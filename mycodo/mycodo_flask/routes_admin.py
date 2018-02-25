@@ -2,6 +2,7 @@
 """ collection of Admin endpoints """
 import logging
 import subprocess
+from collections import OrderedDict
 
 import flask_login
 import os
@@ -19,6 +20,7 @@ from mycodo.config import BACKUP_LOG_FILE
 from mycodo.config import BACKUP_PATH
 from mycodo.config import FORCE_UPGRADE_MASTER
 from mycodo.config import INSTALL_DIRECTORY
+from mycodo.config import MEASUREMENTS
 from mycodo.config import MYCODO_VERSION
 from mycodo.config import RESTORE_LOG_FILE
 from mycodo.config import STATS_CSV
@@ -26,13 +28,13 @@ from mycodo.config import UPGRADE_INIT_FILE
 from mycodo.config import UPGRADE_LOG_FILE
 from mycodo.databases.models import Misc
 from mycodo.mycodo_flask.extensions import db
+from mycodo.mycodo_flask.forms import forms_dependencies
 from mycodo.mycodo_flask.forms import forms_misc
 from mycodo.mycodo_flask.routes_static import inject_variables
 from mycodo.mycodo_flask.utils import utils_general
 from mycodo.utils.github_release_info import github_releases
 from mycodo.utils.statistics import return_stat_file_dict
 from mycodo.utils.system_pi import can_perform_backup
-from mycodo.utils.system_pi import cmd_output
 from mycodo.utils.system_pi import get_directory_size
 from mycodo.utils.system_pi import internet
 
@@ -121,6 +123,75 @@ def admin_backup():
                            form_backup=form_backup,
                            backup_dirs=backup_dirs,
                            full_paths=full_paths)
+
+
+@blueprint.route('/admin/dependencies', methods=('GET', 'POST'))
+@flask_login.login_required
+def admin_dependencies_main():
+    return redirect(url_for('routes_admin.admin_dependencies', device='0'))
+
+
+@blueprint.route('/admin/dependencies/<device>', methods=('GET', 'POST'))
+@flask_login.login_required
+def admin_dependencies(device):
+    """ Display Dependency page """
+    form_dependencies = forms_dependencies.Dependencies()
+
+    if device != '0':
+        device_unmet_dependencies = utils_general.return_dependencies(device)
+    elif form_dependencies.device.data:
+        device_unmet_dependencies = utils_general.return_dependencies(form_dependencies.device.data)
+    else:
+        device_unmet_dependencies = []
+
+    unmet_dependencies = OrderedDict()
+    met_dependencies = OrderedDict()
+    dep_tally = {}
+    for each_device, each_dict in MEASUREMENTS.items():
+        unmet_dependencies.update({
+            each_device: utils_general.return_dependencies(
+                each_device)
+        })
+        met_dependencies.update({
+            each_device: utils_general.return_dependencies(
+                each_device, dep_type='met')
+        })
+        if unmet_dependencies[each_device]:
+            for each_dep in unmet_dependencies[each_device]:
+                if each_dep not in dep_tally:
+                    dep_tally[each_dep] = []
+                dep_tally[each_dep].append(each_device)
+
+    if request.method == 'POST':
+        if not utils_general.user_has_permission('edit_controllers'):
+            return redirect(url_for('routes_admin.admin_dependencies', device=device))
+
+        if form_dependencies.install.data:
+            for each_dep in device_unmet_dependencies:
+                cmd = "/bin/bash {pth}/mycodo/scripts/user_commands.sh install-pip-dependency {dep}" \
+                      " | ts '[%Y-%m-%d %H:%M:%S]' 2>&1".format(
+                    pth=INSTALL_DIRECTORY,
+                    dep=each_dep)
+                flash("Successfully installed {dep}".format(dep=each_dep), "success")
+                dep = subprocess.Popen(cmd, shell=True)
+                dep.wait()
+
+            cmd = "{pth}/mycodo/scripts/mycodo_wrapper initialize" \
+                  " | ts '[%Y-%m-%d %H:%M:%S]' 2>&1".format(
+                pth=INSTALL_DIRECTORY)
+            init = subprocess.Popen(cmd, shell=True)
+            init.wait()
+
+        return redirect(url_for('routes_admin.admin_dependencies', device='0'))
+
+    return render_template('admin/dependencies.html',
+                           measurements=MEASUREMENTS,
+                           dep_tally=dep_tally,
+                           device=device,
+                           unmet_dependencies=unmet_dependencies,
+                           met_dependencies=met_dependencies,
+                           form_dependencies=form_dependencies,
+                           device_unmet_dependencies=device_unmet_dependencies)
 
 
 @blueprint.route('/admin/statistics', methods=('GET', 'POST'))

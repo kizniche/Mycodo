@@ -21,7 +21,7 @@ from mycodo.mycodo_flask.utils.utils_general import delete_entry_with_id
 from mycodo.mycodo_flask.utils.utils_general import flash_form_errors
 from mycodo.mycodo_flask.utils.utils_general import flash_success_errors
 from mycodo.mycodo_flask.utils.utils_general import reorder
-from mycodo.mycodo_flask.utils.utils_general import check_dependencies
+from mycodo.mycodo_flask.utils.utils_general import return_dependencies
 from mycodo.utils.system_pi import csv_to_list_of_int
 from mycodo.utils.system_pi import list_to_csv
 
@@ -38,6 +38,7 @@ def input_add(form_add):
         action=gettext("Add"),
         controller=gettext("Input"))
     error = []
+    unmet_deps = None
 
     if form_add.validate():
         new_sensor = Input()
@@ -50,11 +51,10 @@ def input_add(form_add):
             new_sensor.i2c_bus = 0
             new_sensor.multiplexer_bus = 0
 
-        unmet_deps = check_dependencies(form_add.input_type.data)
+        unmet_deps = return_dependencies(form_add.input_type.data)
         if unmet_deps:
-            return redirect('/dependencies/{dev}'.format(dev=form_add.input_type.data))
-            # error.append("Unmet dependencies: {dep}".format(
-            #     dep=unmet_deps))
+            error.append("The {dev} device you're trying to add has unmet dependencies: {dep}".format(
+                dev=form_add.input_type.data, dep=unmet_deps))
 
         # Linux command as sensor
         if form_add.input_type.data == 'LinuxCommand':
@@ -235,6 +235,9 @@ def input_add(form_add):
         flash_success_errors(error, action, url_for('routes_page.page_data'))
     else:
         flash_form_errors(form_add)
+
+    if unmet_deps:
+        return 1
 
 
 def input_mod(form_mod):

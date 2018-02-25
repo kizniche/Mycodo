@@ -201,15 +201,17 @@
               </ul>
             </li>
 
-            <li class="dropdown{% if upgrade_available %} upgrade_available{% elif active_page in ['backup', 'info', 'logview', 'settings', 'upgrade'] %} active{% endif %}">
+            <li class="dropdown{% if upgrade_available %} upgrade_available{% elif active_page in ['backup', 'dependencies', 'info', 'logview', 'settings', 'upgrade'] %} active{% endif %}">
               <a style="padding-top: 10px !important;" href="#" class="dropdown-toggle" style="padding-top: 0.2em; padding-bottom: 0.2em" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><span class="gi-2x glyphicon glyphicon-cog"></span></a>
               <ul class="dropdown-menu">
                 <li{% if active_page == 'settings' %} class="active"{% endif %}><a href="{{url_for('routes_settings.settings_general')}}"><i class="fa fa-sliders icon-fw"></i> {{_('Configure')}}</a></li>
                 <li{% if active_page == 'logview' %} class="active"{% endif %}><a href="{{url_for('routes_page.page_logview')}}"><i class="glyphicon glyphicon-book icon-fw"></i> {{_('Mycodo Logs')}}</a></li>
                 <li{% if active_page == 'info' %} class="active"{% endif %}><a href="{{url_for('routes_page.page_info')}}"><i class="glyphicon glyphicon-info-sign icon-fw"></i> {{_('System Information')}}</a></li>
                 <li role="separator" class="divider"></li>
-                <li{% if upgrade_available %} class="upgrade_available"{% elif active_page == 'upgrade' %} class="active"{% endif %}><a href="/admin/upgrade"><i class="glyphicon glyphicon-open"></i> {{_('Upgrade')}}</a></li>
-                <li{% if active_page == 'backup' %} class="active"{% endif %}><a href="/admin/backup"><i class=" glyphicon glyphicon-floppy-saved"></i> {{_('Backup Restore')}}</a></li>
+                <li{% if active_page == 'dependencies' %} class="active"{% endif %}><a href="{{url_for('routes_admin.admin_dependencies_main')}}"><i class="fa fa-link icon-fw"></i> {{_('Dependencies')}}</a></li>
+                <li role="separator" class="divider"></li>
+                <li{% if upgrade_available %} class="upgrade_available"{% elif active_page == 'upgrade' %} class="active"{% endif %}><a href="{{url_for('routes_admin.admin_upgrade')}}"><i class="glyphicon glyphicon-open"></i> {{_('Upgrade')}}</a></li>
+                <li{% if active_page == 'backup' %} class="active"{% endif %}><a href="{{url_for('routes_admin.admin_backup')}}"><i class=" glyphicon glyphicon-floppy-saved"></i> {{_('Backup Restore')}}</a></li>
                 <li role="separator" class="divider"></li>
                 <li><a href="/systemctl/daemon_restart"onclick='return confirm("Confirm restarting the backend")'><i class="glyphicon glyphicon-repeat icon-fw"></i> {{_('Restart Backend')}}</a></li>
                 <li><a href="/systemctl/frontend_reload"onclick='return confirm("Confirm restarting the frontend")'><i class="glyphicon glyphicon-repeat icon-fw"></i> {{_('Restart Frontend')}}</a></li>

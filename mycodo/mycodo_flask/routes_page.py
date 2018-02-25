@@ -60,7 +60,6 @@ from mycodo.mycodo_client import daemon_active
 from mycodo.mycodo_flask.extensions import db
 from mycodo.mycodo_flask.forms import forms_conditional
 from mycodo.mycodo_flask.forms import forms_dashboard
-from mycodo.mycodo_flask.forms import forms_dependencies
 from mycodo.mycodo_flask.forms import forms_function
 from mycodo.mycodo_flask.forms import forms_input
 from mycodo.mycodo_flask.forms import forms_lcd
@@ -1015,60 +1014,6 @@ def page_output():
                            user=user)
 
 
-@blueprint.route('/dependencies/<device>', methods=('GET', 'POST'))
-@flask_login.login_required
-def page_dependencies(device):
-    """ Display Dependency page """
-    form_dependencies = forms_dependencies.Dependencies()
-
-    if device != '0':
-        unmet_dependencies = utils_general.check_dependencies(device)
-    elif form_dependencies.device.data:
-        unmet_dependencies = utils_general.check_dependencies(form_dependencies.device.data)
-    else:
-        unmet_dependencies = []
-
-    device_status = OrderedDict()
-    dep_tally = {}
-    for each_device, each_dict in MEASUREMENTS.items():
-        device_status.update({each_device: utils_general.check_dependencies(each_device)})
-        if device_status[each_device]:
-            for each_dep in device_status[each_device]:
-                if each_dep not in dep_tally:
-                    dep_tally[each_dep] = []
-                dep_tally[each_dep].append(each_device)
-
-    if request.method == 'POST':
-        if not utils_general.user_has_permission('edit_controllers'):
-            return redirect(url_for('routes_page.page_data'))
-
-        if form_dependencies.install.data:
-            for each_dep in unmet_dependencies:
-                cmd = "/bin/bash {pth}/mycodo/scripts/user_commands.sh install-pip-dependency {dep}" \
-                      " | ts '[%Y-%m-%d %H:%M:%S]' 2>&1".format(
-                    pth=INSTALL_DIRECTORY,
-                    dep=each_dep)
-                flash("Successfully installed {dep}".format(dep=each_dep), "success")
-                dep = subprocess.Popen(cmd, shell=True)
-                dep.wait()
-
-            cmd = "{pth}/mycodo/scripts/mycodo_wrapper initialize" \
-                  " | ts '[%Y-%m-%d %H:%M:%S]' 2>&1".format(
-                pth=INSTALL_DIRECTORY)
-            init = subprocess.Popen(cmd, shell=True)
-            init.wait()
-
-        return redirect(url_for('routes_page.page_dependencies', device='0'))
-
-    return render_template('pages/dependencies.html',
-                           measurements=MEASUREMENTS,
-                           dep_tally=dep_tally,
-                           device=device,
-                           device_status=device_status,
-                           form_dependencies=form_dependencies,
-                           unmet_dependencies=unmet_dependencies)
-
-
 @blueprint.route('/data', methods=('GET', 'POST'))
 @flask_login.login_required
 def page_data():
@@ -1153,12 +1098,13 @@ def page_data():
                   "error")
 
     if request.method == 'POST':
+        unmet_dependencies = None
         if not utils_general.user_has_permission('edit_controllers'):
             return redirect(url_for('routes_page.page_data'))
 
         # Input forms
         if form_add_input.input_add.data:
-            utils_input.input_add(form_add_input)
+            unmet_dependencies = utils_input.input_add(form_add_input)
         elif form_mod_input.input_mod.data:
             utils_input.input_mod(form_mod_input)
         elif form_mod_input.input_delete.data:
@@ -1205,7 +1151,11 @@ def page_data():
         elif form_mod_math.math_deactivate.data:
             utils_math.math_deactivate(form_mod_math)
 
-        return redirect(url_for('routes_page.page_data'))
+        if unmet_dependencies:
+            return redirect(url_for('routes_admin.admin_dependencies',
+                                    device=form_add_input.input_type.data))
+        else:
+            return redirect(url_for('routes_page.page_data'))
 
     return render_template('pages/data.html',
                            choices_input=choices_input,

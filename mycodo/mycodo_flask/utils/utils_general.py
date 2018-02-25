@@ -450,8 +450,9 @@ def get_camera_image_info():
             latest_img_tl_ts, latest_img_tl)
 
 
-def check_dependencies(device_type):
+def return_dependencies(device_type, dep_type='unmet'):
     unmet_deps = []
+    met_deps = []
     if device_type in MEASUREMENTS:
         for each_device, each_dict in MEASUREMENTS[device_type].items():
             if each_device == 'py-dependencies':
@@ -459,5 +460,10 @@ def check_dependencies(device_type):
                     module = importlib.util.find_spec(each_dep)
                     if module is None:
                         unmet_deps.append(each_dep)
+                    else:
+                        met_deps.append(each_dep)
 
-    return unmet_deps
+    if dep_type == 'unmet':
+        return unmet_deps
+    else:
+        return met_deps
