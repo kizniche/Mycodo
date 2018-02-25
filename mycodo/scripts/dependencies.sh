@@ -34,14 +34,14 @@ case "${1:-''}" in
     'MCP342x')
         ${INSTALL_CMD} install-pip-dependency MCP342x==0.3.3
     ;;
-    'install-pigiod')
+    'install-pigpiod')
         ${INSTALL_CMD} install-pigpiod
         ${INSTALL_CMD} enable-pigpiod-low
     ;;
     'quick2wire')
         ${INSTALL_CMD} install-pip-dependency quick2wire-api
     ;;
-    'update-pigiod')
+    'update-pigpiod')
         ${INSTALL_CMD} update-pigpiod
     ;;
     'sht_sensor')

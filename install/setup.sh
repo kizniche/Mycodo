@@ -109,7 +109,7 @@ trap 'abort' 0
 
 set -e
 
-TOTAL=26  # The total number of times progress() called
+TOTAL=26  # The total number of times progress() is executed
 COUNT=1
 
 function progress() {
@@ -156,11 +156,17 @@ function progress() {
     progress "Setting up files and folders"
     ${INSTALL_CMD} initialize >>${LOG_LOCATION} 2>&1
 
-    if [ "$INSTALL_TYPE" == "minimal" ]; then
-        printf '\n#### Minimal install selected. No more dependencies to install.' >>${LOG_LOCATION} 2>&1
-    elif [ "$INSTALL_TYPE" == "custom" ]; then
-        printf '\n#### Installing custom-selected dependencies' >>${LOG_LOCATION} 2>&1
-        progress "Installing custom python packages in virtualenv"
+    if [ "$INSTALL_TYPE" != "minimal" ]; then
+        MSG_STR="Minimal install selected. Skipping extra package installation"
+        printf "\n#### ${MSG_STR}." >>${LOG_LOCATION} 2>&1
+
+    else
+        MSG_STR="Installing custom python packages in virtualenv"
+        printf "\n#### ${MSG_STR}." >>${LOG_LOCATION} 2>&1
+    fi
+    progress $MSG_STR
+
+    if [ "$INSTALL_TYPE" == "custom" ]; then
         for option in $DEP_STATUS
         do
             option="${option%\"}"
