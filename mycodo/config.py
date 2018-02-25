@@ -77,13 +77,13 @@ MEASUREMENTS = {
         'py-dependencies': ['quick2wire.i2c'],
         'measure': ['dewpoint', 'humidity', 'temperature']},
     'ATLAS_PH_I2C': {
-        'py-dependencies': ['io'],
+        'py-dependencies': [''],
         'measure': ['ph']},
     'ATLAS_PH_UART': {
         'py-dependencies': ['serial'],
         'measure': ['ph']},
     'ATLAS_PT1000_I2C': {
-        'py-dependencies': ['io'],
+        'py-dependencies': [''],
         'measure': ['temperature']},
     'ATLAS_PT1000_UART': {
         'py-dependencies': ['serial'],

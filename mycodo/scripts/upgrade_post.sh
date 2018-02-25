@@ -35,7 +35,7 @@ ${INSTALL_CMD} update-pip3
 
 ${INSTALL_CMD} update-pip3-packages
 
-DEPENDENCIES=$(${INSTALL_DIRECTORY}/Mycodo/env/bin/python3 ${INSTALL_DIRECTORY}/Mycodo/mycodo/utils/dependencies_installed.py -c 2>&1)
+DEPENDENCIES=$(${INSTALL_DIRECTORY}/Mycodo/env/bin/python3 ${INSTALL_DIRECTORY}/Mycodo/mycodo/utils/dependencies_installed.py 2>&1)
 
 IFS=, read -ra ary <<< "$DEPENDENCIES"
 printf "%s\n" "${ary[@]}"
