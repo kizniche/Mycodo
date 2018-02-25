@@ -4,8 +4,6 @@
 import logging
 import time
 
-import Adafruit_GPIO.I2C as I2C
-
 from .base_input import AbstractInput
 from .sensorutils import altitude
 
@@ -63,6 +61,7 @@ class BMP280Sensor(AbstractInput):
         self.I2C_bus_number = bus
 
         if not testing:
+            import Adafruit_GPIO.I2C as I2C
             if mode not in [BMP280_ULTRALOWPOWER, BMP280_STANDARD, BMP280_HIGHRES, BMP280_ULTRAHIGHRES]:
                 raise ValueError(
                     'Unexpected mode value {0}.  Set mode to one of '
