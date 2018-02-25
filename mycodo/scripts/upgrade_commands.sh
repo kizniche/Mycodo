@@ -315,7 +315,7 @@ case "${1:-''}" in
     'install-pip-dependency')
         printf "\n#### Installing ${2} with pip\n"
         if [ ! -d ${MYCODO_PATH}/env ]; then
-            printf "\n## Error: Virtualenv doesn't exist.\n"
+            printf "\n## Error: Virtualenv doesn't exist\n"
             /bin/bash ${MYCODO_PATH}/mycodo/scripts/upgrade_commands.sh setup-virtualenv
         else
             ${MYCODO_PATH}/env/bin/pip3 install --upgrade ${2}

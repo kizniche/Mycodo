@@ -249,9 +249,9 @@ fi
 
 date
 echo >&2 "
-***************************************************
-** Mycodo successfully installed without errors! **
-***************************************************
+************************************
+** Mycodo successfully installed! **
+************************************
 
 Go to https://${IP}/, or whatever your Raspberry Pi's
 IP address is, to create an admin user and log in.
