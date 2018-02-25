@@ -23,8 +23,8 @@ if [ $exitstatus != 0 ]; then
     exit 1
 fi
 
-NOW=$(date +"%m-%d-%Y %H:%M:%S")
-printf "### Mycodo installation initiated at $NOW\n" 2>&1 | tee -a ${LOG_LOCATION}
+NOW=$(date)
+printf "### Mycodo installation initiated $NOW\n" 2>&1 | tee -a ${LOG_LOCATION}
 
 clear
 LICENSE=$(whiptail --title "Mycodo Installer: License Agreement" \
@@ -109,8 +109,10 @@ trap 'abort' 0
 
 set -e
 
-NOW=$(date +"%m-%d-%Y %H:%M:%S")
-printf "### Mycodo installation began at $NOW\n" 2>&1 | tee -a ${LOG_LOCATION}
+SECONDS=0
+
+NOW=$(date)
+printf "### Mycodo installation began $NOW\n" 2>&1 | tee -a ${LOG_LOCATION}
 
 {
     echo -e "XXX\n4\nChecking swap size... \nXXX"
@@ -229,7 +231,7 @@ printf "### Mycodo installation began at $NOW\n" 2>&1 | tee -a ${LOG_LOCATION}
     echo -e "XXX\n99\nStarting the Mycodo daemon... \nXXX"
     ${INSTALL_CMD} restart-daemon >>${LOG_LOCATION} 2>&1
 
-} | whiptail --backtitle "Mycodo Install" --gauge "Installing Mycodo. Please wait..." 6 55 0
+} | whiptail --gauge "Installing Mycodo. Please wait..." 6 55 0
 
 trap : 0
 
@@ -239,8 +241,12 @@ if [[ -z ${IP} ]]; then
   IP="your.IP.address.here"
 fi
 
-NOW=$(date +"%m-%d-%Y %H:%M:%S")
-printf "### Mycodo Installer finished  ${NOW}\n" 2>&1 | tee -a ${LOG_LOCATION}
+CURRENT_DATE=$(date)
+printf "### Mycodo Installer finished ${CURRENT_DATE}\n" 2>&1 | tee -a ${LOG_LOCATION}
+
+duration=$SECONDS
+printf "### Total install time: $(($duration / 60)) minutes and $(($duration % 60)) seconds\n" 2>&1 | tee -a ${LOG_LOCATION}
+
 printf "
 ************************************
 ** Mycodo successfully installed! **
