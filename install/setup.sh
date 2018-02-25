@@ -48,18 +48,18 @@ trap 'abort' 0
 set -e
 
 NOW=$(date +"%m-%d-%Y %H:%M:%S")
-printf "### Mycodo installation began at $NOW\n" >>${LOG_LOCATION}
+printf "### Mycodo installation began at $NOW\n" >>${LOG_LOCATION} 2>&1
 
 clear
 LICENSE=$(whiptail --title "Mycodo Installer: License Agreement" \
                    --backtitle "Mycodo ${CURRENT_VERSION}" \
-                   --yesno "Mycodo is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.\nMycodo is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details. You should have received a copy of the GNU General Public License along with Mycodo. If not, see gnu.org/licenses.\n\nDo you agree to the license terms?" \
-                   18 68 \
+                   --yesno "Mycodo is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.\n\nMycodo is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.\n\nYou should have received a copy of the GNU General Public License along with Mycodo. If not, see gnu.org/licenses.\n\nDo you agree to the license terms?" \
+                   20 68 \
                    3>&1 1>&2 2>&3)
 
 exitstatus=$?
 if [ $exitstatus != 0 ]; then
-    echo "Install canceled by user" >>${LOG_LOCATION}
+    echo "Install canceled by user" >>${LOG_LOCATION} 2>&1
     exit
 fi
 
@@ -68,14 +68,14 @@ INSTALL_TYPE=$(whiptail --title "Mycodo Installer: Install Type" \
                         --backtitle "Mycodo ${CURRENT_VERSION}" \
                         --notags \
                         --menu "Select the Install Type:\n\nFull: Install all dependencies\nMinimal: Install a minimal set of dependencies\nCustom: Select which dependencies to install\n\nIf unsure, choose 'Full Install'" \
-                        18 68 3 \
+                        20 68 3 \
                         "full" "Full Install (recommended)" \
                         "minimal" "Minimal Install" \
                         "custom" "Custom Install" \
                         3>&1 1>&2 2>&3)
 exitstatus=$?
 if [ $exitstatus != 0 ]; then
-    echo "Install canceled by user" >>${LOG_LOCATION}
+    echo "Install canceled by user" >>${LOG_LOCATION} 2>&1
     exit
 fi
 printf "\nInstall Type: $INSTALL_TYPE\n"
@@ -86,7 +86,7 @@ if [ "$INSTALL_TYPE" == "custom" ]; then
                            --backtitle "Mycodo ${CURRENT_VERSION}" \
                            --notags \
                            --checklist "Dependencies to Install" \
-                           18 68 11 \
+                           20 68 11 \
                            1 "Adafruit_ADS1x15" off \
                            2 "Adafruit_BME280" off \
                            3 "Adafruit_GPIO" off \
@@ -101,122 +101,122 @@ if [ "$INSTALL_TYPE" == "custom" ]; then
                            3>&1 1>&2 2>&3)
     exitstatus=$?
     if [ $exitstatus != 0 ]; then
-        echo "Install canceled by user" >>${LOG_LOCATION}
+        echo "Install canceled by user" >>${LOG_LOCATION} 2>&1
         exit
     fi
-    printf "\nDependencies: $INSTALL_DEP\n" >>${LOG_LOCATION}
+    printf "\nDependencies: $INSTALL_DEP\n" >>${LOG_LOCATION} 2>&1
 fi
 
 {
     echo -e "XXX\n4\nChecking swap size... \nXXX"
-    ${INSTALL_CMD} update-swap-size >>${LOG_LOCATION}
+    ${INSTALL_CMD} update-swap-size >>${LOG_LOCATION} 2>&1
 
-    echo -e "XXX\n5\nUpdating apt sources... \nXXX"
-    ${INSTALL_CMD} update-apt >>${LOG_LOCATION}
+    echo -e "XXX\n9\nUpdating apt sources... \nXXX"
+    ${INSTALL_CMD} update-apt >>${LOG_LOCATION} 2>&1
 
-    echo -e "XXX\n4\nRemoving apt- version of pip... \nXXX"
-    ${INSTALL_CMD} uninstall-apt-pip >>${LOG_LOCATION}
+    echo -e "XXX\n13\nRemoving apt- version of pip... \nXXX"
+    ${INSTALL_CMD} uninstall-apt-pip >>${LOG_LOCATION} 2>&1
 
-    echo -e "XXX\n5\nInstall dependencies (apt)... \nXXX"
-    ${INSTALL_CMD} update-packages >>${LOG_LOCATION}
+    echo -e "XXX\n18\nInstall dependencies (apt)... \nXXX"
+    ${INSTALL_CMD} update-packages >>${LOG_LOCATION} 2>&1
 
-    echo -e "XXX\n4\nSetting up virtualenv... \nXXX"
-    ${INSTALL_CMD} setup-virtualenv >>${LOG_LOCATION}
+    echo -e "XXX\n22\nSetting up virtualenv... \nXXX"
+    ${INSTALL_CMD} setup-virtualenv >>${LOG_LOCATION} 2>&1
 
-    echo -e "XXX\n5\nUpdating pip... \nXXX"
-    ${INSTALL_CMD} update-pip3 >>${LOG_LOCATION}
+    echo -e "XXX\n27\nUpdating pip... \nXXX"
+    ${INSTALL_CMD} update-pip3 >>${LOG_LOCATION} 2>&1
 
-    echo -e "XXX\n4\nInstalling WiringPi... \nXXX"
-    ${INSTALL_CMD} update-wiringpi >>${LOG_LOCATION}
+    echo -e "XXX\n31\nInstalling WiringPi... \nXXX"
+    ${INSTALL_CMD} update-wiringpi >>${LOG_LOCATION} 2>&1
 
-    echo -e "XXX\n5\nInstalling base python packages... \nXXX"
-    ${INSTALL_CMD} update-pip3-packages >>${LOG_LOCATION}
+    echo -e "XXX\n36\nInstalling base python packages... \nXXX"
+    ${INSTALL_CMD} update-pip3-packages >>${LOG_LOCATION} 2>&1
 
     if [ "$INSTALL_TYPE" == "minimal" ]; then
         printf '\n### Minimal install selected. No more dependencies to install.'
     elif [ "$INSTALL_TYPE" == "custom" ]; then
         printf '\n### Installing custom-selected dependencies'
-        echo -e "XXX\n4\nInstalling custom python packages... \nXXX"
+        echo -e "XXX\n40\nInstalling custom python packages... \nXXX"
         for option in $INSTALL_DEP
         do
             option="${option%\"}"
             option="${option#\"}"
             if [ "$option" == "1" ]; then
-                ${INSTALL_DEP} Adafruit_ADS1x15 >>${LOG_LOCATION}
+                ${INSTALL_DEP} Adafruit_ADS1x15 >>${LOG_LOCATION} 2>&1
             elif [ "$option" == "2" ]; then
-                ${INSTALL_DEP} Adafruit_Python_BME280 >>${LOG_LOCATION}
+                ${INSTALL_DEP} Adafruit_Python_BME280 >>${LOG_LOCATION} 2>&1
             elif [ "$option" == "3" ]; then
-                ${INSTALL_DEP} Adafruit_GPIO >>${LOG_LOCATION}
+                ${INSTALL_DEP} Adafruit_GPIO >>${LOG_LOCATION} 2>&1
             elif [ "$option" == "4" ]; then
-                ${INSTALL_DEP} Adafruit_MCP3008 >>${LOG_LOCATION}
+                ${INSTALL_DEP} Adafruit_MCP3008 >>${LOG_LOCATION} 2>&1
             elif [ "$option" == "5" ]; then
-                ${INSTALL_DEP} Adafruit_TMP >>${LOG_LOCATION}
+                ${INSTALL_DEP} Adafruit_TMP >>${LOG_LOCATION} 2>&1
             elif [ "$option" == "6" ]; then
-                ${INSTALL_DEP} MCP342x >>${LOG_LOCATION}
+                ${INSTALL_DEP} MCP342x >>${LOG_LOCATION} 2>&1
             elif [ "$option" == "7" ]; then
-                ${INSTALL_DEP} install-pigpiod >>${LOG_LOCATION}
+                ${INSTALL_DEP} install-pigpiod >>${LOG_LOCATION} 2>&1
             elif [ "$option" == "8" ]; then
-                ${INSTALL_DEP} sht_sensor >>${LOG_LOCATION}
+                ${INSTALL_DEP} sht_sensor >>${LOG_LOCATION} 2>&1
             elif [ "$option" == "9" ]; then
-                ${INSTALL_DEP} tsl2561 >>${LOG_LOCATION}
+                ${INSTALL_DEP} tsl2561 >>${LOG_LOCATION} 2>&1
             elif [ "$option" == "10" ]; then
-                ${INSTALL_DEP} tsl2591 >>${LOG_LOCATION}
+                ${INSTALL_DEP} tsl2591 >>${LOG_LOCATION} 2>&1
             elif [ "$option" == "11" ]; then
-                ${INSTALL_DEP} w1thermsensor >>${LOG_LOCATION}
+                ${INSTALL_DEP} w1thermsensor >>${LOG_LOCATION} 2>&1
             fi
         done
     elif [ "$INSTALL_TYPE" == "full" ]; then
-        ${INSTALL_DEP} Adafruit_ADS1x15 >>${LOG_LOCATION}
-        ${INSTALL_DEP} Adafruit_Python_BME280 >>${LOG_LOCATION}
-        ${INSTALL_DEP} Adafruit_GPIO >>${LOG_LOCATION}
-        ${INSTALL_DEP} Adafruit_MCP3008 >>${LOG_LOCATION}
-        ${INSTALL_DEP} Adafruit_TMP >>${LOG_LOCATION}
-        ${INSTALL_DEP} MCP342x >>${LOG_LOCATION}
-        ${INSTALL_DEP} install-pigpiod >>${LOG_LOCATION}
-        ${INSTALL_DEP} sht_sensor >>${LOG_LOCATION}
-        ${INSTALL_DEP} tsl2561 >>${LOG_LOCATION}
-        ${INSTALL_DEP} tsl2591 >>${LOG_LOCATION}
-        ${INSTALL_DEP} w1thermsensor >>${LOG_LOCATION}
+        ${INSTALL_DEP} Adafruit_ADS1x15 >>${LOG_LOCATION} 2>&1
+        ${INSTALL_DEP} Adafruit_Python_BME280 >>${LOG_LOCATION} 2>&1
+        ${INSTALL_DEP} Adafruit_GPIO >>${LOG_LOCATION} 2>&1
+        ${INSTALL_DEP} Adafruit_MCP3008 >>${LOG_LOCATION} 2>&1
+        ${INSTALL_DEP} Adafruit_TMP >>${LOG_LOCATION} 2>&1
+        ${INSTALL_DEP} MCP342x >>${LOG_LOCATION} 2>&1
+        ${INSTALL_DEP} install-pigpiod >>${LOG_LOCATION} 2>&1
+        ${INSTALL_DEP} sht_sensor >>${LOG_LOCATION} 2>&1
+        ${INSTALL_DEP} tsl2561 >>${LOG_LOCATION} 2>&1
+        ${INSTALL_DEP} tsl2591 >>${LOG_LOCATION} 2>&1
+        ${INSTALL_DEP} w1thermsensor >>${LOG_LOCATION} 2>&1
     fi
 
-    echo -e "XXX\n5\nInstalling InfluxDB... \nXXX"
-    ${INSTALL_CMD} update-influxdb >>${LOG_LOCATION}
+    echo -e "XXX\n45\nInstalling InfluxDB... \nXXX"
+    ${INSTALL_CMD} update-influxdb >>${LOG_LOCATION} 2>&1
 
-    echo -e "XXX\n4\nInstalling InfluxDB database and user... \nXXX"
-    ${INSTALL_CMD} update-influxdb-db-user >>${LOG_LOCATION}
+    echo -e "XXX\n49\nInstalling InfluxDB database and user... \nXXX"
+    ${INSTALL_CMD} update-influxdb-db-user >>${LOG_LOCATION} 2>&1
 
-    echo -e "XXX\n5\nInstalling logrotate... \nXXX"
-    ${INSTALL_CMD} update-logrotate >>${LOG_LOCATION}
+    echo -e "XXX\n54\nInstalling logrotate... \nXXX"
+    ${INSTALL_CMD} update-logrotate >>${LOG_LOCATION} 2>&1
 
-    echo -e "XXX\n4\nGenerating SSL certificate... \nXXX"
-    ${INSTALL_CMD} ssl-certs-generate >>${LOG_LOCATION}
+    echo -e "XXX\n58\nGenerating SSL certificate... \nXXX"
+    ${INSTALL_CMD} ssl-certs-generate >>${LOG_LOCATION} 2>&1
 
-    echo -e "XXX\n5\nInstalling Mycodo startup script... \nXXX"
-    ${INSTALL_CMD} update-mycodo-startup-script >>${LOG_LOCATION}
+    echo -e "XXX\n63\nInstalling Mycodo startup script... \nXXX"
+    ${INSTALL_CMD} update-mycodo-startup-script >>${LOG_LOCATION} 2>&1
 
-    echo -e "XXX\n4\nCompiling translations... \nXXX"
-    ${INSTALL_CMD} compile-translations >>${LOG_LOCATION}
+    echo -e "XXX\n67\nCompiling translations... \nXXX"
+    ${INSTALL_CMD} compile-translations >>${LOG_LOCATION} 2>&1
 
-    echo -e "XXX\n5\nUpdating cron... \nXXX"
-    ${INSTALL_CMD} update-cron >>${LOG_LOCATION}
+    echo -e "XXX\n72\nUpdating cron... \nXXX"
+    ${INSTALL_CMD} update-cron >>${LOG_LOCATION} 2>&1
 
-    echo -e "XXX\n4\nInitializing install... \nXXX"
-    ${INSTALL_CMD} initialize >>${LOG_LOCATION}
+    echo -e "XXX\n76\nInitializing install... \nXXX"
+    ${INSTALL_CMD} initialize >>${LOG_LOCATION} 2>&1
 
-    echo -e "XXX\n5\nUpdating web server... \nXXX"
-    ${INSTALL_CMD} web-server-update >>${LOG_LOCATION}
+    echo -e "XXX\n81\nUpdating web server... \nXXX"
+    ${INSTALL_CMD} web-server-update >>${LOG_LOCATION} 2>&1
 
-    echo -e "XXX\n4\nRestarting web server... \nXXX"
-    ${INSTALL_CMD} web-server-restart >>${LOG_LOCATION}
+    echo -e "XXX\n85\nRestarting web server... \nXXX"
+    ${INSTALL_CMD} web-server-restart >>${LOG_LOCATION} 2>&1
 
-    echo -e "XXX\n5\nConnecting to web server... \nXXX"
-    ${INSTALL_CMD} web-server-connect >>${LOG_LOCATION}
+    echo -e "XXX\n90\nConnecting to web server... \nXXX"
+    ${INSTALL_CMD} web-server-connect >>${LOG_LOCATION} 2>&1
 
-    echo -e "XXX\n4\nUpdating permissions... \nXXX"
-    ${INSTALL_CMD} update-permissions >>${LOG_LOCATION}
+    echo -e "XXX\n94\nUpdating permissions... \nXXX"
+    ${INSTALL_CMD} update-permissions >>${LOG_LOCATION} 2>&1
 
-    echo -e "XXX\n5\nRestarting daemon... \nXXX"
-    ${INSTALL_CMD} restart-daemon >>${LOG_LOCATION}
+    echo -e "XXX\n99\nRestarting daemon... \nXXX"
+    ${INSTALL_CMD} restart-daemon >>${LOG_LOCATION} 2>&1
 
 } | whiptail --gauge "Installing Mycodo. Please wait..." 6 50 0
 
