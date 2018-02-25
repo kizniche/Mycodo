@@ -109,47 +109,60 @@ trap 'abort' 0
 
 set -e
 
+TOTAL=25
+COUNT=1
+
+function progress() {
+    echo -e "XXX\n$(awk "BEGIN { pc=100*${COUNT}/${TOTAL}; i=int(pc); print (pc-i<0.5)?i:i+1 }")\n${1}... \nXXX"
+    ((COUNT++))
+}
+
 {
-    echo -e "XXX\n0\nSit back... \nXXX"
-    sleep 5
-    echo -e "XXX\n1\nOr grab a coffee... \nXXX"
-    sleep 5
-    echo -e "XXX\n2\nThis may take a while... \nXXX"
-    sleep 5
+    progress "Sit back..."
+    sleep 4
+    progress "Or grab a coffee..."
+    sleep 4
+    progress "This may take a while..."
+
+    sleep 4
 
     SECONDS=0
     NOW=$(date)
     printf "#### Mycodo installation began $NOW\n" 2>&1 | tee -a ${LOG_LOCATION}
 
-    echo -e "XXX\n4\nChecking swap size... \nXXX"
+
+    progress "Checking swap size..."
     ${INSTALL_CMD} update-swap-size >>${LOG_LOCATION} 2>&1
 
-    echo -e "XXX\n9\nUpdating apt sources... \nXXX"
+    progress "Updating apt sources..."
     ${INSTALL_CMD} update-apt >>${LOG_LOCATION} 2>&1
 
-    echo -e "XXX\n13\nRemoving apt version of pip... \nXXX"
+    progress "Removing apt version of pip..."
     ${INSTALL_CMD} uninstall-apt-pip >>${LOG_LOCATION} 2>&1
 
-    echo -e "XXX\n18\nInstalling apt dependencies... \nXXX"
+    progress "Installing apt dependencies..."
     ${INSTALL_CMD} update-packages >>${LOG_LOCATION} 2>&1
 
-    echo -e "XXX\n22\nSetting up virtualenv... \nXXX"
+    progress "Setting up virtualenv..."
     ${INSTALL_CMD} setup-virtualenv >>${LOG_LOCATION} 2>&1
 
-    echo -e "XXX\n27\nUpdating virtualenv pip... \nXXX"
+    progress "Updating virtualenv pip..."
     ${INSTALL_CMD} update-pip3 >>${LOG_LOCATION} 2>&1
 
-    echo -e "XXX\n31\nInstalling WiringPi... \nXXX"
+    progress "Installing WiringPi..."
     ${INSTALL_CMD} update-wiringpi >>${LOG_LOCATION} 2>&1
 
-    echo -e "XXX\n36\nInstalling base python packages in virtualenv... \nXXX"
+    progress "Installing base python packages in virtualenv..."
     ${INSTALL_CMD} update-pip3-packages >>${LOG_LOCATION} 2>&1
+
+    progress "Setting up files and folders..."
+    ${INSTALL_CMD} initialize >>${LOG_LOCATION} 2>&1
 
     if [ "$INSTALL_TYPE" == "minimal" ]; then
         printf '\n#### Minimal install selected. No more dependencies to install.' >>${LOG_LOCATION} 2>&1
     elif [ "$INSTALL_TYPE" == "custom" ]; then
         printf '\n#### Installing custom-selected dependencies' >>${LOG_LOCATION} 2>&1
-        echo -e "XXX\n40\nInstalling custom python packages in virtualenv... \nXXX"
+        progress "Installing custom python packages in virtualenv..."
         for option in $DEP_STATUS
         do
             option="${option%\"}"
@@ -198,44 +211,45 @@ set -e
         ${INSTALL_DEP} w1thermsensor >>${LOG_LOCATION} 2>&1
     fi
 
-    echo -e "XXX\n45\nInstalling InfluxDB... \nXXX"
+    progress "Installing InfluxDB..."
     ${INSTALL_CMD} update-influxdb >>${LOG_LOCATION} 2>&1
 
-    echo -e "XXX\n49\nSetting up InfluxDB database and user... \nXXX"
+    progress "Setting up InfluxDB database and user..."
     ${INSTALL_CMD} update-influxdb-db-user >>${LOG_LOCATION} 2>&1
 
-    echo -e "XXX\n54\nSetting up logrotate... \nXXX"
+    progress "Setting up logrotate..."
     ${INSTALL_CMD} update-logrotate >>${LOG_LOCATION} 2>&1
 
-    echo -e "XXX\n58\nGenerating SSL certificate... \nXXX"
+    progress "Generating SSL certificate..."
     ${INSTALL_CMD} ssl-certs-generate >>${LOG_LOCATION} 2>&1
 
-    echo -e "XXX\n63\nInstalling Mycodo startup script... \nXXX"
+    progress "Installing Mycodo startup script..."
     ${INSTALL_CMD} update-mycodo-startup-script >>${LOG_LOCATION} 2>&1
 
-    echo -e "XXX\n67\nCompiling translations... \nXXX"
+    progress "Compiling translations..."
     ${INSTALL_CMD} compile-translations >>${LOG_LOCATION} 2>&1
 
-    echo -e "XXX\n72\nUpdating cron... \nXXX"
+    progress "Updating cron..."
     ${INSTALL_CMD} update-cron >>${LOG_LOCATION} 2>&1
 
-    echo -e "XXX\n76\nSetting up files and folders... \nXXX"
+    progress "Running initialization..."
     ${INSTALL_CMD} initialize >>${LOG_LOCATION} 2>&1
 
-    echo -e "XXX\n81\nSetting up the web server... \nXXX"
+    progress "Setting up the web server..."
     ${INSTALL_CMD} web-server-update >>${LOG_LOCATION} 2>&1
 
-    echo -e "XXX\n85\nStarting the web server... \nXXX"
+    progress "Starting the web server..."
     ${INSTALL_CMD} web-server-restart >>${LOG_LOCATION} 2>&1
 
-    echo -e "XXX\n90\nCreating Mycodo database... \nXXX"
+    progress "Creating Mycodo database..."
     ${INSTALL_CMD} web-server-connect >>${LOG_LOCATION} 2>&1
 
-    echo -e "XXX\n94\Setting permissions... \nXXX"
+    progress "Setting permissions..."
     ${INSTALL_CMD} update-permissions >>${LOG_LOCATION} 2>&1
 
-    echo -e "XXX\n99\nStarting the Mycodo daemon... \nXXX"
+    progress "Starting the Mycodo daemon..."
     ${INSTALL_CMD} restart-daemon >>${LOG_LOCATION} 2>&1
+
 
 } | whiptail --gauge "Installing Mycodo. Please wait..." 6 55 0
 
