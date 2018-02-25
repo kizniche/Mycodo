@@ -60,5 +60,3 @@ case "${1:-''}" in
         printf "\nUnrecognized dependency"
     ;;
 esac
-
-${INSTALL_CMD} update-permissions

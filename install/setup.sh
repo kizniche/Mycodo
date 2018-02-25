@@ -109,20 +109,20 @@ trap 'abort' 0
 
 set -e
 
-TOTAL=25
+TOTAL=27  # Should be one greater than the total number of progress() uses
 COUNT=1
 
 function progress() {
-    echo -e "XXX\n$(awk "BEGIN { pc=100*${COUNT}/${TOTAL}; i=int(pc); print (pc-i<0.5)?i:i+1 }")\n${1}... \nXXX"
+    echo -e "XXX\n$(awk "BEGIN { pc=100*${COUNT}/${TOTAL}; i=int(pc); print (pc-i<0.5)?i:i+1 }")\n${1}...\nXXX"
     ((COUNT++))
 }
 
 {
-    progress "Sit back..."
+    progress "Sit back"
     sleep 4
-    progress "Or grab a coffee..."
+    progress "Or grab a coffee"
     sleep 4
-    progress "This may take a while..."
+    progress "This may take a while"
 
     sleep 4
 
@@ -131,38 +131,38 @@ function progress() {
     printf "#### Mycodo installation began $NOW\n" 2>&1 | tee -a ${LOG_LOCATION}
 
 
-    progress "Checking swap size..."
+    progress "Checking swap size"
     ${INSTALL_CMD} update-swap-size >>${LOG_LOCATION} 2>&1
 
-    progress "Updating apt sources..."
+    progress "Updating apt sources"
     ${INSTALL_CMD} update-apt >>${LOG_LOCATION} 2>&1
 
-    progress "Removing apt version of pip..."
+    progress "Removing apt version of pip"
     ${INSTALL_CMD} uninstall-apt-pip >>${LOG_LOCATION} 2>&1
 
-    progress "Installing apt dependencies..."
+    progress "Installing apt dependencies"
     ${INSTALL_CMD} update-packages >>${LOG_LOCATION} 2>&1
 
-    progress "Setting up virtualenv..."
+    progress "Setting up virtualenv"
     ${INSTALL_CMD} setup-virtualenv >>${LOG_LOCATION} 2>&1
 
-    progress "Updating virtualenv pip..."
+    progress "Updating virtualenv pip"
     ${INSTALL_CMD} update-pip3 >>${LOG_LOCATION} 2>&1
 
-    progress "Installing WiringPi..."
+    progress "Installing WiringPi"
     ${INSTALL_CMD} update-wiringpi >>${LOG_LOCATION} 2>&1
 
-    progress "Installing base python packages in virtualenv..."
+    progress "Installing base python packages in virtualenv"
     ${INSTALL_CMD} update-pip3-packages >>${LOG_LOCATION} 2>&1
 
-    progress "Setting up files and folders..."
+    progress "Setting up files and folders"
     ${INSTALL_CMD} initialize >>${LOG_LOCATION} 2>&1
 
     if [ "$INSTALL_TYPE" == "minimal" ]; then
         printf '\n#### Minimal install selected. No more dependencies to install.' >>${LOG_LOCATION} 2>&1
     elif [ "$INSTALL_TYPE" == "custom" ]; then
         printf '\n#### Installing custom-selected dependencies' >>${LOG_LOCATION} 2>&1
-        progress "Installing custom python packages in virtualenv..."
+        progress "Installing custom python packages in virtualenv"
         for option in $DEP_STATUS
         do
             option="${option%\"}"
@@ -195,6 +195,7 @@ function progress() {
                 ${INSTALL_DEP} w1thermsensor >>${LOG_LOCATION} 2>&1
             fi
         done
+        ${INSTALL_CMD} update-permissions >>${LOG_LOCATION} 2>&1
     elif [ "$INSTALL_TYPE" == "full" ]; then
         ${INSTALL_DEP} Adafruit_ADS1x15 >>${LOG_LOCATION} 2>&1
         ${INSTALL_DEP} Adafruit_BMP >>${LOG_LOCATION} 2>&1
@@ -209,45 +210,46 @@ function progress() {
         ${INSTALL_DEP} tsl2561 >>${LOG_LOCATION} 2>&1
         ${INSTALL_DEP} tsl2591 >>${LOG_LOCATION} 2>&1
         ${INSTALL_DEP} w1thermsensor >>${LOG_LOCATION} 2>&1
+        ${INSTALL_CMD} update-permissions >>${LOG_LOCATION} 2>&1
     fi
 
-    progress "Installing InfluxDB..."
+    progress "Installing InfluxDB"
     ${INSTALL_CMD} update-influxdb >>${LOG_LOCATION} 2>&1
 
-    progress "Setting up InfluxDB database and user..."
+    progress "Setting up InfluxDB database and user"
     ${INSTALL_CMD} update-influxdb-db-user >>${LOG_LOCATION} 2>&1
 
-    progress "Setting up logrotate..."
+    progress "Setting up logrotate"
     ${INSTALL_CMD} update-logrotate >>${LOG_LOCATION} 2>&1
 
-    progress "Generating SSL certificate..."
+    progress "Generating SSL certificate"
     ${INSTALL_CMD} ssl-certs-generate >>${LOG_LOCATION} 2>&1
 
-    progress "Installing Mycodo startup script..."
+    progress "Installing Mycodo startup script"
     ${INSTALL_CMD} update-mycodo-startup-script >>${LOG_LOCATION} 2>&1
 
-    progress "Compiling translations..."
+    progress "Compiling translations"
     ${INSTALL_CMD} compile-translations >>${LOG_LOCATION} 2>&1
 
-    progress "Updating cron..."
+    progress "Updating cron"
     ${INSTALL_CMD} update-cron >>${LOG_LOCATION} 2>&1
 
-    progress "Running initialization..."
+    progress "Running initialization"
     ${INSTALL_CMD} initialize >>${LOG_LOCATION} 2>&1
 
-    progress "Setting up the web server..."
+    progress "Setting up the web server"
     ${INSTALL_CMD} web-server-update >>${LOG_LOCATION} 2>&1
 
-    progress "Starting the web server..."
+    progress "Starting the web server"
     ${INSTALL_CMD} web-server-restart >>${LOG_LOCATION} 2>&1
 
-    progress "Creating Mycodo database..."
+    progress "Creating Mycodo database"
     ${INSTALL_CMD} web-server-connect >>${LOG_LOCATION} 2>&1
 
-    progress "Setting permissions..."
+    progress "Setting permissions"
     ${INSTALL_CMD} update-permissions >>${LOG_LOCATION} 2>&1
 
-    progress "Starting the Mycodo daemon..."
+    progress "Starting the Mycodo daemon"
     ${INSTALL_CMD} restart-daemon >>${LOG_LOCATION} 2>&1
 
 
