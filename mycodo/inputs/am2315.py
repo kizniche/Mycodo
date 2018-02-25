@@ -3,8 +3,6 @@ import logging
 import math
 import time
 
-import quick2wire.i2c as i2c
-
 from mycodo.databases.models import Output
 from mycodo.utils.database import db_retrieve_table_daemon
 from .base_input import AbstractInput
@@ -50,9 +48,11 @@ class AM2315:
         debug:     bool containing debug state
     """
     def __init__(self, bus, address=0x5C, debug=False):
+        import quick2wire.i2c as i2c
+        self.i2c = i2c
         self.channel = bus
         self.address = address   				  # Default address 0x5C
-        self.bus = i2c.I2CMaster(int(bus))        # quick2wire master
+        self.bus = self.i2c.I2CMaster(int(bus))        # quick2wire master
         self.lastError = None   				  # Contains last error string
         self.debug = debug       				  # Debug flag
 
@@ -68,15 +68,15 @@ class AM2315:
 
         # Send a wakeup call to the sensor. This call will always fail
         try:
-            self.bus.transaction(i2c.writing(self.address, bytes([0x03,0x0,0x04])))
+            self.bus.transaction(self.i2c.writing(self.address, bytes([0x03,0x0,0x04])))
         except:
              pass
 
         time.sleep(0.125)
         # Now that the device is awake, read the data
         try:
-            self.bus.transaction(i2c.writing(self.address, bytes([0x03,0x0,0x04])))
-            data = self.bus.transaction(i2c.reading(self.address, 0x08))
+            self.bus.transaction(self.i2c.writing(self.address, bytes([0x03,0x0,0x04])))
+            data = self.bus.transaction(self.i2c.reading(self.address, 0x08))
             data = bytearray(data[0])
         except IOError as e:
             self.lastError = 'I/O Error({0}): {1}'.format(e.errno,e.strerror)
