@@ -145,22 +145,35 @@ def admin_dependencies(device):
         device_unmet_dependencies = []
 
     unmet_dependencies = OrderedDict()
+    unmet_exist = False
     met_dependencies = OrderedDict()
-    dep_tally = {}
+    met_exist = False
+    unmet_list = {}
     for each_device, each_dict in MEASUREMENTS.items():
+        # Determine if there are any unmet dependencies
         unmet_dependencies.update({
             each_device: utils_general.return_dependencies(
                 each_device)
         })
+        if utils_general.return_dependencies(each_device) != []:
+            unmet_exist = True
+
+        # Determine if there are any met dependencies
         met_dependencies.update({
             each_device: utils_general.return_dependencies(
                 each_device, dep_type='met')
         })
+        if utils_general.return_dependencies(
+                each_device, dep_type='met'):
+            met_exist = True
+
+        # Find all the devices that use each unmet dependency
         if unmet_dependencies[each_device]:
             for each_dep in unmet_dependencies[each_device]:
-                if each_dep not in dep_tally:
-                    dep_tally[each_dep] = []
-                dep_tally[each_dep].append(each_device)
+                if each_dep not in unmet_list:
+                    unmet_list[each_dep] = []
+                if each_device not in unmet_list[each_dep]:
+                    unmet_list[each_dep].append(each_device)
 
     if request.method == 'POST':
         if not utils_general.user_has_permission('edit_controllers'):
@@ -186,10 +199,12 @@ def admin_dependencies(device):
 
     return render_template('admin/dependencies.html',
                            measurements=MEASUREMENTS,
-                           dep_tally=dep_tally,
+                           unmet_list=unmet_list,
                            device=device,
                            unmet_dependencies=unmet_dependencies,
+                           unmet_exist=unmet_exist,
                            met_dependencies=met_dependencies,
+                           met_exist=met_exist,
                            form_dependencies=form_dependencies,
                            device_unmet_dependencies=device_unmet_dependencies)
 

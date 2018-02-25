@@ -452,16 +452,20 @@ def get_camera_image_info():
 
 def return_dependencies(device_type, dep_type='unmet'):
     unmet_deps = []
-    met_deps = []
+    met_deps = False
     if device_type in MEASUREMENTS:
         for each_device, each_dict in MEASUREMENTS[device_type].items():
             if each_device == 'py-dependencies':
                 for each_dep in each_dict:
                     module = importlib.util.find_spec(each_dep)
                     if module is None:
-                        unmet_deps.append(each_dep)
+                        if each_dep not in unmet_deps:
+                            unmet_deps.append(each_dep)
                     else:
-                        met_deps.append(each_dep)
+                        met_deps = True
+
+                if each_dict == []:
+                    met_deps = True
 
     if dep_type == 'unmet':
         return unmet_deps
