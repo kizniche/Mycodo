@@ -6,7 +6,6 @@
 #
 
 INSTALL_DIRECTORY=$( cd "$( dirname "${BASH_SOURCE[0]}" )/.." && pwd -P )
-CURRENT_VERSION=$(${INSTALL_DIRECTORY}/Mycodo/env/bin/python3 ${INSTALL_DIRECTORY}/Mycodo/mycodo/utils/github_release_info.py -c 2>&1)
 INSTALL_CMD="/bin/bash ${INSTALL_DIRECTORY}/mycodo/scripts/upgrade_commands.sh"
 INSTALL_DEP="/bin/bash ${INSTALL_DIRECTORY}/mycodo/scripts/dependencies.sh"
 LOG_LOCATION=${INSTALL_DIRECTORY}/install/setup.log
@@ -52,7 +51,7 @@ printf "### Mycodo installation began at $NOW\n" >>${LOG_LOCATION} 2>&1
 
 clear
 LICENSE=$(whiptail --title "Mycodo Installer: License Agreement" \
-                   --backtitle "Mycodo ${CURRENT_VERSION}" \
+                   --backtitle "Mycodo" \
                    --yesno "Mycodo is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.\n\nMycodo is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.\n\nYou should have received a copy of the GNU General Public License along with Mycodo. If not, see gnu.org/licenses.\n\nDo you agree to the license terms?" \
                    20 68 \
                    3>&1 1>&2 2>&3)
@@ -65,7 +64,7 @@ fi
 
 clear
 INSTALL_TYPE=$(whiptail --title "Mycodo Installer: Install Type" \
-                        --backtitle "Mycodo ${CURRENT_VERSION}" \
+                        --backtitle "Mycodo" \
                         --notags \
                         --menu "Select the Install Type:\n\nFull: Install all dependencies\nMinimal: Install a minimal set of dependencies\nCustom: Select which dependencies to install\n\nIf unsure, choose 'Full Install'" \
                         20 68 3 \
@@ -83,7 +82,7 @@ printf "\nInstall Type: $INSTALL_TYPE\n"
 if [ "$INSTALL_TYPE" == "custom" ]; then
     clear
     INSTALL_DEP=$(whiptail --title "Mycodo Install: Custom" \
-                           --backtitle "Mycodo ${CURRENT_VERSION}" \
+                           --backtitle "Mycodo" \
                            --notags \
                            --checklist "Dependencies to Install" \
                            20 68 11 \
