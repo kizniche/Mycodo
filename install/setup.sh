@@ -77,7 +77,7 @@ if [ $exitstatus != 0 ]; then
     echo "Install canceled by user" >>${LOG_LOCATION} 2>&1
     exit
 fi
-printf "\nInstall Type: $INSTALL_TYPE\n"
+printf "\nInstall Type: $INSTALL_TYPE\n" >>${LOG_LOCATION} 2>&1
 
 if [ "$INSTALL_TYPE" == "custom" ]; then
     clear
@@ -103,7 +103,6 @@ if [ "$INSTALL_TYPE" == "custom" ]; then
         echo "Install canceled by user" >>${LOG_LOCATION} 2>&1
         exit
     fi
-    printf "\nDependencies: $INSTALL_DEP\n" >>${LOG_LOCATION} 2>&1
 fi
 
 {
@@ -113,10 +112,10 @@ fi
     echo -e "XXX\n9\nUpdating apt sources... \nXXX"
     ${INSTALL_CMD} update-apt >>${LOG_LOCATION} 2>&1
 
-    echo -e "XXX\n13\nRemoving apt- version of pip... \nXXX"
+    echo -e "XXX\n13\nRemoving apt version of pip... \nXXX"
     ${INSTALL_CMD} uninstall-apt-pip >>${LOG_LOCATION} 2>&1
 
-    echo -e "XXX\n18\nInstall dependencies (apt)... \nXXX"
+    echo -e "XXX\n18\nInstalling dependencies (apt)... \nXXX"
     ${INSTALL_CMD} update-packages >>${LOG_LOCATION} 2>&1
 
     echo -e "XXX\n22\nSetting up virtualenv... \nXXX"
@@ -208,7 +207,7 @@ fi
     echo -e "XXX\n85\nRestarting web server... \nXXX"
     ${INSTALL_CMD} web-server-restart >>${LOG_LOCATION} 2>&1
 
-    echo -e "XXX\n90\nConnecting to web server... \nXXX"
+    echo -e "XXX\n90\nConnecting to the web server... \nXXX"
     ${INSTALL_CMD} web-server-connect >>${LOG_LOCATION} 2>&1
 
     echo -e "XXX\n94\nUpdating permissions... \nXXX"
@@ -228,7 +227,7 @@ if [[ -z ${IP} ]]; then
 fi
 
 CURRENT_DATE=$(date)
-printf "Mycodo Installer finished  ${CURRENT_DATE}" 2>&1 | tee -a ${LOG_LOCATION}
+printf "Mycodo Installer finished  ${CURRENT_DATE}\n" 2>&1 | tee -a ${LOG_LOCATION}
 echo "
 ************************************
 ** Mycodo successfully installed! **
