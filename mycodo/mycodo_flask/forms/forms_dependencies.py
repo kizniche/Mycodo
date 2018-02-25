@@ -12,4 +12,4 @@ from wtforms import widgets
 
 class Dependencies(FlaskForm):
     device = StringField('Device', widget=widgets.HiddenInput())
-    install = SubmitField(lazy_gettext('Install all Dependencies'))
+    install = SubmitField(lazy_gettext('Install All Dependencies'))

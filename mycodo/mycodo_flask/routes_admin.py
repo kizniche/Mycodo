@@ -181,13 +181,28 @@ def admin_dependencies(device):
 
         if form_dependencies.install.data:
             for each_dep in device_unmet_dependencies:
-                cmd = "/bin/bash {pth}/mycodo/scripts/user_commands.sh install-pip-dependency {dep}" \
-                      " | ts '[%Y-%m-%d %H:%M:%S]' 2>&1".format(
-                    pth=INSTALL_DIRECTORY,
-                    dep=each_dep)
-                flash("Successfully installed {dep}".format(dep=each_dep), "success")
-                dep = subprocess.Popen(cmd, shell=True)
-                dep.wait()
+                if each_dep == 'Adafruit_BME280':
+                    cmd = "{pth}/env/bin/pip3 install -e git://github.com/adafruit/Adafruit_Python_BME280.git#egg=adafruit-bme280" \
+                          " | ts '[%Y-%m-%d %H:%M:%S]' 2>&1".format(
+                        pth=INSTALL_DIRECTORY)
+                    flash("Successfully installed {dep}".format(dep=each_dep), "success")
+                    dep = subprocess.Popen(cmd, shell=True)
+                    dep.wait()
+                elif each_dep == 'tsl2591':
+                    cmd = "{pth}/env/bin/pip3 install -e git://github.com/maxlklaxl/python-tsl2591.git#egg=tsl2591" \
+                          " | ts '[%Y-%m-%d %H:%M:%S]' 2>&1".format(
+                        pth=INSTALL_DIRECTORY)
+                    flash("Successfully installed {dep}".format(dep=each_dep), "success")
+                    dep = subprocess.Popen(cmd, shell=True)
+                    dep.wait()
+                else:
+                    cmd = "/bin/bash {pth}/mycodo/scripts/user_commands.sh install-pip-dependency {dep}" \
+                          " | ts '[%Y-%m-%d %H:%M:%S]' 2>&1".format(
+                        pth=INSTALL_DIRECTORY,
+                        dep=each_dep)
+                    flash("Successfully installed {dep}".format(dep=each_dep), "success")
+                    dep = subprocess.Popen(cmd, shell=True)
+                    dep.wait()
 
             cmd = "{pth}/mycodo/scripts/mycodo_wrapper initialize" \
                   " | ts '[%Y-%m-%d %H:%M:%S]' 2>&1".format(
