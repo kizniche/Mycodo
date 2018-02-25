@@ -54,7 +54,7 @@ printf "### Mycodo installation initiated at $NOW\n" 2>&1 | tee -a ${LOG_LOCATIO
 clear
 LICENSE=$(whiptail --title "Mycodo Installer: License Agreement" \
                    --backtitle "Mycodo" \
-                   --yesno "Mycodo is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.\n\nMycodo is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.\n\nYou should have received a copy of the GNU General Public License along with Mycodo. If not, see gnu.org/licenses.\n\nDo you agree to the license terms?" \
+                   --yesno "Mycodo is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.\n\nMycodo is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.\n\nYou should have received a copy of the GNU General Public License along with Mycodo. If not, see gnu.org/licenses\n\nDo you agree to the license terms?" \
                    20 68 \
                    3>&1 1>&2 2>&3)
 
@@ -68,7 +68,7 @@ clear
 INSTALL_TYPE=$(whiptail --title "Mycodo Installer: Install Type" \
                         --backtitle "Mycodo" \
                         --notags \
-                        --menu "Select the Install Type:\n\nFull: Install all dependencies\nMinimal: Install a minimal set of dependencies\nCustom: Select which dependencies to install\n\nIf unsure, choose 'Full Install'" \
+                        --menu "\nSelect the Install Type:\n\nFull: Install all dependencies\nMinimal: Install a minimal set of dependencies\nCustom: Select which dependencies to install\n\nIf unsure, choose 'Full Install'" \
                         20 68 3 \
                         "full" "Full Install (recommended)" \
                         "minimal" "Minimal Install" \
@@ -122,26 +122,26 @@ printf "### Mycodo installation began at $NOW\n" 2>&1 | tee -a ${LOG_LOCATION}
     echo -e "XXX\n13\nRemoving apt version of pip... \nXXX"
     ${INSTALL_CMD} uninstall-apt-pip >>${LOG_LOCATION} 2>&1
 
-    echo -e "XXX\n18\nInstalling dependencies (apt)... \nXXX"
+    echo -e "XXX\n18\nInstalling apt dependencies... \nXXX"
     ${INSTALL_CMD} update-packages >>${LOG_LOCATION} 2>&1
 
     echo -e "XXX\n22\nSetting up virtualenv... \nXXX"
     ${INSTALL_CMD} setup-virtualenv >>${LOG_LOCATION} 2>&1
 
-    echo -e "XXX\n27\nUpdating pip... \nXXX"
+    echo -e "XXX\n27\nUpdating virtualenv pip... \nXXX"
     ${INSTALL_CMD} update-pip3 >>${LOG_LOCATION} 2>&1
 
     echo -e "XXX\n31\nInstalling WiringPi... \nXXX"
     ${INSTALL_CMD} update-wiringpi >>${LOG_LOCATION} 2>&1
 
-    echo -e "XXX\n36\nInstalling base python packages... \nXXX"
+    echo -e "XXX\n36\nInstalling base python packages in virtualenv... \nXXX"
     ${INSTALL_CMD} update-pip3-packages >>${LOG_LOCATION} 2>&1
 
     if [ "$INSTALL_TYPE" == "minimal" ]; then
         printf '\n### Minimal install selected. No more dependencies to install.'
     elif [ "$INSTALL_TYPE" == "custom" ]; then
         printf '\n### Installing custom-selected dependencies'
-        echo -e "XXX\n40\nInstalling custom python packages... \nXXX"
+        echo -e "XXX\n40\nInstalling custom python packages in virtualenv... \nXXX"
         for option in $INSTALL_DEP
         do
             option="${option%\"}"
@@ -193,10 +193,10 @@ printf "### Mycodo installation began at $NOW\n" 2>&1 | tee -a ${LOG_LOCATION}
     echo -e "XXX\n45\nInstalling InfluxDB... \nXXX"
     ${INSTALL_CMD} update-influxdb >>${LOG_LOCATION} 2>&1
 
-    echo -e "XXX\n49\nInstalling InfluxDB database and user... \nXXX"
+    echo -e "XXX\n49\nSetting up InfluxDB database and user... \nXXX"
     ${INSTALL_CMD} update-influxdb-db-user >>${LOG_LOCATION} 2>&1
 
-    echo -e "XXX\n54\nInstalling logrotate... \nXXX"
+    echo -e "XXX\n54\nSetting up logrotate... \nXXX"
     ${INSTALL_CMD} update-logrotate >>${LOG_LOCATION} 2>&1
 
     echo -e "XXX\n58\nGenerating SSL certificate... \nXXX"
@@ -211,25 +211,25 @@ printf "### Mycodo installation began at $NOW\n" 2>&1 | tee -a ${LOG_LOCATION}
     echo -e "XXX\n72\nUpdating cron... \nXXX"
     ${INSTALL_CMD} update-cron >>${LOG_LOCATION} 2>&1
 
-    echo -e "XXX\n76\nInitializing install... \nXXX"
+    echo -e "XXX\n76\nSetting up files and folders... \nXXX"
     ${INSTALL_CMD} initialize >>${LOG_LOCATION} 2>&1
 
-    echo -e "XXX\n81\nUpdating web server... \nXXX"
+    echo -e "XXX\n81\nSetting up the web server... \nXXX"
     ${INSTALL_CMD} web-server-update >>${LOG_LOCATION} 2>&1
 
-    echo -e "XXX\n85\nRestarting web server... \nXXX"
+    echo -e "XXX\n85\nStarting the web server... \nXXX"
     ${INSTALL_CMD} web-server-restart >>${LOG_LOCATION} 2>&1
 
-    echo -e "XXX\n90\nConnecting to the web server... \nXXX"
+    echo -e "XXX\n90\nCreating Mycodo database... \nXXX"
     ${INSTALL_CMD} web-server-connect >>${LOG_LOCATION} 2>&1
 
-    echo -e "XXX\n94\nUpdating permissions... \nXXX"
+    echo -e "XXX\n94\Setting permissions... \nXXX"
     ${INSTALL_CMD} update-permissions >>${LOG_LOCATION} 2>&1
 
-    echo -e "XXX\n99\nRestarting daemon... \nXXX"
+    echo -e "XXX\n99\nStarting the Mycodo daemon... \nXXX"
     ${INSTALL_CMD} restart-daemon >>${LOG_LOCATION} 2>&1
 
-} | whiptail --gauge "Installing Mycodo. Please wait..." 8 55 0
+} | whiptail --gauge "Installing Mycodo. Please wait..." 6 55 0
 
 trap : 0
 
