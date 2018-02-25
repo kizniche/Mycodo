@@ -109,7 +109,7 @@ trap 'abort' 0
 
 set -e
 
-TOTAL=27  # Should be one greater than the total number of progress() uses
+TOTAL=26  # The total number of times progress() called
 COUNT=1
 
 function progress() {
@@ -123,13 +123,11 @@ function progress() {
     progress "Or grab a coffee"
     sleep 4
     progress "This may take a while"
-
     sleep 4
 
     SECONDS=0
     NOW=$(date)
     printf "#### Mycodo installation began $NOW\n" 2>&1 | tee -a ${LOG_LOCATION}
-
 
     progress "Checking swap size"
     ${INSTALL_CMD} update-swap-size >>${LOG_LOCATION} 2>&1
@@ -252,7 +250,6 @@ function progress() {
     progress "Starting the Mycodo daemon"
     ${INSTALL_CMD} restart-daemon >>${LOG_LOCATION} 2>&1
 
-
 } | whiptail --gauge "Installing Mycodo. Please wait..." 6 55 0
 
 trap : 0
@@ -266,8 +263,8 @@ fi
 CURRENT_DATE=$(date)
 printf "#### Mycodo Installer finished ${CURRENT_DATE}\n" 2>&1 | tee -a ${LOG_LOCATION}
 
-duration=$SECONDS
-printf "#### Total install time: $(($duration / 60)) minutes and $(($duration % 60)) seconds\n" 2>&1 | tee -a ${LOG_LOCATION}
+DURATION=$SECONDS
+printf "#### Total install time: $(($DURATION / 60)) minutes and $(($DURATION % 60)) seconds\n" 2>&1 | tee -a ${LOG_LOCATION}
 
 printf "
 ************************************
