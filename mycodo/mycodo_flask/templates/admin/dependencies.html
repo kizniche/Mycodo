@@ -47,7 +47,7 @@
 
      {% if unmet_list %}
     <div>
-      <h3 style="color: #F70D1A">Some dependencies are not currently met</h3>
+      <h3 style="color: #f78900">Some dependencies are not currently met</h3>
       <p>The following list contains dependencies that are not currently installed and the devices that use them. If you require the use of a feature that has one or more unmet dependencies, you must install them before being able to use the feature. Select a device name to view information about its depenencies.</p>
       {% for each_dep, devices in unmet_list.items()|sort(case_sensitive=False) %}
       <div>

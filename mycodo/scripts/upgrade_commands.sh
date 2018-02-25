@@ -12,7 +12,7 @@ fi
 # Raspberry Pi but should work with most debian-based systems.
 APT_PKGS="fswebcam gawk gcc git libav-tools libffi-dev libi2c-dev logrotate \
           moreutils nginx python-setuptools python3 python3-dev python3-numpy \
-          python3-pigpio python3-smbus sqlite3 wget"
+          python3-smbus sqlite3 wget"
 
 # Get the Mycodo root directory
 SOURCE="${BASH_SOURCE[0]}"
@@ -170,6 +170,7 @@ case "${1:-''}" in
     ;;
     'install-pigpiod')
         printf "\n#### Installing pigpiod\n"
+        apt-get install -y python3-pigpio
         cd ${MYCODO_PATH}/install
         # wget --quiet -P ${MYCODO_PATH}/install abyz.co.uk/rpi/pigpio/pigpio.zip
         tar xf pigpio.tar

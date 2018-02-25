@@ -28,7 +28,6 @@ import time
 import timeit
 
 import RPi.GPIO as GPIO
-import pigpio
 from sqlalchemy import and_
 from sqlalchemy import or_
 
@@ -471,6 +470,7 @@ class OutputController(threading.Thread):
                     ret=cmd_return))
 
         elif self.output_type[output_id] == 'pwm':
+            import pigpio
             if state == 'on':
                 if self.pwm_library[output_id] == 'pigpio_hardware':
                     self.pwm_output[output_id].hardware_PWM(
@@ -787,6 +787,7 @@ class OutputController(threading.Thread):
 
         elif self.output_type[output_id] == 'pwm':
             try:
+                import pigpio
                 self.pwm_output[output_id] = pigpio.pi()
                 if self.pwm_library[output_id] == 'pigpio_hardware':
                     self.pwm_output[output_id].hardware_PWM(

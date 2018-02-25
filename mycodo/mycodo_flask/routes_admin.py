@@ -185,16 +185,24 @@ def admin_dependencies(device):
                     cmd = "{pth}/env/bin/pip3 install -e git://github.com/adafruit/Adafruit_Python_BME280.git#egg=adafruit-bme280" \
                           " | ts '[%Y-%m-%d %H:%M:%S]' 2>&1".format(
                         pth=INSTALL_DIRECTORY)
-                    flash("Successfully installed {dep}".format(dep=each_dep), "success")
                     dep = subprocess.Popen(cmd, shell=True)
                     dep.wait()
+                    flash("Successfully installed {dep}".format(dep=each_dep), "success")
                 elif each_dep == 'tsl2591':
                     cmd = "{pth}/env/bin/pip3 install -e git://github.com/maxlklaxl/python-tsl2591.git#egg=tsl2591" \
                           " | ts '[%Y-%m-%d %H:%M:%S]' 2>&1".format(
                         pth=INSTALL_DIRECTORY)
-                    flash("Successfully installed {dep}".format(dep=each_dep), "success")
                     dep = subprocess.Popen(cmd, shell=True)
                     dep.wait()
+                    flash("Successfully installed {dep}".format(dep=each_dep), "success")
+                elif each_dep == 'pigpio':
+                    cmd = "{pth}/mycodo/scripts/mycodo_wrapper install_pigpio" \
+                          " | ts '[%Y-%m-%d %H:%M:%S]'" \
+                          " >> {log} 2>&1".format(pth=INSTALL_DIRECTORY,
+                                                  log=UPGRADE_LOG_FILE)
+                    dep = subprocess.Popen(cmd, shell=True)
+                    dep.wait()
+                    flash("Successfully installed {dep}".format(dep=each_dep), "success")
                 else:
                     cmd = "/bin/bash {pth}/mycodo/scripts/user_commands.sh install-pip-dependency {dep}" \
                           " | ts '[%Y-%m-%d %H:%M:%S]' 2>&1".format(
