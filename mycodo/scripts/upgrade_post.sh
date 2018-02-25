@@ -10,6 +10,7 @@ fi
 
 INSTALL_DIRECTORY=$( cd "$( dirname "${BASH_SOURCE[0]}" )/../../" && pwd -P )
 INSTALL_CMD="/bin/bash ${INSTALL_DIRECTORY}/mycodo/scripts/upgrade_commands.sh"
+INSTALL_DEP="/bin/bash ${INSTALL_DIRECTORY}/mycodo/scripts/dependencies.sh"
 cd ${INSTALL_DIRECTORY}
 
 ${INSTALL_CMD} create-symlinks
@@ -44,27 +45,27 @@ for opt in "${!ary[@]}"
 do
     if [[ ${ary[opt]} ]] ; then
         if [ "$opt" == "1" ]; then
-            ${INSTALL_CMD} install-pip-dependency Adafruit_ADS1x15
+            ${INSTALL_DEP} Adafruit_ADS1x15
         elif [ "$opt" == "2" ]; then
-            ${INSTALL_DIRECTORY}/env/bin/pip3 install -e git://github.com/adafruit/Adafruit_Python_BME280.git#egg=adafruit-bme280
+            ${INSTALL_DEP} Adafruit_Python_BME280
         elif [ "$opt" == "3" ]; then
-            ${INSTALL_CMD} install-pip-dependency Adafruit_GPIO
+            ${INSTALL_DEP} Adafruit_GPIO
         elif [ "$opt" == "4" ]; then
-            ${INSTALL_CMD} install-pip-dependency Adafruit_MCP3008
+            ${INSTALL_DEP} Adafruit_MCP3008
         elif [ "$opt" == "5" ]; then
-            ${INSTALL_CMD} install-pip-dependency Adafruit_TMP
+            ${INSTALL_DEP} Adafruit_TMP
         elif [ "$opt" == "6" ]; then
-            ${INSTALL_CMD} install-pip-dependency MCP342x==0.3.3
+            ${INSTALL_DEP} MCP342x
         elif [ "$opt" == "7" ]; then
-            ${INSTALL_CMD} update-pigpiod
+            ${INSTALL_DEP} update-pigpiod
         elif [ "$opt" == "8" ]; then
-            ${INSTALL_CMD} install-pip-dependency sht_sensor==17.5.5
+            ${INSTALL_DEP} sht_sensor
         elif [ "$opt" == "9" ]; then
-            ${INSTALL_CMD} install-pip-dependency tsl2561
+            ${INSTALL_DEP} tsl2561
         elif [ "$opt" == "10" ]; then
-            ${INSTALL_DIRECTORY}/env/bin/pip3 install -e git://github.com/maxlklaxl/python-tsl2591.git#egg=tsl2591
+            ${INSTALL_DEP} tsl2591
         elif [ "$opt" == "11" ]; then
-            ${INSTALL_CMD} install-pip-dependency w1thermsensor==1.0.5
+            ${INSTALL_DEP} w1thermsensor
         fi
     fi
 done

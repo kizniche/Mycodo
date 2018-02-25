@@ -3,6 +3,7 @@
 ### Features
 
  - Make Python modules conditionally imported ([#412](https://github.com/kizniche/mycodo/issues/412))
+ - Add interactive installer
 
 
 ## 5.5.24 (2018-02-24)

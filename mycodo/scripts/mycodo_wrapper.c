@@ -110,6 +110,18 @@ int main(int argc, char *argv[]) {
 			strncat(updateScript, "/upgrade_commands.sh initialize", sizeof(updateScript));
 			system(updateScript);
 
+		} else if (strcmp(argv[1], "update_permissions") == 0) {
+
+            char path[255];
+            strncpy(path, argv[0], sizeof(path));
+            dirname(path);
+
+			char updateScript[255];
+			strncpy(updateScript, "/bin/bash ", sizeof(updateScript));
+			strncat(updateScript, path, sizeof(updateScript));
+			strncat(updateScript, "/upgrade_commands.sh update-permissions", sizeof(updateScript));
+			system(updateScript);
+
 		} else if (strcmp(argv[1], "upgrade") == 0) {
 
             char path[255];
@@ -122,7 +134,20 @@ int main(int argc, char *argv[]) {
 			strncat(updateScript, "/upgrade_commands.sh upgrade", sizeof(updateScript));
 			system(updateScript);
 
-		} else if (strcmp(argv[1], "install_pigpio") == 0) {
+		} else if (strcmp(argv[1], "install_dependency") == 0 && (argc > 2)) {
+
+		    char path[255];
+            strncpy(path, argv[0], sizeof(path));
+            dirname(path);
+
+			char restoreScript[255];
+			strncpy(restoreScript, "/bin/bash ", sizeof(restoreScript));
+			strncat(restoreScript, path, sizeof(restoreScript));
+			sprintf(cmd, "/dependencies.sh %s", argv[2]);
+			strncat(restoreScript, cmd, sizeof(restoreScript));
+			system(restoreScript);
+
+        } else if (strcmp(argv[1], "install_pigpio") == 0) {
 
             char path[255];
             strncpy(path, argv[0], sizeof(path));

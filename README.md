@@ -110,7 +110,7 @@ Then change the following settings
 Mycodo will be installed by executing setup.sh. As a part of the installation, it will install and configure services to automatically start the Mycodo backend and frontend.
 
 ```
-sudo apt-get install -y jq
+sudo apt-get install -y jq dialog
 cd ~
 curl -s https://api.github.com/repos/kizniche/Mycodo/releases/latest | \
 jq -r '.tarball_url' | wget -i - -O mycodo-latest.tar.gz

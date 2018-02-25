@@ -41,19 +41,38 @@
     <p>All dependencies have been installed for this device.</p>
     {% endif %}
 
-    <h5><a href="/admin/dependencies">Return to device list</a></h5>
+    <h4 style="padding: 1em 0 0 0.5em"><a href="/admin/dependencies"><i class="fa fa-arrow-left"></i> Return to device list</a></h4>
 
   {% else %}
 
      {% if unmet_list %}
     <div>
       <h3 style="color: #f78900">Some dependencies are not currently met</h3>
-      <p>The following list contains dependencies that are not currently installed and the devices that use them. If you require the use of a feature that has one or more unmet dependencies, you must install them before being able to use the feature. Select a device name to view information about its depenencies.</p>
+      <p>The following list contains dependencies that are not currently installed and the devices that use them. If you require the use of a feature that has one or more unmet dependencies, you must install them before being able to use the feature. Select a device name to view information about its depenencies and the option to install them.</p>
+
+    <table class="table">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Dependency</th>
+          <th>Mycodo Feature(s)</th>
+        </tr>
+      </thead>
+      <tbody>
+
       {% for each_dep, devices in unmet_list.items()|sort(case_sensitive=False) %}
-      <div>
-        {{each_dep}}: {% for each_device in devices %}<a href="{{each_device}}">{{each_device}}</a>{% if not loop.last %} ,{% endif %}{% endfor %}
-      </div>
+        <tr>
+          <th scope="row">{{loop.index}}</th>
+          <td>{{each_dep}}</td>
+          <td>
+        {% for each_device in devices %}<a href="{{each_device}}">{{each_device}}</a>{% if not loop.last %} ,{% endif %}{% endfor %}
+          </td>
+        </tr>
       {% endfor %}
+
+      </tbody>
+    </table>
+
     </div>
     {% endif %}
 

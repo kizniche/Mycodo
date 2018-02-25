@@ -149,11 +149,10 @@ def admin_dependencies(device):
     met_dependencies = OrderedDict()
     met_exist = False
     unmet_list = {}
-    for each_device, each_dict in MEASUREMENTS.items():
+    for each_device in MEASUREMENTS:
         # Determine if there are any unmet dependencies
         unmet_dependencies.update({
-            each_device: utils_general.return_dependencies(
-                each_device)
+            each_device: utils_general.return_dependencies(each_device)
         })
         if utils_general.return_dependencies(each_device) != []:
             unmet_exist = True
@@ -181,21 +180,7 @@ def admin_dependencies(device):
 
         if form_dependencies.install.data:
             for each_dep in device_unmet_dependencies:
-                if each_dep == 'Adafruit_BME280':
-                    cmd = "{pth}/env/bin/pip3 install -e git://github.com/adafruit/Adafruit_Python_BME280.git#egg=adafruit-bme280" \
-                          " | ts '[%Y-%m-%d %H:%M:%S]' 2>&1".format(
-                        pth=INSTALL_DIRECTORY)
-                    dep = subprocess.Popen(cmd, shell=True)
-                    dep.wait()
-                    flash("Successfully installed {dep}".format(dep=each_dep), "success")
-                elif each_dep == 'tsl2591':
-                    cmd = "{pth}/env/bin/pip3 install -e git://github.com/maxlklaxl/python-tsl2591.git#egg=tsl2591" \
-                          " | ts '[%Y-%m-%d %H:%M:%S]' 2>&1".format(
-                        pth=INSTALL_DIRECTORY)
-                    dep = subprocess.Popen(cmd, shell=True)
-                    dep.wait()
-                    flash("Successfully installed {dep}".format(dep=each_dep), "success")
-                elif each_dep == 'pigpio':
+                if each_dep == 'pigpio':
                     cmd = "{pth}/mycodo/scripts/mycodo_wrapper install_pigpio" \
                           " | ts '[%Y-%m-%d %H:%M:%S]'" \
                           " >> {log} 2>&1".format(pth=INSTALL_DIRECTORY,
@@ -204,7 +189,7 @@ def admin_dependencies(device):
                     dep.wait()
                     flash("Successfully installed {dep}".format(dep=each_dep), "success")
                 else:
-                    cmd = "/bin/bash {pth}/mycodo/scripts/user_commands.sh install-pip-dependency {dep}" \
+                    cmd = "{pth}/mycodo/scripts/mycodo_wrapper install_dependency {dep}" \
                           " | ts '[%Y-%m-%d %H:%M:%S]' 2>&1".format(
                         pth=INSTALL_DIRECTORY,
                         dep=each_dep)
@@ -212,7 +197,7 @@ def admin_dependencies(device):
                     dep = subprocess.Popen(cmd, shell=True)
                     dep.wait()
 
-            cmd = "{pth}/mycodo/scripts/mycodo_wrapper initialize" \
+            cmd = "{pth}/mycodo/scripts/mycodo_wrapper update_permissions" \
                   " | ts '[%Y-%m-%d %H:%M:%S]' 2>&1".format(
                 pth=INSTALL_DIRECTORY)
             init = subprocess.Popen(cmd, shell=True)

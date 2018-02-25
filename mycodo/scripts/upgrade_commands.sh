@@ -100,6 +100,14 @@ case "${1:-''}" in
         /bin/bash ${MYCODO_PATH}/mycodo/scripts/upgrade_commands.sh create-files-directories
         systemctl daemon-reload
     ;;
+    'install-pip-dependency')
+        printf "\n#### Installing ${2} with pip\n"
+        if [ ! -d ${MYCODO_PATH}/env ]; then
+            printf "\n## Error: Virtualenv doesn't exist. Install with 'sudo $0 setup-virtualenv'\n"
+        else
+            ${MYCODO_PATH}/env/bin/pip3 install --upgrade ${2}
+        fi
+    ;;
     'restart-daemon')
         printf "\n#### Restarting the Mycodo daemon\n"
         service mycodo stop
