@@ -23,7 +23,7 @@ command -v whiptail >/dev/null || {
 
 abort()
 {
-    echo '
+    echo "
 ************************************
 ** ERROR: Mycodo Install Aborted! **
 ************************************
@@ -38,7 +38,7 @@ Please contact the developer by submitting a bug report
 at https://github.com/kizniche/Mycodo/issues with the
 pertinent excerpts from the setup log located at:
 ${INSTALL_DIRECTORY}/install/setup.log
-' 2>&1 | tee -a ${LOG_LOCATION}
+" 2>&1 | tee -a ${LOG_LOCATION}
     exit 1
 }
 
