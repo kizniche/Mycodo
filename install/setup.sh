@@ -41,11 +41,10 @@ trap 'abort' 0
 set -e
 
 NOW=$(date +"%m-%d-%Y %H:%M:%S")
-printf "### Mycodo installation beginning at $NOW\n"
+printf "### Mycodo installation began at $NOW\n"
 
 INSTALL_TYPE="FULL"
 
-printf "Welcome to the Mycodo installer."
 printf "\nSelect the type of install you would like to perform."
 printf "\nA 'full' install is recommended unless you know what you're doing.\n\n"
 
@@ -76,7 +75,7 @@ if [ "$INSTALL_TYPE" == "CUSTOM" ]; then
         fi
     }
 
-    PS3='Select which dependencies to install, then select "done": '
+    PS3='Select which dependencies to install, then select "Done": '
     while :
     do
         clear
@@ -144,7 +143,7 @@ if [ "$INSTALL_TYPE" == "CUSTOM" ]; then
                 "Done")
                     break 2
                     ;;
-                *) printf '%s\n' 'invalid option';;
+                *) printf '\nInvalid option';;
             esac
         done
     done
@@ -167,6 +166,8 @@ ${INSTALL_CMD} update-wiringpi
 ${INSTALL_CMD} update-pip3-packages
 
 if [ "$INSTALL_TYPE" == "CUSTOM" ]; then
+    printf '\n### Minimal install selected. No more dependencies to install.'
+elif [ "$INSTALL_TYPE" == "CUSTOM" ]; then
     printf '\n### Installing custom-selected dependencies'
     for opt in "${!opts[@]}"
     do
@@ -182,36 +183,34 @@ if [ "$INSTALL_TYPE" == "CUSTOM" ]; then
             elif [ "$opt" == "5" ]; then
                 ${INSTALL_CMD} install-pip-dependency Adafruit_TMP
             elif [ "$opt" == "6" ]; then
-                ${INSTALL_CMD} install-pip-dependency MCP342x
+                ${INSTALL_CMD} install-pip-dependency MCP342x==0.3.3
             elif [ "$opt" == "7" ]; then
                 ${INSTALL_CMD} install-pigpiod
                 ${INSTALL_CMD} enable-pigpiod-low
             elif [ "$opt" == "8" ]; then
-                ${INSTALL_CMD} install-pip-dependency sht_sensor
+                ${INSTALL_CMD} install-pip-dependency sht_sensor==17.5.5
             elif [ "$opt" == "9" ]; then
                 ${INSTALL_CMD} install-pip-dependency tsl2561
             elif [ "$opt" == "10" ]; then
                 ${INSTALL_DIRECTORY}/env/bin/pip3 install -e git://github.com/maxlklaxl/python-tsl2591.git#egg=tsl2591
             elif [ "$opt" == "11" ]; then
-                ${INSTALL_CMD} install-pip-dependency w1thermsensor
+                ${INSTALL_CMD} install-pip-dependency w1thermsensor==1.0.5
             fi
         fi
     done
-fi
-
-if [ "$INSTALL_TYPE" == "FULL" ]; then
+elif [ "$INSTALL_TYPE" == "FULL" ]; then
     ${INSTALL_CMD} install-pip-dependency Adafruit_ADS1x15
     ${INSTALL_DIRECTORY}/env/bin/pip3 install -e git://github.com/adafruit/Adafruit_Python_BME280.git#egg=adafruit-bme280
     ${INSTALL_CMD} install-pip-dependency Adafruit_GPIO
     ${INSTALL_CMD} install-pip-dependency Adafruit_MCP3008
     ${INSTALL_CMD} install-pip-dependency Adafruit_TMP
-    ${INSTALL_CMD} install-pip-dependency MCP342x
+    ${INSTALL_CMD} install-pip-dependency MCP342x==0.3.3
     ${INSTALL_CMD} install-pigpiod
     ${INSTALL_CMD} enable-pigpiod-low
-    ${INSTALL_CMD} install-pip-dependency sht_sensor
+    ${INSTALL_CMD} install-pip-dependency sht_sensor==17.5.5
     ${INSTALL_CMD} install-pip-dependency tsl2561
     ${INSTALL_DIRECTORY}/env/bin/pip3 install -e git://github.com/maxlklaxl/python-tsl2591.git#egg=tsl2591
-    ${INSTALL_CMD} install-pip-dependency w1thermsensor
+    ${INSTALL_CMD} install-pip-dependency w1thermsensor==1.0.5
 fi
 
 ${INSTALL_CMD} update-influxdb
