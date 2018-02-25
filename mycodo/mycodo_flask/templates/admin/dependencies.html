@@ -92,7 +92,7 @@
     {% if met_exist %}
     <div style="padding-top:1.5em">
       <h4>List of devices that have all dependencies installed</h4>
-      {% for each_device, list_dep in met_dependencies.items()|sort(case_sensitive=False) if list_dep %}
+      {% for each_device in met_dependencies|sort(case_sensitive=False) %}
       <div>
         <a href="{{each_device}}">{{each_device}}</a>
       </div>

@@ -146,7 +146,7 @@ def admin_dependencies(device):
 
     unmet_dependencies = OrderedDict()
     unmet_exist = False
-    met_dependencies = OrderedDict()
+    met_dependencies = []
     met_exist = False
     unmet_list = {}
     for each_device in MEASUREMENTS:
@@ -158,13 +158,10 @@ def admin_dependencies(device):
             unmet_exist = True
 
         # Determine if there are any met dependencies
-        met_dependencies.update({
-            each_device: utils_general.return_dependencies(
-                each_device, dep_type='met')
-        })
-        if utils_general.return_dependencies(
-                each_device, dep_type='met'):
-            met_exist = True
+        if utils_general.return_dependencies(each_device, dep_type='met'):
+            if each_device not in met_dependencies:
+                met_dependencies.append(each_device)
+                met_exist = True
 
         # Find all the devices that use each unmet dependency
         if unmet_dependencies[each_device]:

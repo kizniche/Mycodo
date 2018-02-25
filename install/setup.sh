@@ -240,7 +240,7 @@ if [[ -z ${IP} ]]; then
 fi
 
 NOW=$(date +"%m-%d-%Y %H:%M:%S")
-printf "Mycodo Installer finished  ${NOW}\n" 2>&1 | tee -a ${LOG_LOCATION}
+printf "### Mycodo Installer finished  ${NOW}\n" 2>&1 | tee -a ${LOG_LOCATION}
 printf "
 ************************************
 ** Mycodo successfully installed! **

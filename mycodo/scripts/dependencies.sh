@@ -39,7 +39,7 @@ case "${1:-''}" in
         ${INSTALL_CMD} enable-pigpiod-low
     ;;
     'quick2wire')
-        ${INSTALL_CMD} quick2wire-api
+        ${INSTALL_CMD} install-pip-dependency quick2wire-api
     ;;
     'update-pigiod')
         ${INSTALL_CMD} update-pigpiod

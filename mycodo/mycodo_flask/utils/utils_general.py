@@ -462,12 +462,11 @@ def return_dependencies(device_type, dep_type='unmet'):
                         if module is None:
                             if each_dep not in unmet_deps:
                                 unmet_deps.append(each_dep)
+                        else:
+                            met_deps = True
                     except ImportError:
                         if each_dep not in unmet_deps:
                             unmet_deps.append(each_dep)
-
-                    else:
-                        met_deps = True
 
                 if each_dict == []:
                     met_deps = True
