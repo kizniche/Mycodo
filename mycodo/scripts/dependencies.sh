@@ -19,6 +19,9 @@ case "${1:-''}" in
     'Adafruit_Python_BME280')
         ${INSTALL_DIRECTORY}/env/bin/pip3 install -e git://github.com/adafruit/Adafruit_Python_BME280.git#egg=adafruit-bme280
     ;;
+    'Adafruit_BMP')
+        ${INSTALL_CMD} install-pip-dependency Adafruit_BMP
+    ;;
     'Adafruit_GPIO')
         ${INSTALL_CMD} install-pip-dependency Adafruit_GPIO
     ;;
@@ -34,6 +37,9 @@ case "${1:-''}" in
     'install-pigiod')
         ${INSTALL_CMD} install-pigpiod
         ${INSTALL_CMD} enable-pigpiod-low
+    ;;
+    'quick2wire')
+        ${INSTALL_CMD} quick2wire-api
     ;;
     'update-pigiod')
         ${INSTALL_CMD} update-pigpiod

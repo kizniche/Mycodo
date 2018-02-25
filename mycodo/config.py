@@ -74,7 +74,7 @@ MEASUREMENTS = {
         'py-dependencies': ['Adafruit_ADS1x15'],
         'measure': ['voltage']},
     'AM2315': {
-        'py-dependencies': ['quick2wire.i2c'],
+        'py-dependencies': ['quick2wire'],
         'measure': ['dewpoint', 'humidity', 'temperature']},
     'ATLAS_PH_I2C': {
         'py-dependencies': [],

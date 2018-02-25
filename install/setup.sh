@@ -16,14 +16,16 @@ if [ "$EUID" -ne 0 ]; then
     exit
 fi
 
-command -v whiptail >/dev/null || {
+WHIPTAIL=$(command -v whiptail)
+exitstatus=$?
+if [ $exitstatus != 0 ]; then
     printf "\nwhiptail not installed. Install it with 'sudo apt-get install whiptail' then try the install again.\n"
-    exit;
-}
+    exit 1
+fi
 
 abort()
 {
-    echo "
+    printf "
 ************************************
 ** ERROR: Mycodo Install Aborted! **
 ************************************
@@ -47,7 +49,7 @@ trap 'abort' 0
 set -e
 
 NOW=$(date +"%m-%d-%Y %H:%M:%S")
-printf "### Mycodo installation began at $NOW\n" >>${LOG_LOCATION} 2>&1
+printf "### Mycodo installation initiated at $NOW\n" 2>&1 | tee -a ${LOG_LOCATION}
 
 clear
 LICENSE=$(whiptail --title "Mycodo Installer: License Agreement" \
@@ -58,7 +60,7 @@ LICENSE=$(whiptail --title "Mycodo Installer: License Agreement" \
 
 exitstatus=$?
 if [ $exitstatus != 0 ]; then
-    echo "Install canceled by user" >>${LOG_LOCATION} 2>&1
+    echo "Install canceled by user" 2>&1 | tee -a ${LOG_LOCATION}
     exit
 fi
 
@@ -74,7 +76,7 @@ INSTALL_TYPE=$(whiptail --title "Mycodo Installer: Install Type" \
                         3>&1 1>&2 2>&3)
 exitstatus=$?
 if [ $exitstatus != 0 ]; then
-    echo "Install canceled by user" >>${LOG_LOCATION} 2>&1
+    echo "Install canceled by user" 2>&1 | tee -a ${LOG_LOCATION}
     exit
 fi
 printf "\nInstall Type: $INSTALL_TYPE\n" >>${LOG_LOCATION} 2>&1
@@ -85,25 +87,30 @@ if [ "$INSTALL_TYPE" == "custom" ]; then
                            --backtitle "Mycodo" \
                            --notags \
                            --checklist "Dependencies to Install" \
-                           20 68 11 \
-                           1 "Adafruit_ADS1x15" off \
-                           2 "Adafruit_BME280" off \
-                           3 "Adafruit_GPIO" off \
-                           4 "Adafruit_MCP3008" off \
-                           5 "Adafruit_TMP" off \
-                           6 "MCP342x" off \
-                           7 "pigpio" off \
-                           8 "sht_sensor" off \
-                           9 "tsl2561" off \
-                           10 "tsl2591" off \
-                           11 "w1thermsensor" off \
+                           20 68 13 \
+                           'Adafruit_ADS1x15' "Adafruit_ADS1x15" off \
+                           'Adafruit_BME280' "Adafruit_BME280" off \
+                           'Adafruit_BMP' "Adafruit_BMP" off \
+                           'Adafruit_GPIO' "Adafruit_GPIO" off \
+                           'Adafruit_MCP3008' "Adafruit_MCP3008" off \
+                           'Adafruit_TMP' "Adafruit_TMP" off \
+                           'MCP342x' "MCP342x" off \
+                           'pigpio' "pigpio" off \
+                           'quick2wire' "quick2wire" off \
+                           'sht_sensor' "sht_sensor" off \
+                           'tsl2561' "tsl2561" off \
+                           'tsl2591' "tsl2591" off \
+                           'w1thermsensor' "w1thermsensor" off \
                            3>&1 1>&2 2>&3)
     exitstatus=$?
     if [ $exitstatus != 0 ]; then
-        echo "Install canceled by user" >>${LOG_LOCATION} 2>&1
+        echo "Install canceled by user" 2>&1 | tee -a ${LOG_LOCATION}
         exit
     fi
 fi
+
+NOW=$(date +"%m-%d-%Y %H:%M:%S")
+printf "### Mycodo installation began at $NOW\n" 2>&1 | tee -a ${LOG_LOCATION}
 
 {
     echo -e "XXX\n4\nChecking swap size... \nXXX"
@@ -139,38 +146,44 @@ fi
         do
             option="${option%\"}"
             option="${option#\"}"
-            if [ "$option" == "1" ]; then
+            if [ "$option" == "Adafruit_ADS1x15" ]; then
                 ${INSTALL_DEP} Adafruit_ADS1x15 >>${LOG_LOCATION} 2>&1
-            elif [ "$option" == "2" ]; then
+            elif [ "$option" == "Adafruit_Python_BME280" ]; then
                 ${INSTALL_DEP} Adafruit_Python_BME280 >>${LOG_LOCATION} 2>&1
-            elif [ "$option" == "3" ]; then
+            elif [ "$option" == "Adafruit_BMP" ]; then
+                ${INSTALL_DEP} Adafruit_BMP >>${LOG_LOCATION} 2>&1
+            elif [ "$option" == "Adafruit_GPIO" ]; then
                 ${INSTALL_DEP} Adafruit_GPIO >>${LOG_LOCATION} 2>&1
-            elif [ "$option" == "4" ]; then
+            elif [ "$option" == "Adafruit_MCP3008" ]; then
                 ${INSTALL_DEP} Adafruit_MCP3008 >>${LOG_LOCATION} 2>&1
-            elif [ "$option" == "5" ]; then
+            elif [ "$option" == "Adafruit_TMP" ]; then
                 ${INSTALL_DEP} Adafruit_TMP >>${LOG_LOCATION} 2>&1
-            elif [ "$option" == "6" ]; then
+            elif [ "$option" == "MCP342x" ]; then
                 ${INSTALL_DEP} MCP342x >>${LOG_LOCATION} 2>&1
-            elif [ "$option" == "7" ]; then
+            elif [ "$option" == "pigpio" ]; then
                 ${INSTALL_DEP} install-pigpiod >>${LOG_LOCATION} 2>&1
-            elif [ "$option" == "8" ]; then
+            elif [ "$option" == "quick2wire" ]; then
+                ${INSTALL_DEP} quick2wire >>${LOG_LOCATION} 2>&1
+            elif [ "$option" == "sht_sensor" ]; then
                 ${INSTALL_DEP} sht_sensor >>${LOG_LOCATION} 2>&1
-            elif [ "$option" == "9" ]; then
+            elif [ "$option" == "tsl2561" ]; then
                 ${INSTALL_DEP} tsl2561 >>${LOG_LOCATION} 2>&1
-            elif [ "$option" == "10" ]; then
+            elif [ "$option" == "tsl2591" ]; then
                 ${INSTALL_DEP} tsl2591 >>${LOG_LOCATION} 2>&1
-            elif [ "$option" == "11" ]; then
+            elif [ "$option" == "w1thermsensor" ]; then
                 ${INSTALL_DEP} w1thermsensor >>${LOG_LOCATION} 2>&1
             fi
         done
     elif [ "$INSTALL_TYPE" == "full" ]; then
         ${INSTALL_DEP} Adafruit_ADS1x15 >>${LOG_LOCATION} 2>&1
+        ${INSTALL_DEP} Adafruit_BMP >>${LOG_LOCATION} 2>&1
         ${INSTALL_DEP} Adafruit_Python_BME280 >>${LOG_LOCATION} 2>&1
         ${INSTALL_DEP} Adafruit_GPIO >>${LOG_LOCATION} 2>&1
         ${INSTALL_DEP} Adafruit_MCP3008 >>${LOG_LOCATION} 2>&1
         ${INSTALL_DEP} Adafruit_TMP >>${LOG_LOCATION} 2>&1
         ${INSTALL_DEP} MCP342x >>${LOG_LOCATION} 2>&1
         ${INSTALL_DEP} install-pigpiod >>${LOG_LOCATION} 2>&1
+        ${INSTALL_DEP} quick2wire >>${LOG_LOCATION} 2>&1
         ${INSTALL_DEP} sht_sensor >>${LOG_LOCATION} 2>&1
         ${INSTALL_DEP} tsl2561 >>${LOG_LOCATION} 2>&1
         ${INSTALL_DEP} tsl2591 >>${LOG_LOCATION} 2>&1
@@ -216,7 +229,7 @@ fi
     echo -e "XXX\n99\nRestarting daemon... \nXXX"
     ${INSTALL_CMD} restart-daemon >>${LOG_LOCATION} 2>&1
 
-} | whiptail --gauge "Installing Mycodo. Please wait..." 6 50 0
+} | whiptail --gauge "Installing Mycodo. Please wait..." 8 55 0
 
 trap : 0
 
@@ -226,9 +239,9 @@ if [[ -z ${IP} ]]; then
   IP="your.IP.address.here"
 fi
 
-CURRENT_DATE=$(date)
-printf "Mycodo Installer finished  ${CURRENT_DATE}\n" 2>&1 | tee -a ${LOG_LOCATION}
-echo "
+NOW=$(date +"%m-%d-%Y %H:%M:%S")
+printf "Mycodo Installer finished  ${NOW}\n" 2>&1 | tee -a ${LOG_LOCATION}
+printf "
 ************************************
 ** Mycodo successfully installed! **
 ************************************
