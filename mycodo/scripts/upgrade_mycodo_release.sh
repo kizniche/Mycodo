@@ -232,12 +232,7 @@ if ! ${INSTALL_DIRECTORY}/Mycodo/mycodo/scripts/upgrade_commands.sh initialize ;
   error_found
 fi
 
-if ! ${INSTALL_DIRECTORY}/Mycodo/mycodo/scripts/upgrade_commands.sh update-permissions ; then
-  printf "Failed: Error while setting permissions.\n"
-  error_found
-fi
-
-printf "\n\nRunning post-upgrade script...\n"
+printf "\nRunning post-upgrade script...\n"
 if ! ${INSTALL_DIRECTORY}/Mycodo/mycodo/scripts/upgrade_post.sh ; then
   printf "Failed: Error while running post-upgrade script.\n"
   error_found

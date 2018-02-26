@@ -45,6 +45,7 @@ Table of Contents
    - [Live Measurements](#live-measurements)
    - [Asynchronous Graphs](#asynchronous-graphs)
    - [Export-Import](#export-import)
+   - [Dependencies](#dependencies)
    - [Camera](#camera)
    - [Output Usage](#output-usage)
    - [Backup-Restore](#backup-restore)
@@ -425,7 +426,7 @@ Start State | This specifies whether the output should be ON or OFF when mycodo 
 Seconds to turn On | This is a way to turn a output on for a specific duration of time. This can be useful for testing the outputs and powered devices or the measured effects a device may have on an environmental condition.
 
 Function
----------
+--------
 
 Functions couple Inputs with Outputs to perform specific tasks. For example, this could be regulation of temperature with a temperature sensor and heater with a PID Controller.
 
@@ -601,6 +602,8 @@ Variable | Description
 Timers
 ------
 
+More -> Timers
+
 Timers enable outputs to be manipulated after specific durations of time or at a specific times of the day. Timers will ***only*** do as instructed, therefore if you turn a output *ON* from *Start Time* to *End Time* and you want that output to turn *OFF* at the end of that period, you will need to create another timer that turns the output *OFF* at *End Time* + 1 minute.
 
  There are two types of timers, one for general outputs that turn on and off, and those that generate a PWM signal.
@@ -618,6 +621,8 @@ This timer allows a method to be used to determine the duty cycle (as percent) o
 
 LCDs
 ----
+
+More -> LCDs
 
 Data may be output to a liquid crystal display (LCD) for easy viewing. Please see [LCD Displays](#lcd-displays) for specific information regarding compatibility.
 
@@ -638,6 +643,8 @@ Max Age (seconds) | The maximum age the measurement is allowed to be. If no meas
 
 Methods
 -------
+
+More -> Methods
 
 Methods enable Setpoint Tracking in PIDs and time-based duty cycle changes in timers.
 Normally, a PID controller will regulate an environmental condition to a
@@ -699,6 +706,8 @@ within a 24-hour period and this method will repeat daily.
 
 PID Tuning
 ==========
+
+Function -> PIDs
 
 PID Control Theory
 ------------------
@@ -859,6 +868,8 @@ section.
 Configuration Settings
 ======================
 
+[Gear Icon] -> Configuration
+
 The settings menu, accessed by selecting the gear icon in the top-right,
 then the Configure link, is a general area for various system-wide
 configuration options.
@@ -866,6 +877,8 @@ configuration options.
 
 General Settings
 ----------------
+
+[Gear Icon] -> Configuration -> General
 
 Setting | Description
 -------------------- | ----------------------------------------------
@@ -898,6 +911,8 @@ Day of Month | This is the day of the month (1-30) that the electricity meter is
 
 Users
 -----
+
+[Gear Icon] -> Configuration -> Users
 
 Mycodo requires at least one Admin user for the login system to be
 enabled. If there isn't an Admin user, the web server will redirect to
@@ -936,6 +951,8 @@ Four roles are provided by default, but custom roles may be created.
 Pi Settings
 -----------
 
+[Gear Icon] -> Configuration -> Pi
+
 Pi settings configure parts of the linux system that Mycodo runs on.
 
 pigpiod is required if you wish to use PWM Outputs, as well as PWM, RPM, DHT22, DHT11, HTU21D Inputs.
@@ -947,6 +964,8 @@ pigpiod Sample Rate | This is the sample rate the pigpiod service will operate a
 
 Alert Settings
 --------------
+
+[Gear Icon] -> Configuration -> Alerts
 
 Alert settings set up the credentials for sending email notifications.
 
@@ -963,6 +982,8 @@ Send Test Email | Test the email configuration by sending a test email.
 
 Camera Settings
 ---------------
+
+[Gear Icon] -> Configuration -> Camera
 
 Many cameras can be used simultaneously with Mycodo. Each camera needs
 to be set up in the camera settings, then may be used throughout the
@@ -988,6 +1009,8 @@ Miscellaneous
 
 Dashboard
 ---------
+
+Info -> Dashboard
 
 The dashboard is where you can add pieces of data for easy viewing. It is highly customizable and provides an easy way to see exactly what data you want to see on one screen.
 
@@ -1092,11 +1115,15 @@ PID | The PID to display information about.
 Live Measurements
 -----------------
 
+Info -> Live Measurements
+
 The Live Measurements page is the first page a user sees after logging in to Mycodo. It will display the current measurements being acquired from Input and Math controllers. If there is nothing displayed on the Live Measurements page, ensure an Input or Math controller is both configured correctly and activated. Data will be automatically updated on the page from the measurement database.
 
 
 Asynchronous Graphs
 -------------------
+
+Info -> Asynchronous Graphs
 
 A graphical data display that is useful for viewing data sets spanning
 relatively long periods of time (weeks/months/years), which could be
@@ -1122,14 +1149,27 @@ live data.
 Export-Import
 -------------
 
+More -> Export Import
+
 Measurements that fall within the selected date/time frame may be exported as CSV with their corresponding timestamps.
 
 Additionally, the entire measurement database (influxdb) may be exported as a ZIP file backup. This ZIP may be imported back in any Mycodo system to restore these measurements. Note that an import will override the current data (i.e. destroying it).
 
 Mycodo settings may be exported as a ZIP file containing the Mycodo settings database (sqlite). This ZIP file may be used to restore the settings database to another Mycodo install, as long as the Mycodo version and database versions are the same. Future support for installing older (or newer) databases and performing an automatic upgrade/downgrade is in the works.
 
+Dependencies
+------------
+
+[Gear Icon] -> Dependencies
+
+The dependency page allows viewing of dependency information and the ability to initiate their installation.
+
+During the installation of Mycodo, there is an option to select which dependencies to install. If "Minimal Install" or "Custom Install" was selected (rather than "Full Install"), there may be unmet dependencies on your system. Don't worry, this isn't necessarily a problem. These optional dependencies only need to be installed when there's a particular feature you want to use. When a user attempts to use a feature that has an unmet dependency, the user will be forwarded to the Dependency page in order to install it.
+
 Camera
 ------
+
+More -> Cameras
 
 Once a cameras has been set up (in the [Camera
 Settings](#camera-settings)), it may be used to capture still images,
@@ -1141,12 +1181,16 @@ with a notification).
 Output Usage
 -----------
 
+More -> Output Usage
+
 Output usage statistics are calculated for each output, based on how long
 the output has been powered, the current draw of the device connected to
 the output, and other [Relay Usage Settings](#output-usage-settings).
 
 Backup-Restore
-----------------
+--------------
+
+[Gear Icon] -> Backup Restore
 
 A backup is made to /var/Mycodo-backups when the system is upgraded or through the web interface on the Config -> Backup / Restore page.
 
@@ -1159,6 +1203,8 @@ If you need to restore a backup, this can be done on the Config -> Backup / Rest
 
 System Information
 ------------------
+
+[Gear Icon] -> System Information
 
 This page serves to provide information about the Mycodo frontend and backend as well as the linux system it's running on. Several commands and their output are listed to give the user information about how their system is running.
 

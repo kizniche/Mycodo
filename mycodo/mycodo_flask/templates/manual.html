@@ -375,6 +375,7 @@
 <li><a href="#live-measurements">Live Measurements</a></li>
 <li><a href="#asynchronous-graphs">Asynchronous Graphs</a></li>
 <li><a href="#export-import">Export-Import</a></li>
+<li><a href="#dependencies">Dependencies</a></li>
 <li><a href="#camera">Camera</a></li>
 <li><a href="#output-usage">Output Usage</a></li>
 <li><a href="#backup-restore">Backup-Restore</a></li>
@@ -1501,6 +1502,7 @@
 </tbody>
 </table>
 <h2 id="timers">Timers</h2>
+<p>More -&gt; Timers</p>
 <p>Timers enable outputs to be manipulated after specific durations of time or at a specific times of the day. Timers will <strong><em>only</em></strong> do as instructed, therefore if you turn a output <em>ON</em> from <em>Start Time</em> to <em>End Time</em> and you want that output to turn <em>OFF</em> at the end of that period, you will need to create another timer that turns the output <em>OFF</em> at <em>End Time</em> + 1 minute.</p>
 <p>There are two types of timers, one for general outputs that turn on and off, and those that generate a PWM signal.</p>
 <h4 id="general-output">General Output</h4>
@@ -1509,6 +1511,7 @@
 <h4 id="pwm-method">PWM Method</h4>
 <p>This timer allows a method to be used to determine the duty cycle (as percent) of a PWM output. While creating these methods, keep in mind a duty cycle is a percentage and the values must stay between 0 and 100.</p>
 <h2 id="lcds">LCDs</h2>
+<p>More -&gt; LCDs</p>
 <p>Data may be output to a liquid crystal display (LCD) for easy viewing. Please see <a href="#lcd-displays">LCD Displays</a> for specific information regarding compatibility.</p>
 <p>There may be multiple displays created for each LCD. If there is only one display created for the LCD, it will refresh at the set period. If there is more than one display, it will cycle from one display to the next every set period.</p>
 <table style="width:94%;">
@@ -1562,6 +1565,7 @@
 </tbody>
 </table>
 <h2 id="methods">Methods</h2>
+<p>More -&gt; Methods</p>
 <p>Methods enable Setpoint Tracking in PIDs and time-based duty cycle changes in timers. Normally, a PID controller will regulate an environmental condition to a specific setpoint. If you would like the setpoint to change over time, this is called setpoint tracking. Setpoint Tracking is useful for applications such as reflow ovens, thermal cyclers (DNA replication), mimicking natural daily cycles, and more. Methods may also be used to change a duty cycle over time when used with a Timer.</p>
 <h3 id="universal-options">Universal Options</h3>
 <p>These options are shared with several method types.</p>
@@ -1604,6 +1608,7 @@
 <h4 id="daily-bezier-curve-method">Daily (Bezier Curve) Method</h4>
 <p>A daily Bezier curve method define the setpoint over the day based on a cubic Bezier curve. If unfamiliar with a Bezier curve, it is recommended you use the <a href="https://www.desmos.com/calculator/cahqdxeshd">graphical Bezier curve generator</a> and use the 8 variables it creates for 4 points (each a set of x and y). The x-axis start (x3) and end (x0) will be automatically stretched or skewed to fit within a 24-hour period and this method will repeat daily.</p>
 <h1 id="pid-tuning">PID Tuning</h1>
+<p>Function -&gt; PIDs</p>
 <h2 id="pid-control-theory">PID Control Theory</h2>
 <p>The PID controller is the most common regulatory controller found in industrial settings, for it“s ability to handle both simple and complex regulation. The PID controller has three paths, the proportional, integral, and derivative.</p>
 <p>The <strong>P</strong>roportional takes the error and multiplies it by the constant K<sub>p</sub>, to yield an output value. When the error is large, there will be a large proportional output.</p>
@@ -1630,8 +1635,10 @@
 <p>Often the system can be simplified if two-way regulation is not needed. For instance, if cooling is unnecessary, this can be removed from the system and only up-regulation can be used.</p>
 <p>Use the same configuration as the <a href="#exact-temperature-regulation">Exact Temperature Regulation</a> example, except change <em>Regulate Direction</em> to “Raise” and do not touch the “Down Relay” section.</p>
 <h1 id="configuration-settings">Configuration Settings</h1>
+<p>[Gear Icon] -&gt; Configuration</p>
 <p>The settings menu, accessed by selecting the gear icon in the top-right, then the Configure link, is a general area for various system-wide configuration options.</p>
 <h2 id="general-settings">General Settings</h2>
+<p>[Gear Icon] -&gt; Configuration -&gt; General</p>
 <table style="width:94%;">
 <colgroup>
 <col style="width: 29%"></col>
@@ -1711,6 +1718,7 @@
 </tbody>
 </table>
 <h2 id="users">Users</h2>
+<p>[Gear Icon] -&gt; Configuration -&gt; Users</p>
 <p>Mycodo requires at least one Admin user for the login system to be enabled. If there isn’t an Admin user, the web server will redirect to an Admin Creation Form. This is the first page you see when starting Mycodo for the first time. After an Admin user has been created, additional users may be created from the User Settings page.</p>
 <table style="width:94%;">
 <colgroup>
@@ -1809,6 +1817,7 @@
 <p><sup>1</sup>The <code>Edit Controllers</code> permission protects the editing of Graphs, LCDs, Methods, PIDs, Outputs, Inputs, and Timers.</p>
 <p><sup>2</sup>The <code>View Stats</code> permission protects the viewing of usage statistics and the System Info and Output Usage pages.</p>
 <h2 id="pi-settings">Pi Settings</h2>
+<p>[Gear Icon] -&gt; Configuration -&gt; Pi</p>
 <p>Pi settings configure parts of the linux system that Mycodo runs on.</p>
 <p>pigpiod is required if you wish to use PWM Outputs, as well as PWM, RPM, DHT22, DHT11, HTU21D Inputs.</p>
 <table style="width:94%;">
@@ -1834,6 +1843,7 @@
 </tbody>
 </table>
 <h2 id="alert-settings">Alert Settings</h2>
+<p>[Gear Icon] -&gt; Configuration -&gt; Alerts</p>
 <p>Alert settings set up the credentials for sending email notifications.</p>
 <table style="width:94%;">
 <colgroup>
@@ -1882,6 +1892,7 @@
 </tbody>
 </table>
 <h2 id="camera-settings">Camera Settings</h2>
+<p>[Gear Icon] -&gt; Configuration -&gt; Camera</p>
 <p>Many cameras can be used simultaneously with Mycodo. Each camera needs to be set up in the camera settings, then may be used throughout the software. Note that not every option (such as Hue or White Balance) may be able to be used with your particular camera, due to manufacturer differences in hardware and software.</p>
 <table style="width:94%;">
 <colgroup>
@@ -1939,6 +1950,7 @@
 </table>
 <h1 id="miscellaneous">Miscellaneous</h1>
 <h2 id="dashboard">Dashboard</h2>
+<p>Info -&gt; Dashboard</p>
 <p>The dashboard is where you can add pieces of data for easy viewing. It is highly customizable and provides an easy way to see exactly what data you want to see on one screen.</p>
 <table style="width:94%;">
 <colgroup>
@@ -2245,25 +2257,36 @@
 </tbody>
 </table>
 <h2 id="live-measurements">Live Measurements</h2>
+<p>Info -&gt; Live Measurements</p>
 <p>The Live Measurements page is the first page a user sees after logging in to Mycodo. It will display the current measurements being acquired from Input and Math controllers. If there is nothing displayed on the Live Measurements page, ensure an Input or Math controller is both configured correctly and activated. Data will be automatically updated on the page from the measurement database.</p>
 <h2 id="asynchronous-graphs">Asynchronous Graphs</h2>
+<p>Info -&gt; Asynchronous Graphs</p>
 <p>A graphical data display that is useful for viewing data sets spanning relatively long periods of time (weeks/months/years), which could be very data- and processor-intensive to view as a Live Graph. Select a time frame and data will be loaded from that time span, if it exists. The first view will be of the entire selected data set. For every view/zoom, 700 data points will be loaded. If there are more than 700 data points recorded for the time span selected, 700 points will be created from an averaging of the points in that time span. This enables much less data to be used to navigate a large data set. For instance, 4 months of data may be 10 megabytes if all of it were downloaded. However, when viewing a 4 month span, it’s not possible to see every data point of that 10 megabytes, and aggregating of points is inevitable. With asynchronous loading of data, you only download what you see. So, instead of downloading 10 megabytes every graph load, only ~50kb will be downloaded until a new zoom level is selected, at which time only another ~50kb is downloaded.</p>
 <p>Note: Live Graphs require measurements to be acquired, therefore at least one sensor needs to be added and activated in order to display live data.</p>
 <h2 id="export-import">Export-Import</h2>
+<p>More -&gt; Export Import</p>
 <p>Measurements that fall within the selected date/time frame may be exported as CSV with their corresponding timestamps.</p>
 <p>Additionally, the entire measurement database (influxdb) may be exported as a ZIP file backup. This ZIP may be imported back in any Mycodo system to restore these measurements. Note that an import will override the current data (i.e. destroying it).</p>
 <p>Mycodo settings may be exported as a ZIP file containing the Mycodo settings database (sqlite). This ZIP file may be used to restore the settings database to another Mycodo install, as long as the Mycodo version and database versions are the same. Future support for installing older (or newer) databases and performing an automatic upgrade/downgrade is in the works.</p>
+<h2 id="dependencies">Dependencies</h2>
+<p>[Gear Icon] -&gt; Dependencies</p>
+<p>The dependency page allows viewing of dependency information and the ability to initiate their installation.</p>
+<p>During the installation of Mycodo, there is an option to select which dependencies to install. If “Minimal Install” or “Custom Install” was selected (rather than “Full Install”), there may be unmet dependencies on your system. Don’t worry, this isn’t necessarily a problem. These optional dependencies only need to be installed when there’s a particular feature you want to use. When a user attempts to use a feature that has an unmet dependency, the user will be forwarded to the Dependency page in order to install it.</p>
 <h2 id="camera">Camera</h2>
+<p>More -&gt; Cameras</p>
 <p>Once a cameras has been set up (in the <a href="#camera-settings">Camera Settings</a>), it may be used to capture still images, create time-lapses, and stream video. Cameras may also be used by <a href="#conditional-statements">Conditional Statements</a> to trigger a camera image or video capture (as well as the ability to email the image/video with a notification).</p>
 <h2 id="output-usage">Output Usage</h2>
+<p>More -&gt; Output Usage</p>
 <p>Output usage statistics are calculated for each output, based on how long the output has been powered, the current draw of the device connected to the output, and other <a href="#output-usage-settings">Relay Usage Settings</a>.</p>
 <h2 id="backup-restore">Backup-Restore</h2>
+<p>[Gear Icon] -&gt; Backup Restore</p>
 <p>A backup is made to /var/Mycodo-backups when the system is upgraded or through the web interface on the Config -&gt; Backup / Restore page.</p>
 <p>If you need to restore a backup, this can be done on the Config -&gt; Backup / Restore page. Find the backup you would like restored and press the Restore button beside it. A restore can also be initialized through the command line. Use the following commands to initialize a restore, changing the appropriate directory names, ‘user’ to your user name, and TIME and COMMIT to the appropriate text found as the directory names in /var/Mycodo-backups/</p>
 <pre><code>sudo mv /home/user/Mycodo /home/user/Mycodo_old
 sudo cp -a /var/Mycodo-backups/Mycodo-TIME-COMMIT /home/user/Mycodo
 sudo /bin/bash ~/Mycodo/mycodo/scripts/upgrade_post.sh</code></pre>
 <h2 id="system-information">System Information</h2>
+<p>[Gear Icon] -&gt; System Information</p>
 <p>This page serves to provide information about the Mycodo frontend and backend as well as the linux system it’s running on. Several commands and their output are listed to give the user information about how their system is running.</p>
 <table style="width:94%;">
 <colgroup>

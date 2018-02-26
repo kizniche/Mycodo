@@ -47,6 +47,7 @@ Miscellaneous
 -   Live Measurements
 -   Asynchronous Graphs
 -   Export-Import
+-   Dependencies
 -   Camera
 -   Output Usage
 -   Backup-Restore
@@ -1236,6 +1237,8 @@ Edge Conditional command variables
 
 Timers
 
+More -> Timers
+
 Timers enable outputs to be manipulated after specific durations of time
 or at a specific times of the day. Timers will _ONLY_ do as instructed,
 therefore if you turn a output _ON_ from _Start Time_ to _End Time_ and
@@ -1263,6 +1266,8 @@ duty cycle is a percentage and the values must stay between 0 and 100.
 
 
 LCDs
+
+More -> LCDs
 
 Data may be output to a liquid crystal display (LCD) for easy viewing.
 Please see LCD Displays for specific information regarding
@@ -1310,6 +1315,8 @@ next every set period.
 
 
 Methods
+
+More -> Methods
 
 Methods enable Setpoint Tracking in PIDs and time-based duty cycle
 changes in timers. Normally, a PID controller will regulate an
@@ -1382,6 +1389,9 @@ end (x0) will be automatically stretched or skewed to fit within a
 
 
 PID TUNING
+
+
+Function -> PIDs
 
 
 PID Control Theory
@@ -1536,12 +1546,16 @@ Relay” section.
 CONFIGURATION SETTINGS
 
 
+[Gear Icon] -> Configuration
+
 The settings menu, accessed by selecting the gear icon in the top-right,
 then the Configure link, is a general area for various system-wide
 configuration options.
 
 
 General Settings
+
+[Gear Icon] -> Configuration -> General
 
   ---------------------------------------------------------------------
   Setting               Description
@@ -1611,6 +1625,8 @@ set for each output (see Output Settings).
 
 Users
 
+[Gear Icon] -> Configuration -> Users
+
 Mycodo requires at least one Admin user for the login system to be
 enabled. If there isn’t an Admin user, the web server will redirect to
 an Admin Creation Form. This is the first page you see when starting
@@ -1662,6 +1678,8 @@ the System Info and Output Usage pages.
 
 Pi Settings
 
+[Gear Icon] -> Configuration -> Pi
+
 Pi settings configure parts of the linux system that Mycodo runs on.
 
 pigpiod is required if you wish to use PWM Outputs, as well as PWM, RPM,
@@ -1684,6 +1702,8 @@ DHT22, DHT11, HTU21D Inputs.
 
 
 Alert Settings
+
+[Gear Icon] -> Configuration -> Alerts
 
 Alert settings set up the credentials for sending email notifications.
 
@@ -1718,6 +1738,8 @@ Alert settings set up the credentials for sending email notifications.
 
 
 Camera Settings
+
+[Gear Icon] -> Configuration -> Camera
 
 Many cameras can be used simultaneously with Mycodo. Each camera needs
 to be set up in the camera settings, then may be used throughout the
@@ -1768,6 +1790,8 @@ MISCELLANEOUS
 
 
 Dashboard
+
+Info -> Dashboard
 
 The dashboard is where you can add pieces of data for easy viewing. It
 is highly customizable and provides an easy way to see exactly what data
@@ -1981,6 +2005,8 @@ PID Control
 
 Live Measurements
 
+Info -> Live Measurements
+
 The Live Measurements page is the first page a user sees after logging
 in to Mycodo. It will display the current measurements being acquired
 from Input and Math controllers. If there is nothing displayed on the
@@ -1990,6 +2016,8 @@ on the page from the measurement database.
 
 
 Asynchronous Graphs
+
+Info -> Asynchronous Graphs
 
 A graphical data display that is useful for viewing data sets spanning
 relatively long periods of time (weeks/months/years), which could be
@@ -2015,6 +2043,8 @@ live data.
 
 Export-Import
 
+More -> Export Import
+
 Measurements that fall within the selected date/time frame may be
 exported as CSV with their corresponding timestamps.
 
@@ -2031,7 +2061,26 @@ installing older (or newer) databases and performing an automatic
 upgrade/downgrade is in the works.
 
 
+Dependencies
+
+[Gear Icon] -> Dependencies
+
+The dependency page allows viewing of dependency information and the
+ability to initiate their installation.
+
+During the installation of Mycodo, there is an option to select which
+dependencies to install. If “Minimal Install” or “Custom Install” was
+selected (rather than “Full Install”), there may be unmet dependencies
+on your system. Don’t worry, this isn’t necessarily a problem. These
+optional dependencies only need to be installed when there’s a
+particular feature you want to use. When a user attempts to use a
+feature that has an unmet dependency, the user will be forwarded to the
+Dependency page in order to install it.
+
+
 Camera
+
+More -> Cameras
 
 Once a cameras has been set up (in the Camera Settings), it may be used
 to capture still images, create time-lapses, and stream video. Cameras
@@ -2042,12 +2091,16 @@ notification).
 
 Output Usage
 
+More -> Output Usage
+
 Output usage statistics are calculated for each output, based on how
 long the output has been powered, the current draw of the device
 connected to the output, and other Relay Usage Settings.
 
 
 Backup-Restore
+
+[Gear Icon] -> Backup Restore
 
 A backup is made to /var/Mycodo-backups when the system is upgraded or
 through the web interface on the Config -> Backup / Restore page.
@@ -2066,6 +2119,8 @@ TIME and COMMIT to the appropriate text found as the directory names in
 
 
 System Information
+
+[Gear Icon] -> System Information
 
 This page serves to provide information about the Mycodo frontend and
 backend as well as the linux system it’s running on. Several commands
