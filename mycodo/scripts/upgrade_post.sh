@@ -38,6 +38,7 @@ ${INSTALL_CMD} update-pip3-packages
 
 ${INSTALL_CMD} initialize
 
+printf "\n#### Checking for updates to optional dependencies\n"
 DEPENDENCIES=$(${INSTALL_DIRECTORY}/Mycodo/env/bin/python3 ${INSTALL_DIRECTORY}/Mycodo/mycodo/utils/dependencies_installed.py 2>&1)
 IFS=, read -ra ary <<< "$DEPENDENCIES"
 for opt in "${!ary[@]}"
