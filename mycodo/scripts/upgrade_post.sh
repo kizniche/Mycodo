@@ -44,6 +44,7 @@ IFS=, read -ra ary <<< "$DEPENDENCIES"
 for opt in "${!ary[@]}"
 do
     if [[ ${ary[opt]} ]] ; then
+        printf "\n#### Installing/updating $opt\n"
         if [ "$opt" == "Adafruit_ADS1x15" ]; then
             ${INSTALL_DEP} Adafruit_ADS1x15
         elif [ "$opt" == "Adafruit_Python_BME280" ]; then
@@ -70,6 +71,8 @@ do
             ${INSTALL_DEP} tsl2591
         elif [ "$opt" == "w1thermsensor" ]; then
             ${INSTALL_DEP} w1thermsensor
+        else
+            printf "\n#### No install candidate for $opt\n"
         fi
     fi
 done
