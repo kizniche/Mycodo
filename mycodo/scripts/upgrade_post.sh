@@ -36,11 +36,10 @@ ${INSTALL_CMD} update-pip3
 
 ${INSTALL_CMD} update-pip3-packages
 
+${INSTALL_CMD} initialize
+
 DEPENDENCIES=$(${INSTALL_DIRECTORY}/Mycodo/env/bin/python3 ${INSTALL_DIRECTORY}/Mycodo/mycodo/utils/dependencies_installed.py 2>&1)
-
 IFS=, read -ra ary <<< "$DEPENDENCIES"
-printf "%s\n" "${ary[@]}"
-
 for opt in "${!ary[@]}"
 do
     if [[ ${ary[opt]} ]] ; then

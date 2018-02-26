@@ -39,7 +39,7 @@ picamera == 1.13
 RPi.GPIO
 rpi-rf  # Replaces pi_switch
 
-# Disabled modules (optional install)
+# Disabled modules (installed via dependency system)
 # -e git://github.com/maxlklaxl/python-tsl2591.git#egg=tsl2591
 # -e git://github.com/adafruit/Adafruit_Python_BME280.git#egg=adafruit-bme280
 # Adafruit_ADS1x15
