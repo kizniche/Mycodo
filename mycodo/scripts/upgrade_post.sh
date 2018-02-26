@@ -44,35 +44,35 @@ IFS=, read -ra ary <<< "$DEPENDENCIES"
 for opt in "${!ary[@]}"
 do
     if [[ ${ary[opt]} ]] ; then
-        printf "\n#### Installing/updating $opt\n"
-        if [ "$opt" == "Adafruit_ADS1x15" ]; then
+        printf "\n#### Installing/updating ${ary[opt]}\n"
+        if [ "${ary[opt]}" == "Adafruit_ADS1x15" ]; then
             ${INSTALL_DEP} Adafruit_ADS1x15
-        elif [ "$opt" == "Adafruit_Python_BME280" ]; then
+        elif [ "${ary[opt]}" == "Adafruit_Python_BME280" ]; then
             ${INSTALL_DEP} Adafruit_Python_BME280
-        elif [ "$opt" == "Adafruit_Python_BMP" ]; then
+        elif [ "${ary[opt]}" == "Adafruit_Python_BMP" ]; then
             ${INSTALL_DEP} Adafruit_Python_BMP
-        elif [ "$opt" == "Adafruit_GPIO" ]; then
+        elif [ "${ary[opt]}" == "Adafruit_GPIO" ]; then
             ${INSTALL_DEP} Adafruit_GPIO
-        elif [ "$opt" == "Adafruit_MCP3008" ]; then
+        elif [ "${ary[opt]}" == "Adafruit_MCP3008" ]; then
             ${INSTALL_DEP} Adafruit_MCP3008
-        elif [ "$opt" == "Adafruit_TMP" ]; then
+        elif [ "${ary[opt]}" == "Adafruit_TMP" ]; then
             ${INSTALL_DEP} Adafruit_TMP
-        elif [ "$opt" == "MCP342x" ]; then
+        elif [ "${ary[opt]}" == "MCP342x" ]; then
             ${INSTALL_DEP} MCP342x
-        elif [ "$opt" == "pigpio" ]; then
+        elif [ "${ary[opt]}" == "pigpio" ]; then
             ${INSTALL_DEP} update-pigpiod
-        elif [ "$opt" == "quick2wire" ]; then
+        elif [ "${ary[opt]}" == "quick2wire" ]; then
             ${INSTALL_DEP} quick2wire
-        elif [ "$opt" == "sht_sensor" ]; then
+        elif [ "${ary[opt]}" == "sht_sensor" ]; then
             ${INSTALL_DEP} sht_sensor
-        elif [ "$opt" == "tsl2561" ]; then
+        elif [ "${ary[opt]}" == "tsl2561" ]; then
             ${INSTALL_DEP} tsl2561
-        elif [ "$opt" == "tsl2591" ]; then
+        elif [ "${ary[opt]}" == "tsl2591" ]; then
             ${INSTALL_DEP} tsl2591
-        elif [ "$opt" == "w1thermsensor" ]; then
+        elif [ "${ary[opt]}" == "w1thermsensor" ]; then
             ${INSTALL_DEP} w1thermsensor
         else
-            printf "\n#### No install candidate for $opt\n"
+            printf "\n#### No install candidate for ${ary[opt]}\n"
         fi
     fi
 done
