@@ -48,8 +48,8 @@ do
             ${INSTALL_DEP} Adafruit_ADS1x15
         elif [ "${ary[opt]}" == "Adafruit_BME280" ]; then
             ${INSTALL_DEP} Adafruit_BME280
-        elif [ "${ary[opt]}" == "Adafruit_Python_BMP" ]; then
-            ${INSTALL_DEP} Adafruit_Python_BMP
+        elif [ "${ary[opt]}" == "Adafruit_BMP" ]; then
+            ${INSTALL_DEP} Adafruit_BMP
         elif [ "${ary[opt]}" == "Adafruit_GPIO" ]; then
             ${INSTALL_DEP} Adafruit_GPIO
         elif [ "${ary[opt]}" == "Adafruit_MCP3008" ]; then
