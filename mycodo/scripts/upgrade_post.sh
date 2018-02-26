@@ -44,27 +44,31 @@ printf "%s\n" "${ary[@]}"
 for opt in "${!ary[@]}"
 do
     if [[ ${ary[opt]} ]] ; then
-        if [ "$opt" == "1" ]; then
+        if [ "$opt" == "Adafruit_ADS1x15" ]; then
             ${INSTALL_DEP} Adafruit_ADS1x15
-        elif [ "$opt" == "2" ]; then
+        elif [ "$opt" == "Adafruit_Python_BME280" ]; then
             ${INSTALL_DEP} Adafruit_Python_BME280
-        elif [ "$opt" == "3" ]; then
+        elif [ "$opt" == "Adafruit_Python_BMP" ]; then
+            ${INSTALL_DEP} Adafruit_Python_BMP
+        elif [ "$opt" == "Adafruit_GPIO" ]; then
             ${INSTALL_DEP} Adafruit_GPIO
-        elif [ "$opt" == "4" ]; then
+        elif [ "$opt" == "Adafruit_MCP3008" ]; then
             ${INSTALL_DEP} Adafruit_MCP3008
-        elif [ "$opt" == "5" ]; then
+        elif [ "$opt" == "Adafruit_TMP" ]; then
             ${INSTALL_DEP} Adafruit_TMP
-        elif [ "$opt" == "6" ]; then
+        elif [ "$opt" == "MCP342x" ]; then
             ${INSTALL_DEP} MCP342x
-        elif [ "$opt" == "7" ]; then
+        elif [ "$opt" == "pigpio" ]; then
             ${INSTALL_DEP} update-pigpiod
-        elif [ "$opt" == "8" ]; then
+        elif [ "$opt" == "quick2wire" ]; then
+            ${INSTALL_DEP} quick2wire
+        elif [ "$opt" == "sht_sensor" ]; then
             ${INSTALL_DEP} sht_sensor
-        elif [ "$opt" == "9" ]; then
+        elif [ "$opt" == "tsl2561" ]; then
             ${INSTALL_DEP} tsl2561
-        elif [ "$opt" == "10" ]; then
+        elif [ "$opt" == "tsl2591" ]; then
             ${INSTALL_DEP} tsl2591
-        elif [ "$opt" == "11" ]; then
+        elif [ "$opt" == "w1thermsensor" ]; then
             ${INSTALL_DEP} w1thermsensor
         fi
     fi

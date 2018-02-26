@@ -109,7 +109,7 @@ trap 'abort' 0
 
 set -e
 
-TOTAL=26  # The total number of times progress() is executed
+TOTAL=24  # The total number of times progress() is executed
 COUNT=1
 
 function progress() {
@@ -118,12 +118,8 @@ function progress() {
 }
 
 {
-    progress "Sit back"
-    sleep 4
-    progress "Or grab a coffee"
-    sleep 4
-    progress "This may take a while"
-    sleep 4
+    progress "Here we go...This may take a while"
+    sleep 5
 
     SECONDS=0
     NOW=$(date)
