@@ -169,8 +169,8 @@ function progress() {
             option="${option#\"}"
             if [ "$option" == "Adafruit_ADS1x15" ]; then
                 ${INSTALL_DEP} Adafruit_ADS1x15 >>${LOG_LOCATION} 2>&1
-            elif [ "$option" == "Adafruit_Python_BME280" ]; then
-                ${INSTALL_DEP} Adafruit_Python_BME280 >>${LOG_LOCATION} 2>&1
+            elif [ "$option" == "Adafruit_BME280" ]; then
+                ${INSTALL_DEP} Adafruit_BME280 >>${LOG_LOCATION} 2>&1
             elif [ "$option" == "Adafruit_BMP" ]; then
                 ${INSTALL_DEP} Adafruit_BMP >>${LOG_LOCATION} 2>&1
             elif [ "$option" == "Adafruit_GPIO" ]; then

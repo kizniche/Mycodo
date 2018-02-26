@@ -16,7 +16,7 @@ case "${1:-''}" in
     'Adafruit_ADS1x15')
         ${INSTALL_CMD} install-pip-dependency Adafruit_ADS1x15
     ;;
-    'Adafruit_Python_BME280')
+    'Adafruit_BME280')
         ${INSTALL_DIRECTORY}/env/bin/pip3 install -e git://github.com/adafruit/Adafruit_Python_BME280.git#egg=adafruit-bme280
     ;;
     'Adafruit_BMP')

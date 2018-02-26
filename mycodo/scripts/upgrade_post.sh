@@ -44,11 +44,10 @@ IFS=, read -ra ary <<< "$DEPENDENCIES"
 for opt in "${!ary[@]}"
 do
     if [[ ${ary[opt]} ]] ; then
-        printf "\n#### Installing/updating ${ary[opt]}\n"
         if [ "${ary[opt]}" == "Adafruit_ADS1x15" ]; then
             ${INSTALL_DEP} Adafruit_ADS1x15
-        elif [ "${ary[opt]}" == "Adafruit_Python_BME280" ]; then
-            ${INSTALL_DEP} Adafruit_Python_BME280
+        elif [ "${ary[opt]}" == "Adafruit_BME280" ]; then
+            ${INSTALL_DEP} Adafruit_BME280
         elif [ "${ary[opt]}" == "Adafruit_Python_BMP" ]; then
             ${INSTALL_DEP} Adafruit_Python_BMP
         elif [ "${ary[opt]}" == "Adafruit_GPIO" ]; then
