@@ -4,6 +4,7 @@
 
  - Fix pigpiod configuration options when pigpiod is not installed ([#412](https://github.com/kizniche/mycodo/issues/412))
  - Fix setting up pigpiod during install
+ - Fix TSL2561 Input module ([#414](https://github.com/kizniche/mycodo/issues/414))
 
 
 ## 5.6.0 (2018-02-25)

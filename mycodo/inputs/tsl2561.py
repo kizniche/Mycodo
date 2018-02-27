@@ -16,9 +16,8 @@ class TSL2561Sensor(AbstractInput):
         self.i2c_bus = bus
 
         if not testing:
-            from tentacle_pi import TSL2561
-            self.tsl = TSL2561.TSL2561(
-                self.i2c_address, "/dev/i2c-" + str(self.i2c_bus))
+            from tsl2561 import TSL2561
+            self.tsl = TSL2561(address=self.i2c_address, busnum=self.i2c_bus)
 
     def __repr__(self):
         """  Representation of object """
@@ -49,9 +48,6 @@ class TSL2561Sensor(AbstractInput):
     def get_measurement(self):
         """ Gets the TSL2561's lux """
         self._lux = None
-        self.tsl.enable_autogain()
-        # tsl.set_gain(16)
-        self.tsl.set_time(0x00)
         return self.tsl.lux()
 
 
