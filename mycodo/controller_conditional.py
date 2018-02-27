@@ -491,6 +491,34 @@ class ConditionalController(threading.Thread):
                               cond_action.do_pid_id,))
                     deactivate_pid.start()
 
+            # Activate PID controller
+            elif cond_action.do_action == 'resume_pid':
+                message += " Resume PID ({id}).".format(
+                    id=cond_action.do_pid_id)
+                pid = db_retrieve_table_daemon(
+                    PID, device_id=cond_action.do_pid_id, entry='first')
+                if not pid.is_paused:
+                    message += " Notice: PID is not paused!"
+                else:
+                    resume_pid = threading.Thread(
+                        target=self.control.pid_resume,
+                        args=(cond_action.do_pid_id,))
+                    resume_pid.start()
+
+            # Deactivate PID controller
+            elif cond_action.do_action == 'pause_pid':
+                message += " Pause PID ({id}).".format(
+                    id=cond_action.do_pid_id)
+                pid = db_retrieve_table_daemon(
+                    PID, device_id=cond_action.do_pid_id, entry='first')
+                if pid.is_paused:
+                    message += " Notice: PID is already paused!"
+                else:
+                    pause_pid = threading.Thread(
+                        target=self.control.pid_pause,
+                        args=(cond_action.do_pid_id,))
+                    pause_pid.start()
+
             # Email the Conditional message. Optionally capture a photo or
             # video and attach to the email.
             elif cond_action.do_action in ['email',

@@ -1,5 +1,9 @@
 ## 5.6.1 (Unreleased)
 
+### Features
+
+ - Add Conditional Actions: Pause/Resume PID ([#346](https://github.com/kizniche/mycodo/issues/346))
+
 ### Bugfixes
 
  - Fix pigpiod configuration options when pigpiod is not installed ([#412](https://github.com/kizniche/mycodo/issues/412))
