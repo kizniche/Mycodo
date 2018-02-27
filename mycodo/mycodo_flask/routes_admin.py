@@ -20,7 +20,7 @@ from mycodo.config import BACKUP_LOG_FILE
 from mycodo.config import BACKUP_PATH
 from mycodo.config import FORCE_UPGRADE_MASTER
 from mycodo.config import INSTALL_DIRECTORY
-from mycodo.config import MEASUREMENTS
+from mycodo.config import DEVICE_INFO
 from mycodo.config import MYCODO_VERSION
 from mycodo.config import RESTORE_LOG_FILE
 from mycodo.config import STATS_CSV
@@ -149,7 +149,7 @@ def admin_dependencies(device):
     met_dependencies = []
     met_exist = False
     unmet_list = {}
-    for each_device in MEASUREMENTS:
+    for each_device in DEVICE_INFO:
         # Determine if there are any unmet dependencies
         unmet_dependencies.update({
             each_device: utils_general.return_dependencies(each_device)
@@ -203,7 +203,7 @@ def admin_dependencies(device):
         return redirect(url_for('routes_admin.admin_dependencies', device='0'))
 
     return render_template('admin/dependencies.html',
-                           measurements=MEASUREMENTS,
+                           measurements=DEVICE_INFO,
                            unmet_list=unmet_list,
                            device=device,
                            unmet_dependencies=unmet_dependencies,

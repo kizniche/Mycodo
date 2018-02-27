@@ -37,146 +37,146 @@ DEVICES = [
     ('LinuxCommand', 'Linux Command'),
     ('SERVER_PING', 'Server Ping'),
     ('SERVER_PORT_OPEN', 'Server Port Open'),
-    ('ADS1x15', 'Analog-to-Digital Converter: ADS1x15'),
-    ('MCP3008', 'Analog-to-Digital Converter: MCP3008'),
-    ('MCP342x', 'Analog-to-Digital Converter: MCP342x'),
-    ('K30_UART', 'CO2: K30 (UART)'),
+    ('ADS1x15', 'Analog-to-Digital Converter: ADS1x15 (I2C)'),
+    ('MCP3008', 'Analog-to-Digital Converter: MCP3008 (Serial)'),
+    ('MCP342x', 'Analog-to-Digital Converter: MCP342x (I2C)'),
+    ('K30_UART', 'CO2: K30 (Serial)'),
     ('MH_Z16_I2C', 'CO2: MH-Z16 (I2C)'),
-    ('MH_Z16_UART', 'CO2: MH-Z16 (UART)'),
-    ('MH_Z19_UART', 'CO2: MH-Z19 (UART)'),
-    ('BH1750', 'Luminance: BH1750'),
-    ('TSL2561', 'Luminance: TSL2561'),
-    ('TSL2591', 'Luminance: TSL2591'),
-    ('CHIRP', 'Moisture: Chirp'),
+    ('MH_Z16_UART', 'CO2: MH-Z16 (Serial)'),
+    ('MH_Z19_UART', 'CO2: MH-Z19 (Serial)'),
+    ('BH1750', 'Luminance: BH1750 (I2C)'),
+    ('TSL2561', 'Luminance: TSL2561 (I2C)'),
+    ('TSL2591', 'Luminance: TSL2591 (I2C)'),
+    ('CHIRP', 'Moisture: Chirp (I2C)'),
     ('ATLAS_PH_I2C', 'pH: Atlas Scientific (I2C)'),
-    ('ATLAS_PH_UART', 'pH: Atlas Scientific (UART)'),
-    ('BME280', 'Pressure/Temperature/Humidity: BME 280'),
-    ('BMP180', 'Pressure/Temperature: BMP 180/085'),
-    ('BMP280', 'Pressure/Temperature: BMP 280'),
-    ('DS18B20', 'Temperature: DS18B20'),
+    ('ATLAS_PH_UART', 'pH: Atlas Scientific (Serial)'),
+    ('BME280', 'Pressure/Temperature/Humidity: BME 280 (I2C)'),
+    ('BMP180', 'Pressure/Temperature: BMP 180/085 (I2C)'),
+    ('BMP280', 'Pressure/Temperature: BMP 280 (I2C)'),
+    ('DS18B20', 'Temperature: DS18B20 (1-Wire)'),
     ('ATLAS_PT1000_I2C', 'Temperature: Atlas Scientific PT-1000 (I2C)'),
-    ('ATLAS_PT1000_UART', 'Temperature: Atlas Scientific PT-1000 (UART)'),
-    ('TMP006', 'Temperature (Contactless): TMP 006/007'),
-    ('AM2315', 'Temperature/Humidity: AM2315'),
-    ('DHT11', 'Temperature/Humidity: DHT11'),
-    ('DHT22', 'Temperature/Humidity: DHT22'),
-    ('HTU21D', 'Temperature/Humidity: HTU21D'),
+    ('ATLAS_PT1000_UART', 'Temperature: Atlas Scientific PT-1000 (Serial)'),
+    ('TMP006', 'Temperature (Contactless): TMP 006/007 (I2C)'),
+    ('AM2315', 'Temperature/Humidity: AM2315 (I2C)'),
+    ('DHT11', 'Temperature/Humidity: DHT11 (GPIO)'),
+    ('DHT22', 'Temperature/Humidity: DHT22 (GPIO)'),
+    ('HTU21D', 'Temperature/Humidity: HTU21D (I2C)'),
     ('SHT1x_7x', 'Temperature/Humidity: SHT 10/11/15/71/75'),
-    ('SHT2x', 'Temperature/Humidity: SHT 21/25')
+    ('SHT2x', 'Temperature/Humidity: SHT 21/25 (I2C)')
 ]
 
-# Measurements for each device
-MEASUREMENTS = {
+# Device information
+DEVICE_INFO = {
     'MYCODO_RAM': {
-        'py-dependencies': [],
+        'dependencies': [],
         'measure': ['disk_space']},
     'ADS1x15': {
-        'py-dependencies': ['Adafruit_ADS1x15'],
+        'dependencies': ['Adafruit_ADS1x15'],
         'measure': ['voltage']},
     'AM2315': {
-        'py-dependencies': ['quick2wire'],
+        'dependencies': ['quick2wire'],
         'measure': ['dewpoint', 'humidity', 'temperature']},
     'ATLAS_PH_I2C': {
-        'py-dependencies': [],
+        'dependencies': [],
         'measure': ['ph']},
     'ATLAS_PH_UART': {
-        'py-dependencies': ['serial'],
+        'dependencies': ['serial'],
         'measure': ['ph']},
     'ATLAS_PT1000_I2C': {
-        'py-dependencies': [],
+        'dependencies': [],
         'measure': ['temperature']},
     'ATLAS_PT1000_UART': {
-        'py-dependencies': ['serial'],
+        'dependencies': ['serial'],
         'measure': ['temperature']},
     'BH1750': {
-        'py-dependencies': ['smbus'],
+        'dependencies': ['smbus'],
         'measure': ['lux']},
     'BME280': {
-        'py-dependencies': ['Adafruit_BME280'],
+        'dependencies': ['Adafruit_BME280'],
         'measure': ['altitude', 'dewpoint', 'humidity', 'pressure', 'temperature']},
     'BMP': {  # TODO: Remove in next major version. BMP180 replaced this name
-        'py-dependencies': ['Adafruit_BMP'],
+        'dependencies': ['Adafruit_BMP'],
         'measure': ['altitude', 'pressure', 'temperature']},
     'BMP180': {
-        'py-dependencies': ['Adafruit_BMP'],
+        'dependencies': ['Adafruit_BMP'],
         'measure': ['altitude', 'pressure', 'temperature']},
     'BMP280': {
-        'py-dependencies': ['Adafruit_GPIO'],
+        'dependencies': ['Adafruit_GPIO'],
         'measure': ['altitude', 'pressure', 'temperature']},
     'CHIRP': {
-        'py-dependencies': ['smbus'],
+        'dependencies': ['smbus'],
         'measure': ['lux', 'moisture', 'temperature']},
     'DHT11': {
-        'py-dependencies': ['pigpio'],
+        'dependencies': ['pigpio'],
         'measure': ['dewpoint', 'humidity', 'temperature']},
     'DHT22': {
-        'py-dependencies': ['pigpio'],
+        'dependencies': ['pigpio'],
         'measure': ['dewpoint', 'humidity', 'temperature']},
     'DS18B20': {
-        'py-dependencies': ['w1thermsensor'],
+        'dependencies': ['w1thermsensor'],
         'measure': ['temperature']},
     'EDGE': {
-        'py-dependencies': ['RPi.GPIO'],
+        'dependencies': ['RPi.GPIO'],
         'measure': ['edge']},
     'GPIO_STATE': {
-        'py-dependencies': ['RPi.GPIO'],
+        'dependencies': ['RPi.GPIO'],
         'measure': ['gpio_state']},
     'HTU21D': {
-        'py-dependencies': ['pigpio'],
+        'dependencies': ['pigpio'],
         'measure': ['dewpoint', 'humidity', 'temperature']},
     'K30_UART': {
-        'py-dependencies': ['serial'],
+        'dependencies': ['serial'],
         'measure': ['co2']},
     'MH_Z16_I2C': {
-        'py-dependencies': ['smbus'],
+        'dependencies': ['smbus'],
         'measure': ['co2']},
     'MH_Z16_UART': {
-        'py-dependencies': ['serial'],
+        'dependencies': ['serial'],
         'measure': ['co2']},
     'MH_Z19_UART': {
-        'py-dependencies': ['serial'],
+        'dependencies': ['serial'],
         'measure': ['co2']},
     'MCP3008': {
-        'py-dependencies': ['Adafruit_MCP3008'],
+        'dependencies': ['Adafruit_MCP3008'],
         'measure': ['voltage']},
     'MCP342x': {
-        'py-dependencies': ['MCP342x'],
+        'dependencies': ['MCP342x'],
         'measure': ['voltage']},
     'RPi': {
-        'py-dependencies': [],
+        'dependencies': [],
         'measure': ['temperature']},
     'RPiCPULoad': {
-        'py-dependencies': [],
+        'dependencies': [],
         'measure': ['cpu_load_1m', 'cpu_load_5m', 'cpu_load_15m']},
     'RPiFreeSpace': {
-        'py-dependencies': [],
+        'dependencies': [],
         'measure': ['disk_space']},
     'SERVER_PING': {
-        'py-dependencies': [],
+        'dependencies': [],
         'measure': ['boolean']},
     'SERVER_PORT_OPEN': {
-        'py-dependencies': [],
+        'dependencies': [],
         'measure': ['boolean']},
     'SHT1x_7x': {
-        'py-dependencies': ['sht_sensor'],
+        'dependencies': ['sht_sensor'],
         'measure': ['dewpoint', 'humidity', 'temperature']},
     'SHT2x': {
-        'py-dependencies': ['smbus'],
+        'dependencies': ['smbus'],
         'measure': ['dewpoint', 'humidity', 'temperature']},
     'SIGNAL_PWM': {
-        'py-dependencies': ['pigpio'],
+        'dependencies': ['pigpio'],
         'measure': ['frequency','pulse_width', 'duty_cycle']},
     'SIGNAL_RPM': {
-        'py-dependencies': ['pigpio'],
+        'dependencies': ['pigpio'],
         'measure': ['rpm']},
     'TMP006': {
-        'py-dependencies': ['Adafruit_TMP'],
+        'dependencies': ['Adafruit_TMP'],
         'measure': ['temperature_object', 'temperature_die']},
     'TSL2561': {
-        'py-dependencies': ['tsl2561'],
+        'dependencies': ['tsl2561'],
         'measure': ['lux']},
     'TSL2591': {
-        'py-dependencies': ['tsl2591'],
+        'dependencies': ['tsl2591'],
         'measure': ['lux']}
 }
 
@@ -356,6 +356,37 @@ LIST_DEVICES_I2C = [
     'TMP006',
     'TSL2561',
     'TSL2591'
+]
+
+# Devices that use SPI to communicate
+LIST_DEVICES_SPI = [
+    'MCP3008'
+]
+
+# Devices that use serial to communicate
+LIST_DEVICES_SERIAL = [
+    'ATLAS_PH_UART',
+    'ATLAS_PT1000_UART',
+    'K30_UART',
+    'MH_Z16_UART',
+    'MH_Z19_UART'
+]
+
+# Devices that use 1-wire to communicate
+LIST_DEVICES_ONE_WIRE = [
+    'DS18B20'
+]
+
+# Devices that communicate to the Pi itself or operating system
+LIST_DEVICES_INTERNAL_PI = [
+    'MYCODO_RAM',
+    'RPi',
+    'RPiCPULoad',
+    'RPiFreeSpace',
+    'SERVER_PING',
+    'SERVER_PORT_OPEN',
+    'SIGNAL_PWM',
+    'SIGNAL_RPM'
 ]
 
 # Conditional actions

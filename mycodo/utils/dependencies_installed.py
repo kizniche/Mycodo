@@ -7,16 +7,16 @@ import os
 
 sys.path.append(
     os.path.abspath(os.path.join(os.path.dirname(__file__), os.path.pardir) + '/..'))
-from mycodo.config import MEASUREMENTS
+from mycodo.config import DEVICE_INFO
 
 logger = logging.getLogger("mycodo.dependencies_installed")
 
 
 def get_installed_dependencies():
     met_deps = []
-    for device_type in MEASUREMENTS:
-        for each_device, each_dict in MEASUREMENTS[device_type].items():
-            if each_device == 'py-dependencies':
+    for device_type in DEVICE_INFO:
+        for each_device, each_dict in DEVICE_INFO[device_type].items():
+            if each_device == 'dependencies':
                 for each_dep in each_dict:
                     module = importlib.util.find_spec(each_dep)
                     if module is not None:

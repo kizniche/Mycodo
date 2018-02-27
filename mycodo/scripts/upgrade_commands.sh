@@ -186,6 +186,20 @@ case "${1:-''}" in
         make install
         cd ${MYCODO_PATH}/install
         rm -rf ./PIGPIO
+        /bin/bash ${MYCODO_PATH}/mycodo/scripts/upgrade_commands.sh disable-pigpiod
+        /bin/bash ${MYCODO_PATH}/mycodo/scripts/upgrade_commands.sh enable-pigpiod-low
+    ;;
+    'uninstall-pigpiod')
+        printf "\n#### Uninstalling pigpiod\n"
+        apt-get remove -y python3-pigpio
+        cd ${MYCODO_PATH}/install
+        # wget --quiet -P ${MYCODO_PATH}/install abyz.co.uk/rpi/pigpio/pigpio.zip
+        tar xf pigpio.tar
+        cd ${MYCODO_PATH}/install/PIGPIO
+        make uninstall
+        cd ${MYCODO_PATH}/install
+        rm -rf ./PIGPIO
+        touch /etc/systemd/system/pigpiod_uninstalled.service
     ;;
     'disable-pigpiod')
         printf "\n#### Disabling installed pigpiod startup script\n"
@@ -197,6 +211,7 @@ case "${1:-''}" in
         systemctl disable pigpiod_high.service
         rm -rf /etc/systemd/system/pigpiod_high.service
         rm -rf /etc/systemd/system/pigpiod_disabled.service
+        rm -rf /etc/systemd/system/pigpiod_uninstalled.service
     ;;
     'enable-pigpiod-low')
         printf "\n#### Enabling pigpiod startup script (1 ms sample rate)\n"

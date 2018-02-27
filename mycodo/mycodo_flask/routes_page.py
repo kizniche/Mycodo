@@ -33,7 +33,7 @@ from mycodo.config import KEEPUP_LOG_FILE
 from mycodo.config import LIST_DEVICES_ADC
 from mycodo.config import LIST_DEVICES_I2C
 from mycodo.config import LOGIN_LOG_FILE
-from mycodo.config import MEASUREMENTS
+from mycodo.config import DEVICE_INFO
 from mycodo.config import MEASUREMENT_UNITS
 from mycodo.config import RESTORE_LOG_FILE
 from mycodo.config import UPGRADE_LOG_FILE
@@ -662,11 +662,11 @@ def page_lcd():
     form_lcd_mod = forms_lcd.LCDMod()
     form_lcd_display = forms_lcd.LCDModDisplay()
 
-    measurements = MEASUREMENTS
+    measurements = DEVICE_INFO
 
     # Add custom measurement and units to list (From linux command input)
     for each_input in input_dev:
-        if each_input.cmd_measurement and each_input.cmd_measurement not in MEASUREMENTS:
+        if each_input.cmd_measurement and each_input.cmd_measurement not in DEVICE_INFO:
             if each_input.cmd_measurement and each_input.cmd_measurement_units:
                 measurements.update(
                     {'LinuxCommand': {

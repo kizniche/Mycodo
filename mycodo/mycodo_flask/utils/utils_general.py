@@ -14,7 +14,7 @@ from flask import url_for
 from flask_babel import gettext
 
 from mycodo.config import LIST_DEVICES_ADC
-from mycodo.config import MEASUREMENTS
+from mycodo.config import DEVICE_INFO
 from mycodo.config import MEASUREMENT_UNITS
 from mycodo.config import PATH_CAMERAS
 from mycodo.databases.models import Camera
@@ -141,7 +141,7 @@ def choices_inputs(inputs):
                 meas=each_input.cmd_measurement)
             choices.update({value: display})
         else:
-            for each_name, each_dict in MEASUREMENTS[each_input.device].items():
+            for each_name, each_dict in DEVICE_INFO[each_input.device].items():
                 if each_name == 'measure':
                     for each_measure in each_dict:
                         value = '{id},{meas}'.format(
@@ -453,9 +453,9 @@ def get_camera_image_info():
 def return_dependencies(device_type, dep_type='unmet'):
     unmet_deps = []
     met_deps = False
-    if device_type in MEASUREMENTS:
-        for each_device, each_dict in MEASUREMENTS[device_type].items():
-            if each_device == 'py-dependencies':
+    if device_type in DEVICE_INFO:
+        for each_device, each_dict in DEVICE_INFO[device_type].items():
+            if each_device == 'dependencies':
                 for each_dep in each_dict:
                     try:
                         module = importlib.util.find_spec(each_dep)

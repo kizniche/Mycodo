@@ -233,7 +233,12 @@ class UserMod(FlaskForm):
     delete = SubmitField(lazy_gettext('Delete'))
 
 
+#
+# Settings (Pi)
+#
+
 class SettingsPi(FlaskForm):
+    pigpiod_state = StringField('pigpiod state', widget=widgets.HiddenInput())
     enable_i2c = SubmitField(lazy_gettext('Enable I2C'))
     disable_i2c = SubmitField(lazy_gettext('Disable I2C'))
     enable_one_wire = SubmitField(lazy_gettext('Enable 1-Wire'))
@@ -248,5 +253,5 @@ class SettingsPi(FlaskForm):
     disable_pi_camera = SubmitField(lazy_gettext('Disable Pi Camera'))
     hostname = StringField(lazy_gettext('Hostname'))
     change_hostname = SubmitField(lazy_gettext('Change Hostname'))
-    pigpiod_sample_rate = IntegerField(lazy_gettext('pigpiod Sample Rate'))
+    pigpiod_sample_rate = StringField(lazy_gettext('pigpiod Sample Rate'))
     change_pigpiod_sample_rate = SubmitField(lazy_gettext('Set Sample Rate'))

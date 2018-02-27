@@ -182,13 +182,18 @@ def settings_pi():
 
     pi_settings = get_raspi_config_settings()
 
-    pigpiod_sample_rate = 999
-    if os.path.exists('/etc/systemd/system/pigpiod_low.service'):
-        pigpiod_sample_rate = 1
+    # Determine what state pigpiod is currently in
+    pigpiod_sample_rate = ''
+    if os.path.exists('/etc/systemd/system/pigpiod_uninstalled.service'):
+        pigpiod_sample_rate = 'uninstalled'
+    elif os.path.exists('/etc/systemd/system/pigpiod_disabled.service'):
+        pigpiod_sample_rate = 'disabled'
+    elif os.path.exists('/etc/systemd/system/pigpiod_low.service'):
+        pigpiod_sample_rate = 'low'
     elif os.path.exists('/etc/systemd/system/pigpiod_high.service'):
-        pigpiod_sample_rate = 5
+        pigpiod_sample_rate = 'high'
     elif os.path.exists('/etc/systemd/system/pigpiod.service'):
-        pigpiod_sample_rate = 1
+        pigpiod_sample_rate = 'low'
 
     if request.method == 'POST':
         if not utils_general.user_has_permission('edit_settings'):

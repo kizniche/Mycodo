@@ -111,11 +111,13 @@
     </div>
     <div class="row small-gutters">
       <div class="col-xs-6 col-sm-5  col-md-3">
+        {{form_settings_pi.pigpiod_state(value=pigpiod_sample_rate)}}
         <select class="form-control" id="pigpiod_sample_rate" name="pigpiod_sample_rate" title="" data-original-title="Select a sample rate in milliseconds for pigpiod">
           <option value=""></option>
-          <option value="999"{% if pigpiod_sample_rate == 999 %} selected{% endif %}>Disable pigpiod</option>
-          <option value="1"{% if pigpiod_sample_rate == 1 %} selected{% endif %}>1 ms (faster)</option>
-          <option value="5"{% if pigpiod_sample_rate == 5 %} selected{% endif %}>5 ms (slower)</option>
+          <option value="uninstalled"{% if pigpiod_sample_rate == 'uninstalled' %} selected{% endif %}>Uninstall pigpiod</option>
+          <option value="disabled"{% if pigpiod_sample_rate == 'disabled' %} selected{% endif %}>Disable pigpiod</option>
+          <option value="low"{% if pigpiod_sample_rate == 'low' %} selected{% endif %}>1 ms (faster)</option>
+          <option value="high"{% if pigpiod_sample_rate == 'high' %} selected{% endif %}>5 ms (slower)</option>
         </select>
       </div>
       <div class="col-xs-6 col-sm-3">

@@ -211,6 +211,8 @@ function progress() {
         ${INSTALL_DEP} tsl2591 >>${LOG_LOCATION} 2>&1
         ${INSTALL_DEP} w1thermsensor >>${LOG_LOCATION} 2>&1
         ${INSTALL_CMD} update-permissions >>${LOG_LOCATION} 2>&1
+    elif [ "$INSTALL_TYPE" == "minimum" ]; then
+        ${INSTALL_CMD} enable-pigpiod-uninstalled
     fi
 
     progress "Installing InfluxDB"
