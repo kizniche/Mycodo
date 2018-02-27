@@ -72,7 +72,7 @@ if __name__ == '__main__':
                 new_data.append(ord(i))
 
             if new_data[0] != AM2315_READREG or new_data[1] != 4:
-                print 'Fail'
+                print('Fail')
             else:
                 humidity = (new_data[2] * 256 + new_data[3]) / 10.0
                 temperature = ((new_data[4] & 0x7F) * 256 + new_data[5]) / 10.0

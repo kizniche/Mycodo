@@ -1314,7 +1314,7 @@ The I<sup>2</sup>C interface should be enabled with `raspi-config`.
 
 **Sensors**
 
-> [AM2315](#am2315): Relative humidity, temperature [link](https://github.com/lexruee/tentacle_pi)
+> [AM2315](#am2315): Relative humidity, temperature [link](https://www.adafruit.com/product/1293)
 
 > [Atlas Scientific pH](#atlas-scientific-ph): pH [link](https://www.atlas-scientific.com/ph.html)
 
