@@ -165,7 +165,9 @@ def conditional_action_mod(form):
             mod_action.do_relay_duration = form.do_relay_duration.data
 
         elif mod_action.do_action in ['activate_pid',
-                                      'deactivate_pid']:
+                                      'deactivate_pid',
+                                      'resume_pid',
+                                      'pause_pid'                                      ]:
             mod_action.do_pid_id = form.do_pid_id.data
 
         elif mod_action.do_action == 'email':
@@ -343,9 +345,11 @@ def check_form_actions(form, error):
             error.append("State must be set")
 
     elif cond_action.do_action in ['activate_pid',
-                                   'deactivate_pid']:
+                                   'deactivate_pid',
+                                   'resume_pid',
+                                   'pause_pid']:
         if not form.do_pid_id.data or form.do_pid_id.data == '':
-            error.append("PID must be set")
+            error.append("PID must be set: asdf {} asdf".format(form.do_pid_id.data))
 
     elif cond_action.do_action == 'email':
         if not form.do_action_string.data or form.do_action_string.data == '':
@@ -390,7 +394,7 @@ def check_cond_actions(cond_action, error):
             error.append("State must be set")
 
     elif cond_action.do_action in ['activate_pid',
-                                 'deactivate_pid']:
+                                   'deactivate_pid']:
         if not cond_action.do_pid_id or cond_action.do_pid_id == '':
             error.append("PID must be set")
 

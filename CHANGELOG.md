@@ -10,6 +10,7 @@
  - Fix setting up pigpiod during install
  - Fix TSL2561 Input module ([#414](https://github.com/kizniche/mycodo/issues/414))
  - Fix Measurement Dashboard element condition/unit display ([#346](https://github.com/kizniche/mycodo/issues/346))
+ - Fix saving PID Conditional Actions ([#415](https://github.com/kizniche/mycodo/issues/415))
 
 
 ## 5.6.0 (2018-02-25)
