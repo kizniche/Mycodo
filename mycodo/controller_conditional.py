@@ -491,7 +491,7 @@ class ConditionalController(threading.Thread):
                               cond_action.do_pid_id,))
                     deactivate_pid.start()
 
-            # Activate PID controller
+            # Resume PID controller
             elif cond_action.do_action == 'resume_pid':
                 message += " Resume PID ({id}).".format(
                     id=cond_action.do_pid_id)
@@ -505,7 +505,7 @@ class ConditionalController(threading.Thread):
                         args=(cond_action.do_pid_id,))
                     resume_pid.start()
 
-            # Deactivate PID controller
+            # Pause PID controller
             elif cond_action.do_action == 'pause_pid':
                 message += " Pause PID ({id}).".format(
                     id=cond_action.do_pid_id)
