@@ -13,9 +13,9 @@
   <br/><span style="font-size: {{each_graph.font_em_timestamp}}em">
   {%- for each_input in input -%}
     {%- if each_input.unique_id == each_graph.sensor_ids_measurements.split(',')[0] %}
-      {%- if not each_input.adc_measure -%}
+      {%- if each_graph.sensor_ids_measurements.split(',')[1] in measurement_units -%}
         {{measurement_units[each_graph.sensor_ids_measurements.split(',')[1]]['name']|safe}} ({{measurement_units[each_graph.sensor_ids_measurements.split(',')[1]]['unit']|safe}})
-      {%- else -%}
+      {%- elif each_input.adc_measure -%}
         {{each_input.adc_measure|safe}} ({{each_input.adc_measure_units|safe}})
       {% endif %}
     {%- endif -%}

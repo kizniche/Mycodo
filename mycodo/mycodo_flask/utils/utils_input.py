@@ -195,6 +195,8 @@ def input_add(form_add):
         # Analog to Digital Converters
         elif form_add.input_type.data in LIST_DEVICES_ADC:
             new_sensor.measurements = 'voltage'
+            new_sensor.adc_measure = 'Condition'
+            new_sensor.adc_measure_units = 'units'
             if form_add.input_type.data == 'ADS1x15':
                 new_sensor.location = '0x48'
                 new_sensor.adc_volts_min = -4.096
