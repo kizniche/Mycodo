@@ -1,9 +1,5 @@
 ## 5.6.1 (Unreleased)
 
-### Features
-
- - Add warning when a communication interface is disabled and it needs to be used ([#412](https://github.com/kizniche/mycodo/issues/412))
-
 ### Bugfixes
 
  - Fix pigpiod configuration options when pigpiod is not installed ([#412](https://github.com/kizniche/mycodo/issues/412))
