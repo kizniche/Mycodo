@@ -36,6 +36,9 @@ case "${1:-''}" in
     'MCP342x')
         ${INSTALL_CMD} install-pip-dependency MCP342x==0.3.3
     ;;
+    'numpy')
+        ${INSTALL_CMD} install-numpy
+    ;;
     'install-pigpiod')
         ${INSTALL_CMD} install-pigpiod
         ${INSTALL_CMD} enable-pigpiod-low

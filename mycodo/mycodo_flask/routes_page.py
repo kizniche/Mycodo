@@ -670,7 +670,7 @@ def page_lcd():
             if each_input.cmd_measurement and each_input.cmd_measurement_units:
                 measurements.update(
                     {'LinuxCommand': {
-                        'pip-dependencies': [],
+                        'py-dependencies': [],
                         'measure': [each_input.cmd_measurement]
                     }})
 

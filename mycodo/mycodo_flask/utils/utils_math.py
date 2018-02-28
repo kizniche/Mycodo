@@ -18,6 +18,7 @@ from mycodo.mycodo_flask.utils.utils_general import delete_entry_with_id
 from mycodo.mycodo_flask.utils.utils_general import flash_form_errors
 from mycodo.mycodo_flask.utils.utils_general import flash_success_errors
 from mycodo.mycodo_flask.utils.utils_general import reorder
+from mycodo.mycodo_flask.utils.utils_general import return_dependencies
 from mycodo.utils.system_pi import csv_to_list_of_int
 from mycodo.utils.system_pi import list_to_csv
 
@@ -42,6 +43,11 @@ def math_add(form_add_math):
         if new_math.math_type == 'humidity':
             new_math.measure = 'humidity,humidity_ratio,specific_enthalpy,specific_volume'
             new_math.measure_units = '%'
+
+        unmet_deps = return_dependencies(form_add_math.math_type.data)
+        if unmet_deps:
+            error.append("The {dev} device you're trying to add has unmet dependencies: {dep}".format(
+                dev=form_add_math.math_type.data, dep=unmet_deps))
 
         try:
             new_math.save()

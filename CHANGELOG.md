@@ -3,6 +3,7 @@
 ### Features
 
  - Make install of WiringPi optional ([#412](https://github.com/kizniche/mycodo/issues/412))
+ - Make install of numpy optional ([#412](https://github.com/kizniche/mycodo/issues/412))
 
 
 ## 5.6.1 (2018-02-27)

@@ -13,8 +13,9 @@ from flask import redirect
 from flask import url_for
 from flask_babel import gettext
 
-from mycodo.config import LIST_DEVICES_ADC
 from mycodo.config import DEVICE_INFO
+from mycodo.config import LIST_DEVICES_ADC
+from mycodo.config import MATH_INFO
 from mycodo.config import MEASUREMENT_UNITS
 from mycodo.config import PATH_CAMERAS
 from mycodo.databases.models import Camera
@@ -453,23 +454,29 @@ def get_camera_image_info():
 def return_dependencies(device_type, dep_type='unmet'):
     unmet_deps = []
     met_deps = False
-    if device_type in DEVICE_INFO:
-        for each_device, each_dict in DEVICE_INFO[device_type].items():
-            if each_device == 'dependencies':
-                for each_dep in each_dict:
-                    try:
-                        module = importlib.util.find_spec(each_dep)
-                        if module is None:
+
+    list_dependencies = [
+        DEVICE_INFO,
+        MATH_INFO
+    ]
+    for each_section in list_dependencies:
+        if device_type in each_section:
+            for each_device, each_dict in each_section[device_type].items():
+                if each_device == 'py-dependencies':
+                    for each_dep in each_dict:
+                        try:
+                            module = importlib.util.find_spec(each_dep)
+                            if module is None:
+                                if each_dep not in unmet_deps:
+                                    unmet_deps.append(each_dep)
+                            else:
+                                met_deps = True
+                        except ImportError:
                             if each_dep not in unmet_deps:
                                 unmet_deps.append(each_dep)
-                        else:
-                            met_deps = True
-                    except ImportError:
-                        if each_dep not in unmet_deps:
-                            unmet_deps.append(each_dep)
 
-                if each_dict == []:
-                    met_deps = True
+                    if each_dict == []:
+                        met_deps = True
 
     if dep_type == 'unmet':
         return unmet_deps

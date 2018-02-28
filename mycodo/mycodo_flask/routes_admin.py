@@ -18,9 +18,10 @@ from pkg_resources import parse_version
 
 from mycodo.config import BACKUP_LOG_FILE
 from mycodo.config import BACKUP_PATH
+from mycodo.config import DEVICE_INFO
 from mycodo.config import FORCE_UPGRADE_MASTER
 from mycodo.config import INSTALL_DIRECTORY
-from mycodo.config import DEVICE_INFO
+from mycodo.config import MATH_INFO
 from mycodo.config import MYCODO_VERSION
 from mycodo.config import RESTORE_LOG_FILE
 from mycodo.config import STATS_CSV
@@ -149,27 +150,33 @@ def admin_dependencies(device):
     met_dependencies = []
     met_exist = False
     unmet_list = {}
-    for each_device in DEVICE_INFO:
-        # Determine if there are any unmet dependencies
-        unmet_dependencies.update({
-            each_device: utils_general.return_dependencies(each_device)
-        })
-        if utils_general.return_dependencies(each_device) != []:
-            unmet_exist = True
 
-        # Determine if there are any met dependencies
-        if utils_general.return_dependencies(each_device, dep_type='met'):
-            if each_device not in met_dependencies:
-                met_dependencies.append(each_device)
-                met_exist = True
+    list_dependencies = [
+        DEVICE_INFO,
+        MATH_INFO
+    ]
+    for each_section in list_dependencies:
+        for each_device in each_section:
+            # Determine if there are any unmet dependencies
+            unmet_dependencies.update({
+                each_device: utils_general.return_dependencies(each_device)
+            })
+            if utils_general.return_dependencies(each_device) != []:
+                unmet_exist = True
 
-        # Find all the devices that use each unmet dependency
-        if unmet_dependencies[each_device]:
-            for each_dep in unmet_dependencies[each_device]:
-                if each_dep not in unmet_list:
-                    unmet_list[each_dep] = []
-                if each_device not in unmet_list[each_dep]:
-                    unmet_list[each_dep].append(each_device)
+            # Determine if there are any met dependencies
+            if utils_general.return_dependencies(each_device, dep_type='met'):
+                if each_device not in met_dependencies:
+                    met_dependencies.append(each_device)
+                    met_exist = True
+
+            # Find all the devices that use each unmet dependency
+            if unmet_dependencies[each_device]:
+                for each_dep in unmet_dependencies[each_device]:
+                    if each_dep not in unmet_list:
+                        unmet_list[each_dep] = []
+                    if each_device not in unmet_list[each_dep]:
+                        unmet_list[each_dep].append(each_device)
 
     if request.method == 'POST':
         if not utils_general.user_has_permission('edit_controllers'):

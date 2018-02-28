@@ -11,7 +11,7 @@ fi
 # Required apt packages. This has only been tested with Raspbian for the
 # Raspberry Pi but should work with most debian-based systems.
 APT_PKGS="fswebcam gawk gcc git libav-tools libffi-dev libi2c-dev logrotate \
-          moreutils nginx python-setuptools python3 python3-dev python3-numpy \
+          moreutils nginx python-setuptools python3 python3-dev \
           python3-smbus sqlite3 wget"
 
 # Get the Mycodo root directory
@@ -353,6 +353,10 @@ case "${1:-''}" in
         else
             printf "#### Swap not currently set to 100 MB. Not changing.\n"
         fi
+    ;;
+    'install-numpy')
+        printf "\n#### Installing numpy\n"
+        apt-get install -y python3-numpy
     ;;
     'install-wiringpi')
         printf "\n#### Installing wiringpi\n"

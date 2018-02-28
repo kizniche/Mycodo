@@ -61,8 +61,9 @@ if [ "$INSTALL_TYPE" == "custom" ]; then
     DEP_STATUS=$(whiptail --title "Mycodo Install: Custom" \
                           --backtitle "Mycodo" \
                           --notags \
-                          --checklist "Dependencies to Install" \
-                          20 68 13 \
+                          --separate-output \
+                          --checklist "Dependencies to Install\n\nScroll down to view more dependencies available to install." \
+                          20 68 11 \
                           'Adafruit_ADS1x15' "Adafruit_ADS1x15" off \
                           'Adafruit_BME280' "Adafruit_BME280" off \
                           'Adafruit_BMP' "Adafruit_BMP" off \
@@ -70,6 +71,7 @@ if [ "$INSTALL_TYPE" == "custom" ]; then
                           'Adafruit_MCP3008' "Adafruit_MCP3008" off \
                           'Adafruit_TMP' "Adafruit_TMP" off \
                           'MCP342x' "MCP342x" off \
+                          'numpy' "numpy" off \
                           'pigpio' "pigpio" off \
                           'quick2wire' "quick2wire" off \
                           'sht_sensor' "sht_sensor" off \
@@ -161,37 +163,37 @@ function progress() {
     progress $MSG_STR
 
     if [ "$INSTALL_TYPE" == "custom" ]; then
-        for option in $DEP_STATUS
+        for dep in $DEP_STATUS
         do
-            option="${option%\"}"
-            option="${option#\"}"
-            if [ "$option" == "Adafruit_ADS1x15" ]; then
+            if [ "$dep" == "Adafruit_ADS1x15" ]; then
                 ${INSTALL_DEP} Adafruit_ADS1x15 >>${LOG_LOCATION} 2>&1
-            elif [ "$option" == "Adafruit_BME280" ]; then
+            elif [ "$dep" == "Adafruit_BME280" ]; then
                 ${INSTALL_DEP} Adafruit_BME280 >>${LOG_LOCATION} 2>&1
-            elif [ "$option" == "Adafruit_BMP" ]; then
+            elif [ "$dep" == "Adafruit_BMP" ]; then
                 ${INSTALL_DEP} Adafruit_BMP >>${LOG_LOCATION} 2>&1
-            elif [ "$option" == "Adafruit_GPIO" ]; then
+            elif [ "$dep" == "Adafruit_GPIO" ]; then
                 ${INSTALL_DEP} Adafruit_GPIO >>${LOG_LOCATION} 2>&1
-            elif [ "$option" == "Adafruit_MCP3008" ]; then
+            elif [ "$dep" == "Adafruit_MCP3008" ]; then
                 ${INSTALL_DEP} Adafruit_MCP3008 >>${LOG_LOCATION} 2>&1
-            elif [ "$option" == "Adafruit_TMP" ]; then
+            elif [ "$dep" == "Adafruit_TMP" ]; then
                 ${INSTALL_DEP} Adafruit_TMP >>${LOG_LOCATION} 2>&1
-            elif [ "$option" == "MCP342x" ]; then
+            elif [ "$dep" == "MCP342x" ]; then
                 ${INSTALL_DEP} MCP342x >>${LOG_LOCATION} 2>&1
-            elif [ "$option" == "pigpio" ]; then
+            elif [ "$dep" == "numpy" ]; then
+                ${INSTALL_DEP} numpy >>${LOG_LOCATION} 2>&1
+            elif [ "$dep" == "pigpio" ]; then
                 ${INSTALL_DEP} install-pigpiod >>${LOG_LOCATION} 2>&1
-            elif [ "$option" == "quick2wire" ]; then
+            elif [ "$dep" == "quick2wire" ]; then
                 ${INSTALL_DEP} quick2wire >>${LOG_LOCATION} 2>&1
-            elif [ "$option" == "sht_sensor" ]; then
+            elif [ "$dep" == "sht_sensor" ]; then
                 ${INSTALL_DEP} sht_sensor >>${LOG_LOCATION} 2>&1
-            elif [ "$option" == "tsl2561" ]; then
+            elif [ "$dep" == "tsl2561" ]; then
                 ${INSTALL_DEP} tsl2561 >>${LOG_LOCATION} 2>&1
-            elif [ "$option" == "tsl2591" ]; then
+            elif [ "$dep" == "tsl2591" ]; then
                 ${INSTALL_DEP} tsl2591 >>${LOG_LOCATION} 2>&1
-            elif [ "$option" == "w1thermsensor" ]; then
+            elif [ "$dep" == "w1thermsensor" ]; then
                 ${INSTALL_DEP} w1thermsensor >>${LOG_LOCATION} 2>&1
-            elif [ "$option" == "wiringpi" ]; then
+            elif [ "$dep" == "wiringpi" ]; then
                 ${INSTALL_DEP} wiringpi >>${LOG_LOCATION} 2>&1
             fi
         done
@@ -204,6 +206,7 @@ function progress() {
         ${INSTALL_DEP} Adafruit_MCP3008 >>${LOG_LOCATION} 2>&1
         ${INSTALL_DEP} Adafruit_TMP >>${LOG_LOCATION} 2>&1
         ${INSTALL_DEP} MCP342x >>${LOG_LOCATION} 2>&1
+        ${INSTALL_DEP} numpy >>${LOG_LOCATION} 2>&1
         ${INSTALL_DEP} install-pigpiod >>${LOG_LOCATION} 2>&1
         ${INSTALL_DEP} quick2wire >>${LOG_LOCATION} 2>&1
         ${INSTALL_DEP} sht_sensor >>${LOG_LOCATION} 2>&1
