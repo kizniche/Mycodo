@@ -76,6 +76,7 @@ if [ "$INSTALL_TYPE" == "custom" ]; then
                           'tsl2561' "tsl2561" off \
                           'tsl2591' "tsl2591" off \
                           'w1thermsensor' "w1thermsensor" off \
+                          'wiringpi' "WiringPi" off \
                           3>&1 1>&2 2>&3)
     exitstatus=$?
     if [ $exitstatus != 0 ]; then
@@ -143,9 +144,6 @@ function progress() {
     progress "Updating virtualenv pip"
     ${INSTALL_CMD} update-pip3 >>${LOG_LOCATION} 2>&1
 
-    progress "Installing WiringPi"
-    ${INSTALL_CMD} update-wiringpi >>${LOG_LOCATION} 2>&1
-
     progress "Installing base python packages in virtualenv"
     ${INSTALL_CMD} update-pip3-packages >>${LOG_LOCATION} 2>&1
 
@@ -193,6 +191,8 @@ function progress() {
                 ${INSTALL_DEP} tsl2591 >>${LOG_LOCATION} 2>&1
             elif [ "$option" == "w1thermsensor" ]; then
                 ${INSTALL_DEP} w1thermsensor >>${LOG_LOCATION} 2>&1
+            elif [ "$option" == "wiringpi" ]; then
+                ${INSTALL_DEP} wiringpi >>${LOG_LOCATION} 2>&1
             fi
         done
         ${INSTALL_CMD} update-permissions >>${LOG_LOCATION} 2>&1
@@ -210,6 +210,7 @@ function progress() {
         ${INSTALL_DEP} tsl2561 >>${LOG_LOCATION} 2>&1
         ${INSTALL_DEP} tsl2591 >>${LOG_LOCATION} 2>&1
         ${INSTALL_DEP} w1thermsensor >>${LOG_LOCATION} 2>&1
+        ${INSTALL_DEP} wiringpi >>${LOG_LOCATION} 2>&1
         ${INSTALL_CMD} update-permissions >>${LOG_LOCATION} 2>&1
     elif [ "$INSTALL_TYPE" == "minimum" ]; then
         ${INSTALL_CMD} enable-pigpiod-uninstalled

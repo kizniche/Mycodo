@@ -22,8 +22,6 @@ ${INSTALL_CMD} update-swap-size
 
 ${INSTALL_CMD} setup-virtualenv
 
-${INSTALL_CMD} update-wiringpi
-
 ${INSTALL_CMD} update-apt
 
 ${INSTALL_CMD} update-packages
@@ -70,6 +68,8 @@ do
             ${INSTALL_DEP} tsl2591
         elif [ "${ary[opt]}" == "w1thermsensor" ]; then
             ${INSTALL_DEP} w1thermsensor
+        elif [ "${ary[opt]}" == "wiringpi" ]; then
+            ${INSTALL_DEP} install-wiringpi
         else
             printf "\n#### No install candidate for ${ary[opt]}\n"
         fi

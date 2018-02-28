@@ -55,19 +55,16 @@
       </div>
     </div>
 
+  {%- if gpio_readall -%}
     <div style="padding-bottom: 1.5em">
       <div style="padding-bottom: 0.5em">
         General-Purpose Input/Output (GPIO) Pins: gpio readall
       </div>
       <div>
-        {%- if gpio_readall != "" -%}
-          <pre>{{gpio_readall}}</pre>
-        {%- else -%}
-{{_('Command "gpio" not found. Install gpio from the terminal with the following commands')}}:
-<pre>cd &amp;&amp; git clone git://git.drogon.net/wiringPi &amp;&amp; cd wiringPi &amp;&amp; ./build</pre>
-        {%- endif -%}
+        <pre>{{gpio_readall}}</pre>
       </div>
     </div>
+  {%- endif -%}
 
     {% for each_i2c_dev in i2c_devices_sorted %}
 

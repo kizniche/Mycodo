@@ -183,7 +183,7 @@ def output_mod(form_relay):
             mod_relay.trigger = bool(int(form_relay.trigger.data))
         elif mod_relay.relay_type == 'wireless_433MHz_pi_switch':
             if not is_int(form_relay.wiringpi_pin.data):
-                error.append("WiringPi Pin must be an integer")
+                error.append("Pin must be an integer")
             if not is_int(form_relay.protocol.data):
                 error.append("Protocol must be an integer")
             if not is_int(form_relay.pulse_length.data):

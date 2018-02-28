@@ -354,7 +354,7 @@ case "${1:-''}" in
             printf "#### Swap not currently set to 100 MB. Not changing.\n"
         fi
     ;;
-    'update-wiringpi')
+    'install-wiringpi')
         printf "\n#### Installing wiringpi\n"
         git clone git://git.drogon.net/wiringPi ${MYCODO_PATH}/install/wiringPi
         cd ${MYCODO_PATH}/install/wiringPi

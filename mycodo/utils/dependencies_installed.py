@@ -23,6 +23,9 @@ def get_installed_dependencies():
                         if each_dep not in met_deps:
                             met_deps.append(each_dep)
 
+    if os.path.exists('/usr/local/bin/gpio'):
+        met_deps.append('wiringpi')
+
     return (',').join(met_deps)
 
 

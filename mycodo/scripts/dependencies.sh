@@ -58,6 +58,9 @@ case "${1:-''}" in
     'w1thermsensor')
         ${INSTALL_CMD} install-pip-dependency w1thermsensor==1.0.5
     ;;
+    'wiringpi')
+        ${INSTALL_CMD} install-wiringpi
+    ;;
     *)
         printf "\nUnrecognized dependency: ${1}"
     ;;
