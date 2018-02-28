@@ -34,6 +34,7 @@ import RPi.GPIO as GPIO
 from sqlalchemy import and_
 from sqlalchemy import or_
 
+from mycodo.config import SQL_DATABASE_MYCODO
 from mycodo.databases.models import Camera
 from mycodo.databases.models import Conditional
 from mycodo.databases.models import ConditionalActions
@@ -43,12 +44,15 @@ from mycodo.databases.models import Math
 from mycodo.databases.models import Output
 from mycodo.databases.models import PID
 from mycodo.databases.models import SMTP
+from mycodo.databases.utils import session_scope
 from mycodo.devices.camera import camera_record
 from mycodo.mycodo_client import DaemonControl
 from mycodo.utils.database import db_retrieve_table_daemon
 from mycodo.utils.influx import read_last_influxdb
 from mycodo.utils.send_data import send_email
 from mycodo.utils.system_pi import cmd_output
+
+MYCODO_DB_PATH = 'sqlite:///' + SQL_DATABASE_MYCODO
 
 
 class ConditionalController(threading.Thread):
@@ -470,6 +474,11 @@ class ConditionalController(threading.Thread):
                 if pid.is_activated:
                     message += " Notice: PID is already active!"
                 else:
+                    with session_scope(MYCODO_DB_PATH) as new_session:
+                        mod_pid = new_session.query(PID).filter(
+                            PID.id == cond_action.do_pid_id).first()
+                        mod_pid.is_activated = True
+                        new_session.commit()
                     activate_pid = threading.Thread(
                         target=self.control.controller_activate,
                         args=('PID',
@@ -485,6 +494,11 @@ class ConditionalController(threading.Thread):
                 if not pid.is_activated:
                     message += " Notice: PID is already inactive!"
                 else:
+                    with session_scope(MYCODO_DB_PATH) as new_session:
+                        mod_pid = new_session.query(PID).filter(
+                            PID.id == cond_action.do_pid_id).first()
+                        mod_pid.is_activated = False
+                        new_session.commit()
                     deactivate_pid = threading.Thread(
                         target=self.control.controller_deactivate,
                         args=('PID',
@@ -499,7 +513,12 @@ class ConditionalController(threading.Thread):
                     PID, device_id=cond_action.do_pid_id, entry='first')
                 if not pid.is_paused:
                     message += " Notice: PID is not paused!"
-                else:
+                elif pid.is_activated:
+                    with session_scope(MYCODO_DB_PATH) as new_session:
+                        mod_pid = new_session.query(PID).filter(
+                            PID.id == cond_action.do_pid_id).first()
+                        mod_pid.is_paused = False
+                        new_session.commit()
                     resume_pid = threading.Thread(
                         target=self.control.pid_resume,
                         args=(cond_action.do_pid_id,))
@@ -513,7 +532,12 @@ class ConditionalController(threading.Thread):
                     PID, device_id=cond_action.do_pid_id, entry='first')
                 if pid.is_paused:
                     message += " Notice: PID is already paused!"
-                else:
+                elif pid.is_activated:
+                    with session_scope(MYCODO_DB_PATH) as new_session:
+                        mod_pid = new_session.query(PID).filter(
+                            PID.id == cond_action.do_pid_id).first()
+                        mod_pid.is_paused = True
+                        new_session.commit()
                     pause_pid = threading.Thread(
                         target=self.control.pid_pause,
                         args=(cond_action.do_pid_id,))

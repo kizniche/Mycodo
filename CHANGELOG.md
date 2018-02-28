@@ -4,6 +4,10 @@
 
  - Make install of WiringPi optional ([#412](https://github.com/kizniche/mycodo/issues/412))
  - Make install of numpy optional ([#412](https://github.com/kizniche/mycodo/issues/412))
+ 
+### Bugfixes
+
+ - Fix issues with PID Conditional Actions ([#416](https://github.com/kizniche/mycodo/issues/416))
 
 
 ## 5.6.1 (2018-02-27)
