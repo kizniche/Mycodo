@@ -8,6 +8,7 @@
 ### Bugfixes
 
  - Fix issues with PID Conditional Actions ([#416](https://github.com/kizniche/mycodo/issues/416))
+ - Fix display of last edge on Live page
 
 
 ## 5.6.1 (2018-02-27)

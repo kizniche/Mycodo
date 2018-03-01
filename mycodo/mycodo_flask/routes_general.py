@@ -132,7 +132,7 @@ def camera_img_latest_timelapse(camera_unique_id, max_age):
                                                      tl_ts[camera_unique_id])
             else:
                 return_values = '["max_age_exceeded"]'
-        except FileNotFoundError:
+        except OSError:
             return_values = '["file_not_found"]'
     else:
         return_values = '["file_not_found"]'
@@ -241,9 +241,13 @@ def last_data(input_measure, input_id, input_period):
     current_app.config['INFLUXDB_DATABASE'] = INFLUXDB_DATABASE
     dbcon = influx_db.connection
     try:
-        query_str = query_string(
-            input_measure, input_id, value='LAST',
-            past_sec=input_period)
+        if input_period != '0':
+            query_str = query_string(
+                input_measure, input_id, value='LAST',
+                past_sec=input_period)
+        else:
+            query_str = query_string(
+                input_measure, input_id, value='LAST')
         if query_str == 1:
             return '', 204
         raw_data = dbcon.query(query_str).raw
