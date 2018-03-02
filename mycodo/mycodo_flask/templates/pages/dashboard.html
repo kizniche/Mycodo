@@ -376,14 +376,14 @@ $(document).ready(function() {
 
   function print_pid_error(chart_number) {
     document.getElementById('container-pid-' + chart_number).className = "pause-background";
-    document.getElementById('setpoint-' + chart_number).innerHTML = 'ERROR';
-    document.getElementById('setpoint-timestamp-' + chart_number).innerHTML = 'ERROR';
-    document.getElementById('pid_p_value-' + chart_number).innerHTML = 'ERROR';
-    document.getElementById('pid_i_value-' + chart_number).innerHTML = 'ERROR';
-    document.getElementById('pid_d_value-' + chart_number).innerHTML = 'ERROR';
-    document.getElementById('pid_output-' + chart_number).innerHTML = 'ERROR';
-    document.getElementById('actual-' + chart_number).innerHTML = 'ERROR';
-    document.getElementById('actual-timestamp-' + chart_number).innerHTML = 'ERROR';
+    document.getElementById('setpoint-' + chart_number).innerHTML = 'ERR';
+    document.getElementById('setpoint-timestamp-' + chart_number).innerHTML = 'ERR';
+    document.getElementById('pid_p_value-' + chart_number).innerHTML = 'ERR';
+    document.getElementById('pid_i_value-' + chart_number).innerHTML = 'ERR';
+    document.getElementById('pid_d_value-' + chart_number).innerHTML = 'ERR';
+    document.getElementById('pid_output-' + chart_number).innerHTML = 'ERR';
+    document.getElementById('actual-' + chart_number).innerHTML = 'ERR';
+    document.getElementById('actual-timestamp-' + chart_number).innerHTML = 'ERR';
   }
 
   // Retrieve the latest/last measurement for gauges/outputs
@@ -397,13 +397,12 @@ $(document).ready(function() {
         else {
           if (data['activated']) {
             if (data['paused']) {
+              document.getElementById('container-pid-' + chart_number).className = "pause-background";
               document.getElementById('button-activate-' + chart_number).style.display = "none";
               document.getElementById('button-deactivate-' + chart_number).style.display = "block";
               document.getElementById('button-pause-' + chart_number).style.display = "none";
               document.getElementById('button-resume-' + chart_number).style.display = "block";
               document.getElementById('button-hold-' + chart_number).style.display = "none";
-
-              document.getElementById('container-pid-' + chart_number).className = "pause-background";
               print_pid_value(data, 'setpoint', chart_number, decimal_places, ' ' + units);
               document.getElementById('setpoint-timestamp-' + chart_number).innerHTML = 'PAUSED';
               print_pid_value(data, 'actual', chart_number, decimal_places, ' ' + units);
@@ -412,13 +411,12 @@ $(document).ready(function() {
               print_pid_value(data, 'pid_d_value', chart_number, 1, '');
               print_pid_value(data, 'pid_output', chart_number, 1, '');
             } else if (data['held']) {
+              document.getElementById('container-pid-' + chart_number).className = "pause-background";
               document.getElementById('button-activate-' + chart_number).style.display = "none";
               document.getElementById('button-deactivate-' + chart_number).style.display = "block";
               document.getElementById('button-pause-' + chart_number).style.display = "none";
               document.getElementById('button-resume-' + chart_number).style.display = "block";
               document.getElementById('button-hold-' + chart_number).style.display = "none";
-
-              document.getElementById('container-pid-' + chart_number).className = "pause-background";
               print_pid_value(data, 'setpoint', chart_number, decimal_places, ' ' + units);
               document.getElementById('setpoint-timestamp-' + chart_number).innerHTML = 'HELD';
               print_pid_value(data, 'actual', chart_number, decimal_places, ' ' + units);
@@ -427,13 +425,12 @@ $(document).ready(function() {
               print_pid_value(data, 'pid_d_value', chart_number, 1, '');
               print_pid_value(data, 'pid_output', chart_number, 1, '');
             } else {
+              document.getElementById('container-pid-' + chart_number).className = "active-background";
               document.getElementById('button-activate-' + chart_number).style.display = "none";
               document.getElementById('button-deactivate-' + chart_number).style.display = "block";
               document.getElementById('button-pause-' + chart_number).style.display = "block";
               document.getElementById('button-resume-' + chart_number).style.display = "none";
               document.getElementById('button-hold-' + chart_number).style.display = "block";
-
-              document.getElementById('container-pid-' + chart_number).className = "active-background";
               print_pid_value(data, 'setpoint', chart_number, decimal_places, ' ' + units);
               print_pid_value(data, 'actual', chart_number, decimal_places, ' ' + units);
               print_pid_value(data, 'pid_p_value', chart_number, 1, '');
@@ -442,13 +439,12 @@ $(document).ready(function() {
               print_pid_value(data, 'pid_output', chart_number, 1, '');
             }
           } else {
+            document.getElementById('container-pid-' + chart_number).className = "inactive-background";
             document.getElementById('button-activate-' + chart_number).style.display = "block";
             document.getElementById('button-deactivate-' + chart_number).style.display = "none";
             document.getElementById('button-pause-' + chart_number).style.display = "none";
             document.getElementById('button-resume-' + chart_number).style.display = "none";
             document.getElementById('button-hold-' + chart_number).style.display = "none";
-
-            document.getElementById('container-pid-' + chart_number).className = "inactive-background";
             document.getElementById('setpoint-' + chart_number).innerHTML = 'INACTIVE';
             document.getElementById('setpoint-timestamp-' + chart_number).innerHTML = 'INACTIVE';
             document.getElementById('pid_p_value-' + chart_number).innerHTML = '0';
