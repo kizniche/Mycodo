@@ -227,11 +227,6 @@ if ! ${INSTALL_DIRECTORY}/Mycodo/mycodo/scripts/upgrade_commands.sh update-alemb
   error_found
 fi
 
-if ! ${INSTALL_DIRECTORY}/Mycodo/mycodo/scripts/upgrade_commands.sh initialize ; then
-  printf "Failed: Error while running initialization.\n"
-  error_found
-fi
-
 printf "\nRunning post-upgrade script...\n"
 if ! ${INSTALL_DIRECTORY}/Mycodo/mycodo/scripts/upgrade_post.sh ; then
   printf "Failed: Error while running post-upgrade script.\n"
