@@ -611,6 +611,8 @@ def last_data_pid(input_id, input_period):
 
         live_data = {
             'activated': pid.is_activated,
+            'paused': pid.is_paused,
+            'held': pid.is_held,
             'setpoint': return_point_timestamp('setpoint', input_id, input_period),
             'pid_p_value': return_point_timestamp('pid_p_value', input_id, input_period),
             'pid_i_value': return_point_timestamp('pid_i_value', input_id, input_period),
@@ -645,6 +647,24 @@ def pid_mod_unique_id(unique_id, state):
         return return_str
     elif state == 'deactivate_pid':
         pid.is_activated = False
+        pid.is_paused = False
+        pid.is_held = False
         pid.save()
         return_val, return_str = daemon.controller_deactivate('PID', pid.id)
+        return return_str
+    elif state == 'pause_pid':
+        pid.is_paused = True
+        pid.save()
+        return_str = daemon.pid_pause(pid.id)
+        return return_str
+    elif state == 'hold_pid':
+        pid.is_held = True
+        pid.save()
+        return_str = daemon.pid_hold(pid.id)
+        return return_str
+    elif state == 'resume_pid':
+        pid.is_held = False
+        pid.is_paused = False
+        pid.save()
+        return_str = daemon.pid_resume(pid.id)
         return return_str

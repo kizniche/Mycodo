@@ -197,6 +197,24 @@ $(document).ready(function() {
     toastr['info']('Command sent to Deactivate PID');
     modPID(btn_val);
   });
+  $('.pause_pid').click(function() {
+    var btn_val = this.name;
+    var id = btn_val.split('/')[0];
+    toastr['info']('Command sent to Pause PID');
+    modPID(btn_val);
+  });
+  $('.hold_pid').click(function() {
+    var btn_val = this.name;
+    var id = btn_val.split('/')[0];
+    toastr['info']('Command sent to Hold PID');
+    modPID(btn_val);
+  });
+  $('.resume_pid').click(function() {
+    var btn_val = this.name;
+    var id = btn_val.split('/')[0];
+    toastr['info']('Command sent to Resume PID');
+    modPID(btn_val);
+  });
 });
 
 Highcharts.setOptions({
@@ -378,14 +396,58 @@ $(document).ready(function() {
         }
         else {
           if (data['activated']) {
-            document.getElementById('container-pid-' + chart_number).className = "active-background";
-            print_pid_value(data, 'setpoint', chart_number, decimal_places, ' ' + units);
-            print_pid_value(data, 'actual', chart_number, decimal_places, ' ' + units);
-            print_pid_value(data, 'pid_p_value', chart_number, 1, '');
-            print_pid_value(data, 'pid_i_value', chart_number, 1, '');
-            print_pid_value(data, 'pid_d_value', chart_number, 1, '');
-            print_pid_value(data, 'pid_output', chart_number, 1, '');
+            if (data['paused']) {
+              document.getElementById('button-activate-' + chart_number).style.display = "none";
+              document.getElementById('button-deactivate-' + chart_number).style.display = "block";
+              document.getElementById('button-pause-' + chart_number).style.display = "none";
+              document.getElementById('button-resume-' + chart_number).style.display = "block";
+              document.getElementById('button-hold-' + chart_number).style.display = "none";
+
+              document.getElementById('container-pid-' + chart_number).className = "pause-background";
+              print_pid_value(data, 'setpoint', chart_number, decimal_places, ' ' + units);
+              document.getElementById('setpoint-timestamp-' + chart_number).innerHTML = 'PAUSED';
+              print_pid_value(data, 'actual', chart_number, decimal_places, ' ' + units);
+              print_pid_value(data, 'pid_p_value', chart_number, 1, '');
+              print_pid_value(data, 'pid_i_value', chart_number, 1, '');
+              print_pid_value(data, 'pid_d_value', chart_number, 1, '');
+              print_pid_value(data, 'pid_output', chart_number, 1, '');
+            } else if (data['held']) {
+              document.getElementById('button-activate-' + chart_number).style.display = "none";
+              document.getElementById('button-deactivate-' + chart_number).style.display = "block";
+              document.getElementById('button-pause-' + chart_number).style.display = "none";
+              document.getElementById('button-resume-' + chart_number).style.display = "block";
+              document.getElementById('button-hold-' + chart_number).style.display = "none";
+
+              document.getElementById('container-pid-' + chart_number).className = "pause-background";
+              print_pid_value(data, 'setpoint', chart_number, decimal_places, ' ' + units);
+              document.getElementById('setpoint-timestamp-' + chart_number).innerHTML = 'HELD';
+              print_pid_value(data, 'actual', chart_number, decimal_places, ' ' + units);
+              print_pid_value(data, 'pid_p_value', chart_number, 1, '');
+              print_pid_value(data, 'pid_i_value', chart_number, 1, '');
+              print_pid_value(data, 'pid_d_value', chart_number, 1, '');
+              print_pid_value(data, 'pid_output', chart_number, 1, '');
+            } else {
+              document.getElementById('button-activate-' + chart_number).style.display = "none";
+              document.getElementById('button-deactivate-' + chart_number).style.display = "block";
+              document.getElementById('button-pause-' + chart_number).style.display = "block";
+              document.getElementById('button-resume-' + chart_number).style.display = "none";
+              document.getElementById('button-hold-' + chart_number).style.display = "block";
+
+              document.getElementById('container-pid-' + chart_number).className = "active-background";
+              print_pid_value(data, 'setpoint', chart_number, decimal_places, ' ' + units);
+              print_pid_value(data, 'actual', chart_number, decimal_places, ' ' + units);
+              print_pid_value(data, 'pid_p_value', chart_number, 1, '');
+              print_pid_value(data, 'pid_i_value', chart_number, 1, '');
+              print_pid_value(data, 'pid_d_value', chart_number, 1, '');
+              print_pid_value(data, 'pid_output', chart_number, 1, '');
+            }
           } else {
+            document.getElementById('button-activate-' + chart_number).style.display = "block";
+            document.getElementById('button-deactivate-' + chart_number).style.display = "none";
+            document.getElementById('button-pause-' + chart_number).style.display = "none";
+            document.getElementById('button-resume-' + chart_number).style.display = "none";
+            document.getElementById('button-hold-' + chart_number).style.display = "none";
+
             document.getElementById('container-pid-' + chart_number).className = "inactive-background";
             document.getElementById('setpoint-' + chart_number).innerHTML = 'INACTIVE';
             document.getElementById('setpoint-timestamp-' + chart_number).innerHTML = 'INACTIVE';

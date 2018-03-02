@@ -35,11 +35,20 @@
 
   <div class="clearfix" style="padding-top: 0.7em">
     <div class="col-xs-12 small-gutters">
-      <div class="col-xs-6 small-gutters">
+      <div id="button-activate-{{chart_number}}" class="col-xs-6 small-gutters">
         <input class="form-control btn btn-default activate_pid" id="activate_pid" name="{{each_graph.pid_ids}}/activate_pid" type="button" value="{{_('Activate')}}">
       </div>
-      <div class="col-xs-6 small-gutters">
+      <div id="button-deactivate-{{chart_number}}" class="col-xs-6 small-gutters">
         <input class="form-control btn btn-default deactivate_pid" id="deactivate_pid" name="{{each_graph.pid_ids}}/deactivate_pid" type="button" value="{{_('Deactivate')}}">
+      </div>
+      <div id="button-resume-{{chart_number}}" class="col-xs-6 small-gutters">
+        <input class="form-control btn btn-default resume_pid" id="resume_pid" name="{{each_graph.pid_ids}}/resume_pid" type="button" value="{{_('Resume')}}">
+      </div>
+      <div id="button-pause-{{chart_number}}" class="col-xs-3 small-gutters">
+        <input class="form-control btn btn-default pause_pid" id="pause_pid" name="{{each_graph.pid_ids}}/pause_pid" type="button" value="{{_('Pause')}}">
+      </div>
+      <div id="button-hold-{{chart_number}}" class="col-xs-3 small-gutters">
+        <input class="form-control btn btn-default hold_pid" id="hold_pid" name="{{each_graph.pid_ids}}/hold_pid" type="button" value="{{_('Hold')}}">
       </div>
     </div>
   </div>

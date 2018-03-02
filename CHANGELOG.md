@@ -4,6 +4,7 @@
 
  - Make install of WiringPi optional ([#412](https://github.com/kizniche/mycodo/issues/412))
  - Make install of numpy optional ([#412](https://github.com/kizniche/mycodo/issues/412))
+ - Add pause color and Pause/Hold/Resume buttons to PID Dashboard element options ([#416](https://github.com/kizniche/mycodo/issues/416))
  
 ### Bugfixes
 
