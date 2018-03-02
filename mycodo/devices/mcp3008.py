@@ -1,8 +1,10 @@
 # coding=utf-8
 import argparse
 import logging
+import time
 
 import Adafruit_MCP3008
+import fasteners
 
 
 class MCP3008Read(object):
@@ -15,6 +17,9 @@ class MCP3008Read(object):
         self._voltage = None
         self.channel = channel
 
+        self.lock_file = '/var/lock/mcp3008-{clock}-{cs}-{miso}-{mosi}-{chan}'.format(
+                clock=clockpin, cs=cspin, miso=misopin,
+                mosi=mosipin, chan=channel)
         self.adc = Adafruit_MCP3008.MCP3008(clk=clockpin,
                                             cs=cspin,
                                             miso=misopin,
@@ -22,13 +27,26 @@ class MCP3008Read(object):
 
     def read(self):
         """ Take a measurement """
+        self._voltage = None
+        lock_acquired = False
         try:
-            self._voltage = (self.adc.read_adc(self.channel) / 1023.0) * 3.3
+            lock = fasteners.InterProcessLock(self.lock_file)
+            for _ in range(600):
+                lock_acquired = lock.acquire(blocking=False)
+                if lock_acquired:
+                    break
+                else:
+                    time.sleep(0.1)
+
+            if lock_acquired:
+                self._voltage = (self.adc.read_adc(self.channel) / 1023.0) * 3.3
+                lock.release()
+            else:
+                self.logger.error("Could not acquire lock")
         except Exception as e:
             self.logger.exception(
                 "{cls} raised exception during read(): "
                 "{err}".format(cls=type(self).__name__, err=e))
-
             return 1
 
     @property
