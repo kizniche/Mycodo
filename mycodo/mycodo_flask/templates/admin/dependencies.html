@@ -4,7 +4,37 @@
 
 {% block title %} - {{_('Dependencies')}}{% endblock %}
 
-{% block head %}{% endblock %}
+{% block head %}
+  {% if install_in_progress == 1 %}
+<script>
+  var prev_string = '';
+  function check_dependency_status() {
+    var url = '/admin/dependency_status';
+    $.ajax(url, {
+      success: function(new_string, responseText, jqXHR) {
+        if (jqXHR.status !== 204) {
+          if (new_string !== prev_string) {
+            prev_string = new_string;
+            document.getElementById("dependency_status").innerHTML = new_string;
+            var objDiv = document.getElementById("dependency_status");
+            objDiv.scrollTop = objDiv.scrollHeight;
+          }
+        }
+        else {
+          document.getElementById("dependency_status").innerHTML = "Attempting to read the dependency log. Please wait...";
+        }
+      },
+      cache: false
+    });
+  }
+  check_dependency_status();
+  setInterval(function() {
+      check_dependency_status();
+    }, 5000
+  );
+</script>
+  {% endif %}
+{% endblock %}
 
 {%- block body %}
   <!-- Route: /dependencies -->
@@ -18,9 +48,25 @@
     <h2>Device: {{device}}</h2>
 
     {% if device_unmet_dependencies %}
+
+      {% if install_in_progress == 1 %}
+
+    <p>The install has been initiated for the following dependencies:</p>
+    <ul>
+    {% for each_dep in device_unmet_dependencies %}
+      <li>{{each_dep}}</li>
+    {% endfor %}
+    </ul>
+    <p>The Dependency Install Log below will refresh every 5 seconds. Wait until all dependencies have been installed to attempt to add the associated device again. You will know the entire install processes have completed by "#### All Dependencies have been installed." appearing at the end of the log.</p>
+    <p>If there's an issue with the install and you need to reset the install state, delete ~/Mycodo/.dependency to restore dependency install functionality.</p>
+
+    <pre style="overflow:auto; resize: vertical; height:400px" id="dependency_status"></pre>
+
+      {% else %}
+
     <p>There were unmet dependencies encountered when adding the following device: {{device}}</p>
     <p>The Unmet dependencies are the following python modules:</p>
-     <ul>
+    <ul>
     {% for each_dep in device_unmet_dependencies %}
       <li>{{each_dep}}</li>
     {% endfor %}
@@ -37,6 +83,9 @@
         </div>
       </div>
     </form>
+
+      {% endif %}
+
     {% else %}
     <p>All dependencies have been installed for this device.</p>
     {% endif %}

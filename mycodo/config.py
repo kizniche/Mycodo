@@ -464,6 +464,7 @@ MYCODO_DB_PATH = 'sqlite:///' + SQL_DATABASE_MYCODO
 
 # File paths/logging
 USAGE_REPORTS_PATH = os.path.join(INSTALL_DIRECTORY, 'relay_usage_reports')
+DEPENDENCY_INIT_FILE = os.path.join(INSTALL_DIRECTORY, '.dependency')
 UPGRADE_INIT_FILE = os.path.join(INSTALL_DIRECTORY, '.upgrade')
 BACKUP_PATH = '/var/Mycodo-backups'  # Where Mycodo backups are stored
 LOG_PATH = '/var/log/mycodo'  # Where generated logs are stored
@@ -471,6 +472,7 @@ LOGIN_LOG_FILE = os.path.join(LOG_PATH, 'login.log')
 DAEMON_LOG_FILE = os.path.join(LOG_PATH, 'mycodo.log')
 KEEPUP_LOG_FILE = os.path.join(LOG_PATH, 'mycodokeepup.log')
 BACKUP_LOG_FILE = os.path.join(LOG_PATH, 'mycodobackup.log')
+DEPENDENCY_LOG_FILE = os.path.join(LOG_PATH, 'mycododependency.log')
 UPGRADE_LOG_FILE = os.path.join(LOG_PATH, 'mycodoupgrade.log')
 RESTORE_LOG_FILE = os.path.join(LOG_PATH, 'mycodorestore.log')
 HTTP_ACCESS_LOG_FILE = '/var/log/nginx/access.log'

@@ -1,7 +1,9 @@
 # coding=utf-8
 """ collection of Admin endpoints """
+import datetime
 import logging
 import subprocess
+import threading
 from collections import OrderedDict
 
 import flask_login
@@ -18,6 +20,8 @@ from pkg_resources import parse_version
 
 from mycodo.config import BACKUP_LOG_FILE
 from mycodo.config import BACKUP_PATH
+from mycodo.config import DEPENDENCY_INIT_FILE
+from mycodo.config import DEPENDENCY_LOG_FILE
 from mycodo.config import DEVICE_INFO
 from mycodo.config import FORCE_UPGRADE_MASTER
 from mycodo.config import INSTALL_DIRECTORY
@@ -126,6 +130,47 @@ def admin_backup():
                            full_paths=full_paths)
 
 
+def install_dependencies(dependencies):
+    for each_dep in dependencies:
+        if each_dep == 'pigpio':
+            cmd = "{pth}/mycodo/scripts/mycodo_wrapper install_pigpio" \
+                  " | ts '[%Y-%m-%d %H:%M:%S]'" \
+                  " >> {log} 2>&1".format(pth=INSTALL_DIRECTORY,
+                                          log=DEPENDENCY_LOG_FILE)
+            dep = subprocess.Popen(cmd, shell=True)
+            dep.wait()
+            now = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            with open(DEPENDENCY_LOG_FILE, 'a') as f:
+                f.write("\n[{time}] Successfully installed {dep}\n\n".format(
+                    time=now, dep=each_dep))
+        else:
+            cmd = "{pth}/mycodo/scripts/mycodo_wrapper install_dependency {dep}" \
+                  " | ts '[%Y-%m-%d %H:%M:%S]' >> {log} 2>&1".format(
+                pth=INSTALL_DIRECTORY,
+                log=DEPENDENCY_LOG_FILE,
+                dep=each_dep)
+            dep = subprocess.Popen(cmd, shell=True)
+            dep.wait()
+            now = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            with open(DEPENDENCY_LOG_FILE, 'a') as f:
+                f.write("\n[{time}] Successfully installed {dep}\n\n".format(
+                    time=now, dep=each_dep))
+
+    cmd = "{pth}/mycodo/scripts/mycodo_wrapper update_permissions" \
+          " | ts '[%Y-%m-%d %H:%M:%S]' >> {log}  2>&1".format(
+        pth=INSTALL_DIRECTORY,
+        log=DEPENDENCY_LOG_FILE)
+    init = subprocess.Popen(cmd, shell=True)
+    init.wait()
+
+    now = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    with open(DEPENDENCY_LOG_FILE, 'a') as f:
+        f.write("\n[{time}] #### All Dependencies have been installed.\n\n".format(time=now))
+
+    with open(DEPENDENCY_INIT_FILE, 'w') as f:
+        f.write('0')
+
+
 @blueprint.route('/admin/dependencies', methods=('GET', 'POST'))
 @flask_login.login_required
 def admin_dependencies_main():
@@ -150,6 +195,22 @@ def admin_dependencies(device):
     met_dependencies = []
     met_exist = False
     unmet_list = {}
+    install_in_progress = False
+
+    # Read from the dependency status file created by the upgrade script
+    # to indicate if the upgrade is running.
+    try:
+        with open(DEPENDENCY_INIT_FILE) as f:
+            dep = int(f.read(1))
+    except IOError:
+        try:
+            with open(DEPENDENCY_INIT_FILE, 'w') as f:
+                f.write('0')
+        finally:
+            dep = 0
+
+    if dep:
+        install_in_progress = True
 
     list_dependencies = [
         DEVICE_INFO,
@@ -183,42 +244,51 @@ def admin_dependencies(device):
             return redirect(url_for('routes_admin.admin_dependencies', device=device))
 
         if form_dependencies.install.data:
-            for each_dep in device_unmet_dependencies:
-                if each_dep == 'pigpio':
-                    cmd = "{pth}/mycodo/scripts/mycodo_wrapper install_pigpio" \
-                          " | ts '[%Y-%m-%d %H:%M:%S]'" \
-                          " >> {log} 2>&1".format(pth=INSTALL_DIRECTORY,
-                                                  log=UPGRADE_LOG_FILE)
-                    dep = subprocess.Popen(cmd, shell=True)
-                    dep.wait()
-                    flash("Successfully installed {dep}".format(dep=each_dep), "success")
-                else:
-                    cmd = "{pth}/mycodo/scripts/mycodo_wrapper install_dependency {dep}" \
-                          " | ts '[%Y-%m-%d %H:%M:%S]' 2>&1".format(
-                        pth=INSTALL_DIRECTORY,
-                        dep=each_dep)
-                    flash("Successfully installed {dep}".format(dep=each_dep), "success")
-                    dep = subprocess.Popen(cmd, shell=True)
-                    dep.wait()
+            install_in_progress = True
+            with open(DEPENDENCY_INIT_FILE, 'w') as f:
+                f.write('1')
 
-            cmd = "{pth}/mycodo/scripts/mycodo_wrapper update_permissions" \
-                  " | ts '[%Y-%m-%d %H:%M:%S]' 2>&1".format(
-                pth=INSTALL_DIRECTORY)
-            init = subprocess.Popen(cmd, shell=True)
-            init.wait()
+            # from multiprocessing.pool import ThreadPool
+            # pool = ThreadPool(processes=1)
+            # result = pool.apply_async(install_dependencies, (device_unmet_dependencies))
 
-        return redirect(url_for('routes_admin.admin_dependencies', device='0'))
+            install_deps = threading.Thread(
+                target=install_dependencies,
+                args=(device_unmet_dependencies,))
+            install_deps.start()
+
+        return redirect(url_for('routes_admin.admin_dependencies', device=device))
 
     return render_template('admin/dependencies.html',
                            measurements=DEVICE_INFO,
                            unmet_list=unmet_list,
                            device=device,
+                           install_in_progress=install_in_progress,
                            unmet_dependencies=unmet_dependencies,
                            unmet_exist=unmet_exist,
                            met_dependencies=met_dependencies,
                            met_exist=met_exist,
                            form_dependencies=form_dependencies,
                            device_unmet_dependencies=device_unmet_dependencies)
+
+
+@blueprint.route('/admin/dependency_status', methods=('GET', 'POST'))
+@flask_login.login_required
+def admin_dependency_status():
+    """ Return the last 30 lines of the dependency log """
+    if os.path.isfile(DEPENDENCY_LOG_FILE):
+        command = 'tail -n 40 {log}'.format(log=DEPENDENCY_LOG_FILE)
+        log = subprocess.Popen(
+            command, stdout=subprocess.PIPE, shell=True)
+        (log_output, _) = log.communicate()
+        log.wait()
+        log_output = log_output.decode("utf-8")
+    else:
+        log_output = 'Dependency log not found. If a dependency install was ' \
+                     'just initialized, please wait...'
+    response = make_response(log_output)
+    response.headers["content-type"] = "text/plain"
+    return response
 
 
 @blueprint.route('/admin/statistics', methods=('GET', 'POST'))

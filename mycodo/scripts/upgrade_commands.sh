@@ -56,6 +56,9 @@ case "${1:-''}" in
         if [ ! -e /var/log/mycodo/mycodokeepup.log ]; then
             touch /var/log/mycodo/mycodokeepup.log
         fi
+        if [ ! -e /var/log/mycodo/mycododependency.log ]; then
+            touch /var/log/mycodo/mycododependency.log
+        fi
         if [ ! -e /var/log/mycodo/mycodoupgrade.log ]; then
             touch /var/log/mycodo/mycodoupgrade.log
         fi

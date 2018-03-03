@@ -28,7 +28,7 @@
   check_upgrade_status();
   setInterval(function() {
       check_upgrade_status();
-    }, 10000
+    }, 5000
   );
 </script>
 {% endif %}
@@ -55,7 +55,7 @@ sudo /bin/bash ~/upgrade_mycodo_5.sh</pre>
       <p>{{_('Mycodo is currently in the process of an upgrade')}}</p>
       <p>{{_('If an upgrade is not currently in progress, you may delete the ~/Mycodo/.upgrade file to be able to reinitiate the upgrade process.')}}</p>
       <p>{{_('An upgrade often takes several minutes, and in some cases longer, to complete. Give the process ample time to run before doing anything. When the upgrade has successfully finished, the daemon status indicator at the top left will change from red to green. You can monitor the upgrade progress with the live log view, below, by navigating to Configure -> Mycodo Logs -> Upgrade Log, or by opening /var/log/mycodo/mycodoupgrade.log.')}}</p>
-      <p>{{_('Below are the last 40 lines of the upgrade log, updated every 10 seconds. If an error occurs, it is advisable to inspect the entire log in order to diagnose the issue.')}}</p>
+      <p>{{_('Below are the last 40 lines of the upgrade log, updated every 5 seconds. If an error occurs, it is advisable to inspect the entire log in order to diagnose the issue.')}}</p>
     </div>
     <pre style="overflow:auto; resize: vertical; height:400px" id="upgrade_status"></pre>
 
