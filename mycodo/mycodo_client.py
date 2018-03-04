@@ -173,7 +173,7 @@ def parseargs(parser):
                         help='Pause PID controller.',
                         required=False)
     parser.add_argument('--pid_hold', nargs=1,
-                        metavar=('CONTROLLER', 'ID'), type=str,
+                        metavar=('ID'), type=str,
                         help='Hold PID controller.',
                         required=False)
     parser.add_argument('--pid_resume', nargs=1,
