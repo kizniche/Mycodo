@@ -65,6 +65,9 @@ int main(int argc, char *argv[]) {
 		} else if (strcmp(argv[1], "frontend_reload") == 0) {
 			sprintf(cmd, "service mycodoflask reload");
 			system(cmd);
+        } else if (strcmp(argv[1], "frontend_restart") == 0) {
+			sprintf(cmd, "service mycodoflask restart");
+			system(cmd);
         } else if (strcmp(argv[1], "influxdb_restart") == 0) {
 			sprintf(cmd, "service influxdb restart");
 			system(cmd);
@@ -114,11 +117,10 @@ int main(int argc, char *argv[]) {
 			upgrade_commands(argv[0], "upgrade-master");
 		}
 	} else {
-		printf("mycodo-wrapper: A wrapper to allow the mycodo web interface\n");
-		printf("                to stop and start the daemon and update the\n");
-		printf("                mycodo system to the latest version.\n\n");
-		printf("Usage: mycodo-wrapper start|restart|debug|update|restore [commit]\n\n");
-		printf("Options:\n");
+		printf("Mycodo Wrapper: A wrapper to allow the mycodo web interface\n");
+		printf("                to perform superuser actions.\n\n");
+		printf("Usage: mycodo_wrapper [command]\n\n");
+		printf("Commands:\n");
         printf("   backup-create:              Create Mycodo backup\n");
 		printf("   backup-delete [DIRECTORY]:  Delete Mycodo backup [DIRECTORY]\n");
 		printf("   backup-restore [DIRECTORY]: Restore Mycodo from backup [DIRECTORY]\n");
@@ -126,6 +128,13 @@ int main(int argc, char *argv[]) {
 		printf("   daemon_restart_debug:       Restart the mycodo daemon in debug mode\n");
 		printf("   daemon_start:               Start the mycodo daemon\n");
 		printf("   daemon_stop:                Stop the mycodo daemon\n");
+		printf("   frontend_reload:            Reload the mycodo frontend\n");
+		printf("   frontend_restart:           Restart the mycodo frontend\n");
+		printf("   influxdb_start:             Start influxdb\n");
+		printf("   influxdb_stop:              Stop influxdb\n");
+		printf("   influxdb_restart:           Restart influxdb\n");
+		printf("   initialize:                 Run the Mycodo initialization sequence\n");
+		printf("   update_permissions:         Set the Mycodo file/folder permissions\n");
 		printf("   restart:                    Restart the computer after a 10 second pause\n");
 		printf("   shutdown:                   Shutdown the computer after a 10 second pause\n");
 		printf("   upgrade:                    Upgrade Mycodo to the latest version on github\n");

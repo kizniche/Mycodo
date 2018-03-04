@@ -25,6 +25,8 @@ from mycodo.config import BACKUP_LOG_FILE
 from mycodo.config import CONDITIONAL_ACTIONS
 from mycodo.config import DAEMON_LOG_FILE
 from mycodo.config import DAEMON_PID_FILE
+from mycodo.config import DEPENDENCY_LOG_FILE
+from mycodo.config import DEVICE_INFO
 from mycodo.config import FRONTEND_PID_FILE
 from mycodo.config import HTTP_ACCESS_LOG_FILE
 from mycodo.config import HTTP_ERROR_LOG_FILE
@@ -33,7 +35,6 @@ from mycodo.config import KEEPUP_LOG_FILE
 from mycodo.config import LIST_DEVICES_ADC
 from mycodo.config import LIST_DEVICES_I2C
 from mycodo.config import LOGIN_LOG_FILE
-from mycodo.config import DEVICE_INFO
 from mycodo.config import MEASUREMENT_UNITS
 from mycodo.config import RESTORE_LOG_FILE
 from mycodo.config import UPGRADE_LOG_FILE
@@ -797,6 +798,8 @@ def page_logview():
             logfile = HTTP_ACCESS_LOG_FILE
         elif form_log_view.loghttp_error.data:
             logfile = HTTP_ERROR_LOG_FILE
+        elif form_log_view.logdependency.data:
+            logfile = DEPENDENCY_LOG_FILE
         elif form_log_view.logdaemon.data:
             logfile = DAEMON_LOG_FILE
         elif form_log_view.logkeepup.data:

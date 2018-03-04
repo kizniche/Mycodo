@@ -131,6 +131,11 @@ def admin_backup():
 
 
 def install_dependencies(dependencies):
+    now = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    with open(DEPENDENCY_LOG_FILE, 'a') as f:
+        f.write("\n[{time}] Dependency installation beginning. Installing: {deps}\n\n".format(
+            time=now, deps=",".join(dependencies)))
+
     for each_dep in dependencies:
         if each_dep == 'pigpio':
             cmd = "{pth}/mycodo/scripts/mycodo_wrapper install_pigpio" \
@@ -157,6 +162,13 @@ def install_dependencies(dependencies):
                     time=now, dep=each_dep))
 
     cmd = "{pth}/mycodo/scripts/mycodo_wrapper update_permissions" \
+          " | ts '[%Y-%m-%d %H:%M:%S]' >> {log}  2>&1".format(
+        pth=INSTALL_DIRECTORY,
+        log=DEPENDENCY_LOG_FILE)
+    init = subprocess.Popen(cmd, shell=True)
+    init.wait()
+
+    cmd = "{pth}/mycodo/scripts/mycodo_wrapper frontend_restart" \
           " | ts '[%Y-%m-%d %H:%M:%S]' >> {log}  2>&1".format(
         pth=INSTALL_DIRECTORY,
         log=DEPENDENCY_LOG_FILE)
@@ -247,11 +259,6 @@ def admin_dependencies(device):
             install_in_progress = True
             with open(DEPENDENCY_INIT_FILE, 'w') as f:
                 f.write('1')
-
-            # from multiprocessing.pool import ThreadPool
-            # pool = ThreadPool(processes=1)
-            # result = pool.apply_async(install_dependencies, (device_unmet_dependencies))
-
             install_deps = threading.Thread(
                 target=install_dependencies,
                 args=(device_unmet_dependencies,))

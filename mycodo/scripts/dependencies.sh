@@ -19,7 +19,7 @@ case "${1:-''}" in
         ${INSTALL_CMD} install-pip-dependency Adafruit_ADS1x15
     ;;
     'Adafruit_BME280')
-        ${INSTALL_DIRECTORY}/env/bin/pip3 install -e git://github.com/adafruit/Adafruit_Python_BME280.git#egg=adafruit-bme280
+        ${INSTALL_DIRECTORY}/env/bin/pip3 install -e git://github.com/adafruit/Adafruit_Python_BME280.git#egg=adafruit-bme280 --upgrade
     ;;
     'Adafruit_BMP')
         ${INSTALL_CMD} install-pip-dependency Adafruit_BMP
@@ -56,7 +56,7 @@ case "${1:-''}" in
         ${INSTALL_CMD} install-pip-dependency tsl2561
     ;;
     'tsl2591')
-        ${INSTALL_DIRECTORY}/env/bin/pip3 install -e git://github.com/maxlklaxl/python-tsl2591.git#egg=tsl2591
+        ${INSTALL_DIRECTORY}/env/bin/pip3 install -e git://github.com/maxlklaxl/python-tsl2591.git#egg=tsl2591 --upgrade
     ;;
     'w1thermsensor')
         ${INSTALL_CMD} install-pip-dependency w1thermsensor==1.0.5
