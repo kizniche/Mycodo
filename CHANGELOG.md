@@ -7,6 +7,7 @@
  - Add pause color and Pause/Hold/Resume buttons to PID Dashboard element options ([#416](https://github.com/kizniche/mycodo/issues/416))
  - Display a log when installing dependencies to follow the progress
  - Add Dependency Install Log to the Log page
+ - Add mycodo_client.py user commands: pid_pause, pid_hold, pid_resume
  
 ### Bugfixes
 

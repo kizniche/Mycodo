@@ -162,11 +162,23 @@ def timeout_handler(signum, frame):  # Custom signal handler
 def parseargs(parser):
     parser.add_argument('--activatecontroller', nargs=2,
                         metavar=('CONTROLLER', 'ID'), type=str,
-                        help='Activate controller. Options: LCD, PID, Input, Timer',
+                        help='Activate controller. Options: LCD, Math, PID, Input, Timer',
                         required=False)
     parser.add_argument('--deactivatecontroller', nargs=2,
                         metavar=('CONTROLLER', 'ID'), type=str,
-                        help='Deactivate controller. Options: LCD, PID, Input, Timer',
+                        help='Deactivate controller. Options: LCD, Math, PID, Input, Timer',
+                        required=False)
+    parser.add_argument('--pid_pause', nargs=1,
+                        metavar=('ID'), type=str,
+                        help='Pause PID controller.',
+                        required=False)
+    parser.add_argument('--pid_hold', nargs=1,
+                        metavar=('CONTROLLER', 'ID'), type=str,
+                        help='Hold PID controller.',
+                        required=False)
+    parser.add_argument('--pid_resume', nargs=1,
+                        metavar=('ID'), type=str,
+                        help='Resume PID controller.',
                         required=False)
     parser.add_argument('-c', '--checkdaemon', action='store_true',
                         help="Check if all active daemon controllers are running")
@@ -223,9 +235,9 @@ if __name__ == "__main__":
                         msg=return_msg))
 
     elif args.activatecontroller:
-        if args.activatecontroller[0] not in ['LCD', 'Log', 'PID',
+        if args.activatecontroller[0] not in ['LCD', 'Math', 'PID',
                                               'Input', 'Timer']:
-            logger.info("Invalid controller type. Options are LCD, Log, PID, "
+            logger.info("Invalid controller type. Options are LCD, Math, PID, "
                         "Input, and Timer.")
         else:
             return_msg = daemon_control.controller_activate(
@@ -237,9 +249,9 @@ if __name__ == "__main__":
                             msg=return_msg))
 
     elif args.deactivatecontroller:
-        if args.deactivatecontroller[0] not in ['LCD', 'Log', 'PID',
+        if args.deactivatecontroller[0] not in ['LCD', 'Math', 'PID',
                                                 'Input', 'Timer']:
-            logger.info("Invalid controller type. Options are LCD, Log, PID, "
+            logger.info("Invalid controller type. Options are LCD, Math, PID, "
                         "Input, and Timer.")
         else:
             return_msg = daemon_control.controller_deactivate(
@@ -249,6 +261,15 @@ if __name__ == "__main__":
                             type=args.deactivatecontroller[0],
                             id=args.deactivatecontroller[1],
                             msg=return_msg))
+
+    elif args.pid_pause:
+        daemon_control.pid_pause(args.pid_pause[0])
+
+    elif args.pid_hold:
+        daemon_control.pid_pause(args.pid_pause[0])
+
+    elif args.pid_resume:
+        daemon_control.pid_pause(args.pid_pause[0])
 
     elif args.terminate:
         logger.info("[Remote command] Terminate daemon...")
