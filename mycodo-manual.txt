@@ -1089,13 +1089,6 @@ Edge Conditional Statement If Options
                         volts) or Falling when the state changes from
                         HIGH (3.3 volts) to LOW (0 volts), or Both
                         (Rising and Falling).
-
-  GPIO State            The conditional will trigger if the GPIO state
-                        of HIGH (3.3 volts) or LOW (0 volts) is
-                        detected every Period.
-
-  Period (seconds)      If GPIO State is selected, how often to check
-                        the state of the GPIO.
   ---------------------------------------------------------------------
 
 Conditional Statement Actions
@@ -1112,6 +1105,12 @@ Conditional Statement Actions
   Activate PID          Activate a particular PID controller.
 
   Deactivate PID        Deactivate a particular PID controller.
+
+  Pause PID             Pause a particular PID controller.
+
+  Hold PID              Hold a particular PID controller.
+
+  Resume PID            Resume a particular PID controller.
 
   Email                 Send an email containing information about the
                         current condition that triggered the

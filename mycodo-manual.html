@@ -1269,14 +1269,6 @@
 <td style="text-align: left;">Edge Detected</td>
 <td style="text-align: left;">The conditional will be triggered if a change in state is detected, either Rising when the state changes from LOW (0 volts) to HIGH (3.5 volts) or Falling when the state changes from HIGH (3.3 volts) to LOW (0 volts), or Both (Rising and Falling).</td>
 </tr>
-<tr class="even">
-<td style="text-align: left;">GPIO State</td>
-<td style="text-align: left;">The conditional will trigger if the GPIO state of HIGH (3.3 volts) or LOW (0 volts) is detected every Period.</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">Period (seconds)</td>
-<td style="text-align: left;">If GPIO State is selected, how often to check the state of the GPIO.</td>
-</tr>
 </tbody>
 </table>
 <h4 id="conditional-statement-actions">Conditional Statement Actions</h4>
@@ -1309,26 +1301,38 @@
 <td style="text-align: left;">Deactivate a particular PID controller.</td>
 </tr>
 <tr class="odd">
+<td style="text-align: left;">Pause PID</td>
+<td style="text-align: left;">Pause a particular PID controller.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Hold PID</td>
+<td style="text-align: left;">Hold a particular PID controller.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Resume PID</td>
+<td style="text-align: left;">Resume a particular PID controller.</td>
+</tr>
+<tr class="even">
 <td style="text-align: left;">Email</td>
 <td style="text-align: left;">Send an email containing information about the current condition that triggered the conditional to send the email.</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td style="text-align: left;">Flash LCD</td>
 <td style="text-align: left;">Have an LCD screen begin flashing in order to alert.</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td style="text-align: left;">Photo</td>
 <td style="text-align: left;">Capture a photo with the selected camera.</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td style="text-align: left;">Email Photo</td>
 <td style="text-align: left;">Capture a photo and email it as an attachment to the an email address.</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td style="text-align: left;">Video</td>
 <td style="text-align: left;">Capture a video of a set duration with the selected camera.</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td style="text-align: left;">Email Video</td>
 <td style="text-align: left;">Capture a video and email it as an attachment to the an email address.</td>
 </tr>

@@ -519,8 +519,6 @@ Duration (seconds) | If "On" is selected, a optional duration (seconds) may be s
 Setting | Description
 -------------------- | ----------------------------------------------
 Edge Detected | The conditional will be triggered if a change in state is detected, either Rising when the state changes from LOW (0 volts) to HIGH (3.5 volts) or Falling when the state changes from HIGH (3.3 volts) to LOW (0 volts), or Both (Rising and Falling).
-GPIO State | The conditional will trigger if the GPIO state of HIGH (3.3 volts) or LOW (0 volts) is detected every Period.
-Period (seconds) | If GPIO State is selected, how often to check the state of the GPIO.
 
 #### Conditional Statement Actions
 
@@ -530,6 +528,9 @@ Output | Turn a output on, off, or on for a duration of time.
 Command | Execute a command in the linux shell (as user mycodo).
 Activate PID | Activate a particular PID controller.
 Deactivate PID | Deactivate a particular PID controller.
+Pause PID | Pause a particular PID controller.
+Hold PID | Hold a particular PID controller.
+Resume PID | Resume a particular PID controller.
 Email | Send an email containing information about the current condition that triggered the conditional to send the email.
 Flash LCD | Have an LCD screen begin flashing in order to alert.
 Photo | Capture a photo with the selected camera.
