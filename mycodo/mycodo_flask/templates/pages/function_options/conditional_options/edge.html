@@ -22,12 +22,6 @@
       </select>
     </div>
   </div>
-  <div class="col-xs-2 col-sm-1 text-right">
-    <label class='control-label' style="padding-top: 1em"></label>
-    <div>
-      <input id="if_sensor_edge_select_0" name="if_sensor_edge_select" type="radio" value="edge" {% if each_cond.if_sensor_edge_select == 'edge' %} checked{% endif %}> <span style="font-size: 1.75em">&#8680;</span>
-    </div>
-  </div>
   <div class="col-xs-10 col-sm-3 col-md-2">
     {{form_conditional.if_sensor_edge_detected.label(class_='control-label')}}
     <div>
@@ -37,30 +31,6 @@
         <option value="falling"{% if each_cond.if_sensor_edge_detected == 'falling' %} selected{% endif %}>{{_('Falling')}}</option>
         <option value="both"{% if each_cond.if_sensor_edge_detected == 'both' %} selected{% endif %}>{{_('Both')}}</option>
       </select>
-    </div>
-  </div>
-
-  <div class="col-xs-2 col-sm-1 text-right">
-    <label class='control-label' style="padding-top: 1em"></label>
-    <div>
-      <input id="if_sensor_edge_select_1" name="if_sensor_edge_select" type="radio" value="state" {% if each_cond.if_sensor_edge_select == 'state' %} checked{% endif %}> <span style="font-size: 1.75em">&#8680;</span>
-    </div>
-  </div>
-  <div class="col-xs-10 col-sm-3 col-md-2">
-    {{form_conditional.if_sensor_gpio_state.label(class_='control-label')}}
-    <div>
-      <select class="form-control form-tooltip form-dropdown" data-placement="top" id="if_sensor_gpio_state" name="if_sensor_gpio_state">
-        <option value=""></option>
-        <option value="1"{% if each_cond.if_sensor_gpio_state == 1 %} selected{% endif %}>{{_('HIGH (3.3 volts)')}}</option>
-        <option value="0"{% if each_cond.if_sensor_gpio_state == 0 %} selected{% endif %}>{{_('LOW (0 volts)')}}</option>
-      </select>
-    </div>
-  </div>
-
-  <div class="col-xs-6 col-sm-3 col-md-2">
-    {{form_conditional.if_sensor_period.label(class_='control-label')}}
-    <div>
-      {{form_conditional.if_sensor_period(class_='form-control', value=each_cond.if_sensor_period, **{'title':_('The duration (seconds) between checking whether the conditional is true'), 'size':'3'})}}
     </div>
   </div>
 </div>

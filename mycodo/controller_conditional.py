@@ -154,16 +154,8 @@ class ConditionalController(threading.Thread):
         self.timer = {}
         self.smtp_wait_timer = {}
 
-        # Only check edge (state only) and measurement conditionals
-        # 'output' conditionals are checked in the Output Controller
-        edge_with_state = and_(
-            Conditional.conditional_type == 'conditional_edge',
-            Conditional.if_sensor_edge_select == 'state')
-
         conditional = db_retrieve_table_daemon(
-            Conditional).filter(
-            or_(Conditional.conditional_type == 'conditional_measurement',
-                edge_with_state)).all()
+            Conditional).filter(Conditional.conditional_type == 'conditional_measurement').all()
 
         for each_cond in conditional:
             self.is_activated[each_cond.id] = each_cond.is_activated

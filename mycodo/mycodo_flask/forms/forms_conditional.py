@@ -36,9 +36,7 @@ class Conditional(FlaskForm):
     if_sensor_max_age = IntegerField(lazy_gettext('Max Age (seconds)'))
 
     # Edge detection
-    if_sensor_edge_select = StringField(lazy_gettext('Edge or State'))
     if_sensor_edge_detected = StringField(lazy_gettext('Edge Detected'))
-    if_sensor_gpio_state = IntegerField(lazy_gettext('GPIO State'))
 
     add_cond = SubmitField(lazy_gettext('Add Conditional'))
     save_cond = SubmitField(lazy_gettext('Save'))

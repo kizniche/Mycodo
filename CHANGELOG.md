@@ -18,6 +18,7 @@
 ### Miscellaneous
 
  - Remove redundant upgrade commands ([#412](https://github.com/kizniche/mycodo/issues/412))
+ - Remove GPIO State from Edge Conditional (use Measurement Conditional) ([#416](https://github.com/kizniche/mycodo/issues/416))
 
 
 ## 5.6.1 (2018-02-27)

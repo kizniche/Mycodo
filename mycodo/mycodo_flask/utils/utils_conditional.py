@@ -38,9 +38,7 @@ def conditional_mod(form):
             error = check_form_edge(form, error)
 
             cond_mod.if_sensor_measurement = form.if_sensor_measurement.data
-            cond_mod.if_sensor_edge_select = form.if_sensor_edge_select.data
             cond_mod.if_sensor_edge_detected = form.if_sensor_edge_detected.data
-            cond_mod.if_sensor_gpio_state = form.if_sensor_gpio_state.data
             cond_mod.if_sensor_period = form.if_sensor_period.data
 
         elif cond_mod.conditional_type == 'conditional_measurement':
@@ -434,28 +432,6 @@ def check_form_edge(form, error):
         error.append("{meas} must be set".format(
             meas=form.if_sensor_measurement.label.text))
 
-    if (form.if_sensor_edge_select.data == 'edge' and
-            not form.if_sensor_edge_detected.data):
-        error.append("If the {edge} radio button is selected,"
-                     " {edge} must be set".format(
-            edge=form.if_sensor_edge_detected.label.text))
-
-    if (form.if_sensor_edge_select.data == 'state' and
-            form.if_sensor_gpio_state.data is None):
-        error.append("If the {gpio} radio button is selected,"
-                     " {gpio} must be set".format(
-            gpio=form.if_sensor_gpio_state.label.text))
-
-    if (form.if_sensor_edge_select.data == 'state' and
-            form.if_sensor_period.data <= 0):
-        error.append("If the {state} radio button is selected,"
-                     " {per} must be greater than 1".format(
-            state=form.if_sensor_gpio_state.label.text,
-            per=form.if_sensor_period.label.text))
-
-    if form.if_sensor_edge_select.data not in ['state', 'edge']:
-        error.append("A radio button selection must be made")
-
     return error
 
 
@@ -463,24 +439,6 @@ def check_cond_edge(cond, error):
     """Checks if the saved variables have any errors"""
     if not cond.if_sensor_measurement or cond.if_sensor_measurement == '':
         error.append("Measurement must be set")
-
-    if (cond.if_sensor_edge_select == 'edge' and
-            not cond.if_sensor_edge_detected):
-        error.append("If the Edge Detected radio button is selected,"
-                     " Edge Detected must be set")
-
-    if (cond.if_sensor_edge_select == 'state' and
-            cond.if_sensor_gpio_state is None):
-        error.append("If the GPIO State radio button is selected,"
-                     " a GPIO State must be set")
-
-    if (cond.if_sensor_edge_select == 'state' and
-            cond.if_sensor_period <= 0):
-        error.append("If the GPIO State radio button is selected,"
-                     " Period must be greater than 1")
-
-    if cond.if_sensor_edge_select not in ['state', 'edge']:
-        error.append("A radio button selection must be made")
 
     return error
 
