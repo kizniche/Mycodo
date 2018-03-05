@@ -86,36 +86,36 @@ class LCDModDisplay(FlaskForm):
     lcd_id = IntegerField('LCD ID', widget=widgets.HiddenInput())
     lcd_data_id = IntegerField('LCD Data ID', widget=widgets.HiddenInput())
     line_1_display = StringField(lazy_gettext('Line 1'))
-    line_1_max_age = DecimalField(
+    line_1_max_age = IntegerField(
         lazy_gettext('Max Age (seconds)'),
-        validators=[validators.NumberRange(min=1)]
+        validators=[validators.NumberRange(min=1, max=999999999)]
     )
     line_1_decimal_places = IntegerField(
         lazy_gettext('Decimal Places'),
         validators=[validators.NumberRange(min=0)]
     )
     line_2_display = StringField(lazy_gettext('Line 2'))
-    line_2_max_age = DecimalField(
+    line_2_max_age = IntegerField(
         lazy_gettext('Max Age (seconds)'),
-        validators=[validators.NumberRange(min=1)]
+        validators=[validators.NumberRange(min=1, max=999999999)]
     )
     line_2_decimal_places = IntegerField(
         lazy_gettext('Decimal Places'),
         validators=[validators.NumberRange(min=0)]
     )
     line_3_display = StringField(lazy_gettext('Line 3'))
-    line_3_max_age = DecimalField(
+    line_3_max_age = IntegerField(
         lazy_gettext('Max Age (seconds)'),
-        validators=[validators.NumberRange(min=1)]
+        validators=[validators.NumberRange(min=1, max=999999999)]
     )
     line_3_decimal_places = IntegerField(
         lazy_gettext('Decimal Places'),
         validators=[validators.NumberRange(min=0)]
     )
     line_4_display = StringField(lazy_gettext('Line 4'))
-    line_4_max_age = DecimalField(
+    line_4_max_age = IntegerField(
         lazy_gettext('Max Age (seconds)'),
-        validators=[validators.NumberRange(min=1)]
+        validators=[validators.NumberRange(min=1, max=999999999)]
     )
     line_4_decimal_places = IntegerField(
         lazy_gettext('Decimal Places'),

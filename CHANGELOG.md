@@ -1,3 +1,10 @@
+## 5.6.3 (Unreleased)
+
+### Bugfixes
+
+ - Fix LCD issues
+
+
 ## 5.6.2 (2018-03-04)
 
 ### Features

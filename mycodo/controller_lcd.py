@@ -344,12 +344,8 @@ class LCDController(threading.Thread):
                     pid = db_retrieve_table_daemon(
                         PID, unique_id=self.lcd_line[display_id][i]['id'])
                     measurement = pid.measurement.split(',')[1]
-                    self.lcd_line[display_id][i]['measure_val'] = '{:.2f}'.format(
-                        self.lcd_line[display_id][i]['measure_val'])
                 elif self.lcd_line[display_id][i]['measure'] == 'duration_sec':
                     measurement = 'duration_sec'
-                    self.lcd_line[display_id][i]['measure_val'] = '{:.2f}'.format(
-                        self.lcd_line[display_id][i]['measure_val'])
                 elif self.lcd_line[display_id][i]['measure'] in self.list_inputs:
                     measurement = self.lcd_line[display_id][i]['measure']
 
@@ -428,47 +424,33 @@ class LCDController(threading.Thread):
         self.lcd_line[display_id][line]['name'] = None
         self.lcd_line[display_id][line]['unit'] = None
         self.lcd_line[display_id][line]['measure'] = measurement
+        if 'time' in measurement:
+            self.lcd_line[display_id][line]['measure'] = 'time'
         if not lcd_id:
             return
 
-        table = None
-
-        # Find what controller the unique_id of the line belongs to,
-        # then determine the unit
-        if (db_retrieve_table_daemon(Output, unique_id=lcd_id) and
-                measurement in self.list_outputs):
+        # Determine the unit
+        if measurement in self.list_inputs:
             self.lcd_line[display_id][line]['unit'] = self.list_inputs[measurement]['unit']
-            table = Output
-        elif (db_retrieve_table_daemon(PID, unique_id=lcd_id) and
-                measurement in self.list_pids):
-            self.lcd_line[display_id][line]['unit'] = self.list_inputs[measurement]['unit']
-            table = PID
-        elif (db_retrieve_table_daemon(Input, unique_id=lcd_id) and
-                measurement in self.list_inputs):
-            self.lcd_line[display_id][line]['unit'] = self.list_inputs[measurement]['unit']
-            table = Input
-        elif db_retrieve_table_daemon(Math, unique_id=lcd_id):
-            if measurement in self.list_inputs:
-                self.lcd_line[display_id][line]['unit'] = self.list_inputs[measurement]['unit']
-            else:
-                self.lcd_line[display_id][line]['unit'] = db_retrieve_table_daemon(
-                    Math, unique_id=lcd_id).measure_units
-            table = Math
         else:
-            self.logger.error("Line {line}: Unique ID not found in any controller".format(line=line))
+            self.lcd_line[display_id][line]['unit'] = ''
 
-        try:
-            dev_name = db_retrieve_table_daemon(
-                table, unique_id=lcd_id)
-        except sqlalchemy.exc.InvalidRequestError:
-            self.logger.error("Line {line}: Invalid table".format(line=line))
-            return
+        # Determine the name
+        controllers = [
+            Output,
+            PID,
+            Input,
+            Math
+        ]
+        for each_controller in controllers:
+            controller_found = db_retrieve_table_daemon(each_controller, unique_id=lcd_id)
+            if controller_found:
+                self.lcd_line[display_id][line]['name'] = controller_found.name
 
-        self.lcd_line[display_id][line]['name'] = dev_name.name
-        if 'time' in measurement:
-            self.lcd_line[display_id][line]['measure'] = 'time'
-
-        self.lcd_line[display_id][line]['setup'] = True
+        if (self.lcd_line[display_id][line]['measure'] == 'time' or
+                None not in [self.lcd_line[display_id][line]['name'],
+                             self.lcd_line[display_id][line]['unit']]):
+            self.lcd_line[display_id][line]['setup'] = True
 
     def lcd_flash(self, state):
         """ Enable the LCD to begin or end flashing """
