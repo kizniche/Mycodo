@@ -39,6 +39,7 @@ class SettingsCamera(FlaskForm):
     hue = DecimalField(lazy_gettext('Hue'))
     saturation = DecimalField(lazy_gettext('Saturation'))
     white_balance = DecimalField(lazy_gettext('White Balance'))
+    custom_options = StringField(lazy_gettext('Custom Options'))
     relay_id = IntegerField(lazy_gettext('Output'))
     cmd_pre_camera = StringField(lazy_gettext('Pre Command'))
     cmd_post_camera = StringField(lazy_gettext('Post Command'))

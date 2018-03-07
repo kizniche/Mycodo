@@ -506,6 +506,7 @@ def camera_mod(form_camera):
             mod_camera.height = form_camera.height.data
             mod_camera.width = form_camera.width.data
             mod_camera.brightness = form_camera.brightness.data
+            mod_camera.custom_options = form_camera.custom_options.data
         elif mod_camera.library == 'picamera':
             mod_camera.hflip = form_camera.hflip.data
             mod_camera.vflip = form_camera.vflip.data

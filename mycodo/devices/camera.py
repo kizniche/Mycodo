@@ -108,10 +108,11 @@ def camera_record(record_type, unique_id, duration_sec=None, tmp_filename=None):
             cmd += " --flip h"
         if settings.rotation:
             cmd += " --rotate {angle}".format(angle=settings.rotation)
+        if settings.custom_options:
+            cmd += " " + settings.custom_options
 
         out, err, status = cmd_output(cmd, stdout_pipe=False)
         # logger.error("TEST01: {}; {}; {}; {}".format(cmd, out, err, status))
-
     try:
         set_user_grp(path_file, 'mycodo', 'mycodo')
         return save_path, filename
