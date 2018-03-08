@@ -71,39 +71,59 @@ DEVICE_INFO = {
         'py-dependencies': [],
         'measure': ['disk_space']},
     'ADS1x15': {
+        'i2c-addresses': ['0x48'],
+        'i2c-address-change': False,
         'py-dependencies': ['Adafruit_ADS1x15'],
         'measure': ['voltage']},
     'AM2315': {
+        'i2c-addresses': ['0x5c'],
+        'i2c-address-change': False,
         'py-dependencies': ['quick2wire'],
         'measure': ['dewpoint', 'humidity', 'temperature']},
     'ATLAS_PH_I2C': {
+        'i2c-addresses': ['0x63'],
+        'i2c-address-change': False,
         'py-dependencies': [],
         'measure': ['ph']},
     'ATLAS_PH_UART': {
         'py-dependencies': ['serial'],
         'measure': ['ph']},
     'ATLAS_PT1000_I2C': {
+        'i2c-addresses': ['0x66'],
+        'i2c-address-change': False,
         'py-dependencies': [],
         'measure': ['temperature']},
     'ATLAS_PT1000_UART': {
         'py-dependencies': ['serial'],
         'measure': ['temperature']},
     'BH1750': {
+        'i2c-addresses': ['0x23'],
+        'i2c-address-change': False,
         'py-dependencies': ['smbus'],
         'measure': ['lux']},
     'BME280': {
+        'i2c-addresses': ['0x76'],
+        'i2c-address-change': False,
         'py-dependencies': ['Adafruit_BME280'],
         'measure': ['altitude', 'dewpoint', 'humidity', 'pressure', 'temperature']},
     'BMP': {  # TODO: Remove in next major version. BMP180 replaced this name
+        'i2c-addresses': ['0x77'],
+        'i2c-address-change': False,
         'py-dependencies': ['Adafruit_BMP'],
         'measure': ['altitude', 'pressure', 'temperature']},
     'BMP180': {
+        'i2c-addresses': ['0x77'],
+        'i2c-address-change': False,
         'py-dependencies': ['Adafruit_BMP'],
         'measure': ['altitude', 'pressure', 'temperature']},
     'BMP280': {
+        'i2c-addresses': ['0x77'],
+        'i2c-address-change': False,
         'py-dependencies': ['Adafruit_GPIO'],
         'measure': ['altitude', 'pressure', 'temperature']},
     'CHIRP': {
+        'i2c-addresses': ['0x40'],
+        'i2c-address-change': True,
         'py-dependencies': ['smbus'],
         'measure': ['lux', 'moisture', 'temperature']},
     'DHT11': {
@@ -122,12 +142,16 @@ DEVICE_INFO = {
         'py-dependencies': ['RPi.GPIO'],
         'measure': ['gpio_state']},
     'HTU21D': {
+        'i2c-addresses': ['0x40'],
+        'i2c-address-change': False,
         'py-dependencies': ['pigpio'],
         'measure': ['dewpoint', 'humidity', 'temperature']},
     'K30_UART': {
         'py-dependencies': ['serial'],
         'measure': ['co2']},
     'MH_Z16_I2C': {
+        'i2c-addresses': ['0x63'],
+        'i2c-address-change': False,
         'py-dependencies': ['smbus'],
         'measure': ['co2']},
     'MH_Z16_UART': {
@@ -140,6 +164,8 @@ DEVICE_INFO = {
         'py-dependencies': ['Adafruit_MCP3008'],
         'measure': ['voltage']},
     'MCP342x': {
+        'i2c-addresses': ['0x68'],
+        'i2c-address-change': False,
         'py-dependencies': ['MCP342x'],
         'measure': ['voltage']},
     'RPi': {
@@ -161,6 +187,8 @@ DEVICE_INFO = {
         'py-dependencies': ['sht_sensor'],
         'measure': ['dewpoint', 'humidity', 'temperature']},
     'SHT2x': {
+        'i2c-addresses': ['0x40'],
+        'i2c-address-change': False,
         'py-dependencies': ['smbus'],
         'measure': ['dewpoint', 'humidity', 'temperature']},
     'SIGNAL_PWM': {
@@ -173,9 +201,13 @@ DEVICE_INFO = {
         'py-dependencies': ['Adafruit_TMP'],
         'measure': ['temperature_object', 'temperature_die']},
     'TSL2561': {
+        'i2c-addresses': ['0x39'],
+        'i2c-address-change': False,
         'py-dependencies': ['tsl2561'],
         'measure': ['lux']},
     'TSL2591': {
+        'i2c-addresses': ['0x29'],
+        'i2c-address-change': False,
         'py-dependencies': ['tsl2591'],
         'measure': ['lux']}
 }
