@@ -26,6 +26,7 @@ class Camera(CRUDMixin, db.Model):
     hue = db.Column(db.Float, default=None)
     saturation = db.Column(db.Float, default=0.3)
     white_balance = db.Column(db.Float, default=0.0)
+    custom_options = db.Column(db.Text, default='')
     relay_id = db.Column(db.Integer, db.ForeignKey('relay.id'), default=None)  # Turn relay on during capture
     cmd_pre_camera = db.Column(db.Text, default='')  # Command to execute before capture
     cmd_post_camera = db.Column(db.Text, default='')  # Command to execute after capture

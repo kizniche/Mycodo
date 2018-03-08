@@ -1,5 +1,9 @@
 ## 5.6.3 (Unreleased)
 
+### Features
+
+ - Add ability to use custom command line options for fswebcam camera image captures ([#419](https://github.com/kizniche/mycodo/issues/419))
+
 ### Bugfixes
 
  - Fix LCD issues
