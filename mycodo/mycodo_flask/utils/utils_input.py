@@ -99,7 +99,9 @@ def input_add(form_add):
         # Temperature
         elif form_add.input_type.data in ['ATLAS_PT1000_I2C',
                                           'ATLAS_PT1000_UART',
-                                          'DS18B20', 'TMP006']:
+                                          'DS18B20',
+                                          'MAX31855',
+                                          'TMP006']:
             new_sensor.measurements = 'temperature'
             if form_add.input_type.data == 'ATLAS_PT1000_I2C':
                 new_sensor.interface = 'I2C'
@@ -112,6 +114,12 @@ def input_add(form_add):
                     new_sensor.device_loc = "/dev/ttyS0"
                 else:
                     new_sensor.device_loc = "/dev/ttyAMA0"
+            elif form_add.input_type.data == 'MAX31855':
+                new_sensor.measurements = 'temperature,' \
+                                          'temperature_die'
+                new_sensor.pin_clock = 11
+                new_sensor.pin_cs = 8
+                new_sensor.pin_miso = 9
             elif form_add.input_type.data == 'TMP006':
                 new_sensor.measurements = 'temperature_object,' \
                                           'temperature_die'
@@ -302,11 +310,12 @@ def input_mod(form_mod):
             mod_sensor.multiplexer_address = form_mod.multiplexer_address.data
             mod_sensor.multiplexer_bus = form_mod.multiplexer_bus.data
             mod_sensor.multiplexer_channel = form_mod.multiplexer_channel.data
-            # ADC options
+            # Serial options
             mod_sensor.pin_clock = form_mod.pin_clock.data
             mod_sensor.pin_cs = form_mod.pin_cs.data
             mod_sensor.pin_mosi = form_mod.pin_mosi.data
             mod_sensor.pin_miso = form_mod.pin_miso.data
+            # ADC options
             mod_sensor.adc_channel = form_mod.adc_channel.data
             mod_sensor.adc_gain = form_mod.adc_gain.data
             mod_sensor.adc_resolution = form_mod.adc_resolution.data

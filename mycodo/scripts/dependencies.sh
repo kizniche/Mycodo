@@ -27,6 +27,9 @@ case "${1:-''}" in
     'Adafruit_GPIO')
         ${INSTALL_CMD} install-pip-dependency Adafruit_GPIO
     ;;
+    'Adafruit_MAX31855')
+        ${INSTALL_DIRECTORY}/env/bin/pip3 install -e git://github.com/adafruit/Adafruit_Python_MAX31855.git#egg=adafruit-max31855 --upgrade
+    ;;
     'Adafruit_MCP3008')
         ${INSTALL_CMD} install-pip-dependency Adafruit_MCP3008
     ;;

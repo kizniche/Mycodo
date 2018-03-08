@@ -304,6 +304,11 @@ class InputController(threading.Thread):
             from mycodo.inputs.k30 import K30Sensor
             self.measure_input = K30Sensor(self.device_loc,
                                            baud_rate=self.baud_rate)
+        elif self.device == 'MAX31855':
+            from mycodo.inputs.max31855 import MAX31855Sensor
+            self.measure_input = MAX31855Sensor(self.pin_clock,
+                                                self.pin_cs,
+                                                self.pin_miso)
         elif self.device == 'MH_Z16_I2C':
             from mycodo.inputs.mh_z16 import MHZ16Sensor
             self.measure_input = MHZ16Sensor(self.interface,

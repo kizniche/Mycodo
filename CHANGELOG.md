@@ -3,6 +3,7 @@
 ### Features
 
  - Add ability to use custom command line options for fswebcam camera image captures ([#419](https://github.com/kizniche/mycodo/issues/419))
+ - Add Input: MAX31855 for measuring k-type thermocouples ([#345](https://github.com/kizniche/mycodo/issues/345))
 
 ### Bugfixes
 
