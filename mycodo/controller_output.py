@@ -182,8 +182,6 @@ class OutputController(threading.Thread):
         # Signaled to turn output on
         if state == 'on':
 
-            self.logger.error("TEST00: {}, {}".format(self.output_type[output_id], duration))
-
             # Check if pin is valid
             if (self.output_type[output_id] in [
                     'pwm', 'wired', 'wireless_433MHz_pi_switch'] and
@@ -236,8 +234,6 @@ class OutputController(threading.Thread):
                     'command', 'wired', 'wireless_433MHz_pi_switch'] and
                     duration != 0):
                 time_now = datetime.datetime.now()
-
-                self.logger.error("TEST02: duration")
 
                 # Output is already on for a duration
                 if self.is_on(output_id) and self.output_on_duration[output_id]:
@@ -303,8 +299,6 @@ class OutputController(threading.Thread):
 
                 # Output is not already on
                 else:
-                    self.logger.error("TEST03: full go duration")
-
                     self.output_on_duration[output_id] = True
                     self.output_last_duration[output_id] = duration
                     self.logger.debug(
@@ -385,8 +379,6 @@ class OutputController(threading.Thread):
 
         # Signaled to turn output off
         elif state == 'off':
-
-            self.logger.error("TEST01: {}".format(self.output_type[output_id]))
 
             if not self._is_setup(output_id):
                 return

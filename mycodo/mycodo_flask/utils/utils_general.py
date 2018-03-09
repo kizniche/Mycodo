@@ -191,14 +191,14 @@ def choices_outputs(output):
     """ populate form multi-select choices from Output entries """
     choices = OrderedDict()
     for each_output in output:
-        if each_output.relay_type != 'pwm':
-            value = '{id},duration_sec'.format(id=each_output.unique_id)
-            display = '[Output {id:02d}] {name} (Duration)'.format(
-                id=each_output.id, name=each_output.name)
-            choices.update({value: display})
-        elif each_output.relay_type == 'pwm':
+        if each_output.relay_type in ['pwm', 'command_pwm']:
             value = '{id},duty_cycle'.format(id=each_output.unique_id)
             display = '[Output {id:02d}] {name} (Duty Cycle)'.format(
+                id=each_output.id, name=each_output.name)
+            choices.update({value: display})
+        else:
+            value = '{id},duration_sec'.format(id=each_output.unique_id)
+            display = '[Output {id:02d}] {name} (Duration)'.format(
                 id=each_output.id, name=each_output.name)
             choices.update({value: display})
     return choices
