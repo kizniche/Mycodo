@@ -28,7 +28,10 @@ def upgrade():
     )
 
     with op.batch_alter_table("conditional_data") as batch_op:
-        batch_op.add_column(sa.Column('do_relay_pwm', sa.Text))
+        batch_op.add_column(sa.Column('do_relay_pwm', sa.Float))
+
+    with op.batch_alter_table("relay") as batch_op:
+        batch_op.add_column(sa.Column('pwm_command', sa.Text))
 
 
 def downgrade():
@@ -37,3 +40,6 @@ def downgrade():
 
     with op.batch_alter_table("conditional_data") as batch_op:
         batch_op.drop_column('do_relay_pwm')
+
+    with op.batch_alter_table("relay") as batch_op:
+        batch_op.drop_column('pwm_command')

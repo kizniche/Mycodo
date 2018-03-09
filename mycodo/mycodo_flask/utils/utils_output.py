@@ -144,6 +144,8 @@ def output_add(form_add_relay):
                 elif form_add_relay.relay_type.data == 'command':
                     new_relay.on_command = '/home/pi/script_on.sh'
                     new_relay.off_command = '/home/pi/script_off.sh'
+                elif form_add_relay.relay_type.data == 'command_pwm':
+                    new_relay.pwm_command = '/home/pi/script_pwm.sh ((duty_cycle))'
                 elif form_add_relay.relay_type.data == 'pwm':
                     new_relay.pwm_hertz = 22000
                     new_relay.pwm_library = 'pigpio_any'
@@ -203,13 +205,16 @@ def output_mod(form_relay):
         elif mod_relay.relay_type == 'command':
             mod_relay.on_command = form_relay.on_command.data
             mod_relay.off_command = form_relay.off_command.data
+        elif mod_relay.relay_type == 'command_pwm':
+            mod_relay.pwm_command = form_relay.pwm_command.data
         elif mod_relay.relay_type == 'pwm':
             mod_relay.pin = form_relay.gpio.data
             mod_relay.pwm_hertz = form_relay.pwm_hertz.data
             mod_relay.pwm_library = form_relay.pwm_library.data
         mod_relay.amps = form_relay.amps.data
 
-        if form_relay.on_at_start.data == '-1' or mod_relay.relay_type == 'pwm':
+        if (form_relay.on_at_start.data == '-1' or
+                mod_relay.relay_type in ['pwm', 'command_pwm']):
             mod_relay.on_at_start = None
         else:
             mod_relay.on_at_start = bool(int(form_relay.on_at_start.data))

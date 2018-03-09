@@ -74,6 +74,7 @@ class OutputController(threading.Thread):
         self.output_bit_length = {}
         self.output_on_command = {}
         self.output_off_command = {}
+        self.output_pwm_command = {}
         self.wireless_pi_switch = {}
 
         # PWM
@@ -181,6 +182,8 @@ class OutputController(threading.Thread):
         # Signaled to turn output on
         if state == 'on':
 
+            self.logger.error("TEST00: {}, {}".format(self.output_type[output_id], duration))
+
             # Check if pin is valid
             if (self.output_type[output_id] in [
                     'pwm', 'wired', 'wireless_433MHz_pi_switch'] and
@@ -233,6 +236,8 @@ class OutputController(threading.Thread):
                     'command', 'wired', 'wireless_433MHz_pi_switch'] and
                     duration != 0):
                 time_now = datetime.datetime.now()
+
+                self.logger.error("TEST02: duration")
 
                 # Output is already on for a duration
                 if self.is_on(output_id) and self.output_on_duration[output_id]:
@@ -298,6 +303,8 @@ class OutputController(threading.Thread):
 
                 # Output is not already on
                 else:
+                    self.logger.error("TEST03: full go duration")
+
                     self.output_on_duration[output_id] = True
                     self.output_last_duration[output_id] = duration
                     self.logger.debug(
@@ -332,6 +339,27 @@ class OutputController(threading.Thread):
                             timeon=self.output_time_turned_on[output_id]))
                     self.output_switch(output_id, 'on')
 
+            # PWM command output
+            elif self.output_type[output_id] == 'command_pwm':
+                if duty_cycle:
+                    self.pwm_time_turned_on[output_id] = datetime.datetime.now()
+                else:
+                    self.pwm_time_turned_on[output_id] = None
+                self.logger.debug(
+                    "PWM command {id} ({name}) ON with a duty cycle of {dc:.2f}%".format(
+                        id=self.output_id[output_id],
+                        name=self.output_name[output_id],
+                        dc=abs(duty_cycle)))
+                self.output_switch(output_id, 'on', duty_cycle=duty_cycle)
+
+                # Write the duty cycle of the PWM to the database
+                write_db = threading.Thread(
+                    target=write_influxdb_value,
+                    args=(self.output_unique_id[output_id],
+                          'duty_cycle',
+                          duty_cycle,))
+                write_db.start()
+
             # PWM output
             elif self.output_type[output_id] == 'pwm':
                 # Record the time the PWM was turned on
@@ -357,6 +385,9 @@ class OutputController(threading.Thread):
 
         # Signaled to turn output off
         elif state == 'off':
+
+            self.logger.error("TEST01: {}".format(self.output_type[output_id]))
+
             if not self._is_setup(output_id):
                 return
             if (self.output_type[output_id] in [
@@ -371,7 +402,7 @@ class OutputController(threading.Thread):
                     name=self.output_name[output_id]))
 
             # Write PWM duty cycle to database
-            if (self.output_type[output_id] == 'pwm' and
+            if (self.output_type[output_id] in ['pwm', 'command_pwm'] and
                     self.pwm_time_turned_on[output_id] is not None):
                 # Write the duration the PWM was ON to the database
                 # at the timestamp it turned ON
@@ -468,6 +499,25 @@ class OutputController(threading.Thread):
                     state=state,
                     stat=cmd_status,
                     ret=cmd_return))
+
+        elif self.output_type[output_id] == 'command_pwm':
+            if self.output_pwm_command[output_id]:
+                if state == 'on' and 100 >= duty_cycle >= 0:
+                    cmd = self.output_pwm_command[output_id].replace('((duty_cycle))', str(duty_cycle))
+                    cmd_return, _, cmd_status = cmd_output(cmd)
+                    self.pwm_state[output_id] = abs(duty_cycle)
+                elif state == 'off':
+                    cmd = self.output_pwm_command[output_id].replace('((duty_cycle))', str(0))
+                    cmd_return, _, cmd_status = cmd_output(cmd)
+                    self.pwm_state[output_id] = None
+                else:
+                    return
+                self.logger.error(
+                    "Output duty cycle {duty_cycle} command returned: "
+                    "{stat}: '{ret}'".format(
+                        duty_cycle=duty_cycle,
+                        stat=cmd_status,
+                        ret=cmd_return))
 
         elif self.output_type[output_id] == 'pwm':
             import pigpio
@@ -570,6 +620,7 @@ class OutputController(threading.Thread):
             self.output_bit_length[each_output.id] = each_output.bit_length
             self.output_on_command[each_output.id] = each_output.on_command
             self.output_off_command[each_output.id] = each_output.off_command
+            self.output_pwm_command[each_output.id] = each_output.pwm_command
 
             self.pwm_hertz[each_output.id] = each_output.pwm_hertz
             self.pwm_library[each_output.id] = each_output.pwm_library
@@ -639,6 +690,7 @@ class OutputController(threading.Thread):
             self.output_bit_length[output_id] = output.bit_length
             self.output_on_command[output_id] = output.on_command
             self.output_off_command[output_id] = output.off_command
+            self.output_pwm_command[output_id] = output.pwm_command
 
             self.pwm_hertz[output_id] = output.pwm_hertz
             self.pwm_library[output_id] = output.pwm_library
@@ -696,6 +748,7 @@ class OutputController(threading.Thread):
             self.output_bit_length.pop(output_id, None)
             self.output_on_command.pop(output_id, None)
             self.output_off_command.pop(output_id, None)
+            self.output_pwm_command.pop(output_id, None)
             self.wireless_pi_switch.pop(output_id, None)
 
             self.pwm_hertz.pop(output_id, None)
@@ -823,9 +876,10 @@ class OutputController(threading.Thread):
                     return 'on'
             elif self.output_type[output_id] in ['command',
                                                  'wireless_433MHz_pi_switch']:
-                if self.output_time_turned_on[output_id]:
+                if (self.output_time_turned_on[output_id] or
+                        self.output_on_until[output_id] > datetime.datetime.now()):
                     return 'on'
-            elif self.output_type[output_id] == 'pwm':
+            elif self.output_type[output_id] in ['pwm', 'command_pwm']:
                 if output_id in self.pwm_state and self.pwm_state[output_id]:
                     return self.pwm_state[output_id]
         return 'off'
@@ -842,6 +896,7 @@ class OutputController(threading.Thread):
                 self._is_setup(output_id)):
             return self.output_trigger[output_id] == GPIO.input(self.output_pin[output_id])
         elif self.output_type[output_id] in ['command',
+                                             'command_pwm',
                                              'wireless_433MHz_pi_switch']:
             if self.output_time_turned_on[output_id]:
                 return True
@@ -866,6 +921,7 @@ class OutputController(threading.Thread):
             GPIO.setup(self.output_pin[output_id], GPIO.OUT)
             return True
         elif self.output_type[output_id] in ['command',
+                                             'command_pwm',
                                              'wireless_433MHz_pi_switch']:
             return True
         elif self.output_type[output_id] == 'pwm':

@@ -6,10 +6,12 @@
  - Add Input: MAX31855 for measuring k-type thermocouples ([#345](https://github.com/kizniche/mycodo/issues/345))
  - Add ability to set duty cycle of output via mycodo_client.py ([#420](https://github.com/kizniche/mycodo/issues/420))
  - Add Conditional Action: Output PWM ([#420](https://github.com/kizniche/mycodo/issues/420))
+ - Add Output Type: Execute Command (PWM) ([#420](https://github.com/kizniche/mycodo/issues/420))
 
 ### Bugfixes
 
  - Fix LCD issues
+ - Fix state display of Command Outputs turned on for a duration
 
 
 ## 5.6.2 (2018-03-04)

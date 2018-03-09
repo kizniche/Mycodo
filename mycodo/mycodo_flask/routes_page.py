@@ -998,10 +998,10 @@ def page_output():
             utils_output.output_del(form_mod_output)
         elif form_mod_output.order_up.data:
             utils_output.output_reorder(form_mod_output.relay_id.data,
-                                       display_order, 'up')
+                                        display_order, 'up')
         elif form_mod_output.order_down.data:
             utils_output.output_reorder(form_mod_output.relay_id.data,
-                                       display_order, 'down')
+                                        display_order, 'down')
 
         return redirect(url_for('routes_page.page_output'))
 

@@ -10,34 +10,34 @@
 
 <script type="text/javascript">
   $(document).ready(function() {
-      toastr.options = {
-          "closeButton": true,
-          "debug": false,
-          "newestOnTop": false,
-          "progressBar": false,
-          "positionClass": "toast-top-right",
-          "preventDuplicates": false,
-          "onclick": null,
-          "showDuration": "300",
-          "hideDuration": "1000",
-          "timeOut": "7000",
-          "extendedTimeOut": "10000",
-          "showEasing": "swing",
-          "hideEasing": "linear",
-          "showMethod": "fadeIn",
-          "hideMethod": "fadeOut"
-      }
+    toastr.options = {
+      "closeButton": true,
+      "debug": false,
+      "newestOnTop": false,
+      "progressBar": false,
+      "positionClass": "toast-top-right",
+      "preventDuplicates": false,
+      "onclick": null,
+      "showDuration": "300",
+      "hideDuration": "1000",
+      "timeOut": "7000",
+      "extendedTimeOut": "10000",
+      "showEasing": "swing",
+      "hideEasing": "linear",
+      "showMethod": "fadeIn",
+      "hideMethod": "fadeOut"
+    }
   });
- function getAjax(btn_val) {
+  function getAjax(btn_val) {
     $.ajax({
-        type: 'GET',
-        url: '/output_mod/' + btn_val,
-        success: function(data) {
-            toastr['success']("Output " + btn_val.split("/")[0] + ": " + data);
-        },
-        error: function(data) {
-            toastr['error']("Output " + btn_val.split("/")[0] + ": " + data);
-        }
+      type: 'GET',
+      url: '/output_mod/' + btn_val,
+      success: function(data) {
+        toastr['success']("Output " + btn_val.split("/")[0] + ": " + data);
+      },
+      error: function(data) {
+        toastr['error']("Output " + btn_val.split("/")[0] + ": " + data);
+      }
     });
   }
 
@@ -73,9 +73,9 @@
 
 <script>
   function pad(num, size) {
-      var s = num+"";
-      while (s.length < size) s = "0" + s;
-      return s;
+    var s = num+"";
+    while (s.length < size) s = "0" + s;
+    return s;
   }
   function gpioState() {
     var url = '/gpiostate';
@@ -154,7 +154,8 @@
             <option value="wired">Relay: Wired</option>
             <option value="wireless_433MHz_pi_switch">Relay: Wireless (433MHz, pi_switch)</option>
             <option value="pwm">PWM Output</option>
-            <option value="command">Execute Commands</option>
+            <option value="command">Execute Command (On/Off)</option>
+            <option value="command_pwm">Execute Command (PWM)</option>
           </select>
         </div>
         <div class="col-xs-4 col-sm-3 col-lg-2 small-gutters">
@@ -187,7 +188,7 @@
             <input class="form-control btn btn-default" disabled="" id="{{each_relay.id}}-input-relay-state" title="UUID: {{each_relay.unique_id}}" value="[{{'%02d' % each_relay.id}}] {{ _('Unconfigured')}}" type="text">
           </div>
           <div class="col-xs-5 col-xs-offset-2 col-sm-3 col-sm-offset-0 col-md-3 small-gutters">
-            {% if each_relay.relay_type != 'pwm' -%}
+            {% if each_relay.relay_type not in ['pwm', 'command_pwm'] -%}
             <div class="col-xs-6 col-sm-6 col-md-6 small-gutters">
               <input class="form-control btn btn-default turn_on" id="turn_on" name="{{each_relay.id}}/on/sec/0" type="button" value="{{_('On')}}">
             </div>
@@ -242,7 +243,7 @@
             </div>
           </div>
 
-        {% elif each_relay.relay_type == 'pwm' %}
+        {% elif each_relay.relay_type in ['pwm', 'command_pwm'] %}
 
           <div class="col-xs-12">
             <label class='control-label'>{{_('Duty Cycle')}} (%)</label>

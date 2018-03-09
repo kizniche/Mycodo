@@ -37,6 +37,7 @@ class OutputMod(FlaskForm):
     bit_length = IntegerField(lazy_gettext('Bit length'))
     on_command = StringField(lazy_gettext('On Command'))
     off_command = StringField(lazy_gettext('Off Command'))
+    pwm_command = StringField(lazy_gettext('PWM Command'))
     amps = DecimalField(
         lazy_gettext('Current Draw (amps)'),
         validators=[validators.NumberRange(

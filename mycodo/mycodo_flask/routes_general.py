@@ -174,7 +174,7 @@ def gpio_state():
                 state[each_output.id] = 'on'
             else:
                 state[each_output.id] = 'off'
-        elif (each_output.relay_type == 'command' or
+        elif (each_output.relay_type in ['command', 'command_pwm'] or
                 (each_output.relay_type in ['pwm', 'wireless_433MHz_pi_switch'] and
                  each_output.pin and
                  -1 < each_output.pin < 40)):
@@ -201,7 +201,7 @@ def gpio_state_unique_id(unique_id):
             state = 'on'
         else:
             state = 'off'
-    elif (output.relay_type == 'command' or
+    elif (output.relay_type in ['command', 'command_pwm'] or
             (output.relay_type in ['pwm', 'wireless_433MHz_pi_switch'] and
              output.pin and
              -1 < output.pin < 40)):
@@ -499,7 +499,7 @@ def output_mod(output_id, state, out_type, amount):
     if (state in ['on', 'off'] and out_type == 'sec' and
             (str_is_float(amount) and float(amount) >= 0)):
         return daemon.output_on_off(int(output_id), state, float(amount))
-    elif (state == 'on' and out_type == 'pwm' and
+    elif (state == 'on' and out_type in ['pwm', 'command_pwm'] and
               (str_is_float(amount) and float(amount) >= 0)):
         return daemon.relay_on(int(output_id), state, duty_cycle=float(amount))
 
@@ -517,7 +517,7 @@ def output_mod_unique_id(unique_id, state, out_type, amount):
     if (state in ['on', 'off'] and out_type == 'sec' and
             (str_is_float(amount) and float(amount) >= 0)):
         return daemon.output_on_off(output.id, state, float(amount))
-    elif (state == 'on' and out_type == 'pwm' and
+    elif (state == 'on' and out_type in ['pwm', 'command_pwm'] and
               (str_is_float(amount) and float(amount) >= 0)):
         return daemon.relay_on(output.id, state, duty_cycle=float(amount))
 
