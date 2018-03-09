@@ -193,6 +193,9 @@ def parseargs(parser):
     parser.add_argument('--duration', metavar='SECONDS', type=float,
                         help='Turn on relay for a duration of time (seconds)',
                         required=False)
+    parser.add_argument('--dutycycle', metavar='DUTYCYCLE', type=float,
+                        help='Turn on PWM relay for a duty cycle (%)',
+                        required=False)
     parser.add_argument('-t', '--terminate', action='store_true',
                         help="Terminate the daemon")
     return parser.parse_args()
@@ -225,10 +228,12 @@ if __name__ == "__main__":
         parser.error("--duration requires --relayon")
 
     elif args.relayon:
-        duration = 0
         if args.duration:
-            duration = args.duration
-        return_msg = daemon_control.relay_on(args.relayon, duration)
+            return_msg = daemon_control.relay_on(args.relayon, duration=args.duration)
+        elif args.duty_cycle:
+            return_msg = daemon_control.relay_on(args.relayon, duty_cycle=args.duty_cycle)
+        else:
+            return_msg = daemon_control.relay_on(args.relayon)
         logger.info("[Remote command] Turn on relay with ID '{id}': "
                     "Server returned:".format(
                         id=args.relayon,
