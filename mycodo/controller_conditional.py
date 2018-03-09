@@ -372,7 +372,7 @@ class ConditionalController(threading.Thread):
             message += "\n[Conditional Action {id}]:".format(
                 id=cond_action.id, do_action=cond_action.do_action)
 
-            # Actuate output
+            # Actuate output (duration)
             if (cond_action.do_action == 'output' and cond_action.do_relay_id and
                     cond_action.do_relay_state in ['on', 'off']):
                 message += " Turn output {id} {state}".format(
@@ -390,6 +390,19 @@ class ConditionalController(threading.Thread):
                           cond_action.do_relay_state,),
                     kwargs={'duration': cond_action.do_relay_duration})
                 output_on_off.start()
+
+            # Actuate output (PWM)
+            elif (cond_action.do_action == 'output_pwm' and cond_action.do_relay_id and
+                    cond_action.do_relay_pwm):
+                message += " Turn output {id} duty cycle to {duty_cycle}%.".format(
+                    id=cond_action.do_relay_id,
+                    duty_cycle=cond_action.do_relay_pwm)
+
+                output_on = threading.Thread(
+                    target=self.control.relay_on,
+                    args=(cond_action.do_relay_id,),
+                    kwargs={'duty_cycle': cond_action.do_relay_pwm})
+                output_on.start()
 
             # Execute command in shell
             elif cond_action.do_action == 'command':

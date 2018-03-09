@@ -5,6 +5,7 @@
  - Add ability to use custom command line options for fswebcam camera image captures ([#419](https://github.com/kizniche/mycodo/issues/419))
  - Add Input: MAX31855 for measuring k-type thermocouples ([#345](https://github.com/kizniche/mycodo/issues/345))
  - Add ability to set duty cycle of output via mycodo_client.py ([#420](https://github.com/kizniche/mycodo/issues/420))
+ - Add Conditional Action: Output PWM ([#420](https://github.com/kizniche/mycodo/issues/420))
 
 ### Bugfixes
 

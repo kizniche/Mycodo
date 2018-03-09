@@ -47,6 +47,7 @@ class ConditionalActions(CRUDMixin, db.Model):
     do_relay_id = db.Column(db.Integer, db.ForeignKey('relay.id'), default=None)
     do_relay_state = db.Column(db.Text, default='')  # 'on' or 'off'
     do_relay_duration = db.Column(db.Float, default=0.0)
+    do_relay_pwm = db.Column(db.Float, default=0.0)
 
     do_camera_id = db.Column(db.Integer, db.ForeignKey('lcd.id'), default=None)
     do_camera_duration = db.Column(db.Float, default=0.0)

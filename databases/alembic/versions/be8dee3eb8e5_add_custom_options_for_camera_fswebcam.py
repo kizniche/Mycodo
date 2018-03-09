@@ -27,7 +27,13 @@ def upgrade():
         '''
     )
 
+    with op.batch_alter_table("conditional_data") as batch_op:
+        batch_op.add_column(sa.Column('do_relay_pwm', sa.Text))
+
 
 def downgrade():
     with op.batch_alter_table("camera") as batch_op:
         batch_op.drop_column('custom_options')
+
+    with op.batch_alter_table("conditional_data") as batch_op:
+        batch_op.drop_column('do_relay_pwm')

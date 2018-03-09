@@ -2,12 +2,14 @@
 
 <div class="col-sm-3 col-md-4">
   {{form_conditional_actions.do_relay_id.label(class_='control-label')}}
-  <select class="form-control form-tooltip form-dropdown" id="do_relay_id" name="do_relay_id" data-placement="top" title="{{_('What relay to manipulate')}}">
-    <option value=""></option>
-    {%- for each_output in output if each_output.relay_type != 'pwm' -%}
-      <option value="{{each_output.id}}"{% if each_cond_action.do_relay_id == each_output.id %} selected{% endif %}>[{{each_output.id}}] {{each_output.name}}</option>
-    {%- endfor -%}
-  </select>
+  <div>
+    <select class="form-control form-tooltip form-dropdown" id="do_relay_id" name="do_relay_id" data-placement="top" title="{{_('What relay to manipulate')}}">
+      <option value=""></option>
+      {%- for each_output in output if each_output.relay_type != 'pwm' -%}
+        <option value="{{each_output.id}}"{% if each_cond_action.do_relay_id == each_output.id %} selected{% endif %}>[{{each_output.id}}] {{each_output.name}}</option>
+      {%- endfor -%}
+    </select>
+  </div>
 </div>
 <div class="col-sm-2 col-md-2">
   <label class='control-label'>{{_('Turn')}}</label>
@@ -18,8 +20,30 @@
   </select>
 </div>
 <div class="col-sm-1 col-md-2">
-  <label class='control-label'>{{_('Seconds')}}</label>
-  {{form_conditional_actions.do_relay_duration(class_='form-control', value=each_cond_action.do_relay_duration, **{'title':_('How long to turn the relay on (optional)'), 'size':'3'})}}
+  {{form_conditional_actions.do_relay_duration.label(class_='control-label')}}
+  <div>
+    {{form_conditional_actions.do_relay_duration(class_='form-control', value=each_cond_action.do_relay_duration, **{'title':_('How long to turn the relay on (optional)')})}}
+  </div>
+</div>
+
+{% elif each_cond_action.do_action == 'output_pwm' %}
+
+<div class="col-sm-3 col-md-4">
+  {{form_conditional_actions.do_relay_id.label(class_='control-label')}}
+  <div>
+    <select class="form-control form-tooltip form-dropdown" id="do_relay_id" name="do_relay_id" data-placement="top" title="{{_('What relay to manipulate')}}">
+      <option value=""></option>
+      {%- for each_output in output if each_output.relay_type == 'pwm' -%}
+        <option value="{{each_output.id}}"{% if each_cond_action.do_relay_id == each_output.id %} selected{% endif %}>[{{each_output.id}}] {{each_output.name}}</option>
+      {%- endfor -%}
+    </select>
+  </div>
+</div>
+<div class="col-sm-1 col-md-2">
+  {{form_conditional_actions.do_relay_pwm.label(class_='control-label')}}
+  <div>
+    {{form_conditional_actions.do_relay_pwm(class_='form-control', value=each_cond_action.do_relay_pwm, **{'title':_('What duty cycle to set the output')})}}
+  </div>
 </div>
 
 {% elif each_cond_action.do_action == 'email' %}

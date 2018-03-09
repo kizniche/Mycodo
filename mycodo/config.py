@@ -435,7 +435,8 @@ LIST_DEVICES_INTERNAL_PI = [
 # Conditional actions
 # TODO: Some have been disabled until they can be properly tested
 CONDITIONAL_ACTIONS = collections.OrderedDict([
-    ('output', lazy_gettext('Output')),
+    ('output', lazy_gettext('Output (Duration)')),
+    ('output_pwm', lazy_gettext('Output (Duty Cycle)')),
     ('command', lazy_gettext('Command')),
     ('activate_pid', lazy_gettext('Activate PID')),
     ('deactivate_pid', lazy_gettext('Deactivate PID')),

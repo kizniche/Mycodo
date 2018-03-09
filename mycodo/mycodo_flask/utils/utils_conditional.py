@@ -88,7 +88,6 @@ def conditional_del(cond_id):
     try:
         if not error:
             # Delete conditional
-
             conditional_actions = ConditionalActions.query.filter(
                 ConditionalActions.conditional_id == cond.id).all()
             for each_cond_action in conditional_actions:
@@ -161,6 +160,10 @@ def conditional_action_mod(form):
             mod_action.do_relay_id = form.do_relay_id.data
             mod_action.do_relay_state = form.do_relay_state.data
             mod_action.do_relay_duration = form.do_relay_duration.data
+
+        if mod_action.do_action == 'output_pwm':
+            mod_action.do_relay_id = form.do_relay_id.data
+            mod_action.do_relay_pwm = form.do_relay_pwm.data
 
         elif mod_action.do_action in ['activate_pid',
                                       'deactivate_pid',
@@ -341,6 +344,12 @@ def check_form_actions(form, error):
             error.append("Output must be set")
         if not form.do_relay_state.data or form.do_relay_state.data == '':
             error.append("State must be set")
+
+    elif cond_action.do_action == 'output_pwm':
+        if not form.do_relay_id.data or form.do_relay_id.data == '':
+            error.append("Output must be set")
+        if not form.do_relay_pwm.data or form.do_relay_pwm.data == '':
+            error.append("Duty Cycle must be set")
 
     elif cond_action.do_action in ['activate_pid',
                                    'deactivate_pid',
