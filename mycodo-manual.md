@@ -407,7 +407,7 @@ Certain 433 MHz wireless relays may be used, however you will need to set the pi
 
 #### Command
 
-Another option for output control is to execute a terminal command when the output is turned on or off. Commands will be executed as the user 'mycodo'.
+Another option for output control is to execute a terminal command when the output is turned on, off, or a duty cycle. Commands will be executed as the user 'root'.
 
 Wireless and Command Output Note: Since the wireless protocol only allows 1-way communication to 433 MHz devices, wireless relays are assumed to be off until they are turned on, and therefore will appear red (off) when added. If a wireless relay is turned off or on outside Mycodo (by a remote, for instance), Mycodo will ***not*** be able to determine the state of the relay and will indicate whichever state the relay was last. This is, if Mycodo turns the wireless relay on, and a remote is used to turn the relay off, Mycodo will still assume the relay is on.
 
@@ -419,8 +419,9 @@ WiringPi Pin | This is the GPIO that will be the signal to the output, using Wir
 Protocol | This is the protocol to use to transmit via 433MHz. Default is 1, but if this doesn't work, increment the number.
 Pulse Length | This is the pulse length to transmit via 433MHz. Default is 189 ms.
 Bit Length | This is the bit length to transmit via 433MHz. Default is 24-bit.
-On Command | This is the command used to turn the output on. For wireless relays, this is the numerical command to be transmitted, and for command outputs this is the command to be executed. 
-Off Command | This is the command used to turn the output off. For wireless relays, this is the numerical command to be transmitted, and for command outputs this is the command to be executed. 
+On Command | This is the command used to turn the output on. For wireless relays, this is the numerical command to be transmitted, and for command outputs this is the command to be executed.
+Off Command | This is the command used to turn the output off. For wireless relays, this is the numerical command to be transmitted, and for command outputs this is the command to be executed.
+PWM Command | This is the command used to set the duty cycle. The string "((duty_cycle))" in the command will be replaced with the actual duty cycle before the command is executed. Ensure "((duty_cycle))" is included in your command for this feature to work correctly.
 Current Draw (amps) | The is the amount of current the device powered by the output draws. Note: this value should be calculated based on the voltage set in the [Output Usage Settings](#output-usage-settings).
 Start State | This specifies whether the output should be ON or OFF when mycodo initially starts. Wireless relays have an additional option 'Neither' which will not issue an on or off command when Mycodo starts or stops.
 Seconds to turn On | This is a way to turn a output on for a specific duration of time. This can be useful for testing the outputs and powered devices or the measured effects a device may have on an environmental condition.
