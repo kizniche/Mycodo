@@ -163,6 +163,16 @@ def mycodo_service(mycodo):
             return mycodo.pid_resume(pid_id)
 
         @staticmethod
+        def exposed_pid_get(pid_id, setting):
+            """Get PID setting"""
+            return mycodo.pid_get(pid_id, setting)
+
+        @staticmethod
+        def exposed_pid_set(pid_id, setting, value):
+            """Set PID setting"""
+            return mycodo.pid_set(pid_id, setting, value)
+
+        @staticmethod
         def exposed_ram_use():
             """Return the amount of ram used by the daemon"""
             return resource.getrusage(
@@ -640,6 +650,54 @@ class DaemonController:
         except Exception as except_msg:
             message = "Could not resume PID:" \
                       " {err}".format(err=except_msg)
+            self.logger.exception(message)
+
+    def pid_get(self, pid_unique_id, setting):
+        try:
+            with session_scope(MYCODO_DB_PATH) as new_session:
+                pid = new_session.query(PID).filter(
+                    PID.unique_id == pid_unique_id).first()
+                pid_id = pid.id
+            if setting == 'setpoint':
+                return self.controller['PID'][pid_id].get_setpoint()
+            elif setting == 'error':
+                return self.controller['PID'][pid_id].get_error()
+            elif setting == 'integrator':
+                return self.controller['PID'][pid_id].get_integrator()
+            elif setting == 'derivator':
+                return self.controller['PID'][pid_id].get_derivator()
+            elif setting == 'kp':
+                return self.controller['PID'][pid_id].get_kp()
+            elif setting == 'ki':
+                return self.controller['PID'][pid_id].get_ki()
+            elif setting == 'kd':
+                return self.controller['PID'][pid_id].get_kd()
+        except Exception as except_msg:
+            message = "Could not set PID {option}:" \
+                      " {err}".format(option=setting, err=except_msg)
+            self.logger.exception(message)
+
+    def pid_set(self, pid_unique_id, setting, value):
+        try:
+            with session_scope(MYCODO_DB_PATH) as new_session:
+                pid = new_session.query(PID).filter(
+                    PID.unique_id == pid_unique_id).first()
+                pid_id = pid.id
+            if setting == 'setpoint':
+                return self.controller['PID'][pid_id].set_setpoint(value)
+            elif setting == 'integrator':
+                return self.controller['PID'][pid_id].set_integrator(value)
+            elif setting == 'derivator':
+                return self.controller['PID'][pid_id].set_derivator(value)
+            elif setting == 'kp':
+                return self.controller['PID'][pid_id].set_kp(value)
+            elif setting == 'ki':
+                return self.controller['PID'][pid_id].set_ki(value)
+            elif setting == 'kd':
+                return self.controller['PID'][pid_id].set_kd(value)
+        except Exception as except_msg:
+            message = "Could not set PID {option}:" \
+                      " {err}".format(option=setting, err=except_msg)
             self.logger.exception(message)
 
     def refresh_daemon_camera_settings(self):

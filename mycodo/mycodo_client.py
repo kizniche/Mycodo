@@ -99,6 +99,12 @@ class DaemonControl:
     def pid_resume(self, pid_id):
         return self.rpyc_client.root.pid_resume(pid_id)
 
+    def pid_get(self, pid_id, setting):
+        return self.rpyc_client.root.pid_get(pid_id, setting)
+
+    def pid_set(self, pid_id, setting, value):
+        return self.rpyc_client.root.pid_set(pid_id, setting, value)
+
     def ram_use(self):
         return self.rpyc_client.root.ram_use()
 
@@ -168,6 +174,8 @@ def parseargs(parser):
                         metavar=('CONTROLLER', 'ID'), type=str,
                         help='Deactivate controller. Options: LCD, Math, PID, Input, Timer',
                         required=False)
+
+    # PID manipulate
     parser.add_argument('--pid_pause', nargs=1,
                         metavar=('ID'), type=str,
                         help='Pause PID controller.',
@@ -180,10 +188,70 @@ def parseargs(parser):
                         metavar=('ID'), type=str,
                         help='Resume PID controller.',
                         required=False)
+
+    # PID get
+    parser.add_argument('--pid_get_setpoint', nargs=1,
+                        metavar=('ID'), type=str,
+                        help='Get the setpoint value of the PID controller.',
+                        required=False)
+    parser.add_argument('--pid_get_error', nargs=1,
+                        metavar=('ID'), type=str,
+                        help='Get the error value of the PID controller.',
+                        required=False)
+    parser.add_argument('--pid_get_integrator', nargs=1,
+                        metavar=('ID'), type=str,
+                        help='Get the integrator value of the PID controller.',
+                        required=False)
+    parser.add_argument('--pid_get_derivator', nargs=1,
+                        metavar=('ID'), type=str,
+                        help='Get the derivator value of the PID controller.',
+                        required=False)
+    parser.add_argument('--pid_get_kp', nargs=1,
+                        metavar=('ID'), type=str,
+                        help='Get the Kp gain of the PID controller.',
+                        required=False)
+    parser.add_argument('--pid_get_ki', nargs=1,
+                        metavar=('ID'), type=str,
+                        help='Get the Ki gain of the PID controller.',
+                        required=False)
+    parser.add_argument('--pid_get_kd', nargs=1,
+                        metavar=('ID'), type=str,
+                        help='Get the Kd gain of the PID controller.',
+                        required=False)
+
+    # PID set
+    parser.add_argument('--pid_set_setpoint', nargs=2,
+                        metavar=('ID','SETPOINT'), type=str,
+                        help='Set the setpoint value of the PID controller.',
+                        required=False)
+    parser.add_argument('--pid_set_integrator', nargs=2,
+                        metavar=('ID', 'INTEGRATOR'), type=str,
+                        help='Set the integrator value of the PID controller.',
+                        required=False)
+    parser.add_argument('--pid_set_derivator', nargs=2,
+                        metavar=('ID', 'DERIVATOR'), type=str,
+                        help='Set the derivator value of the PID controller.',
+                        required=False)
+    parser.add_argument('--pid_set_kp', nargs=2,
+                        metavar=('ID', 'KP'), type=str,
+                        help='Set the Kp gain of the PID controller.',
+                        required=False)
+    parser.add_argument('--pid_set_ki', nargs=2,
+                        metavar=('ID', 'KI'), type=str,
+                        help='Set the Ki gain of the PID controller.',
+                        required=False)
+    parser.add_argument('--pid_set_kd', nargs=2,
+                        metavar=('ID', 'KD'), type=str,
+                        help='Set the Kd gain of the PID controller.',
+                        required=False)
+
     parser.add_argument('-c', '--checkdaemon', action='store_true',
                         help="Check if all active daemon controllers are running")
     parser.add_argument('--ramuse', action='store_true',
                         help="Return the amount of ram used by the Mycodo daemon")
+
+    # Output
+    # TODO: Rename relay to output
     parser.add_argument('--relayoff', metavar='RELAYID', type=str,
                         help='Turn off relay with relay ID',
                         required=False)
@@ -196,8 +264,10 @@ def parseargs(parser):
     parser.add_argument('--dutycycle', metavar='DUTYCYCLE', type=float,
                         help='Turn on PWM relay for a duty cycle (%)',
                         required=False)
+
     parser.add_argument('-t', '--terminate', action='store_true',
                         help="Terminate the daemon")
+
     return parser.parse_args()
 
 
@@ -271,10 +341,41 @@ if __name__ == "__main__":
         daemon_control.pid_pause(args.pid_pause[0])
 
     elif args.pid_hold:
-        daemon_control.pid_pause(args.pid_pause[0])
+        daemon_control.pid_pause(args.pid_hold[0])
 
     elif args.pid_resume:
-        daemon_control.pid_pause(args.pid_pause[0])
+        daemon_control.pid_pause(args.pid_resume[0])
+
+    elif args.pid_get_setpoint:
+        print(daemon_control.pid_get(args.pid_get_setpoint[0], 'setpoint'))
+    elif args.pid_get_error:
+        print(daemon_control.pid_get(args.pid_get_setpoint[0], 'setpoint'))
+    elif args.pid_get_integrator:
+        print(daemon_control.pid_get(args.pid_get_integrator[0], 'integrator'))
+    elif args.pid_get_derivator:
+        print(daemon_control.pid_get(args.pid_get_derivator[0], 'derivator'))
+    elif args.pid_get_kp:
+        print(daemon_control.pid_get(args.pid_get_kp[0], 'kp'))
+    elif args.pid_get_ki:
+        print(daemon_control.pid_get(args.pid_get_ki[0], 'ki'))
+    elif args.pid_get_kd:
+        print(daemon_control.pid_get(args.pid_get_kd[0], 'kd'))
+
+    elif args.pid_set_setpoint:
+        print(daemon_control.pid_set(
+            args.pid_set_setpoint[0], 'setpoint', args.pid_set_setpoint[1]))
+    elif args.pid_set_integrator:
+        print(daemon_control.pid_set(
+            args.pid_set_integrator[0], 'integrator', args.pid_set_integrator[1]))
+    elif args.pid_set_derivator:
+        print(daemon_control.pid_set(
+            args.pid_set_derivator[0], 'derivator', args.pid_set_derivator[1]))
+    elif args.pid_set_kp:
+        print(daemon_control.pid_set(args.pid_set_kp[0], 'kp', args.pid_set_kp[1]))
+    elif args.pid_set_ki:
+        print(daemon_control.pid_set(args.pid_set_ki[0], 'ki', args.pid_set_ki[1]))
+    elif args.pid_set_kd:
+        print(daemon_control.pid_set(args.pid_set_kd[0], 'kd', args.pid_set_kd[1]))
 
     elif args.terminate:
         logger.info("[Remote command] Terminate daemon...")

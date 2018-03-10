@@ -4,10 +4,12 @@
 
  - Add Input: MAX31856 for measuring several types of thermocouples (K, J, N, R, S, T, E, and B) ([#345](https://github.com/kizniche/mycodo/issues/345))
  - Make rpi-rf an optional Output dependency
+ - Add mycodo_client.py option: get or set PID setpoint, integrator, derivator, kp, ki, and kd ([#420](https://github.com/kizniche/mycodo/issues/420))
 
 ### Bugfixes
 
  - Fix frontend pid in System Information page
+ - Fix issue with mycodo_client.py PID hold and resume commands
 
 
 ## 5.6.3 (2018-03-09)

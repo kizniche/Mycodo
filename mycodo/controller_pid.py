@@ -174,8 +174,8 @@ class PIDController(threading.Thread):
                             seconds=float(method_data_repeat.duration_end))
 
                     with session_scope(MYCODO_DB_PATH) as db_session:
-                        mod_pid = db_session.query(PID)
-                        mod_pid = mod_pid.filter(PID.id == self.pid_id).first()
+                        mod_pid = db_session.query(PID).filter(
+                            PID.id == self.pid_id).first()
                         mod_pid.method_start_time = self.method_start_time
                         mod_pid.method_end_time = self.method_end_time
                         db_session.commit()
@@ -732,8 +732,11 @@ class PIDController(threading.Thread):
     def set_setpoint(self, setpoint):
         """ Initilize the setpoint of PID """
         self.setpoint = setpoint
-        self.integrator = 0
-        self.derivator = 0
+        with session_scope(MYCODO_DB_PATH) as db_session:
+            mod_pid = db_session.query(PID).filter(
+                PID.id == self.pid_id).first()
+            mod_pid.setpoint = setpoint
+            db_session.commit()
 
     def set_integrator(self, integrator):
         """ Set the integrator of the controller """
@@ -746,14 +749,29 @@ class PIDController(threading.Thread):
     def set_kp(self, p):
         """ Set Kp gain of the controller """
         self.Kp = p
+        with session_scope(MYCODO_DB_PATH) as db_session:
+            mod_pid = db_session.query(PID).filter(
+                PID.id == self.pid_id).first()
+            mod_pid.p = p
+            db_session.commit()
 
     def set_ki(self, i):
         """ Set Ki gain of the controller """
         self.Ki = i
+        with session_scope(MYCODO_DB_PATH) as db_session:
+            mod_pid = db_session.query(PID).filter(
+                PID.id == self.pid_id).first()
+            mod_pid.i = i
+            db_session.commit()
 
     def set_kd(self, d):
         """ Set Kd gain of the controller """
         self.Kd = d
+        with session_scope(MYCODO_DB_PATH) as db_session:
+            mod_pid = db_session.query(PID).filter(
+                PID.id == self.pid_id).first()
+            mod_pid.d = d
+            db_session.commit()
 
     def get_setpoint(self):
         return self.setpoint
@@ -766,6 +784,15 @@ class PIDController(threading.Thread):
 
     def get_derivator(self):
         return self.derivator
+
+    def get_kp(self):
+        return self.Kp
+
+    def get_ki(self):
+        return self.Ki
+
+    def get_kd(self):
+        return self.Kd
 
     def is_running(self):
         return self.running
