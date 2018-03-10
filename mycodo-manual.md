@@ -60,7 +60,7 @@ Table of Contents
 
    - [1-Wire](#1-wire)
    - [GPIO](#gpio)
-   - [UART](#uart)
+   - [Serial](#serial)
    - [I<sup>2</sup>C](#i2c)
    - [Edge Detection](#edge-detection)
    - [I<sup>2</sup>C Multiplexers](#i2c-multiplexers)
@@ -75,6 +75,8 @@ Table of Contents
    - [Raspberry Pi](#raspberry-pi)
    - [Atlas Scientific PT-1000](#atlas-scientific-pt-1000)
    - [DS18B20](#ds18b20)
+   - [MAX31855K](#max31855k)
+   - [MAX31856](#max31856)
    - [TMP006, TMP007](#tmp006-tmp007)
 
 [Temperature, Humidity Sensors](#temperature-humidity-sensors)
@@ -1280,14 +1282,18 @@ GPIO
 
 > [SHT1x](#sht1x)/[SHT7x](#sht7x), SHT2x: Relative humidity and temperature [link](https://github.com/mk-fg/sht-sensor)
 
-UART
-----
+Serial
+------
 
 > [Atlas Scientific pH](#atlas-scientific-ph): pH [link](https://www.atlas-scientific.com/ph.html)
 
 > [Atlas Scientific PT-1000](#atlas-scientific-pt-1000): Temperature [link](https://www.atlas-scientific.com/temperature.html)
 
 > [K30](#k-30): Carbon dioxide (CO<sub>2</sub>) in ppmv [link](http://www.co2meter.com/products/k-30-co2-sensor-module)
+
+> [MAX31855K](#max31855k): Temperature [link](https://www.adafruit.com/product/269)
+
+> [MAX31856](#max31856): Temperature [link](https://www.adafruit.com/product/3263)
 
 > [MH-Z19](#mh-z19): Carbon dioxide (CO<sub>2</sub>) in ppmv [link](http://www.winsen-sensor.com/products/ndir-co2-sensor/mh-z19.html)
 
@@ -1394,7 +1400,7 @@ stands for platinum and 1000 is the measured resistance of the probe at
 
 #### Specifications
 
- - UART or I<sup>2</sup>C
+ - Serial or I<sup>2</sup>C
  - Accuracy &plusmn;(0.15 + (0.002\*t))
  - Probe type: Class A Platinum, RTD (resistance temperature detector)
  - Cable length: 81cm (32")
@@ -1425,6 +1431,28 @@ sensors to be used on one data bus.
  - Temperature-limit alarm system
  - Query time is less than 750ms
  - Usable with 3.0V to 5.5V power/data
+
+### MAX31855K
+
+Measures K-type thermocouples.
+
+#### Specifications
+
+ - Serial interface
+ - -200°C to +1350°C output in 0.25 degree increments
+ - K thermocouples have about ±2°C to ±6°C accuracy
+ - Internal temperature reading
+
+### MAX31856
+
+Measures several types of thermocouples (K, J, N, R, S, T, E, and B).
+
+#### Specifications
+
+ - Serial interface
+ - -210°C to +1800°C output in 0.0078125° resolution ()many thermocouples have about ±2°C to ±6°C accuracy or worse depending on the temperature and type, so the resolution will be a lot better than the accuracy)
+ - Works with any K, J, N, R, S, T, E, or B type thermocouple
+ - Internal temperature reading
 
 ### TMP006, TMP007
 

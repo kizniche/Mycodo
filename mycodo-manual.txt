@@ -62,7 +62,7 @@ Device Interfaces
 
 -   1-Wire
 -   GPIO
--   UART
+-   Serial
 -   I2C
 -   Edge Detection
 -   I2C Multiplexers
@@ -77,6 +77,8 @@ Temperature Sensors
 -   Raspberry Pi
 -   Atlas Scientific PT-1000
 -   DS18B20
+-   MAX31855K
+-   MAX31856
 -   TMP006, TMP007
 
 Temperature, Humidity Sensors
@@ -794,8 +796,8 @@ settings), submit a new issue with details of your hardware.
 Command
 
 Another option for output control is to execute a terminal command when
-the output is turned on or off. Commands will be executed as the user
-‘mycodo’.
+the output is turned on, off, or a duty cycle. Commands will be executed
+as the user ‘root’.
 
 Wireless and Command Output Note: Since the wireless protocol only
 allows 1-way communication to 433 MHz devices, wireless relays are
@@ -844,6 +846,13 @@ is on.
                         off. For wireless relays, this is the numerical
                         command to be transmitted, and for command
                         outputs this is the command to be executed.
+
+  PWM Command           This is the command used to set the duty cycle.
+                        The string “((duty_cycle))” in the command will
+                        be replaced with the actual duty cycle before
+                        the command is executed. Ensure
+                        “((duty_cycle))” is included in your command
+                        for this feature to work correctly.
 
   Current Draw (amps)   The is the amount of current the device powered
                         by the output draws. Note: this value should be
@@ -2235,13 +2244,17 @@ GPIO
   SHT1x/SHT7x, SHT2x: Relative humidity and temperature link
 
 
-UART
+Serial
 
   Atlas Scientific pH: pH link
 
   Atlas Scientific PT-1000: Temperature link
 
   K30: Carbon dioxide (CO2) in ppmv link
+
+  MAX31855K: Temperature link
+
+  MAX31856: Temperature link
 
   MH-Z19: Carbon dioxide (CO2) in ppmv link
 
@@ -2395,7 +2408,7 @@ stands for platinum and 1000 is the measured resistance of the probe at
 
 Specifications
 
--   UART or I2C
+-   Serial or I2C
 -   Accuracy ±(0.15 + (0.002*t))
 -   Probe type: Class A Platinum, RTD (resistance temperature detector)
 -   Cable length: 81cm (32“)
@@ -2427,6 +2440,31 @@ Specifications
 -   Temperature-limit alarm system
 -   Query time is less than 750ms
 -   Usable with 3.0V to 5.5V power/data
+
+MAX31855K
+
+Measures K-type thermocouples.
+
+Specifications
+
+-   Serial interface
+-   -200°C to +1350°C output in 0.25 degree increments
+-   K thermocouples have about ±2°C to ±6°C accuracy
+-   Internal temperature reading
+
+MAX31856
+
+Measures several types of thermocouples (K, J, N, R, S, T, E, and B).
+
+Specifications
+
+-   Serial interface
+-   -210°C to +1800°C output in 0.0078125° resolution ()many
+    thermocouples have about ±2°C to ±6°C accuracy or worse depending on
+    the temperature and type, so the resolution will be a lot better
+    than the accuracy)
+-   Works with any K, J, N, R, S, T, E, or B type thermocouple
+-   Internal temperature reading
 
 TMP006, TMP007
 

@@ -46,6 +46,7 @@ class InputMod(FlaskForm):
     cmd_command = StringField(lazy_gettext('Command'))
     cmd_measurement = StringField(lazy_gettext('Measurement'))
     cmd_measurement_units = StringField(lazy_gettext('Unit'))
+    thermocouple_type = StringField(lazy_gettext('Thermocouple Type'))
 
     # SPI Communication
     pin_clock = IntegerField(lazy_gettext('Clock Pin'))

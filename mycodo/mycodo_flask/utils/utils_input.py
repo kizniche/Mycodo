@@ -101,6 +101,7 @@ def input_add(form_add):
                                           'ATLAS_PT1000_UART',
                                           'DS18B20',
                                           'MAX31855',
+                                          'MAX31856',
                                           'TMP006']:
             new_sensor.measurements = 'temperature'
             if form_add.input_type.data == 'ATLAS_PT1000_I2C':
@@ -120,6 +121,14 @@ def input_add(form_add):
                 new_sensor.pin_clock = 11
                 new_sensor.pin_cs = 8
                 new_sensor.pin_miso = 9
+            elif form_add.input_type.data == 'MAX31856':
+                new_sensor.measurements = 'temperature,' \
+                                          'temperature_die'
+                new_sensor.pin_cs = 8
+                new_sensor.pin_miso = 9
+                new_sensor.pin_mosi = 10
+                new_sensor.pin_clock = 11
+                new_sensor.thermocouple_type = 'K'
             elif form_add.input_type.data == 'TMP006':
                 new_sensor.measurements = 'temperature_object,' \
                                           'temperature_die'
@@ -214,10 +223,10 @@ def input_add(form_add):
                 new_sensor.adc_volts_min = -2.048
                 new_sensor.adc_volts_max = 2.048
             elif form_add.input_type.data == 'MCP3008':
-                new_sensor.pin_clock = 11
                 new_sensor.pin_cs = 8
-                new_sensor.pin_mosi = 10
                 new_sensor.pin_miso = 9
+                new_sensor.pin_mosi = 10
+                new_sensor.pin_clock = 11
                 new_sensor.adc_volts_min = 0
                 new_sensor.adc_volts_max = 3.3
 
@@ -306,6 +315,7 @@ def input_mod(form_mod):
             mod_sensor.cmd_command = form_mod.cmd_command.data
             mod_sensor.cmd_measurement = form_mod.cmd_measurement.data
             mod_sensor.cmd_measurement_units = form_mod.cmd_measurement_units.data
+            mod_sensor.thermocouple_type = form_mod.thermocouple_type.data
             # Multiplexer options
             mod_sensor.multiplexer_address = form_mod.multiplexer_address.data
             mod_sensor.multiplexer_bus = form_mod.multiplexer_bus.data

@@ -10,7 +10,7 @@ import os
 from flask_babel import lazy_gettext
 
 MYCODO_VERSION = '5.6.3'
-ALEMBIC_VERSION = 'be8dee3eb8e5'
+ALEMBIC_VERSION = 'fdb54958dd73'
 
 #  FORCE_UPGRADE_MASTER
 #  Set True to enable upgrading to the master branch of the Mycodo repository.
@@ -56,7 +56,8 @@ DEVICES = [
     ('DS18B20', 'Temperature: DS18B20 (1-Wire)'),
     ('ATLAS_PT1000_I2C', 'Temperature: Atlas Scientific PT-1000 (I2C)'),
     ('ATLAS_PT1000_UART', 'Temperature: Atlas Scientific PT-1000 (Serial)'),
-    ('MAX31855', 'Temperature: MAX31855 with k-type thermocouple (Serial)'),
+    ('MAX31855', 'Temperature: MAX31855K + K-type thermocouple'),
+    ('MAX31856', 'Temperature: MAX31856 + K/J/N/R/S/T/E/B-type thermocouple'),
     ('TMP006', 'Temperature (Contactless): TMP 006/007 (I2C)'),
     ('AM2315', 'Temperature/Humidity: AM2315 (I2C)'),
     ('DHT11', 'Temperature/Humidity: DHT11 (GPIO)'),
@@ -152,6 +153,9 @@ DEVICE_INFO = {
         'measure': ['co2']},
     'MAX31855': {
         'py-dependencies': ['Adafruit_MAX31855'],
+        'measure': ['temperature', 'temperature_die']},
+    'MAX31856': {
+        'py-dependencies': ['RPi.GPIO'],
         'measure': ['temperature', 'temperature_die']},
     'MH_Z16_I2C': {
         'i2c-addresses': ['0x63'],
@@ -403,6 +407,7 @@ LIST_DEVICES_I2C = [
 # Devices that use SPI to communicate
 LIST_DEVICES_SPI = [
     'MAX31855',
+    'MAX31856',
     'MCP3008'
 ]
 
