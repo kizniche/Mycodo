@@ -276,7 +276,7 @@ class max31856(object):
         # 0x to specify 'read register value'
         self.sendByte(regNumStart)
 
-        for byte in range(numRegisters):
+        for _ in range(numRegisters):
             data = self.recvByte()
             out.append(data)
 
@@ -284,7 +284,7 @@ class max31856(object):
         return out
 
     def sendByte(self, byte):
-        for bit in range(8):
+        for _ in range(8):
             self.GPIO.output(self.clkPin, self.GPIO.HIGH)
             if (byte & 0x80):
                 self.GPIO.output(self.mosiPin, self.GPIO.HIGH)

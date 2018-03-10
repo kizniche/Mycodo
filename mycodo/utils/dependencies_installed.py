@@ -33,7 +33,9 @@ def get_installed_dependencies():
                                 if each_dep not in met_deps:
                                     met_deps.append(each_dep)
                         except Exception:
-                            pass
+                            logger.error(
+                                'Exception while checking python dependency: '
+                                '{dep}'.format(dep=each_dep))
 
     if os.path.exists('/usr/local/bin/gpio'):
         met_deps.append('wiringpi')

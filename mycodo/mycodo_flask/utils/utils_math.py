@@ -40,7 +40,7 @@ def math_add(form_add_math):
         new_math = Math()
         new_math.name = ''
         new_math.math_type = form_add_math.math_type.data
-        
+
         if form_add_math.math_type.data in MATH_INFO:
             new_math.name += ' {name}'.format(name=MATH_INFO[form_add_math.math_type.data]['name'])
             new_math.measure = ",".join(MATH_INFO[form_add_math.math_type.data]['measure'])
