@@ -10,6 +10,7 @@ sys.path.append(
 from mycodo.config import DEVICE_INFO
 from mycodo.config import MATH_INFO
 from mycodo.config import METHOD_INFO
+from mycodo.config import OUTPUT_INFO
 
 logger = logging.getLogger("mycodo.dependencies_installed")
 
@@ -20,7 +21,8 @@ def get_installed_dependencies():
     list_dependencies = [
         DEVICE_INFO,
         MATH_INFO,
-        METHOD_INFO
+        METHOD_INFO,
+        OUTPUT_INFO
     ]
     for each_section in list_dependencies:
         for device_type in each_section:

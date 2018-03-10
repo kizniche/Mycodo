@@ -60,6 +60,8 @@ do
             ${INSTALL_DEP} update-pigpiod
         elif [ "${ary[opt]}" == "quick2wire" ]; then
             ${INSTALL_DEP} quick2wire
+        elif [ "${ary[opt]}" == "rpi_rf" ]; then
+            ${INSTALL_DEP} rpi_rf
         elif [ "${ary[opt]}" == "sht_sensor" ]; then
             ${INSTALL_DEP} sht_sensor
         elif [ "${ary[opt]}" == "tsl2561" ]; then

@@ -37,6 +37,8 @@ from mycodo.config import LIST_DEVICES_I2C
 from mycodo.config import LOGIN_LOG_FILE
 from mycodo.config import MATH_INFO
 from mycodo.config import MEASUREMENT_UNITS
+from mycodo.config import OUTPUTS
+from mycodo.config import OUTPUT_INFO
 from mycodo.config import RESTORE_LOG_FILE
 from mycodo.config import UPGRADE_LOG_FILE
 from mycodo.config import USAGE_REPORTS_PATH
@@ -988,11 +990,12 @@ def page_output():
         break
 
     if request.method == 'POST':
+        unmet_dependencies = None
         if not utils_general.user_has_permission('edit_controllers'):
             return redirect(url_for('routes_page.page_output'))
 
         if form_add_output.relay_add.data:
-            utils_output.output_add(form_add_output)
+            unmet_dependencies = utils_output.output_add(form_add_output)
         elif form_mod_output.save.data:
             utils_output.output_mod(form_mod_output)
         elif form_mod_output.delete.data:
@@ -1004,7 +1007,11 @@ def page_output():
             utils_output.output_reorder(form_mod_output.relay_id.data,
                                         display_order, 'down')
 
-        return redirect(url_for('routes_page.page_output'))
+        if unmet_dependencies:
+            return redirect(url_for('routes_admin.admin_dependencies',
+                                    device=form_add_output.relay_type.data))
+        else:
+            return redirect(url_for('routes_page.page_output'))
 
     return render_template('pages/output.html',
                            camera=camera,
@@ -1013,6 +1020,8 @@ def page_output():
                            form_add_relay=form_add_output,
                            form_mod_relay=form_mod_output,
                            lcd=lcd,
+                           outputs=OUTPUTS,
+                           output_info=OUTPUT_INFO,
                            relay=output,
                            relay_templates=output_templates,
                            user=user)
@@ -1126,7 +1135,7 @@ def page_data():
 
         # Math forms
         elif form_add_math.math_add.data:
-            utils_math.math_add(form_add_math)
+            unmet_dependencies = utils_math.math_add(form_add_math)
         elif form_mod_math.math_mod.data:
             math_type = Math.query.filter(
                 Math.id == form_mod_math.math_id.data).first().math_type

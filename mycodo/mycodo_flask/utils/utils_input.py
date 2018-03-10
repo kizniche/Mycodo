@@ -39,7 +39,11 @@ def input_add(form_add):
         action=gettext("Add"),
         controller=gettext("Input"))
     error = []
-    unmet_deps = None
+
+    unmet_deps = return_dependencies(form_add.input_type.data)
+    if unmet_deps:
+        error.append("The {dev} device you're trying to add has unmet dependencies: {dep}".format(
+            dev=form_add.input_type.data, dep=unmet_deps))
 
     if form_add.validate():
         new_sensor = Input()
@@ -51,11 +55,6 @@ def input_add(form_add):
         else:
             new_sensor.i2c_bus = 0
             new_sensor.multiplexer_bus = 0
-
-        unmet_deps = return_dependencies(form_add.input_type.data)
-        if unmet_deps:
-            error.append("The {dev} device you're trying to add has unmet dependencies: {dep}".format(
-                dev=form_add.input_type.data, dep=unmet_deps))
 
         if form_add.input_type.data in DEVICE_INFO :
             new_sensor.name += ' {name}'.format(name=DEVICE_INFO[form_add.input_type.data]['name'])

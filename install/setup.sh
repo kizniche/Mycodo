@@ -74,6 +74,7 @@ if [ "$INSTALL_TYPE" == "custom" ]; then
                           'numpy' "numpy" off \
                           'pigpio' "pigpio" off \
                           'quick2wire' "quick2wire" off \
+                          'rpi_rp' "quick2wire" off \
                           'sht_sensor' "sht_sensor" off \
                           'tsl2561' "tsl2561" off \
                           'tsl2591' "tsl2591" off \
@@ -185,6 +186,8 @@ function progress() {
                 ${INSTALL_DEP} install-pigpiod >>${LOG_LOCATION} 2>&1
             elif [ "$dep" == "quick2wire" ]; then
                 ${INSTALL_DEP} quick2wire >>${LOG_LOCATION} 2>&1
+            elif [ "$dep" == "rpi_rf" ]; then
+                ${INSTALL_DEP} rpi_rf >>${LOG_LOCATION} 2>&1
             elif [ "$dep" == "sht_sensor" ]; then
                 ${INSTALL_DEP} sht_sensor >>${LOG_LOCATION} 2>&1
             elif [ "$dep" == "tsl2561" ]; then
@@ -209,6 +212,7 @@ function progress() {
         ${INSTALL_DEP} numpy >>${LOG_LOCATION} 2>&1
         ${INSTALL_DEP} install-pigpiod >>${LOG_LOCATION} 2>&1
         ${INSTALL_DEP} quick2wire >>${LOG_LOCATION} 2>&1
+        ${INSTALL_DEP} rpi_rf >>${LOG_LOCATION} 2>&1
         ${INSTALL_DEP} sht_sensor >>${LOG_LOCATION} 2>&1
         ${INSTALL_DEP} tsl2561 >>${LOG_LOCATION} 2>&1
         ${INSTALL_DEP} tsl2591 >>${LOG_LOCATION} 2>&1

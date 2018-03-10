@@ -18,6 +18,7 @@ from mycodo.config import LIST_DEVICES_ADC
 from mycodo.config import MATH_INFO
 from mycodo.config import MEASUREMENT_UNITS
 from mycodo.config import METHOD_INFO
+from mycodo.config import OUTPUT_INFO
 from mycodo.config import PATH_CAMERAS
 from mycodo.databases.models import Camera
 from mycodo.databases.models import Conditional
@@ -459,7 +460,8 @@ def return_dependencies(device_type, dep_type='unmet'):
     list_dependencies = [
         DEVICE_INFO,
         MATH_INFO,
-        METHOD_INFO
+        METHOD_INFO,
+        OUTPUT_INFO
     ]
     for each_section in list_dependencies:
         if device_type in each_section:

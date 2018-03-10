@@ -37,7 +37,6 @@ WTForms == 2.1
 # Devices and Sensors
 picamera == 1.13
 RPi.GPIO
-rpi-rf  # Replaces pi_switch
 
 # Disabled modules (installed via dependency system)
 # -e git://github.com/maxlklaxl/python-tsl2591.git#egg=tsl2591
@@ -49,6 +48,7 @@ rpi-rf  # Replaces pi_switch
 # Adafruit_TMP
 # MCP342x == 0.3.3
 # quick2wire-api  # Replaces tentacle_pi and aosong
+# rpi-rf  # Replaces pi_switch
 # sht_sensor == 17.5.5
 # tsl2561  # Replaces tentacle_pi
 # w1thermsensor == 1.0.5

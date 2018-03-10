@@ -319,9 +319,42 @@ MATH_INFO = {
 
 # Method info
 METHOD_INFO = {
-    'average': {
+    'DailyBezier': {
         'name': 'DailyBezier',
         'py-dependencies': ['numpy']}
+}
+
+# Math controllers
+OUTPUTS = [
+    ('wired', 'GPIO (On/Off)'),
+    ('pwm', 'GPIO (PWM)'),
+    ('wireless_433MHz_pi_switch', 'Wireless (433MHz)'),
+    ('command', 'Command (On/Off)'),
+    ('command_pwm', 'Command (PWM)')
+]
+
+# Output info
+OUTPUT_INFO = {
+    'wired': {
+        'name': 'GPIO (On/Off)',
+        'py-dependencies': [],
+        'measure': []},
+    'pwm': {
+        'name': 'GPIO (PWM)',
+        'py-dependencies': [],
+        'measure': []},
+    'wireless_433MHz_pi_switch': {
+        'name': 'Wireless (433MHz)',
+        'py-dependencies': ['rpi_rf'],
+        'measure': []},
+    'command': {
+        'name': 'Command (On/Off)',
+        'py-dependencies': [],
+        'measure': []},
+    'command_pwm': {
+        'name': 'Command (PWM)',
+        'py-dependencies': [],
+        'measure': []},
 }
 
 # Measurement information

@@ -36,6 +36,11 @@ def math_add(form_add_math):
         controller=gettext("Math"))
     error = []
 
+    unmet_deps = return_dependencies(form_add_math.math_type.data)
+    if unmet_deps:
+        error.append("The {dev} device you're trying to add has unmet dependencies: {dep}".format(
+            dev=form_add_math.math_type.data, dep=unmet_deps))
+
     if form_add_math.validate():
         new_math = Math()
         new_math.name = ''
@@ -44,11 +49,6 @@ def math_add(form_add_math):
         if form_add_math.math_type.data in MATH_INFO:
             new_math.name += ' {name}'.format(name=MATH_INFO[form_add_math.math_type.data]['name'])
             new_math.measure = ",".join(MATH_INFO[form_add_math.math_type.data]['measure'])
-
-        unmet_deps = return_dependencies(form_add_math.math_type.data)
-        if unmet_deps:
-            error.append("The {dev} device you're trying to add has unmet dependencies: {dep}".format(
-                dev=form_add_math.math_type.data, dep=unmet_deps))
 
         try:
             new_math.save()
@@ -72,6 +72,9 @@ def math_add(form_add_math):
         flash_success_errors(error, action, url_for('routes_page.page_data'))
     else:
         flash_form_errors(form_add_math)
+
+    if unmet_deps:
+        return 1
 
 
 def math_mod(form_mod_math, form_mod_type=None):

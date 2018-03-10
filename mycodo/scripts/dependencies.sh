@@ -49,6 +49,9 @@ case "${1:-''}" in
     'quick2wire')
         ${INSTALL_CMD} install-pip-dependency quick2wire-api
     ;;
+    'rpi_rf')
+        ${INSTALL_CMD} install-pip-dependency rpi-rf
+    ;;
     'update-pigpiod')
         ${INSTALL_CMD} update-pigpiod
     ;;

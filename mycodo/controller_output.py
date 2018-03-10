@@ -35,7 +35,6 @@ from mycodo.databases.models import Conditional
 from mycodo.databases.models import Misc
 from mycodo.databases.models import Output
 from mycodo.databases.models import SMTP
-from mycodo.devices.wireless_433mhz_pi_switch import Transmit433MHz
 from mycodo.mycodo_client import DaemonControl
 from mycodo.utils.database import db_retrieve_table_daemon
 from mycodo.utils.influx import write_influxdb_value
@@ -824,6 +823,7 @@ class OutputController(threading.Thread):
                         trigger=self.output_trigger[output_id], err=except_msg))
 
         elif self.output_type[output_id] == 'wireless_433MHz_pi_switch':
+            from mycodo.devices.wireless_433mhz_pi_switch import Transmit433MHz
             self.wireless_pi_switch[output_id] = Transmit433MHz(
                 self.output_pin[output_id],
                 protocol=int(self.output_protocol[output_id]),

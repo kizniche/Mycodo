@@ -3,6 +3,7 @@
 ### Features
 
  - Add Input: MAX31856 for measuring several types of thermocouples (K, J, N, R, S, T, E, and B) ([#345](https://github.com/kizniche/mycodo/issues/345))
+ - Make rpi-rf an optional Output dependency
 
 
 ## 5.6.3 (2018-03-09)
@@ -10,7 +11,7 @@
 ### Features
 
  - Add ability to use custom command line options for fswebcam camera image captures ([#419](https://github.com/kizniche/mycodo/issues/419))
- - Add Input: MAX31855K for measuring k-type thermocouples ([#345](https://github.com/kizniche/mycodo/issues/345))
+ - Add Input: MAX31855K for measuring K-type thermocouples ([#345](https://github.com/kizniche/mycodo/issues/345))
  - Add ability to set duty cycle of output via mycodo_client.py ([#420](https://github.com/kizniche/mycodo/issues/420))
  - Add Conditional Action: Output PWM ([#420](https://github.com/kizniche/mycodo/issues/420))
  - Add Output Type: Execute Command (PWM) ([#420](https://github.com/kizniche/mycodo/issues/420))

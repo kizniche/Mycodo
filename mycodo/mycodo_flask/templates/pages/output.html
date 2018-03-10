@@ -151,11 +151,9 @@
         </div>
         <div class="col-xs-6 col-sm-3 col-md-3 small-gutters">
           <select class="form-control form-tooltip form-dropdown" id="relay_type" name="relay_type" data-placement="top" title="{{_('Output Type')}}">
-            <option value="wired">Relay: Wired</option>
-            <option value="wireless_433MHz_pi_switch">Relay: Wireless (433MHz, pi_switch)</option>
-            <option value="pwm">PWM Output</option>
-            <option value="command">Execute Command (On/Off)</option>
-            <option value="command_pwm">Execute Command (PWM)</option>
+            {% for each_option in outputs %}
+              <option value="{{each_option[0]}}">{{each_option[1]}}</option>
+            {% endfor %}
           </select>
         </div>
         <div class="col-xs-4 col-sm-3 col-lg-2 small-gutters">
@@ -209,7 +207,7 @@
 
         <div class="row small-gutters collapse" id="collapseContainer{{each_relay.id}}" style="border-bottom: 2px solid #ddd; padding: 0.5em">
           <div class="col-xs-6 col-sm-6 col-md-4">
-            <input class="form-control" disabled="" value="{{each_relay.relay_type}}" type="text">
+            <input class="form-control" disabled="" value="{{output_info[each_relay.relay_type]['name']}}" type="text">
           </div>
           <div class="col-xs-3 col-sm-3 col-md-4">
             {{form_mod_relay.save(class_='form-control btn btn-default')}}
