@@ -349,7 +349,7 @@ if __name__ == "__main__":
     elif args.pid_get_setpoint:
         print(daemon_control.pid_get(args.pid_get_setpoint[0], 'setpoint'))
     elif args.pid_get_error:
-        print(daemon_control.pid_get(args.pid_get_setpoint[0], 'setpoint'))
+        print(daemon_control.pid_get(args.pid_get_error[0], 'error'))
     elif args.pid_get_integrator:
         print(daemon_control.pid_get(args.pid_get_integrator[0], 'integrator'))
     elif args.pid_get_derivator:
