@@ -275,20 +275,21 @@ if __name__ == "__main__":
     now = datetime.datetime.now
     parser = argparse.ArgumentParser(description="Client for Mycodo daemon.")
     args = parseargs(parser)
-    daemon_control = DaemonControl()
+    daemon = DaemonControl()
 
     if args.checkdaemon:
-        return_msg = daemon_control.check_daemon()
+        return_msg = daemon.check_daemon()
         logger.info(
             "[Remote command] Check Daemon: {msg}".format(msg=return_msg))
 
     elif args.ramuse:
-        return_msg = daemon_control.ram_use()
+        return_msg = daemon.ram_use()
         logger.info(
-            "[Remote command] Daemon Ram in Use: {msg} MB".format(msg=return_msg))
+            "[Remote command] Daemon Ram in Use: {msg} MB".format(
+                msg=return_msg))
 
     elif args.relayoff:
-        return_msg = daemon_control.relay_off(args.relayoff)
+        return_msg = daemon.relay_off(args.relayoff)
         logger.info("[Remote command] Turn off relay with ID '{id}': "
                     "Server returned: {msg}".format(
                         id=args.relayoff,
@@ -299,11 +300,13 @@ if __name__ == "__main__":
 
     elif args.relayon:
         if args.duration:
-            return_msg = daemon_control.relay_on(args.relayon, duration=args.duration)
+            return_msg = daemon.relay_on(
+                args.relayon, duration=args.duration)
         elif args.duty_cycle:
-            return_msg = daemon_control.relay_on(args.relayon, duty_cycle=args.duty_cycle)
+            return_msg = daemon.relay_on(
+                args.relayon, duty_cycle=args.duty_cycle)
         else:
-            return_msg = daemon_control.relay_on(args.relayon)
+            return_msg = daemon.relay_on(args.relayon)
         logger.info("[Remote command] Turn on relay with ID '{id}': "
                     "Server returned:".format(
                         id=args.relayon,
@@ -312,10 +315,10 @@ if __name__ == "__main__":
     elif args.activatecontroller:
         if args.activatecontroller[0] not in ['LCD', 'Math', 'PID',
                                               'Input', 'Timer']:
-            logger.info("Invalid controller type. Options are LCD, Math, PID, "
-                        "Input, and Timer.")
+            logger.info("Invalid controller type. Options: LCD, Math, PID, "
+                        "Input, Timer.")
         else:
-            return_msg = daemon_control.controller_activate(
+            return_msg = daemon.controller_activate(
                 args.activatecontroller[0], args.activatecontroller[1])
             logger.info("[Remote command] Activate {type} controller with "
                         "ID '{id}': Server returned: {msg}".format(
@@ -326,10 +329,10 @@ if __name__ == "__main__":
     elif args.deactivatecontroller:
         if args.deactivatecontroller[0] not in ['LCD', 'Math', 'PID',
                                                 'Input', 'Timer']:
-            logger.info("Invalid controller type. Options are LCD, Math, PID, "
-                        "Input, and Timer.")
+            logger.info("Invalid controller type. Options: LCD, Math, PID, "
+                        "Input, Timer.")
         else:
-            return_msg = daemon_control.controller_deactivate(
+            return_msg = daemon.controller_deactivate(
                 args.deactivatecontroller[0], args.deactivatecontroller[1])
             logger.info("[Remote command] Deactivate {type} controller with "
                         "ID '{id}': Server returned: {msg}".format(
@@ -338,48 +341,48 @@ if __name__ == "__main__":
                             msg=return_msg))
 
     elif args.pid_pause:
-        daemon_control.pid_pause(args.pid_pause[0])
+        daemon.pid_pause(args.pid_pause[0])
 
     elif args.pid_hold:
-        daemon_control.pid_pause(args.pid_hold[0])
+        daemon.pid_pause(args.pid_hold[0])
 
     elif args.pid_resume:
-        daemon_control.pid_pause(args.pid_resume[0])
+        daemon.pid_pause(args.pid_resume[0])
 
     elif args.pid_get_setpoint:
-        print(daemon_control.pid_get(args.pid_get_setpoint[0], 'setpoint'))
+        print(daemon.pid_get(args.pid_get_setpoint[0], 'setpoint'))
     elif args.pid_get_error:
-        print(daemon_control.pid_get(args.pid_get_error[0], 'error'))
+        print(daemon.pid_get(args.pid_get_error[0], 'error'))
     elif args.pid_get_integrator:
-        print(daemon_control.pid_get(args.pid_get_integrator[0], 'integrator'))
+        print(daemon.pid_get(args.pid_get_integrator[0], 'integrator'))
     elif args.pid_get_derivator:
-        print(daemon_control.pid_get(args.pid_get_derivator[0], 'derivator'))
+        print(daemon.pid_get(args.pid_get_derivator[0], 'derivator'))
     elif args.pid_get_kp:
-        print(daemon_control.pid_get(args.pid_get_kp[0], 'kp'))
+        print(daemon.pid_get(args.pid_get_kp[0], 'kp'))
     elif args.pid_get_ki:
-        print(daemon_control.pid_get(args.pid_get_ki[0], 'ki'))
+        print(daemon.pid_get(args.pid_get_ki[0], 'ki'))
     elif args.pid_get_kd:
-        print(daemon_control.pid_get(args.pid_get_kd[0], 'kd'))
+        print(daemon.pid_get(args.pid_get_kd[0], 'kd'))
 
     elif args.pid_set_setpoint:
-        print(daemon_control.pid_set(
-            args.pid_set_setpoint[0], 'setpoint', args.pid_set_setpoint[1]))
+        print(daemon.pid_set(args.pid_set_setpoint[0],
+                             'setpoint', args.pid_set_setpoint[1]))
     elif args.pid_set_integrator:
-        print(daemon_control.pid_set(
-            args.pid_set_integrator[0], 'integrator', args.pid_set_integrator[1]))
+        print(daemon.pid_set(args.pid_set_integrator[0],
+                             'integrator', args.pid_set_integrator[1]))
     elif args.pid_set_derivator:
-        print(daemon_control.pid_set(
-            args.pid_set_derivator[0], 'derivator', args.pid_set_derivator[1]))
+        print(daemon.pid_set(args.pid_set_derivator[0],
+                             'derivator', args.pid_set_derivator[1]))
     elif args.pid_set_kp:
-        print(daemon_control.pid_set(args.pid_set_kp[0], 'kp', args.pid_set_kp[1]))
+        print(daemon.pid_set(args.pid_set_kp[0], 'kp', args.pid_set_kp[1]))
     elif args.pid_set_ki:
-        print(daemon_control.pid_set(args.pid_set_ki[0], 'ki', args.pid_set_ki[1]))
+        print(daemon.pid_set(args.pid_set_ki[0], 'ki', args.pid_set_ki[1]))
     elif args.pid_set_kd:
-        print(daemon_control.pid_set(args.pid_set_kd[0], 'kd', args.pid_set_kd[1]))
+        print(daemon.pid_set(args.pid_set_kd[0], 'kd', args.pid_set_kd[1]))
 
     elif args.terminate:
         logger.info("[Remote command] Terminate daemon...")
-        if daemon_control.terminate_daemon():
+        if daemon.terminate_daemon():
             logger.info("Daemon response: Terminated.")
         else:
             logger.info("Unknown daemon response.")
