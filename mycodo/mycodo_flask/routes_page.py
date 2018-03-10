@@ -634,6 +634,7 @@ def page_info():
                            correct_database_version=correct_database_version,
                            df=df_output,
                            free=free_output,
+                           frontend_pid=frontend_pid,
                            i2c_devices_sorted=i2c_devices_sorted,
                            ifconfig=ifconfig_output,
                            pstree_daemon=pstree_daemon_output,
