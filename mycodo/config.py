@@ -47,12 +47,12 @@ DEVICES = [
     ('BH1750', 'Luminance: BH1750 (I2C)'),
     ('TSL2561', 'Luminance: TSL2561 (I2C)'),
     ('TSL2591', 'Luminance: TSL2591 (I2C)'),
-    ('CHIRP', 'Moisture: Chirp (I2C)'),
+    ('CHIRP', 'Moisture/Temperature/Luminance: Chirp (I2C)'),
     ('ATLAS_PH_I2C', 'pH: Atlas Scientific (I2C)'),
     ('ATLAS_PH_UART', 'pH: Atlas Scientific (Serial)'),
-    ('BME280', 'Pressure/Temperature/Humidity: BME 280 (I2C)'),
     ('BMP180', 'Pressure/Temperature: BMP 180/085 (I2C)'),
     ('BMP280', 'Pressure/Temperature: BMP 280 (I2C)'),
+    ('BME280', 'Pressure/Temperature/Humidity: BME 280 (I2C)'),
     ('DS18B20', 'Temperature: DS18B20 (1-Wire)'),
     ('ATLAS_PT1000_I2C', 'Temperature: Atlas Scientific PT-1000 (I2C)'),
     ('ATLAS_PT1000_UART', 'Temperature: Atlas Scientific PT-1000 (Serial)'),
@@ -70,159 +70,257 @@ DEVICES = [
 # Device information
 DEVICE_INFO = {
     'MYCODO_RAM': {
+        'name': 'Mycodo RAM',
         'py-dependencies': [],
         'measure': ['disk_space']},
     'ADS1x15': {
+        'name': 'ADS1x15',
         'i2c-addresses': ['0x48'],
         'i2c-address-change': False,
         'py-dependencies': ['Adafruit_ADS1x15'],
         'measure': ['voltage']},
     'AM2315': {
+        'name': 'AM2315',
         'i2c-addresses': ['0x5c'],
         'i2c-address-change': False,
         'py-dependencies': ['quick2wire'],
         'measure': ['dewpoint', 'humidity', 'temperature']},
     'ATLAS_PH_I2C': {
+        'name': 'Atlas pH (I2C)',
         'i2c-addresses': ['0x63'],
         'i2c-address-change': False,
         'py-dependencies': [],
         'measure': ['ph']},
     'ATLAS_PH_UART': {
+        'name': 'Atlas pH (Serial)',
         'py-dependencies': ['serial'],
         'measure': ['ph']},
     'ATLAS_PT1000_I2C': {
+        'name': 'Atlas PT-1000 (I2C)',
         'i2c-addresses': ['0x66'],
         'i2c-address-change': False,
         'py-dependencies': [],
         'measure': ['temperature']},
     'ATLAS_PT1000_UART': {
+        'name': 'Atlas PT-1000 (Serial)',
         'py-dependencies': ['serial'],
         'measure': ['temperature']},
     'BH1750': {
+        'name': 'BH1750',
         'i2c-addresses': ['0x23'],
         'i2c-address-change': False,
         'py-dependencies': ['smbus'],
         'measure': ['lux']},
     'BME280': {
+        'name': 'BME280',
         'i2c-addresses': ['0x76'],
         'i2c-address-change': False,
         'py-dependencies': ['Adafruit_BME280'],
         'measure': ['altitude', 'dewpoint', 'humidity', 'pressure', 'temperature']},
     'BMP': {  # TODO: Remove in next major version. BMP180 replaced this name
+        'name': 'BMP180',
         'i2c-addresses': ['0x77'],
         'i2c-address-change': False,
         'py-dependencies': ['Adafruit_BMP'],
         'measure': ['altitude', 'pressure', 'temperature']},
     'BMP180': {
+        'name': 'BMP180',
         'i2c-addresses': ['0x77'],
         'i2c-address-change': False,
         'py-dependencies': ['Adafruit_BMP'],
         'measure': ['altitude', 'pressure', 'temperature']},
     'BMP280': {
+        'name': 'BMP280',
         'i2c-addresses': ['0x77'],
         'i2c-address-change': False,
         'py-dependencies': ['Adafruit_GPIO'],
         'measure': ['altitude', 'pressure', 'temperature']},
     'CHIRP': {
+        'name': 'Chirp',
         'i2c-addresses': ['0x40'],
         'i2c-address-change': True,
         'py-dependencies': ['smbus'],
         'measure': ['lux', 'moisture', 'temperature']},
     'DHT11': {
+        'name': 'DHT11',
         'py-dependencies': ['pigpio'],
         'measure': ['dewpoint', 'humidity', 'temperature']},
     'DHT22': {
+        'name': 'DHT22',
         'py-dependencies': ['pigpio'],
         'measure': ['dewpoint', 'humidity', 'temperature']},
     'DS18B20': {
+        'name': 'DS18B20',
         'py-dependencies': ['w1thermsensor'],
         'measure': ['temperature']},
     'EDGE': {
+        'name': 'Edge',
         'py-dependencies': ['RPi.GPIO'],
         'measure': ['edge']},
     'GPIO_STATE': {
+        'name': 'GPIO State',
         'py-dependencies': ['RPi.GPIO'],
         'measure': ['gpio_state']},
     'HTU21D': {
+        'name': 'HTU21D',
         'i2c-addresses': ['0x40'],
         'i2c-address-change': False,
         'py-dependencies': ['pigpio'],
         'measure': ['dewpoint', 'humidity', 'temperature']},
     'K30_UART': {
+        'name': 'K-30 (Serial)',
         'py-dependencies': ['serial'],
         'measure': ['co2']},
+    'LinuxCommand': {
+        'name': 'Linux Command',
+        'py-dependencies': [],
+        'measure': []},
     'MAX31855': {
+        'name': 'MAX13855K',
         'py-dependencies': ['Adafruit_MAX31855'],
         'measure': ['temperature', 'temperature_die']},
     'MAX31856': {
+        'name': 'MAX31856',
         'py-dependencies': ['RPi.GPIO'],
         'measure': ['temperature', 'temperature_die']},
     'MH_Z16_I2C': {
+        'name': 'MH-Z16 (I2C)',
         'i2c-addresses': ['0x63'],
         'i2c-address-change': False,
         'py-dependencies': ['smbus'],
         'measure': ['co2']},
     'MH_Z16_UART': {
+        'name': 'MH-Z16 (Serial)',
         'py-dependencies': ['serial'],
         'measure': ['co2']},
     'MH_Z19_UART': {
+        'name': 'MH-Z19 (Serial)',
         'py-dependencies': ['serial'],
         'measure': ['co2']},
     'MCP3008': {
+        'name': 'MCP3008',
         'py-dependencies': ['Adafruit_MCP3008'],
         'measure': ['voltage']},
     'MCP342x': {
+        'name': 'MCP342x',
         'i2c-addresses': ['0x68'],
         'i2c-address-change': False,
         'py-dependencies': ['MCP342x'],
         'measure': ['voltage']},
     'RPi': {
+        'name': 'RPi CPU Temperature',
         'py-dependencies': [],
         'measure': ['temperature']},
     'RPiCPULoad': {
+        'name': 'RPi CPU Load',
         'py-dependencies': [],
         'measure': ['cpu_load_1m', 'cpu_load_5m', 'cpu_load_15m']},
     'RPiFreeSpace': {
+        'name': 'RPi Free Space',
         'py-dependencies': [],
         'measure': ['disk_space']},
     'SERVER_PING': {
+        'name': 'Server Ping',
         'py-dependencies': [],
         'measure': ['boolean']},
     'SERVER_PORT_OPEN': {
+        'name': 'Port Open',
         'py-dependencies': [],
         'measure': ['boolean']},
     'SHT1x_7x': {
+        'name': 'SHT1x-7x',
         'py-dependencies': ['sht_sensor'],
         'measure': ['dewpoint', 'humidity', 'temperature']},
     'SHT2x': {
+        'name': 'SHT2x',
         'i2c-addresses': ['0x40'],
         'i2c-address-change': False,
         'py-dependencies': ['smbus'],
         'measure': ['dewpoint', 'humidity', 'temperature']},
     'SIGNAL_PWM': {
+        'name': 'Signal (PWM)',
         'py-dependencies': ['pigpio'],
         'measure': ['frequency','pulse_width', 'duty_cycle']},
     'SIGNAL_RPM': {
+        'name': 'Signal (RPM)',
         'py-dependencies': ['pigpio'],
         'measure': ['rpm']},
     'TMP006': {
+        'name': 'TMP006',
         'py-dependencies': ['Adafruit_TMP'],
         'measure': ['temperature_object', 'temperature_die']},
     'TSL2561': {
+        'name': 'TSL2561',
         'i2c-addresses': ['0x39'],
         'i2c-address-change': False,
         'py-dependencies': ['tsl2561'],
         'measure': ['lux']},
     'TSL2591': {
+        'name': 'TSL2591',
         'i2c-addresses': ['0x29'],
         'i2c-address-change': False,
         'py-dependencies': ['tsl2591'],
         'measure': ['lux']}
 }
 
+
+# Math controllers
+MATHS = [
+    ('average', 'Average (Multiple Inputs)'),
+    ('average_single', 'Average (Single Input)'),
+    ('difference', 'Difference'),
+    ('equation', 'Equation'),
+    ('median', 'Median'),
+    ('maximum', 'Maximum'),
+    ('minimum', 'Minimum'),
+    ('humidity', 'Humidity (Wet/Dry-Bulb)'),
+    ('verification', 'Verification')
+]
+
 # Math info
 MATH_INFO = {
-    'DailyBezier': {
+    'average': {
+        'name': 'Average (Multi)',
+        'py-dependencies': [],
+        'measure': []},
+    'average_single': {
+        'name': 'Average (Single)',
+        'py-dependencies': [],
+        'measure': []},
+    'difference': {
+        'name': 'Difference',
+        'py-dependencies': [],
+        'measure': []},
+    'equation': {
+        'name': 'Equation',
+        'py-dependencies': [],
+        'measure': []},
+    'median': {
+        'name': 'Median',
+        'py-dependencies': [],
+        'measure': []},
+    'maximum': {
+        'name': 'Maximum',
+        'py-dependencies': [],
+        'measure': []},
+    'minimum': {
+        'name': 'Minimum',
+        'py-dependencies': [],
+        'measure': []},
+    'humidity': {
+        'name': 'Humidity (Wet-Bulb)',
+        'py-dependencies': [],
+        'measure': ['humidity', 'humidity_ratio', 'specific_enthalpy', 'specific_volume']},
+    'verification': {
+        'name': 'Verification',
+        'py-dependencies': [],
+        'measure': []}
+}
+
+# Method info
+METHOD_INFO = {
+    'average': {
+        'name': 'DailyBezier',
         'py-dependencies': ['numpy']}
 }
 
@@ -337,19 +435,6 @@ MEASUREMENT_UNITS = {
         'name': lazy_gettext('Voltage'),
         'meas': 'voltage', 'unit': 'volts'}
 }
-
-# Math controllers
-MATHS = [
-    ('average', 'Average (Multiple Measurements)'),
-    ('average_single', 'Average (Single Measurement)'),
-    ('difference', 'Difference'),
-    ('equation', 'Equation'),
-    ('median', 'Median'),
-    ('maximum', 'Maximum'),
-    ('minimum', 'Minimum'),
-    ('humidity', 'Humidity'),
-    ('verification', 'Verification')
-]
 
 # Calibration
 CALIBRATION_DEVICES = [

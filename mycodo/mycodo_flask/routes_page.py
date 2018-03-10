@@ -35,6 +35,7 @@ from mycodo.config import KEEPUP_LOG_FILE
 from mycodo.config import LIST_DEVICES_ADC
 from mycodo.config import LIST_DEVICES_I2C
 from mycodo.config import LOGIN_LOG_FILE
+from mycodo.config import MATH_INFO
 from mycodo.config import MEASUREMENT_UNITS
 from mycodo.config import RESTORE_LOG_FILE
 from mycodo.config import UPGRADE_LOG_FILE
@@ -1163,6 +1164,7 @@ def page_data():
     return render_template('pages/data.html',
                            choices_input=choices_input,
                            choices_math=choices_math,
+                           device_info=DEVICE_INFO,
                            display_order_input=display_order_input,
                            display_order_math=display_order_math,
                            form_add_input=form_add_input,
@@ -1178,6 +1180,7 @@ def page_data():
                            input=input_dev,
                            input_templates=input_templates,
                            math=math,
+                           math_info=MATH_INFO,
                            math_templates=math_templates,
                            output=output,
                            pid=pid,

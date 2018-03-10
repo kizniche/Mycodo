@@ -10,6 +10,7 @@ from flask import url_for
 from flask_babel import gettext
 
 from mycodo.config import DEVICES_DEFAULT_LOCATION
+from mycodo.config import DEVICE_INFO
 from mycodo.config import LIST_DEVICES_ADC
 from mycodo.databases.models import DisplayOrder
 from mycodo.databases.models import Input
@@ -43,7 +44,7 @@ def input_add(form_add):
     if form_add.validate():
         new_sensor = Input()
         new_sensor.device = form_add.input_type.data
-        new_sensor.name = '{name} Input'.format(name=form_add.input_type.data)
+        new_sensor.name = ''
         if GPIO.RPI_INFO['P1_REVISION'] in [2, 3]:
             new_sensor.i2c_bus = 1
             new_sensor.multiplexer_bus = 1
@@ -56,6 +57,14 @@ def input_add(form_add):
             error.append("The {dev} device you're trying to add has unmet dependencies: {dep}".format(
                 dev=form_add.input_type.data, dep=unmet_deps))
 
+        if form_add.input_type.data in DEVICE_INFO :
+            new_sensor.name += ' {name}'.format(name=DEVICE_INFO[form_add.input_type.data]['name'])
+            new_sensor.measurements = ",".join(DEVICE_INFO[form_add.input_type.data]['measure'])
+
+        #
+        # Set default values for new Inputs
+        #
+
         # Linux command as sensor
         if form_add.input_type.data == 'LinuxCommand':
             new_sensor.cmd_command = 'shuf -i 50-70 -n 1'
@@ -65,35 +74,18 @@ def input_add(form_add):
         # Server is up or down
         elif form_add.input_type.data in ['SERVER_PING',
                                           'SERVER_PORT_OPEN']:
-            new_sensor.measurements = 'boolean'
             new_sensor.location = '127.0.0.1'
             new_sensor.period = 3600
 
         # Process monitors
         elif form_add.input_type.data == 'MYCODO_RAM':
-            new_sensor.measurements = 'disk_space'
             new_sensor.location = 'Mycodo_daemon'
         elif form_add.input_type.data == 'RPi':
-            new_sensor.measurements = 'temperature'
             new_sensor.location = 'RPi'
         elif form_add.input_type.data == 'RPiCPULoad':
-            new_sensor.measurements = 'cpu_load_1m,' \
-                                      'cpu_load_5m,' \
-                                      'cpu_load_15m'
             new_sensor.location = 'RPi'
         elif form_add.input_type.data == 'RPiFreeSpace':
-            new_sensor.measurements = 'disk_space'
             new_sensor.location = '/'
-        elif form_add.input_type.data == 'EDGE':
-            new_sensor.measurements = 'edge'
-        elif form_add.input_type.data == 'GPIO_STATE':
-            new_sensor.measurements = 'gpio_state'
-
-        # Signal measuremnt (PWM and RPM)
-        elif form_add.input_type.data == 'SIGNAL_PWM':
-            new_sensor.measurements = 'frequency,pulse_width,duty_cycle'
-        elif form_add.input_type.data == 'SIGNAL_RPM':
-            new_sensor.measurements = 'rpm'
 
         # Environmental Inputs
         # Temperature
@@ -103,7 +95,6 @@ def input_add(form_add):
                                           'MAX31855',
                                           'MAX31856',
                                           'TMP006']:
-            new_sensor.measurements = 'temperature'
             if form_add.input_type.data == 'ATLAS_PT1000_I2C':
                 new_sensor.interface = 'I2C'
                 new_sensor.location = '0x66'
@@ -116,29 +107,22 @@ def input_add(form_add):
                 else:
                     new_sensor.device_loc = "/dev/ttyAMA0"
             elif form_add.input_type.data == 'MAX31855':
-                new_sensor.measurements = 'temperature,' \
-                                          'temperature_die'
                 new_sensor.pin_clock = 11
                 new_sensor.pin_cs = 8
                 new_sensor.pin_miso = 9
             elif form_add.input_type.data == 'MAX31856':
-                new_sensor.measurements = 'temperature,' \
-                                          'temperature_die'
                 new_sensor.pin_cs = 8
                 new_sensor.pin_miso = 9
                 new_sensor.pin_mosi = 10
                 new_sensor.pin_clock = 11
                 new_sensor.thermocouple_type = 'K'
             elif form_add.input_type.data == 'TMP006':
-                new_sensor.measurements = 'temperature_object,' \
-                                          'temperature_die'
                 new_sensor.location = '0x40'
 
         # Temperature/Humidity
         elif form_add.input_type.data in ['AM2315', 'DHT11',
                                           'DHT22', 'HTU21D',
                                           'SHT1x_7x', 'SHT2x']:
-            new_sensor.measurements = 'temperature,humidity,dewpoint'
             if form_add.input_type.data == 'AM2315':
                 new_sensor.location = '0x5c'
             elif form_add.input_type.data == 'HTU21D':
@@ -148,18 +132,15 @@ def input_add(form_add):
 
         # Chirp moisture sensor
         elif form_add.input_type.data == 'CHIRP':
-            new_sensor.measurements = 'lux,moisture,temperature'
             new_sensor.location = '0x20'
 
         # CO2
         elif form_add.input_type.data == 'MH_Z16_I2C':
-            new_sensor.measurements = 'co2'
             new_sensor.location = '0x63'
             new_sensor.interface = 'I2C'
         elif form_add.input_type.data in ['K30_UART',
                                           'MH_Z16_UART',
                                           'MH_Z19_UART']:
-            new_sensor.measurements = 'co2'
             new_sensor.location = 'Tx/Rx'
             new_sensor.interface = 'UART'
             new_sensor.baud_rate = 9600
@@ -170,11 +151,9 @@ def input_add(form_add):
 
         # pH
         elif form_add.input_type.data == 'ATLAS_PH_I2C':
-            new_sensor.measurements = 'ph'
             new_sensor.location = '0x63'
             new_sensor.interface = 'I2C'
         elif form_add.input_type.data == 'ATLAS_PH_UART':
-            new_sensor.measurements = 'ph'
             new_sensor.location = 'Tx/Rx'
             new_sensor.interface = 'UART'
             new_sensor.baud_rate = 9600
@@ -184,22 +163,15 @@ def input_add(form_add):
                 new_sensor.device_loc = "/dev/ttyAMA0"
 
         # Pressure
-        elif form_add.input_type.data in ['BME280',
-                                          'BMP180',
-                                          'BMP280']:
-            if form_add.input_type.data == 'BME280':
-                new_sensor.measurements = 'temperature,humidity,' \
-                                          'dewpoint,pressure,altitude'
-                new_sensor.location = '0x76'
-            elif form_add.input_type.data in ['BMP180', 'BMP280']:
-                new_sensor.measurements = 'temperature,pressure,altitude'
-                new_sensor.location = '0x77'
+        if form_add.input_type.data == 'BME280':
+            new_sensor.location = '0x76'
+        elif form_add.input_type.data in ['BMP180', 'BMP280']:
+            new_sensor.location = '0x77'
 
         # Light
         elif form_add.input_type.data in ['BH1750',
                                           'TSL2561',
                                           'TSL2591']:
-            new_sensor.measurements = 'lux'
             if form_add.input_type.data == 'BH1750':
                 new_sensor.location = '0x23'
                 new_sensor.resolution = 0  # 0=Low, 1=High, 2=High2
@@ -211,7 +183,6 @@ def input_add(form_add):
 
         # Analog to Digital Converters
         elif form_add.input_type.data in LIST_DEVICES_ADC:
-            new_sensor.measurements = 'voltage'
             new_sensor.adc_measure = 'Condition'
             new_sensor.adc_measure_units = 'units'
             if form_add.input_type.data == 'ADS1x15':

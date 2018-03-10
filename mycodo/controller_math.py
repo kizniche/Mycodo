@@ -100,7 +100,6 @@ class MathController(threading.Thread):
             self.period = math.period
             self.max_measure_age = math.max_measure_age
             self.measure = math.measure
-            self.measure_units = math.measure_units
 
             # Inputs to calculate with
             self.inputs = math.inputs

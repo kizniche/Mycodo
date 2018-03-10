@@ -9,6 +9,7 @@ sys.path.append(
     os.path.abspath(os.path.join(os.path.dirname(__file__), os.path.pardir) + '/..'))
 from mycodo.config import DEVICE_INFO
 from mycodo.config import MATH_INFO
+from mycodo.config import METHOD_INFO
 
 logger = logging.getLogger("mycodo.dependencies_installed")
 
@@ -18,7 +19,8 @@ def get_installed_dependencies():
 
     list_dependencies = [
         DEVICE_INFO,
-        MATH_INFO
+        MATH_INFO,
+        METHOD_INFO
     ]
     for each_section in list_dependencies:
         for device_type in each_section:

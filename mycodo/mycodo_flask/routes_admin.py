@@ -26,6 +26,7 @@ from mycodo.config import DEVICE_INFO
 from mycodo.config import FORCE_UPGRADE_MASTER
 from mycodo.config import INSTALL_DIRECTORY
 from mycodo.config import MATH_INFO
+from mycodo.config import METHOD_INFO
 from mycodo.config import MYCODO_VERSION
 from mycodo.config import RESTORE_LOG_FILE
 from mycodo.config import STATS_CSV
@@ -226,7 +227,8 @@ def admin_dependencies(device):
 
     list_dependencies = [
         DEVICE_INFO,
-        MATH_INFO
+        MATH_INFO,
+        METHOD_INFO
     ]
     for each_section in list_dependencies:
         for each_device in each_section:

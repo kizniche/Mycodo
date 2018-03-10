@@ -6,6 +6,7 @@ from flask import flash
 from flask import url_for
 from flask_babel import gettext
 
+from mycodo.config import MATH_INFO
 from mycodo.databases.models import Conditional
 from mycodo.databases.models import ConditionalActions
 from mycodo.databases.models import DisplayOrder
@@ -37,12 +38,12 @@ def math_add(form_add_math):
 
     if form_add_math.validate():
         new_math = Math()
-        new_math.name = 'Math {name}'.format(name=form_add_math.math_type.data)
+        new_math.name = ''
         new_math.math_type = form_add_math.math_type.data
-
-        if new_math.math_type == 'humidity':
-            new_math.measure = 'humidity,humidity_ratio,specific_enthalpy,specific_volume'
-            new_math.measure_units = '%'
+        
+        if form_add_math.math_type.data in MATH_INFO:
+            new_math.name += ' {name}'.format(name=MATH_INFO[form_add_math.math_type.data]['name'])
+            new_math.measure = ",".join(MATH_INFO[form_add_math.math_type.data]['measure'])
 
         unmet_deps = return_dependencies(form_add_math.math_type.data)
         if unmet_deps:
