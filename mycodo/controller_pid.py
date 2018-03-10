@@ -731,7 +731,7 @@ class PIDController(threading.Thread):
 
     def set_setpoint(self, setpoint):
         """ Initilize the setpoint of PID """
-        self.setpoint = setpoint
+        self.setpoint = float(setpoint)
         with session_scope(MYCODO_DB_PATH) as db_session:
             mod_pid = db_session.query(PID).filter(
                 PID.id == self.pid_id).first()
@@ -740,15 +740,15 @@ class PIDController(threading.Thread):
 
     def set_integrator(self, integrator):
         """ Set the integrator of the controller """
-        self.integrator = integrator
+        self.integrator = float(integrator)
 
     def set_derivator(self, derivator):
         """ Set the derivator of the controller """
-        self.derivator = derivator
+        self.derivator = float(derivator)
 
     def set_kp(self, p):
         """ Set Kp gain of the controller """
-        self.Kp = p
+        self.Kp = float(p)
         with session_scope(MYCODO_DB_PATH) as db_session:
             mod_pid = db_session.query(PID).filter(
                 PID.id == self.pid_id).first()
@@ -757,7 +757,7 @@ class PIDController(threading.Thread):
 
     def set_ki(self, i):
         """ Set Ki gain of the controller """
-        self.Ki = i
+        self.Ki = float(i)
         with session_scope(MYCODO_DB_PATH) as db_session:
             mod_pid = db_session.query(PID).filter(
                 PID.id == self.pid_id).first()
@@ -766,7 +766,7 @@ class PIDController(threading.Thread):
 
     def set_kd(self, d):
         """ Set Kd gain of the controller """
-        self.Kd = d
+        self.Kd = float(d)
         with session_scope(MYCODO_DB_PATH) as db_session:
             mod_pid = db_session.query(PID).filter(
                 PID.id == self.pid_id).first()
