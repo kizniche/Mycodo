@@ -7,14 +7,14 @@
 
 {% block settings %}
   <!-- Route: /settings/general -->
-  <h3 style="text-align: right; padding-bottom: 1.3em;"><a href="/help#general-settings" target="_blank"><span style="font-size: 16px" class="glyphicon glyphicon-question-sign"></span></a> {{_('General Settings')}}</h3>
+  <h3 style="text-align: right; padding-bottom: 1.3em;"><a href="/help#general-settings" target="_blank"><span style="font-size: 16px" class="fas fa-question-circle"></span></a> {{_('General Settings')}}</h3>
 
   <form class="form-horizontal" method="post" action="/settings/general">
     <input type="hidden" name="form-name" value="General">
     {{form_settings_general.csrf_token}}
     <div class="form-group">
-      {{form_settings_general.language.label(class_='col-sm-4 control-label')}}
-      <div class="col-sm-8">
+      {{form_settings_general.language.label(class_='col-sm-12 control-label')}}
+      <div class="col-sm-12">
         <select class="form-control form-tooltip form-dropdown" data-placement="top" id="language" name="language" title="{{_('Selecting a language will override the web browser\'s language.')}}">
           <option value="">Browser Default</option>
           {% for each_language in languages %}
@@ -24,8 +24,8 @@
       </div>
     </div>
     <div class="form-group">
-      {{form_settings_general.force_https.label(class_='col-sm-4 control-label checkbox-nopad')}}
-      <div class="col-sm-8">
+      {{form_settings_general.force_https.label(class_='col-sm-12 control-label checkbox-nopad')}}
+      <div class="col-sm-12">
         {%- if misc.force_https == true -%}
           {{form_settings_general.force_https(checked=True)}}
         {%- else -%}
@@ -35,8 +35,8 @@
       </div>
     </div>
     <div class="form-group">
-      {{form_settings_general.hide_success.label(class_='col-sm-4 control-label checkbox-nopad')}}
-      <div class="col-sm-8">
+      {{form_settings_general.hide_success.label(class_='col-sm-12 control-label checkbox-nopad')}}
+      <div class="col-sm-12">
         {%- if misc.hide_alert_success == true -%}
           {{form_settings_general.hide_success(checked=True)}}
         {%- else -%}
@@ -46,8 +46,8 @@
       </div>
     </div>
     <div class="form-group">
-      {{form_settings_general.hide_info.label(class_='col-sm-4 control-label checkbox-nopad')}}
-      <div class="col-sm-8">
+      {{form_settings_general.hide_info.label(class_='col-sm-12 control-label checkbox-nopad')}}
+      <div class="col-sm-12">
         {%- if misc.hide_alert_info == true -%}
           {{form_settings_general.hide_info(checked=True)}}
         {%- else -%}
@@ -57,8 +57,8 @@
       </div>
     </div>
     <div class="form-group">
-      {{form_settings_general.hide_warning.label(class_='col-sm-4 control-label checkbox-nopad')}}
-      <div class="col-sm-8">
+      {{form_settings_general.hide_warning.label(class_='col-sm-12 control-label checkbox-nopad')}}
+      <div class="col-sm-12">
         {%- if misc.hide_alert_warning == true -%}
           {{form_settings_general.hide_warning(checked=True)}}
         {%- else -%}
@@ -68,8 +68,8 @@
       </div>
     </div>
     <div class="form-group">
-      {{form_settings_general.hide_tooltips.label(class_='col-sm-4 control-label checkbox-nopad')}}
-      <div class="col-sm-8">
+      {{form_settings_general.hide_tooltips.label(class_='col-sm-12 control-label checkbox-nopad')}}
+      <div class="col-sm-12">
         {%- if misc.hide_tooltips == true -%}
           {{form_settings_general.hide_tooltips(checked=True)}}
         {%- else -%}
@@ -79,8 +79,8 @@
       </div>
     </div>
     <div class="form-group">
-      {{form_settings_general.stats_opt_out.label(class_='col-sm-4 control-label checkbox-nopad')}}
-      <div class="col-sm-8">
+      {{form_settings_general.stats_opt_out.label(class_='col-sm-12 control-label checkbox-nopad')}}
+      <div class="col-sm-12">
         {%- if misc.stats_opt_out == true -%}
           {{form_settings_general.stats_opt_out(checked=True)}}
         {%- else -%}
@@ -90,8 +90,8 @@
       </div>
     </div>
     <div class="form-group">
-      {{form_settings_general.enable_upgrade_check.label(class_='col-sm-4 control-label checkbox-nopad')}}
-      <div class="col-sm-8">
+      {{form_settings_general.enable_upgrade_check.label(class_='col-sm-12 control-label checkbox-nopad')}}
+      <div class="col-sm-12">
         {%- if misc.enable_upgrade_check == true -%}
           {{form_settings_general.enable_upgrade_check(checked=True)}}
         {%- else -%}
@@ -101,44 +101,43 @@
       </div>
     </div>
     <div class="form-group">
-      <div class="col-sm-4"></div>
-      <div class="col-sm-8">
+      <div class="col-sm-12">
         <h3>{{_('Output Usage')}}</h3>
       </div>
     </div>
     <div class="form-group">
-      {{form_settings_general.max_amps.label(class_='col-sm-4 control-label checkbox-nopad')}}
-      <div class="col-sm-8">
+      {{form_settings_general.max_amps.label(class_='col-sm-12 control-label checkbox-nopad')}}
+      <div class="col-sm-12">
         {{form_settings_general.max_amps(class_='form-control', value=misc.max_amps, **{'title':_("Set the maximum allowed amperage to be switched on at any given time")})}}
       </div>
     </div>
     <div class="form-group">
-      {{form_settings_general.relay_stats_volts.label(class_='col-sm-4 control-label checkbox-nopad')}}
-      <div class="col-sm-8">
+      {{form_settings_general.relay_stats_volts.label(class_='col-sm-12 control-label checkbox-nopad')}}
+      <div class="col-sm-12">
         {{form_settings_general.relay_stats_volts(class_='form-control', value=misc.relay_usage_volts, **{'title':_('Set the voltage used to power the devices powered by the relays')})}}
       </div>
     </div>
     <div class="form-group">
-      {{form_settings_general.relay_stats_cost.label(class_='col-sm-4 control-label checkbox-nopad')}}
-      <div class="col-sm-8">
+      {{form_settings_general.relay_stats_cost.label(class_='col-sm-12 control-label checkbox-nopad')}}
+      <div class="col-sm-12">
         {{form_settings_general.relay_stats_cost(class_='form-control', value=misc.relay_usage_cost, **{'title':_('Set the cost per kilowatt-hour')})}}
       </div>
     </div>
     <div class="form-group">
-      {{form_settings_general.relay_stats_currency.label(class_='col-sm-4 control-label checkbox-nopad')}}
-      <div class="col-sm-8">
+      {{form_settings_general.relay_stats_currency.label(class_='col-sm-12 control-label checkbox-nopad')}}
+      <div class="col-sm-12">
         {{form_settings_general.relay_stats_currency(class_='form-control', value=misc.relay_usage_currency, **{'title':_('Set the unit of currency used to pay for the electricity')})}}
       </div>
     </div>
     <div class="form-group">
-      {{form_settings_general.relay_stats_day_month.label(class_='col-sm-4 control-label checkbox-nopad')}}
-      <div class="col-sm-8">
+      {{form_settings_general.relay_stats_day_month.label(class_='col-sm-12 control-label checkbox-nopad')}}
+      <div class="col-sm-12">
         {{form_settings_general.relay_stats_day_month(class_='form-control', value=misc.relay_usage_dayofmonth, **{'title':_('Set a day of the month to calculate monthly power usage')})}}
       </div>
     </div>
     <div class="form-group">
-      {{form_settings_general.relay_usage_report_gen.label(class_='col-sm-4 control-label checkbox-nopad')}}
-      <div class="col-sm-8">
+      {{form_settings_general.relay_usage_report_gen.label(class_='col-sm-12 control-label checkbox-nopad')}}
+      <div class="col-sm-12">
         {%- if misc.relay_usage_report_gen == true -%}
           {{form_settings_general.relay_usage_report_gen(checked=True)}}
         {%- else -%}
@@ -148,8 +147,8 @@
       </div>
     </div>
     <div class="form-group">
-      {{form_settings_general.relay_usage_report_span.label(class_='col-sm-4 control-label checkbox-nopad')}}
-      <div class="col-sm-8">
+      {{form_settings_general.relay_usage_report_span.label(class_='col-sm-12 control-label checkbox-nopad')}}
+      <div class="col-sm-12">
         <select class="form-control" id="relay_usage_report_span" name="relay_usage_report_span" title="" data-original-title="{{_('How often to generate a report')}}">
           <option value="monthly"{% if misc.relay_usage_report_span == 'monthly' %} selected{% endif %}>Monthly</option>
           <option value="weekly"{% if misc.relay_usage_report_span == 'weekly' %} selected{% endif %}>Weekly</option>
@@ -158,19 +157,19 @@
       </div>
     </div>
     <div class="form-group">
-      {{form_settings_general.relay_usage_report_day.label(class_='col-sm-4 control-label checkbox-nopad')}}
-      <div class="col-sm-8">
+      {{form_settings_general.relay_usage_report_day.label(class_='col-sm-12 control-label checkbox-nopad')}}
+      <div class="col-sm-12">
         {{form_settings_general.relay_usage_report_day(class_='form-control', value=misc.relay_usage_report_day, **{'title':_('Day Options: Daily: 1-7 (1=Monday), Monthly: 1-28')})}}
       </div>
     </div>
     <div class="form-group">
-      {{form_settings_general.relay_usage_report_hour.label(class_='col-sm-4 control-label checkbox-nopad')}}
-      <div class="col-sm-8">
+      {{form_settings_general.relay_usage_report_hour.label(class_='col-sm-12 control-label checkbox-nopad')}}
+      <div class="col-sm-12">
         {{form_settings_general.relay_usage_report_hour(class_='form-control', value=misc.relay_usage_report_hour, **{'title':_('Hour Options: 0-23')})}}
       </div>
     </div>
     <div class="form-group">
-      <div class="col-sm-offset-4 col-sm-8">
+      <div class="col-sm-offset-4 col-sm-12">
         {{form_settings_general.Submit(class_='btn btn-default')}}
       </div>
     </div>

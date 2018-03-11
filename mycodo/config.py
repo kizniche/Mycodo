@@ -594,26 +594,13 @@ USER_ROLES = [
 
 # Web UI themes
 THEMES = [
-    ('cerulean', 'Cerulean'),
-    ('cosmo', 'Cosmo'),
-    ('cyborg', 'Cyborg'),
-    ('darkly', 'Darkly'),
-    ('flatly', 'Flatly'),
-    ('journal', 'Journal'),
-    ('lumen', 'Lumen'),
-    ('paper', 'Paper'),
-    ('readable', 'Readable'),
-    ('sadstone', 'Sadstone'),
-    ('simplex', 'Simplex'),
-    ('slate', 'Slate'),
-    ('spacelab', 'Spacelab'),
-    ('sun', 'Sun'),
-    ('superhearo', 'Superhearo'),
-    ('united', 'United'),
-    ('yeti', 'Yeti')
+    ('business-tycoon', 'Business Tycoon'),
+    ('charming', 'Charming'),
+    ('neon-glow', 'Neon Glow'),
+    ('vibrant-sea', 'Vibrant Sea')
 ]
 
-THEMES_DARK = ['cyborg', 'darkly', 'slate', 'sun', 'superhero']
+THEMES_DARK = ['neon-glow']
 
 # Install path, the parent directory this script resides
 INSTALL_DIRECTORY = os.path.dirname(os.path.realpath(__file__)) + '/..'

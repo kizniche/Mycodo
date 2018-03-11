@@ -2,6 +2,13 @@
  * Custom CSS
  */
 
+@media (max-width: 767px) {
+    .dropdown-menu{
+       max-height: 300px;
+       overflow-y: scroll;
+    }
+}
+
 .checkbox-big {
     width: 1.5em;
     height: 1.5em

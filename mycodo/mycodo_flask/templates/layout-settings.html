@@ -17,31 +17,25 @@
 
   {% set active_settings = active_settings|default('users') -%}
 
-  <div class="container-fluid">
-    <div class="row row-offcanvas row-offcanvas-left">
-      <div class="col-sm-2 col-md-2 sidebar-offcanvas" id="sidebar" role="navigation">
-        <ul class="nav nav-sidebar">
-          <li{% if active_settings == 'general' %} class="active"{% endif %}><a href="{{url_for('routes_settings.settings_general')}}"><i class="glyphicon glyphicon-globe"></i>&nbsp;&nbsp;{{_('General')}}</a></li>
-          <li{% if active_settings == 'users' %} class="active"{% endif %}><a href="{{url_for('routes_settings.settings_users')}}"><i class="fa fa-users"></i>&nbsp;&nbsp;{{_('Users')}}</a></li>
-          <li{% if active_settings == 'pi' %} class="active"{% endif %}><a href="{{url_for('routes_settings.settings_pi')}}"><i class="fa fa-linux"></i>&nbsp;&nbsp;{{_('Pi')}}</a></li>
-        </ul>
-        <ul class="nav nav-sidebar">
-          <li{% if active_settings == 'alerts' %} class="active"{% endif %}><a href="{{url_for('routes_settings.settings_alerts')}}"><i class="glyphicon glyphicon-alert"></i>&nbsp;&nbsp;{{_('Alerts')}}</a></li>
-          <li{% if active_settings == 'camera' %} class="active"{% endif %}><a href="{{url_for('routes_settings.settings_camera')}}"><i class="glyphicon glyphicon-camera"></i>&nbsp;&nbsp;{{_('Cameras')}}</a></li>
-        </ul>
-      </div><!--/span-->
-      <div class="col-sm-9 col-md-10 main">
-        <!--toggle sidebar button-->
-        <p class="visible-xs">
-          <button type="button" class="btn btn-primary btn-xs" data-toggle="offcanvas"><i class="glyphicon glyphicon-chevron-left"></i></button>
-        </p>
+  <div class="container sidebar-drop">
+    <div class="row">
+      <div class="col-md-3 col-xs-1 p-l-0 p-r-0 collapse in show" id="sidebar">
+          <div class="list-group panel">
+            <a class="list-group-item collapsed{% if active_settings == 'general' %} active{% endif %}" href="{{url_for('routes_settings.settings_general')}}"><i class="fas fa-globe"></i>&nbsp;&nbsp;{{_('General')}}</a>
+            <a class="list-group-item collapsed{% if active_settings == 'users' %} active{% endif %}" href="{{url_for('routes_settings.settings_users')}}"><i class="fas fa-users"></i>&nbsp;&nbsp;{{_('Users')}}</a>
+            <a class="list-group-item collapsed{% if active_settings == 'pi' %} active{% endif %}" href="{{url_for('routes_settings.settings_pi')}}"><i class="fab fa-linux"></i>&nbsp;&nbsp;{{_('Pi')}}</a>
+            <a class="list-group-item collapsed{% if active_settings == 'alerts' %} active{% endif %}" href="{{url_for('routes_settings.settings_alerts')}}"><i class="fas fa-bell"></i>&nbsp;&nbsp;{{_('Alerts')}}</a>
+            <a class="list-group-item collapsed{% if active_settings == 'camera' %} active{% endif %}" href="{{url_for('routes_settings.settings_camera')}}"><i class="fas fa-camera"></i>&nbsp;&nbsp;{{_('Cameras')}}</a>
+          </div>
+      </div>
+      <main class="col-md-9 col-xs-11 p-l-2 p-t-2">
+          <a href="#sidebar" data-toggle="collapse"><i class="fas fa-bars fa-lg"></i></a>
 
-        {% include 'flash_messages.html' %}
+          {% include 'flash_messages.html' %}
 
-        {% block settings %}{% endblock %}
-
-      </div><!--/row-->
+          {% block settings %}{% endblock %}
+      </main>
     </div>
-  </div><!--/.container-->
+  </div>
 
 {% endblock %}

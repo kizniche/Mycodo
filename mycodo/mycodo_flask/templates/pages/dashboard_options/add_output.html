@@ -1,14 +1,16 @@
 <form method="post" action="/dashboard">
-  <div class="form-inline">
-    {{form_base.csrf_token}}
-    <input type="hidden" name="dashboard_type" value="output">
-    <div class="form-group">
+  {{form_base.csrf_token}}
+  <input type="hidden" name="dashboard_type" value="output">
+
+  <div class="form-row small-gutters">
+
+    <div class="col-sm-6 col-md-3 col-lg-2">
       {{form_base.name.label(class_='control-label')}}
       <div>
         {{form_base.name(class_='form-control', value=_('Output Name'))}}
       </div>
     </div>
-    <div class="form-group">
+    <div class="col-sm-6 col-md-3 col-lg-2">
       {{form_base.width.label(class_='control-label')}}
       <div>
         <select class="form-control" id="width" name="width">
@@ -18,52 +20,52 @@
         </select>
       </div>
     </div>
-    <div class="form-group">
+    <div class="col-sm-6 col-md-3 col-lg-2">
       {{form_base.height.label(class_='control-label')}}
       <div>
         {{form_base.height(class_='form-control', value=200)}}
       </div>
     </div>
-    <div class="form-group">
+    <div class="col-sm-6 col-md-3 col-lg-2">
       {{form_output.max_measure_age.label(class_='control-label')}}
       <div>
         {{form_output.max_measure_age(class_='form-control', value=3600)}}
       </div>
     </div>
-    <div class="form-group">
+    <div class="col-sm-6 col-md-3 col-lg-2">
       {{form_base.refresh_duration.label(class_='control-label')}}
       <div>
         {{form_base.refresh_duration(class_='form-control', value=15)}}
       </div>
     </div>
-    <div class="form-group">
+    <div class="col-sm-6 col-md-3 col-lg-2">
       {{form_output.font_em_value.label(class_='control-label')}}
       <div>
         {{form_output.font_em_value(class_='form-control', value=3)}}
       </div>
     </div>
-    <div class="form-group">
+    <div class="col-sm-6 col-md-3 col-lg-2">
       {{form_output.font_em_timestamp.label(class_='control-label')}}
       <div>
         {{form_output.font_em_timestamp(class_='form-control', value=2)}}
       </div>
     </div>
-    <div class="form-group">
+    <div class="col-sm-6 col-md-3 col-lg-2">
       {{form_output.decimal_places.label(class_='control-label')}}
       <div>
         {{form_output.decimal_places(class_='form-control', value=1)}}
       </div>
     </div>
-    <div class="checkbox" style="padding-right: 1em">
-      <label>
-        {{form_output.enable_output_controls(class_='form-control')}}
-        {{form_output.enable_output_controls.label.text}}
-      </label>
+    <div class="col-sm-6 col-md-3 col-lg-2">
+      {{form_output.enable_output_controls.label(class_='control-label')}}
+      <div class="input-group-text">
+        <input id="enable_output_controls" name="enable_output_controls" type="checkbox" value="y">
+      </div>
     </div>
 
     <div style="clear: both"></div>
 
-    <div class="form-group">
+    <div class="col-sm-6 col-lg-3">
       {{form_output.output_id.label(class_='control-label')}}
       <div>
         <select class="form-control" id="output_id" name="output_id" style="width: 100%;">
@@ -81,9 +83,10 @@
 
     <div style="clear: both"></div>
   </div>
-  <div class="form-inline btn-group">
+  <div class="form-inline btn-group" style="padding: 1em 0 1em 0">
     <div class="form-group">
-      {{form_base.create(class_='form-control btn btn-default')}}
+      {{form_base.create(class_='btn btn-primary')}}
     </div>
   </div>
+
 </form>

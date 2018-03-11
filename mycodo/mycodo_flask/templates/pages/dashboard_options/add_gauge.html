@@ -1,20 +1,22 @@
 <form method="post" action="/dashboard">
-  <div class="form-inline">
-    {{form_base.csrf_token}}
-    <input type="hidden" name="dashboard_type" value="gauge">
-    <div class="form-group">
+  {{form_base.csrf_token}}
+  <input type="hidden" name="dashboard_type" value="gauge">
+
+  <div class="form-row small-gutters">
+
+    <div class="col-sm-6 col-md-3 col-lg-2">
       {{form_gauge.gauge_type.label(class_='control-label')}}
       <div>
         {{form_gauge.gauge_type(class_='form-control')}}
       </div>
     </div>
-    <div class="form-group">
+    <div class="col-sm-6 col-md-3 col-lg-2">
       {{form_base.name.label(class_='control-label')}}
       <div>
         {{form_base.name(class_='form-control', value=_('Gauge Name'))}}
       </div>
     </div>
-    <div class="form-group">
+    <div class="col-sm-6 col-md-3 col-lg-2">
       {{form_base.width.label(class_='control-label')}}
       <div>
         <select class="form-control" id="width" name="width">
@@ -24,31 +26,31 @@
         </select>
       </div>
     </div>
-    <div class="form-group">
+    <div class="col-sm-6 col-md-3 col-lg-2">
       {{form_base.height.label(class_='control-label')}}
       <div>
         {{form_base.height(class_='form-control', value=200)}}
       </div>
     </div>
-    <div class="form-group">
+    <div class="col-sm-6 col-md-3 col-lg-2">
       {{form_gauge.y_axis_min.label(class_='control-label')}}
       <div>
         {{form_gauge.y_axis_min(class_='form-control', value=0)}}
       </div>
     </div>
-    <div class="form-group">
+    <div class="col-sm-6 col-md-3 col-lg-2">
       {{form_gauge.y_axis_max.label(class_='control-label')}}
       <div>
         {{form_gauge.y_axis_max(class_='form-control', value=1000)}}
       </div>
     </div>
-    <div class="form-group">
+    <div class="col-sm-6 col-md-3 col-lg-2">
       {{form_gauge.max_measure_age.label(class_='control-label')}}
       <div>
         {{form_gauge.max_measure_age(class_='form-control', value=120)}}
       </div>
     </div>
-    <div class="form-group">
+    <div class="col-sm-6 col-md-3 col-lg-2">
       {{form_base.refresh_duration.label(class_='control-label')}}
       <div>
         {{form_base.refresh_duration(class_='form-control', value=30)}}
@@ -79,11 +81,12 @@
       </div>
     </div>
 
-    <div style="clear: both"></div>
   </div>
-  <div class="form-inline btn-group">
+
+  <div class="form-inline btn-group" style="padding-bottom: 1em">
     <div class="form-group">
-      {{form_base.create(class_='form-control btn btn-default')}}
+      {{form_base.create(class_='btn btn-primary')}}
     </div>
   </div>
+
 </form>

@@ -71,13 +71,13 @@ class InputMod(FlaskForm):
     switch_reset_period = IntegerField(lazy_gettext('Reset Period'))
     pre_relay_id = StringField(lazy_gettext('Pre Output'))
     pre_relay_duration = DecimalField(
-        lazy_gettext('Pre Output Duration'),
+        lazy_gettext('Pre Out Duration'),
         validators=[validators.NumberRange(
             min=0,
             max=86400
         )]
     )
-    pre_relay_during_measure = BooleanField(lazy_gettext('Pre Output During Measure'))
+    pre_relay_during_measure = BooleanField(lazy_gettext('Pre During Measure'))
     period = DecimalField(
         lazy_gettext('Period (seconds)'),
         validators=[DataRequired(),

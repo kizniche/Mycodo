@@ -13,7 +13,7 @@
   <div class="container">
     {% include 'flash_messages.html' %}
 
-    <h4>{{_('Functions')}} <a href="/help#{{help_page[0]}}" target="_blank"><span style="font-size: 16px" class="glyphicon glyphicon-question-sign"></span></a></h4>
+    <h4>{{_('Functions')}} <a href="/help#{{help_page[0]}}" target="_blank"><span style="font-size: 16px" class="fas fa-question-circle"></span></a></h4>
     <p>{{_('Functions conduct complex tasks, often coupling one or more <a href="/data">Data</a> sources with <a href="/output">Outputs</a>. For example, this could be using a PID Controller to create a feedback loop with a temperature sensor and heater in order to regulate temperature.')}}</p>
 
     <div style="clear: both; padding: 0.5em 0;"></div>
@@ -38,13 +38,13 @@
     <div style="clear: both; padding: 1em 0;"></div>
 
   {% if pid %}
-    <h4>{{_('PID Controllers')}} <a href="/help#pids" target="_blank"><span style="font-size: 16px" class="glyphicon glyphicon-question-sign"></span></a></h4>
+    <h4>{{_('PID Controllers')}} <a href="/help#pids" target="_blank"><span style="font-size: 16px" class="fas fa-question-circle"></span></a></h4>
     <p>{{_('PID controllers couple an input with a device connected to an output to regulate an environmental condition. For example, this could be a heater and a temperature sensor, allowing the regulation of temperature.')}}</p>
     {% include 'pages/function_options/pid.html' %}
   {% endif %}
 
   {% if conditional %}
-    <h4>{{_('Conditional')}} <a href="/help#conditional-statements"><span style="font-size: 16px" class="glyphicon glyphicon-question-sign"></span></a></h4>
+    <h4>{{_('Conditional')}} <a href="/help#conditional-statements"><span style="font-size: 16px" class="fas fa-question-circle"></span></a></h4>
     <p>{{_('Conditionals allow certain actions to be carried out when a certain set of conditions are met.')}} See the <a href="/help#conditional-statements">manual</a> for more information.</p>
     {% include 'pages/function_options/conditional.html' %}
   {% endif %}

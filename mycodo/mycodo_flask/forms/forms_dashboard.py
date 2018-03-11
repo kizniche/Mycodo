@@ -111,16 +111,16 @@ class DashboardGauge(FlaskForm):
 class DashboardMeasurement(FlaskForm):
     measurement_id = StringField(lazy_gettext('Measurement'))
     max_measure_age = DecimalField(lazy_gettext('Max Age (seconds)'))
-    font_em_value = DecimalField(lazy_gettext('Value Font Size (em)'))
-    font_em_timestamp = DecimalField(lazy_gettext('Timestamp Font Size (em)'))
+    font_em_value = DecimalField(lazy_gettext('Value Font (em)'))
+    font_em_timestamp = DecimalField(lazy_gettext('Timestamp Font (em)'))
     decimal_places = IntegerField(lazy_gettext('Decimal Places'))
 
 
 class DashboardOutput(FlaskForm):
     output_id = StringField(lazy_gettext('Output'))
     max_measure_age = DecimalField(lazy_gettext('Max Age (seconds)'))
-    font_em_value = DecimalField(lazy_gettext('Value Font Size (em)'))
-    font_em_timestamp = DecimalField(lazy_gettext('Timestamp Font Size (em)'))
+    font_em_value = DecimalField(lazy_gettext('Value Font (em)'))
+    font_em_timestamp = DecimalField(lazy_gettext('Timestamp Font (em)'))
     decimal_places = IntegerField(lazy_gettext('Decimal Places'))
     enable_output_controls = BooleanField(lazy_gettext('Feature Output Controls'))
 
@@ -128,8 +128,8 @@ class DashboardOutput(FlaskForm):
 class DashboardPIDControl(FlaskForm):
     pid_id = StringField(lazy_gettext('PID'))
     max_measure_age = DecimalField(lazy_gettext('Max Age (seconds)'))
-    font_em_value = DecimalField(lazy_gettext('Value Font Size (em)'))
-    font_em_timestamp = DecimalField(lazy_gettext('Timestamp Font Size (em)'))
+    font_em_value = DecimalField(lazy_gettext('Value Font (em)'))
+    font_em_timestamp = DecimalField(lazy_gettext('Timestamp Font (em)'))
     camera_max_age = IntegerField(lazy_gettext('Max Age (seconds)'))
     decimal_places = IntegerField(lazy_gettext('Decimal Places'))
     enable_pid_info = BooleanField(lazy_gettext('Show PID Information'))

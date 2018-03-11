@@ -1,0 +1,10 @@
+/* Show it is fixed to the top */
+body {
+  min-height: 10rem;
+  padding-top: 4.5rem;
+}
+
+.sidebar-drop {
+  min-height: 10rem;
+  padding-top: 2.5rem;
+}

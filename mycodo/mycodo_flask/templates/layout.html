@@ -8,7 +8,7 @@
   <meta name="description" content="">
   <meta name="author" content="">
   <link rel="icon" type="image/png" href="/static/img/favicon.png">
-    
+
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-title" content="Mycodo {{mycodo_version}}">
   <meta name="application-name" content="Mycodo {{mycodo_version}}">
@@ -42,14 +42,7 @@
 
   <title>{{host}}{% block title %}{% endblock %} - Mycodo {{mycodo_version}}</title>
 
-  <link rel="stylesheet" href="/static/css/font-awesome.min.css">
-
-  <!-- Bootstrap core CSS -->
   <link href="/static/css/bootstrap.min.css" rel="stylesheet">
-
-  {% if current_user.theme != '' %}
-    <link href="/static/css/bootstrap-themes/bootstrap-{{current_user.theme}}.min.css" rel="stylesheet">
-  {% endif %}
 
   {% if current_user.theme in dark_themes %}
     <link href="/static/css/custom-dark.css" rel="stylesheet">
@@ -57,13 +50,15 @@
     <link href="/static/css/custom-light.css" rel="stylesheet">
   {% endif %}
 
-  <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
-  <link href="/static/css/ie10-viewport-bug-workaround.css" rel="stylesheet">
+  {% if current_user.theme != '' %}
+    <link href="/static/css/bootstrap-4-themes/{{current_user.theme}}.min.css" rel="stylesheet">
+  {% endif %}
 
-  <link href="/static/css/navbar-fixed-top.css" rel="stylesheet">
+  <link href="/static/css/navbar-top-fixed.css" rel="stylesheet">
   <link href="/static/css/custom.css" rel="stylesheet">
-  <script src="/static/js/ie-emulation-modes-warning.js"></script>
-  <script src="/static/js/jquery-3.1.1.min.js"></script>
+  <script src="/static/js/jquery-3.3.1.min.js"></script>
+  <script src="/static/js/fontawesome-all.min.js"></script>
+  <script src="/static/js/popper.min.js"></script>
   <script>
 
   function check_daemon_status() {
@@ -140,93 +135,83 @@
   {% block head %}{% endblock %}
   </head>
   <body>
-    
+
     {% set active_page = active_page|default('') -%}
     {% set help_page = help_page|default(['', '']) -%}
 
-    <nav class="navbar navbar-default navbar-fixed-top">
-      <div class="container">
-        <div class="navbar-header">
-          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
-          <span class="sr-only">Toggle navigation</span>
-          <span class="icon-bar"></span>
-          <span class="icon-bar"></span>
-          <span class="icon-bar"></span>
-          </button>
-          <a class="navbar-brand" id="daemon-status" data-toggle="tooltip" data-placement="bottom" href="{{url_for('routes_page.page_info')}}" style="text-align: center; padding: 0 15px; padding-top: 2px !important; font-size: 14px; font-weight: bold;{%- if daemon_status == "alive" -%} /*noinspection CssOverwrittenProperties*/color: #4E9258{%- else -%} /*noinspection CssOverwrittenProperties*/color: #F70D1A{%- endif -%}" title="{%- if daemon_status == "alive" -%}{{_('Daemon is Running')}}{%- else -%}{{_('Daemon is Not Running')}}{%- endif -%}">{{host}} - {{mycodo_version}}<br><span id="time-update"></span></a>
-        </div>
-        <div id="navbar" class="navbar-collapse collapse">
-          <ul class="nav navbar-nav">
+    <nav class="navbar navbar-expand-md {% if current_user.theme in dark_themes %}bg-dark{% else %}bg-light{% endif %} fixed-top">
+      <a class="navbar-brand" id="daemon-status" href="{{url_for('routes_page.page_info')}}" style="text-align: center; padding: 0 15px; padding-top: 2px !important; font-size: 14px; font-weight: bold;{%- if daemon_status == "alive" -%} /*noinspection CssOverwrittenProperties*/color: #4E9258{%- else -%} /*noinspection CssOverwrittenProperties*/color: #F70D1A{%- endif -%}" title="{%- if daemon_status == "alive" -%}{{_('Daemon is Running')}}{%- else -%}{{_('Daemon is Not Running')}}{%- endif -%}">{{host}} - {{mycodo_version}}<br><span id="time-update"></span></a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarCollapse">
+        <ul class="navbar-nav mr-auto">
 
-            <li class="dropdown{% if active_page in ['dashboard', 'live', 'graph_async'] %} active{% endif %}">
-              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{{_('Info')}}<span class="caret"></span></a>
-              <ul class="dropdown-menu">
-                <li{% if active_page == 'dashboard' %} class="active"{% endif %}><a href="{{url_for('routes_page.page_dashboard')}}"><i class="fa fa-area-chart icon-fw"></i> {{_('Dashboard')}}</a></li>
-                <li{% if active_page == 'live' %} class="active"{% endif %}><a href="{{url_for('routes_page.page_live')}}"><i class="glyphicon glyphicon-play icon-fw"></i> {{_('Live Measurements')}}</a></li>
-                <li{% if active_page == 'graph_async' %} class="active"{% endif %}><a href="{{url_for('routes_page.page_graph_async')}}"><i class="glyphicon glyphicon-transfer icon-fw"></i> {{_('Asynchronous Graphs')}}</a></li>
-              </ul>
-            </li>
+          <li class="nav-item dropdown{% if active_page in ['dashboard', 'live', 'graph_async'] %} active{% endif %}">
+            <a class="nav-link dropdown-toggle" href="http://example.com" id="dropdown00" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{_('Info')}}</a>
+            <div class="dropdown-menu" aria-labelledby="dropdown00">
+              <a class="dropdown-item{% if active_page == 'dashboard' %} active{% endif %}" href="{{url_for('routes_page.page_dashboard')}}"><i class="fas fa-chart-area"></i> {{_('Dashboard')}}</a>
+              <a class="dropdown-item{% if active_page == 'live' %} active{% endif %}" href="{{url_for('routes_page.page_live')}}"><i class="fas fa-play"></i> {{_('Live Measurements')}}</a>
+              <a class="dropdown-item{% if active_page == 'graph_async' %} active{% endif %}" href="{{url_for('routes_page.page_graph_async')}}"><i class="fas fa-exchange-alt"></i> {{_('Asynchronous Graphs')}}</a>
+            </div>
+          </li>
 
-            <li{% if active_page == 'data' %} class="active"{% endif %}><a href="{{url_for('routes_page.page_data')}}">{{_('Data')}}</a></li>
-            <li{% if active_page == 'output' %} class="active"{% endif %}><a href="{{url_for('routes_page.page_output')}}">{{_('Output')}}</a></li>
-            <li{% if active_page == 'function' %} class="active"{% endif %}><a href="{{url_for('routes_page.page_function')}}">{{_('Function')}}</a></li>
-            <li{% if active_page == 'timer' %} class="active"{% endif %}><a href="{{url_for('routes_page.page_timer')}}">{{_('Timer')}}</a></li>
+          <li class="nav-item{% if active_page == 'data' %} active{% endif %}">
+            <a class="nav-link" href="{{url_for('routes_page.page_data')}}">{{_('Data')}}</a>
+          </li>
+          <li class="nav-item{% if active_page == 'output' %} active{% endif %}">
+            <a class="nav-link" href="{{url_for('routes_page.page_output')}}">{{_('Output')}}</a>
+          </li>
+          <li class="nav-item{% if active_page == 'function' %} active{% endif %}">
+            <a class="nav-link" href="{{url_for('routes_page.page_function')}}">{{_('Function')}}</a>
+          </li>
+          <li class="nav-item{% if active_page == 'timer' %} active{% endif %}">
+            <a class="nav-link" href="{{url_for('routes_page.page_timer')}}">{{_('Timer')}}</a>
+          </li>
 
-            <li class="dropdown{% if active_page in ['camera', 'export', 'lcd', 'method_list', 'calibration', 'usage', 'usage_reports'] %} active{% endif %}">
-              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{{_('More')}}<span class="caret"></span></a>
-              <ul class="dropdown-menu">
-                <li{% if active_page == 'export' %} class="active"{% endif %}><a href="{{url_for('routes_page.page_export')}}"><i class="glyphicon glyphicon-save-file icon-fw"></i> {{_('Export Import')}}</a></li>
-                <li{% if active_page == 'method_list' %} class="active"{% endif %}><a href="{{url_for('routes_method.method_list')}}"><i class="fa fa-line-chart icon-fw"></i> {{_('Methods')}}</a></li>
-                <li{% if active_page == 'lcd' %} class="active"{% endif %}><a href="{{url_for('routes_page.page_lcd')}}"><i class="fa fa-desktop icon-fw"></i> {{_('LCDs')}}</a></li>
-                <li{% if active_page == 'camera' %} class="active"{% endif %}><a href="{{url_for('routes_page.page_camera')}}"><i class="glyphicon glyphicon-camera icon-fw"></i> {{_('Cameras')}}</a></li>
-                <li{% if active_page == 'calibration' %} class="active"{% endif %}><a href="{{url_for('routes_calibration.calibration_select')}}"><i class="fa fa-balance-scale icon-fw"></i> {{_('Calibration')}}</a></li>
-                <li{% if active_page == 'usage' %} class="active"{% endif %}><a href="{{url_for('routes_page.page_usage')}}"><i class="glyphicon glyphicon-equalizer icon-fw"></i> {{_('Output Usage')}}</a></li>
-                <li{% if active_page == 'usage_reports' %} class="active"{% endif %}><a href="{{url_for('routes_page.page_usage_reports')}}"><i class="glyphicon glyphicon-list-alt icon-fw"></i> {{_('Output Usage Reports')}}</a></li>
-              </ul>
-            </li>
-          </ul>
+          <li class="nav-item dropdown{% if active_page in ['camera', 'export', 'lcd', 'method_list', 'calibration', 'usage', 'usage_reports'] %} active{% endif %}">
+            <a class="nav-link dropdown-toggle" href="http://example.com" id="dropdown01" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{_('More')}}</a>
+            <div class="dropdown-menu" aria-labelledby="dropdown01">
+              <a class="dropdown-item{% if active_page == 'export' %} active{% endif %}" href="{{url_for('routes_page.page_export')}}"><i class="fas fa-save"></i> {{_('Export Import')}}</a>
+              <a class="dropdown-item{% if active_page == 'method_list' %} active{% endif %}" href="{{url_for('routes_method.method_list')}}"><i class="fa fa-chart-line"></i> {{_('Methods')}}</a>
+              <a class="dropdown-item{% if active_page == 'lcd' %} active{% endif %}" href="{{url_for('routes_page.page_lcd')}}"><i class="fa fa-desktop"></i> {{_('LCDs')}}</a>
+              <a class="dropdown-item{% if active_page == 'camera' %} active{% endif %}" href="{{url_for('routes_page.page_camera')}}"><i class="fas fa-camera"></i> {{_('Cameras')}}</a>
+              <a class="dropdown-item{% if active_page == 'calibration' %} active{% endif %}" href="{{url_for('routes_calibration.calibration_select')}}"><i class="fa fa-balance-scale"></i> {{_('Calibration')}}</a>
+              <a class="dropdown-item{% if active_page == 'usage' %} active{% endif %}" href="{{url_for('routes_page.page_usage')}}"><i class="fas fa-sliders-h"></i> {{_('Output Usage')}}</a>
+              <a class="dropdown-item{% if active_page == 'usage_reports' %} active{% endif %}" href="{{url_for('routes_page.page_usage_reports')}}"><i class="fas fa-list-alt"></i> {{_('Output Usage Reports')}}</a>
+            </div>
+          </li>
 
-          <ul class="nav navbar-nav navbar-right">
-            <li class="dropdown{% if active_page == 'help' %} active{% endif %}">
-              <a style="padding-top: 10px !important;" href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><span class="gi-2x glyphicon glyphicon-question-sign"></span></a>
-              <ul class="dropdown-menu">
-                {% if help_page[0] != '' %}
-                  <li{% if active_page == 'help' %} class="active"{% endif %}><a href="{{url_for('routes_page.page_help')}}#{{help_page[0]}}" target="_blank"><i class="fa fa-book icon-fw"></i> {{_('Help')}}: {{help_page[1]}}</a></li>
-                {% endif %}
-                <li{% if active_page == 'help' %} class="active"{% endif %}><a href="{{url_for('routes_page.page_help')}}" target="_blank"><i class="fa fa-book icon-fw"></i> {{_('Mycodo Manual')}}</a></li>
-                <li role="separator" class="divider"></li>
-                <li><a href="https://github.com/kizniche/Mycodo/issues/new" target="_blank"><i class="fa fa-bug icon-fw"></i> {{_('Submit an Issue')}}</a></li>
-                <li><a href="https://github.com/kizniche/Mycodo" target="_blank"><i class="fa fa-github icon-fw"></i> {{_('Mycodo on Github')}}</a></li>
-                <li><a href="https://github.com/kizniche/Mycodo/blob/master/CHANGELOG.md" target="_blank"><i class="fa fa-github icon-fw"></i> {{_('Changelog')}}</a></li>
-              </ul>
-            </li>
+        </ul>
 
-            <li class="dropdown{% if upgrade_available %} upgrade_available{% elif active_page in ['backup', 'dependencies', 'info', 'logview', 'settings', 'upgrade'] %} active{% endif %}">
-              <a style="padding-top: 10px !important;" href="#" class="dropdown-toggle" style="padding-top: 0.2em; padding-bottom: 0.2em" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><span class="gi-2x glyphicon glyphicon-cog"></span></a>
-              <ul class="dropdown-menu">
-                <li{% if active_page == 'settings' %} class="active"{% endif %}><a href="{{url_for('routes_settings.settings_general')}}"><i class="fa fa-sliders icon-fw"></i> {{_('Configure')}}</a></li>
-                <li{% if active_page == 'logview' %} class="active"{% endif %}><a href="{{url_for('routes_page.page_logview')}}"><i class="glyphicon glyphicon-book icon-fw"></i> {{_('Mycodo Logs')}}</a></li>
-                <li{% if active_page == 'info' %} class="active"{% endif %}><a href="{{url_for('routes_page.page_info')}}"><i class="glyphicon glyphicon-info-sign icon-fw"></i> {{_('System Information')}}</a></li>
-                <li role="separator" class="divider"></li>
-                <li{% if active_page == 'dependencies' %} class="active"{% endif %}><a href="{{url_for('routes_admin.admin_dependencies_main')}}"><i class="fa fa-link icon-fw"></i> {{_('Dependencies')}}</a></li>
-                <li role="separator" class="divider"></li>
-                <li{% if upgrade_available %} class="upgrade_available"{% elif active_page == 'upgrade' %} class="active"{% endif %}><a href="{{url_for('routes_admin.admin_upgrade')}}"><i class="glyphicon glyphicon-open"></i> {{_('Upgrade')}}</a></li>
-                <li{% if active_page == 'backup' %} class="active"{% endif %}><a href="{{url_for('routes_admin.admin_backup')}}"><i class=" glyphicon glyphicon-floppy-saved"></i> {{_('Backup Restore')}}</a></li>
-                <li role="separator" class="divider"></li>
-                <li><a href="/systemctl/daemon_restart"onclick='return confirm("Confirm restarting the backend")'><i class="glyphicon glyphicon-repeat icon-fw"></i> {{_('Restart Backend')}}</a></li>
-                <li><a href="/systemctl/frontend_reload"onclick='return confirm("Confirm restarting the frontend")'><i class="glyphicon glyphicon-repeat icon-fw"></i> {{_('Restart Frontend')}}</a></li>
-                <li role="separator" class="divider"></li>
-                <li><a href="/systemctl/restart"onclick='return confirm("Confirm restarting the system")'><i class="glyphicon glyphicon-repeat icon-fw"></i> {{_('Restart System')}}</a></li>
-                <li><a href="/systemctl/shutdown"onclick='return confirm("Confirm shutting down the system")'><i class="glyphicon glyphicon-off icon-fw"></i> {{_('Shutdown System')}}</a></li>
-                <li role="separator" class="divider"></li>
-                <li><a href="/remote/setup"><i class="glyphicon glyphicon-sort"></i> {{_('Remote Admin')}}</a></li>
-                <li role="separator" class="divider"></li>
-                <li><a href="/logout"><i class="glyphicon glyphicon-lock"></i> {{_('Logout')}}</a></li>
-              </ul>
-            </li>
-          </ul>
+        <ul class="navbar-nav ml-auto">
 
-        </div>
+          <li class="nav-item dropdown{% if active_page in ['backup', 'dependencies', 'info', 'logview', 'settings', 'upgrade'] %} active{% endif %}">
+            <a class="nav-link dropdown-toggle" href="http://example.com" id="dropdown02" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-2x fa-cog"></i></a>
+            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdown02">
+              <a class="dropdown-item{% if active_page == 'settings' %} active{% endif %}" href="{{url_for('routes_settings.settings_general')}}"><i class="fas fa-sliders-h"></i> {{_('Configure')}}</a>
+              <a class="dropdown-item{% if active_page == 'logview' %} cactive{% endif %}" href="{{url_for('routes_page.page_logview')}}"><i class="fas fa-book"></i> {{_('Mycodo Logs')}}</a>
+              <a class="dropdown-item{% if active_page == 'info' %} active{% endif %}" href="{{url_for('routes_page.page_info')}}"><i class="fas fa-info-circle"></i> {{_('System Information')}}</a>
+              <div class="dropdown-divider"></div>
+              <a class="dropdown-item{% if active_page == 'dependencies' %} active{% endif %}" href="{{url_for('routes_admin.admin_dependencies_main')}}"><i class="fa fa-link"></i> {{_('Dependencies')}}</a>
+              <div class="dropdown-divider"></div>
+              <a class="dropdown-item{% if upgrade_available %} upgrade_available{% elif active_page == 'upgrade' %} active{% endif %}" href="{{url_for('routes_admin.admin_upgrade')}}"><i class="fas fa-upload"></i> {{_('Upgrade')}}</a>
+              <a class="dropdown-item{% if active_page == 'backup' %} active{% endif %}" href="{{url_for('routes_admin.admin_backup')}}"><i class=" fas fa-save"></i> {{_('Backup Restore')}}</a>
+              <div class="dropdown-divider"></div>
+              <a class="dropdown-item" href="/systemctl/daemon_restart"onclick='return confirm("Confirm restarting the backend")'><i class="fas fa-redo-alt"></i> {{_('Restart Backend')}}</a>
+              <a class="dropdown-item" href="/systemctl/frontend_reload"onclick='return confirm("Confirm restarting the frontend")'><i class="fas fa-redo-alt"></i> {{_('Restart Frontend')}}</a>
+              <div class="dropdown-divider"></div>
+              <a class="dropdown-item" href="/systemctl/restart"onclick='return confirm("Confirm restarting the system")'><i class="fas fa-redo-alt"></i> {{_('Restart System')}}</a>
+              <a class="dropdown-item" href="/systemctl/shutdown"onclick='return confirm("Confirm shutting down the system")'><i class="fas fa-power-off"></i> {{_('Shutdown System')}}</a>
+              <div class="dropdown-divider"></div>
+              <a class="dropdown-item" href="/remote/setup"><i class="fas fa-sort"></i> {{_('Remote Admin')}}</a>
+              <div class="dropdown-divider"></div>
+              <a class="dropdown-item" href="/logout"><i class="fas fa-lock"></i> {{_('Logout')}}</a>
+            </div>
+          </li>
+
+        </ul>
+
       </div>
     </nav>
 
@@ -234,9 +219,8 @@
 
     <!-- Bootstrap core JavaScript
     ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
     <script src="/static/js/bootstrap.min.js"></script>
-    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
-    <script src="/static/js/ie10-viewport-bug-workaround.js"></script>
     <script>
     $(document).ready(function(){
       $('[data-toggle="tooltip"]').tooltip();

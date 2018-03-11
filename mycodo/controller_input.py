@@ -91,6 +91,7 @@ class InputController(threading.Thread):
         input_dev = db_retrieve_table_daemon(Input, device_id=self.input_id)
         self.input_sel = input_dev
         self.id = input_dev.id
+        self.input_name = input_dev.name
         self.unique_id = input_dev.unique_id
         self.i2c_bus = input_dev.i2c_bus
         self.location = input_dev.location
@@ -570,6 +571,7 @@ class InputController(threading.Thread):
             if measurements is not None:
                 # Get the voltage difference between min and max volts
                 diff_voltage = abs(self.adc_volts_max - self.adc_volts_min)
+
                 # Ensure the voltage stays within the min/max bounds
                 if measurements['voltage'] < self.adc_volts_min:
                     measured_voltage = self.adc_volts_min
@@ -577,12 +579,14 @@ class InputController(threading.Thread):
                     measured_voltage = self.adc_volts_max
                 else:
                     measured_voltage = measurements['voltage']
+
                 # Calculate the percentage of the voltage difference
                 percent_diff = ((measured_voltage - self.adc_volts_min) /
                                 diff_voltage)
 
                 # Get the units difference between min and max units
                 diff_units = abs(self.adc_units_max - self.adc_units_min)
+
                 # Calculate the measured units from the percent difference
                 if self.adc_inverse_unit_scale:
                     converted_units = (self.adc_units_max -
@@ -590,6 +594,7 @@ class InputController(threading.Thread):
                 else:
                     converted_units = (self.adc_units_min +
                                        (diff_units * percent_diff))
+
                 # Ensure the units stay within the min/max bounds
                 if converted_units < self.adc_units_min:
                     measurements[self.adc_measure] = self.adc_units_min
@@ -709,13 +714,13 @@ class InputController(threading.Thread):
                     message = "{ts}\n[Conditional {cid} ({cname})] " \
                               "Input {oid} ({name}) {state} edge detected " \
                               "on pin {pin} (BCM)".format(
-                        ts=timestamp,
-                        cid=each_conditional.id,
-                        cname=each_conditional.name,
-                        name=each_conditional.name,
-                        oid=self.id,
-                        state=state_str,
-                        pin=bcm_pin)
+                                    ts=timestamp,
+                                    cid=each_conditional.id,
+                                    cname=each_conditional.name,
+                                    oid=self.id,
+                                    name=self.input_name,
+                                    state=state_str,
+                                    pin=bcm_pin)
 
                     self.control.trigger_conditional_actions(
                         each_conditional.id, message=message,
