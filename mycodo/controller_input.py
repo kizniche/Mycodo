@@ -82,7 +82,7 @@ class InputController(threading.Thread):
         self.ready = ready
         self.lock = {}
         self.measurement = None
-        self.updateSuccess = False
+        self.measurement_success = False
         self.input_id = input_id
         self.control = DaemonControl()
         self.pause_loop = False
@@ -434,15 +434,17 @@ class InputController(threading.Thread):
                             self.next_measurement += self.period
 
                     # if signaled and a pre output is set up correctly, turn the
-                    # output on for the set duration
+                    # output on or on for the set duration
                     if (self.get_new_measurement and
                             self.pre_output_setup and
                             not self.pre_output_activated):
 
+                        self.pre_output_timer = now + self.pre_output_duration
+                        self.pre_output_activated = True
+
                         # Only run the pre-output before measurement
+                        # Turn on for a duration, measure after it turns off
                         if not self.pre_relay_during_measure:
-                            self.pre_output_timer = now + self.pre_output_duration
-                            self.pre_output_activated = True
                             output_on = threading.Thread(
                                 target=self.control.relay_on,
                                 args=(self.pre_output_id,
@@ -450,9 +452,8 @@ class InputController(threading.Thread):
                             output_on.start()
 
                         # Run the pre-output during the measurement
+                        # Just turn on, then off after the measurement
                         else:
-                            self.pre_output_timer = now + self.pre_output_duration
-                            self.pre_output_activated = True
                             output_on = threading.Thread(
                                 target=self.control.relay_on,
                                 args=(self.pre_output_id,))
@@ -486,9 +487,9 @@ class InputController(threading.Thread):
                             self.get_new_measurement = False
 
                         # Add measurement(s) to influxdb
-                        if self.updateSuccess:
+                        if self.measurement_success:
                             add_measure_influxdb(self.unique_id, self.measurement)
-                            self.updateSuccess = False
+                            self.measurement_success = False
 
                 self.trigger_cond = False
 
@@ -539,7 +540,7 @@ class InputController(threading.Thread):
                 " Error: {err}".format(
                     add=self.mux_address_string,
                     err=multiplexer_response))
-            self.updateSuccess = False
+            self.measurement_success = False
             return 1
 
     def unlock_multiplexer(self):
@@ -621,7 +622,7 @@ class InputController(threading.Thread):
         if not self.device_recognized:
             self.logger.debug("Device not recognized: {device}".format(
                 device=self.device))
-            self.updateSuccess = False
+            self.measurement_success = False
             return 1
 
         # Lock multiplexer, if it's enabled
@@ -657,9 +658,9 @@ class InputController(threading.Thread):
 
         if self.device_recognized and measurements is not None:
             self.measurement = Measurement(measurements)
-            self.updateSuccess = True
+            self.measurement_success = True
         else:
-            self.updateSuccess = False
+            self.measurement_success = False
 
         self.lastUpdate = time.time()
 
