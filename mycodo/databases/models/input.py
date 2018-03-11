@@ -48,6 +48,7 @@ class Input(CRUDMixin, db.Model):
     # Pre-measurement relay options
     pre_relay_id = db.Column(db.Integer, db.ForeignKey('relay.id'), default=None)  # Output to turn on before sensor read
     pre_relay_duration = db.Column(db.Float, default=0.0)  # Duration to turn relay on before sensor read
+    pre_relay_during_measure = db.Column(db.Boolean, default=True)
 
     # SHT sensor options
     sht_clock_pin = db.Column(db.Integer, default=0)

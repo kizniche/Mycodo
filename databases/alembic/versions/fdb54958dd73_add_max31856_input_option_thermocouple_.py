@@ -19,8 +19,10 @@ depends_on = None
 def upgrade():
     with op.batch_alter_table("sensor") as batch_op:
         batch_op.add_column(sa.Column('thermocouple_type', sa.Text))
+        batch_op.add_column(sa.Column('pre_relay_during_measure', sa.Boolean))
 
 
 def downgrade():
     with op.batch_alter_table("sensor") as batch_op:
         batch_op.drop_column('thermocouple_type')
+        batch_op.drop_column('pre_relay_during_measure')

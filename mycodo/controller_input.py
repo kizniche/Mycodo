@@ -151,6 +151,7 @@ class InputController(threading.Thread):
         # Output that will activate prior to input read
         self.pre_output_id = input_dev.pre_relay_id
         self.pre_output_duration = input_dev.pre_relay_duration
+        self.pre_relay_during_measure = input_dev.pre_relay_during_measure
         self.pre_output_setup = False
         self.next_measurement = time.time()
         self.get_new_measurement = False
@@ -437,29 +438,57 @@ class InputController(threading.Thread):
                     if (self.get_new_measurement and
                             self.pre_output_setup and
                             not self.pre_output_activated):
-                        self.pre_output_timer = now + self.pre_output_duration
-                        self.pre_output_activated = True
 
-                        output_on = threading.Thread(
-                            target=self.control.relay_on,
-                            args=(self.pre_output_id,
-                                  self.pre_output_duration,))
-                        output_on.start()
+                        # Only run the pre-output before measurement
+                        if not self.pre_relay_during_measure:
+                            self.pre_output_timer = now + self.pre_output_duration
+                            self.pre_output_activated = True
+                            output_on = threading.Thread(
+                                target=self.control.relay_on,
+                                args=(self.pre_output_id,
+                                      self.pre_output_duration,))
+                            output_on.start()
+
+                        # Run the pre-output during the measurement
+                        else:
+                            self.pre_output_timer = now + self.pre_output_duration
+                            self.pre_output_activated = True
+                            output_on = threading.Thread(
+                                target=self.control.relay_on,
+                                args=(self.pre_output_id,))
+                            output_on.start()
 
                     # If using a pre output, wait for it to complete before
                     # querying the input for a measurement
                     if self.get_new_measurement:
-                        if ((self.pre_output_setup and
+
+                        if (self.pre_output_setup and
                                 self.pre_output_activated and
-                                now < self.pre_output_timer) or
-                                not self.pre_output_setup):
-                            # Get measurement(s) from input
-                            self.update_measure()
-                            # Add measurement(s) to influxdb
-                            if self.updateSuccess:
-                                add_measure_influxdb(self.unique_id, self.measurement)
+                                now > self.pre_output_timer):
+
+                            if self.pre_relay_during_measure:
+                                # Measure then turn off pre-output
+                                self.update_measure()
+                                output_off = threading.Thread(
+                                    target=self.control.relay_off,
+                                    args=(self.pre_output_id,))
+                                output_off.start()
+                            else:
+                                # Pre-output has turned off, now measure
+                                self.update_measure()
+
                             self.pre_output_activated = False
                             self.get_new_measurement = False
+
+                        elif not self.pre_output_setup:
+                            # Pre-output not enabled, just measure
+                            self.update_measure()
+                            self.get_new_measurement = False
+
+                        # Add measurement(s) to influxdb
+                        if self.updateSuccess:
+                            add_measure_influxdb(self.unique_id, self.measurement)
+                            self.updateSuccess = False
 
                 self.trigger_cond = False
 

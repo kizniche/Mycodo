@@ -1072,6 +1072,7 @@ def page_data():
 
     choices_input = utils_general.choices_inputs(input_dev)
     choices_math = utils_general.choices_maths(math)
+    choices_output = utils_general.choices_outputs(output)
 
     # convert dict to list of tuples
     choices = []
@@ -1174,6 +1175,7 @@ def page_data():
     return render_template('pages/data.html',
                            choices_input=choices_input,
                            choices_math=choices_math,
+                           choices_output=choices_output,
                            device_info=DEVICE_INFO,
                            display_order_input=display_order_input,
                            display_order_math=display_order_math,

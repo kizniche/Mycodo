@@ -4,6 +4,7 @@
 
  - Add Input: MAX31856 for measuring several types of thermocouples (K, J, N, R, S, T, E, and B) ([#345](https://github.com/kizniche/mycodo/issues/345)
  - Add mycodo_client.py option: get or set PID setpoint, integrator, derivator, kp, ki, and kd ([#420](https://github.com/kizniche/mycodo/issues/420))
+ - Add option to enable pre-output during measurement (previously turned off before measurement) ([#418](https://github.com/kizniche/mycodo/issues/418))
 
 ### Bugfixes
 

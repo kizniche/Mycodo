@@ -77,6 +77,7 @@ class InputMod(FlaskForm):
             max=86400
         )]
     )
+    pre_relay_during_measure = BooleanField(lazy_gettext('Pre Output During Measure'))
     period = DecimalField(
         lazy_gettext('Period (seconds)'),
         validators=[DataRequired(),

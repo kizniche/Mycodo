@@ -278,6 +278,7 @@ def input_mod(form_mod):
             else:
                 mod_sensor.pre_relay_id = None
             mod_sensor.pre_relay_duration = form_mod.pre_relay_duration.data
+            mod_sensor.pre_relay_during_measure = form_mod.pre_relay_during_measure.data
             mod_sensor.period = form_mod.period.data
             mod_sensor.resolution = form_mod.resolution.data
             mod_sensor.sensitivity = form_mod.sensitivity.data

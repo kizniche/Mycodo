@@ -91,8 +91,8 @@
           <div>
             <select class="form-control form-tooltip form-dropdown" data-placement="top" id="pre_relay_id" name="pre_relay_id" title="{{_('Turn the selected relay on before taking every measurement')}}.">
               <option value="">Disabled</option>
-              {% for each_output in output -%}
-                <option value="{{each_output.id}}"{% if each_input.pre_relay_id == each_output.id %} selected{% endif %}>{{each_output.id}} ({{each_output.name}})</option>
+              {% for each_output in output if each_output.relay_type not in ['pwm', 'command_pwm'] -%}
+                <option value="{{each_output.id}}"{% if each_input.pre_relay_id == each_output.id %} selected{% endif %}>{{"[{0:02d}]".format(each_output.id)}} ({{each_output.name}})</option>
               {% endfor -%}
             </select>
           </div>
@@ -101,6 +101,12 @@
           {{form_mod_input.pre_relay_duration.label(class_='control-label')}}
           <div>
             {{form_mod_input.pre_relay_duration(class_='form-control', value=each_input.pre_relay_duration, **{'title':_('If a Pre Output is selected, set the duration (seconds) to turn the Pre Output on for before every measurement is acquired.')})}}
+          </div>
+        </div>
+        <div class="col-xs-6 col-sm-3 col-md-3 col-lg-2">
+          {{form_mod_input.pre_relay_during_measure.label(class_='control-label')}}
+          <div>
+            <input class="form-check-input" id="pre_relay_during_measure" name="pre_relay_during_measure" type="checkbox" value="y"{% if each_input.pre_relay_during_measure %} checked{% endif %}>
           </div>
         </div>
       {% endif -%}
