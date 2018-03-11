@@ -226,6 +226,7 @@ I<sup>2</sup>C Bus | The bus to be used to communicate with the I<sup>2</sup>C a
 Period (seconds) | After the sensor is successfully read and a database entry is made, this is the duration of time waited until the sensor is measured again.
 Pre Output | If you require a output to be activated before a measurement is made (for instance, if you have a pump that extracts air to a chamber where the sensor resides), this is the output number that will be activated. The output will be activated for a duration defined by the Pre Duration, then once the output turns off, a measurement by the sensor is made.
 Pre Output Duration (seconds) | This is the duration of time that the Pre Output runs for before the sensor measurement is obtained.
+Pre Output During Measurement | If enabled, the Pre Output stays on during the acquisition of a measurement. If disabled, the Pre Output is turned off directly before acquiring a measurement.
 Command | A linux command (executed as the user 'mycodo') that the return value becomes the measurement
 Command Measurement | The measured condition (e.g. temperature, humidity, etc.) from the linux command
 Command Units | The units of the measurement condition from the linux command

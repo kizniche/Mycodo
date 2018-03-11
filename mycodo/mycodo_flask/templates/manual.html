@@ -555,102 +555,106 @@
 <td style="text-align: left;">This is the duration of time that the Pre Output runs for before the sensor measurement is obtained.</td>
 </tr>
 <tr class="even">
+<td style="text-align: left;">Pre Output During Measurement</td>
+<td style="text-align: left;">If enabled, the Pre Output stays on during the acquisition of a measurement. If disabled, the Pre Output is turned off directly before acquiring a measurement.</td>
+</tr>
+<tr class="odd">
 <td style="text-align: left;">Command</td>
 <td style="text-align: left;">A linux command (executed as the user ‘mycodo’) that the return value becomes the measurement</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td style="text-align: left;">Command Measurement</td>
 <td style="text-align: left;">The measured condition (e.g. temperature, humidity, etc.) from the linux command</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td style="text-align: left;">Command Units</td>
 <td style="text-align: left;">The units of the measurement condition from the linux command</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td style="text-align: left;">Edge</td>
 <td style="text-align: left;">Edge sensors only: Select whether the Rising or Falling (or both) edges of a changing voltage are detected. A number of devices to do this when in-line with a circuit supplying a 3.3-volt input signal to a GPIO, such as simple mechanical switch, a button, a magnet (reed/hall) sensor, a PIR motion detector, and more.</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td style="text-align: left;">Bounce Time (ms)</td>
 <td style="text-align: left;">Edge sensors only: This is the number of milliseconds to bounce the input signal. This is commonly called <a href="http://kylegabriel.com/projects/2016/02/morse-code-translator.html#debouncing">debouncing a signal</a>. and may be necessary if using a mechanical circuit.</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td style="text-align: left;">Reset Period (seconds)</td>
 <td style="text-align: left;">Edge sensors only: This is the period of time after an edge detection that another edge will not be recorded. This enables devices such as PIR motion sensors that may stay activated for longer periods of time.</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td style="text-align: left;">Multiplexer (MX)</td>
 <td style="text-align: left;">If connected to the TCA9548A I<sup>2</sup>C multiplexer, select what the I<sup>2</sup>C address of the multiplexer is.</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td style="text-align: left;">Mx I<sup>2</sup>C Bus</td>
 <td style="text-align: left;">If connected to the TCA9548A I<sup>2</sup>C multiplexer, select the I<sup>2</sup>C bus the multiplexer is connected to.</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td style="text-align: left;">Mx Channel</td>
 <td style="text-align: left;">If connected to the TCA9548A I<sup>2</sup>C multiplexer, select the channel of the multiplexer the device is connected to.</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td style="text-align: left;">Measurement</td>
 <td style="text-align: left;">Analog-to-digital converter only: The type of measurement being acquired by the ADC. For instance, if the resistance of a photocell is being measured through a voltage divider, this measurement would be “light”.</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td style="text-align: left;">Units</td>
 <td style="text-align: left;">Analog-to-digital converter only: This is the unit of the measurement. With the above example of “light” as the measurement, the unit may be “lux” or “intensity”.</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td style="text-align: left;">Clock Pin</td>
 <td style="text-align: left;">The GPIO (using BCM numbering) connected to the Clock pin of the ADC</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td style="text-align: left;">CS Pin</td>
 <td style="text-align: left;">The GPIO (using BCM numbering) connected to the CS pin of the ADC</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td style="text-align: left;">MISO Pin</td>
 <td style="text-align: left;">The GPIO (using BCM numbering) connected to the MISO pin of the ADC</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td style="text-align: left;">MOSI Pin</td>
 <td style="text-align: left;">The GPIO (using BCM numbering) connected to the MOSI pin of the ADC</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td style="text-align: left;">Channel</td>
 <td style="text-align: left;">Analog-to-digital converter only: This is the channel to obtain the voltage measurement from the ADC.</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td style="text-align: left;">Gain</td>
 <td style="text-align: left;">Analog-to-digital converter only: set the gain when acquiring the measurement.</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td style="text-align: left;">Volts Min</td>
 <td style="text-align: left;">Analog-to-digital converter only: What is the minimum voltage to use when scaling to produce the unit value for the database. For instance, if your ADC is not expected to measure below 0.2 volts for your particular circuit, set this to “0.2”.</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td style="text-align: left;">Volts Max</td>
 <td style="text-align: left;">Analog-to-digital converter only: This is similar to the Min option above, however it is setting the ceiling to the voltage range. Units Min Analog-to-digital converter only: This value will be the lower value of a range that will use the Min and Max Voltages, above, to produce a unit output. For instance, if your voltage range is 0.0 - 1.0 volts, and the unit range is 1 - 60, and a voltage of 0.5 is measured, in addition to 0.5 being stored in the database, 30 will be stored as well. This enables creating calibrated scales to use with your particular circuit.</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td style="text-align: left;">Units Max</td>
 <td style="text-align: left;">Analog-to-digital converter only: This is similar to the Min option above, however it is setting the ceiling to the unit range.</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td style="text-align: left;">Weighting</td>
 <td style="text-align: left;">The This is a number between 0 and 1 and indicates how much the old reading affects the new reading. It defaults to 0 which means the old reading has no effect. This may be used to smooth the data.</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td style="text-align: left;">Pulses Per Rev</td>
 <td style="text-align: left;">The number of pulses for a complete revolution.</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td style="text-align: left;">Port</td>
 <td style="text-align: left;">The server port to be queried (Server Port Open input).</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td style="text-align: left;">Times to Check</td>
 <td style="text-align: left;">The number of times to attempt to ping a server (Server Ping input).</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td style="text-align: left;">Deadline (seconds)</td>
 <td style="text-align: left;">The maximum amount of time to wait for each ping attempt, after which 0 (offline) will be returned (Server Ping input).</td>
 </tr>

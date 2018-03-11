@@ -380,6 +380,11 @@ the measurement database to be used throughout the Mycodo system.
   (seconds)             Output runs for before the sensor measurement
                         is obtained.
 
+  Pre Output During     If enabled, the Pre Output stays on during the
+  Measurement           acquisition of a measurement. If disabled, the
+                        Pre Output is turned off directly before
+                        acquiring a measurement.
+
   Command               A linux command (executed as the user ‘mycodo’)
                         that the return value becomes the measurement
 
