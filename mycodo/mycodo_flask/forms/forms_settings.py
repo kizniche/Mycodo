@@ -254,5 +254,5 @@ class SettingsPi(FlaskForm):
     disable_pi_camera = SubmitField(lazy_gettext('Disable Pi Camera'))
     hostname = StringField(lazy_gettext('Hostname'))
     change_hostname = SubmitField(lazy_gettext('Change Hostname'))
-    pigpiod_sample_rate = StringField(lazy_gettext('pigpiod Sample Rate'))
-    change_pigpiod_sample_rate = SubmitField(lazy_gettext('Set Sample Rate'))
+    pigpiod_sample_rate = StringField(lazy_gettext('Configure pigpiod'))
+    change_pigpiod_sample_rate = SubmitField(lazy_gettext('Reconfigure'))

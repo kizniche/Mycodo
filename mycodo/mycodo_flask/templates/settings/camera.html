@@ -9,32 +9,34 @@
   <!-- Route: /settings/camera -->
   <h3 style="text-align: right; padding-bottom: 1.3em;"><a href="/help#camera-settings" target="_blank"><span style="font-size: 16px" class="fas fa-question-circle"></span></a> {{_('Camera Settings')}}</h3>
 
-  <div class=text-right>
-  <form class="form-inline" method="post" action="/settings/camera">
-    {{form_camera.csrf_token}}
-    <div class="form-group">
-      {{form_camera.name.label(class_='control-label')}}
-      <div>
-        {{form_camera.name(class_='form-control', value='Camera Name')}}
+  <div class="text-right">
+    <form method="post" action="/settings/camera">
+      <div class="row">
+        {{form_camera.csrf_token}}
+        <div class="col">
+          {{form_camera.name.label(class_='control-label')}}
+          <div>
+            {{form_camera.name(class_='form-control', value='Camera Name')}}
+          </div>
+        </div>
+        <div class="col"">
+          {{form_camera.library.label(class_='control-label')}}
+          <div>
+            <select class="form-control" id="library" name="library" title="" data-original-title="Select the library to use to communicate with the camera">
+              {%- for each_library in camera_libraries -%}
+                <option value="{{each_library}}">{{each_library}}</option>
+              {%- endfor -%}
+            </select>
+          </div>
+        </div>
+        <div class="col">
+          <label></label>
+          <div>
+            {{form_camera.camera_add(class_='btn btn-primary btn-block')}}
+          </div>
+        </div>
       </div>
-    </div>
-    <div class="form-group">
-      {{form_camera.library.label(class_='control-label')}}
-      <div>
-        <select class="form-control" id="library" name="library" title="" data-original-title="Select the library to use to communicate with the camera">
-          {%- for each_library in camera_libraries -%}
-            <option value="{{each_library}}">{{each_library}}</option>
-          {%- endfor -%}
-        </select>
-      </div>
-    </div>
-    <div class="form-group">
-      <label></label>
-      <div>
-        {{form_camera.camera_add(class_='form-control btn btn-default')}}
-      </div>
-    </div>
-  </form>
+    </form>
   </div>
 
   <p style="text-align: right;">Note: Not all camera settings will work with every camera.</p>
@@ -47,7 +49,7 @@
       <form method="post" action="/settings/camera">
       {{form_camera.csrf_token}}
       {{form_camera.camera_id(value=each_camera.id)}}
-      <div class="row" style="border-bottom: 2px solid #ddd; padding: 1em 0;">
+      <div class="row small-gutters" style="border-bottom: 2px solid #ddd; padding: 1em 0;">
         <div class="col-xs-12 col-sm-3">
           {{form_camera.name(class_='form-control', value=each_camera.name, **{'title':_('Name for this Camera')})}}
         </div>
@@ -55,17 +57,18 @@
           <input class="form-control" disabled="" value="[{{each_camera.id}}] {{each_camera.library}}" type="text">
         </div>
         <div class="col-xs-12 col-sm-3">
-          {{form_camera.camera_mod(class_='form-control btn btn-default')}}
+          {{form_camera.camera_mod(class_='btn btn-primary btn-block')}}
         </div>
         <div class="col-xs-12 col-sm-3">
-          {{form_camera.camera_del(class_='form-control btn btn-default')}}
+          {{form_camera.camera_del(class_='btn btn-primary btn-block')}}
         </div>
       </div>
-      <div style="padding: 0.5em 0 0.25em 0" class="form-inline">
+
+      <div class="row small-gutters">
 
       {% if each_camera.library == 'picamera' %}
         {% if not pi_camera_enabled %}
-        <div class="row" style="color: red; padding: 1em 1em;">
+        <div class="row small-gutters">
           Raspberry Pi Camera support doesn't appear to be enabled. Please enable it using 'sudo raspi-config'
         </div>
         {% else %}
@@ -79,19 +82,19 @@
 
         <div style="clear: both;"></div>
 
-        <div class="form-group">
+        <div class="col-xs-6 col-md-4 col-lg-3">
           {{form_camera.cmd_pre_camera.label(class_='control-label')}}
           <div>
             {{form_camera.cmd_pre_camera(class_='form-control', value=each_camera.cmd_pre_camera)}}
            </div>
         </div>
-        <div class="form-group">
+        <div class="col-xs-6 col-md-4 col-lg-3">
           {{form_camera.cmd_post_camera.label(class_='control-label')}}
           <div>
             {{form_camera.cmd_post_camera(class_='form-control', value=each_camera.cmd_post_camera)}}
            </div>
         </div>
-        <div class="form-group">
+        <div class="col-xs-6 col-md-4 col-lg-3">
           {{form_camera.relay_id.label(class_='control-label')}}
           <div>
             <select class="form-control" id="relay_id" name="relay_id" title="" data-original-title="Select the relay to activate while the camera is acquiring an image or streaming.">
@@ -106,7 +109,9 @@
             </select>
           </div>
         </div>
+      </div>
 
+      <div class="row">
         <div class="form-check">
           <label class="form-check-label">
             {%- if each_camera.hflip == 1 -%}
@@ -128,6 +133,7 @@
           </label>
         </div>
       </div>
+
       </form>
 
     </div>

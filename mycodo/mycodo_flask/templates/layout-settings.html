@@ -2,7 +2,7 @@
 {% set active_page = "settings" %}
 
 {% block head %}
-  <link href="/static/css/dashboard.css" rel="stylesheet">
+{#  <link href="/static/css/dashboard.css" rel="stylesheet">#}
   <script>
     $(document).ready(function() {
       $('[data-toggle=offcanvas]').click(function() {
@@ -17,7 +17,7 @@
 
   {% set active_settings = active_settings|default('users') -%}
 
-  <div class="container sidebar-drop">
+  <main role="main" class="container sidebar-drop">
     <div class="row">
       <div class="col-md-3 col-xs-1 p-l-0 p-r-0 collapse in show" id="sidebar">
           <div class="list-group panel">
@@ -28,14 +28,14 @@
             <a class="list-group-item collapsed{% if active_settings == 'camera' %} active{% endif %}" href="{{url_for('routes_settings.settings_camera')}}"><i class="fas fa-camera"></i>&nbsp;&nbsp;{{_('Cameras')}}</a>
           </div>
       </div>
-      <main class="col-md-9 col-xs-11 p-l-2 p-t-2">
+      <div class="col-md-9 col-xs-11 p-l-2 p-t-2" style="padding-bottom: 1em">
           <a href="#sidebar" data-toggle="collapse"><i class="fas fa-bars fa-lg"></i></a>
 
           {% include 'flash_messages.html' %}
 
           {% block settings %}{% endblock %}
-      </main>
+     </div>
     </div>
-  </div>
+  </main>
 
 {% endblock %}

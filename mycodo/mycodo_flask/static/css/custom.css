@@ -4,7 +4,7 @@
 
 @media (max-width: 767px) {
     .dropdown-menu{
-       max-height: 300px;
+       max-height: 10em;
        overflow-y: scroll;
     }
 }

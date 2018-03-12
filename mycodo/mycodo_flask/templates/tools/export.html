@@ -26,7 +26,7 @@
   <form method="post" action="/export">
   {{form_export_measurements.csrf_token}}
   <div class="row" style="padding-top: 1em">
-    <div class="col-xs-12 col-sm-6 col-md-5">
+    <div class="col-xs-12 col-sm-6">
       {{form_export_measurements.measurement.label(class_='control-label')}}
       <div>
         <select class="form-control" id="measurement" name="measurement">
@@ -42,7 +42,7 @@
         </select>
       </div>
     </div>
-    <div class="col-xs-12 col-sm-6 col-md-4">
+    <div class="col-xs-12 col-sm-6">
       {{form_export_measurements.date_range.label(class_='control-label')}}
       <div>
         <input class="form-control" type="text" name="date_range" value="{{start_picker}} - {{end_picker}}" />
@@ -51,7 +51,7 @@
   </div>
   <div class="form-inline">
     <div class="form-group">
-      {{form_export_measurements.export_data_csv(class_='form-control btn btn-default')}}
+      {{form_export_measurements.export_data_csv(class_='btn btn-primary')}}
     </div>
   </div>
   </form>
@@ -64,7 +64,7 @@
   {{form_export_influxdb.csrf_token}}
   <div class="form-inline">
     <div class="form-group">
-      {{form_export_influxdb.export_influxdb_zip(class_='form-control btn btn-default')}}
+      {{form_export_influxdb.export_influxdb_zip(class_='btn btn-primary')}}
     </div>
   </div>
   </form>
@@ -80,7 +80,7 @@
       <span class="btn btn-default btn-file"><input id="influxdb_import_file" name="influxdb_import_file" type="file" /></span>
     </div>
     <div class="form-group">
-      {{form_import_influxdb.influxdb_import_upload(class_='form-control btn btn-default')}}
+      {{form_import_influxdb.influxdb_import_upload(class_='btn btn-primary')}}
     </div>
   </div>
   </form>
@@ -93,7 +93,7 @@
   {{form_export_settings.csrf_token}}
   <div class="form-inline">
     <div class="form-group">
-      {{form_export_settings.export_settings_zip(class_='form-control btn btn-default')}}
+      {{form_export_settings.export_settings_zip(class_='btn btn-primary')}}
     </div>
   </div>
   </form>
@@ -109,7 +109,7 @@
       <span class="btn btn-default btn-file"><input id="settings_import_file" name="settings_import_file" type="file" /></span>
     </div>
     <div class="form-group">
-      {{form_import_settings.settings_import_upload(class_='form-control btn btn-default')}}
+      {{form_import_settings.settings_import_upload(class_='btn btn-primary')}}
     </div>
   </div>
   </form>

@@ -42,7 +42,7 @@
         uptime
       </div>
       <div>
-        <pre>{{uptime}}</pre>
+        <pre style="padding: 0.5em; border: 1px solid Black;">{{uptime}}</pre>
       </div>
     </div>
 
@@ -51,7 +51,7 @@
         Kernel Information: uname -a
       </div>
       <div>
-        <pre>{{uname}}</pre>
+        <pre style="padding: 0.5em; border: 1px solid Black;">{{uname}}</pre>
       </div>
     </div>
 
@@ -61,7 +61,7 @@
         General-Purpose Input/Output (GPIO) Pins: gpio readall
       </div>
       <div>
-        <pre>{{gpio_readall}}</pre>
+        <pre style="padding: 0.5em; border: 1px solid Black;">{{gpio_readall}}</pre>
       </div>
     </div>
   {%- endif -%}
@@ -73,7 +73,7 @@
         I<sup>2</sup>C Bus {{each_i2c_dev}}: i2cdetect -y {{each_i2c_dev}}
       </div>
       <div>
-        <pre>{{i2c_devices_sorted[each_i2c_dev]}}</pre>
+        <pre style="padding: 0.5em; border: 1px solid Black;">{{i2c_devices_sorted[each_i2c_dev]}}</pre>
       </div>
     </div>
 
@@ -84,7 +84,7 @@
         Disk Usage: df -h
       </div>
       <div>
-        <pre>{{df}}</pre>
+        <pre style="padding: 0.5em; border: 1px solid Black;">{{df}}</pre>
       </div>
     </div>
 
@@ -93,7 +93,7 @@
         Memory: free -h
       </div>
       <div>
-        <pre>{{free}}</pre>
+        <pre style="padding: 0.5em; border: 1px solid Black;">{{free}}</pre>
       </div>
     </div>
 
@@ -102,7 +102,7 @@
         Network: ifconfig -a
       </div>
       <div>
-        <pre>{{ifconfig}}</pre>
+        <pre style="padding: 0.5em; border: 1px solid Black;">{{ifconfig}}</pre>
       </div>
     </div>
 
@@ -113,7 +113,7 @@
         Processes (daemon and threads): pstree -p {{daemon_pid}}
       </div>
       <div>
-        <pre>{{pstree_daemon}}</pre>
+        <pre style="padding: 0.5em; border: 1px solid Black;">{{pstree_daemon}}</pre>
       </div>
     </div>
 
@@ -122,7 +122,7 @@
         Processes (daemon and threads): top -b -H -n 1 -p {{daemon_pid}}
       </div>
       <div>
-        <pre>{{top_daemon}}</pre>
+        <pre style="padding: 0.5em; border: 1px solid Black;">{{top_daemon}}</pre>
       </div>
     </div>
 
@@ -133,7 +133,7 @@
         Processes (frontend and threads): pstree -p {{frontend_pid}}
       </div>
       <div>
-        <pre>{{pstree_frontend}}</pre>
+        <pre style="padding: 0.5em; border: 1px solid Black;">{{pstree_frontend}}</pre>
       </div>
     </div>
 
@@ -142,7 +142,7 @@
         Processes (fronetend and threads): top -b -H -n 1 -p {{frontend_pid}}
       </div>
       <div>
-        <pre>{{top_frontend}}</pre>
+        <pre style="padding: 0.5em; border: 1px solid Black;">{{top_frontend}}</pre>
       </div>
     </div>
 

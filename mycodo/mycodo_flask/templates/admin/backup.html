@@ -16,7 +16,7 @@
     <form method="post" action="/admin/backup">
     <div class="row" style="padding-bottom: 1.5em">
       <div class="col-xs-12 col-sm-3 col-md-2 small-gutters">
-        {{form_backup.backup(class_='form-control btn btn-default', value='Create Backup')}}
+        {{form_backup.backup(class_='btn btn-primary', value='Create Backup')}}
       </div>
     </div>
     </form>
@@ -30,18 +30,20 @@
         <form method="post" action="/admin/backup">
         {{form_backup.selected_dir(class_='form-control', value=each_backup[0][14:])}}
         {{form_backup.full_path(class_='form-control', value=full_paths[loop.index0])}}
-        <div class="row" style="padding: 0.3em">
-          <div class="col-xs-12 col-sm-3 col-lg-2" style="font-family: 'Courier New', monospace;">
+
+        <div class="row small-gutters" style="padding: 0.3em">
+          <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3" style="font-family: 'Courier New', monospace;">
             {% set split_version = each_backup[0].split('-') %}
             {{each_backup[0][14:33]}}<br><a href="https://github.com/kizniche/Mycodo/releases/tag/v{{each_backup[0][34:]}}" target="_blank">v{{each_backup[0][34:]}}</a>, {{"%.1f MB"|format(each_backup[1])}}
           </div>
-          <div class="col-xs-6 col-sm-3 col-md-2 small-gutters">
-            {{form_backup.restore(class_='form-control btn btn-default', value='Restore Backup')}}
+          <div class="col-xs-6 col-sm-3 small-gutters">
+            {{form_backup.restore(class_='btn btn-primary btn-block', value='Restore Backup')}}
           </div>
-          <div class="col-xs-6 col-sm-3 col-md-2 small-gutters">
-            {{form_backup.delete(class_='form-control btn btn-default', value='Delete Backup', **{'onclick':'return confirm("Are you sure you want to delete this?")'})}}
+          <div class="col-xs-6 col-sm-3 small-gutters">
+            {{form_backup.delete(class_='btn btn-primary btn-block', value='Delete Backup', **{'onclick':'return confirm("Are you sure you want to delete this?")'})}}
           </div>
         </div>
+
         </form>
       {%- endfor -%}
 

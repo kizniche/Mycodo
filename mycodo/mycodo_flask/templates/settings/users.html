@@ -15,31 +15,32 @@
   {{form_add_user.hidden_tag()}}
 
   <div class="row small-gutters">
-    <div class="col-xs-6 col-sm-3 col-md-2">
+
+    <div class="col-xs-6 col-sm-3 col-md-3">
       {{form_add_user.user_name.label(class_='control-label')}}
       <div>
         {{form_add_user.user_name(class_='form-control')}}
       </div>
     </div>
-    <div class="col-xs-6 col-sm-3 col-md-2">
+    <div class="col-xs-6 col-sm-3 col-md-3">
       {{form_add_user.email.label(class_='control-label')}}
       <div>
         {{form_add_user.email(class_='form-control')}}
       </div>
     </div>
-    <div class="col-xs-6 col-sm-3 col-md-2">
+    <div class="col-xs-6 col-sm-3 col-md-3">
       {{form_add_user.password_new.label(class_='control-label')}}
       <div>
         {{form_add_user.password_new(class_='form-control')}}
       </div>
     </div>
-    <div class="col-xs-6 col-sm-3 col-md-2">
+    <div class="col-xs-6 col-sm-3 col-md-3">
       {{form_add_user.password_repeat.label(class_='control-label')}}
       <div>
         {{form_add_user.password_repeat(class_='form-control')}}
       </div>
     </div>
-    <div class="col-xs-4 col-sm-3 col-md-2">
+    <div class="col-xs-4 col-sm-3 col-md-3">
       {{form_add_user.addRole.label(class_='control-label')}}
       <div>
         <select class="form-control" id="addRole" name="addRole">
@@ -50,7 +51,7 @@
         </select>
       </div>
     </div>
-    <div class="col-xs-4 col-sm-3 col-md-2">
+    <div class="col-xs-4 col-sm-3 col-md-3">
     {{form_add_user.theme.label(class_='control-label')}}
       <div>
         <select class="form-control" id="theme" name="theme">
@@ -60,10 +61,10 @@
         </select>
       </div>
     </div>
-    <div class="col-xs-4 col-sm-3 col-md-2">
+    <div class="col-xs-4 col-sm-3 col-md-3">
       <label class="control-label">&nbsp;</label>
       <div>
-        {{form_add_user.add_user(class_='form-control btn btn-default')}}
+        {{form_add_user.add_user(class_='btn btn-primary')}}
       </div>
     </div>
   </div>
@@ -74,19 +75,19 @@
 
   {% for user in users %}
 
-    <form method="post" action="/settings/users">
-    {{form_mod_user.csrf_token}}
-    {{form_mod_user.user_id(value=user.id)}}
+  <form method="post" action="/settings/users">
+  {{form_mod_user.csrf_token}}
+  {{form_mod_user.user_id(value=user.id)}}
 
     <div class="row small-gutters">
-      <div class="col-xs-4 col-sm-4 col-md-2">
-        <input class="form-control btn btn-default" disabled="" value="{{user.name}}" type="text">
+      <div class="col-xs-4 col-sm-4 col-md-3">
+        <input class="form-control btn btn-primary" disabled="" value="{{user.name}}" type="text">
       </div>
-      <div class="col-xs-4 col-sm-4 col-md-1">
-        {{form_mod_user.save(class_='form-control btn btn-default')}}
+      <div class="col-xs-4 col-sm-4 col-md-2 small-gutters">
+        {{form_mod_user.save(class_='btn btn-primary btn-block')}}
       </div>
-      <div class="col-xs-4 col-sm-4 col-md-1">
-        {{form_mod_user.delete(class_='form-control btn btn-default', **{'onclick':'return confirm("Are you sure you want to delete this?")'})}}
+      <div class="col-xs-4 col-sm-4 col-md-2 small-gutters">
+        {{form_mod_user.delete(class_='btn btn-primary btn-block', **{'onclick':'return confirm("Are you sure you want to delete this?")'})}}
       </div>
     </div>
 
@@ -94,20 +95,20 @@
       <div class="col-xs-4 col-sm-2 col-md-2">
         {{form_mod_user.email(class_='form-control', value=user.email)}}
       </div>
-      <div class="col-xs-4 col-sm-3 col-md-2">
+      <div class="col-xs-4 col-sm-3 col-md-3">
         {{form_mod_user.password_new(class_='form-control')}}
       </div>
-      <div class="col-xs-4 col-sm-3 col-md-2">
+      <div class="col-xs-4 col-sm-3 col-md-3">
         {{form_mod_user.password_repeat(class_='form-control')}}
       </div>
-      <div class="col-xs-6 col-sm-2 col-md-2">
+      <div class="col-xs-6 col-sm-2">
         <select class="form-control" id="role" name="role">
           {% for each_role in user_roles %}
             <option value="{{each_role.name}}"{% if user.role == each_role.id %} selected{% endif %}>{{each_role.name}}</option>
           {% endfor %}
         </select>
       </div>
-      <div class="col-xs-6 col-sm-2 col-md-2">
+      <div class="col-xs-6 col-sm-2">
         <select class="form-control" id="theme" name="theme">
           <option value=""{% if user.theme == '' %} selected{% endif %}>Default</option>
           {% for value, name in themes %}
@@ -117,9 +118,9 @@
       </div>
     </div>
 
-    </form>
+  </form>
 
-    <div style="clear: both; padding: 0.5em 0;"></div>
+  <div style="clear: both; padding: 0.5em 0;"></div>
 
   {% endfor -%}
 
@@ -140,33 +141,40 @@
     <div class="col-xs-6 col-sm-6 col-md-2">
       <label class="control-label">&nbsp;</label>
       <div>
-        {{form_user_roles.add_role(class_='form-control btn btn-default')}}
+        {{form_user_roles.add_role(class_='btn btn-primary')}}
       </div>
     </div>
   </div>
 
-  <div class="row small-gutters">
-    <label class="checkbox-inline">
-      {{form_user_roles.view_logs()}} {{form_user_roles.view_logs.label.text}}
-    </label>
-    <label class="checkbox-inline">
-      {{form_user_roles.view_stats()}} {{form_user_roles.view_stats.label.text}}
-    </label>
-    <label class="checkbox-inline">
-      {{form_user_roles.view_camera()}} {{form_user_roles.view_camera.label.text}}
-    </label>
-    <label class="checkbox-inline">
-      {{form_user_roles.view_settings()}} {{form_user_roles.view_settings.label.text}}
-    </label>
-    <label class="checkbox-inline">
-      {{form_user_roles.edit_users()}} {{form_user_roles.edit_users.label.text}}
-    </label>
-    <label class="checkbox-inline">
-      {{form_user_roles.edit_controllers()}} {{form_user_roles.edit_controllers.label.text}}
-    </label>
-    <label class="checkbox-inline">
-      {{form_user_roles.edit_settings()}} {{form_user_roles.edit_settings.label.text}}
-    </label>
+  <div class="form-inline">
+    <div class="form-check form-check-inline">
+      {{form_user_roles.view_logs(class_='form-control')}}
+      <label>{{form_user_roles.view_logs.label.text}}</label>
+    </div>
+    <div class="form-check form-check-inline">
+      {{form_user_roles.view_stats(class_='form-control')}}
+      <label>{{form_user_roles.view_stats.label.text}}</label>
+    </div>
+    <div class="form-check form-check-inline">
+      {{form_user_roles.view_camera(class_='form-control')}}
+      <label>{{form_user_roles.view_camera.label.text}}</label>
+    </div>
+    <div class="form-check form-check-inline">
+      {{form_user_roles.view_settings(class_='form-control')}}
+      <label>{{form_user_roles.view_settings.label.text}}</label>
+    </div>
+    <div class="form-check form-check-inline">
+      {{form_user_roles.edit_users(class_='form-control')}}
+      <label>{{form_user_roles.edit_users.label.text}}</label>
+    </div>
+    <div class="form-check form-check-inline">
+      {{form_user_roles.edit_controllers(class_='form-control')}}
+      <label>{{form_user_roles.edit_controllers.label.text}}</label>
+    </div>
+    <div class="form-check form-check-inline">
+      {{form_user_roles.edit_settings(class_='form-control')}}
+      <label>{{form_user_roles.edit_settings.label.text}}</label>
+    </div>
   </div>
 
   </form>
@@ -183,66 +191,73 @@
 
       <div class="row small-gutters">
         <div class="col-xs-4 col-sm-4 col-md-2">
-          <input class="form-control btn btn-default" disabled="" value="{{each_role.name}}" type="text">
+          <input class="btn btn-primary" disabled="" value="{{each_role.name}}" type="text">
         </div>
         <div class="col-xs-4 col-sm-4 col-md-1">
-          {{form_user_roles.save_role(class_='form-control btn btn-default')}}
+          {{form_user_roles.save_role(class_='btn btn-primary')}}
         </div>
         <div class="col-xs-4 col-sm-4 col-md-1">
-          {{form_user_roles.delete_role(class_='form-control btn btn-default', **{'onclick':'return confirm("Are you sure you want to delete this?")'})}}
+          {{form_user_roles.delete_role(class_='btn btn-primary', **{'onclick':'return confirm("Are you sure you want to delete this?")'})}}
         </div>
       </div>
 
-      <div class="row small-gutters">
-        <label class="checkbox-inline">
+      <div class="form-inline">
+        <div class="form-check form-check-inline">
           {%- if each_role.view_logs == true -%}
-            {{form_user_roles.view_logs(checked=True)}}
+            {{form_user_roles.view_logs(class_='form-control', checked=True)}}
           {%- else -%}
-            {{form_user_roles.view_logs()}}
-          {%- endif %} {{form_user_roles.view_logs.label.text}}
-        </label>
-        <label class="checkbox-inline">
+            {{form_user_roles.view_logs(class_='form-control')}}
+          {%- endif %}
+          <label>{{form_user_roles.view_logs.label.text}}</label>
+        </div>
+        <div class="form-check form-check-inline">
           {%- if each_role.view_stats == true -%}
-            {{form_user_roles.view_stats(checked=True)}}
+            {{form_user_roles.view_stats(class_='form-control', checked=True)}}
           {%- else -%}
-            {{form_user_roles.view_stats()}}
-          {%- endif %} {{form_user_roles.view_stats.label.text}}
-        </label>
-        <label class="checkbox-inline">
+            {{form_user_roles.view_stats(class_='form-control')}}
+          {%- endif %}
+          <label>{{form_user_roles.view_stats.label.text}}</label>
+        </div>
+        <div class="form-check form-check-inline">
           {%- if each_role.view_camera == true -%}
-            {{form_user_roles.view_camera(checked=True)}}
+            {{form_user_roles.view_camera(class_='form-control', checked=True)}}
           {%- else -%}
-            {{form_user_roles.view_camera()}}
-          {%- endif %} {{form_user_roles.view_camera.label.text}}
-        </label>
-        <label class="checkbox-inline">
+            {{form_user_roles.view_camera(class_='form-control')}}
+          {%- endif %}
+          <label>{{form_user_roles.view_camera.label.text}}</label>
+        </div>
+        <div class="form-check form-check-inline">
           {%- if each_role.view_settings == true -%}
-            {{form_user_roles.view_settings(checked=True)}}
+            {{form_user_roles.view_settings(class_='form-control', checked=True)}}
           {%- else -%}
-            {{form_user_roles.view_settings()}}
-          {%- endif -%} {{form_user_roles.view_settings.label.text}}
-        </label>
-        <label class="checkbox-inline">
+            {{form_user_roles.view_settings(class_='form-control')}}
+          {%- endif %}
+          <label>{{form_user_roles.view_settings.label.text}}</label>
+        </div>
+        <div class="form-check form-check-inline">
           {%- if each_role.edit_users == true -%}
-            {{form_user_roles.edit_users(checked=True)}}
+            {{form_user_roles.edit_users(class_='form-control', checked=True)}}
           {%- else -%}
-            {{form_user_roles.edit_users()}}
-          {%- endif -%} {{form_user_roles.edit_users.label.text}}
-        </label>
-        <label class="checkbox-inline">
+            {{form_user_roles.edit_users(class_='form-control')}}
+          {%- endif %}
+          <label>{{form_user_roles.edit_users.label.text}}</label>
+        </div>
+        <div class="form-check form-check-inline">
           {%- if each_role.edit_controllers == true -%}
-            {{form_user_roles.edit_controllers(checked=True)}}
+            {{form_user_roles.edit_controllers(class_='form-control', checked=True)}}
           {%- else -%}
-            {{form_user_roles.edit_controllers()}}
-          {%- endif -%} {{form_user_roles.edit_controllers.label.text}}
-        </label>
-        <label class="checkbox-inline">
+            {{form_user_roles.edit_controllers(class_='form-control')}}
+          {%- endif %}
+          <label>{{form_user_roles.edit_controllers.label.text}}</label>
+        </div>
+        <div class="form-check form-check-inline">
           {%- if each_role.edit_settings == true -%}
-            {{form_user_roles.edit_settings(checked=True)}}
+            {{form_user_roles.edit_settings(class_='form-control', checked=True)}}
           {%- else -%}
-            {{form_user_roles.edit_settings()}}
-          {%- endif -%} {{form_user_roles.edit_settings.label.text}}
-        </label>
+            {{form_user_roles.edit_settings(class_='form-control')}}
+          {%- endif %}
+          <label>{{form_user_roles.edit_settings.label.text}}</label>
+        </div>
       </div>
 
       </form>

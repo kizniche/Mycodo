@@ -19,98 +19,98 @@
       </div>
     </div>
     <div class="row small-gutters">
-      <div class="col-xs-6 col-sm-5 col-md-3">
+      <div class="col">
         I<sup>2</sup>C Enabled: {{pi_settings['i2c_enabled']}}
       </div>
-      <div class="col-xs-6 col-sm-2">
+      <div class="col">
         {% if pi_settings['i2c_enabled'] %}
-          {{form_settings_pi.disable_i2c(class_='btn btn-default')}}
+          {{form_settings_pi.disable_i2c(class_='btn btn-primary')}}
         {% else %}
-          {{form_settings_pi.enable_i2c(class_='btn btn-default')}}
+          {{form_settings_pi.enable_i2c(class_='btn btn-primary')}}
         {% endif %}
       </div>
     </div>
     <div class="row small-gutters">
-      <div class="col-xs-6 col-sm-5 col-md-3">
+      <div class="col">
         1-Wire Enabled: {{pi_settings['one_wire_enabled']}}
       </div>
-      <div class="col-xs-6 col-sm-2">
+      <div class="col">
         {% if pi_settings['one_wire_enabled'] %}
-          {{form_settings_pi.disable_one_wire(class_='btn btn-default')}}
+          {{form_settings_pi.disable_one_wire(class_='btn btn-primary')}}
         {% else %}
-          {{form_settings_pi.enable_one_wire(class_='btn btn-default')}}
+          {{form_settings_pi.enable_one_wire(class_='btn btn-primary')}}
         {% endif %}
       </div>
     </div>
     <div class="row small-gutters">
-      <div class="col-xs-6 col-sm-5 col-md-3">
+      <div class="col">
         Serial Enabled: {{pi_settings['serial_enabled']}}
       </div>
-      <div class="col-xs-6 col-sm-2">
+      <div class="col">
         {% if pi_settings['serial_enabled'] %}
-          {{form_settings_pi.disable_serial(class_='btn btn-default')}}
+          {{form_settings_pi.disable_serial(class_='btn btn-primary')}}
         {% else %}
-          {{form_settings_pi.enable_serial(class_='btn btn-default')}}
+          {{form_settings_pi.enable_serial(class_='btn btn-primary')}}
         {% endif %}
       </div>
     </div>
     <div class="row small-gutters">
-      <div class="col-xs-6 col-sm-5 col-md-3">
+      <div class="col">
         SPI Enabled: {{pi_settings['spi_enabled']}}
       </div>
-      <div class="col-xs-6 col-sm-2">
+      <div class="col">
         {% if pi_settings['spi_enabled'] %}
-          {{form_settings_pi.disable_spi(class_='btn btn-default')}}
+          {{form_settings_pi.disable_spi(class_='btn btn-primary')}}
         {% else %}
-          {{form_settings_pi.enable_spi(class_='btn btn-default')}}
+          {{form_settings_pi.enable_spi(class_='btn btn-primary')}}
         {% endif %}
       </div>
     </div>
     <div class="row small-gutters">
-      <div class="col-xs-6 col-sm-5 col-md-3">
+      <div class="col">
         SSH Enabled: {{pi_settings['ssh_enabled']}}
       </div>
-      <div class="col-xs-6 col-sm-2">
+      <div class="col">
         {% if pi_settings['ssh_enabled'] %}
-          {{form_settings_pi.disable_ssh(class_='btn btn-default')}}
+          {{form_settings_pi.disable_ssh(class_='btn btn-primary')}}
         {% else %}
-          {{form_settings_pi.enable_ssh(class_='btn btn-default')}}
+          {{form_settings_pi.enable_ssh(class_='btn btn-primary')}}
         {% endif %}
       </div>
     </div>
     <div class="row small-gutters">
-      <div class="col-xs-6 col-sm-5 col-md-3">
+      <div class="col">
         Pi Camera Enabled: {{pi_settings['pi_camera_enabled']}}
       </div>
-      <div class="col-xs-6 col-sm-2">
+      <div class="col">
         {% if pi_settings['pi_camera_enabled'] %}
-          {{form_settings_pi.disable_pi_camera(class_='btn btn-default')}}
+          {{form_settings_pi.disable_pi_camera(class_='btn btn-primary')}}
         {% else %}
-          {{form_settings_pi.enable_pi_camera(class_='btn btn-default')}}
+          {{form_settings_pi.enable_pi_camera(class_='btn btn-primary')}}
         {% endif %}
       </div>
     </div>
     <div class="row small-gutters">
-      <div class="col-xs-6 col-sm-5 col-md-3">
+      <div class="col">
         {{form_settings_pi.hostname(class_='form-control', value=pi_settings['hostname'])}}
       </div>
-      <div class="col-xs-6 col-sm-2">
-        {{form_settings_pi.change_hostname(class_='btn btn-default')}}
+      <div class="col">
+        {{form_settings_pi.change_hostname(class_='btn btn-primary')}}
       </div>
     </div>
 
     <div class="row small-gutters" style="padding: 2em 0 0.5em 0">
       <div class="col-xs-12">
-        The following settings are service options:
+        Service options:
       </div>
     </div>
     <div class="row small-gutters">
-      <div class="col-xs-12">
+      <div class="col">
         {{form_settings_pi.pigpiod_sample_rate.label(class_='control-label')}}
       </div>
     </div>
     <div class="row small-gutters">
-      <div class="col-xs-6 col-sm-5  col-md-3">
+      <div class="col">
         {{form_settings_pi.pigpiod_state(value=pigpiod_sample_rate)}}
         <select class="form-control" id="pigpiod_sample_rate" name="pigpiod_sample_rate" title="" data-original-title="Select a sample rate in milliseconds for pigpiod">
           <option value=""></option>
@@ -120,8 +120,8 @@
           <option value="high"{% if pigpiod_sample_rate == 'high' %} selected{% endif %}>5 ms (slower)</option>
         </select>
       </div>
-      <div class="col-xs-6 col-sm-3">
-        {{form_settings_pi.change_pigpiod_sample_rate(class_='btn btn-default',**{'onclick':'return confirm("Changing the sample rate of pigpiod requires restarting both pigpiod and the mycodo daemon. Please confirm this is what you wish to do.")'})}}
+      <div class="col">
+        {{form_settings_pi.change_pigpiod_sample_rate(class_='btn btn-primary',**{'onclick':'return confirm("Changing the sample rate of pigpiod requires restarting both pigpiod and the mycodo daemon. Please confirm this is what you wish to do.")'})}}
       </div>
     </div>
 

@@ -80,7 +80,8 @@
 
 {%- block body %}
   <!-- Route: /live -->
-  <div class="container">
+  <main role="main" class="container">
+
     {% include 'flash_messages.html' %}
 
     {%- if inputs_sorted|length == 0 and maths_sorted|length == 0 -%}
@@ -428,8 +429,7 @@
       {%- endfor -%}
     {%- endfor -%}
 
-
-  </div>
+  </main>
 
   <script>
     $('.collapse').on('show.bs.collapse', function(){

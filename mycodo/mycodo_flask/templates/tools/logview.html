@@ -16,33 +16,33 @@
         {{form_log_view.lines(class_='form-control', type="number", value=lines)}}
       </div>
       <div class="col-xs-12 col-sm-10">
-        <div class="form-inline">
-          <div class="form-group">
-            {{form_log_view.loglogin(class_='form-control btn btn-default')}}
+        <div class="row small-gutters">
+          <div class="col-xs-6 col-sm-3 col-md-2">
+            {{form_log_view.loglogin(class_='btn btn-primary btn-block')}}
           </div>
-          <div class="form-group">
-            {{form_log_view.loghttp_access(class_='form-control btn btn-default')}}
+          <div class="col-xs-6 col-sm-3 col-md-2">
+            {{form_log_view.loghttp_access(class_='btn btn-primary btn-block')}}
           </div>
-          <div class="form-group">
-            {{form_log_view.loghttp_error(class_='form-control btn btn-default')}}
+          <div class="col-xs-6 col-sm-3 col-md-2">
+            {{form_log_view.loghttp_error(class_='btn btn-primary btn-block')}}
           </div>
-          <div class="form-group">
-            {{form_log_view.logdaemon(class_='form-control btn btn-default')}}
+          <div class="col-xs-6 col-sm-3 col-md-2">
+            {{form_log_view.logdaemon(class_='btn btn-primary btn-block')}}
           </div>
-          <div class="form-group">
-            {{form_log_view.logdependency(class_='form-control btn btn-default')}}
+          <div class="col-xs-6 col-sm-3 col-md-2">
+            {{form_log_view.logdependency(class_='btn btn-primary btn-block')}}
           </div>
-          <div class="form-group">
-            {{form_log_view.logkeepup(class_='form-control btn btn-default')}}
+          <div class="col-xs-6 col-sm-3 col-md-2">
+            {{form_log_view.logkeepup(class_='btn btn-primary btn-block')}}
           </div>
-          <div class="form-group">
-            {{form_log_view.logbackup(class_='form-control btn btn-default')}}
+          <div class="col-xs-6 col-sm-3 col-md-2">
+            {{form_log_view.logbackup(class_='btn btn-primary btn-block')}}
           </div>
-          <div class="form-group">
-            {{form_log_view.logrestore(class_='form-control btn btn-default')}}
+          <div class="col-xs-6 col-sm-3 col-md-2">
+            {{form_log_view.logrestore(class_='btn btn-primary btn-block')}}
           </div>
-          <div class="form-group">
-            {{form_log_view.logupgrade(class_='form-control btn btn-default')}}
+          <div class="col-xs-6 col-sm-3 col-md-2">
+            {{form_log_view.logupgrade(class_='btn btn-primary btn-block')}}
           </div>
         </div>
       </div>
@@ -56,7 +56,7 @@
         File empty: {{logfile}}
       {%- else -%}
         Last {{lines}} lines of {{logfile}}:
-        <pre style="resize: vertical">{{log_output}}</pre>
+        <pre style="resize: vertical; padding: 0.5em; border: 1px solid Black;">{{log_output}}</pre>
       {%- endif -%}
     </div>
     {%- endif -%}
