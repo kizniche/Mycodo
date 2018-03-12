@@ -50,7 +50,6 @@
     <link href="/static/css/custom-light.css" rel="stylesheet">
   {% endif %}
 
-  <link href="/static/css/navbar-top-fixed.css" rel="stylesheet">
   <link href="/static/css/custom.css" rel="stylesheet">
   <script src="/static/js/jquery-3.3.1.min.js"></script>
   <script src="/static/js/fontawesome-all.min.js"></script>
@@ -130,6 +129,22 @@
     });
   {% endif %}
 
+  function set_navbar_classes() {
+    if($(window).width() > 768) {
+      $('#nav-respond').addClass('fixed-top py-0');
+      document.body.style.minHeight = "10rem";
+      document.body.style.paddingTop = "4.5rem";
+    }else{
+      $('#nav-respond').removeClass('fixed-top py-0');
+      document.body.style.minHeight = "0";
+      document.body.style.paddingTop = "0";
+    }
+  }
+
+  $(window).on('resize', function() {
+    set_navbar_classes();
+  });
+
   </script>
 
   {% block head %}{% endblock %}
@@ -139,9 +154,9 @@
     {% set active_page = active_page|default('') -%}
     {% set help_page = help_page|default(['', '']) -%}
 
-    <nav class="navbar navbar-expand-md{% if current_user.theme in dark_themes %} navbar-dark bg-dark {% else %} navbar-light bg-light {% endif %}fixed-top">
+    <nav id="nav-respond" class="navbar navbar-expand-md{% if current_user.theme in dark_themes %} navbar-dark bg-dark{% else %} navbar-light bg-light{% endif %}">
 
-      <a class="navbar-brand" id="daemon-status" data-toggle="tooltip" data-placement="bottom" href="{{url_for('routes_page.page_info')}}" style="text-align: center; padding: 0 15px; padding-top: 2px !important; font-size: 14px; font-weight: bold;{%- if daemon_status == "alive" -%} /*noinspection CssOverwrittenProperties*/color: #4E9258{%- else -%} /*noinspection CssOverwrittenProperties*/color: #F70D1A{%- endif -%}" title="{%- if daemon_status == "alive" -%}{{_('Daemon is Running')}}{%- else -%}{{_('Daemon is Not Running')}}{%- endif -%}">{{host}} - {{mycodo_version}}<br><span id="time-update"></span></a>
+      <a class="navbar-brand" id="daemon-status" data-toggle="tooltip" data-placement="bottom" href="{{url_for('routes_page.page_info')}}" style="text-align: center; padding: 0 15px; line-height: 1.1; font-size: 0.8em; font-weight: bold;{%- if daemon_status == "alive" -%} /*noinspection CssOverwrittenProperties*/color: #4E9258{%- else -%} /*noinspection CssOverwrittenProperties*/color: #F70D1A{%- endif -%}" title="{%- if daemon_status == "alive" -%}{{_('Daemon is Running')}}{%- else -%}{{_('Daemon is Not Running')}}{%- endif -%}">{{host}} - {{mycodo_version}}<br><span id="time-update"></span></a>
       <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
@@ -226,6 +241,10 @@
     $(document).ready(function(){
       $('[data-toggle="tooltip"]').tooltip();
     });
+
+    window.onload = function() {
+      set_navbar_classes();
+    }
     </script>
   </body>
 </html>

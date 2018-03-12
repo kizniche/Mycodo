@@ -16,11 +16,11 @@
 
     <div style="clear: both; padding: 0.5em 0;"></div>
 
-    <form id="new_sensor_form" method="post" action="/data">
+    <form id="new_sensor_form" method="post" action="/data" style="padding-bottom: 0.5em">
       {{form_add_input.hidden_tag()}}
       <input type="hidden" name="form-name" value="addSensor">
 
-      <div class="row">
+      <div class="row small-gutters">
         <div class="col-sm">
           {{form_add_input.input_type(class_='form-control')}}
         </div>
@@ -33,7 +33,7 @@
     <form id="new_math_form" method="post" action="/data">
       {{form_add_math.hidden_tag()}}
 
-      <div class="row">
+      <div class="row small-gutters">
         <div class="col-sm">
           {{form_add_math.math_type(class_='form-control')}}
         </div>

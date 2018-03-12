@@ -2,11 +2,9 @@
  * Custom CSS
  */
 
-@media (max-width: 767px) {
-    .dropdown-menu{
-       max-height: 10em;
-       overflow-y: scroll;
-    }
+.sidebar-drop {
+  min-height: 10rem;
+  padding-top: 1rem;
 }
 
 .checkbox-big {
@@ -23,32 +21,32 @@
     font-size: 0.9em;
 }
 
-.navbar-default .navbar-nav > .active-upgrade > a, .navbar-default .navbar-nav > .active-upgrade > a:hover, .navbar-default .navbar-nav > .active-upgrade > a:focus {
-    color: #ffffff;
-    background-color: #8e0001;
-}
+/*.navbar-default .navbar-nav > .active-upgrade > a, .navbar-default .navbar-nav > .active-upgrade > a:hover, .navbar-default .navbar-nav > .active-upgrade > a:focus {*/
+    /*color: #ffffff;*/
+    /*background-color: #8e0001;*/
+/*}*/
 
-.dropdown-menu > .active-upgrade > a, .dropdown-menu > .active-upgrade > a:hover, .dropdown-menu > .active-upgrade > a:focus {
-    color: #ffffff;
-    text-decoration: none;
-    outline: 0;
-    background-color: #8e0001;
-}
+/*.dropdown-menu > .active-upgrade > a, .dropdown-menu > .active-upgrade > a:hover, .dropdown-menu > .active-upgrade > a:focus {*/
+    /*color: #ffffff;*/
+    /*text-decoration: none;*/
+    /*outline: 0;*/
+    /*background-color: #8e0001;*/
+/*}*/
 
-.navbar-nav > li > a, .navbar-brand {
-    padding-top:12px !important; padding-bottom:0 !important;
-    height: 45px;
-}
-.navbar {min-height:45px !important;}
+/*.navbar-nav > li > a, .navbar-brand {*/
+    /*padding-top:4px !important; padding-bottom:0 !important;*/
+    /*height: 35px;*/
+/*}*/
+/*.navbar {min-height:35px !important;}*/
 
-a.anchor {
-    display: block;
-    position: relative;
-    top: -3.7em;
-    visibility: hidden;
-}
+/*a.anchor {*/
+    /*display: block;*/
+    /*position: relative;*/
+    /*top: -3.7em;*/
+    /*visibility: hidden;*/
+/*}*/
 
-.gi-2x{font-size: 1.6em;}
+/*.gi-2x{font-size: 1.6em;}*/
 
 .row.small-gutters > [class^="col-"],
 .row.small-gutters > [class*=" col-"] {
@@ -96,38 +94,38 @@ a.anchor {
  * Live view
  */
 
-.inline-align {
-  text-align: justify; 
+/*.inline-align {*/
+  /*text-align: justify; */
 
-   /* IE special */  
-  width: 100%;  
-  -ms-text-justify: distribute-all-lines;
-  text-justify: distribute-all-lines;
-}
- .inline-align:after{
-  content: '';
-  display: inline-block;
-  width: 100%;
-  height: 0;
-  font-size:0;
-  line-height:0;
-}
+   /*!* IE special *!  */
+  /*width: 100%;  */
+  /*-ms-text-justify: distribute-all-lines;*/
+  /*text-justify: distribute-all-lines;*/
+/*}*/
+ /*.inline-align:after{*/
+  /*content: '';*/
+  /*display: inline-block;*/
+  /*width: 100%;*/
+  /*height: 0;*/
+  /*font-size:0;*/
+  /*line-height:0;*/
+/*}*/
 
-.inline-left {
-  display: inline-block;
+/*.inline-left {*/
+  /*display: inline-block;*/
 
-  /* ie 7*/ 
-  *display: inline;
-  *zoom: 1;
-  *text-align: left; 
-}
+  /*!* ie 7*! */
+  /**display: inline;*/
+  /**zoom: 1;*/
+  /**text-align: left; */
+/*}*/
 
-.inline-right {
-  display: inline-block;
-  vertical-align: baseline; 
+/*.inline-right {*/
+  /*display: inline-block;*/
+  /*vertical-align: baseline; */
 
-  /* ie 7*/
-  *display: inline;
-  *zoom:1;
-  *text-align: right;
-}
+  /*!* ie 7*!*/
+  /**display: inline;*/
+  /**zoom:1;*/
+  /**text-align: right;*/
+/*}*/

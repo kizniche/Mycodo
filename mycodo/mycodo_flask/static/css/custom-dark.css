@@ -3,21 +3,21 @@
 */
 
 .nav .upgrade_available {
-    background: #b10000;
+    background: #660000;
 }
 
 .active-background {
-    background-color: #004a02 !important
+    background-color: #003002 !important
 }
 
 .inactive-background {
-    background-color: #630100 !important
+    background-color: #370100 !important
 }
 
 .pause-background {
-    background-color: #5d5700 !important
+    background-color: #3c3600 !important
 }
 
 .hold-background {
-    background-color: #00026d !important
+    background-color: #000239 !important
 }
