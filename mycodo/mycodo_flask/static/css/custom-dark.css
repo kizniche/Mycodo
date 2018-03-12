@@ -7,17 +7,17 @@
 }
 
 .active-background {
-    background-color: #002202 !important
+    background-color: #004a02 !important
 }
 
 .inactive-background {
-    background-color: #2B0100 !important
+    background-color: #630100 !important
 }
 
 .pause-background {
-    background-color: #2b2600 !important
+    background-color: #5d5700 !important
 }
 
 .hold-background {
-    background-color: #00022b !important
+    background-color: #00026d !important
 }

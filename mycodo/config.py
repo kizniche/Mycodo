@@ -594,13 +594,14 @@ USER_ROLES = [
 
 # Web UI themes
 THEMES = [
-    ('business-tycoon', 'Business Tycoon'),
+    ('dark', 'Dark'),
     ('charming', 'Charming'),
+    ('business-tycoon', 'Business Tycoon'),
     ('neon-glow', 'Neon Glow'),
     ('vibrant-sea', 'Vibrant Sea')
 ]
 
-THEMES_DARK = ['neon-glow']
+THEMES_DARK = ['dark', 'neon-glow']
 
 # Install path, the parent directory this script resides
 INSTALL_DIRECTORY = os.path.dirname(os.path.realpath(__file__)) + '/..'

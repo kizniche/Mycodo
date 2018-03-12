@@ -1,10 +1,10 @@
-<div class="col-xs-6 col-sm-4 col-md-2">
+<div class="col-xs-6 col-sm-4 col-md-3">
   {{form_mod_relay.gpio.label(class_='control-label')}}
   <div>
     {{form_mod_relay.gpio(class_='form-control', value=each_relay.pin, **{'title':_('The GPIO pin (using BCM numbering) connected to the relay signal pin')})}}
    </div>
 </div>
-<div class="col-xs-6 col-sm-4 col-md-2">
+<div class="col-xs-6 col-sm-4 col-md-3">
   {{form_mod_relay.trigger.label(class_='control-label')}}
   <div>
     <select class="form-control form-tooltip form-dropdown" id="trigger" name="trigger" data-placement="top" title="{{_('What state triggers the relay to turn on? High or Low?')}}">
@@ -13,7 +13,7 @@
     </select>
    </div>
 </div>
-<div class="col-xs-6 col-sm-4 col-md-2">
+<div class="col-xs-6 col-sm-4 col-md-3">
   {{form_mod_relay.on_at_start.label(class_='control-label')}}
   <div>
     <select class="form-control form-tooltip form-dropdown" id="on_at_start" name="on_at_start" data-placement="top" title="{{_('When Mycodo starts, set the relay state')}}">

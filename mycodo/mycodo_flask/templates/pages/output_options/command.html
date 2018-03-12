@@ -10,7 +10,7 @@
     {{form_mod_relay.off_command(class_='form-control', value=each_relay.off_command, **{'title':_('Command to execute (as user mycodo) when the relay is instructed to turn off')})}}
    </div>
 </div>
-<div class="col-xs-6 col-sm-4 col-md-2">
+<div class="col-xs-6 col-sm-4 col-md-4">
   {{form_mod_relay.on_at_start.label(class_='control-label')}}
   <div>
     <select class="form-control form-tooltip form-dropdown" id="on_at_start" name="on_at_start" data-placement="top" title="{{_('When Mycodo starts, set the relay state')}}">
