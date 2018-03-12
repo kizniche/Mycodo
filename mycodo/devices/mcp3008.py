@@ -18,9 +18,9 @@ class MCP3008Read(object):
         self.channel = channel
         self.volts_max = volts_max
 
-        self.lock_file = '/var/lock/mcp3008-{clock}-{cs}-{miso}-{mosi}-{chan}'.format(
+        self.lock_file = '/var/lock/mcp3008-{clock}-{cs}-{miso}-{mosi}'.format(
                 clock=clockpin, cs=cspin, miso=misopin,
-                mosi=mosipin, chan=channel)
+                mosi=mosipin)
         self.adc = Adafruit_MCP3008.MCP3008(clk=clockpin,
                                             cs=cspin,
                                             miso=misopin,

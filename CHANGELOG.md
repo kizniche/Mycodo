@@ -7,6 +7,7 @@
 ### Bugfixes
 
  - Add proper max voltage for MCP3008 ([#418](https://github.com/kizniche/mycodo/issues/418))
+ - Fix proper locking for MCP3008 ([#418](https://github.com/kizniche/mycodo/issues/418))
 
 
 ## 5.6.4 (2018-03-11)
