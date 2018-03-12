@@ -9,13 +9,14 @@ import fasteners
 
 class MCP3008Read(object):
     """ ADC Read """
-    def __init__(self, clockpin, cspin, misopin, mosipin, channel):
+    def __init__(self, clockpin, cspin, misopin, mosipin, channel, volts_max):
         self.logger = logging.getLogger(
             'mycodo.mcp3008-{clock}-{cs}-{miso}-{mosi}-{chan}'.format(
                 clock=clockpin, cs=cspin, miso=misopin,
                 mosi=mosipin, chan=channel))
         self._voltage = None
         self.channel = channel
+        self.volts_max = volts_max
 
         self.lock_file = '/var/lock/mcp3008-{clock}-{cs}-{miso}-{mosi}-{chan}'.format(
                 clock=clockpin, cs=cspin, miso=misopin,
@@ -39,7 +40,7 @@ class MCP3008Read(object):
                     time.sleep(0.1)
 
             if lock_acquired:
-                self._voltage = (self.adc.read_adc(self.channel) / 1023.0) * 3.3
+                self._voltage = (self.adc.read_adc(self.channel) / 1023.0) * self.volts_max
                 lock.release()
             else:
                 self.logger.error("Could not acquire lock")

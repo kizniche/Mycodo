@@ -1,3 +1,14 @@
+## 5.6.5 (Unreleased)
+
+### Features
+
+ - Update from Bootstrap 4
+
+### Bugfixes
+
+ - Add proper max voltage for MCP3008 ([#418](https://github.com/kizniche/mycodo/issues/418))
+
+
 ## 5.6.4 (2018-03-11)
 
 ### Features

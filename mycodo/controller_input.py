@@ -218,7 +218,7 @@ class InputController(threading.Thread):
                 from mycodo.devices.mcp3008 import MCP3008Read
                 self.adc = MCP3008Read(self.pin_clock, self.pin_cs,
                                        self.pin_miso, self.pin_mosi,
-                                       self.adc_chan)
+                                       self.adc_chan, self.adc_volts_max)
             elif self.device == 'MCP342x' and self.location:
                 from mycodo.devices.mcp342x import MCP342xRead
                 self.adc = MCP342xRead(self.i2c_address, self.i2c_bus,
