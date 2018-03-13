@@ -11,16 +11,16 @@
 
     <p>{{("Certain devices require calibration in order to accurately operate. If Mycodo supports the calibration of a specific device, it will be listed below. For calibrating other devices, refer to the manufacturer's documentation.")}}</p>
 
+    <form method="post" action="/calibration">
     <div class="row small-gutters">
-      <form method="post" action="/calibration">
-      <div class="col-xs-12 col-sm-4 col-lg-3 small-gutters">
+      <div class="col-xs-12 col-sm-6 col-lg-4 small-gutters">
         {{form_calibration.selection(class_='form-control')}}
       </div>
       <div class="col-xs-12 col-sm-4 col-lg-2 small-gutters">
         {{form_calibration.submit(class_='form-control btn btn-default')}}
       </div>
-      </form>
     </div>
+    </form>
 
   </div>
 

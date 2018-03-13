@@ -445,7 +445,7 @@ kbd {
 pre {
   display: block;
   font-size: 87.5%;
-  color: #212529; }
+  color: #c9d4e1; }
   pre code {
     font-size: inherit;
     color: inherit;
@@ -2676,7 +2676,7 @@ tbody.collapse.show {
   color: #171717;
   text-align: left;
   list-style: none;
-  background-color: #fff;
+  background-color: #535467;
   -webkit-background-clip: padding-box;
           background-clip: padding-box;
   border: 1px solid rgba(0, 0, 0, 0.15);
@@ -2766,7 +2766,7 @@ tbody.collapse.show {
   padding: 0.25rem 1.5rem;
   clear: both;
   font-weight: 400;
-  color: #212529;
+  color: #afc4d5;
   text-align: inherit;
   white-space: nowrap;
   background-color: transparent;
@@ -2774,7 +2774,7 @@ tbody.collapse.show {
   .dropdown-item:hover, .dropdown-item:focus {
     color: #16181b;
     text-decoration: none;
-    background-color: #f8f9fa; }
+    background-color: #bdbcc5; }
   .dropdown-item.active, .dropdown-item:active {
     color: #fff;
     text-decoration: none;
@@ -4357,7 +4357,8 @@ tbody.collapse.show {
   display: block;
   padding: 0.75rem 1.25rem;
   margin-bottom: -1px;
-  background-color: #fff;
+  color: #e9e9e9;
+  background-color: #535467;
   border: 1px solid rgba(0, 0, 0, 0.125); }
   .list-group-item:first-child {
     border-top-left-radius: 10px;
@@ -4368,6 +4369,7 @@ tbody.collapse.show {
     border-bottom-left-radius: 10px; }
   .list-group-item:hover, .list-group-item:focus {
     z-index: 1;
+    color: #24acd3;
     text-decoration: none; }
   .list-group-item.disabled, .list-group-item:disabled {
     color: #6c757d;
@@ -5116,7 +5118,8 @@ button.bg-light:focus {
   background-color: #add2f6 !important; }
 
 .bg-dark {
-  background-color: #021127 !important; }
+  background-color: #021127 !important;
+  background-image: linear-gradient(#484e55, #3a3f44 60%, #313539);}
 
 a.bg-dark:hover, a.bg-dark:focus,
 button.bg-dark:hover,

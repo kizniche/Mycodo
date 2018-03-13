@@ -1,5 +1,5 @@
 <input type="hidden" name="timer_type" value="timespan">
-<div class="col-xs-6 col-sm-3">
+<div class="col-sm-4">
   {{form_timer_base.relay_id.label(class_='control-label')}}
   <div>
     <select class="form-control" id="relay_id" name="relay_id">
@@ -18,7 +18,7 @@
     </select>
   </div>
 </div>
-<div class="col-xs-6 col-sm-2">
+<div class="col-sm-2">
   {{form_timer_time_span.state.label(class_='control-label')}}
   <div>
     <select class="form-control" id="state" name="state">
@@ -27,7 +27,7 @@
     </select>
   </div>
 </div>
-<div class="col-xs-5 col-sm-3 col-md-2">
+<div class="col-sm-3 col-md-2">
   {{form_timer_time_span.time_start_duration.label(class_='control-label')}}
   <div>
     <div class="input-group clockpicker">
@@ -38,13 +38,13 @@
     </div>
   </div>
 </div>
-<div class="col-xs-2 col-sm-1 text-center">
+<div class="col-sm-1 text-center">
   <label></label>
   <div>
-    <span class="collapse-button{{each_timer.id}} fa fa-3x fa-long-arrow-right"></span>
+    <span class="fa fa-3x fa-long-arrow-alt-right"></span>
   </div>
 </div>
-<div class="col-xs-5 col-sm-3 col-md-2">
+<div class="col-sm-3 col-md-2">
   {{form_timer_time_span.time_end_duration.label(class_='control-label')}}
   <div>
     <div class="input-group clockpicker">

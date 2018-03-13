@@ -1,57 +1,60 @@
 <form method="post" action="/timer">
 {{form_timer_base.csrf_token}}
 <input type="hidden" name="timer_type" value="pwm_method">
-<div class="form-group">
-  {{form_timer_base.name.label(class_='control-label')}}
-  <div>
-    {{form_timer_base.name(class_='form-control')}}
-  </div>
-</div>
-<div class="form-group">
-  {{form_timer_base.relay_id.label(class_='control-label')}}
-  <div>
-    <select class="form-control" id="relay_id" name="relay_id">
-    {%- set pwm_output_exists = [] -%}
-    {% for each_choice, value in output_choices.items() if each_choice.split(',')[1] == 'duty_cycle' -%}
-      {%- do pwm_output_exists.append(1) -%}
-    {%- endfor -%}
 
-    {% if not pwm_output_exists %}
-      <option value="">{{_('No PWM Outputs Found')}}</option>
-    {% else %}
+<div class="form-row">
+  <div class="col-sm-6 col-md-3">
+    {{form_timer_base.name.label(class_='control-label')}}
+    <div>
+      {{form_timer_base.name(class_='form-control')}}
+    </div>
+  </div>
+  <div class="col-sm-6 col-md-3">
+    {{form_timer_base.relay_id.label(class_='control-label')}}
+    <div>
+      <select class="form-control" id="relay_id" name="relay_id">
+      {%- set pwm_output_exists = [] -%}
       {% for each_choice, value in output_choices.items() if each_choice.split(',')[1] == 'duty_cycle' -%}
-        <option value="{{each_choice.split(',')[0]}}">{{value}}</option>
-      {% endfor -%}
-    {% endif %}
-    </select>
+        {%- do pwm_output_exists.append(1) -%}
+      {%- endfor -%}
+
+      {% if not pwm_output_exists %}
+        <option value="">{{_('No PWM Outputs Found')}}</option>
+      {% else %}
+        {% for each_choice, value in output_choices.items() if each_choice.split(',')[1] == 'duty_cycle' -%}
+          <option value="{{each_choice.split(',')[0]}}">{{value}}</option>
+        {% endfor -%}
+      {% endif %}
+      </select>
+    </div>
   </div>
-</div>
-<div class="form-group">
-  {{form_timer_pwm_method.method_id.label(class_='control-label')}}
-  <div>
-    <select class="form-control" id="method_id" name="method_id" title="" data-original-title="{{_('Select the method for determining the duty cycle')}}">
-      {%- if method == [] -%}
-        <option value="">{{_('No Methods Found')}} -></option>
-      {%- else -%}
-        {%- for each_method in method-%}
-          <option value="{{each_method.id}}">[{{'%02d' % each_method.id}}] {{each_method.name}}</option>
-        {%- endfor -%}
-      {%- endif-%}
-    </select>
+  <div class="col-sm-6 col-md-3">
+    {{form_timer_pwm_method.method_id.label(class_='control-label')}}
+    <div>
+      <select class="form-control" id="method_id" name="method_id" title="" data-original-title="{{_('Select the method for determining the duty cycle')}}">
+        {%- if method == [] -%}
+          <option value="">{{_('No Methods Found')}} -></option>
+        {%- else -%}
+          {%- for each_method in method-%}
+            <option value="{{each_method.id}}">[{{'%02d' % each_method.id}}] {{each_method.name}}</option>
+          {%- endfor -%}
+        {%- endif-%}
+      </select>
+    </div>
   </div>
-</div>
-{%- if method == [] -%}
-<div class="form-group">
-  <label class='control-label' style="padding-top: 1em"></label>
-  <div>
-    <a href="/method" class="form-control btn btn-default" role="button">{{_('Manage Methods')}}</a>
+  {%- if method == [] -%}
+  <div class="col-sm-6 col-md-3">
+    <label class='control-label' style="padding-top: 1em"></label>
+    <div>
+      <a href="/method" class="form-control btn btn-default" role="button">{{_('Manage Methods')}}</a>
+    </div>
   </div>
-</div>
-{% endif %}
-<div class="form-group">
-  {{form_timer_pwm_method.method_period.label(class_='control-label')}}
-  <div>
-    {{form_timer_pwm_method.method_period(class_='form-control', value=15, **{'size':'6'})}}
+  {% endif %}
+  <div class="col-sm-6 col-md-3">
+    {{form_timer_pwm_method.method_period.label(class_='control-label')}}
+    <div>
+      {{form_timer_pwm_method.method_period(class_='form-control', value=15, **{'size':'6'})}}
+    </div>
   </div>
 </div>
 <div>

@@ -22,39 +22,35 @@
     <div style="clear: both; padding: 0.5em 0;"></div>
 
     <div class="container" style="padding-bottom: 1.5em;">
-      <a data-toggle="collapse" href="#collapseContainerTimerAdd" aria-expanded="false" aria-controls="collapseContainerTimerAdd" class="btn btn-default" role="button">{{_('New Timer')}}</a>
+      <a data-toggle="collapse" href="#collapseContainerTimerAdd" aria-expanded="false" aria-controls="collapseContainerTimerAdd" class="btn btn-primary" role="button">{{_('New Timer')}}</a>
 
       <div class="collapse" id="collapseContainerTimerAdd" style="padding-top: 1em">
 
         <div class="form-inline"></div>
 
-        <div class="form-inline">
-
-          <div>
-            <div class="form-group">
-              {{form_timer_base.timer_type.label(class_='control-label')}}
-              <div>
-                {{form_timer_base.timer_type(class_='form-control')}}
-              </div>
+        <div class="form-row">
+          <div class="col-sm-6 col-md-5 col-lg-3">
+            {{form_timer_base.timer_type.label(class_='control-label')}}
+            <div>
+              {{form_timer_base.timer_type(class_='form-control')}}
             </div>
           </div>
+        </div>
 
-          <div class="add_timer" style="display: none" id="time">
-           {% include 'pages/timer_options/add_time_point.html' %}
-          </div>
+        <div class="add_timer" style="display: none" id="time">
+         {% include 'pages/timer_options/add_time_point.html' %}
+        </div>
 
-          <div class="add_timer" style="display: none" id="timespan">
-           {% include 'pages/timer_options/add_time_span.html' %}
-          </div>
+        <div class="add_timer" style="display: none" id="timespan">
+         {% include 'pages/timer_options/add_time_span.html' %}
+        </div>
 
-          <div class="add_timer" style="display: none" id="duration">
-           {% include 'pages/timer_options/add_duration.html' %}
-          </div>
+        <div class="add_timer" style="display: none" id="duration">
+         {% include 'pages/timer_options/add_duration.html' %}
+        </div>
 
-          <div class="add_timer" style="display: none" id="pwm_method">
-            {% include 'pages/timer_options/add_pwm_method.html' %}
-          </div>
-
+        <div class="add_timer" style="display: none" id="pwm_method">
+          {% include 'pages/timer_options/add_pwm_method.html' %}
         </div>
 
       </div>
@@ -66,12 +62,14 @@
     {% for each_timer in timer if each_timer.id == order %}
 
     <div class="container" style="border: 2px solid #ddd;">
+
       <form method="post" action="/timer">
       {{form_timer_base.csrf_token}}
       {{form_timer_base.timer_id(class_='form-control', value=each_timer.id)}}
+
       <div class="row {% if each_timer.is_activated -%}active-background
-                      {% else -%}inactive-background
-                      {% endif -%} small-gutters" style="border-bottom: 2px solid #ddd; padding: 0.5em;">
+                           {% else -%}inactive-background
+                           {% endif -%} small-gutters" style="border-bottom: 2px solid #ddd; padding: 0.5em;">
         <div class="col-xs-2 col-sm-1 text-center icon-fh">
           <a data-toggle="collapse" href="#collapseContainer{{each_timer.id}}" aria-expanded="false" aria-controls="collapseContainer{{each_timer.id}}">
             <span class="collapse-button{{each_timer.id}} fa fa-3x fa-plus-square"></span>
@@ -102,25 +100,31 @@
         </div>
       </div>
 
-      <div class="row small-gutters collapse" id="collapseContainer{{each_timer.id}}" style="border-bottom: 2px solid #ddd; padding: 0.5em">
-        <div class="col-xs-6 col-sm-4 col-sm-offset-4">
-          {{form_timer_base.modify(class_='form-control btn btn-default')}}
-        </div>
-        <div class="col-xs-6 col-sm-4">
-          {{form_timer_base.delete(class_='form-control btn btn-default',**{'onclick':'return confirm("Are you sure you want to delete this?")'})}}
+      <div class="collapse" id="collapseContainer{{each_timer.id}}" style="padding: 0.5em">
+
+        <div class="row small-gutters">
+          <div class="col-xs-6 col-sm-4 col-sm-offset-4">
+            {{form_timer_base.modify(class_='form-control btn btn-default')}}
+          </div>
+          <div class="col-xs-6 col-sm-4">
+            {{form_timer_base.delete(class_='form-control btn btn-default',**{'onclick':'return confirm("Are you sure you want to delete this?")'})}}
+          </div>
         </div>
 
-        {% if each_timer.timer_type == 'time' %}
-          {% include 'pages/timer_options/mod_time_point.html' %}
-        {% elif each_timer.timer_type == 'timespan' %}
-          {% include 'pages/timer_options/mod_time_span.html' %}
-        {% elif each_timer.timer_type == 'duration' %}
-          {% include 'pages/timer_options/mod_duration.html' %}
-        {% elif each_timer.timer_type == 'pwm_method' %}
-          {% include 'pages/timer_options/mod_pwm_method.html' %}
-        {% endif %}
+        <div class="row small-gutters">
+          {% if each_timer.timer_type == 'time' %}
+            {% include 'pages/timer_options/mod_time_point.html' %}
+          {% elif each_timer.timer_type == 'timespan' %}
+            {% include 'pages/timer_options/mod_time_span.html' %}
+          {% elif each_timer.timer_type == 'duration' %}
+            {% include 'pages/timer_options/mod_duration.html' %}
+          {% elif each_timer.timer_type == 'pwm_method' %}
+            {% include 'pages/timer_options/mod_pwm_method.html' %}
+          {% endif %}
+        </div>
 
       </div>
+
       </form>
 
     </div>

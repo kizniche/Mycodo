@@ -75,10 +75,10 @@ function startTimer() {
 
     <p>If you wish to clear the calibration from the sensor memory, click Clear Calibration.</p>
 
+    <form method="post" action="/calibration_atlas_ph">
+    {{form_ph_calibrate.hidden_next_stage(value=1)}}
     <div class="row small-gutters">
-      <form method="post" action="/calibration_atlas_ph">
-      {{form_ph_calibrate.hidden_next_stage(value=1)}}
-      <div class="col-xs-12 col-sm-4 col-lg-3 small-gutters">
+      <div class="col-xs-12 col-sm-4 col-lg-4 small-gutters">
         <select class="form-control" id="selected_sensor_id" name="selected_sensor_id" title="" data-original-title="Select which Atlas Scientific pH sensor to calibrate">
           {% if sensor %}
             {%- for each_sensor in sensor -%}
@@ -95,8 +95,8 @@ function startTimer() {
       <div class="col-xs-6 col-sm-4 col-lg-2 small-gutters">
         {{form_ph_calibrate.clear_calibration(class_='form-control btn btn-default')}}
       </div>
-      </form>
     </div>
+    </form>
 
     {% elif stage == 1 %}
 
@@ -107,6 +107,7 @@ function startTimer() {
 
     <p>1. {{_('Calibration')}}{% if sensor_device_name %}: {{sensor_device_name}}{% endif %} {{selected_sensor.id}} ({{selected_sensor.name}})</p>
     <p>{{_('Ensure all pH calibration solutions are the same temperature. Enter the temperature (in Celsius) of your solutions, then click Continue.')}}</p>
+
     <form method="post" action="/calibration_atlas_ph">
     {{form_ph_calibrate.hidden_next_stage(value=2)}}
     <div class="row small-gutters">
@@ -131,6 +132,7 @@ function startTimer() {
 
     <p>2. {{_('Calibration')}}{% if sensor_device_name %}: {{sensor_device_name}}{% endif %} {{selected_sensor.id}} ({{selected_sensor.name}})</p>
     <p>{{_('Insert the probe into the pH %(ph)s solution, then click Ready', ph='7.0')}}</p>
+
     <form method="post" action="/calibration_atlas_ph">
     {{form_ph_calibrate.hidden_next_stage(value=3)}}
     <div style="display: none" id="ph_status">&lt;Please wait&gt;</div>
@@ -162,6 +164,7 @@ function startTimer() {
     <p>3. {{_('Calibration')}}{% if sensor_device_name %}: {{sensor_device_name}}{% endif %} {{selected_sensor.id}} ({{selected_sensor.name}})</p>
     <p>{{_('Remove the pH probe from the pH %(ph)s solution and rinse it with distilled water', ph='7.0')}}</p>
     <p>{{_('Insert the probe into the pH %(ph)s solution, then click Ready', ph='4.0')}}</p>
+
     <form method="post" action="/calibration_atlas_ph">
     {{form_ph_calibrate.hidden_next_stage(value=4)}}
     <div style="display: none" id="ph_status">&lt;Please wait&gt;</div>
@@ -193,6 +196,7 @@ function startTimer() {
     <p>4. {{_('Calibration')}}{% if sensor_device_name %}: {{sensor_device_name}}{% endif %} {{selected_sensor.id}} ({{selected_sensor.name}})</p>
     <p>{{_('Remove the pH probe from the pH %(ph)s solution and rinse it with distilled water', ph='4.0')}}</p>
     <p>{{_('Insert the probe into the pH %(ph)s solution, then click Ready', ph='10.0')}}</p>
+
     <form method="post" action="/calibration_atlas_ph">
     {{form_ph_calibrate.hidden_next_stage(value=5)}}
     <div style="display: none" id="ph_status">&lt;Please wait&gt;</div>
