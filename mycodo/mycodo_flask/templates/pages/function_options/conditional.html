@@ -9,44 +9,42 @@
 
     <div class="{% if each_cond.is_activated -%}active-background
                 {% else -%}inactive-background
-                {% endif -%} row small-gutters" style="padding-top: 0.5em; padding-bottom: 0.5em;">
+                {% endif -%} row small-gutters" style="padding: 0.4em 0.2em 0.3em 0.3em;">
 
-      <div class="col-xs-12 col-sm-6 small-gutters">
-        <div class="col-xs-2 text-center icon-fh">
-          <a data-toggle="collapse" href="#collapseContainer-conditional-{{each_cond.id}}" aria-expanded="false" aria-controls="collapseContainer-conditional-{{each_cond.id}}">
-            <span class="collapse-button{{each_cond.id}} fa fa-3x fa-plus-square"></span>
-          </a>
-        </div>
-        <div class="col-xs-6 no-gutters">
-          {{form_conditional.name(class_='form-control', value=each_cond.name, **{'title':_('A name to distinguish this from others')})}}
-        </div>
-        <div class="col-xs-4 no-gutters">
-          <input class="form-control btn btn-default" disabled="" value="[{{'%02d' % each_cond.id}}]
-          {%- if each_cond.is_activated %} {{_('Active')}}
-          {%- else %} {{_('Inactive')}}
-          {%-endif -%}
-          " type="text">
-        </div>
+      <div class="col-xs-2 col-sm-1 text-center icon-fh">
+        <a data-toggle="collapse" href="#collapseContainer-conditional-{{each_cond.id}}" aria-expanded="false" aria-controls="collapseContainer-conditional-{{each_cond.id}}">
+          <span style="font-size: 2.6em" class="collapse-button{{each_cond.id}} fa fa-plus-square"></span>
+        </a>
+      </div>
+      <div class="col-xs-6 col-sm-4 col-md-4 col-lg-3">
+        {{form_conditional.name(class_='form-control', value=each_cond.name, **{'title':_('A name to distinguish this from others')})}}
+      </div>
+      <div class="col-xs-6 col-sm-4 col-md-4 col-lg-2">
+        <input class="form-control btn btn-default" disabled="" value="[{{'%02d' % each_cond.id}}]
+        {%- if each_cond.is_activated %} {{_('Active')}}
+        {%- else %} {{_('Inactive')}}
+        {%-endif -%}
+        " type="text">
       </div>
 
-      <div class="col-xs-12 col-sm-6 col-md-2 no-gutters">
+      <div class="col-xs-12 col-sm-3 col-md-3 col-lg-2">
         {%- if each_cond.is_activated %}
           {{form_conditional.deactivate_cond(class_='form-control btn btn-default')}}
         {%- else %}
           {{form_conditional.activate_cond(class_='form-control btn btn-default')}}
         {%- endif -%}
       </div>
-      <div class="col-xs-6 col-sm-3 col-md-1">
-        {{form_conditional.order_up_cond(class_='form-control btn btn-default')}}
-      </div>
-      <div class="col-xs-6 col-sm-3 col-md-1">
-        {{form_conditional.order_down_cond(class_='form-control btn btn-default')}}
-      </div>
-      <div class="col-xs-6 col-sm-3 col-md-1">
+      <div class="col-xs-6 col-sm-3 col-md-3 col-lg-1">
         {{form_conditional.save_cond(class_='form-control btn btn-default')}}
       </div>
-      <div class="col-xs-6 col-sm-3 col-md-1">
+      <div class="col-xs-6 col-sm-3 col-md-3 col-lg-1">
         {{form_conditional.delete_cond(class_='form-control btn btn-default', **{'onclick':'return confirm("Are you sure you want to delete this?")'})}}
+      </div>
+      <div class="col-xs-6 col-sm-3 col-md-3 col-lg-1">
+        {{form_conditional.order_up_cond(class_='form-control btn btn-default')}}
+      </div>
+      <div class="col-xs-6 col-sm-3 col-md-3 col-lg-1">
+        {{form_conditional.order_down_cond(class_='form-control btn btn-default')}}
       </div>
     </div>
 

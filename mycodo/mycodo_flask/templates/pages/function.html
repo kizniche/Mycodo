@@ -18,9 +18,11 @@
 
     <div style="clear: both; padding: 0.5em 0;"></div>
 
+    <form method="post" action="/function">
+    {{form_mod_pid_base.csrf_token}}
+
     <div class="row small-gutters">
-      <form method="post" action="/function">
-      {{form_mod_pid_base.csrf_token}}
+
       <div class="col-xs-6 col-sm-4 col-md-3">
         <select class="form-control" id="func_type" name="func_type">
           <option value="pid">PID Controller</option>
@@ -30,10 +32,11 @@
         </select>
       </div>
       <div class="col-xs-5 col-sm-3 col-lg-2 no-gutters">
-        {{form_add_function.func_add(class_='form-control btn btn-default')}}
+        {{form_add_function.func_add(class_='btn btn-primary')}}
       </div>
-      </form>
     </div>
+
+    </form>
 
     <div style="clear: both; padding: 1em 0;"></div>
 

@@ -1,6 +1,6 @@
 <div class="row small-gutters {% if each_cond.is_activated -%}active-background
                   {% else -%}inactive-background
-                  {% endif -%}" style="border-bottom: 2px solid #ddd; padding-bottom: 0.2em">
+                  {% endif -%}" style="border-bottom: 1px solid #ddd; padding-bottom: 0.2em">
   <div class="col-xs-6 col-sm-4 col-md-3">
     <label class='control-label'>{{_('If Output')}}</label>
     <div>
@@ -33,7 +33,7 @@
       <label class='control-label'>{{_('For')}}</label>
     </div>
   </div>
-  <div class="col-xs-6 col-sm-3 col-md-2">
+  <div class="col-xs-6 col-sm-3">
     <label class='control-label'>{{_('Duration (seconds)')}}</label>
     <div>
      {{form_conditional.if_relay_duration(class_='form-control', value=each_cond.if_relay_duration, **{'title':_('(Optional) Set this to a specific duration of time if the conditional should trigger when the relay On duration equals this amount'), 'size':'3'})}}

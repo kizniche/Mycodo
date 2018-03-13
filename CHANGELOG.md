@@ -2,7 +2,7 @@
 
 ### Features
 
- - Update from Bootstrap 4
+ - Update to Bootstrap 4
 
 ### Bugfixes
 
