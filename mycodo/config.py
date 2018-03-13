@@ -328,9 +328,9 @@ METHOD_INFO = {
 OUTPUTS = [
     ('wired', 'GPIO (On/Off)'),
     ('pwm', 'GPIO (PWM)'),
-    ('wireless_433MHz_pi_switch', 'Wireless (433MHz)'),
     ('command', 'Command (On/Off)'),
-    ('command_pwm', 'Command (PWM)')
+    ('command_pwm', 'Command (PWM)'),
+    ('wireless_433MHz_pi_switch', 'Wireless (433MHz)')
 ]
 
 # Output info
