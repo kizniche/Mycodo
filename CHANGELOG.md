@@ -3,6 +3,7 @@
 ### Features
 
  - Update to Bootstrap 4
+ - Update to InfluxDB 1.5.0
 
 ### Bugfixes
 

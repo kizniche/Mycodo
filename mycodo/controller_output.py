@@ -503,7 +503,7 @@ class OutputController(threading.Thread):
                     self.pwm_state[output_id] = None
                 else:
                     return
-                self.logger.error(
+                self.logger.debug(
                     "Output duty cycle {duty_cycle} command returned: "
                     "{stat}: '{ret}'".format(
                         duty_cycle=duty_cycle,
