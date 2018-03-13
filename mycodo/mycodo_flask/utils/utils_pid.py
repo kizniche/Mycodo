@@ -271,6 +271,8 @@ def pid_deactivate(pid_id):
     pid = PID.query.filter(
         PID.id == pid_id).first()
     pid.is_activated = False
+    pid.is_held = False
+    pid.is_paused = False
     db.session.commit()
     time.sleep(1)
     controller_activate_deactivate('deactivate',
