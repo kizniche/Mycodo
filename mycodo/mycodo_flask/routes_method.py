@@ -201,6 +201,10 @@ def method_builder(method_id):
     form_add_method = forms_method.MethodAdd()
     form_mod_method = forms_method.MethodMod()
 
+    choices_output = utils_general.choices_outputs(output)
+
+    form_fail = None
+
     # Used in software tests to verify function is executing as admin
     if method_id == '-1':
         return 'admin logged in'
@@ -277,6 +281,7 @@ def method_builder(method_id):
             method_data = []
 
         return render_template('pages/method-build.html',
+                               choices_output=choices_output,
                                method=method,
                                output=output,
                                method_data=method_data,

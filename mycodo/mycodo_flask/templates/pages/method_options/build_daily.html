@@ -1,4 +1,4 @@
-<div class="row">
+<div class="row small-gutters" style="padding: 0.7em">
   <div class="col-md-12">
     <input type="radio" name="method_select" value="setpoint" checked="checked"> {{_('Define the setpoint over a period of time based on specific times of the day. This method will repeat daily. Start the first entry at midnight (00:00) if you wish to fill the entire day.')}}
     <br>{{_("The new entry's start time may be equal to the last entry's end time, but it cannot overlap. The default setpoint for the PID will be used if there is any unaccounted time.")}}
@@ -18,7 +18,7 @@
   </div>
 </div>
 
-<div class="row">
+<div class="row small-gutters" style="padding: 0.7em">
   <div class="col-sm-6 col-md-4">
     {{form_add_method.setpoint_start.label(class_='control-label')}}
     <div>
@@ -42,12 +42,12 @@
   </div>
 </div>
 
-<div class="row">
+<div class="row small-gutters" style="padding: 0.7em">
   <div class="col-md-12">
     <input type="radio" name="method_select" value="relay"> {{_('Output')}}
     <br>{{_('Activate or deactivate an output at a specific time of day. Hour and minute (HH:MM) here is defined as the time of day. For example, 3:05 PM would be "15:05".')}}
   </div>
-  <div class="col-sm-6 col-md-2">
+  <div class="col-sm-6 col-md-3">
     {{form_add_method.relay_daily_time.label(class_='control-label')}}
     <div>
       {{form_add_method.relay_daily_time(class_='form-control')}}
@@ -58,8 +58,8 @@
     <div>
       <select class="form-control form-tooltip form-dropdown" data-placement="bottom" id="relay_id" name="relay_id" title="{{_('Modulate the selected relay')}}.">
         <option value=""></option>
-        {% for rel in relay -%}
-          <option value="{{rel.id}}">{{rel.id}} ({{rel.name}})</option>
+        {% for each_choice, value in choices_output.items() if each_choice.split(',')[1] == 'duration_sec' -%}
+          <option value="{{each_choice.split(',')[0]}}">{{value}}</option>
         {% endfor -%}
       </select>
     </div>
@@ -70,7 +70,7 @@
       {{form_add_method.relay_state(class_='form-control')}}
     </div>
   </div>
-  <div class="col-sm-3 col-md-2">
+  <div class="col-sm-3">
     {{form_add_method.relay_duration.label(class_='control-label')}}
     <div>
       {{form_add_method.relay_duration(class_='form-control')}}

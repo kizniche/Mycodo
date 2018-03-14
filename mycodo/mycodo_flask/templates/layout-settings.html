@@ -15,6 +15,8 @@
 
   {% set active_settings = active_settings|default('users') -%}
 
+  {% include 'flash_messages.html' %}
+
   <main role="main" class="container sidebar-drop">
     <div class="row">
       <div class="col-md-3 col-xs-1 p-l-0 p-r-0 collapse in show" id="sidebar">
@@ -28,9 +30,6 @@
       </div>
       <div class="col-md-9 col-xs-11 p-l-2 p-t-2" style="padding-bottom: 1em">
           <a href="#sidebar" data-toggle="collapse"><i class="fas fa-bars fa-lg"></i></a>
-
-          {% include 'flash_messages.html' %}
-
           {% block settings %}{% endblock %}
      </div>
     </div>

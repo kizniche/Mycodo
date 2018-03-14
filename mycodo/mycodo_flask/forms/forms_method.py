@@ -65,7 +65,7 @@ class MethodAdd(FlaskForm):
         lazy_gettext('Time YYYY-MM-DD HH:MM:SS'),
         render_kw={"placeholder": "YYYY-MM-DD HH:MM:SS"}
     )
-    relay_duration = IntegerField(lazy_gettext('Duration On (seconds)'))
+    relay_duration = IntegerField(lazy_gettext('Duration (seconds)'))
     relay_id = StringField(lazy_gettext('Output'),)
     relay_state = SelectField(
         lazy_gettext('Relay State'),
@@ -113,9 +113,9 @@ class MethodMod(FlaskForm):
     duration_end = DecimalField(lazy_gettext('End After (seconds)'))
     setpoint_start = DecimalField(lazy_gettext('Start Setpoint'))
     setpoint_end = DecimalField(lazy_gettext('End Setpoint'))
-    relay_id = StringField(lazy_gettext('Relay'))
-    relay_state = StringField(lazy_gettext('Relay State'))
-    relay_duration = IntegerField(lazy_gettext('Relay Duration'))
+    relay_id = StringField(lazy_gettext('Output'))
+    relay_state = StringField(lazy_gettext('State'))
+    relay_duration = IntegerField(lazy_gettext('Duration'))
     rename = SubmitField(lazy_gettext('Rename'))
     save = SubmitField(lazy_gettext('Save'))
     Delete = SubmitField(lazy_gettext('Delete'))

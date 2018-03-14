@@ -9,7 +9,7 @@
   <!-- Route: /settings/users -->
   <h3 style="text-align: right; padding-bottom: 1.3em;"><a href="/help#users" target="_blank"><span style="font-size: 16px" class="fas fa-question-circle"></span></a> {{_('User Settings')}}</h3>
 
-  <h3>{{_('Users')}}</h3>
+  <h3>{{_('Add User')}}</h3>
 
   <form class="form-horizontal" method="post" action="/settings/users">
   {{form_add_user.hidden_tag()}}
@@ -73,6 +73,8 @@
 
   <div style="clear: both; padding: 1em 0;"></div>
 
+  <h3>{{_('Users')}}</h3>
+
   {% for user in users %}
 
   <form method="post" action="/settings/users">
@@ -80,41 +82,37 @@
   {{form_mod_user.user_id(value=user.id)}}
 
     <div class="row small-gutters">
-      <div class="col-xs-4 col-sm-4 col-md-3">
+      <div class="col-sm-6 col-md-3">
         <input class="form-control btn btn-primary" disabled="" value="{{user.name}}" type="text">
       </div>
-      <div class="col-xs-4 col-sm-4 col-md-2 small-gutters">
-        {{form_mod_user.save(class_='btn btn-primary btn-block')}}
-      </div>
-      <div class="col-xs-4 col-sm-4 col-md-2 small-gutters">
-        {{form_mod_user.delete(class_='btn btn-primary btn-block', **{'onclick':'return confirm("Are you sure you want to delete this?")'})}}
-      </div>
-    </div>
-
-    <div class="row small-gutters">
-      <div class="col-xs-4 col-sm-2 col-md-2">
+      <div class="col-sm-6 col-md-3">
         {{form_mod_user.email(class_='form-control', value=user.email)}}
       </div>
-      <div class="col-xs-4 col-sm-3 col-md-3">
+      <div class="col-sm-3 col-md-3">
         {{form_mod_user.password_new(class_='form-control')}}
       </div>
-      <div class="col-xs-4 col-sm-3 col-md-3">
+      <div class="col-sm-3 col-md-3">
         {{form_mod_user.password_repeat(class_='form-control')}}
       </div>
-      <div class="col-xs-6 col-sm-2">
+      <div class="col-sm-3">
         <select class="form-control" id="role" name="role">
           {% for each_role in user_roles %}
             <option value="{{each_role.name}}"{% if user.role == each_role.id %} selected{% endif %}>{{each_role.name}}</option>
           {% endfor %}
         </select>
       </div>
-      <div class="col-xs-6 col-sm-2">
+      <div class="col-sm-3">
         <select class="form-control" id="theme" name="theme">
-          <option value=""{% if user.theme == '' %} selected{% endif %}>Default</option>
           {% for value, name in themes %}
             <option value="{{value|e}}"{% if value == user.theme %} selected{% endif %}>{{name|e}}</option>
           {% endfor -%}
         </select>
+      </div>
+      <div class="col-sm-6 col-md-3 small-gutters">
+        {{form_mod_user.save(class_='btn btn-primary btn-block')}}
+      </div>
+      <div class="col-sm-6 col-md-3 small-gutters">
+        {{form_mod_user.delete(class_='btn btn-primary btn-block', **{'onclick':'return confirm("Are you sure you want to delete this?")'})}}
       </div>
     </div>
 

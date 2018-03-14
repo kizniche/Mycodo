@@ -22,10 +22,11 @@
 
     <div style="clear: both; padding: 0.5em 0;"></div>
 
-    <div class="row">
-      <form method="post" action="/method-build/0">
-      <input type="hidden" name="form-name" value="createMethod">
-      {{form_create_method.csrf_token}}
+    <form method="post" action="/method-build/0">
+    <input type="hidden" name="form-name" value="createMethod">
+    {{form_create_method.csrf_token}}
+
+    <div class="row small-gutters" style="padding-left: 1em">
       <div class="col-sm-4 col-md-3">
         {{form_create_method.name.label(class_='control-label')}}
         <div>
@@ -50,8 +51,9 @@
           {{form_create_method.Submit(class_='form-control btn btn-default')}}
         </div>
       </div>
-      </form>
     </div>
+
+    </form>
 
     <div style="clear: both; padding: 1em 0;">
 
@@ -66,8 +68,8 @@
 
     {%- for each_method in method -%}
       {%- set chart_number = loop.index -%}
-      <div style="padding: 0.5em; margin-bottom: 1em; border: 2px solid #ddd; border-radius: 5px;">
-        <div class="row" style="padding-bottom: 0.2em">
+      <div style="margin-bottom: 1em; border: 2px solid #ddd; border-radius: 5px;">
+        <div class="row small-gutters" style="padding: 0 1em">
           <div class="col-xs-12 col-sm-6">
             <input class="form-control btn btn-default" disabled="" value="[{{'%02d' % each_method.id}}] {{each_method.method_type}} Method: {{each_method.name}}" type="text">
           </div>

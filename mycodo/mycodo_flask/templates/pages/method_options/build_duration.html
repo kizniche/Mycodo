@@ -1,4 +1,4 @@
-<div class="row">
+<div class="row small-gutters" style="padding: 0.7em">
   <div class="col-sm-6 col-md-4 " style="padding-bottom: 1.5em">
     {{form_add_method.duration.label(class_='control-label')}}
     <div>
@@ -11,7 +11,7 @@
   </div>
 </div>
 
-<div class="row">
+<div class="row small-gutters" style="padding: 0.7em">
   <div class="col-sm-6 col-md-4">
     {{form_add_method.setpoint_start.label(class_='control-label')}}
     <div>
@@ -35,18 +35,18 @@
   </div>
 </div>
 
-<div class="row">
+<div class="row small-gutters" style="padding: 0.7em">
   <div class="col-md-12">
     <input type="radio" name="method_select" value="relay"> {{_('Output')}}
     <br>{{_('Activate or deactivate an output within this method at a specific duration. Duration here is defined as the amount of time since the beginning of the method. For example, 60 seconds would execute the output modulation 60 seconds after the start of the method.')}}
   </div>
-  <div class="col-sm-6 col-md-4">
+  <div class="col-sm-5 col-md-4">
     {{form_add_method.relay_id.label(class_='control-label')}}
     <div>
       <select class="form-control form-tooltip form-dropdown" data-placement="bottom" id="relay_id" name="relay_id" title="{{_('Modulate the selected relay')}}.">
         <option value=""></option>
-        {% for rel in relay -%}
-          <option value="{{rel.id}}">{{rel.id}} ({{rel.name}})</option>
+        {% for each_choice, value in choices_output.items() if each_choice.split(',')[1] == 'duration_sec' -%}
+          <option value="{{each_choice.split(',')[0]}}">{{value}}</option>
         {% endfor -%}
       </select>
     </div>
@@ -57,7 +57,7 @@
       {{form_add_method.relay_state(class_='form-control')}}
     </div>
   </div>
-  <div class="col-sm-3 col-md-2">
+  <div class="col-sm-4 col-md-3">
     {{form_add_method.relay_duration.label(class_='control-label')}}
     <div>
       {{form_add_method.relay_duration(class_='form-control')}}
@@ -72,20 +72,20 @@
     </div>
   </div>
 </div>
-<div class="row">
+<div class="row small-gutters" style="padding: 0.7em">
   <div style="padding: 1em">
     {{_('Use the following options to instruct the method to restart when it reaches the end.')}}
     {{_('If you do not wish for the method to repeat, do not use this option.')}}
     {{_('You may enter a duration (seconds) that the method will end after, otherwise leave blank to repeat forever.')}}
   </div>
-  <div class="col-sm-3 col-md-2">
+  <div class="col-sm-5 col-md-3">
     {{form_add_method.duration_end.label(class_='control-label')}}
     <div>
       {{form_add_method.duration_end(class_='form-control')}}
     </div>
   </div>
-  <div class="col-md-3">
-    <label class='control-label'></label>
+  <div class="col-sm-5">
+    <label class='control-label'>&nbsp;</label>
     <div>
       {{form_add_method.restart(class_='form-control btn btn-default',**{'onclick':'return confirm("This will instruct the method to be restarted once it finishes. No more durations may be added if this option is used. Confirm adding restart at the end of this method?")'})}}
     </div>

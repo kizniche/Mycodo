@@ -594,7 +594,6 @@ USER_ROLES = [
 
 # Web UI themes
 THEMES = [
-    ('mycodo_dark', 'Mycodo Dark'),
     ('cerulean', 'Cerulean'),
     ('cosmo', 'Cosmo'),
     ('cyborg', 'Cyborg'),
@@ -617,7 +616,7 @@ THEMES = [
     ('yeti', 'Yeti')
 ]
 
-THEMES_DARK = ['mycodo_dark', 'cyborg', 'darkly', 'slate', 'solar', 'superhero']
+THEMES_DARK = ['cyborg', 'darkly', 'slate', 'solar', 'superhero']
 
 # Install path, the parent directory this script resides
 INSTALL_DIRECTORY = os.path.dirname(os.path.realpath(__file__)) + '/..'

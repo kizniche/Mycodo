@@ -32,25 +32,27 @@
         {{_('Method-Builder')}}: [{{'%02d' % method.id}}] {{method.method_type}}
       </div>
 
-      <div class="row">
-        <form method="post" action="/method-build/{{method.id}}">
-        <input type="hidden" name="form-name" value="renameMethod">
-        {{form_mod_method.csrf_token}}
-        {{form_mod_method.method_id(class_='form-control', value=method.id)}}
+      <form method="post" action="/method-build/{{method.id}}">
+      <input type="hidden" name="form-name" value="renameMethod">
+      {{form_mod_method.csrf_token}}
+      {{form_mod_method.method_id(class_='form-control', value=method.id)}}
+
+      <div class="row small-gutters" style="padding: 0.7em">
         <div class="col-sm-6 col-md-4">
           {{form_mod_method.name.label(class_='control-label')}}
           <div>
             {{form_mod_method.name(class_='form-control', value=method.name, **{'title':_('A name to distinguish this from others')})}}
           </div>
         </div>
-        <div class="col-sm-6 col-md-2 small-gutters">
+        <div class="col-sm-6 col-md-3">
           <label style="padding-top: 1em"></label>
           <div>
             {{form_mod_method.rename(class_='form-control btn btn-default')}}
           </div>
         </div>
-        </form>
       </div>
+
+      </form>
 
       <form method="post" action="/method-build/{{method.id}}">
       <input type="hidden" name="form-name" value="addMethod">
@@ -107,7 +109,7 @@
 
     {%- if method_setpoint -%}
 
-      <div class="row" style="margin: 1em 0 0 0; padding: 1em; border: 2px solid #ddd; border-radius: 5px;">
+      <div class="row small-gutters" style="margin: 1em 0 0 0; padding: 1em; border: 2px solid #ddd; border-radius: 5px;">
         <div class="col-xs-12" style="padding-bottom: 1em">
           <h3>Setpoint Tracking</h3>
         </div>
@@ -116,23 +118,24 @@
             if each_method.method_id == method.id and
                not each_method.relay_id -%}
 
-        <div class="row">
-          <form method="post" action="/method-build/{{method.id}}">
-          <input type="hidden" name="form-name" value="modMethod">
-          {{form_mod_method.csrf_token}}
-          {{form_mod_method.method_id(class_='form-control', value=method.id)}}
-          {{form_mod_method.method_data_id(class_='form-control', value=each_method.id)}}
-          <input class="form-control" id="method_select" name="method_select" type="hidden" value="setpoint">
+        <form method="post" action="/method-build/{{method.id}}">
+        <input type="hidden" name="form-name" value="modMethod">
+        {{form_mod_method.csrf_token}}
+        {{form_mod_method.method_id(class_='form-control', value=method.id)}}
+        {{form_mod_method.method_data_id(class_='form-control', value=each_method.id)}}
+        <input class="form-control" id="method_select" name="method_select" type="hidden" value="setpoint">
 
-            {% if method.method_type == "Date" -%}
+        <div class="row small-gutters" style="padding: 0.7em">
 
-          <div class="col-sm-4 col-md-2">
+          {% if method.method_type == "Date" -%}
+
+          <div class="col-sm-6 col-md-4 col-lg-3">
             {{form_mod_method.time_start.label(class_='control-label')}}
             <div>
               {{form_mod_method.time_start(class_='form-control', value=each_method.time_start)}}
             </div>
           </div>
-          <div class="col-sm-4 col-md-2">
+          <div class="col-sm-6 col-md-4 col-lg-3">
             {{form_mod_method.time_end.label(class_='control-label')}}
             <div>
               {{form_mod_method.time_end(class_='form-control', value=each_method.time_end)}}
@@ -141,13 +144,13 @@
 
           {% elif method.method_type == "Daily" -%}
 
-          <div class="col-sm-3 col-md-2">
+          <div class="col-sm-6 col-md-4 col-lg-3">
             {{form_mod_method.daily_time_start.label(class_='control-label')}}
             <div>
               {{form_mod_method.daily_time_start(class_='form-control', value=each_method.time_start)}}
             </div>
           </div>
-          <div class="col-sm-3 col-md-2">
+          <div class="col-sm-6 col-md-4 col-lg-3">
             {{form_mod_method.daily_time_end.label(class_='control-label')}}
             <div>
               {{form_mod_method.daily_time_end(class_='form-control', value=each_method.time_end)}}
@@ -179,13 +182,13 @@
               <input class="form-control btn btn-default" disabled="" value="Repeat Method" type="text">
             </div>
           </div>
-          <div class="col-sm-3 col-md-2">
+          <div class="col-sm-2 col-md-1">
             <label class='control-label' style="padding-top: 1em"></label>
             <div>
               {{form_mod_method.save(class_='form-control btn btn-default')}}
             </div>
           </div>
-          <div class="col-sm-3 col-md-2">
+          <div class="col-sm-2 col-md-1">
             <label class='control-label' style="padding-top: 1em"></label>
             <div>
               {{form_mod_method.Delete(class_='form-control btn btn-default',**{'onclick':'return confirm("Are you sure you want to delete this?")'})}}
@@ -194,25 +197,25 @@
 
           {% else %}
 
-          <div class="col-sm-3 col-md-2">
+          <div class="col-sm-3 col-md-2 col-lg-2">
             {{form_mod_method.setpoint_start.label(class_='control-label')}}
             <div>
               {{form_mod_method.setpoint_start(class_='form-control', value=each_method.setpoint_start)}}
             </div>
           </div>
-          <div class="col-sm-3 col-md-2">
+          <div class="col-sm-3 col-md-2 col-lg-2">
             {{form_mod_method.setpoint_end.label(class_='control-label')}}
             <div>
               {{form_mod_method.setpoint_end(class_='form-control', value=each_method.setpoint_end)}}
             </div>
           </div>
-          <div class="col-sm-3 col-md-2">
+          <div class="col-sm-3 col-md-2 col-lg-1">
             <label class='control-label' style="padding-top: 1em"></label>
             <div>
               {{form_mod_method.save(class_='form-control btn btn-default')}}
             </div>
           </div>
-          <div class="col-sm-3 col-md-2">
+          <div class="col-sm-3 col-md-2 col-lg-1">
             <label class='control-label' style="padding-top: 1em"></label>
             <div>
               {{form_mod_method.Delete(class_='form-control btn btn-default',**{'onclick':'return confirm("Are you sure you want to delete this?")'})}}
@@ -221,8 +224,9 @@
 
           {% endif %}
 
-          </form>
         </div>
+
+        </form>
 
       {%- endfor -%}
 
@@ -237,7 +241,7 @@
     {%- endfor -%}
 
     {%- if method_relay -%}
-    <div class="row" style="margin: 1em 0 0 0; padding: 1em; border: 2px solid #ddd; border-radius: 5px;">
+    <div class="row small-gutters" style="margin: 1em 0 0 0; padding: 1em; border: 2px solid #ddd; border-radius: 5px;">
       <div class="col-xs-12">
         <h3>{{_('Output Modulation')}}</h3>
       </div>
@@ -248,13 +252,14 @@
 
     {%- for each_method in method_data if each_method.method_id == method.id and each_method.relay_id -%}
 
+      <form method="post" action="/method-build/{{method.id}}" style="padding: 0.7em 0">
+      <input type="hidden" name="form-name" value="modMethod">
+      {{form_mod_method.csrf_token}}
+      {{form_mod_method.method_id(class_='form-control', value=method.id)}}
+      {{form_mod_method.method_data_id(class_='form-control', value=each_method.id)}}
+      <input class="form-control" id="method_select" name="method_select" type="hidden" value="relay">
+
       <div class="row">
-        <form method="post" action="/method-build/{{method.id}}" style="padding: 0.7em 0">
-        <input type="hidden" name="form-name" value="modMethod">
-        {{form_mod_method.csrf_token}}
-        {{form_mod_method.method_id(class_='form-control', value=method.id)}}
-        {{form_mod_method.method_data_id(class_='form-control', value=each_method.id)}}
-        <input class="form-control" id="method_select" name="method_select" type="hidden" value="relay">
 
       {% if method.method_type == "Date" -%}
 
@@ -318,15 +323,16 @@
             {{form_mod_method.save(class_='form-control btn btn-default')}}
           </div>
         </div>
-        <div class="col-sm-2  col-md-2">
+        <div class="col-sm-2 col-md-2">
           <label class='control-label' style="padding-top: 1em"></label>
           <div>
             {{form_mod_method.Delete(class_='form-control btn btn-default',**{'onclick':'return confirm("Are you sure you want to delete this?")'})}}
           </div>
         </div>
-        </form>
 
       </div>
+
+      </form>
 
     {%- endfor -%}
 
