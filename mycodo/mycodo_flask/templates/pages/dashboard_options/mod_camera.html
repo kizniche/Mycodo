@@ -17,7 +17,7 @@
     {{form_base.csrf_token}}
     {{form_base.dashboard_id(value=each_graph.id)}}
     <input type="hidden" name="dashboard_type" value="{{each_graph.graph_type}}">
-    <div class="form-inline">
+
       <div class="form-group">
         {{form_base.name.label(class_='control-label')}}
         <div>
@@ -80,7 +80,6 @@
           {{form_camera.camera_max_age(class_='form-control', value=each_graph.camera_max_age)}}
         </div>
       </div>
-    </div>
 
     <div style="clear: both"></div>
 
@@ -96,5 +95,7 @@
         {{form_base.order_down(class_='form-control btn btn-default')}}
       </div>
     </div>
+
   </form>
+
 </div>
