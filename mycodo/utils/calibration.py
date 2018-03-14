@@ -24,7 +24,7 @@ class AtlasScientificCommand:
                 sensor_sel.device_loc, baudrate=sensor_sel.baud_rate)
         elif self.interface == 'I2C':
             self.ph_sensor_i2c = AtlasScientificI2C(
-                i2c_address=sensor_sel.i2c_address,
+                i2c_address=sensor_sel.location,
                 i2c_bus=sensor_sel.i2c_bus)
 
         self.board_version, self.board_info = self.board_version()
