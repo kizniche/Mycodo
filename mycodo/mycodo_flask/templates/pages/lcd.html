@@ -15,17 +15,19 @@
 
   <div style="clear: both; padding: 0.5em 0;"></div>
 
+  <form method="post" action="/lcd">
+  {{form_lcd_add.hidden_tag()}}
+
   <div class="row small-gutters" style="padding-left: 1em">
-    <form method="post" action="/lcd">
-    {{form_lcd_add.hidden_tag()}}
     <div class="col-xs-6 col-sm-2 col-lg-2 no-gutters">
       {{form_lcd_add.quantity(class_='form-control', value=1, type="number", **{'rel':'tooltip','title':_('How many LCD controllers to add?')})}}
     </div>
-    <div class="col-xs-6 col-sm-2 col-lg-2 no-gutters">
+    <div class="col-xs-6 col-sm-3 no-gutters">
       {{form_lcd_add.add(class_='form-control btn btn-default')}}
     </div>
-    </form>
   </div>
+
+  </form>
 
   <div style="clear: both; padding:1em 0;"></div>
 
@@ -34,62 +36,64 @@
     {%- for each_lcd in lcd if each_lcd.id == order-%}
 
   <div class="container" style="border: 2px solid #ddd; border-radius: 5px;">
+
     <form method="post" action="/lcd">
     {{form_lcd_mod.csrf_token}}
     {{form_lcd_mod.lcd_id(value=each_lcd.id)}}
+
     <div class="{% if each_lcd.is_activated -%}active-background
                 {%- else -%}inactive-background
-                {% endif %} row small-gutters" style="border-bottom: 2px solid #ddd; padding: 0.5em">
+                {% endif %} row small-gutters" style="border-bottom: 2px solid #ddd; padding: 0.4em 0.2em 0.4em 0">
 
-      <div class="col-xs-12">
-        <div class="col-xs-2 col-sm-1 text-center icon-fh">
-          <a data-toggle="collapse" href="#collapseContainer{{each_lcd.id}}" aria-expanded="false" aria-controls="collapseContainer{{each_lcd.id}}">
-            <span class="collapse-button{{each_lcd.id}} fa fa-3x fa-plus-square"></span>
-          </a>
-        </div>
-        <div class="col-xs-5 col-sm-6 no-gutters">
-          {{form_lcd_mod.name(class_='form-control', value=each_lcd.name, **{'title':_('A name to distinguish this from others')})}}
-        </div>
-        <div class="col-xs-5 no-gutters">
-          <input class="form-control btn btn-default" title="UUID: {{each_lcd.id}}" disabled="" value="[{{'%02d' % each_lcd.id}}]
-          {%- if each_lcd.is_activated %} {{_('Active')}}
-          {%- else %} {{_('Inactive')}}
-          {%-endif -%}
-          " type="text">
-        </div>
+      <div class="col-sm-1 text-center icon-fh">
+        <a data-toggle="collapse" href="#collapseContainer{{each_lcd.id}}" aria-expanded="false" aria-controls="collapseContainer{{each_lcd.id}}">
+          <span style="font-size: 2.6em" class="collapse-button{{each_lcd.id}} fa fa-plus-square"></span>
+        </a>
       </div>
-      <div class="col-xs-12 col-sm-4 small-gutters">
-        <div class="col-xs-6 col-sm-6 no-gutters">
-          {%- if each_lcd.is_activated %}
-            {{form_lcd_mod.deactivate(class_='form-control btn btn-default')}}
-          {%- else %}
-            {{form_lcd_mod.activate(class_='form-control btn btn-default')}}
-          {%- endif -%}
-        </div>
-        <div class="col-xs-6 col-sm-6 no-gutters">
-          {{form_lcd_mod.reset_flashing(class_='form-control btn btn-default')}}
-        </div>
+      <div class="col-sm-6 col-lg-3 no-gutters">
+        {{form_lcd_mod.name(class_='form-control', value=each_lcd.name, **{'title':_('A name to distinguish this from others')})}}
       </div>
-      <div class="col-xs-12 col-sm-4 small-gutters">
-        <div class="col-xs-6 col-sm-6 no-gutters">
-          {{form_lcd_mod.reorder_up(class_='form-control btn btn-default')}}
-        </div>
-        <div class="col-xs-6 col-sm-6 no-gutters">
-          {{form_lcd_mod.reorder_down(class_='form-control btn btn-default')}}
-        </div>
+      <div class="col-sm-5 col-lg-2 no-gutters">
+        <input class="form-control btn btn-default" title="UUID: {{each_lcd.id}}" disabled="" value="[{{'%02d' % each_lcd.id}}]
+        {%- if each_lcd.is_activated %} {{_('Active')}}
+        {%- else %} {{_('Inactive')}}
+        {%-endif -%}
+        " type="text">
       </div>
-      <div class="col-xs-12 col-sm-4 small-gutters">
-        <div class="col-xs-6 col-sm-6 no-gutters">
-          {{form_lcd_mod.delete(class_='form-control btn btn-default',**{'onclick':'return confirm("Are you sure you want to delete this?")'})}}
-        </div>
-        <div class="col-xs-6 col-sm-6 no-gutters">
-          {{form_lcd_mod.save(class_='form-control btn btn-default')}}
-        </div>
+      <div class="col-sm-3 col-lg-2 no-gutters">
+        {%- if each_lcd.is_activated %}
+          {{form_lcd_mod.deactivate(class_='form-control btn btn-default')}}
+        {%- else %}
+          {{form_lcd_mod.activate(class_='form-control btn btn-default')}}
+        {%- endif -%}
+      </div>
+      <div class="col-sm-3 col-lg-2 no-gutters">
+        {{form_lcd_mod.reset_flashing(class_='form-control btn btn-default')}}
+      </div>
+      <div class="col-sm-3 col-lg-1 no-gutters">
+        {{form_lcd_mod.reorder_up(class_='form-control btn btn-default')}}
+      </div>
+      <div class="col-sm-3 col-lg-1 no-gutters">
+        {{form_lcd_mod.reorder_down(class_='form-control btn btn-default')}}
       </div>
     </div>
 
+    </form>
+
     <div class="collapse" id="collapseContainer{{each_lcd.id}}">
 
+      <form method="post" action="/lcd">
+      {{form_lcd_mod.csrf_token}}
+      {{form_lcd_mod.lcd_id(value=each_lcd.id)}}
+
+      <div class="row small-gutters">
+        <div class="col-sm-6 col-md-3">
+          {{form_lcd_mod.delete(class_='form-control btn btn-default',**{'onclick':'return confirm("Are you sure you want to delete this?")'})}}
+        </div>
+        <div class="col-sm-6 col-md-3">
+          {{form_lcd_mod.save(class_='form-control btn btn-default')}}
+        </div>
+      </div>
       <div class="row small-gutters">
         <div class="col-xs-6 col-sm-3">
           {{form_lcd_mod.lcd_type.label(class_='control-label')}}
@@ -171,21 +175,23 @@
           {{form_lcd_mod.add_display(class_='form-control btn btn-default')}}
         </div>
       </div>
+
       </form>
 
       {% for each_lcd_display in lcd_data if each_lcd_display.lcd_id == each_lcd.id %}
 
-      <div class="row small-gutters" style="border-top: 2px solid #ddd;">
+      <form method="post" action="/lcd" style="border-top: 1px solid #ddd;">
+      {{form_lcd_display.csrf_token}}
+      {{form_lcd_display.lcd_id(value=each_lcd.id)}}
+      {{form_lcd_display.lcd_data_id(value=each_lcd_display.id)}}
 
+      <div class="row small-gutters">
         <div class="col-xs-12">
           <label>Display Set {{loop.index}}</label>
         </div>
+      </div>
 
-        <form method="post" action="/lcd">
-        {{form_lcd_display.csrf_token}}
-        {{form_lcd_display.lcd_id(value=each_lcd.id)}}
-        {{form_lcd_display.lcd_data_id(value=each_lcd_display.id)}}
-
+      <div class="row small-gutters">
         <div class="col-xs-12 col-sm-6 small-gutters">
           {{form_lcd_display.line_1_display.label(class_='control-label')}}
           <div>
@@ -240,7 +246,9 @@
             {{form_lcd_display.line_1_decimal_places(class_='form-control', value=each_lcd_display.line_1_decimal_places)}}
           </div>
         </div>
+      </div>
 
+      <div class="row small-gutters">
         <div class="col-xs-12 col-sm-6 small-gutters">
           {{form_lcd_display.line_2_display.label(class_='control-label')}}
           <div>
@@ -295,9 +303,11 @@
             {{form_lcd_display.line_2_decimal_places(class_='form-control', value=each_lcd_display.line_2_decimal_places)}}
           </div>
         </div>
+      </div>
 
         {%- if each_lcd.y_lines == 4 -%}
 
+      <div class="row small-gutters">
         <div class="col-xs-12 col-sm-6 small-gutters">
           {{form_lcd_display.line_3_display.label(class_='control-label')}}
           <div>
@@ -352,7 +362,9 @@
             {{form_lcd_display.line_3_decimal_places(class_='form-control', value=each_lcd_display.line_3_decimal_places)}}
           </div>
         </div>
+      </div>
 
+      <div class="row small-gutters">
         <div class="col-xs-12 col-sm-6 small-gutters">
           {{form_lcd_display.line_4_display.label(class_='control-label')}}
           <div>
@@ -407,9 +419,11 @@
             {{form_lcd_display.line_4_decimal_places(class_='form-control', value=each_lcd_display.line_4_decimal_places)}}
           </div>
         </div>
+      </div>
 
         {% endif %}
 
+      <div class="row small-gutters">
         <div class="col-xs-12 col-sm-3 no-gutters">
           <div>
             {{form_lcd_display.save_display(class_='form-control btn btn-default')}}
@@ -420,10 +434,9 @@
             {{form_lcd_display.delete_display(class_='form-control btn btn-default')}}
           </div>
         </div>
-
-        </form>
-
       </div>
+
+      </form>
 
       {% endfor %}
 
