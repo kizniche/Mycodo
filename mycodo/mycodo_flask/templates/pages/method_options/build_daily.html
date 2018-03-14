@@ -58,8 +58,8 @@
     <div>
       <select class="form-control form-tooltip form-dropdown" data-placement="bottom" id="relay_id" name="relay_id" title="{{_('Modulate the selected relay')}}.">
         <option value=""></option>
-        {% for each_choice, value in choices_output.items() if each_choice.split(',')[1] == 'duration_sec' -%}
-          <option value="{{each_choice.split(',')[0]}}">{{value}}</option>
+        {% for each_output in output if each_output.relay_type not in ['pwm', 'command_pwm'] -%}
+          <option value="{{each_output.id}}">{{"[{0:02d}]".format(each_output.id)}} {{each_output.name}}</option>
         {% endfor -%}
       </select>
     </div>

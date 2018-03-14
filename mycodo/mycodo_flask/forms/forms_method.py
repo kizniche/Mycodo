@@ -65,14 +65,15 @@ class MethodAdd(FlaskForm):
         lazy_gettext('Time YYYY-MM-DD HH:MM:SS'),
         render_kw={"placeholder": "YYYY-MM-DD HH:MM:SS"}
     )
-    relay_duration = IntegerField(lazy_gettext('Duration (seconds)'))
+    relay_duration = IntegerField(lazy_gettext('Duration/Duty Cycle'))
     relay_id = StringField(lazy_gettext('Output'),)
     relay_state = SelectField(
         lazy_gettext('Relay State'),
         choices=[
             ('', ''),
             ('On', lazy_gettext('Turn On')),
-            ('Off', lazy_gettext('Turn Off'))
+            ('Off', lazy_gettext('Turn Off')),
+            ('PWM', lazy_gettext('PWM (Duty Cycle)'))
         ]
     )
     save = SubmitField(lazy_gettext('Add to Method'))

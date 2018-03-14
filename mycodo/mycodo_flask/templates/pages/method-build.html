@@ -259,11 +259,11 @@
       {{form_mod_method.method_data_id(class_='form-control', value=each_method.id)}}
       <input class="form-control" id="method_select" name="method_select" type="hidden" value="relay">
 
-      <div class="row">
+      <div class="row small-gutters" style="padding: 0.7em">
 
       {% if method.method_type == "Date" -%}
 
-        <div class="col-sm-3 col-md-2">
+        <div class="col-sm-6 col-md-3 col-lg-2">
           {{form_mod_method.relay_time.label(class_='control-label')}}
           <div>
             {{form_mod_method.relay_time(class_='form-control', value=each_method.time_start)}}
@@ -272,7 +272,7 @@
 
       {% elif method.method_type == "Daily" -%}
 
-        <div class="col-sm-3 col-md-2">
+        <div class="col-sm-6 col-md-3 col-lg-2">
           {{form_mod_method.relay_daily_time.label(class_='control-label')}}
           <div>
             {{form_mod_method.relay_daily_time(class_='form-control', value=each_method.time_start)}}
@@ -281,7 +281,7 @@
 
       {% elif method.method_type == "Duration" -%}
 
-        <div class="col-sm-3 col-md-2">
+        <div class="col-sm-6 col-md-3 col-lg-2">
           {{form_mod_method.duration.label(class_='control-label')}}
           <div>
             {{form_mod_method.duration(class_='form-control', value=each_method.duration_sec)}}
@@ -290,40 +290,41 @@
 
       {% endif -%}
 
-        <div class="col-sm-3 col-md-2">
+        <div class="col-sm-6 col-md-4 col-lg-3">
           {{form_mod_method.relay_id.label(class_='control-label')}}
           <div>
             <select class="form-control form-tooltip form-dropdown" data-placement="bottom" id="relay_id" name="relay_id" title="{{_('Modulate the selected relay.')}}">
               <option value="">Disabled</option>
               {% for each_output in output -%}
-                <option value="{{each_output.id}}"{%- if each_output.id == each_method.relay_id -%} selected{%- endif -%}>{{each_output.id}} ({{each_output.name}})</option>
+                <option value="{{each_output.id}}"{%- if each_output.id == each_method.relay_id -%} selected{%- endif -%}>{{"[{0:02d}]".format(each_output.id)}} {{each_output.name}}</option>
               {% endfor -%}
             </select>
           </div>
         </div>
-        <div class="col-sm-3 col-md-2">
+        <div class="col-sm-5 col-md-3">
           {{form_mod_method.relay_state.label(class_='control-label')}}
           <div>
             <select class="form-control form-tooltip form-dropdown" data-placement="bottom" id="relay_state" name="relay_state" title="{{_('Modulate the selected relay.')}}">
               <option value=""></option>
               <option value="On"{%- if each_method.relay_state == "On" -%} selected{%- endif -%}>{{_('Turn On')}}</option>
               <option value="Off"{%- if each_method.relay_state == "Off" -%} selected{%- endif -%}>{{_('Turn Off')}}</option>
+              <option value="PWM"{%- if each_method.relay_state == "PWM" -%} selected{%- endif -%}>{{_('PWM (Duty Cycle)')}}</option>
             </select>
           </div>
         </div>
-        <div class="col-sm-3 col-md-2">
+        <div class="col-sm-3 col-md-2 col-lg-2">
           {{form_mod_method.relay_duration.label(class_='control-label')}}
           <div>
             {{form_mod_method.relay_duration(class_='form-control', value=each_method.relay_duration)}}
           </div>
         </div>
-        <div class="col-sm-2 col-md-2">
+        <div class="col-sm-2 col-md-2 col-lg-1">
           <label class='control-label' style="padding-top: 1em"></label>
           <div>
             {{form_mod_method.save(class_='form-control btn btn-default')}}
           </div>
         </div>
-        <div class="col-sm-2 col-md-2">
+        <div class="col-sm-2 col-md-2 col-lg-1">
           <label class='control-label' style="padding-top: 1em"></label>
           <div>
             {{form_mod_method.Delete(class_='form-control btn btn-default',**{'onclick':'return confirm("Are you sure you want to delete this?")'})}}

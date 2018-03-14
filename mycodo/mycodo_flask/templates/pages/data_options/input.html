@@ -92,7 +92,7 @@
             <select class="form-control form-tooltip form-dropdown" data-placement="top" id="pre_relay_id" name="pre_relay_id" title="{{_('Turn the selected relay on before taking every measurement')}}.">
               <option value="">Disabled</option>
               {% for each_output in output if each_output.relay_type not in ['pwm', 'command_pwm'] -%}
-                <option value="{{each_output.id}}"{% if each_input.pre_relay_id == each_output.id %} selected{% endif %}>{{"[{0:02d}]".format(each_output.id)}} ({{each_output.name}})</option>
+                <option value="{{each_output.id}}"{% if each_input.pre_relay_id == each_output.id %} selected{% endif %}>{{"[{0:02d}]".format(each_output.id)}} {{each_output.name}}</option>
               {% endfor -%}
             </select>
           </div>

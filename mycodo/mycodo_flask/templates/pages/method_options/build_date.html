@@ -58,7 +58,7 @@
       <select class="form-control form-tooltip form-dropdown" data-placement="bottom" id="relay_id" name="relay_id" title="{{_('Modulate the selected relay')}}.">
         <option value=""></option>
         {% for each_output in output -%}
-          <option value="{{each_output.id}}">[{{each_output.id}}] {{each_output.name}}</option>
+          <option value="{{each_output.id}}">{{"[{0:02d}]".format(each_output.id)}} {{each_output.name}}</option>
         {% endfor -%}
       </select>
     </div>
