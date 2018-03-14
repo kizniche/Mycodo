@@ -2,7 +2,6 @@
 {% set active_page = "settings" %}
 
 {% block head %}
-{#  <link href="/static/css/dashboard.css" rel="stylesheet">#}
   <script>
     $(document).ready(function() {
       $('[data-toggle=offcanvas]').click(function() {
@@ -10,7 +9,6 @@
       });
     });
   </script>
-
 {% endblock %} 
 
 {% block body %}
@@ -23,7 +21,7 @@
           <div class="list-group panel">
             <a class="list-group-item collapsed{% if active_settings == 'general' %} active{% endif %}" href="{{url_for('routes_settings.settings_general')}}"><i class="fas fa-globe"></i>&nbsp;&nbsp;{{_('General')}}</a>
             <a class="list-group-item collapsed{% if active_settings == 'users' %} active{% endif %}" href="{{url_for('routes_settings.settings_users')}}"><i class="fas fa-users"></i>&nbsp;&nbsp;{{_('Users')}}</a>
-            <a class="list-group-item collapsed{% if active_settings == 'pi' %} active{% endif %}" href="{{url_for('routes_settings.settings_pi')}}"><i class="fab fa-linux"></i>&nbsp;&nbsp;{{_('Pi')}}</a>
+            <a class="list-group-item collapsed{% if active_settings == 'pi' %} active{% endif %}" href="{{url_for('routes_settings.settings_pi')}}"><i class="fab fa-linux"></i>&nbsp;&nbsp;{{_('Raspberry Pi')}}</a>
             <a class="list-group-item collapsed{% if active_settings == 'alerts' %} active{% endif %}" href="{{url_for('routes_settings.settings_alerts')}}"><i class="fas fa-bell"></i>&nbsp;&nbsp;{{_('Alerts')}}</a>
             <a class="list-group-item collapsed{% if active_settings == 'camera' %} active{% endif %}" href="{{url_for('routes_settings.settings_camera')}}"><i class="fas fa-camera"></i>&nbsp;&nbsp;{{_('Cameras')}}</a>
           </div>
