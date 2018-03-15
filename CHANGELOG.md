@@ -1,3 +1,10 @@
+## 5.6.6 (Unreleased)
+
+### Bugfixes
+
+ - Fix incorrect conversion of I2C address during Atlas pH sensor calibration ([#425](https://github.com/kizniche/mycodo/issues/425))
+
+
 ## 5.6.5 (2018-03-14)
 
 ### Features

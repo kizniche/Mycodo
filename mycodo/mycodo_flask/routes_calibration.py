@@ -172,7 +172,7 @@ def calibration_atlas_ph_measure(input_id):
                 val=lines[0])
     elif selected_input.interface == 'I2C':
         ph_input_i2c = AtlasScientificI2C(
-            i2c_address=selected_input.i2c_address,
+            i2c_address=int(str(selected_input.location), 16),
             i2c_bus=selected_input.i2c_bus)
         ph_status, ph_str = ph_input_i2c.query('R')
         if ph_status == 'error':
