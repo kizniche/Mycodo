@@ -18,43 +18,40 @@
 
   {% if each_graph.enable_output_controls %}
 
-  <div class="clearfix" style="padding-top: 1em">
-    <div class="col-xs-12 small-gutters">
-      {% if not is_pwm -%}
-      <div class="col-xs-6 small-gutters">
-        <input class="form-control btn btn-default turn_on" id="turn_on" name="{{each_graph.output_ids.split(',')[0]}}/on/sec/0" type="button" value="{{_('On')}}">
-      </div>
-      {%- endif %}
-      <div class="col-xs-6 small-gutters">
-        <input class="form-control btn btn-default turn_off" id="turn_off" name="{{each_graph.output_ids.split(',')[0]}}/off/sec/0" type="button" value="{{_('Off')}}">
-      </div>
+  <div class="form-row small-gutters" style="padding-top: 1em">
+    {% if not is_pwm -%}
+    <div class="col-xs-6 small-gutters">
+      <input class="form-control btn btn-default turn_on" id="turn_on" name="{{each_graph.output_ids.split(',')[0]}}/on/sec/0" type="button" value="{{_('On')}}">
     </div>
+    {%- endif %}
+    <div class="col-xs-6 small-gutters">
+      <input class="form-control btn btn-default turn_off" id="turn_off" name="{{each_graph.output_ids.split(',')[0]}}/off/sec/0" type="button" value="{{_('Off')}}">
+    </div>
+  </div>
 
     {% if not is_pwm %}
 
-    <div class="col-xs-12 small-gutters">
-      <div class="col-xs-6 small-gutters">
-        <input class="form-control" id="sec_on_amt_{{each_graph.output_ids.split(',')[0]}}" name="sec_on_amt_{{each_graph.output_ids.split(',')[0]}}" title="Turn this relay on for a specific number of seconds (used to test relay)" type="text" value="" placeholder="Seconds">
-      </div>
-      <div class="col-xs-6 small-gutters">
-        <input class="form-control btn btn-default sec_on_amt" id="turn_on" name="{{each_graph.output_ids.split(',')[0]}}/on/sec/" type="button" value="{{_('Turn On')}}">
-      </div>
+  <div class="form-row small-gutters">
+    <div class="col-xs-6 small-gutters">
+      <input class="form-control" id="sec_on_amt_{{each_graph.output_ids.split(',')[0]}}" name="sec_on_amt_{{each_graph.output_ids.split(',')[0]}}" title="Turn this relay on for a specific number of seconds (used to test relay)" type="text" value="" placeholder="Seconds">
     </div>
+    <div class="col-xs-6 small-gutters">
+      <input class="form-control btn btn-default sec_on_amt" id="turn_on" name="{{each_graph.output_ids.split(',')[0]}}/on/sec/" type="button" value="{{_('Turn On')}}">
+    </div>
+  </div>
 
     {% else %}
 
-    <div class="col-xs-12 small-gutters">
-      <div class="col-xs-6 small-gutters">
-        <input class="form-control" id="duty_cycle_on_amt_{{each_graph.output_ids.split(',')[0]}}" name="duty_cycle_on_amt_{{each_graph.output_ids.split(',')[0]}}" title="Select the duty cycle for the PWM when turned on (0.0 - 100.0)" type="text" value="" placeholder="% Duty Cycle">
-      </div>
-      <div class="col-xs-6 small-gutters">
-        <input class="form-control btn btn-default duty_cycle_on_amt" id="turn_on" name="{{each_graph.output_ids.split(',')[0]}}/on/pwm/" type="button" value="{{_('Turn On')}}">
-      </div>
+  <div class="form-row small-gutters">
+    <div class="col-xs-6 small-gutters">
+      <input class="form-control" id="duty_cycle_on_amt_{{each_graph.output_ids.split(',')[0]}}" name="duty_cycle_on_amt_{{each_graph.output_ids.split(',')[0]}}" title="Select the duty cycle for the PWM when turned on (0.0 - 100.0)" type="text" value="" placeholder="% Duty Cycle">
     </div>
+    <div class="col-xs-6 small-gutters">
+      <input class="form-control btn btn-default duty_cycle_on_amt" id="turn_on" name="{{each_graph.output_ids.split(',')[0]}}/on/pwm/" type="button" value="{{_('Turn On')}}">
+    </div>
+  </div>
 
     {% endif %}
-
-  </div>
 
   {% endif %}
 
@@ -64,35 +61,35 @@
 
   {% if not each_graph.enable_output_controls %}
 
-    <div class="col-xs-12 small-gutters">
+    <div class="form-row">
       {% if not is_pwm -%}
-      <div class="col-xs-6 small-gutters">
+      <div class="col-auto">
         <input class="form-control btn btn-default turn_on" id="turn_on" name="{{each_graph.output_ids.split(',')[0]}}/on/sec/0" type="button" value="{{_('On')}}">
       </div>
       {%- endif %}
-      <div class="col-xs-6 small-gutters">
+      <div class="col-auto">
         <input class="form-control btn btn-default turn_off" id="turn_off" name="{{each_graph.output_ids.split(',')[0]}}/off/sec/0" type="button" value="{{_('Off')}}">
       </div>
     </div>
 
     {% if not is_pwm %}
 
-    <div class="col-xs-12 small-gutters">
-      <div class="col-xs-6 small-gutters">
+    <div class="form-row">
+      <div class="col-auto">
         <input class="form-control" id="sec_on_amt_{{each_graph.output_ids.split(',')[0]}}" name="sec_on_amt_{{each_graph.output_ids.split(',')[0]}}" title="Turn this relay on for a specific number of seconds (used to test relay)" type="text" value="" placeholder="Seconds">
       </div>
-      <div class="col-xs-6 small-gutters">
+      <div class="col-auto">
         <input class="form-control btn btn-default sec_on_amt" id="turn_on" name="{{each_graph.output_ids.split(',')[0]}}/on/sec/" type="button" value="{{_('Turn On')}}">
       </div>
     </div>
 
     {% else %}
 
-    <div class="col-xs-12 small-gutters">
-      <div class="col-xs-6 small-gutters">
+    <div class="form-row">
+      <div class="col-auto">
         <input class="form-control" id="duty_cycle_on_amt_{{each_graph.output_ids.split(',')[0]}}" name="duty_cycle_on_amt_{{each_graph.output_ids.split(',')[0]}}" title="Select the duty cycle for the PWM when turned on (0.0 - 100.0)" type="text" value="" placeholder="% Duty Cycle">
       </div>
-      <div class="col-xs-6 small-gutters">
+      <div class="col-auto">
         <input class="form-control btn btn-default duty_cycle_on_amt" id="turn_on" name="{{each_graph.output_ids.split(',')[0]}}/on/pwm/" type="button" value="{{_('Turn On')}}">
       </div>
     </div>
@@ -105,14 +102,15 @@
     {{form_base.csrf_token}}
     {{form_base.dashboard_id(value=each_graph.id)}}
     <input type="hidden" name="dashboard_type" value="output">
-    <div class="form-inline">
-      <div class="form-group">
+
+    <div class="form-row">
+      <div class="col-auto">
         {{form_base.name.label(class_='control-label')}}
         <div>
           {{form_base.name(class_='form-control', value=each_graph.name, **{'title':_('A name to distinguish this from others')})}}
         </div>
       </div>
-      <div class="form-group">
+      <div class="col-auto">
         {{form_output.output_id.label(class_='control-label')}}
         <div>
           <select class="form-control" id="output_id" name="output_id" style="width: 100%;">
@@ -127,7 +125,7 @@
           </select>
         </div>
       </div>
-      <div class="form-group">
+      <div class="col-auto">
         {{form_base.width.label(class_='control-label')}}
         <div>
           <select class="form-control" id="width" name="width">
@@ -137,63 +135,59 @@
           </select>
         </div>
       </div>
-      <div class="form-group">
+      <div class="col-auto">
         {{form_base.height.label(class_='control-label')}}
         <div>
           {{form_base.height(class_='form-control', value=each_graph.height)}}
         </div>
       </div>
-      <div class="form-group">
+      <div class="col-auto">
         {{form_output.max_measure_age.label(class_='control-label')}}
         <div>
           {{form_output.max_measure_age(class_='form-control', value=each_graph.max_measure_age)}}
         </div>
       </div>
-      <div class="form-group">
+      <div class="col-auto">
         {{form_base.refresh_duration.label(class_='control-label')}}
         <div>
           {{form_base.refresh_duration(class_='form-control', value=each_graph.refresh_duration)}}
         </div>
       </div>
-     <div class="form-group">
+     <div class="col-auto">
         {{form_output.font_em_value.label(class_='control-label')}}
         <div>
           {{form_output.font_em_value(class_='form-control', value=each_graph.font_em_value)}}
         </div>
       </div>
-      <div class="form-group">
+      <div class="col-auto">
         {{form_output.font_em_timestamp.label(class_='control-label')}}
         <div>
           {{form_output.font_em_timestamp(class_='form-control', value=each_graph.font_em_timestamp)}}
         </div>
       </div>
-      <div class="form-group">
+      <div class="col-auto">
         {{form_output.decimal_places.label(class_='control-label')}}
         <div>
           {{form_output.decimal_places(class_='form-control', value=each_graph.decimal_places)}}
         </div>
       </div>
-      <div class="form-group">
-        <label class="form-check-label">
-          <input class="form-check-input" id="enable_output_controls" name="enable_output_controls" type="checkbox" value="y"{% if each_graph.enable_output_controls %} checked{% endif %}>
-          {{form_output.enable_output_controls.label.text}}
-        </label>
+      <div class="form-check form-check-inline">
+        <input class="form-check-input" id="enable_output_controls" name="enable_output_controls" type="checkbox" value="y"{% if each_graph.enable_output_controls %} checked{% endif %}>
+        {{form_output.enable_output_controls.label(class_='control-label')}}
       </div>
     </div>
 
-    <div class="form-inline">
+    <div class="form-row btn-group" style="padding-top: 1em;">
       <div class="form-group">
         {{form_base.modify(class_='form-control btn btn-default')}}
       </div>
-    </div>
-
-    <div class="form-inline" style="padding-top: 1em;">
       <div class="form-group">
         {{form_base.delete(class_='form-control btn btn-default',**{'onclick':'return confirm("Are you sure you want to delete this?")'})}}
       </div>
       <div class="form-group">
-        Reorder:
         {{form_base.order_up(class_='form-control btn btn-default')}}
+      </div>
+      <div class="form-group">
         {{form_base.order_down(class_='form-control btn btn-default')}}
       </div>
     </div>

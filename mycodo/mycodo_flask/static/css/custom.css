@@ -54,12 +54,24 @@
   padding-left: 0.1em;
 }
 
+.form-row.small-gutters > [class^="col-"],
+.form-row.small-gutters > [class*=" col-"] {
+  padding-right: 0.1em;
+  padding-left: 0.1em;
+}
+
 .small-gutters {
     padding: 0 0.2em
 }
 
 .row.no-gutters > [class^="col-"],
 .row.no-gutters > [class*=" col-"] {
+  padding-right: 0;
+  padding-left: 0;
+}
+
+.form-row.no-gutters > [class^="col-"],
+.formrow.no-gutters > [class*=" col-"] {
   padding-right: 0;
   padding-left: 0;
 }

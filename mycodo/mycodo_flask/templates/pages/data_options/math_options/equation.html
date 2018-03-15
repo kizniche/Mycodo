@@ -1,11 +1,11 @@
-<div style="padding: 0.5em" class="row">
+<div style="padding: 0.5em" class="row" style="padding: 0.5em">
   {{_('See <a href="/help#pre-defined-measurements" target="_blank">Pre-Defined Measurements</a> for a list of Measurements that may be used. You may also create your own Measurement and Units.')}}
 </div>
-<div style="padding: 0.5em" class="row small-gutters">
+<div class="form-row small-gutters" style="padding: 0.5em">
   {% include 'pages/data_options/math_options/form_options/measure_units.html' %}
 </div>
-<div style="padding: 0.5em" class="row small-gutters">
-  <div class="col-xs-12 col-sm-6">
+<div class="form-row small-gutters" style="padding: 0.5em">
+  <div class="col-auto">
     {{form_mod_equation.equation_input.label(class_='control-label')}}
     <div>
       <select class="form-control" id="equation_input" name="equation_input" style="width: 100%;">
@@ -23,7 +23,7 @@
       </select>
     </div>
   </div>
-  <div class="col-xs-12 col-sm-6">
+  <div class="col-auto">
     {{form_mod_equation.equation.label(class_='control-label')}}
     <div>
       {{form_mod_equation.equation(class_='form-control', value=each_math.equation, **{'title':_('An equation to store the soved value of. Let "x" represent the input value.')})}}

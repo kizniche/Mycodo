@@ -8,14 +8,15 @@
 </div>
 
 <div class="pause-background" id="container-pid-{{chart_number}}" style="height: {{each_graph.height}}px">
-  <div class="clearfix" style="padding-top: 0.7em">
-    <div class="col-xs-12 col-md-6 small-gutters" style="text-align: center">
+
+  <div class="row small-gutters" style="padding-top: 0.7em">
+    <div class="col-sm-12 col-md-6 text-center small-gutters">
       <div style="font-size: {{each_graph.font_em_value}}em">
         Set: <span id="setpoint-{{chart_number}}"></span>
       </div>
       <span style="font-size: {{each_graph.font_em_timestamp}}em" id="setpoint-timestamp-{{chart_number}}"></span>
     </div>
-    <div class="col-xs-12 col-md-6 small-gutters" style="text-align: center">
+    <div class="col-sm-12 col-md-6 text-center small-gutters">
       <div style="font-size: {{each_graph.font_em_value}}em">
         Now: <span id="actual-{{chart_number}}"></span>
       </div>
@@ -24,8 +25,8 @@
   </div>
 
   {% if each_graph.enable_pid_info %}
-  <div class="clearfix" style="padding-top: 0.7em">
-    <div class="col-xs-12 small-gutters" style="text-align: center">
+  <div class="row">
+    <div class="col-sm-12 text-center">
     {% for each_pid in pid if each_pid.unique_id == each_graph.pid_ids %}
     (P: <span id="pid_p_value-{{chart_number}}"></span>) + (I: <span id="pid_i_value-{{chart_number}}"></span>) + (D: <span id="pid_d_value-{{chart_number}}"></span>) = Out: <span id="pid_output-{{chart_number}}"></span>
     {% endfor %}
@@ -33,23 +34,21 @@
   </div>
   {% endif %}
 
-  <div class="clearfix" style="padding-top: 0.7em">
-    <div class="col-xs-12 small-gutters">
-      <div id="button-activate-{{chart_number}}" class="col-xs-6 small-gutters">
-        <input class="form-control btn btn-default activate_pid" id="activate_pid" name="{{each_graph.pid_ids}}/activate_pid" type="button" value="{{_('Activate')}}">
-      </div>
-      <div id="button-deactivate-{{chart_number}}" class="col-xs-6 small-gutters">
-        <input class="form-control btn btn-default deactivate_pid" id="deactivate_pid" name="{{each_graph.pid_ids}}/deactivate_pid" type="button" value="{{_('Deactivate')}}">
-      </div>
-      <div id="button-resume-{{chart_number}}" class="col-xs-6 small-gutters">
-        <input class="form-control btn btn-default resume_pid" id="resume_pid" name="{{each_graph.pid_ids}}/resume_pid" type="button" value="{{_('Resume')}}">
-      </div>
-      <div id="button-pause-{{chart_number}}" class="col-xs-3 small-gutters">
-        <input class="form-control btn btn-default pause_pid" id="pause_pid" name="{{each_graph.pid_ids}}/pause_pid" type="button" value="{{_('Pause')}}">
-      </div>
-      <div id="button-hold-{{chart_number}}" class="col-xs-3 small-gutters">
-        <input class="form-control btn btn-default hold_pid" id="hold_pid" name="{{each_graph.pid_ids}}/hold_pid" type="button" value="{{_('Hold')}}">
-      </div>
+  <div class="row small-gutters" style="padding: 0.5em 1.5em 1.5em 1.5em">
+    <div id="button-activate-{{chart_number}}" class="col-sm-6">
+      <input class="form-control btn btn-block activate_pid" id="activate_pid" name="{{each_graph.pid_ids}}/activate_pid" type="button" value="{{_('Activate')}}">
+    </div>
+    <div id="button-deactivate-{{chart_number}}" class="col-sm-6">
+      <input class="form-control btn btn-block deactivate_pid" id="deactivate_pid" name="{{each_graph.pid_ids}}/deactivate_pid" type="button" value="{{_('Deactivate')}}">
+    </div>
+    <div id="button-resume-{{chart_number}}" class="col-sm-6">
+      <input class="form-control btn btn-block resume_pid" id="resume_pid" name="{{each_graph.pid_ids}}/resume_pid" type="button" value="{{_('Resume')}}">
+    </div>
+    <div id="button-pause-{{chart_number}}" class="col-sm-3">
+      <input class="form-control btn btn-block pause_pid" id="pause_pid" name="{{each_graph.pid_ids}}/pause_pid" type="button" value="{{_('Pause')}}">
+    </div>
+    <div id="button-hold-{{chart_number}}" class="col-sm-3">
+      <input class="form-control btn btn-block hold_pid" id="hold_pid" name="{{each_graph.pid_ids}}/hold_pid" type="button" value="{{_('Hold')}}">
     </div>
   </div>
 
@@ -57,8 +56,13 @@
 
 <div class="collapse" id="collapseContainer_output{{chart_number}}" style="padding: 0.5em; width: calc(100% - 1em)">
 
+  <form method="post" action="/dashboard">
+  {{form_base.csrf_token}}
+  {{form_base.dashboard_id(value=each_graph.id)}}
+  <input type="hidden" name="dashboard_type" value="pid_control">
+
   {% if not each_graph.enable_pid_info %}
-  <div class="clearfix" style="padding-top: 0.7em">
+  <div class="row" style="padding-top: 0.7em">
     <div class="col-xs-12 small-gutters" style="text-align: center">
     {% for each_pid in pid if each_pid.unique_id == each_graph.pid_ids %}
     (P: <span id="pid_p_value-{{chart_number}}"></span>) + (I: <span id="pid_i_value-{{chart_number}}"></span>) + (D: <span id="pid_d_value-{{chart_number}}"></span>) = Out: <span id="pid_output-{{chart_number}}"></span>
@@ -67,18 +71,14 @@
   </div>
   {% endif %}
 
-  <form method="post" action="/dashboard">
-    {{form_base.csrf_token}}
-    {{form_base.dashboard_id(value=each_graph.id)}}
-    <input type="hidden" name="dashboard_type" value="pid_control">
-    <div class="form-inline">
-      <div class="form-group">
+    <div class="form-row">
+      <div class="col-auto">
         {{form_base.name.label(class_='control-label')}}
         <div>
           {{form_base.name(class_='form-control', value=each_graph.name, **{'title':_('A name to distinguish this from others')})}}
         </div>
       </div>
-      <div class="form-group">
+      <div class="col-auto">
         {{form_pid.pid_id.label(class_='control-label')}}
         <div>
           <select class="form-control" id="pid_id" name="pid_id" style="width: 100%;">
@@ -93,7 +93,7 @@
           </select>
         </div>
       </div>
-      <div class="form-group">
+      <div class="col-auto">
         {{form_base.width.label(class_='control-label')}}
         <div>
           <select class="form-control" id="width" name="width">
@@ -103,65 +103,63 @@
           </select>
         </div>
       </div>
-      <div class="form-group">
+      <div class="col-auto">
         {{form_base.height.label(class_='control-label')}}
         <div>
           {{form_base.height(class_='form-control', value=each_graph.height)}}
         </div>
       </div>
-      <div class="form-group">
+      <div class="col-auto">
         {{form_pid.max_measure_age.label(class_='control-label')}}
         <div>
           {{form_pid.max_measure_age(class_='form-control', value=each_graph.max_measure_age)}}
         </div>
       </div>
-      <div class="form-group">
+      <div class="col-auto">
         {{form_base.refresh_duration.label(class_='control-label')}}
         <div>
           {{form_base.refresh_duration(class_='form-control', value=each_graph.refresh_duration)}}
         </div>
       </div>
-     <div class="form-group">
+     <div class="col-auto">
         {{form_pid.font_em_value.label(class_='control-label')}}
         <div>
           {{form_pid.font_em_value(class_='form-control', value=each_graph.font_em_value)}}
         </div>
       </div>
-      <div class="form-group">
+      <div class="col-auto">
         {{form_pid.font_em_timestamp.label(class_='control-label')}}
         <div>
           {{form_pid.font_em_timestamp(class_='form-control', value=each_graph.font_em_timestamp)}}
         </div>
       </div>
-      <div class="form-group">
+      <div class="col-auto">
         {{form_pid.decimal_places.label(class_='control-label')}}
         <div>
           {{form_pid.decimal_places(class_='form-control', value=each_graph.decimal_places)}}
         </div>
       </div>
-      <div class="form-group">
-        <label class="form-check-label">
-          <input class="form-check-input" id="enable_pid_info" name="enable_pid_info" type="checkbox" value="y"{% if each_graph.enable_pid_info %} checked{% endif %}>
-          {{form_pid.enable_pid_info.label.text}}
-        </label>
+      <div class="form-check form-check-inline">
+        <input class="form-check-input" id="enable_pid_info" name="enable_pid_info" type="checkbox" value="y"{% if each_graph.enable_pid_info %} checked{% endif %}>
+        {{form_pid.enable_pid_info.label(class_='control-label')}}
       </div>
     </div>
 
-    <div class="form-inline">
+    <div class="form-row btn-group" style="padding-top: 1em;">
       <div class="form-group">
         {{form_base.modify(class_='form-control btn btn-default')}}
       </div>
-    </div>
-
-    <div class="form-inline" style="padding-top: 1em;">
       <div class="form-group">
         {{form_base.delete(class_='form-control btn btn-default',**{'onclick':'return confirm("Are you sure you want to delete this?")'})}}
       </div>
       <div class="form-group">
-        Reorder:
         {{form_base.order_up(class_='form-control btn btn-default')}}
+      </div>
+      <div class="form-group">
         {{form_base.order_down(class_='form-control btn btn-default')}}
       </div>
     </div>
-  </form>
+
+</form>
+
 </div>

@@ -1,11 +1,11 @@
-<div style="padding: 0.5em" class="row">
+<div class="form-row" style="padding: 0.5em">
   {{_('See <a href="/help#pre-defined-measurements" target="_blank">Pre-Defined Measurements</a> for a list of Measurements that may be used. You may also create your own Measurement and Units.')}}
 </div>
-<div style="padding: 0.5em" class="row small-gutters">
+<div class="form-row small-gutters" style="padding: 0.5em">
   {% include 'pages/data_options/math_options/form_options/measure_units.html' %}
 </div>
-<div style="padding: 0.5em" class="row small-gutters">
-  <div class="col-xs-12 col-sm-6">
+<div class="form-row small-gutters" style="padding: 0.5em">
+  <div class="col-auto">
     {{form_mod_average_single.average_input.label(class_='control-label')}}
     <div>
       <select class="form-control" id="average_input" name="average_input" style="width: 100%;">

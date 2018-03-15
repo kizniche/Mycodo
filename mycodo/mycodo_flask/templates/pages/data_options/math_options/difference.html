@@ -1,16 +1,16 @@
-<div style="padding: 0.5em" class="row">
+<div class="form-row" style="padding: 0.5em">
   {{_('See <a href="/help#pre-defined-measurements" target="_blank">Pre-Defined Measurements</a> for a list of Measurements that may be used. You may also create your own Measurement and Units.')}}
 </div>
-<div style="padding: 0.5em" class="row small-gutters">
+<div class="form-row small-gutters" style="padding: 0.5em">
   {% include 'pages/data_options/math_options/form_options/measure_units.html' %}
 
-  <div class="col-xs-6 col-sm-4 col-lg-3">
+  <div class="col-auto">
     {{form_mod_difference.difference_reverse_order.label(class_='control-label')}}
     <div class="input-group-text">
       <input id="difference_reverse_order" name="pre_relay_during_measure" type="checkbox" value="y"{% if each_math.difference_reverse_order %} checked{% endif %}>
     </div>
   </div>
-  <div class="col-xs-6 col-sm-4 col-lg-3">
+  <div class="col-auto">
     {{form_mod_difference.difference_absolute.label(class_='control-label')}}
     <div class="input-group-text">
       <input id="difference_absolute" name="difference_absolute" type="checkbox" value="y"{% if each_math.difference_absolute %} checked{% endif %}>

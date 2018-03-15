@@ -1,7 +1,8 @@
 <input type="hidden" name="measure" value="{{each_math.measure}}">
 <input type="hidden" name="measure_units" value="{{each_math.measure_units}}">
-<div style="padding: 0.5em" class="row small-gutters">
-  <div class="col-xs-6 col-sm-4 col-lg-3">
+
+<div class="form-row small-gutters" style="padding: 0.5em">
+  <div class="col-auto">
     {{form_mod_humidity.dry_bulb_temperature.label(class_='control-label')}}
     <div>
       <select class="form-control" id="dry_bulb_temperature" name="dry_bulb_temperature">
@@ -19,7 +20,7 @@
       </select>
     </div>
   </div>
-  <div class="col-xs-6 col-sm-4 col-lg-3">
+  <div class="col-auto">
     {{form_mod_humidity.wet_bulb_temperature.label(class_='control-label')}}
     <div>
       <select class="form-control" id="wet_bulb_temperature" name="wet_bulb_temperature">
@@ -37,7 +38,7 @@
       </select>
     </div>
   </div>
-  <div class="col-xs-6 col-sm-4 col-lg-3">
+  <div class="col-auto">
     {{form_mod_humidity.pressure.label(class_='control-label')}}
     <div>
       <select class="form-control" id="pressure" name="pressure">

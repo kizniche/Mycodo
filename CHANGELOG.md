@@ -1,4 +1,4 @@
-## 5.6.5 (Unreleased)
+## 5.6.5 (2018-03-14)
 
 ### Features
 
@@ -11,6 +11,7 @@
  - Fix proper locking for MCP3008 ([#418](https://github.com/kizniche/mycodo/issues/418))
  - Fix PID persisting as paused/held after deactivating and activating
  - Fix Atlas pH Calibration issue ([#425](https://github.com/kizniche/mycodo/issues/425))
+ - Fix issue with Linux Command Inputs and LCDs ([#427](https://github.com/kizniche/mycodo/issues/427))
 
 
 ## 5.6.4 (2018-03-11)

@@ -1,11 +1,11 @@
 {% include 'pages/data_options/input_options/TEMPLATE_GPIO_PIN.html' %}
-<div class="col-xs-6 col-sm-4 col-lg-2">
+<div class="col-auto">
   {{form_mod_input.weighting.label(class_='control-label')}}
   <div>
     {{form_mod_input.weighting(class_='form-control', value=each_input.weighting, **{'title':_('The weighting of the previous measurement on the current measurement. Range: 0.0 - 1.0. Used for smoothing measurements. 0.0 means no weighting.')})}}
   </div>
 </div>
-<div class="col-xs-6 col-sm-4 col-lg-2">
+<div class="col-auto">
   {{form_mod_input.sample_time.label(class_='control-label')}}
   <div>
     {{form_mod_input.sample_time(class_='form-control', value=each_input.sample_time, **{'title':_('The amount of time to sample the input before caluclating the measurement')})}}

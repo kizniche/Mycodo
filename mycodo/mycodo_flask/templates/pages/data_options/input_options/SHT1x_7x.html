@@ -1,11 +1,11 @@
 {% include 'pages/data_options/input_options/TEMPLATE_GPIO_PIN.html' %}
-<div class="col-xs-6 col-sm-4 col-lg-2">
+<div class="col-auto">
   {{form_mod_input.sht_clock_pin.label(class_='control-label')}}
   <div>
     {{form_mod_input.sht_clock_pin(class_='form-control', value=each_input.sht_clock_pin, **{'title':_('The GPIO pin (BCM numbering) connected to the sensor clock pin')})}}
   </div>
 </div>
-<div class="col-xs-6 col-sm-4 col-lg-2">
+<div class="col-auto">
   {{form_mod_input.sht_voltage.label(class_='control-label')}}
   <div>
     <select class="form-control form-tooltip form-dropdown" data-placement="top" id="sht_voltage" name="sht_voltage" title="{{_('The input voltage to the sensor')}}">

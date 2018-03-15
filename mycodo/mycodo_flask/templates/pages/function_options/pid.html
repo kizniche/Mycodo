@@ -72,8 +72,8 @@
           </div>
         </div>
 
-        <div class="row small-gutters">
-          <div class="col-xs-6 col-sm-4 col-lg-4">
+        <div class="form-row small-gutters">
+          <div class="col-auto">
             {{form_mod_pid_base.measurement.label(class_='control-label')}}
             <div>
               <select class="form-control" id="measurement" name="measurement" style="width: 100%;" title="" data-original-title="{{_('Select the measurement to use as the input')}}">
@@ -87,7 +87,7 @@
               </select>
             </div>
           </div>
-          <div class="col-xs-6 col-sm-2 col-lg-2">
+          <div class="col-auto">
             {{form_mod_pid_base.direction.label(class_='control-label')}}
             <div>
               <select class="form-control" id="direction" name="direction" title="" data-original-title="{{_('Choose the direction(s) to regulate')}}">
@@ -97,58 +97,61 @@
               </select>
             </div>
           </div>
-          <div class="col-xs-6 col-sm-3 col-lg-2">
+          <div class="col-auto">
             {{form_mod_pid_base.period.label(class_='control-label')}}
             <div>
               {{form_mod_pid_base.period(class_='form-control', value=each_pid.period, **{'title':_('The duration between calculating a new PID output to power the raise and lower relays.')})}}
             </div>
           </div>
-          <div class="col-xs-6 col-sm-3 col-lg-2">
+          <div class="col-auto">
             {{form_mod_pid_base.max_measure_age.label(class_='control-label')}}
             <div>
               {{form_mod_pid_base.max_measure_age(class_='form-control', value=each_pid.max_measure_age, **{'title':_('Maximum allowable measurement age (to allow the PID controller to manipulate relays, the measurement must have occurred in the past x seconds)')})}}
             </div>
           </div>
-          <div class="clearfix hidden-xs hidden-sm hidden-md"></div>
-          <div class="col-xs-6 col-sm-3 col-lg-2">
+        </div>
+
+        <div class="form-row small-gutters">
+          <div class="col-auto">
             {{form_mod_pid_base.setpoint.label(class_='control-label')}}
             <div>
               {{form_mod_pid_base.setpoint(class_='form-control', value=each_pid.setpoint, **{'title':_('This is the desired state of a perticular environmental condition. For instance, this could be the desired temperature in Celsius.')})}}
             </div>
           </div>
-          <div class="col-xs-6 col-sm-3 col-lg-2">
+          <div class="col-auto">
             {{form_mod_pid_base.band.label(class_='control-label')}}
             <div>
               {{form_mod_pid_base.band(class_='form-control', value=each_pid.band, **{'title':_('The control hysteresis surounding the setpoint, with a band that is the setpoint plus and minus the band value. 0 is disabled.')})}}
             </div>
           </div>
         </div>
-        <div class="row small-gutters">
-          <div class="col-xs-4 col-sm-3 col-md-2">
+
+        <div class="form-row small-gutters">
+          <div class="col-sm-4 col-lg-2">
             {{form_mod_pid_base.k_p.label(class_='control-label')}}
             <div>
               {{form_mod_pid_base.k_p(class_='form-control', value=each_pid.p, **{'title':_('Proportional gain')})}}
             </div>
           </div>
-          <div class="col-xs-4 col-sm-3 col-md-2">
+          <div class="col-sm-4 col-lg-2">
             {{form_mod_pid_base.k_i.label(class_='control-label')}}
             <div>
               {{form_mod_pid_base.k_i(class_='form-control', value=each_pid.i, **{'title':_('Integral gain')})}}
             </div>
           </div>
-          <div class="col-xs-4 col-sm-3 col-md-2">
+          <div class="col-sm-4 col-lg-2">
             {{form_mod_pid_base.k_d.label(class_='control-label')}}
             <div>
               {{form_mod_pid_base.k_d(class_='form-control', value=each_pid.d, **{'title':_('Derivative gain')})}}
             </div>
           </div>
-          <div class="col-xs-6 col-sm-3 col-lg-2">
+          <div class="col-sm-4 col-lg-3">
             {{form_mod_pid_base.integrator_max.label(class_='control-label')}}
             <div>
               {{form_mod_pid_base.integrator_max(class_='form-control', value=each_pid.integrator_min, **{'title':_('Limit the integrator minimum, for calculating Ki_total: (Ki_total = Ki * integrator; and PID output = Kp_total + Ki_total + Kd_total)')})}}
             </div>
           </div>
-          <div class="col-xs-6 col-sm-3 col-lg-2">
+          <div class="col-sm-4 col-lg-3">
             {{form_mod_pid_base.integrator_min.label(class_='control-label')}}
             <div>
               {{form_mod_pid_base.integrator_min(class_='form-control', value=each_pid.integrator_max, **{'title':_('Limit the integrator maximum, for calculating Ki_total: (Ki_total = Ki * integrator; and PID output = Kp_total + Ki_total + Kd_total)')})}}
@@ -156,8 +159,8 @@
           </div>
         </div>
 
-        <div class="row small-gutters">
-          <div class="col-xs-6 col-sm-3 col-lg-2">
+        <div class="form-row small-gutters">
+          <div class="col-auto">
             {{form_mod_pid_base.raise_relay_id.label(class_='control-label')}}
             <div>
               <select class="form-control" id="raise_relay_id" name="raise_relay_id" title="" data-original-title="{{_('The output that will raise the selected environmental condition (Measure Type)')}}.">
@@ -179,8 +182,8 @@
 
         </div>
 
-        <div class="row small-gutters">
-          <div class="col-xs-6 col-sm-3 col-lg-2">
+        <div class="form-row small-gutters">
+          <div class="col-auto">
             {{form_mod_pid_base.lower_relay_id.label(class_='control-label')}}
             <div>
               <select class="form-control" id="lower_relay_id" name="lower_relay_id" title="" data-original-title="{{_('The output that will lower the selected environmental condition (Measure Type)')}}.">
@@ -202,11 +205,11 @@
 
         </div>
 
-        <div class="row small-gutters" style="padding-bottom: 0.3em">
-          <div class="col-xs-12 col-sm-12">
-            {{form_mod_pid_base.method_id.label(class_='control-label')}}
-          </div>
-          <div class="col-xs-6 col-sm-3 col-lg-2">
+        <div class="form-row align-items-end small-gutters" style="padding-bottom: 0.3em">
+          <div class="col-auto">
+            <div>
+              {{form_mod_pid_base.method_id.label(class_='control-label')}}
+            </div>
             <select class="form-control" id="method_id" name="method_id" title="" data-original-title="{{_('Select the method to use when calculating the setpoint. When enabled, the setpoint(s) of the method override the PID setpoint above.')}}">
               {%- if method == [] -%}
                 <option value="0">{{_('No methods exist. Create one with this button')}} -></option>
@@ -226,7 +229,7 @@
               {%- endif -%}
             </select>
           </div>
-          <div class="col-xs-6 col-sm-3 col-lg-2">
+          <div class="col-auto">
             <a href="/method" class="form-control btn btn-default" role="button">{{_('Manage Methods')}}</a>
           </div>
         </div>
