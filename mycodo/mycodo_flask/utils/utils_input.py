@@ -48,7 +48,7 @@ def input_add(form_add):
     if form_add.validate():
         new_sensor = Input()
         new_sensor.device = form_add.input_type.data
-        new_sensor.name = ''
+
         if GPIO.RPI_INFO['P1_REVISION'] in [2, 3]:
             new_sensor.i2c_bus = 1
             new_sensor.multiplexer_bus = 1
@@ -56,9 +56,11 @@ def input_add(form_add):
             new_sensor.i2c_bus = 0
             new_sensor.multiplexer_bus = 0
 
-        if form_add.input_type.data in DEVICE_INFO :
-            new_sensor.name += ' {name}'.format(name=DEVICE_INFO[form_add.input_type.data]['name'])
+        if form_add.input_type.data in DEVICE_INFO:
+            new_sensor.name = DEVICE_INFO[form_add.input_type.data]['name']
             new_sensor.measurements = ",".join(DEVICE_INFO[form_add.input_type.data]['measure'])
+        else:
+            new_sensor.name = 'Name'
 
         #
         # Set default values for new Inputs
