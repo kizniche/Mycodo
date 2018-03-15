@@ -251,7 +251,7 @@
               {%- for each_sensor in sensor -%}
                 <option value="{{each_sensor.unique_id}},sensor_time"{% if each_lcd_display.line_2_id == each_sensor.unique_id and each_lcd_display.line_2_measurement == 'sensor_time' %} selected{% endif %}>Input {{each_sensor.id}} {{each_sensor.device}} ({{each_sensor.name}}): Timestamp</option>
                 {% for each_device, measure in measurements.items() if each_sensor.device == each_device %}
-                  {% if each_sensor.cmd_measurement in measure['measure'] %}
+                  {% if each_sensor.cmd_measurement %}
                     <option value="{{each_sensor.unique_id}},{{each_sensor.cmd_measurement}}"{% if each_lcd_display.line_2_id == each_sensor.unique_id and each_lcd_display.line_2_measurement == each_sensor.cmd_measurement %} selected{% endif %}>Input {{each_sensor.id}} {{each_sensor.device}} ({{each_sensor.name}}): {{each_sensor.cmd_measurement}}</option>
                   {% else %}
                     {% for each_measurement in measure['measure'] %}
@@ -310,7 +310,7 @@
               {%- for each_sensor in sensor -%}
                 <option value="{{each_sensor.unique_id}},sensor_time"{% if each_lcd_display.line_3_id == each_sensor.unique_id and each_lcd_display.line_3_measurement == 'sensor_time' %} selected{% endif %}>Input {{each_sensor.id}} {{each_sensor.device}} ({{each_sensor.name}}): Timestamp</option>
                 {% for each_device, measure in measurements.items() if each_sensor.device == each_device %}
-                  {% if each_sensor.cmd_measurement in measure['measure'] %}
+                  {% if each_sensor.cmd_measurement %}
                     <option value="{{each_sensor.unique_id}},{{each_sensor.cmd_measurement}}"{% if each_lcd_display.line_3_id == each_sensor.unique_id and each_lcd_display.line_3_measurement == each_sensor.cmd_measurement %} selected{% endif %}>Input {{each_sensor.id}} {{each_sensor.device}} ({{each_sensor.name}}): {{each_sensor.cmd_measurement}}</option>
                   {% else %}
                     {% for each_measurement in measure['measure'] %}
@@ -367,7 +367,7 @@
               {%- for each_sensor in sensor -%}
                 <option value="{{each_sensor.unique_id}},sensor_time"{% if each_lcd_display.line_4_id == each_sensor.unique_id and each_lcd_display.line_4_measurement == 'sensor_time' %} selected{% endif %}>Input {{each_sensor.id}} {{each_sensor.device}} ({{each_sensor.name}}): Timestamp</option>
                 {% for each_device, measure in measurements.items() if each_sensor.device == each_device %}
-                  {% if each_sensor.cmd_measurement in measure['measure'] %}
+                  {% if each_sensor.cmd_measurement %}
                     <option value="{{each_sensor.unique_id}},{{each_sensor.cmd_measurement}}"{% if each_lcd_display.line_4_id == each_sensor.unique_id and each_lcd_display.line_4_measurement == each_sensor.cmd_measurement %} selected{% endif %}>Input {{each_sensor.id}} {{each_sensor.device}} ({{each_sensor.name}}): {{each_sensor.cmd_measurement}}</option>
                   {% else %}
                     {% for each_measurement in measure['measure'] %}
