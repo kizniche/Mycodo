@@ -20,38 +20,35 @@
 
   <div class="form-row small-gutters" style="padding-top: 1em">
     {% if not is_pwm -%}
-    <div class="col-xs-6 small-gutters">
+    <div class="col-sm-3 small-gutters">
       <input class="form-control btn btn-default turn_on" id="turn_on" name="{{each_graph.output_ids.split(',')[0]}}/on/sec/0" type="button" value="{{_('On')}}">
     </div>
     {%- endif %}
-    <div class="col-xs-6 small-gutters">
+    <div class="col-sm-3 small-gutters">
       <input class="form-control btn btn-default turn_off" id="turn_off" name="{{each_graph.output_ids.split(',')[0]}}/off/sec/0" type="button" value="{{_('Off')}}">
     </div>
-  </div>
 
     {% if not is_pwm %}
 
-  <div class="form-row small-gutters">
-    <div class="col-xs-6 small-gutters">
+    <div class="col-sm-3 small-gutters">
       <input class="form-control" id="sec_on_amt_{{each_graph.output_ids.split(',')[0]}}" name="sec_on_amt_{{each_graph.output_ids.split(',')[0]}}" title="Turn this relay on for a specific number of seconds (used to test relay)" type="text" value="" placeholder="Seconds">
     </div>
-    <div class="col-xs-6 small-gutters">
-      <input class="form-control btn btn-default sec_on_amt" id="turn_on" name="{{each_graph.output_ids.split(',')[0]}}/on/sec/" type="button" value="{{_('Turn On')}}">
+    <div class="col-sm-3 small-gutters">
+      <input class="form-control btn btn-default sec_on_amt" id="turn_on" name="{{each_graph.output_ids.split(',')[0]}}/on/sec/" type="button" value="{{_('Sec On')}}">
     </div>
-  </div>
 
     {% else %}
 
-  <div class="form-row small-gutters">
-    <div class="col-xs-6 small-gutters">
+    <div class="col-sm-3 small-gutters">
       <input class="form-control" id="duty_cycle_on_amt_{{each_graph.output_ids.split(',')[0]}}" name="duty_cycle_on_amt_{{each_graph.output_ids.split(',')[0]}}" title="Select the duty cycle for the PWM when turned on (0.0 - 100.0)" type="text" value="" placeholder="% Duty Cycle">
     </div>
-    <div class="col-xs-6 small-gutters">
-      <input class="form-control btn btn-default duty_cycle_on_amt" id="turn_on" name="{{each_graph.output_ids.split(',')[0]}}/on/pwm/" type="button" value="{{_('Turn On')}}">
+    <div class="col-sm-3 small-gutters">
+      <input class="form-control btn btn-default duty_cycle_on_amt" id="turn_on" name="{{each_graph.output_ids.split(',')[0]}}/on/pwm/" type="button" value="{{_('PWM On')}}">
     </div>
-  </div>
 
     {% endif %}
+
+  </div>
 
   {% endif %}
 
