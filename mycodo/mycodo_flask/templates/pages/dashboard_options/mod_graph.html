@@ -1,13 +1,11 @@
-<div style="padding-right: 0.2em;">
-  <div class="text-right align-items-center">
-    <span style="padding-right: 0.5em">{{each_graph.name}} [{{'%02d' % each_graph.id}}]</span>
-    <button class="btn btn-default btn-sm" id="updateData{{chart_number}}">Update</button>
-    <button class="btn btn-default btn-sm" id="resetZoom{{chart_number}}">Reset</button>
-    <button class="btn btn-default btn-sm" id="showhidebutton{{chart_number}}">Show/Hide</button>
-    <a data-toggle="collapse" href="#collapseContainer{{chart_number}}" aria-expanded="false" aria-controls="collapseContainer{{chart_number}}">
-      <span class="collapse-button{{chart_number}} fa fa-2x fa-plus-square"></span>
-    </a>
-  </div>
+<div class="text-right" style="padding-right: 0.2em;">
+  <span style="padding-right: 0.5em">{{each_graph.name}} [{{'%02d' % each_graph.id}}]</span>
+  <button style="margin-bottom: 1em" class="btn btn-sm" id="updateData{{chart_number}}">Update</button>
+  <button style="margin-bottom: 1em" class="btn btn-sm" id="resetZoom{{chart_number}}">Reset</button>
+  <button style="margin-bottom: 1em" class="btn btn-sm" id="showhidebutton{{chart_number}}">Show/Hide</button>
+  <a data-toggle="collapse" href="#collapseContainer{{chart_number}}" aria-expanded="false" aria-controls="collapseContainer{{chart_number}}">
+    <span style="font-size: 2em" class="collapse-button{{chart_number}} fas fa-plus-square"></span>
+  </a>
 </div>
 
 <div id="container-graph-{{each_graph.id}}" style="height: {{each_graph.height}}px;"></div>

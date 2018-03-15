@@ -15,7 +15,7 @@
       <div>
         <select class="form-control" id="width" name="width">
           {% for n in range(1, 13) %}
-            <option value="{{n}}"{% if n == 4 %} selected{% endif %}>{{n}}/12</option>
+            <option value="{{n}}"{% if n == 3 %} selected{% endif %}>{{n}}/12</option>
           {% endfor %}
         </select>
       </div>
@@ -41,13 +41,13 @@
     <div class="col-sm-6 col-md-3 col-lg-2">
       {{form_output.font_em_value.label(class_='control-label')}}
       <div>
-        {{form_output.font_em_value(class_='form-control', value=2)}}
+        {{form_output.font_em_value(class_='form-control', value=2.2)}}
       </div>
     </div>
     <div class="col-sm-6 col-md-3 col-lg-2">
       {{form_output.font_em_timestamp.label(class_='control-label')}}
       <div>
-        {{form_output.font_em_timestamp(class_='form-control', value=1.5)}}
+        {{form_output.font_em_timestamp(class_='form-control', value=1.2)}}
       </div>
     </div>
     <div class="col-sm-6 col-md-3 col-lg-2">
@@ -59,7 +59,7 @@
     <div class="col-sm-6 col-md-3 col-lg-2">
       {{form_output.enable_output_controls.label(class_='control-label')}}
       <div class="input-group-text">
-        <input id="enable_output_controls" name="enable_output_controls" type="checkbox" value="y">
+        <input id="enable_output_controls" name="enable_output_controls" type="checkbox" value="y" checked>
       </div>
     </div>
 

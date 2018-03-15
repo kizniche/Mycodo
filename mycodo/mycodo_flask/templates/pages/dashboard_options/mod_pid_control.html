@@ -9,14 +9,14 @@
 
 <div class="pause-background" id="container-pid-{{chart_number}}" style="height: {{each_graph.height}}px">
 
-  <div class="row small-gutters" style="padding-top: 0.7em">
-    <div class="col-sm-12 col-md-6 text-center small-gutters">
+  <div class="row no-gutters" style="padding-top: 0.4em">
+    <div class="col-6 text-center no-gutters">
       <div style="font-size: {{each_graph.font_em_value}}em">
         Set: <span id="setpoint-{{chart_number}}"></span>
       </div>
       <span style="font-size: {{each_graph.font_em_timestamp}}em" id="setpoint-timestamp-{{chart_number}}"></span>
     </div>
-    <div class="col-sm-12 col-md-6 text-center small-gutters">
+    <div class="col-6 text-center no-gutters">
       <div style="font-size: {{each_graph.font_em_value}}em">
         Now: <span id="actual-{{chart_number}}"></span>
       </div>
@@ -35,20 +35,20 @@
   {% endif %}
 
   <div class="row small-gutters" style="padding: 0.5em 1.5em 1.5em 1.5em">
-    <div id="button-activate-{{chart_number}}" class="col-sm-6">
-      <input class="form-control btn btn-block activate_pid" id="activate_pid" name="{{each_graph.pid_ids}}/activate_pid" type="button" value="{{_('Activate')}}">
+    <div id="button-activate-{{chart_number}}" class="col-6">
+      <input class="form-control btn btn-block btn-sm activate_pid" id="activate_pid" name="{{each_graph.pid_ids}}/activate_pid" type="button" value="{{_('Activate')}}">
     </div>
-    <div id="button-deactivate-{{chart_number}}" class="col-sm-6">
-      <input class="form-control btn btn-block deactivate_pid" id="deactivate_pid" name="{{each_graph.pid_ids}}/deactivate_pid" type="button" value="{{_('Deactivate')}}">
+    <div id="button-deactivate-{{chart_number}}" class="col-6">
+      <input class="form-control btn btn-block btn-sm deactivate_pid" id="deactivate_pid" name="{{each_graph.pid_ids}}/deactivate_pid" type="button" value="{{_('Deactivate')}}">
     </div>
-    <div id="button-resume-{{chart_number}}" class="col-sm-6">
-      <input class="form-control btn btn-block resume_pid" id="resume_pid" name="{{each_graph.pid_ids}}/resume_pid" type="button" value="{{_('Resume')}}">
+    <div id="button-resume-{{chart_number}}" class="col-6">
+      <input class="form-control btn btn-block btn-sm resume_pid" id="resume_pid" name="{{each_graph.pid_ids}}/resume_pid" type="button" value="{{_('Resume')}}">
     </div>
-    <div id="button-pause-{{chart_number}}" class="col-sm-3">
-      <input class="form-control btn btn-block pause_pid" id="pause_pid" name="{{each_graph.pid_ids}}/pause_pid" type="button" value="{{_('Pause')}}">
+    <div id="button-pause-{{chart_number}}" class="col-3">
+      <input class="form-control btn btn-block btn-sm pause_pid" id="pause_pid" name="{{each_graph.pid_ids}}/pause_pid" type="button" value="{{_('Pause')}}">
     </div>
-    <div id="button-hold-{{chart_number}}" class="col-sm-3">
-      <input class="form-control btn btn-block hold_pid" id="hold_pid" name="{{each_graph.pid_ids}}/hold_pid" type="button" value="{{_('Hold')}}">
+    <div id="button-hold-{{chart_number}}" class="col-3">
+      <input class="form-control btn btn-block btn-sm hold_pid" id="hold_pid" name="{{each_graph.pid_ids}}/hold_pid" type="button" value="{{_('Hold')}}">
     </div>
   </div>
 
