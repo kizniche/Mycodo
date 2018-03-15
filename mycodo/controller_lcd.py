@@ -338,16 +338,7 @@ class LCDController(threading.Thread):
     def create_lcd_line(self, last_measurement_success, display_id, i):
         try:
             if last_measurement_success:
-                # Determine if the LCD output will have a value unit
-                measurement = ''
-                if self.lcd_line[display_id][i]['measure'] == 'setpoint':
-                    pid = db_retrieve_table_daemon(
-                        PID, unique_id=self.lcd_line[display_id][i]['id'])
-                    measurement = pid.measurement.split(',')[1]
-                elif self.lcd_line[display_id][i]['measure'] == 'duration_sec':
-                    measurement = 'duration_sec'
-                elif self.lcd_line[display_id][i]['measure'] in self.list_inputs:
-                    measurement = self.lcd_line[display_id][i]['measure']
+                unit_length = len(self.lcd_line[display_id][i]['unit'].replace('°', u''))
 
                 # Produce the line that will be displayed on the LCD
                 if self.lcd_line[display_id][i]['measure'] == 'time':
@@ -358,10 +349,9 @@ class LCDController(threading.Thread):
                     utc_timestamp = calendar.timegm(utc_dt.timetuple())
                     self.lcd_string_line[display_id][i] = str(
                         datetime.datetime.fromtimestamp(utc_timestamp))
-                elif measurement:
+                elif unit_length > 0:
                     value_length = len(str(
                         self.lcd_line[display_id][i]['measure_val']))
-                    unit_length = len(self.lcd_line[display_id][i]['unit'].replace('°', u''))
                     name_length = self.lcd_x_characters - value_length - unit_length - 2
                     name_cropped = self.lcd_line[display_id][i]['name'].ljust(name_length)[:name_length]
                     self.lcd_string_line[display_id][i] = '{name} {value} {unit}'.format(
@@ -418,19 +408,26 @@ class LCDController(threading.Thread):
             gpio_state = 'Off'
         return gpio_state
 
-    def setup_lcd_line(self, display_id, line, lcd_id, measurement):
+    def setup_lcd_line(self, display_id, line, device_id, measurement):
         self.lcd_line[display_id][line]['setup'] = False
-        self.lcd_line[display_id][line]['id'] = lcd_id
+        self.lcd_line[display_id][line]['id'] = device_id
         self.lcd_line[display_id][line]['name'] = None
         self.lcd_line[display_id][line]['unit'] = None
         self.lcd_line[display_id][line]['measure'] = measurement
         if 'time' in measurement:
             self.lcd_line[display_id][line]['measure'] = 'time'
-        if not lcd_id:
+        if not device_id:
             return
 
         # Determine the unit
-        if measurement in self.list_inputs:
+        if measurement == 'setpoint':
+            pid = db_retrieve_table_daemon(PID, unique_id=device_id)
+            if pid:
+                if pid.measurement.split(',')[1] in self.list_inputs:
+                    self.lcd_line[display_id][line]['unit'] = self.list_inputs[pid.measurement.split(',')[1]]['unit']
+                else:
+                    self.lcd_line[display_id][line]['unit'] = ''
+        elif measurement in self.list_inputs:
             self.lcd_line[display_id][line]['unit'] = self.list_inputs[measurement]['unit']
         else:
             self.lcd_line[display_id][line]['unit'] = ''
@@ -443,7 +440,7 @@ class LCDController(threading.Thread):
             Math
         ]
         for each_controller in controllers:
-            controller_found = db_retrieve_table_daemon(each_controller, unique_id=lcd_id)
+            controller_found = db_retrieve_table_daemon(each_controller, unique_id=device_id)
             if controller_found:
                 self.lcd_line[display_id][line]['name'] = controller_found.name
 
