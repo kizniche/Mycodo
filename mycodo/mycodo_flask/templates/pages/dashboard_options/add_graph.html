@@ -4,14 +4,14 @@
 
   <div class="form-row small-gutters">
 
-    <div class="col-sm-6 col-md-3 col-lg-2">
+    <div class="col-auto">
       {{form_base.name.label(class_='control-label')}}
       <div>
         {{form_base.name(class_='form-control', value=_('Graph Name'))}}
       </div>
     </div>
 
-    <div class="col-sm-6 col-md-3 col-lg-2">
+    <div class="col-auto">
       {{form_base.width.label(class_='control-label')}}
       <div>
         <select class="form-control" id="width" name="width">
@@ -23,28 +23,28 @@
       </div>
     </div>
 
-    <div class="col-sm-6 col-md-3 col-lg-2">
+    <div class="col-auto">
       {{form_base.height.label(class_='control-label')}}
       <div>
         {{form_base.height(class_='form-control', value=400)}}
       </div>
     </div>
 
-    <div class="col-sm-6 col-md-3 col-lg-2">
+    <div class="col-auto">
       {{form_graph.xaxis_duration.label(class_='control-label')}}
       <div>
         {{form_graph.xaxis_duration(class_='form-control', value=1440)}}
       </div>
     </div>
 
-    <div class="col-sm-6 col-md-3 col-lg-2">
-      {{form_graph.enable_auto_refresh.label(class_='control-label')}}
-      <div class="input-group-text">
+    <div class="col-auto">
+      <div class="form-check">
         <input id="enable_auto_refresh" name="enable_auto_refresh" type="checkbox" value="y" checked>
+        {{form_graph.enable_auto_refresh.label(class_='control-label')}}
       </div>
     </div>
 
-    <div class="col-sm-6 col-md-3 col-lg-2">
+    <div class="col-auto">
       {{form_base.refresh_duration.label(class_='control-label')}}
       <div>
         {{form_base.refresh_duration(class_='form-control', value=60)}}
@@ -55,10 +55,10 @@
 
   <div class="form-row">
 
-    <div class="form-group col-sm-6 col-lg-4 col-xl-3">
+    <div class="col-auto">
       {{form_graph.sensor_ids.label(class_='control-label')}}
       <div>
-        <select class="form-control btn-default" id="sensor_ids" name="sensor_ids" style="width: 100%;" size="{{([choices_input|length, choices_math|length, choices_output|length, choices_pid|length] | sort(reverse=True))[0]}}" multiple>
+        <select class="form-control btn-default" id="sensor_ids" name="sensor_ids" style="width: 100%;" size="{{choices_pid|length}}" multiple>
         {% if choices_input %}
           {% for each_choice, value in choices_input.items() -%}
           <option value="{{each_choice}}">{{value}}</option>
@@ -69,10 +69,10 @@
         </select>
       </div>
     </div>
-    <div class="form-group col-sm-6 col-lg-4 col-xl-3">
+    <div class="col-auto">
       {{form_graph.math_ids.label(class_='control-label')}}
       <div>
-        <select class="form-control btn-default" id="math_ids" name="math_ids" style="width: 100%;" size="{{([choices_input|length, choices_math|length, choices_output|length, choices_pid|length] | sort(reverse=True))[0]}}" multiple>
+        <select class="form-control btn-default" id="math_ids" name="math_ids" style="width: 100%;" size="{{choices_math|length}}" multiple>
         {% if choices_math %}
           {% for each_choice, value in choices_math.items() -%}
           <option value="{{each_choice}}">{{value}}</option>
@@ -83,10 +83,10 @@
         </select>
       </div>
     </div>
-    <div class="form-group col-sm-6 col-lg-4 col-xl-3">
+    <div class="col-auto">
       {{form_graph.relay_ids.label(class_='control-label')}}
       <div>
-        <select class="form-control btn-default" id="relay_ids" name="relay_ids" style="width: 100%;" size="{{([choices_input|length, choices_math|length, choices_output|length, choices_pid|length] | sort(reverse=True))[0]}}" multiple>
+        <select class="form-control btn-default" id="relay_ids" name="relay_ids" style="width: 100%;" size="{{choices_output|length}}" multiple>
         {% if choices_output %}
           {% for each_choice, value in choices_output.items() -%}
           <option value="{{each_choice}}">{{value}}</option>
@@ -97,10 +97,10 @@
         </select>
       </div>
     </div>
-    <div class="form-group col-sm-6 col-lg-4 col-xl-3">
+    <div class="col-auto">
       {{form_graph.pid_ids.label(class_='control-label')}}
       <div>
-        <select class="form-control btn-default" id="pid_ids" name="pid_ids" style="width: 100%;" size="{{([choices_input|length, choices_math|length, choices_output|length, choices_pid|length] | sort(reverse=True))[0]}}" multiple>
+        <select class="form-control btn-default" id="pid_ids" name="pid_ids" style="width: 100%;" size="{{choices_pid|length}}" multiple>
         {% if choices_pid %}
           {% for each_choice, value in choices_pid.items() -%}
           <option value="{{each_choice}}">{{value}}</option>
@@ -123,27 +123,27 @@
   <div class="form-inline">
     <div class="form-check form-check-inline">
       {{form_graph.enable_xaxis_reset(class_='form-control', value='y', checked=True)}}
-      <label>{{form_graph.enable_xaxis_reset.label.text}}</label>
+      {{form_graph.enable_xaxis_reset.label(class_='control-label')}}
     </div>
     <div class="form-check form-check-inline">
       {{form_graph.enable_title(class_='form-control')}}
-      <label>{{form_graph.enable_title.label.text}}</label>
+      {{form_graph.enable_title.label(class_='control-label')}}
     </div>
     <div class="form-check form-check-inline">
       {{form_graph.enable_navbar(class_='form-control')}}
-      <label>{{form_graph.enable_navbar.label.text}}</label>
+      {{form_graph.enable_navbar.label(class_='control-label')}}
     </div>
     <div class="form-check form-check-inline">
       {{form_graph.enable_export(class_='form-control')}}
-      <label>{{form_graph.enable_export.label.text}}</label>
+      {{form_graph.enable_export.label(class_='control-label')}}
     </div>
     <div class="form-check form-check-inline">
       {{form_graph.enable_range(class_='form-control')}}
-      <label>{{form_graph.enable_range.label.text}}</label>
+      {{form_graph.enable_range.label(class_='control-label')}}
     </div>
     <div class="form-check form-check-inline">
       {{form_graph.enable_graph_shift(class_='form-control')}}
-      <label>{{form_graph.enable_graph_shift.label.text}}</label>
+      {{form_graph.enable_graph_shift.label(class_='control-label')}}
     </div>
   </div>
 

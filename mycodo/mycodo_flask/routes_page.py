@@ -667,18 +667,6 @@ def page_lcd():
     form_lcd_mod = forms_lcd.LCDMod()
     form_lcd_display = forms_lcd.LCDModDisplay()
 
-    measurements = DEVICE_INFO
-
-    # Add custom measurement and units to list (From linux command input)
-    for each_input in input_dev:
-        if each_input.cmd_measurement and each_input.cmd_measurement not in DEVICE_INFO:
-            if each_input.cmd_measurement and each_input.cmd_measurement_units:
-                measurements.update(
-                    {'LinuxCommand': {
-                        'py-dependencies': [],
-                        'measure': [each_input.cmd_measurement]
-                    }})
-
     if request.method == 'POST':
         if not utils_general.user_has_permission('edit_controllers'):
             return redirect(url_for('routes_general.home'))
@@ -713,7 +701,7 @@ def page_lcd():
                            lcd=lcd,
                            lcd_data=lcd_data,
                            math=math,
-                           measurements=measurements,
+                           measurements=DEVICE_INFO,
                            pid=pid,
                            relay=output,
                            sensor=input_dev,
