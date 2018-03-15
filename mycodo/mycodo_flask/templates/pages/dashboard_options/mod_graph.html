@@ -1,12 +1,12 @@
-<div style="padding-right: 0.5em;">
-  <div class="col-sx-12 text-right">
+<div style="padding-right: 0.2em;">
+  <div class="text-right align-items-center">
     <span style="padding-right: 0.5em">{{each_graph.name}} [{{'%02d' % each_graph.id}}]</span>
     <button class="btn btn-default btn-sm" id="updateData{{chart_number}}">Update</button>
     <button class="btn btn-default btn-sm" id="resetZoom{{chart_number}}">Reset</button>
     <button class="btn btn-default btn-sm" id="showhidebutton{{chart_number}}">Show/Hide</button>
-    <button type="button" class="btn btn-default" style="padding: 0 0" data-toggle="collapse" href="#collapseContainer{{chart_number}}" aria-expanded="false" aria-controls="collapseContainer{{chart_number}}">
+    <a data-toggle="collapse" href="#collapseContainer{{chart_number}}" aria-expanded="false" aria-controls="collapseContainer{{chart_number}}">
       <span class="collapse-button{{chart_number}} fa fa-2x fa-plus-square"></span>
-    </button>
+    </a>
   </div>
 </div>
 

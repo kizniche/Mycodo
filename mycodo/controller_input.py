@@ -87,6 +87,7 @@ class InputController(threading.Thread):
         self.control = DaemonControl()
         self.pause_loop = False
         self.verify_pause_loop = True
+        self.lock_acquired = False
 
         input_dev = db_retrieve_table_daemon(Input, device_id=self.input_id)
         self.input_sel = input_dev
@@ -440,6 +441,19 @@ class InputController(threading.Thread):
                             self.pre_output_setup and
                             not self.pre_output_activated):
 
+
+                        # Set up lock for pre-output
+                        lock_file = '/var/lock/input_pre_output_{id}'.format(id=self.pre_output_id)
+
+                        self.lock = fasteners.InterProcessLock(lock_file)
+                        self.lock_acquired = False
+                        for _ in range(600):
+                            self.lock_acquired = self.lock.acquire(blocking=False)
+                            if self.lock_acquired:
+                                break
+                            else:
+                                time.sleep(0.1)
+
                         self.pre_output_timer = now + self.pre_output_duration
                         self.pre_output_activated = True
 
@@ -481,6 +495,9 @@ class InputController(threading.Thread):
 
                             self.pre_output_activated = False
                             self.get_new_measurement = False
+
+                            # release pre-output lock
+                            self.lock.release()
 
                         elif not self.pre_output_setup:
                             # Pre-output not enabled, just measure

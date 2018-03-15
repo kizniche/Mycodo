@@ -3,6 +3,7 @@
 ### Bugfixes
 
  - Fix incorrect conversion of I2C address during Atlas pH sensor calibration ([#425](https://github.com/kizniche/mycodo/issues/425))
+ - Potential fix for ADC issues when using pre-output ([#418](https://github.com/kizniche/mycodo/issues/418))
 
 
 ## 5.6.5 (2018-03-14)

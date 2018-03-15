@@ -1,9 +1,9 @@
-<div style="padding-right: 0.5em;">
-  <div class="col-sx-12 text-right">
+<div style="padding-right: 0.2em;">
+  <div class="text-right align-items-center">
     <span id="text-output-state-{{chart_number}}"></span> <span style="padding-right: 0.5em"> {{each_graph.name}} [{{'%02d' % each_graph.id}}]</span>
-    <button type="button" class="btn btn-default" style="padding: 0 0" data-toggle="collapse" href="#collapseContainer_output{{chart_number}}" aria-expanded="false" aria-controls="collapseContainer_output{{chart_number}}">
+    <a data-toggle="collapse" href="#collapseContainer{{chart_number}}" aria-expanded="false" aria-controls="collapseContainer{{chart_number}}">
       <span class="collapse-button{{chart_number}} fa fa-2x fa-plus-square"></span>
-    </button>
+    </a>
   </div>
 </div>
 
@@ -54,7 +54,7 @@
 
 </div>
 
-<div class="collapse" id="collapseContainer_output{{chart_number}}" style="padding: 0.5em; width: calc(100% - 1em)">
+<div class="collapse" id="collapseContainer{{chart_number}}" style="padding: 0.5em; width: calc(100% - 1em)">
 
   <form method="post" action="/dashboard">
   {{form_base.csrf_token}}
