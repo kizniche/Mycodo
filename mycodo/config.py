@@ -10,7 +10,7 @@ import os
 from flask_babel import lazy_gettext
 
 MYCODO_VERSION = '5.6.5'
-ALEMBIC_VERSION = 'fdb54958dd73'
+ALEMBIC_VERSION = '595e818456db'
 
 #  FORCE_UPGRADE_MASTER
 #  Set True to enable upgrading to the master branch of the Mycodo repository.
@@ -58,6 +58,7 @@ DEVICES = [
     ('ATLAS_PT1000_UART', 'Temperature: Atlas Scientific PT-1000 (Serial)'),
     ('MAX31855', 'Temperature: MAX31855K + K-type thermocouple'),
     ('MAX31856', 'Temperature: MAX31856 + K/J/N/R/S/T/E/B-type thermocouple'),
+    ('MAX31865', 'Temperature: MAX31865 + PT100 or PT1000 probe'),
     ('TMP006', 'Temperature (Contactless): TMP 006/007 (I2C)'),
     ('AM2315', 'Temperature/Humidity: AM2315 (I2C)'),
     ('DHT11', 'Temperature/Humidity: DHT11 (GPIO)'),
@@ -183,6 +184,10 @@ DEVICE_INFO = {
         'name': 'MAX31856',
         'py-dependencies': ['RPi.GPIO'],
         'measure': ['temperature', 'temperature_die']},
+    'MAX31865': {
+        'name': 'MAX31865',
+        'py-dependencies': ['RPi.GPIO'],
+        'measure': ['temperature']},
     'MH_Z16_I2C': {
         'name': 'MH-Z16 (I2C)',
         'i2c-addresses': ['0x63'],
@@ -526,6 +531,7 @@ LIST_DEVICES_I2C = [
 LIST_DEVICES_SPI = [
     'MAX31855',
     'MAX31856',
+    'MAX31865',
     'MCP3008'
 ]
 

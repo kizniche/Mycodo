@@ -1,0 +1,16 @@
+{% include 'pages/data_options/input_options/TEMPLATE_SPI_OPTIONS.html' %}
+<div class="col-auto">
+  {{form_mod_input.thermocouple_type.label(class_='control-label')}}
+  <div>
+    <select class="form-control form-tooltip form-dropdown" data-placement="top" id="thermocouple_type" name="thermocouple_type" title="{{_('The type of thermocouple connected')}}">
+      <option value="PT100"{% if each_input.thermocouple_type == 'PT100' %} selected{% endif %}>PT100</option>
+      <option value="PT1000"{% if each_input.thermocouple_type == 'PT1000' %} selected{% endif %}>PT1000</option>
+    </select>
+  </div>
+</div>
+<div class="col-auto">
+  {{form_mod_input.ref_ohm.label(class_='control-label')}}
+  <div>
+    {{form_mod_input.ref_ohm(class_='form-control', value=each_input.ref_ohm, **{'title':'Use a custom reference resistor value (Set to 0 to use default resistance value for probe)'})}}
+  </div>
+</div>

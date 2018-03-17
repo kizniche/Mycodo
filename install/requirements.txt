@@ -26,7 +26,7 @@ geocoder == 1.33
 gunicorn == 19.7.1
 imutils == 0.4.4
 influxdb == 5.0.0
-locket
+locket == 0.2.0
 pyserial == 3.4
 python-dateutil
 requests

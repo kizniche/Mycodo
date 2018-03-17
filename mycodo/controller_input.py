@@ -108,6 +108,7 @@ class InputController(threading.Thread):
         self.cmd_measurement = input_dev.cmd_measurement
         self.cmd_measurement_units = input_dev.cmd_measurement_units
         self.thermocouple_type = input_dev.thermocouple_type
+        self.ref_ohm = input_dev.ref_ohm
 
         # Multiplexer
         self.mux_address_raw = input_dev.multiplexer_address
@@ -332,6 +333,15 @@ class InputController(threading.Thread):
                 self.pin_miso,
                 self.pin_mosi,
                 thermocouple_type=self.thermocouple_type)
+        elif self.device == 'MAX31865':
+            from mycodo.inputs.max31856 import MAX31865Sensor
+            self.measure_input = MAX31865Sensor(
+                self.pin_clock,
+                self.pin_cs,
+                self.pin_miso,
+                self.pin_mosi,
+                device=self.thermocouple_type,
+                resistor_ref=self.ref_ohm)
         elif self.device == 'MH_Z16_I2C':
             from mycodo.inputs.mh_z16 import MHZ16Sensor
             self.measure_input = MHZ16Sensor(self.interface,

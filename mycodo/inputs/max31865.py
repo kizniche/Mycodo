@@ -21,9 +21,93 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-import time, math
+import logging
+import math
+import time
 
-# import numpy
+from .base_input import AbstractInput
+
+# import numpy  # Used for more accurate temperature calculation
+
+
+class MAX31865Sensor(AbstractInput):
+    """
+    A sensor support class that measures the MAX31865's humidity, temperature,
+    and pressure, them calculates the altitude and dew point
+
+    """
+
+    def __init__(self, clk, cs, miso, mosi, device='PT100', resistor_ref=None, testing=False):
+        super(MAX31865Sensor, self).__init__()
+        self.logger = logging.getLogger("mycodo.inputs.max31865")
+        self._temperature = None
+
+        self.clk = clk
+        self.cs = cs
+        self.miso = miso
+        self.mosi = mosi
+        self.device = device
+        self.resistor_ref = resistor_ref
+
+        if not testing:
+            import max31865
+            self.sensor = max31865.max31865(self.cs, self.miso, self.mosi, self.clk)
+
+    def __repr__(self):
+        """  Representation of object """
+        return "<{cls}(temperature={temp})>".format(
+            cls=type(self).__name__,
+            temp="{0:.2f}".format(self._temperature))
+
+    def __str__(self):
+        """ Return measurement information """
+        return "Temperature: {temp}".format(
+            temp="{0:.2f}".format(self._temperature))
+
+    def __iter__(self):  # must return an iterator
+        """ SensorClass iterates through live measurement readings """
+        return self
+
+    def next(self):
+        """ Get next measurement reading """
+        if self.read():  # raised an error
+            raise StopIteration  # required
+        return dict(temperature=float('{0:.2f}'.format(self._temperature)))
+
+    @property
+    def temperature(self):
+        """ MAX31865 temperature in Celsius """
+        if self._temperature is None:  # update if needed
+            self.read()
+        return self._temperature
+
+    def get_measurement(self):
+        """ Gets the measurement in units by reading the """
+        self._temperature = None
+        temp = self.sensor.readTemp(self.device, self.resistor_ref)
+        return temp
+
+    def read(self):
+        """
+        Takes a reading from the MAX31865 and updates the
+        self._temperature value
+
+        :returns: None on success or 1 on error
+        """
+        try:
+            self._temperature = self.get_measurement()
+            if self._temperature is not None:
+                return  # success - no errors
+        except Exception as e:
+            self.logger.exception(
+                "{cls} raised an exception when taking a reading: "
+                "{err}".format(cls=type(self).__name__, err=e))
+        return 1
+
+    def stop_sensor(self):
+        """ Called by InputController class when sensors are deactivated """
+        self.sensor.cleanupGPIO()
+        self.running = False
 
 
 class max31865(object):
@@ -180,9 +264,11 @@ class max31865(object):
             self.GPIO.output(self.clkPin, self.GPIO.LOW)
         return byte
 
-    def calcPTTemp(self, RTD_ADC_Code, device='PT100'):
+    def calcPTTemp(self, RTD_ADC_Code, device='PT100', resistor_ref=None):
         # Reference Resistor
-        if device == 'PT100':
+        if resistor_ref:
+            R_REF = resistor_ref
+        elif device == 'PT100':
             R_REF = 400.0
         elif device == 'PT1000':
             R_REF = 4000.0

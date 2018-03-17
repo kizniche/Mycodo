@@ -31,8 +31,6 @@ import time
 import timeit
 
 import RPi.GPIO as GPIO
-from sqlalchemy import and_
-from sqlalchemy import or_
 
 from mycodo.config import SQL_DATABASE_MYCODO
 from mycodo.databases.models import Camera

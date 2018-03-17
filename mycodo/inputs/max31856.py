@@ -46,10 +46,7 @@ class MAX31856Sensor(AbstractInput):
         self.mosi = mosi
 
         if not testing:
-            import RPi.GPIO as GPIO
             import max31856
-
-            self.GPIO = GPIO
             self.sensor = max31856.max31856(self.logger, cs, miso, mosi, clk)
             if thermocouple_type == 'B':
                 self.sensor.writeRegister(1, 0x00) #for B Type
@@ -118,7 +115,7 @@ class MAX31856Sensor(AbstractInput):
 
     def read(self):
         """
-        Takes a reading from the MAX31856 and updates the self._humidity and
+        Takes a reading from the MAX31856 and updates the
         self._temperature values
 
         :returns: None on success or 1 on error

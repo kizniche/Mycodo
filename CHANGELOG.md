@@ -1,5 +1,9 @@
 ## 5.6.6 (Unreleased)
 
+### Features
+
+ - Add Input: MAX31865 for PT100 and PT1000 temperature probes ([#345](https://github.com/kizniche/mycodo/issues/345))
+
 ### Bugfixes
 
  - Fix incorrect conversion of I2C address during Atlas pH sensor calibration ([#425](https://github.com/kizniche/mycodo/issues/425))

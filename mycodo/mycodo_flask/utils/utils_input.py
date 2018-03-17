@@ -90,35 +90,35 @@ def input_add(form_add):
 
         # Environmental Inputs
         # Temperature
+        elif form_add.input_type.data == 'TMP006':
+            new_sensor.location = '0x40'
+        elif form_add.input_type.data == 'ATLAS_PT1000_I2C':
+            new_sensor.interface = 'I2C'
+            new_sensor.location = '0x66'
+        elif form_add.input_type.data == 'ATLAS_PT1000_UART':
+            new_sensor.location = 'Tx/Rx'
+            new_sensor.interface = 'UART'
+            new_sensor.baud_rate = 9600
+            if GPIO.RPI_INFO['P1_REVISION'] == 3:
+                new_sensor.device_loc = "/dev/ttyS0"
+            else:
+                new_sensor.device_loc = "/dev/ttyAMA0"
         elif form_add.input_type.data in ['ATLAS_PT1000_I2C',
                                           'ATLAS_PT1000_UART',
                                           'DS18B20',
                                           'MAX31855',
                                           'MAX31856',
+                                          'MAX31865',
                                           'TMP006']:
-            if form_add.input_type.data == 'ATLAS_PT1000_I2C':
-                new_sensor.interface = 'I2C'
-                new_sensor.location = '0x66'
-            elif form_add.input_type.data == 'ATLAS_PT1000_UART':
-                new_sensor.location = 'Tx/Rx'
-                new_sensor.interface = 'UART'
-                new_sensor.baud_rate = 9600
-                if GPIO.RPI_INFO['P1_REVISION'] == 3:
-                    new_sensor.device_loc = "/dev/ttyS0"
-                else:
-                    new_sensor.device_loc = "/dev/ttyAMA0"
-            elif form_add.input_type.data == 'MAX31855':
-                new_sensor.pin_clock = 11
-                new_sensor.pin_cs = 8
-                new_sensor.pin_miso = 9
-            elif form_add.input_type.data == 'MAX31856':
-                new_sensor.pin_cs = 8
-                new_sensor.pin_miso = 9
-                new_sensor.pin_mosi = 10
-                new_sensor.pin_clock = 11
+            new_sensor.pin_cs = 8
+            new_sensor.pin_miso = 9
+            new_sensor.pin_mosi = 10
+            new_sensor.pin_clock = 11
+            if form_add.input_type.data == 'MAX31856':
                 new_sensor.thermocouple_type = 'K'
-            elif form_add.input_type.data == 'TMP006':
-                new_sensor.location = '0x40'
+            elif form_add.input_type.data == 'MAX31865':
+                new_sensor.thermocouple_type = 'PT100'
+                new_sensor.ref_ohm = 0
 
         # Temperature/Humidity
         elif form_add.input_type.data in ['AM2315', 'DHT11',
