@@ -7,6 +7,7 @@
  - Fix Linux Command measurement display on lines 2 through 4 of LCDs ([#427](https://github.com/kizniche/mycodo/issues/427))
  - Fix display of PID setpoint units on LCDs
  - Fix display of LCD lines without measurement units
+ - Fix locking to be thread safe (replaced fasteners with locket) ([#418](https://github.com/kizniche/mycodo/issues/418))
 
 
 ## 5.6.5 (2018-03-14)
@@ -19,7 +20,6 @@
 ### Bugfixes
 
  - Add proper max voltage for MCP3008 ([#418](https://github.com/kizniche/mycodo/issues/418))
- - Fix proper locking for MCP3008 ([#418](https://github.com/kizniche/mycodo/issues/418))
  - Fix PID persisting as paused/held after deactivating and activating
  - Fix Atlas pH Calibration issue ([#425](https://github.com/kizniche/mycodo/issues/425))
  - Fix issue with Linux Command Inputs and LCDs ([#427](https://github.com/kizniche/mycodo/issues/427))

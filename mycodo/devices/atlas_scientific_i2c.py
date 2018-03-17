@@ -1,11 +1,10 @@
 # coding=utf-8
 import fcntl  # used to access I2C parameters like addresses
 import logging
-import string  # helps parse strings
 import time  # used for sleep delay and timestamps
 
-import fasteners
 import io  # used to create file streams
+import locket
 
 from mycodo.config import ATLAS_PH_LOCK_FILE
 from mycodo.utils.system_pi import str_is_float
@@ -74,18 +73,17 @@ class AtlasScientificI2C:
 
     def query(self, query_str):
         """ Send command to board and read response """
+        lock_acquired = False
         lock_file_amend = '{lf}.{dev}'.format(lf=ATLAS_PH_LOCK_FILE,
                                               dev=self.current_addr)
         try:
-            lock = fasteners.InterProcessLock(lock_file_amend)
-            lock_acquired = False
-
-            for _ in range(600):
-                lock_acquired = lock.acquire(blocking=False)
-                if lock_acquired:
-                    break
-                else:
-                    time.sleep(0.1)
+            # Set up lock
+            lock = locket.lock_file(lock_file_amend, timeout=60)
+            try:
+                lock.acquire()
+                lock_acquired = True
+            except:
+                self.logger.error("Could not acquire lock.")
 
             if lock_acquired:
                 # write a command to the board, wait the correct timeout,

@@ -1,8 +1,7 @@
 # coding=utf-8
 import logging
 import time
-
-import fasteners
+import locket
 
 from .base_input import AbstractInput
 from .sensorutils import is_device
@@ -71,13 +70,13 @@ class K30Sensor(AbstractInput):
         co2= None
         lock_acquired = False
 
-        lock = fasteners.InterProcessLock(self.k30_lock_file)
-        for _ in range(600):
-            lock_acquired = lock.acquire(blocking=False)
-            if lock_acquired:
-                break
-            else:
-                time.sleep(0.1)
+        # Set up lock
+        lock = locket.lock_file(self.k30_lock_file, timeout=60)
+        try:
+            lock.acquire()
+            lock_acquired = True
+        except:
+            self.logger.error("Could not acquire lock.")
 
         if lock_acquired:
             self.ser.flushInput()
@@ -90,8 +89,6 @@ class K30Sensor(AbstractInput):
                 low = ord(resp[4])
                 co2 = (high * 256) + low
             lock.release()
-        else:
-            self.logger.error("Could not acquire K30 lock")
 
         return co2
 

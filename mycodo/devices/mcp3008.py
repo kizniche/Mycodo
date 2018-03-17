@@ -1,10 +1,9 @@
 # coding=utf-8
 import argparse
 import logging
-import time
 
 import Adafruit_MCP3008
-import fasteners
+import locket
 
 
 class MCP3008Read(object):
@@ -30,19 +29,18 @@ class MCP3008Read(object):
         self._voltage = None
         lock_acquired = False
         try:
-            lock = fasteners.InterProcessLock(self.lock_file)
-            for _ in range(600):
-                lock_acquired = lock.acquire(blocking=False)
-                if lock_acquired:
-                    break
-                else:
-                    time.sleep(0.1)
+            # Set up lock
+            lock = locket.lock_file(self.lock_file, timeout=60)
+            try:
+                lock.acquire()
+                lock_acquired = True
+            except:
+                self.logger.error("Could not acquire lock.")
 
             if lock_acquired:
                 self._voltage = (self.adc.read_adc(self.channel) / 1023.0) * self.volts_max
                 lock.release()
-            else:
-                self.logger.error("Could not acquire lock")
+
         except Exception as e:
             self.logger.exception(
                 "{cls} raised exception during read(): "

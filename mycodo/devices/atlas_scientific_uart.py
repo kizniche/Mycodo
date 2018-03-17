@@ -2,7 +2,7 @@
 import logging
 import time
 
-import fasteners
+import locket
 import os
 import serial
 from serial import SerialException
@@ -48,19 +48,18 @@ class AtlasScientificUART:
 
     def query(self, query_str):
         """ Send command and return reply """
+        lock_acquired = False
         lock_file_amend = '{lf}.{dev}'.format(lf=ATLAS_PH_LOCK_FILE,
                                               dev=self.serial_device.replace("/", "-"))
 
         try:
-            lock = fasteners.InterProcessLock(lock_file_amend)
-            lock_acquired = False
-
-            for _ in range(600):
-                lock_acquired = lock.acquire(blocking=False)
-                if lock_acquired:
-                    break
-                else:
-                    time.sleep(0.1)
+            # Set up lock
+            lock = locket.lock_file(lock_file_amend, timeout=60)
+            try:
+                lock.acquire()
+                lock_acquired = True
+            except:
+                self.logger.error("Could not acquire lock.")
 
             if lock_acquired:
                 self.send_cmd(query_str)

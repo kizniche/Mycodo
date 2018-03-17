@@ -29,7 +29,7 @@ import time
 import timeit
 
 import RPi.GPIO as GPIO
-import fasteners
+import locket
 import requests
 
 from mycodo.config import LIST_DEVICES_ADC
@@ -87,7 +87,6 @@ class InputController(threading.Thread):
         self.control = DaemonControl()
         self.pause_loop = False
         self.verify_pause_loop = True
-        self.lock_acquired = False
 
         input_dev = db_retrieve_table_daemon(Input, device_id=self.input_id)
         self.input_sel = input_dev
@@ -162,8 +161,9 @@ class InputController(threading.Thread):
         self.pre_output_activated = False
         self.pre_output_timer = time.time()
 
+        # Check if Pre-Output ID actually exists
         output = db_retrieve_table_daemon(Output, entry='all')
-        for each_output in output:  # Check if output ID actually exists
+        for each_output in output:
             if each_output.id == self.pre_output_id and self.pre_output_duration:
                 self.pre_output_setup = True
 
@@ -171,6 +171,10 @@ class InputController(threading.Thread):
         self.smtp_max_count = smtp.hourly_max
         self.email_count = 0
         self.allowed_to_send_notice = True
+
+        # Set up input lock
+        self.input_lock = None
+        self.lock_file = '/var/lock/input_pre_output_{id}'.format(id=self.pre_output_id)
 
         # Convert string I2C address to base-16 int
         if self.device in LIST_DEVICES_I2C:
@@ -181,9 +185,10 @@ class InputController(threading.Thread):
             from mycodo.devices.tca9548a import TCA9548A
             self.mux_address_string = self.mux_address_raw
             self.mux_address = int(str(self.mux_address_raw), 16)
-            self.mux_lock = "/var/lock/mycodo_multiplexer_0x{i2c:02X}.pid".format(
+            self.mux_lock_file = "/var/lock/mycodo_multiplexer_0x{i2c:02X}.pid".format(
                 i2c=self.mux_address)
-            self.mux_lock = fasteners.InterProcessLock(self.mux_lock)
+            # Set up lock for pre-output
+            self.mux_lock = locket.lock_file(self.mux_lock_file, timeout=60)
             self.mux_lock_acquired = False
             self.multiplexer = TCA9548A(self.mux_bus, self.mux_address)
         else:
@@ -441,20 +446,14 @@ class InputController(threading.Thread):
                             self.pre_output_setup and
                             not self.pre_output_activated):
 
+                        # Set up lock
+                        self.input_lock = locket.lock_file(self.lock_file, timeout=60)
+                        try:
+                            self.input_lock.acquire()
+                        except:
+                            self.logger.error("Could not acquire input lock.")
 
-                        # Set up lock for pre-output
-                        lock_file = '/var/lock/input_pre_output_{id}'.format(id=self.pre_output_id)
-
-                        self.lock = fasteners.InterProcessLock(lock_file)
-                        self.lock_acquired = False
-                        for _ in range(600):
-                            self.lock_acquired = self.lock.acquire(blocking=False)
-                            if self.lock_acquired:
-                                break
-                            else:
-                                time.sleep(0.1)
-
-                        self.pre_output_timer = now + self.pre_output_duration
+                        self.pre_output_timer = time.time() + self.pre_output_duration
                         self.pre_output_activated = True
 
                         # Only run the pre-output before measurement
@@ -497,7 +496,7 @@ class InputController(threading.Thread):
                             self.get_new_measurement = False
 
                             # release pre-output lock
-                            self.lock.release()
+                            self.input_lock.release()
 
                         elif not self.pre_output_setup:
                             # Pre-output not enabled, just measure
@@ -532,12 +531,11 @@ class InputController(threading.Thread):
         """ Acquire a multiplexer lock """
         self.mux_lock_acquired = False
 
-        for _ in range(600):
-            self.mux_lock_acquired = self.mux_lock.acquire(blocking=False)
-            if self.mux_lock_acquired:
-                break
-            else:
-                time.sleep(0.1)
+        try:
+            self.mux_lock.acquire()
+            self.mux_lock_acquired = True
+        except:
+            self.logger.error("Could not acquire multiplexer lock.")
 
         if not self.mux_lock_acquired:
             self.logger.error(
@@ -570,13 +568,15 @@ class InputController(threading.Thread):
         """ Read voltage from ADC """
         try:
             lock_acquired = False
-            adc_lock = fasteners.InterProcessLock(self.adc_lock_file)
-            for _ in range(600):
-                lock_acquired = adc_lock.acquire(blocking=False)
-                if lock_acquired:
-                    break
-                else:
-                    time.sleep(0.1)
+
+            # Set up lock for ADC
+            adc_lock = locket.lock_file(self.adc_lock_file, timeout=60)
+            try:
+                adc_lock.acquire()
+                lock_acquired = True
+            except:
+                self.logger.error("Could not acquire ADC lock.")
+
             if not lock_acquired:
                 self.logger.error(
                     "Unable to acquire lock: {lock}".format(

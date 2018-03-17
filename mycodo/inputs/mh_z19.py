@@ -2,7 +2,7 @@
 import logging
 import time
 
-import fasteners
+import locket
 
 from .base_input import AbstractInput
 from .sensorutils import is_device
@@ -66,23 +66,20 @@ class MHZ19Sensor(AbstractInput):
 
     def get_measurement(self):
         """ Gets the MH-Z19's CO2 concentration in ppmv via UART"""
+        lock_acquired = False
         self._co2 = None
         co2 = None
 
         if not self.serial_device:  # Don't measure if device isn't validated
             return None
 
-        # Acquire lock on MHZ19 to ensure more than one read isn't
-        # being attempted at once.
-        lock = fasteners.InterProcessLock(self.mhz19_lock_file)
-        lock_acquired = False
-
-        for _ in range(600):
-            lock_acquired = lock.acquire(blocking=False)
-            if lock_acquired:
-                break
-            else:
-                time.sleep(0.1)
+        # Set up lock
+        lock = locket.lock_file(self.mhz19_lock_file, timeout=60)
+        try:
+            lock.acquire()
+            lock_acquired = True
+        except:
+            self.logger.error("Could not acquire lock.")
 
         if lock_acquired:
             self.ser.flushInput()
