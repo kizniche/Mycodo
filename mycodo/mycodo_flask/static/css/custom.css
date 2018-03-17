@@ -2,6 +2,24 @@
  * Custom CSS
  */
 
+.dropdown-upgrade {
+  color: #ededed;
+  background-color: #f92f44;
+}
+
+.dropdown-item-upgrade {
+  display: block;
+  width: 100%;
+  padding: 0.25rem 1.5rem;
+  clear: both;
+  font-weight: 400;
+  color: #ededed;
+  text-align: inherit;
+  white-space: nowrap;
+  background-color: #f92f44;
+  border: 0;
+}
+
 .sidebar-drop {
   min-height: 10rem;
   padding-top: 1rem;
@@ -20,33 +38,6 @@
 .icon-fh {
     font-size: 0.9em;
 }
-
-/*.navbar-default .navbar-nav > .active-upgrade > a, .navbar-default .navbar-nav > .active-upgrade > a:hover, .navbar-default .navbar-nav > .active-upgrade > a:focus {*/
-    /*color: #ffffff;*/
-    /*background-color: #8e0001;*/
-/*}*/
-
-/*.dropdown-menu > .active-upgrade > a, .dropdown-menu > .active-upgrade > a:hover, .dropdown-menu > .active-upgrade > a:focus {*/
-    /*color: #ffffff;*/
-    /*text-decoration: none;*/
-    /*outline: 0;*/
-    /*background-color: #8e0001;*/
-/*}*/
-
-/*.navbar-nav > li > a, .navbar-brand {*/
-    /*padding-top:4px !important; padding-bottom:0 !important;*/
-    /*height: 35px;*/
-/*}*/
-/*.navbar {min-height:35px !important;}*/
-
-/*a.anchor {*/
-    /*display: block;*/
-    /*position: relative;*/
-    /*top: -3.7em;*/
-    /*visibility: hidden;*/
-/*}*/
-
-/*.gi-2x{font-size: 1.6em;}*/
 
 .row.small-gutters > [class^="col-"],
 .row.small-gutters > [class*=" col-"] {

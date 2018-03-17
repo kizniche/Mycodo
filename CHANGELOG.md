@@ -1,3 +1,10 @@
+## 5.6.7 (Unreleased)
+
+### Bugfixes
+
+ - Fix upgrade menu not turning red when an upgrade is available
+
+
 ## 5.6.6 (2018-03-17)
 
 ### Features
