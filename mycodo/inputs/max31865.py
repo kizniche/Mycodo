@@ -146,7 +146,7 @@ class max31865(object):
 
     def readTemp(self, device):
         """
-
+        Read the temperature of a PT100 or PT1000 probe
         :param device: 'PT100' or 'PT1000'
         :return:
         """
@@ -180,22 +180,21 @@ class max31865(object):
         out = self.readRegisters(0, 8)
 
         conf_reg = out[0]
-        print("config register byte: {}".format(conf_reg))
+        # print("config register byte: {}".format(conf_reg))
 
         [rtd_msb, rtd_lsb] = [out[1], out[2]]
         rtd_ADC_Code = ((rtd_msb << 8) | rtd_lsb) >> 1
 
         temp_C = self.calcPTTemp(rtd_ADC_Code, device)
-
-        print("Temperature: {temp} C".format(temp=temp_C))
+        # print("Temperature: {temp} C".format(temp=temp_C))
 
         [hft_msb, hft_lsb] = [out[3], out[4]]
         hft = ((hft_msb << 8) | hft_lsb) >> 1
-        print("high fault threshold: {}".format(hft))
+        # print("high fault threshold: {}".format(hft))
 
         [lft_msb, lft_lsb] = [out[5], out[6]]
         lft = ((lft_msb << 8) | lft_lsb) >> 1
-        print("low fault threshold: {}".format(lft))
+        # print("low fault threshold: {}".format(lft))
 
         status = out[7]
         #
@@ -216,6 +215,8 @@ class max31865(object):
             raise FaultError("Low threshold limit (Cable fault/short)")
         if ((status & 0x04) == 1):
             raise FaultError("Overvoltage or Undervoltage Error")
+
+        return temp_C
 
     def writeRegister(self, regNum, dataByte):
         self.GPIO.output(self.csPin, self.GPIO.LOW)
@@ -278,34 +279,38 @@ class max31865(object):
         Res0 = 100.0  # Resistance at 0 degC for 400ohm R_Ref
         a = .00390830
         b = -.000000577500
-        # c = -4.18301e-12 # for -200 <= T <= 0 (degC)
-        c = -0.00000000000418301
-        # c = 0 # for 0 <= T <= 850 (degC)
-        print("RTD ADC Code: {}".format(RTD_ADC_Code))
-        Res_RTD = (RTD_ADC_Code * R_REF) / 32768.0  # PT100 Resistance
-        print("{dev} Resistance: {res} ohms".format(dev=device, res=Res_RTD))
-        #
+
+        # c = -0.00000000000418301  # for -200 <= T <= 0 (degC)
+        # c = 0  # for 0 <= T <= 850 (degC)
+
+        # print("RTD ADC Code: {}".format(RTD_ADC_Code))
+
+        Res_RTD = (RTD_ADC_Code * R_REF) / 32768.0  # Probe Resistance
+        # print("{dev} Resistance: {res} ohms".format(dev=device, res=Res_RTD))
+
         # Callendar-Van Dusen equation
-        # Res_RTD = Res0 * (1 + a*T + b*T**2 + c*(T-100)*T**3)
-        # Res_RTD = Res0 + a*Res0*T + b*Res0*T**2 # c = 0
+        # Res_RTD = Res0 * (1 + a*T + b*T**2 + c*(T-100)*T**3)  # T <= -200
+        # Res_RTD = Res0 + a*Res0*T + b*Res0*T**2  # T >= 0
         # (c*Res0)T**4 - (c*Res0)*100*T**3
         # + (b*Res0)*T**2 + (a*Res0)*T + (Res0 - Res_RTD) = 0
-        #
+
         # quadratic formula:
         # for 0 <= T <= 850 (degC)
         temp_C = -(a * Res0) + math.sqrt(a * a * Res0 * Res0 - 4 * (b * Res0) * (Res0 - Res_RTD))
         temp_C = temp_C / (2 * (b * Res0))
-        temp_C_line = (RTD_ADC_Code / 32.0) - 256.0
+        # print("Callendar-Van Dusen Temp (degC > 0): {} degC".format(temp_C))
+
         # removing numpy.roots will greatly speed things up
         # temp_C_numpy = numpy.roots([c*Res0, -c*Res0*100, b*Res0, a*Res0, (Res0 - Res_RTD)])
         # temp_C_numpy = abs(temp_C_numpy[-1])
-        print("Straight Line Approx. Temp: {} degC".format(temp_C_line))
-        print("Callendar-Van Dusen Temp (degC > 0): {} degC".format(temp_C))
-        # print "Solving Full Callendar-Van Dusen using numpy: %f" %  temp_C_numpy
+        # print("Solving Full Callendar-Van Dusen using numpy: {}".format(temp_C_numpy))
+
         if (temp_C < 0):  # use straight line approximation if less than 0
             # Can also use python lib numpy to solve cubic
             # Should never get here in this application
-            temp_C = (RTD_ADC_Code / 32) - 256
+            temp_C_line = (RTD_ADC_Code / 32.0) - 256.0
+            # print("Straight Line Approx. Temp: {} degC".format(temp_C_line))
+            return temp_C_line
         return temp_C
 
 

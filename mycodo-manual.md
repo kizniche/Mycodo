@@ -77,6 +77,7 @@ Table of Contents
    - [DS18B20](#ds18b20)
    - [MAX31855K](#max31855k)
    - [MAX31856](#max31856)
+   - [MAX31865](#max31865)
    - [TMP006, TMP007](#tmp006-tmp007)
 
 [Temperature, Humidity Sensors](#temperature-humidity-sensors)
@@ -242,6 +243,8 @@ Clock Pin | The GPIO (using BCM numbering) connected to the Clock pin of the ADC
 CS Pin | The GPIO (using BCM numbering) connected to the CS pin of the ADC
 MISO Pin | The GPIO (using BCM numbering) connected to the MISO pin of the ADC
 MOSI Pin | The GPIO (using BCM numbering) connected to the MOSI pin of the ADC
+RTD Probe Type | Select to measure from a PT100 or PT1000 probe.
+Resistor Reference (Ohm) | If your reference resistor is not the default (400 Ohm for PT100, 4000 Ohm for PT1000), you can manually set this value. Several manufacturers now use 430 Ohm resistors on their circuit boards, therefore it's recommended to verify the accuracy of your measurements and adjust this value if necessary.
 Channel | Analog-to-digital converter only: This is the channel to obtain the voltage measurement from the ADC.
 Gain | Analog-to-digital converter only: set the gain when acquiring the measurement.
 Volts Min | Analog-to-digital converter only: What is the minimum voltage to use when scaling to produce the unit value for the database. For instance, if your ADC is not expected to measure below 0.2 volts for your particular circuit, set this to "0.2".
@@ -1296,6 +1299,8 @@ Serial
 
 > [MAX31856](#max31856): Temperature [link](https://www.adafruit.com/product/3263)
 
+> [MAX31865](#max31856): Temperature [link](https://www.adafruit.com/product/3328)
+
 > [MH-Z19](#mh-z19): Carbon dioxide (CO<sub>2</sub>) in ppmv [link](http://www.winsen-sensor.com/products/ndir-co2-sensor/mh-z19.html)
 
 [This documentation](http://www.co2meters.com/Documentation/AppNotes/AN137-Raspberry-Pi.zip) provides specific installation procedures for configuring UART with the Raspberry Pi version 1 or 2.
@@ -1451,9 +1456,19 @@ Measures several types of thermocouples (K, J, N, R, S, T, E, and B).
 #### Specifications
 
  - Serial interface
- - -210°C to +1800°C output in 0.0078125° resolution ()many thermocouples have about ±2°C to ±6°C accuracy or worse depending on the temperature and type, so the resolution will be a lot better than the accuracy)
+ - -210°C to +1800°C output in 0.0078125° resolution (many thermocouples have about ±2°C to ±6°C accuracy or worse depending on the temperature and type, so the resolution will be a lot better than the accuracy)
  - Works with any K, J, N, R, S, T, E, or B type thermocouple
  - Internal temperature reading
+ 
+### MAX31865
+
+Measures the PT100 or PT1000 platinum resistance temperature detectors (RTDs).
+
+#### Specifications
+
+ - Serial interface
+ - -200°C to +850°C
+ - Works with the PT100 and PT1000 RTD
 
 ### TMP006, TMP007
 

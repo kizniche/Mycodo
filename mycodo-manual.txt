@@ -79,6 +79,7 @@ Temperature Sensors
 -   DS18B20
 -   MAX31855K
 -   MAX31856
+-   MAX31865
 -   TMP006, TMP007
 
 Temperature, Humidity Sensors
@@ -448,6 +449,17 @@ the measurement database to be used throughout the Mycodo system.
 
   MOSI Pin              The GPIO (using BCM numbering) connected to the
                         MOSI pin of the ADC
+
+  RTD Probe Type        Select to measure from a PT100 or PT1000 probe.
+
+  Resistor Reference    If your reference resistor is not the default
+  (Ohm)                 (400 Ohm for PT100, 4000 Ohm for PT1000), you
+                        can manually set this value. Several
+                        manufacturers now use 430 Ohm resistors on
+                        their circuit boards, therefore it’s
+                        recommended to verify the accuracy of your
+                        measurements and adjust this value if
+                        necessary.
 
   Channel               Analog-to-digital converter only: This is the
                         channel to obtain the voltage measurement from
@@ -2261,6 +2273,8 @@ Serial
 
   MAX31856: Temperature link
 
+  MAX31865: Temperature link
+
   MH-Z19: Carbon dioxide (CO2) in ppmv link
 
 This documentation provides specific installation procedures for
@@ -2464,12 +2478,23 @@ Measures several types of thermocouples (K, J, N, R, S, T, E, and B).
 Specifications
 
 -   Serial interface
--   -210°C to +1800°C output in 0.0078125° resolution ()many
+-   -210°C to +1800°C output in 0.0078125° resolution (many
     thermocouples have about ±2°C to ±6°C accuracy or worse depending on
     the temperature and type, so the resolution will be a lot better
     than the accuracy)
 -   Works with any K, J, N, R, S, T, E, or B type thermocouple
 -   Internal temperature reading
+
+MAX31865
+
+Measures the PT100 or PT1000 platinum resistance temperature detectors
+(RTDs).
+
+Specifications
+
+-   Serial interface
+-   -200°C to +850°C
+-   Works with the PT100 and PT1000 RTD
 
 TMP006, TMP007
 

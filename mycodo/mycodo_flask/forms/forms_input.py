@@ -32,21 +32,42 @@ class InputMod(FlaskForm):
         lazy_gettext('Name'),
         validators=[DataRequired()]
     )
+    period = DecimalField(
+        lazy_gettext('Period (seconds)'),
+        validators=[DataRequired(),
+                    validators.NumberRange(
+                        min=5.0,
+                        max=86400.0
+                    )]
+    )
+    location = StringField(lazy_gettext('Location'))  # Access input (GPIO, I2C address, etc.)
+    device_loc = StringField(lazy_gettext('Device Location'))  # Second device location type
     i2c_bus = IntegerField(lazy_gettext('I<sup>2</sup>C Bus'))
-    location = StringField(lazy_gettext('Location'))
     baud_rate = IntegerField(lazy_gettext('Baud Rate'))
-    device_loc = StringField(lazy_gettext('Device Location'))
+    power_relay_id = IntegerField(lazy_gettext('Power Output'))  # For powering input
     calibrate_sensor_measure = StringField(lazy_gettext('Calibration Measurement'))
     resolution = IntegerField(lazy_gettext('Resolution'))
     sensitivity = IntegerField(lazy_gettext('Sensitivity'))
-    power_relay_id = IntegerField(lazy_gettext('Power Output'))
+
+    # Server options
+    host = StringField(lazy_gettext('Host'))
+    port = IntegerField(lazy_gettext('Port'))
+    times_check = IntegerField(lazy_gettext('Times to Check'))
+    deadline = IntegerField(lazy_gettext('Deadline (seconds)'))
+
+    # Multiplexer
+    # TODO: Remove in 6.0
     multiplexer_address = StringField(lazy_gettext('Multiplexer (MX)'))
     multiplexer_bus = StringField(lazy_gettext('Mx I<sup>2</sup>C Bus'))
     multiplexer_channel = IntegerField(lazy_gettext('Mx Channel'))
+
+    # Linux Command
     cmd_command = StringField(lazy_gettext('Command'))
     cmd_measurement = StringField(lazy_gettext('Measurement'))
     cmd_measurement_units = StringField(lazy_gettext('Unit'))
-    thermocouple_type = StringField(lazy_gettext('Thermocouple Type'))
+
+    # MAX chip options
+    thermocouple_type = StringField(lazy_gettext('RTD Probe Type'))
     ref_ohm = IntegerField(lazy_gettext('Resistor Reference (Ohm)'))
 
     # SPI Communication
@@ -70,6 +91,8 @@ class InputMod(FlaskForm):
     switch_edge = StringField(lazy_gettext('Edge'))
     switch_bounce_time = IntegerField(lazy_gettext('Bounce Time (ms)'))
     switch_reset_period = IntegerField(lazy_gettext('Reset Period'))
+
+    # Pre-Output
     pre_relay_id = StringField(lazy_gettext('Pre Output'))
     pre_relay_duration = DecimalField(
         lazy_gettext('Pre Out Duration'),
@@ -79,17 +102,13 @@ class InputMod(FlaskForm):
         )]
     )
     pre_relay_during_measure = BooleanField(lazy_gettext('Pre During Measure'))
-    period = DecimalField(
-        lazy_gettext('Period (seconds)'),
-        validators=[DataRequired(),
-                    validators.NumberRange(
-            min=5.0,
-            max=86400.0
-        )]
-    )
+
+    # RPM/Signal
     weighting = DecimalField(lazy_gettext('Weighting'))
     rpm_pulses_per_rev = DecimalField(lazy_gettext('Pulses Per Rev'))
     sample_time = DecimalField(lazy_gettext('Sample Time (seconds)'))
+
+    # SHT options
     sht_clock_pin = IntegerField(
         lazy_gettext('Clock Pin'),
         validators=[validators.NumberRange(
@@ -101,10 +120,6 @@ class InputMod(FlaskForm):
         )]
     )
     sht_voltage = StringField(lazy_gettext('Voltage'))
-    host = StringField(lazy_gettext('Host'))
-    port = IntegerField(lazy_gettext('Port'))
-    times_check = IntegerField(lazy_gettext('Times to Check'))
-    deadline = IntegerField(lazy_gettext('Deadline (seconds)'))
 
     input_mod = SubmitField(lazy_gettext('Save'))
     input_delete = SubmitField(lazy_gettext('Delete'))
