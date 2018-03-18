@@ -73,7 +73,7 @@ class K30Sensor(AbstractInput):
         lock_acquired = False
 
         # Set up lock
-        lock = locket.lock_file(self.k30_lock_file, timeout=60)
+        lock = locket.lock_file(self.k30_lock_file, timeout=120)
         try:
             lock.acquire()
             lock_acquired = True

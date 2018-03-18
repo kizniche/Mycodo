@@ -75,7 +75,7 @@ class MHZ19Sensor(AbstractInput):
             return None
 
         # Set up lock
-        lock = locket.lock_file(self.mhz19_lock_file, timeout=60)
+        lock = locket.lock_file(self.mhz19_lock_file, timeout=120)
         try:
             lock.acquire()
             lock_acquired = True

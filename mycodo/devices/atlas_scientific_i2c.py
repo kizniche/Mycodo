@@ -79,7 +79,7 @@ class AtlasScientificI2C:
                                               dev=self.current_addr)
         try:
             # Set up lock
-            lock = locket.lock_file(lock_file_amend, timeout=60)
+            lock = locket.lock_file(lock_file_amend, timeout=120)
             try:
                 lock.acquire()
                 lock_acquired = True

@@ -1,9 +1,10 @@
-## 5.6.7 (Unreleased)
+## 5.6.7 (2018-03-18)
 
 ### Bugfixes
 
  - Fix upgrade menu not turning red when an upgrade is available
  - Add lockfile breaking ([#418](https://github.com/kizniche/mycodo/issues/418))
+ - Fix bcrypt dependency issue preventing install ([#429](https://github.com/kizniche/mycodo/issues/429))
 
 
 ## 5.6.6 (2018-03-17)
