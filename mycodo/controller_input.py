@@ -30,6 +30,7 @@ import timeit
 
 import RPi.GPIO as GPIO
 import locket
+import os
 import requests
 
 from mycodo.config import LIST_DEVICES_ADC
@@ -461,7 +462,8 @@ class InputController(threading.Thread):
                         try:
                             self.input_lock.acquire()
                         except:
-                            self.logger.error("Could not acquire input lock.")
+                            self.logger.error("Could not acquire input lock. Breaking for future locking.")
+                            os.remove(self.lock_file)
 
                         self.pre_output_timer = time.time() + self.pre_output_duration
                         self.pre_output_activated = True
@@ -545,7 +547,8 @@ class InputController(threading.Thread):
             self.mux_lock.acquire()
             self.mux_lock_acquired = True
         except:
-            self.logger.error("Could not acquire multiplexer lock.")
+            self.logger.error("Could not acquire multiplexer lock. Breaking for future locking.")
+            os.remove(self.mux_lock_file)
 
         if not self.mux_lock_acquired:
             self.logger.error(
@@ -585,7 +588,8 @@ class InputController(threading.Thread):
                 adc_lock.acquire()
                 lock_acquired = True
             except:
-                self.logger.error("Could not acquire ADC lock.")
+                self.logger.error("Could not acquire ADC lock. Breaking for future locking.")
+                os.remove(self.adc_lock_file)
 
             if not lock_acquired:
                 self.logger.error(

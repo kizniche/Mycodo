@@ -59,7 +59,8 @@ class AtlasScientificUART:
                 lock.acquire()
                 lock_acquired = True
             except:
-                self.logger.error("Could not acquire lock.")
+                self.logger.error("Could not acquire lock. Breaking for future locking.")
+                os.remove(lock_file_amend)
 
             if lock_acquired:
                 self.send_cmd(query_str)
@@ -67,8 +68,6 @@ class AtlasScientificUART:
                 response = self.read_lines()
                 lock.release()
                 return response
-            else:
-                self.logger.error("Could not acquire Atlas UART lock. Breaking lock.")
 
             os.remove(lock_file_amend)
 

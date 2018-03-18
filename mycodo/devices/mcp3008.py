@@ -4,6 +4,7 @@ import logging
 
 import Adafruit_MCP3008
 import locket
+import os
 
 
 class MCP3008Read(object):
@@ -17,12 +18,14 @@ class MCP3008Read(object):
         self.channel = channel
         self.volts_max = volts_max
 
+        self.adc = None
+        self.clockpin = clockpin
+        self.cspin = cspin
+        self.misopin = misopin
+        self.mosipin = mosipin
         self.lock_file = '/var/lock/mcp3008-{clock}-{cs}-{miso}-{mosi}'.format(
                 clock=clockpin, cs=cspin, miso=misopin, mosi=mosipin)
-        self.adc = Adafruit_MCP3008.MCP3008(clk=clockpin,
-                                            cs=cspin,
-                                            miso=misopin,
-                                            mosi=mosipin)
+
 
     def read(self):
         """ Take a measurement """
@@ -30,17 +33,21 @@ class MCP3008Read(object):
         lock_acquired = False
         try:
             # Set up lock
-            lock = locket.lock_file(self.lock_file, timeout=60)
+            lock = locket.lock_file(self.lock_file, timeout=120)
             try:
                 lock.acquire()
                 lock_acquired = True
             except:
-                self.logger.error("Could not acquire lock.")
+                self.logger.error("Could not acquire lock. Breaking for future locking.")
+                os.remove(self.lock_file)
 
             if lock_acquired:
+                self.adc = Adafruit_MCP3008.MCP3008(clk=self.clockpin,
+                                                    cs=self.cspin,
+                                                    miso=self.misopin,
+                                                    mosi=self.mosipin)
                 self._voltage = (self.adc.read_adc(self.channel) / 1023.0) * self.volts_max
                 lock.release()
-
         except Exception as e:
             self.logger.exception(
                 "{cls} raised exception during read(): "

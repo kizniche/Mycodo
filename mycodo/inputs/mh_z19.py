@@ -3,6 +3,7 @@ import logging
 import time
 
 import locket
+import os
 
 from .base_input import AbstractInput
 from .sensorutils import is_device
@@ -79,7 +80,8 @@ class MHZ19Sensor(AbstractInput):
             lock.acquire()
             lock_acquired = True
         except:
-            self.logger.error("Could not acquire lock.")
+            self.logger.error("Could not acquire lock. Breaking for future locking.")
+            os.remove(self.mhz19_lock_file)
 
         if lock_acquired:
             self.ser.flushInput()

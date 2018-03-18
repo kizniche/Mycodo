@@ -1,7 +1,9 @@
 # coding=utf-8
 import logging
 import time
+
 import locket
+import os
 
 from .base_input import AbstractInput
 from .sensorutils import is_device
@@ -76,7 +78,8 @@ class K30Sensor(AbstractInput):
             lock.acquire()
             lock_acquired = True
         except:
-            self.logger.error("Could not acquire lock.")
+            self.logger.error("Could not acquire lock. Breaking for future locking.")
+            os.remove(self.k30_lock_file)
 
         if lock_acquired:
             self.ser.flushInput()

@@ -3,6 +3,7 @@
 ### Bugfixes
 
  - Fix upgrade menu not turning red when an upgrade is available
+ - Add lockfile breaking ([#418](https://github.com/kizniche/mycodo/issues/418))
 
 
 ## 5.6.6 (2018-03-17)
