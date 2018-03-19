@@ -32,6 +32,10 @@
             }
           }
         },
+        error: function(XMLHttpRequest, textStatus, errorThrown) {
+          document.getElementById(sensor_id + "-" + sensor_measurement + "-time").innerHTML = "No Data Last " + period.toString() + " sec";
+          document.getElementById(sensor_id + "-" + sensor_measurement + "-value").innerHTML = "0";
+        },
         cache: false
       });
     }
