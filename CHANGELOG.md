@@ -1,3 +1,10 @@
+## 5.6.8 (Unreleased)
+
+### Bugfixes
+
+ - Fix Camera Output not having an effect
+
+
 ## 5.6.7 (2018-03-18)
 
 ### Bugfixes

@@ -10,10 +10,12 @@ import picamera
 
 from mycodo.config import INSTALL_DIRECTORY
 from mycodo.databases.models import Camera
+from mycodo.databases.models import Output
 from mycodo.utils.database import db_retrieve_table_daemon
 from mycodo.utils.system_pi import assure_path_exists
 from mycodo.utils.system_pi import cmd_output
 from mycodo.utils.system_pi import set_user_grp
+from mycodo.mycodo_client import DaemonControl
 
 logger = logging.getLogger('mycodo.devices.picamera')
 
@@ -24,11 +26,11 @@ logger = logging.getLogger('mycodo.devices.picamera')
 
 def camera_record(record_type, unique_id, duration_sec=None, tmp_filename=None):
     """
-    Record still/timelapse images, and video
-
-    :param record_type: 'photo', 'timelapse', or 'video'
-    :param settings: picamera settings object
-    :param duration_sec: video duration
+    Record still image from cameras
+    :param record_type:
+    :param unique_id:
+    :param duration_sec:
+    :param tmp_filename:
     :return:
     """
     settings = db_retrieve_table_daemon(Camera, unique_id=unique_id)
@@ -64,6 +66,13 @@ def camera_record(record_type, unique_id, duration_sec=None, tmp_filename=None):
         filename = tmp_filename
 
     path_file = os.path.join(save_path, filename)
+
+
+    # Turn on output, if configured
+    if settings.relay_id:
+        daemon_control = DaemonControl()
+        daemon_control.relay_on(settings.relay_id)
+
 
     if settings.library == 'picamera':
         # Try 5 times to access the pi camera (in case another process is accessing it)
@@ -113,6 +122,11 @@ def camera_record(record_type, unique_id, duration_sec=None, tmp_filename=None):
 
         out, err, status = cmd_output(cmd, stdout_pipe=False)
         # logger.error("TEST01: {}; {}; {}; {}".format(cmd, out, err, status))
+
+    # Turn off output, if configured
+    if settings.relay_id:
+        daemon_control.relay_off(settings.relay_id)
+
     try:
         set_user_grp(path_file, 'mycodo', 'mycodo')
         return save_path, filename

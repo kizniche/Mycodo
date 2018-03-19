@@ -156,7 +156,7 @@ class OutputController(threading.Thread):
         if true, those conditional actions will be executed. For example:
             'If output 1 turns on, turn output 3 off'
 
-        :param output_id: Unique ID for output
+        :param output_id: ID for output
         :type output_id: int
         :param state: What state is desired? 'on' or 'off'
         :type state: str
