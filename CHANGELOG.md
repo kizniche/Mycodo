@@ -1,8 +1,9 @@
-## 5.6.8 (Unreleased)
+## 5.6.8 (2018-03-19)
 
 ### Bugfixes
 
  - Fix Camera Output not having an effect
+ - Fix issues with MAX31856/MAX31865 ([#345](https://github.com/kizniche/mycodo/issues/345))
 
 
 ## 5.6.7 (2018-03-18)

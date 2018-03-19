@@ -46,8 +46,7 @@ class MAX31856Sensor(AbstractInput):
         self.mosi = mosi
 
         if not testing:
-            import max31856
-            self.sensor = max31856.max31856(self.logger, cs, miso, mosi, clk)
+            self.sensor = max31856(self.logger, cs, miso, mosi, clk)
             if thermocouple_type == 'B':
                 self.sensor.writeRegister(1, 0x00) #for B Type
             elif thermocouple_type == 'E':

@@ -12,6 +12,7 @@ from flask_babel import gettext
 from mycodo.config import DEVICES_DEFAULT_LOCATION
 from mycodo.config import DEVICE_INFO
 from mycodo.config import LIST_DEVICES_ADC
+from mycodo.config import LIST_DEVICES_SPI
 from mycodo.databases.models import DisplayOrder
 from mycodo.databases.models import Input
 from mycodo.databases.models import PID
@@ -384,12 +385,11 @@ def input_reorder(input_id, display_order, direction):
 def input_activate(form_mod):
     input_id = form_mod.input_id.data
     input_dev = Input.query.filter(Input.id == input_id).first()
-    if input_dev.device == 'MCP3008':
+    if input_dev.device in LIST_DEVICES_SPI:
         if None in [form_mod.pin_clock.data,
                     form_mod.pin_cs.data,
-                    form_mod.pin_mosi.data,
                     form_mod.pin_miso.data]:
-            flash("Cannot activate without SPI pins set.", "error")
+            flash("Cannot activate without Serial pins set.", "error")
             return redirect(url_for('routes_page.page_data'))
     elif (input_dev.device == 'LinuxCommand' and
           input_dev.cmd_command is ''):

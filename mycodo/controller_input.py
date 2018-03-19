@@ -335,7 +335,7 @@ class InputController(threading.Thread):
                 self.pin_mosi,
                 thermocouple_type=self.thermocouple_type)
         elif self.device == 'MAX31865':
-            from mycodo.inputs.max31856 import MAX31865Sensor
+            from mycodo.inputs.max31865 import MAX31865Sensor
             self.measure_input = MAX31865Sensor(
                 self.pin_clock,
                 self.pin_cs,

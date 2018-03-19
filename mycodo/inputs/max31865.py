@@ -50,8 +50,7 @@ class MAX31865Sensor(AbstractInput):
         self.resistor_ref = resistor_ref
 
         if not testing:
-            import max31865
-            self.sensor = max31865.max31865(self.cs, self.miso, self.mosi, self.clk)
+            self.sensor = max31865_sen(self.cs, self.miso, self.mosi, self.clk)
 
     def __repr__(self):
         """  Representation of object """
@@ -110,7 +109,7 @@ class MAX31865Sensor(AbstractInput):
         self.running = False
 
 
-class max31865(object):
+class max31865_sen(object):
     """Reading Temperature from the MAX31865 with GPIO using
        the Raspberry Pi.  Any pins can be used.
        Numpy can be used to completely solve the Callendar-Van Dusen equation
@@ -144,7 +143,7 @@ class max31865(object):
     def cleanupGPIO(self):
         self.GPIO.cleanup()
 
-    def readTemp(self, device):
+    def readTemp(self, device, resistor_ref):
         """
         Read the temperature of a PT100 or PT1000 probe
         :param device: 'PT100' or 'PT1000'
@@ -185,7 +184,7 @@ class max31865(object):
         [rtd_msb, rtd_lsb] = [out[1], out[2]]
         rtd_ADC_Code = ((rtd_msb << 8) | rtd_lsb) >> 1
 
-        temp_C = self.calcPTTemp(rtd_ADC_Code, device)
+        temp_C = self.calcPTTemp(rtd_ADC_Code, device, resistor_ref)
         # print("Temperature: {temp} C".format(temp=temp_C))
 
         [hft_msb, hft_lsb] = [out[3], out[4]]
