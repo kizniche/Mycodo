@@ -290,6 +290,7 @@ def input_mod(form_mod):
             mod_sensor.cmd_measurement = form_mod.cmd_measurement.data
             mod_sensor.cmd_measurement_units = form_mod.cmd_measurement_units.data
             mod_sensor.thermocouple_type = form_mod.thermocouple_type.data
+            mod_sensor.ref_ohm = form_mod.ref_ohm.data
             # Multiplexer options
             mod_sensor.multiplexer_address = form_mod.multiplexer_address.data
             mod_sensor.multiplexer_bus = form_mod.multiplexer_bus.data
