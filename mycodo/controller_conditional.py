@@ -85,7 +85,9 @@ class ConditionalController(threading.Thread):
 
         self.is_activated = {}
         self.period = {}
-        self.timer = {}
+        self.timer_period = {}
+        self.refractory_period = {}
+        self.timer_refractory_period = {}
 
         self.smtp_max_count = db_retrieve_table_daemon(
             SMTP, entry='first').hourly_max
@@ -116,11 +118,12 @@ class ConditionalController(threading.Thread):
 
                     # Check if the timer has elapsed
                     if (self.is_activated[each_id] and
-                        self.timer[each_id] < time.time()):
+                            self.timer_period[each_id] < time.time() and
+                            self.timer_refractory_period[each_id] < time.time()):
 
                         # Update timer
-                        while self.timer[each_id] < time.time():
-                            self.timer[each_id] += self.period[each_id]
+                        while self.timer_period[each_id] < time.time():
+                            self.timer_period[each_id] += self.period[each_id]
 
                         self.check_conditionals(each_id)
 
@@ -149,7 +152,9 @@ class ConditionalController(threading.Thread):
 
         self.is_activated = {}
         self.period = {}
-        self.timer = {}
+        self.timer_period = {}
+        self.refractory_period = {}
+        self.timer_refractory_period = {}
         self.smtp_wait_timer = {}
 
         conditional = db_retrieve_table_daemon(
@@ -158,7 +163,9 @@ class ConditionalController(threading.Thread):
         for each_cond in conditional:
             self.is_activated[each_cond.id] = each_cond.is_activated
             self.period[each_cond.id] = each_cond.if_sensor_period
-            self.timer[each_cond.id] = time.time() + self.period[each_cond.id]
+            self.timer_period[each_cond.id] = time.time() + self.period[each_cond.id]
+            self.refractory_period[each_cond.id] = each_cond.if_sensor_refractory_period
+            self.timer_refractory_period[each_cond.id] = 0
             self.smtp_wait_timer[each_cond.id] = time.time() + 3600
 
         self.logger.info("Conditional settings refreshed")
@@ -301,6 +308,9 @@ class ConditionalController(threading.Thread):
 
         # If the code hasn't returned by now, the conditional has been triggered
         # and the actions for that conditional should be executed
+        if cond.conditional_type == 'conditional_measurement':
+            self.timer_refractory_period[cond_id] = time.time() + self.refractory_period[cond_id]
+        
         self.trigger_conditional_actions(
             cond_id, message=message, last_measurement=last_measurement,
             device_id=device_id, device_measurement=device_measurement,

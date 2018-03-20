@@ -24,6 +24,7 @@ class Conditional(CRUDMixin, db.Model):
     # Sensor/Math options
     # TODO: Make variable names more generic in next major version change sensor->measurement
     if_sensor_period = db.Column(db.Float, default=60.0)
+    if_sensor_refractory_period = db.Column(db.Float, default=0.0)
     if_sensor_measurement = db.Column(db.Text, default='')  # which measurement to monitor
     if_sensor_max_age = db.Column(db.Integer, default=120.0)  # max age of the measurement
     if_sensor_edge_detected = db.Column(db.Text, default='')

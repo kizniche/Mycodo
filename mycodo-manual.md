@@ -511,6 +511,7 @@ If Measurement | The measurement that will be checked every Period. By default, 
 State | The conditional will trigger if the measurement Greater Than or Less Than the set Value, or if "No Measurement" is set and the measurement age is greater than Max Age.
 Value | The value that the measurement will be checked against (greater or less than).
 Period (seconds) | The period (seconds) between conditional checks.
+Refractory Period (seconds) | The minimum duration (seconds) to wait after a conditional has been triggered to begin evaluating the conditional again.
 Max Age (seconds) | The maximum age the measurement can be. If a measurement isn't available within this time frame, the conditional will not trigger. The only exception is if State is set to "No Measurement", which will cause the conditional to trigger when there is no measurement available.
 
 #### Output Conditional Statement If Options

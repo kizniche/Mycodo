@@ -1,3 +1,10 @@
+## 5.6.9 (Unreleased)
+
+### Features
+
+ - Add Refractory Period to Measurement Conditional options
+
+
 ## 5.6.8 (2018-03-19)
 
 ### Bugfixes

@@ -48,17 +48,17 @@
       </div>
     </div>
 
-    {% if each_cond.conditional_type == 'conditional_output' %}
-      {% include 'pages/function_options/conditional_options/output.html' %}
-    {% elif each_cond.conditional_type == 'conditional_measurement' %}
-      {% include 'pages/function_options/conditional_options/measurement.html' %}
-    {% elif each_cond.conditional_type == 'conditional_edge' %}
-      {% include 'pages/function_options/conditional_options/edge.html' %}
-    {% endif %}
+    <div class="collapse" id="collapseContainer-conditional-{{each_cond.id}}">
+
+      {% if each_cond.conditional_type == 'conditional_output' %}
+        {% include 'pages/function_options/conditional_options/output.html' %}
+      {% elif each_cond.conditional_type == 'conditional_measurement' %}
+        {% include 'pages/function_options/conditional_options/measurement.html' %}
+      {% elif each_cond.conditional_type == 'conditional_edge' %}
+        {% include 'pages/function_options/conditional_options/edge.html' %}
+      {% endif %}
 
     </form>
-
-    <div class="collapse" id="collapseContainer-conditional-{{each_cond.id}}">
 
       {% for each_cond_action in conditional_actions if each_cond_action.conditional_id == each_cond.id %}
 

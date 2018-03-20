@@ -2,7 +2,7 @@
 {%- for order in display_order_pid -%}
   {%- for each_pid in pid if each_pid.id == order -%}
 
-    <div class="container" style="margin-bottom: 0.5em; border: 2px solid #ddd; border-radius: 5px;">
+    <div class="container" style="border: 2px solid #ddd; border-radius: 5px;">
 
       <form method="post" action="/function">
       <input type="hidden" name="form-name" value="modPID">

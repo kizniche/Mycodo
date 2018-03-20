@@ -1,6 +1,6 @@
 <div class="row small-gutters {% if each_cond.is_activated -%}active-background
                               {% else -%}inactive-background
-                              {% endif -%}" style="border-bottom: 2px solid #ddd; padding-bottom: 0.2em">
+                              {% endif -%}" style="padding-bottom: 0.2em">
 
   <div class="col-xs-11 col-md-4 col-lg-4">
     {{form_conditional.if_sensor_measurement.label(class_='control-label')}}
@@ -43,18 +43,27 @@
       {{form_conditional.if_sensor_setpoint(class_='form-control', value=each_cond.if_sensor_setpoint, **{'title':_('What value to check the measurement against?')})}}
     </div>
   </div>
-
   <div class="col-xs-6 col-sm-3 col-md-2 col-lg-2">
+    {{form_conditional.if_sensor_max_age.label(class_='control-label')}}
+    <div>
+      {{form_conditional.if_sensor_max_age(class_='form-control', value=each_cond.if_sensor_max_age, **{'title':_('Do not accept measurements older than this age')})}}
+    </div>
+  </div>
+</div>
+
+<div class="row small-gutters {% if each_cond.is_activated -%}active-background
+                              {% else -%}inactive-background
+                              {% endif -%}" style="border-bottom: 2px solid #ddd; padding-bottom: 0.2em">
+  <div class="col-auto">
     {{form_conditional.if_sensor_period.label(class_='control-label')}}
     <div>
       {{form_conditional.if_sensor_period(class_='form-control', value=each_cond.if_sensor_period, **{'title':_('The duration between checking whether the conditional is true')})}}
     </div>
   </div>
-
-  <div class="col-xs-6 col-sm-3 col-md-2 col-lg-2">
-    {{form_conditional.if_sensor_max_age.label(class_='control-label')}}
+  <div class="col-auto">
+    {{form_conditional.if_sensor_refractory_period.label(class_='control-label')}}
     <div>
-      {{form_conditional.if_sensor_max_age(class_='form-control', value=each_cond.if_sensor_max_age, **{'title':_('Do not accept measurements older than this age')})}}
+      {{form_conditional.if_sensor_refractory_period(class_='form-control', value=each_cond.if_sensor_refractory_period, **{'title':_('The minimum duration after a conditional trigger to wait before beggining monitoring again')})}}
     </div>
   </div>
 </div>
