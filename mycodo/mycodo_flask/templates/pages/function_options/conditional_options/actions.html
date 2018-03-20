@@ -1,6 +1,6 @@
 {% if each_cond_action.do_action == 'output' %}
 
-<div class="col-sm-3 col-md-4">
+<div class="col-auto">
   {{form_conditional_actions.do_relay_id.label(class_='control-label')}}
   <div>
     <select class="form-control form-tooltip form-dropdown" id="do_relay_id" name="do_relay_id" data-placement="top" title="{{_('What relay to manipulate')}}">
@@ -11,15 +11,15 @@
     </select>
   </div>
 </div>
-<div class="col-sm-2 col-md-2">
-  <label class='control-label'>{{_('Turn')}}</label>
+<div class="col-auto">
+  {{form_conditional_actions.do_relay_state.label(class_='control-label')}}
   <select class="form-control form-tooltip form-dropdown" id="do_relay_state" name="do_relay_state" data-placement="top" title="{{_('Turn the relay on or off')}}">
     <option value=""></option>
     <option value="on"{% if each_cond_action.do_relay_state == 'on' %} selected{% endif %}>{{_('On')}}</option>
     <option value="off"{% if each_cond_action.do_relay_state == 'off' %} selected{% endif %}>{{_('Off')}}</option>
   </select>
 </div>
-<div class="col-sm-1 col-md-2">
+<div class="col-auto">
   {{form_conditional_actions.do_relay_duration.label(class_='control-label')}}
   <div>
     {{form_conditional_actions.do_relay_duration(class_='form-control', value=each_cond_action.do_relay_duration, **{'title':_('How long to turn the relay on (optional)')})}}
@@ -28,7 +28,7 @@
 
 {% elif each_cond_action.do_action == 'output_pwm' %}
 
-<div class="col-sm-3 col-md-4">
+<div class="col-auto">
   {{form_conditional_actions.do_relay_id.label(class_='control-label')}}
   <div>
     <select class="form-control form-tooltip form-dropdown" id="do_relay_id" name="do_relay_id" data-placement="top" title="{{_('What relay to manipulate')}}">
@@ -39,7 +39,7 @@
     </select>
   </div>
 </div>
-<div class="col-sm-1 col-md-2">
+<div class="col-auto">
   {{form_conditional_actions.do_relay_pwm.label(class_='control-label')}}
   <div>
     {{form_conditional_actions.do_relay_pwm(class_='form-control', value=each_cond_action.do_relay_pwm, **{'title':_('What duty cycle to set the output')})}}
@@ -48,7 +48,7 @@
 
 {% elif each_cond_action.do_action == 'email' %}
 
-<div class="col-sm-6 col-md-8">
+<div class="col-auto">
   <label class='control-label'>{{_('Email Address')}}</label>
   <select class="form-control form-tooltip form-dropdown" id="do_action_string" name="do_action_string" data-placement="top" title="{{_('Email address to notify')}}">
     <option value=""></option>
@@ -64,8 +64,8 @@
                                        'lcd_backlight_off',
                                        'lcd_backlight_on'] %}
 
-<div class="col-sm-6 col-md-8">
-  <label class='control-label'>{{_('LCD')}}</label>
+<div class="col-auto">
+  {{form_conditional_actions.do_lcd_id.label(class_='control-label')}}
   <select class="form-control form-tooltip form-dropdown" id="do_lcd_id" name="do_lcd_id" data-placement="top" title="{{_('LCD to flash')}}">
     <option value=""></option>
     {%- for each_lcd in lcd -%}
@@ -76,8 +76,8 @@
 
 {% elif each_cond_action.do_action == 'photo' %}
 
-<div class="col-sm-6 col-md-8">
-  <label class='control-label'>{{_('Camera')}}</label>
+<div class="col-auto">
+  {{form_conditional_actions.do_camera_id.label(class_='control-label')}}
   <select class="form-control form-tooltip form-dropdown" id="do_camera_id" name="do_camera_id" data-placement="top" title="{{_('Camera to capture with')}}">
     <option value=""></option>
     {%- for each_camera in camera -%}
@@ -88,7 +88,7 @@
 
 {% elif each_cond_action.do_action == 'photo_email' %}
 
-<div class="col-sm-6 col-md-8">
+<div class="col-auto">
   <label class='control-label'>{{_('Email Address')}}</label>
   <select class="form-control form-tooltip form-dropdown" id="do_action_string" name="do_action_string" data-placement="top" title="{{_('Email address to notify')}}">
     <option value=""></option>
@@ -100,8 +100,8 @@
 
 {% elif each_cond_action.do_action == 'video' %}
 
-<div class="col-sm-3 col-md-5">
-  <label class='control-label'>{{_('Camera')}}</label>
+<div class="col-auto">
+  {{form_conditional_actions.do_camera_id.label(class_='control-label')}}
   <select class="form-control form-tooltip form-dropdown" id="do_camera_id" name="do_camera_id" data-placement="top" title="{{_('Camera to capture with')}}">
     <option value=""></option>
     {%- for each_camera in camera -%}
@@ -109,14 +109,14 @@
     {%- endfor -%}
   </select>
 </div>
-<div class="col-sm-3 col-md-3">
+<div class="col-auto">
   {{form_conditional_actions.do_camera_duration.label(class_='control-label')}}
   {{form_conditional_actions.do_camera_duration(class_='form-control', value=each_cond_action.do_camera_duration, **{'title':_('Duration to record video (sec)')})}}
 </div>
 
 {% elif each_cond_action.do_action == 'video_email' %}
 
-<div class="col-sm-6 col-md-8">
+<div class="col-auto">
   <label class='control-label'>{{_('Email Address')}}</label>
   <select class="form-control form-tooltip form-dropdown" id="do_action_string" name="do_action_string" data-placement="top" title="{{_('Email address to notify')}}">
     <option value=""></option>
@@ -128,7 +128,7 @@
 
 {% elif each_cond_action.do_action == 'command' %}
 
-<div class="col-sm-6 col-md-8">
+<div class="col-auto">
   <label class='control-label'>{{_('Command')}}</label>
   {{form_conditional_actions.do_action_string(class_='form-control', value=each_cond_action.do_action_string, **{'title':_('Command to execute (as user "mycodo")')})}}
 </div>
@@ -138,8 +138,8 @@
                                        'pause_pid',
                                        'resume_pid'] %}
 
-<div class="col-sm-6 col-md-8">
-  <label class='control-label'>{{_('PID')}}</label>
+<div class="col-auto">
+  {{form_conditional_actions.do_pid_id.label(class_='control-label')}}
   <select class="form-control form-tooltip form-dropdown" id="do_pid_id" name="do_pid_id" data-placement="top" title="{{_('PID to affect')}}">
     <option value=""></option>
     {%- for each_pid in pid -%}

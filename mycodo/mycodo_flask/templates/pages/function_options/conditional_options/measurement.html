@@ -1,6 +1,5 @@
-<div class="row small-gutters" style="padding-bottom: 0.2em">
-
-  <div class="col-xs-11 col-md-4 col-lg-4">
+<div class="row small-gutters" style="border-bottom: 1px solid #ddd; padding-bottom: 0.2em">
+  <div class="col-auto">
     {{form_conditional.if_sensor_measurement.label(class_='control-label')}}
     <div>
       <select class="form-control" id="if_sensor_measurement" name="if_sensor_measurement" style="width: 100%;" title="" data-original-title="{{_('Select the measurement to use as the input')}}">
@@ -17,14 +16,7 @@
         </select>
     </div>
   </div>
-  <div class="col-xs-1 col-md-1 text-center">
-    <label class='control-label' style="padding-top: 1em"></label>
-    <div>
-      <label class='control-label'>{{_('Is')}}</label>
-    </div>
-  </div>
-
-  <div class="col-xs-6 col-sm-3 col-md-2 col-lg-2">
+  <div class="col-auto">
     {{form_conditional.if_sensor_direction.label(class_='control-label')}}
     <div>
       <select class="form-control form-tooltip form-dropdown" data-placement="top" id="if_sensor_direction" name="if_sensor_direction" title="{{_('The conditional is triggered when the measured condition is greater than or less than the set value, or the measurement timestamp is greater than the value of seconds')}}">
@@ -35,21 +27,18 @@
       </select>
     </div>
   </div>
-  <div class="col-xs-6 col-sm-3 col-md-1 col-lg-1">
+  <div class="col-auto">
     {{form_conditional.if_sensor_setpoint.label(class_='control-label')}}
     <div>
       {{form_conditional.if_sensor_setpoint(class_='form-control', value=each_cond.if_sensor_setpoint, **{'title':_('What value to check the measurement against?')})}}
     </div>
   </div>
-  <div class="col-xs-6 col-sm-3 col-md-2 col-lg-2">
+  <div class="col-auto">
     {{form_conditional.if_sensor_max_age.label(class_='control-label')}}
     <div>
       {{form_conditional.if_sensor_max_age(class_='form-control', value=each_cond.if_sensor_max_age, **{'title':_('Do not accept measurements older than this age')})}}
     </div>
   </div>
-</div>
-
-<div class="row small-gutters" style="border-bottom: 2px solid #ddd; padding-bottom: 0.2em">
   <div class="col-auto">
     {{form_conditional.if_sensor_period.label(class_='control-label')}}
     <div>

@@ -25,19 +25,19 @@ class Conditional(FlaskForm):
 
     # Output conditional options
     if_relay_id = StringField(lazy_gettext('If Output'))
-    if_relay_state = StringField(lazy_gettext('State'))
-    if_relay_duration = DecimalField(lazy_gettext('Duration (seconds)'))
+    if_relay_state = StringField(lazy_gettext('If State'))
+    if_relay_duration = DecimalField(lazy_gettext('If Duration (seconds)'))
 
     # Input conditional options
     if_sensor_measurement = StringField(lazy_gettext('If Measurement'))
-    if_sensor_direction = StringField(lazy_gettext('State'))
-    if_sensor_setpoint = DecimalField(lazy_gettext('Value'))
+    if_sensor_direction = StringField(lazy_gettext('If State'))
+    if_sensor_setpoint = DecimalField(lazy_gettext('If Value'))
     if_sensor_period = DecimalField(lazy_gettext('Period (seconds)'))
     if_sensor_refractory_period = DecimalField(lazy_gettext('Refractory Period (seconds)'))
     if_sensor_max_age = IntegerField(lazy_gettext('Max Age (seconds)'))
 
     # Edge detection
-    if_sensor_edge_detected = StringField(lazy_gettext('Edge Detected'))
+    if_sensor_edge_detected = StringField(lazy_gettext('If Edge Detected'))
 
     add_cond = SubmitField(lazy_gettext('Add Conditional'))
     save_cond = SubmitField(lazy_gettext('Save'))
@@ -55,14 +55,14 @@ class ConditionalActions(FlaskForm):
         'Conditional Action ID', widget=widgets.HiddenInput())
     do_action = StringField(lazy_gettext('Action to Perform'))
     do_action_string = StringField(lazy_gettext('Action String'))
-    do_relay_id = IntegerField(lazy_gettext('Output'))
-    do_relay_state = StringField(lazy_gettext('Output State'))
-    do_relay_duration = DecimalField(lazy_gettext('Seconds'))
-    do_relay_pwm = DecimalField(lazy_gettext('Duty Cycle'))
-    do_camera_id = IntegerField(lazy_gettext('Camera'))
-    do_camera_duration = DecimalField(lazy_gettext('Duration'))
-    do_lcd_id = IntegerField(lazy_gettext('LCD'))
-    do_pid_id = IntegerField(lazy_gettext('PID'))
+    do_relay_id = IntegerField(lazy_gettext('Then Output'))
+    do_relay_state = StringField(lazy_gettext('Then State'))
+    do_relay_duration = DecimalField(lazy_gettext('Then Duration (seconds)'))
+    do_relay_pwm = DecimalField(lazy_gettext('Then Duty Cycle'))
+    do_camera_id = IntegerField(lazy_gettext('Then Camera'))
+    do_camera_duration = DecimalField(lazy_gettext('Then Duration'))
+    do_lcd_id = IntegerField(lazy_gettext('Then LCD'))
+    do_pid_id = IntegerField(lazy_gettext('Then PID'))
     add_action = SubmitField(lazy_gettext('Add Action'))
     save_action = SubmitField(lazy_gettext('Save'))
     delete_action = SubmitField(lazy_gettext('Delete'))
