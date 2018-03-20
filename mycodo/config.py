@@ -561,6 +561,16 @@ LIST_DEVICES_INTERNAL_PI = [
     'SIGNAL_RPM'
 ]
 
+# Conditional Types
+CONDITIONAL_TYPES = {
+    'conditional_measurement': {
+        'name': lazy_gettext('Measurement')},
+    'conditional_output': {
+        'name': lazy_gettext('Output')},
+    'conditional_edge': {
+        'name': lazy_gettext('Edge')},
+}
+
 # Conditional actions
 # TODO: Some have been disabled until they can be properly tested
 CONDITIONAL_ACTIONS = collections.OrderedDict([

@@ -1,6 +1,4 @@
-<div class="row small-gutters {% if each_cond.is_activated -%}active-background
-                              {% else -%}inactive-background
-                              {% endif -%}" style="padding-bottom: 0.2em">
+<div class="row small-gutters" style="padding-bottom: 0.2em">
 
   <div class="col-xs-11 col-md-4 col-lg-4">
     {{form_conditional.if_sensor_measurement.label(class_='control-label')}}
@@ -51,9 +49,7 @@
   </div>
 </div>
 
-<div class="row small-gutters {% if each_cond.is_activated -%}active-background
-                              {% else -%}inactive-background
-                              {% endif -%}" style="border-bottom: 2px solid #ddd; padding-bottom: 0.2em">
+<div class="row small-gutters" style="border-bottom: 2px solid #ddd; padding-bottom: 0.2em">
   <div class="col-auto">
     {{form_conditional.if_sensor_period.label(class_='control-label')}}
     <div>
