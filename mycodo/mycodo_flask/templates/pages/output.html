@@ -147,17 +147,17 @@
       {{form_add_relay.hidden_tag()}}
 
       <div class="row small-gutters" style="padding-left: 0.75em">
-        <div class="col-xs-12 col-sm-2 col-md-2 col-lg-1">
+        <div class="col-sm-3 col-md-2 col-lg-1">
           {{form_add_relay.relay_quantity(class_='form-control', type="number", value=1, **{'title':_('Quantity')})}}
         </div>
-        <div class="col-xs-12 col-sm-5 col-md-4 col-lg-3">
+        <div class="col-auto">
           <select class="form-control form-tooltip form-dropdown" id="relay_type" name="relay_type" data-placement="top" title="{{_('Output Type')}}">
             {% for each_option in outputs %}
               <option value="{{each_option[0]}}">{{each_option[1]}}</option>
             {% endfor %}
           </select>
         </div>
-        <div class="col-xs-12 col-sm-3 col-md-2 col-lg-1">
+        <div class="col-auto">
           {{form_add_relay.relay_add(class_='btn btn-primary btn-block')}}
         </div>
       </div>

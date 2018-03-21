@@ -19,11 +19,11 @@
   {{form_lcd_add.hidden_tag()}}
 
   <div class="row small-gutters" style="padding-left: 1em">
-    <div class="col-xs-6 col-sm-2 col-lg-2 no-gutters">
+    <div class="col-sm-3 col-md-2 col-lg-1">
       {{form_lcd_add.quantity(class_='form-control', value=1, type="number", **{'rel':'tooltip','title':_('How many LCD controllers to add?')})}}
     </div>
-    <div class="col-xs-6 col-sm-3 no-gutters">
-      {{form_lcd_add.add(class_='form-control btn btn-default')}}
+    <div class="col-auto">
+      {{form_lcd_add.add(class_='form-control btn btn-primary')}}
     </div>
   </div>
 

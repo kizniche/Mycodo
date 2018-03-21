@@ -51,8 +51,8 @@
         <input class="btn btn-primary" type="submit" name="submit" value="Day">
       </div>
     </div>
-    <div class="form-inline">
-      <div class="form-group">
+    <div class="row">
+      <div class="col-auto">
         <select class="form-control" id="selected_measure" name="selected_measure" size="{{input_choices|length + math_choices|length + output_choices|length + pid_choices|length}}" multiple>
         {% for each_choice, value in input_choices.items() -%}
           <option value="{{each_choice}}"{% if each_choice in selected_ids_measures %} selected{% endif %}>{{value}}</option>
