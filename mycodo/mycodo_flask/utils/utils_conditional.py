@@ -48,6 +48,7 @@ def conditional_mod(form):
             cond_mod.if_sensor_direction = form.if_sensor_direction.data
             cond_mod.if_sensor_setpoint = form.if_sensor_setpoint.data
             cond_mod.if_sensor_period = form.if_sensor_period.data
+            cond_mod.if_sensor_refractory_period = form.if_sensor_refractory_period.data
             cond_mod.if_sensor_max_age = form.if_sensor_max_age.data
 
         elif cond_mod.conditional_type == 'conditional_output':

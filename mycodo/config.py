@@ -10,7 +10,7 @@ import os
 from flask_babel import lazy_gettext
 
 MYCODO_VERSION = '5.6.8'
-ALEMBIC_VERSION = '595e818456db'
+ALEMBIC_VERSION = '01ba9473fc96'
 
 #  FORCE_UPGRADE_MASTER
 #  Set True to enable upgrading to the master branch of the Mycodo repository.
@@ -560,6 +560,16 @@ LIST_DEVICES_INTERNAL_PI = [
     'SIGNAL_PWM',
     'SIGNAL_RPM'
 ]
+
+# Conditional Types
+CONDITIONAL_TYPES = {
+    'conditional_measurement': {
+        'name': lazy_gettext('Measurement')},
+    'conditional_output': {
+        'name': lazy_gettext('Output')},
+    'conditional_edge': {
+        'name': lazy_gettext('Edge')},
+}
 
 # Conditional actions
 # TODO: Some have been disabled until they can be properly tested
