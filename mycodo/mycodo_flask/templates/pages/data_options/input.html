@@ -24,7 +24,7 @@
       {{form_mod_input.name(class_='form-control', value=each_input.name, **{'title':_('A name to distinguish this from others')})}}
     </div>
     <div class="col-xs-5 col-sm-2">
-      <input class="btn btn-default btn-block" disabled="" title="UUID: {{each_input.unique_id}}" value="[{{'%02d' % each_input.id}}] {% if each_input.device in device_info %}{{device_info[each_input.device]['name']}}{% endif %}" type="text">
+      <input class="form-control btn btn-default btn-block" disabled="" title="UUID: {{each_input.unique_id}}" value="[{{'%02d' % each_input.id}}] {% if each_input.device in device_info %}{{device_info[each_input.device]['name']}}{% endif %}" type="text">
     </div>
     <div class="col-xs-4 col-xs-offset-2 col-sm-2 col-sm-offset-0">
     {% if each_input.is_activated -%}
@@ -33,20 +33,20 @@
         {%- do has_active_pid.append(1) -%}
       {%- endfor -%}
       {% if has_active_pid -%}
-        {{form_mod_input.input_deactivate(class_='btn btn-default btn-block',**{'onclick':'return confirm("There are currently active PID controllers that rely on this Input to be active. Select OK to deactivate this input and all associated PID controllers, otherwise click Cancel to leave them active.")'})}}
+        {{form_mod_input.input_deactivate(class_='form-control btn btn-default btn-block',**{'onclick':'return confirm("There are currently active PID controllers that rely on this Input to be active. Select OK to deactivate this input and all associated PID controllers, otherwise click Cancel to leave them active.")'})}}
       {% else -%}
-        {{form_mod_input.input_deactivate(class_='btn btn-default btn-block')}}
+        {{form_mod_input.input_deactivate(class_='form-control btn btn-default btn-block')}}
       {% endif -%}
     {% else -%}
-      {{form_mod_input.input_activate(class_='btn btn-default btn-block')}}
+      {{form_mod_input.input_activate(class_='form-control btn btn-default btn-block')}}
     {% endif -%}
     </div>
 
     <div class="col-xs-3 col-sm-2">
-      {{form_mod_input.input_order_up(class_='btn btn-default btn-block')}}
+      {{form_mod_input.input_order_up(class_='form-control btn btn-default btn-block')}}
     </div>
     <div class="col-xs-3 col-sm-2">
-      {{form_mod_input.input_order_down(class_='btn btn-default btn-block')}}
+      {{form_mod_input.input_order_down(class_='form-control btn btn-default btn-block')}}
     </div>
 
   </div>
@@ -60,18 +60,18 @@
 
     <div class="row small-gutters" style="padding: 0.5em">
       <div class="col-auto small-gutters">
-        {{form_mod_input.input_mod(class_='btn btn-default btn-block')}}
+        {{form_mod_input.input_mod(class_='form-control btn btn-default btn-block')}}
       </div>
       <div class="col-auto small-gutters">
         {% if has_active_pid or has_active_lcd -%}
-          {{form_mod_input.input_delete(class_='btn btn-default btn-block',**{'onclick':'return confirm("Note: there are currently an active PID that relies on this to operate. Deleting it will deactivate the PID. Are you sure you want to delete this?")'})}}
+          {{form_mod_input.input_delete(class_='form-control btn btn-default btn-block',**{'onclick':'return confirm("Note: there are currently an active PID that relies on this to operate. Deleting it will deactivate the PID. Are you sure you want to delete this?")'})}}
         {% else -%}
-          {{form_mod_input.input_delete(class_='btn btn-default btn-block',**{'onclick':'return confirm("Are you sure you want to delete this?")'})}}
+          {{form_mod_input.input_delete(class_='form-control btn btn-default btn-block',**{'onclick':'return confirm("Are you sure you want to delete this?")'})}}
         {% endif -%}
       </div>
     </div>
 
-    <div class="form-row small-gutters" style="padding: 0.5em">
+    <div class="row small-gutters" style="padding: 0.5em">
       {% for each_input_templates in input_templates if each_input_templates[:-5] == each_input.device %}
         {% include 'pages/data_options/input_options/'+each_input_templates %}
       {% endfor %}

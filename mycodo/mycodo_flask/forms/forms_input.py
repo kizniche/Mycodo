@@ -68,7 +68,7 @@ class InputMod(FlaskForm):
 
     # MAX chip options
     thermocouple_type = StringField(lazy_gettext('RTD Probe Type'))
-    ref_ohm = IntegerField(lazy_gettext('Resistor Reference (Ohm)'))
+    ref_ohm = IntegerField(lazy_gettext('Reference Resistance (Ohm)'))
 
     # SPI Communication
     pin_clock = IntegerField(lazy_gettext('Clock Pin'))

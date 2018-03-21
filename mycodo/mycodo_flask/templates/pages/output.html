@@ -187,18 +187,18 @@
             {{form_mod_relay.name(class_='form-control', value=each_relay.name, **{'title':_('A name to distinguish this from others')})}}
           </div>
           <div class="col-xs-5 col-sm-6 col-md-3 col-lg-2 small-gutters">
-            <input class="btn btn-default btn-block" disabled="" id="{{each_relay.id}}-input-relay-state" title="UUID: {{each_relay.unique_id}}" value="[{{'%02d' % each_relay.id}}] {{ _('Unconfigured')}}" type="text">
+            <input class="form-control btn btn-default btn-block" disabled="" id="{{each_relay.id}}-input-relay-state" title="UUID: {{each_relay.unique_id}}" value="[{{'%02d' % each_relay.id}}] {{ _('Unconfigured')}}" type="text">
           </div>
 
           <div class="col-xs-5 col-md-3 small-gutters">
             <div class="row small-gutters">
                 {% if each_relay.relay_type not in ['pwm', 'command_pwm'] -%}
               <div class="col small-gutters">
-                <input class="btn btn-success btn-block turn_on" id="turn_on" name="{{each_relay.id}}/on/sec/0" type="button" value="{{_('On')}}">
+                <input class="form-control btn btn-success btn-block turn_on" id="turn_on" name="{{each_relay.id}}/on/sec/0" type="button" value="{{_('On')}}">
               </div>
                 {%- endif %}
               <div class="col small-gutters">
-                <input class="btn btn-danger btn-block turn_off" id="turn_off" name="{{each_relay.id}}/off/sec/0" type="button" value="{{_('Off')}}">
+                <input class="form-control btn btn-danger btn-block turn_off" id="turn_off" name="{{each_relay.id}}/off/sec/0" type="button" value="{{_('Off')}}">
               </div>
             </div>
           </div>
@@ -206,10 +206,10 @@
           <div class="col-xs-5 col-md-3 small-gutters">
             <div class="row small-gutters">
               <div class="col small-gutters">
-                {{form_mod_relay.order_up(class_='btn btn-primary btn-block')}}
+                {{form_mod_relay.order_up(class_='form-control btn btn-default btn-block')}}
               </div>
               <div class="col small-gutters">
-                {{form_mod_relay.order_down(class_='btn btn-primary btn-block')}}
+                {{form_mod_relay.order_down(class_='form-control btn btn-default btn-block')}}
               </div>
             </div>
           </div>
@@ -223,10 +223,10 @@
               <input class="form-control" disabled="" value="{{output_info[each_relay.relay_type]['name']}}" type="text">
             </div>
             <div class="col-xs-3 col-sm-3 col-md-4">
-              {{form_mod_relay.save(class_='btn btn-default btn-block')}}
+              {{form_mod_relay.save(class_='form-control btn btn-default btn-block')}}
             </div>
             <div class="col-xs-3 col-sm-3 col-md-4">
-              {{form_mod_relay.delete(class_='btn btn-default btn-block', **{'onclick':'return confirm("Are you sure you want to delete this?")'})}}
+              {{form_mod_relay.delete(class_='form-control btn btn-default btn-block', **{'onclick':'return confirm("Are you sure you want to delete this?")'})}}
             </div>
 
           {% for each_relay_template in relay_templates if each_relay_template[:-5] == each_relay.relay_type %}
