@@ -123,9 +123,11 @@
         Visible Elements
         <div>
           <select name="list_visible_elements" id="multiselect_to" class="form-control" size="8" multiple="multiple">
+          {% if display_order -%}
             {% for each_visible in display_order %}
               <option value="{{each_visible}}">{{dashboard_element_names[each_visible]}}</option>
             {% endfor %}
+          {% endif %}
           </select>
           <div class="row">
             <div class="col-sm-6">

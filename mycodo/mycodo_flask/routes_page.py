@@ -299,7 +299,7 @@ def page_dashboard():
     for each_element in all_elements:
         dashboard_element_names[each_element.id] = '[{id}] {name}'.format(
                 id=each_element.id, name=each_element.name)
-        if each_element.id not in display_order:
+        if not display_order or each_element.id not in display_order:
             dashboard_elements_hidden.append(each_element.id)
 
     if form_base.reorder.data:
