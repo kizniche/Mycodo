@@ -302,11 +302,7 @@ def page_dashboard():
         if each_element.id not in display_order:
             dashboard_elements_hidden.append(each_element.id)
 
-    flash("Visible: {}".format(display_order), "success")
-    flash("Hidden: {}".format(dashboard_elements_hidden), "success")
     if form_base.reorder.data:
-        flash("Submitted: {}".format(form_base.list_visible_elements.data), "error")
-        flash("Needed: {}".format(display_order), "error")
         mod_order = DisplayOrder.query.first()
         mod_order.graph = list_to_csv(form_base.list_visible_elements.data)
         db.session.commit()
