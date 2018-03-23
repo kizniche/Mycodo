@@ -87,6 +87,7 @@ from mycodo.mycodo_flask.utils import utils_pid
 from mycodo.mycodo_flask.utils import utils_timer
 from mycodo.utils.system_pi import add_custom_measurements
 from mycodo.utils.system_pi import csv_to_list_of_int
+from mycodo.utils.system_pi import list_to_csv
 from mycodo.utils.tools import return_output_usage
 
 logger = logging.getLogger('mycodo.mycodo_flask.routes_page')
@@ -291,6 +292,27 @@ def page_dashboard():
     # Retrieve the order to display graphs
     display_order = csv_to_list_of_int(DisplayOrder.query.first().graph)
 
+    # Create list of hidden dashboard element IDs and dict of names
+    dashboard_element_names = {}
+    dashboard_elements_hidden = []
+    all_elements = Dashboard.query.all()
+    for each_element in all_elements:
+        dashboard_element_names[each_element.id] = '[{id}] {name}'.format(
+                id=each_element.id, name=each_element.name)
+        if each_element.id not in display_order:
+            dashboard_elements_hidden.append(each_element.id)
+
+    flash("Visible: {}".format(display_order), "success")
+    flash("Hidden: {}".format(dashboard_elements_hidden), "success")
+    if form_base.reorder.data:
+        flash("Submitted: {}".format(form_base.list_visible_elements.data), "error")
+        flash("Needed: {}".format(display_order), "error")
+        mod_order = DisplayOrder.query.first()
+        mod_order.graph = list_to_csv(form_base.list_visible_elements.data)
+        db.session.commit()
+        # Retrieve the order to display graphs
+        display_order = csv_to_list_of_int(DisplayOrder.query.first().graph)
+
     # Retrieve tables from SQL database
     camera = Camera.query.all()
     graph = Dashboard.query.all()
@@ -406,6 +428,8 @@ def page_dashboard():
                            choices_output=choices_output,
                            choices_pid=choices_pid,
                            custom_yaxes=custom_yaxes,
+                           dashboard_element_names=dashboard_element_names,
+                           dashboard_elements_hidden=dashboard_elements_hidden,
                            graph=graph,
                            math=math,
                            pid=pid,
@@ -415,7 +439,7 @@ def page_dashboard():
                            colors_gauge=colors_gauge,
                            dict_measurements=dict_measurements,
                            measurement_units=MEASUREMENT_UNITS,
-                           displayOrder=display_order,
+                           display_order=display_order,
                            form_base=form_base,
                            form_camera=form_camera,
                            form_graph=form_graph,
@@ -706,7 +730,7 @@ def page_lcd():
                            pid=pid,
                            relay=output,
                            sensor=input_dev,
-                           displayOrder=display_order,
+                           display_order=display_order,
                            form_lcd_add=form_lcd_add,
                            form_lcd_mod=form_lcd_mod,
                            form_lcd_display=form_lcd_display)
@@ -1007,7 +1031,7 @@ def page_output():
     return render_template('pages/output.html',
                            camera=camera,
                            conditional_actions_list=CONDITIONAL_ACTIONS,
-                           displayOrder=display_order,
+                           display_order=display_order,
                            form_add_relay=form_add_output,
                            form_mod_relay=form_mod_output,
                            lcd=lcd,
@@ -1256,7 +1280,7 @@ def page_timer():
     return render_template('pages/timer.html',
                            method=method,
                            timer=timer,
-                           displayOrder=display_order,
+                           display_order=display_order,
                            output_choices=output_choices,
                            form_timer_base=form_timer_base,
                            form_timer_time_point=form_timer_time_point,

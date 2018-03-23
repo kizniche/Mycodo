@@ -6,22 +6,23 @@
 
 {% block head %}
 
-  <script src="/static/js/highstock.src.js"></script>
-  <script src="/static/js/highcharts-more.js"></script>
-  <script src="/static/js/modules/solid-gauge.js"></script>
+  <script type="text/javascript" src="/static/js/highstock.src.js"></script>
+  <script type="text/javascript" src="/static/js/highcharts-more.js"></script>
+  <script type="text/javascript" src="/static/js/modules/solid-gauge.js"></script>
+  <script type="text/javascript" src="/static/js/modules/exporting.js"></script>
+  <script type="text/javascript" src="/static/js/modules/canvas-tools.js"></script>
+  <script type="text/javascript" src="/static/js/modules/export-csv.js"></script>
+  <script type="text/javascript" src="/static/js/modules/jspdf.min.js"></script>
+  <script type="text/javascript" src="/static/js/modules/highcharts-export-clientside.js"></script>
 
-  <script src="/static/js/modules/exporting.js"></script>
-  <script src="/static/js/modules/canvas-tools.js"></script>
-  <script src="/static/js/modules/export-csv.js"></script>
-  <script src="/static/js/modules/jspdf.min.js"></script>
-  <script src="/static/js/modules/highcharts-export-clientside.js"></script>
+  <script type="text/javascript" src="/static/js/multiselect.min.js"></script>
 
   {% if current_user.theme in dark_themes %}
-    <script src="/static/js/dark-unica.js"></script>
+    <script type="text/javascript" src="/static/js/dark-unica.js"></script>
   {% endif %}
 
   <link href="/static/css/toastr.min.css" rel="stylesheet"/>
-  <script src="/static/js/toastr.min.js"></script>
+  <script type="text/javascript" src="/static/js/toastr.min.js"></script>
 
 {% endblock %}
 
@@ -35,8 +36,8 @@
 
   <div class="row">
 
-  {% if displayOrder -%}
-  {%- for order in displayOrder -%}
+  {% if display_order -%}
+  {%- for order in display_order -%}
     {%- set chart_number = loop.index -%}
     {%- for each_graph in graph if each_graph.id == order -%}
 
@@ -80,15 +81,73 @@
   <div style="clear: both"></div>
 
   <div class="form-inline" style="padding-bottom: 1em;">
-    <div>
-      <div class="form-group">
-        <label class="control-label" for="dashboard_type">Add Dashboard Element:&nbsp;</label>
+    <div class="form-group">
+      <label class="control-label" for="dashboard_type">Add Dashboard Element:&nbsp;</label>
+      <div>
+        {{form_base.dashboard_type(class_='form-control')}}
+      </div>
+    </div>
+    <div class="form-group">
+      <a data-toggle="collapse" href="#collapseContainerReorder" aria-expanded="false" aria-controls="collapseContainerReorder" class="btn btn-primary" role="button">{{_('Reorder Elements')}}</a>
+    </div>
+  </div>
+
+  <div class="collapse" id="collapseContainerReorder" style="padding-top: 1em">
+
+    <form method="post" action="/dashboard">
+    {{form_base.csrf_token}}
+
+    <div class="row">
+      <div class="col-sm-5">
+        Hidden Elements
         <div>
-          {{form_base.dashboard_type(class_='form-control')}}
+          <select name="from[]" id="multiselect" class="form-control" size="8" multiple="multiple">
+            {% for each_hidden in dashboard_elements_hidden %}
+              <option value="{{each_hidden}}">{{dashboard_element_names[each_hidden]}}</option>
+            {% endfor %}
+          </select>
+        </div>
+      </div>
+
+      <div class="col-sm-2">
+        <label>&nbsp;</label>
+        <div>
+          <button type="button" id="multiselect_rightAll" class="btn btn-sm btn-block"><i class="fa fa-forward"></i></button>
+          <button type="button" id="multiselect_rightSelected" class="btn btn-sm btn-block"><i class="fa fa-chevron-right"></i></button>
+          <button type="button" id="multiselect_leftSelected" class="btn btn-sm btn-block"><i class="fa fa-chevron-left"></i></button>
+          <button type="button" id="multiselect_leftAll" class="btn btn-sm btn-block"><i class="fa fa-backward"></i></button>
+        </div>
+      </div>
+
+      <div class="col-sm-5">
+        Visible Elements
+        <div>
+          <select name="list_visible_elements" id="multiselect_to" class="form-control" size="8" multiple="multiple">
+            {% for each_visible in display_order %}
+              <option value="{{each_visible}}">{{dashboard_element_names[each_visible]}}</option>
+            {% endfor %}
+          </select>
+          <div class="row">
+            <div class="col-sm-6">
+              <button type="button" id="multiselect_move_up" class="btn btn-sm btn-block"><i class="fa fa-arrow-up"></i></button>
+            </div>
+            <div class="col-sm-6">
+              <button type="button" id="multiselect_move_down" class="btn btn-sm btn-block"><i class="fa fa-arrow-down"></i></button>
+            </div>
+          </div>
         </div>
       </div>
     </div>
+
+    <div class="row">
+      <div class="col-auto">
+        {{form_base.reorder(class_='btn btn-primary')}}
+      </div>
+    </div>
+
+    </form>
   </div>
+
   <div class="add_dashboard_object" style="display: none" id="graph">
    {% include 'pages/dashboard_options/add_graph.html' %}
   </div>
@@ -110,12 +169,25 @@
 
 </div>
 
+<script type="text/javascript">
+jQuery(document).ready(function($) {
+    $('#multiselect').multiselect({
+        sort: false,
+        keepRenderingSort: true
+    });
+});
+</script>
+
 <script>
 
 $('.collapse').on('show.bs.collapse', function(){
   $(this).parent().find(".fa-plus-square").removeClass("fa-plus-square").addClass("fa-minus-square");
 }).on('hide.bs.collapse', function(){
   $(this).parent().find(".fa-minus-square").removeClass("fa-minus-square").addClass("fa-plus-square");
+});
+
+$('#collapseContainerReorder').on('shown.bs.collapse', function () {
+  this.scrollIntoView();
 });
 
 $('#dashboard_type').on('change', function () {
@@ -590,8 +662,8 @@ $(document).ready(function() {
     return Highcharts.Color(color).setOpacity(0.6).get('rgba');
   });
 
-{% if displayOrder -%}
-  {%- for order in displayOrder -%}
+{% if display_order -%}
+  {%- for order in display_order -%}
     {%- set chart_number = loop.index -%}
     {%- for each_graph in graph if each_graph.id == order -%}
 

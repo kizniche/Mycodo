@@ -58,6 +58,8 @@ class DashboardBase(FlaskForm):
                                  " any new measurements.")
         )]
     )
+    list_visible_elements = SelectMultipleField(lazy_gettext('Visible Elements'))
+    reorder = SubmitField(lazy_gettext('Save Reorder'))
     create = SubmitField(lazy_gettext('Create'))
     modify = SubmitField(lazy_gettext('Save'))
     delete = SubmitField(lazy_gettext('Delete'))
