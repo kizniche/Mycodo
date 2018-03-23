@@ -256,7 +256,7 @@
       {%- for each_graph_relay_id in graph_output_ids if each_output.unique_id == each_graph_relay_id.split(',')[0] -%}
         {% if each_graph_relay_id.split(',')[1] == 'duration_sec' %}
         {
-          name: '{{each_output.name}} (sec)',
+          name: '{{each_output.name}} {{_('Duration')}} (sec)',
           type: 'column',
           dataGrouping: {
             approximation: 'low',
@@ -271,7 +271,7 @@
         },
         {% elif each_graph_relay_id.split(',')[1] == 'duty_cycle' %}
         {
-          name: '{{each_output.name}} (%)',
+          name: '{{each_output.name}} {{_('Duty Cycle')}} (%)',
           type: 'column',
           dataGrouping: {
             approximation: 'low',
@@ -388,7 +388,7 @@
         },
         {% elif each_graph_pid_id.split(',')[1] == 'duty_cycle' %}
         {
-          name: '{{each_pid.name}} {{_('Output')}} {{_('Duty Cycle')}}',
+          name: '{{each_pid.name}} {{_('Output')}} {{_('Duty Cycle')}} (%)',
           type: 'line',
           tooltip: {
             valueSuffix: ' %',

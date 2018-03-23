@@ -1063,9 +1063,9 @@ Measurement Conditional Statement If Options
                         than 120 seconds
 
   If State              The conditional will trigger if the measurement
-                        Greater Than or Less Than the set Value, or if
-                        “No Measurement” is set and the measurement age
-                        is greater than Max Age.
+                        Greater Than or Less Than the set If Value, or
+                        if “No Measurement” is set and the measurement
+                        age is greater than Max Age.
 
   If Value              The value that the measurement will be checked
                         against (greater or less than).
@@ -1080,10 +1080,11 @@ Measurement Conditional Statement If Options
   Max Age (seconds)     The maximum age the measurement can be. If a
                         measurement isn’t available within this time
                         frame, the conditional will not trigger. The
-                        only exception is if State is set to “No
+                        only exception is if “If State” is set to “No
                         Measurement”, which will cause the conditional
                         to trigger when there is no measurement
-                        available.
+                        available (indicating the input or measuring
+                        device has stopped working).
   ---------------------------------------------------------------------
 
 Output Conditional Statement If Options
@@ -1091,7 +1092,7 @@ Output Conditional Statement If Options
   ---------------------------------------------------------------------
   Setting               Description
   --------------------- -----------------------------------------------
-  Output                The Output to monitor for a change of state.
+  If Output             The Output to monitor for a change of state.
 
   If State              If the state of the output changes to On or Off
                         the conditional will trigger. If “On (any
@@ -1113,7 +1114,7 @@ Edge Conditional Statement If Options
   ---------------------------------------------------------------------
   Setting               Description
   --------------------- -----------------------------------------------
-  Edge Detected         The conditional will be triggered if a change
+  If Edge Detected      The conditional will be triggered if a change
                         in state is detected, either Rising when the
                         state changes from LOW (0 volts) to HIGH (3.5
                         volts) or Falling when the state changes from
@@ -1150,15 +1151,6 @@ Conditional Statement Actions
                         alert.
 
   Photo                 Capture a photo with the selected camera.
-
-  Email Photo           Capture a photo and email it as an attachment
-                        to the an email address.
-
-  Video                 Capture a video of a set duration with the
-                        selected camera.
-
-  Email Video           Capture a video and email it as an attachment
-                        to the an email address.
   ---------------------------------------------------------------------
 
 Conditional Statement variables

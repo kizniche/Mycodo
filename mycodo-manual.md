@@ -508,17 +508,17 @@ with conditional statements.
 Setting | Description
 -------------------- | ----------------------------------------------
 If Measurement | The measurement that will be checked every Period. By default, a measurement will only be checked for in the past 120 seconds, unless "None Found Last x seconds" in which case the Value will determine the measurement age. The takeaway from this is if a measurement is more than 120 seconds 
-If State | The conditional will trigger if the measurement Greater Than or Less Than the set Value, or if "No Measurement" is set and the measurement age is greater than Max Age.
+If State | The conditional will trigger if the measurement Greater Than or Less Than the set If Value, or if "No Measurement" is set and the measurement age is greater than Max Age.
 If Value | The value that the measurement will be checked against (greater or less than).
 Period (seconds) | The period (seconds) between conditional checks.
 Refractory Period (seconds) | The minimum duration (seconds) to wait after a conditional has been triggered to begin evaluating the conditional again.
-Max Age (seconds) | The maximum age the measurement can be. If a measurement isn't available within this time frame, the conditional will not trigger. The only exception is if State is set to "No Measurement", which will cause the conditional to trigger when there is no measurement available.
+Max Age (seconds) | The maximum age the measurement can be. If a measurement isn't available within this time frame, the conditional will not trigger. The only exception is if "If State" is set to "No Measurement", which will cause the conditional to trigger when there is no measurement available (indicating the input or measuring device has stopped working).
 
 #### Output Conditional Statement If Options
 
 Setting | Description
 -------------------- | ----------------------------------------------
-Output | The Output to monitor for a change of state.
+If Output | The Output to monitor for a change of state.
 If State | If the state of the output changes to On or Off the conditional will trigger. If "On (any duration) is selected, th trigger will occur no matter how long the output turns on for, whereas if only "On" is selected, the conditional will trigger only when the output turns on for a duration of time equal to the set "Duration (seconds)".
 If Duration (seconds) | If "On" is selected, a optional duration (seconds) may be set that will trigger the conditional only if the Output is turned on for this specific duration.
 
@@ -526,7 +526,7 @@ If Duration (seconds) | If "On" is selected, a optional duration (seconds) may b
 
 Setting | Description
 -------------------- | ----------------------------------------------
-Edge Detected | The conditional will be triggered if a change in state is detected, either Rising when the state changes from LOW (0 volts) to HIGH (3.5 volts) or Falling when the state changes from HIGH (3.3 volts) to LOW (0 volts), or Both (Rising and Falling).
+If Edge Detected | The conditional will be triggered if a change in state is detected, either Rising when the state changes from LOW (0 volts) to HIGH (3.5 volts) or Falling when the state changes from HIGH (3.3 volts) to LOW (0 volts), or Both (Rising and Falling).
 
 #### Conditional Statement Actions
 
@@ -542,9 +542,6 @@ Resume PID | Resume a particular PID controller.
 Email | Send an email containing information about the current condition that triggered the conditional to send the email.
 Flash LCD | Have an LCD screen begin flashing in order to alert.
 Photo | Capture a photo with the selected camera.
-Email Photo | Capture a photo and email it as an attachment to the an email address.
-Video | Capture a video of a set duration with the selected camera.
-Email Video | Capture a video and email it as an attachment to the an email address.
 
 #### Conditional Statement variables
 
