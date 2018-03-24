@@ -82,13 +82,10 @@
 
   <div class="form-inline" style="padding-bottom: 1em;">
     <div class="form-group">
-      <label class="control-label" for="dashboard_type">Add Dashboard Element:&nbsp;</label>
-      <div>
-        {{form_base.dashboard_type(class_='form-control')}}
-      </div>
+      {{form_base.dashboard_type(class_='selectpicker')}}
     </div>
     <div class="form-group">
-      <a data-toggle="collapse" href="#collapseContainerReorder" aria-expanded="false" aria-controls="collapseContainerReorder" class="btn btn-primary" role="button">{{_('Reorder Elements')}}</a>
+      <a data-toggle="collapse" href="#collapseContainerReorder" aria-expanded="false" aria-controls="collapseContainerReorder" class="btn btn-sm btn-primary" role="button">{{_('Reorder Elements')}}</a>
     </div>
   </div>
 

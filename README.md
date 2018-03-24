@@ -6,6 +6,8 @@
 
 #### [Mycodo Manual](https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.md) ([PDF](https://github.com/kizniche/Mycodo/raw/master/mycodo-manual.pdf), [HTML](http://htmlpreview.github.io/?https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.html), [TEXT](https://raw.githubusercontent.com/kizniche/Mycodo/master/mycodo-manual.txt))
 
+#### [Mycodo Wiki](https://github.com/kizniche/Mycodo/wiki)
+
 Mycodo is an automated monitoring and regulation system that was built to run on the [Raspberry Pi](https://en.wikipedia.org/wiki/Raspberry_Pi) (versions Zero, 1, 2, and 3).
 
 Originally designed to cultivate edible mushrooms, Mycodo has grown to include the ability to do much more, including cultivating plants, culturing microorganisms, maintaining honey bee apiary homeostasis, incubating animals and eggs, maintaining aquatic systems, aging cheeses, fermenting foods and tobacco, cooking food (vous-vide), and more.
@@ -37,16 +39,6 @@ The system comprises a backend (daemon) and a frontend (user interface). The bac
 - [Español (Spanish)](#espa%C3%B1ol-spanish)
 - [Français (French)](#fran%C3%A7ais-french)
 
-[From the Wiki](#from-the-wiki)
- - [Backup and Restore](https://github.com/kizniche/Mycodo/wiki/Backup-and-Restore)
- - [Diagnosing Issues](https://github.com/kizniche/Mycodo/wiki/Diagnosing-Issues)
- - [Directory Structure](https://github.com/kizniche/Mycodo/wiki/Directory-Structure)
- - [Preserving Custom Code](https://github.com/kizniche/Mycodo/wiki/Preserving-Custom-Code)
- - [Screenshots](https://github.com/kizniche/Mycodo/wiki/Screenshots)
- - [Testing](https://github.com/kizniche/Mycodo/wiki/Testing)
- - [TODO](https://github.com/kizniche/Mycodo/wiki/TODO)
- - [Translations](https://github.com/kizniche/Mycodo/wiki/Translations)
-
 ## What is PID Control?
 
 ![PID Animation](manual_images/PID-animation.gif)
@@ -55,22 +47,22 @@ A [proportional-derivative-integral (PID) controller](https://en.wikipedia.org/w
 
 [![Mycodo](http://kylegabriel.com/projects/wp-content/uploads/sites/3/2016/05/Mycodo-3.6.0-tango-Graph-2016-05-21-11-15-26.png)](http://kylegabriel.com/projects/)
 
-The top graph visualizes the regulation of temperature. The red line is the desired temperature setpoint that has been configured (which also has been configured to change over the course of each day). The blue line is the actual recorded temperature. The green vertical bars represent how long a heater is activated for, per every 20-second period. This regulation was achieved with minimal tuning (actual tuned gains: K<sub>P</sub>=0.08, K<sub>I</sub>=0.005, K<sub>D</sub>=0.001), and already displays a very minimal deviation from the setpoint (±0.5° Celsius). Further tuning would reduce this variability further.
+The top graph visualizes the regulation of temperature. The red line is the desired temperature (setpoint) that has been configured to change over the course of each day. The blue line is the actual recorded temperature. The green vertical bars represent how long a heater has been activated for every 20-second period. This regulation was achieved with minimal tuning, and already displays a very minimal deviation from the setpoint (±0.5° Celsius). Further tuning would reduce this variability further.
 
 ## Features
 
-* Inputs: Periodically measure devices, such as analog-to-digital converters (ADCs), sensors (temperature, humidity, CO<sub>2</sub>, atmospheric pressure, infrared heat, luminosity, magnetism, motion, pH, soil moisture, and more), or add your own.
-* Outputs: Manipulate the environment by switching GPIO pins High/Low, switching relays, generating PWM signals, email notifications, executing linux commands, and more.
-* PID Controllers - Couple inputs with outputs to create feedback loops in order to regulate environmental conditions.
+* Inputs: Periodically measure devices, such as analog-to-digital converters (ADCs), sensors (temperature, humidity, etc.), or add your own.
+* Outputs: Manipulate the environment by switching GPIO pins High or Low, switching relays, generating PWM signals, email notifications, executing linux commands, and more.
+* PID Controllers: Couple inputs with outputs to create feedback loops in order to regulate environmental conditions.
 * Methods: Change the desired condition over time (useful for reflow ovens, thermal cyclers, mimicking natural environmental changes, etc.)
 * Timers: Schedule the execution of actions at various times and intervals.
-* LCDs: Display measurements and data on 16x2 and 20x4 I<sup>2</sup>C-enabled LCD displays
+* LCDs: Display measurements and data on 16x2 and 20x4 I<sup>2</sup>C-enabled LCD displays.
 * I<sup>2</sup>C Multiplexer Support: Allow multiple devices/sensors with the same I<sup>2</sup>C address to be used simultaneously.
 * Camera support: Raspberry Pi Camera and USB cameras, to stream live video (only Pi cam), capture still images and video, and create time-lapses.
 * Web Interface: Access using a web browser on your local network or anywhere in the world with an internet connection.
 * Secure Login: High-security login system utilizing the latest encryption and authorization standards.
-* Automated system upgrade: When a new version is released on github, an upgrade can be initiated from the web interface.
-* Languages: English, [Español (Spanish)](#espa%C3%B1ol-spanish) (partial: [Français (French)](#fran%C3%A7ais-french), [한국어 (Korean)](#%ED%95%9C%EA%B5%AD%EC%96%B4-korean)) (Change language under Configure -> Language)
+* System upgrade: When a new version is released on github, an upgrade can be initiated from the web interface.
+* Languages: English, [Español (Spanish)](#espa%C3%B1ol-spanish) (partial: [Français (French)](#fran%C3%A7ais-french)) (Change language under Configure -> Language)
 
 [Read the manual](#manual) for details.
 
@@ -81,8 +73,6 @@ All supported Inputs can be found under [Sensor Interfaces](https://github.com/k
 ## Install
 
 These install procedures have been tested to work with the Raspberry Pi (versions Zero, 1, 2, and 3) following a fresh install of [Raspbian](https://www.raspberrypi.org/downloads/raspbian/) (Full or Lite version), with an active internet connection.
-
-Latest version of Raspbian tested: Raspbian Stretch Nov/2017 version (2017-11-29)
 
 Once Raspbian has been installed, follow the guide below to set up the system prior to installing Mycodo.
 
@@ -100,14 +90,12 @@ Then change the following settings
  + ```Localisation Options``` -> ```Change Locale``` (set and select en_US.UTF-8, if US)
  + ```Localisation Options``` -> ```Change Timezone```
  + ```Interfacing Options``` -> ```SSH``` -> ```Enable```
- + ```Interfacing Options``` -> ```Camera``` -> ```Enable``` (required if using a Pi camera)
- + ```Interfacing Options``` -> ```I2C``` -> ```Enable``` (required if using I<sup>2</sup>C sensors/devices)
  + ```Advanced Options``` -> ```Expand Filesystem``` (***required***)
  + Reboot (***required***)
 
 ### Install Mycodo
 
-Mycodo will be installed by executing setup.sh. As a part of the installation, it will install and configure services to automatically start the Mycodo backend and frontend.
+Mycodo will be installed by executing setup.sh. As a part of the installation, you will be prompted with a few options to determine which components to install and configure.
 
 ```
 sudo apt-get install -y jq
@@ -212,16 +200,3 @@ Mycodo est un système de surveillance à distance et de régulation automatisé
 Le système de base coordonne un ensemble divers de réponses aux mesures de capteurs, y compris des actions telles que l'enregistrement de caméra, les notifications par courrier électronique, l'activation / désactivation de relais, la régulation avec contrôle PID, et plus encore.
 
 Mycodo a été utilisé pour cultiver des champignons gourmands, cultiver des plantes, cultiver des micro-organismes, entretenir l'homéostasie du rucher des abeilles, incuber les œufs de serpent et les jeunes animaux, vieillir les fromages, fermenter les aliments, entretenir les systèmes aquatiques et plus encore.
-
-## From the Wiki
-
-The following sections can be found in the wiki.
-
- - [Backup and Restore](https://github.com/kizniche/Mycodo/wiki/Backup-and-Restore)
- - [Diagnosing Issues](https://github.com/kizniche/Mycodo/wiki/Diagnosing-Issues)
- - [Directory Structure](https://github.com/kizniche/Mycodo/wiki/Directory-Structure)
- - [Preserving Custom Code](https://github.com/kizniche/Mycodo/wiki/Preserving-Custom-Code)
- - [Screenshots](https://github.com/kizniche/Mycodo/wiki/Screenshots)
- - [Sensors and Devices](https://github.com/kizniche/Mycodo/wiki/Sensors-and-Devices)
- - [Translations](https://github.com/kizniche/Mycodo/wiki/Translations)
- - [User Roles](https://github.com/kizniche/Mycodo/wiki/User-Roles)

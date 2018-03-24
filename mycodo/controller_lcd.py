@@ -338,7 +338,10 @@ class LCDController(threading.Thread):
     def create_lcd_line(self, last_measurement_success, display_id, i):
         try:
             if last_measurement_success:
-                unit_length = len(self.lcd_line[display_id][i]['unit'].replace('°', u''))
+                if self.lcd_line[display_id][i]['unit']:
+                    unit_length = len(self.lcd_line[display_id][i]['unit'].replace('°', u''))
+                else:
+                    unit_length = 0
 
                 # Produce the line that will be displayed on the LCD
                 if self.lcd_line[display_id][i]['measure'] == 'time':

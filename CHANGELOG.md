@@ -5,6 +5,10 @@
  - Add Refractory Period to Measurement Conditional options
  - Add method to hide/show/reorder all Dashboard Elements at once ([#346](https://github.com/kizniche/mycodo/issues/346))
 
+### Bugfixes
+
+ - Fix LCD display of timestamps
+
 
 ## 5.6.8 (2018-03-19)
 

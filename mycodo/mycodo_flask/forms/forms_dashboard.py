@@ -19,10 +19,9 @@ from wtforms.validators import DataRequired
 
 class DashboardBase(FlaskForm):
     dashboard_id = IntegerField('Dash Object ID', widget=widgets.HiddenInput())
-    dashboard_type = SelectField(
-        lazy_gettext('Dashboard Element Type'),
+    dashboard_type = SelectField('Dashboard Element Type',
         choices=[
-            ('', lazy_gettext('Select a Dashboard Element')),
+            ('', lazy_gettext('Add Dashboard Element')),
             ('graph', lazy_gettext('Graph')),
             ('gauge', lazy_gettext('Gauge')),
             ('measurement', lazy_gettext('Measurement')),
