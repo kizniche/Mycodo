@@ -7,6 +7,7 @@
 
 ### Bugfixes
 
+ - Fix issue saving reference resistor value ([#345](https://github.com/kizniche/mycodo/issues/345))
  - Fix LCD display of timestamps
  - Fix inability to change Solid Gauge Stops ([#433](https://github.com/kizniche/mycodo/issues/433))
  - Fix Command Outputs not turning off after turning on for a duration ([#432](https://github.com/kizniche/mycodo/issues/432))
