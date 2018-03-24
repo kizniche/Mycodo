@@ -204,12 +204,16 @@ function modOutput(btn_val) {
   $.ajax({
       type: 'GET',
       url: '/output_mod_unique_id/' + btn_val,
+    {% if not misc.hide_alert_success %}
       success: function(data) {
           toastr['success']("Output " + data);
       },
+    {% endif %}
+    {% if not misc.hide_alert_warning %}
       error: function(data) {
           toastr['error']("Output " + btn_val.split("/")[0] + ": " + data);
       }
+    {% endif %}
   });
 }
 
@@ -217,27 +221,35 @@ $(document).ready(function() {
   $('.turn_on').click(function() {
     var btn_val = this.name;
     var id = btn_val.split('/')[0];
+    {% if not misc.hide_alert_info %}
     toastr['info']('Command sent to turn output On');
+    {% endif %}
     modOutput(btn_val);
   });
   $('.turn_off').click(function() {
     var btn_val = this.name;
     var id = btn_val.split('/')[0];
+    {% if not misc.hide_alert_info %}
     toastr['info']('Command sent to turn output Off');
+    {% endif %}
     modOutput(btn_val);
   });
   $('.sec_on_amt').click(function() {
     var btn_val = this.name;
     var id = btn_val.split('/')[0];
     var sec = $('#sec_on_amt_' + id).val();
+    {% if not misc.hide_alert_info %}
     toastr['info']('Command sent to turn output On for ' + sec + ' seconds');
+    {% endif %}
     modOutput(btn_val + sec);
   });
   $('.duty_cycle_on_amt').click(function() {
     var btn_val = this.name;
     var id = btn_val.split('/')[0];
     var dc = $('#duty_cycle_on_amt_' + id).val();
+    {% if not misc.hide_alert_info %}
     toastr['info']('Command sent to turn output On with a duty cycle of ' + dc + '%');
+    {% endif %}
     modOutput(btn_val + dc);
   });
 });
@@ -246,12 +258,16 @@ function modPID(btn_val) {
   $.ajax({
       type: 'GET',
       url: '/pid_mod_unique_id/' + btn_val,
+    {% if not misc.hide_alert_success %}
       success: function(data) {
           toastr['success']("PID " + data);
       },
+    {% endif %}
+    {% if not misc.hide_alert_warning %}
       error: function(data) {
           toastr['error']("PID " + btn_val.split("/")[0] + ": " + data);
       }
+    {% endif %}
   });
 }
 
@@ -259,31 +275,41 @@ $(document).ready(function() {
   $('.activate_pid').click(function() {
     var btn_val = this.name;
     var id = btn_val.split('/')[0];
+    {% if not misc.hide_alert_info %}
     toastr['info']('Command sent to Activate PID');
+    {% endif %}
     modPID(btn_val);
   });
   $('.deactivate_pid').click(function() {
     var btn_val = this.name;
     var id = btn_val.split('/')[0];
+    {% if not misc.hide_alert_info %}
     toastr['info']('Command sent to Deactivate PID');
+    {% endif %}
     modPID(btn_val);
   });
   $('.pause_pid').click(function() {
     var btn_val = this.name;
     var id = btn_val.split('/')[0];
+    {% if not misc.hide_alert_info %}
     toastr['info']('Command sent to Pause PID');
+    {% endif %}
     modPID(btn_val);
   });
   $('.hold_pid').click(function() {
     var btn_val = this.name;
     var id = btn_val.split('/')[0];
+    {% if not misc.hide_alert_info %}
     toastr['info']('Command sent to Hold PID');
+    {% endif %}
     modPID(btn_val);
   });
   $('.resume_pid').click(function() {
     var btn_val = this.name;
     var id = btn_val.split('/')[0];
+    {% if not misc.hide_alert_info %}
     toastr['info']('Command sent to Resume PID');
+    {% endif %}
     modPID(btn_val);
   });
 });

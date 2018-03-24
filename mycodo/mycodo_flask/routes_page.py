@@ -280,6 +280,15 @@ def page_dashboard():
     """
     Generate custom dashboard with various data
     """
+    # Retrieve tables from SQL database
+    camera = Camera.query.all()
+    graph = Dashboard.query.all()
+    input_dev = Input.query.all()
+    math = Math.query.all()
+    misc = Misc.query.first()
+    output = Output.query.all()
+    pid = PID.query.all()
+
     # Create form objects
     form_base = forms_dashboard.DashboardBase()
     form_camera = forms_dashboard.DashboardCamera()
@@ -308,14 +317,6 @@ def page_dashboard():
         db.session.commit()
         # Retrieve the order to display graphs
         display_order = csv_to_list_of_int(DisplayOrder.query.first().graph)
-
-    # Retrieve tables from SQL database
-    camera = Camera.query.all()
-    graph = Dashboard.query.all()
-    input_dev = Input.query.all()
-    math = Math.query.all()
-    output = Output.query.all()
-    pid = PID.query.all()
 
     # Retrieve all choices to populate form drop-down menu
     choices_camera = utils_general.choices_id_name(camera)
@@ -428,6 +429,7 @@ def page_dashboard():
                            dashboard_elements_hidden=dashboard_elements_hidden,
                            graph=graph,
                            math=math,
+                           misc=misc,
                            pid=pid,
                            output=output,
                            input=input_dev,
@@ -982,6 +984,7 @@ def page_output():
     """ Display output status and config """
     camera = Camera.query.all()
     lcd = LCD.query.all()
+    misc = Misc.query.first()
     output = Output.query.all()
     user = User.query.all()
 
@@ -1031,6 +1034,7 @@ def page_output():
                            form_add_relay=form_add_output,
                            form_mod_relay=form_mod_output,
                            lcd=lcd,
+                           misc=misc,
                            outputs=OUTPUTS,
                            output_info=OUTPUT_INFO,
                            relay=output,

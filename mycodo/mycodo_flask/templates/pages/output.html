@@ -5,6 +5,7 @@
 {% block title %} - {{_('Output')}}{% endblock %}
 
 {% block head %}
+
 <link href="/static/css/toastr.min.css" rel="stylesheet"/>
 <script src="/static/js/toastr.min.js"></script>
 
@@ -32,12 +33,16 @@
     $.ajax({
       type: 'GET',
       url: '/output_mod/' + btn_val,
+    {% if not misc.hide_alert_success %}
       success: function(data) {
         toastr['success']("Output " + btn_val.split("/")[0] + ": " + data);
       },
+    {% endif %}
+    {% if not misc.hide_alert_warning %}
       error: function(data) {
         toastr['error']("Output " + btn_val.split("/")[0] + ": " + data);
       }
+    {% endif %}
     });
   }
 
@@ -45,27 +50,35 @@
     $('.turn_on').click(function() {
       var btn_val = this.name;
       var id = btn_val.split('/')[0];
+      {% if not misc.hide_alert_info %}
       toastr['info']('Command sent to turn output ' + id + ' On');
+      {% endif %}
       getAjax(btn_val);
     });
     $('.turn_off').click(function() {
       var btn_val = this.name;
       var id = btn_val.split('/')[0];
+      {% if not misc.hide_alert_info %}
       toastr['info']('Command sent to turn output ' + id + ' Off');
+      {% endif %}
       getAjax(btn_val);
     });
     $('.sec_on_amt').click(function() {
       var btn_val = this.name;
       var id = btn_val.split('/')[0];
       var sec = $('#sec_on_amt_' + id).val();
+      {% if not misc.hide_alert_info %}
       toastr['info']('Command sent to turn output ' + id + ' On for ' + sec + ' seconds');
+      {% endif %}
       getAjax(btn_val + sec);
     });
     $('.duty_cycle_on_amt').click(function() {
       var btn_val = this.name;
       var id = btn_val.split('/')[0];
       var dc = $('#duty_cycle_on_amt_' + id).val();
+      {% if not misc.hide_alert_info %}
       toastr['info']('Command sent to turn output ' + id + ' on with a duty cycle of ' + dc + '%');
+      {% endif %}
       getAjax(btn_val + dc);
     });
   });
