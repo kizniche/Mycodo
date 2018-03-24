@@ -526,21 +526,21 @@ def page_info():
     (uptime_output, _) = uptime.communicate()
     uptime.wait()
     if uptime_output:
-        uptime_output = uptime_output.decode("utf-8")
+        uptime_output = uptime_output.decode("latin1")
 
     uname = subprocess.Popen(
         "uname -a", stdout=subprocess.PIPE, shell=True)
     (uname_output, _) = uname.communicate()
     uname.wait()
     if uname_output:
-        uname_output = uname_output.decode("utf-8")
+        uname_output = uname_output.decode("latin1")
 
     gpio = subprocess.Popen(
         "gpio readall", stdout=subprocess.PIPE, shell=True)
     (gpio_output, _) = gpio.communicate()
     gpio.wait()
     if gpio_output:
-        gpio_output = gpio_output.decode("utf-8")
+        gpio_output = gpio_output.decode("latin1")
 
     # Search for /dev/i2c- devices and compile a sorted dictionary of each
     # device's integer device number and the corresponding 'i2cdetect -y ID'
@@ -551,14 +551,14 @@ def page_info():
         i2c_devices_sorted = OrderedDict()
         for index, each_dev in enumerate(i2c_devices):
             device_int = int(each_dev.replace("/dev/i2c-", ""))
-            df = subprocess.Popen(
+            i2cdetect = subprocess.Popen(
                 "i2cdetect -y {dev}".format(dev=device_int),
                 stdout=subprocess.PIPE,
                 shell=True)
-            (out, _) = df.communicate()
-            df.wait()
-            if out:
-                i2c_devices_sorted[device_int] = out.decode("utf-8")
+            (i2cdetect_out, _) = i2cdetect.communicate()
+            i2cdetect.wait()
+            if i2cdetect_out:
+                i2c_devices_sorted[device_int] = i2cdetect_out.decode("latin1")
     except Exception as er:
         flash("Error detecting I2C devices: {er}".format(er=er), "error")
     finally:
@@ -569,21 +569,21 @@ def page_info():
     (df_output, _) = df.communicate()
     df.wait()
     if df_output:
-        df_output = df_output.decode("utf-8")
+        df_output = df_output.decode("latin1")
 
     free = subprocess.Popen(
         "free -h", stdout=subprocess.PIPE, shell=True)
     (free_output, _) = free.communicate()
     free.wait()
     if free_output:
-        free_output = free_output.decode("utf-8")
+        free_output = free_output.decode("latin1")
 
     ifconfig = subprocess.Popen(
         "ifconfig -a", stdout=subprocess.PIPE, shell=True)
     (ifconfig_output, _) = ifconfig.communicate()
     ifconfig.wait()
     if ifconfig_output:
-        ifconfig_output = ifconfig_output.decode("utf-8")
+        ifconfig_output = ifconfig_output.decode("latin1")
 
     database_version = AlembicVersion.query.first().version_num
     correct_database_version = ALEMBIC_VERSION
@@ -611,14 +611,14 @@ def page_info():
         (pstree_daemon_output, _) = pstree_damon.communicate()
         pstree_damon.wait()
         if pstree_daemon_output:
-            pstree_daemon_output = pstree_daemon_output.decode("utf-8")
+            pstree_daemon_output = pstree_daemon_output.decode("latin1")
 
         top_daemon = subprocess.Popen(
             "top -bH -n 1 -p {pid}".format(pid=daemon_pid), stdout=subprocess.PIPE, shell=True)
         (top_daemon_output, _) = top_daemon.communicate()
         top_daemon.wait()
         if top_daemon_output:
-            top_daemon_output = top_daemon_output.decode("utf-8")
+            top_daemon_output = top_daemon_output.decode("latin1")
     else:
         ram_use_daemon = 0
 
@@ -635,14 +635,14 @@ def page_info():
         (pstree_frontend_output, _) = pstree_damon.communicate()
         pstree_damon.wait()
         if pstree_frontend_output:
-            pstree_frontend_output = pstree_frontend_output.decode("utf-8")
+            pstree_frontend_output = pstree_frontend_output.decode("latin1")
 
         top_frontend = subprocess.Popen(
             "top -bH -n 1 -p {pid}".format(pid=frontend_pid), stdout=subprocess.PIPE, shell=True)
         (top_frontend_output, _) = top_frontend.communicate()
         top_frontend.wait()
         if top_frontend_output:
-            top_frontend_output = top_frontend_output.decode("utf-8")
+            top_frontend_output = top_frontend_output.decode("latin1")
 
     ram_use_flask = resource.getrusage(
         resource.RUSAGE_SELF).ru_maxrss / float(1000)
@@ -834,7 +834,7 @@ def page_logview():
                 command, stdout=subprocess.PIPE, shell=True)
             (log_output, _) = log.communicate()
             log.wait()
-            log_output = str(log_output, 'utf-8')
+            log_output = str(log_output, 'latin1')
         else:
             log_output = 404
 
