@@ -8,6 +8,7 @@
 ### Bugfixes
 
  - Fix LCD display of timestamps
+ - Fix inability to change Solid Gauge Stops ([#433](https://github.com/kizniche/mycodo/issues/433))
 
 
 ## 5.6.8 (2018-03-19)

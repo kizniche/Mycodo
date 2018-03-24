@@ -89,10 +89,16 @@
     </div>
   </div>
 
-  <div class="collapse" id="collapseContainerReorder" style="padding-top: 1em">
+  <div class="collapse" id="collapseContainerReorder" style="padding-bottom: 1em">
 
     <form method="post" action="/dashboard">
     {{form_base.csrf_token}}
+
+    <div class="row" style="padding-bottom: 0.5em">
+      <div class="col-auto">
+        {{form_base.reorder(class_='btn btn-primary')}}
+      </div>
+    </div>
 
     <div class="row">
       <div class="col-sm-5">
@@ -109,10 +115,10 @@
       <div class="col-sm-2">
         <label>&nbsp;</label>
         <div>
-          <button type="button" id="multiselect_rightAll" class="btn btn-sm btn-block"><i class="fa fa-forward"></i></button>
-          <button type="button" id="multiselect_rightSelected" class="btn btn-sm btn-block"><i class="fa fa-chevron-right"></i></button>
-          <button type="button" id="multiselect_leftSelected" class="btn btn-sm btn-block"><i class="fa fa-chevron-left"></i></button>
-          <button type="button" id="multiselect_leftAll" class="btn btn-sm btn-block"><i class="fa fa-backward"></i></button>
+          <button type="button" id="multiselect_rightAll" class="btn btn-sm btn-block btn-primary"><i class="fa fa-forward"></i></button>
+          <button type="button" id="multiselect_rightSelected" class="btn btn-sm btn-block btn-primary"><i class="fa fa-chevron-right"></i></button>
+          <button type="button" id="multiselect_leftSelected" class="btn btn-sm btn-block btn-primary"><i class="fa fa-chevron-left"></i></button>
+          <button type="button" id="multiselect_leftAll" class="btn btn-sm btn-block btn-primary"><i class="fa fa-backward"></i></button>
         </div>
       </div>
 
@@ -128,19 +134,13 @@
           </select>
           <div class="row">
             <div class="col-sm-6">
-              <button type="button" id="multiselect_move_up" class="btn btn-sm btn-block"><i class="fa fa-arrow-up"></i></button>
+              <button type="button" id="multiselect_move_up" class="btn btn-sm btn-block btn-primary"><i class="fa fa-arrow-up"></i></button>
             </div>
             <div class="col-sm-6">
-              <button type="button" id="multiselect_move_down" class="btn btn-sm btn-block"><i class="fa fa-arrow-down"></i></button>
+              <button type="button" id="multiselect_move_down" class="btn btn-sm btn-block btn-primary"><i class="fa fa-arrow-down"></i></button>
             </div>
           </div>
         </div>
-      </div>
-    </div>
-
-    <div class="row">
-      <div class="col-auto">
-        {{form_base.reorder(class_='btn btn-primary')}}
       </div>
     </div>
 
