@@ -604,12 +604,13 @@ def custom_colors_gauge_str(form, gauge_type, error):
                     colors_hex[i]['hex'])
             elif gauge_type == 'gauge_solid':
                 try:
-                    if 0 > colors_hex[i]['stop'] > 1:
+                    if 0 > float(colors_hex[i]['stop']) > 1:
                         error.append("Color stops must be between 0 and 1")
                     sorted_colors_string += "{},{}".format(
                         colors_hex[i]['stop'],
                         colors_hex[i]['hex'])
-                except Exception:
+                except Exception as err_msg:
+                    error.append(err_msg)
                     sorted_colors_string += "0,{}".format(
                         colors_hex[i]['hex'])
             if i < len(colors_hex) - 1:
