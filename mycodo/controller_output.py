@@ -116,10 +116,11 @@ class OutputController(threading.Thread):
                 current_time = datetime.datetime.now()
                 for output_id in self.output_id:
                     # Is the current time past the time the output was supposed
-                    # to turn off at?
+                    # to turn off?
                     if (self.output_on_until[output_id] < current_time and
                             self.output_on_duration[output_id] and
-                            self.output_pin[output_id] is not None):
+                            ('command' not in self.output_type[output_id] or
+                             self.output_pin[output_id] is not None)):
 
                         # Use threads to prevent a slow execution of a
                         # process that could slow the loop
