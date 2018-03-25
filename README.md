@@ -133,13 +133,7 @@ A minimal set of anonymous usage statistics are collected to help improve develo
 
 ## Web Server Security
 
-An SSL certificate will be generated and stored at ```~/Mycodo/mycodo/mycodo_flask/ssl_certs/``` during the install process to allow SSL to be used to securely connect to the web interface. If you want to use your own SSL certificates, replace them with your own.
-
-The certificate that is automatically generated are set to expire in 10 years. If you would like to regenerate new certificate, delete the old certificates, create a new one, and restart the web server with the following commands:
-
-```
-sudo /bin/bash ~/Mycodo/mycodo/scripts/upgrade_commands.sh ssl-certs-regenerate
-```
+An SSL certificate will be generated (expires in 10 years) and stored at ```~/Mycodo/mycodo/mycodo_flask/ssl_certs/``` during the install process to allow SSL to be used to securely connect to the web interface. If you want to use your own SSL certificates, replace them with your own.
 
 If using the auto-generated certificate from the install, be aware that it will not be verified when visiting the web interface using the ```https://``` address prefix (opposed to ```http://```). You may continually receive a warning message about the security of your site, unless you add the certificate to your browser's trusted list.
 

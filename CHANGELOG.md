@@ -1,5 +1,9 @@
 ## 5.6.10 (Unreleased)
 
+### Bugfixes
+
+ - Fix issue executing mycodo_client.py
+
 ### Miscellaneous
 
  - Change SSL certificate expiration from 1 year to 10 years

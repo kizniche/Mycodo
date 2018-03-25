@@ -2,7 +2,7 @@
 #
 #  upgrade_commands.sh - Mycodo commands
 #
-
+# TODO: Rename this file
 if [ "$EUID" -ne 0 ] ; then
   printf "Please run as root.\n"
   exit 1
@@ -23,6 +23,54 @@ while [ -h "$SOURCE" ]; do # resolve $SOURCE until the file is no longer a symli
 done
 MYCODO_PATH="$( cd -P "$( dirname "${SOURCE}" )/../.." && pwd )"
 cd ${MYCODO_PATH}
+
+HELP_OPTIONS="upgrade_commands.sh [option] - Program to execute various mycodo commands
+
+Options:
+  backup-create                 Create a backup of the ~/Mycodo directory
+  backup-restore [backup]       Restore [backup] location, which must be the full path to the backup.
+                                Ex.: '/var/Mycodo-backups/Mycodo-backup-2018-03-11_21-19-15-5.6.4/'
+  compile-mycodo-wrapper        Compile mycodo_wrapper.c
+  compile-translations          Compile language translations for web interface
+  create-files-directories      Create required directories
+  create-symlinks               Create required symlinks
+  create-user                   Create 'mycodo' user and add to appropriate groups
+  initialize                    Issues several commands to set up directories/files/permissions
+  restart-daemon                Restart the Mycodo daemon
+  setup-virtualenv              Create a Python virtual environment
+  ssl-certs-generate            Generate SSL certificates for the web user interface
+  ssl-certs-regenerate          Regenerate SSL certificates
+  uninstall-apt-pip             Uninstall the apt version of pip
+  update-alembic                Use alembic to upgrade the mycodo.db settings database
+  update-apt                    Update apt sources
+  update-cron                   Update cron entries
+  install-pigpiod               Install pigpiod
+  uninstall-pigpiod             Uninstall pigpiod
+  disable-pigpiod               Disable pigpiod
+  enable-pigpiod-low            Enable pigpiod with 1 ms sample rate
+  enable-pigpiod-high           Enable pigpiod with 5 ms sample rate
+  enable-pigpiod-disabled       Create empty service to indicate pigpiod is disabled
+  update-pigpiod                Update to latest version of pigpiod service file
+  update-influxdb               Update influxdb to the latest version
+  update-influxdb-db-user       Create the influxdb database and user
+  update-logrotate              Install logrotate script
+  update-mycodo-startup-script  Install the Mycodo daemon startup script
+  update-packages               Install required apt packages are installed/up-to-date
+  update-permissions            Set permissions for Mycodo directories/files
+  update-pip3                   Update pip
+  update-pip3-packages          Update required pip packages
+  install-pip-dependency [dep]  Install [dep]
+  update-swap-size              Ensure sqap size is sufficiently large (512 MB)
+  install-numpy                 Install numpy
+  install-wiringpi              Install wiringpi
+  upgrade                       Upgrade Mycodo to the latest release
+  upgrade-master                Upgrade Mycodo to the master branch of the Mycodo github repository
+  upgrade-post                  Post-Upgrade commands
+  web-server-connect            Attampt to connect to the web server
+  web-server-reload             Reload the web server
+  web-server-restart            Restart the web server
+  web-server-update             Update the web server configuration files
+"
 
 case "${1:-''}" in
     'backup-create')
@@ -102,13 +150,6 @@ case "${1:-''}" in
         /bin/bash ${MYCODO_PATH}/mycodo/scripts/upgrade_commands.sh create-symlinks
         /bin/bash ${MYCODO_PATH}/mycodo/scripts/upgrade_commands.sh create-files-directories
         systemctl daemon-reload
-    ;;
-    'install-pip-dependency')
-        if [ ! -d ${MYCODO_PATH}/env ]; then
-            printf "\n## Error: Virtualenv doesn't exist. Install with 'sudo $0 setup-virtualenv'\n"
-        else
-            ${MYCODO_PATH}/env/bin/pip3 install --upgrade ${2}
-        fi
     ;;
     'restart-daemon')
         printf "\n#### Restarting the Mycodo daemon\n"
@@ -340,7 +381,7 @@ case "${1:-''}" in
     'install-pip-dependency')
         printf "\n#### Installing ${2} with pip\n"
         if [ ! -d ${MYCODO_PATH}/env ]; then
-            printf "\n## Error: Virtualenv doesn't exist\n"
+            printf "\n## Error: Virtualenv doesn't exist. Creating...\n"
             /bin/bash ${MYCODO_PATH}/mycodo/scripts/upgrade_commands.sh setup-virtualenv
         else
             ${MYCODO_PATH}/env/bin/pip3 install --upgrade ${2}
@@ -415,6 +456,6 @@ case "${1:-''}" in
         systemctl enable ${MYCODO_PATH}/install/mycodoflask.service
     ;;
     *)
-        printf "Error: Unrecognized command\n"
+        printf "Error: Unrecognized command\n${HELP_OPTIONS}"
     ;;
 esac

@@ -464,6 +464,14 @@
 <p>When Inputs and Outputs are combined, PID controllers may be used to create a feedback loop that uses the Output device to modulate an environmental condition the Input detects. Certain Inputs may be coupled with certain Outputs to create a variety of different control and regulation applications. Beyond simple regulation, Methods may be used to create changing setpoints over time, enabling such things as thermal cyclers, reflow ovens, environmental simulation for terrariums, food and beverage fermentation or curing, and cooking food (<a href="https://en.wikipedia.org/wiki/Sous-vide">sous-vide</a>), to name a few.</p>
 <p>Timers can be set to trigger events based on specific dates and times or according to durations of time. Timers are fairly basic, but can be configured in very complex ways. Don’t underestimate a good timer.</p>
 <h1 id="frequently-asked-questions">Frequently Asked Questions</h1>
+<p><em>What should I do if I have an issue?</em></p>
+<p>First, read though this manual to make sure you understand how the system works and you’re using the system properly. Also check out the <a href="https://github.com/kizniche/Mycodo/wiki">Mycodo Wiki</a>. You may even want to look through recent <a href="https://github.com/kizniche/Mycodo/issues">GitHub Issues</a>. If you haven’t resolved your issue by this point, make a <a href="https://github.com/kizniche/Mycodo/issues/new">New GitHub Issue</a> describing the issue and attaching a sufficient amount of evidence (screenshots, log files, etc.) to aid in diagnosing the issue.</p>
+<hr />
+<p><em>How do I add an Input (like a sensor) to the system if it’s not currently supported?</em></p>
+<p>Currently, adding an Input device that’s not currently supported can be achieved by two different methods:</p>
+<p>The first involves editing several internal Mycodo files. There has been effort to make the addition process as simple as possible. See the <a href="https://github.com/kizniche/Mycodo/wiki/Adding-Support-for-a-New-Input">Adding Support for a New Input</a> Wiki page for how to do this. All changes will be lost during an upgrade, therefore it is suggested to make a GitHub pull request with your changes to permanently integrate them into Mycodo.</p>
+<p>The second way to add an Input is to create a script that obtains and returns a numerical value when executed in the linux system of the Raspberry Pi. This script may be configured to be executed by a “Linux Command” Input type. This will periodically execute the command and store the returned value to the database for use with the rest of the Mycodo system.</p>
+<hr />
 <p><em>How do I set up simple regulation?</em></p>
 <p>Here is how I generally set up Mycodo to monitor and regulate:</p>
 <ol type="1">
@@ -478,16 +486,24 @@
 <li>On the <code>Info</code> -&gt; <code>Live Graphs</code> page, create a graph that includes the input measurement, the output that is being used by the PID, and the PID setpoint. This provides a good visualization for tuning the PID. See <a href="#quick-setup-examples">Quick Setup Examples</a> for a greater detail of this process and tuning tips.</li>
 </ol>
 <hr />
-<p><em>How do I add an Input (like a sensor) to the system that’s not currently supported?</em></p>
-<p>Currently, adding an Input device that’s not currently supported can be achieved by two different methods:</p>
-<p>The first involves editing several files. There has been effort to make the addition process as simple as possible. See the <a href="https://github.com/kizniche/Mycodo/wiki/Adding-Support-for-a-New-Input">Adding Support for a New Input</a> Wiki page for how to do this. All changes will be lost during an upgrade, therefore it is suggested to make a GitHub pull request with your changes to permanently integrate them into Mycodo.</p>
-<p>The second way to add an Input is to create a script that obtains and returns a numerical value when executed in the linux system of the Raspberry Pi. This script may be configured to be executed by a “Linux Command” Input type. This will periodically execute the command and store the returned value to the database for use with the rest of the Mycodo system.</p>
+<p><em>Can I communicate with Mycodo from the command line?</em></p>
+<p>Yes, ~/Mycodo/mycodo/mycodo_client.py has this functionality, but there’s a lot to be desired. Below may not be the most current list of commands, so it’s recommended to execute the installed symlink <code>mycodo-client -h</code> to see a full list with descriptions.</p>
+<pre><code>pi@raspberry:~/Mycodo $ mycodo-client --help
+usage: mycodo-client [-h] [--activatecontroller CONTROLLER ID]
+                     [--deactivatecontroller CONTROLLER ID] [--pid_pause ID]
+                     [--pid_hold ID] [--pid_resume ID] [--pid_get_setpoint ID]
+                     [--pid_get_error ID] [--pid_get_integrator ID]
+                     [--pid_get_derivator ID] [--pid_get_kp ID]
+                     [--pid_get_ki ID] [--pid_get_kd ID]
+                     [--pid_set_setpoint ID SETPOINT]
+                     [--pid_set_integrator ID INTEGRATOR]
+                     [--pid_set_derivator ID DERIVATOR] [--pid_set_kp ID KP]
+                     [--pid_set_ki ID KI] [--pid_set_kd ID KD] [-c] [--ramuse]
+                     [--relayoff RELAYID] [--relayon RELAYID]
+                     [--duration SECONDS] [--dutycycle DUTYCYCLE] [-t]</code></pre>
 <hr />
 <p><em>Can I variably-control the speed of motors or other devices with the PWM output signal from the PID?</em></p>
 <p>Yes, as long as you have the proper hardware to do that. The PWM signal being produced by the PID should be handled appropriately, whether by a fast-switching solid state relay, an <a href="#schematics-for-ac-modulation">AC modulation circuit</a>, <a href="#schematics-for-dc-fan-control">DC modulation circuit</a>, or something else.</p>
-<hr />
-<p><em>What should I do if I have an issue?</em></p>
-<p>First, read though this manual to make sure you understand how the system works and you’re using the system properly. Also check out the <a href="https://github.com/kizniche/Mycodo/wiki">Mycodo Wiki</a>. You may even want to look through recent <a href="https://github.com/kizniche/Mycodo/issues">GitHub Issues</a>. If you haven’t resolved your issue by this point, make a <a href="https://github.com/kizniche/Mycodo/issues/new">New GitHub Issue</a> describing the issue and attaching a sufficient amount of evidence (screenshots, log files, etc.) to aid in diagnosing the issue.</p>
 <hr />
 <h1 id="upgrading">Upgrading</h1>
 <p>If you already have Mycodo installed (version &gt;= 4.0.0), you can perform an upgrade to the latest <a href="https://github.com/kizniche/Mycodo/releases">Mycodo Release</a> by either using the Upgrade option in the web interface (recommended) or by issuing the following command in a terminal. A log of the upgrade process is created at <code>/var/log/mycodo/mycodoupgrade.log</code></p>

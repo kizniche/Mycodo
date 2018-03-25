@@ -262,7 +262,7 @@ def parseargs(parser):
                         help='Turn on relay for a duration of time (seconds)',
                         required=False)
     parser.add_argument('--dutycycle', metavar='DUTYCYCLE', type=float,
-                        help='Turn on PWM relay for a duty cycle (%)',
+                        help='Turn on PWM relay for a duty cycle (%%)',
                         required=False)
 
     parser.add_argument('-t', '--terminate', action='store_true',

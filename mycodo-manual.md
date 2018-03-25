@@ -151,6 +151,22 @@ Timers can be set to trigger events based on specific dates and times or accordi
 Frequently Asked Questions
 ==========================
 
+*What should I do if I have an issue?*
+
+First, read though this manual to make sure you understand how the system works and you're using the system properly. Also check out the [Mycodo Wiki](https://github.com/kizniche/Mycodo/wiki). You may even want to look through recent [GitHub Issues](https://github.com/kizniche/Mycodo/issues). If you haven't resolved your issue by this point, make a [New GitHub Issue](https://github.com/kizniche/Mycodo/issues/new) describing the issue and attaching a sufficient amount of evidence (screenshots, log files, etc.) to aid in diagnosing the issue.
+
+* * * * *
+
+*How do I add an Input (like a sensor) to the system if it's not currently supported?*
+
+Currently, adding an Input device that's not currently supported can be achieved by two different methods:
+
+The first involves editing several internal Mycodo files. There has been effort to make the addition process as simple as possible. See the [Adding Support for a New Input](https://github.com/kizniche/Mycodo/wiki/Adding-Support-for-a-New-Input) Wiki page for how to do this. All changes will be lost during an upgrade, therefore it is suggested to make a GitHub pull request with your changes to permanently integrate them into Mycodo.
+
+The second way to add an Input is to create a script that obtains and returns a numerical value when executed in the linux system of the Raspberry Pi. This script may be configured to be executed by a "Linux Command" Input type. This will periodically execute the command and store the returned value to the database for use with the rest of the Mycodo system.
+
+* * * * *
+
 *How do I set up simple regulation?*
 
 Here is how I generally set up Mycodo to monitor and regulate:
@@ -167,25 +183,31 @@ Here is how I generally set up Mycodo to monitor and regulate:
 
 * * * * *
 
-*How do I add an Input (like a sensor) to the system that's not currently supported?*
+*Can I communicate with Mycodo from the command line?*
 
-Currently, adding an Input device that's not currently supported can be achieved by two different methods:
+Yes, ~/Mycodo/mycodo/mycodo_client.py has this functionality, but there's a lot to be desired. Below may not be the most current list of commands, so it's recommended to execute the installed symlink ```mycodo-client -h``` to see a full list with descriptions.
 
-The first involves editing several files. There has been effort to make the addition process as simple as possible. See the [Adding Support for a New Input](https://github.com/kizniche/Mycodo/wiki/Adding-Support-for-a-New-Input) Wiki page for how to do this. All changes will be lost during an upgrade, therefore it is suggested to make a GitHub pull request with your changes to permanently integrate them into Mycodo.
-
-The second way to add an Input is to create a script that obtains and returns a numerical value when executed in the linux system of the Raspberry Pi. This script may be configured to be executed by a "Linux Command" Input type. This will periodically execute the command and store the returned value to the database for use with the rest of the Mycodo system.
+```
+pi@raspberry:~/Mycodo $ mycodo-client --help
+usage: mycodo-client [-h] [--activatecontroller CONTROLLER ID]
+                     [--deactivatecontroller CONTROLLER ID] [--pid_pause ID]
+                     [--pid_hold ID] [--pid_resume ID] [--pid_get_setpoint ID]
+                     [--pid_get_error ID] [--pid_get_integrator ID]
+                     [--pid_get_derivator ID] [--pid_get_kp ID]
+                     [--pid_get_ki ID] [--pid_get_kd ID]
+                     [--pid_set_setpoint ID SETPOINT]
+                     [--pid_set_integrator ID INTEGRATOR]
+                     [--pid_set_derivator ID DERIVATOR] [--pid_set_kp ID KP]
+                     [--pid_set_ki ID KI] [--pid_set_kd ID KD] [-c] [--ramuse]
+                     [--relayoff RELAYID] [--relayon RELAYID]
+                     [--duration SECONDS] [--dutycycle DUTYCYCLE] [-t]
+```
 
 * * * * *
 
 *Can I variably-control the speed of motors or other devices with the PWM output signal from the PID?*
 
 Yes, as long as you have the proper hardware to do that. The PWM signal being produced by the PID should be handled appropriately, whether by a fast-switching solid state relay, an [AC modulation circuit](#schematics-for-ac-modulation), [DC modulation circuit](#schematics-for-dc-fan-control), or something else.
-
-* * * * *
-
-*What should I do if I have an issue?*
-
-First, read though this manual to make sure you understand how the system works and you're using the system properly. Also check out the [Mycodo Wiki](https://github.com/kizniche/Mycodo/wiki). You may even want to look through recent [GitHub Issues](https://github.com/kizniche/Mycodo/issues). If you haven't resolved your issue by this point, make a [New GitHub Issue](https://github.com/kizniche/Mycodo/issues/new) describing the issue and attaching a sufficient amount of evidence (screenshots, log files, etc.) to aid in diagnosing the issue.
 
 * * * * *
 
