@@ -1,3 +1,10 @@
+## 5.6.10 (Unreleased)
+
+### Miscellaneous
+
+ - Change SSL certificate expiration from 1 year to 10 years
+
+
 ## 5.6.9 (2018-03-24)
 
 ### Features

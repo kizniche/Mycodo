@@ -135,7 +135,7 @@ A minimal set of anonymous usage statistics are collected to help improve develo
 
 An SSL certificate will be generated and stored at ```~/Mycodo/mycodo/mycodo_flask/ssl_certs/``` during the install process to allow SSL to be used to securely connect to the web interface. If you want to use your own SSL certificates, replace them with your own.
 
-The certificate that is automatically generated are set to expire in 365 days. If you would like to regenerate new certificate, delete the old certificates, create a new one, and restart the web server with the following commands:
+The certificate that is automatically generated are set to expire in 10 years. If you would like to regenerate new certificate, delete the old certificates, create a new one, and restart the web server with the following commands:
 
 ```
 sudo /bin/bash ~/Mycodo/mycodo/scripts/upgrade_commands.sh ssl-certs-regenerate
@@ -178,7 +178,7 @@ Mycodo is distributed in the hope that it will be useful, but WITHOUT ANY WARRAN
 
 A full copy of the GNU General Public License can be found at <a href="http://www.gnu.org/licenses/gpl-3.0.en.html" target="_blank">http://www.gnu.org/licenses/gpl-3.0.en.html</a>
 
-This software includes third party open source software components: Discrete PID Controller. Each of these software components have their own license. Please see Mycodo/mycodo/controller_PID.py for license information.
+This software includes third party open source software components. Please see individual files for license information, if applicable.
 
 
 ## Languages
