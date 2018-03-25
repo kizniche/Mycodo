@@ -5,6 +5,7 @@
  - Add Refractory Period to Measurement Conditional options
  - Add method to hide/show/reorder all Dashboard Elements at once ([#346](https://github.com/kizniche/mycodo/issues/346))
  - Make Output/PID popups respond to show/hide configuration options ([#346](https://github.com/kizniche/mycodo/issues/346))
+ - Add Input: Atlas Electrical Conductivity sensor ([#411](https://github.com/kizniche/mycodo/issues/411))
 
 ### Bugfixes
 

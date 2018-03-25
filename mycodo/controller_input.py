@@ -256,6 +256,20 @@ class InputController(threading.Thread):
             from mycodo.inputs.am2315 import AM2315Sensor
             self.measure_input = AM2315Sensor(self.i2c_bus,
                                               power=self.power_output_id)
+        elif self.device == 'ATLAS_EC_I2C':
+            from mycodo.inputs.atlas_ec import AtlasElectricalConductivitySensor
+            self.measure_input = AtlasElectricalConductivitySensor(
+                                               self.interface,
+                                               i2c_address=self.i2c_address,
+                                               i2c_bus=self.i2c_bus,
+                                               sensor_sel=self.input_sel)
+        elif self.device == 'ATLAS_EC_UART':
+            from mycodo.inputs.atlas_ec import AtlasElectricalConductivitySensor
+            self.measure_input = AtlasElectricalConductivitySensor(
+                                               self.interface,
+                                               device_loc=self.device_loc,
+                                               baud_rate=self.baud_rate,
+                                               sensor_sel=self.input_sel)
         elif self.device == 'ATLAS_PH_I2C':
             from mycodo.inputs.atlas_ph import AtlaspHSensor
             self.measure_input = AtlaspHSensor(self.interface,

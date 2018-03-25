@@ -90,6 +90,20 @@ def input_add(form_add):
             new_sensor.location = '/'
 
         # Environmental Inputs
+
+        # Electrical Conductivity
+        elif form_add.input_type.data == 'ATLAS_EC_I2C':
+            new_sensor.location = '0x01'
+            new_sensor.interface = 'I2C'
+        elif form_add.input_type.data == 'ATLAS_EC_UART':
+            new_sensor.location = 'Tx/Rx'
+            new_sensor.interface = 'UART'
+            new_sensor.baud_rate = 9600
+            if GPIO.RPI_INFO['P1_REVISION'] == 3:
+                new_sensor.device_loc = "/dev/ttyS0"
+            else:
+                new_sensor.device_loc = "/dev/ttyAMA0"
+
         # Temperature
         elif form_add.input_type.data == 'TMP006':
             new_sensor.location = '0x40'

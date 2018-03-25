@@ -44,6 +44,8 @@ DEVICES = [
     ('MH_Z16_I2C', 'CO2: MH-Z16 (I2C)'),
     ('MH_Z16_UART', 'CO2: MH-Z16 (Serial)'),
     ('MH_Z19_UART', 'CO2: MH-Z19 (Serial)'),
+    ('ATLAS_EC_I2C', 'Electrical Conductivity: Atlas Scientific (I2C)'),
+    ('ATLAS_EC_UART', 'Electrical Conductivity: Atlas Scientific (Serial)'),
     ('BH1750', 'Luminance: BH1750 (I2C)'),
     ('TSL2561', 'Luminance: TSL2561 (I2C)'),
     ('TSL2591', 'Luminance: TSL2591 (I2C)'),
@@ -86,6 +88,16 @@ DEVICE_INFO = {
         'i2c-address-change': False,
         'py-dependencies': ['quick2wire'],
         'measure': ['dewpoint', 'humidity', 'temperature']},
+    'ATLAS_EC_I2C': {
+        'name': 'Atlas Electrical Conductivity (I2C)',
+        'i2c-addresses': ['0x01'],
+        'i2c-address-change': False,
+        'py-dependencies': [],
+        'measure': ['electrical_conductivity']},
+    'ATLAS_EC_UART': {
+        'name': 'Atlas Electrical Conductivity (Serial)',
+        'py-dependencies': ['serial'],
+        'measure': ['electrical_conductivity']},
     'ATLAS_PH_I2C': {
         'name': 'Atlas pH (I2C)',
         'i2c-addresses': ['0x63'],
@@ -400,6 +412,9 @@ MEASUREMENT_UNITS = {
     'edge': {
         'name': lazy_gettext('GPIO Edge'),
         'meas': 'edge', 'unit': ''},
+    'electrical_conductivity': {
+        'name': lazy_gettext('Electrical Conductivity'),
+        'meas': 'electrical_conductivity', 'unit': 'μS/cm'},
     'frequency': {
         'name': lazy_gettext('Frequency'),
         'meas': 'frequency', 'unit': 'Hz'},
@@ -510,6 +525,7 @@ LIST_DEVICES_ADC = [
 LIST_DEVICES_I2C = [
     'ADS1x15',
     'AM2315',
+    'ATLAS_EC_I2C',
     'ATLAS_PH_I2C',
     'ATLAS_PT1000_I2C',
     'BH1750',
@@ -537,6 +553,7 @@ LIST_DEVICES_SPI = [
 
 # Devices that use serial to communicate
 LIST_DEVICES_SERIAL = [
+    'ATLAS_EC_UART',
     'ATLAS_PH_UART',
     'ATLAS_PT1000_UART',
     'K30_UART',
@@ -554,6 +571,7 @@ LIST_DEVICES_INTERNAL_PI = [
     'MYCODO_RAM',
     'RPi',
     'RPiCPULoad',
+    'RPiFreeSpace',
     'RPiFreeSpace',
     'SERVER_PING',
     'SERVER_PORT_OPEN',
