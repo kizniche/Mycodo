@@ -171,15 +171,15 @@ The second way to add an Input is to create a script that obtains and returns a 
 
 Here is how I generally set up Mycodo to monitor and regulate:
 
-1.  Determine what environmental condition you want to measure or regulate. Consider the devices that must be coupled to achieve this. For instance, temperature regulation require a temperature sensor as the input and an electric heater as the output.
-2.  Determine what relays you will need to power your electric devices. The Raspberry Pi is capable of directly switching relays (using a 3.3-volt signal), although opto-isolating the circuit is advisable. Be careful when selecting a relay not to exceed the current draw of the Raspberry Pi’s GPIO pins.
-3.  See the [Device Specific Information](#device-specific-information) for information about what sensors are supported. Acquire one or more of these sensors and relays and connect them to the Raspberry Pi according to the manufacturer’s instructions.
-4.  On the ```Data``` page, create a new input using the dropdown to select the correct sensor or input device. Configure the input with the correct communication pins and other options. Activate the input to begin recording measurements to the database..
+1.  Determine what environmental condition you want to measure or regulate. Consider the devices that must be coupled to achieve this. For instance, temperature regulation require a temperature sensor as the input and an electric heater (or cooler) as the output.
+2.  Determine what relays you will need to power your electric devices. The Raspberry Pi is capable of directly switching relays (using a 3.3-volt signal). Remember to select a relay that can handle the load and doesn't exceed the maximum current draw from the Raspberry Pi GPIO pins.
+3.  See the [Device Specific Information](#device-specific-information) for information about what sensors are supported. Acquire sensor(s) and relay(s) and connect them to the Raspberry Pi according to the manufacturer’s instructions.
+4.  On the ```Data``` page, create a new input using the dropdown to select the correct sensor or input device. Configure the input with the correct communication pins and other options. Activate the input to begin recording measurements to the database.
 5.  Go to the ```Info``` -> ```Live Measurements``` page to ensure there is recent data being acquired from the input.
-6.  On the ```Ouput``` page, add a relay and configure the GPIO pin that switches it, whether the relay switches On when the signal is HIGH or LOW, and what state (On or Off) to set the relay when Mycodo starts. A pulse-width modulated (PWM) output may also be used..
+6.  On the ```Ouput``` page, add a relay and configure the GPIO pin that switches it, whether the relay switches On when the signal is HIGH or LOW, and what state (On or Off) to set the relay when Mycodo starts. A pulse-width modulated (PWM) output may also be used, among others.
 7.  Test the relay by switching it On and Off or generating a PWM signal from the ```Output``` page and make sure the device connected to the relay turns On when you select "On", and Off when you select "Off".
-8.  On the ```Function``` page, create a PID controller with the appropriate input, output, and other parameters.
-9.  On the ```Info``` -> ```Live Graphs``` page, create a graph that includes the input measurement, the output that is being used by the PID, and the PID setpoint. This provides a good visualization for tuning the PID. See [Quick Setup Examples](#quick-setup-examples) for a greater detail of this process and tuning tips.
+8.  On the ```Function``` page, create a PID controller with the appropriate input, output, and other parameters. Activate the PID controller.
+9.  On the ```Info``` -> ```Dashboard``` page, create a graph that includes the input measurement, the output that is being used by the PID, and the PID output and setpoint. This provides a good visualization for tuning the PID. See [Quick Setup Examples](#quick-setup-examples) for a greater detail of this process and tuning tips.
 
 * * * * *
 
@@ -328,6 +328,7 @@ disk_space | MB
 duration_sec | sec
 duty_cycle | %
 edge | edge
+electrical_conductivity | uS/cm
 frequency | Hz
 humidity | %
 humidity_ratio | kg/kg
@@ -598,6 +599,7 @@ Variable | Description
 ((measure_disk_space)) | Input measurement: disk space
 ((measure_duty_cycle)) | Input measurement: duty cycle
 ((measure_edge)) | Input measurement: edge detected (1 or -1)
+((measure_electrical_conductivity)) | Input measurement: Electrical Conductivity (uS/cm)
 ((measure_frequency)) | Input measurement: frequency
 ((measure_humidity)) | Input measurement: humidity
 ((measure_lux)) | Input measurement: lux
@@ -1744,17 +1746,17 @@ Diagrams
 
 ### DHT11 Diagrams
 
-![](manual_images/Schematic-Sensor-DHT11-01.jpg)\ 
+![Schematic-Sensor-DHT11-01](manual_images/Schematic-Sensor-DHT11-01.jpg)\ 
 
-![](manual_images/Schematic-Sensor-DHT11-02.png)\ 
+![Schematic-Sensor-DHT11-02](manual_images/Schematic-Sensor-DHT11-02.png)\ 
 
 ### DS18B20 Diagrams
 
-![](manual_images/Schematic-Sensor-DS18B20-01.png)\ 
+![Schematic-Sensor-DS18B20-01](manual_images/Schematic-Sensor-DS18B20-01.png)\ 
 
-![](manual_images/Schematic-Sensor-DS18B20-02.jpg)\ 
+![Schematic-Sensor-DS18B20-02](manual_images/Schematic-Sensor-DS18B20-02.jpg)\ 
 
-![](manual_images/Schematic-Sensor-DS18B20-03.jpg)\ 
+![Schematic-Sensor-DS18B20-03](manual_images/Schematic-Sensor-DS18B20-03.jpg)\ 
 
 ### Raspberry Pi and Relay Diagrams
 
