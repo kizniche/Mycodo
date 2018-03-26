@@ -18,70 +18,73 @@
       The user must be in the <i>Admin</i> group of the remote Mycodo host you are adding (Admin/Configuration/User menu). Ensure port 443 (HTTPS) is open and reachable on the remote host. Check your router settings to enable port forwarding if trying to communicate over a non-local network. After adding the host, a status icon will appear next to the new host entry to indicate if it is accessible.
     </div>
 
-    <div class="form-inline">
-      <form method="post" action="/remote/setup">
+    <form method="post" action="/remote/setup">
       <input type="hidden" name="form-name" value="add_remote">
       {{form_setup.csrf_token}}
-      <div class="form-group">
+
+    <div class="form-row">
+      <div class="col-auto">
         {{form_setup.host.label(class_='control-label')}}
         <div>
           {{form_setup.host(class_='form-control')}}
         </div>
       </div>
-      <div class="form-group">
+      <div class="col-auto">
         {{form_setup.username.label(class_='control-label')}}
         <div>
           {{form_setup.username(class_='form-control')}}
         </div>
       </div>
-      <div class="form-group">
+      <div class="col-auto">
         {{form_setup.password.label(class_='control-label')}}
         <div>
           {{form_setup.password(class_='form-control')}}
         </div>
       </div>
-      <div class="form-group">
-        <label class='control-label'></label>
+      <div class="col-auto">
+        <label class='control-label'>&nbsp;</label>
         <div>
           {{form_setup.add(class_='form-control btn btn-default')}}
         </div>
       </div>
-      </form>
     </div>
 
+    </form>
+
     {% for each_host in remote_hosts %}
-      <div class="form-inline" style="padding: 2em 0">
-        <form method="post" action="/remote/setup">
-        <input type="hidden" name="form-name" value="mod_remote">
-        {{form_setup.csrf_token}}
-        {{form_setup.remote_id(value=each_host.id)}}
-        <div class="form-group">
+    <form method="post" action="/remote/setup">
+      <input type="hidden" name="form-name" value="mod_remote">
+      {{form_setup.csrf_token}}
+      {{form_setup.remote_id(value=each_host.id)}}
+
+      <div class="form-row" style="padding: 2em 0">
+        <div class="col-2">
           <label class='control-label'>ID</label>
           <div>
             <input class="form-control" disabled="" value="{{each_host.id}}" type="text">
           </div>
         </div>
-        <div class="form-group">
+        <div class="col-auto">
           {{form_setup.host.label(class_='control-label')}}
           <div>
             {{form_setup.host(class_='form-control', value=each_host.host)}}
           </div>
         </div>
-        <div class="form-group">
+        <div class="col-auto">
           {{form_setup.username.label(class_='control-label')}}
           <div>
             {{form_setup.username(class_='form-control', value=each_host.username)}}
           </div>
         </div>
-        <div class="form-group">
+        <div class="col-auto">
           {{form_setup.password.label(class_='control-label')}}
           <div>
             {{form_setup.password(class_='form-control')}}
           </div>
         </div>
-        <div class="form-group">
+        <div class="col-auto">
           <label class='control-label'>Status</label>
-          <div class="text-center">
+          <div class="text-center justify-content-center">
             {% if host_auth[each_host.host] == 'authenticated' %}
               <img src="/static/img/on.png" style="width: 30px">
             {% else %}
@@ -89,14 +92,15 @@
             {% endif %}
           </div>
         </div>
-        <div class="form-group">
-          <label class='control-label'></label>
+        <div class="col-auto">
+          <label class='control-label'>&nbsp;</label>
           <div>
             {{form_setup.delete(class_='form-control btn btn-default')}}
           </div>
         </div>
-        </form>
       </div>
+
+      </form>
     {% endfor %}
 
   </div>

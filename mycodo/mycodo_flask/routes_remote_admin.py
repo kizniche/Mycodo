@@ -14,6 +14,7 @@ from flask.blueprints import Blueprint
 from mycodo.databases.models import DisplayOrder
 from mycodo.databases.models import Remote
 from mycodo.mycodo_flask.forms import forms_authentication
+from mycodo.mycodo_flask.routes_static import inject_variables
 from mycodo.mycodo_flask.utils import utils_general
 from mycodo.mycodo_flask.utils import utils_remote_host
 from mycodo.mycodo_flask.utils.utils_remote_host import remote_host_page
@@ -30,9 +31,16 @@ logger = logging.getLogger(__name__)
 
 
 @blueprint.context_processor
+@flask_login.login_required
 def inject_hostname():
     """Variables to send with every login page request"""
     return dict(host=socket.gethostname())
+
+
+@blueprint.context_processor
+@flask_login.login_required
+def inject_dictionary():
+    return inject_variables()
 
 
 @blueprint.route('/remote/input', methods=('GET', 'POST'))

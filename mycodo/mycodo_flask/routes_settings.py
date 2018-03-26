@@ -35,6 +35,7 @@ blueprint = Blueprint('routes_settings',
 
 
 @blueprint.context_processor
+@flask_login.login_required
 def inject_dictionary():
     return inject_variables()
 

@@ -7,6 +7,7 @@
 ### Miscellaneous
 
  - Change SSL certificate expiration from 1 year to 10 years
+ - Fix style issues with Remote Admin following Bootstrap upgrade
 
 
 ## 5.6.9 (2018-03-24)

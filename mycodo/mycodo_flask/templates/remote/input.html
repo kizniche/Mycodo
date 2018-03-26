@@ -21,11 +21,11 @@
 
     {% for each_host in remote_hosts %}
 
-      <div class="form-inline">
-        <div class="form-group">
+      <div class="form-row">
+        <div class="col-auto">
           {{each_host.host}}
         </div>
-        <div class="form-group">
+        <div class="col-auto">
       {% if host_inputs[each_host.host] %}
           <img src="/static/img/on.png" style="width: 30px">
       {% else %}
@@ -34,11 +34,11 @@
         </div>
       </div>
 
-      <div class="form-inline">
+      <div class="form-row">
       {% if host_inputs[each_host.host] %}
 
         {% for each_input in host_inputs[each_host.host] %}
-        <div class="form-group" style="padding: 0.5em">
+        <div class="col-auto" style="padding: 0.5em">
           <div>
             Input ID: {{each_input}}
           </div>

@@ -38,6 +38,7 @@ blueprint = Blueprint('routes_method',
 
 
 @blueprint.context_processor
+@flask_login.login_required
 def inject_dictionary():
     return inject_variables()
 
