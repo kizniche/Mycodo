@@ -3,6 +3,7 @@
 ### Bugfixes
 
  - Fix issue executing mycodo_client.py
+ - Fix Command Outputs not turning off after turning on for a duration ([#432](https://github.com/kizniche/mycodo/issues/432))
 
 ### Miscellaneous
 

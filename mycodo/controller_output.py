@@ -119,7 +119,7 @@ class OutputController(threading.Thread):
                     # to turn off?
                     if (self.output_on_until[output_id] < current_time and
                             self.output_on_duration[output_id] and
-                            ('command' not in self.output_type[output_id] or
+                            ('command' in self.output_type[output_id] or
                              self.output_pin[output_id] is not None)):
 
                         # Use threads to prevent a slow execution of a
