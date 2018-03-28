@@ -124,6 +124,7 @@ class OutputController(threading.Thread):
 
                         # Use threads to prevent a slow execution of a
                         # process that could slow the loop
+                        self.output_on_duration[output_id] = False
                         turn_output_off = threading.Thread(
                             target=self.output_on_off,
                             args=(output_id,
@@ -299,8 +300,6 @@ class OutputController(threading.Thread):
 
                 # Output is not already on
                 else:
-                    self.output_on_duration[output_id] = True
-                    self.output_last_duration[output_id] = duration
                     self.logger.debug(
                         "Output {id} ({name}) on for {dur:.1f} "
                         "seconds.".format(
@@ -311,6 +310,8 @@ class OutputController(threading.Thread):
                     self.output_on_until[output_id] = (
                             datetime.datetime.now() +
                             datetime.timedelta(seconds=abs(duration)))
+                    self.output_last_duration[output_id] = duration
+                    self.output_on_duration[output_id] = True
 
             # Just turn output on
             elif self.output_type[output_id] in [
