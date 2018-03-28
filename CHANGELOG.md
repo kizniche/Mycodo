@@ -4,6 +4,7 @@
 
  - Fix issue executing mycodo_client.py
  - Fix Command Outputs not turning off after turning on for a duration ([#432](https://github.com/kizniche/mycodo/issues/432))
+ - Prevent DS18B20 measurements outside expected range ([#404](https://github.com/kizniche/mycodo/issues/404))
 
 ### Miscellaneous
 

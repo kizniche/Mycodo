@@ -62,8 +62,14 @@ class DS18B20Sensor(AbstractInput):
                         "{err}".format(cls=type(self).__name__, err=e))
                 time.sleep(1)
 
-        # 85 degrees indicates an issue communicating with the sensor
         if temperature == 85:
+            logger.error("Measurement returned 85 C, "
+                         "Indicating an issue communicating with the sensor.")
+            return None
+        elif -55 > temperature > 125:
+            logger.error(
+                "Measurement outside the expected range of -55 C to 125 C: "
+                "{temp} C".format(temp=self._temperature))
             return None
 
         return temperature
