@@ -13,7 +13,7 @@ INSTALL_TYPE="Full"
 
 if [ "$EUID" -ne 0 ]; then
     printf "Please run as root: \"sudo /bin/bash ${INSTALL_DIRECTORY}/install/setup.sh\"\n";
-    exit
+    exit 1
 fi
 
 WHIPTAIL=$(command -v whiptail)
@@ -35,8 +35,8 @@ LICENSE=$(whiptail --title "Mycodo Installer: License Agreement" \
 
 exitstatus=$?
 if [ $exitstatus != 0 ]; then
-    echo "Mycodo install canceled by user" 2>&1 | tee -a ${LOG_LOCATION}
-    exit
+    printf "Mycodo install canceled by user" 2>&1 | tee -a ${LOG_LOCATION}
+    exit 1
 fi
 
 clear
@@ -51,8 +51,8 @@ INSTALL_TYPE=$(whiptail --title "Mycodo Installer: Install Type" \
                         3>&1 1>&2 2>&3)
 exitstatus=$?
 if [ $exitstatus != 0 ]; then
-    echo "Mycodo install canceled by user" 2>&1 | tee -a ${LOG_LOCATION}
-    exit
+    printf "Mycodo install canceled by user" 2>&1 | tee -a ${LOG_LOCATION}
+    exit 1
 fi
 printf "\nInstall Type: $INSTALL_TYPE\n" >>${LOG_LOCATION} 2>&1
 
@@ -83,17 +83,17 @@ if [ "$INSTALL_TYPE" == "custom" ]; then
                           3>&1 1>&2 2>&3)
     exitstatus=$?
     if [ $exitstatus != 0 ]; then
-        echo "Mycodo install canceled by user" 2>&1 | tee -a ${LOG_LOCATION}
-        exit
+        printf "Mycodo install canceled by user" 2>&1 | tee -a ${LOG_LOCATION}
+        exit 1
     fi
 fi
 
 abort()
 {
     printf "
-************************************
-** ERROR: Mycodo Install Aborted! **
-************************************
+**********************************
+** ERROR During Mycodo Install! **
+**********************************
 
 An error occurred that may have prevented Mycodo from
 being installed properly!
@@ -113,156 +113,100 @@ trap 'abort' 0
 
 set -e
 
-TOTAL=24  # The total number of times progress() is executed
-COUNT=1
+SECONDS=0
+NOW=$(date)
+printf "#### Mycodo installation began $NOW\n" 2>&1 | tee -a ${LOG_LOCATION}
 
-function progress() {
-    echo -e "XXX\n$(awk "BEGIN { pc=100*${COUNT}/${TOTAL}; i=int(pc); print (pc-i<0.5)?i:i+1 }")\n${1}...\nXXX"
-    ((COUNT++))
-}
+${INSTALL_CMD} update-swap-size >>${LOG_LOCATION} 2>&1
+${INSTALL_CMD} update-apt >>${LOG_LOCATION} 2>&1
+${INSTALL_CMD} uninstall-apt-pip >>${LOG_LOCATION} 2>&1
+${INSTALL_CMD} update-packages >>${LOG_LOCATION} 2>&1
+${INSTALL_CMD} setup-virtualenv >>${LOG_LOCATION} 2>&1
+${INSTALL_CMD} update-pip3 >>${LOG_LOCATION} 2>&1
+${INSTALL_CMD} update-pip3-packages >>${LOG_LOCATION} 2>&1
+${INSTALL_CMD} initialize >>${LOG_LOCATION} 2>&1
 
-{
-    progress "Here we go...This may take a while"
-    sleep 5
+if [ "$INSTALL_TYPE" != "minimal" ]; then
+    printf "\n#### Minimal install selected. Skipping extra package installation\n" >>${LOG_LOCATION} 2>&1
+elif [ "$INSTALL_TYPE" != "full" ]; then
+    printf "\n#### Full install selected. Installing all extra packages\n" >>${LOG_LOCATION} 2>&1
+else
+    printf "\n#### Custom install selected. Installing custom packages\n" >>${LOG_LOCATION} 2>&1
+fi
 
-    SECONDS=0
-    NOW=$(date)
-    printf "#### Mycodo installation began $NOW\n" 2>&1 | tee -a ${LOG_LOCATION}
-
-    progress "Checking swap size"
-    ${INSTALL_CMD} update-swap-size >>${LOG_LOCATION} 2>&1
-
-    progress "Updating apt sources"
-    ${INSTALL_CMD} update-apt >>${LOG_LOCATION} 2>&1
-
-    progress "Removing apt version of pip"
-    ${INSTALL_CMD} uninstall-apt-pip >>${LOG_LOCATION} 2>&1
-
-    progress "Installing apt dependencies"
-    ${INSTALL_CMD} update-packages >>${LOG_LOCATION} 2>&1
-
-    progress "Setting up virtualenv"
-    ${INSTALL_CMD} setup-virtualenv >>${LOG_LOCATION} 2>&1
-
-    progress "Updating virtualenv pip"
-    ${INSTALL_CMD} update-pip3 >>${LOG_LOCATION} 2>&1
-
-    progress "Installing base python packages in virtualenv"
-    ${INSTALL_CMD} update-pip3-packages >>${LOG_LOCATION} 2>&1
-
-    progress "Setting up files and folders"
-    ${INSTALL_CMD} initialize >>${LOG_LOCATION} 2>&1
-
-    if [ "$INSTALL_TYPE" != "minimal" ]; then
-        MSG_STR="Minimal install selected. Skipping extra package installation"
-        printf "\n#### ${MSG_STR}." >>${LOG_LOCATION} 2>&1
-
-    else
-        MSG_STR="Installing custom python packages in virtualenv"
-        printf "\n#### ${MSG_STR}." >>${LOG_LOCATION} 2>&1
-    fi
-    progress $MSG_STR
-
-    if [ "$INSTALL_TYPE" == "custom" ]; then
-        for dep in $DEP_STATUS
-        do
-            if [ "$dep" == "Adafruit_ADS1x15" ]; then
-                ${INSTALL_DEP} Adafruit_ADS1x15 >>${LOG_LOCATION} 2>&1
-            elif [ "$dep" == "Adafruit_BME280" ]; then
-                ${INSTALL_DEP} Adafruit_BME280 >>${LOG_LOCATION} 2>&1
-            elif [ "$dep" == "Adafruit_BMP" ]; then
-                ${INSTALL_DEP} Adafruit_BMP >>${LOG_LOCATION} 2>&1
-            elif [ "$dep" == "Adafruit_GPIO" ]; then
-                ${INSTALL_DEP} Adafruit_GPIO >>${LOG_LOCATION} 2>&1
-            elif [ "$dep" == "Adafruit_MCP3008" ]; then
-                ${INSTALL_DEP} Adafruit_MCP3008 >>${LOG_LOCATION} 2>&1
-            elif [ "$dep" == "Adafruit_TMP" ]; then
-                ${INSTALL_DEP} Adafruit_TMP >>${LOG_LOCATION} 2>&1
-            elif [ "$dep" == "MCP342x" ]; then
-                ${INSTALL_DEP} MCP342x >>${LOG_LOCATION} 2>&1
-            elif [ "$dep" == "numpy" ]; then
-                ${INSTALL_DEP} numpy >>${LOG_LOCATION} 2>&1
-            elif [ "$dep" == "pigpio" ]; then
-                ${INSTALL_DEP} install-pigpiod >>${LOG_LOCATION} 2>&1
-            elif [ "$dep" == "quick2wire" ]; then
-                ${INSTALL_DEP} quick2wire >>${LOG_LOCATION} 2>&1
-            elif [ "$dep" == "rpi_rf" ]; then
-                ${INSTALL_DEP} rpi_rf >>${LOG_LOCATION} 2>&1
-            elif [ "$dep" == "sht_sensor" ]; then
-                ${INSTALL_DEP} sht_sensor >>${LOG_LOCATION} 2>&1
-            elif [ "$dep" == "tsl2561" ]; then
-                ${INSTALL_DEP} tsl2561 >>${LOG_LOCATION} 2>&1
-            elif [ "$dep" == "tsl2591" ]; then
-                ${INSTALL_DEP} tsl2591 >>${LOG_LOCATION} 2>&1
-            elif [ "$dep" == "w1thermsensor" ]; then
-                ${INSTALL_DEP} w1thermsensor >>${LOG_LOCATION} 2>&1
-            elif [ "$dep" == "wiringpi" ]; then
-                ${INSTALL_DEP} wiringpi >>${LOG_LOCATION} 2>&1
-            fi
-        done
-        ${INSTALL_CMD} update-permissions >>${LOG_LOCATION} 2>&1
-    elif [ "$INSTALL_TYPE" == "full" ]; then
-        ${INSTALL_DEP} Adafruit_ADS1x15 >>${LOG_LOCATION} 2>&1
-        ${INSTALL_DEP} Adafruit_BMP >>${LOG_LOCATION} 2>&1
-        ${INSTALL_DEP} Adafruit_Python_BME280 >>${LOG_LOCATION} 2>&1
-        ${INSTALL_DEP} Adafruit_GPIO >>${LOG_LOCATION} 2>&1
-        ${INSTALL_DEP} Adafruit_MCP3008 >>${LOG_LOCATION} 2>&1
-        ${INSTALL_DEP} Adafruit_TMP >>${LOG_LOCATION} 2>&1
-        ${INSTALL_DEP} MCP342x >>${LOG_LOCATION} 2>&1
-        ${INSTALL_DEP} numpy >>${LOG_LOCATION} 2>&1
-        ${INSTALL_DEP} install-pigpiod >>${LOG_LOCATION} 2>&1
-        ${INSTALL_DEP} quick2wire >>${LOG_LOCATION} 2>&1
-        ${INSTALL_DEP} rpi_rf >>${LOG_LOCATION} 2>&1
-        ${INSTALL_DEP} sht_sensor >>${LOG_LOCATION} 2>&1
-        ${INSTALL_DEP} tsl2561 >>${LOG_LOCATION} 2>&1
-        ${INSTALL_DEP} tsl2591 >>${LOG_LOCATION} 2>&1
-        ${INSTALL_DEP} w1thermsensor >>${LOG_LOCATION} 2>&1
-        ${INSTALL_DEP} wiringpi >>${LOG_LOCATION} 2>&1
-        ${INSTALL_CMD} update-permissions >>${LOG_LOCATION} 2>&1
-    elif [ "$INSTALL_TYPE" == "minimum" ]; then
-        ${INSTALL_CMD} enable-pigpiod-uninstalled
-    fi
-
-    progress "Installing InfluxDB"
-    ${INSTALL_CMD} update-influxdb >>${LOG_LOCATION} 2>&1
-
-    progress "Setting up InfluxDB database and user"
-    ${INSTALL_CMD} update-influxdb-db-user >>${LOG_LOCATION} 2>&1
-
-    progress "Setting up logrotate"
-    ${INSTALL_CMD} update-logrotate >>${LOG_LOCATION} 2>&1
-
-    progress "Generating SSL certificate"
-    ${INSTALL_CMD} ssl-certs-generate >>${LOG_LOCATION} 2>&1
-
-    progress "Installing Mycodo startup script"
-    ${INSTALL_CMD} update-mycodo-startup-script >>${LOG_LOCATION} 2>&1
-
-    progress "Compiling translations"
-    ${INSTALL_CMD} compile-translations >>${LOG_LOCATION} 2>&1
-
-    progress "Updating cron"
-    ${INSTALL_CMD} update-cron >>${LOG_LOCATION} 2>&1
-
-    progress "Running initialization"
-    ${INSTALL_CMD} initialize >>${LOG_LOCATION} 2>&1
-
-    progress "Setting up the web server"
-    ${INSTALL_CMD} web-server-update >>${LOG_LOCATION} 2>&1
-
-    progress "Starting the web server"
-    ${INSTALL_CMD} web-server-restart >>${LOG_LOCATION} 2>&1
-
-    progress "Creating Mycodo database"
-    ${INSTALL_CMD} web-server-connect >>${LOG_LOCATION} 2>&1
-
-    progress "Setting permissions"
+if [ "$INSTALL_TYPE" == "custom" ]; then
+    for dep in $DEP_STATUS
+    do
+        if [ "$dep" == "Adafruit_ADS1x15" ]; then
+            ${INSTALL_DEP} Adafruit_ADS1x15 >>${LOG_LOCATION} 2>&1
+        elif [ "$dep" == "Adafruit_BME280" ]; then
+            ${INSTALL_DEP} Adafruit_BME280 >>${LOG_LOCATION} 2>&1
+        elif [ "$dep" == "Adafruit_BMP" ]; then
+            ${INSTALL_DEP} Adafruit_BMP >>${LOG_LOCATION} 2>&1
+        elif [ "$dep" == "Adafruit_GPIO" ]; then
+            ${INSTALL_DEP} Adafruit_GPIO >>${LOG_LOCATION} 2>&1
+        elif [ "$dep" == "Adafruit_MCP3008" ]; then
+            ${INSTALL_DEP} Adafruit_MCP3008 >>${LOG_LOCATION} 2>&1
+        elif [ "$dep" == "Adafruit_TMP" ]; then
+            ${INSTALL_DEP} Adafruit_TMP >>${LOG_LOCATION} 2>&1
+        elif [ "$dep" == "MCP342x" ]; then
+            ${INSTALL_DEP} MCP342x >>${LOG_LOCATION} 2>&1
+        elif [ "$dep" == "numpy" ]; then
+            ${INSTALL_DEP} numpy >>${LOG_LOCATION} 2>&1
+        elif [ "$dep" == "pigpio" ]; then
+            ${INSTALL_DEP} install-pigpiod >>${LOG_LOCATION} 2>&1
+        elif [ "$dep" == "quick2wire" ]; then
+            ${INSTALL_DEP} quick2wire >>${LOG_LOCATION} 2>&1
+        elif [ "$dep" == "rpi_rf" ]; then
+            ${INSTALL_DEP} rpi_rf >>${LOG_LOCATION} 2>&1
+        elif [ "$dep" == "sht_sensor" ]; then
+            ${INSTALL_DEP} sht_sensor >>${LOG_LOCATION} 2>&1
+        elif [ "$dep" == "tsl2561" ]; then
+            ${INSTALL_DEP} tsl2561 >>${LOG_LOCATION} 2>&1
+        elif [ "$dep" == "tsl2591" ]; then
+            ${INSTALL_DEP} tsl2591 >>${LOG_LOCATION} 2>&1
+        elif [ "$dep" == "w1thermsensor" ]; then
+            ${INSTALL_DEP} w1thermsensor >>${LOG_LOCATION} 2>&1
+        elif [ "$dep" == "wiringpi" ]; then
+            ${INSTALL_DEP} wiringpi >>${LOG_LOCATION} 2>&1
+        fi
+    done
     ${INSTALL_CMD} update-permissions >>${LOG_LOCATION} 2>&1
+elif [ "$INSTALL_TYPE" == "full" ]; then
+    ${INSTALL_DEP} Adafruit_ADS1x15 >>${LOG_LOCATION} 2>&1
+    ${INSTALL_DEP} Adafruit_BMP >>${LOG_LOCATION} 2>&1
+    ${INSTALL_DEP} Adafruit_Python_BME280 >>${LOG_LOCATION} 2>&1
+    ${INSTALL_DEP} Adafruit_GPIO >>${LOG_LOCATION} 2>&1
+    ${INSTALL_DEP} Adafruit_MCP3008 >>${LOG_LOCATION} 2>&1
+    ${INSTALL_DEP} Adafruit_TMP >>${LOG_LOCATION} 2>&1
+    ${INSTALL_DEP} MCP342x >>${LOG_LOCATION} 2>&1
+    ${INSTALL_DEP} numpy >>${LOG_LOCATION} 2>&1
+    ${INSTALL_DEP} install-pigpiod >>${LOG_LOCATION} 2>&1
+    ${INSTALL_DEP} quick2wire >>${LOG_LOCATION} 2>&1
+    ${INSTALL_DEP} rpi_rf >>${LOG_LOCATION} 2>&1
+    ${INSTALL_DEP} sht_sensor >>${LOG_LOCATION} 2>&1
+    ${INSTALL_DEP} tsl2561 >>${LOG_LOCATION} 2>&1
+    ${INSTALL_DEP} tsl2591 >>${LOG_LOCATION} 2>&1
+    ${INSTALL_DEP} w1thermsensor >>${LOG_LOCATION} 2>&1
+    ${INSTALL_DEP} wiringpi >>${LOG_LOCATION} 2>&1
+    ${INSTALL_CMD} update-permissions >>${LOG_LOCATION} 2>&1
+elif [ "$INSTALL_TYPE" == "minimum" ]; then
+    ${INSTALL_CMD} enable-pigpiod-uninstalled
+fi
 
-    progress "Starting the Mycodo daemon"
-    ${INSTALL_CMD} restart-daemon >>${LOG_LOCATION} 2>&1
-
-} | whiptail --gauge "Installing Mycodo. Please wait..." 6 55 0
+${INSTALL_CMD} update-influxdb >>${LOG_LOCATION} 2>&1
+${INSTALL_CMD} update-influxdb-db-user >>${LOG_LOCATION} 2>&1
+${INSTALL_CMD} update-logrotate >>${LOG_LOCATION} 2>&1
+${INSTALL_CMD} ssl-certs-generate >>${LOG_LOCATION} 2>&1
+${INSTALL_CMD} update-mycodo-startup-script >>${LOG_LOCATION} 2>&1
+${INSTALL_CMD} compile-translations >>${LOG_LOCATION} 2>&1
+${INSTALL_CMD} update-cron >>${LOG_LOCATION} 2>&1
+${INSTALL_CMD} initialize >>${LOG_LOCATION} 2>&1
+${INSTALL_CMD} web-server-update >>${LOG_LOCATION} 2>&1
+${INSTALL_CMD} web-server-restart >>${LOG_LOCATION} 2>&1
+${INSTALL_CMD} web-server-connect >>${LOG_LOCATION} 2>&1
+${INSTALL_CMD} update-permissions >>${LOG_LOCATION} 2>&1
+${INSTALL_CMD} restart-daemon >>${LOG_LOCATION} 2>&1
 
 trap : 0
 

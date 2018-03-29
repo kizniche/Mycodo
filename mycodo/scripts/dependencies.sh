@@ -12,7 +12,7 @@ INSTALL_DIRECTORY=$( cd "$( dirname "${BASH_SOURCE[0]}" )/../../" && pwd -P )
 INSTALL_CMD="/bin/bash ${INSTALL_DIRECTORY}/mycodo/scripts/upgrade_commands.sh"
 cd ${INSTALL_DIRECTORY}
 
-printf "\n#### Installing/updating ${1} with pip\n"
+printf "\n#### Installing/updating ${1}\n"
 
 case "${1:-''}" in
     'Adafruit_ADS1x15')

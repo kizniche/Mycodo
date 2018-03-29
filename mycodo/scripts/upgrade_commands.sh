@@ -145,6 +145,7 @@ case "${1:-''}" in
         adduser mycodo video
     ;;
     'initialize')
+        printf "\n#### Running initialization\n"
         /bin/bash ${MYCODO_PATH}/mycodo/scripts/upgrade_commands.sh create-user
         /bin/bash ${MYCODO_PATH}/mycodo/scripts/upgrade_commands.sh compile-mycodo-wrapper
         /bin/bash ${MYCODO_PATH}/mycodo/scripts/upgrade_commands.sh create-symlinks
