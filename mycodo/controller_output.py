@@ -66,6 +66,7 @@ class OutputController(threading.Thread):
         self.output_on_until = {}
         self.output_last_duration = {}
         self.output_on_duration = {}
+        self.output_off_triggered = {}
 
         # wireless
         self.output_protocol = {}
@@ -119,12 +120,13 @@ class OutputController(threading.Thread):
                     # to turn off?
                     if (self.output_on_until[output_id] < current_time and
                             self.output_on_duration[output_id] and
+                            not self.output_off_triggered[output_id] and
                             ('command' in self.output_type[output_id] or
                              self.output_pin[output_id] is not None)):
 
                         # Use threads to prevent a slow execution of a
                         # process that could slow the loop
-                        self.output_on_duration[output_id] = False
+                        self.output_off_triggered[output_id] = True
                         turn_output_off = threading.Thread(
                             target=self.output_on_off,
                             args=(output_id,
@@ -382,7 +384,10 @@ class OutputController(threading.Thread):
         elif state == 'off':
 
             if not self._is_setup(output_id):
+                self.logger.error("Cannot turn off Output {id}: Output not "
+                                  "set up properly.".format(id=output_id))
                 return
+
             if (self.output_type[output_id] in [
                     'pwm', 'wired', 'wireless_433MHz_pi_switch'] and
                     self.output_pin[output_id] is None):
@@ -452,6 +457,8 @@ class OutputController(threading.Thread):
                           duration_sec,
                           timestamp,))
                 write_db.start()
+
+            self.output_off_triggered[output_id] = False
 
         if trigger_conditionals:
             self.check_conditionals(output_id,
@@ -607,6 +614,7 @@ class OutputController(threading.Thread):
             self.output_on_until[each_output.id] = datetime.datetime.now()
             self.output_last_duration[each_output.id] = 0
             self.output_on_duration[each_output.id] = False
+            self.output_off_triggered[each_output.id] = False
             self.output_time_turned_on[each_output.id] = None
             self.output_protocol[each_output.id] = each_output.protocol
             self.output_pulse_length[each_output.id] = each_output.pulse_length
@@ -678,6 +686,7 @@ class OutputController(threading.Thread):
             self.output_time_turned_on[output_id] = None
             self.output_last_duration[output_id] = 0
             self.output_on_duration[output_id] = False
+            self.output_off_triggered[output_id] = False
             self.output_protocol[output_id] = output.protocol
             self.output_pulse_length[output_id] = output.pulse_length
             self.output_bit_length[output_id] = output.bit_length
@@ -736,6 +745,7 @@ class OutputController(threading.Thread):
             self.output_on_until.pop(output_id, None)
             self.output_last_duration.pop(output_id, None)
             self.output_on_duration.pop(output_id, None)
+            self.output_off_triggered.pop(output_id, None)
             self.output_protocol.pop(output_id, None)
             self.output_pulse_length.pop(output_id, None)
             self.output_bit_length.pop(output_id, None)
