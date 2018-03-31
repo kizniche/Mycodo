@@ -7,6 +7,7 @@
  - Prevent DS18B20 measurements outside expected range ([#404](https://github.com/kizniche/mycodo/issues/404))
  - Prevent race condition preventing output from remaining on for a duration ([#436](https://github.com/kizniche/mycodo/issues/436))
  - Ensure outputs turned on for a duration only turn off once ([#436](https://github.com/kizniche/mycodo/issues/436))
+ - Update sht-sensor to 18.3.3 for Python 3 compatibility ([#437](https://github.com/kizniche/mycodo/issues/437))
 
 ### Miscellaneous
 
