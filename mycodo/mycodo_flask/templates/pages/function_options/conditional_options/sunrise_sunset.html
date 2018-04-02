@@ -1,0 +1,51 @@
+<div class="row small-gutters" style="border-bottom: 2px solid #ddd; padding-bottom: 0.2em">
+  <div class="col-xs-10 col-sm-3 col-md-2">
+    {{form_conditional.rise_or_set.label(class_='control-label')}}
+    <div>
+      <select class="form-control form-tooltip form-dropdown" data-placement="top" id="rise_or_set" name="rise_or_set" title="{{_('Trigger conditional at sunrise or sunset?')}}">
+        <option value="sunrise"{% if each_cond.rise_or_set == 'sunrise' %} selected{% endif %}>{{_('Sunrise')}}</option>
+        <option value="sunset"{% if each_cond.rise_or_set == 'sunset' %} selected{% endif %}>{{_('Sunset')}}</option>
+      </select>
+    </div>
+  </div>
+  <div class="col-auto">
+    {{form_conditional.latitude.label(class_='control-label')}}
+    <div>
+      {{form_conditional.latitude(class_='form-control', value=each_cond.latitude, **{'title':_('Latitude for sunrise or sunset')})}}
+    </div>
+  </div>
+  <div class="col-auto">
+    {{form_conditional.longitude.label(class_='control-label')}}
+    <div>
+      {{form_conditional.longitude(class_='form-control', value=each_cond.longitude, **{'title':_('Longitude for sunrise or sunset')})}}
+    </div>
+  </div>
+  <div class="col-auto">
+    {{form_conditional.zenith.label(class_='control-label')}}
+    <div>
+      {{form_conditional.zenith(class_='form-control', value=each_cond.zenith, **{'title':_('Zenith for sunrise or sunset')})}}
+    </div>
+  </div>
+  <div class="col-auto">
+    {{form_conditional.date_offset_days.label(class_='control-label')}}
+    <div>
+      {{form_conditional.date_offset_days(class_='form-control', value=each_cond.date_offset_days, **{'title':_('The number of days to offset from the date of the sunrise or sunset')})}}
+    </div>
+  </div>
+  <div class="col-auto">
+    {{form_conditional.time_offset_minutes.label(class_='control-label')}}
+    <div>
+      {{form_conditional.time_offset_minutes(class_='form-control', value=each_cond.time_offset_minutes, **{'title':_('The number of minutes to offset from the sunrise or sunset')})}}
+    </div>
+  </div>
+  <div class="col-auto">
+    <label class="control-label">Sunrise and Sunset</label>
+    <div>
+      {% if sunrise_sunset_calculated[each_cond.id]['rise'] and sunrise_sunset_calculated[each_cond.id]['set'] %}
+        {{sunrise_sunset_calculated[each_cond.id]['rise']}}<br/>{{sunrise_sunset_calculated[each_cond.id]['set']}}
+      {% else %}
+        Could not calculate sunrise/sunset times
+      {% endif %}
+    </div>
+  </div>
+</div>

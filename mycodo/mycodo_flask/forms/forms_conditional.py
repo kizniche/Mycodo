@@ -39,6 +39,14 @@ class Conditional(FlaskForm):
     # Edge detection
     if_sensor_edge_detected = StringField(lazy_gettext('If Edge Detected'))
 
+    # Sunrise/sunset
+    rise_or_set = StringField(lazy_gettext('Rise or Set'))
+    latitude = DecimalField(lazy_gettext('Latitude (decimal)'))
+    longitude = DecimalField(lazy_gettext('Longitude (decimal)'))
+    zenith = DecimalField(lazy_gettext('Zenith'))
+    date_offset_days = IntegerField(lazy_gettext('Date Offset (days)'))
+    time_offset_minutes = IntegerField(lazy_gettext('Time Offset (minutes)'))
+
     add_cond = SubmitField(lazy_gettext('Add Conditional'))
     save_cond = SubmitField(lazy_gettext('Save'))
     delete_cond = SubmitField(lazy_gettext('Delete'))

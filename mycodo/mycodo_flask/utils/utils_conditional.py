@@ -58,6 +58,16 @@ def conditional_mod(form):
             cond_mod.if_relay_state = form.if_relay_state.data
             cond_mod.if_relay_duration = form.if_relay_duration.data
 
+        elif cond_mod.conditional_type == 'conditional_sunrise_sunset':
+            error = check_form_sunrise_sunset(form, error)
+
+            cond_mod.rise_or_set = form.rise_or_set.data
+            cond_mod.latitude = form.latitude.data
+            cond_mod.longitude = form.longitude.data
+            cond_mod.zenith = form.zenith.data
+            cond_mod.date_offset_days = form.date_offset_days.data
+            cond_mod.time_offset_minutes = form.time_offset_minutes.data
+
         if not error:
             db.session.commit()
             check_refresh_conditional(form.conditional_id.data)
@@ -321,7 +331,9 @@ def check_refresh_conditional(cond_id):
         Conditional.id == cond_id).first()
 
     if cond.conditional_type in ['conditional_edge',
-                                 'conditional_measurement']:
+                                 'conditional_measurement',
+                                 'conditional_sunrise_sunset'
+                                 ]:
         try:
             control = DaemonControl()
             control.refresh_conditionals()
@@ -502,6 +514,35 @@ def check_form_output(form, error):
     if not form.if_relay_state.data:
         error.append("{id} must be set".format(
             id=form.if_relay_state.label.text))
+
+    return error
+
+
+def check_form_sunrise_sunset(form, error):
+    """Checks if the submitted form has any errors"""
+    if form.rise_or_set.data not in ['sunrise', 'sunset']:
+        error.append("{id} must be set to 'sunrise' or 'sunset'".format(
+            id=form.rise_or_set.label.text))
+
+    if -90 > form.latitude.data > 90:
+        error.append("{id} must be >= -90 and <= 90".format(
+            id=form.latitude.label.text))
+
+    if -180 > form.longitude.data > 180:
+        error.append("{id} must be >= -180 and <= 180".format(
+            id=form.longitude.label.text))
+
+    if form.zenith.data is None:
+        error.append("{id} must be set".format(
+            id=form.zenith.label.text))
+
+    if form.date_offset_days.data is None:
+        error.append("{id} must be set".format(
+            id=form.date_offset_days.label.text))
+
+    if form.time_offset_minutes.data is None:
+        error.append("{id} must be set".format(
+            id=form.time_offset_minutes.label.text))
 
     return error
 

@@ -23,6 +23,14 @@ def upgrade():
     with op.batch_alter_table("pid") as batch_op:
         batch_op.add_column(sa.Column('store_lower_as_negative', sa.Boolean))
 
+    with op.batch_alter_table("conditional") as batch_op:
+        batch_op.add_column(sa.Column('rise_or_set', sa.Text))
+        batch_op.add_column(sa.Column('latitude', sa.Float))
+        batch_op.add_column(sa.Column('longitude', sa.Float))
+        batch_op.add_column(sa.Column('zenith', sa.Float))
+        batch_op.add_column(sa.Column('date_offset_days', sa.Integer))
+        batch_op.add_column(sa.Column('time_offset_minutes', sa.Integer))
+
     op.execute(
         '''
         UPDATE sensor
@@ -44,3 +52,11 @@ def downgrade():
 
     with op.batch_alter_table("pid") as batch_op:
         batch_op.drop_column('store_lower_as_negative')
+
+    with op.batch_alter_table("conditional") as batch_op:
+        batch_op.drop_column('rise_or_set')
+        batch_op.drop_column('latitude')
+        batch_op.drop_column('longitude')
+        batch_op.drop_column('zenith')
+        batch_op.drop_column('date_offset_days')
+        batch_op.drop_column('time_offset_minutes')

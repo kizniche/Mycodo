@@ -48,6 +48,7 @@ from mycodo.mycodo_client import DaemonControl
 from mycodo.utils.database import db_retrieve_table_daemon
 from mycodo.utils.influx import read_last_influxdb
 from mycodo.utils.send_data import send_email
+from mycodo.utils.sunriseset import Sun
 from mycodo.utils.system_pi import cmd_output
 
 MYCODO_DB_PATH = 'sqlite:///' + SQL_DATABASE_MYCODO
@@ -157,16 +158,27 @@ class ConditionalController(threading.Thread):
         self.timer_refractory_period = {}
         self.smtp_wait_timer = {}
 
+        # Set up all measurement conditionals
         conditional = db_retrieve_table_daemon(
             Conditional).filter(Conditional.conditional_type == 'conditional_measurement').all()
-
         for each_cond in conditional:
             self.is_activated[each_cond.id] = each_cond.is_activated
             self.period[each_cond.id] = each_cond.if_sensor_period
-            self.timer_period[each_cond.id] = time.time() + self.period[each_cond.id]
             self.refractory_period[each_cond.id] = each_cond.if_sensor_refractory_period
             self.timer_refractory_period[each_cond.id] = 0
             self.smtp_wait_timer[each_cond.id] = time.time() + 3600
+            self.timer_period[each_cond.id] = time.time() + self.period[each_cond.id]
+
+        # Set up all sunrise/sunset conditionals
+        conditional = db_retrieve_table_daemon(
+            Conditional).filter(Conditional.conditional_type == 'conditional_sunrise_sunset').all()
+        for each_cond in conditional:
+            self.is_activated[each_cond.id] = each_cond.is_activated
+            self.timer_refractory_period[each_cond.id] = 0
+            self.period[each_cond.id] = 1000
+            # Set the next trigger at the specified sunrise/sunset time (+-offsets)
+            self.timer_period[each_cond.id] = self.calculate_sunrise_sunset_epoch(each_cond)
+            self.logger.error("TEST00: Now: {}, Next: {}".format(time.time(), self.timer_period[each_cond.id]))
 
         self.logger.info("Conditional settings refreshed")
 
@@ -305,6 +317,13 @@ class ConditionalController(threading.Thread):
             else:
                 logger_cond.error("GPIO not configured correctly or GPIO state not verified")
                 return
+
+        # Calculate the sunrise/sunset times and find the next time this conditional should trigger
+        elif cond.conditional_type == 'conditional_sunrise_sunset':
+            # Since the check time is the trigger time, we will only calculate and set the next trigger time
+            self.timer_period[cond_id] = self.calculate_sunrise_sunset_epoch(cond)
+            self.logger.error(
+                "TEST01: Now: {}, Next: {}".format(time.time(), self.timer_period[cond_id]))
 
         # If the code hasn't returned by now, the conditional has been triggered
         # and the actions for that conditional should be executed
@@ -650,6 +669,43 @@ class ConditionalController(threading.Thread):
                        attachment_file, attachment_type)
 
         logger_cond.debug(message)
+
+    @staticmethod
+    def calculate_sunrise_sunset_epoch(cond):
+        try:
+            # Adjust for date offset
+            now = datetime.datetime.now()
+            new_date = now + datetime.timedelta(days=cond.date_offset_days)
+
+            sun = Sun(latitude=cond.latitude,
+                      longitude=cond.longitude,
+                      zenith=cond.zenith,
+                      day=new_date.day,
+                      month=new_date.month,
+                      year=new_date.year)
+            sunrise = sun.get_sunrise_time()
+            sunset = sun.get_sunset_time()
+
+            # Adjust for time offset
+            new_sunrise = sunrise['time_local'] + datetime.timedelta(minutes=cond.time_offset_minutes)
+            new_sunset = sunset['time_local'] + datetime.timedelta(minutes=cond.time_offset_minutes)
+
+            if cond.rise_or_set == 'sunrise':
+                # If the sunrise is in the past, add a day
+                if float(new_sunrise.strftime('%s')) < time.time():
+                    tomorrow_sunrise = new_sunrise + datetime.timedelta(days=1)
+                    return float(tomorrow_sunrise.strftime('%s'))
+                else:
+                    return float(new_sunrise.strftime('%s'))
+            elif cond.rise_or_set == 'sunset':
+                # If the sunrise is in the past, add a day
+                if float(new_sunset.strftime('%s')) < time.time():
+                    tomorrow_sunset = new_sunset + datetime.timedelta(days=1)
+                    return float(tomorrow_sunset.strftime('%s'))
+                else:
+                    return float(new_sunset.strftime('%s'))
+        except:
+            return None
 
     @staticmethod
     def get_last_measurement(unique_id, measurement, duration_sec):

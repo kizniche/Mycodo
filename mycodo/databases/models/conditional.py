@@ -21,6 +21,14 @@ class Conditional(CRUDMixin, db.Model):
     if_relay_state = db.Column(db.Text, default='')  # What action to watch relay for
     if_relay_duration = db.Column(db.Float, default=0.0)
 
+    # Sunrise/sunset
+    rise_or_set = db.Column(db.Text, default='sunrise')
+    latitude = db.Column(db.Float, default=33.749249)
+    longitude = db.Column(db.Float, default=-84.387314)
+    zenith = db.Column(db.Float, default=90.8)
+    date_offset_days = db.Column(db.Integer, default=0)
+    time_offset_minutes = db.Column(db.Integer, default=0)
+
     # Sensor/Math options
     # TODO: Make variable names more generic in next major version change sensor->measurement
     if_sensor_period = db.Column(db.Float, default=60.0)

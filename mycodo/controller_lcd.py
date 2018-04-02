@@ -236,6 +236,8 @@ class LCDController(threading.Thread):
                         # Acquire all measurements to be displayed on the LCD
                         display_id = self.display_ids[self.display_count]
                         for i in range(1, self.lcd_y_lines + 1):
+                            if not self.running:
+                                break
                             if self.lcd_line[display_id][i]['id'] and self.lcd_line[display_id][i]['setup']:
                                 self.create_lcd_line(
                                     self.get_measurement(display_id, i),
@@ -244,7 +246,8 @@ class LCDController(threading.Thread):
                             else:
                                 self.lcd_string_line[display_id][i] = 'ID NOT FOUND'
                         # Output lines to the LCD
-                        self.output_lcds()
+                        if self.running:
+                            self.output_lcds()
                     except KeyError:
                         self.logger.error(
                             "KeyError: Unable to output to LCD.")

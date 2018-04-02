@@ -552,6 +552,17 @@ Setting | Description
 -------------------- | ----------------------------------------------
 If Edge Detected | The conditional will be triggered if a change in state is detected, either Rising when the state changes from LOW (0 volts) to HIGH (3.5 volts) or Falling when the state changes from HIGH (3.3 volts) to LOW (0 volts), or Both (Rising and Falling).
 
+#### Sunrise/Sunset Conditional Statement If Options
+
+Setting | Description
+-------------------- | ----------------------------------------------
+Rise or Set | Select which to trigger the conditional, at sunrise or sunset.
+Latitude (decimal) | Latitude of the sunrise/sunset, using decimal format.
+Longitude (decimal) | Longitude of the sunrise/sunset, using decimal format.
+Zenith | The Zenith angle of the sun.
+Date Offset (days) | Set a sunrise/sunset offset in days (positive or negative).
+Time Offset (minutes) | Set a sunrise/sunset offset in minutes (positive or negative).
+
 #### Conditional Statement Actions
 
 Setting | Description

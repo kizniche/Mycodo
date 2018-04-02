@@ -611,6 +611,8 @@ CONDITIONAL_TYPES = {
         'name': lazy_gettext('Output')},
     'conditional_edge': {
         'name': lazy_gettext('Edge')},
+    'conditional_sunrise_sunset': {
+        'name': lazy_gettext('Sun rise/set')}
 }
 
 # Conditional actions
