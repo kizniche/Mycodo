@@ -57,10 +57,10 @@ import timeit
 
 import RPi.GPIO as GPIO
 import smbus
-import sqlalchemy
 
 from mycodo.config import MEASUREMENT_UNITS
 from mycodo.config import MYCODO_VERSION
+from mycodo.config import UNITS
 from mycodo.databases.models import Input
 from mycodo.databases.models import LCD
 from mycodo.databases.models import LCDData
@@ -68,6 +68,7 @@ from mycodo.databases.models import Math
 from mycodo.databases.models import Output
 from mycodo.databases.models import PID
 from mycodo.devices.tca9548a import TCA9548A
+from mycodo.mycodo_flask.utils.utils_general import use_unit_generate
 from mycodo.utils.database import db_retrieve_table_daemon
 from mycodo.utils.influx import read_last_influxdb
 from mycodo.utils.system_pi import add_custom_measurements
@@ -431,7 +432,13 @@ class LCDController(threading.Thread):
                 else:
                     self.lcd_line[display_id][line]['unit'] = ''
         elif measurement in self.list_inputs:
-            self.lcd_line[display_id][line]['unit'] = self.list_inputs[measurement]['unit']
+            # Get what each measurement uses for a unit
+            input_dev = db_retrieve_table_daemon(Input)
+            use_unit = use_unit_generate(input_dev)
+            if measurement in use_unit[device_id]:
+                self.lcd_line[display_id][line]['unit'] = UNITS[use_unit[device_id][measurement]]['unit']
+            else:
+                self.lcd_line[display_id][line]['unit'] = self.list_inputs[measurement]['unit']
         else:
             self.lcd_line[display_id][line]['unit'] = ''
 
