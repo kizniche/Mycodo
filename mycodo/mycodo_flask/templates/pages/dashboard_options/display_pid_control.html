@@ -1,7 +1,36 @@
 
   {%- for each_pid in pid -%}
     {%- if each_pid.unique_id == each_graph.pid_ids.split(',')[0] %}
-  getLastDataPID({{chart_number}}, '{{each_graph.pid_ids}}', {{each_graph.max_measure_age}}, {{each_graph.decimal_places}}, '{{dict_measurements[each_pid.measurement.split(',')[1]]['unit']}}');
-  repeatLastDataPID({{chart_number}}, '{{each_graph.pid_ids}}', {{each_graph.refresh_duration}}, {{each_graph.max_measure_age}}, {{each_graph.decimal_places}}, '{{dict_measurements[each_pid.measurement.split(',')[1]]['unit']}}');
+  getLastDataPID({{chart_number}}, '{{each_graph.pid_ids}}', {{each_graph.max_measure_age}}, {{each_graph.decimal_places}}, '
+      {%- for each_input in input if each_pid.measurement.split(',')[0] == each_input.unique_id -%}
+        {%- if use_unit[each_input.unique_id][each_pid.measurement.split(',')[1]] -%}
+          {{units[use_unit[each_input.unique_id][each_pid.measurement.split(',')[1]]]['unit']}}
+        {%- else -%}
+          {%- if each_pid.measurement.split(',')[1] in measurement_units -%}
+            {{dict_measurements[each_pid.measurement.split(',')[1]]['unit']}}
+          {%- else -%}
+            {%- for each_input in input if each_pid.measurement.split(',')[0] == each_input.unique_id and each_input.device == 'LinuxCommand' -%}
+              {{' ' + each_input.cmd_measurement_units}}
+            {%- endfor -%}
+          {%- endif -%}
+        {%- endif -%}
+      {%- endfor -%}
+      ');
+
+  repeatLastDataPID({{chart_number}}, '{{each_graph.pid_ids}}', {{each_graph.refresh_duration}}, {{each_graph.max_measure_age}}, {{each_graph.decimal_places}}, '
+      {%- for each_input in input if each_pid.measurement.split(',')[0] == each_input.unique_id -%}
+        {%- if use_unit[each_input.unique_id][each_pid.measurement.split(',')[1]] -%}
+          {{units[use_unit[each_input.unique_id][each_pid.measurement.split(',')[1]]]['unit']}}
+        {%- else -%}
+          {%- if each_pid.measurement.split(',')[1] in measurement_units -%}
+            {{dict_measurements[each_pid.measurement.split(',')[1]]['unit']}}
+          {%- else -%}
+            {%- for each_input in input if each_pid.measurement.split(',')[0] == each_input.unique_id and each_input.device == 'LinuxCommand' -%}
+              {{' ' + each_input.cmd_measurement_units}}
+            {%- endfor -%}
+          {%- endif -%}
+        {%- endif -%}
+      {%- endfor -%}
+      ');
     {%- endif -%}
   {%- endfor -%}

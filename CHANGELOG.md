@@ -3,6 +3,11 @@
 ### Features
 
  - Add ability to convert Input measurements between units ([#346](https://github.com/kizniche/mycodo/issues/346))
+ - Add ability to select whether lowering PID outputs are stored as positive or negative values
+
+### Bugfixes
+
+ - Fix issues with PID control on Dashboard ([#441](https://github.com/kizniche/mycodo/issues/441))
 
 
 ## 5.6.10 (2018-03-31)

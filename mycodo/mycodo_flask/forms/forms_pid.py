@@ -5,6 +5,7 @@
 
 from flask_babel import lazy_gettext
 from flask_wtf import FlaskForm
+from wtforms import BooleanField
 from wtforms import DecimalField
 from wtforms import IntegerField
 from wtforms import SelectField
@@ -56,6 +57,7 @@ class PIDModBase(FlaskForm):
         )]
     )
     band = DecimalField(lazy_gettext('Band (+/- Setpoint)'))
+    store_lower_as_negative = BooleanField(lazy_gettext('Store Lower as Negative'))
     k_p = DecimalField(
         lazy_gettext('Kp Gain'),
         validators=[validators.NumberRange(

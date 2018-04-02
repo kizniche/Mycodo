@@ -506,7 +506,27 @@ $(document).ready(function() {
               print_pid_value(data, 'pid_p_value', chart_number, 1, '');
               print_pid_value(data, 'pid_i_value', chart_number, 1, '');
               print_pid_value(data, 'pid_d_value', chart_number, 1, '');
-              print_pid_value(data, 'pid_output', chart_number, 1, '');
+
+              {#Find which PID output is more recent, seconds on or duty cycle#}
+              if (data['pid_output'][1] !== null && data['duty_cycle'][1] !== null) {
+                if (data['pid_output'][0] > data['duty_cycle'][0]) {
+                  document.getElementById('duty_cycle-' + chart_number).innerHTML = '';
+                  print_pid_value(data, 'pid_output', chart_number, 1, ' sec');
+                } else {
+                  document.getElementById('pid_output-' + chart_number).innerHTML = '';
+                  print_pid_value(data, 'duty_cycle', chart_number, 1, ' %');
+                }
+              } else if (data['pid_output'][1] !== null) {
+                document.getElementById('duty_cycle-' + chart_number).innerHTML = '';
+                print_pid_value(data, 'pid_output', chart_number, 1, ' sec');
+              } else if (data['duty_cycle'][1] !== null) {
+                document.getElementById('pid_output-' + chart_number).innerHTML = '';
+                print_pid_value(data, 'duty_cycle', chart_number, 1, ' %');
+              } else {
+                document.getElementById('pid_output-' + chart_number).innerHTML = 'NO DATA';
+                document.getElementById('duty_cycle-' + chart_number).innerHTML = '';
+              }
+
             } else if (data['held']) {
               document.getElementById('container-pid-' + chart_number).className = "pause-background";
               document.getElementById('button-activate-' + chart_number).style.display = "none";
@@ -520,7 +540,26 @@ $(document).ready(function() {
               print_pid_value(data, 'pid_p_value', chart_number, 1, '');
               print_pid_value(data, 'pid_i_value', chart_number, 1, '');
               print_pid_value(data, 'pid_d_value', chart_number, 1, '');
-              print_pid_value(data, 'pid_output', chart_number, 1, '');
+
+              {#Find which PID output is more recent, seconds on or duty cycle#}
+              if (data['pid_output'][1] !== null && data['duty_cycle'][1] !== null) {
+                if (data['pid_output'][0] > data['duty_cycle'][0]) {
+                  document.getElementById('duty_cycle-' + chart_number).innerHTML = '';
+                  print_pid_value(data, 'pid_output', chart_number, 1, ' sec');
+                } else {
+                  document.getElementById('pid_output-' + chart_number).innerHTML = '';
+                  print_pid_value(data, 'duty_cycle', chart_number, 1, ' %');
+                }
+              } else if (data['pid_output'][1] !== null) {
+                document.getElementById('duty_cycle-' + chart_number).innerHTML = '';
+                print_pid_value(data, 'pid_output', chart_number, 1, ' sec');
+              } else if (data['duty_cycle'][1] !== null) {
+                document.getElementById('pid_output-' + chart_number).innerHTML = '';
+                print_pid_value(data, 'duty_cycle', chart_number, 1, ' %');
+              } else {
+                document.getElementById('pid_output-' + chart_number).innerHTML = 'NO DATA';
+                document.getElementById('duty_cycle-' + chart_number).innerHTML = '';
+              }
             } else {
               document.getElementById('container-pid-' + chart_number).className = "active-background";
               document.getElementById('button-activate-' + chart_number).style.display = "none";
@@ -533,7 +572,26 @@ $(document).ready(function() {
               print_pid_value(data, 'pid_p_value', chart_number, 1, '');
               print_pid_value(data, 'pid_i_value', chart_number, 1, '');
               print_pid_value(data, 'pid_d_value', chart_number, 1, '');
-              print_pid_value(data, 'pid_output', chart_number, 1, '');
+
+              {#Find which PID output is more recent, seconds on or duty cycle#}
+              if (data['pid_output'][1] !== null && data['duty_cycle'][1] !== null) {
+                if (data['pid_output'][0] > data['duty_cycle'][0]) {
+                  document.getElementById('duty_cycle-' + chart_number).innerHTML = '';
+                  print_pid_value(data, 'pid_output', chart_number, 1, ' sec');
+                } else {
+                  document.getElementById('pid_output-' + chart_number).innerHTML = '';
+                  print_pid_value(data, 'duty_cycle', chart_number, 1, ' %');
+                }
+              } else if (data['pid_output'][1] !== null) {
+                document.getElementById('duty_cycle-' + chart_number).innerHTML = '';
+                print_pid_value(data, 'pid_output', chart_number, 1, ' sec');
+              } else if (data['duty_cycle'][1] !== null) {
+                document.getElementById('pid_output-' + chart_number).innerHTML = '';
+                print_pid_value(data, 'duty_cycle', chart_number, 1, ' %');
+              } else {
+                document.getElementById('pid_output-' + chart_number).innerHTML = 'NO DATA';
+                document.getElementById('duty_cycle-' + chart_number).innerHTML = '';
+              }
             }
           } else {
             document.getElementById('container-pid-' + chart_number).className = "inactive-background";
@@ -548,6 +606,7 @@ $(document).ready(function() {
             document.getElementById('pid_i_value-' + chart_number).innerHTML = '0';
             document.getElementById('pid_d_value-' + chart_number).innerHTML = '0';
             document.getElementById('pid_output-' + chart_number).innerHTML = '0';
+            document.getElementById('duty_cycle-' + chart_number).innerHTML = '';
             print_pid_value(data, 'actual', chart_number, decimal_places, ' ' + units);
           }
         }

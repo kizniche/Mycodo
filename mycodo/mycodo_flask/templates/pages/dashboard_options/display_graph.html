@@ -297,56 +297,45 @@
 
     {%- for each_pid in pid -%}
       {%- for each_graph_pid_id in graph_pid_ids if each_pid.unique_id == each_graph_pid_id.split(',')[0] -%}
-        {% if each_graph_pid_id.split(',')[1] == 'setpoint' and each_pid.measurement %}
+        {% if each_graph_pid_id.split(',')[1] in ['setpoint', 'setpoint_band_min', 'setpoint_band_max'] and each_pid.measurement %}
         {
-          name: '{{each_pid.name}} {{_('Setpoint')}}',
+          name: '{{each_pid.name}}
+          {%- if each_graph_pid_id.split(',')[1] == 'setpoint' -%}
+            {{' '+_('Setpoint')}}
+          {%- elif each_graph_pid_id.split(',')[1] == 'setpoint_band_min' -%}
+            {{' '+_('Band Min')}}
+          {%- elif each_graph_pid_id.split(',')[1] == 'setpoint_band_max' -%}
+            {{' '+_('Band Max')}}
+          {%- endif -%}
+          ',
           type: 'line',
           tooltip: {
             valueSuffix: '
-          {%- if each_pid.measurement.split(',')[1] in measurement_units -%}
-            {{' ' + measurement_units[each_pid.measurement.split(',')[1]]['unit']|safe}}
-          {%- else -%}
-            {%- for each_input in input if each_pid.measurement.split(',')[0] == each_input.unique_id and each_input.device == 'LinuxCommand' -%}
-              {{' ' + each_input.cmd_measurement_units}}
-            {%- endfor -%}
-          {%- endif -%}',
+          {%- for each_input in input if each_pid.measurement.split(',')[0] == each_input.unique_id -%}
+            {%- if use_unit[each_input.unique_id][each_pid.measurement.split(',')[1]] -%}
+              {{' ' + units[use_unit[each_input.unique_id][each_pid.measurement.split(',')[1]]]['unit']}}
+            {%- else -%}
+              {%- if each_pid.measurement.split(',')[1] in measurement_units -%}
+                {{' ' + measurement_units[each_pid.measurement.split(',')[1]]['unit']|safe}}
+              {%- else -%}
+                {%- for each_input in input if each_pid.measurement.split(',')[0] == each_input.unique_id and each_input.device == 'LinuxCommand' -%}
+                  {{' ' + each_input.cmd_measurement_units}}
+                {%- endfor -%}
+              {%- endif -%}
+            {%- endif -%}
+          {%- endfor -%}
+          ',
             valueDecimals: 2
           },
-          yAxis: '{{each_pid.measurement.split(',')[1]}}',
-          data: []
-        },
-        {% elif each_graph_pid_id.split(',')[1] == 'setpoint_band_min' and each_pid.measurement %}
-        {
-          name: '{{each_pid.name}} {{_('Band Min')}}',
-          type: 'line',
-          tooltip: {
-            valueSuffix: '{%- if each_pid.measurement.split(',')[1] in measurement_units -%}
-            {{' ' + measurement_units[each_pid.measurement.split(',')[1]]['unit']|safe}}
-          {%- else -%}
-            {%- for each_input in input if each_pid.measurement.split(',')[0] == each_input.unique_id and each_input.device == 'LinuxCommand' -%}
-              {{' ' + each_input.cmd_measurement_units}}
-            {%- endfor -%}
-          {%- endif -%}',
-            valueDecimals: 2
-          },
-          yAxis: '{{each_pid.measurement.split(',')[1]}}',
-          data: []
-        },
-        {% elif each_graph_pid_id.split(',')[1] == 'setpoint_band_max' and each_pid.measurement %}
-        {
-          name: '{{each_pid.name}} {{_('Band Max')}}',
-          type: 'line',
-          tooltip: {
-            valueSuffix: '{%- if each_pid.measurement.split(',')[1] in measurement_units -%}
-            {{' ' + measurement_units[each_pid.measurement.split(',')[1]]['unit']|safe}}
-          {%- else -%}
-            {%- for each_input in input if each_pid.measurement.split(',')[0] == each_input.unique_id and each_input.device == 'LinuxCommand' -%}
-              {{' ' + each_input.cmd_measurement_units}}
-            {%- endfor -%}
-          {%- endif -%}',
-            valueDecimals: 2
-          },
-          yAxis: '{{each_pid.measurement.split(',')[1]}}',
+          yAxis: '
+          {%- for each_input in input if each_pid.measurement.split(',')[0] == each_input.unique_id -%}
+            {%- if use_unit[each_input.unique_id][each_pid.measurement.split(',')[1]] -%}
+              {{use_unit[each_input.unique_id][each_pid.measurement.split(',')[1]]}}
+            {%- else -%}
+              {{each_pid.measurement.split(',')[1]}}
+            {%- endif -%}
+          {%- endfor -%}
+          ',
           data: []
         },
         {% elif each_graph_pid_id.split(',')[1] == 'pid_p_value' %}

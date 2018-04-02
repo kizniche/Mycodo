@@ -20,6 +20,9 @@ def upgrade():
     with op.batch_alter_table("sensor") as batch_op:
         batch_op.add_column(sa.Column('convert_to_unit', sa.Text))
 
+    with op.batch_alter_table("pid") as batch_op:
+        batch_op.add_column(sa.Column('store_lower_as_negative', sa.Boolean))
+
     op.execute(
         '''
         UPDATE sensor
@@ -27,7 +30,17 @@ def upgrade():
         '''
     )
 
+    op.execute(
+        '''
+        UPDATE pid
+        SET store_lower_as_negative=1
+        '''
+    )
+
 
 def downgrade():
     with op.batch_alter_table("sensor") as batch_op:
         batch_op.drop_column('convert_to_unit')
+
+    with op.batch_alter_table("pid") as batch_op:
+        batch_op.drop_column('store_lower_as_negative')

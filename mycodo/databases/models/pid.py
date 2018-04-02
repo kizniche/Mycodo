@@ -38,6 +38,7 @@ class PID(CRUDMixin, db.Model):
     lower_min_duration = db.Column(db.Float, default=0.0)
     lower_max_duration = db.Column(db.Float, default=0.0)
     lower_min_off_duration = db.Column(db.Float, default=0.0)
+    store_lower_as_negative = db.Column(db.Boolean, default=True)
 
     def __repr__(self):
         return "<{cls}(id={s.id})>".format(s=self, cls=self.__class__.__name__)

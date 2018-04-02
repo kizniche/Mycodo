@@ -509,7 +509,7 @@ UNITS = {
 }
 
 UNIT_CONVERSIONS = {
-    'celsius_to_fahrenheit': '(9/5)*x+32',
+    'celsius_to_fahrenheit': 'x*(9/5)+32',
     'celsius_to_kelvin': 'x+274.15'
 }
 

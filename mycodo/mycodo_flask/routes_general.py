@@ -618,6 +618,7 @@ def last_data_pid(input_id, input_period):
             'pid_i_value': return_point_timestamp('pid_i_value', input_id, input_period),
             'pid_d_value': return_point_timestamp('pid_d_value', input_id, input_period),
             'pid_output': return_point_timestamp('pid_output', input_id, input_period),
+            'duty_cycle': return_point_timestamp('duty_cycle', input_id, input_period),
             'actual': return_point_timestamp(measure_type, measure_id, input_period)
         }
         return jsonify(live_data)

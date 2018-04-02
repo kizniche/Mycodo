@@ -130,6 +130,7 @@ class PIDController(threading.Thread):
         self.max_measure_age = None
         self.default_setpoint = None
         self.setpoint = None
+        self.store_lower_as_negative = None
 
         # Hysteresis options
         self.band = None
@@ -325,6 +326,7 @@ class PIDController(threading.Thread):
         self.default_setpoint = pid.setpoint
         self.setpoint = pid.setpoint
         self.band = pid.band
+        self.store_lower_as_negative = pid.store_lower_as_negative
 
         dev_unique_id = pid.measurement.split(',')[0]
         self.measurement = pid.measurement.split(',')[1]
@@ -574,12 +576,8 @@ class PIDController(threading.Thread):
                         self.control.relay_on(self.raise_output_id,
                                               duty_cycle=self.raise_duty_cycle)
 
-                        pid_entry_value = self.control_var_to_duty_cycle(
-                            abs(self.control_variable))
-                        if self.control_variable < 0:
-                            pid_entry_value = -pid_entry_value
                         self.write_pid_output_influxdb(
-                            'duty_cycle', pid_entry_value)
+                            'duty_cycle', self.control_var_to_duty_cycle(self.control_variable))
 
                     elif self.raise_output_type in ['command',
                                                     'wired',
@@ -641,18 +639,20 @@ class PIDController(threading.Thread):
                                 id=self.lower_output_id,
                                 dc=self.lower_duty_cycle))
 
-                        # Turn back negative for proper logging
-                        self.lower_duty_cycle = -self.lower_duty_cycle
+                        if self.store_lower_as_negative:
+                            stored_duty_cycle = -abs(self.lower_duty_cycle)
+                            stored_control_variable = -self.control_var_to_duty_cycle(abs(self.control_variable))
+                        else:
+                            stored_duty_cycle = abs(self.lower_duty_cycle)
+                            stored_control_variable = self.control_var_to_duty_cycle(abs(self.control_variable))
 
                         # Activate pwm with calculated duty cycle
                         self.control.relay_on(
                             self.lower_output_id,
-                            duty_cycle=self.lower_duty_cycle)
+                            duty_cycle=stored_duty_cycle)
 
-                        pid_entry_value = self.control_var_to_duty_cycle(
-                            abs(self.control_variable))
-                        pid_entry_value = -pid_entry_value
-                        self.write_pid_output_influxdb('duty_cycle', pid_entry_value)
+                        self.write_pid_output_influxdb(
+                            'duty_cycle', stored_control_variable)
 
                     elif self.lower_output_type in ['command',
                                                     'wired',
@@ -663,22 +663,30 @@ class PIDController(threading.Thread):
                             self.lower_seconds_on = self.lower_max_duration
                         else:
                             self.lower_seconds_on = float("{0:.2f}".format(
-                                self.control_variable))
+                                abs(self.control_variable)))
 
-                        if abs(self.lower_seconds_on) > self.lower_min_duration:
+                        if self.store_lower_as_negative:
+                            stored_seconds_on = -abs(self.lower_seconds_on)
+                            stored_control_variable = -abs(self.control_variable)
+                        else:
+                            stored_seconds_on = abs(self.lower_seconds_on)
+                            stored_control_variable = abs(self.control_variable)
+
+                        if self.lower_seconds_on > self.lower_min_duration:
                             # Activate lower_output for a duration
                             self.logger.debug("Setpoint: {sp} Output: {cv} to "
                                               "output {id}".format(
                                                 sp=self.setpoint,
                                                 cv=self.control_variable,
                                                 id=self.lower_output_id))
+
                             self.control.relay_on(
                                 self.lower_output_id,
-                                duration=self.lower_seconds_on,
+                                duration=stored_seconds_on,
                                 min_off=self.lower_min_off_duration)
 
                         self.write_pid_output_influxdb(
-                            'pid_output', self.control_variable)
+                            'pid_output', stored_control_variable)
 
                 else:
                     if self.lower_output_type == 'pwm':

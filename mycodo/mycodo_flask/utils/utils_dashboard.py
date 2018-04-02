@@ -532,22 +532,33 @@ def check_func(all_devices, unique_id, y_axes, measurement, dict_measurements, i
                 if 'duration_sec' not in y_axes:
                     y_axes.append('duration_sec')
 
-            # Find the y-axis the setpoint or bands apply to
-            elif measurement in ['setpoint', 'setpoint_band_min', 'setpoint_band_max']:
-                for each_input in input_dev:
-                    if each_input.unique_id == each_device.measurement.split(',')[0]:
-                        pid_measurement = each_device.measurement.split(',')[1]
-                        if pid_measurement in dict_measurements:
-                            measure_short = dict_measurements[pid_measurement]['meas']
-                            if measure_short not in y_axes:
-                                y_axes.append(measure_short)
-
-            elif (unique_id in use_unit and
+            # Use custom-converted units
+            if (unique_id in use_unit and
                     measurement in use_unit[unique_id] and
                     use_unit[unique_id][measurement]):
                 measure_short = use_unit[unique_id][measurement]
                 if measure_short not in y_axes:
                     y_axes.append(measure_short)
+
+            # Find the y-axis the setpoint or bands apply to
+            elif measurement in ['setpoint', 'setpoint_band_min', 'setpoint_band_max']:
+                for each_input in input_dev:
+                    if each_input.unique_id == each_device.measurement.split(',')[0]:
+                        pid_measurement = each_device.measurement.split(',')[1]
+
+                        # If PID uses input with custom conversion, use custom unit
+                        if (each_input.unique_id in use_unit and
+                                pid_measurement in use_unit[each_input.unique_id] and
+                                use_unit[each_input.unique_id][pid_measurement]):
+                            measure_short = use_unit[each_input.unique_id][pid_measurement]
+                            if measure_short not in y_axes:
+                                y_axes.append(measure_short)
+                        # Else use default unit for input measurement
+                        else:
+                            if pid_measurement in dict_measurements:
+                                measure_short = dict_measurements[pid_measurement]['meas']
+                                if measure_short not in y_axes:
+                                    y_axes.append(measure_short)
 
             # Append all other measurements if they don't already exist
             elif measurement in dict_measurements:

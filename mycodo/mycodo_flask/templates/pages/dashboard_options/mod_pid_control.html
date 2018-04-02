@@ -28,7 +28,7 @@
   <div class="row">
     <div class="col-sm-12 text-center">
     {% for each_pid in pid if each_pid.unique_id == each_graph.pid_ids %}
-    (P: <span id="pid_p_value-{{chart_number}}"></span>) + (I: <span id="pid_i_value-{{chart_number}}"></span>) + (D: <span id="pid_d_value-{{chart_number}}"></span>) = Out: <span id="pid_output-{{chart_number}}"></span>
+    (P: <span id="pid_p_value-{{chart_number}}"></span>) + (I: <span id="pid_i_value-{{chart_number}}"></span>) + (D: <span id="pid_d_value-{{chart_number}}"></span>) = Out: <span id="pid_output-{{chart_number}}"></span><span id="duty_cycle-{{chart_number}}"></span>
     {% endfor %}
     </div>
   </div>
@@ -65,7 +65,7 @@
   <div class="row" style="padding-top: 0.7em">
     <div class="col-xs-12 small-gutters" style="text-align: center">
     {% for each_pid in pid if each_pid.unique_id == each_graph.pid_ids %}
-    (P: <span id="pid_p_value-{{chart_number}}"></span>) + (I: <span id="pid_i_value-{{chart_number}}"></span>) + (D: <span id="pid_d_value-{{chart_number}}"></span>) = Out: <span id="pid_output-{{chart_number}}"></span>
+    (P: <span id="pid_p_value-{{chart_number}}"></span>) + (I: <span id="pid_i_value-{{chart_number}}"></span>) + (D: <span id="pid_d_value-{{chart_number}}"></span>) = Out: <span id="pid_output-{{chart_number}}"></span><span id="duty_cycle-{{chart_number}}"></span>
     {% endfor %}
     </div>
   </div>
