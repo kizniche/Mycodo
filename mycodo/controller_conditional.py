@@ -178,7 +178,6 @@ class ConditionalController(threading.Thread):
             self.period[each_cond.id] = 1000
             # Set the next trigger at the specified sunrise/sunset time (+-offsets)
             self.timer_period[each_cond.id] = self.calculate_sunrise_sunset_epoch(each_cond)
-            self.logger.error("TEST00: Now: {}, Next: {}".format(time.time(), self.timer_period[each_cond.id]))
 
         self.logger.info("Conditional settings refreshed")
 
@@ -322,8 +321,6 @@ class ConditionalController(threading.Thread):
         elif cond.conditional_type == 'conditional_sunrise_sunset':
             # Since the check time is the trigger time, we will only calculate and set the next trigger time
             self.timer_period[cond_id] = self.calculate_sunrise_sunset_epoch(cond)
-            self.logger.error(
-                "TEST01: Now: {}, Next: {}".format(time.time(), self.timer_period[cond_id]))
 
         # If the code hasn't returned by now, the conditional has been triggered
         # and the actions for that conditional should be executed
