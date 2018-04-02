@@ -7,6 +7,7 @@ import logging
 
 from .base_input import AbstractInput
 from .sensorutils import altitude
+from .sensorutils import convert_units
 from .sensorutils import dewpoint
 
 
@@ -17,7 +18,7 @@ class BME280Sensor(AbstractInput):
 
     """
 
-    def __init__(self, address, bus, testing=False):
+    def __init__(self, address, bus, convert_to_unit=None, testing=False):
         super(BME280Sensor, self).__init__()
         self.logger = logging.getLogger("mycodo.inputs.bme280")
         self._altitude = None
@@ -28,6 +29,7 @@ class BME280Sensor(AbstractInput):
 
         self.I2C_address = address
         self.I2C_bus_number = bus
+        self.convert_to_unit = convert_to_unit
 
         if not testing:
             from Adafruit_BME280 import BME280
@@ -113,11 +115,15 @@ class BME280Sensor(AbstractInput):
         self._pressure = None
         self._temperature = None
 
-        temperature = self.sensor.read_temperature()
+        temperature = convert_units(
+            'temperature', 'celsius', self.convert_to_unit,
+            self.sensor.read_temperature())
         pressure = self.sensor.read_pressure()
         humidity = self.sensor.read_humidity()
         alt = altitude(pressure)
         dew_pt = dewpoint(temperature, humidity)
+        dew_pt = convert_units(
+            'dewpoint', 'celsius', self.convert_to_unit, dew_pt)
         return alt, dew_pt, humidity, pressure, temperature
 
     def read(self):

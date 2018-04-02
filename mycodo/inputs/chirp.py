@@ -5,6 +5,7 @@ import time
 import smbus
 
 from .base_input import AbstractInput
+from .sensorutils import convert_units
 
 logger = logging.getLogger("mycodo.inputs.chirp")
 
@@ -16,13 +17,14 @@ class ChirpSensor(AbstractInput):
 
     """
 
-    def __init__(self, address, bus, testing=False):
+    def __init__(self, address, bus, convert_to_unit=None, testing=False):
         super(ChirpSensor, self).__init__()
         self._lux = None
         self._moisture = None
         self._temperature = None
 
         self.address = address
+        self.convert_to_unit = convert_to_unit
 
         if not testing:
             self.logger = logging.getLogger("mycodo.inputs.chirp_{b}_{a}".format(b=bus, a=address))
@@ -85,7 +87,9 @@ class ChirpSensor(AbstractInput):
 
         lux = self.filter_average('lux', measurement=self.light())
         moisture = self.moist()
-        temperature = self.temp() / 10.0
+        temperature = convert_units(
+            'temperature', 'celsius', self.convert_to_unit,
+            self.temp() / 10.0)
         return lux, moisture, temperature
 
     def read(self):

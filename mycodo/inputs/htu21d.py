@@ -24,6 +24,7 @@ import logging
 import time
 
 from .base_input import AbstractInput
+from .sensorutils import convert_units
 from .sensorutils import dewpoint
 
 logger = logging.getLogger("mycodo.inputs.htu21d")
@@ -36,7 +37,7 @@ class HTU21DSensor(AbstractInput):
 
     """
 
-    def __init__(self, bus, testing=False):
+    def __init__(self, bus, convert_to_unit=None, testing=False):
         super(HTU21DSensor, self).__init__()
         self._dew_point = None
         self._humidity = None
@@ -44,6 +45,7 @@ class HTU21DSensor(AbstractInput):
 
         self.I2C_bus_number = bus
         self.address = 0x40  # HTU21D-F Address
+        self.convert_to_unit = convert_to_unit
 
         if not testing:
             import pigpio
@@ -133,6 +135,13 @@ class HTU21DSensor(AbstractInput):
         uncomp_humidity = ((humi_reading / 65536) * 125) - 6  # formula from datasheet
         humidity = ((25 - temperature) * -0.15) + uncomp_humidity
         dew_pt = dewpoint(temperature, humidity)
+
+        # Check for conversions
+        dew_pt = convert_units(
+            'dewpoint', 'celsius', self.convert_to_unit, dew_pt)
+        temperature = convert_units(
+            'temperature', 'celsius', self.convert_to_unit, temperature)
+
         return dew_pt, humidity, temperature
 
     def read(self):

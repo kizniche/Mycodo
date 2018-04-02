@@ -5,6 +5,7 @@ import time
 from w1thermsensor import W1ThermSensor
 
 from .base_input import AbstractInput
+from .sensorutils import convert_units
 
 logger = logging.getLogger("mycodo.inputs.ds18b20")
 
@@ -12,10 +13,12 @@ logger = logging.getLogger("mycodo.inputs.ds18b20")
 class DS18B20Sensor(AbstractInput):
     """ A sensor support class that monitors the DS18B20's temperature """
 
-    def __init__(self, pin, testing=False):
+    def __init__(self, pin, convert_to_unit=None, testing=False):
         super(DS18B20Sensor, self).__init__()
         self._temperature = None
+
         self.pin = pin
+        self.convert_to_unit = convert_to_unit
 
         if not testing:
             self.sensor = W1ThermSensor(W1ThermSensor.THERM_SENSOR_DS18B20, self.pin)
@@ -71,6 +74,10 @@ class DS18B20Sensor(AbstractInput):
                 "Measurement outside the expected range of -55 C to 125 C: "
                 "{temp} C".format(temp=self._temperature))
             return None
+
+        temperature = convert_units(
+            'temperature', 'celsius', self.convert_to_unit,
+            temperature)
 
         return temperature
 

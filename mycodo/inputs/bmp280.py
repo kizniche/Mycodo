@@ -6,6 +6,7 @@ import time
 
 from .base_input import AbstractInput
 from .sensorutils import altitude
+from .sensorutils import convert_units
 
 # Operating Modes
 BMP280_ULTRALOWPOWER = 0
@@ -51,7 +52,7 @@ class BMP280Sensor(AbstractInput):
 
     """
 
-    def __init__(self, address, bus, mode=BMP280_STANDARD, testing=False):
+    def __init__(self, address, bus, mode=BMP280_STANDARD, convert_to_unit=None, testing=False):
         super(BMP280Sensor, self).__init__()
         self._altitude = None
         self._pressure = None
@@ -59,6 +60,7 @@ class BMP280Sensor(AbstractInput):
 
         self.I2C_address = address
         self.I2C_bus_number = bus
+        self.convert_to_unit = convert_to_unit
 
         if not testing:
             import Adafruit_GPIO.I2C as I2C
@@ -132,10 +134,12 @@ class BMP280Sensor(AbstractInput):
         self._pressure = None
         self._temperature = None
 
-        temperature = self.read_temperature()
-        pressure_pa = self.read_pressure()
-        alt = altitude(pressure_pa)
-        return temperature, pressure_pa, alt
+        temperature = convert_units(
+            'temperature', 'celsius', self.convert_to_unit,
+            self.read_temperature())
+        pressure = self.read_pressure()
+        alt = altitude(pressure)
+        return temperature, pressure, alt
 
     def read(self):
         """

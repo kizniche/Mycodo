@@ -29,6 +29,7 @@ class Input(CRUDMixin, db.Model):
     sensitivity = db.Column(db.Integer, default=0)
     thermocouple_type = db.Column(db.Text, default=None)
     ref_ohm = db.Column(db.Integer, default=None)
+    convert_to_unit = db.Column(db.Text, default='')
 
     # Communication (SPI)
     pin_clock = db.Column(db.Integer, default=None)

@@ -2,6 +2,7 @@
 import logging
 
 from .base_input import AbstractInput
+from .sensorutils import convert_units
 
 logger = logging.getLogger("mycodo.inputs.sht1x_7x")
 
@@ -13,13 +14,15 @@ class SHT1x7xSensor(AbstractInput):
 
     """
 
-    def __init__(self, pin, clock_pin, voltage, testing=False):
+    def __init__(self, pin, clock_pin, voltage, convert_to_unit=None, testing=False):
         super(SHT1x7xSensor, self).__init__()
         self._dew_point = None
         self._humidity = None
         self._temperature = None
+
         self.pin = pin
         self.clock_pin = clock_pin
+        self.convert_to_unit = convert_to_unit
 
         if not testing:
             from sht_sensor import Sht
@@ -88,9 +91,14 @@ class SHT1x7xSensor(AbstractInput):
         self._humidity = None
         self._temperature = None
 
-        temperature = self.sht_sensor.read_t()
+        temperature = convert_units(
+            'temperature', 'celsius', self.convert_to_unit,
+            self.sht_sensor.read_t())
         humidity = self.sht_sensor.read_rh()
         dew_point = self.sht_sensor.read_dew_point(temperature, humidity)
+        dew_point = convert_units(
+            'dewpoint', 'celsius', self.convert_to_unit, dew_point)
+
         return dew_point, humidity, temperature
 
     def read(self):

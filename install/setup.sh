@@ -113,6 +113,7 @@ trap 'abort' 0
 
 set -e
 
+clear
 SECONDS=0
 NOW=$(date)
 printf "#### Mycodo installation began $NOW\n" 2>&1 | tee -a ${LOG_LOCATION}
@@ -127,11 +128,11 @@ ${INSTALL_CMD} update-pip3-packages >>${LOG_LOCATION} 2>&1
 ${INSTALL_CMD} initialize >>${LOG_LOCATION} 2>&1
 
 if [ "$INSTALL_TYPE" != "minimal" ]; then
-    printf "\n#### Minimal install selected. Skipping extra package installation\n" >>${LOG_LOCATION} 2>&1
+    printf "\n#### Minimal install selected. Skipping extra package installation.\n" >>${LOG_LOCATION} 2>&1
 elif [ "$INSTALL_TYPE" != "full" ]; then
-    printf "\n#### Full install selected. Installing all extra packages\n" >>${LOG_LOCATION} 2>&1
+    printf "\n#### Full install selected. Installing all extra packages.\n" >>${LOG_LOCATION} 2>&1
 else
-    printf "\n#### Custom install selected. Installing custom packages\n" >>${LOG_LOCATION} 2>&1
+    printf "\n#### Custom install selected. Installing custom packages.\n" >>${LOG_LOCATION} 2>&1
 fi
 
 if [ "$INSTALL_TYPE" == "custom" ]; then

@@ -10,7 +10,7 @@ import os
 from flask_babel import lazy_gettext
 
 MYCODO_VERSION = '5.6.10'
-ALEMBIC_VERSION = '01ba9473fc96'
+ALEMBIC_VERSION = 'c4da358618cc'
 
 #  FORCE_UPGRADE_MASTER
 #  Set True to enable upgrading to the master branch of the Mycodo repository.
@@ -385,9 +385,6 @@ MEASUREMENT_UNITS = {
     'co2': {
         'name': lazy_gettext('CO2'),
         'meas': 'co2', 'unit': 'ppmv'},
-    'dewpoint': {
-        'name': lazy_gettext('Dewpoint'),
-        'meas': 'temperature', 'unit': '°C'},
     'cpu_load': {
         'name': lazy_gettext('CPU Load'),
         'meas': 'cpu_load', 'unit': ''},
@@ -400,6 +397,10 @@ MEASUREMENT_UNITS = {
     'cpu_load_15m': {
         'name': lazy_gettext('CPU Load'),
         'meas': 'cpu_load', 'unit': '15 min'},
+    'dewpoint': {
+        'name': lazy_gettext('Dewpoint'),
+        'meas': 'temperature', 'unit': '°C',
+        'units': ['celsius', 'fahrenheit', 'kelvin']},
     'disk_space': {
         'name': lazy_gettext('Disk'),
         'meas': 'disk_space', 'unit': 'MB'},
@@ -477,16 +478,39 @@ MEASUREMENT_UNITS = {
         'meas': 'specific_volume', 'unit': 'm^3/kg'},
     'temperature': {
         'name': lazy_gettext('Temperature'),
-        'meas': 'temperature', 'unit': '°C'},
+        'meas': 'temperature', 'unit': '°C',
+        'units': ['celsius', 'fahrenheit', 'kelvin']},
     'temperature_object': {
         'name': lazy_gettext('Temperature (Obj)'),
-        'meas': 'temperature', 'unit': '°C'},
+        'meas': 'temperature', 'unit': '°C',
+        'units': ['celsius', 'fahrenheit', 'kelvin']},
     'temperature_die': {
         'name': lazy_gettext('Temperature (Die)'),
-        'meas': 'temperature', 'unit': '°C'},
+        'meas': 'temperature', 'unit': '°C',
+        'units': ['celsius', 'fahrenheit', 'kelvin']},
     'voltage': {
         'name': lazy_gettext('Voltage'),
         'meas': 'voltage', 'unit': 'volts'}
+}
+
+UNITS = {
+    'celsius': {
+        'name': 'Celsius',
+        'measurement': 'temperature',
+        'unit': '°C'},
+    'fahrenheit': {
+        'name': 'Fahrenheit',
+        'measurement': 'temperature',
+        'unit': '°F'},
+    'kelvin': {
+        'name': 'Kelvin',
+        'measurement': 'temperature',
+        'unit': '°K'}
+}
+
+UNIT_CONVERSIONS = {
+    'celsius_to_fahrenheit': '(9/5)*x+32',
+    'celsius_to_kelvin': 'x+274.15'
 }
 
 # Calibration

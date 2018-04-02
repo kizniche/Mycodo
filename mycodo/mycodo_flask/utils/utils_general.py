@@ -486,3 +486,17 @@ def return_dependencies(device_type, dep_type='unmet'):
         return unmet_deps
     else:
         return met_deps
+
+
+def use_unit_generate(input_dev):
+    """Generate dictionary of units to convert to"""
+    use_unit = {}
+    for each_input in input_dev:
+        use_unit[each_input.unique_id] = {}
+        for each_measure in each_input.measurements.split(','):
+            for each_unit_set in each_input.convert_to_unit.split(';'):
+                if len(each_unit_set.split(',')) > 1 and each_measure == each_unit_set.split(',')[0]:
+                    use_unit[each_input.unique_id][each_measure] = each_unit_set.split(',')[1]
+                elif each_measure not in use_unit[each_input.unique_id]:
+                    use_unit[each_input.unique_id][each_measure] = None
+    return use_unit

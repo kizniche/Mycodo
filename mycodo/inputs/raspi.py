@@ -5,6 +5,7 @@ import logging
 import subprocess
 
 from .base_input import AbstractInput
+from .sensorutils import convert_units
 
 logger = logging.getLogger("mycodo.inputs.raspi")
 
@@ -12,9 +13,10 @@ logger = logging.getLogger("mycodo.inputs.raspi")
 class RaspberryPiCPUTemp(AbstractInput):
     """ A sensor support class that monitors the raspberry pi's cpu temperature """
 
-    def __init__(self):
+    def __init__(self, convert_to_unit=None):
         super(RaspberryPiCPUTemp, self).__init__()
         self._temperature = None
+        self.convert_to_unit = convert_to_unit
 
     def __repr__(self):
         """  Representation of object """
@@ -43,8 +45,7 @@ class RaspberryPiCPUTemp(AbstractInput):
             self.read()
         return self._temperature
 
-    @staticmethod
-    def get_measurement():
+    def get_measurement(self):
         """ Gets the Raspberry pi's temperature in Celsius by reading the temp file and div by 1000 """
         # import psutil
         # import resource
@@ -56,7 +57,10 @@ class RaspberryPiCPUTemp(AbstractInput):
         # soft, hard = resource.getrlimit(resource.RLIMIT_NOFILE)
         # logger.info("LIMIT: Soft: {sft}, Hard: {hrd}".format(sft=soft, hrd=hard))
         with open('/sys/class/thermal/thermal_zone0/temp') as cpu_temp_file:
-            return float(cpu_temp_file.read()) / 1000
+            temperature = convert_units(
+                'temperature', 'celsius', self.convert_to_unit,
+                float(cpu_temp_file.read()) / 1000)
+            return temperature
 
     def read(self):
         """

@@ -1,0 +1,18 @@
+{% for each_measurement in each_input.measurements.split(',') %}
+  {% if each_measurement in measurements and 'units' in measurements[each_measurement] %}
+    {% set index = '{0:0>2}'.format(loop.index) %}
+<div class="col-auto">
+  <label class="control-label">{{measurements[each_measurement]['name']}} Unit</label>
+  <div>
+    <select class="form-control form-tooltip form-dropdown" data-placement="top" id="convert_unit{{index}}" name="convert_unit{{index}}" title="{{ _('Select the unit of the measurement to be stored in the database')}}">
+      {% for each_unit in measurements[each_measurement]['units'] %}
+      <option value="{{each_measurement}},{{each_unit}}"{% if each_measurement+','+each_unit in each_input.convert_to_unit.split(';') %} selected{% endif %}>{{units[each_unit]['name']}} ({{units[each_unit]['unit']}})</option>
+      {% endfor %}
+    </select>
+  </div>
+</div>
+  {% endif %}
+{% endfor %}
+<div class="col-auto">
+  {{each_input.convert_to_unit}}
+</div>

@@ -7,6 +7,8 @@ import math
 
 import os
 
+from mycodo.config import UNIT_CONVERSIONS
+
 logger = logging.getLogger("mycodo.sensor_utils")
 
 
@@ -22,6 +24,22 @@ def altitude(pressure_pa, sea_level_pa=101325.0):
 
 def c_to_f(temp_c):
     return 9.0 / 5.0 * temp_c + 32
+
+def convert_units(measurement, unit, convert_to_unit, measure_value):
+    logger.error("TEST00: {}, {}, {}, {}".format(measurement, unit, convert_to_unit, measure_value))
+    measuement = measure_value
+    if convert_to_unit:
+        for each_unit in convert_to_unit.split(';'):
+            if each_unit.split(',')[0] == measurement:
+                conversion = unit + '_to_' + each_unit.split(',')[1]
+                if each_unit.split(',')[1] == unit:
+                    return measuement
+                elif conversion in UNIT_CONVERSIONS:
+                    replaced_str = UNIT_CONVERSIONS[conversion].replace('x', str(measuement))
+                    logger.error("TEST01: {}".format(float('{0:.5f}'.format(eval(replaced_str)))))
+                    return float('{0:.5f}'.format(eval(replaced_str)))
+    logger.error("TEST01: {}".format(measuement))
+    return measuement
 
 
 def dewpoint(t, rh):

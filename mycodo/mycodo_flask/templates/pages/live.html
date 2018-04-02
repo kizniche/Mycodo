@@ -6,7 +6,7 @@
 
 {% block head %}
   <script>
-    function updateMeasurements(sensor_id, sensor_measurement, period, convert_c) {
+    function updateMeasurements(sensor_id, sensor_measurement, period) {
       var url = '/last/' + sensor_measurement + '/' + sensor_id + '/' + period.toString();
       $.ajax(url, {
         success: function(data, responseText, jqXHR) {
@@ -27,9 +27,6 @@
             var formattedTime = year + "/" + month + "/" + day + " " + hours + ':' + minutes.substr(-2) + ':' + seconds.substr(-2);
             document.getElementById(sensor_id + "-" + sensor_measurement + "-time").innerHTML = formattedTime;
             document.getElementById(sensor_id + "-" + sensor_measurement + "-value").innerHTML = measurement;
-            if (convert_c) {
-              document.getElementById(sensor_id + "-" + sensor_measurement + "-value-F").innerHTML = (measurement * 9 / 5 + 32).toFixed(2).toString();
-            }
           }
         },
         error: function(XMLHttpRequest, textStatus, errorThrown) {
@@ -57,16 +54,15 @@
       {%- for each_input in input if each_input.is_activated -%}
         {%- set measurement_list = each_input.measurements.split(',') -%}
         {%- for each_measurement in measurement_list %}
-          {%- set c_to_f = 'true' if each_measurement in temperatures else 'false' %}
           {% if each_input.device == 'LinuxCommand' -%}
-          liveTextData('{{each_input.unique_id}}', '{{each_input.cmd_measurement}}', {{each_input.period + 1}}, {{c_to_f}});
+          liveTextData('{{each_input.unique_id}}', '{{each_input.cmd_measurement}}', {{each_input.period + 1}});
           {% elif each_measurement == 'edge' -%}
-          liveTextData('{{each_input.unique_id}}', '{{each_measurement}}', '0', {{c_to_f}});
+          liveTextData('{{each_input.unique_id}}', '{{each_measurement}}', '0');
           {% else -%}
-          liveTextData('{{each_input.unique_id}}', '{{each_measurement}}', {{each_input.period + 1}}, {{c_to_f}});
+          liveTextData('{{each_input.unique_id}}', '{{each_measurement}}', {{each_input.period + 1}});
           {% endif -%}
           {%- if each_measurement == 'voltage' %}
-            liveTextData('{{each_input.unique_id}}', '{{each_input.adc_measure}}', {{each_input.period + 1}}, {{c_to_f}});
+            liveTextData('{{each_input.unique_id}}', '{{each_input.adc_measure}}', {{each_input.period + 1}});
           {%- endif -%}
         {%- endfor -%}
       {%- endfor -%}
@@ -75,7 +71,7 @@
         {%- set measurement_list = each_math.measure.split(',') -%}
         {%- for each_measurement in measurement_list %}
           {%- set c_to_f = 'true' if each_measurement in temperatures else 'false' %}
-          liveTextData('{{each_math.unique_id}}', '{{each_measurement}}', {{each_math.period+1}}, {{c_to_f}});
+          liveTextData('{{each_math.unique_id}}', '{{each_measurement}}', {{each_math.period+1}});
         {%- endfor -%}
       {%- endfor -%}
     });
@@ -126,8 +122,9 @@
           {{_('Measurement')}} | {{_('Timestamp')}}
           <div>
             {% for each_measure in each_input.measurements.split(',') if each_input.device != 'LinuxCommand' %}
+
               {% if each_measure and each_measure in measurement_units and measurement_units[each_measure]['meas'] == 'temperature' %}
-                <b><span id="{{each_input.unique_id}}-{{each_measure}}-value">0.0</span> {{measurement_units[each_measure]['unit']}} (<span id="{{each_input.unique_id}}-{{each_measure}}-value-F">0.0</span> &deg;F)
+                <b><span id="{{each_input.unique_id}}-{{each_measure}}-value">0.0</span> {% if use_unit[each_input.unique_id][each_measure] %}{{units[use_unit[each_input.unique_id][each_measure]]['unit']}}{% else %}{{measurement_units[each_measure]['unit']}}{% endif %}
                   {%- if each_measure == 'dewpoint' %} DP
                   {% elif each_measure == 'temperature_object' %} Obj
                   {% elif each_measure == 'temperature_die' %} Die

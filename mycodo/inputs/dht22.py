@@ -7,6 +7,7 @@ import pigpio
 from mycodo.databases.models import Output
 from mycodo.utils.database import db_retrieve_table_daemon
 from .base_input import AbstractInput
+from .sensorutils import convert_units
 from .sensorutils import dewpoint
 
 
@@ -33,7 +34,7 @@ class DHT22Sensor(AbstractInput):
     gpio ------------+
 
     """
-    def __init__(self, gpio, power=None, testing=False):
+    def __init__(self, gpio, power=None, convert_to_unit=None, testing=False):
         """
         :param gpio: gpio pin number
         :type gpio: int
@@ -61,6 +62,7 @@ class DHT22Sensor(AbstractInput):
         self.temp_humidity = None
         self.temp_dew_point = None
 
+        self.convert_to_unit = convert_to_unit
         self.power_relay_id = power
         self.powered = False
 
@@ -165,6 +167,12 @@ class DHT22Sensor(AbstractInput):
         for _ in range(4):
             self.measure_sensor()
             if self.temp_dew_point is not None:
+                self.temp_dew_point = convert_units(
+                    'dewpoint', 'celsius', self.convert_to_unit,
+                    self.temp_dew_point)
+                self.temp_temperature = convert_units(
+                    'temperature', 'celsius', self.convert_to_unit,
+                    self.temp_temperature)
                 return (self.temp_dew_point,
                         self.temp_humidity,
                         self.temp_temperature)  # success - no errors
@@ -179,6 +187,12 @@ class DHT22Sensor(AbstractInput):
             for _ in range(2):
                 self.measure_sensor()
                 if self.temp_dew_point is not None:
+                    self.temp_dew_point = convert_units(
+                        'dewpoint', 'celsius', self.convert_to_unit,
+                        self.temp_dew_point)
+                    self.temp_temperature = convert_units(
+                        'temperature', 'celsius', self.convert_to_unit,
+                        self.temp_temperature)
                     return (self.temp_dew_point,
                             self.temp_humidity,
                             self.temp_temperature)  # success - no errors

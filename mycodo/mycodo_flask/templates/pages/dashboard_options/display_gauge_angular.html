@@ -129,9 +129,17 @@
 
         {%- for each_input in input -%}
           {%- for each_id_and_measure in graph_input_ids if each_input.unique_id == each_id_and_measure.split(',')[0] %}
-            {%- if not each_input.adc_measure and 'temperature' in measurement_units[each_id_and_measure.split(',')[1]]['meas'] %}
+            {%- if not each_input.adc_measure %}
             pointFormatter: function () {
-              return '<span style="color:'+ this.series.color + '"">\u25CF</span> ' + this.series.name + ': <b>' + Highcharts.numberFormat(this.y, 2) + '°C (' + Highcharts.numberFormat(((this.y*9/5)+32), 2) + '°F)</b><br>';
+              return '<span style="color:'+ this.series.color + '"">\u25CF</span> ' + this.series.name + ': <b>' + Highcharts.numberFormat(this.y, 2) + '
+
+              {%- if use_unit[each_input.unique_id][each_id_and_measure.split(',')[1]] -%}
+                {{' ' + units[use_unit[each_input.unique_id][each_id_and_measure.split(',')[1]]]['unit']}}
+              {%- else -%}
+                {{' ' + measurement_units[each_id_and_measure.split(',')[1]]['unit']|safe}}
+              {%- endif -%}
+
+              </b><br>';
             },
             {% endif %}
           {%- endfor -%}
@@ -140,7 +148,9 @@
             valueSuffix: '
         {%- for each_input in input -%}
           {%- for each_id_and_measure in graph_input_ids if each_input.unique_id == each_id_and_measure.split(',')[0] %}
-            {%- if not each_input.adc_measure -%}
+            {%- if use_unit[each_input.unique_id][each_id_and_measure.split(',')[1]] -%}
+              {{' ' + units[use_unit[each_input.unique_id][each_id_and_measure.split(',')[1]]]['unit']}}
+            {%- elif not each_input.adc_measure -%}
               {{' ' + measurement_units[each_id_and_measure.split(',')[1]]['unit']|safe}}
             {%- else -%}
               {{' ' + each_input.adc_measure_units|safe}}

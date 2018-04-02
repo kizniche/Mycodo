@@ -246,7 +246,7 @@ def input_add(form_add):
         return 1
 
 
-def input_mod(form_mod):
+def input_mod(form_mod, request_form):
     action = '{action} {controller}'.format(
         action=gettext("Modify"),
         controller=gettext("Input"))
@@ -294,6 +294,20 @@ def input_mod(form_mod):
                 mod_sensor.pre_relay_id = form_mod.pre_relay_id.data
             else:
                 mod_sensor.pre_relay_id = None
+
+            short_list = []
+            for key in request_form.keys():
+                if 'convert_unit' in key:
+                    for value in request_form.getlist(key):
+                        if (len(value.split(',')) < 2 or
+                                value.split(',')[0] == '' or value.split(',')[1] == ''):
+                            error.append("Invalid custom unit")
+                        short_list.append(value)
+            # sorted_list = [(k, measure_unit[k]) for k in sorted(measure_unit)]
+
+            # Generate color option string from form inputs
+            mod_sensor.convert_to_unit = ';'.join(short_list)
+
             mod_sensor.pre_relay_duration = form_mod.pre_relay_duration.data
             mod_sensor.pre_relay_during_measure = form_mod.pre_relay_during_measure.data
             mod_sensor.period = form_mod.period.data

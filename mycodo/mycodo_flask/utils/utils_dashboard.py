@@ -20,6 +20,7 @@ from mycodo.mycodo_flask.utils.utils_general import delete_entry_with_id
 from mycodo.mycodo_flask.utils.utils_general import flash_form_errors
 from mycodo.mycodo_flask.utils.utils_general import flash_success_errors
 from mycodo.mycodo_flask.utils.utils_general import reorder
+from mycodo.mycodo_flask.utils.utils_general import use_unit_generate
 from mycodo.utils.system_pi import csv_to_list_of_int
 from mycodo.utils.system_pi import list_to_csv
 
@@ -523,6 +524,8 @@ def check_func(all_devices, unique_id, y_axes, measurement, dict_measurements, i
         # If the ID saved to the dashboard element matches the table entry ID
         if each_device.unique_id == unique_id:
 
+            use_unit = use_unit_generate(input_dev)
+
             # Add duration_sec
             # TODO: rename 'pid_output' to 'duration_sec'
             if measurement == 'pid_output':
@@ -538,6 +541,13 @@ def check_func(all_devices, unique_id, y_axes, measurement, dict_measurements, i
                             measure_short = dict_measurements[pid_measurement]['meas']
                             if measure_short not in y_axes:
                                 y_axes.append(measure_short)
+
+            elif (unique_id in use_unit and
+                    measurement in use_unit[unique_id] and
+                    use_unit[unique_id][measurement]):
+                measure_short = use_unit[unique_id][measurement]
+                if measure_short not in y_axes:
+                    y_axes.append(measure_short)
 
             # Append all other measurements if they don't already exist
             elif measurement in dict_measurements:

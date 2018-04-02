@@ -1,3 +1,10 @@
+## 5.6.11 (Unreleased)
+
+### Features
+
+ - Add ability to convert Input measurements between units ([#346](https://github.com/kizniche/mycodo/issues/346))
+
+
 ## 5.6.10 (2018-03-31)
 
 ### Bugfixes

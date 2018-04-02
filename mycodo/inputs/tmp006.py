@@ -2,6 +2,7 @@
 import logging
 
 from .base_input import AbstractInput
+from .sensorutils import convert_units
 
 logger = logging.getLogger("mycodo.inputs.tmp006")
 
@@ -9,12 +10,14 @@ logger = logging.getLogger("mycodo.inputs.tmp006")
 class TMP006Sensor(AbstractInput):
     """ A sensor support class that monitors the TMP006's die and object temperatures """
 
-    def __init__(self, address, bus, testing=False):
+    def __init__(self, address, bus, convert_to_unit=None, testing=False):
         super(TMP006Sensor, self).__init__()
         self._temperature_die = None
         self._temperature_object = None
+
         self.i2c_address = address
         self.i2c_bus = bus
+        self.convert_to_unit = convert_to_unit
 
         if not testing:
             from Adafruit_TMP import TMP006
@@ -65,8 +68,14 @@ class TMP006Sensor(AbstractInput):
         self._temperature_object = None
 
         self.sensor.begin()
-        temperature_die = self.sensor.readDieTempC()
-        temperature_object = self.sensor.readObjTempC()
+
+        temperature_die = convert_units(
+            'temperature_die', 'celsius', self.convert_to_unit,
+            self.sensor.readDieTempC())
+        temperature_object = convert_units(
+            'temperature_object', 'celsius', self.convert_to_unit,
+            self.sensor.readObjTempC())
+
         return temperature_die, temperature_object
 
     def read(self):

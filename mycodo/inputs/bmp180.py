@@ -3,6 +3,7 @@ import logging
 import time
 
 from .base_input import AbstractInput
+from .sensorutils import convert_units
 
 logger = logging.getLogger("mycodo.inputs.bmp180")
 
@@ -14,12 +15,14 @@ class BMP180Sensor(AbstractInput):
 
     """
 
-    def __init__(self, bus, testing=False):
+    def __init__(self, bus, convert_to_unit=None, testing=False):
         super(BMP180Sensor, self).__init__()
-        self.I2C_bus_number = bus
         self._altitude = None
         self._pressure = None
         self._temperature = None
+
+        self.I2C_bus_number = bus
+        self.convert_to_unit = convert_to_unit
 
         if not testing:
             from Adafruit_BMP import BMP085
@@ -78,7 +81,12 @@ class BMP180Sensor(AbstractInput):
     def get_measurement(self):
         """ Gets the measurement in units by reading the BMP180/085 """
         time.sleep(2)
-        return self.bmp.read_temperature(), self.bmp.read_pressure(), self.bmp.read_altitude()
+        temperature = convert_units(
+            'temperature', 'celsius', self.convert_to_unit,
+            self.bmp.read_temperature())
+        pressure = self.bmp.read_pressure()
+        altitude = self.bmp.read_altitude()
+        return temperature, pressure, altitude
 
     def read(self):
         """

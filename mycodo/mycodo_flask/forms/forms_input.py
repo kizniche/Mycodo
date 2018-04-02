@@ -48,6 +48,7 @@ class InputMod(FlaskForm):
     calibrate_sensor_measure = StringField(lazy_gettext('Calibration Measurement'))
     resolution = IntegerField(lazy_gettext('Resolution'))
     sensitivity = IntegerField(lazy_gettext('Sensitivity'))
+    convert_to_unit = StringField(lazy_gettext('Unit'))
 
     # Server options
     host = StringField(lazy_gettext('Host'))

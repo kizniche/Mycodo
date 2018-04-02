@@ -4,6 +4,7 @@ import logging
 import time
 
 from .base_input import AbstractInput
+from .sensorutils import convert_units
 from .sensorutils import dewpoint
 
 logger = logging.getLogger("mycodo.inputs.sht2x")
@@ -16,7 +17,7 @@ class SHT2xSensor(AbstractInput):
 
     """
 
-    def __init__(self, address, bus, testing=False):
+    def __init__(self, address, bus, convert_to_unit=None, testing=False):
         super(SHT2xSensor, self).__init__()
         self._dew_point = None
         self._humidity = None
@@ -24,6 +25,7 @@ class SHT2xSensor(AbstractInput):
 
         self.i2c_address = address
         self.i2c_bus = bus
+        self.convert_to_unit = convert_to_unit
 
         if not testing:
             import smbus
@@ -115,6 +117,12 @@ class SHT2xSensor(AbstractInput):
             # Send soft reset and try a second read
             self.sht2x.write_byte(self.i2c_address, 0xFE)
             time.sleep(0.1)
+
+        dew_point = convert_units(
+            'dewpoint', 'celsius', self.convert_to_unit, dew_point)
+        temperature = convert_units(
+            'temperature', 'celsius', self.convert_to_unit, temperature)
+
         return dew_point, humidity, temperature
 
     def read(self):

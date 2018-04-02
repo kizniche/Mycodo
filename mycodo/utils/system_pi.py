@@ -9,6 +9,8 @@ import subprocess
 import os
 
 from mycodo.config import INSTALL_DIRECTORY
+from mycodo.config import UNITS
+from mycodo.mycodo_flask.utils.utils_general import use_unit_generate
 
 logger = logging.getLogger("mycodo.system_pi")
 
@@ -19,9 +21,23 @@ def add_custom_measurements(inputs, maths, measurement_units):
     input, ADC, and command measurements/units
     """
     return_measurements = measurement_units
+
+    use_unit = use_unit_generate(inputs)
+
     for each_input in inputs:
+        # Add converted measurements/units to measurements dictionary
+        if each_input.unique_id in use_unit:
+            for each_measure in use_unit[each_input.unique_id]:
+                if (use_unit[each_input.unique_id][each_measure] is not None and
+                        use_unit[each_input.unique_id][each_measure] in UNITS):
+                    return_measurements.update(
+                        {use_unit[each_input.unique_id][each_measure]: {
+                            'meas': use_unit[each_input.unique_id][each_measure],
+                            'unit': UNITS[use_unit[each_input.unique_id][each_measure]]['unit'],
+                            'name': UNITS[use_unit[each_input.unique_id][each_measure]]['name']}})
+
         # Add command measurements/units to measurements dictionary
-        if (each_input.cmd_measurement and
+        elif (each_input.cmd_measurement and
                 each_input.cmd_measurement_units and
                 each_input.cmd_measurement not in measurement_units):
             return_measurements.update(
@@ -38,6 +54,7 @@ def add_custom_measurements(inputs, maths, measurement_units):
                     'meas': each_input.adc_measure,
                     'unit': each_input.adc_measure_units,
                     'name': each_input.adc_measure}})
+
     for each_math in maths:
         # Add Math measurements/units to measurements dictionary
         if (each_math.measure and
@@ -48,6 +65,7 @@ def add_custom_measurements(inputs, maths, measurement_units):
                     'meas': each_math.measure,
                     'unit': each_math.measure_units,
                     'name': each_math.measure}})
+
     return return_measurements
 
 

@@ -91,13 +91,13 @@
         endOnTick: {% if each_graph.enable_end_on_tick %}true{% else %}false{% endif %},
         {% endif %}
         title: {
-          text: '{{dict_measurements[each_axis_meas]['name']}}{% if dict_measurements[each_axis_meas]['unit'] != '' %} ({{dict_measurements[each_axis_meas]['unit']}}){% endif %}'
+          text: '{% if dict_measurements[each_axis_meas]['name'] == 'Temperature' %}Celsius{% else %}{{dict_measurements[each_axis_meas]['name']}}{% endif %}{% if dict_measurements[each_axis_meas]['unit'] != '' %} ({{dict_measurements[each_axis_meas]['unit']}}){% endif %}'
         },
         labels: {
           format: '{value}'
         },
         opposite: false,
-        id: '{{dict_measurements[each_axis_meas]['meas']}}'
+          id: '{{dict_measurements[each_axis_meas]['meas']}}'
       },
     {% endfor %}
     ],
@@ -179,14 +179,8 @@
             name: '{{each_input.name}} {{each_input.cmd_measurement}} ({{each_input.cmd_measurement_units}})',
             type: 'line',
             tooltip: {
-              {% if each_input.cmd_measurement == 'temperature' %}
-              pointFormatter: function () {
-                return '<span style="color:'+ this.series.color + '"">\u25CF</span> ' + this.series.name + ': <b>' + Highcharts.numberFormat(this.y, 2) + '°C (' + Highcharts.numberFormat(((this.y*9/5)+32), 2) + '°F)</b><br>';
-              },
-              {% else %}
               valueSuffix: ' {{each_input.cmd_measurement_units}}',
               valueDecimals: 2
-              {% endif %}
             },
             yAxis: '{{each_input.cmd_measurement}}',
             data: []
@@ -196,23 +190,36 @@
         {%- for each_measurement in each_input.measurements.split(',') -%}
           {%- if each_measurement == each_id_and_measure.split(',')[1] -%}
             {
-              name: '{{each_input.name}} {{measurement_units[each_measurement]['name']}}{% if dict_measurements[each_measurement]['unit'] != '' %} ({{measurement_units[each_measurement]['unit']}}){% endif %}',
+              name: '{{each_input.name}} {{measurement_units[each_measurement]['name']}}{% if dict_measurements[each_measurement]['unit'] != '' %} (
+                {%- if use_unit[each_input.unique_id][each_measurement] -%}
+                  {{units[use_unit[each_input.unique_id][each_measurement]]['unit']}}
+                {%- else -%}
+                  {{measurement_units[each_measurement]['unit']}}
+                {%- endif -%}
+              ){%- endif -%}
+            ',
               {% if measurement_units[each_measurement]['meas'] == 'edge' %}
               type: 'column',
               {% else %}
               type: 'line',
               {% endif %}
               tooltip: {
-                {% if measurement_units[each_measurement]['meas'] == 'temperature' %}
-                pointFormatter: function () {
-                  return '<span style="color:'+ this.series.color + '"">\u25CF</span> ' + this.series.name + ': <b>' + Highcharts.numberFormat(this.y, 2) + '°C (' + Highcharts.numberFormat(((this.y*9/5)+32), 2) + '°F)</b><br>';
-                },
-                {% else %}
-                valueSuffix: ' {{measurement_units[each_measurement]['unit']}}',
+                valueSuffix: '
+                  {%- if use_unit[each_input.unique_id][each_measurement] -%}
+                    {{' ' + units[use_unit[each_input.unique_id][each_measurement]]['unit']}}
+                  {%- else -%}
+                    {{' ' + measurement_units[each_measurement]['unit']}}
+                  {%- endif -%}
+                  ',
                 valueDecimals: 2
-                {% endif %}
               },
-              yAxis: '{{measurement_units[each_measurement]['meas']}}',
+              yAxis: '
+                  {%- if use_unit[each_input.unique_id][each_measurement] -%}
+                    {{use_unit[each_input.unique_id][each_measurement]}}
+                  {%- else -%}
+                    {{measurement_units[each_measurement]['meas']}}
+                  {%- endif -%}
+              ',
               data: []
             },
           {%- elif each_input.adc_measure == each_id_and_measure.split(',')[1] -%}

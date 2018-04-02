@@ -41,6 +41,7 @@ from mycodo.config import MEASUREMENT_UNITS
 from mycodo.config import OUTPUTS
 from mycodo.config import OUTPUT_INFO
 from mycodo.config import RESTORE_LOG_FILE
+from mycodo.config import UNITS
 from mycodo.config import UPGRADE_LOG_FILE
 from mycodo.config import USAGE_REPORTS_PATH
 from mycodo.databases.models import AlembicVersion
@@ -374,6 +375,9 @@ def page_dashboard():
     # Generate a dictionary of lists of y-axes for each graph/gauge
     y_axes = utils_dashboard.graph_y_axes(dict_measurements)
 
+    # Get what each measurement uses for a unit
+    use_unit = utils_general.use_unit_generate(input_dev)
+
     # Generate a dictionary of each graph's y-axis minimum and maximum
     custom_yaxes = dict_custom_yaxes_min_max(graph, y_axes)
 
@@ -438,6 +442,8 @@ def page_dashboard():
                            colors_gauge=colors_gauge,
                            dict_measurements=dict_measurements,
                            measurement_units=MEASUREMENT_UNITS,
+                           units=UNITS,
+                           use_unit=use_unit,
                            display_order=display_order,
                            form_base=form_base,
                            form_camera=form_camera,
@@ -778,6 +784,9 @@ def page_live():
     for each_output in output:
         output_type[each_output.id] = each_output.relay_type
 
+    # Get what each measurement uses for a unit
+    use_unit = utils_general.use_unit_generate(input_dev)
+
     return render_template('pages/live.html',
                            LIST_DEVICES_ADC=LIST_DEVICES_ADC,
                            measurement_units=MEASUREMENT_UNITS,
@@ -790,7 +799,9 @@ def page_live():
                            timer=timer,
                            pid_display_order=pid_display_order,
                            inputs_sorted=inputs_sorted,
-                           maths_sorted=maths_sorted)
+                           maths_sorted=maths_sorted,
+                           units=UNITS,
+                           use_unit=use_unit)
 
 
 @blueprint.route('/logview', methods=('GET', 'POST'))
@@ -1136,7 +1147,7 @@ def page_data():
         if form_add_input.input_add.data:
             unmet_dependencies = utils_input.input_add(form_add_input)
         elif form_mod_input.input_mod.data:
-            utils_input.input_mod(form_mod_input)
+            utils_input.input_mod(form_mod_input, request.form)
         elif form_mod_input.input_delete.data:
             utils_input.input_del(form_mod_input)
         elif form_mod_input.input_order_up.data:
@@ -1211,7 +1222,8 @@ def page_data():
                            math_templates=math_templates,
                            output=output,
                            pid=pid,
-                           units=MEASUREMENT_UNITS,
+                           measurements=MEASUREMENT_UNITS,
+                           units=UNITS,
                            user=user,
                            ds18b20_sensors=ds18b20_inputs,
                            lcd=lcd,
