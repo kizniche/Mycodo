@@ -467,7 +467,7 @@ $(document).ready(function() {
       var value = parseFloat(data[name][1]).toFixed(decimal_places);
       document.getElementById(name + '-' + chart_number).innerHTML = value + units;
     } else if (document.getElementById(name + '-' + chart_number)) {
-      document.getElementById(name + '-' + chart_number).innerHTML = 'NO DATA';
+      document.getElementById(name + '-' + chart_number).innerHTML = 'NULL';
     }
   }
 
@@ -523,7 +523,7 @@ $(document).ready(function() {
                 document.getElementById('pid_output-' + chart_number).innerHTML = '';
                 print_pid_value(data, 'duty_cycle', chart_number, 1, ' %');
               } else {
-                document.getElementById('pid_output-' + chart_number).innerHTML = 'NO DATA';
+                document.getElementById('pid_output-' + chart_number).innerHTML = 'NULL';
                 document.getElementById('duty_cycle-' + chart_number).innerHTML = '';
               }
 
@@ -557,7 +557,7 @@ $(document).ready(function() {
                 document.getElementById('pid_output-' + chart_number).innerHTML = '';
                 print_pid_value(data, 'duty_cycle', chart_number, 1, ' %');
               } else {
-                document.getElementById('pid_output-' + chart_number).innerHTML = 'NO DATA';
+                document.getElementById('pid_output-' + chart_number).innerHTML = 'NULL';
                 document.getElementById('duty_cycle-' + chart_number).innerHTML = '';
               }
             } else {
@@ -589,7 +589,7 @@ $(document).ready(function() {
                 document.getElementById('pid_output-' + chart_number).innerHTML = '';
                 print_pid_value(data, 'duty_cycle', chart_number, 1, ' %');
               } else {
-                document.getElementById('pid_output-' + chart_number).innerHTML = 'NO DATA';
+                document.getElementById('pid_output-' + chart_number).innerHTML = 'NULL';
                 document.getElementById('duty_cycle-' + chart_number).innerHTML = '';
               }
             }

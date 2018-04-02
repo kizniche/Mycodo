@@ -435,7 +435,8 @@ class LCDController(threading.Thread):
             # Get what each measurement uses for a unit
             input_dev = db_retrieve_table_daemon(Input)
             use_unit = use_unit_generate(input_dev)
-            if measurement in use_unit[device_id]:
+            if (measurement in use_unit[device_id] and
+                    use_unit[device_id][measurement] is not None):
                 self.lcd_line[display_id][line]['unit'] = UNITS[use_unit[device_id][measurement]]['unit']
             else:
                 self.lcd_line[display_id][line]['unit'] = self.list_inputs[measurement]['unit']
