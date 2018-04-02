@@ -247,6 +247,7 @@ Power Output | Select a output that powers the sensor. This enables powering cyc
 Location | Depending on what sensor is being used, you will need to either select a serial number (DS18B20 temperature sensor), a GPIO pin (in the case of sensors read by a GPIO), or an I<sup>2</sup>C address. and channel if using the TCA9548A I<sup>2</sup>C multiplexer.
 I<sup>2</sup>C Bus | The bus to be used to communicate with the I<sup>2</sup>C address. If you're using an I<sup>2</sup>C multiplexer that provides multiple buses, this allows you to select which bus the sensor is connected to.
 Period (seconds) | After the sensor is successfully read and a database entry is made, this is the duration of time waited until the sensor is measured again.
+[Measurement] Unit | Select the unit to save the measurement as (only available for select measurements).
 Pre Output | If you require a output to be activated before a measurement is made (for instance, if you have a pump that extracts air to a chamber where the sensor resides), this is the output number that will be activated. The output will be activated for a duration defined by the Pre Duration, then once the output turns off, a measurement by the sensor is made.
 Pre Output Duration (seconds) | This is the duration of time that the Pre Output runs for before the sensor measurement is obtained.
 Pre Output During Measurement | If enabled, the Pre Output stays on during the acquisition of a measurement. If disabled, the Pre Output is turned off directly before acquiring a measurement.

@@ -503,13 +503,13 @@ UNITS = {
         'unit': '°F'},
     'feet': {
         'name': 'Feet',
-        'unit': 'ft',},
+        'unit': 'ft'},
     'kelvin': {
         'name': 'Kelvin',
-        'unit': '°K',},
+        'unit': '°K'},
     'meters': {
         'name': 'Meters',
-        'unit': 'm',}
+        'unit': 'm'}
 }
 
 UNIT_CONVERSIONS = {
