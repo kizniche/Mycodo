@@ -2,6 +2,7 @@
 import logging
 
 from .base_input import AbstractInput
+from .sensorutils import convert_units
 
 
 class MAX31855Sensor(AbstractInput):
@@ -11,7 +12,7 @@ class MAX31855Sensor(AbstractInput):
 
     """
 
-    def __init__(self, clk, cs, do, testing=False):
+    def __init__(self, clk, cs, do, convert_to_unit=None, testing=False):
         super(MAX31855Sensor, self).__init__()
         self.logger = logging.getLogger("mycodo.inputs.max31855")
         self._temperature = None
@@ -20,6 +21,7 @@ class MAX31855Sensor(AbstractInput):
         self.clk = clk
         self.cs = cs
         self.do = do
+        self.convert_to_unit = convert_to_unit
 
         if not testing:
             import Adafruit_MAX31855.MAX31855 as MAX31855
@@ -69,7 +71,11 @@ class MAX31855Sensor(AbstractInput):
         self._temperature_die = None
 
         temp = self.sensor.readTempC()
+        temp = convert_units(
+            'temperature', 'celsius', self.convert_to_unit, temp)
         temp_die = self.sensor.readInternalC()
+        temp_die = convert_units(
+            'temperature_die', 'celsius', self.convert_to_unit, temp_die)
         return temp, temp_die
 
     def read(self):

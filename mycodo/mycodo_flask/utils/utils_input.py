@@ -125,6 +125,7 @@ def input_add(form_add):
                                           'MAX31856',
                                           'MAX31865',
                                           'TMP006']:
+            new_sensor.convert_to_unit = 'temperature,celsius'
             new_sensor.pin_cs = 8
             new_sensor.pin_miso = 9
             new_sensor.pin_mosi = 10
@@ -139,6 +140,7 @@ def input_add(form_add):
         elif form_add.input_type.data in ['AM2315', 'DHT11',
                                           'DHT22', 'HTU21D',
                                           'SHT1x_7x', 'SHT2x']:
+            new_sensor.convert_to_unit = 'temperature,celsius;dewpoint,celsius'
             if form_add.input_type.data == 'AM2315':
                 new_sensor.location = '0x5c'
             elif form_add.input_type.data == 'HTU21D':
@@ -149,6 +151,7 @@ def input_add(form_add):
         # Chirp moisture sensor
         elif form_add.input_type.data == 'CHIRP':
             new_sensor.location = '0x20'
+            new_sensor.convert_to_unit = 'temperature,celsius'
 
         # CO2
         elif form_add.input_type.data == 'MH_Z16_I2C':
@@ -181,8 +184,10 @@ def input_add(form_add):
         # Pressure
         if form_add.input_type.data == 'BME280':
             new_sensor.location = '0x76'
+            new_sensor.convert_to_unit = 'temperature,celsius;dewpoint,celsius;altitude,meters'
         elif form_add.input_type.data in ['BMP180', 'BMP280']:
             new_sensor.location = '0x77'
+            new_sensor.convert_to_unit = 'temperature,celsius;altitude,meters'
 
         # Light
         elif form_add.input_type.data in ['BH1750',

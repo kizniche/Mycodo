@@ -288,12 +288,14 @@ class InputController(threading.Thread):
             from mycodo.inputs.atlas_pt1000 import AtlasPT1000Sensor
             self.measure_input = AtlasPT1000Sensor(self.interface,
                                                    i2c_address=self.i2c_address,
-                                                   i2c_bus=self.i2c_bus)
+                                                   i2c_bus=self.i2c_bus,
+                                                   convert_to_unit=self.convert_to_unit)
         elif self.device == 'ATLAS_PT1000_UART':
             from mycodo.inputs.atlas_pt1000 import AtlasPT1000Sensor
             self.measure_input = AtlasPT1000Sensor(self.interface,
                                                    device_loc=self.device_loc,
-                                                   baud_rate=self.baud_rate)
+                                                   baud_rate=self.baud_rate,
+                                                   convert_to_unit=self.convert_to_unit)
         elif self.device == 'BH1750':
             from mycodo.inputs.bh1750 import BH1750Sensor
             self.measure_input = BH1750Sensor(self.i2c_address,
@@ -349,7 +351,8 @@ class InputController(threading.Thread):
             from mycodo.inputs.max31855 import MAX31855Sensor
             self.measure_input = MAX31855Sensor(self.pin_clock,
                                                 self.pin_cs,
-                                                self.pin_miso)
+                                                self.pin_miso,
+                                                convert_to_unit=self.convert_to_unit)
         elif self.device == 'MAX31856':
             from mycodo.inputs.max31856 import MAX31856Sensor
             self.measure_input = MAX31856Sensor(
@@ -357,7 +360,8 @@ class InputController(threading.Thread):
                 self.pin_cs,
                 self.pin_miso,
                 self.pin_mosi,
-                thermocouple_type=self.thermocouple_type)
+                thermocouple_type=self.thermocouple_type,
+                convert_to_unit=self.convert_to_unit)
         elif self.device == 'MAX31865':
             from mycodo.inputs.max31865 import MAX31865Sensor
             self.measure_input = MAX31865Sensor(
@@ -366,7 +370,8 @@ class InputController(threading.Thread):
                 self.pin_miso,
                 self.pin_mosi,
                 device=self.thermocouple_type,
-                resistor_ref=self.ref_ohm)
+                resistor_ref=self.ref_ohm,
+                convert_to_unit=self.convert_to_unit)
         elif self.device == 'MH_Z16_I2C':
             from mycodo.inputs.mh_z16 import MHZ16Sensor
             self.measure_input = MHZ16Sensor(self.interface,

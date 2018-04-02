@@ -26,6 +26,8 @@ import math
 import time
 
 from .base_input import AbstractInput
+from .sensorutils import convert_units
+
 
 # import numpy  # Used for more accurate temperature calculation
 
@@ -37,7 +39,7 @@ class MAX31865Sensor(AbstractInput):
 
     """
 
-    def __init__(self, clk, cs, miso, mosi, device='PT100', resistor_ref=None, testing=False):
+    def __init__(self, clk, cs, miso, mosi, device='PT100', resistor_ref=None, convert_to_unit=None, testing=False):
         super(MAX31865Sensor, self).__init__()
         self.logger = logging.getLogger("mycodo.inputs.max31865")
         self._temperature = None
@@ -48,6 +50,7 @@ class MAX31865Sensor(AbstractInput):
         self.mosi = mosi
         self.device = device
         self.resistor_ref = resistor_ref
+        self.convert_to_unit = convert_to_unit
 
         if not testing:
             self.sensor = max31865_sen(self.cs, self.miso, self.mosi, self.clk)
@@ -84,6 +87,8 @@ class MAX31865Sensor(AbstractInput):
         """ Gets the measurement in units by reading the """
         self._temperature = None
         temp = self.sensor.readTemp(self.device, self.resistor_ref)
+        temp = convert_units(
+            'temperature', 'celsius', self.convert_to_unit, temp)
         return temp
 
     def read(self):

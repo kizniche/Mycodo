@@ -3,16 +3,18 @@ import logging
 
 from mycodo.utils.system_pi import str_is_float
 from .base_input import AbstractInput
+from .sensorutils import convert_units
 
 
 class AtlasPT1000Sensor(AbstractInput):
     """ A sensor support class that monitors the PT1000's temperature """
 
     def __init__(self, interface, device_loc=None, baud_rate=None,
-                 i2c_address=None, i2c_bus=None, testing=False):
+                 i2c_address=None, i2c_bus=None, convert_to_unit=None, testing=False):
         super(AtlasPT1000Sensor, self).__init__()
         self.logger = logging.getLogger("mycodo.inputs.atlas_pt1000")
         self._temperature = None
+
         self.interface = interface
         self.device_loc = device_loc
         self.baud_rate = baud_rate
@@ -20,6 +22,7 @@ class AtlasPT1000Sensor(AbstractInput):
         self.i2c_bus = i2c_bus
         self.atlas_sensor_uart = None
         self.atlas_sensor_i2c = None
+        self.convert_to_unit = convert_to_unit
 
         if not testing:
             self.initialize_sensor()
@@ -106,6 +109,9 @@ class AtlasPT1000Sensor(AbstractInput):
             else:
                 self.logger.error('I2C device is not set up.'
                                   'Check the log for errors.')
+
+        temp = convert_units(
+            'temperature', 'celsius', self.convert_to_unit, temp)
 
         return temp
 

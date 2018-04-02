@@ -25,6 +25,7 @@ import logging
 import time
 
 from .base_input import AbstractInput
+from .sensorutils import convert_units
 
 
 class MAX31856Sensor(AbstractInput):
@@ -34,7 +35,7 @@ class MAX31856Sensor(AbstractInput):
 
     """
 
-    def __init__(self, clk, cs, miso, mosi, thermocouple_type='K', testing=False):
+    def __init__(self, clk, cs, miso, mosi, thermocouple_type='K', convert_to_unit=None, testing=False):
         super(MAX31856Sensor, self).__init__()
         self.logger = logging.getLogger("mycodo.inputs.max31855")
         self._temperature = None
@@ -44,6 +45,7 @@ class MAX31856Sensor(AbstractInput):
         self.cs = cs
         self.miso = miso
         self.mosi = mosi
+        self.convert_to_unit = convert_to_unit
 
         if not testing:
             self.sensor = max31856(self.logger, cs, miso, mosi, clk)
@@ -108,7 +110,11 @@ class MAX31856Sensor(AbstractInput):
         self._temperature_die = None
 
         temp = self.sensor.readThermocoupleTemp()
+        temp = convert_units(
+            'temperature', 'celsius', self.convert_to_unit, temp)
         temp_die = self.sensor.readJunctionTemp()
+        temp_die = convert_units(
+            'temperature_die', 'celsius', self.convert_to_unit, temp_die)
 
         return temp, temp_die
 
