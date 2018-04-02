@@ -139,6 +139,8 @@ class BMP280Sensor(AbstractInput):
             self.read_temperature())
         pressure = self.read_pressure()
         alt = altitude(pressure)
+        alt = convert_units(
+            'altitude', 'meters', self.convert_to_unit, alt)
         return temperature, pressure, alt
 
     def read(self):

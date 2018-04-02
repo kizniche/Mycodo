@@ -86,6 +86,8 @@ class BMP180Sensor(AbstractInput):
             self.bmp.read_temperature())
         pressure = self.bmp.read_pressure()
         altitude = self.bmp.read_altitude()
+        altitude = convert_units(
+            'altitude', 'meters', self.convert_to_unit, altitude)
         return temperature, pressure, altitude
 
     def read(self):

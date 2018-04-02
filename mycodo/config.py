@@ -378,7 +378,8 @@ OUTPUT_INFO = {
 MEASUREMENT_UNITS = {
     'altitude': {
         'name': lazy_gettext('Altitude'),
-        'meas': 'altitude', 'unit': 'm'},
+        'meas': 'altitude', 'unit': 'm',
+        'units': ['feet', 'meters']},
     'boolean': {
         'name': lazy_gettext('Boolean'),
         'meas': 'boolean', 'unit': ''},
@@ -496,21 +497,25 @@ MEASUREMENT_UNITS = {
 UNITS = {
     'celsius': {
         'name': 'Celsius',
-        'measurement': 'temperature',
         'unit': '°C'},
     'fahrenheit': {
         'name': 'Fahrenheit',
-        'measurement': 'temperature',
         'unit': '°F'},
+    'feet': {
+        'name': 'Feet',
+        'unit': 'ft',},
     'kelvin': {
         'name': 'Kelvin',
-        'measurement': 'temperature',
-        'unit': '°K'}
+        'unit': '°K',},
+    'meters': {
+        'name': 'Meters',
+        'unit': 'm',}
 }
 
 UNIT_CONVERSIONS = {
     'celsius_to_fahrenheit': 'x*(9/5)+32',
-    'celsius_to_kelvin': 'x+274.15'
+    'celsius_to_kelvin': 'x+274.15',
+    'meters_to_feet': 'x*3.2808399'
 }
 
 # Calibration
