@@ -16,6 +16,7 @@
  - Fix issues with PID control on Dashboard ([#441](https://github.com/kizniche/mycodo/issues/441))
  - Improve LCD controller shutdown speed
  - Fix installer not displaying progress in console ([#442](https://github.com/kizniche/mycodo/issues/442))
+ - Force measurement values to float before writing to influxdb (except 'pressure') ([#441](https://github.com/kizniche/mycodo/issues/441))
 
 
 ## 5.6.10 (2018-03-31)
