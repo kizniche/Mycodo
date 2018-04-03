@@ -54,9 +54,9 @@ def calibration_select():
                            form_calibration=form_calibration)
 
 
-@blueprint.route('/calibration_atlas_ph', methods=('GET', 'POST'))
+@blueprint.route('/setup_atlas_ph', methods=('GET', 'POST'))
 @flask_login.login_required
-def calibration_atlas_ph():
+def setup_atlas_ph():
     """
     Step-by-step tool for calibrating the Atlas Scientific pH sensor
     """
@@ -131,7 +131,7 @@ def calibration_atlas_ph():
         stage, complete_with_error = dual_commands_to_sensor(
             selected_input, 'high', '10.0', 'end', 4)
 
-    return render_template('tools/calibration_atlas_ph.html',
+    return render_template('tools/calibration_options/atlas_ph.html',
                            complete_with_error=complete_with_error,
                            form_ph_calibrate=form_ph_calibrate,
                            sensor=input_dev,
@@ -140,9 +140,9 @@ def calibration_atlas_ph():
                            stage=stage)
 
 
-@blueprint.route('/calibration_atlas_ph_measure/<input_id>')
+@blueprint.route('/setup_atlas_ph_measure/<input_id>')
 @flask_login.login_required
-def calibration_atlas_ph_measure(input_id):
+def setup_atlas_ph_measure(input_id):
     """
     Acquire a measurement from the Atlas Scientific pH input and return it
     Used during calibration to display the current pH to the user
@@ -187,6 +187,47 @@ def calibration_atlas_ph_measure(input_id):
     else:
         return ph
 
+@blueprint.route('/setup_ds18b20', methods=('GET', 'POST'))
+@flask_login.login_required
+def setup_ds18b20():
+    """
+    Set DS18B20 options
+    """
+    form_ds18b20 = forms_calibration.SetupDS18B20()
+
+    inputs = Input.query.all()
+
+    # If DS18B20 inputs added, compile a list of detected inputs
+    ds18b20_inputs = []
+    try:
+        from w1thermsensor import W1ThermSensor
+        for each_input in W1ThermSensor.get_available_sensors():
+            ds18b20_inputs.append(each_input.id)
+    except OSError:
+        flash("Unable to detect DS18B20 Inputs in '/sys/bus/w1/devices'. "
+              "Make 1-wire support is enabled with 'sudo raspi-config'.",
+              "error")
+
+    if form_ds18b20.set_resolution.data and form_ds18b20.device_id.data:
+        try:
+            from w1thermsensor import W1ThermSensor
+            sensor = W1ThermSensor(W1ThermSensor.THERM_SENSOR_DS18B20,
+                                   form_ds18b20.device_id.data)
+            # sensor = W1ThermSensor(W1ThermSensor.THERM_SENSOR_DS18B20, "00000588806a")
+            sensor.set_precision(
+                form_ds18b20.set_resolution.data,persist=True)
+            flash("Successfully set DS18B20 sensor {id} resolution to "
+                  "{bit}-bit".format(id=form_ds18b20.device_id.data,
+                                     bit=form_ds18b20.set_resolution.data),
+                  "success")
+        except Exception as msg:
+            flash("Error while setting DS18B20 resolution: {err}".format(
+                err=msg), "error")
+
+    return render_template('tools/calibration_options/ds18b20.html',
+                           ds18b20_inputs=ds18b20_inputs,
+                           form_ds18b20=form_ds18b20,
+                           inputs=inputs)
 
 def dual_commands_to_sensor(input_sel, first_cmd, amount,
                             second_cmd, current_stage):

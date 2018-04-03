@@ -104,9 +104,16 @@ def add_update_csv(csv_file, key, value):
         os.chmod(csv_file, 0o664)
         os.remove(temp_file_name)  # delete backed-up original
     except Exception as except_msg:
-        logger.exception('[Statistics] Could not update stat csv: '
-                         '{}'.format(except_msg))
-        os.rename(temp_file_name, csv_file)  # rename temp file to original
+        logger.exception("Could not update stat csv: {}".format(except_msg))
+        try:
+            os.remove(csv_file)
+        except OSError:
+            logger.debug("Could not delete file")
+        try:
+            os.remove(temp_file_name)
+        except OSError:
+            logger.debug("Could not delete file")
+        recreate_stat_file()
 
 
 def get_count(q):

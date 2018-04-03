@@ -75,6 +75,11 @@ Table of Contents
    - [Raspberry Pi](#raspberry-pi)
    - [Atlas Scientific PT-1000](#atlas-scientific-pt-1000)
    - [DS18B20](#ds18b20)
+   - [DS18S20](#ds18s20)
+   - [DS1822](#ds1822)
+   - [DS28EA00](#ds28ea00)
+   - [DS1825](#ds1825)
+   - [MAX31850K](#max31850k)
    - [MAX31855K](#max31855k)
    - [MAX31856](#max31856)
    - [MAX31865](#max31865)
@@ -1312,7 +1317,17 @@ Inputs are categorized below by their communication interface.
 
 The 1-wire interface should be configured with [these instructions](https://learn.adafruit.com/adafruits-raspberry-pi-lesson-11-ds18b20-temperature-sensing).
 
-> [DS18B20](#ds18b20): Temperature [link](https://datasheets.maximintegrated.com/en/ds/DS18B20.pdf) (Also works with: [DS18S20](https://datasheets.maximintegrated.com/en/ds/DS18S20.pdf), [DS1822](https://datasheets.maximintegrated.com/en/ds/DS1822.pdf), [DS28EA00](https://datasheets.maximintegrated.com/en/ds/DS28EA00.pdf), [DS1825](https://datasheets.maximintegrated.com/en/ds/DS1825.pdf)/[MAX31850K](https://datasheets.maximintegrated.com/en/ds/MAX31850-MAX31851.pdf))
+> [DS18B20](#ds18b20): Temperature [link](https://datasheets.maximintegrated.com/en/ds/DS18B20.pdf)
+
+> [DS18S20](#ds18s20): Temperature [link](https://datasheets.maximintegrated.com/en/ds/DS18S20.pdf)
+
+> [DS1822](#ds1822): Temperature [link](https://datasheets.maximintegrated.com/en/ds/DS1822.pdf)
+
+> [DS28EA00](#ds28ea00): Temperature [link](https://datasheets.maximintegrated.com/en/ds/DS28EA00.pdf)
+
+> [DS1825](#ds1825): Temperature [link](https://datasheets.maximintegrated.com/en/ds/DS1825.pdf)
+
+> [MAX31850K](#max31850k): Temperature [link](https://datasheets.maximintegrated.com/en/ds/MAX31850-MAX31851.pdf)
 
 GPIO
 ----
@@ -1463,7 +1478,7 @@ sensors to be used on one data bus.
 
 #### Specifications
 
- - Usable temperature range: -55 to 125&deg;C (-67&deg;F to +257&deg;F)
+ - Usable temperature range: -55&deg;C to 125&deg;C
  - 9 to 12 bit selectable resolution
  - Uses 1-Wire interface- requires only one digital pin for communication
  - Unique 64 bit ID burned into chip
@@ -1473,12 +1488,49 @@ sensors to be used on one data bus.
  - Query time is less than 750ms
  - Usable with 3.0V to 5.5V power/data
 
-### MAX31855K
-
-Measures K-type thermocouples.
+### DS18S20
 
 #### Specifications
 
+ - Usable temperature range: -55&deg;C to 125&deg;C
+ - &plusmn;0.5&deg;C Accuracy from -10&deg;C to +85&deg;C
+ - 9-bit resolution
+
+### DS1822
+
+#### Specifications
+
+ - Usable temperature range: -55&deg;C to 125&deg;C
+ - &plusmn;2.0&deg;C Accuracy from -10&deg;C to +85&deg;C
+ - 9 to 12 bit selectable resolution
+
+### DS28EA00
+
+#### Specifications
+
+ - Usable temperature range: -40&deg;C to 85&deg;C
+ - 9 to 12 bit selectable resolution
+
+### DS1825
+
+#### Specifications
+
+ - Usable temperature range: -55&deg;C to 125&deg;C
+ - &plusmn;0.5&deg;C Accuracy from -10&deg;C to +85&deg;C
+ - 9 to 12 bit selectable resolution
+
+### MAX31850K
+
+#### Specifications
+
+ - Measures K-type thermocouples
+ - 14-bit, 0.25&deg;C resolution
+
+### MAX31855K
+
+#### Specifications
+
+ - Measures K-type thermocouples
  - Serial interface
  - -200°C to +1350°C output in 0.25 degree increments
  - K thermocouples have about ±2°C to ±6°C accuracy

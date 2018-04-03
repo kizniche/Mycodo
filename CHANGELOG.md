@@ -6,6 +6,9 @@
  - Add unit conversions: celsius, fahrenheit, kelvin, meters, feet
  - Add ability to select whether lowering PID outputs are stored as positive or negative values
  - Add Sunrise/Sunset Conditional ([#440](https://github.com/kizniche/mycodo/issues/440))
+ - Add ability to set the precision of DS18B20 sensors ([#439](https://github.com/kizniche/mycodo/issues/439))
+ - Add Inputs: DS18S20, DS1822, DS28EA00, DS1825, MAX31850K
+
 
 ### Bugfixes
 

@@ -6,6 +6,7 @@
 from flask_babel import lazy_gettext
 from flask_wtf import FlaskForm
 from wtforms import DecimalField
+from wtforms import IntegerField
 from wtforms import SelectField
 from wtforms import StringField
 from wtforms import SubmitField
@@ -14,10 +15,6 @@ from wtforms.validators import DataRequired
 
 from mycodo.config import CALIBRATION_DEVICES
 
-
-#
-# Calibration selection (what to calibrate)
-#
 
 class Calibration(FlaskForm):
     selection = SelectField(
@@ -28,10 +25,7 @@ class Calibration(FlaskForm):
     submit = SubmitField(lazy_gettext('Select Device'))
 
 
-#
-# Calibration: Atlas Scientific pH sensor
-#
-
+# Atlas Scientific pH sensor
 class CalibrationAtlasph(FlaskForm):
     selected_sensor_id = StringField(lazy_gettext('Atlas pH Sensor'))
     hidden_sensor_id = StringField('Sensor ID', widget=widgets.HiddenInput())
@@ -43,3 +37,10 @@ class CalibrationAtlasph(FlaskForm):
     go_from_first_stage = SubmitField(lazy_gettext('Begin Calibration'))
     go_to_next_stage = SubmitField(lazy_gettext('Continue to Next Stage'))
     go_to_last_stage = SubmitField(lazy_gettext('Continue to Next Stage'))
+
+
+# DS18B20 Temperature sensor
+class SetupDS18B20(FlaskForm):
+    device_id = StringField(lazy_gettext('Device'))
+    resolution = IntegerField(lazy_gettext('Resolution'))
+    set_resolution = SubmitField(lazy_gettext('Set Resolution'))

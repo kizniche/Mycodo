@@ -1,6 +1,6 @@
 {% extends "layout.html" %}
 {% set active_page = "calibration" %}
-{% block title %} - {{_('Calibration')}}{% endblock %}
+{% block title %} - {{_('Calibration & Setup')}}{% endblock %}
 
 {% block head %}{% endblock %}
 
@@ -9,7 +9,9 @@
   <div class="container"> 
     {% include 'flash_messages.html' %}
 
-    <p>{{("Certain devices require calibration in order to accurately operate. If Mycodo supports the calibration of a specific device, it will be listed below. For calibrating other devices, refer to the manufacturer's documentation.")}}</p>
+    <h2>Calibration and Setup</h2>
+
+    <p>Certain devices may be configured or calibrated. If Mycodo supports the configuration or calibration of a specific device, it will be listed below. For configuring or calibrating other devices, refer to the manufacturer's documentation.</p>
 
     <form method="post" action="/calibration">
     <div class="row small-gutters">

@@ -77,6 +77,11 @@ Temperature Sensors
 -   Raspberry Pi
 -   Atlas Scientific PT-1000
 -   DS18B20
+-   DS18S20
+-   DS1822
+-   DS28EA00
+-   DS1825
+-   MAX31850K
 -   MAX31855K
 -   MAX31856
 -   MAX31865
@@ -391,6 +396,9 @@ the measurement database to be used throughout the Mycodo system.
   Period (seconds)      After the sensor is successfully read and a
                         database entry is made, this is the duration of
                         time waited until the sensor is measured again.
+
+  Measurement Unit      Select the unit to save the measurement as
+                        (only available for select measurements).
 
   Pre Output            If you require a output to be activated before
                         a measurement is made (for instance, if you
@@ -971,6 +979,15 @@ resumes operation.
                         within the band. Set to 0 to disable
                         Hysteresis.
 
+  Store Lower as        Checking this will store all output variables
+  Negative              (PID and output duration/duty cycle) as a
+                        negative values in the measurement database.
+                        This is useful for displaying graphs that
+                        indicate whether the PID is currently lowering
+                        or raising. Disable this if you desire all
+                        positive values to be stored in the measurement
+                        database.
+
   Direction             This is the direction that you wish to
                         regulate. For example, if you only require the
                         temperature to be raised, set this to “Up,” but
@@ -1145,6 +1162,29 @@ Edge Conditional Statement If Options
                         volts) or Falling when the state changes from
                         HIGH (3.3 volts) to LOW (0 volts), or Both
                         (Rising and Falling).
+  ---------------------------------------------------------------------
+
+Sunrise/Sunset Conditional Statement If Options
+
+  ---------------------------------------------------------------------
+  Setting               Description
+  --------------------- -----------------------------------------------
+  Rise or Set           Select which to trigger the conditional, at
+                        sunrise or sunset.
+
+  Latitude (decimal)    Latitude of the sunrise/sunset, using decimal
+                        format.
+
+  Longitude (decimal)   Longitude of the sunrise/sunset, using decimal
+                        format.
+
+  Zenith                The Zenith angle of the sun.
+
+  Date Offset (days)    Set a sunrise/sunset offset in days (positive
+                        or negative).
+
+  Time Offset (minutes) Set a sunrise/sunset offset in minutes
+                        (positive or negative).
   ---------------------------------------------------------------------
 
 Conditional Statement Actions
@@ -2274,8 +2314,17 @@ Inputs are categorized below by their communication interface.
 
 The 1-wire interface should be configured with these instructions.
 
-  DS18B20: Temperature link (Also works with: DS18S20, DS1822, DS28EA00,
-  DS1825/MAX31850K)
+  DS18B20: Temperature link
+
+  DS18S20: Temperature link
+
+  DS1822: Temperature link
+
+  DS28EA00: Temperature link
+
+  DS1825: Temperature link
+
+  MAX31850K: Temperature link
 
 
 GPIO
@@ -2473,7 +2522,7 @@ sensors to be used on one data bus.
 
 Specifications
 
--   Usable temperature range: -55 to 125°C (-67°F to +257°F)
+-   Usable temperature range: -55°C to 125°C
 -   9 to 12 bit selectable resolution
 -   Uses 1-Wire interface- requires only one digital pin for
     communication
@@ -2484,12 +2533,49 @@ Specifications
 -   Query time is less than 750ms
 -   Usable with 3.0V to 5.5V power/data
 
-MAX31855K
-
-Measures K-type thermocouples.
+DS18S20
 
 Specifications
 
+-   Usable temperature range: -55°C to 125°C
+-   ±0.5°C Accuracy from -10°C to +85°C
+-   9-bit resolution
+
+DS1822
+
+Specifications
+
+-   Usable temperature range: -55°C to 125°C
+-   ±2.0°C Accuracy from -10°C to +85°C
+-   9 to 12 bit selectable resolution
+
+DS28EA00
+
+Specifications
+
+-   Usable temperature range: -40°C to 85°C
+-   9 to 12 bit selectable resolution
+
+DS1825
+
+Specifications
+
+-   Usable temperature range: -55°C to 125°C
+-   ±0.5°C Accuracy from -10°C to +85°C
+-   9 to 12 bit selectable resolution
+
+MAX31850K
+
+Specifications
+
+-   Measures K-type thermocouples
+-   14-bit, 0.25°C resolution
+
+MAX31855K
+
+Specifications
+
+-   Measures K-type thermocouples
 -   Serial interface
 -   -200°C to +1350°C output in 0.25 degree increments
 -   K thermocouples have about ±2°C to ±6°C accuracy

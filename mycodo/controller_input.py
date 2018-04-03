@@ -325,6 +325,22 @@ class InputController(threading.Thread):
             from mycodo.inputs.ds18b20 import DS18B20Sensor
             self.measure_input = DS18B20Sensor(self.location,
                                               convert_to_unit=self.convert_to_unit)
+        elif self.device == 'DS18S20':
+            from mycodo.inputs.ds18s20 import DS18S20Sensor
+            self.measure_input = DS18S20Sensor(self.location,
+                                               convert_to_unit=self.convert_to_unit)
+        elif self.device == 'DS1822':
+            from mycodo.inputs.ds1822 import DS1822Sensor
+            self.measure_input = DS1822Sensor(self.location,
+                                              convert_to_unit=self.convert_to_unit)
+        elif self.device == 'DS28EA00':
+            from mycodo.inputs.ds28ea00 import DS28EA00Sensor
+            self.measure_input = DS28EA00Sensor(self.location,
+                                                convert_to_unit=self.convert_to_unit)
+        elif self.device == 'DS1825':
+            from mycodo.inputs.ds1825 import DS1825Sensor
+            self.measure_input = DS1825Sensor(self.location,
+                                              convert_to_unit=self.convert_to_unit)
         elif self.device == 'DHT11':
             from mycodo.inputs.dht11 import DHT11Sensor
             self.measure_input = DHT11Sensor(self.input_id,
@@ -347,6 +363,10 @@ class InputController(threading.Thread):
             from mycodo.inputs.k30 import K30Sensor
             self.measure_input = K30Sensor(self.device_loc,
                                            baud_rate=self.baud_rate)
+        elif self.device == 'MAX31850K':
+            from mycodo.inputs.max31850k import MAX31850KSensor
+            self.measure_input = MAX31850KSensor(self.location,
+                                                 convert_to_unit=self.convert_to_unit)
         elif self.device == 'MAX31855':
             from mycodo.inputs.max31855 import MAX31855Sensor
             self.measure_input = MAX31855Sensor(self.pin_clock,

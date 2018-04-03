@@ -105,7 +105,21 @@ def input_add(form_add):
                 new_sensor.device_loc = "/dev/ttyAMA0"
 
         # Temperature
-        elif form_add.input_type.data == 'TMP006':
+        if form_add.input_type.data in ['ATLAS_PT1000_I2C',
+                                        'ATLAS_PT1000_UART',
+                                        'DS18B20',
+                                        'DS18S20',
+                                        'DS1822',
+                                        'DS28EA00',
+                                        'DS1825',
+                                        'MAX31850K',
+                                        'MAX31855',
+                                        'MAX31856',
+                                        'MAX31865',
+                                        'TMP006']:
+            new_sensor.convert_to_unit = 'temperature,celsius'
+
+        if form_add.input_type.data == 'TMP006':
             new_sensor.location = '0x40'
         elif form_add.input_type.data == 'ATLAS_PT1000_I2C':
             new_sensor.interface = 'I2C'
@@ -118,14 +132,10 @@ def input_add(form_add):
                 new_sensor.device_loc = "/dev/ttyS0"
             else:
                 new_sensor.device_loc = "/dev/ttyAMA0"
-        elif form_add.input_type.data in ['ATLAS_PT1000_I2C',
-                                          'ATLAS_PT1000_UART',
-                                          'DS18B20',
-                                          'MAX31855',
+        elif form_add.input_type.data in ['MAX31855',
                                           'MAX31856',
                                           'MAX31865',
-                                          'TMP006']:
-            new_sensor.convert_to_unit = 'temperature,celsius'
+                                          ]:
             new_sensor.pin_cs = 8
             new_sensor.pin_miso = 9
             new_sensor.pin_mosi = 10

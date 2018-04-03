@@ -1,15 +1,15 @@
 {% extends "layout.html" %}
 {% set active_page = "calibration" %}
-{% block title %} - {{_('Calibration')}}: {{_('Sensor')}}{% if sensor_device_name %}: {{sensor_device_name}}{% endif %}{% endblock %}
+{% block title %} - {{_('Calibration & Setup')}}: Atlas pH{% if sensor_device_name %}: {{sensor_device_name}}{% endif %}{% endblock %}
 
 {% block head %}
 <script>
 {% if stage in [2, 3, 4] -%}
 function ph_status() {
-  var url = '/calibration_atlas_ph_measure/{{selected_sensor.unique_id}}';
+  var url = '/setup_atlas_ph_measure/{{selected_sensor.unique_id}}';
   $.ajax(url, {
     success: function(data, responseText, jqXHR) {
-      if (jqXHR.status == 204) {
+      if (jqXHR.status === 204) {
         document.getElementById("ph_status").innerHTML = "{{_('Latest pH measurement')}}: {{_('Error acquiring measurement')}}";
       }
       else {
@@ -63,9 +63,11 @@ function startTimer() {
 {% endblock %}
 
 {% block body %}
-  <!-- Route: /calibration_atlas_ph -->
+  <!-- Route: /setup_atlas_ph -->
   <div class="container"> 
     {% include 'flash_messages.html' %}
+
+    <h2>Atlas pH Sensor</h2>
 
     {% if stage == 0 %}
 
@@ -75,7 +77,7 @@ function startTimer() {
 
     <p>If you wish to clear the calibration from the sensor memory, click Clear Calibration.</p>
 
-    <form method="post" action="/calibration_atlas_ph">
+    <form method="post" action="/setup_atlas_ph">
     {{form_ph_calibrate.hidden_next_stage(value=1)}}
     <div class="row small-gutters">
       <div class="col-xs-12 col-sm-4 col-lg-4 small-gutters">
@@ -108,7 +110,7 @@ function startTimer() {
     <p>1. {{_('Calibration')}}{% if sensor_device_name %}: {{sensor_device_name}}{% endif %} {{selected_sensor.id}} ({{selected_sensor.name}})</p>
     <p>{{_('Ensure all pH calibration solutions are the same temperature. Enter the temperature (in Celsius) of your solutions, then click Continue.')}}</p>
 
-    <form method="post" action="/calibration_atlas_ph">
+    <form method="post" action="/setup_atlas_ph">
     {{form_ph_calibrate.hidden_next_stage(value=2)}}
     <div class="row small-gutters">
       {{form_ph_calibrate.hidden_sensor_id(value=selected_sensor.unique_id)}}
@@ -133,7 +135,7 @@ function startTimer() {
     <p>2. {{_('Calibration')}}{% if sensor_device_name %}: {{sensor_device_name}}{% endif %} {{selected_sensor.id}} ({{selected_sensor.name}})</p>
     <p>{{_('Insert the probe into the pH %(ph)s solution, then click Ready', ph='7.0')}}</p>
 
-    <form method="post" action="/calibration_atlas_ph">
+    <form method="post" action="/setup_atlas_ph">
     {{form_ph_calibrate.hidden_next_stage(value=3)}}
     <div style="display: none" id="ph_status">&lt;Please wait&gt;</div>
     <div class="row small-gutters">
@@ -165,7 +167,7 @@ function startTimer() {
     <p>{{_('Remove the pH probe from the pH %(ph)s solution and rinse it with distilled water', ph='7.0')}}</p>
     <p>{{_('Insert the probe into the pH %(ph)s solution, then click Ready', ph='4.0')}}</p>
 
-    <form method="post" action="/calibration_atlas_ph">
+    <form method="post" action="/setup_atlas_ph">
     {{form_ph_calibrate.hidden_next_stage(value=4)}}
     <div style="display: none" id="ph_status">&lt;Please wait&gt;</div>
     <div class="row small-gutters">
@@ -197,7 +199,7 @@ function startTimer() {
     <p>{{_('Remove the pH probe from the pH %(ph)s solution and rinse it with distilled water', ph='4.0')}}</p>
     <p>{{_('Insert the probe into the pH %(ph)s solution, then click Ready', ph='10.0')}}</p>
 
-    <form method="post" action="/calibration_atlas_ph">
+    <form method="post" action="/setup_atlas_ph">
     {{form_ph_calibrate.hidden_next_stage(value=5)}}
     <div style="display: none" id="ph_status">&lt;Please wait&gt;</div>
     <div class="row small-gutters">

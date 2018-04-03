@@ -56,8 +56,13 @@ DEVICES = [
     ('BMP280', 'Pressure/Temperature: BMP 280 (I2C)'),
     ('BME280', 'Pressure/Temperature/Humidity: BME 280 (I2C)'),
     ('DS18B20', 'Temperature: DS18B20 (1-Wire)'),
+    ('DS18S20', 'Temperature: DS18S20 (1-Wire)'),
+    ('DS1822', 'Temperature: DS1822 (1-Wire)'),
+    ('DS28EA00', 'Temperature: DS28EA00 (1-Wire)'),
+    ('DS1825', 'Temperature: DS1825 (1-Wire)'),
     ('ATLAS_PT1000_I2C', 'Temperature: Atlas Scientific PT-1000 (I2C)'),
     ('ATLAS_PT1000_UART', 'Temperature: Atlas Scientific PT-1000 (Serial)'),
+    ('MAX31850K', 'Temperature: MAX31850K + K-type thermocouple'),
     ('MAX31855', 'Temperature: MAX31855K + K-type thermocouple'),
     ('MAX31856', 'Temperature: MAX31856 + K/J/N/R/S/T/E/B-type thermocouple'),
     ('MAX31865', 'Temperature: MAX31865 + PT100 or PT1000 probe'),
@@ -164,6 +169,22 @@ DEVICE_INFO = {
         'measure': ['dewpoint', 'humidity', 'temperature']},
     'DS18B20': {
         'name': 'DS18B20',
+        'py-dependencies': ['w1thermsensor'],
+        'measure': ['temperature']},
+    'DS18S20': {
+        'name': 'DS18S20',
+        'py-dependencies': ['w1thermsensor'],
+        'measure': ['temperature']},
+    'DS1822': {
+        'name': 'DS1822',
+        'py-dependencies': ['w1thermsensor'],
+        'measure': ['temperature']},
+    'DS28EA00': {
+        'name': 'DS28EA00',
+        'py-dependencies': ['w1thermsensor'],
+        'measure': ['temperature']},
+    'DS1825_MAX31850K': {
+        'name': 'DS1825/MAX31850K',
         'py-dependencies': ['w1thermsensor'],
         'measure': ['temperature']},
     'EDGE': {
@@ -520,7 +541,8 @@ UNIT_CONVERSIONS = {
 
 # Calibration
 CALIBRATION_DEVICES = [
-    ('calibration_atlas_ph', 'Atlas Scientific pH sensor')
+    ('setup_atlas_ph', 'Atlas Scientific pH Sensor'),
+    ('setup_ds18b20', 'DS18B20 Temperature Sensor')
 ]
 
 # Measurements that must be stured in influxdb as an integer instead of a float
@@ -592,7 +614,12 @@ LIST_DEVICES_SERIAL = [
 
 # Devices that use 1-wire to communicate
 LIST_DEVICES_ONE_WIRE = [
-    'DS18B20'
+    'DS18B20',
+    'DS18S20',
+    'DS1822',
+    'DS28EA00',
+    'DS1825',
+    'MAX31850K'
 ]
 
 # Devices that communicate to the Pi itself or operating system

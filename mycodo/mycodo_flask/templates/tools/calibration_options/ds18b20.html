@@ -1,0 +1,56 @@
+{% extends "layout.html" %}
+{% set active_page = "calibration" %}
+{% block title %} - {{_('Calibration & Setup')}}: DS18B20{% endblock %}
+
+{% block head %}
+
+{% endblock %}
+
+{% block body %}
+  <!-- Route: /setup_ds18b20 -->
+  <div class="container"> 
+    {% include 'flash_messages.html' %}
+
+  <h2>DS18B20 Setup</h2>
+
+  <p>Set the precision of DS18B20 sensors. Below are the resolutions, precisions, and response times that may be set for any detected DS18B20 sensors.</p>
+
+    <form method="post" action="/setup_ds18b20">
+    <div class="row small-gutters">
+      <div class="col-auto">
+        {{form_ds18b20.device_id.label(class_='control-label')}}
+        <div>
+          <select class="form-control" id="device_id" name="device_id" title="" data-original-title="{{_('Select a DS18B20 sensor')}}">
+          {% if ds18b20_sensors %}
+            {% for each_ds18b20 in ds18b20_sensors %}
+              <option value="{{each_ds18b20}}">{{each_ds18b20}}</option>
+            {% endfor %}
+          {% else %}
+            <option value="">None Detected</option>
+          {% endif %}
+          </select>
+        </div>
+      </div>
+      <div class="col-auto">
+        {{form_ds18b20.resolution.label(class_='control-label')}}
+        <div>
+          <select class="form-control" id="resolution" name="resolution" title="" data-original-title="{{_('Select a resolution')}}">
+            <option value="9">9-bit, 0.5 °C, 93.75 ms</option>
+            <option value="10">10-bit, 0.25 °C, 187.5 ms</option>
+            <option value="11">11-bit, 0.125 °C, 375 ms</option>
+            <option value="12">12-bit, 0.0625 °C, 750 ms</option>
+          </select>
+        </div>
+      </div>
+      <div class="col-auto">
+        <label class="control-label">&nbsp;</label>
+        <div>
+          {{form_ds18b20.set_resolution(class_='form-control btn btn-primary')}}
+        </div>
+      </div>
+    </div>
+    </form>
+
+  </div>
+
+{% endblock %}
