@@ -118,6 +118,7 @@ Luminosity Sensors
 
 -   BH1750
 -   TSL2561
+-   TSL2591
 
 Analog to Digital Converters
 
@@ -2401,6 +2402,8 @@ SENSORS
 
   TSL2561: Light link
 
+  TSL2591: Light link
+
   Chirp: link Moisture, light, and temperature
 
 
@@ -2825,19 +2828,25 @@ lux (lx) over a range of 1 - 65535 lx.
 
 TSL2561
 
-The TSL2561 SparkFun Luminosity Sensor Breakout is a sophisticated light
-sensor which has a flat response across most of the visible spectrum.
-Unlike simpler sensors, the TSL2561 measures both infrared and visible
-light to better approximate the response of the human eye. And because
-the TSL2561 is an integrating sensor (it soaks up light for a
-predetermined amount of time), it is capable of measuring both small and
-large amounts of light by changing the integration time.
+The TSL2561 Luminosity Sensor is a sophisticated light sensor which has
+a flat response across most of the visible spectrum. Unlike simpler
+sensors, the TSL2561 measures both infrared and visible light to better
+approximate the response of the human eye. And because the TSL2561 is an
+integrating sensor (it soaks up light for a predetermined amount of
+time), it is capable of measuring both small and large amounts of light
+by changing the integration time.
 
 Specifications
 
 -   Light range: 0.1 - 40k+ lux
 -   Vin: 3V and a low supply
 -   Max current: 0.6mA.
+
+TSL2591
+
+Specifications
+
+-   Light range: 188 uLux to 88,000 Lux
 
 
 Analog to Digital Converters

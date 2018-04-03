@@ -116,6 +116,7 @@ Table of Contents
 
    - [BH1750](#bh1750)
    - [TSL2561](#tsl2561)
+   - [TSL2591](#tsl2591)
 
 [Analog to Digital Converters](#analog-to-digital-converters)
 
@@ -1396,6 +1397,8 @@ The I<sup>2</sup>C interface should be enabled with `raspi-config`.
 
 > [TSL2561](#tsl2561): Light [link](https://www.sparkfun.com/products/12055)
 
+> [TSL2591](#tsl2591): Light [link](https://www.adafruit.com/product/1980)
+
 > [Chirp](#chirp): [link](https://wemakethings.net/chirp/) Moisture, light, and temperature
 
 Edge Detection
@@ -1752,7 +1755,7 @@ in lux (lx) over a range of 1 - 65535 lx.
 
 ### TSL2561
 
-The TSL2561 SparkFun Luminosity Sensor Breakout is a sophisticated light
+The TSL2561 Luminosity Sensor is a sophisticated light
 sensor which has a flat response across most of the visible spectrum.
 Unlike simpler sensors, the TSL2561 measures both infrared and visible
 light to better approximate the response of the human eye. And because
@@ -1765,6 +1768,12 @@ large amounts of light by changing the integration time.
  - Light range: 0.1 - 40k+ lux
  - Vin: 3V and a low supply
  - Max current: 0.6mA.
+
+### TSL2591
+
+#### Specifications
+
+ - Light range: 188 uLux to 88,000 Lux
 
 Analog to Digital Converters
 ----------------------------

@@ -444,6 +444,7 @@
 <ul>
 <li><a href="#bh1750">BH1750</a></li>
 <li><a href="#tsl2561">TSL2561</a></li>
+<li><a href="#tsl2591">TSL2591</a></li>
 </ul>
 <p><a href="#analog-to-digital-converters">Analog to Digital Converters</a></p>
 <ul>
@@ -2526,6 +2527,9 @@ sudo service mycodoflask restart</code></pre>
 <p><a href="#tsl2561">TSL2561</a>: Light <a href="https://www.sparkfun.com/products/12055">link</a></p>
 </blockquote>
 <blockquote>
+<p><a href="#tsl2591">TSL2591</a>: Light <a href="https://www.adafruit.com/product/1980">link</a></p>
+</blockquote>
+<blockquote>
 <p><a href="#chirp">Chirp</a>: <a href="https://wemakethings.net/chirp/">link</a> Moisture, light, and temperature</p>
 </blockquote>
 <h2 id="edge-detection">Edge Detection</h2>
@@ -2792,17 +2796,22 @@ sudo service mycodoflask restart</code></pre>
 <h3 id="bh1750">BH1750</h3>
 <p>The BH1750 is an I<sup>2</sup>C luminosity sensor that provides a digital value in lux (lx) over a range of 1 - 65535 lx.</p>
 <h3 id="tsl2561">TSL2561</h3>
-<p>The TSL2561 SparkFun Luminosity Sensor Breakout is a sophisticated light sensor which has a flat response across most of the visible spectrum. Unlike simpler sensors, the TSL2561 measures both infrared and visible light to better approximate the response of the human eye. And because the TSL2561 is an integrating sensor (it soaks up light for a predetermined amount of time), it is capable of measuring both small and large amounts of light by changing the integration time.</p>
+<p>The TSL2561 Luminosity Sensor is a sophisticated light sensor which has a flat response across most of the visible spectrum. Unlike simpler sensors, the TSL2561 measures both infrared and visible light to better approximate the response of the human eye. And because the TSL2561 is an integrating sensor (it soaks up light for a predetermined amount of time), it is capable of measuring both small and large amounts of light by changing the integration time.</p>
 <h4 id="specifications-23">Specifications</h4>
 <ul>
 <li>Light range: 0.1 - 40k+ lux</li>
 <li>Vin: 3V and a low supply</li>
 <li>Max current: 0.6mA.</li>
 </ul>
+<h3 id="tsl2591">TSL2591</h3>
+<h4 id="specifications-24">Specifications</h4>
+<ul>
+<li>Light range: 188 uLux to 88,000 Lux</li>
+</ul>
 <h2 id="analog-to-digital-converters-1">Analog to Digital Converters</h2>
 <h3 id="ads1x15">ADS1x15</h3>
 <p>(ADS1015, ADS1115)</p>
-<h4 id="specifications-24">Specifications</h4>
+<h4 id="specifications-25">Specifications</h4>
 <ul>
 <li>Interface: I<sup>2</sup>C</li>
 <li>I<sup>2</sup>C 7-bit addresses 0x48 - 0x4B</li>
@@ -2812,7 +2821,7 @@ sudo service mycodoflask restart</code></pre>
 <li>Resolution: 1015: 12-bit, 1115: 16-bit</li>
 </ul>
 <h3 id="mcp3008">MCP3008</h3>
-<h4 id="specifications-25">Specifications</h4>
+<h4 id="specifications-26">Specifications</h4>
 <ul>
 <li>Interface: SPI</li>
 <li>8 channels</li>
@@ -2821,7 +2830,7 @@ sudo service mycodoflask restart</code></pre>
 </ul>
 <h3 id="mcp342x">MCP342x</h3>
 <p>(MCP3422, MCP3423, MCP3424, MCP3426, MCP3427, MCP3428)</p>
-<h4 id="specifications-26">Specifications</h4>
+<h4 id="specifications-27">Specifications</h4>
 <ul>
 <li>Interface: I<sup>2</sup>C</li>
 <li>I<sup>2</sup>C 7-bit addresses 0x68 - 0x6F</li>
