@@ -105,20 +105,6 @@ def input_add(form_add):
                 new_sensor.device_loc = "/dev/ttyAMA0"
 
         # Temperature
-        if form_add.input_type.data in ['ATLAS_PT1000_I2C',
-                                        'ATLAS_PT1000_UART',
-                                        'DS18B20',
-                                        'DS18S20',
-                                        'DS1822',
-                                        'DS28EA00',
-                                        'DS1825',
-                                        'MAX31850K',
-                                        'MAX31855',
-                                        'MAX31856',
-                                        'MAX31865',
-                                        'TMP006']:
-            new_sensor.convert_to_unit = 'temperature,celsius'
-
         if form_add.input_type.data == 'TMP006':
             new_sensor.location = '0x40'
         elif form_add.input_type.data == 'ATLAS_PT1000_I2C':
@@ -134,8 +120,7 @@ def input_add(form_add):
                 new_sensor.device_loc = "/dev/ttyAMA0"
         elif form_add.input_type.data in ['MAX31855',
                                           'MAX31856',
-                                          'MAX31865',
-                                          ]:
+                                          'MAX31865']:
             new_sensor.pin_cs = 8
             new_sensor.pin_miso = 9
             new_sensor.pin_mosi = 10
@@ -150,7 +135,6 @@ def input_add(form_add):
         elif form_add.input_type.data in ['AM2315', 'DHT11',
                                           'DHT22', 'HTU21D',
                                           'SHT1x_7x', 'SHT2x']:
-            new_sensor.convert_to_unit = 'temperature,celsius;dewpoint,celsius'
             if form_add.input_type.data == 'AM2315':
                 new_sensor.location = '0x5c'
             elif form_add.input_type.data == 'HTU21D':
@@ -161,7 +145,6 @@ def input_add(form_add):
         # Chirp moisture sensor
         elif form_add.input_type.data == 'CHIRP':
             new_sensor.location = '0x20'
-            new_sensor.convert_to_unit = 'temperature,celsius'
 
         # CO2
         elif form_add.input_type.data == 'MH_Z16_I2C':
@@ -194,10 +177,8 @@ def input_add(form_add):
         # Pressure
         if form_add.input_type.data == 'BME280':
             new_sensor.location = '0x76'
-            new_sensor.convert_to_unit = 'temperature,celsius;dewpoint,celsius;altitude,meters'
         elif form_add.input_type.data in ['BMP180', 'BMP280']:
             new_sensor.location = '0x77'
-            new_sensor.convert_to_unit = 'temperature,celsius;altitude,meters'
 
         # Light
         elif form_add.input_type.data in ['BH1750',
@@ -314,10 +295,13 @@ def input_mod(form_mod, request_form):
             for key in request_form.keys():
                 if 'convert_unit' in key:
                     for value in request_form.getlist(key):
-                        if (len(value.split(',')) < 2 or
+                        if value == 'default':
+                            pass
+                        elif (len(value.split(',')) < 2 or
                                 value.split(',')[0] == '' or value.split(',')[1] == ''):
                             error.append("Invalid custom unit")
-                        short_list.append(value)
+                        else:
+                            short_list.append(value)
             # sorted_list = [(k, measure_unit[k]) for k in sorted(measure_unit)]
 
             # Generate color option string from form inputs

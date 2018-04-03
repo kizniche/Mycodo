@@ -13,7 +13,7 @@
 
   <h2>DS-Sensor Setup</h2>
 
-  <p>Set the precision of DS-type sensors. Below are the resolutions, precisions, and response times that may be set for any detected DS-type sensors. Be sure to select the correct DS-type sensor. This setting will be written to the EEPROM to allow persistence after power loss. The EEPROM has a limited amount of writes (>50k).</p>
+  <p>Set the precision of DS18B20, DS1822, DS28EA00, and DS1825 sensors. Below are the resolutions, precisions, and response times that may be set for any detected DS-type sensors. This setting will be written to the EEPROM to allow persistence after power loss. The EEPROM has a limited amount of writes (>50k).</p>
 
     <form method="post" action="/setup_ds_resolution">
     <div class="row small-gutters">
@@ -28,17 +28,6 @@
           {% else %}
             <option value="">None Detected</option>
           {% endif %}
-          </select>
-        </div>
-      </div>
-      <div class="col-auto">
-        {{form_ds.device_type.label(class_='control-label')}}
-        <div>
-          <select class="form-control" id="device_type" name="device_type" title="" data-original-title="{{_('Select the device type')}}">
-            <option value="DS18B20">DS18B20</option>
-            <option value="DS1822">DS1822</option>
-            <option value="DS28EA00">DS28EA00</option>
-            <option value="DS1825">DS1825</option>
           </select>
         </div>
       </div>

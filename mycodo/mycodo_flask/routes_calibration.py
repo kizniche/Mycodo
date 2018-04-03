@@ -208,31 +208,20 @@ def setup_ds_resolution():
               "Make 1-wire support is enabled with 'sudo raspi-config'.",
               "error")
 
-    if form_ds.set_resolution.data and form_ds.device_id.data and form_ds.device_type.data:
+    if form_ds.set_resolution.data and form_ds.device_id.data:
         try:
             from w1thermsensor import W1ThermSensor
-            device_type = None
-            if form_ds.device_type.data == 'DS18B20':
-                device_type = W1ThermSensor.THERM_SENSOR_DS18B20
-            elif form_ds.device_type.data == 'DS1822':
-                device_type = W1ThermSensor.THERM_SENSOR_DS1822
-            elif form_ds.device_type.data == 'DS28EA00':
-                device_type = W1ThermSensor.THERM_SENSOR_DS28EA00
-            elif form_ds.device_type.data == 'DS1825':
-                device_type = W1ThermSensor.THERM_SENSOR_DS1825
-            if device_type:
-                sensor = W1ThermSensor(device_type, form_ds.device_id.data)
-                # sensor = W1ThermSensor(W1ThermSensor.THERM_SENSOR_DS18B20, "00000588806a")
-                sensor.set_precision(
-                    form_ds.set_resolution.data,persist=True)
-                flash("Successfully set {dev} sensor {id} resolution to "
-                      "{bit}-bit".format(dev=form_ds.device_type.data,
-                                         id=form_ds.device_id.data,
-                                         bit=form_ds.set_resolution.data),
-                      "success")
+            sensor = W1ThermSensor(sensor_id=form_ds.device_id.data)
+            # sensor = W1ThermSensor(W1ThermSensor.THERM_SENSOR_DS18B20, "00000588806a")
+            sensor.set_precision(
+                form_ds.set_resolution.data,persist=True)
+            flash("Successfully set sensor {id} resolution to "
+                  "{bit}-bit".format(id=form_ds.device_id.data,
+                                     bit=form_ds.set_resolution.data),
+                  "success")
         except Exception as msg:
-            flash("Error while setting DS18B20 resolution: {err}".format(
-                err=msg), "error")
+            flash("Error while setting resolution of sensor with ID {id}: "
+                  "{err}".format(id=form_ds.device_id.data, err=msg), "error")
 
     return render_template('tools/calibration_options/ds_resolution.html',
                            ds_inputs=ds_inputs,

@@ -42,6 +42,5 @@ class CalibrationAtlasph(FlaskForm):
 # DS18B20 Temperature sensor
 class SetupDS18B20(FlaskForm):
     device_id = StringField(lazy_gettext('Device'))
-    device_type = StringField(lazy_gettext('Device Type'))
     resolution = IntegerField(lazy_gettext('Resolution'))
     set_resolution = SubmitField(lazy_gettext('Set Resolution'))

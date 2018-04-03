@@ -5,6 +5,7 @@
   <label class="control-label">{{measurements[each_measurement]['name']}} Unit</label>
   <div>
     <select class="form-control form-tooltip form-dropdown" data-placement="top" id="convert_unit{{index}}" name="convert_unit{{index}}" title="{{ _('Select the unit of the measurement to be stored in the database')}}">
+      <option value="default">Use Default</option>
       {% for each_unit in measurements[each_measurement]['units'] %}
       <option value="{{each_measurement}},{{each_unit}}"{% if each_measurement+','+each_unit in each_input.convert_to_unit.split(';') %} selected{% endif %}>{{units[each_unit]['name']}} ({{units[each_unit]['unit']}})</option>
       {% endfor %}
