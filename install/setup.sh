@@ -118,96 +118,96 @@ SECONDS=0
 NOW=$(date)
 printf "#### Mycodo installation began $NOW\n" 2>&1 | tee -a ${LOG_LOCATION}
 
-${INSTALL_CMD} update-swap-size >>${LOG_LOCATION} 2>&1
-${INSTALL_CMD} update-apt >>${LOG_LOCATION} 2>&1
-${INSTALL_CMD} uninstall-apt-pip >>${LOG_LOCATION} 2>&1
-${INSTALL_CMD} update-packages >>${LOG_LOCATION} 2>&1
-${INSTALL_CMD} setup-virtualenv >>${LOG_LOCATION} 2>&1
-${INSTALL_CMD} update-pip3 >>${LOG_LOCATION} 2>&1
-${INSTALL_CMD} update-pip3-packages >>${LOG_LOCATION} 2>&1
-${INSTALL_CMD} initialize >>${LOG_LOCATION} 2>&1
+${INSTALL_CMD} update-swap-size 2>&1 | tee -a ${LOG_LOCATION}
+${INSTALL_CMD} update-apt 2>&1 | tee -a ${LOG_LOCATION}
+${INSTALL_CMD} uninstall-apt-pip 2>&1 | tee -a ${LOG_LOCATION}
+${INSTALL_CMD} update-packages 2>&1 | tee -a ${LOG_LOCATION}
+${INSTALL_CMD} setup-virtualenv 2>&1 | tee -a ${LOG_LOCATION}
+${INSTALL_CMD} update-pip3 2>&1 | tee -a ${LOG_LOCATION}
+${INSTALL_CMD} update-pip3-packages 2>&1 | tee -a ${LOG_LOCATION}
+${INSTALL_CMD} initialize 2>&1 | tee -a ${LOG_LOCATION}
 
 if [ "$INSTALL_TYPE" != "minimal" ]; then
-    printf "\n#### Minimal install selected. Skipping extra package installation.\n" >>${LOG_LOCATION} 2>&1
+    printf "\n#### Minimal install selected. Skipping extra package installation.\n" 2>&1 | tee -a ${LOG_LOCATION}
 elif [ "$INSTALL_TYPE" != "full" ]; then
-    printf "\n#### Full install selected. Installing all extra packages.\n" >>${LOG_LOCATION} 2>&1
+    printf "\n#### Full install selected. Installing all extra packages.\n" 2>&1 | tee -a ${LOG_LOCATION}
 else
-    printf "\n#### Custom install selected. Installing custom packages.\n" >>${LOG_LOCATION} 2>&1
+    printf "\n#### Custom install selected. Installing custom packages.\n" 2>&1 | tee -a ${LOG_LOCATION}
 fi
 
 if [ "$INSTALL_TYPE" == "custom" ]; then
     for dep in $DEP_STATUS
     do
         if [ "$dep" == "Adafruit_ADS1x15" ]; then
-            ${INSTALL_DEP} Adafruit_ADS1x15 >>${LOG_LOCATION} 2>&1
+            ${INSTALL_DEP} Adafruit_ADS1x15 2>&1 | tee -a ${LOG_LOCATION}
         elif [ "$dep" == "Adafruit_BME280" ]; then
-            ${INSTALL_DEP} Adafruit_BME280 >>${LOG_LOCATION} 2>&1
+            ${INSTALL_DEP} Adafruit_BME280 2>&1 | tee -a ${LOG_LOCATION}
         elif [ "$dep" == "Adafruit_BMP" ]; then
-            ${INSTALL_DEP} Adafruit_BMP >>${LOG_LOCATION} 2>&1
+            ${INSTALL_DEP} Adafruit_BMP 2>&1 | tee -a ${LOG_LOCATION}
         elif [ "$dep" == "Adafruit_GPIO" ]; then
-            ${INSTALL_DEP} Adafruit_GPIO >>${LOG_LOCATION} 2>&1
+            ${INSTALL_DEP} Adafruit_GPIO 2>&1 | tee -a ${LOG_LOCATION}
         elif [ "$dep" == "Adafruit_MCP3008" ]; then
-            ${INSTALL_DEP} Adafruit_MCP3008 >>${LOG_LOCATION} 2>&1
+            ${INSTALL_DEP} Adafruit_MCP3008 2>&1 | tee -a ${LOG_LOCATION}
         elif [ "$dep" == "Adafruit_TMP" ]; then
-            ${INSTALL_DEP} Adafruit_TMP >>${LOG_LOCATION} 2>&1
+            ${INSTALL_DEP} Adafruit_TMP 2>&1 | tee -a ${LOG_LOCATION}
         elif [ "$dep" == "MCP342x" ]; then
-            ${INSTALL_DEP} MCP342x >>${LOG_LOCATION} 2>&1
+            ${INSTALL_DEP} MCP342x 2>&1 | tee -a ${LOG_LOCATION}
         elif [ "$dep" == "numpy" ]; then
-            ${INSTALL_DEP} numpy >>${LOG_LOCATION} 2>&1
+            ${INSTALL_DEP} numpy 2>&1 | tee -a ${LOG_LOCATION}
         elif [ "$dep" == "pigpio" ]; then
-            ${INSTALL_DEP} install-pigpiod >>${LOG_LOCATION} 2>&1
+            ${INSTALL_DEP} install-pigpiod 2>&1 | tee -a ${LOG_LOCATION}
         elif [ "$dep" == "quick2wire" ]; then
-            ${INSTALL_DEP} quick2wire >>${LOG_LOCATION} 2>&1
+            ${INSTALL_DEP} quick2wire 2>&1 | tee -a ${LOG_LOCATION}
         elif [ "$dep" == "rpi_rf" ]; then
-            ${INSTALL_DEP} rpi_rf >>${LOG_LOCATION} 2>&1
+            ${INSTALL_DEP} rpi_rf 2>&1 | tee -a ${LOG_LOCATION}
         elif [ "$dep" == "sht_sensor" ]; then
-            ${INSTALL_DEP} sht_sensor >>${LOG_LOCATION} 2>&1
+            ${INSTALL_DEP} sht_sensor 2>&1 | tee -a ${LOG_LOCATION}
         elif [ "$dep" == "tsl2561" ]; then
-            ${INSTALL_DEP} tsl2561 >>${LOG_LOCATION} 2>&1
+            ${INSTALL_DEP} tsl2561 2>&1 | tee -a ${LOG_LOCATION}
         elif [ "$dep" == "tsl2591" ]; then
-            ${INSTALL_DEP} tsl2591 >>${LOG_LOCATION} 2>&1
+            ${INSTALL_DEP} tsl2591 2>&1 | tee -a ${LOG_LOCATION}
         elif [ "$dep" == "w1thermsensor" ]; then
-            ${INSTALL_DEP} w1thermsensor >>${LOG_LOCATION} 2>&1
+            ${INSTALL_DEP} w1thermsensor 2>&1 | tee -a ${LOG_LOCATION}
         elif [ "$dep" == "wiringpi" ]; then
-            ${INSTALL_DEP} wiringpi >>${LOG_LOCATION} 2>&1
+            ${INSTALL_DEP} wiringpi 2>&1 | tee -a ${LOG_LOCATION}
         fi
     done
-    ${INSTALL_CMD} update-permissions >>${LOG_LOCATION} 2>&1
+    ${INSTALL_CMD} update-permissions 2>&1 | tee -a ${LOG_LOCATION}
 elif [ "$INSTALL_TYPE" == "full" ]; then
-    ${INSTALL_DEP} Adafruit_ADS1x15 >>${LOG_LOCATION} 2>&1
-    ${INSTALL_DEP} Adafruit_BMP >>${LOG_LOCATION} 2>&1
-    ${INSTALL_DEP} Adafruit_Python_BME280 >>${LOG_LOCATION} 2>&1
-    ${INSTALL_DEP} Adafruit_GPIO >>${LOG_LOCATION} 2>&1
-    ${INSTALL_DEP} Adafruit_MCP3008 >>${LOG_LOCATION} 2>&1
-    ${INSTALL_DEP} Adafruit_TMP >>${LOG_LOCATION} 2>&1
-    ${INSTALL_DEP} MCP342x >>${LOG_LOCATION} 2>&1
-    ${INSTALL_DEP} numpy >>${LOG_LOCATION} 2>&1
-    ${INSTALL_DEP} install-pigpiod >>${LOG_LOCATION} 2>&1
-    ${INSTALL_DEP} quick2wire >>${LOG_LOCATION} 2>&1
-    ${INSTALL_DEP} rpi_rf >>${LOG_LOCATION} 2>&1
-    ${INSTALL_DEP} sht_sensor >>${LOG_LOCATION} 2>&1
-    ${INSTALL_DEP} tsl2561 >>${LOG_LOCATION} 2>&1
-    ${INSTALL_DEP} tsl2591 >>${LOG_LOCATION} 2>&1
-    ${INSTALL_DEP} w1thermsensor >>${LOG_LOCATION} 2>&1
-    ${INSTALL_DEP} wiringpi >>${LOG_LOCATION} 2>&1
-    ${INSTALL_CMD} update-permissions >>${LOG_LOCATION} 2>&1
+    ${INSTALL_DEP} Adafruit_ADS1x15 2>&1 | tee -a ${LOG_LOCATION}
+    ${INSTALL_DEP} Adafruit_BMP 2>&1 | tee -a ${LOG_LOCATION}
+    ${INSTALL_DEP} Adafruit_Python_BME280 2>&1 | tee -a ${LOG_LOCATION}
+    ${INSTALL_DEP} Adafruit_GPIO 2>&1 | tee -a ${LOG_LOCATION}
+    ${INSTALL_DEP} Adafruit_MCP3008 2>&1 | tee -a ${LOG_LOCATION}
+    ${INSTALL_DEP} Adafruit_TMP 2>&1 | tee -a ${LOG_LOCATION}
+    ${INSTALL_DEP} MCP342x 2>&1 | tee -a ${LOG_LOCATION}
+    ${INSTALL_DEP} numpy 2>&1 | tee -a ${LOG_LOCATION}
+    ${INSTALL_DEP} install-pigpiod 2>&1 | tee -a ${LOG_LOCATION}
+    ${INSTALL_DEP} quick2wire 2>&1 | tee -a ${LOG_LOCATION}
+    ${INSTALL_DEP} rpi_rf 2>&1 | tee -a ${LOG_LOCATION}
+    ${INSTALL_DEP} sht_sensor 2>&1 | tee -a ${LOG_LOCATION}
+    ${INSTALL_DEP} tsl2561 2>&1 | tee -a ${LOG_LOCATION}
+    ${INSTALL_DEP} tsl2591 2>&1 | tee -a ${LOG_LOCATION}
+    ${INSTALL_DEP} w1thermsensor 2>&1 | tee -a ${LOG_LOCATION}
+    ${INSTALL_DEP} wiringpi 2>&1 | tee -a ${LOG_LOCATION}
+    ${INSTALL_CMD} update-permissions 2>&1 | tee -a ${LOG_LOCATION}
 elif [ "$INSTALL_TYPE" == "minimum" ]; then
     ${INSTALL_CMD} enable-pigpiod-uninstalled
 fi
 
-${INSTALL_CMD} update-influxdb >>${LOG_LOCATION} 2>&1
-${INSTALL_CMD} update-influxdb-db-user >>${LOG_LOCATION} 2>&1
-${INSTALL_CMD} update-logrotate >>${LOG_LOCATION} 2>&1
-${INSTALL_CMD} ssl-certs-generate >>${LOG_LOCATION} 2>&1
-${INSTALL_CMD} update-mycodo-startup-script >>${LOG_LOCATION} 2>&1
-${INSTALL_CMD} compile-translations >>${LOG_LOCATION} 2>&1
-${INSTALL_CMD} update-cron >>${LOG_LOCATION} 2>&1
-${INSTALL_CMD} initialize >>${LOG_LOCATION} 2>&1
-${INSTALL_CMD} web-server-update >>${LOG_LOCATION} 2>&1
-${INSTALL_CMD} web-server-restart >>${LOG_LOCATION} 2>&1
-${INSTALL_CMD} web-server-connect >>${LOG_LOCATION} 2>&1
-${INSTALL_CMD} update-permissions >>${LOG_LOCATION} 2>&1
-${INSTALL_CMD} restart-daemon >>${LOG_LOCATION} 2>&1
+${INSTALL_CMD} update-influxdb 2>&1 | tee -a ${LOG_LOCATION}
+${INSTALL_CMD} update-influxdb-db-user 2>&1 | tee -a ${LOG_LOCATION}
+${INSTALL_CMD} update-logrotate 2>&1 | tee -a ${LOG_LOCATION}
+${INSTALL_CMD} ssl-certs-generate 2>&1 | tee -a ${LOG_LOCATION}
+${INSTALL_CMD} update-mycodo-startup-script 2>&1 | tee -a ${LOG_LOCATION}
+${INSTALL_CMD} compile-translations 2>&1 | tee -a ${LOG_LOCATION}
+${INSTALL_CMD} update-cron 2>&1 | tee -a ${LOG_LOCATION}
+${INSTALL_CMD} initialize 2>&1 | tee -a ${LOG_LOCATION}
+${INSTALL_CMD} web-server-update 2>&1 | tee -a ${LOG_LOCATION}
+${INSTALL_CMD} web-server-restart 2>&1 | tee -a ${LOG_LOCATION}
+${INSTALL_CMD} web-server-connect 2>&1 | tee -a ${LOG_LOCATION}
+${INSTALL_CMD} update-permissions 2>&1 | tee -a ${LOG_LOCATION}
+${INSTALL_CMD} restart-daemon 2>&1 | tee -a ${LOG_LOCATION}
 
 trap : 0
 
