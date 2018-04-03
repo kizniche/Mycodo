@@ -7,15 +7,15 @@
 {% endblock %}
 
 {% block body %}
-  <!-- Route: /setup_ds18b20 -->
+  <!-- Route: /setup_ds_resolution -->
   <div class="container"> 
     {% include 'flash_messages.html' %}
 
-  <h2>DS18B20 Setup</h2>
+  <h2>DS-Sensor Setup</h2>
 
-  <p>Set the precision of DS18B20 sensors. Below are the resolutions, precisions, and response times that may be set for any detected DS18B20 sensors. This setting will be written to the EEPROM to allow persistence after power loss. The EEPROM has a limited amount of writes (>50k).</p>
+  <p>Set the precision of DS-type sensors. Below are the resolutions, precisions, and response times that may be set for any detected DS-type sensors. Be sure to select the correct DS-type sensor. This setting will be written to the EEPROM to allow persistence after power loss. The EEPROM has a limited amount of writes (>50k).</p>
 
-    <form method="post" action="/setup_ds18b20">
+    <form method="post" action="/setup_ds_resolution">
     <div class="row small-gutters">
       <div class="col-auto">
         {{form_ds.device_id.label(class_='control-label')}}
