@@ -1158,12 +1158,12 @@ def page_data():
         break
 
     # If DS18B20 inputs added, compile a list of detected inputs
-    ds18b20_inputs = []
+    w1thermsensor_sensors = []
     if Input.query.filter(Input.device == 'DS18B20').count():
         try:
             from w1thermsensor import W1ThermSensor
             for each_input in W1ThermSensor.get_available_sensors():
-                ds18b20_inputs.append(each_input.id)
+                w1thermsensor_sensors.append(each_input.id)
         except OSError:
             flash("Unable to detect DS18B20 Inputs in '/sys/bus/w1/devices'. "
                   "Make 1-wire support is enabled with 'sudo raspi-config'.",
@@ -1256,7 +1256,7 @@ def page_data():
                            measurements=MEASUREMENT_UNITS,
                            units=UNITS,
                            user=user,
-                           ds18b20_sensors=ds18b20_inputs,
+                           w1thermsensor_sensors=w1thermsensor_sensors,
                            lcd=lcd,
                            list_devices_i2c=list_devices_i2c,
                            multiplexer_addresses=multiplexer_addresses,

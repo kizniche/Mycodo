@@ -13,15 +13,18 @@ logger = logging.getLogger("mycodo.inputs.ds18b20")
 class DS28EA00Sensor(AbstractInput):
     """ A sensor support class that monitors the DS28EA00's temperature """
 
-    def __init__(self, pin, convert_to_unit=None, testing=False):
+    def __init__(self, pin, resolution, convert_to_unit=None, testing=False):
         super(DS28EA00Sensor, self).__init__()
         self._temperature = None
 
         self.pin = pin
+        self.resolution = resolution
         self.convert_to_unit = convert_to_unit
 
         if not testing:
             self.sensor = W1ThermSensor(W1ThermSensor.THERM_SENSOR_DS28EA00, self.pin)
+            if self.resolution:
+                self.sensor.set_precision(self.resolution)
 
     def __repr__(self):
         """  Representation of object """

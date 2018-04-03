@@ -187,46 +187,56 @@ def setup_atlas_ph_measure(input_id):
     else:
         return ph
 
-@blueprint.route('/setup_ds18b20', methods=('GET', 'POST'))
+@blueprint.route('/setup_ds_resolution', methods=('GET', 'POST'))
 @flask_login.login_required
-def setup_ds18b20():
+def setup_ds_resolution():
     """
-    Set DS18B20 options
+    Set DS Sensor resolution
     """
-    form_ds18b20 = forms_calibration.SetupDS18B20()
+    form_ds = forms_calibration.SetupDS18B20()
 
     inputs = Input.query.all()
 
     # If DS18B20 inputs added, compile a list of detected inputs
-    ds18b20_inputs = []
+    ds_inputs = []
     try:
         from w1thermsensor import W1ThermSensor
         for each_input in W1ThermSensor.get_available_sensors():
-            ds18b20_inputs.append(each_input.id)
+            ds_inputs.append(each_input.id)
     except OSError:
         flash("Unable to detect DS18B20 Inputs in '/sys/bus/w1/devices'. "
               "Make 1-wire support is enabled with 'sudo raspi-config'.",
               "error")
 
-    if form_ds18b20.set_resolution.data and form_ds18b20.device_id.data:
+    if form_ds.set_resolution.data and form_ds.device_id.data and form_ds.device_type.data:
         try:
             from w1thermsensor import W1ThermSensor
-            sensor = W1ThermSensor(W1ThermSensor.THERM_SENSOR_DS18B20,
-                                   form_ds18b20.device_id.data)
-            # sensor = W1ThermSensor(W1ThermSensor.THERM_SENSOR_DS18B20, "00000588806a")
-            sensor.set_precision(
-                form_ds18b20.set_resolution.data,persist=True)
-            flash("Successfully set DS18B20 sensor {id} resolution to "
-                  "{bit}-bit".format(id=form_ds18b20.device_id.data,
-                                     bit=form_ds18b20.set_resolution.data),
-                  "success")
+            device_type = None
+            if form_ds.device_type.data == 'DS18B20':
+                device_type = W1ThermSensor.THERM_SENSOR_DS18B20
+            elif form_ds.device_type.data == 'DS1822':
+                device_type = W1ThermSensor.THERM_SENSOR_DS1822
+            elif form_ds.device_type.data == 'DS28EA00':
+                device_type = W1ThermSensor.THERM_SENSOR_DS28EA00
+            elif form_ds.device_type.data == 'DS1825':
+                device_type = W1ThermSensor.THERM_SENSOR_DS1825
+            if device_type:
+                sensor = W1ThermSensor(device_type, form_ds.device_id.data)
+                # sensor = W1ThermSensor(W1ThermSensor.THERM_SENSOR_DS18B20, "00000588806a")
+                sensor.set_precision(
+                    form_ds.set_resolution.data,persist=True)
+                flash("Successfully set {dev} sensor {id} resolution to "
+                      "{bit}-bit".format(dev=form_ds.device_type.data,
+                                         id=form_ds.device_id.data,
+                                         bit=form_ds.set_resolution.data),
+                      "success")
         except Exception as msg:
             flash("Error while setting DS18B20 resolution: {err}".format(
                 err=msg), "error")
 
-    return render_template('tools/calibration_options/ds18b20.html',
-                           ds18b20_inputs=ds18b20_inputs,
-                           form_ds18b20=form_ds18b20,
+    return render_template('tools/calibration_options/ds_resolution.html',
+                           ds_inputs=ds_inputs,
+                           form_ds=form_ds,
                            inputs=inputs)
 
 def dual_commands_to_sensor(input_sel, first_cmd, amount,

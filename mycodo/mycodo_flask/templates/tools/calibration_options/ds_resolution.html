@@ -13,17 +13,17 @@
 
   <h2>DS18B20 Setup</h2>
 
-  <p>Set the precision of DS18B20 sensors. Below are the resolutions, precisions, and response times that may be set for any detected DS18B20 sensors.</p>
+  <p>Set the precision of DS18B20 sensors. Below are the resolutions, precisions, and response times that may be set for any detected DS18B20 sensors. This setting will be written to the EEPROM to allow persistence after power loss. The EEPROM has a limited amount of writes (>50k).</p>
 
     <form method="post" action="/setup_ds18b20">
     <div class="row small-gutters">
       <div class="col-auto">
-        {{form_ds18b20.device_id.label(class_='control-label')}}
+        {{form_ds.device_id.label(class_='control-label')}}
         <div>
           <select class="form-control" id="device_id" name="device_id" title="" data-original-title="{{_('Select a DS18B20 sensor')}}">
-          {% if ds18b20_sensors %}
-            {% for each_ds18b20 in ds18b20_sensors %}
-              <option value="{{each_ds18b20}}">{{each_ds18b20}}</option>
+          {% if ds_inputs %}
+            {% for each_ds in ds_inputs %}
+              <option value="{{each_ds}}">{{each_ds}}</option>
             {% endfor %}
           {% else %}
             <option value="">None Detected</option>
@@ -32,7 +32,18 @@
         </div>
       </div>
       <div class="col-auto">
-        {{form_ds18b20.resolution.label(class_='control-label')}}
+        {{form_ds.device_type.label(class_='control-label')}}
+        <div>
+          <select class="form-control" id="device_type" name="device_type" title="" data-original-title="{{_('Select the device type')}}">
+            <option value="DS18B20">DS18B20</option>
+            <option value="DS1822">DS1822</option>
+            <option value="DS28EA00">DS28EA00</option>
+            <option value="DS1825">DS1825</option>
+          </select>
+        </div>
+      </div>
+      <div class="col-auto">
+        {{form_ds.resolution.label(class_='control-label')}}
         <div>
           <select class="form-control" id="resolution" name="resolution" title="" data-original-title="{{_('Select a resolution')}}">
             <option value="9">9-bit, 0.5 °C, 93.75 ms</option>
@@ -45,7 +56,7 @@
       <div class="col-auto">
         <label class="control-label">&nbsp;</label>
         <div>
-          {{form_ds18b20.set_resolution(class_='form-control btn btn-primary')}}
+          {{form_ds.set_resolution(class_='form-control btn btn-primary')}}
         </div>
       </div>
     </div>

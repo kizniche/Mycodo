@@ -542,7 +542,7 @@ UNIT_CONVERSIONS = {
 # Calibration
 CALIBRATION_DEVICES = [
     ('setup_atlas_ph', 'Atlas Scientific pH Sensor'),
-    ('setup_ds18b20', 'DS18B20 Temperature Sensor')
+    ('setup_ds_resolution', 'DS-Type Temperature Sensors (e.g. DS18B20)')
 ]
 
 # Measurements that must be stured in influxdb as an integer instead of a float

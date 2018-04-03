@@ -1,0 +1,16 @@
+<div class="col-auto">
+  <label class="control-label">Device ID</label>
+  <div>
+    <select class="form-control form-tooltip form-dropdown" data-placement="top" id="location" name="location" title="{{_('Select the ID of the desired DS18B20 sensor')}}">
+      {% if w1thermsensor_sensors != [] %}
+        <option value=""></option>
+        {% for each_w1thermsensor in w1thermsensor_sensors %}
+          <option value="{{each_w1thermsensor}}"{% if each_input.location == each_w1thermsensor %} selected{% endif %}>{{each_w1thermsensor}}</option>
+        {% endfor %}
+      {% else %}
+        <option value="">None Detected</option>
+      {% endif %}
+    </select>
+  </div>
+</div>
+{% include 'pages/data_options/input_options/TEMPLATE_CONVERT_UNIT.html' %}
