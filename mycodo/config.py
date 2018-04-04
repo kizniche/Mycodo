@@ -50,6 +50,7 @@ DEVICES = [
     ('TSL2561', 'Luminance: TSL2561 (I2C)'),
     ('TSL2591', 'Luminance: TSL2591 (I2C)'),
     ('CHIRP', 'Moisture/Temperature/Luminance: Chirp (I2C)'),
+    ('MIFLORA', 'Moisture/Conductance/Temperature/Luminance: Miflora (I2C)'),
     ('ATLAS_PH_I2C', 'pH: Atlas Scientific (I2C)'),
     ('ATLAS_PH_UART', 'pH: Atlas Scientific (Serial)'),
     ('BMP180', 'Pressure/Temperature: BMP 180/085 (I2C)'),
@@ -245,6 +246,10 @@ DEVICE_INFO = {
         'i2c-address-change': False,
         'py-dependencies': ['MCP342x'],
         'measure': ['voltage']},
+    'MIFLORA': {
+        'name': 'MCP342x',
+        'py-dependencies': ['miflora', 'bluepy', 'btlewrap'],
+        'measure': ['battery', 'electrical_conductivity', 'lux', 'moisture', 'temperature']},
     'RPi': {
         'name': 'RPi CPU Temperature',
         'py-dependencies': [],
@@ -401,6 +406,9 @@ MEASUREMENT_UNITS = {
         'name': lazy_gettext('Altitude'),
         'meas': 'altitude', 'unit': 'm',
         'units': ['feet', 'meters']},
+    'battery': {
+        'name': lazy_gettext('Battery'),
+        'meas': 'battery', 'unit': '%'},
     'boolean': {
         'name': lazy_gettext('Boolean'),
         'meas': 'boolean', 'unit': ''},
@@ -592,6 +600,11 @@ LIST_DEVICES_I2C = [
     'TMP006',
     'TSL2561',
     'TSL2591'
+]
+
+# Devices that use bluetooth
+LIST_DEVICES_BLUETOOTH = [
+    'MIFLORA'
 ]
 
 # Devices that use SPI to communicate

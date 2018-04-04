@@ -70,7 +70,10 @@ if [ "$INSTALL_TYPE" == "custom" ]; then
                           'Adafruit_GPIO' "Adafruit_GPIO" off \
                           'Adafruit_MCP3008' "Adafruit_MCP3008" off \
                           'Adafruit_TMP' "Adafruit_TMP" off \
+                          'bluepy' "bluepy" off \
+                          'btlewrap' "btlewrap" off \
                           'MCP342x' "MCP342x" off \
+                          'miflora' "miflora" off \
                           'numpy' "numpy" off \
                           'pigpio' "pigpio" off \
                           'quick2wire' "quick2wire" off \
@@ -150,8 +153,14 @@ if [ "$INSTALL_TYPE" == "custom" ]; then
             ${INSTALL_DEP} Adafruit_MCP3008 2>&1 | tee -a ${LOG_LOCATION}
         elif [ "$dep" == "Adafruit_TMP" ]; then
             ${INSTALL_DEP} Adafruit_TMP 2>&1 | tee -a ${LOG_LOCATION}
+        elif [ "$dep" == "bluepy" ]; then
+            ${INSTALL_DEP} bluepy 2>&1 | tee -a ${LOG_LOCATION}
+        elif [ "$dep" == "btlewrap" ]; then
+            ${INSTALL_DEP} btlewrap 2>&1 | tee -a ${LOG_LOCATION}
         elif [ "$dep" == "MCP342x" ]; then
             ${INSTALL_DEP} MCP342x 2>&1 | tee -a ${LOG_LOCATION}
+        elif [ "$dep" == "miflora" ]; then
+            ${INSTALL_DEP} miflora 2>&1 | tee -a ${LOG_LOCATION}
         elif [ "$dep" == "numpy" ]; then
             ${INSTALL_DEP} numpy 2>&1 | tee -a ${LOG_LOCATION}
         elif [ "$dep" == "pigpio" ]; then
@@ -180,7 +189,10 @@ elif [ "$INSTALL_TYPE" == "full" ]; then
     ${INSTALL_DEP} Adafruit_GPIO 2>&1 | tee -a ${LOG_LOCATION}
     ${INSTALL_DEP} Adafruit_MCP3008 2>&1 | tee -a ${LOG_LOCATION}
     ${INSTALL_DEP} Adafruit_TMP 2>&1 | tee -a ${LOG_LOCATION}
+    ${INSTALL_DEP} bluepy 2>&1 | tee -a ${LOG_LOCATION}
+    ${INSTALL_DEP} btlewrap 2>&1 | tee -a ${LOG_LOCATION}
     ${INSTALL_DEP} MCP342x 2>&1 | tee -a ${LOG_LOCATION}
+    ${INSTALL_DEP} miflora 2>&1 | tee -a ${LOG_LOCATION}
     ${INSTALL_DEP} numpy 2>&1 | tee -a ${LOG_LOCATION}
     ${INSTALL_DEP} install-pigpiod 2>&1 | tee -a ${LOG_LOCATION}
     ${INSTALL_DEP} quick2wire 2>&1 | tee -a ${LOG_LOCATION}

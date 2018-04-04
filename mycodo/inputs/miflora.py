@@ -1,13 +1,4 @@
 # coding=utf-8
-#
-# To get miflora MAC address, use command line tool:
-# sudo hcitool lescan
-#
-# Python dependencies: miflora
-#
-# pip install bluepy
-# sudo apt-get install libglib2.0-dev
-#
 import logging
 
 from .base_input import AbstractInput
@@ -18,8 +9,8 @@ logger = logging.getLogger("mycodo.inputs.miflora")
 
 class MifloraSensor(AbstractInput):
     """
-    A sensor support class that measures the Miflora's electrical conductivity,
-    moisture, temperature, and light
+    A sensor support class that measures the Miflora's electrical
+    conductivity, moisture, temperature, and light.
 
     """
 
@@ -36,9 +27,9 @@ class MifloraSensor(AbstractInput):
 
         if not testing:
             from miflora.miflora_poller import MiFloraPoller
-            from btlewrap import GatttoolBackend
+            from btlewrap import BluepyBackend
             self.logger = logging.getLogger("mycodo.inputs.miflora_{a}".format(a=mac_address.replace(':','')))
-            self.poller = MiFloraPoller(mac_address, GatttoolBackend)
+            self.poller = MiFloraPoller(mac_address, BluepyBackend)
 
     def __repr__(self):
         """  Representation of object """

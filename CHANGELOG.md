@@ -3,6 +3,7 @@
 ### Features
 
  - Add Conditional Action: Set PID Setpoint
+ - Add Input: Xiaomi MiFlora ([#422](https://github.com/kizniche/mycodo/issues/422))
 
 ### Bugfixes
 

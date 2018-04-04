@@ -410,6 +410,10 @@ class InputController(threading.Thread):
             from mycodo.inputs.mh_z19 import MHZ19Sensor
             self.measure_input = MHZ19Sensor(self.device_loc,
                                              baud_rate=self.baud_rate)
+        elif self.device == 'MIFLORA':
+            from mycodo.inputs.miflora import MifloraSensor
+            self.measure_input = MifloraSensor(int(self.location),
+                                               convert_to_unit=self.convert_to_unit)
         elif self.device == 'SHT1x_7x':
             from mycodo.inputs.sht1x_7x import SHT1x7xSensor
             self.measure_input = SHT1x7xSensor(int(self.location),

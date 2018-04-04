@@ -36,8 +36,18 @@ case "${1:-''}" in
     'Adafruit_TMP')
         ${INSTALL_CMD} install-pip-dependency Adafruit_TMP
     ;;
+    'bluepy')
+        apt-get install -y libglib2.0-dev
+        ${INSTALL_CMD} install-pip-dependency bluepy==1.1.4
+    ;;
+    'btlewrap')
+        ${INSTALL_CMD} install-pip-dependency btlewrap==0.0.2
+    ;;
     'MCP342x')
         ${INSTALL_CMD} install-pip-dependency MCP342x==0.3.3
+    ;;
+    'miflora')
+        ${INSTALL_CMD} install-pip-dependency miflora==0.3
     ;;
     'numpy')
         ${INSTALL_CMD} install-numpy
