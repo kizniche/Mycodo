@@ -4,6 +4,14 @@
 
  - Add Conditional Action: Set PID Setpoint
 
+### Bugfixes
+
+ - Restore missing help menu on navigation bar
+
+### Miscellaneous
+
+ - Convert README and Manual from MD to RST
+
 
 ## 5.7.0 (2018-04-03)
 
