@@ -13,7 +13,7 @@
 ### Miscellaneous
 
  - Convert README and Manual from MD to RST
- - Update sht_sensor to 18.4.0
+ - Update sht_sensor to 18.4.1
 
 
 ## 5.7.0 (2018-04-03)
