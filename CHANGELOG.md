@@ -8,6 +8,7 @@
 ### Bugfixes
 
  - Restore missing help menu on navigation bar
+ - Fix issue reading SHT sensors ([#437](https://github.com/kizniche/mycodo/issues/437))
 
 ### Miscellaneous
 
