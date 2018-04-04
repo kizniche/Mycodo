@@ -894,9 +894,14 @@ def page_function():
         if each_conditional.conditional_type == 'conditional_sunrise_sunset':
             sunrise_sunset_calculated[each_conditional.id] = {}
             try:
+                sun = Sun(latitude=each_conditional.latitude,
+                          longitude=each_conditional.longitude,
+                          zenith=each_conditional.zenith)
+                sunrise = sun.get_sunrise_time()
+                sunset = sun.get_sunset_time()
+
                 # Adjust for date offset
-                now = datetime.datetime.now()
-                new_date = now + datetime.timedelta(days=each_conditional.date_offset_days)
+                new_date = datetime.datetime.now() + datetime.timedelta(days=each_conditional.date_offset_days)
 
                 sun = Sun(latitude=each_conditional.latitude,
                           longitude=each_conditional.longitude,
@@ -904,18 +909,22 @@ def page_function():
                           day=new_date.day,
                           month=new_date.month,
                           year=new_date.year)
-                sunrise = sun.get_sunrise_time()
-                sunset = sun.get_sunset_time()
+                offset_sunrise = sun.get_sunrise_time()
+                offset_sunset = sun.get_sunset_time()
 
                 # Adjust for time offset
-                new_sunrise = sunrise['time_local'] + datetime.timedelta(minutes=each_conditional.time_offset_minutes)
-                new_sunset = sunset['time_local'] + datetime.timedelta(minutes=each_conditional.time_offset_minutes)
+                offset_sunrise = offset_sunrise['time_local'] + datetime.timedelta(minutes=each_conditional.time_offset_minutes)
+                offset_sunset = offset_sunset['time_local'] + datetime.timedelta(minutes=each_conditional.time_offset_minutes)
 
-                sunrise_sunset_calculated[each_conditional.id]['rise'] = 'Sunrise: {rise}'.format(rise=new_sunrise.strftime("%Y-%m-%d %H:%M"))
-                sunrise_sunset_calculated[each_conditional.id]['set'] = 'Sunset: {set}'.format(set=new_sunset.strftime("%Y-%m-%d %H:%M"))
+                sunrise_sunset_calculated[each_conditional.id]['sunrise'] = sunrise['time_local'].strftime("%Y-%m-%d %H:%M")
+                sunrise_sunset_calculated[each_conditional.id]['sunset'] = sunset['time_local'].strftime("%Y-%m-%d %H:%M")
+                sunrise_sunset_calculated[each_conditional.id]['offset_sunrise'] = offset_sunrise.strftime("%Y-%m-%d %H:%M")
+                sunrise_sunset_calculated[each_conditional.id]['offset_sunset'] = offset_sunset.strftime("%Y-%m-%d %H:%M")
             except:
-                sunrise_sunset_calculated[each_conditional.id]['rise'] = None
-                sunrise_sunset_calculated[each_conditional.id]['set'] = None
+                sunrise_sunset_calculated[each_conditional.id]['sunrise'] = None
+                sunrise_sunset_calculated[each_conditional.id]['sunrise'] = None
+                sunrise_sunset_calculated[each_conditional.id]['offset_sunrise'] = None
+                sunrise_sunset_calculated[each_conditional.id]['offset_sunset'] = None
 
     if request.method == 'POST':
         if not utils_general.user_has_permission('edit_controllers'):

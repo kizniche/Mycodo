@@ -1,3 +1,10 @@
+## 5.7.1 (Unreleased)
+
+### Features
+
+ - Add Conditional Action: Set PID Setpoint
+
+
 ## 5.7.0 (2018-04-03)
 
 ### Features

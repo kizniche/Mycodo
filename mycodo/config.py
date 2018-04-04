@@ -644,7 +644,7 @@ CONDITIONAL_TYPES = {
     'conditional_edge': {
         'name': lazy_gettext('Edge')},
     'conditional_sunrise_sunset': {
-        'name': lazy_gettext('Sun rise/set')}
+        'name': lazy_gettext('Sunrise/Sunset')}
 }
 
 # Conditional actions
@@ -654,6 +654,7 @@ CONDITIONAL_ACTIONS = collections.OrderedDict([
     ('output_pwm', lazy_gettext('Output (Duty Cycle)')),
     ('command', lazy_gettext('Command')),
     ('activate_pid', lazy_gettext('Activate PID')),
+    ('setpoint_pid', lazy_gettext('Set PID Setpoint')),
     ('deactivate_pid', lazy_gettext('Deactivate PID')),
     ('resume_pid', lazy_gettext('Resume PID')),
     ('pause_pid', lazy_gettext('Pause PID')),

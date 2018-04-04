@@ -534,6 +534,25 @@ class ConditionalController(threading.Thread):
                               cond_action.do_pid_id,))
                     deactivate_pid.start()
 
+            # Set PID Setpoint
+            elif cond_action.do_action == 'setpoint_pid':
+                message += " Set Setpoint of PID ({id}).".format(
+                    id=cond_action.do_pid_id)
+                with session_scope(MYCODO_DB_PATH) as new_session:
+                    mod_pid = new_session.query(PID).filter(
+                        PID.id == cond_action.do_pid_id).first()
+                    mod_pid.setpoint = cond_action.do_action_string
+                    new_session.commit()
+                pid = db_retrieve_table_daemon(
+                    PID, device_id=cond_action.do_pid_id, entry='first')
+                if pid.is_activated:
+                    setpoint_pid = threading.Thread(
+                        target=self.control.pid_set,
+                        args=(pid.unique_id,
+                              'setpoint',
+                              float(cond_action.do_action_string),))
+                    setpoint_pid.start()
+
             # Resume PID controller
             elif cond_action.do_action == 'resume_pid':
                 message += " Resume PID ({id}).".format(

@@ -12,12 +12,12 @@ from mycodo.databases.models import ConditionalActions
 from mycodo.databases.models import DisplayOrder
 from mycodo.mycodo_client import DaemonControl
 from mycodo.mycodo_flask.extensions import db
-from mycodo.mycodo_flask.utils.utils_general import controller_activate_deactivate
 from mycodo.mycodo_flask.utils.utils_general import delete_entry_with_id
 from mycodo.mycodo_flask.utils.utils_general import flash_success_errors
 from mycodo.mycodo_flask.utils.utils_general import reorder
 from mycodo.utils.system_pi import csv_to_list_of_int
 from mycodo.utils.system_pi import list_to_csv
+from mycodo.utils.system_pi import str_is_float
 
 logger = logging.getLogger(__name__)
 
@@ -179,8 +179,14 @@ def conditional_action_mod(form):
         elif mod_action.do_action in ['activate_pid',
                                       'deactivate_pid',
                                       'resume_pid',
-                                      'pause_pid'                                      ]:
+                                      'pause_pid']:
             mod_action.do_pid_id = form.do_pid_id.data
+
+        elif mod_action.do_action == 'setpoint_pid':
+            if not str_is_float(form.do_action_string.data):
+                error.append("Setpoint must be an integer or float value")
+            mod_action.do_pid_id = form.do_pid_id.data
+            mod_action.do_action_string = form.do_action_string.data
 
         elif mod_action.do_action == 'email':
             mod_action.do_action_string = form.do_action_string.data

@@ -1,3 +1,28 @@
+<div class="row small-gutters" style="padding-bottom: 0.75em">
+  <div class="col-auto">
+    <label class="control-label">Current Sunrise & Sunset at Geolocation</label>
+    <div>
+      {% if sunrise_sunset_calculated[each_cond.id]['sunrise'] and sunrise_sunset_calculated[each_cond.id]['sunset'] %}
+        Sunrise: {{sunrise_sunset_calculated[each_cond.id]['sunrise']}}<br/>
+        Sunset: {{sunrise_sunset_calculated[each_cond.id]['sunset']}}
+      {% else %}
+        Could not calculate sunrise/sunset times
+      {% endif %}
+    </div>
+  </div>
+  <div class="col-1"></div>
+  <div class="col-auto">
+    <label class="control-label">Sunrise & Sunset with Offsets</label>
+    <div>
+      {% if sunrise_sunset_calculated[each_cond.id]['offset_sunrise'] and sunrise_sunset_calculated[each_cond.id]['offset_sunset'] %}
+        Sunrise: {{sunrise_sunset_calculated[each_cond.id]['offset_sunrise']}}<br/>
+        Sunset: {{sunrise_sunset_calculated[each_cond.id]['offset_sunset']}}
+      {% else %}
+        Could not calculate sunrise/sunset times
+      {% endif %}
+    </div>
+  </div>
+</div>
 <div class="row small-gutters" style="border-bottom: 2px solid #ddd; padding-bottom: 0.2em">
   <div class="col-xs-10 col-sm-3 col-md-2">
     {{form_conditional.rise_or_set.label(class_='control-label')}}
@@ -38,14 +63,5 @@
       {{form_conditional.time_offset_minutes(class_='form-control', value=each_cond.time_offset_minutes, **{'title':_('The number of minutes to offset from the sunrise or sunset')})}}
     </div>
   </div>
-  <div class="col-auto">
-    <label class="control-label">Sunrise and Sunset</label>
-    <div>
-      {% if sunrise_sunset_calculated[each_cond.id]['rise'] and sunrise_sunset_calculated[each_cond.id]['set'] %}
-        {{sunrise_sunset_calculated[each_cond.id]['rise']}}<br/>{{sunrise_sunset_calculated[each_cond.id]['set']}}
-      {% else %}
-        Could not calculate sunrise/sunset times
-      {% endif %}
-    </div>
-  </div>
 </div>
+
