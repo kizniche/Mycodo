@@ -19,21 +19,13 @@ printf "\n#### Removing statistics file\n"
 rm ${INSTALL_DIRECTORY}/databases/statistics.csv
 
 ${INSTALL_CMD} update-swap-size
-
 ${INSTALL_CMD} setup-virtualenv
-
 ${INSTALL_CMD} update-apt
-
 ${INSTALL_CMD} update-packages
-
 ${INSTALL_CMD} web-server-update
-
 ${INSTALL_CMD} update-logrotate
-
 ${INSTALL_CMD} update-pip3
-
 ${INSTALL_CMD} update-pip3-packages
-
 ${INSTALL_CMD} update-permissions
 
 printf "\n#### Checking for updates to optional dependencies\n"
@@ -54,8 +46,14 @@ do
             ${INSTALL_DEP} Adafruit_MCP3008
         elif [ "${ary[opt]}" == "Adafruit_TMP" ]; then
             ${INSTALL_DEP} Adafruit_TMP
+        elif [ "${ary[opt]}" == "bluepy" ]; then
+            ${INSTALL_DEP} bluepy
+        elif [ "${ary[opt]}" == "btlewrap" ]; then
+            ${INSTALL_DEP} btlewrap
         elif [ "${ary[opt]}" == "MCP342x" ]; then
             ${INSTALL_DEP} MCP342x
+        elif [ "${ary[opt]}" == "miflora" ]; then
+            ${INSTALL_DEP} miflora
         elif [ "${ary[opt]}" == "pigpio" ]; then
             ${INSTALL_DEP} update-pigpiod
         elif [ "${ary[opt]}" == "quick2wire" ]; then
@@ -79,19 +77,11 @@ do
 done
 
 ${INSTALL_CMD} update-influxdb
-
 ${INSTALL_CMD} update-alembic
-
 ${INSTALL_CMD} update-mycodo-startup-script
-
 ${INSTALL_CMD} compile-translations
-
 ${INSTALL_CMD} update-cron
-
 ${INSTALL_CMD} update-permissions
-
 ${INSTALL_CMD} restart-daemon
-
 ${INSTALL_CMD} web-server-reload
-
 ${INSTALL_CMD} web-server-connect
