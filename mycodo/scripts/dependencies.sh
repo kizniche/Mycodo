@@ -56,7 +56,7 @@ case "${1:-''}" in
         ${INSTALL_CMD} update-pigpiod
     ;;
     'sht_sensor')
-        ${INSTALL_CMD} install-pip-dependency sht_sensor==18.3.6
+        ${INSTALL_CMD} install-pip-dependency sht_sensor==18.4.0
     ;;
     'tsl2561')
         ${INSTALL_CMD} install-pip-dependency tsl2561
