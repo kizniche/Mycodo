@@ -9,7 +9,7 @@ from datetime import timedelta
 import os
 from flask_babel import lazy_gettext
 
-MYCODO_VERSION = '5.7.0'
+MYCODO_VERSION = '5.7.1'
 ALEMBIC_VERSION = 'c4da358618cc'
 
 #  FORCE_UPGRADE_MASTER
@@ -49,8 +49,8 @@ DEVICES = [
     ('BH1750', 'Luminance: BH1750 (I2C)'),
     ('TSL2561', 'Luminance: TSL2561 (I2C)'),
     ('TSL2591', 'Luminance: TSL2591 (I2C)'),
-    ('CHIRP', 'Moisture/Temperature/Luminance: Chirp (I2C)'),
-    ('MIFLORA', 'Moisture/Conductance/Temperature/Luminance: Miflora (I2C)'),
+    ('CHIRP', 'Moisture/Temperature/Light: Chirp (I2C)'),
+    ('MIFLORA', 'Moisture/Temperature/Light/EC: Miflora (Bluetooth)'),
     ('ATLAS_PH_I2C', 'pH: Atlas Scientific (I2C)'),
     ('ATLAS_PH_UART', 'pH: Atlas Scientific (Serial)'),
     ('BMP180', 'Pressure/Temperature: BMP 180/085 (I2C)'),
@@ -247,7 +247,7 @@ DEVICE_INFO = {
         'py-dependencies': ['MCP342x'],
         'measure': ['voltage']},
     'MIFLORA': {
-        'name': 'MCP342x',
+        'name': 'MiFlora',
         'py-dependencies': ['miflora', 'bluepy', 'btlewrap'],
         'measure': ['battery', 'electrical_conductivity', 'lux', 'moisture', 'temperature']},
     'RPi': {
