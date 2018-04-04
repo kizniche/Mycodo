@@ -50,14 +50,18 @@
     <link href="/static/css/custom-light.css" rel="stylesheet">
   {% endif %}
 
-  <link href="/static/css/custom.css" rel="stylesheet">
-  <script src="/static/js/jquery-3.3.1.min.js"></script>
-  <script src="/static/js/fontawesome-all.min.js"></script>
-  <script src="/static/js/popper.min.js"></script>
-
   {% if current_user.theme != '' %}
     <link href="/static/css/bootstrap-4-themes/{{current_user.theme}}.css" rel="stylesheet">
   {% endif %}
+
+  <link href="/static/css/custom.css" rel="stylesheet">
+
+  <script src="/static/js/popper.min.js"></script>
+  <script src="/static/js/jquery-3.3.1.min.js"></script>
+
+  <link href="/static/css/fa-svg-with-js.css" rel="stylesheet">
+  <script src="/static/js/fontawesome-all.min.js"></script>
+
   <script>
 
   function check_daemon_status() {
@@ -211,8 +215,8 @@
               <a class="dropdown-item{% if active_page == 'help' %} active{% endif %}" target="_blank" href="{{url_for('routes_page.page_help')}}"><i class="fas fa-book"></i> {{_('Mycodo Manual')}}</a>
               <div class="dropdown-divider"></div>
               <a class="dropdown-item" target="_blank" href="https://github.com/kizniche/Mycodo/issues/new"><i class="fas fa-bug"></i> {{_('Submit an Issue')}}</a>
-              <a class="dropdown-item" target="_blank" href="https://github.com/kizniche/Mycodo"><i class="fas fa-github"></i> {{_('Mycodo on Github')}}</a>
-              <a class="dropdown-item" target="_blank" href="https://github.com/kizniche/Mycodo/blob/master/CHANGELOG.md"><i class="fas fa-github"></i> {{_('Changelog')}}</a>
+              <a class="dropdown-item" target="_blank" href="https://github.com/kizniche/Mycodo"><i class="fab fa-github"></i> {{_('Mycodo on Github')}}</a>
+              <a class="dropdown-item" target="_blank" href="https://github.com/kizniche/Mycodo/blob/master/CHANGELOG.md"><i class="fab fa-github"></i> {{_('Changelog')}}</a>
             </div>
           </li>
 
