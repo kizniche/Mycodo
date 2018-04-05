@@ -114,7 +114,7 @@
           <th scope="row">{{loop.index}}</th>
           <td>{{each_dep}}</td>
           <td>
-        {% for each_device in devices %}<a href="{{each_device}}">{{each_device}}</a>{% if not loop.last %} ,{% endif %}{% endfor %}
+        {% for each_device in devices %}<a href="{{each_device}}">{{each_device}}</a>{% if not loop.last %}, {% endif %}{% endfor %}
           </td>
         </tr>
       {% endfor %}
@@ -130,7 +130,7 @@
       <h4>List of devices with unmet dependencies</h4>
       {% for each_device, dependencies in unmet_dependencies.items()|sort(case_sensitive=False) if dependencies %}
       <div>
-        <a href="{{each_device}}">{{each_device}}</a>: {% for each_dep in dependencies %}{{each_dep}}{% if not loop.last %} ,{% endif %}{% endfor %}
+        <a href="{{each_device}}">{{each_device}}</a>: {% for each_dep in dependencies %}{{each_dep}}{% if not loop.last %}, {% endif %}{% endfor %}
       </div>
       {% endfor %}
     </div>

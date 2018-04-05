@@ -162,6 +162,7 @@ class InputController(threading.Thread):
         self.trigger_cond = False
         self.measurement_acquired = False
         self.pre_output_activated = False
+        self.pre_output_locked = False
         self.pre_output_timer = time.time()
 
         # Check if Pre-Output ID actually exists
@@ -521,6 +522,7 @@ class InputController(threading.Thread):
                         self.input_lock = locket.lock_file(self.lock_file, timeout=120)
                         try:
                             self.input_lock.acquire()
+                            self.pre_output_locked = True
                         except locket.LockError:
                             self.logger.error("Could not acquire input lock. Breaking for future locking.")
                             try:
@@ -572,9 +574,12 @@ class InputController(threading.Thread):
 
                             # release pre-output lock
                             try:
-                                self.input_lock.release()
+                                if self.pre_output_locked:
+                                    self.input_lock.release()
+                                    self.pre_output_locked = False
                             except AttributeError:
-                                self.logger.error("Can't release lock: Lock file not present.")
+                                self.logger.error("Can't release lock: "
+                                                  "Lock file not present.")
 
                         elif not self.pre_output_setup:
                             # Pre-output not enabled, just measure

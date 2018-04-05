@@ -1,6 +1,7 @@
 # coding=utf-8
 import argparse
 import logging
+from time import sleep
 
 import Adafruit_MCP3008
 import locket
@@ -25,7 +26,10 @@ class MCP3008Read(object):
         self.mosipin = mosipin
         self.lock_file = '/var/lock/mcp3008-{clock}-{cs}-{miso}-{mosi}'.format(
                 clock=clockpin, cs=cspin, miso=misopin, mosi=mosipin)
-
+        self.adc = Adafruit_MCP3008.MCP3008(clk=self.clockpin,
+                                            cs=self.cspin,
+                                            miso=self.misopin,
+                                            mosi=self.mosipin)
 
     def read(self):
         """ Take a measurement """
@@ -42,10 +46,7 @@ class MCP3008Read(object):
                 os.remove(self.lock_file)
 
             if lock_acquired:
-                self.adc = Adafruit_MCP3008.MCP3008(clk=self.clockpin,
-                                                    cs=self.cspin,
-                                                    miso=self.misopin,
-                                                    mosi=self.mosipin)
+                sleep(0.1)
                 self._voltage = (self.adc.read_adc(self.channel) / 1023.0) * self.volts_max
                 lock.release()
         except Exception as e:
