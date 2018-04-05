@@ -1,3 +1,10 @@
+## 5.7.2 (Unreleased)
+
+### Bugfixes
+
+ - Fix catching erroneous DS18B20 values ([#404](https://github.com/kizniche/mycodo/issues/404))
+
+
 ## 5.7.1 (2018-04-04)
 
 ### Features
