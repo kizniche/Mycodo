@@ -521,9 +521,12 @@ class InputController(threading.Thread):
                         self.input_lock = locket.lock_file(self.lock_file, timeout=120)
                         try:
                             self.input_lock.acquire()
-                        except:
+                        except locket.LockError:
                             self.logger.error("Could not acquire input lock. Breaking for future locking.")
-                            os.remove(self.lock_file)
+                            try:
+                                os.remove(self.lock_file)
+                            except OSError:
+                                self.logger.error("Can't delete lock file: Lock file doesn't exist.")
 
                         self.pre_output_timer = time.time() + self.pre_output_duration
                         self.pre_output_activated = True
@@ -568,7 +571,10 @@ class InputController(threading.Thread):
                             self.get_new_measurement = False
 
                             # release pre-output lock
-                            self.input_lock.release()
+                            try:
+                                self.input_lock.release()
+                            except AttributeError:
+                                self.logger.error("Can't release lock: Lock file not present.")
 
                         elif not self.pre_output_setup:
                             # Pre-output not enabled, just measure
