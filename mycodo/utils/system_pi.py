@@ -152,6 +152,8 @@ def is_int(test_var, check_range=None):
         _ = int(test_var)
     except ValueError:
         return False
+    except TypeError:
+        return False
 
     if check_range:
         if not (check_range[0] <= int(test_var) <= check_range[1]):

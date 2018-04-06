@@ -10,7 +10,7 @@ logger = logging.getLogger("mycodo.device.433mhz_pi_switch")
 class Transmit433MHz:
     """Transmit 433MHz commands"""
 
-    def __init__(self, pin, protocol=1, pulse_length=189, bit_length=24):
+    def __init__(self, pin, protocol=1, pulse_length=189):
         self.device = None
         self.pin = pin
         self.protocol = protocol

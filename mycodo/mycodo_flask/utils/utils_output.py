@@ -49,7 +49,6 @@ def output_add(form_add):
                     new_relay.on_at_start = False
                 elif form_add.relay_type.data == 'wireless_433MHz_pi_switch':
                     new_relay.protocol = 1
-                    new_relay.bit_length = 25
                     new_relay.pulse_length = 189
                     new_relay.on_command = '22559'
                     new_relay.off_command = '22558'
@@ -107,8 +106,6 @@ def output_mod(form_relay):
                 error.append("Protocol must be an integer")
             if not is_int(form_relay.pulse_length.data):
                 error.append("Pulse Length must be an integer")
-            if not is_int(form_relay.bit_length.data):
-                error.append("Bit Length must be an integer")
             if not is_int(form_relay.on_command.data):
                 error.append("On Command must be an integer")
             if not is_int(form_relay.off_command.data):
@@ -116,7 +113,6 @@ def output_mod(form_relay):
             mod_relay.pin = form_relay.wiringpi_pin.data
             mod_relay.protocol = form_relay.protocol.data
             mod_relay.pulse_length = form_relay.pulse_length.data
-            mod_relay.bit_length = form_relay.bit_length.data
             mod_relay.on_command = form_relay.on_command.data
             mod_relay.off_command = form_relay.off_command.data
         elif mod_relay.relay_type == 'command':

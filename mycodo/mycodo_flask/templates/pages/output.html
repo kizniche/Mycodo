@@ -196,35 +196,32 @@
             </a>
           </div>
 
-          <div class="col-xs-5 col-sm-5 col-md-2 col-lg-3 small-gutters">
+          <div class="col-xs-5 col-sm-5 col-md-5 col-lg-3 small-gutters">
             {{form_mod_relay.name(class_='form-control', value=each_relay.name, **{'title':_('A name to distinguish this from others')})}}
           </div>
-          <div class="col-xs-5 col-sm-6 col-md-3 col-lg-2 small-gutters">
+          <div class="col-xs-5 col-sm-6 col-md-6 col-lg-2 small-gutters">
             <input class="form-control btn btn-default btn-block" disabled="" id="{{each_relay.id}}-input-relay-state" title="UUID: {{each_relay.unique_id}}" value="[{{'%02d' % each_relay.id}}] {{ _('Unconfigured')}}" type="text">
           </div>
 
-          <div class="col-xs-5 col-md-3 small-gutters">
-            <div class="row small-gutters">
-                {% if each_relay.relay_type not in ['pwm', 'command_pwm'] -%}
-              <div class="col small-gutters">
-                <input class="form-control btn btn-success btn-block turn_on" id="turn_on" name="{{each_relay.id}}/on/sec/0" type="button" value="{{_('On')}}">
-              </div>
-                {%- endif %}
-              <div class="col small-gutters">
-                <input class="form-control btn btn-danger btn-block turn_off" id="turn_off" name="{{each_relay.id}}/off/sec/0" type="button" value="{{_('Off')}}">
-              </div>
-            </div>
+        {% if each_relay.relay_type not in ['pwm', 'command_pwm'] -%}
+          <div class="col-xs-5 col-sm-6 col-md-4 col-lg-2 small-gutters">
+            <input class="form-control btn btn-success btn-block turn_on" id="turn_on" name="{{each_relay.id}}/on/sec/0" type="button" value="{{_('On')}}">
+          </div>
+        {%- endif %}
+
+        {% if each_relay.relay_type not in ['pwm', 'command_pwm'] -%}
+          <div class="col-xs-5 col-sm-6 col-md-4 col-lg-2 small-gutters">
+        {% else %}
+          <div class="col-xs-5 col-sm-6 col-md-8 col-lg-4 small-gutters">
+        {% endif %}
+            <input class="form-control btn btn-danger btn-block turn_off" id="turn_off" name="{{each_relay.id}}/off/sec/0" type="button" value="{{_('Off')}}">
           </div>
 
-          <div class="col-xs-5 col-md-3 small-gutters">
-            <div class="row small-gutters">
-              <div class="col small-gutters">
-                {{form_mod_relay.order_up(class_='form-control btn btn-default btn-block')}}
-              </div>
-              <div class="col small-gutters">
-                {{form_mod_relay.order_down(class_='form-control btn btn-default btn-block')}}
-              </div>
-            </div>
+          <div class="col small-gutters">
+            {{form_mod_relay.order_up(class_='form-control btn btn-default btn-block')}}
+          </div>
+          <div class="col small-gutters">
+            {{form_mod_relay.order_down(class_='form-control btn btn-default btn-block')}}
           </div>
 
         </div>

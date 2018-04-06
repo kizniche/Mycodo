@@ -34,7 +34,6 @@ class OutputMod(FlaskForm):
     wiringpi_pin = IntegerField(lazy_gettext('Pin'))
     protocol = IntegerField(lazy_gettext('Protocol'))
     pulse_length = IntegerField(lazy_gettext('Pulse Length'))
-    bit_length = IntegerField(lazy_gettext('Bit length'))
     on_command = StringField(lazy_gettext('On Command'))
     off_command = StringField(lazy_gettext('Off Command'))
     pwm_command = StringField(lazy_gettext('PWM Command'))

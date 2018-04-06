@@ -71,7 +71,6 @@ class OutputController(threading.Thread):
         # wireless
         self.output_protocol = {}
         self.output_pulse_length = {}
-        self.output_bit_length = {}
         self.output_on_command = {}
         self.output_off_command = {}
         self.output_pwm_command = {}
@@ -618,7 +617,6 @@ class OutputController(threading.Thread):
             self.output_time_turned_on[each_output.id] = None
             self.output_protocol[each_output.id] = each_output.protocol
             self.output_pulse_length[each_output.id] = each_output.pulse_length
-            self.output_bit_length[each_output.id] = each_output.bit_length
             self.output_on_command[each_output.id] = each_output.on_command
             self.output_off_command[each_output.id] = each_output.off_command
             self.output_pwm_command[each_output.id] = each_output.pwm_command
@@ -689,7 +687,6 @@ class OutputController(threading.Thread):
             self.output_off_triggered[output_id] = False
             self.output_protocol[output_id] = output.protocol
             self.output_pulse_length[output_id] = output.pulse_length
-            self.output_bit_length[output_id] = output.bit_length
             self.output_on_command[output_id] = output.on_command
             self.output_off_command[output_id] = output.off_command
             self.output_pwm_command[output_id] = output.pwm_command
@@ -748,7 +745,6 @@ class OutputController(threading.Thread):
             self.output_off_triggered.pop(output_id, None)
             self.output_protocol.pop(output_id, None)
             self.output_pulse_length.pop(output_id, None)
-            self.output_bit_length.pop(output_id, None)
             self.output_on_command.pop(output_id, None)
             self.output_off_command.pop(output_id, None)
             self.output_pwm_command.pop(output_id, None)
@@ -839,8 +835,7 @@ class OutputController(threading.Thread):
             self.wireless_pi_switch[output_id] = Transmit433MHz(
                 self.output_pin[output_id],
                 protocol=int(self.output_protocol[output_id]),
-                pulse_length=int(self.output_pulse_length[output_id]),
-                bit_length=int(self.output_bit_length[output_id]))
+                pulse_length=int(self.output_pulse_length[output_id]))
 
         elif self.output_type[output_id] == 'pwm':
             try:
@@ -870,7 +865,7 @@ class OutputController(threading.Thread):
         :param output_id: Unique ID for each output
         :type output_id: int
 
-        :return: Whether the output is currently "ON"
+        :return: Whether the output is currently "on" or "off"
         :rtype: str
         """
         if output_id in self.output_type:

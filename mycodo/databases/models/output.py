@@ -24,7 +24,6 @@ class Output(CRUDMixin, db.Model):
     on_duration = db.Column(db.Boolean, default=None)  # Stores if the relay is currently on for a duration
     protocol = db.Column(db.Integer, default=None)
     pulse_length = db.Column(db.Integer, default=None)
-    bit_length = db.Column(db.Integer, default=None)
     on_command = db.Column(db.Text, default=None)
     off_command = db.Column(db.Text, default=None)
     pwm_command = db.Column(db.Text, default=None)
