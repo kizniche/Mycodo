@@ -72,10 +72,10 @@
   {% endif %}
 
     <div class="form-row">
-      <div class="col-auto">
-        <input class="form-control" id="setpoint_pid" name="setpoint_pid" type="number" value="">
+      <div class="col-6">
+        <input class="form-control" id="setpoint_pid" name="setpoint_pid" type="number" value="" title="{{_('A numerical value to set the PID setpoint')}}">
       </div>
-      <div class="col-auto">
+      <div class="col-6">
         <input class="form-control btn btn-default set_setpoint" id="set_setpoint" name="{{each_graph.pid_ids}}/set_setpoint_pid|" type="button" value="{{_('Set Setpoint')}}">
       </div>
 
