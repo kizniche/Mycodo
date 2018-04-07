@@ -73,6 +73,13 @@
 
     <div class="form-row">
       <div class="col-auto">
+        <input class="form-control" id="setpoint_pid" name="setpoint_pid" type="number" value="">
+      </div>
+      <div class="col-auto">
+        <input class="form-control btn btn-default set_setpoint" id="set_setpoint" name="{{each_graph.pid_ids}}/set_setpoint_pid|" type="button" value="{{_('Set Setpoint')}}">
+      </div>
+
+      <div class="col-auto">
         {{form_base.name.label(class_='control-label')}}
         <div>
           {{form_base.name(class_='form-control', value=each_graph.name, **{'title':_('A name to distinguish this from others')})}}

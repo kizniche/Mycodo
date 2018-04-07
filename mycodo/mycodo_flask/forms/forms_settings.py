@@ -111,6 +111,7 @@ class SettingsEmail(FlaskForm):
 #
 
 class SettingsGeneral(FlaskForm):
+    landing_page = StringField(lazy_gettext('Landing Page'))
     language = StringField(lazy_gettext('Language'))
     force_https = BooleanField(lazy_gettext('Force HTTPS'))
     hide_success = BooleanField(lazy_gettext('Hide success messages'))

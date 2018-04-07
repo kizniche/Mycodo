@@ -265,6 +265,7 @@ function modPID(btn_val) {
     {% endif %}
     {% if not misc.hide_alert_warning %}
       error: function(data) {
+        console.log(data);
           toastr['error']("PID " + btn_val.split("/")[0] + ": " + data);
       }
     {% endif %}
@@ -311,6 +312,18 @@ $(document).ready(function() {
     toastr['info']('Command sent to Resume PID');
     {% endif %}
     modPID(btn_val);
+  });
+  $('.set_setpoint').click(function() {
+    var btn_val = this.name;
+    var id = btn_val.split('/')[0];
+    var setpoint = document.getElementById('setpoint_pid').value;
+    if(setpoint) {
+      {% if not misc.hide_alert_info %}
+      toastr['info']('Command sent to set PID setpoint');
+      {% endif %}
+      console.log(btn_val + setpoint);
+      modPID(btn_val + setpoint);
+    }
   });
 });
 

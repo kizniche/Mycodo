@@ -59,6 +59,10 @@ limiter = Limiter()
 def home():
     """Load the default landing page"""
     if flask_login.current_user.is_authenticated:
+        if flask_login.current_user.landing_page == 'live':
+            return redirect(url_for('routes_page.page_live'))
+        elif flask_login.current_user.landing_page == 'dashboard':
+            return redirect(url_for('routes_page.page_dashboard'))
         return redirect(url_for('routes_page.page_live'))
     return clear_cookie_auth()
 
@@ -668,4 +672,9 @@ def pid_mod_unique_id(unique_id, state):
         pid.is_paused = False
         pid.save()
         return_str = daemon.pid_resume(pid.id)
+        return return_str
+    elif 'set_setpoint_pid' in state:
+        pid.setpoint = state.split('|')[1]
+        pid.save()
+        return_str = daemon.pid_set(pid.unique_id, 'setpoint', float(state.split('|')[1]))
         return return_str

@@ -745,14 +745,17 @@ class PIDController(threading.Thread):
                 PID.id == self.pid_id).first()
             mod_pid.setpoint = setpoint
             db_session.commit()
+        return "Setpoint set to {sp}".format(sp=setpoint)
 
     def set_integrator(self, integrator):
         """ Set the integrator of the controller """
         self.integrator = float(integrator)
+        return "Integrator set to {i}".format(i=self.integrator)
 
     def set_derivator(self, derivator):
         """ Set the derivator of the controller """
         self.derivator = float(derivator)
+        return "Derivator set to {d}".format(d=self.derivator)
 
     def set_kp(self, p):
         """ Set Kp gain of the controller """
@@ -762,6 +765,7 @@ class PIDController(threading.Thread):
                 PID.id == self.pid_id).first()
             mod_pid.p = p
             db_session.commit()
+        return "Kp set to {kp}".format(kp=self.Kp)
 
     def set_ki(self, i):
         """ Set Ki gain of the controller """
@@ -771,6 +775,7 @@ class PIDController(threading.Thread):
                 PID.id == self.pid_id).first()
             mod_pid.i = i
             db_session.commit()
+        return "Ki set to {ki}".format(ki=self.Ki)
 
     def set_kd(self, d):
         """ Set Kd gain of the controller """
@@ -780,6 +785,7 @@ class PIDController(threading.Thread):
                 PID.id == self.pid_id).first()
             mod_pid.d = d
             db_session.commit()
+        return "Kd set to {kd}".format(kd=self.Kd)
 
     def get_setpoint(self):
         return self.setpoint

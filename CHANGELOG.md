@@ -3,6 +3,8 @@
 ### Features
 
  - Add ability to invert PWM duty cycle ([#444](https://github.com/kizniche/mycodo/issues/444))
+ - Add ability to select landing page ([#444](https://github.com/kizniche/mycodo/issues/444))
+ - Add ability to set setpoint from PID dashboard elements ([#444](https://github.com/kizniche/mycodo/issues/444))
 
 ### Bugfixes
 

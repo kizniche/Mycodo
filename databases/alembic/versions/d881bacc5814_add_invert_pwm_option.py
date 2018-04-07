@@ -20,6 +20,9 @@ def upgrade():
     with op.batch_alter_table("relay") as batch_op:
         batch_op.add_column(sa.Column('pwm_invert_signal', sa.Boolean))
 
+    with op.batch_alter_table("users") as batch_op:
+        batch_op.add_column(sa.Column('landing_page', sa.Text))
+
     op.execute(
         '''
         UPDATE relay
@@ -27,7 +30,17 @@ def upgrade():
         '''
     )
 
+    op.execute(
+        '''
+        UPDATE users
+        SET landing_page='live'
+        '''
+    )
+
 
 def downgrade():
     with op.batch_alter_table("relay") as batch_op:
         batch_op.drop_column('pwm_invert_signal')
+
+    with op.batch_alter_table("users") as batch_op:
+        batch_op.drop_column('landing_page')

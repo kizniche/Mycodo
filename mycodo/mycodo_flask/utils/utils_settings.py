@@ -243,6 +243,7 @@ def settings_general_mod(form):
                 mod_misc.enable_upgrade_check = form.enable_upgrade_check.data
 
                 mod_user = User.query.filter(User.id == flask_login.current_user.id).first()
+                mod_user.landing_page = form.landing_page.data
                 mod_user.language = form.language.data
 
                 db.session.commit()
