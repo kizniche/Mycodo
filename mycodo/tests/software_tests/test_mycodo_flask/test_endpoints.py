@@ -209,24 +209,25 @@ def sees_navbar(testapp):
     response = testapp.get('/').maybe_follow()
     assert response.status_code == 200
     navbar_strings = [
-        'Asynchronous Graphs',
-        'Cameras',
+        'Async',
+        'Calibration & Setup',
+        'Cam',
         'Configure',
-        'Dashboard',
+        'Dash',
         'Data',
         'Export',
-        'Func',
-        'Info',
+        'Functions',
         'LCDs',
-        'Live Measurements',
+        'Live',
         'Logout',
         'Mycodo Logs',
         'Methods',
+        'Outputs',
         'Output Usage',
         'Output Usage Reports',
         'Remote Admin',
         'System Information',
-        'Timer',
+        'Timers',
         'Upgrade'
     ]
     assert all(
