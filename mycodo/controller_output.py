@@ -412,12 +412,11 @@ class OutputController(threading.Thread):
                     name=self.output_name[output_id]))
 
             # Write PWM duty cycle to database
-            if (self.output_type[output_id] in ['pwm', 'command_pwm'] and
-                    self.pwm_time_turned_on[output_id] is not None):
+            if self.output_type[output_id] in ['pwm', 'command_pwm']:
                 if self.pwm_invert_signal[output_id]:
-                    duty_cycle = 100
+                    duty_cycle = 100.0
                 else:
-                    duty_cycle = 0
+                    duty_cycle = 0.0
 
                 self.pwm_time_turned_on[output_id] = None
 
