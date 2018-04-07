@@ -583,8 +583,7 @@ usage: mycodo-client [-h] [--activatecontroller CONTROLLER ID]
 <td style="text-align: left;">After the sensor is successfully read and a database entry is made, this is the duration of time waited until the sensor is measured again.</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">Measurement &lt;#measur
-ement&gt;__ Unit</td>
+<td style="text-align: left;">Measurement Unit</td>
 <td style="text-align: left;">Select the unit to save the measurement as (only available for select measurements).</td>
 </tr>
 <tr class="odd">
@@ -713,10 +712,10 @@ signal &lt;http://kylegabriel.com/projects/2016/02
 </table>
 <h3 id="math">Math</h3>
 <p>Math controllers allow one or more Inputs to have math applied to produce a new value that may be used within Mycodo.</p>
-<table style="width:88%;">
+<table>
 <colgroup>
-<col style="width: 18%"></col>
-<col style="width: 69%"></col>
+<col style="width: 40%"></col>
+<col style="width: 59%"></col>
 </colgroup>
 <thead>
 <tr class="header">
@@ -726,11 +725,11 @@ signal &lt;http://kylegabriel.com/projects/2016/02
 </thead>
 <tbody>
 <tr class="odd">
-<td style="text-align: left;">Average (Multiple Measuremen ts)</td>
+<td style="text-align: left;">Average (Multiple Measurements)</td>
 <td style="text-align: left;">Stores the statistical mean of multiple selected measurements.</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">Average (Single Measuremen t)</td>
+<td style="text-align: left;">Average (Single Measurement)</td>
 <td style="text-align: left;">Stores the statistical mean of one selected measurement over a duration of time determined by the Max Age (seconds) option.</td>
 </tr>
 <tr class="odd">
@@ -758,7 +757,7 @@ signal &lt;http://kylegabriel.com/projects/2016/02
 <td style="text-align: left;">Calculates and stores the percent relative humidity from the dry-bulb and wet-bulb temperatures, and optional pressure.</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">Verificati on</td>
+<td style="text-align: left;">Verification</td>
 <td style="text-align: left;">Ensures the greatest difference between any selected Inputs is less than Max Difference, and if so, stores the average of the selected measurements.</td>
 </tr>
 </tbody>
@@ -844,114 +843,118 @@ signal &lt;http://kylegabriel.com/projects/2016/02
 <td style="text-align: left;">m</td>
 </tr>
 <tr class="even">
+<td style="text-align: left;">battery</td>
+<td style="text-align: left;">%</td>
+</tr>
+<tr class="odd">
 <td style="text-align: left;">boolean</td>
 <td style="text-align: left;">None</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td style="text-align: left;">co2</td>
 <td style="text-align: left;">ppmv</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td style="text-align: left;">cpu_load_1m</td>
 <td style="text-align: left;">1 min</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td style="text-align: left;">cpu_load_5m</td>
 <td style="text-align: left;">5 min</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td style="text-align: left;">cpu_load_15m</td>
 <td style="text-align: left;">15 min</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td style="text-align: left;">dewpoint</td>
 <td style="text-align: left;">°C</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td style="text-align: left;">disk_space</td>
 <td style="text-align: left;">MB</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td style="text-align: left;">duration_sec</td>
 <td style="text-align: left;">sec</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td style="text-align: left;">duty_cycle</td>
 <td style="text-align: left;">%</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td style="text-align: left;">edge</td>
 <td style="text-align: left;">edge</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td style="text-align: left;">electrical_conductivity</td>
 <td style="text-align: left;">uS/cm</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td style="text-align: left;">frequency</td>
 <td style="text-align: left;">Hz</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td style="text-align: left;">humidity</td>
 <td style="text-align: left;">%</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td style="text-align: left;">humidity_ratio</td>
 <td style="text-align: left;">kg/kg</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td style="text-align: left;">lux</td>
 <td style="text-align: left;">lx</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td style="text-align: left;">moisture</td>
 <td style="text-align: left;">moisture</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td style="text-align: left;">ph</td>
 <td style="text-align: left;">pH</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td style="text-align: left;">pid_output</td>
 <td style="text-align: left;">sec</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td style="text-align: left;">pressure</td>
 <td style="text-align: left;">Pa</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td style="text-align: left;">pulse_width</td>
 <td style="text-align: left;">µs</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td style="text-align: left;">rpm</td>
 <td style="text-align: left;">rpm</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td style="text-align: left;">setpoint</td>
 <td style="text-align: left;">None</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td style="text-align: left;">specific_enthalpy</td>
 <td style="text-align: left;">kJ/kg</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td style="text-align: left;">specific_volume</td>
 <td style="text-align: left;">m3/kg</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td style="text-align: left;">temperature</td>
 <td style="text-align: left;">°C</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td style="text-align: left;">temperature_die</td>
 <td style="text-align: left;">°C</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td style="text-align: left;">temperature_object</td>
 <td style="text-align: left;">°C</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td style="text-align: left;">voltage</td>
 <td style="text-align: left;">volts</td>
 </tr>
@@ -1466,8 +1469,8 @@ document.write('<a h'+'ref'+'="ma'+'ilto'+':'+e+'" clas'+'s="em' + 'ail">'+e+'<\
 <h4 id="measurement-conditional-command-variables">Measurement Conditional command variables</h4>
 <table>
 <colgroup>
-<col style="width: 39%"></col>
-<col style="width: 60%"></col>
+<col style="width: 45%"></col>
+<col style="width: 54%"></col>
 </colgroup>
 <thead>
 <tr class="header">
@@ -1529,7 +1532,7 @@ document.write('<a h'+'ref'+'="ma'+'ilto'+':'+e+'" clas'+'s="em' + 'ail">'+e+'<\
 <td style="text-align: left;">Input measurement: edge detected (1 or -1)</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">((measure_electrical_condu ctivity))</td>
+<td style="text-align: left;">((measure_electrical_conductivity))</td>
 <td style="text-align: left;">Input measurement: Electrical Conductivity (uS/cm)</td>
 </tr>
 <tr class="odd">
@@ -1569,11 +1572,11 @@ document.write('<a h'+'ref'+'="ma'+'ilto'+':'+e+'" clas'+'s="em' + 'ail">'+e+'<\
 <td style="text-align: left;">Input measurement: temperature</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">((measure_temperature_die) )</td>
+<td style="text-align: left;">((measure_temperature_die))</td>
 <td style="text-align: left;">Input measurement: temperature (die)</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">((measure_temperature_obje ct))</td>
+<td style="text-align: left;">((measure_temperature_object))</td>
 <td style="text-align: left;">Input measurement: temperature (object)</td>
 </tr>
 <tr class="even">

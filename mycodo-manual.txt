@@ -369,8 +369,8 @@ the measurement database to be used throughout the Mycodo system.
                           database entry is made, this is the duration of
                           time waited until the sensor is measured again.
 
-  Measurement <#measur    Select the unit to save the measurement as (only
-  ement>__ Unit           available for select measurements).
+  Measurement Unit        Select the unit to save the measurement as (only
+                          available for select measurements).
 
   Pre Output              If you require a output to be activated before a
                           measurement is made (for instance, if you have a
@@ -522,41 +522,41 @@ Math
 Math controllers allow one or more Inputs to have math applied to
 produce a new value that may be used within Mycodo.
 
-  ----------------------------------------------------------------
-  Type          Description
-  ------------- --------------------------------------------------
-  Average       Stores the statistical mean of multiple selected
-  (Multiple     measurements.
-  Measuremen    
-  ts)           
+  ------------------------------------------------------------------------
+  Type                          Description
+  ----------------------------- ------------------------------------------
+  Average (Multiple             Stores the statistical mean of multiple
+  Measurements)                 selected measurements.
 
-  Average       Stores the statistical mean of one selected
-  (Single       measurement over a duration of time determined by
-  Measuremen t) the Max Age (seconds) option.
+  Average (Single Measurement)  Stores the statistical mean of one
+                                selected measurement over a duration of
+                                time determined by the Max Age (seconds)
+                                option.
 
-  Difference    Stores the mathematical difference (value_1
-                -value_2).
+  Difference                    Stores the mathematical difference
+                                (value_1 -value_2).
 
-  Equation      Stores the calculated value of an equation.
+  Equation                      Stores the calculated value of an
+                                equation.
 
-  Median        Stores the statistical median from the selected
-                measurements.
+  Median                        Stores the statistical median from the
+                                selected measurements.
 
-  Maximum       Stores the largest measurement from the selected
-                measurements.
+  Maximum                       Stores the largest measurement from the
+                                selected measurements.
 
-  Minimum       Stores the smallest measurement from the selected
-                measurements.
+  Minimum                       Stores the smallest measurement from the
+                                selected measurements.
 
-  Humidity      Calculates and stores the percent relative
-                humidity from the dry-bulb and wet-bulb
-                temperatures, and optional pressure.
+  Humidity                      Calculates and stores the percent relative
+                                humidity from the dry-bulb and wet-bulb
+                                temperatures, and optional pressure.
 
-  Verificati on Ensures the greatest difference between any
-                selected Inputs is less than Max Difference, and
-                if so, stores the average of the selected
-                measurements.
-  ----------------------------------------------------------------
+  Verification                  Ensures the greatest difference between
+                                any selected Inputs is less than Max
+                                Difference, and if so, stores the average
+                                of the selected measurements.
+  ------------------------------------------------------------------------
 
   ------------------------------------------------------------------------
   Setting                 Description
@@ -630,6 +630,7 @@ y-axis as the other temperatures.
   Measurement                   Units
   ----------------------------- -------------
   altitude                      m
+  battery                       %
   boolean                       None
   co2                           ppmv
   cpu_load_1m                   1 min
@@ -1208,64 +1209,65 @@ Or for an Output Conditional:
 Measurement Conditional command variables
 
   ------------------------------------------------------------------------
-  Variable                     Description
-  ---------------------------- -------------------------------------------
-  ((measure_location))         Input location (such as GPIO pin, I2C
-                               address, etc.)
+  Variable                          Description
+  --------------------------------- --------------------------------------
+  ((measure_location))              Input location (such as GPIO pin, I2C
+                                    address, etc.)
 
-  ((measure_period))           The period (seconds) between measurements
-                               (input, math, or PID)
+  ((measure_period))                The period (seconds) between
+                                    measurements (input, math, or PID)
 
-  ((measure_linux_command))    Input measurement: Linux Command return
-                               value
+  ((measure_linux_command))         Input measurement: Linux Command
+                                    return value
 
-  ((measure_altitude))         Input measurement: altitude
+  ((measure_altitude))              Input measurement: altitude
 
-  ((measure_boolean))          Input measurement: boolean
+  ((measure_boolean))               Input measurement: boolean
 
-  ((measure_co2))              Input measurement: CO2
+  ((measure_co2))                   Input measurement: CO2
 
-  ((measure_cpu_load_1m))      Input measurement: CPU load (1 min)
+  ((measure_cpu_load_1m))           Input measurement: CPU load (1 min)
 
-  ((measure_cpu_load_5m))      Input measurement: CPU load (5 min)
+  ((measure_cpu_load_5m))           Input measurement: CPU load (5 min)
 
-  ((measure_cpu_load_15m))     Input measurement: CPU load (15 min)
+  ((measure_cpu_load_15m))          Input measurement: CPU load (15 min)
 
-  ((measure_dewpoint))         Input measurement: dew point
+  ((measure_dewpoint))              Input measurement: dew point
 
-  ((measure_disk_space))       Input measurement: disk space
+  ((measure_disk_space))            Input measurement: disk space
 
-  ((measure_duty_cycle))       Input measurement: duty cycle
+  ((measure_duty_cycle))            Input measurement: duty cycle
 
-  ((measure_edge))             Input measurement: edge detected (1 or -1)
+  ((measure_edge))                  Input measurement: edge detected (1 or
+                                    -1)
 
-  ((measure_electrical_condu   Input measurement: Electrical Conductivity
-  ctivity))                    (uS/cm)
+  ((measure_electrical_conductivity Input measurement: Electrical
+  ))                                Conductivity (uS/cm)
 
-  ((measure_frequency))        Input measurement: frequency
+  ((measure_frequency))             Input measurement: frequency
 
-  ((measure_humidity))         Input measurement: humidity
+  ((measure_humidity))              Input measurement: humidity
 
-  ((measure_lux))              Input measurement: lux
+  ((measure_lux))                   Input measurement: lux
 
-  ((measure_moisture))         Input measurement: moisture
+  ((measure_moisture))              Input measurement: moisture
 
-  ((measure_ph))               Input measurement: ph
+  ((measure_ph))                    Input measurement: ph
 
-  ((measure_pressure))         Input measurement: pressure
+  ((measure_pressure))              Input measurement: pressure
 
-  ((measure_pulse_width))      Input measurement: pulse width
+  ((measure_pulse_width))           Input measurement: pulse width
 
-  ((measure_rpm))              Input measurement: RPM
+  ((measure_rpm))                   Input measurement: RPM
 
-  ((measure_temperature))      Input measurement: temperature
+  ((measure_temperature))           Input measurement: temperature
 
-  ((measure_temperature_die) ) Input measurement: temperature (die)
+  ((measure_temperature_die))       Input measurement: temperature (die)
 
-  ((measure_temperature_obje   Input measurement: temperature (object)
-  ct))                         
+  ((measure_temperature_object))    Input measurement: temperature
+                                    (object)
 
-  ((measure_voltage))          Input measurement: voltage
+  ((measure_voltage))               Input measurement: voltage
   ------------------------------------------------------------------------
 
 Output Conditional command variables

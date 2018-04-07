@@ -274,9 +274,8 @@ the measurement database to be used throughout the Mycodo system.
 |                       | database entry is made, this is the duration of |
 |                       | time waited until the sensor is measured again. |
 +-----------------------+-------------------------------------------------+
-| `Measurement <#measur | Select the unit to save the measurement as      |
-| ement>`__             | (only available for select measurements).       |
-| Unit                  |                                                 |
+| Measurement Unit      | Select the unit to save the measurement as      |
+|                       | (only available for select measurements).       |
 +-----------------------+-------------------------------------------------+
 | Pre Output            | If you require a output to be activated before  |
 |                       | a measurement is made (for instance, if you     |
@@ -431,42 +430,39 @@ Math
 Math controllers allow one or more Inputs to have math applied to
 produce a new value that may be used within Mycodo.
 
-+------------+-------------------------------------------------+
-| Type       | Description                                     |
-+============+=================================================+
-| Average    | Stores the statistical mean of multiple         |
-| (Multiple  | selected measurements.                          |
-| Measuremen |                                                 |
-| ts)        |                                                 |
-+------------+-------------------------------------------------+
-| Average    | Stores the statistical mean of one selected     |
-| (Single    | measurement over a duration of time determined  |
-| Measuremen | by the Max Age (seconds) option.                |
-| t)         |                                                 |
-+------------+-------------------------------------------------+
-| Difference | Stores the mathematical difference (value\_1 -  |
-|            | value\_2).                                      |
-+------------+-------------------------------------------------+
-| Equation   | Stores the calculated value of an equation.     |
-+------------+-------------------------------------------------+
-| Median     | Stores the statistical median from the selected |
-|            | measurements.                                   |
-+------------+-------------------------------------------------+
-| Maximum    | Stores the largest measurement from the         |
-|            | selected measurements.                          |
-+------------+-------------------------------------------------+
-| Minimum    | Stores the smallest measurement from the        |
-|            | selected measurements.                          |
-+------------+-------------------------------------------------+
-| Humidity   | Calculates and stores the percent relative      |
-|            | humidity from the dry-bulb and wet-bulb         |
-|            | temperatures, and optional pressure.            |
-+------------+-------------------------------------------------+
-| Verificati | Ensures the greatest difference between any     |
-| on         | selected Inputs is less than Max Difference,    |
-|            | and if so, stores the average of the selected   |
-|            | measurements.                                   |
-+------------+-------------------------------------------------+
++---------------------------------+-------------------------------------------------+
+| Type                            | Description                                     |
++=================================+=================================================+
+| Average (Multiple Measurements) | Stores the statistical mean of multiple         |
+|                                 | selected measurements.                          |
++---------------------------------+-------------------------------------------------+
+| Average (Single Measurement)    | Stores the statistical mean of one selected     |
+|                                 | measurement over a duration of time determined  |
+|                                 | by the Max Age (seconds) option.                |
++---------------------------------+-------------------------------------------------+
+| Difference                      | Stores the mathematical difference (value\_1 -  |
+|                                 | value\_2).                                      |
++---------------------------------+-------------------------------------------------+
+| Equation                        | Stores the calculated value of an equation.     |
++---------------------------------+-------------------------------------------------+
+| Median                          | Stores the statistical median from the selected |
+|                                 | measurements.                                   |
++---------------------------------+-------------------------------------------------+
+| Maximum                         | Stores the largest measurement from the         |
+|                                 | selected measurements.                          |
++---------------------------------+-------------------------------------------------+
+| Minimum                         | Stores the smallest measurement from the        |
+|                                 | selected measurements.                          |
++---------------------------------+-------------------------------------------------+
+| Humidity                        | Calculates and stores the percent relative      |
+|                                 | humidity from the dry-bulb and wet-bulb         |
+|                                 | temperatures, and optional pressure.            |
++---------------------------------+-------------------------------------------------+
+| Verification                    | Ensures the greatest difference between any     |
+|                                 | selected Inputs is less than Max Difference,    |
+|                                 | and if so, stores the average of the selected   |
+|                                 | measurements.                                   |
++---------------------------------+-------------------------------------------------+
 
 +-----------------------+-------------------------------------------------+
 | Setting               | Description                                     |
@@ -543,6 +539,8 @@ y-axis as the other temperatures.
 | Measurement                | Units      |
 +============================+============+
 | altitude                   | m          |
++----------------------------+------------+
+| battery                    | %          |
 +----------------------------+------------+
 | boolean                    | None       |
 +----------------------------+------------+
@@ -1193,67 +1191,66 @@ Or for an Output Conditional:
 Measurement Conditional command variables
 '''''''''''''''''''''''''''''''''''''''''
 
-+------------------------------+----------------------------------------------+
-| Variable                     | Description                                  |
-+==============================+==============================================+
-| ((measure\_location))        | Input location (such as GPIO pin, I2C        |
-|                              | address, etc.)                               |
-+------------------------------+----------------------------------------------+
-| ((measure\_period))          | The period (seconds) between measurements    |
-|                              | (input, math, or PID)                        |
-+------------------------------+----------------------------------------------+
-| ((measure\_linux\_command))  | Input measurement: Linux Command return      |
-|                              | value                                        |
-+------------------------------+----------------------------------------------+
-| ((measure\_altitude))        | Input measurement: altitude                  |
-+------------------------------+----------------------------------------------+
-| ((measure\_boolean))         | Input measurement: boolean                   |
-+------------------------------+----------------------------------------------+
-| ((measure\_co2))             | Input measurement: CO2                       |
-+------------------------------+----------------------------------------------+
-| ((measure\_cpu\_load\_1m))   | Input measurement: CPU load (1 min)          |
-+------------------------------+----------------------------------------------+
-| ((measure\_cpu\_load\_5m))   | Input measurement: CPU load (5 min)          |
-+------------------------------+----------------------------------------------+
-| ((measure\_cpu\_load\_15m))  | Input measurement: CPU load (15 min)         |
-+------------------------------+----------------------------------------------+
-| ((measure\_dewpoint))        | Input measurement: dew point                 |
-+------------------------------+----------------------------------------------+
-| ((measure\_disk\_space))     | Input measurement: disk space                |
-+------------------------------+----------------------------------------------+
-| ((measure\_duty\_cycle))     | Input measurement: duty cycle                |
-+------------------------------+----------------------------------------------+
-| ((measure\_edge))            | Input measurement: edge detected (1 or -1)   |
-+------------------------------+----------------------------------------------+
-| ((measure\_electrical\_condu | Input measurement: Electrical Conductivity   |
-| ctivity))                    | (uS/cm)                                      |
-+------------------------------+----------------------------------------------+
-| ((measure\_frequency))       | Input measurement: frequency                 |
-+------------------------------+----------------------------------------------+
-| ((measure\_humidity))        | Input measurement: humidity                  |
-+------------------------------+----------------------------------------------+
-| ((measure\_lux))             | Input measurement: lux                       |
-+------------------------------+----------------------------------------------+
-| ((measure\_moisture))        | Input measurement: moisture                  |
-+------------------------------+----------------------------------------------+
-| ((measure\_ph))              | Input measurement: ph                        |
-+------------------------------+----------------------------------------------+
-| ((measure\_pressure))        | Input measurement: pressure                  |
-+------------------------------+----------------------------------------------+
-| ((measure\_pulse\_width))    | Input measurement: pulse width               |
-+------------------------------+----------------------------------------------+
-| ((measure\_rpm))             | Input measurement: RPM                       |
-+------------------------------+----------------------------------------------+
-| ((measure\_temperature))     | Input measurement: temperature               |
-+------------------------------+----------------------------------------------+
-| ((measure\_temperature\_die) | Input measurement: temperature (die)         |
-| )                            |                                              |
-+------------------------------+----------------------------------------------+
-| ((measure\_temperature\_obje | Input measurement: temperature (object)      |
-| ct))                         |                                              |
-+------------------------------+----------------------------------------------+
-| ((measure\_voltage))         | Input measurement: voltage                   |
-+------------------------------+----------------------------------------------+
++---------------------------------------+----------------------------------------------+
+| Variable                              | Description                                  |
++=======================================+==============================================+
+| ((measure\_location))                 | Input location (such as GPIO pin, I2C        |
+|                                       | address, etc.)                               |
++---------------------------------------+----------------------------------------------+
+| ((measure\_period))                   | The period (seconds) between measurements    |
+|                                       | (input, math, or PID)                        |
++---------------------------------------+----------------------------------------------+
+| ((measure\_linux\_command))           | Input measurement: Linux Command return      |
+|                                       | value                                        |
++---------------------------------------+----------------------------------------------+
+| ((measure\_altitude))                 | Input measurement: altitude                  |
++---------------------------------------+----------------------------------------------+
+| ((measure\_boolean))                  | Input measurement: boolean                   |
++---------------------------------------+----------------------------------------------+
+| ((measure\_co2))                      | Input measurement: CO2                       |
++---------------------------------------+----------------------------------------------+
+| ((measure\_cpu\_load\_1m))            | Input measurement: CPU load (1 min)          |
++---------------------------------------+----------------------------------------------+
+| ((measure\_cpu\_load\_5m))            | Input measurement: CPU load (5 min)          |
++---------------------------------------+----------------------------------------------+
+| ((measure\_cpu\_load\_15m))           | Input measurement: CPU load (15 min)         |
++---------------------------------------+----------------------------------------------+
+| ((measure\_dewpoint))                 | Input measurement: dew point                 |
++---------------------------------------+----------------------------------------------+
+| ((measure\_disk\_space))              | Input measurement: disk space                |
++---------------------------------------+----------------------------------------------+
+| ((measure\_duty\_cycle))              | Input measurement: duty cycle                |
++---------------------------------------+----------------------------------------------+
+| ((measure\_edge))                     | Input measurement: edge detected (1 or -1)   |
++---------------------------------------+----------------------------------------------+
+| ((measure\_electrical\_conductivity)) | Input measurement: Electrical Conductivity   |
+|                                       | (uS/cm)                                      |
++---------------------------------------+----------------------------------------------+
+| ((measure\_frequency))                | Input measurement: frequency                 |
++---------------------------------------+----------------------------------------------+
+| ((measure\_humidity))                 | Input measurement: humidity                  |
++---------------------------------------+----------------------------------------------+
+| ((measure\_lux))                      | Input measurement: lux                       |
++---------------------------------------+----------------------------------------------+
+| ((measure\_moisture))                 | Input measurement: moisture                  |
++---------------------------------------+----------------------------------------------+
+| ((measure\_ph))                       | Input measurement: ph                        |
++---------------------------------------+----------------------------------------------+
+| ((measure\_pressure))                 | Input measurement: pressure                  |
++---------------------------------------+----------------------------------------------+
+| ((measure\_pulse\_width))             | Input measurement: pulse width               |
++---------------------------------------+----------------------------------------------+
+| ((measure\_rpm))                      | Input measurement: RPM                       |
++---------------------------------------+----------------------------------------------+
+| ((measure\_temperature))              | Input measurement: temperature               |
++---------------------------------------+----------------------------------------------+
+| ((measure\_temperature\_die))         | Input measurement: temperature (die)         |
++---------------------------------------+----------------------------------------------+
+| ((measure\_temperature\_object))      | Input measurement: temperature (object)      |
+|                                       |                                              |
++---------------------------------------+----------------------------------------------+
+| ((measure\_voltage))                  | Input measurement: voltage                   |
++---------------------------------------+----------------------------------------------+
 
 Output Conditional command variables
 ''''''''''''''''''''''''''''''''''''
