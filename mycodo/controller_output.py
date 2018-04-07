@@ -80,6 +80,7 @@ class OutputController(threading.Thread):
         self.pwm_hertz = {}
         self.pwm_library = {}
         self.pwm_output = {}
+        self.pwm_invert_signal = {}
         self.pwm_state = {}
         self.pwm_time_turned_on = {}
 
@@ -337,12 +338,16 @@ class OutputController(threading.Thread):
 
             # PWM command output
             elif self.output_type[output_id] == 'command_pwm':
+                if self.pwm_invert_signal[output_id]:
+                    duty_cycle = 100.0 - abs(duty_cycle)
+
                 if duty_cycle:
                     self.pwm_time_turned_on[output_id] = datetime.datetime.now()
                 else:
                     self.pwm_time_turned_on[output_id] = None
+
                 self.logger.debug(
-                    "PWM command {id} ({name}) ON with a duty cycle of {dc:.2f}%".format(
+                    "PWM command {id} ({name}) executed with a duty cycle of {dc:.2f}%".format(
                         id=self.output_id[output_id],
                         name=self.output_name[output_id],
                         dc=abs(duty_cycle)))
@@ -358,13 +363,21 @@ class OutputController(threading.Thread):
 
             # PWM output
             elif self.output_type[output_id] == 'pwm':
+                if self.pwm_invert_signal[output_id]:
+                    duty_cycle = 100.0 - abs(duty_cycle)
+
+                if duty_cycle:
+                    self.pwm_time_turned_on[output_id] = datetime.datetime.now()
+                else:
+                    self.pwm_time_turned_on[output_id] = None
+
                 # Record the time the PWM was turned on
                 if self.pwm_hertz[output_id] <= 0:
                     self.logger.warning("PWM Hertz must be a positive value")
                     return 1
-                self.pwm_time_turned_on[output_id] = datetime.datetime.now()
+
                 self.logger.debug(
-                    "PWM {id} ({name}) ON with a duty cycle of {dc:.2f}% at {hertz} Hz".format(
+                    "PWM {id} ({name}) set to a duty cycle of {dc:.2f}% at {hertz} Hz".format(
                         id=self.output_id[output_id],
                         name=self.output_name[output_id],
                         dc=abs(duty_cycle),
@@ -401,19 +414,18 @@ class OutputController(threading.Thread):
             # Write PWM duty cycle to database
             if (self.output_type[output_id] in ['pwm', 'command_pwm'] and
                     self.pwm_time_turned_on[output_id] is not None):
-                # Write the duration the PWM was ON to the database
-                # at the timestamp it turned ON
-                duration_on = (datetime.datetime.now() -
-                               self.pwm_time_turned_on[output_id]).total_seconds()
+                if self.pwm_invert_signal[output_id]:
+                    duty_cycle = 100
+                else:
+                    duty_cycle = 0
+
                 self.pwm_time_turned_on[output_id] = None
-                timestamp = (datetime.datetime.utcnow() -
-                             datetime.timedelta(seconds=duration_on))
+
                 write_db = threading.Thread(
                     target=write_influxdb_value,
                     args=(self.output_unique_id[output_id],
                           'duty_cycle',
-                          duty_cycle,
-                          timestamp,))
+                          duty_cycle,))
                 write_db.start()
 
             # Write output duration on to database
@@ -623,6 +635,7 @@ class OutputController(threading.Thread):
 
             self.pwm_hertz[each_output.id] = each_output.pwm_hertz
             self.pwm_library[each_output.id] = each_output.pwm_library
+            self.pwm_invert_signal[each_output.id] = each_output.pwm_invert_signal
             self.pwm_time_turned_on[each_output.id] = None
 
             if self.output_pin[each_output.id] is not None:
@@ -693,6 +706,7 @@ class OutputController(threading.Thread):
 
             self.pwm_hertz[output_id] = output.pwm_hertz
             self.pwm_library[output_id] = output.pwm_library
+            self.pwm_invert_signal[output_id] = output.pwm_invert_signal
 
             if self.output_pin[output_id]:
                 self.setup_pin(output.id)
@@ -752,6 +766,7 @@ class OutputController(threading.Thread):
 
             self.pwm_hertz.pop(output_id, None)
             self.pwm_library.pop(output_id, None)
+            self.pwm_invert_signal.pop(output_id, None)
             self.pwm_output.pop(output_id, None)
             self.pwm_state.pop(output_id, None)
             self.pwm_time_turned_on.pop(output_id, None)

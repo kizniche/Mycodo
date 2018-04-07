@@ -167,36 +167,40 @@
       <div class="collapse navbar-collapse" id="navbarCollapse">
         <ul class="navbar-nav mr-auto">
 
-          <li class="nav-item dropdown{% if active_page in ['dashboard', 'live', 'graph_async'] %} active{% endif %}">
-            <a class="nav-link dropdown-toggle" href="http://example.com" id="dropdown00" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{_('Info')}}</a>
+          <li class="nav-item{% if active_page == 'dashboard' %} active{% endif %}">
+            <a class="nav-link" href="{{url_for('routes_page.page_dashboard')}}">{{_('Dash')}}</a>
+          </li>
+
+          <li class="nav-item{% if active_page == 'live' %} active{% endif %}">
+            <a class="nav-link" href="{{url_for('routes_page.page_live')}}">{{_('Live')}}</a>
+          </li>
+
+          <li class="nav-item{% if active_page == 'graph_async' %} active{% endif %}">
+            <a class="nav-link" href="{{url_for('routes_page.page_graph_async')}}">{{_('Async')}}</a>
+          </li>
+
+          <li class="nav-item{% if active_page == 'camera' %} active{% endif %}">
+            <a class="nav-link" href="{{url_for('routes_page.page_camera')}}">{{_('Cam')}}</a>
+          </li>
+
+          <li class="nav-item dropdown{% if active_page in ['data', 'output', 'function', 'method_list', 'timer', 'lcd', 'calibration'] %} active{% endif %}">
+            <a class="nav-link dropdown-toggle" href="http://example.com" id="dropdown00" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{_('Setup')}}</a>
             <div class="dropdown-menu" aria-labelledby="dropdown00">
-              <a class="dropdown-item{% if active_page == 'dashboard' %} active{% endif %}" href="{{url_for('routes_page.page_dashboard')}}"><i class="fas fa-chart-area"></i> {{_('Dashboard')}}</a>
-              <a class="dropdown-item{% if active_page == 'live' %} active{% endif %}" href="{{url_for('routes_page.page_live')}}"><i class="fas fa-play"></i> {{_('Live Measurements')}}</a>
-              <a class="dropdown-item{% if active_page == 'graph_async' %} active{% endif %}" href="{{url_for('routes_page.page_graph_async')}}"><i class="fas fa-exchange-alt"></i> {{_('Asynchronous Graphs')}}</a>
+              <a class="dropdown-item{% if active_page == 'data' %} active{% endif %}" href="{{url_for('routes_page.page_data')}}"><i class="fas fa-database"></i> {{_('Data')}}</a>
+              <a class="dropdown-item{% if active_page == 'output' %} active{% endif %}" href="{{url_for('routes_page.page_output')}}"><i class="fas fa-bolt"></i> {{_('Outputs')}}</a>
+              <a class="dropdown-item{% if active_page == 'function' %} active{% endif %}" href="{{url_for('routes_page.page_function')}}"><i class="fas fa-random"></i> {{_('Functions')}}</a>
+              <a class="dropdown-item{% if active_page == 'method_list' %} active{% endif %}" href="{{url_for('routes_method.method_list')}}"><i class="fas fa-chart-line"></i> {{_('Methods')}}</a>
+              <a class="dropdown-item{% if active_page == 'timer' %} active{% endif %}" href="{{url_for('routes_page.page_timer')}}"><i class="fas fa-stopwatch"></i> {{_('Timers')}}</a>
+              <a class="dropdown-item{% if active_page == 'lcd' %} active{% endif %}" href="{{url_for('routes_page.page_lcd')}}"><i class="fas fa-desktop"></i> {{_('LCDs')}}</a>
+              <a class="dropdown-item{% if active_page == 'calibration' %} active{% endif %}" href="{{url_for('routes_calibration.calibration_select')}}"><i class="fas fa-wrench"></i> {{_('Calibration & Setup')}}</a>
             </div>
           </li>
 
-          <li class="nav-item{% if active_page == 'data' %} active{% endif %}">
-            <a class="nav-link" href="{{url_for('routes_page.page_data')}}">{{_('Data')}}</a>
-          </li>
-          <li class="nav-item{% if active_page == 'output' %} active{% endif %}">
-            <a class="nav-link" href="{{url_for('routes_page.page_output')}}">{{_('Output')}}</a>
-          </li>
-          <li class="nav-item{% if active_page == 'function' %} active{% endif %}">
-            <a class="nav-link" href="{{url_for('routes_page.page_function')}}">{{_('Function')}}</a>
-          </li>
-          <li class="nav-item{% if active_page == 'timer' %} active{% endif %}">
-            <a class="nav-link" href="{{url_for('routes_page.page_timer')}}">{{_('Timer')}}</a>
-          </li>
 
-          <li class="nav-item dropdown{% if active_page in ['camera', 'export', 'lcd', 'method_list', 'calibration', 'usage', 'usage_reports'] %} active{% endif %}">
+          <li class="nav-item dropdown{% if active_page in ['export', 'usage', 'usage_reports'] %} active{% endif %}">
             <a class="nav-link dropdown-toggle" href="http://example.com" id="dropdown01" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{_('More')}}</a>
             <div class="dropdown-menu" aria-labelledby="dropdown01">
               <a class="dropdown-item{% if active_page == 'export' %} active{% endif %}" href="{{url_for('routes_page.page_export')}}"><i class="fas fa-save"></i> {{_('Export Import')}}</a>
-              <a class="dropdown-item{% if active_page == 'method_list' %} active{% endif %}" href="{{url_for('routes_method.method_list')}}"><i class="fa fa-chart-line"></i> {{_('Methods')}}</a>
-              <a class="dropdown-item{% if active_page == 'lcd' %} active{% endif %}" href="{{url_for('routes_page.page_lcd')}}"><i class="fa fa-desktop"></i> {{_('LCDs')}}</a>
-              <a class="dropdown-item{% if active_page == 'camera' %} active{% endif %}" href="{{url_for('routes_page.page_camera')}}"><i class="fas fa-camera"></i> {{_('Cameras')}}</a>
-              <a class="dropdown-item{% if active_page == 'calibration' %} active{% endif %}" href="{{url_for('routes_calibration.calibration_select')}}"><i class="fa fa-balance-scale"></i> {{_('Calibration & Setup')}}</a>
               <a class="dropdown-item{% if active_page == 'usage' %} active{% endif %}" href="{{url_for('routes_page.page_usage')}}"><i class="fas fa-sliders-h"></i> {{_('Output Usage')}}</a>
               <a class="dropdown-item{% if active_page == 'usage_reports' %} active{% endif %}" href="{{url_for('routes_page.page_usage_reports')}}"><i class="fas fa-list-alt"></i> {{_('Output Usage Reports')}}</a>
             </div>
@@ -223,7 +227,7 @@
           <li class="nav-item dropdown{% if upgrade_available %} dropdown-upgrade{% elif active_page in ['backup', 'dependencies', 'info', 'logview', 'settings', 'upgrade'] %} active{% endif %}">
             <a class="nav-link dropdown-toggle" href="http://example.com" id="dropdown02" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-cog" style="font-size: 1.5em;"></i></a>
             <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdown02">
-              <a class="dropdown-item{% if active_page == 'settings' %} active{% endif %}" href="{{url_for('routes_settings.settings_general')}}"><i class="fas fa-sliders-h"></i> {{_('Configure')}}</a>
+              <a class="dropdown-item{% if active_page == 'settings' %} active{% endif %}" href="{{url_for('routes_settings.settings_general')}}"><i class="fas fa-wrench"></i> {{_('Configure')}}</a>
               <a class="dropdown-item{% if active_page == 'logview' %} active{% endif %}" href="{{url_for('routes_page.page_logview')}}"><i class="fas fa-book"></i> {{_('Mycodo Logs')}}</a>
               <a class="dropdown-item{% if active_page == 'info' %} active{% endif %}" href="{{url_for('routes_page.page_info')}}"><i class="fas fa-info-circle"></i> {{_('System Information')}}</a>
               <div class="dropdown-divider"></div>

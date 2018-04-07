@@ -862,6 +862,7 @@ def page_logview():
 @flask_login.login_required
 def page_function():
     """ Display Function settings """
+    camera = Camera.query.all()
     conditional = Conditional.query.all()
     conditional_actions = ConditionalActions.query.all()
     input_dev = Input.query.all()
@@ -1002,6 +1003,7 @@ def page_function():
         return redirect('/function')
 
     return render_template('pages/function.html',
+                           camera=camera,
                            choices_input=choices_input,
                            choices_math=choices_math,
                            choices_pid=choices_pid,

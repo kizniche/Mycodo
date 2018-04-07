@@ -1,8 +1,18 @@
 ## 5.7.2 (Unreleased)
 
+### Features
+
+ - Add ability to invert PWM duty cycle ([#444](https://github.com/kizniche/mycodo/issues/444))
+
 ### Bugfixes
 
  - Fix catching erroneous DS18B20 values ([#404](https://github.com/kizniche/mycodo/issues/404))
+ - Fix camera selection of Photo Conditional Action ([#444](https://github.com/kizniche/mycodo/issues/444))
+
+### Miscellaneous
+
+ - Set picamera use_video_port=False ([#444](https://github.com/kizniche/mycodo/issues/444))
+ - Rearrange navigation menu ([#444](https://github.com/kizniche/mycodo/issues/444))
 
 
 ## 5.7.1 (2018-04-04)

@@ -10,7 +10,6 @@ import picamera
 
 from mycodo.config import INSTALL_DIRECTORY
 from mycodo.databases.models import Camera
-from mycodo.databases.models import Output
 from mycodo.utils.database import db_retrieve_table_daemon
 from mycodo.utils.system_pi import assure_path_exists
 from mycodo.utils.system_pi import cmd_output
@@ -33,6 +32,7 @@ def camera_record(record_type, unique_id, duration_sec=None, tmp_filename=None):
     :param tmp_filename:
     :return:
     """
+    daemon_control = None
     settings = db_retrieve_table_daemon(Camera, unique_id=unique_id)
     timestamp = datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
     root_path = os.path.abspath(os.path.join(INSTALL_DIRECTORY, 'cameras'))
@@ -91,7 +91,7 @@ def camera_record(record_type, unique_id, duration_sec=None, tmp_filename=None):
                     time.sleep(2)  # Camera warm-up time
 
                     if record_type in ['photo', 'timelapse']:
-                        camera.capture(path_file, use_video_port=True)
+                        camera.capture(path_file, use_video_port=False)
                     elif record_type == 'video':
                         camera.start_recording(path_file, format='h264', quality=20)
                         camera.wait_recording(duration_sec)
@@ -100,8 +100,7 @@ def camera_record(record_type, unique_id, duration_sec=None, tmp_filename=None):
                         return
                     break
             except picamera.exc.PiCameraMMALError:
-                # 'out of resources' error when the camera is already open by picamera
-                pass
+                logger.error("The camera is already open by picamera. Retrying 4 times.")
             time.sleep(1)
 
     elif settings.library == 'fswebcam':
@@ -124,7 +123,7 @@ def camera_record(record_type, unique_id, duration_sec=None, tmp_filename=None):
         # logger.error("TEST01: {}; {}; {}; {}".format(cmd, out, err, status))
 
     # Turn off output, if configured
-    if settings.relay_id:
+    if settings.relay_id and daemon_control:
         daemon_control.relay_off(settings.relay_id)
 
     try:

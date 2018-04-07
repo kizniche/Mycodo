@@ -22,3 +22,9 @@ Note: See the <a href="/help#pwm" target="_blank">PWM</a> section of the manual 
     {{form_mod_relay.pwm_hertz(class_='form-control', value=each_relay.pwm_hertz, **{'title':_('The Hertz to output the PWM signal (0 - 70,000)')})}}
   </div>
 </div>
+<div class="col-auto">
+  {{form_mod_relay.pwm_invert_signal.label(class_='control-label')}}
+  <div class="input-group-text">
+    <input id="pwm_invert_signal" name="pwm_invert_signal" type="checkbox" value="y"{% if each_relay.pwm_invert_signal %} checked{% endif %}>
+  </div>
+</div>

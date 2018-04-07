@@ -5,6 +5,7 @@
 
 from flask_babel import lazy_gettext
 from flask_wtf import FlaskForm
+from wtforms import BooleanField
 from wtforms import DecimalField
 from wtforms import HiddenField
 from wtforms import IntegerField
@@ -37,6 +38,7 @@ class OutputMod(FlaskForm):
     on_command = StringField(lazy_gettext('On Command'))
     off_command = StringField(lazy_gettext('Off Command'))
     pwm_command = StringField(lazy_gettext('PWM Command'))
+    pwm_invert_signal = BooleanField(lazy_gettext('Invert Signal'))
     amps = DecimalField(
         lazy_gettext('Current Draw (amps)'),
         validators=[validators.NumberRange(
