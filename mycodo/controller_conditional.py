@@ -577,11 +577,6 @@ class ConditionalController(threading.Thread):
             elif cond_action.do_action == 'setpoint_pid':
                 message += " Set Setpoint of PID ({id}).".format(
                     id=cond_action.do_pid_id)
-                with session_scope(MYCODO_DB_PATH) as new_session:
-                    mod_pid = new_session.query(PID).filter(
-                        PID.id == cond_action.do_pid_id).first()
-                    mod_pid.setpoint = cond_action.do_action_string
-                    new_session.commit()
                 pid = db_retrieve_table_daemon(
                     PID, device_id=cond_action.do_pid_id, entry='first')
                 if pid.is_activated:
@@ -591,16 +586,17 @@ class ConditionalController(threading.Thread):
                               'setpoint',
                               float(cond_action.do_action_string),))
                     setpoint_pid.start()
+                else:
+                    with session_scope(MYCODO_DB_PATH) as new_session:
+                        mod_pid = new_session.query(PID).filter(
+                            PID.id == cond_action.do_pid_id).first()
+                        mod_pid.setpoint = cond_action.do_action_string
+                        new_session.commit()
 
             # Set PID Method and start method from beginning
             elif cond_action.do_action == 'method_pid':
                 message += " Set Method of PID ({id}).".format(
                     id=cond_action.do_pid_id)
-                with session_scope(MYCODO_DB_PATH) as new_session:
-                    mod_pid = new_session.query(PID).filter(
-                        PID.id == cond_action.do_pid_id).first()
-                    mod_pid.method_id = cond_action.do_action_string
-                    new_session.commit()
                 pid = db_retrieve_table_daemon(
                     PID, device_id=cond_action.do_pid_id, entry='first')
                 if pid.is_activated:
@@ -610,6 +606,12 @@ class ConditionalController(threading.Thread):
                               'method',
                               cond_action.do_action_string,))
                     method_pid.start()
+                else:
+                    with session_scope(MYCODO_DB_PATH) as new_session:
+                        mod_pid = new_session.query(PID).filter(
+                            PID.id == cond_action.do_pid_id).first()
+                        mod_pid.method_id = cond_action.do_action_string
+                        new_session.commit()
 
             # Activate Timer
             elif cond_action.do_action == 'activate_timer':

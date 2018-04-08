@@ -306,7 +306,7 @@ class PIDController(threading.Thread):
 
         return "success"
 
-    def setup_method(self, method_id, force_start=False):
+    def setup_method(self, method_id):
         method = db_retrieve_table_daemon(Method, device_id=method_id)
         method_data = db_retrieve_table_daemon(MethodData)
         method_data = method_data.filter(MethodData.method_id == method_id)
@@ -318,12 +318,11 @@ class PIDController(threading.Thread):
         self.method_end_time = None
 
         if self.method_type == 'Duration':
-            if self.method_start_act == 'Ended' and not force_start:
+            if self.method_start_act == 'Ended':
                 # Method has ended and hasn't been instructed to begin again
                 pass
             elif (self.method_start_act == 'Ready' or
-                    self.method_start_act is None or
-                    force_start):
+                    self.method_start_act is None):
                 # Method has been instructed to begin
                 now = datetime.datetime.now()
                 self.method_start_time = now
@@ -755,14 +754,19 @@ class PIDController(threading.Thread):
     def set_method(self, method_id):
         """ Set the method of PID """
         self.method_id = int(method_id)
-        self.method_start_act = None
-        self.setup_method(method_id, force_start=True)
+
         with session_scope(MYCODO_DB_PATH) as db_session:
             mod_pid = db_session.query(PID).filter(
                 PID.id == self.pid_id).first()
             mod_pid.method_id = method_id
+            mod_pid.method_start_time = 'Ready'
+            mod_pid.method_end_time = None
             db_session.commit()
-        return "Method set to {me}".format(me=method_id)
+
+        if self.method_id:
+            self.setup_method(method_id)
+
+        return "Method set to {me} and started".format(me=method_id)
 
     def set_integrator(self, integrator):
         """ Set the integrator of the controller """

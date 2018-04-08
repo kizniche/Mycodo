@@ -178,7 +178,7 @@
 <div class="col-auto">
   <label class='control-label'>{{_('Method')}}</label>
   <select class="form-control form-tooltip form-dropdown" id="do_action_string" name="do_action_string" data-placement="top" title="{{_('Method to set the PID to use')}}">
-    <option value=""></option>
+    <option value="0">Disable Method</option>
     {%- for each_method in method -%}
       <option value="{{each_method.id}}"{% if each_cond_action.do_action_string|int == each_method.id %} selected{% endif %}>[{{each_method.id}}] {{each_method.name}}</option>
     {%- endfor -%}
