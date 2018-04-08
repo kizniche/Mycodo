@@ -152,54 +152,7 @@ class PIDController(threading.Thread):
         # Check if a method is set for this PID
         self.method_start_act = None
         if self.method_id:
-            method = db_retrieve_table_daemon(Method, device_id=self.method_id)
-            method_data = db_retrieve_table_daemon(MethodData)
-            method_data = method_data.filter(MethodData.method_id == self.method_id)
-            method_data_repeat = method_data.filter(MethodData.duration_sec == 0).first()
-            pid = db_retrieve_table_daemon(PID, device_id=self.pid_id)
-            self.method_type = method.method_type
-            self.method_start_act = pid.method_start_time
-            self.method_start_time = None
-            self.method_end_time = None
-
-            if self.method_type == 'Duration':
-                if self.method_start_act == 'Ended':
-                    # Method has ended and hasn't been instructed to begin again
-                    pass
-                elif self.method_start_act == 'Ready' or self.method_start_act is None:
-                    # Method has been instructed to begin
-                    now = datetime.datetime.now()
-                    self.method_start_time = now
-                    if method_data_repeat and method_data_repeat.duration_end:
-                        self.method_end_time = now + datetime.timedelta(
-                            seconds=float(method_data_repeat.duration_end))
-
-                    with session_scope(MYCODO_DB_PATH) as db_session:
-                        mod_pid = db_session.query(PID).filter(
-                            PID.id == self.pid_id).first()
-                        mod_pid.method_start_time = self.method_start_time
-                        mod_pid.method_end_time = self.method_end_time
-                        db_session.commit()
-                else:
-                    # Method neither instructed to begin or not to
-                    # Likely there was a daemon restart ot power failure
-                    # Resume method with saved start_time
-                    self.method_start_time = datetime.datetime.strptime(
-                        str(pid.method_start_time), '%Y-%m-%d %H:%M:%S.%f')
-                    if method_data_repeat and method_data_repeat.duration_end:
-                        self.method_end_time = datetime.datetime.strptime(
-                            str(pid.method_end_time), '%Y-%m-%d %H:%M:%S.%f')
-                        if self.method_end_time > datetime.datetime.now():
-                            self.logger.warning(
-                                "Resuming method {id}: started {start}, "
-                                "ends {end}".format(
-                                    id=self.method_id,
-                                    start=self.method_start_time,
-                                    end=self.method_end_time))
-                        else:
-                            self.method_start_act = 'Ended'
-                    else:
-                        self.method_start_act = 'Ended'
+            self.setup_method(self.method_id)
 
     def run(self):
         try:
@@ -352,6 +305,58 @@ class PIDController(threading.Thread):
             self.lower_output_type = None
 
         return "success"
+
+    def setup_method(self, method_id, force_start=False):
+        method = db_retrieve_table_daemon(Method, device_id=method_id)
+        method_data = db_retrieve_table_daemon(MethodData)
+        method_data = method_data.filter(MethodData.method_id == method_id)
+        method_data_repeat = method_data.filter(MethodData.duration_sec == 0).first()
+        pid = db_retrieve_table_daemon(PID, device_id=self.pid_id)
+        self.method_type = method.method_type
+        self.method_start_act = pid.method_start_time
+        self.method_start_time = None
+        self.method_end_time = None
+
+        if self.method_type == 'Duration':
+            if self.method_start_act == 'Ended' and not force_start:
+                # Method has ended and hasn't been instructed to begin again
+                pass
+            elif (self.method_start_act == 'Ready' or
+                    self.method_start_act is None or
+                    force_start):
+                # Method has been instructed to begin
+                now = datetime.datetime.now()
+                self.method_start_time = now
+                if method_data_repeat and method_data_repeat.duration_end:
+                    self.method_end_time = now + datetime.timedelta(
+                        seconds=float(method_data_repeat.duration_end))
+
+                with session_scope(MYCODO_DB_PATH) as db_session:
+                    mod_pid = db_session.query(PID).filter(
+                        PID.id == self.pid_id).first()
+                    mod_pid.method_start_time = self.method_start_time
+                    mod_pid.method_end_time = self.method_end_time
+                    db_session.commit()
+            else:
+                # Method neither instructed to begin or not to
+                # Likely there was a daemon restart ot power failure
+                # Resume method with saved start_time
+                self.method_start_time = datetime.datetime.strptime(
+                    str(pid.method_start_time), '%Y-%m-%d %H:%M:%S.%f')
+                if method_data_repeat and method_data_repeat.duration_end:
+                    self.method_end_time = datetime.datetime.strptime(
+                        str(pid.method_end_time), '%Y-%m-%d %H:%M:%S.%f')
+                    if self.method_end_time > datetime.datetime.now():
+                        self.logger.warning(
+                            "Resuming method {id}: started {start}, "
+                            "ends {end}".format(
+                                id=method_id,
+                                start=self.method_start_time,
+                                end=self.method_end_time))
+                    else:
+                        self.method_start_act = 'Ended'
+                else:
+                    self.method_start_act = 'Ended'
 
     def update_pid_output(self, current_value):
         """
@@ -738,7 +743,7 @@ class PIDController(threading.Thread):
         return "success"
 
     def set_setpoint(self, setpoint):
-        """ Initilize the setpoint of PID """
+        """ Set the setpoint of PID """
         self.setpoint = float(setpoint)
         with session_scope(MYCODO_DB_PATH) as db_session:
             mod_pid = db_session.query(PID).filter(
@@ -746,6 +751,18 @@ class PIDController(threading.Thread):
             mod_pid.setpoint = setpoint
             db_session.commit()
         return "Setpoint set to {sp}".format(sp=setpoint)
+
+    def set_method(self, method_id):
+        """ Set the method of PID """
+        self.method_id = int(method_id)
+        self.method_start_act = None
+        self.setup_method(method_id, force_start=True)
+        with session_scope(MYCODO_DB_PATH) as db_session:
+            mod_pid = db_session.query(PID).filter(
+                PID.id == self.pid_id).first()
+            mod_pid.method_id = method_id
+            db_session.commit()
+        return "Method set to {me}".format(me=method_id)
 
     def set_integrator(self, integrator):
         """ Set the integrator of the controller """

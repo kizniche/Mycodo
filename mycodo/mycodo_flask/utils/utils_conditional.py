@@ -192,6 +192,10 @@ def conditional_action_mod(form):
             mod_action.do_pid_id = form.do_pid_id.data
             mod_action.do_action_string = form.do_action_string.data
 
+        elif mod_action.do_action == 'method_pid':
+            mod_action.do_pid_id = form.do_pid_id.data
+            mod_action.do_action_string = form.do_action_string.data
+
         elif mod_action.do_action == 'email':
             mod_action.do_action_string = form.do_action_string.data
 

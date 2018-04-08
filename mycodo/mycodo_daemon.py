@@ -685,6 +685,8 @@ class DaemonController:
                 pid_id = pid.id
             if setting == 'setpoint':
                 return self.controller['PID'][pid_id].set_setpoint(value)
+            elif setting == 'method':
+                return self.controller['PID'][pid_id].set_method(value)
             elif setting == 'integrator':
                 return self.controller['PID'][pid_id].set_integrator(value)
             elif setting == 'derivator':

@@ -2,6 +2,13 @@
 
 ### Features
 
+ - Add Conditional Action: Set PID Method ([#440](https://github.com/kizniche/mycodo/issues/440))
+
+
+## 5.7.2 (2018-04-07)
+
+### Features
+
  - Add ability to invert PWM duty cycle ([#444](https://github.com/kizniche/mycodo/issues/444))
  - Add ability to select landing page ([#444](https://github.com/kizniche/mycodo/issues/444))
  - Add ability to set setpoint from PID dashboard elements ([#444](https://github.com/kizniche/mycodo/issues/444))
