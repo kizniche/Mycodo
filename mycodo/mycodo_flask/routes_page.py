@@ -871,6 +871,7 @@ def page_function():
     method = Method.query.all()
     output = Output.query.all()
     pid = PID.query.all()
+    timer = Timer.query.all()
     user = User.query.all()
 
     choices_input = utils_general.choices_inputs(input_dev)
@@ -1027,6 +1028,7 @@ def page_function():
                            method=method,
                            output=output,
                            pid=pid,
+                           timer=timer,
                            units=MEASUREMENT_UNITS,
                            user=user,
                            sunrise_sunset_calculated=sunrise_sunset_calculated)

@@ -42,7 +42,7 @@ class Conditional(CRUDMixin, db.Model):
     def __repr__(self):
         return "<{cls}(id={s.id})>".format(s=self, cls=self.__class__.__name__)
 
-
+# TODO: for 6.0, condense all do_x_ids to do_device_id
 class ConditionalActions(CRUDMixin, db.Model):
     __tablename__ = "conditional_data"
     __table_args__ = {'extend_existing': True}

@@ -32,7 +32,7 @@
   {% include 'flash_messages.html' %}
   </div>
 
-  <div style="padding: 0 1.5em 0 1em">
+  <div style="padding: 0 1em 0 1em">
 
   <div class="row">
 
@@ -48,7 +48,7 @@
       12
     {%- endif -%}" style="padding: 0.25em;">
 
-      <div style="border: 2px solid #ddd; border-radius: 5px;">
+      <div style="border: 1px solid #ddd; border-radius: 5px;">
 
       {% for id, axes in y_axes.items() if id == each_graph.id and each_graph.graph_type in ['graph', 'gauge_angular', 'gauge_solid'] %}
         <!--Dashboard {{each_graph.id}} y-axes: {{axes|safe}}-->

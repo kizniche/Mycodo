@@ -182,6 +182,10 @@ def conditional_action_mod(form):
                                       'pause_pid']:
             mod_action.do_pid_id = form.do_pid_id.data
 
+        elif mod_action.do_action in ['activate_timer',
+                                      'deactivate_timer']:
+            mod_action.do_pid_id = form.do_pid_id.data
+
         elif mod_action.do_action == 'setpoint_pid':
             if not str_is_float(form.do_action_string.data):
                 error.append("Setpoint must be an integer or float value")

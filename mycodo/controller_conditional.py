@@ -42,6 +42,7 @@ from mycodo.databases.models import Math
 from mycodo.databases.models import Output
 from mycodo.databases.models import PID
 from mycodo.databases.models import SMTP
+from mycodo.databases.models import Timer
 from mycodo.databases.utils import session_scope
 from mycodo.devices.camera import camera_record
 from mycodo.mycodo_client import DaemonControl
@@ -590,6 +591,46 @@ class ConditionalController(threading.Thread):
                         target=self.control.pid_pause,
                         args=(cond_action.do_pid_id,))
                     pause_pid.start()
+
+            # Activate Timer
+            elif cond_action.do_action == 'activate_timer':
+                message += " Activate Timer ({id}).".format(
+                    id=cond_action.do_pid_id)
+                timer = db_retrieve_table_daemon(
+                    Timer, device_id=cond_action.do_pid_id, entry='first')
+                if timer.is_activated:
+                    message += " Notice: Timer is already active!"
+                else:
+                    with session_scope(MYCODO_DB_PATH) as new_session:
+                        mod_timer = new_session.query(Timer).filter(
+                            Timer.id == cond_action.do_pid_id).first()
+                        mod_timer.is_activated = True
+                        new_session.commit()
+                    activate_pid = threading.Thread(
+                        target=self.control.controller_activate,
+                        args=('Timer',
+                              cond_action.do_pid_id,))
+                    activate_pid.start()
+
+            # Deactivate Timer
+            elif cond_action.do_action == 'deactivate_timer':
+                message += " Deactivate Timer ({id}).".format(
+                    id=cond_action.do_pid_id)
+                timer = db_retrieve_table_daemon(
+                    Timer, device_id=cond_action.do_pid_id, entry='first')
+                if not timer.is_activated:
+                    message += " Notice: Timer is already inactive!"
+                else:
+                    with session_scope(MYCODO_DB_PATH) as new_session:
+                        mod_timer = new_session.query(Timer).filter(
+                            Timer.id == cond_action.do_pid_id).first()
+                        mod_timer.is_activated = False
+                        new_session.commit()
+                    deactivate_pid = threading.Thread(
+                        target=self.control.controller_deactivate,
+                        args=('Timer',
+                              cond_action.do_pid_id,))
+                    deactivate_pid.start()
 
             # Email the Conditional message. Optionally capture a photo or
             # video and attach to the email.

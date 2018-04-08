@@ -671,6 +671,8 @@ CONDITIONAL_ACTIONS = collections.OrderedDict([
     ('deactivate_pid', lazy_gettext('Deactivate PID')),
     ('resume_pid', lazy_gettext('Resume PID')),
     ('pause_pid', lazy_gettext('Pause PID')),
+    ('activate_timer', lazy_gettext('Activate Timer')),
+    ('deactivate_timer', lazy_gettext('Deactivate Timer')),
     ('email', lazy_gettext('Email')),
     ('flash_lcd_off', lazy_gettext('Flash LCD Off')),
     ('flash_lcd_on', lazy_gettext('Flash LCD On')),
