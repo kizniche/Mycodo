@@ -461,15 +461,15 @@ class DaemonController:
             if cont_type == 'LCD':
                 controller_manage['type'] = LCD
                 controller_manage['function'] = LCDController
+            elif cont_type == 'Input':
+                controller_manage['type'] = Input
+                controller_manage['function'] = InputController
             elif cont_type == 'Math':
                 controller_manage['type'] = Math
                 controller_manage['function'] = MathController
             elif cont_type == 'PID':
                 controller_manage['type'] = PID
                 controller_manage['function'] = PIDController
-            elif cont_type == 'Input':
-                controller_manage['type'] = Input
-                controller_manage['function'] = InputController
             elif cont_type == 'Timer':
                 controller_manage['type'] = Timer
                 controller_manage['function'] = TimerController
@@ -479,9 +479,14 @@ class DaemonController:
 
             # Check if the controller ID actually exists and start it
             controller = db_retrieve_table_daemon(controller_manage['type'],
-                                                  device_id=cont_id)
+                                                  unique_id=cont_id)
 
-            if controller:
+            if cont_type == 'Conditional':
+                # Only refresh conditional settings
+                self.controller['Conditional'].setup_conditionals()
+                return 0, "{type} controller with ID {id} " \
+                          "activated.".format(type=cont_type, id=cont_id)
+            elif controller:
                 self.controller[cont_type][cont_id] = controller_manage['function'](
                     ready, cont_id)
                 self.controller[cont_type][cont_id].daemon = True
@@ -876,7 +881,7 @@ class DaemonController:
                         type=each_controller))
                 for each_entry in db_tables[each_controller]:
                     if each_entry.is_activated:
-                        self.controller_activate(each_controller, each_entry.id)
+                        self.controller_activate(each_controller, each_entry.unique_id)
                 self.logger.info(
                     "All activated {type} controllers started".format(
                         type=each_controller))

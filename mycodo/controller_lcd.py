@@ -82,7 +82,7 @@ class LCDController(threading.Thread):
     def __init__(self, ready, lcd_id):
         threading.Thread.__init__(self)
 
-        self.logger = logging.getLogger("mycodo.lcd_{id}".format(id=lcd_id))
+        self.logger = logging.getLogger("mycodo.lcd_{id}".format(id=lcd_id.split('-')[0]))
 
         self.running = False
         self.thread_startup_timer = timeit.default_timer()
@@ -96,7 +96,7 @@ class LCDController(threading.Thread):
         self.display_count = 0
 
         try:
-            lcd = db_retrieve_table_daemon(LCD, device_id=self.lcd_id)
+            lcd = db_retrieve_table_daemon(LCD, unique_id=self.lcd_id)
             self.lcd_name = lcd.name
             self.lcd_location = lcd.location
             self.lcd_i2c_bus = lcd.i2c_bus

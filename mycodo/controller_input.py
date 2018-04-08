@@ -75,7 +75,7 @@ class InputController(threading.Thread):
         threading.Thread.__init__(self)
 
         self.logger = logging.getLogger(
-            "mycodo.input_{id}".format(id=input_id))
+            "mycodo.input_{id}".format(id=input_id.split('-')[0]))
 
         self.stop_iteration_counter = 0
         self.thread_startup_timer = timeit.default_timer()
@@ -89,7 +89,7 @@ class InputController(threading.Thread):
         self.pause_loop = False
         self.verify_pause_loop = True
 
-        input_dev = db_retrieve_table_daemon(Input, device_id=self.input_id)
+        input_dev = db_retrieve_table_daemon(Input, unique_id=self.input_id)
         self.input_sel = input_dev
         self.id = input_dev.id
         self.input_name = input_dev.name

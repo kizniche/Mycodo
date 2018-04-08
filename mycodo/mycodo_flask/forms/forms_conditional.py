@@ -63,6 +63,7 @@ class ConditionalActions(FlaskForm):
         'Conditional Action ID', widget=widgets.HiddenInput())
     do_action = StringField(lazy_gettext('Action to Perform'))
     do_action_string = StringField(lazy_gettext('Action String'))
+    do_unique_id = StringField(lazy_gettext('Controller ID'))
     do_relay_id = IntegerField(lazy_gettext('Then Output'))
     do_relay_state = StringField(lazy_gettext('Then State'))
     do_relay_duration = DecimalField(lazy_gettext('Then Duration (seconds)'))

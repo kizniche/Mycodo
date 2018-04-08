@@ -1,6 +1,7 @@
 # coding=utf-8
-from mycodo.mycodo_flask.extensions import db
 from mycodo.databases import CRUDMixin
+from mycodo.databases import set_uuid
+from mycodo.mycodo_flask.extensions import db
 
 
 class Conditional(CRUDMixin, db.Model):
@@ -8,6 +9,7 @@ class Conditional(CRUDMixin, db.Model):
     __table_args__ = {'extend_existing': True}
 
     id = db.Column(db.Integer, unique=True, primary_key=True)
+    unique_id = db.Column(db.String, nullable=False, unique=True, default=set_uuid)  # ID for influxdb entries
     name = db.Column(db.Text, default='Conditional Name')
     conditional_type = db.Column(db.Text, default=None)
     is_activated = db.Column(db.Boolean, default=False)
@@ -57,6 +59,7 @@ class ConditionalActions(CRUDMixin, db.Model):
     do_relay_state = db.Column(db.Text, default='')  # 'on' or 'off'
     do_relay_duration = db.Column(db.Float, default=0.0)
     do_relay_pwm = db.Column(db.Float, default=0.0)
+    do_unique_id = db.Column(db.Text, default='')
 
     do_camera_id = db.Column(db.Integer, db.ForeignKey('lcd.id'), default=None)
     do_camera_duration = db.Column(db.Float, default=0.0)

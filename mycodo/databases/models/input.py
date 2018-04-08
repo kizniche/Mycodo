@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
-from mycodo.mycodo_flask.extensions import db
 from mycodo.databases import CRUDMixin
 from mycodo.databases import set_uuid
+from mycodo.mycodo_flask.extensions import db
 
 
 # TODO: Rename to 'input'

@@ -10,7 +10,7 @@ import os
 from flask_babel import lazy_gettext
 
 MYCODO_VERSION = '5.7.2'
-ALEMBIC_VERSION = 'd881bacc5814'
+ALEMBIC_VERSION = '758f88901bbc'
 
 #  FORCE_UPGRADE_MASTER
 #  Set True to enable upgrading to the master branch of the Mycodo repository.
@@ -666,14 +666,12 @@ CONDITIONAL_ACTIONS = collections.OrderedDict([
     ('output', lazy_gettext('Output (Duration)')),
     ('output_pwm', lazy_gettext('Output (Duty Cycle)')),
     ('command', lazy_gettext('Command')),
-    ('activate_pid', lazy_gettext('Activate PID')),
-    ('deactivate_pid', lazy_gettext('Deactivate PID')),
+    ('activate_controller', lazy_gettext('Activate Controller')),
+    ('deactivate_controller', lazy_gettext('Deactivate Controller')),
     ('resume_pid', lazy_gettext('Resume PID')),
     ('pause_pid', lazy_gettext('Pause PID')),
     ('setpoint_pid', lazy_gettext('Set PID Setpoint')),
     ('method_pid', lazy_gettext('Set PID Method')),
-    ('activate_timer', lazy_gettext('Activate Timer')),
-    ('deactivate_timer', lazy_gettext('Deactivate Timer')),
     ('email', lazy_gettext('Email')),
     ('flash_lcd_off', lazy_gettext('Flash LCD Off')),
     ('flash_lcd_on', lazy_gettext('Flash LCD On')),

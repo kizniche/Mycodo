@@ -495,6 +495,50 @@ class ConditionalController(threading.Thread):
                     'video', camera_stream.unique_id,
                     duration_sec=cond_action.do_camera_duration)
 
+            # Activate Controller
+            elif cond_action.do_action == 'activate_controller':
+                message += " Activate Controller ({id}).".format(
+                    id=cond_action.do_pid_id)
+                (controller_type,
+                 controller_object,
+                 controller_entry) = self.which_controller(
+                    cond_action.do_unique_id)
+                if controller_entry.is_activated:
+                    message += " Notice: Controller is already active!"
+                else:
+                    with session_scope(MYCODO_DB_PATH) as new_session:
+                        mod_cont = new_session.query(controller_object).filter(
+                            controller_object.unique_id == cond_action.do_unique_id).first()
+                        mod_cont.is_activated = True
+                        new_session.commit()
+                    activate_controller = threading.Thread(
+                        target=self.control.controller_activate,
+                        args=(controller_type,
+                              cond_action.do_unique_id,))
+                    activate_controller.start()
+
+            # Deactivate Controller
+            elif cond_action.do_action == 'deactivate_controller':
+                message += " Deactivate Controller ({id}).".format(
+                    id=cond_action.do_pid_id)
+                (controller_type,
+                 controller_object,
+                 controller_entry) = self.which_controller(
+                    cond_action.do_unique_id)
+                if not controller_entry.is_activated:
+                    message += " Notice: Controller is already inactive!"
+                else:
+                    with session_scope(MYCODO_DB_PATH) as new_session:
+                        mod_cont = new_session.query(controller_object).filter(
+                            controller_object.id == cond_action.do_pid_id).first()
+                        mod_cont.is_activated = False
+                        new_session.commit()
+                    deactivate_controller = threading.Thread(
+                        target=self.control.controller_deactivate,
+                        args=(controller_type,
+                              cond_action.do_unique_id,))
+                    deactivate_controller.start()
+
             # Activate PID controller
             elif cond_action.do_action == 'activate_pid':
                 message += " Activate PID ({id}).".format(
@@ -747,6 +791,42 @@ class ConditionalController(threading.Thread):
                        attachment_file, attachment_type)
 
         logger_cond.debug(message)
+
+    def which_controller(self, unique_id):
+        controller_type = None
+        controller_object = None
+        controller_entry = None
+        if db_retrieve_table_daemon(Conditional, unique_id=unique_id):
+            controller_type = 'Conditional'
+            controller_object = Conditional
+            controller_entry = db_retrieve_table_daemon(
+                Conditional, unique_id=unique_id)
+        elif db_retrieve_table_daemon(Input, unique_id=unique_id):
+            controller_type = 'Input'
+            controller_object = Input
+            controller_entry = db_retrieve_table_daemon(
+                Input, unique_id=unique_id)
+        elif db_retrieve_table_daemon(LCD, unique_id=unique_id):
+            controller_type = 'LCD'
+            controller_object = LCD
+            controller_entry = db_retrieve_table_daemon(
+                LCD, unique_id=unique_id)
+        elif db_retrieve_table_daemon(Math, unique_id=unique_id):
+            controller_type = 'Math'
+            controller_object = Math
+            controller_entry = db_retrieve_table_daemon(
+                Math, unique_id=unique_id)
+        elif db_retrieve_table_daemon(PID, unique_id=unique_id):
+            controller_type = 'PID'
+            controller_object = PID
+            controller_entry = db_retrieve_table_daemon(
+                PID, unique_id=unique_id)
+        elif db_retrieve_table_daemon(Timer, unique_id=unique_id):
+            controller_type = 'Timer'
+            controller_object = Timer
+            controller_entry = db_retrieve_table_daemon(
+                Timer, unique_id=unique_id)
+        return controller_type, controller_object, controller_entry
 
     @staticmethod
     def calculate_sunrise_sunset_epoch(cond):

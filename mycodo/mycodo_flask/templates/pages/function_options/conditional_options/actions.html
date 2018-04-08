@@ -133,6 +133,19 @@
   {{form_conditional_actions.do_action_string(class_='form-control', value=each_cond_action.do_action_string, **{'title':_('Command to execute (as user "mycodo")')})}}
 </div>
 
+{% elif each_cond_action.do_action in ['activate_controller',
+                                       'deactivate_controller'] %}
+
+<div class="col-auto">
+  {{form_conditional_actions.do_unique_id.label(class_='control-label')}}
+  <select class="form-control form-tooltip form-dropdown" id="do_unique_id" name="do_unique_id" data-placement="top" title="{{_('Controller to affect')}}">
+    <option value=""></option>
+    {%- for each_controller in controllers -%}
+      <option value="{{each_controller[1]}}"{% if each_cond_action.do_unique_id == each_controller[1] %} selected{% endif %}>[{{each_controller[0]}}] {{each_controller[2]}}</option>
+    {%- endfor -%}
+  </select>
+</div>
+
 {% elif each_cond_action.do_action in ['activate_pid',
                                        'deactivate_pid',
                                        'pause_pid',

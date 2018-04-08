@@ -176,6 +176,10 @@ def conditional_action_mod(form):
             mod_action.do_relay_id = form.do_relay_id.data
             mod_action.do_relay_pwm = form.do_relay_pwm.data
 
+        elif mod_action.do_action in ['activate_controller',
+                                      'deactivate_controller']:
+            mod_action.do_unique_id = form.do_unique_id.data
+
         elif mod_action.do_action in ['activate_pid',
                                       'deactivate_pid',
                                       'resume_pid',

@@ -874,6 +874,17 @@ def page_function():
     timer = Timer.query.all()
     user = User.query.all()
 
+    controllers = []
+    controllers_all = [('Conditional', conditional),
+                       ('Input', input_dev),
+                       ('LCD', lcd),
+                       ('Math', math),
+                       ('PID', pid),
+                       ('Timer', timer)]
+    for each_controller in controllers_all:
+        for each_cont in each_controller[1]:
+            controllers.append((each_controller[0], each_cont.unique_id, each_cont.name))
+
     choices_input = utils_general.choices_inputs(input_dev)
     choices_math = utils_general.choices_maths(math)
     choices_pid = utils_general.choices_pids(pid)
@@ -1012,6 +1023,7 @@ def page_function():
                            conditional_types=CONDITIONAL_TYPES,
                            conditional_actions=conditional_actions,
                            conditional_actions_list=CONDITIONAL_ACTIONS,
+                           controllers=controllers,
                            display_order_conditional=display_order_conditional,
                            display_order_pid=display_order_pid,
                            form_conditional=form_conditional,
