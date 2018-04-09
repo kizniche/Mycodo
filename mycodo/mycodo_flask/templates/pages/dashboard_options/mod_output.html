@@ -8,7 +8,7 @@
 </div>
 
 {% set is_pwm = [] -%}
-{% for each_output in output if each_output.unique_id == each_graph.output_ids.split(',')[0] and each_output.relay_type == 'pwm' %}
+{% for each_output in output if each_output.unique_id == each_graph.output_ids.split(',')[0] and each_output.output_type == 'pwm' %}
   {%- do is_pwm.append(1) %}
 {% endfor %}
 
@@ -76,7 +76,7 @@
 
     <div class="form-row">
       <div class="col-auto">
-        <input class="form-control" id="sec_on_amt_{{each_graph.output_ids.split(',')[0]}}" name="sec_on_amt_{{each_graph.output_ids.split(',')[0]}}" title="Turn this relay on for a specific number of seconds (used to test relay)" type="text" value="" placeholder="Seconds">
+        <input class="form-control" id="sec_on_amt_{{each_graph.output_ids.split(',')[0]}}" name="sec_on_amt_{{each_graph.output_ids.split(',')[0]}}" title="Turn this output on for a specific number of seconds (used to test output)" type="text" value="" placeholder="Seconds">
       </div>
       <div class="col-auto">
         <input class="form-control btn btn-default sec_on_amt" id="turn_on" name="{{each_graph.output_ids.split(',')[0]}}/on/sec/" type="button" value="{{_('Turn On')}}">
@@ -100,7 +100,7 @@
 
   <form method="post" action="/dashboard">
     {{form_base.csrf_token}}
-    {{form_base.dashboard_id(value=each_graph.id)}}
+    {{form_base.dashboard_id(value=each_graph.unique_id)}}
     <input type="hidden" name="dashboard_type" value="output">
 
     <div class="form-row">

@@ -1,9 +1,10 @@
 # coding=utf-8
 import bcrypt
-
 from flask_login import UserMixin
-from mycodo.mycodo_flask.extensions import db
+
 from mycodo.databases import CRUDMixin
+from mycodo.databases import set_uuid
+from mycodo.mycodo_flask.extensions import db
 
 
 class User(UserMixin, CRUDMixin, db.Model):
@@ -11,10 +12,11 @@ class User(UserMixin, CRUDMixin, db.Model):
     __table_args__ = {'extend_existing': True}
 
     id = db.Column(db.Integer, primary_key=True)
+    unique_id = db.Column(db.String, nullable=False, unique=True, default=set_uuid)
     name = db.Column(db.VARCHAR(64), unique=True, index=True)
     password_hash = db.Column(db.VARCHAR(255))
     email = db.Column(db.VARCHAR(64), unique=True, index=True)
-    role = db.Column(db.Integer, db.ForeignKey('roles.id'), default=None)
+    role = db.Column(db.String, db.ForeignKey('roles.unique_id'), default=None)
     theme = db.Column(db.VARCHAR(64))
     landing_page = db.Column(db.Text, default='live')
     language = db.Column(db.Text, default=None)  # Force the web interface to use a specific language

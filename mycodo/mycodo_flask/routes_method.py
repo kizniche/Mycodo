@@ -25,7 +25,7 @@ from mycodo.mycodo_flask.utils import utils_general
 from mycodo.mycodo_flask.utils import utils_method
 from mycodo.utils.method import bezier_curve_y_out
 from mycodo.utils.method import sine_wave_y_out
-from mycodo.utils.system_pi import csv_to_list_of_int
+from mycodo.utils.system_pi import csv_to_list_of_str
 from mycodo.utils.system_pi import get_sec
 from mycodo.utils.system_pi import list_to_csv
 
@@ -51,20 +51,20 @@ def method_data(method_id):
     This includes sets of (time, setpoint) data.
     """
     # First method column with general information about method
-    method = Method.query.filter(Method.id == method_id).first()
+    method = Method.query.filter(Method.unique_id == method_id).first()
 
     # User-edited lines of each method
-    method_data = MethodData.query.filter(MethodData.method_id == method.id)
+    method_data = MethodData.query.filter(MethodData.method_id == method.unique_id)
 
     # Retrieve the order to display method data lines
-    display_order = csv_to_list_of_int(method.method_order)
+    display_order = csv_to_list_of_str(method.method_order)
 
     last_method_data = None
     if display_order is not None:
         method_data = MethodData.query.filter(
-            MethodData.method_id == method.id)
+            MethodData.method_id == method.unique_id)
         last_method_data = method_data.filter(
-            MethodData.id == display_order[-1]).first()
+            MethodData.unique_id == display_order[-1]).first()
 
     method_list = []
     if method.method_type == "Date":
@@ -94,7 +94,7 @@ def method_data(method_id):
     elif method.method_type == "Daily":
         method_data = method_data.filter(MethodData.time_start != None)
         method_data = method_data.filter(MethodData.time_end != None)
-        method_data = method_data.filter(MethodData.relay_id == None)
+        method_data = method_data.filter(MethodData.output_id == None)
         for each_method in method_data:
             if each_method.setpoint_end is None:
                 setpoint_end = each_method.setpoint_start
@@ -144,7 +144,7 @@ def method_data(method_id):
         first_entry = True
         start_duration = 0
         end_duration = 0
-        method_data = method_data.filter(MethodData.relay_id == None)
+        method_data = method_data.filter(MethodData.output_id == None)
         for each_method in method_data:
             if each_method.setpoint_end is None:
                 setpoint_end = each_method.setpoint_start
@@ -213,24 +213,24 @@ def method_builder(method_id):
         new_method = Method.query.order_by(Method.id.desc()).first()
         if not form_fail:
             return redirect('/method-build/{method_id}'.format(
-                method_id=new_method.id))
+                method_id=new_method.unique_id))
         else:
             return redirect('/method')
-    elif int(method_id) < 0:
+    elif not method_id:
         flash("Invalid method ID", "error")
         return redirect('/method')
 
     # First method column with general information about method
-    method = Method.query.filter(Method.id == int(method_id)).first()
+    method = Method.query.filter(Method.unique_id == method_id).first()
 
     if method.method_type in ['Date', 'Duration', 'Daily',
                               'DailySine', 'DailyBezier']:
 
         # Retrieve the order to display method data lines
-        display_order = csv_to_list_of_int(method.method_order)
+        display_order = csv_to_list_of_str(method.method_order)
 
         method_data = MethodData.query.filter(
-            MethodData.method_id == method.id)
+            MethodData.method_id == method.unique_id)
         setpoint_method_data = MethodData.query.filter(
             MethodData.setpoint_start != None)
         sine_method_data = MethodData.query.filter(
@@ -239,11 +239,11 @@ def method_builder(method_id):
             MethodData.x0 != None)
         if display_order is not None:
             last_setpoint_method = setpoint_method_data.filter(
-                MethodData.id == display_order[-1]).first()
+                MethodData.unique_id == display_order[-1]).first()
             last_sine_method = sine_method_data.filter(
-                MethodData.id == display_order[-1]).first()
+                MethodData.unique_id == display_order[-1]).first()
             last_bezier_method = bezier_method_data.filter(
-                MethodData.id == display_order[-1]).first()
+                MethodData.unique_id == display_order[-1]).first()
         else:
             last_setpoint_method = None
             last_sine_method = None
@@ -274,7 +274,7 @@ def method_builder(method_id):
             if (form_name in ['addMethod', 'modMethod', 'renameMethod'] and
                     not form_fail):
                 return redirect('/method-build/{method_id}'.format(
-                    method_id=method.id))
+                    method_id=method.unique_id))
 
         if not method_data:
             method_data = []
@@ -309,11 +309,11 @@ def method_delete(method_id):
 
     try:
         MethodData.query.filter(
-            MethodData.method_id == int(method_id)).delete()
+            MethodData.method_id == method_id).delete()
         Method.query.filter(
-            Method.id == int(method_id)).delete()
-        display_order = csv_to_list_of_int(DisplayOrder.query.first().method)
-        display_order.remove(int(method_id))
+            Method.unique_id == method_id).delete()
+        display_order = csv_to_list_of_str(DisplayOrder.query.first().method)
+        display_order.remove(method_id)
         DisplayOrder.query.first().method = list_to_csv(display_order)
         db.session.commit()
         flash("Success: {action}".format(action=action), "success")

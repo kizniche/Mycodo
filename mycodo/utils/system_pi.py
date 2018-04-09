@@ -235,16 +235,16 @@ def celsius_to_kelvin(celsius):
         logger.error("Input must be an int or float")
 
 
-def csv_to_list_of_int(str_csv):
-    """ return a list of integers from a string of csv integers """
+def csv_to_list_of_str(str_csv):
+    """ return a list of strings from a string of csv strings """
     if str_csv:
-        list_int = []
+        list_str = []
         for x in str_csv.split(','):
             try:
-                list_int.append(int(x))
+                list_str.append(x)
             except:
                 pass
-        return list_int
+        return list_str
 
 
 def list_to_csv(display_order):

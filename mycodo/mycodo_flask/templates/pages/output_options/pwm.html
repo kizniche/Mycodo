@@ -2,29 +2,29 @@
 Note: See the <a href="/help#pwm" target="_blank">PWM</a> section of the manual for PWM information and determining which pins may be used for each library option.
 </div>
 <div class="col-xs-6 col-sm-4 col-md-3">
-  {{form_mod_relay.pwm_library.label(class_='control-label')}}
+  {{form_mod_output.pwm_library.label(class_='control-label')}}
   <div>
     <select class="form-control form-tooltip form-dropdown" id="pwm_library" name="pwm_library" data-placement="top" title="{{_('Which method to produce the PWM signal (hardware pins can produce higher frequencies)')}}">
-      <option value="pigpio_any"{% if each_relay.pwm_library == 'pigpio_any' %} selected{% endif %}>{{_('Any Pin, <= 40kHz')}}</option>
-      <option value="pigpio_hardware"{% if each_relay.pwm_library == 'pigpio_hardware' %} selected{% endif %}>{{_('Hardware Pin, <= 30MHz')}}</option>
+      <option value="pigpio_any"{% if each_output.pwm_library == 'pigpio_any' %} selected{% endif %}>{{_('Any Pin, <= 40kHz')}}</option>
+      <option value="pigpio_hardware"{% if each_output.pwm_library == 'pigpio_hardware' %} selected{% endif %}>{{_('Hardware Pin, <= 30MHz')}}</option>
     </select>
   </div>
 </div>
 <div class="col-xs-6 col-sm-4 col-md-3">
-  {{form_mod_relay.gpio.label(class_='control-label')}}
+  {{form_mod_output.gpio.label(class_='control-label')}}
   <div>
-    {{form_mod_relay.gpio(class_='form-control', value=each_relay.pin, **{'title':_('The GPIO pin (using BCM numbering) to output the PWM signal')})}}
+    {{form_mod_output.gpio(class_='form-control', value=each_output.pin, **{'title':_('The GPIO pin (using BCM numbering) to output the PWM signal')})}}
    </div>
 </div>
 <div class="col-xs-6 col-sm-4 col-md-3">
-  {{form_mod_relay.pwm_hertz.label(class_='control-label')}}
+  {{form_mod_output.pwm_hertz.label(class_='control-label')}}
   <div>
-    {{form_mod_relay.pwm_hertz(class_='form-control', value=each_relay.pwm_hertz, **{'title':_('The Hertz to output the PWM signal (0 - 70,000)')})}}
+    {{form_mod_output.pwm_hertz(class_='form-control', value=each_output.pwm_hertz, **{'title':_('The Hertz to output the PWM signal (0 - 70,000)')})}}
   </div>
 </div>
 <div class="col-auto">
-  {{form_mod_relay.pwm_invert_signal.label(class_='control-label')}}
+  {{form_mod_output.pwm_invert_signal.label(class_='control-label')}}
   <div class="input-group-text">
-    <input id="pwm_invert_signal" name="pwm_invert_signal" type="checkbox" value="y"{% if each_relay.pwm_invert_signal %} checked{% endif %}>
+    <input id="pwm_invert_signal" name="pwm_invert_signal" type="checkbox" value="y"{% if each_output.pwm_invert_signal %} checked{% endif %}>
   </div>
 </div>

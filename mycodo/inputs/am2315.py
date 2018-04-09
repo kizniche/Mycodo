@@ -282,7 +282,7 @@ class AM2315Sensor(AbstractInput):
         # Ensure if the power pin turns off, it is turned back on
         if self.power_output_id:
             power_pin_is_on = db_retrieve_table_daemon(
-                Output, device_id=self.power_output_id).is_on()
+                Output, unique_id=self.power_output_id).is_on()
             if not power_pin_is_on:
                 self.logger.error(
                     'Sensor power output {rel} detected as being off. '
@@ -354,7 +354,7 @@ class AM2315Sensor(AbstractInput):
         """ Turn the sensor on """
         if self.power_output_id:
             self.logger.info("Turning on sensor")
-            self.control.relay_on(self.power_output_id, 0)
+            self.control.output_on(self.power_output_id, 0)
             time.sleep(2)
             self.powered = True
 
@@ -362,5 +362,5 @@ class AM2315Sensor(AbstractInput):
         """ Turn the sensor off """
         if self.power_output_id:
             self.logger.info("Turning off sensor")
-            self.control.relay_off(self.power_output_id)
+            self.control.output_off(self.power_output_id)
             self.powered = False

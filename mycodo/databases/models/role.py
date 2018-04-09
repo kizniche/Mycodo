@@ -1,6 +1,7 @@
 # coding=utf-8
-from mycodo.mycodo_flask.extensions import db
 from mycodo.databases import CRUDMixin
+from mycodo.databases import set_uuid
+from mycodo.mycodo_flask.extensions import db
 
 
 class Role(CRUDMixin, db.Model):
@@ -9,6 +10,7 @@ class Role(CRUDMixin, db.Model):
     # __abstract__ = True
 
     id = db.Column(db.Integer, unique=True, primary_key=True)
+    unique_id = db.Column(db.String, nullable=False, unique=True, default=set_uuid)
     name = db.Column(db.String, nullable=False, unique=True)
     edit_settings = db.Column(db.Boolean, nullable=False, default=False)
     edit_controllers = db.Column(db.Boolean, nullable=False, default=False)

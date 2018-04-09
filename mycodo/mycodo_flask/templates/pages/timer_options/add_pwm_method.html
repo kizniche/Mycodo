@@ -10,9 +10,9 @@
     </div>
   </div>
   <div class="col-sm-6 col-md-3">
-    {{form_timer_base.relay_id.label(class_='control-label')}}
+    {{form_timer_base.output_id.label(class_='control-label')}}
     <div>
-      <select class="form-control" id="relay_id" name="relay_id">
+      <select class="form-control" id="output_id" name="output_id">
       {%- set pwm_output_exists = [] -%}
       {% for each_choice, value in output_choices.items() if each_choice.split(',')[1] == 'duty_cycle' -%}
         {%- do pwm_output_exists.append(1) -%}

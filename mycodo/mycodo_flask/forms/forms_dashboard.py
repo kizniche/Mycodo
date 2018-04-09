@@ -18,7 +18,7 @@ from wtforms.validators import DataRequired
 
 
 class DashboardBase(FlaskForm):
-    dashboard_id = IntegerField('Dash Object ID', widget=widgets.HiddenInput())
+    dashboard_id = StringField('Dash Object ID', widget=widgets.HiddenInput())
     dashboard_type = SelectField('Dashboard Element Type',
         choices=[
             ('', lazy_gettext('Add Dashboard Element')),
@@ -69,8 +69,8 @@ class DashboardBase(FlaskForm):
 class DashboardGraph(FlaskForm):
     math_ids = SelectMultipleField(lazy_gettext('Maths'))
     pid_ids = SelectMultipleField(lazy_gettext('PIDs'))
-    relay_ids = SelectMultipleField(lazy_gettext('Outputs'))
-    sensor_ids = SelectMultipleField(lazy_gettext('Inputs'))
+    output_ids = SelectMultipleField(lazy_gettext('Outputs'))
+    input_ids = SelectMultipleField(lazy_gettext('Inputs'))
     xaxis_duration = DecimalField(
         lazy_gettext('X-Axis (minutes)'),
         validators=[validators.NumberRange(
@@ -102,7 +102,7 @@ class DashboardGauge(FlaskForm):
         ],
         validators=[DataRequired()]
     )
-    sensor_ids = StringField(lazy_gettext('Measurement'))
+    input_ids = StringField(lazy_gettext('Measurement'))
     y_axis_min = DecimalField(lazy_gettext('Gauge Min'))
     y_axis_max = DecimalField(lazy_gettext('Gauge Max'))
     max_measure_age = DecimalField(lazy_gettext('Max Age (seconds)'))

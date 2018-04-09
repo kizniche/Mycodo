@@ -13,7 +13,7 @@
 
   <form method="post" action="/dashboard">
     {{form_base.csrf_token}}
-    {{form_base.dashboard_id(value=each_graph.id)}}
+    {{form_base.dashboard_id(value=each_graph.unique_id)}}
     <input type="hidden" name="dashboard_type" value="gauge">
 
     <div class="form-row">
@@ -33,19 +33,19 @@
         </div>
       </div>
       <div class="col-auto">
-        {{form_gauge.sensor_ids.label(class_='control-label')}}
+        {{form_gauge.input_ids.label(class_='control-label')}}
         <div>
-          <select class="form-control" id="sensor_ids" name="sensor_ids" style="width: 100%;">
+          <select class="form-control" id="input_ids" name="input_ids" style="width: 100%;">
           {% if choices_input or choices_math or choices_pid %}
             <option value="">{{_('Select One')}}</option>
             {% for each_choice, value in choices_input.items() -%}
-            <option value="{{each_choice}}" {% if each_graph.sensor_ids_measurements == each_choice %}selected{% endif %}>{{value}}</option>
+            <option value="{{each_choice}}" {% if each_graph.input_ids_measurements == each_choice %}selected{% endif %}>{{value}}</option>
             {% endfor -%}
             {% for each_choice, value in choices_math.items() -%}
-            <option value="{{each_choice}}" {% if each_graph.sensor_ids_measurements == each_choice %}selected{% endif %}>{{value}}</option>
+            <option value="{{each_choice}}" {% if each_graph.input_ids_measurements == each_choice %}selected{% endif %}>{{value}}</option>
             {% endfor -%}
             {% for each_choice, value in choices_pid.items() -%}
-            <option value="{{each_choice}}" {% if each_graph.sensor_ids_measurements == each_choice %}selected{% endif %}>{{value}}</option>
+            <option value="{{each_choice}}" {% if each_graph.input_ids_measurements == each_choice %}selected{% endif %}>{{value}}</option>
             {% endfor -%}
           {% else %}
             <option value="">{{_('None Available')}}</option>

@@ -33,28 +33,28 @@
 
   {%- if display_order -%}
   {%- for order in display_order -%}
-    {%- for each_lcd in lcd if each_lcd.id == order-%}
+    {%- for each_lcd in lcd if each_lcd.unique_id == order-%}
 
   <div class="container" style="border: 2px solid #ddd; border-radius: 5px;">
 
     <form method="post" action="/lcd">
     {{form_lcd_mod.csrf_token}}
-    {{form_lcd_mod.lcd_id(value=each_lcd.id)}}
+    {{form_lcd_mod.lcd_id(value=each_lcd.unique_id)}}
 
     <div class="{% if each_lcd.is_activated -%}active-background
                 {%- else -%}inactive-background
                 {% endif %} row small-gutters" style="border-bottom: 2px solid #ddd; padding: 0.4em 0.2em 0.4em 0">
 
       <div class="col-sm-1 text-center icon-fh">
-        <a data-toggle="collapse" href="#collapseContainer{{each_lcd.id}}" aria-expanded="false" aria-controls="collapseContainer{{each_lcd.id}}">
-          <span style="font-size: 3.5em" class="collapse-button{{each_lcd.id}} fa fa-plus-square"></span>
+        <a data-toggle="collapse" href="#collapseContainer{{each_lcd.unique_id}}" aria-expanded="false" aria-controls="collapseContainer{{each_lcd.unique_id}}">
+          <span style="font-size: 3.5em" class="collapse-button{{each_lcd.unique_id}} fa fa-plus-square"></span>
         </a>
       </div>
       <div class="col-sm-6 col-lg-3 no-gutters">
         {{form_lcd_mod.name(class_='form-control', value=each_lcd.name, **{'title':_('A name to distinguish this from others')})}}
       </div>
       <div class="col-sm-5 col-lg-2 no-gutters">
-        <input class="form-control btn btn-default" title="UUID: {{each_lcd.id}}" disabled="" value="[{{'%02d' % each_lcd.id}}]
+        <input class="form-control btn btn-default" title="UUID: {{each_lcd.unique_id}}" disabled="" value="[{{'%02d' % each_lcd.id}}]
         {%- if each_lcd.is_activated %} {{_('Active')}}
         {%- else %} {{_('Inactive')}}
         {%-endif -%}
@@ -78,7 +78,7 @@
       </div>
     </div>
 
-    <div class="collapse" id="collapseContainer{{each_lcd.id}}">
+    <div class="collapse" id="collapseContainer{{each_lcd.unique_id}}">
 
       <div class="row small-gutters">
         <div class="col-sm-6 col-md-3">
@@ -172,12 +172,12 @@
 
       </form>
 
-      {% for each_lcd_display in lcd_data if each_lcd_display.lcd_id == each_lcd.id %}
+      {% for each_lcd_display in lcd_data if each_lcd_display.lcd_id == each_lcd.unique_id %}
 
       <form method="post" action="/lcd" style="border-top: 1px solid #ddd;">
       {{form_lcd_display.csrf_token}}
-      {{form_lcd_display.lcd_id(value=each_lcd.id)}}
-      {{form_lcd_display.lcd_data_id(value=each_lcd_display.id)}}
+      {{form_lcd_display.lcd_id(value=each_lcd.unique_id)}}
+      {{form_lcd_display.lcd_data_id(value=each_lcd_display.unique_id)}}
 
       <div class="row small-gutters">
         <div class="col-xs-12">
@@ -216,13 +216,13 @@
                 <option value="{{each_pid.unique_id}},setpoint"{% if each_lcd_display.line_1_id == each_pid.unique_id and each_lcd_display.line_1_measurement == 'setpoint' %} selected{% endif %}>PID {{each_pid.id}} ({{each_pid.name}}): Setpoint</option>
               {%- endfor %}
 
-              {%- for each_relay in relay -%}
-                <option value="{{each_relay.unique_id}},relay_time"{% if each_lcd_display.line_1_id == each_relay.unique_id and each_lcd_display.line_1_measurement == 'relay_time' %} selected{% endif %}>Output {{each_relay.id}} ({{each_relay.name}}): Timestamp</option>
-                {% if each_relay.relay_type != 'pwm' %}
-                <option value="{{each_relay.unique_id}},duration_sec"{% if each_lcd_display.line_1_id == each_relay.unique_id and each_lcd_display.line_1_measurement == 'duration_sec' %} selected{% endif %}>Output {{each_relay.id}} ({{each_relay.name}}): Duration</option>
-                <option value="{{each_relay.unique_id}},relay_state"{% if each_lcd_display.line_1_id == each_relay.unique_id and each_lcd_display.line_1_measurement == 'relay_state' %} selected{% endif %}>Output {{each_relay.id}} ({{each_relay.name}}): State (On/Off)</option>
-                {% elif each_relay.relay_type == 'pwm' %}
-                <option value="{{each_relay.unique_id}},duty_cycle"{% if each_lcd_display.line_1_id == each_relay.unique_id and each_lcd_display.line_1_measurement == 'duty_cycle' %} selected{% endif %}>Output {{each_relay.id}} ({{each_relay.name}}): Duty Cycle</option>
+              {%- for each_output in output -%}
+                <option value="{{each_output.unique_id}},output_time"{% if each_lcd_display.line_1_id == each_output.unique_id and each_lcd_display.line_1_measurement == 'output_time' %} selected{% endif %}>Output {{each_output.id}} ({{each_output.name}}): Timestamp</option>
+                {% if each_output.output_type != 'pwm' %}
+                <option value="{{each_output.unique_id}},duration_sec"{% if each_lcd_display.line_1_id == each_output.unique_id and each_lcd_display.line_1_measurement == 'duration_sec' %} selected{% endif %}>Output {{each_output.id}} ({{each_output.name}}): Duration</option>
+                <option value="{{each_output.unique_id}},output_state"{% if each_lcd_display.line_1_id == each_output.unique_id and each_lcd_display.line_1_measurement == 'output_state' %} selected{% endif %}>Output {{each_output.id}} ({{each_output.name}}): State (On/Off)</option>
+                {% elif each_output.output_type == 'pwm' %}
+                <option value="{{each_output.unique_id}},duty_cycle"{% if each_lcd_display.line_1_id == each_output.unique_id and each_lcd_display.line_1_measurement == 'duty_cycle' %} selected{% endif %}>Output {{each_output.id}} ({{each_output.name}}): Duty Cycle</option>
                 {% endif %}
               {%- endfor %}
             </select>
@@ -273,13 +273,13 @@
                 <option value="{{each_pid.unique_id}},setpoint"{% if each_lcd_display.line_2_id == each_pid.unique_id and each_lcd_display.line_2_measurement == 'setpoint' %} selected{% endif %}>PID {{each_pid.id}} ({{each_pid.name}}): Setpoint</option>
               {%- endfor %}
 
-              {%- for each_relay in relay -%}
-                <option value="{{each_relay.unique_id}},relay_time"{% if each_lcd_display.line_2_id == each_relay.unique_id and each_lcd_display.line_2_measurement == 'relay_time' %} selected{% endif %}>Output {{each_relay.id}} ({{each_relay.name}}): Timestamp</option>
-                {% if each_relay.relay_type != 'pwm' %}
-                <option value="{{each_relay.unique_id}},duration_sec"{% if each_lcd_display.line_2_id == each_relay.unique_id and each_lcd_display.line_2_measurement == 'duration_sec' %} selected{% endif %}>Output {{each_relay.id}} ({{each_relay.name}}): Duration</option>
-                <option value="{{each_relay.unique_id}},relay_state"{% if each_lcd_display.line_2_id == each_relay.unique_id and each_lcd_display.line_2_measurement == 'relay_state' %} selected{% endif %}>Output {{each_relay.id}} ({{each_relay.name}}): State (On/Off)</option>
-                {% elif each_relay.relay_type == 'pwm' %}
-                <option value="{{each_relay.unique_id}},duty_cycle"{% if each_lcd_display.line_2_id == each_relay.unique_id and each_lcd_display.line_2_measurement == 'duty_cycle' %} selected{% endif %}>Output {{each_relay.id}} ({{each_relay.name}}): Duty Cycle</option>
+              {%- for each_output in output -%}
+                <option value="{{each_output.unique_id}},output_time"{% if each_lcd_display.line_2_id == each_output.unique_id and each_lcd_display.line_2_measurement == 'output_time' %} selected{% endif %}>Output {{each_output.id}} ({{each_output.name}}): Timestamp</option>
+                {% if each_output.output_type != 'pwm' %}
+                <option value="{{each_output.unique_id}},duration_sec"{% if each_lcd_display.line_2_id == each_output.unique_id and each_lcd_display.line_2_measurement == 'duration_sec' %} selected{% endif %}>Output {{each_output.id}} ({{each_output.name}}): Duration</option>
+                <option value="{{each_output.unique_id}},output_state"{% if each_lcd_display.line_2_id == each_output.unique_id and each_lcd_display.line_2_measurement == 'output_state' %} selected{% endif %}>Output {{each_output.id}} ({{each_output.name}}): State (On/Off)</option>
+                {% elif each_output.output_type == 'pwm' %}
+                <option value="{{each_output.unique_id}},duty_cycle"{% if each_lcd_display.line_2_id == each_output.unique_id and each_lcd_display.line_2_measurement == 'duty_cycle' %} selected{% endif %}>Output {{each_output.id}} ({{each_output.name}}): Duty Cycle</option>
                 {% endif %}
               {%- endfor %}
             </select>
@@ -332,13 +332,13 @@
                 <option value="{{each_pid.unique_id}},setpoint"{% if each_lcd_display.line_3_id == each_pid.unique_id and each_lcd_display.line_3_measurement == 'setpoint' %} selected{% endif %}>PID {{each_pid.id}} ({{each_pid.name}}): Setpoint</option>
               {%- endfor %}
 
-              {%- for each_relay in relay -%}
-                <option value="{{each_relay.unique_id}},relay_time"{% if each_lcd_display.line_3_id == each_relay.unique_id and each_lcd_display.line_3_measurement == 'relay_time' %} selected{% endif %}>Output {{each_relay.id}} ({{each_relay.name}}): Timestamp</option>
-                {% if each_relay.relay_type != 'pwm' %}
-                <option value="{{each_relay.unique_id}},duration_sec"{% if each_lcd_display.line_3_id == each_relay.unique_id and each_lcd_display.line_3_measurement == 'duration_sec' %} selected{% endif %}>Output {{each_relay.id}} ({{each_relay.name}}): Duration</option>
-                <option value="{{each_relay.unique_id}},relay_state"{% if each_lcd_display.line_3_id == each_relay.unique_id and each_lcd_display.line_3_measurement == 'relay_state' %} selected{% endif %}>Output {{each_relay.id}} ({{each_relay.name}}): State (On/Off)</option>
-                {% elif each_relay.relay_type == 'pwm' %}
-                <option value="{{each_relay.unique_id}},duty_cycle"{% if each_lcd_display.line_3_id == each_relay.unique_id and each_lcd_display.line_3_measurement == 'duty_cycle' %} selected{% endif %}>Output {{each_relay.id}} ({{each_relay.name}}): Duty Cycle</option>
+              {%- for each_output in output -%}
+                <option value="{{each_output.unique_id}},output_time"{% if each_lcd_display.line_3_id == each_output.unique_id and each_lcd_display.line_3_measurement == 'output_time' %} selected{% endif %}>Output {{each_output.id}} ({{each_output.name}}): Timestamp</option>
+                {% if each_output.output_type != 'pwm' %}
+                <option value="{{each_output.unique_id}},duration_sec"{% if each_lcd_display.line_3_id == each_output.unique_id and each_lcd_display.line_3_measurement == 'duration_sec' %} selected{% endif %}>Output {{each_output.id}} ({{each_output.name}}): Duration</option>
+                <option value="{{each_output.unique_id}},output_state"{% if each_lcd_display.line_3_id == each_output.unique_id and each_lcd_display.line_3_measurement == 'output_state' %} selected{% endif %}>Output {{each_output.id}} ({{each_output.name}}): State (On/Off)</option>
+                {% elif each_output.output_type == 'pwm' %}
+                <option value="{{each_output.unique_id}},duty_cycle"{% if each_lcd_display.line_3_id == each_output.unique_id and each_lcd_display.line_3_measurement == 'duty_cycle' %} selected{% endif %}>Output {{each_output.id}} ({{each_output.name}}): Duty Cycle</option>
                 {% endif %}
               {%- endfor %}
               </select>
@@ -389,13 +389,13 @@
                 <option value="{{each_pid.unique_id}},setpoint"{% if each_lcd_display.line_4_id == each_pid.unique_id and each_lcd_display.line_4_measurement == 'setpoint' %} selected{% endif %}>PID {{each_pid.id}} ({{each_pid.name}}): Setpoint</option>
               {%- endfor %}
 
-              {%- for each_relay in relay -%}
-                <option value="{{each_relay.unique_id}},relay_time"{% if each_lcd_display.line_4_id == each_relay.unique_id and each_lcd_display.line_4_measurement == 'relay_time' %} selected{% endif %}>Output {{each_relay.id}} ({{each_relay.name}}): Timestamp</option>
-                {% if each_relay.relay_type != 'pwm' %}
-                <option value="{{each_relay.unique_id}},duration_sec"{% if each_lcd_display.line_4_id == each_relay.unique_id and each_lcd_display.line_4_measurement == 'duration_sec' %} selected{% endif %}>Output {{each_relay.id}} ({{each_relay.name}}): Duration</option>
-                <option value="{{each_relay.unique_id}},relay_state"{% if each_lcd_display.line_4_id == each_relay.unique_id and each_lcd_display.line_4_measurement == 'relay_state' %} selected{% endif %}>Output {{each_relay.id}} ({{each_relay.name}}): State (On/Off)</option>
-                {% elif each_relay.relay_type == 'pwm' %}
-                <option value="{{each_relay.unique_id}},duty_cycle"{% if each_lcd_display.line_4_id == each_relay.unique_id and each_lcd_display.line_4_measurement == 'duty_cycle' %} selected{% endif %}>Output {{each_relay.id}} ({{each_relay.name}}): Duty Cycle</option>
+              {%- for each_output in output -%}
+                <option value="{{each_output.unique_id}},output_time"{% if each_lcd_display.line_4_id == each_output.unique_id and each_lcd_display.line_4_measurement == 'output_time' %} selected{% endif %}>Output {{each_output.id}} ({{each_output.name}}): Timestamp</option>
+                {% if each_output.output_type != 'pwm' %}
+                <option value="{{each_output.unique_id}},duration_sec"{% if each_lcd_display.line_4_id == each_output.unique_id and each_lcd_display.line_4_measurement == 'duration_sec' %} selected{% endif %}>Output {{each_output.id}} ({{each_output.name}}): Duration</option>
+                <option value="{{each_output.unique_id}},output_state"{% if each_lcd_display.line_4_id == each_output.unique_id and each_lcd_display.line_4_measurement == 'output_state' %} selected{% endif %}>Output {{each_output.id}} ({{each_output.name}}): State (On/Off)</option>
+                {% elif each_output.output_type == 'pwm' %}
+                <option value="{{each_output.unique_id}},duty_cycle"{% if each_lcd_display.line_4_id == each_output.unique_id and each_lcd_display.line_4_measurement == 'duty_cycle' %} selected{% endif %}>Output {{each_output.id}} ({{each_output.name}}): Duty Cycle</option>
                 {% endif %}
               {%- endfor %}
               </select>

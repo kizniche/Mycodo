@@ -22,7 +22,7 @@ class PID(CRUDMixin, db.Model):
     direction = db.Column(db.Text, default='raise')  # Direction of regulation (raise, lower, both)
     setpoint = db.Column(db.Float, default=30.0)  # PID setpoint
     band = db.Column(db.Float, default=0)  # PID hysteresis band
-    method_id = db.Column(db.Integer, db.ForeignKey('method.id'), default=None)
+    method_id = db.Column(db.String, db.ForeignKey('method.unique_id'), default=None)
     method_start_time = db.Column(db.Text, default=None)
     method_end_time = db.Column(db.Text, default=None)
     p = db.Column(db.Float, default=1.0)  # Kp gain
@@ -30,11 +30,11 @@ class PID(CRUDMixin, db.Model):
     d = db.Column(db.Float, default=0.0)  # Kd gain
     integrator_min = db.Column(db.Float, default=-100.0)
     integrator_max = db.Column(db.Float, default=100.0)
-    raise_relay_id = db.Column(db.Integer, db.ForeignKey('relay.id'), default=None)  # Output to raise the condition
+    raise_output_id = db.Column(db.String, db.ForeignKey('output.unique_id'), default=None)  # Output to raise the condition
     raise_min_duration = db.Column(db.Float, default=0.0)
     raise_max_duration = db.Column(db.Float, default=0.0)
     raise_min_off_duration = db.Column(db.Float, default=0.0)
-    lower_relay_id = db.Column(db.Integer, db.ForeignKey('relay.id'), default=None)  # Output to lower the condition
+    lower_output_id = db.Column(db.String, db.ForeignKey('output.unique_id'), default=None)  # Output to lower the condition
     lower_min_duration = db.Column(db.Float, default=0.0)
     lower_max_duration = db.Column(db.Float, default=0.0)
     lower_min_off_duration = db.Column(db.Float, default=0.0)

@@ -12,9 +12,9 @@
   <span style="font-size: {{each_graph.font_em_value}}em" id="value-{{chart_number}}"></span>
   <br/><span style="font-size: {{each_graph.font_em_timestamp}}em">
   {%- for each_input in input -%}
-    {%- if each_input.unique_id == each_graph.sensor_ids_measurements.split(',')[0] %}
-      {%- if each_graph.sensor_ids_measurements.split(',')[1] in measurement_units -%}
-        {{measurement_units[each_graph.sensor_ids_measurements.split(',')[1]]['name']|safe}} ({% if use_unit[each_input.unique_id][each_graph.sensor_ids_measurements.split(',')[1]] %}{{units[use_unit[each_input.unique_id][each_graph.sensor_ids_measurements.split(',')[1]]]['unit']}}{% else %}{{measurement_units[each_graph.sensor_ids_measurements.split(',')[1]]['unit']|safe}}{% endif %})
+    {%- if each_input.unique_id == each_graph.input_ids_measurements.split(',')[0] %}
+      {%- if each_graph.input_ids_measurements.split(',')[1] in measurement_units -%}
+        {{measurement_units[each_graph.input_ids_measurements.split(',')[1]]['name']|safe}} ({% if use_unit[each_input.unique_id][each_graph.input_ids_measurements.split(',')[1]] %}{{units[use_unit[each_input.unique_id][each_graph.input_ids_measurements.split(',')[1]]]['unit']}}{% else %}{{measurement_units[each_graph.input_ids_measurements.split(',')[1]]['unit']|safe}}{% endif %})
       {%- elif each_input.adc_measure -%}
         {{each_input.adc_measure|safe}} ({{each_input.adc_measure_units|safe}})
       {% endif %}
@@ -22,14 +22,14 @@
   {%- endfor -%}
 
   {%- for each_math in math -%}
-    {%- if each_math.unique_id == each_graph.sensor_ids_measurements.split(',')[0] %}
-      {{dict_measurements[each_graph.sensor_ids_measurements.split(',')[1]]['name']|safe}} ({{each_math.measure_units|safe}})
+    {%- if each_math.unique_id == each_graph.input_ids_measurements.split(',')[0] %}
+      {{dict_measurements[each_graph.input_ids_measurements.split(',')[1]]['name']|safe}} ({{each_math.measure_units|safe}})
     {%- endif -%}
   {%- endfor -%}
 
   {%- for each_pid in pid -%}
-    {%- if each_pid.unique_id == each_graph.sensor_ids_measurements.split(',')[0] %}
-      {{measurement_units[each_graph.sensor_ids_measurements.split(',')[1]]['name']|safe}} ({{dict_measurements[each_graph.sensor_ids_measurements.split(',')[1]]['unit']|safe}})
+    {%- if each_pid.unique_id == each_graph.input_ids_measurements.split(',')[0] %}
+      {{measurement_units[each_graph.input_ids_measurements.split(',')[1]]['name']|safe}} ({{dict_measurements[each_graph.input_ids_measurements.split(',')[1]]['unit']|safe}})
     {%- endif -%}
   {%- endfor -%}
   </span>
@@ -41,7 +41,7 @@
 
   <form method="post" action="/dashboard">
     {{form_base.csrf_token}}
-    {{form_base.dashboard_id(value=each_graph.id)}}
+    {{form_base.dashboard_id(value=each_graph.unique_id)}}
     <input type="hidden" name="dashboard_type" value="measurement">
 
     <div class="form-row">
@@ -58,13 +58,13 @@
           {% if choices_input or choices_math or choices_pid %}
             <option value="">{{_('Select One')}}</option>
             {% for each_choice, value in choices_input.items() -%}
-            <option value="{{each_choice}}" {% if each_graph.sensor_ids_measurements == each_choice %}selected{% endif %}>{{value}}</option>
+            <option value="{{each_choice}}" {% if each_graph.input_ids_measurements == each_choice %}selected{% endif %}>{{value}}</option>
             {% endfor -%}
             {% for each_choice, value in choices_math.items() -%}
-            <option value="{{each_choice}}" {% if each_graph.sensor_ids_measurements == each_choice %}selected{% endif %}>{{value}}</option>
+            <option value="{{each_choice}}" {% if each_graph.input_ids_measurements == each_choice %}selected{% endif %}>{{value}}</option>
             {% endfor -%}
             {% for each_choice, value in choices_pid.items() -%}
-            <option value="{{each_choice}}" {% if each_graph.sensor_ids_measurements == each_choice %}selected{% endif %}>{{value}}</option>
+            <option value="{{each_choice}}" {% if each_graph.input_ids_measurements == each_choice %}selected{% endif %}>{{value}}</option>
             {% endfor -%}
           {% else %}
             <option value="">{{_('None Available')}}</option>

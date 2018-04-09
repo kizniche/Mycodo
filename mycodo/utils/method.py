@@ -98,8 +98,8 @@ def calculate_method_setpoint(method_id, table, controller, Method, MethodData, 
     method_data = db_retrieve_table_daemon(MethodData)
     method_data = method_data.filter(MethodData.method_id == method_id)
 
-    method_data_all = method_data.filter(MethodData.relay_id == None).all()
-    method_data_first = method_data.filter(MethodData.relay_id == None).first()
+    method_data_all = method_data.filter(MethodData.output_id == None).all()
+    method_data_first = method_data.filter(MethodData.output_id == None).first()
 
     now = datetime.datetime.now()
 

@@ -24,7 +24,7 @@ from mycodo.mycodo_flask.utils.utils_general import flash_form_errors
 from mycodo.mycodo_flask.utils.utils_general import flash_success_errors
 from mycodo.mycodo_flask.utils.utils_general import reorder
 from mycodo.mycodo_flask.utils.utils_general import return_dependencies
-from mycodo.utils.system_pi import csv_to_list_of_int
+from mycodo.utils.system_pi import csv_to_list_of_str
 from mycodo.utils.system_pi import list_to_csv
 
 logger = logging.getLogger(__name__)
@@ -52,10 +52,8 @@ def input_add(form_add):
 
         if GPIO.RPI_INFO['P1_REVISION'] in [2, 3]:
             new_sensor.i2c_bus = 1
-            new_sensor.multiplexer_bus = 1
         else:
             new_sensor.i2c_bus = 0
-            new_sensor.multiplexer_bus = 0
 
         if form_add.input_type.data in DEVICE_INFO:
             new_sensor.name = DEVICE_INFO[form_add.input_type.data]['name']
@@ -217,10 +215,10 @@ def input_add(form_add):
             if not error:
                 new_sensor.save()
 
-                display_order = csv_to_list_of_int(
-                    DisplayOrder.query.first().sensor)
-                DisplayOrder.query.first().sensor = add_display_order(
-                    display_order, new_sensor.id)
+                display_order = csv_to_list_of_str(
+                    DisplayOrder.query.first().inputs)
+                DisplayOrder.query.first().inputs = add_display_order(
+                    display_order, new_sensor.unique_id)
                 db.session.commit()
 
                 flash(gettext(
@@ -250,7 +248,7 @@ def input_mod(form_mod, request_form):
 
     try:
         mod_sensor = Input.query.filter(
-            Input.id == form_mod.input_id.data).first()
+            Input.unique_id == form_mod.input_id.data).first()
 
         if mod_sensor.is_activated:
             error.append(gettext(
@@ -263,8 +261,8 @@ def input_mod(form_mod, request_form):
                 "AM2315 may become unresponsive if the period is "
                 "below 7."))
         if (mod_sensor.device != 'EDGE' and
-                (mod_sensor.pre_relay_duration and
-                 form_mod.period.data < mod_sensor.pre_relay_duration)):
+                (mod_sensor.pre_output_duration and
+                 form_mod.period.data < mod_sensor.pre_output_duration)):
             error.append(gettext(
                 "The Read Period cannot be less than the Pre Output "
                 "Duration"))
@@ -278,18 +276,18 @@ def input_mod(form_mod, request_form):
             mod_sensor.i2c_bus = form_mod.i2c_bus.data
             if form_mod.location.data:
                 mod_sensor.location = form_mod.location.data
-            if form_mod.power_relay_id.data:
-                mod_sensor.power_relay_id = form_mod.power_relay_id.data
+            if form_mod.power_output_id.data:
+                mod_sensor.power_output_id = form_mod.power_output_id.data
             else:
-                mod_sensor.power_relay_id = None
+                mod_sensor.power_output_id = None
             if form_mod.baud_rate.data:
                 mod_sensor.baud_rate = form_mod.baud_rate.data
             if form_mod.device_loc.data:
                 mod_sensor.device_loc = form_mod.device_loc.data
-            if form_mod.pre_relay_id.data:
-                mod_sensor.pre_relay_id = form_mod.pre_relay_id.data
+            if form_mod.pre_output_id.data:
+                mod_sensor.pre_output_id = form_mod.pre_output_id.data
             else:
-                mod_sensor.pre_relay_id = None
+                mod_sensor.pre_output_id = None
 
             short_list = []
             for key in request_form.keys():
@@ -307,8 +305,8 @@ def input_mod(form_mod, request_form):
             # Generate color option string from form inputs
             mod_sensor.convert_to_unit = ';'.join(short_list)
 
-            mod_sensor.pre_relay_duration = form_mod.pre_relay_duration.data
-            mod_sensor.pre_relay_during_measure = form_mod.pre_relay_during_measure.data
+            mod_sensor.pre_output_duration = form_mod.pre_output_duration.data
+            mod_sensor.pre_output_during_measure = form_mod.pre_output_during_measure.data
             mod_sensor.period = form_mod.period.data
             mod_sensor.resolution = form_mod.resolution.data
             mod_sensor.sensitivity = form_mod.sensitivity.data
@@ -318,10 +316,6 @@ def input_mod(form_mod, request_form):
             mod_sensor.cmd_measurement_units = form_mod.cmd_measurement_units.data
             mod_sensor.thermocouple_type = form_mod.thermocouple_type.data
             mod_sensor.ref_ohm = form_mod.ref_ohm.data
-            # Multiplexer options
-            mod_sensor.multiplexer_address = form_mod.multiplexer_address.data
-            mod_sensor.multiplexer_bus = form_mod.multiplexer_bus.data
-            mod_sensor.multiplexer_channel = form_mod.multiplexer_channel.data
             # Serial options
             mod_sensor.pin_clock = form_mod.pin_clock.data
             mod_sensor.pin_cs = form_mod.pin_cs.data
@@ -372,17 +366,17 @@ def input_del(form_mod):
 
     try:
         input_dev = Input.query.filter(
-            Input.id == input_id).first()
+            Input.unique_id == input_id).first()
         if input_dev.is_activated:
             input_deactivate_associated_controllers(input_id)
             controller_activate_deactivate('deactivate', 'Input', input_id)
 
         delete_entry_with_id(Input, input_id)
         try:
-            display_order = csv_to_list_of_int(
-                DisplayOrder.query.first().sensor)
-            display_order.remove(int(input_id))
-            DisplayOrder.query.first().sensor = list_to_csv(display_order)
+            display_order = csv_to_list_of_str(
+                DisplayOrder.query.first().inputs)
+            display_order.remove(input_id)
+            DisplayOrder.query.first().inputs = list_to_csv(display_order)
         except Exception:  # id not in list
             pass
         db.session.commit()
@@ -401,7 +395,7 @@ def input_reorder(input_id, display_order, direction):
     try:
         status, reord_list = reorder(display_order, input_id, direction)
         if status == 'success':
-            DisplayOrder.query.first().sensor = ','.join(map(str, reord_list))
+            DisplayOrder.query.first().inputs = ','.join(map(str, reord_list))
             db.session.commit()
         elif status == 'error':
             error.append(reord_list)
@@ -412,7 +406,7 @@ def input_reorder(input_id, display_order, direction):
 
 def input_activate(form_mod):
     input_id = form_mod.input_id.data
-    input_dev = Input.query.filter(Input.id == input_id).first()
+    input_dev = Input.query.filter(Input.unique_id == input_id).first()
     if input_dev.device in LIST_DEVICES_SPI:
         if None in [form_mod.pin_clock.data,
                     form_mod.pin_cs.data,
@@ -442,10 +436,10 @@ def input_deactivate(form_mod):
 def input_deactivate_associated_controllers(input_id):
     # Deactivate any activated PIDs using this input
     sensor_unique_id = Input.query.filter(
-        Input.id == input_id).first().unique_id
+        Input.unique_id == input_id).first().unique_id
     pid = PID.query.filter(PID.is_activated == True).all()
     for each_pid in pid:
         if sensor_unique_id in each_pid.measurement:
             controller_activate_deactivate('deactivate',
                                            'PID',
-                                           each_pid.id)
+                                           each_pid.unique_id)

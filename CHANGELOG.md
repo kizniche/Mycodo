@@ -1,8 +1,15 @@
-## 5.7.3 (Unreleased)
+## 6.0.0 (Unreleased)
+
+Version 6.0.0 has changes to the database schema that could not be upgraded to. To upgrade to this version, the settings database must be created anew. You either have the options of staying at the last version (5.7.x), or deleting the settings database and upgrading. You will be presented with a menu on the upgrade screen explaining your options, and a button to perform an upgrade/database deletion.
 
 ### Features
 
+ - Add Conditional Actions: Activate/Deactivate any controller
  - Add Conditional Action: Set PID Method ([#440](https://github.com/kizniche/mycodo/issues/440))
+
+### Miscellaneous
+
+ - Remove multiplexer integration (use kernel driver)
 
 
 ## 5.7.2 (2018-04-07)

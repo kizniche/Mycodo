@@ -723,6 +723,8 @@ THEMES = [
     ('yeti', 'Yeti')
 ]
 
+LAST_VERSIONS_UPGRADE = ['5.7.2']
+
 THEMES_DARK = ['cyborg', 'darkly', 'slate', 'solar', 'superhero']
 
 # Install path, the parent directory this script resides
@@ -734,7 +736,7 @@ SQL_DATABASE_MYCODO = os.path.join(DATABASE_PATH, 'mycodo.db')
 MYCODO_DB_PATH = 'sqlite:///' + SQL_DATABASE_MYCODO
 
 # File paths/logging
-USAGE_REPORTS_PATH = os.path.join(INSTALL_DIRECTORY, 'relay_usage_reports')
+USAGE_REPORTS_PATH = os.path.join(INSTALL_DIRECTORY, 'output_usage_reports')
 DEPENDENCY_INIT_FILE = os.path.join(INSTALL_DIRECTORY, '.dependency')
 UPGRADE_INIT_FILE = os.path.join(INSTALL_DIRECTORY, '.upgrade')
 BACKUP_PATH = '/var/Mycodo-backups'  # Where Mycodo backups are stored

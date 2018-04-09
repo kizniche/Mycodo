@@ -21,7 +21,7 @@ from mycodo.mycodo_flask.utils.utils_general import flash_form_errors
 from mycodo.mycodo_flask.utils.utils_general import flash_success_errors
 from mycodo.mycodo_flask.utils.utils_general import reorder
 from mycodo.mycodo_flask.utils.utils_general import use_unit_generate
-from mycodo.utils.system_pi import csv_to_list_of_int
+from mycodo.utils.system_pi import csv_to_list_of_str
 from mycodo.utils.system_pi import list_to_csv
 
 logger = logging.getLogger(__name__)
@@ -63,12 +63,12 @@ def dashboard_add(form_base, form_object, display_order):
         if form_object.pid_ids.data:
             pid_ids_joined = ";".join(form_object.pid_ids.data)
             new_graph.pid_ids = pid_ids_joined
-        if form_object.relay_ids.data:
-            relay_ids_joined = ";".join(form_object.relay_ids.data)
-            new_graph.relay_ids = relay_ids_joined
-        if form_object.sensor_ids.data:
-            sensor_ids_joined = ";".join(form_object.sensor_ids.data)
-            new_graph.sensor_ids_measurements = sensor_ids_joined
+        if form_object.output_ids.data:
+            output_ids_joined = ";".join(form_object.output_ids.data)
+            new_graph.output_ids = output_ids_joined
+        if form_object.input_ids.data:
+            input_ids_joined = ";".join(form_object.input_ids.data)
+            new_graph.input_ids_measurements = input_ids_joined
         new_graph.width = form_base.width.data
         new_graph.height = form_base.height.data
         new_graph.x_axis_duration = form_object.xaxis_duration.data
@@ -98,7 +98,7 @@ def dashboard_add(form_base, form_object, display_order):
         new_graph.refresh_duration = form_base.refresh_duration.data
         new_graph.y_axis_min = form_object.y_axis_min.data
         new_graph.y_axis_max = form_object.y_axis_max.data
-        new_graph.sensor_ids_measurements = form_object.sensor_ids.data
+        new_graph.input_ids_measurements = form_object.input_ids.data
         new_graph.enable_timestamp = form_object.enable_timestamp.data
 
     # Measurement
@@ -114,7 +114,7 @@ def dashboard_add(form_base, form_object, display_order):
         new_graph.font_em_value = form_object.font_em_value.data
         new_graph.font_em_timestamp = form_object.font_em_timestamp.data
         new_graph.decimal_places = form_object.decimal_places.data
-        new_graph.sensor_ids_measurements = form_object.measurement_id.data
+        new_graph.input_ids_measurements = form_object.measurement_id.data
 
     # Output
     elif form_base.dashboard_type.data == 'output':
@@ -171,8 +171,8 @@ def dashboard_add(form_base, form_object, display_order):
                 "{dev} with ID %(id)s successfully added".format(dev=dashboard_type),
                 id=new_graph.id),
                 "success")
-            DisplayOrder.query.first().graph = add_display_order(
-                display_order, new_graph.id)
+            DisplayOrder.query.first().dashboard = add_display_order(
+                display_order, new_graph.unique_id)
             db.session.commit()
     except sqlalchemy.exc.OperationalError as except_msg:
         error.append(except_msg)
@@ -190,7 +190,7 @@ def dashboard_mod(form_base, form_object, request_form):
     error = []
 
     mod_graph = Dashboard.query.filter(
-        Dashboard.id == form_base.dashboard_id.data).first()
+        Dashboard.unique_id == form_base.dashboard_id.data).first()
     mod_graph.name = form_base.name.data
 
     # Graph Mod
@@ -223,17 +223,17 @@ def dashboard_mod(form_base, form_object, request_form):
         else:
             mod_graph.pid_ids = ''
 
-        if form_object.relay_ids.data:
-            relay_ids_joined = ";".join(form_object.relay_ids.data)
-            mod_graph.relay_ids = relay_ids_joined
+        if form_object.output_ids.data:
+            output_ids_joined = ";".join(form_object.output_ids.data)
+            mod_graph.output_ids = output_ids_joined
         else:
-            mod_graph.relay_ids = ''
+            mod_graph.output_ids = ''
 
-        if form_object.sensor_ids.data:
-            sensor_ids_joined = ";".join(form_object.sensor_ids.data)
-            mod_graph.sensor_ids_measurements = sensor_ids_joined
+        if form_object.input_ids.data:
+            input_ids_joined = ";".join(form_object.input_ids.data)
+            mod_graph.input_ids_measurements = input_ids_joined
         else:
-            mod_graph.sensor_ids_measurements = ''
+            mod_graph.input_ids_measurements = ''
 
         mod_graph.width = form_base.width.data
         mod_graph.height = form_base.height.data
@@ -274,8 +274,8 @@ def dashboard_mod(form_base, form_object, request_form):
         mod_graph.y_axis_max = form_object.y_axis_max.data
         mod_graph.max_measure_age = form_object.max_measure_age.data
         mod_graph.enable_timestamp = form_object.enable_timestamp.data
-        if form_object.sensor_ids.data:
-            mod_graph.sensor_ids_measurements = form_object.sensor_ids.data
+        if form_object.input_ids.data:
+            mod_graph.input_ids_measurements = form_object.input_ids.data
         else:
             error.append("A valid Measurement must be selected")
 
@@ -291,7 +291,7 @@ def dashboard_mod(form_base, form_object, request_form):
         mod_graph.font_em_timestamp = form_object.font_em_timestamp.data
         mod_graph.decimal_places = form_object.decimal_places.data
         if form_object.measurement_id.data:
-            mod_graph.sensor_ids_measurements = form_object.measurement_id.data
+            mod_graph.input_ids_measurements = form_object.measurement_id.data
 
     # Output Mod
     elif form_base.dashboard_type.data == 'output':
@@ -356,9 +356,9 @@ def dashboard_del(form_base):
     try:
         delete_entry_with_id(Dashboard,
                              form_base.dashboard_id.data)
-        display_order = csv_to_list_of_int(DisplayOrder.query.first().graph)
-        display_order.remove(int(form_base.dashboard_id.data))
-        DisplayOrder.query.first().graph = list_to_csv(display_order)
+        display_order = csv_to_list_of_str(DisplayOrder.query.first().dashboard)
+        display_order.remove(form_base.dashboard_id.data)
+        DisplayOrder.query.first().dashboard = list_to_csv(display_order)
         db.session.commit()
     except Exception as except_msg:
         error.append(except_msg)
@@ -376,7 +376,7 @@ def dashboard_reorder(dashboard_id, display_order, direction):
                                      dashboard_id,
                                      direction)
         if status == 'success':
-            DisplayOrder.query.first().graph = ','.join(map(str, reord_list))
+            DisplayOrder.query.first().dashboard = ','.join(map(str, reord_list))
             db.session.commit()
         else:
             error.append(reord_list)
@@ -393,7 +393,7 @@ def graph_error_check(form, error):
 
 def gauge_error_check(form, error):
     """Determine if there are any errors in the gauge form"""
-    if not form.sensor_ids.data:
+    if not form.input_ids.data:
         error.append("A valid Measurement must be selected")
     return error
 
@@ -438,11 +438,11 @@ def graph_y_axes(dict_measurements):
         for each_device in devices_list:
 
             if each_device == input_dev:
-                ids_and_measures = each_graph.sensor_ids_measurements.split(';')
+                ids_and_measures = each_graph.input_ids_measurements.split(';')
             elif each_device == math:
                 ids_and_measures = each_graph.math_ids.split(';')
             elif each_device == output:
-                ids_and_measures = each_graph.relay_ids.split(';')
+                ids_and_measures = each_graph.output_ids.split(';')
             elif each_device == pid:
                 ids_and_measures = each_graph.pid_ids.split(';')
             else:

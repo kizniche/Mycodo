@@ -101,7 +101,7 @@ def settings_camera():
                            camera_libraries=CAMERA_LIBRARIES,
                            form_camera=form_camera,
                            pi_camera_enabled=pi_camera_enabled,
-                           relay=output)
+                           output=output)
 
 
 @blueprint.route('/settings/general', methods=('GET', 'POST'))

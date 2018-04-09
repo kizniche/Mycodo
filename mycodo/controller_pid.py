@@ -89,7 +89,7 @@ class PIDController(threading.Thread):
         self.ready = ready
         self.pid_id = pid_id
         self.pid_unique_id = db_retrieve_table_daemon(
-            PID, device_id=self.pid_id).unique_id
+            PID, unique_id=self.pid_id).unique_id
         self.control = DaemonControl()
 
         self.control_variable = 0.0
@@ -189,7 +189,7 @@ class PIDController(threading.Thread):
                             # Update setpoint using a method if one is selected
                             if self.method_id:
                                 this_controller = db_retrieve_table_daemon(
-                                    PID, device_id=self.pid_id)
+                                    PID, unique_id=self.pid_id)
                                 setpoint, ended = calculate_method_setpoint(
                                     self.method_id,
                                     PID,
@@ -242,9 +242,9 @@ class PIDController(threading.Thread):
 
             # Turn off output used in PID when the controller is deactivated
             if self.raise_output_id and self.direction in ['raise', 'both']:
-                self.control.relay_off(self.raise_output_id, trigger_conditionals=True)
+                self.control.output_off(self.raise_output_id, trigger_conditionals=True)
             if self.lower_output_id and self.direction in ['lower', 'both']:
-                self.control.relay_off(self.lower_output_id, trigger_conditionals=True)
+                self.control.output_off(self.lower_output_id, trigger_conditionals=True)
 
             self.running = False
             self.logger.info("Deactivated in {:.1f} ms".format(
@@ -255,17 +255,17 @@ class PIDController(threading.Thread):
 
     def initialize_values(self):
         """Set PID parameters"""
-        pid = db_retrieve_table_daemon(PID, device_id=self.pid_id)
+        pid = db_retrieve_table_daemon(PID, unique_id=self.pid_id)
         self.is_activated = pid.is_activated
         self.is_held = pid.is_held
         self.is_paused = pid.is_paused
         self.method_id = pid.method_id
         self.direction = pid.direction
-        self.raise_output_id = pid.raise_relay_id
+        self.raise_output_id = pid.raise_output_id
         self.raise_min_duration = pid.raise_min_duration
         self.raise_max_duration = pid.raise_max_duration
         self.raise_min_off_duration = pid.raise_min_off_duration
-        self.lower_output_id = pid.lower_relay_id
+        self.lower_output_id = pid.lower_output_id
         self.lower_min_duration = pid.lower_min_duration
         self.lower_max_duration = pid.lower_max_duration
         self.lower_min_off_duration = pid.lower_min_off_duration
@@ -295,23 +295,23 @@ class PIDController(threading.Thread):
 
         try:
             self.raise_output_type = db_retrieve_table_daemon(
-                Output, device_id=self.raise_output_id).relay_type
+                Output, unique_id=self.raise_output_id).output_type
         except AttributeError:
             self.raise_output_type = None
         try:
             self.lower_output_type = db_retrieve_table_daemon(
-                Output, device_id=self.lower_output_id).relay_type
+                Output, unique_id=self.lower_output_id).output_type
         except AttributeError:
             self.lower_output_type = None
 
         return "success"
 
     def setup_method(self, method_id):
-        method = db_retrieve_table_daemon(Method, device_id=method_id)
+        method = db_retrieve_table_daemon(Method, unique_id=method_id)
         method_data = db_retrieve_table_daemon(MethodData)
         method_data = method_data.filter(MethodData.method_id == method_id)
         method_data_repeat = method_data.filter(MethodData.duration_sec == 0).first()
-        pid = db_retrieve_table_daemon(PID, device_id=self.pid_id)
+        pid = db_retrieve_table_daemon(PID, unique_id=self.pid_id)
         self.method_type = method.method_type
         self.method_start_act = pid.method_start_time
         self.method_start_time = None
@@ -577,7 +577,7 @@ class PIDController(threading.Thread):
                                 dc=self.raise_duty_cycle))
 
                         # Activate pwm with calculated duty cycle
-                        self.control.relay_on(self.raise_output_id,
+                        self.control.output_on(self.raise_output_id,
                                               duty_cycle=self.raise_duty_cycle)
 
                         self.write_pid_output_influxdb(
@@ -602,7 +602,7 @@ class PIDController(threading.Thread):
                                     sp=self.setpoint,
                                     cv=self.control_variable,
                                     id=self.raise_output_id))
-                            self.control.relay_on(
+                            self.control.output_on(
                                 self.raise_output_id,
                                 duration=self.raise_seconds_on,
                                 min_off=self.raise_min_off_duration)
@@ -612,7 +612,7 @@ class PIDController(threading.Thread):
 
                 else:
                     if self.raise_output_type == 'pwm':
-                        self.control.relay_on(self.raise_output_id,
+                        self.control.output_on(self.raise_output_id,
                                               duty_cycle=0)
 
             #
@@ -651,7 +651,7 @@ class PIDController(threading.Thread):
                             stored_control_variable = self.control_var_to_duty_cycle(abs(self.control_variable))
 
                         # Activate pwm with calculated duty cycle
-                        self.control.relay_on(
+                        self.control.output_on(
                             self.lower_output_id,
                             duty_cycle=stored_duty_cycle)
 
@@ -684,7 +684,7 @@ class PIDController(threading.Thread):
                                                 cv=self.control_variable,
                                                 id=self.lower_output_id))
 
-                            self.control.relay_on(
+                            self.control.output_on(
                                 self.lower_output_id,
                                 duration=stored_seconds_on,
                                 min_off=self.lower_min_off_duration)
@@ -694,14 +694,14 @@ class PIDController(threading.Thread):
 
                 else:
                     if self.lower_output_type == 'pwm':
-                        self.control.relay_on(self.lower_output_id,
+                        self.control.output_on(self.lower_output_id,
                                               duty_cycle=0)
 
         else:
             if self.direction in ['raise', 'both'] and self.raise_output_id:
-                self.control.relay_off(self.raise_output_id)
+                self.control.output_off(self.raise_output_id)
             if self.direction in ['lower', 'both'] and self.lower_output_id:
-                self.control.relay_off(self.lower_output_id)
+                self.control.output_off(self.lower_output_id)
 
     def control_var_to_duty_cycle(self, control_variable):
         # Convert control variable to duty cycle

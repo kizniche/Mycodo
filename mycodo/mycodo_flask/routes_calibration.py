@@ -211,7 +211,7 @@ def setup_ds_resolution():
     if form_ds.set_resolution.data and form_ds.device_id.data:
         try:
             from w1thermsensor import W1ThermSensor
-            sensor = W1ThermSensor(sensor_id=form_ds.device_id.data)
+            sensor = W1ThermSensor(input_id=form_ds.device_id.data)
             # sensor = W1ThermSensor(W1ThermSensor.THERM_SENSOR_DS18B20, "00000588806a")
             sensor.set_precision(
                 form_ds.set_resolution.data,persist=True)

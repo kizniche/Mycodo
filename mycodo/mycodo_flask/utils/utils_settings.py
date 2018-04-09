@@ -145,7 +145,7 @@ def user_mod(form):
 
     try:
         mod_user = User.query.filter(
-            User.id == form.user_id.data).first()
+            User.unique_id == form.user_id.data).first()
         mod_user.email = form.email.data
         # Only change the password if it's entered in the form
         logout_user = False
@@ -181,7 +181,8 @@ def user_mod(form):
 
 def user_del(form):
     """ Delete user from SQL database """
-    user_name = User.query.filter(User.id == form.user_id.data).first().name
+    user_name = User.query.filter(
+        User.unique_id == form.user_id.data).first().name
     action = '{action} {controller} {user}'.format(
         action=gettext("Delete"),
         controller=gettext("User"),
@@ -194,7 +195,7 @@ def user_del(form):
     if not error:
         try:
             user = User.query.filter(
-                User.id == form.user_id.data).first()
+                User.unique_id == form.user_id.data).first()
             user.delete()
         except Exception as except_msg:
             error.append(except_msg)
@@ -214,11 +215,11 @@ def settings_general_mod(form):
     error = []
 
     if form.validate():
-        if (form.relay_usage_report_span.data == 'monthly' and
-                not 0 < form.relay_usage_report_day.data < 29):
+        if (form.output_usage_report_span.data == 'monthly' and
+                not 0 < form.output_usage_report_day.data < 29):
             error.append("Day Options: Daily: 1-7 (1=Monday), Monthly: 1-28")
-        elif (form.relay_usage_report_span.data == 'weekly' and
-                not 0 < form.relay_usage_report_day.data < 8):
+        elif (form.output_usage_report_span.data == 'weekly' and
+                not 0 < form.output_usage_report_day.data < 8):
             error.append("Day Options: Daily: 1-7 (1=Monday), Monthly: 1-28")
 
         if not error:
@@ -231,18 +232,19 @@ def settings_general_mod(form):
                 mod_misc.hide_alert_warning = form.hide_warning.data
                 mod_misc.hide_tooltips = form.hide_tooltips.data
                 mod_misc.max_amps = form.max_amps.data
-                mod_misc.relay_usage_volts = form.relay_stats_volts.data
-                mod_misc.relay_usage_cost = form.relay_stats_cost.data
-                mod_misc.relay_usage_currency = form.relay_stats_currency.data
-                mod_misc.relay_usage_dayofmonth = form.relay_stats_day_month.data
-                mod_misc.relay_usage_report_gen = form.relay_usage_report_gen.data
-                mod_misc.relay_usage_report_span = form.relay_usage_report_span.data
-                mod_misc.relay_usage_report_day = form.relay_usage_report_day.data
-                mod_misc.relay_usage_report_hour = form.relay_usage_report_hour.data
+                mod_misc.output_usage_volts = form.output_stats_volts.data
+                mod_misc.output_usage_cost = form.output_stats_cost.data
+                mod_misc.output_usage_currency = form.output_stats_currency.data
+                mod_misc.output_usage_dayofmonth = form.output_stats_day_month.data
+                mod_misc.output_usage_report_gen = form.output_usage_report_gen.data
+                mod_misc.output_usage_report_span = form.output_usage_report_span.data
+                mod_misc.output_usage_report_day = form.output_usage_report_day.data
+                mod_misc.output_usage_report_hour = form.output_usage_report_hour.data
                 mod_misc.stats_opt_out = form.stats_opt_out.data
                 mod_misc.enable_upgrade_check = form.enable_upgrade_check.data
 
-                mod_user = User.query.filter(User.id == flask_login.current_user.id).first()
+                mod_user = User.query.filter(
+                    User.unique_id == flask_login.current_user.id).first()
                 mod_user.landing_page = form.landing_page.data
                 mod_user.language = form.language.data
 
@@ -488,7 +490,7 @@ def camera_mod(form_camera):
 
     try:
         if (Camera.query
-                .filter(Camera.id != form_camera.camera_id.data)
+                .filter(Camera.unique_id != form_camera.camera_id.data)
                 .filter(Camera.name == form_camera.name.data).count()):
             flash("You must choose a unique name", "error")
             return redirect(url_for('routes_settings.settings_camera'))
@@ -497,7 +499,7 @@ def camera_mod(form_camera):
             return redirect(url_for('routes_settings.settings_camera'))
 
         mod_camera = Camera.query.filter(
-            Camera.id == form_camera.camera_id.data).first()
+            Camera.unique_id == form_camera.camera_id.data).first()
         mod_camera.name = form_camera.name.data
 
         if mod_camera.library == 'fswebcam':
@@ -521,10 +523,10 @@ def camera_mod(form_camera):
         else:
             error.append("Unknown camera library")
 
-        if form_camera.relay_id.data:
-            mod_camera.relay_id = form_camera.relay_id.data
+        if form_camera.output_id.data:
+            mod_camera.output_id = form_camera.output_id.data
         else:
-            mod_camera.relay_id = None
+            mod_camera.output_id = None
         mod_camera.cmd_pre_camera = form_camera.cmd_pre_camera.data
         mod_camera.cmd_post_camera = form_camera.cmd_post_camera.data
 
@@ -546,7 +548,7 @@ def camera_del(form_camera):
     error = []
 
     camera = db_retrieve_table(
-        Camera, device_id=form_camera.camera_id.data)
+        Camera, unique_id=form_camera.camera_id.data)
     if camera.timelapse_started:
         error.append("Cannot delete camera if a time-lapse is currently "
                      "using it. Stop the time-lapse and try again.")
@@ -554,7 +556,7 @@ def camera_del(form_camera):
     if not error:
         try:
             delete_entry_with_id(
-                Camera, int(form_camera.camera_id.data))
+                Camera, form_camera.camera_id.data)
         except Exception as except_msg:
             error.append(except_msg)
 

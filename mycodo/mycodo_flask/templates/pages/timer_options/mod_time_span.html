@@ -1,8 +1,8 @@
 <input type="hidden" name="timer_type" value="timespan">
 <div class="col-sm-4">
-  {{form_timer_base.relay_id.label(class_='control-label')}}
+  {{form_timer_base.output_id.label(class_='control-label')}}
   <div>
-    <select class="form-control" id="relay_id" name="relay_id">
+    <select class="form-control" id="output_id" name="output_id">
     {%- set duration_output_exists = [] -%}
     {% for each_choice, value in output_choices.items() if each_choice.split(',')[1] == 'duration_sec' -%}
       {%- do duration_output_exists.append(1) -%}
@@ -12,7 +12,7 @@
       <option value="">{{_('No Duration Outputs Found')}}</option>
     {% else %}
       {% for each_choice, value in output_choices.items() if each_choice.split(',')[1] == 'duration_sec' -%}
-        <option value="{{each_choice.split(',')[0]}}"{% if each_timer.relay_id == each_choice.split(',')[0] %} selected{% endif %}>{{value}}</option>
+        <option value="{{each_choice.split(',')[0]}}"{% if each_timer.output_id == each_choice.split(',')[0] %} selected{% endif %}>{{value}}</option>
       {% endfor -%}
     {% endif %}
     </select>

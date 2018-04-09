@@ -58,7 +58,7 @@
 
   <form method="post" action="/dashboard">
   {{form_base.csrf_token}}
-  {{form_base.dashboard_id(value=each_graph.id)}}
+  {{form_base.dashboard_id(value=each_graph.unique_id)}}
   <input type="hidden" name="dashboard_type" value="pid_control">
 
   {% if not each_graph.enable_pid_info %}

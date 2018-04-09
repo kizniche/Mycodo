@@ -88,7 +88,7 @@ from mycodo.mycodo_flask.utils import utils_pid
 from mycodo.mycodo_flask.utils import utils_timer
 from mycodo.utils.sunriseset import Sun
 from mycodo.utils.system_pi import add_custom_measurements
-from mycodo.utils.system_pi import csv_to_list_of_int
+from mycodo.utils.system_pi import csv_to_list_of_str
 from mycodo.utils.system_pi import list_to_csv
 from mycodo.utils.tools import return_output_usage
 
@@ -302,7 +302,7 @@ def page_dashboard():
     form_pid = forms_dashboard.DashboardPIDControl()
 
     # Retrieve the order to display graphs
-    display_order = csv_to_list_of_int(DisplayOrder.query.first().graph)
+    display_order = csv_to_list_of_str(DisplayOrder.query.first().dashboard)
 
     # Create list of hidden dashboard element IDs and dict of names
     dashboard_element_names = {}
@@ -316,10 +316,10 @@ def page_dashboard():
 
     if form_base.reorder.data:
         mod_order = DisplayOrder.query.first()
-        mod_order.graph = list_to_csv(form_base.list_visible_elements.data)
+        mod_order.dashboard = list_to_csv(form_base.list_visible_elements.data)
         db.session.commit()
         # Retrieve the order to display graphs
-        display_order = csv_to_list_of_int(DisplayOrder.query.first().graph)
+        display_order = csv_to_list_of_str(DisplayOrder.query.first().dashboard)
 
     # Retrieve all choices to populate form drop-down menu
     choices_camera = utils_general.choices_id_name(camera)
@@ -335,16 +335,16 @@ def page_dashboard():
     # Add multi-select values as form choices, for validation
     form_graph.math_ids.choices = []
     form_graph.pid_ids.choices = []
-    form_graph.relay_ids.choices = []
-    form_graph.sensor_ids.choices = []
+    form_graph.output_ids.choices = []
+    form_graph.input_ids.choices = []
     for key, value in choices_math.items():
         form_graph.math_ids.choices.append((key, value))
     for key, value in choices_pid.items():
         form_graph.pid_ids.choices.append((key, value))
     for key, value in choices_output.items():
-        form_graph.relay_ids.choices.append((key, value))
+        form_graph.output_ids.choices.append((key, value))
     for key, value in choices_input.items():
-        form_graph.sensor_ids.choices.append((key, value))
+        form_graph.input_ids.choices.append((key, value))
 
     # Generate dictionary of custom colors for each graph
     colors_graph = dict_custom_colors()
@@ -692,7 +692,7 @@ def page_lcd():
     output = Output.query.all()
     input_dev = Input.query.all()
 
-    display_order = csv_to_list_of_int(DisplayOrder.query.first().lcd)
+    display_order = csv_to_list_of_str(DisplayOrder.query.first().lcd)
 
     form_lcd_add = forms_lcd.LCDAdd()
     form_lcd_mod = forms_lcd.LCDMod()
@@ -734,7 +734,7 @@ def page_lcd():
                            math=math,
                            measurements=DEVICE_INFO,
                            pid=pid,
-                           relay=output,
+                           output=output,
                            sensor=input_dev,
                            display_order=display_order,
                            form_lcd_add=form_lcd_add,
@@ -755,11 +755,11 @@ def page_live():
     timer = Timer.query.all()
 
     # Display orders
-    input_display_order = csv_to_list_of_int(
-        DisplayOrder.query.first().sensor)
-    math_display_order = csv_to_list_of_int(
+    input_display_order = csv_to_list_of_str(
+        DisplayOrder.query.first().inputs)
+    math_display_order = csv_to_list_of_str(
         DisplayOrder.query.first().math)
-    pid_display_order = csv_to_list_of_int(
+    pid_display_order = csv_to_list_of_str(
         DisplayOrder.query.first().pid)
 
     # Filter only activated input controllers
@@ -767,23 +767,23 @@ def page_live():
     if input_display_order:
         for each_input_order in input_display_order:
             for each_input in input_dev:
-                if (each_input_order == each_input.id and
+                if (each_input_order == each_input.unique_id and
                         each_input.is_activated):
-                    inputs_sorted.append(each_input.id)
+                    inputs_sorted.append(each_input.unique_id)
 
     # Filter only activated math controllers
     maths_sorted = []
     if input_display_order and math_display_order:
         for each_math_order in math_display_order:
             for each_math in math:
-                if (each_math_order == each_math.id and
+                if (each_math_order == each_math.unique_id and
                         each_math.is_activated):
-                    maths_sorted.append(each_math.id)
+                    maths_sorted.append(each_math.unique_id)
 
     # Store all output types
     output_type = {}
     for each_output in output:
-        output_type[each_output.id] = each_output.relay_type
+        output_type[each_output.unique_id] = each_output.output_type
 
     # Get what each measurement uses for a unit
     use_unit = utils_general.use_unit_generate(input_dev)
@@ -889,8 +889,8 @@ def page_function():
     choices_math = utils_general.choices_maths(math)
     choices_pid = utils_general.choices_pids(pid)
 
-    display_order_conditional = csv_to_list_of_int(DisplayOrder.query.first().conditional)
-    display_order_pid = csv_to_list_of_int(DisplayOrder.query.first().pid)
+    display_order_conditional = csv_to_list_of_str(DisplayOrder.query.first().conditional)
+    display_order_pid = csv_to_list_of_str(DisplayOrder.query.first().pid)
 
     form_add_function = forms_function.FunctionAdd()
     form_mod_pid_base = forms_pid.PIDModBase()
@@ -1032,8 +1032,8 @@ def page_function():
                            form_mod_pid_base=form_mod_pid_base,
                            form_mod_pid_pwm_raise=form_mod_pid_pwm_raise,
                            form_mod_pid_pwm_lower=form_mod_pid_pwm_lower,
-                           form_mod_pid_relay_raise=form_mod_pid_output_raise,
-                           form_mod_pid_relay_lower=form_mod_pid_output_lower,
+                           form_mod_pid_output_raise=form_mod_pid_output_raise,
+                           form_mod_pid_output_lower=form_mod_pid_output_lower,
                            input=input_dev,
                            lcd=lcd,
                            math=math,
@@ -1056,7 +1056,7 @@ def page_output():
     output = Output.query.all()
     user = User.query.all()
 
-    display_order = csv_to_list_of_int(DisplayOrder.query.first().relay)
+    display_order = csv_to_list_of_str(DisplayOrder.query.first().output)
 
     form_add_output = forms_output.OutputAdd()
     form_mod_output = forms_output.OutputMod()
@@ -1076,22 +1076,22 @@ def page_output():
         if not utils_general.user_has_permission('edit_controllers'):
             return redirect(url_for('routes_page.page_output'))
 
-        if form_add_output.relay_add.data:
+        if form_add_output.output_add.data:
             unmet_dependencies = utils_output.output_add(form_add_output)
         elif form_mod_output.save.data:
             utils_output.output_mod(form_mod_output)
         elif form_mod_output.delete.data:
             utils_output.output_del(form_mod_output)
         elif form_mod_output.order_up.data:
-            utils_output.output_reorder(form_mod_output.relay_id.data,
+            utils_output.output_reorder(form_mod_output.output_id.data,
                                         display_order, 'up')
         elif form_mod_output.order_down.data:
-            utils_output.output_reorder(form_mod_output.relay_id.data,
+            utils_output.output_reorder(form_mod_output.output_id.data,
                                         display_order, 'down')
 
         if unmet_dependencies:
             return redirect(url_for('routes_admin.admin_dependencies',
-                                    device=form_add_output.relay_type.data))
+                                    device=form_add_output.output_type.data))
         else:
             return redirect(url_for('routes_page.page_output'))
 
@@ -1099,14 +1099,14 @@ def page_output():
                            camera=camera,
                            conditional_actions_list=CONDITIONAL_ACTIONS,
                            display_order=display_order,
-                           form_add_relay=form_add_output,
-                           form_mod_relay=form_mod_output,
+                           form_add_output=form_add_output,
+                           form_mod_output=form_mod_output,
                            lcd=lcd,
                            misc=misc,
                            outputs=OUTPUTS,
                            output_info=OUTPUT_INFO,
-                           relay=output,
-                           relay_templates=output_templates,
+                           output=output,
+                           output_templates=output_templates,
                            user=user)
 
 
@@ -1138,8 +1138,8 @@ def page_data():
 
     list_devices_i2c = LIST_DEVICES_I2C
 
-    display_order_input = csv_to_list_of_int(DisplayOrder.query.first().sensor)
-    display_order_math = csv_to_list_of_int(DisplayOrder.query.first().math)
+    display_order_input = csv_to_list_of_str(DisplayOrder.query.first().inputs)
+    display_order_math = csv_to_list_of_str(DisplayOrder.query.first().math)
 
     form_add_input = forms_input.InputAdd()
     form_mod_input = forms_input.InputMod()
@@ -1298,7 +1298,7 @@ def page_timer():
 
     output_choices = utils_general.choices_outputs(output)
 
-    display_order = csv_to_list_of_int(DisplayOrder.query.first().timer)
+    display_order = csv_to_list_of_str(DisplayOrder.query.first().timer)
 
     form_timer_base = forms_timer.TimerBase()
     form_timer_time_point = forms_timer.TimerTimePoint()
@@ -1370,20 +1370,20 @@ def page_usage():
 
     output_stats = return_output_usage(misc, output)
 
-    day = misc.relay_usage_dayofmonth
+    day = misc.output_usage_dayofmonth
     if 4 <= day <= 20 or 24 <= day <= 30:
         date_suffix = 'th'
     else:
         date_suffix = ['st', 'nd', 'rd'][day % 10 - 1]
 
-    display_order = csv_to_list_of_int(DisplayOrder.query.first().relay)
+    display_order = csv_to_list_of_str(DisplayOrder.query.first().output)
 
     return render_template('pages/usage.html',
                            date_suffix=date_suffix,
                            display_order=display_order,
                            misc=misc,
-                           relay=output,
-                           relay_stats=output_stats,
+                           output=output,
+                           output_stats=output_stats,
                            timestamp=time.strftime("%c"))
 
 
@@ -1444,13 +1444,13 @@ def dict_custom_colors():
             index = 0
             index_sum = 0
             total = []
-            if each_graph.sensor_ids_measurements:
-                for each_set in each_graph.sensor_ids_measurements.split(';'):
+            if each_graph.input_ids_measurements:
+                for each_set in each_graph.input_ids_measurements.split(';'):
                     input_unique_id = each_set.split(',')[0]
                     input_measure = each_set.split(',')[1]
                     input_dev = Input.query.filter_by(
                         unique_id=input_unique_id).first()
-                    if (index < len(each_graph.sensor_ids_measurements.split(';')) and
+                    if (index < len(each_graph.input_ids_measurements.split(';')) and
                             len(colors) > index):
                         color = colors[index]
                     else:
@@ -1485,13 +1485,13 @@ def dict_custom_colors():
                         index += 1
                 index_sum += index
 
-            if each_graph.relay_ids:
+            if each_graph.output_ids:
                 index = 0
-                for each_set in each_graph.relay_ids.split(';'):
+                for each_set in each_graph.output_ids.split(';'):
                     output_unique_id = each_set.split(',')[0]
                     output = Output.query.filter_by(
                         unique_id=output_unique_id).first()
-                    if (index < len(each_graph.relay_ids.split(',')) and
+                    if (index < len(each_graph.output_ids.split(',')) and
                             len(colors) > index_sum + index):
                         color = colors[index_sum + index]
                     else:
@@ -1500,7 +1500,7 @@ def dict_custom_colors():
                         total.append({
                             'unique_id': output_unique_id,
                             'name': output.name,
-                            'measure': 'relay duration',
+                            'measure': 'output duration',
                             'color': color})
                         index += 1
                 index_sum += index

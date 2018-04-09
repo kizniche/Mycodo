@@ -116,7 +116,7 @@ class LCDController(threading.Thread):
                 self.multiplexer = None
 
             self.list_pids = ['setpoint', 'pid_time']
-            self.list_outputs = ['duration_sec', 'relay_time', 'relay_state']
+            self.list_outputs = ['duration_sec', 'output_time', 'output_state']
 
             self.list_inputs = MEASUREMENT_UNITS
             self.list_inputs.update(
@@ -131,7 +131,7 @@ class LCDController(threading.Thread):
                 input_dev, math, self.list_inputs)
 
             lcd_data = db_retrieve_table_daemon(
-                LCDData).filter(LCDData.lcd_id == lcd.id).all()
+                LCDData).filter(LCDData.lcd_id == lcd.unique_id).all()
 
             self.lcd_string_line = {}
             self.lcd_line = {}
@@ -139,45 +139,45 @@ class LCDController(threading.Thread):
             self.lcd_decimal_places = {}
 
             for each_lcd_display in lcd_data:
-                self.display_ids.append(each_lcd_display.id)
-                self.lcd_string_line[each_lcd_display.id] = {}
-                self.lcd_line[each_lcd_display.id] = {}
-                self.lcd_max_age[each_lcd_display.id] = {}
-                self.lcd_decimal_places[each_lcd_display.id] = {}
+                self.display_ids.append(each_lcd_display.unique_id)
+                self.lcd_string_line[each_lcd_display.unique_id] = {}
+                self.lcd_line[each_lcd_display.unique_id] = {}
+                self.lcd_max_age[each_lcd_display.unique_id] = {}
+                self.lcd_decimal_places[each_lcd_display.unique_id] = {}
 
                 for i in range(1, self.lcd_y_lines + 1):
-                    self.lcd_string_line[each_lcd_display.id][i] = ''
-                    self.lcd_line[each_lcd_display.id][i] = {}
+                    self.lcd_string_line[each_lcd_display.unique_id][i] = ''
+                    self.lcd_line[each_lcd_display.unique_id][i] = {}
                     if i == 1:
-                        self.lcd_max_age[each_lcd_display.id][i] = each_lcd_display.line_1_max_age
-                        self.lcd_decimal_places[each_lcd_display.id][i] = each_lcd_display.line_1_decimal_places
+                        self.lcd_max_age[each_lcd_display.unique_id][i] = each_lcd_display.line_1_max_age
+                        self.lcd_decimal_places[each_lcd_display.unique_id][i] = each_lcd_display.line_1_decimal_places
                     elif i == 2:
-                        self.lcd_max_age[each_lcd_display.id][i] = each_lcd_display.line_2_max_age
-                        self.lcd_decimal_places[each_lcd_display.id][i] = each_lcd_display.line_2_decimal_places
+                        self.lcd_max_age[each_lcd_display.unique_id][i] = each_lcd_display.line_2_max_age
+                        self.lcd_decimal_places[each_lcd_display.unique_id][i] = each_lcd_display.line_2_decimal_places
                     elif i == 3:
-                        self.lcd_max_age[each_lcd_display.id][i] = each_lcd_display.line_3_max_age
-                        self.lcd_decimal_places[each_lcd_display.id][i] = each_lcd_display.line_3_decimal_places
+                        self.lcd_max_age[each_lcd_display.unique_id][i] = each_lcd_display.line_3_max_age
+                        self.lcd_decimal_places[each_lcd_display.unique_id][i] = each_lcd_display.line_3_decimal_places
                     elif i == 4:
-                        self.lcd_max_age[each_lcd_display.id][i] = each_lcd_display.line_4_max_age
-                        self.lcd_decimal_places[each_lcd_display.id][i] = each_lcd_display.line_4_decimal_places
+                        self.lcd_max_age[each_lcd_display.unique_id][i] = each_lcd_display.line_4_max_age
+                        self.lcd_decimal_places[each_lcd_display.unique_id][i] = each_lcd_display.line_4_decimal_places
 
                 if self.lcd_y_lines in [2, 4]:
                     self.setup_lcd_line(
-                        each_lcd_display.id, 1,
+                        each_lcd_display.unique_id, 1,
                         each_lcd_display.line_1_id,
                         each_lcd_display.line_1_measurement)
                     self.setup_lcd_line(
-                        each_lcd_display.id, 2,
+                        each_lcd_display.unique_id, 2,
                         each_lcd_display.line_2_id,
                         each_lcd_display.line_2_measurement)
 
                 if self.lcd_y_lines == 4:
                     self.setup_lcd_line(
-                        each_lcd_display.id, 3,
+                        each_lcd_display.unique_id, 3,
                         each_lcd_display.line_3_id,
                         each_lcd_display.line_3_measurement)
                     self.setup_lcd_line(
-                        each_lcd_display.id, 4,
+                        each_lcd_display.unique_id, 4,
                         each_lcd_display.line_4_id,
                         each_lcd_display.line_4_measurement)
 
@@ -297,7 +297,7 @@ class LCDController(threading.Thread):
 
     def get_measurement(self, display_id, i):
         try:
-            if self.lcd_line[display_id][i]['measure'] == 'relay_state':
+            if self.lcd_line[display_id][i]['measure'] == 'output_state':
                 self.lcd_line[display_id][i]['measure_val'] = self.output_state(
                     self.lcd_line[display_id][i]['id'])
                 return True
@@ -438,7 +438,8 @@ class LCDController(threading.Thread):
             # Get what each measurement uses for a unit
             input_dev = db_retrieve_table_daemon(Input)
             use_unit = use_unit_generate(input_dev)
-            if (measurement in use_unit[device_id] and
+            if (device_id in use_unit and
+                    measurement in use_unit[device_id] and
                     use_unit[device_id][measurement] is not None):
                 self.lcd_line[display_id][line]['unit'] = UNITS[use_unit[device_id][measurement]]['unit']
             else:

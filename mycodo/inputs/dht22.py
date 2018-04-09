@@ -63,7 +63,7 @@ class DHT22Sensor(AbstractInput):
         self.temp_dew_point = None
 
         self.convert_to_unit = convert_to_unit
-        self.power_relay_id = power
+        self.power_output_id = power
         self.powered = False
 
         self.pi = None
@@ -153,11 +153,11 @@ class DHT22Sensor(AbstractInput):
             return None, None, None
 
         # Ensure if the power pin turns off, it is turned back on
-        if (self.power_relay_id and
-                not db_retrieve_table_daemon(Output, device_id=self.power_relay_id).is_on()):
+        if (self.power_output_id and
+                not db_retrieve_table_daemon(Output, unique_id=self.power_output_id).is_on()):
             self.logger.error(
-                'Sensor power relay {rel} detected as being off. '
-                'Turning on.'.format(rel=self.power_relay_id))
+                'Sensor power output {rel} detected as being off. '
+                'Turning on.'.format(rel=self.power_output_id))
             self.start_sensor()
             time.sleep(2)
 
@@ -180,7 +180,7 @@ class DHT22Sensor(AbstractInput):
 
         # Measurement failure, power cycle the sensor (if enabled)
         # Then try two more times to get a measurement
-        if self.power_relay_id is not None:
+        if self.power_output_id is not None:
             self.stop_sensor()
             time.sleep(3)
             self.start_sensor()
@@ -357,7 +357,7 @@ class DHT22Sensor(AbstractInput):
             if self.no_response > self.MAX_NO_RESPONSE:
                 self.no_response = 0
                 self.bad_SR += 1  # Bump sensor reset count.
-                if self.power_relay_id is not None:
+                if self.power_output_id is not None:
                     self.logger.error(
                         "Invalid data, power cycling sensor.")
                     self.stop_sensor()
@@ -401,15 +401,15 @@ class DHT22Sensor(AbstractInput):
 
     def start_sensor(self):
         """ Turn the sensor on """
-        if self.power_relay_id:
+        if self.power_output_id:
             self.logger.info("Turning on sensor")
-            self.control.relay_on(self.power_relay_id, 0)
+            self.control.output_on(self.power_output_id, 0)
             time.sleep(2)
             self.powered = True
 
     def stop_sensor(self):
         """ Turn the sensor off """
-        if self.power_relay_id:
+        if self.power_output_id:
             self.logger.info("Turning off sensor")
-            self.control.relay_off(self.power_relay_id)
+            self.control.output_off(self.power_output_id)
             self.powered = False

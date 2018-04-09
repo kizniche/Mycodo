@@ -15,7 +15,7 @@ from mycodo.mycodo_flask.utils.utils_general import delete_entry_with_id
 from mycodo.mycodo_flask.utils.utils_general import flash_form_errors
 from mycodo.mycodo_flask.utils.utils_general import flash_success_errors
 from mycodo.mycodo_flask.utils.utils_general import reorder
-from mycodo.utils.system_pi import csv_to_list_of_int
+from mycodo.utils.system_pi import csv_to_list_of_str
 from mycodo.utils.system_pi import list_to_csv
 
 logger = logging.getLogger(__name__)
@@ -41,17 +41,17 @@ def timer_add(display_order,
         flash_form_errors(form_add_timer)
 
     output = Output.query.filter(
-        Output.unique_id == form_add_timer_base.relay_id.data).first()
+        Output.unique_id == form_add_timer_base.output_id.data).first()
     if (form_add_timer_base.timer_type.data == 'pwm_method' and
-            output.relay_type != 'pwm'):
+            output.output_type != 'pwm'):
         error.append("PWM Method Timers require a PWM Output")
     elif (form_add_timer_base.timer_type.data != 'pwm_method' and
-            output.relay_type == 'pwm'):
+            output.output_type == 'pwm'):
         error.append("Time and Duration Timers require a non-PWM Output")
 
     new_timer = Timer()
     new_timer.name = form_add_timer_base.name.data
-    new_timer.relay_id = form_add_timer_base.relay_id.data
+    new_timer.output_id = form_add_timer_base.output_id.data
     new_timer.timer_type = form_add_timer_base.timer_type.data
     if form_add_timer_base.timer_type.data == 'time':
         new_timer.state = form_add_timer.state.data
@@ -79,7 +79,7 @@ def timer_add(display_order,
         try:
             new_timer.save()
             DisplayOrder.query.first().timer = add_display_order(
-                display_order, new_timer.id)
+                display_order, new_timer.unique_id)
             db.session.commit()
         except sqlalchemy.exc.OperationalError as except_msg:
             error.append(except_msg)
@@ -104,16 +104,16 @@ def timer_mod(form_mod_timer_base, form_mod_timer):
 
     try:
         mod_timer = Timer.query.filter(
-            Timer.id == form_mod_timer_base.timer_id.data).first()
+            Timer.unique_id == form_mod_timer_base.timer_id.data).first()
         if mod_timer.is_activated:
             error.append(gettext("Deactivate timer controller before "
                                  "modifying its settings"))
         else:
             mod_timer.name = form_mod_timer_base.name.data
-            if form_mod_timer_base.relay_id.data:
-                mod_timer.relay_id = form_mod_timer_base.relay_id.data
+            if form_mod_timer_base.output_id.data:
+                mod_timer.output_id = form_mod_timer_base.output_id.data
             else:
-                mod_timer.relay_id = None
+                mod_timer.output_id = None
 
             if mod_timer.timer_type == 'time':
                 mod_timer.state = form_mod_timer.state.data
@@ -152,8 +152,8 @@ def timer_del(form_timer):
     try:
         delete_entry_with_id(Timer,
                              form_timer.timer_id.data)
-        display_order = csv_to_list_of_int(DisplayOrder.query.first().timer)
-        display_order.remove(int(form_timer.timer_id.data))
+        display_order = csv_to_list_of_str(DisplayOrder.query.first().timer)
+        display_order.remove(form_timer.timer_id.data)
         DisplayOrder.query.first().timer = list_to_csv(display_order)
         db.session.commit()
     except Exception as except_msg:
@@ -182,11 +182,13 @@ def timer_reorder(timer_id, display_order, direction):
 
 
 def timer_activate(form_timer):
-    timer = Timer.query.filter(Timer.id == form_timer.timer_id.data).first()
+    timer = Timer.query.filter(
+        Timer.unique_id == form_timer.timer_id.data).first()
     if timer.timer_type == 'pwm_method':
         # Signal the duration method can run because it's been
         # properly initiated (non-power failure)
-        mod_timer = Timer.query.filter(Timer.id == form_timer.timer_id.data).first()
+        mod_timer = Timer.query.filter(
+            Timer.unique_id == form_timer.timer_id.data).first()
         mod_timer.method_start_time = 'Ready'
         db.session.commit()
     controller_activate_deactivate(

@@ -96,7 +96,7 @@ class InputController(threading.Thread):
         self.unique_id = input_dev.unique_id
         self.i2c_bus = input_dev.i2c_bus
         self.location = input_dev.location
-        self.power_output_id = input_dev.power_relay_id
+        self.power_output_id = input_dev.power_output_id
         self.measurements = input_dev.measurements
         self.convert_to_unit = input_dev.convert_to_unit
         self.device = input_dev.device
@@ -111,11 +111,6 @@ class InputController(threading.Thread):
         self.cmd_measurement_units = input_dev.cmd_measurement_units
         self.thermocouple_type = input_dev.thermocouple_type
         self.ref_ohm = input_dev.ref_ohm
-
-        # Multiplexer
-        self.mux_address_raw = input_dev.multiplexer_address
-        self.mux_bus = input_dev.multiplexer_bus
-        self.mux_chan = input_dev.multiplexer_channel
 
         # Serial
         self.pin_clock = input_dev.pin_clock
@@ -153,9 +148,9 @@ class InputController(threading.Thread):
         self.deadline = input_dev.deadline
 
         # Output that will activate prior to input read
-        self.pre_output_id = input_dev.pre_relay_id
-        self.pre_output_duration = input_dev.pre_relay_duration
-        self.pre_relay_during_measure = input_dev.pre_relay_during_measure
+        self.pre_output_id = input_dev.pre_output_id
+        self.pre_output_duration = input_dev.pre_output_duration
+        self.pre_output_during_measure = input_dev.pre_output_during_measure
         self.pre_output_setup = False
         self.next_measurement = time.time()
         self.get_new_measurement = False
@@ -184,20 +179,6 @@ class InputController(threading.Thread):
         if self.device in LIST_DEVICES_I2C:
             self.i2c_address = int(str(self.location), 16)
 
-        # Set up multiplexer if enabled
-        if self.mux_address_raw:
-            from mycodo.devices.tca9548a import TCA9548A
-            self.mux_address_string = self.mux_address_raw
-            self.mux_address = int(str(self.mux_address_raw), 16)
-            self.mux_lock_file = "/var/lock/mycodo_multiplexer_0x{i2c:02X}.pid".format(
-                i2c=self.mux_address)
-            # Set up lock for pre-output
-            self.mux_lock = locket.lock_file(self.mux_lock_file, timeout=120)
-            self.mux_lock_acquired = False
-            self.multiplexer = TCA9548A(self.mux_bus, self.mux_address)
-        else:
-            self.multiplexer = None
-
         # Set up edge detection of a GPIO pin
         if self.device == 'EDGE':
             if self.switch_edge == 'rising':
@@ -206,10 +187,6 @@ class InputController(threading.Thread):
                 self.switch_edge_gpio = GPIO.FALLING
             else:
                 self.switch_edge_gpio = GPIO.BOTH
-
-        # Lock multiplexer, if it's enabled
-        if self.multiplexer:
-            self.lock_multiplexer()
 
         # Set up analog-to-digital converter
         if self.device in LIST_DEVICES_ADC:
@@ -470,9 +447,6 @@ class InputController(threading.Thread):
             raise Exception("'{device}' is not a valid device type.".format(
                 device=self.device))
 
-        if self.multiplexer:
-            self.unlock_multiplexer()
-
         self.edge_reset_timer = time.time()
         self.input_timer = time.time()
         self.running = False
@@ -535,9 +509,9 @@ class InputController(threading.Thread):
 
                         # Only run the pre-output before measurement
                         # Turn on for a duration, measure after it turns off
-                        if not self.pre_relay_during_measure:
+                        if not self.pre_output_during_measure:
                             output_on = threading.Thread(
-                                target=self.control.relay_on,
+                                target=self.control.output_on,
                                 args=(self.pre_output_id,
                                       self.pre_output_duration,))
                             output_on.start()
@@ -546,7 +520,7 @@ class InputController(threading.Thread):
                         # Just turn on, then off after the measurement
                         else:
                             output_on = threading.Thread(
-                                target=self.control.relay_on,
+                                target=self.control.output_on,
                                 args=(self.pre_output_id,))
                             output_on.start()
 
@@ -558,11 +532,11 @@ class InputController(threading.Thread):
                                 self.pre_output_activated and
                                 now > self.pre_output_timer):
 
-                            if self.pre_relay_during_measure:
+                            if self.pre_output_during_measure:
                                 # Measure then turn off pre-output
                                 self.update_measure()
                                 output_off = threading.Thread(
-                                    target=self.control.relay_off,
+                                    target=self.control.output_off,
                                     args=(self.pre_output_id,))
                                 output_off.start()
                             else:
@@ -609,44 +583,6 @@ class InputController(threading.Thread):
         except Exception as except_msg:
             self.logger.exception("Error: {err}".format(
                 err=except_msg))
-
-    def lock_multiplexer(self):
-        """ Acquire a multiplexer lock """
-        self.mux_lock_acquired = False
-
-        try:
-            self.mux_lock.acquire()
-            self.mux_lock_acquired = True
-        except:
-            self.logger.error("Could not acquire multiplexer lock. Breaking for future locking.")
-            os.remove(self.mux_lock_file)
-
-        if not self.mux_lock_acquired:
-            self.logger.error(
-                "Unable to acquire lock: {lock}".format(lock=self.mux_lock))
-
-        self.logger.debug(
-            "Setting multiplexer ({add}) to channel {chan}".format(
-                add=self.mux_address_string,
-                chan=self.mux_chan))
-
-        # Set multiplexer channel
-        (multiplexer_status,
-         multiplexer_response) = self.multiplexer.setup(self.mux_chan)
-
-        if not multiplexer_status:
-            self.logger.warning(
-                "Could not set channel with multiplexer at address {add}."
-                " Error: {err}".format(
-                    add=self.mux_address_string,
-                    err=multiplexer_response))
-            self.measurement_success = False
-            return 1
-
-    def unlock_multiplexer(self):
-        """ Remove a multiplexer lock """
-        if self.mux_lock and self.mux_lock_acquired:
-            self.mux_lock.release()
 
     def read_adc(self):
         """ Read voltage from ADC """
@@ -732,10 +668,6 @@ class InputController(threading.Thread):
             self.measurement_success = False
             return 1
 
-        # Lock multiplexer, if it's enabled
-        if self.multiplexer:
-            self.lock_multiplexer()
-
         if self.adc:
             measurements = self.read_adc()
         else:
@@ -759,9 +691,6 @@ class InputController(threading.Thread):
                 self.logger.exception(
                     "Error while attempting to read input: {err}".format(
                         err=except_msg))
-
-        if self.multiplexer:
-            self.unlock_multiplexer()
 
         if self.device_recognized and measurements is not None:
             self.measurement = Measurement(measurements)
@@ -804,12 +733,12 @@ class InputController(threading.Thread):
             conditionals = conditionals.filter(
                 Conditional.conditional_type == 'conditional_edge')
             conditionals = conditionals.filter(
-                Conditional.if_sensor_measurement == self.unique_id)
+                Conditional.measurement == self.unique_id)
             conditionals = conditionals.filter(
                 Conditional.is_activated == True)
 
             for each_conditional in conditionals.all():
-                if each_conditional.if_sensor_edge_detected in ['both', state_str.lower()]:
+                if each_conditional.edge_detected in ['both', state_str.lower()]:
                     now = time.time()
                     timestamp = datetime.datetime.fromtimestamp(
                         now).strftime('%Y-%m-%d %H-%M-%S')

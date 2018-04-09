@@ -79,7 +79,7 @@
 
   <form method="post" action="/settings/users">
   {{form_mod_user.csrf_token}}
-  {{form_mod_user.user_id(value=user.id)}}
+  {{form_mod_user.user_id(value=user.unique_id)}}
 
     <div class="row small-gutters">
       <div class="col-sm-6 col-md-3">
@@ -185,7 +185,7 @@
 
       <form method="post" action="/settings/users">
       {{form_user_roles.csrf_token}}
-      {{form_user_roles.role_id(value=each_role.id)}}
+      {{form_user_roles.role_id(value=each_role.unique_id)}}
 
       <div class="row small-gutters">
         <div class="col-xs-4 col-sm-4 col-md-2">

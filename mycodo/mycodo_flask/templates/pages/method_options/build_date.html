@@ -43,19 +43,19 @@
 
 <div class="row small-gutters" style="padding: 0.7em">
   <div class="col-md-12">
-    <input type="radio" name="method_select" value="relay"> {{_('Output')}}
-    <br>{{_('Activate or deactivate a relay within this method at a specific time/date.')}}
+    <input type="radio" name="method_select" value="output"> {{_('Output')}}
+    <br>{{_('Activate or deactivate a output within this method at a specific time/date.')}}
   </div>
   <div class="col-sm-6 col-md-4">
-    {{form_add_method.relay_time.label(class_='control-label')}}
+    {{form_add_method.output_time.label(class_='control-label')}}
     <div>
-      {{form_add_method.relay_time(class_='form-control')}}
+      {{form_add_method.output_time(class_='form-control')}}
     </div>
   </div>
   <div class="col-sm-6 col-md-3">
-    {{form_add_method.relay_id.label(class_='control-label')}}
+    {{form_add_method.output_id.label(class_='control-label')}}
     <div>
-      <select class="form-control form-tooltip form-dropdown" data-placement="bottom" id="relay_id" name="relay_id" title="{{_('Modulate the selected relay')}}.">
+      <select class="form-control form-tooltip form-dropdown" data-placement="bottom" id="output_id" name="output_id" title="{{_('Modulate the selected output')}}.">
         <option value=""></option>
         {% for each_output in output -%}
           <option value="{{each_output.id}}">{{"[{0:02d}]".format(each_output.id)}} {{each_output.name}}</option>
@@ -64,15 +64,15 @@
     </div>
   </div>
   <div class="col-sm-3 col-md-2">
-    {{form_add_method.relay_state.label(class_='control-label')}}
+    {{form_add_method.output_state.label(class_='control-label')}}
     <div>
-      {{form_add_method.relay_state(class_='form-control')}}
+      {{form_add_method.output_state(class_='form-control')}}
     </div>
   </div>
   <div class="col-sm-3 col-md-3">
-    {{form_add_method.relay_duration.label(class_='control-label')}}
+    {{form_add_method.output_duration.label(class_='control-label')}}
     <div>
-      {{form_add_method.relay_duration(class_='form-control')}}
+      {{form_add_method.output_duration(class_='form-control')}}
     </div>
   </div>
 </div>

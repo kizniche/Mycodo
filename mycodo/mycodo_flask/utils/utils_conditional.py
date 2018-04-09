@@ -15,7 +15,7 @@ from mycodo.mycodo_flask.extensions import db
 from mycodo.mycodo_flask.utils.utils_general import delete_entry_with_id
 from mycodo.mycodo_flask.utils.utils_general import flash_success_errors
 from mycodo.mycodo_flask.utils.utils_general import reorder
-from mycodo.utils.system_pi import csv_to_list_of_int
+from mycodo.utils.system_pi import csv_to_list_of_str
 from mycodo.utils.system_pi import list_to_csv
 from mycodo.utils.system_pi import str_is_float
 
@@ -31,32 +31,32 @@ def conditional_mod(form):
 
     try:
         cond_mod = Conditional.query.filter(
-            Conditional.id == form.conditional_id.data).first()
+            Conditional.unique_id == form.conditional_id.data).first()
         cond_mod.name = form.name.data
 
         if cond_mod.conditional_type == 'conditional_edge':
             error = check_form_edge(form, error)
 
-            cond_mod.if_sensor_measurement = form.if_sensor_measurement.data
-            cond_mod.if_sensor_edge_detected = form.if_sensor_edge_detected.data
-            cond_mod.if_sensor_period = form.if_sensor_period.data
+            cond_mod.measurement = form.measurement.data
+            cond_mod.edge_detected = form.edge_detected.data
+            cond_mod.period = form.period.data
 
         elif cond_mod.conditional_type == 'conditional_measurement':
             error = check_form_measurements(form, error)
 
-            cond_mod.if_sensor_measurement = form.if_sensor_measurement.data
-            cond_mod.if_sensor_direction = form.if_sensor_direction.data
-            cond_mod.if_sensor_setpoint = form.if_sensor_setpoint.data
-            cond_mod.if_sensor_period = form.if_sensor_period.data
-            cond_mod.if_sensor_refractory_period = form.if_sensor_refractory_period.data
-            cond_mod.if_sensor_max_age = form.if_sensor_max_age.data
+            cond_mod.measurement = form.measurement.data
+            cond_mod.direction = form.direction.data
+            cond_mod.setpoint = form.setpoint.data
+            cond_mod.period = form.period.data
+            cond_mod.refractory_period = form.refractory_period.data
+            cond_mod.max_age = form.max_age.data
 
         elif cond_mod.conditional_type == 'conditional_output':
             error = check_form_output(form, error)
 
-            cond_mod.if_relay_id = form.if_relay_id.data
-            cond_mod.if_relay_state = form.if_relay_state.data
-            cond_mod.if_relay_duration = form.if_relay_duration.data
+            cond_mod.unique_id_1 = form.unique_id_1.data
+            cond_mod.output_state = form.output_state.data
+            cond_mod.output_duration = form.output_duration.data
 
         elif cond_mod.conditional_type == 'conditional_sunrise_sunset':
             error = check_form_sunrise_sunset(form, error)
@@ -100,14 +100,14 @@ def conditional_del(cond_id):
         if not error:
             # Delete conditional
             conditional_actions = ConditionalActions.query.filter(
-                ConditionalActions.conditional_id == cond.id).all()
+                ConditionalActions.conditional_id == cond.unique_id).all()
             for each_cond_action in conditional_actions:
-                delete_entry_with_id(ConditionalActions, each_cond_action.id)
-            delete_entry_with_id(Conditional, cond.id)
+                delete_entry_with_id(ConditionalActions, each_cond_action.unique_id)
+            delete_entry_with_id(Conditional, cond.unique_id)
 
             try:
-                display_order = csv_to_list_of_int(DisplayOrder.query.first().conditional)
-                display_order.remove(int(cond.id))
+                display_order = csv_to_list_of_str(DisplayOrder.query.first().conditional)
+                display_order.remove(cond.id)
                 DisplayOrder.query.first().conditional = list_to_csv(display_order)
             except Exception:  # id not in list
                 pass
@@ -132,7 +132,7 @@ def conditional_action_add(form):
         controller=gettext("Conditional"))
 
     cond = Conditional.query.filter(
-        Conditional.id == form.conditional_id.data).first()
+        Conditional.unique_id == form.conditional_id.data).first()
     if cond.is_activated:
         error.append("Deactivate the Conditional before adding an Action")
 
@@ -165,16 +165,16 @@ def conditional_action_mod(form):
 
     try:
         mod_action = ConditionalActions.query.filter(
-            ConditionalActions.id == form.conditional_action_id.data).first()
+            ConditionalActions.unique_id == form.conditional_action_id.data).first()
 
         if mod_action.do_action == 'output':
-            mod_action.do_relay_id = form.do_relay_id.data
-            mod_action.do_relay_state = form.do_relay_state.data
-            mod_action.do_relay_duration = form.do_relay_duration.data
+            mod_action.do_unique_id = form.do_unique_id.data
+            mod_action.do_output_state = form.do_output_state.data
+            mod_action.do_output_duration = form.do_output_duration.data
 
         if mod_action.do_action == 'output_pwm':
-            mod_action.do_relay_id = form.do_relay_id.data
-            mod_action.do_relay_pwm = form.do_relay_pwm.data
+            mod_action.do_unique_id = form.do_unique_id.data
+            mod_action.do_output_pwm = form.do_output_pwm.data
 
         elif mod_action.do_action in ['activate_controller',
                                       'deactivate_controller']:
@@ -184,20 +184,20 @@ def conditional_action_mod(form):
                                       'deactivate_pid',
                                       'resume_pid',
                                       'pause_pid']:
-            mod_action.do_pid_id = form.do_pid_id.data
+            mod_action.do_unique_id = form.do_unique_id.data
 
         elif mod_action.do_action in ['activate_timer',
                                       'deactivate_timer']:
-            mod_action.do_pid_id = form.do_pid_id.data
+            mod_action.do_unique_id = form.do_unique_id.data
 
         elif mod_action.do_action == 'setpoint_pid':
             if not str_is_float(form.do_action_string.data):
                 error.append("Setpoint must be an integer or float value")
-            mod_action.do_pid_id = form.do_pid_id.data
+            mod_action.do_unique_id = form.do_unique_id.data
             mod_action.do_action_string = form.do_action_string.data
 
         elif mod_action.do_action == 'method_pid':
-            mod_action.do_pid_id = form.do_pid_id.data
+            mod_action.do_unique_id = form.do_unique_id.data
             mod_action.do_action_string = form.do_action_string.data
 
         elif mod_action.do_action == 'email':
@@ -206,20 +206,20 @@ def conditional_action_mod(form):
         elif mod_action.do_action in ['photo_email',
                                       'video_email']:
             mod_action.do_action_string = form.do_action_string.data
-            mod_action.do_camera_id = form.do_camera_id.data
+            mod_action.do_unique_id = form.do_unique_id.data
 
         elif mod_action.do_action in ['flash_lcd',
                                       'flash_lcd_on',
                                       'flash_lcd_off',
                                       'lcd_backlight_off',
                                       'lcd_backlight_on']:
-            mod_action.do_lcd_id = form.do_lcd_id.data
+            mod_action.do_unique_id = form.do_unique_id.data
 
         elif mod_action.do_action == 'photo':
-            mod_action.do_camera_id = form.do_camera_id.data
+            mod_action.do_unique_id = form.do_unique_id.data
 
         elif mod_action.do_action == 'video':
-            mod_action.do_camera_id = form.do_camera_id.data
+            mod_action.do_unique_id = form.do_unique_id.data
             mod_action.do_camera_duration = form.do_camera_duration.data
 
         elif mod_action.do_action == 'command':
@@ -247,14 +247,14 @@ def conditional_action_del(form):
         controller=gettext("Conditional"))
 
     cond = Conditional.query.filter(
-        Conditional.id == form.conditional_id.data).first()
+        Conditional.unique_id == form.conditional_id.data).first()
     if cond.is_activated:
         error.append("Deactivate the Conditional before deleting an Action")
 
     try:
         if not error:
             cond_action_id = ConditionalActions.query.filter(
-                ConditionalActions.id == form.conditional_action_id.data).first().id
+                ConditionalActions.unique_id == form.conditional_action_id.data).first().id
             delete_entry_with_id(ConditionalActions, cond_action_id)
 
     except sqlalchemy.exc.OperationalError as except_msg:
@@ -295,7 +295,7 @@ def conditional_activate(cond_id):
         controller=gettext("Conditional"))
 
     mod_cond = Conditional.query.filter(
-        Conditional.id == cond_id).first()
+        Conditional.unique_id == cond_id).first()
     conditional_type = mod_cond.conditional_type
     mod_cond.is_activated = True
 
@@ -328,7 +328,7 @@ def conditional_deactivate(cond_id):
         controller=gettext("Conditional"))
 
     mod_cond = Conditional.query.filter(
-        Conditional.id == cond_id).first()
+        Conditional.unique_id == cond_id).first()
     mod_cond.is_activated = False
 
     if not error:
@@ -346,7 +346,7 @@ def check_refresh_conditional(cond_id):
         controller=gettext("Conditional"))
 
     cond = Conditional.query.filter(
-        Conditional.id == cond_id).first()
+        Conditional.unique_id == cond_id).first()
 
     if cond.conditional_type in ['conditional_edge',
                                  'conditional_measurement',
@@ -364,30 +364,30 @@ def check_refresh_conditional(cond_id):
 def check_form_actions(form, error):
     """Check if the Conditional Actions form inputs are valid"""
     cond_action = ConditionalActions.query.filter(
-        ConditionalActions.id == form.conditional_action_id.data).first()
+        ConditionalActions.unique_id == form.conditional_action_id.data).first()
 
     if cond_action.do_action == 'command':
         if not form.do_action_string.data or form.do_action_string.data == '':
             error.append("Command must be set")
 
     elif cond_action.do_action == 'output':
-        if not form.do_relay_id.data or form.do_relay_id.data == '':
+        if not form.do_unique_id.data or form.do_unique_id.data == '':
             error.append("Output must be set")
-        if not form.do_relay_state.data or form.do_relay_state.data == '':
+        if not form.do_output_state.data or form.do_output_state.data == '':
             error.append("State must be set")
 
     elif cond_action.do_action == 'output_pwm':
-        if not form.do_relay_id.data or form.do_relay_id.data == '':
+        if not form.do_unique_id.data or form.do_unique_id.data == '':
             error.append("Output must be set")
-        if not form.do_relay_pwm.data or form.do_relay_pwm.data == '':
+        if not form.do_output_pwm.data or form.do_output_pwm.data == '':
             error.append("Duty Cycle must be set")
 
     elif cond_action.do_action in ['activate_pid',
                                    'deactivate_pid',
                                    'resume_pid',
                                    'pause_pid']:
-        if not form.do_pid_id.data or form.do_pid_id.data == '':
-            error.append("PID must be set: asdf {} asdf".format(form.do_pid_id.data))
+        if not form.do_unique_id.data or form.do_unique_id.data == '':
+            error.append("PID must be set: asdf {} asdf".format(form.do_unique_id.data))
 
     elif cond_action.do_action == 'email':
         if not form.do_action_string.data or form.do_action_string.data == '':
@@ -396,24 +396,24 @@ def check_form_actions(form, error):
     elif cond_action.do_action in ['photo_email', 'video_email']:
         if not form.do_action_string.data or form.do_action_string.data == '':
             error.append("Email must be set")
-        if not form.do_camera_id.data or form.do_camera_id.data == '':
+        if not form.do_unique_id.data or form.do_unique_id.data == '':
             error.append("Camera must be set")
         if (form.do_action.data == 'video_email' and
                 Camera.query.filter(
-                    and_(Camera.id == form.do_camera_id.data,
+                    and_(Camera.id == form.do_unique_id.data,
                          Camera.library != 'picamera')).count()):
             error.append('Only Pi Cameras can record video')
 
     elif cond_action.do_action == 'flash_lcd':
-        if not form.do_lcd_id.data:
+        if not form.do_unique_id.data:
             error.append("LCD must be set")
 
     elif cond_action.do_action == 'photo':
-        if not form.do_camera_id.data or form.do_camera_id.data == '':
+        if not form.do_unique_id.data or form.do_unique_id.data == '':
             error.append("Camera must be set")
 
     elif cond_action.do_action == 'video':
-        if not form.do_camera_id.data or form.do_camera_id.data == '':
+        if not form.do_unique_id.data or form.do_unique_id.data == '':
             error.append("Camera must be set")
 
     return error
@@ -426,14 +426,14 @@ def check_cond_actions(cond_action, error):
             error.append("Command must be set")
 
     elif cond_action.do_action == 'output':
-        if not cond_action.do_relay_id or cond_action.do_relay_id == '':
+        if not cond_action.do_unique_id or cond_action.do_unique_id == '':
             error.append("Output must be set")
-        if not cond_action.do_relay_state or cond_action.do_relay_state == '':
+        if not cond_action.do_output_state or cond_action.do_output_state == '':
             error.append("State must be set")
 
     elif cond_action.do_action in ['activate_pid',
                                    'deactivate_pid']:
-        if not cond_action.do_pid_id or cond_action.do_pid_id == '':
+        if not cond_action.do_unique_id or cond_action.do_unique_id == '':
             error.append("PID must be set")
 
     elif cond_action.do_action == 'email':
@@ -443,24 +443,24 @@ def check_cond_actions(cond_action, error):
     elif cond_action.do_action in ['photo_email', 'video_email']:
         if not cond_action.do_action_string or cond_action.do_action_string == '':
             error.append("Email must be set")
-        if not cond_action.do_camera_id or cond_action.do_camera_id == '':
+        if not cond_action.do_unique_id or cond_action.do_unique_id == '':
             error.append("Camera must be set")
         if (cond_action.do_action == 'video_email' and
                 Camera.query.filter(
-                    and_(Camera.id == cond_action.do_camera_id,
+                    and_(Camera.id == cond_action.do_unique_id,
                          Camera.library != 'picamera')).count()):
             error.append('Only Pi Cameras can record video')
 
     elif cond_action.do_action == 'flash_lcd':
-        if not cond_action.do_lcd_id:
+        if not cond_action.do_unique_id:
             error.append("LCD must be set")
 
     elif cond_action.do_action == 'photo':
-        if not cond_action.do_camera_id or cond_action.do_camera_id == '':
+        if not cond_action.do_unique_id or cond_action.do_unique_id == '':
             error.append("Camera must be set")
 
     elif cond_action.do_action == 'video':
-        if not cond_action.do_camera_id or cond_action.do_camera_id == '':
+        if not cond_action.do_unique_id or cond_action.do_unique_id == '':
             error.append("Camera must be set")
 
     return error
@@ -468,16 +468,16 @@ def check_cond_actions(cond_action, error):
 
 def check_form_edge(form, error):
     """Checks if the submitted form has any errors"""
-    if not form.if_sensor_measurement.data or form.if_sensor_measurement.data == '':
+    if not form.measurement.data or form.measurement.data == '':
         error.append("{meas} must be set".format(
-            meas=form.if_sensor_measurement.label.text))
+            meas=form.measurement.label.text))
 
     return error
 
 
 def check_cond_edge(cond, error):
     """Checks if the saved variables have any errors"""
-    if not cond.if_sensor_measurement or cond.if_sensor_measurement == '':
+    if not cond.measurement or cond.measurement == '':
         error.append("Measurement must be set")
 
     return error
@@ -485,39 +485,39 @@ def check_cond_edge(cond, error):
 
 def check_form_measurements(form, error):
     """Checks if the submitted form has any errors"""
-    if not form.if_sensor_measurement.data or form.if_sensor_measurement.data == '':
+    if not form.measurement.data or form.measurement.data == '':
         error.append("{meas} must be set".format(
-            meas=form.if_sensor_measurement.label.text))
+            meas=form.measurement.label.text))
 
-    if not form.if_sensor_direction.data or form.if_sensor_direction.data == '':
+    if not form.direction.data or form.direction.data == '':
         error.append("{dir} must be set".format(
-            dir=form.if_sensor_direction.label.text))
+            dir=form.direction.label.text))
 
-    if not form.if_sensor_period.data or form.if_sensor_period.data <= 0:
+    if not form.period.data or form.period.data <= 0:
         error.append("{dir} must be greater than 0".format(
-            dir=form.if_sensor_period.label.text))
+            dir=form.period.label.text))
 
-    if not form.if_sensor_max_age.data or form.if_sensor_max_age.data <= 0:
+    if not form.max_age.data or form.max_age.data <= 0:
         error.append("{dir} must be greater than 0".format(
-            dir=form.if_sensor_max_age.label.text))
+            dir=form.max_age.label.text))
 
     return error
 
 
 def check_cond_measurements(cond, error):
     """Checks if the saved variables have any errors"""
-    if not cond.if_sensor_measurement or cond.if_sensor_measurement == '':
+    if not cond.measurement or cond.measurement == '':
         error.append("Measurement must be set".format(
-            meas=cond.if_sensor_measurement))
+            meas=cond.measurement))
 
-    if not cond.if_sensor_direction or cond.if_sensor_direction == '':
+    if not cond.direction or cond.direction == '':
         error.append("State must be set".format(
-            dir=cond.if_sensor_direction))
+            dir=cond.direction))
 
-    if not cond.if_sensor_period or cond.if_sensor_period <= 0:
+    if not cond.period or cond.period <= 0:
         error.append("Period must be greater than 0")
 
-    if not cond.if_sensor_max_age or cond.if_sensor_max_age <= 0:
+    if not cond.max_age or cond.max_age <= 0:
         error.append("Max Age must be greater than 0")
 
     return error
@@ -525,13 +525,13 @@ def check_cond_measurements(cond, error):
 
 def check_form_output(form, error):
     """Checks if the submitted form has any errors"""
-    if not form.if_relay_id.data:
+    if not form.unique_id_1.data:
         error.append("{id} must be set".format(
-            id=form.if_relay_id.label.text))
+            id=form.unique_id_1.label.text))
 
-    if not form.if_relay_state.data:
+    if not form.output_state.data:
         error.append("{id} must be set".format(
-            id=form.if_relay_state.label.text))
+            id=form.output_state.label.text))
 
     return error
 
@@ -567,10 +567,10 @@ def check_form_sunrise_sunset(form, error):
 
 def check_cond_output(cond, error):
     """Checks if the saved variables have any errors"""
-    if not cond.if_relay_id or cond.if_relay_id == '':
+    if not cond.unique_id_1 or cond.unique_id_1 == '':
         error.append("An Output must be set")
 
-    if not cond.if_relay_state or cond.if_relay_state == '':
+    if not cond.output_state or cond.output_state == '':
         error.append("A State must be set")
 
     return error

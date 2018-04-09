@@ -6,13 +6,13 @@
 
 {% block head %}
   <script>
-    function updateMeasurements(sensor_id, sensor_measurement, period) {
-      var url = '/last/' + sensor_measurement + '/' + sensor_id + '/' + period.toString();
+    function updateMeasurements(input_id, sensor_measurement, period) {
+      var url = '/last/' + sensor_measurement + '/' + input_id + '/' + period.toString();
       $.ajax(url, {
         success: function(data, responseText, jqXHR) {
           if (jqXHR.status === 204) {
-            document.getElementById(sensor_id + "-" + sensor_measurement + "-time").innerHTML = "No Data Last " + period.toString() + " sec";
-            document.getElementById(sensor_id + "-" + sensor_measurement + "-value").innerHTML = "0";
+            document.getElementById(input_id + "-" + sensor_measurement + "-time").innerHTML = "No Data Last " + period.toString() + " sec";
+            document.getElementById(input_id + "-" + sensor_measurement + "-value").innerHTML = "0";
           }
           else {
             var time = data[0];
@@ -25,24 +25,24 @@
             var minutes = "0" + date.getMinutes();
             var seconds = "0" + date.getSeconds();
             var formattedTime = year + "/" + month + "/" + day + " " + hours + ':' + minutes.substr(-2) + ':' + seconds.substr(-2);
-            document.getElementById(sensor_id + "-" + sensor_measurement + "-time").innerHTML = formattedTime;
-            document.getElementById(sensor_id + "-" + sensor_measurement + "-value").innerHTML = measurement;
+            document.getElementById(input_id + "-" + sensor_measurement + "-time").innerHTML = formattedTime;
+            document.getElementById(input_id + "-" + sensor_measurement + "-value").innerHTML = measurement;
           }
         },
         error: function(XMLHttpRequest, textStatus, errorThrown) {
-          document.getElementById(sensor_id + "-" + sensor_measurement + "-time").innerHTML = "No Data Last " + period.toString() + " sec";
-          document.getElementById(sensor_id + "-" + sensor_measurement + "-value").innerHTML = "0";
+          document.getElementById(input_id + "-" + sensor_measurement + "-time").innerHTML = "No Data Last " + period.toString() + " sec";
+          document.getElementById(input_id + "-" + sensor_measurement + "-value").innerHTML = "0";
         },
         cache: false
       });
     }
 
-    function liveTextData(sensor_id, sensor_measurement, period, convert_c) {
+    function liveTextData(input_id, sensor_measurement, period, convert_c) {
       // Update when page first loads
-      updateMeasurements(sensor_id, sensor_measurement, period, convert_c);
+      updateMeasurements(input_id, sensor_measurement, period, convert_c);
       setInterval(function () {
         // Update after every 30 seconds
-        updateMeasurements(sensor_id, sensor_measurement, period, convert_c);
+        updateMeasurements(input_id, sensor_measurement, period, convert_c);
       }, 30000);
     }
 
@@ -93,7 +93,7 @@
     {%- for each_input_sorted in inputs_sorted -%}
       {%- set collapse_container_number = loop.index -%}
 
-      {%- for each_input in input if each_input.id == each_input_sorted -%}
+      {%- for each_input in input if each_input.unique_id == each_input_sorted -%}
 
     <div style="padding: 0.5em; margin-bottom: 0.7em; border: 1px solid #ddd; border-radius: 5px;">
 
@@ -165,7 +165,7 @@
           </div>
         </div>
 
-            {%- for each_output in output if each_output.id == each_pid.raise_relay_id -%}
+            {%- for each_output in output if each_output.id == each_pid.raise_output_id -%}
 
         <div class="row" style="padding-top: 0.5em">
           <div class="col-xs-12 col-sm-3 col-md-2">
@@ -175,8 +175,8 @@
             </div>
           </div>
           <div class="col-xs-4 col-sm-3 col-md-2">
-              {% if each_pid.raise_relay_id in output_type and
-                    output_type[each_pid.raise_relay_id] == 'pwm' -%}
+              {% if each_pid.raise_output_id in output_type and
+                    output_type[each_pid.raise_output_id] == 'pwm' -%}
                 {{_('Duty Cycle')}} (%)
               {% else -%}
                 {{_('On Duration (sec.)')}}
@@ -185,8 +185,8 @@
               {{_('Min')}}: {{each_pid.raise_min_duration}}, {{_('Max')}}: {{each_pid.raise_max_duration}}
              </div>
           </div>
-          {% if each_pid.raise_relay_id in output_type and
-                output_type[each_pid.raise_relay_id] != 'pwm' -%}
+          {% if each_pid.raise_output_id in output_type and
+                output_type[each_pid.raise_output_id] != 'pwm' -%}
           <div class="col-xs-4 col-sm-3 col-md-2">
             {{_('Off (seconds)')}}
             <div>
@@ -204,7 +204,7 @@
 
             {%- endfor -%}
 
-            {%- for each_output in output if each_output.id == each_pid.lower_relay_id -%}
+            {%- for each_output in output if each_output.id == each_pid.lower_output_id -%}
 
         <div class="row" style="padding-top: 0.5em">
           <div class="col-xs-12 col-sm-3 col-md-2">
@@ -214,8 +214,8 @@
             </div>
           </div>
           <div class="col-xs-4 col-sm-3 col-md-2">
-            {% if each_pid.lower_relay_id in output_type and
-                  output_type[each_pid.lower_relay_id] == 'pwm' -%}
+            {% if each_pid.lower_output_id in output_type and
+                  output_type[each_pid.lower_output_id] == 'pwm' -%}
               {{_('Duty Cycle')}} (%)
             {% else -%}
               {{_('On Duration (sec.)')}}
@@ -224,8 +224,8 @@
               {{_('Min')}}: {{each_pid.lower_min_duration}}, {{_('Max')}}: {{each_pid.lower_max_duration}}
             </div>
           </div>
-          {% if each_pid.lower_relay_id in output_type and
-                output_type[each_pid.lower_relay_id] != 'pwm' -%}
+          {% if each_pid.lower_output_id in output_type and
+                output_type[each_pid.lower_output_id] != 'pwm' -%}
           <div class="col-xs-4 col-sm-3 col-md-2">
             {{_('Off (seconds)')}}
             <div>
@@ -247,7 +247,7 @@
 
         <div class="row">
           <div class="col-xs-12">
-            {{_('Method Enabled')}}: <a href="/method-build/{{each_method.id}}">{{each_method.name}} ({{each_method.id}})</a>
+            {{_('Method Enabled')}}: <a href="/method-build/{{each_method.unique_id}}">{{each_method.name}} ({{each_method.id}})</a>
           </div>
         </div>
 
@@ -332,7 +332,7 @@
           </div>
         </div>
 
-            {%- for each_output in output if each_output.id == each_pid.raise_relay_id -%}
+            {%- for each_output in output if each_output.id == each_pid.raise_output_id -%}
 
         <div class="row" style="padding-top: 0.5em">
           <div class="col-xs-12 col-sm-3 col-md-2">
@@ -342,8 +342,8 @@
             </div>
           </div>
           <div class="col-xs-4 col-sm-3 col-md-2">
-            {% if each_pid.raise_relay_id in output_type and
-                  output_type[each_pid.raise_relay_id] == 'pwm' -%}
+            {% if each_pid.raise_output_id in output_type and
+                  output_type[each_pid.raise_output_id] == 'pwm' -%}
               {{_('Duty Cycle')}} (%)
             {% else -%}
               {{_('On Duration (sec.)')}}
@@ -352,8 +352,8 @@
             {{_('Min')}}: {{each_pid.raise_min_duration}}, {{_('Max')}}: {{each_pid.raise_max_duration}}
            </div>
           </div>
-          {% if each_pid.raise_relay_id in output_type and
-                output_type[each_pid.raise_relay_id] != 'pwm' -%}
+          {% if each_pid.raise_output_id in output_type and
+                output_type[each_pid.raise_output_id] != 'pwm' -%}
           <div class="col-xs-4 col-sm-3 col-md-2">
             {{_('Off (seconds)')}}
             <div>
@@ -371,7 +371,7 @@
 
             {%- endfor -%}
 
-            {%- for each_output in output if each_output.id == each_pid.lower_relay_id -%}
+            {%- for each_output in output if each_output.id == each_pid.lower_output_id -%}
 
         <div class="row" style="padding-top: 0.5em">
           <div class="col-xs-12 col-sm-3 col-md-2">
@@ -381,8 +381,8 @@
             </div>
           </div>
           <div class="col-xs-4 col-sm-3 col-md-2">
-            {% if each_pid.lower_relay_id in output_type and
-                  output_type[each_pid.lower_relay_id] == 'pwm' -%}
+            {% if each_pid.lower_output_id in output_type and
+                  output_type[each_pid.lower_output_id] == 'pwm' -%}
               {{_('Duty Cycle')}} (%)
             {% else -%}
               {{_('On Duration (sec.)')}}
@@ -391,8 +391,8 @@
               {{_('Min')}}: {{each_pid.lower_min_duration}}, {{_('Max')}}: {{each_pid.lower_max_duration}}
             </div>
           </div>
-          {% if each_pid.lower_relay_id in output_type and
-                output_type[each_pid.lower_relay_id] != 'pwm' -%}
+          {% if each_pid.lower_output_id in output_type and
+                output_type[each_pid.lower_output_id] != 'pwm' -%}
           <div class="col-xs-4 col-sm-3 col-md-2">
             {{_('Off (seconds)')}}
             <div>
@@ -414,7 +414,7 @@
 
         <div class="row">
           <div class="col-xs-12">
-            {{_('Method Enabled')}}: <a href="/method-build/{{each_method.id}}">{{each_method.name}} ({{each_method.id}})</a>
+            {{_('Method Enabled')}}: <a href="/method-build/{{each_method.unique_id}}">{{each_method.name}} ({{each_method.id}})</a>
           </div>
         </div>
 

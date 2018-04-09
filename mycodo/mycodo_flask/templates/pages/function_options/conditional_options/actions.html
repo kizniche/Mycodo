@@ -1,48 +1,48 @@
 {% if each_cond_action.do_action == 'output' %}
 
 <div class="col-auto">
-  {{form_conditional_actions.do_relay_id.label(class_='control-label')}}
+  {{form_conditional_actions.do_unique_id.label(class_='control-label')}}
   <div>
-    <select class="form-control form-tooltip form-dropdown" id="do_relay_id" name="do_relay_id" data-placement="top" title="{{_('What relay to manipulate')}}">
+    <select class="form-control form-tooltip form-dropdown" id="do_unique_id" name="do_unique_id" data-placement="top" title="{{_('What output to manipulate')}}">
       <option value=""></option>
-      {%- for each_output in output if each_output.relay_type != 'pwm' -%}
-        <option value="{{each_output.id}}"{% if each_cond_action.do_relay_id == each_output.id %} selected{% endif %}>[{{each_output.id}}] {{each_output.name}}</option>
+      {%- for each_output in output if each_output.output_type != 'pwm' -%}
+        <option value="{{each_output.id}}"{% if each_cond_action.do_unique_id == each_output.id %} selected{% endif %}>[{{each_output.id}}] {{each_output.name}}</option>
       {%- endfor -%}
     </select>
   </div>
 </div>
 <div class="col-auto">
-  {{form_conditional_actions.do_relay_state.label(class_='control-label')}}
-  <select class="form-control form-tooltip form-dropdown" id="do_relay_state" name="do_relay_state" data-placement="top" title="{{_('Turn the relay on or off')}}">
+  {{form_conditional_actions.do_output_state.label(class_='control-label')}}
+  <select class="form-control form-tooltip form-dropdown" id="do_output_state" name="do_output_state" data-placement="top" title="{{_('Turn the output on or off')}}">
     <option value=""></option>
-    <option value="on"{% if each_cond_action.do_relay_state == 'on' %} selected{% endif %}>{{_('On')}}</option>
-    <option value="off"{% if each_cond_action.do_relay_state == 'off' %} selected{% endif %}>{{_('Off')}}</option>
+    <option value="on"{% if each_cond_action.do_output_state == 'on' %} selected{% endif %}>{{_('On')}}</option>
+    <option value="off"{% if each_cond_action.do_output_state == 'off' %} selected{% endif %}>{{_('Off')}}</option>
   </select>
 </div>
 <div class="col-auto">
-  {{form_conditional_actions.do_relay_duration.label(class_='control-label')}}
+  {{form_conditional_actions.do_output_duration.label(class_='control-label')}}
   <div>
-    {{form_conditional_actions.do_relay_duration(class_='form-control', value=each_cond_action.do_relay_duration, **{'title':_('How long to turn the relay on (optional)')})}}
+    {{form_conditional_actions.do_output_duration(class_='form-control', value=each_cond_action.do_output_duration, **{'title':_('How long to turn the output on (optional)')})}}
   </div>
 </div>
 
 {% elif each_cond_action.do_action == 'output_pwm' %}
 
 <div class="col-auto">
-  {{form_conditional_actions.do_relay_id.label(class_='control-label')}}
+  {{form_conditional_actions.do_unique_id.label(class_='control-label')}}
   <div>
-    <select class="form-control form-tooltip form-dropdown" id="do_relay_id" name="do_relay_id" data-placement="top" title="{{_('What relay to manipulate')}}">
+    <select class="form-control form-tooltip form-dropdown" id="do_unique_id" name="do_unique_id" data-placement="top" title="{{_('What output to manipulate')}}">
       <option value=""></option>
-      {%- for each_output in output if each_output.relay_type == 'pwm' -%}
-        <option value="{{each_output.id}}"{% if each_cond_action.do_relay_id == each_output.id %} selected{% endif %}>[{{each_output.id}}] {{each_output.name}}</option>
+      {%- for each_output in output if each_output.output_type == 'pwm' -%}
+        <option value="{{each_output.id}}"{% if each_cond_action.do_unique_id == each_output.id %} selected{% endif %}>[{{each_output.id}}] {{each_output.name}}</option>
       {%- endfor -%}
     </select>
   </div>
 </div>
 <div class="col-auto">
-  {{form_conditional_actions.do_relay_pwm.label(class_='control-label')}}
+  {{form_conditional_actions.do_output_pwm.label(class_='control-label')}}
   <div>
-    {{form_conditional_actions.do_relay_pwm(class_='form-control', value=each_cond_action.do_relay_pwm, **{'title':_('What duty cycle to set the output')})}}
+    {{form_conditional_actions.do_output_pwm(class_='form-control', value=each_cond_action.do_output_pwm, **{'title':_('What duty cycle to set the output')})}}
   </div>
 </div>
 
@@ -65,11 +65,11 @@
                                        'lcd_backlight_on'] %}
 
 <div class="col-auto">
-  {{form_conditional_actions.do_lcd_id.label(class_='control-label')}}
-  <select class="form-control form-tooltip form-dropdown" id="do_lcd_id" name="do_lcd_id" data-placement="top" title="{{_('LCD to flash')}}">
+  {{form_conditional_actions.do_unique_id.label(class_='control-label')}}
+  <select class="form-control form-tooltip form-dropdown" id="do_unique_id" name="do_unique_id" data-placement="top" title="{{_('LCD to flash')}}">
     <option value=""></option>
     {%- for each_lcd in lcd -%}
-      <option value="{{each_lcd.id}}"{% if each_cond_action.do_lcd_id == each_lcd.id %} selected{% endif %}>[{{each_lcd.id}}] {{each_lcd.name}}</option>
+      <option value="{{each_lcd.id}}"{% if each_cond_action.do_unique_id == each_lcd.id %} selected{% endif %}>[{{each_lcd.id}}] {{each_lcd.name}}</option>
     {%- endfor -%}
   </select>
 </div>
@@ -77,11 +77,11 @@
 {% elif each_cond_action.do_action == 'photo' %}
 
 <div class="col-auto">
-  {{form_conditional_actions.do_camera_id.label(class_='control-label')}}
-  <select class="form-control form-tooltip form-dropdown" id="do_camera_id" name="do_camera_id" data-placement="top" title="{{_('Camera to capture with')}}">
+  {{form_conditional_actions.do_unique_id.label(class_='control-label')}}
+  <select class="form-control form-tooltip form-dropdown" id="do_unique_id" name="do_unique_id" data-placement="top" title="{{_('Camera to capture with')}}">
     <option value=""></option>
     {%- for each_camera in camera -%}
-      <option value="{{each_camera.id}}"{% if each_cond_action.do_camera_id == each_camera.id %} selected{% endif %}>[{{each_camera.id}}] {{each_camera.name}}</option>
+      <option value="{{each_camera.id}}"{% if each_cond_action.do_unique_id == each_camera.id %} selected{% endif %}>[{{each_camera.id}}] {{each_camera.name}}</option>
     {%- endfor -%}
   </select>
 </div>
@@ -101,11 +101,11 @@
 {% elif each_cond_action.do_action == 'video' %}
 
 <div class="col-auto">
-  {{form_conditional_actions.do_camera_id.label(class_='control-label')}}
-  <select class="form-control form-tooltip form-dropdown" id="do_camera_id" name="do_camera_id" data-placement="top" title="{{_('Camera to capture with')}}">
+  {{form_conditional_actions.do_unique_id.label(class_='control-label')}}
+  <select class="form-control form-tooltip form-dropdown" id="do_unique_id" name="do_unique_id" data-placement="top" title="{{_('Camera to capture with')}}">
     <option value=""></option>
     {%- for each_camera in camera -%}
-      <option value="{{each_camera.id}}"{% if each_cond_action.do_camera_id == each_camera.id %} selected{% endif %}>[{{each_camera.id}}] {{each_camera.name}}</option>
+      <option value="{{each_camera.id}}"{% if each_cond_action.do_unique_id == each_camera.id %} selected{% endif %}>[{{each_camera.id}}] {{each_camera.name}}</option>
     {%- endfor -%}
   </select>
 </div>
@@ -152,11 +152,11 @@
                                        'resume_pid'] %}
 
 <div class="col-auto">
-  {{form_conditional_actions.do_pid_id.label(class_='control-label')}}
-  <select class="form-control form-tooltip form-dropdown" id="do_pid_id" name="do_pid_id" data-placement="top" title="{{_('PID to affect')}}">
+  {{form_conditional_actions.do_unique_id.label(class_='control-label')}}
+  <select class="form-control form-tooltip form-dropdown" id="do_unique_id" name="do_unique_id" data-placement="top" title="{{_('PID to affect')}}">
     <option value=""></option>
     {%- for each_pid in pid -%}
-      <option value="{{each_pid.id}}"{% if each_cond_action.do_pid_id == each_pid.id %} selected{% endif %}>[{{each_pid.id}}] {{each_pid.name}}</option>
+      <option value="{{each_pid.id}}"{% if each_cond_action.do_unique_id == each_pid.id %} selected{% endif %}>[{{each_pid.id}}] {{each_pid.name}}</option>
     {%- endfor -%}
   </select>
 </div>
@@ -164,11 +164,11 @@
 {% elif each_cond_action.do_action == 'setpoint_pid' %}
 
 <div class="col-auto">
-  {{form_conditional_actions.do_pid_id.label(class_='control-label')}}
-  <select class="form-control form-tooltip form-dropdown" id="do_pid_id" name="do_pid_id" data-placement="top" title="{{_('PID to affect')}}">
+  {{form_conditional_actions.do_unique_id.label(class_='control-label')}}
+  <select class="form-control form-tooltip form-dropdown" id="do_unique_id" name="do_unique_id" data-placement="top" title="{{_('PID to affect')}}">
     <option value=""></option>
     {%- for each_pid in pid -%}
-      <option value="{{each_pid.id}}"{% if each_cond_action.do_pid_id == each_pid.id %} selected{% endif %}>[{{each_pid.id}}] {{each_pid.name}}</option>
+      <option value="{{each_pid.id}}"{% if each_cond_action.do_unique_id == each_pid.id %} selected{% endif %}>[{{each_pid.id}}] {{each_pid.name}}</option>
     {%- endfor -%}
   </select>
 </div>
@@ -180,11 +180,11 @@
 {% elif each_cond_action.do_action == 'method_pid' %}
 
 <div class="col-auto">
-  {{form_conditional_actions.do_pid_id.label(class_='control-label')}}
-  <select class="form-control form-tooltip form-dropdown" id="do_pid_id" name="do_pid_id" data-placement="top" title="{{_('PID to affect')}}">
+  {{form_conditional_actions.do_unique_id.label(class_='control-label')}}
+  <select class="form-control form-tooltip form-dropdown" id="do_unique_id" name="do_unique_id" data-placement="top" title="{{_('PID to affect')}}">
     <option value=""></option>
     {%- for each_pid in pid -%}
-      <option value="{{each_pid.id}}"{% if each_cond_action.do_pid_id == each_pid.id %} selected{% endif %}>[{{each_pid.id}}] {{each_pid.name}}</option>
+      <option value="{{each_pid.id}}"{% if each_cond_action.do_unique_id == each_pid.id %} selected{% endif %}>[{{each_pid.id}}] {{each_pid.name}}</option>
     {%- endfor -%}
   </select>
 </div>
@@ -203,10 +203,10 @@
 
 <div class="col-auto">
   <label class="control-label">Then Timer</label>
-  <select class="form-control form-tooltip form-dropdown" id="do_pid_id" name="do_pid_id" data-placement="top" title="{{_('Timer to affect')}}">
+  <select class="form-control form-tooltip form-dropdown" id="do_unique_id" name="do_unique_id" data-placement="top" title="{{_('Timer to affect')}}">
     <option value=""></option>
     {%- for each_timer in timer -%}
-      <option value="{{each_timer.id}}"{% if each_cond_action.do_pid_id == each_timer.id %} selected{% endif %}>[{{each_timer.id}}] {{each_timer.name}}</option>
+      <option value="{{each_timer.id}}"{% if each_cond_action.do_unique_id == each_timer.id %} selected{% endif %}>[{{each_timer.id}}] {{each_timer.name}}</option>
     {%- endfor -%}
   </select>
 </div>

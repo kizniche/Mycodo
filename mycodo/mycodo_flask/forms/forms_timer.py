@@ -16,7 +16,7 @@ from wtforms.validators import DataRequired
 
 
 class TimerBase(FlaskForm):
-    timer_id = IntegerField('Timer ID', widget=widgets.HiddenInput())
+    timer_id = StringField('Timer ID', widget=widgets.HiddenInput())
     timer_type = SelectField(
         lazy_gettext('Timer Type'),
         choices=[
@@ -32,7 +32,7 @@ class TimerBase(FlaskForm):
         lazy_gettext('Name'),
         validators=[DataRequired()]
     )
-    relay_id = StringField(lazy_gettext('Output'))
+    output_id = StringField(lazy_gettext('Output'))
     create = SubmitField(lazy_gettext('Add'))
     modify = SubmitField(lazy_gettext('Save'))
     delete = SubmitField(lazy_gettext('Delete'))

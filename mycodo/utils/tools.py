@@ -78,22 +78,22 @@ def return_output_usage(table_misc, table_outputs):
     time_now = datetime.datetime.now()
     past_month_seconds = 0
 
-    if table_misc.relay_usage_dayofmonth == datetime.datetime.today().day:
+    if table_misc.output_usage_dayofmonth == datetime.datetime.today().day:
         past_month_seconds = (time_now - time_now.replace(
             hour=0, minute=0, second=0, microsecond=0)).total_seconds()
-    elif table_misc.relay_usage_dayofmonth > datetime.datetime.today().day:
+    elif table_misc.output_usage_dayofmonth > datetime.datetime.today().day:
         first_day = date_now.replace(day=1)
         last_month = first_day - datetime.timedelta(days=1)
-        past_month = last_month.replace(day=table_misc.relay_usage_dayofmonth)
+        past_month = last_month.replace(day=table_misc.output_usage_dayofmonth)
         past_month_seconds = (date_now - past_month).total_seconds()
-    elif table_misc.relay_usage_dayofmonth < datetime.datetime.today().day:
-        past_month = date_now.replace(day=table_misc.relay_usage_dayofmonth)
+    elif table_misc.output_usage_dayofmonth < datetime.datetime.today().day:
+        past_month = date_now.replace(day=table_misc.output_usage_dayofmonth)
         past_month_seconds = (date_now - past_month).total_seconds()
 
     output_stats = OrderedDict()
 
     for each_output in table_outputs:
-        if each_output.relay_type != 'pwm':
+        if each_output.output_type != 'pwm':
             output_stats[each_output.id] = None
 
     # Calculate output on duration for different time periods
@@ -103,44 +103,44 @@ def return_output_usage(table_misc, table_outputs):
     output_stats['total_cost'] = dict.fromkeys(['1d', '1w', '1m', '1m_date', '1y'], 0)
 
     for each_output in table_outputs:
-        if each_output.relay_type != 'pwm':
+        if each_output.output_type != 'pwm':
             past_1d_hours = output_sec_on(each_output.id, 86400) / 3600
             past_1w_hours = output_sec_on(each_output.id, 604800) / 3600
             past_1m_hours = output_sec_on(each_output.id, 2629743) / 3600
             past_1m_date_hours = output_sec_on(each_output.id, int(past_month_seconds)) / 3600
             past_1y_hours = output_sec_on(each_output.id, 31556926) / 3600
 
-            past_1d_kwh = table_misc.relay_usage_volts * each_output.amps * past_1d_hours / 1000
-            past_1w_kwh = table_misc.relay_usage_volts * each_output.amps * past_1w_hours / 1000
-            past_1m_kwh = table_misc.relay_usage_volts * each_output.amps * past_1m_hours / 1000
-            past_1m_date_kwh = table_misc.relay_usage_volts * each_output.amps * past_1m_date_hours / 1000
-            past_1y_kwh = table_misc.relay_usage_volts * each_output.amps * past_1y_hours / 1000
+            past_1d_kwh = table_misc.output_usage_volts * each_output.amps * past_1d_hours / 1000
+            past_1w_kwh = table_misc.output_usage_volts * each_output.amps * past_1w_hours / 1000
+            past_1m_kwh = table_misc.output_usage_volts * each_output.amps * past_1m_hours / 1000
+            past_1m_date_kwh = table_misc.output_usage_volts * each_output.amps * past_1m_date_hours / 1000
+            past_1y_kwh = table_misc.output_usage_volts * each_output.amps * past_1y_hours / 1000
 
             output_stats[each_output.id] = {
                 '1d': {
                     'hours_on': past_1d_hours,
                     'kwh': past_1d_kwh,
-                    'cost': table_misc.relay_usage_cost * past_1d_kwh
+                    'cost': table_misc.output_usage_cost * past_1d_kwh
                 },
                 '1w': {
                     'hours_on': past_1w_hours,
                     'kwh': past_1w_kwh,
-                    'cost': table_misc.relay_usage_cost * past_1w_kwh
+                    'cost': table_misc.output_usage_cost * past_1w_kwh
                 },
                 '1m': {
                     'hours_on': past_1m_hours,
                     'kwh': past_1m_kwh,
-                    'cost': table_misc.relay_usage_cost * past_1m_kwh
+                    'cost': table_misc.output_usage_cost * past_1m_kwh
                 },
                 '1m_date': {
                     'hours_on': past_1m_date_hours,
                     'kwh': past_1m_date_kwh,
-                    'cost': table_misc.relay_usage_cost * past_1m_date_kwh
+                    'cost': table_misc.output_usage_cost * past_1m_date_kwh
                 },
                 '1y': {
                     'hours_on': past_1y_hours,
                     'kwh': past_1y_kwh,
-                    'cost': table_misc.relay_usage_cost * past_1y_kwh
+                    'cost': table_misc.output_usage_cost * past_1y_kwh
                 }
             }
 
@@ -156,16 +156,16 @@ def return_output_usage(table_misc, table_outputs):
             output_stats['total_kwh']['1m_date'] += past_1m_date_kwh
             output_stats['total_kwh']['1y'] += past_1y_kwh
 
-            output_stats['total_cost']['1d'] += table_misc.relay_usage_cost * past_1d_kwh
-            output_stats['total_cost']['1w'] += table_misc.relay_usage_cost * past_1w_kwh
-            output_stats['total_cost']['1m'] += table_misc.relay_usage_cost * past_1m_kwh
-            output_stats['total_cost']['1m_date'] += table_misc.relay_usage_cost * past_1m_date_kwh
-            output_stats['total_cost']['1y'] += table_misc.relay_usage_cost * past_1y_kwh
+            output_stats['total_cost']['1d'] += table_misc.output_usage_cost * past_1d_kwh
+            output_stats['total_cost']['1w'] += table_misc.output_usage_cost * past_1w_kwh
+            output_stats['total_cost']['1m'] += table_misc.output_usage_cost * past_1m_kwh
+            output_stats['total_cost']['1m_date'] += table_misc.output_usage_cost * past_1m_date_kwh
+            output_stats['total_cost']['1y'] += table_misc.output_usage_cost * past_1y_kwh
 
     return output_stats
 
 
-def generate_relay_usage_report():
+def generate_output_usage_report():
     """
     Generate output usage report in a csv file
 
@@ -193,7 +193,7 @@ def generate_relay_usage_report():
                  'Past Day',
                  'Past Week',
                  'Past Month',
-                 'Past Month (from {})'.format(misc.relay_usage_dayofmonth),
+                 'Past Month (from {})'.format(misc.output_usage_dayofmonth),
                  'Past Year'
             ])
             for key, value in output_usage.items():

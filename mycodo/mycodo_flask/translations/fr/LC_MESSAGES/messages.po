@@ -1201,7 +1201,7 @@ msgid "Current Draw (amps)"
 msgstr ""
 
 #: mycodo_flask/forms/forms_output.py:47
-msgid "The current draw of the device connected to this relay, in amps."
+msgid "The current draw of the device connected to this output, in amps."
 msgstr ""
 
 #: mycodo_flask/forms/forms_output.py:52
@@ -1969,7 +1969,7 @@ msgid ""
 "Click the button below to begin the upgrade process. Note: An upgrade "
 "often takes several minutes, and in rare cases hours, to complete. During"
 " that time, the Mycodo web interface and server recording sensors and "
-"manipulating relays (among other services) will be completely shut down. "
+"manipulating outputs (among other services) will be completely shut down. "
 "It is not recommended not perform an upgrade on a production machine "
 "(i.e. trust buy verify: treat the new version as unstable until you have "
 "verified it works as expected)."
@@ -2275,7 +2275,7 @@ msgstr ""
 
 #: mycodo_flask/templates/pages/method-build.html:291
 #: mycodo_flask/templates/pages/method-build.html:302
-msgid "Modulate the selected relay."
+msgid "Modulate the selected output."
 msgstr ""
 
 #: mycodo_flask/templates/pages/method-list.html:5
@@ -2321,7 +2321,7 @@ msgstr ""
 #: mycodo_flask/templates/pages/output.html:142
 msgid ""
 "Output devices enable Mycodo to manipulate things through the use of "
-"relays (wired and wireless), PWM signals, and executing commands. When "
+"outputs (wired and wireless), PWM signals, and executing commands. When "
 "linked to a PID controller, with an input, output devices can be used for"
 " feedback regulation."
 msgstr ""
@@ -2418,7 +2418,7 @@ msgid "The duration (seconds) between input reads"
 msgstr ""
 
 #: mycodo_flask/templates/pages/data_options/input.html:92
-msgid "Turn the selected relay on before taking every measurement"
+msgid "Turn the selected output on before taking every measurement"
 msgstr ""
 
 #: mycodo_flask/templates/pages/data_options/input.html:103
@@ -2627,7 +2627,7 @@ msgid "The I2C bus to access the device"
 msgstr ""
 
 #: mycodo_flask/templates/pages/data_options/input_options/TEMPLATE_POWER_RELAY.html:4
-msgid "The relay used to power the device"
+msgid "The output used to power the device"
 msgstr ""
 
 #: mycodo_flask/templates/pages/data_options/input_options/TEMPLATE_UART_BAUD.html:4
@@ -2699,7 +2699,7 @@ msgid "The maximum allowed difference between any selected measurements"
 msgstr ""
 
 #: mycodo_flask/templates/pages/function_options/conditional.html:75
-msgid "What relay to manipulate"
+msgid "What output to manipulate"
 msgstr ""
 
 #: mycodo_flask/templates/pages/function_options/conditional.html:83
@@ -2707,7 +2707,7 @@ msgid "Turn"
 msgstr ""
 
 #: mycodo_flask/templates/pages/function_options/conditional.html:84
-msgid "Turn the relay on or off"
+msgid "Turn the output on or off"
 msgstr ""
 
 #: mycodo_flask/templates/pages/function_options/conditional.html:91
@@ -2715,7 +2715,7 @@ msgid "Seconds"
 msgstr ""
 
 #: mycodo_flask/templates/pages/function_options/conditional.html:92
-msgid "How long to turn the relay on (optional)"
+msgid "How long to turn the output on (optional)"
 msgstr ""
 
 #: mycodo_flask/templates/pages/function_options/conditional.html:98
@@ -2772,13 +2772,13 @@ msgstr ""
 #: mycodo_flask/templates/pages/function_options/pid.html:106
 msgid ""
 "The duration between calculating a new PID output to power the raise and "
-"lower relays."
+"lower outputs."
 msgstr ""
 
 #: mycodo_flask/templates/pages/function_options/pid.html:112
 msgid ""
 "Maximum allowable measurement age (to allow the PID controller to "
-"manipulate relays, the measurement must have occurred in the past x "
+"manipulate outputs, the measurement must have occurred in the past x "
 "seconds)"
 msgstr ""
 
@@ -2904,7 +2904,7 @@ msgid "Do not accept measurements older than this age"
 msgstr ""
 
 #: mycodo_flask/templates/pages/function_options/conditional_options/output.html:7
-msgid "Trigger this conditional to act when this relay turns on or off"
+msgid "Trigger this conditional to act when this output turns on or off"
 msgstr ""
 
 #: mycodo_flask/templates/pages/function_options/conditional_options/output.html:18
@@ -2926,7 +2926,7 @@ msgstr ""
 #: mycodo_flask/templates/pages/function_options/conditional_options/output.html:39
 msgid ""
 "(Optional) Set this to a specific duration of time if the conditional "
-"should trigger when the relay On duration equals this amount"
+"should trigger when the output On duration equals this amount"
 msgstr ""
 
 #: mycodo_flask/templates/pages/function_options/pid_options/pwm_lower.html:5
@@ -2951,33 +2951,33 @@ msgid ""
 " is the value that will be used."
 msgstr ""
 
-#: mycodo_flask/templates/pages/function_options/pid_options/relay_lower.html:5
+#: mycodo_flask/templates/pages/function_options/pid_options/output_lower.html:5
 msgid ""
 "The minimum duration (in seconds) required for the Lower Output to "
 "activate. If an On duration is below this value, the Lower Output will "
 "not turn on."
 msgstr ""
 
-#: mycodo_flask/templates/pages/function_options/pid_options/relay_lower.html:11
+#: mycodo_flask/templates/pages/function_options/pid_options/output_lower.html:11
 msgid ""
 "The maximum duration (in seconds) allowed for the Lower Output to be on "
 "for, per period. If an ON duration is above this value, the Lower Output "
 "will turn on for this set duration."
 msgstr ""
 
-#: mycodo_flask/templates/pages/function_options/pid_options/relay_lower.html:17
-#: mycodo_flask/templates/pages/function_options/pid_options/relay_raise.html:17
-msgid "This relay will remain off for at least this duration of time"
+#: mycodo_flask/templates/pages/function_options/pid_options/output_lower.html:17
+#: mycodo_flask/templates/pages/function_options/pid_options/output_raise.html:17
+msgid "This output will remain off for at least this duration of time"
 msgstr ""
 
-#: mycodo_flask/templates/pages/function_options/pid_options/relay_raise.html:5
+#: mycodo_flask/templates/pages/function_options/pid_options/output_raise.html:5
 msgid ""
 "The minimum duration (in seconds) required for the Raise Output to "
 "activate. If an On duration is below this value, the Raise Output will "
 "not turn on."
 msgstr ""
 
-#: mycodo_flask/templates/pages/function_options/pid_options/relay_raise.html:11
+#: mycodo_flask/templates/pages/function_options/pid_options/output_raise.html:11
 msgid ""
 "The maximum duration (in seconds) allowed for the Raise Output to be on "
 "for, per period. If an On duration is above this value, the Raise Output "
@@ -3044,7 +3044,7 @@ msgstr ""
 #: mycodo_flask/templates/pages/method_options/build_daily.html:59
 #: mycodo_flask/templates/pages/method_options/build_date.html:60
 #: mycodo_flask/templates/pages/method_options/build_duration.html:46
-msgid "Modulate the selected relay"
+msgid "Modulate the selected output"
 msgstr ""
 
 #: mycodo_flask/templates/pages/method_options/build_daily_bezier.html:3
@@ -3071,7 +3071,7 @@ msgid "Define the setpoint over a period of time based on specific times/dates."
 msgstr ""
 
 #: mycodo_flask/templates/pages/method_options/build_date.html:47
-msgid "Activate or deactivate a relay within this method at a specific time/date."
+msgid "Activate or deactivate a output within this method at a specific time/date."
 msgstr ""
 
 #: mycodo_flask/templates/pages/method_options/build_duration.html:9
@@ -3114,20 +3114,20 @@ msgstr ""
 
 #: mycodo_flask/templates/pages/output_options/command.html:4
 msgid ""
-"Command to execute (as user mycodo) when the relay is instructed to turn "
+"Command to execute (as user mycodo) when the output is instructed to turn "
 "on"
 msgstr ""
 
 #: mycodo_flask/templates/pages/output_options/command.html:10
 msgid ""
-"Command to execute (as user mycodo) when the relay is instructed to turn "
+"Command to execute (as user mycodo) when the output is instructed to turn "
 "off"
 msgstr ""
 
 #: mycodo_flask/templates/pages/output_options/command.html:16
 #: mycodo_flask/templates/pages/output_options/wired.html:19
 #: mycodo_flask/templates/pages/output_options/wireless_433MHz_pi_switch.html:40
-msgid "When Mycodo starts, set the relay state"
+msgid "When Mycodo starts, set the output state"
 msgstr ""
 
 #: mycodo_flask/templates/pages/output_options/pwm.html:7
@@ -3153,11 +3153,11 @@ msgid "The Hertz to output the PWM signal (0 - 70,000)"
 msgstr ""
 
 #: mycodo_flask/templates/pages/output_options/wired.html:4
-msgid "The GPIO pin (using BCM numbering) connected to the relay signal pin"
+msgid "The GPIO pin (using BCM numbering) connected to the output signal pin"
 msgstr ""
 
 #: mycodo_flask/templates/pages/output_options/wired.html:10
-msgid "What state triggers the relay to turn on? High or Low?"
+msgid "What state triggers the output to turn on? High or Low?"
 msgstr ""
 
 #: mycodo_flask/templates/pages/output_options/wireless_433MHz_pi_switch.html:4
@@ -3307,7 +3307,7 @@ msgid "Set the maximum allowed amperage to be switched on at any given time"
 msgstr ""
 
 #: mycodo_flask/templates/settings/general.html:118
-msgid "Set the voltage used to power the devices powered by the relays"
+msgid "Set the voltage used to power the devices powered by the outputs"
 msgstr ""
 
 #: mycodo_flask/templates/settings/general.html:124
@@ -3324,7 +3324,7 @@ msgstr ""
 
 #: mycodo_flask/templates/settings/general.html:147
 msgid ""
-"Automatically generate relay usage reports on a daily/weekly/monthly "
+"Automatically generate output usage reports on a daily/weekly/monthly "
 "schedule"
 msgstr ""
 
@@ -3707,7 +3707,7 @@ msgstr ""
 #: mycodo_flask/utils/utils_method.py:359
 #: mycodo_flask/utils/utils_method.py:361
 #, python-format
-msgid "Added relay modulation to method at start time: %(tm)s"
+msgid "Added output modulation to method at start time: %(tm)s"
 msgstr ""
 
 #: mycodo_flask/utils/utils_method.py:428
@@ -3805,7 +3805,7 @@ msgstr ""
 
 #: mycodo_flask/utils/utils_pid.py:247
 msgid ""
-"Cannot activate PID controller if raise and/or lower relay IDs are not "
+"Cannot activate PID controller if raise and/or lower output IDs are not "
 "selected"
 msgstr ""
 

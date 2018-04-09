@@ -22,7 +22,7 @@ from wtforms.validators import DataRequired
 #
 
 class SettingsCamera(FlaskForm):
-    camera_id = IntegerField('Camera ID', widget=widgets.HiddenInput())
+    camera_id = StringField('Camera ID', widget=widgets.HiddenInput())
     name = StringField(lazy_gettext('Name'))
     library = StringField(lazy_gettext('Library'))
     device = StringField(lazy_gettext('Device'))
@@ -40,7 +40,7 @@ class SettingsCamera(FlaskForm):
     saturation = DecimalField(lazy_gettext('Saturation'))
     white_balance = DecimalField(lazy_gettext('White Balance'))
     custom_options = StringField(lazy_gettext('Custom Options'))
-    relay_id = IntegerField(lazy_gettext('Output'))
+    output_id = IntegerField(lazy_gettext('Output'))
     cmd_pre_camera = StringField(lazy_gettext('Pre Command'))
     cmd_post_camera = StringField(lazy_gettext('Post Command'))
     camera_add = SubmitField(lazy_gettext('Add Camera'))
@@ -119,14 +119,14 @@ class SettingsGeneral(FlaskForm):
     hide_warning = BooleanField(lazy_gettext('Hide warning messages'))
     hide_tooltips = BooleanField(lazy_gettext('Hide Form Tooltips'))
     max_amps = DecimalField(lazy_gettext('Max Amps'))
-    relay_stats_volts = IntegerField(lazy_gettext('Voltage'))
-    relay_stats_cost = DecimalField(lazy_gettext('Cost per kWh'))
-    relay_stats_currency = StringField(lazy_gettext('Currency Unit'))
-    relay_stats_day_month = StringField(lazy_gettext('Day of Month'))
-    relay_usage_report_gen = BooleanField(lazy_gettext('Generate Usage/Cost Report'))
-    relay_usage_report_span = StringField(lazy_gettext('Time Span to Generate'))
-    relay_usage_report_day = IntegerField(lazy_gettext('Day of Week/Month to Generate'))
-    relay_usage_report_hour = IntegerField(
+    output_stats_volts = IntegerField(lazy_gettext('Voltage'))
+    output_stats_cost = DecimalField(lazy_gettext('Cost per kWh'))
+    output_stats_currency = StringField(lazy_gettext('Currency Unit'))
+    output_stats_day_month = StringField(lazy_gettext('Day of Month'))
+    output_usage_report_gen = BooleanField(lazy_gettext('Generate Usage/Cost Report'))
+    output_usage_report_span = StringField(lazy_gettext('Time Span to Generate'))
+    output_usage_report_day = IntegerField(lazy_gettext('Day of Week/Month to Generate'))
+    output_usage_report_hour = IntegerField(
         lazy_gettext('Hour of Day to Generate'),
         validators=[validators.NumberRange(
             min=0,

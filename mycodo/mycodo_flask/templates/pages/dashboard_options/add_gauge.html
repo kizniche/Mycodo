@@ -60,9 +60,9 @@
     <div style="clear: both"></div>
 
     <div class="form-group">
-      {{form_gauge.sensor_ids.label(class_='control-label')}}
+      {{form_gauge.input_ids.label(class_='control-label')}}
       <div>
-        <select class="form-control" id="sensor_ids" name="sensor_ids" style="width: 100%;">
+        <select class="form-control" id="input_ids" name="input_ids" style="width: 100%;">
         {% if choices_input or choices_math or choices_pid %}
           <option value="">{{_('Select One')}}</option>
           {% for each_choice, value in choices_input.items() -%}

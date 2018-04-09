@@ -26,7 +26,7 @@ class MathAdd(FlaskForm):
 
 
 class MathMod(FlaskForm):
-    math_id = IntegerField('Math ID', widget=widgets.HiddenInput())
+    math_id = StringField('Math ID', widget=widgets.HiddenInput())
     name = StringField(
         lazy_gettext('Name'),
         validators=[DataRequired()])

@@ -172,19 +172,19 @@ def gpio_state():
     GPIO.setmode(GPIO.BCM)
     GPIO.setwarnings(False)
     for each_output in output:
-        if each_output.relay_type == 'wired' and each_output.pin and -1 < each_output.pin < 40:
+        if each_output.output_type == 'wired' and each_output.pin and -1 < each_output.pin < 40:
             GPIO.setup(each_output.pin, GPIO.OUT)
             if GPIO.input(each_output.pin) == each_output.trigger:
-                state[each_output.id] = 'on'
+                state[each_output.unique_id] = 'on'
             else:
-                state[each_output.id] = 'off'
-        elif (each_output.relay_type in ['command', 'command_pwm'] or
-                (each_output.relay_type in ['pwm', 'wireless_433MHz_pi_switch'] and
+                state[each_output.unique_id] = 'off'
+        elif (each_output.output_type in ['command', 'command_pwm'] or
+                (each_output.output_type in ['pwm', 'wireless_433MHz_pi_switch'] and
                  each_output.pin and
                  -1 < each_output.pin < 40)):
-            state[each_output.id] = daemon_control.relay_state(each_output.id)
+            state[each_output.unique_id] = daemon_control.output_state(each_output.unique_id)
         else:
-            state[each_output.id] = None
+            state[each_output.unique_id] = None
 
     return jsonify(state)
 
@@ -199,17 +199,17 @@ def gpio_state_unique_id(unique_id):
     GPIO.setmode(GPIO.BCM)
     GPIO.setwarnings(False)
 
-    if output.relay_type == 'wired' and output.pin and -1 < output.pin < 40:
+    if output.output_type == 'wired' and output.pin and -1 < output.pin < 40:
         GPIO.setup(output.pin, GPIO.OUT)
         if GPIO.input(output.pin) == output.trigger:
             state = 'on'
         else:
             state = 'off'
-    elif (output.relay_type in ['command', 'command_pwm'] or
-            (output.relay_type in ['pwm', 'wireless_433MHz_pi_switch'] and
+    elif (output.output_type in ['command', 'command_pwm'] or
+            (output.output_type in ['pwm', 'wireless_433MHz_pi_switch'] and
              output.pin and
              -1 < output.pin < 40)):
-        state = daemon_control.relay_state(output.id)
+        state = daemon_control.output_state(output.id)
     else:
         state = None
 
@@ -502,28 +502,10 @@ def output_mod(output_id, state, out_type, amount):
     daemon = DaemonControl()
     if (state in ['on', 'off'] and out_type == 'sec' and
             (str_is_float(amount) and float(amount) >= 0)):
-        return daemon.output_on_off(int(output_id), state, float(amount))
+        return daemon.output_on_off(output_id, state, float(amount))
     elif (state == 'on' and out_type in ['pwm', 'command_pwm'] and
               (str_is_float(amount) and float(amount) >= 0)):
-        return daemon.relay_on(int(output_id), state, duty_cycle=float(amount))
-
-
-@blueprint.route('/output_mod_unique_id/<unique_id>/<state>/<out_type>/<amount>')
-@flask_login.login_required
-def output_mod_unique_id(unique_id, state, out_type, amount):
-    """ Manipulate output (using unique ID) """
-    if not utils_general.user_has_permission('edit_controllers'):
-        return 'Insufficient user permissions to manipulate outputs'
-
-    output = Output.query.filter(Output.unique_id == unique_id).first()
-
-    daemon = DaemonControl()
-    if (state in ['on', 'off'] and out_type == 'sec' and
-            (str_is_float(amount) and float(amount) >= 0)):
-        return daemon.output_on_off(output.id, state, float(amount))
-    elif (state == 'on' and out_type in ['pwm', 'command_pwm'] and
-              (str_is_float(amount) and float(amount) >= 0)):
-        return daemon.relay_on(output.id, state, duty_cycle=float(amount))
+        return daemon.output_on(output_id, state, duty_cycle=float(amount))
 
 
 @blueprint.route('/daemonactive')

@@ -1,11 +1,11 @@
 {%- if display_order_conditional -%}
 {%- for order in display_order_conditional -%}
-  {%- for each_cond in conditional if each_cond.id == order  -%}
+  {%- for each_cond in conditional if each_cond.unique_id == order  -%}
 
   <div class="container" style="border: 2px solid #ddd; border-radius: 5px;">
     <form method="post" action="/function">
     {{form_conditional.csrf_token}}
-    {{form_conditional.conditional_id(class_='form-control', value=each_cond.id)}}
+    {{form_conditional.conditional_id(class_='form-control', value=each_cond.unique_id)}}
 
     <div class="{% if each_cond.is_activated -%}active-background
                 {% else -%}inactive-background
@@ -70,8 +70,8 @@
 
       <form method="post" action="/function">
       {{form_conditional_actions.csrf_token}}
-      {{form_conditional_actions.conditional_id(class_='form-control', value=each_cond.id)}}
-      {{form_conditional_actions.conditional_action_id(class_='form-control', value=each_cond_action.id)}}
+      {{form_conditional_actions.conditional_id(class_='form-control', value=each_cond.unique_id)}}
+      {{form_conditional_actions.conditional_action_id(class_='form-control', value=each_cond_action.unique_id)}}
 
       <div class="row small-gutters" style="border-bottom: 1px solid #ddd; padding-bottom: 0.3em">
         <div class="col-sm-2">
@@ -105,7 +105,7 @@
 
       <form method="post" action="/function">
       {{form_conditional_actions.csrf_token}}
-      {{form_conditional_actions.conditional_id(class_='form-control', value=each_cond.id)}}
+      {{form_conditional_actions.conditional_id(class_='form-control', value=each_cond.unique_id)}}
       <div class="row small-gutters" style="padding: 1.5em 0 0.2em 0.1em">
         <div class="col-auto">
           <select class="form-control form-tooltip form-dropdown" id="do_action" name="do_action" data-placement="top" title="{{_('The action to perform when the conditional is True')}}">

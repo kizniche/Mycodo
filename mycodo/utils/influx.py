@@ -182,7 +182,7 @@ def read_last_influxdb(device_id, measure_type, duration_sec=None):
 def output_sec_on(output_id, past_seconds):
     """ Return the number of seconds a output has been ON in the past number of seconds """
     # Get the number of seconds ON stored in the database
-    output = db_retrieve_table_daemon(Output, device_id=output_id)
+    output = db_retrieve_table_daemon(Output, unique_id=output_id)
     client = InfluxDBClient(INFLUXDB_HOST, INFLUXDB_PORT, INFLUXDB_USER,
                             INFLUXDB_PASSWORD, INFLUXDB_DATABASE)
     if not output_id:

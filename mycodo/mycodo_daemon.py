@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 #
 #  mycodo_daemon.py - Daemon for managing Mycodo controllers, such as sensors,
-#                     relays, PID controllers, etc.
+#                     outputs, PID controllers, etc.
 #
 #  Copyright (C) 2017  Kyle T. Gabriel
 #
@@ -71,7 +71,7 @@ from mycodo.utils.statistics import add_update_csv
 from mycodo.utils.statistics import recreate_stat_file
 from mycodo.utils.statistics import return_stat_file_dict
 from mycodo.utils.statistics import send_anonymous_stats
-from mycodo.utils.tools import generate_relay_usage_report
+from mycodo.utils.tools import generate_output_usage_report
 from mycodo.utils.tools import next_schedule
 
 MYCODO_DB_PATH = 'sqlite:///' + SQL_DATABASE_MYCODO
@@ -201,34 +201,34 @@ def mycodo_service(mycodo):
             return mycodo.refresh_conditionals()
 
         @staticmethod
-        def exposed_relay_state(relay_id):
+        def exposed_output_state(output_id):
             """Return the output state (not pin but whether output is on or off"""
-            return mycodo.output_state(relay_id)
+            return mycodo.output_state(output_id)
 
         @staticmethod
-        def exposed_relay_on(relay_id, duration=0.0, min_off=0.0,
+        def exposed_output_on(output_id, duration=0.0, min_off=0.0,
                              duty_cycle=0.0, trigger_conditionals=True):
             """Turns output on from the client"""
-            return mycodo.relay_on(relay_id,
-                                   duration=duration,
-                                   min_off=min_off,
-                                   duty_cycle=duty_cycle,
-                                   trigger_conditionals=trigger_conditionals)
+            return mycodo.output_on(output_id,
+                                    duration=duration,
+                                    min_off=min_off,
+                                    duty_cycle=duty_cycle,
+                                    trigger_conditionals=trigger_conditionals)
 
         @staticmethod
-        def exposed_relay_off(relay_id, trigger_conditionals=True):
+        def exposed_output_off(output_id, trigger_conditionals=True):
             """Turns output off from the client"""
-            return mycodo.relay_off(relay_id, trigger_conditionals)
+            return mycodo.output_off(output_id, trigger_conditionals)
 
         @staticmethod
-        def exposed_output_sec_currently_on(relay_id):
+        def exposed_output_sec_currently_on(output_id):
             """Turns the amount of time a output has already been on"""
-            return mycodo.controller['Output'].output_sec_currently_on(relay_id)
+            return mycodo.controller['Output'].output_sec_currently_on(output_id)
 
         @staticmethod
-        def exposed_relay_setup(action, relay_id):
+        def exposed_output_setup(action, output_id):
             """Add, delete, or modify a output in the running output controller"""
-            return mycodo.output_setup(action, relay_id)
+            return mycodo.output_setup(action, output_id)
 
         @staticmethod
         def exposed_trigger_conditional_actions(
@@ -367,11 +367,11 @@ class DaemonController:
         self.refresh_daemon_camera_settings()
 
         # Update Misc settings
-        self.relay_usage_report_gen = None
-        self.relay_usage_report_span = None
-        self.relay_usage_report_day = None
-        self.relay_usage_report_hour = None
-        self.relay_usage_report_next_gen = None
+        self.output_usage_report_gen = None
+        self.output_usage_report_span = None
+        self.output_usage_report_day = None
+        self.output_usage_report_hour = None
+        self.output_usage_report_next_gen = None
         self.opt_out_statistics = None
         self.enable_upgrade_check = None
         self.refresh_daemon_misc_settings()
@@ -400,9 +400,9 @@ class DaemonController:
                 self.check_all_timelapses(now)
 
                 # Generate output usage report (if enabled)
-                if (self.relay_usage_report_gen and
-                        now > self.relay_usage_report_next_gen):
-                    generate_relay_usage_report()
+                if (self.output_usage_report_gen and
+                        now > self.output_usage_report_next_gen):
+                    generate_output_usage_report()
                     self.refresh_daemon_misc_settings()  # Update timer
 
                 # Collect and send anonymous statistics (if enabled)
@@ -719,24 +719,24 @@ class DaemonController:
             self.logger.exception(message)
 
     def refresh_daemon_misc_settings(self):
-        old_time = self.relay_usage_report_next_gen
-        self.relay_usage_report_next_gen = next_schedule(
-            self.relay_usage_report_span,
-            self.relay_usage_report_day,
-            self.relay_usage_report_hour)
+        old_time = self.output_usage_report_next_gen
+        self.output_usage_report_next_gen = next_schedule(
+            self.output_usage_report_span,
+            self.output_usage_report_day,
+            self.output_usage_report_hour)
         try:
             self.logger.debug("Refreshing misc settings")
             misc = db_retrieve_table_daemon(Misc, entry='first')
             self.opt_out_statistics = misc.stats_opt_out
             self.enable_upgrade_check = misc.enable_upgrade_check
-            self.relay_usage_report_gen = misc.relay_usage_report_gen
-            self.relay_usage_report_span = misc.relay_usage_report_span
-            self.relay_usage_report_day = misc.relay_usage_report_day
-            self.relay_usage_report_hour = misc.relay_usage_report_hour
-            if (self.relay_usage_report_gen and
-                    old_time != self.relay_usage_report_next_gen):
+            self.output_usage_report_gen = misc.output_usage_report_gen
+            self.output_usage_report_span = misc.output_usage_report_span
+            self.output_usage_report_day = misc.output_usage_report_day
+            self.output_usage_report_hour = misc.output_usage_report_hour
+            if (self.output_usage_report_gen and
+                    old_time != self.output_usage_report_next_gen):
                 str_next_report = time.strftime(
-                    '%c', time.localtime(self.relay_usage_report_next_gen))
+                    '%c', time.localtime(self.output_usage_report_next_gen))
                 self.logger.debug(
                     "Generating next output usage report {time_date}".format(
                         time_date=str_next_report))
@@ -753,18 +753,18 @@ class DaemonController:
                       " {err}".format(err=except_msg)
             self.logger.exception(message)
 
-    def relay_off(self, relay_id, trigger_conditionals=True):
+    def output_off(self, output_id, trigger_conditionals=True):
         """
         Turn output off using default output controller
 
-        :param relay_id: Unique ID for output
-        :type relay_id: str
+        :param output_id: Unique ID for output
+        :type output_id: str
         :param trigger_conditionals: Whether to trigger output conditionals or not
         :type trigger_conditionals: bool
         """
         try:
             self.controller['Output'].output_on_off(
-                relay_id,
+                output_id,
                 'off',
                 trigger_conditionals=trigger_conditionals)
             return "Turned off"
@@ -773,13 +773,13 @@ class DaemonController:
                       " {err}".format(err=except_msg)
             self.logger.exception(message)
 
-    def relay_on(self, relay_id, duration=0.0, min_off=0.0,
+    def output_on(self, output_id, duration=0.0, min_off=0.0,
                  duty_cycle=0.0, trigger_conditionals=True):
         """
         Turn output on using default output controller
 
-        :param relay_id: Unique ID for output
-        :type relay_id: str
+        :param output_id: Unique ID for output
+        :type output_id: str
         :param duration: How long to turn the output on
         :type duration: float
         :param min_off: Don't turn on if not off for at least this duration (0 = disabled)
@@ -791,7 +791,7 @@ class DaemonController:
         """
         try:
             self.controller['Output'].output_on_off(
-                relay_id,
+                output_id,
                 'on',
                 duration=duration,
                 min_off=min_off,
@@ -803,7 +803,7 @@ class DaemonController:
                       " {err}".format(err=except_msg)
             self.logger.exception(message)
 
-    def output_setup(self, action, relay_id):
+    def output_setup(self, action, output_id):
         """
         Setup output in running output controller
 
@@ -812,25 +812,25 @@ class DaemonController:
 
         :param action: What action to perform on a specific output ID
         :type action: str
-        :param relay_id: Unique ID for output
-        :type relay_id: str
+        :param output_id: Unique ID for output
+        :type output_id: str
         """
         try:
-            return self.controller['Output'].output_setup(action, relay_id)
+            return self.controller['Output'].output_setup(action, output_id)
         except Exception as except_msg:
             message = "Could not set up output:" \
                       " {err}".format(err=except_msg)
             self.logger.exception(message)
 
-    def output_state(self, relay_id):
+    def output_state(self, output_id):
         """
         Return the output state, wither "on" or "off"
 
-        :param relay_id: Unique ID for output
-        :type relay_id: str
+        :param output_id: Unique ID for output
+        :type output_id: str
         """
         try:
-            return self.controller['Output'].output_state(relay_id)
+            return self.controller['Output'].output_state(output_id)
         except Exception as except_msg:
             message = "Could not query output state:" \
                       " {err}".format(err=except_msg)

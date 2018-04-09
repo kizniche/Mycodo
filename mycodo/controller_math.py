@@ -90,7 +90,7 @@ class MathController(threading.Thread):
             self.allowed_to_send_notice = True
 
             self.math_id = math_id
-            math = db_retrieve_table_daemon(Math, device_id=self.math_id)
+            math = db_retrieve_table_daemon(Math, unique_id=self.math_id)
 
             # General variables
             self.unique_id = math.unique_id

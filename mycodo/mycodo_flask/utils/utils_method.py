@@ -13,7 +13,7 @@ from mycodo.mycodo_flask.extensions import db
 from mycodo.mycodo_flask.utils.utils_general import add_display_order
 from mycodo.mycodo_flask.utils.utils_general import delete_entry_with_id
 from mycodo.mycodo_flask.utils.utils_general import flash_success_errors
-from mycodo.utils.system_pi import csv_to_list_of_int
+from mycodo.utils.system_pi import csv_to_list_of_str
 from mycodo.utils.system_pi import list_to_csv
 
 logger = logging.getLogger(__name__)
@@ -99,16 +99,16 @@ def validate_method_data(form_data, this_method):
                       "error")
                 return 1
 
-    elif form_data.method_select.data == 'relay':
+    elif form_data.method_select.data == 'output':
         if this_method.method_type == 'Date':
-            if (not form_data.relay_time.data or
-                    not form_data.relay_id.data or
-                    not form_data.relay_state.data):
+            if (not form_data.output_time.data or
+                    not form_data.output_id.data or
+                    not form_data.output_state.data):
                 flash(gettext("Required: Date/Time, Output, and Output "
                               "State"), "error")
                 return 1
             try:
-                datetime.strptime(form_data.relay_time.data,
+                datetime.strptime(form_data.output_time.data,
                                   '%Y-%m-%d %H:%M:%S')
             except ValueError:
                 flash(gettext("Invalid Date/Time format. Correct format: "
@@ -116,22 +116,22 @@ def validate_method_data(form_data, this_method):
                 return 1
         elif this_method.method_type == 'Duration':
             if (not form_data.duration.data or
-                    not form_data.relay_id.data or
-                    not form_data.relay_state.data):
+                    not form_data.output_id.data or
+                    not form_data.output_state.data):
                 flash(gettext("Required: Output, Output State, and Output Duration"),
                       "error")
                 return 1
-            if not is_positive_integer(form_data.relay_duration.data):
+            if not is_positive_integer(form_data.output_duration.data):
                 return 1
         elif this_method.method_type == 'Daily':
-            if (not form_data.relay_daily_time.data or
-                    not form_data.relay_id.data or
-                    not form_data.relay_state.data):
+            if (not form_data.output_daily_time.data or
+                    not form_data.output_id.data or
+                    not form_data.output_state.data):
                 flash(gettext("Required: Time, Relay ID, and Relay State"),
                       "error")
                 return 1
             try:
-                datetime.strptime(form_data.relay_daily_time.data,
+                datetime.strptime(form_data.output_daily_time.data,
                                   '%H:%M:%S')
             except ValueError:
                 flash(gettext("Invalid Date/Time format. Correct format: "
@@ -156,42 +156,43 @@ def method_create(form_create_method):
 
         # Add new method line id to method display order
         method_order = DisplayOrder.query.first()
-        display_order = csv_to_list_of_int(method_order.method)
-        method_order.method = add_display_order(display_order, new_method.id)
+        display_order = csv_to_list_of_str(method_order.method)
+        method_order.method = add_display_order(display_order, new_method.unique_id)
         db.session.commit()
-
-        # For tables that require only one entry to configure,
-        # create that single entry now with default values
-        if new_method.method_type == 'DailySine':
-            new_method_data = MethodData()
-            new_method_data.method_id = new_method.id
-            new_method_data.amplitude = 1.0
-            new_method_data.frequency = 1.0
-            new_method_data.shift_angle = 0
-            new_method_data.shift_y = 1.0
-            db.session.add(new_method_data)
-            db.session.commit()
-        elif new_method.method_type == 'DailyBezier':
-            new_method_data = MethodData()
-            new_method_data.method_id = new_method.id
-            new_method_data.shift_angle = 0.0
-            new_method_data.x0 = 20.0
-            new_method_data.y0 = 20.0
-            new_method_data.x1 = 10.0
-            new_method_data.y1 = 13.5
-            new_method_data.x2 = 22.5
-            new_method_data.y2 = 30.0
-            new_method_data.x3 = 0.0
-            new_method_data.y3 = 20.0
-            db.session.add(new_method_data)
-            db.session.commit()
 
         # Add new method data line id to method_data display order
         if new_method.method_type in ['DailyBezier', 'DailySine']:
-            display_order = csv_to_list_of_int(new_method.method_order)
-            method = Method.query.filter(Method.id == new_method.id).first()
-            method.method_order = add_display_order(display_order,
-                                                    new_method_data.id)
+            # For tables that require only one entry to configure,
+            # create that single entry now with default values
+            new_method_data = MethodData()
+            new_method_data.method_id = new_method.unique_id
+
+            if new_method.method_type == 'DailySine':
+                new_method_data.amplitude = 1.0
+                new_method_data.frequency = 1.0
+                new_method_data.shift_angle = 0
+                new_method_data.shift_y = 1.0
+            elif new_method.method_type == 'DailyBezier':
+                new_method_data = MethodData()
+                new_method_data.method_id = new_method.unique_id
+                new_method_data.shift_angle = 0.0
+                new_method_data.x0 = 20.0
+                new_method_data.y0 = 20.0
+                new_method_data.x1 = 10.0
+                new_method_data.y1 = 13.5
+                new_method_data.x2 = 22.5
+                new_method_data.y2 = 30.0
+                new_method_data.x3 = 0.0
+                new_method_data.y3 = 20.0
+
+            db.session.add(new_method_data)
+            db.session.commit()
+
+            display_order = csv_to_list_of_str(new_method.method_order)
+            method = Method.query.filter(
+                Method.unique_id == new_method.unique_id).first()
+            method.method_order = add_display_order(
+                display_order, new_method_data.unique_id)
             db.session.commit()
 
         return 0
@@ -208,8 +209,9 @@ def method_add(form_add_method):
         controller=gettext("Method"))
     error = []
 
-    method = Method.query.filter(Method.id == form_add_method.method_id.data).first()
-    display_order = csv_to_list_of_int(method.method_order)
+    method = Method.query.filter(
+        Method.unique_id == form_add_method.method_id.data).first()
+    display_order = csv_to_list_of_str(method.method_order)
 
     try:
         if validate_method_data(form_add_method, method):
@@ -261,9 +263,10 @@ def method_add(form_add_method):
 
             if method.method_type in ['Date', 'Daily']:
                 # Check if the start time comes after the last entry's end time
-                display_order = csv_to_list_of_int(method.method_order)
+                display_order = csv_to_list_of_str(method.method_order)
                 if display_order:
-                    last_method = MethodData.query.filter(MethodData.id == display_order[-1]).first()
+                    last_method = MethodData.query.filter(
+                        MethodData.uniaue_id == display_order[-1]).first()
                 else:
                     last_method = None
 
@@ -285,12 +288,12 @@ def method_add(form_add_method):
                               "error")
                         return 1
 
-        elif form_add_method.method_select.data == 'relay':
+        elif form_add_method.method_select.data == 'output':
             if method.method_type == 'Date':
-                start_time = datetime.strptime(form_add_method.relay_time.data,
+                start_time = datetime.strptime(form_add_method.output_time.data,
                                                '%Y-%m-%d %H:%M:%S')
             elif method.method_type == 'Daily':
-                start_time = datetime.strptime(form_add_method.relay_daily_time.data,
+                start_time = datetime.strptime(form_add_method.output_daily_time.data,
                                                '%H:%M:%S')
 
         add_method_data = MethodData()
@@ -300,14 +303,14 @@ def method_add(form_add_method):
             if form_add_method.method_select.data == 'setpoint':
                 add_method_data.time_start = start_time.strftime('%Y-%m-%d %H:%M:%S')
                 add_method_data.time_end = end_time.strftime('%Y-%m-%d %H:%M:%S')
-            if form_add_method.method_select.data == 'relay':
-                add_method_data.time_start = form_add_method.relay_time.data
+            if form_add_method.method_select.data == 'output':
+                add_method_data.time_start = form_add_method.output_time.data
         elif method.method_type == 'Daily':
             if form_add_method.method_select.data == 'setpoint':
                 add_method_data.time_start = start_time.strftime('%H:%M:%S')
                 add_method_data.time_end = end_time.strftime('%H:%M:%S')
-            if form_add_method.method_select.data == 'relay':
-                add_method_data.time_start = form_add_method.relay_daily_time.data
+            if form_add_method.method_select.data == 'output':
+                add_method_data.time_start = form_add_method.output_daily_time.data
         elif method.method_type == 'Duration':
             if form_add_method.restart.data:
                 add_method_data.duration_sec = 0
@@ -318,18 +321,18 @@ def method_add(form_add_method):
         if form_add_method.method_select.data == 'setpoint':
             add_method_data.setpoint_start = form_add_method.setpoint_start.data
             add_method_data.setpoint_end = form_add_method.setpoint_end.data
-        elif form_add_method.method_select.data == 'relay':
-            add_method_data.relay_id = form_add_method.relay_id.data
-            add_method_data.relay_state = form_add_method.relay_state.data
-            add_method_data.relay_duration = form_add_method.relay_duration.data
+        elif form_add_method.method_select.data == 'output':
+            add_method_data.output_id = form_add_method.output_id.data
+            add_method_data.output_state = form_add_method.output_state.data
+            add_method_data.output_duration = form_add_method.output_duration.data
 
         db.session.add(add_method_data)
         db.session.commit()
 
-        # Add line to method data list if not a relay duration
-        if form_add_method.method_select.data != 'relay':
-            method.method_order = add_display_order(display_order,
-                                                    add_method_data.id)
+        # Add line to method data list if not a output duration
+        if form_add_method.method_select.data != 'output':
+            method.method_order = add_display_order(
+                display_order, add_method_data.unique_id)
             db.session.commit()
 
         if form_add_method.method_select.data == 'setpoint':
@@ -349,16 +352,16 @@ def method_add(form_add_method):
                 else:
                     flash(gettext("Added duration to method for %(sec)s seconds",
                                   sec=form_add_method.duration.data), "success")
-        elif form_add_method.method_select.data == 'relay':
+        elif form_add_method.method_select.data == 'output':
             if method.method_type == 'Date':
-                flash(gettext("Added relay modulation to method at start "
+                flash(gettext("Added output modulation to method at start "
                               "time: %(tm)s", tm=start_time), "success")
             elif method.method_type == 'Daily':
-                flash(gettext("Added relay modulation to method at start "
+                flash(gettext("Added output modulation to method at start "
                               "time: %(tm)s",
                               tm=start_time.strftime('%H:%M:%S')), "success")
             elif method.method_type == 'Duration':
-                flash(gettext("Added relay modulation to method at start "
+                flash(gettext("Added output modulation to method at start "
                               "time: %(tm)s",
                               tm=form_add_method.duration.data), "success")
 
@@ -375,19 +378,20 @@ def method_mod(form_mod_method):
     error = []
 
     method = Method.query.filter(
-        Method.id == form_mod_method.method_id.data).first()
+        Method.unique_id == form_mod_method.method_id.data).first()
     method_data = MethodData.query.filter(
-        MethodData.id == form_mod_method.method_data_id.data).first()
-    display_order = csv_to_list_of_int(method.method_order)
+        MethodData.unique_id == form_mod_method.method_data_id.data).first()
+    display_order = csv_to_list_of_str(method.method_order)
 
     try:
         if form_mod_method.Delete.data:
             delete_entry_with_id(MethodData,
                                  form_mod_method.method_data_id.data)
-            if form_mod_method.method_select.data != 'relay':
-                method_order = Method.query.filter(Method.id == method.id).first()
-                display_order = csv_to_list_of_int(method_order.method_order)
-                display_order.remove(method_data.id)
+            if form_mod_method.method_select.data != 'output':
+                method_order = Method.query.filter(
+                    Method.unique_id == method.unique_id).first()
+                display_order = csv_to_list_of_str(method_order.method_order)
+                display_order.remove(method_data.unique_id)
                 method_order.method_order = list_to_csv(display_order)
                 db.session.commit()
             return 0
@@ -412,13 +416,13 @@ def method_mod(form_mod_method):
                 previous_method = None
                 next_method = None
                 for index, each_order in enumerate(display_order):
-                    if each_order == method_data.id:
+                    if each_order == method_data.unique_id:
                         if len(display_order) > 1 and index > 0:
                             previous_method = MethodData.query.filter(
-                                MethodData.id == display_order[index-1]).first()
+                                MethodData.unique_id == display_order[index-1]).first()
                         if len(display_order) > index+1:
                             next_method = MethodData.query.filter(
-                                MethodData.id == display_order[index+1]).first()
+                                MethodData.unique_id == display_order[index+1]).first()
 
                 if previous_method is not None and previous_method.time_end is not None:
                     previous_end_time = datetime.strptime(
@@ -456,29 +460,29 @@ def method_mod(form_mod_method):
             method_data.setpoint_start = form_mod_method.setpoint_start.data
             method_data.setpoint_end = form_mod_method.setpoint_end.data
 
-        elif form_mod_method.method_select.data == 'relay':
+        elif form_mod_method.method_select.data == 'output':
             if method.method_type == 'Date':
-                method_data.time_start = form_mod_method.relay_time.data
+                method_data.time_start = form_mod_method.output_time.data
             elif method.method_type == 'Duration':
                 method_data.duration_sec = form_mod_method.duration.data
                 if form_mod_method.duration_sec.data == 0:
                     method_data.duration_end = form_mod_method.duration_end.data
-            if form_mod_method.relay_id.data == '':
-                method_data.relay_id = None
+            if form_mod_method.output_id.data == '':
+                method_data.output_id = None
             else:
-                method_data.relay_id = form_mod_method.relay_id.data
-            method_data.relay_state = form_mod_method.relay_state.data
-            method_data.relay_duration = form_mod_method.relay_duration.data
+                method_data.output_id = form_mod_method.output_id.data
+            method_data.output_state = form_mod_method.output_state.data
+            method_data.output_duration = form_mod_method.output_duration.data
 
         elif method.method_type == 'DailySine':
-            if form_mod_method.method_select.data == 'relay':
-                method_data.time_start = form_mod_method.relay_time.data
-                if form_mod_method.relay_id.data == '':
-                    method_data.relay_id = None
+            if form_mod_method.method_select.data == 'output':
+                method_data.time_start = form_mod_method.output_time.data
+                if form_mod_method.output_id.data == '':
+                    method_data.output_id = None
                 else:
-                    method_data.relay_id = form_mod_method.relay_id.data
-                method_data.relay_state = form_mod_method.relay_state.data
-                method_data.relay_duration = form_mod_method.relay_duration.data
+                    method_data.output_id = form_mod_method.output_id.data
+                method_data.output_state = form_mod_method.output_state.data
+                method_data.output_duration = form_mod_method.output_duration.data
 
         if not error:
             db.session.commit()

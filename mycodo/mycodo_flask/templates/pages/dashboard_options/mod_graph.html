@@ -14,7 +14,7 @@
 
   <form method="post" action="/dashboard">
     {{form_base.csrf_token}}
-    {{form_base.dashboard_id(value=each_graph.id)}}
+    {{form_base.dashboard_id(value=each_graph.unique_id)}}
     <input type="hidden" name="dashboard_type" value="{{each_graph.graph_type}}">
 
     <div style="padding: 0.5em;" class="form-row small-gutters">
@@ -65,12 +65,12 @@
 
     <div class="form-row">
       <div class="col-auto">
-        {{form_graph.sensor_ids.label(class_='control-label')}}
+        {{form_graph.input_ids.label(class_='control-label')}}
         <div>
-          <select class="form-control btn-default" id="sensor_ids" name="sensor_ids" style="width: 100%;" size="{{choices_input|length}}" multiple>
+          <select class="form-control btn-default" id="input_ids" name="input_ids" style="width: 100%;" size="{{choices_input|length}}" multiple>
           {% if choices_input %}
             {% for each_choice, value in choices_input.items() -%}
-            <option value="{{each_choice}}"{%- if each_choice|string in each_graph.sensor_ids_measurements %} selected{%- endif -%}>{{value}}</option>
+            <option value="{{each_choice}}"{%- if each_choice|string in each_graph.input_ids_measurements %} selected{%- endif -%}>{{value}}</option>
             {% endfor -%}
           {% else %}
             <option value="">{{_('None Available')}}</option>
@@ -93,12 +93,12 @@
         </div>
       </div>
       <div class="col-auto">
-        {{form_graph.relay_ids.label(class_='control-label')}}
+        {{form_graph.output_ids.label(class_='control-label')}}
         <div>
-          <select class="form-control btn-default" id="relay_ids" name="relay_ids" style="width: 100%;" size="{{choices_output|length}}" multiple>
+          <select class="form-control btn-default" id="output_ids" name="output_ids" style="width: 100%;" size="{{choices_output|length}}" multiple>
           {% if choices_output %}
             {% for each_choice, value in choices_output.items() -%}
-            <option value="{{each_choice}}"{%- if each_choice|string in each_graph.relay_ids %} selected{%- endif -%}>{{value}}</option>
+            <option value="{{each_choice}}"{%- if each_choice|string in each_graph.output_ids %} selected{%- endif -%}>{{value}}</option>
             {% endfor -%}
           {% else %}
             <option value="">{{_('None Available')}}</option>

@@ -20,7 +20,7 @@ from mycodo.mycodo_flask.utils.utils_general import flash_form_errors
 from mycodo.mycodo_flask.utils.utils_general import flash_success_errors
 from mycodo.mycodo_flask.utils.utils_general import reorder
 from mycodo.mycodo_flask.utils.utils_general import return_dependencies
-from mycodo.utils.system_pi import csv_to_list_of_int
+from mycodo.utils.system_pi import csv_to_list_of_str
 from mycodo.utils.system_pi import list_to_csv
 
 logger = logging.getLogger(__name__)
@@ -53,10 +53,10 @@ def math_add(form_add_math):
         try:
             new_math.save()
 
-            display_order = csv_to_list_of_int(
+            display_order = csv_to_list_of_str(
                 DisplayOrder.query.first().math)
             DisplayOrder.query.first().math = add_display_order(
-                display_order, new_math.id)
+                display_order, new_math.unique_id)
             db.session.commit()
 
             flash(gettext(
@@ -89,7 +89,7 @@ def math_mod(form_mod_math, form_mod_type=None):
 
     try:
         mod_math = Math.query.filter(
-            Math.id == form_mod_math.math_id.data).first()
+            Math.unique_id == form_mod_math.math_id.data).first()
 
         if mod_math.is_activated:
             error.append(gettext(
@@ -198,7 +198,7 @@ def math_del(form_mod_math):
 
     try:
         math = Math.query.filter(
-            Math.id == form_mod_math.math_id.data).first()
+            Math.unique_id == form_mod_math.math_id.data).first()
         if math.is_activated:
             controller_activate_deactivate(
                 'deactivate',
@@ -218,8 +218,8 @@ def math_del(form_mod_math):
 
         delete_entry_with_id(Math, form_mod_math.math_id.data)
         try:
-            display_order = csv_to_list_of_int(DisplayOrder.query.first().math)
-            display_order.remove(int(form_mod_math.math_id.data))
+            display_order = csv_to_list_of_str(DisplayOrder.query.first().math)
+            display_order.remove(form_mod_math.math_id.data)
             DisplayOrder.query.first().math = list_to_csv(display_order)
         except Exception:  # id not in list
             pass

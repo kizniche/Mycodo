@@ -1,6 +1,6 @@
 # coding=utf-8
 #
-# controller_timer.py - Timer controller to turn relays on or off
+# controller_timer.py - Timer controller to turn outputs on or off
 #                       at predefined intervals or at specific times
 #                       of the day.
 #
@@ -60,9 +60,9 @@ class TimerController(threading.Thread):
         self.timer_id = timer_id
         self.control = DaemonControl()
 
-        timer = db_retrieve_table_daemon(Timer, device_id=self.timer_id)
+        timer = db_retrieve_table_daemon(Timer, unique_id=self.timer_id)
         self.timer_type = timer.timer_type
-        self.output_unique_id = timer.relay_id
+        self.output_unique_id = timer.output_id
         self.method_id = timer.method_id
         self.method_period = timer.method_period
         self.state = timer.state
@@ -97,7 +97,7 @@ class TimerController(threading.Thread):
         self.running = False
 
         if self.method_id:
-            method = db_retrieve_table_daemon(Method, device_id=self.method_id)
+            method = db_retrieve_table_daemon(Method, unique_id=self.method_id)
             method_data = db_retrieve_table_daemon(MethodData)
             method_data = method_data.filter(MethodData.method_id == self.method_id)
             method_data_repeat = method_data.filter(MethodData.duration_sec == 0).first()
@@ -186,7 +186,7 @@ class TimerController(threading.Thread):
             # Timer is set to react at a specific time duration of the day
             elif self.timer_type == 'timespan':
                 if time_between_range(self.time_start, self.time_end):
-                    current_output_state = self.control.relay_state(self.output_id)
+                    current_output_state = self.control.output_state(self.output_id)
                     if self.state != current_output_state:
                         message = "Output {output} should be {state}, but is " \
                                   "{cstate}. Turning {state}.".format(
@@ -212,7 +212,7 @@ class TimerController(threading.Thread):
                                         output=self.output_id,
                                         onsec=self.duration_on,
                                         offsec=self.duration_off))
-                    output_on = threading.Thread(target=self.control.relay_on,
+                    output_on = threading.Thread(target=self.control.output_on,
                                                 args=(self.output_id,
                                                       self.duration_on,))
                     output_on.start()
@@ -228,7 +228,7 @@ class TimerController(threading.Thread):
                                 "Activate the Timer controller to start it again.")
                         else:
                             this_controller = db_retrieve_table_daemon(
-                                Timer, device_id=self.timer_id)
+                                Timer, unique_id=self.timer_id)
                             setpoint, ended = calculate_method_setpoint(
                                 self.method_id,
                                 Timer,
@@ -248,7 +248,7 @@ class TimerController(threading.Thread):
                                     output=self.output_id,
                                     dc=setpoint))
                             # Activate pwm with calculated duty cycle
-                            self.control.relay_on(
+                            self.control.output_on(
                                 self.output_id,
                                 duty_cycle=setpoint)
                         self.pwm_method_timer = time.time() + self.method_period
@@ -257,7 +257,7 @@ class TimerController(threading.Thread):
 
             time.sleep(0.1)
 
-        self.control.relay_off(self.output_id)
+        self.control.output_off(self.output_id)
         self.running = False
         self.logger.info("Deactivated in {:.1f} ms".format(
             (timeit.default_timer() - self.thread_shutdown_timer) * 1000))

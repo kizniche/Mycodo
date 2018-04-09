@@ -108,29 +108,29 @@ class DaemonControl:
     def ram_use(self):
         return self.rpyc_client.root.ram_use()
 
-    def relay_off(self, relay_id, trigger_conditionals=True):
-        return self.rpyc_client.root.relay_off(relay_id, trigger_conditionals)
+    def output_off(self, output_id, trigger_conditionals=True):
+        return self.rpyc_client.root.output_off(output_id, trigger_conditionals)
 
-    def relay_on(self, relay_id, duration=0.0, min_off=0.0,
+    def output_on(self, output_id, duration=0.0, min_off=0.0,
                  duty_cycle=0.0, trigger_conditionals=True):
-        return self.rpyc_client.root.relay_on(
-            relay_id, duration=duration, min_off=min_off,
+        return self.rpyc_client.root.output_on(
+            output_id, duration=duration, min_off=min_off,
             duty_cycle=duty_cycle, trigger_conditionals=trigger_conditionals)
 
-    def output_on_off(self, relay_id, state, duration=0.0):
+    def output_on_off(self, output_id, state, duration=0.0):
         if state == 'on':
-            return self.relay_on(relay_id, duration)
+            return self.output_on(output_id, duration)
         else:
-            return self.relay_off(relay_id)
+            return self.output_off(output_id)
 
-    def output_sec_currently_on(self, relay_id):
-        return self.rpyc_client.root.output_sec_currently_on(relay_id)
+    def output_sec_currently_on(self, output_id):
+        return self.rpyc_client.root.output_sec_currently_on(output_id)
 
-    def relay_setup(self, action, relay_id):
-        return self.rpyc_client.root.relay_setup(action, relay_id)
+    def output_setup(self, action, output_id):
+        return self.rpyc_client.root.output_setup(action, output_id)
 
-    def relay_state(self, relay_id):
-        return self.rpyc_client.root.relay_state(relay_id)
+    def output_state(self, output_id):
+        return self.rpyc_client.root.output_state(output_id)
 
     def refresh_daemon_camera_settings(self):
         return self.rpyc_client.root.refresh_daemon_camera_settings()
@@ -251,18 +251,18 @@ def parseargs(parser):
                         help="Return the amount of ram used by the Mycodo daemon")
 
     # Output
-    # TODO: Rename relay to output
-    parser.add_argument('--relayoff', metavar='RELAYID', type=str,
-                        help='Turn off relay with relay ID',
+    # TODO: Rename output to output
+    parser.add_argument('--outputoff', metavar='RELAYID', type=str,
+                        help='Turn off output with output ID',
                         required=False)
-    parser.add_argument('--relayon', metavar='RELAYID', type=str,
-                        help='Turn on relay with relay ID',
+    parser.add_argument('--outputon', metavar='RELAYID', type=str,
+                        help='Turn on output with output ID',
                         required=False)
     parser.add_argument('--duration', metavar='SECONDS', type=float,
-                        help='Turn on relay for a duration of time (seconds)',
+                        help='Turn on output for a duration of time (seconds)',
                         required=False)
     parser.add_argument('--dutycycle', metavar='DUTYCYCLE', type=float,
-                        help='Turn on PWM relay for a duty cycle (%%)',
+                        help='Turn on PWM output for a duty cycle (%%)',
                         required=False)
 
     parser.add_argument('-t', '--terminate', action='store_true',
@@ -288,28 +288,28 @@ if __name__ == "__main__":
             "[Remote command] Daemon Ram in Use: {msg} MB".format(
                 msg=return_msg))
 
-    elif args.relayoff:
-        return_msg = daemon.relay_off(args.relayoff)
-        logger.info("[Remote command] Turn off relay with ID '{id}': "
+    elif args.outputoff:
+        return_msg = daemon.output_off(args.outputoff)
+        logger.info("[Remote command] Turn off output with ID '{id}': "
                     "Server returned: {msg}".format(
-                        id=args.relayoff,
+                        id=args.outputoff,
                         msg=return_msg))
 
-    elif args.duration and args.relayon is None:
-        parser.error("--duration requires --relayon")
+    elif args.duration and args.outputon is None:
+        parser.error("--duration requires --outputon")
 
-    elif args.relayon:
+    elif args.outputon:
         if args.duration:
-            return_msg = daemon.relay_on(
-                args.relayon, duration=args.duration)
+            return_msg = daemon.output_on(
+                args.outputon, duration=args.duration)
         elif args.duty_cycle:
-            return_msg = daemon.relay_on(
-                args.relayon, duty_cycle=args.duty_cycle)
+            return_msg = daemon.output_on(
+                args.outputon, duty_cycle=args.duty_cycle)
         else:
-            return_msg = daemon.relay_on(args.relayon)
-        logger.info("[Remote command] Turn on relay with ID '{id}': "
+            return_msg = daemon.output_on(args.outputon)
+        logger.info("[Remote command] Turn on output with ID '{id}': "
                     "Server returned:".format(
-                        id=args.relayon,
+                        id=args.outputon,
                         msg=return_msg))
 
     elif args.activatecontroller:

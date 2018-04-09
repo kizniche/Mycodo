@@ -13,7 +13,7 @@ MYCODO_DB_PATH = 'sqlite:///' + SQL_DATABASE_MYCODO
 logger = logging.getLogger("mycodo.database")
 
 
-def db_retrieve_table(table, entry=None, device_id=None):
+def db_retrieve_table(table, entry=None, unique_id=None):
     """
     Return SQL database query object with optional filtering
     Used in Flask (For daemon, see db_retrieve_table_daemon() below)

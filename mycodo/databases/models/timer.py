@@ -17,7 +17,7 @@ class Timer(CRUDMixin, db.Model):
     method_start_time = db.Column(db.Text, default=None)
     method_end_time = db.Column(db.Text, default=None)
     method_period = db.Column(db.Float, default=None)
-    relay_id = db.Column(db.Integer, db.ForeignKey('relay.id'), default=None)
+    output_id = db.Column(db.String, db.ForeignKey('output.unique_id'), default=None)
     state = db.Column(db.Text, default=None)  # 'on' or 'off'
     time_start = db.Column(db.Text, default=None)
     time_end = db.Column(db.Text, default=None)

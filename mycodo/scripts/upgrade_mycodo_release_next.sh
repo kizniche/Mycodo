@@ -1,5 +1,5 @@
 #!/bin/bash
-# Upgrade to the next release within the current major version number
+# Upgrade to the next release past the current major version number
 
 ARG=$1
 
@@ -26,9 +26,9 @@ runSelfUpgrade() {
   NOW=$(date +"%Y-%m-%d_%H-%M-%S")
   CURRENT_VERSION=$(${INSTALL_DIRECTORY}/Mycodo/env/bin/python3 ${INSTALL_DIRECTORY}/Mycodo/mycodo/utils/github_release_info.py -c 2>&1)
   BACKUP_DIR="/var/Mycodo-backups/Mycodo-backup-${NOW}-${CURRENT_VERSION}"
-  UPDATE_VERSION=$(${INSTALL_DIRECTORY}/Mycodo/env/bin/python3 ${INSTALL_DIRECTORY}/Mycodo/mycodo/utils/github_release_info.py -m 5 -v 2>&1)
+  UPDATE_VERSION=$(${INSTALL_DIRECTORY}/Mycodo/env/bin/python3 ${INSTALL_DIRECTORY}/Mycodo/mycodo/utils/github_release_info.py -m 6 -v 2>&1)
   MYCODO_NEW_TMP_DIR="/tmp/Mycodo-${UPDATE_VERSION}"
-  UPDATE_URL=$(${INSTALL_DIRECTORY}/Mycodo/env/bin/python3 ${INSTALL_DIRECTORY}/Mycodo/mycodo/utils/github_release_info.py -m 5 2>&1)
+  UPDATE_URL=$(${INSTALL_DIRECTORY}/Mycodo/env/bin/python3 ${INSTALL_DIRECTORY}/Mycodo/mycodo/utils/github_release_info.py -m 6 2>&1)
   TARBALL_FILE="mycodo-${UPDATE_VERSION}"
 
   printf "\n"

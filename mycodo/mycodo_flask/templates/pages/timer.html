@@ -59,13 +59,13 @@
 
   {%- if display_order -%}
   {%- for order in display_order -%}
-    {% for each_timer in timer if each_timer.id == order %}
+    {% for each_timer in timer if each_timer.unique_id == order %}
 
     <div class="container" style="border: 2px solid #ddd;">
 
       <form method="post" action="/timer">
       {{form_timer_base.csrf_token}}
-      {{form_timer_base.timer_id(class_='form-control', value=each_timer.id)}}
+      {{form_timer_base.timer_id(class_='form-control', value=each_timer.unique_id)}}
 
       <div class="row {% if each_timer.is_activated -%}active-background
                            {% else -%}inactive-background
@@ -79,7 +79,7 @@
           {{form_timer_base.name(class_='form-control', value=each_timer.name, **{'title':_('A name to distinguish this from others')})}}
         </div>
         <div class="col-sm-2">
-          <input class="form-control btn btn-default" disabled="" value="[{{'%02d' % each_timer.id}}] {{each_timer.timer_type}} (
+          <input class="form-control btn btn-default" disabled="" title="UUID: {{each_timer.unique_id}}" value="[{{'%02d' % each_timer.id}}] {{each_timer.timer_type}} (
             {%- if each_timer.is_activated %}{{_('Active')}}
             {%- else %}{{_('Inactive')}}
             {%-endif -%}

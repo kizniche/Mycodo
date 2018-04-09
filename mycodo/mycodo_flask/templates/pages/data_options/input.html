@@ -3,13 +3,13 @@
 
 {%- if display_order_input -%}
 {%- for order in display_order_input -%}
-  {%- for each_input in input if each_input.id == order -%}
+  {%- for each_input in input if each_input.unique_id == order -%}
 
 <div class="container" style="border: 2px solid #ddd; border-radius: 5px;">
 
   <form method="post" action="/data">
     {{form_mod_input.csrf_token}}
-    {{form_mod_input.input_id(value=each_input.id)}}
+    {{form_mod_input.input_id(value=each_input.unique_id)}}
 
   <div class="row {% if each_input.is_activated -%}active-background
                   {% else -%}inactive-background
@@ -54,8 +54,8 @@
   <div class="collapse" id="collapseContainer-input-{{each_input.id}}">
 
     {% if each_input.device in ['RPiCPULoad', 'RPiFreeSpace'] -%}
-      <input id="pre_relay_id" name="pre_relay_id" type="hidden" value="0">
-      <input id="pre_relay_duration" name="pre_relay_duration" type="hidden" value="0">
+      <input id="pre_output_id" name="pre_output_id" type="hidden" value="0">
+      <input id="pre_output_duration" name="pre_output_duration" type="hidden" value="0">
     {% endif -%}
 
     <div class="row small-gutters" style="padding: 0.5em">
@@ -87,57 +87,26 @@
 
       {% if each_input.device not in ['EDGE', 'RPi', 'RPiCPULoad', 'RPiFreeSpace', 'MYCODO_RAM'] -%}
         <div class="col-auto">
-          {{form_mod_input.pre_relay_id.label(class_='control-label')}}
+          {{form_mod_input.pre_output_id.label(class_='control-label')}}
           <div>
-            <select class="form-control form-tooltip form-dropdown" data-placement="top" id="pre_relay_id" name="pre_relay_id" title="{{_('Turn the selected relay on before taking every measurement')}}.">
+            <select class="form-control form-tooltip form-dropdown" data-placement="top" id="pre_output_id" name="pre_output_id" title="{{_('Turn the selected output on before taking every measurement')}}.">
               <option value="">Disabled</option>
-              {% for each_output in output if each_output.relay_type not in ['pwm', 'command_pwm'] -%}
-                <option value="{{each_output.id}}"{% if each_input.pre_relay_id == each_output.id %} selected{% endif %}>{{"[{0:02d}]".format(each_output.id)}} {{each_output.name}}</option>
+              {% for each_output in output if each_output.output_type not in ['pwm', 'command_pwm'] -%}
+                <option value="{{each_output.unique_id}}"{% if each_input.pre_output_id == each_output.unique_id %} selected{% endif %}>{{"[{0:02d}]".format(each_output.id)}} {{each_output.name}}</option>
               {% endfor -%}
             </select>
           </div>
         </div>
         <div class="col-auto">
-          {{form_mod_input.pre_relay_duration.label(class_='control-label')}}
+          {{form_mod_input.pre_output_duration.label(class_='control-label')}}
           <div>
-            {{form_mod_input.pre_relay_duration(class_='form-control', value=each_input.pre_relay_duration, **{'title':_('If a Pre Output is selected, set the duration (seconds) to turn the Pre Output on for before every measurement is acquired.')})}}
+            {{form_mod_input.pre_output_duration(class_='form-control', value=each_input.pre_output_duration, **{'title':_('If a Pre Output is selected, set the duration (seconds) to turn the Pre Output on for before every measurement is acquired.')})}}
           </div>
         </div>
         <div class="col-auto">
-          {{form_mod_input.pre_relay_during_measure.label(class_='control-label')}}
+          {{form_mod_input.pre_output_during_measure.label(class_='control-label')}}
           <div class="input-group-text">
-            <input id="pre_relay_during_measure" name="pre_relay_during_measure" type="checkbox" value="y"{% if each_input.pre_relay_during_measure %} checked{% endif %}>
-          </div>
-        </div>
-      {% endif -%}
-
-      {% if each_input.device in list_devices_i2c -%}
-        <div class="col-auto">
-          {{form_mod_input.multiplexer_address.label(class_='control-label')}}
-          <div>
-            <select class="form-control form-tooltip form-dropdown" data-placement="top" id="multiplexer_address" name="multiplexer_address" title="{{_('The I2C address of the multiplexer (if used)')}}.">
-              <option value=""{% if each_input.multiplexer_address == '' %} selected{% endif %}>{{_('Disabled')}}</option>
-            {% for each_mp_add in multiplexer_addresses %}
-              <option value="{{each_mp_add}}"{% if each_input.multiplexer_address == each_mp_add %} selected{% endif %}>{{_('I2C Address %(address)s', address=each_mp_add)}}</option>
-            {% endfor %}
-            </select>
-          </div>
-        </div>
-        <div class="col-auto">
-          {{form_mod_input.multiplexer_bus.label(class_='control-label')}}
-          <div>
-            {{form_mod_input.multiplexer_bus(class_='form-control', value=each_input.multiplexer_bus, **{'title':_('Which I2C bus is this multiplexer connected?')})}}
-          </div>
-        </div>
-        <div class="col-auto">
-          {{form_mod_input.multiplexer_channel.label(class_='control-label')}}
-          <div>
-            <select class="form-control form-tooltip form-dropdown" data-placement="top" id="multiplexer_channel" name="multiplexer_channel" rel="tooltip" title="{{_('If a multiplexer address is selected, select the channel connected to your target device')}}.">
-              <option value=""{% if each_input.multiplexer_channel == '' %} selected{% endif %}>{{_('Disabled')}}</option>
-            {% for each_mp_chan in multiplexer_channels %}
-              <option value="{{each_mp_chan}}"{% if each_input.multiplexer_channel == each_mp_chan %} selected{% endif %}>{{_('Channel %(channel)s', channel=each_mp_chan)}}</option>
-            {% endfor %}
-            </select>
+            <input id="pre_output_during_measure" name="pre_output_during_measure" type="checkbox" value="y"{% if each_input.pre_output_during_measure %} checked{% endif %}>
           </div>
         </div>
       {% endif -%}
