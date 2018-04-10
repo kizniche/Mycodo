@@ -9,7 +9,7 @@ from datetime import timedelta
 import os
 from flask_babel import lazy_gettext
 
-MYCODO_VERSION = '5.7.2'
+MYCODO_VERSION = '6.0.0'
 ALEMBIC_VERSION = '758f88901bbc'
 
 #  FORCE_UPGRADE_MASTER
@@ -719,8 +719,6 @@ THEMES = [
     ('united', 'United'),
     ('yeti', 'Yeti')
 ]
-
-LAST_VERSIONS_UPGRADE = ['5.7.2']
 
 THEMES_DARK = ['cyborg', 'darkly', 'slate', 'solar', 'superhero']
 
