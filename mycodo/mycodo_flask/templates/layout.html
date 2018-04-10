@@ -233,7 +233,7 @@
               <div class="dropdown-divider"></div>
               <a class="dropdown-item{% if active_page == 'dependencies' %} active{% endif %}" href="{{url_for('routes_admin.admin_dependencies_main')}}"><i class="fa fa-link"></i> {{_('Dependencies')}}</a>
               <div class="dropdown-divider"></div>
-              <a class="{% if upgrade_available %}dropdown-item-upgrade{% elif active_page == 'upgrade' %}active{% else %}dropdown-item{% endif %}" href="{{url_for('routes_admin.admin_upgrade')}}"><i class="fas fa-upload"></i> {{_('Upgrade')}}</a>
+              <a class="dropdown-item{% if upgrade_available %} dropdown-item-upgrade{% elif active_page == 'upgrade' %} active{% endif %}" href="{{url_for('routes_admin.admin_upgrade')}}"><i class="fas fa-upload"></i> {{_('Upgrade')}}</a>
               <a class="dropdown-item{% if active_page == 'backup' %} active{% endif %}" href="{{url_for('routes_admin.admin_backup')}}"><i class=" fas fa-save"></i> {{_('Backup Restore')}}</a>
               <div class="dropdown-divider"></div>
               <a class="dropdown-item" href="/systemctl/daemon_restart"onclick='return confirm("Confirm restarting the backend")'><i class="fas fa-redo-alt"></i> {{_('Restart Backend')}}</a>

@@ -163,7 +163,7 @@ class InputController(threading.Thread):
         # Check if Pre-Output ID actually exists
         output = db_retrieve_table_daemon(Output, entry='all')
         for each_output in output:
-            if each_output.id == self.pre_output_id and self.pre_output_duration:
+            if each_output.unique_id == self.pre_output_id and self.pre_output_duration:
                 self.pre_output_setup = True
 
         smtp = db_retrieve_table_daemon(SMTP, entry='first')

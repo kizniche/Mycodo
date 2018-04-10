@@ -422,7 +422,7 @@ $(document).ready(function() {
             yAxis: '{{each_pid.measurement.split(',')[1]}}',
             data: []
           },
-            {% elif each_id_meas.split(',')[1] == 'pid_output' %}
+            {% elif each_id_meas.split(',')[1] == 'duration_sec' %}
           {
             name: '{{each_pid.name}} {{_('Output')}} {{_('Duration')}}',
             type: 'line',

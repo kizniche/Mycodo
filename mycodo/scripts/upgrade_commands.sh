@@ -2,7 +2,6 @@
 #
 #  upgrade_commands.sh - Mycodo commands
 #
-# TODO: Rename this file
 if [ "$EUID" -ne 0 ] ; then
   printf "Please run as root.\n"
   exit 1
@@ -63,7 +62,8 @@ Options:
   update-swap-size              Ensure sqap size is sufficiently large (512 MB)
   install-numpy                 Install numpy
   install-wiringpi              Install wiringpi
-  upgrade                       Upgrade Mycodo to the latest release
+  upgrade                       Upgrade Mycodo to the latest release (of the current major version)
+  upgrade-next-release          Upgrade Mycodo to the next major version release
   upgrade-master                Upgrade Mycodo to the master branch of the Mycodo github repository
   upgrade-post                  Post-Upgrade commands
   web-server-connect            Attampt to connect to the web server
@@ -186,11 +186,6 @@ case "${1:-''}" in
             -in server.csr \
             -signkey server.key \
             -out server.crt
-
-        # Conform to current file-naming format
-        # TODO: Change to appropriate names in the future
-        ln -s server.key privkey.pem
-        ln -s server.crt cert.pem
     ;;
     'ssl-certs-regenerate')
         printf "\n#### Regenerating SSL certificates at ${MYCODO_PATH}/mycodo/mycodo_flask/ssl_certs\n"
@@ -413,6 +408,9 @@ case "${1:-''}" in
     ;;
     'upgrade')
         /bin/bash ${MYCODO_PATH}/mycodo/scripts/upgrade_mycodo_release.sh
+    ;;
+    'upgrade-next-release')
+        /bin/bash ${MYCODO_PATH}/mycodo/scripts/upgrade_mycodo_release_next.sh
     ;;
     'upgrade-master')
         /bin/bash ${MYCODO_PATH}/mycodo/scripts/upgrade_mycodo_release.sh force-upgrade-master

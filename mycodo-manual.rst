@@ -262,13 +262,10 @@ the measurement database to be used throughout the Mycodo system.
 |                       | will need to either select a serial number      |
 |                       | (DS18B20 temperature sensor), a GPIO pin (in    |
 |                       | the case of sensors read by a GPIO), or an I2C  |
-|                       | address. and channel if using the TCA9548A I2C  |
-|                       | multiplexer.                                    |
+|                       | address. or other.                              |
 +-----------------------+-------------------------------------------------+
 | I2C Bus               | The bus to be used to communicate with the I2C  |
-|                       | address. If you're using an I2C multiplexer     |
-|                       | that provides multiple buses, this allows you   |
-|                       | to select which bus the sensor is connected to. |
+|                       | address.                                        |
 +-----------------------+-------------------------------------------------+
 | Period (seconds)      | After the sensor is successfully read and a     |
 |                       | database entry is made, this is the duration of |
@@ -326,18 +323,6 @@ the measurement database to be used throughout the Mycodo system.
 |                       | not be recorded. This enables devices such as   |
 |                       | PIR motion sensors that may stay activated for  |
 |                       | longer periods of time.                         |
-+-----------------------+-------------------------------------------------+
-| Multiplexer (MX)      | If connected to the TCA9548A I2C multiplexer,   |
-|                       | select what the I2C address of the multiplexer  |
-|                       | is.                                             |
-+-----------------------+-------------------------------------------------+
-| Mx I2C Bus            | If connected to the TCA9548A I2C multiplexer,   |
-|                       | select the I2C bus the multiplexer is connected |
-|                       | to.                                             |
-+-----------------------+-------------------------------------------------+
-| Mx Channel            | If connected to the TCA9548A I2C multiplexer,   |
-|                       | select the channel of the multiplexer the       |
-|                       | device is connected to.                         |
 +-----------------------+-------------------------------------------------+
 | Measurement           | Analog-to-digital converter only: The type of   |
 |                       | measurement being acquired by the ADC. For      |
@@ -1337,13 +1322,6 @@ next every set period.
 |                       | display.                                        |
 +-----------------------+-------------------------------------------------+
 | I2C Address           | Select the I2C to communicate with the LCD.     |
-+-----------------------+-------------------------------------------------+
-| Multiplexer I2C       | If the LCD is connected to a multiplexer,       |
-| Address               | select the multiplexer I2C address.             |
-+-----------------------+-------------------------------------------------+
-| Multiplexer Channel   | If the LCD is connected to a multiplexer,       |
-|                       | select the multiplexer channel the LCD is       |
-|                       | connected to.                                   |
 +-----------------------+-------------------------------------------------+
 | Period                | This is the period of time (in seconds) between |
 |                       | redrawing the LCD with new data or switching to |
@@ -2465,6 +2443,18 @@ limits by how many you can use at the same time. I2C multiplexers are
 extremely clever and useful in these scenarios because they allow
 multiple sensors with the same I2C address to be connected.
 
+Multiplexers can be set up by loading a kernel driver to handle the
+communication, producing a new I2C bus device for each multiplexer
+channel. To enable the driver for the TCA9548A/PCA9548A, visit
+`GPIO-pca9548 <https://github.com/Theoi-Meteoroi/GPIO-pca9548>`__ to get
+the code and latest install instructions. If successfully set up, there
+will be 8 new I2C busses on the ``Config -> System Information`` page.
+
+The driver for the TCA9545A can be found at
+https://github.com/camrex/i2c-mux-pca9545a and other drivers are available
+elsewhere. See the manufacturer or user forums for details. Some
+multiplexers I've tested are below.
+
     TCA9548A/PCA9548A: I2C Multiplexer
     `link <https://learn.adafruit.com/adafruit-tca9548a-1-to-8-i2c-multiplexer-breakout/overview>`__
     (I2C): Has 8 selectable addresses, so 8 multiplexers can be
@@ -2473,28 +2463,10 @@ multiple sensors with the same I2C address to be connected.
     connected to each multiplexer. 8 multiplexers x 8 channels = 64
     devices/sensors with the same I2C address.
 
-Note: The TCA9548A/PCA9548A can be set up in two ways. Either by A)
-connecting the multiplexer to an already-existing I2C bus and
-configuring each device manually in Mycodo, or B) (the easier and safer
-option) creating a dtoverlay to produce a new I2C bus device for each
-multiplexer channel. Method A can be used with the multiplexer options
-already existing in Mycodo, however option B benefits by allowing the
-linux driver to handle channel switching and being able to see every
-device on every bus at once in Mycodo's System Information page. To
-enable option B, visit
-`GPIO-pca9548 <https://github.com/Theoi-Meteoroi/GPIO-pca9548>`__ to get
-the code and latest install instructions. If successfully set up, there
-will be 8 new I2C busses on the ``Config -> System Information`` page.
-
     TCA9545A: I2C Bus Multiplexer
     `link <http://store.switchdoc.com/i2c-4-channel-mux-extender-expander-board-grove-pin-headers-for-arduino-and-raspberry-pi/>`__
-    (I2C): This board works a little differently than the TCA9548A,
-    above. This board actually creates 4 new I2C busses, each with their
-    own selectable voltage, either 3.3 or 5.0 volts. Instructions to
-    enable the Device Tree Overlay are at
-    https://github.com/camrex/i2c-mux-pca9545a. Nothing else needs to be
-    done in Mycodo after that except to select the correct I2C bus when
-    configuring a sensor.
+    (I2C): This board also creates 4 new I2C busses, but each with their
+    own selectable voltage, either 3.3 or 5.0 volts.
 
 Analog-to-Digital Converters
 ----------------------------

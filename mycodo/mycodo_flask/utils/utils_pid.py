@@ -66,10 +66,7 @@ def pid_mod(form_mod_pid_base,
     mod_pid.d = form_mod_pid_base.k_d.data
     mod_pid.integrator_min = form_mod_pid_base.integrator_max.data
     mod_pid.integrator_max = form_mod_pid_base.integrator_min.data
-    if form_mod_pid_base.method_id.data:
-        mod_pid.method_id = form_mod_pid_base.method_id.data
-    else:
-        mod_pid.method_id = None
+    mod_pid.method_id = form_mod_pid_base.method_id.data
 
     if form_mod_pid_base.raise_output_id.data:
         raise_output_type = Output.query.filter(

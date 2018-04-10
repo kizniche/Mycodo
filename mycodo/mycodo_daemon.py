@@ -100,21 +100,19 @@ def mycodo_service(mycodo):
         def exposed_controller_activate(cont_type, cont_id):
             """
             Activates a controller
-            This may be a Input, PID, Timer, or LCD controller
+            May be a Conditional, Input, Math, PID, Timer, or LCD controller
 
             """
-            return mycodo.controller_activate(
-                cont_type, cont_id)
+            return mycodo.controller_activate(cont_type, cont_id)
 
         @staticmethod
         def exposed_controller_deactivate(cont_type, cont_id):
             """
             Deactivates a controller
-            This may be a Input, PID, Timer, or LCD controller
+            May be a Conditional, Input, Math, PID, Timer, or LCD controller
 
             """
-            return mycodo.controller_deactivate(
-                cont_type, cont_id)
+            return mycodo.controller_deactivate(cont_type, cont_id)
 
         @staticmethod
         def exposed_check_daemon():
@@ -477,7 +475,7 @@ class DaemonController:
                 return 1, "'{type}' not a valid controller type.".format(
                     type=cont_type)
 
-            # Check if the controller ID actually exists and start it
+            # Check if the controller actually exists
             controller = db_retrieve_table_daemon(controller_manage['type'],
                                                   unique_id=cont_id)
 
@@ -517,7 +515,12 @@ class DaemonController:
         :type cont_id: str
         """
         try:
-            if cont_id in self.controller[cont_type]:
+            if cont_type == 'Conditional':
+                # Only refresh conditional settings
+                self.controller['Conditional'].setup_conditionals()
+                return 0, "{type} controller with ID {id} " \
+                          "activated.".format(type=cont_type, id=cont_id)
+            elif cont_id in self.controller[cont_type]:
                 if self.controller[cont_type][cont_id].is_running():
                     try:
                         self.controller[cont_type][cont_id].stop_controller()
@@ -657,12 +660,8 @@ class DaemonController:
                       " {err}".format(err=except_msg)
             self.logger.exception(message)
 
-    def pid_get(self, pid_unique_id, setting):
+    def pid_get(self, pid_id, setting):
         try:
-            with session_scope(MYCODO_DB_PATH) as new_session:
-                pid = new_session.query(PID).filter(
-                    PID.unique_id == pid_unique_id).first()
-                pid_id = pid.id
             if setting == 'setpoint':
                 return self.controller['PID'][pid_id].get_setpoint()
             elif setting == 'error':
@@ -682,12 +681,8 @@ class DaemonController:
                       " {err}".format(option=setting, err=except_msg)
             self.logger.exception(message)
 
-    def pid_set(self, pid_unique_id, setting, value):
+    def pid_set(self, pid_id, setting, value):
         try:
-            with session_scope(MYCODO_DB_PATH) as new_session:
-                pid = new_session.query(PID).filter(
-                    PID.unique_id == pid_unique_id).first()
-                pid_id = pid.id
             if setting == 'setpoint':
                 return self.controller['PID'][pid_id].set_setpoint(value)
             elif setting == 'method':
@@ -881,7 +876,8 @@ class DaemonController:
                         type=each_controller))
                 for each_entry in db_tables[each_controller]:
                     if each_entry.is_activated:
-                        self.controller_activate(each_controller, each_entry.unique_id)
+                        self.controller_activate(
+                            each_controller, each_entry.unique_id)
                 self.logger.info(
                     "All activated {type} controllers started".format(
                         type=each_controller))

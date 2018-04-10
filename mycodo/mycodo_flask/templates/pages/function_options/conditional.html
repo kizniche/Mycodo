@@ -66,7 +66,7 @@
 
     </form>
 
-    {% for each_cond_action in conditional_actions if each_cond_action.conditional_id == each_cond.id %}
+    {% for each_cond_action in conditional_actions if each_cond_action.conditional_id == each_cond.unique_id %}
 
       <form method="post" action="/function">
       {{form_conditional_actions.csrf_token}}

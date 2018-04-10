@@ -445,6 +445,34 @@ def admin_upgrade():
                 mod_misc.mycodo_upgrade_available = False
                 db.session.commit()
                 flash(gettext("The upgrade has started"), "success")
+        elif (form_upgrade.upgrade_next_major_version.data and
+                upgrade_available):
+            backup_size, free_before, free_after = can_perform_backup()
+            if free_after / 1000000 < 50:
+                flash(
+                    "A backup must be performed during an upgrade and there "
+                    "is not enough free space to perform a backup. A backup "
+                    "requires {size_bu:.1f} MB but there is only "
+                    "{size_free:.1f} MB available, which would leave "
+                    "{size_after:.1f} MB after the backup. If the free space "
+                    "after a backup is less than 50 MB, the backup cannot "
+                    "proceed. Free up space by deleting current "
+                    "backups.".format(size_bu=backup_size / 1000000,
+                                      size_free=free_before / 1000000,
+                                      size_after=free_after / 1000000),
+                    'error')
+            else:
+                cmd = "{pth}/mycodo/scripts/mycodo_wrapper upgrade-next-release" \
+                      " | ts '[%Y-%m-%d %H:%M:%S]'" \
+                      " >> {log} 2>&1".format(pth=INSTALL_DIRECTORY,
+                                              log=UPGRADE_LOG_FILE)
+                subprocess.Popen(cmd, shell=True)
+
+                upgrade = 1
+                mod_misc = Misc.query.first()
+                mod_misc.mycodo_upgrade_available = False
+                db.session.commit()
+                flash(gettext("The upgrade has started"), "success")
         else:
             flash(gettext("You cannot upgrade if an upgrade is not available"),
                   "error")

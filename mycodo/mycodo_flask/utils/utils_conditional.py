@@ -208,8 +208,7 @@ def conditional_action_mod(form):
             mod_action.do_action_string = form.do_action_string.data
             mod_action.do_unique_id = form.do_unique_id.data
 
-        elif mod_action.do_action in ['flash_lcd',
-                                      'flash_lcd_on',
+        elif mod_action.do_action in ['flash_lcd_on',
                                       'flash_lcd_off',
                                       'lcd_backlight_off',
                                       'lcd_backlight_on']:
@@ -404,7 +403,7 @@ def check_form_actions(form, error):
                          Camera.library != 'picamera')).count()):
             error.append('Only Pi Cameras can record video')
 
-    elif cond_action.do_action == 'flash_lcd':
+    elif cond_action.do_action == 'flash_lcd_on':
         if not form.do_unique_id.data:
             error.append("LCD must be set")
 
@@ -451,7 +450,7 @@ def check_cond_actions(cond_action, error):
                          Camera.library != 'picamera')).count()):
             error.append('Only Pi Cameras can record video')
 
-    elif cond_action.do_action == 'flash_lcd':
+    elif cond_action.do_action == 'flash_lcd_on':
         if not cond_action.do_unique_id:
             error.append("LCD must be set")
 

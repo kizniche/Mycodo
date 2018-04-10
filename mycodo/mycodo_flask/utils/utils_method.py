@@ -266,7 +266,7 @@ def method_add(form_add_method):
                 display_order = csv_to_list_of_str(method.method_order)
                 if display_order:
                     last_method = MethodData.query.filter(
-                        MethodData.uniaue_id == display_order[-1]).first()
+                        MethodData.unique_id == display_order[-1]).first()
                 else:
                     last_method = None
 

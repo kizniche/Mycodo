@@ -113,6 +113,8 @@ int main(int argc, char *argv[]) {
 			upgrade_commands(argv[0], "uninstall-pigpiod");
 		} else if (strcmp(argv[1], "upgrade") == 0) {
 			upgrade_commands(argv[0], "upgrade");
+		} else if (strcmp(argv[1], "upgrade-next-release") == 0) {
+			upgrade_commands(argv[0], "upgrade_next_release");
 		} else if (strcmp(argv[1], "upgrade-master") == 0) {
 			upgrade_commands(argv[0], "upgrade-master");
 		}

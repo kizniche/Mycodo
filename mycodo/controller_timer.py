@@ -52,7 +52,7 @@ class TimerController(threading.Thread):
         threading.Thread.__init__(self)
 
         self.logger = logging.getLogger(
-            "mycodo.timer_{id}".format(id=timer_id))
+            "mycodo.timer_{id}".format(id=timer_id.split('-')[0]))
 
         self.thread_startup_timer = timeit.default_timer()
         self.thread_shutdown_timer = 0
@@ -72,7 +72,7 @@ class TimerController(threading.Thread):
         self.duration_off = timer.duration_off
 
         self.output_id = db_retrieve_table_daemon(
-            Output, unique_id=self.output_unique_id).id
+            Output, unique_id=self.output_unique_id).unique_id
 
         # Time of day split into hour and minute
         if self.time_start:
@@ -123,7 +123,7 @@ class TimerController(threading.Thread):
 
                     with session_scope(MYCODO_DB_PATH) as db_session:
                         mod_timer = db_session.query(Timer)
-                        mod_timer = mod_timer.filter(Timer.id == self.timer_id).first()
+                        mod_timer = mod_timer.filter(Timer.unique_id == self.timer_id).first()
                         mod_timer.method_start_time = self.method_start_time
                         mod_timer.method_end_time = self.method_end_time
                         db_session.commit()
@@ -213,8 +213,8 @@ class TimerController(threading.Thread):
                                         onsec=self.duration_on,
                                         offsec=self.duration_off))
                     output_on = threading.Thread(target=self.control.output_on,
-                                                args=(self.output_id,
-                                                      self.duration_on,))
+                                                 args=(self.output_id,
+                                                       self.duration_on,))
                     output_on.start()
 
             # Timer is a PWM Method timer
@@ -222,7 +222,8 @@ class TimerController(threading.Thread):
                 try:
                     if time.time() > self.pwm_method_timer:
                         if self.method_start_act == 'Ended':
-                            self.stop_controller(ended_normally=False, deactivate_timer=True)
+                            self.stop_controller(ended_normally=False,
+                                                 deactivate_timer=True)
                             self.logger.info(
                                 "Method has ended. "
                                 "Activate the Timer controller to start it again.")
@@ -272,7 +273,7 @@ class TimerController(threading.Thread):
         if self.method_id and ended_normally:
             with session_scope(MYCODO_DB_PATH) as db_session:
                 mod_timer = db_session.query(Timer).filter(
-                    Timer.id == self.timer_id).first()
+                    Timer.unique_id == self.timer_id).first()
                 mod_timer.method_start_time = 'Ended'
                 mod_timer.method_end_time = None
                 db_session.commit()
@@ -280,6 +281,6 @@ class TimerController(threading.Thread):
         if deactivate_timer:
             with session_scope(MYCODO_DB_PATH) as db_session:
                 mod_timer = db_session.query(Timer).filter(
-                    Timer.id == self.timer_id).first()
+                    Timer.unique_id == self.timer_id).first()
                 mod_timer.is_activated = False
                 db_session.commit()

@@ -479,9 +479,6 @@ MEASUREMENT_UNITS = {
     'pid_d_value': {
         'name': lazy_gettext('PID D-Value'),
         'meas': 'pid_value', 'unit': ''},
-    'pid_output': {
-        'name': lazy_gettext('PID Output'),
-        'meas': 'pid_output', 'unit': 'sec'},
     'pressure': {
         'name': lazy_gettext('Pressure'),
         'meas': 'pressure', 'unit': 'Pa'},
@@ -665,19 +662,19 @@ CONDITIONAL_TYPES = {
 CONDITIONAL_ACTIONS = collections.OrderedDict([
     ('output', lazy_gettext('Output (Duration)')),
     ('output_pwm', lazy_gettext('Output (Duty Cycle)')),
-    ('command', lazy_gettext('Command')),
+    ('command', lazy_gettext('Execute Command')),
     ('activate_controller', lazy_gettext('Activate Controller')),
     ('deactivate_controller', lazy_gettext('Deactivate Controller')),
-    ('resume_pid', lazy_gettext('Resume PID')),
-    ('pause_pid', lazy_gettext('Pause PID')),
-    ('setpoint_pid', lazy_gettext('Set PID Setpoint')),
-    ('method_pid', lazy_gettext('Set PID Method')),
-    ('email', lazy_gettext('Email')),
-    ('flash_lcd_off', lazy_gettext('Flash LCD Off')),
-    ('flash_lcd_on', lazy_gettext('Flash LCD On')),
+    ('pause_pid', lazy_gettext('PID Pause')),
+    ('resume_pid', lazy_gettext('PID Resume')),
+    ('method_pid', lazy_gettext('PID Set Method')),
+    ('setpoint_pid', lazy_gettext('PID Set Setpoint')),
+    ('email', lazy_gettext('Email Notification')),
+    ('flash_lcd_off', lazy_gettext('LCD Flashing Off')),
+    ('flash_lcd_on', lazy_gettext('LCD Flashing On')),
     ('lcd_backlight_off', lazy_gettext('LCD Backlight Off')),
     ('lcd_backlight_on', lazy_gettext('LCD Backlight On')),
-    ('photo', lazy_gettext('Photo')),
+    ('photo', lazy_gettext('Capture Photo')),
     # ('photo_email', lazy_gettext('Email Photo')),
     # ('video', lazy_gettext('Video')),
     # ('video_email', lazy_gettext('Email Video'))

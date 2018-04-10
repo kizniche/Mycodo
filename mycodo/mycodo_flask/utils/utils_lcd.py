@@ -76,8 +76,6 @@ def lcd_mod(form_mod_lcd):
                 mod_lcd.name = form_mod_lcd.name.data
                 mod_lcd.location = form_mod_lcd.location.data
                 mod_lcd.i2c_bus = form_mod_lcd.i2c_bus.data
-                mod_lcd.multiplexer_address = form_mod_lcd.multiplexer_address.data
-                mod_lcd.multiplexer_channel = form_mod_lcd.multiplexer_channel.data
                 mod_lcd.period = form_mod_lcd.period.data
                 mod_lcd.x_characters = int(form_mod_lcd.lcd_type.data.split("x")[0])
                 mod_lcd.y_lines = int(form_mod_lcd.lcd_type.data.split("x")[1])

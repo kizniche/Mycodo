@@ -251,11 +251,10 @@ def parseargs(parser):
                         help="Return the amount of ram used by the Mycodo daemon")
 
     # Output
-    # TODO: Rename output to output
-    parser.add_argument('--outputoff', metavar='RELAYID', type=str,
+    parser.add_argument('--outputoff', metavar='OUTPUTID', type=str,
                         help='Turn off output with output ID',
                         required=False)
-    parser.add_argument('--outputon', metavar='RELAYID', type=str,
+    parser.add_argument('--outputon', metavar='OUTPUTID', type=str,
                         help='Turn on output with output ID',
                         required=False)
     parser.add_argument('--duration', metavar='SECONDS', type=float,

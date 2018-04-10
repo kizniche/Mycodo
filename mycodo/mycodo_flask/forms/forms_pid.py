@@ -80,7 +80,7 @@ class PIDModBase(FlaskForm):
     integrator_min = DecimalField(lazy_gettext('Integrator Max'))
     raise_output_id = StringField(lazy_gettext('Output (Raise)'))
     lower_output_id = StringField(lazy_gettext('Output (Lower)'))
-    method_id = IntegerField(
+    method_id = StringField(
         'Setpoint Tracking Method', widget=widgets.HiddenInput())
     pid_mod = SubmitField(lazy_gettext('Save'))
     pid_hold = SubmitField(lazy_gettext('Hold'))

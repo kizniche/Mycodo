@@ -81,15 +81,13 @@ class PIDController(threading.Thread):
     def __init__(self, ready, pid_id):
         threading.Thread.__init__(self)
 
-        self.logger = logging.getLogger("mycodo.pid_{id}".format(id=pid_id))
+        self.logger = logging.getLogger("mycodo.pid_{id}".format(id=pid_id.split('-')[0]))
 
         self.running = False
         self.thread_startup_timer = timeit.default_timer()
         self.thread_shutdown_timer = 0
         self.ready = ready
         self.pid_id = pid_id
-        self.pid_unique_id = db_retrieve_table_daemon(
-            PID, unique_id=self.pid_id).unique_id
         self.control = DaemonControl()
 
         self.control_variable = 0.0
@@ -151,7 +149,7 @@ class PIDController(threading.Thread):
 
         # Check if a method is set for this PID
         self.method_start_act = None
-        if self.method_id:
+        if self.method_id != '':
             self.setup_method(self.method_id)
 
     def run(self):
@@ -206,7 +204,7 @@ class PIDController(threading.Thread):
 
                             write_setpoint_db = threading.Thread(
                                 target=write_influxdb_value,
-                                args=(self.pid_unique_id,
+                                args=(self.pid_id,
                                       'setpoint',
                                       self.setpoint,))
                             write_setpoint_db.start()
@@ -215,7 +213,7 @@ class PIDController(threading.Thread):
                                 band_min = self.setpoint - self.band
                                 write_setpoint_db = threading.Thread(
                                     target=write_influxdb_value,
-                                    args=(self.pid_unique_id,
+                                    args=(self.pid_id,
                                           'setpoint_band_min',
                                           band_min,))
                                 write_setpoint_db.start()
@@ -223,7 +221,7 @@ class PIDController(threading.Thread):
                                 band_max = self.setpoint + self.band
                                 write_setpoint_db = threading.Thread(
                                     target=write_influxdb_value,
-                                    args=(self.pid_unique_id,
+                                    args=(self.pid_id,
                                           'setpoint_band_max',
                                           band_max,))
                                 write_setpoint_db.start()
@@ -332,7 +330,7 @@ class PIDController(threading.Thread):
 
                 with session_scope(MYCODO_DB_PATH) as db_session:
                     mod_pid = db_session.query(PID).filter(
-                        PID.id == self.pid_id).first()
+                        PID.unique_id == self.pid_id).first()
                     mod_pid.method_start_time = self.method_start_time
                     mod_pid.method_end_time = self.method_end_time
                     db_session.commit()
@@ -416,21 +414,21 @@ class PIDController(threading.Thread):
     def write_pid_values(self):
         write_setpoint_db = threading.Thread(
             target=write_influxdb_value,
-            args=(self.pid_unique_id,
+            args=(self.pid_id,
                   'pid_p_value',
                   self.P_value,))
         write_setpoint_db.start()
 
         write_setpoint_db = threading.Thread(
             target=write_influxdb_value,
-            args=(self.pid_unique_id,
+            args=(self.pid_id,
                   'pid_i_value',
                   self.I_value,))
         write_setpoint_db.start()
 
         write_setpoint_db = threading.Thread(
             target=write_influxdb_value,
-            args=(self.pid_unique_id,
+            args=(self.pid_id,
                   'pid_d_value',
                   self.D_value,))
         write_setpoint_db.start()
@@ -608,7 +606,7 @@ class PIDController(threading.Thread):
                                 min_off=self.raise_min_off_duration)
 
                         self.write_pid_output_influxdb(
-                            'pid_output', self.control_variable)
+                            'duration_sec', self.control_variable)
 
                 else:
                     if self.raise_output_type == 'pwm':
@@ -690,7 +688,7 @@ class PIDController(threading.Thread):
                                 min_off=self.lower_min_off_duration)
 
                         self.write_pid_output_influxdb(
-                            'pid_output', stored_control_variable)
+                            'duration_sec', stored_control_variable)
 
                 else:
                     if self.lower_output_type == 'pwm':
@@ -713,7 +711,7 @@ class PIDController(threading.Thread):
     def write_pid_output_influxdb(self, pid_entry_type, pid_entry_value):
         write_pid_out_db = threading.Thread(
             target=write_influxdb_value,
-            args=(self.pid_unique_id,
+            args=(self.pid_id,
                   pid_entry_type,
                   pid_entry_value,))
         write_pid_out_db.start()
@@ -746,7 +744,7 @@ class PIDController(threading.Thread):
         self.setpoint = float(setpoint)
         with session_scope(MYCODO_DB_PATH) as db_session:
             mod_pid = db_session.query(PID).filter(
-                PID.id == self.pid_id).first()
+                PID.unique_id == self.pid_id).first()
             mod_pid.setpoint = setpoint
             db_session.commit()
         return "Setpoint set to {sp}".format(sp=setpoint)
@@ -757,7 +755,7 @@ class PIDController(threading.Thread):
 
         with session_scope(MYCODO_DB_PATH) as db_session:
             mod_pid = db_session.query(PID).filter(
-                PID.id == self.pid_id).first()
+                PID.unique_id == self.pid_id).first()
             mod_pid.method_id = method_id
             mod_pid.method_start_time = 'Ready'
             mod_pid.method_end_time = None
@@ -783,7 +781,7 @@ class PIDController(threading.Thread):
         self.Kp = float(p)
         with session_scope(MYCODO_DB_PATH) as db_session:
             mod_pid = db_session.query(PID).filter(
-                PID.id == self.pid_id).first()
+                PID.unique_id == self.pid_id).first()
             mod_pid.p = p
             db_session.commit()
         return "Kp set to {kp}".format(kp=self.Kp)
@@ -793,7 +791,7 @@ class PIDController(threading.Thread):
         self.Ki = float(i)
         with session_scope(MYCODO_DB_PATH) as db_session:
             mod_pid = db_session.query(PID).filter(
-                PID.id == self.pid_id).first()
+                PID.unique_id == self.pid_id).first()
             mod_pid.i = i
             db_session.commit()
         return "Ki set to {ki}".format(ki=self.Ki)
@@ -803,7 +801,7 @@ class PIDController(threading.Thread):
         self.Kd = float(d)
         with session_scope(MYCODO_DB_PATH) as db_session:
             mod_pid = db_session.query(PID).filter(
-                PID.id == self.pid_id).first()
+                PID.unique_id == self.pid_id).first()
             mod_pid.d = d
             db_session.commit()
         return "Kd set to {kd}".format(kd=self.Kd)
@@ -839,7 +837,7 @@ class PIDController(threading.Thread):
         if self.method_id and ended_normally:
             with session_scope(MYCODO_DB_PATH) as db_session:
                 mod_pid = db_session.query(PID).filter(
-                    PID.id == self.pid_id).first()
+                    PID.unique_id == self.pid_id).first()
                 mod_pid.method_start_time = 'Ended'
                 mod_pid.method_end_time = None
                 db_session.commit()
@@ -847,6 +845,6 @@ class PIDController(threading.Thread):
         if deactivate_pid:
             with session_scope(MYCODO_DB_PATH) as db_session:
                 mod_pid = db_session.query(PID).filter(
-                    PID.id == self.pid_id).first()
+                    PID.unique_id == self.pid_id).first()
                 mod_pid.is_activated = False
                 db_session.commit()

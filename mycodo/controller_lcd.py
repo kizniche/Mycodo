@@ -67,7 +67,6 @@ from mycodo.databases.models import LCDData
 from mycodo.databases.models import Math
 from mycodo.databases.models import Output
 from mycodo.databases.models import PID
-from mycodo.devices.tca9548a import TCA9548A
 from mycodo.mycodo_flask.utils.utils_general import use_unit_generate
 from mycodo.utils.database import db_retrieve_table_daemon
 from mycodo.utils.influx import read_last_influxdb
@@ -105,15 +104,6 @@ class LCDController(threading.Thread):
             self.lcd_y_lines = lcd.y_lines
             self.timer = time.time() + self.lcd_period
             self.backlight_timer = time.time()
-
-            if lcd.multiplexer_address:
-                self.multiplexer_address_string = lcd.multiplexer_address
-                self.multiplexer_address = int(str(lcd.multiplexer_address),
-                                               16)
-                self.multiplexer_channel = lcd.multiplexer_channel
-                self.multiplexer = TCA9548A(self.multiplexer_address)
-            else:
-                self.multiplexer = None
 
             self.list_pids = ['setpoint', 'pid_time']
             self.list_outputs = ['duration_sec', 'output_time', 'output_state']
@@ -385,21 +375,6 @@ class LCDController(threading.Thread):
 
     def output_lcds(self):
         """ Output to all LCDs all at once """
-        if self.multiplexer:
-            mult_status, mult_response = self.multiplexer.setup_lock(
-                self.logger, self.multiplexer_channel)
-            if mult_status:
-                self.logger.debug(
-                    "Setting multiplexer at address {add} to channel "
-                    "{chan}".format(
-                        add=self.multiplexer_address_string,
-                        chan=self.multiplexer_channel))
-            else:
-                self.logger.warning(
-                    "Could not set channel with multiplexer at address {add}."
-                    " Error: {err}".format(
-                        add=self.multiplexer_address_string,
-                        err=mult_response))
         self.lcd_init()
         display_id = self.display_ids[self.display_count]
         for i in range(1, self.lcd_y_lines + 1):

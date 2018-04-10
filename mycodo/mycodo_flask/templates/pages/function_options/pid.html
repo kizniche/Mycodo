@@ -172,13 +172,13 @@
               <select class="form-control" id="raise_output_id" name="raise_output_id" title="" data-original-title="{{_('The output that will raise the selected environmental condition (Measure Type)')}}.">
                 <option value="">{{_('Disabled')}}</option>
                 {%- for each_output in output -%}
-                  <option value="{{each_output.id}}"{% if each_pid.raise_output_id == each_output.id %} selected{% endif %}>{{each_output.id}} ({{each_output.name}})</option>
+                  <option value="{{each_output.unique_id}}"{% if each_pid.raise_output_id == each_output.unique_id %} selected{% endif %}>[{{each_output.id}}] {{each_output.name}}</option>
                 {%- endfor -%}
               </select>
             </div>
           </div>
 
-      {% for each_output in output if each_pid.raise_output_id == each_output.id %}
+      {% for each_output in output if each_pid.raise_output_id == each_output.unique_id %}
         {% if each_output.output_type == 'pwm' %}
           {% include 'pages/function_options/pid_options/pwm_raise.html' %}
         {% else %}
@@ -195,13 +195,13 @@
               <select class="form-control" id="lower_output_id" name="lower_output_id" title="" data-original-title="{{_('The output that will lower the selected environmental condition (Measure Type)')}}.">
                 <option value="">{{_('Disabled')}}</option>
                 {%- for each_output in output -%}
-                  <option value="{{each_output.id}}"{% if each_pid.lower_output_id == each_output.id %} selected{% endif %}>{{each_output.id}} ({{each_output.name}})</option>
+                  <option value="{{each_output.unique_id}}"{% if each_pid.lower_output_id == each_output.unique_id %} selected{% endif %}>[{{each_output.id}}] {{each_output.name}}</option>
                 {%- endfor -%}
               </select>
             </div>
           </div>
 
-      {% for each_output in output if each_pid.lower_output_id == each_output.id %}
+      {% for each_output in output if each_pid.lower_output_id == each_output.unique_id %}
         {% if each_output.output_type == 'pwm' %}
           {% include 'pages/function_options/pid_options/pwm_lower.html' %}
         {% else %}
@@ -218,19 +218,19 @@
             </div>
             <select class="form-control" id="method_id" name="method_id" title="" data-original-title="{{_('Select the method to use when calculating the setpoint. When enabled, the setpoint(s) of the method override the PID setpoint above.')}}">
               {%- if method == [] -%}
-                <option value="0">{{_('No methods exist. Create one with this button')}} -></option>
+                <option value="">{{_('No methods exist. Create one with this button')}} -></option>
               {%- else -%}
-                <option value="0">{{_('Disabled')}}</option>
+                <option value="">{{_('Disabled')}}</option>
               {%- endif-%}
 
               {%- set valid_saved_method = [] -%}
               {%- for each_method in method -%}
-                {%- if each_method.id == each_pid.method_id -%}
+                {%- if each_method.unique_id == each_pid.method_id -%}
                   {%- do valid_saved_method.append(1) -%}
                 {%- endif -%}
-                <option value="{{each_method.id}}"{% if each_pid.method_id == each_method.id %} selected{% endif %}>{{each_method.id}} ({{each_method.name}})</option>
+                <option value="{{each_method.unique_id}}"{% if each_pid.method_id == each_method.unique_id %} selected{% endif %}>[{{each_method.id}}] {{each_method.name}}</option>
               {%- endfor -%}
-              {%- if not valid_saved_method and each_pid.method_id -%}
+              {%- if not valid_saved_method and each_pid.method_id != '' -%}
                 <option value="" selected>{{_('Invalid saved method. Save another method from this list.')}}</option>
               {%- endif -%}
             </select>

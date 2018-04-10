@@ -527,8 +527,7 @@ def check_func(all_devices, unique_id, y_axes, measurement, dict_measurements, i
             use_unit = use_unit_generate(input_dev)
 
             # Add duration_sec
-            # TODO: rename 'pid_output' to 'duration_sec'
-            if measurement == 'pid_output':
+            if measurement == 'duration_sec':
                 if 'duration_sec' not in y_axes:
                     y_axes.append('duration_sec')
 

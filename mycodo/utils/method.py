@@ -93,7 +93,7 @@ def calculate_method_setpoint(method_id, table, controller, Method, MethodData, 
     """
     method = db_retrieve_table_daemon(Method)
 
-    method_key = method.filter(Method.id == method_id).first()
+    method_key = method.filter(Method.unique_id == method_id).first()
 
     method_data = db_retrieve_table_daemon(MethodData)
     method_data = method_data.filter(MethodData.method_id == method_id)

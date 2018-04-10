@@ -234,7 +234,7 @@ def choices_pids(pid):
         display = '[PID {id:02d}] {name} (D-Value)'.format(
             id=each_pid.id, name=each_pid.name)
         choices.update({value: display})
-        value = '{id},pid_output'.format(id=each_pid.unique_id)
+        value = '{id},duration_sec'.format(id=each_pid.unique_id)
         display = '[PID {id:02d}] {name} (Output Duration)'.format(
             id=each_pid.id, name=each_pid.name)
         choices.update({value: display})

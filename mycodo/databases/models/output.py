@@ -6,7 +6,6 @@ from mycodo.databases import set_uuid
 from mycodo.mycodo_flask.extensions import db
 
 
-# TODO: rename to 'output'
 class Output(CRUDMixin, db.Model):
     __tablename__ = "output"
     __table_args__ = {'extend_existing': True}

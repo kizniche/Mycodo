@@ -49,7 +49,7 @@ class DashboardBase(FlaskForm):
             max=10000
         )]
     )
-    refresh_duration = DecimalField(
+    refresh_duration = IntegerField(
         lazy_gettext('Refresh (seconds)'),
         validators=[validators.NumberRange(
             min=1,
@@ -71,10 +71,10 @@ class DashboardGraph(FlaskForm):
     pid_ids = SelectMultipleField(lazy_gettext('PIDs'))
     output_ids = SelectMultipleField(lazy_gettext('Outputs'))
     input_ids = SelectMultipleField(lazy_gettext('Inputs'))
-    xaxis_duration = DecimalField(
+    xaxis_duration = IntegerField(
         lazy_gettext('X-Axis (minutes)'),
         validators=[validators.NumberRange(
-            min=0.1,
+            min=1,
             message=lazy_gettext("Number of minutes to display of past "
                                  "measurements.")
         )]
@@ -111,7 +111,7 @@ class DashboardGauge(FlaskForm):
 
 class DashboardMeasurement(FlaskForm):
     measurement_id = StringField(lazy_gettext('Measurement'))
-    max_measure_age = DecimalField(lazy_gettext('Max Age (seconds)'))
+    max_measure_age = IntegerField(lazy_gettext('Max Age (seconds)'))
     font_em_value = DecimalField(lazy_gettext('Value Font (em)'))
     font_em_timestamp = DecimalField(lazy_gettext('Timestamp Font (em)'))
     decimal_places = IntegerField(lazy_gettext('Decimal Places'))
@@ -119,7 +119,7 @@ class DashboardMeasurement(FlaskForm):
 
 class DashboardOutput(FlaskForm):
     output_id = StringField(lazy_gettext('Output'))
-    max_measure_age = DecimalField(lazy_gettext('Max Age (seconds)'))
+    max_measure_age = IntegerField(lazy_gettext('Max Age (seconds)'))
     font_em_value = DecimalField(lazy_gettext('Value Font (em)'))
     font_em_timestamp = DecimalField(lazy_gettext('Timestamp Font (em)'))
     decimal_places = IntegerField(lazy_gettext('Decimal Places'))
@@ -128,7 +128,7 @@ class DashboardOutput(FlaskForm):
 
 class DashboardPIDControl(FlaskForm):
     pid_id = StringField(lazy_gettext('PID'))
-    max_measure_age = DecimalField(lazy_gettext('Max Age (seconds)'))
+    max_measure_age = IntegerField(lazy_gettext('Max Age (seconds)'))
     font_em_value = DecimalField(lazy_gettext('Value Font (em)'))
     font_em_timestamp = DecimalField(lazy_gettext('Timestamp Font (em)'))
     camera_max_age = IntegerField(lazy_gettext('Max Age (seconds)'))

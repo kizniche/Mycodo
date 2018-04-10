@@ -22,7 +22,7 @@ class Dashboard(CRUDMixin, db.Model):
     math_ids = db.Column(db.Text, default='')  # store Math IDs to display
 
     input_ids_measurements = db.Column(db.Text, default='')  # store IDs and measurements to display
-    x_axis_duration = db.Column(db.Float, default=1440)  # X-axis duration (in minutes)
+    x_axis_duration = db.Column(db.Integer, default=1440)  # X-axis duration (in minutes)
     use_custom_colors = db.Column(db.Boolean, default=False)  # Enable custom colors of graph series
     custom_colors = db.Column(db.Text, default='')  # Custom hex color values (csv)
     enable_navbar = db.Column(db.Boolean, default=False)  # Show navigation bar
@@ -40,7 +40,7 @@ class Dashboard(CRUDMixin, db.Model):
     decimal_places = db.Column(db.Integer, default=1)  # Number of decimal places for displayed value
 
     # Gauge options
-    max_measure_age = db.Column(db.Float, default=120.0)  # Only show measurements if they are younger than this age
+    max_measure_age = db.Column(db.Integer, default=120.0)  # Only show measurements if they are younger than this age
     range_colors = db.Column(db.Text, default='')  # Custom hex color values and gauge range
     enable_timestamp = db.Column(db.Boolean, default=True)  # Show timestamp for displayed gauge value
 

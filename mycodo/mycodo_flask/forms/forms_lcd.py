@@ -42,18 +42,6 @@ class LCDMod(FlaskForm):
                                unit=lazy_gettext('I<sup>2</sup>C')),
         validators=[DataRequired()]
     )
-    multiplexer_address = StringField(
-        "{op} ({unit})".format(op=lazy_gettext('Multiplexer Address'),
-                               unit=lazy_gettext('I<sup>2</sup>C'))
-    )
-    multiplexer_channel = IntegerField(
-        lazy_gettext('Multiplexer Channel'),
-        validators=[
-            validators.NumberRange(
-                min=0,
-                max=8
-            )]
-    )
     period = DecimalField(
         lazy_gettext('Period (seconds)'),
         validators=[validators.NumberRange(

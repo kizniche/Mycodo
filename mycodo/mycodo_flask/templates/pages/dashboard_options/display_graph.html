@@ -371,7 +371,7 @@
           yAxis: 'pid_value',
           data: []
         },
-        {% elif each_graph_pid_id.split(',')[1] == 'pid_output' %}
+        {% elif each_graph_pid_id.split(',')[1] == 'duration_sec' %}
         {
           name: '{{each_pid.name}} {{_('Output')}} {{_('Duration')}}',
           type: 'line',

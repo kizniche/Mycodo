@@ -163,22 +163,22 @@ class ConditionalController(threading.Thread):
         conditional = db_retrieve_table_daemon(
             Conditional).filter(Conditional.conditional_type == 'conditional_measurement').all()
         for each_cond in conditional:
-            self.is_activated[each_cond.id] = each_cond.is_activated
-            self.period[each_cond.id] = each_cond.period
-            self.refractory_period[each_cond.id] = each_cond.refractory_period
-            self.timer_refractory_period[each_cond.id] = 0
-            self.smtp_wait_timer[each_cond.id] = time.time() + 3600
-            self.timer_period[each_cond.id] = time.time() + self.period[each_cond.id]
+            self.is_activated[each_cond.unique_id] = each_cond.is_activated
+            self.period[each_cond.unique_id] = each_cond.period
+            self.refractory_period[each_cond.unique_id] = each_cond.refractory_period
+            self.timer_refractory_period[each_cond.unique_id] = 0
+            self.smtp_wait_timer[each_cond.unique_id] = time.time() + 3600
+            self.timer_period[each_cond.unique_id] = time.time() + self.period[each_cond.unique_id]
 
         # Set up all sunrise/sunset conditionals
         conditional = db_retrieve_table_daemon(
             Conditional).filter(Conditional.conditional_type == 'conditional_sunrise_sunset').all()
         for each_cond in conditional:
-            self.is_activated[each_cond.id] = each_cond.is_activated
-            self.timer_refractory_period[each_cond.id] = 0
-            self.period[each_cond.id] = 1000
+            self.is_activated[each_cond.unique_id] = each_cond.is_activated
+            self.timer_refractory_period[each_cond.unique_id] = 0
+            self.period[each_cond.unique_id] = 1000
             # Set the next trigger at the specified sunrise/sunset time (+-offsets)
-            self.timer_period[each_cond.id] = self.calculate_sunrise_sunset_epoch(each_cond)
+            self.timer_period[each_cond.unique_id] = self.calculate_sunrise_sunset_epoch(each_cond)
 
         self.logger.info("Conditional settings refreshed")
 
@@ -530,7 +530,7 @@ class ConditionalController(threading.Thread):
                 else:
                     with session_scope(MYCODO_DB_PATH) as new_session:
                         mod_cont = new_session.query(controller_object).filter(
-                            controller_object.id == cond_action.do_unique_id).first()
+                            controller_object.unique_id == cond_action.do_unique_id).first()
                         mod_cont.is_activated = False
                         new_session.commit()
                     deactivate_controller = threading.Thread(
@@ -538,46 +538,6 @@ class ConditionalController(threading.Thread):
                         args=(controller_type,
                               cond_action.do_unique_id,))
                     deactivate_controller.start()
-
-            # Activate PID controller
-            elif cond_action.do_action == 'activate_pid':
-                message += " Activate PID ({id}).".format(
-                    id=cond_action.do_unique_id)
-                pid = db_retrieve_table_daemon(
-                    PID, unique_id=cond_action.do_unique_id, entry='first')
-                if pid.is_activated:
-                    message += " Notice: PID is already active!"
-                else:
-                    with session_scope(MYCODO_DB_PATH) as new_session:
-                        mod_pid = new_session.query(PID).filter(
-                            PID.id == cond_action.do_unique_id).first()
-                        mod_pid.is_activated = True
-                        new_session.commit()
-                    activate_pid = threading.Thread(
-                        target=self.control.controller_activate,
-                        args=('PID',
-                              cond_action.do_unique_id,))
-                    activate_pid.start()
-
-            # Deactivate PID controller
-            elif cond_action.do_action == 'deactivate_pid':
-                message += " Deactivate PID ({id}).".format(
-                    id=cond_action.do_unique_id)
-                pid = db_retrieve_table_daemon(
-                    PID, unique_id=cond_action.do_unique_id, entry='first')
-                if not pid.is_activated:
-                    message += " Notice: PID is already inactive!"
-                else:
-                    with session_scope(MYCODO_DB_PATH) as new_session:
-                        mod_pid = new_session.query(PID).filter(
-                            PID.id == cond_action.do_unique_id).first()
-                        mod_pid.is_activated = False
-                        new_session.commit()
-                    deactivate_pid = threading.Thread(
-                        target=self.control.controller_deactivate,
-                        args=('PID',
-                              cond_action.do_unique_id,))
-                    deactivate_pid.start()
 
             # Resume PID controller
             elif cond_action.do_action == 'resume_pid':
@@ -590,7 +550,7 @@ class ConditionalController(threading.Thread):
                 elif pid.is_activated:
                     with session_scope(MYCODO_DB_PATH) as new_session:
                         mod_pid = new_session.query(PID).filter(
-                            PID.id == cond_action.do_unique_id).first()
+                            PID.unique_id == cond_action.do_unique_id).first()
                         mod_pid.is_paused = False
                         new_session.commit()
                     resume_pid = threading.Thread(
@@ -609,7 +569,7 @@ class ConditionalController(threading.Thread):
                 elif pid.is_activated:
                     with session_scope(MYCODO_DB_PATH) as new_session:
                         mod_pid = new_session.query(PID).filter(
-                            PID.id == cond_action.do_unique_id).first()
+                            PID.unique_id == cond_action.do_unique_id).first()
                         mod_pid.is_paused = True
                         new_session.commit()
                     pause_pid = threading.Thread(
@@ -633,7 +593,7 @@ class ConditionalController(threading.Thread):
                 else:
                     with session_scope(MYCODO_DB_PATH) as new_session:
                         mod_pid = new_session.query(PID).filter(
-                            PID.id == cond_action.do_unique_id).first()
+                            PID.unique_id == cond_action.do_unique_id).first()
                         mod_pid.setpoint = cond_action.do_action_string
                         new_session.commit()
 
@@ -653,49 +613,9 @@ class ConditionalController(threading.Thread):
                 else:
                     with session_scope(MYCODO_DB_PATH) as new_session:
                         mod_pid = new_session.query(PID).filter(
-                            PID.id == cond_action.do_unique_id).first()
+                            PID.unique_id == cond_action.do_unique_id).first()
                         mod_pid.method_id = cond_action.do_action_string
                         new_session.commit()
-
-            # Activate Timer
-            elif cond_action.do_action == 'activate_timer':
-                message += " Activate Timer ({id}).".format(
-                    id=cond_action.do_unique_id)
-                timer = db_retrieve_table_daemon(
-                    Timer, unique_id=cond_action.do_unique_id, entry='first')
-                if timer.is_activated:
-                    message += " Notice: Timer is already active!"
-                else:
-                    with session_scope(MYCODO_DB_PATH) as new_session:
-                        mod_timer = new_session.query(Timer).filter(
-                            Timer.id == cond_action.do_unique_id).first()
-                        mod_timer.is_activated = True
-                        new_session.commit()
-                    activate_pid = threading.Thread(
-                        target=self.control.controller_activate,
-                        args=('Timer',
-                              cond_action.do_unique_id,))
-                    activate_pid.start()
-
-            # Deactivate Timer
-            elif cond_action.do_action == 'deactivate_timer':
-                message += " Deactivate Timer ({id}).".format(
-                    id=cond_action.do_unique_id)
-                timer = db_retrieve_table_daemon(
-                    Timer, unique_id=cond_action.do_unique_id, entry='first')
-                if not timer.is_activated:
-                    message += " Notice: Timer is already inactive!"
-                else:
-                    with session_scope(MYCODO_DB_PATH) as new_session:
-                        mod_timer = new_session.query(Timer).filter(
-                            Timer.id == cond_action.do_unique_id).first()
-                        mod_timer.is_activated = False
-                        new_session.commit()
-                    deactivate_pid = threading.Thread(
-                        target=self.control.controller_deactivate,
-                        args=('Timer',
-                              cond_action.do_unique_id,))
-                    deactivate_pid.start()
 
             # Email the Conditional message. Optionally capture a photo or
             # video and attach to the email.
@@ -731,8 +651,7 @@ class ConditionalController(threading.Thread):
                         "Wait {sec:.0f} seconds to email again.".format(
                             sec=self.smtp_wait_timer[cond_id] - time.time()))
 
-            # TODO: rename flash_lcd in user databases to flash_lcd_on
-            elif cond_action.do_action in ['flash_lcd', 'flash_lcd_on']:
+            elif cond_action.do_action == 'flash_lcd_on':
                 lcd = db_retrieve_table_daemon(
                     LCD, unique_id=cond_action.do_unique_id)
                 message += " Flash LCD On {id} ({name}).".format(

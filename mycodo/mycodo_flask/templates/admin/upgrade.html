@@ -39,15 +39,33 @@
   <div class="container">
     {% include 'flash_messages.html' %}
 
-    {% if current_release == '4.2.0' %}
+    {% if current_release == '5.7.2' %}
 
-    <p>You care currently running Mycodo <a href="https://github.com/kizniche/Mycodo/releases/tag/v4.2.0" target="_blank">4.2.0</a>. This is the last version of the 4.x releases and the last version that can be upgraded to from this web interface.</p>
-    <p>Databases in the 4.x versions are not compatible with Mycodo 5.0, therefore a new Mycodo install will be required to use Mycodo 5.0. No settings or configurations will be transferred from 4.x to 5.0, so it is advisable to backup these settings by either saving the SQLite3 database (~/Mycodo/databases/mycodo.db) or writing down information (GPIO pins, PID settings, etc.), in order to reference those settings when configuring 5.0.</p>
-    <p>If you would like to install Mycodo 5.0, execute the following commands in a terminal, as the user originally used to install Mycodo 4.x:</p>
+    <div style="padding: 0.5em 0">
+      Installed version: <a href="https://github.com/kizniche/Mycodo/releases/tag/v{{current_release}}" target="_blank">{{current_release}}</a>
+      <br>Latest version: <a href="https://github.com/kizniche/Mycodo/releases/tag/v{{latest_release}}" target="_blank">{{latest_release}}</a>
+    </div>
+    <div style="padding: 0.5em 0">
+      You are {{releases_behind}} release{% if releases_behind > 1 %}s{% endif %} behind the latest version.
+      <br>Refer to the <a href="https://github.com/kizniche/Mycodo/blob/master/CHANGELOG.md" target="_blank">Changelog</a> for a list of all changes.
+    </div>
 
-    <pre>cd ~
-cp ~/Mycodo/install/upgrade_mycodo_5.sh ~/
-sudo /bin/bash ~/upgrade_mycodo_5.sh</pre>
+    <p>You care currently running Mycodo <a href="https://github.com/kizniche/Mycodo/releases/tag/v5.7.2" target="_blank">5.7.2</a>. This is the last version of the 5.x releases.</p>
+    <p>The settings database in the >= 6.x versions are not compatible with <= 5.7.2 versions, therefore the database will have to be recreated in order to upgrade. No settings or configurations will be transferred from 5.x to 6.x, so it is advisable to backup these settings by either saving the settings database (~/Mycodo/databases/mycodo.db) or writing down information (GPIO pins, PID settings, etc.), in order to reference those settings when configuring 6.0. I repeat, this will effectively be deleting your database during th eupgrade (though there will be the ability to restore a previous backup with a database).</p>
+    <p>Note: If you are really behind on upgrades (i.e. multiple major version numbers behind), note that you will only be upgraded to the next major version number. You may then upgrade to the next major version number by revisiting this upgrade page and continuing the process.</p>
+    <p>If you would like to install Mycodo 6.x, use the following upgrade button.</p>
+
+    <div class="form-inline" style="padding-bottom: 1em">
+      <form method="post" action="/admin/upgrade">
+        <input type="hidden" name="form-name" value="upgrade">
+        {{form_upgrade.csrf_token}}
+        <div>
+          <div class="form-group">
+            {{form_upgrade.upgrade_next_major_version(class_='btn btn-primary', **{'onclick':'return confirm("Your settings database will not be transfered if you choose to upgrade. Confirm that you really want to do this.")'})}}
+          </div>
+        </div>
+      </form>
+    </div>
 
     {% elif upgrade == 1 %}
 
@@ -102,11 +120,11 @@ sudo /bin/bash ~/upgrade_mycodo_5.sh</pre>
     {% elif upgrade_available %}
 
     <div style="padding: 0.5em 0">
-      Installed version: <a href="https://github.com/kizniche/Mycodo/releases/tag/v{{ current_release }}" target="_blank">{{ current_release }}</a>
-      <br>Latest version: <a href="https://github.com/kizniche/Mycodo/releases/tag/v{{ latest_release }}" target="_blank">{{ latest_release }}</a>
+      Installed version: <a href="https://github.com/kizniche/Mycodo/releases/tag/v{{current_release}}" target="_blank">{{current_release}}</a>
+      <br>Latest version: <a href="https://github.com/kizniche/Mycodo/releases/tag/v{{latest_release}}" target="_blank">{{latest_release}}</a>
     </div>
     <div style="padding: 0.5em 0">
-      You are {{ releases_behind }} release{% if releases_behind > 1 %}s{% endif %} behind the latest version.
+      You are {{releases_behind}} release{% if releases_behind > 1 %}s{% endif %} behind the latest version.
       <br>Refer to the <a href="https://github.com/kizniche/Mycodo/blob/master/CHANGELOG.md" target="_blank">Changelog</a> for a list of all changes.
     </div>
     <div style="padding: 1em 0 1.5em 0">

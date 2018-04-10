@@ -1114,20 +1114,6 @@ def page_output():
 @flask_login.login_required
 def page_data():
     """ Display Data page """
-
-    # TCA9548A I2C multiplexer
-    multiplexer_addresses = [
-        '0x70',
-        '0x71',
-        '0x72',
-        '0x73',
-        '0x74',
-        '0x75',
-        '0x76',
-        '0x77'
-    ]
-    multiplexer_channels = list(range(0, 8))
-
     camera = Camera.query.all()
     lcd = LCD.query.all()
     pid = PID.query.all()
@@ -1283,9 +1269,7 @@ def page_data():
                            user=user,
                            w1thermsensor_sensors=w1thermsensor_sensors,
                            lcd=lcd,
-                           list_devices_i2c=list_devices_i2c,
-                           multiplexer_addresses=multiplexer_addresses,
-                           multiplexer_channels=multiplexer_channels)
+                           list_devices_i2c=list_devices_i2c)
 
 
 @blueprint.route('/timer', methods=('GET', 'POST'))
@@ -1527,9 +1511,7 @@ def dict_custom_colors():
 
             color_count.update({each_graph.id: total})
     except IndexError:
-        # Expected exception from previous version database
-        # TODO: Remove this exception in next major version release
-        pass
+        return None
 
     return color_count
 

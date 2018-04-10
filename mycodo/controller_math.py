@@ -72,7 +72,7 @@ class MathController(threading.Thread):
     def __init__(self, ready, math_id):
         threading.Thread.__init__(self)
 
-        self.logger = logging.getLogger("mycodo.math_{id}".format(id=math_id))
+        self.logger = logging.getLogger("mycodo.math_{id}".format(id=math_id.split('-')[0]))
 
         try:
             self.measurements = None
