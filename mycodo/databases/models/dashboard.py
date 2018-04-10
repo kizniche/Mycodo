@@ -12,7 +12,7 @@ class Dashboard(CRUDMixin, db.Model):
     unique_id = db.Column(db.String, nullable=False, unique=True, default=set_uuid)
     graph_type = db.Column(db.Text, default=None)
     name = db.Column(db.Text, default='Dashboard Element')
-    refresh_duration = db.Column(db.Float, default=120)  # How often to add new data and redraw, refresh camera
+    refresh_duration = db.Column(db.Integer, default=120)  # How often to add new data and redraw, refresh camera
     width = db.Column(db.Integer, default=12)  # Width of page (1-12, bootstrap col widths)
     height = db.Column(db.Integer, default=400)  # Height (in pixels)
 

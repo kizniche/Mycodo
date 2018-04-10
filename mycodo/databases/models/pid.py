@@ -22,7 +22,7 @@ class PID(CRUDMixin, db.Model):
     direction = db.Column(db.Text, default='raise')  # Direction of regulation (raise, lower, both)
     setpoint = db.Column(db.Float, default=30.0)  # PID setpoint
     band = db.Column(db.Float, default=0)  # PID hysteresis band
-    method_id = db.Column(db.String, db.ForeignKey('method.unique_id'), default=None)
+    method_id = db.Column(db.String, db.ForeignKey('method.unique_id'), default='')
     method_start_time = db.Column(db.Text, default=None)
     method_end_time = db.Column(db.Text, default=None)
     p = db.Column(db.Float, default=1.0)  # Kp gain

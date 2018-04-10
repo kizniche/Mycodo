@@ -253,7 +253,7 @@ def pid_activate(pid_id):
         method = Method.query.filter(
             Method.unique_id == pid.method_id).first()
         if method and method.method_type == 'Duration':
-            mod_pid = PID.query.filter(PID.uniue_id == pid_id).first()
+            mod_pid = PID.query.filter(PID.unique_id == pid_id).first()
             mod_pid.method_start_time = 'Ready'
             db.session.commit()
 

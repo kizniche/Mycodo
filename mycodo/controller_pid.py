@@ -185,7 +185,7 @@ class PIDController(threading.Thread):
 
                         if self.last_measurement_success:
                             # Update setpoint using a method if one is selected
-                            if self.method_id:
+                            if self.method_id != '':
                                 this_controller = db_retrieve_table_daemon(
                                     PID, unique_id=self.pid_id)
                                 setpoint, ended = calculate_method_setpoint(
@@ -751,7 +751,7 @@ class PIDController(threading.Thread):
 
     def set_method(self, method_id):
         """ Set the method of PID """
-        self.method_id = int(method_id)
+        self.method_id = method_id
 
         with session_scope(MYCODO_DB_PATH) as db_session:
             mod_pid = db_session.query(PID).filter(
@@ -761,7 +761,7 @@ class PIDController(threading.Thread):
             mod_pid.method_end_time = None
             db_session.commit()
 
-        if self.method_id:
+        if self.method_id != '':
             self.setup_method(method_id)
 
         return "Method set to {me} and started".format(me=method_id)
@@ -834,7 +834,7 @@ class PIDController(threading.Thread):
         self.thread_shutdown_timer = timeit.default_timer()
         self.running = False
         # Unset method start time
-        if self.method_id and ended_normally:
+        if self.method_id != '' and ended_normally:
             with session_scope(MYCODO_DB_PATH) as db_session:
                 mod_pid = db_session.query(PID).filter(
                     PID.unique_id == self.pid_id).first()

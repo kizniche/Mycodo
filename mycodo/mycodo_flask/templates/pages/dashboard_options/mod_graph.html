@@ -214,17 +214,17 @@
     </div>
   {% endfor %}
 
-    <div class="form-row btn-group" style="padding-top: 1em;">
-      <div class="form-group">
+    <div class="form-row btn-group" style="padding: 1em;">
+      <div class="col-auto">
         {{form_base.modify(class_='form-control btn btn-default')}}
       </div>
-      <div class="form-group">
+      <div class="col-auto">
         {{form_base.delete(class_='form-control btn btn-default',**{'onclick':'return confirm("Are you sure you want to delete this?")'})}}
       </div>
-      <div class="form-group">
+      <div class="col-auto">
         {{form_base.order_up(class_='form-control btn btn-default')}}
       </div>
-      <div class="form-group">
+      <div class="col-auto">
         {{form_base.order_down(class_='form-control btn btn-default')}}
       </div>
     </div>
