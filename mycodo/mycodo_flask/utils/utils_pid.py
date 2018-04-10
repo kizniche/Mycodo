@@ -73,8 +73,8 @@ def pid_mod(form_mod_pid_base,
 
     if form_mod_pid_base.raise_output_id.data:
         raise_output_type = Output.query.filter(
-            Output.id == int(form_mod_pid_base.raise_output_id.data)).first().output_type
-        if mod_pid.raise_output_id == int(form_mod_pid_base.raise_output_id.data):
+            Output.unique_id == form_mod_pid_base.raise_output_id.data).first().output_type
+        if mod_pid.raise_output_id == form_mod_pid_base.raise_output_id.data:
             if raise_output_type == 'pwm':
                 if not form_mod_pid_pwm_raise.validate():
                     error.append(gettext("Error in form field(s)"))
@@ -104,8 +104,8 @@ def pid_mod(form_mod_pid_base,
 
     if form_mod_pid_base.lower_output_id.data:
         lower_output_type = Output.query.filter(
-            Output.id == int(form_mod_pid_base.lower_output_id.data)).first().output_type
-        if mod_pid.lower_output_id == int(form_mod_pid_base.lower_output_id.data):
+            Output.unique_id == form_mod_pid_base.lower_output_id.data).first().output_type
+        if mod_pid.lower_output_id == form_mod_pid_base.lower_output_id.data:
             if lower_output_type == 'pwm':
                 if not form_mod_pid_pwm_lower.validate():
                     error.append(gettext("Error in form field(s)"))
@@ -198,7 +198,7 @@ def pid_reorder(pid_id, display_order, direction):
 # TODO: Add more settings-checks before allowing controller to be activated
 def has_required_pid_values(pid_id):
     pid = PID.query.filter(
-        PID.id == pid_id).first()
+        PID.unique_id == pid_id).first()
     error = False
     device_unique_id = pid.measurement.split(',')[0]
     input = Input.query.filter(
@@ -227,7 +227,7 @@ def pid_activate(pid_id):
 
     # Check if associated sensor is activated
     pid = PID.query.filter(
-        PID.uniqueid == pid_id).first()
+        PID.unique_id == pid_id).first()
 
     error = can_set_output(
         error, pid_id, pid.raise_output_id, pid.lower_output_id)
@@ -270,7 +270,7 @@ def pid_activate(pid_id):
 
 def pid_deactivate(pid_id):
     pid = PID.query.filter(
-        PID.id == pid_id).first()
+        PID.unique_id == pid_id).first()
     pid.is_activated = False
     pid.is_held = False
     pid.is_paused = False
