@@ -132,7 +132,7 @@ def page_camera():
 
         control = DaemonControl()
         mod_camera = Camera.query.filter(
-            Camera.id == form_camera.camera_id.data).first()
+            Camera.unique_id == form_camera.camera_id.data).first()
         if form_camera.capture_still.data:
             # If a stream is active, stop the stream to take a photo
             if mod_camera.stream_started:
@@ -309,10 +309,10 @@ def page_dashboard():
     dashboard_elements_hidden = []
     all_elements = Dashboard.query.all()
     for each_element in all_elements:
-        dashboard_element_names[each_element.id] = '[{id}] {name}'.format(
+        dashboard_element_names[each_element.unique_id] = '[{id}] {name}'.format(
                 id=each_element.id, name=each_element.name)
-        if not display_order or each_element.id not in display_order:
-            dashboard_elements_hidden.append(each_element.id)
+        if not display_order or each_element.unique_id not in display_order:
+            dashboard_elements_hidden.append(each_element.unique_id)
 
     if form_base.reorder.data:
         mod_order = DisplayOrder.query.first()
@@ -369,7 +369,7 @@ def page_dashboard():
                     total.append({
                         'stop': each_range.split(',')[0],
                         'hex': each_range.split(',')[1]})
-            colors_gauge.update({each_graph.id: total})
+            colors_gauge.update({each_graph.unique_id: total})
     except IndexError:
         flash("Colors Index Error", "error")
 
@@ -905,7 +905,7 @@ def page_function():
     sunrise_sunset_calculated = {}
     for each_conditional in conditional:
         if each_conditional.conditional_type == 'conditional_sunrise_sunset':
-            sunrise_sunset_calculated[each_conditional.id] = {}
+            sunrise_sunset_calculated[each_conditional.unique_id] = {}
             try:
                 sun = Sun(latitude=each_conditional.latitude,
                           longitude=each_conditional.longitude,
@@ -929,15 +929,15 @@ def page_function():
                 offset_sunrise = offset_sunrise['time_local'] + datetime.timedelta(minutes=each_conditional.time_offset_minutes)
                 offset_sunset = offset_sunset['time_local'] + datetime.timedelta(minutes=each_conditional.time_offset_minutes)
 
-                sunrise_sunset_calculated[each_conditional.id]['sunrise'] = sunrise['time_local'].strftime("%Y-%m-%d %H:%M")
-                sunrise_sunset_calculated[each_conditional.id]['sunset'] = sunset['time_local'].strftime("%Y-%m-%d %H:%M")
-                sunrise_sunset_calculated[each_conditional.id]['offset_sunrise'] = offset_sunrise.strftime("%Y-%m-%d %H:%M")
-                sunrise_sunset_calculated[each_conditional.id]['offset_sunset'] = offset_sunset.strftime("%Y-%m-%d %H:%M")
+                sunrise_sunset_calculated[each_conditional.unique_id]['sunrise'] = sunrise['time_local'].strftime("%Y-%m-%d %H:%M")
+                sunrise_sunset_calculated[each_conditional.unique_id]['sunset'] = sunset['time_local'].strftime("%Y-%m-%d %H:%M")
+                sunrise_sunset_calculated[each_conditional.unique_id]['offset_sunrise'] = offset_sunrise.strftime("%Y-%m-%d %H:%M")
+                sunrise_sunset_calculated[each_conditional.unique_id]['offset_sunset'] = offset_sunset.strftime("%Y-%m-%d %H:%M")
             except:
-                sunrise_sunset_calculated[each_conditional.id]['sunrise'] = None
-                sunrise_sunset_calculated[each_conditional.id]['sunrise'] = None
-                sunrise_sunset_calculated[each_conditional.id]['offset_sunrise'] = None
-                sunrise_sunset_calculated[each_conditional.id]['offset_sunset'] = None
+                sunrise_sunset_calculated[each_conditional.unique_id]['sunrise'] = None
+                sunrise_sunset_calculated[each_conditional.unique_id]['sunrise'] = None
+                sunrise_sunset_calculated[each_conditional.unique_id]['offset_sunrise'] = None
+                sunrise_sunset_calculated[each_conditional.unique_id]['offset_sunset'] = None
 
     if request.method == 'POST':
         if not utils_general.user_has_permission('edit_controllers'):
@@ -1174,7 +1174,7 @@ def page_data():
         try:
             from w1thermsensor import W1ThermSensor
             for each_input in W1ThermSensor.get_available_sensors():
-                w1thermsensor_sensors.append(each_input.id)
+                w1thermsensor_sensors.append(each_input.unique_id)
         except OSError:
             flash("Unable to detect DS18B20 Inputs in '/sys/bus/w1/devices'. "
                   "Make 1-wire support is enabled with 'sudo raspi-config'.",
@@ -1208,7 +1208,7 @@ def page_data():
             unmet_dependencies = utils_math.math_add(form_add_math)
         elif form_mod_math.math_mod.data:
             math_type = Math.query.filter(
-                Math.id == form_mod_math.math_id.data).first().math_type
+                Math.unique_id == form_mod_math.math_id.data).first().math_type
             if math_type == 'humidity':
                 utils_math.math_mod(form_mod_math, form_mod_humidity)
             elif math_type == 'average_single':
@@ -1509,7 +1509,7 @@ def dict_custom_colors():
                             'color': color})
                         index += 1
 
-            color_count.update({each_graph.id: total})
+            color_count.update({each_graph.unique_id: total})
     except IndexError:
         return None
 
@@ -1525,18 +1525,18 @@ def dict_custom_yaxes_min_max(graph, yaxes):
     """
     dict_yaxes = {}
     for each_graph in graph:
-        dict_yaxes[each_graph.id] = {}
+        dict_yaxes[each_graph.unique_id] = {}
 
-        if each_graph.id in yaxes:
-            for each_yaxis in yaxes[each_graph.id]:
-                dict_yaxes[each_graph.id][each_yaxis] = {}
-                dict_yaxes[each_graph.id][each_yaxis]['minimum'] = 0
-                dict_yaxes[each_graph.id][each_yaxis]['maximum'] = 0
+        if each_graph.unique_id in yaxes:
+            for each_yaxis in yaxes[each_graph.unique_id]:
+                dict_yaxes[each_graph.unique_id][each_yaxis] = {}
+                dict_yaxes[each_graph.unique_id][each_yaxis]['minimum'] = 0
+                dict_yaxes[each_graph.unique_id][each_yaxis]['maximum'] = 0
 
                 for each_custom_yaxis in each_graph.custom_yaxes.split(';'):
                     if each_custom_yaxis.split(',')[0] == each_yaxis:
-                        dict_yaxes[each_graph.id][each_yaxis]['minimum'] = each_custom_yaxis.split(',')[1]
-                        dict_yaxes[each_graph.id][each_yaxis]['maximum'] = each_custom_yaxis.split(',')[2]
+                        dict_yaxes[each_graph.unique_id][each_yaxis]['minimum'] = each_custom_yaxis.split(',')[1]
+                        dict_yaxes[each_graph.unique_id][each_yaxis]['maximum'] = each_custom_yaxis.split(',')[2]
 
     return dict_yaxes
 

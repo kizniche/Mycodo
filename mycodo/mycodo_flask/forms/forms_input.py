@@ -44,7 +44,7 @@ class InputMod(FlaskForm):
     device_loc = StringField(lazy_gettext('Device Location'))  # Second device location type
     i2c_bus = IntegerField(lazy_gettext('I<sup>2</sup>C Bus'))
     baud_rate = IntegerField(lazy_gettext('Baud Rate'))
-    power_output_id = IntegerField(lazy_gettext('Power Output'))  # For powering input
+    power_output_id = StringField(lazy_gettext('Power Output'))  # For powering input
     calibrate_sensor_measure = StringField(lazy_gettext('Calibration Measurement'))
     resolution = IntegerField(lazy_gettext('Resolution'))
     sensitivity = IntegerField(lazy_gettext('Sensitivity'))

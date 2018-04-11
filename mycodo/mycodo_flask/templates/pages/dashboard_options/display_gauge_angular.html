@@ -81,12 +81,12 @@
             rotation: 'auto'
         },
         plotBands: [
-          {% for n in range(colors_gauge[each_graph.id]|length) %}
+          {% for n in range(colors_gauge[each_graph.unique_id]|length) %}
             {% set index = '{0:0>2}'.format(n) %}
         {
-            from: {{colors_gauge[each_graph.id][n]['low']}},
-            to: {{colors_gauge[each_graph.id][n]['high']}},
-            color: '{{colors_gauge[each_graph.id][n]['hex']}}'
+            from: {{colors_gauge[each_graph.unique_id][n]['low']}},
+            to: {{colors_gauge[each_graph.unique_id][n]['high']}},
+            color: '{{colors_gauge[each_graph.unique_id][n]['hex']}}'
         },
           {% endfor %}
         ]

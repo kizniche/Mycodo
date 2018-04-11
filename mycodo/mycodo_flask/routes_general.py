@@ -630,30 +630,30 @@ def pid_mod_unique_id(unique_id, state):
     if state == 'activate_pid':
         pid.is_activated = True
         pid.save()
-        return_val, return_str = daemon.controller_activate('PID', pid.id)
+        return_val, return_str = daemon.controller_activate('PID', pid.unique_id)
         return return_str
     elif state == 'deactivate_pid':
         pid.is_activated = False
         pid.is_paused = False
         pid.is_held = False
         pid.save()
-        return_val, return_str = daemon.controller_deactivate('PID', pid.id)
+        return_val, return_str = daemon.controller_deactivate('PID', pid.unique_id)
         return return_str
     elif state == 'pause_pid':
         pid.is_paused = True
         pid.save()
-        return_str = daemon.pid_pause(pid.id)
+        return_str = daemon.pid_pause(pid.unique_id)
         return return_str
     elif state == 'hold_pid':
         pid.is_held = True
         pid.save()
-        return_str = daemon.pid_hold(pid.id)
+        return_str = daemon.pid_hold(pid.unique_id)
         return return_str
     elif state == 'resume_pid':
         pid.is_held = False
         pid.is_paused = False
         pid.save()
-        return_str = daemon.pid_resume(pid.id)
+        return_str = daemon.pid_resume(pid.unique_id)
         return return_str
     elif 'set_setpoint_pid' in state:
         pid.setpoint = state.split('|')[1]

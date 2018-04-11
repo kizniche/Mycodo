@@ -50,8 +50,8 @@
 
       <div style="border: 1px solid #ddd; border-radius: 5px;">
 
-      {% for id, axes in y_axes.items() if id == each_graph.id and each_graph.graph_type in ['graph', 'gauge_angular', 'gauge_solid'] %}
-        <!--Dashboard {{each_graph.id}} y-axes: {{axes|safe}}-->
+      {% for id, axes in y_axes.items() if id == each_graph.unique_id and each_graph.graph_type in ['graph', 'gauge_angular', 'gauge_solid'] %}
+        <!--Dashboard {{each_graph.unique_id}} y-axes: {{axes|safe}}-->
       {% endfor %}
 
       {% if each_graph.graph_type == 'graph' %}
@@ -203,7 +203,7 @@ $('#dashboard_type').on('change', function () {
 function modOutput(btn_val) {
   $.ajax({
       type: 'GET',
-      url: '/output_mod_id/' + btn_val,
+      url: '/output_mod/' + btn_val,
     {% if not misc.hide_alert_success %}
       success: function(data) {
           toastr['success']("Output " + data);
@@ -260,13 +260,13 @@ function modPID(btn_val) {
       url: '/pid_mod_unique_id/' + btn_val,
     {% if not misc.hide_alert_success %}
       success: function(data) {
-          toastr['success']("PID " + data);
+          toastr['success'](data);
       },
     {% endif %}
     {% if not misc.hide_alert_warning %}
       error: function(data) {
         console.log(data);
-          toastr['error']("PID " + btn_val.split("/")[0] + ": " + data);
+          toastr['error'](btn_val.split("/")[0] + ": " + data);
       }
     {% endif %}
   });

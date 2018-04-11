@@ -20,7 +20,7 @@ from wtforms import widgets
 #
 
 class Camera(FlaskForm):
-    camera_id = IntegerField('Camera ID', widget=widgets.HiddenInput())
+    camera_id = StringField('Camera ID', widget=widgets.HiddenInput())
     capture_still = SubmitField(lazy_gettext('Capture Still'))
     start_timelapse = SubmitField(lazy_gettext('Start Timelapse'))
     pause_timelapse = SubmitField(lazy_gettext('Pause Timelapse'))

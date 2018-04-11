@@ -458,12 +458,13 @@ def graph_y_axes(dict_measurements):
                     unique_id = each_id_measure.split(',')[0]
                     measurement = each_id_measure.split(',')[1]
 
-                    y_axes[each_graph.id] = check_func(each_device,
-                                                       unique_id,
-                                                       y_axes[each_graph.id],
-                                                       measurement,
-                                                       dict_measurements,
-                                                       input_dev)
+                    y_axes[each_graph.unique_id] = check_func(
+                        each_device,
+                        unique_id,
+                        y_axes[each_graph.id],
+                        measurement,
+                        dict_measurements,
+                        input_dev)
 
     return y_axes
 

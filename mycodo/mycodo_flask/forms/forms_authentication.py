@@ -82,7 +82,7 @@ class LogView(FlaskForm):
 #
 
 class RemoteSetup(FlaskForm):
-    remote_id = IntegerField('Remote Host ID', widget=widgets.HiddenInput())
+    remote_id = StringField('Remote Host ID', widget=widgets.HiddenInput())
     host = StringField(
         lazy_gettext('Domain or IP Address'),
         validators=[DataRequired()]

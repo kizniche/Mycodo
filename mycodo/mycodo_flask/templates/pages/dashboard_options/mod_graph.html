@@ -8,7 +8,7 @@
   </a>
 </div>
 
-<div id="container-graph-{{each_graph.id}}" style="height: {{each_graph.height}}px;"></div>
+<div id="container-graph-{{each_graph.unique_id}}" style="height: {{each_graph.height}}px;"></div>
 
 <div class="collapse" id="collapseContainer{{chart_number}}" style="padding: 0.5em; width: calc(100% - 1em)">
 
@@ -161,11 +161,11 @@
     </div>
 
     <div class="form-row">
-      {% for n in range(colors_graph[each_graph.id]|length) %}
+      {% for n in range(colors_graph[each_graph.unique_id]|length) %}
       <div class="form-check">
         {% set index = '{0:0>2}'.format(n) %}
-        <input id="color_number{{index}}" name="color_number{{index}}" placeholder="#000000" type="color" value="{{colors_graph[each_graph.id][n]['color']}}">
-        <label for="color_number{{index}}">{{colors_graph[each_graph.id][n]['name']}} ({{colors_graph[each_graph.id][n]['measure']}})</label>
+        <input id="color_number{{index}}" name="color_number{{index}}" placeholder="#000000" type="color" value="{{colors_graph[each_graph.unique_id][n]['color']}}">
+        <label for="color_number{{index}}">{{colors_graph[each_graph.unique_id][n]['name']}} ({{colors_graph[each_graph.unique_id][n]['measure']}})</label>
       </div>
       {% endfor %}
     </div>
@@ -189,7 +189,7 @@
       </div>
     </div>
 
-  {% for each_yaxis in y_axes[each_graph.id] %}
+  {% for each_yaxis in y_axes[each_graph.unique_id] %}
     {% set index = '{0:0>2}'.format(loop.index) %}
     <div class="form-row" style="padding-top: 0.5em">
       <div class="col-auto">
@@ -202,13 +202,13 @@
       <div class="col-auto">
         <label class="form-check-label" for="custom_yaxis_min_{{index}}">Y-Axis Minimum</label>
         <div>
-          <input id="yaxis_min_{{index}}" class="form-control" name="custom_yaxis_min_{{index}}" type="text" value="{% if custom_yaxes[each_graph.id][each_yaxis] %}{{custom_yaxes[each_graph.id][each_yaxis]['minimum']}}{% endif %}">
+          <input id="yaxis_min_{{index}}" class="form-control" name="custom_yaxis_min_{{index}}" type="text" value="{% if custom_yaxes[each_graph.unique_id][each_yaxis] %}{{custom_yaxes[each_graph.unique_id][each_yaxis]['minimum']}}{% endif %}">
         </div>
       </div>
       <div class="col-auto">
         <label class="form-check-label" for="custom_yaxis_max_{{index}}">Y-Axis Maximum</label>
         <div>
-          <input id="yaxis_max_{{index}}" class="form-control" name="custom_yaxis_max_{{index}}" type="text" value="{% if custom_yaxes[each_graph.id][each_yaxis] %}{{custom_yaxes[each_graph.id][each_yaxis]['maximum']}}{% endif %}">
+          <input id="yaxis_max_{{index}}" class="form-control" name="custom_yaxis_max_{{index}}" type="text" value="{% if custom_yaxes[each_graph.unique_id][each_yaxis] %}{{custom_yaxes[each_graph.unique_id][each_yaxis]['maximum']}}{% endif %}">
         </div>
       </div>
     </div>

@@ -40,7 +40,7 @@ class SettingsCamera(FlaskForm):
     saturation = DecimalField(lazy_gettext('Saturation'))
     white_balance = DecimalField(lazy_gettext('White Balance'))
     custom_options = StringField(lazy_gettext('Custom Options'))
-    output_id = IntegerField(lazy_gettext('Output'))
+    output_id = StringField(lazy_gettext('Output'))
     cmd_pre_camera = StringField(lazy_gettext('Pre Command'))
     cmd_post_camera = StringField(lazy_gettext('Post Command'))
     camera_add = SubmitField(lazy_gettext('Add Camera'))
@@ -154,7 +154,7 @@ class UserRoles(FlaskForm):
     edit_users = BooleanField(lazy_gettext('Edit Users'))
     edit_controllers = BooleanField(lazy_gettext('Edit Controllers'))
     edit_settings = BooleanField(lazy_gettext('Edit Settings'))
-    role_id = IntegerField('Role ID', widget=widgets.HiddenInput())
+    role_id = StringField('Role ID', widget=widgets.HiddenInput())
     add_role = SubmitField(lazy_gettext('Add Role'))
     save_role = SubmitField(lazy_gettext('Save'))
     delete_role = SubmitField(lazy_gettext('Delete'))
@@ -200,7 +200,7 @@ class UserAdd(FlaskForm):
 
 
 class UserMod(FlaskForm):
-    user_id = IntegerField('User ID', widget=widgets.HiddenInput())
+    user_id = StringField('User ID', widget=widgets.HiddenInput())
     email = EmailField(
         lazy_gettext('Email'),
         render_kw={"placeholder": lazy_gettext("Email")},

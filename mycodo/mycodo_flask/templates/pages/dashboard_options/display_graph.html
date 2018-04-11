@@ -4,7 +4,7 @@
 
   chart_graph[{{chart_number}}] = new Highcharts.StockChart({
     chart : {
-      renderTo: 'container-graph-{{each_graph.id}}',
+      renderTo: 'container-graph-{{each_graph.unique_id}}',
       zoomType: 'x',
       alignTicks: {% if each_graph.enable_align_ticks %}true{% else %}false{% endif %},
       resetZoomButton: {
@@ -80,13 +80,13 @@
     },
 
     yAxis: [
-    {% for each_axis_meas in y_axes[each_graph.id] %}
+    {% for each_axis_meas in y_axes[each_graph.unique_id] %}
       {
         {% if each_graph.enable_manual_y_axis and
-             not (custom_yaxes[each_graph.id][dict_measurements[each_axis_meas]['meas']]['minimum'] == '0' and
-                  custom_yaxes[each_graph.id][dict_measurements[each_axis_meas]['meas']]['maximum'] == '0') %}
-        min: {{custom_yaxes[each_graph.id][dict_measurements[each_axis_meas]['meas']]['minimum']}},
-        max: {{custom_yaxes[each_graph.id][dict_measurements[each_axis_meas]['meas']]['maximum']}},
+             not (custom_yaxes[each_graph.unique_id][dict_measurements[each_axis_meas]['meas']]['minimum'] == '0' and
+                  custom_yaxes[each_graph.unique_id][dict_measurements[each_axis_meas]['meas']]['maximum'] == '0') %}
+        min: {{custom_yaxes[each_graph.unique_id][dict_measurements[each_axis_meas]['meas']]['minimum']}},
+        max: {{custom_yaxes[each_graph.unique_id][dict_measurements[each_axis_meas]['meas']]['maximum']}},
         startOnTick: {% if each_graph.enable_start_on_tick %}true{% else %}false{% endif %},
         endOnTick: {% if each_graph.enable_end_on_tick %}true{% else %}false{% endif %},
         {% endif %}
@@ -432,12 +432,12 @@
   });
 
   $('#resetZoom{{chart_number}}').click(function() {
-    var chart = $('#container-graph-{{each_graph.id}}').highcharts();
+    var chart = $('#container-graph-{{each_graph.unique_id}}').highcharts();
     chart.zoomOut();
   });
 
   $('#showhidebutton{{chart_number}}').click(function() {
-    var chart = $('#container-graph-{{each_graph.id}}').highcharts();
+    var chart = $('#container-graph-{{each_graph.unique_id}}').highcharts();
     var series = chart.series[0];
     if (series.visible) {
       $(chart.series).each(function(){

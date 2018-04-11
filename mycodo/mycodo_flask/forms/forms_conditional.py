@@ -19,7 +19,7 @@ from wtforms import widgets
 class Conditional(FlaskForm):
     conditional_id = StringField('Conditional ID', widget=widgets.HiddenInput())
     conditional_type = StringField('Conditional Type', widget=widgets.HiddenInput())
-    input_id = IntegerField('Output ID', widget=widgets.HiddenInput())
+    input_id = StringField('Input ID', widget=widgets.HiddenInput())
     quantity = IntegerField(lazy_gettext('Quantity'))
     name = StringField(lazy_gettext('Name'))
 

@@ -29,7 +29,7 @@
       {% if not each_camera.stream_started -%}
         {% if not each_camera.timelapse_started %}
           <div class="col-xs-12 col-sm-3">
-            <a data-toggle="collapse" href="#collapseContainerTimelapse-{{each_camera.id}}" aria-expanded="false" aria-controls="collapseContainerTimelapse-{{each_camera.id}}" class="form-control btn btn-default" role="button">{{_('Create Timelapse')}}</a>
+            <a data-toggle="collapse" href="#collapseContainerTimelapse-{{each_camera.unique_id}}" aria-expanded="false" aria-controls="collapseContainerTimelapse-{{each_camera.unique_id}}" class="form-control btn btn-default" role="button">{{_('Create Timelapse')}}</a>
           </div>
         {% else %}
           {% if each_camera.timelapse_paused %}
@@ -60,7 +60,7 @@
 
     </div>
 
-    <div class="collapse" id="collapseContainerTimelapse-{{each_camera.id}}" style="padding: 0.5em 0 0.5em 1em">
+    <div class="collapse" id="collapseContainerTimelapse-{{each_camera.unique_id}}" style="padding: 0.5em 0 0.5em 1em">
       <div class="row">
         Time-lapse parameters:
       </div>

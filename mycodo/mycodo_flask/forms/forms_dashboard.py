@@ -105,7 +105,7 @@ class DashboardGauge(FlaskForm):
     input_ids = StringField(lazy_gettext('Measurement'))
     y_axis_min = DecimalField(lazy_gettext('Gauge Min'))
     y_axis_max = DecimalField(lazy_gettext('Gauge Max'))
-    max_measure_age = DecimalField(lazy_gettext('Max Age (seconds)'))
+    max_measure_age = IntegerField(lazy_gettext('Max Age (seconds)'))
     enable_timestamp = BooleanField(lazy_gettext('Show Timestamp'))
 
 
