@@ -219,7 +219,9 @@ class LCDController(threading.Thread):
             self.ready.set()
 
             while self.running:
-                if (self.lcd_is_on and
+                if not self.lcd_initilized:
+                    self.stop_controller()
+                elif (self.lcd_is_on and
                         self.lcd_initilized and
                         time.time() > self.timer):
                     try:
@@ -472,7 +474,7 @@ class LCDController(threading.Thread):
             self.lcd_is_on = True
         except Exception as err:
             self.logger.error(
-                "Count not initialize LCD. Error: {err}".format(err=err))
+                "Could not initialize LCD. Check your configuration and wiring. Error: {err}".format(err=err))
 
     def lcd_byte(self, bits, mode, backlight=None):
         """ Send byte to data pins """
