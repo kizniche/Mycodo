@@ -78,24 +78,24 @@
         <div class="col-sm-3">
           {{form_timer_base.name(class_='form-control', value=each_timer.name, **{'title':_('A name to distinguish this from others')})}}
         </div>
-        <div class="col-sm-2">
-          <input class="form-control btn btn-default" disabled="" title="UUID: {{each_timer.unique_id}}" value="[{{'%02d' % each_timer.id}}] {{each_timer.timer_type}} (
-            {%- if each_timer.is_activated %}{{_('Active')}}
-            {%- else %}{{_('Inactive')}}
+        <div class="col-sm-2 col-lg-3">
+          <input class="form-control btn btn-default" disabled="" title="[{{'%02d' % each_timer.id}}] UUID: {{each_timer.unique_id}}" value="[{{each_timer.timer_type}}]
+            {%- if each_timer.is_activated %} {{_('Active')}}
+            {%- else %} {{_('Inactive')}}
             {%-endif -%}
-          )" type="text">
+          " type="text">
         </div>
-        <div class="col-sm-2">
+        <div class="col-sm-2 col-lg-3">
           {%- if each_timer.is_activated %}
             {{form_timer_base.deactivate(class_='form-control btn btn-default')}}
           {%- else %}
             {{form_timer_base.activate(class_='form-control btn btn-default')}}
           {%- endif -%}
         </div>
-        <div class="col-sm-2">
+        <div class="col-sm-2 col-lg-1">
           {{form_timer_base.order_up(class_='form-control btn btn-default')}}
         </div>
-        <div class="col-sm-2">
+        <div class="col-sm-2 col-lg-1">
           {{form_timer_base.order_down(class_='form-control btn btn-default')}}
         </div>
       </div>

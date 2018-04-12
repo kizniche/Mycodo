@@ -92,7 +92,7 @@
           {% if pid %}
             <option value="">{{_('Select One')}}</option>
             {% for each_pid in pid -%}
-            <option value="{{each_pid.unique_id}}" {% if each_graph.pid_ids == each_pid.unique_id %}selected{% endif %}>[{{each_pid.id}}] {{each_pid.name}}</option>
+            <option value="{{each_pid.unique_id}}" {% if each_graph.pid_ids == each_pid.unique_id %}selected{% endif %}>[{{'%02d' % each_pid.id}}] {{each_pid.name}}</option>
             {% endfor -%}
           {% else %}
             <option value="">{{_('None Available')}}</option>

@@ -54,7 +54,7 @@
           {{form_camera.name(class_='form-control', value=each_camera.name, **{'title':_('Name for this Camera')})}}
         </div>
         <div class="col-xs-12 col-sm-3">
-          <input class="form-control" disabled="" value="[{{each_camera.id}}] {{each_camera.library}}" type="text">
+          <input class="form-control" disabled="" title="[{{'%02d' % each_camera.id}}] UUID: {{each_camera.unique_id}}" value="{{each_camera.library}}" type="text">
         </div>
         <div class="col-xs-12 col-sm-3">
           {{form_camera.camera_mod(class_='btn btn-primary btn-block')}}
@@ -104,7 +104,7 @@
                 <option value="">Disabled</option>
               {% endif %}
               {%- for each_output in output -%}
-                <option value="{{each_output.unique_id}}"{% if each_camera.output_id == each_output.unique_id %} selected{% endif %}>[{{each_output.id}}] {{each_output.name}}</option>
+                <option value="{{each_output.unique_id}}"{% if each_camera.output_id == each_output.unique_id %} selected{% endif %}>[{{'%02d' % each_output.id}}] {{each_output.name}}</option>
               {%- endfor -%}
             </select>
           </div>

@@ -54,9 +54,9 @@
         {{form_lcd_mod.name(class_='form-control', value=each_lcd.name, **{'title':_('A name to distinguish this from others')})}}
       </div>
       <div class="col-sm-5 col-lg-2 no-gutters">
-        <input class="form-control btn btn-default" title="UUID: {{each_lcd.unique_id}}" disabled="" value="[{{'%02d' % each_lcd.id}}]
-        {%- if each_lcd.is_activated %} {{_('Active')}}
-        {%- else %} {{_('Inactive')}}
+        <input class="form-control btn btn-default" title="[{{'%02d' % each_lcd.id}}] UUID: {{each_lcd.unique_id}}" disabled="" value="
+        {%- if each_lcd.is_activated %}{{_('Active')}}
+        {%- else %}{{_('Inactive')}}
         {%-endif -%}
         " type="text">
       </div>

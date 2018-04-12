@@ -58,7 +58,7 @@
     <div class="col-auto">
       {{form_graph.input_ids.label(class_='control-label')}}
       <div>
-        <select class="form-control btn-default" id="input_ids" name="input_ids" style="width: 100%;" size="{{choices_pid|length}}" multiple>
+        <select class="form-control btn-default" id="input_ids" name="input_ids" style="width: 100%;" size="{{choices_input|length}}" multiple>
         {% if choices_input %}
           {% for each_choice, value in choices_input.items() -%}
           <option value="{{each_choice}}">{{value}}</option>

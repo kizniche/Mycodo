@@ -24,7 +24,7 @@
           {{form_mod_pid_base.name(class_='form-control', value=each_pid.name, **{'title':_('A name to distinguish this from others')})}}
         </div>
         <div class="col-xs-5 col-sm-3 col-md-2 col-lg-3">
-          <input class="form-control btn btn-default" title="UUID: {{each_pid.unique_id}}" disabled="" value="[PID {{'%02d' % each_pid.id}}]
+          <input class="form-control btn btn-default" title="[{{'%02d' % each_pid.id}}] UUID: {{each_pid.unique_id}}" disabled="" value="[PID]
           {%- if each_pid.is_activated and not each_pid.is_paused %} {{_('Active')}}
           {%- elif each_pid.is_activated and each_pid.is_paused %} {{_('Paused')}}
           {%- elif each_pid.is_held %} {{_('On Hold')}}
@@ -172,7 +172,7 @@
               <select class="form-control" id="raise_output_id" name="raise_output_id" title="" data-original-title="{{_('The output that will raise the selected environmental condition (Measure Type)')}}.">
                 <option value="">{{_('Disabled')}}</option>
                 {%- for each_output in output -%}
-                  <option value="{{each_output.unique_id}}"{% if each_pid.raise_output_id == each_output.unique_id %} selected{% endif %}>[{{each_output.id}}] {{each_output.name}}</option>
+                  <option value="{{each_output.unique_id}}"{% if each_pid.raise_output_id == each_output.unique_id %} selected{% endif %}>[{{'%02d' % each_output.id}}] {{each_output.name}}</option>
                 {%- endfor -%}
               </select>
             </div>
@@ -195,7 +195,7 @@
               <select class="form-control" id="lower_output_id" name="lower_output_id" title="" data-original-title="{{_('The output that will lower the selected environmental condition (Measure Type)')}}.">
                 <option value="">{{_('Disabled')}}</option>
                 {%- for each_output in output -%}
-                  <option value="{{each_output.unique_id}}"{% if each_pid.lower_output_id == each_output.unique_id %} selected{% endif %}>[{{each_output.id}}] {{each_output.name}}</option>
+                  <option value="{{each_output.unique_id}}"{% if each_pid.lower_output_id == each_output.unique_id %} selected{% endif %}>[{{'%02d' % each_output.id}}] {{each_output.name}}</option>
                 {%- endfor -%}
               </select>
             </div>
@@ -228,7 +228,7 @@
                 {%- if each_method.unique_id == each_pid.method_id -%}
                   {%- do valid_saved_method.append(1) -%}
                 {%- endif -%}
-                <option value="{{each_method.unique_id}}"{% if each_pid.method_id == each_method.unique_id %} selected{% endif %}>[{{each_method.id}}] {{each_method.name}}</option>
+                <option value="{{each_method.unique_id}}"{% if each_pid.method_id == each_method.unique_id %} selected{% endif %}>[{{'%02d' % each_method.id}}] {{each_method.name}}</option>
               {%- endfor -%}
               {%- if not valid_saved_method and each_pid.method_id != '' -%}
                 <option value="" selected>{{_('Invalid saved method. Save another method from this list.')}}</option>

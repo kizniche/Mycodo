@@ -1003,8 +1003,9 @@ class DaemonController:
 
     def check_all_timelapses(self, now):
         try:
-            for each_camera in self.camera:
-                self.timelapse_check(each_camera, now)
+            if self.camera:
+                for each_camera in self.camera:
+                    self.timelapse_check(each_camera, now)
         except Exception:
             self.logger.exception("Timelapse ERROR")
 
