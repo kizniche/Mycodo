@@ -29,7 +29,7 @@ def redirects_to_admin_creation_page(testapp, endpoint):
 def test_sees_admin_creation_form(testapp):
     """ No Admin user exists: user sees the admin creation page """
     # Delete all admin users to show the admin creation form
-    for each_admin in User.query.filter_by(role=1).all():
+    for each_admin in User.query.filter_by(role_id=1).all():
         each_admin.delete()
     expected_body_msg = "<!-- Route: /create_admin -->"
     assert expected_body_msg in testapp.get('/').maybe_follow()
@@ -182,12 +182,12 @@ def test_routes_logged_in_as_guest(_, testapp):
         assert route[1] in response, "Unexpected HTTP Response: \n{body}".format(body=response.body)
 
 
-def create_user(mycodo_db, role, name, password):
+def create_user(mycodo_db, role_id, name, password):
     """ Create fake admin user """
     new_user = UserFactory()
     new_user.name = name
     new_user.set_password(password)
-    new_user.role = role
+    new_user.role_id = role_id
     mycodo_db.add(new_user)
     mycodo_db.commit()
     return new_user

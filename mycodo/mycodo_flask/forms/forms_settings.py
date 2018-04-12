@@ -226,8 +226,8 @@ class UserMod(FlaskForm):
         lazy_gettext('Repeat Password'),
         render_kw={"placeholder": lazy_gettext("Repeat Password")}
     )
-    role = StringField(
-        lazy_gettext('Role'),
+    role_id = IntegerField(
+        lazy_gettext('Role ID'),
         validators=[DataRequired()]
     )
     theme = StringField(lazy_gettext('Theme'))

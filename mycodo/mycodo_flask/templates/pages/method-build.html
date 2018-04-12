@@ -250,7 +250,7 @@
       </div>
     {%- endif -%}
 
-    {%- for each_method in method_data if each_method.method_id == method.id and each_method.output_id -%}
+    {%- for each_method in method_data if each_method.method_id == method.unique_id and each_method.output_id -%}
 
       <form method="post" action="/method-build/{{method.unique_id}}" style="padding: 0.7em 0">
       <input type="hidden" name="form-name" value="modMethod">
@@ -296,7 +296,7 @@
             <select class="form-control form-tooltip form-dropdown" data-placement="bottom" id="output_id" name="output_id" title="{{_('Modulate the selected output.')}}">
               <option value="">Disabled</option>
               {% for each_output in output -%}
-                <option value="{{each_output.id}}"{%- if each_output.id == each_method.output_id -%} selected{%- endif -%}>{{"[{0:02d}]".format(each_output.id)}} {{each_output.name}}</option>
+                <option value="{{each_output.id}}"{%- if each_output.unique_id == each_method.output_id -%} selected{%- endif -%}>{{"[{0:02d}]".format(each_output.id)}} {{each_output.name}}</option>
               {% endfor -%}
             </select>
           </div>

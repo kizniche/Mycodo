@@ -32,31 +32,35 @@
   {% if not dismiss_notification %}
 
   <form method="post" action="/create_admin">
-  <div class="form-row text-center" style="max-width: 40em;">
-    <div class="col-12" style="padding-bottom: 1em; text-align: center; font-size: 1.5em; font-weight: bold;">
-      Welcome to Mycodo
+    <div class="row justify-content-center">
+      <div class="col-12" style="max-width: 40em;">
+        <p style="padding: 1em 0; text-align: center; font-size: 2em; font-weight: bold;">
+          Welcome to Mycodo
+        </p>
+
+        <p>
+          This appears to be a new install, so the first thing we'll need to do is create an administrator user for Mycodo. Read and accept the agreement below to begin.</p>
+
+        <p style="padding: 1em 0; text-align: center; font-size: 1.2em; font-weight: bold;">
+          NO WARRANTY NOTICE
+        </p>
+
+        <p>
+          Mycodo is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+          <br/>
+          Mycodo is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+          <br/>
+          You should have received a copy of the GNU General Public License along with Mycodo. If not, see &lt;<a href="http://www.gnu.org/licenses/" target="_blank">http://www.gnu.org/licenses/</a>&gt;.
+          <br/>&nbsp;<br/>
+          Mycodo also collects anonymous usage statistics to aid with development of new features. This is used to determine what features are used most often, when systems run poorly, and other aspects that should improve reliability, performance, and new features. You can opt-out at any time from the Admin Configuration panel, after you log in.
+        </p>
+        <p>
+          <input type="hidden" name="form-name" value="acknowledge">
+          {{form_notice.csrf_token}}
+          {{form_notice.acknowledge(class_='form-control btn btn-default')}}
+        </p>
+      </div>
     </div>
-    <div class="col-12">
-      This appears to be a new install, so the first thing we'll need to do is create an administrator user for Mycodo. Read and accept the agreement below to begin.
-    </div>
-    <div class="col-12" style="padding: 1em 0; text-align: center; font-size: 1.2em; font-weight: bold;">
-      NO WARRANTY NOTICE
-    </div>
-    <div class="col-12" style="padding-bottom: 1em; text-align: justify;">
-      Mycodo is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
-      <br/>
-      Mycodo is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
-      <br/>
-      You should have received a copy of the GNU General Public License along with Mycodo. If not, see &lt;<a href="http://www.gnu.org/licenses/" target="_blank">http://www.gnu.org/licenses/</a>&gt;.
-      <br/>&nbsp;<br/>
-      Mycodo also collects anonymous usage statistics to aid with development of new features. This is used to determine what features are used most often, when systems run poorly, and other aspects that should improve reliability, performance, and new features. You can opt-out at any time from the Admin Configuration panel, after you log in.
-    </div>
-    <div class="col-12">
-      <input type="hidden" name="form-name" value="acknowledge">
-      {{form_notice.csrf_token}}
-      {{form_notice.acknowledge(class_='form-control btn btn-default')}}
-    </div>
-  </div>
   </form>
 
   {% else %}

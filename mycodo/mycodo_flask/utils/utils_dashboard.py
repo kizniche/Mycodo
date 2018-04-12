@@ -452,8 +452,8 @@ def graph_y_axes(dict_measurements):
             # dashboard element
             for each_id_measure in ids_and_measures:
                 if len(each_id_measure.split(',')) == 2:
-                    if each_graph.id not in y_axes:
-                        y_axes[each_graph.id] = []
+                    if each_graph.unique_id not in y_axes:
+                        y_axes[each_graph.unique_id] = []
 
                     unique_id = each_id_measure.split(',')[0]
                     measurement = each_id_measure.split(',')[1]
@@ -461,7 +461,7 @@ def graph_y_axes(dict_measurements):
                     y_axes[each_graph.unique_id] = check_func(
                         each_device,
                         unique_id,
-                        y_axes[each_graph.id],
+                        y_axes[each_graph.unique_id],
                         measurement,
                         dict_measurements,
                         input_dev)

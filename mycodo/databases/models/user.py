@@ -16,7 +16,7 @@ class User(UserMixin, CRUDMixin, db.Model):
     name = db.Column(db.VARCHAR(64), unique=True, index=True)
     password_hash = db.Column(db.VARCHAR(255))
     email = db.Column(db.VARCHAR(64), unique=True, index=True)
-    role = db.Column(db.String, db.ForeignKey('roles.unique_id'), default=None)
+    role_id = db.Column(db.Integer, db.ForeignKey('roles.id'), default=None)
     theme = db.Column(db.VARCHAR(64))
     landing_page = db.Column(db.Text, default='live')
     language = db.Column(db.Text, default=None)  # Force the web interface to use a specific language
@@ -25,7 +25,7 @@ class User(UserMixin, CRUDMixin, db.Model):
 
     def __repr__(self):
         output = "<User: <name='{name}', email='{email}' is_admin='{isadmin}'>"
-        return output.format(name=self.name, email=self.email, isadmin=bool(self.role == 1))
+        return output.format(name=self.name, email=self.email, isadmin=bool(self.role_id == 1))
 
     def set_password(self, new_password):
         """ saves a password hash  """

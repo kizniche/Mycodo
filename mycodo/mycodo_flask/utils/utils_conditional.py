@@ -90,7 +90,7 @@ def conditional_del(cond_id):
         controller=gettext("Conditional"))
 
     cond = Conditional.query.filter(
-        Conditional.id == cond_id).first()
+        Conditional.unique_id == cond_id).first()
 
     # Deactivate conditional if active
     if cond.is_activated:
@@ -399,7 +399,7 @@ def check_form_actions(form, error):
             error.append("Camera must be set")
         if (form.do_action.data == 'video_email' and
                 Camera.query.filter(
-                    and_(Camera.id == form.do_unique_id.data,
+                    and_(Camera.unique_id == form.do_unique_id.data,
                          Camera.library != 'picamera')).count()):
             error.append('Only Pi Cameras can record video')
 
@@ -446,7 +446,7 @@ def check_cond_actions(cond_action, error):
             error.append("Camera must be set")
         if (cond_action.do_action == 'video_email' and
                 Camera.query.filter(
-                    and_(Camera.id == cond_action.do_unique_id,
+                    and_(Camera.unique_id == cond_action.do_unique_id,
                          Camera.library != 'picamera')).count()):
             error.append('Only Pi Cameras can record video')
 

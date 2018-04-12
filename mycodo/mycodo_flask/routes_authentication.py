@@ -97,7 +97,7 @@ def create_admin():
             new_user.name = username
             new_user.email = form_create_admin.email.data
             new_user.set_password(form_create_admin.password.data)
-            new_user.role = 1  # Admin
+            new_user.role_id = 1  # Admin
             new_user.theme = 'slate'
             try:
                 db.session.add(new_user)
@@ -181,7 +181,7 @@ def do_login():
 
                 if matched_hash == password_hash:
                     user = User.query.filter(User.name == username).first()
-                    role_name = Role.query.filter(Role.id == user.role).first().name
+                    role_name = Role.query.filter(Role.id == user.role_id).first().name
                     login_log(username, role_name, user_ip, 'LOGIN')
 
                     # flask-login user
@@ -193,7 +193,7 @@ def do_login():
                     return redirect(url_for('routes_general.home'))
                 else:
                     user = User.query.filter(User.name == username).first()
-                    role_name = Role.query.filter(Role.id == user.role).first().name
+                    role_name = Role.query.filter(Role.id == user.role_id).first().name
                     login_log(username, role_name, user_ip, 'FAIL')
                     failed_login()
             else:
@@ -211,7 +211,7 @@ def do_login():
 def logout():
     """Log out of the web-ui"""
     user = User.query.filter(User.name == flask_login.current_user.name).first()
-    role_name = Role.query.filter(Role.id == user.role).first().name
+    role_name = Role.query.filter(Role.id == user.role_id).first().name
     login_log(user.name,
               role_name,
               request.environ.get('REMOTE_ADDR', 'unknown address'),
@@ -276,7 +276,7 @@ def remote_get_inputs():
 
 def admin_exists():
     """Verify that at least one admin user exists"""
-    return User.query.filter_by(role=1).count()
+    return User.query.filter_by(role_id=1).count()
 
 
 def check_database_version_issue():

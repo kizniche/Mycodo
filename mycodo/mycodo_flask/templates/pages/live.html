@@ -102,7 +102,7 @@
           {%- set input_has_pid = [] -%}
           {%- if pid_display_order -%}
             {%- for pid_order in pid_display_order -%}
-              {%- for each_pid in pid if each_pid.id == pid_order and each_pid.is_activated and each_pid.measurement.split(',')[0] == each_input.unique_id -%}
+              {%- for each_pid in pid if each_pid.unique_id == pid_order and each_pid.is_activated and each_pid.measurement.split(',')[0] == each_input.unique_id -%}
                 {%- do input_has_pid.append(1) -%}
               {%- endfor -%}
             {%- endfor -%}
@@ -146,7 +146,7 @@
 
         {%- if pid_display_order -%}
         {%- for pid_order in pid_display_order -%}
-          {%- for each_pid in pid if each_pid.id == pid_order and each_pid.is_activated and each_pid.measurement.split(',')[0] == each_input.unique_id -%}
+          {%- for each_pid in pid if each_pid.unique_id == pid_order and each_pid.is_activated and each_pid.measurement.split(',')[0] == each_input.unique_id -%}
 
       <div class="collapse" id="collapseContainer{{collapse_container_number}}" style="padding: 0.5em 0;">
 
@@ -165,7 +165,7 @@
           </div>
         </div>
 
-            {%- for each_output in output if each_output.id == each_pid.raise_output_id -%}
+            {%- for each_output in output if each_output.unique_id == each_pid.raise_output_id -%}
 
         <div class="row" style="padding-top: 0.5em">
           <div class="col-xs-12 col-sm-3 col-md-2">
@@ -204,7 +204,7 @@
 
             {%- endfor -%}
 
-            {%- for each_output in output if each_output.id == each_pid.lower_output_id -%}
+            {%- for each_output in output if each_output.unique_id == each_pid.lower_output_id -%}
 
         <div class="row" style="padding-top: 0.5em">
           <div class="col-xs-12 col-sm-3 col-md-2">
@@ -243,7 +243,7 @@
 
             {%- endfor -%}
 
-            {%- for each_method in method if each_method.id == each_pid.method_id -%}
+            {%- for each_method in method if each_method.unique_id == each_pid.method_id -%}
 
         <div class="row">
           <div class="col-xs-12">
@@ -268,7 +268,7 @@
     {%- for each_math_sorted in maths_sorted -%}
       {%- set collapse_container_number = loop.index -%}
 
-      {%- for each_math in math if each_math.id == each_math_sorted -%}
+      {%- for each_math in math if each_math.unique_id == each_math_sorted -%}
 
     <div style="padding: 0.5em; margin-bottom: 0.7em; border: 2px solid #ddd; border-radius: 5px;">
 
@@ -277,7 +277,7 @@
           {%- set math_has_pid = [] -%}
           {%- if pid_display_order -%}
             {%- for pid_order in pid_display_order -%}
-              {%- for each_pid in pid if each_pid.id == pid_order and each_pid.is_activated and each_pid.measurement.split(',')[0] == each_math.unique_id -%}
+              {%- for each_pid in pid if each_pid.unique_id == pid_order and each_pid.is_activated and each_pid.measurement.split(',')[0] == each_math.unique_id -%}
                 {%- do math_has_pid.append(1) -%}
               {%- endfor -%}
             {%- endfor -%}
@@ -313,7 +313,7 @@
 
         {%- if pid_display_order -%}
         {%- for pid_order in pid_display_order -%}
-          {%- for each_pid in pid if each_pid.id == pid_order and each_pid.is_activated and each_pid.measurement.split(',')[0] == each_math.unique_id -%}
+          {%- for each_pid in pid if each_pid.unique_id == pid_order and each_pid.is_activated and each_pid.measurement.split(',')[0] == each_math.unique_id -%}
 
       <div class="collapse" id="collapseContainer{{collapse_container_number}}" style="padding: 0.5em 0;">
 
@@ -332,7 +332,7 @@
           </div>
         </div>
 
-            {%- for each_output in output if each_output.id == each_pid.raise_output_id -%}
+            {%- for each_output in output if each_output.unique_id == each_pid.raise_output_id -%}
 
         <div class="row" style="padding-top: 0.5em">
           <div class="col-xs-12 col-sm-3 col-md-2">
@@ -371,7 +371,7 @@
 
             {%- endfor -%}
 
-            {%- for each_output in output if each_output.id == each_pid.lower_output_id -%}
+            {%- for each_output in output if each_output.unique_id == each_pid.lower_output_id -%}
 
         <div class="row" style="padding-top: 0.5em">
           <div class="col-xs-12 col-sm-3 col-md-2">
@@ -410,7 +410,7 @@
 
             {%- endfor -%}
 
-            {%- for each_method in method if each_method.id == each_pid.method_id -%}
+            {%- for each_method in method if each_method.unique_id == each_pid.method_id -%}
 
         <div class="row">
           <div class="col-xs-12">

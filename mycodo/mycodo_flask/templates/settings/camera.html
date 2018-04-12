@@ -104,7 +104,7 @@
                 <option value="">Disabled</option>
               {% endif %}
               {%- for each_output in output -%}
-                <option value="{{each_output.id}}"{% if each_camera.output_id == each_output.id %} selected{% endif %}>{{each_output.id}} ({{each_output.name}})</option>
+                <option value="{{each_output.unique_id}}"{% if each_camera.output_id == each_output.unique_id %} selected{% endif %}>[{{each_output.id}}] {{each_output.name}}</option>
               {%- endfor -%}
             </select>
           </div>

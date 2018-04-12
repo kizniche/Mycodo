@@ -94,7 +94,7 @@ def return_output_usage(table_misc, table_outputs):
 
     for each_output in table_outputs:
         if each_output.output_type != 'pwm':
-            output_stats[each_output.id] = None
+            output_stats[each_output.unique_id] = None
 
     # Calculate output on duration for different time periods
     # Use OrderedDict to ensure proper order when saved to csv file
@@ -104,11 +104,11 @@ def return_output_usage(table_misc, table_outputs):
 
     for each_output in table_outputs:
         if each_output.output_type != 'pwm':
-            past_1d_hours = output_sec_on(each_output.id, 86400) / 3600
-            past_1w_hours = output_sec_on(each_output.id, 604800) / 3600
-            past_1m_hours = output_sec_on(each_output.id, 2629743) / 3600
-            past_1m_date_hours = output_sec_on(each_output.id, int(past_month_seconds)) / 3600
-            past_1y_hours = output_sec_on(each_output.id, 31556926) / 3600
+            past_1d_hours = output_sec_on(each_output.unique_id, 86400) / 3600
+            past_1w_hours = output_sec_on(each_output.unique_id, 604800) / 3600
+            past_1m_hours = output_sec_on(each_output.unique_id, 2629743) / 3600
+            past_1m_date_hours = output_sec_on(each_output.unique_id, int(past_month_seconds)) / 3600
+            past_1y_hours = output_sec_on(each_output.unique_id, 31556926) / 3600
 
             past_1d_kwh = table_misc.output_usage_volts * each_output.amps * past_1d_hours / 1000
             past_1w_kwh = table_misc.output_usage_volts * each_output.amps * past_1w_hours / 1000
@@ -116,7 +116,7 @@ def return_output_usage(table_misc, table_outputs):
             past_1m_date_kwh = table_misc.output_usage_volts * each_output.amps * past_1m_date_hours / 1000
             past_1y_kwh = table_misc.output_usage_volts * each_output.amps * past_1y_hours / 1000
 
-            output_stats[each_output.id] = {
+            output_stats[each_output.unique_id] = {
                 '1d': {
                     'hours_on': past_1d_hours,
                     'kwh': past_1d_kwh,
@@ -208,8 +208,8 @@ def generate_output_usage_report():
                                 value['1y']])
                 else:
                     # Each output rows
-                    each_output = output.filter(Output.id == key).first()
-                    w.writerow([each_output.id,
+                    each_output = output.filter(Output.unique_id == key).first()
+                    w.writerow([each_output.unique_id,
                                 each_output.unique_id,
                                 str(each_output.name).encode("utf-8"),
                                 'hours_on',
@@ -218,7 +218,7 @@ def generate_output_usage_report():
                                 value['1m']['hours_on'],
                                 value['1m_date']['hours_on'],
                                 value['1y']['hours_on']])
-                    w.writerow([each_output.id,
+                    w.writerow([each_output.unique_id,
                                 each_output.unique_id,
                                 str(each_output.name).encode("utf-8"),
                                 'kwh',
@@ -227,7 +227,7 @@ def generate_output_usage_report():
                                 value['1m']['kwh'],
                                 value['1m_date']['kwh'],
                                 value['1y']['kwh']])
-                    w.writerow([each_output.id,
+                    w.writerow([each_output.unique_id,
                                 each_output.unique_id,
                                 str(each_output.name).encode("utf-8"),
                                 'cost',

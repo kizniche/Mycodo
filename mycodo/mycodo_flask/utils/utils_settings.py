@@ -68,7 +68,7 @@ def user_roles(form):
             except sqlalchemy.exc.IntegrityError as except_msg:
                 error.append(except_msg)
         elif form.save_role.data:
-            mod_role = Role.query.filter(Role.id == form.role_id.data).first()
+            mod_role = Role.query.filter(Role.unique_id == form.role_id.data).first()
             mod_role.view_logs = form.view_logs.data
             mod_role.view_camera = form.view_camera.data
             mod_role.view_stats = form.view_stats.data
@@ -78,7 +78,7 @@ def user_roles(form):
             mod_role.edit_controllers = form.edit_controllers.data
             db.session.commit()
         elif form.delete_role.data:
-            if User().query.filter(User.role == form.role_id.data).count():
+            if User().query.filter(User.role_id == form.role_id.data).count():
                 error.append(
                     "Cannot delete role if it is assigned to a user. "
                     "Change the user to another role and try again.")
@@ -119,8 +119,8 @@ def user_add(form):
         if not error:
             new_user.set_password(form.password_new.data)
             role = Role.query.filter(
-                Role.name == form.addRole.data).first().id
-            new_user.role = role
+                Role.name == form.addRole.data).first()
+            new_user.role_id = role.id
             new_user.theme = form.theme.data
             try:
                 new_user.save()
@@ -136,7 +136,7 @@ def user_add(form):
 
 def user_mod(form):
     mod_user = User.query.filter(
-        User.id == form.user_id.data).first()
+        User.unique_id == form.user_id.data).first()
     action = '{action} {controller} {user}'.format(
         action=gettext("Modify"),
         controller=gettext("User"),
@@ -160,15 +160,15 @@ def user_mod(form):
             if flask_login.current_user.id == form.user_id.data:
                 logout_user = True
 
-        current_role = Role.query.filter(
-            Role.name == form.role.data).first()
-        if mod_user.role == 1 and mod_user.role != current_role.id:
+        current_user_name = User.query.filter(
+            User.unique_id == form.user_id.data).first().name
+        if (mod_user.role_id == 1 and
+                mod_user.role_id != form.role_id.data and
+                flask_login.current_user.name == current_user_name):
             error.append("Cannot change currently-logged in user's role from Admin")
 
         if not error:
-            role = Role.query.filter(
-                Role.name == form.role.data).first().id
-            mod_user.role = role
+            mod_user.role_id = form.role_id.data
             mod_user.theme = form.theme.data
             db.session.commit()
             if logout_user:

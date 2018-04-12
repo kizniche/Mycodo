@@ -1015,7 +1015,7 @@ class DaemonController:
                         now > camera.timelapse_end_time):
                 with session_scope(MYCODO_DB_PATH) as new_session:
                     mod_camera = new_session.query(Camera).filter(
-                        Camera.id == camera.id).first()
+                        Camera.unique_id == camera.unique_id).first()
                     mod_camera.timelapse_started = False
                     mod_camera.timelapse_paused = False
                     mod_camera.timelapse_start_time = None
@@ -1038,7 +1038,7 @@ class DaemonController:
                     capture_number += 1
                 with session_scope(MYCODO_DB_PATH) as new_session:
                     mod_camera = new_session.query(Camera).filter(
-                        Camera.id == camera.id).first()
+                        Camera.unique_id == camera.unique_id).first()
                     mod_camera.timelapse_next_capture = next_capture
                     mod_camera.timelapse_capture_number = capture_number
                     new_session.commit()

@@ -27,10 +27,10 @@
       {%- else -%}
         {%- set valid_saved_method = [] -%}
         {%- for each_method in method -%}
-          {%- if each_method.id == each_timer.method_id -%}
+          {%- if each_method.unique_id == each_timer.method_id -%}
             {%- do valid_saved_method.append(1) -%}
           {%- endif -%}
-          <option value="{{each_method.id}}"{% if each_timer.method_id == each_method.id %} selected{% endif %}>{{each_method.id}} ({{each_method.name}})</option>
+          <option value="{{each_method.id}}"{% if each_timer.method_id == each_method.unique_id %} selected{% endif %}>[{{each_method.id}}] {{each_method.name}}</option>
         {%- endfor -%}
         {%- if not valid_saved_method and each_timer.method_id -%}
           <option value="" selected>{{_('Invalid saved method. Save another method from this list.')}}</option>

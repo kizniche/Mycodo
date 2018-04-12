@@ -258,7 +258,7 @@ def choices_id_name(table):
 
 def user_has_permission(permission):
     user = User.query.filter(User.name == flask_login.current_user.name).first()
-    role = Role.query.filter(Role.id == user.role).first()
+    role = Role.query.filter(Role.id == user.role_id).first()
     if ((permission == 'edit_settings' and role.edit_settings) or
         (permission == 'edit_controllers' and role.edit_controllers) or
         (permission == 'edit_users' and role.edit_users) or
