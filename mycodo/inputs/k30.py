@@ -84,12 +84,12 @@ class K30Sensor(AbstractInput):
         if lock_acquired:
             self.ser.flushInput()
             time.sleep(1)
-            self.ser.write("\xFE\x44\x00\x08\x02\x9F\x25")
+            self.ser.write(bytearray([0xfe, 0x44, 0x00, 0x08, 0x02, 0x9f, 0x25]))
             time.sleep(.01)
             resp = self.ser.read(7)
             if len(resp) != 0:
-                high = ord(resp[3])
-                low = ord(resp[4])
+                high = resp[3]
+                low = resp[4]
                 co2 = (high * 256) + low
             lock.release()
 
