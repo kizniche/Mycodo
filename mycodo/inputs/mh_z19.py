@@ -4,6 +4,7 @@ import time
 
 import locket
 import os
+import struct
 
 from .base_input import AbstractInput
 from .sensorutils import is_device
@@ -90,8 +91,8 @@ class MHZ19Sensor(AbstractInput):
             time.sleep(.01)
             resp = self.ser.read(9)
             if len(resp) != 0:
-                high = resp[2]
-                low = resp[3]
+                high = struct.unpack('B', resp[2])
+                low = struct.unpack('B', resp[3])
                 co2 = (high * 256) + low
             lock.release()
         else:
