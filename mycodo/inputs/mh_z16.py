@@ -133,9 +133,9 @@ class MHZ16Sensor(AbstractInput):
                 time.sleep(.01)
                 resp = self.ser.read(9)
                 if len(resp) != 0:
-                    high_level = resp[2]
-                    low_level = resp[3]
-                    co2 = high_level * 256 + low_level
+                    high = resp[2]
+                    low = resp[3]
+                    co2 = (high * 256) + low
                 lock.release()
 
         elif self.interface == 'I2C':
