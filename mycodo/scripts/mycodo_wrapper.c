@@ -140,6 +140,7 @@ int main(int argc, char *argv[]) {
 		printf("   restart:                    Restart the computer after a 10 second pause\n");
 		printf("   shutdown:                   Shutdown the computer after a 10 second pause\n");
 		printf("   upgrade:                    Upgrade Mycodo to the latest version on github\n");
+		printf("   upgrade-next-release:       Upgrade Mycodo to the next major version on github\n");
 		printf("   upgrade-master:             Upgrade Mycodo to the latest master branch on github\n");
 	}
 
