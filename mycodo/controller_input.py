@@ -390,7 +390,7 @@ class InputController(threading.Thread):
                                              baud_rate=self.baud_rate)
         elif self.device == 'MIFLORA':
             from mycodo.inputs.miflora import MifloraSensor
-            self.measure_input = MifloraSensor(int(self.location),
+            self.measure_input = MifloraSensor(self.location,
                                                convert_to_unit=self.convert_to_unit)
         elif self.device == 'SHT1x_7x':
             from mycodo.inputs.sht1x_7x import SHT1x7xSensor
