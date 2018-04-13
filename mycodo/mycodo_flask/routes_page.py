@@ -350,26 +350,53 @@ def page_dashboard():
     colors_graph = dict_custom_colors()
 
     # Retrieve custom colors for gauges
-    colors_gauge = OrderedDict()
+    colors_gauge_solid = OrderedDict()
+    colors_gauge_solid_form = OrderedDict()
+    colors_gauge_angular = OrderedDict()
     try:
         for each_graph in graph:
             if each_graph.range_colors:  # Split into list
                 color_areas = each_graph.range_colors.split(';')
             else:  # Create empty list
                 color_areas = []
-            total = []
+            colors_gauge_solid_total = []
+            colors_gauge_solid_form_total = []
+            colors_gauge_angular_total = []
             if each_graph.graph_type == 'gauge_angular':
                 for each_range in color_areas:
-                    total.append({
+                    colors_gauge_angular_total.append({
                         'low': each_range.split(',')[0],
                         'high': each_range.split(',')[1],
                         'hex': each_range.split(',')[2]})
+                colors_gauge_angular.update(
+                    {each_graph.unique_id: colors_gauge_angular_total})
             elif each_graph.graph_type == 'gauge_solid':
-                for each_range in color_areas:
-                    total.append({
-                        'stop': each_range.split(',')[0],
-                        'hex': each_range.split(',')[1]})
-            colors_gauge.update({each_graph.unique_id: total})
+                try:
+                    gauge_low = each_graph.y_axis_min
+                    gauge_high = each_graph.y_axis_max
+                    gauge_difference = gauge_high - gauge_low
+                    for each_range in color_areas:
+                        percent_of_range = float((float(each_range.split(',')[0]) - gauge_low) /
+                                                 gauge_difference)
+                        colors_gauge_solid_total.append({
+                            'stop': '{:.2f}'.format(percent_of_range),
+                            'hex': each_range.split(',')[1]})
+                        colors_gauge_solid_form_total.append({
+                            'stop': each_range.split(',')[0],
+                            'hex': each_range.split(',')[1]})
+                except:
+                    # Prevent mathematical errors from preventing proper page render
+                    for each_range in color_areas:
+                        colors_gauge_solid_total.append({
+                            'stop': '0',
+                            'hex': each_range.split(',')[1]})
+                        colors_gauge_solid_form_total.append({
+                            'stop': '0',
+                            'hex': each_range.split(',')[1]})
+                colors_gauge_solid.update(
+                    {each_graph.unique_id: colors_gauge_solid_total})
+                colors_gauge_solid_form.update(
+                    {each_graph.unique_id: colors_gauge_solid_form_total})
     except IndexError:
         flash("Colors Index Error", "error")
 
@@ -440,7 +467,9 @@ def page_dashboard():
                            output=output,
                            input=input_dev,
                            colors_graph=colors_graph,
-                           colors_gauge=colors_gauge,
+                           colors_gauge_angular=colors_gauge_angular,
+                           colors_gauge_solid=colors_gauge_solid,
+                           colors_gauge_solid_form=colors_gauge_solid_form,
                            dict_measurements=dict_measurements,
                            measurement_units=MEASUREMENT_UNITS,
                            units=UNITS,

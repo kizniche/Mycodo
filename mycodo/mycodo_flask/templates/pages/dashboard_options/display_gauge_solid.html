@@ -59,9 +59,9 @@
       min: {{each_graph.y_axis_min}},
       max: {{each_graph.y_axis_max}},
       stops: [
-          {% for n in range(colors_gauge[each_graph.unique_id]|length) %}
+          {% for n in range(colors_gauge_solid[each_graph.unique_id]|length) %}
               {% set index = '{0:0>2}'.format(n) %}
-        [{{colors_gauge[each_graph.unique_id][n]['stop']}}, '{{colors_gauge[each_graph.unique_id][n]['hex']}}'],
+        [{{colors_gauge_solid[each_graph.unique_id][n]['stop']}}, '{{colors_gauge_solid[each_graph.unique_id][n]['hex']}}'],
           {% endfor %}
       ],
       lineWidth: 0,

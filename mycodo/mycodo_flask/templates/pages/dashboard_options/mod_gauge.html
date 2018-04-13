@@ -101,26 +101,26 @@
 
         {% if each_graph.graph_type == 'gauge_angular' %}
 
-        {% for n in range(colors_gauge[each_graph.unique_id]|length) %}
+        {% for n in range(colors_gauge_angular[each_graph.unique_id]|length) %}
           {% set index = '{0:0>2}'.format(n) %}
 
     <div class="form-row">
       <div class="col-auto">
-        <label class="control-label" for="color_low_number{{index}}">Low</label>
+        <label class="control-label" for="color_low_number{{index}}">[{{n}}] Low</label>
         <div>
-          <input class="form-control" id="color_low_number{{index}}" name="color_low_number{{index}}" type="text" value="{{colors_gauge[each_graph.unique_id][n]['low']}}">
+          <input class="form-control" id="color_low_number{{index}}" name="color_low_number{{index}}" type="text" value="{{colors_gauge_angular[each_graph.unique_id][n]['low']}}">
         </div>
       </div>
       <div class="col-auto">
-        <label class="control-label" for="color_high_number{{index}}">High</label>
+        <label class="control-label" for="color_high_number{{index}}">[{{n}}] High</label>
         <div>
-          <input class="form-control" id="color_high_number{{index}}" name="color_high_number{{index}}" type="text" value="{{colors_gauge[each_graph.unique_id][n]['high']}}">
+          <input class="form-control" id="color_high_number{{index}}" name="color_high_number{{index}}" type="text" value="{{colors_gauge_angular[each_graph.unique_id][n]['high']}}">
         </div>
       </div>
       <div class="col-auto">
-        <label class="control-label" for="color_hex_number{{index}}">Color</label>
+        <label class="control-label" for="color_hex_number{{index}}">[{{n}}] Color</label>
         <div>
-          <input id="color_hex_number{{index}}" name="color_hex_number{{index}}" placeholder="#000000" type="color" value="{{colors_gauge[each_graph.unique_id][n]['hex']}}">
+          <input id="color_hex_number{{index}}" name="color_hex_number{{index}}" placeholder="#000000" type="color" value="{{colors_gauge_angular[each_graph.unique_id][n]['hex']}}">
         </div>
       </div>
     </div>
@@ -129,20 +129,20 @@
 
         {% elif each_graph.graph_type == 'gauge_solid' %}
 
-        {% for n in range(colors_gauge[each_graph.unique_id]|length) %}
+        {% for n in range(colors_gauge_solid_form[each_graph.unique_id]|length) %}
           {% set index = '{0:0>2}'.format(n) %}
 
     <div class="form-row">
       <div class="col-auto">
-        <label class="control-label" for="color_stop_number{{index}}">Stop</label>
+        <label class="control-label" for="color_stop_number{{index}}">[{{n}}] Stop</label>
         <div>
-          <input class="form-control" id="color_stop_number{{index}}" name="color_stop_number{{index}}" type="text" value="{{colors_gauge[each_graph.unique_id][n]['stop']}}">
+          <input class="form-control" id="color_stop_number{{index}}" name="color_stop_number{{index}}" type="text" value="{{colors_gauge_solid_form[each_graph.unique_id][n]['stop']}}">
         </div>
       </div>
       <div class="col-auto">
-        <label class="control-label" for="color_hex_number{{index}}">Color</label>
+        <label class="control-label" for="color_hex_number{{index}}">[{{n}}] Color</label>
         <div>
-          <input id="color_hex_number{{index}}" name="color_hex_number{{index}}" placeholder="#000000" type="color" value="{{colors_gauge[each_graph.unique_id][n]['hex']}}">
+          <input id="color_hex_number{{index}}" name="color_hex_number{{index}}" placeholder="#000000" type="color" value="{{colors_gauge_solid_form[each_graph.unique_id][n]['hex']}}">
         </div>
       </div>
     </div>

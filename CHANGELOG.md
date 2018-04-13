@@ -6,6 +6,7 @@ Version 6.0.0 has changes to the database schema that could not be upgraded to. 
 
  - Add Conditional Actions: Activate/Deactivate any controller
  - Add Conditional Action: Set PID Method ([#440](https://github.com/kizniche/mycodo/issues/440))
+ - Use actual range value for color stops of solid gauges ([#434](https://github.com/kizniche/mycodo/issues/434))
 
 ### Miscellaneous
 

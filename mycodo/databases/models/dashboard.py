@@ -45,8 +45,8 @@ class Dashboard(CRUDMixin, db.Model):
     enable_timestamp = db.Column(db.Boolean, default=True)  # Show timestamp for displayed gauge value
 
     # Graph and Gauge options
-    y_axis_min = db.Column(db.Float, default=None)  # x-axis minimum
-    y_axis_max = db.Column(db.Float, default=None)  # x-axis maximum
+    y_axis_min = db.Column(db.Float, default=None)  # y-axis minimum
+    y_axis_max = db.Column(db.Float, default=None)  # y-axis maximum
 
     # Output options
     font_em_value = db.Column(db.Float, default=1.0)  # Font size of value

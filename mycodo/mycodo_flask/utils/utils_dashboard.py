@@ -89,7 +89,7 @@ def dashboard_add(form_base, form_object, display_order):
         error = gauge_error_check(form_object, error)
         new_graph.graph_type = form_object.gauge_type.data
         if form_object.gauge_type.data == 'gauge_solid':
-            new_graph.range_colors = '0.2,#33CCFF;0.4,#55BF3B;0.6,#DDDF0D;0.8,#DF5353'
+            new_graph.range_colors = '20,#33CCFF;40,#55BF3B;60,#DDDF0D;80,#DF5353'
         elif form_object.gauge_type.data == 'gauge_angular':
             new_graph.range_colors = '0,25,#33CCFF;25,50,#55BF3B;50,75,#DDDF0D;75,100,#DF5353'
         new_graph.width = form_base.width.data
@@ -270,6 +270,12 @@ def dashboard_mod(form_base, form_object, request_form):
         mod_graph.width = form_base.width.data
         mod_graph.height = form_base.height.data
         mod_graph.refresh_duration = form_base.refresh_duration.data
+        gauge_high = each_graph.y_axis_min
+        gauge_low = each_graph.y_axis_max
+        gauge_difference = gauge_high - gauge_low
+        for each_range in color_areas:
+            percent_of_range = float(gauge_difference /
+                                     (float(each_range.split(',')[0]) - gauge_low))
         mod_graph.y_axis_min = form_object.y_axis_min.data
         mod_graph.y_axis_max = form_object.y_axis_max.data
         mod_graph.max_measure_age = form_object.max_measure_age.data
