@@ -39,7 +39,7 @@
   <div class="container">
     {% include 'flash_messages.html' %}
 
-    {% if current_release == '5.7.3' %}
+    {% if current_release == '5.7.3' and current_release != latest_release and upgrade != 1 %}
 
     <div style="padding: 0.5em 0">
       Installed version: <a href="https://github.com/kizniche/Mycodo/releases/tag/v{{current_release}}" target="_blank">{{current_release}}</a>
