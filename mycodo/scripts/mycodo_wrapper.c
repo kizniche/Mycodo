@@ -113,7 +113,9 @@ int main(int argc, char *argv[]) {
 			upgrade_commands(argv[0], "uninstall-pigpiod");
 		} else if (strcmp(argv[1], "upgrade") == 0) {
 			upgrade_commands(argv[0], "upgrade");
-		} else if (strcmp(argv[1], "upgrade-master") == 0) {
+		} else if (strcmp(argv[1], "upgrade-next-release") == 0) {
+            upgrade_commands(argv[0], "upgrade_next_release");
+        } else if (strcmp(argv[1], "upgrade-master") == 0) {
 			upgrade_commands(argv[0], "upgrade-master");
 		}
 	} else {
@@ -138,6 +140,7 @@ int main(int argc, char *argv[]) {
 		printf("   restart:                    Restart the computer after a 10 second pause\n");
 		printf("   shutdown:                   Shutdown the computer after a 10 second pause\n");
 		printf("   upgrade:                    Upgrade Mycodo to the latest version on github\n");
+		printf("   upgrade-next-release:       Upgrade Mycodo to the next major version on github\n");
 		printf("   upgrade-master:             Upgrade Mycodo to the latest master branch on github\n");
 	}
 

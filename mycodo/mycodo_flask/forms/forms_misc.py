@@ -110,6 +110,7 @@ class LogView(FlaskForm):
 
 class Upgrade(FlaskForm):
     upgrade = SubmitField(lazy_gettext('Upgrade Mycodo'))
+    upgrade_next_major_version = SubmitField(lazy_gettext('Upgrade Mycodo to Next Major Version'))
 
 
 #
