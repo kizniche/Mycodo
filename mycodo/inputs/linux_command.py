@@ -7,17 +7,21 @@ from mycodo.utils.system_pi import cmd_output
 from mycodo.utils.system_pi import str_is_float
 from .base_input import AbstractInput
 
-logger = logging.getLogger("mycodo.inputs.linux_command")
-
 
 class LinuxCommand(AbstractInput):
     """ A sensor support class that returns a value from a command """
 
-    def __init__(self, command, condition, testing=False):
+    def __init__(self, input_dev, testing=False):
         super(LinuxCommand, self).__init__()
+        self.logger = logging.getLogger("mycodo.inputs.linux_command")
         self._measurement = None
-        self.command = command
-        self.condition = str(condition)
+
+        self.cmd_command = input_dev.cmd_command
+        self.cmd_measurement = str(input_dev.cmd_measurement)
+
+        if not testing:
+            self.logger = logging.getLogger(
+                "mycodo.inputs.linux_command_{id}".format(id=input_dev.id))
 
     def __repr__(self):
         """  Representation of object """
@@ -37,7 +41,7 @@ class LinuxCommand(AbstractInput):
         """ Get next measurement """
         if self.read():  # raised an error
             raise StopIteration  # required
-        return {self.condition: float('{0:.2f}'.format(self._measurement))}
+        return {self.cmd_measurement: float('{0:.2f}'.format(self._measurement))}
 
     @property
     def measurement(self):
@@ -50,11 +54,11 @@ class LinuxCommand(AbstractInput):
         """ Determine if the return value of the command is a number """
         self._measurement = None
 
-        out, _, _ = cmd_output(self.command)
+        out, _, _ = cmd_output(self.cmd_command)
         if str_is_float(out):
             return float(out)
         else:
-            logger.error("The command returned a non-numerical value. "
+            self.logger.error("The command returned a non-numerical value. "
                          "Ensure only one numerical value is returned "
                          "by the command.")
             return None
@@ -70,7 +74,7 @@ class LinuxCommand(AbstractInput):
             if self._measurement is not None:
                 return  # success - no errors
         except Exception as e:
-            logger.exception(
+            self.logger.exception(
                 "{cls} raised an exception when taking a reading: "
                 "{err}".format(cls=type(self).__name__, err=e))
         return 1

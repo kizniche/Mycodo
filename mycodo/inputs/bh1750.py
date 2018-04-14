@@ -6,41 +6,45 @@ import smbus
 
 from .base_input import AbstractInput
 
-logger = logging.getLogger("mycodo.inputs.bh1750")
+# Define some constants from the datasheet
+POWER_DOWN = 0x00  # No active state
+POWER_ON = 0x01  # Power on
+RESET = 0x07  # Reset data register value
+# Start measurement at 4lx resolution. Time typically 16ms.
+CONTINUOUS_LOW_RES_MODE = 0x13
+# Start measurement at 1lx resolution. Time typically 120ms
+CONTINUOUS_HIGH_RES_MODE_1 = 0x10
+# Start measurement at 0.5lx resolution. Time typically 120ms
+CONTINUOUS_HIGH_RES_MODE_2 = 0x11
+# Start measurement at 1lx resolution. Time typically 120ms
+# Device is automatically set to Power Down after measurement.
+ONE_TIME_HIGH_RES_MODE_1 = 0x20
+# Start measurement at 0.5lx resolution. Time typically 120ms
+# Device is automatically set to Power Down after measurement.
+ONE_TIME_HIGH_RES_MODE_2 = 0x21
+# Start measurement at 1lx resolution. Time typically 120ms
+# Device is automatically set to Power Down after measurement.
+ONE_TIME_LOW_RES_MODE = 0x23
 
 
 class BH1750Sensor(AbstractInput):
     """ A sensor support class that monitors the DS18B20's lux """
-    # Define some constants from the datasheet
-    POWER_DOWN = 0x00  # No active state
-    POWER_ON = 0x01  # Power on
-    RESET = 0x07  # Reset data register value
-    # Start measurement at 4lx resolution. Time typically 16ms.
-    CONTINUOUS_LOW_RES_MODE = 0x13
-    # Start measurement at 1lx resolution. Time typically 120ms
-    CONTINUOUS_HIGH_RES_MODE_1 = 0x10
-    # Start measurement at 0.5lx resolution. Time typically 120ms
-    CONTINUOUS_HIGH_RES_MODE_2 = 0x11
-    # Start measurement at 1lx resolution. Time typically 120ms
-    # Device is automatically set to Power Down after measurement.
-    ONE_TIME_HIGH_RES_MODE_1 = 0x20
-    # Start measurement at 0.5lx resolution. Time typically 120ms
-    # Device is automatically set to Power Down after measurement.
-    ONE_TIME_HIGH_RES_MODE_2 = 0x21
-    # Start measurement at 1lx resolution. Time typically 120ms
-    # Device is automatically set to Power Down after measurement.
-    ONE_TIME_LOW_RES_MODE = 0x23
-
-    def __init__(self, address, bus, resolution, sensitivity, testing=False):
+    def __init__(self, input_dev, testing=False):
         super(BH1750Sensor, self).__init__()
+        self.logger = logging.getLogger("mycodo.inputs.bh1750")
         self._lux = None
-        self.i2c_address = address
-        self.resolution = resolution
+
+        self.i2c_address = int(str(input_dev.location), 16)
+        self.i2c_bus = input_dev.i2c_bus
+        self.resolution = input_dev.resolution
+        self.sensitivity = input_dev.sensitivity
 
         if not testing:
-            self.i2c_bus = smbus.SMBus(bus)
+            self.logger = logging.getLogger(
+                "mycodo.inputs.bh1750_{id}".format(id=input_dev.id))
+            self.i2c_bus = smbus.SMBus(self.i2c_bus)
             self.power_down()
-            self.set_sensitivity(sensitivity=sensitivity)
+            self.set_sensitivity(sensitivity=self.sensitivity)
 
     def __repr__(self):
         """  Representation of object """
@@ -90,7 +94,7 @@ class BH1750Sensor(AbstractInput):
             if self._lux is not None:
                 return  # success - no errors
         except Exception as e:
-            logger.exception(
+            self.logger.exception(
                 "{cls} raised an exception when taking a reading: "
                 "{err}".format(cls=type(self).__name__, err=e))
         return 1

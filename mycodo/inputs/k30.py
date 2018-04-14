@@ -12,30 +12,33 @@ from .sensorutils import is_device
 class K30Sensor(AbstractInput):
     """ A sensor support class that monitors the K30's CO2 concentration """
 
-    def __init__(self, device_loc, baud_rate=9600, testing=False):
+    def __init__(self, input_dev, baud_rate=9600, testing=False):
         super(K30Sensor, self).__init__()
         self.logger = logging.getLogger("mycodo.inputs.k30")
         self._co2 = None
-
         self.k30_lock_file = None
+
+        self.device_loc = input_dev.device_loc
 
         if not testing:
             import serial
+            self.logger = logging.getLogger(
+                "mycodo.inputs.k30_{id}".format(id=input_dev.id))
             # Check if device is valid
-            self.serial_device = is_device(device_loc)
+            self.serial_device = is_device(self.device_loc)
             if self.serial_device:
                 try:
                     self.ser = serial.Serial(self.serial_device,
                                              baudrate=baud_rate,
                                              timeout=1)
-                    self.k30_lock_file = "/var/lock/sen-k30-{}".format(device_loc.replace('/', ''))
+                    self.k30_lock_file = "/var/lock/sen-k30-{}".format(self.device_loc.replace('/', ''))
                 except serial.SerialException:
                     self.logger.exception('Opening serial')
             else:
                 self.logger.error(
                     'Could not open "{dev}". '
                     'Check the device location is correct.'.format(
-                        dev=device_loc))
+                        dev=self.device_loc))
 
     def __repr__(self):
         """  Representation of object """

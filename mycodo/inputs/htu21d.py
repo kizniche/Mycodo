@@ -27,8 +27,6 @@ from .base_input import AbstractInput
 from .sensorutils import convert_units
 from .sensorutils import dewpoint
 
-logger = logging.getLogger("mycodo.inputs.htu21d")
-
 
 class HTU21DSensor(AbstractInput):
     """
@@ -37,18 +35,21 @@ class HTU21DSensor(AbstractInput):
 
     """
 
-    def __init__(self, bus, convert_to_unit=None, testing=False):
+    def __init__(self, input_dev, testing=False):
         super(HTU21DSensor, self).__init__()
+        self.logger = logging.getLogger("mycodo.inputs.htu21d")
         self._dew_point = None
         self._humidity = None
         self._temperature = None
 
-        self.I2C_bus_number = bus
-        self.address = 0x40  # HTU21D-F Address
-        self.convert_to_unit = convert_to_unit
+        self.i2c_bus = input_dev.i2c_bus
+        self.i2c_address = 0x40  # HTU21D-F Address
+        self.convert_to_unit = input_dev.convert_to_unit
 
         if not testing:
             import pigpio
+            self.logger = logging.getLogger(
+                "mycodo.inputs.htu21d_{id}".format(id=input_dev.id))
             self.pi = pigpio.pi()
 
     def __repr__(self):
@@ -102,7 +103,7 @@ class HTU21DSensor(AbstractInput):
     def get_measurement(self):
         """ Gets the humidity and temperature """
         if not self.pi.connected:  # Check if pigpiod is running
-            logger.error("Could not connect to pigpiod."
+            self.logger.error("Could not connect to pigpiod."
                          "Ensure it is running and try again.")
             return None, None, None
 
@@ -112,7 +113,7 @@ class HTU21DSensor(AbstractInput):
         rdtemp = 0xE3
         rdhumi = 0xE5
 
-        handle = self.pi.i2c_open(self.I2C_bus_number, self.address)  # open i2c bus
+        handle = self.pi.i2c_open(self.i2c_bus, self.i2c_address)  # open i2c bus
         self.pi.i2c_write_byte(handle, rdtemp)  # send read temp command
         time.sleep(0.055)  # readings take up to 50ms, lets give it some time
         (_, byte_array) = self.pi.i2c_read_device(handle, 3)  # vacuum up those bytes
@@ -123,7 +124,7 @@ class HTU21DSensor(AbstractInput):
         temp_reading = float(temp_reading)
         temperature = ((temp_reading / 65536) * 175.72) - 46.85  # formula from datasheet
 
-        handle = self.pi.i2c_open(self.I2C_bus_number, self.address)  # open i2c bus
+        handle = self.pi.i2c_open(self.i2c_bus, self.i2c_address)  # open i2c bus
         self.pi.i2c_write_byte(handle, rdhumi)  # send read humi command
         time.sleep(0.055)  # readings take up to 50ms, lets give it some time
         (_, byte_array) = self.pi.i2c_read_device(handle, 3)  # vacuum up those bytes
@@ -158,14 +159,14 @@ class HTU21DSensor(AbstractInput):
             if self._dew_point is not None:
                 return  # success - no errors
         except Exception as e:
-            logger.exception(
+            self.logger.exception(
                 "{cls} raised an exception when taking a reading: "
                 "{err}".format(cls=type(self).__name__, err=e))
         return 1
 
     def htu_reset(self):
         reset = 0xFE
-        handle = self.pi.i2c_open(self.I2C_bus_number, self.address)  # open i2c bus
+        handle = self.pi.i2c_open(self.i2c_bus, self.i2c_address)  # open i2c bus
         self.pi.i2c_write_byte(handle, reset)  # send reset command
         self.pi.i2c_close(handle)  # close i2c bus
         time.sleep(0.2)  # reset takes 15ms so let's give it some time

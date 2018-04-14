@@ -4,8 +4,6 @@ import logging
 from .base_input import AbstractInput
 from .sensorutils import convert_units
 
-logger = logging.getLogger("mycodo.inputs.miflora")
-
 
 class MifloraSensor(AbstractInput):
     """
@@ -14,22 +12,24 @@ class MifloraSensor(AbstractInput):
 
     """
 
-    def __init__(self, mac_address, convert_to_unit=None, testing=False):
+    def __init__(self, input_dev, testing=False):
         super(MifloraSensor, self).__init__()
+        self.logger = logging.getLogger("mycodo.inputs.miflora")
         self._battery = None
         self._electrical_conductivity = None
         self._lux = None
         self._moisture = None
         self._temperature = None
 
-        self.mac_address = mac_address
-        self.convert_to_unit = convert_to_unit
+        self.location = input_dev.location
+        self.convert_to_unit = input_dev.convert_to_unit
 
         if not testing:
             from miflora.miflora_poller import MiFloraPoller
             from btlewrap import BluepyBackend
-            self.logger = logging.getLogger("mycodo.inputs.miflora_{a}".format(a=mac_address.replace(':','')))
-            self.poller = MiFloraPoller(mac_address, BluepyBackend)
+            self.logger = logging.getLogger(
+                "mycodo.inputs.miflora_{id}".format(id=input_dev.id))
+            self.poller = MiFloraPoller(self.location, BluepyBackend)
 
     def __repr__(self):
         """  Representation of object """
@@ -138,7 +138,7 @@ class MifloraSensor(AbstractInput):
             if self._electrical_conductivity is not None:
                 return  # success - no errors
         except Exception as e:
-            logger.exception(
+            self.logger.exception(
                 "{cls} raised an exception when taking a reading: "
                 "{err}".format(cls=type(self).__name__, err=e))
         return 1

@@ -7,18 +7,19 @@ from .base_input import AbstractInput
 class GPIOState(AbstractInput):
     """ A sensor support class that monitors the K30's CO2 concentration """
 
-    def __init__(self, pin, testing=False):
+    def __init__(self, input_dev, testing=False):
         super(GPIOState, self).__init__()
         self.logger = logging.getLogger("mycodo.inputs.gpio_state")
         self._gpio_state = None
-        self.pin = pin
+        self.location = int(input_dev.location)
 
         if not testing:
             import RPi.GPIO as GPIO
+            self.logger = logging.getLogger(
+                "mycodo.inputs.gpio_state_{id}".format(id=input_dev.id))
             self.gpio = GPIO
             self.gpio.setmode(self.gpio.BCM)
-            self.gpio.setup(self.pin, self.gpio.IN)
-            self.logger = logging.getLogger("mycodo.inputs.gpio_state_{pin}".format(pin=pin))
+            self.gpio.setup(self.location, self.gpio.IN)
 
     def __repr__(self):
         """  Representation of object """
@@ -27,7 +28,8 @@ class GPIOState(AbstractInput):
 
     def __str__(self):
         """ Return CO2 information """
-        return "GPIO State: {gpio_state}".format(gpio_state="{0}".format(self._gpio_state))
+        return "GPIO State: {gpio_state}".format(
+            gpio_state="{0}".format(self._gpio_state))
 
     def __iter__(self):  # must return an iterator
         """ GPIOState iterates through GPIO state readings """
@@ -49,7 +51,7 @@ class GPIOState(AbstractInput):
     def get_measurement(self):
         """ Gets the GPIO state via RPi.GPIO """
         self._gpio_state = None
-        return self.gpio.input(self.pin)
+        return self.gpio.input(self.location)
 
     def read(self):
         """
@@ -69,4 +71,4 @@ class GPIOState(AbstractInput):
 
     def stop_sensor(self):
         self.gpio.setmode(self.gpio.BCM)
-        self.gpio.cleanup(self.pin)
+        self.gpio.cleanup(self.location)

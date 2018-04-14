@@ -13,19 +13,19 @@ class AtlasScientificCommand:
     Class to handle issuing commands to the Atlas Scientific sensor boards
     """
 
-    def __init__(self, sensor_sel):
+    def __init__(self, input_dev):
         self.cmd_send = None
         self.ph_sensor_uart = None
         self.ph_sensor_i2c = None
-        self.interface = sensor_sel.interface
+        self.interface = input_dev.interface
 
         if self.interface == 'UART':
             self.ph_sensor_uart = AtlasScientificUART(
-                sensor_sel.device_loc, baudrate=sensor_sel.baud_rate)
+                input_dev.device_loc, baudrate=input_dev.baud_rate)
         elif self.interface == 'I2C':
             self.ph_sensor_i2c = AtlasScientificI2C(
-                i2c_address=int(str(sensor_sel.location), 16),
-                i2c_bus=sensor_sel.i2c_bus)
+                i2c_address=int(str(input_dev.location), 16),
+                i2c_bus=input_dev.i2c_bus)
 
         self.board_version, self.board_info = self.board_version()
 

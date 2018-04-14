@@ -34,7 +34,7 @@ class DHT22Sensor(AbstractInput):
     gpio ------------+
 
     """
-    def __init__(self, gpio, power=None, convert_to_unit=None, testing=False):
+    def __init__(self, input_dev, testing=False):
         """
         :param gpio: gpio pin number
         :type gpio: int
@@ -62,8 +62,8 @@ class DHT22Sensor(AbstractInput):
         self.temp_humidity = None
         self.temp_dew_point = None
 
-        self.convert_to_unit = convert_to_unit
-        self.power_output_id = power
+        self.convert_to_unit = input_dev.convert_to_unit
+        self.power_output_id = input_dev.power_output_id
         self.powered = False
 
         self.pi = None
@@ -71,13 +71,14 @@ class DHT22Sensor(AbstractInput):
         if not testing:
             from mycodo.mycodo_client import DaemonControl
 
-            self.logger = logging.getLogger('mycodo.inputs.dht22')
+            self.logger = logging.getLogger(
+                'mycodo.inputs.dht22_{id}'.format(id=input_dev.id))
 
             self.control = DaemonControl()
 
             self.pi = pigpio.pi()
 
-            self.gpio = gpio
+            self.gpio = int(input_dev.location)
             self.bad_CS = 0  # Bad checksum count
             self.bad_SM = 0  # Short message count
             self.bad_MM = 0  # Missing message count

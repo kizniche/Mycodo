@@ -1,9 +1,6 @@
 # coding=utf-8
 import logging
-import time
 
-from mycodo.mycodo_flask.routes_calibration import AtlasScientificCommand
-from mycodo.utils.influx import read_last_influxdb
 from mycodo.utils.system_pi import str_is_float
 from .base_input import AbstractInput
 
@@ -11,19 +8,16 @@ from .base_input import AbstractInput
 class AtlasElectricalConductivitySensor(AbstractInput):
     """A sensor support class that monitors the Atlas Scientific sensor ElectricalConductivity"""
 
-    def __init__(self, interface, device_loc=None, baud_rate=None,
-                 i2c_address=None, i2c_bus=None, sensor_sel=None,
-                 testing=False):
+    def __init__(self, input_dev, testing=False):
         super(AtlasElectricalConductivitySensor, self).__init__()
         self.logger = logging.getLogger("mycodo.inputs.atlas_ec")
 
         self._electrical_conductivity = None
-        self.interface = interface
-        self.device_loc = device_loc
-        self.baud_rate = baud_rate
-        self.i2c_address = i2c_address
-        self.i2c_bus = i2c_bus
-        self.sensor_sel = sensor_sel
+        self.interface = input_dev.interface
+        self.device_loc = input_dev.device_loc
+        self.i2c_address = int(str(input_dev.location), 16)
+        self.i2c_bus = input_dev.i2c_bus
+        self.input_dev = input_dev
         self.atlas_sensor_uart = None
         self.atlas_sensor_i2c = None
 
@@ -68,8 +62,7 @@ class AtlasElectricalConductivitySensor(AbstractInput):
             self.logger = logging.getLogger(
                 "mycodo.inputs.atlas_electrical_conductivity_{uart}".format(
                     uart=self.device_loc))
-            self.atlas_sensor_uart = AtlasScientificUART(self.device_loc,
-                                                         baudrate=self.baud_rate)
+            self.atlas_sensor_uart = AtlasScientificUART(self.device_loc)
         elif self.interface == 'I2C':
             self.logger = logging.getLogger(
                 "mycodo.inputs.atlas_electrical_conductivity_{bus}_{add}".format(

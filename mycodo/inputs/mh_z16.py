@@ -33,39 +33,40 @@ from .sensorutils import is_device
 class MHZ16Sensor(AbstractInput):
     """ A sensor support class that monitors the MH-Z16's CO2 concentration """
 
-    def __init__(self, interface, device_loc=None, baud_rate=None,
-                 i2c_address=None, i2c_bus=None, testing=False):
+    def __init__(self, input_dev, testing=False):
         super(MHZ16Sensor, self).__init__()
         self.logger = logging.getLogger("mycodo.inputs.mh_z16")
         self._co2 = None
         self.mhz16_lock_file = None
-        self.interface = interface
+
+        self.interface = input_dev.interface
+        self.device_loc = input_dev.device_loc
+        self.i2c_address = int(str(input_dev.location), 16)
+        self.i2c_bus = input_dev.i2c_bus
 
         if not testing:
+            self.logger = logging.getLogger(
+                "mycodo.inputs.mh_z16_{id}".format(id=input_dev.id))
             if self.interface == 'UART':
                 import serial
-                self.logger = logging.getLogger(
-                    "mycodo.inputs.mh_z16.{dev}".format(dev=device_loc.replace('/', '')))
+
                 # Check if device is valid
-                self.serial_device = is_device(device_loc)
+                self.serial_device = is_device(self.device_loc)
                 if self.serial_device:
                     try:
-                        self.mhz16_lock_file = "/var/lock/sen-mhz16-{}".format(device_loc.replace('/', ''))
-                        self.ser = serial.Serial(self.serial_device,
-                                                 baudrate=baud_rate,
-                                                 timeout=1)
+                        self.mhz16_lock_file = "/var/lock/sen-mhz16-{}".format(
+                            self.device_loc.replace('/', ''))
+                        self.ser = serial.Serial(self.serial_device, timeout=1)
                     except serial.SerialException:
                         self.logger.exception('Opening serial')
                 else:
                     self.logger.error(
                         'Could not open "{dev}". '
                         'Check the device location is correct.'.format(
-                            dev=device_loc))
+                            dev=self.device_loc))
 
             elif self.interface == 'I2C':
                 import smbus
-                self.logger = logging.getLogger(
-                    "mycodo.inputs.mh_z16.{dev}".format(dev=i2c_address))
                 self.cmd_measure = [0xFF, 0x01, 0x9C, 0x00, 0x00, 0x00, 0x00, 0x00, 0x63]
                 self.IOCONTROL = 0X0E << 3
                 self.FCR = 0X02 << 3
@@ -76,8 +77,7 @@ class MHZ16Sensor(AbstractInput):
                 self.RHR = 0x00 << 3
                 self.TXLVL = 0X08 << 3
                 self.RXLVL = 0X09 << 3
-                self.i2c_address = i2c_address
-                self.i2c = smbus.SMBus(i2c_bus)
+                self.i2c = smbus.SMBus(self.i2c_bus)
                 self.begin()
 
     def __repr__(self):

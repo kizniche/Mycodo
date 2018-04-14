@@ -19,7 +19,7 @@ class DHT11Sensor(AbstractInput):
     - https://github.com/srounet/pigpio/tree/master/EXAMPLES/Python/DHT22_AM2302_SENSOR
 
     """
-    def __init__(self, input_id, gpio, power=None, convert_to_unit=None, testing=False):
+    def __init__(self, input_dev, testing=False):
         """
         :param gpio: gpio pin number
         :type gpio: int
@@ -44,8 +44,9 @@ class DHT11Sensor(AbstractInput):
         self.temp_humidity = 0
         self.temp_dew_point = None
 
-        self.convert_to_unit = convert_to_unit
-        self.power_output_id = power
+        self.convert_to_unit = input_dev.convert_to_unit
+        self.gpio = int(input_dev.location)
+        self.power_output_id = input_dev.power_output_id
         self.powered = False
 
         if not testing:
@@ -53,13 +54,12 @@ class DHT11Sensor(AbstractInput):
             from mycodo.mycodo_client import DaemonControl
 
             self.logger = logging.getLogger(
-                'mycodo.inputs.dht11_{id}'.format(id=input_id))
+                'mycodo.inputs.dht11_{id}'.format(id=input_dev.id))
 
             self.control = DaemonControl()
 
             self.pigpio = pigpio
             self.pi = self.pigpio.pi()
-            self.gpio = gpio
 
             self.high_tick = None
             self.bit = None

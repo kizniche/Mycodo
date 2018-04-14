@@ -6,8 +6,6 @@ import os
 
 from .base_input import AbstractInput
 
-logger = logging.getLogger("mycodo.inputs.server_port_open")
-
 
 class ServerPortOpen(AbstractInput):
     """
@@ -15,11 +13,17 @@ class ServerPortOpen(AbstractInput):
     and 0 if it's down.
     """
 
-    def __init__(self, host, port, testing=False):
+    def __init__(self, input_dev, testing=False):
         super(ServerPortOpen, self).__init__()
+        self.logger = logging.getLogger("mycodo.inputs.server_port_open")
         self._measurement = None
-        self.host = host
-        self.port = port
+
+        self.location = input_dev.location
+        self.port = input_dev.port
+
+        if not testing:
+            self.logger = logging.getLogger(
+                "mycodo.inputs.server_port_open_{id}".format(id=input_dev.id))
 
     def __repr__(self):
         """  Representation of object """
@@ -54,7 +58,7 @@ class ServerPortOpen(AbstractInput):
 
         response = os.system(
             "nc -zv {host} {port} > /dev/null 2>&1".format(
-                port=self.port,  host=self.host))
+                port=self.port,  host=self.location))
         if response == 0:
             return 1  # Server is up
         else:
@@ -71,7 +75,7 @@ class ServerPortOpen(AbstractInput):
             if self._measurement is not None:
                 return  # success - no errors
         except Exception as e:
-            logger.exception(
+            self.logger.exception(
                 "{cls} raised an exception when taking a reading: "
                 "{err}".format(cls=type(self).__name__, err=e))
         return 1

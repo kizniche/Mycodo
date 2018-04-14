@@ -7,22 +7,24 @@ from w1thermsensor import W1ThermSensor
 from .base_input import AbstractInput
 from .sensorutils import convert_units
 
-logger = logging.getLogger("mycodo.inputs.ds18b20")
-
 
 class DS18B20Sensor(AbstractInput):
     """ A sensor support class that monitors the DS18B20's temperature """
 
-    def __init__(self, pin, resolution, convert_to_unit=None, testing=False):
+    def __init__(self, input_dev, testing=False):
         super(DS18B20Sensor, self).__init__()
+        self.logger = logging.getLogger("mycodo.inputs.ds18b20")
         self._temperature = None
 
-        self.pin = pin
-        self.resolution = resolution
-        self.convert_to_unit = convert_to_unit
+        self.location = input_dev.location
+        self.resolution = input_dev.resolution
+        self.convert_to_unit = input_dev.convert_to_unit
 
         if not testing:
-            self.sensor = W1ThermSensor(W1ThermSensor.THERM_SENSOR_DS18B20, self.pin)
+            self.logger = logging.getLogger(
+                "mycodo.inputs.ds18b20_{id}".format(id=input_dev.id))
+            self.sensor = W1ThermSensor(W1ThermSensor.THERM_SENSOR_DS18B20,
+                                        self.location)
             if self.resolution:
                 self.sensor.set_precision(self.resolution)
 
@@ -63,17 +65,17 @@ class DS18B20Sensor(AbstractInput):
                 break
             except Exception as e:
                 if i == n:
-                    logger.exception(
+                    self.logger.exception(
                         "{cls} raised an exception when taking a reading: "
                         "{err}".format(cls=type(self).__name__, err=e))
                 time.sleep(1)
 
         if temperature == 85:
-            logger.error("Measurement returned 85 C, "
+            self.logger.error("Measurement returned 85 C, "
                          "Indicating an issue communicating with the sensor.")
             return None
         elif temperature is not None and not -55 < temperature < 125:
-            logger.error(
+            self.logger.error(
                 "Measurement outside the expected range of -55 C to 125 C: "
                 "{temp} C".format(temp=self._temperature))
             return None
@@ -95,7 +97,7 @@ class DS18B20Sensor(AbstractInput):
             if self._temperature is not None:
                 return  # success - no errors
         except Exception as e:
-            logger.exception(
+            self.logger.exception(
                 "{cls} raised an exception when taking a reading: "
                 "{err}".format(cls=type(self).__name__, err=e))
         return 1

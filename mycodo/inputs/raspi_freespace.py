@@ -5,16 +5,20 @@ import os
 
 from .base_input import AbstractInput
 
-logger = logging.getLogger("mycodo.inputs.raspi_freespace")
-
 
 class RaspberryPiFreeSpace(AbstractInput):
     """ A sensor support class that monitors the free space of a path """
 
-    def __init__(self, path, testing=False):
+    def __init__(self, input_dev, testing=False):
         super(RaspberryPiFreeSpace, self).__init__()
+        self.logger = logging.getLogger("mycodo.inputs.raspi_freespace")
         self._disk_space = None
-        self.path = path
+
+        self.path = input_dev.location
+
+        if not testing:
+            self.logger = logging.getLogger(
+                "mycodo.inputs.raspi_freespace_{id}".format(id=input_dev.id))
 
     def __repr__(self):
         """  Representation of object """
@@ -60,7 +64,7 @@ class RaspberryPiFreeSpace(AbstractInput):
             if self._disk_space is not None:
                 return  # success - no errors
         except Exception as e:
-            logger.exception(
+            self.logger.exception(
                 "{cls} raised an exception when taking a reading: "
                 "{err}".format(cls=type(self).__name__, err=e))
         return 1

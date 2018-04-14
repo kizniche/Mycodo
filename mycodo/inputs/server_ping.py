@@ -6,8 +6,6 @@ import os
 
 from .base_input import AbstractInput
 
-logger = logging.getLogger("mycodo.inputs.server_ping")
-
 
 class ServerPing(AbstractInput):
     """
@@ -15,12 +13,18 @@ class ServerPing(AbstractInput):
     and 0 if it's down.
     """
 
-    def __init__(self, host, times, deadline, testing=False):
+    def __init__(self, input_dev, testing=False):
         super(ServerPing, self).__init__()
+        self.logger = logging.getLogger("mycodo.inputs.server_ping")
         self._measurement = None
-        self.host = host
-        self.times = times
-        self.deadline = deadline
+
+        self.location = input_dev.location
+        self.times_check = input_dev.times_check
+        self.deadline = input_dev.deadline
+
+        if not testing:
+            self.logger = logging.getLogger(
+                "mycodo.inputs.server_ping_{id}".format(id=input_dev.id))
 
     def __repr__(self):
         """  Representation of object """
@@ -55,7 +59,7 @@ class ServerPing(AbstractInput):
 
         response = os.system(
             "ping -c {times} -w {deadline} {host} > /dev/null 2>&1".format(
-                times=self.times, deadline=self.deadline, host=self.host))
+                times=self.times_check, deadline=self.deadline, host=self.location))
         if response == 0:
             return 1  # Server is up
         else:
@@ -72,7 +76,7 @@ class ServerPing(AbstractInput):
             if self._measurement is not None:
                 return  # success - no errors
         except Exception as e:
-            logger.exception(
+            self.logger.exception(
                 "{cls} raised an exception when taking a reading: "
                 "{err}".format(cls=type(self).__name__, err=e))
         return 1

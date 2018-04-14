@@ -28,7 +28,6 @@ import time
 from .base_input import AbstractInput
 from .sensorutils import convert_units
 
-
 # import numpy  # Used for more accurate temperature calculation
 
 
@@ -39,21 +38,26 @@ class MAX31865Sensor(AbstractInput):
 
     """
 
-    def __init__(self, clk, cs, miso, mosi, device='PT100', resistor_ref=None, convert_to_unit=None, testing=False):
+    def __init__(self, input_dev, testing=False):
         super(MAX31865Sensor, self).__init__()
         self.logger = logging.getLogger("mycodo.inputs.max31865")
         self._temperature = None
 
-        self.clk = clk
-        self.cs = cs
-        self.miso = miso
-        self.mosi = mosi
-        self.device = device
-        self.resistor_ref = resistor_ref
-        self.convert_to_unit = convert_to_unit
+        self.pin_clock = input_dev.pin_clock
+        self.pin_cs = input_dev.pin_cs
+        self.pin_miso = input_dev.pin_miso
+        self.pin_mosi = input_dev.pin_mosi
+        self.thermocouple_type = input_dev.thermocouple_type
+        self.ref_ohm = input_dev.ref_ohm
+        self.convert_to_unit = input_dev.convert_to_unit
 
         if not testing:
-            self.sensor = max31865_sen(self.cs, self.miso, self.mosi, self.clk)
+            self.logger = logging.getLogger(
+                "mycodo.inputs.max31865_{id}".format(id=input_dev.id))
+            self.sensor = max31865_sen(self.pin_cs,
+                                       self.pin_miso,
+                                       self.pin_mosi,
+                                       self.pin_clock)
 
     def __repr__(self):
         """  Representation of object """
@@ -86,7 +90,7 @@ class MAX31865Sensor(AbstractInput):
     def get_measurement(self):
         """ Gets the measurement in units by reading the """
         self._temperature = None
-        temp = self.sensor.readTemp(self.device, self.resistor_ref)
+        temp = self.sensor.readTemp(self.thermocouple_type, self.ref_ohm)
         temp = convert_units(
             'temperature', 'celsius', self.convert_to_unit, temp)
         return temp

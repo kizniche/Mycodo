@@ -7,8 +7,6 @@ from .base_input import AbstractInput
 from .sensorutils import convert_units
 from .sensorutils import dewpoint
 
-logger = logging.getLogger("mycodo.inputs.sht2x")
-
 
 class SHT2xSensor(AbstractInput):
     """
@@ -17,18 +15,21 @@ class SHT2xSensor(AbstractInput):
 
     """
 
-    def __init__(self, address, bus, convert_to_unit=None, testing=False):
+    def __init__(self, input_dev, testing=False):
         super(SHT2xSensor, self).__init__()
+        self.logger = logging.getLogger("mycodo.inputs.sht2x")
         self._dew_point = None
         self._humidity = None
         self._temperature = None
 
-        self.i2c_address = address
-        self.i2c_bus = bus
-        self.convert_to_unit = convert_to_unit
+        self.i2c_address = int(str(input_dev.location), 16)
+        self.i2c_bus = input_dev.i2c_bus
+        self.convert_to_unit = input_dev.convert_to_unit
 
         if not testing:
             import smbus
+            self.logger = logging.getLogger(
+                "mycodo.inputs.sht2x_{id}".format(id=input_dev.id))
             self.sht2x = smbus.SMBus(self.i2c_bus)
 
     def __repr__(self):
@@ -112,7 +113,7 @@ class SHT2xSensor(AbstractInput):
                 dew_point = dewpoint(temperature, humidity)
                 return dew_point, humidity, temperature
             except Exception as e:
-                logger.exception(
+                self.logger.exception(
                     "Exception when taking a reading: {err}".format(err=e))
             # Send soft reset and try a second read
             self.sht2x.write_byte(self.i2c_address, 0xFE)
@@ -139,7 +140,7 @@ class SHT2xSensor(AbstractInput):
             if self._dew_point is not None:
                 return  # success - no errors
         except Exception as e:
-            logger.exception(
+            self.logger.exception(
                 "{cls} raised an exception when taking a reading: "
                 "{err}".format(cls=type(self).__name__, err=e))
         return 1

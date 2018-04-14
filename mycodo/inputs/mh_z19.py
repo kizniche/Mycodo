@@ -13,31 +13,34 @@ from .sensorutils import is_device
 class MHZ19Sensor(AbstractInput):
     """ A sensor support class that monitors the MH-Z19's CO2 concentration """
 
-    def __init__(self, device_loc, baud_rate=9600, testing=False):
+    def __init__(self, input_dev, testing=False):
         super(MHZ19Sensor, self).__init__()
         self.logger = logging.getLogger("mycodo.inputs.mh_z19")
         self._co2 = None
         self.mhz19_lock_file = None
 
+        self.device_loc = input_dev.device_loc
+        self.baud_rate = input_dev.baud_rate
+
         if not testing:
             import serial
             self.logger = logging.getLogger(
-                "mycodo.inputs.mhz19.{dev}".format(dev=device_loc.replace('/', '')))
+                "mycodo.inputs.mhz19_{id}".format(id=input_dev.id))
             # Check if device is valid
-            self.serial_device = is_device(device_loc)
+            self.serial_device = is_device(self.device_loc)
             if self.serial_device:
                 try:
                     self.ser = serial.Serial(self.serial_device,
-                                             baudrate=baud_rate,
+                                             baudrate=self.baud_rate,
                                              timeout=1)
-                    self.mhz19_lock_file = "/var/lock/sen-mhz19-{}".format(device_loc.replace('/', ''))
+                    self.mhz19_lock_file = "/var/lock/sen-mhz19-{}".format(self.device_loc.replace('/', ''))
                 except serial.SerialException:
                     self.logger.exception('Opening serial')
             else:
                 self.logger.error(
                     'Could not open "{dev}". '
                     'Check the device location is correct.'.format(
-                        dev=device_loc))
+                        dev=self.device_loc))
 
     def __repr__(self):
         """  Representation of object """

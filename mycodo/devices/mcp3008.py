@@ -10,26 +10,29 @@ import os
 
 class MCP3008Read(object):
     """ ADC Read """
-    def __init__(self, clockpin, cspin, misopin, mosipin, channel, volts_max):
-        self.logger = logging.getLogger(
-            'mycodo.mcp3008-{clock}-{cs}-{miso}-{mosi}-{chan}'.format(
-                clock=clockpin, cs=cspin, miso=misopin,
-                mosi=mosipin, chan=channel))
+    def __init__(self, input_dev, testing=False):
+        self.logger = logging.getLogger('mycodo.mcp3008')
         self._voltage = None
-        self.channel = channel
-        self.volts_max = volts_max
-
         self.adc = None
-        self.clockpin = clockpin
-        self.cspin = cspin
-        self.misopin = misopin
-        self.mosipin = mosipin
+
+        self.pin_clock = input_dev.pin_clock
+        self.pin_cs = input_dev.pin_cs
+        self.pin_miso = input_dev.pin_miso
+        self.pin_mosi = input_dev.pin_mosi
+        self.adc_channel = input_dev.adc_channel
+        self.adc_volts_max = input_dev.adc_volts_max
+
         self.lock_file = '/var/lock/mcp3008-{clock}-{cs}-{miso}-{mosi}'.format(
-                clock=clockpin, cs=cspin, miso=misopin, mosi=mosipin)
-        self.adc = Adafruit_MCP3008.MCP3008(clk=self.clockpin,
-                                            cs=self.cspin,
-                                            miso=self.misopin,
-                                            mosi=self.mosipin)
+            clock=self.pin_clock, cs=self.pin_cs,
+            miso=self.pin_miso, mosi=self.pin_mosi)
+
+        if not testing:
+            self.logger = logging.getLogger(
+                'mycodo.mcp3008_{id}'.format(id=input_dev.id))
+            self.adc = Adafruit_MCP3008.MCP3008(clk=self.pin_clock,
+                                                cs=self.pin_cs,
+                                                miso=self.pin_miso,
+                                                mosi=self.pin_mosi)
 
     def read(self):
         """ Take a measurement """
@@ -47,7 +50,7 @@ class MCP3008Read(object):
 
             if lock_acquired:
                 sleep(0.1)
-                self._voltage = (self.adc.read_adc(self.channel) / 1023.0) * self.volts_max
+                self._voltage = (self.adc.read_adc(self.adc_channel) / 1023.0) * self.adc_volts_max
                 lock.release()
         except Exception as e:
             self.logger.exception(

@@ -35,35 +35,42 @@ class MAX31856Sensor(AbstractInput):
 
     """
 
-    def __init__(self, clk, cs, miso, mosi, thermocouple_type='K', convert_to_unit=None, testing=False):
+    def __init__(self, input_dev, testing=False):
         super(MAX31856Sensor, self).__init__()
-        self.logger = logging.getLogger("mycodo.inputs.max31855")
+        self.logger = logging.getLogger("mycodo.inputs.max31856")
         self._temperature = None
         self._temperature_die = None
 
-        self.clk = clk
-        self.cs = cs
-        self.miso = miso
-        self.mosi = mosi
-        self.convert_to_unit = convert_to_unit
+        self.pin_clock = input_dev.pin_clock
+        self.pin_cs = input_dev.pin_cs
+        self.pin_miso = input_dev.pin_miso
+        self.pin_mosi = input_dev.pin_mosi
+        self.thermocouple_type = input_dev.thermocouple_type
+        self.convert_to_unit = input_dev.convert_to_unit
 
         if not testing:
-            self.sensor = max31856(self.logger, cs, miso, mosi, clk)
-            if thermocouple_type == 'B':
+            self.logger = logging.getLogger(
+                "mycodo.inputs.max31856_{id}".format(id=input_dev.id))
+            self.sensor = max31856(self.logger,
+                                   self.pin_cs,
+                                   self.pin_miso,
+                                   self.pin_mosi,
+                                   self.pin_clock)
+            if self.thermocouple_type == 'B':
                 self.sensor.writeRegister(1, 0x00) #for B Type
-            elif thermocouple_type == 'E':
+            elif self.thermocouple_type == 'E':
                 self.sensor.writeRegister(1, 0x01) #for E Type
-            elif thermocouple_type == 'J':
+            elif self.thermocouple_type == 'J':
                 self.sensor.writeRegister(1, 0x02) #for J Type
-            elif thermocouple_type == 'K':
+            elif self.thermocouple_type == 'K':
                 self.sensor.writeRegister(1, 0x03) #for K Type
-            elif thermocouple_type == 'N':
+            elif self.thermocouple_type == 'N':
                 self.sensor.writeRegister(1, 0x04) #for N Type
-            elif thermocouple_type == 'R':
+            elif self.thermocouple_type == 'R':
                 self.sensor.writeRegister(1, 0x05) #for R Type
-            elif thermocouple_type == 'S':
+            elif self.thermocouple_type == 'S':
                 self.sensor.writeRegister(1, 0x06) #for S Type
-            elif thermocouple_type == 'T':
+            elif self.thermocouple_type == 'T':
                 self.sensor.writeRegister(1, 0x07) #for T Type
 
     def __repr__(self):

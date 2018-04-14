@@ -42,8 +42,6 @@ BMP280_REGISTER_TEMPDATA_XLSB = 0xFC
 # Commands
 BMP280_READCMD = 0x3F
 
-logger = logging.getLogger("mycodo.inputs.bmp280")
-
 
 class BMP280Sensor(AbstractInput):
     """
@@ -52,19 +50,25 @@ class BMP280Sensor(AbstractInput):
 
     """
 
-    def __init__(self, address, bus, mode=BMP280_STANDARD, convert_to_unit=None, testing=False):
+    def __init__(self, input_dev, mode=BMP280_STANDARD, testing=False):
         super(BMP280Sensor, self).__init__()
+        self.logger = logging.getLogger("mycodo.inputs.bmp280")
         self._altitude = None
         self._pressure = None
         self._temperature = None
 
-        self.I2C_address = address
-        self.I2C_bus_number = bus
-        self.convert_to_unit = convert_to_unit
+        self.i2c_address = int(str(input_dev.location), 16)
+        self.i2c_bus = input_dev.i2c_bus
+        self.convert_to_unit = input_dev.convert_to_unit
 
         if not testing:
             import Adafruit_GPIO.I2C as I2C
-            if mode not in [BMP280_ULTRALOWPOWER, BMP280_STANDARD, BMP280_HIGHRES, BMP280_ULTRAHIGHRES]:
+            self.logger = logging.getLogger(
+                "mycodo.inputs.bmp280_{id}".format(id=input_dev.id))
+            if mode not in [BMP280_ULTRALOWPOWER,
+                            BMP280_STANDARD,
+                            BMP280_HIGHRES,
+                            BMP280_ULTRAHIGHRES]:
                 raise ValueError(
                     'Unexpected mode value {0}.  Set mode to one of '
                     'BMP280_ULTRALOWPOWER, BMP280_STANDARD, BMP280_HIGHRES, '
@@ -72,8 +76,8 @@ class BMP280Sensor(AbstractInput):
             self._mode = mode
             # Create I2C device.
             i2c = I2C
-            self._device = i2c.get_i2c_device(self.I2C_address,
-                                              busnum=self.I2C_bus_number)
+            self._device = i2c.get_i2c_device(self.i2c_address,
+                                              busnum=self.i2c_bus)
             # Load calibration values.
             self._load_calibration()
             self._tfine = 0
@@ -159,7 +163,7 @@ class BMP280Sensor(AbstractInput):
                             self._altitude]:
                 return  # success - no errors
         except Exception as e:
-            logger.exception(
+            self.logger.exception(
                 "{cls} raised an exception when taking a reading: "
                 "{err}".format(cls=type(self).__name__, err=e))
         return 1
@@ -178,18 +182,18 @@ class BMP280Sensor(AbstractInput):
         self.cal_REGISTER_DIG_P8 = self._device.readS16LE(BMP280_REGISTER_DIG_P8)  # INT16
         self.cal_REGISTER_DIG_P9 = self._device.readS16LE(BMP280_REGISTER_DIG_P9)  # INT16
 
-        logger.debug('T1 = {0:6d}'.format(self.cal_REGISTER_DIG_T1))
-        logger.debug('T2 = {0:6d}'.format(self.cal_REGISTER_DIG_T2))
-        logger.debug('T3 = {0:6d}'.format(self.cal_REGISTER_DIG_T3))
-        logger.debug('P1 = {0:6d}'.format(self.cal_REGISTER_DIG_P1))
-        logger.debug('P2 = {0:6d}'.format(self.cal_REGISTER_DIG_P2))
-        logger.debug('P3 = {0:6d}'.format(self.cal_REGISTER_DIG_P3))
-        logger.debug('P4 = {0:6d}'.format(self.cal_REGISTER_DIG_P4))
-        logger.debug('P5 = {0:6d}'.format(self.cal_REGISTER_DIG_P5))
-        logger.debug('P6 = {0:6d}'.format(self.cal_REGISTER_DIG_P6))
-        logger.debug('P7 = {0:6d}'.format(self.cal_REGISTER_DIG_P7))
-        logger.debug('P8 = {0:6d}'.format(self.cal_REGISTER_DIG_P8))
-        logger.debug('P9 = {0:6d}'.format(self.cal_REGISTER_DIG_P9))
+        self.logger.debug('T1 = {0:6d}'.format(self.cal_REGISTER_DIG_T1))
+        self.logger.debug('T2 = {0:6d}'.format(self.cal_REGISTER_DIG_T2))
+        self.logger.debug('T3 = {0:6d}'.format(self.cal_REGISTER_DIG_T3))
+        self.logger.debug('P1 = {0:6d}'.format(self.cal_REGISTER_DIG_P1))
+        self.logger.debug('P2 = {0:6d}'.format(self.cal_REGISTER_DIG_P2))
+        self.logger.debug('P3 = {0:6d}'.format(self.cal_REGISTER_DIG_P3))
+        self.logger.debug('P4 = {0:6d}'.format(self.cal_REGISTER_DIG_P4))
+        self.logger.debug('P5 = {0:6d}'.format(self.cal_REGISTER_DIG_P5))
+        self.logger.debug('P6 = {0:6d}'.format(self.cal_REGISTER_DIG_P6))
+        self.logger.debug('P7 = {0:6d}'.format(self.cal_REGISTER_DIG_P7))
+        self.logger.debug('P8 = {0:6d}'.format(self.cal_REGISTER_DIG_P8))
+        self.logger.debug('P9 = {0:6d}'.format(self.cal_REGISTER_DIG_P9))
 
     def _load_datasheet_calibration(self):
         """data from the datasheet example, useful for debug"""
@@ -223,7 +227,7 @@ class BMP280Sensor(AbstractInput):
         lsb = self._device.readU8(BMP280_REGISTER_TEMPDATA_LSB)
         xlsb = self._device.readU8(BMP280_REGISTER_TEMPDATA_XLSB)
         raw = ((msb << 8 | lsb) << 8 | xlsb) >> 4
-        logger.debug(
+        self.logger.debug(
             'Raw temperature 0x{0:04X} ({1})'.format(raw & 0xFFFF, raw))
         return raw
 
@@ -242,7 +246,7 @@ class BMP280Sensor(AbstractInput):
         lsb = self._device.readU8(BMP280_REGISTER_PRESSUREDATA_LSB)
         xlsb = self._device.readU8(BMP280_REGISTER_PRESSUREDATA_XLSB)
         raw = ((msb << 8 | lsb) << 8 | xlsb) >> 4
-        logger.debug('Raw pressure 0x{0:04X} ({1})'.format(raw & 0xFFFF, raw))
+        self.logger.debug('Raw pressure 0x{0:04X} ({1})'.format(raw & 0xFFFF, raw))
         return raw
 
     def read_temperature(self):
@@ -254,7 +258,7 @@ class BMP280Sensor(AbstractInput):
         TMP_FINE = TMP_PART1 + TMP_PART2
         self._tfine = TMP_FINE
         temp = ((TMP_FINE * 5 + 128) >> 8) / 100.0
-        logger.debug('Calibrated temperature {0} C'.format(temp))
+        self.logger.debug('Calibrated temperature {0} C'.format(temp))
         return temp
 
     def read_pressure(self):
@@ -286,7 +290,7 @@ class BMP280Sensor(AbstractInput):
         """Calculates the altitude in meters."""
         pressure = float(self.read_pressure())
         altitude = 44330.0 * (1.0 - pow(pressure / sealevel_pa, (1.0 / 5.255)))
-        logger.debug('Altitude {0} m'.format(altitude))
+        self.logger.debug('Altitude {0} m'.format(altitude))
         return altitude
 
     def read_sealevel_pressure(self, altitude_m=0.0):
@@ -296,5 +300,5 @@ class BMP280Sensor(AbstractInput):
         """
         pressure = float(self.read_pressure())
         p0 = pressure / pow(1.0 - altitude_m / 44330.0, 5.255)
-        logger.debug('Sealevel pressure {0} Pa'.format(p0))
+        self.logger.debug('Sealevel pressure {0} Pa'.format(p0))
         return p0

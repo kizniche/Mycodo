@@ -345,8 +345,6 @@ def input_mod(form_mod, request_form):
             mod_sensor.times_check = form_mod.times_check.data
             mod_sensor.deadline = form_mod.deadline.data
             # SHT sensor options
-            if form_mod.sht_clock_pin.data:
-                mod_sensor.sht_clock_pin = form_mod.sht_clock_pin.data
             if form_mod.sht_voltage.data:
                 mod_sensor.sht_voltage = form_mod.sht_voltage.data
             db.session.commit()

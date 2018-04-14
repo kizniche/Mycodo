@@ -104,16 +104,6 @@ class InputMod(FlaskForm):
     sample_time = DecimalField(lazy_gettext('Sample Time (seconds)'))
 
     # SHT options
-    sht_clock_pin = IntegerField(
-        lazy_gettext('Clock Pin'),
-        validators=[validators.NumberRange(
-            min=0,
-            max=100,
-            message=lazy_gettext("If using a SHT sensor, enter the GPIO "
-                                 "connected to the clock pin (using BCM "
-                                 "numbering)")
-        )]
-    )
     sht_voltage = StringField(lazy_gettext('Voltage'))
 
     input_mod = SubmitField(lazy_gettext('Save'))

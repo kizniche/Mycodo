@@ -47,7 +47,6 @@ class Input(CRUDMixin, db.Model):
     pre_output_during_measure = db.Column(db.Boolean, default=True)
 
     # SHT sensor options
-    sht_clock_pin = db.Column(db.Integer, default=0)
     sht_voltage = db.Column(db.Text, default='3.5')
 
     # Analog to digital converter options

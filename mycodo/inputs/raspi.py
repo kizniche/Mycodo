@@ -7,16 +7,19 @@ import subprocess
 from .base_input import AbstractInput
 from .sensorutils import convert_units
 
-logger = logging.getLogger("mycodo.inputs.raspi")
-
 
 class RaspberryPiCPUTemp(AbstractInput):
     """ A sensor support class that monitors the raspberry pi's cpu temperature """
 
-    def __init__(self, convert_to_unit=None):
+    def __init__(self, input_dev, testing=False):
         super(RaspberryPiCPUTemp, self).__init__()
+        self.logger = logging.getLogger("mycodo.inputs.raspi")
         self._temperature = None
-        self.convert_to_unit = convert_to_unit
+        self.convert_to_unit = input_dev.convert_to_unit
+
+        if not testing:
+            self.logger = logging.getLogger(
+                "mycodo.inputs.raspi_{id}".format(id=input_dev.id))
 
     def __repr__(self):
         """  Representation of object """
@@ -53,9 +56,9 @@ class RaspberryPiCPUTemp(AbstractInput):
         # for proc in psutil.process_iter():
         #     if proc.open_files():
         #         open_files_count += 1
-        # logger.info("Open files: {of}".format(of=open_files_count))
+        # self.logger.info("Open files: {of}".format(of=open_files_count))
         # soft, hard = resource.getrlimit(resource.RLIMIT_NOFILE)
-        # logger.info("LIMIT: Soft: {sft}, Hard: {hrd}".format(sft=soft, hrd=hard))
+        # self.logger.info("LIMIT: Soft: {sft}, Hard: {hrd}".format(sft=soft, hrd=hard))
         with open('/sys/class/thermal/thermal_zone0/temp') as cpu_temp_file:
             temperature = convert_units(
                 'temperature', 'celsius', self.convert_to_unit,
@@ -73,10 +76,10 @@ class RaspberryPiCPUTemp(AbstractInput):
             if self._temperature is not None:
                 return  # success - no errors
         except IOError as e:
-            logger.error("{cls}.get_measurement() method raised IOError: "
+            self.logger.error("{cls}.get_measurement() method raised IOError: "
                          "{err}".format(cls=type(self).__name__, err=e))
         except Exception as e:
-            logger.exception("{cls} raised an exception when taking a reading: "
+            self.logger.exception("{cls} raised an exception when taking a reading: "
                              "{err}".format(cls=type(self).__name__, err=e))
         return 1
 
@@ -128,15 +131,15 @@ class RaspberryPiGPUTemp(AbstractInput):
             if self._temperature is not None:
                 return  # success - no errors
         except subprocess.CalledProcessError as e:
-            logger.exception(
+            self.logger.exception(
                 "{cls}.get_measurement() subprocess call raised: "
                 "{err}".format(cls=type(self).__name__, err=e))
         except IOError as e:
-            logger.exception(
+            self.logger.exception(
                 "{cls}.get_measurement() method raised IOError: "
                 "{err}".format(cls=type(self).__name__, err=e))
         except Exception as e:
-            logger.exception(
+            self.logger.exception(
                 "{cls} raised an exception when taking a reading: "
                 "{err}".format(cls=type(self).__name__, err=e))
         return 1

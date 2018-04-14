@@ -8,20 +8,25 @@ from MCP342x import MCP342x
 
 class MCP342xRead(object):
     """ ADC Read """
-    def __init__(self, address, bus, channel, gain, resolution):
-        self.logger = logging.getLogger('mycodo.mcp342x-{bus}-{add}'.format(
-            bus=bus, add=address))
+    def __init__(self, input_dev, testing=False):
+        self.logger = logging.getLogger('mycodo.mcp342x')
         self._voltage = None
-        self.i2c_address = address
-        self.bus = smbus.SMBus(bus)
-        self.channel = channel
-        self.gain = gain
-        self.resolution = resolution
-        self.adc = MCP342x(self.bus,
-                           self.i2c_address,
-                           channel=self.channel,
-                           gain=self.gain,
-                           resolution=self.resolution)
+
+        self.i2c_address = int(str(input_dev.location), 16)
+        self.i2c_bus = input_dev.i2c_bus
+        self.adc_channel = input_dev.adc_channel
+        self.adc_gain = input_dev.adc_gain
+        self.adc_resolution = input_dev.adc_resolution
+
+        if not testing:
+            self.logger = logging.getLogger(
+                'mycodo.mcp342x_{id}'.format(id=input_dev.id))
+            self.bus = smbus.SMBus(self.i2c_bus)
+            self.adc = MCP342x(self.bus,
+                               self.i2c_address,
+                               channel=self.adc_channel,
+                               gain=self.adc_gain,
+                               resolution=self.adc_resolution)
 
     def read(self):
         """ Take a measurement """

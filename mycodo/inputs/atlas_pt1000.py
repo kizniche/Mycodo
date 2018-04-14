@@ -9,22 +9,22 @@ from .sensorutils import convert_units
 class AtlasPT1000Sensor(AbstractInput):
     """ A sensor support class that monitors the PT1000's temperature """
 
-    def __init__(self, interface, device_loc=None, baud_rate=None,
-                 i2c_address=None, i2c_bus=None, convert_to_unit=None, testing=False):
+    def __init__(self, input_dev, testing=False):
         super(AtlasPT1000Sensor, self).__init__()
         self.logger = logging.getLogger("mycodo.inputs.atlas_pt1000")
         self._temperature = None
 
-        self.interface = interface
-        self.device_loc = device_loc
-        self.baud_rate = baud_rate
-        self.i2c_address = i2c_address
-        self.i2c_bus = i2c_bus
+        self.interface = input_dev.interface
+        self.device_loc = input_dev.device_loc
+        self.i2c_address = int(str(input_dev.location), 16)
+        self.i2c_bus = input_dev.i2c_bus
         self.atlas_sensor_uart = None
         self.atlas_sensor_i2c = None
-        self.convert_to_unit = convert_to_unit
+        self.convert_to_unit = input_dev.convert_to_unit
 
         if not testing:
+            self.logger = logging.getLogger(
+                "mycodo.inputs.atlas_pt1000_{id}".format(id=input_dev.id))
             self.initialize_sensor()
 
     def __repr__(self):
@@ -62,8 +62,7 @@ class AtlasPT1000Sensor(AbstractInput):
             self.logger = logging.getLogger(
                 "mycodo.inputs.atlas_pt1000_{loc}".format(
                     loc=self.device_loc))
-            self.atlas_sensor_uart = AtlasScientificUART(
-                self.device_loc, baudrate=self.baud_rate)
+            self.atlas_sensor_uart = AtlasScientificUART(self.device_loc)
         elif self.interface == 'I2C':
             self.logger = logging.getLogger(
                 "mycodo.inputs.atlas_pt1000_{bus}_{add}".format(
