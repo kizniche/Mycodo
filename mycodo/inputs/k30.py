@@ -18,12 +18,11 @@ class K30Sensor(AbstractInput):
         self._co2 = None
         self.k30_lock_file = None
 
-        self.device_loc = input_dev.device_loc
-
         if not testing:
             import serial
             self.logger = logging.getLogger(
                 "mycodo.inputs.k30_{id}".format(id=input_dev.id))
+            self.device_loc = input_dev.device_loc
             # Check if device is valid
             self.serial_device = is_device(self.device_loc)
             if self.serial_device:

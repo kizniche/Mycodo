@@ -11,12 +11,12 @@ class GPIOState(AbstractInput):
         super(GPIOState, self).__init__()
         self.logger = logging.getLogger("mycodo.inputs.gpio_state")
         self._gpio_state = None
-        self.location = int(input_dev.location)
 
         if not testing:
             import RPi.GPIO as GPIO
             self.logger = logging.getLogger(
                 "mycodo.inputs.gpio_state_{id}".format(id=input_dev.id))
+            self.location = int(input_dev.location)
             self.gpio = GPIO
             self.gpio.setmode(self.gpio.BCM)
             self.gpio.setup(self.location, self.gpio.IN)

@@ -15,11 +15,11 @@ class RaspberryPiCPUTemp(AbstractInput):
         super(RaspberryPiCPUTemp, self).__init__()
         self.logger = logging.getLogger("mycodo.inputs.raspi")
         self._temperature = None
-        self.convert_to_unit = input_dev.convert_to_unit
 
         if not testing:
             self.logger = logging.getLogger(
                 "mycodo.inputs.raspi_{id}".format(id=input_dev.id))
+            self.convert_to_unit = input_dev.convert_to_unit
 
     def __repr__(self):
         """  Representation of object """

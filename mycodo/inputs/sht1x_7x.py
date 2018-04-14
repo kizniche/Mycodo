@@ -19,15 +19,14 @@ class SHT1x7xSensor(AbstractInput):
         self._humidity = None
         self._temperature = None
 
-        self.location = int(input_dev.location)
-        self.clock_pin = input_dev.clock_pin
-        self.convert_to_unit = input_dev.convert_to_unit
-
         if not testing:
             from sht_sensor import Sht
             from sht_sensor import ShtVDDLevel
             self.logger = logging.getLogger(
                 "mycodo.inputs.sht1x_7x_{id}".format(id=input_dev.id))
+            self.location = int(input_dev.location)
+            self.clock_pin = input_dev.clock_pin
+            self.convert_to_unit = input_dev.convert_to_unit
             sht_sensor_vdd_value = {
                 2.5: ShtVDDLevel.vdd_2_5,
                 3.0: ShtVDDLevel.vdd_3,

@@ -16,12 +16,11 @@ class DS18S20Sensor(AbstractInput):
         self.logger = logging.getLogger("mycodo.inputs.ds18s20")
         self._temperature = None
 
-        self.location = input_dev.location
-        self.convert_to_unit = input_dev.convert_to_unit
-
         if not testing:
             self.logger = logging.getLogger(
                 "mycodo.inputs.ds18s20_{id}".format(id=input_dev.id))
+            self.location = input_dev.location
+            self.convert_to_unit = input_dev.convert_to_unit
             self.sensor = W1ThermSensor(W1ThermSensor.THERM_SENSOR_DS18S20,
                                         self.location)
 

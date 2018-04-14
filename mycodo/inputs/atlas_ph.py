@@ -14,18 +14,19 @@ class AtlaspHSensor(AbstractInput):
     def __init__(self, input_dev, testing=False):
         super(AtlaspHSensor, self).__init__()
         self.logger = logging.getLogger("mycodo.inputs.atlas_ph")
-
         self._ph = None
-        self.input_dev = input_dev
-        self.interface = input_dev.interface
-        self.device_loc = input_dev.device_loc
-        self.i2c_address = int(str(input_dev.location), 16)
-        self.i2c_bus = input_dev.i2c_bus
-        self.calibrate_sensor_measure = input_dev.calibrate_sensor_measure
         self.atlas_sensor_uart = None
         self.atlas_sensor_i2c = None
 
         if not testing:
+            self.logger = logging.getLogger(
+                "mycodo.inputs.atlas_ph_{id}".format(id=input_dev.id))
+            self.input_dev = input_dev
+            self.interface = input_dev.interface
+            self.device_loc = input_dev.device_loc
+            self.i2c_address = int(str(input_dev.location), 16)
+            self.i2c_bus = input_dev.i2c_bus
+            self.calibrate_sensor_measure = input_dev.calibrate_sensor_measure
             try:
                 self.initialize_sensor()
             except Exception:

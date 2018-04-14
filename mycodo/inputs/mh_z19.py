@@ -19,13 +19,12 @@ class MHZ19Sensor(AbstractInput):
         self._co2 = None
         self.mhz19_lock_file = None
 
-        self.device_loc = input_dev.device_loc
-        self.baud_rate = input_dev.baud_rate
-
         if not testing:
             import serial
             self.logger = logging.getLogger(
                 "mycodo.inputs.mhz19_{id}".format(id=input_dev.id))
+            self.device_loc = input_dev.device_loc
+            self.baud_rate = input_dev.baud_rate
             # Check if device is valid
             self.serial_device = is_device(self.device_loc)
             if self.serial_device:

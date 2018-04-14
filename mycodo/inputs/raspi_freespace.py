@@ -14,11 +14,10 @@ class RaspberryPiFreeSpace(AbstractInput):
         self.logger = logging.getLogger("mycodo.inputs.raspi_freespace")
         self._disk_space = None
 
-        self.path = input_dev.location
-
         if not testing:
             self.logger = logging.getLogger(
                 "mycodo.inputs.raspi_freespace_{id}".format(id=input_dev.id))
+            self.path = input_dev.location
 
     def __repr__(self):
         """  Representation of object """

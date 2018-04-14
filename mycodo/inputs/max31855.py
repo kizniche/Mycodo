@@ -18,15 +18,14 @@ class MAX31855Sensor(AbstractInput):
         self._temperature = None
         self._temperature_die = None
 
-        self.pin_clock = input_dev.pin_clock
-        self.pin_cs = input_dev.pin_cs
-        self.pin_miso = input_dev.pin_miso
-        self.convert_to_unit = input_dev.convert_to_unit
-
         if not testing:
             import Adafruit_MAX31855.MAX31855 as MAX31855
             self.logger = logging.getLogger(
                 "mycodo.inputs.max31855_{id}".format(id=input_dev.id))
+            self.pin_clock = input_dev.pin_clock
+            self.pin_cs = input_dev.pin_cs
+            self.pin_miso = input_dev.pin_miso
+            self.convert_to_unit = input_dev.convert_to_unit
             self.sensor = MAX31855.MAX31855(self.pin_clock,
                                             self.pin_cs,
                                             self.pin_miso)

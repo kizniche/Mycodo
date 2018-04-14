@@ -18,13 +18,12 @@ class ServerPing(AbstractInput):
         self.logger = logging.getLogger("mycodo.inputs.server_ping")
         self._measurement = None
 
-        self.location = input_dev.location
-        self.times_check = input_dev.times_check
-        self.deadline = input_dev.deadline
-
         if not testing:
             self.logger = logging.getLogger(
                 "mycodo.inputs.server_ping_{id}".format(id=input_dev.id))
+            self.location = input_dev.location
+            self.times_check = input_dev.times_check
+            self.deadline = input_dev.deadline
 
     def __repr__(self):
         """  Representation of object """

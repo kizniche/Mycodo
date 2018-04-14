@@ -34,14 +34,13 @@ class BH1750Sensor(AbstractInput):
         self.logger = logging.getLogger("mycodo.inputs.bh1750")
         self._lux = None
 
-        self.i2c_address = int(str(input_dev.location), 16)
-        self.i2c_bus = input_dev.i2c_bus
-        self.resolution = input_dev.resolution
-        self.sensitivity = input_dev.sensitivity
-
         if not testing:
             self.logger = logging.getLogger(
                 "mycodo.inputs.bh1750_{id}".format(id=input_dev.id))
+            self.i2c_address = int(str(input_dev.location), 16)
+            self.i2c_bus = input_dev.i2c_bus
+            self.resolution = input_dev.resolution
+            self.sensitivity = input_dev.sensitivity
             self.i2c_bus = smbus.SMBus(self.i2c_bus)
             self.power_down()
             self.set_sensitivity(sensitivity=self.sensitivity)

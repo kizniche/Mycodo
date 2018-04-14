@@ -53,26 +53,23 @@ class DHT22Sensor(AbstractInput):
         """
         super(DHT22Sensor, self).__init__()
         self.logger = logging.getLogger('mycodo.inputs.dht22')
-
         self._dew_point = None
         self._humidity = None
         self._temperature = None
-
         self.temp_temperature = None
         self.temp_humidity = None
         self.temp_dew_point = None
-
-        self.convert_to_unit = input_dev.convert_to_unit
-        self.power_output_id = input_dev.power_output_id
+        self.power_output_id = None
         self.powered = False
-
         self.pi = None
 
         if not testing:
             from mycodo.mycodo_client import DaemonControl
-
             self.logger = logging.getLogger(
                 'mycodo.inputs.dht22_{id}'.format(id=input_dev.id))
+
+            self.convert_to_unit = input_dev.convert_to_unit
+            self.power_output_id = input_dev.power_output_id
 
             self.control = DaemonControl()
 

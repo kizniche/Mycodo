@@ -13,18 +13,17 @@ class AtlasPT1000Sensor(AbstractInput):
         super(AtlasPT1000Sensor, self).__init__()
         self.logger = logging.getLogger("mycodo.inputs.atlas_pt1000")
         self._temperature = None
-
-        self.interface = input_dev.interface
-        self.device_loc = input_dev.device_loc
-        self.i2c_address = int(str(input_dev.location), 16)
-        self.i2c_bus = input_dev.i2c_bus
         self.atlas_sensor_uart = None
         self.atlas_sensor_i2c = None
-        self.convert_to_unit = input_dev.convert_to_unit
 
         if not testing:
             self.logger = logging.getLogger(
                 "mycodo.inputs.atlas_pt1000_{id}".format(id=input_dev.id))
+            self.interface = input_dev.interface
+            self.device_loc = input_dev.device_loc
+            self.i2c_address = int(str(input_dev.location), 16)
+            self.i2c_bus = input_dev.i2c_bus
+            self.convert_to_unit = input_dev.convert_to_unit
             self.initialize_sensor()
 
     def __repr__(self):

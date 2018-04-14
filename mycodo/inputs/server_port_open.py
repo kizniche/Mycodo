@@ -18,12 +18,11 @@ class ServerPortOpen(AbstractInput):
         self.logger = logging.getLogger("mycodo.inputs.server_port_open")
         self._measurement = None
 
-        self.location = input_dev.location
-        self.port = input_dev.port
-
         if not testing:
             self.logger = logging.getLogger(
                 "mycodo.inputs.server_port_open_{id}".format(id=input_dev.id))
+            self.location = input_dev.location
+            self.port = input_dev.port
 
     def __repr__(self):
         """  Representation of object """

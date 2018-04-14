@@ -21,14 +21,13 @@ class MifloraSensor(AbstractInput):
         self._moisture = None
         self._temperature = None
 
-        self.location = input_dev.location
-        self.convert_to_unit = input_dev.convert_to_unit
-
         if not testing:
             from miflora.miflora_poller import MiFloraPoller
             from btlewrap import BluepyBackend
             self.logger = logging.getLogger(
                 "mycodo.inputs.miflora_{id}".format(id=input_dev.id))
+            self.location = input_dev.location
+            self.convert_to_unit = input_dev.convert_to_unit
             self.poller = MiFloraPoller(self.location, BluepyBackend)
 
     def __repr__(self):

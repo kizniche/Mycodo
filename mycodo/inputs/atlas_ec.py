@@ -11,17 +11,18 @@ class AtlasElectricalConductivitySensor(AbstractInput):
     def __init__(self, input_dev, testing=False):
         super(AtlasElectricalConductivitySensor, self).__init__()
         self.logger = logging.getLogger("mycodo.inputs.atlas_ec")
-
         self._electrical_conductivity = None
-        self.interface = input_dev.interface
-        self.device_loc = input_dev.device_loc
-        self.i2c_address = int(str(input_dev.location), 16)
-        self.i2c_bus = input_dev.i2c_bus
-        self.input_dev = input_dev
         self.atlas_sensor_uart = None
         self.atlas_sensor_i2c = None
 
         if not testing:
+            self.logger = logging.getLogger(
+                "mycodo.inputs.atlas_ec_{id}".format(id=input_dev.id))
+            self.interface = input_dev.interface
+            self.device_loc = input_dev.device_loc
+            self.i2c_address = int(str(input_dev.location), 16)
+            self.i2c_bus = input_dev.i2c_bus
+            self.input_dev = input_dev
             try:
                 self.initialize_sensor()
             except Exception:

@@ -13,15 +13,14 @@ class SignalRPMInput(AbstractInput):
         self.logger = logging.getLogger("mycodo.inputs.signal_rpm")
         self._rpm = None
 
-        self.location = int(input_dev.location)
-        self.weighting = input_dev.weighting
-        self.rpm_pulses_per_rev = input_dev.rpm_pulses_per_rev
-        self.sample_time = input_dev.sample_time
-
         if not testing:
             import pigpio
             self.logger = logging.getLogger(
                 "mycodo.inputs.signal_rpm_{id}".format(id=input_dev.id))
+            self.location = int(input_dev.location)
+            self.weighting = input_dev.weighting
+            self.rpm_pulses_per_rev = input_dev.rpm_pulses_per_rev
+            self.sample_time = input_dev.sample_time
             self.pigpio = pigpio
 
     def __repr__(self):

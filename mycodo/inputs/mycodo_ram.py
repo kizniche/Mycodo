@@ -5,19 +5,20 @@ import resource
 from mycodo.mycodo_client import DaemonControl
 from .base_input import AbstractInput
 
-logger = logging.getLogger("mycodo.inputs.mycodo_ram")
-
 
 class MycodoRam(AbstractInput):
     """
     A sensor support class that measures ram used by the Mycodo daemon
 
     """
-    def __init__(self, testing=False):
+    def __init__(self, input_dev, testing=False):
         super(MycodoRam, self).__init__()
+        self.logger = logging.getLogger("mycodo.inputs.mycodo_ram")
         self._disk_space = None
 
         if not testing:
+            self.logger = logging.getLogger(
+                "mycodo.inputs.mycodo_ram_{id}".format(id=input_dev.id))
             self.control = DaemonControl()
 
     def __repr__(self):
@@ -70,7 +71,7 @@ class MycodoRam(AbstractInput):
             if self._disk_space is not None:
                 return  # success - no errors
         except Exception as e:
-            logger.exception(
+            self.logger.exception(
                 "{cls} raised an exception when taking a reading: "
                 "{err}".format(cls=type(self).__name__, err=e))
         return 1

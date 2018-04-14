@@ -210,10 +210,10 @@ class InputController(threading.Thread):
             self.measure_input = None
         elif self.device == 'MYCODO_RAM':
             from mycodo.inputs.mycodo_ram import MycodoRam
-            self.measure_input = MycodoRam()
+            self.measure_input = MycodoRam(self.input_dev)
         elif self.device == 'RPiCPULoad':
             from mycodo.inputs.raspi_cpuload import RaspberryPiCPULoad
-            self.measure_input = RaspberryPiCPULoad()
+            self.measure_input = RaspberryPiCPULoad(self.input_dev)
         elif self.device == 'RPi':
             from mycodo.inputs.raspi import RaspberryPiCPUTemp
             self.measure_input = RaspberryPiCPUTemp(self.input_dev)

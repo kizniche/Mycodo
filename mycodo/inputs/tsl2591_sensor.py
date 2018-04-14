@@ -12,13 +12,12 @@ class TSL2591Sensor(AbstractInput):
         self.logger = logging.getLogger("mycodo.inputs.tsl2591_sensor")
         self._lux = None
 
-        self.i2c_address = int(str(input_dev.location), 16)
-        self.i2c_bus = input_dev.i2c_bus
-
         if not testing:
             import tsl2591
             self.logger = logging.getLogger(
                 "mycodo.inputs.tsl2591_sensor_{id}".format(id=input_dev.id))
+            self.i2c_address = int(str(input_dev.location), 16)
+            self.i2c_bus = input_dev.i2c_bus
             self.tsl = tsl2591.Tsl2591(i2c_bus=self.i2c_bus,
                                        sensor_address=self.i2c_address)
 

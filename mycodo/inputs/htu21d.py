@@ -42,14 +42,13 @@ class HTU21DSensor(AbstractInput):
         self._humidity = None
         self._temperature = None
 
-        self.i2c_bus = input_dev.i2c_bus
-        self.i2c_address = 0x40  # HTU21D-F Address
-        self.convert_to_unit = input_dev.convert_to_unit
-
         if not testing:
             import pigpio
             self.logger = logging.getLogger(
                 "mycodo.inputs.htu21d_{id}".format(id=input_dev.id))
+            self.i2c_bus = input_dev.i2c_bus
+            self.i2c_address = 0x40  # HTU21D-F Address
+            self.convert_to_unit = input_dev.convert_to_unit
             self.pi = pigpio.pi()
 
     def __repr__(self):

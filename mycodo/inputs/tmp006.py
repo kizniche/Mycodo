@@ -14,14 +14,13 @@ class TMP006Sensor(AbstractInput):
         self._temperature_die = None
         self._temperature_object = None
 
-        self.i2c_address = int(str(input_dev.location), 16)
-        self.i2c_bus = input_dev.i2c_bus
-        self.convert_to_unit = input_dev.convert_to_unit
-
         if not testing:
             from Adafruit_TMP import TMP006
             self.logger = logging.getLogger(
                 "mycodo.inputs.tmp006_{id}".format(id=input_dev.id))
+            self.i2c_address = int(str(input_dev.location), 16)
+            self.i2c_bus = input_dev.i2c_bus
+            self.convert_to_unit = input_dev.convert_to_unit
             self.sensor = TMP006.TMP006(
                 address=self.i2c_address, busnum=self.i2c_bus)
 

@@ -20,13 +20,12 @@ class BMP180Sensor(AbstractInput):
         self._pressure = None
         self._temperature = None
 
-        self.i2c_bus = input_dev.i2c_bus
-        self.convert_to_unit = input_dev.convert_to_unit
-
         if not testing:
             from Adafruit_BMP import BMP085
             self.logger = logging.getLogger(
                 "mycodo.inputs.bmp180_{id}".format(id=input_dev.id))
+            self.i2c_bus = input_dev.i2c_bus
+            self.convert_to_unit = input_dev.convert_to_unit
             self.bmp = BMP085.BMP085(busnum=self.i2c_bus)
 
     def __repr__(self):

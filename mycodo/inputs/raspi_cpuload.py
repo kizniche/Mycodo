@@ -5,17 +5,20 @@ import os
 
 from .base_input import AbstractInput
 
-logger = logging.getLogger("mycodo.inputs.raspi_cpuload")
-
 
 class RaspberryPiCPULoad(AbstractInput):
     """ A sensor support class that monitors the raspberry pi's cpu load """
 
-    def __init__(self, testing=False):
+    def __init__(self, input_dev, testing=False):
         super(RaspberryPiCPULoad, self).__init__()
+        self.logger = logging.getLogger("mycodo.inputs.raspi_cpuload")
         self._cpu_load_1m = None
         self._cpu_load_5m = None
         self._cpu_load_15m = None
+
+        if not testing:
+            self.logger = logging.getLogger(
+                "mycodo.inputs.raspi_cpuload_{id}".format(id=input_dev.id))
 
     def __repr__(self):
         """  Representation of object """
@@ -84,7 +87,7 @@ class RaspberryPiCPULoad(AbstractInput):
             if self._cpu_load_1m is not None:
                 return  # success - no errors
         except Exception as e:
-            logger.exception(
+            self.logger.exception(
                 "{cls} raised an exception when taking a reading: "
                 "{err}".format(cls=type(self).__name__, err=e))
         return 1

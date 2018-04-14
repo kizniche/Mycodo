@@ -16,12 +16,11 @@ class LinuxCommand(AbstractInput):
         self.logger = logging.getLogger("mycodo.inputs.linux_command")
         self._measurement = None
 
-        self.cmd_command = input_dev.cmd_command
-        self.cmd_measurement = str(input_dev.cmd_measurement)
-
         if not testing:
             self.logger = logging.getLogger(
                 "mycodo.inputs.linux_command_{id}".format(id=input_dev.id))
+            self.cmd_command = input_dev.cmd_command
+            self.cmd_measurement = str(input_dev.cmd_measurement)
 
     def __repr__(self):
         """  Representation of object """

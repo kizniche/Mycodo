@@ -43,17 +43,16 @@ class MAX31865Sensor(AbstractInput):
         self.logger = logging.getLogger("mycodo.inputs.max31865")
         self._temperature = None
 
-        self.pin_clock = input_dev.pin_clock
-        self.pin_cs = input_dev.pin_cs
-        self.pin_miso = input_dev.pin_miso
-        self.pin_mosi = input_dev.pin_mosi
-        self.thermocouple_type = input_dev.thermocouple_type
-        self.ref_ohm = input_dev.ref_ohm
-        self.convert_to_unit = input_dev.convert_to_unit
-
         if not testing:
             self.logger = logging.getLogger(
                 "mycodo.inputs.max31865_{id}".format(id=input_dev.id))
+            self.pin_clock = input_dev.pin_clock
+            self.pin_cs = input_dev.pin_cs
+            self.pin_miso = input_dev.pin_miso
+            self.pin_mosi = input_dev.pin_mosi
+            self.thermocouple_type = input_dev.thermocouple_type
+            self.ref_ohm = input_dev.ref_ohm
+            self.convert_to_unit = input_dev.convert_to_unit
             self.sensor = max31865_sen(self.pin_cs,
                                        self.pin_miso,
                                        self.pin_mosi,

@@ -15,14 +15,13 @@ class SignalPWMInput(AbstractInput):
         self._pulse_width = None
         self._duty_cycle = None
 
-        self.location = int(input_dev.location)
-        self.weighting = input_dev.weighting
-        self.sample_time = input_dev.sample_time
-
         if not testing:
             import pigpio
             self.logger = logging.getLogger(
                 "mycodo.inputs.signal_pwm_{id}".format(id=input_dev.id))
+            self.location = int(input_dev.location)
+            self.weighting = input_dev.weighting
+            self.sample_time = input_dev.sample_time
             self.pigpio = pigpio
 
     def __repr__(self):

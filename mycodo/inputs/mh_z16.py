@@ -39,14 +39,13 @@ class MHZ16Sensor(AbstractInput):
         self._co2 = None
         self.mhz16_lock_file = None
 
-        self.interface = input_dev.interface
-        self.device_loc = input_dev.device_loc
-        self.i2c_address = int(str(input_dev.location), 16)
-        self.i2c_bus = input_dev.i2c_bus
-
         if not testing:
             self.logger = logging.getLogger(
                 "mycodo.inputs.mh_z16_{id}".format(id=input_dev.id))
+            self.interface = input_dev.interface
+            self.device_loc = input_dev.device_loc
+            self.i2c_address = int(str(input_dev.location), 16)
+            self.i2c_bus = input_dev.i2c_bus
             if self.interface == 'UART':
                 import serial
 

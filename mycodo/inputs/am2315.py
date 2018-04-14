@@ -53,13 +53,12 @@ class AM2315Sensor(AbstractInput):
         self.powered = False
         self.am = None
 
-        self.i2c_bus = input_dev.i2c_bus
-        self.power_output_id = input_dev.power_output_id
-
         if not testing:
             from mycodo.mycodo_client import DaemonControl
             self.logger = logging.getLogger(
                 'mycodo.inputs.am2315_{id}'.format(id=input_dev.id))
+            self.i2c_bus = input_dev.i2c_bus
+            self.power_output_id = input_dev.power_output_id
             self.control = DaemonControl()
             self.start_sensor()
             self.am = AM2315(self.i2c_bus)
