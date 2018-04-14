@@ -305,6 +305,8 @@ class PIDController(threading.Thread):
         return "success"
 
     def setup_method(self, method_id):
+        self.method_id = ''
+
         method = db_retrieve_table_daemon(Method, unique_id=method_id)
         method_data = db_retrieve_table_daemon(MethodData)
         method_data = method_data.filter(MethodData.method_id == method_id)
@@ -354,6 +356,9 @@ class PIDController(threading.Thread):
                         self.method_start_act = 'Ended'
                 else:
                     self.method_start_act = 'Ended'
+
+            if method_id != '':
+                self.method_id = method_id
 
     def update_pid_output(self, current_value):
         """
@@ -751,8 +756,6 @@ class PIDController(threading.Thread):
 
     def set_method(self, method_id):
         """ Set the method of PID """
-        self.method_id = method_id
-
         with session_scope(MYCODO_DB_PATH) as db_session:
             mod_pid = db_session.query(PID).filter(
                 PID.unique_id == self.pid_id).first()
@@ -761,9 +764,7 @@ class PIDController(threading.Thread):
             mod_pid.method_end_time = None
             db_session.commit()
 
-        self.initialize_values()
-
-        if self.method_id != '':
+        if method_id != '':
             self.setup_method(method_id)
 
         return "Method set to {me} and started".format(me=method_id)
