@@ -761,6 +761,8 @@ class PIDController(threading.Thread):
             mod_pid.method_end_time = None
             db_session.commit()
 
+        self.initialize_values()
+
         if self.method_id != '':
             self.setup_method(method_id)
 
