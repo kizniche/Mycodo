@@ -1,5 +1,7 @@
 ## 5.7.3 (Unreleased)
 
+This is the last version of the 5.x branch. If your system is upgraded to 5.7.3, you will have the option of upgrading to the next major version (6.x), however the settings database will need to be deleted. This can be done through the web UI or manually by reinstalling Mycodo fresh.
+
 ### Features
 
  - Add Conditional Action: Set PID Method ([#440](https://github.com/kizniche/mycodo/issues/440))
