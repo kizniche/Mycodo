@@ -55,7 +55,7 @@ input_classes = [
     MHZ19Sensor(None, testing=True),
     MycodoRam(None, testing=True),
     RaspberryPiCPUTemp(None, testing=True),
-    RaspberryPiGPUTemp(),
+    RaspberryPiGPUTemp(None, testing=True),
     RaspberryPiCPULoad(None, testing=True),
     RaspberryPiFreeSpace(None, testing=True),
     SHT1x7xSensor(None, testing=True),

@@ -87,9 +87,15 @@ class RaspberryPiCPUTemp(AbstractInput):
 class RaspberryPiGPUTemp(AbstractInput):
     """ A sensor support class that monitors the raspberry pi's gpu temperature """
 
-    def __init__(self):
+    def __init__(self, input_dev, testing=False):
         super(RaspberryPiGPUTemp, self).__init__()
+        self.logger = logging.getLogger("mycodo.inputs.raspi")
         self._temperature = None
+
+        if not testing:
+            self.logger = logging.getLogger(
+                "mycodo.inputs.raspi_{id}".format(id=input_dev.id))
+            self.convert_to_unit = input_dev.convert_to_unit
 
     def __repr__(self):
         """  Representation of object """

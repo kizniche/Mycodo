@@ -17,7 +17,7 @@ def test_raspberry_pi_cpu_temp_iterates_using_in():
     """ Verify that a RaspberryPiCPUTemp object can use the 'in' operator """
     with mock.patch('mycodo.inputs.raspi.RaspberryPiCPUTemp.get_measurement') as mock_measure:
         mock_measure.side_effect = [67, 52, 37, 45]
-        rpicpu = RaspberryPiCPUTemp()
+        rpicpu = RaspberryPiCPUTemp(None, testing=True)
         expected_result_list = [dict(temperature=67.00),
                                 dict(temperature=52.00),
                                 dict(temperature=37.00),
@@ -29,7 +29,7 @@ def test_raspberry_pi_cpu_temp__iter__returns_iterator():
     """ The iter methods must return an iterator in order to work properly """
     with mock.patch('mycodo.inputs.raspi.RaspberryPiCPUTemp.get_measurement') as mock_measure:
         mock_measure.side_effect = [67, 52]
-        rpi_cpu = RaspberryPiCPUTemp()
+        rpi_cpu = RaspberryPiCPUTemp(None, testing=True)
         assert isinstance(rpi_cpu.__iter__(), Iterator)
 
 
@@ -37,7 +37,7 @@ def test_raspberry_pi_cpu_temp_read_updates_temp():
     """  Verify that RaspberryPiCPUTemp().read() gets the average temp """
     with mock.patch('mycodo.inputs.raspi.RaspberryPiCPUTemp.get_measurement') as mock_measure:
         mock_measure.side_effect = [67, 52]
-        rpi_cpu = RaspberryPiCPUTemp()
+        rpi_cpu = RaspberryPiCPUTemp(None, testing=True)
         assert rpi_cpu._temperature is None
         assert not rpi_cpu.read()
         assert rpi_cpu._temperature == 67.0
@@ -49,7 +49,7 @@ def test_raspberry_pi_cpu_temp_next_returns_dict():
     """ next returns dict(temperature=float) """
     with mock.patch('mycodo.inputs.raspi.RaspberryPiCPUTemp.get_measurement') as mock_measure:
         mock_measure.side_effect = [67, 52]
-        rpi_cpu = RaspberryPiCPUTemp()
+        rpi_cpu = RaspberryPiCPUTemp(None, testing=True)
         assert rpi_cpu.next() == dict(temperature=67.00)
 
 
@@ -57,7 +57,7 @@ def test_raspberry_pi_cpu_temp_temperature_property():
     """ verify temperature property """
     with mock.patch('mycodo.inputs.raspi.RaspberryPiCPUTemp.get_measurement') as mock_measure:
         mock_measure.side_effect = [67, 52]
-        rpi_cpu = RaspberryPiCPUTemp()
+        rpi_cpu = RaspberryPiCPUTemp(None, testing=True)
         assert rpi_cpu._temperature is None
         assert rpi_cpu.temperature == 67.00
         assert rpi_cpu.temperature == 67.00
@@ -69,7 +69,7 @@ def test_raspberry_pi_cpu_temp_special_method_str():
     """ expect a __str__ format """
     with mock.patch('mycodo.inputs.raspi.RaspberryPiCPUTemp.get_measurement') as mock_measure:
         mock_measure.side_effect = [0, 0]
-        rpi_cpu = RaspberryPiCPUTemp()
+        rpi_cpu = RaspberryPiCPUTemp(None, testing=True)
         rpi_cpu.read()
         assert "Temperature: 0.00" in str(rpi_cpu)
 
@@ -78,7 +78,7 @@ def test_raspberry_pi_cpu_temp_special_method_repr():
     """ expect a __repr__ format """
     with mock.patch('mycodo.inputs.raspi.RaspberryPiCPUTemp.get_measurement') as mock_measure:
         mock_measure.side_effect = [0, 0]
-        rpi_cpu = RaspberryPiCPUTemp()
+        rpi_cpu = RaspberryPiCPUTemp(None, testing=True)
         rpi_cpu.read()
         assert "<RaspberryPiCPUTemp(temperature=0.00)>" in repr(rpi_cpu)
 
@@ -87,13 +87,13 @@ def test_raspberry_pi_cpu_temp_raises_exception():
     """ stops iteration on read() error """
     with mock.patch('mycodo.inputs.raspi.RaspberryPiCPUTemp.get_measurement', side_effect=IOError):
         with pytest.raises(StopIteration):
-            RaspberryPiCPUTemp().next()
+            RaspberryPiCPUTemp(None, testing=True).next()
 
 
 def test_raspberry_pi_cpu_temp_read_returns_1_on_exception():
     """ Verify the read() method returns true on error """
     with mock.patch('mycodo.inputs.raspi.RaspberryPiCPUTemp.get_measurement', side_effect=Exception):
-        assert RaspberryPiCPUTemp().read()
+        assert RaspberryPiCPUTemp(None, testing=True).read()
 
 
 # def test_raspberry_pi_cpu_temp_get_measurement_divs_by_1k():
@@ -107,7 +107,7 @@ def test_raspberry_pi_cpu_read_logs_ioerrors():
     """ verify that IOErrors are logged """
     with LogCapture() as log_cap:
         with mock.patch('mycodo.inputs.raspi.RaspberryPiCPUTemp.get_measurement', side_effect=IOError('msg')):
-            RaspberryPiCPUTemp().read()
+            RaspberryPiCPUTemp(None, testing=True).read()
     expected_logs = ('mycodo.inputs.raspi', 'ERROR', "RaspberryPiCPUTemp.get_measurement() method raised IOError: msg")
     assert expected_logs in log_cap.actual()
 
@@ -116,7 +116,7 @@ def test_raspberry_pi_cpu_read_logs_unknown_errors():
     """ verify that IOErrors are logged """
     with LogCapture() as log_cap:
         with mock.patch('mycodo.inputs.raspi.RaspberryPiCPUTemp.get_measurement', side_effect=Exception('msg')):
-            RaspberryPiCPUTemp().read()
+            RaspberryPiCPUTemp(None, testing=True).read()
     expected_logs = ('mycodo.inputs.raspi', 'ERROR', 'RaspberryPiCPUTemp raised an exception when taking a reading: msg')
     assert expected_logs in log_cap.actual()
 
@@ -126,14 +126,14 @@ def test_raspberry_pi_cpu_read_logs_unknown_errors():
 # ----------------------------
 def test_raspberry_pi_gpu_temp_is_iterator_instance():
     """ Verify that a RaspberryPiGPUTemp object is and behaves like an iterator """
-    assert isinstance(RaspberryPiGPUTemp(), Iterator), "RaspberryPiGPUTemp is not and iterator instance"
+    assert isinstance(RaspberryPiGPUTemp(None, testing=True), Iterator), "RaspberryPiGPUTemp is not and iterator instance"
 
 
 def test_raspberry_pi_gpu_temp_iterates_using_in():
     """ Verify that a RaspberryPiGPUTemp object can use the 'in' operator """
     with mock.patch('mycodo.inputs.raspi.RaspberryPiGPUTemp.get_measurement') as mock_measure:
         mock_measure.side_effect = [67, 52, 37, 45]
-        rpigpu = RaspberryPiGPUTemp()
+        rpigpu = RaspberryPiGPUTemp(None, testing=True)
         expected_result_list = [dict(temperature=67.00),
                                 dict(temperature=52.00),
                                 dict(temperature=37.00),
@@ -145,7 +145,7 @@ def test_raspberry_pi_gpu_temp__iter__returns_iterator():
     """ The iter methods must return an iterator in order to work properly """
     with mock.patch('mycodo.inputs.raspi.RaspberryPiGPUTemp.get_measurement') as mock_measure:
         mock_measure.side_effect = [67, 52]
-        rpi_gpu = RaspberryPiGPUTemp()
+        rpi_gpu = RaspberryPiGPUTemp(None, testing=True)
         assert isinstance(rpi_gpu.__iter__(), Iterator)
 
 
@@ -153,7 +153,7 @@ def test_raspberry_pi_gpu_temp_read_updates_temp():
     """  Verify that RaspberryPiGPUTemp().read() gets the average temp """
     with mock.patch('mycodo.inputs.raspi.RaspberryPiGPUTemp.get_measurement') as mock_measure:
         mock_measure.side_effect = [67, 52]
-        rpi_gpu = RaspberryPiGPUTemp()
+        rpi_gpu = RaspberryPiGPUTemp(None, testing=True)
         assert rpi_gpu._temperature is None
         assert not rpi_gpu.read()
         assert rpi_gpu._temperature == 67.0
@@ -165,7 +165,7 @@ def test_raspberry_pi_gpu_temp_temperature_property():
     """ verify temperature property """
     with mock.patch('mycodo.inputs.raspi.RaspberryPiGPUTemp.get_measurement') as mock_measure:
         mock_measure.side_effect = [67.2, 52.5]
-        rpi_gpu = RaspberryPiGPUTemp()
+        rpi_gpu = RaspberryPiGPUTemp(None, testing=True)
         assert rpi_gpu._temperature is None
         assert rpi_gpu.temperature == 67.2
         assert rpi_gpu.temperature == 67.2  # same reading, not updated yet
@@ -177,7 +177,7 @@ def test_raspberry_pi_gpu_temp_next_returns_dict():
     """ Expect next() to return string: '{'measurement type':measurement value}' """
     with mock.patch('mycodo.inputs.raspi.subprocess') as mock_subprocess:
         mock_subprocess.check_output.side_effect = lambda n: "temp=42.8'C"
-        rpi_gpu = RaspberryPiGPUTemp()
+        rpi_gpu = RaspberryPiGPUTemp(None, testing=True)
         assert rpi_gpu.next() == dict(temperature=42.80)
 
 
@@ -185,7 +185,7 @@ def test_raspberry_pi_gpu_temp_special_method_str():
     """ expect a __str__ format """
     with mock.patch('mycodo.inputs.raspi.RaspberryPiGPUTemp.get_measurement') as mock_measure:
         mock_measure.side_effect = [67.2, 52.5]
-        rpi_gpu = RaspberryPiGPUTemp()
+        rpi_gpu = RaspberryPiGPUTemp(None, testing=True)
         assert not rpi_gpu.read()
         assert "Temperature: 67.20" in str(rpi_gpu)
         assert not rpi_gpu.read()
@@ -196,7 +196,7 @@ def test_raspberry_pi_gpu_temp_special_method_repr():
     """ expect a __repr__ format """
     with mock.patch('mycodo.inputs.raspi.RaspberryPiGPUTemp.get_measurement') as mock_measure:
         mock_measure.side_effect = [67.2, 52.5]
-        rpi_gpu = RaspberryPiGPUTemp()
+        rpi_gpu = RaspberryPiGPUTemp(None, testing=True)
         assert not rpi_gpu.read()
         assert "<RaspberryPiGPUTemp(temperature=67.20)>" in repr(rpi_gpu)
         assert not rpi_gpu.read()
@@ -207,13 +207,13 @@ def test_raspberry_pi_gpu_temp_raises_exception():
     """ stops iteration on read() error """
     with mock.patch('mycodo.inputs.raspi.RaspberryPiGPUTemp.get_measurement', side_effect=IOError):
         with pytest.raises(StopIteration):
-            RaspberryPiGPUTemp().next()
+            RaspberryPiGPUTemp(None, testing=True).next()
 
 
 def test_raspberry_pi_gpu_temp_read_returns_1_on_exception():
     """ Verify the read() method returns true on error """
     with mock.patch('mycodo.inputs.raspi.RaspberryPiGPUTemp.get_measurement', side_effect=Exception):
-        assert RaspberryPiGPUTemp().read()
+        assert RaspberryPiGPUTemp(None, testing=True).read()
 
 
 # def test_raspberry_pi_gpu_temp_get_measurement_method_returns_float():
@@ -228,7 +228,7 @@ def test_raspberry_pi_gpu_temp_read_logs_called_process_error():
     with LogCapture() as log_cap:
         with mock.patch('mycodo.inputs.raspi.RaspberryPiGPUTemp.get_measurement',
                         side_effect=CalledProcessError(cmd='cmd', returncode=0)):
-            RaspberryPiGPUTemp().read()
+            RaspberryPiGPUTemp(None, testing=True).read()
     expected_log = ('mycodo.inputs.raspi', 'ERROR', "RaspberryPiGPUTemp.get_measurement() subprocess call raised: Command 'cmd' returned non-zero exit status 0")
     assert expected_log in log_cap.actual()
 
@@ -237,7 +237,7 @@ def test_raspberry_pi_gpu_temp_read_logs_ioerror():
     """ verify get_measurement string format """
     with LogCapture() as log_cap:
         with mock.patch('mycodo.inputs.raspi.RaspberryPiGPUTemp.get_measurement', side_effect=IOError('msg')):
-            RaspberryPiGPUTemp().read()
+            RaspberryPiGPUTemp(None, testing=True).read()
     expected_log = ('mycodo.inputs.raspi', 'ERROR', "RaspberryPiGPUTemp.get_measurement() method raised IOError: msg")
     assert expected_log in log_cap.actual()
 
@@ -246,6 +246,6 @@ def test_raspberry_pi_gpu_temp_read_logs_unknown_errors():
     """ verify get_measurement string format """
     with LogCapture() as log_cap:
         with mock.patch('mycodo.inputs.raspi.RaspberryPiGPUTemp.get_measurement', side_effect=Exception('msg')):
-            RaspberryPiGPUTemp().read()
+            RaspberryPiGPUTemp(None, testing=True).read()
     expected_log = ('mycodo.inputs.raspi', 'ERROR', "RaspberryPiGPUTemp raised an exception when taking a reading: msg")
     assert expected_log in log_cap.actual()

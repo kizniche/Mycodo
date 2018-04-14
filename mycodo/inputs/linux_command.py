@@ -15,6 +15,7 @@ class LinuxCommand(AbstractInput):
         super(LinuxCommand, self).__init__()
         self.logger = logging.getLogger("mycodo.inputs.linux_command")
         self._measurement = None
+        self.cmd_measurement = 'measurement'
 
         if not testing:
             self.logger = logging.getLogger(
