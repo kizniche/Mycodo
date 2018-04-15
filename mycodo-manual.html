@@ -572,11 +572,11 @@ usage: mycodo-client [-h] [--activatecontroller CONTROLLER ID]
 </tr>
 <tr class="odd">
 <td style="text-align: left;">Location</td>
-<td style="text-align: left;">Depending on what sensor is being used, you will need to either select a serial number (DS18B20 temperature sensor), a GPIO pin (in the case of sensors read by a GPIO), or an I2C address. and channel if using the TCA9548A I2C multiplexer.</td>
+<td style="text-align: left;">Depending on what sensor is being used, you will need to either select a serial number (DS18B20 temperature sensor), a GPIO pin (in the case of sensors read by a GPIO), or an I2C address. or other.</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">I2C Bus</td>
-<td style="text-align: left;">The bus to be used to communicate with the I2C address. If you’re using an I2C multiplexer that provides multiple buses, this allows you to select which bus the sensor is connected to.</td>
+<td style="text-align: left;">The bus to be used to communicate with the I2C address.</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">Period (seconds)</td>
@@ -625,86 +625,74 @@ signal &lt;http://kylegabriel.com/projects/2016/02
 <td style="text-align: left;">Edge sensors only: This is the period of time after an edge detection that another edge will not be recorded. This enables devices such as PIR motion sensors that may stay activated for longer periods of time.</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">Multiplexer (MX)</td>
-<td style="text-align: left;">If connected to the TCA9548A I2C multiplexer, select what the I2C address of the multiplexer is.</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">Mx I2C Bus</td>
-<td style="text-align: left;">If connected to the TCA9548A I2C multiplexer, select the I2C bus the multiplexer is connected to.</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">Mx Channel</td>
-<td style="text-align: left;">If connected to the TCA9548A I2C multiplexer, select the channel of the multiplexer the device is connected to.</td>
-</tr>
-<tr class="odd">
 <td style="text-align: left;">Measurement</td>
 <td style="text-align: left;">Analog-to-digital converter only: The type of measurement being acquired by the ADC. For instance, if the resistance of a photocell is being measured through a voltage divider, this measurement would be “light”.</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td style="text-align: left;">Units</td>
 <td style="text-align: left;">Analog-to-digital converter only: This is the unit of the measurement. With the above example of “light” as the measurement, the unit may be “lux” or “intensity”.</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td style="text-align: left;">Clock Pin</td>
 <td style="text-align: left;">The GPIO (using BCM numbering) connected to the Clock pin of the ADC</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td style="text-align: left;">CS Pin</td>
 <td style="text-align: left;">The GPIO (using BCM numbering) connected to the CS pin of the ADC</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td style="text-align: left;">MISO Pin</td>
 <td style="text-align: left;">The GPIO (using BCM numbering) connected to the MISO pin of the ADC</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td style="text-align: left;">MOSI Pin</td>
 <td style="text-align: left;">The GPIO (using BCM numbering) connected to the MOSI pin of the ADC</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td style="text-align: left;">RTD Probe Type</td>
 <td style="text-align: left;">Select to measure from a PT100 or PT1000 probe.</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td style="text-align: left;">Resistor Reference (Ohm)</td>
 <td style="text-align: left;">If your reference resistor is not the default (400 Ohm for PT100, 4000 Ohm for PT1000), you can manually set this value. Several manufacturers now use 430 Ohm resistors on their circuit boards, therefore it’s recommended to verify the accuracy of your measurements and adjust this value if necessary.</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td style="text-align: left;">Channel</td>
 <td style="text-align: left;">Analog-to-digital converter only: This is the channel to obtain the voltage measurement from the ADC.</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td style="text-align: left;">Gain</td>
 <td style="text-align: left;">Analog-to-digital converter only: set the gain when acquiring the measurement.</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td style="text-align: left;">Volts Min</td>
 <td style="text-align: left;">Analog-to-digital converter only: What is the minimum voltage to use when scaling to produce the unit value for the database. For instance, if your ADC is not expected to measure below 0.2 volts for your particular circuit, set this to “0.2”.</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td style="text-align: left;">Volts Max</td>
 <td style="text-align: left;">Analog-to-digital converter only: This is similar to the Min option above, however it is setting the ceiling to the voltage range. Units Min Analog-to-digital converter only: This value will be the lower value of a range that will use the Min and Max Voltages, above, to produce a unit output. For instance, if your voltage range is 0.0 - 1.0 volts, and the unit range is 1 - 60, and a voltage of 0.5 is measured, in addition to 0.5 being stored in the database, 30 will be stored as well. This enables creating calibrated scales to use with your particular circuit.</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td style="text-align: left;">Units Max</td>
 <td style="text-align: left;">Analog-to-digital converter only: This is similar to the Min option above, however it is setting the ceiling to the unit range.</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td style="text-align: left;">Weighting</td>
 <td style="text-align: left;">The This is a number between 0 and 1 and indicates how much the old reading affects the new reading. It defaults to 0 which means the old reading has no effect. This may be used to smooth the data.</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td style="text-align: left;">Pulses Per Rev</td>
 <td style="text-align: left;">The number of pulses for a complete revolution.</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td style="text-align: left;">Port</td>
 <td style="text-align: left;">The server port to be queried (Server Port Open input).</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td style="text-align: left;">Times to Check</td>
 <td style="text-align: left;">The number of times to attempt to ping a server (Server Ping input).</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td style="text-align: left;">Deadline (seconds)</td>
 <td style="text-align: left;">The maximum amount of time to wait for each ping attempt, after which 0 (offline) will be returned (Server Ping input).</td>
 </tr>
@@ -1178,11 +1166,11 @@ signal &lt;http://kylegabriel.com/projects/2016/02
 </tr>
 <tr class="even">
 <td style="text-align: left;">Pause</td>
-<td style="text-align: left;">When paused, the PID will not turn on the associated outputs, and settings can be changed without losing current PID output values.</td>
+<td style="text-align: left;">When paused, the control variable will not be updated and the PID will not turn on the associated outputs. Settings can be changed without losing current PID output values.</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">Hold</td>
-<td style="text-align: left;">When held, the PID will turn on the associated outputs, and settings can be changed without losing current PID output values.</td>
+<td style="text-align: left;">When held, the control variable will not be updated but the PID will turn on the associated outputs, Settings can be changed without losing current PID output values.</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">Resume</td>
@@ -1671,14 +1659,6 @@ document.write('<a h'+'ref'+'="ma'+'ilto'+':'+e+'" clas'+'s="em' + 'ail">'+e+'<\
 <tr class="odd">
 <td style="text-align: left;">I2C Address</td>
 <td style="text-align: left;">Select the I2C to communicate with the LCD.</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">Multiplexer I2C Address</td>
-<td style="text-align: left;">If the LCD is connected to a multiplexer, select the multiplexer I2C address.</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">Multiplexer Channel</td>
-<td style="text-align: left;">If the LCD is connected to a multiplexer, select the multiplexer channel the LCD is connected to.</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">Period</td>
@@ -2546,12 +2526,11 @@ sudo service mycodoflask restart</code></pre>
 <p>Examples of devices that can be used with edge detection: simple switches and buttons, PIR motion sensors, reed switches, hall effect sensors, float switches, and more.</p>
 <h2 id="i2c-multiplexers">I2C Multiplexers</h2>
 <p>All devices that connected to the Raspberry Pi by the I2C bus need to have a unique address in order to communicate. Some inputs may have the same address (such as the AM2315), which prevents more than one from being connected at the same time. Others may provide the ability to change the address, however the address range may be limited, which limits by how many you can use at the same time. I2C multiplexers are extremely clever and useful in these scenarios because they allow multiple sensors with the same I2C address to be connected.</p>
+<p>Multiplexers can be set up by loading a kernel driver to handle the communication, producing a new I2C bus device for each multiplexer channel. To enable the driver for the TCA9548A/PCA9548A, visit <a href="https://github.com/Theoi-Meteoroi/GPIO-pca9548">GPIO-pca9548</a> to get the code and latest install instructions. If successfully set up, there will be 8 new I2C busses on the <code>Config -&gt; System Information</code> page.</p>
+<p>The driver for the TCA9545A can be found at <a href="https://github.com/camrex/i2c-mux-pca9545a" class="uri">https://github.com/camrex/i2c-mux-pca9545a</a> and other drivers are available elsewhere. See the manufacturer or user forums for details. Some multiplexers I’ve tested are below.</p>
 <blockquote>
 <p>TCA9548A/PCA9548A: I2C Multiplexer <a href="https://learn.adafruit.com/adafruit-tca9548a-1-to-8-i2c-multiplexer-breakout/overview">link</a> (I2C): Has 8 selectable addresses, so 8 multiplexers can be connected to one Raspberry Pi. Each multiplexer has 8 channels, allowing up to 8 devices/sensors with the same address to be connected to each multiplexer. 8 multiplexers x 8 channels = 64 devices/sensors with the same I2C address.</p>
-</blockquote>
-<p>Note: The TCA9548A/PCA9548A can be set up in two ways. Either by A) connecting the multiplexer to an already-existing I2C bus and configuring each device manually in Mycodo, or B) (the easier and safer option) creating a dtoverlay to produce a new I2C bus device for each multiplexer channel. Method A can be used with the multiplexer options already existing in Mycodo, however option B benefits by allowing the linux driver to handle channel switching and being able to see every device on every bus at once in Mycodo’s System Information page. To enable option B, visit <a href="https://github.com/Theoi-Meteoroi/GPIO-pca9548">GPIO-pca9548</a> to get the code and latest install instructions. If successfully set up, there will be 8 new I2C busses on the <code>Config -&gt; System Information</code> page.</p>
-<blockquote>
-<p>TCA9545A: I2C Bus Multiplexer <a href="http://store.switchdoc.com/i2c-4-channel-mux-extender-expander-board-grove-pin-headers-for-arduino-and-raspberry-pi/">link</a> (I2C): This board works a little differently than the TCA9548A, above. This board actually creates 4 new I2C busses, each with their own selectable voltage, either 3.3 or 5.0 volts. Instructions to enable the Device Tree Overlay are at <a href="https://github.com/camrex/i2c-mux-pca9545a" class="uri">https://github.com/camrex/i2c-mux-pca9545a</a>. Nothing else needs to be done in Mycodo after that except to select the correct I2C bus when configuring a sensor.</p>
+<p>TCA9545A: I2C Bus Multiplexer <a href="http://store.switchdoc.com/i2c-4-channel-mux-extender-expander-board-grove-pin-headers-for-arduino-and-raspberry-pi/">link</a> (I2C): This board also creates 4 new I2C busses, but each with their own selectable voltage, either 3.3 or 5.0 volts.</p>
 </blockquote>
 <h2 id="analog-to-digital-converters">Analog-to-Digital Converters</h2>
 <p>An analog to digital converter (ADC) allows the use of any analog sensor that outputs a variable voltage. A <a href="https://learn.sparkfun.com/tutorials/voltage-dividers">voltage divider</a> may be necessary to attain your desired range.</p>

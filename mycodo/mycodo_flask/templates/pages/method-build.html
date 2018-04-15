@@ -38,13 +38,13 @@
       {{form_mod_method.method_id(class_='form-control', value=method.unique_id)}}
 
       <div class="row small-gutters" style="padding: 0.7em">
-        <div class="col-sm-6 col-md-4">
+        <div class="col-auto">
           {{form_mod_method.name.label(class_='control-label')}}
           <div>
             {{form_mod_method.name(class_='form-control', value=method.name, **{'title':_('A name to distinguish this from others')})}}
           </div>
         </div>
-        <div class="col-sm-6 col-md-3">
+        <div class="col-auto">
           <label style="padding-top: 1em"></label>
           <div>
             {{form_mod_method.rename(class_='form-control btn btn-default')}}
@@ -110,7 +110,7 @@
     {%- if method_setpoint -%}
 
       <div class="row small-gutters" style="margin: 1em 0 0 0; padding: 1em; border: 2px solid #ddd; border-radius: 5px;">
-        <div class="col-xs-12" style="padding-bottom: 1em">
+        <div class="col-auto" style="padding-bottom: 1em">
           <h3>Setpoint Tracking</h3>
         </div>
 
@@ -159,7 +159,7 @@
 
           {% elif method.method_type == "Duration" and each_method.duration_sec -%}
 
-          <div class="col-sm-4 col-md-2">
+          <div class="col-auto">
             {{form_mod_method.duration.label(class_='control-label')}}
             <div>
               {{form_mod_method.duration(class_='form-control', value=each_method.duration_sec)}}
@@ -170,26 +170,26 @@
 
           {% if method.method_type == "Duration" and not each_method.duration_sec %}
 
-          <div class="col-sm-4 col-md-2">
+          <div class="col-auto">
             {{form_mod_method.duration_end.label(class_='control-label')}}
             <div>
               {{form_mod_method.duration_end(class_='form-control', value=each_method.duration_end)}}
             </div>
           </div>
-          <div class="col-sm-4 col-md-2">
-            <label class='control-label' style="padding-top: 1em"></label>
+          <div class="col-auto">
+            <label class='control-label'>&nbsp;</label>
             <div>
               <input class="form-control btn btn-default" disabled="" value="Repeat Method" type="text">
             </div>
           </div>
-          <div class="col-sm-2 col-md-1">
-            <label class='control-label' style="padding-top: 1em"></label>
+          <div class="col-auto">
+            <label class='control-label'>&nbsp;</label>
             <div>
               {{form_mod_method.save(class_='form-control btn btn-default')}}
             </div>
           </div>
-          <div class="col-sm-2 col-md-1">
-            <label class='control-label' style="padding-top: 1em"></label>
+          <div class="col-auto">
+            <label class='control-label'>&nbsp;</label>
             <div>
               {{form_mod_method.Delete(class_='form-control btn btn-default',**{'onclick':'return confirm("Are you sure you want to delete this?")'})}}
             </div>
@@ -197,26 +197,26 @@
 
           {% else %}
 
-          <div class="col-sm-3 col-md-2 col-lg-2">
+          <div class="col-auto">
             {{form_mod_method.setpoint_start.label(class_='control-label')}}
             <div>
               {{form_mod_method.setpoint_start(class_='form-control', value=each_method.setpoint_start)}}
             </div>
           </div>
-          <div class="col-sm-3 col-md-2 col-lg-2">
+          <div class="col-auto">
             {{form_mod_method.setpoint_end.label(class_='control-label')}}
             <div>
               {{form_mod_method.setpoint_end(class_='form-control', value=each_method.setpoint_end)}}
             </div>
           </div>
-          <div class="col-sm-3 col-md-2 col-lg-1">
-            <label class='control-label' style="padding-top: 1em"></label>
+          <div class="col-auto">
+            <label class='control-label'>&nbsp;</label>
             <div>
               {{form_mod_method.save(class_='form-control btn btn-default')}}
             </div>
           </div>
-          <div class="col-sm-3 col-md-2 col-lg-1">
-            <label class='control-label' style="padding-top: 1em"></label>
+          <div class="col-auto">
+            <label class='control-label'>&nbsp;</label>
             <div>
               {{form_mod_method.Delete(class_='form-control btn btn-default',**{'onclick':'return confirm("Are you sure you want to delete this?")'})}}
             </div>

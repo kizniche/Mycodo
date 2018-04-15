@@ -9,6 +9,10 @@ Version 6.0.0 has changes to the database schema that could not be upgraded to. 
  - Add Conditional Action: Set PID Method ([#440](https://github.com/kizniche/mycodo/issues/440))
  - Use actual range value for color stops of solid gauges ([#434](https://github.com/kizniche/mycodo/issues/434))
 
+### Bugfixes
+
+ - Fix Hold bug in PID controllers
+
 ### Miscellaneous
 
  - Remove multiplexer integration (use kernel driver)

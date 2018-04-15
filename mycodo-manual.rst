@@ -873,13 +873,15 @@ resumes operation.
 +=======================+=================================================+
 | Activate/Deactivate   | Turn a particular PID controller on or off.     |
 +-----------------------+-------------------------------------------------+
-| Pause                 | When paused, the PID will not turn on the       |
-|                       | associated outputs, and settings can be changed |
+| Pause                 | When paused, the control variable will not be   |
+|                       | updated and the PID will not turn on the        |
+|                       | associated outputs. Settings can be changed     |
 |                       | without losing current PID output values.       |
 +-----------------------+-------------------------------------------------+
-| Hold                  | When held, the PID will turn on the associated  |
-|                       | outputs, and settings can be changed without    |
-|                       | losing current PID output values.               |
+| Hold                  | When held, the control variable will not be     |
+|                       | updated but the PID will turn on the associated |
+|                       | outputs, Settings can be changed without losing |
+|                       | current PID output values.                      |
 +-----------------------+-------------------------------------------------+
 | Resume                | Resume a PID controller from being held or      |
 |                       | paused.                                         |
