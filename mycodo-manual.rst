@@ -64,9 +64,9 @@ beverage fermentation or curing, and cooking food
 (`sous-vide <https://en.wikipedia.org/wiki/Sous-vide>`__), to name a
 few.
 
-Timers can be set to trigger events based on specific dates and times or
-according to durations of time. Timers are fairly basic, but can be
-configured in very complex ways. Don't underestimate a good timer.
+Conditionals can be set to trigger events based on specific dates and times or
+according to durations of time. Conditionals are fairly basic, but can be
+configured in very complex ways. Don't underestimate a good conditional.
 
 Frequently Asked Questions
 ==========================
@@ -1022,6 +1022,8 @@ with conditional statements.
 Measurement Conditional Statement If Options
 ''''''''''''''''''''''''''''''''''''''''''''
 
+Check if the latest measurement is above or below the set value.
+
 +-----------------------+-------------------------------------------------+
 | Setting               | Description                                     |
 +=======================+=================================================+
@@ -1061,6 +1063,8 @@ Measurement Conditional Statement If Options
 Output Conditional Statement If Options
 '''''''''''''''''''''''''''''''''''''''
 
+Monitor the state of an output.
+
 +-----------------------+-------------------------------------------------+
 | Setting               | Description                                     |
 +=======================+=================================================+
@@ -1084,6 +1088,8 @@ Output Conditional Statement If Options
 Edge Conditional Statement If Options
 '''''''''''''''''''''''''''''''''''''
 
+Monitor the state of a pin for a rising and/or falling edge.
+
 +-----------------------+-------------------------------------------------+
 | Setting               | Description                                     |
 +=======================+=================================================+
@@ -1095,8 +1101,33 @@ Edge Conditional Statement If Options
 |                       | (Rising and Falling).                           |
 +-----------------------+-------------------------------------------------+
 
+Run PWM Method Conditional Statement If Options
+'''''''''''''''''''''''''''''''''''''''''''''''
+
+Select a Duration Method and this will set the selected PWM Output to the
+duty cycle specified by the method.
+
++------------------------+-------------------------------------------------+
+| Setting                | Description                                     |
++========================+=================================================+
+| Duration Method        | Select which Method to use.                     |
++------------------------+-------------------------------------------------+
+| PWM Output             | Select which PWM Output to use.                 |
++------------------------+-------------------------------------------------+
+| Period (seconds)       | Select the interval of time to calculate the    |
+|                        | duty cycle, then apply to the PWM Output.       |
++------------------------+-------------------------------------------------+
+| Trigger Every Period   | Trigger Conditional Actions every period.       |
++------------------------+-------------------------------------------------+
+| Trigger when Activated | Trigger Conditional Actions when the            |
+|                        | Conditional is activated.                       |
++------------------------+-------------------------------------------------+
+
 Sunrise/Sunset Conditional Statement If Options
 '''''''''''''''''''''''''''''''''''''''''''''''
+
+Trigger events at sunrise or sunset (or a time offset of those), based on
+latitude and longitude.
 
 +-----------------------+-------------------------------------------------+
 | Setting               | Description                                     |
@@ -1118,6 +1149,35 @@ Sunrise/Sunset Conditional Statement If Options
 | Time Offset (minutes) | Set a sunrise/sunset offset in minutes          |
 |                       | (positive or negative).                         |
 +-----------------------+-------------------------------------------------+
+
+Timer (Duration) Conditional Statement If Options
+'''''''''''''''''''''''''''''''''''''''''''''''''
+
+Run a timer that triggers Contitional Actions every period.
+
++------------------------+-------------------------------------------------+
+| Setting                | Description                                     |
++========================+=================================================+
+| Period (seconds)       | The period of time between triggering           |
+|                        | Conditional Actions.                            |
++------------------------+-------------------------------------------------+
+| Start Offset (seconds) | Set this to start the first trigger a number of |
+|                        | seconds after the Conditional is activated.     |
++------------------------+-------------------------------------------------+
+
+Timer (Daily Time) Conditional Statement If Options
+'''''''''''''''''''''''''''''''''''''''''''''''''''
+
+Run a timer that triggers Contitional Actions at a specific time every day.
+
++-----------------------+-------------------------------------------------+
+| Setting               | Description                                     |
++=======================+=================================================+
+| Start Time (HH:MM)    | Set the time to trigger Conditional Actions, in |
+|                       | the format "HH:MM", with HH denoting hours, and |
+|                       | MM donoting minutes. Time is in 24-hour format. |
++-----------------------+-------------------------------------------------+
+
 
 Conditional Statement Actions
 '''''''''''''''''''''''''''''
@@ -1192,6 +1252,8 @@ Measurement Conditional command variables
 +---------------------------------------+----------------------------------------------+
 | ((measure\_altitude))                 | Input measurement: altitude                  |
 +---------------------------------------+----------------------------------------------+
+| ((measure\_battery))                  | Input measurement: battery                   |
++---------------------------------------+----------------------------------------------+
 | ((measure\_boolean))                  | Input measurement: boolean                   |
 +---------------------------------------+----------------------------------------------+
 | ((measure\_co2))                      | Input measurement: CO2                       |
@@ -1265,38 +1327,6 @@ Edge Conditional command variables
 +===================+==============================================================+
 | ((edge\_state))   | The state of the GPIO pin (on/rising = 1, off/falling = 0)   |
 +-------------------+--------------------------------------------------------------+
-
-Timers
-------
-
-More -> Timers
-
-Timers enable outputs to be manipulated after specific durations of time
-or at a specific times of the day. Timers will ***only*** do as
-instructed, therefore if you turn a output *ON* from *Start Time* to
-*End Time* and you want that output to turn *OFF* at the end of that
-period, you will need to create another timer that turns the output
-*OFF* at *End Time* + 1 minute.
-
-There are two types of timers, one for general outputs that turn on and
-off, and those that generate a PWM signal.
-
-General Output
-``````````````
-
-For *Duration Timers*, both the on duration and the off duration can be
-defined and the timer will be turned on and off for those durations
-until deactivated.
-
-For *Daily Timers*, the start hour:minute can be set to turn a specific
-output on or off at the specific time of day.
-
-PWM Method
-``````````
-
-This timer allows a method to be used to determine the duty cycle (as
-percent) of a PWM output. While creating these methods, keep in mind a
-duty cycle is a percentage and the values must stay between 0 and 100.
 
 LCDs
 ----

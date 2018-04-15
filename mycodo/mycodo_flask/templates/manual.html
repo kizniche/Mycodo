@@ -359,10 +359,6 @@
 <li><a href="#pid-controller">PID Controller</a></li>
 <li><a href="#conditional-statements">Conditional Statements</a></li>
 </ul></li>
-<li><a href="#timers">Timers</a><ul>
-<li><a href="#general-output">General Output</a></li>
-<li><a href="#pwm-method">PWM Method</a></li>
-</ul></li>
 <li><a href="#lcds">LCDs</a></li>
 <li><a href="#methods">Methods</a><ul>
 <li><a href="#universal-options">Universal Options</a></li>
@@ -481,7 +477,7 @@
 <p>Input controllers acquire measurements and store them in a <a href="https://en.wikipedia.org/wiki/Time_series_database">time series database</a>. Measurements typically come from sensors, but may also be configured to use the return value of a linux command, making integrating new inputs very easy.</p>
 <p>Output controllers produce changes to the general input/output (GPIO) pins or may be configured to execute linux commands in order to allow an unlimited number of potential uses. There are a few different types of outputs: simple switching of pins (HIGH/LOW), generating pulse-width modulated (PWM) signals, switching 433 MHz wireless relays, and linux command execution. The most common setup is using a relay to switch electrical devices on and off.</p>
 <p>When Inputs and Outputs are combined, PID controllers may be used to create a feedback loop that uses the Output device to modulate an environmental condition the Input detects. Certain Inputs may be coupled with certain Outputs to create a variety of different control and regulation applications. Beyond simple regulation, Methods may be used to create changing setpoints over time, enabling such things as thermal cyclers, reflow ovens, environmental simulation for terrariums, food and beverage fermentation or curing, and cooking food (<a href="https://en.wikipedia.org/wiki/Sous-vide">sous-vide</a>), to name a few.</p>
-<p>Timers can be set to trigger events based on specific dates and times or according to durations of time. Timers are fairly basic, but can be configured in very complex ways. Don’t underestimate a good timer.</p>
+<p>Conditionals can be set to trigger events based on specific dates and times or according to durations of time. Conditionals are fairly basic, but can be configured in very complex ways. Don’t underestimate a good conditional.</p>
 <h1 id="frequently-asked-questions">Frequently Asked Questions</h1>
 <p><em>What should I do if I have an issue?</em></p>
 <p>First, read though this manual to make sure you understand how the system works and you’re using the system properly. Also check out the <a href="https://github.com/kizniche/Mycodo/wiki">Mycodo Wiki</a>. You may even want to look through recent <a href="https://github.com/kizniche/Mycodo/issues">GitHub Issues</a>. If you haven’t resolved your issue by this point, make a <a href="https://github.com/kizniche/Mycodo/issues/new">New GitHub Issue</a> describing the issue and attaching a sufficient amount of evidence (screenshots, log files, etc.) to aid in diagnosing the issue.</p>
@@ -1270,6 +1266,7 @@ document.write('<a h'+'ref'+'="ma'+'ilto'+':'+e+'" clas'+'s="em' + 'ail">'+e+'<\
 </ul>
 <p>Before activating any conditional statements or PID controllers, it’s advised to thoroughly explore all possible scenarios and plan a configuration that eliminates conflicts. Then, trial run your configuration before connecting devices to the outputs. Some devices or outputs may respond atypically or fail when switched on and off in rapid succession. Therefore, avoid creating an <a href="https://en.wikipedia.org/wiki/Loop_%28computing%29#Infinite_loops">infinite loop</a> with conditional statements.</p>
 <h4 id="measurement-conditional-statement-if-options">Measurement Conditional Statement If Options</h4>
+<p>Check if the latest measurement is above or below the set value.</p>
 <table>
 <colgroup>
 <col style="width: 32%"></col>
@@ -1309,6 +1306,7 @@ document.write('<a h'+'ref'+'="ma'+'ilto'+':'+e+'" clas'+'s="em' + 'ail">'+e+'<\
 </tbody>
 </table>
 <h4 id="output-conditional-statement-if-options">Output Conditional Statement If Options</h4>
+<p>Monitor the state of an output.</p>
 <table>
 <colgroup>
 <col style="width: 32%"></col>
@@ -1336,6 +1334,7 @@ document.write('<a h'+'ref'+'="ma'+'ilto'+':'+e+'" clas'+'s="em' + 'ail">'+e+'<\
 </tbody>
 </table>
 <h4 id="edge-conditional-statement-if-options">Edge Conditional Statement If Options</h4>
+<p>Monitor the state of a pin for a rising and/or falling edge.</p>
 <table>
 <colgroup>
 <col style="width: 32%"></col>
@@ -1354,7 +1353,44 @@ document.write('<a h'+'ref'+'="ma'+'ilto'+':'+e+'" clas'+'s="em' + 'ail">'+e+'<\
 </tr>
 </tbody>
 </table>
+<h4 id="run-pwm-method-conditional-statement-if-options">Run PWM Method Conditional Statement If Options</h4>
+<p>Select a Duration Method and this will set the selected PWM Output to the duty cycle specified by the method.</p>
+<table>
+<colgroup>
+<col style="width: 33%"></col>
+<col style="width: 66%"></col>
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Setting</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Duration Method</td>
+<td style="text-align: left;">Select which Method to use.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">PWM Output</td>
+<td style="text-align: left;">Select which PWM Output to use.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Period (seconds)</td>
+<td style="text-align: left;">Select the interval of time to calculate the duty cycle, then apply to the PWM Output.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Trigger Every Period</td>
+<td style="text-align: left;">Trigger Conditional Actions every period.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Trigger when Activated</td>
+<td style="text-align: left;">Trigger Conditional Actions when the Conditional is activated.</td>
+</tr>
+</tbody>
+</table>
 <h4 id="sunrisesunset-conditional-statement-if-options">Sunrise/Sunset Conditional Statement If Options</h4>
+<p>Trigger events at sunrise or sunset (or a time offset of those), based on latitude and longitude.</p>
 <table>
 <colgroup>
 <col style="width: 32%"></col>
@@ -1390,6 +1426,50 @@ document.write('<a h'+'ref'+'="ma'+'ilto'+':'+e+'" clas'+'s="em' + 'ail">'+e+'<\
 <tr class="even">
 <td style="text-align: left;">Time Offset (minutes)</td>
 <td style="text-align: left;">Set a sunrise/sunset offset in minutes (positive or negative).</td>
+</tr>
+</tbody>
+</table>
+<h4 id="timer-duration-conditional-statement-if-options">Timer (Duration) Conditional Statement If Options</h4>
+<p>Run a timer that triggers Contitional Actions every period.</p>
+<table>
+<colgroup>
+<col style="width: 33%"></col>
+<col style="width: 66%"></col>
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Setting</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Period (seconds)</td>
+<td style="text-align: left;">The period of time between triggering Conditional Actions.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Start Offset (seconds)</td>
+<td style="text-align: left;">Set this to start the first trigger a number of seconds after the Conditional is activated.</td>
+</tr>
+</tbody>
+</table>
+<h4 id="timer-daily-time-conditional-statement-if-options">Timer (Daily Time) Conditional Statement If Options</h4>
+<p>Run a timer that triggers Contitional Actions at a specific time every day.</p>
+<table>
+<colgroup>
+<col style="width: 32%"></col>
+<col style="width: 67%"></col>
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Setting</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Start Time (HH:MM)</td>
+<td style="text-align: left;">Set the time to trigger Conditional Actions, in the format “HH:MM”, with HH denoting hours, and MM donoting minutes. Time is in 24-hour format.</td>
 </tr>
 </tbody>
 </table>
@@ -1484,90 +1564,94 @@ document.write('<a h'+'ref'+'="ma'+'ilto'+':'+e+'" clas'+'s="em' + 'ail">'+e+'<\
 <td style="text-align: left;">Input measurement: altitude</td>
 </tr>
 <tr class="odd">
+<td style="text-align: left;">((measure_battery))</td>
+<td style="text-align: left;">Input measurement: battery</td>
+</tr>
+<tr class="even">
 <td style="text-align: left;">((measure_boolean))</td>
 <td style="text-align: left;">Input measurement: boolean</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td style="text-align: left;">((measure_co2))</td>
 <td style="text-align: left;">Input measurement: CO2</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td style="text-align: left;">((measure_cpu_load_1m))</td>
 <td style="text-align: left;">Input measurement: CPU load (1 min)</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td style="text-align: left;">((measure_cpu_load_5m))</td>
 <td style="text-align: left;">Input measurement: CPU load (5 min)</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td style="text-align: left;">((measure_cpu_load_15m))</td>
 <td style="text-align: left;">Input measurement: CPU load (15 min)</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td style="text-align: left;">((measure_dewpoint))</td>
 <td style="text-align: left;">Input measurement: dew point</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td style="text-align: left;">((measure_disk_space))</td>
 <td style="text-align: left;">Input measurement: disk space</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td style="text-align: left;">((measure_duty_cycle))</td>
 <td style="text-align: left;">Input measurement: duty cycle</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td style="text-align: left;">((measure_edge))</td>
 <td style="text-align: left;">Input measurement: edge detected (1 or -1)</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td style="text-align: left;">((measure_electrical_conductivity))</td>
 <td style="text-align: left;">Input measurement: Electrical Conductivity (uS/cm)</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td style="text-align: left;">((measure_frequency))</td>
 <td style="text-align: left;">Input measurement: frequency</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td style="text-align: left;">((measure_humidity))</td>
 <td style="text-align: left;">Input measurement: humidity</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td style="text-align: left;">((measure_lux))</td>
 <td style="text-align: left;">Input measurement: lux</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td style="text-align: left;">((measure_moisture))</td>
 <td style="text-align: left;">Input measurement: moisture</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td style="text-align: left;">((measure_ph))</td>
 <td style="text-align: left;">Input measurement: ph</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td style="text-align: left;">((measure_pressure))</td>
 <td style="text-align: left;">Input measurement: pressure</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td style="text-align: left;">((measure_pulse_width))</td>
 <td style="text-align: left;">Input measurement: pulse width</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td style="text-align: left;">((measure_rpm))</td>
 <td style="text-align: left;">Input measurement: RPM</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td style="text-align: left;">((measure_temperature))</td>
 <td style="text-align: left;">Input measurement: temperature</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td style="text-align: left;">((measure_temperature_die))</td>
 <td style="text-align: left;">Input measurement: temperature (die)</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td style="text-align: left;">((measure_temperature_object))</td>
 <td style="text-align: left;">Input measurement: temperature (object)</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td style="text-align: left;">((measure_voltage))</td>
 <td style="text-align: left;">Input measurement: voltage</td>
 </tr>
@@ -1623,15 +1707,6 @@ document.write('<a h'+'ref'+'="ma'+'ilto'+':'+e+'" clas'+'s="em' + 'ail">'+e+'<\
 </tr>
 </tbody>
 </table>
-<h2 id="timers">Timers</h2>
-<p>More -&gt; Timers</p>
-<p>Timers enable outputs to be manipulated after specific durations of time or at a specific times of the day. Timers will <strong><em>only</em></strong> do as instructed, therefore if you turn a output <em>ON</em> from <em>Start Time</em> to <em>End Time</em> and you want that output to turn <em>OFF</em> at the end of that period, you will need to create another timer that turns the output <em>OFF</em> at <em>End Time</em> + 1 minute.</p>
-<p>There are two types of timers, one for general outputs that turn on and off, and those that generate a PWM signal.</p>
-<h3 id="general-output">General Output</h3>
-<p>For <em>Duration Timers</em>, both the on duration and the off duration can be defined and the timer will be turned on and off for those durations until deactivated.</p>
-<p>For <em>Daily Timers</em>, the start hour:minute can be set to turn a specific output on or off at the specific time of day.</p>
-<h3 id="pwm-method">PWM Method</h3>
-<p>This timer allows a method to be used to determine the duty cycle (as percent) of a PWM output. While creating these methods, keep in mind a duty cycle is a percentage and the values must stay between 0 and 100.</p>
 <h2 id="lcds">LCDs</h2>
 <p>More -&gt; LCDs</p>
 <p>Data may be output to a liquid crystal display (LCD) for easy viewing. Please see <a href="#lcd-displays">LCD Displays</a> for specific information regarding compatibility.</p>

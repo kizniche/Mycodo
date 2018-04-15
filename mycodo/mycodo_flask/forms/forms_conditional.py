@@ -55,8 +55,8 @@ class Conditional(FlaskForm):
     timer_start_time = StringField(lazy_gettext('Start Time (HH:MM)'))
 
     # Method
-    trigger_actions_at_period = BooleanField(lazy_gettext('Triger Actions Every Period'))
-    trigger_actions_at_start = BooleanField(lazy_gettext('Trigger Actions when Activated'))
+    trigger_actions_at_period = BooleanField(lazy_gettext('Trigger Every Period'))
+    trigger_actions_at_start = BooleanField(lazy_gettext('Trigger when Activated'))
 
     add_cond = SubmitField(lazy_gettext('Add Conditional'))
     save_cond = SubmitField(lazy_gettext('Save'))
