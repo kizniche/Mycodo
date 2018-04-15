@@ -38,6 +38,10 @@ class Conditional(CRUDMixin, db.Model):
     direction = db.Column(db.Text, default='')  # 'above', 'below', 'equal'
     setpoint = db.Column(db.Float, default=0.0)
 
+    # Timer options
+    timer_duration = db.Column(db.Integer, default=360)
+    timer_start_offset = db.Column(db.Integer, default=0)
+
     def __repr__(self):
         return "<{cls}(id={s.id})>".format(s=self, cls=self.__class__.__name__)
 

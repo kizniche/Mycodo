@@ -4,6 +4,7 @@ Version 6.0.0 has changes to the database schema that could not be upgraded to. 
 
 ### Features
 
+ - Add Conditional: Timer (Duration) ([#444](https://github.com/kizniche/mycodo/issues/444))
  - Add Conditional: Output PWM ([#448](https://github.com/kizniche/mycodo/issues/448))
  - Add Conditional Actions: Activate/Deactivate any controller
  - Add Conditional Action: Set PID Method ([#440](https://github.com/kizniche/mycodo/issues/440))

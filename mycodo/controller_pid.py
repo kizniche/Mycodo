@@ -327,6 +327,7 @@ class PIDController(threading.Thread):
                 # Resume method with saved start_time
                 self.method_start_time = datetime.datetime.strptime(
                     str(pid.method_start_time), '%Y-%m-%d %H:%M:%S.%f')
+                self.logger.error("TEST00: {}".format(self.method_start_time))
                 if method_data_repeat and method_data_repeat.duration_end:
                     self.method_end_time = datetime.datetime.strptime(
                         str(pid.method_end_time), '%Y-%m-%d %H:%M:%S.%f')

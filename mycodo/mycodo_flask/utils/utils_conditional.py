@@ -75,6 +75,12 @@ def conditional_mod(form):
             cond_mod.date_offset_days = form.date_offset_days.data
             cond_mod.time_offset_minutes = form.time_offset_minutes.data
 
+        elif cond_mod.conditional_type == 'conditional_timer_duration':
+            error = check_form_timer_duration(form, error)
+
+            cond_mod.timer_duration = form.timer_duration.data
+            cond_mod.timer_start_offset = form.timer_start_offset.data
+
         if not error:
             db.session.commit()
             check_refresh_conditional(form.conditional_id.data)
@@ -356,7 +362,8 @@ def check_refresh_conditional(cond_id):
 
     if cond.conditional_type in ['conditional_edge',
                                  'conditional_measurement',
-                                 'conditional_sunrise_sunset'
+                                 'conditional_sunrise_sunset',
+                                 'conditional_timer_duration'
                                  ]:
         try:
             control = DaemonControl()
@@ -371,34 +378,28 @@ def check_form_actions(form, error):
     """Check if the Conditional Actions form inputs are valid"""
     cond_action = ConditionalActions.query.filter(
         ConditionalActions.unique_id == form.conditional_action_id.data).first()
-
     if cond_action.do_action == 'command':
         if not form.do_action_string.data or form.do_action_string.data == '':
             error.append("Command must be set")
-
     elif cond_action.do_action == 'output':
         if not form.do_unique_id.data or form.do_unique_id.data == '':
             error.append("Output must be set")
         if not form.do_output_state.data or form.do_output_state.data == '':
             error.append("State must be set")
-
     elif cond_action.do_action == 'output_pwm':
         if not form.do_unique_id.data or form.do_unique_id.data == '':
             error.append("Output must be set")
         if not form.do_output_pwm.data or form.do_output_pwm.data == '':
             error.append("Duty Cycle must be set")
-
     elif cond_action.do_action in ['activate_pid',
                                    'deactivate_pid',
                                    'resume_pid',
                                    'pause_pid']:
         if not form.do_unique_id.data or form.do_unique_id.data == '':
             error.append("PID must be set: asdf {} asdf".format(form.do_unique_id.data))
-
     elif cond_action.do_action == 'email':
         if not form.do_action_string.data or form.do_action_string.data == '':
             error.append("Email must be set")
-
     elif cond_action.do_action in ['photo_email', 'video_email']:
         if not form.do_action_string.data or form.do_action_string.data == '':
             error.append("Email must be set")
@@ -409,19 +410,14 @@ def check_form_actions(form, error):
                     and_(Camera.unique_id == form.do_unique_id.data,
                          Camera.library != 'picamera')).count()):
             error.append('Only Pi Cameras can record video')
-
-    elif cond_action.do_action == 'flash_lcd_on':
-        if not form.do_unique_id.data:
-            error.append("LCD must be set")
-
-    elif cond_action.do_action == 'photo':
-        if not form.do_unique_id.data or form.do_unique_id.data == '':
-            error.append("Camera must be set")
-
-    elif cond_action.do_action == 'video':
-        if not form.do_unique_id.data or form.do_unique_id.data == '':
-            error.append("Camera must be set")
-
+    elif cond_action.do_action == 'flash_lcd_on' and not form.do_unique_id.data:
+        error.append("LCD must be set")
+    elif (cond_action.do_action == 'photo' and
+            (not form.do_unique_id.data or form.do_unique_id.data == '')):
+        error.append("Camera must be set")
+    elif (cond_action.do_action == 'video' and
+            (not form.do_unique_id.data or form.do_unique_id.data == '')):
+        error.append("Camera must be set")
     return error
 
 
@@ -430,22 +426,18 @@ def check_cond_actions(cond_action, error):
     if cond_action.do_action == 'command':
         if not cond_action.do_action_string or cond_action.do_action_string == '':
             error.append("Command must be set")
-
     elif cond_action.do_action == 'output':
         if not cond_action.do_unique_id or cond_action.do_unique_id == '':
             error.append("Output must be set")
         if not cond_action.do_output_state or cond_action.do_output_state == '':
             error.append("State must be set")
-
     elif cond_action.do_action in ['activate_pid',
                                    'deactivate_pid']:
         if not cond_action.do_unique_id or cond_action.do_unique_id == '':
             error.append("PID must be set")
-
     elif cond_action.do_action == 'email':
         if not cond_action.do_action_string or cond_action.do_action_string == '':
             error.append("Email must be set")
-
     elif cond_action.do_action in ['photo_email', 'video_email']:
         if not cond_action.do_action_string or cond_action.do_action_string == '':
             error.append("Email must be set")
@@ -456,19 +448,14 @@ def check_cond_actions(cond_action, error):
                     and_(Camera.unique_id == cond_action.do_unique_id,
                          Camera.library != 'picamera')).count()):
             error.append('Only Pi Cameras can record video')
-
-    elif cond_action.do_action == 'flash_lcd_on':
-        if not cond_action.do_unique_id:
-            error.append("LCD must be set")
-
-    elif cond_action.do_action == 'photo':
-        if not cond_action.do_unique_id or cond_action.do_unique_id == '':
-            error.append("Camera must be set")
-
-    elif cond_action.do_action == 'video':
-        if not cond_action.do_unique_id or cond_action.do_unique_id == '':
-            error.append("Camera must be set")
-
+    elif cond_action.do_action == 'flash_lcd_on' and not cond_action.do_unique_id:
+        error.append("LCD must be set")
+    elif (cond_action.do_action == 'photo' and
+            (not cond_action.do_unique_id or cond_action.do_unique_id == '')):
+        error.append("Camera must be set")
+    elif (cond_action.do_action == 'video' and
+            (not cond_action.do_unique_id or cond_action.do_unique_id == '')):
+        error.append("Camera must be set")
     return error
 
 
@@ -477,7 +464,6 @@ def check_form_edge(form, error):
     if not form.measurement.data or form.measurement.data == '':
         error.append("{meas} must be set".format(
             meas=form.measurement.label.text))
-
     return error
 
 
@@ -485,7 +471,6 @@ def check_cond_edge(form, error):
     """Checks if the saved variables have any errors"""
     if not form.measurement or form.measurement == '':
         error.append("Measurement must be set")
-
     return error
 
 
@@ -494,19 +479,15 @@ def check_form_measurements(form, error):
     if not form.measurement.data or form.measurement.data == '':
         error.append("{meas} must be set".format(
             meas=form.measurement.label.text))
-
     if not form.direction.data or form.direction.data == '':
         error.append("{dir} must be set".format(
             dir=form.direction.label.text))
-
     if not form.period.data or form.period.data <= 0:
         error.append("{dir} must be greater than 0".format(
             dir=form.period.label.text))
-
     if not form.max_age.data or form.max_age.data <= 0:
         error.append("{dir} must be greater than 0".format(
             dir=form.max_age.label.text))
-
     return error
 
 
@@ -515,17 +496,13 @@ def check_cond_measurements(form, error):
     if not form.measurement or form.measurement == '':
         error.append("Measurement must be set".format(
             meas=form.measurement))
-
     if not form.direction or form.direction == '':
         error.append("State must be set".format(
             dir=form.direction))
-
     if not form.period or form.period <= 0:
         error.append("Period must be greater than 0")
-
     if not form.max_age or form.max_age <= 0:
         error.append("Max Age must be greater than 0")
-
     return error
 
 
@@ -534,11 +511,9 @@ def check_form_output(form, error):
     if not form.unique_id_1.data:
         error.append("{id} must be set".format(
             id=form.unique_id_1.label.text))
-
     if not form.output_state.data:
         error.append("{id} must be set".format(
             id=form.output_state.label.text))
-
     return error
 
 
@@ -547,15 +522,12 @@ def check_form_output_pwm(form, error):
     if not form.unique_id_1.data:
         error.append("{id} must be set".format(
             id=form.unique_id_1.label.text))
-
     if not form.direction or form.direction == '':
         error.append("State must be set".format(
             dir=form.direction))
-
     if not 0 <= form.output_duty_cycle.data <= 100:
         error.append("{id} must >= 0 and <= 100".format(
             id=form.output_duty_cycle.label.text))
-
     return error
 
 
@@ -564,27 +536,32 @@ def check_form_sunrise_sunset(form, error):
     if form.rise_or_set.data not in ['sunrise', 'sunset']:
         error.append("{id} must be set to 'sunrise' or 'sunset'".format(
             id=form.rise_or_set.label.text))
-
     if -90 > form.latitude.data > 90:
         error.append("{id} must be >= -90 and <= 90".format(
             id=form.latitude.label.text))
-
     if -180 > form.longitude.data > 180:
         error.append("{id} must be >= -180 and <= 180".format(
             id=form.longitude.label.text))
-
     if form.zenith.data is None:
         error.append("{id} must be set".format(
             id=form.zenith.label.text))
-
     if form.date_offset_days.data is None:
         error.append("{id} must be set".format(
             id=form.date_offset_days.label.text))
-
     if form.time_offset_minutes.data is None:
         error.append("{id} must be set".format(
             id=form.time_offset_minutes.label.text))
+    return error
 
+
+def check_form_timer_duration(form, error):
+    """Checks if the submitted form has any errors"""
+    if form.timer_duration.data <= 0:
+        error.append("{id} must be > 0".format(
+            id=form.timer_duration.label.text))
+    if form.timer_start_offset.data < 0:
+        error.append("{id} must be >= 0".format(
+            id=form.timer_start_offset.label.text))
     return error
 
 
@@ -592,8 +569,6 @@ def check_cond_output(form, error):
     """Checks if the saved variables have any errors"""
     if not form.unique_id_1 or form.unique_id_1 == '':
         error.append("An Output must be set")
-
     if not form.output_state or form.output_state == '':
         error.append("A State must be set")
-
     return error

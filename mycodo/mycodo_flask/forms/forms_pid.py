@@ -38,14 +38,14 @@ class PIDModBase(FlaskForm):
     period = DecimalField(
         lazy_gettext('Period (seconds)'),
         validators=[validators.NumberRange(
-            min=5.0,
+            min=1.0,
             max=86400.0
         )]
     )
     max_measure_age = DecimalField(
         lazy_gettext('Max Age (seconds)'),
         validators=[validators.NumberRange(
-            min=5.0,
+            min=1.0,
             max=86400.0
         )]
     )

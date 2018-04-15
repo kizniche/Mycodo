@@ -241,8 +241,8 @@ def pid_activate(pid_id):
             "controller is inactive"))
 
     if ((pid.direction == 'both' and not (pid.lower_output_id and pid.raise_output_id)) or
-                (pid.direction == 'lower' and not pid.lower_output_id) or
-                (pid.direction == 'raise' and not pid.raise_output_id)):
+            (pid.direction == 'lower' and not pid.lower_output_id) or
+            (pid.direction == 'raise' and not pid.raise_output_id)):
         error.append(gettext(
             "Cannot activate PID controller if raise and/or lower output IDs "
             "are not selected"))

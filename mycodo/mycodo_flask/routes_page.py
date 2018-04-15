@@ -912,7 +912,10 @@ def page_function():
                        ('Timer', timer)]
     for each_controller in controllers_all:
         for each_cont in each_controller[1]:
-            controllers.append((each_controller[0], each_cont.unique_id, each_cont.name))
+            controllers.append((each_controller[0],
+                                each_cont.unique_id,
+                                each_cont.id,
+                                each_cont.name))
 
     choices_input = utils_general.choices_inputs(input_dev)
     choices_math = utils_general.choices_maths(math)

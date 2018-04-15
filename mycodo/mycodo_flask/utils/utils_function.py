@@ -41,7 +41,8 @@ def func_add(form_add_func):
                                                   'conditional_output',
                                                   'conditional_output_pwm',
                                                   'conditional_edge',
-                                                  'conditional_sunrise_sunset']:
+                                                  'conditional_sunrise_sunset',
+                                                  'conditional_timer_duration']:
                 new_func = Conditional()
                 new_func.conditional_type = form_add_func.func_type.data
                 new_func.save()

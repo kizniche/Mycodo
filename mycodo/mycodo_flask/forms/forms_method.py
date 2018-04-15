@@ -44,7 +44,7 @@ class MethodAdd(FlaskForm):
     setpoint_start = DecimalField(lazy_gettext('Start Setpoint'))
     setpoint_end = DecimalField(lazy_gettext('End Setpoint (optional)'))
     duration = DecimalField(lazy_gettext('Duration (seconds)'))
-    duration_end = DecimalField(lazy_gettext('Second to Repeat'))
+    duration_end = DecimalField(lazy_gettext('Duration to End (seconds)'))
     amplitude = DecimalField(lazy_gettext('Amplitude'))
     frequency = DecimalField(lazy_gettext('Frequency'))
     shift_angle = DecimalField(lazy_gettext('Angle Shift (0 to 360)'))
@@ -77,7 +77,7 @@ class MethodAdd(FlaskForm):
         ]
     )
     save = SubmitField(lazy_gettext('Add to Method'))
-    restart = SubmitField(lazy_gettext('Restart at Beginning'))
+    restart = SubmitField(lazy_gettext('Set Repeat Option'))
 
 
 class MethodMod(FlaskForm):
@@ -111,7 +111,7 @@ class MethodMod(FlaskForm):
         render_kw={"placeholder": "YYYY-MM-DD HH:MM:SS"}
     )
     duration = DecimalField(lazy_gettext('Duration (seconds)'))
-    duration_end = DecimalField(lazy_gettext('Second to Repeat'))
+    duration_end = DecimalField(lazy_gettext('Duration to End (seconds)'))
     setpoint_start = DecimalField(lazy_gettext('Start Setpoint'))
     setpoint_end = DecimalField(lazy_gettext('End Setpoint'))
     output_id = StringField(lazy_gettext('Output'))

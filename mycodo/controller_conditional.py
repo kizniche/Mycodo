@@ -91,6 +91,10 @@ class ConditionalController(threading.Thread):
         self.refractory_period = {}
         self.timer_refractory_period = {}
 
+        # Timer
+        self.timer_duration = {}
+        self.timer_timer_period = {}
+
         self.smtp_max_count = db_retrieve_table_daemon(
             SMTP, entry='first').hourly_max
         self.email_count = 0
@@ -118,16 +122,25 @@ class ConditionalController(threading.Thread):
                 # Check each activated conditional
                 for each_id in self.is_activated:
 
-                    # Check if the timer has elapsed
-                    if (self.is_activated[each_id] and
-                            self.timer_period[each_id] < time.time() and
-                            self.timer_refractory_period[each_id] < time.time()):
+                    if self.is_activated[each_id]:
+                        # Check if the conditional period has elapsed
+                        if (self.timer_period and
+                                (self.timer_period[each_id] < time.time() and
+                                 self.timer_refractory_period[each_id] < time.time())
+                                ):
+                            # Update conditional timer
+                            while self.timer_period[each_id] < time.time():
+                                self.timer_period[each_id] += self.period[each_id]
+                            self.check_conditionals(each_id)
 
-                        # Update timer
-                        while self.timer_period[each_id] < time.time():
-                            self.timer_period[each_id] += self.period[each_id]
-
-                        self.check_conditionals(each_id)
+                        # Check if a timer has been triggered
+                        elif (self.timer_timer_period and
+                                (self.timer_timer_period[each_id] < time.time())
+                                ):
+                            # Update timer timer
+                            while self.timer_timer_period[each_id] < time.time():
+                                self.timer_timer_period[each_id] += self.timer_duration[each_id]
+                            self.check_conditionals(each_id)
 
                 time.sleep(0.1)
 
@@ -157,7 +170,14 @@ class ConditionalController(threading.Thread):
         self.timer_period = {}
         self.refractory_period = {}
         self.timer_refractory_period = {}
+
+        # Timer
+        self.timer_duration = {}
+        self.timer_timer_period = {}
+
         self.smtp_wait_timer = {}
+
+        now = time.time()
 
         # Set up all measurement conditionals
         conditional = db_retrieve_table_daemon(
@@ -167,8 +187,19 @@ class ConditionalController(threading.Thread):
             self.period[each_cond.unique_id] = each_cond.period
             self.refractory_period[each_cond.unique_id] = each_cond.refractory_period
             self.timer_refractory_period[each_cond.unique_id] = 0
-            self.smtp_wait_timer[each_cond.unique_id] = time.time() + 3600
-            self.timer_period[each_cond.unique_id] = time.time() + self.period[each_cond.unique_id]
+            self.smtp_wait_timer[each_cond.unique_id] = now + 3600
+            self.timer_period[each_cond.unique_id] = now + self.period[each_cond.unique_id]
+
+        # Set up all timer conditionals
+        conditional = db_retrieve_table_daemon(
+            Conditional).filter(Conditional.conditional_type == 'conditional_timer_duration').all()
+        for each_cond in conditional:
+            self.is_activated[each_cond.unique_id] = each_cond.is_activated
+            self.timer_duration[each_cond.unique_id] = each_cond.timer_duration
+            if each_cond.timer_start_offset:
+                self.timer_timer_period[each_cond.unique_id] = now + each_cond.timer_start_offset
+            else:
+                self.timer_timer_period[each_cond.unique_id] = now
 
         # Set up all sunrise/sunset conditionals
         conditional = db_retrieve_table_daemon(
@@ -601,6 +632,14 @@ class ConditionalController(threading.Thread):
             elif cond_action.do_action == 'method_pid':
                 message += " Set Method of PID ({id}).".format(
                     id=cond_action.do_unique_id)
+
+                # Instruct method to start
+                with session_scope(MYCODO_DB_PATH) as new_session:
+                    mod_pid = new_session.query(PID).filter(
+                        PID.unique_id == cond_action.do_unique_id).first()
+                    mod_pid.method_start_time = 'Ready'
+                    new_session.commit()
+
                 pid = db_retrieve_table_daemon(
                     PID, unique_id=cond_action.do_unique_id, entry='first')
                 if pid.is_activated:

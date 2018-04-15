@@ -5,6 +5,7 @@
 
 from flask_babel import lazy_gettext
 from flask_wtf import FlaskForm
+from wtforms import BooleanField
 from wtforms import DecimalField
 from wtforms import IntegerField
 from wtforms import StringField
@@ -47,6 +48,10 @@ class Conditional(FlaskForm):
     zenith = DecimalField(lazy_gettext('Zenith'))
     date_offset_days = IntegerField(lazy_gettext('Date Offset (days)'))
     time_offset_minutes = IntegerField(lazy_gettext('Time Offset (minutes)'))
+
+    # Timer
+    timer_duration = IntegerField(lazy_gettext('Duration (seconds)'))
+    timer_start_offset = IntegerField(lazy_gettext('Start Offset (seconds)'))
 
     add_cond = SubmitField(lazy_gettext('Add Conditional'))
     save_cond = SubmitField(lazy_gettext('Save'))
