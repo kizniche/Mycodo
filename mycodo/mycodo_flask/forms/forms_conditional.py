@@ -52,6 +52,7 @@ class Conditional(FlaskForm):
     # Timer
     timer_duration = IntegerField(lazy_gettext('Duration (seconds)'))
     timer_start_offset = IntegerField(lazy_gettext('Start Offset (seconds)'))
+    timer_start_time = StringField(lazy_gettext('Start Time (HH:MM)'))
 
     add_cond = SubmitField(lazy_gettext('Add Conditional'))
     save_cond = SubmitField(lazy_gettext('Save'))

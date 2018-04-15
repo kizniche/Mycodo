@@ -41,6 +41,7 @@ class Conditional(CRUDMixin, db.Model):
     # Timer options
     timer_duration = db.Column(db.Integer, default=360)
     timer_start_offset = db.Column(db.Integer, default=0)
+    timer_start_time = db.Column(db.Text, default='16:30')
 
     def __repr__(self):
         return "<{cls}(id={s.id})>".format(s=self, cls=self.__class__.__name__)

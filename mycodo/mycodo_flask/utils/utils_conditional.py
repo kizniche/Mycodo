@@ -16,6 +16,7 @@ from mycodo.mycodo_flask.utils.utils_general import delete_entry_with_id
 from mycodo.mycodo_flask.utils.utils_general import flash_success_errors
 from mycodo.mycodo_flask.utils.utils_general import reorder
 from mycodo.utils.system_pi import csv_to_list_of_str
+from mycodo.utils.system_pi import epoch_of_next_time
 from mycodo.utils.system_pi import list_to_csv
 from mycodo.utils.system_pi import str_is_float
 
@@ -36,14 +37,12 @@ def conditional_mod(form):
 
         if cond_mod.conditional_type == 'conditional_edge':
             error = check_form_edge(form, error)
-
             cond_mod.measurement = form.measurement.data
             cond_mod.edge_detected = form.edge_detected.data
             cond_mod.period = form.period.data
 
         elif cond_mod.conditional_type == 'conditional_measurement':
             error = check_form_measurements(form, error)
-
             cond_mod.measurement = form.measurement.data
             cond_mod.direction = form.direction.data
             cond_mod.setpoint = form.setpoint.data
@@ -53,21 +52,18 @@ def conditional_mod(form):
 
         elif cond_mod.conditional_type == 'conditional_output':
             error = check_form_output(form, error)
-
             cond_mod.unique_id_1 = form.unique_id_1.data
             cond_mod.output_state = form.output_state.data
             cond_mod.output_duration = form.output_duration.data
 
         elif cond_mod.conditional_type == 'conditional_output_pwm':
             error = check_form_output_pwm(form, error)
-
             cond_mod.unique_id_1 = form.unique_id_1.data
             cond_mod.direction = form.direction.data
             cond_mod.output_duty_cycle = form.output_duty_cycle.data
 
         elif cond_mod.conditional_type == 'conditional_sunrise_sunset':
             error = check_form_sunrise_sunset(form, error)
-
             cond_mod.rise_or_set = form.rise_or_set.data
             cond_mod.latitude = form.latitude.data
             cond_mod.longitude = form.longitude.data
@@ -75,9 +71,12 @@ def conditional_mod(form):
             cond_mod.date_offset_days = form.date_offset_days.data
             cond_mod.time_offset_minutes = form.time_offset_minutes.data
 
+        elif cond_mod.conditional_type == 'conditional_timer_daily_time_point':
+            error = check_form_timer_daily_time_point(form, error)
+            cond_mod.timer_start_time = form.timer_start_time.data
+
         elif cond_mod.conditional_type == 'conditional_timer_duration':
             error = check_form_timer_duration(form, error)
-
             cond_mod.timer_duration = form.timer_duration.data
             cond_mod.timer_start_offset = form.timer_start_offset.data
 
@@ -363,6 +362,7 @@ def check_refresh_conditional(cond_id):
     if cond.conditional_type in ['conditional_edge',
                                  'conditional_measurement',
                                  'conditional_sunrise_sunset',
+                                 'conditional_timer_daily_time_point',
                                  'conditional_timer_duration'
                                  ]:
         try:
@@ -551,6 +551,14 @@ def check_form_sunrise_sunset(form, error):
     if form.time_offset_minutes.data is None:
         error.append("{id} must be set".format(
             id=form.time_offset_minutes.label.text))
+    return error
+
+
+def check_form_timer_daily_time_point(form, error):
+    """Checks if the submitted form has any errors"""
+    if not epoch_of_next_time('{hm}:00'.format(hm=form.timer_start_time.data)):
+        error.append("{id} must be a valid HH:MM time format".format(
+            id=form.timer_duration.label.text))
     return error
 
 

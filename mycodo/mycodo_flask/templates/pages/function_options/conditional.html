@@ -21,8 +21,8 @@
       </div>
       <div class="col-xs-5 col-sm-3 col-md-4 col-lg-3">
         <input class="form-control btn btn-default" disabled="" title="[{{'%02d' % each_cond.id}}] UUID: {{each_cond.unique_id}}" value="
-          {%- for each_type, each_name in conditional_types.items() if each_type == each_cond.conditional_type -%}
-            [{{each_name['name']}}]
+          {%- for each_type, each_name in conditional_types if each_type == each_cond.conditional_type -%}
+            [{{each_name}}]
           {%- endfor %}
           {%- if each_cond.is_activated %} {{_('Active')}}
           {%- else %} {{_('Inactive')}}
@@ -66,6 +66,8 @@
         {% include 'pages/function_options/conditional_options/edge.html' %}
       {% elif each_cond.conditional_type == 'conditional_sunrise_sunset' %}
         {% include 'pages/function_options/conditional_options/sunrise_sunset.html' %}
+      {% elif each_cond.conditional_type == 'conditional_timer_daily_time_point' %}
+        {% include 'pages/function_options/conditional_options/timer_daily_time_point.html' %}
       {% elif each_cond.conditional_type == 'conditional_timer_duration' %}
         {% include 'pages/function_options/conditional_options/timer_duration.html' %}
       {% endif %}

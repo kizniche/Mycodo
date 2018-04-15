@@ -646,20 +646,15 @@ LIST_DEVICES_INTERNAL_PI = [
 ]
 
 # Conditional Types
-CONDITIONAL_TYPES = {
-    'conditional_measurement': {
-        'name': lazy_gettext('Measurement')},
-    'conditional_output': {
-        'name': lazy_gettext('Output (On/Off)')},
-    'conditional_output_pwm': {
-        'name': lazy_gettext('Output (PWM)')},
-    'conditional_edge': {
-        'name': lazy_gettext('Edge')},
-    'conditional_sunrise_sunset': {
-        'name': lazy_gettext('Sunrise/Sunset')},
-    'conditional_timer_duration': {
-        'name': lazy_gettext('Timer (Duration)')}
-}
+CONDITIONAL_TYPES = [
+    ('conditional_measurement', lazy_gettext('Measurement')),
+    ('conditional_output', lazy_gettext('Output (On/Off)')),
+    ('conditional_output_pwm', lazy_gettext('Output (PWM)')),
+    ('conditional_edge', lazy_gettext('Edge')),
+    ('conditional_sunrise_sunset', lazy_gettext('Sunrise/Sunset')),
+    ('conditional_timer_daily_time_point', lazy_gettext('Timer (Daily Time Point)')),
+    ('conditional_timer_duration', lazy_gettext('Timer (Duration)'))
+]
 
 # Conditional actions
 # TODO: Some have been disabled until they can be properly tested

@@ -26,8 +26,8 @@
       <div class="col-auto">
         <select class="form-control" id="func_type" name="func_type">
           <option value="pid">{{_('PID Controller')}}</option>
-          {% for each_type, each_name in conditional_types.items() %}
-          <option value="{{each_type}}">{{_('Conditional')}}: {{each_name['name']}}</option>
+          {% for each_type, each_name in conditional_types %}
+          <option value="{{each_type}}">{{_('Conditional')}}: {{each_name}}</option>
           {% endfor %}
         </select>
       </div>

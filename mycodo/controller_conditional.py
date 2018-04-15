@@ -51,6 +51,7 @@ from mycodo.utils.influx import read_last_influxdb
 from mycodo.utils.send_data import send_email
 from mycodo.utils.sunriseset import Sun
 from mycodo.utils.system_pi import cmd_output
+from mycodo.utils.system_pi import epoch_of_next_time
 
 MYCODO_DB_PATH = 'sqlite:///' + SQL_DATABASE_MYCODO
 
@@ -85,6 +86,7 @@ class ConditionalController(threading.Thread):
         self.verify_pause_loop = True
         self.control = DaemonControl()
 
+        self.conditional_type = {}
         self.is_activated = {}
         self.period = {}
         self.timer_period = {}
@@ -93,6 +95,7 @@ class ConditionalController(threading.Thread):
 
         # Timer
         self.timer_duration = {}
+        self.timer_start_time = {}
         self.timer_timer_period = {}
 
         self.smtp_max_count = db_retrieve_table_daemon(
@@ -138,8 +141,13 @@ class ConditionalController(threading.Thread):
                                 (self.timer_timer_period[each_id] < time.time())
                                 ):
                             # Update timer timer
-                            while self.timer_timer_period[each_id] < time.time():
-                                self.timer_timer_period[each_id] += self.timer_duration[each_id]
+                            if self.conditional_type[each_id] == 'conditional_timer_daily_time_point':
+                                self.timer_timer_period[each_id] = epoch_of_next_time(
+                                    '{hm}:00'.format(hm=self.timer_start_time[each_id]))
+                            elif self.conditional_type[each_id] == 'conditional_timer_duration':
+                                while self.timer_timer_period[each_id] < time.time():
+                                    self.timer_timer_period[each_id] += self.timer_duration[each_id]
+
                             self.check_conditionals(each_id)
 
                 time.sleep(0.1)
@@ -165,6 +173,7 @@ class ConditionalController(threading.Thread):
         while not self.verify_pause_loop:
             time.sleep(0.1)
 
+        self.conditional_type = {}
         self.is_activated = {}
         self.period = {}
         self.timer_period = {}
@@ -173,16 +182,23 @@ class ConditionalController(threading.Thread):
 
         # Timer
         self.timer_duration = {}
+        self.timer_start_time = {}
         self.timer_timer_period = {}
 
         self.smtp_wait_timer = {}
 
         now = time.time()
 
+        conditional = db_retrieve_table_daemon(Conditional)
+
+        # Set all conditional types
+        for each_cond in conditional.all():
+            self.conditional_type[each_cond.unique_id] = each_cond.conditional_type
+
         # Set up all measurement conditionals
-        conditional = db_retrieve_table_daemon(
-            Conditional).filter(Conditional.conditional_type == 'conditional_measurement').all()
-        for each_cond in conditional:
+        conditional_measure = conditional.filter(
+            Conditional.conditional_type == 'conditional_measurement').all()
+        for each_cond in conditional_measure:
             self.is_activated[each_cond.unique_id] = each_cond.is_activated
             self.period[each_cond.unique_id] = each_cond.period
             self.refractory_period[each_cond.unique_id] = each_cond.refractory_period
@@ -190,10 +206,19 @@ class ConditionalController(threading.Thread):
             self.smtp_wait_timer[each_cond.unique_id] = now + 3600
             self.timer_period[each_cond.unique_id] = now + self.period[each_cond.unique_id]
 
-        # Set up all timer conditionals
-        conditional = db_retrieve_table_daemon(
-            Conditional).filter(Conditional.conditional_type == 'conditional_timer_duration').all()
-        for each_cond in conditional:
+        # Set up all conditional timers (daily time point)
+        conditional_timer_duration = conditional.filter(
+            Conditional.conditional_type == 'conditional_timer_daily_time_point').all()
+        for each_cond in conditional_timer_duration:
+            self.is_activated[each_cond.unique_id] = each_cond.is_activated
+            self.timer_start_time[each_cond.unique_id] = each_cond.timer_start_time
+            self.timer_timer_period[each_cond.unique_id] = epoch_of_next_time(
+                '{hm}:00'.format(hm=each_cond.timer_start_time))
+
+        # Set up all conditional timers (duration)
+        conditional_timer_duration = conditional.filter(
+            Conditional.conditional_type == 'conditional_timer_duration').all()
+        for each_cond in conditional_timer_duration:
             self.is_activated[each_cond.unique_id] = each_cond.is_activated
             self.timer_duration[each_cond.unique_id] = each_cond.timer_duration
             if each_cond.timer_start_offset:
@@ -202,9 +227,9 @@ class ConditionalController(threading.Thread):
                 self.timer_timer_period[each_cond.unique_id] = now
 
         # Set up all sunrise/sunset conditionals
-        conditional = db_retrieve_table_daemon(
-            Conditional).filter(Conditional.conditional_type == 'conditional_sunrise_sunset').all()
-        for each_cond in conditional:
+        conditional_sun = conditional.filter(
+            Conditional.conditional_type == 'conditional_sunrise_sunset').all()
+        for each_cond in conditional_sun:
             self.is_activated[each_cond.unique_id] = each_cond.is_activated
             self.timer_refractory_period[each_cond.unique_id] = 0
             self.period[each_cond.unique_id] = 1000
