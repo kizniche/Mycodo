@@ -1382,7 +1382,7 @@ setpoint to change over time, this is called setpoint tracking. Setpoint
 Tracking is useful for applications such as reflow ovens, thermal
 cyclers (DNA replication), mimicking natural daily cycles, and more.
 Methods may also be used to change a duty cycle over time when used with
-a Timer.
+a Run PWM Method Conditional.
 
 Universal Options
 `````````````````
@@ -1415,7 +1415,7 @@ Duration Method
 '''''''''''''''
 
 A Duration Method allows a ***Setpoint*** (for PIDs) or ***Duty Cycle***
-(for Timers) to be set after specific durations of time. Each new
+(for Conditional) to be set after specific durations of time. Each new
 duration added will stack, meaning it will come after the previous
 duration, meaning a newly-added ***Start Setpoint*** will begin after
 the previous entry's ***End Setpoint***.
@@ -1425,7 +1425,7 @@ repeat once it has reached the end. If this option is used, no more
 durations may be added to the method. If the repeat option is deleted
 then more durations may be added. For instance, if your method is 200
 seconds total, if the Repeat Duration is set to 600 seconds, the method
-will repeat 3 times and then automatically turn off the PID or Timer.
+will repeat 3 times and then automatically turn off the PID or Conditional.
 
 Daily (Time-Based) Method
 '''''''''''''''''''''''''
@@ -1755,8 +1755,8 @@ Four roles are provided by default, but custom roles may be created.
 | View Logs          | X       | X        | X         |         |
 +--------------------+---------+----------+-----------+---------+
 
-1The ``Edit Controllers`` permission protects the editing of Graphs,
-LCDs, Methods, PIDs, Outputs, Inputs, and Timers.
+1The ``Edit Controllers`` permission protects the editing of Conditionals, Graphs,
+LCDs, Methods, PIDs, Outputs, and Inputs.
 
 2The ``View Stats`` permission protects the viewing of usage statistics
 and the System Info and Output Usage pages.

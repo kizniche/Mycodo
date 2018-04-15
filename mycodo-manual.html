@@ -1755,7 +1755,7 @@ document.write('<a h'+'ref'+'="ma'+'ilto'+':'+e+'" clas'+'s="em' + 'ail">'+e+'<\
 </table>
 <h2 id="methods">Methods</h2>
 <p>More -&gt; Methods</p>
-<p>Methods enable Setpoint Tracking in PIDs and time-based duty cycle changes in timers. Normally, a PID controller will regulate an environmental condition to a specific setpoint. If you would like the setpoint to change over time, this is called setpoint tracking. Setpoint Tracking is useful for applications such as reflow ovens, thermal cyclers (DNA replication), mimicking natural daily cycles, and more. Methods may also be used to change a duty cycle over time when used with a Timer.</p>
+<p>Methods enable Setpoint Tracking in PIDs and time-based duty cycle changes in timers. Normally, a PID controller will regulate an environmental condition to a specific setpoint. If you would like the setpoint to change over time, this is called setpoint tracking. Setpoint Tracking is useful for applications such as reflow ovens, thermal cyclers (DNA replication), mimicking natural daily cycles, and more. Methods may also be used to change a duty cycle over time when used with a Run PWM Method Conditional.</p>
 <h3 id="universal-options">Universal Options</h3>
 <p>These options are shared with several method types.</p>
 <table>
@@ -1792,8 +1792,8 @@ document.write('<a h'+'ref'+'="ma'+'ilto'+':'+e+'" clas'+'s="em' + 'ail">'+e+'<\
 <h4 id="timedate-method">Time/Date Method</h4>
 <p>A time/date method allows a specific time/date span to dictate the setpoint. This is useful for long-running methods, that may take place over the period of days, weeks, or months.</p>
 <h4 id="duration-method">Duration Method</h4>
-<p>A Duration Method allows a <strong><em>Setpoint</em></strong> (for PIDs) or <strong><em>Duty Cycle</em></strong> (for Timers) to be set after specific durations of time. Each new duration added will stack, meaning it will come after the previous duration, meaning a newly-added <strong><em>Start Setpoint</em></strong> will begin after the previous entry’s <strong><em>End Setpoint</em></strong>.</p>
-<p>If the “Repeat Method” option is used, this will cause the method to repeat once it has reached the end. If this option is used, no more durations may be added to the method. If the repeat option is deleted then more durations may be added. For instance, if your method is 200 seconds total, if the Repeat Duration is set to 600 seconds, the method will repeat 3 times and then automatically turn off the PID or Timer.</p>
+<p>A Duration Method allows a <strong><em>Setpoint</em></strong> (for PIDs) or <strong><em>Duty Cycle</em></strong> (for Conditional) to be set after specific durations of time. Each new duration added will stack, meaning it will come after the previous duration, meaning a newly-added <strong><em>Start Setpoint</em></strong> will begin after the previous entry’s <strong><em>End Setpoint</em></strong>.</p>
+<p>If the “Repeat Method” option is used, this will cause the method to repeat once it has reached the end. If this option is used, no more durations may be added to the method. If the repeat option is deleted then more durations may be added. For instance, if your method is 200 seconds total, if the Repeat Duration is set to 600 seconds, the method will repeat 3 times and then automatically turn off the PID or Conditional.</p>
 <h4 id="daily-time-based-method">Daily (Time-Based) Method</h4>
 <p>The daily time-based method is similar to the time/date method, however it will repeat every day. Therefore, it is essential that only the span of one day be set in this method. Begin with the start time at 00:00:00 and end at 23:59:59 (or 00:00:00, which would be 24 hours from the start). The start time must be equal or greater than the previous end time.</p>
 <h4 id="daily-sine-wave-method">Daily (Sine Wave) Method</h4>
@@ -2014,7 +2014,7 @@ document.write('<a h'+'ref'+'="ma'+'ilto'+':'+e+'" clas'+'s="em' + 'ail">'+e+'<\
 </tr>
 </tbody>
 </table>
-<p>1The <code>Edit Controllers</code> permission protects the editing of Graphs, LCDs, Methods, PIDs, Outputs, Inputs, and Timers.</p>
+<p>1The <code>Edit Controllers</code> permission protects the editing of Conditionals, Graphs, LCDs, Methods, PIDs, Outputs, and Inputs.</p>
 <p>2The <code>View Stats</code> permission protects the viewing of usage statistics and the System Info and Output Usage pages.</p>
 <h2 id="pi-settings">Pi Settings</h2>
 <p>[Gear Icon] -&gt; Configuration -&gt; Pi</p>

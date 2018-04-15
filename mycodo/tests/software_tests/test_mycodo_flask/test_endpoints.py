@@ -225,7 +225,6 @@ def sees_navbar(testapp):
         'Output Usage Reports',
         'Remote Admin',
         'System Information',
-        'Timers',
         'Upgrade'
     ]
     assert all(
