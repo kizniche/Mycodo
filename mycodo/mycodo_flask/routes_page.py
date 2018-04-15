@@ -58,7 +58,6 @@ from mycodo.databases.models import Method
 from mycodo.databases.models import Misc
 from mycodo.databases.models import Output
 from mycodo.databases.models import PID
-from mycodo.databases.models import Timer
 from mycodo.databases.models import User
 from mycodo.devices.camera import camera_record
 from mycodo.mycodo_client import DaemonControl
@@ -73,7 +72,6 @@ from mycodo.mycodo_flask.forms import forms_math
 from mycodo.mycodo_flask.forms import forms_misc
 from mycodo.mycodo_flask.forms import forms_output
 from mycodo.mycodo_flask.forms import forms_pid
-from mycodo.mycodo_flask.forms import forms_timer
 from mycodo.mycodo_flask.routes_static import inject_variables
 from mycodo.mycodo_flask.utils import utils_conditional
 from mycodo.mycodo_flask.utils import utils_dashboard
@@ -85,7 +83,6 @@ from mycodo.mycodo_flask.utils import utils_lcd
 from mycodo.mycodo_flask.utils import utils_math
 from mycodo.mycodo_flask.utils import utils_output
 from mycodo.mycodo_flask.utils import utils_pid
-from mycodo.mycodo_flask.utils import utils_timer
 from mycodo.utils.sunriseset import Sun
 from mycodo.utils.system_pi import add_custom_measurements
 from mycodo.utils.system_pi import csv_to_list_of_str
@@ -781,7 +778,6 @@ def page_live():
     input_dev = Input.query.all()
     math = Math.query.all()
     method = Method.query.all()
-    timer = Timer.query.all()
 
     # Display orders
     input_display_order = csv_to_list_of_str(
@@ -826,7 +822,6 @@ def page_live():
                            output_type=output_type,
                            pid=pid,
                            input=input_dev,
-                           timer=timer,
                            pid_display_order=pid_display_order,
                            inputs_sorted=inputs_sorted,
                            maths_sorted=maths_sorted,
@@ -900,7 +895,6 @@ def page_function():
     method = Method.query.all()
     output = Output.query.all()
     pid = PID.query.all()
-    timer = Timer.query.all()
     user = User.query.all()
 
     controllers = []
@@ -908,8 +902,7 @@ def page_function():
                        ('Input', input_dev),
                        ('LCD', lcd),
                        ('Math', math),
-                       ('PID', pid),
-                       ('Timer', timer)]
+                       ('PID', pid)]
     for each_controller in controllers_all:
         for each_cont in each_controller[1]:
             controllers.append((each_controller[0],
@@ -1072,7 +1065,6 @@ def page_function():
                            method=method,
                            output=output,
                            pid=pid,
-                           timer=timer,
                            units=MEASUREMENT_UNITS,
                            user=user,
                            sunrise_sunset_calculated=sunrise_sunset_calculated)
@@ -1302,76 +1294,6 @@ def page_data():
                            w1thermsensor_sensors=w1thermsensor_sensors,
                            lcd=lcd,
                            list_devices_i2c=list_devices_i2c)
-
-
-@blueprint.route('/timer', methods=('GET', 'POST'))
-@flask_login.login_required
-def page_timer():
-    """ Display Timer settings """
-    method = Method.query.all()
-    timer = Timer.query.all()
-    output = Output.query.all()
-
-    output_choices = utils_general.choices_outputs(output)
-
-    display_order = csv_to_list_of_str(DisplayOrder.query.first().timer)
-
-    form_timer_base = forms_timer.TimerBase()
-    form_timer_time_point = forms_timer.TimerTimePoint()
-    form_timer_time_span = forms_timer.TimerTimeSpan()
-    form_timer_duration = forms_timer.TimerDuration()
-    form_timer_pwm_method = forms_timer.TimerPWMMethod()
-
-    if request.method == 'POST':
-        if not utils_general.user_has_permission('edit_controllers'):
-            return redirect(url_for('routes_general.home'))
-
-        form_timer = None
-        if form_timer_base.create.data or form_timer_base.modify.data:
-            if form_timer_base.timer_type.data == 'time':
-                form_timer = form_timer_time_point
-            elif form_timer_base.timer_type.data == 'timespan':
-                form_timer = form_timer_time_span
-            elif form_timer_base.timer_type.data == 'duration':
-                form_timer = form_timer_duration
-            elif form_timer_base.timer_type.data == 'pwm_method':
-                form_timer = form_timer_pwm_method
-            else:
-                flash("Unknown Timer type: {type}".format(
-                    type=form_timer_base.timer_type.data), "error")
-                return redirect(url_for('routes_page.page_timer'))
-
-        if form_timer_base.create.data:
-            utils_timer.timer_add(display_order,
-                                 form_timer_base,
-                                 form_timer)
-        elif form_timer_base.modify.data:
-            utils_timer.timer_mod(form_timer_base, form_timer)
-        elif form_timer_base.delete.data:
-            utils_timer.timer_del(form_timer_base)
-        elif form_timer_base.order_up.data:
-            utils_timer.timer_reorder(form_timer_base.timer_id.data,
-                                      display_order, 'up')
-        elif form_timer_base.order_down.data:
-            utils_timer.timer_reorder(form_timer_base.timer_id.data,
-                                      display_order, 'down')
-        elif form_timer_base.activate.data:
-            utils_timer.timer_activate(form_timer_base)
-        elif form_timer_base.deactivate.data:
-            utils_timer.timer_deactivate(form_timer_base)
-
-        return redirect(url_for('routes_page.page_timer'))
-
-    return render_template('pages/timer.html',
-                           method=method,
-                           timer=timer,
-                           display_order=display_order,
-                           output_choices=output_choices,
-                           form_timer_base=form_timer_base,
-                           form_timer_time_point=form_timer_time_point,
-                           form_timer_time_span=form_timer_time_span,
-                           form_timer_duration=form_timer_duration,
-                           form_timer_pwm_method=form_timer_pwm_method)
 
 
 @blueprint.route('/usage')

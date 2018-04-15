@@ -31,7 +31,6 @@ from mycodo.databases.models import Math
 from mycodo.databases.models import Method
 from mycodo.databases.models import Output
 from mycodo.databases.models import PID
-from mycodo.databases.models import Timer
 from mycodo.utils.database import db_retrieve_table_daemon
 
 MYCODO_DB_PATH = 'sqlite:///' + SQL_DATABASE_MYCODO
@@ -274,12 +273,6 @@ def send_anonymous_stats(start_time):
                        get_count(methods))
         add_update_csv(STATS_CSV, 'num_methods_in_pid',
                        get_count(pids.filter(PID.method_id != '')))
-
-        timers = db_retrieve_table_daemon(Timer)
-        add_update_csv(STATS_CSV, 'num_timers', get_count(timers))
-        add_update_csv(STATS_CSV, 'num_timers_active',
-                       get_count(timers.filter(
-                           Timer.is_activated == True)))
 
         country = geocoder.ip('me').country
         if not country:

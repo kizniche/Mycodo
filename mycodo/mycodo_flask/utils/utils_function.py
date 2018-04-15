@@ -6,6 +6,7 @@ from flask import url_for
 from flask_babel import gettext
 
 from mycodo.databases.models import Conditional
+from mycodo.databases.models import ConditionalActions
 from mycodo.databases.models import DisplayOrder
 from mycodo.databases.models import PID
 from mycodo.mycodo_flask.extensions import db
@@ -41,6 +42,7 @@ def func_add(form_add_func):
                                                   'conditional_output',
                                                   'conditional_output_pwm',
                                                   'conditional_edge',
+                                                  'conditional_run_pwm_method',
                                                   'conditional_sunrise_sunset',
                                                   'conditional_timer_daily_time_point',
                                                   'conditional_timer_duration']:

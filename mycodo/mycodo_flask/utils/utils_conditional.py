@@ -62,6 +62,14 @@ def conditional_mod(form):
             cond_mod.direction = form.direction.data
             cond_mod.output_duty_cycle = form.output_duty_cycle.data
 
+        elif cond_mod.conditional_type == 'conditional_run_pwm_method':
+            error = check_form_run_pwm_method(form, error)
+            cond_mod.unique_id_1 = form.unique_id_1.data
+            cond_mod.unique_id_2 = form.unique_id_2.data
+            cond_mod.period = form.period.data
+            cond_mod.trigger_actions_at_start = form.trigger_actions_at_start.data
+            cond_mod.trigger_actions_at_period = form.trigger_actions_at_period.data
+
         elif cond_mod.conditional_type == 'conditional_sunrise_sunset':
             error = check_form_sunrise_sunset(form, error)
             cond_mod.rise_or_set = form.rise_or_set.data
@@ -77,7 +85,7 @@ def conditional_mod(form):
 
         elif cond_mod.conditional_type == 'conditional_timer_duration':
             error = check_form_timer_duration(form, error)
-            cond_mod.timer_duration = form.timer_duration.data
+            cond_mod.period = form.period.data
             cond_mod.timer_start_offset = form.timer_start_offset.data
 
         if not error:
@@ -307,16 +315,21 @@ def conditional_activate(cond_id):
 
     mod_cond = Conditional.query.filter(
         Conditional.unique_id == cond_id).first()
-    conditional_type = mod_cond.conditional_type
     mod_cond.is_activated = True
 
     # Check for errors in the Conditional settings
-    if conditional_type == 'conditional_edge':
+    if mod_cond.conditional_type == 'conditional_edge':
         error = check_cond_edge(mod_cond, error)
-    elif conditional_type == 'conditional_measurement':
+    elif mod_cond.conditional_type == 'conditional_measurement':
         error = check_cond_measurements(mod_cond, error)
-    elif conditional_type == 'conditional_output':
+    elif mod_cond.conditional_type == 'conditional_output':
         error = check_cond_output(mod_cond, error)
+
+    if mod_cond.conditional_type == 'conditional_run_pwm_method':
+        mod_cond_ready = Conditional.query.filter(
+            Conditional.unique_id == cond_id).first()
+        mod_cond_ready.method_start_time = 'Ready'
+        db.session.commit()
 
     # Check for errors in each Conditional Action
     cond_actions = ConditionalActions.query.filter(
@@ -361,6 +374,7 @@ def check_refresh_conditional(cond_id):
 
     if cond.conditional_type in ['conditional_edge',
                                  'conditional_measurement',
+                                 'conditional_run_pwm_method',
                                  'conditional_sunrise_sunset',
                                  'conditional_timer_daily_time_point',
                                  'conditional_timer_duration'
@@ -531,6 +545,19 @@ def check_form_output_pwm(form, error):
     return error
 
 
+def check_form_run_pwm_method(form, error):
+    """Checks if the saved variables have any errors"""
+    if not form.period.data or form.period.data <= 0:
+        error.append("Period must be greater than 0")
+    if not form.unique_id_1.data:
+        error.append("{id} must be set".format(
+            id=form.unique_id_1.label.text))
+    if not form.unique_id_2.data:
+        error.append("{id} must be set".format(
+            id=form.unique_id_2.label.text))
+    return error
+
+
 def check_form_sunrise_sunset(form, error):
     """Checks if the submitted form has any errors"""
     if form.rise_or_set.data not in ['sunrise', 'sunset']:
@@ -564,9 +591,9 @@ def check_form_timer_daily_time_point(form, error):
 
 def check_form_timer_duration(form, error):
     """Checks if the submitted form has any errors"""
-    if form.timer_duration.data <= 0:
+    if form.period.data <= 0:
         error.append("{id} must be > 0".format(
-            id=form.timer_duration.label.text))
+            id=form.period.label.text))
     if form.timer_start_offset.data < 0:
         error.append("{id} must be >= 0".format(
             id=form.timer_start_offset.label.text))

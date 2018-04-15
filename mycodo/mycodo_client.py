@@ -168,11 +168,11 @@ def timeout_handler(signum, frame):  # Custom signal handler
 def parseargs(parser):
     parser.add_argument('--activatecontroller', nargs=2,
                         metavar=('CONTROLLER', 'ID'), type=str,
-                        help='Activate controller. Options: LCD, Math, PID, Input, Timer',
+                        help='Activate controller. Options: Conditional, LCD, Math, PID, Input',
                         required=False)
     parser.add_argument('--deactivatecontroller', nargs=2,
                         metavar=('CONTROLLER', 'ID'), type=str,
-                        help='Deactivate controller. Options: LCD, Math, PID, Input, Timer',
+                        help='Deactivate controller. Options: Conditional, LCD, Math, PID, Input',
                         required=False)
 
     # PID manipulate
@@ -312,10 +312,9 @@ if __name__ == "__main__":
                         msg=return_msg))
 
     elif args.activatecontroller:
-        if args.activatecontroller[0] not in ['LCD', 'Math', 'PID',
-                                              'Input', 'Timer']:
-            logger.info("Invalid controller type. Options: LCD, Math, PID, "
-                        "Input, Timer.")
+        if args.activatecontroller[0] not in ['Conditional', 'LCD', 'Math', 'PID', 'Input']:
+            logger.info("Invalid controller type. Options: Conditional, LCD, Math, PID, "
+                        "Input.")
         else:
             return_msg = daemon.controller_activate(
                 args.activatecontroller[0], args.activatecontroller[1])
@@ -326,10 +325,9 @@ if __name__ == "__main__":
                             msg=return_msg))
 
     elif args.deactivatecontroller:
-        if args.deactivatecontroller[0] not in ['LCD', 'Math', 'PID',
-                                                'Input', 'Timer']:
-            logger.info("Invalid controller type. Options: LCD, Math, PID, "
-                        "Input, Timer.")
+        if args.deactivatecontroller[0] not in ['Conditional', 'LCD', 'Math', 'PID', 'Input']:
+            logger.info("Invalid controller type. Options: Conditional, LCD, Math, PID, "
+                        "Input.")
         else:
             return_msg = daemon.controller_deactivate(
                 args.deactivatecontroller[0], args.deactivatecontroller[1])

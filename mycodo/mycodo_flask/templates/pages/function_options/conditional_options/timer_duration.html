@@ -1,8 +1,8 @@
 <div class="row small-gutters" style="border-bottom: 1px solid #ddd; padding-bottom: 0.2em">
   <div class="col-auto">
-    {{form_conditional.timer_duration.label(class_='control-label')}}
+    {{form_conditional.period.label(class_='control-label')}}
     <div>
-     {{form_conditional.timer_duration(class_='form-control', value=each_cond.timer_duration, **{'title':_('Trigger conditional actions at an interval of time')})}}
+     {{form_conditional.period(class_='form-control', value=each_cond.period, **{'title':_('Trigger conditional actions at an interval of time')})}}
     </div>
   </div>
   <div class="col-auto">

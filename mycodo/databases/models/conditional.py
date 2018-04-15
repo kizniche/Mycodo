@@ -13,8 +13,11 @@ class Conditional(CRUDMixin, db.Model):
     name = db.Column(db.Text, default='Conditional Name')
     conditional_type = db.Column(db.Text, default=None)
     is_activated = db.Column(db.Boolean, default=False)
+    period = db.Column(db.Float, default=60.0)
 
+    # Used to hold unique IDs
     unique_id_1 = db.Column(db.String, default=None)
+    unique_id_2 = db.Column(db.String, default=None)
 
     # Relay options
     output_state = db.Column(db.Text, default='')  # What action to watch output for
@@ -30,7 +33,6 @@ class Conditional(CRUDMixin, db.Model):
     time_offset_minutes = db.Column(db.Integer, default=0)
 
     # Sensor/Math options
-    period = db.Column(db.Float, default=60.0)
     refractory_period = db.Column(db.Float, default=0.0)
     measurement = db.Column(db.Text, default='')  # which measurement to monitor
     max_age = db.Column(db.Integer, default=120.0)  # max age of the measurement
@@ -39,9 +41,15 @@ class Conditional(CRUDMixin, db.Model):
     setpoint = db.Column(db.Float, default=0.0)
 
     # Timer options
-    timer_duration = db.Column(db.Integer, default=360)
     timer_start_offset = db.Column(db.Integer, default=0)
     timer_start_time = db.Column(db.Text, default='16:30')
+
+    # Method options
+    method_start_time = db.Column(db.Text, default=None)
+    method_end_time = db.Column(db.Text, default=None)
+    trigger_actions_at_period = db.Column(db.Boolean, default=True)
+    trigger_actions_at_start = db.Column(db.Boolean, default=True)
+
 
     def __repr__(self):
         return "<{cls}(id={s.id})>".format(s=self, cls=self.__class__.__name__)

@@ -19,33 +19,33 @@
 #
 #  Contact at kylegabriel.com
 
-import sqlalchemy
 import subprocess
+
+import sqlalchemy
 from flask import current_app
 
 from mycodo.config import ALEMBIC_VERSION
 from mycodo.config import INSTALL_DIRECTORY
 from mycodo.config import USER_ROLES
 from mycodo.mycodo_flask.extensions import db
-from .conditional import Conditional
-from .conditional import ConditionalActions
 from .alembic_version import AlembicVersion
 from .camera import Camera
-from .display_order import DisplayOrder
+from .conditional import Conditional
+from .conditional import ConditionalActions
 from .dashboard import Dashboard
+from .display_order import DisplayOrder
+from .input import Input
 from .lcd import LCD
 from .lcd import LCDData
 from .math import Math
 from .method import Method
 from .method import MethodData
 from .misc import Misc
-from .pid import PID
 from .output import Output
+from .pid import PID
 from .remote import Remote
 from .role import Role
-from .input import Input
 from .smtp import SMTP
-from .timer import Timer
 from .user import User
 
 

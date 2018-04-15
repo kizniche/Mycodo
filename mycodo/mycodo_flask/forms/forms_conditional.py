@@ -25,7 +25,8 @@ class Conditional(FlaskForm):
     name = StringField(lazy_gettext('Name'))
 
     # Output conditional options
-    unique_id_1 = StringField(lazy_gettext('If Output'))
+    unique_id_1 = StringField(lazy_gettext('If ID 1'))
+    unique_id_2 = StringField(lazy_gettext('If ID 2'))
     output_state = StringField(lazy_gettext('If State'))
     output_duration = DecimalField(lazy_gettext('If Duration (seconds)'))
     output_duty_cycle = DecimalField(lazy_gettext('If Duty Cycle (%)'))
@@ -50,9 +51,12 @@ class Conditional(FlaskForm):
     time_offset_minutes = IntegerField(lazy_gettext('Time Offset (minutes)'))
 
     # Timer
-    timer_duration = IntegerField(lazy_gettext('Duration (seconds)'))
     timer_start_offset = IntegerField(lazy_gettext('Start Offset (seconds)'))
     timer_start_time = StringField(lazy_gettext('Start Time (HH:MM)'))
+
+    # Method
+    trigger_actions_at_period = BooleanField(lazy_gettext('Triger Actions Every Period'))
+    trigger_actions_at_start = BooleanField(lazy_gettext('Trigger Actions when Activated'))
 
     add_cond = SubmitField(lazy_gettext('Add Conditional'))
     save_cond = SubmitField(lazy_gettext('Save'))

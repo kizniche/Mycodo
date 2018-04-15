@@ -651,8 +651,9 @@ CONDITIONAL_TYPES = [
     ('conditional_output', lazy_gettext('Output (On/Off)')),
     ('conditional_output_pwm', lazy_gettext('Output (PWM)')),
     ('conditional_edge', lazy_gettext('Edge')),
+    ('conditional_run_pwm_method', lazy_gettext('Run PWM Method')),
     ('conditional_sunrise_sunset', lazy_gettext('Sunrise/Sunset')),
-    ('conditional_timer_daily_time_point', lazy_gettext('Timer (Daily Time Point)')),
+    ('conditional_timer_daily_time_point', lazy_gettext('Timer (Daily)')),
     ('conditional_timer_duration', lazy_gettext('Timer (Duration)'))
 ]
 

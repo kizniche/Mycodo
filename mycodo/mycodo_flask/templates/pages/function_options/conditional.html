@@ -64,6 +64,8 @@
         {% include 'pages/function_options/conditional_options/measurement.html' %}
       {% elif each_cond.conditional_type == 'conditional_edge' %}
         {% include 'pages/function_options/conditional_options/edge.html' %}
+      {% elif each_cond.conditional_type == 'conditional_run_pwm_method' %}
+        {% include 'pages/function_options/conditional_options/run_pwm_method.html' %}
       {% elif each_cond.conditional_type == 'conditional_sunrise_sunset' %}
         {% include 'pages/function_options/conditional_options/sunrise_sunset.html' %}
       {% elif each_cond.conditional_type == 'conditional_timer_daily_time_point' %}
@@ -130,9 +132,9 @@
 
     </div>
 
-  {%- endfor -%}
-
   </div>
+
+  {%- endfor -%}
 
   <div style="clear: both; padding: 0.5em 0;"></div>
 

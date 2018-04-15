@@ -55,14 +55,12 @@ from mycodo.controller_lcd import LCDController
 from mycodo.controller_math import MathController
 from mycodo.controller_output import OutputController
 from mycodo.controller_pid import PIDController
-from mycodo.controller_timer import TimerController
 from mycodo.databases.models import Camera
 from mycodo.databases.models import Input
 from mycodo.databases.models import LCD
 from mycodo.databases.models import Math
 from mycodo.databases.models import Misc
 from mycodo.databases.models import PID
-from mycodo.databases.models import Timer
 from mycodo.databases.utils import session_scope
 from mycodo.devices.camera import camera_record
 from mycodo.utils.database import db_retrieve_table_daemon
@@ -100,7 +98,7 @@ def mycodo_service(mycodo):
         def exposed_controller_activate(cont_type, cont_id):
             """
             Activates a controller
-            May be a Conditional, Input, Math, PID, Timer, or LCD controller
+            May be a Conditional, Input, Math, PID, or LCD controller
 
             """
             return mycodo.controller_activate(cont_type, cont_id)
@@ -109,7 +107,7 @@ def mycodo_service(mycodo):
         def exposed_controller_deactivate(cont_type, cont_id):
             """
             Deactivates a controller
-            May be a Conditional, Input, Math, PID, Timer, or LCD controller
+            May be a Conditional, Input, Math, PID, or LCD controller
 
             """
             return mycodo.controller_deactivate(cont_type, cont_id)
@@ -340,14 +338,12 @@ class DaemonController:
             'Input': {},
             'LCD': {},
             'Math': {},
-            'PID': {},
-            'Timer': {}
+            'PID': {}
         }
 
         # Controllers that may launch multiple threads
         # Order matters for starting and shutting down
         self.cont_types = [
-            'Timer',
             'Input',
             'Math',
             'PID',
@@ -468,9 +464,6 @@ class DaemonController:
             elif cont_type == 'PID':
                 controller_manage['type'] = PID
                 controller_manage['function'] = PIDController
-            elif cont_type == 'Timer':
-                controller_manage['type'] = Timer
-                controller_manage['function'] = TimerController
             else:
                 return 1, "'{type}' not a valid controller type.".format(
                     type=cont_type)
@@ -566,9 +559,6 @@ class DaemonController:
             for input_id in self.controller['Input']:
                 if not self.controller['Input'][input_id].is_running():
                     return "Error: Input ID {}".format(input_id)
-            for timer_id in self.controller['Timer']:
-                if not self.controller['Timer'][timer_id].is_running():
-                    return "Error: Timer ID {}".format(timer_id)
             if not self.controller['Output'].is_running():
                 return "Error: Output controller"
             if not self.controller['Conditional'].is_running():
@@ -856,7 +846,6 @@ class DaemonController:
         try:
             # Obtain database configuration options
             db_tables = {
-                'Timer': db_retrieve_table_daemon(Timer, entry='all'),
                 'Input': db_retrieve_table_daemon(Input, entry='all'),
                 'Math': db_retrieve_table_daemon(Math, entry='all'),
                 'PID': db_retrieve_table_daemon(PID, entry='all'),

@@ -39,15 +39,17 @@ from mycodo.databases.models import ConditionalActions
 from mycodo.databases.models import Input
 from mycodo.databases.models import LCD
 from mycodo.databases.models import Math
+from mycodo.databases.models import Method
+from mycodo.databases.models import MethodData
 from mycodo.databases.models import Output
 from mycodo.databases.models import PID
 from mycodo.databases.models import SMTP
-from mycodo.databases.models import Timer
 from mycodo.databases.utils import session_scope
 from mycodo.devices.camera import camera_record
 from mycodo.mycodo_client import DaemonControl
 from mycodo.utils.database import db_retrieve_table_daemon
 from mycodo.utils.influx import read_last_influxdb
+from mycodo.utils.method import calculate_method_setpoint
 from mycodo.utils.send_data import send_email
 from mycodo.utils.sunriseset import Sun
 from mycodo.utils.system_pi import cmd_output
@@ -89,14 +91,21 @@ class ConditionalController(threading.Thread):
         self.conditional_type = {}
         self.is_activated = {}
         self.period = {}
+        self.unique_id_1 = {}
+        self.unique_id_2 = {}
         self.timer_period = {}
         self.refractory_period = {}
         self.timer_refractory_period = {}
 
         # Timer
-        self.timer_duration = {}
         self.timer_start_time = {}
-        self.timer_timer_period = {}
+
+        # Method
+        self.trigger_actions_at_period = {}
+        self.trigger_actions_at_start = {}
+        self.method_start_time = {}
+        self.method_end_time = {}
+        self.method_start_act = {}
 
         self.smtp_max_count = db_retrieve_table_daemon(
             SMTP, entry='first').hourly_max
@@ -124,30 +133,49 @@ class ConditionalController(threading.Thread):
 
                 # Check each activated conditional
                 for each_id in self.is_activated:
+                    check_approved = False
 
-                    if self.is_activated[each_id]:
+                    if (self.is_activated[each_id] and
+                            self.timer_period[each_id] < time.time()):
+
                         # Check if the conditional period has elapsed
-                        if (self.timer_period and
-                                (self.timer_period[each_id] < time.time() and
-                                 self.timer_refractory_period[each_id] < time.time())
+                        if ((self.conditional_type[each_id] == 'conditional_measurement' and
+                                self.timer_refractory_period[each_id] < time.time()) or
+                                self.conditional_type[each_id] in ['conditional_sunrise_sunset',
+                                                                   'conditional_run_pwm_method']
                                 ):
-                            # Update conditional timer
                             while self.timer_period[each_id] < time.time():
                                 self.timer_period[each_id] += self.period[each_id]
-                            self.check_conditionals(each_id)
 
-                        # Check if a timer has been triggered
-                        elif (self.timer_timer_period and
-                                (self.timer_timer_period[each_id] < time.time())
+                            if self.conditional_type[each_id] == 'conditional_run_pwm_method':
+                                # Only execute conditional actions when started
+                                # Now only set PWM output
+                                pwm_duty_cycle, ended = self.get_method_output(
+                                    each_id, self.unique_id_1[each_id])
+                                if not ended:
+                                    self.set_output_duty_cycle(
+                                        self.unique_id_2[each_id],
+                                        pwm_duty_cycle)
+                                    if self.trigger_actions_at_period[each_id]:
+                                        self.trigger_conditional_actions(
+                                            each_id, duty_cycle=pwm_duty_cycle)
+
+                            else:
+                                check_approved = True
+
+                        elif (self.conditional_type[each_id] in [
+                                'conditional_timer_daily_time_point',
+                                'conditional_timer_duration']
                                 ):
-                            # Update timer timer
                             if self.conditional_type[each_id] == 'conditional_timer_daily_time_point':
-                                self.timer_timer_period[each_id] = epoch_of_next_time(
+                                self.timer_period[each_id] = epoch_of_next_time(
                                     '{hm}:00'.format(hm=self.timer_start_time[each_id]))
                             elif self.conditional_type[each_id] == 'conditional_timer_duration':
-                                while self.timer_timer_period[each_id] < time.time():
-                                    self.timer_timer_period[each_id] += self.timer_duration[each_id]
+                                while self.timer_period[each_id] < time.time():
+                                    self.timer_period[each_id] += self.period[each_id]
+                            check_approved = True
 
+                        if check_approved:
                             self.check_conditionals(each_id)
 
                 time.sleep(0.1)
@@ -160,6 +188,82 @@ class ConditionalController(threading.Thread):
         except Exception as except_msg:
             self.logger.exception("Run Error: {err}".format(
                 err=except_msg))
+
+    def start_method(self, cond_id, method_id):
+        """ Instruct a method to start running """
+        if method_id:
+            method = db_retrieve_table_daemon(Method, unique_id=method_id)
+            method_data = db_retrieve_table_daemon(MethodData)
+            method_data = method_data.filter(MethodData.method_id == method_id)
+            method_data_repeat = method_data.filter(MethodData.duration_sec == 0).first()
+            self.method_start_act[cond_id] = self.method_start_time[cond_id]
+            self.method_start_time[cond_id] = None
+            self.method_end_time[cond_id] = None
+
+            if method.method_type == 'Duration':
+                if self.method_start_act[cond_id] == 'Ended':
+                    with session_scope(MYCODO_DB_PATH) as db_session:
+                        mod_conditional = db_session.query(Conditional)
+                        mod_conditional = mod_conditional.filter(
+                            Conditional.unique_id == cond_id).first()
+                        mod_conditional.is_activated = False
+                        db_session.commit()
+                    self.setup_conditionals()
+                    self.logger.warning(
+                        "Method has ended. "
+                        "Activate the Conditional controller to start it again.")
+                elif (self.method_start_act[cond_id] == 'Ready' or
+                        self.method_start_act[cond_id] is None):
+                    # Method has been instructed to begin
+                    now = datetime.datetime.now()
+                    self.method_start_time[cond_id] = now
+                    if method_data_repeat and method_data_repeat.duration_end:
+                        self.method_end_time[cond_id] = now + datetime.timedelta(
+                            seconds=float(method_data_repeat.duration_end))
+
+                    with session_scope(MYCODO_DB_PATH) as db_session:
+                        mod_conditional = db_session.query(Conditional)
+                        mod_conditional = mod_conditional.filter(
+                            Conditional.unique_id == cond_id).first()
+                        mod_conditional.method_start_time = self.method_start_time[cond_id]
+                        mod_conditional.method_end_time = self.method_end_time[cond_id]
+                        db_session.commit()
+
+    def get_method_output(self, cond_id, method_id):
+        """ Get output variable from method """
+        this_controller = db_retrieve_table_daemon(
+            Conditional, unique_id=cond_id)
+        setpoint, ended = calculate_method_setpoint(
+            method_id,
+            Conditional,
+            this_controller,
+            Method,
+            MethodData,
+            self.logger)
+
+        if setpoint is not None:
+            if setpoint > 100:
+                setpoint = 100
+            elif setpoint < 0:
+                setpoint = 0
+
+        if ended:
+            with session_scope(MYCODO_DB_PATH) as db_session:
+                mod_conditional = db_session.query(Conditional)
+                mod_conditional = mod_conditional.filter(
+                    Conditional.unique_id == cond_id).first()
+                mod_conditional.is_activated = False
+                db_session.commit()
+            setup_cond = threading.Thread(
+                target=self.setup_conditionals)
+            setup_cond.start()
+
+        return setpoint, ended
+
+    def set_output_duty_cycle(self, output_id, duty_cycle):
+        """ Set PWM Output duty cycle """
+        self.control.output_on(output_id,
+                               duty_cycle=duty_cycle)
 
     def setup_conditionals(self):
         """
@@ -175,15 +279,21 @@ class ConditionalController(threading.Thread):
 
         self.conditional_type = {}
         self.is_activated = {}
+        self.unique_id_1 = {}
+        self.unique_id_2 = {}
         self.period = {}
         self.timer_period = {}
         self.refractory_period = {}
         self.timer_refractory_period = {}
 
         # Timer
-        self.timer_duration = {}
         self.timer_start_time = {}
-        self.timer_timer_period = {}
+
+        # Method
+        self.trigger_actions_at_period = {}
+        self.trigger_actions_at_start = {}
+        self.method_start_time = {}
+        self.method_end_time = {}
 
         self.smtp_wait_timer = {}
 
@@ -194,12 +304,13 @@ class ConditionalController(threading.Thread):
         # Set all conditional types
         for each_cond in conditional.all():
             self.conditional_type[each_cond.unique_id] = each_cond.conditional_type
+            self.is_activated[each_cond.unique_id] = each_cond.is_activated
+            self.smtp_wait_timer[each_cond.unique_id] = now + 3600
 
         # Set up all measurement conditionals
         conditional_measure = conditional.filter(
             Conditional.conditional_type == 'conditional_measurement').all()
         for each_cond in conditional_measure:
-            self.is_activated[each_cond.unique_id] = each_cond.is_activated
             self.period[each_cond.unique_id] = each_cond.period
             self.refractory_period[each_cond.unique_id] = each_cond.refractory_period
             self.timer_refractory_period[each_cond.unique_id] = 0
@@ -210,27 +321,49 @@ class ConditionalController(threading.Thread):
         conditional_timer_duration = conditional.filter(
             Conditional.conditional_type == 'conditional_timer_daily_time_point').all()
         for each_cond in conditional_timer_duration:
-            self.is_activated[each_cond.unique_id] = each_cond.is_activated
             self.timer_start_time[each_cond.unique_id] = each_cond.timer_start_time
-            self.timer_timer_period[each_cond.unique_id] = epoch_of_next_time(
+            self.timer_period[each_cond.unique_id] = epoch_of_next_time(
                 '{hm}:00'.format(hm=each_cond.timer_start_time))
 
         # Set up all conditional timers (duration)
         conditional_timer_duration = conditional.filter(
             Conditional.conditional_type == 'conditional_timer_duration').all()
         for each_cond in conditional_timer_duration:
-            self.is_activated[each_cond.unique_id] = each_cond.is_activated
-            self.timer_duration[each_cond.unique_id] = each_cond.timer_duration
+            self.period[each_cond.unique_id] = each_cond.period
             if each_cond.timer_start_offset:
-                self.timer_timer_period[each_cond.unique_id] = now + each_cond.timer_start_offset
+                self.timer_period[each_cond.unique_id] = now + each_cond.timer_start_offset
             else:
-                self.timer_timer_period[each_cond.unique_id] = now
+                self.timer_period[each_cond.unique_id] = now
+
+        # Set up all Run PWM Method conditionals
+        conditional_timer_duration = conditional.filter(
+            Conditional.conditional_type == 'conditional_run_pwm_method').all()
+        for each_cond in conditional_timer_duration:
+            self.unique_id_1[each_cond.unique_id] = each_cond.unique_id_1
+            self.unique_id_2[each_cond.unique_id] = each_cond.unique_id_2
+            self.period[each_cond.unique_id] = each_cond.period
+            self.trigger_actions_at_period[each_cond.unique_id] = each_cond.trigger_actions_at_period
+            self.trigger_actions_at_start[each_cond.unique_id] = each_cond.trigger_actions_at_start
+            self.method_start_time[each_cond.unique_id] = each_cond.method_start_time
+            self.method_end_time[each_cond.unique_id] = each_cond.method_end_time
+            if self.is_activated[each_cond.unique_id]:
+                self.start_method(each_cond.unique_id, each_cond.unique_id_1)
+            if self.trigger_actions_at_start[each_cond.unique_id]:
+                self.timer_period[each_cond.unique_id] = now + each_cond.period
+                if self.is_activated[each_cond.unique_id]:
+                    pwm_duty_cycle = self.get_method_output(
+                        each_cond.unique_id, each_cond.unique_id_1)
+                    self.set_output_duty_cycle(each_cond.unique_id_2,
+                                               pwm_duty_cycle)
+                    self.trigger_conditional_actions(
+                        each_cond.unique_id, duty_cycle=pwm_duty_cycle)
+            else:
+                self.timer_period[each_cond.unique_id] = now
 
         # Set up all sunrise/sunset conditionals
         conditional_sun = conditional.filter(
             Conditional.conditional_type == 'conditional_sunrise_sunset').all()
         for each_cond in conditional_sun:
-            self.is_activated[each_cond.unique_id] = each_cond.is_activated
             self.timer_refractory_period[each_cond.unique_id] = 0
             self.period[each_cond.unique_id] = 1000
             # Set the next trigger at the specified sunrise/sunset time (+-offsets)
@@ -562,6 +695,18 @@ class ConditionalController(threading.Thread):
                 if controller_entry.is_activated:
                     message += " Notice: Controller is already active!"
                 else:
+                    # If controller is Conditional and is
+                    # conditional_run_pwm_method, activate method start
+                    is_conditional = db_retrieve_table_daemon(
+                        Conditional, unique_id=cond_action.do_unique_id, entry='first')
+                    if (is_conditional and
+                                is_conditional.conditional_type == 'conditional_run_pwm_method'):
+                            with session_scope(MYCODO_DB_PATH) as new_session:
+                                mod_cont_ready = new_session.query(Conditional).filter(
+                                    Conditional.unique_id == cond_id).first()
+                                mod_cont_ready.method_start_time = 'Ready'
+                                new_session.commit()
+
                     with session_scope(MYCODO_DB_PATH) as new_session:
                         mod_cont = new_session.query(controller_object).filter(
                             controller_object.unique_id == cond_action.do_unique_id).first()
@@ -804,11 +949,6 @@ class ConditionalController(threading.Thread):
             controller_object = PID
             controller_entry = db_retrieve_table_daemon(
                 PID, unique_id=unique_id)
-        elif db_retrieve_table_daemon(Timer, unique_id=unique_id):
-            controller_type = 'Timer'
-            controller_object = Timer
-            controller_entry = db_retrieve_table_daemon(
-                Timer, unique_id=unique_id)
         return controller_type, controller_object, controller_entry
 
     @staticmethod

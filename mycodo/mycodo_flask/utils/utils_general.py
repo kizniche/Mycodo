@@ -27,7 +27,6 @@ from mycodo.databases.models import LCD
 from mycodo.databases.models import Math
 from mycodo.databases.models import PID
 from mycodo.databases.models import Role
-from mycodo.databases.models import Timer
 from mycodo.databases.models import User
 from mycodo.mycodo_client import DaemonControl
 from mycodo.mycodo_flask.extensions import db
@@ -47,7 +46,7 @@ def controller_activate_deactivate(controller_action,
 
     :param controller_action: Activate or deactivate
     :type controller_action: str
-    :param controller_type: The controller type (LCD, Math, PID, Input, Timer)
+    :param controller_type: The controller type (Conditional, LCD, Math, PID, Input)
     :type controller_type: str
     :param controller_id: Controller with ID to activate or deactivate
     :type controller_id: str
@@ -62,8 +61,7 @@ def controller_activate_deactivate(controller_action,
         "Input": gettext("Input"),
         "LCD": gettext("LCD"),
         "Math": gettext("Math"),
-        "PID": gettext("PID"),
-        "Timer": gettext("Timer")
+        "PID": gettext("PID")
     }
 
     mod_controller = None
@@ -82,9 +80,6 @@ def controller_activate_deactivate(controller_action,
     elif controller_type == 'PID':
         mod_controller = PID.query.filter(
             PID.unique_id == controller_id).first()
-    elif controller_type == 'Timer':
-        mod_controller = Timer.query.filter(
-            Timer.unique_id == controller_id).first()
 
     if mod_controller is None:
         flash("{type} Controller {id} doesn't exist".format(

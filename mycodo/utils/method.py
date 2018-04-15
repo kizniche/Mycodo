@@ -82,12 +82,12 @@ def bezier_curve_y_out(shift_angle, P0, P1, P2, P3, second_of_day=None):
     return y
 
 
-def calculate_method_setpoint(method_id, table, controller, Method, MethodData, logger):
+def calculate_method_setpoint(method_id, table, this_controller, Method, MethodData, logger):
     """
     Calculates the setpoint from a method
     :param method_id: ID of Method to be used
-    :param table: Table of the controller using this function
-    :param controller: The controller using this function
+    :param table: Table of the this_controller using this function
+    :param this_controller: The this_controller using this function
     :param logger: The logger to use
     :return: 0 (success) or 1 (error) and a setpoint value
     """
@@ -191,14 +191,14 @@ def calculate_method_setpoint(method_id, table, controller, Method, MethodData, 
     # Calculate the duration in the method based on self.method_start_time
     elif method_key.method_type == 'Duration':
         start_time = datetime.datetime.strptime(
-            str(controller.method_start_time), '%Y-%m-%d %H:%M:%S.%f')
+            str(this_controller.method_start_time), '%Y-%m-%d %H:%M:%S.%f')
         ended = False
 
         # Check if method_end_time is not None
-        if controller.method_end_time:
+        if this_controller.method_end_time:
             # Convert time string to datetime object
             end_time = datetime.datetime.strptime(
-                str(controller.method_end_time), '%Y-%m-%d %H:%M:%S.%f')
+                str(this_controller.method_end_time), '%Y-%m-%d %H:%M:%S.%f')
             if now > start_time:
                 ended = True
 
@@ -250,17 +250,17 @@ def calculate_method_setpoint(method_id, table, controller, Method, MethodData, 
                 return new_setpoint, False
             previous_total_sec = total_sec
 
-        if controller.method_start_time:
+        if this_controller.method_start_time:
             if method_restart:
                 if end_time and now > end_time:
                     ended = True
                 else:
                     # Method has been instructed to restart
-                    controller.method_start_time = datetime.datetime.now()
                     with session_scope(MYCODO_DB_PATH) as db_session:
                         mod_method = db_session.query(table)
-                        mod_method = mod_method.filter(table.method_id == method_id).first()
-                        mod_method.method_start_time = controller.method_start_time
+                        mod_method = mod_method.filter(
+                            table.unique_id == this_controller.unique_id).first()
+                        mod_method.method_start_time = datetime.datetime.now()
                         db_session.commit()
                         return previous_end, False
             else:
@@ -270,7 +270,7 @@ def calculate_method_setpoint(method_id, table, controller, Method, MethodData, 
                 # Duration method has ended, reset method_start_time locally and in DB
                 with session_scope(MYCODO_DB_PATH) as db_session:
                     mod_method = db_session.query(table).filter(
-                        table.method_id == method_id).first()
+                        table.unique_id == this_controller.unique_id).first()
                     mod_method.method_start_time = 'Ended'
                     mod_method.method_end_time = None
                     db_session.commit()

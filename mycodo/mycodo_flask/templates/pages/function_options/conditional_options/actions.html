@@ -197,18 +197,5 @@
   </select>
 </div>
 
-{% elif each_cond_action.do_action in ['activate_timer',
-                                       'deactivate_timer'] %}
-
-<div class="col-auto">
-  <label class="control-label">Then Timer</label>
-  <select class="form-control form-tooltip form-dropdown" id="do_unique_id" name="do_unique_id" data-placement="top" title="{{_('Timer to affect')}}">
-    <option value=""></option>
-    {%- for each_timer in timer -%}
-      <option value="{{each_timer.unique_id}}"{% if each_cond_action.do_unique_id == each_timer.unique_id %} selected{% endif %}>[{{'%02d' % each_timer.id}}] {{each_timer.name}}</option>
-    {%- endfor -%}
-  </select>
-</div>
-
 
 {% endif %}

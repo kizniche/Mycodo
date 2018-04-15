@@ -81,7 +81,6 @@ def test_routes_when_not_logged_in(testapp):
         'settings/users',
         'systemctl/restart',
         'systemctl/shutdown',
-        'timer',
         'usage',
         'video_feed/0'
     ]
@@ -125,7 +124,6 @@ def test_routes_logged_in_as_admin(_, testapp):
         ('method-build/-1', 'admin logged in'),
         ('output', '<!-- Route: /output -->'),
         ('remote/setup', '<!-- Route: /remote/setup -->'),
-        ('timer', '<!-- Route: /timer -->'),
         ('usage', '<!-- Route: /usage -->'),
         ('usage_reports', '<!-- Route: /usage_reports -->')
     ]
