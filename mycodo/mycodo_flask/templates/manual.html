@@ -1305,7 +1305,7 @@ document.write('<a h'+'ref'+'="ma'+'ilto'+':'+e+'" clas'+'s="em' + 'ail">'+e+'<\
 </tr>
 </tbody>
 </table>
-<h4 id="output-conditional-statement-if-options">Output Conditional Statement If Options</h4>
+<h4 id="output-onoff-conditional-statement-if-options">Output (On/Off) Conditional Statement If Options</h4>
 <p>Monitor the state of an output.</p>
 <table>
 <colgroup>
@@ -1329,7 +1329,35 @@ document.write('<a h'+'ref'+'="ma'+'ilto'+':'+e+'" clas'+'s="em' + 'ail">'+e+'<\
 </tr>
 <tr class="odd">
 <td style="text-align: left;">If Duration (seconds)</td>
-<td style="text-align: left;">If “On” is selected, a optional duration (seconds) may be set that will trigger the conditional only if the Output is turned on for this specific duration.</td>
+<td style="text-align: left;">If “On” is selected, an optional duration (seconds) may be set that will trigger the conditional only if the Output is turned on for this specific duration.</td>
+</tr>
+</tbody>
+</table>
+<h4 id="output-pwm-conditional-statement-if-options">Output (PWM) Conditional Statement If Options</h4>
+<p>Monitor the state of a PWM output.</p>
+<table>
+<colgroup>
+<col style="width: 32%"></col>
+<col style="width: 67%"></col>
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Setting</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">If Output</td>
+<td style="text-align: left;">The Output to monitor for a change of state.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">If State</td>
+<td style="text-align: left;">If the duty cycle of the output is greater than,less than, or equal to the set value, trigger the Conditional Actions.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">If Duty Cycle (%)</td>
+<td style="text-align: left;">The duty cycle for the Output to be checked against.</td>
 </tr>
 </tbody>
 </table>

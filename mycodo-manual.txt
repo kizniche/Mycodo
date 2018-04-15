@@ -1086,7 +1086,7 @@ Check if the latest measurement is above or below the set value.
                           device has stopped working).
   ------------------------------------------------------------------------
 
-Output Conditional Statement If Options
+Output (On/Off) Conditional Statement If Options
 
 Monitor the state of an output.
 
@@ -1104,10 +1104,27 @@ Monitor the state of an output.
                           duration of time equal to the set “Duration
                           (seconds)”.
 
-  If Duration (seconds)   If “On” is selected, a optional duration
+  If Duration (seconds)   If “On” is selected, an optional duration
                           (seconds) may be set that will trigger the
                           conditional only if the Output is turned on for
                           this specific duration.
+  ------------------------------------------------------------------------
+
+Output (PWM) Conditional Statement If Options
+
+Monitor the state of a PWM output.
+
+  ------------------------------------------------------------------------
+  Setting                 Description
+  ----------------------- ------------------------------------------------
+  If Output               The Output to monitor for a change of state.
+
+  If State                If the duty cycle of the output is greater
+                          than,less than, or equal to the set value,
+                          trigger the Conditional Actions.
+
+  If Duty Cycle (%)       The duty cycle for the Output to be checked
+                          against.
   ------------------------------------------------------------------------
 
 Edge Conditional Statement If Options
