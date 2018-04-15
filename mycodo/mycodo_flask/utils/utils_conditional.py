@@ -58,6 +58,13 @@ def conditional_mod(form):
             cond_mod.output_state = form.output_state.data
             cond_mod.output_duration = form.output_duration.data
 
+        elif cond_mod.conditional_type == 'conditional_output_pwm':
+            error = check_form_output_pwm(form, error)
+
+            cond_mod.unique_id_1 = form.unique_id_1.data
+            cond_mod.direction = form.direction.data
+            cond_mod.output_duty_cycle = form.output_duty_cycle.data
+
         elif cond_mod.conditional_type == 'conditional_sunrise_sunset':
             error = check_form_sunrise_sunset(form, error)
 
@@ -86,7 +93,7 @@ def conditional_del(cond_id):
     """Delete a Conditional"""
     error = []
     action = '{action} {controller}'.format(
-        action=gettext("Mod"),
+        action=gettext("Delete"),
         controller=gettext("Conditional"))
 
     cond = Conditional.query.filter(
@@ -129,7 +136,7 @@ def conditional_action_add(form):
     error = []
     action = '{action} {controller}'.format(
         action=gettext("Add"),
-        controller=gettext("Conditional"))
+        controller='{} {}'.format(gettext("Conditional"), gettext("Action")))
 
     cond = Conditional.query.filter(
         Conditional.unique_id == form.conditional_id.data).first()
@@ -159,7 +166,7 @@ def conditional_action_mod(form):
     error = []
     action = '{action} {controller}'.format(
         action=gettext("Mod"),
-        controller=gettext("Conditional"))
+        controller='{} {}'.format(gettext("Conditional"), gettext("Action")))
 
     error = check_form_actions(form, error)
 
@@ -242,8 +249,8 @@ def conditional_action_del(form):
     """Delete a Conditional Action"""
     error = []
     action = '{action} {controller}'.format(
-        action=gettext("Mod"),
-        controller=gettext("Conditional"))
+        action=gettext("Delete"),
+        controller='{} {}'.format(gettext("Conditional"), gettext("Action")))
 
     cond = Conditional.query.filter(
         Conditional.unique_id == form.conditional_id.data).first()
@@ -253,7 +260,7 @@ def conditional_action_del(form):
     try:
         if not error:
             cond_action_id = ConditionalActions.query.filter(
-                ConditionalActions.unique_id == form.conditional_action_id.data).first().id
+                ConditionalActions.unique_id == form.conditional_action_id.data).first().unique_id
             delete_entry_with_id(ConditionalActions, cond_action_id)
 
     except sqlalchemy.exc.OperationalError as except_msg:
@@ -474,9 +481,9 @@ def check_form_edge(form, error):
     return error
 
 
-def check_cond_edge(cond, error):
+def check_cond_edge(form, error):
     """Checks if the saved variables have any errors"""
-    if not cond.measurement or cond.measurement == '':
+    if not form.measurement or form.measurement == '':
         error.append("Measurement must be set")
 
     return error
@@ -503,20 +510,20 @@ def check_form_measurements(form, error):
     return error
 
 
-def check_cond_measurements(cond, error):
+def check_cond_measurements(form, error):
     """Checks if the saved variables have any errors"""
-    if not cond.measurement or cond.measurement == '':
+    if not form.measurement or form.measurement == '':
         error.append("Measurement must be set".format(
-            meas=cond.measurement))
+            meas=form.measurement))
 
-    if not cond.direction or cond.direction == '':
+    if not form.direction or form.direction == '':
         error.append("State must be set".format(
-            dir=cond.direction))
+            dir=form.direction))
 
-    if not cond.period or cond.period <= 0:
+    if not form.period or form.period <= 0:
         error.append("Period must be greater than 0")
 
-    if not cond.max_age or cond.max_age <= 0:
+    if not form.max_age or form.max_age <= 0:
         error.append("Max Age must be greater than 0")
 
     return error
@@ -531,6 +538,23 @@ def check_form_output(form, error):
     if not form.output_state.data:
         error.append("{id} must be set".format(
             id=form.output_state.label.text))
+
+    return error
+
+
+def check_form_output_pwm(form, error):
+    """Checks if the submitted form has any errors"""
+    if not form.unique_id_1.data:
+        error.append("{id} must be set".format(
+            id=form.unique_id_1.label.text))
+
+    if not form.direction or form.direction == '':
+        error.append("State must be set".format(
+            dir=form.direction))
+
+    if not 0 <= form.output_duty_cycle.data <= 100:
+        error.append("{id} must >= 0 and <= 100".format(
+            id=form.output_duty_cycle.label.text))
 
     return error
 
@@ -564,12 +588,12 @@ def check_form_sunrise_sunset(form, error):
     return error
 
 
-def check_cond_output(cond, error):
+def check_cond_output(form, error):
     """Checks if the saved variables have any errors"""
-    if not cond.unique_id_1 or cond.unique_id_1 == '':
+    if not form.unique_id_1 or form.unique_id_1 == '':
         error.append("An Output must be set")
 
-    if not cond.output_state or cond.output_state == '':
+    if not form.output_state or form.output_state == '':
         error.append("A State must be set")
 
     return error

@@ -20,8 +20,8 @@ class Dashboard(CRUDMixin, db.Model):
     pid_ids = db.Column(db.Text, default='')  # store IDs and measurements to display
     output_ids = db.Column(db.Text, default='')  # store IDs and measurements to display
     math_ids = db.Column(db.Text, default='')  # store Math IDs to display
-
     input_ids_measurements = db.Column(db.Text, default='')  # store IDs and measurements to display
+
     x_axis_duration = db.Column(db.Integer, default=1440)  # X-axis duration (in minutes)
     use_custom_colors = db.Column(db.Boolean, default=False)  # Enable custom colors of graph series
     custom_colors = db.Column(db.Text, default='')  # Custom hex color values (csv)

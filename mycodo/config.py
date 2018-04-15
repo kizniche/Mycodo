@@ -650,7 +650,9 @@ CONDITIONAL_TYPES = {
     'conditional_measurement': {
         'name': lazy_gettext('Measurement')},
     'conditional_output': {
-        'name': lazy_gettext('Output')},
+        'name': lazy_gettext('Output (On/Off)')},
+    'conditional_output_pwm': {
+        'name': lazy_gettext('Output (PWM)')},
     'conditional_edge': {
         'name': lazy_gettext('Edge')},
     'conditional_sunrise_sunset': {

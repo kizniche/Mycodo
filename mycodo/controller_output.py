@@ -567,35 +567,37 @@ class OutputController(threading.Thread):
         This function is executed whenever an output is turned on or off
         It is responsible for executing Output Conditionals
         """
-        conditionals = db_retrieve_table_daemon(Conditional)
-        conditionals = conditionals.filter(
+
+        # Check On/Off Outputs
+        conditionals_output = db_retrieve_table_daemon(Conditional)
+        conditionals_output = conditionals_output.filter(
             Conditional.conditional_type == 'conditional_output')
-        conditionals = conditionals.filter(
+        conditionals_output = conditionals_output.filter(
             Conditional.unique_id_1 == output_id)
-        conditionals = conditionals.filter(
+        conditionals_output = conditionals_output.filter(
             Conditional.is_activated == True)
 
         # Find any Output Conditionals with the output_id of the output that
         # just changed its state
         if self.is_on(output_id):
-            conditionals = conditionals.filter(
+            conditionals_output = conditionals_output.filter(
                 or_(Conditional.output_state == 'on',
                     Conditional.output_state == 'on_any'))
 
             on_with_duration = and_(
                 Conditional.output_state == 'on',
                 Conditional.output_duration == on_duration)
-            conditionals = conditionals.filter(
+            conditionals_output = conditionals_output.filter(
                 or_(Conditional.output_state == 'on_any',
                     on_with_duration))
 
         else:
-            conditionals = conditionals.filter(
+            conditionals_output = conditionals_output.filter(
                 Conditional.output_state == 'off')
 
         # Execute the Conditional Actions for each Output Conditional
         # for this particular Output device
-        for each_conditional in conditionals.all():
+        for each_conditional in conditionals_output.all():
             now = time.time()
             timestamp = datetime.datetime.fromtimestamp(now).strftime('%Y-%m-%d %H:%M:%S')
             message = "{ts}\n[Conditional {cid} ({cname})] Output {oid} ({name}) {state}".format(
@@ -609,6 +611,54 @@ class OutputController(threading.Thread):
             self.control.trigger_conditional_actions(
                 each_conditional.unique_id, message=message,
                 output_state=state, on_duration=on_duration, duty_cycle=duty_cycle)
+
+        # Check PWM Outputs
+        conditionals_output_pwm = db_retrieve_table_daemon(Conditional)
+        conditionals_output_pwm = conditionals_output_pwm.filter(
+            Conditional.conditional_type == 'conditional_output_pwm')
+        conditionals_output_pwm = conditionals_output_pwm.filter(
+            Conditional.unique_id_1 == output_id)
+        conditionals_output_pwm = conditionals_output_pwm.filter(
+            Conditional.is_activated == True)
+
+        # Execute the Conditional Actions for each Output Conditional
+        # for this particular Output device
+        for each_conditional in conditionals_output_pwm.all():
+            trigger_conditional = False
+            duty_cycle = self.output_state(output_id)
+
+            if duty_cycle == 'off':
+                if (each_conditional.direction == 'equal' and
+                        each_conditional.output_duty_cycle == 0):
+                    trigger_conditional = True
+            elif (
+                    (each_conditional.direction == 'above' and
+                     duty_cycle > each_conditional.output_duty_cycle) or
+                    (each_conditional.direction == 'below' and
+                     duty_cycle < each_conditional.output_duty_cycle) or
+                    (each_conditional.direction == 'equal' and
+                     duty_cycle == each_conditional.output_duty_cycle)
+                    ):
+                trigger_conditional = True
+
+            if not trigger_conditional:
+                continue
+
+            now = time.time()
+            timestamp = datetime.datetime.fromtimestamp(now).strftime('%Y-%m-%d %H:%M:%S')
+            message = "{ts}\n[Conditional {cid} ({cname})] Output {oid} " \
+                      "({name}) Duty Cycle {actual_dc} {state} {duty_cycle}".format(
+                ts=timestamp,
+                cid=each_conditional.unique_id.split('-')[0],
+                cname=each_conditional.name,
+                name=each_conditional.name,
+                oid=output_id,
+                actual_dc=duty_cycle,
+                state = each_conditional.direction,
+                duty_cycle = each_conditional.output_duty_cycle)
+
+            self.control.trigger_conditional_actions(
+                each_conditional.unique_id, message=message, duty_cycle=duty_cycle)
 
     def all_outputs_initialize(self, outputs):
         for each_output in outputs:

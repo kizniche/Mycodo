@@ -27,6 +27,7 @@ class Conditional(FlaskForm):
     unique_id_1 = StringField(lazy_gettext('If Output'))
     output_state = StringField(lazy_gettext('If State'))
     output_duration = DecimalField(lazy_gettext('If Duration (seconds)'))
+    output_duty_cycle = DecimalField(lazy_gettext('If Duty Cycle (%)'))
 
     # Input conditional options
     measurement = StringField(lazy_gettext('If Measurement'))

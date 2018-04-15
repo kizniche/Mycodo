@@ -19,6 +19,7 @@ class Conditional(CRUDMixin, db.Model):
     # Relay options
     output_state = db.Column(db.Text, default='')  # What action to watch output for
     output_duration = db.Column(db.Float, default=0.0)
+    output_duty_cycle = db.Column(db.Float, default=0.0)
 
     # Sunrise/sunset
     rise_or_set = db.Column(db.Text, default='sunrise')
@@ -34,7 +35,7 @@ class Conditional(CRUDMixin, db.Model):
     measurement = db.Column(db.Text, default='')  # which measurement to monitor
     max_age = db.Column(db.Integer, default=120.0)  # max age of the measurement
     edge_detected = db.Column(db.Text, default='')
-    direction = db.Column(db.Text, default='')  # 'above' or 'below' setpoint
+    direction = db.Column(db.Text, default='')  # 'above', 'below', 'equal'
     setpoint = db.Column(db.Float, default=0.0)
 
     def __repr__(self):
@@ -46,7 +47,7 @@ class ConditionalActions(CRUDMixin, db.Model):
 
     id = db.Column(db.Integer, unique=True, primary_key=True)
     unique_id = db.Column(db.String, nullable=False, unique=True, default=set_uuid)
-    conditional_id = db.Column(db.String, db.ForeignKey('output.unique_id'), default=None)
+    conditional_id = db.Column(db.String, db.ForeignKey('conditional.unique_id'), default=None)
 
     # Actions
     do_unique_id = db.Column(db.Text, default='')

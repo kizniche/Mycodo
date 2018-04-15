@@ -39,6 +39,7 @@ def func_add(form_add_func):
                     db.session.commit()
             elif form_add_func.func_type.data in ['conditional_measurement',
                                                   'conditional_output',
+                                                  'conditional_output_pwm',
                                                   'conditional_edge',
                                                   'conditional_sunrise_sunset']:
                 new_func = Conditional()
