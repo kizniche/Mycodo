@@ -38,6 +38,7 @@ import time
 import timeit
 
 import rpyc
+from collections import OrderedDict
 from daemonize import Daemonize
 from pkg_resources import parse_version
 from rpyc.utils.server import ThreadedServer
@@ -190,14 +191,6 @@ def mycodo_service(mycodo):
             return mycodo.refresh_daemon_misc_settings()
 
         @staticmethod
-        def exposed_refresh_conditionals():
-            """
-            Instruct the input controller to refresh the settings of
-            conditional statements
-            """
-            return mycodo.refresh_conditionals()
-
-        @staticmethod
         def exposed_output_state(output_id):
             """Return the output state (not pin but whether output is on or off"""
             return mycodo.output_state(output_id)
@@ -345,11 +338,11 @@ class DaemonController:
         # Controllers that may launch multiple threads
         # Order matters for starting and shutting down
         self.cont_types = [
-            'Conditional',
             'Input',
             'Math',
             'PID',
             'LCD',
+            'Conditional'
         ]
         self.thread_shutdown_timer = None
         self.start_time = time.time()
@@ -835,11 +828,11 @@ class DaemonController:
         try:
             # Obtain database configuration options
             db_tables = {
+                'Conditional': db_retrieve_table_daemon(Conditional, entry='all'),
                 'Input': db_retrieve_table_daemon(Input, entry='all'),
                 'Math': db_retrieve_table_daemon(Math, entry='all'),
                 'PID': db_retrieve_table_daemon(PID, entry='all'),
-                'LCD': db_retrieve_table_daemon(LCD, entry='all'),
-                'Conditional': db_retrieve_table_daemon(Conditional, entry='all')
+                'LCD': db_retrieve_table_daemon(LCD, entry='all')
             }
 
             self.logger.debug("Starting Output controller")

@@ -2,9 +2,9 @@
   <div class="col-auto">
     <label class="control-label">Current Sunrise & Sunset at Geolocation</label>
     <div>
-      {% if sunrise_sunset_calculated[each_cond.id]['sunrise'] and sunrise_sunset_calculated[each_cond.id]['sunset'] %}
-        Sunrise: {{sunrise_sunset_calculated[each_cond.id]['sunrise']}}<br/>
-        Sunset: {{sunrise_sunset_calculated[each_cond.id]['sunset']}}
+      {% if sunrise_sunset_calculated[each_cond.unique_id]['sunrise'] and sunrise_sunset_calculated[each_cond.unique_id]['sunset'] %}
+        Sunrise: {{sunrise_sunset_calculated[each_cond.unique_id]['sunrise']}}<br/>
+        Sunset: {{sunrise_sunset_calculated[each_cond.unique_id]['sunset']}}
       {% else %}
         Could not calculate sunrise/sunset times
       {% endif %}
@@ -14,9 +14,9 @@
   <div class="col-auto">
     <label class="control-label">Sunrise & Sunset with Offsets</label>
     <div>
-      {% if sunrise_sunset_calculated[each_cond.id]['offset_sunrise'] and sunrise_sunset_calculated[each_cond.id]['offset_sunset'] %}
-        Sunrise: {{sunrise_sunset_calculated[each_cond.id]['offset_sunrise']}}<br/>
-        Sunset: {{sunrise_sunset_calculated[each_cond.id]['offset_sunset']}}
+      {% if sunrise_sunset_calculated[each_cond.unique_id]['offset_sunrise'] and sunrise_sunset_calculated[each_cond.unique_id]['offset_sunset'] %}
+        Sunrise: {{sunrise_sunset_calculated[each_cond.unique_id]['offset_sunrise']}}<br/>
+        Sunset: {{sunrise_sunset_calculated[each_cond.unique_id]['offset_sunset']}}
       {% else %}
         Could not calculate sunrise/sunset times
       {% endif %}

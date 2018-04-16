@@ -4,6 +4,7 @@ import logging
 import os
 import sqlalchemy
 from RPi import GPIO
+from flask import current_app
 from flask import flash
 from flask import redirect
 from flask import url_for
@@ -41,10 +42,13 @@ def input_add(form_add):
         controller=gettext("Input"))
     error = []
 
-    unmet_deps = return_dependencies(form_add.input_type.data)
-    if unmet_deps:
-        error.append("The {dev} device you're trying to add has unmet dependencies: {dep}".format(
-            dev=form_add.input_type.data, dep=unmet_deps))
+    if current_app.config['TESTING']:
+        unmet_deps = False
+    else:
+        unmet_deps = return_dependencies(form_add.input_type.data)
+        if unmet_deps:
+            error.append("The {dev} device you're trying to add has unmet dependencies: {dep}".format(
+                dev=form_add.input_type.data, dep=unmet_deps))
 
     if form_add.validate():
         new_sensor = Input()

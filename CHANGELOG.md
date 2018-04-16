@@ -17,6 +17,7 @@ Version 6.0.0 has changes to the database schema that could not be upgraded to. 
 
  - Remove multiplexer integration (use kernel driver)
  - Remove Timers (Conditionals have replaced their functionality)
+ - Improve testing coverage of frontend ([#444](https://github.com/kizniche/mycodo/issues/444))
 
 
 ## 5.7.2 (2018-04-07)

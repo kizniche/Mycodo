@@ -643,7 +643,6 @@ class ConditionalController(threading.Thread):
                         args=(controller_type,
                               cond_action.do_unique_id,))
                     activate_controller.start()
-                    time.sleep(0.5)
 
             # Deactivate Controller
             elif cond_action.do_action == 'deactivate_controller':
@@ -666,7 +665,6 @@ class ConditionalController(threading.Thread):
                         args=(controller_type,
                               cond_action.do_unique_id,))
                     deactivate_controller.start()
-                    time.sleep(0.5)
 
             # Resume PID controller
             elif cond_action.do_action == 'resume_pid':

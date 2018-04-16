@@ -91,7 +91,6 @@ def conditional_mod(form):
 
         if not error:
             db.session.commit()
-            check_refresh_conditional(form.conditional_id.data)
 
     except sqlalchemy.exc.OperationalError as except_msg:
         error.append(except_msg)
@@ -247,7 +246,6 @@ def conditional_action_mod(form):
 
         if not error:
             db.session.commit()
-            check_refresh_conditional(form.conditional_id.data)
 
     except sqlalchemy.exc.OperationalError as except_msg:
         error.append(except_msg)
@@ -358,32 +356,6 @@ def conditional_deactivate(cond_id):
             'deactivate',
             'Conditional',
             cond_id)
-
-    flash_success_errors(error, action, url_for('routes_page.page_function'))
-
-
-def check_refresh_conditional(cond_id):
-    """Check if the Conditional is active, and if so, refresh the settings"""
-    error = []
-    action = '{action} {controller}'.format(
-        action=gettext("Refresh"),
-        controller=gettext("Conditional"))
-
-    cond = Conditional.query.filter(
-        Conditional.unique_id == cond_id).first()
-
-    if cond.conditional_type in ['conditional_edge',
-                                 'conditional_measurement',
-                                 'conditional_run_pwm_method',
-                                 'conditional_sunrise_sunset',
-                                 'conditional_timer_daily_time_point',
-                                 'conditional_timer_duration'
-                                 ]:
-        try:
-            control = DaemonControl()
-            control.refresh_conditionals()
-        except Exception as msg:
-            error.append("Exception: {err}".format(err=msg))
 
     flash_success_errors(error, action, url_for('routes_page.page_function'))
 

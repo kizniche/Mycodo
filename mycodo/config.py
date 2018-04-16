@@ -136,12 +136,6 @@ DEVICE_INFO = {
         'i2c-address-change': False,
         'py-dependencies': ['Adafruit_BME280'],
         'measure': ['altitude', 'dewpoint', 'humidity', 'pressure', 'temperature']},
-    'BMP': {  # TODO: Remove in next major version. BMP180 replaced this name
-        'name': 'BMP180',
-        'i2c-addresses': ['0x77'],
-        'i2c-address-change': False,
-        'py-dependencies': ['Adafruit_BMP'],
-        'measure': ['altitude', 'pressure', 'temperature']},
     'BMP180': {
         'name': 'BMP180',
         'i2c-addresses': ['0x77'],
@@ -180,12 +174,12 @@ DEVICE_INFO = {
         'name': 'DS1822',
         'py-dependencies': ['w1thermsensor'],
         'measure': ['temperature']},
-    'DS28EA00': {
-        'name': 'DS28EA00',
+    'DS1825': {
+        'name': 'DS1825',
         'py-dependencies': ['w1thermsensor'],
         'measure': ['temperature']},
-    'DS1825_MAX31850K': {
-        'name': 'DS1825/MAX31850K',
+    'DS28EA00': {
+        'name': 'DS28EA00',
         'py-dependencies': ['w1thermsensor'],
         'measure': ['temperature']},
     'EDGE': {
@@ -210,6 +204,10 @@ DEVICE_INFO = {
         'name': 'Linux Command',
         'py-dependencies': [],
         'measure': []},
+    'MAX31850K': {
+        'name': 'MAX31850K',
+        'py-dependencies': ['w1thermsensor'],
+        'measure': ['temperature']},
     'MAX31855': {
         'name': 'MAX13855K',
         'py-dependencies': ['Adafruit_MAX31855'],

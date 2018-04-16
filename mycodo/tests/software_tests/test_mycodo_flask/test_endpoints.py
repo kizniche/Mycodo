@@ -7,7 +7,7 @@ from mycodo.databases.models import User
 
 from mycodo.tests.software_tests.conftest import login_user
 from mycodo.tests.software_tests.factories import UserFactory
-
+from mycodo.config import DEVICE_INFO
 
 # ----------------------
 #   Non-Logged In Tests
@@ -133,21 +133,24 @@ def test_routes_logged_in_as_admin(_, testapp):
         assert route[1] in response, "Unexpected HTTP Response: \n{body}".format(body=response.body)
 
 
-# @mock.patch('mycodo.mycodo_flask.routes_authentication.login_log')
-# def test_add_sensor_logged_in_as_admin(_, testapp):
-#     """ Verifies adding a sensor as a logged in admin user """
-#     login_user(testapp, 'admin', '53CR3t_p4zZW0rD')
-#
-#     response = add_sensor(testapp)
-#
-#     # Verify success message flashed
-#     print(response)
-#     assert "RPi Sensor with ID" in response
-#     assert "successfully added" in response
-#
-#     # Verify data was entered into the database
-#     for each_sensor in Sensor.query.all():
-#         assert 'RPi' in each_sensor.name, "Sensor name doesn't match: {}".format(each_sensor.name)
+@mock.patch('mycodo.mycodo_flask.routes_authentication.login_log')
+def test_add_all_inputs_logged_in_as_admin(_, testapp):
+    """ Verifies adding all inputs as a logged in admin user """
+    login_user(testapp, 'admin', '53CR3t_p4zZW0rD')
+    input_count = 0
+    for each_input, each_data in DEVICE_INFO.items():
+        response = add_input(testapp, sensor_type=each_input)
+
+        # Verify success message flashed
+        assert "{} Input with ID".format(each_input) in response
+        assert "successfully added" in response
+
+        # Verify data was entered into the database
+        input_count += 1
+        assert Input.query.count() == input_count, "Number of Inputs doesn't match: In DB {}, Should be: {}".format(Input.query.count(), input_count)
+
+        input_dev = Input.query.filter(Input.id == input_count).first()
+        assert each_data['name'] in input_dev.name, "Input name doesn't match: {}".format(each_input)
 
 
 # ---------------------------
@@ -191,12 +194,11 @@ def create_user(mycodo_db, role_id, name, password):
     return new_user
 
 
-def add_sensor(testapp, sensor_type='RPi', qty=1):
-    """ Go to the sensor page and create one or more sensors """
-    form = testapp.get('/input').maybe_follow().forms['new_sensor_form']
-    form['numberSensors'] = qty
-    form.select(name='sensor', value=sensor_type)
-    response = form.submit().maybe_follow()
+def add_input(testapp, sensor_type='RPiCPULoad'):
+    """ Go to the data page and create one or more inputs """
+    form = testapp.get('/data').maybe_follow().forms['new_sensor_form']
+    form.select(name='input_type', value=sensor_type)
+    response = form.submit(name='input_add', value='Add Input').maybe_follow()
     # response.showbrowser()
     return response
 
