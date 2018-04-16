@@ -74,7 +74,7 @@
         {% include 'pages/function_options/conditional_options/timer_duration.html' %}
       {% endif %}
 
-    </form>
+      </form>
 
     {% for each_cond_action in conditional_actions if each_cond_action.conditional_id == each_cond.unique_id %}
 
@@ -104,7 +104,7 @@
       </div>
 
       {% if each_cond_action.do_action == 'command' %}
-        <div class="col-xs-12">
+        <div class="col-auto">
           See <a href="/help#conditional-statement-variables">Conditional Statement Variables</a> for a list of replaceable variables able to be used in commands.
         </div>
       {% endif %}
@@ -134,9 +134,9 @@
 
   </div>
 
-  {%- endfor -%}
+  <div style="padding-bottom: 1em; "></div>
 
-  <div style="clear: both; padding: 0.5em 0;"></div>
+  {%- endfor -%}
 
 {%- endfor -%}
 {%- endif -%}

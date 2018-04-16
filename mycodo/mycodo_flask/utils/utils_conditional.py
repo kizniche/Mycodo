@@ -12,6 +12,7 @@ from mycodo.databases.models import ConditionalActions
 from mycodo.databases.models import DisplayOrder
 from mycodo.mycodo_client import DaemonControl
 from mycodo.mycodo_flask.extensions import db
+from mycodo.mycodo_flask.utils.utils_general import controller_activate_deactivate
 from mycodo.mycodo_flask.utils.utils_general import delete_entry_with_id
 from mycodo.mycodo_flask.utils.utils_general import flash_success_errors
 from mycodo.mycodo_flask.utils.utils_general import reorder
@@ -315,7 +316,6 @@ def conditional_activate(cond_id):
 
     mod_cond = Conditional.query.filter(
         Conditional.unique_id == cond_id).first()
-    mod_cond.is_activated = True
 
     # Check for errors in the Conditional settings
     if mod_cond.conditional_type == 'conditional_edge':
@@ -325,21 +325,23 @@ def conditional_activate(cond_id):
     elif mod_cond.conditional_type == 'conditional_output':
         error = check_cond_output(mod_cond, error)
 
-    if mod_cond.conditional_type == 'conditional_run_pwm_method':
-        mod_cond_ready = Conditional.query.filter(
-            Conditional.unique_id == cond_id).first()
-        mod_cond_ready.method_start_time = 'Ready'
-        db.session.commit()
-
     # Check for errors in each Conditional Action
     cond_actions = ConditionalActions.query.filter(
         ConditionalActions.conditional_id == cond_id).all()
     for each_action in cond_actions:
         error = check_cond_actions(each_action, error)
 
-    if not error:
+    if mod_cond.conditional_type == 'conditional_run_pwm_method':
+        mod_cond_ready = Conditional.query.filter(
+            Conditional.unique_id == cond_id).first()
+        mod_cond_ready.method_start_time = 'Ready'
         db.session.commit()
-        check_refresh_conditional(cond_id)
+
+    if not error:
+        controller_activate_deactivate(
+            'activate',
+            'Conditional',
+            cond_id)
 
     flash_success_errors(error, action, url_for('routes_page.page_function'))
 
@@ -351,13 +353,11 @@ def conditional_deactivate(cond_id):
         action=gettext("Deactivate"),
         controller=gettext("Conditional"))
 
-    mod_cond = Conditional.query.filter(
-        Conditional.unique_id == cond_id).first()
-    mod_cond.is_activated = False
-
     if not error:
-        db.session.commit()
-        check_refresh_conditional(cond_id)
+        controller_activate_deactivate(
+            'deactivate',
+            'Conditional',
+            cond_id)
 
     flash_success_errors(error, action, url_for('routes_page.page_function'))
 

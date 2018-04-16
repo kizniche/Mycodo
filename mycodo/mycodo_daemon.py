@@ -56,6 +56,7 @@ from mycodo.controller_math import MathController
 from mycodo.controller_output import OutputController
 from mycodo.controller_pid import PIDController
 from mycodo.databases.models import Camera
+from mycodo.databases.models import Conditional
 from mycodo.databases.models import Input
 from mycodo.databases.models import LCD
 from mycodo.databases.models import Math
@@ -332,7 +333,7 @@ class DaemonController:
         # controller
         self.controller = {
             # May only launch a single thread for this controller
-            'Conditional': None,
+            'Conditional': {},
             'Output': None,
             # May launch multiple threads per each of these controllers
             'Input': {},
@@ -344,6 +345,7 @@ class DaemonController:
         # Controllers that may launch multiple threads
         # Order matters for starting and shutting down
         self.cont_types = [
+            'Conditional',
             'Input',
             'Math',
             'PID',
@@ -452,7 +454,10 @@ class DaemonController:
 
             controller_manage = {}
             ready = threading.Event()
-            if cont_type == 'LCD':
+            if cont_type == 'Conditional':
+                controller_manage['type'] = Conditional
+                controller_manage['function'] = ConditionalController
+            elif cont_type == 'LCD':
                 controller_manage['type'] = LCD
                 controller_manage['function'] = LCDController
             elif cont_type == 'Input':
@@ -471,13 +476,7 @@ class DaemonController:
             # Check if the controller actually exists
             controller = db_retrieve_table_daemon(controller_manage['type'],
                                                   unique_id=cont_id)
-
-            if cont_type == 'Conditional':
-                # Only refresh conditional settings
-                self.controller['Conditional'].setup_conditionals()
-                return 0, "{type} controller with ID {id} " \
-                          "activated.".format(type=cont_type, id=cont_id)
-            elif controller:
+            if controller:
                 self.controller[cont_type][cont_id] = controller_manage['function'](
                     ready, cont_id)
                 self.controller[cont_type][cont_id].daemon = True
@@ -508,12 +507,7 @@ class DaemonController:
         :type cont_id: str
         """
         try:
-            if cont_type == 'Conditional':
-                # Only refresh conditional settings
-                self.controller['Conditional'].setup_conditionals()
-                return 0, "{type} controller with ID {id} " \
-                          "activated.".format(type=cont_type, id=cont_id)
-            elif cont_id in self.controller[cont_type]:
+            if cont_id in self.controller[cont_type]:
                 if self.controller[cont_type][cont_id].is_running():
                     try:
                         self.controller[cont_type][cont_id].stop_controller()
@@ -547,6 +541,9 @@ class DaemonController:
 
     def check_daemon(self):
         try:
+            for cond_id in self.controller['Conditional']:
+                if not self.controller['Conditional'][cond_id].is_running():
+                    return "Error: Conditional ID {}".format(cond_id)
             for lcd_id in self.controller['LCD']:
                 if not self.controller['LCD'][lcd_id].is_running():
                     return "Error: LCD ID {}".format(lcd_id)
@@ -730,14 +727,6 @@ class DaemonController:
                       " {err}".format(err=except_msg)
             self.logger.exception(message)
 
-    def refresh_conditionals(self):
-        try:
-            return self.controller['Conditional'].setup_conditionals()
-        except Exception as except_msg:
-            message = "Could not refresh conditional:" \
-                      " {err}".format(err=except_msg)
-            self.logger.exception(message)
-
     def output_off(self, output_id, trigger_conditionals=True):
         """
         Turn output off using default output controller
@@ -849,7 +838,8 @@ class DaemonController:
                 'Input': db_retrieve_table_daemon(Input, entry='all'),
                 'Math': db_retrieve_table_daemon(Math, entry='all'),
                 'PID': db_retrieve_table_daemon(PID, entry='all'),
-                'LCD': db_retrieve_table_daemon(LCD, entry='all')
+                'LCD': db_retrieve_table_daemon(LCD, entry='all'),
+                'Conditional': db_retrieve_table_daemon(Conditional, entry='all')
             }
 
             self.logger.debug("Starting Output controller")
@@ -872,11 +862,6 @@ class DaemonController:
                         type=each_controller))
 
             time.sleep(0.5)
-
-            self.logger.debug("Starting Conditional controller")
-            self.controller['Conditional'] = ConditionalController()
-            self.controller['Conditional'].daemon = True
-            self.controller['Conditional'].start()
 
         except Exception as except_msg:
             message = "Could not start all controllers:" \
@@ -926,8 +911,8 @@ class DaemonController:
             self, conditional_id, message='', edge=None,
             output_state=None, on_duration=None, duty_cycle=None):
         try:
-            return self.controller['Conditional'].trigger_conditional_actions(
-                conditional_id, message=message, edge=edge,
+            return self.controller['Conditional'][conditional_id].trigger_conditional_actions(
+                message=message, edge=edge,
                 output_state=output_state, on_duration=on_duration,
                 duty_cycle=duty_cycle)
         except Exception as except_msg:

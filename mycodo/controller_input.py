@@ -84,14 +84,15 @@ class InputController(threading.Thread):
         self.lock = {}
         self.measurement = None
         self.measurement_success = False
-        self.input_id = input_id
         self.control = DaemonControl()
         self.pause_loop = False
         self.verify_pause_loop = True
 
-        input_dev = db_retrieve_table_daemon(Input, unique_id=self.input_id)
+        self.input_id = input_id
+        input_dev = db_retrieve_table_daemon(
+            Input, unique_id=self.input_id)
+
         self.input_dev = input_dev
-        self.input_id = input_dev.id
         self.input_name = input_dev.name
         self.unique_id = input_dev.unique_id
         self.i2c_bus = input_dev.i2c_bus

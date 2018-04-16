@@ -7,6 +7,7 @@ Version 6.0.0 has changes to the database schema that could not be upgraded to. 
  - Add Conditionals: Run PWM Method, Daily Time Point Timer, Duration Timer, Output PWM ([#444](https://github.com/kizniche/mycodo/issues/444), [#448](https://github.com/kizniche/mycodo/issues/448))
  - Add Conditional Actions: Activate/Deactivate any controller, Set PID Method ([#440](https://github.com/kizniche/mycodo/issues/440))
  - Use actual range value for color stops of solid gauges ([#434](https://github.com/kizniche/mycodo/issues/434))
+ - Refactor Conditional Controllers to be multithreaded
 
 ### Bugfixes
 
