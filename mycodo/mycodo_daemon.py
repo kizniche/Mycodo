@@ -38,7 +38,6 @@ import time
 import timeit
 
 import rpyc
-from collections import OrderedDict
 from daemonize import Daemonize
 from pkg_resources import parse_version
 from rpyc.utils.server import ThreadedServer
