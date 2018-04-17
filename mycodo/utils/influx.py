@@ -60,11 +60,7 @@ def format_influxdb_data(device_id, measure_type, value, timestamp=None):
     :type timestamp: datetime object
 
     """
-    # TODO: Remove this some time in the future, force pressure to be float
-    if measure_type == 'pressure':
-        checked_value = int(value)
-    else:
-        checked_value = float(value)
+    checked_value = float(value)
 
     if timestamp:
         return {

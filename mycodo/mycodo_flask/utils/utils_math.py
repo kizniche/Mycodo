@@ -167,7 +167,6 @@ def math_mod(form_mod_math, form_mod_type=None):
             if 'temperature' not in mod_math.wet_bulb_t_measure:
                 error.append("Invalid wet-bulb temperature selection: Must be a temperature measurement")
 
-
             if form_mod_type.pressure.data:
                 mod_math.pressure_pa_id = form_mod_type.pressure.data.split(',')[0]
                 pressure_input = Input.query.filter(
@@ -204,17 +203,6 @@ def math_del(form_mod_math):
                 'deactivate',
                 'Math',
                 form_mod_math.math_id.data)
-
-        # Delete any conditionals associated with the controller
-        conditionals = Conditional.query.filter(
-            Conditional.math_id == form_mod_math.math_id.data).all()
-        for each_cond in conditionals:
-            conditional_actions = ConditionalActions.query.filter(
-                ConditionalActions.conditional_id == each_cond.id).all()
-            for each_cond_action in conditional_actions:
-                db.session.delete(each_cond_action)
-            db.session.delete(each_cond)
-        db.session.commit()
 
         delete_entry_with_id(Math, form_mod_math.math_id.data)
         try:
