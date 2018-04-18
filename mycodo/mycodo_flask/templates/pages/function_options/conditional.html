@@ -118,11 +118,7 @@
       {{form_conditional_actions.conditional_id(class_='form-control', value=each_cond.unique_id)}}
       <div class="row small-gutters" style="padding: 1.5em 0 0.2em 0.1em">
         <div class="col-auto">
-          <select class="form-control form-tooltip form-dropdown" id="do_action" name="do_action" data-placement="top" title="{{_('The action to perform when the conditional is True')}}">
-            {% for each_action, each_action_string in conditional_actions_list.items() %}
-              <option value="{{each_action}}">{{_(each_action_string)}}</option>
-            {% endfor %}
-          </select>
+        {{form_conditional_actions.do_action(class_='form-control')}}
         </div>
         <div class="col-auto">
           {{form_conditional_actions.add_action(class_='form-control btn btn-default')}}

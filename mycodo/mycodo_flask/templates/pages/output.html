@@ -165,11 +165,7 @@
           {{form_add_output.output_quantity(class_='form-control', type="number", value=1, **{'title':_('Quantity')})}}
         </div>
         <div class="col-auto">
-          <select class="form-control form-tooltip form-dropdown" id="output_type" name="output_type" data-placement="top" title="{{_('Output Type')}}">
-            {% for each_option in outputs %}
-              <option value="{{each_option[0]}}">{{each_option[1]}}</option>
-            {% endfor %}
-          </select>
+          {{form_add_output.output_type(class_='form-control')}}
         </div>
         <div class="col-auto">
           {{form_add_output.output_add(class_='btn btn-primary btn-block')}}

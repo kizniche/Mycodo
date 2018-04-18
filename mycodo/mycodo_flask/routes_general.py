@@ -642,21 +642,33 @@ def pid_mod_unique_id(unique_id, state):
     elif state == 'pause_pid':
         pid.is_paused = True
         pid.save()
-        return_str = daemon.pid_pause(pid.unique_id)
+        if pid.is_activated:
+            return_str = daemon.pid_pause(pid.unique_id)
+        else:
+            return_str = "PID Paused (Note: PID is not currently active)"
         return return_str
     elif state == 'hold_pid':
         pid.is_held = True
         pid.save()
-        return_str = daemon.pid_hold(pid.unique_id)
+        if pid.is_activated:
+            return_str = daemon.pid_hold(pid.unique_id)
+        else:
+            return_str = "PID Held (Note: PID is not currently active)"
         return return_str
     elif state == 'resume_pid':
         pid.is_held = False
         pid.is_paused = False
         pid.save()
-        return_str = daemon.pid_resume(pid.unique_id)
+        if pid.is_activated:
+            return_str = daemon.pid_resume(pid.unique_id)
+        else:
+            return_str = "PID Resumed (Note: PID is not currently active)"
         return return_str
     elif 'set_setpoint_pid' in state:
         pid.setpoint = state.split('|')[1]
         pid.save()
-        return_str = daemon.pid_set(pid.unique_id, 'setpoint', float(state.split('|')[1]))
+        if pid.is_activated:
+            return_str = daemon.pid_set(pid.unique_id, 'setpoint', float(state.split('|')[1]))
+        else:
+            return_str = "PID Setpoint changed (Note: PID is not currently active)"
         return return_str

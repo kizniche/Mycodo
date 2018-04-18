@@ -12,6 +12,7 @@ Version 6.0.0 has changes to the database schema that could not be upgraded to. 
 ### Bugfixes
 
  - Fix Hold bug in PID controllers
+ - Fix error-handing when changing PID setting from Dashboard if PID is inactive ([#449](https://github.com/kizniche/mycodo/issues/449))
 
 ### Miscellaneous
 

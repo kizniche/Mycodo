@@ -23,7 +23,6 @@ from flask_babel import gettext
 from mycodo.config import ALEMBIC_VERSION
 from mycodo.config import BACKUP_LOG_FILE
 from mycodo.config import CONDITIONAL_ACTIONS
-from mycodo.config import CONDITIONAL_TYPES
 from mycodo.config import DAEMON_LOG_FILE
 from mycodo.config import DAEMON_PID_FILE
 from mycodo.config import DEPENDENCY_LOG_FILE
@@ -1045,7 +1044,6 @@ def page_function():
                            choices_math=choices_math,
                            choices_pid=choices_pid,
                            conditional=conditional,
-                           conditional_types=CONDITIONAL_TYPES,
                            conditional_actions=conditional_actions,
                            conditional_actions_list=CONDITIONAL_ACTIONS,
                            controllers=controllers,

@@ -8,9 +8,13 @@ from flask_wtf import FlaskForm
 from wtforms import BooleanField
 from wtforms import DecimalField
 from wtforms import IntegerField
+from wtforms import SelectField
 from wtforms import StringField
 from wtforms import SubmitField
 from wtforms import widgets
+from wtforms.validators import DataRequired
+
+from mycodo.config import CONDITIONAL_ACTIONS
 
 
 #
@@ -72,7 +76,10 @@ class ConditionalActions(FlaskForm):
         'Conditional ID', widget=widgets.HiddenInput())
     conditional_action_id = StringField(
         'Conditional Action ID', widget=widgets.HiddenInput())
-    do_action = StringField(lazy_gettext('Action to Perform'))
+    do_action = SelectField(
+        choices=CONDITIONAL_ACTIONS,
+        validators=[DataRequired()]
+    )
     do_action_string = StringField(lazy_gettext('Action String'))
     do_unique_id = StringField(lazy_gettext('Controller ID'))
     do_output_state = StringField(lazy_gettext('Then State'))

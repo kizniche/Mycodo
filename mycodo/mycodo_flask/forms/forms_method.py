@@ -12,11 +12,17 @@ from wtforms import SelectField
 from wtforms import StringField
 from wtforms import SubmitField
 from wtforms import widgets
+from wtforms.validators import DataRequired
+
+from mycodo.config import METHODS
 
 
 class MethodCreate(FlaskForm):
     name = StringField(lazy_gettext('Name'))
-    method_type = StringField(lazy_gettext('Method Type'))
+    method_type = SelectField(
+        choices=METHODS,
+        validators=[DataRequired()]
+    )
     controller_type = HiddenField('Controller Type')
     Submit = SubmitField(lazy_gettext('Create New Method'))
 

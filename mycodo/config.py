@@ -358,6 +358,15 @@ MATH_INFO = {
         'measure': []}
 }
 
+# Methods
+METHODS = [
+    ('Date', 'Time/Date'),
+    ('Duration', 'Duration'),
+    ('Daily', 'Daily (Time-Based)'),
+    ('DailySine', 'Daily (Sine Wave)'),
+    ('DailyBezier', 'Daily (Bezier Curve)')
+]
+
 # Method info
 METHOD_INFO = {
     'DailyBezier': {
@@ -548,9 +557,47 @@ CALIBRATION_DEVICES = [
     ('setup_ds_resolution', 'DS-Type Temperature Sensors (e.g. DS18B20)')
 ]
 
-# Measurements that must be stured in influxdb as an integer instead of a float
-MEASUREMENT_INTEGERS = [
-    'pressure'
+PIDS = [
+    ('pid', 'PID Controller')
+]
+
+def generate_conditional_name(name):
+    return '{}: {}'.format(lazy_gettext('Conditional'), lazy_gettext(name))
+
+# Conditional Types
+CONDITIONALS = [
+    ('conditional_measurement', generate_conditional_name('Measurement')),
+    ('conditional_output', generate_conditional_name('Output (On/Off)')),
+    ('conditional_output_pwm', generate_conditional_name('Output (PWM)')),
+    ('conditional_edge', generate_conditional_name('Edge')),
+    ('conditional_run_pwm_method', generate_conditional_name('Run PWM Method')),
+    ('conditional_sunrise_sunset', generate_conditional_name('Sunrise/Sunset')),
+    ('conditional_timer_daily_time_point', generate_conditional_name('Timer (Daily)')),
+    ('conditional_timer_duration', generate_conditional_name('Timer (Duration)'))
+]
+
+# Conditional actions
+CONDITIONAL_ACTIONS = [
+    ('output', lazy_gettext('Output (Duration)')),
+    ('output_pwm', lazy_gettext('Output (Duty Cycle)')),
+    ('command', lazy_gettext('Execute Command')),
+    ('activate_controller', lazy_gettext('Activate Controller')),
+    ('deactivate_controller', lazy_gettext('Deactivate Controller')),
+    ('pause_pid', lazy_gettext('PID Pause')),
+    ('resume_pid', lazy_gettext('PID Resume')),
+    ('method_pid', lazy_gettext('PID Set Method')),
+    ('setpoint_pid', lazy_gettext('PID Set Setpoint')),
+    ('email', lazy_gettext('Email Notification')),
+    ('flash_lcd_off', lazy_gettext('LCD Flashing Off')),
+    ('flash_lcd_on', lazy_gettext('LCD Flashing On')),
+    ('lcd_backlight_off', lazy_gettext('LCD Backlight Off')),
+    ('lcd_backlight_on', lazy_gettext('LCD Backlight On')),
+    ('photo', lazy_gettext('Capture Photo')),
+
+    # TODO: These have been disabled until they can be properly tested
+    # ('photo_email', lazy_gettext('Email Photo')),
+    # ('video', lazy_gettext('Video')),
+    # ('video_email', lazy_gettext('Email Video'))
 ]
 
 # Devices that have a default address that doesn't change
@@ -642,41 +689,6 @@ LIST_DEVICES_INTERNAL_PI = [
     'SIGNAL_PWM',
     'SIGNAL_RPM'
 ]
-
-# Conditional Types
-CONDITIONAL_TYPES = [
-    ('conditional_measurement', lazy_gettext('Measurement')),
-    ('conditional_output', lazy_gettext('Output (On/Off)')),
-    ('conditional_output_pwm', lazy_gettext('Output (PWM)')),
-    ('conditional_edge', lazy_gettext('Edge')),
-    ('conditional_run_pwm_method', lazy_gettext('Run PWM Method')),
-    ('conditional_sunrise_sunset', lazy_gettext('Sunrise/Sunset')),
-    ('conditional_timer_daily_time_point', lazy_gettext('Timer (Daily)')),
-    ('conditional_timer_duration', lazy_gettext('Timer (Duration)'))
-]
-
-# Conditional actions
-# TODO: Some have been disabled until they can be properly tested
-CONDITIONAL_ACTIONS = collections.OrderedDict([
-    ('output', lazy_gettext('Output (Duration)')),
-    ('output_pwm', lazy_gettext('Output (Duty Cycle)')),
-    ('command', lazy_gettext('Execute Command')),
-    ('activate_controller', lazy_gettext('Activate Controller')),
-    ('deactivate_controller', lazy_gettext('Deactivate Controller')),
-    ('pause_pid', lazy_gettext('PID Pause')),
-    ('resume_pid', lazy_gettext('PID Resume')),
-    ('method_pid', lazy_gettext('PID Set Method')),
-    ('setpoint_pid', lazy_gettext('PID Set Setpoint')),
-    ('email', lazy_gettext('Email Notification')),
-    ('flash_lcd_off', lazy_gettext('LCD Flashing Off')),
-    ('flash_lcd_on', lazy_gettext('LCD Flashing On')),
-    ('lcd_backlight_off', lazy_gettext('LCD Backlight Off')),
-    ('lcd_backlight_on', lazy_gettext('LCD Backlight On')),
-    ('photo', lazy_gettext('Capture Photo')),
-    # ('photo_email', lazy_gettext('Email Photo')),
-    # ('video', lazy_gettext('Video')),
-    # ('video_email', lazy_gettext('Email Video'))
-])
 
 # User Roles
 USER_ROLES = [

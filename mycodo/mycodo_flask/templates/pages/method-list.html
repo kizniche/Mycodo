@@ -36,13 +36,7 @@
       <div class="col-auto">
         {{form_create_method.method_type.label(class_='control-label')}}
         <div>
-          <select class="form-control" id="method_type" name="method_type">
-            <option value="Date">{{_('Time/Date')}}</option>
-            <option value="Duration">{{_('Duration')}}</option>
-            <option value="Daily">{{_('Daily (Time-Based)')}}</option>
-            <option value="DailySine">{{_('Daily (Sine Wave)')}}</option>
-            <option value="DailyBezier">{{_('Daily (Bezier Curve)')}}</option>
-          </select>
+          {{form_create_method.method_type(class_='form-control')}}
         </div>
       </div>
       <div class="col-auto">

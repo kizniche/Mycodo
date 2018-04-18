@@ -17,10 +17,15 @@ from wtforms import widgets
 from wtforms.validators import DataRequired
 from wtforms.validators import Optional
 
+from mycodo.config import OUTPUTS
+
 
 class OutputAdd(FlaskForm):
     output_quantity = IntegerField(lazy_gettext('Quantity'))
-    output_type = StringField(lazy_gettext('Type'))
+    output_type = SelectField(
+        choices=OUTPUTS,
+        validators=[DataRequired()]
+    )
     output_add = SubmitField(lazy_gettext('Add'))
 
 
