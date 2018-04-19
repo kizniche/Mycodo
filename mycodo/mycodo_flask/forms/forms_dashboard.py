@@ -133,7 +133,8 @@ class DashboardPIDControl(FlaskForm):
     font_em_timestamp = DecimalField(lazy_gettext('Timestamp Font (em)'))
     camera_max_age = IntegerField(lazy_gettext('Max Age (seconds)'))
     decimal_places = IntegerField(lazy_gettext('Decimal Places'))
-    enable_pid_info = BooleanField(lazy_gettext('Show PID Information'))
+    show_pid_info = BooleanField(lazy_gettext('Show PID Information'))
+    show_set_setpoint = BooleanField(lazy_gettext('Show Set Setpoint'))
 
 
 class DashboardCamera(FlaskForm):

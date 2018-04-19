@@ -54,7 +54,8 @@ class Dashboard(CRUDMixin, db.Model):
     enable_output_controls = db.Column(db.Boolean, default=True)  # Show output controls on dashboard element
 
     # PID options
-    enable_pid_info = db.Column(db.Boolean, default=True)  # Display detailed information about the PID
+    show_pid_info = db.Column(db.Boolean, default=True)  # Display detailed information about the PID
+    show_set_setpoint = db.Column(db.Boolean, default=True)  # Display set PID setpoint
 
     # Camera options
     camera_id = db.Column(db.Text, default='')  # store camera ID to display

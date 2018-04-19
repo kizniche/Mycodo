@@ -24,7 +24,7 @@
     </div>
   </div>
 
-  {% if each_graph.enable_pid_info %}
+  {% if each_graph.show_pid_info %}
   <div class="row">
     <div class="col-sm-12 text-center">
     {% for each_pid in pid if each_pid.unique_id == each_graph.pid_ids %}
@@ -34,7 +34,7 @@
   </div>
   {% endif %}
 
-  <div class="row small-gutters" style="padding: 0.5em 1.5em 1.5em 1.5em">
+  <div class="row small-gutters" style="padding: 1em 1.5em 0.5em 1.5em">
     <div id="button-activate-{{chart_number}}" class="col-6">
       <input class="form-control btn btn-block btn-sm activate_pid" id="activate_pid" name="{{each_graph.pid_ids}}/activate_pid" type="button" value="{{_('Activate')}}">
     </div>
@@ -52,6 +52,17 @@
     </div>
   </div>
 
+  {% if each_graph.show_set_setpoint %}
+  <div class="row small-gutters" style="padding: 0.5em 1.5em 0.5em 1.5em">
+    <div class="col-6">
+      <input class="form-control form-control-sm" id="setpoint_pid" name="setpoint_pid" type="number" value="" title="{{_('A numerical value to set the PID setpoint')}}">
+    </div>
+    <div class="col-6">
+      <input class="form-control btn btn-block btn-sm set_setpoint" id="set_setpoint" name="{{each_graph.pid_ids}}/set_setpoint_pid|" type="button" value="{{_('Set Setpoint')}}">
+    </div>
+  </div>
+  {% endif %}
+
 </div>
 
 <div class="collapse" id="collapseContainer{{chart_number}}" style="padding: 0.5em; width: calc(100% - 1em)">
@@ -61,7 +72,7 @@
   {{form_base.dashboard_id(value=each_graph.unique_id)}}
   <input type="hidden" name="dashboard_type" value="pid_control">
 
-  {% if not each_graph.enable_pid_info %}
+  {% if not each_graph.show_pid_info %}
   <div class="row" style="padding-top: 0.7em">
     <div class="col-xs-12 small-gutters" style="text-align: center">
     {% for each_pid in pid if each_pid.unique_id == each_graph.pid_ids %}
@@ -71,6 +82,7 @@
   </div>
   {% endif %}
 
+    {% if not each_graph.show_set_setpoint %}
     <div class="form-row">
       <div class="col-6">
         <input class="form-control" id="setpoint_pid" name="setpoint_pid" type="number" value="" title="{{_('A numerical value to set the PID setpoint')}}">
@@ -78,7 +90,10 @@
       <div class="col-6">
         <input class="form-control btn btn-default set_setpoint" id="set_setpoint" name="{{each_graph.pid_ids}}/set_setpoint_pid|" type="button" value="{{_('Set Setpoint')}}">
       </div>
+    </div>
+    {% endif %}
 
+    <div class="form-row">
       <div class="col-auto">
         {{form_base.name.label(class_='control-label')}}
         <div>
@@ -147,8 +162,12 @@
         </div>
       </div>
       <div class="form-check form-check-inline">
-        <input class="form-check-input" id="enable_pid_info" name="enable_pid_info" type="checkbox" value="y"{% if each_graph.enable_pid_info %} checked{% endif %}>
-        {{form_pid.enable_pid_info.label(class_='control-label')}}
+        <input class="form-check-input" id="show_pid_info" name="show_pid_info" type="checkbox" value="y"{% if each_graph.show_pid_info %} checked{% endif %}>
+        {{form_pid.show_pid_info.label(class_='control-label')}}
+      </div>
+      <div class="form-check form-check-inline">
+        <input class="form-check-input" id="show_set_setpoint" name="show_set_setpoint" type="checkbox" value="y"{% if each_graph.show_set_setpoint %} checked{% endif %}>
+        {{form_pid.show_set_setpoint.label(class_='control-label')}}
       </div>
     </div>
 

@@ -145,7 +145,8 @@ def dashboard_add(form_base, form_object, display_order):
         new_graph.font_em_value = form_object.font_em_value.data
         new_graph.font_em_timestamp = form_object.font_em_timestamp.data
         new_graph.decimal_places = form_object.decimal_places.data
-        new_graph.enable_pid_info = form_object.enable_pid_info.data
+        new_graph.show_pid_info = form_object.show_pid_info.data
+        new_graph.show_set_setpoint = form_object.show_set_setpoint.data
         new_graph.pid_ids = form_object.pid_id.data
 
     # Camera
@@ -270,12 +271,6 @@ def dashboard_mod(form_base, form_object, request_form):
         mod_graph.width = form_base.width.data
         mod_graph.height = form_base.height.data
         mod_graph.refresh_duration = form_base.refresh_duration.data
-        gauge_high = each_graph.y_axis_min
-        gauge_low = each_graph.y_axis_max
-        gauge_difference = gauge_high - gauge_low
-        for each_range in color_areas:
-            percent_of_range = float(gauge_difference /
-                                     (float(each_range.split(',')[0]) - gauge_low))
         mod_graph.y_axis_min = form_object.y_axis_min.data
         mod_graph.y_axis_max = form_object.y_axis_max.data
         mod_graph.max_measure_age = form_object.max_measure_age.data
@@ -325,7 +320,8 @@ def dashboard_mod(form_base, form_object, request_form):
         mod_graph.font_em_value = form_object.font_em_value.data
         mod_graph.font_em_timestamp = form_object.font_em_timestamp.data
         mod_graph.decimal_places = form_object.decimal_places.data
-        mod_graph.enable_pid_info = form_object.enable_pid_info.data
+        mod_graph.show_pid_info = form_object.show_pid_info.data
+        mod_graph.show_set_setpoint = form_object.show_set_setpoint.data
         if form_object.pid_id.data:
             mod_graph.pid_ids = form_object.pid_id.data
 
@@ -631,8 +627,6 @@ def custom_colors_gauge_str(form, gauge_type, error):
                     colors_hex[i]['hex'])
             elif gauge_type == 'gauge_solid':
                 try:
-                    if 0 > float(colors_hex[i]['stop']) > 1:
-                        error.append("Color stops must be between 0 and 1")
                     sorted_colors_string += "{},{}".format(
                         colors_hex[i]['stop'],
                         colors_hex[i]['hex'])

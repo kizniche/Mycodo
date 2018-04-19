@@ -23,7 +23,7 @@
     <div class="col-sm-6 col-md-3 col-lg-2">
       {{form_base.height.label(class_='control-label')}}
       <div>
-        {{form_base.height(class_='form-control', value=150)}}
+        {{form_base.height(class_='form-control', value=200)}}
       </div>
     </div>
     <div class="col-sm-6 col-md-3 col-lg-2">
@@ -57,9 +57,15 @@
       </div>
     </div>
     <div class="col-sm-6 col-md-3 col-lg-2">
-      {{form_pid.enable_pid_info.label(class_='control-label')}}
+      {{form_pid.show_pid_info.label(class_='control-label')}}
       <div class="input-group-text">
-        <input id="enable_pid_info" name="enable_pid_info" type="checkbox" value="y" checked>
+        <input id="show_pid_info" name="show_pid_info" type="checkbox" value="y" checked>
+      </div>
+    </div>
+    <div class="col-sm-6 col-md-3 col-lg-2">
+      {{form_pid.show_set_setpoint.label(class_='control-label')}}
+      <div class="input-group-text">
+        <input id="show_set_setpoint" name="show_set_setpoint" type="checkbox" value="y" checked>
       </div>
     </div>
 
