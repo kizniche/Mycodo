@@ -2108,6 +2108,9 @@ PID Control
 | Show PID Information  | Show extra PID information on the dashboard     |
 |                       | element.                                        |
 +-----------------------+-------------------------------------------------+
+| Show Set Setpoint     | Allow setting the PID setpoint on the dashboard |
+|                       | element.                                        |
++-----------------------+-------------------------------------------------+
 | PID                   | The PID to display information about.           |
 +-----------------------+-------------------------------------------------+
 
