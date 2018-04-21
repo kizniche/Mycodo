@@ -1,6 +1,6 @@
 """base Mycodo version 6.0.0
 
-Revision ID: 059a47f950b8
+Revision ID: 032b48f920b8
 Revises:
 Create Date: 2018-04-10 23:45:18.650731
 
