@@ -1,8 +1,8 @@
-## 6.0.2 (2018-04-21)
+## 6.0.3 (2018-04-21)
 
 ### Bugfixes
 
- - Fix alembic issue
+ - Fix upgrade issue
 
 ## 6.0.1 (2018-04-21)
 
