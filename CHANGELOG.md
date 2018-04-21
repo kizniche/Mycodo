@@ -1,7 +1,4 @@
-## 5.7.3 (2018-04-20)
-
-This is the last version of the 5.x branch. If your system is upgraded to 5.7.3, you will have the option of upgrading to the next major version (6.x), however the settings database will need to be deleted. This can be done through the web UI or manually by reinstalling Mycodo fresh.
-## 6.0.0 (Unreleased)
+## 6.0.0 (2018-04-21)
 
 Version 6.0.0 has changes to the database schema that could not be upgraded to. To upgrade to this version, the settings database must be created anew. You either have the options of staying at the last version (5.7.x), or deleting the settings database and upgrading. You will be presented with a menu on the upgrade screen explaining your options, and a button to perform an upgrade/database deletion.
 
@@ -24,6 +21,13 @@ Version 6.0.0 has changes to the database schema that could not be upgraded to. 
  - Remove Timers (Conditionals have replaced their functionality)
  - Improve testing coverage of frontend ([#444](https://github.com/kizniche/mycodo/issues/444))
 
+## 5.7.3 (2018-04-20)
+
+This is the last version of the 5.x branch. If your system is upgraded to 5.7.3, you will have the option of upgrading to the next major version (6.x), however the settings database will need to be deleted. This can be done through the web UI or manually by reinstalling Mycodo fresh.
+
+### Features
+
+ - Add Conditional Action: Set PID Method ([#440](https://github.com/kizniche/mycodo/issues/440))
 
 ## 5.7.2 (2018-04-07)
 

@@ -1,5 +1,5 @@
 #!/bin/bash
-# Upgrade to the major version release
+# Upgrade to the latest major version release
 # Usage:
 # sudo /bin/bash ./upgrade_mycodo_release_maj.sh [major version number]
 
