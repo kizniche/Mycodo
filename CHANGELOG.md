@@ -1,3 +1,9 @@
+## 6.0.4 (2018-04-21)
+
+### Bugfixes
+
+ - Fix scanning for DS18B20 sensors ([#452](https://github.com/kizniche/mycodo/issues/452))
+
 ## 6.0.3 (2018-04-21)
 
 ### Bugfixes
@@ -9,7 +15,6 @@
 ### Bugfixes
 
  - Fix setting landing page ([#452](https://github.com/kizniche/mycodo/issues/452))
- - Fix scanning for DS18B20 sensors ([#452](https://github.com/kizniche/mycodo/issues/452))
 
 ## 6.0.0 (2018-04-21)
 

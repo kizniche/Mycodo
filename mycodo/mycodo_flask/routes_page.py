@@ -1196,7 +1196,7 @@ def page_data():
         try:
             from w1thermsensor import W1ThermSensor
             for each_sensor in W1ThermSensor.get_available_sensors():
-                w1thermsensor_sensors.append(each_sensor)
+                w1thermsensor_sensors.append(each_sensor.id)
         except OSError:
             flash("Unable to detect DS18B20 Inputs in '/sys/bus/w1/devices'. "
                   "Make 1-wire support is enabled with 'sudo raspi-config'.",
