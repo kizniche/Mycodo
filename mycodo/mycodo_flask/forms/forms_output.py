@@ -17,16 +17,21 @@ from wtforms import widgets
 from wtforms.validators import DataRequired
 from wtforms.validators import Optional
 
+from mycodo.config import OUTPUTS
+
 
 class OutputAdd(FlaskForm):
-    relay_quantity = IntegerField(lazy_gettext('Quantity'))
-    relay_type = StringField(lazy_gettext('Type'))
-    relay_add = SubmitField(lazy_gettext('Add'))
+    output_quantity = IntegerField(lazy_gettext('Quantity'))
+    output_type = SelectField(
+        choices=OUTPUTS,
+        validators=[DataRequired()]
+    )
+    output_add = SubmitField(lazy_gettext('Add'))
 
 
 class OutputMod(FlaskForm):
-    relay_id = IntegerField('Relay ID', widget=widgets.HiddenInput())
-    relay_pin = HiddenField('Relay Pin')
+    output_id = StringField('Relay ID', widget=widgets.HiddenInput())
+    output_pin = HiddenField('Relay Pin')
     name = StringField(
         lazy_gettext('Name'),
         validators=[DataRequired()]
@@ -45,7 +50,7 @@ class OutputMod(FlaskForm):
             min=0,
             max=50,
             message=lazy_gettext("The current draw of the device connected "
-                                 "to this relay, in amps.")
+                                 "to this output, in amps.")
         )]
     )
     trigger = SelectField(

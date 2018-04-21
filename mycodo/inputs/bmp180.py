@@ -5,8 +5,6 @@ import time
 from .base_input import AbstractInput
 from .sensorutils import convert_units
 
-logger = logging.getLogger("mycodo.inputs.bmp180")
-
 
 class BMP180Sensor(AbstractInput):
     """
@@ -15,18 +13,20 @@ class BMP180Sensor(AbstractInput):
 
     """
 
-    def __init__(self, bus, convert_to_unit=None, testing=False):
+    def __init__(self, input_dev, testing=False):
         super(BMP180Sensor, self).__init__()
+        self.logger = logging.getLogger("mycodo.inputs.bmp180")
         self._altitude = None
         self._pressure = None
         self._temperature = None
 
-        self.I2C_bus_number = bus
-        self.convert_to_unit = convert_to_unit
-
         if not testing:
             from Adafruit_BMP import BMP085
-            self.bmp = BMP085.BMP085(busnum=self.I2C_bus_number)
+            self.logger = logging.getLogger(
+                "mycodo.inputs.bmp180_{id}".format(id=input_dev.id))
+            self.i2c_bus = input_dev.i2c_bus
+            self.convert_to_unit = input_dev.convert_to_unit
+            self.bmp = BMP085.BMP085(busnum=self.i2c_bus)
 
     def __repr__(self):
         """  Representation of object """
@@ -102,7 +102,7 @@ class BMP180Sensor(AbstractInput):
             if self._temperature is not None:
                 return  # success - no errors
         except Exception as e:
-            logger.exception(
+            self.logger.exception(
                 "{cls} raised an exception when taking a reading: "
                 "{err}".format(cls=type(self).__name__, err=e))
         return 1

@@ -161,7 +161,7 @@ class OutputController(threading.Thread):
             'If output 1 turns on, turn output 3 off'
 
         :param output_id: ID for output
-        :type output_id: int
+        :type output_id: str
         :param state: What state is desired? 'on' or 'off'
         :type state: str
         :param duration: If state is 'on', a duration can be set to turn the output off after
@@ -174,7 +174,6 @@ class OutputController(threading.Thread):
         :type trigger_conditionals: bool
         """
         # Check if output exists
-        output_id = int(output_id)
         if output_id not in self.output_id:
             self.logger.warning(
                 "Cannot turn {state} Output with ID {id}. "
@@ -568,80 +567,130 @@ class OutputController(threading.Thread):
         This function is executed whenever an output is turned on or off
         It is responsible for executing Output Conditionals
         """
-        conditionals = db_retrieve_table_daemon(Conditional)
-        conditionals = conditionals.filter(
+
+        # Check On/Off Outputs
+        conditionals_output = db_retrieve_table_daemon(Conditional)
+        conditionals_output = conditionals_output.filter(
             Conditional.conditional_type == 'conditional_output')
-        conditionals = conditionals.filter(
-            Conditional.if_relay_id == output_id)
-        conditionals = conditionals.filter(
+        conditionals_output = conditionals_output.filter(
+            Conditional.unique_id_1 == output_id)
+        conditionals_output = conditionals_output.filter(
             Conditional.is_activated == True)
 
         # Find any Output Conditionals with the output_id of the output that
         # just changed its state
         if self.is_on(output_id):
-            conditionals = conditionals.filter(
-                or_(Conditional.if_relay_state == 'on',
-                    Conditional.if_relay_state == 'on_any'))
+            conditionals_output = conditionals_output.filter(
+                or_(Conditional.output_state == 'on',
+                    Conditional.output_state == 'on_any'))
 
             on_with_duration = and_(
-                Conditional.if_relay_state == 'on',
-                Conditional.if_relay_duration == on_duration)
-            conditionals = conditionals.filter(
-                or_(Conditional.if_relay_state == 'on_any',
+                Conditional.output_state == 'on',
+                Conditional.output_duration == on_duration)
+            conditionals_output = conditionals_output.filter(
+                or_(Conditional.output_state == 'on_any',
                     on_with_duration))
 
         else:
-            conditionals = conditionals.filter(
-                Conditional.if_relay_state == 'off')
+            conditionals_output = conditionals_output.filter(
+                Conditional.output_state == 'off')
 
         # Execute the Conditional Actions for each Output Conditional
         # for this particular Output device
-        for each_conditional in conditionals.all():
+        for each_conditional in conditionals_output.all():
             now = time.time()
             timestamp = datetime.datetime.fromtimestamp(now).strftime('%Y-%m-%d %H:%M:%S')
             message = "{ts}\n[Conditional {cid} ({cname})] Output {oid} ({name}) {state}".format(
                 ts=timestamp,
-                cid=each_conditional.id,
+                cid=each_conditional.unique_id.split('-')[0],
                 cname=each_conditional.name,
                 name=each_conditional.name,
                 oid=output_id,
-                state=each_conditional.if_relay_state)
+                state=each_conditional.output_state)
 
             self.control.trigger_conditional_actions(
-                each_conditional.id, message=message,
+                each_conditional.unique_id, message=message,
                 output_state=state, on_duration=on_duration, duty_cycle=duty_cycle)
+
+        # Check PWM Outputs
+        conditionals_output_pwm = db_retrieve_table_daemon(Conditional)
+        conditionals_output_pwm = conditionals_output_pwm.filter(
+            Conditional.conditional_type == 'conditional_output_pwm')
+        conditionals_output_pwm = conditionals_output_pwm.filter(
+            Conditional.unique_id_1 == output_id)
+        conditionals_output_pwm = conditionals_output_pwm.filter(
+            Conditional.is_activated == True)
+
+        # Execute the Conditional Actions for each Output Conditional
+        # for this particular Output device
+        for each_conditional in conditionals_output_pwm.all():
+            trigger_conditional = False
+            duty_cycle = self.output_state(output_id)
+
+            if duty_cycle == 'off':
+                if (each_conditional.direction == 'equal' and
+                        each_conditional.output_duty_cycle == 0):
+                    trigger_conditional = True
+            elif (
+                    (each_conditional.direction == 'above' and
+                     duty_cycle > each_conditional.output_duty_cycle) or
+                    (each_conditional.direction == 'below' and
+                     duty_cycle < each_conditional.output_duty_cycle) or
+                    (each_conditional.direction == 'equal' and
+                     duty_cycle == each_conditional.output_duty_cycle)
+                    ):
+                trigger_conditional = True
+
+            if not trigger_conditional:
+                continue
+
+            now = time.time()
+            timestamp = datetime.datetime.fromtimestamp(now).strftime('%Y-%m-%d %H:%M:%S')
+            message = "{ts}\n[Conditional {cid} ({cname})] Output {oid} " \
+                      "({name}) Duty Cycle {actual_dc} {state} {duty_cycle}".format(
+                ts=timestamp,
+                cid=each_conditional.unique_id.split('-')[0],
+                cname=each_conditional.name,
+                name=each_conditional.name,
+                oid=output_id,
+                actual_dc=duty_cycle,
+                state = each_conditional.direction,
+                duty_cycle = each_conditional.output_duty_cycle)
+
+            self.control.trigger_conditional_actions(
+                each_conditional.unique_id, message=message, duty_cycle=duty_cycle)
 
     def all_outputs_initialize(self, outputs):
         for each_output in outputs:
-            self.output_id[each_output.id] = each_output.id
-            self.output_unique_id[each_output.id] = each_output.unique_id
-            self.output_type[each_output.id] = each_output.relay_type
-            self.output_name[each_output.id] = each_output.name
-            self.output_pin[each_output.id] = each_output.pin
-            self.output_amps[each_output.id] = each_output.amps
-            self.output_trigger[each_output.id] = each_output.trigger
-            self.output_on_at_start[each_output.id] = each_output.on_at_start
-            self.output_on_until[each_output.id] = datetime.datetime.now()
-            self.output_last_duration[each_output.id] = 0
-            self.output_on_duration[each_output.id] = False
-            self.output_off_triggered[each_output.id] = False
-            self.output_time_turned_on[each_output.id] = None
-            self.output_protocol[each_output.id] = each_output.protocol
-            self.output_pulse_length[each_output.id] = each_output.pulse_length
-            self.output_on_command[each_output.id] = each_output.on_command
-            self.output_off_command[each_output.id] = each_output.off_command
-            self.output_pwm_command[each_output.id] = each_output.pwm_command
+            self.output_id[each_output.unique_id] = each_output.id
+            self.output_unique_id[each_output.unique_id] = each_output.unique_id
+            self.output_type[each_output.unique_id] = each_output.output_type
+            self.output_name[each_output.unique_id] = each_output.name
+            self.output_pin[each_output.unique_id] = each_output.pin
+            self.output_amps[each_output.unique_id] = each_output.amps
+            self.output_trigger[each_output.unique_id] = each_output.trigger
+            self.output_on_at_start[each_output.unique_id] = each_output.on_at_start
+            self.output_on_until[each_output.unique_id] = datetime.datetime.now()
+            self.output_last_duration[each_output.unique_id] = 0
+            self.output_on_duration[each_output.unique_id] = False
+            self.output_off_triggered[each_output.unique_id] = False
+            self.output_time_turned_on[each_output.unique_id] = None
+            self.output_protocol[each_output.unique_id] = each_output.protocol
+            self.output_pulse_length[each_output.unique_id] = each_output.pulse_length
+            self.output_on_command[each_output.unique_id] = each_output.on_command
+            self.output_off_command[each_output.unique_id] = each_output.off_command
+            self.output_pwm_command[each_output.unique_id] = each_output.pwm_command
 
-            self.pwm_hertz[each_output.id] = each_output.pwm_hertz
-            self.pwm_library[each_output.id] = each_output.pwm_library
-            self.pwm_invert_signal[each_output.id] = each_output.pwm_invert_signal
-            self.pwm_time_turned_on[each_output.id] = None
+            self.pwm_hertz[each_output.unique_id] = each_output.pwm_hertz
+            self.pwm_library[each_output.unique_id] = each_output.pwm_library
+            self.pwm_invert_signal[each_output.unique_id] = each_output.pwm_invert_signal
+            self.pwm_time_turned_on[each_output.unique_id] = None
 
-            if self.output_pin[each_output.id] is not None:
-                self.setup_pin(each_output.id)
+            if self.output_pin[each_output.unique_id] is not None:
+                self.setup_pin(each_output.unique_id)
 
             self.logger.debug("{id} ({name}) Initialized".format(
-                id=each_output.id, name=each_output.name))
+                id=each_output.unique_id.split('-')[0], name=each_output.name))
 
     def all_outputs_set_state(self):
         """Turn all outputs on that are set to be on at startup"""
@@ -669,16 +718,15 @@ class OutputController(threading.Thread):
         maintain consistency between the SQL database and running controller.
 
         :param output_id: Unique ID for each output
-        :type output_id: int
+        :type output_id: str
 
         :return: 0 for success, 1 for fail, with success for fail message
         :rtype: int, str
         """
-        output_id = int(output_id)
         try:
-            output = db_retrieve_table_daemon(Output, device_id=output_id)
+            output = db_retrieve_table_daemon(Output, unique_id=output_id)
 
-            self.output_type[output_id] = output.relay_type
+            self.output_type[output_id] = output.output_type
 
             # Turn current pin off
             if output_id in self.output_pin and self.output_state(output_id) != 'off':
@@ -686,7 +734,7 @@ class OutputController(threading.Thread):
 
             self.output_id[output_id] = output.id
             self.output_unique_id[output_id] = output.unique_id
-            self.output_type[output_id] = output.relay_type
+            self.output_type[output_id] = output.output_type
             self.output_name[output_id] = output.name
             self.output_pin[output_id] = output.pin
             self.output_amps[output_id] = output.amps
@@ -708,10 +756,10 @@ class OutputController(threading.Thread):
             self.pwm_invert_signal[output_id] = output.pwm_invert_signal
 
             if self.output_pin[output_id]:
-                self.setup_pin(output.id)
+                self.setup_pin(output.unique_id)
 
             message = "Output {id} ({name}) initialized".format(
-                id=self.output_id[output_id],
+                id=self.output_unique_id[output_id].split('-')[0],
                 name=self.output_name[output_id])
             self.logger.debug(message)
 
@@ -735,7 +783,6 @@ class OutputController(threading.Thread):
         :return: 0 for success, 1 for fail (with error message)
         :rtype: int, str
         """
-        output_id = int(output_id)
 
         # Turn current pin off
         if output_id in self.output_pin and self.output_state(output_id) != 'off':
@@ -823,7 +870,7 @@ class OutputController(threading.Thread):
         Setup pin for this output
 
         :param output_id: Unique ID for each output
-        :type output_id: int
+        :type output_id: str
 
         :rtype: None
         """
@@ -832,17 +879,22 @@ class OutputController(threading.Thread):
                 GPIO.setmode(GPIO.BCM)
                 GPIO.setwarnings(True)
                 GPIO.setup(self.output_pin[output_id], GPIO.OUT)
-                GPIO.output(self.output_pin[output_id], not self.output_trigger[output_id])
+                GPIO.output(self.output_pin[output_id],
+                            not self.output_trigger[output_id])
                 state = 'LOW' if self.output_trigger[output_id] else 'HIGH'
                 self.logger.info(
                     "Output {id} setup on pin {pin} and turned OFF "
-                    "(OFF={state})".format(id=output_id, pin=self.output_pin[output_id], state=state))
+                    "(OFF={state})".format(id=output_id.split('-')[0],
+                                           pin=self.output_pin[output_id],
+                                           state=state))
             except Exception as except_msg:
                 self.logger.exception(
                     "Output {id} was unable to be setup on pin {pin} with "
                     "trigger={trigger}: {err}".format(
-                        id=output_id, pin=self.output_pin[output_id],
-                        trigger=self.output_trigger[output_id], err=except_msg))
+                        id=output_id.split('-')[0],
+                        pin=self.output_pin[output_id],
+                        trigger=self.output_trigger[output_id],
+                        err=except_msg))
 
         elif self.output_type[output_id] == 'wireless_433MHz_pi_switch':
             from mycodo.devices.wireless_433mhz_pi_switch import Transmit433MHz
@@ -868,16 +920,18 @@ class OutputController(threading.Thread):
                         self.logger.error("Cound not connect to pigpiod")
                 self.pwm_state[output_id] = None
                 self.logger.info("PWM {id} setup on pin {pin}".format(
-                    id=output_id, pin=self.output_pin[output_id]))
+                    id=output_id.split('-')[0], pin=self.output_pin[output_id]))
             except Exception as except_msg:
                 self.logger.exception(
                     "PWM {id} was unable to be setup on pin {pin}: "
-                    "{err}".format(id=output_id, pin=self.output_pin[output_id], err=except_msg))
+                    "{err}".format(id=output_id,
+                                   pin=self.output_pin[output_id],
+                                   err=except_msg))
 
     def output_state(self, output_id):
         """
         :param output_id: Unique ID for each output
-        :type output_id: int
+        :type output_id: str
 
         :return: Whether the output is currently "on" or "off"
         :rtype: str
@@ -900,7 +954,7 @@ class OutputController(threading.Thread):
     def is_on(self, output_id):
         """
         :param output_id: Unique ID for each output
-        :type output_id: int
+        :type output_id: str
 
         :return: Whether the output is currently "ON"
         :rtype: bool
@@ -924,7 +978,7 @@ class OutputController(threading.Thread):
         to use. This is for safety and to make sure we don't blow anything.
 
         :param output_id: Unique ID for each output
-        :type output_id: int
+        :type output_id: str
 
         :return: Is it safe to manipulate this output?
         :rtype: bool

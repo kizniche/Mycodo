@@ -12,17 +12,23 @@ from wtforms import SelectField
 from wtforms import StringField
 from wtforms import SubmitField
 from wtforms import widgets
+from wtforms.validators import DataRequired
+
+from mycodo.config import METHODS
 
 
 class MethodCreate(FlaskForm):
     name = StringField(lazy_gettext('Name'))
-    method_type = StringField(lazy_gettext('Method Type'))
+    method_type = SelectField(
+        choices=METHODS,
+        validators=[DataRequired()]
+    )
     controller_type = HiddenField('Controller Type')
     Submit = SubmitField(lazy_gettext('Create New Method'))
 
 
 class MethodAdd(FlaskForm):
-    method_id = IntegerField('Method ID', widget=widgets.HiddenInput())
+    method_id = StringField('Method ID', widget=widgets.HiddenInput())
     method_type = HiddenField('Method Type')
     method_select = HiddenField('Method Select')
     daily_time_start = StringField(
@@ -44,7 +50,7 @@ class MethodAdd(FlaskForm):
     setpoint_start = DecimalField(lazy_gettext('Start Setpoint'))
     setpoint_end = DecimalField(lazy_gettext('End Setpoint (optional)'))
     duration = DecimalField(lazy_gettext('Duration (seconds)'))
-    duration_end = DecimalField(lazy_gettext('End After (seconds)'))
+    duration_end = DecimalField(lazy_gettext('Duration to End (seconds)'))
     amplitude = DecimalField(lazy_gettext('Amplitude'))
     frequency = DecimalField(lazy_gettext('Frequency'))
     shift_angle = DecimalField(lazy_gettext('Angle Shift (0 to 360)'))
@@ -57,17 +63,17 @@ class MethodAdd(FlaskForm):
     y2 = DecimalField('Y2')
     x3 = DecimalField('X3')
     y3 = DecimalField('Y3')
-    relay_daily_time = StringField(
+    output_daily_time = StringField(
         lazy_gettext('Time HH:MM:SS'),
         render_kw={"placeholder": "HH:MM:SS"}
     )
-    relay_time = StringField(
+    output_time = StringField(
         lazy_gettext('Time YYYY-MM-DD HH:MM:SS'),
         render_kw={"placeholder": "YYYY-MM-DD HH:MM:SS"}
     )
-    relay_duration = IntegerField(lazy_gettext('Duration/Duty Cycle'))
-    relay_id = StringField(lazy_gettext('Output'),)
-    relay_state = SelectField(
+    output_duration = IntegerField(lazy_gettext('Duration/Duty Cycle'))
+    output_id = StringField(lazy_gettext('Output'),)
+    output_state = SelectField(
         lazy_gettext('Relay State'),
         choices=[
             ('', ''),
@@ -77,12 +83,12 @@ class MethodAdd(FlaskForm):
         ]
     )
     save = SubmitField(lazy_gettext('Add to Method'))
-    restart = SubmitField(lazy_gettext('Restart at Beginning'))
+    restart = SubmitField(lazy_gettext('Set Repeat Option'))
 
 
 class MethodMod(FlaskForm):
-    method_id = IntegerField('Method ID', widget=widgets.HiddenInput())
-    method_data_id = IntegerField('Method Data ID', widget=widgets.HiddenInput())
+    method_id = StringField('Method ID', widget=widgets.HiddenInput())
+    method_data_id = StringField('Method Data ID', widget=widgets.HiddenInput())
     method_type = HiddenField('Method Type')
     method_select = HiddenField('Method Select')
     name = StringField(lazy_gettext('Name'))
@@ -102,21 +108,21 @@ class MethodMod(FlaskForm):
         lazy_gettext('End YYYY-MM-DD HH:MM:SS'),
         render_kw={"placeholder": "YYYY-MM-DD HH:MM:SS"}
     )
-    relay_daily_time = StringField(
+    output_daily_time = StringField(
         lazy_gettext('Time HH:MM:SS'),
         render_kw={"placeholder": "HH:MM:SS"}
     )
-    relay_time = StringField(
+    output_time = StringField(
         lazy_gettext('Time YYYY-MM-DD HH:MM:SS'),
         render_kw={"placeholder": "YYYY-MM-DD HH:MM:SS"}
     )
     duration = DecimalField(lazy_gettext('Duration (seconds)'))
-    duration_end = DecimalField(lazy_gettext('End After (seconds)'))
+    duration_end = DecimalField(lazy_gettext('Duration to End (seconds)'))
     setpoint_start = DecimalField(lazy_gettext('Start Setpoint'))
     setpoint_end = DecimalField(lazy_gettext('End Setpoint'))
-    relay_id = StringField(lazy_gettext('Output'))
-    relay_state = StringField(lazy_gettext('State'))
-    relay_duration = IntegerField(lazy_gettext('Duration'))
+    output_id = StringField(lazy_gettext('Output'))
+    output_state = StringField(lazy_gettext('State'))
+    output_duration = IntegerField(lazy_gettext('Duration'))
     rename = SubmitField(lazy_gettext('Rename'))
     save = SubmitField(lazy_gettext('Save'))
     Delete = SubmitField(lazy_gettext('Delete'))

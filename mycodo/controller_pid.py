@@ -51,7 +51,7 @@ import calendar
 import datetime
 import logging
 import threading
-import time as t
+import time
 import timeit
 
 import requests
@@ -81,15 +81,13 @@ class PIDController(threading.Thread):
     def __init__(self, ready, pid_id):
         threading.Thread.__init__(self)
 
-        self.logger = logging.getLogger("mycodo.pid_{id}".format(id=pid_id))
+        self.logger = logging.getLogger("mycodo.pid_{id}".format(id=pid_id.split('-')[0]))
 
         self.running = False
         self.thread_startup_timer = timeit.default_timer()
         self.thread_shutdown_timer = 0
         self.ready = ready
         self.pid_id = pid_id
-        self.pid_unique_id = db_retrieve_table_daemon(
-            PID, device_id=self.pid_id).unique_id
         self.control = DaemonControl()
 
         self.control_variable = 0.0
@@ -147,11 +145,11 @@ class PIDController(threading.Thread):
 
         self.initialize_values()
 
-        self.timer = t.time() + self.period
+        self.timer = time.time() + self.period
 
         # Check if a method is set for this PID
         self.method_start_act = None
-        if self.method_id:
+        if self.method_id != '':
             self.setup_method(self.method_id)
 
     def run(self):
@@ -167,7 +165,6 @@ class PIDController(threading.Thread):
             self.ready.set()
 
             while self.running:
-
                 if (self.method_start_act == 'Ended' and
                         self.method_type == 'Duration'):
                     self.stop_controller(ended_normally=False,
@@ -176,24 +173,29 @@ class PIDController(threading.Thread):
                         "Method has ended. "
                         "Activate the PID controller to start it again.")
 
-                elif t.time() > self.timer:
+                elif time.time() > self.timer:
                     # Ensure the timer ends in the future
-                    while t.time() > self.timer:
+                    while time.time() > self.timer:
                         self.timer = self.timer + self.period
 
-                    # If PID is active, retrieve input measurement and update PID output
-                    if self.is_activated and not self.is_paused:
+                    # If PID is active, retrieve measurement and update
+                    # the control variable.
+                    # A PID on hold will sustain the current output and
+                    # not update the control variable.
+                    if (self.is_activated and (not self.is_paused or
+                                               not self.is_held)
+                            ):
                         self.get_last_measurement()
 
                         if self.last_measurement_success:
-                            # Update setpoint using a method if one is selected
-                            if self.method_id:
-                                this_controller = db_retrieve_table_daemon(
-                                    PID, device_id=self.pid_id)
+                            if self.method_id != '':
+                                # Update setpoint using a method
+                                this_pid = db_retrieve_table_daemon(
+                                    PID, unique_id=self.pid_id)
                                 setpoint, ended = calculate_method_setpoint(
                                     self.method_id,
                                     PID,
-                                    this_controller,
+                                    this_pid,
                                     Method,
                                     MethodData,
                                     self.logger)
@@ -204,68 +206,48 @@ class PIDController(threading.Thread):
                                 else:
                                     self.setpoint = self.default_setpoint
 
-                            write_setpoint_db = threading.Thread(
-                                target=write_influxdb_value,
-                                args=(self.pid_unique_id,
-                                      'setpoint',
-                                      self.setpoint,))
-                            write_setpoint_db.start()
+                            self.write_setpoint_band()  # Write variables to database
 
-                            if self.band:
-                                band_min = self.setpoint - self.band
-                                write_setpoint_db = threading.Thread(
-                                    target=write_influxdb_value,
-                                    args=(self.pid_unique_id,
-                                          'setpoint_band_min',
-                                          band_min,))
-                                write_setpoint_db.start()
-
-                                band_max = self.setpoint + self.band
-                                write_setpoint_db = threading.Thread(
-                                    target=write_influxdb_value,
-                                    args=(self.pid_unique_id,
-                                          'setpoint_band_max',
-                                          band_max,))
-                                write_setpoint_db.start()
-
-                            # Update PID and get control variable
+                            # Calculate new control variable
                             self.control_variable = self.update_pid_output(
                                 self.last_measurement)
 
-                            self.write_pid_values()
+                            self.write_pid_values()  # Write variables to database
 
-                    # If PID is active or on hold, activate outputs
-                    if ((self.is_activated and not self.is_paused) or
-                            (self.is_activated and self.is_held)):
+                    # Is PID in a state that allows manipulation of outputs
+                    if (self.is_activated and (not self.is_paused or
+                                               self.is_held)
+                            ):
                         self.manipulate_output()
-                t.sleep(0.1)
 
+                time.sleep(0.1)
+        except Exception as except_msg:
+                self.logger.exception("Run Error: {err}".format(
+                    err=except_msg))
+        finally:
             # Turn off output used in PID when the controller is deactivated
             if self.raise_output_id and self.direction in ['raise', 'both']:
-                self.control.relay_off(self.raise_output_id, trigger_conditionals=True)
+                self.control.output_off(self.raise_output_id, trigger_conditionals=True)
             if self.lower_output_id and self.direction in ['lower', 'both']:
-                self.control.relay_off(self.lower_output_id, trigger_conditionals=True)
+                self.control.output_off(self.lower_output_id, trigger_conditionals=True)
 
             self.running = False
             self.logger.info("Deactivated in {:.1f} ms".format(
                 (timeit.default_timer() - self.thread_shutdown_timer) * 1000))
-        except Exception as except_msg:
-                self.logger.exception("Run Error: {err}".format(
-                    err=except_msg))
 
     def initialize_values(self):
         """Set PID parameters"""
-        pid = db_retrieve_table_daemon(PID, device_id=self.pid_id)
+        pid = db_retrieve_table_daemon(PID, unique_id=self.pid_id)
         self.is_activated = pid.is_activated
         self.is_held = pid.is_held
         self.is_paused = pid.is_paused
         self.method_id = pid.method_id
         self.direction = pid.direction
-        self.raise_output_id = pid.raise_relay_id
+        self.raise_output_id = pid.raise_output_id
         self.raise_min_duration = pid.raise_min_duration
         self.raise_max_duration = pid.raise_max_duration
         self.raise_min_off_duration = pid.raise_min_off_duration
-        self.lower_output_id = pid.lower_relay_id
+        self.lower_output_id = pid.lower_output_id
         self.lower_min_duration = pid.lower_min_duration
         self.lower_max_duration = pid.lower_max_duration
         self.lower_min_off_duration = pid.lower_min_off_duration
@@ -295,23 +277,26 @@ class PIDController(threading.Thread):
 
         try:
             self.raise_output_type = db_retrieve_table_daemon(
-                Output, device_id=self.raise_output_id).relay_type
+                Output, unique_id=self.raise_output_id).output_type
         except AttributeError:
             self.raise_output_type = None
         try:
             self.lower_output_type = db_retrieve_table_daemon(
-                Output, device_id=self.lower_output_id).relay_type
+                Output, unique_id=self.lower_output_id).output_type
         except AttributeError:
             self.lower_output_type = None
 
         return "success"
 
     def setup_method(self, method_id):
-        method = db_retrieve_table_daemon(Method, device_id=method_id)
+        """ Initialize method variables to start running a method """
+        self.method_id = ''
+
+        method = db_retrieve_table_daemon(Method, unique_id=method_id)
         method_data = db_retrieve_table_daemon(MethodData)
         method_data = method_data.filter(MethodData.method_id == method_id)
         method_data_repeat = method_data.filter(MethodData.duration_sec == 0).first()
-        pid = db_retrieve_table_daemon(PID, device_id=self.pid_id)
+        pid = db_retrieve_table_daemon(PID, unique_id=self.pid_id)
         self.method_type = method.method_type
         self.method_start_act = pid.method_start_time
         self.method_start_time = None
@@ -332,7 +317,7 @@ class PIDController(threading.Thread):
 
                 with session_scope(MYCODO_DB_PATH) as db_session:
                     mod_pid = db_session.query(PID).filter(
-                        PID.id == self.pid_id).first()
+                        PID.unique_id == self.pid_id).first()
                     mod_pid.method_start_time = self.method_start_time
                     mod_pid.method_end_time = self.method_end_time
                     db_session.commit()
@@ -356,6 +341,57 @@ class PIDController(threading.Thread):
                         self.method_start_act = 'Ended'
                 else:
                     self.method_start_act = 'Ended'
+
+            self.method_id = method_id
+
+    def write_setpoint_band(self):
+        """ Write setpoint and band values to measurement database """
+        write_setpoint_db = threading.Thread(
+            target=write_influxdb_value,
+            args=(self.pid_id,
+                  'setpoint',
+                  self.setpoint,))
+        write_setpoint_db.start()
+
+        if self.band:
+            band_min = self.setpoint - self.band
+            write_setpoint_db = threading.Thread(
+                target=write_influxdb_value,
+                args=(self.pid_id,
+                      'setpoint_band_min',
+                      band_min,))
+            write_setpoint_db.start()
+
+            band_max = self.setpoint + self.band
+            write_setpoint_db = threading.Thread(
+                target=write_influxdb_value,
+                args=(self.pid_id,
+                      'setpoint_band_max',
+                      band_max,))
+            write_setpoint_db.start()
+
+    def write_pid_values(self):
+        """ Write p, i, and d values to the measurement database """
+        write_setpoint_db = threading.Thread(
+            target=write_influxdb_value,
+            args=(self.pid_id,
+                  'pid_p_value',
+                  self.P_value,))
+        write_setpoint_db.start()
+
+        write_setpoint_db = threading.Thread(
+            target=write_influxdb_value,
+            args=(self.pid_id,
+                  'pid_i_value',
+                  self.I_value,))
+        write_setpoint_db.start()
+
+        write_setpoint_db = threading.Thread(
+            target=write_influxdb_value,
+            args=(self.pid_id,
+                  'pid_d_value',
+                  self.D_value,))
+        write_setpoint_db.start()
 
     def update_pid_output(self, current_value):
         """
@@ -412,28 +448,6 @@ class PIDController(threading.Thread):
         pid_value = self.P_value + self.I_value + self.D_value
 
         return pid_value
-
-    def write_pid_values(self):
-        write_setpoint_db = threading.Thread(
-            target=write_influxdb_value,
-            args=(self.pid_unique_id,
-                  'pid_p_value',
-                  self.P_value,))
-        write_setpoint_db.start()
-
-        write_setpoint_db = threading.Thread(
-            target=write_influxdb_value,
-            args=(self.pid_unique_id,
-                  'pid_i_value',
-                  self.I_value,))
-        write_setpoint_db.start()
-
-        write_setpoint_db = threading.Thread(
-            target=write_influxdb_value,
-            args=(self.pid_unique_id,
-                  'pid_d_value',
-                  self.D_value,))
-        write_setpoint_db.start()
 
     def check_hysteresis(self, measure):
         """
@@ -520,12 +534,12 @@ class PIDController(threading.Thread):
                     meas=self.measurement,
                     last=self.last_measurement,
                     ts=local_timestamp))
-                if calendar.timegm(t.gmtime()) - utc_timestamp > self.max_measure_age:
+                if calendar.timegm(time.gmtime()) - utc_timestamp > self.max_measure_age:
                     self.logger.error(
                         "Last measurement was {last_sec} seconds ago, however"
                         " the maximum measurement age is set to {max_sec}"
                         " seconds.".format(
-                            last_sec=calendar.timegm(t.gmtime())-utc_timestamp,
+                            last_sec=calendar.timegm(time.gmtime())-utc_timestamp,
                             max_sec=self.max_measure_age
                         ))
                 self.last_measurement_success = True
@@ -577,7 +591,7 @@ class PIDController(threading.Thread):
                                 dc=self.raise_duty_cycle))
 
                         # Activate pwm with calculated duty cycle
-                        self.control.relay_on(self.raise_output_id,
+                        self.control.output_on(self.raise_output_id,
                                               duty_cycle=self.raise_duty_cycle)
 
                         self.write_pid_output_influxdb(
@@ -602,17 +616,17 @@ class PIDController(threading.Thread):
                                     sp=self.setpoint,
                                     cv=self.control_variable,
                                     id=self.raise_output_id))
-                            self.control.relay_on(
+                            self.control.output_on(
                                 self.raise_output_id,
                                 duration=self.raise_seconds_on,
                                 min_off=self.raise_min_off_duration)
 
                         self.write_pid_output_influxdb(
-                            'pid_output', self.control_variable)
+                            'duration_sec', self.control_variable)
 
                 else:
                     if self.raise_output_type == 'pwm':
-                        self.control.relay_on(self.raise_output_id,
+                        self.control.output_on(self.raise_output_id,
                                               duty_cycle=0)
 
             #
@@ -651,7 +665,7 @@ class PIDController(threading.Thread):
                             stored_control_variable = self.control_var_to_duty_cycle(abs(self.control_variable))
 
                         # Activate pwm with calculated duty cycle
-                        self.control.relay_on(
+                        self.control.output_on(
                             self.lower_output_id,
                             duty_cycle=stored_duty_cycle)
 
@@ -684,24 +698,24 @@ class PIDController(threading.Thread):
                                                 cv=self.control_variable,
                                                 id=self.lower_output_id))
 
-                            self.control.relay_on(
+                            self.control.output_on(
                                 self.lower_output_id,
                                 duration=stored_seconds_on,
                                 min_off=self.lower_min_off_duration)
 
                         self.write_pid_output_influxdb(
-                            'pid_output', stored_control_variable)
+                            'duration_sec', stored_control_variable)
 
                 else:
                     if self.lower_output_type == 'pwm':
-                        self.control.relay_on(self.lower_output_id,
+                        self.control.output_on(self.lower_output_id,
                                               duty_cycle=0)
 
         else:
             if self.direction in ['raise', 'both'] and self.raise_output_id:
-                self.control.relay_off(self.raise_output_id)
+                self.control.output_off(self.raise_output_id)
             if self.direction in ['lower', 'both'] and self.lower_output_id:
-                self.control.relay_off(self.lower_output_id)
+                self.control.output_off(self.lower_output_id)
 
     def control_var_to_duty_cycle(self, control_variable):
         # Convert control variable to duty cycle
@@ -713,7 +727,7 @@ class PIDController(threading.Thread):
     def write_pid_output_influxdb(self, pid_entry_type, pid_entry_value):
         write_pid_out_db = threading.Thread(
             target=write_influxdb_value,
-            args=(self.pid_unique_id,
+            args=(self.pid_id,
                   pid_entry_type,
                   pid_entry_value,))
         write_pid_out_db.start()
@@ -746,27 +760,28 @@ class PIDController(threading.Thread):
         self.setpoint = float(setpoint)
         with session_scope(MYCODO_DB_PATH) as db_session:
             mod_pid = db_session.query(PID).filter(
-                PID.id == self.pid_id).first()
+                PID.unique_id == self.pid_id).first()
             mod_pid.setpoint = setpoint
             db_session.commit()
         return "Setpoint set to {sp}".format(sp=setpoint)
 
     def set_method(self, method_id):
         """ Set the method of PID """
-        self.method_id = int(method_id)
-
         with session_scope(MYCODO_DB_PATH) as db_session:
             mod_pid = db_session.query(PID).filter(
-                PID.id == self.pid_id).first()
+                PID.unique_id == self.pid_id).first()
             mod_pid.method_id = method_id
-            mod_pid.method_start_time = 'Ready'
-            mod_pid.method_end_time = None
-            db_session.commit()
 
-        if self.method_id:
-            self.setup_method(method_id)
+            if method_id == '':
+                self.method_id = ''
+                db_session.commit()
+            else:
+                mod_pid.method_start_time = 'Ready'
+                mod_pid.method_end_time = None
+                db_session.commit()
+                self.setup_method(method_id)
 
-        return "Method set to {me} and started".format(me=method_id)
+        return "Method set to {me}".format(me=method_id)
 
     def set_integrator(self, integrator):
         """ Set the integrator of the controller """
@@ -783,7 +798,7 @@ class PIDController(threading.Thread):
         self.Kp = float(p)
         with session_scope(MYCODO_DB_PATH) as db_session:
             mod_pid = db_session.query(PID).filter(
-                PID.id == self.pid_id).first()
+                PID.unique_id == self.pid_id).first()
             mod_pid.p = p
             db_session.commit()
         return "Kp set to {kp}".format(kp=self.Kp)
@@ -793,7 +808,7 @@ class PIDController(threading.Thread):
         self.Ki = float(i)
         with session_scope(MYCODO_DB_PATH) as db_session:
             mod_pid = db_session.query(PID).filter(
-                PID.id == self.pid_id).first()
+                PID.unique_id == self.pid_id).first()
             mod_pid.i = i
             db_session.commit()
         return "Ki set to {ki}".format(ki=self.Ki)
@@ -803,7 +818,7 @@ class PIDController(threading.Thread):
         self.Kd = float(d)
         with session_scope(MYCODO_DB_PATH) as db_session:
             mod_pid = db_session.query(PID).filter(
-                PID.id == self.pid_id).first()
+                PID.unique_id == self.pid_id).first()
             mod_pid.d = d
             db_session.commit()
         return "Kd set to {kd}".format(kd=self.Kd)
@@ -836,10 +851,10 @@ class PIDController(threading.Thread):
         self.thread_shutdown_timer = timeit.default_timer()
         self.running = False
         # Unset method start time
-        if self.method_id and ended_normally:
+        if self.method_id != '' and ended_normally:
             with session_scope(MYCODO_DB_PATH) as db_session:
                 mod_pid = db_session.query(PID).filter(
-                    PID.id == self.pid_id).first()
+                    PID.unique_id == self.pid_id).first()
                 mod_pid.method_start_time = 'Ended'
                 mod_pid.method_end_time = None
                 db_session.commit()
@@ -847,6 +862,6 @@ class PIDController(threading.Thread):
         if deactivate_pid:
             with session_scope(MYCODO_DB_PATH) as db_session:
                 mod_pid = db_session.query(PID).filter(
-                    PID.id == self.pid_id).first()
+                    PID.unique_id == self.pid_id).first()
                 mod_pid.is_activated = False
                 db_session.commit()

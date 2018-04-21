@@ -40,7 +40,6 @@ from mycodo.utils.influx import add_measure_influxdb
 from mycodo.utils.influx import read_last_influxdb
 from mycodo.utils.influx import read_past_influxdb
 from mycodo.utils.system_pi import celsius_to_kelvin
-from mycodo.config import MEASUREMENT_INTEGERS
 
 
 class Measurement:
@@ -72,7 +71,7 @@ class MathController(threading.Thread):
     def __init__(self, ready, math_id):
         threading.Thread.__init__(self)
 
-        self.logger = logging.getLogger("mycodo.math_{id}".format(id=math_id))
+        self.logger = logging.getLogger("mycodo.math_{id}".format(id=math_id.split('-')[0]))
 
         try:
             self.measurements = None
@@ -90,7 +89,7 @@ class MathController(threading.Thread):
             self.allowed_to_send_notice = True
 
             self.math_id = math_id
-            math = db_retrieve_table_daemon(Math, device_id=self.math_id)
+            math = db_retrieve_table_daemon(Math, unique_id=self.math_id)
 
             # General variables
             self.unique_id = math.unique_id
@@ -176,14 +175,9 @@ class MathController(threading.Thread):
                                         measure_list.append(each_set[1])
                                 average = sum(measure_list) / float(len(measure_list))
 
-                                if self.measure in MEASUREMENT_INTEGERS:
-                                    measure_dict = {
-                                        self.measure: int(average)
-                                    }
-                                else:
-                                    measure_dict = {
-                                        self.measure: float('{0:.4f}'.format(average))
-                                    }
+                                measure_dict = {
+                                    self.measure: float('{0:.4f}'.format(average))
+                                }
                                 self.measurements = Measurement(measure_dict)
                                 add_measure_influxdb(self.unique_id, self.measurements)
                             else:

@@ -7,18 +7,19 @@ from .base_input import AbstractInput
 class TSL2591Sensor(AbstractInput):
     """ A sensor support class that monitors the TSL2591's lux """
 
-    def __init__(self, address, bus, testing=False):
+    def __init__(self, input_dev, testing=False):
         super(TSL2591Sensor, self).__init__()
         self.logger = logging.getLogger("mycodo.inputs.tsl2591_sensor")
         self._lux = None
-        self.i2c_address = address
-        self.i2c_bus = bus
 
         if not testing:
             import tsl2591
             self.logger = logging.getLogger(
-                "mycodo.inputs.tsl2591_{bus}_{add}".format(bus=bus, add=address))
-            self.tsl = tsl2591.Tsl2591(i2c_bus=self.i2c_bus, sensor_address=self.i2c_address)
+                "mycodo.inputs.tsl2591_sensor_{id}".format(id=input_dev.id))
+            self.i2c_address = int(str(input_dev.location), 16)
+            self.i2c_bus = input_dev.i2c_bus
+            self.tsl = tsl2591.Tsl2591(i2c_bus=self.i2c_bus,
+                                       sensor_address=self.i2c_address)
 
     def __repr__(self):
         """  Representation of object """

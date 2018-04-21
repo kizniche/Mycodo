@@ -5,14 +5,14 @@
       {{form_add_method.duration(class_='form-control')}}
     </div>
   </div>
-  <div class="col-sm-12">
+  <div class="col-auto">
     <input type="radio" name="method_select" value="setpoint" checked="checked"> {{_('Define the setpoint over a period of time, based on specific durations of time.')}}
     <br>{{_('Duration here is defined as the amount of time after the previous duration. If this is the first duration added, this will be the beginning of the method. If this is not the first duration added, it will execute after the last duration already in the method.')}}
   </div>
 </div>
 
 <div class="row small-gutters" style="padding: 0.7em">
-  <div class="col-sm-6 col-md-4">
+  <div class="col-auto">
     {{form_add_method.setpoint_start.label(class_='control-label')}}
     <div>
       {{form_add_method.setpoint_start(class_='form-control', value=last_setpoint)}}
@@ -27,7 +27,7 @@
 </div>
 
 <div class="row" style="padding-bottom: 1em; padding-top: 1em">
-  <div class="col-sm-12">
+  <div class="col-auto">
     <label style="padding-top: 1em"></label>
     <div>
       OR
@@ -36,14 +36,14 @@
 </div>
 
 <div class="row small-gutters" style="padding: 0.7em">
-  <div class="col-md-12">
-    <input type="radio" name="method_select" value="relay"> {{_('Output')}}
+  <div class="col-auto">
+    <input type="radio" name="method_select" value="output"> {{_('Output')}}
     <br>{{_('Activate or deactivate an output within this method at a specific duration. Duration here is defined as the amount of time since the beginning of the method. For example, 60 seconds would execute the output modulation 60 seconds after the start of the method.')}}
   </div>
-  <div class="col-sm-5 col-md-4">
-    {{form_add_method.relay_id.label(class_='control-label')}}
+  <div class="col-auto">
+    {{form_add_method.output_id.label(class_='control-label')}}
     <div>
-      <select class="form-control form-tooltip form-dropdown" data-placement="bottom" id="relay_id" name="relay_id" title="{{_('Modulate the selected relay')}}.">
+      <select class="form-control form-tooltip form-dropdown" data-placement="bottom" id="output_id" name="output_id" title="{{_('Modulate the selected output')}}.">
         <option value=""></option>
         {% for each_output in output -%}
           <option value="{{each_output.id}}">{{"[{0:02d}]".format(each_output.id)}} {{each_output.name}}</option>
@@ -51,21 +51,21 @@
       </select>
     </div>
   </div>
-  <div class="col-sm-3 col-md-2">
-    {{form_add_method.relay_state.label(class_='control-label')}}
+  <div class="col-auto">
+    {{form_add_method.output_state.label(class_='control-label')}}
     <div>
-      {{form_add_method.relay_state(class_='form-control')}}
+      {{form_add_method.output_state(class_='form-control')}}
     </div>
   </div>
-  <div class="col-sm-4 col-md-3">
-    {{form_add_method.relay_duration.label(class_='control-label')}}
+  <div class="col-auto">
+    {{form_add_method.output_duration.label(class_='control-label')}}
     <div>
-      {{form_add_method.relay_duration(class_='form-control')}}
+      {{form_add_method.output_duration(class_='form-control')}}
     </div>
   </div>
 </div>
 <div class="row">
-  <div class="col-md-3">
+  <div class="col-auto">
     <label class='control-label'></label>
     <div>
       {{form_add_method.save(class_='form-control btn btn-default')}}
@@ -78,13 +78,13 @@
     {{_('If you do not wish for the method to repeat, do not use this option.')}}
     {{_('You may enter a duration (seconds) that the method will end after, otherwise leave blank to repeat forever.')}}
   </div>
-  <div class="col-sm-5 col-md-3">
+  <div class="col-auto">
     {{form_add_method.duration_end.label(class_='control-label')}}
     <div>
       {{form_add_method.duration_end(class_='form-control')}}
     </div>
   </div>
-  <div class="col-sm-5">
+  <div class="col-auto">
     <label class='control-label'>&nbsp;</label>
     <div>
       {{form_add_method.restart(class_='form-control btn btn-default',**{'onclick':'return confirm("This will instruct the method to be restarted once it finishes. No more durations may be added if this option is used. Confirm adding restart at the end of this method?")'})}}

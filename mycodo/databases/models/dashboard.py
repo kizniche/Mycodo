@@ -1,26 +1,28 @@
 # coding=utf-8
 from mycodo.databases import CRUDMixin
+from mycodo.databases import set_uuid
 from mycodo.mycodo_flask.extensions import db
 
 
 class Dashboard(CRUDMixin, db.Model):
-    __tablename__ = "graph"  # TODO: rename to 'dashboard'
+    __tablename__ = "dashboard"
     __table_args__ = {'extend_existing': True}
 
     id = db.Column(db.Integer, unique=True, primary_key=True)
+    unique_id = db.Column(db.String, nullable=False, unique=True, default=set_uuid)
     graph_type = db.Column(db.Text, default=None)
-    name = db.Column(db.Text, default='Graph')
-    refresh_duration = db.Column(db.Float, default=120)  # How often to add new data and redraw, refresh camera
+    name = db.Column(db.Text, default='Dashboard Element')
+    refresh_duration = db.Column(db.Integer, default=120)  # How often to add new data and redraw, refresh camera
     width = db.Column(db.Integer, default=12)  # Width of page (1-12, bootstrap col widths)
     height = db.Column(db.Integer, default=400)  # Height (in pixels)
 
     # Graph options
     pid_ids = db.Column(db.Text, default='')  # store IDs and measurements to display
-    relay_ids = db.Column(db.Text, default='')  # store IDs and measurements to display
+    output_ids = db.Column(db.Text, default='')  # store IDs and measurements to display
     math_ids = db.Column(db.Text, default='')  # store Math IDs to display
+    input_ids_measurements = db.Column(db.Text, default='')  # store IDs and measurements to display
 
-    sensor_ids_measurements = db.Column(db.Text, default='')  # store IDs and measurements to display
-    x_axis_duration = db.Column(db.Float, default=1440)  # X-axis duration (in minutes)
+    x_axis_duration = db.Column(db.Integer, default=1440)  # X-axis duration (in minutes)
     use_custom_colors = db.Column(db.Boolean, default=False)  # Enable custom colors of graph series
     custom_colors = db.Column(db.Text, default='')  # Custom hex color values (csv)
     enable_navbar = db.Column(db.Boolean, default=False)  # Show navigation bar
@@ -38,22 +40,22 @@ class Dashboard(CRUDMixin, db.Model):
     decimal_places = db.Column(db.Integer, default=1)  # Number of decimal places for displayed value
 
     # Gauge options
-    max_measure_age = db.Column(db.Float, default=120.0)  # Only show measurements if they are younger than this age
+    max_measure_age = db.Column(db.Integer, default=120.0)  # Only show measurements if they are younger than this age
     range_colors = db.Column(db.Text, default='')  # Custom hex color values and gauge range
     enable_timestamp = db.Column(db.Boolean, default=True)  # Show timestamp for displayed gauge value
 
     # Graph and Gauge options
-    y_axis_min = db.Column(db.Float, default=None)  # x-axis minimum
-    y_axis_max = db.Column(db.Float, default=None)  # x-axis maximum
+    y_axis_min = db.Column(db.Float, default=None)  # y-axis minimum
+    y_axis_max = db.Column(db.Float, default=None)  # y-axis maximum
 
     # Output options
-    output_ids = db.Column(db.Text, default='')  # store Output IDs to display
     font_em_value = db.Column(db.Float, default=1.0)  # Font size of value
     font_em_timestamp = db.Column(db.Float, default=1.0)  # Font size of timestamp
     enable_output_controls = db.Column(db.Boolean, default=True)  # Show output controls on dashboard element
 
     # PID options
-    enable_pid_info = db.Column(db.Boolean, default=True)  # Display detailed information about the PID
+    show_pid_info = db.Column(db.Boolean, default=True)  # Display detailed information about the PID
+    show_set_setpoint = db.Column(db.Boolean, default=True)  # Display set PID setpoint
 
     # Camera options
     camera_id = db.Column(db.Text, default='')  # store camera ID to display

@@ -1,13 +1,13 @@
 {%- if display_order_pid -%}
 {%- for order in display_order_pid -%}
-  {%- for each_pid in pid if each_pid.id == order -%}
+  {%- for each_pid in pid if each_pid.unique_id == order -%}
 
     <div class="container" style="border: 2px solid #ddd; border-radius: 5px;">
 
       <form method="post" action="/function">
       <input type="hidden" name="form-name" value="modPID">
       {{form_mod_pid_base.csrf_token}}
-      {{form_mod_pid_base.pid_id(value=each_pid.id)}}
+      {{form_mod_pid_base.pid_id(value=each_pid.unique_id)}}
 
       <div class="{% if each_pid.is_activated and not each_pid.is_paused -%}active-background
                   {% elif each_pid.is_activated and each_pid.is_paused -%}pause-background
@@ -24,7 +24,7 @@
           {{form_mod_pid_base.name(class_='form-control', value=each_pid.name, **{'title':_('A name to distinguish this from others')})}}
         </div>
         <div class="col-xs-5 col-sm-3 col-md-2 col-lg-3">
-          <input class="form-control btn btn-default" title="UUID: {{each_pid.unique_id}}" disabled="" value="[PID {{'%02d' % each_pid.id}}]
+          <input class="form-control btn btn-default" title="[{{'%02d' % each_pid.id}}] UUID: {{each_pid.unique_id}}" disabled="" value="[PID]
           {%- if each_pid.is_activated and not each_pid.is_paused %} {{_('Active')}}
           {%- elif each_pid.is_activated and each_pid.is_paused %} {{_('Paused')}}
           {%- elif each_pid.is_held %} {{_('On Hold')}}
@@ -100,13 +100,13 @@
           <div class="col-auto">
             {{form_mod_pid_base.period.label(class_='control-label')}}
             <div>
-              {{form_mod_pid_base.period(class_='form-control', value=each_pid.period, **{'title':_('The duration between calculating a new PID output to power the raise and lower relays.')})}}
+              {{form_mod_pid_base.period(class_='form-control', value=each_pid.period, **{'title':_('The duration between calculating a new PID output to power the raise and lower outputs.')})}}
             </div>
           </div>
           <div class="col-auto">
             {{form_mod_pid_base.max_measure_age.label(class_='control-label')}}
             <div>
-              {{form_mod_pid_base.max_measure_age(class_='form-control', value=each_pid.max_measure_age, **{'title':_('Maximum allowable measurement age (to allow the PID controller to manipulate relays, the measurement must have occurred in the past x seconds)')})}}
+              {{form_mod_pid_base.max_measure_age(class_='form-control', value=each_pid.max_measure_age, **{'title':_('Maximum allowable measurement age (to allow the PID controller to manipulate outputs, the measurement must have occurred in the past x seconds)')})}}
             </div>
           </div>
         </div>
@@ -167,22 +167,22 @@
 
         <div class="row small-gutters">
           <div class="col-auto">
-            {{form_mod_pid_base.raise_relay_id.label(class_='control-label')}}
+            {{form_mod_pid_base.raise_output_id.label(class_='control-label')}}
             <div>
-              <select class="form-control" id="raise_relay_id" name="raise_relay_id" title="" data-original-title="{{_('The output that will raise the selected environmental condition (Measure Type)')}}.">
+              <select class="form-control" id="raise_output_id" name="raise_output_id" title="" data-original-title="{{_('The output that will raise the selected environmental condition (Measure Type)')}}.">
                 <option value="">{{_('Disabled')}}</option>
                 {%- for each_output in output -%}
-                  <option value="{{each_output.id}}"{% if each_pid.raise_relay_id == each_output.id %} selected{% endif %}>{{each_output.id}} ({{each_output.name}})</option>
+                  <option value="{{each_output.unique_id}}"{% if each_pid.raise_output_id == each_output.unique_id %} selected{% endif %}>[{{'%02d' % each_output.id}}] {{each_output.name}}</option>
                 {%- endfor -%}
               </select>
             </div>
           </div>
 
-      {% for each_output in output if each_pid.raise_relay_id == each_output.id %}
-        {% if each_output.relay_type == 'pwm' %}
+      {% for each_output in output if each_pid.raise_output_id == each_output.unique_id %}
+        {% if each_output.output_type == 'pwm' %}
           {% include 'pages/function_options/pid_options/pwm_raise.html' %}
         {% else %}
-          {% include 'pages/function_options/pid_options/relay_raise.html' %}
+          {% include 'pages/function_options/pid_options/output_raise.html' %}
         {% endif %}
       {% endfor %}
 
@@ -190,22 +190,22 @@
 
         <div class="row small-gutters">
           <div class="col-auto">
-            {{form_mod_pid_base.lower_relay_id.label(class_='control-label')}}
+            {{form_mod_pid_base.lower_output_id.label(class_='control-label')}}
             <div>
-              <select class="form-control" id="lower_relay_id" name="lower_relay_id" title="" data-original-title="{{_('The output that will lower the selected environmental condition (Measure Type)')}}.">
+              <select class="form-control" id="lower_output_id" name="lower_output_id" title="" data-original-title="{{_('The output that will lower the selected environmental condition (Measure Type)')}}.">
                 <option value="">{{_('Disabled')}}</option>
                 {%- for each_output in output -%}
-                  <option value="{{each_output.id}}"{% if each_pid.lower_relay_id == each_output.id %} selected{% endif %}>{{each_output.id}} ({{each_output.name}})</option>
+                  <option value="{{each_output.unique_id}}"{% if each_pid.lower_output_id == each_output.unique_id %} selected{% endif %}>[{{'%02d' % each_output.id}}] {{each_output.name}}</option>
                 {%- endfor -%}
               </select>
             </div>
           </div>
 
-      {% for each_output in output if each_pid.lower_relay_id == each_output.id %}
-        {% if each_output.relay_type == 'pwm' %}
+      {% for each_output in output if each_pid.lower_output_id == each_output.unique_id %}
+        {% if each_output.output_type == 'pwm' %}
           {% include 'pages/function_options/pid_options/pwm_lower.html' %}
         {% else %}
-          {% include 'pages/function_options/pid_options/relay_lower.html' %}
+          {% include 'pages/function_options/pid_options/output_lower.html' %}
         {% endif %}
       {% endfor %}
 
@@ -218,19 +218,19 @@
             </div>
             <select class="form-control" id="method_id" name="method_id" title="" data-original-title="{{_('Select the method to use when calculating the setpoint. When enabled, the setpoint(s) of the method override the PID setpoint above.')}}">
               {%- if method == [] -%}
-                <option value="0">{{_('No methods exist. Create one with this button')}} -></option>
+                <option value="">{{_('No methods exist. Create one with this button')}} -></option>
               {%- else -%}
-                <option value="0">{{_('Disabled')}}</option>
+                <option value="">{{_('Disabled')}}</option>
               {%- endif-%}
 
               {%- set valid_saved_method = [] -%}
               {%- for each_method in method -%}
-                {%- if each_method.id == each_pid.method_id -%}
+                {%- if each_method.unique_id == each_pid.method_id -%}
                   {%- do valid_saved_method.append(1) -%}
                 {%- endif -%}
-                <option value="{{each_method.id}}"{% if each_pid.method_id == each_method.id %} selected{% endif %}>{{each_method.id}} ({{each_method.name}})</option>
+                <option value="{{each_method.unique_id}}"{% if each_pid.method_id == each_method.unique_id %} selected{% endif %}>[{{'%02d' % each_method.id}}] {{each_method.name}}</option>
               {%- endfor -%}
-              {%- if not valid_saved_method and each_pid.method_id -%}
+              {%- if not valid_saved_method and each_pid.method_id != '' -%}
                 <option value="" selected>{{_('Invalid saved method. Save another method from this list.')}}</option>
               {%- endif -%}
             </select>

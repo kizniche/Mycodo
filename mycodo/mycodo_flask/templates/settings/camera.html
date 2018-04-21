@@ -48,13 +48,13 @@
     <div class="container" style="width: 95%; border: 2px solid #ddd; border-radius: 5px;">
       <form method="post" action="/settings/camera">
       {{form_camera.csrf_token}}
-      {{form_camera.camera_id(value=each_camera.id)}}
+      {{form_camera.camera_id(value=each_camera.unique_id)}}
       <div class="row small-gutters" style="border-bottom: 2px solid #ddd; padding: 1em 0;">
         <div class="col-xs-12 col-sm-3">
           {{form_camera.name(class_='form-control', value=each_camera.name, **{'title':_('Name for this Camera')})}}
         </div>
         <div class="col-xs-12 col-sm-3">
-          <input class="form-control" disabled="" value="[{{each_camera.id}}] {{each_camera.library}}" type="text">
+          <input class="form-control" disabled="" title="[{{'%02d' % each_camera.id}}] UUID: {{each_camera.unique_id}}" value="{{each_camera.library}}" type="text">
         </div>
         <div class="col-xs-12 col-sm-3">
           {{form_camera.camera_mod(class_='btn btn-primary btn-block')}}
@@ -95,16 +95,16 @@
            </div>
         </div>
         <div class="col-xs-6 col-md-4 col-lg-3">
-          {{form_camera.relay_id.label(class_='control-label')}}
+          {{form_camera.output_id.label(class_='control-label')}}
           <div>
-            <select class="form-control" id="relay_id" name="relay_id" title="" data-original-title="Select the relay to activate while the camera is acquiring an image or streaming.">
-              {%  if not relay %}
+            <select class="form-control" id="output_id" name="output_id" title="" data-original-title="Select the output to activate while the camera is acquiring an image or streaming.">
+              {%  if not output %}
                 <option value="">No Outputs Available</option>
               {% else %}
                 <option value="">Disabled</option>
               {% endif %}
-              {%- for each_relay in relay -%}
-                <option value="{{each_relay.id}}"{% if each_camera.relay_id == each_relay.id %} selected{% endif %}>{{each_relay.id}} ({{each_relay.name}})</option>
+              {%- for each_output in output -%}
+                <option value="{{each_output.unique_id}}"{% if each_camera.output_id == each_output.unique_id %} selected{% endif %}>[{{'%02d' % each_output.id}}] {{each_output.name}}</option>
               {%- endfor -%}
             </select>
           </div>

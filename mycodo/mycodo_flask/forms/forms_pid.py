@@ -17,7 +17,7 @@ from wtforms.validators import DataRequired
 
 
 class PIDModBase(FlaskForm):
-    pid_id = IntegerField('PID ID', widget=widgets.HiddenInput())
+    pid_id = StringField('PID ID', widget=widgets.HiddenInput())
     name = StringField(
         lazy_gettext('Name'),
         validators=[DataRequired()]
@@ -38,14 +38,14 @@ class PIDModBase(FlaskForm):
     period = DecimalField(
         lazy_gettext('Period (seconds)'),
         validators=[validators.NumberRange(
-            min=5.0,
+            min=1.0,
             max=86400.0
         )]
     )
     max_measure_age = DecimalField(
         lazy_gettext('Max Age (seconds)'),
         validators=[validators.NumberRange(
-            min=5.0,
+            min=1.0,
             max=86400.0
         )]
     )
@@ -78,9 +78,9 @@ class PIDModBase(FlaskForm):
     )
     integrator_max = DecimalField(lazy_gettext('Integrator Min'))
     integrator_min = DecimalField(lazy_gettext('Integrator Max'))
-    raise_relay_id = StringField(lazy_gettext('Output (Raise)'))
-    lower_relay_id = StringField(lazy_gettext('Output (Lower)'))
-    method_id = IntegerField(
+    raise_output_id = StringField(lazy_gettext('Output (Raise)'))
+    lower_output_id = StringField(lazy_gettext('Output (Lower)'))
+    method_id = StringField(
         'Setpoint Tracking Method', widget=widgets.HiddenInput())
     pid_mod = SubmitField(lazy_gettext('Save'))
     pid_hold = SubmitField(lazy_gettext('Hold'))

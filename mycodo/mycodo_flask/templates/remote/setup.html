@@ -55,7 +55,7 @@
     <form method="post" action="/remote/setup">
       <input type="hidden" name="form-name" value="mod_remote">
       {{form_setup.csrf_token}}
-      {{form_setup.remote_id(value=each_host.id)}}
+      {{form_setup.remote_id(value=each_host.unique_id)}}
 
       <div class="form-row" style="padding: 2em 0">
         <div class="col-2">

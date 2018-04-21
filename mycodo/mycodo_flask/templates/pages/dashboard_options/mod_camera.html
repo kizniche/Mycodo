@@ -15,7 +15,7 @@
 
   <form method="post" action="/dashboard">
     {{form_base.csrf_token}}
-    {{form_base.dashboard_id(value=each_graph.id)}}
+    {{form_base.dashboard_id(value=each_graph.unique_id)}}
     <input type="hidden" name="dashboard_type" value="{{each_graph.graph_type}}">
 
     <div class="form-row">

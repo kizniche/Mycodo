@@ -7,21 +7,22 @@ from w1thermsensor import W1ThermSensor
 from .base_input import AbstractInput
 from .sensorutils import convert_units
 
-logger = logging.getLogger("mycodo.inputs.ds18b20")
-
 
 class MAX31850KSensor(AbstractInput):
     """ A sensor support class that monitors the MAX31850K's temperature """
 
-    def __init__(self, pin, convert_to_unit=None, testing=False):
+    def __init__(self, input_dev, testing=False):
         super(MAX31850KSensor, self).__init__()
+        self.logger = logging.getLogger("mycodo.inputs.max31850k")
         self._temperature = None
 
-        self.pin = pin
-        self.convert_to_unit = convert_to_unit
-
         if not testing:
-            self.sensor = W1ThermSensor(W1ThermSensor.THERM_SENSOR_MAX31850K, self.pin)
+            self.logger = logging.getLogger(
+                "mycodo.inputs.max31850k_{id}".format(id=input_dev.id))
+            self.location = input_dev.location
+            self.convert_to_unit = input_dev.convert_to_unit
+            self.sensor = W1ThermSensor(W1ThermSensor.THERM_SENSOR_MAX31850K,
+                                        self.location)
 
     def __repr__(self):
         """  Representation of object """
@@ -60,7 +61,7 @@ class MAX31850KSensor(AbstractInput):
                 break
             except Exception as e:
                 if i == n:
-                    logger.exception(
+                    self.logger.exception(
                         "{cls} raised an exception when taking a reading: "
                         "{err}".format(cls=type(self).__name__, err=e))
                 time.sleep(1)
@@ -82,7 +83,7 @@ class MAX31850KSensor(AbstractInput):
             if self._temperature is not None:
                 return  # success - no errors
         except Exception as e:
-            logger.exception(
+            self.logger.exception(
                 "{cls} raised an exception when taking a reading: "
                 "{err}".format(cls=type(self).__name__, err=e))
         return 1

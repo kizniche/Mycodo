@@ -31,7 +31,6 @@ from mycodo.databases.models import Math
 from mycodo.databases.models import Method
 from mycodo.databases.models import Output
 from mycodo.databases.models import PID
-from mycodo.databases.models import Timer
 from mycodo.utils.database import db_retrieve_table_daemon
 
 MYCODO_DB_PATH = 'sqlite:///' + SQL_DATABASE_MYCODO
@@ -203,13 +202,11 @@ def recreate_stat_file():
         ['num_methods_in_pid', 0],
         ['num_pids', 0],
         ['num_pids_active', 0],
-        ['num_relays', 0],
+        ['num_outputs', 0],
         ['num_sensors', 0],
         ['num_sensors_active', 0],
         ['num_conditionals', 0],
-        ['num_conditionals_active', 0],
-        ['num_timers', 0],
-        ['num_timers_active', 0]
+        ['num_conditionals_active', 0]
     ]
 
     with open(STATS_CSV, 'w') as csv_stat_file:
@@ -240,7 +237,7 @@ def send_anonymous_stats(start_time):
         add_update_csv(STATS_CSV, 'alembic_version', version_send)
 
         outputs = db_retrieve_table_daemon(Output)
-        add_update_csv(STATS_CSV, 'num_relays', get_count(outputs))
+        add_update_csv(STATS_CSV, 'num_outputs', get_count(outputs))
 
         inputs = db_retrieve_table_daemon(Input)
         add_update_csv(STATS_CSV, 'num_sensors', get_count(inputs))
@@ -274,12 +271,6 @@ def send_anonymous_stats(start_time):
                        get_count(methods))
         add_update_csv(STATS_CSV, 'num_methods_in_pid',
                        get_count(pids.filter(PID.method_id != '')))
-
-        timers = db_retrieve_table_daemon(Timer)
-        add_update_csv(STATS_CSV, 'num_timers', get_count(timers))
-        add_update_csv(STATS_CSV, 'num_timers_active',
-                       get_count(timers.filter(
-                           Timer.is_activated == True)))
 
         country = geocoder.ip('me').country
         if not country:

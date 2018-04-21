@@ -67,7 +67,6 @@ from mycodo.databases.models import LCDData
 from mycodo.databases.models import Math
 from mycodo.databases.models import Output
 from mycodo.databases.models import PID
-from mycodo.devices.tca9548a import TCA9548A
 from mycodo.mycodo_flask.utils.utils_general import use_unit_generate
 from mycodo.utils.database import db_retrieve_table_daemon
 from mycodo.utils.influx import read_last_influxdb
@@ -82,7 +81,7 @@ class LCDController(threading.Thread):
     def __init__(self, ready, lcd_id):
         threading.Thread.__init__(self)
 
-        self.logger = logging.getLogger("mycodo.lcd_{id}".format(id=lcd_id))
+        self.logger = logging.getLogger("mycodo.lcd_{id}".format(id=lcd_id.split('-')[0]))
 
         self.running = False
         self.thread_startup_timer = timeit.default_timer()
@@ -96,7 +95,7 @@ class LCDController(threading.Thread):
         self.display_count = 0
 
         try:
-            lcd = db_retrieve_table_daemon(LCD, device_id=self.lcd_id)
+            lcd = db_retrieve_table_daemon(LCD, unique_id=self.lcd_id)
             self.lcd_name = lcd.name
             self.lcd_location = lcd.location
             self.lcd_i2c_bus = lcd.i2c_bus
@@ -106,17 +105,8 @@ class LCDController(threading.Thread):
             self.timer = time.time() + self.lcd_period
             self.backlight_timer = time.time()
 
-            if lcd.multiplexer_address:
-                self.multiplexer_address_string = lcd.multiplexer_address
-                self.multiplexer_address = int(str(lcd.multiplexer_address),
-                                               16)
-                self.multiplexer_channel = lcd.multiplexer_channel
-                self.multiplexer = TCA9548A(self.multiplexer_address)
-            else:
-                self.multiplexer = None
-
             self.list_pids = ['setpoint', 'pid_time']
-            self.list_outputs = ['duration_sec', 'relay_time', 'relay_state']
+            self.list_outputs = ['duration_sec', 'output_time', 'output_state']
 
             self.list_inputs = MEASUREMENT_UNITS
             self.list_inputs.update(
@@ -131,7 +121,7 @@ class LCDController(threading.Thread):
                 input_dev, math, self.list_inputs)
 
             lcd_data = db_retrieve_table_daemon(
-                LCDData).filter(LCDData.lcd_id == lcd.id).all()
+                LCDData).filter(LCDData.lcd_id == lcd.unique_id).all()
 
             self.lcd_string_line = {}
             self.lcd_line = {}
@@ -139,45 +129,45 @@ class LCDController(threading.Thread):
             self.lcd_decimal_places = {}
 
             for each_lcd_display in lcd_data:
-                self.display_ids.append(each_lcd_display.id)
-                self.lcd_string_line[each_lcd_display.id] = {}
-                self.lcd_line[each_lcd_display.id] = {}
-                self.lcd_max_age[each_lcd_display.id] = {}
-                self.lcd_decimal_places[each_lcd_display.id] = {}
+                self.display_ids.append(each_lcd_display.unique_id)
+                self.lcd_string_line[each_lcd_display.unique_id] = {}
+                self.lcd_line[each_lcd_display.unique_id] = {}
+                self.lcd_max_age[each_lcd_display.unique_id] = {}
+                self.lcd_decimal_places[each_lcd_display.unique_id] = {}
 
                 for i in range(1, self.lcd_y_lines + 1):
-                    self.lcd_string_line[each_lcd_display.id][i] = ''
-                    self.lcd_line[each_lcd_display.id][i] = {}
+                    self.lcd_string_line[each_lcd_display.unique_id][i] = ''
+                    self.lcd_line[each_lcd_display.unique_id][i] = {}
                     if i == 1:
-                        self.lcd_max_age[each_lcd_display.id][i] = each_lcd_display.line_1_max_age
-                        self.lcd_decimal_places[each_lcd_display.id][i] = each_lcd_display.line_1_decimal_places
+                        self.lcd_max_age[each_lcd_display.unique_id][i] = each_lcd_display.line_1_max_age
+                        self.lcd_decimal_places[each_lcd_display.unique_id][i] = each_lcd_display.line_1_decimal_places
                     elif i == 2:
-                        self.lcd_max_age[each_lcd_display.id][i] = each_lcd_display.line_2_max_age
-                        self.lcd_decimal_places[each_lcd_display.id][i] = each_lcd_display.line_2_decimal_places
+                        self.lcd_max_age[each_lcd_display.unique_id][i] = each_lcd_display.line_2_max_age
+                        self.lcd_decimal_places[each_lcd_display.unique_id][i] = each_lcd_display.line_2_decimal_places
                     elif i == 3:
-                        self.lcd_max_age[each_lcd_display.id][i] = each_lcd_display.line_3_max_age
-                        self.lcd_decimal_places[each_lcd_display.id][i] = each_lcd_display.line_3_decimal_places
+                        self.lcd_max_age[each_lcd_display.unique_id][i] = each_lcd_display.line_3_max_age
+                        self.lcd_decimal_places[each_lcd_display.unique_id][i] = each_lcd_display.line_3_decimal_places
                     elif i == 4:
-                        self.lcd_max_age[each_lcd_display.id][i] = each_lcd_display.line_4_max_age
-                        self.lcd_decimal_places[each_lcd_display.id][i] = each_lcd_display.line_4_decimal_places
+                        self.lcd_max_age[each_lcd_display.unique_id][i] = each_lcd_display.line_4_max_age
+                        self.lcd_decimal_places[each_lcd_display.unique_id][i] = each_lcd_display.line_4_decimal_places
 
                 if self.lcd_y_lines in [2, 4]:
                     self.setup_lcd_line(
-                        each_lcd_display.id, 1,
+                        each_lcd_display.unique_id, 1,
                         each_lcd_display.line_1_id,
                         each_lcd_display.line_1_measurement)
                     self.setup_lcd_line(
-                        each_lcd_display.id, 2,
+                        each_lcd_display.unique_id, 2,
                         each_lcd_display.line_2_id,
                         each_lcd_display.line_2_measurement)
 
                 if self.lcd_y_lines == 4:
                     self.setup_lcd_line(
-                        each_lcd_display.id, 3,
+                        each_lcd_display.unique_id, 3,
                         each_lcd_display.line_3_id,
                         each_lcd_display.line_3_measurement)
                     self.setup_lcd_line(
-                        each_lcd_display.id, 4,
+                        each_lcd_display.unique_id, 4,
                         each_lcd_display.line_4_id,
                         each_lcd_display.line_4_measurement)
 
@@ -229,7 +219,9 @@ class LCDController(threading.Thread):
             self.ready.set()
 
             while self.running:
-                if (self.lcd_is_on and
+                if not self.lcd_initilized:
+                    self.stop_controller()
+                elif (self.lcd_is_on and
                         self.lcd_initilized and
                         time.time() > self.timer):
                     try:
@@ -297,7 +289,7 @@ class LCDController(threading.Thread):
 
     def get_measurement(self, display_id, i):
         try:
-            if self.lcd_line[display_id][i]['measure'] == 'relay_state':
+            if self.lcd_line[display_id][i]['measure'] == 'output_state':
                 self.lcd_line[display_id][i]['measure_val'] = self.output_state(
                     self.lcd_line[display_id][i]['id'])
                 return True
@@ -385,21 +377,6 @@ class LCDController(threading.Thread):
 
     def output_lcds(self):
         """ Output to all LCDs all at once """
-        if self.multiplexer:
-            mult_status, mult_response = self.multiplexer.setup_lock(
-                self.logger, self.multiplexer_channel)
-            if mult_status:
-                self.logger.debug(
-                    "Setting multiplexer at address {add} to channel "
-                    "{chan}".format(
-                        add=self.multiplexer_address_string,
-                        chan=self.multiplexer_channel))
-            else:
-                self.logger.warning(
-                    "Could not set channel with multiplexer at address {add}."
-                    " Error: {err}".format(
-                        add=self.multiplexer_address_string,
-                        err=mult_response))
         self.lcd_init()
         display_id = self.display_ids[self.display_count]
         for i in range(1, self.lcd_y_lines + 1):
@@ -438,7 +415,8 @@ class LCDController(threading.Thread):
             # Get what each measurement uses for a unit
             input_dev = db_retrieve_table_daemon(Input)
             use_unit = use_unit_generate(input_dev)
-            if (measurement in use_unit[device_id] and
+            if (device_id in use_unit and
+                    measurement in use_unit[device_id] and
                     use_unit[device_id][measurement] is not None):
                 self.lcd_line[display_id][line]['unit'] = UNITS[use_unit[device_id][measurement]]['unit']
             else:
@@ -496,7 +474,7 @@ class LCDController(threading.Thread):
             self.lcd_is_on = True
         except Exception as err:
             self.logger.error(
-                "Count not initialize LCD. Error: {err}".format(err=err))
+                "Could not initialize LCD. Check your configuration and wiring. Error: {err}".format(err=err))
 
     def lcd_byte(self, bits, mode, backlight=None):
         """ Send byte to data pins """

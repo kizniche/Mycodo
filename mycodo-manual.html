@@ -359,10 +359,6 @@
 <li><a href="#pid-controller">PID Controller</a></li>
 <li><a href="#conditional-statements">Conditional Statements</a></li>
 </ul></li>
-<li><a href="#timers">Timers</a><ul>
-<li><a href="#general-output">General Output</a></li>
-<li><a href="#pwm-method">PWM Method</a></li>
-</ul></li>
 <li><a href="#lcds">LCDs</a></li>
 <li><a href="#methods">Methods</a><ul>
 <li><a href="#universal-options">Universal Options</a></li>
@@ -481,7 +477,7 @@
 <p>Input controllers acquire measurements and store them in a <a href="https://en.wikipedia.org/wiki/Time_series_database">time series database</a>. Measurements typically come from sensors, but may also be configured to use the return value of a linux command, making integrating new inputs very easy.</p>
 <p>Output controllers produce changes to the general input/output (GPIO) pins or may be configured to execute linux commands in order to allow an unlimited number of potential uses. There are a few different types of outputs: simple switching of pins (HIGH/LOW), generating pulse-width modulated (PWM) signals, switching 433 MHz wireless relays, and linux command execution. The most common setup is using a relay to switch electrical devices on and off.</p>
 <p>When Inputs and Outputs are combined, PID controllers may be used to create a feedback loop that uses the Output device to modulate an environmental condition the Input detects. Certain Inputs may be coupled with certain Outputs to create a variety of different control and regulation applications. Beyond simple regulation, Methods may be used to create changing setpoints over time, enabling such things as thermal cyclers, reflow ovens, environmental simulation for terrariums, food and beverage fermentation or curing, and cooking food (<a href="https://en.wikipedia.org/wiki/Sous-vide">sous-vide</a>), to name a few.</p>
-<p>Timers can be set to trigger events based on specific dates and times or according to durations of time. Timers are fairly basic, but can be configured in very complex ways. Don’t underestimate a good timer.</p>
+<p>Conditionals can be set to trigger events based on specific dates and times or according to durations of time. Conditionals are fairly basic, but can be configured in very complex ways. Don’t underestimate a good conditional.</p>
 <h1 id="frequently-asked-questions">Frequently Asked Questions</h1>
 <p><em>What should I do if I have an issue?</em></p>
 <p>First, read though this manual to make sure you understand how the system works and you’re using the system properly. Also check out the <a href="https://github.com/kizniche/Mycodo/wiki">Mycodo Wiki</a>. You may even want to look through recent <a href="https://github.com/kizniche/Mycodo/issues">GitHub Issues</a>. If you haven’t resolved your issue by this point, make a <a href="https://github.com/kizniche/Mycodo/issues/new">New GitHub Issue</a> describing the issue and attaching a sufficient amount of evidence (screenshots, log files, etc.) to aid in diagnosing the issue.</p>
@@ -572,11 +568,11 @@ usage: mycodo-client [-h] [--activatecontroller CONTROLLER ID]
 </tr>
 <tr class="odd">
 <td style="text-align: left;">Location</td>
-<td style="text-align: left;">Depending on what sensor is being used, you will need to either select a serial number (DS18B20 temperature sensor), a GPIO pin (in the case of sensors read by a GPIO), or an I2C address. and channel if using the TCA9548A I2C multiplexer.</td>
+<td style="text-align: left;">Depending on what sensor is being used, you will need to either select a serial number (DS18B20 temperature sensor), a GPIO pin (in the case of sensors read by a GPIO), or an I2C address. or other.</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">I2C Bus</td>
-<td style="text-align: left;">The bus to be used to communicate with the I2C address. If you’re using an I2C multiplexer that provides multiple buses, this allows you to select which bus the sensor is connected to.</td>
+<td style="text-align: left;">The bus to be used to communicate with the I2C address.</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">Period (seconds)</td>
@@ -625,86 +621,74 @@ signal &lt;http://kylegabriel.com/projects/2016/02
 <td style="text-align: left;">Edge sensors only: This is the period of time after an edge detection that another edge will not be recorded. This enables devices such as PIR motion sensors that may stay activated for longer periods of time.</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">Multiplexer (MX)</td>
-<td style="text-align: left;">If connected to the TCA9548A I2C multiplexer, select what the I2C address of the multiplexer is.</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">Mx I2C Bus</td>
-<td style="text-align: left;">If connected to the TCA9548A I2C multiplexer, select the I2C bus the multiplexer is connected to.</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">Mx Channel</td>
-<td style="text-align: left;">If connected to the TCA9548A I2C multiplexer, select the channel of the multiplexer the device is connected to.</td>
-</tr>
-<tr class="odd">
 <td style="text-align: left;">Measurement</td>
 <td style="text-align: left;">Analog-to-digital converter only: The type of measurement being acquired by the ADC. For instance, if the resistance of a photocell is being measured through a voltage divider, this measurement would be “light”.</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td style="text-align: left;">Units</td>
 <td style="text-align: left;">Analog-to-digital converter only: This is the unit of the measurement. With the above example of “light” as the measurement, the unit may be “lux” or “intensity”.</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td style="text-align: left;">Clock Pin</td>
 <td style="text-align: left;">The GPIO (using BCM numbering) connected to the Clock pin of the ADC</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td style="text-align: left;">CS Pin</td>
 <td style="text-align: left;">The GPIO (using BCM numbering) connected to the CS pin of the ADC</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td style="text-align: left;">MISO Pin</td>
 <td style="text-align: left;">The GPIO (using BCM numbering) connected to the MISO pin of the ADC</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td style="text-align: left;">MOSI Pin</td>
 <td style="text-align: left;">The GPIO (using BCM numbering) connected to the MOSI pin of the ADC</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td style="text-align: left;">RTD Probe Type</td>
 <td style="text-align: left;">Select to measure from a PT100 or PT1000 probe.</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td style="text-align: left;">Resistor Reference (Ohm)</td>
 <td style="text-align: left;">If your reference resistor is not the default (400 Ohm for PT100, 4000 Ohm for PT1000), you can manually set this value. Several manufacturers now use 430 Ohm resistors on their circuit boards, therefore it’s recommended to verify the accuracy of your measurements and adjust this value if necessary.</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td style="text-align: left;">Channel</td>
 <td style="text-align: left;">Analog-to-digital converter only: This is the channel to obtain the voltage measurement from the ADC.</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td style="text-align: left;">Gain</td>
 <td style="text-align: left;">Analog-to-digital converter only: set the gain when acquiring the measurement.</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td style="text-align: left;">Volts Min</td>
 <td style="text-align: left;">Analog-to-digital converter only: What is the minimum voltage to use when scaling to produce the unit value for the database. For instance, if your ADC is not expected to measure below 0.2 volts for your particular circuit, set this to “0.2”.</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td style="text-align: left;">Volts Max</td>
 <td style="text-align: left;">Analog-to-digital converter only: This is similar to the Min option above, however it is setting the ceiling to the voltage range. Units Min Analog-to-digital converter only: This value will be the lower value of a range that will use the Min and Max Voltages, above, to produce a unit output. For instance, if your voltage range is 0.0 - 1.0 volts, and the unit range is 1 - 60, and a voltage of 0.5 is measured, in addition to 0.5 being stored in the database, 30 will be stored as well. This enables creating calibrated scales to use with your particular circuit.</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td style="text-align: left;">Units Max</td>
 <td style="text-align: left;">Analog-to-digital converter only: This is similar to the Min option above, however it is setting the ceiling to the unit range.</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td style="text-align: left;">Weighting</td>
 <td style="text-align: left;">The This is a number between 0 and 1 and indicates how much the old reading affects the new reading. It defaults to 0 which means the old reading has no effect. This may be used to smooth the data.</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td style="text-align: left;">Pulses Per Rev</td>
 <td style="text-align: left;">The number of pulses for a complete revolution.</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td style="text-align: left;">Port</td>
 <td style="text-align: left;">The server port to be queried (Server Port Open input).</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td style="text-align: left;">Times to Check</td>
 <td style="text-align: left;">The number of times to attempt to ping a server (Server Ping input).</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td style="text-align: left;">Deadline (seconds)</td>
 <td style="text-align: left;">The maximum amount of time to wait for each ping attempt, after which 0 (offline) will be returned (Server Ping input).</td>
 </tr>
@@ -1178,11 +1162,11 @@ signal &lt;http://kylegabriel.com/projects/2016/02
 </tr>
 <tr class="even">
 <td style="text-align: left;">Pause</td>
-<td style="text-align: left;">When paused, the PID will not turn on the associated outputs, and settings can be changed without losing current PID output values.</td>
+<td style="text-align: left;">When paused, the control variable will not be updated and the PID will not turn on the associated outputs. Settings can be changed without losing current PID output values.</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">Hold</td>
-<td style="text-align: left;">When held, the PID will turn on the associated outputs, and settings can be changed without losing current PID output values.</td>
+<td style="text-align: left;">When held, the control variable will not be updated but the PID will turn on the associated outputs, Settings can be changed without losing current PID output values.</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">Resume</td>
@@ -1282,6 +1266,7 @@ document.write('<a h'+'ref'+'="ma'+'ilto'+':'+e+'" clas'+'s="em' + 'ail">'+e+'<\
 </ul>
 <p>Before activating any conditional statements or PID controllers, it’s advised to thoroughly explore all possible scenarios and plan a configuration that eliminates conflicts. Then, trial run your configuration before connecting devices to the outputs. Some devices or outputs may respond atypically or fail when switched on and off in rapid succession. Therefore, avoid creating an <a href="https://en.wikipedia.org/wiki/Loop_%28computing%29#Infinite_loops">infinite loop</a> with conditional statements.</p>
 <h4 id="measurement-conditional-statement-if-options">Measurement Conditional Statement If Options</h4>
+<p>Check if the latest measurement is above or below the set value.</p>
 <table>
 <colgroup>
 <col style="width: 32%"></col>
@@ -1320,7 +1305,8 @@ document.write('<a h'+'ref'+'="ma'+'ilto'+':'+e+'" clas'+'s="em' + 'ail">'+e+'<\
 </tr>
 </tbody>
 </table>
-<h4 id="output-conditional-statement-if-options">Output Conditional Statement If Options</h4>
+<h4 id="output-onoff-conditional-statement-if-options">Output (On/Off) Conditional Statement If Options</h4>
+<p>Monitor the state of an output.</p>
 <table>
 <colgroup>
 <col style="width: 32%"></col>
@@ -1343,11 +1329,40 @@ document.write('<a h'+'ref'+'="ma'+'ilto'+':'+e+'" clas'+'s="em' + 'ail">'+e+'<\
 </tr>
 <tr class="odd">
 <td style="text-align: left;">If Duration (seconds)</td>
-<td style="text-align: left;">If “On” is selected, a optional duration (seconds) may be set that will trigger the conditional only if the Output is turned on for this specific duration.</td>
+<td style="text-align: left;">If “On” is selected, an optional duration (seconds) may be set that will trigger the conditional only if the Output is turned on for this specific duration.</td>
+</tr>
+</tbody>
+</table>
+<h4 id="output-pwm-conditional-statement-if-options">Output (PWM) Conditional Statement If Options</h4>
+<p>Monitor the state of a PWM output.</p>
+<table>
+<colgroup>
+<col style="width: 32%"></col>
+<col style="width: 67%"></col>
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Setting</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">If Output</td>
+<td style="text-align: left;">The Output to monitor for a change of state.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">If State</td>
+<td style="text-align: left;">If the duty cycle of the output is greater than,less than, or equal to the set value, trigger the Conditional Actions.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">If Duty Cycle (%)</td>
+<td style="text-align: left;">The duty cycle for the Output to be checked against.</td>
 </tr>
 </tbody>
 </table>
 <h4 id="edge-conditional-statement-if-options">Edge Conditional Statement If Options</h4>
+<p>Monitor the state of a pin for a rising and/or falling edge.</p>
 <table>
 <colgroup>
 <col style="width: 32%"></col>
@@ -1366,7 +1381,44 @@ document.write('<a h'+'ref'+'="ma'+'ilto'+':'+e+'" clas'+'s="em' + 'ail">'+e+'<\
 </tr>
 </tbody>
 </table>
+<h4 id="run-pwm-method-conditional-statement-if-options">Run PWM Method Conditional Statement If Options</h4>
+<p>Select a Duration Method and this will set the selected PWM Output to the duty cycle specified by the method.</p>
+<table>
+<colgroup>
+<col style="width: 33%"></col>
+<col style="width: 66%"></col>
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Setting</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Duration Method</td>
+<td style="text-align: left;">Select which Method to use.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">PWM Output</td>
+<td style="text-align: left;">Select which PWM Output to use.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Period (seconds)</td>
+<td style="text-align: left;">Select the interval of time to calculate the duty cycle, then apply to the PWM Output.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Trigger Every Period</td>
+<td style="text-align: left;">Trigger Conditional Actions every period.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Trigger when Activated</td>
+<td style="text-align: left;">Trigger Conditional Actions when the Conditional is activated.</td>
+</tr>
+</tbody>
+</table>
 <h4 id="sunrisesunset-conditional-statement-if-options">Sunrise/Sunset Conditional Statement If Options</h4>
+<p>Trigger events at sunrise or sunset (or a time offset of those), based on latitude and longitude.</p>
 <table>
 <colgroup>
 <col style="width: 32%"></col>
@@ -1402,6 +1454,50 @@ document.write('<a h'+'ref'+'="ma'+'ilto'+':'+e+'" clas'+'s="em' + 'ail">'+e+'<\
 <tr class="even">
 <td style="text-align: left;">Time Offset (minutes)</td>
 <td style="text-align: left;">Set a sunrise/sunset offset in minutes (positive or negative).</td>
+</tr>
+</tbody>
+</table>
+<h4 id="timer-duration-conditional-statement-if-options">Timer (Duration) Conditional Statement If Options</h4>
+<p>Run a timer that triggers Contitional Actions every period.</p>
+<table>
+<colgroup>
+<col style="width: 33%"></col>
+<col style="width: 66%"></col>
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Setting</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Period (seconds)</td>
+<td style="text-align: left;">The period of time between triggering Conditional Actions.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Start Offset (seconds)</td>
+<td style="text-align: left;">Set this to start the first trigger a number of seconds after the Conditional is activated.</td>
+</tr>
+</tbody>
+</table>
+<h4 id="timer-daily-time-conditional-statement-if-options">Timer (Daily Time) Conditional Statement If Options</h4>
+<p>Run a timer that triggers Contitional Actions at a specific time every day.</p>
+<table>
+<colgroup>
+<col style="width: 32%"></col>
+<col style="width: 67%"></col>
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Setting</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Start Time (HH:MM)</td>
+<td style="text-align: left;">Set the time to trigger Conditional Actions, in the format “HH:MM”, with HH denoting hours, and MM donoting minutes. Time is in 24-hour format.</td>
 </tr>
 </tbody>
 </table>
@@ -1496,90 +1592,94 @@ document.write('<a h'+'ref'+'="ma'+'ilto'+':'+e+'" clas'+'s="em' + 'ail">'+e+'<\
 <td style="text-align: left;">Input measurement: altitude</td>
 </tr>
 <tr class="odd">
+<td style="text-align: left;">((measure_battery))</td>
+<td style="text-align: left;">Input measurement: battery</td>
+</tr>
+<tr class="even">
 <td style="text-align: left;">((measure_boolean))</td>
 <td style="text-align: left;">Input measurement: boolean</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td style="text-align: left;">((measure_co2))</td>
 <td style="text-align: left;">Input measurement: CO2</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td style="text-align: left;">((measure_cpu_load_1m))</td>
 <td style="text-align: left;">Input measurement: CPU load (1 min)</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td style="text-align: left;">((measure_cpu_load_5m))</td>
 <td style="text-align: left;">Input measurement: CPU load (5 min)</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td style="text-align: left;">((measure_cpu_load_15m))</td>
 <td style="text-align: left;">Input measurement: CPU load (15 min)</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td style="text-align: left;">((measure_dewpoint))</td>
 <td style="text-align: left;">Input measurement: dew point</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td style="text-align: left;">((measure_disk_space))</td>
 <td style="text-align: left;">Input measurement: disk space</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td style="text-align: left;">((measure_duty_cycle))</td>
 <td style="text-align: left;">Input measurement: duty cycle</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td style="text-align: left;">((measure_edge))</td>
 <td style="text-align: left;">Input measurement: edge detected (1 or -1)</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td style="text-align: left;">((measure_electrical_conductivity))</td>
 <td style="text-align: left;">Input measurement: Electrical Conductivity (uS/cm)</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td style="text-align: left;">((measure_frequency))</td>
 <td style="text-align: left;">Input measurement: frequency</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td style="text-align: left;">((measure_humidity))</td>
 <td style="text-align: left;">Input measurement: humidity</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td style="text-align: left;">((measure_lux))</td>
 <td style="text-align: left;">Input measurement: lux</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td style="text-align: left;">((measure_moisture))</td>
 <td style="text-align: left;">Input measurement: moisture</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td style="text-align: left;">((measure_ph))</td>
 <td style="text-align: left;">Input measurement: ph</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td style="text-align: left;">((measure_pressure))</td>
 <td style="text-align: left;">Input measurement: pressure</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td style="text-align: left;">((measure_pulse_width))</td>
 <td style="text-align: left;">Input measurement: pulse width</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td style="text-align: left;">((measure_rpm))</td>
 <td style="text-align: left;">Input measurement: RPM</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td style="text-align: left;">((measure_temperature))</td>
 <td style="text-align: left;">Input measurement: temperature</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td style="text-align: left;">((measure_temperature_die))</td>
 <td style="text-align: left;">Input measurement: temperature (die)</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td style="text-align: left;">((measure_temperature_object))</td>
 <td style="text-align: left;">Input measurement: temperature (object)</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td style="text-align: left;">((measure_voltage))</td>
 <td style="text-align: left;">Input measurement: voltage</td>
 </tr>
@@ -1635,15 +1735,6 @@ document.write('<a h'+'ref'+'="ma'+'ilto'+':'+e+'" clas'+'s="em' + 'ail">'+e+'<\
 </tr>
 </tbody>
 </table>
-<h2 id="timers">Timers</h2>
-<p>More -&gt; Timers</p>
-<p>Timers enable outputs to be manipulated after specific durations of time or at a specific times of the day. Timers will <strong><em>only</em></strong> do as instructed, therefore if you turn a output <em>ON</em> from <em>Start Time</em> to <em>End Time</em> and you want that output to turn <em>OFF</em> at the end of that period, you will need to create another timer that turns the output <em>OFF</em> at <em>End Time</em> + 1 minute.</p>
-<p>There are two types of timers, one for general outputs that turn on and off, and those that generate a PWM signal.</p>
-<h3 id="general-output">General Output</h3>
-<p>For <em>Duration Timers</em>, both the on duration and the off duration can be defined and the timer will be turned on and off for those durations until deactivated.</p>
-<p>For <em>Daily Timers</em>, the start hour:minute can be set to turn a specific output on or off at the specific time of day.</p>
-<h3 id="pwm-method">PWM Method</h3>
-<p>This timer allows a method to be used to determine the duty cycle (as percent) of a PWM output. While creating these methods, keep in mind a duty cycle is a percentage and the values must stay between 0 and 100.</p>
 <h2 id="lcds">LCDs</h2>
 <p>More -&gt; LCDs</p>
 <p>Data may be output to a liquid crystal display (LCD) for easy viewing. Please see <a href="#lcd-displays">LCD Displays</a> for specific information regarding compatibility.</p>
@@ -1673,14 +1764,6 @@ document.write('<a h'+'ref'+'="ma'+'ilto'+':'+e+'" clas'+'s="em' + 'ail">'+e+'<\
 <td style="text-align: left;">Select the I2C to communicate with the LCD.</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">Multiplexer I2C Address</td>
-<td style="text-align: left;">If the LCD is connected to a multiplexer, select the multiplexer I2C address.</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">Multiplexer Channel</td>
-<td style="text-align: left;">If the LCD is connected to a multiplexer, select the multiplexer channel the LCD is connected to.</td>
-</tr>
-<tr class="even">
 <td style="text-align: left;">Period</td>
 <td style="text-align: left;">This is the period of time (in seconds) between redrawing the LCD with new data or switching to the next set of displays (if multiple displays are used).</td>
 </tr>
@@ -1700,7 +1783,7 @@ document.write('<a h'+'ref'+'="ma'+'ilto'+':'+e+'" clas'+'s="em' + 'ail">'+e+'<\
 </table>
 <h2 id="methods">Methods</h2>
 <p>More -&gt; Methods</p>
-<p>Methods enable Setpoint Tracking in PIDs and time-based duty cycle changes in timers. Normally, a PID controller will regulate an environmental condition to a specific setpoint. If you would like the setpoint to change over time, this is called setpoint tracking. Setpoint Tracking is useful for applications such as reflow ovens, thermal cyclers (DNA replication), mimicking natural daily cycles, and more. Methods may also be used to change a duty cycle over time when used with a Timer.</p>
+<p>Methods enable Setpoint Tracking in PIDs and time-based duty cycle changes in timers. Normally, a PID controller will regulate an environmental condition to a specific setpoint. If you would like the setpoint to change over time, this is called setpoint tracking. Setpoint Tracking is useful for applications such as reflow ovens, thermal cyclers (DNA replication), mimicking natural daily cycles, and more. Methods may also be used to change a duty cycle over time when used with a Run PWM Method Conditional.</p>
 <h3 id="universal-options">Universal Options</h3>
 <p>These options are shared with several method types.</p>
 <table>
@@ -1737,8 +1820,8 @@ document.write('<a h'+'ref'+'="ma'+'ilto'+':'+e+'" clas'+'s="em' + 'ail">'+e+'<\
 <h4 id="timedate-method">Time/Date Method</h4>
 <p>A time/date method allows a specific time/date span to dictate the setpoint. This is useful for long-running methods, that may take place over the period of days, weeks, or months.</p>
 <h4 id="duration-method">Duration Method</h4>
-<p>A Duration Method allows a <strong><em>Setpoint</em></strong> (for PIDs) or <strong><em>Duty Cycle</em></strong> (for Timers) to be set after specific durations of time. Each new duration added will stack, meaning it will come after the previous duration, meaning a newly-added <strong><em>Start Setpoint</em></strong> will begin after the previous entry’s <strong><em>End Setpoint</em></strong>.</p>
-<p>If the “Repeat Method” option is used, this will cause the method to repeat once it has reached the end. If this option is used, no more durations may be added to the method. If the repeat option is deleted then more durations may be added. For instance, if your method is 200 seconds total, if the Repeat Duration is set to 600 seconds, the method will repeat 3 times and then automatically turn off the PID or Timer.</p>
+<p>A Duration Method allows a <strong><em>Setpoint</em></strong> (for PIDs) or <strong><em>Duty Cycle</em></strong> (for Conditional) to be set after specific durations of time. Each new duration added will stack, meaning it will come after the previous duration, meaning a newly-added <strong><em>Start Setpoint</em></strong> will begin after the previous entry’s <strong><em>End Setpoint</em></strong>.</p>
+<p>If the “Repeat Method” option is used, this will cause the method to repeat once it has reached the end. If this option is used, no more durations may be added to the method. If the repeat option is deleted then more durations may be added. For instance, if your method is 200 seconds total, if the Repeat Duration is set to 600 seconds, the method will repeat 3 times and then automatically turn off the PID or Conditional.</p>
 <h4 id="daily-time-based-method">Daily (Time-Based) Method</h4>
 <p>The daily time-based method is similar to the time/date method, however it will repeat every day. Therefore, it is essential that only the span of one day be set in this method. Begin with the start time at 00:00:00 and end at 23:59:59 (or 00:00:00, which would be 24 hours from the start). The start time must be equal or greater than the previous end time.</p>
 <h4 id="daily-sine-wave-method">Daily (Sine Wave) Method</h4>
@@ -1959,7 +2042,7 @@ document.write('<a h'+'ref'+'="ma'+'ilto'+':'+e+'" clas'+'s="em' + 'ail">'+e+'<\
 </tr>
 </tbody>
 </table>
-<p>1The <code>Edit Controllers</code> permission protects the editing of Graphs, LCDs, Methods, PIDs, Outputs, Inputs, and Timers.</p>
+<p>1The <code>Edit Controllers</code> permission protects the editing of Conditionals, Graphs, LCDs, Methods, PIDs, Outputs, and Inputs.</p>
 <p>2The <code>View Stats</code> permission protects the viewing of usage statistics and the System Info and Output Usage pages.</p>
 <h2 id="pi-settings">Pi Settings</h2>
 <p>[Gear Icon] -&gt; Configuration -&gt; Pi</p>
@@ -2396,6 +2479,10 @@ document.write('<a h'+'ref'+'="ma'+'ilto'+':'+e+'" clas'+'s="em' + 'ail">'+e+'<\
 <td style="text-align: left;">Show extra PID information on the dashboard element.</td>
 </tr>
 <tr class="odd">
+<td style="text-align: left;">Show Set Setpoint</td>
+<td style="text-align: left;">Allow setting the PID setpoint on the dashboard element.</td>
+</tr>
+<tr class="even">
 <td style="text-align: left;">PID</td>
 <td style="text-align: left;">The PID to display information about.</td>
 </tr>
@@ -2546,12 +2633,11 @@ sudo service mycodoflask restart</code></pre>
 <p>Examples of devices that can be used with edge detection: simple switches and buttons, PIR motion sensors, reed switches, hall effect sensors, float switches, and more.</p>
 <h2 id="i2c-multiplexers">I2C Multiplexers</h2>
 <p>All devices that connected to the Raspberry Pi by the I2C bus need to have a unique address in order to communicate. Some inputs may have the same address (such as the AM2315), which prevents more than one from being connected at the same time. Others may provide the ability to change the address, however the address range may be limited, which limits by how many you can use at the same time. I2C multiplexers are extremely clever and useful in these scenarios because they allow multiple sensors with the same I2C address to be connected.</p>
+<p>Multiplexers can be set up by loading a kernel driver to handle the communication, producing a new I2C bus device for each multiplexer channel. To enable the driver for the TCA9548A/PCA9548A, visit <a href="https://github.com/Theoi-Meteoroi/GPIO-pca9548">GPIO-pca9548</a> to get the code and latest install instructions. If successfully set up, there will be 8 new I2C busses on the <code>Config -&gt; System Information</code> page.</p>
+<p>The driver for the TCA9545A can be found at <a href="https://github.com/camrex/i2c-mux-pca9545a" class="uri">https://github.com/camrex/i2c-mux-pca9545a</a> and other drivers are available elsewhere. See the manufacturer or user forums for details. Some multiplexers I’ve tested are below.</p>
 <blockquote>
 <p>TCA9548A/PCA9548A: I2C Multiplexer <a href="https://learn.adafruit.com/adafruit-tca9548a-1-to-8-i2c-multiplexer-breakout/overview">link</a> (I2C): Has 8 selectable addresses, so 8 multiplexers can be connected to one Raspberry Pi. Each multiplexer has 8 channels, allowing up to 8 devices/sensors with the same address to be connected to each multiplexer. 8 multiplexers x 8 channels = 64 devices/sensors with the same I2C address.</p>
-</blockquote>
-<p>Note: The TCA9548A/PCA9548A can be set up in two ways. Either by A) connecting the multiplexer to an already-existing I2C bus and configuring each device manually in Mycodo, or B) (the easier and safer option) creating a dtoverlay to produce a new I2C bus device for each multiplexer channel. Method A can be used with the multiplexer options already existing in Mycodo, however option B benefits by allowing the linux driver to handle channel switching and being able to see every device on every bus at once in Mycodo’s System Information page. To enable option B, visit <a href="https://github.com/Theoi-Meteoroi/GPIO-pca9548">GPIO-pca9548</a> to get the code and latest install instructions. If successfully set up, there will be 8 new I2C busses on the <code>Config -&gt; System Information</code> page.</p>
-<blockquote>
-<p>TCA9545A: I2C Bus Multiplexer <a href="http://store.switchdoc.com/i2c-4-channel-mux-extender-expander-board-grove-pin-headers-for-arduino-and-raspberry-pi/">link</a> (I2C): This board works a little differently than the TCA9548A, above. This board actually creates 4 new I2C busses, each with their own selectable voltage, either 3.3 or 5.0 volts. Instructions to enable the Device Tree Overlay are at <a href="https://github.com/camrex/i2c-mux-pca9545a" class="uri">https://github.com/camrex/i2c-mux-pca9545a</a>. Nothing else needs to be done in Mycodo after that except to select the correct I2C bus when configuring a sensor.</p>
+<p>TCA9545A: I2C Bus Multiplexer <a href="http://store.switchdoc.com/i2c-4-channel-mux-extender-expander-board-grove-pin-headers-for-arduino-and-raspberry-pi/">link</a> (I2C): This board also creates 4 new I2C busses, but each with their own selectable voltage, either 3.3 or 5.0 volts.</p>
 </blockquote>
 <h2 id="analog-to-digital-converters">Analog-to-Digital Converters</h2>
 <p>An analog to digital converter (ADC) allows the use of any analog sensor that outputs a variable voltage. A <a href="https://learn.sparkfun.com/tutorials/voltage-dividers">voltage divider</a> may be necessary to attain your desired range.</p>

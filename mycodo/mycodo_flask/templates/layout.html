@@ -183,14 +183,13 @@
             <a class="nav-link" href="{{url_for('routes_page.page_camera')}}">{{_('Cam')}}</a>
           </li>
 
-          <li class="nav-item dropdown{% if active_page in ['data', 'output', 'function', 'method_list', 'timer', 'lcd', 'calibration'] %} active{% endif %}">
+          <li class="nav-item dropdown{% if active_page in ['data', 'output', 'function', 'method_list', 'lcd', 'calibration'] %} active{% endif %}">
             <a class="nav-link dropdown-toggle" href="http://example.com" id="dropdown00" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{_('Setup')}}</a>
             <div class="dropdown-menu" aria-labelledby="dropdown00">
               <a class="dropdown-item{% if active_page == 'data' %} active{% endif %}" href="{{url_for('routes_page.page_data')}}"><i class="fas fa-database"></i> {{_('Data')}}</a>
               <a class="dropdown-item{% if active_page == 'output' %} active{% endif %}" href="{{url_for('routes_page.page_output')}}"><i class="fas fa-bolt"></i> {{_('Outputs')}}</a>
               <a class="dropdown-item{% if active_page == 'function' %} active{% endif %}" href="{{url_for('routes_page.page_function')}}"><i class="fas fa-random"></i> {{_('Functions')}}</a>
               <a class="dropdown-item{% if active_page == 'method_list' %} active{% endif %}" href="{{url_for('routes_method.method_list')}}"><i class="fas fa-chart-line"></i> {{_('Methods')}}</a>
-              <a class="dropdown-item{% if active_page == 'timer' %} active{% endif %}" href="{{url_for('routes_page.page_timer')}}"><i class="fas fa-stopwatch"></i> {{_('Timers')}}</a>
               <a class="dropdown-item{% if active_page == 'lcd' %} active{% endif %}" href="{{url_for('routes_page.page_lcd')}}"><i class="fas fa-desktop"></i> {{_('LCDs')}}</a>
               <a class="dropdown-item{% if active_page == 'calibration' %} active{% endif %}" href="{{url_for('routes_calibration.calibration_select')}}"><i class="fas fa-wrench"></i> {{_('Calibration & Setup')}}</a>
             </div>
@@ -233,7 +232,7 @@
               <div class="dropdown-divider"></div>
               <a class="dropdown-item{% if active_page == 'dependencies' %} active{% endif %}" href="{{url_for('routes_admin.admin_dependencies_main')}}"><i class="fa fa-link"></i> {{_('Dependencies')}}</a>
               <div class="dropdown-divider"></div>
-              <a class="{% if upgrade_available %}dropdown-item-upgrade{% elif active_page == 'upgrade' %}active{% else %}dropdown-item{% endif %}" href="{{url_for('routes_admin.admin_upgrade')}}"><i class="fas fa-upload"></i> {{_('Upgrade')}}</a>
+              <a class="dropdown-item{% if upgrade_available %} dropdown-item-upgrade{% elif active_page == 'upgrade' %} active{% endif %}" href="{{url_for('routes_admin.admin_upgrade')}}"><i class="fas fa-upload"></i> {{_('Upgrade')}}</a>
               <a class="dropdown-item{% if active_page == 'backup' %} active{% endif %}" href="{{url_for('routes_admin.admin_backup')}}"><i class=" fas fa-save"></i> {{_('Backup Restore')}}</a>
               <div class="dropdown-divider"></div>
               <a class="dropdown-item" href="/systemctl/daemon_restart"onclick='return confirm("Confirm restarting the backend")'><i class="fas fa-redo-alt"></i> {{_('Restart Backend')}}</a>

@@ -27,7 +27,6 @@ from mycodo.databases.models import LCD
 from mycodo.databases.models import Math
 from mycodo.databases.models import PID
 from mycodo.databases.models import Role
-from mycodo.databases.models import Timer
 from mycodo.databases.models import User
 from mycodo.mycodo_client import DaemonControl
 from mycodo.mycodo_flask.extensions import db
@@ -47,7 +46,7 @@ def controller_activate_deactivate(controller_action,
 
     :param controller_action: Activate or deactivate
     :type controller_action: str
-    :param controller_type: The controller type (LCD, Math, PID, Input, Timer)
+    :param controller_type: The controller type (Conditional, LCD, Math, PID, Input)
     :type controller_type: str
     :param controller_id: Controller with ID to activate or deactivate
     :type controller_id: str
@@ -62,29 +61,25 @@ def controller_activate_deactivate(controller_action,
         "Input": gettext("Input"),
         "LCD": gettext("LCD"),
         "Math": gettext("Math"),
-        "PID": gettext("PID"),
-        "Timer": gettext("Timer")
+        "PID": gettext("PID")
     }
 
     mod_controller = None
     if controller_type == 'Conditional':
         mod_controller = Conditional.query.filter(
-            Conditional.id == int(controller_id)).first()
+            Conditional.unique_id == controller_id).first()
     elif controller_type == 'Input':
         mod_controller = Input.query.filter(
-            Input.id == int(controller_id)).first()
+            Input.unique_id == controller_id).first()
     elif controller_type == 'LCD':
         mod_controller = LCD.query.filter(
-            LCD.id == int(controller_id)).first()
+            LCD.unique_id == controller_id).first()
     elif controller_type == 'Math':
         mod_controller = Math.query.filter(
-            Math.id == int(controller_id)).first()
+            Math.unique_id == controller_id).first()
     elif controller_type == 'PID':
         mod_controller = PID.query.filter(
-            PID.id == int(controller_id)).first()
-    elif controller_type == 'Timer':
-        mod_controller = Timer.query.filter(
-            Timer.id == int(controller_id)).first()
+            PID.unique_id == controller_id).first()
 
     if mod_controller is None:
         flash("{type} Controller {id} doesn't exist".format(
@@ -112,10 +107,10 @@ def controller_activate_deactivate(controller_action,
         control = DaemonControl()
         if controller_action == 'activate':
             return_values = control.controller_activate(controller_type,
-                                                        int(controller_id))
+                                                        controller_id)
         else:
             return_values = control.controller_deactivate(controller_type,
-                                                          int(controller_id))
+                                                          controller_id)
         if return_values[0]:
             flash("{err}".format(err=return_values[1]), "error")
         else:
@@ -193,7 +188,7 @@ def choices_outputs(output):
     """ populate form multi-select choices from Output entries """
     choices = OrderedDict()
     for each_output in output:
-        if each_output.relay_type in ['pwm', 'command_pwm']:
+        if each_output.output_type in ['pwm', 'command_pwm']:
             value = '{id},duty_cycle'.format(id=each_output.unique_id)
             display = '[Output {id:02d}] {name} (Duty Cycle)'.format(
                 id=each_output.id, name=each_output.name)
@@ -234,7 +229,7 @@ def choices_pids(pid):
         display = '[PID {id:02d}] {name} (D-Value)'.format(
             id=each_pid.id, name=each_pid.name)
         choices.update({value: display})
-        value = '{id},pid_output'.format(id=each_pid.unique_id)
+        value = '{id},duration_sec'.format(id=each_pid.unique_id)
         display = '[PID {id:02d}] {name} (Output Duration)'.format(
             id=each_pid.id, name=each_pid.name)
         choices.update({value: display})
@@ -251,14 +246,14 @@ def choices_id_name(table):
     for each_entry in table:
         value = each_entry.unique_id
         display = '[{id:02d}] {name}'.format(id=each_entry.id,
-                                          name=each_entry.name)
+                                             name=each_entry.name)
         choices.update({value: display})
     return choices
 
 
 def user_has_permission(permission):
     user = User.query.filter(User.name == flask_login.current_user.name).first()
-    role = Role.query.filter(Role.id == user.role).first()
+    role = Role.query.filter(Role.id == user.role_id).first()
     if ((permission == 'edit_settings' and role.edit_settings) or
         (permission == 'edit_controllers' and role.edit_controllers) or
         (permission == 'edit_users' and role.edit_users) or
@@ -275,7 +270,7 @@ def delete_entry_with_id(table, entry_id):
     """ Delete SQL database entry with specific id """
     try:
         entries = table.query.filter(
-            table.id == entry_id).first()
+            table.unique_id == entry_id).first()
         db.session.delete(entries)
         db.session.commit()
         flash(gettext("%(msg)s",
@@ -329,9 +324,8 @@ def add_display_order(display_order, device_id):
     """ Add integer ID to list of string IDs """
     if display_order:
         display_order.append(device_id)
-        display_order = [str(i) for i in display_order]
         return ','.join(display_order)
-    return str(device_id)
+    return device_id
 
 
 def reorder(display_order, device_id, direction):

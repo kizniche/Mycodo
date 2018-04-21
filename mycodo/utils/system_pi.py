@@ -5,6 +5,7 @@ import logging
 import pwd
 import socket
 import subprocess
+import time
 
 import os
 
@@ -90,6 +91,22 @@ def time_between_range(start_time, end_time):
         if now_time >= datetime.time(start_hour, start_min) or now_time <= datetime.time(end_hour, end_min):
             return 1  # Yes now within range
     return 0  # No now not within range
+
+
+def epoch_of_next_time(time_str):
+    """
+    Take time string (HH:MM:SS) and return the epoch of the time in the future
+    """
+    try:
+        current_epoch = time.time()
+        time_parts = time.ctime().split(' ')  # split full time string
+        time_parts[3] = time_str  # replace the time component
+        new_time = time.mktime(time.strptime(' '.join(time_parts)))  # convert to epoch
+        if new_time < current_epoch:  # Add a day if in the past
+            new_time += 86400
+        return new_time
+    except:
+        return None
 
 
 def cmd_output(command, su_mycodo=False, stdout_pipe=True):
@@ -235,16 +252,16 @@ def celsius_to_kelvin(celsius):
         logger.error("Input must be an int or float")
 
 
-def csv_to_list_of_int(str_csv):
-    """ return a list of integers from a string of csv integers """
+def csv_to_list_of_str(str_csv):
+    """ return a list of strings from a string of csv strings """
     if str_csv:
-        list_int = []
+        list_str = []
         for x in str_csv.split(','):
             try:
-                list_int.append(int(x))
+                list_str.append(x)
             except:
                 pass
-        return list_int
+        return list_str
 
 
 def list_to_csv(display_order):

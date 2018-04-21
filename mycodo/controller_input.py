@@ -75,7 +75,7 @@ class InputController(threading.Thread):
         threading.Thread.__init__(self)
 
         self.logger = logging.getLogger(
-            "mycodo.input_{id}".format(id=input_id))
+            "mycodo.input_{id}".format(id=input_id.split('-')[0]))
 
         self.stop_iteration_counter = 0
         self.thread_startup_timer = timeit.default_timer()
@@ -84,19 +84,20 @@ class InputController(threading.Thread):
         self.lock = {}
         self.measurement = None
         self.measurement_success = False
-        self.input_id = input_id
         self.control = DaemonControl()
         self.pause_loop = False
         self.verify_pause_loop = True
 
-        input_dev = db_retrieve_table_daemon(Input, device_id=self.input_id)
-        self.input_sel = input_dev
-        self.id = input_dev.id
+        self.input_id = input_id
+        input_dev = db_retrieve_table_daemon(
+            Input, unique_id=self.input_id)
+
+        self.input_dev = input_dev
         self.input_name = input_dev.name
         self.unique_id = input_dev.unique_id
         self.i2c_bus = input_dev.i2c_bus
         self.location = input_dev.location
-        self.power_output_id = input_dev.power_relay_id
+        self.power_output_id = input_dev.power_output_id
         self.measurements = input_dev.measurements
         self.convert_to_unit = input_dev.convert_to_unit
         self.device = input_dev.device
@@ -112,11 +113,6 @@ class InputController(threading.Thread):
         self.thermocouple_type = input_dev.thermocouple_type
         self.ref_ohm = input_dev.ref_ohm
 
-        # Multiplexer
-        self.mux_address_raw = input_dev.multiplexer_address
-        self.mux_bus = input_dev.multiplexer_bus
-        self.mux_chan = input_dev.multiplexer_channel
-
         # Serial
         self.pin_clock = input_dev.pin_clock
         self.pin_cs = input_dev.pin_cs
@@ -124,18 +120,12 @@ class InputController(threading.Thread):
         self.pin_miso = input_dev.pin_miso
 
         # ADC
-        self.adc_chan = input_dev.adc_channel
-        self.adc_gain = input_dev.adc_gain
-        self.adc_resolution = input_dev.adc_resolution
         self.adc_measure = input_dev.adc_measure
-        self.adc_measure_units = input_dev.adc_measure_units
         self.adc_volts_min = input_dev.adc_volts_min
         self.adc_volts_max = input_dev.adc_volts_max
         self.adc_units_min = input_dev.adc_units_min
         self.adc_units_max = input_dev.adc_units_max
         self.adc_inverse_unit_scale = input_dev.adc_inverse_unit_scale
-        self.sht_clock_pin = input_dev.sht_clock_pin
-        self.sht_voltage = input_dev.sht_voltage
 
         # Edge detection
         self.switch_edge = input_dev.switch_edge
@@ -153,9 +143,9 @@ class InputController(threading.Thread):
         self.deadline = input_dev.deadline
 
         # Output that will activate prior to input read
-        self.pre_output_id = input_dev.pre_relay_id
-        self.pre_output_duration = input_dev.pre_relay_duration
-        self.pre_relay_during_measure = input_dev.pre_relay_during_measure
+        self.pre_output_id = input_dev.pre_output_id
+        self.pre_output_duration = input_dev.pre_output_duration
+        self.pre_output_during_measure = input_dev.pre_output_during_measure
         self.pre_output_setup = False
         self.next_measurement = time.time()
         self.get_new_measurement = False
@@ -168,7 +158,7 @@ class InputController(threading.Thread):
         # Check if Pre-Output ID actually exists
         output = db_retrieve_table_daemon(Output, entry='all')
         for each_output in output:
-            if each_output.id == self.pre_output_id and self.pre_output_duration:
+            if each_output.unique_id == self.pre_output_id and self.pre_output_duration:
                 self.pre_output_setup = True
 
         smtp = db_retrieve_table_daemon(SMTP, entry='first')
@@ -184,20 +174,6 @@ class InputController(threading.Thread):
         if self.device in LIST_DEVICES_I2C:
             self.i2c_address = int(str(self.location), 16)
 
-        # Set up multiplexer if enabled
-        if self.mux_address_raw:
-            from mycodo.devices.tca9548a import TCA9548A
-            self.mux_address_string = self.mux_address_raw
-            self.mux_address = int(str(self.mux_address_raw), 16)
-            self.mux_lock_file = "/var/lock/mycodo_multiplexer_0x{i2c:02X}.pid".format(
-                i2c=self.mux_address)
-            # Set up lock for pre-output
-            self.mux_lock = locket.lock_file(self.mux_lock_file, timeout=120)
-            self.mux_lock_acquired = False
-            self.multiplexer = TCA9548A(self.mux_bus, self.mux_address)
-        else:
-            self.multiplexer = None
-
         # Set up edge detection of a GPIO pin
         if self.device == 'EDGE':
             if self.switch_edge == 'rising':
@@ -206,10 +182,6 @@ class InputController(threading.Thread):
                 self.switch_edge_gpio = GPIO.FALLING
             else:
                 self.switch_edge_gpio = GPIO.BOTH
-
-        # Lock multiplexer, if it's enabled
-        if self.multiplexer:
-            self.lock_multiplexer()
 
         # Set up analog-to-digital converter
         if self.device in LIST_DEVICES_ADC:
@@ -222,18 +194,13 @@ class InputController(threading.Thread):
 
             if self.device == 'ADS1x15' and self.location:
                 from mycodo.devices.ads1x15 import ADS1x15Read
-                self.adc = ADS1x15Read(self.i2c_address, self.i2c_bus,
-                                       self.adc_chan, self.adc_gain)
+                self.adc = ADS1x15Read(self.input_dev)
             elif self.device == 'MCP3008':
                 from mycodo.devices.mcp3008 import MCP3008Read
-                self.adc = MCP3008Read(self.pin_clock, self.pin_cs,
-                                       self.pin_miso, self.pin_mosi,
-                                       self.adc_chan, self.adc_volts_max)
+                self.adc = MCP3008Read(self.input_dev)
             elif self.device == 'MCP342x' and self.location:
                 from mycodo.devices.mcp342x import MCP342xRead
-                self.adc = MCP342xRead(self.i2c_address, self.i2c_bus,
-                                       self.adc_chan, self.adc_gain,
-                                       self.adc_resolution)
+                self.adc = MCP342xRead(self.input_dev)
         else:
             self.adc = None
 
@@ -244,234 +211,142 @@ class InputController(threading.Thread):
             self.measure_input = None
         elif self.device == 'MYCODO_RAM':
             from mycodo.inputs.mycodo_ram import MycodoRam
-            self.measure_input = MycodoRam()
+            self.measure_input = MycodoRam(self.input_dev)
         elif self.device == 'RPiCPULoad':
             from mycodo.inputs.raspi_cpuload import RaspberryPiCPULoad
-            self.measure_input = RaspberryPiCPULoad()
+            self.measure_input = RaspberryPiCPULoad(self.input_dev)
         elif self.device == 'RPi':
             from mycodo.inputs.raspi import RaspberryPiCPUTemp
-            self.measure_input = RaspberryPiCPUTemp(
-                convert_to_unit=self.convert_to_unit)
+            self.measure_input = RaspberryPiCPUTemp(self.input_dev)
         elif self.device == 'RPiFreeSpace':
             from mycodo.inputs.raspi_freespace import RaspberryPiFreeSpace
-            self.measure_input = RaspberryPiFreeSpace(self.location)
+            self.measure_input = RaspberryPiFreeSpace(self.input_dev)
         elif self.device == 'AM2315':
             from mycodo.inputs.am2315 import AM2315Sensor
-            self.measure_input = AM2315Sensor(self.i2c_bus,
-                                              power=self.power_output_id)
+            self.measure_input = AM2315Sensor(self.input_dev)
         elif self.device == 'ATLAS_EC_I2C':
             from mycodo.inputs.atlas_ec import AtlasElectricalConductivitySensor
-            self.measure_input = AtlasElectricalConductivitySensor(
-                                               self.interface,
-                                               i2c_address=self.i2c_address,
-                                               i2c_bus=self.i2c_bus,
-                                               sensor_sel=self.input_sel)
+            self.measure_input = AtlasElectricalConductivitySensor(self.input_dev)
         elif self.device == 'ATLAS_EC_UART':
             from mycodo.inputs.atlas_ec import AtlasElectricalConductivitySensor
-            self.measure_input = AtlasElectricalConductivitySensor(
-                                               self.interface,
-                                               device_loc=self.device_loc,
-                                               baud_rate=self.baud_rate,
-                                               sensor_sel=self.input_sel)
+            self.measure_input = AtlasElectricalConductivitySensor(self.input_dev)
         elif self.device == 'ATLAS_PH_I2C':
             from mycodo.inputs.atlas_ph import AtlaspHSensor
-            self.measure_input = AtlaspHSensor(self.interface,
-                                               i2c_address=self.i2c_address,
-                                               i2c_bus=self.i2c_bus,
-                                               sensor_sel=self.input_sel)
+            self.measure_input = AtlaspHSensor(self.input_dev)
         elif self.device == 'ATLAS_PH_UART':
             from mycodo.inputs.atlas_ph import AtlaspHSensor
-            self.measure_input = AtlaspHSensor(self.interface,
-                                               device_loc=self.device_loc,
-                                               baud_rate=self.baud_rate,
-                                               sensor_sel=self.input_sel)
+            self.measure_input = AtlaspHSensor(self.input_dev)
         elif self.device == 'ATLAS_PT1000_I2C':
             from mycodo.inputs.atlas_pt1000 import AtlasPT1000Sensor
-            self.measure_input = AtlasPT1000Sensor(self.interface,
-                                                   i2c_address=self.i2c_address,
-                                                   i2c_bus=self.i2c_bus,
-                                                   convert_to_unit=self.convert_to_unit)
+            self.measure_input = AtlasPT1000Sensor(self.input_dev)
         elif self.device == 'ATLAS_PT1000_UART':
             from mycodo.inputs.atlas_pt1000 import AtlasPT1000Sensor
-            self.measure_input = AtlasPT1000Sensor(self.interface,
-                                                   device_loc=self.device_loc,
-                                                   baud_rate=self.baud_rate,
-                                                   convert_to_unit=self.convert_to_unit)
+            self.measure_input = AtlasPT1000Sensor(self.input_dev)
         elif self.device == 'BH1750':
             from mycodo.inputs.bh1750 import BH1750Sensor
-            self.measure_input = BH1750Sensor(self.i2c_address,
-                                              self.i2c_bus,
-                                              self.resolution,
-                                              self.sensitivity)
+            self.measure_input = BH1750Sensor(self.input_dev)
         elif self.device == 'BME280':
             from mycodo.inputs.bme280 import BME280Sensor
-            self.measure_input = BME280Sensor(self.i2c_address,
-                                              self.i2c_bus,
-                                              convert_to_unit=self.convert_to_unit)
+            self.measure_input = BME280Sensor(self.input_dev)
         elif self.device == 'BMP180':
             from mycodo.inputs.bmp180 import BMP180Sensor
-            self.measure_input = BMP180Sensor(self.i2c_bus,
-                                              convert_to_unit=self.convert_to_unit)
+            self.measure_input = BMP180Sensor(self.input_dev)
         elif self.device == 'BMP280':
             from mycodo.inputs.bmp280 import BMP280Sensor
-            self.measure_input = BMP280Sensor(self.i2c_address,
-                                              self.i2c_bus,
-                                              convert_to_unit=self.convert_to_unit)
+            self.measure_input = BMP280Sensor(self.input_dev)
         elif self.device == 'CHIRP':
             from mycodo.inputs.chirp import ChirpSensor
-            self.measure_input = ChirpSensor(self.i2c_address,
-                                             self.i2c_bus,
-                                              convert_to_unit=self.convert_to_unit)
-        elif self.device == 'DS18B20':
-            from mycodo.inputs.ds18b20 import DS18B20Sensor
-            self.measure_input = DS18B20Sensor(self.location,
-                                               self.resolution,
-                                               convert_to_unit=self.convert_to_unit)
-        elif self.device == 'DS18S20':
-            from mycodo.inputs.ds18s20 import DS18S20Sensor
-            self.measure_input = DS18S20Sensor(self.location,
-                                               convert_to_unit=self.convert_to_unit)
-        elif self.device == 'DS1822':
-            from mycodo.inputs.ds1822 import DS1822Sensor
-            self.measure_input = DS1822Sensor(self.location,
-                                              self.resolution,
-                                              convert_to_unit=self.convert_to_unit)
-        elif self.device == 'DS28EA00':
-            from mycodo.inputs.ds28ea00 import DS28EA00Sensor
-            self.measure_input = DS28EA00Sensor(self.location,
-                                                self.resolution,
-                                                convert_to_unit=self.convert_to_unit)
-        elif self.device == 'DS1825':
-            from mycodo.inputs.ds1825 import DS1825Sensor
-            self.measure_input = DS1825Sensor(self.location,
-                                              self.resolution,
-                                              convert_to_unit=self.convert_to_unit)
+            self.measure_input = ChirpSensor(self.input_dev)
         elif self.device == 'DHT11':
             from mycodo.inputs.dht11 import DHT11Sensor
-            self.measure_input = DHT11Sensor(self.input_id,
-                                             int(self.location),
-                                             power=self.power_output_id,
-                                             convert_to_unit=self.convert_to_unit)
+            self.measure_input = DHT11Sensor(self.input_dev)
         elif self.device in ['DHT22', 'AM2302']:
             from mycodo.inputs.dht22 import DHT22Sensor
-            self.measure_input = DHT22Sensor(int(self.location),
-                                             power=self.power_output_id,
-                                             convert_to_unit=self.convert_to_unit)
+            self.measure_input = DHT22Sensor(self.input_dev)
+        elif self.device == 'DS18B20':
+            from mycodo.inputs.ds18b20 import DS18B20Sensor
+            self.measure_input = DS18B20Sensor(self.input_dev)
+        elif self.device == 'DS18S20':
+            from mycodo.inputs.ds18s20 import DS18S20Sensor
+            self.measure_input = DS18S20Sensor(self.input_dev)
+        elif self.device == 'DS1822':
+            from mycodo.inputs.ds1822 import DS1822Sensor
+            self.measure_input = DS1822Sensor(self.input_dev)
+        elif self.device == 'DS28EA00':
+            from mycodo.inputs.ds28ea00 import DS28EA00Sensor
+            self.measure_input = DS28EA00Sensor(self.input_dev)
+        elif self.device == 'DS1825':
+            from mycodo.inputs.ds1825 import DS1825Sensor
+            self.measure_input = DS1825Sensor(self.input_dev)
         elif self.device == 'GPIO_STATE':
             from mycodo.inputs.gpio_state import GPIOState
-            self.measure_input = GPIOState(int(self.location))
+            self.measure_input = GPIOState(self.input_dev)
         elif self.device == 'HTU21D':
             from mycodo.inputs.htu21d import HTU21DSensor
-            self.measure_input = HTU21DSensor(self.i2c_bus,
-                                              convert_to_unit=self.convert_to_unit)
+            self.measure_input = HTU21DSensor(self.input_dev)
         elif self.device == 'K30_UART':
             from mycodo.inputs.k30 import K30Sensor
-            self.measure_input = K30Sensor(self.device_loc,
-                                           baud_rate=self.baud_rate)
-        elif self.device == 'MAX31850K':
-            from mycodo.inputs.max31850k import MAX31850KSensor
-            self.measure_input = MAX31850KSensor(self.location,
-                                                 convert_to_unit=self.convert_to_unit)
-        elif self.device == 'MAX31855':
-            from mycodo.inputs.max31855 import MAX31855Sensor
-            self.measure_input = MAX31855Sensor(self.pin_clock,
-                                                self.pin_cs,
-                                                self.pin_miso,
-                                                convert_to_unit=self.convert_to_unit)
-        elif self.device == 'MAX31856':
-            from mycodo.inputs.max31856 import MAX31856Sensor
-            self.measure_input = MAX31856Sensor(
-                self.pin_clock,
-                self.pin_cs,
-                self.pin_miso,
-                self.pin_mosi,
-                thermocouple_type=self.thermocouple_type,
-                convert_to_unit=self.convert_to_unit)
-        elif self.device == 'MAX31865':
-            from mycodo.inputs.max31865 import MAX31865Sensor
-            self.measure_input = MAX31865Sensor(
-                self.pin_clock,
-                self.pin_cs,
-                self.pin_miso,
-                self.pin_mosi,
-                device=self.thermocouple_type,
-                resistor_ref=self.ref_ohm,
-                convert_to_unit=self.convert_to_unit)
-        elif self.device == 'MH_Z16_I2C':
-            from mycodo.inputs.mh_z16 import MHZ16Sensor
-            self.measure_input = MHZ16Sensor(self.interface,
-                                             i2c_address=self.i2c_address,
-                                             i2c_bus=self.i2c_bus)
-        elif self.device == 'MH_Z16_UART':
-            from mycodo.inputs.mh_z16 import MHZ16Sensor
-            self.measure_input = MHZ16Sensor(self.interface,
-                                             device_loc=self.device_loc,
-                                             baud_rate=self.baud_rate)
-        elif self.device == 'MH_Z19_UART':
-            from mycodo.inputs.mh_z19 import MHZ19Sensor
-            self.measure_input = MHZ19Sensor(self.device_loc,
-                                             baud_rate=self.baud_rate)
-        elif self.device == 'MIFLORA':
-            from mycodo.inputs.miflora import MifloraSensor
-            self.measure_input = MifloraSensor(int(self.location),
-                                               convert_to_unit=self.convert_to_unit)
-        elif self.device == 'SHT1x_7x':
-            from mycodo.inputs.sht1x_7x import SHT1x7xSensor
-            self.measure_input = SHT1x7xSensor(int(self.location),
-                                               self.sht_clock_pin,
-                                               self.sht_voltage,
-                                               convert_to_unit=self.convert_to_unit)
-        elif self.device == 'SHT2x':
-            from mycodo.inputs.sht2x import SHT2xSensor
-            self.measure_input = SHT2xSensor(self.i2c_address,
-                                             self.i2c_bus,
-                                             convert_to_unit=self.convert_to_unit)
-        elif self.device == 'SIGNAL_PWM':
-            from mycodo.inputs.signal_pwm import SignalPWMInput
-            self.measure_input = SignalPWMInput(int(self.location),
-                                                self.weighting,
-                                                self.sample_time)
-        elif self.device == 'SIGNAL_RPM':
-            from mycodo.inputs.signal_rpm import SignalRPMInput
-            self.measure_input = SignalRPMInput(int(self.location),
-                                                self.weighting,
-                                                self.rpm_pulses_per_rev,
-                                                self.sample_time)
-        elif self.device == 'TMP006':
-            from mycodo.inputs.tmp006 import TMP006Sensor
-            self.measure_input = TMP006Sensor(self.i2c_address,
-                                              self.i2c_bus,
-                                              convert_to_unit=self.convert_to_unit)
-        elif self.device == 'TSL2561':
-            from mycodo.inputs.tsl2561 import TSL2561Sensor
-            self.measure_input = TSL2561Sensor(self.i2c_address,
-                                               self.i2c_bus)
-        elif self.device == 'TSL2591':
-            from mycodo.inputs.tsl2591_sensor import TSL2591Sensor
-            self.measure_input = TSL2591Sensor(self.i2c_address,
-                                               self.i2c_bus)
+            self.measure_input = K30Sensor(self.input_dev)
         elif self.device == 'LinuxCommand':
             from mycodo.inputs.linux_command import LinuxCommand
-            self.measure_input = LinuxCommand(self.cmd_command,
-                                              self.cmd_measurement)
+            self.measure_input = LinuxCommand(self.input_dev)
+        elif self.device == 'MAX31850K':
+            from mycodo.inputs.max31850k import MAX31850KSensor
+            self.measure_input = MAX31850KSensor(self.input_dev)
+        elif self.device == 'MAX31855':
+            from mycodo.inputs.max31855 import MAX31855Sensor
+            self.measure_input = MAX31855Sensor(self.input_dev)
+        elif self.device == 'MAX31856':
+            from mycodo.inputs.max31856 import MAX31856Sensor
+            self.measure_input = MAX31856Sensor(self.input_dev)
+        elif self.device == 'MAX31865':
+            from mycodo.inputs.max31865 import MAX31865Sensor
+            self.measure_input = MAX31865Sensor(self.input_dev)
+        elif self.device == 'MH_Z16_I2C':
+            from mycodo.inputs.mh_z16 import MHZ16Sensor
+            self.measure_input = MHZ16Sensor(self.input_dev)
+        elif self.device == 'MH_Z16_UART':
+            from mycodo.inputs.mh_z16 import MHZ16Sensor
+            self.measure_input = MHZ16Sensor(self.input_dev)
+        elif self.device == 'MH_Z19_UART':
+            from mycodo.inputs.mh_z19 import MHZ19Sensor
+            self.measure_input = MHZ19Sensor(self.input_dev)
+        elif self.device == 'MIFLORA':
+            from mycodo.inputs.miflora import MifloraSensor
+            self.measure_input = MifloraSensor(self.input_dev)
         elif self.device == 'SERVER_PING':
             from mycodo.inputs.server_ping import ServerPing
-            self.measure_input = ServerPing(self.location,
-                                            self.times_check,
-                                            self.deadline)
+            self.measure_input = ServerPing(self.input_dev)
         elif self.device == 'SERVER_PORT_OPEN':
             from mycodo.inputs.server_port_open import ServerPortOpen
-            self.measure_input = ServerPortOpen(self.location,
-                                                self.port)
+            self.measure_input = ServerPortOpen(self.input_dev)
+        elif self.device == 'SHT1x_7x':
+            from mycodo.inputs.sht1x_7x import SHT1x7xSensor
+            self.measure_input = SHT1x7xSensor(self.input_dev)
+        elif self.device == 'SHT2x':
+            from mycodo.inputs.sht2x import SHT2xSensor
+            self.measure_input = SHT2xSensor(self.input_dev)
+        elif self.device == 'SIGNAL_PWM':
+            from mycodo.inputs.signal_pwm import SignalPWMInput
+            self.measure_input = SignalPWMInput(self.input_dev)
+        elif self.device == 'SIGNAL_RPM':
+            from mycodo.inputs.signal_rpm import SignalRPMInput
+            self.measure_input = SignalRPMInput(self.input_dev)
+        elif self.device == 'TMP006':
+            from mycodo.inputs.tmp006 import TMP006Sensor
+            self.measure_input = TMP006Sensor(self.input_dev)
+        elif self.device == 'TSL2561':
+            from mycodo.inputs.tsl2561 import TSL2561Sensor
+            self.measure_input = TSL2561Sensor(self.input_dev)
+        elif self.device == 'TSL2591':
+            from mycodo.inputs.tsl2591_sensor import TSL2591Sensor
+            self.measure_input = TSL2591Sensor(self.input_dev)
         else:
             self.device_recognized = False
             self.logger.debug("Device '{device}' not recognized".format(
                 device=self.device))
             raise Exception("'{device}' is not a valid device type.".format(
                 device=self.device))
-
-        if self.multiplexer:
-            self.unlock_multiplexer()
 
         self.edge_reset_timer = time.time()
         self.input_timer = time.time()
@@ -535,9 +410,9 @@ class InputController(threading.Thread):
 
                         # Only run the pre-output before measurement
                         # Turn on for a duration, measure after it turns off
-                        if not self.pre_relay_during_measure:
+                        if not self.pre_output_during_measure:
                             output_on = threading.Thread(
-                                target=self.control.relay_on,
+                                target=self.control.output_on,
                                 args=(self.pre_output_id,
                                       self.pre_output_duration,))
                             output_on.start()
@@ -546,7 +421,7 @@ class InputController(threading.Thread):
                         # Just turn on, then off after the measurement
                         else:
                             output_on = threading.Thread(
-                                target=self.control.relay_on,
+                                target=self.control.output_on,
                                 args=(self.pre_output_id,))
                             output_on.start()
 
@@ -558,11 +433,11 @@ class InputController(threading.Thread):
                                 self.pre_output_activated and
                                 now > self.pre_output_timer):
 
-                            if self.pre_relay_during_measure:
+                            if self.pre_output_during_measure:
                                 # Measure then turn off pre-output
                                 self.update_measure()
                                 output_off = threading.Thread(
-                                    target=self.control.relay_off,
+                                    target=self.control.output_off,
                                     args=(self.pre_output_id,))
                                 output_off.start()
                             else:
@@ -609,44 +484,6 @@ class InputController(threading.Thread):
         except Exception as except_msg:
             self.logger.exception("Error: {err}".format(
                 err=except_msg))
-
-    def lock_multiplexer(self):
-        """ Acquire a multiplexer lock """
-        self.mux_lock_acquired = False
-
-        try:
-            self.mux_lock.acquire()
-            self.mux_lock_acquired = True
-        except:
-            self.logger.error("Could not acquire multiplexer lock. Breaking for future locking.")
-            os.remove(self.mux_lock_file)
-
-        if not self.mux_lock_acquired:
-            self.logger.error(
-                "Unable to acquire lock: {lock}".format(lock=self.mux_lock))
-
-        self.logger.debug(
-            "Setting multiplexer ({add}) to channel {chan}".format(
-                add=self.mux_address_string,
-                chan=self.mux_chan))
-
-        # Set multiplexer channel
-        (multiplexer_status,
-         multiplexer_response) = self.multiplexer.setup(self.mux_chan)
-
-        if not multiplexer_status:
-            self.logger.warning(
-                "Could not set channel with multiplexer at address {add}."
-                " Error: {err}".format(
-                    add=self.mux_address_string,
-                    err=multiplexer_response))
-            self.measurement_success = False
-            return 1
-
-    def unlock_multiplexer(self):
-        """ Remove a multiplexer lock """
-        if self.mux_lock and self.mux_lock_acquired:
-            self.mux_lock.release()
 
     def read_adc(self):
         """ Read voltage from ADC """
@@ -732,10 +569,6 @@ class InputController(threading.Thread):
             self.measurement_success = False
             return 1
 
-        # Lock multiplexer, if it's enabled
-        if self.multiplexer:
-            self.lock_multiplexer()
-
         if self.adc:
             measurements = self.read_adc()
         else:
@@ -759,9 +592,6 @@ class InputController(threading.Thread):
                 self.logger.exception(
                     "Error while attempting to read input: {err}".format(
                         err=except_msg))
-
-        if self.multiplexer:
-            self.unlock_multiplexer()
 
         if self.device_recognized and measurements is not None:
             self.measurement = Measurement(measurements)
@@ -804,12 +634,12 @@ class InputController(threading.Thread):
             conditionals = conditionals.filter(
                 Conditional.conditional_type == 'conditional_edge')
             conditionals = conditionals.filter(
-                Conditional.if_sensor_measurement == self.unique_id)
+                Conditional.measurement == self.unique_id)
             conditionals = conditionals.filter(
                 Conditional.is_activated == True)
 
             for each_conditional in conditionals.all():
-                if each_conditional.if_sensor_edge_detected in ['both', state_str.lower()]:
+                if each_conditional.edge_detected in ['both', state_str.lower()]:
                     now = time.time()
                     timestamp = datetime.datetime.fromtimestamp(
                         now).strftime('%Y-%m-%d %H-%M-%S')
@@ -819,7 +649,7 @@ class InputController(threading.Thread):
                                     ts=timestamp,
                                     cid=each_conditional.id,
                                     cname=each_conditional.name,
-                                    oid=self.id,
+                                    oid=self.input_id,
                                     name=self.input_name,
                                     state=state_str,
                                     pin=bcm_pin)

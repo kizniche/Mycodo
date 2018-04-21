@@ -2,7 +2,7 @@
 import logging
 import time
 
-from mycodo.mycodo_flask.routes_calibration import AtlasScientificCommand
+from mycodo.utils.calibration import AtlasScientificCommand
 from mycodo.utils.influx import read_last_influxdb
 from mycodo.utils.system_pi import str_is_float
 from .base_input import AbstractInput
@@ -11,23 +11,22 @@ from .base_input import AbstractInput
 class AtlaspHSensor(AbstractInput):
     """A sensor support class that monitors the Atlas Scientific sensor pH"""
 
-    def __init__(self, interface, device_loc=None, baud_rate=None,
-                 i2c_address=None, i2c_bus=None, sensor_sel=None,
-                 testing=False):
+    def __init__(self, input_dev, testing=False):
         super(AtlaspHSensor, self).__init__()
         self.logger = logging.getLogger("mycodo.inputs.atlas_ph")
-
         self._ph = None
-        self.interface = interface
-        self.device_loc = device_loc
-        self.baud_rate = baud_rate
-        self.i2c_address = i2c_address
-        self.i2c_bus = i2c_bus
-        self.sensor_sel = sensor_sel
         self.atlas_sensor_uart = None
         self.atlas_sensor_i2c = None
 
         if not testing:
+            self.logger = logging.getLogger(
+                "mycodo.inputs.atlas_ph_{id}".format(id=input_dev.id))
+            self.input_dev = input_dev
+            self.interface = input_dev.interface
+            self.device_loc = input_dev.device_loc
+            self.i2c_address = int(str(input_dev.location), 16)
+            self.i2c_bus = input_dev.i2c_bus
+            self.calibrate_sensor_measure = input_dev.calibrate_sensor_measure
             try:
                 self.initialize_sensor()
             except Exception:
@@ -67,8 +66,7 @@ class AtlaspHSensor(AbstractInput):
             self.logger = logging.getLogger(
                 "mycodo.inputs.atlas_ph_{uart}".format(
                     uart=self.device_loc))
-            self.atlas_sensor_uart = AtlasScientificUART(self.device_loc,
-                                                         baudrate=self.baud_rate)
+            self.atlas_sensor_uart = AtlasScientificUART(self.device_loc)
         elif self.interface == 'I2C':
             self.logger = logging.getLogger(
                 "mycodo.inputs.atlas_ph_{bus}_{add}".format(
@@ -82,12 +80,12 @@ class AtlaspHSensor(AbstractInput):
         ph = None
 
         # Calibrate the pH measurement based on a temperature measurement
-        if (self.sensor_sel.calibrate_sensor_measure and
-                ',' in self.sensor_sel.calibrate_sensor_measure):
+        if (self.calibrate_sensor_measure and
+                ',' in self.calibrate_sensor_measure):
             self.logger.debug("pH sensor set to calibrate temperature")
 
-            device_id = self.sensor_sel.calibrate_sensor_measure.split(',')[0]
-            measurement = self.sensor_sel.calibrate_sensor_measure.split(',')[1]
+            device_id = self.calibrate_sensor_measure.split(',')[0]
+            measurement = self.calibrate_sensor_measure.split(',')[1]
             last_measurement = read_last_influxdb(
                 device_id, measurement, duration_sec=300)
             if last_measurement:
@@ -95,7 +93,7 @@ class AtlaspHSensor(AbstractInput):
                     "Latest temperature used to calibrate: {temp}".format(
                         temp=last_measurement[1]))
 
-                atlas_command = AtlasScientificCommand(self.sensor_sel)
+                atlas_command = AtlasScientificCommand(self.input_dev)
                 ret_value, ret_msg = atlas_command.calibrate(
                     'temperature', temperature=last_measurement[1])
                 time.sleep(0.5)

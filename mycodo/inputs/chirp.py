@@ -7,8 +7,6 @@ import smbus
 from .base_input import AbstractInput
 from .sensorutils import convert_units
 
-logger = logging.getLogger("mycodo.inputs.chirp")
-
 
 class ChirpSensor(AbstractInput):
     """
@@ -17,18 +15,20 @@ class ChirpSensor(AbstractInput):
 
     """
 
-    def __init__(self, address, bus, convert_to_unit=None, testing=False):
+    def __init__(self, input_dev, testing=False):
         super(ChirpSensor, self).__init__()
+        self.logger = logging.getLogger("mycodo.inputs.chirp")
         self._lux = None
         self._moisture = None
         self._temperature = None
 
-        self.address = address
-        self.convert_to_unit = convert_to_unit
-
         if not testing:
-            self.logger = logging.getLogger("mycodo.inputs.chirp_{b}_{a}".format(b=bus, a=address))
-            self.bus = smbus.SMBus(bus)
+            self.logger = logging.getLogger(
+                "mycodo.inputs.chirp_{id}".format(id=input_dev.id))
+            self.i2c_address = int(str(input_dev.location), 16)
+            self.i2c_bus = input_dev.i2c_bus
+            self.convert_to_unit = input_dev.convert_to_unit
+            self.bus = smbus.SMBus(self.i2c_bus)
             self.filter_average('lux', init_max=5)
 
     def __repr__(self):
@@ -104,7 +104,7 @@ class ChirpSensor(AbstractInput):
             if self._lux is not None:
                 return  # success - no errors
         except Exception as e:
-            logger.exception(
+            self.logger.exception(
                 "{cls} raised an exception when taking a reading: "
                 "{err}".format(cls=type(self).__name__, err=e))
         return 1

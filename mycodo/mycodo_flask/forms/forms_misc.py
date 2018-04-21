@@ -20,7 +20,7 @@ from wtforms import widgets
 #
 
 class Camera(FlaskForm):
-    camera_id = IntegerField('Camera ID', widget=widgets.HiddenInput())
+    camera_id = StringField('Camera ID', widget=widgets.HiddenInput())
     capture_still = SubmitField(lazy_gettext('Capture Still'))
     start_timelapse = SubmitField(lazy_gettext('Start Timelapse'))
     pause_timelapse = SubmitField(lazy_gettext('Pause Timelapse'))
@@ -110,7 +110,7 @@ class LogView(FlaskForm):
 
 class Upgrade(FlaskForm):
     upgrade = SubmitField(lazy_gettext('Upgrade Mycodo'))
-    upgrade_major_version = SubmitField(lazy_gettext('Upgrade Mycodo'))
+    upgrade_next_major_version = SubmitField(lazy_gettext('Upgrade Mycodo to Next Major Version'))
 
 
 #

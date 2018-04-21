@@ -1,4 +1,5 @@
 #!/bin/bash
+# Upgrade to the next release within the current major version number
 
 ARG=$1
 
@@ -155,10 +156,10 @@ runSelfUpgrade() {
     printf "Done.\n"
   fi
 
-  if [ -d ${INSTALL_DIRECTORY}/Mycodo/relay_usage_reports ] ; then
-    printf "Moving relay_usage_reports directory..."
-    if ! mv ${INSTALL_DIRECTORY}/Mycodo/relay_usage_reports ${MYCODO_NEW_TMP_DIR} ; then
-      printf "Failed: Error while trying to move relay_usage_reports directory.\n"
+  if [ -d ${INSTALL_DIRECTORY}/Mycodo/output_usage_reports ] ; then
+    printf "Moving output_usage_reports directory..."
+    if ! mv ${INSTALL_DIRECTORY}/Mycodo/output_usage_reports ${MYCODO_NEW_TMP_DIR} ; then
+      printf "Failed: Error while trying to move output_usage_reports directory.\n"
     fi
     printf "Done.\n"
   fi

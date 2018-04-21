@@ -3,11 +3,13 @@
 import pytest
 import mock
 from mycodo.databases.models import Input
+from mycodo.databases.models import Math
 from mycodo.databases.models import User
 
 from mycodo.tests.software_tests.conftest import login_user
 from mycodo.tests.software_tests.factories import UserFactory
-
+from mycodo.config import DEVICE_INFO
+from mycodo.config import MATH_INFO
 
 # ----------------------
 #   Non-Logged In Tests
@@ -29,7 +31,7 @@ def redirects_to_admin_creation_page(testapp, endpoint):
 def test_sees_admin_creation_form(testapp):
     """ No Admin user exists: user sees the admin creation page """
     # Delete all admin users to show the admin creation form
-    for each_admin in User.query.filter_by(role=1).all():
+    for each_admin in User.query.filter_by(role_id=1).all():
         each_admin.delete()
     expected_body_msg = "<!-- Route: /create_admin -->"
     assert expected_body_msg in testapp.get('/').maybe_follow()
@@ -81,7 +83,6 @@ def test_routes_when_not_logged_in(testapp):
         'settings/users',
         'systemctl/restart',
         'systemctl/shutdown',
-        'timer',
         'usage',
         'video_feed/0'
     ]
@@ -125,7 +126,6 @@ def test_routes_logged_in_as_admin(_, testapp):
         ('method-build/-1', 'admin logged in'),
         ('output', '<!-- Route: /output -->'),
         ('remote/setup', '<!-- Route: /remote/setup -->'),
-        ('timer', '<!-- Route: /timer -->'),
         ('usage', '<!-- Route: /usage -->'),
         ('usage_reports', '<!-- Route: /usage_reports -->')
     ]
@@ -135,21 +135,43 @@ def test_routes_logged_in_as_admin(_, testapp):
         assert route[1] in response, "Unexpected HTTP Response: \n{body}".format(body=response.body)
 
 
-# @mock.patch('mycodo.mycodo_flask.routes_authentication.login_log')
-# def test_add_sensor_logged_in_as_admin(_, testapp):
-#     """ Verifies adding a sensor as a logged in admin user """
-#     login_user(testapp, 'admin', '53CR3t_p4zZW0rD')
-#
-#     response = add_sensor(testapp)
-#
-#     # Verify success message flashed
-#     print(response)
-#     assert "RPi Sensor with ID" in response
-#     assert "successfully added" in response
-#
-#     # Verify data was entered into the database
-#     for each_sensor in Sensor.query.all():
-#         assert 'RPi' in each_sensor.name, "Sensor name doesn't match: {}".format(each_sensor.name)
+@mock.patch('mycodo.mycodo_flask.routes_authentication.login_log')
+def test_add_all_data_devices_logged_in_as_admin(_, testapp):
+    """ Verifies adding all inputs as a logged in admin user """
+    login_user(testapp, 'admin', '53CR3t_p4zZW0rD')
+
+    # Add All Inputs
+    input_count = 0
+    for each_input, each_data in DEVICE_INFO.items():
+        response = add_data(testapp, data_type='input', input_type=each_input)
+
+        # Verify success message flashed
+        assert "{} Input with ID".format(each_input) in response
+        assert "successfully added" in response
+
+        # Verify data was entered into the database
+        input_count += 1
+        assert Input.query.count() == input_count, "Number of Inputs doesn't match: In DB {}, Should be: {}".format(Input.query.count(), input_count)
+
+        input_dev = Input.query.filter(Input.id == input_count).first()
+        assert each_data['name'] in input_dev.name, "Input name doesn't match: {}".format(each_input)
+
+    # Add All Maths
+    math_count = 0
+    for each_math, each_data in MATH_INFO.items():
+        response = add_data(testapp, data_type='math', input_type=each_math)
+
+        # Verify success message flashed
+        assert "{} Math with ID".format(each_math) in response
+        assert "successfully added" in response
+
+        # Verify data was entered into the database
+        math_count += 1
+        actual_count = Math.query.count()
+        assert actual_count == math_count, "Number of Maths doesn't match: In DB {}, Should be: {}".format(actual_count, math_count)
+
+        math_dev = Math.query.filter(Math.id == math_count).first()
+        assert each_data['name'] in math_dev.name, "Math name doesn't match: {}".format(each_math)
 
 
 # ---------------------------
@@ -182,23 +204,28 @@ def test_routes_logged_in_as_guest(_, testapp):
         assert route[1] in response, "Unexpected HTTP Response: \n{body}".format(body=response.body)
 
 
-def create_user(mycodo_db, role, name, password):
+def create_user(mycodo_db, role_id, name, password):
     """ Create fake admin user """
     new_user = UserFactory()
     new_user.name = name
     new_user.set_password(password)
-    new_user.role = role
+    new_user.role_id = role_id
     mycodo_db.add(new_user)
     mycodo_db.commit()
     return new_user
 
 
-def add_sensor(testapp, sensor_type='RPi', qty=1):
-    """ Go to the sensor page and create one or more sensors """
-    form = testapp.get('/input').maybe_follow().forms['new_sensor_form']
-    form['numberSensors'] = qty
-    form.select(name='sensor', value=sensor_type)
-    response = form.submit().maybe_follow()
+def add_data(testapp, data_type='input', input_type='RPi'):
+    """ Go to the data page and create one or more inputs """
+    response = None
+    if data_type == 'input':
+        form = testapp.get('/data').maybe_follow().forms['new_input_form']
+        form.select(name='input_type', value=input_type)
+        response = form.submit(name='input_add', value='Add Input').maybe_follow()
+    elif data_type == 'math':
+        form = testapp.get('/data').maybe_follow().forms['new_math_form']
+        form.select(name='math_type', value=input_type)
+        response = form.submit(name='math_add', value='Add Math').maybe_follow()
     # response.showbrowser()
     return response
 
@@ -227,7 +254,6 @@ def sees_navbar(testapp):
         'Output Usage Reports',
         'Remote Admin',
         'System Information',
-        'Timers',
         'Upgrade'
     ]
     assert all(

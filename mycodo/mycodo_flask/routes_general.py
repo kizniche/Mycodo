@@ -172,19 +172,19 @@ def gpio_state():
     GPIO.setmode(GPIO.BCM)
     GPIO.setwarnings(False)
     for each_output in output:
-        if each_output.relay_type == 'wired' and each_output.pin and -1 < each_output.pin < 40:
+        if each_output.output_type == 'wired' and each_output.pin and -1 < each_output.pin < 40:
             GPIO.setup(each_output.pin, GPIO.OUT)
             if GPIO.input(each_output.pin) == each_output.trigger:
-                state[each_output.id] = 'on'
+                state[each_output.unique_id] = 'on'
             else:
-                state[each_output.id] = 'off'
-        elif (each_output.relay_type in ['command', 'command_pwm'] or
-                (each_output.relay_type in ['pwm', 'wireless_433MHz_pi_switch'] and
+                state[each_output.unique_id] = 'off'
+        elif (each_output.output_type in ['command', 'command_pwm'] or
+                (each_output.output_type in ['pwm', 'wireless_433MHz_pi_switch'] and
                  each_output.pin and
                  -1 < each_output.pin < 40)):
-            state[each_output.id] = daemon_control.relay_state(each_output.id)
+            state[each_output.unique_id] = daemon_control.output_state(each_output.unique_id)
         else:
-            state[each_output.id] = None
+            state[each_output.unique_id] = None
 
     return jsonify(state)
 
@@ -199,17 +199,17 @@ def gpio_state_unique_id(unique_id):
     GPIO.setmode(GPIO.BCM)
     GPIO.setwarnings(False)
 
-    if output.relay_type == 'wired' and output.pin and -1 < output.pin < 40:
+    if output.output_type == 'wired' and output.pin and -1 < output.pin < 40:
         GPIO.setup(output.pin, GPIO.OUT)
         if GPIO.input(output.pin) == output.trigger:
             state = 'on'
         else:
             state = 'off'
-    elif (output.relay_type in ['command', 'command_pwm'] or
-            (output.relay_type in ['pwm', 'wireless_433MHz_pi_switch'] and
+    elif (output.output_type in ['command', 'command_pwm'] or
+            (output.output_type in ['pwm', 'wireless_433MHz_pi_switch'] and
              output.pin and
              -1 < output.pin < 40)):
-        state = daemon_control.relay_state(output.id)
+        state = daemon_control.output_state(output.id)
     else:
         state = None
 
@@ -502,28 +502,10 @@ def output_mod(output_id, state, out_type, amount):
     daemon = DaemonControl()
     if (state in ['on', 'off'] and out_type == 'sec' and
             (str_is_float(amount) and float(amount) >= 0)):
-        return daemon.output_on_off(int(output_id), state, float(amount))
+        return daemon.output_on_off(output_id, state, float(amount))
     elif (state == 'on' and out_type in ['pwm', 'command_pwm'] and
               (str_is_float(amount) and float(amount) >= 0)):
-        return daemon.relay_on(int(output_id), state, duty_cycle=float(amount))
-
-
-@blueprint.route('/output_mod_unique_id/<unique_id>/<state>/<out_type>/<amount>')
-@flask_login.login_required
-def output_mod_unique_id(unique_id, state, out_type, amount):
-    """ Manipulate output (using unique ID) """
-    if not utils_general.user_has_permission('edit_controllers'):
-        return 'Insufficient user permissions to manipulate outputs'
-
-    output = Output.query.filter(Output.unique_id == unique_id).first()
-
-    daemon = DaemonControl()
-    if (state in ['on', 'off'] and out_type == 'sec' and
-            (str_is_float(amount) and float(amount) >= 0)):
-        return daemon.output_on_off(output.id, state, float(amount))
-    elif (state == 'on' and out_type in ['pwm', 'command_pwm'] and
-              (str_is_float(amount) and float(amount) >= 0)):
-        return daemon.relay_on(output.id, state, duty_cycle=float(amount))
+        return daemon.output_on(output_id, state, duty_cycle=float(amount))
 
 
 @blueprint.route('/daemonactive')
@@ -621,7 +603,7 @@ def last_data_pid(input_id, input_period):
             'pid_p_value': return_point_timestamp('pid_p_value', input_id, input_period),
             'pid_i_value': return_point_timestamp('pid_i_value', input_id, input_period),
             'pid_d_value': return_point_timestamp('pid_d_value', input_id, input_period),
-            'pid_output': return_point_timestamp('pid_output', input_id, input_period),
+            'duration_sec': return_point_timestamp('duration_sec', input_id, input_period),
             'duty_cycle': return_point_timestamp('duty_cycle', input_id, input_period),
             'actual': return_point_timestamp(measure_type, measure_id, input_period)
         }
@@ -648,33 +630,45 @@ def pid_mod_unique_id(unique_id, state):
     if state == 'activate_pid':
         pid.is_activated = True
         pid.save()
-        return_val, return_str = daemon.controller_activate('PID', pid.id)
+        return_val, return_str = daemon.controller_activate('PID', pid.unique_id)
         return return_str
     elif state == 'deactivate_pid':
         pid.is_activated = False
         pid.is_paused = False
         pid.is_held = False
         pid.save()
-        return_val, return_str = daemon.controller_deactivate('PID', pid.id)
+        return_val, return_str = daemon.controller_deactivate('PID', pid.unique_id)
         return return_str
     elif state == 'pause_pid':
         pid.is_paused = True
         pid.save()
-        return_str = daemon.pid_pause(pid.id)
+        if pid.is_activated:
+            return_str = daemon.pid_pause(pid.unique_id)
+        else:
+            return_str = "PID Paused (Note: PID is not currently active)"
         return return_str
     elif state == 'hold_pid':
         pid.is_held = True
         pid.save()
-        return_str = daemon.pid_hold(pid.id)
+        if pid.is_activated:
+            return_str = daemon.pid_hold(pid.unique_id)
+        else:
+            return_str = "PID Held (Note: PID is not currently active)"
         return return_str
     elif state == 'resume_pid':
         pid.is_held = False
         pid.is_paused = False
         pid.save()
-        return_str = daemon.pid_resume(pid.id)
+        if pid.is_activated:
+            return_str = daemon.pid_resume(pid.unique_id)
+        else:
+            return_str = "PID Resumed (Note: PID is not currently active)"
         return return_str
     elif 'set_setpoint_pid' in state:
         pid.setpoint = state.split('|')[1]
         pid.save()
-        return_str = daemon.pid_set(pid.unique_id, 'setpoint', float(state.split('|')[1]))
+        if pid.is_activated:
+            return_str = daemon.pid_set(pid.unique_id, 'setpoint', float(state.split('|')[1]))
+        else:
+            return_str = "PID Setpoint changed (Note: PID is not currently active)"
         return return_str

@@ -13,7 +13,7 @@ MYCODO_DB_PATH = 'sqlite:///' + SQL_DATABASE_MYCODO
 logger = logging.getLogger("mycodo.database")
 
 
-def db_retrieve_table(table, entry=None, device_id=None):
+def db_retrieve_table(table, entry=None, unique_id=None):
     """
     Return SQL database query object with optional filtering
     Used in Flask (For daemon, see db_retrieve_table_daemon() below)
@@ -23,12 +23,12 @@ def db_retrieve_table(table, entry=None, device_id=None):
     If device_id is set, the first entry with that device ID is returned.
     Otherwise, the table object is returned.
     """
-    if device_id:
-        return_table = table.query.filter(table.id == device_id)
+    if unique_id:
+        return_table = table.query.filter(table.unique_id == unique_id)
     else:
         return_table = table.query
 
-    if entry == 'first' or device_id:
+    if entry == 'first' or unique_id:
         return_table = return_table.first()
     elif entry == 'all':
         return_table = return_table.all()

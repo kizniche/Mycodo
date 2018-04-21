@@ -19,7 +19,7 @@ from mycodo.mycodo_flask.utils.utils_general import delete_entry_with_id
 from mycodo.mycodo_flask.utils.utils_general import flash_form_errors
 from mycodo.mycodo_flask.utils.utils_general import flash_success_errors
 from mycodo.mycodo_flask.utils.utils_general import reorder
-from mycodo.utils.system_pi import csv_to_list_of_int
+from mycodo.utils.system_pi import csv_to_list_of_str
 from mycodo.utils.system_pi import list_to_csv
 
 logger = logging.getLogger(__name__)
@@ -43,11 +43,11 @@ def lcd_add(quantity):
             else:
                 new_lcd.i2c_bus = 0
             new_lcd.save()
-            new_lcd_data.lcd_id = new_lcd.id
+            new_lcd_data.lcd_id = new_lcd.unique_id
             new_lcd_data.save()
-            display_order = csv_to_list_of_int(DisplayOrder.query.first().lcd)
+            display_order = csv_to_list_of_str(DisplayOrder.query.first().lcd)
             DisplayOrder.query.first().lcd = add_display_order(
-                display_order, new_lcd.id)
+                display_order, new_lcd.unique_id)
             db.session.commit()
         except sqlalchemy.exc.OperationalError as except_msg:
             error.append(except_msg)
@@ -63,7 +63,7 @@ def lcd_mod(form_mod_lcd):
     error = []
 
     lcd = LCD.query.filter(
-        LCD.id == form_mod_lcd.lcd_id.data).first()
+        LCD.unique_id == form_mod_lcd.lcd_id.data).first()
     if lcd.is_activated:
         error.append(gettext("Deactivate LCD controller before modifying"
                              " its settings."))
@@ -72,12 +72,10 @@ def lcd_mod(form_mod_lcd):
         if form_mod_lcd.validate():
             try:
                 mod_lcd = LCD.query.filter(
-                    LCD.id == form_mod_lcd.lcd_id.data).first()
+                    LCD.unique_id == form_mod_lcd.lcd_id.data).first()
                 mod_lcd.name = form_mod_lcd.name.data
                 mod_lcd.location = form_mod_lcd.location.data
                 mod_lcd.i2c_bus = form_mod_lcd.i2c_bus.data
-                mod_lcd.multiplexer_address = form_mod_lcd.multiplexer_address.data
-                mod_lcd.multiplexer_channel = form_mod_lcd.multiplexer_channel.data
                 mod_lcd.period = form_mod_lcd.period.data
                 mod_lcd.x_characters = int(form_mod_lcd.lcd_type.data.split("x")[0])
                 mod_lcd.y_lines = int(form_mod_lcd.lcd_type.data.split("x")[1])
@@ -96,7 +94,7 @@ def lcd_del(lcd_id):
     error = []
 
     lcd = LCD.query.filter(
-        LCD.id == lcd_id).first()
+        LCD.unique_id == lcd_id).first()
     if lcd.is_activated:
         error.append(gettext("Deactivate LCD controller before modifying "
                              "its settings."))
@@ -107,13 +105,12 @@ def lcd_del(lcd_id):
             lcd_displays = LCDData.query.filter(
                 LCDData.lcd_id == lcd_id).all()
             for each_lcd_display in lcd_displays:
-                lcd_display_del(each_lcd_display.id, delete_last=True)
+                lcd_display_del(each_lcd_display.unique_id, delete_last=True)
 
             # Delete LCD
-            delete_entry_with_id(LCD,
-                                 lcd_id)
-            display_order = csv_to_list_of_int(DisplayOrder.query.first().lcd)
-            display_order.remove(int(lcd_id))
+            delete_entry_with_id(LCD, lcd_id)
+            display_order = csv_to_list_of_str(DisplayOrder.query.first().lcd)
+            display_order.remove(lcd_id)
             DisplayOrder.query.first().lcd = list_to_csv(display_order)
             db.session.commit()
         except Exception as except_msg:
@@ -149,7 +146,7 @@ def lcd_activate(lcd_id):
     try:
         # All display lines must be filled to activate display
         lcd = LCD.query.filter(
-            LCD.id == lcd_id).first()
+            LCD.unique_id == lcd_id).first()
         lcd_data = LCDData.query.filter(
             LCDData.lcd_id == lcd_id).all()
         blank_line_detected = False
@@ -203,7 +200,7 @@ def lcd_display_add(form):
     error = []
 
     lcd = LCD.query.filter(
-        LCD.id == form.lcd_id.data).first()
+        LCD.unique_id == form.lcd_id.data).first()
     if lcd.is_activated:
         error.append(gettext("Deactivate LCD controller before modifying"
                              " its settings."))
@@ -228,7 +225,7 @@ def lcd_display_mod(form):
     error = []
 
     lcd = LCD.query.filter(
-        LCD.id == form.lcd_id.data).first()
+        LCD.unique_id == form.lcd_id.data).first()
     if lcd.is_activated:
         error.append(gettext("Deactivate LCD controller before modifying"
                              " its settings."))
@@ -236,14 +233,14 @@ def lcd_display_mod(form):
     if not error:
         try:
             mod_lcd = LCD.query.filter(
-                LCD.id == form.lcd_id.data).first()
+                LCD.unique_id == form.lcd_id.data).first()
             if mod_lcd.is_activated:
                 flash(gettext("Deactivate LCD controller before modifying"
                               " its settings."), "error")
                 return redirect('/lcd')
 
             mod_lcd_data = LCDData.query.filter(
-                LCDData.id == form.lcd_data_id.data).first()
+                LCDData.unique_id == form.lcd_data_id.data).first()
 
             if form.line_1_display.data:
                 mod_lcd_data.line_1_id = form.line_1_display.data.split(",")[0]
@@ -294,11 +291,11 @@ def lcd_display_del(lcd_data_id, delete_last=False):
     error = []
 
     lcd_data_this = LCDData.query.filter(
-        LCDData.id == lcd_data_id).first()
+        LCDData.unique_id == lcd_data_id).first()
     lcd_data_all = LCDData.query.filter(
         LCDData.lcd_id == lcd_data_this.lcd_id).all()
     lcd = LCD.query.filter(
-        LCD.id == lcd_data_this.lcd_id).first()
+        LCD.unique_id == lcd_data_this.lcd_id).first()
 
     if lcd.is_activated:
         error.append(gettext("Deactivate LCD controller before modifying"

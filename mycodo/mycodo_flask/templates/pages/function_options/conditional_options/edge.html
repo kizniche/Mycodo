@@ -1,9 +1,9 @@
 <div class="row small-gutters" style="border-bottom: 2px solid #ddd; padding-bottom: 0.2em">
 
   <div class="col-xs-12 col-md-4">
-    {{form_conditional.if_sensor_measurement.label(class_='control-label')}}
+    {{form_conditional.measurement.label(class_='control-label')}}
     <div>
-      <select class="form-control" id="if_sensor_measurement" name="if_sensor_measurement" style="width: 100%;" title="" data-original-title="{{_('Select the measurement to use as the input')}}">
+      <select class="form-control" id="measurement" name="measurement" style="width: 100%;" title="" data-original-title="{{_('Select the measurement to use as the input')}}">
       {% set edge_sensor = [] %}
       {% for each_choice, value in choices_input.items() if each_choice.split(',')[1] == 'edge' -%}
         {% do edge_sensor.append(1) %}
@@ -12,7 +12,7 @@
       {% if edge_sensor %}
         <option value="">{{_('Select One')}}</option>
         {% for each_choice, value in choices_input.items() if each_choice.split(',')[1] == 'edge' -%}
-        <option value="{{each_choice.split(',')[0]}}"{% if each_cond.if_sensor_measurement == each_choice.split(',')[0] %} selected{% endif %}>{{value}}</option>
+        <option value="{{each_choice.split(',')[0]}}"{% if each_cond.measurement == each_choice.split(',')[0] %} selected{% endif %}>{{value}}</option>
         {% endfor -%}
       {% else %}
         <option value="">{{_('None Available')}}</option>
@@ -21,13 +21,13 @@
     </div>
   </div>
   <div class="col-xs-10 col-sm-3 col-md-2">
-    {{form_conditional.if_sensor_edge_detected.label(class_='control-label')}}
+    {{form_conditional.edge_detected.label(class_='control-label')}}
     <div>
-      <select class="form-control form-tooltip form-dropdown" data-placement="top" id="if_sensor_edge_detected" name="if_sensor_edge_detected" title="{{_('Detect low to high (rising), high to low (falling), or both?')}}">
+      <select class="form-control form-tooltip form-dropdown" data-placement="top" id="edge_detected" name="edge_detected" title="{{_('Detect low to high (rising), high to low (falling), or both?')}}">
         <option value=""></option>
-        <option value="rising"{% if each_cond.if_sensor_edge_detected == 'rising' %} selected{% endif %}>{{_('Rising')}}</option>
-        <option value="falling"{% if each_cond.if_sensor_edge_detected == 'falling' %} selected{% endif %}>{{_('Falling')}}</option>
-        <option value="both"{% if each_cond.if_sensor_edge_detected == 'both' %} selected{% endif %}>{{_('Both')}}</option>
+        <option value="rising"{% if each_cond.edge_detected == 'rising' %} selected{% endif %}>{{_('Rising')}}</option>
+        <option value="falling"{% if each_cond.edge_detected == 'falling' %} selected{% endif %}>{{_('Falling')}}</option>
+        <option value="both"{% if each_cond.edge_detected == 'both' %} selected{% endif %}>{{_('Both')}}</option>
       </select>
     </div>
   </div>

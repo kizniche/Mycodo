@@ -240,7 +240,7 @@ def admin_dependencies(device):
             unmet_dependencies.update({
                 each_device: utils_general.return_dependencies(each_device)
             })
-            if utils_general.return_dependencies(each_device) != []:
+            if utils_general.return_dependencies(each_device):
                 unmet_exist = True
 
             # Determine if there are any met dependencies

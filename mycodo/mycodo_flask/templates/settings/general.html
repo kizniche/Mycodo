@@ -121,60 +121,60 @@
       </div>
     </div>
     <div class="form-group">
-      {{form_settings_general.relay_stats_volts.label(class_='col-sm-12 control-label checkbox-nopad')}}
+      {{form_settings_general.output_stats_volts.label(class_='col-sm-12 control-label checkbox-nopad')}}
       <div class="col-sm-12">
-        {{form_settings_general.relay_stats_volts(class_='form-control', value=misc.relay_usage_volts, **{'title':_('Set the voltage used to power the devices powered by the relays')})}}
+        {{form_settings_general.output_stats_volts(class_='form-control', value=misc.output_usage_volts, **{'title':_('Set the voltage used to power the devices powered by the outputs')})}}
       </div>
     </div>
     <div class="form-group">
-      {{form_settings_general.relay_stats_cost.label(class_='col-sm-12 control-label checkbox-nopad')}}
+      {{form_settings_general.output_stats_cost.label(class_='col-sm-12 control-label checkbox-nopad')}}
       <div class="col-sm-12">
-        {{form_settings_general.relay_stats_cost(class_='form-control', value=misc.relay_usage_cost, **{'title':_('Set the cost per kilowatt-hour')})}}
+        {{form_settings_general.output_stats_cost(class_='form-control', value=misc.output_usage_cost, **{'title':_('Set the cost per kilowatt-hour')})}}
       </div>
     </div>
     <div class="form-group">
-      {{form_settings_general.relay_stats_currency.label(class_='col-sm-12 control-label checkbox-nopad')}}
+      {{form_settings_general.output_stats_currency.label(class_='col-sm-12 control-label checkbox-nopad')}}
       <div class="col-sm-12">
-        {{form_settings_general.relay_stats_currency(class_='form-control', value=misc.relay_usage_currency, **{'title':_('Set the unit of currency used to pay for the electricity')})}}
+        {{form_settings_general.output_stats_currency(class_='form-control', value=misc.output_usage_currency, **{'title':_('Set the unit of currency used to pay for the electricity')})}}
       </div>
     </div>
     <div class="form-group">
-      {{form_settings_general.relay_stats_day_month.label(class_='col-sm-12 control-label checkbox-nopad')}}
+      {{form_settings_general.output_stats_day_month.label(class_='col-sm-12 control-label checkbox-nopad')}}
       <div class="col-sm-12">
-        {{form_settings_general.relay_stats_day_month(class_='form-control', value=misc.relay_usage_dayofmonth, **{'title':_('Set a day of the month to calculate monthly power usage')})}}
+        {{form_settings_general.output_stats_day_month(class_='form-control', value=misc.output_usage_dayofmonth, **{'title':_('Set a day of the month to calculate monthly power usage')})}}
       </div>
     </div>
     <div class="form-group">
-      {{form_settings_general.relay_usage_report_gen.label(class_='col-sm-12 control-label checkbox-nopad')}}
+      {{form_settings_general.output_usage_report_gen.label(class_='col-sm-12 control-label checkbox-nopad')}}
       <div class="col-sm-12">
-        {%- if misc.relay_usage_report_gen == true -%}
-          {{form_settings_general.relay_usage_report_gen(checked=True)}}
+        {%- if misc.output_usage_report_gen == true -%}
+          {{form_settings_general.output_usage_report_gen(checked=True)}}
         {%- else -%}
-          {{form_settings_general.relay_usage_report_gen()}}
+          {{form_settings_general.output_usage_report_gen()}}
         {%- endif -%}
-        &nbsp;&nbsp;{{_('Automatically generate relay usage reports on a daily/weekly/monthly schedule')}}
+        &nbsp;&nbsp;{{_('Automatically generate output usage reports on a daily/weekly/monthly schedule')}}
       </div>
     </div>
     <div class="form-group">
-      {{form_settings_general.relay_usage_report_span.label(class_='col-sm-12 control-label checkbox-nopad')}}
+      {{form_settings_general.output_usage_report_span.label(class_='col-sm-12 control-label checkbox-nopad')}}
       <div class="col-sm-12">
-        <select class="form-control" id="relay_usage_report_span" name="relay_usage_report_span" title="" data-original-title="{{_('How often to generate a report')}}">
-          <option value="monthly"{% if misc.relay_usage_report_span == 'monthly' %} selected{% endif %}>Monthly</option>
-          <option value="weekly"{% if misc.relay_usage_report_span == 'weekly' %} selected{% endif %}>Weekly</option>
-          <option value="daily"{% if misc.relay_usage_report_span == 'daily' %} selected{% endif %}>Daily</option>
+        <select class="form-control" id="output_usage_report_span" name="output_usage_report_span" title="" data-original-title="{{_('How often to generate a report')}}">
+          <option value="monthly"{% if misc.output_usage_report_span == 'monthly' %} selected{% endif %}>Monthly</option>
+          <option value="weekly"{% if misc.output_usage_report_span == 'weekly' %} selected{% endif %}>Weekly</option>
+          <option value="daily"{% if misc.output_usage_report_span == 'daily' %} selected{% endif %}>Daily</option>
         </select>
       </div>
     </div>
     <div class="form-group">
-      {{form_settings_general.relay_usage_report_day.label(class_='col-sm-12 control-label checkbox-nopad')}}
+      {{form_settings_general.output_usage_report_day.label(class_='col-sm-12 control-label checkbox-nopad')}}
       <div class="col-sm-12">
-        {{form_settings_general.relay_usage_report_day(class_='form-control', value=misc.relay_usage_report_day, **{'title':_('Day Options: Daily: 1-7 (1=Monday), Monthly: 1-28')})}}
+        {{form_settings_general.output_usage_report_day(class_='form-control', value=misc.output_usage_report_day, **{'title':_('Day Options: Daily: 1-7 (1=Monday), Monthly: 1-28')})}}
       </div>
     </div>
     <div class="form-group">
-      {{form_settings_general.relay_usage_report_hour.label(class_='col-sm-12 control-label checkbox-nopad')}}
+      {{form_settings_general.output_usage_report_hour.label(class_='col-sm-12 control-label checkbox-nopad')}}
       <div class="col-sm-12">
-        {{form_settings_general.relay_usage_report_hour(class_='form-control', value=misc.relay_usage_report_hour, **{'title':_('Hour Options: 0-23')})}}
+        {{form_settings_general.output_usage_report_hour(class_='form-control', value=misc.output_usage_report_hour, **{'title':_('Hour Options: 0-23')})}}
       </div>
     </div>
     <div class="form-group">

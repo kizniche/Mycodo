@@ -1,10 +1,10 @@
 {% set graph_math_ids = each_graph.math_ids.split(';') %}
-{% set graph_output_ids = each_graph.relay_ids.split(';') %}
+{% set graph_output_ids = each_graph.output_ids.split(';') %}
 {% set graph_pid_ids = each_graph.pid_ids.split(';') %}
 
   chart_graph[{{chart_number}}] = new Highcharts.StockChart({
     chart : {
-      renderTo: 'container-graph-{{each_graph.id}}',
+      renderTo: 'container-graph-{{each_graph.unique_id}}',
       zoomType: 'x',
       alignTicks: {% if each_graph.enable_align_ticks %}true{% else %}false{% endif %},
       resetZoomButton: {
@@ -38,10 +38,10 @@
           {%- endfor -%}
 
           {%- for each_output in output -%}
-            {%- for each_graph_relay_id in graph_output_ids if each_output.unique_id == each_graph_relay_id.split(',')[0] %}
-          getPastData({{chart_number}}, {{count_series|count}}, '{{each_graph_relay_id.split(',')[1]}}', '{{each_output.unique_id}}', {{each_graph.x_axis_duration*60}});
+            {%- for each_graph_output_id in graph_output_ids if each_output.unique_id == each_graph_output_id.split(',')[0] %}
+          getPastData({{chart_number}}, {{count_series|count}}, '{{each_graph_output_id.split(',')[1]}}', '{{each_output.unique_id}}', {{each_graph.x_axis_duration*60}});
           {% if each_graph.enable_auto_refresh %}
-          getLiveData({{chart_number}}, {{count_series|count}}, '{{each_graph_relay_id.split(',')[1]}}', '{{each_output.unique_id}}', {{each_graph.x_axis_duration}}, {{each_graph.enable_xaxis_reset|int}}, {{each_graph.refresh_duration}}, {% if each_graph.enable_graph_shift %}true{% else %}false{% endif %});
+          getLiveData({{chart_number}}, {{count_series|count}}, '{{each_graph_output_id.split(',')[1]}}', '{{each_output.unique_id}}', {{each_graph.x_axis_duration}}, {{each_graph.enable_xaxis_reset|int}}, {{each_graph.refresh_duration}}, {% if each_graph.enable_graph_shift %}true{% else %}false{% endif %});
           {% endif %}
               {%- do count_series.append(1) %}
             {%- endfor -%}
@@ -80,13 +80,13 @@
     },
 
     yAxis: [
-    {% for each_axis_meas in y_axes[each_graph.id] %}
+    {% for each_axis_meas in y_axes[each_graph.unique_id] %}
       {
         {% if each_graph.enable_manual_y_axis and
-             not (custom_yaxes[each_graph.id][dict_measurements[each_axis_meas]['meas']]['minimum'] == '0' and
-                  custom_yaxes[each_graph.id][dict_measurements[each_axis_meas]['meas']]['maximum'] == '0') %}
-        min: {{custom_yaxes[each_graph.id][dict_measurements[each_axis_meas]['meas']]['minimum']}},
-        max: {{custom_yaxes[each_graph.id][dict_measurements[each_axis_meas]['meas']]['maximum']}},
+             not (custom_yaxes[each_graph.unique_id][dict_measurements[each_axis_meas]['meas']]['minimum'] == '0' and
+                  custom_yaxes[each_graph.unique_id][dict_measurements[each_axis_meas]['meas']]['maximum'] == '0') %}
+        min: {{custom_yaxes[each_graph.unique_id][dict_measurements[each_axis_meas]['meas']]['minimum']}},
+        max: {{custom_yaxes[each_graph.unique_id][dict_measurements[each_axis_meas]['meas']]['maximum']}},
         startOnTick: {% if each_graph.enable_start_on_tick %}true{% else %}false{% endif %},
         endOnTick: {% if each_graph.enable_end_on_tick %}true{% else %}false{% endif %},
         {% endif %}
@@ -260,8 +260,8 @@
     {% endfor %}
 
     {%- for each_output in output -%}
-      {%- for each_graph_relay_id in graph_output_ids if each_output.unique_id == each_graph_relay_id.split(',')[0] -%}
-        {% if each_graph_relay_id.split(',')[1] == 'duration_sec' %}
+      {%- for each_graph_output_id in graph_output_ids if each_output.unique_id == each_graph_output_id.split(',')[0] -%}
+        {% if each_graph_output_id.split(',')[1] == 'duration_sec' %}
         {
           name: '{{each_output.name}} {{_('Duration')}} (sec)',
           type: 'column',
@@ -276,7 +276,7 @@
           yAxis: 'duration_sec',
           data: []
         },
-        {% elif each_graph_relay_id.split(',')[1] == 'duty_cycle' %}
+        {% elif each_graph_output_id.split(',')[1] == 'duty_cycle' %}
         {
           name: '{{each_output.name}} {{_('Duty Cycle')}} (%)',
           type: 'column',
@@ -371,7 +371,7 @@
           yAxis: 'pid_value',
           data: []
         },
-        {% elif each_graph_pid_id.split(',')[1] == 'pid_output' %}
+        {% elif each_graph_pid_id.split(',')[1] == 'duration_sec' %}
         {
           name: '{{each_pid.name}} {{_('Output')}} {{_('Duration')}}',
           type: 'line',
@@ -417,8 +417,8 @@
     {%- endfor -%}
 
     {%- for each_output in output -%}
-      {%- for each_graph_relay_id in graph_output_ids if each_output.unique_id == each_graph_relay_id.split(',')[0] %}
-    retrieveLiveData({{chart_number}}, {{count_series|count}}, '{{each_graph_relay_id.split(',')[1]}}', '{{each_output.unique_id}}', {{each_graph.x_axis_duration}}, {{each_graph.enable_xaxis_reset|int}}, {{each_graph.refresh_duration}}, {% if each_graph.enable_graph_shift %}true{% else %}false{% endif %});
+      {%- for each_graph_output_id in graph_output_ids if each_output.unique_id == each_graph_output_id.split(',')[0] %}
+    retrieveLiveData({{chart_number}}, {{count_series|count}}, '{{each_graph_output_id.split(',')[1]}}', '{{each_output.unique_id}}', {{each_graph.x_axis_duration}}, {{each_graph.enable_xaxis_reset|int}}, {{each_graph.refresh_duration}}, {% if each_graph.enable_graph_shift %}true{% else %}false{% endif %});
         {%- do count_series.append(1) %}
       {%- endfor -%}
     {%- endfor -%}
@@ -432,12 +432,12 @@
   });
 
   $('#resetZoom{{chart_number}}').click(function() {
-    var chart = $('#container-graph-{{each_graph.id}}').highcharts();
+    var chart = $('#container-graph-{{each_graph.unique_id}}').highcharts();
     chart.zoomOut();
   });
 
   $('#showhidebutton{{chart_number}}').click(function() {
-    var chart = $('#container-graph-{{each_graph.id}}').highcharts();
+    var chart = $('#container-graph-{{each_graph.unique_id}}').highcharts();
     var series = chart.series[0];
     if (series.visible) {
       $(chart.series).each(function(){

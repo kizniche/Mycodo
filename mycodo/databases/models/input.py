@@ -1,16 +1,15 @@
 # -*- coding: utf-8 -*-
-from mycodo.mycodo_flask.extensions import db
 from mycodo.databases import CRUDMixin
 from mycodo.databases import set_uuid
+from mycodo.mycodo_flask.extensions import db
 
 
-# TODO: Rename to 'input'
 class Input(CRUDMixin, db.Model):
-    __tablename__ = "sensor"
+    __tablename__ = "input"
     __table_args__ = {'extend_existing': True}
 
     id = db.Column(db.Integer, unique=True, primary_key=True)
-    unique_id = db.Column(db.String, nullable=False, unique=True, default=set_uuid)  # ID for influxdb entries
+    unique_id = db.Column(db.String, nullable=False, unique=True, default=set_uuid)
     name = db.Column(db.Text, default='Input Name')
     is_activated = db.Column(db.Boolean, default=False)
     is_preset = db.Column(db.Boolean, default=False)  # Is config saved as a preset?
@@ -23,7 +22,7 @@ class Input(CRUDMixin, db.Model):
     period = db.Column(db.Float, default=15.0)  # Duration between readings
     i2c_bus = db.Column(db.Integer, default='')  # I2C bus the sensor is connected to
     location = db.Column(db.Text, default='')  # GPIO pin or i2c address to communicate with sensor
-    power_relay_id = db.Column(db.Integer, db.ForeignKey('relay.id'), default=None)  # Output to power sensor
+    power_output_id = db.Column(db.String, default=None)
     measurements = db.Column(db.Text, default='')  # Measurements separated by commas
     resolution = db.Column(db.Integer, default=0)
     sensitivity = db.Column(db.Integer, default=0)
@@ -37,23 +36,17 @@ class Input(CRUDMixin, db.Model):
     pin_mosi = db.Column(db.Integer, default=None)
     pin_miso = db.Column(db.Integer, default=None)
 
-    # Multiplexer options
-    multiplexer_address = db.Column(db.Text, default=None)
-    multiplexer_bus = db.Column(db.Integer, default=1)
-    multiplexer_channel = db.Column(db.Integer, default=0)
-
     # Switch options
     switch_edge = db.Column(db.Text, default='rising')
     switch_bouncetime = db.Column(db.Integer, default=50)
     switch_reset_period = db.Column(db.Integer, default=10)
 
-    # Pre-measurement relay options
-    pre_relay_id = db.Column(db.Integer, db.ForeignKey('relay.id'), default=None)  # Output to turn on before sensor read
-    pre_relay_duration = db.Column(db.Float, default=0.0)  # Duration to turn relay on before sensor read
-    pre_relay_during_measure = db.Column(db.Boolean, default=True)
+    # Pre-measurement output options
+    pre_output_id = db.Column(db.String, db.ForeignKey('output.unique_id'), default=None)  # Output to turn on before sensor read
+    pre_output_duration = db.Column(db.Float, default=0.0)  # Duration to turn output on before sensor read
+    pre_output_during_measure = db.Column(db.Boolean, default=True)
 
     # SHT sensor options
-    sht_clock_pin = db.Column(db.Integer, default=0)
     sht_voltage = db.Column(db.Text, default='3.5')
 
     # Analog to digital converter options

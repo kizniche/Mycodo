@@ -96,28 +96,28 @@
       function(data, responseText, jqXHR) {
         if (jqXHR.status !== 204) {
           $.each(data,
-            function(relay_id, state) {
+            function(output_id, state) {
               if (state !== null) {
-                document.getElementById(relay_id + "-relay-state").className = "row small-gutters active-background";
+                document.getElementById(output_id + "-output-state").className = "row small-gutters active-background";
                 if (state !== 'off') {
                   if (state === 'on') {
-                    document.getElementById(relay_id + "-input-relay-state").value = '[' + pad(relay_id, 2) + '] {{_('Active')}}';
+                    document.getElementById(output_id + "-input-output-state").value = '{{_('Active')}}';
                   } else {
-                    document.getElementById(relay_id + "-input-relay-state").value = '[' + pad(relay_id, 2) + '] {{_('Active')}} (' + state.toFixed(1) + '%)';
+                    document.getElementById(output_id + "-input-output-state").value = '{{_('Active')}} (' + state.toFixed(1) + '%)';
                   }
                 }
                 else {
-                  document.getElementById(relay_id + "-relay-state").className = "row small-gutters inactive-background";
-                  document.getElementById(relay_id + "-input-relay-state").value = '[' + pad(relay_id, 2) + '] {{_('Inactive')}}';
+                  document.getElementById(output_id + "-output-state").className = "row small-gutters inactive-background";
+                  document.getElementById(output_id + "-input-output-state").value = '{{_('Inactive')}}';
                 }
               }
             }
           );
         }
         else {
-          {% for each_relay in relay %}
-          document.getElementById("{{each_relay.id}}-relay-state").className = "row small-gutters pause-background";
-          document.getElementById("{{each_relay.id}}-input-relay-state").value = '{{_('No Connection')}}';
+          {% for each_output in output %}
+          document.getElementById("{{each_output.unique_id}}-output-state").className = "row small-gutters pause-background";
+          document.getElementById("{{each_output.unique_id}}-input-output-state").value = '{{_('No Connection')}}';
           {% endfor %}
         }
       }
@@ -130,13 +130,14 @@
     }, 5000);  // Refresh duration in milliseconds
   }
 
-  {% set relay_has_gpio = [] %}
-  {% for each_relay in relay %}
-    {% if each_relay.pin and -1 < each_relay.pin < 40 -%}
-      {% do relay_has_gpio.append(1) %}
+  {% set output_has_gpio = [] %}
+  {% for each_output in output %}
+    {% if each_output.pin and -1 < each_output.pin < 40 -%}
+      {% do output_has_gpio.append(1) %}
     {% endif %}
   {%- endfor -%}
-  {% if relay_has_gpio -%}
+
+  {% if output_has_gpio -%}
   $(function() {
     gpioState();  // Update when page first loads
     liveGPIOData();  // Update every 5 seconds
@@ -152,26 +153,22 @@
 
     <h4>{{_('Output')}} <a href="/help#{{help_page[0]}}" target="_blank"><span style="font-size: 16px" class="fas fa-question-circle"></span></a></h4>
 
-    <p>{{_('Output devices enable Mycodo to manipulate things through the use of relays (wired and wireless), PWM signals, and executing commands. When linked to a PID controller, with an input, output devices can be used for feedback regulation.')}}</p>
+    <p>{{_('Output devices enable Mycodo to manipulate things through the use of outputs (wired and wireless), PWM signals, and executing commands. When linked to a PID controller, with an input, output devices can be used for feedback regulation.')}}</p>
 
     <div style="clear: both; padding: 0.5em 0;"></div>
 
     <form method="post" action="/output">
-      {{form_add_relay.hidden_tag()}}
+      {{form_add_output.hidden_tag()}}
 
       <div class="row small-gutters" style="padding-left: 0.75em">
         <div class="col-sm-3 col-md-2 col-lg-1">
-          {{form_add_relay.relay_quantity(class_='form-control', type="number", value=1, **{'title':_('Quantity')})}}
+          {{form_add_output.output_quantity(class_='form-control', type="number", value=1, **{'title':_('Quantity')})}}
         </div>
         <div class="col-auto">
-          <select class="form-control form-tooltip form-dropdown" id="relay_type" name="relay_type" data-placement="top" title="{{_('Output Type')}}">
-            {% for each_option in outputs %}
-              <option value="{{each_option[0]}}">{{each_option[1]}}</option>
-            {% endfor %}
-          </select>
+          {{form_add_output.output_type(class_='form-control')}}
         </div>
         <div class="col-auto">
-          {{form_add_relay.relay_add(class_='btn btn-primary btn-block')}}
+          {{form_add_output.output_add(class_='btn btn-primary btn-block')}}
         </div>
       </div>
     </form>
@@ -180,79 +177,79 @@
 
     {%- if display_order -%}
       {%- for order in display_order -%}
-        {%- for each_relay in relay if each_relay.id == order -%}
+        {%- for each_output in output if each_output.unique_id == order -%}
 
       <div class="container" style="border: 2px solid #ddd; border-radius: 5px;">
         <form method="post" action="/output">
-        {{form_mod_relay.csrf_token}}
-        {{form_mod_relay.relay_id(class_='form-control', value=each_relay.id)}}
-        {{form_mod_relay.relay_pin(class_='form-control', value=each_relay.pin)}}
+        {{form_mod_output.csrf_token}}
+        {{form_mod_output.output_id(class_='form-control', value=each_output.unique_id)}}
+        {{form_mod_output.output_pin(class_='form-control', value=each_output.pin)}}
 
-        <div class="row small-gutters pause-background" style="border-bottom: 1px solid #ddd; padding: 0.4em 0.2em 0.4em 0;" id="{{each_relay.id}}-relay-state">
+        <div class="row small-gutters pause-background" style="border-bottom: 1px solid #ddd; padding: 0.4em 0.2em 0.4em 0;" id="{{each_output.unique_id}}-output-state">
 
           <div class="col-xs-2 col-sm-1 text-center icon-fh">
-            <a data-toggle="collapse" href="#collapseContainer{{each_relay.id}}" aria-expanded="false" aria-controls="collapseContainer{{each_relay.id}}">
-              <span style="font-size: 3.5em" class="collapse-button{{each_relay.id}} fa fa-plus-square"></span>
+            <a data-toggle="collapse" href="#collapseContainer{{each_output.unique_id}}" aria-expanded="false" aria-controls="collapseContainer{{each_output.unique_id}}">
+              <span style="font-size: 3.5em" class="collapse-button{{each_output.unique_id}} fa fa-plus-square"></span>
             </a>
           </div>
 
           <div class="col-xs-5 col-sm-5 col-md-5 col-lg-3 small-gutters">
-            {{form_mod_relay.name(class_='form-control', value=each_relay.name, **{'title':_('A name to distinguish this from others')})}}
+            {{form_mod_output.name(class_='form-control', value=each_output.name, **{'title':_('A name to distinguish this from others')})}}
           </div>
           <div class="col-xs-5 col-sm-6 col-md-6 col-lg-2 small-gutters">
-            <input class="form-control btn btn-default btn-block" disabled="" id="{{each_relay.id}}-input-relay-state" title="UUID: {{each_relay.unique_id}}" value="[{{'%02d' % each_relay.id}}] {{ _('Unconfigured')}}" type="text">
+            <input class="form-control btn btn-default btn-block" disabled="" id="{{each_output.unique_id}}-input-output-state" title="[{{'%02d' % each_output.id}}] UUID: {{each_output.unique_id}}" value="{{ _('Unconfigured')}}" type="text">
           </div>
 
-        {% if each_relay.relay_type not in ['pwm', 'command_pwm'] -%}
+        {% if each_output.output_type not in ['pwm', 'command_pwm'] -%}
           <div class="col-xs-5 col-sm-6 col-md-4 col-lg-2 small-gutters">
-            <input class="form-control btn btn-success btn-block turn_on" id="turn_on" name="{{each_relay.id}}/on/sec/0" type="button" value="{{_('On')}}">
+            <input class="form-control btn btn-success btn-block turn_on" id="turn_on" name="{{each_output.unique_id}}/on/sec/0" type="button" value="{{_('On')}}">
           </div>
         {%- endif %}
 
-        {% if each_relay.relay_type not in ['pwm', 'command_pwm'] -%}
+        {% if each_output.output_type not in ['pwm', 'command_pwm'] -%}
           <div class="col-xs-5 col-sm-6 col-md-4 col-lg-2 small-gutters">
         {% else %}
           <div class="col-xs-5 col-sm-6 col-md-8 col-lg-4 small-gutters">
         {% endif %}
-            <input class="form-control btn btn-danger btn-block turn_off" id="turn_off" name="{{each_relay.id}}/off/sec/0" type="button" value="{{_('Off')}}">
+            <input class="form-control btn btn-danger btn-block turn_off" id="turn_off" name="{{each_output.unique_id}}/off/sec/0" type="button" value="{{_('Off')}}">
           </div>
 
           <div class="col small-gutters">
-            {{form_mod_relay.order_up(class_='form-control btn btn-default btn-block')}}
+            {{form_mod_output.order_up(class_='form-control btn btn-default btn-block')}}
           </div>
           <div class="col small-gutters">
-            {{form_mod_relay.order_down(class_='form-control btn btn-default btn-block')}}
+            {{form_mod_output.order_down(class_='form-control btn btn-default btn-block')}}
           </div>
 
         </div>
 
-        <div class="collapse" id="collapseContainer{{each_relay.id}}" style="padding: 0.5em">
+        <div class="collapse" id="collapseContainer{{each_output.unique_id}}" style="padding: 0.5em">
 
           <div class="row small-gutters">
             <div class="col-xs-6 col-sm-6 col-md-4">
-              <input class="form-control" disabled="" value="{{output_info[each_relay.relay_type]['name']}}" type="text">
+              <input class="form-control" disabled="" value="{{output_info[each_output.output_type]['name']}}" type="text">
             </div>
             <div class="col-xs-3 col-sm-3 col-md-4">
-              {{form_mod_relay.save(class_='form-control btn btn-default btn-block')}}
+              {{form_mod_output.save(class_='form-control btn btn-default btn-block')}}
             </div>
             <div class="col-xs-3 col-sm-3 col-md-4">
-              {{form_mod_relay.delete(class_='form-control btn btn-default btn-block', **{'onclick':'return confirm("Are you sure you want to delete this?")'})}}
+              {{form_mod_output.delete(class_='form-control btn btn-default btn-block', **{'onclick':'return confirm("Are you sure you want to delete this?")'})}}
             </div>
 
-          {% for each_relay_template in relay_templates if each_relay_template[:-5] == each_relay.relay_type %}
-            {% include 'pages/output_options/'+each_relay_template %}
+          {% for each_output_template in output_templates if each_output_template[:-5] == each_output.output_type %}
+            {% include 'pages/output_options/'+each_output_template %}
           {% endfor %}
 
             <div class="col-xs-6 col-sm-4 col-md-3">
-              {{form_mod_relay.amps.label(class_='control-label')}}
+              {{form_mod_output.amps.label(class_='control-label')}}
               <div>
-                {{form_mod_relay.amps(class_='form-control', value=each_relay.amps, **{'title':_('The number of amps the output device draws (at 120/240 VAC)')})}}
+                {{form_mod_output.amps(class_='form-control', value=each_output.amps, **{'title':_('The number of amps the output device draws (at 120/240 VAC)')})}}
                </div>
             </div>
 
           </div>
 
-          {% if each_relay.relay_type in ['wired', 'wireless_433MHz_pi_switch', 'command'] %}
+          {% if each_output.output_type in ['wired', 'wireless_433MHz_pi_switch', 'command'] %}
 
           <div class="row">
             <div class="col">
@@ -260,17 +257,17 @@
               <div>
                 <div class="row small-gutters">
                   <div class="col-xs-6 col-sm-4 col-md-3 small-gutters">
-                    <input class="form-control" id="sec_on_amt_{{each_relay.id}}" name="sec_on_amt_{{each_relay.id}}" title="Turn this relay on for a specific number of seconds (used to test relay)" type="text" value="">
+                    <input class="form-control" id="sec_on_amt_{{each_output.unique_id}}" name="sec_on_amt_{{each_output.unique_id}}" title="Turn this output on for a specific number of seconds (used to test output)" type="text" value="">
                   </div>
                   <div class="col-xs-6 col-sm-4 col-md-3 small-gutters">
-                    <input class="btn btn-success btn-block sec_on_amt" id="turn_on" name="{{each_relay.id}}/on/sec/" type="button" value="{{_('Turn On')}}">
+                    <input class="btn btn-success btn-block sec_on_amt" id="turn_on" name="{{each_output.unique_id}}/on/sec/" type="button" value="{{_('Turn On')}}">
                   </div>
                 </div>
               </div>
             </div>
           </div>
 
-          {% elif each_relay.relay_type in ['pwm', 'command_pwm'] %}
+          {% elif each_output.output_type in ['pwm', 'command_pwm'] %}
 
           <div class="row">
             <div class="col">
@@ -278,10 +275,10 @@
               <div>
                 <div class="row small-gutters">
                   <div class="col-xs-6 col-sm-4 col-md-3 small-gutters">
-                  <input class="form-control" id="duty_cycle_on_amt_{{each_relay.id}}" name="duty_cycle_on_amt_{{each_relay.id}}" title="Select the duty cycle for the PWM when turned on (0.0 - 100.0)" type="text" value="">
+                  <input class="form-control" id="duty_cycle_on_amt_{{each_output.unique_id}}" name="duty_cycle_on_amt_{{each_output.unique_id}}" title="Select the duty cycle for the PWM when turned on (0.0 - 100.0)" type="text" value="">
                   </div>
                   <div class="col-xs-6 col-sm-4 col-md-3 small-gutters">
-                  <input class="btn btn-success btn-block duty_cycle_on_amt" id="turn_on" name="{{each_relay.id}}/on/pwm/" type="button" value="{{_('Turn On')}}">
+                  <input class="btn btn-success btn-block duty_cycle_on_amt" id="turn_on" name="{{each_output.unique_id}}/on/pwm/" type="button" value="{{_('Turn On')}}">
                   </div>
                 </div>
               </div>

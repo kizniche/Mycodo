@@ -69,9 +69,9 @@ def camera_record(record_type, unique_id, duration_sec=None, tmp_filename=None):
 
 
     # Turn on output, if configured
-    if settings.relay_id:
+    if settings.output_id:
         daemon_control = DaemonControl()
-        daemon_control.relay_on(settings.relay_id)
+        daemon_control.output_on(settings.output_id)
 
 
     if settings.library == 'picamera':
@@ -123,8 +123,8 @@ def camera_record(record_type, unique_id, duration_sec=None, tmp_filename=None):
         # logger.error("TEST01: {}; {}; {}; {}".format(cmd, out, err, status))
 
     # Turn off output, if configured
-    if settings.relay_id and daemon_control:
-        daemon_control.relay_off(settings.relay_id)
+    if settings.output_id and daemon_control:
+        daemon_control.output_off(settings.output_id)
 
     try:
         set_user_grp(path_file, 'mycodo', 'mycodo')

@@ -12,20 +12,23 @@ class MAX31855Sensor(AbstractInput):
 
     """
 
-    def __init__(self, clk, cs, do, convert_to_unit=None, testing=False):
+    def __init__(self, input_dev, testing=False):
         super(MAX31855Sensor, self).__init__()
         self.logger = logging.getLogger("mycodo.inputs.max31855")
         self._temperature = None
         self._temperature_die = None
 
-        self.clk = clk
-        self.cs = cs
-        self.do = do
-        self.convert_to_unit = convert_to_unit
-
         if not testing:
             import Adafruit_MAX31855.MAX31855 as MAX31855
-            self.sensor = MAX31855.MAX31855(clk, cs, do)
+            self.logger = logging.getLogger(
+                "mycodo.inputs.max31855_{id}".format(id=input_dev.id))
+            self.pin_clock = input_dev.pin_clock
+            self.pin_cs = input_dev.pin_cs
+            self.pin_miso = input_dev.pin_miso
+            self.convert_to_unit = input_dev.convert_to_unit
+            self.sensor = MAX31855.MAX31855(self.pin_clock,
+                                            self.pin_cs,
+                                            self.pin_miso)
 
     def __repr__(self):
         """  Representation of object """

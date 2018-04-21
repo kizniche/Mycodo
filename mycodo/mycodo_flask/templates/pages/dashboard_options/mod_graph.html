@@ -8,13 +8,13 @@
   </a>
 </div>
 
-<div id="container-graph-{{each_graph.id}}" style="height: {{each_graph.height}}px;"></div>
+<div id="container-graph-{{each_graph.unique_id}}" style="height: {{each_graph.height}}px;"></div>
 
 <div class="collapse" id="collapseContainer{{chart_number}}" style="padding: 0.5em; width: calc(100% - 1em)">
 
   <form method="post" action="/dashboard">
     {{form_base.csrf_token}}
-    {{form_base.dashboard_id(value=each_graph.id)}}
+    {{form_base.dashboard_id(value=each_graph.unique_id)}}
     <input type="hidden" name="dashboard_type" value="{{each_graph.graph_type}}">
 
     <div style="padding: 0.5em;" class="form-row small-gutters">
@@ -65,12 +65,12 @@
 
     <div class="form-row">
       <div class="col-auto">
-        {{form_graph.sensor_ids.label(class_='control-label')}}
+        {{form_graph.input_ids.label(class_='control-label')}}
         <div>
-          <select class="form-control btn-default" id="sensor_ids" name="sensor_ids" style="width: 100%;" size="{{choices_input|length}}" multiple>
+          <select class="form-control btn-default" id="input_ids" name="input_ids" style="width: 100%;" size="{{choices_input|length}}" multiple>
           {% if choices_input %}
             {% for each_choice, value in choices_input.items() -%}
-            <option value="{{each_choice}}"{%- if each_choice|string in each_graph.sensor_ids_measurements %} selected{%- endif -%}>{{value}}</option>
+            <option value="{{each_choice}}"{%- if each_choice|string in each_graph.input_ids_measurements %} selected{%- endif -%}>{{value}}</option>
             {% endfor -%}
           {% else %}
             <option value="">{{_('None Available')}}</option>
@@ -93,12 +93,12 @@
         </div>
       </div>
       <div class="col-auto">
-        {{form_graph.relay_ids.label(class_='control-label')}}
+        {{form_graph.output_ids.label(class_='control-label')}}
         <div>
-          <select class="form-control btn-default" id="relay_ids" name="relay_ids" style="width: 100%;" size="{{choices_output|length}}" multiple>
+          <select class="form-control btn-default" id="output_ids" name="output_ids" style="width: 100%;" size="{{choices_output|length}}" multiple>
           {% if choices_output %}
             {% for each_choice, value in choices_output.items() -%}
-            <option value="{{each_choice}}"{%- if each_choice|string in each_graph.relay_ids %} selected{%- endif -%}>{{value}}</option>
+            <option value="{{each_choice}}"{%- if each_choice|string in each_graph.output_ids %} selected{%- endif -%}>{{value}}</option>
             {% endfor -%}
           {% else %}
             <option value="">{{_('None Available')}}</option>
@@ -161,11 +161,11 @@
     </div>
 
     <div class="form-row">
-      {% for n in range(colors_graph[each_graph.id]|length) %}
+      {% for n in range(colors_graph[each_graph.unique_id]|length) %}
       <div class="form-check">
         {% set index = '{0:0>2}'.format(n) %}
-        <input id="color_number{{index}}" name="color_number{{index}}" placeholder="#000000" type="color" value="{{colors_graph[each_graph.id][n]['color']}}">
-        <label for="color_number{{index}}">{{colors_graph[each_graph.id][n]['name']}} ({{colors_graph[each_graph.id][n]['measure']}})</label>
+        <input id="color_number{{index}}" name="color_number{{index}}" placeholder="#000000" type="color" value="{{colors_graph[each_graph.unique_id][n]['color']}}">
+        <label for="color_number{{index}}">{{colors_graph[each_graph.unique_id][n]['name']}} ({{colors_graph[each_graph.unique_id][n]['measure']}})</label>
       </div>
       {% endfor %}
     </div>
@@ -189,7 +189,7 @@
       </div>
     </div>
 
-  {% for each_yaxis in y_axes[each_graph.id] %}
+  {% for each_yaxis in y_axes[each_graph.unique_id] %}
     {% set index = '{0:0>2}'.format(loop.index) %}
     <div class="form-row" style="padding-top: 0.5em">
       <div class="col-auto">
@@ -202,29 +202,29 @@
       <div class="col-auto">
         <label class="form-check-label" for="custom_yaxis_min_{{index}}">Y-Axis Minimum</label>
         <div>
-          <input id="yaxis_min_{{index}}" class="form-control" name="custom_yaxis_min_{{index}}" type="text" value="{% if custom_yaxes[each_graph.id][each_yaxis] %}{{custom_yaxes[each_graph.id][each_yaxis]['minimum']}}{% endif %}">
+          <input id="yaxis_min_{{index}}" class="form-control" name="custom_yaxis_min_{{index}}" type="text" value="{% if custom_yaxes[each_graph.unique_id][each_yaxis] %}{{custom_yaxes[each_graph.unique_id][each_yaxis]['minimum']}}{% endif %}">
         </div>
       </div>
       <div class="col-auto">
         <label class="form-check-label" for="custom_yaxis_max_{{index}}">Y-Axis Maximum</label>
         <div>
-          <input id="yaxis_max_{{index}}" class="form-control" name="custom_yaxis_max_{{index}}" type="text" value="{% if custom_yaxes[each_graph.id][each_yaxis] %}{{custom_yaxes[each_graph.id][each_yaxis]['maximum']}}{% endif %}">
+          <input id="yaxis_max_{{index}}" class="form-control" name="custom_yaxis_max_{{index}}" type="text" value="{% if custom_yaxes[each_graph.unique_id][each_yaxis] %}{{custom_yaxes[each_graph.unique_id][each_yaxis]['maximum']}}{% endif %}">
         </div>
       </div>
     </div>
   {% endfor %}
 
-    <div class="form-row btn-group" style="padding-top: 1em;">
-      <div class="form-group">
+    <div class="form-row btn-group" style="padding: 1em;">
+      <div class="col-auto">
         {{form_base.modify(class_='form-control btn btn-default')}}
       </div>
-      <div class="form-group">
+      <div class="col-auto">
         {{form_base.delete(class_='form-control btn btn-default',**{'onclick':'return confirm("Are you sure you want to delete this?")'})}}
       </div>
-      <div class="form-group">
+      <div class="col-auto">
         {{form_base.order_up(class_='form-control btn btn-default')}}
       </div>
-      <div class="form-group">
+      <div class="col-auto">
         {{form_base.order_down(class_='form-control btn btn-default')}}
       </div>
     </div>

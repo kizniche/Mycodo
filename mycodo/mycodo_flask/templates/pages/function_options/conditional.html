@@ -1,11 +1,11 @@
 {%- if display_order_conditional -%}
 {%- for order in display_order_conditional -%}
-  {%- for each_cond in conditional if each_cond.id == order  -%}
+  {%- for each_cond in conditional if each_cond.unique_id == order  -%}
 
   <div class="container" style="border: 2px solid #ddd; border-radius: 5px;">
     <form method="post" action="/function">
     {{form_conditional.csrf_token}}
-    {{form_conditional.conditional_id(class_='form-control', value=each_cond.id)}}
+    {{form_conditional.conditional_id(class_='form-control', value=each_cond.unique_id)}}
 
     <div class="{% if each_cond.is_activated -%}active-background
                 {% else -%}inactive-background
@@ -20,8 +20,10 @@
         {{form_conditional.name(class_='form-control', value=each_cond.name, **{'title':_('A name to distinguish this from others')})}}
       </div>
       <div class="col-xs-5 col-sm-3 col-md-4 col-lg-3">
-        <input class="form-control btn btn-default" disabled="" value="[{{'%02d' % each_cond.id}}
-          {%- for each_type, each_name in conditional_types.items() if each_type == each_cond.conditional_type %} {{each_name['name']}}]{% endfor %}
+        <input class="form-control btn btn-default" disabled="" title="[{{'%02d' % each_cond.id}}] UUID: {{each_cond.unique_id}}" value="
+          {%- for each_type, each_name in conditional_types if each_type == each_cond.conditional_type -%}
+            [{{each_name}}]
+          {%- endfor %}
           {%- if each_cond.is_activated %} {{_('Active')}}
           {%- else %} {{_('Inactive')}}
           {%-endif -%}
@@ -56,22 +58,30 @@
 
       {% if each_cond.conditional_type == 'conditional_output' %}
         {% include 'pages/function_options/conditional_options/output.html' %}
+      {% elif each_cond.conditional_type == 'conditional_output_pwm' %}
+        {% include 'pages/function_options/conditional_options/output_pwm.html' %}
       {% elif each_cond.conditional_type == 'conditional_measurement' %}
         {% include 'pages/function_options/conditional_options/measurement.html' %}
       {% elif each_cond.conditional_type == 'conditional_edge' %}
         {% include 'pages/function_options/conditional_options/edge.html' %}
+      {% elif each_cond.conditional_type == 'conditional_run_pwm_method' %}
+        {% include 'pages/function_options/conditional_options/run_pwm_method.html' %}
       {% elif each_cond.conditional_type == 'conditional_sunrise_sunset' %}
         {% include 'pages/function_options/conditional_options/sunrise_sunset.html' %}
+      {% elif each_cond.conditional_type == 'conditional_timer_daily_time_point' %}
+        {% include 'pages/function_options/conditional_options/timer_daily_time_point.html' %}
+      {% elif each_cond.conditional_type == 'conditional_timer_duration' %}
+        {% include 'pages/function_options/conditional_options/timer_duration.html' %}
       {% endif %}
 
-    </form>
+      </form>
 
-    {% for each_cond_action in conditional_actions if each_cond_action.conditional_id == each_cond.id %}
+    {% for each_cond_action in conditional_actions if each_cond_action.conditional_id == each_cond.unique_id %}
 
       <form method="post" action="/function">
       {{form_conditional_actions.csrf_token}}
-      {{form_conditional_actions.conditional_id(class_='form-control', value=each_cond.id)}}
-      {{form_conditional_actions.conditional_action_id(class_='form-control', value=each_cond_action.id)}}
+      {{form_conditional_actions.conditional_id(class_='form-control', value=each_cond.unique_id)}}
+      {{form_conditional_actions.conditional_action_id(class_='form-control', value=each_cond_action.unique_id)}}
 
       <div class="row small-gutters" style="border-bottom: 1px solid #ddd; padding-bottom: 0.3em">
         <div class="col-sm-2">
@@ -94,7 +104,7 @@
       </div>
 
       {% if each_cond_action.do_action == 'command' %}
-        <div class="col-xs-12">
+        <div class="col-auto">
           See <a href="/help#conditional-statement-variables">Conditional Statement Variables</a> for a list of replaceable variables able to be used in commands.
         </div>
       {% endif %}
@@ -105,14 +115,10 @@
 
       <form method="post" action="/function">
       {{form_conditional_actions.csrf_token}}
-      {{form_conditional_actions.conditional_id(class_='form-control', value=each_cond.id)}}
+      {{form_conditional_actions.conditional_id(class_='form-control', value=each_cond.unique_id)}}
       <div class="row small-gutters" style="padding: 1.5em 0 0.2em 0.1em">
         <div class="col-auto">
-          <select class="form-control form-tooltip form-dropdown" id="do_action" name="do_action" data-placement="top" title="{{_('The action to perform when the conditional is True')}}">
-            {% for each_action, each_action_string in conditional_actions_list.items() %}
-              <option value="{{each_action}}">{{_(each_action_string)}}</option>
-            {% endfor %}
-          </select>
+        {{form_conditional_actions.do_action(class_='form-control')}}
         </div>
         <div class="col-auto">
           {{form_conditional_actions.add_action(class_='form-control btn btn-default')}}
@@ -122,11 +128,11 @@
 
     </div>
 
-  {%- endfor -%}
-
   </div>
 
-  <div style="clear: both; padding: 0.5em 0;"></div>
+  <div style="padding-bottom: 1em; "></div>
+
+  {%- endfor -%}
 
 {%- endfor -%}
 {%- endif -%}

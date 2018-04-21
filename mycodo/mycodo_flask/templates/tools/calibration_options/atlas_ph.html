@@ -80,7 +80,7 @@ function startTimer() {
     <form method="post" action="/setup_atlas_ph">
     {{form_ph_calibrate.hidden_next_stage(value=1)}}
     <div class="row small-gutters">
-      <div class="col-xs-12 col-sm-4 col-lg-4 small-gutters">
+      <div class="col-auto small-gutters">
         <select class="form-control" id="selected_sensor_id" name="selected_sensor_id" title="" data-original-title="Select which Atlas Scientific pH sensor to calibrate">
           {% if sensor %}
             {%- for each_sensor in sensor -%}
@@ -91,10 +91,10 @@ function startTimer() {
           {% endif %}
         </select>
       </div>
-      <div class="col-xs-6 col-sm-4 col-lg-2 small-gutters">
+      <div class="col-auto small-gutters">
         {{form_ph_calibrate.go_from_first_stage(class_='form-control btn btn-default')}}
       </div>
-      <div class="col-xs-6 col-sm-4 col-lg-2 small-gutters">
+      <div class="col-auto small-gutters">
         {{form_ph_calibrate.clear_calibration(class_='form-control btn btn-default')}}
       </div>
     </div>
@@ -114,10 +114,10 @@ function startTimer() {
     {{form_ph_calibrate.hidden_next_stage(value=2)}}
     <div class="row small-gutters">
       {{form_ph_calibrate.hidden_sensor_id(value=selected_sensor.unique_id)}}
-      <div class="col-xs-6 col-sm-4 col-lg-2 small-gutters">
+      <div class="col-auto small-gutters">
         {{form_ph_calibrate.temperature(class_='form-control')}}
       </div>
-      <div class="col-xs-6 col-sm-4 col-lg-2 small-gutters">
+      <div class="col-auto small-gutters">
         {{form_ph_calibrate.go_to_next_stage(class_='form-control btn btn-default')}}
       </div>
     </div>
@@ -141,13 +141,13 @@ function startTimer() {
     <div class="row small-gutters">
       {{form_ph_calibrate.hidden_sensor_id(value=selected_sensor.unique_id)}}
       <div id="proceed_stage_2">
-        <div id="go_to_next_stage" style="display: none" class="col-xs-6 col-sm-4 col-lg-2 small-gutters">
+        <div id="go_to_next_stage" style="display: none" class="col-auto small-gutters">
           {{form_ph_calibrate.go_to_next_stage(class_='form-control btn btn-default')}}
         </div>
       </div>
     </div>
     <div class="row small-gutters">
-      <div class="col-xs-6 col-sm-4 col-lg-2 small-gutters">
+      <div class="col-auto small-gutters">
         <input class="form-control btn btn-default" id="timer" type="button" onclick="startTimer()" value="{{_('Ready')}}"/>
       </div>
     </div>
@@ -173,13 +173,13 @@ function startTimer() {
     <div class="row small-gutters">
       {{form_ph_calibrate.hidden_sensor_id(value=selected_sensor.unique_id)}}
       <div id="proceed_stage_2">
-        <div id="go_to_next_stage" style="display: none" class="col-xs-6 col-sm-4 col-lg-2 small-gutters">
+        <div id="go_to_next_stage" style="display: none" class="col-auto small-gutters">
           {{form_ph_calibrate.go_to_next_stage(class_='form-control btn btn-default')}}
         </div>
       </div>
     </div>
     <div class="row small-gutters">
-      <div class="col-xs-6 col-sm-4 col-lg-2 small-gutters">
+      <div class="col-auto small-gutters">
         <input class="form-control btn btn-default" id="timer" type="button" onclick="startTimer()" value="{{_('Ready')}}"/>
       </div>
     </div>
@@ -205,13 +205,13 @@ function startTimer() {
     <div class="row small-gutters">
       {{form_ph_calibrate.hidden_sensor_id(value=selected_sensor.unique_id)}}
       <div id="proceed_stage_2">
-        <div id="go_to_next_stage" style="display: none" class="col-xs-6 col-sm-4 col-lg-2 small-gutters">
+        <div id="go_to_next_stage" style="display: none" class="col-auto small-gutters">
           {{form_ph_calibrate.go_to_last_stage(class_='form-control btn btn-default')}}
         </div>
       </div>
     </div>
     <div class="row small-gutters">
-      <div class="col-xs-6 col-sm-4 col-lg-2 small-gutters">
+      <div class="col-auto small-gutters">
         <input class="form-control btn btn-default" id="timer" type="button" onclick="startTimer()" value="{{_('Ready')}}"/>
       </div>
     </div>

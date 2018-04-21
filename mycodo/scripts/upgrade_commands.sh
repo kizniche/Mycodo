@@ -2,7 +2,6 @@
 #
 #  upgrade_commands.sh - Mycodo commands
 #
-# TODO: Rename this file
 if [ "$EUID" -ne 0 ] ; then
   printf "Please run as root.\n"
   exit 1
@@ -187,11 +186,6 @@ case "${1:-''}" in
             -in server.csr \
             -signkey server.key \
             -out server.crt
-
-        # Conform to current file-naming format
-        # TODO: Change to appropriate names in the future
-        ln -s server.key privkey.pem
-        ln -s server.crt cert.pem
     ;;
     'ssl-certs-regenerate')
         printf "\n#### Regenerating SSL certificates at ${MYCODO_PATH}/mycodo/mycodo_flask/ssl_certs\n"

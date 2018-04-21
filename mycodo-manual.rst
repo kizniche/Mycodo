@@ -64,9 +64,9 @@ beverage fermentation or curing, and cooking food
 (`sous-vide <https://en.wikipedia.org/wiki/Sous-vide>`__), to name a
 few.
 
-Timers can be set to trigger events based on specific dates and times or
-according to durations of time. Timers are fairly basic, but can be
-configured in very complex ways. Don't underestimate a good timer.
+Conditionals can be set to trigger events based on specific dates and times or
+according to durations of time. Conditionals are fairly basic, but can be
+configured in very complex ways. Don't underestimate a good conditional.
 
 Frequently Asked Questions
 ==========================
@@ -262,13 +262,10 @@ the measurement database to be used throughout the Mycodo system.
 |                       | will need to either select a serial number      |
 |                       | (DS18B20 temperature sensor), a GPIO pin (in    |
 |                       | the case of sensors read by a GPIO), or an I2C  |
-|                       | address. and channel if using the TCA9548A I2C  |
-|                       | multiplexer.                                    |
+|                       | address. or other.                              |
 +-----------------------+-------------------------------------------------+
 | I2C Bus               | The bus to be used to communicate with the I2C  |
-|                       | address. If you're using an I2C multiplexer     |
-|                       | that provides multiple buses, this allows you   |
-|                       | to select which bus the sensor is connected to. |
+|                       | address.                                        |
 +-----------------------+-------------------------------------------------+
 | Period (seconds)      | After the sensor is successfully read and a     |
 |                       | database entry is made, this is the duration of |
@@ -326,18 +323,6 @@ the measurement database to be used throughout the Mycodo system.
 |                       | not be recorded. This enables devices such as   |
 |                       | PIR motion sensors that may stay activated for  |
 |                       | longer periods of time.                         |
-+-----------------------+-------------------------------------------------+
-| Multiplexer (MX)      | If connected to the TCA9548A I2C multiplexer,   |
-|                       | select what the I2C address of the multiplexer  |
-|                       | is.                                             |
-+-----------------------+-------------------------------------------------+
-| Mx I2C Bus            | If connected to the TCA9548A I2C multiplexer,   |
-|                       | select the I2C bus the multiplexer is connected |
-|                       | to.                                             |
-+-----------------------+-------------------------------------------------+
-| Mx Channel            | If connected to the TCA9548A I2C multiplexer,   |
-|                       | select the channel of the multiplexer the       |
-|                       | device is connected to.                         |
 +-----------------------+-------------------------------------------------+
 | Measurement           | Analog-to-digital converter only: The type of   |
 |                       | measurement being acquired by the ADC. For      |
@@ -888,13 +873,15 @@ resumes operation.
 +=======================+=================================================+
 | Activate/Deactivate   | Turn a particular PID controller on or off.     |
 +-----------------------+-------------------------------------------------+
-| Pause                 | When paused, the PID will not turn on the       |
-|                       | associated outputs, and settings can be changed |
+| Pause                 | When paused, the control variable will not be   |
+|                       | updated and the PID will not turn on the        |
+|                       | associated outputs. Settings can be changed     |
 |                       | without losing current PID output values.       |
 +-----------------------+-------------------------------------------------+
-| Hold                  | When held, the PID will turn on the associated  |
-|                       | outputs, and settings can be changed without    |
-|                       | losing current PID output values.               |
+| Hold                  | When held, the control variable will not be     |
+|                       | updated but the PID will turn on the associated |
+|                       | outputs, Settings can be changed without losing |
+|                       | current PID output values.                      |
 +-----------------------+-------------------------------------------------+
 | Resume                | Resume a PID controller from being held or      |
 |                       | paused.                                         |
@@ -1035,6 +1022,8 @@ with conditional statements.
 Measurement Conditional Statement If Options
 ''''''''''''''''''''''''''''''''''''''''''''
 
+Check if the latest measurement is above or below the set value.
+
 +-----------------------+-------------------------------------------------+
 | Setting               | Description                                     |
 +=======================+=================================================+
@@ -1071,8 +1060,10 @@ Measurement Conditional Statement If Options
 |                       | device has stopped working).                    |
 +-----------------------+-------------------------------------------------+
 
-Output Conditional Statement If Options
-'''''''''''''''''''''''''''''''''''''''
+Output (On/Off) Conditional Statement If Options
+''''''''''''''''''''''''''''''''''''''''''''''''
+
+Monitor the state of an output.
 
 +-----------------------+-------------------------------------------------+
 | Setting               | Description                                     |
@@ -1088,14 +1079,34 @@ Output Conditional Statement If Options
 |                       | turns on for a duration of time equal to the    |
 |                       | set "Duration (seconds)".                       |
 +-----------------------+-------------------------------------------------+
-| If Duration (seconds) | If "On" is selected, a optional duration        |
+| If Duration (seconds) | If "On" is selected, an optional duration       |
 |                       | (seconds) may be set that will trigger the      |
 |                       | conditional only if the Output is turned on for |
 |                       | this specific duration.                         |
 +-----------------------+-------------------------------------------------+
 
+Output (PWM) Conditional Statement If Options
+'''''''''''''''''''''''''''''''''''''''''''''
+
+Monitor the state of a PWM output.
+
++-----------------------+-------------------------------------------------+
+| Setting               | Description                                     |
++=======================+=================================================+
+| If Output             | The Output to monitor for a change of state.    |
++-----------------------+-------------------------------------------------+
+| If State              | If the duty cycle of the output is greater      |
+|                       | than,less than, or equal to the set value,      |
+|                       | trigger the Conditional Actions.                |
++-----------------------+-------------------------------------------------+
+| If Duty Cycle (%)     | The duty cycle for the Output to be checked     |
+|                       | against.                                        |
++-----------------------+-------------------------------------------------+
+
 Edge Conditional Statement If Options
 '''''''''''''''''''''''''''''''''''''
+
+Monitor the state of a pin for a rising and/or falling edge.
 
 +-----------------------+-------------------------------------------------+
 | Setting               | Description                                     |
@@ -1108,8 +1119,33 @@ Edge Conditional Statement If Options
 |                       | (Rising and Falling).                           |
 +-----------------------+-------------------------------------------------+
 
+Run PWM Method Conditional Statement If Options
+'''''''''''''''''''''''''''''''''''''''''''''''
+
+Select a Duration Method and this will set the selected PWM Output to the
+duty cycle specified by the method.
+
++------------------------+-------------------------------------------------+
+| Setting                | Description                                     |
++========================+=================================================+
+| Duration Method        | Select which Method to use.                     |
++------------------------+-------------------------------------------------+
+| PWM Output             | Select which PWM Output to use.                 |
++------------------------+-------------------------------------------------+
+| Period (seconds)       | Select the interval of time to calculate the    |
+|                        | duty cycle, then apply to the PWM Output.       |
++------------------------+-------------------------------------------------+
+| Trigger Every Period   | Trigger Conditional Actions every period.       |
++------------------------+-------------------------------------------------+
+| Trigger when Activated | Trigger Conditional Actions when the            |
+|                        | Conditional is activated.                       |
++------------------------+-------------------------------------------------+
+
 Sunrise/Sunset Conditional Statement If Options
 '''''''''''''''''''''''''''''''''''''''''''''''
+
+Trigger events at sunrise or sunset (or a time offset of those), based on
+latitude and longitude.
 
 +-----------------------+-------------------------------------------------+
 | Setting               | Description                                     |
@@ -1131,6 +1167,35 @@ Sunrise/Sunset Conditional Statement If Options
 | Time Offset (minutes) | Set a sunrise/sunset offset in minutes          |
 |                       | (positive or negative).                         |
 +-----------------------+-------------------------------------------------+
+
+Timer (Duration) Conditional Statement If Options
+'''''''''''''''''''''''''''''''''''''''''''''''''
+
+Run a timer that triggers Contitional Actions every period.
+
++------------------------+-------------------------------------------------+
+| Setting                | Description                                     |
++========================+=================================================+
+| Period (seconds)       | The period of time between triggering           |
+|                        | Conditional Actions.                            |
++------------------------+-------------------------------------------------+
+| Start Offset (seconds) | Set this to start the first trigger a number of |
+|                        | seconds after the Conditional is activated.     |
++------------------------+-------------------------------------------------+
+
+Timer (Daily Time) Conditional Statement If Options
+'''''''''''''''''''''''''''''''''''''''''''''''''''
+
+Run a timer that triggers Contitional Actions at a specific time every day.
+
++-----------------------+-------------------------------------------------+
+| Setting               | Description                                     |
++=======================+=================================================+
+| Start Time (HH:MM)    | Set the time to trigger Conditional Actions, in |
+|                       | the format "HH:MM", with HH denoting hours, and |
+|                       | MM donoting minutes. Time is in 24-hour format. |
++-----------------------+-------------------------------------------------+
+
 
 Conditional Statement Actions
 '''''''''''''''''''''''''''''
@@ -1204,6 +1269,8 @@ Measurement Conditional command variables
 |                                       | value                                        |
 +---------------------------------------+----------------------------------------------+
 | ((measure\_altitude))                 | Input measurement: altitude                  |
++---------------------------------------+----------------------------------------------+
+| ((measure\_battery))                  | Input measurement: battery                   |
 +---------------------------------------+----------------------------------------------+
 | ((measure\_boolean))                  | Input measurement: boolean                   |
 +---------------------------------------+----------------------------------------------+
@@ -1279,38 +1346,6 @@ Edge Conditional command variables
 | ((edge\_state))   | The state of the GPIO pin (on/rising = 1, off/falling = 0)   |
 +-------------------+--------------------------------------------------------------+
 
-Timers
-------
-
-More -> Timers
-
-Timers enable outputs to be manipulated after specific durations of time
-or at a specific times of the day. Timers will ***only*** do as
-instructed, therefore if you turn a output *ON* from *Start Time* to
-*End Time* and you want that output to turn *OFF* at the end of that
-period, you will need to create another timer that turns the output
-*OFF* at *End Time* + 1 minute.
-
-There are two types of timers, one for general outputs that turn on and
-off, and those that generate a PWM signal.
-
-General Output
-``````````````
-
-For *Duration Timers*, both the on duration and the off duration can be
-defined and the timer will be turned on and off for those durations
-until deactivated.
-
-For *Daily Timers*, the start hour:minute can be set to turn a specific
-output on or off at the specific time of day.
-
-PWM Method
-``````````
-
-This timer allows a method to be used to determine the duty cycle (as
-percent) of a PWM output. While creating these methods, keep in mind a
-duty cycle is a percentage and the values must stay between 0 and 100.
-
 LCDs
 ----
 
@@ -1337,13 +1372,6 @@ next every set period.
 |                       | display.                                        |
 +-----------------------+-------------------------------------------------+
 | I2C Address           | Select the I2C to communicate with the LCD.     |
-+-----------------------+-------------------------------------------------+
-| Multiplexer I2C       | If the LCD is connected to a multiplexer,       |
-| Address               | select the multiplexer I2C address.             |
-+-----------------------+-------------------------------------------------+
-| Multiplexer Channel   | If the LCD is connected to a multiplexer,       |
-|                       | select the multiplexer channel the LCD is       |
-|                       | connected to.                                   |
 +-----------------------+-------------------------------------------------+
 | Period                | This is the period of time (in seconds) between |
 |                       | redrawing the LCD with new data or switching to |
@@ -1372,7 +1400,7 @@ setpoint to change over time, this is called setpoint tracking. Setpoint
 Tracking is useful for applications such as reflow ovens, thermal
 cyclers (DNA replication), mimicking natural daily cycles, and more.
 Methods may also be used to change a duty cycle over time when used with
-a Timer.
+a Run PWM Method Conditional.
 
 Universal Options
 `````````````````
@@ -1405,7 +1433,7 @@ Duration Method
 '''''''''''''''
 
 A Duration Method allows a ***Setpoint*** (for PIDs) or ***Duty Cycle***
-(for Timers) to be set after specific durations of time. Each new
+(for Conditional) to be set after specific durations of time. Each new
 duration added will stack, meaning it will come after the previous
 duration, meaning a newly-added ***Start Setpoint*** will begin after
 the previous entry's ***End Setpoint***.
@@ -1415,7 +1443,7 @@ repeat once it has reached the end. If this option is used, no more
 durations may be added to the method. If the repeat option is deleted
 then more durations may be added. For instance, if your method is 200
 seconds total, if the Repeat Duration is set to 600 seconds, the method
-will repeat 3 times and then automatically turn off the PID or Timer.
+will repeat 3 times and then automatically turn off the PID or Conditional.
 
 Daily (Time-Based) Method
 '''''''''''''''''''''''''
@@ -1745,8 +1773,8 @@ Four roles are provided by default, but custom roles may be created.
 | View Logs          | X       | X        | X         |         |
 +--------------------+---------+----------+-----------+---------+
 
-1The ``Edit Controllers`` permission protects the editing of Graphs,
-LCDs, Methods, PIDs, Outputs, Inputs, and Timers.
+1The ``Edit Controllers`` permission protects the editing of Conditionals, Graphs,
+LCDs, Methods, PIDs, Outputs, and Inputs.
 
 2The ``View Stats`` permission protects the viewing of usage statistics
 and the System Info and Output Usage pages.
@@ -2078,6 +2106,9 @@ PID Control
 |                       | the decimal.                                    |
 +-----------------------+-------------------------------------------------+
 | Show PID Information  | Show extra PID information on the dashboard     |
+|                       | element.                                        |
++-----------------------+-------------------------------------------------+
+| Show Set Setpoint     | Allow setting the PID setpoint on the dashboard |
 |                       | element.                                        |
 +-----------------------+-------------------------------------------------+
 | PID                   | The PID to display information about.           |
@@ -2465,6 +2496,18 @@ limits by how many you can use at the same time. I2C multiplexers are
 extremely clever and useful in these scenarios because they allow
 multiple sensors with the same I2C address to be connected.
 
+Multiplexers can be set up by loading a kernel driver to handle the
+communication, producing a new I2C bus device for each multiplexer
+channel. To enable the driver for the TCA9548A/PCA9548A, visit
+`GPIO-pca9548 <https://github.com/Theoi-Meteoroi/GPIO-pca9548>`__ to get
+the code and latest install instructions. If successfully set up, there
+will be 8 new I2C busses on the ``Config -> System Information`` page.
+
+The driver for the TCA9545A can be found at
+https://github.com/camrex/i2c-mux-pca9545a and other drivers are available
+elsewhere. See the manufacturer or user forums for details. Some
+multiplexers I've tested are below.
+
     TCA9548A/PCA9548A: I2C Multiplexer
     `link <https://learn.adafruit.com/adafruit-tca9548a-1-to-8-i2c-multiplexer-breakout/overview>`__
     (I2C): Has 8 selectable addresses, so 8 multiplexers can be
@@ -2473,28 +2516,10 @@ multiple sensors with the same I2C address to be connected.
     connected to each multiplexer. 8 multiplexers x 8 channels = 64
     devices/sensors with the same I2C address.
 
-Note: The TCA9548A/PCA9548A can be set up in two ways. Either by A)
-connecting the multiplexer to an already-existing I2C bus and
-configuring each device manually in Mycodo, or B) (the easier and safer
-option) creating a dtoverlay to produce a new I2C bus device for each
-multiplexer channel. Method A can be used with the multiplexer options
-already existing in Mycodo, however option B benefits by allowing the
-linux driver to handle channel switching and being able to see every
-device on every bus at once in Mycodo's System Information page. To
-enable option B, visit
-`GPIO-pca9548 <https://github.com/Theoi-Meteoroi/GPIO-pca9548>`__ to get
-the code and latest install instructions. If successfully set up, there
-will be 8 new I2C busses on the ``Config -> System Information`` page.
-
     TCA9545A: I2C Bus Multiplexer
     `link <http://store.switchdoc.com/i2c-4-channel-mux-extender-expander-board-grove-pin-headers-for-arduino-and-raspberry-pi/>`__
-    (I2C): This board works a little differently than the TCA9548A,
-    above. This board actually creates 4 new I2C busses, each with their
-    own selectable voltage, either 3.3 or 5.0 volts. Instructions to
-    enable the Device Tree Overlay are at
-    https://github.com/camrex/i2c-mux-pca9545a. Nothing else needs to be
-    done in Mycodo after that except to select the correct I2C bus when
-    configuring a sensor.
+    (I2C): This board also creates 4 new I2C busses, but each with their
+    own selectable voltage, either 3.3 or 5.0 volts.
 
 Analog-to-Digital Converters
 ----------------------------

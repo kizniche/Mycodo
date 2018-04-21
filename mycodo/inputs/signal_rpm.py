@@ -4,7 +4,91 @@ import time
 
 from .base_input import AbstractInput
 
-logger = logging.getLogger("mycodo.inputs.signal_rpm")
+
+class SignalRPMInput(AbstractInput):
+    """ A sensor support class that monitors rpm """
+
+    def __init__(self, input_dev, testing=False):
+        super(SignalRPMInput, self).__init__()
+        self.logger = logging.getLogger("mycodo.inputs.signal_rpm")
+        self._rpm = None
+
+        if not testing:
+            import pigpio
+            self.logger = logging.getLogger(
+                "mycodo.inputs.signal_rpm_{id}".format(id=input_dev.id))
+            self.location = int(input_dev.location)
+            self.weighting = input_dev.weighting
+            self.rpm_pulses_per_rev = input_dev.rpm_pulses_per_rev
+            self.sample_time = input_dev.sample_time
+            self.pigpio = pigpio
+
+    def __repr__(self):
+        """  Representation of object """
+        return "<{cls}(rpm={rpm})>".format(
+            cls=type(self).__name__,
+            rpm="{0:.2f}".format(self._rpm))
+
+    def __str__(self):
+        """ Return rpm information """
+        return "RPM: {0:.2f}".format(self._rpm)
+
+    def __iter__(self):  # must return an iterator
+        """ Iterates through live rpm readings """
+        return self
+
+    def next(self):
+        """ Get next rpm reading """
+        if self.read():  # raised an error
+            raise StopIteration  # required
+        return dict(rpm=float('{0:.2f}'.format(self._rpm)))
+
+    @property
+    def rpm(self):
+        """ rpm (revolutions per minute) """
+        if self._rpm is None:  # update if needed
+            self.read()
+        return self._rpm
+
+    def get_measurement(self):
+        """ Gets the rpm """
+        self._rpm = None
+
+        pi = self.pigpio.pi()
+        if not pi.connected:  # Check if pigpiod is running
+            self.logger.error("Could not connect to pigpiod."
+                         "Ensure it is running and try again.")
+            return None
+
+        read_rpm = ReadRPM(pi,
+                           self.location,
+                           self.pigpio,
+                           self.rpm_pulses_per_rev,
+                           self.weighting)
+        time.sleep(self.sample_time)
+        rpm = read_rpm.RPM()
+        read_rpm.cancel()
+        pi.stop()
+        if rpm:
+            return int(rpm + 0.5)
+        elif rpm == 0:
+            return 0
+        return None
+
+    def read(self):
+        """
+        Takes a reading from the pin and updates the self._rpm value
+
+        :returns: None on success or 1 on error
+        """
+        try:
+            self._rpm = self.get_measurement()
+            if self._rpm is not None:
+                return  # success - no errors
+        except Exception as e:
+            self.logger.exception("{cls} raised an exception when taking a reading: "
+                         "{err}".format(cls=type(self).__name__, err=e))
+        return 1
 
 
 class ReadRPM:
@@ -78,87 +162,3 @@ class ReadRPM:
         """
         self.pi.set_watchdog(self.gpio, 0)  # cancel watchdog
         self._cb.cancel()
-
-
-class SignalRPMInput(AbstractInput):
-    """ A sensor support class that monitors rpm """
-
-    def __init__(self, pin, weighting, rpm_pulses_per_rev, sample_time, testing=False):
-        super(SignalRPMInput, self).__init__()
-        self._rpm = None
-
-        self.pin = pin
-        self.weighting = weighting
-        self.rpm_pulses_per_rev = rpm_pulses_per_rev
-        self.sample_time = sample_time
-
-        if not testing:
-            import pigpio
-            self.pigpio = pigpio
-
-    def __repr__(self):
-        """  Representation of object """
-        return "<{cls}(rpm={rpm})>".format(
-            cls=type(self).__name__,
-            rpm="{0:.2f}".format(self._rpm))
-
-    def __str__(self):
-        """ Return rpm information """
-        return "RPM: {0:.2f}".format(self._rpm)
-
-    def __iter__(self):  # must return an iterator
-        """ Iterates through live rpm readings """
-        return self
-
-    def next(self):
-        """ Get next rpm reading """
-        if self.read():  # raised an error
-            raise StopIteration  # required
-        return dict(rpm=float('{0:.2f}'.format(self._rpm)))
-
-    @property
-    def rpm(self):
-        """ rpm (revolutions per minute) """
-        if self._rpm is None:  # update if needed
-            self.read()
-        return self._rpm
-
-    def get_measurement(self):
-        """ Gets the rpm """
-        self._rpm = None
-
-        pi = self.pigpio.pi()
-        if not pi.connected:  # Check if pigpiod is running
-            logger.error("Could not connect to pigpiod."
-                         "Ensure it is running and try again.")
-            return None
-
-        read_rpm = ReadRPM(pi,
-                           self.pin,
-                           self.pigpio,
-                           self.rpm_pulses_per_rev,
-                           self.weighting)
-        time.sleep(self.sample_time)
-        rpm = read_rpm.RPM()
-        read_rpm.cancel()
-        pi.stop()
-        if rpm:
-            return int(rpm + 0.5)
-        elif rpm == 0:
-            return 0
-        return None
-
-    def read(self):
-        """
-        Takes a reading from the pin and updates the self._rpm value
-
-        :returns: None on success or 1 on error
-        """
-        try:
-            self._rpm = self.get_measurement()
-            if self._rpm is not None:
-                return  # success - no errors
-        except Exception as e:
-            logger.exception("{cls} raised an exception when taking a reading: "
-                         "{err}".format(cls=type(self).__name__, err=e))
-        return 1

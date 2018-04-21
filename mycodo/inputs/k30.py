@@ -12,30 +12,32 @@ from .sensorutils import is_device
 class K30Sensor(AbstractInput):
     """ A sensor support class that monitors the K30's CO2 concentration """
 
-    def __init__(self, device_loc, baud_rate=9600, testing=False):
+    def __init__(self, input_dev, baud_rate=9600, testing=False):
         super(K30Sensor, self).__init__()
         self.logger = logging.getLogger("mycodo.inputs.k30")
         self._co2 = None
-
         self.k30_lock_file = None
 
         if not testing:
             import serial
+            self.logger = logging.getLogger(
+                "mycodo.inputs.k30_{id}".format(id=input_dev.id))
+            self.device_loc = input_dev.device_loc
             # Check if device is valid
-            self.serial_device = is_device(device_loc)
+            self.serial_device = is_device(self.device_loc)
             if self.serial_device:
                 try:
                     self.ser = serial.Serial(self.serial_device,
                                              baudrate=baud_rate,
                                              timeout=1)
-                    self.k30_lock_file = "/var/lock/sen-k30-{}".format(device_loc.replace('/', ''))
+                    self.k30_lock_file = "/var/lock/sen-k30-{}".format(self.device_loc.replace('/', ''))
                 except serial.SerialException:
                     self.logger.exception('Opening serial')
             else:
                 self.logger.error(
                     'Could not open "{dev}". '
                     'Check the device location is correct.'.format(
-                        dev=device_loc))
+                        dev=self.device_loc))
 
     def __repr__(self):
         """  Representation of object """
@@ -84,12 +86,12 @@ class K30Sensor(AbstractInput):
         if lock_acquired:
             self.ser.flushInput()
             time.sleep(1)
-            self.ser.write("\xFE\x44\x00\x08\x02\x9F\x25")
+            self.ser.write(bytearray([0xfe, 0x44, 0x00, 0x08, 0x02, 0x9f, 0x25]))
             time.sleep(.01)
             resp = self.ser.read(7)
             if len(resp) != 0:
-                high = ord(resp[3])
-                low = ord(resp[4])
+                high = resp[3]
+                low = resp[4]
                 co2 = (high * 256) + low
             lock.release()
 

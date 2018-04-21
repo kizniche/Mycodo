@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
-from mycodo.mycodo_flask.extensions import db
 from mycodo.databases import CRUDMixin
 from mycodo.databases import set_uuid
+from mycodo.mycodo_flask.extensions import db
 
 
 class Math(CRUDMixin, db.Model):
@@ -9,7 +9,7 @@ class Math(CRUDMixin, db.Model):
     __table_args__ = {'extend_existing': True}
 
     id = db.Column(db.Integer, unique=True, primary_key=True)
-    unique_id = db.Column(db.String, nullable=False, unique=True, default=set_uuid)  # ID for influxdb entries
+    unique_id = db.Column(db.String, nullable=False, unique=True, default=set_uuid)
     name = db.Column(db.Text, default='Input Name')
     math_type = db.Column(db.Text, default=None)
     is_activated = db.Column(db.Boolean, default=False)

@@ -4,8 +4,6 @@ import logging
 from .base_input import AbstractInput
 from .sensorutils import convert_units
 
-logger = logging.getLogger("mycodo.inputs.sht1x_7x")
-
 
 class SHT1x7xSensor(AbstractInput):
     """
@@ -14,19 +12,21 @@ class SHT1x7xSensor(AbstractInput):
 
     """
 
-    def __init__(self, pin, clock_pin, voltage, convert_to_unit=None, testing=False):
+    def __init__(self, input_dev, testing=False):
         super(SHT1x7xSensor, self).__init__()
+        self.logger = logging.getLogger("mycodo.inputs.sht1x_7x")
         self._dew_point = None
         self._humidity = None
         self._temperature = None
 
-        self.pin = pin
-        self.clock_pin = clock_pin
-        self.convert_to_unit = convert_to_unit
-
         if not testing:
             from sht_sensor import Sht
             from sht_sensor import ShtVDDLevel
+            self.logger = logging.getLogger(
+                "mycodo.inputs.sht1x_7x_{id}".format(id=input_dev.id))
+            self.location = int(input_dev.location)
+            self.clock_pin = input_dev.clock_pin
+            self.convert_to_unit = input_dev.convert_to_unit
             sht_sensor_vdd_value = {
                 2.5: ShtVDDLevel.vdd_2_5,
                 3.0: ShtVDDLevel.vdd_3,
@@ -34,8 +34,10 @@ class SHT1x7xSensor(AbstractInput):
                 4.0: ShtVDDLevel.vdd_4,
                 5.0: ShtVDDLevel.vdd_5
             }
-            self.voltage = sht_sensor_vdd_value[round(float(voltage), 1)]
-            self.sht_sensor = Sht(self.clock_pin, self.pin, voltage=self.voltage)
+            self.sht_voltage = sht_sensor_vdd_value[round(float(input_dev.sht_voltage), 1)]
+            self.sht_sensor = Sht(self.clock_pin,
+                                  self.location,
+                                  voltage=self.sht_voltage)
 
     def __repr__(self):
         """  Representation of object """
@@ -115,7 +117,7 @@ class SHT1x7xSensor(AbstractInput):
             if self._dew_point is not None:
                 return  # success - no errors
         except Exception as e:
-            logger.exception(
+            self.logger.exception(
                 "{cls} raised an exception when taking a reading: "
                 "{err}".format(cls=type(self).__name__, err=e))
         return 1

@@ -20,7 +20,7 @@ from mycodo.mycodo_flask.utils.utils_general import delete_entry_with_id
 from mycodo.mycodo_flask.utils.utils_general import flash_form_errors
 from mycodo.mycodo_flask.utils.utils_general import flash_success_errors
 from mycodo.mycodo_flask.utils.utils_general import reorder
-from mycodo.utils.system_pi import csv_to_list_of_int
+from mycodo.utils.system_pi import csv_to_list_of_str
 from mycodo.utils.system_pi import list_to_csv
 
 logger = logging.getLogger(__name__)
@@ -33,7 +33,7 @@ logger = logging.getLogger(__name__)
 
 def pid_mod(form_mod_pid_base,
             form_mod_pid_pwm_raise, form_mod_pid_pwm_lower,
-            form_mod_pid_relay_raise, form_mod_pid_relay_lower):
+            form_mod_pid_output_raise, form_mod_pid_output_lower):
     action = '{action} {controller}'.format(
         action=gettext("Modify"),
         controller=gettext("PID"))
@@ -44,14 +44,14 @@ def pid_mod(form_mod_pid_base,
         flash_form_errors(form_mod_pid_base)
 
     mod_pid = PID.query.filter(
-        PID.id == form_mod_pid_base.pid_id.data).first()
+        PID.unique_id == form_mod_pid_base.pid_id.data).first()
 
     # Check if a specific setting can be modified if the PID is active
     if mod_pid.is_activated:
-        error = can_set_relay(error,
-                              form_mod_pid_base.pid_id.data,
-                              form_mod_pid_base.raise_relay_id.data,
-                              form_mod_pid_base.lower_relay_id.data)
+        error = can_set_output(error,
+                               form_mod_pid_base.pid_id.data,
+                               form_mod_pid_base.raise_output_id.data,
+                               form_mod_pid_base.lower_output_id.data)
 
     mod_pid.name = form_mod_pid_base.name.data
     mod_pid.measurement = form_mod_pid_base.measurement.data
@@ -66,16 +66,13 @@ def pid_mod(form_mod_pid_base,
     mod_pid.d = form_mod_pid_base.k_d.data
     mod_pid.integrator_min = form_mod_pid_base.integrator_max.data
     mod_pid.integrator_max = form_mod_pid_base.integrator_min.data
-    if form_mod_pid_base.method_id.data:
-        mod_pid.method_id = form_mod_pid_base.method_id.data
-    else:
-        mod_pid.method_id = None
+    mod_pid.method_id = form_mod_pid_base.method_id.data
 
-    if form_mod_pid_base.raise_relay_id.data:
-        raise_relay_type = Output.query.filter(
-            Output.id == int(form_mod_pid_base.raise_relay_id.data)).first().relay_type
-        if mod_pid.raise_relay_id == int(form_mod_pid_base.raise_relay_id.data):
-            if raise_relay_type == 'pwm':
+    if form_mod_pid_base.raise_output_id.data:
+        raise_output_type = Output.query.filter(
+            Output.unique_id == form_mod_pid_base.raise_output_id.data).first().output_type
+        if mod_pid.raise_output_id == form_mod_pid_base.raise_output_id.data:
+            if raise_output_type == 'pwm':
                 if not form_mod_pid_pwm_raise.validate():
                     error.append(gettext("Error in form field(s)"))
                     flash_form_errors(form_mod_pid_pwm_raise)
@@ -83,30 +80,30 @@ def pid_mod(form_mod_pid_base,
                     mod_pid.raise_min_duration = form_mod_pid_pwm_raise.raise_min_duty_cycle.data
                     mod_pid.raise_max_duration = form_mod_pid_pwm_raise.raise_max_duty_cycle.data
             else:
-                if not form_mod_pid_relay_raise.validate():
+                if not form_mod_pid_output_raise.validate():
                     error.append(gettext("Error in form field(s)"))
-                    flash_form_errors(form_mod_pid_relay_raise)
+                    flash_form_errors(form_mod_pid_output_raise)
                 else:
-                    mod_pid.raise_min_duration = form_mod_pid_relay_raise.raise_min_duration.data
-                    mod_pid.raise_max_duration = form_mod_pid_relay_raise.raise_max_duration.data
-                    mod_pid.raise_min_off_duration = form_mod_pid_relay_raise.raise_min_off_duration.data
+                    mod_pid.raise_min_duration = form_mod_pid_output_raise.raise_min_duration.data
+                    mod_pid.raise_max_duration = form_mod_pid_output_raise.raise_max_duration.data
+                    mod_pid.raise_min_off_duration = form_mod_pid_output_raise.raise_min_off_duration.data
         else:
-            if raise_relay_type == 'pwm':
+            if raise_output_type == 'pwm':
                 mod_pid.raise_min_duration = 2
                 mod_pid.raise_max_duration = 98
             else:
                 mod_pid.raise_min_duration = 0
                 mod_pid.raise_max_duration = 0
                 mod_pid.raise_min_off_duration = 0
-        mod_pid.raise_relay_id = form_mod_pid_base.raise_relay_id.data
+        mod_pid.raise_output_id = form_mod_pid_base.raise_output_id.data
     else:
-        mod_pid.raise_relay_id = None
+        mod_pid.raise_output_id = None
 
-    if form_mod_pid_base.lower_relay_id.data:
-        lower_relay_type = Output.query.filter(
-            Output.id == int(form_mod_pid_base.lower_relay_id.data)).first().relay_type
-        if mod_pid.lower_relay_id == int(form_mod_pid_base.lower_relay_id.data):
-            if lower_relay_type == 'pwm':
+    if form_mod_pid_base.lower_output_id.data:
+        lower_output_type = Output.query.filter(
+            Output.unique_id == form_mod_pid_base.lower_output_id.data).first().output_type
+        if mod_pid.lower_output_id == form_mod_pid_base.lower_output_id.data:
+            if lower_output_type == 'pwm':
                 if not form_mod_pid_pwm_lower.validate():
                     error.append(gettext("Error in form field(s)"))
                     flash_form_errors(form_mod_pid_pwm_lower)
@@ -114,27 +111,27 @@ def pid_mod(form_mod_pid_base,
                     mod_pid.lower_min_duration = form_mod_pid_pwm_lower.lower_min_duty_cycle.data
                     mod_pid.lower_max_duration = form_mod_pid_pwm_lower.lower_max_duty_cycle.data
             else:
-                if not form_mod_pid_relay_lower.validate():
+                if not form_mod_pid_output_lower.validate():
                     error.append(gettext("Error in form field(s)"))
-                    flash_form_errors(form_mod_pid_relay_lower)
+                    flash_form_errors(form_mod_pid_output_lower)
                 else:
-                    mod_pid.lower_min_duration = form_mod_pid_relay_lower.lower_min_duration.data
-                    mod_pid.lower_max_duration = form_mod_pid_relay_lower.lower_max_duration.data
-                    mod_pid.lower_min_off_duration = form_mod_pid_relay_lower.lower_min_off_duration.data
+                    mod_pid.lower_min_duration = form_mod_pid_output_lower.lower_min_duration.data
+                    mod_pid.lower_max_duration = form_mod_pid_output_lower.lower_max_duration.data
+                    mod_pid.lower_min_off_duration = form_mod_pid_output_lower.lower_min_off_duration.data
         else:
-            if lower_relay_type == 'pwm':
+            if lower_output_type == 'pwm':
                 mod_pid.lower_min_duration = 2
                 mod_pid.lower_max_duration = 98
             else:
                 mod_pid.lower_min_duration = 0
                 mod_pid.lower_max_duration = 0
                 mod_pid.lower_min_off_duration = 0
-        mod_pid.lower_relay_id = form_mod_pid_base.lower_relay_id.data
+        mod_pid.lower_output_id = form_mod_pid_base.lower_output_id.data
     else:
-        mod_pid.lower_relay_id = None
+        mod_pid.lower_output_id = None
 
-    if (mod_pid.raise_relay_id and mod_pid.lower_relay_id and
-            mod_pid.raise_relay_id == mod_pid.lower_relay_id):
+    if (mod_pid.raise_output_id and mod_pid.lower_output_id and
+            mod_pid.raise_output_id == mod_pid.lower_output_id):
         error.append(gettext("Raise and lower outputs cannot be the same"))
 
     try:
@@ -160,14 +157,14 @@ def pid_del(pid_id):
 
     try:
         pid = PID.query.filter(
-            PID.id == pid_id).first()
+            PID.unique_id == pid_id).first()
         if pid.is_activated:
             pid_deactivate(pid_id)
 
         delete_entry_with_id(PID, pid_id)
 
-        display_order = csv_to_list_of_int(DisplayOrder.query.first().pid)
-        display_order.remove(int(pid_id))
+        display_order = csv_to_list_of_str(DisplayOrder.query.first().pid)
+        display_order.remove(pid_id)
         DisplayOrder.query.first().pid = list_to_csv(display_order)
         db.session.commit()
     except Exception as except_msg:
@@ -198,7 +195,7 @@ def pid_reorder(pid_id, display_order, direction):
 # TODO: Add more settings-checks before allowing controller to be activated
 def has_required_pid_values(pid_id):
     pid = PID.query.filter(
-        PID.id == pid_id).first()
+        PID.unique_id == pid_id).first()
     error = False
     device_unique_id = pid.measurement.split(',')[0]
     input = Input.query.filter(
@@ -208,7 +205,7 @@ def has_required_pid_values(pid_id):
     if (not input and not math) or not pid.measurement:
         flash(gettext("A valid Measurement is required"), "error")
         error = True
-    if not pid.raise_relay_id and not pid.lower_relay_id:
+    if not pid.raise_output_id and not pid.lower_output_id:
         flash(gettext("A Raise Output and/or a Lower Output is "
                       "required"), "error")
         error = True
@@ -227,10 +224,10 @@ def pid_activate(pid_id):
 
     # Check if associated sensor is activated
     pid = PID.query.filter(
-        PID.id == pid_id).first()
+        PID.unique_id == pid_id).first()
 
-    error = can_set_relay(
-        error, pid_id, pid.raise_relay_id, pid.lower_relay_id)
+    error = can_set_output(
+        error, pid_id, pid.raise_output_id, pid.lower_output_id)
 
     device_unique_id = pid.measurement.split(',')[0]
     input = Input.query.filter(
@@ -243,20 +240,20 @@ def pid_activate(pid_id):
             "Cannot activate PID controller if the associated sensor "
             "controller is inactive"))
 
-    if ((pid.direction == 'both' and not (pid.lower_relay_id and pid.raise_relay_id)) or
-                (pid.direction == 'lower' and not pid.lower_relay_id) or
-                (pid.direction == 'raise' and not pid.raise_relay_id)):
+    if ((pid.direction == 'both' and not (pid.lower_output_id and pid.raise_output_id)) or
+            (pid.direction == 'lower' and not pid.lower_output_id) or
+            (pid.direction == 'raise' and not pid.raise_output_id)):
         error.append(gettext(
-            "Cannot activate PID controller if raise and/or lower relay IDs "
+            "Cannot activate PID controller if raise and/or lower output IDs "
             "are not selected"))
 
     if not error:
         # Signal the duration method can run because it's been
         # properly initiated (non-power failure)
         method = Method.query.filter(
-            Method.id == pid.method_id).first()
+            Method.unique_id == pid.method_id).first()
         if method and method.method_type == 'Duration':
-            mod_pid = PID.query.filter(PID.id == pid_id).first()
+            mod_pid = PID.query.filter(PID.unique_id == pid_id).first()
             mod_pid.method_start_time = 'Ready'
             db.session.commit()
 
@@ -270,7 +267,7 @@ def pid_activate(pid_id):
 
 def pid_deactivate(pid_id):
     pid = PID.query.filter(
-        PID.id == pid_id).first()
+        PID.unique_id == pid_id).first()
     pid.is_activated = False
     pid.is_held = False
     pid.is_paused = False
@@ -288,7 +285,7 @@ def pid_manipulate(pid_id, action):
 
     try:
         mod_pid = PID.query.filter(
-            PID.id == pid_id).first()
+            PID.unique_id == pid_id).first()
         if action == 'Hold':
             mod_pid.is_held = True
             mod_pid.is_paused = False
@@ -318,19 +315,19 @@ def pid_manipulate(pid_id, action):
               "error")
 
 
-def can_set_relay(error, pid_id, raise_relay_id, lower_relay_id):
+def can_set_output(error, pid_id, raise_output_id, lower_output_id):
     """ Don't allow an output to be used with more than one active PID """
     pid_all = (PID.query
                .filter(PID.is_activated == True)
-               .filter(PID.id != int(pid_id))
+               .filter(PID.unique_id != pid_id)
               ).all()
     for each_pid in pid_all:
-        if ((raise_relay_id and
-                (raise_relay_id == str(each_pid.raise_relay_id) or
-                 raise_relay_id == str(each_pid.lower_relay_id))) or
-            (lower_relay_id and
-                (lower_relay_id == str(each_pid.lower_relay_id) or
-                 lower_relay_id == str(each_pid.raise_relay_id)))):
+        if ((raise_output_id and
+                (raise_output_id == each_pid.raise_output_id or
+                 raise_output_id == each_pid.lower_output_id)) or
+            (lower_output_id and
+                (lower_output_id == each_pid.lower_output_id or
+                 lower_output_id == each_pid.raise_output_id))):
             error.append(gettext(
                 "Cannot set output if it is already "
                 "selected by another active PID controller"))

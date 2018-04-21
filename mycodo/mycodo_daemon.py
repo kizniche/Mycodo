@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 #
 #  mycodo_daemon.py - Daemon for managing Mycodo controllers, such as sensors,
-#                     relays, PID controllers, etc.
+#                     outputs, PID controllers, etc.
 #
 #  Copyright (C) 2017  Kyle T. Gabriel
 #
@@ -55,14 +55,13 @@ from mycodo.controller_lcd import LCDController
 from mycodo.controller_math import MathController
 from mycodo.controller_output import OutputController
 from mycodo.controller_pid import PIDController
-from mycodo.controller_timer import TimerController
 from mycodo.databases.models import Camera
+from mycodo.databases.models import Conditional
 from mycodo.databases.models import Input
 from mycodo.databases.models import LCD
 from mycodo.databases.models import Math
 from mycodo.databases.models import Misc
 from mycodo.databases.models import PID
-from mycodo.databases.models import Timer
 from mycodo.databases.utils import session_scope
 from mycodo.devices.camera import camera_record
 from mycodo.utils.database import db_retrieve_table_daemon
@@ -71,7 +70,7 @@ from mycodo.utils.statistics import add_update_csv
 from mycodo.utils.statistics import recreate_stat_file
 from mycodo.utils.statistics import return_stat_file_dict
 from mycodo.utils.statistics import send_anonymous_stats
-from mycodo.utils.tools import generate_relay_usage_report
+from mycodo.utils.tools import generate_output_usage_report
 from mycodo.utils.tools import next_schedule
 
 MYCODO_DB_PATH = 'sqlite:///' + SQL_DATABASE_MYCODO
@@ -100,21 +99,19 @@ def mycodo_service(mycodo):
         def exposed_controller_activate(cont_type, cont_id):
             """
             Activates a controller
-            This may be a Input, PID, Timer, or LCD controller
+            May be a Conditional, Input, Math, PID, or LCD controller
 
             """
-            return mycodo.controller_activate(
-                cont_type, cont_id)
+            return mycodo.controller_activate(cont_type, cont_id)
 
         @staticmethod
         def exposed_controller_deactivate(cont_type, cont_id):
             """
             Deactivates a controller
-            This may be a Input, PID, Timer, or LCD controller
+            May be a Conditional, Input, Math, PID, or LCD controller
 
             """
-            return mycodo.controller_deactivate(
-                cont_type, cont_id)
+            return mycodo.controller_deactivate(cont_type, cont_id)
 
         @staticmethod
         def exposed_check_daemon():
@@ -193,42 +190,34 @@ def mycodo_service(mycodo):
             return mycodo.refresh_daemon_misc_settings()
 
         @staticmethod
-        def exposed_refresh_conditionals():
-            """
-            Instruct the input controller to refresh the settings of
-            conditional statements
-            """
-            return mycodo.refresh_conditionals()
-
-        @staticmethod
-        def exposed_relay_state(relay_id):
+        def exposed_output_state(output_id):
             """Return the output state (not pin but whether output is on or off"""
-            return mycodo.output_state(relay_id)
+            return mycodo.output_state(output_id)
 
         @staticmethod
-        def exposed_relay_on(relay_id, duration=0.0, min_off=0.0,
+        def exposed_output_on(output_id, duration=0.0, min_off=0.0,
                              duty_cycle=0.0, trigger_conditionals=True):
             """Turns output on from the client"""
-            return mycodo.relay_on(relay_id,
-                                   duration=duration,
-                                   min_off=min_off,
-                                   duty_cycle=duty_cycle,
-                                   trigger_conditionals=trigger_conditionals)
+            return mycodo.output_on(output_id,
+                                    duration=duration,
+                                    min_off=min_off,
+                                    duty_cycle=duty_cycle,
+                                    trigger_conditionals=trigger_conditionals)
 
         @staticmethod
-        def exposed_relay_off(relay_id, trigger_conditionals=True):
+        def exposed_output_off(output_id, trigger_conditionals=True):
             """Turns output off from the client"""
-            return mycodo.relay_off(relay_id, trigger_conditionals)
+            return mycodo.output_off(output_id, trigger_conditionals)
 
         @staticmethod
-        def exposed_output_sec_currently_on(relay_id):
+        def exposed_output_sec_currently_on(output_id):
             """Turns the amount of time a output has already been on"""
-            return mycodo.controller['Output'].output_sec_currently_on(relay_id)
+            return mycodo.controller['Output'].output_sec_currently_on(output_id)
 
         @staticmethod
-        def exposed_relay_setup(action, relay_id):
+        def exposed_output_setup(action, output_id):
             """Add, delete, or modify a output in the running output controller"""
-            return mycodo.output_setup(action, relay_id)
+            return mycodo.output_setup(action, output_id)
 
         @staticmethod
         def exposed_trigger_conditional_actions(
@@ -336,24 +325,23 @@ class DaemonController:
         # controller
         self.controller = {
             # May only launch a single thread for this controller
-            'Conditional': None,
+            'Conditional': {},
             'Output': None,
             # May launch multiple threads per each of these controllers
             'Input': {},
             'LCD': {},
             'Math': {},
-            'PID': {},
-            'Timer': {}
+            'PID': {}
         }
 
         # Controllers that may launch multiple threads
         # Order matters for starting and shutting down
         self.cont_types = [
-            'Timer',
             'Input',
             'Math',
             'PID',
             'LCD',
+            'Conditional'
         ]
         self.thread_shutdown_timer = None
         self.start_time = time.time()
@@ -367,11 +355,11 @@ class DaemonController:
         self.refresh_daemon_camera_settings()
 
         # Update Misc settings
-        self.relay_usage_report_gen = None
-        self.relay_usage_report_span = None
-        self.relay_usage_report_day = None
-        self.relay_usage_report_hour = None
-        self.relay_usage_report_next_gen = None
+        self.output_usage_report_gen = None
+        self.output_usage_report_span = None
+        self.output_usage_report_day = None
+        self.output_usage_report_hour = None
+        self.output_usage_report_next_gen = None
         self.opt_out_statistics = None
         self.enable_upgrade_check = None
         self.refresh_daemon_misc_settings()
@@ -400,9 +388,9 @@ class DaemonController:
                 self.check_all_timelapses(now)
 
                 # Generate output usage report (if enabled)
-                if (self.relay_usage_report_gen and
-                        now > self.relay_usage_report_next_gen):
-                    generate_relay_usage_report()
+                if (self.output_usage_report_gen and
+                        now > self.output_usage_report_next_gen):
+                    generate_output_usage_report()
                     self.refresh_daemon_misc_settings()  # Update timer
 
                 # Collect and send anonymous statistics (if enabled)
@@ -458,29 +446,28 @@ class DaemonController:
 
             controller_manage = {}
             ready = threading.Event()
-            if cont_type == 'LCD':
+            if cont_type == 'Conditional':
+                controller_manage['type'] = Conditional
+                controller_manage['function'] = ConditionalController
+            elif cont_type == 'LCD':
                 controller_manage['type'] = LCD
                 controller_manage['function'] = LCDController
+            elif cont_type == 'Input':
+                controller_manage['type'] = Input
+                controller_manage['function'] = InputController
             elif cont_type == 'Math':
                 controller_manage['type'] = Math
                 controller_manage['function'] = MathController
             elif cont_type == 'PID':
                 controller_manage['type'] = PID
                 controller_manage['function'] = PIDController
-            elif cont_type == 'Input':
-                controller_manage['type'] = Input
-                controller_manage['function'] = InputController
-            elif cont_type == 'Timer':
-                controller_manage['type'] = Timer
-                controller_manage['function'] = TimerController
             else:
                 return 1, "'{type}' not a valid controller type.".format(
                     type=cont_type)
 
-            # Check if the controller ID actually exists and start it
+            # Check if the controller actually exists
             controller = db_retrieve_table_daemon(controller_manage['type'],
-                                                  device_id=cont_id)
-
+                                                  unique_id=cont_id)
             if controller:
                 self.controller[cont_type][cont_id] = controller_manage['function'](
                     ready, cont_id)
@@ -546,6 +533,9 @@ class DaemonController:
 
     def check_daemon(self):
         try:
+            for cond_id in self.controller['Conditional']:
+                if not self.controller['Conditional'][cond_id].is_running():
+                    return "Error: Conditional ID {}".format(cond_id)
             for lcd_id in self.controller['LCD']:
                 if not self.controller['LCD'][lcd_id].is_running():
                     return "Error: LCD ID {}".format(lcd_id)
@@ -558,9 +548,6 @@ class DaemonController:
             for input_id in self.controller['Input']:
                 if not self.controller['Input'][input_id].is_running():
                     return "Error: Input ID {}".format(input_id)
-            for timer_id in self.controller['Timer']:
-                if not self.controller['Timer'][timer_id].is_running():
-                    return "Error: Timer ID {}".format(timer_id)
             if not self.controller['Output'].is_running():
                 return "Error: Output controller"
             if not self.controller['Conditional'].is_running():
@@ -652,12 +639,8 @@ class DaemonController:
                       " {err}".format(err=except_msg)
             self.logger.exception(message)
 
-    def pid_get(self, pid_unique_id, setting):
+    def pid_get(self, pid_id, setting):
         try:
-            with session_scope(MYCODO_DB_PATH) as new_session:
-                pid = new_session.query(PID).filter(
-                    PID.unique_id == pid_unique_id).first()
-                pid_id = pid.id
             if setting == 'setpoint':
                 return self.controller['PID'][pid_id].get_setpoint()
             elif setting == 'error':
@@ -677,12 +660,8 @@ class DaemonController:
                       " {err}".format(option=setting, err=except_msg)
             self.logger.exception(message)
 
-    def pid_set(self, pid_unique_id, setting, value):
+    def pid_set(self, pid_id, setting, value):
         try:
-            with session_scope(MYCODO_DB_PATH) as new_session:
-                pid = new_session.query(PID).filter(
-                    PID.unique_id == pid_unique_id).first()
-                pid_id = pid.id
             if setting == 'setpoint':
                 return self.controller['PID'][pid_id].set_setpoint(value)
             elif setting == 'method':
@@ -714,24 +693,24 @@ class DaemonController:
             self.logger.exception(message)
 
     def refresh_daemon_misc_settings(self):
-        old_time = self.relay_usage_report_next_gen
-        self.relay_usage_report_next_gen = next_schedule(
-            self.relay_usage_report_span,
-            self.relay_usage_report_day,
-            self.relay_usage_report_hour)
+        old_time = self.output_usage_report_next_gen
+        self.output_usage_report_next_gen = next_schedule(
+            self.output_usage_report_span,
+            self.output_usage_report_day,
+            self.output_usage_report_hour)
         try:
             self.logger.debug("Refreshing misc settings")
             misc = db_retrieve_table_daemon(Misc, entry='first')
             self.opt_out_statistics = misc.stats_opt_out
             self.enable_upgrade_check = misc.enable_upgrade_check
-            self.relay_usage_report_gen = misc.relay_usage_report_gen
-            self.relay_usage_report_span = misc.relay_usage_report_span
-            self.relay_usage_report_day = misc.relay_usage_report_day
-            self.relay_usage_report_hour = misc.relay_usage_report_hour
-            if (self.relay_usage_report_gen and
-                    old_time != self.relay_usage_report_next_gen):
+            self.output_usage_report_gen = misc.output_usage_report_gen
+            self.output_usage_report_span = misc.output_usage_report_span
+            self.output_usage_report_day = misc.output_usage_report_day
+            self.output_usage_report_hour = misc.output_usage_report_hour
+            if (self.output_usage_report_gen and
+                    old_time != self.output_usage_report_next_gen):
                 str_next_report = time.strftime(
-                    '%c', time.localtime(self.relay_usage_report_next_gen))
+                    '%c', time.localtime(self.output_usage_report_next_gen))
                 self.logger.debug(
                     "Generating next output usage report {time_date}".format(
                         time_date=str_next_report))
@@ -740,26 +719,18 @@ class DaemonController:
                       " {err}".format(err=except_msg)
             self.logger.exception(message)
 
-    def refresh_conditionals(self):
-        try:
-            return self.controller['Conditional'].setup_conditionals()
-        except Exception as except_msg:
-            message = "Could not refresh conditional:" \
-                      " {err}".format(err=except_msg)
-            self.logger.exception(message)
-
-    def relay_off(self, relay_id, trigger_conditionals=True):
+    def output_off(self, output_id, trigger_conditionals=True):
         """
         Turn output off using default output controller
 
-        :param relay_id: Unique ID for output
-        :type relay_id: str
+        :param output_id: Unique ID for output
+        :type output_id: str
         :param trigger_conditionals: Whether to trigger output conditionals or not
         :type trigger_conditionals: bool
         """
         try:
             self.controller['Output'].output_on_off(
-                relay_id,
+                output_id,
                 'off',
                 trigger_conditionals=trigger_conditionals)
             return "Turned off"
@@ -768,13 +739,13 @@ class DaemonController:
                       " {err}".format(err=except_msg)
             self.logger.exception(message)
 
-    def relay_on(self, relay_id, duration=0.0, min_off=0.0,
+    def output_on(self, output_id, duration=0.0, min_off=0.0,
                  duty_cycle=0.0, trigger_conditionals=True):
         """
         Turn output on using default output controller
 
-        :param relay_id: Unique ID for output
-        :type relay_id: str
+        :param output_id: Unique ID for output
+        :type output_id: str
         :param duration: How long to turn the output on
         :type duration: float
         :param min_off: Don't turn on if not off for at least this duration (0 = disabled)
@@ -786,7 +757,7 @@ class DaemonController:
         """
         try:
             self.controller['Output'].output_on_off(
-                relay_id,
+                output_id,
                 'on',
                 duration=duration,
                 min_off=min_off,
@@ -798,7 +769,7 @@ class DaemonController:
                       " {err}".format(err=except_msg)
             self.logger.exception(message)
 
-    def output_setup(self, action, relay_id):
+    def output_setup(self, action, output_id):
         """
         Setup output in running output controller
 
@@ -807,25 +778,25 @@ class DaemonController:
 
         :param action: What action to perform on a specific output ID
         :type action: str
-        :param relay_id: Unique ID for output
-        :type relay_id: str
+        :param output_id: Unique ID for output
+        :type output_id: str
         """
         try:
-            return self.controller['Output'].output_setup(action, relay_id)
+            return self.controller['Output'].output_setup(action, output_id)
         except Exception as except_msg:
             message = "Could not set up output:" \
                       " {err}".format(err=except_msg)
             self.logger.exception(message)
 
-    def output_state(self, relay_id):
+    def output_state(self, output_id):
         """
         Return the output state, wither "on" or "off"
 
-        :param relay_id: Unique ID for output
-        :type relay_id: str
+        :param output_id: Unique ID for output
+        :type output_id: str
         """
         try:
-            return self.controller['Output'].output_state(relay_id)
+            return self.controller['Output'].output_state(output_id)
         except Exception as except_msg:
             message = "Could not query output state:" \
                       " {err}".format(err=except_msg)
@@ -856,7 +827,7 @@ class DaemonController:
         try:
             # Obtain database configuration options
             db_tables = {
-                'Timer': db_retrieve_table_daemon(Timer, entry='all'),
+                'Conditional': db_retrieve_table_daemon(Conditional, entry='all'),
                 'Input': db_retrieve_table_daemon(Input, entry='all'),
                 'Math': db_retrieve_table_daemon(Math, entry='all'),
                 'PID': db_retrieve_table_daemon(PID, entry='all'),
@@ -876,17 +847,13 @@ class DaemonController:
                         type=each_controller))
                 for each_entry in db_tables[each_controller]:
                     if each_entry.is_activated:
-                        self.controller_activate(each_controller, each_entry.id)
+                        self.controller_activate(
+                            each_controller, each_entry.unique_id)
                 self.logger.info(
                     "All activated {type} controllers started".format(
                         type=each_controller))
 
             time.sleep(0.5)
-
-            self.logger.debug("Starting Conditional controller")
-            self.controller['Conditional'] = ConditionalController()
-            self.controller['Conditional'].daemon = True
-            self.controller['Conditional'].start()
 
         except Exception as except_msg:
             message = "Could not start all controllers:" \
@@ -936,8 +903,8 @@ class DaemonController:
             self, conditional_id, message='', edge=None,
             output_state=None, on_duration=None, duty_cycle=None):
         try:
-            return self.controller['Conditional'].trigger_conditional_actions(
-                conditional_id, message=message, edge=edge,
+            return self.controller['Conditional'][conditional_id].trigger_conditional_actions(
+                message=message, edge=edge,
                 output_state=output_state, on_duration=on_duration,
                 duty_cycle=duty_cycle)
         except Exception as except_msg:
@@ -1002,8 +969,9 @@ class DaemonController:
 
     def check_all_timelapses(self, now):
         try:
-            for each_camera in self.camera:
-                self.timelapse_check(each_camera, now)
+            if self.camera:
+                for each_camera in self.camera:
+                    self.timelapse_check(each_camera, now)
         except Exception:
             self.logger.exception("Timelapse ERROR")
 
@@ -1014,7 +982,7 @@ class DaemonController:
                         now > camera.timelapse_end_time):
                 with session_scope(MYCODO_DB_PATH) as new_session:
                     mod_camera = new_session.query(Camera).filter(
-                        Camera.id == camera.id).first()
+                        Camera.unique_id == camera.unique_id).first()
                     mod_camera.timelapse_started = False
                     mod_camera.timelapse_paused = False
                     mod_camera.timelapse_start_time = None
@@ -1037,7 +1005,7 @@ class DaemonController:
                     capture_number += 1
                 with session_scope(MYCODO_DB_PATH) as new_session:
                     mod_camera = new_session.query(Camera).filter(
-                        Camera.id == camera.id).first()
+                        Camera.unique_id == camera.unique_id).first()
                     mod_camera.timelapse_next_capture = next_capture
                     mod_camera.timelapse_capture_number = capture_number
                     new_session.commit()

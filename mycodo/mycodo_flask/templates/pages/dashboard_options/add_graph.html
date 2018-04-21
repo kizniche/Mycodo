@@ -56,9 +56,9 @@
   <div class="form-row">
 
     <div class="col-auto">
-      {{form_graph.sensor_ids.label(class_='control-label')}}
+      {{form_graph.input_ids.label(class_='control-label')}}
       <div>
-        <select class="form-control btn-default" id="sensor_ids" name="sensor_ids" style="width: 100%;" size="{{choices_pid|length}}" multiple>
+        <select class="form-control btn-default" id="input_ids" name="input_ids" style="width: 100%;" size="{{choices_input|length}}" multiple>
         {% if choices_input %}
           {% for each_choice, value in choices_input.items() -%}
           <option value="{{each_choice}}">{{value}}</option>
@@ -84,9 +84,9 @@
       </div>
     </div>
     <div class="col-auto">
-      {{form_graph.relay_ids.label(class_='control-label')}}
+      {{form_graph.output_ids.label(class_='control-label')}}
       <div>
-        <select class="form-control btn-default" id="relay_ids" name="relay_ids" style="width: 100%;" size="{{choices_output|length}}" multiple>
+        <select class="form-control btn-default" id="output_ids" name="output_ids" style="width: 100%;" size="{{choices_output|length}}" multiple>
         {% if choices_output %}
           {% for each_choice, value in choices_output.items() -%}
           <option value="{{each_choice}}">{{value}}</option>

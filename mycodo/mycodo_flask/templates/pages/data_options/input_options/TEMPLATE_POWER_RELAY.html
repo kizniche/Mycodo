@@ -1,10 +1,10 @@
 <div class="col-auto">
-  {{form_mod_input.power_relay_id.label(class_='control-label')}}
+  {{form_mod_input.power_output_id.label(class_='control-label')}}
   <div>
-    <select class="form-control form-tooltip form-dropdown" data-placement="top" id="power_relay_id" name="power_relay_id" title="{{_('The relay used to power the device')}}.">
+    <select class="form-control form-tooltip form-dropdown" data-placement="top" id="power_output_id" name="power_output_id" title="{{_('The output used to power the device')}}.">
       <option value="0">Disabled</option>
-      {% for rel in relay -%}
-        <option value="{{rel.id}}"{% if each_input.power_relay_id == rel.id %} selected{% endif %}>{{rel.id}} ({{rel.name}})</option>
+      {% for rel in output -%}
+        <option value="{{rel.id}}"{% if each_input.power_output_id == rel.id %} selected{% endif %}>{{rel.id}} ({{rel.name}})</option>
       {% endfor -%}
     </select>
   </div>

@@ -27,7 +27,7 @@ class LCDAdd(FlaskForm):
 
 
 class LCDMod(FlaskForm):
-    lcd_id = IntegerField('LCD ID', widget=widgets.HiddenInput())
+    lcd_id = StringField('LCD ID', widget=widgets.HiddenInput())
     name = StringField(
         lazy_gettext('Name'),
         validators=[DataRequired()]
@@ -41,18 +41,6 @@ class LCDMod(FlaskForm):
         "{op} ({unit})".format(op=lazy_gettext('Bus'),
                                unit=lazy_gettext('I<sup>2</sup>C')),
         validators=[DataRequired()]
-    )
-    multiplexer_address = StringField(
-        "{op} ({unit})".format(op=lazy_gettext('Multiplexer Address'),
-                               unit=lazy_gettext('I<sup>2</sup>C'))
-    )
-    multiplexer_channel = IntegerField(
-        lazy_gettext('Multiplexer Channel'),
-        validators=[
-            validators.NumberRange(
-                min=0,
-                max=8
-            )]
     )
     period = DecimalField(
         lazy_gettext('Period (seconds)'),
@@ -83,8 +71,8 @@ class LCDMod(FlaskForm):
 
 
 class LCDModDisplay(FlaskForm):
-    lcd_id = IntegerField('LCD ID', widget=widgets.HiddenInput())
-    lcd_data_id = IntegerField('LCD Data ID', widget=widgets.HiddenInput())
+    lcd_id = StringField('LCD ID', widget=widgets.HiddenInput())
+    lcd_data_id = StringField('LCD Data ID', widget=widgets.HiddenInput())
     line_1_display = StringField(lazy_gettext('Line 1'))
     line_1_max_age = IntegerField(
         lazy_gettext('Max Age (seconds)'),

@@ -1,28 +1,28 @@
 <div class="row small-gutters" style="border-bottom: 1px solid #ddd; padding-bottom: 0.2em">
   <div class="col-auto">
-    {{form_conditional.if_relay_id.label(class_='control-label')}}
+    <label class='control-label'>Output</label>
     <div>
-      <select class="form-control form-tooltip form-dropdown" id="if_relay_id" name="if_relay_id" data-placement="top" title="{{_('Trigger this conditional to act when this relay turns on or off')}}">
+      <select class="form-control form-tooltip form-dropdown" id="unique_id_1" name="unique_id_1" data-placement="top" title="{{_('Trigger this conditional to act when this output turns on or off')}}">
         <option value="">{{_('Select One')}}</option>
-        {%- for each_output in output if each_output.relay_type != 'pwm' -%}
-          <option value="{{each_output.id}}"{% if each_cond.if_relay_id == each_output.id %} selected{% endif %}>{{each_output.id}} ({{each_output.name}})</option>
+        {%- for each_output in output if each_output.output_type != 'pwm' -%}
+          <option value="{{each_output.unique_id}}"{% if each_cond.unique_id_1 == each_output.unique_id %} selected{% endif %}>[{{'%02d' % each_output.id}}] {{each_output.name}}</option>
         {%- endfor -%}
       </select>
     </div>
   </div>
   <div class="col-auto">
-    {{form_conditional.if_relay_state.label(class_='control-label')}}
-    <select class="form-control form-tooltip form-dropdown" id="if_relay_state" name="if_relay_state" data-placement="top" title="{{_('What action will trigger this conditional statement, on or off?')}}">
+    {{form_conditional.output_state.label(class_='control-label')}}
+    <select class="form-control form-tooltip form-dropdown" id="output_state" name="output_state" data-placement="top" title="{{_('What action will trigger this conditional statement, on or off?')}}">
       <option value="">{{_('Select One')}}</option>
-      <option value="on"{% if each_cond.if_relay_state == 'on' %} selected{% endif %}>{{_('On')}}</option>
-      <option value="on_any"{% if each_cond.if_relay_state == 'on_any' %} selected{% endif %}>{{_('On')}} ({{_('any duration')}})</option>
-      <option value="off"{% if each_cond.if_relay_state == 'off' %} selected{% endif %}>{{_('Off')}}</option>
+      <option value="on"{% if each_cond.output_state == 'on' %} selected{% endif %}>{{_('On')}}</option>
+      <option value="on_any"{% if each_cond.output_state == 'on_any' %} selected{% endif %}>{{_('On')}} ({{_('any duration')}})</option>
+      <option value="off"{% if each_cond.output_state == 'off' %} selected{% endif %}>{{_('Off')}}</option>
     </select>
   </div>
   <div class="col-auto">
-    {{form_conditional.if_relay_duration.label(class_='control-label')}}
+    {{form_conditional.output_duration.label(class_='control-label')}}
     <div>
-     {{form_conditional.if_relay_duration(class_='form-control', value=each_cond.if_relay_duration, **{'title':_('(Optional) Set this to a specific duration of time if the conditional should trigger when the relay On duration equals this amount'), 'size':'3'})}}
+     {{form_conditional.output_duration(class_='form-control', value=each_cond.output_duration, **{'title':_('(Optional) Set this to a specific duration of time if the conditional should trigger when the output On duration equals this amount'), 'size':'3'})}}
     </div>
   </div>
 </div>

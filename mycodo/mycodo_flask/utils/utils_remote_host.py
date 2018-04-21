@@ -18,7 +18,7 @@ from mycodo.mycodo_flask.utils.utils_general import add_display_order
 from mycodo.mycodo_flask.utils.utils_general import delete_entry_with_id
 from mycodo.mycodo_flask.utils.utils_general import flash_form_errors
 from mycodo.utils.system_pi import assure_path_exists
-from mycodo.utils.system_pi import csv_to_list_of_int
+from mycodo.utils.system_pi import csv_to_list_of_str
 from mycodo.utils.system_pi import list_to_csv
 
 logger = logging.getLogger(__name__)
@@ -153,7 +153,7 @@ def remote_host_add(form_setup, display_order):
                       "success")
 
                 DisplayOrder.query.first().remote_host = add_display_order(
-                    display_order, new_remote_host.id)
+                    display_order, new_remote_host.unique_id)
                 db.session.commit()
             except sqlalchemy.exc.OperationalError as except_msg:
                 flash(gettext("Error: %(err)s",
@@ -179,9 +179,9 @@ def remote_host_del(form_setup):
     try:
         delete_entry_with_id(Remote,
                              form_setup.remote_id.data)
-        display_order = csv_to_list_of_int(
+        display_order = csv_to_list_of_str(
             DisplayOrder.query.first().remote_host)
-        display_order.remove(int(form_setup.remote_id.data))
+        display_order.remove(form_setup.remote_id.data)
         DisplayOrder.query.first().remote_host = list_to_csv(display_order)
         db.session.commit()
     except Exception as except_msg:

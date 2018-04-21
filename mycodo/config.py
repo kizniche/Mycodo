@@ -3,18 +3,19 @@
 #  config.py - Global Mycodo settings
 #
 import binascii
-import collections
 from datetime import timedelta
 
 import os
 from flask_babel import lazy_gettext
 
-MYCODO_VERSION = '5.7.3'
-ALEMBIC_VERSION = 'd881bacc5814'
+MYCODO_VERSION = '6.0.0'
+ALEMBIC_VERSION = '032b48f920b8'
 
 #  FORCE_UPGRADE_MASTER
 #  Set True to enable upgrading to the master branch of the Mycodo repository.
 #  Set False to enable upgrading to the latest Release version (default).
+#  Do not use this feature unless you know what you're doing or have been
+#  instructed to do so, as it can really mess up your system.
 FORCE_UPGRADE_MASTER = False
 
 # Final release for each major version number
@@ -26,7 +27,6 @@ LANGUAGES = {
     'fr': 'Français (French)',
     'es': 'Español (Spanish)'
 }
-
 
 # Devices and descriptions (for Data page)
 DEVICES = [
@@ -140,12 +140,6 @@ DEVICE_INFO = {
         'i2c-address-change': False,
         'py-dependencies': ['Adafruit_BME280'],
         'measure': ['altitude', 'dewpoint', 'humidity', 'pressure', 'temperature']},
-    'BMP': {  # TODO: Remove in next major version. BMP180 replaced this name
-        'name': 'BMP180',
-        'i2c-addresses': ['0x77'],
-        'i2c-address-change': False,
-        'py-dependencies': ['Adafruit_BMP'],
-        'measure': ['altitude', 'pressure', 'temperature']},
     'BMP180': {
         'name': 'BMP180',
         'i2c-addresses': ['0x77'],
@@ -184,12 +178,12 @@ DEVICE_INFO = {
         'name': 'DS1822',
         'py-dependencies': ['w1thermsensor'],
         'measure': ['temperature']},
-    'DS28EA00': {
-        'name': 'DS28EA00',
+    'DS1825': {
+        'name': 'DS1825',
         'py-dependencies': ['w1thermsensor'],
         'measure': ['temperature']},
-    'DS1825_MAX31850K': {
-        'name': 'DS1825/MAX31850K',
+    'DS28EA00': {
+        'name': 'DS28EA00',
         'py-dependencies': ['w1thermsensor'],
         'measure': ['temperature']},
     'EDGE': {
@@ -214,6 +208,10 @@ DEVICE_INFO = {
         'name': 'Linux Command',
         'py-dependencies': [],
         'measure': []},
+    'MAX31850K': {
+        'name': 'MAX31850K',
+        'py-dependencies': ['w1thermsensor'],
+        'measure': ['temperature']},
     'MAX31855': {
         'name': 'MAX13855K',
         'py-dependencies': ['Adafruit_MAX31855'],
@@ -310,7 +308,6 @@ DEVICE_INFO = {
         'measure': ['lux']}
 }
 
-
 # Math controllers
 MATHS = [
     ('average', 'Average (Multiple Inputs)'),
@@ -362,46 +359,6 @@ MATH_INFO = {
         'name': 'Verification',
         'py-dependencies': [],
         'measure': []}
-}
-
-# Method info
-METHOD_INFO = {
-    'DailyBezier': {
-        'name': 'DailyBezier',
-        'py-dependencies': ['numpy']}
-}
-
-# Math controllers
-OUTPUTS = [
-    ('wired', 'GPIO (On/Off)'),
-    ('pwm', 'GPIO (PWM)'),
-    ('command', 'Command (On/Off)'),
-    ('command_pwm', 'Command (PWM)'),
-    ('wireless_433MHz_pi_switch', 'Wireless (433MHz)')
-]
-
-# Output info
-OUTPUT_INFO = {
-    'wired': {
-        'name': 'GPIO (On/Off)',
-        'py-dependencies': [],
-        'measure': []},
-    'pwm': {
-        'name': 'GPIO (PWM)',
-        'py-dependencies': [],
-        'measure': []},
-    'wireless_433MHz_pi_switch': {
-        'name': 'Wireless (433MHz)',
-        'py-dependencies': ['rpi_rf'],
-        'measure': []},
-    'command': {
-        'name': 'Command (On/Off)',
-        'py-dependencies': [],
-        'measure': []},
-    'command_pwm': {
-        'name': 'Command (PWM)',
-        'py-dependencies': [],
-        'measure': []},
 }
 
 # Measurement information
@@ -483,9 +440,6 @@ MEASUREMENT_UNITS = {
     'pid_d_value': {
         'name': lazy_gettext('PID D-Value'),
         'meas': 'pid_value', 'unit': ''},
-    'pid_output': {
-        'name': lazy_gettext('PID Output'),
-        'meas': 'pid_output', 'unit': 'sec'},
     'pressure': {
         'name': lazy_gettext('Pressure'),
         'meas': 'pressure', 'unit': 'Pa'},
@@ -527,6 +481,7 @@ MEASUREMENT_UNITS = {
         'meas': 'voltage', 'unit': 'volts'}
 }
 
+# Measurement units
 UNITS = {
     'celsius': {
         'name': 'Celsius',
@@ -545,21 +500,110 @@ UNITS = {
         'unit': 'm'}
 }
 
+# Supported conversions
 UNIT_CONVERSIONS = {
     'celsius_to_fahrenheit': 'x*(9/5)+32',
     'celsius_to_kelvin': 'x+274.15',
     'meters_to_feet': 'x*3.2808399'
 }
 
+# Methods
+METHODS = [
+    ('Date', 'Time/Date'),
+    ('Duration', 'Duration'),
+    ('Daily', 'Daily (Time-Based)'),
+    ('DailySine', 'Daily (Sine Wave)'),
+    ('DailyBezier', 'Daily (Bezier Curve)')
+]
+
+# Method info
+METHOD_INFO = {
+    'DailyBezier': {
+        'name': 'DailyBezier',
+        'py-dependencies': ['numpy']}
+}
+
+# Math controllers
+OUTPUTS = [
+    ('wired', 'GPIO (On/Off)'),
+    ('pwm', 'GPIO (PWM)'),
+    ('command', 'Command (On/Off)'),
+    ('command_pwm', 'Command (PWM)'),
+    ('wireless_433MHz_pi_switch', 'Wireless (433MHz)')
+]
+
+# Outputs
+OUTPUT_INFO = {
+    'wired': {
+        'name': 'GPIO (On/Off)',
+        'py-dependencies': [],
+        'measure': []},
+    'pwm': {
+        'name': 'GPIO (PWM)',
+        'py-dependencies': [],
+        'measure': []},
+    'wireless_433MHz_pi_switch': {
+        'name': 'Wireless (433MHz)',
+        'py-dependencies': ['rpi_rf'],
+        'measure': []},
+    'command': {
+        'name': 'Command (On/Off)',
+        'py-dependencies': [],
+        'measure': []},
+    'command_pwm': {
+        'name': 'Command (PWM)',
+        'py-dependencies': [],
+        'measure': []},
+}
+
+# PID controllers
+PIDS = [
+    ('pid', 'PID Controller')
+]
+
+def generate_conditional_name(name):
+    return '{}: {}'.format(lazy_gettext('Conditional'), lazy_gettext(name))
+
+# Conditional controllers
+CONDITIONALS = [
+    ('conditional_measurement', generate_conditional_name('Measurement')),
+    ('conditional_output', generate_conditional_name('Output (On/Off)')),
+    ('conditional_output_pwm', generate_conditional_name('Output (PWM)')),
+    ('conditional_edge', generate_conditional_name('Edge')),
+    ('conditional_run_pwm_method', generate_conditional_name('Run PWM Method')),
+    ('conditional_sunrise_sunset', generate_conditional_name('Sunrise/Sunset')),
+    ('conditional_timer_daily_time_point', generate_conditional_name('Timer (Daily)')),
+    ('conditional_timer_duration', generate_conditional_name('Timer (Duration)'))
+]
+
+# Conditional actions
+CONDITIONAL_ACTIONS = [
+    ('output', lazy_gettext('Output (Duration)')),
+    ('output_pwm', lazy_gettext('Output (Duty Cycle)')),
+    ('command', lazy_gettext('Execute Command')),
+    ('activate_controller', lazy_gettext('Activate Controller')),
+    ('deactivate_controller', lazy_gettext('Deactivate Controller')),
+    ('pause_pid', lazy_gettext('PID Pause')),
+    ('resume_pid', lazy_gettext('PID Resume')),
+    ('method_pid', lazy_gettext('PID Set Method')),
+    ('setpoint_pid', lazy_gettext('PID Set Setpoint')),
+    ('email', lazy_gettext('Email Notification')),
+    ('flash_lcd_off', lazy_gettext('LCD Flashing Off')),
+    ('flash_lcd_on', lazy_gettext('LCD Flashing On')),
+    ('lcd_backlight_off', lazy_gettext('LCD Backlight Off')),
+    ('lcd_backlight_on', lazy_gettext('LCD Backlight On')),
+    ('photo', lazy_gettext('Capture Photo')),
+
+    # TODO: These have been disabled until they can be properly tested
+    # ('photo_email', lazy_gettext('Email Photo')),
+    # ('video', lazy_gettext('Video')),
+    # ('video_email', lazy_gettext('Email Video'))
+]
+
 # Calibration
 CALIBRATION_DEVICES = [
     ('setup_atlas_ph', 'Atlas Scientific pH Sensor'),
     ('setup_ds_resolution', 'DS-Type Temperature Sensors (e.g. DS18B20)')
-]
-
-# Measurements that must be stured in influxdb as an integer instead of a float
-MEASUREMENT_INTEGERS = [
-    'pressure'
 ]
 
 # Devices that have a default address that doesn't change
@@ -652,43 +696,6 @@ LIST_DEVICES_INTERNAL_PI = [
     'SIGNAL_RPM'
 ]
 
-# Conditional Types
-CONDITIONAL_TYPES = {
-    'conditional_measurement': {
-        'name': lazy_gettext('Measurement')},
-    'conditional_output': {
-        'name': lazy_gettext('Output')},
-    'conditional_edge': {
-        'name': lazy_gettext('Edge')},
-    'conditional_sunrise_sunset': {
-        'name': lazy_gettext('Sunrise/Sunset')}
-}
-
-# Conditional actions
-# TODO: Some have been disabled until they can be properly tested
-CONDITIONAL_ACTIONS = collections.OrderedDict([
-    ('output', lazy_gettext('Output (Duration)')),
-    ('output_pwm', lazy_gettext('Output (Duty Cycle)')),
-    ('command', lazy_gettext('Command')),
-    ('activate_pid', lazy_gettext('Activate PID')),
-    ('deactivate_pid', lazy_gettext('Deactivate PID')),
-    ('resume_pid', lazy_gettext('Resume PID')),
-    ('pause_pid', lazy_gettext('Pause PID')),
-    ('setpoint_pid', lazy_gettext('Set PID Setpoint')),
-    ('method_pid', lazy_gettext('Set PID Method')),
-    ('activate_timer', lazy_gettext('Activate Timer')),
-    ('deactivate_timer', lazy_gettext('Deactivate Timer')),
-    ('email', lazy_gettext('Email')),
-    ('flash_lcd_off', lazy_gettext('Flash LCD Off')),
-    ('flash_lcd_on', lazy_gettext('Flash LCD On')),
-    ('lcd_backlight_off', lazy_gettext('LCD Backlight Off')),
-    ('lcd_backlight_on', lazy_gettext('LCD Backlight On')),
-    ('photo', lazy_gettext('Photo')),
-    # ('photo_email', lazy_gettext('Email Photo')),
-    # ('video', lazy_gettext('Video')),
-    # ('video_email', lazy_gettext('Email Video'))
-])
-
 # User Roles
 USER_ROLES = [
     dict(id=1, name='Admin',
@@ -740,7 +747,7 @@ SQL_DATABASE_MYCODO = os.path.join(DATABASE_PATH, 'mycodo.db')
 MYCODO_DB_PATH = 'sqlite:///' + SQL_DATABASE_MYCODO
 
 # File paths/logging
-USAGE_REPORTS_PATH = os.path.join(INSTALL_DIRECTORY, 'relay_usage_reports')
+USAGE_REPORTS_PATH = os.path.join(INSTALL_DIRECTORY, 'output_usage_reports')
 DEPENDENCY_INIT_FILE = os.path.join(INSTALL_DIRECTORY, '.dependency')
 UPGRADE_INIT_FILE = os.path.join(INSTALL_DIRECTORY, '.upgrade')
 BACKUP_PATH = '/var/Mycodo-backups'  # Where Mycodo backups are stored

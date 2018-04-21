@@ -27,7 +27,7 @@ class InputAdd(FlaskForm):
 
 
 class InputMod(FlaskForm):
-    input_id = IntegerField('Input ID', widget=widgets.HiddenInput())
+    input_id = StringField('Input ID', widget=widgets.HiddenInput())
     name = StringField(
         lazy_gettext('Name'),
         validators=[DataRequired()]
@@ -44,7 +44,7 @@ class InputMod(FlaskForm):
     device_loc = StringField(lazy_gettext('Device Location'))  # Second device location type
     i2c_bus = IntegerField(lazy_gettext('I<sup>2</sup>C Bus'))
     baud_rate = IntegerField(lazy_gettext('Baud Rate'))
-    power_relay_id = IntegerField(lazy_gettext('Power Output'))  # For powering input
+    power_output_id = StringField(lazy_gettext('Power Output'))  # For powering input
     calibrate_sensor_measure = StringField(lazy_gettext('Calibration Measurement'))
     resolution = IntegerField(lazy_gettext('Resolution'))
     sensitivity = IntegerField(lazy_gettext('Sensitivity'))
@@ -55,12 +55,6 @@ class InputMod(FlaskForm):
     port = IntegerField(lazy_gettext('Port'))
     times_check = IntegerField(lazy_gettext('Times to Check'))
     deadline = IntegerField(lazy_gettext('Deadline (seconds)'))
-
-    # Multiplexer
-    # TODO: Remove in 6.0
-    multiplexer_address = StringField(lazy_gettext('Multiplexer (MX)'))
-    multiplexer_bus = StringField(lazy_gettext('Mx I<sup>2</sup>C Bus'))
-    multiplexer_channel = IntegerField(lazy_gettext('Mx Channel'))
 
     # Linux Command
     cmd_command = StringField(lazy_gettext('Command'))
@@ -94,15 +88,15 @@ class InputMod(FlaskForm):
     switch_reset_period = IntegerField(lazy_gettext('Reset Period'))
 
     # Pre-Output
-    pre_relay_id = StringField(lazy_gettext('Pre Output'))
-    pre_relay_duration = DecimalField(
+    pre_output_id = StringField(lazy_gettext('Pre Output'))
+    pre_output_duration = DecimalField(
         lazy_gettext('Pre Out Duration'),
         validators=[validators.NumberRange(
             min=0,
             max=86400
         )]
     )
-    pre_relay_during_measure = BooleanField(lazy_gettext('Pre During Measure'))
+    pre_output_during_measure = BooleanField(lazy_gettext('Pre During Measure'))
 
     # RPM/Signal
     weighting = DecimalField(lazy_gettext('Weighting'))
@@ -110,16 +104,6 @@ class InputMod(FlaskForm):
     sample_time = DecimalField(lazy_gettext('Sample Time (seconds)'))
 
     # SHT options
-    sht_clock_pin = IntegerField(
-        lazy_gettext('Clock Pin'),
-        validators=[validators.NumberRange(
-            min=0,
-            max=100,
-            message=lazy_gettext("If using a SHT sensor, enter the GPIO "
-                                 "connected to the clock pin (using BCM "
-                                 "numbering)")
-        )]
-    )
     sht_voltage = StringField(lazy_gettext('Voltage'))
 
     input_mod = SubmitField(lazy_gettext('Save'))

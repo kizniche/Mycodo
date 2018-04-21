@@ -6,13 +6,14 @@ from flask import url_for
 from flask_babel import gettext
 
 from mycodo.databases.models import Conditional
+from mycodo.databases.models import ConditionalActions
 from mycodo.databases.models import DisplayOrder
 from mycodo.databases.models import PID
 from mycodo.mycodo_flask.extensions import db
 from mycodo.mycodo_flask.utils.utils_general import add_display_order
 from mycodo.mycodo_flask.utils.utils_general import flash_form_errors
 from mycodo.mycodo_flask.utils.utils_general import flash_success_errors
-from mycodo.utils.system_pi import csv_to_list_of_int
+from mycodo.utils.system_pi import csv_to_list_of_str
 
 logger = logging.getLogger(__name__)
 
@@ -32,23 +33,27 @@ def func_add(form_add_func):
             if form_add_func.func_type.data == 'pid':
                 new_func = PID().save()
                 if not error:
-                    display_order = csv_to_list_of_int(
+                    display_order = csv_to_list_of_str(
                         DisplayOrder.query.first().pid)
                     DisplayOrder.query.first().pid = add_display_order(
-                        display_order, new_func.id)
+                        display_order, new_func.unique_id)
                     db.session.commit()
             elif form_add_func.func_type.data in ['conditional_measurement',
                                                   'conditional_output',
+                                                  'conditional_output_pwm',
                                                   'conditional_edge',
-                                                  'conditional_sunrise_sunset']:
+                                                  'conditional_run_pwm_method',
+                                                  'conditional_sunrise_sunset',
+                                                  'conditional_timer_daily_time_point',
+                                                  'conditional_timer_duration']:
                 new_func = Conditional()
                 new_func.conditional_type = form_add_func.func_type.data
                 new_func.save()
                 if not error:
-                    display_order = csv_to_list_of_int(
+                    display_order = csv_to_list_of_str(
                         DisplayOrder.query.first().conditional)
                     DisplayOrder.query.first().conditional = add_display_order(
-                        display_order, new_func.id)
+                        display_order, new_func.unique_id)
                     db.session.commit()
 
         except sqlalchemy.exc.OperationalError as except_msg:
