@@ -49,8 +49,49 @@ class TSL2561Sensor(AbstractInput):
     def get_measurement(self):
         """ Gets the TSL2561's lux """
         self._lux = None
-        return self.tsl.lux()
+        saturated = False
+        try:
+            lux = self.tsl.lux()
+            return lux
+        except Exception as err:
+            if 'saturated' in repr(err):
+                self.logger.error(
+                    "Could not obtain measurement: Sensor is saturated. "
+                    "Setting integration time to 101 ms and trying again")
+                saturated = True
+            else:
+                self.logger.exception("Error: {}".format(err))
 
+        if saturated:
+            from tsl2561.constants import TSL2561_INTEGRATIONTIME_101MS
+            self.tsl.set_integration_time(TSL2561_INTEGRATIONTIME_101MS)
+            saturated = False
+            try:
+                lux = self.tsl.lux()
+                return lux
+            except Exception as err:
+                if 'saturated' in repr(err):
+                    self.logger.error(
+                        "Could not obtain measurement: Sensor is saturated. "
+                        "Setting integration time to 13 ms and trying again")
+                    saturated = True
+                else:
+                    self.logger.exception("Error: {}".format(err))
+
+        if saturated:
+            from tsl2561.constants import TSL2561_INTEGRATIONTIME_13MS
+            self.tsl.set_integration_time(TSL2561_INTEGRATIONTIME_13MS)
+            try:
+                lux = self.tsl.lux()
+                return lux
+            except Exception as err:
+                if 'saturated' in repr(err):
+                    self.logger.error(
+                        "Could not obtain measurement: Sensor is saturated. "
+                        "Recording value as 65536.")
+                    return 65536.0
+                else:
+                    self.logger.exception("Error: {}".format(err))
 
     def read(self):
         """
@@ -60,7 +101,8 @@ class TSL2561Sensor(AbstractInput):
         """
         try:
             self._lux = self.get_measurement()
-            return  # success - no errors
+            if self._lux is not None:
+                return  # success - no errors
         except Exception as e:
             self.logger.exception(
                 "{cls} raised an exception when taking a reading: "
