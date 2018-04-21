@@ -152,6 +152,7 @@ class DHT22Sensor(AbstractInput):
 
         # Ensure if the power pin turns off, it is turned back on
         if (self.power_output_id and
+                db_retrieve_table_daemon(Output, unique_id=self.power_output_id) and
                 self.control.output_state(self.power_output_id) == 'off'):
             self.logger.error(
                 'Sensor power output {rel} detected as being off. '
