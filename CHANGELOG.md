@@ -1,3 +1,10 @@
+## 6.0.1 (2018-04-21)
+
+### Bugfixes
+
+ - Fix setting landing page ([#452](https://github.com/kizniche/mycodo/issues/452))
+ - Fix scanning for DS18B20 sensors ([#452](https://github.com/kizniche/mycodo/issues/452))
+
 ## 6.0.0 (2018-04-21)
 
 Version 6 has changes to the database schema that could not be upgraded to. To upgrade to this version, the settings database must be created anew. You either have the options of staying at the last version (5.7.x), or deleting the settings database and upgrading. A fresh install is necessary to run this version.
