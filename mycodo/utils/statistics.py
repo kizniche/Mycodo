@@ -206,9 +206,7 @@ def recreate_stat_file():
         ['num_sensors', 0],
         ['num_sensors_active', 0],
         ['num_conditionals', 0],
-        ['num_conditionals_active', 0],
-        ['num_timers', 0],
-        ['num_timers_active', 0]
+        ['num_conditionals_active', 0]
     ]
 
     with open(STATS_CSV, 'w') as csv_stat_file:
