@@ -4,6 +4,7 @@
 
  - Fix dependency check ([#422](https://github.com/kizniche/mycodo/issues/422))
  - Try lower integration times when TSL2561 sensor is saturated ([#450](https://github.com/kizniche/mycodo/issues/450))
+ - Fix DHT11/DHT22 output power check ([#454](https://github.com/kizniche/mycodo/issues/454))
 
 ## 6.0.4 (2018-04-21)
 

@@ -422,8 +422,8 @@ def input_activate(form_mod):
     elif (input_dev.device != 'LinuxCommand' and
             not input_dev.location and
             input_dev.device not in DEVICES_DEFAULT_LOCATION):
-        flash("Cannot activate Input without the GPIO/I2C Address/Port "
-              "to communicate with it set.", "error")
+        flash("Cannot activate Input without the location (GPIO/I2C "
+              "Address/Port/etc.) to communicate with it set.", "error")
         return redirect(url_for('routes_page.page_data'))
     controller_activate_deactivate('activate', 'Input',  input_id)
 
