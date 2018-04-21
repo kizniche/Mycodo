@@ -9,13 +9,17 @@ from datetime import timedelta
 import os
 from flask_babel import lazy_gettext
 
-MYCODO_VERSION = '5.7.2'
+MYCODO_VERSION = '5.7.3'
 ALEMBIC_VERSION = 'd881bacc5814'
 
 #  FORCE_UPGRADE_MASTER
 #  Set True to enable upgrading to the master branch of the Mycodo repository.
 #  Set False to enable upgrading to the latest Release version (default).
 FORCE_UPGRADE_MASTER = False
+
+# Final release for each major version number
+# Used to determine proper upgrade page to display
+FINAL_RELEASES = ['5.7.3']
 
 LANGUAGES = {
     'en': 'English',

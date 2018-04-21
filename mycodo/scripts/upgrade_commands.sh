@@ -64,7 +64,7 @@ Options:
   install-numpy                 Install numpy
   install-wiringpi              Install wiringpi
   upgrade                       Upgrade Mycodo to the latest release
-  upgrade-next-release          Upgrade Mycodo to the next major version release
+  upgrade-major-release         Upgrade Mycodo to a major version release
   upgrade-master                Upgrade Mycodo to the master branch of the Mycodo github repository
   upgrade-post                  Post-Upgrade commands
   web-server-connect            Attampt to connect to the web server
@@ -78,7 +78,7 @@ case "${1:-''}" in
         /bin/bash ${MYCODO_PATH}/mycodo/scripts/mycodo_backup_create.sh
     ;;
     'backup-restore')
-        /bin/bash ${MYCODO_PATH}/mycodo/scripts/mycodo_backup_restore.sh $2
+        /bin/bash ${MYCODO_PATH}/mycodo/scripts/mycodo_backup_restore.sh ${2}
     ;;
     'compile-mycodo-wrapper')
         printf "\n#### Compiling mycodo_wrapper\n"
@@ -415,11 +415,11 @@ case "${1:-''}" in
     'upgrade')
         /bin/bash ${MYCODO_PATH}/mycodo/scripts/upgrade_mycodo_release.sh
     ;;
-    'upgrade-next-release')
-        /bin/bash ${MYCODO_PATH}/mycodo/scripts/upgrade_mycodo_release_next.sh
-    ;;
     'upgrade-master')
         /bin/bash ${MYCODO_PATH}/mycodo/scripts/upgrade_mycodo_release.sh force-upgrade-master
+    ;;
+    'upgrade-release-major')
+        /bin/bash ${MYCODO_PATH}/mycodo/scripts/upgrade_mycodo_release_maj.sh ${2}
     ;;
     'upgrade-post')
         /bin/bash ${MYCODO_PATH}/mycodo/scripts/upgrade_post.sh

@@ -113,8 +113,16 @@ int main(int argc, char *argv[]) {
 			upgrade_commands(argv[0], "uninstall-pigpiod");
 		} else if (strcmp(argv[1], "upgrade") == 0) {
 			upgrade_commands(argv[0], "upgrade");
-		} else if (strcmp(argv[1], "upgrade-next-release") == 0) {
-            upgrade_commands(argv[0], "upgrade_next_release");
+        } else if (strcmp(argv[1], "upgrade-release-major") == 0 && (argc > 2)) {
+		    char path[255];
+            strncpy(path, argv[0], sizeof(path));
+            dirname(path);
+			char restoreScript[255];
+			strncpy(restoreScript, "/bin/bash ", sizeof(restoreScript));
+			strncat(restoreScript, path, sizeof(restoreScript));
+			sprintf(cmd, "/upgrade_commands.sh upgrade-release-major %s", argv[2]);
+			strncat(restoreScript, cmd, sizeof(restoreScript));
+			system(restoreScript);
         } else if (strcmp(argv[1], "upgrade-master") == 0) {
 			upgrade_commands(argv[0], "upgrade-master");
 		}

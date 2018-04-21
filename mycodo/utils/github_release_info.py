@@ -43,6 +43,16 @@ def github_releases(major_version):
     return sort_reverse_list(all_versions)
 
 
+def github_latest_release():
+    """ Return the latest Mycodo release version """
+    mycodo_releases = json_to_dict(release_url)
+    all_versions = []
+    for each_release in mycodo_releases:
+        if re.match('v.*(\d\.\d\.\d)', each_release['name']):
+            all_versions.append(each_release['name'][1:])
+    return sort_reverse_list(all_versions)[0]
+
+
 def is_latest_installed(major_number):
     """
     Check if the latest Mycodo release version is installed.

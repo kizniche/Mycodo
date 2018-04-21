@@ -39,29 +39,27 @@
   <div class="container">
     {% include 'flash_messages.html' %}
 
-    {% if current_release == '5.7.3' and current_release != latest_release and upgrade != 1 %}
+    {% if current_release in final_releases and
+          current_release != current_latest_release and
+          current_latest_release != '0.0.0' and
+          upgrade != 1 %}
 
     <div style="padding: 0.5em 0">
       Installed version: <a href="https://github.com/kizniche/Mycodo/releases/tag/v{{current_release}}" target="_blank">{{current_release}}</a>
-      <br>Latest version: <a href="https://github.com/kizniche/Mycodo/releases/tag/v{{latest_release}}" target="_blank">{{latest_release}}</a>
+      <br>Latest version: <a href="https://github.com/kizniche/Mycodo/releases/tag/v{{current_latest_release}}" target="_blank">{{current_latest_release}}</a>
     </div>
     <div style="padding: 0.5em 0">
-      You are {{releases_behind}} release{% if releases_behind > 1 %}s{% endif %} behind the latest version.
       <br>Refer to the <a href="https://github.com/kizniche/Mycodo/blob/master/CHANGELOG.md" target="_blank">Changelog</a> for a list of all changes.
     </div>
-
-    <p>You care currently running Mycodo <a href="https://github.com/kizniche/Mycodo/releases/tag/v{{current_release}}" target="_blank">{{current_release}}</a>. This is the last version of the 5.x releases.</p>
-    <p>The settings database in the >= 6.x versions are not compatible with <= {{current_release}} versions, therefore the database will have to be recreated in order to upgrade. No settings or configurations will be transferred from 5.x to 6.x, so it is advisable to backup these settings by either saving the settings database (~/Mycodo/databases/mycodo.db) or writing down information (GPIO pins, PID settings, etc.), in order to reference those settings when configuring 6.0. I repeat, this will effectively be deleting your database during th eupgrade (though there will be the ability to restore a previous backup with a database).</p>
-    <p>Note: If you are really behind on upgrades (i.e. multiple major version numbers behind), note that you will only be upgraded to the next major version number. You may then upgrade to the next major version number by revisiting this upgrade page and continuing the process.</p>
-    <p>If you would like to install Mycodo 6.x, use the following upgrade button.</p>
-
+    <p>Version incompatibility detected! The settings database in {{current_latest_major_version}} is not compatible with <= {{current_release}} versions, therefore the database will have to be recreated in order to upgrade. No settings or configurations will be transferred to v{{current_latest_release}}, so it is advisable to backup these settings by either saving the settings database (~/Mycodo/databases/mycodo.db) or writing down information (GPIO pins, PID settings, etc.). I repeat, this will effectively be deleting your database during the upgrade (though there will be the ability to restore a previous backup with a database).</p>
+    <p>If you would like to upgrade to Mycodo v{{current_latest_release}}, select the button below.</p>
     <div class="form-inline" style="padding-bottom: 1em">
       <form method="post" action="/admin/upgrade">
         <input type="hidden" name="form-name" value="upgrade">
         {{form_upgrade.csrf_token}}
         <div>
           <div class="form-group">
-            {{form_upgrade.upgrade_next_major_version(class_='btn btn-primary', **{'onclick':'return confirm("Your settings database will not be transfered if you choose to upgrade. Confirm that you really want to do this.")'})}}
+            {{form_upgrade.upgrade_major_version(class_='btn btn-primary', **{'onclick':'return confirm("Your settings database will not be transfered if you choose to upgrade. Confirm that you really want to do this.")'})}}
           </div>
         </div>
       </form>
@@ -121,7 +119,7 @@
 
     <div style="padding: 0.5em 0">
       Installed version: <a href="https://github.com/kizniche/Mycodo/releases/tag/v{{current_release}}" target="_blank">{{current_release}}</a>
-      <br>Latest version: <a href="https://github.com/kizniche/Mycodo/releases/tag/v{{latest_release}}" target="_blank">{{latest_release}}</a>
+      <br>Latest version: <a href="https://github.com/kizniche/Mycodo/releases/tag/v{{current_major_release}}" target="_blank">{{current_major_release}}</a>
     </div>
     <div style="padding: 0.5em 0">
       You are {{releases_behind}} release{% if releases_behind > 1 %}s{% endif %} behind the latest version.
@@ -155,7 +153,7 @@
               <a href="https://github.com/kizniche/Mycodo/releases/tag/v{{ each_release }}" target="_blank" {% if current_release == each_release %}style="color: red"{% endif %}>v{{ each_release }}</a>
             </td>
             <td>
-              {% if each_release == current_release %}{{_('current')}}{% elif each_release == latest_release %}{{_('latest')}}{% endif %}
+              {% if each_release == current_release %}{{_('current')}}{% elif each_release == current_major_release %}{{_('latest')}}{% endif %}
             </td>
           </tr>
         {% endfor %}

@@ -23,6 +23,7 @@ from mycodo.config import BACKUP_PATH
 from mycodo.config import DEPENDENCY_INIT_FILE
 from mycodo.config import DEPENDENCY_LOG_FILE
 from mycodo.config import DEVICE_INFO
+from mycodo.config import FINAL_RELEASES
 from mycodo.config import FORCE_UPGRADE_MASTER
 from mycodo.config import INSTALL_DIRECTORY
 from mycodo.config import MATH_INFO
@@ -39,6 +40,7 @@ from mycodo.mycodo_flask.forms import forms_dependencies
 from mycodo.mycodo_flask.forms import forms_misc
 from mycodo.mycodo_flask.routes_static import inject_variables
 from mycodo.mycodo_flask.utils import utils_general
+from mycodo.utils.github_release_info import github_latest_release
 from mycodo.utils.github_release_info import github_releases
 from mycodo.utils.statistics import return_stat_file_dict
 from mycodo.utils.system_pi import can_perform_backup
@@ -379,14 +381,16 @@ def admin_upgrade():
     # Check for any new Mycodo releases on github
     releases = []
     try:
-        maj_version = int(MYCODO_VERSION.split('.')[0])
-        releases = github_releases(maj_version)
+        current_maj_version = int(MYCODO_VERSION.split('.')[0])
+        releases = github_releases(current_maj_version)
     except Exception as err:
         flash(gettext("Could not determine local mycodo version or "
                       "online release versions: {err}".format(err=err)),
               "error")
     if len(releases):
-        latest_release = releases[0]
+        current_latest_release = github_latest_release()
+        current_latest_major_version = current_latest_release.split('.')[0]
+        current_major_release = releases[0]
         current_releases = []
         releases_behind = None
         for index, each_release in enumerate(releases):
@@ -394,11 +398,14 @@ def admin_upgrade():
                 current_releases.append(each_release)
             if parse_version(each_release) == parse_version(MYCODO_VERSION):
                 releases_behind = index
-        if parse_version(releases[0]) > parse_version(MYCODO_VERSION):
+        if (parse_version(releases[0]) > parse_version(MYCODO_VERSION) or
+                parse_version(current_latest_release[0]) > parse_version(MYCODO_VERSION)):
             upgrade_available = True
     else:
         current_releases = []
-        latest_release = '0.0.0'
+        current_latest_release = '0.0.0'
+        current_latest_major_version = '0'
+        current_major_release = '0.0.0'
         releases_behind = 0
 
     # Update database to reflect the current upgrade status
@@ -445,7 +452,7 @@ def admin_upgrade():
                 mod_misc.mycodo_upgrade_available = False
                 db.session.commit()
                 flash(gettext("The upgrade has started"), "success")
-        elif (form_upgrade.upgrade_next_major_version.data and
+        elif (form_upgrade.upgrade_major_version.data and
                 upgrade_available):
             backup_size, free_before, free_after = can_perform_backup()
             if free_after / 1000000 < 50:
@@ -462,9 +469,10 @@ def admin_upgrade():
                                       size_after=free_after / 1000000),
                     'error')
             else:
-                cmd = "{pth}/mycodo/scripts/mycodo_wrapper upgrade-next-release" \
+                cmd = "{pth}/mycodo/scripts/mycodo_wrapper upgrade-release-major {ver}" \
                       " | ts '[%Y-%m-%d %H:%M:%S]'" \
                       " >> {log} 2>&1".format(pth=INSTALL_DIRECTORY,
+                                              ver=current_latest_major_version,
                                               log=UPGRADE_LOG_FILE)
                 subprocess.Popen(cmd, shell=True)
 
@@ -472,18 +480,21 @@ def admin_upgrade():
                 mod_misc = Misc.query.first()
                 mod_misc.mycodo_upgrade_available = False
                 db.session.commit()
-            flash(gettext("The upgrade has started"), "success")
+            flash(gettext("The major version upgrade has started"), "success")
         else:
             flash(gettext("You cannot upgrade if an upgrade is not available"),
                   "error")
 
     return render_template('admin/upgrade.html',
+                           final_releases=FINAL_RELEASES,
                            force_upgrade_master=FORCE_UPGRADE_MASTER,
                            form_backup=form_backup,
                            form_upgrade=form_upgrade,
                            current_release=MYCODO_VERSION,
                            current_releases=current_releases,
-                           latest_release=latest_release,
+                           current_major_release=current_major_release,
+                           current_latest_release=current_latest_release,
+                           current_latest_major_version=current_latest_major_version,
                            releases_behind=releases_behind,
                            upgrade_available=upgrade_available,
                            upgrade=upgrade,
