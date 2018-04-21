@@ -1,3 +1,9 @@
+## 6.0.5 (Unreleased)
+
+### Bugfixes
+
+ - Fix dependency check ([#422](https://github.com/kizniche/mycodo/issues/422))
+
 ## 6.0.4 (2018-04-21)
 
 ### Bugfixes

@@ -218,7 +218,7 @@ def admin_dependencies(device):
     try:
         with open(DEPENDENCY_INIT_FILE) as f:
             dep = int(f.read(1))
-    except IOError:
+    except (IOError, ValueError):
         try:
             with open(DEPENDENCY_INIT_FILE, 'w') as f:
                 f.write('0')
