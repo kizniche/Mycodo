@@ -85,6 +85,7 @@ def conditional_mod(form):
 
         elif cond_mod.conditional_type == 'conditional_timer_daily_time_span':
             error = check_form_timer_daily_time_span(form, error)
+            cond_mod.period = form.period.data
             cond_mod.timer_start_time = form.timer_start_time.data
             cond_mod.timer_end_time = form.timer_end_time.data
 
