@@ -8,8 +8,8 @@ from datetime import timedelta
 import os
 from flask_babel import lazy_gettext
 
-MYCODO_VERSION = '6.0.4'
-ALEMBIC_VERSION = '032b48f920b8'
+MYCODO_VERSION = '6.0.5'
+ALEMBIC_VERSION = 'c10d401e574c'
 
 #  FORCE_UPGRADE_MASTER
 #  Set True to enable upgrading to the master branch of the Mycodo repository.
@@ -572,7 +572,8 @@ CONDITIONALS = [
     ('conditional_edge', generate_conditional_name('Edge')),
     ('conditional_run_pwm_method', generate_conditional_name('Run PWM Method')),
     ('conditional_sunrise_sunset', generate_conditional_name('Sunrise/Sunset')),
-    ('conditional_timer_daily_time_point', generate_conditional_name('Timer (Daily)')),
+    ('conditional_timer_daily_time_point', generate_conditional_name('Timer (Daily Point)')),
+    ('conditional_timer_daily_time_span', generate_conditional_name('Timer (Daily Span)')),
     ('conditional_timer_duration', generate_conditional_name('Timer (Duration)'))
 ]
 

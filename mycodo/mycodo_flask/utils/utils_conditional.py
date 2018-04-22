@@ -10,7 +10,6 @@ from mycodo.databases.models import Camera
 from mycodo.databases.models import Conditional
 from mycodo.databases.models import ConditionalActions
 from mycodo.databases.models import DisplayOrder
-from mycodo.mycodo_client import DaemonControl
 from mycodo.mycodo_flask.extensions import db
 from mycodo.mycodo_flask.utils.utils_general import controller_activate_deactivate
 from mycodo.mycodo_flask.utils.utils_general import delete_entry_with_id
@@ -83,6 +82,11 @@ def conditional_mod(form):
         elif cond_mod.conditional_type == 'conditional_timer_daily_time_point':
             error = check_form_timer_daily_time_point(form, error)
             cond_mod.timer_start_time = form.timer_start_time.data
+
+        elif cond_mod.conditional_type == 'conditional_timer_daily_time_span':
+            error = check_form_timer_daily_time_span(form, error)
+            cond_mod.timer_start_time = form.timer_start_time.data
+            cond_mod.timer_end_time = form.timer_end_time.data
 
         elif cond_mod.conditional_type == 'conditional_timer_duration':
             error = check_form_timer_duration(form, error)
@@ -557,7 +561,18 @@ def check_form_timer_daily_time_point(form, error):
     """Checks if the submitted form has any errors"""
     if not epoch_of_next_time('{hm}:00'.format(hm=form.timer_start_time.data)):
         error.append("{id} must be a valid HH:MM time format".format(
-            id=form.timer_duration.label.text))
+            id=form.timer_start_time.label.text))
+    return error
+
+
+def check_form_timer_daily_time_span(form, error):
+    """Checks if the submitted form has any errors"""
+    if not epoch_of_next_time('{hm}:00'.format(hm=form.timer_start_time.data)):
+        error.append("{id} must be a valid HH:MM time format".format(
+            id=form.timer_start_time.label.text))
+    if not epoch_of_next_time('{hm}:00'.format(hm=form.timer_end_time.data)):
+        error.append("{id} must be a valid HH:MM time format".format(
+            id=form.timer_end_time.label.text))
     return error
 
 

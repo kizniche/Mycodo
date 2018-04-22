@@ -1,5 +1,9 @@
 ## 6.0.5 (Unreleased)
 
+### Features
+
+- Add Conditional: Time Span ([#444](https://github.com/kizniche/mycodo/issues/444))
+
 ### Bugfixes
 
  - Fix dependency check ([#422](https://github.com/kizniche/mycodo/issues/422))

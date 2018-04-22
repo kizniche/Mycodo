@@ -43,6 +43,7 @@ class Conditional(CRUDMixin, db.Model):
     # Timer options
     timer_start_offset = db.Column(db.Integer, default=0)
     timer_start_time = db.Column(db.Text, default='16:30')
+    timer_end_time = db.Column(db.Text, default='19:00')
 
     # Method options
     method_start_time = db.Column(db.Text, default=None)

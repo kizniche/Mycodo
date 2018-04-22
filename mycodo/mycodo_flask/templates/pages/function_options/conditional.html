@@ -70,6 +70,8 @@
         {% include 'pages/function_options/conditional_options/sunrise_sunset.html' %}
       {% elif each_cond.conditional_type == 'conditional_timer_daily_time_point' %}
         {% include 'pages/function_options/conditional_options/timer_daily_time_point.html' %}
+      {% elif each_cond.conditional_type == 'conditional_timer_daily_time_span' %}
+        {% include 'pages/function_options/conditional_options/timer_daily_time_span.html' %}
       {% elif each_cond.conditional_type == 'conditional_timer_duration' %}
         {% include 'pages/function_options/conditional_options/timer_duration.html' %}
       {% endif %}

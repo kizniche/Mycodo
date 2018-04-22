@@ -1183,7 +1183,7 @@ Run a timer that triggers Contitional Actions every period.
 |                        | seconds after the Conditional is activated.     |
 +------------------------+-------------------------------------------------+
 
-Timer (Daily Time) Conditional Statement If Options
+Timer (Daily Time Point) Conditional Statement If Options
 '''''''''''''''''''''''''''''''''''''''''''''''''''
 
 Run a timer that triggers Contitional Actions at a specific time every day.
@@ -1196,6 +1196,29 @@ Run a timer that triggers Contitional Actions at a specific time every day.
 |                       | MM donoting minutes. Time is in 24-hour format. |
 +-----------------------+-------------------------------------------------+
 
+Timer (Daily Time Span) Conditional Statement If Options
+'''''''''''''''''''''''''''''''''''''''''''''''''''
+
+Run a timer that triggers Contitional Actions at a specific period if it's between the set start and end times. For example, if the Start Time is set to 10:00 and End Time set to 11:00 and Period set to 120 seconds, the Conditional Actions will trigger every 120 seconds when the time is between 10 AM and 11 AM.
+
+This may be useful, for instance, if you desire an Output to remain on during a particular time period and you want to prevent power outages from interupting the cycle (which a simple Time Point Timer could not prevent against because it only triggers once at the Start Time). By setting an Output to turn the lights on every few minutes during the Start -> End period, it ensured the Output remains on during this period.
+
++-----------------------+-------------------------------------------------+
+| Setting               | Description                                     |
++=======================+=================================================+
+| Start Time (HH:MM)    | Set the start time to trigger Conditional       |
+|                       | Actions, in the format "HH:MM", with HH         |
+|                       | denoting hours, and MM donoting minutes. Time   |
+|                       | is in 24-hour format.                           |
++-----------------------+-------------------------------------------------+
+| End Time (HH:MM)      | Set the end time to trigger Conditional         |
+|                       | Actions, in the format "HH:MM", with HH         |
+|                       | denoting hours, and MM donoting minutes. Time   |
+|                       | is in 24-hour format.                           |
++-----------------------+-------------------------------------------------+
+| Period (seconds)      | The period of time between triggering           |
+|                       | Conditional Actions.                            |
++------------------------+------------------------------------------------+
 
 Conditional Statement Actions
 '''''''''''''''''''''''''''''

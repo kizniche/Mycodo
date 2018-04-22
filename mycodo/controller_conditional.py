@@ -54,6 +54,7 @@ from mycodo.utils.send_data import send_email
 from mycodo.utils.sunriseset import Sun
 from mycodo.utils.system_pi import cmd_output
 from mycodo.utils.system_pi import epoch_of_next_time
+from mycodo.utils.system_pi import time_between_range
 
 MYCODO_DB_PATH = 'sqlite:///' + SQL_DATABASE_MYCODO
 
@@ -106,7 +107,7 @@ class ConditionalController(threading.Thread):
 
         self.smtp_wait_timer = now + 3600
 
-        # Set up all measurement conditionals
+        # Set up measurement conditional
         if self.conditional_type == 'conditional_measurement':
             self.period = cond.period
             self.refractory_period = cond.refractory_period
@@ -114,22 +115,29 @@ class ConditionalController(threading.Thread):
             self.smtp_wait_timer = now + 3600
             self.timer_period = now + self.period
 
-        # Set up all conditional timers (daily time point)
-        if self.conditional_type == 'conditional_timer_daily_time_point':
+        # Set up conditional timer (daily time point)
+        elif self.conditional_type == 'conditional_timer_daily_time_point':
             self.timer_start_time = cond.timer_start_time
             self.timer_period = epoch_of_next_time(
                 '{hm}:00'.format(hm=cond.timer_start_time))
 
-        # Set up all conditional timers (duration)
-        if self.conditional_type == 'conditional_timer_duration':
+        # Set up conditional timer (daily time span)
+        elif self.conditional_type == 'conditional_timer_daily_time_span':
+            self.timer_start_time = cond.timer_start_time
+            self.timer_end_time = cond.timer_end_time
+            self.period = cond.period
+            self.timer_period = now
+
+        # Set up conditional timer (duration)
+        elif self.conditional_type == 'conditional_timer_duration':
             self.period = cond.period
             if cond.timer_start_offset:
                 self.timer_period = now + cond.timer_start_offset
             else:
                 self.timer_period = now
 
-        # Set up all Run PWM Method conditionals
-        if self.conditional_type == 'conditional_run_pwm_method':
+        # Set up Run PWM Method conditional
+        elif self.conditional_type == 'conditional_run_pwm_method':
             self.unique_id_1 = cond.unique_id_1
             self.unique_id_2 = cond.unique_id_2
             self.period = cond.period
@@ -151,8 +159,8 @@ class ConditionalController(threading.Thread):
             else:
                 self.timer_period = now
 
-        # Set up all sunrise/sunset conditionals
-        if self.conditional_type == 'conditional_sunrise_sunset':
+        # Set up sunrise/sunset conditional
+        elif self.conditional_type == 'conditional_sunrise_sunset':
             self.timer_refractory_period = 0
             self.period = 1000
             # Set the next trigger at the specified sunrise/sunset time (+-offsets)
@@ -183,7 +191,7 @@ class ConditionalController(threading.Thread):
                     if ((self.conditional_type == 'conditional_measurement' and
                             self.timer_refractory_period < time.time()) or
                             self.conditional_type in ['conditional_sunrise_sunset',
-                                                               'conditional_run_pwm_method']
+                                                      'conditional_run_pwm_method']
                             ):
                         while self.timer_period < time.time():
                             self.timer_period += self.period
@@ -205,12 +213,14 @@ class ConditionalController(threading.Thread):
 
                     elif (self.conditional_type in [
                             'conditional_timer_daily_time_point',
+                            'conditional_timer_daily_time_span',
                             'conditional_timer_duration']
                             ):
                         if self.conditional_type == 'conditional_timer_daily_time_point':
                             self.timer_period = epoch_of_next_time(
                                 '{hm}:00'.format(hm=self.timer_start_time))
-                        elif self.conditional_type == 'conditional_timer_duration':
+                        elif self.conditional_type in ['conditional_timer_duration',
+                                                       'conditional_timer_daily_time_span']:
                             while self.timer_period < time.time():
                                 self.timer_period += self.period
                         check_approved = True
@@ -439,11 +449,17 @@ class ConditionalController(threading.Thread):
             # Since the check time is the trigger time, we will only calculate and set the next trigger time
             self.timer_period = self.calculate_sunrise_sunset_epoch(cond)
 
-        # If the code hasn't returned by now, the conditional has been triggered
-        # and the actions for that conditional should be executed
+        # Set the refractory period
         if cond.conditional_type == 'conditional_measurement':
             self.timer_refractory_period = time.time() + self.refractory_period
-        
+
+        # Check if the current time is between the start and end time
+        if cond.conditional_type == 'conditional_timer_daily_time_span':
+            if not time_between_range(self.timer_start_time, self.timer_end_time):
+                return
+
+        # If the code hasn't returned by now, the conditional has been triggered
+        # and the actions for that conditional should be executed
         self.trigger_conditional_actions(
             message=message, last_measurement=last_measurement,
             device_id=device_id, device_measurement=device_measurement,

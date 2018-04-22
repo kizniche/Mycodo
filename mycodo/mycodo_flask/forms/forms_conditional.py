@@ -57,6 +57,7 @@ class Conditional(FlaskForm):
     # Timer
     timer_start_offset = IntegerField(lazy_gettext('Start Offset (seconds)'))
     timer_start_time = StringField(lazy_gettext('Start Time (HH:MM)'))
+    timer_end_time = StringField(lazy_gettext('End Time (HH:MM)'))
 
     # Method
     trigger_actions_at_period = BooleanField(lazy_gettext('Trigger Every Period'))

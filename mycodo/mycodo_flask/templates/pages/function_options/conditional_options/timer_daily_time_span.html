@@ -1,0 +1,30 @@
+<div class="row small-gutters" style="border-bottom: 1px solid #ddd; padding-bottom: 0.2em">
+  <div class="col-auto">
+    {{form_conditional.timer_start_time.label(class_='control-label')}}
+    <div>
+      <div class="input-group clockpicker">
+        <input type="text" class="form-control" id="timer_start_time" name="timer_start_time" value="{{each_cond.timer_start_time}}">
+        <span class="input-group-addon">
+          <span class="glyphicon glyphicon-time"></span>
+        </span>
+      </div>
+    </div>
+  </div>
+  <div class="col-auto">
+    {{form_conditional.timer_end_time.label(class_='control-label')}}
+    <div>
+      <div class="input-group clockpicker">
+        <input type="text" class="form-control" id="timer_end_time" name="timer_end_time" value="{{each_cond.timer_end_time}}">
+        <span class="input-group-addon">
+          <span class="glyphicon glyphicon-time"></span>
+        </span>
+      </div>
+    </div>
+  </div>
+  <div class="col-auto">
+    {{form_conditional.period.label(class_='control-label')}}
+    <div>
+      {{form_conditional.period(class_='form-control', value=each_cond.period, **{'title':_('The duration between checking whether the conditional is true')})}}
+    </div>
+  </div>
+</div>

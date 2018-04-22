@@ -5,8 +5,9 @@ import sqlalchemy
 from flask import url_for
 from flask_babel import gettext
 
+from mycodo.config import CONDITIONALS
+from mycodo.config import PIDS
 from mycodo.databases.models import Conditional
-from mycodo.databases.models import ConditionalActions
 from mycodo.databases.models import DisplayOrder
 from mycodo.databases.models import PID
 from mycodo.mycodo_flask.extensions import db
@@ -30,7 +31,7 @@ def func_add(form_add_func):
 
     if form_add_func.validate():
         try:
-            if form_add_func.func_type.data == 'pid':
+            if [ur for ur in PIDS if form_add_func.func_type.data == ur[0]]:
                 new_func = PID().save()
                 if not error:
                     display_order = csv_to_list_of_str(
@@ -38,14 +39,7 @@ def func_add(form_add_func):
                     DisplayOrder.query.first().pid = add_display_order(
                         display_order, new_func.unique_id)
                     db.session.commit()
-            elif form_add_func.func_type.data in ['conditional_measurement',
-                                                  'conditional_output',
-                                                  'conditional_output_pwm',
-                                                  'conditional_edge',
-                                                  'conditional_run_pwm_method',
-                                                  'conditional_sunrise_sunset',
-                                                  'conditional_timer_daily_time_point',
-                                                  'conditional_timer_duration']:
+            elif [ur for ur in CONDITIONALS if form_add_func.func_type.data == ur[0]]:
                 new_func = Conditional()
                 new_func.conditional_type = form_add_func.func_type.data
                 new_func.save()

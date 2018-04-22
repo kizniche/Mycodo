@@ -181,7 +181,7 @@ def recreate_stat_file():
     with open(ID_FILE, 'r') as read_file:
         stat_id = read_file.readline().strip()
 
-    if not stat_id.isalnum() or not len(stat_id) == 12:
+    if not stat_id.isalnum() or len(stat_id) != 12:
         stat_id = 'NoneNoneNone'
 
     new_stat_data = [
@@ -242,14 +242,12 @@ def send_anonymous_stats(start_time):
         inputs = db_retrieve_table_daemon(Input)
         add_update_csv(STATS_CSV, 'num_sensors', get_count(inputs))
         add_update_csv(STATS_CSV, 'num_sensors_active',
-                       get_count(
-                           inputs.filter(Input.is_activated == True)))
+                       get_count(inputs.filter(Input.is_activated == True)))
 
         conditionals = db_retrieve_table_daemon(Conditional)
         add_update_csv(STATS_CSV, 'num_conditionals', get_count(conditionals))
         add_update_csv(STATS_CSV, 'num_conditionals_active',
-                       get_count(
-                           conditionals.filter(Conditional.is_activated == True)))
+                       get_count(conditionals.filter(Conditional.is_activated == True)))
 
         pids = db_retrieve_table_daemon(PID)
         add_update_csv(STATS_CSV, 'num_pids', get_count(pids))
