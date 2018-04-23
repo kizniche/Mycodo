@@ -1,3 +1,9 @@
+## 6.0.7 (Unreleased)
+
+### Bugfixes
+
+ - Fix display of graph custom y-axis names
+
 ## 6.0.6 (2018-04-23)
 
 ### Bugfixes
