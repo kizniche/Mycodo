@@ -655,7 +655,7 @@ class InputController(threading.Thread):
                                     pin=bcm_pin)
 
                     self.control.trigger_conditional_actions(
-                        each_conditional.id, message=message,
+                        each_conditional.unique_id, message=message,
                         edge=conditional_edge)
 
     def is_running(self):

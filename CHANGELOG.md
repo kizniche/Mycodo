@@ -1,3 +1,11 @@
+## 6.0.6 (2018-04-23)
+
+### Bugfixes
+
+ - Fix issue with Edge Input
+ - Fix issue with Conditional timers
+ - Fix issue with BME280 dependency identification
+
 ## 6.0.5 (2018-04-22)
 
 ### Features

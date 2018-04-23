@@ -106,6 +106,7 @@ class ConditionalController(threading.Thread):
         now = time.time()
 
         self.smtp_wait_timer = now + 3600
+        self.timer_period = None
 
         # Set up measurement conditional
         if self.conditional_type == 'conditional_measurement':
@@ -183,7 +184,7 @@ class ConditionalController(threading.Thread):
                     while self.pause_loop:
                         time.sleep(0.1)
 
-                if (self.is_activated and
+                if (self.is_activated and self.timer_period and
                         self.timer_period < time.time()):
                     check_approved = False
 

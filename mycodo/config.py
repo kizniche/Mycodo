@@ -8,7 +8,7 @@ from datetime import timedelta
 import os
 from flask_babel import lazy_gettext
 
-MYCODO_VERSION = '6.0.5'
+MYCODO_VERSION = '6.0.6'
 ALEMBIC_VERSION = 'c10d401e574c'
 
 #  FORCE_UPGRADE_MASTER
@@ -138,7 +138,7 @@ DEVICE_INFO = {
         'name': 'BME280',
         'i2c-addresses': ['0x76'],
         'i2c-address-change': False,
-        'py-dependencies': ['Adafruit_BME280'],
+        'py-dependencies': ['Adafruit_BME280', 'Adafruit_GPIO'],
         'measure': ['altitude', 'dewpoint', 'humidity', 'pressure', 'temperature']},
     'BMP180': {
         'name': 'BMP180',
