@@ -41,6 +41,7 @@ from mycodo.databases.models import LCD
 from mycodo.databases.models import Math
 from mycodo.databases.models import Method
 from mycodo.databases.models import MethodData
+from mycodo.databases.models import Misc
 from mycodo.databases.models import Output
 from mycodo.databases.models import PID
 from mycodo.databases.models import SMTP
@@ -90,6 +91,9 @@ class ConditionalController(threading.Thread):
         self.verify_pause_loop = True
         self.ready = ready
         self.control = DaemonControl()
+
+        self.sample_rate = db_retrieve_table_daemon(
+            Misc, entry='first').sample_rate_controller_conditional
 
         self.cond_id = cond_id
         cond = db_retrieve_table_daemon(
@@ -229,7 +233,7 @@ class ConditionalController(threading.Thread):
                     if check_approved:
                         self.check_conditionals()
 
-                time.sleep(0.1)
+                time.sleep(self.sample_rate)
 
             self.running = False
             self.logger.info(

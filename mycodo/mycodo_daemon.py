@@ -405,7 +405,7 @@ class DaemonController:
                     if self.enable_upgrade_check:
                         self.check_mycodo_upgrade_exists(now)
 
-                time.sleep(0.25)
+                time.sleep(1)
         except Exception as except_msg:
             self.logger.exception("Unexpected error: {msg}".format(
                 msg=except_msg))

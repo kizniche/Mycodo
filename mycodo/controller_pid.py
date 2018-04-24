@@ -61,6 +61,7 @@ from mycodo.databases.models import Input
 from mycodo.databases.models import Math
 from mycodo.databases.models import Method
 from mycodo.databases.models import MethodData
+from mycodo.databases.models import Misc
 from mycodo.databases.models import Output
 from mycodo.databases.models import PID
 from mycodo.databases.utils import session_scope
@@ -89,6 +90,9 @@ class PIDController(threading.Thread):
         self.ready = ready
         self.pid_id = pid_id
         self.control = DaemonControl()
+
+        self.sample_rate = db_retrieve_table_daemon(
+            Misc, entry='first').sample_rate_controller_pid
 
         self.control_variable = 0.0
         self.derivator = 0.0
@@ -142,10 +146,9 @@ class PIDController(threading.Thread):
         self.lower_output_type = None
 
         self.first_start = True
+        self.timer = 0
 
         self.initialize_values()
-
-        self.timer = time.time() + self.period
 
         # Check if a method is set for this PID
         self.method_start_act = None
@@ -174,56 +177,12 @@ class PIDController(threading.Thread):
                         "Activate the PID controller to start it again.")
 
                 elif time.time() > self.timer:
-                    # Ensure the timer ends in the future
-                    while time.time() > self.timer:
-                        self.timer = self.timer + self.period
+                    self.check_pid()
 
-                    # If PID is active, retrieve measurement and update
-                    # the control variable.
-                    # A PID on hold will sustain the current output and
-                    # not update the control variable.
-                    if (self.is_activated and (not self.is_paused or
-                                               not self.is_held)
-                            ):
-                        self.get_last_measurement()
-
-                        if self.last_measurement_success:
-                            if self.method_id != '':
-                                # Update setpoint using a method
-                                this_pid = db_retrieve_table_daemon(
-                                    PID, unique_id=self.pid_id)
-                                setpoint, ended = calculate_method_setpoint(
-                                    self.method_id,
-                                    PID,
-                                    this_pid,
-                                    Method,
-                                    MethodData,
-                                    self.logger)
-                                if ended:
-                                    self.method_start_act = 'Ended'
-                                if setpoint is not None:
-                                    self.setpoint = setpoint
-                                else:
-                                    self.setpoint = self.default_setpoint
-
-                            self.write_setpoint_band()  # Write variables to database
-
-                            # Calculate new control variable
-                            self.control_variable = self.update_pid_output(
-                                self.last_measurement)
-
-                            self.write_pid_values()  # Write variables to database
-
-                    # Is PID in a state that allows manipulation of outputs
-                    if (self.is_activated and (not self.is_paused or
-                                               self.is_held)
-                            ):
-                        self.manipulate_output()
-
-                time.sleep(0.1)
+                time.sleep(self.sample_rate)
         except Exception as except_msg:
-                self.logger.exception("Run Error: {err}".format(
-                    err=except_msg))
+            self.logger.exception("Run Error: {err}".format(
+                err=except_msg))
         finally:
             # Turn off output used in PID when the controller is deactivated
             if self.raise_output_id and self.direction in ['raise', 'both']:
@@ -287,6 +246,50 @@ class PIDController(threading.Thread):
             self.lower_output_type = None
 
         return "success"
+
+    def check_pid(self):
+        """ Get measurement and apply to PID controller """
+        # Ensure the timer ends in the future
+        while time.time() > self.timer:
+            self.timer = self.timer + self.period
+
+        # If PID is active, retrieve measurement and update
+        # the control variable.
+        # A PID on hold will sustain the current output and
+        # not update the control variable.
+        if self.is_activated and (not self.is_paused or not self.is_held):
+            self.get_last_measurement()
+
+            if self.last_measurement_success:
+                if self.method_id != '':
+                    # Update setpoint using a method
+                    this_pid = db_retrieve_table_daemon(
+                        PID, unique_id=self.pid_id)
+                    setpoint, ended = calculate_method_setpoint(
+                        self.method_id,
+                        PID,
+                        this_pid,
+                        Method,
+                        MethodData,
+                        self.logger)
+                    if ended:
+                        self.method_start_act = 'Ended'
+                    if setpoint is not None:
+                        self.setpoint = setpoint
+                    else:
+                        self.setpoint = self.default_setpoint
+
+                self.write_setpoint_band()  # Write variables to database
+
+                # Calculate new control variable
+                self.control_variable = self.update_pid_output(
+                    self.last_measurement)
+
+                self.write_pid_values()  # Write variables to database
+
+        # Is PID in a state that allows manipulation of outputs
+        if self.is_activated and (not self.is_paused or self.is_held):
+            self.manipulate_output()
 
     def setup_method(self, method_id):
         """ Initialize method variables to start running a method """

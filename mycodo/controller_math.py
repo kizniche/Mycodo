@@ -33,6 +33,7 @@ import urllib3
 
 import mycodo.utils.psypy as SI
 from mycodo.databases.models import Math
+from mycodo.databases.models import Misc
 from mycodo.databases.models import SMTP
 from mycodo.mycodo_client import DaemonControl
 from mycodo.utils.database import db_retrieve_table_daemon
@@ -82,6 +83,9 @@ class MathController(threading.Thread):
             self.pause_loop = False
             self.verify_pause_loop = True
             self.control = DaemonControl()
+
+            self.sample_rate = db_retrieve_table_daemon(
+                Misc, entry='first').sample_rate_controller_math
 
             smtp = db_retrieve_table_daemon(SMTP, entry='first')
             self.smtp_max_count = smtp.hourly_max
@@ -145,195 +149,13 @@ class MathController(threading.Thread):
 
                 if self.is_activated and time.time() > self.timer:
 
-                    if self.math_type == 'average':
-                        success, measure = self.get_measurements_from_str(self.inputs)
-                        if success:
-                            measure_dict = {
-                                self.measure: float('{0:.4f}'.format(
-                                    sum(measure) / float(len(measure))))
-                            }
-                            self.measurements = Measurement(measure_dict)
-                            add_measure_influxdb(self.unique_id, self.measurements)
-                        elif measure:
-                            self.logger.error(measure)
-                        else:
-                            self.error_not_within_max_age()
-
-                    elif self.math_type == 'average_single':
-                        device_id = self.inputs.split(',')[0]
-                        measurement = self.inputs.split(',')[1]
-                        try:
-                            last_measurements = read_past_influxdb(
-                                device_id,
-                                measurement,
-                                self.max_measure_age)
-
-                            if last_measurements:
-                                measure_list = []
-                                for each_set in last_measurements:
-                                    if len(each_set) == 2:
-                                        measure_list.append(each_set[1])
-                                average = sum(measure_list) / float(len(measure_list))
-
-                                measure_dict = {
-                                    self.measure: float('{0:.4f}'.format(average))
-                                }
-                                self.measurements = Measurement(measure_dict)
-                                add_measure_influxdb(self.unique_id, self.measurements)
-                            else:
-                                self.error_not_within_max_age()
-                        except Exception as msg:
-                            self.logger.error("average_single Error: {err}".format(err=msg))
-
-                    elif self.math_type == 'difference':
-                        success, measure = self.get_measurements_from_str(self.inputs)
-                        if success:
-                            if self.difference_reverse_order:
-                                difference = measure[1] - measure[0]
-                            else:
-                                difference = measure[0] - measure[1]
-                            if self.difference_absolute:
-                                difference = abs(difference)
-                            measure_dict = {
-                                self.measure: float('{0:.4f}'.format(difference))
-                            }
-                            self.measurements = Measurement(measure_dict)
-                            add_measure_influxdb(self.unique_id, self.measurements)
-                        elif measure:
-                            self.logger.error(measure)
-                        else:
-                            self.error_not_within_max_age()
-
-                    elif self.math_type == 'equation':
-                        success, measure = self.get_measurements_from_str(self.equation_input)
-                        if success:
-                            replaced_str = self.equation.replace('x', str(measure[0]))
-                            equation_output = eval(replaced_str)
-                            measure_dict = {
-                                self.measure: float('{0:.4f}'.format(equation_output))
-                            }
-                            self.measurements = Measurement(measure_dict)
-                            add_measure_influxdb(self.unique_id, self.measurements)
-                        elif measure:
-                            self.logger.error(measure)
-                        else:
-                            self.error_not_within_max_age()
-
-                    elif self.math_type == 'median':
-                        success, measure = self.get_measurements_from_str(self.inputs)
-                        if success:
-                            measure_dict = {
-                                self.measure: float('{0:.4f}'.format(median(measure)))
-                            }
-                            self.measurements = Measurement(measure_dict)
-                            add_measure_influxdb(self.unique_id, self.measurements)
-                        elif measure:
-                            self.logger.error(measure)
-                        else:
-                            self.error_not_within_max_age()
-
-                    elif self.math_type == 'maximum':
-                        success, measure = self.get_measurements_from_str(self.inputs)
-                        if success:
-                            measure_dict = {
-                                self.measure: float('{0:.4f}'.format(max(measure)))
-                            }
-                            self.measurements = Measurement(measure_dict)
-                            add_measure_influxdb(self.unique_id, self.measurements)
-                        elif measure:
-                            self.logger.error(measure)
-                        else:
-                            self.error_not_within_max_age()
-
-                    elif self.math_type == 'minimum':
-                        success, measure = self.get_measurements_from_str(self.inputs)
-                        if success:
-                            measure_dict = {
-                                self.measure: float('{0:.4f}'.format(min(measure)))
-                            }
-                            self.measurements = Measurement(measure_dict)
-                            add_measure_influxdb(self.unique_id, self.measurements)
-                        elif measure:
-                            self.logger.error(measure)
-                        else:
-                            self.error_not_within_max_age()
-
-                    elif self.math_type == 'verification':
-                        success, measure = self.get_measurements_from_str(self.inputs)
-                        if (success and
-                                max(measure) - min(measure) <
-                                self.max_difference):
-                            measure_dict = {
-                                self.measure: float('{0:.4f}'.format(
-                                    sum(measure) / float(len(measure))))
-                            }
-                            self.measurements = Measurement(measure_dict)
-                            add_measure_influxdb(self.unique_id, self.measurements)
-                        elif measure:
-                            self.logger.error(measure)
-                        else:
-                            self.error_not_within_max_age()
-
-                    elif self.math_type == 'humidity':
-                        measure_temps_good = False
-                        measure_press_good = False
-                        pressure_pa = 101325
-
-                        success_dbt, dry_bulb_t = self.get_measurements_from_id(
-                            self.dry_bulb_t_id, self.dry_bulb_t_measure)
-                        success_wbt, wet_bulb_t = self.get_measurements_from_id(
-                            self.wet_bulb_t_id, self.wet_bulb_t_measure)
-                        if success_dbt and success_wbt:
-                            measure_temps_good = True
-
-                        if self.pressure_pa_id and self.pressure_pa_measure:
-                            success_pa, pressure = self.get_measurements_from_id(
-                                self.pressure_pa_id, self.pressure_pa_measure)
-                            if success_pa:
-                                pressure_pa = int(pressure[1])
-                                measure_press_good = True
-
-                        if (measure_temps_good and
-                                ((self.pressure_pa_id and self.pressure_pa_measure and measure_press_good) or
-                                 (not self.pressure_pa_id or not self.pressure_pa_measure))
-                                ):
-
-                            dbt_kelvin = celsius_to_kelvin(float(dry_bulb_t[1]))
-                            wbt_kelvin = celsius_to_kelvin(float(wet_bulb_t[1]))
-
-                            try:
-                                psypi = SI.state("DBT", dbt_kelvin,
-                                                 "WBT", wbt_kelvin,
-                                                 pressure_pa)
-                            except TypeError as err:
-                                self.logger.error("TypeError: {msg}".format(msg=err))
-
-                            percent_relative_humidity = psypi[2] * 100
-
-                            # Ensure percent humidity stays within 0 - 100 % range
-                            if percent_relative_humidity > 100:
-                                percent_relative_humidity = 100
-                            elif percent_relative_humidity < 0:
-                                percent_relative_humidity = 0
-
-                            # Dry bulb temperature: psypi[0])
-                            # Wet bulb temperature: psypi[5])
-
-                            measure_dict = dict(
-                                specific_enthalpy=float('{0:.5f}'.format(psypi[1])),
-                                humidity=float('{0:.5f}'.format(percent_relative_humidity)),
-                                specific_volume=float('{0:.5f}'.format(psypi[3])),
-                                humidity_ratio=float('{0:.5f}'.format(psypi[4])))
-                            self.measurements = Measurement(measure_dict)
-                            add_measure_influxdb(self.unique_id, self.measurements)
-                        else:
-                            self.error_not_within_max_age()
+                    self.calculate_math()
 
                     # Ensure the next timer ends in the future
                     while time.time() > self.timer:
                         self.timer += self.period
 
-                time.sleep(0.1)
+                time.sleep(self.sample_rate)
 
             self.running = False
             self.logger.info("Deactivated in {:.1f} ms".format(
@@ -341,6 +163,186 @@ class MathController(threading.Thread):
         except Exception as except_msg:
             self.logger.exception("Run Error: {err}".format(
                 err=except_msg))
+
+    def calculate_math(self):
+        if self.math_type == 'average':
+            success, measure = self.get_measurements_from_str(self.inputs)
+            if success:
+                measure_dict = {
+                    self.measure: float('{0:.4f}'.format(
+                        sum(measure) / float(len(measure))))
+                }
+                self.measurements = Measurement(measure_dict)
+                add_measure_influxdb(self.unique_id, self.measurements)
+            elif measure:
+                self.logger.error(measure)
+            else:
+                self.error_not_within_max_age()
+
+        elif self.math_type == 'average_single':
+            device_id = self.inputs.split(',')[0]
+            measurement = self.inputs.split(',')[1]
+            try:
+                last_measurements = read_past_influxdb(
+                    device_id,
+                    measurement,
+                    self.max_measure_age)
+
+                if last_measurements:
+                    measure_list = []
+                    for each_set in last_measurements:
+                        if len(each_set) == 2:
+                            measure_list.append(each_set[1])
+                    average = sum(measure_list) / float(len(measure_list))
+
+                    measure_dict = {
+                        self.measure: float('{0:.4f}'.format(average))
+                    }
+                    self.measurements = Measurement(measure_dict)
+                    add_measure_influxdb(self.unique_id, self.measurements)
+                else:
+                    self.error_not_within_max_age()
+            except Exception as msg:
+                self.logger.error("average_single Error: {err}".format(err=msg))
+
+        elif self.math_type == 'difference':
+            success, measure = self.get_measurements_from_str(self.inputs)
+            if success:
+                if self.difference_reverse_order:
+                    difference = measure[1] - measure[0]
+                else:
+                    difference = measure[0] - measure[1]
+                if self.difference_absolute:
+                    difference = abs(difference)
+                measure_dict = {
+                    self.measure: float('{0:.4f}'.format(difference))
+                }
+                self.measurements = Measurement(measure_dict)
+                add_measure_influxdb(self.unique_id, self.measurements)
+            elif measure:
+                self.logger.error(measure)
+            else:
+                self.error_not_within_max_age()
+
+        elif self.math_type == 'equation':
+            success, measure = self.get_measurements_from_str(self.equation_input)
+            if success:
+                replaced_str = self.equation.replace('x', str(measure[0]))
+                equation_output = eval(replaced_str)
+                measure_dict = {
+                    self.measure: float('{0:.4f}'.format(equation_output))
+                }
+                self.measurements = Measurement(measure_dict)
+                add_measure_influxdb(self.unique_id, self.measurements)
+            elif measure:
+                self.logger.error(measure)
+            else:
+                self.error_not_within_max_age()
+
+        elif self.math_type == 'median':
+            success, measure = self.get_measurements_from_str(self.inputs)
+            if success:
+                measure_dict = {
+                    self.measure: float('{0:.4f}'.format(median(measure)))
+                }
+                self.measurements = Measurement(measure_dict)
+                add_measure_influxdb(self.unique_id, self.measurements)
+            elif measure:
+                self.logger.error(measure)
+            else:
+                self.error_not_within_max_age()
+
+        elif self.math_type == 'maximum':
+            success, measure = self.get_measurements_from_str(self.inputs)
+            if success:
+                measure_dict = {
+                    self.measure: float('{0:.4f}'.format(max(measure)))
+                }
+                self.measurements = Measurement(measure_dict)
+                add_measure_influxdb(self.unique_id, self.measurements)
+            elif measure:
+                self.logger.error(measure)
+            else:
+                self.error_not_within_max_age()
+
+        elif self.math_type == 'minimum':
+            success, measure = self.get_measurements_from_str(self.inputs)
+            if success:
+                measure_dict = {
+                    self.measure: float('{0:.4f}'.format(min(measure)))
+                }
+                self.measurements = Measurement(measure_dict)
+                add_measure_influxdb(self.unique_id, self.measurements)
+            elif measure:
+                self.logger.error(measure)
+            else:
+                self.error_not_within_max_age()
+
+        elif self.math_type == 'verification':
+            success, measure = self.get_measurements_from_str(self.inputs)
+            if (success and
+                    max(measure) - min(measure) <
+                    self.max_difference):
+                measure_dict = {
+                    self.measure: float('{0:.4f}'.format(
+                        sum(measure) / float(len(measure))))
+                }
+                self.measurements = Measurement(measure_dict)
+                add_measure_influxdb(self.unique_id, self.measurements)
+            elif measure:
+                self.logger.error(measure)
+            else:
+                self.error_not_within_max_age()
+
+        elif self.math_type == 'humidity':
+            measure_temps_good = False
+            pressure_pa = 101325
+
+            success_dbt, dry_bulb_t = self.get_measurements_from_id(
+                self.dry_bulb_t_id, self.dry_bulb_t_measure)
+            success_wbt, wet_bulb_t = self.get_measurements_from_id(
+                self.wet_bulb_t_id, self.wet_bulb_t_measure)
+            if success_dbt and success_wbt:
+                measure_temps_good = True
+
+            if self.pressure_pa_id and self.pressure_pa_measure:
+                success_pa, pressure = self.get_measurements_from_id(
+                    self.pressure_pa_id, self.pressure_pa_measure)
+                if success_pa:
+                    pressure_pa = int(pressure[1])
+
+            if measure_temps_good:
+                dbt_kelvin = celsius_to_kelvin(float(dry_bulb_t[1]))
+                wbt_kelvin = celsius_to_kelvin(float(wet_bulb_t[1]))
+                psypi = None
+
+                try:
+                    psypi = SI.state(
+                        "DBT", dbt_kelvin, "WBT", wbt_kelvin, pressure_pa)
+                except TypeError as err:
+                    self.logger.error("TypeError: {msg}".format(msg=err))
+
+                if psypi:
+                    percent_relative_humidity = psypi[2] * 100
+
+                    # Ensure percent humidity stays within 0 - 100 % range
+                    if percent_relative_humidity > 100:
+                        percent_relative_humidity = 100
+                    elif percent_relative_humidity < 0:
+                        percent_relative_humidity = 0
+
+                    # Dry bulb temperature: psypi[0])
+                    # Wet bulb temperature: psypi[5])
+
+                    measure_dict = dict(
+                        specific_enthalpy=float('{0:.5f}'.format(psypi[1])),
+                        humidity=float('{0:.5f}'.format(percent_relative_humidity)),
+                        specific_volume=float('{0:.5f}'.format(psypi[3])),
+                        humidity_ratio=float('{0:.5f}'.format(psypi[4])))
+                    self.measurements = Measurement(measure_dict)
+                    add_measure_influxdb(self.unique_id, self.measurements)
+            else:
+                self.error_not_within_max_age()
 
     def error_not_within_max_age(self):
         self.logger.error(

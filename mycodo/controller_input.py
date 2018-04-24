@@ -37,6 +37,7 @@ from mycodo.config import LIST_DEVICES_ADC
 from mycodo.config import LIST_DEVICES_I2C
 from mycodo.databases.models import Conditional
 from mycodo.databases.models import Input
+from mycodo.databases.models import Misc
 from mycodo.databases.models import Output
 from mycodo.databases.models import SMTP
 from mycodo.mycodo_client import DaemonControl
@@ -87,6 +88,9 @@ class InputController(threading.Thread):
         self.control = DaemonControl()
         self.pause_loop = False
         self.verify_pause_loop = True
+
+        self.sample_rate = db_retrieve_table_daemon(
+            Misc, entry='first').sample_rate_controller_input
 
         self.input_id = input_id
         input_dev = db_retrieve_table_daemon(
@@ -468,7 +472,7 @@ class InputController(threading.Thread):
 
                 self.trigger_cond = False
 
-                time.sleep(0.1)
+                time.sleep(self.sample_rate)
 
             self.running = False
 

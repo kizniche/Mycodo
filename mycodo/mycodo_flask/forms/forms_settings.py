@@ -257,3 +257,10 @@ class SettingsPi(FlaskForm):
     change_hostname = SubmitField(lazy_gettext('Change Hostname'))
     pigpiod_sample_rate = StringField(lazy_gettext('Configure pigpiod'))
     change_pigpiod_sample_rate = SubmitField(lazy_gettext('Reconfigure'))
+
+    sample_rate_controller_conditional = DecimalField(lazy_gettext('Conditional Sample Rate (seconds)'))
+    sample_rate_controller_input = DecimalField(lazy_gettext('Input Sample Rate (seconds)'))
+    sample_rate_controller_math = DecimalField(lazy_gettext('Math Sample Rate (seconds)'))
+    sample_rate_controller_output = DecimalField(lazy_gettext('Output Sample Rate (seconds)'))
+    sample_rate_controller_pid = DecimalField(lazy_gettext('PID Sample Rate (seconds)'))
+    save_sample_rates = SubmitField(lazy_gettext('Save Sample Rates (seconds)'))

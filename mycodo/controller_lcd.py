@@ -273,7 +273,7 @@ class LCDController(threading.Thread):
                             seconds = 1.1
                         self.backlight_timer = time.time() + seconds
 
-                time.sleep(0.1)
+                time.sleep(1)
 
         except Exception as except_msg:
             self.logger.exception("Exception: {err}".format(err=except_msg))

@@ -55,6 +55,9 @@ class OutputController(threading.Thread):
         self.thread_shutdown_timer = 0
         self.control = DaemonControl()
 
+        self.sample_rate = db_retrieve_table_daemon(
+            Misc, entry='first').sample_rate_controller_output
+
         self.output_id = {}
         self.output_unique_id = {}
         self.output_type = {}
@@ -133,7 +136,7 @@ class OutputController(threading.Thread):
                                   'off',))
                         turn_output_off.start()
 
-                time.sleep(0.01)
+                time.sleep(self.sample_rate)
         finally:
             # Turn all outputs off
             for each_output_id in self.output_id:

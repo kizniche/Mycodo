@@ -1,5 +1,9 @@
 ## 6.0.7 (Unreleased)
 
+### Features
+
+- Add ability to change sample rate of controllers ([#386](https://github.com/kizniche/mycodo/issues/386))
+
 ### Bugfixes
 
  - Fix display of graph custom y-axis names

@@ -99,7 +99,7 @@
       </div>
     </div>
 
-    <div class="row small-gutters" style="padding: 2em 0 0.5em 0">
+    <div class="row small-gutters" style="padding-top: 2em">
       <div class="col-xs-12">
         Service options:
       </div>
@@ -122,6 +122,48 @@
       </div>
       <div class="col">
         {{form_settings_pi.change_pigpiod_sample_rate(class_='btn btn-primary',**{'onclick':'return confirm("Changing the sample rate of pigpiod requires restarting both pigpiod and the mycodo daemon. Please confirm this is what you wish to do.")'})}}
+      </div>
+    </div>
+
+    <div class="row small-gutters" style="padding-top: 2em">
+      <div class="col-xs-12">
+        Mycodo Controller Sample Rates<br/>
+        The sample rates of Mycodo daemon controllers can be changed below. Note that the daemon will need to be restarted after saving in order for the new options to take effect. Select Config [Gear Icon] -> Restart Backend to restart the daemon.
+      </div>
+      <div class="col-auto">
+        {{form_settings_pi.sample_rate_controller_conditional.label(class_='control-label')}}
+        <div>
+          {{form_settings_pi.sample_rate_controller_conditional(class_='form-control', value=misc.sample_rate_controller_conditional)}}
+        </div>
+      </div>
+      <div class="col-auto">
+        {{form_settings_pi.sample_rate_controller_input.label(class_='control-label')}}
+        <div>
+          {{form_settings_pi.sample_rate_controller_input(class_='form-control', value=misc.sample_rate_controller_input)}}
+        </div>
+      </div>
+      <div class="col-auto">
+        {{form_settings_pi.sample_rate_controller_math.label(class_='control-label')}}
+        <div>
+          {{form_settings_pi.sample_rate_controller_math(class_='form-control', value=misc.sample_rate_controller_math)}}
+        </div>
+      </div>
+      <div class="col-auto">
+        {{form_settings_pi.sample_rate_controller_output.label(class_='control-label')}}
+        <div>
+          {{form_settings_pi.sample_rate_controller_output(class_='form-control', value=misc.sample_rate_controller_output)}}
+        </div>
+      </div>
+      <div class="col-auto">
+        {{form_settings_pi.sample_rate_controller_pid.label(class_='control-label')}}
+        <div>
+          {{form_settings_pi.sample_rate_controller_pid(class_='form-control', value=misc.sample_rate_controller_pid)}}
+        </div>
+      </div>
+    </div>
+    <div class="row small-gutters" style="padding: 0.5em 0 0.5em 0">
+      <div class="col-auto">
+        {{form_settings_pi.save_sample_rates(class_='btn btn-primary')}}
       </div>
     </div>
 

@@ -24,6 +24,11 @@ class Misc(CRUDMixin, db.Model):
     output_usage_report_span = db.Column(db.Text, default='monthly')
     output_usage_report_day = db.Column(db.Integer, default=1)
     output_usage_report_hour = db.Column(db.Integer, default=0)
+    sample_rate_controller_conditional = db.Column(db.Float, default=0.1)
+    sample_rate_controller_input = db.Column(db.Float, default=0.1)
+    sample_rate_controller_math = db.Column(db.Float, default=0.1)
+    sample_rate_controller_output = db.Column(db.Float, default=0.05)
+    sample_rate_controller_pid = db.Column(db.Float, default=0.1)
     stats_opt_out = db.Column(db.Boolean, default=False)  # Opt not to send anonymous usage statistics
     enable_upgrade_check = db.Column(db.Boolean, default=True)  # Periodically check for a Mycodo upgrade
     mycodo_upgrade_available = db.Column(db.Boolean, default=False)  # Stores if an upgrade is available
