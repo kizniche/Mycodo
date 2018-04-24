@@ -27,7 +27,7 @@ def upgrade():
     op.execute(
         '''
         UPDATE misc
-        SET sample_rate_controller_conditional=0.1
+        SET sample_rate_controller_conditional=0.25
         '''
     )
 
@@ -41,7 +41,7 @@ def upgrade():
     op.execute(
         '''
         UPDATE misc
-        SET sample_rate_controller_math=0.1
+        SET sample_rate_controller_math=0.25
         '''
     )
 
