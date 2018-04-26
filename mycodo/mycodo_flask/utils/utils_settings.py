@@ -340,12 +340,9 @@ def settings_pi_mod(form):
         if form.pigpiod_sample_rate.data not in ['low', 'high',
                                                  'disabled', 'uninstalled']:
             error.append(
-                "Valid pigpiod options: Disable, 1 ms, or 5 ms. "
+                "Valid pigpiod options: Uninstall, Disable, 1 ms, or 5 ms. "
                 "Invalid option: {op}".format(
                     op=form.pigpiod_sample_rate.data))
-        elif (not os.path.exists('/etc/systemd/system/pigpiod_uninstalled.service') and
-                form.pigpiod_sample_rate.data != 'uninstalled'):
-            error.append("Cannot modify pigpiod option if pigpiod is not installed")
         else:
             # Stop the Mycodo daemon
             cmd = "{pth}/mycodo/scripts/mycodo_wrapper daemon_stop" \

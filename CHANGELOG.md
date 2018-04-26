@@ -7,6 +7,7 @@
 ### Bugfixes
 
  - Fix display of graph custom y-axis names
+ - Fix inability to change pigpiod sample rate ([#458](https://github.com/kizniche/mycodo/issues/458))
 
 ## 6.0.6 (2018-04-23)
 
