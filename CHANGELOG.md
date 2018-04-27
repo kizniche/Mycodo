@@ -1,8 +1,9 @@
-## 6.0.8 (Unreleased)
+## 6.0.8 (2018-04-27)
 
 ### Bugfixes
 
  - Fix identification of custom command measurement/units ([#457](https://github.com/kizniche/mycodo/issues/457))
+ - Fix AM2315 Input issue ([#459](https://github.com/kizniche/mycodo/issues/459))
 
 ## 6.0.7 (2018-04-26)
 

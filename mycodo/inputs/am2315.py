@@ -43,7 +43,6 @@ class AM2315Sensor(AbstractInput):
     and calculates the dew point
 
     """
-
     def __init__(self, input_dev, testing=False):
         super(AM2315Sensor, self).__init__()
         self.logger = logging.getLogger('mycodo.inputs.am2315')
@@ -118,15 +117,14 @@ class AM2315Sensor(AbstractInput):
         self._temperature = None
 
         # Ensure if the power pin turns off, it is turned back on
-        if self.power_output_id:
-            power_pin_is_on = db_retrieve_table_daemon(
-                Output, unique_id=self.power_output_id).is_on()
-            if not power_pin_is_on:
-                self.logger.error(
-                    'Sensor power output {rel} detected as being off. '
-                    'Turning on.'.format(rel=self.power_output_id))
-                self.start_sensor()
-                time.sleep(2)
+        if (self.power_output_id and
+                db_retrieve_table_daemon(Output, unique_id=self.power_output_id) and
+                self.control.output_state(self.power_output_id) == 'off'):
+            self.logger.error(
+                'Sensor power output {rel} detected as being off. '
+                'Turning on.'.format(rel=self.power_output_id))
+            self.start_sensor()
+            time.sleep(2)
 
         # Try twice to get measurement. This prevents an anomaly where
         # the first measurement fails if the sensor has just been powered
