@@ -513,7 +513,7 @@ def graph_y_axes_async(dict_measurements, ids_measures):
 def check_func(all_devices, unique_id, y_axes, measurement, dict_measurements, input_dev):
     """
     Generate a list of y-axes for Live and Asynchronous Graphs
-    :param all_devices: A list of Input, Math, Output, and PID SQL objects
+    :param all Input, Math, Output, and PID SQL entries of a table
     :param unique_id: The ID of the measurement
     :param y_axes: empty list to populate
     :param measurement:
@@ -534,8 +534,13 @@ def check_func(all_devices, unique_id, y_axes, measurement, dict_measurements, i
                 if 'duration_sec' not in y_axes:
                     y_axes.append('duration_sec')
 
+            # Use Linux Command measurement
+            elif each_device.cmd_measurement and each_device.cmd_measurement != '':
+                if each_device.cmd_measurement not in y_axes:
+                    y_axes.append(each_device.cmd_measurement)
+
             # Use custom-converted units
-            if (unique_id in use_unit and
+            elif (unique_id in use_unit and
                     measurement in use_unit[unique_id] and
                     use_unit[unique_id][measurement]):
                 measure_short = use_unit[unique_id][measurement]

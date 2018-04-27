@@ -26,8 +26,28 @@ def add_custom_measurements(inputs, maths, measurement_units):
     use_unit = use_unit_generate(inputs)
 
     for each_input in inputs:
+        # Add command measurements/units to measurements dictionary
+        if (each_input.cmd_measurement and
+                each_input.cmd_measurement_units and
+                each_input.cmd_measurement not in measurement_units):
+            return_measurements.update(
+                {each_input.cmd_measurement: {
+                    'meas': each_input.cmd_measurement,
+                    'unit': each_input.cmd_measurement_units,
+                    'name': each_input.cmd_measurement}})
+
+        # Add ADC measurements/units to measurements dictionary
+        elif (each_input.adc_measure and
+                each_input.adc_measure_units and
+                each_input.adc_measure not in measurement_units):
+            return_measurements.update(
+                {each_input.adc_measure: {
+                    'meas': each_input.adc_measure,
+                    'unit': each_input.adc_measure_units,
+                    'name': each_input.adc_measure}})
+
         # Add converted measurements/units to measurements dictionary
-        if each_input.unique_id in use_unit:
+        elif each_input.unique_id in use_unit:
             for each_measure in use_unit[each_input.unique_id]:
                 if (use_unit[each_input.unique_id][each_measure] is not None and
                         use_unit[each_input.unique_id][each_measure] in UNITS):
@@ -36,25 +56,6 @@ def add_custom_measurements(inputs, maths, measurement_units):
                             'meas': use_unit[each_input.unique_id][each_measure],
                             'unit': UNITS[use_unit[each_input.unique_id][each_measure]]['unit'],
                             'name': UNITS[use_unit[each_input.unique_id][each_measure]]['name']}})
-
-        # Add command measurements/units to measurements dictionary
-        elif (each_input.cmd_measurement and
-                each_input.cmd_measurement_units and
-                each_input.cmd_measurement not in measurement_units):
-            return_measurements.update(
-                {each_input.cmd_measurement: {
-                    'meas': each_input.cmd_measurement,
-                    'unit': each_input.cmd_measurement_units,
-                    'name': each_input.cmd_measurement}})
-        # Add ADC measurements/units to measurements dictionary
-        if (each_input.adc_measure and
-                each_input.adc_measure_units and
-                each_input.adc_measure not in measurement_units):
-            return_measurements.update(
-                {each_input.adc_measure: {
-                    'meas': each_input.adc_measure,
-                    'unit': each_input.adc_measure_units,
-                    'name': each_input.adc_measure}})
 
     for each_math in maths:
         # Add Math measurements/units to measurements dictionary

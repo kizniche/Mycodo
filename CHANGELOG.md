@@ -1,3 +1,9 @@
+## 6.0.8 (Unreleased)
+
+### Bugfixes
+
+ - Fix identification of custom command measurement/units ([#457](https://github.com/kizniche/mycodo/issues/457))
+
 ## 6.0.7 (2018-04-26)
 
 ### Features
