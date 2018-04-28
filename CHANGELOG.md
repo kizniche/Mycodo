@@ -1,3 +1,10 @@
+## 6.0.9 (2018-04-27)
+
+### Bugfixes
+
+ - Fix command measurement checking ([#460](https://github.com/kizniche/mycodo/issues/460))
+ - Fix rendering of Math measurements/units ([#461](https://github.com/kizniche/mycodo/issues/461))
+
 ## 6.0.8 (2018-04-27)
 
 ### Bugfixes

@@ -95,23 +95,23 @@
     series: [{
         name: '
         {%- for each_input in input -%}
-          {%- for each_id_and_measure in graph_input_ids if each_input.unique_id == each_id_and_measure.split(',')[0] %}
+          {%- for each_id_and_measure in graph_input_ids if each_input.unique_id == each_id_and_measure.split(',')[0] -%}
             {%- if not each_input.adc_measure -%}
               {{measurement_units[each_id_and_measure.split(',')[1]]['name']|safe}}
             {%- else -%}
               {{each_input.adc_measure|safe}}
-            {% endif %}
+            {%- endif -%}
           {%- endfor -%}
         {%- endfor -%}
 
         {%- for each_math in math -%}
-          {%- for each_id_and_measure in graph_input_ids if each_math.unique_id == each_id_and_measure.split(',')[0] %}
+          {%- for each_id_and_measure in graph_input_ids if each_math.unique_id == each_id_and_measure.split(',')[0] -%}
             {{each_math.measure|safe}}
           {%- endfor -%}
         {%- endfor -%}
 
         {%- for each_pid in pid -%}
-          {%- for each_id_and_measure in graph_input_ids if each_pid.unique_id == each_id_and_measure.split(',')[0] %}
+          {%- for each_id_and_measure in graph_input_ids if each_pid.unique_id == each_id_and_measure.split(',')[0] -%}
             {{measurement_units[each_id_and_measure.split(',')[1]]['name']|safe}}
           {%- endfor -%}
         {%- endfor -%}',
@@ -147,25 +147,25 @@
 
             valueSuffix: '
         {%- for each_input in input -%}
-          {%- for each_id_and_measure in graph_input_ids if each_input.unique_id == each_id_and_measure.split(',')[0] %}
+          {%- for each_id_and_measure in graph_input_ids if each_input.unique_id == each_id_and_measure.split(',')[0] -%}
             {%- if use_unit[each_input.unique_id][each_id_and_measure.split(',')[1]] -%}
               {{' ' + units[use_unit[each_input.unique_id][each_id_and_measure.split(',')[1]]]['unit']}}
             {%- elif not each_input.adc_measure -%}
               {{' ' + measurement_units[each_id_and_measure.split(',')[1]]['unit']|safe}}
             {%- else -%}
               {{' ' + each_input.adc_measure_units|safe}}
-            {% endif %}
+            {%- endif -%}
           {%- endfor -%}
         {%- endfor -%}
 
         {%- for each_math in math -%}
-          {%- for each_id_and_measure in graph_input_ids if each_math.unique_id == each_id_and_measure.split(',')[0] %}
+          {%- for each_id_and_measure in graph_input_ids if each_math.unique_id == each_id_and_measure.split(',')[0] -%}
             {{' ' + each_math.measure_units|safe}}
           {%- endfor -%}
         {%- endfor -%}
 
         {%- for each_pid in pid -%}
-          {%- for each_id_and_measure in graph_input_ids if each_pid.unique_id == each_id_and_measure.split(',')[0] %}
+          {%- for each_id_and_measure in graph_input_ids if each_pid.unique_id == each_id_and_measure.split(',')[0] -%}
             {{' ' + dict_measurements[each_id_and_measure.split(',')[1]]['unit']|safe}}
           {%- endfor -%}
         {%- endfor -%}'
