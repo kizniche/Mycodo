@@ -265,8 +265,7 @@ function modPID(btn_val) {
     {% endif %}
     {% if not misc.hide_alert_warning %}
       error: function(data) {
-        console.log(data);
-          toastr['error'](btn_val.split("/")[0] + ": " + data);
+        toastr['error'](btn_val.split("/")[0] + ": " + data);
       }
     {% endif %}
   });
@@ -321,7 +320,6 @@ $(document).ready(function() {
       {% if not misc.hide_alert_info %}
       toastr['info']('Command sent to set PID setpoint');
       {% endif %}
-      console.log(btn_val + setpoint);
       modPID(btn_val + setpoint);
     }
   });
@@ -422,7 +420,6 @@ $(document).ready(function() {
       decimal_places = 1;
     }
     var url = '/last/' + measurement_name + '/' + dev_id + '/' + max_measure_age_sec.toString();
-    console.log(url);
     $.ajax(url, {
       success: function(data, responseText, jqXHR) {
         if (jqXHR.status === 204) {

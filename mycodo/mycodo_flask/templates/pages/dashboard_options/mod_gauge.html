@@ -1,6 +1,6 @@
 <div style="padding-right: 0.2em;">
   <div class="text-right align-items-center">
-    <span style="padding-right: 0.5em">{% if each_graph.enable_timestamp %}<span id="timestamp-{{chart_number}}"></span>{% endif %} {{each_graph.name}} [{{'%02d' % each_graph.id}}]</span>
+    <span style="padding-right: 0.5em"><span {% if not each_graph.enable_timestamp %}style="display: none;"{% endif %} id="timestamp-{{chart_number}}"></span> {{each_graph.name}} [{{'%02d' % each_graph.id}}]</span>
     <a data-toggle="collapse" href="#collapseContainer{{chart_number}}" aria-expanded="false" aria-controls="collapseContainer{{chart_number}}">
       <span class="collapse-button{{chart_number}} fa fa-2x fa-plus-square"></span>
     </a>
