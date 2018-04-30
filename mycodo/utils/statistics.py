@@ -202,7 +202,7 @@ def recreate_stat_file():
         ['num_methods_in_pid', 0],
         ['num_pids', 0],
         ['num_pids_active', 0],
-        ['num_outputs', 0],
+        ['num_relays', 0],
         ['num_sensors', 0],
         ['num_sensors_active', 0],
         ['num_conditionals', 0],
@@ -237,7 +237,7 @@ def send_anonymous_stats(start_time):
         add_update_csv(STATS_CSV, 'alembic_version', version_send)
 
         outputs = db_retrieve_table_daemon(Output)
-        add_update_csv(STATS_CSV, 'num_outputs', get_count(outputs))
+        add_update_csv(STATS_CSV, 'num_relays', get_count(outputs))
 
         inputs = db_retrieve_table_daemon(Input)
         add_update_csv(STATS_CSV, 'num_sensors', get_count(inputs))
