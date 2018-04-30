@@ -234,13 +234,13 @@ def output_on_off(form_output):
             error.append(gettext("Cannot modulate output with a GPIO of 0"))
         elif form_output.on_submit.data:
             if output.output_type in ['wired',
-                                    'wireless_433MHz_pi_switch',
-                                    'command']:
+                                      'wireless_433MHz_pi_switch',
+                                      'command']:
                 if float(form_output.sec_on.data) <= 0:
                     error.append(gettext("Value must be greater than 0"))
                 else:
                     return_value = control.output_on(form_output.output_id.data,
-                                                    duration=float(form_output.sec_on.data))
+                                                     duration=float(form_output.sec_on.data))
                     flash(gettext("Output turned on for %(sec)s seconds: %(rvalue)s",
                                   sec=form_output.sec_on.data,
                                   rvalue=return_value),
@@ -253,8 +253,9 @@ def output_on_off(form_output):
                 if float(form_output.pwm_duty_cycle_on.data) <= 0:
                     error.append(gettext("PWM duty cycle must be a positive value"))
                 if not error:
-                    return_value = control.output_on(form_output.output_id.data,
-                                                    duty_cycle=float(form_output.pwm_duty_cycle_on.data))
+                    return_value = control.output_on(
+                        form_output.output_id.data,
+                        duty_cycle=float(form_output.pwm_duty_cycle_on.data))
                     flash(gettext("PWM set to %(dc)s%% at %(hertz)s Hz: %(rvalue)s",
                                   dc=float(form_output.pwm_duty_cycle_on.data),
                                   hertz=output.pwm_hertz,

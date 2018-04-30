@@ -58,6 +58,12 @@ def conditional_mod(form):
             cond_mod.output_state = form.output_state.data
             cond_mod.output_duration = form.output_duration.data
 
+        elif cond_mod.conditional_type == 'conditional_output_duration':
+            error = check_form_output_duration(form, error)
+            cond_mod.unique_id_1 = form.unique_id_1.data
+            cond_mod.output_state = form.output_state.data
+            cond_mod.output_duration = form.output_duration.data
+
         elif cond_mod.conditional_type == 'conditional_output_pwm':
             error = check_form_output_pwm(form, error)
             cond_mod.unique_id_1 = form.unique_id_1.data
@@ -515,6 +521,20 @@ def check_form_output(form, error):
     if not form.output_state.data:
         error.append("{id} must be set".format(
             id=form.output_state.label.text))
+    return error
+
+
+def check_form_output_duration(form, error):
+    """Checks if the submitted form has any errors"""
+    if not form.unique_id_1.data:
+        error.append("{id} must be set".format(
+            id=form.unique_id_1.label.text))
+    if not form.output_state.data:
+        error.append("{id} must be set".format(
+            id=form.output_state.label.text))
+    if not form.output_duration.data:
+        error.append("{id} must be set".format(
+            id=form.output_duration.label.text))
     return error
 
 

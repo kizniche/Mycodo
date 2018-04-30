@@ -570,11 +570,13 @@ class OutputController(threading.Thread):
         This function is executed whenever an output is turned on or off
         It is responsible for executing Output Conditionals
         """
-
+        #
         # Check On/Off Outputs
+        #
         conditionals_output = db_retrieve_table_daemon(Conditional)
         conditionals_output = conditionals_output.filter(
-            Conditional.conditional_type == 'conditional_output')
+            or_(Conditional.conditional_type == 'conditional_output',
+                Conditional.conditional_type == 'conditional_output_duration'))
         conditionals_output = conditionals_output.filter(
             Conditional.unique_id_1 == output_id)
         conditionals_output = conditionals_output.filter(
@@ -582,18 +584,28 @@ class OutputController(threading.Thread):
 
         # Find any Output Conditionals with the output_id of the output that
         # just changed its state
-        if self.is_on(output_id):
+        if self.is_on(output_id) and on_duration > 0:
             conditionals_output = conditionals_output.filter(
                 or_(Conditional.output_state == 'on',
-                    Conditional.output_state == 'on_any'))
+                    Conditional.output_state == 'on_any',
+                    Conditional.output_state == 'equal_greater_than',
+                    Conditional.output_state == 'equal_less_than'))
 
-            on_with_duration = and_(
+            on_equal_to = and_(
                 Conditional.output_state == 'on',
                 Conditional.output_duration == on_duration)
+            on_greater_than = and_(
+                Conditional.output_state == 'equal_greater_than',
+                on_duration >= Conditional.output_duration)
+            on_less_than = and_(
+                Conditional.output_state == 'equal_less_than',
+                on_duration <= Conditional.output_duration)
+
             conditionals_output = conditionals_output.filter(
                 or_(Conditional.output_state == 'on_any',
-                    on_with_duration))
-
+                    on_equal_to,
+                    on_greater_than,
+                    on_less_than))
         else:
             conditionals_output = conditionals_output.filter(
                 Conditional.output_state == 'off')
@@ -615,7 +627,9 @@ class OutputController(threading.Thread):
                 each_conditional.unique_id, message=message,
                 output_state=state, on_duration=on_duration, duty_cycle=duty_cycle)
 
+        #
         # Check PWM Outputs
+        #
         conditionals_output_pwm = db_retrieve_table_daemon(Conditional)
         conditionals_output_pwm = conditionals_output_pwm.filter(
             Conditional.conditional_type == 'conditional_output_pwm')

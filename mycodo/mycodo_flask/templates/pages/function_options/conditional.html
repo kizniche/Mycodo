@@ -58,6 +58,8 @@
 
       {% if each_cond.conditional_type == 'conditional_output' %}
         {% include 'pages/function_options/conditional_options/output.html' %}
+      {% elif each_cond.conditional_type == 'conditional_output_duration' %}
+        {% include 'pages/function_options/conditional_options/output_duration.html' %}
       {% elif each_cond.conditional_type == 'conditional_output_pwm' %}
         {% include 'pages/function_options/conditional_options/output_pwm.html' %}
       {% elif each_cond.conditional_type == 'conditional_measurement' %}

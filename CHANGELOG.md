@@ -1,5 +1,9 @@
 ## 6.0.10 (Unreleased)
 
+### Features
+
+- Add Output (Duration) Conditional ([#186](https://github.com/kizniche/mycodo/issues/186))
+
 ### Bugfixes
 
  - Fix refreshing settings of active conditional controllers

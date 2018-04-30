@@ -568,6 +568,7 @@ def generate_conditional_name(name):
 CONDITIONALS = [
     ('conditional_measurement', generate_conditional_name('Measurement')),
     ('conditional_output', generate_conditional_name('Output (On/Off)')),
+    ('conditional_output_duration', generate_conditional_name('Output (On Duration)')),
     ('conditional_output_pwm', generate_conditional_name('Output (PWM)')),
     ('conditional_edge', generate_conditional_name('Edge')),
     ('conditional_run_pwm_method', generate_conditional_name('Run PWM Method')),
