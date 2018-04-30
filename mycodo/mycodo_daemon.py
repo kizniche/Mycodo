@@ -183,6 +183,13 @@ def mycodo_service(mycodo):
             return mycodo.refresh_daemon_camera_settings()
 
         @staticmethod
+        def exposed_refresh_daemon_conditional_settings(unique_id):
+            """
+            Instruct the daemon to refresh a conditional's settings
+            """
+            return mycodo.refresh_daemon_conditional_settings(unique_id)
+
+        @staticmethod
         def exposed_refresh_daemon_misc_settings():
             """
             Instruct the daemon to refresh the misc settings
@@ -689,6 +696,14 @@ class DaemonController:
         except Exception as except_msg:
             self.camera = []
             message = "Could not read camera table:" \
+                      " {err}".format(err=except_msg)
+            self.logger.exception(message)
+
+    def refresh_daemon_conditional_settings(self, unique_id):
+        try:
+            return self.controller['Conditional'][unique_id].refresh_settings()
+        except Exception as except_msg:
+            message = "Could not refresh conditional settings:" \
                       " {err}".format(err=except_msg)
             self.logger.exception(message)
 

@@ -84,6 +84,7 @@ class ConditionalController(threading.Thread):
         self.logger = logging.getLogger(
             "mycodo.conditional_{id}".format(id=cond_id.split('-')[0]))
 
+        self.cond_id = cond_id
         self.running = False
         self.thread_startup_timer = timeit.default_timer()
         self.thread_shutdown_timer = 0
@@ -95,7 +96,118 @@ class ConditionalController(threading.Thread):
         self.sample_rate = db_retrieve_table_daemon(
             Misc, entry='first').sample_rate_controller_conditional
 
-        self.cond_id = cond_id
+        self.conditional_type = None
+        self.is_activated = None
+        self.smtp_max_count = None
+        self.email_count = None
+        self.allowed_to_send_notice = None
+        self.smtp_wait_timer = None
+        self.timer_period = None
+        self.period = None
+        self.refractory_period = None
+        self.timer_refractory_period = None
+        self.smtp_wait_timer = None
+        self.timer_period = None
+        self.timer_start_time = None
+        self.timer_end_time = None
+        self.unique_id_1 = None
+        self.unique_id_2 = None
+        self.trigger_actions_at_period = None
+        self.trigger_actions_at_start = None
+        self.method_start_time = None
+        self.method_end_time = None
+        self.method_start_act = None
+
+        self.setup_settings()
+
+    def run(self):
+        try:
+            self.running = True
+            self.logger.info(
+                "Conditional controller activated in {:.1f} ms".format(
+                (timeit.default_timer() - self.thread_startup_timer) * 1000))
+            self.ready.set()
+
+            while self.running:
+                # Pause loop to modify conditional statements.
+                # Prevents execution of conditional while variables are
+                # being modified.
+                if self.pause_loop:
+                    self.verify_pause_loop = True
+                    while self.pause_loop:
+                        time.sleep(0.1)
+
+                if (self.is_activated and self.timer_period and
+                        self.timer_period < time.time()):
+                    check_approved = False
+
+                    # Check if the conditional period has elapsed
+                    if ((self.conditional_type == 'conditional_measurement' and
+                            self.timer_refractory_period < time.time()) or
+                            self.conditional_type in ['conditional_sunrise_sunset',
+                                                      'conditional_run_pwm_method']
+                            ):
+                        while self.timer_period < time.time():
+                            self.timer_period += self.period
+
+                        if self.conditional_type == 'conditional_run_pwm_method':
+                            # Only execute conditional actions when started
+                            # Now only set PWM output
+                            pwm_duty_cycle, ended = self.get_method_output(
+                                self.unique_id_1)
+                            if not ended:
+                                self.set_output_duty_cycle(
+                                    self.unique_id_2,
+                                    pwm_duty_cycle)
+                                if self.trigger_actions_at_period:
+                                    self.trigger_conditional_actions(
+                                        duty_cycle=pwm_duty_cycle)
+                        else:
+                            check_approved = True
+
+                    elif (self.conditional_type in [
+                            'conditional_timer_daily_time_point',
+                            'conditional_timer_daily_time_span',
+                            'conditional_timer_duration']
+                            ):
+                        if self.conditional_type == 'conditional_timer_daily_time_point':
+                            self.timer_period = epoch_of_next_time(
+                                '{hm}:00'.format(hm=self.timer_start_time))
+                        elif self.conditional_type in ['conditional_timer_duration',
+                                                       'conditional_timer_daily_time_span']:
+                            while self.timer_period < time.time():
+                                self.timer_period += self.period
+                        check_approved = True
+
+                    if check_approved:
+                        self.check_conditionals()
+
+                time.sleep(self.sample_rate)
+
+            self.running = False
+            self.logger.info(
+                "Conditional controller deactivated in {:.1f} ms".format(
+                    (timeit.default_timer() -
+                     self.thread_shutdown_timer) * 1000))
+        except Exception as except_msg:
+            self.logger.exception("Run Error: {err}".format(
+                err=except_msg))
+
+    def refresh_settings(self):
+        """ Signal to pause the main loop and wait for verification, the refresh settings """
+        self.pause_loop = True
+        while not self.verify_pause_loop:
+            time.sleep(0.1)
+
+        self.logger.info("Refreshing conditional settings")
+        self.setup_settings()
+
+        self.pause_loop = False
+        self.verify_pause_loop = False
+        return "Conditional settings successfully refreshed"
+
+    def setup_settings(self):
+        """ Define all settings """
         cond = db_retrieve_table_daemon(
             Conditional, unique_id=self.cond_id)
 
@@ -170,79 +282,6 @@ class ConditionalController(threading.Thread):
             self.period = 1000
             # Set the next trigger at the specified sunrise/sunset time (+-offsets)
             self.timer_period = self.calculate_sunrise_sunset_epoch(cond)
-
-    def run(self):
-        try:
-            self.running = True
-            self.logger.info(
-                "Conditional controller activated in {:.1f} ms".format(
-                (timeit.default_timer() - self.thread_startup_timer) * 1000))
-            self.ready.set()
-
-            while self.running:
-                # Pause loop to modify conditional statements.
-                # Prevents execution of conditional while variables are
-                # being modified.
-                if self.pause_loop:
-                    self.verify_pause_loop = True
-                    while self.pause_loop:
-                        time.sleep(0.1)
-
-                if (self.is_activated and self.timer_period and
-                        self.timer_period < time.time()):
-                    check_approved = False
-
-                    # Check if the conditional period has elapsed
-                    if ((self.conditional_type == 'conditional_measurement' and
-                            self.timer_refractory_period < time.time()) or
-                            self.conditional_type in ['conditional_sunrise_sunset',
-                                                      'conditional_run_pwm_method']
-                            ):
-                        while self.timer_period < time.time():
-                            self.timer_period += self.period
-
-                        if self.conditional_type == 'conditional_run_pwm_method':
-                            # Only execute conditional actions when started
-                            # Now only set PWM output
-                            pwm_duty_cycle, ended = self.get_method_output(
-                                self.unique_id_1)
-                            if not ended:
-                                self.set_output_duty_cycle(
-                                    self.unique_id_2,
-                                    pwm_duty_cycle)
-                                if self.trigger_actions_at_period:
-                                    self.trigger_conditional_actions(
-                                        duty_cycle=pwm_duty_cycle)
-                        else:
-                            check_approved = True
-
-                    elif (self.conditional_type in [
-                            'conditional_timer_daily_time_point',
-                            'conditional_timer_daily_time_span',
-                            'conditional_timer_duration']
-                            ):
-                        if self.conditional_type == 'conditional_timer_daily_time_point':
-                            self.timer_period = epoch_of_next_time(
-                                '{hm}:00'.format(hm=self.timer_start_time))
-                        elif self.conditional_type in ['conditional_timer_duration',
-                                                       'conditional_timer_daily_time_span']:
-                            while self.timer_period < time.time():
-                                self.timer_period += self.period
-                        check_approved = True
-
-                    if check_approved:
-                        self.check_conditionals()
-
-                time.sleep(self.sample_rate)
-
-            self.running = False
-            self.logger.info(
-                "Conditional controller deactivated in {:.1f} ms".format(
-                    (timeit.default_timer() -
-                     self.thread_shutdown_timer) * 1000))
-        except Exception as except_msg:
-            self.logger.exception("Run Error: {err}".format(
-                err=except_msg))
 
     def start_method(self, method_id):
         """ Instruct a method to start running """
@@ -867,7 +906,8 @@ class ConditionalController(threading.Thread):
 
         logger_cond.debug(message)
 
-    def which_controller(self, unique_id):
+    @staticmethod
+    def which_controller(unique_id):
         controller_type = None
         controller_object = None
         controller_entry = None

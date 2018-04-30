@@ -135,6 +135,9 @@ class DaemonControl:
     def refresh_daemon_camera_settings(self):
         return self.rpyc_client.root.refresh_daemon_camera_settings()
 
+    def refresh_daemon_conditional_settings(self, unique_id):
+        return self.rpyc_client.root.refresh_daemon_conditional_settings(unique_id)
+
     def refresh_daemon_misc_settings(self):
         return self.rpyc_client.root.refresh_daemon_misc_settings()
 

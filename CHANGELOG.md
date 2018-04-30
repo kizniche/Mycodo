@@ -1,3 +1,9 @@
+## 6.0.10 (Unreleased)
+
+### Bugfixes
+
+ - Fix refreshing settings of active conditional controllers
+
 ## 6.0.9 (2018-04-27)
 
 ### Bugfixes

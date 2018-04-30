@@ -2,6 +2,7 @@
 import logging
 
 import sqlalchemy
+from flask import flash
 from flask import url_for
 from flask_babel import gettext
 from sqlalchemy import and_
@@ -10,6 +11,7 @@ from mycodo.databases.models import Camera
 from mycodo.databases.models import Conditional
 from mycodo.databases.models import ConditionalActions
 from mycodo.databases.models import DisplayOrder
+from mycodo.mycodo_client import DaemonControl
 from mycodo.mycodo_flask.extensions import db
 from mycodo.mycodo_flask.utils.utils_general import controller_activate_deactivate
 from mycodo.mycodo_flask.utils.utils_general import delete_entry_with_id
@@ -96,6 +98,14 @@ def conditional_mod(form):
 
         if not error:
             db.session.commit()
+
+            if cond_mod.is_activated:
+                control = DaemonControl()
+                return_value = control.refresh_daemon_conditional_settings(
+                    form.conditional_id.data)
+                flash(gettext(
+                    "Daemon response: %(resp)s",
+                    resp=return_value), "success")
 
     except sqlalchemy.exc.OperationalError as except_msg:
         error.append(except_msg)
