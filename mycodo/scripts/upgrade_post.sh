@@ -69,7 +69,7 @@ do
         elif [ "${ary[opt]}" == "w1thermsensor" ]; then
             ${INSTALL_DEP} w1thermsensor
         elif [ "${ary[opt]}" == "wiringpi" ]; then
-            ${INSTALL_DEP} install-wiringpi
+            ${INSTALL_DEP} wiringpi
         else
             printf "\n#### No install candidate for ${ary[opt]}\n"
         fi
