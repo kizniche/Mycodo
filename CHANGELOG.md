@@ -7,6 +7,7 @@
 ### Bugfixes
 
  - Fix refreshing settings of active conditional controllers
+ - Fix saving settings of Conditional Timers ([#464](https://github.com/kizniche/mycodo/issues/464))
 
 ## 6.0.9 (2018-04-27)
 

@@ -55,6 +55,13 @@
           {{form_conditional.order_down_cond(class_='form-control btn btn-default')}}
         </div>
       </div>
+      <div class="row small-gutters" style="padding: 0.3em 0.2em 0.3em 0.3em;">
+          <div class="col-auto">
+            {% for each_conditional in conditional_names if each_cond.conditional_type == each_conditional[0] %}
+              {{each_conditional[1]}}
+            {% endfor %}
+          </div>
+      </div>
 
       {% if each_cond.conditional_type == 'conditional_output' %}
         {% include 'pages/function_options/conditional_options/output.html' %}
