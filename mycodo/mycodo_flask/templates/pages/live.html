@@ -16,7 +16,7 @@
           }
           else {
             var time = data[0];
-            var measurement = data[1];
+            var measurement = parseFloat(data[1].toFixed(3));
             var date = new Date(parseFloat(time));
             var year = date.getFullYear();
             var month = date.getMonth() + 1;
@@ -24,8 +24,7 @@
             var hours = date.getHours();
             var minutes = "0" + date.getMinutes();
             var seconds = "0" + date.getSeconds();
-            var formattedTime = year + "/" + month + "/" + day + " " + hours + ':' + minutes.substr(-2) + ':' + seconds.substr(-2);
-            document.getElementById(input_id + "-" + sensor_measurement + "-time").innerHTML = formattedTime;
+            document.getElementById(input_id + "-" + sensor_measurement + "-time").innerHTML = year + "/" + month + "/" + day + " " + hours + ':' + minutes.substr(-2) + ':' + seconds.substr(-2);
             document.getElementById(input_id + "-" + sensor_measurement + "-value").innerHTML = measurement;
           }
         },
@@ -71,7 +70,7 @@
         {%- set measurement_list = each_math.measure.split(',') -%}
         {%- for each_measurement in measurement_list %}
           {%- set c_to_f = 'true' if each_measurement in temperatures else 'false' %}
-          liveTextData('{{each_math.unique_id}}', '{{each_measurement}}', {{each_math.period+1}});
+          liveTextData('{{each_math.unique_id}}', '{{each_measurement}}', {{each_math.period + 1}});
         {%- endfor -%}
       {%- endfor -%}
     });

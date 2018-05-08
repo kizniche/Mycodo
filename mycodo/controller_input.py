@@ -258,6 +258,9 @@ class InputController(threading.Thread):
         elif self.device == 'BMP280':
             from mycodo.inputs.bmp280 import BMP280Sensor
             self.measure_input = BMP280Sensor(self.input_dev)
+        elif self.device == 'CCS811':
+            from mycodo.inputs.ccs811 import CCS811Sensor
+            self.measure_input = CCS811Sensor(self.input_dev)
         elif self.device == 'CHIRP':
             from mycodo.inputs.chirp import ChirpSensor
             self.measure_input = ChirpSensor(self.input_dev)

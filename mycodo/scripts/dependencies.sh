@@ -24,6 +24,9 @@ case "${1:-''}" in
     'Adafruit_BMP')
         ${INSTALL_CMD} install-pip-dependency Adafruit_BMP
     ;;
+    'Adafruit_CCS811')
+        ${INSTALL_CMD} install-pip-dependency Adafruit_CCS811
+    ;;
     'Adafruit_GPIO')
         ${INSTALL_CMD} install-pip-dependency Adafruit_GPIO
     ;;

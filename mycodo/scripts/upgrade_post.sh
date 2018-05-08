@@ -40,6 +40,8 @@ do
             ${INSTALL_DEP} Adafruit_BME280
         elif [ "${ary[opt]}" == "Adafruit_BMP" ]; then
             ${INSTALL_DEP} Adafruit_BMP
+        elif [ "${ary[opt]}" == "Adafruit_CCS811" ]; then
+            ${INSTALL_DEP} Adafruit_CCS811
         elif [ "${ary[opt]}" == "Adafruit_GPIO" ]; then
             ${INSTALL_DEP} Adafruit_GPIO
         elif [ "${ary[opt]}" == "Adafruit_MCP3008" ]; then

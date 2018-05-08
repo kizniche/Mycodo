@@ -18,12 +18,13 @@ def altitude(pressure_pa, sea_level_pa=101325.0):
         logger.error("Erroneous Pressure to calculate altitude: "
                      "{press} Pa".format(press=pressure_pa))
         return None
-    alt = 44330.0 * (1.0 - pow(pressure_pa / sea_level_pa, (1.0 / 5.255)))
-    return alt
+    alt_meters = 44330.0 * (1.0 - pow(pressure_pa / sea_level_pa, (1.0 / 5.255)))
+    return float("{:.3f}".format(alt_meters))
 
 
 def c_to_f(temp_c):
     return 9.0 / 5.0 * temp_c + 32
+
 
 def convert_units(measurement, unit, convert_to_unit, measure_value):
     measuement = measure_value

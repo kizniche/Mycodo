@@ -28,6 +28,7 @@ class Camera(CRUDMixin, db.Model):
     white_balance = db.Column(db.Float, default=0.0)
     custom_options = db.Column(db.Text, default='')
     output_id = db.Column(db.String, db.ForeignKey('output.unique_id'), default=None)  # Turn output on during capture
+    output_duration = db.Column(db.Float, default=3.0)
     cmd_pre_camera = db.Column(db.Text, default='')  # Command to execute before capture
     cmd_post_camera = db.Column(db.Text, default='')  # Command to execute after capture
     stream_started = db.Column(db.Boolean, default=False)

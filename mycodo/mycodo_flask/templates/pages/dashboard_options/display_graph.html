@@ -180,7 +180,7 @@
             type: 'line',
             tooltip: {
               valueSuffix: ' {{each_input.cmd_measurement_units}}',
-              valueDecimals: 2
+              valueDecimals: 3
             },
             yAxis: '{{each_input.cmd_measurement}}',
             data: []
@@ -211,7 +211,7 @@
                     {{' ' + measurement_units[each_measurement]['unit']}}
                   {%- endif -%}
                   ',
-                valueDecimals: 2
+                valueDecimals: 3
               },
               yAxis: '
                   {%- if use_unit[each_input.unique_id][each_measurement] -%}
@@ -246,7 +246,7 @@
           tooltip: {
             {% if each_id_and_measure.split(',')[1] in measurement_units and measurement_units[each_id_and_measure.split(',')[1]]['meas'] == 'temperature' %}
             pointFormatter: function () {
-              return '<span style="color:'+ this.series.color + '"">\u25CF</span> ' + this.series.name + ': <b>' + Highcharts.numberFormat(this.y, 2) + '°C (' + Highcharts.numberFormat(((this.y*9/5)+32), 2) + '°F)</b><br>';
+              return '<span style="color:'+ this.series.color + '">\u25CF</span> ' + this.series.name + ': <b>' + Highcharts.numberFormat(this.y, 2) + '°C (' + Highcharts.numberFormat(((this.y*9/5)+32), 2) + '°F)</b><br>';
             },
             {% else %}
             valueSuffix: ' {% if each_id_and_measure.split(',')[1] in measurement_units %}{{measurement_units[each_id_and_measure.split(',')[1]]['unit']}}{% else %}{{each_math.measure_units}}{% endif %}',

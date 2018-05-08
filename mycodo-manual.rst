@@ -1889,8 +1889,11 @@ differences in hardware and software.
 |                       | fswebcam is the only library that uses this     |
 |                       | option.                                         |
 +-----------------------+-------------------------------------------------+
-| Output ID             | This output will turn on during the capture of  |
+| Output                | This output will turn on during the capture of  |
 |                       | any still image (which includes timelapses).    |
++-----------------------+-------------------------------------------------+
+| Output Duration       | Turn output on for this duration of time before |
+|                       | the image is captured.                          |
 +-----------------------+-------------------------------------------------+
 | Rotate Image          | The number of degrees to rotate the image.      |
 +-----------------------+-------------------------------------------------+
@@ -2472,9 +2475,11 @@ The I2C interface should be enabled with ``raspi-config``.
     `BME280 <#bme280>`__: Barometric pressure, humidity, temperature
     `link <https://www.bosch-sensortec.com/bst/products/all_products/bme280>`__
 
-    `BMP085, BMP180 <#bmp085-bmp180>`__: Barometric pressure,
-    temperature
+    `BMP085, BMP180 <#bmp085-bmp180>`__: Barometric pressure, temperature
     `link <https://learn.adafruit.com/using-the-bmp085-with-raspberry-pi>`__
+
+    `CCS811 <#ccs811>`__: CO2, VOC, temperature
+    `link <https://www.sparkfun.com/products/14193>`__
 
     `HTU21D <#htu21d>`__: Relative humidity and temperature
     `link <http://www.te.com/usa-en/product-CAT-HSC0004.html>`__
@@ -2848,6 +2853,21 @@ Specifications
 
 CO2 Sensors
 -----------
+
+CCS811
+``````
+
+Be aware that the CCS811 datasheet recommends a burn-in of 48 hours and a
+run-in of 20 minutes (you must allow 20 minutes for the sensor to warm up
+and output valid data).
+
+Specifications
+''''''''''''''
+
+-  400 – 8,192 ppmv CO2
+-  0 - 1,187 ppbv VOC
+-  Ambient temperature measured from 10K NTC Thermistor (separate from chip, may or may not be included on the board you purchase)
+-  Warm-up time: ~ 20 min.
 
 K-30
 ````

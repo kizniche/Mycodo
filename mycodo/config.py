@@ -9,7 +9,7 @@ import os
 from flask_babel import lazy_gettext
 
 MYCODO_VERSION = '6.1.0'
-ALEMBIC_VERSION = '0a29a4ab7273'
+ALEMBIC_VERSION = 'b2c19049035f'
 
 #  FORCE_UPGRADE_MASTER
 #  Set True to enable upgrading to the master branch of the Mycodo repository.
@@ -48,6 +48,7 @@ DEVICES = [
     ('MH_Z16_I2C', 'CO2: MH-Z16 (I2C)'),
     ('MH_Z16_UART', 'CO2: MH-Z16 (Serial)'),
     ('MH_Z19_UART', 'CO2: MH-Z19 (Serial)'),
+    ('CCS811', 'CO2/VOC/Temperature: CCS811 (I2C)'),
     ('ATLAS_EC_I2C', 'Electrical Conductivity: Atlas Scientific (I2C)'),
     ('ATLAS_EC_UART', 'Electrical Conductivity: Atlas Scientific (Serial)'),
     ('BH1750', 'Luminance: BH1750 (I2C)'),
@@ -90,7 +91,7 @@ DEVICE_INFO = {
         'name': 'ADS1x15',
         'i2c-addresses': ['0x48'],
         'i2c-address-change': False,
-        'py-dependencies': ['Adafruit_ADS1x15'],
+        'py-dependencies': ['Adafruit_ADS1x15', 'Adafruit_GPIO'],
         'measure': ['voltage']},
     'AM2315': {
         'name': 'AM2315',
@@ -144,7 +145,7 @@ DEVICE_INFO = {
         'name': 'BMP180',
         'i2c-addresses': ['0x77'],
         'i2c-address-change': False,
-        'py-dependencies': ['Adafruit_BMP'],
+        'py-dependencies': ['Adafruit_BMP', 'Adafruit_GPIO'],
         'measure': ['altitude', 'pressure', 'temperature']},
     'BMP280': {
         'name': 'BMP280',
@@ -152,6 +153,12 @@ DEVICE_INFO = {
         'i2c-address-change': False,
         'py-dependencies': ['Adafruit_GPIO'],
         'measure': ['altitude', 'pressure', 'temperature']},
+    'CCS811': {
+        'name': 'CCS811',
+        'i2c-addresses': ['0x5A', '0x5B'],
+        'i2c-address-change': True,
+        'py-dependencies': ['Adafruit_CCS811', 'Adafruit_GPIO'],
+        'measure': ['co2', 'voc', 'temperature']},
     'CHIRP': {
         'name': 'Chirp',
         'i2c-addresses': ['0x40'],
@@ -214,7 +221,7 @@ DEVICE_INFO = {
         'measure': ['temperature']},
     'MAX31855': {
         'name': 'MAX13855K',
-        'py-dependencies': ['Adafruit_MAX31855'],
+        'py-dependencies': ['Adafruit_MAX31855', 'Adafruit_GPIO'],
         'measure': ['temperature', 'temperature_die']},
     'MAX31856': {
         'name': 'MAX31856',
@@ -375,7 +382,8 @@ MEASUREMENT_UNITS = {
         'meas': 'boolean', 'unit': ''},
     'co2': {
         'name': lazy_gettext('CO2'),
-        'meas': 'co2', 'unit': 'ppmv'},
+        'meas': 'co2', 'unit': 'ppm',
+        'units': ['ppb', 'ppm']},
     'cpu_load': {
         'name': lazy_gettext('CPU Load'),
         'meas': 'cpu_load', 'unit': ''},
@@ -442,7 +450,8 @@ MEASUREMENT_UNITS = {
         'meas': 'pid_value', 'unit': ''},
     'pressure': {
         'name': lazy_gettext('Pressure'),
-        'meas': 'pressure', 'unit': 'Pa'},
+        'meas': 'pressure', 'unit': 'Pa',
+        'units': ['pascals', 'kilopascals']},
     'pulse_width': {
         'name': lazy_gettext('Pulse Width'),
         'meas': 'pulse_width', 'unit': 'µs'},
@@ -476,9 +485,13 @@ MEASUREMENT_UNITS = {
         'name': lazy_gettext('Temperature (Die)'),
         'meas': 'temperature', 'unit': '°C',
         'units': ['celsius', 'fahrenheit', 'kelvin']},
+    'voc': {
+        'name': lazy_gettext('VOC'),
+        'meas': 'voc', 'unit': 'ppb',
+        'units': ['ppb', 'ppm']},
     'voltage': {
         'name': lazy_gettext('Voltage'),
-        'meas': 'voltage', 'unit': 'volts'}
+        'meas': 'voltage', 'unit': 'volts'},
 }
 
 # Measurement units
@@ -495,16 +508,32 @@ UNITS = {
     'kelvin': {
         'name': 'Kelvin',
         'unit': '°K'},
+    'pascals': {
+        'name': 'Pascals',
+        'unit': 'Pa'},
+    'kilopascals': {
+        'name': 'kiloPascals',
+        'unit': 'kPa'},
     'meters': {
         'name': 'Meters',
-        'unit': 'm'}
+        'unit': 'm'},
+    'ppm': {
+        'name': 'Parts Per Million',
+        'unit': 'ppm'},
+    'ppb': {
+        'name': 'Parts Per Billion',
+        'unit': 'ppb'}
 }
 
 # Supported conversions
 UNIT_CONVERSIONS = {
     'celsius_to_fahrenheit': 'x*(9/5)+32',
     'celsius_to_kelvin': 'x+274.15',
-    'meters_to_feet': 'x*3.2808399'
+    'meters_to_feet': 'x*3.2808399',
+    'ppm_to_ppb': 'x*1000',
+    'ppb_to_ppm': 'x/1000',
+    'pascals_to_kilopascals': 'x/1000',
+    'kilopascals_to_pascals': 'x*1000'
 }
 
 # Methods
@@ -642,6 +671,7 @@ LIST_DEVICES_I2C = [
     'BMP',
     'BMP180',
     'BMP280',
+    'CCS811',
     'CHIRP',
     'HTU21D',
     'MH_Z16_I2C',

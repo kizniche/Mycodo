@@ -1,3 +1,13 @@
+## 6.1.1 (2018-05-08)
+
+### Features
+
+- Add CCS811 CO2 sensor input ([#467](https://github.com/kizniche/mycodo/issues/467))
+- Add Pascal/kiloPascal conversion for pressure
+- Add ppm/ppb conversion for CO2 and VOC concentration
+- Improve accuracy of float measurement values
+- Add option to set camera output duration (before image capture)
+
 ## 6.1.0 (2018-05-02)
 
 ### Features

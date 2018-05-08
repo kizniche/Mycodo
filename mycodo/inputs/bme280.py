@@ -120,14 +120,17 @@ class BME280Sensor(AbstractInput):
         temperature = convert_units(
             'temperature', 'celsius', self.convert_to_unit,
             self.sensor.read_temperature())
-        pressure = self.sensor.read_pressure()
-        humidity = self.sensor.read_humidity()
-        alt = altitude(pressure)
+        pressure_pa = self.sensor.read_pressure()
+        pressure = convert_units(
+            'pressure', 'pascals', self.convert_to_unit,
+            pressure_pa)
         alt = convert_units(
-            'altitude', 'meters', self.convert_to_unit, alt)
-        dew_pt = dewpoint(temperature, humidity)
+            'altitude', 'meters', self.convert_to_unit,
+            altitude(pressure_pa))
+        humidity = self.sensor.read_humidity()
         dew_pt = convert_units(
-            'dewpoint', 'celsius', self.convert_to_unit, dew_pt)
+            'dewpoint', 'celsius', self.convert_to_unit,
+            dewpoint(temperature, humidity))
         return alt, dew_pt, humidity, pressure, temperature
 
     def read(self):

@@ -532,6 +532,7 @@ def camera_mod(form_camera):
             mod_camera.output_id = form_camera.output_id.data
         else:
             mod_camera.output_id = None
+        mod_camera.output_duration = form_camera.output_duration.data
         mod_camera.cmd_pre_camera = form_camera.cmd_pre_camera.data
         mod_camera.cmd_post_camera = form_camera.cmd_post_camera.data
 

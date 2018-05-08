@@ -103,7 +103,7 @@ def test_bmp_special_method_repr():
         mock_measure.side_effect = [(0, 0, 0)]
         bmp180 = BMP180Sensor(None, testing=True)
         bmp180.read()
-        assert "<BMP180Sensor(temperature=0.00)(pressure=0)(altitude=0.00)>" in repr(bmp180)
+        assert "<BMP180Sensor(temperature=0.000000)(pressure=0.000000)(altitude=0.000000)>" in repr(bmp180)
 
 
 def test_bmp_raises_exception():

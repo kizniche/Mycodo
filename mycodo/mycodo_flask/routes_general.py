@@ -1,6 +1,4 @@
 # coding=utf-8
-from __future__ import print_function
-
 import calendar
 import datetime
 import logging
@@ -258,7 +256,7 @@ def last_data(input_measure, input_id, input_period):
         number = len(raw_data['series'][0]['values'])
         time_raw = raw_data['series'][0]['values'][number - 1][0]
         value = raw_data['series'][0]['values'][number - 1][1]
-        value = '{:.3f}'.format(float(value))
+        value = float(value)
         # Convert date-time to epoch (potential bottleneck for data)
         dt = date_parse(time_raw)
         timestamp = calendar.timegm(dt.timetuple()) * 1000

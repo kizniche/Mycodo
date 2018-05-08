@@ -41,6 +41,7 @@ class SettingsCamera(FlaskForm):
     white_balance = DecimalField(lazy_gettext('White Balance'))
     custom_options = StringField(lazy_gettext('Custom Options'))
     output_id = StringField(lazy_gettext('Output'))
+    output_duration = DecimalField(lazy_gettext('Output Duration'))
     cmd_pre_camera = StringField(lazy_gettext('Pre Command'))
     cmd_post_camera = StringField(lazy_gettext('Post Command'))
     camera_add = SubmitField(lazy_gettext('Add Camera'))

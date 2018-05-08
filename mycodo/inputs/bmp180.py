@@ -33,17 +33,17 @@ class BMP180Sensor(AbstractInput):
         return "<{cls}(temperature={temp})(pressure={press})" \
                "(altitude={alt})>".format(
                 cls=type(self).__name__,
-                alt="{0:.2f}".format(self._altitude),
-                press=self._pressure,
-                temp="{0:.2f}".format(self._temperature))
+                alt="{0:.6f}".format(self._altitude),
+                press="{0:.6f}".format(self._pressure),
+                temp="{0:.6f}".format(self._temperature))
 
     def __str__(self):
         """ Return measurement information """
         return "Temperature: {temp}, Pressure: {press}, " \
                "Altitude: {alt}".format(
-                alt="{0:.2f}".format(self._altitude),
-                press="{0}".format(self._pressure),
-                temp="{0:.2f}".format(self._temperature))
+                alt="{0:.6f}".format(self._altitude),
+                press="{0:.6f}".format(self._pressure),
+                temp="{0:.6f}".format(self._temperature))
 
     def __iter__(self):  # must return an iterator
         """ SensorClass iterates through live measurement readings """
@@ -53,9 +53,9 @@ class BMP180Sensor(AbstractInput):
         """ Get next measurement reading """
         if self.read():  # raised an error
             raise StopIteration  # required
-        return dict(altitude=float('{0:.2f}'.format(self._altitude)),
-                    pressure=int(self._pressure),
-                    temperature=float('{0:.2f}'.format(self._temperature)))
+        return dict(altitude=float(self._altitude),
+                    pressure=float(self._pressure),
+                    temperature=float(self._temperature))
 
     @property
     def altitude(self):
@@ -84,10 +84,12 @@ class BMP180Sensor(AbstractInput):
         temperature = convert_units(
             'temperature', 'celsius', self.convert_to_unit,
             self.bmp.read_temperature())
-        pressure = self.bmp.read_pressure()
-        altitude = self.bmp.read_altitude()
+        pressure = convert_units(
+            'pressure', 'pascals', self.convert_to_unit,
+            self.bmp.read_pressure())
         altitude = convert_units(
-            'altitude', 'meters', self.convert_to_unit, altitude)
+            'altitude', 'meters', self.convert_to_unit,
+            self.bmp.read_altitude())
         return temperature, pressure, altitude
 
     def read(self):

@@ -149,6 +149,9 @@ def input_add(form_add):
             new_sensor.location = '0x20'
 
         # CO2
+        elif form_add.input_type.data == 'CCS811':
+            new_sensor.location = '0x5B'
+            new_sensor.interface = 'I2C'
         elif form_add.input_type.data == 'MH_Z16_I2C':
             new_sensor.location = '0x63'
             new_sensor.interface = 'I2C'

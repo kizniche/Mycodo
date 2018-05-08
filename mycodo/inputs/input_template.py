@@ -1,6 +1,4 @@
 # coding=utf-8
-from __future__ import division
-
 import logging
 
 from .base_input import AbstractInput

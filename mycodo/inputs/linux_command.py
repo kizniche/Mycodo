@@ -1,6 +1,4 @@
 # coding=utf-8
-from __future__ import division
-
 import logging
 
 from mycodo.utils.system_pi import cmd_output

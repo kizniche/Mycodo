@@ -29,7 +29,7 @@ class ChirpSensor(AbstractInput):
             self.i2c_bus = input_dev.i2c_bus
             self.convert_to_unit = input_dev.convert_to_unit
             self.bus = smbus.SMBus(self.i2c_bus)
-            self.filter_average('lux', init_max=5)
+            self.filter_average('lux', init_max=3)
 
     def __repr__(self):
         """  Representation of object """
@@ -111,18 +111,18 @@ class ChirpSensor(AbstractInput):
 
     def get_reg(self, reg):
         # read 2 bytes from register
-        val = self.bus.read_word_data(self.address, reg)
+        val = self.bus.read_word_data(self.i2c_address, reg)
         # return swapped bytes (they come in wrong order)
         return (val >> 8) + ((val & 0xFF) << 8)
 
     def reset(self):
         # To reset the sensor, write 6 to the device I2C address
-        self.bus.write_byte(self.address, 6)
+        self.bus.write_byte(self.i2c_address, 6)
 
     def set_addr(self, new_addr):
         # To change the I2C address of the sensor, write a new address
         # (one byte [1..127]) to register 1; the new address will take effect after reset
-        self.bus.write_byte_data(self.address, 1, new_addr)
+        self.bus.write_byte_data(self.i2c_address, 1, new_addr)
         self.reset()
         # self.address = new_addr
 
@@ -137,7 +137,7 @@ class ChirpSensor(AbstractInput):
     def light(self):
         # To read light level, start measurement by writing 3 to the
         # device I2C address, wait for 3 seconds, read 2 bytes from register 4
-        self.bus.write_byte(self.address, 3)
+        self.bus.write_byte(self.i2c_address, 3)
         time.sleep(1.5)
         lux = self.get_reg(4)
         if lux == 0:

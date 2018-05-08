@@ -1,6 +1,4 @@
 # -*- coding: utf-8 -*-
-from __future__ import print_function  # In python 2.7
-
 import datetime
 import logging
 import time
@@ -72,6 +70,12 @@ def camera_record(record_type, unique_id, duration_sec=None, tmp_filename=None):
     if settings.output_id:
         daemon_control = DaemonControl()
         daemon_control.output_on(settings.output_id)
+
+    # Pause while the output remains on for the specified duration.
+    # Used for instance to allow fluorescent lights to fully turn on before
+    # capturing an image.
+    if settings.output_duration:
+        time.sleep(settings.output_duration)
 
 
     if settings.library == 'picamera':

@@ -67,6 +67,7 @@ if [ "$INSTALL_TYPE" == "custom" ]; then
                           'Adafruit_ADS1x15' "Adafruit_ADS1x15" off \
                           'Adafruit_BME280' "Adafruit_BME280" off \
                           'Adafruit_BMP' "Adafruit_BMP" off \
+                          'Adafruit_CCS811' "Adafruit_CCS811" off \
                           'Adafruit_GPIO' "Adafruit_GPIO" off \
                           'Adafruit_MCP3008' "Adafruit_MCP3008" off \
                           'Adafruit_TMP' "Adafruit_TMP" off \
@@ -147,6 +148,8 @@ if [ "$INSTALL_TYPE" == "custom" ]; then
             ${INSTALL_DEP} Adafruit_BME280 2>&1 | tee -a ${LOG_LOCATION}
         elif [ "$dep" == "Adafruit_BMP" ]; then
             ${INSTALL_DEP} Adafruit_BMP 2>&1 | tee -a ${LOG_LOCATION}
+        elif [ "$dep" == "Adafruit_CCS811" ]; then
+            ${INSTALL_DEP} Adafruit_CCS811 2>&1 | tee -a ${LOG_LOCATION}
         elif [ "$dep" == "Adafruit_GPIO" ]; then
             ${INSTALL_DEP} Adafruit_GPIO 2>&1 | tee -a ${LOG_LOCATION}
         elif [ "$dep" == "Adafruit_MCP3008" ]; then
@@ -185,6 +188,7 @@ if [ "$INSTALL_TYPE" == "custom" ]; then
 elif [ "$INSTALL_TYPE" == "full" ]; then
     ${INSTALL_DEP} Adafruit_ADS1x15 2>&1 | tee -a ${LOG_LOCATION}
     ${INSTALL_DEP} Adafruit_BMP 2>&1 | tee -a ${LOG_LOCATION}
+    ${INSTALL_DEP} Adafruit_CCS811 2>&1 | tee -a ${LOG_LOCATION}
     ${INSTALL_DEP} Adafruit_Python_BME280 2>&1 | tee -a ${LOG_LOCATION}
     ${INSTALL_DEP} Adafruit_GPIO 2>&1 | tee -a ${LOG_LOCATION}
     ${INSTALL_DEP} Adafruit_MCP3008 2>&1 | tee -a ${LOG_LOCATION}
