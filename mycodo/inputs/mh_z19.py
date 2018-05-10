@@ -2,10 +2,6 @@
 import logging
 import time
 
-import locket
-import os
-import struct
-
 from .base_input import AbstractInput
 from .sensorutils import is_device
 
@@ -17,7 +13,6 @@ class MHZ19Sensor(AbstractInput):
         super(MHZ19Sensor, self).__init__()
         self.logger = logging.getLogger("mycodo.inputs.mh_z19")
         self._co2 = None
-        self.mhz19_lock_file = None
 
         if not testing:
             import serial
@@ -32,7 +27,6 @@ class MHZ19Sensor(AbstractInput):
                     self.ser = serial.Serial(self.serial_device,
                                              baudrate=self.baud_rate,
                                              timeout=1)
-                    self.mhz19_lock_file = "/var/lock/sen-mhz19-{}".format(self.device_loc.replace('/', ''))
                 except serial.SerialException:
                     self.logger.exception('Opening serial')
             else:
@@ -70,35 +64,21 @@ class MHZ19Sensor(AbstractInput):
 
     def get_measurement(self):
         """ Gets the MH-Z19's CO2 concentration in ppmv via UART"""
-        lock_acquired = False
         self._co2 = None
         co2 = None
 
         if not self.serial_device:  # Don't measure if device isn't validated
             return None
 
-        # Set up lock
-        lock = locket.lock_file(self.mhz19_lock_file, timeout=120)
-        try:
-            lock.acquire()
-            lock_acquired = True
-        except:
-            self.logger.error("Could not acquire lock. Breaking for future locking.")
-            os.remove(self.mhz19_lock_file)
-
-        if lock_acquired:
-            self.ser.flushInput()
-            time.sleep(1)
-            self.ser.write(bytearray([0xff, 0x01, 0x86, 0x00, 0x00, 0x00, 0x00, 0x00, 0x79]))
-            time.sleep(.01)
-            resp = self.ser.read(9)
-            if len(resp) != 0:
-                high = resp[2]
-                low = resp[3]
-                co2 = (high * 256) + low
-            lock.release()
-        else:
-            self.logger.error("Could not acquire MHZ19 lock")
+        self.ser.flushInput()
+        time.sleep(1)
+        self.ser.write(bytearray([0xff, 0x01, 0x86, 0x00, 0x00, 0x00, 0x00, 0x00, 0x79]))
+        time.sleep(.01)
+        resp = self.ser.read(9)
+        if len(resp) != 0:
+            high = resp[2]
+            low = resp[3]
+            co2 = (high * 256) + low
 
         return co2
 
@@ -108,7 +88,12 @@ class MHZ19Sensor(AbstractInput):
 
         :returns: None on success or 1 on error
         """
+        if self.acquiring_measurement:
+            self.logger.error("Attempting to acquire a measurement when a"
+                              " measurement is already being acquired.")
+            return 1
         try:
+            self.acquiring_measurement = True
             self._co2 = self.get_measurement()
             if self._co2 is not None:
                 return  # success - no errors
@@ -116,4 +101,6 @@ class MHZ19Sensor(AbstractInput):
             self.logger.error(
                 "{cls} raised an exception when taking a reading: "
                 "{err}".format(cls=type(self).__name__, err=e))
+        finally:
+            self.acquiring_measurement = False
         return 1

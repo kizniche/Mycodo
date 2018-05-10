@@ -1,17 +1,15 @@
 # coding=utf-8
 import argparse
 import logging
-from time import sleep
 
 import Adafruit_MCP3008
-import locket
-import os
 
 
 class MCP3008Read(object):
     """ ADC Read """
     def __init__(self, input_dev, testing=False):
         self.logger = logging.getLogger('mycodo.mcp3008')
+        self.acquiring_measurement = False
         self._voltage = None
         self.adc = None
 
@@ -22,10 +20,6 @@ class MCP3008Read(object):
         self.adc_channel = input_dev.adc_channel
         self.adc_volts_max = input_dev.adc_volts_max
 
-        self.lock_file = '/var/lock/mcp3008-{clock}-{cs}-{miso}-{mosi}'.format(
-            clock=self.pin_clock, cs=self.pin_cs,
-            miso=self.pin_miso, mosi=self.pin_mosi)
-
         if not testing:
             self.logger = logging.getLogger(
                 'mycodo.mcp3008_{id}'.format(id=input_dev.id))
@@ -33,34 +27,6 @@ class MCP3008Read(object):
                                                 cs=self.pin_cs,
                                                 miso=self.pin_miso,
                                                 mosi=self.pin_mosi)
-
-    def read(self):
-        """ Take a measurement """
-        self._voltage = None
-        lock_acquired = False
-        try:
-            # Set up lock
-            lock = locket.lock_file(self.lock_file, timeout=120)
-            try:
-                lock.acquire()
-                lock_acquired = True
-            except:
-                self.logger.error("Could not acquire lock. Breaking for future locking.")
-                os.remove(self.lock_file)
-
-            if lock_acquired:
-                sleep(0.1)
-                self._voltage = (self.adc.read_adc(self.adc_channel) / 1023.0) * self.adc_volts_max
-                lock.release()
-        except Exception as e:
-            self.logger.exception(
-                "{cls} raised exception during read(): "
-                "{err}".format(cls=type(self).__name__, err=e))
-            return 1
-
-    @property
-    def voltage(self):
-        return self._voltage
 
     def __iter__(self):
         """
@@ -75,6 +41,38 @@ class MCP3008Read(object):
         if self.read():
             return None
         return dict(voltage=float('{0:.4f}'.format(self._voltage)))
+
+    @property
+    def voltage(self):
+        return self._voltage
+
+    def get_measurement(self):
+        self._voltage = None
+        voltage = (self.adc.read_adc(self.adc_channel) / 1023.0) * self.adc_volts_max
+        return voltage
+
+    def read(self):
+        """
+        Takes a reading
+
+        :returns: None on success or 1 on error
+        """
+        if self.acquiring_measurement:
+            self.logger.error("Attempting to acquire a measurement when a"
+                              " measurement is already being acquired.")
+            return 1
+        try:
+            self.acquiring_measurement = True
+            self._co2 = self.get_measurement()
+            if self._co2 is not None:
+                return  # success - no errors
+        except Exception as e:
+            self.logger.error(
+                "{cls} raised an exception when taking a reading: "
+                "{err}".format(cls=type(self).__name__, err=e))
+        finally:
+            self.acquiring_measurement = False
+        return 1
 
 
 def parse_args(parser):

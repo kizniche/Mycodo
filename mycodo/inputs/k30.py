@@ -2,9 +2,6 @@
 import logging
 import time
 
-import locket
-import os
-
 from .base_input import AbstractInput
 from .sensorutils import is_device
 
@@ -16,7 +13,6 @@ class K30Sensor(AbstractInput):
         super(K30Sensor, self).__init__()
         self.logger = logging.getLogger("mycodo.inputs.k30")
         self._co2 = None
-        self.k30_lock_file = None
 
         if not testing:
             import serial
@@ -30,7 +26,6 @@ class K30Sensor(AbstractInput):
                     self.ser = serial.Serial(self.serial_device,
                                              baudrate=baud_rate,
                                              timeout=1)
-                    self.k30_lock_file = "/var/lock/sen-k30-{}".format(self.device_loc.replace('/', ''))
                 except serial.SerialException:
                     self.logger.exception('Opening serial')
             else:
@@ -72,28 +67,16 @@ class K30Sensor(AbstractInput):
 
         self._co2 = None
         co2= None
-        lock_acquired = False
 
-        # Set up lock
-        lock = locket.lock_file(self.k30_lock_file, timeout=120)
-        try:
-            lock.acquire()
-            lock_acquired = True
-        except:
-            self.logger.error("Could not acquire lock. Breaking for future locking.")
-            os.remove(self.k30_lock_file)
-
-        if lock_acquired:
-            self.ser.flushInput()
-            time.sleep(1)
-            self.ser.write(bytearray([0xfe, 0x44, 0x00, 0x08, 0x02, 0x9f, 0x25]))
-            time.sleep(.01)
-            resp = self.ser.read(7)
-            if len(resp) != 0:
-                high = resp[3]
-                low = resp[4]
-                co2 = (high * 256) + low
-            lock.release()
+        self.ser.flushInput()
+        time.sleep(1)
+        self.ser.write(bytearray([0xfe, 0x44, 0x00, 0x08, 0x02, 0x9f, 0x25]))
+        time.sleep(.01)
+        resp = self.ser.read(7)
+        if len(resp) != 0:
+            high = resp[3]
+            low = resp[4]
+            co2 = (high * 256) + low
 
         return co2
 
@@ -103,7 +86,12 @@ class K30Sensor(AbstractInput):
 
         :returns: None on success or 1 on error
         """
+        if self.acquiring_measurement:
+            self.logger.error("Attempting to acquire a measurement when a"
+                              " measurement is already being acquired.")
+            return 1
         try:
+            self.acquiring_measurement = True
             self._co2 = self.get_measurement()
             if self._co2 is not None:
                 return  # success - no errors
@@ -111,4 +99,6 @@ class K30Sensor(AbstractInput):
             self.logger.error(
                 "{cls} raised an exception when taking a reading: "
                 "{err}".format(cls=type(self).__name__, err=e))
+        finally:
+            self.acquiring_measurement = False
         return 1
