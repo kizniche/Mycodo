@@ -7,6 +7,7 @@
 - Add ppm/ppb conversion for CO2 and VOC concentration
 - Improve accuracy of float measurement values
 - Add option to set camera output duration (before image capture)
+- Improve handling of multiple queries to a single device
 
 ## 6.1.0 (2018-05-02)
 

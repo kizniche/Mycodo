@@ -82,6 +82,7 @@ Mycodo Manual
         -   [SHT1x](#sht1x)
         -   [SHT7x](#sht7x)
     -   [CO2 Sensors](#co2-sensors)
+        -   [CCS811](#ccs811)
         -   [K-30](#k-30)
         -   [MH-Z19](#mh-z19)
     -   [Moisture Sensors](#moisture-sensors)
@@ -1884,8 +1885,11 @@ differences in hardware and software.
                           fswebcam is the only library that uses this
                           option.
 
-  Output ID               This output will turn on during the capture of
+  Output                  This output will turn on during the capture of
                           any still image (which includes timelapses).
+
+  Output Duration         Turn output on for this duration of time before
+                          the image is captured.
 
   Rotate Image            The number of degrees to rotate the image.
 
@@ -2427,6 +2431,8 @@ SENSORS
 
   BMP085, BMP180: Barometric pressure, temperature link
 
+  CCS811: CO2, VOC, temperature link
+
   HTU21D: Relative humidity and temperature link
 
   TMP006, TMP007: Contactless temperature link
@@ -2750,6 +2756,20 @@ Specifications
 
 
 CO2 Sensors
+
+CCS811
+
+Be aware that the CCS811 datasheet recommends a burn-in of 48 hours and
+a run-in of 20 minutes (you must allow 20 minutes for the sensor to warm
+up and output valid data).
+
+Specifications
+
+-   400 – 8,192 ppmv CO2
+-   0 - 1,187 ppbv VOC
+-   Ambient temperature measured from 10K NTC Thermistor (separate from
+    chip, may or may not be included on the board you purchase)
+-   Warm-up time: ~ 20 min.
 
 K-30
 

@@ -30,6 +30,7 @@ class AbstractInput(object):
         self.avg_max = {}
         self.avg_index = {}
         self.avg_meas = {}
+        self.acquiring_measurement = False
         self.running = True
 
     def __iter__(self):
@@ -108,3 +109,6 @@ class AbstractInput(object):
         logger.error("{cls} did not overwrite the read() method.  All subclasses of the AbstractInput class"
                      " are required to overwrite this method".format(cls=type(self).__name__))
         raise NotImplementedError
+
+    def is_acquiring_measurement(self):
+        return self.acquiring_measurement
