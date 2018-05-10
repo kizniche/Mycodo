@@ -47,6 +47,7 @@ class InputMod(FlaskForm):
     power_output_id = StringField(lazy_gettext('Power Output'))  # For powering input
     calibrate_sensor_measure = StringField(lazy_gettext('Calibration Measurement'))
     resolution = IntegerField(lazy_gettext('Resolution'))
+    resolution_2 = IntegerField(lazy_gettext('Resolution'))
     sensitivity = IntegerField(lazy_gettext('Sensitivity'))
     convert_to_unit = StringField(lazy_gettext('Unit'))
 

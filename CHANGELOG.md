@@ -3,6 +3,7 @@
 ### Features
 
 - Add CCS811 CO2 sensor input ([#467](https://github.com/kizniche/mycodo/issues/467))
+- Add HDC1000/HDC1080 Temperature/Humidity sensor input ([#467](https://github.com/kizniche/mycodo/issues/467))
 - Add Pascal/kiloPascal conversion for pressure
 - Add ppm/ppb conversion for CO2 and VOC concentration
 - Improve accuracy of float measurement values

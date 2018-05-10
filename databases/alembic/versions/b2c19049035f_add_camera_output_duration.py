@@ -20,6 +20,9 @@ def upgrade():
     with op.batch_alter_table("camera") as batch_op:
         batch_op.add_column(sa.Column('output_duration', sa.Float))
 
+    with op.batch_alter_table("input") as batch_op:
+        batch_op.add_column(sa.Column('resolution_2', sa.Integer))
+
     op.execute(
         '''
         UPDATE camera
@@ -31,3 +34,6 @@ def upgrade():
 def downgrade():
     with op.batch_alter_table("camera") as batch_op:
         batch_op.drop_column('output_duration')
+
+    with op.batch_alter_table("input") as batch_op:
+        batch_op.drop_column('resolution_2')

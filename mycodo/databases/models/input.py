@@ -25,6 +25,7 @@ class Input(CRUDMixin, db.Model):
     power_output_id = db.Column(db.String, default=None)
     measurements = db.Column(db.Text, default='')  # Measurements separated by commas
     resolution = db.Column(db.Integer, default=0)
+    resolution_2 = db.Column(db.Integer, default=0)
     sensitivity = db.Column(db.Integer, default=0)
     thermocouple_type = db.Column(db.Text, default=None)
     ref_ohm = db.Column(db.Integer, default=None)

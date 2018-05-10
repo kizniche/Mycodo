@@ -134,15 +134,16 @@ def input_add(form_add):
                 new_sensor.ref_ohm = 0
 
         # Temperature/Humidity
-        elif form_add.input_type.data in ['AM2315', 'DHT11',
-                                          'DHT22', 'HTU21D',
-                                          'SHT1x_7x', 'SHT2x']:
+        elif form_add.input_type.data in ['AM2315', 'DHT11', 'DHT22',
+                                          'HDC1000', 'HTU21D', 'SHT1x_7x',
+                                          'SHT2x']:
             if form_add.input_type.data == 'AM2315':
                 new_sensor.location = '0x5c'
-            elif form_add.input_type.data == 'HTU21D':
+            elif form_add.input_type.data in ['HDC1000', 'HTU21D', 'SHT2x']:
                 new_sensor.location = '0x40'
-            elif form_add.input_type.data == 'SHT2x':
-                new_sensor.location = '0x40'
+            if form_add.input_type.data =='HDC1000':
+                new_sensor.resolution = 14
+                new_sensor.resolution_2 = 14
 
         # Chirp moisture sensor
         elif form_add.input_type.data == 'CHIRP':
@@ -316,6 +317,7 @@ def input_mod(form_mod, request_form):
             mod_sensor.pre_output_during_measure = form_mod.pre_output_during_measure.data
             mod_sensor.period = form_mod.period.data
             mod_sensor.resolution = form_mod.resolution.data
+            mod_sensor.resolution_2 = form_mod.resolution_2.data
             mod_sensor.sensitivity = form_mod.sensitivity.data
             mod_sensor.calibrate_sensor_measure = form_mod.calibrate_sensor_measure.data
             mod_sensor.cmd_command = form_mod.cmd_command.data

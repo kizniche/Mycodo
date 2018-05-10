@@ -76,6 +76,7 @@ DEVICES = [
     ('AM2315', 'Temperature/Humidity: AM2315 (I2C)'),
     ('DHT11', 'Temperature/Humidity: DHT11 (GPIO)'),
     ('DHT22', 'Temperature/Humidity: DHT22 (GPIO)'),
+    ('HDC1000', 'Temperature/Humidity: HDC1000/HDC1080 (I2C)'),
     ('HTU21D', 'Temperature/Humidity: HTU21D (I2C)'),
     ('SHT1x_7x', 'Temperature/Humidity: SHT 10/11/15/71/75'),
     ('SHT2x', 'Temperature/Humidity: SHT 21/25 (I2C)')
@@ -206,6 +207,12 @@ DEVICE_INFO = {
         'i2c-addresses': ['0x40'],
         'i2c-address-change': False,
         'py-dependencies': ['pigpio'],
+        'measure': ['dewpoint', 'humidity', 'temperature']},
+    'HDC1000': {
+        'name': 'HDC1000',
+        'i2c-addresses': ['0x40'],
+        'i2c-address-change': False,
+        'py-dependencies': [],
         'measure': ['dewpoint', 'humidity', 'temperature']},
     'K30_UART': {
         'name': 'K-30 (Serial)',
@@ -673,6 +680,7 @@ LIST_DEVICES_I2C = [
     'BMP280',
     'CCS811',
     'CHIRP',
+    'HDC1000',
     'HTU21D',
     'MH_Z16_I2C',
     'MCP342x',
