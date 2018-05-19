@@ -3,6 +3,7 @@
 ### Bugfixes
 
  - Fix exception-handling of sending test email ([#471](https://github.com/kizniche/mycodo/issues/471))
+ - Fix HDC1000 initialization issue ([#467](https://github.com/kizniche/mycodo/issues/467))
 
 
 ## 6.1.1 (2018-05-18)

@@ -288,6 +288,9 @@ class InputController(threading.Thread):
         elif self.device == 'GPIO_STATE':
             from mycodo.inputs.gpio_state import GPIOState
             self.measure_input = GPIOState(self.input_dev)
+        elif self.device == 'HDC1000':
+            from mycodo.inputs.hdc1000 import HDC1000Sensor
+            self.measure_input = HDC1000Sensor(self.input_dev)
         elif self.device == 'HTU21D':
             from mycodo.inputs.htu21d import HTU21DSensor
             self.measure_input = HTU21DSensor(self.input_dev)
