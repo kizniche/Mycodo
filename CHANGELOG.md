@@ -14,6 +14,7 @@
 
  - Fix saving settings of Conditional Timers ([#470](https://github.com/kizniche/mycodo/issues/470))
  - Fix Command PWM output use in PIDs ([#469](https://github.com/kizniche/mycodo/issues/469))
+ - Fix proper display of Outputs in Conditionals ([#469](https://github.com/kizniche/mycodo/issues/469))
 
 
 ## 6.1.0 (2018-05-02)

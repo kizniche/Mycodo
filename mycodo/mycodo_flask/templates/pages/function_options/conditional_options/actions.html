@@ -5,7 +5,7 @@
   <div>
     <select class="form-control form-tooltip form-dropdown" id="do_unique_id" name="do_unique_id" data-placement="top" title="{{_('What output to manipulate')}}">
       <option value=""></option>
-      {%- for each_output in output if each_output.output_type != 'pwm' -%}
+      {%- for each_output in output if each_output.output_type not in ['pwm', 'command_pwm'] -%}
         <option value="{{each_output.unique_id}}"{% if each_cond_action.do_unique_id == each_output.unique_id %} selected{% endif %}>[{{'%02d' % each_output.id}}] {{each_output.name}}</option>
       {%- endfor -%}
     </select>
@@ -33,7 +33,7 @@
   <div>
     <select class="form-control form-tooltip form-dropdown" id="do_unique_id" name="do_unique_id" data-placement="top" title="{{_('What output to manipulate')}}">
       <option value=""></option>
-      {%- for each_output in output if each_output.output_type == 'pwm' -%}
+      {%- for each_output in output if each_output.output_type in ['pwm', 'command_pwm'] -%}
         <option value="{{each_output.unique_id}}"{% if each_cond_action.do_unique_id == each_output.unique_id %} selected{% endif %}>[{{'%02d' % each_output.id}}] {{each_output.name}}</option>
       {%- endfor -%}
     </select>
