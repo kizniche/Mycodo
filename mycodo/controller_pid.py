@@ -573,7 +573,7 @@ class PIDController(threading.Thread):
 
                 if self.control_variable > 0:
                     # Determine if the output should be PWM or a duration
-                    if self.raise_output_type == 'pwm':
+                    if self.raise_output_type in ['pwm', 'command_pwm']:
                         self.raise_duty_cycle = float("{0:.1f}".format(
                             self.control_var_to_duty_cycle(self.control_variable)))
 
@@ -628,7 +628,7 @@ class PIDController(threading.Thread):
                             'duration_sec', self.control_variable)
 
                 else:
-                    if self.raise_output_type == 'pwm':
+                    if self.raise_output_type in ['pwm', 'command_pwm']:
                         self.control.output_on(self.raise_output_id,
                                               duty_cycle=0)
 
@@ -640,7 +640,7 @@ class PIDController(threading.Thread):
 
                 if self.control_variable < 0:
                     # Determine if the output should be PWM or a duration
-                    if self.lower_output_type == 'pwm':
+                    if self.lower_output_type in ['pwm', 'command_pwm']:
                         self.lower_duty_cycle = float("{0:.1f}".format(
                             self.control_var_to_duty_cycle(abs(self.control_variable))))
 
@@ -710,7 +710,7 @@ class PIDController(threading.Thread):
                             'duration_sec', stored_control_variable)
 
                 else:
-                    if self.lower_output_type == 'pwm':
+                    if self.lower_output_type in ['pwm', 'command_pwm']:
                         self.control.output_on(self.lower_output_id,
                                               duty_cycle=0)
 
