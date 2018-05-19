@@ -1,4 +1,4 @@
-## 6.1.1 (2018-05-08)
+## 6.1.1 (Unreleased)
 
 ### Features
 
@@ -9,6 +9,11 @@
 - Improve accuracy of float measurement values
 - Add option to set camera output duration (before image capture)
 - Improve handling of multiple queries to a single device
+
+### Bugfixes
+
+ - Fix saving settings of Conditional Timers ([#470](https://github.com/kizniche/mycodo/issues/470))
+
 
 ## 6.1.0 (2018-05-02)
 

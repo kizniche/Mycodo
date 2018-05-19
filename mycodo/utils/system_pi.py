@@ -94,14 +94,14 @@ def time_between_range(start_time, end_time):
     return 0  # No now not within range
 
 
-def epoch_of_next_time(time_str):
+def epoch_of_next_time(time_str, flash=None):
     """
     Take time string (HH:MM:SS) and return the epoch of the time in the future
     """
     try:
         current_epoch = time.time()
         time_parts = time.ctime().split(' ')  # split full time string
-        time_parts[4] = time_str  # replace the time component
+        time_parts[3] = time_str  # replace the time component
         new_time = time.mktime(time.strptime(' '.join(time_parts)))  # convert to epoch
         if new_time < current_epoch:  # Add a day if in the past
             new_time += 86400
