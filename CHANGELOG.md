@@ -1,3 +1,10 @@
+## 6.1.2 (Unreleased)
+
+### Bugfixes
+
+ - Fix exception-handling of sending test email ([#471](https://github.com/kizniche/mycodo/issues/471))
+
+
 ## 6.1.1 (2018-05-18)
 
 ### Features
@@ -16,6 +23,7 @@
  - Fix Command PWM output use in PIDs ([#469](https://github.com/kizniche/mycodo/issues/469))
  - Fix proper display of Outputs in Conditionals ([#469](https://github.com/kizniche/mycodo/issues/469))
 
+
 ## 6.1.0 (2018-05-02)
 
 ### Features
@@ -27,6 +35,7 @@
  - Fix refreshing settings of active conditional controllers
  - Fix saving settings of Conditional Timers ([#464](https://github.com/kizniche/mycodo/issues/464))
 
+
 ## 6.0.9 (2018-04-27)
 
 ### Bugfixes
@@ -34,12 +43,14 @@
  - Fix command measurement checking ([#460](https://github.com/kizniche/mycodo/issues/460))
  - Fix rendering of Math measurements/units ([#461](https://github.com/kizniche/mycodo/issues/461))
 
+
 ## 6.0.8 (2018-04-27)
 
 ### Bugfixes
 
  - Fix identification of custom command measurement/units ([#457](https://github.com/kizniche/mycodo/issues/457))
  - Fix AM2315 Input issue ([#459](https://github.com/kizniche/mycodo/issues/459))
+
 
 ## 6.0.7 (2018-04-26)
 
@@ -60,6 +71,7 @@
  - Fix issue with Conditional timers
  - Fix issue with BME280 dependency identification
 
+
 ## 6.0.5 (2018-04-22)
 
 ### Features
@@ -78,17 +90,20 @@
 
  - Fix scanning for DS18B20 sensors ([#452](https://github.com/kizniche/mycodo/issues/452))
 
+
 ## 6.0.3 (2018-04-21)
 
 ### Bugfixes
 
  - Fix upgrade issue
 
+
 ## 6.0.1 (2018-04-21)
 
 ### Bugfixes
 
  - Fix setting landing page ([#452](https://github.com/kizniche/mycodo/issues/452))
+
 
 ## 6.0.0 (2018-04-21)
 
@@ -113,6 +128,7 @@ Version 6 has changes to the database schema that could not be upgraded to. To u
  - Remove Timers (Conditionals have replaced their functionality)
  - Improve testing coverage of frontend ([#444](https://github.com/kizniche/mycodo/issues/444))
 
+
 ## 5.7.3 (2018-04-20)
 
 This is the last version of the 5.x branch. If your system is upgraded to 5.7.3, you will have the option of upgrading to the next major version (6.x), however the settings database will need to be deleted. This can be done through the web UI or manually by reinstalling Mycodo fresh.
@@ -120,6 +136,7 @@ This is the last version of the 5.x branch. If your system is upgraded to 5.7.3,
 ### Features
 
  - Add Conditional Action: Set PID Method ([#440](https://github.com/kizniche/mycodo/issues/440))
+
 
 ## 5.7.2 (2018-04-07)
 

@@ -140,5 +140,5 @@ def send_email(smtp_host, smtp_ssl, smtp_port, smtp_user, smtp_pass,
         if logging:
             logging.exception(
                 "Could not send email to {add} with message: {msg}. Error: "
-                "{err}".format(add=email_to, msg=message, err=error))
+                "{err}".format(add=email_to, msg=message_body, err=error))
         return 1
