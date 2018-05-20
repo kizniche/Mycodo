@@ -8,7 +8,7 @@
 </div>
 
 {% set is_pwm = [] -%}
-{% for each_output in output if each_output.unique_id == each_graph.output_ids.split(',')[0] and each_output.output_type == 'pwm' %}
+{% for each_output in output if each_output.unique_id == each_graph.output_ids.split(',')[0] and each_output.output_type in ['pwm', 'command_pwm'] %}
   {%- do is_pwm.append(1) %}
 {% endfor %}
 

@@ -179,7 +179,7 @@
           </div>
 
       {% for each_output in output if each_pid.raise_output_id == each_output.unique_id %}
-        {% if each_output.output_type == 'pwm' %}
+        {% if each_output.output_type in ['pwm', 'command_pwm'] %}
           {% include 'pages/function_options/pid_options/pwm_raise.html' %}
         {% else %}
           {% include 'pages/function_options/pid_options/output_raise.html' %}
@@ -202,7 +202,7 @@
           </div>
 
       {% for each_output in output if each_pid.lower_output_id == each_output.unique_id %}
-        {% if each_output.output_type == 'pwm' %}
+        {% if each_output.output_type in ['pwm', 'command_pwm'] %}
           {% include 'pages/function_options/pid_options/pwm_lower.html' %}
         {% else %}
           {% include 'pages/function_options/pid_options/output_lower.html' %}

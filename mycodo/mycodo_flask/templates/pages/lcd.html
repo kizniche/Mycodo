@@ -184,10 +184,10 @@
 
               {%- for each_output in output -%}
                 <option value="{{each_output.unique_id}},output_time"{% if each_lcd_display.line_1_id == each_output.unique_id and each_lcd_display.line_1_measurement == 'output_time' %} selected{% endif %}>Output {{each_output.id}} ({{each_output.name}}): Timestamp</option>
-                {% if each_output.output_type != 'pwm' %}
+                {% if each_output.output_type not in ['pwm', 'command_pwm'] %}
                 <option value="{{each_output.unique_id}},duration_sec"{% if each_lcd_display.line_1_id == each_output.unique_id and each_lcd_display.line_1_measurement == 'duration_sec' %} selected{% endif %}>Output {{each_output.id}} ({{each_output.name}}): Duration</option>
                 <option value="{{each_output.unique_id}},output_state"{% if each_lcd_display.line_1_id == each_output.unique_id and each_lcd_display.line_1_measurement == 'output_state' %} selected{% endif %}>Output {{each_output.id}} ({{each_output.name}}): State (On/Off)</option>
-                {% elif each_output.output_type == 'pwm' %}
+                {% else %}
                 <option value="{{each_output.unique_id}},duty_cycle"{% if each_lcd_display.line_1_id == each_output.unique_id and each_lcd_display.line_1_measurement == 'duty_cycle' %} selected{% endif %}>Output {{each_output.id}} ({{each_output.name}}): Duty Cycle</option>
                 {% endif %}
               {%- endfor %}
@@ -241,10 +241,10 @@
 
               {%- for each_output in output -%}
                 <option value="{{each_output.unique_id}},output_time"{% if each_lcd_display.line_2_id == each_output.unique_id and each_lcd_display.line_2_measurement == 'output_time' %} selected{% endif %}>Output {{each_output.id}} ({{each_output.name}}): Timestamp</option>
-                {% if each_output.output_type != 'pwm' %}
+                {% if each_output.output_type not in ['pwm', 'command_pwm'] %}
                 <option value="{{each_output.unique_id}},duration_sec"{% if each_lcd_display.line_2_id == each_output.unique_id and each_lcd_display.line_2_measurement == 'duration_sec' %} selected{% endif %}>Output {{each_output.id}} ({{each_output.name}}): Duration</option>
                 <option value="{{each_output.unique_id}},output_state"{% if each_lcd_display.line_2_id == each_output.unique_id and each_lcd_display.line_2_measurement == 'output_state' %} selected{% endif %}>Output {{each_output.id}} ({{each_output.name}}): State (On/Off)</option>
-                {% elif each_output.output_type == 'pwm' %}
+                {% else %}
                 <option value="{{each_output.unique_id}},duty_cycle"{% if each_lcd_display.line_2_id == each_output.unique_id and each_lcd_display.line_2_measurement == 'duty_cycle' %} selected{% endif %}>Output {{each_output.id}} ({{each_output.name}}): Duty Cycle</option>
                 {% endif %}
               {%- endfor %}
@@ -300,10 +300,10 @@
 
               {%- for each_output in output -%}
                 <option value="{{each_output.unique_id}},output_time"{% if each_lcd_display.line_3_id == each_output.unique_id and each_lcd_display.line_3_measurement == 'output_time' %} selected{% endif %}>Output {{each_output.id}} ({{each_output.name}}): Timestamp</option>
-                {% if each_output.output_type != 'pwm' %}
+                {% if each_output.output_type not in ['pwm', 'command_pwm'] %}
                 <option value="{{each_output.unique_id}},duration_sec"{% if each_lcd_display.line_3_id == each_output.unique_id and each_lcd_display.line_3_measurement == 'duration_sec' %} selected{% endif %}>Output {{each_output.id}} ({{each_output.name}}): Duration</option>
                 <option value="{{each_output.unique_id}},output_state"{% if each_lcd_display.line_3_id == each_output.unique_id and each_lcd_display.line_3_measurement == 'output_state' %} selected{% endif %}>Output {{each_output.id}} ({{each_output.name}}): State (On/Off)</option>
-                {% elif each_output.output_type == 'pwm' %}
+                {% else %}
                 <option value="{{each_output.unique_id}},duty_cycle"{% if each_lcd_display.line_3_id == each_output.unique_id and each_lcd_display.line_3_measurement == 'duty_cycle' %} selected{% endif %}>Output {{each_output.id}} ({{each_output.name}}): Duty Cycle</option>
                 {% endif %}
               {%- endfor %}
@@ -357,10 +357,10 @@
 
               {%- for each_output in output -%}
                 <option value="{{each_output.unique_id}},output_time"{% if each_lcd_display.line_4_id == each_output.unique_id and each_lcd_display.line_4_measurement == 'output_time' %} selected{% endif %}>Output {{each_output.id}} ({{each_output.name}}): Timestamp</option>
-                {% if each_output.output_type != 'pwm' %}
+                {% if each_output.output_type not in ['pwm', 'command_pwm'] %}
                 <option value="{{each_output.unique_id}},duration_sec"{% if each_lcd_display.line_4_id == each_output.unique_id and each_lcd_display.line_4_measurement == 'duration_sec' %} selected{% endif %}>Output {{each_output.id}} ({{each_output.name}}): Duration</option>
                 <option value="{{each_output.unique_id}},output_state"{% if each_lcd_display.line_4_id == each_output.unique_id and each_lcd_display.line_4_measurement == 'output_state' %} selected{% endif %}>Output {{each_output.id}} ({{each_output.name}}): State (On/Off)</option>
-                {% elif each_output.output_type == 'pwm' %}
+                {% else %}
                 <option value="{{each_output.unique_id}},duty_cycle"{% if each_lcd_display.line_4_id == each_output.unique_id and each_lcd_display.line_4_measurement == 'duty_cycle' %} selected{% endif %}>Output {{each_output.id}} ({{each_output.name}}): Duty Cycle</option>
                 {% endif %}
               {%- endfor %}

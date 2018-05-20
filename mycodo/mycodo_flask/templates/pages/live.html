@@ -175,7 +175,7 @@
           </div>
           <div class="col-xs-4 col-sm-3 col-md-2">
               {% if each_pid.raise_output_id in output_type and
-                    output_type[each_pid.raise_output_id] == 'pwm' -%}
+                    output_type[each_pid.raise_output_id] in ['pwm', 'command_pwm'] -%}
                 {{_('Duty Cycle')}} (%)
               {% else -%}
                 {{_('On Duration (sec.)')}}
@@ -185,7 +185,7 @@
              </div>
           </div>
           {% if each_pid.raise_output_id in output_type and
-                output_type[each_pid.raise_output_id] != 'pwm' -%}
+                output_type[each_pid.raise_output_id] in ['pwm', 'command_pwm'] -%}
           <div class="col-xs-4 col-sm-3 col-md-2">
             {{_('Off (seconds)')}}
             <div>
@@ -214,7 +214,7 @@
           </div>
           <div class="col-xs-4 col-sm-3 col-md-2">
             {% if each_pid.lower_output_id in output_type and
-                  output_type[each_pid.lower_output_id] == 'pwm' -%}
+                  output_type[each_pid.lower_output_id] in ['pwm', 'command_pwm'] -%}
               {{_('Duty Cycle')}} (%)
             {% else -%}
               {{_('On Duration (sec.)')}}
@@ -224,7 +224,7 @@
             </div>
           </div>
           {% if each_pid.lower_output_id in output_type and
-                output_type[each_pid.lower_output_id] != 'pwm' -%}
+                output_type[each_pid.lower_output_id] not in ['pwm', 'command_pwm'] -%}
           <div class="col-xs-4 col-sm-3 col-md-2">
             {{_('Off (seconds)')}}
             <div>
@@ -342,7 +342,7 @@
           </div>
           <div class="col-xs-4 col-sm-3 col-md-2">
             {% if each_pid.raise_output_id in output_type and
-                  output_type[each_pid.raise_output_id] == 'pwm' -%}
+                  output_type[each_pid.raise_output_id] in ['pwm', 'command_pwm'] -%}
               {{_('Duty Cycle')}} (%)
             {% else -%}
               {{_('On Duration (sec.)')}}
@@ -352,7 +352,7 @@
            </div>
           </div>
           {% if each_pid.raise_output_id in output_type and
-                output_type[each_pid.raise_output_id] != 'pwm' -%}
+                output_type[each_pid.raise_output_id] not in ['pwm', 'command_pwm'] -%}
           <div class="col-xs-4 col-sm-3 col-md-2">
             {{_('Off (seconds)')}}
             <div>
@@ -381,7 +381,7 @@
           </div>
           <div class="col-xs-4 col-sm-3 col-md-2">
             {% if each_pid.lower_output_id in output_type and
-                  output_type[each_pid.lower_output_id] == 'pwm' -%}
+                  output_type[each_pid.lower_output_id] in ['pwm', 'command_pwm'] -%}
               {{_('Duty Cycle')}} (%)
             {% else -%}
               {{_('On Duration (sec.)')}}
@@ -391,7 +391,7 @@
             </div>
           </div>
           {% if each_pid.lower_output_id in output_type and
-                output_type[each_pid.lower_output_id] != 'pwm' -%}
+                output_type[each_pid.lower_output_id] not in ['pwm', 'command_pwm'] -%}
           <div class="col-xs-4 col-sm-3 col-md-2">
             {{_('Off (seconds)')}}
             <div>

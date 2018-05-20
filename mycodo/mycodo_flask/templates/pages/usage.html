@@ -31,7 +31,7 @@
         </tr>
         {% if display_order -%}
           {%- for order in display_order -%}
-            {%- for each_output in output if each_output.unique_id == order and each_output.output_type != 'pwm' -%}
+            {%- for each_output in output if each_output.unique_id == order and each_output.output_type not in ['pwm', 'command_pwm'] -%}
               {% for key, value in output_stats.items() if key == each_output.unique_id -%}
                 <tr>
                   <td>{{each_output.id}}</td>
