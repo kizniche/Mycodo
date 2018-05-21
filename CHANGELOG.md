@@ -7,6 +7,7 @@
  - Fix Command PWM frontend issues ([#469](https://github.com/kizniche/mycodo/issues/469))
  - Fix ADC modules ([#482](https://github.com/kizniche/mycodo/issues/482))
  - Update miflora to 0.4 ([#481](https://github.com/kizniche/mycodo/issues/481))
+ - Fix BH1750 sensor ([#480](https://github.com/kizniche/mycodo/issues/480))
 
 
 ## 6.1.1 (2018-05-18)

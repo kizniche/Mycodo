@@ -103,32 +103,32 @@ class BH1750Sensor(AbstractInput):
         self.i2c_bus.write_byte(self.i2c_address, self.mode)
 
     def power_down(self):
-        self._set_mode(self.POWER_DOWN)
+        self._set_mode(POWER_DOWN)
 
     def power_on(self):
-        self._set_mode(self.POWER_ON)
+        self._set_mode(POWER_ON)
 
     def reset(self):
         self.power_on()  # It has to be powered on before resetting
-        self._set_mode(self.RESET)
+        self._set_mode(RESET)
 
     def cont_low_res(self):
-        self._set_mode(self.CONTINUOUS_LOW_RES_MODE)
+        self._set_mode(CONTINUOUS_LOW_RES_MODE)
 
     def cont_high_res(self):
-        self._set_mode(self.CONTINUOUS_HIGH_RES_MODE_1)
+        self._set_mode(CONTINUOUS_HIGH_RES_MODE_1)
 
     def cont_high_res2(self):
-        self._set_mode(self.CONTINUOUS_HIGH_RES_MODE_2)
+        self._set_mode(CONTINUOUS_HIGH_RES_MODE_2)
 
     def oneshot_low_res(self):
-        self._set_mode(self.ONE_TIME_LOW_RES_MODE)
+        self._set_mode(ONE_TIME_LOW_RES_MODE)
 
     def oneshot_high_res(self):
-        self._set_mode(self.ONE_TIME_HIGH_RES_MODE_1)
+        self._set_mode(ONE_TIME_HIGH_RES_MODE_1)
 
     def oneshot_high_res2(self):
-        self._set_mode(self.ONE_TIME_HIGH_RES_MODE_2)
+        self._set_mode(ONE_TIME_HIGH_RES_MODE_2)
 
     def set_sensitivity(self, sensitivity=69):
         """
@@ -170,10 +170,10 @@ class BH1750Sensor(AbstractInput):
         return self.get_result()
 
     def measure_low_res(self, additional_delay=0):
-        return self.do_measurement(self.ONE_TIME_LOW_RES_MODE, additional_delay)
+        return self.do_measurement(ONE_TIME_LOW_RES_MODE, additional_delay)
 
     def measure_high_res(self, additional_delay=0):
-        return self.do_measurement(self.ONE_TIME_HIGH_RES_MODE_1, additional_delay)
+        return self.do_measurement(ONE_TIME_HIGH_RES_MODE_1, additional_delay)
 
     def measure_high_res2(self, additional_delay=0):
-        return self.do_measurement(self.ONE_TIME_HIGH_RES_MODE_2, additional_delay)
+        return self.do_measurement(ONE_TIME_HIGH_RES_MODE_2, additional_delay)
