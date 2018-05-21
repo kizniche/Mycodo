@@ -330,6 +330,8 @@ def input_mod(form_mod, request_form):
             mod_sensor.pin_cs = form_mod.pin_cs.data
             mod_sensor.pin_mosi = form_mod.pin_mosi.data
             mod_sensor.pin_miso = form_mod.pin_miso.data
+            # Bluetooth options
+            mod_sensor.bt_adapter = form_mod.bt_adapter.data
             # ADC options
             mod_sensor.adc_channel = form_mod.adc_channel.data
             mod_sensor.adc_gain = form_mod.adc_gain.data

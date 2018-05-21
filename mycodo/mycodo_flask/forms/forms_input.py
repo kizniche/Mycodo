@@ -72,6 +72,9 @@ class InputMod(FlaskForm):
     pin_mosi = IntegerField(lazy_gettext('MOSI Pin'))
     pin_miso = IntegerField(lazy_gettext('MISO Pin'))
 
+    # Bluetooth Communication
+    bt_adapter = StringField(lazy_gettext('BT Adapter'))
+
     # ADC
     adc_channel = IntegerField(lazy_gettext('Channel'))
     adc_gain = IntegerField(lazy_gettext('Gain'))

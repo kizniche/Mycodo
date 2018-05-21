@@ -37,6 +37,9 @@ class Input(CRUDMixin, db.Model):
     pin_mosi = db.Column(db.Integer, default=None)
     pin_miso = db.Column(db.Integer, default=None)
 
+    # Communication (Bluetooth)
+    bt_adapter = db.Column(db.Text, default='hci0')
+
     # Switch options
     switch_edge = db.Column(db.Text, default='rising')
     switch_bouncetime = db.Column(db.Integer, default=50)

@@ -27,8 +27,9 @@ class MifloraSensor(AbstractInput):
             self.logger = logging.getLogger(
                 "mycodo.inputs.miflora_{id}".format(id=input_dev.id))
             self.location = input_dev.location
+            self.bt_adapter = input_dev.bt_adapter
             self.convert_to_unit = input_dev.convert_to_unit
-            self.poller = MiFloraPoller(self.location, BluepyBackend)
+            self.poller = MiFloraPoller(self.location, BluepyBackend, adapter=self.bt_adapter)
 
     def __repr__(self):
         """  Representation of object """

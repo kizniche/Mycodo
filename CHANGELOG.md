@@ -1,5 +1,9 @@
 ## 6.1.2 (Unreleased)
 
+### Features
+
+ - Add option to set Miflora Bluetooth adapter ([#483](https://github.com/kizniche/mycodo/issues/483))
+
 ### Bugfixes
 
  - Fix exception-handling of sending test email ([#471](https://github.com/kizniche/mycodo/issues/471))
