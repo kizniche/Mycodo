@@ -50,7 +50,7 @@ case "${1:-''}" in
         ${INSTALL_CMD} install-pip-dependency MCP342x==0.3.3
     ;;
     'miflora')
-        ${INSTALL_CMD} install-pip-dependency miflora==0.3
+        ${INSTALL_CMD} install-pip-dependency miflora==0.4
     ;;
     'numpy')
         ${INSTALL_CMD} install-numpy

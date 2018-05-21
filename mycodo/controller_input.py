@@ -322,7 +322,7 @@ class InputController(threading.Thread):
             from mycodo.inputs.mh_z19 import MHZ19Sensor
             self.measure_input = MHZ19Sensor(self.input_dev)
         elif self.device == 'MIFLORA':
-            from mycodo.inputs.miflora import MifloraSensor
+            from mycodo.inputs.miflora_sensor import MifloraSensor
             self.measure_input = MifloraSensor(self.input_dev)
         elif self.device == 'SERVER_PING':
             from mycodo.inputs.server_ping import ServerPing

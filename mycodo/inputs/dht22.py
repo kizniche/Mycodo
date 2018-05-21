@@ -146,8 +146,8 @@ class DHT22Sensor(AbstractInput):
         self._temperature = None
 
         if not self.pi.connected:  # Check if pigpiod is running
-            self.logger.error("Could not connect to pigpiod."
-                              "Ensure it is running and try again.")
+            self.logger.error('Could not connect to pigpiod. '
+                              'Ensure it is running and try again.')
             return None, None, None
 
         # Ensure if the power pin turns off, it is turned back on
