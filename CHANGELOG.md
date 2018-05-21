@@ -9,6 +9,10 @@
  - Update miflora to 0.4 ([#481](https://github.com/kizniche/mycodo/issues/481))
  - Fix BH1750 sensor ([#480](https://github.com/kizniche/mycodo/issues/480))
 
+### Miscellaneous
+
+- Update alembic, Flask, Flask_CSV, geocoder, gunicorn, imutils, pytest, python-dateutil, SQLAlchemy, testfixtures
+
 
 ## 6.1.1 (2018-05-18)
 
