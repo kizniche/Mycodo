@@ -69,8 +69,8 @@ class ADS1x15Read(object):
             return 1
         try:
             self.acquiring_measurement = True
-            self._co2 = self.get_measurement()
-            if self._co2 is not None:
+            self._voltage = self.get_measurement()
+            if self._voltage is not None:
                 return  # success - no errors
         except Exception as e:
             self.logger.error(
@@ -85,11 +85,19 @@ class ADS1x15Read(object):
 
 
 if __name__ == "__main__":
-    ads = ADS1x15Read(0x48, 1, 0, 1)
+    from types import SimpleNamespace
+    input_dev = SimpleNamespace()
+    input_dev.id = 1
+    input_dev.location = '0x48'
+    input_dev.i2c_bus = 1
+    input_dev.adc_gain = 1
+    input_dev.adc_channel = 1
+
+    ads = ADS1x15Read(input_dev)
     print("Channel 0: {}".format(ads.next()))
-    ads = ADS1x15Read(0x48, 1, 1, 1)
+    ads = ADS1x15Read(input_dev)
     print("Channel 1: {}".format(ads.next()))
-    ads = ADS1x15Read(0x48, 1, 2, 1)
+    ads = ADS1x15Read(input_dev)
     print("Channel 2: {}".format(ads.next()))
-    ads = ADS1x15Read(0x48, 1, 3, 1)
+    ads = ADS1x15Read(input_dev)
     print("Channel 3: {}".format(ads.next()))

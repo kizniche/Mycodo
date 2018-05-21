@@ -63,8 +63,8 @@ class MCP3008Read(object):
             return 1
         try:
             self.acquiring_measurement = True
-            self._co2 = self.get_measurement()
-            if self._co2 is not None:
+            self._voltage = self.get_measurement()
+            if self._voltage is not None:
                 return  # success - no errors
         except Exception as e:
             self.logger.error(
