@@ -335,6 +335,9 @@ the measurement database to be used throughout the Mycodo system.
 |                       | of "light" as the measurement, the unit may be  |
 |                       | "lux" or "intensity".                           |
 +-----------------------+-------------------------------------------------+
+| BT Adapter            | The Bluetooth adapter to communicate with the   |
+|                       | input.                                          |
++-----------------------+-------------------------------------------------+
 | Clock Pin             | The GPIO (using BCM numbering) connected to the |
 |                       | Clock pin of the ADC                            |
 +-----------------------+-------------------------------------------------+
