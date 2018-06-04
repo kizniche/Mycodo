@@ -4,6 +4,10 @@
 
  - Add I2C support for K30 CO2 sensor (untested)
 
+### Bugfixes
+
+ - Fix service executable location ([#487](https://github.com/kizniche/mycodo/issues/487))
+
 
 ## 6.1.2 (2018-05-23)
 
