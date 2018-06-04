@@ -294,8 +294,11 @@ class InputController(threading.Thread):
         elif self.device == 'HTU21D':
             from mycodo.inputs.htu21d import HTU21DSensor
             self.measure_input = HTU21DSensor(self.input_dev)
+        elif self.device == 'K30_I2C':
+            from mycodo.inputs.k30_uart_i2c import K30Sensor
+            self.measure_input = K30Sensor(self.input_dev)
         elif self.device == 'K30_UART':
-            from mycodo.inputs.k30 import K30Sensor
+            from mycodo.inputs.k30_uart_i2c import K30Sensor
             self.measure_input = K30Sensor(self.input_dev)
         elif self.device == 'LinuxCommand':
             from mycodo.inputs.linux_command import LinuxCommand

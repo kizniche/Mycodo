@@ -9,7 +9,7 @@ from .sensorutils import is_device
 class K30Sensor(AbstractInput):
     """ A sensor support class that monitors the K30's CO2 concentration """
 
-    def __init__(self, input_dev, baud_rate=9600, testing=False):
+    def __init__(self, input_dev, testing=False):
         super(K30Sensor, self).__init__()
         self.logger = logging.getLogger("mycodo.inputs.k30")
         self._co2 = None
@@ -19,12 +19,13 @@ class K30Sensor(AbstractInput):
             self.logger = logging.getLogger(
                 "mycodo.inputs.k30_{id}".format(id=input_dev.id))
             self.device_loc = input_dev.device_loc
+            self.baud_rate = input_dev.baud_rate
             # Check if device is valid
             self.serial_device = is_device(self.device_loc)
             if self.serial_device:
                 try:
                     self.ser = serial.Serial(self.serial_device,
-                                             baudrate=baud_rate,
+                                             baudrate=self.baud_rate,
                                              timeout=1)
                 except serial.SerialException:
                     self.logger.exception('Opening serial')

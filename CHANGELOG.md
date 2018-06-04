@@ -1,3 +1,10 @@
+## 6.1.3 (Unreleased)
+
+### Features
+
+ - Add I2C support for K30 CO2 sensor (untested)
+
+
 ## 6.1.2 (2018-05-23)
 
 ### Features
