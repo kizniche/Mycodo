@@ -7,6 +7,7 @@
 ### Bugfixes
 
  - Fix service executable location ([#487](https://github.com/kizniche/mycodo/issues/487))
+ - Fix inability to set duty cycle from frontend ([#485](https://github.com/kizniche/mycodo/issues/485))
 
 
 ## 6.1.2 (2018-05-23)
