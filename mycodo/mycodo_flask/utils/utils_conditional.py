@@ -419,10 +419,7 @@ def check_form_actions(form, error):
             error.append('Only Pi Cameras can record video')
     elif cond_action.do_action == 'flash_lcd_on' and not form.do_unique_id.data:
         error.append("LCD must be set")
-    elif (cond_action.do_action == 'photo' and
-            (not form.do_unique_id.data or form.do_unique_id.data == '')):
-        error.append("Camera must be set")
-    elif (cond_action.do_action == 'video' and
+    elif (cond_action.do_action in ['photo', 'video'] and
             (not form.do_unique_id.data or form.do_unique_id.data == '')):
         error.append("Camera must be set")
     return error
@@ -457,10 +454,7 @@ def check_cond_actions(cond_action, error):
             error.append('Only Pi Cameras can record video')
     elif cond_action.do_action == 'flash_lcd_on' and not cond_action.do_unique_id:
         error.append("LCD must be set")
-    elif (cond_action.do_action == 'photo' and
-            (not cond_action.do_unique_id or cond_action.do_unique_id == '')):
-        error.append("Camera must be set")
-    elif (cond_action.do_action == 'video' and
+    elif (cond_action.do_action in ['photo', 'video'] and
             (not cond_action.do_unique_id or cond_action.do_unique_id == '')):
         error.append("Camera must be set")
     return error
