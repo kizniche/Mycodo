@@ -44,7 +44,6 @@ DEVICES = [
     ('ADS1x15', 'Analog-to-Digital Converter: ADS1x15 (I2C)'),
     ('MCP3008', 'Analog-to-Digital Converter: MCP3008 (Serial)'),
     ('MCP342x', 'Analog-to-Digital Converter: MCP342x (I2C)'),
-    ('K30_I2C', 'CO2: K30 (I2C)'),
     ('K30_UART', 'CO2: K30 (Serial)'),
     ('MH_Z16_I2C', 'CO2: MH-Z16 (I2C)'),
     ('MH_Z16_UART', 'CO2: MH-Z16 (Serial)'),
@@ -215,10 +214,6 @@ DEVICE_INFO = {
         'i2c-address-change': False,
         'py-dependencies': [],
         'measure': ['dewpoint', 'humidity', 'temperature']},
-    'K30_I2C': {
-        'name': 'K-30 (I2C)',
-        'py-dependencies': ['smbus'],
-        'measure': ['co2']},
     'K30_UART': {
         'name': 'K-30 (Serial)',
         'py-dependencies': ['serial'],
@@ -658,7 +653,6 @@ DEVICES_DEFAULT_LOCATION = [
     'BMP',
     'BMP180',
     'HTU21D',
-    'K30_I2C',
     'RPi',
     'RPiCPULoad',
     'TSL2591',

@@ -2,8 +2,6 @@
 import logging
 import time
 
-import smbus
-
 from .base_input import AbstractInput
 
 # Define some constants from the datasheet
@@ -35,6 +33,7 @@ class BH1750Sensor(AbstractInput):
         self._lux = None
 
         if not testing:
+            import smbus
             self.logger = logging.getLogger(
                 "mycodo.inputs.bh1750_{id}".format(id=input_dev.id))
             self.i2c_address = int(str(input_dev.location), 16)
