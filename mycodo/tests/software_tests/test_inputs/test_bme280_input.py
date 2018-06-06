@@ -19,10 +19,10 @@ def test_bme_iterates_using_in():
                                     (37, 27, 60, 70, 3400),
                                     (45, 30, 65, 75, 3300)]
         bme = BME280Sensor(None, testing=True)
-        expected_result_list = [dict(altitude=67.0, dewpoint=23.0, humidity=50.0, pressure=60, temperature=3000.0),
-                                dict(altitude=52.0, dewpoint=25.0, humidity=55.0, pressure=65, temperature=3200.0),
-                                dict(altitude=37.0, dewpoint=27.0, humidity=60.0, pressure=70, temperature=3400.0),
-                                dict(altitude=45.0, dewpoint=30.0, humidity=65.0, pressure=75, temperature=3300.0)]
+        expected_result_list = [dict(altitude=67.0, dewpoint=23.0, humidity=50.0, pressure=60.0, temperature=3000.0),
+                                dict(altitude=52.0, dewpoint=25.0, humidity=55.0, pressure=65.0, temperature=3200.0),
+                                dict(altitude=37.0, dewpoint=27.0, humidity=60.0, pressure=70.0, temperature=3400.0),
+                                dict(altitude=45.0, dewpoint=30.0, humidity=65.0, pressure=75.0, temperature=3300.0)]
         assert expected_result_list == [temp for temp in bme]
 
 
@@ -52,13 +52,13 @@ def test_bme_read_updates_temp():
         assert bme._altitude == 67.0
         assert bme._dew_point == 23.0
         assert bme._humidity == 50.0
-        assert bme._pressure == 60
+        assert bme._pressure == 60.0
         assert bme._temperature == 3000.0
         assert not bme.read()
         assert bme._altitude == 52.0
         assert bme._dew_point == 25.0
         assert bme._humidity == 55.0
-        assert bme._pressure == 65
+        assert bme._pressure == 65.0
         assert bme._temperature == 3200.0
 
 
@@ -70,7 +70,7 @@ def test_bme_next_returns_dict():
         assert bme.next() == dict(altitude=67.0,
                                   dewpoint=23.0,
                                   humidity=50.0,
-                                  pressure=60,
+                                  pressure=60.0,
                                   temperature=3000.0)
 
 
@@ -91,15 +91,15 @@ def test_bme_condition_properties():
         assert bme.dew_point == 23.0
         assert bme.humidity == 50.0
         assert bme.humidity == 50.0
-        assert bme.pressure == 60
-        assert bme.pressure == 60
+        assert bme.pressure == 60.0
+        assert bme.pressure == 60.0
         assert bme.temperature == 3000.0
         assert bme.temperature == 3000.0
         assert not bme.read()
         assert bme.altitude == 52.0
         assert bme.dew_point == 25.0
         assert bme.humidity == 55.0
-        assert bme.pressure == 65
+        assert bme.pressure == 65.0
         assert bme.temperature == 3200.0
 
 
@@ -112,7 +112,7 @@ def test_bme_special_method_str():
     assert "Altitude: 0.00" in str(bme280)
     assert "Dew Point: 0.00" in str(bme280)
     assert "Humidity: 0.00" in str(bme280)
-    assert "Pressure: 0" in str(bme280)
+    assert "Pressure: 0.00" in str(bme280)
     assert "Temperature: 0.00" in str(bme280)
 
 
@@ -122,7 +122,7 @@ def test_bme_special_method_repr():
         mock_measure.side_effect = [(0, 0, 0, 0, 0)]
         bme280 = BME280Sensor(None, testing=True)
         bme280.read()
-        assert "<BME280Sensor(altitude=0.00)(dewpoint=0.00)(humidity=0.00)(pressure=0)(temperature=0.00)>" in repr(bme280)
+        assert "<BME280Sensor(altitude=0.000000)(dewpoint=0.000000)(humidity=0.000000)(pressure=0.000000)(temperature=0.000000)>" in repr(bme280)
 
 
 def test_bme_raises_exception():

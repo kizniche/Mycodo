@@ -30,8 +30,7 @@ from .sensorutils import convert_units
 
 class MAX31856Sensor(AbstractInput):
     """
-    A sensor support class that measures the MAX31856's humidity, temperature,
-    and pressure, them calculates the altitude and dew point
+    A sensor support class that measures the MAX31856's temperature
 
     """
 

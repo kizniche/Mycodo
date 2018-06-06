@@ -61,7 +61,7 @@ def test_bmp_next_returns_dict():
                                     (52, 64, 3500)]
         bmp = BMP180Sensor(None, testing=True)
         assert bmp.next() == dict(altitude=3000.00,
-                                  pressure=44,
+                                  pressure=44.00,
                                   temperature=67.00)
 
 
@@ -93,7 +93,7 @@ def test_bmp_special_method_str():
         bmp180 = BMP180Sensor(None, testing=True)
         bmp180.read()
     assert "Altitude: 0.00" in str(bmp180)
-    assert "Pressure: 0" in str(bmp180)
+    assert "Pressure: 0.00" in str(bmp180)
     assert "Temperature: 0.00" in str(bmp180)
 
 

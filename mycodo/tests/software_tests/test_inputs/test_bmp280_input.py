@@ -60,7 +60,7 @@ def test_bmp_next_returns_dict():
                                     (52, 64, 3500)]
         bmp = BMP280Sensor(None, testing=True)
         assert bmp.next() == dict(altitude=3000.00,
-                                  pressure=44,
+                                  pressure=44.00,
                                   temperature=67.00)
 
 
@@ -92,7 +92,7 @@ def test_bmp_special_method_str():
         bmp280 = BMP280Sensor(None, testing=True)
         bmp280.read()
     assert "Altitude: 0.00" in str(bmp280)
-    assert "Pressure: 0" in str(bmp280)
+    assert "Pressure: 0.00" in str(bmp280)
     assert "Temperature: 0.00" in str(bmp280)
 
 
@@ -102,7 +102,7 @@ def test_bmp_special_method_repr():
         mock_measure.side_effect = [(0, 0, 0)]
         bmp280 = BMP280Sensor(None, testing=True)
         bmp280.read()
-        assert "<BMP280Sensor(temperature=0.00)(pressure=0)(altitude=0.00)>" in repr(bmp280)
+        assert "<BMP280Sensor(temperature=0.000000)(pressure=0.000000)(altitude=0.000000)>" in repr(bmp280)
 
 
 def test_bmp_raises_exception():
