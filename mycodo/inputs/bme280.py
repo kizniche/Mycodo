@@ -43,22 +43,22 @@ class BME280Sensor(AbstractInput):
                "(humidity={hum})(pressure={press})" \
                "(temperature={temp})>".format(
                 cls=type(self).__name__,
-                alt="{0:.2f}".format(self._altitude),
-                dpt="{0:.2f}".format(self._dew_point),
-                hum="{0:.2f}".format(self._humidity),
-                press=self._pressure,
-                temp="{0:.2f}".format(self._temperature))
+                alt="{0:.6f}".format(self._altitude),
+                dpt="{0:.6f}".format(self._dew_point),
+                hum="{0:.6f}".format(self._humidity),
+                press='{0:.6f}'.format(self._pressure),
+                temp="{0:.6f}".format(self._temperature))
 
     def __str__(self):
         """ Return measurement information """
         return "Altitude: {alt}, Dew Point: {dpt}, " \
                "Humidity: {hum}, Pressure: {press}, " \
                "Temperature: {temp}".format(
-                alt="{0:.2f}".format(self._altitude),
-                dpt="{0:.2f}".format(self._dew_point),
-                hum="{0:.2f}".format(self._humidity),
-                press=self._pressure,
-                temp="{0:.2f}".format(self._temperature))
+                alt="{0:.6f}".format(self._altitude),
+                dpt="{0:.6f}".format(self._dew_point),
+                hum="{0:.6f}".format(self._humidity),
+                press='{0:.6f}'.format(self._pressure),
+                temp="{0:.6f}".format(self._temperature))
 
     def __iter__(self):  # must return an iterator
         """ SensorClass iterates through live measurement readings """
@@ -68,11 +68,11 @@ class BME280Sensor(AbstractInput):
         """ Get next measurement reading """
         if self.read():  # raised an error
             raise StopIteration  # required
-        return dict(altitude=float('{0:.2f}'.format(self._altitude)),
-                    dewpoint=float('{0:.2f}'.format(self._dew_point)),
-                    humidity=float('{0:.2f}'.format(self._humidity)),
-                    pressure=int(self._pressure),
-                    temperature=float('{0:.2f}'.format(self._temperature)))
+        return dict(altitude=float(self._altitude),
+                    dewpoint=float(self._dew_point),
+                    humidity=float(self._humidity),
+                    pressure=float(self._pressure),
+                    temperature=float(self._temperature))
 
     @property
     def altitude(self):

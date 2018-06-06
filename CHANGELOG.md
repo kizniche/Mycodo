@@ -1,5 +1,9 @@
 ## 6.1.4 (Unreleased)
 
+### Bugfixes
+
+ - Fix pressure measurements being forced to integer ([#476](https://github.com/kizniche/mycodo/issues/476))
+
 ### Miscellaneous
 
  - Remove I2C support for K30 CO2 sensor (until properly tested)
