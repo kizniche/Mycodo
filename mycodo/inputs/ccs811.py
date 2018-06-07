@@ -86,16 +86,20 @@ class CCS811Sensor(AbstractInput):
         self._voc = None
         self._temperature = None
 
-        co2 = convert_units(
-            'co2', 'ppm', self.convert_to_unit,
-            self.sensor.geteCO2())
-        voc = convert_units(
-            'voc', 'ppb', self.convert_to_unit,
-            self.sensor.getTVOC())
         temperature = convert_units(
             'temperature', 'celsius', self.convert_to_unit,
             self.sensor.calculateTemperature())
-        return co2, voc, temperature
+
+        if not self.sensor.readData():
+            co2 = convert_units(
+                'co2', 'ppm', self.convert_to_unit,
+                self.sensor.geteCO2())
+            voc = convert_units(
+                'voc', 'ppb', self.convert_to_unit,
+                self.sensor.getTVOC())
+            return co2, voc, temperature
+        else:
+            return None, None, None
 
     def read(self):
         """
