@@ -141,29 +141,17 @@ def install_dependencies(dependencies):
             time=now, deps=",".join(dependencies)))
 
     for each_dep in dependencies:
-        if each_dep == 'pigpio':
-            cmd = "{pth}/mycodo/scripts/mycodo_wrapper install_pigpio" \
-                  " | ts '[%Y-%m-%d %H:%M:%S]'" \
-                  " >> {log} 2>&1".format(pth=INSTALL_DIRECTORY,
-                                          log=DEPENDENCY_LOG_FILE)
-            dep = subprocess.Popen(cmd, shell=True)
-            dep.wait()
-            now = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-            with open(DEPENDENCY_LOG_FILE, 'a') as f:
-                f.write("\n[{time}] Successfully installed {dep}\n\n".format(
-                    time=now, dep=each_dep))
-        else:
-            cmd = "{pth}/mycodo/scripts/mycodo_wrapper install_dependency {dep}" \
-                  " | ts '[%Y-%m-%d %H:%M:%S]' >> {log} 2>&1".format(
-                pth=INSTALL_DIRECTORY,
-                log=DEPENDENCY_LOG_FILE,
-                dep=each_dep)
-            dep = subprocess.Popen(cmd, shell=True)
-            dep.wait()
-            now = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-            with open(DEPENDENCY_LOG_FILE, 'a') as f:
-                f.write("\n[{time}] Successfully installed {dep}\n\n".format(
-                    time=now, dep=each_dep))
+        cmd = "{pth}/mycodo/scripts/mycodo_wrapper install_dependency {dep}" \
+              " | ts '[%Y-%m-%d %H:%M:%S]' >> {log} 2>&1".format(
+            pth=INSTALL_DIRECTORY,
+            log=DEPENDENCY_LOG_FILE,
+            dep=each_dep)
+        dep = subprocess.Popen(cmd, shell=True)
+        dep.wait()
+        now = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        with open(DEPENDENCY_LOG_FILE, 'a') as f:
+            f.write("\n[{time}] Successfully installed {dep}\n\n".format(
+                time=now, dep=each_dep))
 
     cmd = "{pth}/mycodo/scripts/mycodo_wrapper update_permissions" \
           " | ts '[%Y-%m-%d %H:%M:%S]' >> {log}  2>&1".format(

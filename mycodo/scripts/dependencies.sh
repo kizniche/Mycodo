@@ -55,7 +55,7 @@ case "${1:-''}" in
     'numpy')
         ${INSTALL_CMD} install-numpy
     ;;
-    'install-pigpiod')
+    'pigpio')
         ${INSTALL_CMD} install-pigpiod
         ${INSTALL_CMD} enable-pigpiod-low
     ;;

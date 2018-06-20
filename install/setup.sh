@@ -167,7 +167,7 @@ if [ "$INSTALL_TYPE" == "custom" ]; then
         elif [ "$dep" == "numpy" ]; then
             ${INSTALL_DEP} numpy 2>&1 | tee -a ${LOG_LOCATION}
         elif [ "$dep" == "pigpio" ]; then
-            ${INSTALL_DEP} install-pigpiod 2>&1 | tee -a ${LOG_LOCATION}
+            ${INSTALL_DEP} pigpio 2>&1 | tee -a ${LOG_LOCATION}
         elif [ "$dep" == "quick2wire" ]; then
             ${INSTALL_DEP} quick2wire 2>&1 | tee -a ${LOG_LOCATION}
         elif [ "$dep" == "rpi_rf" ]; then
@@ -198,7 +198,7 @@ elif [ "$INSTALL_TYPE" == "full" ]; then
     ${INSTALL_DEP} MCP342x 2>&1 | tee -a ${LOG_LOCATION}
     ${INSTALL_DEP} miflora 2>&1 | tee -a ${LOG_LOCATION}
     ${INSTALL_DEP} numpy 2>&1 | tee -a ${LOG_LOCATION}
-    ${INSTALL_DEP} install-pigpiod 2>&1 | tee -a ${LOG_LOCATION}
+    ${INSTALL_DEP} pigpio 2>&1 | tee -a ${LOG_LOCATION}
     ${INSTALL_DEP} quick2wire 2>&1 | tee -a ${LOG_LOCATION}
     ${INSTALL_DEP} rpi_rf 2>&1 | tee -a ${LOG_LOCATION}
     ${INSTALL_DEP} sht_sensor 2>&1 | tee -a ${LOG_LOCATION}

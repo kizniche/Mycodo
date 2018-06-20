@@ -4,6 +4,7 @@
 
  - Fix pressure measurements being forced to integer ([#476](https://github.com/kizniche/mycodo/issues/476))
  - Fix CCS811 Input measurement ([#467](https://github.com/kizniche/mycodo/issues/467))
+ - Fix pigpio dependency install issue
 
 ### Miscellaneous
 

@@ -2,9 +2,9 @@
 Note: See the <a href="/help#pwm" target="_blank">PWM</a> section of the manual for PWM information and determining which pins may be used for each library option.
 </div>
 <div class="col-auto">
-  {{form_mod_output.gpio.label(class_='control-label')}}
+  {{form_mod_output.pin.label(class_='control-label')}}
   <div>
-    {{form_mod_output.gpio(class_='form-control', value=each_output.pin, **{'title':_('The GPIO pin (using BCM numbering) to output the PWM signal')})}}
+    {{form_mod_output.pin(class_='form-control', value=each_output.pin, **{'title':_('The GPIO pin (using BCM numbering) to output the PWM signal')})}}
    </div>
 </div>
 <div class="col-auto">

@@ -36,8 +36,7 @@ class OutputMod(FlaskForm):
         lazy_gettext('Name'),
         validators=[DataRequired()]
     )
-    gpio = IntegerField(lazy_gettext('BCM Pin'))
-    wiringpi_pin = IntegerField(lazy_gettext('Pin'))
+    pin = IntegerField(lazy_gettext('Pin'))
     protocol = IntegerField(lazy_gettext('Protocol'))
     pulse_length = IntegerField(lazy_gettext('Pulse Length'))
     on_command = StringField(lazy_gettext('On Command'))

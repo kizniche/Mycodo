@@ -48,6 +48,7 @@ def output_add(form_add):
                 if form_add.output_type.data == 'wired':
                     new_output.on_at_start = False
                 elif form_add.output_type.data == 'wireless_433MHz_pi_switch':
+                    new_output.pin = None
                     new_output.protocol = 1
                     new_output.pulse_length = 189
                     new_output.on_command = '22559'
@@ -97,12 +98,12 @@ def output_mod(form_output):
         mod_output.amps = form_output.amps.data
 
         if mod_output.output_type == 'wired':
-            if not is_int(form_output.gpio.data):
+            if not is_int(form_output.pin.data):
                 error.append("BCM Pin must be an integer")
-            mod_output.pin = form_output.gpio.data
+            mod_output.pin = form_output.pin.data
             mod_output.trigger = bool(int(form_output.trigger.data))
         elif mod_output.output_type == 'wireless_433MHz_pi_switch':
-            if not is_int(form_output.wiringpi_pin.data):
+            if not is_int(form_output.pin.data):
                 error.append("Pin must be an integer")
             if not is_int(form_output.protocol.data):
                 error.append("Protocol must be an integer")
@@ -112,7 +113,7 @@ def output_mod(form_output):
                 error.append("On Command must be an integer")
             if not is_int(form_output.off_command.data):
                 error.append("Off Command must be an integer")
-            mod_output.pin = form_output.wiringpi_pin.data
+            mod_output.pin = form_output.pin.data
             mod_output.protocol = form_output.protocol.data
             mod_output.pulse_length = form_output.pulse_length.data
             mod_output.on_command = form_output.on_command.data
@@ -124,7 +125,7 @@ def output_mod(form_output):
             mod_output.pwm_command = form_output.pwm_command.data
             mod_output.pwm_invert_signal = form_output.pwm_invert_signal.data
         elif mod_output.output_type == 'pwm':
-            mod_output.pin = form_output.gpio.data
+            mod_output.pin = form_output.pin.data
             mod_output.pwm_hertz = form_output.pwm_hertz.data
             mod_output.pwm_library = form_output.pwm_library.data
             mod_output.pwm_invert_signal = form_output.pwm_invert_signal.data
