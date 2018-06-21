@@ -1,5 +1,9 @@
 ## 6.1.4 (Unreleased)
 
+### Features
+
+ - Increase verbosity of conditional email notification
+
 ### Bugfixes
 
  - Fix pressure measurements being forced to integer ([#476](https://github.com/kizniche/mycodo/issues/476))

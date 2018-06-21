@@ -575,8 +575,12 @@ class ConditionalController(threading.Thread):
             # Actuate output (duration)
             if (cond_action.do_action == 'output' and cond_action.do_unique_id and
                     cond_action.do_output_state in ['on', 'off']):
-                message += " Turn output {id} {state}".format(
-                    id=cond_action.do_unique_id,
+                this_output = db_retrieve_table_daemon(
+                    Output, unique_id=cond_action.do_unique_id, entry='first')
+                message += " Turn output {unique_id} ({id}, {name}) {state}".format(
+                    unique_id=cond_action.do_unique_id,
+                    id=this_output.id,
+                    name=this_output.name,
                     state=cond_action.do_output_state)
                 if (cond_action.do_output_state == 'on' and
                         cond_action.do_output_duration):
@@ -594,8 +598,12 @@ class ConditionalController(threading.Thread):
             # Actuate output (PWM)
             elif (cond_action.do_action == 'output_pwm' and cond_action.do_unique_id and
                     cond_action.do_output_pwm):
-                message += " Turn output {id} duty cycle to {duty_cycle}%.".format(
-                    id=cond_action.do_unique_id,
+                this_output = db_retrieve_table_daemon(
+                    Output, unique_id=cond_action.do_unique_id, entry='first')
+                message += " Turn output {unique_id} ({id}, {name}) duty cycle to {duty_cycle}%.".format(
+                    unique_id=cond_action.do_unique_id,
+                    id=this_output.id,
+                    name=this_output.name,
                     duty_cycle=cond_action.do_output_pwm)
 
                 output_on = threading.Thread(
@@ -654,16 +662,24 @@ class ConditionalController(threading.Thread):
 
             # Capture photo
             elif cond_action.do_action in ['photo', 'photo_email']:
-                message += "  Capturing photo with camera ({id}).".format(
-                    id=cond_action.do_unique_id)
+                this_camera = db_retrieve_table_daemon(
+                    Camera, unique_id=cond_action.do_unique_id, entry='first')
+                message += "  Capturing photo with camera {unique_id} ({id}, {name}).".format(
+                    unique_id=cond_action.do_unique_id,
+                    id=this_camera.id,
+                    name=this_camera.name)
                 camera_still = db_retrieve_table_daemon(
                     Camera, unique_id=cond_action.do_unique_id)
                 attachment_file = camera_record('photo', camera_still.unique_id)
 
             # Capture video
             elif cond_action.do_action in ['video', 'video_email']:
-                message += "  Capturing video with camera ({id}).".format(
-                    id=cond_action.do_unique_id)
+                this_camera = db_retrieve_table_daemon(
+                    Camera, unique_id=cond_action.do_unique_id, entry='first')
+                message += "  Capturing video with camera {unique_id} ({id}, {name}).".format(
+                    unique_id=cond_action.do_unique_id,
+                    id=this_camera.id,
+                    name=this_camera.name)
                 camera_stream = db_retrieve_table_daemon(
                     Camera, unique_id=cond_action.do_unique_id)
                 attachment_file = camera_record(
@@ -672,12 +688,14 @@ class ConditionalController(threading.Thread):
 
             # Activate Controller
             elif cond_action.do_action == 'activate_controller':
-                message += " Activate Controller ({id}).".format(
-                    id=cond_action.do_unique_id)
                 (controller_type,
                  controller_object,
                  controller_entry) = self.which_controller(
                     cond_action.do_unique_id)
+                message += " Activate Controller {unique_id} ({id}, {name}).".format(
+                    unique_id=cond_action.do_unique_id,
+                    id=controller_entry.id,
+                    name=controller_entry.name)
                 if controller_entry.is_activated:
                     message += " Notice: Controller is already active!"
                 else:
@@ -706,12 +724,14 @@ class ConditionalController(threading.Thread):
 
             # Deactivate Controller
             elif cond_action.do_action == 'deactivate_controller':
-                message += " Deactivate Controller ({id}).".format(
-                    id=cond_action.do_unique_id)
                 (controller_type,
                  controller_object,
                  controller_entry) = self.which_controller(
                     cond_action.do_unique_id)
+                message += " Deactivate Controller {unique_id} ({id}, {name}).".format(
+                    unique_id=cond_action.do_unique_id,
+                    id=controller_entry.id,
+                    name=controller_entry.name)
                 if not controller_entry.is_activated:
                     message += " Notice: Controller is already inactive!"
                 else:
@@ -728,10 +748,12 @@ class ConditionalController(threading.Thread):
 
             # Resume PID controller
             elif cond_action.do_action == 'resume_pid':
-                message += " Resume PID ({id}).".format(
-                    id=cond_action.do_unique_id)
                 pid = db_retrieve_table_daemon(
                     PID, unique_id=cond_action.do_unique_id, entry='first')
+                message += " Resume PID {unique_id} ({id}, {name}).".format(
+                    unique_id=cond_action.do_unique_id,
+                    id=pid.id,
+                    name=pid.name)
                 if not pid.is_paused:
                     message += " Notice: PID is not paused!"
                 elif pid.is_activated:
@@ -747,10 +769,12 @@ class ConditionalController(threading.Thread):
 
             # Pause PID controller
             elif cond_action.do_action == 'pause_pid':
-                message += " Pause PID ({id}).".format(
-                    id=cond_action.do_unique_id)
                 pid = db_retrieve_table_daemon(
                     PID, unique_id=cond_action.do_unique_id, entry='first')
+                message += " Pause PID {unique_id} ({id}, {name}).".format(
+                    unique_id=cond_action.do_unique_id,
+                    id=pid.id,
+                    name=pid.name)
                 if pid.is_paused:
                     message += " Notice: PID is already paused!"
                 elif pid.is_activated:
@@ -766,10 +790,12 @@ class ConditionalController(threading.Thread):
 
             # Set PID Setpoint
             elif cond_action.do_action == 'setpoint_pid':
-                message += " Set Setpoint of PID ({id}).".format(
-                    id=cond_action.do_unique_id)
                 pid = db_retrieve_table_daemon(
                     PID, unique_id=cond_action.do_unique_id, entry='first')
+                message += " Set Setpoint of PID {unique_id} ({id}, {name}).".format(
+                    unique_id=cond_action.do_unique_id,
+                    id=pid.id,
+                    name=pid.name)
                 if pid.is_activated:
                     setpoint_pid = threading.Thread(
                         target=self.control.pid_set,
@@ -786,8 +812,12 @@ class ConditionalController(threading.Thread):
 
             # Set PID Method and start method from beginning
             elif cond_action.do_action == 'method_pid':
-                message += " Set Method of PID ({id}).".format(
-                    id=cond_action.do_unique_id)
+                pid = db_retrieve_table_daemon(
+                    PID, unique_id=cond_action.do_unique_id, entry='first')
+                message += " Set Method of PID {unique_id} ({id}, {name}).".format(
+                    unique_id=cond_action.do_unique_id,
+                    id=pid.id,
+                    name=pid.name)
 
                 # Instruct method to start
                 with session_scope(MYCODO_DB_PATH) as new_session:
@@ -849,7 +879,8 @@ class ConditionalController(threading.Thread):
             elif cond_action.do_action == 'flash_lcd_on':
                 lcd = db_retrieve_table_daemon(
                     LCD, unique_id=cond_action.do_unique_id)
-                message += " Flash LCD On {id} ({name}).".format(
+                message += " LCD {unique_id} ({id}, {name}) Flash On.".format(
+                    unique_id=cond_action.do_unique_id,
                     id=lcd.id,
                     name=lcd.name)
 
@@ -861,7 +892,8 @@ class ConditionalController(threading.Thread):
             elif cond_action.do_action == 'flash_lcd_off':
                 lcd = db_retrieve_table_daemon(
                     LCD, unique_id=cond_action.do_unique_id)
-                message += " Flash LCD Off {id} ({name}).".format(
+                message += " LCD {unique_id} ({id}, {name}) Flash Off.".format(
+                    unique_id=cond_action.do_unique_id,
                     id=lcd.id,
                     name=lcd.name)
 
@@ -873,7 +905,8 @@ class ConditionalController(threading.Thread):
             elif cond_action.do_action == 'lcd_backlight_off':
                 lcd = db_retrieve_table_daemon(
                     LCD, unique_id=cond_action.do_unique_id)
-                message += " LCD Backlight Off {id} ({name}).".format(
+                message += " LCD {unique_id} ({id}, {name}) Backlight Off.".format(
+                    unique_id=cond_action.do_unique_id,
                     id=lcd.id,
                     name=lcd.name)
 
@@ -885,7 +918,8 @@ class ConditionalController(threading.Thread):
             elif cond_action.do_action == 'lcd_backlight_on':
                 lcd = db_retrieve_table_daemon(
                     LCD, unique_id=cond_action.do_unique_id)
-                message += " LCD Backlight On {id} ({name}).".format(
+                message += " LCD {unique_id} ({id}, {name}) Backlight On.".format(
+                    unique_id=cond_action.do_unique_id,
                     id=lcd.id,
                     name=lcd.name)
 
