@@ -677,9 +677,10 @@ class InputController(threading.Thread):
             self.measure_input.stop_sensor()
 
         # Ensure pre-output is off
-        output_on = threading.Thread(
-            target=self.control.output_off,
-            args=(self.pre_output_id,))
-        output_on.start()
+        if self.pre_output_setup:
+            output_on = threading.Thread(
+                target=self.control.output_off,
+                args=(self.pre_output_id,))
+            output_on.start()
 
         self.running = False
