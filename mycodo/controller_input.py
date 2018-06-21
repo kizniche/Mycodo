@@ -675,4 +675,11 @@ class InputController(threading.Thread):
         self.thread_shutdown_timer = timeit.default_timer()
         if self.device not in ['EDGE'] + LIST_DEVICES_ADC:
             self.measure_input.stop_sensor()
+
+        # Ensure pre-output is off
+        output_on = threading.Thread(
+            target=self.control.output_off,
+            args=(self.pre_output_id,))
+        output_on.start()
+
         self.running = False
