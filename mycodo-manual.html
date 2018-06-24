@@ -630,66 +630,70 @@ signal &lt;http://kylegabriel.com/projects/2016/02
 <td style="text-align: left;">Analog-to-digital converter only: This is the unit of the measurement. With the above example of “light” as the measurement, the unit may be “lux” or “intensity”.</td>
 </tr>
 <tr class="even">
+<td style="text-align: left;">BT Adapter</td>
+<td style="text-align: left;">The Bluetooth adapter to communicate with the input.</td>
+</tr>
+<tr class="odd">
 <td style="text-align: left;">Clock Pin</td>
 <td style="text-align: left;">The GPIO (using BCM numbering) connected to the Clock pin of the ADC</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td style="text-align: left;">CS Pin</td>
 <td style="text-align: left;">The GPIO (using BCM numbering) connected to the CS pin of the ADC</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td style="text-align: left;">MISO Pin</td>
 <td style="text-align: left;">The GPIO (using BCM numbering) connected to the MISO pin of the ADC</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td style="text-align: left;">MOSI Pin</td>
 <td style="text-align: left;">The GPIO (using BCM numbering) connected to the MOSI pin of the ADC</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td style="text-align: left;">RTD Probe Type</td>
 <td style="text-align: left;">Select to measure from a PT100 or PT1000 probe.</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td style="text-align: left;">Resistor Reference (Ohm)</td>
 <td style="text-align: left;">If your reference resistor is not the default (400 Ohm for PT100, 4000 Ohm for PT1000), you can manually set this value. Several manufacturers now use 430 Ohm resistors on their circuit boards, therefore it’s recommended to verify the accuracy of your measurements and adjust this value if necessary.</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td style="text-align: left;">Channel</td>
 <td style="text-align: left;">Analog-to-digital converter only: This is the channel to obtain the voltage measurement from the ADC.</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td style="text-align: left;">Gain</td>
 <td style="text-align: left;">Analog-to-digital converter only: set the gain when acquiring the measurement.</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td style="text-align: left;">Volts Min</td>
 <td style="text-align: left;">Analog-to-digital converter only: What is the minimum voltage to use when scaling to produce the unit value for the database. For instance, if your ADC is not expected to measure below 0.2 volts for your particular circuit, set this to “0.2”.</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td style="text-align: left;">Volts Max</td>
 <td style="text-align: left;">Analog-to-digital converter only: This is similar to the Min option above, however it is setting the ceiling to the voltage range. Units Min Analog-to-digital converter only: This value will be the lower value of a range that will use the Min and Max Voltages, above, to produce a unit output. For instance, if your voltage range is 0.0 - 1.0 volts, and the unit range is 1 - 60, and a voltage of 0.5 is measured, in addition to 0.5 being stored in the database, 30 will be stored as well. This enables creating calibrated scales to use with your particular circuit.</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td style="text-align: left;">Units Max</td>
 <td style="text-align: left;">Analog-to-digital converter only: This is similar to the Min option above, however it is setting the ceiling to the unit range.</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td style="text-align: left;">Weighting</td>
 <td style="text-align: left;">The This is a number between 0 and 1 and indicates how much the old reading affects the new reading. It defaults to 0 which means the old reading has no effect. This may be used to smooth the data.</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td style="text-align: left;">Pulses Per Rev</td>
 <td style="text-align: left;">The number of pulses for a complete revolution.</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td style="text-align: left;">Port</td>
 <td style="text-align: left;">The server port to be queried (Server Port Open input).</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td style="text-align: left;">Times to Check</td>
 <td style="text-align: left;">The number of times to attempt to ping a server (Server Ping input).</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td style="text-align: left;">Deadline (seconds)</td>
 <td style="text-align: left;">The maximum amount of time to wait for each ping attempt, after which 0 (offline) will be returned (Server Ping input).</td>
 </tr>
@@ -1072,9 +1076,9 @@ signal &lt;http://kylegabriel.com/projects/2016/02
 <h4 id="wired">Wired</h4>
 <p>To set up a wired relay, set the “GPIO Pin” to the BCM GPIO number of each pin that activates each relay. <em>On Trigger</em> should be set to the signal that activates the relay (the device attached to the relay turns on). If your relay activates when the potential across the coil is 0-volts, set <em>On Trigger</em> to “Low”, otherwise if your relay activates when the potential across the coil is 3.3-volts (or whatever switching voltage you are using, if not being driven by the GPIO pin), set it to “High”.</p>
 <h4 id="wireless">Wireless</h4>
-<p>Certain 433 MHz wireless relays may be used, however you will need to set the pin of the transmitter (using WiringPi numbering), pulse length, bit length, protocol, on command, and off command. To determine your on and off commands, connect a 433 MHz receiver to your Pi, then run the receiver script, below, and press one of the buttons (either on or off) on your remote to detect the numeric code associated with that button.</p>
-<pre><code>sudo ~/Mycodo/env/bin/python ~/Mycodo/mycodo/devices/wireless_433mhz_pi_switch.py</code></pre>
-<p>433 MHz wireless relays have been successfully tested with SMAKN 433MHz RF Transmitters/Receivers and Etekcity Wireless Remote Control Electrical Outlets (see <a href="https://github.com/kizniche/Mycodo/issues/88">Issue 88</a> for more information). If you have a 433 MHz transmitter/receiver and a wireless relay that does not work with the current code (even after trying several different protocol settings), submit a <a href="https://github.com/kizniche/Mycodo/issues/new">new issue</a> with details of your hardware.</p>
+<p>Certain 433 MHz wireless relays may be used, however you will need to set the pin of the transmitter (using BCM numbering), pulse length, bit length, protocol, on command, and off command. To determine your On and Off commands, connect a 433 MHz receiver to your Pi, then run the receiver script, below, replacing 17 with the pin your receiver is connected to (BCM numbering), and press one of the buttons (either on or off) on your remote to detect the numeric code associated with that button.</p>
+<pre><code>sudo ~/Mycodo/env/bin/python ~/Mycodo/mycodo/devices/wireless_433mhz.py -d 2 -g 17</code></pre>
+<p>433 MHz wireless relays have been successfully tested with SMAKN 433MHz RF Transmitters/Receivers and Etekcity Wireless Remote Control Electrical Outlets (see <a href="https://github.com/kizniche/Mycodo/issues/88">Issue 88</a> for more information). If you have a 433 MHz transmitter/receiver and a wireless relay that does not work with the current code, submit a <a href="https://github.com/kizniche/Mycodo/issues/new">new issue</a> with details of your hardware.</p>
 <h4 id="command">Command</h4>
 <p>Another option for output control is to execute a terminal command when the output is turned on, off, or a duty cycle. Commands will be executed as the user ‘root’.</p>
 <p>Wireless and Command Output Note: Since the wireless protocol only allows 1-way communication to 433 MHz devices, wireless relays are assumed to be off until they are turned on, and therefore will appear red (off) when added. If a wireless relay is turned off or on outside Mycodo (by a remote, for instance), Mycodo will <strong><em>not</em></strong> be able to determine the state of the relay and will indicate whichever state the relay was last. This is, if Mycodo turns the wireless relay on, and a remote is used to turn the relay off, Mycodo will still assume the relay is on.</p>

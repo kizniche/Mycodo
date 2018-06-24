@@ -746,23 +746,23 @@ Wireless
 ''''''''
 
 Certain 433 MHz wireless relays may be used, however you will need to
-set the pin of the transmitter (using WiringPi numbering), pulse length,
-bit length, protocol, on command, and off command. To determine your on
-and off commands, connect a 433 MHz receiver to your Pi, then run the
-receiver script, below, and press one of the buttons (either on or off)
-on your remote to detect the numeric code associated with that button.
+set the pin of the transmitter (using BCM numbering), pulse length,
+bit length, protocol, on command, and off command. To determine your On
+and Off commands, connect a 433 MHz receiver to your Pi, then run the
+receiver script, below, replacing 17 with the pin your receiver is
+connected to (BCM numbering), and press one of the buttons (either on or
+off) on your remote to detect the numeric code associated with that button.
 
 ::
 
-    sudo ~/Mycodo/env/bin/python ~/Mycodo/mycodo/devices/wireless_433mhz_pi_switch.py
+    sudo ~/Mycodo/env/bin/python ~/Mycodo/mycodo/devices/wireless_433mhz.py -d 2 -g 17
 
 433 MHz wireless relays have been successfully tested with SMAKN 433MHz
 RF Transmitters/Receivers and Etekcity Wireless Remote Control
 Electrical Outlets (see `Issue
 88 <https://github.com/kizniche/Mycodo/issues/88>`__ for more
 information). If you have a 433 MHz transmitter/receiver and a wireless
-relay that does not work with the current code (even after trying
-several different protocol settings), submit a `new
+relay that does not work with the current code, submit a `new
 issue <https://github.com/kizniche/Mycodo/issues/new>`__ with details of
 your hardware.
 

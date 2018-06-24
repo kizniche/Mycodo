@@ -17,6 +17,7 @@
  - Remove I2C support for K30 CO2 sensor (until properly tested)
  - Update to Bootstrap 4.1.1
  - Remove remaining Fahrenheit conversions from Live page
+ - Update 433 MHz wireless script (test send/receive, determine/receive commands from remote)
 
 
 ## 6.1.3 (2018-06-05)

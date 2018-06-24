@@ -1,14 +1,16 @@
 # coding=utf-8
+import argparse
 import logging
 import sys
+import time
 
 from rpi_rf import RFDevice
 
-logger = logging.getLogger("mycodo.device.433mhz_pi_switch")
+logger = logging.getLogger("mycodo.device.wireless_433mhz")
 
 
 class Transmit433MHz:
-    """Transmit 433MHz commands"""
+    """Transmit/Receive 433MHz commands"""
 
     def __init__(self, pin, protocol=1, pulse_length=189):
         self.device = None
@@ -76,60 +78,65 @@ def is_int(test_var, check_range=None):
 
 
 def main():
-    print(">> pi_switch 433MHz sample code")
-    print(">> Send or receive 433MHz commands:")
-    print(">>   1. Send command.")
-    print(">>   2. Listen for commands.")
-    print(">> Pressing ctrl-c to stop")
+    parser = argparse.ArgumentParser(description='Sends/Receives a decimal code via a 433/315MHz GPIO device')
+    parser.add_argument('-d', dest='direction', type=int, default=2,
+                        help="Send (1) or Receive (2) (Default: 2)")
+    parser.add_argument('-g', dest='gpio', type=int, default=17,
+                        help="GPIO pin (Default: 17)")
 
-    cmd_str = input("Select 1 or 2: ")
-    if not is_int(cmd_str, check_range=[1, 2]):
-        print("Invalid option")
-        sys.exit(1)
+    # Send-specific commands
+    parser.add_argument('-c', dest='code', type=int, required=False,
+                        help="Decimal code to send")
+    parser.add_argument('-p', dest='pulselength', type=int, default=None,
+                        help="Pulselength (Default: 350)")
+    parser.add_argument('-t', dest='protocol', type=int, default=None,
+                        help="Protocol (Default: 1)")
+    args = parser.parse_args()
 
-    if int(cmd_str) == 1:
-        pin = input("Pin connected to transmitter: ")
-        if not is_int(pin):
-            print("Invalid option. Must be integer.")
-            sys.exit(1)
-        protocol = input("Protocol (Default: 1): ")
-        if not is_int(protocol):
-            print("Invalid option. Must be integer.")
-            sys.exit(1)
-        pulse_length = input("Pulse Length (Default: 189): ")
-        if not is_int(pulse_length):
-            print("Invalid option. Must be integer.")
-            sys.exit(1)
-        send_str = input("What numerical command to send: ")
-        if not is_int(send_str):
-            print("Invalid option. Must be integer.")
-            sys.exit(1)
-        device = Transmit433MHz(int(pin),
-                                protocol=int(protocol),
-                                pulse_length=int(pulse_length))
-        device.transmit(int(send_str))
-        print("Command sent: {}".format(int(send_str)))
 
-    elif int(cmd_str) == 2:
-        pin = input("Pin connected to receiver: ")
-        if not is_int(pin):
-            print("Invalid option. Must be integer.")
-            sys.exit(1)
+    if args.direction == 1:
+        rfdevice = RFDevice(args.gpio)
+        rfdevice.enable_tx()
 
-        device = Transmit433MHz(int(pin))
-        device.enable_receive()
-        print("Receiver listening. Press a button on your remote or use your "
-              "transmitter near the receiver.")
+        if args.protocol:
+            protocol = args.protocol
+        else:
+            protocol = "default"
+        if args.pulselength:
+            pulselength = args.pulselength
+        else:
+            pulselength = "default"
 
+        print(str(args.code) +
+              " [protocol: " + str(protocol) +
+              ", pulselength: " + str(pulselength) + "]")
+
+        rfdevice.tx_code(args.code, args.protocol, args.pulselength)
+        rfdevice.cleanup()
+
+    elif args.direction == 2:
+        rfdevice = RFDevice(args.gpio)
+        rfdevice.enable_rx()
+        timestamp = None
+        print("Listening for codes on GPIO " + str(args.gpio))
         try:
             while True:
-                num, rec_value, pulse_length, protocol = device.receive_available()
-                if rec_value:
-                    print("Received[{}]: {}".format(num, rec_value))
-                    print("Pulse Length: {}".format(pulse_length))
-                    print("Protocol: {}\n".format(protocol))
+                if rfdevice.rx_code_timestamp != timestamp:
+                    timestamp = rfdevice.rx_code_timestamp
+                    print(str(rfdevice.rx_code) +
+                          " [pulselength " + str(rfdevice.rx_pulselength) +
+                          ", protocol " + str(rfdevice.rx_proto) + "]")
+                time.sleep(0.01)
         except KeyboardInterrupt:
-            device.cleanup()
+            print("Keyboard Interupt")
+        finally:
+            rfdevice.cleanup()
+
+    else:
+        print("Invalid option: '{opt}'. "
+              "You may either Send (1) or Receive (2). ".format(
+            opt=args.direction))
+
 
 if __name__ == "__main__":
     main()
