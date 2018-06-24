@@ -69,7 +69,6 @@
       {%- for each_math in math if each_math.is_activated -%}
         {%- set measurement_list = each_math.measure.split(',') -%}
         {%- for each_measurement in measurement_list %}
-          {%- set c_to_f = 'true' if each_measurement in temperatures else 'false' %}
           liveTextData('{{each_math.unique_id}}', '{{each_measurement}}', {{each_math.period + 1}});
         {%- endfor -%}
       {%- endfor -%}

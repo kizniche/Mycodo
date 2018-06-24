@@ -1,6 +1,7 @@
 # coding=utf-8
 #
-# From https://github.com/mk-fg/sht-sensor
+#  sensorutils.py - commonly used functions for input devices (e.g. sensors)
+#
 
 import logging
 import math
@@ -13,7 +14,12 @@ logger = logging.getLogger("mycodo.sensor_utils")
 
 
 def altitude(pressure_pa, sea_level_pa=101325.0):
-    """Calculates the altitude in meters."""
+    """
+    Calculates the altitude (m) from pressure (Pa)
+    :param pressure_pa: Measured pressure (Pa)
+    :param sea_level_pa: Pressure (Pa) at sea level
+    :return: altitude in meters
+    """
     if pressure_pa < 0:
         logger.error("Erroneous Pressure to calculate altitude: "
                      "{press} Pa".format(press=pressure_pa))
@@ -22,11 +28,17 @@ def altitude(pressure_pa, sea_level_pa=101325.0):
     return float("{:.3f}".format(alt_meters))
 
 
-def c_to_f(temp_c):
-    return 9.0 / 5.0 * temp_c + 32
-
-
 def convert_units(measurement, unit, convert_to_unit, measure_value):
+    """
+    Convert from one unit to another, such as ppm to ppb.
+    See UNIT_CONVERSIONS in config.py for available conversions.
+
+    :param measurement: measurement from MEASUREMENT_UNITS in config.py
+    :param unit: unit to convert from, from UNITS in config.py
+    :param convert_to_unit: unit to convert to, from UNITS in config.py
+    :param measure_value: The value to convert
+    :return: converted value
+    """
     measuement = measure_value
     if convert_to_unit:
         for each_unit in convert_to_unit.split(';'):
@@ -41,6 +53,7 @@ def convert_units(measurement, unit, convert_to_unit, measure_value):
 
 
 def dewpoint(t, rh):
+    """Calucalte dewpoint from temperature and relative humidity"""
     dict_tn = dict(water=243.12, ice=272.62)
     dict_m = dict(water=17.62, ice=22.46)
     if t >= 0:
@@ -58,6 +71,7 @@ def dewpoint(t, rh):
 
 
 def is_device(path):
+    """Determines if a path exists, created to check if a /dev/device exists"""
     try:
         os.stat("{dev}".format(dev=path))
     except OSError:

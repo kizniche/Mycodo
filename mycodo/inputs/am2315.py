@@ -6,6 +6,7 @@ import time
 from mycodo.databases.models import Output
 from mycodo.utils.database import db_retrieve_table_daemon
 from .base_input import AbstractInput
+from .sensorutils import convert_units
 from .sensorutils import dewpoint
 
 """
@@ -58,6 +59,7 @@ class AM2315Sensor(AbstractInput):
                 'mycodo.inputs.am2315_{id}'.format(id=input_dev.id))
             self.i2c_bus = input_dev.i2c_bus
             self.power_output_id = input_dev.power_output_id
+            self.convert_to_unit = input_dev.convert_to_unit
             self.control = DaemonControl()
             self.start_sensor()
             self.am = AM2315(self.i2c_bus)
@@ -132,6 +134,12 @@ class AM2315Sensor(AbstractInput):
         for _ in range(2):
             dew_point, humidity, temperature = self.return_measurements()
             if dew_point is not None:
+                dew_point = convert_units(
+                    'dewpoint', 'celsius', self.convert_to_unit,
+                    dew_point)
+                temperature = convert_units(
+                    'temperature', 'celsius', self.convert_to_unit,
+                    temperature)
                 return dew_point, humidity, temperature  # success - no errors
             time.sleep(2)
 
@@ -144,6 +152,12 @@ class AM2315Sensor(AbstractInput):
             for _ in range(2):
                 dew_point, humidity, temperature = self.return_measurements()
                 if dew_point is not None:
+                    dew_point = convert_units(
+                        'dewpoint', 'celsius', self.convert_to_unit,
+                        dew_point)
+                    temperature = convert_units(
+                        'temperature', 'celsius', self.convert_to_unit,
+                        temperature)
                     return dew_point, humidity, temperature  # success
                 time.sleep(2)
 

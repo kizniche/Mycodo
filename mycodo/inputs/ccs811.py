@@ -61,14 +61,14 @@ class CCS811Sensor(AbstractInput):
 
     @property
     def co2(self):
-        """ CC2811 light measurement """
+        """ CC2811 CO2 measurement (ppm) """
         if self._co2 is None:  # update if needed
             self.read()
         return self._co2
 
     @property
     def voc(self):
-        """ CC2811 voc measurement """
+        """ CC2811 VOC measurement (ppb) """
         if self._voc is None:  # update if needed
             self.read()
         return self._voc
@@ -81,7 +81,7 @@ class CCS811Sensor(AbstractInput):
         return self._temperature
 
     def get_measurement(self):
-        """ Gets the light, voc, and temperature """
+        """ Gets the CO2, VOC, and temperature """
         self._co2 = None
         self._voc = None
         self._temperature = None
