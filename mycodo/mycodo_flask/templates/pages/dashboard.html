@@ -315,7 +315,7 @@ $(document).ready(function() {
   $('.set_setpoint').click(function() {
     var btn_val = this.name;
     var id = btn_val.split('/')[0];
-    var setpoint = document.getElementById('setpoint_pid').value;
+    var setpoint = $('#setpoint_pid_' + id).val();
     if(setpoint) {
       {% if not misc.hide_alert_info %}
       toastr['info']('Command sent to set PID setpoint');

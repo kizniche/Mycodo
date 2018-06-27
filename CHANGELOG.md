@@ -11,6 +11,7 @@
  - Fix pigpio dependency install issue
  - Prevent pre-output from remaining on after an Input is deactivated
  - Enable unit conversions for AM2315
+ - Fix issue setting PID setpoint from Dashboard ([#496](https://github.com/kizniche/mycodo/issues/496))
 
 ### Miscellaneous
 

@@ -55,7 +55,7 @@
   {% if each_graph.show_set_setpoint %}
   <div class="row small-gutters" style="padding: 0.5em 1.5em 0.5em 1.5em">
     <div class="col-6">
-      <input class="form-control form-control-sm" id="setpoint_pid" name="setpoint_pid" type="number" value="" title="{{_('A numerical value to set the PID setpoint')}}">
+      <input class="form-control form-control-sm" id="setpoint_pid_{{each_graph.pid_ids}}" name="setpoint_pid_{{each_graph.pid_ids}}" type="number" value="" title="{{_('A numerical value to set the PID setpoint')}}">
     </div>
     <div class="col-6">
       <input class="form-control btn btn-block btn-sm set_setpoint" id="set_setpoint" name="{{each_graph.pid_ids}}/set_setpoint_pid|" type="button" value="{{_('Set Setpoint')}}">
@@ -85,7 +85,7 @@
     {% if not each_graph.show_set_setpoint %}
     <div class="form-row">
       <div class="col-6">
-        <input class="form-control" id="setpoint_pid" name="setpoint_pid" type="number" value="" title="{{_('A numerical value to set the PID setpoint')}}">
+        <input class="form-control" id="setpoint_pid_{{each_graph.pid_ids}}" name="setpoint_pid_{{each_graph.pid_ids}}" type="number" value="" title="{{_('A numerical value to set the PID setpoint')}}">
       </div>
       <div class="col-6">
         <input class="form-control btn btn-default set_setpoint" id="set_setpoint" name="{{each_graph.pid_ids}}/set_setpoint_pid|" type="button" value="{{_('Set Setpoint')}}">
