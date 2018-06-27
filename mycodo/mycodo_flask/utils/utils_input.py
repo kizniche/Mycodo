@@ -159,7 +159,8 @@ def input_add(form_add):
         elif form_add.input_type.data == 'K30_I2C':
             new_sensor.location = '0x68'
             new_sensor.interface = 'I2C'
-        elif form_add.input_type.data in ['K30_UART',
+        elif form_add.input_type.data in ['COZIR_CO2',
+                                          'K30_UART',
                                           'MH_Z16_UART',
                                           'MH_Z19_UART']:
             new_sensor.location = 'Tx/Rx'

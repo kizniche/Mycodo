@@ -44,6 +44,7 @@ DEVICES = [
     ('ADS1x15', 'Analog-to-Digital Converter: ADS1x15 (I2C)'),
     ('MCP3008', 'Analog-to-Digital Converter: MCP3008 (Serial)'),
     ('MCP342x', 'Analog-to-Digital Converter: MCP342x (I2C)'),
+    ('COZIR_CO2', 'CO2/Temperature/Humidity: COZIR (Serial)'),
     ('K30_UART', 'CO2: K30 (Serial)'),
     ('MH_Z16_I2C', 'CO2: MH-Z16 (I2C)'),
     ('MH_Z16_UART', 'CO2: MH-Z16 (Serial)'),
@@ -166,6 +167,10 @@ DEVICE_INFO = {
         'i2c-address-change': True,
         'py-dependencies': ['smbus'],
         'measure': ['lux', 'moisture', 'temperature']},
+    'COZIR_CO2': {
+        'name': 'COZIR',
+        'py-dependencies': ['cozir'],
+        'measure': ['co2', 'humidity', 'temperature']},
     'DHT11': {
         'name': 'DHT11',
         'py-dependencies': ['pigpio'],
@@ -709,6 +714,7 @@ LIST_DEVICES_SERIAL = [
     'ATLAS_EC_UART',
     'ATLAS_PH_UART',
     'ATLAS_PT1000_UART',
+    'COZIR_CO2',
     'K30_UART',
     'MH_Z16_UART',
     'MH_Z19_UART'

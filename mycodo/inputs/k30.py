@@ -3,6 +3,7 @@ import logging
 import time
 
 from .base_input import AbstractInput
+from .sensorutils import convert_units
 from .sensorutils import is_device
 
 
@@ -20,6 +21,7 @@ class K30Sensor(AbstractInput):
                 "mycodo.inputs.k30_{id}".format(id=input_dev.id))
             self.device_loc = input_dev.device_loc
             self.baud_rate = input_dev.baud_rate
+            self.convert_to_unit = input_dev.convert_to_unit
             # Check if device is valid
             self.serial_device = is_device(self.device_loc)
             if self.serial_device:
@@ -78,6 +80,9 @@ class K30Sensor(AbstractInput):
             high = resp[3]
             low = resp[4]
             co2 = (high * 256) + low
+
+        co2 = convert_units(
+            'co2', 'ppm', self.convert_to_unit, co2)
 
         return co2
 

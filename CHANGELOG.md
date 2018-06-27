@@ -3,6 +3,8 @@
 ### Features
 
  - Increase verbosity of conditional email notification
+ - Add Cozir CO2 sensor Input ([#495](https://github.com/kizniche/mycodo/issues/495))
+ - Allow CO2 to be converted from ppm <-> ppb
 
 ### Bugfixes
 

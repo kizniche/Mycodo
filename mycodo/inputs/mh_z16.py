@@ -23,6 +23,7 @@ import logging
 import time
 
 from .base_input import AbstractInput
+from .sensorutils import convert_units
 from .sensorutils import is_device
 
 
@@ -39,6 +40,7 @@ class MHZ16Sensor(AbstractInput):
                 "mycodo.inputs.mh_z16_{id}".format(id=input_dev.id))
             self.interface = input_dev.interface
             self.device_loc = input_dev.device_loc
+            self.convert_to_unit = input_dev.convert_to_unit
             self.i2c_address = int(str(input_dev.location), 16)
             self.i2c_bus = input_dev.i2c_bus
             if self.interface == 'UART':
@@ -125,6 +127,9 @@ class MHZ16Sensor(AbstractInput):
                 co2 = self.parse(self.receive())
             except Exception:
                 co2 = None
+
+        co2 = convert_units(
+            'co2', 'ppm', self.convert_to_unit, co2)
 
         return co2
 

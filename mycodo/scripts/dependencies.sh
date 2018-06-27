@@ -46,6 +46,9 @@ case "${1:-''}" in
     'btlewrap')
         ${INSTALL_CMD} install-pip-dependency btlewrap==0.0.2
     ;;
+    'cozir')
+        ${INSTALL_DIRECTORY}/env/bin/pip3 install -e git://github.com/pierre-haessig/pycozir.git#egg=cozir --upgrade
+    ;;
     'MCP342x')
         ${INSTALL_CMD} install-pip-dependency MCP342x==0.3.3
     ;;
