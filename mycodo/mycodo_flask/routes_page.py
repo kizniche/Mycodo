@@ -1465,7 +1465,7 @@ def dict_custom_colors():
 
             color_count.update({each_graph.unique_id: total})
     except IndexError:
-        return None
+        pass
 
     return color_count
 
