@@ -15,7 +15,7 @@ from wtforms import validators
 from wtforms import widgets
 from wtforms.validators import DataRequired
 
-from mycodo.config import DEVICES
+from mycodo.config_devices_units import DEVICES
 
 
 class InputAdd(FlaskForm):

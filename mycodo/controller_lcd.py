@@ -58,9 +58,9 @@ import timeit
 import RPi.GPIO as GPIO
 import smbus
 
-from mycodo.config import MEASUREMENT_UNITS
 from mycodo.config import MYCODO_VERSION
-from mycodo.config import UNITS
+from mycodo.config_devices_units import MEASUREMENT_UNITS
+from mycodo.config_devices_units import UNITS
 from mycodo.databases.models import Input
 from mycodo.databases.models import LCD
 from mycodo.databases.models import LCDData

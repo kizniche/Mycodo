@@ -7,7 +7,7 @@ import os
 
 sys.path.append(
     os.path.abspath(os.path.join(os.path.dirname(__file__), os.path.pardir) + '/..'))
-from mycodo.config import DEVICE_INFO
+from mycodo.config_devices_units import DEVICE_INFO
 from mycodo.config import MATH_INFO
 from mycodo.config import METHOD_INFO
 from mycodo.config import OUTPUT_INFO

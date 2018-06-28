@@ -27,7 +27,6 @@ from mycodo.config import CONDITIONAL_ACTIONS
 from mycodo.config import DAEMON_LOG_FILE
 from mycodo.config import DAEMON_PID_FILE
 from mycodo.config import DEPENDENCY_LOG_FILE
-from mycodo.config import DEVICE_INFO
 from mycodo.config import FRONTEND_PID_FILE
 from mycodo.config import HTTP_ACCESS_LOG_FILE
 from mycodo.config import HTTP_ERROR_LOG_FILE
@@ -37,13 +36,14 @@ from mycodo.config import LIST_DEVICES_ADC
 from mycodo.config import LIST_DEVICES_I2C
 from mycodo.config import LOGIN_LOG_FILE
 from mycodo.config import MATH_INFO
-from mycodo.config import MEASUREMENT_UNITS
 from mycodo.config import OUTPUTS
 from mycodo.config import OUTPUT_INFO
 from mycodo.config import RESTORE_LOG_FILE
-from mycodo.config import UNITS
 from mycodo.config import UPGRADE_LOG_FILE
 from mycodo.config import USAGE_REPORTS_PATH
+from mycodo.config_devices_units import DEVICE_INFO
+from mycodo.config_devices_units import MEASUREMENT_UNITS
+from mycodo.config_devices_units import UNITS
 from mycodo.databases.models import AlembicVersion
 from mycodo.databases.models import Camera
 from mycodo.databases.models import Conditional

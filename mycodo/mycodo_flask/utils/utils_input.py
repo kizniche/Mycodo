@@ -11,9 +11,9 @@ from flask import url_for
 from flask_babel import gettext
 
 from mycodo.config import DEVICES_DEFAULT_LOCATION
-from mycodo.config import DEVICE_INFO
 from mycodo.config import LIST_DEVICES_ADC
 from mycodo.config import LIST_DEVICES_SPI
+from mycodo.config_devices_units import DEVICE_INFO
 from mycodo.databases.models import DisplayOrder
 from mycodo.databases.models import Input
 from mycodo.databases.models import PID

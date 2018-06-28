@@ -8,7 +8,7 @@ import math
 
 import os
 
-from mycodo.config import UNIT_CONVERSIONS
+from mycodo.config_devices_units import UNIT_CONVERSIONS
 
 logger = logging.getLogger("mycodo.sensor_utils")
 
@@ -31,7 +31,7 @@ def altitude(pressure_pa, sea_level_pa=101325.0):
 def convert_units(measurement, unit, convert_to_unit, measure_value):
     """
     Convert from one unit to another, such as ppm to ppb.
-    See UNIT_CONVERSIONS in config.py for available conversions.
+    See UNIT_CONVERSIONS in config_devices_units.py for available conversions.
 
     :param measurement: measurement from MEASUREMENT_UNITS in config.py
     :param unit: unit to convert from, from UNITS in config.py

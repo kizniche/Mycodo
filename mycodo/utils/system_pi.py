@@ -10,7 +10,7 @@ import time
 import os
 
 from mycodo.config import INSTALL_DIRECTORY
-from mycodo.config import UNITS
+from mycodo.config_devices_units import UNITS
 from mycodo.mycodo_flask.utils.utils_general import use_unit_generate
 
 logger = logging.getLogger("mycodo.system_pi")

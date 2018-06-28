@@ -13,13 +13,13 @@ from flask import redirect
 from flask import url_for
 from flask_babel import gettext
 
-from mycodo.config import DEVICE_INFO
 from mycodo.config import LIST_DEVICES_ADC
 from mycodo.config import MATH_INFO
-from mycodo.config import MEASUREMENT_UNITS
 from mycodo.config import METHOD_INFO
 from mycodo.config import OUTPUT_INFO
 from mycodo.config import PATH_CAMERAS
+from mycodo.config_devices_units import DEVICE_INFO
+from mycodo.config_devices_units import MEASUREMENT_UNITS
 from mycodo.databases.models import Camera
 from mycodo.databases.models import Conditional
 from mycodo.databases.models import Input

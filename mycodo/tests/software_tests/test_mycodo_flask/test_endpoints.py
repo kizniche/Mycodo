@@ -1,15 +1,15 @@
 # coding=utf-8
 """ functional tests for flask endpoints """
-import pytest
 import mock
+
+from mycodo.config import MATH_INFO
+from mycodo.config_devices_units import DEVICE_INFO
 from mycodo.databases.models import Input
 from mycodo.databases.models import Math
 from mycodo.databases.models import User
-
 from mycodo.tests.software_tests.conftest import login_user
 from mycodo.tests.software_tests.factories import UserFactory
-from mycodo.config import DEVICE_INFO
-from mycodo.config import MATH_INFO
+
 
 # ----------------------
 #   Non-Logged In Tests

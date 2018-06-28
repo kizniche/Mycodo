@@ -22,7 +22,6 @@ from mycodo.config import BACKUP_LOG_FILE
 from mycodo.config import BACKUP_PATH
 from mycodo.config import DEPENDENCY_INIT_FILE
 from mycodo.config import DEPENDENCY_LOG_FILE
-from mycodo.config import DEVICE_INFO
 from mycodo.config import FINAL_RELEASES
 from mycodo.config import FORCE_UPGRADE_MASTER
 from mycodo.config import INSTALL_DIRECTORY
@@ -34,6 +33,7 @@ from mycodo.config import RESTORE_LOG_FILE
 from mycodo.config import STATS_CSV
 from mycodo.config import UPGRADE_INIT_FILE
 from mycodo.config import UPGRADE_LOG_FILE
+from mycodo.config_devices_units import DEVICE_INFO
 from mycodo.databases.models import Misc
 from mycodo.mycodo_flask.extensions import db
 from mycodo.mycodo_flask.forms import forms_dependencies

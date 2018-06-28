@@ -7,7 +7,6 @@ from flask import flash
 from flask import url_for
 from flask_babel import gettext
 
-from mycodo.config import MEASUREMENT_UNITS
 from mycodo.databases.models import Dashboard
 from mycodo.databases.models import DisplayOrder
 from mycodo.databases.models import Input

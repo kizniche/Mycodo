@@ -11,7 +11,7 @@ from flask.blueprints import Blueprint
 from flask_babel import gettext
 from sqlalchemy import or_
 
-from mycodo.config import DEVICES
+from mycodo.config_devices_units import DEVICES
 from mycodo.databases.models import Input
 from mycodo.devices.atlas_scientific_i2c import AtlasScientificI2C
 from mycodo.devices.atlas_scientific_uart import AtlasScientificUART
