@@ -264,6 +264,9 @@ class InputController(threading.Thread):
         elif self.device == 'CHIRP':
             from mycodo.inputs.chirp import ChirpSensor
             self.measure_input = ChirpSensor(self.input_dev)
+        elif self.device == 'COZIR_CO2':
+            from mycodo.inputs.cozir_co2 import COZIRSensor
+            self.measure_input = COZIRSensor(self.input_dev)
         elif self.device == 'DHT11':
             from mycodo.inputs.dht11 import DHT11Sensor
             self.measure_input = DHT11Sensor(self.input_dev)

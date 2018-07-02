@@ -1,3 +1,10 @@
+## 6.1.5 (Unreleased)
+
+### Bugfixes
+
+ - Fix issue activating Cozir CO2 sensor ([#495](https://github.com/kizniche/mycodo/issues/495))
+
+
 ## 6.1.4 (2018-06-28)
 
 ### Features
