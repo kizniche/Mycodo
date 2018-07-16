@@ -396,6 +396,7 @@ class DaemonController:
 
                 # Generate output usage report (if enabled)
                 if (self.output_usage_report_gen and
+                        self.output_usage_report_next_gen and
                         now > self.output_usage_report_next_gen):
                     generate_output_usage_report()
                     self.refresh_daemon_misc_settings()  # Update timer
