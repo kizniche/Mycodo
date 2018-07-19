@@ -472,7 +472,7 @@ def graph_y_axes(dict_measurements):
 
 def graph_y_axes_async(dict_measurements, ids_measures):
     """ Determine which y-axes to use for each Graph """
-    if ids_measures == None:
+    if not ids_measures:
         return
 
     y_axes = []
@@ -512,7 +512,7 @@ def graph_y_axes_async(dict_measurements, ids_measures):
 def check_func(all_devices, unique_id, y_axes, measurement, dict_measurements, input_dev):
     """
     Generate a list of y-axes for Live and Asynchronous Graphs
-    :param all Input, Math, Output, and PID SQL entries of a table
+    :param all_devices: Input, Math, Output, and PID SQL entries of a table
     :param unique_id: The ID of the measurement
     :param y_axes: empty list to populate
     :param measurement:
