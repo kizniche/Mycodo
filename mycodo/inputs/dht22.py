@@ -167,10 +167,10 @@ class DHT22Sensor(AbstractInput):
             self.measure_sensor()
             if self.temp_dew_point is not None:
                 self.temp_dew_point = convert_units(
-                    'dewpoint', 'celsius', self.convert_to_unit,
+                    'dewpoint', 'C', self.convert_to_unit,
                     self.temp_dew_point)
                 self.temp_temperature = convert_units(
-                    'temperature', 'celsius', self.convert_to_unit,
+                    'temperature', 'C', self.convert_to_unit,
                     self.temp_temperature)
                 return (self.temp_dew_point,
                         self.temp_humidity,
@@ -187,10 +187,10 @@ class DHT22Sensor(AbstractInput):
                 self.measure_sensor()
                 if self.temp_dew_point is not None:
                     self.temp_dew_point = convert_units(
-                        'dewpoint', 'celsius', self.convert_to_unit,
+                        'dewpoint', 'C', self.convert_to_unit,
                         self.temp_dew_point)
                     self.temp_temperature = convert_units(
-                        'temperature', 'celsius', self.convert_to_unit,
+                        'temperature', 'C', self.convert_to_unit,
                         self.temp_temperature)
                     return (self.temp_dew_point,
                             self.temp_humidity,

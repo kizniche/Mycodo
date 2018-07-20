@@ -29,6 +29,8 @@ class Input(CRUDMixin, db.Model):
     sensitivity = db.Column(db.Integer, default=0)
     thermocouple_type = db.Column(db.Text, default=None)
     ref_ohm = db.Column(db.Integer, default=None)
+
+    # TODO: Next major version: rename "convert_to_unit" to "selected_units"
     convert_to_unit = db.Column(db.Text, default='')
 
     # Communication (SPI)

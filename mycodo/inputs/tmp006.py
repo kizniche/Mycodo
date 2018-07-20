@@ -70,10 +70,10 @@ class TMP006Sensor(AbstractInput):
         self.sensor.begin()
 
         temperature_die = convert_units(
-            'temperature_die', 'celsius', self.convert_to_unit,
+            'temperature_die', 'C', self.convert_to_unit,
             self.sensor.readDieTempC())
         temperature_object = convert_units(
-            'temperature_object', 'celsius', self.convert_to_unit,
+            'temperature_object', 'C', self.convert_to_unit,
             self.sensor.readObjTempC())
 
         return temperature_die, temperature_object

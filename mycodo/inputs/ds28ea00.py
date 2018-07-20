@@ -70,7 +70,7 @@ class DS28EA00Sensor(AbstractInput):
                 time.sleep(1)
 
         temperature = convert_units(
-            'temperature', 'celsius', self.convert_to_unit,
+            'temperature', 'C', self.convert_to_unit,
             temperature)
 
         return temperature

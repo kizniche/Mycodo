@@ -135,10 +135,10 @@ class AM2315Sensor(AbstractInput):
             dew_point, humidity, temperature = self.return_measurements()
             if dew_point is not None:
                 dew_point = convert_units(
-                    'dewpoint', 'celsius', self.convert_to_unit,
+                    'dewpoint', 'C', self.convert_to_unit,
                     dew_point)
                 temperature = convert_units(
-                    'temperature', 'celsius', self.convert_to_unit,
+                    'temperature', 'C', self.convert_to_unit,
                     temperature)
                 return dew_point, humidity, temperature  # success - no errors
             time.sleep(2)
@@ -153,10 +153,10 @@ class AM2315Sensor(AbstractInput):
                 dew_point, humidity, temperature = self.return_measurements()
                 if dew_point is not None:
                     dew_point = convert_units(
-                        'dewpoint', 'celsius', self.convert_to_unit,
+                        'dewpoint', 'C', self.convert_to_unit,
                         dew_point)
                     temperature = convert_units(
-                        'temperature', 'celsius', self.convert_to_unit,
+                        'temperature', 'C', self.convert_to_unit,
                         temperature)
                     return dew_point, humidity, temperature  # success
                 time.sleep(2)

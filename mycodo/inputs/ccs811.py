@@ -87,7 +87,7 @@ class CCS811Sensor(AbstractInput):
         self._temperature = None
 
         temperature = convert_units(
-            'temperature', 'celsius', self.convert_to_unit,
+            'temperature', 'C', self.convert_to_unit,
             self.sensor.calculateTemperature())
 
         if not self.sensor.readData():

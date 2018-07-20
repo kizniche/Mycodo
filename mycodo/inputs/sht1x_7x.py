@@ -94,12 +94,12 @@ class SHT1x7xSensor(AbstractInput):
         self._temperature = None
 
         temperature = convert_units(
-            'temperature', 'celsius', self.convert_to_unit,
+            'temperature', 'C', self.convert_to_unit,
             self.sht_sensor.read_t())
         humidity = self.sht_sensor.read_rh()
         dew_point = self.sht_sensor.read_dew_point(temperature, humidity)
         dew_point = convert_units(
-            'dewpoint', 'celsius', self.convert_to_unit, dew_point)
+            'dewpoint', 'C', self.convert_to_unit, dew_point)
 
         return dew_point, humidity, temperature
 

@@ -118,7 +118,7 @@ class MifloraSensor(AbstractInput):
         moisture = self.poller.parameter_value(MI_MOISTURE)
         temperature = self.poller.parameter_value(MI_TEMPERATURE)
         temperature = convert_units(
-            'temperature', 'celsius', self.convert_to_unit,
+            'temperature', 'C', self.convert_to_unit,
             temperature)
         return battery, electrical_conductivity, lux, moisture, temperature
 

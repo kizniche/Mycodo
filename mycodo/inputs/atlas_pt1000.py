@@ -109,7 +109,7 @@ class AtlasPT1000Sensor(AbstractInput):
                                   'Check the log for errors.')
 
         temp = convert_units(
-            'temperature', 'celsius', self.convert_to_unit, temp)
+            'temperature', 'C', self.convert_to_unit, temp)
 
         return temp
 

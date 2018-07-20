@@ -189,11 +189,11 @@
       </div>
     </div>
 
-  {% for each_yaxis in y_axes[each_graph.unique_id] %}
+  {% for each_yaxis in y_axes[each_graph.unique_id] if each_yaxis in dict_measurements %}
     {% set index = '{0:0>2}'.format(loop.index) %}
     <div class="form-row" style="padding-top: 0.5em">
       <div class="col-auto">
-        {{dict_measurements[each_yaxis]['name']}}{% if dict_measurements[each_yaxis]['unit'] != '' %} ({{dict_measurements[each_yaxis]['unit']}}){% endif %}
+        {{dict_measurements[each_yaxis]['name']}}{% if dict_measurements[each_yaxis]['units'][0] != '' %} ({{dict_measurements[each_yaxis]['units'][0]}}){% endif %}
       </div>
     </div>
 

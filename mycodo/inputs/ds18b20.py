@@ -80,7 +80,7 @@ class DS18B20Sensor(AbstractInput):
             return None
 
         temperature = convert_units(
-            'temperature', 'celsius', self.convert_to_unit,
+            'temperature', 'C', self.convert_to_unit,
             temperature)
 
         return temperature

@@ -59,7 +59,7 @@ class RaspberryPiCPUTemp(AbstractInput):
         # self.logger.info("LIMIT: Soft: {sft}, Hard: {hrd}".format(sft=soft, hrd=hard))
         with open('/sys/class/thermal/thermal_zone0/temp') as cpu_temp_file:
             temperature = convert_units(
-                'temperature', 'celsius', self.convert_to_unit,
+                'temperature', 'C', self.convert_to_unit,
                 float(cpu_temp_file.read()) / 1000)
             return temperature
 

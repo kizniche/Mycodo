@@ -74,10 +74,10 @@ class MAX31855Sensor(AbstractInput):
 
         temp = self.sensor.readTempC()
         temp = convert_units(
-            'temperature', 'celsius', self.convert_to_unit, temp)
+            'temperature', 'C', self.convert_to_unit, temp)
         temp_die = self.sensor.readInternalC()
         temp_die = convert_units(
-            'temperature_die', 'celsius', self.convert_to_unit, temp_die)
+            'temperature_die', 'C', self.convert_to_unit, temp_die)
         return temp, temp_die
 
     def read(self):

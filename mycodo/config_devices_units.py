@@ -311,201 +311,246 @@ MEASUREMENT_UNITS = {
     'altitude': {
         'name': lazy_gettext('Altitude'),
         'meas': 'altitude',
-        'unit': 'm',
-        'units': ['feet', 'meters']},
+        'units': ['m', 'ft']},
     'battery': {
         'name': lazy_gettext('Battery'),
         'meas': 'battery',
-        'unit': '%'},
+        'units': ['percent']},
     'boolean': {
         'name': lazy_gettext('Boolean'),
         'meas': 'boolean',
-        'unit': ''},
+        'units': ['bool']},
     'co2': {
         'name': lazy_gettext('CO2'),
         'meas': 'co2',
-        'unit': 'ppm',
-        'units': ['ppb', 'ppm']},
-    'cpu_load': {
-        'name': lazy_gettext('CPU Load'),
-        'meas': 'cpu_load',
-        'unit': ''},
+        'units': ['ppm', 'ppb']},
     'cpu_load_1m': {
-        'name': lazy_gettext('CPU Load'),
+        'name': lazy_gettext('CPU Load (1 min)'),
         'meas': 'cpu_load',
-        'unit': '1 min'},
+        'units': ['cpu_load']},
     'cpu_load_5m': {
-        'name': lazy_gettext('CPU Load'),
+        'name': lazy_gettext('CPU Load (5 min)'),
         'meas': 'cpu_load',
-        'unit': '5 min'},
+        'units': ['cpu_load']},
     'cpu_load_15m': {
-        'name': lazy_gettext('CPU Load'),
+        'name': lazy_gettext('CPU Load (15 min)'),
         'meas': 'cpu_load',
-        'unit': '15 min'},
+        'units': ['cpu_load']},
     'dewpoint': {
         'name': lazy_gettext('Dewpoint'),
         'meas': 'temperature',
-        'unit': '°C',
-        'units': ['celsius', 'fahrenheit', 'kelvin']},
+        'units': ['C', 'F', 'K']},
     'disk_space': {
         'name': lazy_gettext('Disk'),
         'meas': 'disk_space',
-        'unit': 'MB'},
-    'duration_sec': {
+        'units': ['kB', 'MB']},
+    'duration': {
         'name': lazy_gettext('Duration'),
-        'meas': 'duration_sec',
-        'unit': 'sec'},
+        'meas': 'duration',
+        'units': ['second', 'minute']},
     'duty_cycle': {
         'name': lazy_gettext('Duty Cycle'),
         'meas': 'duty_cycle',
-        'unit': '%'},
+        'units': ['percent']},
     'edge': {
         'name': lazy_gettext('GPIO Edge'),
         'meas': 'edge',
-        'unit': ''},
+        'units': ['bool']},
     'electrical_conductivity': {
         'name': lazy_gettext('Electrical Conductivity'),
         'meas': 'electrical_conductivity',
-        'unit': 'μS/cm'},
+        'units': ['μS_cm']},
     'frequency': {
         'name': lazy_gettext('Frequency'),
         'meas': 'frequency',
-        'unit': 'Hz'},
+        'units': ['Hz']},
     'gpio_state': {
         'name': lazy_gettext('GPIO State'),
         'meas': 'gpio_state',
-        'unit': ''},
+        'units': ['bool']},
     'humidity': {
         'name': lazy_gettext('Humidity'),
         'meas': 'humidity',
-        'unit': '%'},
+        'units': ['percent']},
     'humidity_ratio': {
         'name': lazy_gettext('Humidity Ratio'),
         'meas': 'humidity_ratio',
-        'unit': 'kg/kg'},
+        'units': ['kg_kg']},
     'lux': {
         'name': lazy_gettext('Light'),
         'meas': 'lux',
-        'unit': 'lx'},
+        'units': ['lux']},
     'moisture': {
         'name': lazy_gettext('Moisture'),
         'meas': 'moisture',
-        'unit': 'moisture'},
+        'units': ['moisture']},
     'ph': {
         'name': lazy_gettext('pH'),
         'meas': 'ph',
-        'unit': 'pH'},
-    'pid_value': {
-        'name': lazy_gettext('PID Values'),
-        'meas': 'pid_value',
-        'unit': ''},
+        'units': ['pH']},
     'pid_p_value': {
         'name': lazy_gettext('PID P-Value'),
         'meas': 'pid_value',
-        'unit': ''},
+        'units': ['pid_value']},
     'pid_i_value': {
         'name': lazy_gettext('PID I-Value'),
         'meas': 'pid_value',
-        'unit': ''},
+        'units': ['pid_value']},
     'pid_d_value': {
         'name': lazy_gettext('PID D-Value'),
         'meas': 'pid_value',
-        'unit': ''},
+        'units': ['pid_value']},
     'pressure': {
         'name': lazy_gettext('Pressure'),
         'meas': 'pressure',
-        'unit': 'Pa',
-        'units': ['pascals', 'kilopascals']},
+        'units': ['Pa', 'kPa']},
     'pulse_width': {
         'name': lazy_gettext('Pulse Width'),
         'meas': 'pulse_width',
-        'unit': 'µs'},
+        'units': ['µs']},
     'rpm': {
         'name': lazy_gettext('Revolutions Per Minute'),
         'meas': 'rpm',
-        'unit': 'rpm'},
+        'units': ['rpm']},
     'setpoint': {
         'name': lazy_gettext('Setpoint'),
-        'meas': 'setpoint', 'unit': ''},
+        'meas': 'setpoint',
+        'units': ['setpoint']},
     'setpoint_band_min': {
         'name': lazy_gettext('Band Min'),
         'meas': 'setpoint_band_min',
-        'unit': ''},
+        'units': ['setpoint']},
     'setpoint_band_max': {
         'name': lazy_gettext('Band Max'),
         'meas': 'setpoint_band_max',
-        'unit': ''},
+        'units': ['setpoint']},
     'specific_enthalpy': {
         'name': lazy_gettext('Specific Enthalpy'),
         'meas': 'specific_enthalpy',
-        'unit': 'kJ/kg'},
+        'units': ['kJ_kg']},
     'specific_volume': {
         'name': lazy_gettext('Specific Volume'),
         'meas': 'specific_volume',
-        'unit': 'm^3/kg'},
+        'units': ['m3_kg']},
     'temperature': {
         'name': lazy_gettext('Temperature'),
         'meas': 'temperature',
-        'unit': '°C',
-        'units': ['celsius', 'fahrenheit', 'kelvin']},
+        'units': ['C', 'F', 'K']},
     'temperature_object': {
         'name': lazy_gettext('Temperature (Obj)'),
         'meas': 'temperature',
-        'unit': '°C',
-        'units': ['celsius', 'fahrenheit', 'kelvin']},
+        'units': ['C', 'F', 'K']},
     'temperature_die': {
         'name': lazy_gettext('Temperature (Die)'),
-        'meas': 'temperature', 'unit': '°C',
-        'units': ['celsius', 'fahrenheit', 'kelvin']},
+        'meas': 'temperature',
+        'units': ['C', 'F', 'K']},
     'voc': {
         'name': lazy_gettext('VOC'),
         'meas': 'voc',
-        'unit': 'ppb',
         'units': ['ppb', 'ppm']},
     'voltage': {
         'name': lazy_gettext('Voltage'),
         'meas': 'voltage',
-        'unit': 'volts'},
+        'units': ['volts']},
 }
 
 # Measurement units
 UNITS = {
-    'celsius': {
+    'µs': {
+        'name': 'Microsecond',
+        'unit': 'µs'},
+    'μS_cm': {
+        'name': 'Microsiemens per Centimeter',
+        'unit': 'μS/cm'},
+    'C': {
         'name': 'Celsius',
         'unit': '°C'},
-    'fahrenheit': {
+    'cpu_load': {
+        'name': 'CPU Load',
+        'unit': ''},
+    'F': {
         'name': 'Fahrenheit',
         'unit': '°F'},
-    'feet': {
+    'ft': {
         'name': 'Feet',
         'unit': 'ft'},
-    'kelvin': {
+    'Hz': {
+        'name': 'Hertz',
+        'unit': 'Hz'},
+    'K': {
         'name': 'Kelvin',
         'unit': '°K'},
-    'pascals': {
-        'name': 'Pascals',
-        'unit': 'Pa'},
-    'kilopascals': {
+    'kg_kg': {
+        'name': 'Kilogram per Kilogram',
+        'unit': 'kg/kg'},
+    'kPa': {
         'name': 'kiloPascals',
         'unit': 'kPa'},
-    'meters': {
+    'm3_kg': {
+        'name': 'Cubic meters per kilogram',
+        'unit': 'm^3/kg'},
+    'Pa': {
+        'name': 'Pascals',
+        'unit': 'Pa'},
+    'pH': {
+        'name': 'pH',
+        'unit': 'pH'},
+    'MB': {
+        'name': 'MegaByte',
+        'unit': 'MB'},
+    'm': {
         'name': 'Meters',
         'unit': 'm'},
+    'minute': {
+        'name': 'Minute',
+        'unit': 'm'},
+    'moisture': {
+        'name': 'Moisture',
+        'unit': ''},
+    'percent': {
+        'name': 'Percent',
+        'unit': '%'},
+    'pid_value': {
+        'name': 'PID Values',
+        'unit': ''},
     'ppm': {
         'name': 'Parts Per Million',
         'unit': 'ppm'},
     'ppb': {
         'name': 'Parts Per Billion',
-        'unit': 'ppb'}
+        'unit': 'ppb'},
+    'kB': {
+        'name': 'kiloByte',
+        'unit': 'kB'},
+    'kJ_kg': {
+        'name': 'Kilojoule per kilogram',
+        'unit': 'kJ/kg'},
+    'lux': {
+        'name': 'Lux',
+        'unit': 'lx'},
+    'rpm': {
+        'name': 'RPM',
+        'unit': 'RPM'},
+    'second': {
+        'name': 'Second',
+        'unit': 's'},
+    'setpoint': {
+        'name': 'Setpoint',
+        'unit': ''},
+    'volts': {
+        'name': 'Volts',
+        'unit': 'V'}
 }
 
 # Supported conversions
 UNIT_CONVERSIONS = {
-    'celsius_to_fahrenheit': 'x*(9/5)+32',
-    'celsius_to_kelvin': 'x+274.15',
-    'meters_to_feet': 'x*3.2808399',
+    'C_to_F': 'x*(9/5)+32',
+    'C_to_K': 'x+274.15',
+    'm_to_ft': 'x*3.2808399',
+    'kB_to_MB': 'x/1000',
+    'MB_to_kB': 'x*1000',
     'ppm_to_ppb': 'x*1000',
     'ppb_to_ppm': 'x/1000',
-    'pascals_to_kilopascals': 'x/1000',
-    'kilopascals_to_pascals': 'x*1000'
+    'Pa_to_kPa': 'x/1000',
+    'kPa_to_Pa': 'x*1000'
 }

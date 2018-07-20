@@ -90,7 +90,7 @@ class MAX31865Sensor(AbstractInput):
         self._temperature = None
         temp = self.sensor.readTemp(self.thermocouple_type, self.ref_ohm)
         temp = convert_units(
-            'temperature', 'celsius', self.convert_to_unit, temp)
+            'temperature', 'C', self.convert_to_unit, temp)
         return temp
 
     def read(self):

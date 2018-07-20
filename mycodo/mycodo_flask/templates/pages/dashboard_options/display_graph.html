@@ -80,7 +80,7 @@
     },
 
     yAxis: [
-    {% for each_axis_meas in y_axes[each_graph.unique_id] %}
+    {% for each_axis_meas in y_axes[each_graph.unique_id] if each_axis_meas in dict_measurements %}
       {
         {% if each_graph.enable_manual_y_axis and
              not (custom_yaxes[each_graph.unique_id][dict_measurements[each_axis_meas]['meas']]['minimum'] == '0' and
@@ -91,13 +91,17 @@
         endOnTick: {% if each_graph.enable_end_on_tick %}true{% else %}false{% endif %},
         {% endif %}
         title: {
-          text: '{% if dict_measurements[each_axis_meas]['name'] == 'Temperature' %}Celsius{% else %}{{dict_measurements[each_axis_meas]['name']}}{% endif %}{% if dict_measurements[each_axis_meas]['unit'] != '' %} ({{dict_measurements[each_axis_meas]['unit']}}){% endif %}'
+          text: '{{dict_measurements[each_axis_meas]['name']}}{% if dict_measurements[each_axis_meas]['units'][0] != '' %} ({{dict_measurements[each_axis_meas]['units'][0]}}){% endif %}'
         },
         labels: {
           format: '{value}'
         },
         opposite: false,
-          id: '{{dict_measurements[each_axis_meas]['meas']}}'
+          id: '{% if 'custom_axis_id' in dict_measurements[each_axis_meas] -%}
+                 {{dict_measurements[each_axis_meas]['custom_axis_id']}}
+               {%- else -%}
+                 {{dict_measurements[each_axis_meas]['meas']}}
+               {%- endif %}'
       },
     {% endfor %}
     ],
@@ -176,7 +180,7 @@
 
         {% if each_input.device == 'LinuxCommand' %}
           {
-            name: '{{each_input.name}} {{each_input.cmd_measurement}} ({{each_input.cmd_measurement_units}})',
+            name: '{{each_input.name}} ({{each_input.cmd_measurement}}, {{each_input.cmd_measurement_units}})',
             type: 'line',
             tooltip: {
               valueSuffix: ' {{each_input.cmd_measurement_units}}',
@@ -190,11 +194,11 @@
         {%- for each_measurement in each_input.measurements.split(',') -%}
           {%- if each_measurement == each_id_and_measure.split(',')[1] -%}
             {
-              name: '{{each_input.name}} {{measurement_units[each_measurement]['name']}}{% if dict_measurements[each_measurement]['unit'] != '' %} (
+              name: '{{each_input.name}} ({{measurement_units[each_measurement]['name']}}{% if dict_measurements[each_measurement]['unit'] != '' %},
                 {%- if use_unit[each_input.unique_id][each_measurement] -%}
                   {{units[use_unit[each_input.unique_id][each_measurement]]['unit']}}
                 {%- else -%}
-                  {{measurement_units[each_measurement]['unit']}}
+                  {{' '+measurement_units[each_measurement]['unit']}}
                 {%- endif -%}
               ){%- endif -%}
             ',
@@ -241,19 +245,22 @@
     {% for each_math in math -%}
       {%- for each_id_and_measure in graph_math_ids if each_math.unique_id == each_id_and_measure.split(',')[0] -%}
         {
-          name: '{{each_math.name}} {% if each_id_and_measure.split(',')[1] in measurement_units %}{{measurement_units[each_id_and_measure.split(',')[1]]['name']}} ({{measurement_units[each_id_and_measure.split(',')[1]]['unit']}}){% else %}{{each_id_and_measure.split(',')[1]}}{% endif %}',
+          name: '{{each_math.name}} (
+        {%- if each_id_and_measure.split(',')[2] in measurement_units -%}
+          {{measurement_units[each_id_and_measure.split(',')[1]]['name']}}, {{measurement_units[each_id_and_measure.split(',')[2]]['units'][0]}}
+        {%- else -%}
+          {{each_id_and_measure.split(',')[1]}}, {{each_id_and_measure.split(',')[2]}}
+        {%- endif %})',
           type: 'line',
           tooltip: {
-            {% if each_id_and_measure.split(',')[1] in measurement_units and measurement_units[each_id_and_measure.split(',')[1]]['meas'] == 'temperature' %}
-            pointFormatter: function () {
-              return '<span style="color:'+ this.series.color + '">\u25CF</span> ' + this.series.name + ': <b>' + Highcharts.numberFormat(this.y, 2) + '°C (' + Highcharts.numberFormat(((this.y*9/5)+32), 2) + '°F)</b><br>';
-            },
-            {% else %}
-            valueSuffix: ' {% if each_id_and_measure.split(',')[1] in measurement_units %}{{measurement_units[each_id_and_measure.split(',')[1]]['unit']}}{% else %}{{each_math.measure_units}}{% endif %}',
+            valueSuffix: ' {% if each_id_and_measure.split(',')[2] in measurement_units %}{{measurement_units[each_id_and_measure.split(',')[2]]['units'][0]}}{% else %}{{each_math.measure_units}}{% endif %}',
             valueDecimals: 3
-            {% endif %}
           },
-          yAxis: '{{each_id_and_measure.split(',')[1]}}',
+          yAxis: '{% if each_id_and_measure.split(',')[1]+'_'+each_id_and_measure.split(',')[2] in measurement_units -%}
+                    {{each_id_and_measure.split(',')[1]}}_{{each_id_and_measure.split(',')[2]}}
+                  {%- else -%}
+                    {{each_id_and_measure.split(',')[2]}}
+                  {%- endif %}',
           data: []
         },
       {%- endfor -%}
@@ -263,7 +270,7 @@
       {%- for each_graph_output_id in graph_output_ids if each_output.unique_id == each_graph_output_id.split(',')[0] -%}
         {% if each_graph_output_id.split(',')[1] == 'duration_sec' %}
         {
-          name: '{{each_output.name}} {{_('Duration')}} (sec)',
+          name: '{{each_output.name}} ({{_('Duration')}}, sec)',
           type: 'column',
           dataGrouping: {
             approximation: 'low',
@@ -278,7 +285,7 @@
         },
         {% elif each_graph_output_id.split(',')[1] == 'duty_cycle' %}
         {
-          name: '{{each_output.name}} {{_('Duty Cycle')}} (%)',
+          name: '{{each_output.name}} ({{_('Duty Cycle')}}, %)',
           type: 'column',
           dataGrouping: {
             approximation: 'low',
@@ -299,7 +306,7 @@
       {%- for each_graph_pid_id in graph_pid_ids if each_pid.unique_id == each_graph_pid_id.split(',')[0] -%}
         {% if each_graph_pid_id.split(',')[1] in ['setpoint', 'setpoint_band_min', 'setpoint_band_max'] and each_pid.measurement %}
         {
-          name: '{{each_pid.name}}
+          name: '{{each_pid.name}} (
           {%- if each_graph_pid_id.split(',')[1] == 'setpoint' -%}
             {{' '+_('Setpoint')}}
           {%- elif each_graph_pid_id.split(',')[1] == 'setpoint_band_min' -%}
@@ -307,7 +314,7 @@
           {%- elif each_graph_pid_id.split(',')[1] == 'setpoint_band_max' -%}
             {{' '+_('Band Max')}}
           {%- endif -%}
-          ',
+          )',
           type: 'line',
           tooltip: {
             valueSuffix: '
@@ -340,7 +347,7 @@
         },
         {% elif each_graph_pid_id.split(',')[1] == 'pid_p_value' %}
         {
-          name: '{{each_pid.name}} P-Value',
+          name: '{{each_pid.name}} (P-Value)',
           type: 'line',
           tooltip: {
             valueSuffix: '',
@@ -351,7 +358,7 @@
         },
         {% elif each_graph_pid_id.split(',')[1] == 'pid_i_value' %}
         {
-          name: '{{each_pid.name}} I-Value',
+          name: '{{each_pid.name}} (I-Value)',
           type: 'line',
           tooltip: {
             valueSuffix: '',
@@ -362,7 +369,7 @@
         },
         {% elif each_graph_pid_id.split(',')[1] == 'pid_d_value' %}
         {
-          name: '{{each_pid.name}} D-Value',
+          name: '{{each_pid.name}} (D-Value)',
           type: 'line',
           tooltip: {
             valueSuffix: '',
@@ -373,7 +380,7 @@
         },
         {% elif each_graph_pid_id.split(',')[1] == 'duration_sec' %}
         {
-          name: '{{each_pid.name}} {{_('Output')}} {{_('Duration')}}',
+          name: '{{each_pid.name}} ({{_('Output')}} {{_('Duration')}}, sec)',
           type: 'line',
           tooltip: {
             valueSuffix: ' sec',
@@ -384,7 +391,7 @@
         },
         {% elif each_graph_pid_id.split(',')[1] == 'duty_cycle' %}
         {
-          name: '{{each_pid.name}} {{_('Output')}} {{_('Duty Cycle')}} (%)',
+          name: '{{each_pid.name}} ({{_('Output')}} {{_('Duty Cycle')}}, %)',
           type: 'line',
           tooltip: {
             valueSuffix: ' %',

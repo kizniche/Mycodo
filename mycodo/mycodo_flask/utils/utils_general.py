@@ -167,20 +167,35 @@ def choices_maths(maths):
     """ populate form multi-select choices from Math entries """
     choices = OrderedDict()
     for each_math in maths:
-        for each_measurement in each_math.measure.split(','):
-            value = '{id},{measure}'.format(
-                id=each_math.unique_id,
-                measure=each_measurement)
 
-            if each_measurement in MEASUREMENT_UNITS:
-                measurement_display = MEASUREMENT_UNITS[each_measurement]['name']
-            else:
-                measurement_display = each_measurement
-            display = '[Math {id:02d}] {name} ({meas})'.format(
+        # Only one measurement specified, use unit specified
+        if ',' not in each_math.measure:
+            value = '{id},{meas},{unit}'.format(
+                id=each_math.unique_id,
+                meas=each_math.measure,
+                unit=each_math.measure_units)
+            display = '[Math {id:02d}] {name} ({meas}, {unit})'.format(
                 id=each_math.id,
                 name=each_math.name,
-                meas=measurement_display)
+                meas=each_math.measure,
+                unit=each_math.measure_units)
             choices.update({value: display})
+
+        else:
+            for each_measurement in each_math.measure.split(','):
+                value = '{id},{measure}'.format(
+                    id=each_math.unique_id,
+                    measure=each_measurement)
+
+                if each_measurement in MEASUREMENT_UNITS:
+                    measurement_display = MEASUREMENT_UNITS[each_measurement]['name']
+                else:
+                    measurement_display = each_measurement
+                display = '[Math {id:02d}] {name} ({meas})'.format(
+                    id=each_math.id,
+                    name=each_math.name,
+                    meas=measurement_display)
+                choices.update({value: display})
     return choices
 
 

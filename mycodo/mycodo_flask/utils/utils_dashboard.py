@@ -466,6 +466,22 @@ def graph_y_axes(dict_measurements):
                         measurement,
                         dict_measurements,
                         input_dev)
+                elif len(each_id_measure.split(',')) == 3:
+                    if each_graph.unique_id not in y_axes:
+                        y_axes[each_graph.unique_id] = []
+
+                    unique_id = each_id_measure.split(',')[0]
+                    measurement = each_id_measure.split(',')[1]
+                    unit = each_id_measure.split(',')[2]
+
+                    y_axes[each_graph.unique_id] = check_func(
+                        each_device,
+                        unique_id,
+                        y_axes[each_graph.unique_id],
+                        measurement,
+                        dict_measurements,
+                        input_dev,
+                        unit=unit)
 
     return y_axes
 
@@ -509,7 +525,7 @@ def graph_y_axes_async(dict_measurements, ids_measures):
 
     return y_axes
 
-def check_func(all_devices, unique_id, y_axes, measurement, dict_measurements, input_dev):
+def check_func(all_devices, unique_id, y_axes, measurement, dict_measurements, input_dev, unit=None):
     """
     Generate a list of y-axes for Live and Asynchronous Graphs
     :param all_devices: Input, Math, Output, and PID SQL entries of a table
@@ -518,6 +534,7 @@ def check_func(all_devices, unique_id, y_axes, measurement, dict_measurements, i
     :param measurement:
     :param dict_measurements:
     :param input_dev:
+    :param unit:
     :return: None
     """
     # Iterate through each device entry
@@ -529,9 +546,9 @@ def check_func(all_devices, unique_id, y_axes, measurement, dict_measurements, i
             use_unit = use_unit_generate(input_dev)
 
             # Add duration_sec
-            if measurement == 'duration_sec':
-                if 'duration_sec' not in y_axes:
-                    y_axes.append('duration_sec')
+            if measurement == 'duration':
+                if 'duration' not in y_axes:
+                    y_axes.append('duration')
 
             # Use Linux Command measurement
             elif (all_devices == input_dev and
@@ -570,10 +587,16 @@ def check_func(all_devices, unique_id, y_axes, measurement, dict_measurements, i
                                     y_axes.append(measure_short)
 
             # Append all other measurements if they don't already exist
-            elif measurement in dict_measurements:
+            elif measurement in dict_measurements and not unit:
                 measure_short = dict_measurements[measurement]['meas']
                 if measure_short not in y_axes:
                     y_axes.append(measure_short)
+
+            # use custom y-axis
+            elif measurement not in dict_measurements or unit not in dict_measurements[measurement]['units']:
+                meas_name = '{meas}_{un}'.format(meas=measurement, un=unit)
+                if meas_name not in y_axes and unit:
+                    y_axes.append(meas_name)
 
     return y_axes
 

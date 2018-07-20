@@ -88,7 +88,7 @@ class ChirpSensor(AbstractInput):
         lux = self.filter_average('lux', measurement=self.light())
         moisture = self.moist()
         temperature = convert_units(
-            'temperature', 'celsius', self.convert_to_unit,
+            'temperature', 'C', self.convert_to_unit,
             self.temp() / 10.0)
         return lux, moisture, temperature
 

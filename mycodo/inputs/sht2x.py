@@ -119,9 +119,9 @@ class SHT2xSensor(AbstractInput):
             time.sleep(0.1)
 
         dew_point = convert_units(
-            'dewpoint', 'celsius', self.convert_to_unit, dew_point)
+            'dewpoint', 'C', self.convert_to_unit, dew_point)
         temperature = convert_units(
-            'temperature', 'celsius', self.convert_to_unit, temperature)
+            'temperature', 'C', self.convert_to_unit, temperature)
 
         return dew_point, humidity, temperature
 

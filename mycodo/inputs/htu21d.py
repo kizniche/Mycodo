@@ -142,9 +142,9 @@ class HTU21DSensor(AbstractInput):
 
         # Check for conversions
         dew_pt = convert_units(
-            'dewpoint', 'celsius', self.convert_to_unit, dew_pt)
+            'dewpoint', 'C', self.convert_to_unit, dew_pt)
         temperature = convert_units(
-            'temperature', 'celsius', self.convert_to_unit, temperature)
+            'temperature', 'C', self.convert_to_unit, temperature)
 
         return dew_pt, humidity, temperature
 

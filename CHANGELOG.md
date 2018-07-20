@@ -1,4 +1,11 @@
-## 6.1.5 (Unreleased)
+## 7.0 (Unreleased)
+
+This is a major version upgrade, and with it brings a new unit configuration system. This will allow system-wide setting of measurement units and converting between units. The new system requires a different database schema, and will require the deletion of the settings database. This will mean all configurations will need to be set up again.
+
+### Features
+
+ - New measurement/unit configuration system (select which unit to convert/store for input measurements)
+ - Update InfluxDB 1.5.0 -> 1.6.0
 
 ### Bugfixes
 
