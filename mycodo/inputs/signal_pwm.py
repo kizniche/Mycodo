@@ -3,6 +3,7 @@ import logging
 import time
 
 from .base_input import AbstractInput
+from .sensorutils import convert_units
 
 
 class SignalPWMInput(AbstractInput):
@@ -20,6 +21,7 @@ class SignalPWMInput(AbstractInput):
             self.logger = logging.getLogger(
                 "mycodo.inputs.signal_pwm_{id}".format(id=input_dev.id))
             self.location = int(input_dev.location)
+            self.convert_to_unit = input_dev.convert_to_unit
             self.weighting = input_dev.weighting
             self.sample_time = input_dev.sample_time
             self.pigpio = pigpio
@@ -86,12 +88,14 @@ class SignalPWMInput(AbstractInput):
 
         read_pwm = ReadPWM(pi, self.location, self.pigpio, self.weighting)
         time.sleep(self.sample_time)
-        frequency = read_pwm.frequency()
-        pulse_width = read_pwm.pulse_width()
+        frequency = convert_units(
+            'frequency', 'Hz', self.convert_to_unit,
+            read_pwm.frequency())
+        pulse_width = int(read_pwm.pulse_width() + 0.5)
         duty_cycle = read_pwm.duty_cycle()
         read_pwm.cancel()
         pi.stop()
-        return frequency, int(pulse_width + 0.5), duty_cycle
+        return frequency, pulse_width, duty_cycle
 
     def read(self):
         """

@@ -4,6 +4,7 @@ import logging
 import os
 
 from .base_input import AbstractInput
+from .sensorutils import convert_units
 
 
 class RaspberryPiFreeSpace(AbstractInput):
@@ -18,6 +19,7 @@ class RaspberryPiFreeSpace(AbstractInput):
             self.logger = logging.getLogger(
                 "mycodo.inputs.raspi_freespace_{id}".format(id=input_dev.id))
             self.path = input_dev.location
+            self.convert_to_unit = input_dev.convert_to_unit
 
     def __repr__(self):
         """  Representation of object """
@@ -50,7 +52,11 @@ class RaspberryPiFreeSpace(AbstractInput):
     def get_measurement(self):
         """ Gets the free space """
         f = os.statvfs(self.path)
-        return (f.f_bsize * f.f_bavail) / 1000000.0
+        space_mb = (f.f_bsize * f.f_bavail) / 1000000.0
+        space = convert_units(
+            'disk_space', 'MB', self.convert_to_unit,
+            space_mb)
+        return space
 
     def read(self):
         """

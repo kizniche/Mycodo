@@ -33,8 +33,13 @@ def upgrade():
         mod_input = new_session.query(Input).all()
         for each_input in mod_input:
 
+            # Update 'duration_sec' to 'duration'
+            if each_input.measurements == 'duration_sec':
+                each_input.measurements = 'duration'
+                each_input.convert_to_unit = 'duration,second'
+
             # If no entry, create entry with default units
-            if each_input.convert_to_unit == '' or not each_input.convert_to_unit:
+            elif each_input.convert_to_unit == '' or not each_input.convert_to_unit:
                 list_measure_units = []
                 for each_measure in each_input.measurements.split(','):
                     if each_measure in MEASUREMENT_UNITS:

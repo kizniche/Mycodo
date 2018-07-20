@@ -3,6 +3,7 @@
 ### Features
 
  - New measurement/unit configuration system (select which unit to convert/store for input measurements)
+ - Enable conversion of disk space (MB, kB) and frequency (Hz, kHz, MHz)
  - Update InfluxDB 1.5.0 -> 1.6.0
 
 ### Bugfixes

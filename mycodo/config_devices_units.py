@@ -307,6 +307,7 @@ DEVICE_INFO = {
 
 
 # Measurement information
+# First unit in list is the default unit when Input is created
 MEASUREMENT_UNITS = {
     'altitude': {
         'name': lazy_gettext('Altitude'),
@@ -343,7 +344,7 @@ MEASUREMENT_UNITS = {
     'disk_space': {
         'name': lazy_gettext('Disk'),
         'meas': 'disk_space',
-        'units': ['kB', 'MB']},
+        'units': ['MB', 'kB']},
     'duration': {
         'name': lazy_gettext('Duration'),
         'meas': 'duration',
@@ -363,7 +364,7 @@ MEASUREMENT_UNITS = {
     'frequency': {
         'name': lazy_gettext('Frequency'),
         'meas': 'frequency',
-        'units': ['Hz']},
+        'units': ['Hz', 'kHz']},
     'gpio_state': {
         'name': lazy_gettext('GPIO State'),
         'meas': 'gpio_state',
@@ -480,54 +481,60 @@ UNITS = {
     'K': {
         'name': 'Kelvin',
         'unit': '°K'},
+    'kB': {
+        'name': 'kiloByte',
+        'unit': 'kB'},
     'kg_kg': {
         'name': 'Kilogram per Kilogram',
         'unit': 'kg/kg'},
+    'kHz': {
+        'name': 'Kilohertz',
+        'unit': 'kHz'},
+    'kJ_kg': {
+        'name': 'Kilojoule per kilogram',
+        'unit': 'kJ/kg'},
     'kPa': {
         'name': 'kiloPascals',
         'unit': 'kPa'},
-    'm3_kg': {
-        'name': 'Cubic meters per kilogram',
-        'unit': 'm^3/kg'},
-    'Pa': {
-        'name': 'Pascals',
-        'unit': 'Pa'},
-    'pH': {
-        'name': 'pH',
-        'unit': 'pH'},
-    'MB': {
-        'name': 'MegaByte',
-        'unit': 'MB'},
+    'lux': {
+        'name': 'Lux',
+        'unit': 'lx'},
     'm': {
         'name': 'Meters',
         'unit': 'm'},
+    'm3_kg': {
+        'name': 'Cubic meters per kilogram',
+        'unit': 'm^3/kg'},
+    'MHz': {
+        'name': 'Megahertz',
+        'unit': 'MHz'},
+    'MB': {
+        'name': 'MegaByte',
+        'unit': 'MB'},
     'minute': {
         'name': 'Minute',
         'unit': 'm'},
     'moisture': {
         'name': 'Moisture',
         'unit': ''},
+    'Pa': {
+        'name': 'Pascals',
+        'unit': 'Pa'},
     'percent': {
         'name': 'Percent',
         'unit': '%'},
+    'pH': {
+        'name': 'pH',
+        'unit': 'pH'},
     'pid_value': {
         'name': 'PID Values',
         'unit': ''},
-    'ppm': {
-        'name': 'Parts Per Million',
-        'unit': 'ppm'},
     'ppb': {
         'name': 'Parts Per Billion',
         'unit': 'ppb'},
-    'kB': {
-        'name': 'kiloByte',
-        'unit': 'kB'},
-    'kJ_kg': {
-        'name': 'Kilojoule per kilogram',
-        'unit': 'kJ/kg'},
-    'lux': {
-        'name': 'Lux',
-        'unit': 'lx'},
+    'ppm': {
+        'name': 'Parts Per Million',
+        'unit': 'ppm'},
     'rpm': {
         'name': 'RPM',
         'unit': 'RPM'},
@@ -546,11 +553,18 @@ UNITS = {
 UNIT_CONVERSIONS = {
     'C_to_F': 'x*(9/5)+32',
     'C_to_K': 'x+274.15',
+
+    'Hz_to_kHz': 'x/1000',
+    'Hz_to_MHz': 'x/1000000',
+
     'm_to_ft': 'x*3.2808399',
+
     'kB_to_MB': 'x/1000',
     'MB_to_kB': 'x*1000',
+
     'ppm_to_ppb': 'x*1000',
     'ppb_to_ppm': 'x/1000',
+
     'Pa_to_kPa': 'x/1000',
     'kPa_to_Pa': 'x*1000'
 }
