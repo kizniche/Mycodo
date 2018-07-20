@@ -344,7 +344,7 @@ MEASUREMENT_UNITS = {
     'disk_space': {
         'name': lazy_gettext('Disk'),
         'meas': 'disk_space',
-        'units': ['MB', 'kB']},
+        'units': ['MB', 'kB', 'GB']},
     'duration': {
         'name': lazy_gettext('Duration'),
         'meas': 'duration',
@@ -364,7 +364,7 @@ MEASUREMENT_UNITS = {
     'frequency': {
         'name': lazy_gettext('Frequency'),
         'meas': 'frequency',
-        'units': ['Hz', 'kHz']},
+        'units': ['Hz', 'kHz', 'MHz']},
     'gpio_state': {
         'name': lazy_gettext('GPIO State'),
         'meas': 'gpio_state',
@@ -475,6 +475,9 @@ UNITS = {
     'ft': {
         'name': 'Feet',
         'unit': 'ft'},
+    'GB': {
+        'name': 'Gigabyte',
+        'unit': 'GB'},
     'Hz': {
         'name': 'Hertz',
         'unit': 'Hz'},
@@ -554,20 +557,30 @@ UNIT_CONVERSIONS = {
     # Temperature
     'C_to_F': 'x*(9/5)+32',
     'C_to_K': 'x+273.15',
-    'F_to_K': '(x+459.67)*5/9',
     'F_to_C': '(x-32)*5/9',
+    'F_to_K': '(x+459.67)*5/9',
     'K_to_C': 'x-273.15',
+    'K_to_F': '(x*9/5)−459.67',
 
     # Frequency
     'Hz_to_kHz': 'x/1000',
     'Hz_to_MHz': 'x/1000000',
+    'kHz_to_Hz': 'x*1000',
+    'kHz_to_MHz': 'x/1000',
+    'MHz_to_Hz': 'x*1000000',
+    'MHz_to_kHz': 'x*1000',
 
     # Length
     'm_to_ft': 'x*3.2808399',
+    'ft_to_m': 'x/3.2808399',
 
     # Disk size
     'kB_to_MB': 'x/1000',
+    'kB_to_GB': 'x/1000000',
     'MB_to_kB': 'x*1000',
+    'MB_to_GB': 'x/1000',
+    'GB_to_kB': 'x*1000000',
+    'GB_to_MB': 'X*1000',
 
     # Concentration
     'ppm_to_ppb': 'x*1000',
