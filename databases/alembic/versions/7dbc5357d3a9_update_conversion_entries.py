@@ -33,13 +33,12 @@ def upgrade():
         mod_input = new_session.query(Input).all()
         for each_input in mod_input:
 
-            # Update 'duration_sec' to 'duration'
-            if each_input.measurements == 'duration_sec':
-                each_input.measurements = 'duration'
-                each_input.convert_to_unit = 'duration,second'
+            # Update measurements
+            each_input.measurements = each_input.measurements.replace('duration_sec', 'duration')
+            each_input.measurements = each_input.measurements.replace('lux', 'light')
 
-            # If no entry, create entry with default units
-            elif each_input.convert_to_unit == '' or not each_input.convert_to_unit:
+            # If no unit entry, create entry with default units
+            if each_input.convert_to_unit == '' or not each_input.convert_to_unit:
                 list_measure_units = []
                 for each_measure in each_input.measurements.split(','):
                     if each_measure in MEASUREMENT_UNITS:
@@ -55,6 +54,7 @@ def upgrade():
             else:
                 # Replace old names with new
                 string_measure_units = each_input.convert_to_unit
+                string_measure_units = string_measure_units.replace('sec', 'second')
                 string_measure_units = string_measure_units.replace('celsius', 'C')
                 string_measure_units = string_measure_units.replace('fahrenheit', 'F')
                 string_measure_units = string_measure_units.replace('kelvin', 'K')

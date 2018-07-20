@@ -114,7 +114,7 @@ DEVICE_INFO = {
         'i2c-addresses': ['0x23'],
         'i2c-address-change': False,
         'py-dependencies': ['smbus'],
-        'measure': ['lux']},
+        'measure': ['light']},
     'BME280': {
         'name': 'BME280',
         'i2c-addresses': ['0x76'],
@@ -144,7 +144,7 @@ DEVICE_INFO = {
         'i2c-addresses': ['0x40'],
         'i2c-address-change': True,
         'py-dependencies': ['smbus'],
-        'measure': ['lux', 'moisture', 'temperature']},
+        'measure': ['light', 'moisture', 'temperature']},
     'COZIR_CO2': {
         'name': 'COZIR',
         'py-dependencies': ['cozir'],
@@ -248,7 +248,7 @@ DEVICE_INFO = {
     'MIFLORA': {
         'name': 'MiFlora',
         'py-dependencies': ['miflora', 'bluepy', 'btlewrap'],
-        'measure': ['battery', 'electrical_conductivity', 'lux', 'moisture', 'temperature']},
+        'measure': ['battery', 'electrical_conductivity', 'light', 'moisture', 'temperature']},
     'RPi': {
         'name': 'RPi CPU Temperature',
         'py-dependencies': [],
@@ -296,13 +296,13 @@ DEVICE_INFO = {
         'i2c-addresses': ['0x39'],
         'i2c-address-change': False,
         'py-dependencies': ['tsl2561'],
-        'measure': ['lux']},
+        'measure': ['light']},
     'TSL2591': {
         'name': 'TSL2591',
         'i2c-addresses': ['0x29'],
         'i2c-address-change': False,
         'py-dependencies': ['tsl2591'],
-        'measure': ['lux']}
+        'measure': ['light']}
 }
 
 
@@ -377,9 +377,9 @@ MEASUREMENT_UNITS = {
         'name': lazy_gettext('Humidity Ratio'),
         'meas': 'humidity_ratio',
         'units': ['kg_kg']},
-    'lux': {
+    'light': {
         'name': lazy_gettext('Light'),
-        'meas': 'lux',
+        'meas': 'light',
         'units': ['lux']},
     'moisture': {
         'name': lazy_gettext('Moisture'),
