@@ -30,8 +30,11 @@ def add_custom_measurements(inputs, maths, measurement_units):
         if (each_input.cmd_measurement and
                 each_input.cmd_measurement_units and
                 each_input.cmd_measurement not in measurement_units):
+            meas_name = '{meas}_{unit}'.format(
+                meas=each_input.cmd_measurement,
+                unit=each_input.cmd_measurement_units)
             return_measurements.update(
-                {each_input.cmd_measurement: {
+                {meas_name: {
                     'meas': each_input.cmd_measurement,
                     'units': [each_input.cmd_measurement_units],
                     'name': each_input.cmd_measurement}})

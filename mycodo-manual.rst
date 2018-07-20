@@ -517,11 +517,13 @@ produce a new value that may be used within Mycodo.
 Pre-defined Measurements
 ''''''''''''''''''''''''
 
-If a pre-defined measurement is used, the newly-generated value will use
-that default y-axes on a Graph. For instance, if two temperature
-measurements are selected for averaging, and Measurement is set to
-'temperature' (lowercase 't'), the new average value will use the same
-y-axis as the other temperatures.
+If a pre-defined Measurement and Unit is used, the newly-generated
+value will use that default y-axes on a Graph. For instance, if
+two temperature measurements are selected for averaging, and
+Measurement is set to 'temperature' (lowercase 't')and Unit is set
+to 'C', the new average value will use the same Celsius y-axis as
+the other temperatures in Celsius. If a unique Measurement or Unit
+is used, a new y-axis will be formed.
 
 +----------------------------+----------------+
 | Measurement                | Units          |

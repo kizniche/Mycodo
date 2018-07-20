@@ -466,6 +466,7 @@ def graph_y_axes(dict_measurements):
                         measurement,
                         dict_measurements,
                         input_dev)
+
                 elif len(each_id_measure.split(',')) == 3:
                     if each_graph.unique_id not in y_axes:
                         y_axes[each_graph.unique_id] = []
@@ -545,7 +546,7 @@ def check_func(all_devices, unique_id, y_axes, measurement, dict_measurements, i
 
             use_unit = use_unit_generate(input_dev)
 
-            # Add duration_sec
+            # Add duration
             if measurement == 'duration':
                 if 'duration' not in y_axes:
                     y_axes.append('duration')

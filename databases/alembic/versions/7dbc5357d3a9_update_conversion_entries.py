@@ -59,8 +59,8 @@ def upgrade():
                 string_measure_units = string_measure_units.replace('fahrenheit', 'F')
                 string_measure_units = string_measure_units.replace('kelvin', 'K')
                 string_measure_units = string_measure_units.replace('feet', 'ft')
-                string_measure_units = string_measure_units.replace('pascals', 'Pa')
                 string_measure_units = string_measure_units.replace('kilopascals', 'kPa')
+                string_measure_units = string_measure_units.replace('pascals', 'Pa')
                 string_measure_units = string_measure_units.replace('meters', 'm')
 
                 list_current_measure_units = string_measure_units.split(';')

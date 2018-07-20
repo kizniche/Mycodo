@@ -313,8 +313,10 @@ def input_mod(form_mod, request_form):
                 mod_sensor.pre_output_id = None
 
             short_list = []
+            mod_units = False
             for key in request_form.keys():
                 if 'convert_unit' in key:
+                    mod_units = True
                     for value in request_form.getlist(key):
                         if value == 'default':
                             pass
@@ -323,10 +325,8 @@ def input_mod(form_mod, request_form):
                             error.append("Invalid custom unit")
                         else:
                             short_list.append(value)
-            # sorted_list = [(k, measure_unit[k]) for k in sorted(measure_unit)]
-
-            # Generate color option string from form inputs
-            mod_sensor.convert_to_unit = ';'.join(short_list)
+            if mod_units:
+                mod_sensor.convert_to_unit = ';'.join(short_list)
 
             mod_sensor.pre_output_duration = form_mod.pre_output_duration.data
             mod_sensor.pre_output_during_measure = form_mod.pre_output_during_measure.data

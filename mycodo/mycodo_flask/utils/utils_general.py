@@ -145,21 +145,30 @@ def choices_inputs(inputs):
                         value = '{id},{meas}'.format(
                             id=each_input.unique_id,
                             meas=each_measure)
-                        display = '[Input {id:02d}] {name} ({meas})'.format(
+
+                        dict_measurements = {}
+                        for each_measurement in each_input.convert_to_unit.split(';'):
+                            dict_measurements[each_measurement.split(',')[0]] = each_measurement.split(',')[1]
+
+                        display = '[Input {id:02d}] {name} ({meas}, {unit})'.format(
                             id=each_input.id,
                             name=each_input.name,
-                            meas=MEASUREMENT_UNITS[each_measure]['name'])
+                            meas=MEASUREMENT_UNITS[each_measure]['name'],
+                            unit=dict_measurements[each_measure])
                         choices.update({value: display})
+
             # Display custom converted units for ADCs
             if each_input.device in LIST_DEVICES_ADC:
                 value = '{id},{meas}'.format(
                     id=each_input.unique_id,
                     meas=each_input.adc_measure)
-                display = '[Input {id:02d}] {name} ({meas})'.format(
+                display = '[Input {id:02d}] {name} ({meas}, {unit})'.format(
                     id=each_input.id,
                     name=each_input.name,
-                    meas=each_input.adc_measure)
+                    meas=each_input.adc_measure,
+                    unit=each_input.adc_unit)
                 choices.update({value: display})
+
     return choices
 
 

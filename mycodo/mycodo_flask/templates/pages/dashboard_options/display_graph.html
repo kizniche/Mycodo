@@ -186,7 +186,7 @@
               valueSuffix: ' {{each_input.cmd_measurement_units}}',
               valueDecimals: 3
             },
-            yAxis: '{{each_input.cmd_measurement}}',
+            yAxis: '{{each_input.cmd_measurement+'_'+each_input.cmd_measurement_units}}',
             data: []
           },
         {% endif %}
@@ -256,10 +256,12 @@
             valueSuffix: ' {% if each_id_and_measure.split(',')[2] in measurement_units %}{{measurement_units[each_id_and_measure.split(',')[2]]['units'][0]}}{% else %}{{each_math.measure_units}}{% endif %}',
             valueDecimals: 3
           },
-          yAxis: '{% if each_id_and_measure.split(',')[1]+'_'+each_id_and_measure.split(',')[2] in measurement_units -%}
+          yAxis: '{% if each_id_and_measure.split(',')|length == 3 and each_id_and_measure.split(',')[1]+'_'+each_id_and_measure.split(',')[2] in measurement_units -%}
                     {{each_id_and_measure.split(',')[1]}}_{{each_id_and_measure.split(',')[2]}}
-                  {%- else -%}
+                  {%- elif each_id_and_measure.split(',')|length == 3 -%}
                     {{each_id_and_measure.split(',')[2]}}
+                  {%- else -%}
+                    {{each_id_and_measure.split(',')[1]}}
                   {%- endif %}',
           data: []
         },
