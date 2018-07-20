@@ -551,23 +551,29 @@ UNITS = {
 
 # Supported conversions
 UNIT_CONVERSIONS = {
+    # Temperature
     'C_to_F': 'x*(9/5)+32',
     'C_to_K': 'x+273.15',
     'F_to_K': '(x+459.67)*5/9',
     'F_to_C': '(x-32)*5/9',
     'K_to_C': 'x-273.15',
 
+    # Frequency
     'Hz_to_kHz': 'x/1000',
     'Hz_to_MHz': 'x/1000000',
 
+    # Length
     'm_to_ft': 'x*3.2808399',
 
+    # Disk size
     'kB_to_MB': 'x/1000',
     'MB_to_kB': 'x*1000',
 
+    # Concentration
     'ppm_to_ppb': 'x*1000',
     'ppb_to_ppm': 'x/1000',
 
+    # Pressure
     'Pa_to_kPa': 'x/1000',
     'kPa_to_Pa': 'x*1000'
 }
