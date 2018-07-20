@@ -11,6 +11,7 @@
  - Fix issue activating Cozir CO2 sensor ([#495](https://github.com/kizniche/mycodo/issues/495))
  - Fix issue with order not updating correctly when Conditional is deleted
  - Fix issue with output usage report generation ([#504](https://github.com/kizniche/mycodo/issues/504))
+ - Fix proper conversion of temperatures/pressure for Wet-Bulb Humidity Math
 
 
 ## 6.1.4 (2018-06-28)

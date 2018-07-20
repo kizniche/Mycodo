@@ -32,9 +32,11 @@ from statistics import median
 import urllib3
 
 import mycodo.utils.psypy as SI
+from mycodo.databases.models import Input
 from mycodo.databases.models import Math
 from mycodo.databases.models import Misc
 from mycodo.databases.models import SMTP
+from mycodo.inputs.sensorutils import convert_units
 from mycodo.mycodo_client import DaemonControl
 from mycodo.utils.database import db_retrieve_table_daemon
 from mycodo.utils.influx import add_measure_influxdb
@@ -295,25 +297,57 @@ class MathController(threading.Thread):
                 self.error_not_within_max_age()
 
         elif self.math_type == 'humidity':
-            measure_temps_good = False
             pressure_pa = 101325
-
-            success_dbt, dry_bulb_t = self.get_measurements_from_id(
-                self.dry_bulb_t_id, self.dry_bulb_t_measure)
-            success_wbt, wet_bulb_t = self.get_measurements_from_id(
-                self.wet_bulb_t_id, self.wet_bulb_t_measure)
-            if success_dbt and success_wbt:
-                measure_temps_good = True
 
             if self.pressure_pa_id and self.pressure_pa_measure:
                 success_pa, pressure = self.get_measurements_from_id(
                     self.pressure_pa_id, self.pressure_pa_measure)
                 if success_pa:
                     pressure_pa = int(pressure[1])
+                    # Pressure must be in Pa, convert if not
+                    pressure_conf = db_retrieve_table_daemon(
+                        Input, unique_id=self.pressure_pa_id)
+                    for each_measure in pressure_conf.convert_to_unit.split(';'):
+                        measure = each_measure.split(',')[0]
+                        unit = each_measure.split(',')[1]
+                        if measure == 'pressure' and unit != 'Pa':
+                            pressure_pa = convert_units(
+                                'pressure', unit, 'Pa',
+                                pressure_pa)
 
-            if measure_temps_good:
-                dbt_kelvin = celsius_to_kelvin(float(dry_bulb_t[1]))
-                wbt_kelvin = celsius_to_kelvin(float(wet_bulb_t[1]))
+            success_dbt, dry_bulb_t = self.get_measurements_from_id(
+                self.dry_bulb_t_id, self.dry_bulb_t_measure)
+            success_wbt, wet_bulb_t = self.get_measurements_from_id(
+                self.wet_bulb_t_id, self.wet_bulb_t_measure)
+
+            if success_dbt and success_wbt:
+                dry_bulb_t_c = float(dry_bulb_t[1])
+                wet_bulb_t_c = float(wet_bulb_t[1])
+
+                # Temperatures must be in Kelvin, convert if not
+                dry_bulb_conf = db_retrieve_table_daemon(
+                    Input, unique_id=self.dry_bulb_t_id)
+                for each_measure in dry_bulb_conf.convert_to_unit.split(';'):
+                    measure = each_measure.split(',')[0]
+                    unit = each_measure.split(',')[1]
+                    if measure == 'temperature' and unit != 'C':
+                        dry_bulb_t_c = convert_units(
+                            'temperature', unit, 'C',
+                            dry_bulb_t_c)
+
+                wet_bulb_conf = db_retrieve_table_daemon(
+                    Input, unique_id=self.wet_bulb_t_id)
+                for each_measure in wet_bulb_conf.convert_to_unit.split(';'):
+                    measure = each_measure.split(',')[0]
+                    unit = each_measure.split(',')[1]
+                    if measure == 'temperature' and unit != 'C':
+                        wet_bulb_t_c = convert_units(
+                            'temperature', unit, 'C',
+                            wet_bulb_t_c)
+
+                # Convert temperatures to Kelvin
+                dbt_kelvin = celsius_to_kelvin(dry_bulb_t_c)
+                wbt_kelvin = celsius_to_kelvin(wet_bulb_t_c)
                 psypi = None
 
                 try:

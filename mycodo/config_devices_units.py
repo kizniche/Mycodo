@@ -552,7 +552,10 @@ UNITS = {
 # Supported conversions
 UNIT_CONVERSIONS = {
     'C_to_F': 'x*(9/5)+32',
-    'C_to_K': 'x+274.15',
+    'C_to_K': 'x+273.15',
+    'F_to_K': '(x+459.67)*5/9',
+    'F_to_C': '(x-32)*5/9',
+    'K_to_C': 'x-273.15',
 
     'Hz_to_kHz': 'x/1000',
     'Hz_to_MHz': 'x/1000000',
