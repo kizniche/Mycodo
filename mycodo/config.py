@@ -9,7 +9,7 @@ import os
 from flask_babel import lazy_gettext
 
 MYCODO_VERSION = '6.1.4'
-ALEMBIC_VERSION = 'f05ca91a4c65'
+ALEMBIC_VERSION = '7dbc5357d3a9'
 
 #  FORCE_UPGRADE_MASTER
 #  Set True to enable upgrading to the master branch of the Mycodo repository.

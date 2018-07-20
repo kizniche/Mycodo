@@ -1,6 +1,4 @@
-## 7.0 (Unreleased)
-
-This is a major version upgrade, and with it brings a new unit configuration system. This will allow system-wide setting of measurement units and converting between units. The new system requires a different database schema, and will require the deletion of the settings database. This will mean all configurations will need to be set up again.
+## 6.2.0 (Unreleased)
 
 ### Features
 
