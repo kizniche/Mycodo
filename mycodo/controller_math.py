@@ -321,8 +321,8 @@ class MathController(threading.Thread):
                 self.wet_bulb_t_id, self.wet_bulb_t_measure)
 
             if success_dbt and success_wbt:
-                dry_bulb_t_c = float(dry_bulb_t[1])
-                wet_bulb_t_c = float(wet_bulb_t[1])
+                dbt_kelvin = float(dry_bulb_t[1])
+                wbt_kelvin = float(wet_bulb_t[1])
 
                 # Temperatures must be in Kelvin, convert if not
                 dry_bulb_conf = db_retrieve_table_daemon(
@@ -330,24 +330,24 @@ class MathController(threading.Thread):
                 for each_measure in dry_bulb_conf.convert_to_unit.split(';'):
                     measure = each_measure.split(',')[0]
                     unit = each_measure.split(',')[1]
-                    if measure == 'temperature' and unit != 'C':
-                        dry_bulb_t_c = convert_units(
-                            'temperature', unit, 'C',
-                            dry_bulb_t_c)
+                    if measure == 'temperature' and unit != 'K':
+                        dbt_kelvin = convert_units(
+                            'temperature', unit, 'K',
+                            dbt_kelvin)
 
                 wet_bulb_conf = db_retrieve_table_daemon(
                     Input, unique_id=self.wet_bulb_t_id)
                 for each_measure in wet_bulb_conf.convert_to_unit.split(';'):
                     measure = each_measure.split(',')[0]
                     unit = each_measure.split(',')[1]
-                    if measure == 'temperature' and unit != 'C':
-                        wet_bulb_t_c = convert_units(
-                            'temperature', unit, 'C',
-                            wet_bulb_t_c)
+                    if measure == 'temperature' and unit != 'K':
+                        wbt_kelvin = convert_units(
+                            'temperature', unit, 'K',
+                            wbt_kelvin)
 
-                # Convert temperatures to Kelvin
-                dbt_kelvin = celsius_to_kelvin(dry_bulb_t_c)
-                wbt_kelvin = celsius_to_kelvin(wet_bulb_t_c)
+                # Convert temperatures to Kelvin (already done above)
+                # dbt_kelvin = celsius_to_kelvin(dry_bulb_t_c)
+                # wbt_kelvin = celsius_to_kelvin(wet_bulb_t_c)
                 psypi = None
 
                 try:
