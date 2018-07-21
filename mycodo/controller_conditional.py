@@ -592,7 +592,7 @@ class ConditionalController(threading.Thread):
                     target=self.control.output_on_off,
                     args=(cond_action.do_unique_id,
                           cond_action.do_output_state,),
-                    kwargs={'duration': cond_action.do_output_duration})
+                    kwargs={'duration_time': cond_action.do_output_duration})
                 output_on_off.start()
 
             # Actuate output (PWM)

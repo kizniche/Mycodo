@@ -106,7 +106,7 @@ class LCDController(threading.Thread):
             self.backlight_timer = time.time()
 
             self.list_pids = ['setpoint', 'pid_time']
-            self.list_outputs = ['duration_sec', 'output_time', 'output_state']
+            self.list_outputs = ['duration_time', 'output_time', 'output_state']
 
             self.list_inputs = MEASUREMENT_UNITS
             self.list_inputs.update(
@@ -414,7 +414,9 @@ class LCDController(threading.Thread):
         elif measurement in self.list_inputs:
             # Get what each measurement uses for a unit
             input_dev = db_retrieve_table_daemon(Input)
-            use_unit = use_unit_generate(input_dev)
+            output = db_retrieve_table_daemon(Output)
+            math = db_retrieve_table_daemon(Math)
+            use_unit = use_unit_generate(input_dev, output, math)
             if (device_id in use_unit and
                     measurement in use_unit[device_id] and
                     use_unit[device_id][measurement] is not None):

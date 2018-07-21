@@ -86,6 +86,7 @@ from mycodo.mycodo_flask.utils import utils_pid
 from mycodo.utils.sunriseset import Sun
 from mycodo.utils.system_pi import add_custom_measurements
 from mycodo.utils.system_pi import csv_to_list_of_str
+from mycodo.utils.system_pi import add_custom_units
 from mycodo.utils.system_pi import list_to_csv
 from mycodo.utils.tools import return_output_usage
 
@@ -327,7 +328,9 @@ def page_dashboard():
 
     # Add custom measurement and units to list (From linux command input)
     dict_measurements = add_custom_measurements(
-        input_dev, math, MEASUREMENT_UNITS)
+        input_dev, output, math, MEASUREMENT_UNITS)
+    dict_units = add_custom_units(
+        input_dev, output, math)
 
     # Add multi-select values as form choices, for validation
     form_graph.math_ids.choices = []
@@ -401,7 +404,7 @@ def page_dashboard():
     y_axes = utils_dashboard.graph_y_axes(dict_measurements)
 
     # Get what each measurement uses for a unit
-    use_unit = utils_general.use_unit_generate(input_dev)
+    use_unit = utils_general.use_unit_generate(input_dev, output, math)
 
     # Generate a dictionary of each graph's y-axis minimum and maximum
     custom_yaxes = dict_custom_yaxes_min_max(graph, y_axes)
@@ -468,6 +471,7 @@ def page_dashboard():
                            colors_gauge_solid=colors_gauge_solid,
                            colors_gauge_solid_form=colors_gauge_solid_form,
                            dict_measurements=dict_measurements,
+                           dict_units=dict_units,
                            measurement_units=MEASUREMENT_UNITS,
                            units=UNITS,
                            use_unit=use_unit,
@@ -811,7 +815,7 @@ def page_live():
         output_type[each_output.unique_id] = each_output.output_type
 
     # Get what each measurement uses for a unit
-    use_unit = utils_general.use_unit_generate(input_dev)
+    use_unit = utils_general.use_unit_generate(input_dev, output, math)
 
     return render_template('pages/live.html',
                            LIST_DEVICES_ADC=LIST_DEVICES_ADC,

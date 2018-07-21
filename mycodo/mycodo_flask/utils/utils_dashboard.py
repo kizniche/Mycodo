@@ -465,7 +465,9 @@ def graph_y_axes(dict_measurements):
                         y_axes[each_graph.unique_id],
                         measurement,
                         dict_measurements,
-                        input_dev)
+                        input_dev,
+                        output,
+                        math)
 
                 elif len(each_id_measure.split(',')) == 3:
                     if each_graph.unique_id not in y_axes:
@@ -482,6 +484,8 @@ def graph_y_axes(dict_measurements):
                         measurement,
                         dict_measurements,
                         input_dev,
+                        output,
+                        math,
                         unit=unit)
 
     return y_axes
@@ -522,11 +526,13 @@ def graph_y_axes_async(dict_measurements, ids_measures):
                                             y_axes,
                                             measurement,
                                             dict_measurements,
-                                            input_dev)
+                                            input_dev,
+                                            output,
+                                            math)
 
     return y_axes
 
-def check_func(all_devices, unique_id, y_axes, measurement, dict_measurements, input_dev, unit=None):
+def check_func(all_devices, unique_id, y_axes, measurement, dict_measurements, input_dev, output, math, unit=None):
     """
     Generate a list of y-axes for Live and Asynchronous Graphs
     :param all_devices: Input, Math, Output, and PID SQL entries of a table
@@ -544,12 +550,12 @@ def check_func(all_devices, unique_id, y_axes, measurement, dict_measurements, i
         # If the ID saved to the dashboard element matches the table entry ID
         if each_device.unique_id == unique_id:
 
-            use_unit = use_unit_generate(input_dev)
+            use_unit = use_unit_generate(input_dev, output, math)
 
             # Add duration
-            if measurement == 'duration':
-                if 'duration' not in y_axes:
-                    y_axes.append('duration')
+            if measurement == 'duration_time':
+                if 'second' not in y_axes:
+                    y_axes.append('second')
 
             # Use Linux Command measurement
             elif (all_devices == input_dev and

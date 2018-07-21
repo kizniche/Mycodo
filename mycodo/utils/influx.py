@@ -44,7 +44,7 @@ def format_influxdb_data(device_id, measure_type, value, timestamp=None):
 
     example:
         format_influxdb_data('00000001', 'temperature', 37.5)
-        format_influxdb_data('00000002', 'duration', 15.2)
+        format_influxdb_data('00000002', 'duration_time', 15.2)
 
     :return: list of measurement type, tags, and value
     :rtype: list
@@ -52,7 +52,7 @@ def format_influxdb_data(device_id, measure_type, value, timestamp=None):
     :param device_id: 8-character alpha-numeric ID associated with device
     :type device_id: str
     :param measure_type: The type of data being entered into the Influxdb
-        database (ex. 'temperature', 'duration')
+        database (ex. 'temperature', 'duration_time')
     :type measure_type: str
     :param value: The value being entered into the Influxdb database
     :type value: int or float
@@ -140,7 +140,7 @@ def read_last_influxdb(device_id, measure_type, duration_sec=None):
         database (ex. '00000001')
     :type device_id: str
     :param measure_type: What measurement to query in the Influxdb
-        database (ex. 'temperature', 'duration')
+        database (ex. 'temperature', 'duration_time')
     :type measure_type: str
     :param duration_sec: How many seconds to look for a past measurement
     :type duration_sec: int
@@ -190,7 +190,7 @@ def output_sec_on(output_id, past_seconds):
         control = DaemonControl()
         output_time_on = control.output_sec_currently_on(output_id)
 
-    query = query_string('duration_sec', output.unique_id, value='SUM',
+    query = query_string('duration_time', output.unique_id, value='SUM',
                          past_sec=past_seconds)
     query_output = client.query(query)
     sec_recorded_on = 0

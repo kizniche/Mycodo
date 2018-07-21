@@ -277,10 +277,11 @@ class OutputController(threading.Thread):
                             duration_on = float(time_on)
                         timestamp = (datetime.datetime.utcnow() -
                                      datetime.timedelta(seconds=abs(duration_on)))
+
                         write_db = threading.Thread(
                             target=write_influxdb_value,
                             args=(self.output_unique_id[output_id],
-                                  'duration_sec',
+                                  'duration_time',
                                   duration_on,
                                   timestamp,))
                         write_db.start()
@@ -465,7 +466,7 @@ class OutputController(threading.Thread):
                 write_db = threading.Thread(
                     target=write_influxdb_value,
                     args=(self.output_unique_id[output_id],
-                          'duration_sec',
+                          'duration_time',
                           duration_sec,
                           timestamp,))
                 write_db.start()

@@ -5,17 +5,21 @@ Revises: f05ca91a4c65
 Create Date: 2018-07-20 10:19:24.691605
 
 """
-from alembic import op
-import sqlalchemy as sa
+
+import sys
 
 import os
-import sys
+
 sys.path.append(os.path.abspath(os.path.join(__file__, "../../../..")))
 
 from mycodo.databases.models import Input
+from mycodo.databases.models import LCDData
+from mycodo.databases.models import Math
 from mycodo.databases.utils import session_scope
+from mycodo.config import MATH_INFO
 from mycodo.config_devices_units import MEASUREMENT_UNITS
 from mycodo.config import SQL_DATABASE_MYCODO
+
 MYCODO_DB_PATH = 'sqlite:///' + SQL_DATABASE_MYCODO
 
 # revision identifiers, used by Alembic.
@@ -30,11 +34,34 @@ def upgrade():
     # There is a new naming convention for units, old unit names need to be renamed
 
     with session_scope(MYCODO_DB_PATH) as new_session:
+        # Update LCD Data
+        mod_lcd_data = new_session.query(LCDData).all()
+        for each_lcd_data in mod_lcd_data:
+            # Update names
+            each_lcd_data.line_1_measurement = each_lcd_data.line_1_measurement.replace('duration_sec', 'duration_time')
+            each_lcd_data.line_2_measurement = each_lcd_data.line_2_measurement.replace('duration_sec', 'duration_time')
+            each_lcd_data.line_3_measurement = each_lcd_data.line_3_measurement.replace('duration_sec', 'duration_time')
+            each_lcd_data.line_4_measurement = each_lcd_data.line_4_measurement.replace('duration_sec', 'duration_time')
+
+        # Update Maths
+        mod_math = new_session.query(Math).all()
+        for each_math in mod_math:
+            if each_math.math_type == 'humidity':
+                # Set the default measurement values
+                list_units = []
+                for each_measurement in MATH_INFO[each_math.math_type]['measure']:
+                    if each_measurement in MEASUREMENT_UNITS:
+                        entry = '{measure},{unit}'.format(
+                            measure=each_measurement,
+                            unit=MEASUREMENT_UNITS[each_measurement]['units'][0])
+                        list_units.append(entry)
+                mod_math.measure_units = ";".join(list_units)
+
+        # Update Inputs
         mod_input = new_session.query(Input).all()
         for each_input in mod_input:
-
-            # Update measurements
-            each_input.measurements = each_input.measurements.replace('duration_sec', 'duration')
+            # Update names
+            each_input.measurements = each_input.measurements.replace('duration_sec', 'duration_time')
             each_input.measurements = each_input.measurements.replace('lux', 'light')
 
             # If no unit entry, create entry with default units

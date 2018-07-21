@@ -218,7 +218,7 @@ def choices_outputs(output):
                 id=each_output.id, name=each_output.name)
             choices.update({value: display})
         else:
-            value = '{id},duration_sec'.format(id=each_output.unique_id)
+            value = '{id},duration_time'.format(id=each_output.unique_id)
             display = '[Output {id:02d}] {name} (Duration)'.format(
                 id=each_output.id, name=each_output.name)
             choices.update({value: display})
@@ -253,7 +253,7 @@ def choices_pids(pid):
         display = '[PID {id:02d}] {name} (D-Value)'.format(
             id=each_pid.id, name=each_pid.name)
         choices.update({value: display})
-        value = '{id},duration_sec'.format(id=each_pid.unique_id)
+        value = '{id},duration_time'.format(id=each_pid.unique_id)
         display = '[PID {id:02d}] {name} (Output Duration)'.format(
             id=each_pid.id, name=each_pid.name)
         choices.update({value: display})
@@ -506,9 +506,11 @@ def return_dependencies(device_type, dep_type='unmet'):
         return met_deps
 
 
-def use_unit_generate(input_dev):
+def use_unit_generate(input_dev, output, math):
     """Generate dictionary of units to convert to"""
+    # TODO: next major version: rename table columns and combine funnctionality
     use_unit = {}
+
     for each_input in input_dev:
         use_unit[each_input.unique_id] = {}
         for each_measure in each_input.measurements.split(','):
@@ -517,4 +519,22 @@ def use_unit_generate(input_dev):
                     use_unit[each_input.unique_id][each_measure] = each_unit_set.split(',')[1]
                 elif each_measure not in use_unit[each_input.unique_id]:
                     use_unit[each_input.unique_id][each_measure] = None
+
+    for each_output in output:
+        use_unit[each_output.unique_id] = {}
+        if each_output.output_type == 'wired':
+            use_unit[each_output.unique_id]['duration_time'] = 'second'
+
+    for each_math in math:
+        use_unit[each_math.unique_id] = {}
+        if len(each_math.measure.split(',')) == 1:
+            use_unit[each_math.unique_id][each_math.measure] = each_math.measure_units
+        elif len(each_math.measure.split(',')) > 1:
+            for each_measure in each_math.measure.split(','):
+                for each_unit_set in each_math.measure_units.split(';'):
+                    if len(each_unit_set.split(',')) > 1 and each_measure == each_unit_set.split(',')[0]:
+                        use_unit[each_math.unique_id][each_measure] = each_unit_set.split(',')[1]
+                    elif each_measure not in use_unit[each_math.unique_id]:
+                        use_unit[each_math.unique_id][each_measure] = None
+
     return use_unit

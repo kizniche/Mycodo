@@ -7,8 +7,7 @@ from flask import url_for
 from flask_babel import gettext
 
 from mycodo.config import MATH_INFO
-from mycodo.databases.models import Conditional
-from mycodo.databases.models import ConditionalActions
+from mycodo.config_devices_units import MEASUREMENT_UNITS
 from mycodo.databases.models import DisplayOrder
 from mycodo.databases.models import Input
 from mycodo.databases.models import Math
@@ -49,6 +48,16 @@ def math_add(form_add_math):
         if form_add_math.math_type.data in MATH_INFO:
             new_math.name += '{name}'.format(name=MATH_INFO[form_add_math.math_type.data]['name'])
             new_math.measure = ",".join(MATH_INFO[form_add_math.math_type.data]['measure'])
+
+        # Set the default measurement values
+        list_units = []
+        for each_measurement in MATH_INFO[form_add_math.math_type.data]['measure']:
+            if each_measurement in MEASUREMENT_UNITS:
+                entry = '{measure},{unit}'.format(
+                    measure=each_measurement,
+                    unit=MEASUREMENT_UNITS[each_measurement]['units'][0])
+                list_units.append(entry)
+        new_math.measure_units = ";".join(list_units)
 
         try:
             new_math.save()

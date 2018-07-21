@@ -345,9 +345,9 @@ MEASUREMENT_UNITS = {
         'name': lazy_gettext('Disk'),
         'meas': 'disk_space',
         'units': ['MB', 'kB', 'GB']},
-    'duration': {
+    'duration_time': {
         'name': lazy_gettext('Duration'),
-        'meas': 'duration',
+        'meas': 'duration_time',
         'units': ['second', 'minute']},
     'duty_cycle': {
         'name': lazy_gettext('Duty Cycle'),

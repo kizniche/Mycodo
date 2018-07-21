@@ -336,7 +336,7 @@ $(document).ready(function() {
 
 
           {%- for each_output in output if each_output.unique_id == each_id_meas.split(',')[0] -%}
-            {% if each_id_meas.split(',')[1] == 'duration_sec' %}
+            {% if each_id_meas.split(',')[1] == 'duration_time' %}
           {
             name: '{{each_output.name}} (sec)',
             type: 'column',
@@ -348,7 +348,7 @@ $(document).ready(function() {
               valueSuffix: ' sec',
               valueDecimals: 2
             },
-            yAxis: 'duration_sec',
+            yAxis: 'duration_time',
             data: []
           },
             {% elif each_id_meas.split(',')[1] == 'duty_cycle' %}
@@ -422,7 +422,7 @@ $(document).ready(function() {
             yAxis: '{{each_pid.measurement.split(',')[1]}}',
             data: []
           },
-            {% elif each_id_meas.split(',')[1] == 'duration_sec' %}
+            {% elif each_id_meas.split(',')[1] == 'duration_time' %}
           {
             name: '{{each_pid.name}} {{_('Output')}} {{_('Duration')}}',
             type: 'line',
@@ -430,7 +430,7 @@ $(document).ready(function() {
               valueSuffix: ' sec',
               valueDecimals: 2
             },
-            yAxis: 'duration_sec',
+            yAxis: 'duration_time',
             data: []
           },
             {% elif each_id_meas.split(',')[1] == 'duty_cycle' %}

@@ -16,14 +16,42 @@ from mycodo.mycodo_flask.utils.utils_general import use_unit_generate
 logger = logging.getLogger("mycodo.system_pi")
 
 
-def add_custom_measurements(inputs, maths, measurement_units):
+def add_custom_units(inputs, outputs, maths):
+    return_measurements = UNITS
+    use_unit = use_unit_generate(inputs, outputs, maths)
+    for each_input in inputs:
+        # Add converted measurements/units to measurements dictionary
+        if each_input.unique_id in use_unit:
+            for each_measure in use_unit[each_input.unique_id]:
+                if (use_unit[each_input.unique_id][each_measure] is not None and
+                        use_unit[each_input.unique_id][each_measure] not in UNITS):
+                    return_measurements.update(
+                        {use_unit[each_input.unique_id][each_measure]: {
+                            'unit': [UNITS[use_unit[each_input.unique_id][each_measure]]['unit']],
+                            'name': UNITS[use_unit[each_input.unique_id][each_measure]]['name']}})
+
+    for each_math in maths:
+        # Add Math measurements/units to measurements dictionary
+        if each_math.unique_id in use_unit:
+            for each_measure in use_unit[each_math.unique_id]:
+                if (use_unit[each_math.unique_id][each_measure] is not None and
+                        use_unit[each_math.unique_id][each_measure] not in UNITS):
+                    return_measurements.update(
+                        {use_unit[each_math.unique_id][each_measure]: {
+                            'unit': UNITS[use_unit[each_math.unique_id][each_measure]]['unit'],
+                            'name': UNITS[use_unit[each_math.unique_id][each_measure]]['name']}})
+
+    return return_measurements
+
+
+def add_custom_measurements(inputs, outputs, maths, measurement_units):
     """
     Returns the measurement dictionary appended with
-    input, ADC, and command measurements/units
+    math, input, ADC, and command measurements/units
     """
     return_measurements = measurement_units
 
-    use_unit = use_unit_generate(inputs)
+    use_unit = use_unit_generate(inputs, outputs, maths)
 
     for each_input in inputs:
         # Add command measurements/units to measurements dictionary
@@ -53,29 +81,39 @@ def add_custom_measurements(inputs, maths, measurement_units):
         elif each_input.unique_id in use_unit:
             for each_measure in use_unit[each_input.unique_id]:
                 if (use_unit[each_input.unique_id][each_measure] is not None and
-                        use_unit[each_input.unique_id][each_measure] in UNITS):
+                        use_unit[each_input.unique_id][each_measure] not in UNITS):
                     return_measurements.update(
-                        {use_unit[each_input.unique_id][each_measure]: {
+                        {each_measure: {
                             'meas': use_unit[each_input.unique_id][each_measure],
                             'units': [UNITS[use_unit[each_input.unique_id][each_measure]]['unit']],
                             'name': UNITS[use_unit[each_input.unique_id][each_measure]]['name']}})
 
     for each_math in maths:
         # Add Math measurements/units to measurements dictionary
-        if each_math.measure and each_math.measure_units:
-            meas_name = '{meas}_{unit}'.format(
-                meas=each_math.measure,
-                unit=each_math.measure_units)
-            if (each_math.measure in return_measurements and
-                    each_math.measure_units in return_measurements[each_math.measure]['units']):
-                pass
-            elif meas_name not in return_measurements:
-                return_measurements.update(
-                    {meas_name: {
-                        'meas': each_math.measure,
-                        'units': [each_math.measure_units],
-                        'name': each_math.measure,
-                        'custom_axis_id': meas_name}})
+        if each_math.unique_id in use_unit:
+            for each_measure in use_unit[each_math.unique_id]:
+                if (use_unit[each_math.unique_id][each_measure] is not None and
+                        use_unit[each_math.unique_id][each_measure] not in UNITS):
+                    return_measurements.update(
+                        {each_measure: {
+                            'meas': use_unit[each_math.unique_id][each_measure],
+                            'units': [UNITS[use_unit[each_math.unique_id][each_measure]]['unit']],
+                            'name': UNITS[use_unit[each_math.unique_id][each_measure]]['name']}})
+
+        # elif each_math.measure and each_math.measure_units:
+        #     meas_name = '{meas}_{unit}'.format(
+        #         meas=each_math.measure,
+        #         unit=each_math.measure_units)
+        #     if (each_math.measure in return_measurements and
+        #             each_math.measure_units in return_measurements[each_math.measure]['units']):
+        #         pass
+        #     elif meas_name not in return_measurements:
+        #         return_measurements.update(
+        #             {meas_name: {
+        #                 'meas': each_math.measure,
+        #                 'units': [each_math.measure_units],
+        #                 'name': each_math.measure,
+        #                 'custom_axis_id': meas_name}})
 
     return return_measurements
 

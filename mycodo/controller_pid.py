@@ -625,7 +625,7 @@ class PIDController(threading.Thread):
                                 min_off=self.raise_min_off_duration)
 
                         self.write_pid_output_influxdb(
-                            'duration_sec', self.control_variable)
+                            'duration_time', self.control_variable)
 
                 else:
                     if self.raise_output_type in ['pwm', 'command_pwm']:
@@ -707,7 +707,7 @@ class PIDController(threading.Thread):
                                 min_off=self.lower_min_off_duration)
 
                         self.write_pid_output_influxdb(
-                            'duration_sec', stored_control_variable)
+                            'duration_time', stored_control_variable)
 
                 else:
                     if self.lower_output_type in ['pwm', 'command_pwm']:

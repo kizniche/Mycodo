@@ -42,7 +42,6 @@ from mycodo.utils.database import db_retrieve_table_daemon
 from mycodo.utils.influx import add_measure_influxdb
 from mycodo.utils.influx import read_last_influxdb
 from mycodo.utils.influx import read_past_influxdb
-from mycodo.utils.system_pi import celsius_to_kelvin
 
 
 class Measurement:
@@ -332,7 +331,7 @@ class MathController(threading.Thread):
                     unit = each_measure.split(',')[1]
                     if measure == 'temperature' and unit != 'K':
                         dbt_kelvin = convert_units(
-                            'temperature', unit, 'K',
+                            'temperature', unit, 'temperature,K',
                             dbt_kelvin)
 
                 wet_bulb_conf = db_retrieve_table_daemon(
@@ -342,7 +341,7 @@ class MathController(threading.Thread):
                     unit = each_measure.split(',')[1]
                     if measure == 'temperature' and unit != 'K':
                         wbt_kelvin = convert_units(
-                            'temperature', unit, 'K',
+                            'temperature', unit, 'temperature,K',
                             wbt_kelvin)
 
                 # Convert temperatures to Kelvin (already done above)
