@@ -122,13 +122,13 @@
             {% for each_measure in each_input.measurements.split(',') if each_input.device != 'LinuxCommand' %}
 
               {% if each_measure and each_measure in measurement_units and measurement_units[each_measure]['meas'] == 'temperature' %}
-                <b><span id="{{each_input.unique_id}}-{{each_measure}}-value">0.0</span> {% if use_unit[each_input.unique_id][each_measure] %}{{units[use_unit[each_input.unique_id][each_measure]]['unit']}}{% else %}{{measurement_units[each_measure]['unit']}}{% endif %}
+                <b><span id="{{each_input.unique_id}}-{{each_measure}}-value">0.0</span> ###0 {% if use_unit[each_input.unique_id][each_measure] %}{{units[use_unit[each_input.unique_id][each_measure]]['unit']}}{% else %}{{measurement_units[each_measure]['unit']}}{% endif %}
                   {%- if each_measure == 'dewpoint' %} DP
                   {% elif each_measure == 'temperature_object' %} Obj
                   {% elif each_measure == 'temperature_die' %} Die
                   {%- endif -%}</b> | <span id="{{each_input.unique_id}}-{{each_measure}}-time">&lt;{{_('Please wait')}}&gt;</span><br>
               {% else %}
-                <b><span id="{{each_input.unique_id}}-{{each_measure}}-value">0.0</span> {% if use_unit[each_input.unique_id][each_measure] %}{{units[use_unit[each_input.unique_id][each_measure]]['unit']}}{% elif each_measure != '' %}{{measurement_units[each_measure]['unit']}}{% endif %}</b> | <span id="{{each_input.unique_id}}-{{each_measure}}-time">&lt;{{_('Please wait')}}&gt;</span><br>
+                <b><span id="{{each_input.unique_id}}-{{each_measure}}-value">0.0</span> ###1 {% if use_unit[each_input.unique_id][each_measure] %}{{units[use_unit[each_input.unique_id][each_measure]]['unit']}}{% elif each_measure != '' %}{{measurement_units[each_measure]['unit']}}{% endif %}</b> | <span id="{{each_input.unique_id}}-{{each_measure}}-time">&lt;{{_('Please wait')}}&gt;</span><br>
               {% endif %}
 
             {% endfor %}
@@ -292,19 +292,21 @@
         <div class="col-xs-12 col-sm-6 text-right">
           {{_('Measurement')}} | {{_('Timestamp')}}
           <div>
-            {% for each_measure in each_math.measure.split(',') %}
-              {% if each_measure and each_measure in measurement_units and measurement_units[each_measure]['meas'] == 'temperature' %}
-                <b><span id="{{each_math.unique_id}}-{{each_measure}}-value">0.0</span> {{measurement_units[each_measure]['unit']}}
-                  {%- if each_measure == 'dewpoint' %} DP
-                  {% elif each_measure == 'temperature_object' %} Obj
-                  {% elif each_measure == 'temperature_die' %} Die
-                  {%- endif -%}</b> | <span id="{{each_math.unique_id}}-{{each_measure}}-time">&lt;{{_('Please wait')}}&gt;</span><br>
-              {% elif each_measure and each_measure in measurement_units %}
-                <b><span id="{{each_math.unique_id}}-{{each_measure}}-value">0.0</span> {{measurement_units[each_measure]['unit']}}</b> | <span id="{{each_math.unique_id}}-{{each_measure}}-time">&lt;{{_('Please wait')}}&gt;</span><br>
-              {% else %}
-                <b><span id="{{each_math.unique_id}}-{{each_measure}}-value">0.0</span> {{each_math.measure_units}}</b> | <span id="{{each_math.unique_id}}-{{each_measure}}-time">&lt;{{_('Please wait')}}&gt;</span><br>
-              {% endif %}
-            {% endfor %}
+          {% for each_measure_unit in each_math.measure_units.split(';') %}
+            {% set each_measure = each_measure_unit.split(',')[0] %}
+            {% set each_unit = each_measure_unit.split(',')[1] %}
+            {% if each_measure and each_measure in measurement_units and measurement_units[each_measure]['meas'] == 'temperature' %}
+              <b><span id="{{each_math.unique_id}}-{{each_measure}}-value">0.0</span> {{measurement_units[each_measure]['unit']}}
+                {%- if each_measure == 'dewpoint' %} DP
+                {% elif each_measure == 'temperature_object' %} Obj
+                {% elif each_measure == 'temperature_die' %} Die
+                {%- endif -%}</b> | <span id="{{each_math.unique_id}}-{{each_measure}}-time">&lt;{{_('Please wait')}}&gt;</span><br>
+            {% elif each_measure and each_measure in measurement_units %}
+              <b><span id="{{each_math.unique_id}}-{{each_measure}}-value">0.0</span> {% if each_unit in dict_units %}{{dict_units[each_unit]['unit']}}{% endif %}</b> | <span id="{{each_math.unique_id}}-{{each_measure}}-time">&lt;{{_('Please wait')}}&gt;</span><br>
+            {% else %}
+              <b><span id="{{each_math.unique_id}}-{{each_measure}}-value">0.0</span> ###2 {{each_math.measure_units}}</b> | <span id="{{each_math.unique_id}}-{{each_measure}}-time">&lt;{{_('Please wait')}}&gt;</span><br>
+            {% endif %}
+          {% endfor %}
           </div>
         </div>
       </div>

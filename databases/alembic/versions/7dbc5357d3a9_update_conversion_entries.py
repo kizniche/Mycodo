@@ -46,15 +46,21 @@ def upgrade():
         # Update Maths
         mod_math = new_session.query(Math).all()
         for each_math in mod_math:
+            list_units = []
             if each_math.math_type == 'humidity':
                 # Set the default measurement values
-                list_units = []
                 for each_measurement in MATH_INFO[each_math.math_type]['measure']:
                     if each_measurement in MEASUREMENT_UNITS:
                         entry = '{measure},{unit}'.format(
                             measure=each_measurement,
                             unit=MEASUREMENT_UNITS[each_measurement]['units'][0])
                         list_units.append(entry)
+                mod_math.measure_units = ";".join(list_units)
+            else:
+                entry = '{measure},{unit}'.format(
+                    measure=each_math.measure,
+                    unit=each_math.measure_units)
+                list_units.append(entry)
                 mod_math.measure_units = ";".join(list_units)
 
         # Update Inputs

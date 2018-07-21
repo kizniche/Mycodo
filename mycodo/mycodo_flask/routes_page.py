@@ -497,7 +497,7 @@ def page_graph_async():
 
     # Add custom measurement and units to list (From linux command input)
     dict_measurements = add_custom_measurements(
-        input_dev, math, MEASUREMENT_UNITS)
+        input_dev, output, math, MEASUREMENT_UNITS)
 
     input_choices = utils_general.choices_inputs(input_dev)
     math_choices = utils_general.choices_maths(math)
@@ -791,6 +791,9 @@ def page_live():
     pid_display_order = csv_to_list_of_str(
         DisplayOrder.query.first().pid)
 
+    dict_units = add_custom_units(
+        input_dev, output, math)
+
     # Filter only activated input controllers
     inputs_sorted = []
     if input_display_order:
@@ -818,6 +821,7 @@ def page_live():
     use_unit = utils_general.use_unit_generate(input_dev, output, math)
 
     return render_template('pages/live.html',
+                           dict_units=dict_units,
                            LIST_DEVICES_ADC=LIST_DEVICES_ADC,
                            measurement_units=MEASUREMENT_UNITS,
                            math=math,

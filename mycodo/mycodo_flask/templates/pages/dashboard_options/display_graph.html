@@ -194,13 +194,15 @@
         {%- for each_measurement in each_input.measurements.split(',') -%}
           {%- if each_measurement == each_id_and_measure.split(',')[1] -%}
             {
-              name: '{{each_input.name}} ({{measurement_units[each_measurement]['name']}}{% if dict_measurements[each_measurement]['unit'] != '' %},
+              name: '{{each_input.name}} ({{measurement_units[each_measurement]['name']}}
+              {%- if dict_measurements[each_measurement]['unit'] != '' %}
                 {%- if use_unit[each_input.unique_id][each_measurement] -%}
-                  {{units[use_unit[each_input.unique_id][each_measurement]]['unit']}}
+                  {{', '+units[use_unit[each_input.unique_id][each_measurement]]['unit']}}
                 {%- else -%}
-                  {{' '+measurement_units[each_measurement]['unit']}}
+                  {{', '+measurement_units[each_measurement]['unit']}}
                 {%- endif -%}
-              ){%- endif -%}
+              )
+              {%- endif -%}
             ',
               {% if measurement_units[each_measurement]['meas'] == 'edge' %}
               type: 'column',
@@ -209,8 +211,8 @@
               {% endif %}
               tooltip: {
                 valueSuffix: '
-                  {%- if use_unit[each_input.unique_id][each_measurement] -%}
-                    {{' ' + use_unit[each_input.unique_id][each_measurement]}}
+                  {%- if use_unit[each_input.unique_id][each_measurement] and use_unit[each_input.unique_id][each_measurement] in dict_units -%}
+                    {{' ' + dict_units[use_unit[each_input.unique_id][each_measurement]]['unit']}}
                   {%- else -%}
                     {{' ' + measurement_units[each_measurement]['unit']}}
                   {%- endif -%}
@@ -246,26 +248,33 @@
       {%- for each_id_and_measure in graph_math_ids if each_math.unique_id == each_id_and_measure.split(',')[0] -%}
 
         {%- for each_measurement in each_math.measure.split(',') -%}
-          {%- if each_measurement == each_id_and_measure.split(',')[1] -%}
+
+          {% for each_set in each_math.measure_units.split(';') if each_measurement == each_set.split(',')[0] %}
+            {% set measure = each_id_and_measure.split(',')[0] %}
+            {% set unit = each_id_and_measure.split(',')[1] %}
+
+            {%- if each_measurement == each_id_and_measure.split(',')[1] -%}
 
         {
-          name: '{{each_math.name}} (
-        {%- if each_id_and_measure.split(',')|length == 3 -%}
-          {%- if each_id_and_measure.split(',')[2] in measurement_units -%}
-            {{measurement_units[each_id_and_measure.split(',')[1]]['name']}}, {{measurement_units[each_id_and_measure.split(',')[2]]['units'][0]}}
-          {%- else -%}
-            {{each_id_and_measure.split(',')[1]}}, {{each_id_and_measure.split(',')[2]}}
-          {%- endif -%}
-        {%- else -%}
-          {{each_id_and_measure.split(',')[1]}}
-        {%- endif %})',
+          name: '{{each_math.name}} ({{measurement_units[each_measurement]['name']}}
+              {%- if dict_measurements[each_measurement]['unit'] != '' %}
+                {%- if use_unit[each_math.unique_id][each_measurement] -%}
+                  {{', '+units[use_unit[each_math.unique_id][each_measurement]]['unit']}}
+                {%- else -%}
+                  {{', '+unit}}
+                {%- endif -%}
+              )
+              {%- endif -%}
+            ',
           type: 'line',
           tooltip: {
             valueSuffix: '
-                  {%- if use_unit[each_math.unique_id][each_measurement] -%}
+                  {%- if use_unit[each_math.unique_id][each_measurement] in dict_units -%}
+                    {{' ' + dict_units[use_unit[each_math.unique_id][each_measurement]]['unit']}}
+                  {%- elif use_unit[each_math.unique_id][each_measurement] -%}
                     {{' ' + use_unit[each_math.unique_id][each_measurement]}}
                   {%- else -%}
-                    {{' ' + measurement_units[each_measurement]['unit']}}
+                    {{' ' + unit}}
                   {%- endif -%}
                   ',
             valueDecimals: 3
@@ -280,7 +289,9 @@
           data: []
         },
 
-          {%- endif -%}
+            {%- endif -%}
+          {% endfor %}
+
         {%- endfor -%}
 
       {%- endfor -%}
@@ -290,7 +301,7 @@
       {%- for each_graph_output_id in graph_output_ids if each_output.unique_id == each_graph_output_id.split(',')[0] -%}
         {% if each_graph_output_id.split(',')[1] == 'duration_time' %}
         {
-          name: '{{each_output.name}} ({{_('Duration')}}, sec)',
+          name: '{{each_output.name}} ({{_('Duration')}}, s)',
           type: 'column',
           dataGrouping: {
             approximation: 'low',

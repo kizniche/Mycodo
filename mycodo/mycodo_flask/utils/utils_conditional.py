@@ -421,7 +421,7 @@ def check_form_actions(form, error):
                                    'resume_pid',
                                    'pause_pid']:
         if not form.do_unique_id.data or form.do_unique_id.data == '':
-            error.append("PID must be set: asdf {} asdf".format(form.do_unique_id.data))
+            error.append("ID must be set")
     elif cond_action.do_action == 'email':
         if not form.do_action_string.data or form.do_action_string.data == '':
             error.append("Email must be set")

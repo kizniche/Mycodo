@@ -527,14 +527,11 @@ def use_unit_generate(input_dev, output, math):
 
     for each_math in math:
         use_unit[each_math.unique_id] = {}
-        if len(each_math.measure.split(',')) == 1:
-            use_unit[each_math.unique_id][each_math.measure] = each_math.measure_units
-        elif len(each_math.measure.split(',')) > 1:
-            for each_measure in each_math.measure.split(','):
-                for each_unit_set in each_math.measure_units.split(';'):
-                    if len(each_unit_set.split(',')) > 1 and each_measure == each_unit_set.split(',')[0]:
-                        use_unit[each_math.unique_id][each_measure] = each_unit_set.split(',')[1]
-                    elif each_measure not in use_unit[each_math.unique_id]:
-                        use_unit[each_math.unique_id][each_measure] = None
+        for each_measure in each_math.measure.split(','):
+            for each_unit_set in each_math.measure_units.split(';'):
+                if len(each_unit_set.split(',')) > 1 and each_measure == each_unit_set.split(',')[0]:
+                    use_unit[each_math.unique_id][each_measure] = each_unit_set.split(',')[1]
+                elif each_measure not in use_unit[each_math.unique_id]:
+                    use_unit[each_math.unique_id][each_measure] = None
 
     return use_unit
