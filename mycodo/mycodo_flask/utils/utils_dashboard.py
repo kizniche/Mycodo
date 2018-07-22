@@ -530,6 +530,28 @@ def graph_y_axes_async(dict_measurements, ids_measures):
                                             output,
                                             math)
 
+            elif len(each_id_measure.split(',')) == 3:
+
+                unique_id = each_id_measure.split(',')[0]
+                measurement = each_id_measure.split(',')[1]
+                unit = each_id_measure.split(',')[2]
+
+                # Iterate through each device entry
+                for each_device_entry in each_device:
+
+                    # If the ID saved to the dashboard element matches the table entry ID
+                    if each_device_entry.unique_id == unique_id:
+
+                        y_axes = check_func(each_device,
+                                            unique_id,
+                                            y_axes,
+                                            measurement,
+                                            dict_measurements,
+                                            input_dev,
+                                            output,
+                                            math,
+                                            unit=unit)
+
     return y_axes
 
 def check_func(all_devices, unique_id, y_axes, measurement, dict_measurements, input_dev, output, math, unit=None):

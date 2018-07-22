@@ -20,6 +20,7 @@ from mycodo.config import OUTPUT_INFO
 from mycodo.config import PATH_CAMERAS
 from mycodo.config_devices_units import DEVICE_INFO
 from mycodo.config_devices_units import MEASUREMENT_UNITS
+from mycodo.config_devices_units import UNITS
 from mycodo.databases.models import Camera
 from mycodo.databases.models import Conditional
 from mycodo.databases.models import Input
@@ -125,6 +126,14 @@ def controller_activate_deactivate(controller_action,
 # Choices
 #
 
+def check_display_names(measure, unit):
+    if measure in MEASUREMENT_UNITS:
+        measure = MEASUREMENT_UNITS[measure]['name']
+    if unit in UNITS:
+        unit = UNITS[unit]['unit']
+    return measure, unit
+
+
 def choices_inputs(inputs):
     """ populate form multi-select choices from Input entries """
     choices = OrderedDict()
@@ -150,11 +159,20 @@ def choices_inputs(inputs):
                         for each_measurement in each_input.convert_to_unit.split(';'):
                             dict_measurements[each_measurement.split(',')[0]] = each_measurement.split(',')[1]
 
-                        display = '[Input {id:02d}] {name} ({meas}, {unit})'.format(
-                            id=each_input.id,
-                            name=each_input.name,
-                            meas=MEASUREMENT_UNITS[each_measure]['name'],
-                            unit=dict_measurements[each_measure])
+                        measure_display, unit_display = check_display_names(
+                            each_measure, dict_measurements[each_measure])
+
+                        if unit_display:
+                            display = '[Input {id:02d}] {name} ({meas}, {unit})'.format(
+                                id=each_input.id,
+                                name=each_input.name,
+                                meas=measure_display,
+                                unit=unit_display)
+                        else:
+                            display = '[Input {id:02d}] {name} ({meas})'.format(
+                                id=each_input.id,
+                                name=each_input.name,
+                                meas=measure_display)
                         choices.update({value: display})
 
             # Display custom converted units for ADCs
@@ -176,34 +194,44 @@ def choices_maths(maths):
     """ populate form multi-select choices from Math entries """
     choices = OrderedDict()
     for each_math in maths:
-
         # Only one measurement specified, use unit specified
         if ',' not in each_math.measure:
             value = '{id},{meas},{unit}'.format(
                 id=each_math.unique_id,
-                meas=each_math.measure,
-                unit=each_math.measure_units)
+                meas=each_math.measure_units.split(',')[0],
+                unit=each_math.measure_units.split(',')[1])
+
+            measure_display, unit_display = check_display_names(
+                each_math.measure_units.split(',')[0],
+                each_math.measure_units.split(',')[1])
+
             display = '[Math {id:02d}] {name} ({meas}, {unit})'.format(
                 id=each_math.id,
                 name=each_math.name,
-                meas=each_math.measure,
-                unit=each_math.measure_units)
+                meas=measure_display,
+                unit=unit_display)
             choices.update({value: display})
-
         else:
-            for each_measurement in each_math.measure.split(','):
-                value = '{id},{measure}'.format(
-                    id=each_math.unique_id,
-                    measure=each_measurement)
+            for each_measure in each_math.measure.split(','):
+                measurement = None
+                unit = None
+                for each_set in each_math.measure_units.split(';'):
+                    if each_measure == each_set.split(',')[0] and len(each_set.split(',')) > 1:
+                        measurement = each_set.split(',')[0]
+                        unit = each_set.split(',')[1]
 
-                if each_measurement in MEASUREMENT_UNITS:
-                    measurement_display = MEASUREMENT_UNITS[each_measurement]['name']
-                else:
-                    measurement_display = each_measurement
-                display = '[Math {id:02d}] {name} ({meas})'.format(
+                value = '{id},{meas},{unit}'.format(
+                    id=each_math.unique_id,
+                    meas=measurement,
+                    unit=unit)
+
+                measure_display, unit_display = check_display_names(each_measure, unit)
+
+                display = '[Math {id:02d}] {name} ({meas}, {unit})'.format(
                     id=each_math.id,
                     name=each_math.name,
-                    meas=measurement_display)
+                    meas=measure_display,
+                    unit=unit_display)
                 choices.update({value: display})
     return choices
 

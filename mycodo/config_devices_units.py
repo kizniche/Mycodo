@@ -326,17 +326,17 @@ MEASUREMENT_UNITS = {
         'meas': 'co2',
         'units': ['ppm', 'ppb']},
     'cpu_load_1m': {
-        'name': lazy_gettext('CPU Load (1 min)'),
+        'name': lazy_gettext('CPU Load 1 min'),
         'meas': 'cpu_load',
-        'units': ['cpu_load']},
+        'units': ['unitless']},
     'cpu_load_5m': {
-        'name': lazy_gettext('CPU Load (5 min)'),
+        'name': lazy_gettext('CPU Load 5 min'),
         'meas': 'cpu_load',
-        'units': ['cpu_load']},
+        'units': ['unitless']},
     'cpu_load_15m': {
-        'name': lazy_gettext('CPU Load (15 min)'),
+        'name': lazy_gettext('CPU Load 15 min'),
         'meas': 'cpu_load',
-        'units': ['cpu_load']},
+        'units': ['unitless']},
     'dewpoint': {
         'name': lazy_gettext('Dewpoint'),
         'meas': 'temperature',
@@ -352,7 +352,7 @@ MEASUREMENT_UNITS = {
     'duty_cycle': {
         'name': lazy_gettext('Duty Cycle'),
         'meas': 'duty_cycle',
-        'units': ['percent']},
+        'units': ['unitless']},
     'edge': {
         'name': lazy_gettext('GPIO Edge'),
         'meas': 'edge',
@@ -457,6 +457,9 @@ MEASUREMENT_UNITS = {
 
 # Measurement units
 UNITS = {
+    'unitless': {
+        'name': '',
+        'unit': ''},
     'µs': {
         'name': 'Microsecond',
         'unit': 'µs'},

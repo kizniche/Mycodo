@@ -326,7 +326,7 @@ def page_dashboard():
     choices_output = utils_general.choices_outputs(output)
     choices_pid = utils_general.choices_pids(pid)
 
-    # Add custom measurement and units to list (From linux command input)
+    # Generate all measurement and units used
     dict_measurements = add_custom_measurements(
         input_dev, output, math, MEASUREMENT_UNITS)
     dict_units = add_custom_units(
@@ -495,9 +495,14 @@ def page_graph_async():
     output = Output.query.all()
     pid = PID.query.all()
 
-    # Add custom measurement and units to list (From linux command input)
+    # Generate all measurement and units used
     dict_measurements = add_custom_measurements(
         input_dev, output, math, MEASUREMENT_UNITS)
+    dict_units = add_custom_units(
+        input_dev, output, math)
+
+    # Get what each measurement uses for a unit
+    use_unit = utils_general.use_unit_generate(input_dev, output, math)
 
     input_choices = utils_general.choices_inputs(input_dev)
     math_choices = utils_general.choices_maths(math)
@@ -532,11 +537,14 @@ def page_graph_async():
     return render_template('pages/graph-async.html',
                            start_time_epoch=start_time_epoch,
                            dict_measurements=dict_measurements,
+                           dict_units=dict_units,
                            measurement_units=MEASUREMENT_UNITS,
+                           use_unit=use_unit,
                            input=input_dev,
                            math=math,
                            output=output,
                            pid=pid,
+                           units=UNITS,
                            input_choices=input_choices,
                            math_choices=math_choices,
                            output_choices=output_choices,
@@ -791,6 +799,9 @@ def page_live():
     pid_display_order = csv_to_list_of_str(
         DisplayOrder.query.first().pid)
 
+    # Generate all measurement and units used
+    dict_measurements = add_custom_measurements(
+        input_dev, output, math, MEASUREMENT_UNITS)
     dict_units = add_custom_units(
         input_dev, output, math)
 
@@ -821,6 +832,7 @@ def page_live():
     use_unit = utils_general.use_unit_generate(input_dev, output, math)
 
     return render_template('pages/live.html',
+                           dict_measurements=dict_measurements,
                            dict_units=dict_units,
                            LIST_DEVICES_ADC=LIST_DEVICES_ADC,
                            measurement_units=MEASUREMENT_UNITS,

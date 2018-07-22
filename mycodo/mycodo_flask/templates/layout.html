@@ -235,11 +235,11 @@
               <a class="dropdown-item{% if upgrade_available %} dropdown-item-upgrade{% elif active_page == 'upgrade' %} active{% endif %}" href="{{url_for('routes_admin.admin_upgrade')}}"><i class="fas fa-upload"></i> {{_('Upgrade')}}</a>
               <a class="dropdown-item{% if active_page == 'backup' %} active{% endif %}" href="{{url_for('routes_admin.admin_backup')}}"><i class=" fas fa-save"></i> {{_('Backup Restore')}}</a>
               <div class="dropdown-divider"></div>
-              <a class="dropdown-item" href="/systemctl/daemon_restart"onclick='return confirm("Confirm restarting the backend")'><i class="fas fa-redo-alt"></i> {{_('Restart Backend')}}</a>
-              <a class="dropdown-item" href="/systemctl/frontend_reload"onclick='return confirm("Confirm restarting the frontend")'><i class="fas fa-redo-alt"></i> {{_('Restart Frontend')}}</a>
+              <a class="dropdown-item" href="/systemctl/daemon_restart" onclick='return confirm("Confirm restarting the backend")'><i class="fas fa-redo-alt"></i> {{_('Restart Backend')}}</a>
+              <a class="dropdown-item" href="/systemctl/frontend_reload" onclick='return confirm("Confirm restarting the frontend")'><i class="fas fa-redo-alt"></i> {{_('Restart Frontend')}}</a>
               <div class="dropdown-divider"></div>
-              <a class="dropdown-item" href="/systemctl/restart"onclick='return confirm("Confirm restarting the system")'><i class="fas fa-redo-alt"></i> {{_('Restart System')}}</a>
-              <a class="dropdown-item" href="/systemctl/shutdown"onclick='return confirm("Confirm shutting down the system")'><i class="fas fa-power-off"></i> {{_('Shutdown System')}}</a>
+              <a class="dropdown-item" href="/systemctl/restart" onclick='return confirm("Confirm restarting the system")'><i class="fas fa-redo-alt"></i> {{_('Restart System')}}</a>
+              <a class="dropdown-item" href="/systemctl/shutdown" onclick='return confirm("Confirm shutting down the system")'><i class="fas fa-power-off"></i> {{_('Shutdown System')}}</a>
               <div class="dropdown-divider"></div>
               <a class="dropdown-item" href="/remote/setup"><i class="fas fa-sort"></i> {{_('Remote Admin')}}</a>
               <div class="dropdown-divider"></div>

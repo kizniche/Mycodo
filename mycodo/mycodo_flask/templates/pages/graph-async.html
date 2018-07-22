@@ -22,6 +22,25 @@
   <div class="container">
   {% include 'flash_messages.html' %}
 
+  <p>
+  yaxes: {{ y_axes }}
+  </p>
+
+  {% if y_axes %}
+  {% for each_axis in y_axes if each_axis in dict_units %}
+          {
+            title: {
+              text: '{{dict_units[each_axis]['name']}}{% if dict_units[each_axis]['unit'] != '' %} ({{dict_units[each_axis]['unit']}}){% endif %}'
+            },
+            labels: {
+              format: '{value}'
+            },
+            opposite: false,
+            id: '{{each_axis}}'
+          },
+        {% endfor %}
+  {% endif %}
+
     <h4>{{_('Asynchronous Graphs')}} <a href="/help#{{help_page[0]}}" target="_blank"><span style="font-size: 16px" class="fas fa-question-circle"></span></a></h4>
 
     <p>A graphical data display that is useful for viewing data sets spanning relatively long periods of time (weeks/months/years), which could be very data- and processor-intensive to view as a Live Graph.</p>
@@ -232,16 +251,16 @@ $(document).ready(function() {
         },
 
         yAxis: [
-        {% for each_axis in y_axes %}
+        {% for each_axis in y_axes if dict_units and each_axis in dict_units %}
           {
             title: {
-              text: '{{dict_measurements[each_axis]['name']}}{% if dict_measurements[each_axis]['unit'] != '' %} ({{dict_measurements[each_axis]['unit']}}){% endif %}'
+              text: '{{dict_units[each_axis]['name']}}{% if dict_units[each_axis]['unit'] != '' %} ({{dict_units[each_axis]['unit']}}){% endif %}'
             },
             labels: {
               format: '{value}'
             },
             opposite: false,
-            id: '{{dict_measurements[each_axis]['meas']}}'
+            id: '{{each_axis}}'
           },
         {% endfor %}
         ],
@@ -279,7 +298,16 @@ $(document).ready(function() {
             {%- for each_measurement in each_input.measurements.split(',') -%}
               {%- if each_measurement == each_id_meas.split(',')[1] -%}
           {
-            name: '{{each_input.name}} {{dict_measurements[each_measurement]['name']}}{% if dict_measurements[each_measurement]['unit'] != '' %} ({{dict_measurements[each_measurement]['unit']}}){% endif %}',
+            name: '{{each_input.name}} ({{measurement_units[each_measurement]['name']}}
+              {%- if dict_measurements[each_measurement]['unit'] != '' %}
+                {%- if use_unit[each_input.unique_id][each_measurement] -%}
+                  {{', '+units[use_unit[each_input.unique_id][each_measurement]]['unit']}}
+                {%- else -%}
+                  {{', '+measurement_units[each_measurement]['unit']}}
+                {%- endif -%}
+              )
+              {%- endif -%}
+            ',
             {% if dict_measurements[each_measurement]['meas'] == 'edge' %}
             type: 'column',
             {% else %}
@@ -295,7 +323,13 @@ $(document).ready(function() {
               valueDecimals: 2
               {% endif %}
             },
-            yAxis: '{{dict_measurements[each_measurement]['meas']}}',
+            yAxis: '
+                  {%- if use_unit[each_input.unique_id][each_measurement] -%}
+                    {{use_unit[each_input.unique_id][each_measurement]}}
+                  {%- else -%}
+                    {{measurement_units[each_measurement]['meas']}}
+                  {%- endif -%}
+            ',
             data: []
           },
             {%- elif each_input.adc_measure == each_id_meas.split(',')[1] -%}
@@ -329,7 +363,13 @@ $(document).ready(function() {
               valueDecimals: 3
               {% endif %}
             },
-            yAxis: '{{each_id_meas.split(',')[1]}}',
+            yAxis: '
+                  {%- if use_unit[each_math.unique_id][each_id_meas.split(',')[1]] -%}
+                    {{use_unit[each_math.unique_id][each_id_meas.split(',')[1]]}}
+                  {%- else -%}
+                    {{measurement_units[each_id_meas.split(',')[1]]['meas']}}
+                  {%- endif -%}
+            ',
             data: []
           },
           {% endfor %}
@@ -348,7 +388,7 @@ $(document).ready(function() {
               valueSuffix: ' sec',
               valueDecimals: 2
             },
-            yAxis: 'duration_time',
+            yAxis: 'second',
             data: []
           },
             {% elif each_id_meas.split(',')[1] == 'duty_cycle' %}
