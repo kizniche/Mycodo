@@ -1746,6 +1746,40 @@ set for each output (see `Output Settings <#output>`__).
 |                       | correspond to the electrical bill).             |
 +-----------------------+-------------------------------------------------+
 
+Measurement Settings
+--------------------
+
+[Gear Icon] -> Configuration -> Measurement
+
+New measurements, units, and conversions can be created that can extend
+functionality of Mycodo beyond the built-in types and equations. Be sure
+to create units before measurements, as units need to be selected when
+creating a measurement.
+
++-----------------------+-------------------------------------------------+
+| Setting               | Description                                     |
++=======================+=================================================+
+| Measurement Name      | Name for the measurement (e.g. "Weight",        |
+|                       | "Length").                                      |
++-----------------------+-------------------------------------------------+
+| Measurement Units     | Select all the units that are soociated with    |
+|                       | the measurement.                                |
++-----------------------+-------------------------------------------------+
+| Unit Name             | Name for the unit (e.g. "Kilogram", "Meter").   |
++-----------------------+-------------------------------------------------+
+| Unit Abbreviation     | Abbreviation for the unit (e.g. "kg", "m").     |
++-----------------------+-------------------------------------------------+
+| Convert From Unit     | The unit that will be converted from.           |
++-----------------------+-------------------------------------------------+
+| Convert To Unit       | The unit that will be converted to.             |
++-----------------------+-------------------------------------------------+
+| Equation              | The equation used to convert one unit to        |
+|                       | another. The lowercase letter "x" must be       |
+|                       | included in the equation (e.g. "x/1000+20",     |
+|                       | "250*(x/3)"). This "x" will be replaced with    |
+|                       | the actual measurement being converted.         |
++-----------------------+-------------------------------------------------+
+
 Users
 -----
 

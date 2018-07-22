@@ -374,6 +374,7 @@
 <li><a href="#configuration-settings">Configuration Settings</a><ul>
 <li><a href="#general-settings">General Settings</a></li>
 <li><a href="#output-usage-settings">Output Usage Settings</a></li>
+<li><a href="#measurement-settings">Measurement Settings</a></li>
 <li><a href="#users">Users</a></li>
 <li><a href="#user-roles">User Roles</a></li>
 <li><a href="#pi-settings">Pi Settings</a></li>
@@ -1969,6 +1970,51 @@ document.write('<a h'+'ref'+'="ma'+'ilto'+':'+e+'" clas'+'s="em' + 'ail">'+e+'<\
 <tr class="odd">
 <td style="text-align: left;">Day of Month</td>
 <td style="text-align: left;">This is the day of the month (1-30) that the electricity meter is read (which will correspond to the electrical bill).</td>
+</tr>
+</tbody>
+</table>
+<h2 id="measurement-settings">Measurement Settings</h2>
+<p>[Gear Icon] -&gt; Configuration -&gt; Measurement</p>
+<p>New measurements, units, and conversions can be created that can extend functionality of Mycodo beyond the built-in types and equations. Be sure to create units before measurements, as units need to be selected when creating a measurement.</p>
+<table>
+<colgroup>
+<col style="width: 32%"></col>
+<col style="width: 67%"></col>
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Setting</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Measurement Name</td>
+<td style="text-align: left;">Name for the measurement (e.g. “Weight”, “Length”).</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Measurement Units</td>
+<td style="text-align: left;">Select all the units that are soociated with the measurement.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Unit Name</td>
+<td style="text-align: left;">Name for the unit (e.g. “Kilogram”, “Meter”).</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Unit Abbreviation</td>
+<td style="text-align: left;">Abbreviation for the unit (e.g. “kg”, “m”).</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Convert From Unit</td>
+<td style="text-align: left;">The unit that will be converted from.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Convert To Unit</td>
+<td style="text-align: left;">The unit that will be converted to.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Equation</td>
+<td style="text-align: left;">The equation used to convert one unit to another. The lowercase letter “x” must be included in the equation (e.g. “x/1000+20”, “250*(x/3)”). This “x” will be replaced with the actual measurement being converted.</td>
 </tr>
 </tbody>
 </table>
