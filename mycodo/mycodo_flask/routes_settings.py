@@ -5,6 +5,7 @@ import logging
 import flask_login
 import operator
 import os
+from flask import flash
 from flask import redirect
 from flask import render_template
 from flask import request
@@ -15,10 +16,13 @@ from mycodo.config import CAMERA_LIBRARIES
 from mycodo.config import LANGUAGES
 from mycodo.config import THEMES
 from mycodo.databases.models import Camera
+from mycodo.databases.models import Conversion
+from mycodo.databases.models import Measurement
 from mycodo.databases.models import Misc
 from mycodo.databases.models import Output
 from mycodo.databases.models import Role
 from mycodo.databases.models import SMTP
+from mycodo.databases.models import Unit
 from mycodo.databases.models import User
 from mycodo.mycodo_flask.forms import forms_settings
 from mycodo.mycodo_flask.routes_static import inject_variables
@@ -129,6 +133,62 @@ def settings_general():
                            misc=misc,
                            languages=languages_sorted,
                            form_settings_general=form_settings_general)
+
+
+@blueprint.route('/settings/measurement', methods=('GET', 'POST'))
+@flask_login.login_required
+def settings_measurement():
+    """ Display measurement settings """
+    if not utils_general.user_has_permission('view_settings'):
+        return redirect(url_for('routes_general.home'))
+
+    measurement = Measurement.query.all()
+    unit = Unit.query.all()
+    conversion = Conversion.query.all()
+    form_add_measurement = forms_settings.MeasurementAdd()
+    form_mod_measurement = forms_settings.MeasurementMod()
+    form_add_unit = forms_settings.UnitAdd()
+    form_mod_unit = forms_settings.UnitMod()
+    form_add_conversion = forms_settings.ConversionAdd()
+    form_mod_conversion = forms_settings.ConversionMod()
+
+    if request.method == 'POST':
+        if not utils_general.user_has_permission('edit_controllers'):
+            return redirect(url_for('routes_general.home'))
+
+        if form_add_measurement.add_measurement.data:
+            utils_settings.settings_measurement_add(form_add_measurement)
+        elif form_mod_measurement.save_measurement.data:
+            utils_settings.settings_measurement_mod(form_mod_measurement)
+        elif form_mod_measurement.delete_measurement.data:
+            utils_settings.settings_measurement_del(form_mod_measurement.measurement_id.data)
+
+        elif form_add_unit.add_unit.data:
+            utils_settings.settings_unit_add(form_add_unit)
+        elif form_mod_unit.save_unit.data:
+            utils_settings.settings_unit_mod(form_mod_unit)
+        elif form_mod_unit.delete_unit.data:
+            utils_settings.settings_unit_del(form_mod_unit.unit_id.data)
+
+        elif form_add_conversion.add_conversion.data:
+            utils_settings.settings_convert_add(form_add_conversion)
+        elif form_mod_conversion.save_conversion.data:
+            utils_settings.settings_convert_mod(form_mod_conversion)
+        elif form_mod_conversion.delete_conversion.data:
+            utils_settings.settings_convert_del(form_mod_conversion.conversion_id.data)
+
+        return redirect(url_for('routes_settings.settings_measurement'))
+
+    return render_template('settings/measurement.html',
+                           measurement=measurement,
+                           unit=unit,
+                           conversion=conversion,
+                           form_add_measurement=form_add_measurement,
+                           form_mod_measurement=form_mod_measurement,
+                           form_add_unit=form_add_unit,
+                           form_mod_unit=form_mod_unit,
+                           form_add_conversion=form_add_conversion,
+                           form_mod_conversion=form_mod_conversion)
 
 
 @blueprint.route('/settings/users', methods=('GET', 'POST'))

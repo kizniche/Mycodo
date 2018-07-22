@@ -187,7 +187,8 @@ def page_camera():
                 camera_stream(unique_id=mod_camera.unique_id).stop(mod_camera.unique_id)
             mod_camera.stream_started = False
             db.session.commit()
-        return redirect('/camera')
+
+        return redirect(url_for('routes_page.page_camera'))
 
     # Get the full path and timestamps of latest still and time-lapse images
     (latest_img_still_ts,
@@ -449,7 +450,7 @@ def page_dashboard():
             utils_dashboard.dashboard_reorder(
                 form_base.dashboard_id.data, display_order, 'down')
 
-        return redirect('/dashboard')
+        return redirect(url_for('routes_page.page_dashboard'))
 
     return render_template('pages/dashboard.html',
                            choices_camera=choices_camera,
@@ -764,7 +765,8 @@ def page_lcd():
             utils_lcd.lcd_display_mod(form_lcd_display)
         elif form_lcd_display.delete_display.data:
             utils_lcd.lcd_display_del(form_lcd_display.lcd_data_id.data)
-        return redirect('/lcd')
+
+        return redirect(url_for('routes_page.page_lcd'))
 
     return render_template('pages/lcd.html',
                            lcd=lcd,
@@ -1057,7 +1059,7 @@ def page_function():
             utils_conditional.conditional_action_del(
                 form_conditional_actions)
 
-        return redirect('/function')
+        return redirect(url_for('routes_page.page_function'))
 
     return render_template('pages/function.html',
                            camera=camera,

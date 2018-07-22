@@ -9,6 +9,7 @@ from wtforms import BooleanField
 from wtforms import DecimalField
 from wtforms import IntegerField
 from wtforms import PasswordField
+from wtforms import SelectMultipleField
 from wtforms import StringField
 from wtforms import SubmitField
 from wtforms import validators
@@ -137,6 +138,68 @@ class SettingsGeneral(FlaskForm):
     stats_opt_out = BooleanField(lazy_gettext('Opt-out of statistics'))
     enable_upgrade_check = BooleanField(lazy_gettext('Check for Updates'))
     Submit = SubmitField(lazy_gettext('Save'))
+
+
+#
+# Settings (Measurement)
+#
+
+class MeasurementAdd(FlaskForm):
+    name = StringField(lazy_gettext('Name'),
+        validators=[DataRequired()])
+    measure = StringField(lazy_gettext('Measurement'),
+        validators=[DataRequired()])
+    units = SelectMultipleField(lazy_gettext('Units'),
+        choices=[
+            ('m', 'Meter (m)'),
+            ('km', 'Kilometer (km)')
+        ],
+        validators=[DataRequired()])
+    add_measurement = SubmitField(lazy_gettext('Add Measurement'))
+
+
+class MeasurementMod(FlaskForm):
+    measurement_id = StringField('Measurement ID', widget=widgets.HiddenInput())
+    name = StringField(lazy_gettext('Name'))
+    measure = StringField(lazy_gettext('Measurement'))
+    units = SelectMultipleField(lazy_gettext('Units'))
+    save_measurement = SubmitField(lazy_gettext('Save'))
+    delete_measurement = SubmitField(lazy_gettext('Delete'))
+
+
+class UnitAdd(FlaskForm):
+    name = StringField(lazy_gettext('Name'),
+        validators=[DataRequired()])
+    unit = StringField(lazy_gettext('Unit'),
+        validators=[DataRequired()])
+    add_unit = SubmitField(lazy_gettext('Add Unit'))
+
+
+class UnitMod(FlaskForm):
+    unit_id = StringField('Unit ID', widget=widgets.HiddenInput())
+    name = StringField(lazy_gettext('Name'))
+    unit = StringField(lazy_gettext('Unit'))
+    save_unit = SubmitField(lazy_gettext('Save'))
+    delete_unit = SubmitField(lazy_gettext('Delete'))
+
+
+class ConversionAdd(FlaskForm):
+    convert_measurement_from = StringField(lazy_gettext('Convert From Measurement'),
+        validators=[DataRequired()])
+    convert_measurement_to = StringField(lazy_gettext('Convert To Measurement'),
+        validators=[DataRequired()])
+    equation = StringField(lazy_gettext('Equation'),
+        validators=[DataRequired()])
+    add_conversion = SubmitField(lazy_gettext('Add Conversion'))
+
+
+class ConversionMod(FlaskForm):
+    conversion_id = StringField('Conversion ID', widget=widgets.HiddenInput())
+    convert_measurement_from = StringField(lazy_gettext('Convert From Measurement'))
+    convert_measurement_to = StringField(lazy_gettext('Convert To Measurement'))
+    equation = StringField(lazy_gettext('Equation'))
+    save_conversion = SubmitField(lazy_gettext('Save'))
+    delete_conversion = SubmitField(lazy_gettext('Delete'))
 
 
 #

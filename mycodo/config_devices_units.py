@@ -464,7 +464,7 @@ UNITS = {
         'name': 'Microsecond',
         'unit': 'µs'},
     'μS_cm': {
-        'name': 'Microsiemens per Centimeter',
+        'name': 'Microsiemens per centimeter',
         'unit': 'μS/cm'},
     'C': {
         'name': 'Celsius',
@@ -488,10 +488,10 @@ UNITS = {
         'name': 'Kelvin',
         'unit': '°K'},
     'kB': {
-        'name': 'kiloByte',
+        'name': 'Kilobyte',
         'unit': 'kB'},
     'kg_kg': {
-        'name': 'Kilogram per Kilogram',
+        'name': 'Kilogram per kilogram',
         'unit': 'kg/kg'},
     'kHz': {
         'name': 'Kilohertz',
@@ -500,7 +500,7 @@ UNITS = {
         'name': 'Kilojoule per kilogram',
         'unit': 'kJ/kg'},
     'kPa': {
-        'name': 'kiloPascals',
+        'name': 'Kilopascals',
         'unit': 'kPa'},
     'lux': {
         'name': 'Lux',
@@ -515,7 +515,7 @@ UNITS = {
         'name': 'Megahertz',
         'unit': 'MHz'},
     'MB': {
-        'name': 'MegaByte',
+        'name': 'Megabyte',
         'unit': 'MB'},
     'minute': {
         'name': 'Minute',
@@ -533,13 +533,13 @@ UNITS = {
         'name': 'pH',
         'unit': 'pH'},
     'pid_value': {
-        'name': 'PID Values',
+        'name': 'PID values',
         'unit': ''},
     'ppb': {
-        'name': 'Parts Per Billion',
+        'name': 'Parts per billion',
         'unit': 'ppb'},
     'ppm': {
-        'name': 'Parts Per Million',
+        'name': 'Parts per million',
         'unit': 'ppm'},
     'rpm': {
         'name': 'RPM',

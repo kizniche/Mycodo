@@ -6,6 +6,9 @@ Create Date: 2018-07-20 10:19:24.691605
 
 """
 
+from alembic import op
+import sqlalchemy as sa
+
 import sys
 
 import os
@@ -30,9 +33,37 @@ depends_on = None
 
 
 def upgrade():
+    op.create_table(
+        'measurements',
+        sa.Column('id', sa.Integer, nullable=False, unique=True),
+        sa.Column('unique_id', sa.String, nullable=False, unique=True),
+        sa.Column('name', sa.Text),
+        sa.Column('measure', sa.Text),
+        sa.Column('units', sa.Text),
+        sa.PrimaryKeyConstraint('id'),
+        keep_existing=True)
+
+    op.create_table(
+        'units',
+        sa.Column('id', sa.Integer, nullable=False, unique=True),
+        sa.Column('unique_id', sa.String, nullable=False, unique=True),
+        sa.Column('name', sa.Text),
+        sa.Column('unit', sa.Text),
+        sa.PrimaryKeyConstraint('id'),
+        keep_existing=True)
+
+    op.create_table(
+        'conversion',
+        sa.Column('id', sa.Integer, nullable=False, unique=True),
+        sa.Column('unique_id', sa.String, nullable=False, unique=True),
+        sa.Column('convert_measurement_from', sa.Text),
+        sa.Column('convert_measurement_to', sa.Text),
+        sa.Column('equation', sa.Text),
+        sa.PrimaryKeyConstraint('id'),
+        keep_existing=True)
+
     # There has been a chance to how the measurement/unit selection for inputs is handled
     # There is a new naming convention for units, old unit names need to be renamed
-
     with session_scope(MYCODO_DB_PATH) as new_session:
         # Update LCD Data
         mod_lcd_data = new_session.query(LCDData).all()
@@ -55,13 +86,13 @@ def upgrade():
                             measure=each_measurement,
                             unit=MEASUREMENT_UNITS[each_measurement]['units'][0])
                         list_units.append(entry)
-                mod_math.measure_units = ";".join(list_units)
+                each_math.measure_units = ";".join(list_units)
             else:
                 entry = '{measure},{unit}'.format(
                     measure=each_math.measure,
                     unit=each_math.measure_units)
                 list_units.append(entry)
-                mod_math.measure_units = ";".join(list_units)
+                each_math.measure_units = ";".join(list_units)
 
         # Update Inputs
         mod_input = new_session.query(Input).all()

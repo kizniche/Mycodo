@@ -2,9 +2,9 @@
 
 ### Features
 
- - New measurement/unit configuration system (select which unit to convert/store for input measurements)
+ - New measurement/unit configuration system (select which unit to convert/store for input measurements) ([#506](https://github.com/kizniche/mycodo/issues/506))
+ - Add ability to create new measurements, units, and conversions ([#506](https://github.com/kizniche/mycodo/issues/506))
  - Enable conversion of disk space (kB, MB, GB) and frequency (Hz, kHz, MHz)
- - Update InfluxDB 1.5.0 -> 1.6.0
 
 ### Bugfixes
 
@@ -12,6 +12,10 @@
  - Fix issue with order not updating correctly when Conditional is deleted
  - Fix issue with output usage report generation ([#504](https://github.com/kizniche/mycodo/issues/504))
  - Fix proper conversion of temperatures/pressure for Wet-Bulb Humidity Math
+
+### Miscellaneous
+
+ - Update InfluxDB 1.5.0 -> 1.6.0
 
 
 ## 6.1.4 (2018-06-28)

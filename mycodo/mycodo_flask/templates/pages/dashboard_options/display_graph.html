@@ -196,9 +196,9 @@
             {
               name: '{{each_input.name}} ({{measurement_units[each_measurement]['name']}}
               {%- if dict_measurements[each_measurement]['unit'] != '' %}
-                {%- if use_unit[each_input.unique_id][each_measurement] -%}
+                {%- if use_unit[each_input.unique_id][each_measurement] and units[use_unit[each_input.unique_id][each_measurement]]['unit'] -%}
                   {{', '+units[use_unit[each_input.unique_id][each_measurement]]['unit']}}
-                {%- else -%}
+                {%- elif measurement_units[each_measurement]['unit'] -%}
                   {{', '+measurement_units[each_measurement]['unit']}}
                 {%- endif -%}
               )

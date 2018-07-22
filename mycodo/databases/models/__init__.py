@@ -38,6 +38,9 @@ from .input import Input
 from .lcd import LCD
 from .lcd import LCDData
 from .math import Math
+from .measurement import Conversion
+from .measurement import Measurement
+from .measurement import Unit
 from .method import Method
 from .method import MethodData
 from .misc import Misc

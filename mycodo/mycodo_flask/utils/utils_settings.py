@@ -14,6 +14,9 @@ from flask_babel import gettext
 
 from mycodo.config import INSTALL_DIRECTORY
 from mycodo.databases.models import Camera
+from mycodo.databases.models import Measurement
+from mycodo.databases.models import Unit
+from mycodo.databases.models import Conversion
 from mycodo.databases.models import Misc
 from mycodo.databases.models import Role
 from mycodo.databases.models import SMTP
@@ -266,6 +269,206 @@ def settings_general_mod(form):
         flash_success_errors(error, action, url_for('routes_settings.settings_general'))
     else:
         flash_form_errors(form)
+
+
+def settings_measurement_add(form):
+    action = '{action} {controller}'.format(
+        action=gettext("Add"),
+        controller=gettext("Measurement"))
+    error = []
+
+    if form.validate():
+        new_measurement = Measurement()
+        new_measurement.name = form.name.data
+        new_measurement.measure = form.measure.data
+        new_measurement.units = ",".join(form.units.data)
+
+        try:
+            if not error:
+                new_measurement.save()
+                flash(gettext(
+                    "Measurement with ID %(id)s (%(uuid)s) successfully added",
+                    id=new_measurement.id,
+                    uuid=new_measurement.unique_id),
+                      "success")
+        except sqlalchemy.exc.OperationalError as except_msg:
+            error.append(except_msg)
+        except sqlalchemy.exc.IntegrityError as except_msg:
+            error.append(except_msg)
+
+        flash_success_errors(error, action, url_for('routes_settings.settings_measurement'))
+    else:
+        flash_form_errors(form)
+
+
+def settings_measurement_mod(form):
+    action = '{action} {controller}'.format(
+        action=gettext("Modify"),
+        controller=gettext("Measurement"))
+    error = []
+
+    try:
+        mod_measurement = Measurement.query.filter(
+            Measurement.unique_id == form.measurement_id.data).first()
+
+        if not error:
+            mod_measurement.name = form.name.data
+            mod_measurement.measure = form.measure.data
+            mod_measurement.units = form.units.data
+            db.session.commit()
+    except Exception as except_msg:
+        error.append(except_msg)
+
+    flash_success_errors(error, action, url_for('routes_settings.settings_measurement'))
+
+
+def settings_measurement_del(unique_id):
+    action = '{action} {controller}'.format(
+        action=gettext("Delete"),
+        controller=gettext("Measurement"))
+    error = []
+
+    try:
+        measurement = Measurement.query.filter(
+            Measurement.unique_id == unique_id).first()
+
+        delete_entry_with_id(Measurement, unique_id)
+    except Exception as except_msg:
+        error.append(except_msg)
+
+    flash_success_errors(error, action, url_for('routes_settings.settings_measurement'))
+
+
+def settings_unit_add(form):
+    action = '{action} {controller}'.format(
+        action=gettext("Add"),
+        controller=gettext("Unit"))
+    error = []
+
+    if form.validate():
+        new_unit = Unit()
+        new_unit.name = form.name.data
+        new_unit.unit = form.unit.data
+
+        try:
+            if not error:
+                new_unit.save()
+                flash(gettext(
+                    "Unit with ID %(id)s (%(uuid)s) successfully added",
+                    id=new_unit.id,
+                    uuid=new_unit.unique_id),
+                    "success")
+        except sqlalchemy.exc.OperationalError as except_msg:
+            error.append(except_msg)
+        except sqlalchemy.exc.IntegrityError as except_msg:
+            error.append(except_msg)
+
+        flash_success_errors(error, action, url_for('routes_settings.settings_measurement'))
+    else:
+        flash_form_errors(form)
+
+
+def settings_unit_mod(form):
+    action = '{action} {controller}'.format(
+        action=gettext("Modify"),
+        controller=gettext("Unit"))
+    error = []
+
+    try:
+        mod_unit = Unit.query.filter(
+            Unit.unique_id == form.unit_id.data).first()
+
+        if not error:
+            mod_unit.name = form.name.data
+            mod_unit.measure = form.measure.data
+            mod_unit.unit = form.unit.data
+            db.session.commit()
+    except Exception as except_msg:
+        error.append(except_msg)
+
+    flash_success_errors(error, action, url_for('routes_settings.settings_measurement'))
+
+
+def settings_unit_del(unique_id):
+    action = '{action} {controller}'.format(
+        action=gettext("Delete"),
+        controller=gettext("Unit"))
+    error = []
+
+    try:
+        delete_entry_with_id(Unit, unique_id)
+    except Exception as except_msg:
+        error.append(except_msg)
+
+    flash_success_errors(error, action, url_for('routes_settings.settings_measurement'))
+
+
+def settings_convert_add(form):
+    action = '{action} {controller}'.format(
+        action=gettext("Add"),
+        controller=gettext("Conversion"))
+    error = []
+
+    if form.validate():
+        new_conversion = Conversion()
+        new_conversion.convert_measurement_from = form.convert_measurement_from.data
+        new_conversion.convert_measurement_to = form.convert_measurement_to.data
+        new_conversion.equation = form.equation.data
+
+        try:
+            if not error:
+                new_conversion.save()
+                flash(gettext(
+                    "Conversion with ID %(id)s (%(uuid)s) successfully added",
+                    id=new_conversion.id,
+                    uuid=new_conversion.unique_id),
+                    "success")
+        except sqlalchemy.exc.OperationalError as except_msg:
+            error.append(except_msg)
+        except sqlalchemy.exc.IntegrityError as except_msg:
+            error.append(except_msg)
+
+        flash_success_errors(error, action, url_for('routes_settings.settings_measurement'))
+    else:
+        flash_form_errors(form)
+
+
+def settings_convert_mod(form):
+    action = '{action} {controller}'.format(
+        action=gettext("Modify"),
+        controller=gettext("Conversion"))
+    error = []
+
+    try:
+        mod_conversion = Unit.query.filter(
+            Unit.unique_id == form.conversion_id.data).first()
+
+        if not error:
+            mod_conversion.name = form.name.data
+            mod_conversion.measure = form.measure.data
+            mod_conversion.conversions = form.conversions.data
+            db.session.commit()
+    except Exception as except_msg:
+        error.append(except_msg)
+
+    flash_success_errors(error, action, url_for('routes_settings.settings_measurement'))
+
+
+def settings_convert_del(unique_id):
+    action = '{action} {controller}'.format(
+        action=gettext("Delete"),
+        controller=gettext("Conversion"))
+    error = []
+
+    try:
+        conversion = Conversion.query.filter(
+            Conversion.unique_id == unique_id).first()
+
+        delete_entry_with_id(Conversion, unique_id)
+    except Exception as except_msg:
+        error.append(except_msg)
+
+    flash_success_errors(error, action, url_for('routes_settings.settings_measurement'))
 
 
 def settings_pi_mod(form):

@@ -1,0 +1,251 @@
+{% extends "layout-settings.html" %}
+{% set active_page = "measurement" %}
+{% set active_settings = "measurement" %}
+{% set help_page = ["measurement-settings", _('Measurement Settings')] %}
+
+{% block title %} - {{_('Measurement Settings')}}{% endblock %}
+
+{% block settings %}
+  <!-- Route: /settings/measurement -->
+  <h3 style="text-align: right; padding-bottom: 1.3em;"><a href="/help#measurement-settings" target="_blank"><span style="font-size: 16px" class="fas fa-question-circle"></span></a> {{_('Measurement Settings')}}</h3>
+
+  <h3>{{_('Add Measurement')}}</h3>
+
+  <form class="form-horizontal" method="post" action="/settings/measurement">
+  {{form_add_measurement.hidden_tag()}}
+
+  <div class="row small-gutters">
+
+    <div class="col-xs-6 col-sm-3 col-md-3">
+      {{form_add_measurement.name.label(class_='control-label')}}
+      <div>
+        {{form_add_measurement.name(class_='form-control')}}
+      </div>
+    </div>
+    <div class="col-xs-6 col-sm-3 col-md-3">
+      {{form_add_measurement.measure.label(class_='control-label')}}
+      <div>
+        {{form_add_measurement.measure(class_='form-control')}}
+      </div>
+    </div>
+    <div class="col-xs-6 col-sm-3 col-md-3">
+      {{form_add_measurement.units.label(class_='control-label')}}
+      <div>
+        <select class="form-control" id="units" name="units" multiple>
+          <option value="m">Meter (m)</option>
+          <option value="km">Kilometer (km)</option>
+        </select>
+      </div>
+    </div>
+    <div class="col-xs-4 col-sm-3 col-md-3">
+      <label class="control-label">&nbsp;</label>
+      <div>
+        {{form_add_measurement.add_measurement(class_='btn btn-primary')}}
+      </div>
+    </div>
+  </div>
+
+  </form>
+
+  <div style="clear: both; padding: 1em 0;"></div>
+
+  <h3>{{_('Add Unit')}}</h3>
+
+  <form class="form-horizontal" method="post" action="/settings/measurement">
+  {{form_add_unit.hidden_tag()}}
+
+  <div class="row small-gutters">
+
+    <div class="col-xs-6 col-sm-3 col-md-3">
+      {{form_add_unit.name.label(class_='control-label')}}
+      <div>
+        {{form_add_unit.name(class_='form-control')}}
+      </div>
+    </div>
+    <div class="col-xs-6 col-sm-3 col-md-3">
+      {{form_add_unit.unit.label(class_='control-label')}}
+      <div>
+        {{form_add_unit.unit(class_='form-control')}}
+      </div>
+    </div>
+    <div class="col-xs-4 col-sm-3 col-md-3">
+      <label class="control-label">&nbsp;</label>
+      <div>
+        {{form_add_unit.add_unit(class_='btn btn-primary')}}
+      </div>
+    </div>
+  </div>
+
+  </form>
+
+  <div style="clear: both; padding: 1em 0;"></div>
+
+  <h3>{{_('Add Conversion')}}</h3>
+
+  <form class="form-horizontal" method="post" action="/settings/measurement">
+  {{form_add_conversion.hidden_tag()}}
+
+  <div class="row small-gutters">
+
+    <div class="col-xs-6 col-sm-3 col-md-3">
+      {{form_add_conversion.convert_measurement_from.label(class_='control-label')}}
+      <div>
+        {{form_add_conversion.convert_measurement_from(class_='form-control')}}
+      </div>
+    </div>
+    <div class="col-xs-6 col-sm-3 col-md-3">
+      {{form_add_conversion.convert_measurement_to.label(class_='control-label')}}
+      <div>
+        {{form_add_conversion.convert_measurement_to(class_='form-control')}}
+      </div>
+    </div>
+    <div class="col-xs-6 col-sm-3 col-md-3">
+      {{form_add_conversion.equation.label(class_='control-label')}}
+      <div>
+        {{form_add_conversion.equation(class_='form-control')}}
+      </div>
+    </div>
+    <div class="col-xs-4 col-sm-3 col-md-3">
+      <label class="control-label">&nbsp;</label>
+      <div>
+        {{form_add_conversion.add_conversion(class_='btn btn-primary')}}
+      </div>
+    </div>
+  </div>
+
+  </form>
+
+  <div style="clear: both; padding: 1em 0;"></div>
+
+  <hr>
+
+  <h3>{{_('Measurements')}}</h3>
+
+  {% for each_measurement in measurement %}
+
+  <form method="post" action="/settings/measurement">
+  {{form_mod_measurement.csrf_token}}
+  {{form_mod_measurement.measurement_id(value=each_measurement.unique_id)}}
+
+    <div class="row small-gutters">
+      <div class="col-sm-6 col-md-3">
+        {{form_mod_measurement.name.label(class_='control-label')}}
+        <div>
+          {{form_mod_measurement.name(class_='form-control', value=each_measurement.name)}}
+        </div>
+      </div>
+      <div class="col-sm-6 col-md-3">
+        {{form_mod_measurement.measure.label(class_='control-label')}}
+        <div>
+          {{form_mod_measurement.measure(class_='form-control', value=each_measurement.measure)}}
+        </div>
+      </div>
+      <div class="col-sm-3">
+        {{form_add_measurement.units.label(class_='control-label')}}
+        <div>
+          <select class="form-control" id="role_id" name="role_id" multiple>
+            {% if not units %}
+              <option value="">No Units Found!</option>
+            {% endif %}
+            {% for each_unit in unit %}
+              <option value="{{each_unit.name}}"{% if each_unit.name in each_measurement.units.split(',') %} selected{% endif %}>{{each_unit.name}} ({{each_unit.unit}})</option>
+            {% endfor %}
+          </select>
+        </div>
+      </div>
+      <div class="col-sm-6 col-md-3 small-gutters">
+        {{form_mod_measurement.save_measurement(class_='btn btn-primary btn-block')}}
+      </div>
+      <div class="col-sm-6 col-md-3 small-gutters">
+        {{form_mod_measurement.delete_measurement(class_='btn btn-primary btn-block', **{'onclick':'return confirm("Are you sure you want to delete this?")'})}}
+      </div>
+    </div>
+
+  </form>
+
+  <div style="clear: both; padding: 0.5em 0;"></div>
+
+  {% endfor -%}
+
+  <hr>
+
+  <h3>{{_('Units')}}</h3>
+
+  {% for each_unit in unit %}
+
+  <form method="post" action="/settings/measurement">
+  {{form_mod_unit.csrf_token}}
+  {{form_mod_unit.unit_id(value=each_unit.unique_id)}}
+
+    <div class="row small-gutters">
+      <div class="col-sm-6 col-md-3">
+        {{form_mod_unit.name.label(class_='control-label')}}
+        <div>
+          {{form_mod_unit.name(class_='form-control', value=each_unit.name)}}
+        </div>
+      </div>
+      <div class="col-sm-6 col-md-3">
+        {{form_mod_unit.unit.label(class_='control-label')}}
+        <div>
+          {{form_mod_unit.unit(class_='form-control', value=each_unit.unit)}}
+        </div>
+      </div>
+      <div class="col-sm-6 col-md-3 small-gutters">
+        {{form_mod_unit.save_unit(class_='btn btn-primary btn-block')}}
+      </div>
+      <div class="col-sm-6 col-md-3 small-gutters">
+        {{form_mod_unit.delete_unit(class_='btn btn-primary btn-block', **{'onclick':'return confirm("Are you sure you want to delete this?")'})}}
+      </div>
+    </div>
+
+  </form>
+
+  <div style="clear: both; padding: 0.5em 0;"></div>
+
+  {% endfor -%}
+
+  <hr>
+
+  <h3>{{_('Conversion')}}</h3>
+
+  {% for each_conversion in conversion %}
+
+  <form method="post" action="/settings/measurement">
+  {{form_mod_conversion.csrf_token}}
+  {{form_mod_conversion.conversion_id(value=each_conversion.unique_id)}}
+
+    <div class="row small-gutters">
+      <div class="col-sm-6 col-md-3">
+        {{form_mod_conversion.convert_measurement_from.label(class_='control-label')}}
+        <div>
+          {{form_mod_conversion.convert_measurement_from(class_='form-control', value=each_conversion.convert_measurement_from)}}
+        </div>
+      </div>
+      <div class="col-sm-6 col-md-3">
+        {{form_mod_conversion.convert_measurement_to.label(class_='control-label')}}
+        <div>
+          {{form_mod_conversion.convert_measurement_to(class_='form-control', value=each_conversion.convert_measurement_to)}}
+        </div>
+      </div>
+      <div class="col-sm-6 col-md-3">
+        {{form_mod_conversion.equation.label(class_='control-label')}}
+        <div>
+          {{form_mod_conversion.equation(class_='form-control', value=each_conversion.equation)}}
+        </div>
+      </div>
+      <div class="col-sm-6 col-md-3 small-gutters">
+        {{form_mod_conversion.save_conversion(class_='btn btn-primary btn-block')}}
+      </div>
+      <div class="col-sm-6 col-md-3 small-gutters">
+        {{form_mod_conversion.delete_conversion(class_='btn btn-primary btn-block', **{'onclick':'return confirm("Are you sure you want to delete this?")'})}}
+      </div>
+    </div>
+
+  </form>
+
+  <div style="clear: both; padding: 0.5em 0;"></div>
+
+  {% endfor -%}
+
+
+{% endblock %}

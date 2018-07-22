@@ -52,19 +52,19 @@ def input_add(form_add):
                 dev=form_add.input_type.data, dep=unmet_deps))
 
     if form_add.validate():
-        new_sensor = Input()
-        new_sensor.device = form_add.input_type.data
+        new_input = Input()
+        new_input.device = form_add.input_type.data
 
         if GPIO.RPI_INFO['P1_REVISION'] in [2, 3]:
-            new_sensor.i2c_bus = 1
+            new_input.i2c_bus = 1
         else:
-            new_sensor.i2c_bus = 0
+            new_input.i2c_bus = 0
 
         if form_add.input_type.data in DEVICE_INFO:
-            new_sensor.name = DEVICE_INFO[form_add.input_type.data]['name']
-            new_sensor.measurements = ",".join(DEVICE_INFO[form_add.input_type.data]['measure'])
+            new_input.name = DEVICE_INFO[form_add.input_type.data]['name']
+            new_input.measurements = ",".join(DEVICE_INFO[form_add.input_type.data]['measure'])
         else:
-            new_sensor.name = 'Name'
+            new_input.name = 'Name'
 
         #
         # Set default values for new Inputs
@@ -78,177 +78,177 @@ def input_add(form_add):
                     measure=each_measurement,
                     unit=MEASUREMENT_UNITS[each_measurement]['units'][0])
                 list_units.append(entry)
-        new_sensor.convert_to_unit = ";".join(list_units)
+        new_input.convert_to_unit = ";".join(list_units)
 
         # Linux command as sensor
         if form_add.input_type.data == 'LinuxCommand':
-            new_sensor.cmd_command = 'shuf -i 50-70 -n 1'
-            new_sensor.cmd_measurement = 'Condition'
-            new_sensor.cmd_measurement_units = 'unit'
+            new_input.cmd_command = 'shuf -i 50-70 -n 1'
+            new_input.cmd_measurement = 'Condition'
+            new_input.cmd_measurement_units = 'unit'
 
         # Server is up or down
         elif form_add.input_type.data in ['SERVER_PING',
                                           'SERVER_PORT_OPEN']:
-            new_sensor.location = '127.0.0.1'
-            new_sensor.period = 3600
+            new_input.location = '127.0.0.1'
+            new_input.period = 3600
 
         # Process monitors
         elif form_add.input_type.data == 'MYCODO_RAM':
-            new_sensor.location = 'Mycodo_daemon'
+            new_input.location = 'Mycodo_daemon'
         elif form_add.input_type.data == 'RPi':
-            new_sensor.location = 'RPi'
+            new_input.location = 'RPi'
         elif form_add.input_type.data == 'RPiCPULoad':
-            new_sensor.location = 'RPi'
+            new_input.location = 'RPi'
         elif form_add.input_type.data == 'RPiFreeSpace':
-            new_sensor.location = '/'
+            new_input.location = '/'
 
         # Environmental Inputs
 
         # Electrical Conductivity
         elif form_add.input_type.data == 'ATLAS_EC_I2C':
-            new_sensor.location = '0x01'
-            new_sensor.interface = 'I2C'
+            new_input.location = '0x01'
+            new_input.interface = 'I2C'
         elif form_add.input_type.data == 'ATLAS_EC_UART':
-            new_sensor.location = 'Tx/Rx'
-            new_sensor.interface = 'UART'
-            new_sensor.baud_rate = 9600
+            new_input.location = 'Tx/Rx'
+            new_input.interface = 'UART'
+            new_input.baud_rate = 9600
             if GPIO.RPI_INFO['P1_REVISION'] == 3:
-                new_sensor.device_loc = "/dev/ttyS0"
+                new_input.device_loc = "/dev/ttyS0"
             else:
-                new_sensor.device_loc = "/dev/ttyAMA0"
+                new_input.device_loc = "/dev/ttyAMA0"
 
         # Temperature
         if form_add.input_type.data == 'TMP006':
-            new_sensor.location = '0x40'
+            new_input.location = '0x40'
         elif form_add.input_type.data == 'ATLAS_PT1000_I2C':
-            new_sensor.interface = 'I2C'
-            new_sensor.location = '0x66'
+            new_input.interface = 'I2C'
+            new_input.location = '0x66'
         elif form_add.input_type.data == 'ATLAS_PT1000_UART':
-            new_sensor.location = 'Tx/Rx'
-            new_sensor.interface = 'UART'
-            new_sensor.baud_rate = 9600
+            new_input.location = 'Tx/Rx'
+            new_input.interface = 'UART'
+            new_input.baud_rate = 9600
             if GPIO.RPI_INFO['P1_REVISION'] == 3:
-                new_sensor.device_loc = "/dev/ttyS0"
+                new_input.device_loc = "/dev/ttyS0"
             else:
-                new_sensor.device_loc = "/dev/ttyAMA0"
+                new_input.device_loc = "/dev/ttyAMA0"
         elif form_add.input_type.data in ['MAX31855',
                                           'MAX31856',
                                           'MAX31865']:
-            new_sensor.pin_cs = 8
-            new_sensor.pin_miso = 9
-            new_sensor.pin_mosi = 10
-            new_sensor.pin_clock = 11
+            new_input.pin_cs = 8
+            new_input.pin_miso = 9
+            new_input.pin_mosi = 10
+            new_input.pin_clock = 11
             if form_add.input_type.data == 'MAX31856':
-                new_sensor.thermocouple_type = 'K'
+                new_input.thermocouple_type = 'K'
             elif form_add.input_type.data == 'MAX31865':
-                new_sensor.thermocouple_type = 'PT100'
-                new_sensor.ref_ohm = 0
+                new_input.thermocouple_type = 'PT100'
+                new_input.ref_ohm = 0
 
         # Temperature/Humidity
         elif form_add.input_type.data in ['AM2315', 'DHT11', 'DHT22',
                                           'HDC1000', 'HTU21D', 'SHT1x_7x',
                                           'SHT2x']:
             if form_add.input_type.data == 'AM2315':
-                new_sensor.location = '0x5c'
+                new_input.location = '0x5c'
             elif form_add.input_type.data in ['HDC1000', 'HTU21D', 'SHT2x']:
-                new_sensor.location = '0x40'
+                new_input.location = '0x40'
             if form_add.input_type.data =='HDC1000':
-                new_sensor.resolution = 14
-                new_sensor.resolution_2 = 14
+                new_input.resolution = 14
+                new_input.resolution_2 = 14
 
         # Chirp moisture sensor
         elif form_add.input_type.data == 'CHIRP':
-            new_sensor.location = '0x20'
+            new_input.location = '0x20'
 
         # CO2
         elif form_add.input_type.data == 'CCS811':
-            new_sensor.location = '0x5B'
-            new_sensor.interface = 'I2C'
+            new_input.location = '0x5B'
+            new_input.interface = 'I2C'
         elif form_add.input_type.data == 'MH_Z16_I2C':
-            new_sensor.location = '0x63'
-            new_sensor.interface = 'I2C'
+            new_input.location = '0x63'
+            new_input.interface = 'I2C'
         elif form_add.input_type.data == 'K30_I2C':
-            new_sensor.location = '0x68'
-            new_sensor.interface = 'I2C'
+            new_input.location = '0x68'
+            new_input.interface = 'I2C'
         elif form_add.input_type.data in ['COZIR_CO2',
                                           'K30_UART',
                                           'MH_Z16_UART',
                                           'MH_Z19_UART']:
-            new_sensor.location = 'Tx/Rx'
-            new_sensor.interface = 'UART'
-            new_sensor.baud_rate = 9600
+            new_input.location = 'Tx/Rx'
+            new_input.interface = 'UART'
+            new_input.baud_rate = 9600
             if GPIO.RPI_INFO['P1_REVISION'] == 3:
-                new_sensor.device_loc = "/dev/ttyS0"
+                new_input.device_loc = "/dev/ttyS0"
             else:
-                new_sensor.device_loc = "/dev/ttyAMA0"
+                new_input.device_loc = "/dev/ttyAMA0"
 
         # pH
         elif form_add.input_type.data == 'ATLAS_PH_I2C':
-            new_sensor.location = '0x63'
-            new_sensor.interface = 'I2C'
+            new_input.location = '0x63'
+            new_input.interface = 'I2C'
         elif form_add.input_type.data == 'ATLAS_PH_UART':
-            new_sensor.location = 'Tx/Rx'
-            new_sensor.interface = 'UART'
-            new_sensor.baud_rate = 9600
+            new_input.location = 'Tx/Rx'
+            new_input.interface = 'UART'
+            new_input.baud_rate = 9600
             if GPIO.RPI_INFO['P1_REVISION'] == 3:
-                new_sensor.device_loc = "/dev/ttyS0"
+                new_input.device_loc = "/dev/ttyS0"
             else:
-                new_sensor.device_loc = "/dev/ttyAMA0"
+                new_input.device_loc = "/dev/ttyAMA0"
 
         # Pressure
         if form_add.input_type.data == 'BME280':
-            new_sensor.location = '0x76'
+            new_input.location = '0x76'
         elif form_add.input_type.data in ['BMP180', 'BMP280']:
-            new_sensor.location = '0x77'
+            new_input.location = '0x77'
 
         # Light
         elif form_add.input_type.data in ['BH1750',
                                           'TSL2561',
                                           'TSL2591']:
             if form_add.input_type.data == 'BH1750':
-                new_sensor.location = '0x23'
-                new_sensor.resolution = 0  # 0=Low, 1=High, 2=High2
-                new_sensor.sensitivity = 69
+                new_input.location = '0x23'
+                new_input.resolution = 0  # 0=Low, 1=High, 2=High2
+                new_input.sensitivity = 69
             elif form_add.input_type.data == 'TSL2561':
-                new_sensor.location = '0x39'
+                new_input.location = '0x39'
             elif form_add.input_type.data == 'TSL2591':
-                new_sensor.location = '0x29'
+                new_input.location = '0x29'
 
         # Analog to Digital Converters
         elif form_add.input_type.data in LIST_DEVICES_ADC:
-            new_sensor.adc_measure = 'Condition'
-            new_sensor.adc_measure_units = 'units'
+            new_input.adc_measure = 'Condition'
+            new_input.adc_measure_units = 'units'
             if form_add.input_type.data == 'ADS1x15':
-                new_sensor.location = '0x48'
-                new_sensor.adc_volts_min = -4.096
-                new_sensor.adc_volts_max = 4.096
+                new_input.location = '0x48'
+                new_input.adc_volts_min = -4.096
+                new_input.adc_volts_max = 4.096
             elif form_add.input_type.data == 'MCP342x':
-                new_sensor.location = '0x68'
-                new_sensor.adc_volts_min = -2.048
-                new_sensor.adc_volts_max = 2.048
+                new_input.location = '0x68'
+                new_input.adc_volts_min = -2.048
+                new_input.adc_volts_max = 2.048
             elif form_add.input_type.data == 'MCP3008':
-                new_sensor.pin_cs = 8
-                new_sensor.pin_miso = 9
-                new_sensor.pin_mosi = 10
-                new_sensor.pin_clock = 11
-                new_sensor.adc_volts_min = 0
-                new_sensor.adc_volts_max = 3.3
+                new_input.pin_cs = 8
+                new_input.pin_miso = 9
+                new_input.pin_mosi = 10
+                new_input.pin_clock = 11
+                new_input.adc_volts_min = 0
+                new_input.adc_volts_max = 3.3
 
         try:
             if not error:
-                new_sensor.save()
+                new_input.save()
 
                 display_order = csv_to_list_of_str(
                     DisplayOrder.query.first().inputs)
                 DisplayOrder.query.first().inputs = add_display_order(
-                    display_order, new_sensor.unique_id)
+                    display_order, new_input.unique_id)
                 db.session.commit()
 
                 flash(gettext(
                     "%(type)s Input with ID %(id)s (%(uuid)s) successfully added",
                     type=form_add.input_type.data,
-                    id=new_sensor.id,
-                    uuid=new_sensor.unique_id),
+                    id=new_input.id,
+                    uuid=new_input.unique_id),
                       "success")
         except sqlalchemy.exc.OperationalError as except_msg:
             error.append(except_msg)
@@ -270,22 +270,22 @@ def input_mod(form_mod, request_form):
     error = []
 
     try:
-        mod_sensor = Input.query.filter(
+        mod_input = Input.query.filter(
             Input.unique_id == form_mod.input_id.data).first()
 
-        if mod_sensor.is_activated:
+        if mod_input.is_activated:
             error.append(gettext(
                 "Deactivate sensor controller before modifying its "
                 "settings"))
-        if (mod_sensor.device == 'AM2315' and
+        if (mod_input.device == 'AM2315' and
                 form_mod.period.data < 7):
             error.append(gettext(
                 "Choose a Read Period equal to or greater than 7. The "
                 "AM2315 may become unresponsive if the period is "
                 "below 7."))
-        if (mod_sensor.device != 'EDGE' and
-                (mod_sensor.pre_output_duration and
-                 form_mod.period.data < mod_sensor.pre_output_duration)):
+        if (mod_input.device != 'EDGE' and
+                (mod_input.pre_output_duration and
+                 form_mod.period.data < mod_input.pre_output_duration)):
             error.append(gettext(
                 "The Read Period cannot be less than the Pre Output "
                 "Duration"))
@@ -295,22 +295,22 @@ def input_mod(form_mod, request_form):
                 "Invalid device or improper permissions to read device"))
 
         if not error:
-            mod_sensor.name = form_mod.name.data
-            mod_sensor.i2c_bus = form_mod.i2c_bus.data
+            mod_input.name = form_mod.name.data
+            mod_input.i2c_bus = form_mod.i2c_bus.data
             if form_mod.location.data:
-                mod_sensor.location = form_mod.location.data
+                mod_input.location = form_mod.location.data
             if form_mod.power_output_id.data:
-                mod_sensor.power_output_id = form_mod.power_output_id.data
+                mod_input.power_output_id = form_mod.power_output_id.data
             else:
-                mod_sensor.power_output_id = None
+                mod_input.power_output_id = None
             if form_mod.baud_rate.data:
-                mod_sensor.baud_rate = form_mod.baud_rate.data
+                mod_input.baud_rate = form_mod.baud_rate.data
             if form_mod.device_loc.data:
-                mod_sensor.device_loc = form_mod.device_loc.data
+                mod_input.device_loc = form_mod.device_loc.data
             if form_mod.pre_output_id.data:
-                mod_sensor.pre_output_id = form_mod.pre_output_id.data
+                mod_input.pre_output_id = form_mod.pre_output_id.data
             else:
-                mod_sensor.pre_output_id = None
+                mod_input.pre_output_id = None
 
             short_list = []
             mod_units = False
@@ -326,53 +326,53 @@ def input_mod(form_mod, request_form):
                         else:
                             short_list.append(value)
             if mod_units:
-                mod_sensor.convert_to_unit = ';'.join(short_list)
+                mod_input.convert_to_unit = ';'.join(short_list)
 
-            mod_sensor.pre_output_duration = form_mod.pre_output_duration.data
-            mod_sensor.pre_output_during_measure = form_mod.pre_output_during_measure.data
-            mod_sensor.period = form_mod.period.data
-            mod_sensor.resolution = form_mod.resolution.data
-            mod_sensor.resolution_2 = form_mod.resolution_2.data
-            mod_sensor.sensitivity = form_mod.sensitivity.data
-            mod_sensor.calibrate_sensor_measure = form_mod.calibrate_sensor_measure.data
-            mod_sensor.cmd_command = form_mod.cmd_command.data
-            mod_sensor.cmd_measurement = form_mod.cmd_measurement.data
-            mod_sensor.cmd_measurement_units = form_mod.cmd_measurement_units.data
-            mod_sensor.thermocouple_type = form_mod.thermocouple_type.data
-            mod_sensor.ref_ohm = form_mod.ref_ohm.data
+            mod_input.pre_output_duration = form_mod.pre_output_duration.data
+            mod_input.pre_output_during_measure = form_mod.pre_output_during_measure.data
+            mod_input.period = form_mod.period.data
+            mod_input.resolution = form_mod.resolution.data
+            mod_input.resolution_2 = form_mod.resolution_2.data
+            mod_input.sensitivity = form_mod.sensitivity.data
+            mod_input.calibrate_sensor_measure = form_mod.calibrate_sensor_measure.data
+            mod_input.cmd_command = form_mod.cmd_command.data
+            mod_input.cmd_measurement = form_mod.cmd_measurement.data
+            mod_input.cmd_measurement_units = form_mod.cmd_measurement_units.data
+            mod_input.thermocouple_type = form_mod.thermocouple_type.data
+            mod_input.ref_ohm = form_mod.ref_ohm.data
             # Serial options
-            mod_sensor.pin_clock = form_mod.pin_clock.data
-            mod_sensor.pin_cs = form_mod.pin_cs.data
-            mod_sensor.pin_mosi = form_mod.pin_mosi.data
-            mod_sensor.pin_miso = form_mod.pin_miso.data
+            mod_input.pin_clock = form_mod.pin_clock.data
+            mod_input.pin_cs = form_mod.pin_cs.data
+            mod_input.pin_mosi = form_mod.pin_mosi.data
+            mod_input.pin_miso = form_mod.pin_miso.data
             # Bluetooth options
-            mod_sensor.bt_adapter = form_mod.bt_adapter.data
+            mod_input.bt_adapter = form_mod.bt_adapter.data
             # ADC options
-            mod_sensor.adc_channel = form_mod.adc_channel.data
-            mod_sensor.adc_gain = form_mod.adc_gain.data
-            mod_sensor.adc_resolution = form_mod.adc_resolution.data
-            mod_sensor.adc_measure = form_mod.adc_measurement.data.replace(" ", "_")
-            mod_sensor.adc_measure_units = form_mod.adc_measurement_units.data
-            mod_sensor.adc_volts_min = form_mod.adc_volts_min.data
-            mod_sensor.adc_volts_max = form_mod.adc_volts_max.data
-            mod_sensor.adc_units_min = form_mod.adc_units_min.data
-            mod_sensor.adc_units_max = form_mod.adc_units_max.data
-            mod_sensor.adc_inverse_unit_scale = form_mod.adc_inverse_unit_scale.data
+            mod_input.adc_channel = form_mod.adc_channel.data
+            mod_input.adc_gain = form_mod.adc_gain.data
+            mod_input.adc_resolution = form_mod.adc_resolution.data
+            mod_input.adc_measure = form_mod.adc_measurement.data.replace(" ", "_")
+            mod_input.adc_measure_units = form_mod.adc_measurement_units.data
+            mod_input.adc_volts_min = form_mod.adc_volts_min.data
+            mod_input.adc_volts_max = form_mod.adc_volts_max.data
+            mod_input.adc_units_min = form_mod.adc_units_min.data
+            mod_input.adc_units_max = form_mod.adc_units_max.data
+            mod_input.adc_inverse_unit_scale = form_mod.adc_inverse_unit_scale.data
             # Switch options
-            mod_sensor.switch_edge = form_mod.switch_edge.data
-            mod_sensor.switch_bouncetime = form_mod.switch_bounce_time.data
-            mod_sensor.switch_reset_period = form_mod.switch_reset_period.data
+            mod_input.switch_edge = form_mod.switch_edge.data
+            mod_input.switch_bouncetime = form_mod.switch_bounce_time.data
+            mod_input.switch_reset_period = form_mod.switch_reset_period.data
             # PWM and RPM options
-            mod_sensor.weighting = form_mod.weighting.data
-            mod_sensor.rpm_pulses_per_rev = form_mod.rpm_pulses_per_rev.data
-            mod_sensor.sample_time = form_mod.sample_time.data
+            mod_input.weighting = form_mod.weighting.data
+            mod_input.rpm_pulses_per_rev = form_mod.rpm_pulses_per_rev.data
+            mod_input.sample_time = form_mod.sample_time.data
             # Server options
-            mod_sensor.port = form_mod.port.data
-            mod_sensor.times_check = form_mod.times_check.data
-            mod_sensor.deadline = form_mod.deadline.data
+            mod_input.port = form_mod.port.data
+            mod_input.times_check = form_mod.times_check.data
+            mod_input.deadline = form_mod.deadline.data
             # SHT sensor options
             if form_mod.sht_voltage.data:
-                mod_sensor.sht_voltage = form_mod.sht_voltage.data
+                mod_input.sht_voltage = form_mod.sht_voltage.data
             db.session.commit()
     except Exception as except_msg:
         error.append(except_msg)
