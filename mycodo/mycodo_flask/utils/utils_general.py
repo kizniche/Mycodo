@@ -184,7 +184,7 @@ def choices_inputs(inputs):
                     id=each_input.id,
                     name=each_input.name,
                     meas=each_input.adc_measure,
-                    unit=each_input.adc_unit)
+                    unit=each_input.adc_measure_unit)
                 choices.update({value: display})
 
     return choices

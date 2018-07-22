@@ -80,6 +80,7 @@ def test_routes_when_not_logged_in(testapp):
         'settings/alerts',
         'settings/camera',
         'settings/general',
+        'settings/measurement',
         'settings/users',
         'systemctl/restart',
         'systemctl/shutdown',
@@ -109,6 +110,7 @@ def test_routes_logged_in_as_admin(_, testapp):
         ('settings/alerts', '<!-- Route: /settings/alerts -->'),
         ('settings/camera', '<!-- Route: /settings/camera -->'),
         ('settings/general', '<!-- Route: /settings/general -->'),
+        ('settings/measurement', '<!-- Route: /settings/measurement -->'),
         ('settings/users', '<!-- Route: /settings/users -->'),
         ('calibration', '<!-- Route: /calibration -->'),
         ('camera', '<!-- Route: /camera -->'),
@@ -194,6 +196,7 @@ def test_routes_logged_in_as_guest(_, testapp):
         ('settings/alerts', '<!-- Route: /live -->'),
         ('settings/camera', '<!-- Route: /live -->'),
         ('settings/general', '<!-- Route: /live -->'),
+        ('settings/measurement', '<!-- Route: /live -->'),
         ('settings/users', '<!-- Route: /live -->'),
         ('systemctl/restart', '<!-- Route: /live -->'),
         ('systemctl/shutdown', '<!-- Route: /live -->')
