@@ -147,8 +147,6 @@ class SettingsGeneral(FlaskForm):
 class MeasurementAdd(FlaskForm):
     name = StringField(lazy_gettext('Name'),
         validators=[DataRequired()])
-    measure = StringField(lazy_gettext('Measurement'),
-        validators=[DataRequired()])
     units = SelectMultipleField(lazy_gettext('Units'),
         choices=[
             ('m', 'Meter (m)'),
@@ -161,7 +159,6 @@ class MeasurementAdd(FlaskForm):
 class MeasurementMod(FlaskForm):
     measurement_id = StringField('Measurement ID', widget=widgets.HiddenInput())
     name = StringField(lazy_gettext('Name'))
-    measure = StringField(lazy_gettext('Measurement'))
     units = SelectMultipleField(lazy_gettext('Units'))
     save_measurement = SubmitField(lazy_gettext('Save'))
     delete_measurement = SubmitField(lazy_gettext('Delete'))
@@ -184,9 +181,9 @@ class UnitMod(FlaskForm):
 
 
 class ConversionAdd(FlaskForm):
-    convert_measurement_from = StringField(lazy_gettext('Convert From Measurement'),
+    convert_unit_from = StringField(lazy_gettext('Convert From Unit'),
         validators=[DataRequired()])
-    convert_measurement_to = StringField(lazy_gettext('Convert To Measurement'),
+    convert_unit_to = StringField(lazy_gettext('Convert To Measurement'),
         validators=[DataRequired()])
     equation = StringField(lazy_gettext('Equation'),
         validators=[DataRequired()])
@@ -195,8 +192,8 @@ class ConversionAdd(FlaskForm):
 
 class ConversionMod(FlaskForm):
     conversion_id = StringField('Conversion ID', widget=widgets.HiddenInput())
-    convert_measurement_from = StringField(lazy_gettext('Convert From Measurement'))
-    convert_measurement_to = StringField(lazy_gettext('Convert To Measurement'))
+    convert_unit_from = StringField(lazy_gettext('Convert From Unit'))
+    convert_unit_to = StringField(lazy_gettext('Convert To Measurement'))
     equation = StringField(lazy_gettext('Equation'))
     save_conversion = SubmitField(lazy_gettext('Save'))
     delete_conversion = SubmitField(lazy_gettext('Delete'))

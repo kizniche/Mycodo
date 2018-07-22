@@ -23,12 +23,6 @@
       </div>
     </div>
     <div class="col-xs-6 col-sm-3 col-md-3">
-      {{form_add_measurement.measure.label(class_='control-label')}}
-      <div>
-        {{form_add_measurement.measure(class_='form-control')}}
-      </div>
-    </div>
-    <div class="col-xs-6 col-sm-3 col-md-3">
       {{form_add_measurement.units.label(class_='control-label')}}
       <div>
         <select class="form-control" id="units" name="units" multiple>
@@ -88,15 +82,15 @@
   <div class="row small-gutters">
 
     <div class="col-xs-6 col-sm-3 col-md-3">
-      {{form_add_conversion.convert_measurement_from.label(class_='control-label')}}
+      {{form_add_conversion.convert_unit_from.label(class_='control-label')}}
       <div>
-        {{form_add_conversion.convert_measurement_from(class_='form-control')}}
+        {{form_add_conversion.convert_unit_from(class_='form-control')}}
       </div>
     </div>
     <div class="col-xs-6 col-sm-3 col-md-3">
-      {{form_add_conversion.convert_measurement_to.label(class_='control-label')}}
+      {{form_add_conversion.convert_unit_to.label(class_='control-label')}}
       <div>
-        {{form_add_conversion.convert_measurement_to(class_='form-control')}}
+        {{form_add_conversion.convert_unit_to(class_='form-control')}}
       </div>
     </div>
     <div class="col-xs-6 col-sm-3 col-md-3">
@@ -129,15 +123,12 @@
 
     <div class="row small-gutters">
       <div class="col-sm-6 col-md-3">
+        <input class="form-control btn btn-primary" disabled="" value="{{each_measurement.name_safe}}" type="text">
+      </div>
+      <div class="col-sm-6 col-md-3">
         {{form_mod_measurement.name.label(class_='control-label')}}
         <div>
           {{form_mod_measurement.name(class_='form-control', value=each_measurement.name)}}
-        </div>
-      </div>
-      <div class="col-sm-6 col-md-3">
-        {{form_mod_measurement.measure.label(class_='control-label')}}
-        <div>
-          {{form_mod_measurement.measure(class_='form-control', value=each_measurement.measure)}}
         </div>
       </div>
       <div class="col-sm-3">
@@ -179,6 +170,9 @@
 
     <div class="row small-gutters">
       <div class="col-sm-6 col-md-3">
+        <input class="form-control btn btn-primary" disabled="" value="{{each_unit.name_safe}}" type="text">
+      </div>
+      <div class="col-sm-6 col-md-3">
         {{form_mod_unit.name.label(class_='control-label')}}
         <div>
           {{form_mod_unit.name(class_='form-control', value=each_unit.name)}}
@@ -206,7 +200,7 @@
 
   <hr>
 
-  <h3>{{_('Conversion')}}</h3>
+  <h3>{{_('Conversions')}}</h3>
 
   {% for each_conversion in conversion %}
 
@@ -216,15 +210,15 @@
 
     <div class="row small-gutters">
       <div class="col-sm-6 col-md-3">
-        {{form_mod_conversion.convert_measurement_from.label(class_='control-label')}}
+        {{form_mod_conversion.convert_unit_from.label(class_='control-label')}}
         <div>
-          {{form_mod_conversion.convert_measurement_from(class_='form-control', value=each_conversion.convert_measurement_from)}}
+          {{form_mod_conversion.convert_unit_from(class_='form-control', value=each_conversion.convert_unit_from)}}
         </div>
       </div>
       <div class="col-sm-6 col-md-3">
-        {{form_mod_conversion.convert_measurement_to.label(class_='control-label')}}
+        {{form_mod_conversion.convert_unit_to.label(class_='control-label')}}
         <div>
-          {{form_mod_conversion.convert_measurement_to(class_='form-control', value=each_conversion.convert_measurement_to)}}
+          {{form_mod_conversion.convert_unit_to(class_='form-control', value=each_conversion.convert_unit_to)}}
         </div>
       </div>
       <div class="col-sm-6 col-md-3">

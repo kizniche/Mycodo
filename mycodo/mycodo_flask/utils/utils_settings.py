@@ -279,8 +279,10 @@ def settings_measurement_add(form):
 
     if form.validate():
         new_measurement = Measurement()
+        new_measurement.name_safe = re.sub('[^0-9a-zA-Z]+', '_', form.name.data).lower()
+        if new_measurement.name_safe.endswith('_'):
+            new_measurement.name_safe = new_measurement.name_safe[:-1]
         new_measurement.name = form.name.data
-        new_measurement.measure = form.measure.data
         new_measurement.units = ",".join(form.units.data)
 
         try:
@@ -312,9 +314,11 @@ def settings_measurement_mod(form):
             Measurement.unique_id == form.measurement_id.data).first()
 
         if not error:
+            mod_measurement.name_safe = re.sub('[^0-9a-zA-Z]+', '_', form.name.data).lower()
+            if mod_measurement.name_safe.endswith('_'):
+                mod_measurement.name_safe = mod_measurement.name_safe[:-1]
             mod_measurement.name = form.name.data
-            mod_measurement.measure = form.measure.data
-            mod_measurement.units = form.units.data
+            mod_measurement.units = ",".join(form.units.data)
             db.session.commit()
     except Exception as except_msg:
         error.append(except_msg)
@@ -347,6 +351,7 @@ def settings_unit_add(form):
 
     if form.validate():
         new_unit = Unit()
+        new_unit.name_safe = re.sub('[^0-9a-zA-Z]+', '_', form.name.data).lower()
         new_unit.name = form.name.data
         new_unit.unit = form.unit.data
 
@@ -379,6 +384,7 @@ def settings_unit_mod(form):
             Unit.unique_id == form.unit_id.data).first()
 
         if not error:
+            mod_unit.name_safe = re.sub('[^0-9a-zA-Z]+', '_', form.name.data).lower()
             mod_unit.name = form.name.data
             mod_unit.measure = form.measure.data
             mod_unit.unit = form.unit.data
@@ -411,8 +417,8 @@ def settings_convert_add(form):
 
     if form.validate():
         new_conversion = Conversion()
-        new_conversion.convert_measurement_from = form.convert_measurement_from.data
-        new_conversion.convert_measurement_to = form.convert_measurement_to.data
+        new_conversion.convert_unit_from = form.convert_unit_from.data
+        new_conversion.convert_unit_to = form.convert_unit_to.data
         new_conversion.equation = form.equation.data
 
         try:

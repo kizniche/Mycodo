@@ -10,8 +10,8 @@ class Measurement(CRUDMixin, db.Model):
 
     id = db.Column(db.Integer, unique=True, primary_key=True)
     unique_id = db.Column(db.String, nullable=False, unique=True, default=set_uuid)
+    name_safe = db.Column(db.Text)
     name = db.Column(db.Text)
-    measure = db.Column(db.Text)
     units = db.Column(db.Text)
 
     def __repr__(self):
@@ -24,6 +24,7 @@ class Unit(CRUDMixin, db.Model):
 
     id = db.Column(db.Integer, unique=True, primary_key=True)
     unique_id = db.Column(db.String, nullable=False, unique=True, default=set_uuid)
+    name_safe = db.Column(db.Text)
     name = db.Column(db.Text)
     unit = db.Column(db.Text)
 
@@ -37,8 +38,8 @@ class Conversion(CRUDMixin, db.Model):
 
     id = db.Column(db.Integer, unique=True, primary_key=True)
     unique_id = db.Column(db.String, nullable=False, unique=True, default=set_uuid)
-    convert_measurement_from = db.Column(db.Text)
-    convert_measurement_to = db.Column(db.Text)
+    convert_unit_from = db.Column(db.Text)
+    convert_unit_to = db.Column(db.Text)
     equation = db.Column(db.Text)
 
 

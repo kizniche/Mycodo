@@ -37,8 +37,8 @@ def upgrade():
         'measurements',
         sa.Column('id', sa.Integer, nullable=False, unique=True),
         sa.Column('unique_id', sa.String, nullable=False, unique=True),
+        sa.Column('name_safe', sa.Text),
         sa.Column('name', sa.Text),
-        sa.Column('measure', sa.Text),
         sa.Column('units', sa.Text),
         sa.PrimaryKeyConstraint('id'),
         keep_existing=True)
@@ -47,6 +47,7 @@ def upgrade():
         'units',
         sa.Column('id', sa.Integer, nullable=False, unique=True),
         sa.Column('unique_id', sa.String, nullable=False, unique=True),
+        sa.Column('name_safe', sa.Text),
         sa.Column('name', sa.Text),
         sa.Column('unit', sa.Text),
         sa.PrimaryKeyConstraint('id'),
@@ -56,8 +57,8 @@ def upgrade():
         'conversion',
         sa.Column('id', sa.Integer, nullable=False, unique=True),
         sa.Column('unique_id', sa.String, nullable=False, unique=True),
-        sa.Column('convert_measurement_from', sa.Text),
-        sa.Column('convert_measurement_to', sa.Text),
+        sa.Column('convert_unit_from', sa.Text),
+        sa.Column('convert_unit_to', sa.Text),
         sa.Column('equation', sa.Text),
         sa.PrimaryKeyConstraint('id'),
         keep_existing=True)
