@@ -195,16 +195,16 @@ def choices_maths(maths):
     choices = OrderedDict()
     for each_math in maths:
         # Only one measurement specified, use unit specified
-        if ',' not in each_math.measure:
+        if (',' not in each_math.measure and
+                len(each_math.measure_units.split(',')) == 2):
+            measurement = each_math.measure_units.split(',')[0]
+            unit = each_math.measure_units.split(',')[1]
             value = '{id},{meas},{unit}'.format(
                 id=each_math.unique_id,
-                meas=each_math.measure_units.split(',')[0],
-                unit=each_math.measure_units.split(',')[1])
+                meas=measurement,
+                unit=unit)
 
-            measure_display, unit_display = check_display_names(
-                each_math.measure_units.split(',')[0],
-                each_math.measure_units.split(',')[1])
-
+            measure_display, unit_display = check_display_names(measurement, unit)
             display = '[Math {id:02d}] {name} ({meas}, {unit})'.format(
                 id=each_math.id,
                 name=each_math.name,
@@ -212,27 +212,22 @@ def choices_maths(maths):
                 unit=unit_display)
             choices.update({value: display})
         else:
-            for each_measure in each_math.measure.split(','):
-                measurement = None
-                unit = None
-                for each_set in each_math.measure_units.split(';'):
-                    if each_measure == each_set.split(',')[0] and len(each_set.split(',')) > 1:
-                        measurement = each_set.split(',')[0]
-                        unit = each_set.split(',')[1]
+            for each_set in each_math.measure_units.split(';'):
+                if len(each_set.split(',')) == 2:
+                    measurement = each_set.split(',')[0]
+                    unit = each_set.split(',')[1]
+                    value = '{id},{meas},{unit}'.format(
+                        id=each_math.unique_id,
+                        meas=measurement,
+                        unit=unit)
 
-                value = '{id},{meas},{unit}'.format(
-                    id=each_math.unique_id,
-                    meas=measurement,
-                    unit=unit)
-
-                measure_display, unit_display = check_display_names(each_measure, unit)
-
-                display = '[Math {id:02d}] {name} ({meas}, {unit})'.format(
-                    id=each_math.id,
-                    name=each_math.name,
-                    meas=measure_display,
-                    unit=unit_display)
-                choices.update({value: display})
+                    measure_display, unit_display = check_display_names(measurement, unit)
+                    display = '[Math {id:02d}] {name} ({meas}, {unit})'.format(
+                        id=each_math.id,
+                        name=each_math.name,
+                        meas=measure_display,
+                        unit=unit_display)
+                    choices.update({value: display})
     return choices
 
 
