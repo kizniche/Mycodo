@@ -582,10 +582,11 @@ def check_func(all_devices, unique_id, y_axes, measurement, dict_measurements, i
             # Use Linux Command measurement
             elif (all_devices == input_dev and
                     each_device.cmd_measurement and
+                    each_device.cmd_measurement_units and
                     each_device.cmd_measurement != '' and
                     each_device.cmd_measurement == measurement and
-                    each_device.cmd_measurement not in y_axes):
-                y_axes.append(each_device.cmd_measurement)
+                    each_device.cmd_measurement_units not in y_axes):
+                y_axes.append(each_device.cmd_measurement_units)
 
             # Use custom-converted units
             elif (unique_id in use_unit and

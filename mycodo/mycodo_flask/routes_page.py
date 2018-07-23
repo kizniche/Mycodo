@@ -54,10 +54,12 @@ from mycodo.databases.models import Input
 from mycodo.databases.models import LCD
 from mycodo.databases.models import LCDData
 from mycodo.databases.models import Math
+from mycodo.databases.models import Measurement
 from mycodo.databases.models import Method
 from mycodo.databases.models import Misc
 from mycodo.databases.models import Output
 from mycodo.databases.models import PID
+from mycodo.databases.models import Unit
 from mycodo.databases.models import User
 from mycodo.devices.camera import camera_record
 from mycodo.mycodo_client import DaemonControl
@@ -85,8 +87,8 @@ from mycodo.mycodo_flask.utils import utils_output
 from mycodo.mycodo_flask.utils import utils_pid
 from mycodo.utils.sunriseset import Sun
 from mycodo.utils.system_pi import add_custom_measurements
-from mycodo.utils.system_pi import csv_to_list_of_str
 from mycodo.utils.system_pi import add_custom_units
+from mycodo.utils.system_pi import csv_to_list_of_str
 from mycodo.utils.system_pi import list_to_csv
 from mycodo.utils.tools import return_output_usage
 
@@ -290,6 +292,7 @@ def page_dashboard():
     misc = Misc.query.first()
     output = Output.query.all()
     pid = PID.query.all()
+    unit = Unit.query.all()
 
     # Create form objects
     form_base = forms_dashboard.DashboardBase()
@@ -331,7 +334,7 @@ def page_dashboard():
     dict_measurements = add_custom_measurements(
         input_dev, output, math, MEASUREMENT_UNITS)
     dict_units = add_custom_units(
-        input_dev, output, math)
+        unit, input_dev, output, math)
 
     # Add multi-select values as form choices, for validation
     form_graph.math_ids.choices = []
@@ -495,12 +498,13 @@ def page_graph_async():
     math = Math.query.all()
     output = Output.query.all()
     pid = PID.query.all()
+    unit = Unit.query.all()
 
     # Generate all measurement and units used
     dict_measurements = add_custom_measurements(
         input_dev, output, math, MEASUREMENT_UNITS)
     dict_units = add_custom_units(
-        input_dev, output, math)
+        unit, input_dev, output, math)
 
     # Get what each measurement uses for a unit
     use_unit = utils_general.use_unit_generate(input_dev, output, math)
@@ -792,6 +796,7 @@ def page_live():
     input_dev = Input.query.all()
     math = Math.query.all()
     method = Method.query.all()
+    unit = Unit.query.all()
 
     # Display orders
     input_display_order = csv_to_list_of_str(
@@ -805,7 +810,7 @@ def page_live():
     dict_measurements = add_custom_measurements(
         input_dev, output, math, MEASUREMENT_UNITS)
     dict_units = add_custom_units(
-        input_dev, output, math)
+        unit, input_dev, output, math)
 
     # Filter only activated input controllers
     inputs_sorted = []
@@ -1187,6 +1192,8 @@ def page_data():
     choices_input = utils_general.choices_inputs(input_dev)
     choices_math = utils_general.choices_maths(math)
     choices_output = utils_general.choices_outputs(output)
+    choices_unit = utils_general.choices_units(Unit.query.all())
+    choices_measurement = utils_general.choices_measurements(Measurement.query.all())
 
     # convert dict to list of tuples
     choices = []
@@ -1290,6 +1297,8 @@ def page_data():
                            choices_input=choices_input,
                            choices_math=choices_math,
                            choices_output=choices_output,
+                           choices_unit=choices_unit,
+                           choices_measurement=choices_measurement,
                            device_info=DEVICE_INFO,
                            display_order_input=display_order_input,
                            display_order_math=display_order_math,

@@ -16,7 +16,7 @@ from mycodo.mycodo_flask.utils.utils_general import use_unit_generate
 logger = logging.getLogger("mycodo.system_pi")
 
 
-def add_custom_units(inputs, outputs, maths):
+def add_custom_units(units, inputs, outputs, maths):
     return_measurements = UNITS
     use_unit = use_unit_generate(inputs, outputs, maths)
     for each_input in inputs:
@@ -40,6 +40,12 @@ def add_custom_units(inputs, outputs, maths):
                         {use_unit[each_math.unique_id][each_measure]: {
                             'unit': UNITS[use_unit[each_math.unique_id][each_measure]]['unit'],
                             'name': UNITS[use_unit[each_math.unique_id][each_measure]]['name']}})
+
+    for each_unit in units:
+        return_measurements.update(
+            {each_unit.name_safe: {
+                'unit': each_unit.unit,
+                'name': each_unit.name}})
 
     return return_measurements
 

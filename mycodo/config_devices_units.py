@@ -352,7 +352,7 @@ MEASUREMENT_UNITS = {
     'duty_cycle': {
         'name': lazy_gettext('Duty Cycle'),
         'meas': 'duty_cycle',
-        'units': ['unitless']},
+        'units': ['percent']},
     'edge': {
         'name': lazy_gettext('GPIO Edge'),
         'meas': 'edge',

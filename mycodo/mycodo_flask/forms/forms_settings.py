@@ -187,7 +187,7 @@ class ConversionAdd(FlaskForm):
 class ConversionMod(FlaskForm):
     conversion_id = StringField('Conversion ID', widget=widgets.HiddenInput())
     convert_unit_from = StringField(lazy_gettext('Convert From Unit'))
-    convert_unit_to = StringField(lazy_gettext('Convert To Measurement'))
+    convert_unit_to = StringField(lazy_gettext('Convert To Unit'))
     equation = StringField(lazy_gettext('Equation'))
     save_conversion = SubmitField(lazy_gettext('Save'))
     delete_conversion = SubmitField(lazy_gettext('Delete'))

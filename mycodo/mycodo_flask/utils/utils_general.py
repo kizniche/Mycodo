@@ -126,6 +126,27 @@ def controller_activate_deactivate(controller_action,
 # Choices
 #
 
+def choices_measurements(measurements):
+    """ populate form multi-select choices from Measurement entries """
+    choices = OrderedDict()
+    for each_meas in measurements:
+        value = '{meas}'.format(
+            meas=each_meas.name_safe)
+        display = '{name} ({units})'.format(
+            name=each_meas.name,
+            units=each_meas.units)
+        choices.update({value: display})
+    for each_meas, each_info in MEASUREMENT_UNITS.items():
+        value = '{meas}'.format(
+            meas=each_meas)
+        display = '{name} ({units})'.format(
+            name=each_info['name'],
+            units=",".join(each_info['units']))
+        choices.update({value: display})
+
+    return choices
+
+
 def choices_units(units):
     """ populate form multi-select choices from Units entries """
     choices = OrderedDict()
@@ -143,9 +164,10 @@ def choices_units(units):
             display = '{name} ({unit})'.format(
                 name=each_info['name'],
                 unit=each_info['unit'])
-        choices.update({value: display})
+            choices.update({value: display})
 
     return choices
+
 
 def choices_inputs(inputs):
     """ populate form multi-select choices from Input entries """

@@ -6,20 +6,24 @@ Create Date: 2018-07-20 10:19:24.691605
 
 """
 
-from alembic import op
-import sqlalchemy as sa
-
 import sys
 
 import os
+import re
+import sqlalchemy as sa
+from alembic import op
 
 sys.path.append(os.path.abspath(os.path.join(__file__, "../../../..")))
 
 from mycodo.databases.models import Input
 from mycodo.databases.models import LCDData
 from mycodo.databases.models import Math
+from mycodo.databases.models import Measurement
+from mycodo.databases.models import Unit
 from mycodo.databases.utils import session_scope
+from mycodo.config import LIST_DEVICES_ADC
 from mycodo.config import MATH_INFO
+from mycodo.config_devices_units import UNITS
 from mycodo.config_devices_units import MEASUREMENT_UNITS
 from mycodo.config import SQL_DATABASE_MYCODO
 
@@ -63,9 +67,84 @@ def upgrade():
         sa.PrimaryKeyConstraint('id'),
         keep_existing=True)
 
-    # There has been a chance to how the measurement/unit selection for inputs is handled
-    # There is a new naming convention for units, old unit names need to be renamed
+    # There has been a chance to how the measurement/unit selection for inputs
+    # is handled. There is a new naming convention for units, old unit names
+    # need to be renamed. Custom measurements/units from LinuxCommand Inputs
+    # and Maths need to be transferred to the measurement/units tables.
     with session_scope(MYCODO_DB_PATH) as new_session:
+        # Iterate through math and linux command inputs and add any unique
+        # measurements/units to measurement/unit tables.
+        # Also update measurement/unit names to be compatible with new naming
+        # convention (alphanumeric and underscore only).
+        math = new_session.query(Math).all()
+        for each_math in math:
+            if each_math.measure != '' and each_math.measure_units != '':
+                measurement = re.sub('[^0-9a-zA-Z]+', '_', each_math.measure).lower()
+                unit = re.sub('[^0-9a-zA-Z]+', '_', each_math.measure_units).lower()
+                if each_math.measure not in MEASUREMENT_UNITS:
+                    new_measurement = Measurement()
+                    new_measurement.name_safe = measurement
+                    new_measurement.name = measurement
+                    new_measurement.units = unit
+                    new_session.add(new_measurement)
+                    # new_measurement.flush()
+                    each_math.measure = measurement
+                if each_math.measure_units not in UNITS:
+                    new_unit = Unit()
+                    new_unit.name_safe = unit
+                    new_unit.name = unit
+                    new_unit.unit = unit
+                    new_session.add(new_unit)
+                    # new_unit.flush()
+                    each_math.measure_units = unit
+
+        input_dev = new_session.query(Input).all()
+        for each_input in input_dev:
+            # Linux Command Inputs
+            if (each_input.device == 'LinuxCommand' and
+                    each_input.cmd_measurement != '' and
+                    each_input.cmd_measurement_units != ''):
+                measurement = re.sub('[^0-9a-zA-Z]+', '_', each_input.cmd_measurement).lower()
+                unit = re.sub('[^0-9a-zA-Z]+', '_', each_input.cmd_measurement_units).lower()
+                if each_input.cmd_measurement not in MEASUREMENT_UNITS:
+                    new_measurement = Measurement()
+                    new_measurement.name_safe = measurement
+                    new_measurement.name = measurement
+                    new_measurement.units = unit
+                    new_session.add(new_measurement)
+                    # new_measurement.flush()
+                    each_input.cmd_measurement = measurement
+                if each_input.cmd_measurement_units not in UNITS:
+                    new_unit = Unit()
+                    new_unit.name_safe = unit
+                    new_unit.name = unit
+                    new_unit.unit = unit
+                    new_session.add(new_unit)
+                    # new_unit.flush()
+                    each_input.cmd_measurement_units = unit
+            # ADC Inputs
+            if (each_input.device in LIST_DEVICES_ADC and
+                    each_input.adc_measure != '' and
+                    each_input.adc_measure_units != ''):
+                measurement = re.sub('[^0-9a-zA-Z]+', '_', each_input.adc_measure).lower()
+                unit = re.sub('[^0-9a-zA-Z]+', '_', each_input.adc_measure_units).lower()
+                if each_input.cmd_measurement not in MEASUREMENT_UNITS:
+                    new_measurement = Measurement()
+                    new_measurement.name_safe = measurement
+                    new_measurement.name = measurement
+                    new_measurement.units = unit
+                    new_session.add(new_measurement)
+                    # new_measurement.flush()
+                    each_input.adc_measure = measurement
+                if each_input.cmd_measurement_units not in UNITS:
+                    new_unit = Unit()
+                    new_unit.name_safe = unit
+                    new_unit.name = unit
+                    new_unit.unit = unit
+                    new_session.add(new_unit)
+                    # new_unit.flush()
+                    each_input.adc_measure_units = unit
+
         # Update LCD Data
         mod_lcd_data = new_session.query(LCDData).all()
         for each_lcd_data in mod_lcd_data:

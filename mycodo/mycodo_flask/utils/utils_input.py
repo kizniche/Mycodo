@@ -283,6 +283,11 @@ def input_mod(form_mod, request_form):
                 "Choose a Read Period equal to or greater than 7. The "
                 "AM2315 may become unresponsive if the period is "
                 "below 7."))
+        if (mod_input.device == 'LinuxCommand' and
+                (form_mod.cmd_measurement.data == '' or
+                 form_mod.cmd_measurement_units.data == '')):
+            error.append(gettext(
+                "Both a measurement and unit must be selected."))
         if (mod_input.device != 'EDGE' and
                 (mod_input.pre_output_duration and
                  form_mod.period.data < mod_input.pre_output_duration)):
