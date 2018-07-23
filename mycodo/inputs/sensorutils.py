@@ -8,7 +8,7 @@ import math
 
 import os
 
-from mycodo.config_devices_units import UNIT_CONVERSIONS
+from mycodo.utils.system_pi import all_conversions
 
 logger = logging.getLogger("mycodo.sensor_utils")
 
@@ -40,14 +40,15 @@ def convert_units(measurement, unit, convert_to_unit, measure_value):
     :return: converted value
     """
     measuement = measure_value
+    conversions_dict = all_conversions()
     if convert_to_unit:
         for each_unit in convert_to_unit.split(';'):
             if each_unit.split(',')[0] == measurement:
                 conversion = unit + '_to_' + each_unit.split(',')[1]
                 if each_unit.split(',')[1] == unit:
                     return measuement
-                elif conversion in UNIT_CONVERSIONS:
-                    replaced_str = UNIT_CONVERSIONS[conversion].replace('x', str(measuement))
+                elif conversion in conversions_dict:
+                    replaced_str = conversions_dict[conversion].replace('x', str(measuement))
                     return float('{0:.5f}'.format(eval(replaced_str)))
     return measuement
 

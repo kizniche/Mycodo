@@ -30,6 +30,7 @@ from mycodo.mycodo_flask.utils.utils_general import flash_form_errors
 from mycodo.mycodo_flask.utils.utils_general import flash_success_errors
 from mycodo.utils.database import db_retrieve_table
 from mycodo.utils.send_data import send_email
+from mycodo.utils.system_pi import all_conversions
 from mycodo.utils.system_pi import cmd_output
 from mycodo.utils.utils import test_password
 from mycodo.utils.utils import test_username
@@ -442,6 +443,12 @@ def settings_convert_add(form):
         controller=gettext("Conversion"))
     error = []
 
+    conversion_str = '{fr}_to_{to}'.format(
+        fr=form.convert_unit_from.data, to=form.convert_unit_to.data)
+    if conversion_str in all_conversions():
+        error.append("Conversion '{cs}' already exists.".format(
+            cs=conversion_str))
+
     if 'x' not in form.equation.data:
         error.append("'x' must appear in the equation.")
 
@@ -474,6 +481,12 @@ def settings_convert_mod(form):
         action=gettext("Modify"),
         controller=gettext("Conversion"))
     error = []
+
+    conversion_str = '{fr}_to_{to}'.format(
+        fr=form.convert_unit_from.data, to=form.convert_unit_to.data)
+    if conversion_str in all_conversions():
+        error.append("Conversion '{cs}' already exists.".format(
+            cs=conversion_str))
 
     if 'x' not in form.equation.data:
         error.append("'x' must appear in the equation.")

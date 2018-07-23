@@ -11,7 +11,10 @@ import os
 
 from mycodo.config import INSTALL_DIRECTORY
 from mycodo.config_devices_units import UNITS
+from mycodo.config_devices_units import UNIT_CONVERSIONS
+from mycodo.databases.models import Conversion
 from mycodo.mycodo_flask.utils.utils_general import use_unit_generate
+from mycodo.utils.database import db_retrieve_table_daemon
 
 logger = logging.getLogger("mycodo.system_pi")
 
@@ -106,22 +109,20 @@ def add_custom_measurements(inputs, outputs, maths, measurement_units):
                             'units': [UNITS[use_unit[each_math.unique_id][each_measure]]['unit']],
                             'name': UNITS[use_unit[each_math.unique_id][each_measure]]['name']}})
 
-        # elif each_math.measure and each_math.measure_units:
-        #     meas_name = '{meas}_{unit}'.format(
-        #         meas=each_math.measure,
-        #         unit=each_math.measure_units)
-        #     if (each_math.measure in return_measurements and
-        #             each_math.measure_units in return_measurements[each_math.measure]['units']):
-        #         pass
-        #     elif meas_name not in return_measurements:
-        #         return_measurements.update(
-        #             {meas_name: {
-        #                 'meas': each_math.measure,
-        #                 'units': [each_math.measure_units],
-        #                 'name': each_math.measure,
-        #                 'custom_axis_id': meas_name}})
-
     return return_measurements
+
+
+def all_conversions():
+    conversions_combined = UNIT_CONVERSIONS
+    conversions = db_retrieve_table_daemon(Conversion, entry='all')
+    for each_conversion in conversions:
+        convert_str = '{fr}_to_{to}'.format(
+            fr=each_conversion.convert_unit_from,
+            to=each_conversion.convert_unit_to)
+        equation_str = each_conversion.equation
+        if convert_str not in UNIT_CONVERSIONS:
+            conversions_combined[convert_str] = equation_str
+    return conversions_combined
 
 
 def time_between_range(start_time, end_time):
