@@ -22,12 +22,13 @@
         {{form_add_measurement.name(class_='form-control')}}
       </div>
     </div>
-    <div class="col-xs-6 col-sm-3 col-md-3">
+    <div class="col-auto">
       {{form_add_measurement.units.label(class_='control-label')}}
       <div>
         <select class="form-control" id="units" name="units" multiple>
-          <option value="m">Meter (m)</option>
-          <option value="km">Kilometer (km)</option>
+          {% for each_unit, each_display in choices_units.items() %}
+          <option value="{{each_unit}}">{{each_display}}</option>
+          {% endfor %}
         </select>
       </div>
     </div>
@@ -131,15 +132,15 @@
           {{form_mod_measurement.name(class_='form-control', value=each_measurement.name)}}
         </div>
       </div>
-      <div class="col-sm-3">
+      <div class="col-auto">
         {{form_add_measurement.units.label(class_='control-label')}}
         <div>
-          <select class="form-control" id="role_id" name="role_id" multiple>
-            {% if not units %}
-              <option value="">No Units Found!</option>
+          <select class="form-control" id="units" name="units" multiple>
+            {% if not choices_units.items() %}
+            <option value="">No Units Found!</option>
             {% endif %}
-            {% for each_unit in unit %}
-              <option value="{{each_unit.name}}"{% if each_unit.name in each_measurement.units.split(',') %} selected{% endif %}>{{each_unit.name}} ({{each_unit.unit}})</option>
+            {% for each_unit, each_display in choices_units.items() %}
+            <option value="{{each_unit}}"{% if each_unit in each_measurement.units.split(',') %} selected{% endif %}>{{each_display}}</option>
             {% endfor %}
           </select>
         </div>

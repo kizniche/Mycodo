@@ -5,7 +5,6 @@ import logging
 import flask_login
 import operator
 import os
-from flask import flash
 from flask import redirect
 from flask import render_template
 from flask import request
@@ -15,6 +14,7 @@ from flask.blueprints import Blueprint
 from mycodo.config import CAMERA_LIBRARIES
 from mycodo.config import LANGUAGES
 from mycodo.config import THEMES
+from mycodo.config_devices_units import UNITS
 from mycodo.databases.models import Camera
 from mycodo.databases.models import Conversion
 from mycodo.databases.models import Measurement
@@ -152,6 +152,8 @@ def settings_measurement():
     form_add_conversion = forms_settings.ConversionAdd()
     form_mod_conversion = forms_settings.ConversionMod()
 
+    choices_units = utils_general.choices_units(unit)
+
     if request.method == 'POST':
         if not utils_general.user_has_permission('edit_controllers'):
             return redirect(url_for('routes_general.home'))
@@ -180,6 +182,8 @@ def settings_measurement():
         return redirect(url_for('routes_settings.settings_measurement'))
 
     return render_template('settings/measurement.html',
+                           choices_units=choices_units,
+                           units=UNITS,
                            measurement=measurement,
                            unit=unit,
                            conversion=conversion,

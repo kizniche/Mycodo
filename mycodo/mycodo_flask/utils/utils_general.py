@@ -126,13 +126,26 @@ def controller_activate_deactivate(controller_action,
 # Choices
 #
 
-def check_display_names(measure, unit):
-    if measure in MEASUREMENT_UNITS:
-        measure = MEASUREMENT_UNITS[measure]['name']
-    if unit in UNITS:
-        unit = UNITS[unit]['unit']
-    return measure, unit
+def choices_units(units):
+    """ populate form multi-select choices from Units entries """
+    choices = OrderedDict()
+    for each_unit in units:
+        value = '{unit}'.format(
+            unit=each_unit.name_safe)
+        display = '{name} ({unit})'.format(
+            name=each_unit.name,
+            unit=each_unit.unit)
+        choices.update({value: display})
+    for each_unit, each_info in UNITS.items():
+        if each_info['unit']:
+            value = '{unit}'.format(
+                unit=each_unit)
+            display = '{name} ({unit})'.format(
+                name=each_info['name'],
+                unit=each_info['unit'])
+        choices.update({value: display})
 
+    return choices
 
 def choices_inputs(inputs):
     """ populate form multi-select choices from Input entries """
@@ -285,6 +298,14 @@ def choices_pids(pid):
             id=each_pid.id, name=each_pid.name)
         choices.update({value: display})
     return choices
+
+
+def check_display_names(measure, unit):
+    if measure in MEASUREMENT_UNITS:
+        measure = MEASUREMENT_UNITS[measure]['name']
+    if unit in UNITS:
+        unit = UNITS[unit]['unit']
+    return measure, unit
 
 
 def choices_id_name(table):

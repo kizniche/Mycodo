@@ -145,37 +145,31 @@ class SettingsGeneral(FlaskForm):
 #
 
 class MeasurementAdd(FlaskForm):
-    name = StringField(lazy_gettext('Name'),
-        validators=[DataRequired()])
-    units = SelectMultipleField(lazy_gettext('Units'),
-        choices=[
-            ('m', 'Meter (m)'),
-            ('km', 'Kilometer (km)')
-        ],
-        validators=[DataRequired()])
+    name = StringField(lazy_gettext('Measurement Name'))
+    units = SelectMultipleField(lazy_gettext('Measurement Units'))
     add_measurement = SubmitField(lazy_gettext('Add Measurement'))
 
 
 class MeasurementMod(FlaskForm):
     measurement_id = StringField('Measurement ID', widget=widgets.HiddenInput())
-    name = StringField(lazy_gettext('Name'))
-    units = SelectMultipleField(lazy_gettext('Units'))
+    name = StringField(lazy_gettext('Measurement Name'))
+    units = SelectMultipleField(lazy_gettext('Measurement Units'))
     save_measurement = SubmitField(lazy_gettext('Save'))
     delete_measurement = SubmitField(lazy_gettext('Delete'))
 
 
 class UnitAdd(FlaskForm):
-    name = StringField(lazy_gettext('Name'),
+    name = StringField(lazy_gettext('Unit Name'),
         validators=[DataRequired()])
-    unit = StringField(lazy_gettext('Unit'),
+    unit = StringField(lazy_gettext('Unit Abbreviation'),
         validators=[DataRequired()])
     add_unit = SubmitField(lazy_gettext('Add Unit'))
 
 
 class UnitMod(FlaskForm):
     unit_id = StringField('Unit ID', widget=widgets.HiddenInput())
-    name = StringField(lazy_gettext('Name'))
-    unit = StringField(lazy_gettext('Unit'))
+    name = StringField(lazy_gettext('Unit Name'))
+    unit = StringField(lazy_gettext('Unit Abbreviation'))
     save_unit = SubmitField(lazy_gettext('Save'))
     delete_unit = SubmitField(lazy_gettext('Delete'))
 

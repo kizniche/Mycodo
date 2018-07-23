@@ -277,30 +277,27 @@ def settings_measurement_add(form):
         controller=gettext("Measurement"))
     error = []
 
-    if form.validate():
-        new_measurement = Measurement()
-        new_measurement.name_safe = re.sub('[^0-9a-zA-Z]+', '_', form.name.data).lower()
-        if new_measurement.name_safe.endswith('_'):
-            new_measurement.name_safe = new_measurement.name_safe[:-1]
-        new_measurement.name = form.name.data
-        new_measurement.units = ",".join(form.units.data)
+    new_measurement = Measurement()
+    new_measurement.name_safe = re.sub('[^0-9a-zA-Z]+', '_', form.name.data).lower()
+    if new_measurement.name_safe.endswith('_'):
+        new_measurement.name_safe = new_measurement.name_safe[:-1]
+    new_measurement.name = form.name.data
+    new_measurement.units = ",".join(form.units.data)
 
-        try:
-            if not error:
-                new_measurement.save()
-                flash(gettext(
-                    "Measurement with ID %(id)s (%(uuid)s) successfully added",
-                    id=new_measurement.id,
-                    uuid=new_measurement.unique_id),
-                      "success")
-        except sqlalchemy.exc.OperationalError as except_msg:
-            error.append(except_msg)
-        except sqlalchemy.exc.IntegrityError as except_msg:
-            error.append(except_msg)
+    try:
+        if not error:
+            new_measurement.save()
+            flash(gettext(
+                "Measurement with ID %(id)s (%(uuid)s) successfully added",
+                id=new_measurement.id,
+                uuid=new_measurement.unique_id),
+                  "success")
+    except sqlalchemy.exc.OperationalError as except_msg:
+        error.append(except_msg)
+    except sqlalchemy.exc.IntegrityError as except_msg:
+        error.append(except_msg)
 
-        flash_success_errors(error, action, url_for('routes_settings.settings_measurement'))
-    else:
-        flash_form_errors(form)
+    flash_success_errors(error, action, url_for('routes_settings.settings_measurement'))
 
 
 def settings_measurement_mod(form):
@@ -351,7 +348,7 @@ def settings_unit_add(form):
 
     if form.validate():
         new_unit = Unit()
-        new_unit.name_safe = re.sub('[^0-9a-zA-Z]+', '_', form.name.data).lower()
+        new_unit.name_safe = re.sub('[^0-9a-zA-Z]+', '_', form.unit.data)
         new_unit.name = form.name.data
         new_unit.unit = form.unit.data
 
@@ -384,9 +381,8 @@ def settings_unit_mod(form):
             Unit.unique_id == form.unit_id.data).first()
 
         if not error:
-            mod_unit.name_safe = re.sub('[^0-9a-zA-Z]+', '_', form.name.data).lower()
+            mod_unit.name_safe = re.sub('[^0-9a-zA-Z]+', '_', form.unit.data)
             mod_unit.name = form.name.data
-            mod_unit.measure = form.measure.data
             mod_unit.unit = form.unit.data
             db.session.commit()
     except Exception as except_msg:
