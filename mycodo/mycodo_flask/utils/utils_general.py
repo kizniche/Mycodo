@@ -21,8 +21,10 @@ from mycodo.config import PATH_CAMERAS
 from mycodo.config_devices_units import DEVICE_INFO
 from mycodo.config_devices_units import MEASUREMENT_UNITS
 from mycodo.config_devices_units import UNITS
+from mycodo.config_devices_units import UNIT_CONVERSIONS
 from mycodo.databases.models import Camera
 from mycodo.databases.models import Conditional
+from mycodo.databases.models import Conversion
 from mycodo.databases.models import Input
 from mycodo.databases.models import LCD
 from mycodo.databases.models import Math
@@ -570,6 +572,19 @@ def return_dependencies(device_type, dep_type='unmet'):
         return unmet_deps
     else:
         return met_deps
+
+
+def all_conversions_flask():
+    conversions_combined = UNIT_CONVERSIONS
+    conversions = Conversion.query.all()
+    for each_conversion in conversions:
+        convert_str = '{fr}_to_{to}'.format(
+            fr=each_conversion.convert_unit_from,
+            to=each_conversion.convert_unit_to)
+        equation_str = each_conversion.equation
+        if convert_str not in UNIT_CONVERSIONS:
+            conversions_combined[convert_str] = equation_str
+    return conversions_combined
 
 
 def use_unit_generate(input_dev, output, math):

@@ -29,7 +29,6 @@ from mycodo.mycodo_flask.forms import forms_settings
 from mycodo.mycodo_flask.routes_static import inject_variables
 from mycodo.mycodo_flask.utils import utils_general
 from mycodo.mycodo_flask.utils import utils_settings
-from mycodo.utils.system_pi import all_conversions
 from mycodo.utils.system_pi import cmd_output
 
 logger = logging.getLogger('mycodo.mycodo_flask.settings')
@@ -155,7 +154,7 @@ def settings_measurement():
     form_mod_conversion = forms_settings.ConversionMod()
 
     choices_units = utils_general.choices_units(unit)
-    conversions_dict = all_conversions()
+    conversions_dict = utils_general.all_conversions_flask()
 
     if request.method == 'POST':
         if not utils_general.user_has_permission('edit_controllers'):

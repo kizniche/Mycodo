@@ -23,6 +23,7 @@ from mycodo.databases.models import Unit
 from mycodo.databases.models import User
 from mycodo.mycodo_client import DaemonControl
 from mycodo.mycodo_flask.extensions import db
+from mycodo.mycodo_flask.utils.utils_general import all_conversions_flask
 from mycodo.mycodo_flask.utils.utils_general import choices_measurements
 from mycodo.mycodo_flask.utils.utils_general import choices_units
 from mycodo.mycodo_flask.utils.utils_general import delete_entry_with_id
@@ -30,7 +31,6 @@ from mycodo.mycodo_flask.utils.utils_general import flash_form_errors
 from mycodo.mycodo_flask.utils.utils_general import flash_success_errors
 from mycodo.utils.database import db_retrieve_table
 from mycodo.utils.send_data import send_email
-from mycodo.utils.system_pi import all_conversions
 from mycodo.utils.system_pi import cmd_output
 from mycodo.utils.utils import test_password
 from mycodo.utils.utils import test_username
@@ -445,7 +445,7 @@ def settings_convert_add(form):
 
     conversion_str = '{fr}_to_{to}'.format(
         fr=form.convert_unit_from.data, to=form.convert_unit_to.data)
-    if conversion_str in all_conversions():
+    if conversion_str in all_conversions_flask():
         error.append("Conversion '{cs}' already exists.".format(
             cs=conversion_str))
 
@@ -484,7 +484,7 @@ def settings_convert_mod(form):
 
     conversion_str = '{fr}_to_{to}'.format(
         fr=form.convert_unit_from.data, to=form.convert_unit_to.data)
-    if conversion_str in all_conversions():
+    if conversion_str in all_conversions_flask():
         error.append("Conversion '{cs}' already exists.".format(
             cs=conversion_str))
 

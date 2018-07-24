@@ -112,7 +112,7 @@ def add_custom_measurements(inputs, outputs, maths, measurement_units):
     return return_measurements
 
 
-def all_conversions():
+def all_conversions_daemon():
     conversions_combined = UNIT_CONVERSIONS
     conversions = db_retrieve_table_daemon(Conversion, entry='all')
     for each_conversion in conversions:
