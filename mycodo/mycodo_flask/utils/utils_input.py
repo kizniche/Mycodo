@@ -2,6 +2,7 @@
 import logging
 
 import os
+import re
 import sqlalchemy
 from RPi import GPIO
 from flask import current_app
@@ -218,6 +219,7 @@ def input_add(form_add):
         elif form_add.input_type.data in LIST_DEVICES_ADC:
             new_input.adc_measure = 'Condition'
             new_input.adc_measure_units = 'units'
+            new_input.convert_to_unit = 'voltage,volts'
             if form_add.input_type.data == 'ADS1x15':
                 new_input.location = '0x48'
                 new_input.adc_volts_min = -4.096
@@ -288,6 +290,11 @@ def input_mod(form_mod, request_form):
                  form_mod.cmd_measurement_units.data == '')):
             error.append(gettext(
                 "Both a measurement and unit must be selected."))
+        if (mod_input.device in LIST_DEVICES_ADC and
+                (form_mod.adc_measurement.data == '' or
+                 form_mod.adc_measurement_units.data == '')):
+            error.append(gettext(
+                "Both a measurement and unit must be selected."))
         if (mod_input.device != 'EDGE' and
                 (mod_input.pre_output_duration and
                  form_mod.period.data < mod_input.pre_output_duration)):
@@ -316,6 +323,11 @@ def input_mod(form_mod, request_form):
                 mod_input.pre_output_id = form_mod.pre_output_id.data
             else:
                 mod_input.pre_output_id = None
+
+            if mod_input.device == 'LinuxCommand':
+                mod_input.measurements = form_mod.cmd_measurement.data
+                mod_input.convert_to_unit = '{meas},{unit}'.format(
+                    meas=form_mod.cmd_measurement.data, unit=form_mod.cmd_measurement_units.data)
 
             short_list = []
             mod_units = False
@@ -356,7 +368,7 @@ def input_mod(form_mod, request_form):
             mod_input.adc_channel = form_mod.adc_channel.data
             mod_input.adc_gain = form_mod.adc_gain.data
             mod_input.adc_resolution = form_mod.adc_resolution.data
-            mod_input.adc_measure = form_mod.adc_measurement.data.replace(" ", "_")
+            mod_input.adc_measure = form_mod.adc_measurement.data
             mod_input.adc_measure_units = form_mod.adc_measurement_units.data
             mod_input.adc_volts_min = form_mod.adc_volts_min.data
             mod_input.adc_volts_max = form_mod.adc_volts_max.data

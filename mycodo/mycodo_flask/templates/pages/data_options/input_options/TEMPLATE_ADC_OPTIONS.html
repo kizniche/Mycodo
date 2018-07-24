@@ -1,13 +1,23 @@
 <div class="col-auto">
   {{form_mod_input.adc_measurement.label(class_='control-label')}}
   <div>
-    {{form_mod_input.adc_measurement(class_='form-control', value=each_input.adc_measure, **{'title':_('What condition is being measured (e.g. Temperature)?')})}}
+    <select class="form-control" id="adc_measurement" name="adc_measurement">
+      <option value="">Select One</option>
+      {% for each_unit, each_display in choices_measurement.items() %}
+      <option value="{{each_unit}}"{% if each_unit == each_input.adc_measure %} selected{% endif %}>{{each_display}}</option>
+      {% endfor %}
+    </select>
   </div>
 </div>
 <div class="col-auto">
   {{form_mod_input.adc_measurement_units.label(class_='control-label')}}
   <div>
-    {{form_mod_input.adc_measurement_units(class_='form-control', value=each_input.adc_measure_units, **{'title':_('What are the units of the condition being measured (e.g. Celsius)?')})}}
+    <select class="form-control" id="adc_measurement_units" name="adc_measurement_units">
+      <option value="">Select One</option>
+      {% for each_unit, each_display in choices_unit.items() %}
+      <option value="{{each_unit}}"{% if each_unit == each_input.adc_measure_units %} selected{% endif %}>{{each_display}}</option>
+      {% endfor %}
+    </select>
   </div>
 </div>
 <div class="col-auto">
@@ -36,7 +46,7 @@
 </div>
 <div class="col-auto">
   {{form_mod_input.adc_inverse_unit_scale.label(class_='control-label')}}
-  <div class="text-xs-center">
+  <div class="input-group-text">
     {%- if each_input.adc_inverse_unit_scale == true -%}
       {{form_mod_input.adc_inverse_unit_scale(checked=True, class_='checkbox-big', **{'title':_('Inverse the scale (example: a high measurement returns a low unit value)')})}}
     {%- else -%}

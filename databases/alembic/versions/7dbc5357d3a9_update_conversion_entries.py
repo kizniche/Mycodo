@@ -122,6 +122,9 @@ def upgrade():
                     new_session.add(new_unit)
                     # new_unit.flush()
                     each_input.cmd_measurement_units = unit
+                each_input.measurements = measurement
+                each_input.convert_to_unit = '{meas},{unit}'.format(
+                    meas=measurement, unit=unit)
             # ADC Inputs
             if (each_input.device in LIST_DEVICES_ADC and
                     each_input.adc_measure != '' and
@@ -144,6 +147,8 @@ def upgrade():
                     new_session.add(new_unit)
                     # new_unit.flush()
                     each_input.adc_measure_units = unit
+                each_input.convert_to_unit = '{meas},{unit}'.format(
+                    meas=measurement, unit=unit)
 
         # Update LCD Data
         mod_lcd_data = new_session.query(LCDData).all()

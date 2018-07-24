@@ -33,9 +33,9 @@ def convert_units(measurement, unit, convert_to_unit, measure_value):
     Convert from one unit to another, such as ppm to ppb.
     See UNIT_CONVERSIONS in config_devices_units.py for available conversions.
 
-    :param measurement: measurement from MEASUREMENT_UNITS in config.py
-    :param unit: unit to convert from, from UNITS in config.py
-    :param convert_to_unit: unit to convert to, from UNITS in config.py
+    :param measurement: measurement from MEASUREMENT_UNITS in config_devices_units.py
+    :param unit: unit to convert from, from UNITS in config_devices_units.py
+    :param convert_to_unit: string of "measurement,unit" of desired units to use (separated by ";")
     :param measure_value: The value to convert
     :return: converted value
     """
@@ -54,7 +54,7 @@ def convert_units(measurement, unit, convert_to_unit, measure_value):
 
 
 def dewpoint(t, rh):
-    """Calucalte dewpoint from temperature and relative humidity"""
+    """Calculate dewpoint from temperature and relative humidity"""
     dict_tn = dict(water=243.12, ice=272.62)
     dict_m = dict(water=17.62, ice=22.46)
     if t >= 0:

@@ -55,6 +55,7 @@ class Input(CRUDMixin, db.Model):
     # SHT sensor options
     sht_voltage = db.Column(db.Text, default='3.5')
 
+    # TODO: Next major version: combine adc_measure + cmd_measurement and adc_measure_units + cmd_measurement_units
     # Analog to digital converter options
     adc_channel = db.Column(db.Integer, default=0)
     adc_gain = db.Column(db.Integer, default=1)

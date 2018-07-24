@@ -178,19 +178,6 @@
     {% for each_input in input -%}
       {%- for each_id_and_measure in graph_input_ids if each_input.unique_id == each_id_and_measure.split(',')[0] -%}
 
-        {% if each_input.device == 'LinuxCommand' %}
-          {
-            name: '{{each_input.name}} ({{each_input.cmd_measurement}}, {{each_input.cmd_measurement_units}})',
-            type: 'line',
-            tooltip: {
-              valueSuffix: ' {{each_input.cmd_measurement_units}}',
-              valueDecimals: 3
-            },
-            yAxis: '{{each_input.cmd_measurement_units}}',
-            data: []
-          },
-        {% endif %}
-
         {%- for each_measurement in each_input.measurements.split(',') -%}
           {%- if each_measurement == each_id_and_measure.split(',')[1] -%}
             {
