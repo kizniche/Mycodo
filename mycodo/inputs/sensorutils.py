@@ -8,6 +8,8 @@ import math
 
 import os
 
+from mycodo.databases.models import Conversion
+from mycodo.utils.database import db_retrieve_table_daemon
 from mycodo.utils.system_pi import all_conversions
 
 logger = logging.getLogger("mycodo.sensor_utils")
@@ -28,29 +30,30 @@ def altitude(pressure_pa, sea_level_pa=101325.0):
     return float("{:.3f}".format(alt_meters))
 
 
-def convert_units(measurement, unit, convert_to_unit, measure_value):
+def convert_units(measurement, convert_from_unit, convert_to_unit, measure_value):
     """
     Convert from one unit to another, such as ppm to ppb.
     See UNIT_CONVERSIONS in config_devices_units.py for available conversions.
 
     :param measurement: measurement from MEASUREMENT_UNITS in config_devices_units.py
-    :param unit: unit to convert from, from UNITS in config_devices_units.py
+    :param convert_from_unit: unit to convert from, from UNITS in config_devices_units.py
     :param convert_to_unit: string of "measurement,unit" of desired units to use (separated by ";")
     :param measure_value: The value to convert
     :return: converted value
     """
-    measuement = measure_value
-    conversions_dict = all_conversions(interface='daemon')
+    return_measurement = measure_value
+    conversions_dict = all_conversions(
+        db_retrieve_table_daemon(Conversion, entry='all'))
     if convert_to_unit:
         for each_unit in convert_to_unit.split(';'):
             if each_unit.split(',')[0] == measurement:
-                conversion = unit + '_to_' + each_unit.split(',')[1]
-                if each_unit.split(',')[1] == unit:
-                    return measuement
+                conversion = convert_from_unit + '_to_' + each_unit.split(',')[1]
+                if each_unit.split(',')[1] == convert_from_unit:
+                    return return_measurement
                 elif conversion in conversions_dict:
-                    replaced_str = conversions_dict[conversion].replace('x', str(measuement))
+                    replaced_str = conversions_dict[conversion].replace('x', str(return_measurement))
                     return float('{0:.5f}'.format(eval(replaced_str)))
-    return measuement
+    return return_measurement
 
 
 def dewpoint(t, rh):

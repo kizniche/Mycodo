@@ -514,81 +514,6 @@ produce a new value that may be used within Mycodo.
 |                       | ^                                               |
 +-----------------------+-------------------------------------------------+
 
-Pre-defined Measurements
-''''''''''''''''''''''''
-
-If a pre-defined Measurement and Unit is used, the newly-generated
-value will use that default y-axes on a Graph. For instance, if
-two temperature measurements are selected for averaging, and
-Measurement is set to 'temperature' (lowercase 't')and Unit is set
-to 'C', the new average value will use the same Celsius y-axis as
-the other temperatures in Celsius. If a unique Measurement or Unit
-is used, a new y-axis will be formed.
-
-+----------------------------+----------------+
-| Measurement                | Units          |
-+============================+================+
-| altitude                   | m, ft          |
-+----------------------------+----------------+
-| battery                    | percent        |
-+----------------------------+----------------+
-| boolean                    | bool           |
-+----------------------------+----------------+
-| co2                        | ppm, ppb       |
-+----------------------------+----------------+
-| cpu\_load\_1m              | cpu_load       |
-+----------------------------+----------------+
-| cpu\_load\_5m              | cpu_load       |
-+----------------------------+----------------+
-| cpu\_load\_15m             | cpu_load       |
-+----------------------------+----------------+
-| dewpoint                   | C, F, K        |
-+----------------------------+----------------+
-| disk\_space                | kB, MB, GB     |
-+----------------------------+----------------+
-| duration                   | second, minute |
-+----------------------------+----------------+
-| duty\_cycle                | percent        |
-+----------------------------+----------------+
-| edge                       | edge           |
-+----------------------------+----------------+
-| electrical\_conductivity   | uS_cm          |
-+----------------------------+----------------+
-| frequency                  | Hz, kHz, MHz   |
-+----------------------------+----------------+
-| humidity                   | percent        |
-+----------------------------+----------------+
-| humidity\_ratio            | kg_kg          |
-+----------------------------+----------------+
-| lux                        | lux            |
-+----------------------------+----------------+
-| moisture                   | moisture       |
-+----------------------------+----------------+
-| ph                         | pH             |
-+----------------------------+----------------+
-| pid\_output                | second, minute |
-+----------------------------+----------------+
-| pressure                   | Pa, kPa        |
-+----------------------------+----------------+
-| pulse\_width               | µs             |
-+----------------------------+----------------+
-| rpm                        | rpm            |
-+----------------------------+----------------+
-| setpoint                   | setpoint       |
-+----------------------------+----------------+
-| specific\_enthalpy         | kJ_kg          |
-+----------------------------+----------------+
-| specific\_volume           | m3_kg          |
-+----------------------------+----------------+
-| temperature                | C, F, K        |
-+----------------------------+----------------+
-| temperature\_die           | C, F, K        |
-+----------------------------+----------------+
-| temperature\_object        | C, F, K        |
-+----------------------------+----------------+
-| voltage                    | volts          |
-+----------------------------+----------------+
-
 Output
 ------
 
@@ -1754,7 +1679,13 @@ Measurement Settings
 New measurements, units, and conversions can be created that can extend
 functionality of Mycodo beyond the built-in types and equations. Be sure
 to create units before measurements, as units need to be selected when
-creating a measurement.
+creating a measurement. A measurement can be created that already exists,
+allowing additional units to be added to a pre-existing measurement. For
+example, the measurement 'altitude' already exists, however if you wanted
+to add the unit 'fathom', first create the unit 'fathom', then create the
+measurement 'altitude' with the 'fathom' unit selected. It is okay to create
+a custom measurement for a measurement that already exist (this is how new
+units for a currently-installed measurement is added).
 
 +-----------------------+-------------------------------------------------+
 | Setting               | Description                                     |
@@ -1762,7 +1693,7 @@ creating a measurement.
 | Measurement Name      | Name for the measurement (e.g. "Weight",        |
 |                       | "Length").                                      |
 +-----------------------+-------------------------------------------------+
-| Measurement Units     | Select all the units that are soociated with    |
+| Measurement Units     | Select all the units that are associated with   |
 |                       | the measurement.                                |
 +-----------------------+-------------------------------------------------+
 | Unit Name             | Name for the unit (e.g. "Kilogram", "Meter").   |

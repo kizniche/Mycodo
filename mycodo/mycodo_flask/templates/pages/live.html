@@ -108,7 +108,7 @@
           {%- if input_has_pid -%}
             <a style="padding-right: 0.5em" data-toggle="collapse" href="#collapseContainer{{collapse_container_number}}" aria-expanded="false" aria-controls="collapseContainer{{collapse_container_number}}"><span class='collapse-button{{collapse_container_number}} fa fa-2x fa-plus-square'></span></a>
           {%- endif -%}
-          {{each_input.name}} (Input {{each_input.id}})
+          {{each_input.name}} (Input {{each_input.unique_id[:8]}})
           {%- if each_input.device != 'EDGE' -%}
             <div>
                {{_('Input (%(type)s), %(sec)s second interval', type=each_input.device, sec=each_input.period)}}
@@ -265,7 +265,7 @@
 
       {%- for each_math in math if each_math.unique_id == each_math_sorted -%}
 
-    <div style="padding: 0.5em; margin-bottom: 0.7em; border: 2px solid #ddd; border-radius: 5px;">
+    <div style="padding: 0.5em; margin-bottom: 0.7em; border: 1px solid #ddd; border-radius: 5px;">
 
       <div class="row">
         <div class="col-xs-12 col-sm-6 text-left">
@@ -280,7 +280,7 @@
           {%- if math_has_pid -%}
             <a style="padding-right: 0.5em" data-toggle="collapse" href="#collapseContainer{{collapse_container_number}}" aria-expanded="false" aria-controls="collapseContainer{{collapse_container_number}}"><span class='collapse-button{{collapse_container_number}} fa fa-2x fa-plus-square'></span></a>
           {%- endif -%}
-          {{each_math.name}} (Math {{each_math.id}})
+          {{each_math.name}} (Math {{each_math.unique_id[:8]}})
           <div>
             {{_('Math (%(type)s), %(sec)s second interval', type=each_math.math_type, sec=each_math.period)}}
           </div>

@@ -146,7 +146,13 @@ def choices_measurements(measurements):
             units=",".join(each_info['units']))
         choices.update({value: display})
 
-    return choices
+    # Sort dictionary by keys
+    sorted_keys = sorted(list(choices), key=lambda s: s.casefold())
+    sorted_dict_choices = OrderedDict()
+    for each_key in sorted_keys:
+        sorted_dict_choices[each_key] = choices[each_key]
+
+    return sorted_dict_choices
 
 
 def choices_units(units):
@@ -168,7 +174,13 @@ def choices_units(units):
                 unit=each_info['unit'])
             choices.update({value: display})
 
-    return choices
+    # Sort dictionary by keys
+    sorted_keys = sorted(list(choices), key=lambda s: s.casefold())
+    sorted_dict_choices = OrderedDict()
+    for each_key in sorted_keys:
+        sorted_dict_choices[each_key] = choices[each_key]
+
+    return sorted_dict_choices
 
 
 def choices_inputs(inputs):
@@ -576,7 +588,7 @@ def return_dependencies(device_type, dep_type='unmet'):
 
 def use_unit_generate(input_dev, output, math):
     """Generate dictionary of units to convert to"""
-    # TODO: next major version: rename table columns and combine funnctionality
+    # TODO: next major version: rename table columns and combine functionality
     use_unit = {}
 
     for each_input in input_dev:

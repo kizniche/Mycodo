@@ -280,16 +280,8 @@ def settings_measurement_add(form):
         controller=gettext("Measurement"))
     error = []
 
-    name_safe = re.sub('[^0-9a-zA-Z]+', '_', form.name.data).lower()
-    measurements = Measurement.query.all()
-    choices_meas = choices_measurements(measurements)
-
-    if name_safe in choices_meas:
-        error.append("'{name}' already exists in the measurement database. "
-                     "Choose a unique name.".format(name=name_safe))
-
     new_measurement = Measurement()
-    new_measurement.name_safe = name_safe
+    new_measurement.name_safe = re.sub('[^0-9a-zA-Z]+', '_', form.name.data).lower()
     if new_measurement.name_safe.endswith('_'):
         new_measurement.name_safe = new_measurement.name_safe[:-1]
     new_measurement.name = form.name.data
@@ -443,9 +435,11 @@ def settings_convert_add(form):
         controller=gettext("Conversion"))
     error = []
 
+    conversion = Conversion.query.all()
+
     conversion_str = '{fr}_to_{to}'.format(
         fr=form.convert_unit_from.data, to=form.convert_unit_to.data)
-    if conversion_str in all_conversions(interface='flask'):
+    if conversion_str in all_conversions(conversion):
         error.append("Conversion '{cs}' already exists.".format(
             cs=conversion_str))
 
@@ -482,9 +476,11 @@ def settings_convert_mod(form):
         controller=gettext("Conversion"))
     error = []
 
+    conversion = Conversion.query.all()
+
     conversion_str = '{fr}_to_{to}'.format(
         fr=form.convert_unit_from.data, to=form.convert_unit_to.data)
-    if conversion_str in all_conversions(interface='flask'):
+    if conversion_str in all_conversions(conversion):
         error.append("Conversion '{cs}' already exists.".format(
             cs=conversion_str))
 

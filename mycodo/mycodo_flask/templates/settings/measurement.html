@@ -124,7 +124,7 @@
 
   <hr>
 
-  <h3>{{_('Measurements')}}</h3>
+  <h3>{{_('Custom')}} {{_('Measurements')}}</h3>
 
   <div class="table-responsive">
     <table class="table">
@@ -171,15 +171,6 @@
 
   {% endfor -%}
 
-  {% for each_unit, each_info in measurement_units.items() %}
-    <tr>
-      <td>{{each_unit}}</td>
-      <td>{{each_info['name']}}</td>
-      <td>{% for each_unit in each_info['units'] %}{{each_unit}}{{ ", " if not loop.last }}{% endfor %}</td>
-      <td></td>
-    </tr>
-  {% endfor %}
-
     </table>
   </div>
 
@@ -189,7 +180,7 @@
 
   <hr>
 
-  <h3>{{_('Units')}}</h3>
+  <h3>{{_('Custom')}} {{_('Units')}}</h3>
 
   <div class="table-responsive">
     <table class="table">
@@ -226,15 +217,6 @@
 
   {% endfor -%}
 
-  {% for each_unit, each_info in units.items() %}
-    <tr>
-      <td>{{each_unit}}</td>
-      <td>{{each_info['name']}}</td>
-      <td>{{each_info['unit']}}</td>
-      <td></td>
-    </tr>
-  {% endfor %}
-
     </table>
   </div>
 
@@ -244,7 +226,7 @@
 
   <hr>
 
-  <h3>{{_('Conversions')}}</h3>
+  <h3>{{_('Custom')}} {{_('Conversions')}}</h3>
 
     <div class="table-responsive">
       <table class="table">
@@ -292,18 +274,90 @@
 
   {% endfor -%}
 
+    </table>
+  </div>
+
+  {% endif %}
+
+  <hr>
+
+  <h3>{{_('All')}} {{_('Measurements')}}</h3>
+
+  <div class="table-responsive">
+    <table class="table">
+      <tr>
+        <td>ID</td>
+        <td>{{form_mod_measurement.name.label(class_='control-label')}}</td>
+        <td>{{form_add_measurement.units.label(class_='control-label')}}</td>
+        <td></td>
+      </tr>
+
+  {% for each_unit, each_info in dict_measurements.items() %}
+
+    <tr>
+      <td>{{each_unit}}</td>
+      <td>{{each_info['name']}}</td>
+      <td>{% for each_unit in each_info['units'] %}{{each_unit}}{{ ", " if not loop.last }}{% endfor %}</td>
+      <td></td>
+    </tr>
+
+  {% endfor %}
+
+    </table>
+  </div>
+
+  <hr>
+
+  <h3>{{_('All')}} {{_('Units')}}</h3>
+
+  <div class="table-responsive">
+  <table class="table">
+    <tr>
+      <td>ID</td>
+      <td>{{form_mod_unit.name.label(class_='control-label')}}</td>
+      <td>{{form_mod_unit.unit.label(class_='control-label')}}</td>
+      <td></td>
+    </tr>
+
+  {% for each_unit, each_info in dict_units.items() %}
+
+    <tr>
+      <td>{{each_unit}}</td>
+      <td>{{each_info['name']}}</td>
+      <td>{{each_info['unit']}}</td>
+      <td></td>
+    </tr>
+
+  {% endfor %}
+
+    </table>
+  </div>
+
+  <hr>
+
+  <h3>{{_('All')}} {{_('Conversions')}}</h3>
+
+    <div class="table-responsive">
+      <table class="table">
+        <tr>
+          <td>{{form_mod_conversion.convert_unit_from.label(class_='control-label')}}</td>
+          <td>{{form_mod_conversion.convert_unit_to.label(class_='control-label')}}</td>
+          <td>{{form_mod_conversion.equation.label(class_='control-label')}}</td>
+          <td></td>
+        </tr>
+
   {% for each_conversion, each_info in conversions_dict.items() %}
+
     <tr>
       <td>{{each_conversion.split('_to_')[0]}}</td>
       <td>{{each_conversion.split('_to_')[1]}}</td>
       <td>{{each_info}}</td>
       <td></td>
     </tr>
+
   {% endfor %}
 
     </table>
   </div>
-
-  {% endif %}
 
 {% endblock %}

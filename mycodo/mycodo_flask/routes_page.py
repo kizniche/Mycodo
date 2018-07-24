@@ -292,6 +292,7 @@ def page_dashboard():
     misc = Misc.query.first()
     output = Output.query.all()
     pid = PID.query.all()
+    measurement = Measurement.query.all()
     unit = Unit.query.all()
 
     # Create form objects
@@ -331,10 +332,8 @@ def page_dashboard():
     choices_pid = utils_general.choices_pids(pid)
 
     # Generate all measurement and units used
-    dict_measurements = add_custom_measurements(
-        input_dev, output, math, MEASUREMENT_UNITS)
-    dict_units = add_custom_units(
-        unit, input_dev, output, math)
+    dict_measurements = add_custom_measurements(measurement)
+    dict_units = add_custom_units(unit)
 
     # Add multi-select values as form choices, for validation
     form_graph.math_ids.choices = []
@@ -498,13 +497,12 @@ def page_graph_async():
     math = Math.query.all()
     output = Output.query.all()
     pid = PID.query.all()
+    measurement = Measurement.query.all()
     unit = Unit.query.all()
 
     # Generate all measurement and units used
-    dict_measurements = add_custom_measurements(
-        input_dev, output, math, MEASUREMENT_UNITS)
-    dict_units = add_custom_units(
-        unit, input_dev, output, math)
+    dict_measurements = add_custom_measurements(measurement)
+    dict_units = add_custom_units(unit)
 
     # Get what each measurement uses for a unit
     use_unit = utils_general.use_unit_generate(input_dev, output, math)
@@ -796,6 +794,7 @@ def page_live():
     input_dev = Input.query.all()
     math = Math.query.all()
     method = Method.query.all()
+    measurement = Measurement.query.all()
     unit = Unit.query.all()
 
     # Display orders
@@ -807,10 +806,8 @@ def page_live():
         DisplayOrder.query.first().pid)
 
     # Generate all measurement and units used
-    dict_measurements = add_custom_measurements(
-        input_dev, output, math, MEASUREMENT_UNITS)
-    dict_units = add_custom_units(
-        unit, input_dev, output, math)
+    dict_measurements = add_custom_measurements(measurement)
+    dict_units = add_custom_units(unit)
 
     # Filter only activated input controllers
     inputs_sorted = []

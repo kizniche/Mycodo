@@ -65,6 +65,7 @@ from mycodo.databases.models import Input
 from mycodo.databases.models import LCD
 from mycodo.databases.models import LCDData
 from mycodo.databases.models import Math
+from mycodo.databases.models import Measurement
 from mycodo.databases.models import Output
 from mycodo.databases.models import PID
 from mycodo.mycodo_flask.utils.utils_general import use_unit_generate
@@ -115,10 +116,8 @@ class LCDController(threading.Thread):
                 {'pid_time': {'unit': None, 'name': 'Time'}})
 
             # Add custom measurement and units to list
-            input_dev = db_retrieve_table_daemon(Input)
-            math = db_retrieve_table_daemon(Math)
             self.list_inputs = add_custom_measurements(
-                input_dev, math, self.list_inputs)
+                db_retrieve_table_daemon(Measurement))
 
             lcd_data = db_retrieve_table_daemon(
                 LCDData).filter(LCDData.lcd_id == lcd.unique_id).all()

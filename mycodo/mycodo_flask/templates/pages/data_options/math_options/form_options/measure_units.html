@@ -1,15 +1,23 @@
 <div class="col-12">
-  {{_('See <a href="/help#pre-defined-measurements" target="_blank">Pre-Defined Measurements</a> for a list of Measurements that may be used. You may also create your own Measurement and Units.')}}
+  {{_('See <a href="/help#measurement-settings" target="_blank">Measurement Settings</a> for how to create your own Measurement, Units, and Conversions.')}}
 </div>
 <div class="col-auto">
   {{form_mod_math.measure.label(class_='control-label')}}
   <div>
-    {{form_mod_math.measure(class_='form-control', value=each_math.measure_units.split(',')[0], **{'title':_('What condition is being measured (e.g. Temperature)?')})}}
-  </div>
+    <select class="form-control" id="measure" name="measure">
+      <option value="">Select One</option>
+      {% for each_unit, each_display in choices_measurement.items() %}
+      <option value="{{each_unit}}"{% if each_unit == each_math.measure_units.split(',')[0] %} selected{% endif %}>{{each_display}}</option>
+      {% endfor %}
+    </select>  </div>
 </div>
 <div class="col-auto">
   {{form_mod_math.measure_units.label(class_='control-label')}}
   <div>
-    {{form_mod_math.measure_units(class_='form-control', value=each_math.measure_units.split(',')[1], **{'title':_('What are the units of the condition being measured (e.g. C)?')})}}
-  </div>
+    <select class="form-control" id="measure_units" name="measure_units">
+      <option value="">Select One</option>
+      {% for each_unit, each_display in choices_unit.items() %}
+      <option value="{{each_unit}}"{% if each_unit == each_math.measure_units.split(',')[1] %} selected{% endif %}>{{each_display}}</option>
+      {% endfor %}
+    </select>  </div>
 </div>

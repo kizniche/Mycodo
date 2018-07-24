@@ -6,120 +6,65 @@ import pwd
 import socket
 import subprocess
 import time
+from collections import OrderedDict
 
 import os
 
 from mycodo.config import INSTALL_DIRECTORY
+from mycodo.config_devices_units import MEASUREMENT_UNITS
 from mycodo.config_devices_units import UNITS
 from mycodo.config_devices_units import UNIT_CONVERSIONS
-from mycodo.databases.models import Conversion
-from mycodo.mycodo_flask.utils.utils_general import use_unit_generate
-from mycodo.utils.database import db_retrieve_table_daemon
 
 logger = logging.getLogger("mycodo.system_pi")
 
 
-def add_custom_units(units, inputs, outputs, maths):
-    return_measurements = UNITS
-    use_unit = use_unit_generate(inputs, outputs, maths)
-    for each_input in inputs:
-        # Add converted measurements/units to measurements dictionary
-        if each_input.unique_id in use_unit:
-            for each_measure in use_unit[each_input.unique_id]:
-                if (use_unit[each_input.unique_id][each_measure] is not None and
-                        use_unit[each_input.unique_id][each_measure] not in UNITS):
-                    return_measurements.update(
-                        {use_unit[each_input.unique_id][each_measure]: {
-                            'unit': [UNITS[use_unit[each_input.unique_id][each_measure]]['unit']],
-                            'name': UNITS[use_unit[each_input.unique_id][each_measure]]['name']}})
-
-    for each_math in maths:
-        # Add Math measurements/units to measurements dictionary
-        if each_math.unique_id in use_unit:
-            for each_measure in use_unit[each_math.unique_id]:
-                if (use_unit[each_math.unique_id][each_measure] is not None and
-                        use_unit[each_math.unique_id][each_measure] not in UNITS):
-                    return_measurements.update(
-                        {use_unit[each_math.unique_id][each_measure]: {
-                            'unit': UNITS[use_unit[each_math.unique_id][each_measure]]['unit'],
-                            'name': UNITS[use_unit[each_math.unique_id][each_measure]]['name']}})
+def add_custom_units(units):
+    return_units = UNITS
 
     for each_unit in units:
-        return_measurements.update(
+        return_units.update(
             {each_unit.name_safe: {
                 'unit': each_unit.unit,
                 'name': each_unit.name}})
 
-    return return_measurements
+    # Sort dictionary by keys, ignoring case
+    sorted_keys = sorted(list(return_units), key=lambda s: s.casefold())
+    sorted_dict_units = OrderedDict()
+    for each_key in sorted_keys:
+        sorted_dict_units[each_key] = return_units[each_key]
+
+    return sorted_dict_units
 
 
-def add_custom_measurements(inputs, outputs, maths, measurement_units):
+def add_custom_measurements(measurements):
     """
-    Returns the measurement dictionary appended with
-    math, input, ADC, and command measurements/units
+    Returns the measurement dictionary appended with custom measurements/units
     """
-    return_measurements = measurement_units
+    return_measurements = MEASUREMENT_UNITS
 
-    use_unit = use_unit_generate(inputs, outputs, maths)
-
-    for each_input in inputs:
-        # Add command measurements/units to measurements dictionary
-        if (each_input.cmd_measurement and
-                each_input.cmd_measurement_units and
-                each_input.cmd_measurement not in measurement_units):
-            meas_name = '{meas}_{unit}'.format(
-                meas=each_input.cmd_measurement,
-                unit=each_input.cmd_measurement_units)
+    for each_measure in measurements:
+        if each_measure.name_safe not in return_measurements:
             return_measurements.update(
-                {meas_name: {
-                    'meas': each_input.cmd_measurement,
-                    'units': [each_input.cmd_measurement_units],
-                    'name': each_input.cmd_measurement}})
+                {each_measure.name_safe: {
+                    'meas': each_measure.name_safe,
+                    'units': each_measure.units.split(','),
+                    'name': each_measure.name}})
+        else:
+            for each_unit in each_measure.units.split(','):
+                if each_unit not in return_measurements[each_measure.name_safe]['units']:
+                    return_measurements[each_measure.name_safe]['units'].append(each_unit)
 
-        # Add ADC measurements/units to measurements dictionary
-        elif (each_input.adc_measure and
-                each_input.adc_measure_units and
-                each_input.adc_measure not in measurement_units):
-            return_measurements.update(
-                {each_input.adc_measure: {
-                    'meas': each_input.adc_measure,
-                    'units': [each_input.adc_measure_units],
-                    'name': each_input.adc_measure}})
+    # Sort dictionary by keys
+    sorted_keys = sorted(list(return_measurements), key=lambda s: s.casefold())
+    sorted_dict_measurements = OrderedDict()
+    for each_key in sorted_keys:
+        sorted_dict_measurements[each_key] = return_measurements[each_key]
 
-        # Add converted measurements/units to measurements dictionary
-        elif each_input.unique_id in use_unit:
-            for each_measure in use_unit[each_input.unique_id]:
-                if (use_unit[each_input.unique_id][each_measure] is not None and
-                        use_unit[each_input.unique_id][each_measure] not in UNITS):
-                    return_measurements.update(
-                        {each_measure: {
-                            'meas': use_unit[each_input.unique_id][each_measure],
-                            'units': [UNITS[use_unit[each_input.unique_id][each_measure]]['unit']],
-                            'name': UNITS[use_unit[each_input.unique_id][each_measure]]['name']}})
-
-    for each_math in maths:
-        # Add Math measurements/units to measurements dictionary
-        if each_math.unique_id in use_unit:
-            for each_measure in use_unit[each_math.unique_id]:
-                if (use_unit[each_math.unique_id][each_measure] is not None and
-                        use_unit[each_math.unique_id][each_measure] not in UNITS):
-                    return_measurements.update(
-                        {each_measure: {
-                            'meas': use_unit[each_math.unique_id][each_measure],
-                            'units': [UNITS[use_unit[each_math.unique_id][each_measure]]['unit']],
-                            'name': UNITS[use_unit[each_math.unique_id][each_measure]]['name']}})
-
-    return return_measurements
+    return sorted_dict_measurements
 
 
-def all_conversions(interface=None):
+def all_conversions(conversions):
     conversions_combined = UNIT_CONVERSIONS
-    if interface == 'flask':
-        conversions = Conversion.query.all()
-    elif interface == 'daemon':
-        conversions = db_retrieve_table_daemon(Conversion, entry='all')
-    else:
-        return
     for each_conversion in conversions:
         convert_str = '{fr}_to_{to}'.format(
             fr=each_conversion.convert_unit_from,
@@ -127,7 +72,14 @@ def all_conversions(interface=None):
         equation_str = each_conversion.equation
         if convert_str not in UNIT_CONVERSIONS:
             conversions_combined[convert_str] = equation_str
-    return conversions_combined
+
+    # Sort dictionary by keys
+    sorted_keys = sorted(list(conversions_combined), key=lambda s: s.casefold())
+    sorted_dict_conversions = OrderedDict()
+    for each_key in sorted_keys:
+        sorted_dict_conversions[each_key] = conversions_combined[each_key]
+
+    return sorted_dict_conversions
 
 
 def time_between_range(start_time, end_time):
