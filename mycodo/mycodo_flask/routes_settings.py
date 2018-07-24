@@ -154,7 +154,7 @@ def settings_measurement():
     form_mod_conversion = forms_settings.ConversionMod()
 
     choices_units = utils_general.choices_units(unit)
-    conversions_dict = utils_general.all_conversions_flask()
+    conversions_dict = utils_general.all_conversions(interface='flask')
 
     if request.method == 'POST':
         if not utils_general.user_has_permission('edit_controllers'):

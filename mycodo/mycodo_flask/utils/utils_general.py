@@ -574,19 +574,6 @@ def return_dependencies(device_type, dep_type='unmet'):
         return met_deps
 
 
-def all_conversions_flask():
-    conversions_combined = UNIT_CONVERSIONS
-    conversions = Conversion.query.all()
-    for each_conversion in conversions:
-        convert_str = '{fr}_to_{to}'.format(
-            fr=each_conversion.convert_unit_from,
-            to=each_conversion.convert_unit_to)
-        equation_str = each_conversion.equation
-        if convert_str not in UNIT_CONVERSIONS:
-            conversions_combined[convert_str] = equation_str
-    return conversions_combined
-
-
 def use_unit_generate(input_dev, output, math):
     """Generate dictionary of units to convert to"""
     # TODO: next major version: rename table columns and combine funnctionality

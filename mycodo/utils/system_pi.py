@@ -112,9 +112,14 @@ def add_custom_measurements(inputs, outputs, maths, measurement_units):
     return return_measurements
 
 
-def all_conversions_daemon():
+def all_conversions(interface=None):
     conversions_combined = UNIT_CONVERSIONS
-    conversions = db_retrieve_table_daemon(Conversion, entry='all')
+    if interface == 'flask':
+        conversions = Conversion.query.all()
+    elif interface == 'daemon':
+        conversions = db_retrieve_table_daemon(Conversion, entry='all')
+    else:
+        return
     for each_conversion in conversions:
         convert_str = '{fr}_to_{to}'.format(
             fr=each_conversion.convert_unit_from,
