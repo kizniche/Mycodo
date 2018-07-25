@@ -112,8 +112,6 @@ class InputController(threading.Thread):
         self.resolution = input_dev.resolution
         self.sensitivity = input_dev.sensitivity
         self.cmd_command = input_dev.cmd_command
-        self.cmd_measurement = input_dev.cmd_measurement
-        self.cmd_measurement_units = input_dev.cmd_measurement_units
         self.thermocouple_type = input_dev.thermocouple_type
         self.ref_ohm = input_dev.ref_ohm
 

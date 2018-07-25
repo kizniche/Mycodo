@@ -53,9 +53,7 @@
       {%- for each_input in input if each_input.is_activated -%}
         {%- set measurement_list = each_input.measurements.split(',') -%}
         {%- for each_measurement in measurement_list %}
-          {% if each_input.device == 'LinuxCommand' -%}
-          liveTextData('{{each_input.unique_id}}', '{{each_input.cmd_measurement}}', {{each_input.period + 1}});
-          {% elif each_measurement == 'edge' -%}
+          {% if each_measurement == 'edge' -%}
           liveTextData('{{each_input.unique_id}}', '{{each_measurement}}', '0');
           {% else -%}
           liveTextData('{{each_input.unique_id}}', '{{each_measurement}}', {{each_input.period + 1}});
