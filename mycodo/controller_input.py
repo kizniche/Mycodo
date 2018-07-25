@@ -124,7 +124,7 @@ class InputController(threading.Thread):
         self.pin_miso = input_dev.pin_miso
 
         # ADC
-        self.adc_measure = input_dev.adc_measure
+        self.adc_measure = input_dev.convert_to_unit.split(',')[0]
         self.adc_volts_min = input_dev.adc_volts_min
         self.adc_volts_max = input_dev.adc_volts_max
         self.adc_units_min = input_dev.adc_units_min

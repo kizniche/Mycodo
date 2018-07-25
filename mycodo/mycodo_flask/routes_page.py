@@ -1169,6 +1169,8 @@ def page_data():
     input_dev = Input.query.all()
     math = Math.query.all()
     user = User.query.all()
+    measurement = Measurement.query.all()
+    unit = Unit.query.all()
 
     list_devices_i2c = LIST_DEVICES_I2C
 
@@ -1189,8 +1191,9 @@ def page_data():
     choices_input = utils_general.choices_inputs(input_dev)
     choices_math = utils_general.choices_maths(math)
     choices_output = utils_general.choices_outputs(output)
-    choices_unit = utils_general.choices_units(Unit.query.all())
-    choices_measurement = utils_general.choices_measurements(Measurement.query.all())
+    choices_unit = utils_general.choices_units(unit)
+    choices_measurement = utils_general.choices_measurements(measurement)
+    choices_measurements_units = utils_general.choices_measurements_units(measurement, unit)
 
     # convert dict to list of tuples
     choices = []
@@ -1296,6 +1299,7 @@ def page_data():
                            choices_output=choices_output,
                            choices_unit=choices_unit,
                            choices_measurement=choices_measurement,
+                           choices_measurements_units=choices_measurements_units,
                            device_info=DEVICE_INFO,
                            display_order_input=display_order_input,
                            display_order_math=display_order_math,

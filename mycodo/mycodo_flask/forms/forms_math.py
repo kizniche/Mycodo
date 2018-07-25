@@ -38,12 +38,7 @@ class MathMod(FlaskForm):
         validators=[DataRequired()])
     inputs = SelectMultipleField(
         lazy_gettext('Inputs'))
-    measure = StringField(
-        lazy_gettext('Measurement'),
-        validators=[DataRequired()])
-    measure_units = StringField(
-        lazy_gettext('Units'),
-        validators=[DataRequired()])
+    selected_measurement_unit = StringField(lazy_gettext('Unit Measurement'))
     math_mod = SubmitField(lazy_gettext('Save'))
     math_delete = SubmitField(lazy_gettext('Delete'))
     math_activate = SubmitField(lazy_gettext('Activate'))

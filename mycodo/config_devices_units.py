@@ -466,6 +466,9 @@ UNITS = {
     'μS_cm': {
         'name': 'Microsiemens per centimeter',
         'unit': 'μS/cm'},
+    'bool': {
+        'name': 'Boolean',
+        'unit': 'bool'},
     'C': {
         'name': 'Celsius',
         'unit': '°C'},

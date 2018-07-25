@@ -285,16 +285,11 @@ def input_mod(form_mod, request_form):
                 "Choose a Read Period equal to or greater than 7. The "
                 "AM2315 may become unresponsive if the period is "
                 "below 7."))
-        if (mod_input.device == 'LinuxCommand' and
-                (form_mod.cmd_measurement.data == '' or
-                 form_mod.cmd_measurement_units.data == '')):
+        if (form_mod.selected_measurement_unit.data == '' and
+                (mod_input.device == 'LinuxCommand' or
+                 mod_input.device in LIST_DEVICES_ADC)):
             error.append(gettext(
-                "Both a measurement and unit must be selected."))
-        if (mod_input.device in LIST_DEVICES_ADC and
-                (form_mod.adc_measurement.data == '' or
-                 form_mod.adc_measurement_units.data == '')):
-            error.append(gettext(
-                "Both a measurement and unit must be selected."))
+                "A unit measurement must be selected."))
         if (mod_input.device != 'EDGE' and
                 (mod_input.pre_output_duration and
                  form_mod.period.data < mod_input.pre_output_duration)):
@@ -324,10 +319,9 @@ def input_mod(form_mod, request_form):
             else:
                 mod_input.pre_output_id = None
 
-            if mod_input.device == 'LinuxCommand':
-                mod_input.measurements = form_mod.cmd_measurement.data
-                mod_input.convert_to_unit = '{meas},{unit}'.format(
-                    meas=form_mod.cmd_measurement.data, unit=form_mod.cmd_measurement_units.data)
+            if (mod_input.device == 'LinuxCommand' or
+                    mod_input.device in LIST_DEVICES_ADC):
+                mod_input.convert_to_unit = form_mod.selected_measurement_unit.data
 
             short_list = []
             mod_units = False
@@ -353,8 +347,6 @@ def input_mod(form_mod, request_form):
             mod_input.sensitivity = form_mod.sensitivity.data
             mod_input.calibrate_sensor_measure = form_mod.calibrate_sensor_measure.data
             mod_input.cmd_command = form_mod.cmd_command.data
-            mod_input.cmd_measurement = form_mod.cmd_measurement.data
-            mod_input.cmd_measurement_units = form_mod.cmd_measurement_units.data
             mod_input.thermocouple_type = form_mod.thermocouple_type.data
             mod_input.ref_ohm = form_mod.ref_ohm.data
             # Serial options
@@ -368,8 +360,6 @@ def input_mod(form_mod, request_form):
             mod_input.adc_channel = form_mod.adc_channel.data
             mod_input.adc_gain = form_mod.adc_gain.data
             mod_input.adc_resolution = form_mod.adc_resolution.data
-            mod_input.adc_measure = form_mod.adc_measurement.data
-            mod_input.adc_measure_units = form_mod.adc_measurement_units.data
             mod_input.adc_volts_min = form_mod.adc_volts_min.data
             mod_input.adc_volts_max = form_mod.adc_volts_max.data
             mod_input.adc_units_min = form_mod.adc_units_min.data

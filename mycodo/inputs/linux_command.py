@@ -19,7 +19,7 @@ class LinuxCommand(AbstractInput):
             self.logger = logging.getLogger(
                 "mycodo.inputs.linux_command_{id}".format(id=input_dev.id))
             self.cmd_command = input_dev.cmd_command
-            self.cmd_measurement = str(input_dev.cmd_measurement)
+            self.cmd_measurement = input_dev.measurements
 
     def __repr__(self):
         """  Representation of object """
@@ -56,9 +56,10 @@ class LinuxCommand(AbstractInput):
         if str_is_float(out):
             return float(out)
         else:
-            self.logger.error("The command returned a non-numerical value. "
-                         "Ensure only one numerical value is returned "
-                         "by the command.")
+            self.logger.error(
+                "The command returned a non-numerical value. "
+                "Ensure only one numerical value is returned "
+                "by the command.")
             return None
 
     def read(self):

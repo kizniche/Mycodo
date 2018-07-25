@@ -76,6 +76,7 @@ def upgrade():
         # measurements/units to measurement/unit tables.
         # Also update measurement/unit names to be compatible with new naming
         # convention (alphanumeric and underscore only).
+
         math = new_session.query(Math).all()
         for each_math in math:
             if each_math.measure != '' and each_math.measure_units != '':
@@ -88,7 +89,6 @@ def upgrade():
                     new_measurement.units = unit
                     new_session.add(new_measurement)
                     # new_measurement.flush()
-                    each_math.measure = measurement
                 if each_math.measure_units not in UNITS:
                     new_unit = Unit()
                     new_unit.name_safe = unit
@@ -96,11 +96,13 @@ def upgrade():
                     new_unit.unit = unit
                     new_session.add(new_unit)
                     # new_unit.flush()
-                    each_math.measure_units = unit
+                each_math.measure = measurement
+                each_math.measure_units = '{meas},{unit}'.format(
+                    meas=measurement, unit=unit)
 
         input_dev = new_session.query(Input).all()
         for each_input in input_dev:
-            # Linux Command Inputs
+            # Add Linux Command Input measurement and unit to custom dictionary
             if (each_input.device == 'LinuxCommand' and
                     each_input.cmd_measurement != '' and
                     each_input.cmd_measurement_units != ''):
@@ -113,7 +115,6 @@ def upgrade():
                     new_measurement.units = unit
                     new_session.add(new_measurement)
                     # new_measurement.flush()
-                    each_input.cmd_measurement = measurement
                 if each_input.cmd_measurement_units not in UNITS:
                     new_unit = Unit()
                     new_unit.name_safe = unit
@@ -121,11 +122,11 @@ def upgrade():
                     new_unit.unit = unit
                     new_session.add(new_unit)
                     # new_unit.flush()
-                    each_input.cmd_measurement_units = unit
                 each_input.measurements = measurement
                 each_input.convert_to_unit = '{meas},{unit}'.format(
                     meas=measurement, unit=unit)
-            # ADC Inputs
+
+            # Add ADC Input measurement and unit to custom dictionary
             if (each_input.device in LIST_DEVICES_ADC and
                     each_input.adc_measure != '' and
                     each_input.adc_measure_units != ''):
@@ -138,7 +139,6 @@ def upgrade():
                     new_measurement.units = unit
                     new_session.add(new_measurement)
                     # new_measurement.flush()
-                    each_input.adc_measure = measurement
                 if each_input.cmd_measurement_units not in UNITS:
                     new_unit = Unit()
                     new_unit.name_safe = unit
@@ -146,7 +146,7 @@ def upgrade():
                     new_unit.unit = unit
                     new_session.add(new_unit)
                     # new_unit.flush()
-                    each_input.adc_measure_units = unit
+                each_input.measurements = measurement
                 each_input.convert_to_unit = '{meas},{unit}'.format(
                     meas=measurement, unit=unit)
 

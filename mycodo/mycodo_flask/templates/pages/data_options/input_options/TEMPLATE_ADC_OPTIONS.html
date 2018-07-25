@@ -1,21 +1,13 @@
-<div class="col-auto">
-  {{form_mod_input.adc_measurement.label(class_='control-label')}}
-  <div>
-    <select class="form-control" id="adc_measurement" name="adc_measurement">
-      <option value="">Select One</option>
-      {% for each_unit, each_display in choices_measurement.items() %}
-      <option value="{{each_unit}}"{% if each_unit == each_input.adc_measure %} selected{% endif %}>{{each_display}}</option>
-      {% endfor %}
-    </select>
-  </div>
+<div class="col-12">
+  Custom Measurements and Units can be created in <a href="/settings/measurement">Measurement Settings</a>.
 </div>
 <div class="col-auto">
-  {{form_mod_input.adc_measurement_units.label(class_='control-label')}}
+  {{form_mod_input.selected_measurement_unit.label(class_='control-label')}}
   <div>
-    <select class="form-control" id="adc_measurement_units" name="adc_measurement_units">
+    <select class="form-control" id="selected_measurement_unit" name="selected_measurement_unit">
       <option value="">Select One</option>
-      {% for each_unit, each_display in choices_unit.items() %}
-      <option value="{{each_unit}}"{% if each_unit == each_input.adc_measure_units %} selected{% endif %}>{{each_display}}</option>
+      {% for each_submit, each_display in choices_measurements_units.items() %}
+      <option value="{{each_submit}}"{% if each_submit == each_input.convert_to_unit %} selected{% endif %}>{{each_display}}</option>
       {% endfor %}
     </select>
   </div>

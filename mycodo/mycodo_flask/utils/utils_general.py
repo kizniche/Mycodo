@@ -21,10 +21,8 @@ from mycodo.config import PATH_CAMERAS
 from mycodo.config_devices_units import DEVICE_INFO
 from mycodo.config_devices_units import MEASUREMENT_UNITS
 from mycodo.config_devices_units import UNITS
-from mycodo.config_devices_units import UNIT_CONVERSIONS
 from mycodo.databases.models import Camera
 from mycodo.databases.models import Conditional
-from mycodo.databases.models import Conversion
 from mycodo.databases.models import Input
 from mycodo.databases.models import LCD
 from mycodo.databases.models import Math
@@ -33,6 +31,8 @@ from mycodo.databases.models import Role
 from mycodo.databases.models import User
 from mycodo.mycodo_client import DaemonControl
 from mycodo.mycodo_flask.extensions import db
+from mycodo.utils.system_pi import add_custom_measurements
+from mycodo.utils.system_pi import add_custom_units
 
 logger = logging.getLogger(__name__)
 
@@ -128,6 +128,31 @@ def controller_activate_deactivate(controller_action,
 # Choices
 #
 
+def choices_measurements_units(measurements, units):
+    dict_measurements = add_custom_measurements(measurements)
+
+    # Sort dictionary by keys
+    sorted_keys = sorted(list(dict_measurements), key=lambda s: s.casefold())
+    sorted_dict_measurements = OrderedDict()
+    for each_key in sorted_keys:
+        sorted_dict_measurements[each_key] = dict_measurements[each_key]
+
+    dict_units = add_custom_units(units)
+
+    choices = OrderedDict()
+    for each_meas, each_info in sorted_dict_measurements.items():
+        for each_unit in each_info['units']:
+            value = '{meas},{unit}'.format(
+                meas=each_meas, unit=each_unit)
+            display = '{meas}: {unit_name} ({unit})'.format(
+                meas=each_info['name'],
+                unit_name=dict_units[each_unit]['name'],
+                unit=each_unit)
+            choices.update({value: display})
+
+    return choices
+
+
 def choices_measurements(measurements):
     """ populate form multi-select choices from Measurement entries """
     choices = OrderedDict()
@@ -187,18 +212,18 @@ def choices_inputs(inputs):
     """ populate form multi-select choices from Input entries """
     choices = OrderedDict()
     for each_input in inputs:
-        if each_input.device == 'LinuxCommand':
-            value = '{id},{meas}'.format(
-                id=each_input.unique_id,
-                meas=each_input.cmd_measurement)
-            display = '[Input {id:02d}] {name} ({meas})'.format(
-                id=each_input.id,
-                name=each_input.name,
-                meas=each_input.cmd_measurement)
-            choices.update({value: display})
-        else:
-            for each_name, each_dict in DEVICE_INFO[each_input.device].items():
-                if each_name == 'measure':
+        for each_name, each_dict in DEVICE_INFO[each_input.device].items():
+            if each_name == 'measure':
+
+                if each_input.device in LIST_DEVICES_ADC:
+                    value = '{id},voltage'.format(
+                        id=each_input.unique_id)
+                    display = '[Input {id:02d}] {name} (Voltage, volts)'.format(
+                        id=each_input.id,
+                        name=each_input.name)
+                    choices.update({value: display})
+
+                else:
                     for each_measure in each_dict:
                         value = '{id},{meas}'.format(
                             id=each_input.unique_id,
@@ -224,17 +249,17 @@ def choices_inputs(inputs):
                                 meas=measure_display)
                         choices.update({value: display})
 
-            # Display custom converted units for ADCs
-            if each_input.device in LIST_DEVICES_ADC:
-                value = '{id},{meas}'.format(
-                    id=each_input.unique_id,
-                    meas=each_input.adc_measure)
-                display = '[Input {id:02d}] {name} ({meas}, {unit})'.format(
-                    id=each_input.id,
-                    name=each_input.name,
-                    meas=each_input.adc_measure,
-                    unit=each_input.adc_measure_units)
-                choices.update({value: display})
+        # Display custom converted units for ADCs
+        if each_input.device in LIST_DEVICES_ADC:
+            value = '{id},{meas}'.format(
+                id=each_input.unique_id,
+                meas=each_input.convert_to_unit.split(',')[0])
+            display = '[Input {id:02d}] {name} ({meas}, {unit})'.format(
+                id=each_input.id,
+                name=each_input.name,
+                meas=each_input.convert_to_unit.split(',')[0],
+                unit=each_input.convert_to_unit.split(',')[1])
+            choices.update({value: display})
 
     return choices
 
@@ -244,7 +269,7 @@ def choices_maths(maths):
     choices = OrderedDict()
     for each_math in maths:
         # Only one measurement specified, use unit specified
-        if (',' not in each_math.measure and
+        if (';' not in each_math.measure and
                 len(each_math.measure_units.split(',')) == 2):
             measurement = each_math.measure_units.split(',')[0]
             unit = each_math.measure_units.split(',')[1]

@@ -137,8 +137,8 @@ def math_mod(form_mod_math, form_mod_type=None):
                                   'maximum',
                                   'minimum',
                                   'verification']:
-            mod_math.measure = form_mod_math.measure.data
-            mod_math.measure_units = '{},{}'.format(form_mod_math.measure.data, form_mod_math.measure_units.data)
+            mod_math.measure = form_mod_math.selected_measurement_unit.data.split(',')[0]
+            mod_math.measure_units = form_mod_math.selected_measurement_unit.data
 
         if mod_math.math_type == 'average_single':
             mod_math.inputs = form_mod_type.average_input.data

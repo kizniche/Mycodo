@@ -50,6 +50,7 @@ class InputMod(FlaskForm):
     resolution_2 = IntegerField(lazy_gettext('Resolution'))
     sensitivity = IntegerField(lazy_gettext('Sensitivity'))
     convert_to_unit = StringField(lazy_gettext('Unit'))
+    selected_measurement_unit = StringField(lazy_gettext('Unit Measurement'))
 
     # Server options
     host = StringField(lazy_gettext('Host'))
@@ -59,8 +60,6 @@ class InputMod(FlaskForm):
 
     # Linux Command
     cmd_command = StringField(lazy_gettext('Command'))
-    cmd_measurement = StringField(lazy_gettext('Measurement'))
-    cmd_measurement_units = StringField(lazy_gettext('Unit'))
 
     # MAX chip options
     thermocouple_type = StringField(lazy_gettext('RTD Probe Type'))

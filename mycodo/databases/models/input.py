@@ -55,13 +55,10 @@ class Input(CRUDMixin, db.Model):
     # SHT sensor options
     sht_voltage = db.Column(db.Text, default='3.5')
 
-    # TODO: Next major version: combine adc_measure + cmd_measurement and adc_measure_units + cmd_measurement_units
     # Analog to digital converter options
     adc_channel = db.Column(db.Integer, default=0)
     adc_gain = db.Column(db.Integer, default=1)
     adc_resolution = db.Column(db.Integer, default=18)
-    adc_measure = db.Column(db.Text, default=None)
-    adc_measure_units = db.Column(db.Text, default=None)
     adc_volts_min = db.Column(db.Float, default=None)
     adc_volts_max = db.Column(db.Float, default=None)
     adc_units_min = db.Column(db.Float, default=0.0)
@@ -70,8 +67,6 @@ class Input(CRUDMixin, db.Model):
 
     # Command options
     cmd_command = db.Column(db.Text, default=None)
-    cmd_measurement = db.Column(db.Text, default=None)
-    cmd_measurement_units = db.Column(db.Text, default=None)
 
     # PWM and RPM options
     weighting = db.Column(db.Float, default=0.0)
