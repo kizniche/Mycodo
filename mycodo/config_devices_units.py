@@ -328,15 +328,15 @@ MEASUREMENT_UNITS = {
     'cpu_load_1m': {
         'name': lazy_gettext('CPU Load 1 min'),
         'meas': 'cpu_load',
-        'units': ['unitless']},
+        'units': ['cpu_load']},
     'cpu_load_5m': {
         'name': lazy_gettext('CPU Load 5 min'),
         'meas': 'cpu_load',
-        'units': ['unitless']},
+        'units': ['cpu_load']},
     'cpu_load_15m': {
         'name': lazy_gettext('CPU Load 15 min'),
         'meas': 'cpu_load',
-        'units': ['unitless']},
+        'units': ['cpu_load']},
     'dewpoint': {
         'name': lazy_gettext('Dewpoint'),
         'meas': 'temperature',
@@ -594,5 +594,9 @@ UNIT_CONVERSIONS = {
 
     # Pressure
     'Pa_to_kPa': 'x/1000',
-    'kPa_to_Pa': 'x*1000'
+    'kPa_to_Pa': 'x*1000',
+
+    # Time
+    'second_to_minute': 'x/60',
+    'minute_to_second': 'x*60'
 }

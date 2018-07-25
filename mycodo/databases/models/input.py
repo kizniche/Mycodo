@@ -64,9 +64,15 @@ class Input(CRUDMixin, db.Model):
     adc_units_min = db.Column(db.Float, default=0.0)
     adc_units_max = db.Column(db.Float, default=10)
     adc_inverse_unit_scale = db.Column(db.Boolean, default=False)
+    # TODO: Next major version: Remove cmd_measurement and cmd_measurement_units (no longer used)
+    adc_measure = db.Column(db.Text, default=None)
+    adc_measure_units = db.Column(db.Text, default=None)
 
     # Command options
     cmd_command = db.Column(db.Text, default=None)
+    # TODO: Next major version: Remove cmd_measurement and cmd_measurement_units (no longer used)
+    cmd_measurement = db.Column(db.Text, default=None)
+    cmd_measurement_units = db.Column(db.Text, default=None)
 
     # PWM and RPM options
     weighting = db.Column(db.Float, default=0.0)

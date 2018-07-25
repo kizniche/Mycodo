@@ -77,28 +77,48 @@ def upgrade():
         # Also update measurement/unit names to be compatible with new naming
         # convention (alphanumeric and underscore only).
 
-        math = new_session.query(Math).all()
-        for each_math in math:
+        # Update Math entries
+        def add_custom_entry_from_math(each_math, measurement, unit):
             if each_math.measure != '' and each_math.measure_units != '':
-                measurement = re.sub('[^0-9a-zA-Z]+', '_', each_math.measure).lower()
-                unit = re.sub('[^0-9a-zA-Z]+', '_', each_math.measure_units).lower()
-                if each_math.measure not in MEASUREMENT_UNITS:
+                measurement = re.sub('[^0-9a-zA-Z]+', '_', measurement).lower()
+                unit = re.sub('[^0-9a-zA-Z]+', '_', unit)
+                if measurement not in MEASUREMENT_UNITS:
                     new_measurement = Measurement()
                     new_measurement.name_safe = measurement
                     new_measurement.name = measurement
                     new_measurement.units = unit
                     new_session.add(new_measurement)
-                    # new_measurement.flush()
-                if each_math.measure_units not in UNITS:
+                if unit not in UNITS:
                     new_unit = Unit()
                     new_unit.name_safe = unit
                     new_unit.name = unit
                     new_unit.unit = unit
                     new_session.add(new_unit)
-                    # new_unit.flush()
-                each_math.measure = measurement
+
+        math = new_session.query(Math).all()
+        for each_math in math:
+            list_units = []
+            if ',' in each_math.measure:
+                # Set the default measurement values
+                for each_measurement in MATH_INFO[each_math.math_type]['measure']:
+                    if each_measurement in MEASUREMENT_UNITS:
+                        add_custom_entry_from_math(
+                            each_math,
+                            each_measurement,
+                            MEASUREMENT_UNITS[each_measurement]['units'][0])
+                        entry = '{measure},{unit}'.format(
+                            measure=each_measurement,
+                            unit=MEASUREMENT_UNITS[each_measurement]['units'][0])
+                        list_units.append(entry)
+                each_math.measure_units = ";".join(list_units)
+            else:
+                add_custom_entry_from_math(
+                    each_math,
+                    each_math.measure,
+                    each_math.measure_units)
+                each_math.measure = each_math.measure
                 each_math.measure_units = '{meas},{unit}'.format(
-                    meas=measurement, unit=unit)
+                    meas=each_math.measure, unit=each_math.measure_units)
 
         input_dev = new_session.query(Input).all()
         for each_input in input_dev:
@@ -107,21 +127,19 @@ def upgrade():
                     each_input.cmd_measurement != '' and
                     each_input.cmd_measurement_units != ''):
                 measurement = re.sub('[^0-9a-zA-Z]+', '_', each_input.cmd_measurement).lower()
-                unit = re.sub('[^0-9a-zA-Z]+', '_', each_input.cmd_measurement_units).lower()
+                unit = re.sub('[^0-9a-zA-Z]+', '_', each_input.cmd_measurement_units)
                 if each_input.cmd_measurement not in MEASUREMENT_UNITS:
                     new_measurement = Measurement()
                     new_measurement.name_safe = measurement
                     new_measurement.name = measurement
                     new_measurement.units = unit
                     new_session.add(new_measurement)
-                    # new_measurement.flush()
                 if each_input.cmd_measurement_units not in UNITS:
                     new_unit = Unit()
                     new_unit.name_safe = unit
                     new_unit.name = unit
                     new_unit.unit = unit
                     new_session.add(new_unit)
-                    # new_unit.flush()
                 each_input.measurements = measurement
                 each_input.convert_to_unit = '{meas},{unit}'.format(
                     meas=measurement, unit=unit)
@@ -131,7 +149,7 @@ def upgrade():
                     each_input.adc_measure != '' and
                     each_input.adc_measure_units != ''):
                 measurement = re.sub('[^0-9a-zA-Z]+', '_', each_input.adc_measure).lower()
-                unit = re.sub('[^0-9a-zA-Z]+', '_', each_input.adc_measure_units).lower()
+                unit = re.sub('[^0-9a-zA-Z]+', '_', each_input.adc_measure_units)
                 if each_input.cmd_measurement not in MEASUREMENT_UNITS:
                     new_measurement = Measurement()
                     new_measurement.name_safe = measurement
@@ -158,26 +176,6 @@ def upgrade():
             each_lcd_data.line_2_measurement = each_lcd_data.line_2_measurement.replace('duration_sec', 'duration_time')
             each_lcd_data.line_3_measurement = each_lcd_data.line_3_measurement.replace('duration_sec', 'duration_time')
             each_lcd_data.line_4_measurement = each_lcd_data.line_4_measurement.replace('duration_sec', 'duration_time')
-
-        # Update Maths
-        mod_math = new_session.query(Math).all()
-        for each_math in mod_math:
-            list_units = []
-            if each_math.math_type == 'humidity':
-                # Set the default measurement values
-                for each_measurement in MATH_INFO[each_math.math_type]['measure']:
-                    if each_measurement in MEASUREMENT_UNITS:
-                        entry = '{measure},{unit}'.format(
-                            measure=each_measurement,
-                            unit=MEASUREMENT_UNITS[each_measurement]['units'][0])
-                        list_units.append(entry)
-                each_math.measure_units = ";".join(list_units)
-            else:
-                entry = '{measure},{unit}'.format(
-                    measure=each_math.measure,
-                    unit=each_math.measure_units)
-                list_units.append(entry)
-                each_math.measure_units = ";".join(list_units)
 
         # Update Inputs
         mod_input = new_session.query(Input).all()
