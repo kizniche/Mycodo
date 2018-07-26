@@ -735,6 +735,8 @@ def page_lcd():
 
     display_order = csv_to_list_of_str(DisplayOrder.query.first().lcd)
 
+    choices_lcd = utils_general.choices_lcd(input_dev, math, pid, output)
+
     form_lcd_add = forms_lcd.LCDAdd()
     form_lcd_mod = forms_lcd.LCDMod()
     form_lcd_display = forms_lcd.LCDModDisplay()
@@ -771,6 +773,7 @@ def page_lcd():
         return redirect(url_for('routes_page.page_lcd'))
 
     return render_template('pages/lcd.html',
+                           choices_lcd=choices_lcd,
                            lcd=lcd,
                            lcd_data=lcd_data,
                            math=math,

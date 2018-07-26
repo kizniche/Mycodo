@@ -111,7 +111,7 @@ class LCDController(threading.Thread):
 
             self.list_inputs = MEASUREMENT_UNITS
             self.list_inputs.update(
-                {'sensor_time': {'unit': None, 'name': 'Time'}})
+                {'input_time': {'unit': None, 'name': 'Time'}})
             self.list_inputs.update(
                 {'pid_time': {'unit': None, 'name': 'Time'}})
 

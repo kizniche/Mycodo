@@ -26,8 +26,10 @@ from mycodo.databases.models import Conditional
 from mycodo.databases.models import Input
 from mycodo.databases.models import LCD
 from mycodo.databases.models import Math
+from mycodo.databases.models import Measurement
 from mycodo.databases.models import PID
 from mycodo.databases.models import Role
+from mycodo.databases.models import Unit
 from mycodo.databases.models import User
 from mycodo.mycodo_client import DaemonControl
 from mycodo.mycodo_flask.extensions import db
@@ -144,10 +146,12 @@ def choices_measurements_units(measurements, units):
         for each_unit in each_info['units']:
             value = '{meas},{unit}'.format(
                 meas=each_meas, unit=each_unit)
-            display = '{meas}: {unit_name} ({unit})'.format(
+            display = '{meas}: {unit_name}'.format(
                 meas=each_info['name'],
-                unit_name=dict_units[each_unit]['name'],
-                unit=each_unit)
+                unit_name=dict_units[each_unit]['name'])
+            if dict_units[each_unit]['unit']:
+                display += ' ({unit})'.format(
+                    unit=dict_units[each_unit]['unit'])
             choices.update({value: display})
 
     return choices
@@ -212,55 +216,7 @@ def choices_inputs(inputs):
     """ populate form multi-select choices from Input entries """
     choices = OrderedDict()
     for each_input in inputs:
-        for each_name, each_dict in DEVICE_INFO[each_input.device].items():
-            if each_name == 'measure':
-
-                if each_input.device in LIST_DEVICES_ADC:
-                    value = '{id},voltage'.format(
-                        id=each_input.unique_id)
-                    display = '[Input {id:02d}] {name} (Voltage, volts)'.format(
-                        id=each_input.id,
-                        name=each_input.name)
-                    choices.update({value: display})
-
-                else:
-                    for each_measure in each_dict:
-                        value = '{id},{meas}'.format(
-                            id=each_input.unique_id,
-                            meas=each_measure)
-
-                        dict_measurements = {}
-                        for each_measurement in each_input.convert_to_unit.split(';'):
-                            dict_measurements[each_measurement.split(',')[0]] = each_measurement.split(',')[1]
-
-                        measure_display, unit_display = check_display_names(
-                            each_measure, dict_measurements[each_measure])
-
-                        if unit_display:
-                            display = '[Input {id:02d}] {name} ({meas}, {unit})'.format(
-                                id=each_input.id,
-                                name=each_input.name,
-                                meas=measure_display,
-                                unit=unit_display)
-                        else:
-                            display = '[Input {id:02d}] {name} ({meas})'.format(
-                                id=each_input.id,
-                                name=each_input.name,
-                                meas=measure_display)
-                        choices.update({value: display})
-
-        # Display custom converted units for ADCs
-        if each_input.device in LIST_DEVICES_ADC:
-            value = '{id},{meas}'.format(
-                id=each_input.unique_id,
-                meas=each_input.convert_to_unit.split(',')[0])
-            display = '[Input {id:02d}] {name} ({meas}, {unit})'.format(
-                id=each_input.id,
-                name=each_input.name,
-                meas=each_input.convert_to_unit.split(',')[0],
-                unit=each_input.convert_to_unit.split(',')[1])
-            choices.update({value: display})
-
+        choices = form_input_choices(choices, each_input)
     return choices
 
 
@@ -268,57 +224,7 @@ def choices_maths(maths):
     """ populate form multi-select choices from Math entries """
     choices = OrderedDict()
     for each_math in maths:
-        # Only one measurement specified, use unit specified
-        if (';' not in each_math.measure and
-                len(each_math.measure_units.split(',')) == 2):
-            measurement = each_math.measure_units.split(',')[0]
-            unit = each_math.measure_units.split(',')[1]
-            value = '{id},{meas},{unit}'.format(
-                id=each_math.unique_id,
-                meas=measurement,
-                unit=unit)
-
-            measure_display, unit_display = check_display_names(measurement, unit)
-            display = '[Math {id:02d}] {name} ({meas}, {unit})'.format(
-                id=each_math.id,
-                name=each_math.name,
-                meas=measure_display,
-                unit=unit_display)
-            choices.update({value: display})
-        else:
-            for each_set in each_math.measure_units.split(';'):
-                if len(each_set.split(',')) == 2:
-                    measurement = each_set.split(',')[0]
-                    unit = each_set.split(',')[1]
-                    value = '{id},{meas},{unit}'.format(
-                        id=each_math.unique_id,
-                        meas=measurement,
-                        unit=unit)
-
-                    measure_display, unit_display = check_display_names(measurement, unit)
-                    display = '[Math {id:02d}] {name} ({meas}, {unit})'.format(
-                        id=each_math.id,
-                        name=each_math.name,
-                        meas=measure_display,
-                        unit=unit_display)
-                    choices.update({value: display})
-    return choices
-
-
-def choices_outputs(output):
-    """ populate form multi-select choices from Output entries """
-    choices = OrderedDict()
-    for each_output in output:
-        if each_output.output_type in ['pwm', 'command_pwm']:
-            value = '{id},duty_cycle'.format(id=each_output.unique_id)
-            display = '[Output {id:02d}] {name} (Duty Cycle)'.format(
-                id=each_output.id, name=each_output.name)
-            choices.update({value: display})
-        else:
-            value = '{id},duration_time'.format(id=each_output.unique_id)
-            display = '[Output {id:02d}] {name} (Duration)'.format(
-                id=each_output.id, name=each_output.name)
-            choices.update({value: display})
+        choices = form_math_choices(choices, each_math)
     return choices
 
 
@@ -326,37 +232,214 @@ def choices_pids(pid):
     """ populate form multi-select choices from PID entries """
     choices = OrderedDict()
     for each_pid in pid:
-        value = '{id},setpoint'.format(id=each_pid.unique_id)
-        display = '[PID {id:02d}] {name} (Setpoint)'.format(
-            id=each_pid.id, name=each_pid.name)
+        choices = form_pid_choices(choices, each_pid)
+    return choices
+
+
+def choices_outputs(output):
+    """ populate form multi-select choices from Output entries """
+    choices = OrderedDict()
+    for each_output in output:
+        choices = form_output_choices(choices, each_output)
+    return choices
+
+
+def choices_lcd(inputs, maths, pids, outputs):
+    choices = OrderedDict()
+
+    # Inputs
+    for each_input in inputs:
+        value = '{id},input_time'.format(
+            id=each_input.unique_id)
+        display = '[Input {id:02d}] {name} (Timestamp)'.format(
+            id=each_input.id,
+            name=each_input.name)
         choices.update({value: display})
-        value = '{id},setpoint_band_min'.format(id=each_pid.unique_id)
-        display = '[PID {id:02d}] {name} (Band Min)'.format(
-            id=each_pid.id, name=each_pid.name)
+        choices = form_input_choices(choices, each_input)
+
+    # Maths
+    for each_math in maths:
+        value = '{id},math_time'.format(
+            id=each_math.unique_id)
+        display = '[Math {id:02d}] {name} (Timestamp)'.format(
+            id=each_math.id,
+            name=each_math.name)
         choices.update({value: display})
-        value = '{id},setpoint_band_max'.format(id=each_pid.unique_id)
-        display = '[PID {id:02d}] {name} (Band Max)'.format(
-            id=each_pid.id, name=each_pid.name)
+        choices = form_math_choices(choices, each_math)
+
+    # PIDs
+    for each_pid in pids:
+        value = '{id},pid_time'.format(
+            id=each_pid.unique_id)
+        display = '[PID {id:02d}] {name} (Timestamp)'.format(
+            id=each_pid.id,
+            name=each_pid.name)
         choices.update({value: display})
-        value = '{id},pid_p_value'.format(id=each_pid.unique_id)
-        display = '[PID {id:02d}] {name} (P-Value)'.format(
-            id=each_pid.id, name=each_pid.name)
+        choices = form_pid_choices(choices, each_pid)
+
+    # Outputs
+    for each_output in outputs:
+        value = '{id},pid_time'.format(
+            id=each_output.unique_id)
+        display = '[Output {id:02d}] {name} (Timestamp)'.format(
+            id=each_output.id,
+            name=each_output.name)
         choices.update({value: display})
-        value = '{id},pid_i_value'.format(id=each_pid.unique_id)
-        display = '[PID {id:02d}] {name} (I-Value)'.format(
-            id=each_pid.id, name=each_pid.name)
+        choices = form_output_choices(choices, each_output)
+
+    return choices
+
+
+def form_input_choices(choices, each_input):
+    dict_measurements = add_custom_measurements(Measurement.query.all())
+    dict_units = add_custom_units(Unit.query.all())
+    for each_name, each_dict in DEVICE_INFO[each_input.device].items():
+        if each_name == 'measure':
+
+            if each_input.device in LIST_DEVICES_ADC:
+                value = '{id},voltage'.format(
+                    id=each_input.unique_id)
+                display = '[Input {id:02d}] {name} (Voltage, volts)'.format(
+                    id=each_input.id,
+                    name=each_input.name)
+                choices.update({value: display})
+
+            elif each_input.device == 'LinuxCommand':
+                value = '{id},{meas}'.format(
+                    id=each_input.unique_id,
+                    meas=each_input.convert_to_unit.split(',')[0])
+                display = '[Input {id:02d}] {name} ({meas}, {unit})'.format(
+                    id=each_input.id,
+                    name=each_input.name,
+                    meas=dict_measurements[each_input.convert_to_unit.split(',')[0]]['name'],
+                    unit=dict_units[each_input.convert_to_unit.split(',')[1]]['unit'])
+                choices.update({value: display})
+
+            else:
+                for each_measure in each_dict:
+                    value = '{id},{meas}'.format(
+                        id=each_input.unique_id,
+                        meas=each_measure)
+
+                    dict_measurements = {}
+                    for each_measurement in each_input.convert_to_unit.split(';'):
+                        dict_measurements[each_measurement.split(',')[0]] = each_measurement.split(',')[1]
+
+                    measure_display, unit_display = check_display_names(
+                        each_measure, dict_measurements[each_measure])
+
+                    if unit_display:
+                        display = '[Input {id:02d}] {name} ({meas}, {unit})'.format(
+                            id=each_input.id,
+                            name=each_input.name,
+                            meas=measure_display,
+                            unit=unit_display)
+                    else:
+                        display = '[Input {id:02d}] {name} ({meas})'.format(
+                            id=each_input.id,
+                            name=each_input.name,
+                            meas=measure_display)
+                    choices.update({value: display})
+
+    # Display custom converted units for ADCs
+    if each_input.device in LIST_DEVICES_ADC:
+        value = '{id},{meas}'.format(
+            id=each_input.unique_id,
+            meas=each_input.convert_to_unit.split(',')[0])
+        display = '[Input {id:02d}] {name} ({meas}, {unit})'.format(
+            id=each_input.id,
+            name=each_input.name,
+            meas=dict_measurements[each_input.convert_to_unit.split(',')[0]]['name'],
+            unit=dict_units[each_input.convert_to_unit.split(',')[1]]['unit'])
         choices.update({value: display})
-        value = '{id},pid_d_value'.format(id=each_pid.unique_id)
-        display = '[PID {id:02d}] {name} (D-Value)'.format(
-            id=each_pid.id, name=each_pid.name)
+
+    return choices
+
+
+def form_math_choices(choices, each_math):
+    # Only one measurement specified, use unit specified
+    if (';' not in each_math.measure and
+            len(each_math.measure_units.split(',')) == 2):
+        measurement = each_math.measure_units.split(',')[0]
+        unit = each_math.measure_units.split(',')[1]
+        value = '{id},{meas},{unit}'.format(
+            id=each_math.unique_id,
+            meas=measurement,
+            unit=unit)
+
+        measure_display, unit_display = check_display_names(measurement, unit)
+        display = '[Math {id:02d}] {name} ({meas}, {unit})'.format(
+            id=each_math.id,
+            name=each_math.name,
+            meas=measure_display,
+            unit=unit_display)
         choices.update({value: display})
-        value = '{id},duration_time'.format(id=each_pid.unique_id)
-        display = '[PID {id:02d}] {name} (Output Duration)'.format(
-            id=each_pid.id, name=each_pid.name)
+    else:
+        for each_set in each_math.measure_units.split(';'):
+            if len(each_set.split(',')) == 2:
+                measurement = each_set.split(',')[0]
+                unit = each_set.split(',')[1]
+                value = '{id},{meas},{unit}'.format(
+                    id=each_math.unique_id,
+                    meas=measurement,
+                    unit=unit)
+
+                measure_display, unit_display = check_display_names(measurement, unit)
+                display = '[Math {id:02d}] {name} ({meas}, {unit})'.format(
+                    id=each_math.id,
+                    name=each_math.name,
+                    meas=measure_display,
+                    unit=unit_display)
+                choices.update({value: display})
+    return choices
+
+
+def form_pid_choices(choices, each_pid):
+    value = '{id},setpoint'.format(id=each_pid.unique_id)
+    display = '[PID {id:02d}] {name} (Setpoint)'.format(
+        id=each_pid.id, name=each_pid.name)
+    choices.update({value: display})
+    value = '{id},setpoint_band_min'.format(id=each_pid.unique_id)
+    display = '[PID {id:02d}] {name} (Band Min)'.format(
+        id=each_pid.id, name=each_pid.name)
+    choices.update({value: display})
+    value = '{id},setpoint_band_max'.format(id=each_pid.unique_id)
+    display = '[PID {id:02d}] {name} (Band Max)'.format(
+        id=each_pid.id, name=each_pid.name)
+    choices.update({value: display})
+    value = '{id},pid_p_value'.format(id=each_pid.unique_id)
+    display = '[PID {id:02d}] {name} (P-Value)'.format(
+        id=each_pid.id, name=each_pid.name)
+    choices.update({value: display})
+    value = '{id},pid_i_value'.format(id=each_pid.unique_id)
+    display = '[PID {id:02d}] {name} (I-Value)'.format(
+        id=each_pid.id, name=each_pid.name)
+    choices.update({value: display})
+    value = '{id},pid_d_value'.format(id=each_pid.unique_id)
+    display = '[PID {id:02d}] {name} (D-Value)'.format(
+        id=each_pid.id, name=each_pid.name)
+    choices.update({value: display})
+    value = '{id},duration_time'.format(id=each_pid.unique_id)
+    display = '[PID {id:02d}] {name} (Output Duration)'.format(
+        id=each_pid.id, name=each_pid.name)
+    choices.update({value: display})
+    value = '{id},duty_cycle'.format(id=each_pid.unique_id)
+    display = '[PID {id:02d}] {name} (Output Duty Cycle)'.format(
+        id=each_pid.id, name=each_pid.name)
+    choices.update({value: display})
+    return choices
+
+
+def form_output_choices(choices, each_output):
+    if 'pwm' in each_output.output_type:
+        value = '{id},duty_cycle'.format(id=each_output.unique_id)
+        display = '[Output {id:02d}] {name} (Duty Cycle)'.format(
+            id=each_output.id, name=each_output.name)
         choices.update({value: display})
-        value = '{id},duty_cycle'.format(id=each_pid.unique_id)
-        display = '[PID {id:02d}] {name} (Output Duty Cycle)'.format(
-            id=each_pid.id, name=each_pid.name)
+    else:
+        value = '{id},duration_time'.format(id=each_output.unique_id)
+        display = '[Output {id:02d}] {name} (Duration)'.format(
+            id=each_output.id, name=each_output.name)
         choices.update({value: display})
     return choices
 
