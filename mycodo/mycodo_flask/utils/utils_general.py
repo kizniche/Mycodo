@@ -449,10 +449,12 @@ def form_output_choices(choices, each_output):
 
 
 def check_display_names(measure, unit):
-    if measure in MEASUREMENT_UNITS:
-        measure = MEASUREMENT_UNITS[measure]['name']
-    if unit in UNITS:
-        unit = UNITS[unit]['unit']
+    dict_measurements = add_custom_measurements(Measurement.query.all())
+    dict_units = add_custom_units(Unit.query.all())
+    if measure in dict_measurements:
+        measure = dict_measurements[measure]['name']
+    if unit in dict_units:
+        unit = dict_units[unit]['unit']
     return measure, unit
 
 
@@ -468,6 +470,7 @@ def choices_id_name(table):
 
 
 def user_has_permission(permission):
+    """ Determine if the currently-logged-in user has permission to perform a spceific action """
     user = User.query.filter(User.name == flask_login.current_user.name).first()
     role = Role.query.filter(Role.id == user.role_id).first()
     if ((permission == 'edit_settings' and role.edit_settings) or

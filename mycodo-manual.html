@@ -814,142 +814,6 @@ signal &lt;http://kylegabriel.com/projects/2016/02
 </tr>
 </tbody>
 </table>
-<h4 id="pre-defined-measurements">Pre-defined Measurements</h4>
-<p>If a pre-defined Measurement and Unit is used, the newly-generated value will use that default y-axes on a Graph. For instance, if two temperature measurements are selected for averaging, and Measurement is set to ‘temperature’ (lowercase ‘t’)and Unit is set to ‘C’, the new average value will use the same Celsius y-axis as the other temperatures in Celsius. If a unique Measurement or Unit is used, a new y-axis will be formed.</p>
-<table style="width:64%;">
-<colgroup>
-<col style="width: 40%"></col>
-<col style="width: 23%"></col>
-</colgroup>
-<thead>
-<tr class="header">
-<th style="text-align: left;">Measurement</th>
-<th style="text-align: left;">Units</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td style="text-align: left;">altitude</td>
-<td style="text-align: left;">m, ft</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">battery</td>
-<td style="text-align: left;">percent</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">boolean</td>
-<td style="text-align: left;">bool</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">co2</td>
-<td style="text-align: left;">ppm, ppb</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">cpu_load_1m</td>
-<td style="text-align: left;">cpu_load</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">cpu_load_5m</td>
-<td style="text-align: left;">cpu_load</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">cpu_load_15m</td>
-<td style="text-align: left;">cpu_load</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">dewpoint</td>
-<td style="text-align: left;">C, F, K</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">disk_space</td>
-<td style="text-align: left;">kB, MB, GB</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">duration</td>
-<td style="text-align: left;">second, minute</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">duty_cycle</td>
-<td style="text-align: left;">percent</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">edge</td>
-<td style="text-align: left;">edge</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">electrical_conductivity</td>
-<td style="text-align: left;">uS_cm</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">frequency</td>
-<td style="text-align: left;">Hz, kHz, MHz</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">humidity</td>
-<td style="text-align: left;">percent</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">humidity_ratio</td>
-<td style="text-align: left;">kg_kg</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">lux</td>
-<td style="text-align: left;">lux</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">moisture</td>
-<td style="text-align: left;">moisture</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">ph</td>
-<td style="text-align: left;">pH</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">pid_output</td>
-<td style="text-align: left;">second, minute</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">pressure</td>
-<td style="text-align: left;">Pa, kPa</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">pulse_width</td>
-<td style="text-align: left;">µs</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">rpm</td>
-<td style="text-align: left;">rpm</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">setpoint</td>
-<td style="text-align: left;">setpoint</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">specific_enthalpy</td>
-<td style="text-align: left;">kJ_kg</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">specific_volume</td>
-<td style="text-align: left;">m3_kg</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">temperature</td>
-<td style="text-align: left;">C, F, K</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">temperature_die</td>
-<td style="text-align: left;">C, F, K</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">temperature_object</td>
-<td style="text-align: left;">C, F, K</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">voltage</td>
-<td style="text-align: left;">volts</td>
-</tr>
-</tbody>
-</table>
 <h2 id="output">Output</h2>
 <p>Outputs are various signals that can be generated that operate devices. An output can be a PWM signal, a simple HIGH/LOW signal to operate a relay, or a 433MHz signal to switch a radio frequency-operated relay, or an execution of a command on the linux system Mycodo runs on.</p>
 <h3 id="pwm">PWM</h3>
@@ -1975,7 +1839,7 @@ document.write('<a h'+'ref'+'="ma'+'ilto'+':'+e+'" clas'+'s="em' + 'ail">'+e+'<\
 </table>
 <h2 id="measurement-settings">Measurement Settings</h2>
 <p>[Gear Icon] -&gt; Configuration -&gt; Measurement</p>
-<p>New measurements, units, and conversions can be created that can extend functionality of Mycodo beyond the built-in types and equations. Be sure to create units before measurements, as units need to be selected when creating a measurement.</p>
+<p>New measurements, units, and conversions can be created that can extend functionality of Mycodo beyond the built-in types and equations. Be sure to create units before measurements, as units need to be selected when creating a measurement. A measurement can be created that already exists, allowing additional units to be added to a pre-existing measurement. For example, the measurement ‘altitude’ already exists, however if you wanted to add the unit ‘fathom’, first create the unit ‘fathom’, then create the measurement ‘altitude’ with the ‘fathom’ unit selected. It is okay to create a custom measurement for a measurement that already exist (this is how new units for a currently-installed measurement is added).</p>
 <table>
 <colgroup>
 <col style="width: 32%"></col>
@@ -1994,7 +1858,7 @@ document.write('<a h'+'ref'+'="ma'+'ilto'+':'+e+'" clas'+'s="em' + 'ail">'+e+'<\
 </tr>
 <tr class="even">
 <td style="text-align: left;">Measurement Units</td>
-<td style="text-align: left;">Select all the units that are soociated with the measurement.</td>
+<td style="text-align: left;">Select all the units that are associated with the measurement.</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">Unit Name</td>
