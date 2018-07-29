@@ -90,8 +90,9 @@ Software Features
    encryption and authorization standards.
 -  System upgrade: When a new version is released on github, an upgrade
    can be initiated from the web interface.
--  Languages: English, `Español (Spanish) <#espa%C3%B1ol-spanish>`__
-   (partial: `Français (French) <#fran%C3%A7ais-french>`__) (Change
+-  Languages: English, `Español (Spanish) <#espa%C3%B1ol-spanish>`__,
+   `Deutsche (German) <#deutsche-german>`__ (partial:
+   `Français (French) <#fran%C3%A7ais-french>`__) (Change
    language under Configure -> Language)
 
 `Read the manual <#manual>`__ for details.
@@ -303,7 +304,8 @@ Languages
 -  Change language under Configure -> Language
 
 Mycodo has been translated (to varying degrees) to `Spanish
-(Español) <#espa%C3%B1ol-spanish>`__ and `French
+(Español) <#espa%C3%B1ol-spanish>`__,
+`German (Deutsche) <#deutsche-german>`__ and `French
 (Français) <#fran%C3%A7ais-french>`__ (partially). By default, mycodo
 will display the default language set by your browser. You may also
 force a language in the settings at ``[Gear Icon]`` -> ``Configure`` ->
@@ -313,6 +315,31 @@ English
 ~~~~~~~
 
 The native language used in the software.
+
+Deutsche (German)
+~~~~~~~~~~~~~~~~~
+
+Mycodo ist ein automatisiertes Überwachungs- und Regelsystem, das auf
+dem Raspberry Pi (Versionen Zero, 1, 2 und 3) läuft.
+
+Ursprünglich zur Kultivierung von essbaren Pilzen entwickelt, hat Mycodo
+die Fähigkeit, viel mehr zu tun, einschließlich der Kultivierung von
+Pflanzen, Kultivierung von Mikroorganismen, Aufrechterhaltung der
+Imkerei-Homöostase, Inkubation von Tieren und Eiern, Aufrechterhaltung
+aquatischer Systeme, Alterung von Käse, Fermentierung von Lebensmitteln
+und Tabak, Kochen Essen (vous-vide) und mehr.
+
+Das System umfasst ein Backend (Daemon) und ein Frontend
+(Benutzerschnittstelle). Das Backend führt Messungen von Sensoren und
+Geräten durch und koordiniert dann verschiedene Reaktionen auf diese
+Messungen, einschließlich der Fähigkeit, Ausgänge (Relais, PWM,
+drahtlose Ausgänge) zu modulieren, Umgebungsbedingungen mit elektrischen
+Geräten unter PID-Kontrolle zu regulieren (stetige Regelung oder
+Umschaltung) Zeit), Timer planen, Fotos aufnehmen und Videos streamen,
+Aktionen auslösen, wenn Messungen bestimmte Bedingungen erfüllen (Relais
+modulieren, Befehle ausführen, per E-Mail benachrichtigen usw.) und
+vieles mehr. Das Frontend ist eine Webschnittstelle, die eine einfache
+Navigation und Konfiguration von jedem browserfähigen Gerät ermöglicht.
 
 Español (Spanish)
 ~~~~~~~~~~~~~~~~~

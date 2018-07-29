@@ -5,6 +5,8 @@
  - New measurement/unit configuration system (select which unit to convert/store for input measurements) ([#506](https://github.com/kizniche/mycodo/issues/506))
  - Add ability to create new measurements, units, and conversions ([#506](https://github.com/kizniche/mycodo/issues/506))
  - Enable conversion of disk space (kB, MB, GB) and frequency (Hz, kHz, MHz)
+ - Add option to display IP address on LCD ([#507](https://github.com/kizniche/mycodo/issues/507))
+ - Full German Translation ([#507](https://github.com/kizniche/mycodo/issues/507)) (@pmunz75)
 
 ### Bugfixes
 

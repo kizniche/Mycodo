@@ -24,8 +24,9 @@ FINAL_RELEASES = ['5.7.3']
 
 LANGUAGES = {
     'en': 'English',
-    'fr': 'Français (French)',
-    'es': 'Español (Spanish)'
+    'de': 'Deutsche (German)',
+    'es': 'Español (Spanish)',
+    'fr': 'Français (French)'
 }
 
 # Math controllers
