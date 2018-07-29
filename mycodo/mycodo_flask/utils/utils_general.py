@@ -247,6 +247,11 @@ def choices_outputs(output):
 def choices_lcd(inputs, maths, pids, outputs):
     choices = OrderedDict()
 
+    # Display IP address
+    value = '0000,IP'
+    display = 'IP Address of Raspberry Pi'
+    choices.update({value: display})
+
     # Inputs
     for each_input in inputs:
         value = '{id},input_time'.format(

@@ -51,12 +51,12 @@
 import calendar
 import datetime
 import logging
+import smbus
 import threading
 import time
 import timeit
 
 import RPi.GPIO as GPIO
-import smbus
 
 from mycodo.config import MYCODO_VERSION
 from mycodo.config_devices_units import MEASUREMENT_UNITS
@@ -72,6 +72,7 @@ from mycodo.mycodo_flask.utils.utils_general import use_unit_generate
 from mycodo.utils.database import db_retrieve_table_daemon
 from mycodo.utils.influx import read_last_influxdb
 from mycodo.utils.system_pi import add_custom_measurements
+from mycodo.utils.system_pi import cmd_output
 
 
 class LCDController(threading.Thread):
@@ -288,7 +289,14 @@ class LCDController(threading.Thread):
 
     def get_measurement(self, display_id, i):
         try:
-            if self.lcd_line[display_id][i]['measure'] == 'output_state':
+            if self.lcd_line[display_id][i]['measure'] == 'IP':
+                str_IP_cmd = "ip addr | grep 'state UP' -A2 | tail -n1 | awk '{print $2}' | cut -f1  -d'/'"
+                IP_out, _, _ = cmd_output(str_IP_cmd)
+                self.lcd_line[display_id][i]['name'] = ''
+                self.lcd_line[display_id][i]['unit'] = ''
+                self.lcd_line[display_id][i]['measure_val'] = IP_out.rstrip()
+                return True
+            elif self.lcd_line[display_id][i]['measure'] == 'output_state':
                 self.lcd_line[display_id][i]['measure_val'] = self.output_state(
                     self.lcd_line[display_id][i]['id'])
                 return True
@@ -397,6 +405,7 @@ class LCDController(threading.Thread):
         self.lcd_line[display_id][line]['name'] = None
         self.lcd_line[display_id][line]['unit'] = None
         self.lcd_line[display_id][line]['measure'] = measurement
+
         if 'time' in measurement:
             self.lcd_line[display_id][line]['measure'] = 'time'
         if not device_id:
@@ -437,7 +446,7 @@ class LCDController(threading.Thread):
             if controller_found:
                 self.lcd_line[display_id][line]['name'] = controller_found.name
 
-        if (self.lcd_line[display_id][line]['measure'] == 'time' or
+        if (self.lcd_line[display_id][line]['measure'] in ['IP', 'time'] or
                 None not in [self.lcd_line[display_id][line]['name'],
                              self.lcd_line[display_id][line]['unit']]):
             self.lcd_line[display_id][line]['setup'] = True
