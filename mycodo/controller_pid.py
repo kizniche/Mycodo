@@ -147,6 +147,7 @@ class PIDController(threading.Thread):
         self.autotune_activated = False
         self.autotune_debug = False
         self.autotune_outstep = 10
+        self.autotune_noiseband = 0.5
         self.autotune_timestamp = None
 
         self.dev_unique_id = None
@@ -191,7 +192,8 @@ class PIDController(threading.Thread):
                     out_step=self.autotune_outstep,
                     sampletime=self.period,
                     out_min=0,
-                    out_max=self.period)
+                    out_max=self.period,
+                    noiseband=self.autotune_noiseband)
 
             self.ready.set()
 
