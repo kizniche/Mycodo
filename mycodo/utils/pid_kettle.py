@@ -1,6 +1,9 @@
 # coding=utf-8
 import math
 
+# From
+# https://github.com/hirschmann/pid-autotune
+
 
 class Kettle(object):
     """A simulated brewing kettle.
@@ -67,4 +70,4 @@ class Kettle(object):
         # P = Q / t
         # Q = c * m * delta T
         # => delta(T) = (P * t) / (c * m)
-        return ((power * duration) / (Kettle.SPECIFIC_HEAT_CAP_WATER * self._mass))
+        return (power * duration) / (Kettle.SPECIFIC_HEAT_CAP_WATER * self._mass)

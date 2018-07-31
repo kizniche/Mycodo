@@ -143,6 +143,7 @@ class PIDController(threading.Thread):
         self.allow_lowering = False
 
         # PID Autotune
+        self.autotune = None
         self.autotune_activated = False
         self.autotune_debug = False
         self.autotune_outstep = 10
@@ -158,15 +159,6 @@ class PIDController(threading.Thread):
         self.timer = 0
 
         self.initialize_values()
-
-        if self.autotune_activated:
-            self.autotune_timestamp = time.time()
-            self.autotune = PIDAutotune(
-                self.setpoint,
-                out_step=self.autotune_outstep,
-                sampletime=self.period,
-                out_min=0,
-                out_max=self.period)
 
         # Check if a method is set for this PID
         self.method_start_act = None
@@ -184,11 +176,22 @@ class PIDController(threading.Thread):
                 startup_str += ", started Held"
             self.logger.info(startup_str)
 
+            # Initialize PID Controller
             self.PID_Controller = PIDControl(
                 self.period,
                 self.Kp, self.Ki, self.Kd,
                 integrator_min=self.integrator_min,
                 integrator_max=self.integrator_max)
+
+            # If activated, initialize PID Autotune
+            if self.autotune_activated:
+                self.autotune_timestamp = time.time()
+                self.autotune = PIDAutotune(
+                    self.setpoint,
+                    out_step=self.autotune_outstep,
+                    sampletime=self.period,
+                    out_min=0,
+                    out_max=self.period)
 
             self.ready.set()
 
@@ -306,6 +309,7 @@ class PIDController(threading.Thread):
 
                 self.write_setpoint_band()  # Write variables to database
 
+                # If autotune activated, determine control variable (output) from autotune
                 if self.autotune_activated:
                     if self.autotune.run(self.last_measurement):
                         self.control_variable = self.autotune.output
@@ -332,12 +336,13 @@ class PIDController(threading.Thread):
 
                         self.stop_controller(deactivate_pid=True)
                 else:
-                    # Calculate new control variable
-                    # Default method
+                    # Calculate new control variable (output) from PID Controller
+
+                    # Original PID method
                     self.control_variable = self.update_pid_output(
                         self.last_measurement)
 
-                    # New method
+                    # New PID method (untested)
                     # self.control_variable = self.PID_Controller.calc(
                     #     self.last_measurement)
 

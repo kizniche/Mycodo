@@ -6,7 +6,8 @@ from time import time
 
 # Based on:
 # https://raw.githubusercontent.com/hirschmann/pid-autotune
-# See https://github.com/t0mpr1c3/Arduino-PID-AutoTune-Library
+# https://github.com/t0mpr1c3/Arduino-PID-AutoTune-Library
+
 
 class PIDAutotune(object):
     """
