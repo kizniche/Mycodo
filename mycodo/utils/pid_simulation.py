@@ -183,6 +183,7 @@ def simulate_autotune(args):
                 print()
 
     print('time:    {0} min'.format(round(timestamp / 60)))
+    print('cycles:  {0}'.format(int(timestamp / args.sampletime)))
     print('state:   {0}'.format(sim.sut.state))
     print()
 
