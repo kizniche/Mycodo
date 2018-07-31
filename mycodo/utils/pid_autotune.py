@@ -214,6 +214,7 @@ class PIDAutotune(object):
             amplitude_dev = ((0.5 * (abs_max - abs_min) - self._induced_amplitude)
                              / self._induced_amplitude)
 
+            self._logger.info('')
             self._logger.info('amplitude: {0}'.format(self._induced_amplitude))
             self._logger.info('amplitude deviation: {0}'.format(amplitude_dev))
 
