@@ -1,8 +1,11 @@
 # coding=utf-8
 import logging
 import math
-from collections import deque, namedtuple
+from collections import OrderedDict
+from collections import deque
+from collections import namedtuple
 from time import time
+
 
 # Based on:
 # https://raw.githubusercontent.com/hirschmann/pid-autotune
@@ -34,16 +37,15 @@ class PIDAutotune(object):
     STATE_SUCCEEDED = 'succeeded'
     STATE_FAILED = 'failed'
 
-    _tuning_rules = {
-        # rule: [Kp_divisor, Ki_divisor, Kd_divisor]
-        "ziegler-nichols": [34, 40, 160],
-        "tyreus-luyben": [44,  9, 126],
-        "ciancone-marlin": [66, 88, 162],
-        "pessen-integral": [28, 50, 133],
-        "some-overshoot": [60, 40,  60],
-        "no-overshoot": [100, 40,  60],
-        "brewing": [2.5, 6, 380]
-    }
+    _tuning_rules = OrderedDict([
+        ("ziegler-nichols", [34, 40, 160]),
+        ("tyreus-luyben", [44, 9, 126]),
+        ("ciancone-marlin", [66, 88, 162]),
+        ("pessen-integral", [28, 50, 133]),
+        ("some-overshoot", [60, 40, 60]),
+        ("no-overshoot", [100, 40, 60]),
+        ("brewing", [2.5, 6, 380])
+    ])
 
     def __init__(self, setpoint, out_step=10, sampletime=5, lookback=60,
                  out_min=float('-inf'), out_max=float('inf'), noiseband=0.5, time=time):
@@ -78,6 +80,7 @@ class PIDAutotune(object):
         self._induced_amplitude = 0
         self._Ku = 0
         self._Pu = 0
+        self._total_cycles = 0
 
     @property
     def state(self):
@@ -117,6 +120,7 @@ class PIDAutotune(object):
             `true` if tuning is finished, otherwise `false`.
         """
         now = self._time() * 1000
+        self._total_cycles += 1
 
         if (self._state == PIDAutotune.STATE_OFF
                 or self._state == PIDAutotune.STATE_SUCCEEDED
@@ -131,13 +135,17 @@ class PIDAutotune(object):
         if (self._state == PIDAutotune.STATE_RELAY_STEP_UP
                 and input_val > self._setpoint + self._noiseband):
             self._state = PIDAutotune.STATE_RELAY_STEP_DOWN
-            self._logger.debug('switched state: {0}'.format(self._state))
-            self._logger.debug('input: {0}'.format(input_val))
+            self._logger.info('')
+            self._logger.info('Cycle: {0}'.format(self._total_cycles))
+            self._logger.info('switched state: {0}'.format(self._state))
+            self._logger.info('input: {0}'.format(input_val))
         elif (self._state == PIDAutotune.STATE_RELAY_STEP_DOWN
                 and input_val < self._setpoint - self._noiseband):
             self._state = PIDAutotune.STATE_RELAY_STEP_UP
-            self._logger.debug('switched state: {0}'.format(self._state))
-            self._logger.debug('input: {0}'.format(input_val))
+            self._logger.info('')
+            self._logger.info('Cycle: {0}'.format(self._total_cycles))
+            self._logger.info('switched state: {0}'.format(self._state))
+            self._logger.info('input: {0}'.format(input_val))
 
         # set output
         if self._state == PIDAutotune.STATE_RELAY_STEP_UP:
@@ -183,8 +191,10 @@ class PIDAutotune(object):
             self._peak_count += 1
             self._peaks.append(input_val)
             self._peak_timestamps.append(now)
-            self._logger.debug('found peak: {0}'.format(input_val))
-            self._logger.debug('peak count: {0}'.format(self._peak_count))
+            self._logger.info('')
+            self._logger.info('Cycle: {0}'.format(self._total_cycles))
+            self._logger.info('found peak: {0}'.format(input_val))
+            self._logger.info('peak count: {0}'.format(self._peak_count))
 
         # check for convergence of induced oscillation
         # convergence of amplitude assessed on last 4 peaks (1.5 cycles)
@@ -204,8 +214,8 @@ class PIDAutotune(object):
             amplitude_dev = ((0.5 * (abs_max - abs_min) - self._induced_amplitude)
                              / self._induced_amplitude)
 
-            self._logger.debug('amplitude: {0}'.format(self._induced_amplitude))
-            self._logger.debug('amplitude deviation: {0}'.format(amplitude_dev))
+            self._logger.info('amplitude: {0}'.format(self._induced_amplitude))
+            self._logger.info('amplitude deviation: {0}'.format(amplitude_dev))
 
             if amplitude_dev < PIDAutotune.PEAK_AMPLITUDE_TOLERANCE:
                 self._state = PIDAutotune.STATE_SUCCEEDED

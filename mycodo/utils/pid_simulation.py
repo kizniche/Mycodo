@@ -20,6 +20,7 @@ Simulation = namedtuple(
     ['name', 'sut', 'kettle', 'delayed_temps', 'timestamps',
      'heater_temps', 'sensor_temps', 'outputs'])
 
+logger = logging.getLogger()
 
 def parser_add_args(parser):
     parser.add_argument(
@@ -175,27 +176,28 @@ def simulate_autotune(args):
         timestamp += args.sampletime
         sim_update(sim, timestamp, sim.sut.output, args)
         if args.verbose > 0:
-                print('time:    {0} sec'.format(timestamp))
-                print('state: {0}'.format(sim.sut.state))
-                print('{0}: {1:.2f}%'.format(sim.name, sim.sut.output))
-                print('temp sensor:    {0:.2f}°C'.format(sim.sensor_temps[-1]))
-                print('temp heater:    {0:.2f}°C'.format(sim.heater_temps[-1]))
-                print()
+                logger.info('time:  {0} sec'.format(timestamp))
+                logger.info('state: {0}'.format(sim.sut.state))
+                logger.info('{0}: {1:.2f}%'.format(sim.name, sim.sut.output))
+                logger.info('temp sensor:    {0:.2f}°C'.format(sim.sensor_temps[-1]))
+                logger.info('temp heater:    {0:.2f}°C'.format(sim.heater_temps[-1]))
+                logger.info('')
 
-    print('time:    {0} min'.format(round(timestamp / 60)))
-    print('cycles:  {0}'.format(int(timestamp / args.sampletime)))
-    print('state:   {0}'.format(sim.sut.state))
-    print()
+    logger.info('')
+    logger.info('time:    {0} min'.format(round(timestamp / 60)))
+    logger.info('cycles:  {0}'.format(1 + int(timestamp / args.sampletime)))
+    logger.info('state:   {0}'.format(sim.sut.state))
+    logger.info('')
 
-    # On success, print params for each tuning rule
+    # On success, logger.info params for each tuning rule
     if sim.sut.state == PIDAutotune.STATE_SUCCEEDED:
         for rule in sim.sut.tuning_rules:
             params = sim.sut.get_pid_parameters(rule)
-            print('rule: {0}'.format(rule))
-            print('Kp: {0}'.format(params.Kp))
-            print('Ki: {0}'.format(params.Ki))
-            print('Kd: {0}'.format(params.Kd))
-            print()
+            logger.info('rule: {0}'.format(rule))
+            logger.info('Kp: {0}'.format(params.Kp))
+            logger.info('Ki: {0}'.format(params.Ki))
+            logger.info('Kd: {0}'.format(params.Kd))
+            logger.info('')
 
     if args.export:
         write_csv(sim)
@@ -239,12 +241,12 @@ def simulate_pid(args):
             sim_update(sim, timestamp, output, args)
 
             if args.verbose > 0:
-                print('time:    {0} sec'.format(timestamp))
-                print('{0}: {1:.2f}%'.format(sim.name, output))
-                print('temp sensor:    {0:.2f}°C'.format(sim.sensor_temps[-1]))
-                print('temp heater:    {0:.2f}°C'.format(sim.heater_temps[-1]))
+                logger.info('time:    {0} sec'.format(timestamp))
+                logger.info('{0}: {1:.2f}%'.format(sim.name, output))
+                logger.info('temp sensor:    {0:.2f}°C'.format(sim.sensor_temps[-1]))
+                logger.info('temp heater:    {0:.2f}°C'.format(sim.heater_temps[-1]))
         if args.verbose > 0:
-            print()
+            logger.info('')
 
     if args.export:
         for sim in sims:
@@ -265,8 +267,15 @@ if __name__ == '__main__':
     else:
         args = parser.parse_args()
 
+        logger.setLevel(logging.INFO)
+        ch = logging.StreamHandler()
+        ch.setLevel(logging.DEBUG)
+        formatter = logging.Formatter("[%(asctime)s] %(levelname)s: %(message)s")
+        ch.setFormatter(formatter)
+        logger.addHandler(ch)
+
         if args.verbose > 1:
-            logging.basicConfig(stream=sys.stderr, format=LOG_FORMAT, level=logging.DEBUG)
+            logger = logging.basicConfig(stream=sys.stderr, format=LOG_FORMAT, level=logging.DEBUG)
         if args.autotune:
             simulate_autotune(args)
         if args.pid is not None:
