@@ -1,14 +1,18 @@
 # coding=utf-8
-from pid_controller import PIDControl
-from pid_autotune import PIDAutotune
-from pid_kettle import Kettle
-from collections import deque, namedtuple
-import sys
-import math
-import logging
 import argparse
+import logging
+import math
+import sys
+from collections import deque, namedtuple
+
 import matplotlib.pyplot as plt
 
+from pid_autotune import PIDAutotune
+from pid_controller import PIDControl
+from pid_kettle import Kettle
+
+# From
+# https://github.com/hirschmann/pid-autotune
 
 LOG_FORMAT = '%(name)s: %(message)s'
 Simulation = namedtuple(
