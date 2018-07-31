@@ -14,13 +14,13 @@ from pid_kettle import Kettle
 # From
 # https://github.com/hirschmann/pid-autotune
 
-LOG_FORMAT = '%(name)s: %(message)s'
 Simulation = namedtuple(
     'Simulation',
     ['name', 'sut', 'kettle', 'delayed_temps', 'timestamps',
      'heater_temps', 'sensor_temps', 'outputs'])
 
 logger = logging.getLogger()
+
 
 def parser_add_args(parser):
     parser.add_argument(
@@ -31,8 +31,8 @@ def parser_add_args(parser):
         action='store_true', help='simulate autotune')
 
     parser.add_argument(
-        '-v', '--verbose', dest='verbose', default=0,
-        action='count', help='be verbose')
+        '-v', '--verbose', dest='verbose', default=False,
+        action='store_true', help='be verbose')
     parser.add_argument(
         '-e', '--export', dest='export', default=False,
         action='store_true', help='export data to a .csv file')
@@ -175,13 +175,13 @@ def simulate_autotune(args):
     while not sim.sut.run(sim.delayed_temps[0]):
         timestamp += args.sampletime
         sim_update(sim, timestamp, sim.sut.output, args)
-        if args.verbose > 0:
-                logger.info('time:  {0} sec'.format(timestamp))
-                logger.info('state: {0}'.format(sim.sut.state))
-                logger.info('{0}: {1:.2f}%'.format(sim.name, sim.sut.output))
-                logger.info('temp sensor:    {0:.2f}°C'.format(sim.sensor_temps[-1]))
-                logger.info('temp heater:    {0:.2f}°C'.format(sim.heater_temps[-1]))
-                logger.info('')
+        if args.verbose:
+                logger.debug('time:  {0} sec'.format(timestamp))
+                logger.debug('state: {0}'.format(sim.sut.state))
+                logger.debug('{0}: {1:.2f}%'.format(sim.name, sim.sut.output))
+                logger.debug('temp sensor:    {0:.2f}°C'.format(sim.sensor_temps[-1]))
+                logger.debug('temp heater:    {0:.2f}°C'.format(sim.heater_temps[-1]))
+                logger.debug('')
 
     logger.info('')
     logger.info('time:    {0} min'.format(round(timestamp / 60)))
@@ -240,13 +240,13 @@ def simulate_pid(args):
             output = min(output, 100)
             sim_update(sim, timestamp, output, args)
 
-            if args.verbose > 0:
-                logger.info('time:    {0} sec'.format(timestamp))
-                logger.info('{0}: {1:.2f}%'.format(sim.name, output))
-                logger.info('temp sensor:    {0:.2f}°C'.format(sim.sensor_temps[-1]))
-                logger.info('temp heater:    {0:.2f}°C'.format(sim.heater_temps[-1]))
-        if args.verbose > 0:
-            logger.info('')
+            if args.verbose:
+                logger.debug('time:    {0} sec'.format(timestamp))
+                logger.debug('{0}: {1:.2f}%'.format(sim.name, output))
+                logger.debug('temp sensor:    {0:.2f}°C'.format(sim.sensor_temps[-1]))
+                logger.debug('temp heater:    {0:.2f}°C'.format(sim.heater_temps[-1]))
+        if args.verbose:
+            logger.debug('')
 
     if args.export:
         for sim in sims:
@@ -267,15 +267,16 @@ if __name__ == '__main__':
     else:
         args = parser.parse_args()
 
-        logger.setLevel(logging.INFO)
+        if args.verbose:
+            logger.setLevel(logging.DEBUG)
+        else:
+            logger.setLevel(logging.INFO)
         ch = logging.StreamHandler()
         ch.setLevel(logging.DEBUG)
         formatter = logging.Formatter("[%(asctime)s] %(levelname)s: %(message)s")
         ch.setFormatter(formatter)
         logger.addHandler(ch)
 
-        if args.verbose > 1:
-            logger = logging.basicConfig(stream=sys.stderr, format=LOG_FORMAT, level=logging.DEBUG)
         if args.autotune:
             simulate_autotune(args)
         if args.pid is not None:
