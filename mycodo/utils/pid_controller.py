@@ -18,6 +18,8 @@ class PIDControl(object):
         kd (float): Derivative coefficient.
         out_min (float): Lower output limit.
         out_max (float): Upper output limit.
+        integrator_min: Lower integrator limit.
+        integrator_max: Upper integrator limit.
         time (function): A function which returns the current time in seconds.
     """
 

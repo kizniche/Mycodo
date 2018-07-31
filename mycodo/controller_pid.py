@@ -344,7 +344,7 @@ class PIDController(threading.Thread):
 
                     # New PID method (untested)
                     # self.control_variable = self.PID_Controller.calc(
-                    #     self.last_measurement)
+                    #     self.last_measurement, self.setpoint)
 
                 self.write_pid_values()  # Write variables to database
 
