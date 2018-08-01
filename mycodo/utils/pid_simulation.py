@@ -3,6 +3,7 @@ import argparse
 import logging
 import math
 import sys
+import time
 from collections import deque, namedtuple
 
 import matplotlib.pyplot as plt
@@ -152,7 +153,10 @@ def plot_simulations(simulations, title):
     # Set title
     plt.title(title)
     fig.canvas.set_window_title(title)
-    plt.show()
+
+    # plt.show()
+    timestr = time.strftime("%Y%m%d-%H%M%S")
+    plt.savefig(timestr+'_simulation.png')
 
 
 def simulate_autotune(args):
