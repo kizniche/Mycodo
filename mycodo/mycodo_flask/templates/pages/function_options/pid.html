@@ -211,7 +211,7 @@
 
         </div>
 
-        <div class="row align-items-end small-gutters" style="padding-bottom: 0.5em">
+        <div class="row align-items-end small-gutters" style="padding-bottom: 0.5em;">
           <div class="col-auto">
             <div>
               {{form_mod_pid_base.method_id.label(class_='control-label')}}
@@ -239,6 +239,13 @@
             <a href="/method" class="form-control btn btn-default" role="button">{{_('Manage Methods')}}</a>
           </div>
         </div>
+
+        <div class="row small-gutters" style="padding-bottom: 0.5em;">
+          <div class="col-auto small-gutters">
+            {{form_mod_pid_base.pid_autotune(class_='form-control btn btn-default')}}
+          </div>
+        </div>
+
       </div>
     </form>
 

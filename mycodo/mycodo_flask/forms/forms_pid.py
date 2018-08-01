@@ -91,6 +91,7 @@ class PIDModBase(FlaskForm):
     pid_deactivate = SubmitField(lazy_gettext('Deactivate'))
     pid_order_up = SubmitField(lazy_gettext('Up'))
     pid_order_down = SubmitField(lazy_gettext('Down'))
+    pid_autotune = SubmitField(lazy_gettext('Perform Autotune'))
 
 
 class PIDModRelayRaise(FlaskForm):

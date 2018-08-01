@@ -916,6 +916,7 @@ class PIDController(threading.Thread):
     def stop_controller(self, ended_normally=True, deactivate_pid=False):
         self.thread_shutdown_timer = timeit.default_timer()
         self.running = False
+
         # Unset method start time
         if self.method_id != '' and ended_normally:
             with session_scope(MYCODO_DB_PATH) as db_session:
@@ -925,9 +926,11 @@ class PIDController(threading.Thread):
                 mod_pid.method_end_time = None
                 db_session.commit()
 
+        # Deactivate PID and Autotune
         if deactivate_pid:
             with session_scope(MYCODO_DB_PATH) as db_session:
                 mod_pid = db_session.query(PID).filter(
                     PID.unique_id == self.pid_id).first()
                 mod_pid.is_activated = False
+                mod_pid.autotune_activated = False
                 db_session.commit()

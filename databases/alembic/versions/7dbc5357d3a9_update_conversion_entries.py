@@ -37,6 +37,16 @@ depends_on = None
 
 
 def upgrade():
+    with op.batch_alter_table("pid") as batch_op:
+        batch_op.add_column(sa.Column('autotune_activated', sa.Boolean))
+
+    op.execute(
+        '''
+        UPDATE pid
+        SET autotune_activated=0
+        '''
+    )
+
     op.create_table(
         'measurements',
         sa.Column('id', sa.Integer, nullable=False, unique=True),
@@ -227,4 +237,5 @@ def upgrade():
 
 
 def downgrade():
-    pass
+    with op.batch_alter_table("pid") as batch_op:
+        batch_op.drop_column('autotune_activated')

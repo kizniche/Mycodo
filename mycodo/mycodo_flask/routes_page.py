@@ -1000,6 +1000,8 @@ def page_function():
             utils_function.func_add(form_add_function)
 
         # PID form actions
+        elif form_mod_pid_base.pid_autotune.data:
+            utils_pid.pid_autotune(form_mod_pid_base)
         elif form_mod_pid_base.pid_mod.data:
             utils_pid.pid_mod(form_mod_pid_base,
                               form_mod_pid_pwm_raise,
