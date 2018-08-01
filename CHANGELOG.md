@@ -15,6 +15,7 @@
  - Fix issue with order not updating correctly when Conditional is deleted
  - Fix issue with output usage report generation ([#504](https://github.com/kizniche/mycodo/issues/504))
  - Fix proper conversion of temperatures/pressure for Wet-Bulb Humidity Math
+ - Fix Atlas pH UART sensor module ([#509](https://github.com/kizniche/mycodo/issues/509))
 
 ### Miscellaneous
 

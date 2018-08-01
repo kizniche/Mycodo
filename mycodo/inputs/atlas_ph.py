@@ -17,6 +17,8 @@ class AtlaspHSensor(AbstractInput):
         self._ph = None
         self.atlas_sensor_uart = None
         self.atlas_sensor_i2c = None
+        self.i2c_address = None
+        self.i2c_bus = None
 
         if not testing:
             self.logger = logging.getLogger(
@@ -24,8 +26,6 @@ class AtlaspHSensor(AbstractInput):
             self.input_dev = input_dev
             self.interface = input_dev.interface
             self.device_loc = input_dev.device_loc
-            self.i2c_address = int(str(input_dev.location), 16)
-            self.i2c_bus = input_dev.i2c_bus
             self.calibrate_sensor_measure = input_dev.calibrate_sensor_measure
             try:
                 self.initialize_sensor()
@@ -71,6 +71,8 @@ class AtlaspHSensor(AbstractInput):
             self.logger = logging.getLogger(
                 "mycodo.inputs.atlas_ph_{bus}_{add}".format(
                     bus=self.i2c_bus, add=self.i2c_address))
+            self.i2c_address = int(str(self.input_dev.location), 16)
+            self.i2c_bus = self.input_dev.i2c_bus
             self.atlas_sensor_i2c = AtlasScientificI2C(
                 i2c_address=self.i2c_address, i2c_bus=self.i2c_bus)
 
