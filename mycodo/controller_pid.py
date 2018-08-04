@@ -252,6 +252,9 @@ class PIDController(threading.Thread):
         self.band = pid.band
         self.store_lower_as_negative = pid.store_lower_as_negative
 
+        # Autotune
+        self.autotune_activated = pid.autotune_activated
+
         dev_unique_id = pid.measurement.split(',')[0]
         self.measurement = pid.measurement.split(',')[1]
 
@@ -313,28 +316,28 @@ class PIDController(threading.Thread):
 
                 # If autotune activated, determine control variable (output) from autotune
                 if self.autotune_activated:
-                    if self.autotune.run(self.last_measurement):
+                    if not self.autotune.run(self.last_measurement):
                         self.control_variable = self.autotune.output
 
                         if self.autotune_debug:
-                            self.logger.error("state: {}".format(self.autotune.state))
-                            self.logger.error("output: {}".format(self.autotune.output))
-                            self.logger.error('')
+                            self.logger.info('')
+                            self.logger.info("state: {}".format(self.autotune.state))
+                            self.logger.info("output: {}".format(self.autotune.output))
                     else:
                         # Autotune has finished
                         timestamp = time.time() - self.autotune_timestamp
-                        self.logger.error('time:  {0} min'.format(round(timestamp / 60)))
-                        self.logger.error('state: {0}'.format(self.autotune.state))
-                        self.logger.error('')
+                        self.logger.info('')
+                        self.logger.info('time:  {0} min'.format(round(timestamp / 60)))
+                        self.logger.info('state: {0}'.format(self.autotune.state))
 
                         if self.autotune.state == PIDAutotune.STATE_SUCCEEDED:
                             for rule in self.autotune.tuning_rules:
                                 params = self.autotune.get_pid_parameters(rule)
-                                self.logger.error('rule: {0}'.format(rule))
-                                self.logger.error('Kp: {0}'.format(params.Kp))
-                                self.logger.error('Ki: {0}'.format(params.Ki))
-                                self.logger.error('Kd: {0}'.format(params.Kd))
-                                self.logger.error('')
+                                self.logger.info('')
+                                self.logger.info('rule: {0}'.format(rule))
+                                self.logger.info('Kp: {0}'.format(params.Kp))
+                                self.logger.info('Ki: {0}'.format(params.Ki))
+                                self.logger.info('Kd: {0}'.format(params.Kd))
 
                         self.stop_controller(deactivate_pid=True)
                 else:

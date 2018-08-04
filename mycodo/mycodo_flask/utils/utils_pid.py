@@ -202,6 +202,7 @@ def pid_autotune(form_mod_pid_base):
         mod_pid = PID.query.filter(
             PID.unique_id == form_mod_pid_base.pid_id.data).first()
         mod_pid.autotune_activated = True
+        # mod_pid.autotune_noiseband = form_mod_pid_base.pid_autotune_noiseband.data  # TODO: enable
         db.session.commit()
 
         # Activate PID
@@ -237,7 +238,7 @@ def pid_activate(pid_id):
         return redirect(url_for('routes_page.page_function'))
 
     action = '{action} {controller}'.format(
-        action=gettext("Actuate"),
+        action=gettext("Activate"),
         controller=gettext("PID"))
     error = []
 

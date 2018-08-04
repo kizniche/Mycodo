@@ -240,7 +240,13 @@
           </div>
         </div>
 
-        <div class="row small-gutters" style="padding-bottom: 0.5em;">
+        <div class="row align-items-end small-gutters" style="padding-bottom: 0.5em;">
+          <div class="col-auto">
+            {{form_mod_pid_base.pid_autotune_noiseband.label(class_='control-label')}}
+            <div>
+              {{form_mod_pid_base.pid_autotune_noiseband(class_='form-control', value=0.5, **{'title':_('Autotune Only: How much above and below the setpoint the process variable must reach before changing direction.')})}}
+            </div>
+          </div>
           <div class="col-auto small-gutters">
             {{form_mod_pid_base.pid_autotune(class_='form-control btn btn-default')}}
           </div>

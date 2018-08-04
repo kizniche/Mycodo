@@ -39,6 +39,7 @@ depends_on = None
 def upgrade():
     with op.batch_alter_table("pid") as batch_op:
         batch_op.add_column(sa.Column('autotune_activated', sa.Boolean))
+        batch_op.add_column(sa.Column('autotune_noiseband', sa.Float))
 
     op.execute(
         '''
@@ -239,3 +240,4 @@ def upgrade():
 def downgrade():
     with op.batch_alter_table("pid") as batch_op:
         batch_op.drop_column('autotune_activated')
+        batch_op.drop_column('autotune_noiseband')

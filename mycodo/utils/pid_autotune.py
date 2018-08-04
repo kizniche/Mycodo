@@ -81,6 +81,7 @@ class PIDAutotune(object):
         self._Ku = 0
         self._Pu = 0
         self._total_cycles = 0
+        self._logger.info("PID Autotune started")
 
     @property
     def state(self):
