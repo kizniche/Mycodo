@@ -344,11 +344,11 @@ class DaemonController:
         # Controllers that may launch multiple threads
         # Order matters for starting and shutting down
         self.cont_types = [
+            'Conditional',
             'Input',
             'Math',
             'PID',
-            'LCD',
-            'Conditional'
+            'LCD'
         ]
         self.thread_shutdown_timer = None
         self.start_time = time.time()

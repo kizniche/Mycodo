@@ -207,7 +207,6 @@ class PIDController(threading.Thread):
                         "Activate the PID controller to start it again.")
 
                 elif time.time() > self.timer:
-                    self.logger.error("TEST00")
                     self.check_pid()
 
                 time.sleep(self.sample_rate)
@@ -280,12 +279,9 @@ class PIDController(threading.Thread):
 
     def check_pid(self):
         """ Get measurement and apply to PID controller """
-        self.logger.error("TEST01")
         # Ensure the timer ends in the future
         while time.time() > self.timer:
             self.timer = self.timer + self.period
-
-        self.logger.error("TEST02")
 
         # If PID is active, retrieve measurement and update
         # the control variable.
@@ -293,10 +289,8 @@ class PIDController(threading.Thread):
         # not update the control variable.
         if self.is_activated and (not self.is_paused or not self.is_held):
             self.get_last_measurement()
-            self.logger.error("TEST03")
 
             if self.last_measurement_success:
-                self.logger.error("TEST04")
                 if self.method_id != '':
                     # Update setpoint using a method
                     this_pid = db_retrieve_table_daemon(
@@ -327,7 +321,6 @@ class PIDController(threading.Thread):
                             self.logger.error("output: {}".format(self.autotune.output))
                             self.logger.error('')
                     else:
-                        self.logger.error("TEST05")
                         # Autotune has finished
                         timestamp = time.time() - self.autotune_timestamp
                         self.logger.error('time:  {0} min'.format(round(timestamp / 60)))

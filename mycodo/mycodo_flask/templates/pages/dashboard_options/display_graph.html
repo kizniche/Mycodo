@@ -326,11 +326,11 @@
         {
           name: '{{each_pid.name}} (
           {%- if each_graph_pid_id.split(',')[1] == 'setpoint' -%}
-            {{' '+_('Setpoint')}}
+            {{_('Setpoint')}}
           {%- elif each_graph_pid_id.split(',')[1] == 'setpoint_band_min' -%}
-            {{' '+_('Band Min')}}
+            {{_('Band Min')}}
           {%- elif each_graph_pid_id.split(',')[1] == 'setpoint_band_max' -%}
-            {{' '+_('Band Max')}}
+            {{_('Band Max')}}
           {%- endif -%}
           )',
           type: 'line',
