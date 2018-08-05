@@ -924,8 +924,8 @@ resumes operation.
 PID Autotune
 ''''''''''''
 
-The PID Autotune feature is useful for determining appropriate Kp, Ki, and Kd
-gains. The autotuner will manipulate an output and measure the response in
+The Autotune feature is useful for determining appropriate Kp, Ki, and Kd
+gains of a PID controller. The autotuner will manipulate an output and measure the response in
 the environment being measured by a sensor. It will take several cycles
 to determine the gains accoring to several rules. In order to use this
 feature, the PID controller must be properly configured, and a Noise Band
@@ -945,7 +945,7 @@ be reintroduced in order to further tune the PID controller to handle them.
 +-----------------------+-------------------------------------------------+
 | Setting               | Description                                     |
 +=======================+=================================================+
-| Noise band            | This is the amount above the setpoint the       |
+| Noise Band            | This is the amount above the setpoint the       |
 |                       | measured condition must reach before the output |
 |                       | turns off. This is also how much below the      |
 |                       | setpoint the measured condition must fall       |

@@ -1113,7 +1113,7 @@ signal &lt;http://kylegabriel.com/projects/2016/02
 </tbody>
 </table>
 <h4 id="pid-autotune">PID Autotune</h4>
-<p>The PID Autotune feature is useful for determining appropriate Kp, Ki, and Kd gains. The autotuner will manipulate an output and measure the response in the environment being measured by a sensor. It will take several cycles to determine the gains accoring to several rules. In order to use this feature, the PID controller must be properly configured, and a Noise Band and Outstep selected, then select “Start Autotune”. The output of the autotuner will appear in the daemon log (Config -&gt; Mycodo Logs -&gt; Daemon). While the autotune is being performed, it is recommended to create a graph that includes the Input, Output, and PID Setpoint/Output in order to see what the PID Autotuner is doing and to notice any issues. If your autotune is taking a long time to complete, there may not be enough stability in the system being manipulated to calculate a reliable set of PID gains. This may be because there are too many disturbanses to the system, or conditions are changing too repidly to acquire consistent measurement oscilations. If this is the case, try modifying your system to reduce disturbances. Once the autotune successfully completes, disturbances may be reintroduced in order to further tune the PID controller to handle them.</p>
+<p>The Autotune feature is useful for determining appropriate Kp, Ki, and Kd gains of a PID controller. The autotuner will manipulate an output and measure the response in the environment being measured by a sensor. It will take several cycles to determine the gains accoring to several rules. In order to use this feature, the PID controller must be properly configured, and a Noise Band and Outstep selected, then select “Start Autotune”. The output of the autotuner will appear in the daemon log (Config -&gt; Mycodo Logs -&gt; Daemon). While the autotune is being performed, it is recommended to create a graph that includes the Input, Output, and PID Setpoint/Output in order to see what the PID Autotuner is doing and to notice any issues. If your autotune is taking a long time to complete, there may not be enough stability in the system being manipulated to calculate a reliable set of PID gains. This may be because there are too many disturbanses to the system, or conditions are changing too repidly to acquire consistent measurement oscilations. If this is the case, try modifying your system to reduce disturbances. Once the autotune successfully completes, disturbances may be reintroduced in order to further tune the PID controller to handle them.</p>
 <table>
 <colgroup>
 <col style="width: 32%"></col>
@@ -1127,7 +1127,7 @@ signal &lt;http://kylegabriel.com/projects/2016/02
 </thead>
 <tbody>
 <tr class="odd">
-<td style="text-align: left;">Noise band</td>
+<td style="text-align: left;">Noise Band</td>
 <td style="text-align: left;">This is the amount above the setpoint the measured condition must reach before the output turns off. This is also how much below the setpoint the measured condition must fall before the output turns back on.</td>
 </tr>
 <tr class="even">
