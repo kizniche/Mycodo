@@ -202,7 +202,8 @@ def pid_autotune(form_mod_pid_base):
         mod_pid = PID.query.filter(
             PID.unique_id == form_mod_pid_base.pid_id.data).first()
         mod_pid.autotune_activated = True
-        # mod_pid.autotune_noiseband = form_mod_pid_base.pid_autotune_noiseband.data  # TODO: enable
+        mod_pid.autotune_noiseband = form_mod_pid_base.pid_autotune_noiseband.data
+        mod_pid.autotune_outstep = form_mod_pid_base.pid_autotune_outstep.data
         db.session.commit()
 
         # Activate PID

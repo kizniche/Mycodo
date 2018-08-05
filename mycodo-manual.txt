@@ -986,6 +986,142 @@ resumes operation.
                           + Kd_total)
   ------------------------------------------------------------------------
 
+PID Autotune
+
+The PID Autotune feature is useful for determining appropriate Kp, Ki,
+and Kd gains. The autotuner will manipulate an output and measure the
+response in the environment being measured by a sensor. It will take
+several cycles to determine the gains accoring to several rules. In
+order to use this feature, the PID controller must be properly
+configured, and a Noise Band and Outstep selected, then select “Start
+Autotune”. The output of the autotuner will appear in the daemon log
+(Config -> Mycodo Logs -> Daemon). While the autotune is being
+performed, it is recommended to create a graph that includes the Input,
+Output, and PID Setpoint/Output in order to see what the PID Autotuner
+is doing and to notice any issues. If your autotune is taking a long
+time to complete, there may not be enough stability in the system being
+manipulated to calculate a reliable set of PID gains. This may be
+because there are too many disturbanses to the system, or conditions are
+changing too repidly to acquire consistent measurement oscilations. If
+this is the case, try modifying your system to reduce disturbances. Once
+the autotune successfully completes, disturbances may be reintroduced in
+order to further tune the PID controller to handle them.
+
+  ------------------------------------------------------------------------
+  Setting                 Description
+  ----------------------- ------------------------------------------------
+  Noise band              This is the amount above the setpoint the
+                          measured condition must reach before the output
+                          turns off. This is also how much below the
+                          setpoint the measured condition must fall before
+                          the output turns back on.
+
+  Outstep                 This is how many seconds the output will turn on
+                          every PID Period. For instance, to autotune with
+                          50% power, ensure the Outstep is half the value
+                          of the PID Period.
+  ------------------------------------------------------------------------
+
+Typical graph output will look like this:
+
+[PID Autotune Output]
+
+And typical Daemon Log output will look like this:
+
+    2018-08-04 23:32:20,876 - mycodo.pid_3b533dff - INFO - Activated in 187.2 ms
+    2018-08-04 23:32:20,877 - mycodo.pid_autotune - INFO - PID Autotune started
+    2018-08-04 23:33:50,823 - mycodo.pid_autotune - INFO -
+    2018-08-04 23:33:50,830 - mycodo.pid_autotune - INFO - Cycle: 19
+    2018-08-04 23:33:50,831 - mycodo.pid_autotune - INFO - switched state: relay step down
+    2018-08-04 23:33:50,832 - mycodo.pid_autotune - INFO - input: 32.52
+    2018-08-04 23:36:00,854 - mycodo.pid_autotune - INFO -
+    2018-08-04 23:36:00,860 - mycodo.pid_autotune - INFO - Cycle: 45
+    2018-08-04 23:36:00,862 - mycodo.pid_autotune - INFO - found peak: 34.03
+    2018-08-04 23:36:00,863 - mycodo.pid_autotune - INFO - peak count: 1
+    2018-08-04 23:37:20,802 - mycodo.pid_autotune - INFO -
+    2018-08-04 23:37:20,809 - mycodo.pid_autotune - INFO - Cycle: 61
+    2018-08-04 23:37:20,810 - mycodo.pid_autotune - INFO - switched state: relay step up
+    2018-08-04 23:37:20,811 - mycodo.pid_autotune - INFO - input: 31.28
+    2018-08-04 23:38:30,867 - mycodo.pid_autotune - INFO -
+    2018-08-04 23:38:30,874 - mycodo.pid_autotune - INFO - Cycle: 75
+    2018-08-04 23:38:30,876 - mycodo.pid_autotune - INFO - found peak: 32.17
+    2018-08-04 23:38:30,878 - mycodo.pid_autotune - INFO - peak count: 2
+    2018-08-04 23:38:40,852 - mycodo.pid_autotune - INFO -
+    2018-08-04 23:38:40,858 - mycodo.pid_autotune - INFO - Cycle: 77
+    2018-08-04 23:38:40,860 - mycodo.pid_autotune - INFO - switched state: relay step down
+    2018-08-04 23:38:40,861 - mycodo.pid_autotune - INFO - input: 32.85
+    2018-08-04 23:40:50,834 - mycodo.pid_autotune - INFO -
+    2018-08-04 23:40:50,835 - mycodo.pid_autotune - INFO - Cycle: 103
+    2018-08-04 23:40:50,836 - mycodo.pid_autotune - INFO - found peak: 33.93
+    2018-08-04 23:40:50,836 - mycodo.pid_autotune - INFO - peak count: 3
+    2018-08-04 23:42:05,799 - mycodo.pid_autotune - INFO -
+    2018-08-04 23:42:05,805 - mycodo.pid_autotune - INFO - Cycle: 118
+    2018-08-04 23:42:05,806 - mycodo.pid_autotune - INFO - switched state: relay step up
+    2018-08-04 23:42:05,807 - mycodo.pid_autotune - INFO - input: 31.27
+    2018-08-04 23:43:15,816 - mycodo.pid_autotune - INFO -
+    2018-08-04 23:43:15,822 - mycodo.pid_autotune - INFO - Cycle: 132
+    2018-08-04 23:43:15,824 - mycodo.pid_autotune - INFO - found peak: 32.09
+    2018-08-04 23:43:15,825 - mycodo.pid_autotune - INFO - peak count: 4
+    2018-08-04 23:43:25,790 - mycodo.pid_autotune - INFO -
+    2018-08-04 23:43:25,796 - mycodo.pid_autotune - INFO - Cycle: 134
+    2018-08-04 23:43:25,797 - mycodo.pid_autotune - INFO - switched state: relay step down
+    2018-08-04 23:43:25,798 - mycodo.pid_autotune - INFO - input: 32.76
+    2018-08-04 23:45:30,802 - mycodo.pid_autotune - INFO -
+    2018-08-04 23:45:30,808 - mycodo.pid_autotune - INFO - Cycle: 159
+    2018-08-04 23:45:30,810 - mycodo.pid_autotune - INFO - found peak: 33.98
+    2018-08-04 23:45:30,811 - mycodo.pid_autotune - INFO - peak count: 5
+    2018-08-04 23:45:30,812 - mycodo.pid_autotune - INFO -
+    2018-08-04 23:45:30,814 - mycodo.pid_autotune - INFO - amplitude: 0.9099999999999989
+    2018-08-04 23:45:30,815 - mycodo.pid_autotune - INFO - amplitude deviation: 0.06593406593406595
+    2018-08-04 23:46:40,851 - mycodo.pid_autotune - INFO -
+    2018-08-04 23:46:40,857 - mycodo.pid_autotune - INFO - Cycle: 173
+    2018-08-04 23:46:40,858 - mycodo.pid_autotune - INFO - switched state: relay step up
+    2018-08-04 23:46:40,859 - mycodo.pid_autotune - INFO - input: 31.37
+    2018-08-04 23:47:55,860 - mycodo.pid_autotune - INFO -
+    2018-08-04 23:47:55,866 - mycodo.pid_autotune - INFO - Cycle: 188
+    2018-08-04 23:47:55,868 - mycodo.pid_autotune - INFO - found peak: 32.36
+    2018-08-04 23:47:55,869 - mycodo.pid_autotune - INFO - peak count: 6
+    2018-08-04 23:47:55,870 - mycodo.pid_autotune - INFO -
+    2018-08-04 23:47:55,871 - mycodo.pid_autotune - INFO - amplitude: 0.9149999999999979
+    2018-08-04 23:47:55,872 - mycodo.pid_autotune - INFO - amplitude deviation: 0.032786885245900406
+    2018-08-04 23:47:55,873 - mycodo.pid_3b533dff - INFO - time:  16 min
+    2018-08-04 23:47:55,874 - mycodo.pid_3b533dff - INFO - state: succeeded
+    2018-08-04 23:47:55,874 - mycodo.pid_3b533dff - INFO -
+    2018-08-04 23:47:55,875 - mycodo.pid_3b533dff - INFO - rule: ziegler-nichols
+    2018-08-04 23:47:55,876 - mycodo.pid_3b533dff - INFO - Kp: 0.40927018474290117
+    2018-08-04 23:47:55,877 - mycodo.pid_3b533dff - INFO - Ki: 0.05846588600007114
+    2018-08-04 23:47:55,879 - mycodo.pid_3b533dff - INFO - Kd: 0.7162385434443115
+    2018-08-04 23:47:55,880 - mycodo.pid_3b533dff - INFO -
+    2018-08-04 23:47:55,881 - mycodo.pid_3b533dff - INFO - rule: tyreus-luyben
+    2018-08-04 23:47:55,887 - mycodo.pid_3b533dff - INFO - Kp: 0.3162542336649691
+    2018-08-04 23:47:55,889 - mycodo.pid_3b533dff - INFO - Ki: 0.010165091543194185
+    2018-08-04 23:47:55,890 - mycodo.pid_3b533dff - INFO - Kd: 0.7028026111719073
+    2018-08-04 23:47:55,891 - mycodo.pid_3b533dff - INFO -
+    2018-08-04 23:47:55,892 - mycodo.pid_3b533dff - INFO - rule: ciancone-marlin
+    2018-08-04 23:47:55,892 - mycodo.pid_3b533dff - INFO - Kp: 0.21083615577664605
+    2018-08-04 23:47:55,893 - mycodo.pid_3b533dff - INFO - Ki: 0.06626133746674728
+    2018-08-04 23:47:55,893 - mycodo.pid_3b533dff - INFO - Kd: 0.3644161687558038
+    2018-08-04 23:47:55,894 - mycodo.pid_3b533dff - INFO -
+    2018-08-04 23:47:55,894 - mycodo.pid_3b533dff - INFO - rule: pessen-integral
+    2018-08-04 23:47:55,895 - mycodo.pid_3b533dff - INFO - Kp: 0.49697093861638
+    2018-08-04 23:47:55,895 - mycodo.pid_3b533dff - INFO - Ki: 0.0887428626786794
+    2018-08-04 23:47:55,896 - mycodo.pid_3b533dff - INFO - Kd: 1.04627757151908
+    2018-08-04 23:47:55,896 - mycodo.pid_3b533dff - INFO -
+    2018-08-04 23:47:55,897 - mycodo.pid_3b533dff - INFO - rule: some-overshoot
+    2018-08-04 23:47:55,898 - mycodo.pid_3b533dff - INFO - Kp: 0.23191977135431066
+    2018-08-04 23:47:55,898 - mycodo.pid_3b533dff - INFO - Ki: 0.03313066873337365
+    2018-08-04 23:47:55,899 - mycodo.pid_3b533dff - INFO - Kd: 1.0823160212047374
+    2018-08-04 23:47:55,899 - mycodo.pid_3b533dff - INFO -
+    2018-08-04 23:47:55,900 - mycodo.pid_3b533dff - INFO - rule: no-overshoot
+    2018-08-04 23:47:55,900 - mycodo.pid_3b533dff - INFO - Kp: 0.1391518628125864
+    2018-08-04 23:47:55,901 - mycodo.pid_3b533dff - INFO - Ki: 0.01987840124002419
+    2018-08-04 23:47:55,901 - mycodo.pid_3b533dff - INFO - Kd: 0.6493896127228425
+    2018-08-04 23:47:55,902 - mycodo.pid_3b533dff - INFO -
+    2018-08-04 23:47:55,902 - mycodo.pid_3b533dff - INFO - rule: brewing
+    2018-08-04 23:47:55,903 - mycodo.pid_3b533dff - INFO - Kp: 5.566074512503456
+    2018-08-04 23:47:55,904 - mycodo.pid_3b533dff - INFO - Ki: 0.11927040744014512
+    2018-08-04 23:47:55,904 - mycodo.pid_3b533dff - INFO - Kd: 4.101408080354794
+
 Conditional Statements
 
 A conditional statement is a way to perform certain actions based on

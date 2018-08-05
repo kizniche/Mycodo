@@ -241,10 +241,19 @@
         </div>
 
         <div class="row align-items-end small-gutters" style="padding-bottom: 0.5em;">
+          <div class="col-12">
+            <h5>{{_('Autotune')}} <a href="/help#pid-autotune" target="_blank"><span style="font-size: 16px" class="fas fa-question-circle"></span></a></h5>
+          </div>
           <div class="col-auto">
             {{form_mod_pid_base.pid_autotune_noiseband.label(class_='control-label')}}
             <div>
-              {{form_mod_pid_base.pid_autotune_noiseband(class_='form-control', value=0.5, **{'title':_('Autotune Only: How much above and below the setpoint the process variable must reach before changing direction.')})}}
+              {{form_mod_pid_base.pid_autotune_noiseband(class_='form-control', value=each_pid.autotune_noiseband, **{'title':_('Autotune Only: How much above and below the setpoint the process variable must reach before changing direction.')})}}
+            </div>
+          </div>
+          <div class="col-auto">
+            {{form_mod_pid_base.pid_autotune_outstep.label(class_='control-label')}}
+            <div>
+              {{form_mod_pid_base.pid_autotune_outstep(class_='form-control', value=each_pid.autotune_outstep, **{'title':_('Autotune Only: How many seconds to turn the output on each PID cycle. For instance, if this equals the PID Period, it will be on 100%% of the time.')})}}
             </div>
           </div>
           <div class="col-auto small-gutters">

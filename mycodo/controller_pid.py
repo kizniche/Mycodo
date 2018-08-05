@@ -146,8 +146,8 @@ class PIDController(threading.Thread):
         self.autotune = None
         self.autotune_activated = False
         self.autotune_debug = False
-        self.autotune_outstep = 10
-        self.autotune_noiseband = 0.5
+        self.autotune_noiseband = None
+        self.autotune_outstep = None
         self.autotune_timestamp = None
 
         self.dev_unique_id = None
@@ -254,6 +254,8 @@ class PIDController(threading.Thread):
 
         # Autotune
         self.autotune_activated = pid.autotune_activated
+        self.autotune_noiseband = pid.autotune_noiseband
+        self.autotune_outstep = pid.autotune_outstep
 
         dev_unique_id = pid.measurement.split(',')[0]
         self.measurement = pid.measurement.split(',')[1]

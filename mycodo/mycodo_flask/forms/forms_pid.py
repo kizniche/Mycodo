@@ -93,6 +93,7 @@ class PIDModBase(FlaskForm):
     pid_order_down = SubmitField(lazy_gettext('Down'))
 
     pid_autotune_noiseband = DecimalField(lazy_gettext('Noise Band'))
+    pid_autotune_outstep = DecimalField(lazy_gettext('Outstep'))
     pid_autotune = SubmitField(lazy_gettext('Start Autotune'))
 
 

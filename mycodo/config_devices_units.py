@@ -94,11 +94,11 @@ DEVICE_INFO = {
         'i2c-addresses': ['0x63'],
         'i2c-address-change': False,
         'py-dependencies': [],
-        'measure': ['ph']},
+        'measure': ['ion_concentration']},
     'ATLAS_PH_UART': {
         'name': 'Atlas pH (Serial)',
         'py-dependencies': ['serial'],
-        'measure': ['ph']},
+        'measure': ['ion_concentration']},
     'ATLAS_PT1000_I2C': {
         'name': 'Atlas PT-1000 (I2C)',
         'i2c-addresses': ['0x66'],
@@ -284,9 +284,9 @@ DEVICE_INFO = {
         'py-dependencies': ['pigpio'],
         'measure': ['frequency','pulse_width', 'duty_cycle']},
     'SIGNAL_RPM': {
-        'name': 'Signal (RPM)',
+        'name': 'Signal (Revolutions)',
         'py-dependencies': ['pigpio'],
-        'measure': ['rpm']},
+        'measure': ['revolutions']},
     'TMP006': {
         'name': 'TMP006',
         'py-dependencies': ['Adafruit_TMP'],
@@ -385,9 +385,9 @@ MEASUREMENT_UNITS = {
         'name': lazy_gettext('Moisture'),
         'meas': 'moisture',
         'units': ['moisture']},
-    'ph': {
-        'name': lazy_gettext('pH'),
-        'meas': 'ph',
+    'ion_concentration': {
+        'name': lazy_gettext('Ion Concentration'),
+        'meas': 'ion_concentration',
         'units': ['pH']},
     'pid_p_value': {
         'name': lazy_gettext('PID P-Value'),
@@ -409,9 +409,9 @@ MEASUREMENT_UNITS = {
         'name': lazy_gettext('Pulse Width'),
         'meas': 'pulse_width',
         'units': ['µs']},
-    'rpm': {
-        'name': lazy_gettext('Revolutions Per Minute'),
-        'meas': 'rpm',
+    'revolutions': {
+        'name': lazy_gettext('Revolutions'),
+        'meas': 'revolutions',
         'units': ['rpm']},
     'setpoint': {
         'name': lazy_gettext('Setpoint'),
@@ -544,9 +544,9 @@ UNITS = {
     'ppm': {
         'name': 'Parts per million',
         'unit': 'ppm'},
-    'rpm': {
-        'name': 'RPM',
-        'unit': 'RPM'},
+    'rps': {
+        'name': 'RPS',
+        'unit': 'Revolutions per second'},
     'second': {
         'name': 'Second',
         'unit': 's'},
