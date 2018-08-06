@@ -30,7 +30,7 @@ from mycodo.inputs.raspi_freespace import RaspberryPiFreeSpace
 from mycodo.inputs.sht1x_7x import SHT1x7xSensor
 from mycodo.inputs.sht2x import SHT2xSensor
 from mycodo.inputs.signal_pwm import SignalPWMInput
-from mycodo.inputs.signal_rpm import SignalRPMInput
+from mycodo.inputs.signal_revolutions import SignalRPMInput
 from mycodo.inputs.tmp006 import TMP006Sensor
 from mycodo.inputs.tsl2561 import TSL2561Sensor
 from mycodo.inputs.tsl2591_sensor import TSL2591Sensor

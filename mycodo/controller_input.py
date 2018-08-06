@@ -341,7 +341,7 @@ class InputController(threading.Thread):
             from mycodo.inputs.signal_pwm import SignalPWMInput
             self.measure_input = SignalPWMInput(self.input_dev)
         elif self.device == 'SIGNAL_RPM':
-            from mycodo.inputs.signal_rpm import SignalRPMInput
+            from mycodo.inputs.signal_revolutions import SignalRPMInput
             self.measure_input = SignalRPMInput(self.input_dev)
         elif self.device == 'TMP006':
             from mycodo.inputs.tmp006 import TMP006Sensor
