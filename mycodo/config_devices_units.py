@@ -547,9 +547,9 @@ UNITS = {
     'ppm': {
         'name': 'Parts per million',
         'unit': 'ppm'},
-    'rps': {
-        'name': 'RPS',
-        'unit': 'Revolutions per second'},
+    'rpm': {
+        'name': 'RPM',
+        'unit': 'Revolutions per minute'},
     'second': {
         'name': 'Second',
         'unit': 's'},
