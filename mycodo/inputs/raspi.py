@@ -58,9 +58,11 @@ class RaspberryPiCPUTemp(AbstractInput):
         # soft, hard = resource.getrlimit(resource.RLIMIT_NOFILE)
         # self.logger.info("LIMIT: Soft: {sft}, Hard: {hrd}".format(sft=soft, hrd=hard))
         with open('/sys/class/thermal/thermal_zone0/temp') as cpu_temp_file:
+
             temperature = convert_units(
                 'temperature', 'C', self.convert_to_unit,
                 float(cpu_temp_file.read()) / 1000)
+
             return temperature
 
     def read(self):
@@ -122,11 +124,14 @@ class RaspberryPiGPUTemp(AbstractInput):
             self.read()
         return self._temperature
 
-    @staticmethod
-    def get_measurement():
+    def get_measurement(self):
         """ Calls the vcgencmd in a subprocess and reads the GPU temperature """
         gputempstr = subprocess.check_output(('/opt/vc/bin/vcgencmd', 'measure_temp'))  # example output: temp=42.8'C
-        return float(gputempstr.split('=')[1].split("'")[0])
+        temperature = float(gputempstr.split('=')[1].split("'")[0])
+        temperature = convert_units(
+            'temperature', 'C', self.convert_to_unit,
+            temperature)
+        return temperature
 
     def read(self):
         """ updates the self._temperature """

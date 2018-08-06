@@ -95,6 +95,11 @@ class SignalPWMInput(AbstractInput):
         duty_cycle = read_pwm.duty_cycle()
         read_pwm.cancel()
         pi.stop()
+
+        duty_cycle = convert_units(
+            'duty_cycle', 'percent', self.convert_to_unit,
+            duty_cycle)
+
         return frequency, pulse_width, duty_cycle
 
     def read(self):

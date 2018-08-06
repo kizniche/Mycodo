@@ -112,14 +112,24 @@ class MifloraSensor(AbstractInput):
         self._moisture = None
         self._temperature = None
 
-        battery = self.poller.parameter_value(MI_BATTERY)
-        electrical_conductivity = self.poller.parameter_value(MI_CONDUCTIVITY)
-        lux = self.poller.parameter_value(MI_LIGHT)
+        battery = convert_units(
+            'battery', 'percent', self.convert_to_unit,
+            self.poller.parameter_value(MI_BATTERY))
+
+        electrical_conductivity = convert_units(
+            'electrical_conductivity', 'μS_cm', self.convert_to_unit,
+            self.poller.parameter_value(MI_CONDUCTIVITY))
+
+        lux = convert_units(
+            'light', 'lux', self.convert_to_unit,
+            self.poller.parameter_value(MI_LIGHT))
+
         moisture = self.poller.parameter_value(MI_MOISTURE)
-        temperature = self.poller.parameter_value(MI_TEMPERATURE)
+
         temperature = convert_units(
             'temperature', 'C', self.convert_to_unit,
-            temperature)
+            self.poller.parameter_value(MI_TEMPERATURE))
+
         return battery, electrical_conductivity, lux, moisture, temperature
 
     def read(self):

@@ -107,7 +107,8 @@ def upgrade():
             'feet': 'ft',
             'kilopascals': 'kPa',
             'pascals': 'Pa',
-            'meters': 'm'
+            'meters': 'm',
+            'moisture': 'unitless'
         }
 
         # Update LCD Data

@@ -3,6 +3,7 @@ import logging
 
 from mycodo.utils.system_pi import str_is_float
 from .base_input import AbstractInput
+from .sensorutils import convert_units
 
 
 class AtlasElectricalConductivitySensor(AbstractInput):
@@ -23,6 +24,7 @@ class AtlasElectricalConductivitySensor(AbstractInput):
             self.i2c_address = int(str(input_dev.location), 16)
             self.i2c_bus = input_dev.i2c_bus
             self.input_dev = input_dev
+            self.convert_to_unit = input_dev.convert_to_unit
             try:
                 self.initialize_sensor()
             except Exception:
@@ -128,6 +130,10 @@ class AtlasElectricalConductivitySensor(AbstractInput):
             else:
                 self.logger.error(
                     'I2C device is not set up. Check the log for errors.')
+
+        electrical_conductivity = convert_units(
+            'electrical_conductivity', 'μS_cm', self.convert_to_unit,
+            electrical_conductivity)
 
         return electrical_conductivity
 

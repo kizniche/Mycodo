@@ -52,11 +52,13 @@ class RaspberryPiFreeSpace(AbstractInput):
     def get_measurement(self):
         """ Gets the free space """
         f = os.statvfs(self.path)
-        space_mb = (f.f_bsize * f.f_bavail) / 1000000.0
-        space = convert_units(
+        disk_space = (f.f_bsize * f.f_bavail) / 1000000.0
+
+        disk_space = convert_units(
             'disk_space', 'MB', self.convert_to_unit,
-            space_mb)
-        return space
+            disk_space)
+
+        return disk_space
 
     def read(self):
         """

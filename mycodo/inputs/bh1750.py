@@ -3,6 +3,7 @@ import logging
 import time
 
 from .base_input import AbstractInput
+from .sensorutils import convert_units
 
 # Define some constants from the datasheet
 POWER_DOWN = 0x00  # No active state
@@ -40,6 +41,7 @@ class BH1750Sensor(AbstractInput):
             self.i2c_bus = input_dev.i2c_bus
             self.resolution = input_dev.resolution
             self.sensitivity = input_dev.sensitivity
+            self.convert_to_unit = input_dev.convert_to_unit
             self.i2c_bus = smbus.SMBus(self.i2c_bus)
             self.power_down()
             self.set_sensitivity(sensitivity=self.sensitivity)
@@ -75,11 +77,19 @@ class BH1750Sensor(AbstractInput):
         self._lux = None
 
         if self.resolution == 0:
-            return self.measure_low_res()
+            lux = self.measure_low_res()
         elif self.resolution == 1:
-            return self.measure_high_res()
+            lux = self.measure_high_res()
         elif self.resolution == 2:
-            return self.measure_high_res2()
+            lux = self.measure_high_res2()
+        else:
+            return None
+
+        lux = convert_units(
+            'light', 'lux', self.convert_to_unit,
+            lux)
+
+        return lux
 
     def read(self):
         """

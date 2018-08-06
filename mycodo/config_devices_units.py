@@ -316,7 +316,7 @@ MEASUREMENT_UNITS = {
     'battery': {
         'name': lazy_gettext('Battery'),
         'meas': 'battery',
-        'units': ['percent']},
+        'units': ['percent', 'decimal']},
     'boolean': {
         'name': lazy_gettext('Boolean'),
         'meas': 'boolean',
@@ -352,7 +352,7 @@ MEASUREMENT_UNITS = {
     'duty_cycle': {
         'name': lazy_gettext('Duty Cycle'),
         'meas': 'duty_cycle',
-        'units': ['percent']},
+        'units': ['percent', 'decimal']},
     'edge': {
         'name': lazy_gettext('GPIO Edge'),
         'meas': 'edge',
@@ -377,6 +377,10 @@ MEASUREMENT_UNITS = {
         'name': lazy_gettext('Humidity Ratio'),
         'meas': 'humidity_ratio',
         'units': ['kg_kg']},
+    'ion_concentration': {
+        'name': lazy_gettext('Ion Concentration'),
+        'meas': 'ion_concentration',
+        'units': ['pH']},
     'light': {
         'name': lazy_gettext('Light'),
         'meas': 'light',
@@ -384,11 +388,7 @@ MEASUREMENT_UNITS = {
     'moisture': {
         'name': lazy_gettext('Moisture'),
         'meas': 'moisture',
-        'units': ['moisture']},
-    'ion_concentration': {
-        'name': lazy_gettext('Ion Concentration'),
-        'meas': 'ion_concentration',
-        'units': ['pH']},
+        'units': ['unitless']},
     'pid_p_value': {
         'name': lazy_gettext('PID P-Value'),
         'meas': 'pid_value',
@@ -526,9 +526,6 @@ UNITS = {
     'minute': {
         'name': 'Minute',
         'unit': 'm'},
-    'moisture': {
-        'name': 'Moisture',
-        'unit': ''},
     'Pa': {
         'name': 'Pascals',
         'unit': 'Pa'},

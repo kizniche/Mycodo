@@ -4,6 +4,7 @@ import resource
 
 from mycodo.mycodo_client import DaemonControl
 from .base_input import AbstractInput
+from .sensorutils import convert_units
 
 
 class MycodoRam(AbstractInput):
@@ -19,6 +20,7 @@ class MycodoRam(AbstractInput):
         if not testing:
             self.logger = logging.getLogger(
                 "mycodo.inputs.mycodo_ram_{id}".format(id=input_dev.id))
+            self.convert_to_unit = input_dev.convert_to_unit
             self.control = DaemonControl()
 
     def __repr__(self):
@@ -53,11 +55,17 @@ class MycodoRam(AbstractInput):
         """ Gets the measurement in units by reading resource """
         self._disk_space = None
         disk_space = None
+
         try:
             disk_space = resource.getrusage(
                 resource.RUSAGE_SELF).ru_maxrss / float(1000)
         except Exception:
             pass
+
+        disk_space = convert_units(
+            'disk_space', 'MB', self.convert_to_unit,
+            disk_space)
+
         return disk_space
 
     def read(self):

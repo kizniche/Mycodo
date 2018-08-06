@@ -88,9 +88,11 @@ class MAX31865Sensor(AbstractInput):
     def get_measurement(self):
         """ Gets the measurement in units by reading the """
         self._temperature = None
+
         temp = self.sensor.readTemp(self.thermocouple_type, self.ref_ohm)
         temp = convert_units(
             'temperature', 'C', self.convert_to_unit, temp)
+
         return temp
 
     def read(self):

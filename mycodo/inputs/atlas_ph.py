@@ -6,6 +6,7 @@ from mycodo.utils.calibration import AtlasScientificCommand
 from mycodo.utils.influx import read_last_influxdb
 from mycodo.utils.system_pi import str_is_float
 from .base_input import AbstractInput
+from .sensorutils import convert_units
 
 
 class AtlaspHSensor(AbstractInput):
@@ -27,6 +28,7 @@ class AtlaspHSensor(AbstractInput):
             self.interface = input_dev.interface
             self.device_loc = input_dev.device_loc
             self.calibrate_sensor_measure = input_dev.calibrate_sensor_measure
+            self.convert_to_unit = input_dev.convert_to_unit
             try:
                 self.initialize_sensor()
             except Exception:
@@ -156,6 +158,10 @@ class AtlaspHSensor(AbstractInput):
             else:
                 self.logger.error(
                     'I2C device is not set up. Check the log for errors.')
+
+        ph = convert_units(
+            'ion_concentration', 'pH', self.convert_to_unit,
+            ph)
 
         return ph
 

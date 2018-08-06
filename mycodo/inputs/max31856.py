@@ -117,6 +117,7 @@ class MAX31856Sensor(AbstractInput):
         temp = self.sensor.readThermocoupleTemp()
         temp = convert_units(
             'temperature', 'C', self.convert_to_unit, temp)
+
         temp_die = self.sensor.readJunctionTemp()
         temp_die = convert_units(
             'temperature_die', 'C', self.convert_to_unit, temp_die)

@@ -70,17 +70,22 @@ class SignalRPMInput(AbstractInput):
         time.sleep(self.sample_time)
 
         rpm = read_revolutions.RPM()
+        if rpm:
+            rpm = int(rpm + 0.5)
+
         rpm = convert_units(
             'revolutions', 'RPM', self.convert_to_unit,
             rpm)
-        read_revolutions.cancel()
 
+        read_revolutions.cancel()
         pi.stop()
+
         if rpm:
-            return int(rpm + 0.5)
+            return rpm
         elif rpm == 0:
             return 0
-        return None
+        else:
+            return None
 
     def read(self):
         """

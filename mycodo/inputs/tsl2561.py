@@ -2,6 +2,7 @@
 import logging
 
 from .base_input import AbstractInput
+from .sensorutils import convert_units
 
 
 class TSL2561Sensor(AbstractInput):
@@ -18,6 +19,7 @@ class TSL2561Sensor(AbstractInput):
                 "mycodo.inputs.tsl2561_{id}".format(id=input_dev.id))
             self.i2c_address = int(str(input_dev.location), 16)
             self.i2c_bus = input_dev.i2c_bus
+            self.convert_to_unit = input_dev.convert_to_unit
             self.tsl = TSL2561(address=self.i2c_address, busnum=self.i2c_bus)
 
     def __repr__(self):
@@ -51,7 +53,9 @@ class TSL2561Sensor(AbstractInput):
         self._lux = None
         saturated = False
         try:
-            lux = self.tsl.lux()
+            lux = convert_units(
+                'light', 'lux', self.convert_to_unit,
+                self.tsl.lux())
             return lux
         except Exception as err:
             if 'saturated' in repr(err):
@@ -67,7 +71,9 @@ class TSL2561Sensor(AbstractInput):
             self.tsl.set_integration_time(TSL2561_INTEGRATIONTIME_101MS)
             saturated = False
             try:
-                lux = self.tsl.lux()
+                lux = convert_units(
+                    'light', 'lux', self.convert_to_unit,
+                    self.tsl.lux())
                 return lux
             except Exception as err:
                 if 'saturated' in repr(err):
@@ -82,7 +88,9 @@ class TSL2561Sensor(AbstractInput):
             from tsl2561.constants import TSL2561_INTEGRATIONTIME_13MS
             self.tsl.set_integration_time(TSL2561_INTEGRATIONTIME_13MS)
             try:
-                lux = self.tsl.lux()
+                lux = convert_units(
+                    'light', 'lux', self.convert_to_unit,
+                    self.tsl.lux())
                 return lux
             except Exception as err:
                 if 'saturated' in repr(err):

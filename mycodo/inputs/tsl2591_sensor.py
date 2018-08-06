@@ -2,6 +2,7 @@
 import logging
 
 from .base_input import AbstractInput
+from .sensorutils import convert_units
 
 
 class TSL2591Sensor(AbstractInput):
@@ -18,6 +19,7 @@ class TSL2591Sensor(AbstractInput):
                 "mycodo.inputs.tsl2591_sensor_{id}".format(id=input_dev.id))
             self.i2c_address = int(str(input_dev.location), 16)
             self.i2c_bus = input_dev.i2c_bus
+            self.convert_to_unit = input_dev.convert_to_unit
             self.tsl = tsl2591.Tsl2591(i2c_bus=self.i2c_bus,
                                        sensor_address=self.i2c_address)
 
@@ -50,7 +52,12 @@ class TSL2591Sensor(AbstractInput):
     def get_measurement(self):
         """ Gets the TSL2591's lux """
         full, ir = self.tsl.get_full_luminosity()  # read raw values (full spectrum and ir spectrum)
-        lux = self.tsl.calculate_lux(full, ir)  # convert raw values to lux
+
+        # convert raw values to lux (and convert to user-selected unit, if necessary)
+        lux = convert_units(
+            'light', 'lux', self.convert_to_unit,
+            self.tsl.calculate_lux(full, ir))
+
         return lux
 
     def read(self):
