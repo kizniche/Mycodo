@@ -172,6 +172,9 @@ class DHT22Sensor(AbstractInput):
                 self.temp_temperature = convert_units(
                     'temperature', 'C', self.convert_to_unit,
                     self.temp_temperature)
+                self.temp_humidity = convert_units(
+                    'humidity', 'percent', self.convert_to_unit,
+                    self.temp_humidity)
                 return (self.temp_dew_point,
                         self.temp_humidity,
                         self.temp_temperature)  # success - no errors
@@ -192,6 +195,9 @@ class DHT22Sensor(AbstractInput):
                     self.temp_temperature = convert_units(
                         'temperature', 'C', self.convert_to_unit,
                         self.temp_temperature)
+                    self.temp_humidity = convert_units(
+                        'humidity', 'percent', self.convert_to_unit,
+                        self.temp_humidity)
                     return (self.temp_dew_point,
                             self.temp_humidity,
                             self.temp_temperature)  # success - no errors

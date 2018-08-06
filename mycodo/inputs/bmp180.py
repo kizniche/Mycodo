@@ -81,15 +81,19 @@ class BMP180Sensor(AbstractInput):
     def get_measurement(self):
         """ Gets the measurement in units by reading the BMP180/085 """
         time.sleep(2)
+
         temperature = convert_units(
             'temperature', 'C', self.convert_to_unit,
             self.bmp.read_temperature())
+
         pressure = convert_units(
             'pressure', 'Pa', self.convert_to_unit,
             self.bmp.read_pressure())
+
         altitude = convert_units(
             'altitude', 'm', self.convert_to_unit,
             self.bmp.read_altitude())
+
         return temperature, pressure, altitude
 
     def read(self):

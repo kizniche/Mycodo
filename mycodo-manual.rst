@@ -1399,7 +1399,7 @@ Measurement Conditional command variables
 +---------------------------------------+----------------------------------------------+
 | ((measure\_pulse\_width))             | Input measurement: pulse width               |
 +---------------------------------------+----------------------------------------------+
-| ((measure\_rpm))                      | Input measurement: RPM                       |
+| ((measure\_revolutions))              | Input measurement: RPM                       |
 +---------------------------------------+----------------------------------------------+
 | ((measure\_temperature))              | Input measurement: temperature               |
 +---------------------------------------+----------------------------------------------+

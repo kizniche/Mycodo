@@ -140,6 +140,9 @@ class AM2315Sensor(AbstractInput):
                 temperature = convert_units(
                     'temperature', 'C', self.convert_to_unit,
                     temperature)
+                humidity = convert_units(
+                    'humidity', 'percent', self.convert_to_unit,
+                    humidity)
                 return dew_point, humidity, temperature  # success - no errors
             time.sleep(2)
 
@@ -158,6 +161,9 @@ class AM2315Sensor(AbstractInput):
                     temperature = convert_units(
                         'temperature', 'C', self.convert_to_unit,
                         temperature)
+                    humidity = convert_units(
+                        'humidity', 'percent', self.convert_to_unit,
+                        humidity)
                     return dew_point, humidity, temperature  # success
                 time.sleep(2)
 

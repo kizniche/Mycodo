@@ -3,6 +3,7 @@ import logging
 import time
 
 from .base_input import AbstractInput
+from .sensorutils import convert_units
 
 
 class SignalRPMInput(AbstractInput):
@@ -10,14 +11,15 @@ class SignalRPMInput(AbstractInput):
 
     def __init__(self, input_dev, testing=False):
         super(SignalRPMInput, self).__init__()
-        self.logger = logging.getLogger("mycodo.inputs.signal_rpm")
-        self._rpm = None
+        self.logger = logging.getLogger("mycodo.inputs.signal_revolutions")
+        self._revolutions = None
 
         if not testing:
             import pigpio
             self.logger = logging.getLogger(
-                "mycodo.inputs.signal_rpm_{id}".format(id=input_dev.id))
+                "mycodo.inputs.signal_revolutions_{id}".format(id=input_dev.id))
             self.location = int(input_dev.location)
+            self.convert_to_unit = input_dev.convert_to_unit
             self.weighting = input_dev.weighting
             self.rpm_pulses_per_rev = input_dev.rpm_pulses_per_rev
             self.sample_time = input_dev.sample_time
@@ -25,49 +27,54 @@ class SignalRPMInput(AbstractInput):
 
     def __repr__(self):
         """  Representation of object """
-        return "<{cls}(rpm={rpm})>".format(
+        return "<{cls}(revolutions={revolutions})>".format(
             cls=type(self).__name__,
-            rpm="{0:.2f}".format(self._rpm))
+            revolutions="{0:.2f}".format(self._revolutions))
 
     def __str__(self):
         """ Return rpm information """
-        return "RPM: {0:.2f}".format(self._rpm)
+        return "Revolutions: {0:.2f}".format(self._revolutions)
 
     def __iter__(self):  # must return an iterator
         """ Iterates through live rpm readings """
         return self
 
     def next(self):
-        """ Get next rpm reading """
+        """ Get next revolutions reading """
         if self.read():  # raised an error
             raise StopIteration  # required
-        return dict(rpm=float('{0:.2f}'.format(self._rpm)))
+        return dict(revolutions=float('{0:.2f}'.format(self._revolutions)))
 
     @property
-    def rpm(self):
-        """ rpm (revolutions per minute) """
-        if self._rpm is None:  # update if needed
+    def revolutions(self):
+        """ revolutions """
+        if self._revolutions is None:  # update if needed
             self.read()
-        return self._rpm
+        return self._revolutions
 
     def get_measurement(self):
-        """ Gets the rpm """
-        self._rpm = None
+        """ Gets the revolutions """
+        self._revolutions = None
 
         pi = self.pigpio.pi()
         if not pi.connected:  # Check if pigpiod is running
             self.logger.error("Could not connect to pigpiod."
-                         "Ensure it is running and try again.")
+                              "Ensure it is running and try again.")
             return None
 
-        read_rpm = ReadRPM(pi,
+        read_revolutions = ReadRPM(pi,
                            self.location,
                            self.pigpio,
                            self.rpm_pulses_per_rev,
                            self.weighting)
         time.sleep(self.sample_time)
-        rpm = read_rpm.RPM()
-        read_rpm.cancel()
+
+        rpm = read_revolutions.RPM()
+        rpm = convert_units(
+            'revolutions', 'RPM', self.convert_to_unit,
+            rpm)
+        read_revolutions.cancel()
+
         pi.stop()
         if rpm:
             return int(rpm + 0.5)
@@ -77,13 +84,13 @@ class SignalRPMInput(AbstractInput):
 
     def read(self):
         """
-        Takes a reading from the pin and updates the self._rpm value
+        Takes a reading from the pin and updates the self._revolutions value
 
         :returns: None on success or 1 on error
         """
         try:
-            self._rpm = self.get_measurement()
-            if self._rpm is not None:
+            self._revolutions = self.get_measurement()
+            if self._revolutions is not None:
                 return  # success - no errors
         except Exception as e:
             self.logger.exception("{cls} raised an exception when taking a reading: "

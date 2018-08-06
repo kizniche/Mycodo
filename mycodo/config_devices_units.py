@@ -372,7 +372,7 @@ MEASUREMENT_UNITS = {
     'humidity': {
         'name': lazy_gettext('Humidity'),
         'meas': 'humidity',
-        'units': ['percent']},
+        'units': ['percent', 'decimal']},
     'humidity_ratio': {
         'name': lazy_gettext('Humidity Ratio'),
         'meas': 'humidity_ratio',
@@ -474,6 +474,9 @@ UNITS = {
         'unit': '°C'},
     'cpu_load': {
         'name': 'CPU Load',
+        'unit': ''},
+    'decimal': {
+        'name': 'Decimal',
         'unit': ''},
     'F': {
         'name': 'Fahrenheit',
@@ -591,6 +594,10 @@ UNIT_CONVERSIONS = {
     # Concentration
     'ppm_to_ppb': 'x*1000',
     'ppb_to_ppm': 'x/1000',
+
+    # Number
+    'percent_to_decimal': 'x/100',
+    'decimal_to_percent': 'x*100',
 
     # Pressure
     'Pa_to_kPa': 'x/1000',
