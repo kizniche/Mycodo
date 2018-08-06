@@ -69,7 +69,7 @@ def test_signal_revolutions_special_method_str():
         mock_measure.side_effect = [0.0]
         signal_revolutions = SignalRPMInput(None, testing=True)
         signal_revolutions.read()
-        assert "RPM: 0.00" in str(signal_revolutions)
+        assert "Revolutions: 0.00" in str(signal_revolutions)
 
 
 def test_signal_revolutions_special_method_repr():
