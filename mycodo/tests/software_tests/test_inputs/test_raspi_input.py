@@ -175,10 +175,10 @@ def test_raspberry_pi_gpu_temp_temperature_property():
 
 def test_raspberry_pi_gpu_temp_next_returns_dict():
     """ Expect next() to return string: '{'measurement type':measurement value}' """
-    with mock.patch('mycodo.inputs.raspi.subprocess') as mock_subprocess:
-        mock_subprocess.check_output.side_effect = lambda n: "temp=42.8'C"
+    with mock.patch('mycodo.inputs.raspi.RaspberryPiGPUTemp.get_measurement') as mock_measure:
+        mock_measure.side_effect = [20, 22]
         rpi_gpu = RaspberryPiGPUTemp(None, testing=True)
-        assert rpi_gpu.next() == dict(temperature=42.80)
+        assert rpi_gpu.next() == dict(temperature=20.00)
 
 
 def test_raspberry_pi_gpu_temp_special_method_str():
