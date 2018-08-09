@@ -6,7 +6,8 @@ import math
 
 
 class Kettle(object):
-    """A simulated brewing kettle.
+    """
+    A simulated brewing kettle.
 
     Args:
         diameter (float): Kettle diameter in centimeters.
@@ -37,18 +38,20 @@ class Kettle(object):
         return self._temp
 
     def heat(self, power, duration, efficiency=0.98):
-        """Heat the kettle's content.
+        """
+        Heat the kettle's content.
 
         Args:
             power (float): The power in kW.
             duration (float): The duration in seconds.
             efficiency (float): The efficiency as number between 0 and 1.
         """
-        self._temp += self._get_deltaT(power * efficiency, duration)
+        self._temp += self._get_delta_t(power * efficiency, duration)
         return self._temp
 
     def cool(self, duration, ambient_temp, heat_loss_factor=1):
-        """Make the content loose heat.
+        """
+        Make the content lose heat.
 
         Args:
             duration (float): The duration in seconds.
@@ -63,10 +66,10 @@ class Kettle(object):
 
         # W to kW
         power /= 1000
-        self._temp -= self._get_deltaT(power, duration) * heat_loss_factor
+        self._temp -= self._get_delta_t(power, duration) * heat_loss_factor
         return self._temp
 
-    def _get_deltaT(self, power, duration):
+    def _get_delta_t(self, power, duration):
         # P = Q / t
         # Q = c * m * delta T
         # => delta(T) = (P * t) / (c * m)

@@ -23,8 +23,9 @@ class PIDControl(object):
         time (function): A function which returns the current time in seconds.
     """
 
-    def __init__(self, sampletime, kp, ki, kd, out_min=float('-inf'),
-                 out_max=float('inf'), integrator_min=-500, integrator_max=500, time=time):
+    def __init__(self, sampletime, kp, ki, kd,
+                 out_min=float('-inf'), out_max=float('inf'),
+                 integrator_min=-500, integrator_max=500, time=time):
         if kp is None:
             raise ValueError('kp must be specified')
         if ki is None:
@@ -52,7 +53,9 @@ class PIDControl(object):
         self._time = time
 
     def calc(self, input_val, setpoint):
-        """Adjusts and holds the given setpoint.
+        """
+        Adjusts and holds the given setpoint.
+        Calculates output from measured input.
 
         Args:
             input_val (float): The input value.
@@ -85,13 +88,13 @@ class PIDControl(object):
         self._last_output = min(self._last_output, self._out_max)
         self._last_output = max(self._last_output, self._out_min)
 
-        # Log some debug info
+        # Log debug info
         self._logger.debug('P: {0}'.format(p))
         self._logger.debug('I: {0}'.format(i))
         self._logger.debug('D: {0}'.format(d))
         self._logger.debug('output: {0}'.format(self._last_output))
 
-        # Remember some variables for next time
+        # Remember variables for next calculation
         self._last_input = input_val
         self._last_calc_timestamp = now
 

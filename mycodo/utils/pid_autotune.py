@@ -21,7 +21,7 @@ class PIDAutotune(object):
         out_step (float): The value by which the output will be
             increased/decreased when stepping up/down.
         sampletime (float): The interval between run() calls.
-        loockback (float): The reference period for local minima/maxima.
+        lookback (float): The reference period for local minima/maxima.
         out_min (float): Lower output limit.
         out_max (float): Upper output limit.
         noiseband (float): Determines by how much the input value must
@@ -99,7 +99,8 @@ class PIDAutotune(object):
         return self._tuning_rules.keys()
 
     def get_pid_parameters(self, tuning_rule='ziegler-nichols'):
-        """Get PID parameters.
+        """
+        Get PID parameters.
 
         Args:
             tuning_rule (str): Sets the rule which should be used to calculate
@@ -112,7 +113,8 @@ class PIDAutotune(object):
         return PIDAutotune.PIDParams(kp, ki, kd)
 
     def run(self, input_val):
-        """To autotune a system, this method must be called periodically.
+        """
+        To autotune a system, this method must be called periodically.
 
         Args:
             input_val (float): The input value.
@@ -140,6 +142,7 @@ class PIDAutotune(object):
             self._logger.info('Cycle: {0}'.format(self._total_cycles))
             self._logger.info('switched state: {0}'.format(self._state))
             self._logger.info('input: {0}'.format(input_val))
+
         elif (self._state == PIDAutotune.STATE_RELAY_STEP_DOWN
                 and input_val < self._setpoint - self._noiseband):
             self._state = PIDAutotune.STATE_RELAY_STEP_UP
