@@ -772,6 +772,7 @@ class OutputController(threading.Thread):
             self.pwm_hertz[output_id] = output.pwm_hertz
             self.pwm_library[output_id] = output.pwm_library
             self.pwm_invert_signal[output_id] = output.pwm_invert_signal
+            self.pwm_time_turned_on[output_id] = None
 
             if self.output_pin[output_id]:
                 self.setup_pin(output.unique_id)
