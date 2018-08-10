@@ -15,7 +15,7 @@ from mycodo.config import DEVICES_DEFAULT_LOCATION
 from mycodo.config import LIST_DEVICES_ADC
 from mycodo.config import LIST_DEVICES_SPI
 from mycodo.config_devices_units import DEVICE_INFO
-from mycodo.config_devices_units import MEASUREMENT_UNITS
+from mycodo.config_devices_units import MEASUREMENTS
 from mycodo.databases.models import DisplayOrder
 from mycodo.databases.models import Input
 from mycodo.databases.models import PID
@@ -74,10 +74,10 @@ def input_add(form_add):
         # Set the default measurement values
         list_units = []
         for each_measurement in DEVICE_INFO[form_add.input_type.data]['measure']:
-            if each_measurement in MEASUREMENT_UNITS:
+            if each_measurement in MEASUREMENTS:
                 entry = '{measure},{unit}'.format(
                     measure=each_measurement,
-                    unit=MEASUREMENT_UNITS[each_measurement]['units'][0])
+                    unit=MEASUREMENTS[each_measurement]['units'][0])
                 list_units.append(entry)
         new_input.convert_to_unit = ";".join(list_units)
 

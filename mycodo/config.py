@@ -26,7 +26,9 @@ LANGUAGES = {
     'en': 'English',
     'de': 'Deutsche (German)',
     'es': 'Español (Spanish)',
-    'fr': 'Français (French)'
+    'fr': 'Français (French)',
+    'ru': 'русский язык (Russian)',
+    'zh': '中文 (Chinese)'
 }
 
 # Math controllers

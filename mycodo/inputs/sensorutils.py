@@ -35,7 +35,7 @@ def convert_units(measurement, convert_from_unit, convert_to_unit, measure_value
     Convert from one unit to another, such as ppm to ppb.
     See UNIT_CONVERSIONS in config_devices_units.py for available conversions.
 
-    :param measurement: measurement from MEASUREMENT_UNITS in config_devices_units.py
+    :param measurement: measurement from MEASUREMENTS in config_devices_units.py
     :param convert_from_unit: unit to convert from, from UNITS in config_devices_units.py
     :param convert_to_unit: string of "measurement,unit" of desired units to use (separated by ";")
     :param measure_value: The value to convert

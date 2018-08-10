@@ -91,8 +91,10 @@ Software Features
 -  System upgrade: When a new version is released on github, an upgrade
    can be initiated from the web interface.
 -  Languages: English, `Español (Spanish) <#espa%C3%B1ol-spanish>`__,
-   `Deutsche (German) <#deutsche-german>`__ (partial:
-   `Français (French) <#fran%C3%A7ais-french>`__) (Change
+   `Deutsche (German) <#deutsche-german>`__,
+   `Français (French) <#fran%C3%A7ais-french>`__,
+   `Russian <#russian>`__, and
+   `Chinese <#chinese>`__ (Change
    language under Configure -> Language)
 
 `Read the manual <#manual>`__ for details.
@@ -299,15 +301,13 @@ Languages
 ---------
 
 -  Native: English
--  Complete: `Español (Spanish) <#espa%C3%B1ol-spanish>`__
--  Partial: `Français (French) <#fran%C3%A7ais-french>`__
--  Change language under Configure -> Language
+-  Complete: `Español (Spanish) <#espa%C3%B1ol-spanish>`__,
+   `Deutsche (German) <#deutsche-german>`__,
+   `Français (French) <#fran%C3%A7ais-french>`__,
+   `Russian <#russian>`__, and
+   `Chinese <#chinese>`__
 
-Mycodo has been translated (to varying degrees) to `Spanish
-(Español) <#espa%C3%B1ol-spanish>`__,
-`German (Deutsche) <#deutsche-german>`__ and `French
-(Français) <#fran%C3%A7ais-french>`__ (partially). By default, mycodo
-will display the default language set by your browser. You may also
+By default, mycodo will display the default language set by your browser. You may also
 force a language in the settings at ``[Gear Icon]`` -> ``Configure`` ->
 ``General`` -> ``Language``
 
@@ -378,6 +378,43 @@ des plantes, cultiver des micro-organismes, entretenir l'homéostasie du
 rucher des abeilles, incuber les œufs de serpent et les jeunes animaux,
 vieillir les fromages, fermenter les aliments, entretenir les systèmes
 aquatiques et plus encore.
+
+Russian
+~~~~~~~
+
+Первоначально разработанный для выращивания съедобных грибов, Mycodo
+вырос, чтобы включать в себя способность делать гораздо больше, в том
+числе выращивать растения, культивировать микроорганизмы, поддерживать
+гомеостаз медоносной пчелы, инкубировать животных и яйца, поддерживать
+водные системы, стареющие сыры, ферментировать продукты и табак,
+готовить еда (sous-vide) и многое другое.
+
+Система содержит бэкэнд (демон) и интерфейс (пользовательский
+интерфейс). Бэкэнд выполняет измерения от датчиков и устройств, затем
+координирует разнообразные ответы на эти измерения, в том числе
+возможность модулировать выходы (реле, ШИМ, беспроводные розетки),
+регулировать условия окружающей среды с помощью электрических устройств
+под ПИД-регулированием (устойчивое регулирование или изменение время),
+расписание таймеров, сбор фотографий и потоковое видео, триггерные
+действия, когда измерения соответствуют определенным условиям
+(модулировать реле, выполнять команды, уведомлять по электронной почте
+и т. д.) и многое другое. Интерфейс - это веб-интерфейс, который
+обеспечивает удобную навигацию и настройку с любого устройства с
+поддержкой браузера.
+
+Chinese
+~~~~~~~
+
+Mycodo最初设计用于种植可食用的蘑菇，已经发展到能够做更多的工作，包括种植植物，
+培养微生物，维持蜂蜜蜂房稳态，孵化动物和鸡蛋，维持水生系统，陈年奶酪，
+发酵食品和烟草，烹饪食物（sous-vide）等等。
+
+该系统包括后端（守护进程）和前端（用户界面）。后端从传感器和设备进行测量，
+然后协调对这些测量的各种响应，包括调制输出（继电器，PWM，无线插座）的能力，
+通过PID控制的电气设备调节环境条件（稳定调节或转换时间），安排计时器，捕获照片和流视频，
+在测量满足特定条件时触发动作（调制继电器，执行命令，通过电子邮件通知等）
+等等。前端是一个Web界面，可以从任何支持浏览器的设备轻松导航和配置。
+
 
 .. |Build Status| image:: https://travis-ci.org/kizniche/Mycodo.svg?branch=master
    :target: https://travis-ci.org/kizniche/Mycodo

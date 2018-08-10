@@ -24,7 +24,7 @@ from mycodo.databases.utils import session_scope
 from mycodo.config import LIST_DEVICES_ADC
 from mycodo.config import MATH_INFO
 from mycodo.config_devices_units import UNITS
-from mycodo.config_devices_units import MEASUREMENT_UNITS
+from mycodo.config_devices_units import MEASUREMENTS
 from mycodo.config import SQL_DATABASE_MYCODO
 
 MYCODO_DB_PATH = 'sqlite:///' + SQL_DATABASE_MYCODO
@@ -132,10 +132,10 @@ def upgrade():
             if each_input.convert_to_unit == '' or not each_input.convert_to_unit:
                 list_measure_units = []
                 for each_measure in each_input.measurements.split(','):
-                    if each_measure in MEASUREMENT_UNITS:
+                    if each_measure in MEASUREMENTS:
                         entry = '{meas},{unit}'.format(
                             meas=each_measure,
-                            unit=MEASUREMENT_UNITS[each_measure]['units'][0])
+                            unit=MEASUREMENTS[each_measure]['units'][0])
                         list_measure_units.append(entry)
 
                 string_measure_units = ";".join(list_measure_units)
@@ -152,10 +152,10 @@ def upgrade():
                 for each_measure in each_input.measurements.split(','):
                     if any(each_measure in s for s in list_current_measure_units):
                         pass
-                    elif each_measure in MEASUREMENT_UNITS:
+                    elif each_measure in MEASUREMENTS:
                         entry = '{meas},{unit}'.format(
                             meas=each_measure,
-                            unit=MEASUREMENT_UNITS[each_measure]['units'][0])
+                            unit=MEASUREMENTS[each_measure]['units'][0])
                         list_current_measure_units.append(entry)
 
                 string_measure_units = ";".join(list_current_measure_units)
@@ -167,7 +167,7 @@ def upgrade():
                     each_input.cmd_measurement_units != ''):
                 measurement = re.sub('[^0-9a-zA-Z]+', '_', each_input.cmd_measurement).lower()
                 unit = re.sub('[^0-9a-zA-Z]+', '_', each_input.cmd_measurement_units)
-                if each_input.cmd_measurement not in MEASUREMENT_UNITS:
+                if each_input.cmd_measurement not in MEASUREMENTS:
                     new_measurement = Measurement()
                     new_measurement.name_safe = measurement
                     new_measurement.name = measurement
@@ -189,7 +189,7 @@ def upgrade():
                     each_input.adc_measure_units != ''):
                 measurement = re.sub('[^0-9a-zA-Z]+', '_', each_input.adc_measure).lower()
                 unit = re.sub('[^0-9a-zA-Z]+', '_', each_input.adc_measure_units)
-                if each_input.cmd_measurement not in MEASUREMENT_UNITS:
+                if each_input.cmd_measurement not in MEASUREMENTS:
                     new_measurement = Measurement()
                     new_measurement.name_safe = measurement
                     new_measurement.name = measurement
@@ -212,7 +212,7 @@ def upgrade():
             if each_math.measure != '' and each_math.measure_units != '':
                 measurement = re.sub('[^0-9a-zA-Z]+', '_', measurement).lower()
                 unit = re.sub('[^0-9a-zA-Z]+', '_', unit)
-                if measurement not in MEASUREMENT_UNITS:
+                if measurement not in MEASUREMENTS:
                     new_measurement = Measurement()
                     new_measurement.name_safe = measurement
                     new_measurement.name = measurement
@@ -238,14 +238,14 @@ def upgrade():
             if ',' in each_math.measure:
                 # Set the default measurement values
                 for each_measurement in MATH_INFO[each_math.math_type]['measure']:
-                    if each_measurement in MEASUREMENT_UNITS:
+                    if each_measurement in MEASUREMENTS:
                         add_custom_entry_from_math(
                             each_math,
                             each_measurement,
-                            MEASUREMENT_UNITS[each_measurement]['units'][0])
+                            MEASUREMENTS[each_measurement]['units'][0])
                         entry = '{measure},{unit}'.format(
                             measure=each_measurement,
-                            unit=MEASUREMENT_UNITS[each_measurement]['units'][0])
+                            unit=MEASUREMENTS[each_measurement]['units'][0])
                         list_units.append(entry)
                 each_math.measure_units = ";".join(list_units)
             else:

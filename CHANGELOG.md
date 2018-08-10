@@ -8,6 +8,8 @@
  - Add option to display IP address on LCD ([#507](https://github.com/kizniche/mycodo/issues/507))
  - Full German Translation ([#507](https://github.com/kizniche/mycodo/issues/507)) (@pmunz75)
  - Add PID Autotune feature (currently disabled; may be enabled in the release, pending testing)
+ - Add New Translations: Russian, Chinese
+ - Complete Translations: German, Spanish, French
 
 ### Bugfixes
 

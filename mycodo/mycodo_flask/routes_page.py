@@ -42,7 +42,7 @@ from mycodo.config import RESTORE_LOG_FILE
 from mycodo.config import UPGRADE_LOG_FILE
 from mycodo.config import USAGE_REPORTS_PATH
 from mycodo.config_devices_units import DEVICE_INFO
-from mycodo.config_devices_units import MEASUREMENT_UNITS
+from mycodo.config_devices_units import MEASUREMENTS
 from mycodo.config_devices_units import UNITS
 from mycodo.databases.models import AlembicVersion
 from mycodo.databases.models import Camera
@@ -475,7 +475,7 @@ def page_dashboard():
                            colors_gauge_solid_form=colors_gauge_solid_form,
                            dict_measurements=dict_measurements,
                            dict_units=dict_units,
-                           measurement_units=MEASUREMENT_UNITS,
+                           measurement_units=MEASUREMENTS,
                            units=UNITS,
                            use_unit=use_unit,
                            display_order=display_order,
@@ -541,7 +541,7 @@ def page_graph_async():
                            start_time_epoch=start_time_epoch,
                            dict_measurements=dict_measurements,
                            dict_units=dict_units,
-                           measurement_units=MEASUREMENT_UNITS,
+                           measurement_units=MEASUREMENTS,
                            use_unit=use_unit,
                            input=input_dev,
                            math=math,
@@ -842,7 +842,7 @@ def page_live():
                            dict_measurements=dict_measurements,
                            dict_units=dict_units,
                            LIST_DEVICES_ADC=LIST_DEVICES_ADC,
-                           measurement_units=MEASUREMENT_UNITS,
+                           measurement_units=MEASUREMENTS,
                            math=math,
                            method=method,
                            output=output,
@@ -1094,7 +1094,7 @@ def page_function():
                            method=method,
                            output=output,
                            pid=pid,
-                           units=MEASUREMENT_UNITS,
+                           units=MEASUREMENTS,
                            user=user,
                            sunrise_sunset_calculated=sunrise_sunset_calculated)
 
@@ -1325,7 +1325,7 @@ def page_data():
                            math_templates=math_templates,
                            output=output,
                            pid=pid,
-                           measurements=MEASUREMENT_UNITS,
+                           measurements=MEASUREMENTS,
                            units=UNITS,
                            user=user,
                            w1thermsensor_sensors=w1thermsensor_sensors,

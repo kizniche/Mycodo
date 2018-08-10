@@ -59,7 +59,7 @@ import timeit
 import RPi.GPIO as GPIO
 
 from mycodo.config import MYCODO_VERSION
-from mycodo.config_devices_units import MEASUREMENT_UNITS
+from mycodo.config_devices_units import MEASUREMENTS
 from mycodo.config_devices_units import UNITS
 from mycodo.databases.models import Input
 from mycodo.databases.models import LCD
@@ -110,7 +110,7 @@ class LCDController(threading.Thread):
             self.list_pids = ['setpoint', 'pid_time']
             self.list_outputs = ['duration_time', 'output_time', 'output_state']
 
-            self.list_inputs = MEASUREMENT_UNITS
+            self.list_inputs = MEASUREMENTS
             self.list_inputs.update(
                 {'input_time': {'unit': None, 'name': 'Time'}})
             self.list_inputs.update(

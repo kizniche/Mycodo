@@ -11,7 +11,7 @@ from collections import OrderedDict
 import os
 
 from mycodo.config import INSTALL_DIRECTORY
-from mycodo.config_devices_units import MEASUREMENT_UNITS
+from mycodo.config_devices_units import MEASUREMENTS
 from mycodo.config_devices_units import UNITS
 from mycodo.config_devices_units import UNIT_CONVERSIONS
 
@@ -40,7 +40,7 @@ def add_custom_measurements(measurements):
     """
     Returns the measurement dictionary appended with custom measurements/units
     """
-    return_measurements = MEASUREMENT_UNITS
+    return_measurements = MEASUREMENTS
 
     for each_measure in measurements:
         if each_measure.name_safe not in return_measurements:

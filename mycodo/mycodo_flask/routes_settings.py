@@ -14,7 +14,7 @@ from flask.blueprints import Blueprint
 from mycodo.config import CAMERA_LIBRARIES
 from mycodo.config import LANGUAGES
 from mycodo.config import THEMES
-from mycodo.config_devices_units import MEASUREMENT_UNITS
+from mycodo.config_devices_units import MEASUREMENTS
 from mycodo.config_devices_units import UNITS
 from mycodo.databases.models import Camera
 from mycodo.databases.models import Conversion
@@ -196,7 +196,7 @@ def settings_measurement():
                            conversions_dict=conversions_dict,
                            choices_units=choices_units,
                            units=UNITS,
-                           measurement_units=MEASUREMENT_UNITS,
+                           measurement_units=MEASUREMENTS,
                            measurement=measurement,
                            unit=unit,
                            conversion=conversion,

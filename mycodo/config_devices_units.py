@@ -308,7 +308,7 @@ DEVICE_INFO = {
 
 # Measurement information
 # First unit in list is the default unit when Input is created
-MEASUREMENT_UNITS = {
+MEASUREMENTS = {
     'altitude': {
         'name': lazy_gettext('Altitude'),
         'meas': 'altitude',
@@ -348,7 +348,7 @@ MEASUREMENT_UNITS = {
     'duration_time': {
         'name': lazy_gettext('Duration'),
         'meas': 'duration_time',
-        'units': ['second', 'minute']},
+        'units': ['second']},
     'duty_cycle': {
         'name': lazy_gettext('Duty Cycle'),
         'meas': 'duty_cycle',

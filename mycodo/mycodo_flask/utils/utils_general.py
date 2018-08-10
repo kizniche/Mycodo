@@ -19,7 +19,7 @@ from mycodo.config import METHOD_INFO
 from mycodo.config import OUTPUT_INFO
 from mycodo.config import PATH_CAMERAS
 from mycodo.config_devices_units import DEVICE_INFO
-from mycodo.config_devices_units import MEASUREMENT_UNITS
+from mycodo.config_devices_units import MEASUREMENTS
 from mycodo.config_devices_units import UNITS
 from mycodo.databases.models import Camera
 from mycodo.databases.models import Conditional
@@ -167,7 +167,7 @@ def choices_measurements(measurements):
             name=each_meas.name,
             units=each_meas.units)
         choices.update({value: display})
-    for each_meas, each_info in MEASUREMENT_UNITS.items():
+    for each_meas, each_info in MEASUREMENTS.items():
         value = '{meas}'.format(
             meas=each_meas)
         display = '{name} ({units})'.format(

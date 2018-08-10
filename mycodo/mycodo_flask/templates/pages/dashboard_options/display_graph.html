@@ -291,8 +291,8 @@
           name: '{{each_output.name}} ({{_('Duration')}}, s)',
           type: 'column',
           dataGrouping: {
-            approximation: 'low',
-            groupPixelWidth: 3
+            approximation: 'high',
+            groupPixelWidth: 1
           },
           tooltip: {
             valueSuffix: ' sec',
@@ -306,8 +306,8 @@
           name: '{{each_output.name}} ({{_('Duty Cycle')}}, %)',
           type: 'column',
           dataGrouping: {
-            approximation: 'low',
-            groupPixelWidth: 3
+            approximation: 'high',
+            groupPixelWidth: 1
           },
           tooltip: {
             valueSuffix: ' %',

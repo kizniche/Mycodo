@@ -7,7 +7,7 @@ from flask import url_for
 from flask_babel import gettext
 
 from mycodo.config import MATH_INFO
-from mycodo.config_devices_units import MEASUREMENT_UNITS
+from mycodo.config_devices_units import MEASUREMENTS
 from mycodo.databases.models import DisplayOrder
 from mycodo.databases.models import Input
 from mycodo.databases.models import Math
@@ -52,10 +52,10 @@ def math_add(form_add_math):
         # Set the default measurement values
         list_units = []
         for each_measurement in MATH_INFO[form_add_math.math_type.data]['measure']:
-            if each_measurement in MEASUREMENT_UNITS:
+            if each_measurement in MEASUREMENTS:
                 entry = '{measure},{unit}'.format(
                     measure=each_measurement,
-                    unit=MEASUREMENT_UNITS[each_measurement]['units'][0])
+                    unit=MEASUREMENTS[each_measurement]['units'][0])
                 list_units.append(entry)
         new_math.measure_units = ";".join(list_units)
 
