@@ -18,7 +18,7 @@ Originally designed to cultivate edible mushrooms, Mycodo has grown to
 include the ability to do much more, including cultivating plants,
 culturing microorganisms, maintaining honey bee apiary homeostasis,
 incubating animals and eggs, maintaining aquatic systems, aging cheeses,
-fermenting foods and tobacco, cooking food (vous-vide), and more.
+fermenting foods and tobacco, cooking food (sous-vide), and more.
 
 The system comprises a backend (daemon) and a frontend (user interface).
 The backend conducts measurements from sensors and devices, then
@@ -327,7 +327,7 @@ die Fähigkeit, viel mehr zu tun, einschließlich der Kultivierung von
 Pflanzen, Kultivierung von Mikroorganismen, Aufrechterhaltung der
 Imkerei-Homöostase, Inkubation von Tieren und Eiern, Aufrechterhaltung
 aquatischer Systeme, Alterung von Käse, Fermentierung von Lebensmitteln
-und Tabak, Kochen Essen (vous-vide) und mehr.
+und Tabak, Kochen Essen (sous-vide) und mehr.
 
 Das System umfasst ein Backend (Daemon) und ein Frontend
 (Benutzerschnittstelle). Das Backend führt Messungen von Sensoren und
