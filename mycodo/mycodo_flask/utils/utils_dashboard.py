@@ -579,6 +579,11 @@ def check_func(all_devices, unique_id, y_axes, measurement, dict_measurements, i
                 if 'second' not in y_axes:
                     y_axes.append('second')
 
+            # Add duty cycle
+            elif measurement == 'duty_cycle':
+                if 'percent' not in y_axes:
+                    y_axes.append('percent')
+
             # Use Linux Command measurement
             elif (all_devices == input_dev and
                     len(each_device.convert_to_unit.split(',')) == 2 and
