@@ -96,6 +96,25 @@ class LCDController(threading.Thread):
         self.display_ids = []
         self.display_count = 0
 
+        self.LCD_LINE = {
+            1: 0x80,
+            2: 0xC0,
+            3: 0x94,
+            4: 0xD4
+        }
+
+        self.LCD_CHR = 1  # Mode - Sending data
+        self.LCD_CMD = 0  # Mode - SenLCDding command
+
+        self.LCD_BACKLIGHT = 0x08  # On
+        self.LCD_BACKLIGHT_OFF = 0x00  # Off
+
+        self.ENABLE = 0b00000100  # Enable bit
+
+        # Timing constants
+        self.E_PULSE = 0.0005
+        self.E_DELAY = 0.0005
+
         try:
             lcd = db_retrieve_table_daemon(LCD, unique_id=self.lcd_id)
             self.lcd_name = lcd.name
@@ -172,25 +191,6 @@ class LCDController(threading.Thread):
                         each_lcd_display.line_4_measurement)
 
             self.LCD_WIDTH = self.lcd_x_characters  # Max characters per line
-
-            self.LCD_LINE = {
-                1: 0x80,
-                2: 0xC0,
-                3: 0x94,
-                4: 0xD4
-            }
-
-            self.LCD_CHR = 1  # Mode - Sending data
-            self.LCD_CMD = 0  # Mode - SenLCDding command
-
-            self.LCD_BACKLIGHT = 0x08  # On
-            self.LCD_BACKLIGHT_OFF = 0x00  # Off
-
-            self.ENABLE = 0b00000100  # Enable bit
-
-            # Timing constants
-            self.E_PULSE = 0.0005
-            self.E_DELAY = 0.0005
 
             # Setup I2C bus
             try:
@@ -429,8 +429,10 @@ class LCDController(threading.Thread):
                     measurement in use_unit[device_id] and
                     use_unit[device_id][measurement] is not None):
                 self.lcd_line[display_id][line]['unit'] = UNITS[use_unit[device_id][measurement]]['unit']
-            else:
+            elif 'unit' in self.list_inputs[measurement]:
                 self.lcd_line[display_id][line]['unit'] = self.list_inputs[measurement]['unit']
+            else:
+                self.lcd_line[display_id][line]['unit'] = ''
         else:
             self.lcd_line[display_id][line]['unit'] = ''
 

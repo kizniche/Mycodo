@@ -590,7 +590,6 @@ class DaemonController:
                       " {err}".format(err=except_msg)
             self.logger.exception(message)
 
-
     def lcd_flash(self, lcd_id, state):
         """
         Begin or end a repeated flashing of an LCD
@@ -607,12 +606,13 @@ class DaemonController:
         try:
             return self.controller['LCD'][lcd_id].lcd_flash(state)
         except KeyError:
-            message = "Cannot stop flashing, LCD not running"
+            message = "Cannot modulate flashing ({state}): " \
+                      "LCD not running".format(state=state)
             self.logger.exception(message)
             return 0, message
         except Exception as except_msg:
-            message = "Could not flash LCD:" \
-                      " {err}".format(err=except_msg)
+            message = "Could not flash LCD ({state}):" \
+                      " {err}".format(state=state, err=except_msg)
             self.logger.exception(message)
 
     def pid_hold(self, pid_id):

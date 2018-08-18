@@ -1,3 +1,10 @@
+## 6.2.1 (2018-08-18)
+
+### Bugfixes
+
+ - Fix issue with units on LCDs ([#514](https://github.com/kizniche/mycodo/issues/514))
+
+
 ## 6.2.0 (2018-08-15)
 
 ### Features
@@ -141,6 +148,7 @@
  - Fix display of graph custom y-axis names
  - Fix inability to change pigpiod sample rate ([#458](https://github.com/kizniche/mycodo/issues/458))
 
+
 ## 6.0.6 (2018-04-23)
 
 ### Bugfixes
@@ -161,6 +169,7 @@
  - Fix dependency check ([#422](https://github.com/kizniche/mycodo/issues/422))
  - Try lower integration times when TSL2561 sensor is saturated ([#450](https://github.com/kizniche/mycodo/issues/450))
  - Fix DHT11/DHT22 output power check ([#454](https://github.com/kizniche/mycodo/issues/454))
+
 
 ## 6.0.4 (2018-04-21)
 
