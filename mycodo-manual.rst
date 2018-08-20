@@ -2023,6 +2023,30 @@ differences in hardware and software.
 | Flip vertically       | Flip, or mirror, the image vertically.          |
 +-----------------------+-------------------------------------------------+
 
+Diagnostic Settings
+-------------------
+
+[Gear Icon] -> Configuration -> Diagnostics
+
+Sometimes issues arise in the system as a result of incompatible
+configurations, either the result of a misconfigured part of the system
+(Input, Output, etc.) or an update that didn't properly handle a database
+upgrade, or other unforeseen issue. Sometimes it is necessary to perform
+diagnostic actions that can determine the cause of the issue or fix the
+issue itself. The options below are meant to alleviate issues, such as a
+misconfigured dashboard element causing an error on the Dashboard page,
+which may cause an inability to access the Dashboard page to correct the
+issue. Deleting all Dashboard Elements may be the most economical method
+to enable access to the Dashboard page again, at the cost of having to
+readd all the Dashboard Elements that were once there.
+
++-------------------------------+-------------------------------------------------+
+| Setting                       | Description                                     |
++===============================+=================================================+
+| Delete All Dashboard Elements | Delete all saved Dashboard Elements from the    |
+|                               | Dashboard.                                      |
++-------------------------------+-------------------------------------------------+
+
 Miscellaneous
 =============
 

@@ -1,0 +1,24 @@
+{% extends "layout-settings.html" %}
+{% set active_page = "settings" %}
+{% set active_settings = "diagnostic" %}
+{% set help_page = ["diagnostic-settings", _('Diagnostics')] %}
+
+{% block title %} - {{_('Diagnostics')}}{% endblock %}
+
+{% block settings %}
+  <!-- Route: /settings/diagnostic -->
+  <h3 style="text-align: right; padding-bottom: 1.3em;"><a href="/help#diagnostic-settings" target="_blank"><span style="font-size: 16px" class="fas fa-question-circle"></span></a> {{_('Diagnostics')}}</h3>
+
+  <form class="form-horizontal" method="post" action="/settings/diagnostic">
+    <input type="hidden" name="form-name" value="Pi">
+    {{form_settings_diagnostic.csrf_token}}
+
+    <div class="row small-gutters">
+      <div class="col-auto">
+        {{form_settings_diagnostic.delete_dashboard_elements(class_='btn btn-primary')}}
+      </div>
+    </div>
+
+  </form>
+
+{% endblock %}

@@ -17,6 +17,7 @@ from mycodo.databases.models import Camera
 from mycodo.databases.models import Conversion
 from mycodo.databases.models import Measurement
 from mycodo.databases.models import Misc
+from mycodo.databases.models import Dashboard
 from mycodo.databases.models import Role
 from mycodo.databases.models import SMTP
 from mycodo.databases.models import Unit
@@ -818,6 +819,26 @@ def camera_del(form_camera):
             error.append(except_msg)
 
     flash_success_errors(error, action, url_for('routes_settings.settings_camera'))
+
+
+def settings_diagnostic_delete_dashboard_elements():
+    action = '{action} {controller}'.format(
+        action=gettext("Delete"),
+        controller=gettext("All Graphs"))
+    error = []
+
+    dashboard = db_retrieve_table(Dashboard)
+
+    if not error:
+        try:
+            for each_dash in dashboard:
+                db.session.delete(each_dash)
+                db.session.commit()
+        except Exception as except_msg:
+            error.append(except_msg)
+
+    flash_success_errors(error, action, url_for('routes_settings.settings_diagnostic'))
+
 
 
 def is_valid_hostname(hostname):

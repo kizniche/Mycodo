@@ -25,6 +25,7 @@
           <a class="list-group-item collapsed{% if active_settings == 'pi' %} active{% endif %}" href="{{url_for('routes_settings.settings_pi')}}"><i class="fab fa-linux"></i>&nbsp;&nbsp;{{_('Raspberry Pi')}}</a>
           <a class="list-group-item collapsed{% if active_settings == 'alerts' %} active{% endif %}" href="{{url_for('routes_settings.settings_alerts')}}"><i class="fas fa-bell"></i>&nbsp;&nbsp;{{_('Alerts')}}</a>
           <a class="list-group-item collapsed{% if active_settings == 'camera' %} active{% endif %}" href="{{url_for('routes_settings.settings_camera')}}"><i class="fas fa-camera"></i>&nbsp;&nbsp;{{_('Cameras')}}</a>
+          <a class="list-group-item collapsed{% if active_settings == 'diagnostic' %} active{% endif %}" href="{{url_for('routes_settings.settings_diagnostic')}}"><i class="fas fa-wrench"></i>&nbsp;&nbsp;{{_('Diagnostics')}}</a>
         </div>
       </div>
       <div class="col-md-9 col-xs-11 p-l-2 p-t-2" style="padding-bottom: 1em">

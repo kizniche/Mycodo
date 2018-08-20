@@ -1,8 +1,9 @@
-## 6.2.1 (2018-08-18)
+## 6.2.1 (2018-08-20)
 
 ### Bugfixes
 
  - Fix issue with units on LCDs ([#514](https://github.com/kizniche/mycodo/issues/514))
+ - Add Diagnostic section of configuration menu with first function: Delete All Dashboard Elements ([#515](https://github.com/kizniche/mycodo/issues/515), [#516](https://github.com/kizniche/mycodo/issues/516))
 
 
 ## 6.2.0 (2018-08-15)

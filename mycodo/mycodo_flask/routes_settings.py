@@ -247,6 +247,7 @@ def settings_users():
                            form_mod_user=form_mod_user,
                            form_user_roles=form_user_roles)
 
+
 @blueprint.route('/settings/pi', methods=('GET', 'POST'))
 @flask_login.login_required
 def settings_pi():
@@ -286,6 +287,29 @@ def settings_pi():
                            pi_settings=pi_settings,
                            pigpiod_sample_rate=pigpiod_sample_rate,
                            form_settings_pi=form_settings_pi)
+
+
+@blueprint.route('/settings/diagnostic', methods=('GET', 'POST'))
+@flask_login.login_required
+def settings_diagnostic():
+    """ Display general settings """
+    if not utils_general.user_has_permission('view_settings'):
+        return redirect(url_for('routes_general.home'))
+
+    form_settings_diagnostic = forms_settings.SettingsDiagnostic()
+
+    if request.method == 'POST':
+        if not utils_general.user_has_permission('edit_settings'):
+            return redirect(url_for('routes_general.home'))
+
+        if form_settings_diagnostic.delete_dashboard_elements.data:
+            utils_settings.settings_diagnostic_delete_dashboard_elements()
+
+        return redirect(url_for('routes_settings.settings_diagnostic'))
+
+    return render_template('settings/diagnostic.html',
+                           form_settings_diagnostic=form_settings_diagnostic)
+
 
 def get_raspi_config_settings():
     settings = {}
