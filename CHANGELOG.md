@@ -1,3 +1,10 @@
+## 6.2.2 (Unreleased)
+
+### Bugfixes
+
+ - Fix display of IP address on LCD ([#507](https://github.com/kizniche/mycodo/issues/507))
+
+
 ## 6.2.1 (2018-08-20)
 
 ### Features

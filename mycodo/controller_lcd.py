@@ -294,7 +294,7 @@ class LCDController(threading.Thread):
                 IP_out, _, _ = cmd_output(str_IP_cmd)
                 self.lcd_line[display_id][i]['name'] = ''
                 self.lcd_line[display_id][i]['unit'] = ''
-                self.lcd_line[display_id][i]['measure_val'] = IP_out.rstrip()
+                self.lcd_line[display_id][i]['measure_val'] = IP_out.rstrip().decode("utf-8")
                 return True
             elif self.lcd_line[display_id][i]['measure'] == 'output_state':
                 self.lcd_line[display_id][i]['measure_val'] = self.output_state(
@@ -369,9 +369,14 @@ class LCDController(threading.Thread):
                         self.lcd_line[display_id][i]['measure_val']))
                     name_length = self.lcd_x_characters - value_length - 1
                     name_cropped = self.lcd_line[display_id][i]['name'][:name_length]
-                    self.lcd_string_line[display_id][i] = '{name} {value}'.format(
-                        name=name_cropped,
-                        value=self.lcd_line[display_id][i]['measure_val'])
+                    if name_cropped != '':
+                        line_str = '{name} {value}'.format(
+                            name=name_cropped,
+                            value=self.lcd_line[display_id][i]['measure_val'])
+                    else:
+                        line_str = self.lcd_line[display_id][i]['measure_val']
+                    self.lcd_string_line[display_id][i] = line_str
+
             else:
                 error = 'NO DATA'
                 name_length = self.lcd_x_characters - len(error) - 1
