@@ -1,5 +1,9 @@
 ## 6.2.2 (Unreleased)
 
+### Features
+
+ - Add translations: Italian, Portuguese
+
 ### Bugfixes
 
  - Fix display of IP address on LCD ([#507](https://github.com/kizniche/mycodo/issues/507))

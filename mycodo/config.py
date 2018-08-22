@@ -27,6 +27,8 @@ LANGUAGES = {
     'de': 'Deutsche (German)',
     'es': 'Español (Spanish)',
     'fr': 'Français (French)',
+    'it': 'Italiano (Italian)',
+    'pt': 'Português (Portuguese)',
     'ru': 'русский язык (Russian)',
     'zh': '中文 (Chinese)'
 }

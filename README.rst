@@ -5,7 +5,10 @@ Environmental Regulation System
 
 Latest version: 6.2.1 |Build Status| |Codacy Badge| |DOI|
 
-`Mycodo Manual <https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.rst>`__ (`PDF <https://github.com/kizniche/Mycodo/raw/master/mycodo-manual.pdf>`__, `HTML <http://htmlpreview.github.io/?https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.html>`__, `TEXT <https://raw.githubusercontent.com/kizniche/Mycodo/master/mycodo-manual.txt>`__)
+`Mycodo Manual <https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.rst>`__
+(`PDF <https://github.com/kizniche/Mycodo/raw/master/mycodo-manual.pdf>`__,
+`HTML <http://htmlpreview.github.io/?https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.html>`__,
+`TEXT <https://raw.githubusercontent.com/kizniche/Mycodo/master/mycodo-manual.txt>`__)
 
 `Mycodo Wiki <https://github.com/kizniche/Mycodo/wiki>`__
 
@@ -93,6 +96,8 @@ Software Features
 -  Languages: English, `Español (Spanish) <#espa%C3%B1ol-spanish>`__,
    `Deutsche (German) <#deutsche-german>`__,
    `Français (French) <#fran%C3%A7ais-french>`__,
+   `Italian <#italian>`__,
+   `Portuguese <#portuguese>`__,
    `Russian <#russian>`__, and
    `Chinese <#chinese>`__ (Change
    language under Configure -> Language)
@@ -304,12 +309,18 @@ Languages
 -  Complete: `Español (Spanish) <#espa%C3%B1ol-spanish>`__,
    `Deutsche (German) <#deutsche-german>`__,
    `Français (French) <#fran%C3%A7ais-french>`__,
+   `Italian <#italian>`__,
+   `Portuguese <#portuguese>`__,
    `Russian <#russian>`__, and
    `Chinese <#chinese>`__
 
 By default, mycodo will display the default language set by your browser. You may also
 force a language in the settings at ``[Gear Icon]`` -> ``Configure`` ->
 ``General`` -> ``Language``
+
+If you would like to improve the translations, you can submit a pull request with an
+amended .po file from ~/Mycodo/mycodo/mycodo_flask/translations/ or start a
+`New Issue <https://github.com/kizniche/Mycodo/issues/new>`__ detailing the corrections.
 
 English
 ~~~~~~~
@@ -378,6 +389,55 @@ des plantes, cultiver des micro-organismes, entretenir l'homéostasie du
 rucher des abeilles, incuber les œufs de serpent et les jeunes animaux,
 vieillir les fromages, fermenter les aliments, entretenir les systèmes
 aquatiques et plus encore.
+
+Italian
+~~~~~~~
+
+Mycodo è un sistema di monitoraggio e regolazione automatico che è
+stato creato per funzionare su Raspberry Pi (versioni Zero, 1, 2 e 3).
+
+Originariamente progettato per coltivare funghi commestibili, Mycodo
+è cresciuto fino a comprendere la possibilità di fare molto di più,
+coltivando piante, coltivando microrganismi, mantenendo l'omeostasi
+delle api apistiche del miele, incubando animali e uova, mantenendo
+sistemi acquatici, formaggi stagionati, alimenti fermentati e tabacco,
+cucinando cibo (sous-vide), e altro ancora.
+
+Il sistema comprende un backend (demone) e un frontend (interfaccia
+utente). Il back-end esegue misurazioni da sensori e dispositivi,
+quindi coordina una serie diversificata di risposte a tali misurazioni,
+inclusa la possibilità di modulare le uscite (relè, PWM, prese wireless),
+regola le condizioni ambientali con dispositivi elettrici sotto controllo
+PID (regolazione costante o commutazione tempo), programmare i timer,
+acquisire foto e riprodurre video in streaming, attivare azioni quando
+le misurazioni soddisfano determinate condizioni (moduli relè, comandi
+di esecuzione, notifica via e-mail, ecc.) e altro. Il frontend è
+un'interfaccia web che consente una facile navigazione e configurazione
+da qualsiasi dispositivo abilitato per il browser.
+
+Portuguese
+~~~~~~~~~~
+Mycodo é um sistema automatizado de monitoramento e regulação que foi
+construído para rodar no Raspberry Pi (versões Zero, 1, 2 e 3).
+
+Originalmente projetado para cultivar cogumelos comestíveis, o Mycodo
+cresceu para incluir a capacidade de fazer muito mais, incluindo
+cultivar plantas, cultivar microorganismos, manter a homeostase do
+apiário de abelhas, incubar animais e ovos, manter sistemas aquáticos,
+queijos envelhecidos, fermentar alimentos e tabaco, cozinhar comida
+(sous-vide) e muito mais.
+
+O sistema compreende um backend (daemon) e um frontend (interface de
+usuário). O backend realiza medições a partir de sensores e dispositivos
+e coordena um conjunto diversificado de respostas a essas medições,
+incluindo a capacidade de modular saídas (relés, PWM, tomadas sem fio),
+regular condições ambientais com dispositivos elétricos sob controle PID
+(regulação estável ou troca tempo), agendar cronômetros, capturar fotos
+e transmitir vídeo, desencadear ações quando as medições atenderem a
+determinadas condições (modular relés, executar comandos, notificar por
+e-mail etc.) e muito mais. O frontend é uma interface da Web que permite
+fácil navegação e configuração a partir de qualquer dispositivo
+habilitado para navegador.
 
 Russian
 ~~~~~~~
