@@ -1,4 +1,4 @@
-## 6.2.2 (Unreleased)
+## 6.2.2 (2018-08-22)
 
 ### Features
 
@@ -8,6 +8,7 @@
 
  - Fix display of IP address on LCD ([#507](https://github.com/kizniche/mycodo/issues/507))
  - Fix graph manual y-axis min/max ([#516](https://github.com/kizniche/mycodo/issues/516))
+ - Fix issue with deleting all dashboard elements
 
 
 ## 6.2.1 (2018-08-20)

@@ -15,9 +15,10 @@ from flask_babel import gettext
 from mycodo.config import INSTALL_DIRECTORY
 from mycodo.databases.models import Camera
 from mycodo.databases.models import Conversion
+from mycodo.databases.models import Dashboard
+from mycodo.databases.models import DisplayOrder
 from mycodo.databases.models import Measurement
 from mycodo.databases.models import Misc
-from mycodo.databases.models import Dashboard
 from mycodo.databases.models import Role
 from mycodo.databases.models import SMTP
 from mycodo.databases.models import Unit
@@ -828,12 +829,15 @@ def settings_diagnostic_delete_dashboard_elements():
     error = []
 
     dashboard = db_retrieve_table(Dashboard)
+    display_order = db_retrieve_table(DisplayOrder, entry='first')
 
     if not error:
         try:
             for each_dash in dashboard:
                 db.session.delete(each_dash)
                 db.session.commit()
+            display_order.dashboard = ''
+            db.session.commit()
         except Exception as except_msg:
             error.append(except_msg)
 
