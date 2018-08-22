@@ -83,10 +83,9 @@
     {% for each_axis_meas in y_axes[each_graph.unique_id] if each_axis_meas in dict_units %}
       {
         {% if each_graph.enable_manual_y_axis and
-             not (custom_yaxes[each_graph.unique_id][dict_measurements[each_axis_meas]['meas']]['minimum'] == '0' and
-                  custom_yaxes[each_graph.unique_id][dict_measurements[each_axis_meas]['meas']]['maximum'] == '0') %}
-        min: {{custom_yaxes[each_graph.unique_id][dict_measurements[each_axis_meas]['meas']]['minimum']}},
-        max: {{custom_yaxes[each_graph.unique_id][dict_measurements[each_axis_meas]['meas']]['maximum']}},
+             custom_yaxes[each_graph.unique_id][each_axis_meas]['minimum'] != custom_yaxes[each_graph.unique_id][each_axis_meas]['maximum'] %}
+        min: {{custom_yaxes[each_graph.unique_id][each_axis_meas]['minimum']}},
+        max: {{custom_yaxes[each_graph.unique_id][each_axis_meas]['maximum']}},
         startOnTick: {% if each_graph.enable_start_on_tick %}true{% else %}false{% endif %},
         endOnTick: {% if each_graph.enable_end_on_tick %}true{% else %}false{% endif %},
         {% endif %}

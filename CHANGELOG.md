@@ -7,6 +7,7 @@
 ### Bugfixes
 
  - Fix display of IP address on LCD ([#507](https://github.com/kizniche/mycodo/issues/507))
+ - Fix graph manual y-axis min/max ([#516](https://github.com/kizniche/mycodo/issues/516))
 
 
 ## 6.2.1 (2018-08-20)
