@@ -440,7 +440,7 @@ def admin_upgrade():
                 mod_misc.mycodo_upgrade_available = False
                 db.session.commit()
                 flash(gettext("The upgrade has started"), "success")
-        elif (form_upgrade.upgrade_major_version.data and
+        elif (form_upgrade.upgrade_next_major_version.data and
                 upgrade_available):
             backup_size, free_before, free_after = can_perform_backup()
             if free_after / 1000000 < 50:

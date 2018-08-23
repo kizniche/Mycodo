@@ -1,3 +1,10 @@
+## 6.2.3 (Unreleased)
+
+### Bugfixes
+
+ - Fix issue with major version upgrade initialization
+
+
 ## 6.2.2 (2018-08-22)
 
 ### Features
