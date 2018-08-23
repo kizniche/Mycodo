@@ -2,7 +2,8 @@
 """ Starts the mycodo flask UI """
 import argparse
 import sys
-import os.path
+import os
+
 sys.path.append(
     os.path.abspath(os.path.join(os.path.dirname(__file__), os.path.pardir)))
 

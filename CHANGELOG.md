@@ -3,6 +3,7 @@
 ### Bugfixes
 
  - Fix issue with major version upgrade initialization
+ - Fix issue with PWM output dashboard element updating ([#517](https://github.com/kizniche/mycodo/issues/517))
 
 
 ## 6.2.2 (2018-08-22)

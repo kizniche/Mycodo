@@ -205,9 +205,8 @@ def gpio_state_unique_id(unique_id):
             state = 'off'
     elif (output.output_type in ['command', 'command_pwm'] or
             (output.output_type in ['pwm', 'wireless_433MHz_pi_switch'] and
-             output.pin and
-             -1 < output.pin < 40)):
-        state = daemon_control.output_state(output.id)
+             output.pin and -1 < output.pin < 40)):
+        state = daemon_control.output_state(output.unique_id)
     else:
         state = None
 
