@@ -402,23 +402,29 @@ def admin_upgrade():
         mod_misc.mycodo_upgrade_available = upgrade_available
         db.session.commit()
 
+    def not_enough_space_upgrade():
+        backup_size, free_before, free_after = can_perform_backup()
+        if free_after / 1000000 < 50:
+            flash(
+                "A backup must be performed during an upgrade and there is "
+                "not enough free space to perform a backup. A backup "
+                "requires {size_bu:.1f} MB but there is only {size_free:.1f} "
+                "MB available, which would leave {size_after:.1f} MB after "
+                "the backup. If the free space after a backup is less than 50"
+                " MB, the backup cannot proceed. Free up space by deleting "
+                "current backups.".format(size_bu=backup_size / 1000000,
+                                          size_free=free_before / 1000000,
+                                          size_after=free_after / 1000000),
+                'error')
+            return True
+        else:
+            return False
+
     if request.method == 'POST':
         if (form_upgrade.upgrade.data and
                 (upgrade_available or FORCE_UPGRADE_MASTER)):
-            backup_size, free_before, free_after = can_perform_backup()
-            if free_after / 1000000 < 50:
-                flash(
-                    "A backup must be performed during an upgrade and there "
-                    "is not enough free space to perform a backup. A backup "
-                    "requires {size_bu:.1f} MB but there is only "
-                    "{size_free:.1f} MB available, which would leave "
-                    "{size_after:.1f} MB after the backup. If the free space "
-                    "after a backup is less than 50 MB, the backup cannot "
-                    "proceed. Free up space by deleting current "
-                    "backups.".format(size_bu=backup_size / 1000000,
-                                      size_free=free_before / 1000000,
-                                      size_after=free_after / 1000000),
-                    'error')
+            if not_enough_space_upgrade():
+                pass
             elif FORCE_UPGRADE_MASTER:
                 cmd = "{pth}/mycodo/scripts/mycodo_wrapper upgrade-master" \
                       " | ts '[%Y-%m-%d %H:%M:%S]'" \
@@ -442,21 +448,7 @@ def admin_upgrade():
                 flash(gettext("The upgrade has started"), "success")
         elif (form_upgrade.upgrade_next_major_version.data and
                 upgrade_available):
-            backup_size, free_before, free_after = can_perform_backup()
-            if free_after / 1000000 < 50:
-                flash(
-                    "A backup must be performed during an upgrade and there "
-                    "is not enough free space to perform a backup. A backup "
-                    "requires {size_bu:.1f} MB but there is only "
-                    "{size_free:.1f} MB available, which would leave "
-                    "{size_after:.1f} MB after the backup. If the free space "
-                    "after a backup is less than 50 MB, the backup cannot "
-                    "proceed. Free up space by deleting current "
-                    "backups.".format(size_bu=backup_size / 1000000,
-                                      size_free=free_before / 1000000,
-                                      size_after=free_after / 1000000),
-                    'error')
-            else:
+            if not not_enough_space_upgrade():
                 cmd = "{pth}/mycodo/scripts/mycodo_wrapper upgrade-release-major {ver}" \
                       " | ts '[%Y-%m-%d %H:%M:%S]'" \
                       " >> {log} 2>&1".format(pth=INSTALL_DIRECTORY,
