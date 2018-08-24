@@ -18,6 +18,7 @@ from mycodo.devices.atlas_scientific_uart import AtlasScientificUART
 from mycodo.mycodo_flask.forms import forms_calibration
 from mycodo.mycodo_flask.routes_static import inject_variables
 from mycodo.mycodo_flask.utils import utils_general
+from mycodo.mycodo_flask.utils.utils_general import return_dependencies
 from mycodo.utils.calibration import AtlasScientificCommand
 from mycodo.utils.system_pi import str_is_float
 
@@ -196,6 +197,14 @@ def setup_ds_resolution():
     form_ds = forms_calibration.SetupDS18B20()
 
     inputs = Input.query.all()
+
+    # Check if w1thermsensor library is installed
+    unmet_deps = return_dependencies('CALIBRATE_DS_TYPE')
+    if unmet_deps:
+        flash("The device you're trying to calibrate has unmet dependencies: {dep}".format(
+            dep=unmet_deps))
+        return redirect(url_for('routes_admin.admin_dependencies',
+                                device='CALIBRATE_DS_TYPE'))
 
     # If DS18B20 inputs added, compile a list of detected inputs
     ds_inputs = []

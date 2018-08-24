@@ -13,6 +13,7 @@ from flask import redirect
 from flask import url_for
 from flask_babel import gettext
 
+from mycodo.config import CALIBRATION_INFO
 from mycodo.config import LIST_DEVICES_ADC
 from mycodo.config import MATH_INFO
 from mycodo.config import METHOD_INFO
@@ -679,7 +680,8 @@ def return_dependencies(device_type, dep_type='unmet'):
         DEVICE_INFO,
         MATH_INFO,
         METHOD_INFO,
-        OUTPUT_INFO
+        OUTPUT_INFO,
+        CALIBRATION_INFO
     ]
     for each_section in list_dependencies:
         if device_type in each_section:

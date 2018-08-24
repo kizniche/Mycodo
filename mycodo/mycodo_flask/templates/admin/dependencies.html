@@ -45,7 +45,7 @@
     <p>{{_('Several software dependencies used by Mycodo features may be disabled. This is done to speed up the initial installation process. This page can be used to determine which dependencies are installed and the ability to install currently unmet dependencies.')}}</p>
 
   {% if device != '0' %}
-    <h2>Device: {{device}}</h2>
+    <h2>Device: {{device}} ({{device_name}})</h2>
 
     {% if device_unmet_dependencies %}
 

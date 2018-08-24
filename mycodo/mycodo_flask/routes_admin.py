@@ -20,6 +20,7 @@ from pkg_resources import parse_version
 
 from mycodo.config import BACKUP_LOG_FILE
 from mycodo.config import BACKUP_PATH
+from mycodo.config import CALIBRATION_INFO
 from mycodo.config import DEPENDENCY_INIT_FILE
 from mycodo.config import DEPENDENCY_LOG_FILE
 from mycodo.config import FINAL_RELEASES
@@ -200,6 +201,7 @@ def admin_dependencies(device):
     met_exist = False
     unmet_list = {}
     install_in_progress = False
+    device_name = None
 
     # Read from the dependency status file created by the upgrade script
     # to indicate if the upgrade is running.
@@ -220,10 +222,17 @@ def admin_dependencies(device):
         DEVICE_INFO,
         MATH_INFO,
         METHOD_INFO,
-        OUTPUT_INFO
+        OUTPUT_INFO,
+        CALIBRATION_INFO
     ]
     for each_section in list_dependencies:
         for each_device in each_section:
+
+            if device in each_section:
+                for each_device, each_val in each_section[device].items():
+                    if each_device == 'name':
+                        device_name = each_val
+
             # Determine if there are any unmet dependencies
             unmet_dependencies.update({
                 each_device: utils_general.return_dependencies(each_device)
@@ -264,6 +273,7 @@ def admin_dependencies(device):
                            measurements=DEVICE_INFO,
                            unmet_list=unmet_list,
                            device=device,
+                           device_name=device_name,
                            install_in_progress=install_in_progress,
                            unmet_dependencies=unmet_dependencies,
                            unmet_exist=unmet_exist,

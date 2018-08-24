@@ -2,7 +2,6 @@
 import logging
 
 import os
-import re
 import sqlalchemy
 from RPi import GPIO
 from flask import current_app

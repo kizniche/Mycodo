@@ -135,6 +135,14 @@ OUTPUT_INFO = {
         'measure': []},
 }
 
+# Calibration
+CALIBRATION_INFO = {
+    'CALIBRATE_DS_TYPE': {
+        'name': 'DS-Type Sensor Calibration',
+        'py-dependencies': ['w1thermsensor']
+    }
+}
+
 # PID controllers
 PIDS = [
     ('pid', 'PID Controller')
