@@ -155,7 +155,7 @@ Then change the following settings
 Install Mycodo
 ~~~~~~~~~~~~~~
 
-Mycodo will be installed by executing setup.sh. As a part of the
+Mycodo will be installed by executing install.sh. As a part of the
 installation, you will be prompted with a few options to determine which
 components to install and configure.
 
