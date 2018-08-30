@@ -164,9 +164,8 @@ components to install and configure.
     curl -L https://raw.githubusercontent.com/kizniche/Mycodo/master/install.sh | bash
 
 
-Make sure the setup.sh script finishes without errors. A log of the
-setup.sh script output will be created at
-``~/Mycodo/install/setup.log``.
+Make sure the install script finishes without errors. A log of the
+output will be created at ``~/Mycodo/install/setup.log``.
 
 If the install is successful, the web user interface should be
 accessible by navigating a web browser to ``https://0.0.0.0/``,
