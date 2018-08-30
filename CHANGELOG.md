@@ -1,3 +1,14 @@
+## 6.2.4 (Unreleased)
+
+### Features
+
+ - Reduce install to one command
+
+### Bugfixes
+
+ - Fix inability to set camera device ([#519](https://github.com/kizniche/mycodo/issues/519))
+ - Fix initialization of UART MHZ16 ([#520](https://github.com/kizniche/mycodo/issues/520))
+
 ## 6.2.3 (2018-08-28)
 
 ### Bugfixes

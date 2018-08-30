@@ -761,6 +761,7 @@ def camera_mod(form_camera):
         mod_camera.name = form_camera.name.data
 
         if mod_camera.library == 'fswebcam':
+            mod_camera.device = form_camera.device.data
             mod_camera.hflip = form_camera.hflip.data
             mod_camera.vflip = form_camera.vflip.data
             mod_camera.rotation = form_camera.rotation.data

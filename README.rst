@@ -161,15 +161,8 @@ components to install and configure.
 
 .. code:: bash
 
-    sudo apt-get install -y jq
-    cd ~
-    curl -s https://api.github.com/repos/kizniche/Mycodo/releases/latest | \
-    jq -r '.tarball_url' | wget -i - -O mycodo-latest.tar.gz
-    mkdir Mycodo
-    tar xzf mycodo-latest.tar.gz -C Mycodo --strip-components=1
-    rm -f mycodo-latest.tar.gz
-    cd Mycodo/install
-    sudo /bin/bash ./setup.sh
+    curl -L https://raw.githubusercontent.com/kizniche/Mycodo/master/install.sh | bash
+
 
 Make sure the setup.sh script finishes without errors. A log of the
 setup.sh script output will be created at

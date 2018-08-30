@@ -41,8 +41,7 @@ class MHZ16Sensor(AbstractInput):
             self.interface = input_dev.interface
             self.device_loc = input_dev.device_loc
             self.convert_to_unit = input_dev.convert_to_unit
-            self.i2c_address = int(str(input_dev.location), 16)
-            self.i2c_bus = input_dev.i2c_bus
+
             if self.interface == 'UART':
                 import serial
 
@@ -61,6 +60,9 @@ class MHZ16Sensor(AbstractInput):
 
             elif self.interface == 'I2C':
                 import smbus
+
+                self.i2c_address = int(str(input_dev.location), 16)
+                self.i2c_bus = input_dev.i2c_bus
                 self.cmd_measure = [0xFF, 0x01, 0x9C, 0x00, 0x00, 0x00, 0x00, 0x00, 0x63]
                 self.IOCONTROL = 0X0E << 3
                 self.FCR = 0X02 << 3
