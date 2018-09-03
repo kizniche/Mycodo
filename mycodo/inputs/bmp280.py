@@ -284,11 +284,11 @@ class BMP280Sensor(AbstractInput):
             return 0
 
         p = 1048576 - adc_P
-        p = (((p << 31) - var2) * 3125) / var1
+        p = int((((p << 31) - var2) * 3125) / var1)
         var1 = (self.cal_REGISTER_DIG_P9 * (p >> 13) * (p >> 13)) >> 25
         var2 = (self.cal_REGISTER_DIG_P8 * p) >> 19
 
-        p = ((p + var1 + var2) >> 8) + (self.cal_REGISTER_DIG_P7 << 4)
+        p = ((p + var1 + var2) >> 8) + ((self.cal_REGISTER_DIG_P7) << 4)
         return p / 256.0
 
     def read_altitude(self, sealevel_pa=101325.0):
