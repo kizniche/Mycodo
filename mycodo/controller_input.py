@@ -352,6 +352,9 @@ class InputController(threading.Thread):
         elif self.device == 'TSL2591':
             from mycodo.inputs.tsl2591_sensor import TSL2591Sensor
             self.measure_input = TSL2591Sensor(self.input_dev)
+        elif self.device == 'WINSEN_ZH03B':
+            from mycodo.inputs.winsen_zh03b import WINSEN_ZH03BSensor
+            self.measure_input = WINSEN_ZH03BSensor(self.input_dev)
         else:
             self.device_recognized = False
             self.logger.debug("Device '{device}' not recognized".format(

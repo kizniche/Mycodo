@@ -28,6 +28,7 @@ DEVICES = [
     ('MH_Z16_UART', 'CO2: MH-Z16 (Serial)'),
     ('MH_Z19_UART', 'CO2: MH-Z19 (Serial)'),
     ('CCS811', 'CO2/VOC/Temperature: CCS811 (I2C)'),
+    ('WINSEN_ZH03B', 'Particulates: Winsen ZH03B (Serial)'),
     ('ATLAS_EC_I2C', 'Electrical Conductivity: Atlas Scientific (I2C)'),
     ('ATLAS_EC_UART', 'Electrical Conductivity: Atlas Scientific (Serial)'),
     ('BH1750', 'Luminance: BH1750 (I2C)'),
@@ -302,7 +303,11 @@ DEVICE_INFO = {
         'i2c-addresses': ['0x29'],
         'i2c-address-change': False,
         'py-dependencies': ['tsl2591'],
-        'measure': ['light']}
+        'measure': ['light']},
+    'WINSEN_ZH03B': {
+        'name': 'WINSEN_ZH03B',
+        'py-dependencies': ['serial', 'binascii'],
+        'measure': ['particulate_matter_1_0', 'particulate_matter_2_5', 'particulate_matter_10_0']}
 }
 
 
@@ -389,6 +394,18 @@ MEASUREMENTS = {
         'name': lazy_gettext('Moisture'),
         'meas': 'moisture',
         'units': ['unitless']},
+    'particulate_matter_1_0': {
+        'name': lazy_gettext('PM1'),
+        'meas': 'particulate_matter_1_0',
+        'units': ['μg_m3']},
+    'particulate_matter_2_5': {
+        'name': lazy_gettext('PM2.5'),
+        'meas': 'particulate_matter_2_5',
+        'units': ['μg_m3']},
+    'particulate_matter_10_0': {
+        'name': lazy_gettext('PM10'),
+        'meas': 'particulate_matter_10_0',
+        'units': ['μg_m3']},
     'pid_p_value': {
         'name': lazy_gettext('PID P-Value'),
         'meas': 'pid_value',
@@ -553,6 +570,9 @@ UNITS = {
     'setpoint': {
         'name': 'Setpoint',
         'unit': ''},
+    'μg_m3': {
+        'name': 'Microgram per cubic meter',
+        'unit': 'μg/m^3'},
     'volts': {
         'name': 'Volts',
         'unit': 'V'}

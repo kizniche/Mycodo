@@ -117,6 +117,13 @@ def input_add(form_add):
             else:
                 new_input.device_loc = "/dev/ttyAMA0"
 
+        # Particulates
+        if form_add.input_type.data == 'WINSEN_ZH03B':
+            new_input.location = 'Tx/Rx'
+            new_input.interface = 'UART'
+            new_input.baud_rate = 9600
+            new_input.device_loc = "/dev/ttyUSB1"
+
         # Temperature
         if form_add.input_type.data == 'TMP006':
             new_input.location = '0x40'

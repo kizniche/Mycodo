@@ -2,6 +2,7 @@
 
 ### Features
 
+ - Add Winsen ZH03B Particulate sensor ([#346](https://github.com/kizniche/mycodo/issues/346))
  - Reduce install to one command
 
 ### Bugfixes
