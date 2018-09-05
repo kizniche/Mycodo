@@ -14,11 +14,11 @@ to run on the `Raspberry
 Pi <https://en.wikipedia.org/wiki/Raspberry_Pi>`__ (versions Zero, 1, 2,
 and 3).
 
-Orignially designed to cultivate edible mushrooms, Mycodo has grown to
+Originally designed to cultivate edible mushrooms, Mycodo has grown to
 include the ability to do much more, including cultivating plants,
 culturing microorganisms, maintaining honey bee apiary homeostasis,
 incubating animals and eggs, maintaining aquatic systems, aging cheeses,
-fermenting foods and tobacco, cooking food (vous-vide), and more.
+fermenting foods and tobacco, cooking food (sous-vide), and more.
 
 The system comprises a backend (daemon) and a frontend (user interface).
 The backend conducts measurements from sensors and devices, then
@@ -35,7 +35,7 @@ Brief Overview
 ==============
 
 There are a number of different uses for Mycodo. Some users simply store
-sensor measurements to monitor conditons remotely from their phone,
+sensor measurements to monitor conditions remotely from their phone,
 others regulate the environmental conditions of a physical space, while
 others capture motion-activated or timelapse photography, and more.
 
@@ -126,13 +126,13 @@ Here is how I generally set up Mycodo to monitor and regulate:
    what sensors are supported. Acquire sensor(s) and relay(s) and
    connect them to the Raspberry Pi according to the manufacturer’s
    instructions.
-4. On the ``Data`` page, create a new input using the dropdown to select
+4. On the ``Data`` page, create a new input using the drop-down to select
    the correct sensor or input device. Configure the input with the
    correct communication pins and other options. Activate the input to
    begin recording measurements to the database.
 5. Go to the ``Info`` -> ``Live Measurements`` page to ensure there is
    recent data being acquired from the input.
-6. On the ``Ouput`` page, add a relay and configure the GPIO pin that
+6. On the ``Output`` page, add a relay and configure the GPIO pin that
    switches it, whether the relay switches On when the signal is HIGH or
    LOW, and what state (On or Off) to set the relay when Mycodo starts.
    A pulse-width modulated (PWM) output may also be used, among others.
@@ -817,7 +817,7 @@ resumes operation.
 |                       | paused.                                         |
 +-----------------------+-------------------------------------------------+
 | Setpoint              | This is the specific point you would like the   |
-|                       | environment to be regaulted at. For example, if |
+|                       | environment to be regulated at. For example, if |
 |                       | you would like the humidity regulated to 60%,   |
 |                       | enter 60.                                       |
 +-----------------------+-------------------------------------------------+
@@ -927,7 +927,7 @@ PID Autotune
 The Autotune feature is useful for determining appropriate Kp, Ki, and Kd
 gains of a PID controller. The autotuner will manipulate an output and measure the response in
 the environment being measured by a sensor. It will take several cycles
-to determine the gains accoring to several rules. In order to use this
+to determine the gains according to several rules. In order to use this
 feature, the PID controller must be properly configured, and a Noise Band
 and Outstep selected, then select "Start Autotune". The output of the
 autotuner will appear in the daemon log (Config -> Mycodo Logs -> Daemon).
@@ -936,9 +936,9 @@ that includes the Input, Output, and PID Setpoint/Output in order to see
 what the PID Autotuner is doing and to notice any issues. If your autotune
 is taking a long time to complete, there may not be enough stability in
 the system being manipulated to calculate a reliable set of PID gains.
-This may be because there are too many disturbanses to the system, or
-conditions are changing too repidly to acquire consistent measurement
-oscilations. If this is the case, try modifying your system to reduce
+This may be because there are too many disturbances to the system, or
+conditions are changing too rapidly to acquire consistent measurement
+oscillations. If this is the case, try modifying your system to reduce
 disturbances. Once the autotune successfully completes, disturbances may
 be reintroduced in order to further tune the PID controller to handle them.
 
@@ -1240,7 +1240,7 @@ latitude and longitude.
 Timer (Duration) Conditional Statement If Options
 '''''''''''''''''''''''''''''''''''''''''''''''''
 
-Run a timer that triggers Contitional Actions every period.
+Run a timer that triggers Conditional Actions every period.
 
 +------------------------+-------------------------------------------------+
 | Setting                | Description                                     |
@@ -1255,34 +1255,43 @@ Run a timer that triggers Contitional Actions every period.
 Timer (Daily Time Point) Conditional Statement If Options
 '''''''''''''''''''''''''''''''''''''''''''''''''''
 
-Run a timer that triggers Contitional Actions at a specific time every day.
+Run a timer that triggers Conditional Actions at a specific time every day.
 
 +-----------------------+-------------------------------------------------+
 | Setting               | Description                                     |
 +=======================+=================================================+
 | Start Time (HH:MM)    | Set the time to trigger Conditional Actions, in |
 |                       | the format "HH:MM", with HH denoting hours, and |
-|                       | MM donoting minutes. Time is in 24-hour format. |
+|                       | MM denoting minutes. Time is in 24-hour format. |
 +-----------------------+-------------------------------------------------+
 
 Timer (Daily Time Span) Conditional Statement If Options
 '''''''''''''''''''''''''''''''''''''''''''''''''''
 
-Run a timer that triggers Contitional Actions at a specific period if it's between the set start and end times. For example, if the Start Time is set to 10:00 and End Time set to 11:00 and Period set to 120 seconds, the Conditional Actions will trigger every 120 seconds when the time is between 10 AM and 11 AM.
+Run a timer that triggers Conditional Actions at a specific period if it's
+between the set start and end times. For example, if the Start Time is set
+to 10:00 and End Time set to 11:00 and Period set to 120 seconds, the
+Conditional Actions will trigger every 120 seconds when the time is between
+10 AM and 11 AM.
 
-This may be useful, for instance, if you desire an Output to remain on during a particular time period and you want to prevent power outages from interupting the cycle (which a simple Time Point Timer could not prevent against because it only triggers once at the Start Time). By setting an Output to turn the lights on every few minutes during the Start -> End period, it ensured the Output remains on during this period.
+This may be useful, for instance, if you desire an Output to remain on during
+a particular time period and you want to prevent power outages from interrupting
+the cycle (which a simple Time Point Timer could not prevent against because
+it only triggers once at the Start Time). By setting an Output to turn the
+lights on every few minutes during the Start -> End period, it ensured the
+Output remains on during this period.
 
 +-----------------------+-------------------------------------------------+
 | Setting               | Description                                     |
 +=======================+=================================================+
 | Start Time (HH:MM)    | Set the start time to trigger Conditional       |
 |                       | Actions, in the format "HH:MM", with HH         |
-|                       | denoting hours, and MM donoting minutes. Time   |
+|                       | denoting hours, and MM denoting minutes. Time   |
 |                       | is in 24-hour format.                           |
 +-----------------------+-------------------------------------------------+
 | End Time (HH:MM)      | Set the end time to trigger Conditional         |
 |                       | Actions, in the format "HH:MM", with HH         |
-|                       | denoting hours, and MM donoting minutes. Time   |
+|                       | denoting hours, and MM denoting minutes. Time   |
 |                       | is in 24-hour format.                           |
 +-----------------------+-------------------------------------------------+
 | Period (seconds)      | The period of time between triggering           |
@@ -2320,7 +2329,7 @@ Measurements that fall within the selected date/time frame may be
 exported as CSV with their corresponding timestamps.
 
 Additionally, the entire measurement database (influxdb) may be exported
-as a ZIP file backup. This ZIP may be imported back in any Mycodo system
+as a ZIP archive backup. This ZIP may be imported back in any Mycodo system
 to restore these measurements. Note that an import will override the
 current data (i.e. destroying it).
 
@@ -2662,7 +2671,7 @@ communication, producing a new I2C bus device for each multiplexer
 channel. To enable the driver for the TCA9548A/PCA9548A, visit
 `GPIO-pca9548 <https://github.com/Theoi-Meteoroi/GPIO-pca9548>`__ to get
 the code and latest install instructions. If successfully set up, there
-will be 8 new I2C busses on the ``Config -> System Information`` page.
+will be 8 new I2C buses on the ``Config -> System Information`` page.
 
 The driver for the TCA9545A can be found at
 https://github.com/camrex/i2c-mux-pca9545a and other drivers are available
@@ -2679,7 +2688,7 @@ multiplexers I've tested are below.
 
     TCA9545A: I2C Bus Multiplexer
     `link <http://store.switchdoc.com/i2c-4-channel-mux-extender-expander-board-grove-pin-headers-for-arduino-and-raspberry-pi/>`__
-    (I2C): This board also creates 4 new I2C busses, but each with their
+    (I2C): This board also creates 4 new I2C buses, but each with their
     own selectable voltage, either 3.3 or 5.0 volts.
 
 Analog-to-Digital Converters
