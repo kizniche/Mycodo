@@ -126,23 +126,23 @@ Here is how I generally set up Mycodo to monitor and regulate:
    what sensors are supported. Acquire sensor(s) and relay(s) and
    connect them to the Raspberry Pi according to the manufacturer’s
    instructions.
-4. On the ``Data`` page, create a new input using the drop-down to select
+4. On the ``Setup -> Data`` page, create a new input using the drop-down to select
    the correct sensor or input device. Configure the input with the
    correct communication pins and other options. Activate the input to
    begin recording measurements to the database.
-5. Go to the ``Info`` -> ``Live Measurements`` page to ensure there is
+5. Go to the ``Live`` page to ensure there is
    recent data being acquired from the input.
-6. On the ``Output`` page, add a relay and configure the GPIO pin that
+6. On the ``Setup -> Outputs`` page, add a relay and configure the GPIO pin that
    switches it, whether the relay switches On when the signal is HIGH or
    LOW, and what state (On or Off) to set the relay when Mycodo starts.
    A pulse-width modulated (PWM) output may also be used, among others.
 7. Test the relay by switching it On and Off or generating a PWM signal
-   from the ``Output`` page and make sure the device connected to the
+   from the ``Setup -> Outputs`` page and make sure the device connected to the
    relay turns On when you select "On", and Off when you select "Off".
-8. On the ``Function`` page, create a PID controller with the
+8. On the ``Setup -> Functions`` page, create a PID controller with the
    appropriate input, output, and other parameters. Activate the PID
    controller.
-9. On the ``Info`` -> ``Dashboard`` page, create a graph that includes
+9. On the ``Dash`` page, create a graph that includes
    the input measurement, the output that is being used by the PID, and
    the PID output and setpoint. This provides a good visualization for
    tuning the PID. See `Quick Setup Examples <#quick-setup-examples>`__
@@ -189,6 +189,8 @@ circuit <#schematics-for-dc-fan-control>`__, or something else.
 Upgrading
 =========
 
+``[Gear Icon] -> Upgrade``
+
 If you already have Mycodo installed (version >= 4.0.0), you can perform
 an upgrade to the latest `Mycodo
 Release <https://github.com/kizniche/Mycodo/releases>`__ by either using
@@ -209,6 +211,8 @@ Each section performs specific tasks or groups of related tasks.
 
 Data
 ----
+
+``Setup -> Data``
 
 Data includes controllers that produce and store data in the measurement
 database. Input controllers generally acquire measurements from sensors,
@@ -517,6 +521,8 @@ produce a new value that may be used within Mycodo.
 Output
 ------
 
+``Setup -> Outputs``
+
 Outputs are various signals that can be generated that operate devices.
 An output can be a PWM signal, a simple HIGH/LOW signal to operate a
 relay, or a 433MHz signal to switch a radio frequency-operated relay, or
@@ -548,7 +554,7 @@ interval or 'period' of time; a low duty cycle corresponds to low power,
 because the power is off for most of the time. Duty cycle is expressed
 in percent, 100% being fully on.
 
-PWM pins can be set up on the Output page, then it may be used by a PWM
+PWM pins can be set up on the ``Setup -> Outputs``` page, then it may be used by a PWM
 PID Controller.
 
 +-----------------------+-------------------------------------------------+
@@ -776,6 +782,8 @@ is on.
 
 Function
 --------
+
+``Setup -> Functions``
 
 Functions couple Inputs with Outputs to perform specific tasks. For
 example, this could be regulation of temperature with a temperature
@@ -1450,7 +1458,7 @@ Edge Conditional command variables
 LCDs
 ----
 
-More -> LCDs
+``Setup -> LCDs``
 
 Data may be output to a liquid crystal display (LCD) for easy viewing.
 Please see `LCD Displays <#lcd-displays>`__ for specific information
@@ -1492,7 +1500,7 @@ next every set period.
 Methods
 -------
 
-More -> Methods
+``Setup -> Methods``
 
 Methods enable Setpoint Tracking in PIDs and time-based duty cycle
 changes in timers. Normally, a PID controller will regulate an
@@ -1743,7 +1751,7 @@ section.
 Configuration Settings
 ======================
 
-[Gear Icon] -> Configuration
+``[Gear Icon] -> Configure``
 
 The settings menu, accessed by selecting the gear icon in the top-right,
 then the Configure link, is a general area for various system-wide
@@ -1752,7 +1760,7 @@ configuration options.
 General Settings
 ----------------
 
-[Gear Icon] -> Configuration -> General
+``[Gear Icon] -> Configure -> General``
 
 +-----------------------+-------------------------------------------------+
 | Setting               | Description                                     |
@@ -1822,7 +1830,7 @@ set for each output (see `Output Settings <#output>`__).
 Measurement Settings
 --------------------
 
-[Gear Icon] -> Configuration -> Measurement
+``[Gear Icon] -> Configure -> Measurement``
 
 New measurements, units, and conversions can be created that can extend
 functionality of Mycodo beyond the built-in types and equations. Be sure
@@ -1862,7 +1870,7 @@ units for a currently-installed measurement is added).
 Users
 -----
 
-[Gear Icon] -> Configuration -> Users
+``[Gear Icon] -> Configure -> Users``
 
 Mycodo requires at least one Admin user for the login system to be
 enabled. If there isn't an Admin user, the web server will redirect to
@@ -1914,16 +1922,16 @@ Four roles are provided by default, but custom roles may be created.
 | View Logs          | X       | X        | X         |         |
 +--------------------+---------+----------+-----------+---------+
 
-1The ``Edit Controllers`` permission protects the editing of Conditionals, Graphs,
+The ``Edit Controllers`` permission protects the editing of Conditionals, Graphs,
 LCDs, Methods, PIDs, Outputs, and Inputs.
 
-2The ``View Stats`` permission protects the viewing of usage statistics
-and the System Info and Output Usage pages.
+The ``View Stats`` permission protects the viewing of usage statistics
+and the System Information and Output Usage pages.
 
 Pi Settings
 -----------
 
-[Gear Icon] -> Configuration -> Pi
+``[Gear Icon] -> Configure -> Raspberry Pi``
 
 Pi settings configure parts of the linux system that Mycodo runs on.
 
@@ -1948,7 +1956,7 @@ DHT22, DHT11, HTU21D Inputs.
 Alert Settings
 --------------
 
-[Gear Icon] -> Configuration -> Alerts
+``[Gear Icon] -> Configure -> Alerts``
 
 Alert settings set up the credentials for sending email notifications.
 
@@ -1984,7 +1992,7 @@ Alert settings set up the credentials for sending email notifications.
 Camera Settings
 ---------------
 
-[Gear Icon] -> Configuration -> Camera
+``[Gear Icon] -> Configure -> Camera``
 
 Many cameras can be used simultaneously with Mycodo. Each camera needs
 to be set up in the camera settings, then may be used throughout the
@@ -2035,7 +2043,7 @@ differences in hardware and software.
 Diagnostic Settings
 -------------------
 
-[Gear Icon] -> Configuration -> Diagnostics
+``[Gear Icon] -> Configure -> Diagnostics``
 
 Sometimes issues arise in the system as a result of incompatible
 configurations, either the result of a misconfigured part of the system
@@ -2043,10 +2051,10 @@ configurations, either the result of a misconfigured part of the system
 upgrade, or other unforeseen issue. Sometimes it is necessary to perform
 diagnostic actions that can determine the cause of the issue or fix the
 issue itself. The options below are meant to alleviate issues, such as a
-misconfigured dashboard element causing an error on the Dashboard page,
-which may cause an inability to access the Dashboard page to correct the
+misconfigured dashboard element causing an error on the ``Dash`` page,
+which may cause an inability to access the ``Dash`` page to correct the
 issue. Deleting all Dashboard Elements may be the most economical method
-to enable access to the Dashboard page again, at the cost of having to
+to enable access to the ``Dash`` page again, at the cost of having to
 readd all the Dashboard Elements that were once there.
 
 +-------------------------------+-------------------------------------------------+
@@ -2062,7 +2070,7 @@ Miscellaneous
 Dashboard
 ---------
 
-Info -> Dashboard
+``Dash``
 
 The dashboard is where you can add pieces of data for easy viewing. It
 is highly customizable and provides an easy way to see exactly what data
@@ -2285,19 +2293,19 @@ PID Control
 Live Measurements
 -----------------
 
-Info -> Live Measurements
+``Live``
 
-The Live Measurements page is the first page a user sees after logging
+The ``Live`` page is the first page a user sees after logging
 in to Mycodo. It will display the current measurements being acquired
 from Input and Math controllers. If there is nothing displayed on the
-Live Measurements page, ensure an Input or Math controller is both
+``Live`` page, ensure an Input or Math controller is both
 configured correctly and activated. Data will be automatically updated
 on the page from the measurement database.
 
 Asynchronous Graphs
 -------------------
 
-Info -> Asynchronous Graphs
+``Async``
 
 A graphical data display that is useful for viewing data sets spanning
 relatively long periods of time (weeks/months/years), which could be
@@ -2323,7 +2331,7 @@ live data.
 Export-Import
 -------------
 
-More -> Export Import
+``More -> Export Import``
 
 Measurements that fall within the selected date/time frame may be
 exported as CSV with their corresponding timestamps.
@@ -2343,7 +2351,7 @@ upgrade/downgrade is in the works.
 Dependencies
 ------------
 
-[Gear Icon] -> Dependencies
+``[Gear Icon] -> Dependencies``
 
 The dependency page allows viewing of dependency information and the
 ability to initiate their installation.
@@ -2360,7 +2368,7 @@ Dependency page in order to install it.
 Camera
 ------
 
-More -> Cameras
+``Cam``
 
 Once a cameras has been set up (in the `Camera
 Settings <#camera-settings>`__), it may be used to capture still images,
@@ -2372,7 +2380,7 @@ with a notification).
 Output Usage
 ------------
 
-More -> Output Usage
+``More -> Output Usage``
 
 Output usage statistics are calculated for each output, based on how
 long the output has been powered, the current draw of the device
@@ -2382,13 +2390,14 @@ Settings <#output-usage-settings>`__.
 Backup-Restore
 --------------
 
-[Gear Icon] -> Backup Restore
+``[Gear Icon] -> Backup Restore``
 
 A backup is made to /var/Mycodo-backups when the system is upgraded or
-through the web interface on the Config -> Backup / Restore page.
+through the web interface on the ``[Gear Icon] -> Backup Restore`` page.
 
-If you need to restore a backup, this can be done on the Config ->
-Backup / Restore page. Find the backup you would like restored and press
+If you need to restore a backup, this can be done on the
+``[Gear Icon] -> Backup  Restore``
+page. Find the backup you would like restored and press
 the Restore button beside it. A restore can also be initialized through
 the command line. Use the following commands to initialize a restore,
 changing the appropriate directory names, 'user' to your user name, and
@@ -2404,7 +2413,7 @@ TIME and COMMIT to the appropriate text found as the directory names in
 System Information
 ------------------
 
-[Gear Icon] -> System Information
+``[Gear Icon] -> System Information``
 
 This page serves to provide information about the Mycodo frontend and
 backend as well as the linux system it's running on. Several commands
@@ -2446,7 +2455,7 @@ Troubleshooting
 Daemon Not Running
 ------------------
 
--  Check the Logs: From the ``Configure [Gear Icon]`` -> ``Mycodo Logs``
+-  Check the Logs: From the ``[Gear Icon] -> Mycodo Logs``
    page, check the Daemon Log for any errors. If the issue began after
    an upgrade, also check the Upgrade Log for indications of an issue.
 -  Determine if the Daemon is Running: Execute
@@ -2463,9 +2472,8 @@ Daemon Not Running
 Incorrect Database Version
 --------------------------
 
--  Check the System Information page (from the web UI: select [Gear
-   Icon] -> System Information or select the mycodo logo in the
-   top-left).
+-  Check the ``[Gear Icon] -> System Information`` page or select the
+   mycodo logo in the top-left.
 -  An incorrect database version error means the version stored in the
    Mycodo settings database (``~/Mycodo/databases/mycodo.db``) is not
    correct for the latest version of Mycodo, determined in the Mycodo
@@ -2671,7 +2679,7 @@ communication, producing a new I2C bus device for each multiplexer
 channel. To enable the driver for the TCA9548A/PCA9548A, visit
 `GPIO-pca9548 <https://github.com/Theoi-Meteoroi/GPIO-pca9548>`__ to get
 the code and latest install instructions. If successfully set up, there
-will be 8 new I2C buses on the ``Config -> System Information`` page.
+will be 8 new I2C buses on the ``[Gear Icon] -> System Information`` page.
 
 The driver for the TCA9545A can be found at
 https://github.com/camrex/i2c-mux-pca9545a and other drivers are available
