@@ -96,9 +96,9 @@ class WINSEN_ZH03BSensor(AbstractInput):
         return self._pm_10_0
 
     def get_measurement(self):
-        """ Gets the WINSEN_ZH03B's Particulate concentration in ppmv via UART"""
+        """ Gets the WINSEN_ZH03B's Particulate concentration in μg/m^3 via UART"""
         if not self.serial_device:  # Don't measure if device isn't validated
-            return None
+            return None, None, None
 
         self._pm_1_0 = None
         self._pm_2_5 = None

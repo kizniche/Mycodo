@@ -2726,7 +2726,7 @@ Atlas Scientific PT-1000
 
 The PT1000 temperature probe is a resistance type thermometer. Where PT
 stands for platinum and 1000 is the measured resistance of the probe at
-0°C in ohms (1k at 0°C).
+0 °C in ohms (1k at 0 °C).
 
 Specifications
 ''''''''''''''
@@ -2741,9 +2741,9 @@ Specifications
 -  BNC Connector
 -  Reaction Time: 90% value in 13 seconds
 -  Probe output: analog
--  Full temperature sensing range: -200°C to 850°C
--  Cable max temp 125°C
--  Cable min temp -55°C
+-  Full temperature sensing range: -200 °C to 850 °C
+-  Cable max temp 125 °C
+-  Cable min temp -55 °C
 
 DS18B20
 ```````
@@ -2755,13 +2755,13 @@ sensors to be used on one data bus.
 Specifications
 ''''''''''''''
 
--  Usable temperature range: -55°C to 125°C
+-  Usable temperature range: -55 °C to 125 °C
 -  9 to 12 bit selectable resolution
 -  Uses 1-Wire interface- requires only one digital pin for
    communication
 -  Unique 64 bit ID burned into chip
 -  Multiple sensors can share one pin
--  ±0.5°C Accuracy from -10°C to +85°C
+-  ±0.5 °C Accuracy from -10 °C to +85 °C
 -  Temperature-limit alarm system
 -  Query time is less than 750ms
 -  Usable with 3.0V to 5.5V power/data
@@ -2772,8 +2772,8 @@ DS18S20
 Specifications
 ''''''''''''''
 
--  Usable temperature range: -55°C to 125°C
--  ±0.5°C Accuracy from -10°C to +85°C
+-  Usable temperature range: -55 °C to 125 °C
+-  ±0.5 °C Accuracy from -10 °C to +85 °C
 -  9-bit resolution
 
 DS1822
@@ -2782,8 +2782,8 @@ DS1822
 Specifications
 ''''''''''''''
 
--  Usable temperature range: -55°C to 125°C
--  ±2.0°C Accuracy from -10°C to +85°C
+-  Usable temperature range: -55 °C to 125 °C
+-  ±2 °C Accuracy from -10 °C to +85 °C
 -  9 to 12 bit selectable resolution
 
 DS28EA00
@@ -2792,7 +2792,7 @@ DS28EA00
 Specifications
 ''''''''''''''
 
--  Usable temperature range: -40°C to 85°C
+-  Usable temperature range: -40 °C to 85 °C
 -  9 to 12 bit selectable resolution
 
 DS1825
@@ -2801,8 +2801,8 @@ DS1825
 Specifications
 ''''''''''''''
 
--  Usable temperature range: -55°C to 125°C
--  ±0.5°C Accuracy from -10°C to +85°C
+-  Usable temperature range: -55 °C to 125 °C
+-  ±0.5 °C Accuracy from -10 °C to +85 °C
 -  9 to 12 bit selectable resolution
 
 MAX31850K
@@ -2812,7 +2812,7 @@ Specifications
 ''''''''''''''
 
 -  Measures K-type thermocouples
--  14-bit, 0.25°C resolution
+-  14-bit, 0.25 °C resolution
 
 MAX31855K
 `````````
@@ -2822,8 +2822,8 @@ Specifications
 
 -  Measures K-type thermocouples
 -  Serial interface
--  -200°C to +1350°C output in 0.25 degree increments
--  K thermocouples have about ±2°C to ±6°C accuracy
+-  -200 °C to 1350 °C output in 0.25 degree increments
+-  K thermocouples have about ±2 °C to ±6 °C accuracy
 -  Internal temperature reading
 
 MAX31856
@@ -2835,8 +2835,8 @@ Specifications
 ''''''''''''''
 
 -  Serial interface
--  -210°C to +1800°C output in 0.0078125° resolution (many thermocouples
-   have about ±2°C to ±6°C accuracy or worse depending on the
+-  -210 °C to 1800 °C output in 0.0078125 ° resolution (many thermocouples
+   have about ±2 °C to ±6 °C accuracy or worse depending on the
    temperature and type, so the resolution will be a lot better than the
    accuracy)
 -  Works with any K, J, N, R, S, T, E, or B type thermocouple
@@ -2852,7 +2852,7 @@ Specifications
 ''''''''''''''
 
 -  Serial interface
--  -200°C to +850°C
+-  -200 °C to 850 °C
 -  Works with the PT100 and PT1000 RTD
 
 TMP006, TMP007
@@ -2866,7 +2866,7 @@ how hot or cold the object is.
 Specifications
 ''''''''''''''
 
--  Usable temperature range: -40°C to 125°C
+-  Usable temperature range: -40 °C to 125 °C
 -  Optimal operating voltage of 3.3V to 5V (tolerant up to 7V max)
 
 Temperature Humidity Sensors
@@ -2880,7 +2880,7 @@ Specifications
 
 -  0-100% humidity readings with 1% (10-90% RH) and 3% (0-10% RH and
    90-100% RH) accuracy
--  -20 to 80°C temperature readings ±0.1°C typical accuracy
+-  -20 °C to 80 °C temperature readings ±0.1 °C typical accuracy
 -  3.5 to 5.5V power and I/O
 -  10 mA max current use during conversion (while requesting data)
 -  No more than 0.5 Hz sampling rate (once every 2 seconds)
@@ -2923,7 +2923,7 @@ Specifications
 -  3 to 5V power and I/O
 -  2.5mA max current use during conversion (while requesting data)
 -  20-80% humidity readings with 5% accuracy
--  0-50°C temperature readings ±2°C accuracy
+-  0 °C to 50 °C temperature readings ±2 °C accuracy
 -  No more than 1 Hz sampling rate (once every second)
 
 DHT22, AM2302
@@ -2938,7 +2938,7 @@ Specifications
 
 -  0-100% humidity readings with 2% (10-90% RH) and 5% (0-10% RH and
    90-100% RH) accuracy
--  -40 to 80°C temperature readings ±0.5°C accuracy
+-  -40 °C to 80 °C temperature readings ±0.5 °C accuracy
 -  3 to 5V power and I/O
 -  2.5mA max current use during conversion (while requesting data)
 -  No more than 0.5 Hz sampling rate (once every 2 seconds)
@@ -2952,7 +2952,7 @@ Specifications
 -  0-100% humidity readings with 2% (20-80% RH) and 2%-5% (0-20% RH and
    80-100% RH) accuracy
 -  Optimum accuracy measurements within 5 to 95% RH
--  -30 to 90°C temperature readings ±1°C typical accuracy
+-  -30 °C to 90 °C temperature readings ±1 °C typical accuracy
 
 SHT1x
 `````
@@ -2964,7 +2964,7 @@ Specifications
 
 -  0-100% humidity readings with 2%-5% (10-90% RH) and 2%-7.5% (0-10% RH
    and 90-100% RH) accuracy
--  -40 to 125°C temperature readings ±0.5°C, ±0.4°C, and ±0.3°C typical
+-  -40 °C to 125 °C temperature readings ±0.5 °C, ±0.4 °C, and ±0.3 °C typical
    accuracy (respectively)
 -  2.4 to 5.5V power and I/O
 -  No more than 0.125 Hz sampling rate (once every 8 seconds)
@@ -2979,7 +2979,7 @@ Specifications
 
 -  0-100% humidity readings with 2%-3% (10-90% RH) and 2%-5% (0-10% RH
    and 90-100% RH) accuracy
--  -40 to 125°C temperature readings ±0.4°C and ±0.3°C typical accuracy
+-  -40 °C to 125 °C temperature readings ±0.4 °C and ±0.3 °C typical accuracy
    (respectively)
 -  2.4 to 5.5V power and I/O
 -  No more than 0.125 Hz sampling rate (once every 8 seconds)
@@ -3069,6 +3069,23 @@ Specifications
 -  Probe Weight: 49 grams
 -  Probe can be fully submerged in fresh or salt water indefinitely
 
+Particulate Sensors
+-------------------
+
+Winsen ZH03B
+````````````
+
+Laser Dust sensor module is a common type, small size sensor, using laser scattering principle to detect the dust particles in air, with good selectivity and stability.
+
+Specifications
+''''''''''''''
+
+-  Detection: PM1.0, PM2.5, PM10
+-  Working humidity: 0~85% RH (no condensation)
+-  Working temperature: -10 °C to 50 °C
+-  Response time <= 45 sec
+-  Life span: 3 years (in air)
+
 Pressure Sensors
 ----------------
 
@@ -3083,11 +3100,11 @@ Specifications
 ''''''''''''''
 
 -  300-1100 hPa (9000m to -500m above sea level)
--  -40 to +85°C operational range
+-  -40 °C to +85 °C operational range
 -  ±3% humidity accuracy tolerance
 -  ±1% humidity hysteresis
 -  ±1 hPa pressure accuracy
--  ±2°C temperature accuracy
+-  ±2 °C temperature accuracy
 -  Vin: 3 to 5V
 -  Logic: 3 to 5V compliant
 -  I2C 7-bit address 0x76 or 0x77
@@ -3103,8 +3120,8 @@ Specifications
 
 -  300-1100 hPa (9000m to -500m above sea level)
 -  Up to 0.03hPa / 0.25m resolution
--  -40 to +85°C operational range
--  ±2°C temperature accuracy
+-  -40 °C to +85 °C operational range
+-  ±2 °C temperature accuracy
 -  Vin: 3 to 5V
 -  Logic: 3 to 5V compliant
 -  I2C 7-bit address 0x77
