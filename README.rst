@@ -161,7 +161,7 @@ components to install and configure.
 
 .. code:: bash
 
-    curl -L https://raw.githubusercontent.com/kizniche/Mycodo/master/install.sh | bash
+    curl -L https://raw.githubusercontent.com/kizniche/Mycodo/master/install/install | bash
 
 
 Make sure the install script finishes without errors. A log of the
