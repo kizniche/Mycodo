@@ -1,3 +1,10 @@
+## 6.2.5 (Unreleased)
+
+### Miscellaneous
+
+ - Update Adafruit-TMP==1.6.3, Adafruit_CCS811==0.2.1, and Adafruit-BMP==1.5.4
+
+
 ## 6.2.4 (2018-09-03)
 
 ### Features

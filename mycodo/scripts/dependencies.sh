@@ -22,10 +22,10 @@ case "${1:-''}" in
         ${INSTALL_DIRECTORY}/env/bin/pip3 install -e git://github.com/adafruit/Adafruit_Python_BME280.git#egg=adafruit-bme280 --upgrade
     ;;
     'Adafruit_BMP')
-        ${INSTALL_CMD} install-pip-dependency Adafruit_BMP==1.5.2
+        ${INSTALL_CMD} install-pip-dependency Adafruit_BMP==1.5.4
     ;;
     'Adafruit_CCS811')
-        ${INSTALL_CMD} install-pip-dependency Adafruit_CCS811==0.1
+        ${INSTALL_CMD} install-pip-dependency Adafruit_CCS811==0.2.1
     ;;
     'Adafruit_GPIO')
         ${INSTALL_CMD} install-pip-dependency Adafruit_GPIO
@@ -37,7 +37,7 @@ case "${1:-''}" in
         ${INSTALL_CMD} install-pip-dependency Adafruit_MCP3008
     ;;
     'Adafruit_TMP')
-        ${INSTALL_CMD} install-pip-dependency Adafruit_TMP==1.6.1
+        ${INSTALL_CMD} install-pip-dependency Adafruit_TMP==1.6.3
     ;;
     'bluepy')
         apt-get install -y libglib2.0-dev
