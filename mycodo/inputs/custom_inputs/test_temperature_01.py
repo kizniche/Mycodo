@@ -1,72 +1,28 @@
 # coding=utf-8
 import logging
 
-from flask_babel import lazy_gettext
+import os
+import sys
 
-from .base_input import AbstractInput
-from .sensorutils import convert_units
+sys.path.append(
+    os.path.abspath(os.path.join(os.path.dirname(__file__), os.path.pardir) + '/../..'))
+
+from mycodo.inputs.base_input import AbstractInput
+from mycodo.inputs.sensorutils import convert_units
 
 
 # Input information
 INPUT_INFORMATION = {
-    'common_name_input': 'Dummy Sensor 001',
-    'unique_name_input': 'DUMMY_SEN_001',
-    'common_name_measurements': 'Temperature/Humidity',
-    'unique_name_measurements': ['temperature', 'humidity'],
-
-    # Measurements (if don't already exist in config_devices_units.py)
-    'measurements': {
-        'temperature': {
-            'name': lazy_gettext('Temperature'),
-            'meas': 'temperature',
-            'units': ['C', 'F', 'K']
-        },
-        'humidity': {
-            'name': lazy_gettext('Humidity'),
-            'meas': 'humidity',
-            'units': ['percent', 'decimal']
-        }
-    },
-
-    # Units (if don't already exist in config_devices_units.py)
-    'units': {
-        # Temperature
-        'C': {
-            'name': 'Celsius',
-            'unit': '°C'
-        },
-        'F': {
-            'name': 'Fahrenheit',
-            'unit': '°F'
-        },
-
-        # Humidity
-        'decimal': {
-            'name': 'Decimal',
-            'unit': ''
-        },
-        'percent': {
-            'name': 'Percent',
-            'unit': '%'
-        }
-    },
-
-    # Conversions (if don't already exist in config_devices_units.py)
-    'unit_conversions': {
-        # Temperature Conversions
-        'C_to_F': 'x*(9/5)+32',
-        'F_to_C': '(x-32)*5/9',
-
-        # Humidity conversions
-        'percent_to_decimal': 'x/100',
-        'decimal_to_percent': 'x*100'
-    },
+    'common_name_input': 'Temperature Sensor 01',
+    'unique_name_input': 'SEN_TEMP_01',
+    'common_name_measurements': 'Temperature',
+    'unique_name_measurements': ['temperature'],
 
     # Python module dependencies
     # This must be a module that is able to be installed with pip via pypi.org
     # Leave the list empty if there are no pip or github dependencies
-    'dependencies_pypi': ['w1thermsensor==1.0.5'],
-    'dependencies_github': ['git://github.com/adafruit/Adafruit_Python_BME280.git#egg=adafruit-bme280'],
+    'dependencies_pypi': [],
+    'dependencies_github': [],
 
     #
     # The below options are available from the input_dev variable
@@ -87,17 +43,17 @@ INPUT_INFORMATION = {
     'pin_clock': None,
 
     # Miscellaneous options available
-    'resolution': 12,  # Set 12-bit resolution (for example), accessed from self.resolution
-    'resolution_2': None,
-    'sensitivity': None,
-    'thermocouple_type': None,
+    'resolution': [],
+    'resolution_2': [],
+    'sensitivity': [],
+    'thermocouple_type': [],
 }
 
-class DummySensor(AbstractInput):
+class Temp01Sensor(AbstractInput):
     """ A dummy sensor support class """
 
     def __init__(self, input_dev, testing=False):
-        super(DummySensor, self).__init__()
+        super(Temp01Sensor, self).__init__()
         self.logger = logging.getLogger("mycodo.inputs.{name_lower}".format(
             name_lower=INPUT_INFORMATION['unique_name_input'].lower()))
 
@@ -105,14 +61,13 @@ class DummySensor(AbstractInput):
         # Initialize the measurements this input returns
         #
         self._temperature = None
-        self._humidity = None
 
         if not testing:
             #
             # Begin dependent modules loading
             #
 
-            import dependent_module
+            # import dependent_module
 
             #
             # End dependent modules loading
@@ -130,23 +85,21 @@ class DummySensor(AbstractInput):
             #
             # Initialize the sensor class
             #
-            self.sensor = dependent_module.MY_SENSOR_CLASS(
-                i2c_address=self.i2c_address,
-                i2c_bus=self.i2c_bus,
-                resolution=self.resolution)
+            # self.sensor = dependent_module.MY_SENSOR_CLASS(
+            #     i2c_address=self.i2c_address,
+            #     i2c_bus=self.i2c_bus,
+            #     resolution=self.resolution)
 
     def __repr__(self):
         """  Representation of object """
-        return "<{cls}(temperature={temperature}(humidity={humidity}))>".format(
+        return "<{cls}(temperature={temperature})>".format(
             cls=type(self).__name__,
-            temperature="{0:.2f}".format(self._temperature),
-            humidity="{0:.2f}".format(self._humidity))
+            temperature="{0:.2f}".format(self._temperature))
 
     def __str__(self):
         """ Return measurement information """
-        return "Temperature: {temperature}, Humidity {humidity}".format(
-            temperature="{0:.2f}".format(self._temperature),
-            humidity="{0:.2f}".format(self._humidity))
+        return "Temperature: {temperature}".format(
+            temperature="{0:.2f}".format(self._temperature))
 
     def __iter__(self):  # must return an iterator
         """ DummySensor iterates through readings """
@@ -156,9 +109,7 @@ class DummySensor(AbstractInput):
         """ Get next reading """
         if self.read():
             raise StopIteration
-        return dict(
-            temperature=float('{0:.2f}'.format(self._temperature)),
-            humidity=float('{0:.2f}'.format(self._humidity)))
+        return dict(temperature=float('{0:.2f}'.format(self._temperature)))
 
     @property
     def temperature(self):
@@ -167,31 +118,21 @@ class DummySensor(AbstractInput):
             self.read()
         return self._temperature
 
-    @property
-    def humidity(self):
-        """ humidity """
-        if self._humidity is None:
-            self.read()
-        return self._humidity
-
     def get_measurement(self):
         """ Gets the temperature and humidity """
         #
         # Resetting these values ensures old measurements aren't mistaken for new measurements
         #
         self._temperature = None
-        self._humidity = None
 
         temperature = None
-        humidity = None
 
         #
         # Begin sensor measurement code
         #
 
-        temperature = self.sensor.get_temperature()
-
-        humidity = self.sensor.get_humidity()
+        import random
+        temperature = random.randint(50, 70)
 
         #
         # End sensor measurement code
@@ -207,12 +148,7 @@ class DummySensor(AbstractInput):
             'temperature', 'C', self.convert_to_unit,
             temperature)
 
-        # Humidity is returned in percent, but it may be converted to another specified unit (e.g. decimal)
-        humidity = convert_units(
-            'humidity', 'percent', self.convert_to_unit,
-            humidity)
-
-        return temperature, humidity
+        return temperature
 
     def read(self):
         """
@@ -224,7 +160,7 @@ class DummySensor(AbstractInput):
             #
             # These measurements must be in the same order as the returned tuple from get_measurement()
             #
-            self._temperature, self._humidity = self.get_measurement()
+            self._temperature = self.get_measurement()
             if self._temperature is not None:
                 return  # success - no errors
         except Exception as e:
