@@ -1,12 +1,6 @@
 # coding=utf-8
 import logging
 
-import os
-import sys
-
-sys.path.append(
-    os.path.abspath(os.path.join(os.path.dirname(__file__), os.path.pardir) + '/../..'))
-
 from mycodo.inputs.base_input import AbstractInput
 from mycodo.inputs.sensorutils import convert_units
 

@@ -15,12 +15,22 @@ from wtforms import validators
 from wtforms import widgets
 from wtforms.validators import DataRequired
 
-from mycodo.config_devices_units import DEVICES
+from mycodo.mycodo_client import DaemonControl
 
+
+choices_inputs = []
+control = DaemonControl()
+dict_inputs = control.input_information_get()
+
+for each_input in dict_inputs:
+    choices_inputs.append((each_input, '{name}: {meas} ({int})'.format(
+        name=dict_inputs[each_input]['common_name_input'],
+        meas=dict_inputs[each_input]['common_name_measurements'],
+        int=dict_inputs[each_input]['interface'])))
 
 class InputAdd(FlaskForm):
     input_type = SelectField(
-        choices=DEVICES,
+        choices=choices_inputs,
         validators=[DataRequired()]
     )
     input_add = SubmitField(lazy_gettext('Add Input'))

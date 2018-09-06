@@ -66,12 +66,14 @@ from mycodo.databases.utils import session_scope
 from mycodo.devices.camera import camera_record
 from mycodo.utils.database import db_retrieve_table_daemon
 from mycodo.utils.github_release_info import github_releases
+from mycodo.utils.inputs import parse_input_information
 from mycodo.utils.statistics import add_update_csv
 from mycodo.utils.statistics import recreate_stat_file
 from mycodo.utils.statistics import return_stat_file_dict
 from mycodo.utils.statistics import send_anonymous_stats
 from mycodo.utils.tools import generate_output_usage_report
 from mycodo.utils.tools import next_schedule
+
 
 MYCODO_DB_PATH = 'sqlite:///' + SQL_DATABASE_MYCODO
 
@@ -131,6 +133,16 @@ def mycodo_service(mycodo):
             TODO: Incorporate controller checks with daemon status
             """
             return 'alive'
+
+        @staticmethod
+        def exposed_input_information_get():
+            """Gets all input information"""
+            return mycodo.input_information_get()
+
+        @staticmethod
+        def exposed_input_information_update():
+            """Updates all input information"""
+            return mycodo.input_information_update()
 
         @staticmethod
         def exposed_is_in_virtualenv():
@@ -327,6 +339,9 @@ class DaemonController:
         self.daemon_startup_time = None
         self.daemon_run = True
         self.terminated = False
+
+        self.dict_input_information = {}
+        self.input_information_update()
 
         # Controller object that will store the thread objects for each
         # controller
@@ -565,6 +580,15 @@ class DaemonController:
                       " {err}".format(err=except_msg)
             self.logger.exception(message)
             return "Exception: {msg}".format(msg=except_msg)
+
+    def input_information_get(self):
+        return self.dict_input_information
+
+    def input_information_update(self):
+        try:
+            self.dict_input_information = parse_input_information()
+        except Exception:
+            self.logger.exception("Exception while parsing inputs")
 
     def lcd_backlight(self, lcd_id, state):
         """
