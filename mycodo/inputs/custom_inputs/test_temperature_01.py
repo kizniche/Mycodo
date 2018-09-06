@@ -13,10 +13,15 @@ from mycodo.inputs.sensorutils import convert_units
 
 # Input information
 INPUT_INFORMATION = {
+    # Input information
     'common_name_input': 'Temperature Sensor 01',
     'unique_name_input': 'SEN_TEMP_01',
+
+    # Measurement information
     'common_name_measurements': 'Temperature',
-    'unique_name_measurements': ['temperature'],
+    'unique_name_measurements': {
+        'temperature': 'C'
+    },
 
     # Python module dependencies
     # This must be a module that is able to be installed with pip via pypi.org
@@ -49,11 +54,11 @@ INPUT_INFORMATION = {
     'thermocouple_type': [],
 }
 
-class Temp01Sensor(AbstractInput):
+class InputModule(AbstractInput):
     """ A dummy sensor support class """
 
     def __init__(self, input_dev, testing=False):
-        super(Temp01Sensor, self).__init__()
+        super(InputModule, self).__init__()
         self.logger = logging.getLogger("mycodo.inputs.{name_lower}".format(
             name_lower=INPUT_INFORMATION['unique_name_input'].lower()))
 

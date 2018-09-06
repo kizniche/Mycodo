@@ -1,10 +1,8 @@
 # coding=utf-8
 import logging
 
-from flask_babel import lazy_gettext
-
-from mycodo.inputs.base_input import AbstractInput
-from mycodo.inputs.sensorutils import convert_units
+from .base_input import AbstractInput
+from .sensorutils import convert_units
 
 
 # Input information
@@ -13,54 +11,6 @@ INPUT_INFORMATION = {
     'unique_name_input': 'DUMMY_SEN_001',
     'common_name_measurements': 'Temperature/Humidity',
     'unique_name_measurements': ['temperature', 'humidity'],
-
-    # Measurements (if don't already exist in config_devices_units.py)
-    'measurements': {
-        'temperature': {
-            'name': lazy_gettext('Temperature'),
-            'meas': 'temperature',
-            'units': ['C', 'F', 'K']
-        },
-        'humidity': {
-            'name': lazy_gettext('Humidity'),
-            'meas': 'humidity',
-            'units': ['percent', 'decimal']
-        }
-    },
-
-    # Units (if don't already exist in config_devices_units.py)
-    'units': {
-        # Temperature
-        'C': {
-            'name': 'Celsius',
-            'unit': '°C'
-        },
-        'F': {
-            'name': 'Fahrenheit',
-            'unit': '°F'
-        },
-
-        # Humidity
-        'decimal': {
-            'name': 'Decimal',
-            'unit': ''
-        },
-        'percent': {
-            'name': 'Percent',
-            'unit': '%'
-        }
-    },
-
-    # Conversions (if don't already exist in config_devices_units.py)
-    'unit_conversions': {
-        # Temperature Conversions
-        'C_to_F': 'x*(9/5)+32',
-        'F_to_C': '(x-32)*5/9',
-
-        # Humidity conversions
-        'percent_to_decimal': 'x/100',
-        'decimal_to_percent': 'x*100'
-    },
 
     # Python module dependencies
     # This must be a module that is able to be installed with pip via pypi.org
