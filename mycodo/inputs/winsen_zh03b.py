@@ -118,7 +118,7 @@ class WINSEN_ZH03BSensor(AbstractInput):
                 reading = self.HexToByte(((self.binascii.hexlify(sample)).hex()))
                 if reading == "424d":  # Start of data frame
                     sampled = True  # Sample will be captured
-                    status = self.ser.read(8)  # Discard internal status bytes
+                    _ = self.ser.read(8)  # Discard internal status bytes
                     pm_1_0 = int(self.HexToByte(((self.binascii.hexlify(self.ser.read(2))).hex())), 16)
                     pm_2_5 = int(self.HexToByte(((self.binascii.hexlify(self.ser.read(2))).hex())), 16)
                     pm_10_0 = int(self.HexToByte(((self.binascii.hexlify(self.ser.read(2))).hex())), 16)
