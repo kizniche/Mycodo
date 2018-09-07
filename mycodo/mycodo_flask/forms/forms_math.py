@@ -18,8 +18,10 @@ from mycodo.config import MATHS
 
 
 class MathAdd(FlaskForm):
+    choices_maths = [('', lazy_gettext('Select Math to Add'))] + MATHS
+
     math_type = SelectField(
-        choices=MATHS,
+        choices=choices_maths,
         validators=[DataRequired()]
     )
     math_add = SubmitField(lazy_gettext('Add Math'))

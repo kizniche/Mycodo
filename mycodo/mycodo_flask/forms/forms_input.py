@@ -19,14 +19,20 @@ from mycodo.utils.inputs import parse_input_information
 
 
 class InputAdd(FlaskForm):
-    choices_inputs = []
+    choices_inputs = [('', lazy_gettext('Select Input to Add'))]
     dict_inputs = parse_input_information()
 
     for each_input in dict_inputs:
-        choices_inputs.append((each_input, '{name}: {meas} ({int})'.format(
-            name=dict_inputs[each_input]['common_name_input'],
-            meas=dict_inputs[each_input]['common_name_measurements'],
-            int=dict_inputs[each_input]['interface'])))
+        for each_interface in dict_inputs[each_input]['interfaces']:
+            choices_inputs.append(
+                ('{inp},{int}'.format(inp=each_input, int=each_interface),
+                 '[{uname}] {manuf}: {model}: {name}: {meas} ({int})'.format(
+                    uname=each_input,
+                    manuf=dict_inputs[each_input]['input_manufacturer'],
+                    model=dict_inputs[each_input]['input_model'],
+                    name=dict_inputs[each_input]['common_name_input'],
+                    meas=dict_inputs[each_input]['common_name_measurements'],
+                    int=each_interface)))
 
     input_type = SelectField(
         choices=choices_inputs,

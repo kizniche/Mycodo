@@ -60,20 +60,30 @@ def parse_input_information():
                 input_custom.INPUT_INFORMATION['common_name_measurements']
             dict_inputs[input_custom.INPUT_INFORMATION['unique_name_input']]['unique_name_measurements'] = \
                 input_custom.INPUT_INFORMATION['unique_name_measurements']
+            dict_inputs[input_custom.INPUT_INFORMATION['unique_name_input']]['input_manufacturer'] = \
+                input_custom.INPUT_INFORMATION['input_manufacturer']
+            dict_inputs[input_custom.INPUT_INFORMATION['unique_name_input']]['input_model'] = \
+                input_custom.INPUT_INFORMATION['input_model']
+
+            # Dependencies
             dict_inputs[input_custom.INPUT_INFORMATION['unique_name_input']]['dependencies_pypi'] = \
                 input_custom.INPUT_INFORMATION['dependencies_pypi']
             dict_inputs[input_custom.INPUT_INFORMATION['unique_name_input']]['dependencies_github'] = \
                 input_custom.INPUT_INFORMATION['dependencies_github']
-            dict_inputs[input_custom.INPUT_INFORMATION['unique_name_input']]['interface'] = \
-                input_custom.INPUT_INFORMATION['interface']
+
+            # Interface
+            dict_inputs[input_custom.INPUT_INFORMATION['unique_name_input']]['interfaces'] = \
+                input_custom.INPUT_INFORMATION['interfaces']
 
             # I2C
-            dict_inputs[input_custom.INPUT_INFORMATION['unique_name_input']]['location'] = \
-                input_custom.INPUT_INFORMATION['location']
+            dict_inputs[input_custom.INPUT_INFORMATION['unique_name_input']]['i2c_location'] = \
+                input_custom.INPUT_INFORMATION['i2c_location']
 
             # UART
-            dict_inputs[input_custom.INPUT_INFORMATION['unique_name_input']]['serial_default_baud_rate'] = \
-                input_custom.INPUT_INFORMATION['serial_default_baud_rate']
+            dict_inputs[input_custom.INPUT_INFORMATION['unique_name_input']]['uart_location'] = \
+                input_custom.INPUT_INFORMATION['uart_location']
+            dict_inputs[input_custom.INPUT_INFORMATION['unique_name_input']]['baud_rate'] = \
+                input_custom.INPUT_INFORMATION['baud_rate']
             dict_inputs[input_custom.INPUT_INFORMATION['unique_name_input']]['pin_cs'] = \
                 input_custom.INPUT_INFORMATION['pin_cs']
             dict_inputs[input_custom.INPUT_INFORMATION['unique_name_input']]['pin_miso'] = \
@@ -83,7 +93,28 @@ def parse_input_information():
             dict_inputs[input_custom.INPUT_INFORMATION['unique_name_input']]['pin_clock'] = \
                 input_custom.INPUT_INFORMATION['pin_clock']
 
+            # Analog-to-digital converter
+            dict_inputs[input_custom.INPUT_INFORMATION['unique_name_input']]['adc_measure'] = \
+                input_custom.INPUT_INFORMATION['adc_measure']
+            dict_inputs[input_custom.INPUT_INFORMATION['unique_name_input']]['adc_measure_units'] = \
+                input_custom.INPUT_INFORMATION['adc_measure_units']
+            dict_inputs[input_custom.INPUT_INFORMATION['unique_name_input']]['convert_to_unit'] = \
+                input_custom.INPUT_INFORMATION['convert_to_unit']
+            dict_inputs[input_custom.INPUT_INFORMATION['unique_name_input']]['adc_volts_min'] = \
+                input_custom.INPUT_INFORMATION['adc_volts_min']
+            dict_inputs[input_custom.INPUT_INFORMATION['unique_name_input']]['adc_volts_max'] = \
+                input_custom.INPUT_INFORMATION['adc_volts_max']
+
+
             # Misc
+            dict_inputs[input_custom.INPUT_INFORMATION['unique_name_input']]['period'] = \
+                input_custom.INPUT_INFORMATION['period']
+            dict_inputs[input_custom.INPUT_INFORMATION['unique_name_input']]['cmd_command'] = \
+                input_custom.INPUT_INFORMATION['cmd_command']
+            dict_inputs[input_custom.INPUT_INFORMATION['unique_name_input']]['cmd_measurement'] = \
+                input_custom.INPUT_INFORMATION['cmd_measurement']
+            dict_inputs[input_custom.INPUT_INFORMATION['unique_name_input']]['cmd_measurement_units'] = \
+                input_custom.INPUT_INFORMATION['cmd_measurement_units']
             dict_inputs[input_custom.INPUT_INFORMATION['unique_name_input']]['resolution'] = \
                 input_custom.INPUT_INFORMATION['resolution']
             dict_inputs[input_custom.INPUT_INFORMATION['unique_name_input']]['resolution_2'] = \
@@ -92,5 +123,8 @@ def parse_input_information():
                 input_custom.INPUT_INFORMATION['sensitivity']
             dict_inputs[input_custom.INPUT_INFORMATION['unique_name_input']]['thermocouple_type'] = \
                 input_custom.INPUT_INFORMATION['thermocouple_type']
+            dict_inputs[input_custom.INPUT_INFORMATION['unique_name_input']]['ref_ohm'] = \
+                input_custom.INPUT_INFORMATION['ref_ohm']
+
 
     return dict_inputs

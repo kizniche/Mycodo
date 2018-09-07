@@ -78,11 +78,11 @@ class DaemonControl:
     def daemon_status(self):
         return self.rpyc_client.root.daemon_status()
 
-    def test(self):
-        return self.rpyc_client.root.test()
-
     def input_information_get(self):
         return self.rpyc_client.root.input_information_get()
+
+    def input_information_update(self):
+        return self.rpyc_client.root.input_information_update()
 
     def lcd_backlight(self, lcd_id, state):
         return self.rpyc_client.root.lcd_backlight(lcd_id, state)

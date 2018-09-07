@@ -10,42 +10,56 @@ INPUT_INFORMATION = {
     # Input information
     'common_name_input': 'Humidity Sensor 01',
     'unique_name_input': 'SEN_HUM_01',
+    'input_manufacturer': 'Company XX',
+    'input_model': 'SEN_X_01',
 
     # Measurement information
     'common_name_measurements': 'Humidity',
-    'unique_name_measurements': {
-        'humidity': 'percent'
-    },
+    'unique_name_measurements': ['humidity'],  # List of strings
 
     # Python module dependencies
     # This must be a module that is able to be installed with pip via pypi.org
     # Leave the list empty if there are no pip or github dependencies
-    'dependencies_pypi': [],
-    'dependencies_github': [],
+    'dependencies_pypi': ['random'],  # List of strings
+    'dependencies_github': [],  # List of strings
 
     #
     # The below options are available from the input_dev variable
     # See the example, below: "self.resolution = input_dev.resolution"
     #
 
-    # Interface options: 'I2C' or 'UART'
-    'interface': 'I2C',
+    # Interface options: 'I2C', 'UART'
+    'interfaces': ['I2C', 'UART'],  # List of strings
 
     # I2C options
-    'location': ['0x01', '0x02'],  # I2C address(s). Must be list. Enter more than one if multiple addresses exist.
+    # Enter more than one if multiple addresses exist.
+    'i2c_location': ['0x01', '0x02'],  # List of strings
 
     # UART options
-    'serial_default_baud_rate': 9600,
-    'pin_cs': None,
-    'pin_miso': None,
-    'pin_mosi': None,
-    'pin_clock': None,
+    'uart_location': '/dev/ttyAMA0',  # String
+    'baud_rate': 9600,  # Integer
+    'pin_cs': None,  # Integer
+    'pin_miso': None,  # Integer
+    'pin_mosi': None,  # Integer
+    'pin_clock': None,  # Integer
 
-    # Miscellaneous options available
-    'resolution': [],
-    'resolution_2': [],
-    'sensitivity': [],
-    'thermocouple_type': [],
+    # Analog-to-digital converter options
+    'adc_measure': None,  # String
+    'adc_measure_units': None,  # String
+    'convert_to_unit': [],  # List of strings
+    'adc_volts_min': None,  # Float
+    'adc_volts_max': None,  # Float
+
+    # Miscellaneous options
+    'period': None,  # Float (Input Period, Default: 15.0)
+    'cmd_command': None,  # String
+    'cmd_measurement': None,  # String
+    'cmd_measurement_units': None,  # String
+    'resolution': [],  # List of integers
+    'resolution_2': [],  # List of integers
+    'sensitivity': [],  # List of integers
+    'thermocouple_type': [],  # List of strings
+    'ref_ohm': None  # Integer
 }
 
 class InputModule(AbstractInput):
@@ -62,32 +76,47 @@ class InputModule(AbstractInput):
         self._humidity = None
 
         if not testing:
-            #
-            # Begin dependent modules loading
-            #
-
-            # import dependent_module
-
-            #
-            # End dependent modules loading
-            #
-
             self.logger = logging.getLogger(
                 "mycodo.inputs.{name_lower}_{id}".format(
                     name_lower=INPUT_INFORMATION['unique_name_input'].lower(),
                     id=input_dev.id))
-            self.i2c_address = int(str(input_dev.location), 16)
-            self.i2c_bus = input_dev.i2c_bus
-            self.resolution = input_dev.resolution
             self.convert_to_unit = input_dev.convert_to_unit
+            self.interface = input_dev.interface
 
             #
-            # Initialize the sensor class
+            # Begin dependent modules loading
             #
-            # self.sensor = dependent_module.MY_SENSOR_CLASS(
-            #     i2c_address=self.i2c_address,
-            #     i2c_bus=self.i2c_bus,
-            #     resolution=self.resolution)
+
+            import random
+            self.random = random
+
+            #
+            # Load optional settings
+            #
+
+            self.resolution = input_dev.resolution
+
+            #
+            # Interface-specific initializations
+            #
+
+            if self.interface == 'I2C':
+
+                self.i2c_address = int(str(input_dev.location), 16)
+                self.i2c_bus = input_dev.i2c_bus
+                # self.sensor = dependent_module.MY_SENSOR_CLASS(
+                #     i2c_address=self.i2c_address,
+                #     i2c_bus=self.i2c_bus,
+                #     resolution=self.resolution)
+
+            elif self.interface == 'UART':
+
+                self.serial_device = input_dev.location
+                self.baud_rate = input_dev.baud_rate
+                # self.sensor = dependent_module.MY_SENSOR_CLASS(
+                #     serial_device=self.serial_device,
+                #     baud_rate=self.baud_rate,
+                #     resolution=self.resolution)
 
     def __repr__(self):
         """  Representation of object """
@@ -130,8 +159,13 @@ class InputModule(AbstractInput):
         # Begin sensor measurement code
         #
 
-        import random
-        humidity = random.randint(15, 45)
+        # I2C-specific measurement code
+        if self.interface == 'I2C':
+            humidity = self.random.randint(15, 45)
+
+        # UART-specific measurement code
+        elif self.interface == 'UART':
+            humidity = self.random.randint(15, 45)
 
         #
         # End sensor measurement code

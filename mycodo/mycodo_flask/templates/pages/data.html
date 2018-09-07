@@ -21,24 +21,23 @@
       <input type="hidden" name="form-name" value="addSensor">
 
       <div class="row small-gutters">
-        <div class="col-sm">
-          {{form_add_input.input_type(class_='form-control')}}
-        </div>
-        <div class="col-sm">
+        <div class="col-auto">
           {{form_add_input.input_add(class_='btn btn-primary')}}
+        </div>
+        <div class="col-auto">
+          {{form_add_input.input_type(class_='form-control')}}
         </div>
       </div>
     </form>
 
     <form id="new_math_form" method="post" action="/data">
       {{form_add_math.hidden_tag()}}
-
       <div class="row small-gutters">
-        <div class="col-sm">
-          {{form_add_math.math_type(class_='form-control')}}
-        </div>
-        <div class="col-sm">
+        <div class="col-auto">
           {{form_add_math.math_add(class_='btn btn-primary')}}
+        </div>
+        <div class="col-auto">
+          {{form_add_math.math_type(class_='form-control')}}
         </div>
       </div>
     </form>
