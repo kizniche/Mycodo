@@ -77,8 +77,20 @@ class MCP342xRead(object):
 
 
 if __name__ == "__main__":
-    mcp = MCP342xRead(0x68, 1, 1, 0, 18)
+    class Data:
+        def __init__(self, **kwargs):
+            self.__dict__.update(kwargs)
 
-    for measure in mcp:
-        print("Voltage: {}".format(measure['voltage']))
+    input_dev = Data(id='00001',
+                     location='0x68',
+                     i2c_bus=1,
+                     adc_channel=0,
+                     adc_gain=1,
+                     adc_resolution=12)
+
+    mcp = MCP342xRead(input_dev)
+
+    while 1:
+        mcp.read()
+        print("Voltage: {}".format(mcp.voltage))
         time.sleep(1)
