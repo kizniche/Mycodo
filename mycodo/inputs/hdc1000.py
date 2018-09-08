@@ -8,9 +8,9 @@ import io
 import logging
 import time
 
-from .base_input import AbstractInput
-from .sensorutils import convert_units
-from .sensorutils import dewpoint
+from mycodo.inputs.base_input import AbstractInput
+from mycodo.inputs.sensorutils import convert_units
+from mycodo.inputs.sensorutils import dewpoint
 
 # I2C Address
 HDC1000_ADDRESS = 0x40  # 1000000

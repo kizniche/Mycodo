@@ -24,8 +24,8 @@
 import logging
 import time
 
-from .base_input import AbstractInput
-from .sensorutils import convert_units
+from mycodo.inputs.base_input import AbstractInput
+from mycodo.inputs.sensorutils import convert_units
 
 
 class MAX31856Sensor(AbstractInput):

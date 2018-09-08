@@ -2,10 +2,8 @@
 import logging
 import time
 
-from w1thermsensor import W1ThermSensor
-
-from .base_input import AbstractInput
-from .sensorutils import convert_units
+from mycodo.inputs.base_input import AbstractInput
+from mycodo.inputs.sensorutils import convert_units
 
 
 class MAX31850KSensor(AbstractInput):
@@ -17,6 +15,7 @@ class MAX31850KSensor(AbstractInput):
         self._temperature = None
 
         if not testing:
+            from w1thermsensor import W1ThermSensor
             self.logger = logging.getLogger(
                 "mycodo.inputs.max31850k_{id}".format(id=input_dev.id))
             self.location = input_dev.location

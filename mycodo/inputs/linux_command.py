@@ -3,7 +3,7 @@ import logging
 
 from mycodo.utils.system_pi import cmd_output
 from mycodo.utils.system_pi import str_is_float
-from .base_input import AbstractInput
+from mycodo.inputs.base_input import AbstractInput
 
 
 class LinuxCommand(AbstractInput):

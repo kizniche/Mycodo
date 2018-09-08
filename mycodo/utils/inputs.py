@@ -25,106 +25,103 @@ import importlib.util
 import logging
 
 import os
+import sys
+
+sys.path.append(
+    os.path.abspath(os.path.join(os.path.dirname(__file__), os.path.pardir) + '/../..'))
+
+logger = logging.getLogger("mycodo.input_parser")
+
+
+def dict_has_value(dict_inputs, input_custom, key):
+    if (key in input_custom.INPUT_INFORMATION and
+            input_custom.INPUT_INFORMATION[key]):
+        dict_inputs[input_custom.INPUT_INFORMATION['unique_name_input']][key] = \
+            input_custom.INPUT_INFORMATION[key]
+    return dict_inputs
 
 
 def parse_input_information():
-    logger = logging.getLogger("mycodo.input_parser")
-    excluded_files = ['__init__.py', 'dummy_input.py', 'parse_inputs.py', '__pycache__']
-    input_path = '/var/mycodo-root/mycodo/inputs/custom_inputs'
-    real_path = os.path.realpath(input_path)
+    excluded_files = ['__init__.py', '__pycache__', 'base_input.py',
+                      'custom_inputs', 'dummy_input.py', 'input_template.py',
+                      'parse_inputs.py','sensorutils.py']
+
+    input_paths = ['/var/mycodo-root/mycodo/inputs', '/var/mycodo-root/mycodo/inputs/custom_inputs']
 
     dict_inputs = {}
 
-    for each_file in os.listdir(real_path):
-        if each_file not in excluded_files:
+    for each_path in input_paths:
 
-            full_path = "{}/{}".format(real_path, each_file)
+        real_path = os.path.realpath(each_path)
 
+        for each_file in os.listdir(real_path):
+            skip_file = False
 
-            spec = importlib.util.spec_from_file_location('module.name', full_path)
-            input_custom = importlib.util.module_from_spec(spec)
-            spec.loader.exec_module(input_custom)
+            if each_file in excluded_files:
+                skip_file = True
 
-            logger.info("Found input: {}, {}".format(input_custom.INPUT_INFORMATION['unique_name_input'], full_path))
+            if not skip_file:
+                logger.error("TEST00: {}".format(each_file))
 
-            # Populate dictionary of input information
-            if input_custom.INPUT_INFORMATION['unique_name_input'] in dict_inputs:
-                logger.error("Error: Cannot add input modules because it does not have a unique name: {name}".format(
-                    name=input_custom.INPUT_INFORMATION['unique_name_input']))
-            else:
-                dict_inputs[input_custom.INPUT_INFORMATION['unique_name_input']] = {}
+                full_path = "{}/{}".format(real_path, each_file)
 
-            dict_inputs[input_custom.INPUT_INFORMATION['unique_name_input']]['common_name_input'] = \
-                input_custom.INPUT_INFORMATION['common_name_input']
-            dict_inputs[input_custom.INPUT_INFORMATION['unique_name_input']]['common_name_measurements'] = \
-                input_custom.INPUT_INFORMATION['common_name_measurements']
-            dict_inputs[input_custom.INPUT_INFORMATION['unique_name_input']]['unique_name_measurements'] = \
-                input_custom.INPUT_INFORMATION['unique_name_measurements']
-            dict_inputs[input_custom.INPUT_INFORMATION['unique_name_input']]['input_manufacturer'] = \
-                input_custom.INPUT_INFORMATION['input_manufacturer']
-            dict_inputs[input_custom.INPUT_INFORMATION['unique_name_input']]['input_model'] = \
-                input_custom.INPUT_INFORMATION['input_model']
+                spec = importlib.util.spec_from_file_location('module.name', full_path)
+                input_custom = importlib.util.module_from_spec(spec)
+                spec.loader.exec_module(input_custom)
 
-            # Dependencies
-            dict_inputs[input_custom.INPUT_INFORMATION['unique_name_input']]['dependencies_pypi'] = \
-                input_custom.INPUT_INFORMATION['dependencies_pypi']
-            dict_inputs[input_custom.INPUT_INFORMATION['unique_name_input']]['dependencies_github'] = \
-                input_custom.INPUT_INFORMATION['dependencies_github']
+                if not hasattr(input_custom, 'INPUT_INFORMATION'):
+                    skip_file = True
 
-            # Interface
-            dict_inputs[input_custom.INPUT_INFORMATION['unique_name_input']]['interfaces'] = \
-                input_custom.INPUT_INFORMATION['interfaces']
+            if not skip_file:
+                logger.info("Found input: {}, {}".format(input_custom.INPUT_INFORMATION['unique_name_input'], full_path))
 
-            # I2C
-            dict_inputs[input_custom.INPUT_INFORMATION['unique_name_input']]['i2c_location'] = \
-                input_custom.INPUT_INFORMATION['i2c_location']
+                # Populate dictionary of input information
+                if input_custom.INPUT_INFORMATION['unique_name_input'] in dict_inputs:
+                    logger.error("Error: Cannot add input modules because it does not have a unique name: {name}".format(
+                        name=input_custom.INPUT_INFORMATION['unique_name_input']))
+                else:
+                    dict_inputs[input_custom.INPUT_INFORMATION['unique_name_input']] = {}
 
-            # UART
-            dict_inputs[input_custom.INPUT_INFORMATION['unique_name_input']]['uart_location'] = \
-                input_custom.INPUT_INFORMATION['uart_location']
-            dict_inputs[input_custom.INPUT_INFORMATION['unique_name_input']]['baud_rate'] = \
-                input_custom.INPUT_INFORMATION['baud_rate']
-            dict_inputs[input_custom.INPUT_INFORMATION['unique_name_input']]['pin_cs'] = \
-                input_custom.INPUT_INFORMATION['pin_cs']
-            dict_inputs[input_custom.INPUT_INFORMATION['unique_name_input']]['pin_miso'] = \
-                input_custom.INPUT_INFORMATION['pin_miso']
-            dict_inputs[input_custom.INPUT_INFORMATION['unique_name_input']]['pin_mosi'] = \
-                input_custom.INPUT_INFORMATION['pin_mosi']
-            dict_inputs[input_custom.INPUT_INFORMATION['unique_name_input']]['pin_clock'] = \
-                input_custom.INPUT_INFORMATION['pin_clock']
+                dict_inputs = dict_has_value(dict_inputs, input_custom, 'common_name_input')
+                dict_inputs = dict_has_value(dict_inputs, input_custom, 'common_name_measurements')
+                dict_inputs = dict_has_value(dict_inputs, input_custom, 'unique_name_measurements')
+                dict_inputs = dict_has_value(dict_inputs, input_custom, 'input_manufacturer')
+                dict_inputs = dict_has_value(dict_inputs, input_custom, 'input_model')
 
-            # Analog-to-digital converter
-            dict_inputs[input_custom.INPUT_INFORMATION['unique_name_input']]['adc_measure'] = \
-                input_custom.INPUT_INFORMATION['adc_measure']
-            dict_inputs[input_custom.INPUT_INFORMATION['unique_name_input']]['adc_measure_units'] = \
-                input_custom.INPUT_INFORMATION['adc_measure_units']
-            dict_inputs[input_custom.INPUT_INFORMATION['unique_name_input']]['convert_to_unit'] = \
-                input_custom.INPUT_INFORMATION['convert_to_unit']
-            dict_inputs[input_custom.INPUT_INFORMATION['unique_name_input']]['adc_volts_min'] = \
-                input_custom.INPUT_INFORMATION['adc_volts_min']
-            dict_inputs[input_custom.INPUT_INFORMATION['unique_name_input']]['adc_volts_max'] = \
-                input_custom.INPUT_INFORMATION['adc_volts_max']
+                # Dependencies
+                dict_inputs = dict_has_value(dict_inputs, input_custom, 'dependencies_pypi')
+                dict_inputs = dict_has_value(dict_inputs, input_custom, 'dependencies_github')
 
+                # Interface
+                dict_inputs = dict_has_value(dict_inputs, input_custom, 'interfaces')
 
-            # Misc
-            dict_inputs[input_custom.INPUT_INFORMATION['unique_name_input']]['period'] = \
-                input_custom.INPUT_INFORMATION['period']
-            dict_inputs[input_custom.INPUT_INFORMATION['unique_name_input']]['cmd_command'] = \
-                input_custom.INPUT_INFORMATION['cmd_command']
-            dict_inputs[input_custom.INPUT_INFORMATION['unique_name_input']]['cmd_measurement'] = \
-                input_custom.INPUT_INFORMATION['cmd_measurement']
-            dict_inputs[input_custom.INPUT_INFORMATION['unique_name_input']]['cmd_measurement_units'] = \
-                input_custom.INPUT_INFORMATION['cmd_measurement_units']
-            dict_inputs[input_custom.INPUT_INFORMATION['unique_name_input']]['resolution'] = \
-                input_custom.INPUT_INFORMATION['resolution']
-            dict_inputs[input_custom.INPUT_INFORMATION['unique_name_input']]['resolution_2'] = \
-                input_custom.INPUT_INFORMATION['resolution_2']
-            dict_inputs[input_custom.INPUT_INFORMATION['unique_name_input']]['sensitivity'] = \
-                input_custom.INPUT_INFORMATION['sensitivity']
-            dict_inputs[input_custom.INPUT_INFORMATION['unique_name_input']]['thermocouple_type'] = \
-                input_custom.INPUT_INFORMATION['thermocouple_type']
-            dict_inputs[input_custom.INPUT_INFORMATION['unique_name_input']]['ref_ohm'] = \
-                input_custom.INPUT_INFORMATION['ref_ohm']
+                # I2C
+                dict_inputs = dict_has_value(dict_inputs, input_custom, 'i2c_location')
 
+                # UART
+                dict_inputs = dict_has_value(dict_inputs, input_custom, 'uart_location')
+                dict_inputs = dict_has_value(dict_inputs, input_custom, 'baud_rate')
+                dict_inputs = dict_has_value(dict_inputs, input_custom, 'pin_cs')
+                dict_inputs = dict_has_value(dict_inputs, input_custom, 'pin_miso')
+                dict_inputs = dict_has_value(dict_inputs, input_custom, 'pin_mosi')
+                dict_inputs = dict_has_value(dict_inputs, input_custom, 'pin_clock')
+
+                # Analog-to-digital converter
+                dict_inputs = dict_has_value(dict_inputs, input_custom, 'adc_measure')
+                dict_inputs = dict_has_value(dict_inputs, input_custom, 'adc_measure_units')
+                dict_inputs = dict_has_value(dict_inputs, input_custom, 'convert_to_unit')
+                dict_inputs = dict_has_value(dict_inputs, input_custom, 'adc_volts_min')
+                dict_inputs = dict_has_value(dict_inputs, input_custom, 'adc_volts_max')
+
+                # Misc
+                dict_inputs = dict_has_value(dict_inputs, input_custom, 'period')
+                dict_inputs = dict_has_value(dict_inputs, input_custom, 'cmd_command')
+                dict_inputs = dict_has_value(dict_inputs, input_custom, 'cmd_measurement')
+                dict_inputs = dict_has_value(dict_inputs, input_custom, 'cmd_measurement_units')
+                dict_inputs = dict_has_value(dict_inputs, input_custom, 'resolution')
+                dict_inputs = dict_has_value(dict_inputs, input_custom, 'resolution_2')
+                dict_inputs = dict_has_value(dict_inputs, input_custom, 'sensitivity')
+                dict_inputs = dict_has_value(dict_inputs, input_custom, 'thermocouple_type')
+                dict_inputs = dict_has_value(dict_inputs, input_custom, 'ref_ohm')
 
     return dict_inputs

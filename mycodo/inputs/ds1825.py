@@ -2,10 +2,8 @@
 import logging
 import time
 
-from w1thermsensor import W1ThermSensor
-
-from .base_input import AbstractInput
-from .sensorutils import convert_units
+from mycodo.inputs.base_input import AbstractInput
+from mycodo.inputs.sensorutils import convert_units
 
 
 class DS18B20Sensor(AbstractInput):
@@ -17,6 +15,7 @@ class DS18B20Sensor(AbstractInput):
         self._temperature = None
 
         if not testing:
+            from w1thermsensor import W1ThermSensor
             self.location = input_dev.location
             self.resolution = input_dev.resolution
             self.convert_to_unit = input_dev.convert_to_unit

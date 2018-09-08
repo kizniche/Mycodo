@@ -5,8 +5,8 @@ import time
 from mycodo.utils.calibration import AtlasScientificCommand
 from mycodo.utils.influx import read_last_influxdb
 from mycodo.utils.system_pi import str_is_float
-from .base_input import AbstractInput
-from .sensorutils import convert_units
+from mycodo.inputs.base_input import AbstractInput
+from mycodo.inputs.sensorutils import convert_units
 
 
 class AtlaspHSensor(AbstractInput):

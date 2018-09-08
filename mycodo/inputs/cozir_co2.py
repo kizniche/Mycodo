@@ -1,9 +1,9 @@
 # coding=utf-8
 import logging
 
-from .base_input import AbstractInput
-from .sensorutils import convert_units
-from .sensorutils import dewpoint
+from mycodo.inputs.base_input import AbstractInput
+from mycodo.inputs.sensorutils import convert_units
+from mycodo.inputs.sensorutils import dewpoint
 
 
 class COZIRSensor(AbstractInput):

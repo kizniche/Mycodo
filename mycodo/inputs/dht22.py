@@ -6,9 +6,9 @@ import pigpio
 
 from mycodo.databases.models import Output
 from mycodo.utils.database import db_retrieve_table_daemon
-from .base_input import AbstractInput
-from .sensorutils import convert_units
-from .sensorutils import dewpoint
+from mycodo.inputs.base_input import AbstractInput
+from mycodo.inputs.sensorutils import convert_units
+from mycodo.inputs.sensorutils import dewpoint
 
 
 class DHT22Sensor(AbstractInput):

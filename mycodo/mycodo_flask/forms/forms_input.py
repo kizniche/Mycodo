@@ -3,6 +3,8 @@
 # forms_input.py - Input Flask Forms
 #
 
+from collections import OrderedDict
+
 from flask_babel import lazy_gettext
 from flask_wtf import FlaskForm
 from wtforms import BooleanField
@@ -22,17 +24,32 @@ class InputAdd(FlaskForm):
     choices_inputs = [('', lazy_gettext('Select Input to Add'))]
     dict_inputs = parse_input_information()
 
+    # Sort dictionary entries by manufacturer
+    dict_inputs = OrderedDict(sorted(dict_inputs.items(), key=lambda x: x[1]['input_manufacturer']))
+
     for each_input in dict_inputs:
-        for each_interface in dict_inputs[each_input]['interfaces']:
+        model = ''
+        if 'input_model' in dict_inputs[each_input]:
+            model = ' {model}:'.format(model=dict_inputs[each_input]['input_model'])
+
+        if 'interfaces' not in dict_inputs[each_input]:
             choices_inputs.append(
-                ('{inp},{int}'.format(inp=each_input, int=each_interface),
-                 '[{uname}] {manuf}: {model}: {name}: {meas} ({int})'.format(
-                    uname=each_input,
-                    manuf=dict_inputs[each_input]['input_manufacturer'],
-                    model=dict_inputs[each_input]['input_model'],
-                    name=dict_inputs[each_input]['common_name_input'],
-                    meas=dict_inputs[each_input]['common_name_measurements'],
-                    int=each_interface)))
+                ('{inp},'.format(inp=each_input),
+                 '{manuf}:{model} {name}: {meas}'.format(
+                     manuf=dict_inputs[each_input]['input_manufacturer'],
+                     model=model,
+                     name=dict_inputs[each_input]['common_name_input'],
+                     meas=dict_inputs[each_input]['common_name_measurements'])))
+        else:
+            for each_interface in dict_inputs[each_input]['interfaces']:
+                choices_inputs.append(
+                    ('{inp},{int}'.format(inp=each_input, int=each_interface),
+                     '{manuf}:{model} {name}: {meas} ({int})'.format(
+                        manuf=dict_inputs[each_input]['input_manufacturer'],
+                        model=model,
+                        name=dict_inputs[each_input]['common_name_input'],
+                        meas=dict_inputs[each_input]['common_name_measurements'],
+                        int=each_interface)))
 
     input_type = SelectField(
         choices=choices_inputs,

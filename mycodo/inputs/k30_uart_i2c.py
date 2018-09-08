@@ -2,8 +2,8 @@
 import logging
 import time
 
-from .base_input import AbstractInput
-from .sensorutils import is_device
+from mycodo.inputs.base_input import AbstractInput
+from mycodo.inputs.sensorutils import is_device
 
 
 class K30Sensor(AbstractInput):

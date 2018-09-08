@@ -25,8 +25,8 @@ import logging
 import math
 import time
 
-from .base_input import AbstractInput
-from .sensorutils import convert_units
+from mycodo.inputs.base_input import AbstractInput
+from mycodo.inputs.sensorutils import convert_units
 
 # import numpy  # Used for more accurate temperature calculation
 

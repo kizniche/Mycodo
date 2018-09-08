@@ -124,60 +124,64 @@ def input_add(form_add):
 
         # NEW CODE - input add options
         if input_name in dict_inputs:
+            def dict_has_value(key):
+                if key in dict_inputs[input_name] and dict_inputs[input_name][key]:
+                    return True
+
             # General options
-            if 'period' in dict_inputs[input_name]:
+            if dict_has_value('period'):
                 new_input.period = dict_inputs[input_name]['period']
 
             if input_interface == 'I2C':
                 # I2C options
-                if 'i2c_location' in dict_inputs[input_name]:
+                if dict_has_value('i2c_location'):
                     new_input.location = dict_inputs[input_name]['i2c_location'][0]  # First I2C address in list
 
             elif input_interface == 'UART':
                 # UART options
-                if 'uart_location' in dict_inputs[input_name]:
+                if dict_has_value('uart_location'):
                     new_input.location = dict_inputs[input_name]['uart_location']
-                if 'baud_rate' in dict_inputs[input_name]:
+                if dict_has_value('baud_rate'):
                     new_input.baud_rate = dict_inputs[input_name]['baud_rate']
-                if 'pin_cs' in dict_inputs[input_name]:
+                if dict_has_value('pin_cs'):
                     new_input.pin_cs = dict_inputs[input_name]['pin_cs']
-                if 'pin_miso' in dict_inputs[input_name]:
+                if dict_has_value('pin_miso'):
                     new_input.pin_miso = dict_inputs[input_name]['pin_miso']
-                if 'pin_mosi' in dict_inputs[input_name]:
+                if dict_has_value('pin_mosi'):
                     new_input.pin_mosi = dict_inputs[input_name]['pin_mosi']
-                if 'pin_clock' in dict_inputs[input_name]:
+                if dict_has_value('pin_clock'):
                     new_input.pin_clock = dict_inputs[input_name]['pin_clock']
 
             # Analog-to-digital converter options
-            if 'adc_measure' in dict_inputs[input_name]:
+            if dict_has_value('adc_measure'):
                 new_input.adc_measure = dict_inputs[input_name]['adc_measure']
-            if 'adc_measure_units' in dict_inputs[input_name]:
-                new_input.adc_measure_units = dict_inputs[input_name]['adc_measure_units']
-            if 'convert_to_unit' in dict_inputs[input_name]:
-                new_input.convert_to_unit = ','.join(dict_inputs[input_name]['convert_to_unit'])
-            if 'adc_volts_min' in dict_inputs[input_name]:
-                new_input.adc_volts_min = dict_inputs[input_name]['adc_volts_min']
-            if 'adc_volts_max' in dict_inputs[input_name]:
-                new_input.adc_volts_max = dict_inputs[input_name]['adc_volts_max']
+                if dict_has_value('adc_measure_units'):
+                    new_input.adc_measure_units = dict_inputs[input_name]['adc_measure_units']
+                if dict_has_value('convert_to_unit'):
+                    new_input.convert_to_unit = ','.join(dict_inputs[input_name]['convert_to_unit'])
+                if dict_has_value('adc_volts_min'):
+                    new_input.adc_volts_min = dict_inputs[input_name]['adc_volts_min']
+                if dict_has_value('adc_volts_max'):
+                    new_input.adc_volts_max = dict_inputs[input_name]['adc_volts_max']
 
             # Linux command
-            if 'cmd_command' in dict_inputs[input_name]:
+            if dict_has_value('cmd_command'):
                 new_input.cmd_command = dict_inputs[input_name]['cmd_command']
-            if 'cmd_measurement' in dict_inputs[input_name]:
-                new_input.cmd_measurement = dict_inputs[input_name]['cmd_measurement']
-            if 'cmd_measurement_units' in dict_inputs[input_name]:
-                new_input.cmd_measurement_units = dict_inputs[input_name]['cmd_measurement_units']
+                if dict_has_value('cmd_measurement'):
+                    new_input.cmd_measurement = dict_inputs[input_name]['cmd_measurement']
+                if dict_has_value('cmd_measurement_units'):
+                    new_input.cmd_measurement_units = dict_inputs[input_name]['cmd_measurement_units']
 
             # Misc options
-            if 'resolution' in dict_inputs[input_name] and dict_inputs[input_name]['resolution']:
+            if dict_has_value('resolution'):
                 new_input.resolution = dict_inputs[input_name]['resolution'][0]
-            if 'resolution_2' in dict_inputs[input_name] and dict_inputs[input_name]['resolution_2']:
+            if dict_has_value('resolution_2'):
                 new_input.resolution_2 = dict_inputs[input_name]['resolution_2'][0]
-            if 'sensitivity' in dict_inputs[input_name] and dict_inputs[input_name]['sensitivity']:
+            if dict_has_value('sensitivity'):
                 new_input.sensitivity = dict_inputs[input_name]['sensitivity'][0]
-            if 'thermocouple_type' in dict_inputs[input_name] and dict_inputs[input_name]['thermocouple_type']:
+            if dict_has_value('thermocouple_type'):
                 new_input.thermocouple_type = dict_inputs[input_name]['thermocouple_type'][0]
-            if 'ref_ohm' in dict_inputs[input_name]:
+            if dict_has_value('ref_ohm'):
                 new_input.ref_ohm = dict_inputs[input_name]['ref_ohm']
 
         # OLD CODE TODO: Remove

@@ -3,8 +3,21 @@ import logging
 
 import os
 
-from .base_input import AbstractInput
+from mycodo.inputs.base_input import AbstractInput
 
+
+# Input information
+INPUT_INFORMATION = {
+    # Input information
+    'common_name_input': 'RPi CPU',
+    'unique_name_input': 'RPiCPULoad',
+    'input_manufacturer': 'Raspberry Pi',
+    'input_model': '',
+
+    # Measurement information
+    'common_name_measurements': 'CPULoad',
+    'unique_name_measurements': ['cpu_load_1m', 'cpu_load_5m', 'cpu_load_15m'],  # List of strings
+}
 
 class RaspberryPiCPULoad(AbstractInput):
     """ A sensor support class that monitors the raspberry pi's cpu load """

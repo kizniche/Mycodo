@@ -1,7 +1,7 @@
 # coding=utf-8
 import logging
 
-from .base_input import AbstractInput
+from mycodo.inputs.base_input import AbstractInput
 
 
 class GPIOState(AbstractInput):

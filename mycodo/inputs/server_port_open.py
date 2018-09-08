@@ -2,7 +2,7 @@
 import logging
 import os
 
-from .base_input import AbstractInput
+from mycodo.inputs.base_input import AbstractInput
 
 
 class ServerPortOpen(AbstractInput):
