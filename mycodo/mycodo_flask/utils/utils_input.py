@@ -155,6 +155,9 @@ def input_add(form_add):
                 if dict_has_value('pin_clock'):
                     new_input.pin_clock = dict_inputs[input_name]['pin_clock']
 
+            elif dict_has_value('location'):
+                new_input.location = dict_inputs[input_name]['location']
+
             # Analog-to-digital converter options
             if dict_has_value('adc_measure'):
                 new_input.adc_measure = dict_inputs[input_name]['adc_measure']

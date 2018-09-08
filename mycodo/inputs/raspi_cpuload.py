@@ -9,9 +9,13 @@ from mycodo.inputs.base_input import AbstractInput
 INPUT_INFORMATION = {
     'unique_name_input': 'RPiCPULoad',
     'input_manufacturer': 'Raspberry Pi',
-    'common_name_input': 'RPi CPU',
+    'common_name_input': 'RPi CPU Load',
     'common_name_measurements': 'CPULoad',
     'unique_name_measurements': ['cpu_load_1m', 'cpu_load_5m', 'cpu_load_15m'],  # List of strings
+    'interfaces': ['RPi'],  # List of strings
+    'location': '/',  # String
+    'options_disabled': ['interface'],
+    'options_enabled': ['period'],
 }
 
 

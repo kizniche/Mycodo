@@ -9,11 +9,12 @@ from mycodo.inputs.sensorutils import convert_units
 INPUT_INFORMATION = {
     'unique_name_input': 'RPi',
     'input_manufacturer': 'Raspberry Pi',
-    'common_name_input': 'RPi CPU',
+    'common_name_input': 'RPi CPU Temp',
     'common_name_measurements': 'Temperature',
     'unique_name_measurements': ['temperature'],  # List of strings
+    'interfaces': ['RPi'],  # List of strings
     'options_disabled': ['interface'],
-    'options_enabled': ['convert_unit'],
+    'options_enabled': ['period', 'convert_unit'],
 }
 
 

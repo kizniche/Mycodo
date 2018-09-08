@@ -41,6 +41,9 @@ INPUT_INFORMATION = {
     'options_enabled': ['period', 'convert_unit', 'pre_output', 'uart_location', 'baud_rate', 'resolution'],
     'options_disabled': ['i2c_location'],
 
+    # Non-standard (I2C, UART, etc.) location setting
+    'location': '',  # String
+
     # UART options
     'uart_location': '/dev/ttyAMA0',  # String
     'baud_rate': 9600,  # Integer
@@ -65,7 +68,20 @@ INPUT_INFORMATION = {
     'resolution_2': [],  # List of integers
     'sensitivity': [],  # List of integers
     'thermocouple_type': [],  # List of strings
-    'ref_ohm': None  # Integer
+    'ref_ohm': None,  # Integer
+
+    #
+    # Custom options
+    #
+    # Custom options may be created if they aren't already available above
+    #
+    'custom_options': {
+        'custom_option_1': {
+            'name': 'Option 1',
+            'value': '15',  # String (can be converted to other types)
+            'description': 'This text describes option 1 and is translatable'
+        }
+    }
 }
 
 class InputModule(AbstractInput):

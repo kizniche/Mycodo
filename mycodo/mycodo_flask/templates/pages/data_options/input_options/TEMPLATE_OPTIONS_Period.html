@@ -7,7 +7,7 @@
   {%- if 'period' in dict_inputs[each_input.device]['options_disabled'] -%}
     {{form_mod_input.period(class_='form-control', value=each_input.period, disabled=True, **{'title': tooltips_input['period']['phrase']})}}
   {% else %}
-    {{form_mod_input.period(class_='form-control', value=each_input.period, **{'title': tooltips_input['phrase']})}}
+    {{form_mod_input.period(class_='form-control', value=each_input.period, **{'title': tooltips_input['period']['phrase']})}}
   {%- endif -%}
 
   </div>

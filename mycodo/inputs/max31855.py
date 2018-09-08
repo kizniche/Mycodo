@@ -13,6 +13,8 @@ INPUT_INFORMATION = {
     'unique_name_measurements': ['temperature', 'temperature_die'],  # List of strings
     'dependencies_pypi': ['Adafruit_MAX31855', 'Adafruit_GPIO'],  # List of strings
     'interfaces': ['UART'],  # List of strings
+    'options_enabled': ['period', 'pin_clock', 'pin_cs', 'pin_miso', 'convert_unit', 'pre_output'],
+    'options_disabled': ['interface']
 }
 
 

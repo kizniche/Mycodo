@@ -43,6 +43,7 @@ from mycodo.mycodo_flask.routes_static import inject_variables
 from mycodo.mycodo_flask.utils import utils_general
 from mycodo.utils.github_release_info import github_latest_release
 from mycodo.utils.github_release_info import github_releases
+from mycodo.utils.inputs import parse_input_information
 from mycodo.utils.statistics import return_stat_file_dict
 from mycodo.utils.system_pi import can_perform_backup
 from mycodo.utils.system_pi import get_directory_size
@@ -218,8 +219,10 @@ def admin_dependencies(device):
     if dep:
         install_in_progress = True
 
+    dict_inputs = parse_input_information()
+
     list_dependencies = [
-        DEVICE_INFO,
+        dict_inputs,
         MATH_INFO,
         METHOD_INFO,
         OUTPUT_INFO,
@@ -230,7 +233,7 @@ def admin_dependencies(device):
 
             if device in each_section:
                 for each_device, each_val in each_section[device].items():
-                    if each_device == 'name':
+                    if each_device in ['name', 'common_name_input']:
                         device_name = each_val
 
             # Determine if there are any unmet dependencies

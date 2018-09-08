@@ -25,9 +25,9 @@ TOOLTIPS_INPUT = {
     'convert_unit': {
         'title': None,
         'phrase': lazy_gettext('Select the unit of the measurement to be stored in the database')},
-    # '': {
-    #     'title': lazy_gettext(''),
-    #     'phrase': lazy_gettext('')},
+    'location': {
+        'title': lazy_gettext('Location'),
+        'phrase': lazy_gettext('The location to use for this device')},
     # '': {
     #     'title': lazy_gettext(''),
     #     'phrase': lazy_gettext('')},

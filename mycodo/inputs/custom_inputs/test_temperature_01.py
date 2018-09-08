@@ -41,6 +41,9 @@ INPUT_INFORMATION = {
     'options_enabled': ['period', 'convert_unit', 'pre_output', 'i2c_location'],
     'options_disabled': [''],
 
+    # Non-standard (I2C, UART, etc.) location setting
+    'location': '',  # String
+
     # UART options
     'uart_location': None,  # String
     'baud_rate': None,  # Integer

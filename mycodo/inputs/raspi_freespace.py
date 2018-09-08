@@ -13,6 +13,9 @@ INPUT_INFORMATION = {
     'common_name_input': 'RPi Free Space',
     'common_name_measurements': 'Unallocated Disk Space',
     'unique_name_measurements': ['disk_space'],  # List of strings
+    'interfaces': ['RPi'],  # List of strings
+    'options_disabled': ['interface'],
+    'options_enabled': ['location', 'period', 'convert_unit']
 }
 
 

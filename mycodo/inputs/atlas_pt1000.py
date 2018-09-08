@@ -5,6 +5,21 @@ from mycodo.utils.system_pi import str_is_float
 from mycodo.inputs.base_input import AbstractInput
 from mycodo.inputs.sensorutils import convert_units
 
+# Input information
+INPUT_INFORMATION = {
+    'unique_name_input': 'ATLAS_PT1000',
+    'input_manufacturer': 'Atlas',
+    'common_name_input': 'ATLAS_PT1000',
+    'common_name_measurements': 'Temperature',
+    'unique_name_measurements': ['temperature'],  # List of strings
+    'dependencies_pypi': ['w1thermsensor'],  # List of strings
+    'interfaces': ['I2C'],  # List of strings
+    'i2c_location': ['0x66'],  # List of strings
+    'i2c_address_editable': True,  # Boolean
+    'options_enabled': ['i2c_location', 'period', 'convert_unit', 'pre_output'],
+    'options_disabled': []
+}
+
 
 class AtlasPT1000Sensor(AbstractInput):
     """ A sensor support class that monitors the PT1000's temperature """

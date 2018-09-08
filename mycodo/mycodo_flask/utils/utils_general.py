@@ -19,7 +19,6 @@ from mycodo.config import MATH_INFO
 from mycodo.config import METHOD_INFO
 from mycodo.config import OUTPUT_INFO
 from mycodo.config import PATH_CAMERAS
-from mycodo.config_devices_units import DEVICE_INFO
 from mycodo.config_devices_units import MEASUREMENTS
 from mycodo.config_devices_units import UNITS
 from mycodo.databases.models import Camera
@@ -747,8 +746,10 @@ def return_dependencies(device_type, dep_type='unmet'):
     unmet_deps = []
     met_deps = False
 
+    dict_inputs = parse_input_information()
+
     list_dependencies = [
-        DEVICE_INFO,
+        dict_inputs,
         MATH_INFO,
         METHOD_INFO,
         OUTPUT_INFO,
@@ -757,7 +758,7 @@ def return_dependencies(device_type, dep_type='unmet'):
     for each_section in list_dependencies:
         if device_type in each_section:
             for each_device, each_dict in each_section[device_type].items():
-                if each_device == 'py-dependencies':
+                if each_device in ['py-dependencies', 'dependencies_pypi']:
                     for each_dep in each_dict:
                         try:
                             module = importlib.util.find_spec(each_dep)

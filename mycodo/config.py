@@ -8,8 +8,8 @@ from datetime import timedelta
 import os
 from flask_babel import lazy_gettext
 
-MYCODO_VERSION = '6.2.4'
-ALEMBIC_VERSION = '7dbc5357d3a9'
+MYCODO_VERSION = '6.3.0'
+ALEMBIC_VERSION = 'd10573676ecb'
 
 #  FORCE_UPGRADE_MASTER
 #  Set True to enable upgrading to the master branch of the Mycodo repository.

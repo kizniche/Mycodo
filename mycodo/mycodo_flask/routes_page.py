@@ -1298,7 +1298,7 @@ def page_data():
 
         if unmet_dependencies:
             return redirect(url_for('routes_admin.admin_dependencies',
-                                    device=form_add_input.input_type.data))
+                                    device=form_add_input.input_type.data.split(',')[0]))
         else:
             return redirect(url_for('routes_page.page_data'))
 

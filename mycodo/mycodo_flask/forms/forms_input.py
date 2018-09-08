@@ -15,9 +15,8 @@ from wtforms import validators
 from wtforms import widgets
 from wtforms.validators import DataRequired
 
-from mycodo.utils.inputs import parse_input_information
-
 from mycodo.config_translations import TOOLTIPS_INPUT
+from mycodo.utils.inputs import parse_input_information
 
 
 class InputAdd(FlaskForm):
