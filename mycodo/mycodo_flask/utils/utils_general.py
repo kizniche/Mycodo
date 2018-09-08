@@ -302,9 +302,6 @@ def form_input_choices(choices, each_input):
 
     dict_inputs = parse_input_information()
 
-    # TODO: remove debug line
-    # flash('TEST00: {}'.format(dict_measurements), 'success')
-
     # NEW CODE
     if each_input.device in dict_inputs:
         if (dict_inputs[each_input.device]['unique_name_measurements'] and

@@ -128,7 +128,8 @@ def input_add(form_add):
         # NEW CODE - input add options
         if input_name in dict_inputs:
             def dict_has_value(key):
-                if key in dict_inputs[input_name] and dict_inputs[input_name][key]:
+                if (key in dict_inputs[input_name] and
+                        (dict_inputs[input_name][key] or dict_inputs[input_name][key] == 0)):
                     return True
 
             # General options
@@ -144,8 +145,8 @@ def input_add(form_add):
                 # UART options
                 if dict_has_value('uart_location'):
                     new_input.location = dict_inputs[input_name]['uart_location']
-                if dict_has_value('baud_rate'):
-                    new_input.baud_rate = dict_inputs[input_name]['baud_rate']
+                if dict_has_value('uart_baud_rate'):
+                    new_input.baud_rate = dict_inputs[input_name]['uart_baud_rate']
                 if dict_has_value('pin_cs'):
                     new_input.pin_cs = dict_inputs[input_name]['pin_cs']
                 if dict_has_value('pin_miso'):
@@ -180,13 +181,25 @@ def input_add(form_add):
 
             # Misc options
             if dict_has_value('resolution'):
-                new_input.resolution = dict_inputs[input_name]['resolution'][0]
+                if len(dict_inputs[input_name]['resolution']) == 1:
+                    new_input.resolution = dict_inputs[input_name]['resolution'][0]
+                elif len(dict_inputs[input_name]['resolution']) > 1:
+                    new_input.resolution = dict_inputs[input_name]['resolution'][0][0]
             if dict_has_value('resolution_2'):
-                new_input.resolution_2 = dict_inputs[input_name]['resolution_2'][0]
+                if len(dict_inputs[input_name]['resolution_2']) == 1:
+                    new_input.resolution_2 = dict_inputs[input_name]['resolution_2'][0]
+                elif len(dict_inputs[input_name]['resolution_2']) > 1:
+                    new_input.resolution_2 = dict_inputs[input_name]['resolution_2'][0][0]
             if dict_has_value('sensitivity'):
-                new_input.sensitivity = dict_inputs[input_name]['sensitivity'][0]
+                if len(dict_inputs[input_name]['sensitivity']) == 1:
+                    new_input.sensitivity = dict_inputs[input_name]['sensitivity'][0]
+                elif len(dict_inputs[input_name]['sensitivity']) > 1:
+                    new_input.sensitivity = dict_inputs[input_name]['sensitivity'][0][0]
             if dict_has_value('thermocouple_type'):
-                new_input.thermocouple_type = dict_inputs[input_name]['thermocouple_type'][0]
+                if len(dict_inputs[input_name]['thermocouple_type']) == 1:
+                    new_input.thermocouple_type = dict_inputs[input_name]['thermocouple_type'][0]
+                elif len(dict_inputs[input_name]['thermocouple_type']) > 1:
+                    new_input.thermocouple_type = dict_inputs[input_name]['thermocouple_type'][0][0]
             if dict_has_value('ref_ohm'):
                 new_input.ref_ohm = dict_inputs[input_name]['ref_ohm']
 
@@ -359,11 +372,6 @@ def input_add(form_add):
 
                 display_order = csv_to_list_of_str(
                     DisplayOrder.query.first().inputs)
-
-                flash("TEST00: {}".format(display_order), "success")
-
-                # flash("TEST01: {}".format(add_display_order(
-                #     display_order, new_input.unique_id)), "success")
 
                 DisplayOrder.query.first().inputs = add_display_order(
                     display_order, new_input.unique_id)

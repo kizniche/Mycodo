@@ -35,7 +35,8 @@ logger = logging.getLogger("mycodo.input_parser")
 
 def dict_has_value(dict_inputs, input_custom, key):
     if (key in input_custom.INPUT_INFORMATION and
-            input_custom.INPUT_INFORMATION[key]):
+            (input_custom.INPUT_INFORMATION[key] or
+             input_custom.INPUT_INFORMATION[key] == 0)):
         dict_inputs[input_custom.INPUT_INFORMATION['unique_name_input']][key] = \
             input_custom.INPUT_INFORMATION[key]
     return dict_inputs
@@ -63,8 +64,6 @@ def parse_input_information():
                 skip_file = True
 
             if not skip_file:
-                logger.error("TEST00: {}".format(each_file))
-
                 full_path = "{}/{}".format(real_path, each_file)
 
                 spec = importlib.util.spec_from_file_location('module.name', full_path)
@@ -99,6 +98,9 @@ def parse_input_information():
                 # Nonstandard (I2C, UART, etc.) location
                 dict_inputs = dict_has_value(dict_inputs, input_custom, 'location')
 
+                # 1WIRE
+                dict_inputs = dict_has_value(dict_inputs, input_custom, 'w1thermsensor_detect_1wire')
+
                 # I2C
                 dict_inputs = dict_has_value(dict_inputs, input_custom, 'i2c_location')
                 dict_inputs = dict_has_value(dict_inputs, input_custom, 'i2c_address_editable')
@@ -108,7 +110,7 @@ def parse_input_information():
 
                 # UART
                 dict_inputs = dict_has_value(dict_inputs, input_custom, 'uart_location')
-                dict_inputs = dict_has_value(dict_inputs, input_custom, 'baud_rate')
+                dict_inputs = dict_has_value(dict_inputs, input_custom, 'uart_baud_rate')
                 dict_inputs = dict_has_value(dict_inputs, input_custom, 'pin_cs')
                 dict_inputs = dict_has_value(dict_inputs, input_custom, 'pin_miso')
                 dict_inputs = dict_has_value(dict_inputs, input_custom, 'pin_mosi')

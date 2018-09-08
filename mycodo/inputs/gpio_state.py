@@ -3,6 +3,19 @@ import logging
 
 from mycodo.inputs.base_input import AbstractInput
 
+# Input information
+INPUT_INFORMATION = {
+    'unique_name_input': 'GPIO_STATE',
+    'input_manufacturer': 'RPi',
+    'common_name_input': 'GPIO State',
+    'common_name_measurements': 'GPIO State',
+    'unique_name_measurements': ['gpio_state'],  # List of strings
+    'dependencies_pypi': ['RPi.GPIO'],  # List of strings
+    'interfaces': ['GPIO'],  # List of strings
+    'options_disabled': ['interface'],
+    'options_enabled': ['location', 'period', 'pre_output'],
+}
+
 
 class GPIOState(AbstractInput):
     """ A sensor support class that monitors the K30's CO2 concentration """

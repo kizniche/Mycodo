@@ -1,0 +1,16 @@
+{% if 'ref_ohm' in dict_inputs[each_input.device]['options_disabled'] or 'ref_ohm' in dict_inputs[each_input.device]['options_enabled'] %}
+
+<div class="col-auto">
+  {{form_mod_input.ref_ohm.label(class_='control-label')}}
+  <div>
+
+  {%- if 'ref_ohm' in dict_inputs[each_input.device]['options_disabled'] -%}
+    {{form_mod_input.ref_ohm(class_='form-control', value=each_input.ref_ohm, disabled=True, **{'title': tooltips_input['ref_ohm']['phrase']})}}
+  {% else %}
+    {{form_mod_input.ref_ohm(class_='form-control', value=each_input.ref_ohm, **{'title': tooltips_input['ref_ohm']['phrase']})}}
+  {%- endif -%}
+
+  </div>
+</div>
+
+{% endif %}

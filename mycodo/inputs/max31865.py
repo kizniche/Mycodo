@@ -39,6 +39,15 @@ INPUT_INFORMATION = {
     'unique_name_measurements': ['temperature'],  # List of strings
     'dependencies_pypi': ['RPi.GPIO'],  # List of strings
     'interfaces': ['UART'],  # List of strings
+    'pin_cs': 8,
+    'pin_miso': 9,
+    'pin_mosi': 10,
+    'pin_clock': 11,
+    'thermocouple_type': [('PT100', 'PT-100'),
+                          ('PT1000', 'PT-1000')],
+    'ref_ohm': 0,
+    'options_disabled': ['interface'],
+    'options_enabled': ['thermocouple_type', 'pin_cs', 'pin_miso', 'pin_mosi', 'pin_clock', 'ref_ohm', 'period', 'convert_unit', 'pre_output'],
 }
 
 

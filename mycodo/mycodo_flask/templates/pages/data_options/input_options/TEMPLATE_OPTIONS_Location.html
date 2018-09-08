@@ -1,16 +1,39 @@
 {% if 'location' in dict_inputs[each_input.device]['options_disabled'] or 'location' in dict_inputs[each_input.device]['options_enabled'] %}
 
 <div class="col-auto">
-  {{form_mod_input.location.label(class_='control-label')}}
-  <div>
 
-  {%- if 'period' in dict_inputs[each_input.device]['options_disabled'] -%}
-    {{form_mod_input.location(class_='form-control', value=each_input.location, disabled=True, **{'title': tooltips_input['location']['phrase']})}}
+  {% if 'location' in dict_inputs[each_input.device]['options_enabled'] and
+        each_input.interface == '1WIRE' and
+        dict_inputs[each_input.device]['w1thermsensor_detect_1wire']
+  %}
+
+      <label class="control-label">{{tooltips_input['w1thermsensor_id']['title']}}</label>
+      <div>
+        <select class="form-control form-tooltip form-dropdown" data-placement="top" id="location" name="location" title="{{tooltips_input['w1thermsensor_id']['phrase']}}">
+          {% if w1thermsensor_sensors != [] %}
+            <option value=""></option>
+            {% for each_w1thermsensor in w1thermsensor_sensors %}
+              <option value="{{each_w1thermsensor}}"{% if each_input.location == each_w1thermsensor %} selected{% endif %}>{{each_w1thermsensor}}</option>
+            {% endfor %}
+          {% else %}
+            <option value="">None Detected</option>
+          {% endif %}
+        </select>
+      </div>
+
   {% else %}
-    {{form_mod_input.location(class_='form-control', value=each_input.location, **{'title': tooltips_input['location']['phrase']})}}
-  {%- endif -%}
 
+      {{form_mod_input.location.label(class_='control-label')}}
+  <div>
+    {%- if 'period' in dict_inputs[each_input.device]['options_disabled'] -%}
+      {{form_mod_input.location(class_='form-control', value=each_input.location, disabled=True, **{'title': tooltips_input['location']['phrase']})}}
+    {% else %}
+      {{form_mod_input.location(class_='form-control', value=each_input.location, **{'title': tooltips_input['location']['phrase']})}}
+    {%- endif -%}
   </div>
+
+  {% endif %}
+
 </div>
 
 {% endif %}

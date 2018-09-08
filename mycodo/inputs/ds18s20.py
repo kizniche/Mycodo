@@ -7,9 +7,9 @@ from mycodo.inputs.sensorutils import convert_units
 
 # Input information
 INPUT_INFORMATION = {
-    'unique_name_input': 'DS18B20',
+    'unique_name_input': 'DS18S20',
     'input_manufacturer': 'MAXIM',
-    'common_name_input': 'DS18B20',
+    'common_name_input': 'DS18S20',
     'common_name_measurements': 'Temperature',
     'unique_name_measurements': ['temperature'],  # List of strings
     'dependencies_pypi': ['w1thermsensor'],  # List of strings

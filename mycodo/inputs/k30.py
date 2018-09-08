@@ -6,6 +6,21 @@ from mycodo.inputs.base_input import AbstractInput
 from mycodo.inputs.sensorutils import convert_units
 from mycodo.inputs.sensorutils import is_device
 
+# Input information
+INPUT_INFORMATION = {
+    'unique_name_input': 'K30',
+    'input_manufacturer': 'CO2Meter',
+    'common_name_input': 'K30',
+    'common_name_measurements': 'CO2',
+    'unique_name_measurements': ['co2'],  # List of strings
+    'dependencies_pypi': ['serial'],  # List of strings
+    'interfaces': ['UART'],  # List of strings
+    'uart_location': '/dev/ttyAMA0',  # String
+    'baud_rate': 9600,  # Integer
+    'options_disabled': ['interface'],
+    'options_enabled': ['uart_location', 'period', 'baud_rate', 'convert_unit', 'pre_output'],
+}
+
 
 class K30Sensor(AbstractInput):
     """ A sensor support class that monitors the K30's CO2 concentration """

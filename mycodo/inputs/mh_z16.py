@@ -30,12 +30,15 @@ from mycodo.inputs.sensorutils import is_device
 INPUT_INFORMATION = {
     'unique_name_input': 'MH_Z16',
     'input_manufacturer': 'Winsen',
-    'common_name_input': 'MH_Z16',
+    'common_name_input': 'MH-Z16',
     'common_name_measurements': 'CO2',
     'unique_name_measurements': ['co2'],  # List of strings
     'dependencies_pypi': ['serial', 'smbus'],  # List of strings
     'interfaces': ['UART', 'I2C'],  # List of strings
     'i2c_location': ['0x63'],
+    'i2c_address_editable': True,  # Boolean
+    'options_disabled': ['interface'],
+    'options_enabled': ['i2c_location', 'uart_location', 'period', 'convert_unit', 'pre_output'],
 }
 
 

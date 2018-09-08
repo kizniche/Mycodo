@@ -7,6 +7,21 @@ import logging
 from mycodo.inputs.base_input import AbstractInput
 from mycodo.inputs.sensorutils import is_device
 
+# Input information
+INPUT_INFORMATION = {
+    'unique_name_input': 'WINSEN_ZH03B',
+    'input_manufacturer': 'Winsen',
+    'common_name_input': 'ZH03B',
+    'common_name_measurements': 'CO2',
+    'unique_name_measurements': ['co2'],  # List of strings
+    'dependencies_pypi': ['serial'],  # List of strings
+    'interfaces': ['UART'],  # List of strings
+    'uart_location': '/dev/ttyAMA0',  # String
+    'uart_baud_rate': 9600,  # Integer
+    'options_disabled': ['interface'],
+    'options_enabled': ['uart_location', 'uart_baud_rate', 'period', 'convert_unit', 'pre_output'],
+}
+
 
 class WINSEN_ZH03BSensor(AbstractInput):
     """ A sensor support class that monitors the WINSEN_ZH03B's particulate concentration """

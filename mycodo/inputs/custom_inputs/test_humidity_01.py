@@ -44,6 +44,9 @@ INPUT_INFORMATION = {
     # Non-standard (I2C, UART, etc.) location setting
     'location': '',  # String
 
+    # 1WIRE
+    'w1thermsensor_detect_1wire': False,  # Boolean
+
     # UART options
     'uart_location': '/dev/ttyAMA0',  # String
     'baud_rate': 9600,  # Integer
@@ -64,10 +67,10 @@ INPUT_INFORMATION = {
     'cmd_command': None,  # String
     'cmd_measurement': None,  # String
     'cmd_measurement_units': None,  # String
-    'resolution': [],  # List of integers
-    'resolution_2': [],  # List of integers
-    'sensitivity': [],  # List of integers
-    'thermocouple_type': [],  # List of strings
+    'resolution': [],  # List of tuples (e.g. [(1, 'option 1 name'), (2, 'option 2 name')]) or list containing one string (e.g. ['12'])
+    'resolution_2': [],  # List of tuples (e.g. [(1, 'option 1 name'), (2, 'option 2 name')]) or list containing one string (e.g. ['12'])
+    'sensitivity': [],  # List of tuples (e.g. [(1, 'option 1 name'), (2, 'option 2 name')]) or list containing one string (e.g. ['12'])
+    'thermocouple_type': [],  # List of tuples (e.g. [(1, 'option 1 name'), (2, 'option 2 name')]) or list containing one string (e.g. ['12'])
     'ref_ohm': None,  # Integer
 
     #

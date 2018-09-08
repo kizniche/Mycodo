@@ -24,7 +24,7 @@
       {{form_mod_input.name(class_='form-control', value=each_input.name, **{'title':_('A name to distinguish this from others')})}}
     </div>
     <div class="col-xs-5 col-sm-2">
-      <input class="form-control btn btn-default btn-block" disabled="" title="[{{'%02d' % each_input.id}}] UUID: {{each_input.unique_id}}" value="{% if each_input.interface %}[{{each_input.interface}}] {% endif %}{% if each_input.device in dict_inputs %}{{dict_inputs[each_input.device]['common_name_input']}}{% endif %}" type="text">
+      <input class="form-control btn btn-default btn-block" disabled="" title="[{{'%02d' % each_input.id}}] UUID: {{each_input.unique_id}}" value="{% if each_input.interface and each_input.interface not in ['RPi', 'Mycodo']%}[{{each_input.interface}}] {% endif %}{% if each_input.device in dict_inputs %}{{dict_inputs[each_input.device]['common_name_input']}}{% endif %}" type="text">
     </div>
     <div class="col-xs-4 col-xs-offset-2 col-sm-2 col-sm-offset-0">
     {% if each_input.is_activated -%}
@@ -78,6 +78,12 @@
         {% include 'pages/data_options/input_options/TEMPLATE_OPTIONS_Location.html' %}
         {% include 'pages/data_options/input_options/TEMPLATE_OPTIONS_I2C.html' %}
         {% include 'pages/data_options/input_options/TEMPLATE_OPTIONS_UART.html' %}
+        {% include 'pages/data_options/input_options/TEMPLATE_OPTIONS_Baud_Rate.html' %}
+        {% include 'pages/data_options/input_options/TEMPLATE_OPTIONS_Ref_Ohm.html' %}
+
+        {% include 'pages/data_options/input_options/TEMPLATE_OPTIONS_Resolution.html' %}
+        {% include 'pages/data_options/input_options/TEMPLATE_OPTIONS_Thermocouple_Type.html' %}
+
         {% include 'pages/data_options/input_options/TEMPLATE_OPTIONS_CONVERT_UNIT.html' %}
 
         {% if each_input.device != 'EDGE' -%}
