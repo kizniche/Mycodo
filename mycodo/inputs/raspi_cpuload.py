@@ -9,7 +9,7 @@ from mycodo.inputs.base_input import AbstractInput
 # Input information
 INPUT_INFORMATION = {
     # Input information
-    'common_name_input': 'RPi CQPU',
+    'common_name_input': 'RPi CPU',
     'unique_name_input': 'RPiCPULoad',
     'input_manufacturer': 'Raspberry Pi',
     'input_model': '',

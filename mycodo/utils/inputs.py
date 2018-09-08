@@ -40,6 +40,8 @@ def dict_has_value(dict_inputs, input_custom, key):
             input_custom.INPUT_INFORMATION[key]
     return dict_inputs
 
+# TODO: add alembic revision that sets input.location = input.device_loc, then delete device_loc column
+
 
 def parse_input_information():
     excluded_files = ['__init__.py', '__pycache__', 'base_input.py',
