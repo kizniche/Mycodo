@@ -7,6 +7,19 @@ from mycodo.inputs.base_input import AbstractInput
 from mycodo.inputs.sensorutils import convert_units
 
 
+# Input information
+INPUT_INFORMATION = {
+    # Input information
+    'common_name_input': 'Mycodo RAM',
+    'unique_name_input': 'MYCODO_RAM',
+    'input_manufacturer': 'Mycodo',
+    'input_model': '',
+
+    # Measurement information
+    'common_name_measurements': 'Size RAM in Use',
+    'unique_name_measurements': ['disk_space'],  # List of strings
+}
+
 class MycodoRam(AbstractInput):
     """
     A sensor support class that measures ram used by the Mycodo daemon

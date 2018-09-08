@@ -10,13 +10,13 @@ from mycodo.inputs.sensorutils import convert_units
 # Input information
 INPUT_INFORMATION = {
     # Input information
-    'common_name_input': 'RPi CPU',
+    'common_name_input': 'RPi Free Space',
     'unique_name_input': 'RPiFreeSpace',
     'input_manufacturer': 'Raspberry Pi',
     'input_model': '',
 
     # Measurement information
-    'common_name_measurements': 'Free Space',
+    'common_name_measurements': 'Unallocated Disk Space',
     'unique_name_measurements': ['disk_space'],  # List of strings
 }
 

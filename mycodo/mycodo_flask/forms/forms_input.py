@@ -3,8 +3,6 @@
 # forms_input.py - Input Flask Forms
 #
 
-from collections import OrderedDict
-
 from flask_babel import lazy_gettext
 from flask_wtf import FlaskForm
 from wtforms import BooleanField
@@ -24,10 +22,14 @@ class InputAdd(FlaskForm):
     choices_inputs = [('', lazy_gettext('Select Input to Add'))]
     dict_inputs = parse_input_information()
 
-    # Sort dictionary entries by manufacturer
-    dict_inputs = OrderedDict(sorted(dict_inputs.items(), key=lambda x: x[1]['input_manufacturer']))
+    # Sort dictionary entries by input_manufacturer, then common_name_input
+    # Results in list of sorted dictionary keys
+    list_tuples_sorted = sorted(dict_inputs.items(), key=lambda x: (x[1]['input_manufacturer'], x[1]['common_name_input']))
+    list_inputs_sorted = []
+    for each_input in list_tuples_sorted:
+        list_inputs_sorted.append(each_input[0])
 
-    for each_input in dict_inputs:
+    for each_input in list_inputs_sorted:
         model = ''
         if 'input_model' in dict_inputs[each_input]:
             model = ' {model}:'.format(model=dict_inputs[each_input]['input_model'])
