@@ -27,6 +27,18 @@ import time
 from mycodo.inputs.base_input import AbstractInput
 from mycodo.inputs.sensorutils import convert_units
 
+# Input information
+INPUT_INFORMATION = {
+    'unique_name_input': 'MAX31856',
+    'input_manufacturer': 'MAXIM',
+    'common_name_input': 'MAX31856',
+    'common_name_measurements': 'Temperature (Object/Die)',
+    'unique_name_measurements': ['temperature', 'temperature_die'],  # List of strings
+    'dependencies_pypi': ['RPi.GPIO'],  # List of strings
+    'interfaces': ['UART'],  # List of strings
+    'thermocouple_type': ['B', 'E', 'J', 'K', 'N', 'R', 'S', 'T']
+}
+
 
 class MAX31856Sensor(AbstractInput):
     """

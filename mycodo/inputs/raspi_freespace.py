@@ -6,19 +6,15 @@ import os
 from mycodo.inputs.base_input import AbstractInput
 from mycodo.inputs.sensorutils import convert_units
 
-
 # Input information
 INPUT_INFORMATION = {
-    # Input information
-    'common_name_input': 'RPi Free Space',
     'unique_name_input': 'RPiFreeSpace',
     'input_manufacturer': 'Raspberry Pi',
-    'input_model': '',
-
-    # Measurement information
+    'common_name_input': 'RPi Free Space',
     'common_name_measurements': 'Unallocated Disk Space',
     'unique_name_measurements': ['disk_space'],  # List of strings
 }
+
 
 class RaspberryPiFreeSpace(AbstractInput):
     """ A sensor support class that monitors the free space of a path """

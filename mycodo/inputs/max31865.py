@@ -30,6 +30,17 @@ from mycodo.inputs.sensorutils import convert_units
 
 # import numpy  # Used for more accurate temperature calculation
 
+# Input information
+INPUT_INFORMATION = {
+    'unique_name_input': 'MAX31865',
+    'input_manufacturer': 'MAXIM',
+    'common_name_input': 'MAX31865',
+    'common_name_measurements': 'Temperature',
+    'unique_name_measurements': ['temperature'],  # List of strings
+    'dependencies_pypi': ['RPi.GPIO'],  # List of strings
+    'interfaces': ['UART'],  # List of strings
+}
+
 
 class MAX31865Sensor(AbstractInput):
     """

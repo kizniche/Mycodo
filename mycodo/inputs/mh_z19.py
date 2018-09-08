@@ -6,6 +6,17 @@ from mycodo.inputs.base_input import AbstractInput
 from mycodo.inputs.sensorutils import convert_units
 from mycodo.inputs.sensorutils import is_device
 
+# Input information
+INPUT_INFORMATION = {
+    'unique_name_input': 'MH_Z19',
+    'input_manufacturer': 'Winsen',
+    'common_name_input': 'MH_Z19',
+    'common_name_measurements': 'CO2',
+    'unique_name_measurements': ['co2'],  # List of strings
+    'dependencies_pypi': ['serial'],  # List of strings
+    'interfaces': ['UART'],  # List of strings
+}
+
 
 class MHZ19Sensor(AbstractInput):
     """ A sensor support class that monitors the MH-Z19's CO2 concentration """

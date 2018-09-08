@@ -4,6 +4,17 @@ import logging
 from mycodo.inputs.base_input import AbstractInput
 from mycodo.inputs.sensorutils import convert_units
 
+# Input information
+INPUT_INFORMATION = {
+    'unique_name_input': 'MAX31855',
+    'input_manufacturer': 'MAXIM',
+    'common_name_input': 'MAX31855',
+    'common_name_measurements': 'Temperature (Object/Die)',
+    'unique_name_measurements': ['temperature', 'temperature_die'],  # List of strings
+    'dependencies_pypi': ['Adafruit_MAX31855', 'Adafruit_GPIO'],  # List of strings
+    'interfaces': ['UART'],  # List of strings
+}
+
 
 class MAX31855Sensor(AbstractInput):
     """

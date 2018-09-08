@@ -26,6 +26,18 @@ from mycodo.inputs.base_input import AbstractInput
 from mycodo.inputs.sensorutils import convert_units
 from mycodo.inputs.sensorutils import is_device
 
+# Input information
+INPUT_INFORMATION = {
+    'unique_name_input': 'MH_Z16',
+    'input_manufacturer': 'Winsen',
+    'common_name_input': 'MH_Z16',
+    'common_name_measurements': 'CO2',
+    'unique_name_measurements': ['co2'],  # List of strings
+    'dependencies_pypi': ['serial', 'smbus'],  # List of strings
+    'interfaces': ['UART', 'I2C'],  # List of strings
+    'i2c_location': ['0x63'],
+}
+
 
 class MHZ16Sensor(AbstractInput):
     """ A sensor support class that monitors the MH-Z16's CO2 concentration """

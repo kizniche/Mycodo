@@ -7,11 +7,12 @@ from mycodo.inputs.sensorutils import convert_units
 
 # Input information
 INPUT_INFORMATION = {
-    # Input information
-    'common_name_input': 'Temperature Sensor 01',
+    # Unique name (must be unique from all other inputs)
     'unique_name_input': 'SEN_TEMP_01',
+
+    # Descriptive information
     'input_manufacturer': 'Company YY',
-    'input_model': 'SEN_Y_01',
+    'common_name_input': 'Temp Sen01',
 
     # Measurement information
     'common_name_measurements': 'Temperature',
@@ -34,6 +35,11 @@ INPUT_INFORMATION = {
     # I2C options
     # Enter more than one if multiple addresses exist.
     'i2c_location': ['0x01', '0x02'],  # List of strings
+    'i2c_address_editable': False,  # Boolean
+
+    # Display options
+    'options_enabled': ['period', 'pre_output', 'i2c_location'],
+    'options_disabled': [''],
 
     # UART options
     'uart_location': None,  # String

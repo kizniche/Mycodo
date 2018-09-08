@@ -5,19 +5,15 @@ import subprocess
 from mycodo.inputs.base_input import AbstractInput
 from mycodo.inputs.sensorutils import convert_units
 
-
 # Input information
 INPUT_INFORMATION = {
-    # Input information
-    'common_name_input': 'RPi CPU',
     'unique_name_input': 'RPi',
     'input_manufacturer': 'Raspberry Pi',
-    'input_model': '',
-
-    # Measurement information
+    'common_name_input': 'RPi CPU',
     'common_name_measurements': 'Temperature',
     'unique_name_measurements': ['temperature'],  # List of strings
 }
+
 
 class RaspberryPiCPUTemp(AbstractInput):
     """ A sensor support class that monitors the raspberry pi's cpu temperature """

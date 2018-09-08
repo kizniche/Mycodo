@@ -88,7 +88,6 @@ def parse_input_information():
                 dict_inputs = dict_has_value(dict_inputs, input_custom, 'common_name_measurements')
                 dict_inputs = dict_has_value(dict_inputs, input_custom, 'unique_name_measurements')
                 dict_inputs = dict_has_value(dict_inputs, input_custom, 'input_manufacturer')
-                dict_inputs = dict_has_value(dict_inputs, input_custom, 'input_model')
 
                 # Dependencies
                 dict_inputs = dict_has_value(dict_inputs, input_custom, 'dependencies_pypi')
@@ -99,6 +98,10 @@ def parse_input_information():
 
                 # I2C
                 dict_inputs = dict_has_value(dict_inputs, input_custom, 'i2c_location')
+                dict_inputs = dict_has_value(dict_inputs, input_custom, 'i2c_address_editable')
+
+                dict_inputs = dict_has_value(dict_inputs, input_custom, 'options_enabled')
+                dict_inputs = dict_has_value(dict_inputs, input_custom, 'options_disabled')
 
                 # UART
                 dict_inputs = dict_has_value(dict_inputs, input_custom, 'uart_location')

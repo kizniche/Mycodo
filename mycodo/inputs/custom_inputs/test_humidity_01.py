@@ -7,11 +7,12 @@ from mycodo.inputs.sensorutils import convert_units
 
 # Input information
 INPUT_INFORMATION = {
-    # Input information
-    'common_name_input': 'Humidity Sensor 01',
+    # Unique name (must be unique from all other inputs)
     'unique_name_input': 'SEN_HUM_01',
+
+    # Descriptive information
     'input_manufacturer': 'Company XX',
-    'input_model': 'SEN_X_01',
+    'common_name_input': 'Hum Sen01',
 
     # Measurement information
     'common_name_measurements': 'Humidity',
@@ -33,7 +34,12 @@ INPUT_INFORMATION = {
 
     # I2C options
     # Enter more than one if multiple addresses exist.
-    'i2c_location': ['0x01', '0x02'],  # List of strings
+    'i2c_location': ['0x01'],  # List of strings
+    'i2c_address_editable': True,  # Boolean
+
+    # Display options
+    'options_enabled': ['period', 'pre_output', 'uart_location', 'baud_rate', 'resolution'],
+    'options_disabled': ['i2c_location'],
 
     # UART options
     'uart_location': '/dev/ttyAMA0',  # String

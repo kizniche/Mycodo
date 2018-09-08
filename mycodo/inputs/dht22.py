@@ -11,6 +11,18 @@ from mycodo.inputs.sensorutils import convert_units
 from mycodo.inputs.sensorutils import dewpoint
 
 
+# Input information
+INPUT_INFORMATION = {
+    'unique_name_input': 'DHT22',
+    'input_manufacturer': 'AOSONG',
+    'common_name_input': 'DHT22',
+    'common_name_measurements': 'Humidity/Temperature',
+    'unique_name_measurements': ['dewpoint', 'humidity', 'temperature'],  # List of strings
+    'dependencies_pypi': ['pigpio'],  # List of strings
+    'interfaces': ['GPIO'],  # List of strings
+}
+
+
 class DHT22Sensor(AbstractInput):
     """
     A sensor support class that measures the DHT22's humidity and temperature

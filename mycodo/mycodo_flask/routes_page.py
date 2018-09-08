@@ -20,6 +20,7 @@ from flask import url_for
 from flask.blueprints import Blueprint
 from flask_babel import gettext
 
+from mycodo.config_translations import TOOLTIPS_INPUT
 from mycodo.config import ALEMBIC_VERSION
 from mycodo.config import BACKUP_LOG_FILE
 from mycodo.config import CONDITIONALS
@@ -85,6 +86,7 @@ from mycodo.mycodo_flask.utils import utils_lcd
 from mycodo.mycodo_flask.utils import utils_math
 from mycodo.mycodo_flask.utils import utils_output
 from mycodo.mycodo_flask.utils import utils_pid
+from mycodo.utils.inputs import parse_input_information
 from mycodo.utils.sunriseset import Sun
 from mycodo.utils.system_pi import add_custom_measurements
 from mycodo.utils.system_pi import add_custom_units
@@ -1177,6 +1179,8 @@ def page_data():
     measurement = Measurement.query.all()
     unit = Unit.query.all()
 
+    dict_inputs =  parse_input_information()
+
     list_devices_i2c = LIST_DEVICES_I2C
 
     display_order_input = csv_to_list_of_str(DisplayOrder.query.first().inputs)
@@ -1306,6 +1310,7 @@ def page_data():
                            choices_measurement=choices_measurement,
                            choices_measurements_units=choices_measurements_units,
                            device_info=DEVICE_INFO,
+                           dict_inputs=dict_inputs,
                            display_order_input=display_order_input,
                            display_order_math=display_order_math,
                            form_add_input=form_add_input,
@@ -1319,6 +1324,7 @@ def page_data():
                            form_mod_verification=form_mod_verification,
                            camera=camera,
                            input=input_dev,
+                           tooltips_input=TOOLTIPS_INPUT,
                            input_templates=input_templates,
                            math=math,
                            math_info=MATH_INFO,

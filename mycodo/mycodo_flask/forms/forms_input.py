@@ -30,25 +30,19 @@ class InputAdd(FlaskForm):
         list_inputs_sorted.append(each_input[0])
 
     for each_input in list_inputs_sorted:
-        model = ''
-        if 'input_model' in dict_inputs[each_input]:
-            model = ' {model}:'.format(model=dict_inputs[each_input]['input_model'])
-
         if 'interfaces' not in dict_inputs[each_input]:
             choices_inputs.append(
                 ('{inp},'.format(inp=each_input),
-                 '{manuf}:{model} {name}: {meas}'.format(
+                 '{manuf}: {name}: {meas}'.format(
                      manuf=dict_inputs[each_input]['input_manufacturer'],
-                     model=model,
                      name=dict_inputs[each_input]['common_name_input'],
                      meas=dict_inputs[each_input]['common_name_measurements'])))
         else:
             for each_interface in dict_inputs[each_input]['interfaces']:
                 choices_inputs.append(
                     ('{inp},{int}'.format(inp=each_input, int=each_interface),
-                     '{manuf}:{model} {name}: {meas} ({int})'.format(
+                     '{manuf}: {name}: {meas} ({int})'.format(
                         manuf=dict_inputs[each_input]['input_manufacturer'],
-                        model=model,
                         name=dict_inputs[each_input]['common_name_input'],
                         meas=dict_inputs[each_input]['common_name_measurements'],
                         int=each_interface)))

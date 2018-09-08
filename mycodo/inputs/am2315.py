@@ -1,4 +1,29 @@
 # coding=utf-8
+#
+# Copyright 2014 Matt Heitzenroder
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+# Python wrapper exposes the capabilities of the AOSONG AM2315 humidity
+# and temperature sensor.
+# The datasheet for the device can be found here:
+# http://www.adafruit.com/datasheets/AM2315.pdf
+#
+# Portions of this code were inspired by Joehrg Ehrsam's am2315-python-api
+# code. http://code.google.com/p/am2315-python-api/
+#
+# This library was originally authored by Sopwith:
+#     http://sopwith.ismellsmoke.net/?p=104
 import logging
 import math
 import time
@@ -9,33 +34,17 @@ from mycodo.inputs.base_input import AbstractInput
 from mycodo.inputs.sensorutils import convert_units
 from mycodo.inputs.sensorutils import dewpoint
 
-"""
-Copyright 2014 Matt Heitzenroder
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-
-Python wrapper exposes the capabilities of the AOSONG AM2315 humidity
-and temperature sensor.
-The datasheet for the device can be found here:
-http://www.adafruit.com/datasheets/AM2315.pdf
-
-Portions of this code were inspired by Joehrg Ehrsam's am2315-python-api
-code. http://code.google.com/p/am2315-python-api/
-
-This library was originally authored by Sopwith:
-    http://sopwith.ismellsmoke.net/?p=104
-
-"""
+# Input information
+INPUT_INFORMATION = {
+    'unique_name_input': 'AM2315',
+    'input_manufacturer': 'AOSONG',
+    'common_name_input': 'AM2315',
+    'common_name_measurements': 'Humidity/Temperature',
+    'unique_name_measurements': ['dewpoint', 'humidity', 'temperature'],  # List of strings
+    'dependencies_pypi': ['quick2wire'],  # List of strings
+    'interfaces': ['I2C'],  # List of strings
+    'i2c_location': ['0x5c'],  # List of strings
+}
 
 
 class AM2315Sensor(AbstractInput):

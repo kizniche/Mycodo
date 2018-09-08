@@ -70,6 +70,9 @@ def input_add(form_add):
         new_input = Input()
         new_input.device = input_name
 
+        if input_interface:
+            new_input.interface = input_interface
+
         if GPIO.RPI_INFO['P1_REVISION'] in [2, 3]:
             new_input.i2c_bus = 1
         else:
