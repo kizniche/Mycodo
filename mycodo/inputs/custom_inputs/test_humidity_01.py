@@ -38,7 +38,7 @@ INPUT_INFORMATION = {
     'i2c_address_editable': True,  # Boolean
 
     # Display options
-    'options_enabled': ['period', 'pre_output', 'uart_location', 'baud_rate', 'resolution'],
+    'options_enabled': ['period', 'convert_unit', 'pre_output', 'uart_location', 'baud_rate', 'resolution'],
     'options_disabled': ['i2c_location'],
 
     # UART options

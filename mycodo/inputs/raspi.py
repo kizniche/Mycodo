@@ -12,6 +12,8 @@ INPUT_INFORMATION = {
     'common_name_input': 'RPi CPU',
     'common_name_measurements': 'Temperature',
     'unique_name_measurements': ['temperature'],  # List of strings
+    'options_disabled': ['interface'],
+    'options_enabled': ['convert_unit'],
 }
 
 

@@ -8,9 +8,9 @@
   %}
 
 <div class="col-auto">
-<label class="control-label">I<sup>2</sup>C Address</label>
+<label class="control-label">{{tooltips_input['i2c_location']['title']}}</label>
 <div>
-  {{form_mod_input.location(class_='form-control', value=each_input.location, disabled=True, **{'title': tooltips_input['i2c_location']})}}
+  {{form_mod_input.location(class_='form-control', value=each_input.location, disabled=True, **{'title': tooltips_input['i2c_location']['phrase']})}}
   <input type="hidden" class="form-control" id="location" name="location" value="{{each_input.location}}">
 </div>
 </div>
@@ -20,9 +20,9 @@
     {% if dict_inputs[each_input.device]['i2c_address_editable'] %}
 
 <div class="col-auto">
-<label class="control-label">I<sup>2</sup>C Address</label>
+<label class="control-label">{{tooltips_input['i2c_location']['title']}}</label>
 <div>
-  {{form_mod_input.location(class_='form-control', value=each_input.location, **{'title': tooltips_input['i2c_location']})}}
+  {{form_mod_input.location(class_='form-control', value=each_input.location, **{'title': tooltips_input['i2c_location']['phrase']})}}
   <input type="hidden" class="form-control" id="location" name="location" value="{{each_input.location}}">
 </div>
 </div>
@@ -30,12 +30,12 @@
     {% elif dict_inputs[each_input.device]['i2c_location']|length > 1 %}
 
 <div class="col-auto">
-<label>I<sup>2</sup>C Address</label>
+<label>{{tooltips_input['i2c_location']['title']}}</label>
 <div>
-  <select class="form-control form-tooltip form-dropdown" data-placement="top" id="location" name="location" title="{{tooltips_input['i2c_location']}}">
+  <select class="form-control form-tooltip form-dropdown" data-placement="top" id="location" name="location" title="{{tooltips_input['i2c_location']['phrase']}}">
     <option value=""></option>
   {% for each_address in dict_inputs[each_input.device]['i2c_location'] %}
-    <option value="{{each_address}}"{% if each_input.location == each_address %} selected{% endif %}>Address {{each_address}}</option>
+    <option value="{{each_address}}"{% if each_input.location == each_address %} selected{% endif %}>{{_('Address')}} {{each_address}}</option>
   {% endfor %}
   </select>
 </div>

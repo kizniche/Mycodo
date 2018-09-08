@@ -3,7 +3,7 @@
 <div class="col-auto">
   {{form_mod_input.pre_output_id.label(class_='control-label')}}
   <div>
-    <select class="form-control form-tooltip form-dropdown" data-placement="top" id="pre_output_id" name="pre_output_id" title="{{tooltips_input['pre_output_id']}}.">
+    <select class="form-control form-tooltip form-dropdown" data-placement="top" id="pre_output_id" name="pre_output_id" title="{{tooltips_input['pre_output_id']['phrase']}}.">
       <option value="">Disabled</option>
       {% for each_output in output if each_output.output_type not in ['pwm', 'command_pwm'] -%}
         <option value="{{each_output.unique_id}}"{% if each_input.pre_output_id == each_output.unique_id %} selected{% endif %}>{{"[{0:02d}]".format(each_output.id)}} {{each_output.name}}</option>
@@ -14,13 +14,13 @@
 <div class="col-auto">
   {{form_mod_input.pre_output_duration.label(class_='control-label')}}
   <div>
-    {{form_mod_input.pre_output_duration(class_='form-control', value=each_input.pre_output_duration, **{'title': tooltips_input['pre_output_duration']})}}
+    {{form_mod_input.pre_output_duration(class_='form-control', value=each_input.pre_output_duration, **{'title': tooltips_input['pre_output_duration']['phrase']})}}
   </div>
 </div>
 <div class="col-auto">
   {{form_mod_input.pre_output_during_measure.label(class_='control-label')}}
   <div class="input-group-text">
-    <input id="pre_output_during_measure" name="pre_output_during_measure" type="checkbox" title="{{tooltips_input['pre_output_during_measure']}}" value="y"{% if each_input.pre_output_during_measure %} checked{% endif %}>
+    <input id="pre_output_during_measure" name="pre_output_during_measure" type="checkbox" title="{{tooltips_input['pre_output_during_measure']['phrase']}}" value="y"{% if each_input.pre_output_during_measure %} checked{% endif %}>
   </div>
 </div>
 

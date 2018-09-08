@@ -17,6 +17,8 @@ from wtforms.validators import DataRequired
 
 from mycodo.utils.inputs import parse_input_information
 
+from mycodo.config_translations import TOOLTIPS_INPUT
+
 
 class InputAdd(FlaskForm):
     choices_inputs = [('', lazy_gettext('Select Input to Add'))]
@@ -61,7 +63,7 @@ class InputMod(FlaskForm):
         validators=[DataRequired()]
     )
     period = DecimalField(
-        lazy_gettext('Period (seconds)'),
+        TOOLTIPS_INPUT['period']['title'],
         validators=[DataRequired(),
                     validators.NumberRange(
                         min=5.0,
@@ -119,15 +121,15 @@ class InputMod(FlaskForm):
     switch_reset_period = IntegerField(lazy_gettext('Reset Period'))
 
     # Pre-Output
-    pre_output_id = StringField(lazy_gettext('Pre Output'))
+    pre_output_id = StringField(TOOLTIPS_INPUT['pre_output_id']['title'])
     pre_output_duration = DecimalField(
-        lazy_gettext('Pre Out Duration'),
+        TOOLTIPS_INPUT['pre_output_duration']['title'],
         validators=[validators.NumberRange(
             min=0,
             max=86400
         )]
     )
-    pre_output_during_measure = BooleanField(lazy_gettext('Pre During Measure'))
+    pre_output_during_measure = BooleanField(TOOLTIPS_INPUT['pre_output_during_measure']['title'])
 
     # RPM/Signal
     weighting = DecimalField(lazy_gettext('Weighting'))
