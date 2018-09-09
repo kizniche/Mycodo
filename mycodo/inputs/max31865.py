@@ -51,14 +51,14 @@ INPUT_INFORMATION = {
 }
 
 
-class MAX31865Sensor(AbstractInput):
+class InputModule(AbstractInput):
     """
     A sensor support class that measures the MAX31865's temperature
 
     """
 
     def __init__(self, input_dev, testing=False):
-        super(MAX31865Sensor, self).__init__()
+        super(InputModule, self).__init__()
         self.logger = logging.getLogger("mycodo.inputs.max31865")
         self._temperature = None
 

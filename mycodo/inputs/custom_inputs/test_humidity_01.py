@@ -121,6 +121,7 @@ INPUT_INFORMATION = {
     }
 }
 
+
 class InputModule(AbstractInput):
     """ A dummy sensor support class """
 

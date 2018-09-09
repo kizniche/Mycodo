@@ -108,6 +108,7 @@ INPUT_INFORMATION = {
     'ref_ohm': None  # Integer
 }
 
+
 class InputModule(AbstractInput):
     """ A dummy sensor support class """
 

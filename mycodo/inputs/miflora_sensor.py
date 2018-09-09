@@ -20,7 +20,7 @@ INPUT_INFORMATION = {
 }
 
 
-class MifloraSensor(AbstractInput):
+class InputModule(AbstractInput):
     """
     A sensor support class that measures the Miflora's electrical
     conductivity, moisture, temperature, and light.
@@ -28,7 +28,7 @@ class MifloraSensor(AbstractInput):
     """
 
     def __init__(self, input_dev, testing=False):
-        super(MifloraSensor, self).__init__()
+        super(InputModule, self).__init__()
         self.logger = logging.getLogger("mycodo.inputs.miflora")
         self._battery = None
         self._electrical_conductivity = None

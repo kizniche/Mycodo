@@ -67,6 +67,9 @@ def upgrade():
                 each_input.interface = 'UART'
                 each_input.device = 'MH_Z19'
 
+            if each_input.device_loc:
+                each_input.location = each_input.device_loc
+
             if each_input.location == 'RPi' or each_input.device == 'RPiFreeSpace':
                 each_input.interface = 'RPi'
             elif each_input.location == 'Mycodo_daemon':

@@ -25,7 +25,7 @@ INPUT_INFORMATION = {
 }
 
 
-class DHT22Sensor(AbstractInput):
+class InputModule(AbstractInput):
     """
     A sensor support class that measures the DHT22's humidity and temperature
     and calculates the dew point
@@ -65,7 +65,7 @@ class DHT22Sensor(AbstractInput):
         Taking readings more often than about once every two seconds will
         eventually cause the DHT22 to hang.  A 3 second interval seems OK.
         """
-        super(DHT22Sensor, self).__init__()
+        super(InputModule, self).__init__()
         self.logger = logging.getLogger('mycodo.inputs.dht22')
         self._dew_point = None
         self._humidity = None

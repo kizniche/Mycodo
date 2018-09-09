@@ -24,14 +24,14 @@ INPUT_INFORMATION = {
 }
 
 
-class ServerPortOpen(AbstractInput):
+class InputModule(AbstractInput):
     """
     A sensor support class that pings a server and returns 1 if it's up
     and 0 if it's down.
     """
 
     def __init__(self, input_dev, testing=False):
-        super(ServerPortOpen, self).__init__()
+        super(InputModule, self).__init__()
         self.logger = logging.getLogger("mycodo.inputs.server_port_open")
         self._measurement = None
 

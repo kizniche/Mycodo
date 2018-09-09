@@ -108,14 +108,6 @@
         {% endif %}
       {% endif %}
 
-      <div class="col-auto">
-        | ASDF |
-      </div>
-
-      {% for each_input_templates in input_templates if each_input_templates[:-5] == each_input.device %}
-        {% include 'pages/data_options/input_options/'+each_input_templates %}
-      {% endfor %}
-
     </div>
 
     </form>

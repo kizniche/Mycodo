@@ -44,6 +44,8 @@ from mycodo.mycodo_client import DaemonControl
 from mycodo.utils.database import db_retrieve_table_daemon
 from mycodo.utils.influx import add_measure_influxdb
 from mycodo.utils.influx import write_influxdb_value
+from mycodo.utils.inputs import load_module_from_file
+from mycodo.utils.inputs import parse_input_information
 
 
 class Measurement:
@@ -88,6 +90,8 @@ class InputController(threading.Thread):
         self.control = DaemonControl()
         self.pause_loop = False
         self.verify_pause_loop = True
+
+        self.dict_inputs = parse_input_information()
 
         self.sample_rate = db_retrieve_table_daemon(
             Misc, entry='first').sample_rate_controller_input
@@ -211,156 +215,17 @@ class InputController(threading.Thread):
         # Set up inputs or devices
         if self.device in ['EDGE'] + LIST_DEVICES_ADC:
             self.measure_input = None
-        elif self.device == 'MYCODO_RAM':
-            from mycodo.inputs.mycodo_ram import MycodoRam
-            self.measure_input = MycodoRam(self.input_dev)
-        elif self.device == 'RPiCPULoad':
-            from mycodo.inputs.raspi_cpuload import RaspberryPiCPULoad
-            self.measure_input = RaspberryPiCPULoad(self.input_dev)
-        elif self.device == 'RPi':
-            from mycodo.inputs.raspi import RaspberryPiCPUTemp
-            self.measure_input = RaspberryPiCPUTemp(self.input_dev)
-        elif self.device == 'RPiFreeSpace':
-            from mycodo.inputs.raspi_freespace import RaspberryPiFreeSpace
-            self.measure_input = RaspberryPiFreeSpace(self.input_dev)
-        elif self.device == 'AM2315':
-            from mycodo.inputs.am2315 import AM2315Sensor
-            self.measure_input = AM2315Sensor(self.input_dev)
-        elif self.device == 'ATLAS_EC_I2C':
-            from mycodo.inputs.atlas_ec import AtlasElectricalConductivitySensor
-            self.measure_input = AtlasElectricalConductivitySensor(self.input_dev)
-        elif self.device == 'ATLAS_EC_UART':
-            from mycodo.inputs.atlas_ec import AtlasElectricalConductivitySensor
-            self.measure_input = AtlasElectricalConductivitySensor(self.input_dev)
-        elif self.device == 'ATLAS_PH_I2C':
-            from mycodo.inputs.atlas_ph import AtlaspHSensor
-            self.measure_input = AtlaspHSensor(self.input_dev)
-        elif self.device == 'ATLAS_PH_UART':
-            from mycodo.inputs.atlas_ph import AtlaspHSensor
-            self.measure_input = AtlaspHSensor(self.input_dev)
-        elif self.device == 'ATLAS_PT1000_I2C':
-            from mycodo.inputs.atlas_pt1000 import AtlasPT1000Sensor
-            self.measure_input = AtlasPT1000Sensor(self.input_dev)
-        elif self.device == 'ATLAS_PT1000_UART':
-            from mycodo.inputs.atlas_pt1000 import AtlasPT1000Sensor
-            self.measure_input = AtlasPT1000Sensor(self.input_dev)
-        elif self.device == 'BH1750':
-            from mycodo.inputs.bh1750 import BH1750Sensor
-            self.measure_input = BH1750Sensor(self.input_dev)
-        elif self.device == 'BME280':
-            from mycodo.inputs.bme280 import BME280Sensor
-            self.measure_input = BME280Sensor(self.input_dev)
-        elif self.device == 'BMP180':
-            from mycodo.inputs.bmp180 import BMP180Sensor
-            self.measure_input = BMP180Sensor(self.input_dev)
-        elif self.device == 'BMP280':
-            from mycodo.inputs.bmp280 import BMP280Sensor
-            self.measure_input = BMP280Sensor(self.input_dev)
-        elif self.device == 'CCS811':
-            from mycodo.inputs.ccs811 import CCS811Sensor
-            self.measure_input = CCS811Sensor(self.input_dev)
-        elif self.device == 'CHIRP':
-            from mycodo.inputs.chirp import ChirpSensor
-            self.measure_input = ChirpSensor(self.input_dev)
-        elif self.device == 'COZIR_CO2':
-            from mycodo.inputs.cozir_co2 import COZIRSensor
-            self.measure_input = COZIRSensor(self.input_dev)
-        elif self.device == 'DHT11':
-            from mycodo.inputs.dht11 import DHT11Sensor
-            self.measure_input = DHT11Sensor(self.input_dev)
-        elif self.device in ['DHT22', 'AM2302']:
-            from mycodo.inputs.dht22 import DHT22Sensor
-            self.measure_input = DHT22Sensor(self.input_dev)
-        elif self.device == 'DS18B20':
-            from mycodo.inputs.ds18b20 import DS18B20Sensor
-            self.measure_input = DS18B20Sensor(self.input_dev)
-        elif self.device == 'DS18S20':
-            from mycodo.inputs.ds18s20 import DS18S20Sensor
-            self.measure_input = DS18S20Sensor(self.input_dev)
-        elif self.device == 'DS1822':
-            from mycodo.inputs.ds1822 import DS1822Sensor
-            self.measure_input = DS1822Sensor(self.input_dev)
-        elif self.device == 'DS28EA00':
-            from mycodo.inputs.ds28ea00 import DS28EA00Sensor
-            self.measure_input = DS28EA00Sensor(self.input_dev)
-        elif self.device == 'DS1825':
-            from mycodo.inputs.ds1825 import DS1825Sensor
-            self.measure_input = DS1825Sensor(self.input_dev)
-        elif self.device == 'GPIO_STATE':
-            from mycodo.inputs.gpio_state import GPIOState
-            self.measure_input = GPIOState(self.input_dev)
-        elif self.device == 'HDC1000':
-            from mycodo.inputs.hdc1000 import HDC1000Sensor
-            self.measure_input = HDC1000Sensor(self.input_dev)
-        elif self.device == 'HTU21D':
-            from mycodo.inputs.htu21d import HTU21DSensor
-            self.measure_input = HTU21DSensor(self.input_dev)
-        elif self.device == 'K30_UART':
-            from mycodo.inputs.k30 import K30Sensor
-            self.measure_input = K30Sensor(self.input_dev)
-        elif self.device == 'LinuxCommand':
-            from mycodo.inputs.linux_command import LinuxCommand
-            self.measure_input = LinuxCommand(self.input_dev)
-        elif self.device == 'MAX31850K':
-            from mycodo.inputs.max31850k import MAX31850KSensor
-            self.measure_input = MAX31850KSensor(self.input_dev)
-        elif self.device == 'MAX31855':
-            from mycodo.inputs.max31855 import MAX31855Sensor
-            self.measure_input = MAX31855Sensor(self.input_dev)
-        elif self.device == 'MAX31856':
-            from mycodo.inputs.max31856 import MAX31856Sensor
-            self.measure_input = MAX31856Sensor(self.input_dev)
-        elif self.device == 'MAX31865':
-            from mycodo.inputs.max31865 import MAX31865Sensor
-            self.measure_input = MAX31865Sensor(self.input_dev)
-        elif self.device == 'MH_Z16_I2C':
-            from mycodo.inputs.mh_z16 import MHZ16Sensor
-            self.measure_input = MHZ16Sensor(self.input_dev)
-        elif self.device == 'MH_Z16_UART':
-            from mycodo.inputs.mh_z16 import MHZ16Sensor
-            self.measure_input = MHZ16Sensor(self.input_dev)
-        elif self.device == 'MH_Z19_UART':
-            from mycodo.inputs.mh_z19 import MHZ19Sensor
-            self.measure_input = MHZ19Sensor(self.input_dev)
-        elif self.device == 'MIFLORA':
-            from mycodo.inputs.miflora_sensor import MifloraSensor
-            self.measure_input = MifloraSensor(self.input_dev)
-        elif self.device == 'SERVER_PING':
-            from mycodo.inputs.server_ping import ServerPing
-            self.measure_input = ServerPing(self.input_dev)
-        elif self.device == 'SERVER_PORT_OPEN':
-            from mycodo.inputs.server_port_open import ServerPortOpen
-            self.measure_input = ServerPortOpen(self.input_dev)
-        elif self.device == 'SHT1x_7x':
-            from mycodo.inputs.sht1x_7x import SHT1x7xSensor
-            self.measure_input = SHT1x7xSensor(self.input_dev)
-        elif self.device == 'SHT2x':
-            from mycodo.inputs.sht2x import SHT2xSensor
-            self.measure_input = SHT2xSensor(self.input_dev)
-        elif self.device == 'SIGNAL_PWM':
-            from mycodo.inputs.signal_pwm import SignalPWMInput
-            self.measure_input = SignalPWMInput(self.input_dev)
-        elif self.device == 'SIGNAL_RPM':
-            from mycodo.inputs.signal_revolutions import SignalRPMInput
-            self.measure_input = SignalRPMInput(self.input_dev)
-        elif self.device == 'TMP006':
-            from mycodo.inputs.tmp006 import TMP006Sensor
-            self.measure_input = TMP006Sensor(self.input_dev)
-        elif self.device == 'TSL2561':
-            from mycodo.inputs.tsl2561 import TSL2561Sensor
-            self.measure_input = TSL2561Sensor(self.input_dev)
-        elif self.device == 'TSL2591':
-            from mycodo.inputs.tsl2591_sensor import TSL2591Sensor
-            self.measure_input = TSL2591Sensor(self.input_dev)
-        elif self.device == 'WINSEN_ZH03B':
-            from mycodo.inputs.winsen_zh03b import WINSEN_ZH03BSensor
-            self.measure_input = WINSEN_ZH03BSensor(self.input_dev)
+
         else:
-            self.device_recognized = False
-            self.logger.debug("Device '{device}' not recognized".format(
-                device=self.device))
-            raise Exception("'{device}' is not a valid device type.".format(
-                device=self.device))
+            if self.device in self.dict_inputs:
+                input_loaded = load_module_from_file(self.dict_inputs[self.device]['file_path'])
+                self.measure_input = input_loaded.InputModule(self.input_dev)
+            else:
+                self.device_recognized = False
+                self.logger.debug("Device '{device}' not recognized".format(
+                    device=self.device))
+                raise Exception("'{device}' is not a valid device type.".format(
+                    device=self.device))
 
         self.edge_reset_timer = time.time()
         self.input_timer = time.time()

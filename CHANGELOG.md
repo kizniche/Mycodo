@@ -1,4 +1,10 @@
-## 6.2.5 (Unreleased)
+## 6.3.0 (Unreleased)
+
+This release adds the ability to use self-contained input modules. This means a new input can be imported into Mycodo with a single file. Documentation for developing your own input modules is in development. See issue #525 for more information about it's development and discussion.
+
+### Features
+
+ - Implement self-contained input modules ([#525](https://github.com/kizniche/mycodo/issues/525))
 
 ### Miscellaneous
 

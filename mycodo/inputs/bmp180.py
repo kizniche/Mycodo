@@ -21,7 +21,7 @@ INPUT_INFORMATION = {
 }
 
 
-class BMP180Sensor(AbstractInput):
+class InputModule(AbstractInput):
     """
     A sensor support class that measures the BMP 180/085's humidity,
     temperature, and pressure, then calculates the altitude and dew point
@@ -29,7 +29,7 @@ class BMP180Sensor(AbstractInput):
     """
 
     def __init__(self, input_dev, testing=False):
-        super(BMP180Sensor, self).__init__()
+        super(InputModule, self).__init__()
         self.logger = logging.getLogger("mycodo.inputs.bmp180")
         self._altitude = None
         self._pressure = None

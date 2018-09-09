@@ -22,11 +22,11 @@ INPUT_INFORMATION = {
 }
 
 
-class MHZ19Sensor(AbstractInput):
+class InputModule(AbstractInput):
     """ A sensor support class that monitors the MH-Z19's CO2 concentration """
 
     def __init__(self, input_dev, testing=False):
-        super(MHZ19Sensor, self).__init__()
+        super(InputModule, self).__init__()
         self.logger = logging.getLogger("mycodo.inputs.mh_z19")
         self._co2 = None
 

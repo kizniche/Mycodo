@@ -23,7 +23,7 @@ INPUT_INFORMATION = {
 }
 
 
-class ChirpSensor(AbstractInput):
+class InputModule(AbstractInput):
     """
     A sensor support class that measures the Chirp's moisture, temperature
     and light
@@ -31,7 +31,7 @@ class ChirpSensor(AbstractInput):
     """
 
     def __init__(self, input_dev, testing=False):
-        super(ChirpSensor, self).__init__()
+        super(InputModule, self).__init__()
         self.logger = logging.getLogger("mycodo.inputs.chirp")
         self._lux = None
         self._moisture = None

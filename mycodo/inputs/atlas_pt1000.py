@@ -22,11 +22,11 @@ INPUT_INFORMATION = {
 }
 
 
-class AtlasPT1000Sensor(AbstractInput):
+class InputModule(AbstractInput):
     """ A sensor support class that monitors the PT1000's temperature """
 
     def __init__(self, input_dev, testing=False):
-        super(AtlasPT1000Sensor, self).__init__()
+        super(InputModule, self).__init__()
         self.logger = logging.getLogger("mycodo.inputs.atlas_pt1000")
         self._temperature = None
         self.atlas_sensor_uart = None

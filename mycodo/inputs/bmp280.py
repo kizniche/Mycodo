@@ -58,7 +58,7 @@ BMP280_REGISTER_TEMPDATA_XLSB = 0xFC
 BMP280_READCMD = 0x3F
 
 
-class BMP280Sensor(AbstractInput):
+class InputModule(AbstractInput):
     """
     A sensor support class that measures the BMP280's humidity,
     temperature, and pressure, then calculates the altitude and dew point
@@ -66,7 +66,7 @@ class BMP280Sensor(AbstractInput):
     """
 
     def __init__(self, input_dev, mode=BMP280_STANDARD, testing=False):
-        super(BMP280Sensor, self).__init__()
+        super(InputModule, self).__init__()
         self.logger = logging.getLogger("mycodo.inputs.bmp280")
         self._altitude = None
         self._pressure = None

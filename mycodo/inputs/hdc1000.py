@@ -64,14 +64,14 @@ HDC1000_CONFIG_HUMIDITY_RESOLUTION_8BIT = 0x0200
 I2C_SLAVE = 0x0703
 
 
-class HDC1000Sensor(AbstractInput):
+class InputModule(AbstractInput):
     """
     A sensor support class that measures the HDC1000's humidity and temperature
     and calculates the dew point
 
     """
     def __init__(self, input_dev, testing=False):
-        super(HDC1000Sensor, self).__init__()
+        super(InputModule, self).__init__()
         self.logger = logging.getLogger("mycodo.inputs.hdc1000")
         self._dew_point = None
         self._humidity = None

@@ -42,11 +42,17 @@ def dict_has_value(dict_inputs, input_custom, key):
             input_custom.INPUT_INFORMATION[key]
     return dict_inputs
 
-# TODO: add alembic revision that sets input.location = input.device_loc, then delete device_loc column
+
+def load_module_from_file(path_file):
+    spec = importlib.util.spec_from_file_location('module.name', path_file)
+    input_custom = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(input_custom)
+    return input_custom
 
 
 def parse_input_information():
-    startup_timer = timeit.default_timer()
+    # Uncomment to enable timer
+    # startup_timer = timeit.default_timer()
 
     excluded_files = ['__init__.py', '__pycache__', 'base_input.py',
                       'custom_inputs', 'dummy_input.py', 'input_template.py',
@@ -68,10 +74,7 @@ def parse_input_information():
 
             if not skip_file:
                 full_path = "{}/{}".format(real_path, each_file)
-
-                spec = importlib.util.spec_from_file_location('module.name', full_path)
-                input_custom = importlib.util.module_from_spec(spec)
-                spec.loader.exec_module(input_custom)
+                input_custom = load_module_from_file(full_path)
 
                 if not hasattr(input_custom, 'INPUT_INFORMATION'):
                     skip_file = True
@@ -85,6 +88,8 @@ def parse_input_information():
                         name=input_custom.INPUT_INFORMATION['unique_name_input']))
                 else:
                     dict_inputs[input_custom.INPUT_INFORMATION['unique_name_input']] = {}
+
+                dict_inputs[input_custom.INPUT_INFORMATION['unique_name_input']]['file_path'] = full_path
 
                 dict_inputs = dict_has_value(dict_inputs, input_custom, 'common_name_input')
                 dict_inputs = dict_has_value(dict_inputs, input_custom, 'common_name_measurements')
@@ -151,7 +156,8 @@ def parse_input_information():
                 dict_inputs = dict_has_value(dict_inputs, input_custom, 'thermocouple_type')
                 dict_inputs = dict_has_value(dict_inputs, input_custom, 'ref_ohm')
 
-    run_time = timeit.default_timer() - startup_timer
-    logger.info("Input parse time: {time:.3f} seconds".format(time=run_time))
+    # Uncomment to enable timer, also uncomment line at start of function
+    # run_time = timeit.default_timer() - startup_timer
+    # logger.info("Input parse time: {time:.1f} ms".format(time=run_time*1000))
 
     return dict_inputs

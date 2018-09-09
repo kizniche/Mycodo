@@ -22,11 +22,11 @@ INPUT_INFORMATION = {
 }
 
 
-class SignalRPMInput(AbstractInput):
+class InputModule(AbstractInput):
     """ A sensor support class that monitors rpm """
 
     def __init__(self, input_dev, testing=False):
-        super(SignalRPMInput, self).__init__()
+        super(InputModule, self).__init__()
         self.logger = logging.getLogger("mycodo.inputs.signal_revolutions")
         self._revolutions = None
 

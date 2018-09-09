@@ -43,7 +43,7 @@ INPUT_INFORMATION = {
 }
 
 
-class HTU21DSensor(AbstractInput):
+class InputModule(AbstractInput):
     """
     A sensor support class that measures the HTU21D's humidity and temperature
     and calculates the dew point
@@ -51,7 +51,7 @@ class HTU21DSensor(AbstractInput):
     """
 
     def __init__(self, input_dev, testing=False):
-        super(HTU21DSensor, self).__init__()
+        super(InputModule, self).__init__()
         self.logger = logging.getLogger("mycodo.inputs.htu21d")
         self._dew_point = None
         self._humidity = None

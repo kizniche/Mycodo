@@ -20,7 +20,7 @@ INPUT_INFORMATION = {
 }
 
 
-class COZIRSensor(AbstractInput):
+class InputModule(AbstractInput):
     """
     A sensor support class that measures the COZIR's CO2, humidity, and temperature
     and calculates the dew point
@@ -28,7 +28,7 @@ class COZIRSensor(AbstractInput):
     """
 
     def __init__(self, input_dev, testing=False):
-        super(COZIRSensor, self).__init__()
+        super(InputModule, self).__init__()
         self.logger = logging.getLogger("mycodo.inputs.cozir")
         self._co2 = None
         self._dew_point = None

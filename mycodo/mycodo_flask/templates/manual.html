@@ -449,6 +449,9 @@
 <li><a href="#ph-sensors">pH Sensors</a><ul>
 <li><a href="#atlas-scientific-ph">Atlas Scientific pH</a></li>
 </ul></li>
+<li><a href="#particulate-sensors">Particulate Sensors</a><ul>
+<li><a href="#winsen-zh03b">Winsen ZH03B</a></li>
+</ul></li>
 <li><a href="#pressure-sensors">Pressure Sensors</a><ul>
 <li><a href="#bme280">BME280</a></li>
 <li><a href="#bmp085-bmp180">BMP085, BMP180</a></li>
@@ -473,10 +476,10 @@
 </nav>
 <h1 id="about-mycodo">About Mycodo</h1>
 <p>Mycodo is an automated monitoring and regulation system that was built to run on the <a href="https://en.wikipedia.org/wiki/Raspberry_Pi">Raspberry Pi</a> (versions Zero, 1, 2, and 3).</p>
-<p>Orignially designed to cultivate edible mushrooms, Mycodo has grown to include the ability to do much more, including cultivating plants, culturing microorganisms, maintaining honey bee apiary homeostasis, incubating animals and eggs, maintaining aquatic systems, aging cheeses, fermenting foods and tobacco, cooking food (vous-vide), and more.</p>
+<p>Originally designed to cultivate edible mushrooms, Mycodo has grown to include the ability to do much more, including cultivating plants, culturing microorganisms, maintaining honey bee apiary homeostasis, incubating animals and eggs, maintaining aquatic systems, aging cheeses, fermenting foods and tobacco, cooking food (sous-vide), and more.</p>
 <p>The system comprises a backend (daemon) and a frontend (user interface). The backend conducts measurements from sensors and devices, then coordinate a diverse set of responses to those measurements, including the ability to modulate outputs (relays, PWM, wireless outlets), regulate environmental conditions with electrical devices under PID control (steady regulation or changing over time), schedule timers, capture photos and stream video, trigger actions when measurements meet certain conditions (modulate relays, execute commands, notify by email, etc.), and more. The frontend is a web interface that enables easy navigation and configuration from any browser-enabled device.</p>
 <h1 id="brief-overview">Brief Overview</h1>
-<p>There are a number of different uses for Mycodo. Some users simply store sensor measurements to monitor conditons remotely from their phone, others regulate the environmental conditions of a physical space, while others capture motion-activated or timelapse photography, and more.</p>
+<p>There are a number of different uses for Mycodo. Some users simply store sensor measurements to monitor conditions remotely from their phone, others regulate the environmental conditions of a physical space, while others capture motion-activated or timelapse photography, and more.</p>
 <p>Input controllers acquire measurements and store them in a <a href="https://en.wikipedia.org/wiki/Time_series_database">time series database</a>. Measurements typically come from sensors, but may also be configured to use the return value of a linux command, making integrating new inputs very easy.</p>
 <p>Output controllers produce changes to the general input/output (GPIO) pins or may be configured to execute linux commands in order to allow an unlimited number of potential uses. There are a few different types of outputs: simple switching of pins (HIGH/LOW), generating pulse-width modulated (PWM) signals, switching 433 MHz wireless relays, and linux command execution. The most common setup is using a relay to switch electrical devices on and off.</p>
 <p>When Inputs and Outputs are combined, PID controllers may be used to create a feedback loop that uses the Output device to modulate an environmental condition the Input detects. Certain Inputs may be coupled with certain Outputs to create a variety of different control and regulation applications. Beyond simple regulation, Methods may be used to create changing setpoints over time, enabling such things as thermal cyclers, reflow ovens, environmental simulation for terrariums, food and beverage fermentation or curing, and cooking food (<a href="https://en.wikipedia.org/wiki/Sous-vide">sous-vide</a>), to name a few.</p>
@@ -496,12 +499,12 @@
 <li>Determine what environmental condition you want to measure or regulate. Consider the devices that must be coupled to achieve this. For instance, temperature regulation require a temperature sensor as the input and an electric heater (or cooler) as the output.</li>
 <li>Determine what relays you will need to power your electric devices. The Raspberry Pi is capable of directly switching relays (using a 3.3-volt signal). Remember to select a relay that can handle the load and doesn’t exceed the maximum current draw from the Raspberry Pi GPIO pins.</li>
 <li>See the <a href="#device-specific-information">Device Specific Information</a> for information about what sensors are supported. Acquire sensor(s) and relay(s) and connect them to the Raspberry Pi according to the manufacturer’s instructions.</li>
-<li>On the <code>Data</code> page, create a new input using the dropdown to select the correct sensor or input device. Configure the input with the correct communication pins and other options. Activate the input to begin recording measurements to the database.</li>
-<li>Go to the <code>Info</code> -&gt; <code>Live Measurements</code> page to ensure there is recent data being acquired from the input.</li>
-<li>On the <code>Ouput</code> page, add a relay and configure the GPIO pin that switches it, whether the relay switches On when the signal is HIGH or LOW, and what state (On or Off) to set the relay when Mycodo starts. A pulse-width modulated (PWM) output may also be used, among others.</li>
-<li>Test the relay by switching it On and Off or generating a PWM signal from the <code>Output</code> page and make sure the device connected to the relay turns On when you select “On”, and Off when you select “Off”.</li>
-<li>On the <code>Function</code> page, create a PID controller with the appropriate input, output, and other parameters. Activate the PID controller.</li>
-<li>On the <code>Info</code> -&gt; <code>Dashboard</code> page, create a graph that includes the input measurement, the output that is being used by the PID, and the PID output and setpoint. This provides a good visualization for tuning the PID. See <a href="#quick-setup-examples">Quick Setup Examples</a> for a greater detail of this process and tuning tips.</li>
+<li>On the <code>Setup -&gt; Data</code> page, create a new input using the drop-down to select the correct sensor or input device. Configure the input with the correct communication pins and other options. Activate the input to begin recording measurements to the database.</li>
+<li>Go to the <code>Live</code> page to ensure there is recent data being acquired from the input.</li>
+<li>On the <code>Setup -&gt; Outputs</code> page, add a relay and configure the GPIO pin that switches it, whether the relay switches On when the signal is HIGH or LOW, and what state (On or Off) to set the relay when Mycodo starts. A pulse-width modulated (PWM) output may also be used, among others.</li>
+<li>Test the relay by switching it On and Off or generating a PWM signal from the <code>Setup -&gt; Outputs</code> page and make sure the device connected to the relay turns On when you select “On”, and Off when you select “Off”.</li>
+<li>On the <code>Setup -&gt; Functions</code> page, create a PID controller with the appropriate input, output, and other parameters. Activate the PID controller.</li>
+<li>On the <code>Dash</code> page, create a graph that includes the input measurement, the output that is being used by the PID, and the PID output and setpoint. This provides a good visualization for tuning the PID. See <a href="#quick-setup-examples">Quick Setup Examples</a> for a greater detail of this process and tuning tips.</li>
 </ol>
 <hr />
 <p><em>Can I communicate with Mycodo from the command line?</em></p>
@@ -524,11 +527,13 @@ usage: mycodo-client [-h] [--activatecontroller CONTROLLER ID]
 <p>Yes, as long as you have the proper hardware to do that. The PWM signal being produced by the PID should be handled appropriately, whether by a fast-switching solid state relay, an <a href="#schematics-for-ac-modulation">AC modulation circuit</a>, <a href="#schematics-for-dc-fan-control">DC modulation circuit</a>, or something else.</p>
 <hr />
 <h1 id="upgrading">Upgrading</h1>
+<p><code>[Gear Icon] -&gt; Upgrade</code></p>
 <p>If you already have Mycodo installed (version &gt;= 4.0.0), you can perform an upgrade to the latest <a href="https://github.com/kizniche/Mycodo/releases">Mycodo Release</a> by either using the Upgrade option in the web interface (recommended) or by issuing the following command in a terminal. A log of the upgrade process is created at <code>/var/log/mycodo/mycodoupgrade.log</code></p>
 <pre><code>sudo /bin/bash ~/Mycodo/mycodo/scripts/upgrade_commands.sh upgrade</code></pre>
 <h1 id="features">Features</h1>
 <p>The following sections describe the essential modules of Mycodo that can be used to perform functions or communicate with other parts of Mycodo. Each section performs specific tasks or groups of related tasks.</p>
 <h2 id="data">Data</h2>
+<p><code>Setup -&gt; Data</code></p>
 <p>Data includes controllers that produce and store data in the measurement database. Input controllers generally acquire measurements from sensors, but they may also come from executed commands. Math controllers, on the other hand, perform math on already-stored values to create new values that are stored.</p>
 <h3 id="input">Input</h3>
 <p>Inputs (such as sensors or analog signals) measure environmental conditions, which will be stored in a time-series database (InfluxDB). This database will provide measurements for <a href="#graphs">Graphs</a>, <a href="#lcds">LCDs</a>, <a href="#pid-controllers">PID Controllers</a>, <a href="#conditional-statements">Conditional Statements</a>, and other parts of Mycodo to operate from.</p>
@@ -540,164 +545,164 @@ usage: mycodo-client [-h] [--activatecontroller CONTROLLER ID]
 </colgroup>
 <thead>
 <tr class="header">
-<th style="text-align: left;">Setting</th>
-<th style="text-align: left;">Description</th>
+<th>Setting</th>
+<th>Description</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td style="text-align: left;">Activate</td>
-<td style="text-align: left;">After the sensor has been properly configured, activation begins acquiring measurements from the sensor. Any activated conditional statements will now being operating.</td>
+<td>Activate</td>
+<td>After the sensor has been properly configured, activation begins acquiring measurements from the sensor. Any activated conditional statements will now being operating.</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">Deactivate</td>
-<td style="text-align: left;">Deactivation stops measurements from being acquired from the sensor. All associated conditional statements will cease to operate.</td>
+<td>Deactivate</td>
+<td>Deactivation stops measurements from being acquired from the sensor. All associated conditional statements will cease to operate.</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">Save</td>
-<td style="text-align: left;">Save the current configuration entered into the input boxes for a particular sensor.</td>
+<td>Save</td>
+<td>Save the current configuration entered into the input boxes for a particular sensor.</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">Delete</td>
-<td style="text-align: left;">Delete a particular sensor.</td>
+<td>Delete</td>
+<td>Delete a particular sensor.</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">Up/Down</td>
-<td style="text-align: left;">Move a particular sensor up or down in the order displayed.</td>
+<td>Up/Down</td>
+<td>Move a particular sensor up or down in the order displayed.</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">Power Output</td>
-<td style="text-align: left;">Select a output that powers the sensor. This enables powering cycling (turn off then on) when the sensor returns 3 consecutive errors to attempt to fix the issue. Transistors may also be used instead of a relay (note: NPN transistors are preferred over PNP for powering sensors).</td>
+<td>Power Output</td>
+<td>Select a output that powers the sensor. This enables powering cycling (turn off then on) when the sensor returns 3 consecutive errors to attempt to fix the issue. Transistors may also be used instead of a relay (note: NPN transistors are preferred over PNP for powering sensors).</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">Location</td>
-<td style="text-align: left;">Depending on what sensor is being used, you will need to either select a serial number (DS18B20 temperature sensor), a GPIO pin (in the case of sensors read by a GPIO), or an I2C address. or other.</td>
+<td>Location</td>
+<td>Depending on what sensor is being used, you will need to either select a serial number (DS18B20 temperature sensor), a GPIO pin (in the case of sensors read by a GPIO), or an I2C address. or other.</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">I2C Bus</td>
-<td style="text-align: left;">The bus to be used to communicate with the I2C address.</td>
+<td>I2C Bus</td>
+<td>The bus to be used to communicate with the I2C address.</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">Period (seconds)</td>
-<td style="text-align: left;">After the sensor is successfully read and a database entry is made, this is the duration of time waited until the sensor is measured again.</td>
+<td>Period (seconds)</td>
+<td>After the sensor is successfully read and a database entry is made, this is the duration of time waited until the sensor is measured again.</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">Measurement Unit</td>
-<td style="text-align: left;">Select the unit to save the measurement as (only available for select measurements).</td>
+<td>Measurement Unit</td>
+<td>Select the unit to save the measurement as (only available for select measurements).</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">Pre Output</td>
-<td style="text-align: left;">If you require a output to be activated before a measurement is made (for instance, if you have a pump that extracts air to a chamber where the sensor resides), this is the output number that will be activated. The output will be activated for a duration defined by the Pre Duration, then once the output turns off, a measurement by the sensor is made.</td>
+<td>Pre Output</td>
+<td>If you require a output to be activated before a measurement is made (for instance, if you have a pump that extracts air to a chamber where the sensor resides), this is the output number that will be activated. The output will be activated for a duration defined by the Pre Duration, then once the output turns off, a measurement by the sensor is made.</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">Pre Output Duration (seconds)</td>
-<td style="text-align: left;">This is the duration of time that the Pre Output runs for before the sensor measurement is obtained.</td>
+<td>Pre Output Duration (seconds)</td>
+<td>This is the duration of time that the Pre Output runs for before the sensor measurement is obtained.</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">Pre Output During Measurement</td>
-<td style="text-align: left;">If enabled, the Pre Output stays on during the acquisition of a measurement. If disabled, the Pre Output is turned off directly before acquiring a measurement.</td>
+<td>Pre Output During Measurement</td>
+<td>If enabled, the Pre Output stays on during the acquisition of a measurement. If disabled, the Pre Output is turned off directly before acquiring a measurement.</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">Command</td>
-<td style="text-align: left;">A linux command (executed as the user ‘mycodo’) that the return value becomes the measurement</td>
+<td>Command</td>
+<td>A linux command (executed as the user ‘mycodo’) that the return value becomes the measurement</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">Command Measurement</td>
-<td style="text-align: left;">The measured condition (e.g. temperature, humidity, etc.) from the linux command</td>
+<td>Command Measurement</td>
+<td>The measured condition (e.g. temperature, humidity, etc.) from the linux command</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">Command Units</td>
-<td style="text-align: left;">The units of the measurement condition from the linux command</td>
+<td>Command Units</td>
+<td>The units of the measurement condition from the linux command</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">Edge</td>
-<td style="text-align: left;">Edge sensors only: Select whether the Rising or Falling (or both) edges of a changing voltage are detected. A number of devices to do this when in-line with a circuit supplying a 3.3-volt input signal to a GPIO, such as simple mechanical switch, a button, a magnet (reed/hall) sensor, a PIR motion detector, and more.</td>
+<td>Edge</td>
+<td>Edge sensors only: Select whether the Rising or Falling (or both) edges of a changing voltage are detected. A number of devices to do this when in-line with a circuit supplying a 3.3-volt input signal to a GPIO, such as simple mechanical switch, a button, a magnet (reed/hall) sensor, a PIR motion detector, and more.</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">Bounce Time (ms)</td>
-<td style="text-align: left;">Edge sensors only: This is the number of milliseconds to bounce the input signal. This is commonly called debouncing a
+<td>Bounce Time (ms)</td>
+<td>Edge sensors only: This is the number of milliseconds to bounce the input signal. This is commonly called debouncing a
 signal &lt;http://kylegabriel.com/projects/2016/02
 /morse-code-translator.html#debouncing&gt;__. and may be necessary if using a mechanical circuit.</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">Reset Period (seconds)</td>
-<td style="text-align: left;">Edge sensors only: This is the period of time after an edge detection that another edge will not be recorded. This enables devices such as PIR motion sensors that may stay activated for longer periods of time.</td>
+<td>Reset Period (seconds)</td>
+<td>Edge sensors only: This is the period of time after an edge detection that another edge will not be recorded. This enables devices such as PIR motion sensors that may stay activated for longer periods of time.</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">Measurement</td>
-<td style="text-align: left;">Analog-to-digital converter only: The type of measurement being acquired by the ADC. For instance, if the resistance of a photocell is being measured through a voltage divider, this measurement would be “light”.</td>
+<td>Measurement</td>
+<td>Analog-to-digital converter only: The type of measurement being acquired by the ADC. For instance, if the resistance of a photocell is being measured through a voltage divider, this measurement would be “light”.</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">Units</td>
-<td style="text-align: left;">Analog-to-digital converter only: This is the unit of the measurement. With the above example of “light” as the measurement, the unit may be “lux” or “intensity”.</td>
+<td>Units</td>
+<td>Analog-to-digital converter only: This is the unit of the measurement. With the above example of “light” as the measurement, the unit may be “lux” or “intensity”.</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">BT Adapter</td>
-<td style="text-align: left;">The Bluetooth adapter to communicate with the input.</td>
+<td>BT Adapter</td>
+<td>The Bluetooth adapter to communicate with the input.</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">Clock Pin</td>
-<td style="text-align: left;">The GPIO (using BCM numbering) connected to the Clock pin of the ADC</td>
+<td>Clock Pin</td>
+<td>The GPIO (using BCM numbering) connected to the Clock pin of the ADC</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">CS Pin</td>
-<td style="text-align: left;">The GPIO (using BCM numbering) connected to the CS pin of the ADC</td>
+<td>CS Pin</td>
+<td>The GPIO (using BCM numbering) connected to the CS pin of the ADC</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">MISO Pin</td>
-<td style="text-align: left;">The GPIO (using BCM numbering) connected to the MISO pin of the ADC</td>
+<td>MISO Pin</td>
+<td>The GPIO (using BCM numbering) connected to the MISO pin of the ADC</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">MOSI Pin</td>
-<td style="text-align: left;">The GPIO (using BCM numbering) connected to the MOSI pin of the ADC</td>
+<td>MOSI Pin</td>
+<td>The GPIO (using BCM numbering) connected to the MOSI pin of the ADC</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">RTD Probe Type</td>
-<td style="text-align: left;">Select to measure from a PT100 or PT1000 probe.</td>
+<td>RTD Probe Type</td>
+<td>Select to measure from a PT100 or PT1000 probe.</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">Resistor Reference (Ohm)</td>
-<td style="text-align: left;">If your reference resistor is not the default (400 Ohm for PT100, 4000 Ohm for PT1000), you can manually set this value. Several manufacturers now use 430 Ohm resistors on their circuit boards, therefore it’s recommended to verify the accuracy of your measurements and adjust this value if necessary.</td>
+<td>Resistor Reference (Ohm)</td>
+<td>If your reference resistor is not the default (400 Ohm for PT100, 4000 Ohm for PT1000), you can manually set this value. Several manufacturers now use 430 Ohm resistors on their circuit boards, therefore it’s recommended to verify the accuracy of your measurements and adjust this value if necessary.</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">Channel</td>
-<td style="text-align: left;">Analog-to-digital converter only: This is the channel to obtain the voltage measurement from the ADC.</td>
+<td>Channel</td>
+<td>Analog-to-digital converter only: This is the channel to obtain the voltage measurement from the ADC.</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">Gain</td>
-<td style="text-align: left;">Analog-to-digital converter only: set the gain when acquiring the measurement.</td>
+<td>Gain</td>
+<td>Analog-to-digital converter only: set the gain when acquiring the measurement.</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">Volts Min</td>
-<td style="text-align: left;">Analog-to-digital converter only: What is the minimum voltage to use when scaling to produce the unit value for the database. For instance, if your ADC is not expected to measure below 0.2 volts for your particular circuit, set this to “0.2”.</td>
+<td>Volts Min</td>
+<td>Analog-to-digital converter only: What is the minimum voltage to use when scaling to produce the unit value for the database. For instance, if your ADC is not expected to measure below 0.2 volts for your particular circuit, set this to “0.2”.</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">Volts Max</td>
-<td style="text-align: left;">Analog-to-digital converter only: This is similar to the Min option above, however it is setting the ceiling to the voltage range. Units Min Analog-to-digital converter only: This value will be the lower value of a range that will use the Min and Max Voltages, above, to produce a unit output. For instance, if your voltage range is 0.0 - 1.0 volts, and the unit range is 1 - 60, and a voltage of 0.5 is measured, in addition to 0.5 being stored in the database, 30 will be stored as well. This enables creating calibrated scales to use with your particular circuit.</td>
+<td>Volts Max</td>
+<td>Analog-to-digital converter only: This is similar to the Min option above, however it is setting the ceiling to the voltage range. Units Min Analog-to-digital converter only: This value will be the lower value of a range that will use the Min and Max Voltages, above, to produce a unit output. For instance, if your voltage range is 0.0 - 1.0 volts, and the unit range is 1 - 60, and a voltage of 0.5 is measured, in addition to 0.5 being stored in the database, 30 will be stored as well. This enables creating calibrated scales to use with your particular circuit.</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">Units Max</td>
-<td style="text-align: left;">Analog-to-digital converter only: This is similar to the Min option above, however it is setting the ceiling to the unit range.</td>
+<td>Units Max</td>
+<td>Analog-to-digital converter only: This is similar to the Min option above, however it is setting the ceiling to the unit range.</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">Weighting</td>
-<td style="text-align: left;">The This is a number between 0 and 1 and indicates how much the old reading affects the new reading. It defaults to 0 which means the old reading has no effect. This may be used to smooth the data.</td>
+<td>Weighting</td>
+<td>The This is a number between 0 and 1 and indicates how much the old reading affects the new reading. It defaults to 0 which means the old reading has no effect. This may be used to smooth the data.</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">Pulses Per Rev</td>
-<td style="text-align: left;">The number of pulses for a complete revolution.</td>
+<td>Pulses Per Rev</td>
+<td>The number of pulses for a complete revolution.</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">Port</td>
-<td style="text-align: left;">The server port to be queried (Server Port Open input).</td>
+<td>Port</td>
+<td>The server port to be queried (Server Port Open input).</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">Times to Check</td>
-<td style="text-align: left;">The number of times to attempt to ping a server (Server Ping input).</td>
+<td>Times to Check</td>
+<td>The number of times to attempt to ping a server (Server Ping input).</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">Deadline (seconds)</td>
-<td style="text-align: left;">The maximum amount of time to wait for each ping attempt, after which 0 (offline) will be returned (Server Ping input).</td>
+<td>Deadline (seconds)</td>
+<td>The maximum amount of time to wait for each ping attempt, after which 0 (offline) will be returned (Server Ping input).</td>
 </tr>
 </tbody>
 </table>
@@ -710,46 +715,46 @@ signal &lt;http://kylegabriel.com/projects/2016/02
 </colgroup>
 <thead>
 <tr class="header">
-<th style="text-align: left;">Type</th>
-<th style="text-align: left;">Description</th>
+<th>Type</th>
+<th>Description</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td style="text-align: left;">Average (Multiple Measurements)</td>
-<td style="text-align: left;">Stores the statistical mean of multiple selected measurements.</td>
+<td>Average (Multiple Measurements)</td>
+<td>Stores the statistical mean of multiple selected measurements.</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">Average (Single Measurement)</td>
-<td style="text-align: left;">Stores the statistical mean of one selected measurement over a duration of time determined by the Max Age (seconds) option.</td>
+<td>Average (Single Measurement)</td>
+<td>Stores the statistical mean of one selected measurement over a duration of time determined by the Max Age (seconds) option.</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">Difference</td>
-<td style="text-align: left;">Stores the mathematical difference (value_1 -value_2).</td>
+<td>Difference</td>
+<td>Stores the mathematical difference (value_1 -value_2).</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">Equation</td>
-<td style="text-align: left;">Stores the calculated value of an equation.</td>
+<td>Equation</td>
+<td>Stores the calculated value of an equation.</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">Median</td>
-<td style="text-align: left;">Stores the statistical median from the selected measurements.</td>
+<td>Median</td>
+<td>Stores the statistical median from the selected measurements.</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">Maximum</td>
-<td style="text-align: left;">Stores the largest measurement from the selected measurements.</td>
+<td>Maximum</td>
+<td>Stores the largest measurement from the selected measurements.</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">Minimum</td>
-<td style="text-align: left;">Stores the smallest measurement from the selected measurements.</td>
+<td>Minimum</td>
+<td>Stores the smallest measurement from the selected measurements.</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">Humidity</td>
-<td style="text-align: left;">Calculates and stores the percent relative humidity from the dry-bulb and wet-bulb temperatures, and optional pressure.</td>
+<td>Humidity</td>
+<td>Calculates and stores the percent relative humidity from the dry-bulb and wet-bulb temperatures, and optional pressure.</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">Verification</td>
-<td style="text-align: left;">Ensures the greatest difference between any selected Inputs is less than Max Difference, and if so, stores the average of the selected measurements.</td>
+<td>Verification</td>
+<td>Ensures the greatest difference between any selected Inputs is less than Max Difference, and if so, stores the average of the selected measurements.</td>
 </tr>
 </tbody>
 </table>
@@ -760,62 +765,63 @@ signal &lt;http://kylegabriel.com/projects/2016/02
 </colgroup>
 <thead>
 <tr class="header">
-<th style="text-align: left;">Setting</th>
-<th style="text-align: left;">Description</th>
+<th>Setting</th>
+<th>Description</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td style="text-align: left;">Input</td>
-<td style="text-align: left;">Select the Inputs to use with the particular Math controller</td>
+<td>Input</td>
+<td>Select the Inputs to use with the particular Math controller</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">Period (seconds)</td>
-<td style="text-align: left;">The duration of time between calculating and storing a new value</td>
+<td>Period (seconds)</td>
+<td>The duration of time between calculating and storing a new value</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">Max Age (seconds)</td>
-<td style="text-align: left;">The maximum allowed age of the Input measurements. If an Input measurement is older than this period, the calculation is cancelled and the new value is not stored in the database. Consequently, if another controller has a Max Age set and cannot retrieve a current Math value, it will cease functioning. A PID controller, for instance, may stop regulating if there is no new Math value created, preventing the PID controller from continuing to run when it should not.</td>
+<td>Max Age (seconds)</td>
+<td>The maximum allowed age of the Input measurements. If an Input measurement is older than this period, the calculation is cancelled and the new value is not stored in the database. Consequently, if another controller has a Max Age set and cannot retrieve a current Math value, it will cease functioning. A PID controller, for instance, may stop regulating if there is no new Math value created, preventing the PID controller from continuing to run when it should not.</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">Measurement</td>
-<td style="text-align: left;">This is the condition being measured. For instance, if all of the selected measurements are temperature, this should also be temperature. A list of the pre-defined measurements that may be used is below.</td>
+<td>Measurement</td>
+<td>This is the condition being measured. For instance, if all of the selected measurements are temperature, this should also be temperature. A list of the pre-defined measurements that may be used is below.</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">Units</td>
-<td style="text-align: left;">This is the units to display along with the measurement, on Graphs. If a pre-defined measurement is used, this field will default to the units associated with that measurement.</td>
+<td>Units</td>
+<td>This is the units to display along with the measurement, on Graphs. If a pre-defined measurement is used, this field will default to the units associated with that measurement.</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">Reverse Equation</td>
-<td style="text-align: left;">For Difference calculations, this will reverse the equation order, from <code>value_1 - value_2</code> to <code>value_2 - value_1</code>.</td>
+<td>Reverse Equation</td>
+<td>For Difference calculations, this will reverse the equation order, from <code>value_1 - value_2</code> to <code>value_2 - value_1</code>.</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">Absolute Value</td>
-<td style="text-align: left;">For Difference calculations, this will yield an absolute value (positive number).</td>
+<td>Absolute Value</td>
+<td>For Difference calculations, this will yield an absolute value (positive number).</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">Max Difference</td>
-<td style="text-align: left;">If the difference between any selected Input is greater than this value, no new value will be stored in the database.</td>
+<td>Max Difference</td>
+<td>If the difference between any selected Input is greater than this value, no new value will be stored in the database.</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">Dry-Bulb Temperature</td>
-<td style="text-align: left;">The measurement that will serve as the dry-bulb temperature (this is the warmer of the two temperature measurements)</td>
+<td>Dry-Bulb Temperature</td>
+<td>The measurement that will serve as the dry-bulb temperature (this is the warmer of the two temperature measurements)</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">Wet-Bulb Temperature</td>
-<td style="text-align: left;">The measurement that will serve as the wet-bulb temperature (this is the colder of the two temperature measurements)</td>
+<td>Wet-Bulb Temperature</td>
+<td>The measurement that will serve as the wet-bulb temperature (this is the colder of the two temperature measurements)</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">Pressure</td>
-<td style="text-align: left;">This is an optional pressure measurement that can be used to calculate the percent relative humidity. If disabled, a default 101325 Pa will be used in the calculation.</td>
+<td>Pressure</td>
+<td>This is an optional pressure measurement that can be used to calculate the percent relative humidity. If disabled, a default 101325 Pa will be used in the calculation.</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">Equation</td>
-<td style="text-align: left;">An equation that will be solved with Python’s eval() function. Let “x” represent the input value. Valid equation symbols include: + - * / ^</td>
+<td>Equation</td>
+<td>An equation that will be solved with Python’s eval() function. Let “x” represent the input value. Valid equation symbols include: + - * / ^</td>
 </tr>
 </tbody>
 </table>
 <h2 id="output">Output</h2>
+<p><code>Setup -&gt; Outputs</code></p>
 <p>Outputs are various signals that can be generated that operate devices. An output can be a PWM signal, a simple HIGH/LOW signal to operate a relay, or a 433MHz signal to switch a radio frequency-operated relay, or an execution of a command on the linux system Mycodo runs on.</p>
 <h3 id="pwm">PWM</h3>
 <p>Pulse-width modulation (PWM) is a modulation technique used to encode a message into a pulsing signal, at a specific frequency in Hertz (Hz). The average value of voltage (and current) fed to the load is controlled by turning the switch between supply and load on and off at a fast rate. The longer the switch is on compared to the off periods, the higher the total power supplied to the load.</p>
@@ -824,7 +830,7 @@ signal &lt;http://kylegabriel.com/projects/2016/02
 <p>Switching has to be done several times a minute in an electric stove; 120 Hz in a lamp dimmer; between a few kilohertz (kHz) to tens of kHz for a motor drive; and well into the tens or hundreds of kHz in audio amplifiers and computer power supplies.</p>
 </blockquote>
 <p>The term duty cycle describes the proportion of ‘on’ time to the regular interval or ‘period’ of time; a low duty cycle corresponds to low power, because the power is off for most of the time. Duty cycle is expressed in percent, 100% being fully on.</p>
-<p>PWM pins can be set up on the Output page, then it may be used by a PWM PID Controller.</p>
+<p>PWM pins can be set up on the <code>Setup -&gt; Outputs</code>` page, then it may be used by a PWM PID Controller.</p>
 <table>
 <colgroup>
 <col style="width: 32%"></col>
@@ -832,30 +838,30 @@ signal &lt;http://kylegabriel.com/projects/2016/02
 </colgroup>
 <thead>
 <tr class="header">
-<th style="text-align: left;">Setting</th>
-<th style="text-align: left;">Description</th>
+<th>Setting</th>
+<th>Description</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td style="text-align: left;">Library</td>
-<td style="text-align: left;">Select the method for producing the PWM signal. Hardware pins can produce up to a 30 MHz PWM signal, while any other (non-hardware PWM) pin can produce up to a 40 kHz PWM signal. See the table, below, for the hardware pins on various Pi boards.</td>
+<td>Library</td>
+<td>Select the method for producing the PWM signal. Hardware pins can produce up to a 30 MHz PWM signal, while any other (non-hardware PWM) pin can produce up to a 40 kHz PWM signal. See the table, below, for the hardware pins on various Pi boards.</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">BCM Pin</td>
-<td style="text-align: left;">This is the GPIO that will output the PWM signal, using BCM numbering.</td>
+<td>BCM Pin</td>
+<td>This is the GPIO that will output the PWM signal, using BCM numbering.</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">Hertz</td>
-<td style="text-align: left;">This is frequency of the PWM signal.</td>
+<td>Hertz</td>
+<td>This is frequency of the PWM signal.</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">Duty Cycle</td>
-<td style="text-align: left;">This is the proportion of the time on to the time off, expressed in percent (0 - 100).</td>
+<td>Duty Cycle</td>
+<td>This is the proportion of the time on to the time off, expressed in percent (0 - 100).</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">Current Draw (amps)</td>
-<td style="text-align: left;">This is the current draw, in amps, when the duty cycle is 100%. Note: this value should be calculated based on the voltage set in the <a href="#output-usage-settings">Output Usage Settings</a>.</td>
+<td>Current Draw (amps)</td>
+<td>This is the current draw, in amps, when the duty cycle is 100%. Note: this value should be calculated based on the voltage set in the <a href="#output-usage-settings">Output Usage Settings</a>.</td>
 </tr>
 </tbody>
 </table>
@@ -871,56 +877,56 @@ signal &lt;http://kylegabriel.com/projects/2016/02
 </colgroup>
 <thead>
 <tr class="header">
-<th style="text-align: left;">BCM Pin</th>
-<th style="text-align: left;">PWM Channel</th>
-<th style="text-align: left;">Raspberry Pi Version</th>
+<th>BCM Pin</th>
+<th>PWM Channel</th>
+<th>Raspberry Pi Version</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td style="text-align: left;">12</td>
-<td style="text-align: left;">0</td>
-<td style="text-align: left;">All models except A and B</td>
+<td>12</td>
+<td>0</td>
+<td>All models except A and B</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">13</td>
-<td style="text-align: left;">1</td>
-<td style="text-align: left;">All models except A and B</td>
+<td>13</td>
+<td>1</td>
+<td>All models except A and B</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">18</td>
-<td style="text-align: left;">0</td>
-<td style="text-align: left;">All models</td>
+<td>18</td>
+<td>0</td>
+<td>All models</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">19</td>
-<td style="text-align: left;">1</td>
-<td style="text-align: left;">All models except A and B</td>
+<td>19</td>
+<td>1</td>
+<td>All models except A and B</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">40</td>
-<td style="text-align: left;">0</td>
-<td style="text-align: left;">Compute module only</td>
+<td>40</td>
+<td>0</td>
+<td>Compute module only</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">41</td>
-<td style="text-align: left;">1</td>
-<td style="text-align: left;">Compute module only</td>
+<td>41</td>
+<td>1</td>
+<td>Compute module only</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">45</td>
-<td style="text-align: left;">1</td>
-<td style="text-align: left;">Compute module only</td>
+<td>45</td>
+<td>1</td>
+<td>Compute module only</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">52</td>
-<td style="text-align: left;">0</td>
-<td style="text-align: left;">Compute module only</td>
+<td>52</td>
+<td>0</td>
+<td>Compute module only</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">53</td>
-<td style="text-align: left;">1</td>
-<td style="text-align: left;">Compute module only</td>
+<td>53</td>
+<td>1</td>
+<td>Compute module only</td>
 </tr>
 </tbody>
 </table>
@@ -955,62 +961,63 @@ signal &lt;http://kylegabriel.com/projects/2016/02
 </colgroup>
 <thead>
 <tr class="header">
-<th style="text-align: left;">Setting</th>
-<th style="text-align: left;">Description</th>
+<th>Setting</th>
+<th>Description</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td style="text-align: left;">BCM Pin</td>
-<td style="text-align: left;">This is the GPIO that will be the signal to the output, using BCM numbering.</td>
+<td>BCM Pin</td>
+<td>This is the GPIO that will be the signal to the output, using BCM numbering.</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">On Trigger</td>
-<td style="text-align: left;">This is the state of the GPIO to signal the output to turn the device on. HIGH will send a 3.3-volt signal and LOW will send a 0-volt signal. If you output completes the circuit (and the device powers on) when a 3.3-volt signal is sent, then set this to HIGH. If the device powers when a 0-volt signal is sent, set this to LOW.</td>
+<td>On Trigger</td>
+<td>This is the state of the GPIO to signal the output to turn the device on. HIGH will send a 3.3-volt signal and LOW will send a 0-volt signal. If you output completes the circuit (and the device powers on) when a 3.3-volt signal is sent, then set this to HIGH. If the device powers when a 0-volt signal is sent, set this to LOW.</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">WiringPi Pin</td>
-<td style="text-align: left;">This is the GPIO that will be the signal to the output, using WiringPi numbering.</td>
+<td>WiringPi Pin</td>
+<td>This is the GPIO that will be the signal to the output, using WiringPi numbering.</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">Protocol</td>
-<td style="text-align: left;">This is the protocol to use to transmit via 433MHz. Default is 1, but if this doesn’t work, increment the number.</td>
+<td>Protocol</td>
+<td>This is the protocol to use to transmit via 433MHz. Default is 1, but if this doesn’t work, increment the number.</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">Pulse Length</td>
-<td style="text-align: left;">This is the pulse length to transmit via 433MHz. Default is 189 ms.</td>
+<td>Pulse Length</td>
+<td>This is the pulse length to transmit via 433MHz. Default is 189 ms.</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">Bit Length</td>
-<td style="text-align: left;">This is the bit length to transmit via 433MHz. Default is 24-bit.</td>
+<td>Bit Length</td>
+<td>This is the bit length to transmit via 433MHz. Default is 24-bit.</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">On Command</td>
-<td style="text-align: left;">This is the command used to turn the output on. For wireless relays, this is the numerical command to be transmitted, and for command outputs this is the command to be executed.</td>
+<td>On Command</td>
+<td>This is the command used to turn the output on. For wireless relays, this is the numerical command to be transmitted, and for command outputs this is the command to be executed.</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">Off Command</td>
-<td style="text-align: left;">This is the command used to turn the output off. For wireless relays, this is the numerical command to be transmitted, and for command outputs this is the command to be executed.</td>
+<td>Off Command</td>
+<td>This is the command used to turn the output off. For wireless relays, this is the numerical command to be transmitted, and for command outputs this is the command to be executed.</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">PWM Command</td>
-<td style="text-align: left;">This is the command used to set the duty cycle. The string “((duty_cycle))” in the command will be replaced with the actual duty cycle before the command is executed. Ensure “((duty_cycle))” is included in your command for this feature to work correctly.</td>
+<td>PWM Command</td>
+<td>This is the command used to set the duty cycle. The string “((duty_cycle))” in the command will be replaced with the actual duty cycle before the command is executed. Ensure “((duty_cycle))” is included in your command for this feature to work correctly.</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">Current Draw (amps)</td>
-<td style="text-align: left;">The is the amount of current the device powered by the output draws. Note: this value should be calculated based on the voltage set in the <a href="#output-usage-settings">Output Usage Settings</a>.</td>
+<td>Current Draw (amps)</td>
+<td>The is the amount of current the device powered by the output draws. Note: this value should be calculated based on the voltage set in the <a href="#output-usage-settings">Output Usage Settings</a>.</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">Start State</td>
-<td style="text-align: left;">This specifies whether the output should be ON or OFF when mycodo initially starts. Wireless relays have an additional option ‘Neither’ which will not issue an on or off command when Mycodo starts or stops.</td>
+<td>Start State</td>
+<td>This specifies whether the output should be ON or OFF when mycodo initially starts. Wireless relays have an additional option ‘Neither’ which will not issue an on or off command when Mycodo starts or stops.</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">Seconds to turn On</td>
-<td style="text-align: left;">This is a way to turn a output on for a specific duration of time. This can be useful for testing the outputs and powered devices or the measured effects a device may have on an environmental condition.</td>
+<td>Seconds to turn On</td>
+<td>This is a way to turn a output on for a specific duration of time. This can be useful for testing the outputs and powered devices or the measured effects a device may have on an environmental condition.</td>
 </tr>
 </tbody>
 </table>
 <h2 id="function">Function</h2>
+<p><code>Setup -&gt; Functions</code></p>
 <p>Functions couple Inputs with Outputs to perform specific tasks. For example, this could be regulation of temperature with a temperature sensor and heater with a PID Controller.</p>
 <h3 id="pid-controller">PID Controller</h3>
 <p>A <a href="https://en.wikipedia.org/wiki/PID_controller">proportional-derivative-integral (PID) controller</a> is a control loop feedback mechanism used throughout industry for controlling systems. It efficiently brings a measurable condition, such as the temperature, to a desired state and maintains it there with little overshoot and oscillation. A well-tuned PID controller will raise to the setpoint quickly, have minimal overshoot, and maintain the setpoint with little oscillation.</p>
@@ -1022,99 +1029,99 @@ signal &lt;http://kylegabriel.com/projects/2016/02
 </colgroup>
 <thead>
 <tr class="header">
-<th style="text-align: left;">Setting</th>
-<th style="text-align: left;">Description</th>
+<th>Setting</th>
+<th>Description</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td style="text-align: left;">Activate/Deactivate</td>
-<td style="text-align: left;">Turn a particular PID controller on or off.</td>
+<td>Activate/Deactivate</td>
+<td>Turn a particular PID controller on or off.</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">Pause</td>
-<td style="text-align: left;">When paused, the control variable will not be updated and the PID will not turn on the associated outputs. Settings can be changed without losing current PID output values.</td>
+<td>Pause</td>
+<td>When paused, the control variable will not be updated and the PID will not turn on the associated outputs. Settings can be changed without losing current PID output values.</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">Hold</td>
-<td style="text-align: left;">When held, the control variable will not be updated but the PID will turn on the associated outputs, Settings can be changed without losing current PID output values.</td>
+<td>Hold</td>
+<td>When held, the control variable will not be updated but the PID will turn on the associated outputs, Settings can be changed without losing current PID output values.</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">Resume</td>
-<td style="text-align: left;">Resume a PID controller from being held or paused.</td>
+<td>Resume</td>
+<td>Resume a PID controller from being held or paused.</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">Setpoint</td>
-<td style="text-align: left;">This is the specific point you would like the environment to be regaulted at. For example, if you would like the humidity regulated to 60%, enter 60.</td>
+<td>Setpoint</td>
+<td>This is the specific point you would like the environment to be regulated at. For example, if you would like the humidity regulated to 60%, enter 60.</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">Band (+/- Setpoint)</td>
-<td style="text-align: left;">Hysteresis option. If set to a non-0 value, the setpoint will become a band, which will be between the band_max=setpoint+band and band_min=setpoint-band. If Raising, the PID will raise above band_max, then wait until the condition falls below band_min to resume regulation. If Lowering, the PID will lower below band_min, then wait until the condition rises above band_max to resume regulating. If set to Both, regulation will only occur to the outside min and max of the band, and cease when within the band. Set to 0 to disable Hysteresis.</td>
+<td>Band (+/- Setpoint)</td>
+<td>Hysteresis option. If set to a non-0 value, the setpoint will become a band, which will be between the band_max=setpoint+band and band_min=setpoint-band. If Raising, the PID will raise above band_max, then wait until the condition falls below band_min to resume regulation. If Lowering, the PID will lower below band_min, then wait until the condition rises above band_max to resume regulating. If set to Both, regulation will only occur to the outside min and max of the band, and cease when within the band. Set to 0 to disable Hysteresis.</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">Store Lower as Negative</td>
-<td style="text-align: left;">Checking this will store all output variables (PID and output duration/duty cycle) as a negative values in the measurement database. This is useful for displaying graphs that indicate whether the PID is currently lowering or raising. Disable this if you desire all positive values to be stored in the measurement database.</td>
+<td>Store Lower as Negative</td>
+<td>Checking this will store all output variables (PID and output duration/duty cycle) as a negative values in the measurement database. This is useful for displaying graphs that indicate whether the PID is currently lowering or raising. Disable this if you desire all positive values to be stored in the measurement database.</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">Direction</td>
-<td style="text-align: left;">This is the direction that you wish to regulate. For example, if you only require the temperature to be raised, set this to “Up,” but if you require regulation up and down, set this to “Both.”</td>
+<td>Direction</td>
+<td>This is the direction that you wish to regulate. For example, if you only require the temperature to be raised, set this to “Up,” but if you require regulation up and down, set this to “Both.”</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">Period</td>
-<td style="text-align: left;">This is the duration between when the PID acquires a measurement, the PID is updated, and the output is modulated.</td>
+<td>Period</td>
+<td>This is the duration between when the PID acquires a measurement, the PID is updated, and the output is modulated.</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">Max Age</td>
-<td style="text-align: left;">The time (in seconds) that the sensor measurement age is required to be less than. If the measurement is not younger than this age, the measurement is thrown out and the PID will not actuate the output. This is a safety measure to ensure the PID is only using recent measurements.</td>
+<td>Max Age</td>
+<td>The time (in seconds) that the sensor measurement age is required to be less than. If the measurement is not younger than this age, the measurement is thrown out and the PID will not actuate the output. This is a safety measure to ensure the PID is only using recent measurements.</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">Raise Output</td>
-<td style="text-align: left;">This is the output that will cause the particular environmental condition to rise. In the case of raising the temperature, this may be a heating pad or coil.</td>
+<td>Raise Output</td>
+<td>This is the output that will cause the particular environmental condition to rise. In the case of raising the temperature, this may be a heating pad or coil.</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">Min Duration (raise)</td>
-<td style="text-align: left;">This is the minimum that the PID output must be before the Up Output turns on. If the PID output exceeds this minimum, the Up Output will turn on for the PID output number of seconds.</td>
+<td>Min Duration (raise)</td>
+<td>This is the minimum that the PID output must be before the Up Output turns on. If the PID output exceeds this minimum, the Up Output will turn on for the PID output number of seconds.</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">Max Duration (raise)</td>
-<td style="text-align: left;">This is the maximum duration the Up Output is allowed to turn on for. If the PID output exceeds this number, the Up Output will turn on for no greater than this duration of time.</td>
+<td>Max Duration (raise)</td>
+<td>This is the maximum duration the Up Output is allowed to turn on for. If the PID output exceeds this number, the Up Output will turn on for no greater than this duration of time.</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">Lower Output</td>
-<td style="text-align: left;">This is the output that will cause the particular environmental condition to lower. In the case of lowering the CO2, this may be an exhaust fan.</td>
+<td>Lower Output</td>
+<td>This is the output that will cause the particular environmental condition to lower. In the case of lowering the CO2, this may be an exhaust fan.</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">Min Duration (lower)</td>
-<td style="text-align: left;">This is the minimum that the PID output must be before the Down Output turns on. If the PID output exceeds this minimum, the Down Output will turn on for the PID output number of seconds.</td>
+<td>Min Duration (lower)</td>
+<td>This is the minimum that the PID output must be before the Down Output turns on. If the PID output exceeds this minimum, the Down Output will turn on for the PID output number of seconds.</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">Max Duration (lower)</td>
-<td style="text-align: left;">This is the maximum duration the Down Output is allowed to turn on for. if the PID output exceeds this number, the Down Output will turn on for no greater than this duration of time.</td>
+<td>Max Duration (lower)</td>
+<td>This is the maximum duration the Down Output is allowed to turn on for. if the PID output exceeds this number, the Down Output will turn on for no greater than this duration of time.</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">K<sub>P</sub></td>
-<td style="text-align: left;">Proportional coefficient (non-negative). Accounts for present values of the error. For example, if the error is large and positive, the control output will also be large and positive.</td>
+<td>K<sub>P</sub></td>
+<td>Proportional coefficient (non-negative). Accounts for present values of the error. For example, if the error is large and positive, the control output will also be large and positive.</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">K<sub>I</sub></td>
-<td style="text-align: left;">Integral coefficient (non-negative). Accounts for past values of the error. For example, if the current output is not sufficiently strong, the integral of the error will accumulate over time, and the controller will respond by applying a stronger action.</td>
+<td>K<sub>I</sub></td>
+<td>Integral coefficient (non-negative). Accounts for past values of the error. For example, if the current output is not sufficiently strong, the integral of the error will accumulate over time, and the controller will respond by applying a stronger action.</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">K<sub>D</sub></td>
-<td style="text-align: left;">Derivative coefficient (non-negative). Accounts for predicted future values of the error, based on its current rate of change.</td>
+<td>K<sub>D</sub></td>
+<td>Derivative coefficient (non-negative). Accounts for predicted future values of the error, based on its current rate of change.</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">Integrator Min</td>
-<td style="text-align: left;">The minimum allowed integrator value, for calculating Ki_total: (Ki_total = Ki * integrator; and PID output = Kp_total + Ki_total + Kd_total)</td>
+<td>Integrator Min</td>
+<td>The minimum allowed integrator value, for calculating Ki_total: (Ki_total = Ki * integrator; and PID output = Kp_total + Ki_total + Kd_total)</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">Integrator Max</td>
-<td style="text-align: left;">The maximum allowed integrator value, for calculating Ki_total: (Ki_total = Ki * integrator; and PID output = Kp_total + Ki_total + Kd_total)</td>
+<td>Integrator Max</td>
+<td>The maximum allowed integrator value, for calculating Ki_total: (Ki_total = Ki * integrator; and PID output = Kp_total + Ki_total + Kd_total)</td>
 </tr>
 </tbody>
 </table>
 <h4 id="pid-autotune">PID Autotune</h4>
-<p>The Autotune feature is useful for determining appropriate Kp, Ki, and Kd gains of a PID controller. The autotuner will manipulate an output and measure the response in the environment being measured by a sensor. It will take several cycles to determine the gains accoring to several rules. In order to use this feature, the PID controller must be properly configured, and a Noise Band and Outstep selected, then select “Start Autotune”. The output of the autotuner will appear in the daemon log (Config -&gt; Mycodo Logs -&gt; Daemon). While the autotune is being performed, it is recommended to create a graph that includes the Input, Output, and PID Setpoint/Output in order to see what the PID Autotuner is doing and to notice any issues. If your autotune is taking a long time to complete, there may not be enough stability in the system being manipulated to calculate a reliable set of PID gains. This may be because there are too many disturbanses to the system, or conditions are changing too repidly to acquire consistent measurement oscilations. If this is the case, try modifying your system to reduce disturbances. Once the autotune successfully completes, disturbances may be reintroduced in order to further tune the PID controller to handle them.</p>
+<p>The Autotune feature is useful for determining appropriate Kp, Ki, and Kd gains of a PID controller. The autotuner will manipulate an output and measure the response in the environment being measured by a sensor. It will take several cycles to determine the gains according to several rules. In order to use this feature, the PID controller must be properly configured, and a Noise Band and Outstep selected, then select “Start Autotune”. The output of the autotuner will appear in the daemon log (Config -&gt; Mycodo Logs -&gt; Daemon). While the autotune is being performed, it is recommended to create a graph that includes the Input, Output, and PID Setpoint/Output in order to see what the PID Autotuner is doing and to notice any issues. If your autotune is taking a long time to complete, there may not be enough stability in the system being manipulated to calculate a reliable set of PID gains. This may be because there are too many disturbances to the system, or conditions are changing too rapidly to acquire consistent measurement oscillations. If this is the case, try modifying your system to reduce disturbances. Once the autotune successfully completes, disturbances may be reintroduced in order to further tune the PID controller to handle them.</p>
 <table>
 <colgroup>
 <col style="width: 32%"></col>
@@ -1122,18 +1129,18 @@ signal &lt;http://kylegabriel.com/projects/2016/02
 </colgroup>
 <thead>
 <tr class="header">
-<th style="text-align: left;">Setting</th>
-<th style="text-align: left;">Description</th>
+<th>Setting</th>
+<th>Description</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td style="text-align: left;">Noise Band</td>
-<td style="text-align: left;">This is the amount above the setpoint the measured condition must reach before the output turns off. This is also how much below the setpoint the measured condition must fall before the output turns back on.</td>
+<td>Noise Band</td>
+<td>This is the amount above the setpoint the measured condition must reach before the output turns off. This is also how much below the setpoint the measured condition must fall before the output turns back on.</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">Outstep</td>
-<td style="text-align: left;">This is how many seconds the output will turn on every PID Period. For instance, to autotune with 50% power, ensure the Outstep is half the value of the PID Period.</td>
+<td>Outstep</td>
+<td>This is how many seconds the output will turn on every PID Period. For instance, to autotune with 50% power, ensure the Outstep is half the value of the PID Period.</td>
 </tr>
 </tbody>
 </table>
@@ -1237,22 +1244,12 @@ signal &lt;http://kylegabriel.com/projects/2016/02
 <p>A conditional statement is a way to perform certain actions based on whether a condition is true. Conditional statements can be created for both inputs and outputs. Possible conditional statements include:</p>
 <ul>
 <li>If Output #1 turns ON, turn Output #3 ON</li>
-<li>If Output #1 turns ON, turn Output #4 ON for 40 seconds and notify <script type="text/javascript">
-<!--
-h='&#100;&#x6f;&#x6d;&#x61;&#x69;&#110;&#46;&#x63;&#x6f;&#x6d;';a='&#64;';n='&#x63;&#114;&#x69;&#116;&#x69;&#x63;&#x61;&#108;&#x2d;&#x69;&#x73;&#x73;&#x75;&#x65;';e=n+a+h;
-document.write('<a h'+'ref'+'="ma'+'ilto'+':'+e+'" clas'+'s="em' + 'ail">'+e+'<\/'+'a'+'>');
-// -->
-</script><noscript>critical-issue at domain dot com</noscript></li>
+<li>If Output #1 turns ON, turn Output #4 ON for 40 seconds and notify <a href="mailto:critical-issue@domain.com">critical-issue@domain.com</a></li>
 <li>If Output #1 turns ON for any duration, turn Output #4 ON</li>
 <li>If Output #4 turns ON for 21 seconds, turn Output #5 ON for 50 seconds</li>
 <li>If Output #4 turns ON for 20 seconds, turn Output #1 OFF</li>
 <li>If Humidity is Greater Than 80%, turn Output #4 ON for 40 seconds</li>
-<li>If Humidity if Less Than 50%, turn Output #1 ON for 21 seconds, execute ‘/usr/local/bin/script.sh’, and notify <script type="text/javascript">
-<!--
-h='&#100;&#x6f;&#x6d;&#x61;&#x69;&#110;&#46;&#x63;&#x6f;&#x6d;';a='&#64;';n='&#x65;&#x6d;&#x61;&#x69;&#108;';e=n+a+h;
-document.write('<a h'+'ref'+'="ma'+'ilto'+':'+e+'" clas'+'s="em' + 'ail">'+e+'<\/'+'a'+'>');
-// -->
-</script><noscript>email at domain dot com</noscript></li>
+<li>If Humidity if Less Than 50%, turn Output #1 ON for 21 seconds, execute ‘/usr/local/bin/script.sh’, and notify <a href="mailto:email@domain.com">email@domain.com</a></li>
 <li>If Temperature if Greater Than 35 C, deactivate PID #1</li>
 </ul>
 <p>Before activating any conditional statements or PID controllers, it’s advised to thoroughly explore all possible scenarios and plan a configuration that eliminates conflicts. Then, trial run your configuration before connecting devices to the outputs. Some devices or outputs may respond atypically or fail when switched on and off in rapid succession. Therefore, avoid creating an <a href="https://en.wikipedia.org/wiki/Loop_%28computing%29#Infinite_loops">infinite loop</a> with conditional statements.</p>
@@ -1265,34 +1262,34 @@ document.write('<a h'+'ref'+'="ma'+'ilto'+':'+e+'" clas'+'s="em' + 'ail">'+e+'<\
 </colgroup>
 <thead>
 <tr class="header">
-<th style="text-align: left;">Setting</th>
-<th style="text-align: left;">Description</th>
+<th>Setting</th>
+<th>Description</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td style="text-align: left;">If Measurement</td>
-<td style="text-align: left;">The measurement that will be checked every Period. By default, a measurement will only be checked for in the past 120 seconds, unless “None Found Last x seconds” in which case the Value will determine the measurement age. The takeaway from this is if a measurement is more than 120 seconds</td>
+<td>If Measurement</td>
+<td>The measurement that will be checked every Period. By default, a measurement will only be checked for in the past 120 seconds, unless “None Found Last x seconds” in which case the Value will determine the measurement age. The takeaway from this is if a measurement is more than 120 seconds</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">If State</td>
-<td style="text-align: left;">The conditional will trigger if the measurement Greater Than or Less Than the set If Value, or if “No Measurement” is set and the measurement age is greater than Max Age.</td>
+<td>If State</td>
+<td>The conditional will trigger if the measurement Greater Than or Less Than the set If Value, or if “No Measurement” is set and the measurement age is greater than Max Age.</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">If Value</td>
-<td style="text-align: left;">The value that the measurement will be checked against (greater or less than).</td>
+<td>If Value</td>
+<td>The value that the measurement will be checked against (greater or less than).</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">Period (seconds)</td>
-<td style="text-align: left;">The period (seconds) between conditional checks.</td>
+<td>Period (seconds)</td>
+<td>The period (seconds) between conditional checks.</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">Refractory Period (seconds)</td>
-<td style="text-align: left;">The minimum duration (seconds) to wait after a conditional has been triggered to begin evaluating the conditional again.</td>
+<td>Refractory Period (seconds)</td>
+<td>The minimum duration (seconds) to wait after a conditional has been triggered to begin evaluating the conditional again.</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">Max Age (seconds)</td>
-<td style="text-align: left;">The maximum age the measurement can be. If a measurement isn’t available within this time frame, the conditional will not trigger. The only exception is if “If State” is set to “No Measurement”, which will cause the conditional to trigger when there is no measurement available (indicating the input or measuring device has stopped working).</td>
+<td>Max Age (seconds)</td>
+<td>The maximum age the measurement can be. If a measurement isn’t available within this time frame, the conditional will not trigger. The only exception is if “If State” is set to “No Measurement”, which will cause the conditional to trigger when there is no measurement available (indicating the input or measuring device has stopped working).</td>
 </tr>
 </tbody>
 </table>
@@ -1305,22 +1302,22 @@ document.write('<a h'+'ref'+'="ma'+'ilto'+':'+e+'" clas'+'s="em' + 'ail">'+e+'<\
 </colgroup>
 <thead>
 <tr class="header">
-<th style="text-align: left;">Setting</th>
-<th style="text-align: left;">Description</th>
+<th>Setting</th>
+<th>Description</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td style="text-align: left;">If Output</td>
-<td style="text-align: left;">The Output to monitor for a change of state.</td>
+<td>If Output</td>
+<td>The Output to monitor for a change of state.</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">If State</td>
-<td style="text-align: left;">If the state of the output changes to On or Off the conditional will trigger. If “On (any duration) is selected, th trigger will occur no matter how long the output turns on for, whereas if only”On&quot; is selected, the conditional will trigger only when the output turns on for a duration of time equal to the set “Duration (seconds)”.</td>
+<td>If State</td>
+<td>If the state of the output changes to On or Off the conditional will trigger. If “On (any duration) is selected, th trigger will occur no matter how long the output turns on for, whereas if only”On&quot; is selected, the conditional will trigger only when the output turns on for a duration of time equal to the set “Duration (seconds)”.</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">If Duration (seconds)</td>
-<td style="text-align: left;">If “On” is selected, an optional duration (seconds) may be set that will trigger the conditional only if the Output is turned on for this specific duration.</td>
+<td>If Duration (seconds)</td>
+<td>If “On” is selected, an optional duration (seconds) may be set that will trigger the conditional only if the Output is turned on for this specific duration.</td>
 </tr>
 </tbody>
 </table>
@@ -1333,22 +1330,22 @@ document.write('<a h'+'ref'+'="ma'+'ilto'+':'+e+'" clas'+'s="em' + 'ail">'+e+'<\
 </colgroup>
 <thead>
 <tr class="header">
-<th style="text-align: left;">Setting</th>
-<th style="text-align: left;">Description</th>
+<th>Setting</th>
+<th>Description</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td style="text-align: left;">If Output</td>
-<td style="text-align: left;">The Output to monitor for a change of state.</td>
+<td>If Output</td>
+<td>The Output to monitor for a change of state.</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">If State</td>
-<td style="text-align: left;">If the duty cycle of the output is greater than,less than, or equal to the set value, trigger the Conditional Actions.</td>
+<td>If State</td>
+<td>If the duty cycle of the output is greater than,less than, or equal to the set value, trigger the Conditional Actions.</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">If Duty Cycle (%)</td>
-<td style="text-align: left;">The duty cycle for the Output to be checked against.</td>
+<td>If Duty Cycle (%)</td>
+<td>The duty cycle for the Output to be checked against.</td>
 </tr>
 </tbody>
 </table>
@@ -1361,14 +1358,14 @@ document.write('<a h'+'ref'+'="ma'+'ilto'+':'+e+'" clas'+'s="em' + 'ail">'+e+'<\
 </colgroup>
 <thead>
 <tr class="header">
-<th style="text-align: left;">Setting</th>
-<th style="text-align: left;">Description</th>
+<th>Setting</th>
+<th>Description</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td style="text-align: left;">If Edge Detected</td>
-<td style="text-align: left;">The conditional will be triggered if a change in state is detected, either Rising when the state changes from LOW (0 volts) to HIGH (3.5 volts) or Falling when the state changes from HIGH (3.3 volts) to LOW (0 volts), or Both (Rising and Falling).</td>
+<td>If Edge Detected</td>
+<td>The conditional will be triggered if a change in state is detected, either Rising when the state changes from LOW (0 volts) to HIGH (3.5 volts) or Falling when the state changes from HIGH (3.3 volts) to LOW (0 volts), or Both (Rising and Falling).</td>
 </tr>
 </tbody>
 </table>
@@ -1381,30 +1378,30 @@ document.write('<a h'+'ref'+'="ma'+'ilto'+':'+e+'" clas'+'s="em' + 'ail">'+e+'<\
 </colgroup>
 <thead>
 <tr class="header">
-<th style="text-align: left;">Setting</th>
-<th style="text-align: left;">Description</th>
+<th>Setting</th>
+<th>Description</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td style="text-align: left;">Duration Method</td>
-<td style="text-align: left;">Select which Method to use.</td>
+<td>Duration Method</td>
+<td>Select which Method to use.</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">PWM Output</td>
-<td style="text-align: left;">Select which PWM Output to use.</td>
+<td>PWM Output</td>
+<td>Select which PWM Output to use.</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">Period (seconds)</td>
-<td style="text-align: left;">Select the interval of time to calculate the duty cycle, then apply to the PWM Output.</td>
+<td>Period (seconds)</td>
+<td>Select the interval of time to calculate the duty cycle, then apply to the PWM Output.</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">Trigger Every Period</td>
-<td style="text-align: left;">Trigger Conditional Actions every period.</td>
+<td>Trigger Every Period</td>
+<td>Trigger Conditional Actions every period.</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">Trigger when Activated</td>
-<td style="text-align: left;">Trigger Conditional Actions when the Conditional is activated.</td>
+<td>Trigger when Activated</td>
+<td>Trigger Conditional Actions when the Conditional is activated.</td>
 </tr>
 </tbody>
 </table>
@@ -1417,39 +1414,39 @@ document.write('<a h'+'ref'+'="ma'+'ilto'+':'+e+'" clas'+'s="em' + 'ail">'+e+'<\
 </colgroup>
 <thead>
 <tr class="header">
-<th style="text-align: left;">Setting</th>
-<th style="text-align: left;">Description</th>
+<th>Setting</th>
+<th>Description</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td style="text-align: left;">Rise or Set</td>
-<td style="text-align: left;">Select which to trigger the conditional, at sunrise or sunset.</td>
+<td>Rise or Set</td>
+<td>Select which to trigger the conditional, at sunrise or sunset.</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">Latitude (decimal)</td>
-<td style="text-align: left;">Latitude of the sunrise/sunset, using decimal format.</td>
+<td>Latitude (decimal)</td>
+<td>Latitude of the sunrise/sunset, using decimal format.</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">Longitude (decimal)</td>
-<td style="text-align: left;">Longitude of the sunrise/sunset, using decimal format.</td>
+<td>Longitude (decimal)</td>
+<td>Longitude of the sunrise/sunset, using decimal format.</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">Zenith</td>
-<td style="text-align: left;">The Zenith angle of the sun.</td>
+<td>Zenith</td>
+<td>The Zenith angle of the sun.</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">Date Offset (days)</td>
-<td style="text-align: left;">Set a sunrise/sunset offset in days (positive or negative).</td>
+<td>Date Offset (days)</td>
+<td>Set a sunrise/sunset offset in days (positive or negative).</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">Time Offset (minutes)</td>
-<td style="text-align: left;">Set a sunrise/sunset offset in minutes (positive or negative).</td>
+<td>Time Offset (minutes)</td>
+<td>Set a sunrise/sunset offset in minutes (positive or negative).</td>
 </tr>
 </tbody>
 </table>
 <h4 id="timer-duration-conditional-statement-if-options">Timer (Duration) Conditional Statement If Options</h4>
-<p>Run a timer that triggers Contitional Actions every period.</p>
+<p>Run a timer that triggers Conditional Actions every period.</p>
 <table>
 <colgroup>
 <col style="width: 33%"></col>
@@ -1457,23 +1454,23 @@ document.write('<a h'+'ref'+'="ma'+'ilto'+':'+e+'" clas'+'s="em' + 'ail">'+e+'<\
 </colgroup>
 <thead>
 <tr class="header">
-<th style="text-align: left;">Setting</th>
-<th style="text-align: left;">Description</th>
+<th>Setting</th>
+<th>Description</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td style="text-align: left;">Period (seconds)</td>
-<td style="text-align: left;">The period of time between triggering Conditional Actions.</td>
+<td>Period (seconds)</td>
+<td>The period of time between triggering Conditional Actions.</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">Start Offset (seconds)</td>
-<td style="text-align: left;">Set this to start the first trigger a number of seconds after the Conditional is activated.</td>
+<td>Start Offset (seconds)</td>
+<td>Set this to start the first trigger a number of seconds after the Conditional is activated.</td>
 </tr>
 </tbody>
 </table>
 <p>Timer (Daily Time Point) Conditional Statement If Options ‘’’‘’’‘’’‘’’‘’’‘’’‘’’‘’’‘’’‘’’‘’’‘’’‘’’‘’’‘’’‘’’‘’’</p>
-<p>Run a timer that triggers Contitional Actions at a specific time every day.</p>
+<p>Run a timer that triggers Conditional Actions at a specific time every day.</p>
 <table>
 <colgroup>
 <col style="width: 32%"></col>
@@ -1481,20 +1478,20 @@ document.write('<a h'+'ref'+'="ma'+'ilto'+':'+e+'" clas'+'s="em' + 'ail">'+e+'<\
 </colgroup>
 <thead>
 <tr class="header">
-<th style="text-align: left;">Setting</th>
-<th style="text-align: left;">Description</th>
+<th>Setting</th>
+<th>Description</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td style="text-align: left;">Start Time (HH:MM)</td>
-<td style="text-align: left;">Set the time to trigger Conditional Actions, in the format “HH:MM”, with HH denoting hours, and MM donoting minutes. Time is in 24-hour format.</td>
+<td>Start Time (HH:MM)</td>
+<td>Set the time to trigger Conditional Actions, in the format “HH:MM”, with HH denoting hours, and MM denoting minutes. Time is in 24-hour format.</td>
 </tr>
 </tbody>
 </table>
 <p>Timer (Daily Time Span) Conditional Statement If Options ‘’’‘’’‘’’‘’’‘’’‘’’‘’’‘’’‘’’‘’’‘’’‘’’‘’’‘’’‘’’‘’’‘’’</p>
-<p>Run a timer that triggers Contitional Actions at a specific period if it’s between the set start and end times. For example, if the Start Time is set to 10:00 and End Time set to 11:00 and Period set to 120 seconds, the Conditional Actions will trigger every 120 seconds when the time is between 10 AM and 11 AM.</p>
-<p>This may be useful, for instance, if you desire an Output to remain on during a particular time period and you want to prevent power outages from interupting the cycle (which a simple Time Point Timer could not prevent against because it only triggers once at the Start Time). By setting an Output to turn the lights on every few minutes during the Start -&gt; End period, it ensured the Output remains on during this period.</p>
+<p>Run a timer that triggers Conditional Actions at a specific period if it’s between the set start and end times. For example, if the Start Time is set to 10:00 and End Time set to 11:00 and Period set to 120 seconds, the Conditional Actions will trigger every 120 seconds when the time is between 10 AM and 11 AM.</p>
+<p>This may be useful, for instance, if you desire an Output to remain on during a particular time period and you want to prevent power outages from interrupting the cycle (which a simple Time Point Timer could not prevent against because it only triggers once at the Start Time). By setting an Output to turn the lights on every few minutes during the Start -&gt; End period, it ensured the Output remains on during this period.</p>
 <table>
 <colgroup>
 <col style="width: 32%"></col>
@@ -1502,22 +1499,22 @@ document.write('<a h'+'ref'+'="ma'+'ilto'+':'+e+'" clas'+'s="em' + 'ail">'+e+'<\
 </colgroup>
 <thead>
 <tr class="header">
-<th style="text-align: left;">Setting</th>
-<th style="text-align: left;">Description</th>
+<th>Setting</th>
+<th>Description</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td style="text-align: left;">Start Time (HH:MM)</td>
-<td style="text-align: left;">Set the start time to trigger Conditional Actions, in the format “HH:MM”, with HH denoting hours, and MM donoting minutes. Time is in 24-hour format.</td>
+<td>Start Time (HH:MM)</td>
+<td>Set the start time to trigger Conditional Actions, in the format “HH:MM”, with HH denoting hours, and MM denoting minutes. Time is in 24-hour format.</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">End Time (HH:MM)</td>
-<td style="text-align: left;">Set the end time to trigger Conditional Actions, in the format “HH:MM”, with HH denoting hours, and MM donoting minutes. Time is in 24-hour format.</td>
+<td>End Time (HH:MM)</td>
+<td>Set the end time to trigger Conditional Actions, in the format “HH:MM”, with HH denoting hours, and MM denoting minutes. Time is in 24-hour format.</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">Period (seconds)</td>
-<td style="text-align: left;">The period of time between triggering Conditional Actions.</td>
+<td>Period (seconds)</td>
+<td>The period of time between triggering Conditional Actions.</td>
 </tr>
 </tbody>
 </table>
@@ -1529,50 +1526,50 @@ document.write('<a h'+'ref'+'="ma'+'ilto'+':'+e+'" clas'+'s="em' + 'ail">'+e+'<\
 </colgroup>
 <thead>
 <tr class="header">
-<th style="text-align: left;">Setting</th>
-<th style="text-align: left;">Description</th>
+<th>Setting</th>
+<th>Description</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td style="text-align: left;">Output</td>
-<td style="text-align: left;">Turn a output on, off, or on for a duration of time.</td>
+<td>Output</td>
+<td>Turn a output on, off, or on for a duration of time.</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">Command</td>
-<td style="text-align: left;">Execute a command in the linux shell (as user mycodo).</td>
+<td>Command</td>
+<td>Execute a command in the linux shell (as user mycodo).</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">Activate PID</td>
-<td style="text-align: left;">Activate a particular PID controller.</td>
+<td>Activate PID</td>
+<td>Activate a particular PID controller.</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">Deactivate PID</td>
-<td style="text-align: left;">Deactivate a particular PID controller.</td>
+<td>Deactivate PID</td>
+<td>Deactivate a particular PID controller.</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">Pause PID</td>
-<td style="text-align: left;">Pause a particular PID controller.</td>
+<td>Pause PID</td>
+<td>Pause a particular PID controller.</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">Hold PID</td>
-<td style="text-align: left;">Hold a particular PID controller.</td>
+<td>Hold PID</td>
+<td>Hold a particular PID controller.</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">Resume PID</td>
-<td style="text-align: left;">Resume a particular PID controller.</td>
+<td>Resume PID</td>
+<td>Resume a particular PID controller.</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">Email</td>
-<td style="text-align: left;">Send an email containing information about the current condition that triggered the conditional to send the email.</td>
+<td>Email</td>
+<td>Send an email containing information about the current condition that triggered the conditional to send the email.</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">Flash LCD</td>
-<td style="text-align: left;">Have an LCD screen begin flashing in order to alert.</td>
+<td>Flash LCD</td>
+<td>Have an LCD screen begin flashing in order to alert.</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">Photo</td>
-<td style="text-align: left;">Capture a photo with the selected camera.</td>
+<td>Photo</td>
+<td>Capture a photo with the selected camera.</td>
 </tr>
 </tbody>
 </table>
@@ -1590,118 +1587,118 @@ document.write('<a h'+'ref'+'="ma'+'ilto'+':'+e+'" clas'+'s="em' + 'ail">'+e+'<\
 </colgroup>
 <thead>
 <tr class="header">
-<th style="text-align: left;">Variable</th>
-<th style="text-align: left;">Description</th>
+<th>Variable</th>
+<th>Description</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td style="text-align: left;">((measure_location))</td>
-<td style="text-align: left;">Input location (such as GPIO pin, I2C address, etc.)</td>
+<td>((measure_location))</td>
+<td>Input location (such as GPIO pin, I2C address, etc.)</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">((measure_period))</td>
-<td style="text-align: left;">The period (seconds) between measurements (input, math, or PID)</td>
+<td>((measure_period))</td>
+<td>The period (seconds) between measurements (input, math, or PID)</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">((measure_linux_command))</td>
-<td style="text-align: left;">Input measurement: Linux Command return value</td>
+<td>((measure_linux_command))</td>
+<td>Input measurement: Linux Command return value</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">((measure_altitude))</td>
-<td style="text-align: left;">Input measurement: altitude</td>
+<td>((measure_altitude))</td>
+<td>Input measurement: altitude</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">((measure_battery))</td>
-<td style="text-align: left;">Input measurement: battery</td>
+<td>((measure_battery))</td>
+<td>Input measurement: battery</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">((measure_boolean))</td>
-<td style="text-align: left;">Input measurement: boolean</td>
+<td>((measure_boolean))</td>
+<td>Input measurement: boolean</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">((measure_co2))</td>
-<td style="text-align: left;">Input measurement: CO2</td>
+<td>((measure_co2))</td>
+<td>Input measurement: CO2</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">((measure_cpu_load_1m))</td>
-<td style="text-align: left;">Input measurement: CPU load (1 min)</td>
+<td>((measure_cpu_load_1m))</td>
+<td>Input measurement: CPU load (1 min)</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">((measure_cpu_load_5m))</td>
-<td style="text-align: left;">Input measurement: CPU load (5 min)</td>
+<td>((measure_cpu_load_5m))</td>
+<td>Input measurement: CPU load (5 min)</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">((measure_cpu_load_15m))</td>
-<td style="text-align: left;">Input measurement: CPU load (15 min)</td>
+<td>((measure_cpu_load_15m))</td>
+<td>Input measurement: CPU load (15 min)</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">((measure_dewpoint))</td>
-<td style="text-align: left;">Input measurement: dew point</td>
+<td>((measure_dewpoint))</td>
+<td>Input measurement: dew point</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">((measure_disk_space))</td>
-<td style="text-align: left;">Input measurement: disk space</td>
+<td>((measure_disk_space))</td>
+<td>Input measurement: disk space</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">((measure_duty_cycle))</td>
-<td style="text-align: left;">Input measurement: duty cycle</td>
+<td>((measure_duty_cycle))</td>
+<td>Input measurement: duty cycle</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">((measure_edge))</td>
-<td style="text-align: left;">Input measurement: edge detected (1 or -1)</td>
+<td>((measure_edge))</td>
+<td>Input measurement: edge detected (1 or -1)</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">((measure_electrical_conductivity))</td>
-<td style="text-align: left;">Input measurement: Electrical Conductivity (uS/cm)</td>
+<td>((measure_electrical_conductivity))</td>
+<td>Input measurement: Electrical Conductivity (uS/cm)</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">((measure_frequency))</td>
-<td style="text-align: left;">Input measurement: frequency</td>
+<td>((measure_frequency))</td>
+<td>Input measurement: frequency</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">((measure_humidity))</td>
-<td style="text-align: left;">Input measurement: humidity</td>
+<td>((measure_humidity))</td>
+<td>Input measurement: humidity</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">((measure_lux))</td>
-<td style="text-align: left;">Input measurement: lux</td>
+<td>((measure_lux))</td>
+<td>Input measurement: lux</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">((measure_moisture))</td>
-<td style="text-align: left;">Input measurement: moisture</td>
+<td>((measure_moisture))</td>
+<td>Input measurement: moisture</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">((measure_ph))</td>
-<td style="text-align: left;">Input measurement: ph</td>
+<td>((measure_ph))</td>
+<td>Input measurement: ph</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">((measure_pressure))</td>
-<td style="text-align: left;">Input measurement: pressure</td>
+<td>((measure_pressure))</td>
+<td>Input measurement: pressure</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">((measure_pulse_width))</td>
-<td style="text-align: left;">Input measurement: pulse width</td>
+<td>((measure_pulse_width))</td>
+<td>Input measurement: pulse width</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">((measure_revolutions))</td>
-<td style="text-align: left;">Input measurement: RPM</td>
+<td>((measure_revolutions))</td>
+<td>Input measurement: RPM</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">((measure_temperature))</td>
-<td style="text-align: left;">Input measurement: temperature</td>
+<td>((measure_temperature))</td>
+<td>Input measurement: temperature</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">((measure_temperature_die))</td>
-<td style="text-align: left;">Input measurement: temperature (die)</td>
+<td>((measure_temperature_die))</td>
+<td>Input measurement: temperature (die)</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">((measure_temperature_object))</td>
-<td style="text-align: left;">Input measurement: temperature (object)</td>
+<td>((measure_temperature_object))</td>
+<td>Input measurement: temperature (object)</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">((measure_voltage))</td>
-<td style="text-align: left;">Input measurement: voltage</td>
+<td>((measure_voltage))</td>
+<td>Input measurement: voltage</td>
 </tr>
 </tbody>
 </table>
@@ -1713,26 +1710,26 @@ document.write('<a h'+'ref'+'="ma'+'ilto'+':'+e+'" clas'+'s="em' + 'ail">'+e+'<\
 </colgroup>
 <thead>
 <tr class="header">
-<th style="text-align: left;">Variable</th>
-<th style="text-align: left;">Description</th>
+<th>Variable</th>
+<th>Description</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td style="text-align: left;">((output_pin))</td>
-<td style="text-align: left;">The output pin</td>
+<td>((output_pin))</td>
+<td>The output pin</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">((output_action))</td>
-<td style="text-align: left;">The state change of the output (turned on = 1, turned off = 0)</td>
+<td>((output_action))</td>
+<td>The state change of the output (turned on = 1, turned off = 0)</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">((output_duration))</td>
-<td style="text-align: left;">The number of seconds the output turned on for (will return 0 if not applicable)</td>
+<td>((output_duration))</td>
+<td>The number of seconds the output turned on for (will return 0 if not applicable)</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">((output_pwm))</td>
-<td style="text-align: left;">The PWM duty cycle the output turned on for (will return 0 if not applicable)</td>
+<td>((output_pwm))</td>
+<td>The PWM duty cycle the output turned on for (will return 0 if not applicable)</td>
 </tr>
 </tbody>
 </table>
@@ -1744,19 +1741,19 @@ document.write('<a h'+'ref'+'="ma'+'ilto'+':'+e+'" clas'+'s="em' + 'ail">'+e+'<\
 </colgroup>
 <thead>
 <tr class="header">
-<th style="text-align: left;">Variable</th>
-<th style="text-align: left;">Description</th>
+<th>Variable</th>
+<th>Description</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td style="text-align: left;">((edge_state))</td>
-<td style="text-align: left;">The state of the GPIO pin (on/rising = 1, off/falling = 0)</td>
+<td>((edge_state))</td>
+<td>The state of the GPIO pin (on/rising = 1, off/falling = 0)</td>
 </tr>
 </tbody>
 </table>
 <h2 id="lcds">LCDs</h2>
-<p>More -&gt; LCDs</p>
+<p><code>Setup -&gt; LCDs</code></p>
 <p>Data may be output to a liquid crystal display (LCD) for easy viewing. Please see <a href="#lcd-displays">LCD Displays</a> for specific information regarding compatibility.</p>
 <p>There may be multiple displays created for each LCD. If there is only one display created for the LCD, it will refresh at the set period. If there is more than one display, it will cycle from one display to the next every set period.</p>
 <table>
@@ -1766,43 +1763,43 @@ document.write('<a h'+'ref'+'="ma'+'ilto'+':'+e+'" clas'+'s="em' + 'ail">'+e+'<\
 </colgroup>
 <thead>
 <tr class="header">
-<th style="text-align: left;">Setting</th>
-<th style="text-align: left;">Description</th>
+<th>Setting</th>
+<th>Description</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td style="text-align: left;">Reset Flashing</td>
-<td style="text-align: left;">If the LCD is flashing to alert you because it was instructed to do so by a triggered Conditional Statement, use this button to stop the flashing.</td>
+<td>Reset Flashing</td>
+<td>If the LCD is flashing to alert you because it was instructed to do so by a triggered Conditional Statement, use this button to stop the flashing.</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">Type</td>
-<td style="text-align: left;">Select either a 16x2 or 20x4 character LCD display.</td>
+<td>Type</td>
+<td>Select either a 16x2 or 20x4 character LCD display.</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">I2C Address</td>
-<td style="text-align: left;">Select the I2C to communicate with the LCD.</td>
+<td>I2C Address</td>
+<td>Select the I2C to communicate with the LCD.</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">Period</td>
-<td style="text-align: left;">This is the period of time (in seconds) between redrawing the LCD with new data or switching to the next set of displays (if multiple displays are used).</td>
+<td>Period</td>
+<td>This is the period of time (in seconds) between redrawing the LCD with new data or switching to the next set of displays (if multiple displays are used).</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">Add Display Set</td>
-<td style="text-align: left;">Add a set of display lines to the LCD.</td>
+<td>Add Display Set</td>
+<td>Add a set of display lines to the LCD.</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">Display Line #</td>
-<td style="text-align: left;">Select which measurement to display on each line of the LCD.</td>
+<td>Display Line #</td>
+<td>Select which measurement to display on each line of the LCD.</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">Max Age (seconds)</td>
-<td style="text-align: left;">The maximum age the measurement is allowed to be. If no measurement was acquired in this time frame, the display will indicate “NO DATA”.</td>
+<td>Max Age (seconds)</td>
+<td>The maximum age the measurement is allowed to be. If no measurement was acquired in this time frame, the display will indicate “NO DATA”.</td>
 </tr>
 </tbody>
 </table>
 <h2 id="methods">Methods</h2>
-<p>More -&gt; Methods</p>
+<p><code>Setup -&gt; Methods</code></p>
 <p>Methods enable Setpoint Tracking in PIDs and time-based duty cycle changes in timers. Normally, a PID controller will regulate an environmental condition to a specific setpoint. If you would like the setpoint to change over time, this is called setpoint tracking. Setpoint Tracking is useful for applications such as reflow ovens, thermal cyclers (DNA replication), mimicking natural daily cycles, and more. Methods may also be used to change a duty cycle over time when used with a Run PWM Method Conditional.</p>
 <h3 id="universal-options">Universal Options</h3>
 <p>These options are shared with several method types.</p>
@@ -1813,26 +1810,26 @@ document.write('<a h'+'ref'+'="ma'+'ilto'+':'+e+'" clas'+'s="em' + 'ail">'+e+'<\
 </colgroup>
 <thead>
 <tr class="header">
-<th style="text-align: left;">Setting</th>
-<th style="text-align: left;">Description</th>
+<th>Setting</th>
+<th>Description</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td style="text-align: left;">Start Time/Date</td>
-<td style="text-align: left;">This is the start time of a range of time.</td>
+<td>Start Time/Date</td>
+<td>This is the start time of a range of time.</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">End Time/Date</td>
-<td style="text-align: left;">This is the end time of a range of time.</td>
+<td>End Time/Date</td>
+<td>This is the end time of a range of time.</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">Start Setpoint</td>
-<td style="text-align: left;">This is the start setpoint of a range of setpoints.</td>
+<td>Start Setpoint</td>
+<td>This is the start setpoint of a range of setpoints.</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">End Setpoint</td>
-<td style="text-align: left;">This is the end setpoint of a range of setpoints.</td>
+<td>End Setpoint</td>
+<td>This is the end setpoint of a range of setpoints.</td>
 </tr>
 </tbody>
 </table>
@@ -1876,10 +1873,10 @@ document.write('<a h'+'ref'+'="ma'+'ilto'+':'+e+'" clas'+'s="em' + 'ail">'+e+'<\
 <p>Often the system can be simplified if two-way regulation is not needed. For instance, if cooling is unnecessary, this can be removed from the system and only up-regulation can be used.</p>
 <p>Use the same configuration as the <a href="#exact-temperature-regulation">Exact Temperature Regulation</a> example, except change <em>Regulate Direction</em> to “Raise” and do not touch the “Down Relay” section.</p>
 <h1 id="configuration-settings">Configuration Settings</h1>
-<p>[Gear Icon] -&gt; Configuration</p>
+<p><code>[Gear Icon] -&gt; Configure</code></p>
 <p>The settings menu, accessed by selecting the gear icon in the top-right, then the Configure link, is a general area for various system-wide configuration options.</p>
 <h2 id="general-settings">General Settings</h2>
-<p>[Gear Icon] -&gt; Configuration -&gt; General</p>
+<p><code>[Gear Icon] -&gt; Configure -&gt; General</code></p>
 <table>
 <colgroup>
 <col style="width: 32%"></col>
@@ -1887,38 +1884,38 @@ document.write('<a h'+'ref'+'="ma'+'ilto'+':'+e+'" clas'+'s="em' + 'ail">'+e+'<\
 </colgroup>
 <thead>
 <tr class="header">
-<th style="text-align: left;">Setting</th>
-<th style="text-align: left;">Description</th>
+<th>Setting</th>
+<th>Description</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td style="text-align: left;">Language</td>
-<td style="text-align: left;">Set the language that will be displayed in the web user interface.</td>
+<td>Language</td>
+<td>Set the language that will be displayed in the web user interface.</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">Force HTTPS</td>
-<td style="text-align: left;">Require web browsers to use SSL/HTTPS. Any request to <a href="http://" class="uri">http://</a> will be redirected to <a href="https://" class="uri">https://</a>.</td>
+<td>Force HTTPS</td>
+<td>Require web browsers to use SSL/HTTPS. Any request to <a href="http://" class="uri">http://</a> will be redirected to <a href="https://" class="uri">https://</a>.</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">Hide success alerts</td>
-<td style="text-align: left;">Hide all success alert boxes that appear at the top of the page.</td>
+<td>Hide success alerts</td>
+<td>Hide all success alert boxes that appear at the top of the page.</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">Hide info alerts</td>
-<td style="text-align: left;">Hide all info alert boxes that appear at the top of the page.</td>
+<td>Hide info alerts</td>
+<td>Hide all info alert boxes that appear at the top of the page.</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">Hide warning alerts</td>
-<td style="text-align: left;">Hide all warning alert boxes that appear at the top of the page.</td>
+<td>Hide warning alerts</td>
+<td>Hide all warning alert boxes that appear at the top of the page.</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">Opt-out of statistics</td>
-<td style="text-align: left;">Turn off sending anonymous usage statistics. Please consider that this helps the development to leave on.</td>
+<td>Opt-out of statistics</td>
+<td>Turn off sending anonymous usage statistics. Please consider that this helps the development to leave on.</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">Check for Updates</td>
-<td style="text-align: left;">Automatically check for updates every 2 days and notify through the web interface. If there is a new update, the Configure (Gear Icon) as well as the Upgrade menu will turn the color red.</td>
+<td>Check for Updates</td>
+<td>Automatically check for updates every 2 days and notify through the web interface. If there is a new update, the Configure (Gear Icon) as well as the Upgrade menu will turn the color red.</td>
 </tr>
 </tbody>
 </table>
@@ -1931,35 +1928,35 @@ document.write('<a h'+'ref'+'="ma'+'ilto'+':'+e+'" clas'+'s="em' + 'ail">'+e+'<\
 </colgroup>
 <thead>
 <tr class="header">
-<th style="text-align: left;">Setting</th>
-<th style="text-align: left;">Description</th>
+<th>Setting</th>
+<th>Description</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td style="text-align: left;">Max Amps</td>
-<td style="text-align: left;">Set the maximum allowed amperage to be switched on at any given time. If a output that’s instructed to turn on will cause the sum of active devices to exceed this amount, the output will not be allowed to turn on, to prevent any damage that may result from exceeding current limits.</td>
+<td>Max Amps</td>
+<td>Set the maximum allowed amperage to be switched on at any given time. If a output that’s instructed to turn on will cause the sum of active devices to exceed this amount, the output will not be allowed to turn on, to prevent any damage that may result from exceeding current limits.</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">Voltage</td>
-<td style="text-align: left;">Alternating current (AC) voltage that is switched by the outputs. This is usually 120 or 240.</td>
+<td>Voltage</td>
+<td>Alternating current (AC) voltage that is switched by the outputs. This is usually 120 or 240.</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">Cost per kWh</td>
-<td style="text-align: left;">This is how much you pay per kWh.</td>
+<td>Cost per kWh</td>
+<td>This is how much you pay per kWh.</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">Currency Unit</td>
-<td style="text-align: left;">This is the unit used for the currency that pays for electricity.</td>
+<td>Currency Unit</td>
+<td>This is the unit used for the currency that pays for electricity.</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">Day of Month</td>
-<td style="text-align: left;">This is the day of the month (1-30) that the electricity meter is read (which will correspond to the electrical bill).</td>
+<td>Day of Month</td>
+<td>This is the day of the month (1-30) that the electricity meter is read (which will correspond to the electrical bill).</td>
 </tr>
 </tbody>
 </table>
 <h2 id="measurement-settings">Measurement Settings</h2>
-<p>[Gear Icon] -&gt; Configuration -&gt; Measurement</p>
+<p><code>[Gear Icon] -&gt; Configure -&gt; Measurement</code></p>
 <p>New measurements, units, and conversions can be created that can extend functionality of Mycodo beyond the built-in types and equations. Be sure to create units before measurements, as units need to be selected when creating a measurement. A measurement can be created that already exists, allowing additional units to be added to a pre-existing measurement. For example, the measurement ‘altitude’ already exists, however if you wanted to add the unit ‘fathom’, first create the unit ‘fathom’, then create the measurement ‘altitude’ with the ‘fathom’ unit selected. It is okay to create a custom measurement for a measurement that already exist (this is how new units for a currently-installed measurement is added).</p>
 <table>
 <colgroup>
@@ -1968,43 +1965,43 @@ document.write('<a h'+'ref'+'="ma'+'ilto'+':'+e+'" clas'+'s="em' + 'ail">'+e+'<\
 </colgroup>
 <thead>
 <tr class="header">
-<th style="text-align: left;">Setting</th>
-<th style="text-align: left;">Description</th>
+<th>Setting</th>
+<th>Description</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td style="text-align: left;">Measurement Name</td>
-<td style="text-align: left;">Name for the measurement (e.g. “Weight”, “Length”).</td>
+<td>Measurement Name</td>
+<td>Name for the measurement (e.g. “Weight”, “Length”).</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">Measurement Units</td>
-<td style="text-align: left;">Select all the units that are associated with the measurement.</td>
+<td>Measurement Units</td>
+<td>Select all the units that are associated with the measurement.</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">Unit Name</td>
-<td style="text-align: left;">Name for the unit (e.g. “Kilogram”, “Meter”).</td>
+<td>Unit Name</td>
+<td>Name for the unit (e.g. “Kilogram”, “Meter”).</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">Unit Abbreviation</td>
-<td style="text-align: left;">Abbreviation for the unit (e.g. “kg”, “m”).</td>
+<td>Unit Abbreviation</td>
+<td>Abbreviation for the unit (e.g. “kg”, “m”).</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">Convert From Unit</td>
-<td style="text-align: left;">The unit that will be converted from.</td>
+<td>Convert From Unit</td>
+<td>The unit that will be converted from.</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">Convert To Unit</td>
-<td style="text-align: left;">The unit that will be converted to.</td>
+<td>Convert To Unit</td>
+<td>The unit that will be converted to.</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">Equation</td>
-<td style="text-align: left;">The equation used to convert one unit to another. The lowercase letter “x” must be included in the equation (e.g. “x/1000+20”, “250*(x/3)”). This “x” will be replaced with the actual measurement being converted.</td>
+<td>Equation</td>
+<td>The equation used to convert one unit to another. The lowercase letter “x” must be included in the equation (e.g. “x/1000+20”, “250*(x/3)”). This “x” will be replaced with the actual measurement being converted.</td>
 </tr>
 </tbody>
 </table>
 <h2 id="users">Users</h2>
-<p>[Gear Icon] -&gt; Configuration -&gt; Users</p>
+<p><code>[Gear Icon] -&gt; Configure -&gt; Users</code></p>
 <p>Mycodo requires at least one Admin user for the login system to be enabled. If there isn’t an Admin user, the web server will redirect to an Admin Creation Form. This is the first page you see when starting Mycodo for the first time. After an Admin user has been created, additional users may be created from the User Settings page.</p>
 <table>
 <colgroup>
@@ -2013,26 +2010,26 @@ document.write('<a h'+'ref'+'="ma'+'ilto'+':'+e+'" clas'+'s="em' + 'ail">'+e+'<\
 </colgroup>
 <thead>
 <tr class="header">
-<th style="text-align: left;">Setting</th>
-<th style="text-align: left;">Description</th>
+<th>Setting</th>
+<th>Description</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td style="text-align: left;">Username</td>
-<td style="text-align: left;">Choose a user name that is between 2 and 64 characters. The user name is case insensitive (all user names are converted to lower-case).</td>
+<td>Username</td>
+<td>Choose a user name that is between 2 and 64 characters. The user name is case insensitive (all user names are converted to lower-case).</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">Email</td>
-<td style="text-align: left;">The email associated with the new account.</td>
+<td>Email</td>
+<td>The email associated with the new account.</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">Password/Repeat</td>
-<td style="text-align: left;">Choose a password that is between 6 and 64 characters and only contain letters, numbers, and symbols.</td>
+<td>Password/Repeat</td>
+<td>Choose a password that is between 6 and 64 characters and only contain letters, numbers, and symbols.</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">Role</td>
-<td style="text-align: left;">Roles are a way of imposing access restrictions on users, to either allow or deny actions. See the table below for explanations of the four default Roles.</td>
+<td>Role</td>
+<td>Roles are a way of imposing access restrictions on users, to either allow or deny actions. See the table below for explanations of the four default Roles.</td>
 </tr>
 </tbody>
 </table>
@@ -2048,69 +2045,69 @@ document.write('<a h'+'ref'+'="ma'+'ilto'+':'+e+'" clas'+'s="em' + 'ail">'+e+'<\
 </colgroup>
 <thead>
 <tr class="header">
-<th style="text-align: left;">Role</th>
-<th style="text-align: left;">Admin</th>
-<th style="text-align: left;">Editor</th>
-<th style="text-align: left;">Monitor</th>
-<th style="text-align: left;">Guest</th>
+<th>Role</th>
+<th>Admin</th>
+<th>Editor</th>
+<th>Monitor</th>
+<th>Guest</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td style="text-align: left;">Edit Users</td>
-<td style="text-align: left;">X</td>
-<td style="text-align: left;"></td>
-<td style="text-align: left;"></td>
-<td style="text-align: left;"></td>
+<td>Edit Users</td>
+<td>X</td>
+<td></td>
+<td></td>
+<td></td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">Edit Controllers</td>
-<td style="text-align: left;">X</td>
-<td style="text-align: left;">X</td>
-<td style="text-align: left;"></td>
-<td style="text-align: left;"></td>
+<td>Edit Controllers</td>
+<td>X</td>
+<td>X</td>
+<td></td>
+<td></td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">Edit Settings</td>
-<td style="text-align: left;">X</td>
-<td style="text-align: left;">X</td>
-<td style="text-align: left;"></td>
-<td style="text-align: left;"></td>
+<td>Edit Settings</td>
+<td>X</td>
+<td>X</td>
+<td></td>
+<td></td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">View Settings</td>
-<td style="text-align: left;">X</td>
-<td style="text-align: left;">X</td>
-<td style="text-align: left;">X</td>
-<td style="text-align: left;"></td>
+<td>View Settings</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td></td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">View Camera</td>
-<td style="text-align: left;">X</td>
-<td style="text-align: left;">X</td>
-<td style="text-align: left;">X</td>
-<td style="text-align: left;"></td>
+<td>View Camera</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td></td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">View Stats</td>
-<td style="text-align: left;">X</td>
-<td style="text-align: left;">X</td>
-<td style="text-align: left;">X</td>
-<td style="text-align: left;"></td>
+<td>View Stats</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td></td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">View Logs</td>
-<td style="text-align: left;">X</td>
-<td style="text-align: left;">X</td>
-<td style="text-align: left;">X</td>
-<td style="text-align: left;"></td>
+<td>View Logs</td>
+<td>X</td>
+<td>X</td>
+<td>X</td>
+<td></td>
 </tr>
 </tbody>
 </table>
-<p>1The <code>Edit Controllers</code> permission protects the editing of Conditionals, Graphs, LCDs, Methods, PIDs, Outputs, and Inputs.</p>
-<p>2The <code>View Stats</code> permission protects the viewing of usage statistics and the System Info and Output Usage pages.</p>
+<p>The <code>Edit Controllers</code> permission protects the editing of Conditionals, Graphs, LCDs, Methods, PIDs, Outputs, and Inputs.</p>
+<p>The <code>View Stats</code> permission protects the viewing of usage statistics and the System Information and Output Usage pages.</p>
 <h2 id="pi-settings">Pi Settings</h2>
-<p>[Gear Icon] -&gt; Configuration -&gt; Pi</p>
+<p><code>[Gear Icon] -&gt; Configure -&gt; Raspberry Pi</code></p>
 <p>Pi settings configure parts of the linux system that Mycodo runs on.</p>
 <p>pigpiod is required if you wish to use PWM Outputs, as well as PWM, RPM, DHT22, DHT11, HTU21D Inputs.</p>
 <table>
@@ -2120,23 +2117,23 @@ document.write('<a h'+'ref'+'="ma'+'ilto'+':'+e+'" clas'+'s="em' + 'ail">'+e+'<\
 </colgroup>
 <thead>
 <tr class="header">
-<th style="text-align: left;">Setting</th>
-<th style="text-align: left;">Description</th>
+<th>Setting</th>
+<th>Description</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td style="text-align: left;">Enable/Disable Feature</td>
-<td style="text-align: left;">These are system interfaces that can be enabled and disabled from the web UI via the <code>raspi-config</code> command.</td>
+<td>Enable/Disable Feature</td>
+<td>These are system interfaces that can be enabled and disabled from the web UI via the <code>raspi-config</code> command.</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">pigpiod Sample Rate</td>
-<td style="text-align: left;">This is the sample rate the pigpiod service will operate at. The lower number enables faster PWM frequencies, but may significantly increase processor load on the Pi Zeros. pigpiod may als be disabled completely if it’s not required (see note, above).</td>
+<td>pigpiod Sample Rate</td>
+<td>This is the sample rate the pigpiod service will operate at. The lower number enables faster PWM frequencies, but may significantly increase processor load on the Pi Zeros. pigpiod may als be disabled completely if it’s not required (see note, above).</td>
 </tr>
 </tbody>
 </table>
 <h2 id="alert-settings">Alert Settings</h2>
-<p>[Gear Icon] -&gt; Configuration -&gt; Alerts</p>
+<p><code>[Gear Icon] -&gt; Configure -&gt; Alerts</code></p>
 <p>Alert settings set up the credentials for sending email notifications.</p>
 <table>
 <colgroup>
@@ -2145,47 +2142,47 @@ document.write('<a h'+'ref'+'="ma'+'ilto'+':'+e+'" clas'+'s="em' + 'ail">'+e+'<\
 </colgroup>
 <thead>
 <tr class="header">
-<th style="text-align: left;">Setting</th>
-<th style="text-align: left;">Description</th>
+<th>Setting</th>
+<th>Description</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td style="text-align: left;">SMTP Host</td>
-<td style="text-align: left;">The SMTP server to use to send emails from.</td>
+<td>SMTP Host</td>
+<td>The SMTP server to use to send emails from.</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">SMTP Port</td>
-<td style="text-align: left;">Port to communicate with the SMTP server (465 for SSL, 587 for TSL).</td>
+<td>SMTP Port</td>
+<td>Port to communicate with the SMTP server (465 for SSL, 587 for TSL).</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">Enable SSL</td>
-<td style="text-align: left;">Check to enable SSL, uncheck to enable TSL.</td>
+<td>Enable SSL</td>
+<td>Check to enable SSL, uncheck to enable TSL.</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">SMTP User</td>
-<td style="text-align: left;">The user name to send the email from. This can be just a name or the entire email address.</td>
+<td>SMTP User</td>
+<td>The user name to send the email from. This can be just a name or the entire email address.</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">SMTP Password</td>
-<td style="text-align: left;">The password for the user.</td>
+<td>SMTP Password</td>
+<td>The password for the user.</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">From Email</td>
-<td style="text-align: left;">What the from email address be set as. This should be the actual email address for this user.</td>
+<td>From Email</td>
+<td>What the from email address be set as. This should be the actual email address for this user.</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">Max emails (per hour)</td>
-<td style="text-align: left;">Set the maximum number of emails that can be sent per hour. If more notifications are triggered within the hour and this number has been reached, the notifications will be discarded.</td>
+<td>Max emails (per hour)</td>
+<td>Set the maximum number of emails that can be sent per hour. If more notifications are triggered within the hour and this number has been reached, the notifications will be discarded.</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">Send Test Email</td>
-<td style="text-align: left;">Test the email configuration by sending a test email.</td>
+<td>Send Test Email</td>
+<td>Test the email configuration by sending a test email.</td>
 </tr>
 </tbody>
 </table>
 <h2 id="camera-settings">Camera Settings</h2>
-<p>[Gear Icon] -&gt; Configuration -&gt; Camera</p>
+<p><code>[Gear Icon] -&gt; Configure -&gt; Camera</code></p>
 <p>Many cameras can be used simultaneously with Mycodo. Each camera needs to be set up in the camera settings, then may be used throughout the software. Note that not every option (such as Hue or White Balance) may be able to be used with your particular camera, due to manufacturer differences in hardware and software.</p>
 <table>
 <colgroup>
@@ -2194,60 +2191,60 @@ document.write('<a h'+'ref'+'="ma'+'ilto'+':'+e+'" clas'+'s="em' + 'ail">'+e+'<\
 </colgroup>
 <thead>
 <tr class="header">
-<th style="text-align: left;">Setting</th>
-<th style="text-align: left;">Description</th>
+<th>Setting</th>
+<th>Description</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td style="text-align: left;">Type</td>
-<td style="text-align: left;">Select whether the camera is a Raspberry Pi Camera or a USB camera.</td>
+<td>Type</td>
+<td>Select whether the camera is a Raspberry Pi Camera or a USB camera.</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">Library</td>
-<td style="text-align: left;">Select which library to use to communicate with the camera. The Raspberry Pi Camera uses picamera, and USB cameras should be set to fswebcam.</td>
+<td>Library</td>
+<td>Select which library to use to communicate with the camera. The Raspberry Pi Camera uses picamera, and USB cameras should be set to fswebcam.</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">Device</td>
-<td style="text-align: left;">The device to use to connect to the camera. fswebcam is the only library that uses this option.</td>
+<td>Device</td>
+<td>The device to use to connect to the camera. fswebcam is the only library that uses this option.</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">Output</td>
-<td style="text-align: left;">This output will turn on during the capture of any still image (which includes timelapses).</td>
+<td>Output</td>
+<td>This output will turn on during the capture of any still image (which includes timelapses).</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">Output Duration</td>
-<td style="text-align: left;">Turn output on for this duration of time before the image is captured.</td>
+<td>Output Duration</td>
+<td>Turn output on for this duration of time before the image is captured.</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">Rotate Image</td>
-<td style="text-align: left;">The number of degrees to rotate the image.</td>
+<td>Rotate Image</td>
+<td>The number of degrees to rotate the image.</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">…</td>
-<td style="text-align: left;">Image Width, Image Height, Brightness, Contrast, Exposure, Gain, Hue, Saturation, White Balance. These options are self-explanatory. Not all options will work with all cameras.</td>
+<td>…</td>
+<td>Image Width, Image Height, Brightness, Contrast, Exposure, Gain, Hue, Saturation, White Balance. These options are self-explanatory. Not all options will work with all cameras.</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">Pre Command</td>
-<td style="text-align: left;">A command to execute (as user mycodo) before a still image is captured.</td>
+<td>Pre Command</td>
+<td>A command to execute (as user mycodo) before a still image is captured.</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">Post Command</td>
-<td style="text-align: left;">A command to execute (as user mycodo) after a still image is captured.</td>
+<td>Post Command</td>
+<td>A command to execute (as user mycodo) after a still image is captured.</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">Flip horizontally</td>
-<td style="text-align: left;">Flip, or mirror, the image horizontally.</td>
+<td>Flip horizontally</td>
+<td>Flip, or mirror, the image horizontally.</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">Flip vertically</td>
-<td style="text-align: left;">Flip, or mirror, the image vertically.</td>
+<td>Flip vertically</td>
+<td>Flip, or mirror, the image vertically.</td>
 </tr>
 </tbody>
 </table>
 <h2 id="diagnostic-settings">Diagnostic Settings</h2>
-<p>[Gear Icon] -&gt; Configuration -&gt; Diagnostics</p>
-<p>Sometimes issues arise in the system as a result of incompatible configurations, either the result of a misconfigured part of the system (Input, Output, etc.) or an update that didn’t properly handle a database upgrade, or other unforeseen issue. Sometimes it is necessary to perform diagnostic actions that can determine the cause of the issue or fix the issue itself. The options below are meant to alleviate issues, such as a misconfigured dashboard element causing an error on the Dashboard page, which may cause an inability to access the Dashboard page to correct the issue. Deleting all Dashboard Elements may be the most economical method to enable access to the Dashboard page again, at the cost of having to readd all the Dashboard Elements that were once there.</p>
+<p><code>[Gear Icon] -&gt; Configure -&gt; Diagnostics</code></p>
+<p>Sometimes issues arise in the system as a result of incompatible configurations, either the result of a misconfigured part of the system (Input, Output, etc.) or an update that didn’t properly handle a database upgrade, or other unforeseen issue. Sometimes it is necessary to perform diagnostic actions that can determine the cause of the issue or fix the issue itself. The options below are meant to alleviate issues, such as a misconfigured dashboard element causing an error on the <code>Dash</code> page, which may cause an inability to access the <code>Dash</code> page to correct the issue. Deleting all Dashboard Elements may be the most economical method to enable access to the <code>Dash</code> page again, at the cost of having to readd all the Dashboard Elements that were once there.</p>
 <table>
 <colgroup>
 <col style="width: 39%"></col>
@@ -2255,20 +2252,20 @@ document.write('<a h'+'ref'+'="ma'+'ilto'+':'+e+'" clas'+'s="em' + 'ail">'+e+'<\
 </colgroup>
 <thead>
 <tr class="header">
-<th style="text-align: left;">Setting</th>
-<th style="text-align: left;">Description</th>
+<th>Setting</th>
+<th>Description</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td style="text-align: left;">Delete All Dashboard Elements</td>
-<td style="text-align: left;">Delete all saved Dashboard Elements from the Dashboard.</td>
+<td>Delete All Dashboard Elements</td>
+<td>Delete all saved Dashboard Elements from the Dashboard.</td>
 </tr>
 </tbody>
 </table>
 <h1 id="miscellaneous">Miscellaneous</h1>
 <h2 id="dashboard">Dashboard</h2>
-<p>Info -&gt; Dashboard</p>
+<p><code>Dash</code></p>
 <p>The dashboard is where you can add pieces of data for easy viewing. It is highly customizable and provides an easy way to see exactly what data you want to see on one screen.</p>
 <table>
 <colgroup>
@@ -2277,18 +2274,18 @@ document.write('<a h'+'ref'+'="ma'+'ilto'+':'+e+'" clas'+'s="em' + 'ail">'+e+'<\
 </colgroup>
 <thead>
 <tr class="header">
-<th style="text-align: left;">Setting</th>
-<th style="text-align: left;">Description</th>
+<th>Setting</th>
+<th>Description</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td style="text-align: left;">Width</td>
-<td style="text-align: left;">The width of the dashboard object on the page, in 1/12th increments. Multiple dashboard object can share the sme row if their combined fraction doesn’t exceed 12/12.</td>
+<td>Width</td>
+<td>The width of the dashboard object on the page, in 1/12th increments. Multiple dashboard object can share the sme row if their combined fraction doesn’t exceed 12/12.</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">Height (pixels)</td>
-<td style="text-align: left;">The height of the dashboard object.</td>
+<td>Height (pixels)</td>
+<td>The height of the dashboard object.</td>
 </tr>
 </tbody>
 </table>
@@ -2302,70 +2299,70 @@ document.write('<a h'+'ref'+'="ma'+'ilto'+':'+e+'" clas'+'s="em' + 'ail">'+e+'<\
 </colgroup>
 <thead>
 <tr class="header">
-<th style="text-align: left;">Setting</th>
-<th style="text-align: left;">Description</th>
+<th>Setting</th>
+<th>Description</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td style="text-align: left;">x-Axis (minutes)</td>
-<td style="text-align: left;">The duration to display on the x-axis of the graph.</td>
+<td>x-Axis (minutes)</td>
+<td>The duration to display on the x-axis of the graph.</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">Enable Auto Refresh</td>
-<td style="text-align: left;">Automatically refresh the data on the graph Refresh Period.</td>
+<td>Enable Auto Refresh</td>
+<td>Automatically refresh the data on the graph Refresh Period.</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">Refresh (seconds)</td>
-<td style="text-align: left;">The duration between acquisitions of new data to display on the graph.</td>
+<td>Refresh (seconds)</td>
+<td>The duration between acquisitions of new data to display on the graph.</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">Inputs/Outputs/PIDs</td>
-<td style="text-align: left;">The Inputs, Outputs, and PIDs to display on the graph.</td>
+<td>Inputs/Outputs/PIDs</td>
+<td>The Inputs, Outputs, and PIDs to display on the graph.</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">Enable X-Axis Reset</td>
-<td style="text-align: left;">Reset the x-axis min/max every time new data comes in during the auto refresh.</td>
+<td>Enable X-Axis Reset</td>
+<td>Reset the x-axis min/max every time new data comes in during the auto refresh.</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">Enable Title</td>
-<td style="text-align: left;">Show a title of the graph name.</td>
+<td>Enable Title</td>
+<td>Show a title of the graph name.</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">Enable Navbar</td>
-<td style="text-align: left;">Show a slidable navigation bar at the bottom of the graph.</td>
+<td>Enable Navbar</td>
+<td>Show a slidable navigation bar at the bottom of the graph.</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">Enable Export</td>
-<td style="text-align: left;">Enable a button on the top right of the graph to allow exporting of the currently-displayed data as PNG, JPEG, PDF, SVG, CSV, XLS.</td>
+<td>Enable Export</td>
+<td>Enable a button on the top right of the graph to allow exporting of the currently-displayed data as PNG, JPEG, PDF, SVG, CSV, XLS.</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">Enable Range Selector</td>
-<td style="text-align: left;">Show a set of navigation buttons at the top of the graph to quickly change the display duration.</td>
+<td>Enable Range Selector</td>
+<td>Show a set of navigation buttons at the top of the graph to quickly change the display duration.</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">Enable Graph Shift</td>
-<td style="text-align: left;">If enabled, old data points are removed when new data is added to the graph. Only recommended to enable if Enable Navbar is enabled.</td>
+<td>Enable Graph Shift</td>
+<td>If enabled, old data points are removed when new data is added to the graph. Only recommended to enable if Enable Navbar is enabled.</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">Enable Custom Colors</td>
-<td style="text-align: left;">Use custom colors for Input, Output, and PID lines. Select the colors with the buttons that appear below this checkbox.</td>
+<td>Enable Custom Colors</td>
+<td>Use custom colors for Input, Output, and PID lines. Select the colors with the buttons that appear below this checkbox.</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">Enable Manual Y-Axis Min/Max</td>
-<td style="text-align: left;">Set the minimum and maximum y-axes of a particular graph. Set both the minimum and maximum to 0 to disable for a particular y-axis.</td>
+<td>Enable Manual Y-Axis Min/Max</td>
+<td>Set the minimum and maximum y-axes of a particular graph. Set both the minimum and maximum to 0 to disable for a particular y-axis.</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">Enable Y-Axis Align Ticks</td>
-<td style="text-align: left;">Align the ticks of several y-axes of the same graph.</td>
+<td>Enable Y-Axis Align Ticks</td>
+<td>Align the ticks of several y-axes of the same graph.</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">Enable Y-Axis Start On Tick</td>
-<td style="text-align: left;">Start all y-axes of a graph on the same tick.</td>
+<td>Enable Y-Axis Start On Tick</td>
+<td>Start all y-axes of a graph on the same tick.</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">Enable Y-Axis End On Tick</td>
-<td style="text-align: left;">End all y-axes of a graph on the same tick.</td>
+<td>Enable Y-Axis End On Tick</td>
+<td>End all y-axes of a graph on the same tick.</td>
 </tr>
 </tbody>
 </table>
@@ -2378,30 +2375,30 @@ document.write('<a h'+'ref'+'="ma'+'ilto'+':'+e+'" clas'+'s="em' + 'ail">'+e+'<\
 </colgroup>
 <thead>
 <tr class="header">
-<th style="text-align: left;">Setting</th>
-<th style="text-align: left;">Description</th>
+<th>Setting</th>
+<th>Description</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td style="text-align: left;">Refresh (seconds)</td>
-<td style="text-align: left;">The duration between acquisitions of new data to display on the graph.</td>
+<td>Refresh (seconds)</td>
+<td>The duration between acquisitions of new data to display on the graph.</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">Max Age (seconds)</td>
-<td style="text-align: left;">The maximum allowable age of the measurement. If the age is greater than this, the gauge will turn off, indicating there is an issue.</td>
+<td>Max Age (seconds)</td>
+<td>The maximum allowable age of the measurement. If the age is greater than this, the gauge will turn off, indicating there is an issue.</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">Gauge Min</td>
-<td style="text-align: left;">The lowest value of the gauge.</td>
+<td>Gauge Min</td>
+<td>The lowest value of the gauge.</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">Gauge Max</td>
-<td style="text-align: left;">The highest value of the gauge.</td>
+<td>Gauge Max</td>
+<td>The highest value of the gauge.</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">Show Timestamp</td>
-<td style="text-align: left;">Show the timestamp of the current gauge measurement.</td>
+<td>Show Timestamp</td>
+<td>Show the timestamp of the current gauge measurement.</td>
 </tr>
 </tbody>
 </table>
@@ -2414,38 +2411,38 @@ document.write('<a h'+'ref'+'="ma'+'ilto'+':'+e+'" clas'+'s="em' + 'ail">'+e+'<\
 </colgroup>
 <thead>
 <tr class="header">
-<th style="text-align: left;">Setting</th>
-<th style="text-align: left;">Description</th>
+<th>Setting</th>
+<th>Description</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td style="text-align: left;">Refresh (seconds)</td>
-<td style="text-align: left;">The duration between acquisitions of new data to display on the graph.</td>
+<td>Refresh (seconds)</td>
+<td>The duration between acquisitions of new data to display on the graph.</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">Max Age (seconds)</td>
-<td style="text-align: left;">The maximum allowed age of the image timestamp before a “No Recent Image” message is returned.</td>
+<td>Max Age (seconds)</td>
+<td>The maximum allowed age of the image timestamp before a “No Recent Image” message is returned.</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">Acquire Image (and save new file)</td>
-<td style="text-align: left;">Acquire a new images and save the previous image.</td>
+<td>Acquire Image (and save new file)</td>
+<td>Acquire a new images and save the previous image.</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">Acquire Image (and erase last file)</td>
-<td style="text-align: left;">Acquire a new image but erase the previous image.</td>
+<td>Acquire Image (and erase last file)</td>
+<td>Acquire a new image but erase the previous image.</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">Display Live Video Stream</td>
-<td style="text-align: left;">Automatically start a video stream and display it.</td>
+<td>Display Live Video Stream</td>
+<td>Automatically start a video stream and display it.</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">Display Latest Timelapse Image</td>
-<td style="text-align: left;">Display the latest timelapse image that exists.</td>
+<td>Display Latest Timelapse Image</td>
+<td>Display the latest timelapse image that exists.</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">Add Timestamp</td>
-<td style="text-align: left;">Append a timestamp to the image.</td>
+<td>Add Timestamp</td>
+<td>Append a timestamp to the image.</td>
 </tr>
 </tbody>
 </table>
@@ -2457,34 +2454,34 @@ document.write('<a h'+'ref'+'="ma'+'ilto'+':'+e+'" clas'+'s="em' + 'ail">'+e+'<\
 </colgroup>
 <thead>
 <tr class="header">
-<th style="text-align: left;">Setting</th>
-<th style="text-align: left;">Description</th>
+<th>Setting</th>
+<th>Description</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td style="text-align: left;">Refresh (seconds)</td>
-<td style="text-align: left;">The duration between acquisitions of new data to display on the graph.</td>
+<td>Refresh (seconds)</td>
+<td>The duration between acquisitions of new data to display on the graph.</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">Max Age (seconds)</td>
-<td style="text-align: left;">The maximum allowable age of the measurement. If the age is greater than this, the gauge will turn off, indicating there is an issue.</td>
+<td>Max Age (seconds)</td>
+<td>The maximum allowable age of the measurement. If the age is greater than this, the gauge will turn off, indicating there is an issue.</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">Value Font Size (em)</td>
-<td style="text-align: left;">The font size of the measurement value in em.</td>
+<td>Value Font Size (em)</td>
+<td>The font size of the measurement value in em.</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">Timestamp Font Size (em)</td>
-<td style="text-align: left;">The font size of the timestamp value in em.</td>
+<td>Timestamp Font Size (em)</td>
+<td>The font size of the timestamp value in em.</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">Decimal Places</td>
-<td style="text-align: left;">The number of digits to display to the right of the decimal.</td>
+<td>Decimal Places</td>
+<td>The number of digits to display to the right of the decimal.</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">Measurement</td>
-<td style="text-align: left;">The device to display information about.</td>
+<td>Measurement</td>
+<td>The device to display information about.</td>
 </tr>
 </tbody>
 </table>
@@ -2496,38 +2493,38 @@ document.write('<a h'+'ref'+'="ma'+'ilto'+':'+e+'" clas'+'s="em' + 'ail">'+e+'<\
 </colgroup>
 <thead>
 <tr class="header">
-<th style="text-align: left;">Setting</th>
-<th style="text-align: left;">Description</th>
+<th>Setting</th>
+<th>Description</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td style="text-align: left;">Refresh (seconds)</td>
-<td style="text-align: left;">The duration between acquisitions of new data to display on the graph.</td>
+<td>Refresh (seconds)</td>
+<td>The duration between acquisitions of new data to display on the graph.</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">Max Age (seconds)</td>
-<td style="text-align: left;">The maximum allowable age of the measurement. If the age is greater than this, the gauge will turn off, indicating there is an issue.</td>
+<td>Max Age (seconds)</td>
+<td>The maximum allowable age of the measurement. If the age is greater than this, the gauge will turn off, indicating there is an issue.</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">Value Font Size (em)</td>
-<td style="text-align: left;">The font size of the output value in em.</td>
+<td>Value Font Size (em)</td>
+<td>The font size of the output value in em.</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">Timestamp Font Size (em)</td>
-<td style="text-align: left;">The font size of the timestamp value in em.</td>
+<td>Timestamp Font Size (em)</td>
+<td>The font size of the timestamp value in em.</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">Decimal Places</td>
-<td style="text-align: left;">The number of digits to display to the right of the decimal.</td>
+<td>Decimal Places</td>
+<td>The number of digits to display to the right of the decimal.</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">Feature Output Controls</td>
-<td style="text-align: left;">Display buttons to turn On and Off the relay from the dashboard element.</td>
+<td>Feature Output Controls</td>
+<td>Display buttons to turn On and Off the relay from the dashboard element.</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">Output</td>
-<td style="text-align: left;">The output to display information about.</td>
+<td>Output</td>
+<td>The output to display information about.</td>
 </tr>
 </tbody>
 </table>
@@ -2539,76 +2536,76 @@ document.write('<a h'+'ref'+'="ma'+'ilto'+':'+e+'" clas'+'s="em' + 'ail">'+e+'<\
 </colgroup>
 <thead>
 <tr class="header">
-<th style="text-align: left;">Setting</th>
-<th style="text-align: left;">Description</th>
+<th>Setting</th>
+<th>Description</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td style="text-align: left;">Refresh (seconds)</td>
-<td style="text-align: left;">The duration between acquisitions of new data to display on the graph.</td>
+<td>Refresh (seconds)</td>
+<td>The duration between acquisitions of new data to display on the graph.</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">Max Age (seconds)</td>
-<td style="text-align: left;">The maximum allowable age of the measurement. If the age is greater than this, the gauge will turn off, indicating there is an issue.</td>
+<td>Max Age (seconds)</td>
+<td>The maximum allowable age of the measurement. If the age is greater than this, the gauge will turn off, indicating there is an issue.</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">Value Font Size (em)</td>
-<td style="text-align: left;">The font size of the measurement value in em.</td>
+<td>Value Font Size (em)</td>
+<td>The font size of the measurement value in em.</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">Timestamp Font Size (em)</td>
-<td style="text-align: left;">The font size of the timestamp value in em.</td>
+<td>Timestamp Font Size (em)</td>
+<td>The font size of the timestamp value in em.</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">Decimal Places</td>
-<td style="text-align: left;">The number of digits to display to the right of the decimal.</td>
+<td>Decimal Places</td>
+<td>The number of digits to display to the right of the decimal.</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">Show PID Information</td>
-<td style="text-align: left;">Show extra PID information on the dashboard element.</td>
+<td>Show PID Information</td>
+<td>Show extra PID information on the dashboard element.</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">Show Set Setpoint</td>
-<td style="text-align: left;">Allow setting the PID setpoint on the dashboard element.</td>
+<td>Show Set Setpoint</td>
+<td>Allow setting the PID setpoint on the dashboard element.</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">PID</td>
-<td style="text-align: left;">The PID to display information about.</td>
+<td>PID</td>
+<td>The PID to display information about.</td>
 </tr>
 </tbody>
 </table>
 <h2 id="live-measurements">Live Measurements</h2>
-<p>Info -&gt; Live Measurements</p>
-<p>The Live Measurements page is the first page a user sees after logging in to Mycodo. It will display the current measurements being acquired from Input and Math controllers. If there is nothing displayed on the Live Measurements page, ensure an Input or Math controller is both configured correctly and activated. Data will be automatically updated on the page from the measurement database.</p>
+<p><code>Live</code></p>
+<p>The <code>Live</code> page is the first page a user sees after logging in to Mycodo. It will display the current measurements being acquired from Input and Math controllers. If there is nothing displayed on the <code>Live</code> page, ensure an Input or Math controller is both configured correctly and activated. Data will be automatically updated on the page from the measurement database.</p>
 <h2 id="asynchronous-graphs">Asynchronous Graphs</h2>
-<p>Info -&gt; Asynchronous Graphs</p>
+<p><code>Async</code></p>
 <p>A graphical data display that is useful for viewing data sets spanning relatively long periods of time (weeks/months/years), which could be very data- and processor-intensive to view as a Live Graph. Select a time frame and data will be loaded from that time span, if it exists. The first view will be of the entire selected data set. For every view/zoom, 700 data points will be loaded. If there are more than 700 data points recorded for the time span selected, 700 points will be created from an averaging of the points in that time span. This enables much less data to be used to navigate a large data set. For instance, 4 months of data may be 10 megabytes if all of it were downloaded. However, when viewing a 4 month span, it’s not possible to see every data point of that 10 megabytes, and aggregating of points is inevitable. With asynchronous loading of data, you only download what you see. So, instead of downloading 10 megabytes every graph load, only ~50kb will be downloaded until a new zoom level is selected, at which time only another ~50kb is downloaded.</p>
 <p>Note: Live Graphs require measurements to be acquired, therefore at least one sensor needs to be added and activated in order to display live data.</p>
 <h2 id="export-import">Export-Import</h2>
-<p>More -&gt; Export Import</p>
+<p><code>More -&gt; Export Import</code></p>
 <p>Measurements that fall within the selected date/time frame may be exported as CSV with their corresponding timestamps.</p>
-<p>Additionally, the entire measurement database (influxdb) may be exported as a ZIP file backup. This ZIP may be imported back in any Mycodo system to restore these measurements. Note that an import will override the current data (i.e. destroying it).</p>
+<p>Additionally, the entire measurement database (influxdb) may be exported as a ZIP archive backup. This ZIP may be imported back in any Mycodo system to restore these measurements. Note that an import will override the current data (i.e. destroying it).</p>
 <p>Mycodo settings may be exported as a ZIP file containing the Mycodo settings database (sqlite). This ZIP file may be used to restore the settings database to another Mycodo install, as long as the Mycodo version and database versions are the same. Future support for installing older (or newer) databases and performing an automatic upgrade/downgrade is in the works.</p>
 <h2 id="dependencies">Dependencies</h2>
-<p>[Gear Icon] -&gt; Dependencies</p>
+<p><code>[Gear Icon] -&gt; Dependencies</code></p>
 <p>The dependency page allows viewing of dependency information and the ability to initiate their installation.</p>
 <p>During the installation of Mycodo, there is an option to select which dependencies to install. If “Minimal Install” or “Custom Install” was selected (rather than “Full Install”), there may be unmet dependencies on your system. Don’t worry, this isn’t necessarily a problem. These optional dependencies only need to be installed when there’s a particular feature you want to use. When a user attempts to use a feature that has an unmet dependency, the user will be forwarded to the Dependency page in order to install it.</p>
 <h2 id="camera">Camera</h2>
-<p>More -&gt; Cameras</p>
+<p><code>Cam</code></p>
 <p>Once a cameras has been set up (in the <a href="#camera-settings">Camera Settings</a>), it may be used to capture still images, create time-lapses, and stream video. Cameras may also be used by <a href="#conditional-statements">Conditional Statements</a> to trigger a camera image or video capture (as well as the ability to email the image/video with a notification).</p>
 <h2 id="output-usage">Output Usage</h2>
-<p>More -&gt; Output Usage</p>
+<p><code>More -&gt; Output Usage</code></p>
 <p>Output usage statistics are calculated for each output, based on how long the output has been powered, the current draw of the device connected to the output, and other <a href="#output-usage-settings">Relay Usage Settings</a>.</p>
 <h2 id="backup-restore">Backup-Restore</h2>
-<p>[Gear Icon] -&gt; Backup Restore</p>
-<p>A backup is made to /var/Mycodo-backups when the system is upgraded or through the web interface on the Config -&gt; Backup / Restore page.</p>
-<p>If you need to restore a backup, this can be done on the Config -&gt; Backup / Restore page. Find the backup you would like restored and press the Restore button beside it. A restore can also be initialized through the command line. Use the following commands to initialize a restore, changing the appropriate directory names, ‘user’ to your user name, and TIME and COMMIT to the appropriate text found as the directory names in /var/Mycodo-backups/</p>
+<p><code>[Gear Icon] -&gt; Backup Restore</code></p>
+<p>A backup is made to /var/Mycodo-backups when the system is upgraded or through the web interface on the <code>[Gear Icon] -&gt; Backup Restore</code> page.</p>
+<p>If you need to restore a backup, this can be done on the <code>[Gear Icon] -&gt; Backup  Restore</code> page. Find the backup you would like restored and press the Restore button beside it. A restore can also be initialized through the command line. Use the following commands to initialize a restore, changing the appropriate directory names, ‘user’ to your user name, and TIME and COMMIT to the appropriate text found as the directory names in /var/Mycodo-backups/</p>
 <pre><code>sudo mv /home/user/Mycodo /home/user/Mycodo_old
 sudo cp -a /var/Mycodo-backups/Mycodo-TIME-COMMIT /home/user/Mycodo
 sudo /bin/bash ~/Mycodo/mycodo/scripts/upgrade_post.sh</code></pre>
 <h2 id="system-information">System Information</h2>
-<p>[Gear Icon] -&gt; System Information</p>
+<p><code>[Gear Icon] -&gt; System Information</code></p>
 <p>This page serves to provide information about the Mycodo frontend and backend as well as the linux system it’s running on. Several commands and their output are listed to give the user information about how their system is running.</p>
 <table>
 <colgroup>
@@ -2617,44 +2614,44 @@ sudo /bin/bash ~/Mycodo/mycodo/scripts/upgrade_post.sh</code></pre>
 </colgroup>
 <thead>
 <tr class="header">
-<th style="text-align: left;">Command</th>
-<th style="text-align: left;">Description</th>
+<th>Command</th>
+<th>Description</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td style="text-align: left;">Mycodo Version</td>
-<td style="text-align: left;">The current version of Mycodo, reported by the configuration file.</td>
+<td>Mycodo Version</td>
+<td>The current version of Mycodo, reported by the configuration file.</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">Python Version</td>
-<td style="text-align: left;">The version of python currently running the web user interface.</td>
+<td>Python Version</td>
+<td>The version of python currently running the web user interface.</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">Database Version</td>
-<td style="text-align: left;">The current version of the settings database. If the current version is different from what it should be, an error will appear indicating the issue and a link to find out more information about the issue.</td>
+<td>Database Version</td>
+<td>The current version of the settings database. If the current version is different from what it should be, an error will appear indicating the issue and a link to find out more information about the issue.</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">Daemon Status</td>
-<td style="text-align: left;">This will be a green “Running” or a red “Stopped”. Additionally, the Mycodo version and hostname text at the top-left of the screen May be Green, Yellow, or Red to indicate the status. Green = daemon running, yellow = unable to connect, and red = daemon not running.</td>
+<td>Daemon Status</td>
+<td>This will be a green “Running” or a red “Stopped”. Additionally, the Mycodo version and hostname text at the top-left of the screen May be Green, Yellow, or Red to indicate the status. Green = daemon running, yellow = unable to connect, and red = daemon not running.</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">…</td>
-<td style="text-align: left;">Several other status indicators and commands are listed to provide information about the health of the system. Use these in addition to others to investigate software or hardware issues.</td>
+<td>…</td>
+<td>Several other status indicators and commands are listed to provide information about the health of the system. Use these in addition to others to investigate software or hardware issues.</td>
 </tr>
 </tbody>
 </table>
 <h1 id="troubleshooting">Troubleshooting</h1>
 <h2 id="daemon-not-running">Daemon Not Running</h2>
 <ul>
-<li>Check the Logs: From the <code>Configure [Gear Icon]</code> -&gt; <code>Mycodo Logs</code> page, check the Daemon Log for any errors. If the issue began after an upgrade, also check the Upgrade Log for indications of an issue.</li>
+<li>Check the Logs: From the <code>[Gear Icon] -&gt; Mycodo Logs</code> page, check the Daemon Log for any errors. If the issue began after an upgrade, also check the Upgrade Log for indications of an issue.</li>
 <li>Determine if the Daemon is Running: Execute <code>ps aux | grep '/var/mycodo-root/env/bin/python /var/mycodo-root/mycodo/mycodo_daemon.py'</code> in a terminal and look for an entry to be returned. If nothing is returned, the daemon is not running.</li>
 <li>Daemon Lock File: If the daemon is not running, make sure the daemon lock file is deleted at <code>/var/lock/mycodo.pid</code>. The daemon cannot start if the lock file is present.</li>
 <li>If a solution could not be found after investigating the above suggestions, submit a <a href="https://github.com/kizniche/Mycodo/issues/new">New Mycodo Issue</a> on github.</li>
 </ul>
 <h2 id="incorrect-database-version">Incorrect Database Version</h2>
 <ul>
-<li>Check the System Information page (from the web UI: select [Gear Icon] -&gt; System Information or select the mycodo logo in the top-left).</li>
+<li>Check the <code>[Gear Icon] -&gt; System Information</code> page or select the mycodo logo in the top-left.</li>
 <li>An incorrect database version error means the version stored in the Mycodo settings database (<code>~/Mycodo/databases/mycodo.db</code>) is not correct for the latest version of Mycodo, determined in the Mycodo config file (<code>~/Mycodo/mycodo/config.py</code>).</li>
 <li>This can be caused by an error in the upgrade process from an older database version to a newer version, or from a database that did not upgrade during the Mycodo upgrade process.</li>
 <li>Check the Upgrade Log for any issues that may have occurred. The log is located at <code>/var/log/mycodo/mycodoupgrade.log</code> but may also be accessed from the web UI (if you’re able to): select [Gear Icon] -&gt; Mycodo Logs -&gt; Upgrade Log.</li>
@@ -2724,11 +2721,11 @@ sudo service mycodoflask restart</code></pre>
 <p>Examples of devices that can be used with edge detection: simple switches and buttons, PIR motion sensors, reed switches, hall effect sensors, float switches, and more.</p>
 <h2 id="i2c-multiplexers">I2C Multiplexers</h2>
 <p>All devices that connected to the Raspberry Pi by the I2C bus need to have a unique address in order to communicate. Some inputs may have the same address (such as the AM2315), which prevents more than one from being connected at the same time. Others may provide the ability to change the address, however the address range may be limited, which limits by how many you can use at the same time. I2C multiplexers are extremely clever and useful in these scenarios because they allow multiple sensors with the same I2C address to be connected.</p>
-<p>Multiplexers can be set up by loading a kernel driver to handle the communication, producing a new I2C bus device for each multiplexer channel. To enable the driver for the TCA9548A/PCA9548A, visit <a href="https://github.com/Theoi-Meteoroi/GPIO-pca9548">GPIO-pca9548</a> to get the code and latest install instructions. If successfully set up, there will be 8 new I2C busses on the <code>Config -&gt; System Information</code> page.</p>
+<p>Multiplexers can be set up by loading a kernel driver to handle the communication, producing a new I2C bus device for each multiplexer channel. To enable the driver for the TCA9548A/PCA9548A, visit <a href="https://github.com/Theoi-Meteoroi/GPIO-pca9548">GPIO-pca9548</a> to get the code and latest install instructions. If successfully set up, there will be 8 new I2C buses on the <code>[Gear Icon] -&gt; System Information</code> page.</p>
 <p>The driver for the TCA9545A can be found at <a href="https://github.com/camrex/i2c-mux-pca9545a" class="uri">https://github.com/camrex/i2c-mux-pca9545a</a> and other drivers are available elsewhere. See the manufacturer or user forums for details. Some multiplexers I’ve tested are below.</p>
 <blockquote>
 <p>TCA9548A/PCA9548A: I2C Multiplexer <a href="https://learn.adafruit.com/adafruit-tca9548a-1-to-8-i2c-multiplexer-breakout/overview">link</a> (I2C): Has 8 selectable addresses, so 8 multiplexers can be connected to one Raspberry Pi. Each multiplexer has 8 channels, allowing up to 8 devices/sensors with the same address to be connected to each multiplexer. 8 multiplexers x 8 channels = 64 devices/sensors with the same I2C address.</p>
-<p>TCA9545A: I2C Bus Multiplexer <a href="http://store.switchdoc.com/i2c-4-channel-mux-extender-expander-board-grove-pin-headers-for-arduino-and-raspberry-pi/">link</a> (I2C): This board also creates 4 new I2C busses, but each with their own selectable voltage, either 3.3 or 5.0 volts.</p>
+<p>TCA9545A: I2C Bus Multiplexer <a href="http://store.switchdoc.com/i2c-4-channel-mux-extender-expander-board-grove-pin-headers-for-arduino-and-raspberry-pi/">link</a> (I2C): This board also creates 4 new I2C buses, but each with their own selectable voltage, either 3.3 or 5.0 volts.</p>
 </blockquote>
 <h2 id="analog-to-digital-converters">Analog-to-Digital Converters</h2>
 <p>An analog to digital converter (ADC) allows the use of any analog sensor that outputs a variable voltage. A <a href="https://learn.sparkfun.com/tutorials/voltage-dividers">voltage divider</a> may be necessary to attain your desired range.</p>
@@ -2745,7 +2742,7 @@ sudo service mycodoflask restart</code></pre>
 <h3 id="raspberry-pi">Raspberry Pi</h3>
 <p>The Raspberry Pi has an integrated temperature sensor on the BCM2835 SoC that measure the temperature of the CPU/GPU. This is the easiest sensor to set up in Mycodo, as it is immediately available to be used.</p>
 <h3 id="atlas-scientific-pt-1000">Atlas Scientific PT-1000</h3>
-<p>The PT1000 temperature probe is a resistance type thermometer. Where PT stands for platinum and 1000 is the measured resistance of the probe at 0°C in ohms (1k at 0°C).</p>
+<p>The PT1000 temperature probe is a resistance type thermometer. Where PT stands for platinum and 1000 is the measured resistance of the probe at 0 °C in ohms (1k at 0 °C).</p>
 <h4 id="specifications">Specifications</h4>
 <ul>
 <li>Serial or I2C</li>
@@ -2758,20 +2755,20 @@ sudo service mycodoflask restart</code></pre>
 <li>BNC Connector</li>
 <li>Reaction Time: 90% value in 13 seconds</li>
 <li>Probe output: analog</li>
-<li>Full temperature sensing range: -200°C to 850°C</li>
-<li>Cable max temp 125°C</li>
-<li>Cable min temp -55°C</li>
+<li>Full temperature sensing range: -200 °C to 850 °C</li>
+<li>Cable max temp 125 °C</li>
+<li>Cable min temp -55 °C</li>
 </ul>
 <h3 id="ds18b20">DS18B20</h3>
 <p>The DS18B20 is a 1-Wire digital temperature sensor from Maxim IC. Each sensor has a unique 64-Bit Serial number, allowing for a huge number of sensors to be used on one data bus.</p>
 <h4 id="specifications-1">Specifications</h4>
 <ul>
-<li>Usable temperature range: -55°C to 125°C</li>
+<li>Usable temperature range: -55 °C to 125 °C</li>
 <li>9 to 12 bit selectable resolution</li>
 <li>Uses 1-Wire interface- requires only one digital pin for communication</li>
 <li>Unique 64 bit ID burned into chip</li>
 <li>Multiple sensors can share one pin</li>
-<li>±0.5°C Accuracy from -10°C to +85°C</li>
+<li>±0.5 °C Accuracy from -10 °C to +85 °C</li>
 <li>Temperature-limit alarm system</li>
 <li>Query time is less than 750ms</li>
 <li>Usable with 3.0V to 5.5V power/data</li>
@@ -2779,43 +2776,43 @@ sudo service mycodoflask restart</code></pre>
 <h3 id="ds18s20">DS18S20</h3>
 <h4 id="specifications-2">Specifications</h4>
 <ul>
-<li>Usable temperature range: -55°C to 125°C</li>
-<li>±0.5°C Accuracy from -10°C to +85°C</li>
+<li>Usable temperature range: -55 °C to 125 °C</li>
+<li>±0.5 °C Accuracy from -10 °C to +85 °C</li>
 <li>9-bit resolution</li>
 </ul>
 <h3 id="ds1822">DS1822</h3>
 <h4 id="specifications-3">Specifications</h4>
 <ul>
-<li>Usable temperature range: -55°C to 125°C</li>
-<li>±2.0°C Accuracy from -10°C to +85°C</li>
+<li>Usable temperature range: -55 °C to 125 °C</li>
+<li>±2 °C Accuracy from -10 °C to +85 °C</li>
 <li>9 to 12 bit selectable resolution</li>
 </ul>
 <h3 id="ds28ea00">DS28EA00</h3>
 <h4 id="specifications-4">Specifications</h4>
 <ul>
-<li>Usable temperature range: -40°C to 85°C</li>
+<li>Usable temperature range: -40 °C to 85 °C</li>
 <li>9 to 12 bit selectable resolution</li>
 </ul>
 <h3 id="ds1825">DS1825</h3>
 <h4 id="specifications-5">Specifications</h4>
 <ul>
-<li>Usable temperature range: -55°C to 125°C</li>
-<li>±0.5°C Accuracy from -10°C to +85°C</li>
+<li>Usable temperature range: -55 °C to 125 °C</li>
+<li>±0.5 °C Accuracy from -10 °C to +85 °C</li>
 <li>9 to 12 bit selectable resolution</li>
 </ul>
 <h3 id="max31850k">MAX31850K</h3>
 <h4 id="specifications-6">Specifications</h4>
 <ul>
 <li>Measures K-type thermocouples</li>
-<li>14-bit, 0.25°C resolution</li>
+<li>14-bit, 0.25 °C resolution</li>
 </ul>
 <h3 id="max31855k">MAX31855K</h3>
 <h4 id="specifications-7">Specifications</h4>
 <ul>
 <li>Measures K-type thermocouples</li>
 <li>Serial interface</li>
-<li>-200°C to +1350°C output in 0.25 degree increments</li>
-<li>K thermocouples have about ±2°C to ±6°C accuracy</li>
+<li>-200 °C to 1350 °C output in 0.25 degree increments</li>
+<li>K thermocouples have about ±2 °C to ±6 °C accuracy</li>
 <li>Internal temperature reading</li>
 </ul>
 <h3 id="max31856">MAX31856</h3>
@@ -2823,7 +2820,7 @@ sudo service mycodoflask restart</code></pre>
 <h4 id="specifications-8">Specifications</h4>
 <ul>
 <li>Serial interface</li>
-<li>-210°C to +1800°C output in 0.0078125° resolution (many thermocouples have about ±2°C to ±6°C accuracy or worse depending on the temperature and type, so the resolution will be a lot better than the accuracy)</li>
+<li>-210 °C to 1800 °C output in 0.0078125 ° resolution (many thermocouples have about ±2 °C to ±6 °C accuracy or worse depending on the temperature and type, so the resolution will be a lot better than the accuracy)</li>
 <li>Works with any K, J, N, R, S, T, E, or B type thermocouple</li>
 <li>Internal temperature reading</li>
 </ul>
@@ -2832,14 +2829,14 @@ sudo service mycodoflask restart</code></pre>
 <h4 id="specifications-9">Specifications</h4>
 <ul>
 <li>Serial interface</li>
-<li>-200°C to +850°C</li>
+<li>-200 °C to 850 °C</li>
 <li>Works with the PT100 and PT1000 RTD</li>
 </ul>
 <h3 id="tmp006-tmp007">TMP006, TMP007</h3>
 <p>The TMP006 Breakout can measure the temperature of an object without making contact with it. By using a thermopile to detect and absorb the infrared energy an object is emitting, the TMP006 Breakout can determine how hot or cold the object is.</p>
 <h4 id="specifications-10">Specifications</h4>
 <ul>
-<li>Usable temperature range: -40°C to 125°C</li>
+<li>Usable temperature range: -40 °C to 125 °C</li>
 <li>Optimal operating voltage of 3.3V to 5V (tolerant up to 7V max)</li>
 </ul>
 <h2 id="temperature-humidity-sensors">Temperature Humidity Sensors</h2>
@@ -2847,7 +2844,7 @@ sudo service mycodoflask restart</code></pre>
 <h4 id="specifications-11">Specifications</h4>
 <ul>
 <li>0-100% humidity readings with 1% (10-90% RH) and 3% (0-10% RH and 90-100% RH) accuracy</li>
-<li>-20 to 80°C temperature readings ±0.1°C typical accuracy</li>
+<li>-20 °C to 80 °C temperature readings ±0.1 °C typical accuracy</li>
 <li>3.5 to 5.5V power and I/O</li>
 <li>10 mA max current use during conversion (while requesting data)</li>
 <li>No more than 0.5 Hz sampling rate (once every 2 seconds)</li>
@@ -2864,7 +2861,7 @@ sudo service mycodoflask restart</code></pre>
 <li>3 to 5V power and I/O</li>
 <li>2.5mA max current use during conversion (while requesting data)</li>
 <li>20-80% humidity readings with 5% accuracy</li>
-<li>0-50°C temperature readings ±2°C accuracy</li>
+<li>0 °C to 50 °C temperature readings ±2 °C accuracy</li>
 <li>No more than 1 Hz sampling rate (once every second)</li>
 </ul>
 <h3 id="dht22-am2302">DHT22, AM2302</h3>
@@ -2872,7 +2869,7 @@ sudo service mycodoflask restart</code></pre>
 <h4 id="specifications-13">Specifications</h4>
 <ul>
 <li>0-100% humidity readings with 2% (10-90% RH) and 5% (0-10% RH and 90-100% RH) accuracy</li>
-<li>-40 to 80°C temperature readings ±0.5°C accuracy</li>
+<li>-40 °C to 80 °C temperature readings ±0.5 °C accuracy</li>
 <li>3 to 5V power and I/O</li>
 <li>2.5mA max current use during conversion (while requesting data)</li>
 <li>No more than 0.5 Hz sampling rate (once every 2 seconds)</li>
@@ -2882,14 +2879,14 @@ sudo service mycodoflask restart</code></pre>
 <ul>
 <li>0-100% humidity readings with 2% (20-80% RH) and 2%-5% (0-20% RH and 80-100% RH) accuracy</li>
 <li>Optimum accuracy measurements within 5 to 95% RH</li>
-<li>-30 to 90°C temperature readings ±1°C typical accuracy</li>
+<li>-30 °C to 90 °C temperature readings ±1 °C typical accuracy</li>
 </ul>
 <h3 id="sht1x">SHT1x</h3>
 <p>(SHT10, SHT11, SHT15)</p>
 <h4 id="specifications-15">Specifications</h4>
 <ul>
 <li>0-100% humidity readings with 2%-5% (10-90% RH) and 2%-7.5% (0-10% RH and 90-100% RH) accuracy</li>
-<li>-40 to 125°C temperature readings ±0.5°C, ±0.4°C, and ±0.3°C typical accuracy (respectively)</li>
+<li>-40 °C to 125 °C temperature readings ±0.5 °C, ±0.4 °C, and ±0.3 °C typical accuracy (respectively)</li>
 <li>2.4 to 5.5V power and I/O</li>
 <li>No more than 0.125 Hz sampling rate (once every 8 seconds)</li>
 </ul>
@@ -2898,7 +2895,7 @@ sudo service mycodoflask restart</code></pre>
 <h4 id="specifications-16">Specifications</h4>
 <ul>
 <li>0-100% humidity readings with 2%-3% (10-90% RH) and 2%-5% (0-10% RH and 90-100% RH) accuracy</li>
-<li>-40 to 125°C temperature readings ±0.4°C and ±0.3°C typical accuracy (respectively)</li>
+<li>-40 °C to 125 °C temperature readings ±0.4 °C and ±0.3 °C typical accuracy (respectively)</li>
 <li>2.4 to 5.5V power and I/O</li>
 <li>No more than 0.125 Hz sampling rate (once every 8 seconds)</li>
 </ul>
@@ -2956,29 +2953,40 @@ sudo service mycodoflask restart</code></pre>
 <li>Probe Weight: 49 grams</li>
 <li>Probe can be fully submerged in fresh or salt water indefinitely</li>
 </ul>
+<h2 id="particulate-sensors">Particulate Sensors</h2>
+<h3 id="winsen-zh03b">Winsen ZH03B</h3>
+<p>Laser Dust sensor module is a common type, small size sensor, using laser scattering principle to detect the dust particles in air, with good selectivity and stability.</p>
+<h4 id="specifications-22">Specifications</h4>
+<ul>
+<li>Detection: PM1.0, PM2.5, PM10</li>
+<li>Working humidity: 0~85% RH (no condensation)</li>
+<li>Working temperature: -10 °C to 50 °C</li>
+<li>Response time &lt;= 45 sec</li>
+<li>Life span: 3 years (in air)</li>
+</ul>
 <h2 id="pressure-sensors">Pressure Sensors</h2>
 <h3 id="bme280">BME280</h3>
 <p>The BME280 is the upgrade to the BMP085/BMP180/BMP183. It has a low altitude noise of 0.25m and the same fast conversion time. It has the same specifications, but can use either I2C or SPI.</p>
-<h4 id="specifications-22">Specifications</h4>
+<h4 id="specifications-23">Specifications</h4>
 <ul>
 <li>300-1100 hPa (9000m to -500m above sea level)</li>
-<li>-40 to +85°C operational range</li>
+<li>-40 °C to +85 °C operational range</li>
 <li>±3% humidity accuracy tolerance</li>
 <li>±1% humidity hysteresis</li>
 <li>±1 hPa pressure accuracy</li>
-<li>±2°C temperature accuracy</li>
+<li>±2 °C temperature accuracy</li>
 <li>Vin: 3 to 5V</li>
 <li>Logic: 3 to 5V compliant</li>
 <li>I2C 7-bit address 0x76 or 0x77</li>
 </ul>
 <h3 id="bmp085-bmp180">BMP085, BMP180</h3>
 <p>The BMP180 replaces the BMP085. It is completely identical to the BMP085 in terms of firmware/software/interfacing.</p>
-<h4 id="specifications-23">Specifications</h4>
+<h4 id="specifications-24">Specifications</h4>
 <ul>
 <li>300-1100 hPa (9000m to -500m above sea level)</li>
 <li>Up to 0.03hPa / 0.25m resolution</li>
-<li>-40 to +85°C operational range</li>
-<li>±2°C temperature accuracy</li>
+<li>-40 °C to +85 °C operational range</li>
+<li>±2 °C temperature accuracy</li>
 <li>Vin: 3 to 5V</li>
 <li>Logic: 3 to 5V compliant</li>
 <li>I2C 7-bit address 0x77</li>
@@ -2988,21 +2996,21 @@ sudo service mycodoflask restart</code></pre>
 <p>The BH1750 is an I2C luminosity sensor that provides a digital value in lux (lx) over a range of 1 - 65535 lx.</p>
 <h3 id="tsl2561">TSL2561</h3>
 <p>The TSL2561 Luminosity Sensor is a sophisticated light sensor which has a flat response across most of the visible spectrum. Unlike simpler sensors, the TSL2561 measures both infrared and visible light to better approximate the response of the human eye. And because the TSL2561 is an integrating sensor (it soaks up light for a predetermined amount of time), it is capable of measuring both small and large amounts of light by changing the integration time.</p>
-<h4 id="specifications-24">Specifications</h4>
+<h4 id="specifications-25">Specifications</h4>
 <ul>
 <li>Light range: 0.1 - 40k+ lux</li>
 <li>Vin: 3V and a low supply</li>
 <li>Max current: 0.6mA.</li>
 </ul>
 <h3 id="tsl2591">TSL2591</h3>
-<h4 id="specifications-25">Specifications</h4>
+<h4 id="specifications-26">Specifications</h4>
 <ul>
 <li>Light range: 188 uLux to 88,000 Lux</li>
 </ul>
 <h2 id="analog-to-digital-converters-1">Analog to Digital Converters</h2>
 <h3 id="ads1x15">ADS1x15</h3>
 <p>(ADS1015, ADS1115)</p>
-<h4 id="specifications-26">Specifications</h4>
+<h4 id="specifications-27">Specifications</h4>
 <ul>
 <li>Interface: I2C</li>
 <li>I2C 7-bit addresses 0x48 - 0x4B</li>
@@ -3012,7 +3020,7 @@ sudo service mycodoflask restart</code></pre>
 <li>Resolution: 1015: 12-bit, 1115: 16-bit</li>
 </ul>
 <h3 id="mcp3008">MCP3008</h3>
-<h4 id="specifications-27">Specifications</h4>
+<h4 id="specifications-28">Specifications</h4>
 <ul>
 <li>Interface: SPI</li>
 <li>8 channels</li>
@@ -3021,7 +3029,7 @@ sudo service mycodoflask restart</code></pre>
 </ul>
 <h3 id="mcp342x">MCP342x</h3>
 <p>(MCP3422, MCP3423, MCP3424, MCP3426, MCP3427, MCP3428)</p>
-<h4 id="specifications-28">Specifications</h4>
+<h4 id="specifications-29">Specifications</h4>
 <ul>
 <li>Interface: I2C</li>
 <li>I2C 7-bit addresses 0x68 - 0x6F</li>

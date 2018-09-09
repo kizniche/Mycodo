@@ -22,11 +22,11 @@ INPUT_INFORMATION = {
 }
 
 
-class AtlasElectricalConductivitySensor(AbstractInput):
+class InputModule(AbstractInput):
     """A sensor support class that monitors the Atlas Scientific sensor ElectricalConductivity"""
 
     def __init__(self, input_dev, testing=False):
-        super(AtlasElectricalConductivitySensor, self).__init__()
+        super(InputModule, self).__init__()
         self.logger = logging.getLogger("mycodo.inputs.atlas_ec")
         self._electrical_conductivity = None
         self.atlas_sensor_uart = None

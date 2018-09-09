@@ -19,7 +19,7 @@ INPUT_INFORMATION = {
     'options_disabled': ['interface']
 }
 
-class CCS811Sensor(AbstractInput):
+class InputModule(AbstractInput):
     """
     A sensor support class that measures the CC2811's voc, temperature
     and co2
@@ -27,7 +27,7 @@ class CCS811Sensor(AbstractInput):
     """
 
     def __init__(self, input_dev, testing=False):
-        super(CCS811Sensor, self).__init__()
+        super(InputModule, self).__init__()
         self.logger = logging.getLogger("mycodo.inputs.ccs811")
         self._co2 = None
         self._voc = None

@@ -23,7 +23,7 @@ INPUT_INFORMATION = {
 }
 
 
-class DHT11Sensor(AbstractInput):
+class InputModule(AbstractInput):
     """
     A sensor support class that measures the DHT11's humidity and temperature
     and calculates the dew point
@@ -47,7 +47,7 @@ class DHT11Sensor(AbstractInput):
         This gpio will be set high to power the sensor.
 
         """
-        super(DHT11Sensor, self).__init__()
+        super(InputModule, self).__init__()
         self.logger = logging.getLogger('mycodo.inputs.dht11')
         self._dew_point = None
         self._humidity = None

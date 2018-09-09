@@ -24,11 +24,11 @@ INPUT_INFORMATION = {
 }
 
 
-class RaspberryPiFreeSpace(AbstractInput):
+class InputModule(AbstractInput):
     """ A sensor support class that monitors the free space of a path """
 
     def __init__(self, input_dev, testing=False):
-        super(RaspberryPiFreeSpace, self).__init__()
+        super(InputModule, self).__init__()
         self.logger = logging.getLogger("mycodo.inputs.raspi_freespace")
         self._disk_space = None
 

@@ -17,11 +17,11 @@ INPUT_INFORMATION = {
 }
 
 
-class GPIOState(AbstractInput):
+class InputModule(AbstractInput):
     """ A sensor support class that monitors the K30's CO2 concentration """
 
     def __init__(self, input_dev, testing=False):
-        super(GPIOState, self).__init__()
+        super(InputModule, self).__init__()
         self.logger = logging.getLogger("mycodo.inputs.gpio_state")
         self._gpio_state = None
 

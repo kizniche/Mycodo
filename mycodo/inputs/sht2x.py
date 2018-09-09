@@ -23,7 +23,7 @@ INPUT_INFORMATION = {
 }
 
 
-class SHT2xSensor(AbstractInput):
+class InputModule(AbstractInput):
     """
     A sensor support class that measures the SHT2x's humidity and temperature
     and calculates the dew point
@@ -31,7 +31,7 @@ class SHT2xSensor(AbstractInput):
     """
 
     def __init__(self, input_dev, testing=False):
-        super(SHT2xSensor, self).__init__()
+        super(InputModule, self).__init__()
         self.logger = logging.getLogger("mycodo.inputs.sht2x")
         self._dew_point = None
         self._humidity = None

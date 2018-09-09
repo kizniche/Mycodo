@@ -19,13 +19,13 @@ INPUT_INFORMATION = {
     'options_enabled': ['period', 'convert_unit']
 }
 
-class MycodoRam(AbstractInput):
+class InputModule(AbstractInput):
     """
     A sensor support class that measures ram used by the Mycodo daemon
 
     """
     def __init__(self, input_dev, testing=False):
-        super(MycodoRam, self).__init__()
+        super(InputModule, self).__init__()
         self.logger = logging.getLogger("mycodo.inputs.mycodo_ram")
         self._disk_space = None
 

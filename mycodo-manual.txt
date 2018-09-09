@@ -91,6 +91,8 @@ Mycodo Manual
         -   [Chirp](#chirp)
     -   [pH Sensors](#ph-sensors)
         -   [Atlas Scientific pH](#atlas-scientific-ph)
+    -   [Particulate Sensors](#particulate-sensors)
+        -   [Winsen ZH03B](#winsen-zh03b)
     -   [Pressure Sensors](#pressure-sensors)
         -   [BME280](#bme280)
         -   [BMP085, BMP180](#bmp085-bmp180)
@@ -116,11 +118,11 @@ ABOUT MYCODO
 Mycodo is an automated monitoring and regulation system that was built
 to run on the Raspberry Pi (versions Zero, 1, 2, and 3).
 
-Orignially designed to cultivate edible mushrooms, Mycodo has grown to
+Originally designed to cultivate edible mushrooms, Mycodo has grown to
 include the ability to do much more, including cultivating plants,
 culturing microorganisms, maintaining honey bee apiary homeostasis,
 incubating animals and eggs, maintaining aquatic systems, aging cheeses,
-fermenting foods and tobacco, cooking food (vous-vide), and more.
+fermenting foods and tobacco, cooking food (sous-vide), and more.
 
 The system comprises a backend (daemon) and a frontend (user interface).
 The backend conducts measurements from sensors and devices, then
@@ -139,7 +141,7 @@ BRIEF OVERVIEW
 
 
 There are a number of different uses for Mycodo. Some users simply store
-sensor measurements to monitor conditons remotely from their phone,
+sensor measurements to monitor conditions remotely from their phone,
 others regulate the environmental conditions of a physical space, while
 others capture motion-activated or timelapse photography, and more.
 
@@ -213,11 +215,10 @@ _How do I set up simple regulation?_
 
 Here is how I generally set up Mycodo to monitor and regulate:
 
-1.  Determine what environmental condition you want to measure
-    or regulate. Consider the devices that must be coupled to achieve
-    this. For instance, temperature regulation require a temperature
-    sensor as the input and an electric heater (or cooler) as
-    the output.
+1.  Determine what environmental condition you want to measure or
+    regulate. Consider the devices that must be coupled to achieve this.
+    For instance, temperature regulation require a temperature sensor as
+    the input and an electric heater (or cooler) as the output.
 2.  Determine what relays you will need to power your electric devices.
     The Raspberry Pi is capable of directly switching relays (using a
     3.3-volt signal). Remember to select a relay that can handle the
@@ -225,29 +226,31 @@ Here is how I generally set up Mycodo to monitor and regulate:
     Pi GPIO pins.
 3.  See the Device Specific Information for information about what
     sensors are supported. Acquire sensor(s) and relay(s) and connect
-    them to the Raspberry Pi according to the
-    manufacturer’s instructions.
-4.  On the Data page, create a new input using the dropdown to select
-    the correct sensor or input device. Configure the input with the
-    correct communication pins and other options. Activate the input to
-    begin recording measurements to the database.
-5.  Go to the Info -> Live Measurements page to ensure there is recent
-    data being acquired from the input.
-6.  On the Ouput page, add a relay and configure the GPIO pin that
-    switches it, whether the relay switches On when the signal is HIGH
-    or LOW, and what state (On or Off) to set the relay when Mycodo
-    starts. A pulse-width modulated (PWM) output may also be used,
-    among others.
+    them to the Raspberry Pi according to the manufacturer’s
+    instructions.
+4.  On the Setup -> Data page, create a new input using the drop-down to
+    select the correct sensor or input device. Configure the input with
+    the correct communication pins and other options. Activate the input
+    to begin recording measurements to the database.
+5.  Go to the Live page to ensure there is recent data being acquired
+    from the input.
+6.  On the Setup -> Outputs page, add a relay and configure the GPIO pin
+    that switches it, whether the relay switches On when the signal is
+    HIGH or LOW, and what state (On or Off) to set the relay when Mycodo
+    starts. A pulse-width modulated (PWM) output may also be used, among
+    others.
 7.  Test the relay by switching it On and Off or generating a PWM signal
-    from the Output page and make sure the device connected to the relay
-    turns On when you select “On”, and Off when you select “Off”.
-8.  On the Function page, create a PID controller with the appropriate
-    input, output, and other parameters. Activate the PID controller.
-9.  On the Info -> Dashboard page, create a graph that includes the
-    input measurement, the output that is being used by the PID, and the
-    PID output and setpoint. This provides a good visualization for
-    tuning the PID. See Quick Setup Examples for a greater detail of
-    this process and tuning tips.
+    from the Setup -> Outputs page and make sure the device connected to
+    the relay turns On when you select “On”, and Off when you select
+    “Off”.
+8.  On the Setup -> Functions page, create a PID controller with the
+    appropriate input, output, and other parameters. Activate the PID
+    controller.
+9.  On the Dash page, create a graph that includes the input
+    measurement, the output that is being used by the PID, and the PID
+    output and setpoint. This provides a good visualization for tuning
+    the PID. See Quick Setup Examples for a greater detail of this
+    process and tuning tips.
 
 ------------------------------------------------------------------------
 
@@ -289,6 +292,8 @@ modulation circuit, or something else.
 UPGRADING
 
 
+[Gear Icon] -> Upgrade
+
 If you already have Mycodo installed (version >= 4.0.0), you can perform
 an upgrade to the latest Mycodo Release by either using the Upgrade
 option in the web interface (recommended) or by issuing the following
@@ -309,6 +314,8 @@ Each section performs specific tasks or groups of related tasks.
 
 Data
 
+Setup -> Data
+
 Data includes controllers that produce and store data in the measurement
 database. Input controllers generally acquire measurements from sensors,
 but they may also come from executed commands. Math controllers, on the
@@ -327,185 +334,119 @@ In addition to several supported sensors and devices, a Linux command
 may be specified that will be executed and the return value stored in
 the measurement database to be used throughout the Mycodo system.
 
-  ------------------------------------------------------------------------
-  Setting                 Description
-  ----------------------- ------------------------------------------------
-  Activate                After the sensor has been properly configured,
-                          activation begins acquiring measurements from
-                          the sensor. Any activated conditional statements
-                          will now being operating.
+  --------------------------------------------------------------------------------------------------------------------------------------------------------
+  Setting                                           Description
+  ------------------------------------------------- ------------------------------------------------------------------------------------------------------
+  Activate                                          After the sensor has been properly configured, activation begins acquiring measurements from the
+                                                    sensor. Any activated conditional statements will now being operating.
 
-  Deactivate              Deactivation stops measurements from being
-                          acquired from the sensor. All associated
-                          conditional statements will cease to operate.
+  Deactivate                                        Deactivation stops measurements from being acquired from the sensor. All associated conditional
+                                                    statements will cease to operate.
 
-  Save                    Save the current configuration entered into the
-                          input boxes for a particular sensor.
+  Save                                              Save the current configuration entered into the input boxes for a particular sensor.
 
-  Delete                  Delete a particular sensor.
+  Delete                                            Delete a particular sensor.
 
-  Up/Down                 Move a particular sensor up or down in the order
-                          displayed.
+  Up/Down                                           Move a particular sensor up or down in the order displayed.
 
-  Power Output            Select a output that powers the sensor. This
-                          enables powering cycling (turn off then on) when
-                          the sensor returns 3 consecutive errors to
-                          attempt to fix the issue. Transistors may also
-                          be used instead of a relay (note: NPN
-                          transistors are preferred over PNP for powering
-                          sensors).
+  Power Output                                      Select a output that powers the sensor. This enables powering cycling (turn off then on) when the
+                                                    sensor returns 3 consecutive errors to attempt to fix the issue. Transistors may also be used instead
+                                                    of a relay (note: NPN transistors are preferred over PNP for powering sensors).
 
-  Location                Depending on what sensor is being used, you will
-                          need to either select a serial number (DS18B20
-                          temperature sensor), a GPIO pin (in the case of
-                          sensors read by a GPIO), or an I2C address. or
-                          other.
+  Location                                          Depending on what sensor is being used, you will need to either select a serial number (DS18B20
+                                                    temperature sensor), a GPIO pin (in the case of sensors read by a GPIO), or an I2C address. or other.
 
-  I2C Bus                 The bus to be used to communicate with the I2C
-                          address.
+  I2C Bus                                           The bus to be used to communicate with the I2C address.
 
-  Period (seconds)        After the sensor is successfully read and a
-                          database entry is made, this is the duration of
-                          time waited until the sensor is measured again.
+  Period (seconds)                                  After the sensor is successfully read and a database entry is made, this is the duration of time
+                                                    waited until the sensor is measured again.
 
-  Measurement Unit        Select the unit to save the measurement as (only
-                          available for select measurements).
+  Measurement Unit                                  Select the unit to save the measurement as (only available for select measurements).
 
-  Pre Output              If you require a output to be activated before a
-                          measurement is made (for instance, if you have a
-                          pump that extracts air to a chamber where the
-                          sensor resides), this is the output number that
-                          will be activated. The output will be activated
-                          for a duration defined by the Pre Duration, then
-                          once the output turns off, a measurement by the
-                          sensor is made.
+  Pre Output                                        If you require a output to be activated before a measurement is made (for instance, if you have a pump
+                                                    that extracts air to a chamber where the sensor resides), this is the output number that will be
+                                                    activated. The output will be activated for a duration defined by the Pre Duration, then once the
+                                                    output turns off, a measurement by the sensor is made.
 
-  Pre Output Duration     This is the duration of time that the Pre Output
-  (seconds)               runs for before the sensor measurement is
-                          obtained.
+  Pre Output Duration (seconds)                     This is the duration of time that the Pre Output runs for before the sensor measurement is obtained.
 
-  Pre Output During       If enabled, the Pre Output stays on during the
-  Measurement             acquisition of a measurement. If disabled, the
-                          Pre Output is turned off directly before
-                          acquiring a measurement.
+  Pre Output During Measurement                     If enabled, the Pre Output stays on during the acquisition of a measurement. If disabled, the Pre
+                                                    Output is turned off directly before acquiring a measurement.
 
-  Command                 A linux command (executed as the user ‘mycodo’)
-                          that the return value becomes the measurement
+  Command                                           A linux command (executed as the user ‘mycodo’) that the return value becomes the measurement
 
-  Command Measurement     The measured condition (e.g. temperature,
-                          humidity, etc.) from the linux command
+  Command Measurement                               The measured condition (e.g. temperature, humidity, etc.) from the linux command
 
-  Command Units           The units of the measurement condition from the
-                          linux command
+  Command Units                                     The units of the measurement condition from the linux command
 
-  Edge                    Edge sensors only: Select whether the Rising or
-                          Falling (or both) edges of a changing voltage
-                          are detected. A number of devices to do this
-                          when in-line with a circuit supplying a 3.3-volt
-                          input signal to a GPIO, such as simple
-                          mechanical switch, a button, a magnet
-                          (reed/hall) sensor, a PIR motion detector, and
-                          more.
+  Edge                                              Edge sensors only: Select whether the Rising or Falling (or both) edges of a changing voltage are
+                                                    detected. A number of devices to do this when in-line with a circuit supplying a 3.3-volt input signal
+                                                    to a GPIO, such as simple mechanical switch, a button, a magnet (reed/hall) sensor, a PIR motion
+                                                    detector, and more.
 
-  Bounce Time (ms)        Edge sensors only: This is the number of
-                          milliseconds to bounce the input signal. This is
-                          commonly called debouncing a
-                          signal <http://kylegabriel.com/projects/2016/02
-                          /morse-code-translator.html#debouncing>__. and
-                          may be necessary if using a mechanical circuit.
+  Bounce Time (ms)                                  Edge sensors only: This is the number of milliseconds to bounce the input signal. This is commonly
+                                                    called debouncing a
+                                                    signal <http://kylegabriel.com/projects/2016/02
+                                                    /morse-code-translator.html#debouncing>__. and may be necessary if using a mechanical circuit.
 
-  Reset Period (seconds)  Edge sensors only: This is the period of time
-                          after an edge detection that another edge will
-                          not be recorded. This enables devices such as
-                          PIR motion sensors that may stay activated for
-                          longer periods of time.
+  Reset Period (seconds)                            Edge sensors only: This is the period of time after an edge detection that another edge will not be
+                                                    recorded. This enables devices such as PIR motion sensors that may stay activated for longer periods
+                                                    of time.
 
-  Measurement             Analog-to-digital converter only: The type of
-                          measurement being acquired by the ADC. For
-                          instance, if the resistance of a photocell is
-                          being measured through a voltage divider, this
-                          measurement would be “light”.
+  Measurement                                       Analog-to-digital converter only: The type of measurement being acquired by the ADC. For instance, if
+                                                    the resistance of a photocell is being measured through a voltage divider, this measurement would be
+                                                    “light”.
 
-  Units                   Analog-to-digital converter only: This is the
-                          unit of the measurement. With the above example
-                          of “light” as the measurement, the unit may be
-                          “lux” or “intensity”.
+  Units                                             Analog-to-digital converter only: This is the unit of the measurement. With the above example of
+                                                    “light” as the measurement, the unit may be “lux” or “intensity”.
 
-  BT Adapter              The Bluetooth adapter to communicate with the
-                          input.
+  BT Adapter                                        The Bluetooth adapter to communicate with the input.
 
-  Clock Pin               The GPIO (using BCM numbering) connected to the
-                          Clock pin of the ADC
+  Clock Pin                                         The GPIO (using BCM numbering) connected to the Clock pin of the ADC
 
-  CS Pin                  The GPIO (using BCM numbering) connected to the
-                          CS pin of the ADC
+  CS Pin                                            The GPIO (using BCM numbering) connected to the CS pin of the ADC
 
-  MISO Pin                The GPIO (using BCM numbering) connected to the
-                          MISO pin of the ADC
+  MISO Pin                                          The GPIO (using BCM numbering) connected to the MISO pin of the ADC
 
-  MOSI Pin                The GPIO (using BCM numbering) connected to the
-                          MOSI pin of the ADC
+  MOSI Pin                                          The GPIO (using BCM numbering) connected to the MOSI pin of the ADC
 
-  RTD Probe Type          Select to measure from a PT100 or PT1000 probe.
+  RTD Probe Type                                    Select to measure from a PT100 or PT1000 probe.
 
-  Resistor Reference      If your reference resistor is not the default
-  (Ohm)                   (400 Ohm for PT100, 4000 Ohm for PT1000), you
-                          can manually set this value. Several
-                          manufacturers now use 430 Ohm resistors on their
-                          circuit boards, therefore it’s recommended to
-                          verify the accuracy of your measurements and
-                          adjust this value if necessary.
+  Resistor Reference (Ohm)                          If your reference resistor is not the default (400 Ohm for PT100, 4000 Ohm for PT1000), you can
+                                                    manually set this value. Several manufacturers now use 430 Ohm resistors on their circuit boards,
+                                                    therefore it’s recommended to verify the accuracy of your measurements and adjust this value if
+                                                    necessary.
 
-  Channel                 Analog-to-digital converter only: This is the
-                          channel to obtain the voltage measurement from
-                          the ADC.
+  Channel                                           Analog-to-digital converter only: This is the channel to obtain the voltage measurement from the ADC.
 
-  Gain                    Analog-to-digital converter only: set the gain
-                          when acquiring the measurement.
+  Gain                                              Analog-to-digital converter only: set the gain when acquiring the measurement.
 
-  Volts Min               Analog-to-digital converter only: What is the
-                          minimum voltage to use when scaling to produce
-                          the unit value for the database. For instance,
-                          if your ADC is not expected to measure below 0.2
-                          volts for your particular circuit, set this to
-                          “0.2”.
+  Volts Min                                         Analog-to-digital converter only: What is the minimum voltage to use when scaling to produce the unit
+                                                    value for the database. For instance, if your ADC is not expected to measure below 0.2 volts for your
+                                                    particular circuit, set this to “0.2”.
 
-  Volts Max               Analog-to-digital converter only: This is
-                          similar to the Min option above, however it is
-                          setting the ceiling to the voltage range. Units
-                          Min Analog-to-digital converter only: This value
-                          will be the lower value of a range that will use
-                          the Min and Max Voltages, above, to produce a
-                          unit output. For instance, if your voltage range
-                          is 0.0 - 1.0 volts, and the unit range is 1 -
-                          60, and a voltage of 0.5 is measured, in
-                          addition to 0.5 being stored in the database, 30
-                          will be stored as well. This enables creating
-                          calibrated scales to use with your particular
-                          circuit.
+  Volts Max                                         Analog-to-digital converter only: This is similar to the Min option above, however it is setting the
+                                                    ceiling to the voltage range. Units Min Analog-to-digital converter only: This value will be the lower
+                                                    value of a range that will use the Min and Max Voltages, above, to produce a unit output. For
+                                                    instance, if your voltage range is 0.0 - 1.0 volts, and the unit range is 1 - 60, and a voltage of 0.5
+                                                    is measured, in addition to 0.5 being stored in the database, 30 will be stored as well. This enables
+                                                    creating calibrated scales to use with your particular circuit.
 
-  Units Max               Analog-to-digital converter only: This is
-                          similar to the Min option above, however it is
-                          setting the ceiling to the unit range.
+  Units Max                                         Analog-to-digital converter only: This is similar to the Min option above, however it is setting the
+                                                    ceiling to the unit range.
 
-  Weighting               The This is a number between 0 and 1 and
-                          indicates how much the old reading affects the
-                          new reading. It defaults to 0 which means the
-                          old reading has no effect. This may be used to
-                          smooth the data.
+  Weighting                                         The This is a number between 0 and 1 and indicates how much the old reading affects the new reading.
+                                                    It defaults to 0 which means the old reading has no effect. This may be used to smooth the data.
 
-  Pulses Per Rev          The number of pulses for a complete revolution.
+  Pulses Per Rev                                    The number of pulses for a complete revolution.
 
-  Port                    The server port to be queried (Server Port Open
-                          input).
+  Port                                              The server port to be queried (Server Port Open input).
 
-  Times to Check          The number of times to attempt to ping a server
-                          (Server Ping input).
+  Times to Check                                    The number of times to attempt to ping a server (Server Ping input).
 
-  Deadline (seconds)      The maximum amount of time to wait for each ping
-                          attempt, after which 0 (offline) will be
-                          returned (Server Ping input).
-  ------------------------------------------------------------------------
+  Deadline (seconds)                                The maximum amount of time to wait for each ping attempt, after which 0 (offline) will be returned
+                                                    (Server Ping input).
+  --------------------------------------------------------------------------------------------------------------------------------------------------------
 
 Math
 
@@ -612,6 +553,8 @@ produce a new value that may be used within Mycodo.
 
 Output
 
+Setup -> Outputs
+
 Outputs are various signals that can be generated that operate devices.
 An output can be a PWM signal, a simple HIGH/LOW signal to operate a
 relay, or a 433MHz signal to switch a radio frequency-operated relay, or
@@ -642,8 +585,8 @@ interval or ‘period’ of time; a low duty cycle corresponds to low power,
 because the power is off for most of the time. Duty cycle is expressed
 in percent, 100% being fully on.
 
-PWM pins can be set up on the Output page, then it may be used by a PWM
-PID Controller.
+PWM pins can be set up on the Setup -> Outputs` page, then it may be
+used by a PWM PID Controller.
 
   ------------------------------------------------------------------------
   Setting                 Description
@@ -847,6 +790,8 @@ is on.
 
 Function
 
+Setup -> Functions
+
 Functions couple Inputs with Outputs to perform specific tasks. For
 example, this could be regulation of temperature with a temperature
 sensor and heater with a PID Controller.
@@ -866,133 +811,124 @@ settings will take effect immediately. If settings are changed while the
 controller is paused, the values will be used once the controller
 resumes operation.
 
-  ------------------------------------------------------------------------
-  Setting                 Description
-  ----------------------- ------------------------------------------------
-  Activate/Deactivate     Turn a particular PID controller on or off.
+  ------------------------------------------------------------------------------
+  Setting                   Description
+  ------------------------- ----------------------------------------------------
+  Activate/Deactivate       Turn a particular PID controller on or off.
 
-  Pause                   When paused, the control variable will not be
-                          updated and the PID will not turn on the
-                          associated outputs. Settings can be changed
-                          without losing current PID output values.
+  Pause                     When paused, the control variable will not be
+                            updated and the PID will not turn on the associated
+                            outputs. Settings can be changed without losing
+                            current PID output values.
 
-  Hold                    When held, the control variable will not be
-                          updated but the PID will turn on the associated
-                          outputs, Settings can be changed without losing
-                          current PID output values.
+  Hold                      When held, the control variable will not be updated
+                            but the PID will turn on the associated outputs,
+                            Settings can be changed without losing current PID
+                            output values.
 
-  Resume                  Resume a PID controller from being held or
-                          paused.
+  Resume                    Resume a PID controller from being held or paused.
 
-  Setpoint                This is the specific point you would like the
-                          environment to be regaulted at. For example, if
-                          you would like the humidity regulated to 60%,
-                          enter 60.
+  Setpoint                  This is the specific point you would like the
+                            environment to be regulated at. For example, if you
+                            would like the humidity regulated to 60%, enter 60.
 
-  Band (+/- Setpoint)     Hysteresis option. If set to a non-0 value, the
-                          setpoint will become a band, which will be
-                          between the band_max=setpoint+band and
-                          band_min=setpoint-band. If Raising, the PID will
-                          raise above band_max, then wait until the
-                          condition falls below band_min to resume
-                          regulation. If Lowering, the PID will lower
-                          below band_min, then wait until the condition
-                          rises above band_max to resume regulating. If
-                          set to Both, regulation will only occur to the
-                          outside min and max of the band, and cease when
-                          within the band. Set to 0 to disable Hysteresis.
+  Band (+/- Setpoint)       Hysteresis option. If set to a non-0 value, the
+                            setpoint will become a band, which will be between
+                            the band_max=setpoint+band and
+                            band_min=setpoint-band. If Raising, the PID will
+                            raise above band_max, then wait until the condition
+                            falls below band_min to resume regulation. If
+                            Lowering, the PID will lower below band_min, then
+                            wait until the condition rises above band_max to
+                            resume regulating. If set to Both, regulation will
+                            only occur to the outside min and max of the band,
+                            and cease when within the band. Set to 0 to disable
+                            Hysteresis.
 
-  Store Lower as Negative Checking this will store all output variables
-                          (PID and output duration/duty cycle) as a
-                          negative values in the measurement database.
-                          This is useful for displaying graphs that
-                          indicate whether the PID is currently lowering
-                          or raising. Disable this if you desire all
-                          positive values to be stored in the measurement
-                          database.
+  Store Lower as Negative   Checking this will store all output variables (PID
+                            and output duration/duty cycle) as a negative values
+                            in the measurement database. This is useful for
+                            displaying graphs that indicate whether the PID is
+                            currently lowering or raising. Disable this if you
+                            desire all positive values to be stored in the
+                            measurement database.
 
-  Direction               This is the direction that you wish to regulate.
-                          For example, if you only require the temperature
-                          to be raised, set this to “Up,” but if you
-                          require regulation up and down, set this to
-                          “Both.”
+  Direction                 This is the direction that you wish to regulate. For
+                            example, if you only require the temperature to be
+                            raised, set this to “Up,” but if you require
+                            regulation up and down, set this to “Both.”
 
-  Period                  This is the duration between when the PID
-                          acquires a measurement, the PID is updated, and
-                          the output is modulated.
+  Period                    This is the duration between when the PID acquires a
+                            measurement, the PID is updated, and the output is
+                            modulated.
 
-  Max Age                 The time (in seconds) that the sensor
-                          measurement age is required to be less than. If
-                          the measurement is not younger than this age,
-                          the measurement is thrown out and the PID will
-                          not actuate the output. This is a safety measure
-                          to ensure the PID is only using recent
-                          measurements.
+  Max Age                   The time (in seconds) that the sensor measurement
+                            age is required to be less than. If the measurement
+                            is not younger than this age, the measurement is
+                            thrown out and the PID will not actuate the output.
+                            This is a safety measure to ensure the PID is only
+                            using recent measurements.
 
-  Raise Output            This is the output that will cause the
-                          particular environmental condition to rise. In
-                          the case of raising the temperature, this may be
-                          a heating pad or coil.
+  Raise Output              This is the output that will cause the particular
+                            environmental condition to rise. In the case of
+                            raising the temperature, this may be a heating pad
+                            or coil.
 
-  Min Duration (raise)    This is the minimum that the PID output must be
-                          before the Up Output turns on. If the PID output
-                          exceeds this minimum, the Up Output will turn on
-                          for the PID output number of seconds.
+  Min Duration (raise)      This is the minimum that the PID output must be
+                            before the Up Output turns on. If the PID output
+                            exceeds this minimum, the Up Output will turn on for
+                            the PID output number of seconds.
 
-  Max Duration (raise)    This is the maximum duration the Up Output is
-                          allowed to turn on for. If the PID output
-                          exceeds this number, the Up Output will turn on
-                          for no greater than this duration of time.
+  Max Duration (raise)      This is the maximum duration the Up Output is
+                            allowed to turn on for. If the PID output exceeds
+                            this number, the Up Output will turn on for no
+                            greater than this duration of time.
 
-  Lower Output            This is the output that will cause the
-                          particular environmental condition to lower. In
-                          the case of lowering the CO2, this may be an
-                          exhaust fan.
+  Lower Output              This is the output that will cause the particular
+                            environmental condition to lower. In the case of
+                            lowering the CO2, this may be an exhaust fan.
 
-  Min Duration (lower)    This is the minimum that the PID output must be
-                          before the Down Output turns on. If the PID
-                          output exceeds this minimum, the Down Output
-                          will turn on for the PID output number of
-                          seconds.
+  Min Duration (lower)      This is the minimum that the PID output must be
+                            before the Down Output turns on. If the PID output
+                            exceeds this minimum, the Down Output will turn on
+                            for the PID output number of seconds.
 
-  Max Duration (lower)    This is the maximum duration the Down Output is
-                          allowed to turn on for. if the PID output
-                          exceeds this number, the Down Output will turn
-                          on for no greater than this duration of time.
+  Max Duration (lower)      This is the maximum duration the Down Output is
+                            allowed to turn on for. if the PID output exceeds
+                            this number, the Down Output will turn on for no
+                            greater than this duration of time.
 
-  KP                      Proportional coefficient (non-negative).
-                          Accounts for present values of the error. For
-                          example, if the error is large and positive, the
-                          control output will also be large and positive.
+  KP                        Proportional coefficient (non-negative). Accounts
+                            for present values of the error. For example, if the
+                            error is large and positive, the control output will
+                            also be large and positive.
 
-  KI                      Integral coefficient (non-negative). Accounts
-                          for past values of the error. For example, if
-                          the current output is not sufficiently strong,
-                          the integral of the error will accumulate over
-                          time, and the controller will respond by
-                          applying a stronger action.
+  KI                        Integral coefficient (non-negative). Accounts for
+                            past values of the error. For example, if the
+                            current output is not sufficiently strong, the
+                            integral of the error will accumulate over time, and
+                            the controller will respond by applying a stronger
+                            action.
 
-  KD                      Derivative coefficient (non-negative). Accounts
-                          for predicted future values of the error, based
-                          on its current rate of change.
+  KD                        Derivative coefficient (non-negative). Accounts for
+                            predicted future values of the error, based on its
+                            current rate of change.
 
-  Integrator Min          The minimum allowed integrator value, for
-                          calculating Ki_total: (Ki_total = Ki *
-                          integrator; and PID output = Kp_total + Ki_total
-                          + Kd_total)
+  Integrator Min            The minimum allowed integrator value, for
+                            calculating Ki_total: (Ki_total = Ki * integrator;
+                            and PID output = Kp_total + Ki_total + Kd_total)
 
-  Integrator Max          The maximum allowed integrator value, for
-                          calculating Ki_total: (Ki_total = Ki *
-                          integrator; and PID output = Kp_total + Ki_total
-                          + Kd_total)
-  ------------------------------------------------------------------------
+  Integrator Max            The maximum allowed integrator value, for
+                            calculating Ki_total: (Ki_total = Ki * integrator;
+                            and PID output = Kp_total + Ki_total + Kd_total)
+  ------------------------------------------------------------------------------
 
 PID Autotune
 
 The Autotune feature is useful for determining appropriate Kp, Ki, and
 Kd gains of a PID controller. The autotuner will manipulate an output
 and measure the response in the environment being measured by a sensor.
-It will take several cycles to determine the gains accoring to several
+It will take several cycles to determine the gains according to several
 rules. In order to use this feature, the PID controller must be properly
 configured, and a Noise Band and Outstep selected, then select “Start
 Autotune”. The output of the autotuner will appear in the daemon log
@@ -1002,8 +938,8 @@ Output, and PID Setpoint/Output in order to see what the PID Autotuner
 is doing and to notice any issues. If your autotune is taking a long
 time to complete, there may not be enough stability in the system being
 manipulated to calculate a reliable set of PID gains. This may be
-because there are too many disturbanses to the system, or conditions are
-changing too repidly to acquire consistent measurement oscilations. If
+because there are too many disturbances to the system, or conditions are
+changing too rapidly to acquire consistent measurement oscillations. If
 this is the case, try modifying your system to reduce disturbances. Once
 the autotune successfully completes, disturbances may be reintroduced in
 order to further tune the PID controller to handle them.
@@ -1293,7 +1229,7 @@ on latitude and longitude.
 
 Timer (Duration) Conditional Statement If Options
 
-Run a timer that triggers Contitional Actions every period.
+Run a timer that triggers Conditional Actions every period.
 
   -------------------------------------------------------------------------
   Setting                  Description
@@ -1308,7 +1244,7 @@ Run a timer that triggers Contitional Actions every period.
 Timer (Daily Time Point) Conditional Statement If Options
 ‘’’‘’’‘’’‘’’‘’’‘’’‘’’‘’’‘’’‘’’‘’’‘’’‘’’‘’’‘’’‘’’‘’’
 
-Run a timer that triggers Contitional Actions at a specific time every
+Run a timer that triggers Conditional Actions at a specific time every
 day.
 
   ------------------------------------------------------------------------
@@ -1316,13 +1252,13 @@ day.
   ----------------------- ------------------------------------------------
   Start Time (HH:MM)      Set the time to trigger Conditional Actions, in
                           the format “HH:MM”, with HH denoting hours, and
-                          MM donoting minutes. Time is in 24-hour format.
+                          MM denoting minutes. Time is in 24-hour format.
   ------------------------------------------------------------------------
 
 Timer (Daily Time Span) Conditional Statement If Options
 ‘’’‘’’‘’’‘’’‘’’‘’’‘’’‘’’‘’’‘’’‘’’‘’’‘’’‘’’‘’’‘’’‘’’
 
-Run a timer that triggers Contitional Actions at a specific period if
+Run a timer that triggers Conditional Actions at a specific period if
 it’s between the set start and end times. For example, if the Start Time
 is set to 10:00 and End Time set to 11:00 and Period set to 120 seconds,
 the Conditional Actions will trigger every 120 seconds when the time is
@@ -1330,7 +1266,7 @@ between 10 AM and 11 AM.
 
 This may be useful, for instance, if you desire an Output to remain on
 during a particular time period and you want to prevent power outages
-from interupting the cycle (which a simple Time Point Timer could not
+from interrupting the cycle (which a simple Time Point Timer could not
 prevent against because it only triggers once at the Start Time). By
 setting an Output to turn the lights on every few minutes during the
 Start -> End period, it ensured the Output remains on during this
@@ -1341,12 +1277,12 @@ period.
   ----------------------- ------------------------------------------------
   Start Time (HH:MM)      Set the start time to trigger Conditional
                           Actions, in the format “HH:MM”, with HH denoting
-                          hours, and MM donoting minutes. Time is in
+                          hours, and MM denoting minutes. Time is in
                           24-hour format.
 
   End Time (HH:MM)        Set the end time to trigger Conditional Actions,
                           in the format “HH:MM”, with HH denoting hours,
-                          and MM donoting minutes. Time is in 24-hour
+                          and MM denoting minutes. Time is in 24-hour
                           format.
 
   Period (seconds)        The period of time between triggering
@@ -1405,69 +1341,67 @@ Or for an Output Conditional:
 
 Measurement Conditional command variables
 
-  ------------------------------------------------------------------------
-  Variable                          Description
-  --------------------------------- --------------------------------------
-  ((measure_location))              Input location (such as GPIO pin, I2C
-                                    address, etc.)
+  ---------------------------------------------------------------------------------
+  Variable                              Description
+  ------------------------------------- -------------------------------------------
+  ((measure_location))                  Input location (such as GPIO pin, I2C
+                                        address, etc.)
 
-  ((measure_period))                The period (seconds) between
-                                    measurements (input, math, or PID)
+  ((measure_period))                    The period (seconds) between measurements
+                                        (input, math, or PID)
 
-  ((measure_linux_command))         Input measurement: Linux Command
-                                    return value
+  ((measure_linux_command))             Input measurement: Linux Command return
+                                        value
 
-  ((measure_altitude))              Input measurement: altitude
+  ((measure_altitude))                  Input measurement: altitude
 
-  ((measure_battery))               Input measurement: battery
+  ((measure_battery))                   Input measurement: battery
 
-  ((measure_boolean))               Input measurement: boolean
+  ((measure_boolean))                   Input measurement: boolean
 
-  ((measure_co2))                   Input measurement: CO2
+  ((measure_co2))                       Input measurement: CO2
 
-  ((measure_cpu_load_1m))           Input measurement: CPU load (1 min)
+  ((measure_cpu_load_1m))               Input measurement: CPU load (1 min)
 
-  ((measure_cpu_load_5m))           Input measurement: CPU load (5 min)
+  ((measure_cpu_load_5m))               Input measurement: CPU load (5 min)
 
-  ((measure_cpu_load_15m))          Input measurement: CPU load (15 min)
+  ((measure_cpu_load_15m))              Input measurement: CPU load (15 min)
 
-  ((measure_dewpoint))              Input measurement: dew point
+  ((measure_dewpoint))                  Input measurement: dew point
 
-  ((measure_disk_space))            Input measurement: disk space
+  ((measure_disk_space))                Input measurement: disk space
 
-  ((measure_duty_cycle))            Input measurement: duty cycle
+  ((measure_duty_cycle))                Input measurement: duty cycle
 
-  ((measure_edge))                  Input measurement: edge detected (1 or
-                                    -1)
+  ((measure_edge))                      Input measurement: edge detected (1 or -1)
 
-  ((measure_electrical_conductivity Input measurement: Electrical
-  ))                                Conductivity (uS/cm)
+  ((measure_electrical_conductivity))   Input measurement: Electrical Conductivity
+                                        (uS/cm)
 
-  ((measure_frequency))             Input measurement: frequency
+  ((measure_frequency))                 Input measurement: frequency
 
-  ((measure_humidity))              Input measurement: humidity
+  ((measure_humidity))                  Input measurement: humidity
 
-  ((measure_lux))                   Input measurement: lux
+  ((measure_lux))                       Input measurement: lux
 
-  ((measure_moisture))              Input measurement: moisture
+  ((measure_moisture))                  Input measurement: moisture
 
-  ((measure_ph))                    Input measurement: ph
+  ((measure_ph))                        Input measurement: ph
 
-  ((measure_pressure))              Input measurement: pressure
+  ((measure_pressure))                  Input measurement: pressure
 
-  ((measure_pulse_width))           Input measurement: pulse width
+  ((measure_pulse_width))               Input measurement: pulse width
 
-  ((measure_revolutions))           Input measurement: RPM
+  ((measure_revolutions))               Input measurement: RPM
 
-  ((measure_temperature))           Input measurement: temperature
+  ((measure_temperature))               Input measurement: temperature
 
-  ((measure_temperature_die))       Input measurement: temperature (die)
+  ((measure_temperature_die))           Input measurement: temperature (die)
 
-  ((measure_temperature_object))    Input measurement: temperature
-                                    (object)
+  ((measure_temperature_object))        Input measurement: temperature (object)
 
-  ((measure_voltage))               Input measurement: voltage
-  ------------------------------------------------------------------------
+  ((measure_voltage))                   Input measurement: voltage
+  ---------------------------------------------------------------------------------
 
 Output Conditional command variables
 
@@ -1498,7 +1432,7 @@ Edge Conditional command variables
 
 LCDs
 
-More -> LCDs
+Setup -> LCDs
 
 Data may be output to a liquid crystal display (LCD) for easy viewing.
 Please see LCD Displays for specific information regarding
@@ -1540,7 +1474,7 @@ next every set period.
 
 Methods
 
-More -> Methods
+Setup -> Methods
 
 Methods enable Setpoint Tracking in PIDs and time-based duty cycle
 changes in timers. Normally, a PID controller will regulate an
@@ -1771,7 +1705,7 @@ Relay” section.
 CONFIGURATION SETTINGS
 
 
-[Gear Icon] -> Configuration
+[Gear Icon] -> Configure
 
 The settings menu, accessed by selecting the gear icon in the top-right,
 then the Configure link, is a general area for various system-wide
@@ -1780,7 +1714,7 @@ configuration options.
 
 General Settings
 
-[Gear Icon] -> Configuration -> General
+[Gear Icon] -> Configure -> General
 
   ------------------------------------------------------------------------
   Setting                 Description
@@ -1849,7 +1783,7 @@ set for each output (see Output Settings).
 
 Measurement Settings
 
-[Gear Icon] -> Configuration -> Measurement
+[Gear Icon] -> Configure -> Measurement
 
 New measurements, units, and conversions can be created that can extend
 functionality of Mycodo beyond the built-in types and equations. Be sure
@@ -1890,7 +1824,7 @@ measurement is added).
 
 Users
 
-[Gear Icon] -> Configuration -> Users
+[Gear Icon] -> Configure -> Users
 
 Mycodo requires at least one Admin user for the login system to be
 enabled. If there isn’t an Admin user, the web server will redirect to
@@ -1924,26 +1858,26 @@ Roles define the permissions of each user. There are 4 default roles
 that determine if a user can view or edit particular areas of Mycodo.
 Four roles are provided by default, but custom roles may be created.
 
-  Role                  Admin      Editor      Monitor      Guest
-  --------------------- ---------- ----------- ------------ ------------
-  Edit Users            X                                   
-  Edit Controllers      X          X                        
-  Edit Settings         X          X                        
-  View Settings         X          X           X            
-  View Camera           X          X           X            
-  View Stats            X          X           X            
-  View Logs             X          X           X            
+  Role                        Admin         Editor         Monitor         Guest
+  --------------------------- ------------- -------------- --------------- ---------------
+  Edit Users                  X                                            
+  Edit Controllers            X             X                              
+  Edit Settings               X             X                              
+  View Settings               X             X              X               
+  View Camera                 X             X              X               
+  View Stats                  X             X              X               
+  View Logs                   X             X              X               
 
-1The Edit Controllers permission protects the editing of Conditionals,
+The Edit Controllers permission protects the editing of Conditionals,
 Graphs, LCDs, Methods, PIDs, Outputs, and Inputs.
 
-2The View Stats permission protects the viewing of usage statistics and
-the System Info and Output Usage pages.
+The View Stats permission protects the viewing of usage statistics and
+the System Information and Output Usage pages.
 
 
 Pi Settings
 
-[Gear Icon] -> Configuration -> Pi
+[Gear Icon] -> Configure -> Raspberry Pi
 
 Pi settings configure parts of the linux system that Mycodo runs on.
 
@@ -1968,7 +1902,7 @@ DHT22, DHT11, HTU21D Inputs.
 
 Alert Settings
 
-[Gear Icon] -> Configuration -> Alerts
+[Gear Icon] -> Configure -> Alerts
 
 Alert settings set up the credentials for sending email notifications.
 
@@ -2004,7 +1938,7 @@ Alert settings set up the credentials for sending email notifications.
 
 Camera Settings
 
-[Gear Icon] -> Configuration -> Camera
+[Gear Icon] -> Configure -> Camera
 
 Many cameras can be used simultaneously with Mycodo. Each camera needs
 to be set up in the camera settings, then may be used throughout the
@@ -2054,7 +1988,7 @@ differences in hardware and software.
 
 Diagnostic Settings
 
-[Gear Icon] -> Configuration -> Diagnostics
+[Gear Icon] -> Configure -> Diagnostics
 
 Sometimes issues arise in the system as a result of incompatible
 configurations, either the result of a misconfigured part of the system
@@ -2063,11 +1997,10 @@ database upgrade, or other unforeseen issue. Sometimes it is necessary
 to perform diagnostic actions that can determine the cause of the issue
 or fix the issue itself. The options below are meant to alleviate
 issues, such as a misconfigured dashboard element causing an error on
-the Dashboard page, which may cause an inability to access the Dashboard
-page to correct the issue. Deleting all Dashboard Elements may be the
-most economical method to enable access to the Dashboard page again, at
-the cost of having to readd all the Dashboard Elements that were once
-there.
+the Dash page, which may cause an inability to access the Dash page to
+correct the issue. Deleting all Dashboard Elements may be the most
+economical method to enable access to the Dash page again, at the cost
+of having to readd all the Dashboard Elements that were once there.
 
   ------------------------------------------------------------------------
   Setting                      Description
@@ -2083,7 +2016,7 @@ MISCELLANEOUS
 
 Dashboard
 
-Info -> Dashboard
+Dash
 
 The dashboard is where you can add pieces of data for easy viewing. It
 is highly customizable and provides an easy way to see exactly what data
@@ -2298,19 +2231,19 @@ PID Control
 
 Live Measurements
 
-Info -> Live Measurements
+Live
 
-The Live Measurements page is the first page a user sees after logging
-in to Mycodo. It will display the current measurements being acquired
-from Input and Math controllers. If there is nothing displayed on the
-Live Measurements page, ensure an Input or Math controller is both
-configured correctly and activated. Data will be automatically updated
-on the page from the measurement database.
+The Live page is the first page a user sees after logging in to Mycodo.
+It will display the current measurements being acquired from Input and
+Math controllers. If there is nothing displayed on the Live page, ensure
+an Input or Math controller is both configured correctly and activated.
+Data will be automatically updated on the page from the measurement
+database.
 
 
 Asynchronous Graphs
 
-Info -> Asynchronous Graphs
+Async
 
 A graphical data display that is useful for viewing data sets spanning
 relatively long periods of time (weeks/months/years), which could be
@@ -2342,9 +2275,9 @@ Measurements that fall within the selected date/time frame may be
 exported as CSV with their corresponding timestamps.
 
 Additionally, the entire measurement database (influxdb) may be exported
-as a ZIP file backup. This ZIP may be imported back in any Mycodo system
-to restore these measurements. Note that an import will override the
-current data (i.e. destroying it).
+as a ZIP archive backup. This ZIP may be imported back in any Mycodo
+system to restore these measurements. Note that an import will override
+the current data (i.e. destroying it).
 
 Mycodo settings may be exported as a ZIP file containing the Mycodo
 settings database (sqlite). This ZIP file may be used to restore the
@@ -2373,7 +2306,7 @@ Dependency page in order to install it.
 
 Camera
 
-More -> Cameras
+Cam
 
 Once a cameras has been set up (in the Camera Settings), it may be used
 to capture still images, create time-lapses, and stream video. Cameras
@@ -2396,15 +2329,15 @@ Backup-Restore
 [Gear Icon] -> Backup Restore
 
 A backup is made to /var/Mycodo-backups when the system is upgraded or
-through the web interface on the Config -> Backup / Restore page.
+through the web interface on the [Gear Icon] -> Backup Restore page.
 
-If you need to restore a backup, this can be done on the Config ->
-Backup / Restore page. Find the backup you would like restored and press
-the Restore button beside it. A restore can also be initialized through
-the command line. Use the following commands to initialize a restore,
-changing the appropriate directory names, ‘user’ to your user name, and
-TIME and COMMIT to the appropriate text found as the directory names in
-/var/Mycodo-backups/
+If you need to restore a backup, this can be done on the
+[Gear Icon] -> Backup  Restore page. Find the backup you would like
+restored and press the Restore button beside it. A restore can also be
+initialized through the command line. Use the following commands to
+initialize a restore, changing the appropriate directory names, ‘user’
+to your user name, and TIME and COMMIT to the appropriate text found as
+the directory names in /var/Mycodo-backups/
 
     sudo mv /home/user/Mycodo /home/user/Mycodo_old
     sudo cp -a /var/Mycodo-backups/Mycodo-TIME-COMMIT /home/user/Mycodo
@@ -2455,9 +2388,9 @@ TROUBLESHOOTING
 
 Daemon Not Running
 
--   Check the Logs: From the Configure [Gear Icon] -> Mycodo Logs page,
-    check the Daemon Log for any errors. If the issue began after an
-    upgrade, also check the Upgrade Log for indications of an issue.
+-   Check the Logs: From the [Gear Icon] -> Mycodo Logs page, check the
+    Daemon Log for any errors. If the issue began after an upgrade, also
+    check the Upgrade Log for indications of an issue.
 -   Determine if the Daemon is Running: Execute
     ps aux | grep '/var/mycodo-root/env/bin/python /var/mycodo-root/mycodo/mycodo_daemon.py'
     in a terminal and look for an entry to be returned. If nothing is
@@ -2471,9 +2404,8 @@ Daemon Not Running
 
 Incorrect Database Version
 
--   Check the System Information page (from the web UI: select [Gear
-    Icon] -> System Information or select the mycodo logo in
-    the top-left).
+-   Check the [Gear Icon] -> System Information page or select the
+    mycodo logo in the top-left.
 -   An incorrect database version error means the version stored in the
     Mycodo settings database (~/Mycodo/databases/mycodo.db) is not
     correct for the latest version of Mycodo, determined in the Mycodo
@@ -2496,6 +2428,7 @@ Incorrect Database Version
     your browser in order to generate a new database and create a new
     Admin user.
 
+&nbsp;
     mv ~/Mycodo/databases/mycodo.db ~/Mycodo/databases/mycodo.db.backup
     sudo service mycodoflask restart
 
@@ -2642,8 +2575,8 @@ Multiplexers can be set up by loading a kernel driver to handle the
 communication, producing a new I2C bus device for each multiplexer
 channel. To enable the driver for the TCA9548A/PCA9548A, visit
 GPIO-pca9548 to get the code and latest install instructions. If
-successfully set up, there will be 8 new I2C busses on the
-Config -> System Information page.
+successfully set up, there will be 8 new I2C buses on the
+[Gear Icon] -> System Information page.
 
 The driver for the TCA9545A can be found at
 https://github.com/camrex/i2c-mux-pca9545a and other drivers are
@@ -2657,7 +2590,7 @@ Some multiplexers I’ve tested are below.
   8 channels = 64 devices/sensors with the same I2C address.
 
   TCA9545A: I2C Bus Multiplexer link (I2C): This board also creates 4
-  new I2C busses, but each with their own selectable voltage, either 3.3
+  new I2C buses, but each with their own selectable voltage, either 3.3
   or 5.0 volts.
 
 
@@ -2699,7 +2632,7 @@ Atlas Scientific PT-1000
 
 The PT1000 temperature probe is a resistance type thermometer. Where PT
 stands for platinum and 1000 is the measured resistance of the probe at
-0°C in ohms (1k at 0°C).
+0 °C in ohms (1k at 0 °C).
 
 Specifications
 
@@ -2713,9 +2646,9 @@ Specifications
 -   BNC Connector
 -   Reaction Time: 90% value in 13 seconds
 -   Probe output: analog
--   Full temperature sensing range: -200°C to 850°C
--   Cable max temp 125°C
--   Cable min temp -55°C
+-   Full temperature sensing range: -200 °C to 850 °C
+-   Cable max temp 125 °C
+-   Cable min temp -55 °C
 
 DS18B20
 
@@ -2725,13 +2658,13 @@ sensors to be used on one data bus.
 
 Specifications
 
--   Usable temperature range: -55°C to 125°C
+-   Usable temperature range: -55 °C to 125 °C
 -   9 to 12 bit selectable resolution
 -   Uses 1-Wire interface- requires only one digital pin for
     communication
 -   Unique 64 bit ID burned into chip
 -   Multiple sensors can share one pin
--   ±0.5°C Accuracy from -10°C to +85°C
+-   ±0.5 °C Accuracy from -10 °C to +85 °C
 -   Temperature-limit alarm system
 -   Query time is less than 750ms
 -   Usable with 3.0V to 5.5V power/data
@@ -2740,31 +2673,31 @@ DS18S20
 
 Specifications
 
--   Usable temperature range: -55°C to 125°C
--   ±0.5°C Accuracy from -10°C to +85°C
+-   Usable temperature range: -55 °C to 125 °C
+-   ±0.5 °C Accuracy from -10 °C to +85 °C
 -   9-bit resolution
 
 DS1822
 
 Specifications
 
--   Usable temperature range: -55°C to 125°C
--   ±2.0°C Accuracy from -10°C to +85°C
+-   Usable temperature range: -55 °C to 125 °C
+-   ±2 °C Accuracy from -10 °C to +85 °C
 -   9 to 12 bit selectable resolution
 
 DS28EA00
 
 Specifications
 
--   Usable temperature range: -40°C to 85°C
+-   Usable temperature range: -40 °C to 85 °C
 -   9 to 12 bit selectable resolution
 
 DS1825
 
 Specifications
 
--   Usable temperature range: -55°C to 125°C
--   ±0.5°C Accuracy from -10°C to +85°C
+-   Usable temperature range: -55 °C to 125 °C
+-   ±0.5 °C Accuracy from -10 °C to +85 °C
 -   9 to 12 bit selectable resolution
 
 MAX31850K
@@ -2772,7 +2705,7 @@ MAX31850K
 Specifications
 
 -   Measures K-type thermocouples
--   14-bit, 0.25°C resolution
+-   14-bit, 0.25 °C resolution
 
 MAX31855K
 
@@ -2780,8 +2713,8 @@ Specifications
 
 -   Measures K-type thermocouples
 -   Serial interface
--   -200°C to +1350°C output in 0.25 degree increments
--   K thermocouples have about ±2°C to ±6°C accuracy
+-   -200 °C to 1350 °C output in 0.25 degree increments
+-   K thermocouples have about ±2 °C to ±6 °C accuracy
 -   Internal temperature reading
 
 MAX31856
@@ -2791,9 +2724,9 @@ Measures several types of thermocouples (K, J, N, R, S, T, E, and B).
 Specifications
 
 -   Serial interface
--   -210°C to +1800°C output in 0.0078125° resolution (many
-    thermocouples have about ±2°C to ±6°C accuracy or worse depending on
-    the temperature and type, so the resolution will be a lot better
+-   -210 °C to 1800 °C output in 0.0078125 ° resolution (many
+    thermocouples have about ±2 °C to ±6 °C accuracy or worse depending
+    on the temperature and type, so the resolution will be a lot better
     than the accuracy)
 -   Works with any K, J, N, R, S, T, E, or B type thermocouple
 -   Internal temperature reading
@@ -2806,7 +2739,7 @@ Measures the PT100 or PT1000 platinum resistance temperature detectors
 Specifications
 
 -   Serial interface
--   -200°C to +850°C
+-   -200 °C to 850 °C
 -   Works with the PT100 and PT1000 RTD
 
 TMP006, TMP007
@@ -2818,7 +2751,7 @@ how hot or cold the object is.
 
 Specifications
 
--   Usable temperature range: -40°C to 125°C
+-   Usable temperature range: -40 °C to 125 °C
 -   Optimal operating voltage of 3.3V to 5V (tolerant up to 7V max)
 
 
@@ -2830,7 +2763,7 @@ Specifications
 
 -   0-100% humidity readings with 1% (10-90% RH) and 3% (0-10% RH and
     90-100% RH) accuracy
--   -20 to 80°C temperature readings ±0.1°C typical accuracy
+-   -20 °C to 80 °C temperature readings ±0.1 °C typical accuracy
 -   3.5 to 5.5V power and I/O
 -   10 mA max current use during conversion (while requesting data)
 -   No more than 0.5 Hz sampling rate (once every 2 seconds)
@@ -2868,7 +2801,7 @@ Specifications
 -   3 to 5V power and I/O
 -   2.5mA max current use during conversion (while requesting data)
 -   20-80% humidity readings with 5% accuracy
--   0-50°C temperature readings ±2°C accuracy
+-   0 °C to 50 °C temperature readings ±2 °C accuracy
 -   No more than 1 Hz sampling rate (once every second)
 
 DHT22, AM2302
@@ -2881,7 +2814,7 @@ Specifications
 
 -   0-100% humidity readings with 2% (10-90% RH) and 5% (0-10% RH and
     90-100% RH) accuracy
--   -40 to 80°C temperature readings ±0.5°C accuracy
+-   -40 °C to 80 °C temperature readings ±0.5 °C accuracy
 -   3 to 5V power and I/O
 -   2.5mA max current use during conversion (while requesting data)
 -   No more than 0.5 Hz sampling rate (once every 2 seconds)
@@ -2893,7 +2826,7 @@ Specifications
 -   0-100% humidity readings with 2% (20-80% RH) and 2%-5% (0-20% RH and
     80-100% RH) accuracy
 -   Optimum accuracy measurements within 5 to 95% RH
--   -30 to 90°C temperature readings ±1°C typical accuracy
+-   -30 °C to 90 °C temperature readings ±1 °C typical accuracy
 
 SHT1x
 
@@ -2903,8 +2836,8 @@ Specifications
 
 -   0-100% humidity readings with 2%-5% (10-90% RH) and 2%-7.5% (0-10%
     RH and 90-100% RH) accuracy
--   -40 to 125°C temperature readings ±0.5°C, ±0.4°C, and ±0.3°C typical
-    accuracy (respectively)
+-   -40 °C to 125 °C temperature readings ±0.5 °C, ±0.4 °C, and ±0.3 °C
+    typical accuracy (respectively)
 -   2.4 to 5.5V power and I/O
 -   No more than 0.125 Hz sampling rate (once every 8 seconds)
 
@@ -2916,7 +2849,7 @@ Specifications
 
 -   0-100% humidity readings with 2%-3% (10-90% RH) and 2%-5% (0-10% RH
     and 90-100% RH) accuracy
--   -40 to 125°C temperature readings ±0.4°C and ±0.3°C typical
+-   -40 °C to 125 °C temperature readings ±0.4 °C and ±0.3 °C typical
     accuracy (respectively)
 -   2.4 to 5.5V power and I/O
 -   No more than 0.125 Hz sampling rate (once every 8 seconds)
@@ -2997,6 +2930,23 @@ Specifications
 -   Probe can be fully submerged in fresh or salt water indefinitely
 
 
+Particulate Sensors
+
+Winsen ZH03B
+
+Laser Dust sensor module is a common type, small size sensor, using
+laser scattering principle to detect the dust particles in air, with
+good selectivity and stability.
+
+Specifications
+
+-   Detection: PM1.0, PM2.5, PM10
+-   Working humidity: 0~85% RH (no condensation)
+-   Working temperature: -10 °C to 50 °C
+-   Response time <= 45 sec
+-   Life span: 3 years (in air)
+
+
 Pressure Sensors
 
 BME280
@@ -3008,11 +2958,11 @@ same specifications, but can use either I2C or SPI.
 Specifications
 
 -   300-1100 hPa (9000m to -500m above sea level)
--   -40 to +85°C operational range
+-   -40 °C to +85 °C operational range
 -   ±3% humidity accuracy tolerance
 -   ±1% humidity hysteresis
 -   ±1 hPa pressure accuracy
--   ±2°C temperature accuracy
+-   ±2 °C temperature accuracy
 -   Vin: 3 to 5V
 -   Logic: 3 to 5V compliant
 -   I2C 7-bit address 0x76 or 0x77
@@ -3026,8 +2976,8 @@ Specifications
 
 -   300-1100 hPa (9000m to -500m above sea level)
 -   Up to 0.03hPa / 0.25m resolution
--   -40 to +85°C operational range
--   ±2°C temperature accuracy
+-   -40 °C to +85 °C operational range
+-   ±2 °C temperature accuracy
 -   Vin: 3 to 5V
 -   Logic: 3 to 5V compliant
 -   I2C 7-bit address 0x77

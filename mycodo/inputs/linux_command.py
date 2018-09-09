@@ -22,11 +22,11 @@ INPUT_INFORMATION = {
 }
 
 
-class LinuxCommand(AbstractInput):
+class InputModule(AbstractInput):
     """ A sensor support class that returns a value from a command """
 
     def __init__(self, input_dev, testing=False):
-        super(LinuxCommand, self).__init__()
+        super(InputModule, self).__init__()
         self.logger = logging.getLogger("mycodo.inputs.linux_command")
         self._measurement = None
         self.cmd_measurement = 'measurement'

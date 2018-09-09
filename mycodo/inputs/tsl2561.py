@@ -20,11 +20,11 @@ INPUT_INFORMATION = {
 }
 
 
-class TSL2561Sensor(AbstractInput):
+class InputModule(AbstractInput):
     """ A sensor support class that monitors the TSL2561's lux """
 
     def __init__(self, input_dev, testing=False):
-        super(TSL2561Sensor, self).__init__()
+        super(InputModule, self).__init__()
         self.logger = logging.getLogger("mycodo.inputs.tsl2561")
         self._lux = None
 

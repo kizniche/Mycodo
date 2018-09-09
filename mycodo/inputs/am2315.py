@@ -50,14 +50,14 @@ INPUT_INFORMATION = {
 }
 
 
-class AM2315Sensor(AbstractInput):
+class InputModule(AbstractInput):
     """
     A sensor support class that measures the AM2315's humidity and temperature
     and calculates the dew point
 
     """
     def __init__(self, input_dev, testing=False):
-        super(AM2315Sensor, self).__init__()
+        super(InputModule, self).__init__()
         self.logger = logging.getLogger('mycodo.inputs.am2315')
         self._dew_point = None
         self._humidity = None

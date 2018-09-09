@@ -21,11 +21,11 @@ INPUT_INFORMATION = {
 }
 
 
-class SignalPWMInput(AbstractInput):
+class InputModule(AbstractInput):
     """ A sensor support class that monitors pwm """
 
     def __init__(self, input_dev, testing=False):
-        super(SignalPWMInput, self).__init__()
+        super(InputModule, self).__init__()
         self.logger = logging.getLogger("mycodo.inputs.signal_pwm")
         self._frequency = None
         self._pulse_width = None

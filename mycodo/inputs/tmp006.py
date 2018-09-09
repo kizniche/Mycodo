@@ -20,11 +20,11 @@ INPUT_INFORMATION = {
 }
 
 
-class TMP006Sensor(AbstractInput):
+class InputModule(AbstractInput):
     """ A sensor support class that monitors the TMP006's die and object temperatures """
 
     def __init__(self, input_dev,  testing=False):
-        super(TMP006Sensor, self).__init__()
+        super(InputModule, self).__init__()
         self.logger = logging.getLogger("mycodo.inputs.tmp006")
         self._temperature_die = None
         self._temperature_object = None

@@ -49,10 +49,10 @@ ONE_TIME_HIGH_RES_MODE_2 = 0x21
 ONE_TIME_LOW_RES_MODE = 0x23
 
 
-class BH1750Sensor(AbstractInput):
+class InputModule(AbstractInput):
     """ A sensor support class that monitors the DS18B20's lux """
     def __init__(self, input_dev, testing=False):
-        super(BH1750Sensor, self).__init__()
+        super(InputModule, self).__init__()
         self.logger = logging.getLogger("mycodo.inputs.bh1750")
         self._lux = None
 

@@ -23,11 +23,11 @@ INPUT_INFORMATION = {
 }
 
 
-class WINSEN_ZH03BSensor(AbstractInput):
+class InputModule(AbstractInput):
     """ A sensor support class that monitors the WINSEN_ZH03B's particulate concentration """
 
     def __init__(self, input_dev, testing=False):
-        super(WINSEN_ZH03BSensor, self).__init__()
+        super(InputModule, self).__init__()
         self.logger = logging.getLogger("mycodo.inputs.winsen_zh03b")
         self._pm_1_0 = None
         self._pm_2_5 = None

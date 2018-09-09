@@ -25,11 +25,11 @@ INPUT_INFORMATION = {
 }
 
 
-class DS18B20Sensor(AbstractInput):
+class InputModule(AbstractInput):
     """ A sensor support class that monitors the DS18B20's temperature """
 
     def __init__(self, input_dev, testing=False):
-        super(DS18B20Sensor, self).__init__()
+        super(InputModule, self).__init__()
         self.logger = logging.getLogger("mycodo.inputs.ds1825")
         self._temperature = None
 

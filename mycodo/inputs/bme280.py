@@ -26,7 +26,7 @@ INPUT_INFORMATION = {
 }
 
 
-class BME280Sensor(AbstractInput):
+class InputModule(AbstractInput):
     """
     A sensor support class that measures the BME280's humidity, temperature,
     and pressure, them calculates the altitude and dew point
@@ -34,7 +34,7 @@ class BME280Sensor(AbstractInput):
     """
 
     def __init__(self, input_dev, testing=False):
-        super(BME280Sensor, self).__init__()
+        super(InputModule, self).__init__()
         self.logger = logging.getLogger("mycodo.inputs.bme280")
         self._altitude = None
         self._dew_point = None
