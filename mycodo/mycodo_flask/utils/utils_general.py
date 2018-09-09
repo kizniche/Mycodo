@@ -216,8 +216,10 @@ def choices_units(units):
 def choices_inputs(inputs):
     """ populate form multi-select choices from Input entries """
     choices = OrderedDict()
+    dict_inputs = parse_input_information()
+
     for each_input in inputs:
-        choices = form_input_choices(choices, each_input)
+        choices = form_input_choices(choices, each_input, dict_inputs)
     return choices
 
 
@@ -247,6 +249,7 @@ def choices_outputs(output):
 
 def choices_lcd(inputs, maths, pids, outputs):
     choices = OrderedDict()
+    dict_inputs = parse_input_information()
 
     # Display IP address
     value = '0000,IP'
@@ -261,7 +264,7 @@ def choices_lcd(inputs, maths, pids, outputs):
             id=each_input.id,
             name=each_input.name)
         choices.update({value: display})
-        choices = form_input_choices(choices, each_input)
+        choices = form_input_choices(choices, each_input, dict_inputs)
 
     # Maths
     for each_math in maths:
@@ -296,15 +299,14 @@ def choices_lcd(inputs, maths, pids, outputs):
     return choices
 
 
-def form_input_choices(choices, each_input):
+def form_input_choices(choices, each_input, dict_inputs):
     dict_measurements = add_custom_measurements(Measurement.query.all())
     dict_units = add_custom_units(Unit.query.all())
 
-    dict_inputs = parse_input_information()
-
     # NEW CODE
     if each_input.device in dict_inputs:
-        if (dict_inputs[each_input.device]['unique_name_measurements'] and
+        if ('unique_name_measurements' in dict_inputs[each_input.device] and
+                dict_inputs[each_input.device]['unique_name_measurements'] and
                 dict_inputs[each_input.device]['unique_name_measurements'] not in LIST_DEVICES_ADC and
                 dict_inputs[each_input.device]['unique_name_measurements'] != 'LinuxCommand'):
 

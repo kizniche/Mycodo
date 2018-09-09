@@ -20,6 +20,8 @@ logger = logging.getLogger("mycodo.dependencies_installed")
 def get_installed_dependencies():
     met_deps = []
 
+    logger.error("TEST00")
+
     dict_inputs = parse_input_information()
 
     list_dependencies = [

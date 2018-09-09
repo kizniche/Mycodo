@@ -8,6 +8,22 @@ from mycodo.utils.system_pi import str_is_float
 from mycodo.inputs.base_input import AbstractInput
 from mycodo.inputs.sensorutils import convert_units
 
+# Input information
+INPUT_INFORMATION = {
+    'unique_name_input': 'ATLAS_PH',
+    'input_manufacturer': 'Atlas',
+    'common_name_input': 'Atlas pH',
+    'common_name_measurements': 'Ion Concentration',
+    'unique_name_measurements': ['ion_concentration'],  # List of strings
+    'dependencies_pypi': [],  # List of strings
+    'interfaces': ['I2C', 'UART'],  # List of strings
+    'i2c_location': ['0x66'],  # List of strings
+    'i2c_address_editable': True,  # Boolean
+    'uart_location': '/dev/ttyAMA0',
+    'options_enabled': ['i2c_location', 'uart_location', 'period', 'convert_unit', 'pre_output'],
+    'options_disabled': ['interface']
+}
+
 
 class AtlaspHSensor(AbstractInput):
     """A sensor support class that monitors the Atlas Scientific sensor pH"""

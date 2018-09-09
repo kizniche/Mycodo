@@ -23,6 +23,7 @@
 
 import importlib.util
 import logging
+import timeit
 
 import os
 import sys
@@ -45,6 +46,8 @@ def dict_has_value(dict_inputs, input_custom, key):
 
 
 def parse_input_information():
+    startup_timer = timeit.default_timer()
+
     excluded_files = ['__init__.py', '__pycache__', 'base_input.py',
                       'custom_inputs', 'dummy_input.py', 'input_template.py',
                       'parse_inputs.py','sensorutils.py']
@@ -74,7 +77,7 @@ def parse_input_information():
                     skip_file = True
 
             if not skip_file:
-                logger.info("Found input: {}, {}".format(input_custom.INPUT_INFORMATION['unique_name_input'], full_path))
+                # logger.info("Found input: {}, {}".format(input_custom.INPUT_INFORMATION['unique_name_input'], full_path))
 
                 # Populate dictionary of input information
                 if input_custom.INPUT_INFORMATION['unique_name_input'] in dict_inputs:
@@ -133,5 +136,8 @@ def parse_input_information():
                 dict_inputs = dict_has_value(dict_inputs, input_custom, 'sensitivity')
                 dict_inputs = dict_has_value(dict_inputs, input_custom, 'thermocouple_type')
                 dict_inputs = dict_has_value(dict_inputs, input_custom, 'ref_ohm')
+
+    run_time = timeit.default_timer() - startup_timer
+    logger.info("Input parse time: {time:.3f} seconds".format(time=run_time))
 
     return dict_inputs

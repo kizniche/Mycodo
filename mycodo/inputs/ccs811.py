@@ -4,6 +4,20 @@ import logging
 from mycodo.inputs.base_input import AbstractInput
 from mycodo.inputs.sensorutils import convert_units
 
+# Input information
+INPUT_INFORMATION = {
+    'unique_name_input': 'CCS811',
+    'input_manufacturer': 'Ams',
+    'common_name_input': 'CCS811',
+    'common_name_measurements': 'CO2/VOC/Temperature',
+    'unique_name_measurements': ['co2', 'voc', 'temperature'],  # List of strings
+    'dependencies_pypi': ['Adafruit_CCS811', 'Adafruit_GPIO'],  # List of strings
+    'interfaces': ['I2C'],  # List of strings
+    'i2c_location': ['0x5a', '0x5b'],  # List of strings
+    'i2c_address_editable': False,  # Boolean
+    'options_enabled': ['i2c_location', 'period', 'convert_unit', 'pre_output'],
+    'options_disabled': ['interface']
+}
 
 class CCS811Sensor(AbstractInput):
     """

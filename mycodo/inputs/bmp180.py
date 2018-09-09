@@ -5,6 +5,21 @@ import time
 from mycodo.inputs.base_input import AbstractInput
 from mycodo.inputs.sensorutils import convert_units
 
+# Input information
+INPUT_INFORMATION = {
+    'unique_name_input': 'BMP180',
+    'input_manufacturer': 'BOSCH',
+    'common_name_input': 'BMP180',
+    'common_name_measurements': 'Pressure/Temperature',
+    'unique_name_measurements': ['altitude', 'pressure', 'temperature'],  # List of strings
+    'dependencies_pypi': ['Adafruit_BMP', 'Adafruit_GPIO'],  # List of strings
+    'interfaces': ['I2C'],  # List of strings
+    'i2c_location': ['0x77'],  # List of strings
+    'i2c_address_editable': False,  # Boolean
+    'options_enabled': ['i2c_location', 'period', 'convert_unit', 'pre_output'],
+    'options_disabled': ['interface']
+}
+
 
 class BMP180Sensor(AbstractInput):
     """

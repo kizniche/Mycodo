@@ -20,6 +20,8 @@ INPUT_INFORMATION = {
     'unique_name_measurements': ['dewpoint', 'humidity', 'temperature'],  # List of strings
     'dependencies_pypi': ['pigpio'],  # List of strings
     'interfaces': ['GPIO'],  # List of strings
+    'options_enabled': ['gpio_location', 'period', 'convert_unit', 'pre_output'],
+    'options_disabled': ['interface']
 }
 
 

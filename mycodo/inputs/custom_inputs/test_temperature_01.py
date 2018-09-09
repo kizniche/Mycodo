@@ -38,6 +38,8 @@ INPUT_INFORMATION = {
     'i2c_address_editable': False,  # Boolean
 
     # Display options
+    # All variables below are able to be used
+    # Additionally, location, gpio_location, i2c_location, uart_location may be used
     'options_enabled': ['period', 'convert_unit', 'pre_output', 'i2c_location'],
     'options_disabled': [''],
 

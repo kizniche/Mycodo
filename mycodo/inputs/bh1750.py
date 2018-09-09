@@ -5,6 +5,29 @@ import time
 from mycodo.inputs.base_input import AbstractInput
 from mycodo.inputs.sensorutils import convert_units
 
+list_sensitivity = []
+for num in range(31, 255):
+    list_sensitivity.append((num, str(num)))
+
+# Input information
+INPUT_INFORMATION = {
+    'unique_name_input': 'BH1750',
+    'input_manufacturer': 'ROHM',
+    'common_name_input': 'BH1750',
+    'common_name_measurements': 'Light',
+    'unique_name_measurements': ['light'],  # List of strings
+    'dependencies_pypi': ['smbus'],  # List of strings
+    'interfaces': ['I2C'],  # List of strings
+    'i2c_location': ['0x23', '0x5c'],  # List of strings
+    'i2c_address_editable': False,  # Boolean
+    'resolution': [(0, 'Low'),
+                   (1, 'High'),
+                   (2, 'High 2')],  # List of tuples
+    'sensitivity': list_sensitivity,  # List of tuples
+    'options_enabled': ['i2c_location', 'period', 'resolution', 'sensitivity', 'pre_output'],
+    'options_disabled': ['interface']
+}
+
 # Define some constants from the datasheet
 POWER_DOWN = 0x00  # No active state
 POWER_ON = 0x01  # Power on

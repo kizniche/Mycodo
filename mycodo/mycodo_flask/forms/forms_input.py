@@ -2,6 +2,7 @@
 #
 # forms_input.py - Input Flask Forms
 #
+import logging
 
 from flask_babel import lazy_gettext
 from flask_wtf import FlaskForm
@@ -18,9 +19,12 @@ from wtforms.validators import DataRequired
 from mycodo.config_translations import TOOLTIPS_INPUT
 from mycodo.utils.inputs import parse_input_information
 
+logger = logging.getLogger("mycodo.forms_input")
+
 
 class InputAdd(FlaskForm):
     choices_inputs = [('', lazy_gettext('Select Input to Add'))]
+
     dict_inputs = parse_input_information()
 
     # Sort dictionary entries by input_manufacturer, then common_name_input

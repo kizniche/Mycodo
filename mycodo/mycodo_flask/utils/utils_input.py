@@ -85,14 +85,19 @@ def input_add(form_add):
         # else:
         #     new_input.name = 'Name'
 
+        # logger.error(dict_inputs)
+
         # NEW CODE
         if 'common_name_input' in dict_inputs[input_name]:
             new_input.name = dict_inputs[input_name]['common_name_input']
         else:
             new_input.name = 'Input Name'
+
         if ('unique_name_measurements' in dict_inputs[input_name] and
                 dict_inputs[input_name]['unique_name_measurements'] != []):
             new_input.measurements = ",".join(dict_inputs[input_name]['unique_name_measurements'])
+        elif input_name == 'LinuxCommand':
+            pass
         else:
             error.append("No measurements defined for this input.")
 
@@ -114,16 +119,17 @@ def input_add(form_add):
 
         # NEW CODE - default unit for each measurement
         list_units = []
-        for each_measurement in dict_inputs[input_name]['unique_name_measurements']:
-            if each_measurement in MEASUREMENTS:
-                entry = '{measure},{unit}'.format(
-                    measure=each_measurement,
-                    unit=MEASUREMENTS[each_measurement]['units'][0])
-                list_units.append(entry)
-            else:
-                error.append("Measurement '{measure}' not recognized.".format(
-                    measure=each_measurement))
-        new_input.convert_to_unit = ";".join(list_units)
+        if 'unique_name_measurements' in dict_inputs[input_name]:
+            for each_measurement in dict_inputs[input_name]['unique_name_measurements']:
+                if each_measurement in MEASUREMENTS:
+                    entry = '{measure},{unit}'.format(
+                        measure=each_measurement,
+                        unit=MEASUREMENTS[each_measurement]['units'][0])
+                    list_units.append(entry)
+                else:
+                    error.append("Measurement '{measure}' not recognized.".format(
+                        measure=each_measurement))
+            new_input.convert_to_unit = ";".join(list_units)
 
         # NEW CODE - input add options
         if input_name in dict_inputs:
@@ -136,13 +142,13 @@ def input_add(form_add):
             if dict_has_value('period'):
                 new_input.period = dict_inputs[input_name]['period']
 
+            # I2C options
             if input_interface == 'I2C':
-                # I2C options
                 if dict_has_value('i2c_location'):
                     new_input.location = dict_inputs[input_name]['i2c_location'][0]  # First I2C address in list
 
+            # UART options
             elif input_interface == 'UART':
-                # UART options
                 if dict_has_value('uart_location'):
                     new_input.location = dict_inputs[input_name]['uart_location']
                 if dict_has_value('uart_baud_rate'):
@@ -155,6 +161,10 @@ def input_add(form_add):
                     new_input.pin_mosi = dict_inputs[input_name]['pin_mosi']
                 if dict_has_value('pin_clock'):
                     new_input.pin_clock = dict_inputs[input_name]['pin_clock']
+
+            # GPIO options
+            elif input_interface == 'GPIO':
+                new_input.location = ''
 
             elif dict_has_value('location'):
                 new_input.location = dict_inputs[input_name]['location']

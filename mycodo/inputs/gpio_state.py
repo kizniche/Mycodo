@@ -6,7 +6,7 @@ from mycodo.inputs.base_input import AbstractInput
 # Input information
 INPUT_INFORMATION = {
     'unique_name_input': 'GPIO_STATE',
-    'input_manufacturer': 'RPi',
+    'input_manufacturer': 'Raspberry Pi',
     'common_name_input': 'GPIO State',
     'common_name_measurements': 'GPIO State',
     'unique_name_measurements': ['gpio_state'],  # List of strings

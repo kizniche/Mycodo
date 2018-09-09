@@ -3,9 +3,9 @@
   <div>
     <select class="form-control form-tooltip form-dropdown" data-placement="top" id="location" name="location" title="{{ _('The I2C address to access the device')}}">
       <option value=""></option>
-    {% for each_address in device_info['CCS811']['i2c-addresses'] %}
-      <option value="{{each_address}}"{% if each_input.location == each_address %} selected{% endif %}>Address {{each_address}}</option>
-    {% endfor %}
+{#    {% for each_address in device_info['CCS811']['i2c-addresses'] %}#}
+{#      <option value="{{each_address}}"{% if each_input.location == each_address %} selected{% endif %}>Address {{each_address}}</option>#}
+{#    {% endfor %}#}
     </select>
   </div>
 </div>

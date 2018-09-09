@@ -5,6 +5,20 @@ from mycodo.inputs.base_input import AbstractInput
 from mycodo.inputs.sensorutils import convert_units
 from mycodo.inputs.sensorutils import dewpoint
 
+# Input information
+INPUT_INFORMATION = {
+    'unique_name_input': 'COZIR_CO2',
+    'input_manufacturer': 'Cozir',
+    'common_name_input': 'Cozir CO2',
+    'common_name_measurements': 'CO2/Humidity/Temperature',
+    'unique_name_measurements': ['co2', 'dewpoint', 'humidity', 'temperature'],  # List of strings
+    'dependencies_pypi': ['cozir'],  # List of strings
+    'interfaces': ['UART'],  # List of strings
+    'uart_location': '/dev/ttyAMA0',  # String
+    'options_enabled': ['uart_location', 'period', 'convert_unit', 'pre_output'],
+    'options_disabled': ['interface']
+}
+
 
 class COZIRSensor(AbstractInput):
     """

@@ -14,6 +14,14 @@ INPUT_INFORMATION = {
     'unique_name_measurements': ['temperature'],  # List of strings
     'dependencies_pypi': ['w1thermsensor'],  # List of strings
     'interfaces': ['1WIRE'],  # List of strings
+    'w1thermsensor_detect_1wire': True,  # Boolean
+    'resolution': [('', 'Use Chip Default'),
+                   (9, '9-bit, 0.5 °C, 93.75 ms'),
+                   (10, '10-bit, 0.25 °C, 187.5 ms'),
+                   (11, '11-bit, 0.125 °C, 375 ms'),
+                   (12, '12-bit, 0.0625 °C, 750 ms')],  # List of tuples
+    'options_disabled': ['interface'],
+    'options_enabled': ['location', 'resolution', 'period', 'convert_unit', 'pre_output'],
 }
 
 

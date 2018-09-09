@@ -29,7 +29,7 @@ INPUT_INFORMATION = {
     # See the example, below: "self.resolution = input_dev.resolution"
     #
 
-    # Interface options: 'I2C', 'UART'
+    # Interface options: 'GPIO', 'I2C', 'UART', '1WIRE'
     'interfaces': ['I2C', 'UART'],  # List of strings
 
     # I2C options
@@ -38,6 +38,8 @@ INPUT_INFORMATION = {
     'i2c_address_editable': True,  # Boolean
 
     # Display options
+    # All variables below are able to be used
+    # Additionally, location, gpio_location, i2c_location, uart_location may be used
     'options_enabled': ['period', 'convert_unit', 'pre_output', 'uart_location', 'baud_rate', 'resolution'],
     'options_disabled': ['i2c_location'],
 

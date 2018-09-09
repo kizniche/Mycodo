@@ -12,6 +12,26 @@ from mycodo.inputs.base_input import AbstractInput
 from mycodo.inputs.sensorutils import convert_units
 from mycodo.inputs.sensorutils import dewpoint
 
+# Input information
+INPUT_INFORMATION = {
+    'unique_name_input': 'HDC1000',
+    'input_manufacturer': 'Texas Instruments',
+    'common_name_input': 'HDC1000',
+    'common_name_measurements': 'Humidity/Temperature',
+    'unique_name_measurements': ['dewpoint', 'humidity', 'temperature'],  # List of strings
+    'dependencies_pypi': [],  # List of strings
+    'interfaces': ['I2C'],  # List of strings
+    'i2c_location': ['0x40'],  # List of strings
+    'i2c_address_editable': False,  # Boolean
+    'resolution': [(11, 'Temperature 11-bit'),
+                   (14, 'Temperature 14-bit')],
+    'resolution_2': [(8, 'Humidity 8-bit'),
+                     (11, 'Humidity 11-bit'),
+                     (14, 'Humidity 14-bit')],
+    'options_enabled': ['i2c_location', 'period', 'resolution', 'resolution_2', 'convert_unit', 'pre_output'],
+    'options_disabled': ['interface']
+}
+
 # I2C Address
 HDC1000_ADDRESS = 0x40  # 1000000
 

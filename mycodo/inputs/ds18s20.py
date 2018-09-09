@@ -14,6 +14,9 @@ INPUT_INFORMATION = {
     'unique_name_measurements': ['temperature'],  # List of strings
     'dependencies_pypi': ['w1thermsensor'],  # List of strings
     'interfaces': ['1WIRE'],  # List of strings
+    'w1thermsensor_detect_1wire': True,  # Boolean
+    'options_disabled': ['interface'],
+    'options_enabled': ['location', 'period', 'convert_unit', 'pre_output'],
 }
 
 

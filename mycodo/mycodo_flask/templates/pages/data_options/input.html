@@ -76,13 +76,19 @@
       {% if each_input.device in dict_inputs %}
         {% include 'pages/data_options/input_options/TEMPLATE_OPTIONS_Interface.html' %}
         {% include 'pages/data_options/input_options/TEMPLATE_OPTIONS_Location.html' %}
+        {% include 'pages/data_options/input_options/TEMPLATE_OPTIONS_GPIO.html' %}
         {% include 'pages/data_options/input_options/TEMPLATE_OPTIONS_I2C.html' %}
         {% include 'pages/data_options/input_options/TEMPLATE_OPTIONS_UART.html' %}
         {% include 'pages/data_options/input_options/TEMPLATE_OPTIONS_Baud_Rate.html' %}
-        {% include 'pages/data_options/input_options/TEMPLATE_OPTIONS_Ref_Ohm.html' %}
 
-        {% include 'pages/data_options/input_options/TEMPLATE_OPTIONS_Resolution.html' %}
+        {% include 'pages/data_options/input_options/TEMPLATE_OPTIONS_Cmd_Command.html' %}
+        {% include 'pages/data_options/input_options/TEMPLATE_OPTIONS_Cmd_Measurement_Units.html' %}
+
+        {% include 'pages/data_options/input_options/TEMPLATE_OPTIONS_Ref_Ohm.html' %}
         {% include 'pages/data_options/input_options/TEMPLATE_OPTIONS_Thermocouple_Type.html' %}
+        {% include 'pages/data_options/input_options/TEMPLATE_OPTIONS_Resolution.html' %}
+        {% include 'pages/data_options/input_options/TEMPLATE_OPTIONS_Resolution_2.html' %}
+        {% include 'pages/data_options/input_options/TEMPLATE_OPTIONS_Sensitivity.html' %}
 
         {% include 'pages/data_options/input_options/TEMPLATE_OPTIONS_CONVERT_UNIT.html' %}
 

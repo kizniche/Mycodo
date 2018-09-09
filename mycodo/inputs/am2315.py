@@ -44,6 +44,9 @@ INPUT_INFORMATION = {
     'dependencies_pypi': ['quick2wire'],  # List of strings
     'interfaces': ['I2C'],  # List of strings
     'i2c_location': ['0x5c'],  # List of strings
+    'i2c_address_editable': False,  # Boolean
+    'options_enabled': ['period', 'convert_unit', 'pre_output'],
+    'options_disabled': ['interface', 'i2c_location']
 }
 
 
