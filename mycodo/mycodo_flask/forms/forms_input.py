@@ -137,7 +137,7 @@ class InputMod(FlaskForm):
     # RPM/Signal
     weighting = DecimalField(lazy_gettext('Weighting'))
     rpm_pulses_per_rev = DecimalField(lazy_gettext('Pulses Per Rev'))
-    sample_time = DecimalField(lazy_gettext('Sample Time (seconds)'))
+    sample_time = DecimalField(lazy_gettext('Sample Time'))
 
     # SHT options
     sht_voltage = StringField(lazy_gettext('Voltage'))

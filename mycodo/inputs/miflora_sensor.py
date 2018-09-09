@@ -4,6 +4,21 @@ import logging
 from mycodo.inputs.base_input import AbstractInput
 from mycodo.inputs.sensorutils import convert_units
 
+# Input information
+INPUT_INFORMATION = {
+    'unique_name_input': 'MIFLORA',
+    'input_manufacturer': 'Xiaomi',
+    'common_name_input': 'Miflora',
+    'common_name_measurements': 'EC/Light/Moisture/Temperature',
+    'unique_name_measurements': ['battery', 'electrical_conductivity', 'light', 'moisture', 'temperature'],  # List of strings
+    'dependencies_pypi': ['miflora', 'bluepy', 'btlewrap'],  # List of strings
+    'interfaces': ['BT'],  # List of strings
+    'bt_location': '00:00:00:00:00:00',  # String
+    'bt_adapter': 'hci0',  # String
+    'options_enabled': ['bt_location', 'period', 'convert_unit', 'pre_output'],
+    'options_disabled': ['interface']
+}
+
 
 class MifloraSensor(AbstractInput):
     """

@@ -7,6 +7,21 @@ from mycodo.inputs.base_input import AbstractInput
 from mycodo.inputs.sensorutils import convert_units
 from mycodo.inputs.sensorutils import dewpoint
 
+# Input information
+INPUT_INFORMATION = {
+    'unique_name_input': 'SHT2x',
+    'input_manufacturer': 'Sensirion',
+    'common_name_input': 'SHT2x',
+    'common_name_measurements': 'Humidity/Temperature',
+    'unique_name_measurements': ['dewpoint', 'humidity', 'temperature'],  # List of strings
+    'dependencies_pypi': ['smbus'],  # List of strings
+    'interfaces': ['I2C'],  # List of strings
+    'i2c_location': ['0x40'],  # List of strings
+    'i2c_address_editable': False,  # Boolean
+    'options_enabled': ['period', 'convert_unit', 'pre_output'],
+    'options_disabled': ['interface', 'i2c_location']
+}
+
 
 class SHT2xSensor(AbstractInput):
     """

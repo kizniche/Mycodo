@@ -7,28 +7,41 @@
         dict_inputs[each_input.device]['w1thermsensor_detect_1wire']
   %}
 
-      <label class="control-label">{{tooltips_input['w1thermsensor_id']['title']}}</label>
-      <div>
-        <select class="form-control form-tooltip form-dropdown" data-placement="top" id="location" name="location" title="{{tooltips_input['w1thermsensor_id']['phrase']}}">
-          {% if w1thermsensor_sensors != [] %}
-            <option value=""></option>
-            {% for each_w1thermsensor in w1thermsensor_sensors %}
-              <option value="{{each_w1thermsensor}}"{% if each_input.location == each_w1thermsensor %} selected{% endif %}>{{each_w1thermsensor}}</option>
-            {% endfor %}
-          {% else %}
-            <option value="">None Detected</option>
-          {% endif %}
-        </select>
-      </div>
+  <label class="control-label">{{tooltips_input['w1thermsensor_id']['title']}}</label>
+  <div>
+    <select class="form-control form-tooltip form-dropdown" data-placement="top" id="location" name="location" title="{{tooltips_input['w1thermsensor_id']['phrase']}}">
+      {% if w1thermsensor_sensors != [] %}
+        <option value=""></option>
+        {% for each_w1thermsensor in w1thermsensor_sensors %}
+          <option value="{{each_w1thermsensor}}"{% if each_input.location == each_w1thermsensor %} selected{% endif %}>{{each_w1thermsensor}}</option>
+        {% endfor %}
+      {% else %}
+        <option value="">None Detected</option>
+      {% endif %}
+    </select>
+  </div>
+
+  {% elif 'location' in dict_inputs[each_input.device]['options_enabled'] and
+          dict_inputs[each_input.device]['location']['options']|length > 1 %}
+
+  <label class="control-label">{{_(dict_inputs[each_input.device]['location']['title'])}}</label>
+  <div>
+    <select class="form-control form-tooltip form-dropdown" data-placement="top" id="location" name="location" title="{{_(dict_inputs[each_input.device]['location']['phrase'])}}">
+      <option value=""></option>
+      {% for each_value, each_name in dict_inputs[each_input.device]['location']['options'] %}
+        <option value="{{each_value}}"{% if each_input.location == each_value %} selected{% endif %}>{{each_name}}</option>
+      {% endfor %}
+    </select>
+  </div>
 
   {% else %}
 
-  {{form_mod_input.location.label(class_='control-label')}}
+  <label class="control-label">{{_(dict_inputs[each_input.device]['location']['title'])}}</label>
   <div>
-    {%- if 'period' in dict_inputs[each_input.device]['options_disabled'] -%}
-      {{form_mod_input.location(class_='form-control', value=each_input.location, disabled=True, **{'title': tooltips_input['location']['phrase']})}}
+    {%- if 'location' in dict_inputs[each_input.device]['options_disabled'] -%}
+      {{form_mod_input.location(class_='form-control', value=each_input.location, disabled=True, **{'title': _(dict_inputs[each_input.device]['location']['phrase'])})}}
     {% else %}
-      {{form_mod_input.location(class_='form-control', value=each_input.location, **{'title': tooltips_input['location']['phrase']})}}
+      {{form_mod_input.location(class_='form-control', value=each_input.location, **{'title': _(dict_inputs[each_input.device]['location']['phrase'])})}}
     {%- endif -%}
   </div>
 

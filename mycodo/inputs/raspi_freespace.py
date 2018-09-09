@@ -9,11 +9,16 @@ from mycodo.inputs.sensorutils import convert_units
 # Input information
 INPUT_INFORMATION = {
     'unique_name_input': 'RPiFreeSpace',
-    'input_manufacturer': 'Raspberry Pi',
-    'common_name_input': 'RPi Free Space',
+    'input_manufacturer': 'Mycodo',
+    'common_name_input': 'Free Space',
     'common_name_measurements': 'Unallocated Disk Space',
     'unique_name_measurements': ['disk_space'],  # List of strings
-    'interfaces': ['RPi'],  # List of strings
+    'interfaces': ['Mycodo'],  # List of strings
+    'location': {
+        'title': 'Path',
+        'phrase': 'The path to monitor the free space of',
+        'options': [('/', '')]
+    },
     'options_disabled': ['interface'],
     'options_enabled': ['location', 'period', 'convert_unit']
 }

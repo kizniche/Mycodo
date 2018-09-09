@@ -8,7 +8,7 @@
   <div>
     <select class="form-control form-tooltip form-dropdown" data-placement="top" id="convert_unit{{index}}" name="convert_unit{{index}}" title="{{tooltips_input['convert_unit']['phrase']}}">
       {% for each_unit in measurements[each_measurement]['units'] %}
-      <option value="{{each_measurement}},{{each_unit}}"{% if each_measurement+','+each_unit in each_input.convert_to_unit.split(';') %} selected{% endif %}>{{units[each_unit]['name']}} ({{units[each_unit]['unit']}})</option>
+      <option value="{{each_measurement}},{{each_unit}}"{% if each_measurement+','+each_unit in each_input.convert_to_unit.split(';') %} selected{% endif %}>{{units[each_unit]['name']}}{% if units[each_unit]['unit'] %} ({{units[each_unit]['unit']}}){% endif %}</option>
       {% endfor %}
     </select>
   </div>

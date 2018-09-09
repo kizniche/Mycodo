@@ -138,14 +138,14 @@ def input_add(form_add):
                         (dict_inputs[input_name][key] or dict_inputs[input_name][key] == 0)):
                     return True
 
-            # General options
-            if dict_has_value('period'):
-                new_input.period = dict_inputs[input_name]['period']
+            #
+            # Interfacing options
+            #
 
             # I2C options
             if input_interface == 'I2C':
                 if dict_has_value('i2c_location'):
-                    new_input.location = dict_inputs[input_name]['i2c_location'][0]  # First I2C address in list
+                    new_input.location = dict_inputs[input_name]['i2c_location'][0]  # First entry in list
 
             # UART options
             elif input_interface == 'UART':
@@ -162,12 +162,41 @@ def input_add(form_add):
                 if dict_has_value('pin_clock'):
                     new_input.pin_clock = dict_inputs[input_name]['pin_clock']
 
+            # Bluetooth (BT) options
+            elif input_interface == 'BT':
+                if dict_has_value('bt_location'):
+                    new_input.location = dict_inputs[input_name]['bt_location']
+                if dict_has_value('bt_adapter'):
+                    new_input.bt_adapter = dict_inputs[input_name]['bt_adapter']
+
             # GPIO options
             elif input_interface == 'GPIO':
                 new_input.location = ''
 
+            # Custom location location
             elif dict_has_value('location'):
-                new_input.location = dict_inputs[input_name]['location']
+                new_input.location = dict_inputs[input_name]['location']['options'][0][0]  # First entry in list
+
+            #
+            # General options
+            #
+
+            if dict_has_value('period'):
+                new_input.period = dict_inputs[input_name]['period']
+
+            # Server Ping options
+            if dict_has_value('times_check'):
+                new_input.times_check = dict_inputs[input_name]['times_check']
+            if dict_has_value('deadline'):
+                new_input.deadline = dict_inputs[input_name]['deadline']
+            if dict_has_value('port'):
+                new_input.port = dict_inputs[input_name]['port']
+
+            # Signal options
+            if dict_has_value('weighting'):
+                new_input.weighting = dict_inputs[input_name]['weighting']
+            if dict_has_value('sample_time'):
+                new_input.sample_time = dict_inputs[input_name]['sample_time']
 
             # Analog-to-digital converter options
             if dict_has_value('adc_measure'):

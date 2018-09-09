@@ -7,12 +7,12 @@
              dict_inputs[each_input.device]['i2c_location']|length == 1)
   %}
 
-  <div class="col-auto">
-  <label class="control-label">{{tooltips_input['i2c_location']['title']}}</label>
-  <div>
-    {{form_mod_input.location(class_='form-control', value=each_input.location, disabled=True, **{'title': tooltips_input['i2c_location']['phrase']})}}
-  </div>
-  </div>
+    <div class="col-auto">
+      <label class="control-label">{{tooltips_input['i2c_location']['title']}}</label>
+      <div>
+        {{form_mod_input.location(class_='form-control', value=each_input.location, disabled=True, **{'title': tooltips_input['i2c_location']['phrase']})}}
+      </div>
+    </div>
 
   {% elif 'i2c_location' in dict_inputs[each_input.device]['options_enabled'] %}
 
@@ -41,13 +41,13 @@
 
     {% endif %}
 
-    <div class="col-auto">
-      <label class="control-label">{{tooltips_input['i2c_bus']['title']}}</label>
-      <div>
-        {{form_mod_input.location(class_='form-control', value=each_input.i2c_bus, **{'title': tooltips_input['i2c_bus']['phrase']})}}
-      </div>
-    </div>
-
   {% endif %}
+
+  <div class="col-auto">
+    <label class="control-label">{{tooltips_input['i2c_bus']['title']}}</label>
+    <div>
+      {{form_mod_input.i2c_bus(class_='form-control', value=each_input.i2c_bus, **{'title': tooltips_input['i2c_bus']['phrase']})}}
+    </div>
+  </div>
 
 {% endif %}

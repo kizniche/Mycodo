@@ -29,7 +29,7 @@ INPUT_INFORMATION = {
     # See the example, below: "self.resolution = input_dev.resolution"
     #
 
-    # Interface options: 'GPIO', 'I2C', 'UART', '1WIRE'
+    # Interface options: 'GPIO', 'I2C', 'UART', '1WIRE', 'BT', 'Mycodo', 'RPi'
     'interfaces': ['I2C', 'UART'],  # List of strings
 
     # I2C options
@@ -37,17 +37,40 @@ INPUT_INFORMATION = {
     'i2c_location': ['0x01'],  # List of strings
     'i2c_address_editable': True,  # Boolean
 
+    # Custom location setting
+    # Only one option, editable text box:
+    'location': {
+        'title': 'Host',
+        'phrase': 'Host name or IP address',
+        'options': [('127.0.0.1', '')]
+    },
+    # More than one option, selectable drop-down menu:
+    # 'location': {
+    #     'title': 'Location Name',
+    #     'phrase': 'Location Description',
+    #     'options': [('1', 'Option 1'),
+    #                 ('2', 'Option 2'),
+    #                 ('3', 'Option 3'),]
+    # },
+
     # Display options
     # All variables below are able to be used
     # Additionally, location, gpio_location, i2c_location, uart_location may be used
     'options_enabled': ['period', 'convert_unit', 'pre_output', 'uart_location', 'baud_rate', 'resolution'],
     'options_disabled': ['i2c_location'],
 
-    # Non-standard (I2C, UART, etc.) location setting
-    'location': '',  # String
-
-    # 1WIRE
+    # 1-Wire options
+    #
+    # Setting the following to True will use the module w1thermsensor to scan
+    # for 1-Wire devices. Put 'location' in 'options_enabled' to display a
+    # drop-down menu of detected devices.
+    # Note: 'location' should not be set, only added to 'options_enabled'.
+    #
     'w1thermsensor_detect_1wire': False,  # Boolean
+
+    # Bluetooth
+    'bt_location': '00:00:00:00:00:00',  # String
+    'bt_adapter': 'hci0',  # String
 
     # UART options
     'uart_location': '/dev/ttyAMA0',  # String
@@ -56,6 +79,15 @@ INPUT_INFORMATION = {
     'pin_miso': None,  # Integer
     'pin_mosi': None,  # Integer
     'pin_clock': None,  # Integer
+
+    # Host options
+    'times_check': None,  # Integer
+    'deadline': None,  # Integer
+    'port': None,  # Integer
+
+    # Signal options
+    'weighting': 0.0,  # Float
+    'sample_time': 2.0,  # Float
 
     # Analog-to-digital converter options
     'adc_measure': None,  # String

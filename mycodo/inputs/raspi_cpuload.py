@@ -13,9 +13,13 @@ INPUT_INFORMATION = {
     'common_name_measurements': 'CPULoad',
     'unique_name_measurements': ['cpu_load_1m', 'cpu_load_5m', 'cpu_load_15m'],  # List of strings
     'interfaces': ['RPi'],  # List of strings
-    'location': '/',  # String
+    'location': {
+        'title': 'Directory',
+        'phrase': 'Directory to report the free space of',
+        'options': [('/', '')]
+    },
     'options_disabled': ['interface'],
-    'options_enabled': ['period'],
+    'options_enabled': ['location', 'period'],
 }
 
 

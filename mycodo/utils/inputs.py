@@ -108,9 +108,6 @@ def parse_input_information():
                 dict_inputs = dict_has_value(dict_inputs, input_custom, 'i2c_location')
                 dict_inputs = dict_has_value(dict_inputs, input_custom, 'i2c_address_editable')
 
-                dict_inputs = dict_has_value(dict_inputs, input_custom, 'options_enabled')
-                dict_inputs = dict_has_value(dict_inputs, input_custom, 'options_disabled')
-
                 # UART
                 dict_inputs = dict_has_value(dict_inputs, input_custom, 'uart_location')
                 dict_inputs = dict_has_value(dict_inputs, input_custom, 'uart_baud_rate')
@@ -118,6 +115,23 @@ def parse_input_information():
                 dict_inputs = dict_has_value(dict_inputs, input_custom, 'pin_miso')
                 dict_inputs = dict_has_value(dict_inputs, input_custom, 'pin_mosi')
                 dict_inputs = dict_has_value(dict_inputs, input_custom, 'pin_clock')
+
+                # Bluetooth (BT)
+                dict_inputs = dict_has_value(dict_inputs, input_custom, 'bt_location')
+                dict_inputs = dict_has_value(dict_inputs, input_custom, 'bt_adapter')
+
+                # Which form options to display and whether each option is enabled
+                dict_inputs = dict_has_value(dict_inputs, input_custom, 'options_enabled')
+                dict_inputs = dict_has_value(dict_inputs, input_custom, 'options_disabled')
+
+                # Host options
+                dict_inputs = dict_has_value(dict_inputs, input_custom, 'times_check')
+                dict_inputs = dict_has_value(dict_inputs, input_custom, 'deadline')
+                dict_inputs = dict_has_value(dict_inputs, input_custom, 'port')
+
+                # Signal options
+                dict_inputs = dict_has_value(dict_inputs, input_custom, 'weighting')
+                dict_inputs = dict_has_value(dict_inputs, input_custom, 'sample_time')
 
                 # Analog-to-digital converter
                 dict_inputs = dict_has_value(dict_inputs, input_custom, 'adc_measure')

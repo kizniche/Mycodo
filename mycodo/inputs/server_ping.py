@@ -4,6 +4,26 @@ import os
 
 from mycodo.inputs.base_input import AbstractInput
 
+# Input information
+INPUT_INFORMATION = {
+    'unique_name_input': 'SERVER_PING',
+    'input_manufacturer': 'Mycodo',
+    'common_name_input': 'Server Ping',
+    'common_name_measurements': 'Boolean',
+    'unique_name_measurements': ['boolean'],  # List of strings
+    'dependencies_pypi': [],  # List of strings
+    'interfaces': ['Mycodo'],  # List of strings
+    'location': {
+        'title': 'Host Location',
+        'phrase': 'Host name or IP address',
+        'options': [('127.0.0.1', '')]
+    },
+    'times_check': 1,  # Integer
+    'deadline': 2,  # Integer
+    'options_enabled': ['location', 'times_check', 'deadline', 'period', 'pre_output'],
+    'options_disabled': ['interface']
+}
+
 
 class ServerPing(AbstractInput):
     """

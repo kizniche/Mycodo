@@ -5,6 +5,22 @@ import time
 from mycodo.inputs.base_input import AbstractInput
 from mycodo.inputs.sensorutils import convert_units
 
+# Input information
+INPUT_INFORMATION = {
+    'unique_name_input': 'SIGNAL_RPM',
+    'input_manufacturer': 'Mycodo',
+    'common_name_input': 'Signal (Revolutions)',
+    'common_name_measurements': 'RPM',
+    'unique_name_measurements': ['revolutions'],  # List of strings
+    'dependencies_pypi': ['pigpio'],  # List of strings
+    'interfaces': ['GPIO'],  # List of strings
+    'weighting': 0.0,  # Float
+    'sample_time': 2.0,  # Float
+    'rpm_pulses_per_rev': 1.0,  # Float
+    'options_enabled': ['gpio_location', 'rpm_pulses_per_rev', 'weighting', 'sample_time', 'period', 'convert_unit', 'pre_output'],
+    'options_disabled': ['interface']
+}
+
 
 class SignalRPMInput(AbstractInput):
     """ A sensor support class that monitors rpm """

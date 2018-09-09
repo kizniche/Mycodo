@@ -25,9 +25,6 @@ TOOLTIPS_INPUT = {
     'pre_output_during_measure': {
         'title': lazy_gettext('Pre During Measure'),
         'phrase': lazy_gettext('Check to turn the output off after (opposed to before) the measurement is complete')},
-    'location': {
-        'title': lazy_gettext('Location'),
-        'phrase': lazy_gettext('The location to use for this device')},
     'gpio_location': {
         'title': lazy_gettext('GPIO'),
         'phrase': lazy_gettext('The GPIO pin (BCM numbering) to access the device')},
@@ -76,6 +73,30 @@ TOOLTIPS_INPUT = {
     'cmd_measurement_units': {
         'title': lazy_gettext('Unit Measurement'),
         'phrase': lazy_gettext('Select a unit for the stored value')},
+    'bt_location': {
+        'title': lazy_gettext('MAC (XX:XX:XX:XX:XX:XX)'),
+        'phrase': lazy_gettext('The MAC address of the input')},
+    'bt_adapter': {
+        'title': lazy_gettext('BT Adapter'),
+        'phrase': lazy_gettext('The Bluetooth adapter of the input')},
+    'times_check': {
+        'title': lazy_gettext('Times Check'),
+        'phrase': lazy_gettext('Number of times to check')},
+    'deadline': {
+        'title': lazy_gettext('Deadline'),
+        'phrase': lazy_gettext('Time (seconds) to wait until failure')},
+    'port': {
+        'title': lazy_gettext('Port'),
+        'phrase': lazy_gettext('Host port number')},
+    'weighting': {
+        'title': lazy_gettext('Weighting'),
+        'phrase': lazy_gettext('The weighting of the previous measurement on the current measurement. Range: 0.0 - 1.0. Used for smoothing measurements. 0.0 means no weighting.')},
+    'sample_time': {
+        'title': lazy_gettext('Sample Time'),
+        'phrase': lazy_gettext('The amount of time (seconds) to sample the input before caluclating the measurement')},
+    'rpm_pulses_per_rev': {
+        'title': lazy_gettext('Pulses Per Rev'),
+        'phrase': lazy_gettext('The number of pulses per revolution to calculate revolutions per minute (RPM)')},
     # '': {
     #     'title': lazy_gettext(''),
     #     'phrase': lazy_gettext('')},

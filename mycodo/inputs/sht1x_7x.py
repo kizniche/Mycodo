@@ -4,6 +4,21 @@ import logging
 from mycodo.inputs.base_input import AbstractInput
 from mycodo.inputs.sensorutils import convert_units
 
+# Input information
+INPUT_INFORMATION = {
+    'unique_name_input': 'SHT1x_7x',
+    'input_manufacturer': 'Sensirion',
+    'common_name_input': 'SHT1x/7x',
+    'common_name_measurements': 'Humidity/Temperature',
+    'unique_name_measurements': ['dewpoint', 'humidity', 'temperature'],  # List of strings
+    'dependencies_pypi': ['sht_sensor'],  # List of strings
+    'interfaces': ['GPIO'],  # List of strings
+    'pin_clock': 11,
+    'sht_voltage': '3.5',  # String representing float
+    'options_enabled': ['period', 'gpio_location', 'pin_clock', 'convert_unit', 'pre_output'],
+    'options_disabled': ['interface']
+}
+
 
 class SHT1x7xSensor(AbstractInput):
     """
