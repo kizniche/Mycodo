@@ -54,14 +54,14 @@ class InputModule(AbstractInput):
             self.logger = logging.getLogger(
                 "mycodo.inputs.mh_z16_{id}".format(id=input_dev.id))
             self.interface = input_dev.interface
-            self.device_loc = input_dev.device_loc
+            self.uart_location = input_dev.uart_location
             self.convert_to_unit = input_dev.convert_to_unit
 
             if self.interface == 'UART':
                 import serial
 
                 # Check if device is valid
-                self.serial_device = is_device(self.device_loc)
+                self.serial_device = is_device(self.uart_location)
                 if self.serial_device:
                     try:
                         self.ser = serial.Serial(self.serial_device, timeout=1)
@@ -71,12 +71,12 @@ class InputModule(AbstractInput):
                     self.logger.error(
                         'Could not open "{dev}". '
                         'Check the device location is correct.'.format(
-                            dev=self.device_loc))
+                            dev=self.uart_location))
 
             elif self.interface == 'I2C':
                 import smbus
 
-                self.i2c_address = int(str(input_dev.location), 16)
+                self.i2c_address = int(str(input_dev.i2c_location), 16)
                 self.i2c_bus = input_dev.i2c_bus
                 self.cmd_measure = [0xFF, 0x01, 0x9C, 0x00, 0x00, 0x00, 0x00, 0x00, 0x63]
                 self.IOCONTROL = 0X0E << 3

@@ -21,10 +21,10 @@ class AtlasScientificCommand:
 
         if self.interface == 'UART':
             self.ph_sensor_uart = AtlasScientificUART(
-                input_dev.device_loc, baudrate=input_dev.baud_rate)
+                input_dev.uart_location, baudrate=input_dev.baud_rate)
         elif self.interface == 'I2C':
             self.ph_sensor_i2c = AtlasScientificI2C(
-                i2c_address=int(str(input_dev.location), 16),
+                i2c_address=int(str(input_dev.i2c_location), 16),
                 i2c_bus=input_dev.i2c_bus)
 
         self.board_version, self.board_info = self.board_version()

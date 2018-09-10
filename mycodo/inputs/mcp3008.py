@@ -4,8 +4,31 @@ import logging
 
 import Adafruit_MCP3008
 
+# Input information
+INPUT_INFORMATION = {
+    'unique_name_input': 'MCP3008',
+    'input_manufacturer': 'Microchip',
+    'common_name_input': 'MCP3008 (Analog-to-Digital Converter)',
+    'common_name_measurements': 'Voltage',
+    'unique_name_measurements': ['voltage'],  # List of strings
+    'dependencies_pypi': ['Adafruit_MCP3008'],  # List of strings
+    'interfaces': ['UART'],  # List of strings
+    'analog_to_digital_converter': True,  # Boolean
+    'pin_cs': 8,
+    'pin_miso': 9,
+    'pin_mosi': 10,
+    'pin_clock': 11,
+    'adc_channel': [(0, 'Channel 0'),
+                    (1, 'Channel 1'),
+                    (2, 'Channel 2'),
+                    (3, 'Channel 3')],  # List of tuples
+    'adc_volts_min': -4.096,  # Float
+    'adc_volts_max': 4.096,  # Float
+    'options_enabled': ['pin_cs', 'pin_miso', 'pin_mosi', 'pin_clock', 'adc_channel', 'adc_options', 'period', 'pre_output'],
+    'options_disabled': ['interface']
+}
 
-class MCP3008Read(object):
+class ADCModule(object):
     """ ADC Read """
     def __init__(self, input_dev, testing=False):
         self.logger = logging.getLogger('mycodo.mcp3008')

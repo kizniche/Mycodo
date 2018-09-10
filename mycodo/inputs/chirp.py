@@ -40,7 +40,7 @@ class InputModule(AbstractInput):
         if not testing:
             self.logger = logging.getLogger(
                 "mycodo.inputs.chirp_{id}".format(id=input_dev.id))
-            self.i2c_address = int(str(input_dev.location), 16)
+            self.i2c_address = int(str(input_dev.i2c_location), 16)
             self.i2c_bus = input_dev.i2c_bus
             self.convert_to_unit = input_dev.convert_to_unit
             self.bus = smbus.SMBus(self.i2c_bus)

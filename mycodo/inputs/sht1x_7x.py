@@ -15,7 +15,7 @@ INPUT_INFORMATION = {
     'interfaces': ['GPIO'],  # List of strings
     'pin_clock': 11,
     'sht_voltage': '3.5',  # String representing float
-    'options_enabled': ['period', 'gpio_location', 'pin_clock', 'convert_unit', 'pre_output'],
+    'options_enabled': ['gpio_location', 'period', 'pin_clock', 'convert_unit', 'pre_output'],
     'options_disabled': ['interface']
 }
 
@@ -39,7 +39,7 @@ class InputModule(AbstractInput):
             from sht_sensor import ShtVDDLevel
             self.logger = logging.getLogger(
                 "mycodo.inputs.sht1x_7x_{id}".format(id=input_dev.id))
-            self.location = int(input_dev.location)
+            self.gpio = int(input_dev.gpio_location)
             self.clock_pin = input_dev.clock_pin
             self.convert_to_unit = input_dev.convert_to_unit
             sht_sensor_vdd_value = {
@@ -51,7 +51,7 @@ class InputModule(AbstractInput):
             }
             self.sht_voltage = sht_sensor_vdd_value[round(float(input_dev.sht_voltage), 1)]
             self.sht_sensor = Sht(self.clock_pin,
-                                  self.location,
+                                  self.gpio,
                                   voltage=self.sht_voltage)
 
     def __repr__(self):

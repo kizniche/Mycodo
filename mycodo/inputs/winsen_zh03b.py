@@ -39,11 +39,11 @@ class InputModule(AbstractInput):
             self.logger = logging.getLogger(
                 "mycodo.inputs.winsen_zh03b_{id}".format(id=input_dev.id))
             self.binascii = binascii
-            self.device_loc = input_dev.device_loc
+            self.uart_location = input_dev.uart_location
             self.baud_rate = input_dev.baud_rate
             self.convert_to_unit = input_dev.convert_to_unit
             # Check if device is valid
-            self.serial_device = is_device(self.device_loc)
+            self.serial_device = is_device(self.uart_location)
             if self.serial_device:
                 try:
                     self.ser = serial.Serial(
@@ -60,7 +60,7 @@ class InputModule(AbstractInput):
                 self.logger.error(
                     'Could not open "{dev}". '
                     'Check the device location is correct.'.format(
-                        dev=self.device_loc))
+                        dev=self.uart_location))
 
     def __repr__(self):
         """  Representation of object """

@@ -139,17 +139,20 @@ def parse_input_information():
                 dict_inputs = dict_has_value(dict_inputs, input_custom, 'sample_time')
 
                 # Analog-to-digital converter
-                dict_inputs = dict_has_value(dict_inputs, input_custom, 'adc_measure')
-                dict_inputs = dict_has_value(dict_inputs, input_custom, 'adc_measure_units')
-                dict_inputs = dict_has_value(dict_inputs, input_custom, 'convert_to_unit')
+                dict_inputs = dict_has_value(dict_inputs, input_custom, 'analog_to_digital_converter')
+                dict_inputs = dict_has_value(dict_inputs, input_custom, 'adc_channel')
+                dict_inputs = dict_has_value(dict_inputs, input_custom, 'adc_gain')
+                dict_inputs = dict_has_value(dict_inputs, input_custom, 'adc_resolution')
                 dict_inputs = dict_has_value(dict_inputs, input_custom, 'adc_volts_min')
                 dict_inputs = dict_has_value(dict_inputs, input_custom, 'adc_volts_max')
+                dict_inputs = dict_has_value(dict_inputs, input_custom, 'adc_units_min')
+                dict_inputs = dict_has_value(dict_inputs, input_custom, 'adc_units_max')
+                dict_inputs = dict_has_value(dict_inputs, input_custom, 'adc_inverse_unit_scale')
 
                 # Misc
                 dict_inputs = dict_has_value(dict_inputs, input_custom, 'period')
+                dict_inputs = dict_has_value(dict_inputs, input_custom, 'convert_to_unit')
                 dict_inputs = dict_has_value(dict_inputs, input_custom, 'cmd_command')
-                dict_inputs = dict_has_value(dict_inputs, input_custom, 'cmd_measurement')
-                dict_inputs = dict_has_value(dict_inputs, input_custom, 'cmd_measurement_units')
                 dict_inputs = dict_has_value(dict_inputs, input_custom, 'resolution')
                 dict_inputs = dict_has_value(dict_inputs, input_custom, 'resolution_2')
                 dict_inputs = dict_has_value(dict_inputs, input_custom, 'sensitivity')

@@ -15,9 +15,9 @@ INPUT_INFORMATION = {
     'dependencies_pypi': ['smbus'],  # List of strings
     'interfaces': ['Mycodo'],  # List of strings
     'cmd_command': 'shuf -i 50-70 -n 1',
-    'cmd_measurement': 'Condition',
-    'cmd_measurement_units': 'unit',
-    'options_enabled': ['period', 'cmd_command', 'cmd_measurement_units', 'convert_unit', 'pre_output'],
+    'measurement': 'Condition',
+    'measurement_units': 'unit',
+    'options_enabled': ['period', 'cmd_command', 'measurement_units', 'convert_unit', 'pre_output'],
     'options_disabled': ['interface']
 }
 

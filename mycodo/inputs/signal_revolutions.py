@@ -34,7 +34,7 @@ class InputModule(AbstractInput):
             import pigpio
             self.logger = logging.getLogger(
                 "mycodo.inputs.signal_revolutions_{id}".format(id=input_dev.id))
-            self.location = int(input_dev.location)
+            self.gpio = int(input_dev.gpio_location)
             self.convert_to_unit = input_dev.convert_to_unit
             self.weighting = input_dev.weighting
             self.rpm_pulses_per_rev = input_dev.rpm_pulses_per_rev
@@ -79,7 +79,7 @@ class InputModule(AbstractInput):
             return None
 
         read_revolutions = ReadRPM(pi,
-                           self.location,
+                           self.gpio,
                            self.pigpio,
                            self.rpm_pulses_per_rev,
                            self.weighting)

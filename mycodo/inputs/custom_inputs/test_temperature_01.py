@@ -90,22 +90,29 @@ INPUT_INFORMATION = {
     'sample_time': 2.0,  # Float
 
     # Analog-to-digital converter options
-    'adc_measure': None,  # String
-    'adc_measure_units': None,  # String
-    'convert_to_unit': [],  # List of strings
-    'adc_volts_min': None,  # Float
-    'adc_volts_max': None,  # Float
+    'analog_to_digital_converter': True,  # Boolean
+    'adc_channel': [(0, 'Channel 0'),
+                    (1, 'Channel 1'),
+                    (2, 'Channel 2'),
+                    (3, 'Channel 3')],  # List of tuples
+    'adc_gain': [(1, '1'),
+                 (2, '2'),
+                 (3, '3'),
+                 (4, '4'),
+                 (8, '8'),
+                 (16, '16')],  # List of tuples
+    'adc_volts_min': -4.096,  # Float
+    'adc_volts_max': 4.096,  # Float
 
     # Miscellaneous options
     'period': None,  # Float (Input Period, Default: 15.0)
+    'convert_to_unit': [],  # List of strings
     'cmd_command': None,  # String
-    'cmd_measurement': None,  # String
-    'cmd_measurement_units': None,  # String
     'resolution': [],  # List of tuples (e.g. [(1, 'option 1 name'), (2, 'option 2 name')]) or list containing one string (e.g. ['12'])
     'resolution_2': [],  # List of tuples (e.g. [(1, 'option 1 name'), (2, 'option 2 name')]) or list containing one string (e.g. ['12'])
     'sensitivity': [],  # List of tuples (e.g. [(1, 'option 1 name'), (2, 'option 2 name')]) or list containing one string (e.g. ['12'])
     'thermocouple_type': [],  # List of tuples (e.g. [(1, 'option 1 name'), (2, 'option 2 name')]) or list containing one string (e.g. ['12'])
-    'ref_ohm': None  # Integer
+    'ref_ohm': None,  # Integer
 }
 
 
@@ -148,8 +155,7 @@ class InputModule(AbstractInput):
             #
 
             if self.interface == 'I2C':
-
-                self.i2c_address = int(str(input_dev.location), 16)
+                self.i2c_address = int(str(input_dev.i2c_location), 16)
                 self.i2c_bus = input_dev.i2c_bus
                 # self.sensor = dependent_module.MY_SENSOR_CLASS(
                 #     i2c_address=self.i2c_address,

@@ -103,21 +103,14 @@ class InputController(threading.Thread):
         self.input_dev = input_dev
         self.input_name = input_dev.name
         self.unique_id = input_dev.unique_id
+        self.gpio_location = input_dev.gpio_location
+        self.i2c_location = input_dev.i2c_location
         self.i2c_bus = input_dev.i2c_bus
-        self.location = input_dev.location
-        self.power_output_id = input_dev.power_output_id
         self.measurements = input_dev.measurements
         self.convert_to_unit = input_dev.convert_to_unit
         self.device = input_dev.device
         self.interface = input_dev.interface
-        self.device_loc = input_dev.device_loc
-        self.baud_rate = input_dev.baud_rate
         self.period = input_dev.period
-        self.resolution = input_dev.resolution
-        self.sensitivity = input_dev.sensitivity
-        self.cmd_command = input_dev.cmd_command
-        self.thermocouple_type = input_dev.thermocouple_type
-        self.ref_ohm = input_dev.ref_ohm
 
         # Serial
         self.pin_clock = input_dev.pin_clock
@@ -178,7 +171,7 @@ class InputController(threading.Thread):
 
         # Convert string I2C address to base-16 int
         if self.device in LIST_DEVICES_I2C:
-            self.i2c_address = int(str(self.location), 16)
+            self.i2c_address = int(str(self.i2c_location), 16)
 
         # Set up edge detection of a GPIO pin
         if self.device == 'EDGE':
@@ -189,37 +182,30 @@ class InputController(threading.Thread):
             else:
                 self.switch_edge_gpio = GPIO.BOTH
 
-        # Set up analog-to-digital converter
-        if self.device in LIST_DEVICES_ADC:
-            if self.device in ['ADS1x15', 'MCP342x']:
-                self.adc_lock_file = "/var/lock/mycodo_adc_bus{bus}_0x{i2c:02X}.pid".format(
-                    bus=self.i2c_bus, i2c=self.i2c_address)
-            elif self.device == 'MCP3008':
-                self.adc_lock_file = "/var/lock/mycodo_adc_uart-{clock}-{cs}-{miso}-{mosi}".format(
-                    clock=self.pin_clock, cs=self.pin_cs, miso=self.pin_miso, mosi=self.pin_mosi)
-
-            if self.device == 'ADS1x15' and self.location:
-                from mycodo.devices.ads1x15 import ADS1x15Read
-                self.adc = ADS1x15Read(self.input_dev)
-            elif self.device == 'MCP3008':
-                from mycodo.devices.mcp3008 import MCP3008Read
-                self.adc = MCP3008Read(self.input_dev)
-            elif self.device == 'MCP342x' and self.location:
-                from mycodo.devices.mcp342x import MCP342xRead
-                self.adc = MCP342xRead(self.input_dev)
-        else:
-            self.adc = None
-
         self.device_recognized = True
 
         # Set up inputs or devices
         if self.device in ['EDGE'] + LIST_DEVICES_ADC:
             self.measure_input = None
-
         else:
             if self.device in self.dict_inputs:
+                # Load input module
                 input_loaded = load_module_from_file(self.dict_inputs[self.device]['file_path'])
-                self.measure_input = input_loaded.InputModule(self.input_dev)
+
+                if ('analog_to_digital_converter' in input_loaded.INPUT_INFORMATION and
+                        input_loaded.INPUT_INFORMATION['analog_to_digital_converter']):
+                    # Load analog-to-digital controller
+                    self.adc = input_loaded.ADCModule(self.input_dev)
+                    if self.interface == 'I2C':
+                        self.adc_lock_file = "/var/lock/mycodo_adc_bus{bus}_0x{i2c:02X}.pid".format(
+                            bus=self.i2c_bus, i2c=self.i2c_address)
+                    elif self.interface == 'UART':
+                        self.adc_lock_file = "/var/lock/mycodo_adc_uart-{clock}-{cs}-{miso}-{mosi}".format(
+                            clock=self.pin_clock, cs=self.pin_cs, miso=self.pin_miso, mosi=self.pin_mosi)
+                else:
+                    # Load regular input
+                    self.adc = None
+                    self.measure_input = input_loaded.InputModule(self.input_dev)
             else:
                 self.device_recognized = False
                 self.logger.debug("Device '{device}' not recognized".format(
@@ -242,8 +228,8 @@ class InputController(threading.Thread):
             # Set up edge detection
             if self.device == 'EDGE':
                 GPIO.setmode(GPIO.BCM)
-                GPIO.setup(int(self.location), GPIO.IN)
-                GPIO.add_event_detect(int(self.location),
+                GPIO.setup(int(self.gpio_location), GPIO.IN)
+                GPIO.add_event_detect(int(self.gpio_location),
                                       self.switch_edge_gpio,
                                       callback=self.edge_detected,
                                       bouncetime=self.switch_bouncetime)
@@ -353,7 +339,7 @@ class InputController(threading.Thread):
 
             if self.device == 'EDGE':
                 GPIO.setmode(GPIO.BCM)
-                GPIO.cleanup(int(self.location))
+                GPIO.cleanup(int(self.gpio_location))
 
             self.logger.info("Deactivated in {:.1f} ms".format(
                 (timeit.default_timer() - self.thread_shutdown_timer) * 1000))
@@ -490,7 +476,7 @@ class InputController(threading.Thread):
         :param bcm_pin: BMC pin of rising/falling edge (required parameter)
         :return: None
         """
-        gpio_state = GPIO.input(int(self.location))
+        gpio_state = GPIO.input(int(self.gpio_location))
         if time.time() > self.edge_reset_timer:
             self.edge_reset_timer = time.time()+self.switch_reset_period
 

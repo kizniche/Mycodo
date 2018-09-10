@@ -37,10 +37,11 @@ class InputModule(AbstractInput):
             from Adafruit_CCS811 import Adafruit_CCS811
             self.logger = logging.getLogger(
                 "mycodo.inputs.ccs811_{id}".format(id=input_dev.id))
-            self.i2c_address = int(str(input_dev.location), 16)
+            self.i2c_address = int(str(input_dev.i2c_location), 16)
             self.i2c_bus = input_dev.i2c_bus
             self.convert_to_unit = input_dev.convert_to_unit
-            self.sensor = Adafruit_CCS811(address=self.i2c_address, busnum=self.i2c_bus)
+            self.sensor = Adafruit_CCS811(address=self.i2c_address,
+                                          busnum=self.i2c_bus)
             while not self.sensor.available():
                 pass
             temp = self.sensor.calculateTemperature()

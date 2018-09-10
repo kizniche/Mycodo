@@ -35,7 +35,7 @@ class InputModule(AbstractInput):
             import pigpio
             self.logger = logging.getLogger(
                 "mycodo.inputs.signal_pwm_{id}".format(id=input_dev.id))
-            self.location = int(input_dev.location)
+            self.gpio = int(input_dev.gpio_location)
             self.convert_to_unit = input_dev.convert_to_unit
             self.weighting = input_dev.weighting
             self.sample_time = input_dev.sample_time
@@ -101,7 +101,7 @@ class InputModule(AbstractInput):
                          "Ensure it is running and try again.")
             return None, None, None
 
-        read_pwm = ReadPWM(pi, self.location, self.pigpio, self.weighting)
+        read_pwm = ReadPWM(pi, self.gpio, self.pigpio, self.weighting)
         time.sleep(self.sample_time)
         frequency = convert_units(
             'frequency', 'Hz', self.convert_to_unit,

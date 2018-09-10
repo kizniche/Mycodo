@@ -5,8 +5,34 @@ import time
 import smbus
 from MCP342x import MCP342x
 
+# Input information
+INPUT_INFORMATION = {
+    'unique_name_input': 'MCP342x',
+    'input_manufacturer': 'Microchip',
+    'common_name_input': 'MCP342x (Analog-to-Digital Converter)',
+    'common_name_measurements': 'Voltage',
+    'unique_name_measurements': ['voltage'],  # List of strings
+    'dependencies_pypi': ['MCP342x'],  # List of strings
+    'interfaces': ['I2C'],  # List of strings
+    'i2c_location': ['0x68', '0x6A', '0x6C', '0x6E', '0x6F'],  # List of strings
+    'i2c_address_editable': False,  # Boolean
+    'analog_to_digital_converter': True,  # Boolean
+    'adc_channel': [(0, 'Channel 0'),
+                    (1, 'Channel 1'),
+                    (2, 'Channel 2'),
+                    (3, 'Channel 3')],  # List of tuples
+    'adc_gain': [(1, '1'),
+                 (2, '2'),
+                 (4, '4'),
+                 (8, '8')],  # List of tuples
+    'adc_volts_min': -4.096,  # Float
+    'adc_volts_max': 4.096,  # Float
+    'options_enabled': ['adc_channel', 'adc_gain', 'adc_options', 'period', 'pre_output'],
+    'options_disabled': ['interface', 'i2c_location']
+}
 
-class MCP342xRead(object):
+
+class ADCModule(object):
     """ ADC Read """
     def __init__(self, input_dev, testing=False):
         self.logger = logging.getLogger('mycodo.mcp342x')

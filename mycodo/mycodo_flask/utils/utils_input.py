@@ -123,12 +123,12 @@ def input_add(form_add):
             # I2C options
             if input_interface == 'I2C':
                 if dict_has_value('i2c_location'):
-                    new_input.location = dict_inputs[input_name]['i2c_location'][0]  # First entry in list
+                    new_input.i2c_location = dict_inputs[input_name]['i2c_location'][0]  # First entry in list
 
             # UART options
             elif input_interface == 'UART':
                 if dict_has_value('uart_location'):
-                    new_input.location = dict_inputs[input_name]['uart_location']
+                    new_input.uart_location = dict_inputs[input_name]['uart_location']
                 if dict_has_value('uart_baud_rate'):
                     new_input.baud_rate = dict_inputs[input_name]['uart_baud_rate']
                 if dict_has_value('pin_cs'):
@@ -149,7 +149,8 @@ def input_add(form_add):
 
             # GPIO options
             elif input_interface == 'GPIO':
-                new_input.location = ''
+                if dict_has_value('gpio_location'):
+                    new_input.gpio_location = dict_inputs[input_name]['gpio_location']
 
             # Custom location location
             elif dict_has_value('location'):
@@ -161,6 +162,8 @@ def input_add(form_add):
 
             if dict_has_value('period'):
                 new_input.period = dict_inputs[input_name]['period']
+            if dict_has_value('convert_to_unit'):
+                new_input.convert_to_unit = ','.join(dict_inputs[input_name]['convert_to_unit'])
 
             # Server Ping options
             if dict_has_value('times_check'):
@@ -177,24 +180,35 @@ def input_add(form_add):
                 new_input.sample_time = dict_inputs[input_name]['sample_time']
 
             # Analog-to-digital converter options
-            if dict_has_value('adc_measure'):
-                new_input.adc_measure = dict_inputs[input_name]['adc_measure']
-                if dict_has_value('adc_measure_units'):
-                    new_input.adc_measure_units = dict_inputs[input_name]['adc_measure_units']
-                if dict_has_value('convert_to_unit'):
-                    new_input.convert_to_unit = ','.join(dict_inputs[input_name]['convert_to_unit'])
-                if dict_has_value('adc_volts_min'):
-                    new_input.adc_volts_min = dict_inputs[input_name]['adc_volts_min']
-                if dict_has_value('adc_volts_max'):
-                    new_input.adc_volts_max = dict_inputs[input_name]['adc_volts_max']
+            if dict_has_value('adc_channel'):
+                if len(dict_inputs[input_name]['adc_channel']) == 1:
+                    new_input.adc_channel = dict_inputs[input_name]['adc_channel'][0]
+                elif len(dict_inputs[input_name]['adc_channel']) > 1:
+                    new_input.adc_channel = dict_inputs[input_name]['adc_channel'][0][0]
+            if dict_has_value('adc_gain'):
+                if len(dict_inputs[input_name]['adc_gain']) == 1:
+                    new_input.adc_gain = dict_inputs[input_name]['adc_gain'][0]
+                elif len(dict_inputs[input_name]['adc_gain']) > 1:
+                    new_input.adc_gain = dict_inputs[input_name]['adc_gain'][0][0]
+            if dict_has_value('adc_resolution'):
+                if len(dict_inputs[input_name]['adc_resolution']) == 1:
+                    new_input.adc_resolution = dict_inputs[input_name]['adc_resolution'][0]
+                elif len(dict_inputs[input_name]['adc_resolution']) > 1:
+                    new_input.adc_resolution = dict_inputs[input_name]['adc_resolution'][0][0]
+            if dict_has_value('adc_volts_min'):
+                new_input.adc_volts_min = dict_inputs[input_name]['adc_volts_min']
+            if dict_has_value('adc_volts_max'):
+                new_input.adc_volts_max = dict_inputs[input_name]['adc_volts_max']
+            if dict_has_value('adc_units_min'):
+                new_input.adc_units_min = dict_inputs[input_name]['adc_units_min']
+            if dict_has_value('adc_units_max'):
+                new_input.adc_units_max = dict_inputs[input_name]['adc_units_max']
+            if dict_has_value('adc_inverse_unit_scale'):
+                new_input.adc_inverse_unit_scale = dict_inputs[input_name]['adc_inverse_unit_scale']
 
             # Linux command
             if dict_has_value('cmd_command'):
                 new_input.cmd_command = dict_inputs[input_name]['cmd_command']
-                if dict_has_value('cmd_measurement'):
-                    new_input.cmd_measurement = dict_inputs[input_name]['cmd_measurement']
-                if dict_has_value('cmd_measurement_units'):
-                    new_input.cmd_measurement_units = dict_inputs[input_name]['cmd_measurement_units']
 
             # Misc options
             if dict_has_value('resolution'):
@@ -256,6 +270,8 @@ def input_mod(form_mod, request_form):
         controller=gettext("Input"))
     error = []
 
+    dict_inputs = parse_input_information()
+
     try:
         mod_input = Input.query.filter(
             Input.unique_id == form_mod.input_id.data).first()
@@ -281,31 +297,36 @@ def input_mod(form_mod, request_form):
             error.append(gettext(
                 "The Read Period cannot be less than the Pre Output "
                 "Duration"))
-        if (form_mod.device_loc.data and
-                not os.path.exists(form_mod.device_loc.data)):
+        if (form_mod.uart_location.data and
+                not os.path.exists(form_mod.uart_location.data)):
             error.append(gettext(
                 "Invalid device or improper permissions to read device"))
 
         if not error:
             mod_input.name = form_mod.name.data
-            mod_input.i2c_bus = form_mod.i2c_bus.data
+
             if form_mod.location.data:
                 mod_input.location = form_mod.location.data
+            if form_mod.i2c_location.data:
+                mod_input.i2c_location = form_mod.i2c_location.data
+            if form_mod.uart_location.data:
+                mod_input.uart_location = form_mod.uart_location.data
+            if form_mod.gpio_location.data:
+                mod_input.gpio_location = form_mod.gpio_location.data
+
             if form_mod.power_output_id.data:
                 mod_input.power_output_id = form_mod.power_output_id.data
             else:
                 mod_input.power_output_id = None
-            if form_mod.baud_rate.data:
-                mod_input.baud_rate = form_mod.baud_rate.data
-            if form_mod.device_loc.data:
-                mod_input.device_loc = form_mod.device_loc.data
+
             if form_mod.pre_output_id.data:
                 mod_input.pre_output_id = form_mod.pre_output_id.data
             else:
                 mod_input.pre_output_id = None
 
             if (mod_input.device == 'LinuxCommand' or
-                    mod_input.device in LIST_DEVICES_ADC):
+                    ('analog_to_digital_converter' in dict_inputs[mod_input.device] and
+                     dict_inputs[mod_input.device]['analog_to_digital_converter'])):
                 mod_input.convert_to_unit = form_mod.selected_measurement_unit.data
 
             short_list = []
@@ -324,6 +345,8 @@ def input_mod(form_mod, request_form):
             if mod_units:
                 mod_input.convert_to_unit = ';'.join(short_list)
 
+            mod_input.i2c_bus = form_mod.i2c_bus.data
+            mod_input.baud_rate = form_mod.baud_rate.data
             mod_input.pre_output_duration = form_mod.pre_output_duration.data
             mod_input.pre_output_during_measure = form_mod.pre_output_during_measure.data
             mod_input.period = form_mod.period.data

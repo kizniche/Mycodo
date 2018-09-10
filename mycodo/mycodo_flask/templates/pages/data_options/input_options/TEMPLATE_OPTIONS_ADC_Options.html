@@ -1,3 +1,5 @@
+{% if 'adc_options' in dict_inputs[each_input.device]['options_disabled'] or 'adc_options' in dict_inputs[each_input.device]['options_enabled'] %}
+
 <div class="col-12">
   Custom Measurements and Units can be created in <a href="/settings/measurement">Measurement Settings</a>.
 </div>
@@ -15,34 +17,36 @@
 <div class="col-auto">
   {{form_mod_input.adc_volts_min.label(class_='control-label')}}
   <div>
-    {{form_mod_input.adc_volts_min(class_='form-control', value=each_input.adc_volts_min, **{'title':_('Minimum analog to digital converter input voltage.')})}}
+    {{form_mod_input.adc_volts_min(class_='form-control', value=each_input.adc_volts_min, **{'title': tooltips_input['adc_volts_min']['phrase']})}}
   </div>
 </div>
 <div class="col-auto">
   {{form_mod_input.adc_volts_max.label(class_='control-label')}}
   <div>
-    {{form_mod_input.adc_volts_max(class_='form-control', value=each_input.adc_volts_max, **{'title':_('Maximum analog to digital converter input voltage.')})}}
+    {{form_mod_input.adc_volts_max(class_='form-control', value=each_input.adc_volts_max, **{'title': tooltips_input['adc_volts_max']['phrase']})}}
   </div>
 </div>
 <div class="col-auto">
   {{form_mod_input.adc_units_min.label(class_='control-label')}}
   <div>
-    {{form_mod_input.adc_units_min(class_='form-control', value=each_input.adc_units_min, **{'title':_('Minimum unit to convert the voltage to.')})}}
+    {{form_mod_input.adc_units_min(class_='form-control', value=each_input.adc_units_min, **{'title': tooltips_input['adc_units_min']['phrase']})}}
   </div>
 </div>
 <div class="col-auto">
   {{form_mod_input.adc_units_max.label(class_='control-label')}}
   <div>
-    {{form_mod_input.adc_units_max(class_='form-control', value=each_input.adc_units_max, **{'title':_('Maximum unit to convert the voltage to.')})}}
+    {{form_mod_input.adc_units_max(class_='form-control', value=each_input.adc_units_max, **{'title': tooltips_input['adc_units_max']['phrase']})}}
   </div>
 </div>
 <div class="col-auto">
   {{form_mod_input.adc_inverse_unit_scale.label(class_='control-label')}}
   <div class="input-group-text">
     {%- if each_input.adc_inverse_unit_scale == true -%}
-      {{form_mod_input.adc_inverse_unit_scale(checked=True, class_='checkbox-big', **{'title':_('Inverse the scale (example: a high measurement returns a low unit value)')})}}
+      {{form_mod_input.adc_inverse_unit_scale(checked=True, class_='checkbox-big', **{'title': tooltips_input['adc_inverse_unit_scale']['phrase']})}}
     {%- else -%}
-      {{form_mod_input.adc_inverse_unit_scale(class_='checkbox-big', **{'title':_('Inverse the scale (example: a high measurement returns a low unit value)')})}}
+      {{form_mod_input.adc_inverse_unit_scale(class_='checkbox-big', **{'title': tooltips_input['adc_inverse_unit_scale']['phrase']})}}
     {%- endif -%}
   </div>
 </div>
+
+{% endif %}

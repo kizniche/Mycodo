@@ -74,7 +74,10 @@ class InputMod(FlaskForm):
                     )]
     )
     location = StringField(lazy_gettext('Location'))  # Access input (GPIO, I2C address, etc.)
-    device_loc = StringField(lazy_gettext('Device Location'))  # Second device location type
+    uart_location = StringField(lazy_gettext('UART Device'))  # UART device location type
+    i2c_location = StringField(lazy_gettext('I<sup>2</sup>C Address'))  # I2C device location type
+    gpio_location = IntegerField(lazy_gettext('GPIO Pin'))  # GPIO device location type
+
     i2c_bus = IntegerField(lazy_gettext('I<sup>2</sup>C Bus'))
     baud_rate = IntegerField(lazy_gettext('Baud Rate'))
     power_output_id = StringField(lazy_gettext('Power Output'))  # For powering input
@@ -111,8 +114,6 @@ class InputMod(FlaskForm):
     adc_channel = IntegerField(lazy_gettext('Channel'))
     adc_gain = IntegerField(lazy_gettext('Gain'))
     adc_resolution = IntegerField(lazy_gettext('Resolution'))
-    adc_measurement = StringField(lazy_gettext('Measurement'))
-    adc_measurement_units = StringField(lazy_gettext('Measurement Units'))
     adc_volts_min = DecimalField(lazy_gettext('Volts Min'))
     adc_volts_max = DecimalField(lazy_gettext('Volts Max'))
     adc_units_min = DecimalField(lazy_gettext('Units Min'))

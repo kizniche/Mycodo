@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Mycodo VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2018-09-09 11:23-0400\n"
+"POT-Creation-Date: 2018-09-09 20:42-0400\n"
 "PO-Revision-Date: 2017-01-05 00:55-0500\n"
 "Last-Translator: \n"
 "Language: fr\n"
@@ -258,7 +258,7 @@ msgstr "Température"
 msgid "VOC"
 msgstr "COV"
 
-#: config_devices_units.py:470 mycodo_flask/forms/forms_input.py:143
+#: config_devices_units.py:470 mycodo_flask/forms/forms_input.py:144
 #: mycodo_flask/forms/forms_settings.py:124
 msgid "Voltage"
 msgstr "Tension"
@@ -280,7 +280,6 @@ msgid "The duration (seconds) between input reads"
 msgstr "La durée (en secondes) entre les lectures d'entrée"
 
 #: config_translations.py:18
-#: mycodo_flask/templates/pages/data_options/input_options/TEMPLATE_CONVERT_UNIT.html:7
 msgid "Select the unit of the measurement to be stored in the database"
 msgstr "Sélectionnez l'unité de mesure à stocker dans la base de données"
 
@@ -319,11 +318,10 @@ msgid "GPIO"
 msgstr ""
 
 #: config_translations.py:30
-#: mycodo_flask/templates/pages/data_options/input_options/TEMPLATE_GPIO_PIN.html:4
 msgid "The GPIO pin (BCM numbering) to access the device"
 msgstr "La broche GPIO (numérotation BCM) pour accéder au périphérique"
 
-#: config_translations.py:32
+#: config_translations.py:32 mycodo_flask/forms/forms_input.py:78
 msgid "I<sup>2</sup>C Address"
 msgstr ""
 
@@ -331,7 +329,7 @@ msgstr ""
 msgid "The I2C address of the device"
 msgstr ""
 
-#: config_translations.py:35 mycodo_flask/forms/forms_input.py:78
+#: config_translations.py:35 mycodo_flask/forms/forms_input.py:81
 msgid "I<sup>2</sup>C Bus"
 msgstr "I <sup> 2 </ sup> C Bus"
 
@@ -339,7 +337,7 @@ msgstr "I <sup> 2 </ sup> C Bus"
 msgid "The I2C bus the device is connected to"
 msgstr ""
 
-#: config_translations.py:38
+#: config_translations.py:38 mycodo_flask/forms/forms_input.py:77
 msgid "UART Device"
 msgstr ""
 
@@ -347,16 +345,15 @@ msgstr ""
 msgid "The UART device location (e.g. /dev/ttyUSB1)"
 msgstr ""
 
-#: config_translations.py:41 mycodo_flask/forms/forms_input.py:79
+#: config_translations.py:41 mycodo_flask/forms/forms_input.py:82
 msgid "Baud Rate"
 msgstr "Débit en bauds"
 
 #: config_translations.py:42
-#: mycodo_flask/templates/pages/data_options/input_options/TEMPLATE_UART_BAUD.html:4
 msgid "The UART baud rate"
 msgstr "Le débit en bauds UART"
 
-#: config_translations.py:44 mycodo_flask/forms/forms_input.py:103
+#: config_translations.py:44 mycodo_flask/forms/forms_input.py:106
 msgid "CS Pin"
 msgstr "Pin CS"
 
@@ -364,119 +361,108 @@ msgstr "Pin CS"
 msgid "The GPIO (using BCM numbering) connected to the Cable Select pin"
 msgstr ""
 
-#: config_translations.py:47 mycodo_flask/forms/forms_input.py:105
+#: config_translations.py:47 mycodo_flask/forms/forms_input.py:108
 msgid "MISO Pin"
 msgstr "MISO Pin"
 
 #: config_translations.py:48
-#: mycodo_flask/templates/pages/data_options/input_options/TEMPLATE_SPI_OPTIONS.html:22
 msgid "The GPIO (using BCM numbering) connected to the MISO pin"
 msgstr "Le GPIO (utilisant la numérotation BCM) connecté à la broche MISO"
 
-#: config_translations.py:50 mycodo_flask/forms/forms_input.py:104
+#: config_translations.py:50 mycodo_flask/forms/forms_input.py:107
 msgid "MOSI Pin"
 msgstr "Pin MOSI"
 
 #: config_translations.py:51
-#: mycodo_flask/templates/pages/data_options/input_options/TEMPLATE_SPI_OPTIONS.html:16
 msgid "The GPIO (using BCM numbering) connected to the MOSI pin"
 msgstr "Le GPIO (utilisant la numérotation BCM) connecté à la broche MOSI"
 
-#: config_translations.py:53 mycodo_flask/forms/forms_input.py:102
+#: config_translations.py:53 mycodo_flask/forms/forms_input.py:105
 msgid "Clock Pin"
 msgstr "Pin de l'horloge"
 
 #: config_translations.py:54
-#: mycodo_flask/templates/pages/data_options/input_options/TEMPLATE_SPI_OPTIONS.html:4
 msgid "The GPIO (using BCM numbering) connected to the Clock pin"
 msgstr "Le GPIO (utilisant la numérotation BCM) connecté à la broche de l'horloge"
 
 #: config_translations.py:56
-msgid "Device ID"
+msgid "MAC (XX:XX:XX:XX:XX:XX)"
 msgstr ""
 
 #: config_translations.py:57
-#: mycodo_flask/templates/pages/data_options/input_options/DS1822.html:4
-#: mycodo_flask/templates/pages/data_options/input_options/DS1825.html:4
-#: mycodo_flask/templates/pages/data_options/input_options/DS18B20.html:4
-#: mycodo_flask/templates/pages/data_options/input_options/DS18S20.html:4
-#: mycodo_flask/templates/pages/data_options/input_options/DS28EA00.html:4
-#: mycodo_flask/templates/pages/data_options/input_options/MAX31850K.html:4
+msgid "The MAC address of the input"
+msgstr ""
+
+#: config_translations.py:59 mycodo_flask/forms/forms_input.py:111
+msgid "BT Adapter"
+msgstr "Adaptateur BT"
+
+#: config_translations.py:60
+msgid "The Bluetooth adapter of the input"
+msgstr ""
+
+#: config_translations.py:62
+msgid "Device ID"
+msgstr ""
+
+#: config_translations.py:63
 msgid "Select the ID of the desired DS18B20 sensor"
 msgstr "Sélectionnez l'ID du capteur DS18B20 souhaité"
 
-#: config_translations.py:59 mycodo_flask/forms/forms_calibration.py:45
-#: mycodo_flask/forms/forms_input.py:82 mycodo_flask/forms/forms_input.py:83
-#: mycodo_flask/forms/forms_input.py:113
+#: config_translations.py:65 config_translations.py:107
+#: mycodo_flask/forms/forms_calibration.py:45
+#: mycodo_flask/forms/forms_input.py:85 mycodo_flask/forms/forms_input.py:86
+#: mycodo_flask/forms/forms_input.py:116
 msgid "Resolution"
 msgstr "Résolution"
 
-#: config_translations.py:60
+#: config_translations.py:66
 msgid "Measurement resolution"
 msgstr ""
 
-#: config_translations.py:62 mycodo_flask/forms/forms_input.py:84
+#: config_translations.py:68 mycodo_flask/forms/forms_input.py:87
 msgid "Sensitivity"
 msgstr "Sensibilité"
 
-#: config_translations.py:63
+#: config_translations.py:69
 msgid "Measurement sensitivity"
 msgstr ""
 
-#: config_translations.py:65
+#: config_translations.py:71
 msgid "Thermocouple"
 msgstr ""
 
-#: config_translations.py:66
-#: mycodo_flask/templates/pages/data_options/input_options/MAX31856.html:5
-#: mycodo_flask/templates/pages/data_options/input_options/MAX31865.html:5
+#: config_translations.py:72
 msgid "The type of thermocouple connected"
 msgstr "Le type de thermocouple connecté"
 
-#: config_translations.py:68 mycodo_flask/forms/forms_input.py:99
+#: config_translations.py:74 mycodo_flask/forms/forms_input.py:102
 msgid "Reference Resistance"
 msgstr ""
 
-#: config_translations.py:69
+#: config_translations.py:75
 msgid "Reference resistance (Ohm)"
 msgstr ""
 
-#: config_translations.py:71 mycodo_flask/forms/forms_input.py:95
+#: config_translations.py:77 mycodo_flask/forms/forms_input.py:98
 #: mycodo_flask/routes_calibration.py:272
 #: mycodo_flask/templates/pages/function_options/conditional_options/actions.html:131
 msgid "Command"
 msgstr "Commander"
 
-#: config_translations.py:72
-#: mycodo_flask/templates/pages/data_options/input_options/LinuxCommand.html:7
+#: config_translations.py:78
 msgid "The command to executed (as user mycodo) to return a measurement value"
 msgstr ""
 "La commande à exécuter (en tant qu'utilisateur mycodo) pour renvoyer une "
 "valeur de mesure"
 
-#: config_translations.py:74 mycodo_flask/forms/forms_input.py:86
+#: config_translations.py:80 mycodo_flask/forms/forms_input.py:89
 #: mycodo_flask/forms/forms_math.py:43
 msgid "Unit Measurement"
 msgstr "Mesure d'unité"
 
-#: config_translations.py:75
-msgid "Select a unit for the stored value"
-msgstr ""
-
-#: config_translations.py:77
-msgid "MAC (XX:XX:XX:XX:XX:XX)"
-msgstr ""
-
-#: config_translations.py:78
-msgid "The MAC address of the input"
-msgstr ""
-
-#: config_translations.py:80 mycodo_flask/forms/forms_input.py:108
-msgid "BT Adapter"
-msgstr "Adaptateur BT"
-
 #: config_translations.py:81
-msgid "The Bluetooth adapter of the input"
+msgid "Select a unit for the stored value"
 msgstr ""
 
 #: config_translations.py:83
@@ -495,7 +481,7 @@ msgstr ""
 msgid "Time (seconds) to wait until failure"
 msgstr ""
 
-#: config_translations.py:89 mycodo_flask/forms/forms_input.py:90
+#: config_translations.py:89 mycodo_flask/forms/forms_input.py:93
 msgid "Port"
 msgstr "Port"
 
@@ -503,13 +489,11 @@ msgstr "Port"
 msgid "Host port number"
 msgstr ""
 
-#: config_translations.py:92 mycodo_flask/forms/forms_input.py:138
+#: config_translations.py:92 mycodo_flask/forms/forms_input.py:139
 msgid "Weighting"
 msgstr "Pondération"
 
 #: config_translations.py:93
-#: mycodo_flask/templates/pages/data_options/input_options/SIGNAL_PWM.html:5
-#: mycodo_flask/templates/pages/data_options/input_options/SIGNAL_RPM.html:5
 msgid ""
 "The weighting of the previous measurement on the current measurement. "
 "Range: 0.0 - 1.0. Used for smoothing measurements. 0.0 means no "
@@ -518,7 +502,7 @@ msgstr ""
 "La pondération de la mesure précédente sur la mesure en cours. Plage: 0.0"
 " - 1.0. Utilisé pour lisser les mesures. 0.0 signifie pas de pondération."
 
-#: config_translations.py:95 mycodo_flask/forms/forms_input.py:140
+#: config_translations.py:95 mycodo_flask/forms/forms_input.py:141
 msgid "Sample Time"
 msgstr ""
 
@@ -528,16 +512,84 @@ msgid ""
 "measurement"
 msgstr ""
 
-#: config_translations.py:98 mycodo_flask/forms/forms_input.py:139
+#: config_translations.py:98 mycodo_flask/forms/forms_input.py:140
 msgid "Pulses Per Rev"
 msgstr "Impulsions par rév"
 
 #: config_translations.py:99
-#: mycodo_flask/templates/pages/data_options/input_options/SIGNAL_RPM.html:11
 msgid ""
 "The number of pulses per revolution to calculate revolutions per minute "
 "(RPM)"
 msgstr "Le nombre d'impulsions par tour pour calculer les tours par minute (RPM)"
+
+#: config_translations.py:101 mycodo_flask/forms/forms_input.py:114
+msgid "Channel"
+msgstr "Canal"
+
+#: config_translations.py:102
+msgid "The channel of the analog to digital converter."
+msgstr "Le canal du convertisseur analogique-numérique."
+
+#: config_translations.py:104 mycodo_flask/forms/forms_input.py:115
+#: mycodo_flask/forms/forms_settings.py:39
+#: mycodo_flask/templates/pages/live.html:154
+#: mycodo_flask/templates/pages/live.html:323
+msgid "Gain"
+msgstr "Gain"
+
+#: config_translations.py:105
+msgid ""
+"Adjust the gain to change the measurable voltage range. See ADC "
+"documentation for details."
+msgstr ""
+"Ajustez le gain pour changer la plage de tension mesurable. Voir la "
+"documentation ADC pour plus de détails."
+
+#: config_translations.py:108
+msgid "ADC Resolution (see ADC documentation)"
+msgstr "Résolution ADC (voir documentation ADC)"
+
+#: config_translations.py:110 mycodo_flask/forms/forms_input.py:117
+msgid "Volts Min"
+msgstr "Volts Min"
+
+#: config_translations.py:111
+msgid "Minimum analog to digital converter input voltage."
+msgstr "Tension d'entrée du convertisseur analogique-numérique minimale."
+
+#: config_translations.py:113 mycodo_flask/forms/forms_input.py:118
+msgid "Volts Max"
+msgstr "Volts Max"
+
+#: config_translations.py:114
+msgid "Maximum analog to digital converter input voltage."
+msgstr "Tension d'entrée du convertisseur analogique / numérique maximale."
+
+#: config_translations.py:116 mycodo_flask/forms/forms_input.py:119
+msgid "Units Min"
+msgstr "Unités Min"
+
+#: config_translations.py:117
+msgid "Minimum unit to convert the voltage to."
+msgstr "Unité minimum pour convertir la tension en."
+
+#: config_translations.py:119 mycodo_flask/forms/forms_input.py:120
+msgid "Units Max"
+msgstr "Unités Max"
+
+#: config_translations.py:120
+msgid "Maximum unit to convert the voltage to."
+msgstr "Unité maximale pour convertir la tension."
+
+#: config_translations.py:122 mycodo_flask/forms/forms_input.py:121
+msgid "Inverse Unit Scale"
+msgstr "Echelle d'unité inverse"
+
+#: config_translations.py:123
+msgid "Inverse the scale (example: a high measurement returns a low unit value)"
+msgstr ""
+"Inverser l'échelle (exemple: une mesure élevée renvoie une valeur "
+"unitaire faible)"
 
 #: mycodo_flask/app.py:112
 msgid "Please log in to access this page"
@@ -689,7 +741,7 @@ msgstr "Commande pour recharger le frontend envoyé"
 #: mycodo_flask/forms/forms_conditional.py:68
 #: mycodo_flask/forms/forms_conditional.py:92
 #: mycodo_flask/forms/forms_dashboard.py:64
-#: mycodo_flask/forms/forms_input.py:146 mycodo_flask/forms/forms_lcd.py:65
+#: mycodo_flask/forms/forms_input.py:147 mycodo_flask/forms/forms_lcd.py:65
 #: mycodo_flask/forms/forms_lcd.py:113 mycodo_flask/forms/forms_math.py:45
 #: mycodo_flask/forms/forms_method.py:128 mycodo_flask/forms/forms_output.py:82
 #: mycodo_flask/forms/forms_pid.py:89 mycodo_flask/forms/forms_settings.py:50
@@ -701,7 +753,7 @@ msgstr "Commande pour recharger le frontend envoyé"
 #: mycodo_flask/utils/utils_conditional.py:130
 #: mycodo_flask/utils/utils_conditional.py:303
 #: mycodo_flask/utils/utils_dashboard.py:353
-#: mycodo_flask/utils/utils_input.py:377 mycodo_flask/utils/utils_lcd.py:92
+#: mycodo_flask/utils/utils_input.py:400 mycodo_flask/utils/utils_lcd.py:92
 #: mycodo_flask/utils/utils_lcd.py:289 mycodo_flask/utils/utils_math.py:203
 #: mycodo_flask/utils/utils_method.py:497
 #: mycodo_flask/utils/utils_output.py:149 mycodo_flask/utils/utils_pid.py:154
@@ -979,7 +1031,7 @@ msgstr "Ajouter conditionnel"
 #: mycodo_flask/forms/forms_conditional.py:67
 #: mycodo_flask/forms/forms_conditional.py:91
 #: mycodo_flask/forms/forms_dashboard.py:63
-#: mycodo_flask/forms/forms_input.py:145 mycodo_flask/forms/forms_lcd.py:64
+#: mycodo_flask/forms/forms_input.py:146 mycodo_flask/forms/forms_lcd.py:64
 #: mycodo_flask/forms/forms_lcd.py:112 mycodo_flask/forms/forms_math.py:44
 #: mycodo_flask/forms/forms_method.py:127 mycodo_flask/forms/forms_output.py:81
 #: mycodo_flask/forms/forms_pid.py:85 mycodo_flask/forms/forms_settings.py:49
@@ -995,7 +1047,7 @@ msgid "Save"
 msgstr "sauvegarder"
 
 #: mycodo_flask/forms/forms_conditional.py:69
-#: mycodo_flask/forms/forms_input.py:147 mycodo_flask/forms/forms_lcd.py:66
+#: mycodo_flask/forms/forms_input.py:148 mycodo_flask/forms/forms_lcd.py:66
 #: mycodo_flask/forms/forms_math.py:46 mycodo_flask/forms/forms_pid.py:90
 #: mycodo_flask/templates/pages/dashboard_options/mod_pid_control.html:39
 #: mycodo_flask/utils/utils_conditional.py:351
@@ -1004,7 +1056,7 @@ msgid "Activate"
 msgstr "Activer"
 
 #: mycodo_flask/forms/forms_conditional.py:70
-#: mycodo_flask/forms/forms_input.py:148 mycodo_flask/forms/forms_lcd.py:67
+#: mycodo_flask/forms/forms_input.py:149 mycodo_flask/forms/forms_lcd.py:67
 #: mycodo_flask/forms/forms_math.py:47 mycodo_flask/forms/forms_pid.py:91
 #: mycodo_flask/templates/pages/dashboard_options/mod_pid_control.html:42
 #: mycodo_flask/utils/utils_conditional.py:390
@@ -1013,7 +1065,7 @@ msgstr "Désactiver"
 
 #: mycodo_flask/forms/forms_conditional.py:71
 #: mycodo_flask/forms/forms_dashboard.py:65
-#: mycodo_flask/forms/forms_input.py:149 mycodo_flask/forms/forms_lcd.py:68
+#: mycodo_flask/forms/forms_input.py:150 mycodo_flask/forms/forms_lcd.py:68
 #: mycodo_flask/forms/forms_math.py:48 mycodo_flask/forms/forms_output.py:83
 #: mycodo_flask/forms/forms_pid.py:92
 msgid "Up"
@@ -1021,7 +1073,7 @@ msgstr "Vers le haut"
 
 #: mycodo_flask/forms/forms_conditional.py:72
 #: mycodo_flask/forms/forms_dashboard.py:66
-#: mycodo_flask/forms/forms_input.py:150 mycodo_flask/forms/forms_lcd.py:69
+#: mycodo_flask/forms/forms_input.py:151 mycodo_flask/forms/forms_lcd.py:69
 #: mycodo_flask/forms/forms_math.py:49 mycodo_flask/forms/forms_output.py:84
 #: mycodo_flask/forms/forms_pid.py:93
 msgid "Down"
@@ -1069,8 +1121,7 @@ msgstr "Jauge"
 
 #: mycodo_flask/forms/forms_dashboard.py:27
 #: mycodo_flask/forms/forms_dashboard.py:105
-#: mycodo_flask/forms/forms_dashboard.py:113
-#: mycodo_flask/forms/forms_input.py:114 mycodo_flask/forms/forms_pid.py:26
+#: mycodo_flask/forms/forms_dashboard.py:113 mycodo_flask/forms/forms_pid.py:26
 #: mycodo_flask/templates/pages/live.html:118
 #: mycodo_flask/templates/pages/live.html:288
 #: mycodo_flask/utils/utils_settings.py:282
@@ -1315,87 +1366,50 @@ msgstr "Ajouter une entrée"
 msgid "Location"
 msgstr "Emplacement"
 
-#: mycodo_flask/forms/forms_input.py:77
-msgid "Device Location"
-msgstr "Emplacement du périphérique"
+#: mycodo_flask/forms/forms_input.py:79
+msgid "GPIO Pin"
+msgstr ""
 
-#: mycodo_flask/forms/forms_input.py:80
+#: mycodo_flask/forms/forms_input.py:83
 msgid "Power Output"
 msgstr "Puissance de sortie"
 
-#: mycodo_flask/forms/forms_input.py:81
+#: mycodo_flask/forms/forms_input.py:84
 msgid "Calibration Measurement"
 msgstr "Mesure d'étalonnage"
 
-#: mycodo_flask/forms/forms_input.py:85
+#: mycodo_flask/forms/forms_input.py:88
 #: mycodo_flask/utils/utils_settings.py:356
 #: mycodo_flask/utils/utils_settings.py:394
 #: mycodo_flask/utils/utils_settings.py:423
 msgid "Unit"
 msgstr "Unité"
 
-#: mycodo_flask/forms/forms_input.py:89
+#: mycodo_flask/forms/forms_input.py:92
 msgid "Host"
 msgstr "Hôte"
 
-#: mycodo_flask/forms/forms_input.py:91
+#: mycodo_flask/forms/forms_input.py:94
 msgid "Times to Check"
 msgstr "Temps pour vérifier"
 
-#: mycodo_flask/forms/forms_input.py:92
+#: mycodo_flask/forms/forms_input.py:95
 msgid "Deadline (seconds)"
 msgstr "Date limite (secondes)"
 
-#: mycodo_flask/forms/forms_input.py:98
+#: mycodo_flask/forms/forms_input.py:101
 msgid "RTD Probe Type"
 msgstr "Type de sonde RTD"
 
-#: mycodo_flask/forms/forms_input.py:111
-msgid "Channel"
-msgstr "Canal"
-
-#: mycodo_flask/forms/forms_input.py:112
-#: mycodo_flask/forms/forms_settings.py:39
-#: mycodo_flask/templates/pages/live.html:154
-#: mycodo_flask/templates/pages/live.html:323
-msgid "Gain"
-msgstr "Gain"
-
-#: mycodo_flask/forms/forms_input.py:115
-#: mycodo_flask/forms/forms_settings.py:149
-#: mycodo_flask/forms/forms_settings.py:156
-msgid "Measurement Units"
-msgstr "Unités de mesure"
-
-#: mycodo_flask/forms/forms_input.py:116
-msgid "Volts Min"
-msgstr "Volts Min"
-
-#: mycodo_flask/forms/forms_input.py:117
-msgid "Volts Max"
-msgstr "Volts Max"
-
-#: mycodo_flask/forms/forms_input.py:118
-msgid "Units Min"
-msgstr "Unités Min"
-
-#: mycodo_flask/forms/forms_input.py:119
-msgid "Units Max"
-msgstr "Unités Max"
-
-#: mycodo_flask/forms/forms_input.py:120
-msgid "Inverse Unit Scale"
-msgstr "Echelle d'unité inverse"
-
-#: mycodo_flask/forms/forms_input.py:122
+#: mycodo_flask/forms/forms_input.py:123
 msgid "Edge"
 msgstr "Bord"
 
-#: mycodo_flask/forms/forms_input.py:123
+#: mycodo_flask/forms/forms_input.py:124
 msgid "Bounce Time (ms)"
 msgstr "Temps de rebond (ms)"
 
-#: mycodo_flask/forms/forms_input.py:124
+#: mycodo_flask/forms/forms_input.py:125
 msgid "Reset Period"
 msgstr "Période de réinitialisation"
 
@@ -1464,8 +1478,8 @@ msgstr "Ajouter des maths"
 #: mycodo_flask/templates/layout-remote.html:50
 #: mycodo_flask/templates/pages/data_options/input.html:1
 #: mycodo_flask/utils/utils_general.py:67 mycodo_flask/utils/utils_input.py:43
-#: mycodo_flask/utils/utils_input.py:256 mycodo_flask/utils/utils_input.py:378
-#: mycodo_flask/utils/utils_input.py:408
+#: mycodo_flask/utils/utils_input.py:270 mycodo_flask/utils/utils_input.py:401
+#: mycodo_flask/utils/utils_input.py:431
 msgid "Input"
 msgstr "Contribution"
 
@@ -2166,6 +2180,11 @@ msgstr "Vérifier les mises à jour"
 #: mycodo_flask/templates/pages/dashboard_options/add_measurement.html:10
 msgid "Measurement Name"
 msgstr "Nom de la mesure"
+
+#: mycodo_flask/forms/forms_settings.py:149
+#: mycodo_flask/forms/forms_settings.py:156
+msgid "Measurement Units"
+msgstr "Unités de mesure"
 
 #: mycodo_flask/forms/forms_settings.py:150
 #: mycodo_flask/templates/settings/measurement.html:12
@@ -3349,58 +3368,6 @@ msgstr ""
 msgid "The duration (seconds) between math calculations"
 msgstr "La durée (en secondes) entre les calculs mathématiques"
 
-#: mycodo_flask/templates/pages/data_options/input_options/ADS1x15.html:4
-#: mycodo_flask/templates/pages/data_options/input_options/BH1750.html:4
-#: mycodo_flask/templates/pages/data_options/input_options/BH1750.html:15
-#: mycodo_flask/templates/pages/data_options/input_options/BH1750.html:25
-#: mycodo_flask/templates/pages/data_options/input_options/BME280.html:4
-#: mycodo_flask/templates/pages/data_options/input_options/BMP280.html:4
-#: mycodo_flask/templates/pages/data_options/input_options/CCS811.html:4
-#: mycodo_flask/templates/pages/data_options/input_options/CHIRP.html:4
-#: mycodo_flask/templates/pages/data_options/input_options/MCP342x.html:4
-#: mycodo_flask/templates/pages/data_options/input_options/TEMPLATE_CHECK_INTERFACE.html:9
-#: mycodo_flask/templates/pages/data_options/input_options/TEMPLATE_CHECK_INTERFACE.html:19
-#: mycodo_flask/templates/pages/data_options/input_options/TEMPLATE_OPTIONS_DISPLAY.html:27
-#: mycodo_flask/templates/pages/data_options/input_options/TEMPLATE_OPTIONS_DISPLAY.html:37
-#: mycodo_flask/templates/pages/data_options/input_options/TEMPLATE_OPTIONS_ENABLED.html:9
-#: mycodo_flask/templates/pages/data_options/input_options/TEMPLATE_OPTIONS_ENABLED.html:19
-#: mycodo_flask/templates/pages/data_options/input_options/TMP006.html:4
-#: mycodo_flask/templates/pages/data_options/input_options/TSL2561.html:4
-msgid "The I2C address to access the device"
-msgstr "L'adresse I2C pour accéder à l'appareil"
-
-#: mycodo_flask/templates/pages/data_options/input_options/ADS1x15.html:17
-#: mycodo_flask/templates/pages/data_options/input_options/MCP3008.html:5
-msgid "The channel of the analog to digital converter."
-msgstr "Le canal du convertisseur analogique-numérique."
-
-#: mycodo_flask/templates/pages/data_options/input_options/ADS1x15.html:28
-msgid ""
-"Adjust the gain to change the measurable voltage range. See ADC "
-"documentation for details."
-msgstr ""
-"Ajustez le gain pour changer la plage de tension mesurable. Voir la "
-"documentation ADC pour plus de détails."
-
-#: mycodo_flask/templates/pages/data_options/input_options/ATLAS_PH_I2C.html:11
-#: mycodo_flask/templates/pages/data_options/input_options/ATLAS_PH_UART.html:7
-msgid ""
-"Select a sensor measurement to use to calibrate this particular sensor "
-"before conducting a measurement"
-msgstr ""
-"Sélectionnez une mesure de capteur à utiliser pour calibrer ce capteur "
-"particulier avant d'effectuer une mesure"
-
-#: mycodo_flask/templates/pages/data_options/input_options/DS1822.html:19
-#: mycodo_flask/templates/pages/data_options/input_options/DS1825.html:19
-#: mycodo_flask/templates/pages/data_options/input_options/DS18B20.html:19
-#: mycodo_flask/templates/pages/data_options/input_options/DS28EA00.html:19
-#: mycodo_flask/templates/pages/data_options/input_options/HDC1000.html:6
-#: mycodo_flask/templates/pages/data_options/input_options/HDC1000.html:15
-#: mycodo_flask/templates/tools/calibration_options/ds_resolution.html:37
-msgid "Select a resolution"
-msgstr "Sélectionnez une résolution"
-
 #: mycodo_flask/templates/pages/data_options/input_options/EDGE.html:5
 msgid "Edge detection: low to high (rising), high to low (falling), or both"
 msgstr ""
@@ -3421,76 +3388,17 @@ msgstr ""
 "Attendez une période de temps (secondes) après la détection du premier "
 "bord pour recommencer à détecter"
 
-#: mycodo_flask/templates/pages/data_options/input_options/MCP342x.html:18
-msgid "The channel of the analog to digital converter"
-msgstr "Le canal du convertisseur analogique-numérique"
+#: mycodo_flask/templates/pages/data_options/input_options/TEMPLATE_OPTIONS_DISPLAY.html:27
+#: mycodo_flask/templates/pages/data_options/input_options/TEMPLATE_OPTIONS_DISPLAY.html:37
+#: mycodo_flask/templates/pages/data_options/input_options/TEMPLATE_OPTIONS_ENABLED.html:9
+#: mycodo_flask/templates/pages/data_options/input_options/TEMPLATE_OPTIONS_ENABLED.html:19
+msgid "The I2C address to access the device"
+msgstr "L'adresse I2C pour accéder à l'appareil"
 
-#: mycodo_flask/templates/pages/data_options/input_options/MCP342x.html:29
-msgid "ADC Gain (see ADC documentation)"
-msgstr "ADC Gain (voir la documentation de l'ADC)"
-
-#: mycodo_flask/templates/pages/data_options/input_options/MCP342x.html:41
-msgid "ADC Resolution (see ADC documentation)"
-msgstr "Résolution ADC (voir documentation ADC)"
-
-#: mycodo_flask/templates/pages/data_options/input_options/SHT1x_7x.html:5
-msgid "The GPIO pin (BCM numbering) connected to the sensor clock pin"
-msgstr ""
-"La broche GPIO (numérotation BCM) connectée à la broche de l’horloge du "
-"capteur"
-
-#: mycodo_flask/templates/pages/data_options/input_options/SHT1x_7x.html:11
-msgid "The input voltage to the sensor"
-msgstr "La tension d'entrée au capteur"
-
-#: mycodo_flask/templates/pages/data_options/input_options/SIGNAL_PWM.html:11
-#: mycodo_flask/templates/pages/data_options/input_options/SIGNAL_RPM.html:17
-msgid "The amount of time to sample the input before caluclating the measurement"
-msgstr ""
-"La quantité de temps pour échantillonner l'entrée avant de caluer la "
-"mesure"
-
-#: mycodo_flask/templates/pages/data_options/input_options/TEMPLATE_ADC_OPTIONS.html:18
-msgid "Minimum analog to digital converter input voltage."
-msgstr "Tension d'entrée du convertisseur analogique-numérique minimale."
-
-#: mycodo_flask/templates/pages/data_options/input_options/TEMPLATE_ADC_OPTIONS.html:24
-msgid "Maximum analog to digital converter input voltage."
-msgstr "Tension d'entrée du convertisseur analogique / numérique maximale."
-
-#: mycodo_flask/templates/pages/data_options/input_options/TEMPLATE_ADC_OPTIONS.html:30
-msgid "Minimum unit to convert the voltage to."
-msgstr "Unité minimum pour convertir la tension en."
-
-#: mycodo_flask/templates/pages/data_options/input_options/TEMPLATE_ADC_OPTIONS.html:36
-msgid "Maximum unit to convert the voltage to."
-msgstr "Unité maximale pour convertir la tension."
-
-#: mycodo_flask/templates/pages/data_options/input_options/TEMPLATE_ADC_OPTIONS.html:43
-#: mycodo_flask/templates/pages/data_options/input_options/TEMPLATE_ADC_OPTIONS.html:45
-msgid "Inverse the scale (example: a high measurement returns a low unit value)"
-msgstr ""
-"Inverser l'échelle (exemple: une mesure élevée renvoie une valeur "
-"unitaire faible)"
-
-#: mycodo_flask/templates/pages/data_options/input_options/TEMPLATE_CHECK_INTERFACE.html:36
 #: mycodo_flask/templates/pages/data_options/input_options/TEMPLATE_OPTIONS_DISPLAY.html:65
 #: mycodo_flask/templates/pages/data_options/input_options/TEMPLATE_OPTIONS_ENABLED.html:36
-#: mycodo_flask/templates/pages/data_options/input_options/TEMPLATE_UART_DEVICE.html:4
 msgid "The UART device location configured for this sensor/device"
 msgstr "L'emplacement de l'appareil UART configuré pour ce capteur / appareil"
-
-#: mycodo_flask/templates/pages/data_options/input_options/TEMPLATE_I2C_BUS.html:4
-msgid "The I2C bus to access the device"
-msgstr "Le bus I2C pour accéder au périphérique"
-
-#: mycodo_flask/templates/pages/data_options/input_options/TEMPLATE_POWER_RELAY.html:4
-msgid "The output used to power the device"
-msgstr "La sortie utilisée pour alimenter l'appareil"
-
-#: mycodo_flask/templates/pages/data_options/input_options/TEMPLATE_SPI_OPTIONS.html:10
-msgid "The GPIO (using BCM numbering) connected to the CS pin"
-msgstr "Le GPIO (utilisant la numérotation BCM) connecté à la broche CS"
 
 #: mycodo_flask/templates/pages/data_options/math_options/equation.html:26
 msgid ""
@@ -4476,6 +4384,10 @@ msgstr "Etalonnage terminé"
 msgid "Select a DS18B20 sensor"
 msgstr "Sélectionnez un capteur DS18B20"
 
+#: mycodo_flask/templates/tools/calibration_options/ds_resolution.html:37
+msgid "Select a resolution"
+msgstr "Sélectionnez une résolution"
+
 #: mycodo_flask/utils/utils_conditional.py:32
 #: mycodo_flask/utils/utils_conditional.py:220
 #: mycodo_flask/utils/utils_lcd.py:223
@@ -4495,7 +4407,7 @@ msgstr "action"
 
 #: mycodo_flask/utils/utils_conditional.py:330
 #: mycodo_flask/utils/utils_dashboard.py:372
-#: mycodo_flask/utils/utils_input.py:407 mycodo_flask/utils/utils_lcd.py:123
+#: mycodo_flask/utils/utils_input.py:430 mycodo_flask/utils/utils_lcd.py:123
 #: mycodo_flask/utils/utils_math.py:232 mycodo_flask/utils/utils_output.py:168
 #: mycodo_flask/utils/utils_pid.py:178
 msgid "Reorder"
@@ -4507,7 +4419,7 @@ msgid "{dev} with ID %(id)s successfully added"
 msgstr "{dev} avec l'ID %(id)s ajouté avec succès"
 
 #: mycodo_flask/utils/utils_dashboard.py:188
-#: mycodo_flask/utils/utils_input.py:255 mycodo_flask/utils/utils_lcd.py:61
+#: mycodo_flask/utils/utils_input.py:269 mycodo_flask/utils/utils_lcd.py:61
 #: mycodo_flask/utils/utils_math.py:91 mycodo_flask/utils/utils_method.py:376
 #: mycodo_flask/utils/utils_output.py:90 mycodo_flask/utils/utils_pid.py:38
 #: mycodo_flask/utils/utils_settings.py:52
@@ -4559,16 +4471,16 @@ msgstr "%(cont)s contrôleur désactivé dans la base de données SQL"
 msgid "Error: %(err)s"
 msgstr "Erreur: %(err)s"
 
-#: mycodo_flask/utils/utils_general.py:572
-#: mycodo_flask/utils/utils_general.py:586
-#: mycodo_flask/utils/utils_general.py:606
-#: mycodo_flask/utils/utils_general.py:612 mycodo_flask/utils/utils_lcd.py:191
+#: mycodo_flask/utils/utils_general.py:515
+#: mycodo_flask/utils/utils_general.py:529
+#: mycodo_flask/utils/utils_general.py:549
+#: mycodo_flask/utils/utils_general.py:555 mycodo_flask/utils/utils_lcd.py:191
 #: mycodo_flask/utils/utils_lcd.py:193
 #, python-format
 msgid "%(msg)s"
 msgstr "%(msg)s"
 
-#: mycodo_flask/utils/utils_general.py:578
+#: mycodo_flask/utils/utils_general.py:521
 #: mycodo_flask/utils/utils_output.py:203
 #: mycodo_flask/utils/utils_output.py:210
 #: mycodo_flask/utils/utils_output.py:215
@@ -4576,34 +4488,34 @@ msgstr "%(msg)s"
 msgid "%(err)s"
 msgstr "%(err)s"
 
-#: mycodo_flask/utils/utils_general.py:579
+#: mycodo_flask/utils/utils_general.py:522
 #, python-format
 msgid "Entry with ID %(id)s not found"
 msgstr "Entrée avec ID %(id)s introuvable"
 
-#: mycodo_flask/utils/utils_general.py:597
+#: mycodo_flask/utils/utils_general.py:540
 #, python-format
 msgid "Error in the %(field)s field - %(err)s"
 msgstr "Erreur dans le champ %(field)s - %(err)s"
 
-#: mycodo_flask/utils/utils_general.py:647
+#: mycodo_flask/utils/utils_general.py:590
 msgid "Cannot move above the first item in the list"
 msgstr "Ne peut pas bouger au-dessus du premier élément de la liste"
 
-#: mycodo_flask/utils/utils_general.py:651
+#: mycodo_flask/utils/utils_general.py:594
 msgid "Cannot move below the last item in the list"
 msgstr "Ne peut pas bouger sous le dernier article de la liste"
 
-#: mycodo_flask/utils/utils_input.py:234
+#: mycodo_flask/utils/utils_input.py:248
 #, python-format
 msgid "%(type)s Input with ID %(id)s (%(uuid)s) successfully added"
 msgstr "%(type)s Entrée avec l'ID %(id)s (%(uuid)s) ajouté avec succès"
 
-#: mycodo_flask/utils/utils_input.py:264
+#: mycodo_flask/utils/utils_input.py:280
 msgid "Deactivate sensor controller before modifying its settings"
 msgstr "Désactiver le contrôleur de capteur avant de modifier ses paramètres"
 
-#: mycodo_flask/utils/utils_input.py:269
+#: mycodo_flask/utils/utils_input.py:285
 msgid ""
 "Choose a Read Period equal to or greater than 7. The AM2315 may become "
 "unresponsive if the period is below 7."
@@ -4611,15 +4523,15 @@ msgstr ""
 "Choisissez une période de lecture égale ou supérieure à 7. L'AM2315 peut "
 "ne plus répondre si la période est inférieure à 7."
 
-#: mycodo_flask/utils/utils_input.py:276
+#: mycodo_flask/utils/utils_input.py:292
 msgid "A unit measurement must be selected."
 msgstr "Une unité de mesure doit être sélectionnée."
 
-#: mycodo_flask/utils/utils_input.py:281
+#: mycodo_flask/utils/utils_input.py:297
 msgid "The Read Period cannot be less than the Pre Output Duration"
 msgstr "La période de lecture ne peut pas être inférieure à la durée de pré-sortie"
 
-#: mycodo_flask/utils/utils_input.py:286
+#: mycodo_flask/utils/utils_input.py:302
 msgid "Invalid device or improper permissions to read device"
 msgstr ""
 "Périphérique non valide ou autorisations incorrectes pour lire le "

@@ -60,7 +60,7 @@ class InputModule(AbstractInput):
             import smbus
             self.logger = logging.getLogger(
                 "mycodo.inputs.bh1750_{id}".format(id=input_dev.id))
-            self.i2c_address = int(str(input_dev.location), 16)
+            self.i2c_address = int(str(input_dev.i2c_location), 16)
             self.i2c_bus = input_dev.i2c_bus
             self.resolution = input_dev.resolution
             self.sensitivity = input_dev.sensitivity

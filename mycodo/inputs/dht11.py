@@ -65,7 +65,7 @@ class InputModule(AbstractInput):
                 'mycodo.inputs.dht11_{id}'.format(id=input_dev.id))
 
             self.convert_to_unit = input_dev.convert_to_unit
-            self.gpio = int(input_dev.location)
+            self.gpio = int(input_dev.gpio_location)
             self.power_output_id = input_dev.power_output_id
 
             self.control = DaemonControl()

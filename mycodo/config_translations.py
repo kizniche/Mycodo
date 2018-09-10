@@ -52,6 +52,12 @@ TOOLTIPS_INPUT = {
     'pin_clock': {
         'title': lazy_gettext('Clock Pin'),
         'phrase': lazy_gettext('The GPIO (using BCM numbering) connected to the Clock pin')},
+    'bt_location': {
+        'title': lazy_gettext('MAC (XX:XX:XX:XX:XX:XX)'),
+        'phrase': lazy_gettext('The MAC address of the input')},
+    'bt_adapter': {
+        'title': lazy_gettext('BT Adapter'),
+        'phrase': lazy_gettext('The Bluetooth adapter of the input')},
     'w1thermsensor_id': {
         'title': lazy_gettext('Device ID'),
         'phrase': lazy_gettext('Select the ID of the desired DS18B20 sensor')},
@@ -70,15 +76,9 @@ TOOLTIPS_INPUT = {
     'cmd_command': {
         'title': lazy_gettext('Command'),
         'phrase': lazy_gettext('The command to executed (as user mycodo) to return a measurement value')},
-    'cmd_measurement_units': {
+    'measurement_units': {
         'title': lazy_gettext('Unit Measurement'),
         'phrase': lazy_gettext('Select a unit for the stored value')},
-    'bt_location': {
-        'title': lazy_gettext('MAC (XX:XX:XX:XX:XX:XX)'),
-        'phrase': lazy_gettext('The MAC address of the input')},
-    'bt_adapter': {
-        'title': lazy_gettext('BT Adapter'),
-        'phrase': lazy_gettext('The Bluetooth adapter of the input')},
     'times_check': {
         'title': lazy_gettext('Times Check'),
         'phrase': lazy_gettext('Number of times to check')},
@@ -97,6 +97,30 @@ TOOLTIPS_INPUT = {
     'rpm_pulses_per_rev': {
         'title': lazy_gettext('Pulses Per Rev'),
         'phrase': lazy_gettext('The number of pulses per revolution to calculate revolutions per minute (RPM)')},
+    'adc_channel': {
+        'title': lazy_gettext('Channel'),
+        'phrase': lazy_gettext('The channel of the analog to digital converter.')},
+    'adc_gain': {
+        'title': lazy_gettext('Gain'),
+        'phrase': lazy_gettext('Adjust the gain to change the measurable voltage range. See ADC documentation for details.')},
+    'adc_resolution': {
+        'title': lazy_gettext('Resolution'),
+        'phrase': lazy_gettext('ADC Resolution (see ADC documentation)')},
+    'adc_volts_min': {
+        'title': lazy_gettext('Volts Min'),
+        'phrase': lazy_gettext('Minimum analog to digital converter input voltage.')},
+    'adc_volts_max': {
+        'title': lazy_gettext('Volts Max'),
+        'phrase': lazy_gettext('Maximum analog to digital converter input voltage.')},
+    'adc_units_min': {
+        'title': lazy_gettext('Units Min'),
+        'phrase': lazy_gettext('Minimum unit to convert the voltage to.')},
+    'adc_units_max': {
+        'title': lazy_gettext('Units Max'),
+        'phrase': lazy_gettext('Maximum unit to convert the voltage to.')},
+    'adc_inverse_unit_scale': {
+        'title': lazy_gettext('Inverse Unit Scale'),
+        'phrase': lazy_gettext('Inverse the scale (example: a high measurement returns a low unit value)')},
     # '': {
     #     'title': lazy_gettext(''),
     #     'phrase': lazy_gettext('')},

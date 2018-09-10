@@ -39,9 +39,9 @@ class InputModule(AbstractInput):
             from cozir import Cozir
             self.logger = logging.getLogger(
                 "mycodo.inputs.cozir_{id}".format(id=input_dev.id))
-            self.device_loc = input_dev.device_loc
+            self.uart_location = input_dev.uart_location
             self.convert_to_unit = input_dev.convert_to_unit
-            self.sensor = Cozir(self.device_loc)
+            self.sensor = Cozir(self.uart_location)
 
     def __repr__(self):
         """  Representation of object """

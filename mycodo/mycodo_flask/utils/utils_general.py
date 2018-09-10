@@ -303,24 +303,30 @@ def form_input_choices(choices, each_input, dict_inputs):
     dict_measurements = add_custom_measurements(Measurement.query.all())
     dict_units = add_custom_units(Unit.query.all())
 
-    # NEW CODE
     if each_input.device in dict_inputs:
+        is_adc = False
+        if ('analog_to_digital_converter' in dict_inputs[each_input.device] and
+                dict_inputs[each_input.device]['analog_to_digital_converter']):
+            is_adc = True
+
         if ('unique_name_measurements' in dict_inputs[each_input.device] and
                 dict_inputs[each_input.device]['unique_name_measurements'] and
                 dict_inputs[each_input.device]['unique_name_measurements'] not in LIST_DEVICES_ADC and
-                dict_inputs[each_input.device]['unique_name_measurements'] != 'LinuxCommand'):
+                dict_inputs[each_input.device]['unique_name_measurements'] != 'LinuxCommand' and
+                not is_adc
+        ):
 
             for each_measure in dict_inputs[each_input.device]['unique_name_measurements']:
                 value = '{id},{meas}'.format(
                     id=each_input.unique_id,
                     meas=each_measure)
 
-                dict_measurements = {}
+                custom_dict_measurements = {}
                 for each_measurement in each_input.convert_to_unit.split(';'):
-                    dict_measurements[each_measurement.split(',')[0]] = each_measurement.split(',')[1]
+                    custom_dict_measurements[each_measurement.split(',')[0]] = each_measurement.split(',')[1]
 
                 measure_display, unit_display = check_display_names(
-                    each_measure, dict_measurements[each_measure])
+                    each_measure, custom_dict_measurements[each_measure])
 
                 if unit_display:
                     display = '[Input {id:02d}] {name} ({meas}, {unit})'.format(
@@ -349,7 +355,8 @@ def form_input_choices(choices, each_input, dict_inputs):
         choices.update({value: display})
 
     # ADC
-    if (each_input.device in LIST_DEVICES_ADC and
+    if ('analog_to_digital_converter' in dict_inputs[each_input.device] and
+            dict_inputs[each_input.device]['analog_to_digital_converter'] and
             each_input.convert_to_unit != ''):
         value = '{id},voltage'.format(
             id=each_input.unique_id)
@@ -367,70 +374,6 @@ def form_input_choices(choices, each_input, dict_inputs):
             meas=dict_measurements[each_input.convert_to_unit.split(',')[0]]['name'],
             unit=dict_units[each_input.convert_to_unit.split(',')[1]]['unit'])
         choices.update({value: display})
-
-    # OLD CODE TODO: remove
-    # for each_name, each_dict in DEVICE_INFO[each_input.device].items():
-    #     if (each_name == 'measure' and
-    #             each_input.device not in LIST_DEVICES_ADC and
-    #             each_input.device != 'LinuxCommand'):
-    #
-    #         for each_measure in each_dict:
-    #             value = '{id},{meas}'.format(
-    #                 id=each_input.unique_id,
-    #                 meas=each_measure)
-    #
-    #             dict_measurements = {}
-    #             for each_measurement in each_input.convert_to_unit.split(';'):
-    #                 dict_measurements[each_measurement.split(',')[0]] = each_measurement.split(',')[1]
-    #
-    #             measure_display, unit_display = check_display_names(
-    #                 each_measure, dict_measurements[each_measure])
-    #
-    #             if unit_display:
-    #                 display = '[Input {id:02d}] {name} ({meas}, {unit})'.format(
-    #                     id=each_input.id,
-    #                     name=each_input.name,
-    #                     meas=measure_display,
-    #                     unit=unit_display)
-    #             else:
-    #                 display = '[Input {id:02d}] {name} ({meas})'.format(
-    #                     id=each_input.id,
-    #                     name=each_input.name,
-    #                     meas=measure_display)
-    #             choices.update({value: display})
-    #
-    # # Linux Command Input
-    # if (each_input.device == 'LinuxCommand' and
-    #         each_input.convert_to_unit != ''):
-    #     value = '{id},{meas}'.format(
-    #         id=each_input.unique_id,
-    #         meas=each_input.convert_to_unit.split(',')[0])
-    #     display = '[Input {id:02d}] {name} ({meas}, {unit})'.format(
-    #         id=each_input.id,
-    #         name=each_input.name,
-    #         meas=dict_measurements[each_input.convert_to_unit.split(',')[0]]['name'],
-    #         unit=dict_units[each_input.convert_to_unit.split(',')[1]]['unit'])
-    #     choices.update({value: display})
-    #
-    # # ADC
-    # if (each_input.device in LIST_DEVICES_ADC and
-    #         each_input.convert_to_unit != ''):
-    #     value = '{id},voltage'.format(
-    #         id=each_input.unique_id)
-    #     display = '[Input {id:02d}] {name} (Voltage, volts)'.format(
-    #         id=each_input.id,
-    #         name=each_input.name)
-    #     choices.update({value: display})
-    #
-    #     value = '{id},{meas}'.format(
-    #         id=each_input.unique_id,
-    #         meas=each_input.convert_to_unit.split(',')[0])
-    #     display = '[Input {id:02d}] {name} ({meas}, {unit})'.format(
-    #         id=each_input.id,
-    #         name=each_input.name,
-    #         meas=dict_measurements[each_input.convert_to_unit.split(',')[0]]['name'],
-    #         unit=dict_units[each_input.convert_to_unit.split(',')[1]]['unit'])
-    #     choices.update({value: display})
 
     return choices
 

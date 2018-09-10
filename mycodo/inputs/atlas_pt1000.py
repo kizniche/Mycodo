@@ -36,9 +36,11 @@ class InputModule(AbstractInput):
             self.logger = logging.getLogger(
                 "mycodo.inputs.atlas_pt1000_{id}".format(id=input_dev.id))
             self.interface = input_dev.interface
-            self.device_loc = input_dev.device_loc
-            self.i2c_address = int(str(input_dev.location), 16)
-            self.i2c_bus = input_dev.i2c_bus
+            if self.interface == 'UART':
+                self.uart_location = input_dev.uart_location
+            elif self.interface == 'I2C':
+                self.i2c_address = int(str(input_dev.i2c_location), 16)
+                self.i2c_bus = input_dev.i2c_bus
             self.convert_to_unit = input_dev.convert_to_unit
             self.initialize_sensor()
 
@@ -76,8 +78,8 @@ class InputModule(AbstractInput):
         if self.interface == 'UART':
             self.logger = logging.getLogger(
                 "mycodo.inputs.atlas_pt1000_{loc}".format(
-                    loc=self.device_loc))
-            self.atlas_sensor_uart = AtlasScientificUART(self.device_loc)
+                    loc=self.uart_location))
+            self.atlas_sensor_uart = AtlasScientificUART(self.uart_location)
         elif self.interface == 'I2C':
             self.logger = logging.getLogger(
                 "mycodo.inputs.atlas_pt1000_{bus}_{add}".format(

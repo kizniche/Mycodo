@@ -158,7 +158,7 @@ def setup_atlas_ph_measure(input_id):
 
     if selected_input.interface == 'UART':
         ph_input_uart = AtlasScientificUART(
-            selected_input.device_loc, baudrate=selected_input.baud_rate)
+            selected_input.uart_location, baudrate=selected_input.baud_rate)
         lines = ph_input_uart.query('R')
         logger.debug("All Lines: {lines}".format(lines=lines))
 
@@ -174,7 +174,7 @@ def setup_atlas_ph_measure(input_id):
                 val=lines[0])
     elif selected_input.interface == 'I2C':
         ph_input_i2c = AtlasScientificI2C(
-            i2c_address=int(str(selected_input.location), 16),
+            i2c_address=int(str(selected_input.i2c_location), 16),
             i2c_bus=selected_input.i2c_bus)
         ph_status, ph_str = ph_input_i2c.query('R')
         if ph_status == 'error':

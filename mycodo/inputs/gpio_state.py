@@ -13,7 +13,7 @@ INPUT_INFORMATION = {
     'dependencies_pypi': ['RPi.GPIO'],  # List of strings
     'interfaces': ['GPIO'],  # List of strings
     'options_disabled': ['interface'],
-    'options_enabled': ['location', 'period', 'pre_output'],
+    'options_enabled': ['gpio_location', 'period', 'pre_output'],
 }
 
 
@@ -29,7 +29,7 @@ class InputModule(AbstractInput):
             import RPi.GPIO as GPIO
             self.logger = logging.getLogger(
                 "mycodo.inputs.gpio_state_{id}".format(id=input_dev.id))
-            self.location = int(input_dev.location)
+            self.location = int(input_dev.gpio_location)
             self.gpio = GPIO
             self.gpio.setmode(self.gpio.BCM)
             self.gpio.setup(self.location, self.gpio.IN)

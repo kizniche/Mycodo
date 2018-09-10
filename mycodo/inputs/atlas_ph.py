@@ -42,7 +42,6 @@ class InputModule(AbstractInput):
                 "mycodo.inputs.atlas_ph_{id}".format(id=input_dev.id))
             self.input_dev = input_dev
             self.interface = input_dev.interface
-            self.device_loc = input_dev.device_loc
             self.calibrate_sensor_measure = input_dev.calibrate_sensor_measure
             self.convert_to_unit = input_dev.convert_to_unit
             try:
@@ -81,15 +80,16 @@ class InputModule(AbstractInput):
         from mycodo.devices.atlas_scientific_i2c import AtlasScientificI2C
         from mycodo.devices.atlas_scientific_uart import AtlasScientificUART
         if self.interface == 'UART':
+            self.uart_location = self.input_dev.uart_location
             self.logger = logging.getLogger(
                 "mycodo.inputs.atlas_ph_{uart}".format(
-                    uart=self.device_loc))
-            self.atlas_sensor_uart = AtlasScientificUART(self.device_loc)
+                    uart=self.uart_location))
+            self.atlas_sensor_uart = AtlasScientificUART(self.uart_location)
         elif self.interface == 'I2C':
+            self.i2c_address = int(str(self.input_dev.i2c_location), 16)
             self.logger = logging.getLogger(
                 "mycodo.inputs.atlas_ph_{bus}_{add}".format(
                     bus=self.i2c_bus, add=self.i2c_address))
-            self.i2c_address = int(str(self.input_dev.location), 16)
             self.i2c_bus = self.input_dev.i2c_bus
             self.atlas_sensor_i2c = AtlasScientificI2C(
                 i2c_address=self.i2c_address, i2c_bus=self.i2c_bus)

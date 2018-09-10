@@ -5,7 +5,7 @@
 <div class="col-auto">
   <label class="control-label">{{tooltips_input['uart_location']['title']}}</label>
   <div>
-    {{form_mod_input.device_loc(class_='form-control', value=each_input.location, disabled=True)}}
+    {{form_mod_input.uart_location(class_='form-control', value=each_input.uart_location, disabled=True)}}
   </div>
 </div>
 
@@ -16,7 +16,7 @@
 <div class="col-auto">
   <label class="control-label">{{tooltips_input['uart_location']['title']}}</label>
   <div>
-    {{form_mod_input.device_loc(class_='form-control', value=each_input.location, **{'title': tooltips_input['uart_location']['phrase']})}}
+    {{form_mod_input.uart_location(class_='form-control', value=each_input.uart_location, **{'title': tooltips_input['uart_location']['phrase']})}}
   </div>
 </div>
 

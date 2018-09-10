@@ -89,7 +89,7 @@ class InputModule(AbstractInput):
 
             self.pi = pigpio.pi()
 
-            self.gpio = int(input_dev.location)
+            self.gpio = int(input_dev.gpio_location)
             self.bad_CS = 0  # Bad checksum count
             self.bad_SM = 0  # Short message count
             self.bad_MM = 0  # Missing message count
