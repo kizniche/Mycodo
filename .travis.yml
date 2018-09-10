@@ -1,6 +1,6 @@
 language: python
 os: linux
-dist: trusty
+dist: xenial
 python:
   - "3.5"
 before_install:
@@ -13,10 +13,11 @@ before_install:
   - sudo service influxdb start
   - influx -execute "CREATE DATABASE mycodo_db"
   - influx -database mycodo_db -execute "CREATE USER mycodo WITH PASSWORD 'mmdu77sj3nIoiajjs'"
+  - export PATH=/usr/bin:$PATH
 install:
   - sed -i '/picamera/d' install/requirements.txt
   - pip3 install --upgrade -r install/requirements.txt
-#virtualenv:
-#    system_site_packages: true
+virtualenv:
+    system_site_packages: true
 script:
   - cd mycodo && python -m pytest tests/software_tests -s
