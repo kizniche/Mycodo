@@ -13,7 +13,7 @@ from mycodo.inputs.am2315 import InputModule as AM2315Sensor
 # ----------------------------
 def test_am2315_iterates_using_in():
     """ Verify that a AM2315Sensor object can use the 'in' operator """
-    with mock.patch('mycodo.inputs.am2315.AM2315Sensor.get_measurement') as mock_measure:
+    with mock.patch('mycodo.inputs.am2315.InputModule.get_measurement') as mock_measure:
         mock_measure.side_effect = [(15, 23, 67),
                                     (16, 25, 52),
                                     (17, 27, 37),
