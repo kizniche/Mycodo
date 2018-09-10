@@ -20,4 +20,4 @@ install:
 #virtualenv:
 #    system_site_packages: true
 script:
-  - cd mycodo && python -m py.test tests/software_tests -s
+  - cd mycodo && python3 -m pytest tests/software_tests -s
