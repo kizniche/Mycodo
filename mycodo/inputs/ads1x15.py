@@ -7,8 +7,8 @@ import Adafruit_ADS1x15
 INPUT_INFORMATION = {
     'unique_name_input': 'ADS1x15',
     'input_manufacturer': 'Texas Instruments',
-    'common_name_input': 'ADS1x15 (Analog-to-Digital Converter)',
-    'common_name_measurements': 'Voltage',
+    'common_name_input': 'ADS1x15',
+    'common_name_measurements': 'Voltage (Analog-to-Digital Converter)',
     'unique_name_measurements': ['voltage'],  # List of strings
     'dependencies_pypi': ['Adafruit_ADS1x15', 'Adafruit_GPIO'],  # List of strings
     'interfaces': ['I2C'],  # List of strings

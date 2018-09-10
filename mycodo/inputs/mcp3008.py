@@ -8,8 +8,8 @@ import Adafruit_MCP3008
 INPUT_INFORMATION = {
     'unique_name_input': 'MCP3008',
     'input_manufacturer': 'Microchip',
-    'common_name_input': 'MCP3008 (Analog-to-Digital Converter)',
-    'common_name_measurements': 'Voltage',
+    'common_name_input': 'MCP3008',
+    'common_name_measurements': 'Voltage (Analog-to-Digital Converter)',
     'unique_name_measurements': ['voltage'],  # List of strings
     'dependencies_pypi': ['Adafruit_MCP3008'],  # List of strings
     'interfaces': ['UART'],  # List of strings

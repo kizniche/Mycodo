@@ -90,35 +90,35 @@ class InputMod(FlaskForm):
 
     # Server options
     host = StringField(lazy_gettext('Host'))
-    port = IntegerField(lazy_gettext('Port'))
-    times_check = IntegerField(lazy_gettext('Times to Check'))
-    deadline = IntegerField(lazy_gettext('Deadline (seconds)'))
+    port = IntegerField(TOOLTIPS_INPUT['port']['title'])
+    times_check = IntegerField(TOOLTIPS_INPUT['times_check']['title'])
+    deadline = IntegerField(TOOLTIPS_INPUT['deadline']['title'])
 
     # Linux Command
-    cmd_command = StringField(lazy_gettext('Command'))
+    cmd_command = StringField(TOOLTIPS_INPUT['cmd_command']['title'])
 
     # MAX chip options
-    thermocouple_type = StringField(lazy_gettext('RTD Probe Type'))
-    ref_ohm = IntegerField(lazy_gettext('Reference Resistance'))
+    thermocouple_type = StringField(TOOLTIPS_INPUT['thermocouple_type']['title'])
+    ref_ohm = IntegerField(TOOLTIPS_INPUT['ref_ohm']['title'])
 
     # SPI Communication
-    pin_clock = IntegerField(lazy_gettext('Clock Pin'))
-    pin_cs = IntegerField(lazy_gettext('CS Pin'))
-    pin_mosi = IntegerField(lazy_gettext('MOSI Pin'))
-    pin_miso = IntegerField(lazy_gettext('MISO Pin'))
+    pin_clock = IntegerField(TOOLTIPS_INPUT['pin_clock']['title'])
+    pin_cs = IntegerField(TOOLTIPS_INPUT['pin_cs']['title'])
+    pin_mosi = IntegerField(TOOLTIPS_INPUT['pin_mosi']['title'])
+    pin_miso = IntegerField(TOOLTIPS_INPUT['pin_miso']['title'])
 
     # Bluetooth Communication
     bt_adapter = StringField(lazy_gettext('BT Adapter'))
 
     # ADC
-    adc_channel = IntegerField(lazy_gettext('Channel'))
-    adc_gain = IntegerField(lazy_gettext('Gain'))
-    adc_resolution = IntegerField(lazy_gettext('Resolution'))
-    adc_volts_min = DecimalField(lazy_gettext('Volts Min'))
-    adc_volts_max = DecimalField(lazy_gettext('Volts Max'))
-    adc_units_min = DecimalField(lazy_gettext('Units Min'))
-    adc_units_max = DecimalField(lazy_gettext('Units Max'))
-    adc_inverse_unit_scale = BooleanField(lazy_gettext('Inverse Unit Scale'))
+    adc_channel = IntegerField(TOOLTIPS_INPUT['adc_channel']['title'])
+    adc_gain = IntegerField(TOOLTIPS_INPUT['adc_gain']['title'])
+    adc_resolution = IntegerField(TOOLTIPS_INPUT['adc_resolution']['title'])
+    adc_volts_min = DecimalField(TOOLTIPS_INPUT['adc_volts_min']['title'])
+    adc_volts_max = DecimalField(TOOLTIPS_INPUT['adc_volts_max']['title'])
+    adc_units_min = DecimalField(TOOLTIPS_INPUT['adc_units_min']['title'])
+    adc_units_max = DecimalField(TOOLTIPS_INPUT['adc_units_max']['title'])
+    adc_inverse_unit_scale = BooleanField(TOOLTIPS_INPUT['adc_inverse_unit_scale']['title'])
 
     switch_edge = StringField(lazy_gettext('Edge'))
     switch_bounce_time = IntegerField(lazy_gettext('Bounce Time (ms)'))
@@ -136,12 +136,12 @@ class InputMod(FlaskForm):
     pre_output_during_measure = BooleanField(TOOLTIPS_INPUT['pre_output_during_measure']['title'])
 
     # RPM/Signal
-    weighting = DecimalField(lazy_gettext('Weighting'))
-    rpm_pulses_per_rev = DecimalField(lazy_gettext('Pulses Per Rev'))
-    sample_time = DecimalField(lazy_gettext('Sample Time'))
+    weighting = DecimalField(TOOLTIPS_INPUT['weighting']['title'])
+    rpm_pulses_per_rev = DecimalField(TOOLTIPS_INPUT['rpm_pulses_per_rev']['title'])
+    sample_time = DecimalField(TOOLTIPS_INPUT['sample_time']['title'])
 
     # SHT options
-    sht_voltage = StringField(lazy_gettext('Voltage'))
+    sht_voltage = StringField(TOOLTIPS_INPUT['sht_voltage']['title'])
 
     input_mod = SubmitField(lazy_gettext('Save'))
     input_delete = SubmitField(lazy_gettext('Delete'))

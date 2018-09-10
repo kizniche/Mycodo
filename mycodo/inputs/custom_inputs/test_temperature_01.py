@@ -112,6 +112,11 @@ INPUT_INFORMATION = {
     'resolution_2': [],  # List of tuples (e.g. [(1, 'option 1 name'), (2, 'option 2 name')]) or list containing one string (e.g. ['12'])
     'sensitivity': [],  # List of tuples (e.g. [(1, 'option 1 name'), (2, 'option 2 name')]) or list containing one string (e.g. ['12'])
     'thermocouple_type': [],  # List of tuples (e.g. [(1, 'option 1 name'), (2, 'option 2 name')]) or list containing one string (e.g. ['12'])
+    'sht_voltage': [('2.5', '2.5V'),
+                    ('3.0', '3.0V'),
+                    ('3.5', '3.5V'),
+                    ('4.0', '4.0V'),
+                    ('5.0', '5.0V')],  # List of tuples
     'ref_ohm': None,  # Integer
 }
 

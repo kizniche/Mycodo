@@ -68,7 +68,7 @@ TOOLTIPS_INPUT = {
         'title': lazy_gettext('Sensitivity'),
         'phrase': lazy_gettext('Measurement sensitivity')},
     'thermocouple_type': {
-        'title': lazy_gettext('Thermocouple'),
+        'title': lazy_gettext('RTD Probe Type'),
         'phrase': lazy_gettext('The type of thermocouple connected')},
     'ref_ohm': {
         'title': lazy_gettext('Reference Resistance'),
@@ -121,6 +121,9 @@ TOOLTIPS_INPUT = {
     'adc_inverse_unit_scale': {
         'title': lazy_gettext('Inverse Unit Scale'),
         'phrase': lazy_gettext('Inverse the scale (example: a high measurement returns a low unit value)')},
+    'sht_voltage': {
+        'title': lazy_gettext('Voltage'),
+        'phrase': lazy_gettext('The input voltage to the sensor')},
     # '': {
     #     'title': lazy_gettext(''),
     #     'phrase': lazy_gettext('')},

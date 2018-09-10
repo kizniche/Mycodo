@@ -152,6 +152,7 @@ def parse_input_information():
                 # Misc
                 dict_inputs = dict_has_value(dict_inputs, input_custom, 'period')
                 dict_inputs = dict_has_value(dict_inputs, input_custom, 'convert_to_unit')
+                dict_inputs = dict_has_value(dict_inputs, input_custom, 'sht_voltage')
                 dict_inputs = dict_has_value(dict_inputs, input_custom, 'cmd_command')
                 dict_inputs = dict_has_value(dict_inputs, input_custom, 'resolution')
                 dict_inputs = dict_has_value(dict_inputs, input_custom, 'resolution_2')

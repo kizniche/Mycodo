@@ -14,8 +14,12 @@ INPUT_INFORMATION = {
     'dependencies_pypi': ['sht_sensor'],  # List of strings
     'interfaces': ['GPIO'],  # List of strings
     'pin_clock': 11,
-    'sht_voltage': '3.5',  # String representing float
-    'options_enabled': ['gpio_location', 'period', 'pin_clock', 'convert_unit', 'pre_output'],
+    'sht_voltage': [('2.5', '2.5V'),
+                    ('3.0', '3.0V'),
+                    ('3.5', '3.5V'),
+                    ('4.0', '4.0V'),
+                    ('5.0', '5.0V')],  # List of tuples
+    'options_enabled': ['gpio_location', 'sht_voltage', 'period', 'pin_clock', 'convert_unit', 'pre_output'],
     'options_disabled': ['interface']
 }
 

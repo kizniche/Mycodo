@@ -9,8 +9,8 @@ from MCP342x import MCP342x
 INPUT_INFORMATION = {
     'unique_name_input': 'MCP342x',
     'input_manufacturer': 'Microchip',
-    'common_name_input': 'MCP342x (Analog-to-Digital Converter)',
-    'common_name_measurements': 'Voltage',
+    'common_name_input': 'MCP342x',
+    'common_name_measurements': 'Voltage (Analog-to-Digital Converter)',
     'unique_name_measurements': ['voltage'],  # List of strings
     'dependencies_pypi': ['MCP342x'],  # List of strings
     'interfaces': ['I2C'],  # List of strings

@@ -231,6 +231,11 @@ def input_add(form_add):
                     new_input.thermocouple_type = dict_inputs[input_name]['thermocouple_type'][0]
                 elif len(dict_inputs[input_name]['thermocouple_type']) > 1:
                     new_input.thermocouple_type = dict_inputs[input_name]['thermocouple_type'][0][0]
+            if dict_has_value('sht_voltage'):
+                if len(dict_inputs[input_name]['sht_voltage']) == 1:
+                    new_input.sht_voltage = dict_inputs[input_name]['sht_voltage'][0]
+                elif len(dict_inputs[input_name]['sht_voltage']) > 1:
+                    new_input.sht_voltage = dict_inputs[input_name]['sht_voltage'][0][0]
             if dict_has_value('ref_ohm'):
                 new_input.ref_ohm = dict_inputs[input_name]['ref_ohm']
 
