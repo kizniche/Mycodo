@@ -34,8 +34,6 @@ rpyc == 3.4.4
 SQLAlchemy == 1.2.7
 WTForms == 2.1
 
-py.test
-
 # Devices and Sensors
 picamera == 1.13
 RPi.GPIO
