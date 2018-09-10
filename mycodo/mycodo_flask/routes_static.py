@@ -41,7 +41,7 @@ def inject_variables():
         control = DaemonControl()
         daemon_status = control.daemon_status()
     except Exception as e:
-        logger.error("URL for 'inject_variables' raised and error: "
+        logger.debug("URL for 'inject_variables' raised and error: "
                      "{err}".format(err=e))
         daemon_status = '0'
 
