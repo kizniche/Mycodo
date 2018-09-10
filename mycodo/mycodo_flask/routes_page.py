@@ -12,6 +12,7 @@ from importlib import import_module
 
 import flask_login
 import os
+from flask import current_app
 from flask import flash
 from flask import redirect
 from flask import render_template
@@ -596,23 +597,24 @@ def page_info():
     # device's integer device number and the corresponding 'i2cdetect -y ID'
     # output for display on the info page
     i2c_devices_sorted = {}
-    try:
-        i2c_devices = glob.glob("/dev/i2c-*")
-        i2c_devices_sorted = OrderedDict()
-        for index, each_dev in enumerate(i2c_devices):
-            device_int = int(each_dev.replace("/dev/i2c-", ""))
-            i2cdetect = subprocess.Popen(
-                "i2cdetect -y {dev}".format(dev=device_int),
-                stdout=subprocess.PIPE,
-                shell=True)
-            (i2cdetect_out, _) = i2cdetect.communicate()
-            i2cdetect.wait()
-            if i2cdetect_out:
-                i2c_devices_sorted[device_int] = i2cdetect_out.decode("latin1")
-    except Exception as er:
-        flash("Error detecting I2C devices: {er}".format(er=er), "error")
-    finally:
-        i2c_devices_sorted = OrderedDict(sorted(i2c_devices_sorted.items()))
+    if not current_app.config['TESTING']:
+        try:
+            i2c_devices = glob.glob("/dev/i2c-*")
+            i2c_devices_sorted = OrderedDict()
+            for index, each_dev in enumerate(i2c_devices):
+                device_int = int(each_dev.replace("/dev/i2c-", ""))
+                i2cdetect = subprocess.Popen(
+                    "i2cdetect -y {dev}".format(dev=device_int),
+                    stdout=subprocess.PIPE,
+                    shell=True)
+                (i2cdetect_out, _) = i2cdetect.communicate()
+                i2cdetect.wait()
+                if i2cdetect_out:
+                    i2c_devices_sorted[device_int] = i2cdetect_out.decode("latin1")
+        except Exception as er:
+            flash("Error detecting I2C devices: {er}".format(er=er), "error")
+        finally:
+            i2c_devices_sorted = OrderedDict(sorted(i2c_devices_sorted.items()))
 
     df = subprocess.Popen(
         "df -h", stdout=subprocess.PIPE, shell=True)

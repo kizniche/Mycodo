@@ -53,7 +53,7 @@ class DaemonControl:
         try:
             self.rpyc_client = rpyc.connect("localhost", 18813)
         except socket.error:
-            raise Exception("Connection refused. Is the daemon running?")
+            logger.debug("Connection refused. Is the daemon running?")
 
     def check_daemon(self):
         signal.signal(signal.SIGALRM, timeout_handler)
