@@ -20,7 +20,6 @@ from flask import url_for
 from flask.blueprints import Blueprint
 from flask_babel import gettext
 
-from mycodo.config_translations import TOOLTIPS_INPUT
 from mycodo.config import ALEMBIC_VERSION
 from mycodo.config import BACKUP_LOG_FILE
 from mycodo.config import CONDITIONALS
@@ -33,8 +32,6 @@ from mycodo.config import HTTP_ACCESS_LOG_FILE
 from mycodo.config import HTTP_ERROR_LOG_FILE
 from mycodo.config import INSTALL_DIRECTORY
 from mycodo.config import KEEPUP_LOG_FILE
-from mycodo.config import LIST_DEVICES_ADC
-from mycodo.config import LIST_DEVICES_I2C
 from mycodo.config import LOGIN_LOG_FILE
 from mycodo.config import MATH_INFO
 from mycodo.config import OUTPUTS
@@ -45,6 +42,7 @@ from mycodo.config import USAGE_REPORTS_PATH
 from mycodo.config_devices_units import DEVICE_INFO
 from mycodo.config_devices_units import MEASUREMENTS
 from mycodo.config_devices_units import UNITS
+from mycodo.config_translations import TOOLTIPS_INPUT
 from mycodo.databases.models import AlembicVersion
 from mycodo.databases.models import Camera
 from mycodo.databases.models import Conditional
@@ -86,6 +84,7 @@ from mycodo.mycodo_flask.utils import utils_lcd
 from mycodo.mycodo_flask.utils import utils_math
 from mycodo.mycodo_flask.utils import utils_output
 from mycodo.mycodo_flask.utils import utils_pid
+from mycodo.utils.inputs import list_analog_to_digital_converters
 from mycodo.utils.inputs import parse_input_information
 from mycodo.utils.sunriseset import Sun
 from mycodo.utils.system_pi import add_custom_measurements
@@ -843,7 +842,7 @@ def page_live():
     return render_template('pages/live.html',
                            dict_measurements=dict_measurements,
                            dict_units=dict_units,
-                           LIST_DEVICES_ADC=LIST_DEVICES_ADC,
+                           list_devices_adc=list_analog_to_digital_converters(),
                            measurement_units=MEASUREMENTS,
                            math=math,
                            method=method,
@@ -1181,8 +1180,6 @@ def page_data():
 
     dict_inputs =  parse_input_information()
 
-    list_devices_i2c = LIST_DEVICES_I2C
-
     display_order_input = csv_to_list_of_str(DisplayOrder.query.first().inputs)
     display_order_math = csv_to_list_of_str(DisplayOrder.query.first().math)
 
@@ -1335,8 +1332,7 @@ def page_data():
                            units=UNITS,
                            user=user,
                            w1thermsensor_sensors=w1thermsensor_sensors,
-                           lcd=lcd,
-                           list_devices_i2c=list_devices_i2c)
+                           lcd=lcd)
 
 
 @blueprint.route('/usage')

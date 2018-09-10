@@ -130,7 +130,7 @@
               {% endif %}
 
             {% endfor %}
-            {%- if each_input.device in LIST_DEVICES_ADC %}
+            {%- if each_input.device in list_devices_adc %}
               <b><span id="{{each_input.unique_id}}-{{each_input.adc_measure}}-value">0.0</span> {{each_input.adc_measure_units}} {{each_input.adc_measure}}</b> | <span id="{{each_input.unique_id}}-{{each_input.adc_measure}}-time">&lt;{{_('Please wait')}}&gt;</span>
             {% endif %}
           </div>

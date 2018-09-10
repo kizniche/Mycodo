@@ -23,24 +23,44 @@
 
 import importlib.util
 import logging
-import timeit
 
 import os
-import sys
-
-sys.path.append(
-    os.path.abspath(os.path.join(os.path.dirname(__file__), os.path.pardir) + '/../..'))
 
 logger = logging.getLogger("mycodo.input_parser")
 
 
-def dict_has_value(dict_inputs, input_custom, key):
-    if (key in input_custom.INPUT_INFORMATION and
-            (input_custom.INPUT_INFORMATION[key] or
-             input_custom.INPUT_INFORMATION[key] == 0)):
-        dict_inputs[input_custom.INPUT_INFORMATION['unique_name_input']][key] = \
-            input_custom.INPUT_INFORMATION[key]
-    return dict_inputs
+def list_devices_using_interface(interface):
+    """
+    Generates a list of input devices that use a particular interface
+    :param interface: string, can be 'GPIO', 'I2C', 'UART', 'BT', '1WIRE', 'Mycodo', 'RPi'
+    :return: list of strings
+    """
+    def check(check_input, dict_all_inputs, check_interface):
+        if ('interfaces' in dict_all_inputs[check_input] and
+                check_interface in dict_all_inputs[check_input]['interfaces']):
+            return True
+
+    list_devices = []
+    dict_inputs = parse_input_information()
+
+    for each_input in dict_inputs:
+        if (check(each_input, dict_inputs, interface) and
+                each_input not in list_devices):
+            list_devices.append(each_input)
+
+    return list_devices
+
+
+def list_analog_to_digital_converters():
+    """Generates a list of input devices that are analog-to-digital converters"""
+    list_adc = []
+    dict_inputs = parse_input_information()
+    for each_input in dict_inputs:
+        if ('analog_to_digital_converter' in dict_inputs[each_input] and
+                dict_inputs[each_input]['analog_to_digital_converter'] and
+                each_input not in list_adc):
+            list_adc.append(each_input)
+    return list_adc
 
 
 def load_module_from_file(path_file):
@@ -51,7 +71,16 @@ def load_module_from_file(path_file):
 
 
 def parse_input_information():
+    def dict_has_value(dict_inp, input_cus, key):
+        if (key in input_cus.INPUT_INFORMATION and
+                (input_cus.INPUT_INFORMATION[key] or
+                 input_cus.INPUT_INFORMATION[key] == 0)):
+            dict_inp[input_cus.INPUT_INFORMATION['unique_name_input']][key] = \
+                input_cus.INPUT_INFORMATION[key]
+        return dict_inp
+
     # Uncomment to enable timer
+    # import timeit
     # startup_timer = timeit.default_timer()
 
     excluded_files = ['__init__.py', '__pycache__', 'base_input.py',

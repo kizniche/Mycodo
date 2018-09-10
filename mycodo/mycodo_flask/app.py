@@ -18,7 +18,6 @@ from flask_babel import Babel
 from flask_babel import gettext
 from flask_compress import Compress
 from flask_limiter import Limiter
-from flask_limiter.util import get_remote_address
 from flask_sslify import SSLify
 
 from mycodo.config import INSTALL_DIRECTORY
@@ -39,6 +38,7 @@ from mycodo.mycodo_flask import routes_settings
 from mycodo.mycodo_flask import routes_static
 from mycodo.mycodo_flask.extensions import db
 from mycodo.mycodo_flask.routes_general import influx_db
+from mycodo.mycodo_flask.utils.utils_general import get_ip_address
 from mycodo.utils.system_pi import assure_path_exists
 
 
@@ -59,6 +59,10 @@ def create_app(config=ProdConfig):
     return app
 
 
+def get_ip_address():
+    return request.environ.get('HTTP_X_FORWARDED_FOR', 'unknown address')
+
+
 def register_extensions(app):
     """ register extensions to the app """
     app.jinja_env.add_extension('jinja2.ext.do')  # Global values in jinja
@@ -76,7 +80,7 @@ def register_extensions(app):
     influx_db.init_app(app)
 
     # Limit authentication blueprint requests to 60 per minute
-    limiter = Limiter(app, key_func=get_remote_address)
+    limiter = Limiter(app, key_func=get_ip_address)
     limiter.limit("60/minute")(routes_authentication.blueprint)
 
     # Language translations

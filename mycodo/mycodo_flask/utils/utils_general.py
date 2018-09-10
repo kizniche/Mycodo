@@ -10,11 +10,11 @@ import os
 import sqlalchemy
 from flask import flash
 from flask import redirect
+from flask import request
 from flask import url_for
 from flask_babel import gettext
 
 from mycodo.config import CALIBRATION_INFO
-from mycodo.config import LIST_DEVICES_ADC
 from mycodo.config import MATH_INFO
 from mycodo.config import METHOD_INFO
 from mycodo.config import OUTPUT_INFO
@@ -311,7 +311,6 @@ def form_input_choices(choices, each_input, dict_inputs):
 
         if ('unique_name_measurements' in dict_inputs[each_input.device] and
                 dict_inputs[each_input.device]['unique_name_measurements'] and
-                dict_inputs[each_input.device]['unique_name_measurements'] not in LIST_DEVICES_ADC and
                 dict_inputs[each_input.device]['unique_name_measurements'] != 'LinuxCommand' and
                 not is_adc
         ):
@@ -751,3 +750,7 @@ def use_unit_generate(input_dev, output, math):
                     use_unit[each_math.unique_id][each_measure] = None
 
     return use_unit
+
+
+def get_ip_address():
+    return request.environ.get('HTTP_X_FORWARDED_FOR', 'unknown address')

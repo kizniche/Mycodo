@@ -37,23 +37,3 @@ WTForms == 2.1
 # Devices and Sensors
 picamera == 1.13
 RPi.GPIO
-
-# Disabled modules (installed via dependency system)
-# -e git://github.com/maxlklaxl/python-tsl2591.git#egg=tsl2591
-# -e git://github.com/adafruit/Adafruit_Python_BME280.git#egg=adafruit-bme280
-# Adafruit_ADS1x15
-# Adafruit_BMP
-# Adafruit_GPIO
-# Adafruit_MCP3008
-# Adafruit_TMP
-# MCP342x == 0.3.3
-# quick2wire-api  # Replaces tentacle_pi and aosong
-# rpi-rf  # Replaces pi_switch
-# sht_sensor == 17.5.5
-# tsl2561  # Replaces tentacle_pi
-# w1thermsensor == 1.0.5
-
-# Removed modules
-# aosong  # Replaces tentacle_pi
-# pi_switch == 0.4.0  # Python 2.7 - For 433 MHz communication
-# tentacle_pi == 0.6.2  # Python 2.7 - For AM2315 and TSL2561

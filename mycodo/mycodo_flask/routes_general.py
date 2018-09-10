@@ -38,6 +38,7 @@ from mycodo.devices.camera import camera_record
 from mycodo.mycodo_client import DaemonControl
 from mycodo.mycodo_flask.routes_authentication import clear_cookie_auth
 from mycodo.mycodo_flask.utils import utils_general
+from mycodo.mycodo_flask.utils.utils_general import get_ip_address
 from mycodo.utils.influx import query_string
 from mycodo.utils.system_pi import assure_path_exists
 from mycodo.utils.system_pi import str_is_float
@@ -50,7 +51,7 @@ blueprint = Blueprint('routes_general',
 logger = logging.getLogger(__name__)
 influx_db = InfluxDB()
 
-limiter = Limiter()
+limiter = Limiter(key_func=get_ip_address)
 
 
 @blueprint.route('/')

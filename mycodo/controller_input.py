@@ -33,8 +33,6 @@ import locket
 import os
 import requests
 
-from mycodo.config import LIST_DEVICES_ADC
-from mycodo.config import LIST_DEVICES_I2C
 from mycodo.databases.models import Conditional
 from mycodo.databases.models import Input
 from mycodo.databases.models import Misc
@@ -104,21 +102,12 @@ class InputController(threading.Thread):
         self.input_name = input_dev.name
         self.unique_id = input_dev.unique_id
         self.gpio_location = input_dev.gpio_location
-        self.i2c_location = input_dev.i2c_location
-        self.i2c_bus = input_dev.i2c_bus
         self.measurements = input_dev.measurements
-        self.convert_to_unit = input_dev.convert_to_unit
         self.device = input_dev.device
         self.interface = input_dev.interface
         self.period = input_dev.period
 
-        # Serial
-        self.pin_clock = input_dev.pin_clock
-        self.pin_cs = input_dev.pin_cs
-        self.pin_mosi = input_dev.pin_mosi
-        self.pin_miso = input_dev.pin_miso
-
-        # ADC
+        # Analog-to-Digital Controller
         self.adc_measure = input_dev.convert_to_unit.split(',')[0]
         self.adc_volts_min = input_dev.adc_volts_min
         self.adc_volts_max = input_dev.adc_volts_max
@@ -126,22 +115,18 @@ class InputController(threading.Thread):
         self.adc_units_max = input_dev.adc_units_max
         self.adc_inverse_unit_scale = input_dev.adc_inverse_unit_scale
 
+        # Determine if this input is an analog-to-digital converter
+        self.is_adc = False
+        if ('analog_to_digital_converter' in self.dict_inputs[self.device] and
+                self.dict_inputs[self.device]['analog_to_digital_converter']):
+            self.is_adc = True
+
         # Edge detection
         self.switch_edge = input_dev.switch_edge
         self.switch_bouncetime = input_dev.switch_bouncetime
         self.switch_reset_period = input_dev.switch_reset_period
 
-        # PWM and RPM options
-        self.weighting = input_dev.weighting
-        self.rpm_pulses_per_rev = input_dev.rpm_pulses_per_rev
-        self.sample_time = input_dev.sample_time
-
-        # Server options
-        self.port = input_dev.port
-        self.times_check = input_dev.times_check
-        self.deadline = input_dev.deadline
-
-        # Output that will activate prior to input read
+        # Pre-Output: Activates prior to input measurement
         self.pre_output_id = input_dev.pre_output_id
         self.pre_output_duration = input_dev.pre_output_duration
         self.pre_output_during_measure = input_dev.pre_output_during_measure
@@ -170,8 +155,8 @@ class InputController(threading.Thread):
         self.lock_file = '/var/lock/input_pre_output_{id}'.format(id=self.pre_output_id)
 
         # Convert string I2C address to base-16 int
-        if self.device in LIST_DEVICES_I2C:
-            self.i2c_address = int(str(self.i2c_location), 16)
+        if self.interface == 'I2C':
+            self.i2c_address = int(str(self.input_dev.i2c_location), 16)
 
         # Set up edge detection of a GPIO pin
         if self.device == 'EDGE':
@@ -184,34 +169,39 @@ class InputController(threading.Thread):
 
         self.device_recognized = True
 
-        # Set up inputs or devices
-        if self.device in ['EDGE'] + LIST_DEVICES_ADC:
-            self.measure_input = None
-        else:
-            if self.device in self.dict_inputs:
-                # Load input module
-                input_loaded = load_module_from_file(self.dict_inputs[self.device]['file_path'])
+        if self.device in self.dict_inputs:
+            input_loaded = load_module_from_file(self.dict_inputs[self.device]['file_path'])
 
-                if ('analog_to_digital_converter' in input_loaded.INPUT_INFORMATION and
-                        input_loaded.INPUT_INFORMATION['analog_to_digital_converter']):
-                    # Load analog-to-digital controller
-                    self.adc = input_loaded.ADCModule(self.input_dev)
-                    if self.interface == 'I2C':
-                        self.adc_lock_file = "/var/lock/mycodo_adc_bus{bus}_0x{i2c:02X}.pid".format(
-                            bus=self.i2c_bus, i2c=self.i2c_address)
-                    elif self.interface == 'UART':
-                        self.adc_lock_file = "/var/lock/mycodo_adc_uart-{clock}-{cs}-{miso}-{mosi}".format(
-                            clock=self.pin_clock, cs=self.pin_cs, miso=self.pin_miso, mosi=self.pin_mosi)
-                else:
-                    # Load regular input
-                    self.adc = None
-                    self.measure_input = input_loaded.InputModule(self.input_dev)
+            if self.device == 'EDGE':
+                # Edge detection handled internally, no module to load
+                self.measure_input = None
+
+            elif self.is_adc:
+                # Load analog-to-digital converter module
+                self.measure_input = None
+                self.adc = input_loaded.ADCModule(self.input_dev)
+                if self.interface == 'I2C':
+                    self.adc_lock_file = "/var/lock/mycodo_adc_bus{bus}_0x{i2c:02X}.pid".format(
+                        bus=self.input_dev.i2c_bus,
+                        i2c=self.input_dev.i2c_location)
+                elif self.interface == 'UART':
+                    self.adc_lock_file = "/var/lock/mycodo_adc_uart-{clock}-{cs}-{miso}-{mosi}".format(
+                        clock=self.input_dev.pin_clock,
+                        cs=self.input_dev.pin_cs,
+                        miso=self.input_dev.pin_miso,
+                        mosi=self.input_dev.pin_mosi)
+
             else:
-                self.device_recognized = False
-                self.logger.debug("Device '{device}' not recognized".format(
-                    device=self.device))
-                raise Exception("'{device}' is not a valid device type.".format(
-                    device=self.device))
+                # Load input module
+                self.adc = None
+                self.measure_input = input_loaded.InputModule(self.input_dev)
+
+        else:
+            self.device_recognized = False
+            self.logger.debug("Device '{device}' not recognized".format(
+                device=self.device))
+            raise Exception("'{device}' is not a valid device type.".format(
+                device=self.device))
 
         self.edge_reset_timer = time.time()
         self.input_timer = time.time()
@@ -528,7 +518,9 @@ class InputController(threading.Thread):
 
     def stop_controller(self):
         self.thread_shutdown_timer = timeit.default_timer()
-        if self.device not in ['EDGE'] + LIST_DEVICES_ADC:
+
+        # Execute stop_sensor() if not EDGE or ADC
+        if self.device != 'EDGE' and not self.is_adc:
             self.measure_input.stop_sensor()
 
         # Ensure pre-output is off
