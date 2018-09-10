@@ -5,7 +5,7 @@ import pytest
 from testfixtures import LogCapture
 
 from collections import Iterator
-from mycodo.inputs.am2315 import AM2315Sensor
+from mycodo.inputs.am2315 import InputModule as AM2315Sensor
 
 
 # ----------------------------

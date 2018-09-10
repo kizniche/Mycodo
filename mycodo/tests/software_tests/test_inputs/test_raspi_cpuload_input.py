@@ -5,7 +5,7 @@ import pytest
 from testfixtures import LogCapture
 
 from collections import Iterator
-from mycodo.inputs.raspi_cpuload import RaspberryPiCPULoad
+from mycodo.inputs.raspi_cpuload import InputModule as RaspberryPiCPULoad
 
 
 # ----------------------------

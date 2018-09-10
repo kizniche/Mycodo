@@ -5,7 +5,7 @@ import pytest
 from testfixtures import LogCapture
 
 from collections import Iterator
-from mycodo.inputs.atlas_ph import AtlaspHSensor
+from mycodo.inputs.atlas_ph import InputModule as AtlaspHSensor
 
 
 # ----------------------------

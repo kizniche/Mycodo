@@ -5,7 +5,7 @@ import pytest
 from testfixtures import LogCapture
 
 from collections import Iterator
-from mycodo.inputs.htu21d import HTU21DSensor
+from mycodo.inputs.htu21d import InputModule as HTU21DSensor
 
 
 # ----------------------------

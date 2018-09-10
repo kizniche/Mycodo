@@ -5,7 +5,7 @@ import pytest
 from testfixtures import LogCapture
 
 from collections import Iterator
-from mycodo.inputs.mycodo_ram import MycodoRam
+from mycodo.inputs.mycodo_ram import InputModule as MycodoRam
 
 
 # ----------------------------

@@ -5,7 +5,7 @@ import pytest
 from testfixtures import LogCapture
 
 from collections import Iterator
-from mycodo.inputs.atlas_pt1000 import AtlasPT1000Sensor
+from mycodo.inputs.atlas_pt1000 import InputModule as AtlasPT1000Sensor
 
 
 # ----------------------------

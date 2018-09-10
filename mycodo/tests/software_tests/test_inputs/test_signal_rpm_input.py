@@ -5,7 +5,7 @@ import pytest
 from testfixtures import LogCapture
 
 from collections import Iterator
-from mycodo.inputs.signal_revolutions import SignalRPMInput
+from mycodo.inputs.signal_revolutions import InputModule as SignalRPMInput
 
 
 # ----------------------------

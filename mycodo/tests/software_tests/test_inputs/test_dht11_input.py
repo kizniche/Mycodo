@@ -5,7 +5,7 @@ import pytest
 from testfixtures import LogCapture
 
 from collections import Iterator
-from mycodo.inputs.dht11 import DHT11Sensor
+from mycodo.inputs.dht11 import InputModule as DHT11Sensor
 
 
 # ----------------------------

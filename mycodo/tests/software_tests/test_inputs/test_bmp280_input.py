@@ -5,7 +5,7 @@ import pytest
 from testfixtures import LogCapture
 
 from collections import Iterator
-from mycodo.inputs.bmp280 import BMP280Sensor
+from mycodo.inputs.bmp280 import InputModule as BMP280Sensor
 
 
 # ----------------------------

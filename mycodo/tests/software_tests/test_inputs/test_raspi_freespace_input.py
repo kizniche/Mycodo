@@ -5,7 +5,7 @@ import pytest
 from testfixtures import LogCapture
 
 from collections import Iterator
-from mycodo.inputs.raspi_freespace import RaspberryPiFreeSpace
+from mycodo.inputs.raspi_freespace import InputModule as RaspberryPiFreeSpace
 
 
 # ----------------------------

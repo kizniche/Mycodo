@@ -5,7 +5,7 @@ import pytest
 from testfixtures import LogCapture
 
 from collections import Iterator
-from mycodo.inputs.k30 import K30Sensor
+from mycodo.inputs.k30 import InputModule as K30Sensor
 
 
 # ----------------------------

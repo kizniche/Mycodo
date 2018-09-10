@@ -5,7 +5,7 @@ import pytest
 from testfixtures import LogCapture
 
 from collections import Iterator
-from mycodo.inputs.sht2x import SHT2xSensor
+from mycodo.inputs.sht2x import InputModule as SHT2xSensor
 
 
 # ----------------------------

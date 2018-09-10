@@ -5,7 +5,7 @@ import pytest
 from testfixtures import LogCapture
 
 from collections import Iterator
-from mycodo.inputs.signal_pwm import SignalPWMInput
+from mycodo.inputs.signal_pwm import InputModule as SignalPWMInput
 
 
 # ----------------------------

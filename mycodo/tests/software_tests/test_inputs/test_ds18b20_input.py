@@ -5,7 +5,7 @@ import pytest
 from testfixtures import LogCapture
 
 from collections import Iterator
-from mycodo.inputs.ds18b20 import DS18B20Sensor
+from mycodo.inputs.ds18b20 import InputModule as DS18B20Sensor
 
 
 # ----------------------------

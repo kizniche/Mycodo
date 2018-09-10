@@ -5,7 +5,7 @@ import pytest
 from testfixtures import LogCapture
 
 from collections import Iterator
-from mycodo.inputs.chirp import ChirpSensor
+from mycodo.inputs.chirp import InputModule as ChirpSensor
 
 
 # ----------------------------

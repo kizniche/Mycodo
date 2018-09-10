@@ -5,7 +5,7 @@ import pytest
 from testfixtures import LogCapture
 
 from collections import Iterator
-from mycodo.inputs.tmp006 import TMP006Sensor
+from mycodo.inputs.tmp006 import InputModule as TMP006Sensor
 
 
 # ----------------------------

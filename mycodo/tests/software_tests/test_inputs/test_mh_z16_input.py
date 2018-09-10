@@ -5,7 +5,7 @@ import pytest
 from testfixtures import LogCapture
 
 from collections import Iterator
-from mycodo.inputs.mh_z16 import MHZ16Sensor
+from mycodo.inputs.mh_z16 import InputModule as MHZ16Sensor
 
 
 # ----------------------------

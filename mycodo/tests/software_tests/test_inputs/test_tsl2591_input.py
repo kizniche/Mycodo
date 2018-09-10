@@ -5,7 +5,7 @@ import pytest
 from testfixtures import LogCapture
 
 from collections import Iterator
-from mycodo.inputs.tsl2591_sensor import TSL2591Sensor
+from mycodo.inputs.tsl2591_sensor import InputModule as TSL2591Sensor
 
 
 # ----------------------------

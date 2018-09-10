@@ -5,7 +5,7 @@ import pytest
 from testfixtures import LogCapture
 
 from collections import Iterator
-from mycodo.inputs.bh1750 import BH1750Sensor
+from mycodo.inputs.bh1750 import InputModule as BH1750Sensor
 
 
 # ----------------------------
