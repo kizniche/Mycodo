@@ -1,6 +1,6 @@
 language: python
 os: linux
-dist: trusty
+dist: xenial
 python:
   - 3.5
 before_install:
