@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Mycodo VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2018-09-09 20:42-0400\n"
+"POT-Creation-Date: 2018-09-09 21:10-0400\n"
 "PO-Revision-Date: 2018-08-10 15:21-0400\n"
 "Last-Translator: \n"
 "Language: es\n"
@@ -258,7 +258,7 @@ msgstr "Temperatura (Die)"
 msgid "VOC"
 msgstr ""
 
-#: config_devices_units.py:470 mycodo_flask/forms/forms_input.py:144
+#: config_devices_units.py:470 config_translations.py:125
 #: mycodo_flask/forms/forms_settings.py:124
 msgid "Voltage"
 msgstr "Tensión"
@@ -353,7 +353,7 @@ msgstr "Velocidad en baudios"
 msgid "The UART baud rate"
 msgstr "Velocidad de Baudios UART"
 
-#: config_translations.py:44 mycodo_flask/forms/forms_input.py:106
+#: config_translations.py:44
 msgid "CS Pin"
 msgstr ""
 
@@ -361,7 +361,7 @@ msgstr ""
 msgid "The GPIO (using BCM numbering) connected to the Cable Select pin"
 msgstr ""
 
-#: config_translations.py:47 mycodo_flask/forms/forms_input.py:108
+#: config_translations.py:47
 msgid "MISO Pin"
 msgstr ""
 
@@ -369,7 +369,7 @@ msgstr ""
 msgid "The GPIO (using BCM numbering) connected to the MISO pin"
 msgstr ""
 
-#: config_translations.py:50 mycodo_flask/forms/forms_input.py:107
+#: config_translations.py:50
 msgid "MOSI Pin"
 msgstr ""
 
@@ -377,7 +377,7 @@ msgstr ""
 msgid "The GPIO (using BCM numbering) connected to the MOSI pin"
 msgstr ""
 
-#: config_translations.py:53 mycodo_flask/forms/forms_input.py:105
+#: config_translations.py:53
 msgid "Clock Pin"
 msgstr "Pin Clock"
 
@@ -412,7 +412,6 @@ msgstr "Seleccione el ID del sensor DS18B20 deseado"
 #: config_translations.py:65 config_translations.py:107
 #: mycodo_flask/forms/forms_calibration.py:45
 #: mycodo_flask/forms/forms_input.py:85 mycodo_flask/forms/forms_input.py:86
-#: mycodo_flask/forms/forms_input.py:116
 msgid "Resolution"
 msgstr "Resolución"
 
@@ -429,14 +428,14 @@ msgid "Measurement sensitivity"
 msgstr ""
 
 #: config_translations.py:71
-msgid "Thermocouple"
-msgstr ""
+msgid "RTD Probe Type"
+msgstr "Tipo de sonda RTD"
 
 #: config_translations.py:72
 msgid "The type of thermocouple connected"
 msgstr "El tipo de termopar conectado"
 
-#: config_translations.py:74 mycodo_flask/forms/forms_input.py:102
+#: config_translations.py:74
 msgid "Reference Resistance"
 msgstr ""
 
@@ -444,8 +443,7 @@ msgstr ""
 msgid "Reference resistance (Ohm)"
 msgstr ""
 
-#: config_translations.py:77 mycodo_flask/forms/forms_input.py:98
-#: mycodo_flask/routes_calibration.py:272
+#: config_translations.py:77 mycodo_flask/routes_calibration.py:272
 #: mycodo_flask/templates/pages/function_options/conditional_options/actions.html:131
 msgid "Command"
 msgstr "Ordenador"
@@ -481,7 +479,7 @@ msgstr ""
 msgid "Time (seconds) to wait until failure"
 msgstr ""
 
-#: config_translations.py:89 mycodo_flask/forms/forms_input.py:93
+#: config_translations.py:89
 msgid "Port"
 msgstr "Puerto"
 
@@ -489,7 +487,7 @@ msgstr "Puerto"
 msgid "Host port number"
 msgstr ""
 
-#: config_translations.py:92 mycodo_flask/forms/forms_input.py:139
+#: config_translations.py:92
 msgid "Weighting"
 msgstr "Ponderación"
 
@@ -503,7 +501,7 @@ msgstr ""
 "- 1.0. Utilizado para alisar medidas. 0.0 significa que no hay "
 "ponderación."
 
-#: config_translations.py:95 mycodo_flask/forms/forms_input.py:141
+#: config_translations.py:95
 msgid "Sample Time"
 msgstr ""
 
@@ -513,7 +511,7 @@ msgid ""
 "measurement"
 msgstr ""
 
-#: config_translations.py:98 mycodo_flask/forms/forms_input.py:140
+#: config_translations.py:98
 msgid "Pulses Per Rev"
 msgstr "Pulsos por Revolución"
 
@@ -525,7 +523,7 @@ msgstr ""
 "La cantidad de pulsos por revolución para calcular revoluciones por "
 "minuto (RPM)"
 
-#: config_translations.py:101 mycodo_flask/forms/forms_input.py:114
+#: config_translations.py:101
 msgid "Channel"
 msgstr "Canal"
 
@@ -533,8 +531,7 @@ msgstr "Canal"
 msgid "The channel of the analog to digital converter."
 msgstr "El canal del convertidor analógico a digital."
 
-#: config_translations.py:104 mycodo_flask/forms/forms_input.py:115
-#: mycodo_flask/forms/forms_settings.py:39
+#: config_translations.py:104 mycodo_flask/forms/forms_settings.py:39
 #: mycodo_flask/templates/pages/live.html:154
 #: mycodo_flask/templates/pages/live.html:323
 msgid "Gain"
@@ -552,7 +549,7 @@ msgstr ""
 msgid "ADC Resolution (see ADC documentation)"
 msgstr "Resolución de ADC (ver documentación de ADC)"
 
-#: config_translations.py:110 mycodo_flask/forms/forms_input.py:117
+#: config_translations.py:110
 msgid "Volts Min"
 msgstr "Tensión Mínima"
 
@@ -560,7 +557,7 @@ msgstr "Tensión Mínima"
 msgid "Minimum analog to digital converter input voltage."
 msgstr "Tensión mínima de entrada del convertidor analógico a digital."
 
-#: config_translations.py:113 mycodo_flask/forms/forms_input.py:118
+#: config_translations.py:113
 msgid "Volts Max"
 msgstr "Tensión Máxima"
 
@@ -568,7 +565,7 @@ msgstr "Tensión Máxima"
 msgid "Maximum analog to digital converter input voltage."
 msgstr "Tensión máxima de entrada del convertidor analógico a digital."
 
-#: config_translations.py:116 mycodo_flask/forms/forms_input.py:119
+#: config_translations.py:116
 msgid "Units Min"
 msgstr "Unidad Mínima"
 
@@ -576,7 +573,7 @@ msgstr "Unidad Mínima"
 msgid "Minimum unit to convert the voltage to."
 msgstr "Unidad mínima de conversión la tensión."
 
-#: config_translations.py:119 mycodo_flask/forms/forms_input.py:120
+#: config_translations.py:119
 msgid "Units Max"
 msgstr "Unidad Máxima"
 
@@ -584,7 +581,7 @@ msgstr "Unidad Máxima"
 msgid "Maximum unit to convert the voltage to."
 msgstr "Unidad máxima de conversión la tensión."
 
-#: config_translations.py:122 mycodo_flask/forms/forms_input.py:121
+#: config_translations.py:122
 msgid "Inverse Unit Scale"
 msgstr "Escala de unidad inversa"
 
@@ -593,6 +590,10 @@ msgid "Inverse the scale (example: a high measurement returns a low unit value)"
 msgstr ""
 "Invertir la escala (ejemplo: una medición alta devuelve un valor bajo de "
 "la unidad)"
+
+#: config_translations.py:126
+msgid "The input voltage to the sensor"
+msgstr ""
 
 #: mycodo_flask/app.py:112
 msgid "Please log in to access this page"
@@ -752,7 +753,7 @@ msgstr "Comando para volver a cargar la interfaz enviada"
 #: mycodo_flask/utils/utils_conditional.py:130
 #: mycodo_flask/utils/utils_conditional.py:303
 #: mycodo_flask/utils/utils_dashboard.py:353
-#: mycodo_flask/utils/utils_input.py:400 mycodo_flask/utils/utils_lcd.py:92
+#: mycodo_flask/utils/utils_input.py:405 mycodo_flask/utils/utils_lcd.py:92
 #: mycodo_flask/utils/utils_lcd.py:289 mycodo_flask/utils/utils_math.py:203
 #: mycodo_flask/utils/utils_method.py:497
 #: mycodo_flask/utils/utils_output.py:149 mycodo_flask/utils/utils_pid.py:154
@@ -1388,18 +1389,6 @@ msgstr "Unidad"
 msgid "Host"
 msgstr "Host"
 
-#: mycodo_flask/forms/forms_input.py:94
-msgid "Times to Check"
-msgstr "Tiempos para verificar"
-
-#: mycodo_flask/forms/forms_input.py:95
-msgid "Deadline (seconds)"
-msgstr "Fecha límite (segundos)"
-
-#: mycodo_flask/forms/forms_input.py:101
-msgid "RTD Probe Type"
-msgstr "Tipo de sonda RTD"
-
 #: mycodo_flask/forms/forms_input.py:123
 msgid "Edge"
 msgstr "Transición"
@@ -1477,8 +1466,8 @@ msgstr "Agregar Mates"
 #: mycodo_flask/templates/layout-remote.html:50
 #: mycodo_flask/templates/pages/data_options/input.html:1
 #: mycodo_flask/utils/utils_general.py:67 mycodo_flask/utils/utils_input.py:43
-#: mycodo_flask/utils/utils_input.py:270 mycodo_flask/utils/utils_input.py:401
-#: mycodo_flask/utils/utils_input.py:431
+#: mycodo_flask/utils/utils_input.py:275 mycodo_flask/utils/utils_input.py:406
+#: mycodo_flask/utils/utils_input.py:436
 msgid "Input"
 msgstr "Entrada"
 
@@ -4398,7 +4387,7 @@ msgstr "Acción"
 
 #: mycodo_flask/utils/utils_conditional.py:330
 #: mycodo_flask/utils/utils_dashboard.py:372
-#: mycodo_flask/utils/utils_input.py:430 mycodo_flask/utils/utils_lcd.py:123
+#: mycodo_flask/utils/utils_input.py:435 mycodo_flask/utils/utils_lcd.py:123
 #: mycodo_flask/utils/utils_math.py:232 mycodo_flask/utils/utils_output.py:168
 #: mycodo_flask/utils/utils_pid.py:178
 msgid "Reorder"
@@ -4410,7 +4399,7 @@ msgid "{dev} with ID %(id)s successfully added"
 msgstr ""
 
 #: mycodo_flask/utils/utils_dashboard.py:188
-#: mycodo_flask/utils/utils_input.py:269 mycodo_flask/utils/utils_lcd.py:61
+#: mycodo_flask/utils/utils_input.py:274 mycodo_flask/utils/utils_lcd.py:61
 #: mycodo_flask/utils/utils_math.py:91 mycodo_flask/utils/utils_method.py:376
 #: mycodo_flask/utils/utils_output.py:90 mycodo_flask/utils/utils_pid.py:38
 #: mycodo_flask/utils/utils_settings.py:52
@@ -4497,16 +4486,16 @@ msgstr "No se puede mover por encima del primer elemento de la lista"
 msgid "Cannot move below the last item in the list"
 msgstr "No se puede mover por debajo del último elemento de la lista"
 
-#: mycodo_flask/utils/utils_input.py:248
+#: mycodo_flask/utils/utils_input.py:253
 #, python-format
 msgid "%(type)s Input with ID %(id)s (%(uuid)s) successfully added"
 msgstr "%(type)s Entrada con ID %(id)s (%(uuid)s) agregada correctamente"
 
-#: mycodo_flask/utils/utils_input.py:280
+#: mycodo_flask/utils/utils_input.py:285
 msgid "Deactivate sensor controller before modifying its settings"
 msgstr "Desactive el controlador del sensor antes de modificar su configuración"
 
-#: mycodo_flask/utils/utils_input.py:285
+#: mycodo_flask/utils/utils_input.py:290
 msgid ""
 "Choose a Read Period equal to or greater than 7. The AM2315 may become "
 "unresponsive if the period is below 7."
@@ -4514,15 +4503,15 @@ msgstr ""
 "Elija un Período de Lectura igual o mayor que 7. El AM2315 puede no "
 "responder si el período es inferior a 7."
 
-#: mycodo_flask/utils/utils_input.py:292
+#: mycodo_flask/utils/utils_input.py:297
 msgid "A unit measurement must be selected."
 msgstr "Se debe seleccionar una unidad de medida."
 
-#: mycodo_flask/utils/utils_input.py:297
+#: mycodo_flask/utils/utils_input.py:302
 msgid "The Read Period cannot be less than the Pre Output Duration"
 msgstr "El período de lectura no puede ser menor que la duración de pre salida"
 
-#: mycodo_flask/utils/utils_input.py:302
+#: mycodo_flask/utils/utils_input.py:307
 msgid "Invalid device or improper permissions to read device"
 msgstr "Dispositivo no válido o permisos incorrectos para leer el dispositivo"
 

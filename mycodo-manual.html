@@ -365,6 +365,7 @@
 <li><a href="#specific-method-options">Specific Method Options</a></li>
 </ul></li>
 </ul></li>
+<li><a href="#create-your-own-input-module">Create Your Own Input Module</a></li>
 <li><a href="#pid-tuning">PID Tuning</a><ul>
 <li><a href="#pid-control-theory">PID Control Theory</a></li>
 <li><a href="#quick-setup-examples">Quick Setup Examples</a></li>
@@ -1845,6 +1846,11 @@ signal &lt;http://kylegabriel.com/projects/2016/02
 <p>The daily sine wave method defines the setpoint over the day based on a sinusoidal wave. The sine wave is defined by y = [A * sin(B * x + C)] + D, where A is amplitude, B is frequency, C is the angle shift, and D is the y-axis shift. This method will repeat daily.</p>
 <h4 id="daily-bezier-curve-method">Daily (Bezier Curve) Method</h4>
 <p>A daily Bezier curve method define the setpoint over the day based on a cubic Bezier curve. If unfamiliar with a Bezier curve, it is recommended you use the <a href="https://www.desmos.com/calculator/cahqdxeshd">graphical Bezier curve generator</a> and use the 8 variables it creates for 4 points (each a set of x and y). The x-axis start (x3) and end (x0) will be automatically stretched or skewed to fit within a 24-hour period and this method will repeat daily.</p>
+<h1 id="create-your-own-input-module">Create Your Own Input Module</h1>
+<p>If you have a sensor that is not currently supported by Mycodo, you can build your own input module and import it into Mycodo. All information about an input is contained within the input module, set in the dictionary ‘INPUT_INFORMATION’. Each module will require a unique name set in ‘unique_name_input’.</p>
+<p>Example input modules can be found:</p>
+<p><a href="https://github.com/kizniche/Mycodo/blob/single_file_input_modules/mycodo/inputs/custom_inputs/test_humidity_01.py" class="uri">https://github.com/kizniche/Mycodo/blob/single_file_input_modules/mycodo/inputs/custom_inputs/test_humidity_01.py</a></p>
+<p><a href="https://github.com/kizniche/Mycodo/blob/single_file_input_modules/mycodo/inputs/custom_inputs/test_temperature_01.py" class="uri">https://github.com/kizniche/Mycodo/blob/single_file_input_modules/mycodo/inputs/custom_inputs/test_temperature_01.py</a></p>
 <h1 id="pid-tuning">PID Tuning</h1>
 <p>Function -&gt; PIDs</p>
 <h2 id="pid-control-theory">PID Control Theory</h2>

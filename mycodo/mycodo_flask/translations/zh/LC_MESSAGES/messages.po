@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2018-09-09 20:42-0400\n"
+"POT-Creation-Date: 2018-09-09 21:10-0400\n"
 "PO-Revision-Date: 2018-08-10 15:59-0400\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: zh\n"
@@ -260,7 +260,7 @@ msgstr "温度（模具）"
 msgid "VOC"
 msgstr "VOC"
 
-#: config_devices_units.py:470 mycodo_flask/forms/forms_input.py:144
+#: config_devices_units.py:470 config_translations.py:125
 #: mycodo_flask/forms/forms_settings.py:124
 msgid "Voltage"
 msgstr "电压"
@@ -353,7 +353,7 @@ msgstr "波特率"
 msgid "The UART baud rate"
 msgstr "UART波特率"
 
-#: config_translations.py:44 mycodo_flask/forms/forms_input.py:106
+#: config_translations.py:44
 msgid "CS Pin"
 msgstr "CS Pin"
 
@@ -361,7 +361,7 @@ msgstr "CS Pin"
 msgid "The GPIO (using BCM numbering) connected to the Cable Select pin"
 msgstr ""
 
-#: config_translations.py:47 mycodo_flask/forms/forms_input.py:108
+#: config_translations.py:47
 msgid "MISO Pin"
 msgstr "MISO Pin"
 
@@ -369,7 +369,7 @@ msgstr "MISO Pin"
 msgid "The GPIO (using BCM numbering) connected to the MISO pin"
 msgstr "GPIO（使用BCM编号）连接到MISO引脚"
 
-#: config_translations.py:50 mycodo_flask/forms/forms_input.py:107
+#: config_translations.py:50
 msgid "MOSI Pin"
 msgstr "MOSI Pin"
 
@@ -377,7 +377,7 @@ msgstr "MOSI Pin"
 msgid "The GPIO (using BCM numbering) connected to the MOSI pin"
 msgstr "GPIO（使用BCM编号）连接到MOSI引脚"
 
-#: config_translations.py:53 mycodo_flask/forms/forms_input.py:105
+#: config_translations.py:53
 msgid "Clock Pin"
 msgstr "时钟针"
 
@@ -412,7 +412,6 @@ msgstr "选择所需DS18B20传感器的ID"
 #: config_translations.py:65 config_translations.py:107
 #: mycodo_flask/forms/forms_calibration.py:45
 #: mycodo_flask/forms/forms_input.py:85 mycodo_flask/forms/forms_input.py:86
-#: mycodo_flask/forms/forms_input.py:116
 msgid "Resolution"
 msgstr "解析度"
 
@@ -429,14 +428,14 @@ msgid "Measurement sensitivity"
 msgstr ""
 
 #: config_translations.py:71
-msgid "Thermocouple"
-msgstr ""
+msgid "RTD Probe Type"
+msgstr "RTD探头类型"
 
 #: config_translations.py:72
 msgid "The type of thermocouple connected"
 msgstr "连接的热电偶类型"
 
-#: config_translations.py:74 mycodo_flask/forms/forms_input.py:102
+#: config_translations.py:74
 msgid "Reference Resistance"
 msgstr ""
 
@@ -444,8 +443,7 @@ msgstr ""
 msgid "Reference resistance (Ohm)"
 msgstr ""
 
-#: config_translations.py:77 mycodo_flask/forms/forms_input.py:98
-#: mycodo_flask/routes_calibration.py:272
+#: config_translations.py:77 mycodo_flask/routes_calibration.py:272
 #: mycodo_flask/templates/pages/function_options/conditional_options/actions.html:131
 msgid "Command"
 msgstr "命令"
@@ -479,7 +477,7 @@ msgstr ""
 msgid "Time (seconds) to wait until failure"
 msgstr ""
 
-#: config_translations.py:89 mycodo_flask/forms/forms_input.py:93
+#: config_translations.py:89
 msgid "Port"
 msgstr "港口"
 
@@ -487,7 +485,7 @@ msgstr "港口"
 msgid "Host port number"
 msgstr ""
 
-#: config_translations.py:92 mycodo_flask/forms/forms_input.py:139
+#: config_translations.py:92
 msgid "Weighting"
 msgstr "权重"
 
@@ -498,7 +496,7 @@ msgid ""
 "weighting."
 msgstr "前一次测量对当前测量的加权。范围：0.0  -  1.0。用于平滑测量。 0.0表示没有加权。"
 
-#: config_translations.py:95 mycodo_flask/forms/forms_input.py:141
+#: config_translations.py:95
 msgid "Sample Time"
 msgstr ""
 
@@ -508,7 +506,7 @@ msgid ""
 "measurement"
 msgstr ""
 
-#: config_translations.py:98 mycodo_flask/forms/forms_input.py:140
+#: config_translations.py:98
 msgid "Pulses Per Rev"
 msgstr "脉冲每转"
 
@@ -518,7 +516,7 @@ msgid ""
 "(RPM)"
 msgstr "计算每分钟转数（RPM）的每转脉冲数"
 
-#: config_translations.py:101 mycodo_flask/forms/forms_input.py:114
+#: config_translations.py:101
 msgid "Channel"
 msgstr "渠道"
 
@@ -526,8 +524,7 @@ msgstr "渠道"
 msgid "The channel of the analog to digital converter."
 msgstr "模数转换器的通道。"
 
-#: config_translations.py:104 mycodo_flask/forms/forms_input.py:115
-#: mycodo_flask/forms/forms_settings.py:39
+#: config_translations.py:104 mycodo_flask/forms/forms_settings.py:39
 #: mycodo_flask/templates/pages/live.html:154
 #: mycodo_flask/templates/pages/live.html:323
 msgid "Gain"
@@ -543,7 +540,7 @@ msgstr "调整增益以改变可测量的电压范围。有关详情，请参阅
 msgid "ADC Resolution (see ADC documentation)"
 msgstr "ADC分辨率（参见ADC文档）"
 
-#: config_translations.py:110 mycodo_flask/forms/forms_input.py:117
+#: config_translations.py:110
 msgid "Volts Min"
 msgstr "伏尔特"
 
@@ -551,7 +548,7 @@ msgstr "伏尔特"
 msgid "Minimum analog to digital converter input voltage."
 msgstr "最小模数转换器输入电压。"
 
-#: config_translations.py:113 mycodo_flask/forms/forms_input.py:118
+#: config_translations.py:113
 msgid "Volts Max"
 msgstr "伏特马克斯"
 
@@ -559,7 +556,7 @@ msgstr "伏特马克斯"
 msgid "Maximum analog to digital converter input voltage."
 msgstr "最大模数转换器输入电压。"
 
-#: config_translations.py:116 mycodo_flask/forms/forms_input.py:119
+#: config_translations.py:116
 msgid "Units Min"
 msgstr "单位最小"
 
@@ -567,7 +564,7 @@ msgstr "单位最小"
 msgid "Minimum unit to convert the voltage to."
 msgstr "将电压转换为的最小单位。"
 
-#: config_translations.py:119 mycodo_flask/forms/forms_input.py:120
+#: config_translations.py:119
 msgid "Units Max"
 msgstr "最大单位"
 
@@ -575,13 +572,17 @@ msgstr "最大单位"
 msgid "Maximum unit to convert the voltage to."
 msgstr "将电压转换为的最大单位。"
 
-#: config_translations.py:122 mycodo_flask/forms/forms_input.py:121
+#: config_translations.py:122
 msgid "Inverse Unit Scale"
 msgstr "逆单位比例"
 
 #: config_translations.py:123
 msgid "Inverse the scale (example: a high measurement returns a low unit value)"
 msgstr "反转比例（例如：高测量值返回低单位值）"
+
+#: config_translations.py:126
+msgid "The input voltage to the sensor"
+msgstr ""
 
 #: mycodo_flask/app.py:112
 msgid "Please log in to access this page"
@@ -725,7 +726,7 @@ msgstr "命令重新加载发送的前端"
 #: mycodo_flask/utils/utils_conditional.py:130
 #: mycodo_flask/utils/utils_conditional.py:303
 #: mycodo_flask/utils/utils_dashboard.py:353
-#: mycodo_flask/utils/utils_input.py:400 mycodo_flask/utils/utils_lcd.py:92
+#: mycodo_flask/utils/utils_input.py:405 mycodo_flask/utils/utils_lcd.py:92
 #: mycodo_flask/utils/utils_lcd.py:289 mycodo_flask/utils/utils_math.py:203
 #: mycodo_flask/utils/utils_method.py:497
 #: mycodo_flask/utils/utils_output.py:149 mycodo_flask/utils/utils_pid.py:154
@@ -1361,18 +1362,6 @@ msgstr "单元"
 msgid "Host"
 msgstr "主办"
 
-#: mycodo_flask/forms/forms_input.py:94
-msgid "Times to Check"
-msgstr "要检查的时间"
-
-#: mycodo_flask/forms/forms_input.py:95
-msgid "Deadline (seconds)"
-msgstr "截止日期（秒）"
-
-#: mycodo_flask/forms/forms_input.py:101
-msgid "RTD Probe Type"
-msgstr "RTD探头类型"
-
 #: mycodo_flask/forms/forms_input.py:123
 msgid "Edge"
 msgstr "边缘"
@@ -1448,8 +1437,8 @@ msgstr "添加数学"
 #: mycodo_flask/templates/layout-remote.html:50
 #: mycodo_flask/templates/pages/data_options/input.html:1
 #: mycodo_flask/utils/utils_general.py:67 mycodo_flask/utils/utils_input.py:43
-#: mycodo_flask/utils/utils_input.py:270 mycodo_flask/utils/utils_input.py:401
-#: mycodo_flask/utils/utils_input.py:431
+#: mycodo_flask/utils/utils_input.py:275 mycodo_flask/utils/utils_input.py:406
+#: mycodo_flask/utils/utils_input.py:436
 msgid "Input"
 msgstr "输入"
 
@@ -4160,7 +4149,7 @@ msgstr "行动"
 
 #: mycodo_flask/utils/utils_conditional.py:330
 #: mycodo_flask/utils/utils_dashboard.py:372
-#: mycodo_flask/utils/utils_input.py:430 mycodo_flask/utils/utils_lcd.py:123
+#: mycodo_flask/utils/utils_input.py:435 mycodo_flask/utils/utils_lcd.py:123
 #: mycodo_flask/utils/utils_math.py:232 mycodo_flask/utils/utils_output.py:168
 #: mycodo_flask/utils/utils_pid.py:178
 msgid "Reorder"
@@ -4172,7 +4161,7 @@ msgid "{dev} with ID %(id)s successfully added"
 msgstr "已成功添加ID为 %(id)s 的{dev}"
 
 #: mycodo_flask/utils/utils_dashboard.py:188
-#: mycodo_flask/utils/utils_input.py:269 mycodo_flask/utils/utils_lcd.py:61
+#: mycodo_flask/utils/utils_input.py:274 mycodo_flask/utils/utils_lcd.py:61
 #: mycodo_flask/utils/utils_math.py:91 mycodo_flask/utils/utils_method.py:376
 #: mycodo_flask/utils/utils_output.py:90 mycodo_flask/utils/utils_pid.py:38
 #: mycodo_flask/utils/utils_settings.py:52
@@ -4259,30 +4248,30 @@ msgstr "无法移动到列表中的第一个项目之上"
 msgid "Cannot move below the last item in the list"
 msgstr "无法移动到列表中的最后一项之下"
 
-#: mycodo_flask/utils/utils_input.py:248
+#: mycodo_flask/utils/utils_input.py:253
 #, python-format
 msgid "%(type)s Input with ID %(id)s (%(uuid)s) successfully added"
 msgstr "%(type)s 已成功添加ID为 %(id)s (%(uuid)s) 的输入"
 
-#: mycodo_flask/utils/utils_input.py:280
+#: mycodo_flask/utils/utils_input.py:285
 msgid "Deactivate sensor controller before modifying its settings"
 msgstr "在修改其设置之前，请停用传感器控制器"
 
-#: mycodo_flask/utils/utils_input.py:285
+#: mycodo_flask/utils/utils_input.py:290
 msgid ""
 "Choose a Read Period equal to or greater than 7. The AM2315 may become "
 "unresponsive if the period is below 7."
 msgstr "选择等于或大于7的读取周期。如果周期低于7，AM2315可能会无响应。"
 
-#: mycodo_flask/utils/utils_input.py:292
+#: mycodo_flask/utils/utils_input.py:297
 msgid "A unit measurement must be selected."
 msgstr "必须选择单位测量。"
 
-#: mycodo_flask/utils/utils_input.py:297
+#: mycodo_flask/utils/utils_input.py:302
 msgid "The Read Period cannot be less than the Pre Output Duration"
 msgstr "读取周期不能小于预输出持续时间"
 
-#: mycodo_flask/utils/utils_input.py:302
+#: mycodo_flask/utils/utils_input.py:307
 msgid "Invalid device or improper permissions to read device"
 msgstr "设备无效或读取设备的权限不正确"
 

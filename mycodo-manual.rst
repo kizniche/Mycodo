@@ -1583,6 +1583,18 @@ generator <https://www.desmos.com/calculator/cahqdxeshd>`__ and use the
 start (x3) and end (x0) will be automatically stretched or skewed to fit
 within a 24-hour period and this method will repeat daily.
 
+Create Your Own Input Module
+============================
+
+If you have a sensor that is not currently supported by Mycodo, you can build your own input module and import it into Mycodo. All information about an input is contained within the input module, set in the dictionary 'INPUT_INFORMATION'. Each module will require a unique name set in 'unique_name_input'.
+
+Example input modules can be found:
+
+https://github.com/kizniche/Mycodo/blob/single_file_input_modules/mycodo/inputs/custom_inputs/test_humidity_01.py
+
+https://github.com/kizniche/Mycodo/blob/single_file_input_modules/mycodo/inputs/custom_inputs/test_temperature_01.py
+
+
 PID Tuning
 ==========
 
