@@ -13,7 +13,7 @@ from mycodo.inputs.sht1x_7x import InputModule as SHT1x7xSensor
 # ----------------------------
 def test_sht1x_7x_iterates_using_in():
     """ Verify that a SHT1x7xSensor object can use the 'in' operator """
-    with mock.patch('mycodo.inputs.sht1x_7x.SHT1x7xSensor.get_measurement') as mock_measure:
+    with mock.patch('mycodo.inputs.sht1x_7x.InputModule.get_measurement') as mock_measure:
         mock_measure.side_effect = [(23, 50, 3000),
                                     (25, 55, 3200),
                                     (27, 60, 3400),
@@ -28,7 +28,7 @@ def test_sht1x_7x_iterates_using_in():
 
 def test_sht1x_7x__iter__returns_iterator():
     """ The iter methods must return an iterator in order to work properly """
-    with mock.patch('mycodo.inputs.sht1x_7x.SHT1x7xSensor.get_measurement') as mock_measure:
+    with mock.patch('mycodo.inputs.sht1x_7x.InputModule.get_measurement') as mock_measure:
         mock_measure.side_effect = [(23, 50, 3000),
                                     (25, 55, 3200),
                                     (27, 60, 3400),
@@ -39,7 +39,7 @@ def test_sht1x_7x__iter__returns_iterator():
 
 def test_sht1x_7x_read_updates_temp():
     """  Verify that SHT1x7xSensor(None, testing=True).read() gets the average temp """
-    with mock.patch('mycodo.inputs.sht1x_7x.SHT1x7xSensor.get_measurement') as mock_measure:
+    with mock.patch('mycodo.inputs.sht1x_7x.InputModule.get_measurement') as mock_measure:
         mock_measure.side_effect = [(23, 50, 3000),
                                     (25, 55, 3200)]
         sht1x_7x = SHT1x7xSensor(None, testing=True)
@@ -58,7 +58,7 @@ def test_sht1x_7x_read_updates_temp():
 
 def test_sht1x_7x_next_returns_dict():
     """ next returns dict(altitude=float,pressure=int,temperature=float) """
-    with mock.patch('mycodo.inputs.sht1x_7x.SHT1x7xSensor.get_measurement') as mock_measure:
+    with mock.patch('mycodo.inputs.sht1x_7x.InputModule.get_measurement') as mock_measure:
         mock_measure.side_effect = [(23, 50, 3000)]
         sht1x_7x = SHT1x7xSensor(None, testing=True)
         assert sht1x_7x.next() == dict(dewpoint=23.0,
@@ -68,7 +68,7 @@ def test_sht1x_7x_next_returns_dict():
 
 def test_sht1x_7x_condition_properties():
     """ verify temperature property """
-    with mock.patch('mycodo.inputs.sht1x_7x.SHT1x7xSensor.get_measurement') as mock_measure:
+    with mock.patch('mycodo.inputs.sht1x_7x.InputModule.get_measurement') as mock_measure:
         mock_measure.side_effect = [(23, 50, 3000),
                                     (25, 55, 3200)]
         sht1x_7x = SHT1x7xSensor(None, testing=True)
@@ -89,7 +89,7 @@ def test_sht1x_7x_condition_properties():
 
 def test_sht1x_7x_special_method_str():
     """ expect a __str__ format """
-    with mock.patch('mycodo.inputs.sht1x_7x.SHT1x7xSensor.get_measurement') as mock_measure:
+    with mock.patch('mycodo.inputs.sht1x_7x.InputModule.get_measurement') as mock_measure:
         mock_measure.side_effect = [(0, 0, 0)]
         sht1x_7x = SHT1x7xSensor(None, testing=True)
         sht1x_7x.read()
@@ -100,31 +100,31 @@ def test_sht1x_7x_special_method_str():
 
 def test_sht1x_7x_special_method_repr():
     """ expect a __repr__ format """
-    with mock.patch('mycodo.inputs.sht1x_7x.SHT1x7xSensor.get_measurement') as mock_measure:
+    with mock.patch('mycodo.inputs.sht1x_7x.InputModule.get_measurement') as mock_measure:
         mock_measure.side_effect = [(0, 0, 0)]
         sht1x_7x = SHT1x7xSensor(None, testing=True)
         sht1x_7x.read()
-        assert "<SHT1x7xSensor(dewpoint=0.00)(humidity=0.00)(temperature=0.00)>" in repr(sht1x_7x)
+        assert "<InputModule(dewpoint=0.00)(humidity=0.00)(temperature=0.00)>" in repr(sht1x_7x)
 
 
 def test_sht1x_7x_raises_exception():
     """ stops iteration on read() error """
-    with mock.patch('mycodo.inputs.sht1x_7x.SHT1x7xSensor.get_measurement', side_effect=IOError):
+    with mock.patch('mycodo.inputs.sht1x_7x.InputModule.get_measurement', side_effect=IOError):
         with pytest.raises(StopIteration):
             SHT1x7xSensor(None, testing=True).next()
 
 
 def test_sht1x_7x_read_returns_1_on_exception():
     """ Verify the read() method returns true on error """
-    with mock.patch('mycodo.inputs.sht1x_7x.SHT1x7xSensor.get_measurement', side_effect=Exception):
+    with mock.patch('mycodo.inputs.sht1x_7x.InputModule.get_measurement', side_effect=Exception):
         assert SHT1x7xSensor(None, testing=True).read()
 
 
 def test_sht1x_7x_read_logs_unknown_errors():
     """ verify that IOErrors are logged """
     with LogCapture() as log_cap:
-        with mock.patch('mycodo.inputs.sht1x_7x.SHT1x7xSensor.get_measurement',
+        with mock.patch('mycodo.inputs.sht1x_7x.InputModule.get_measurement',
                         side_effect=Exception('msg')):
             SHT1x7xSensor(None, testing=True).read()
-    expected_logs = ('mycodo.inputs.sht1x_7x', 'ERROR', 'SHT1x7xSensor raised an exception when taking a reading: msg')
+    expected_logs = ('mycodo.inputs.sht1x_7x', 'ERROR', 'InputModule raised an exception when taking a reading: msg')
     assert expected_logs in log_cap.actual()

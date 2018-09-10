@@ -13,7 +13,7 @@ from mycodo.inputs.bme280 import InputModule as BME280Sensor
 # ----------------------------
 def test_bme_iterates_using_in():
     """ Verify that a BME280Sensor object can use the 'in' operator """
-    with mock.patch('mycodo.inputs.bme280.BME280Sensor.get_measurement') as mock_measure:
+    with mock.patch('mycodo.inputs.bme280.InputModule.get_measurement') as mock_measure:
         mock_measure.side_effect = [(67, 23, 50, 60, 3000),
                                     (52, 25, 55, 65, 3200),
                                     (37, 27, 60, 70, 3400),
@@ -28,7 +28,7 @@ def test_bme_iterates_using_in():
 
 def test_bme__iter__returns_iterator():
     """ The iter methods must return an iterator in order to work properly """
-    with mock.patch('mycodo.inputs.bme280.BME280Sensor.get_measurement') as mock_measure:
+    with mock.patch('mycodo.inputs.bme280.InputModule.get_measurement') as mock_measure:
         mock_measure.side_effect = [(67, 23, 50, 60, 3000),
                                     (52, 25, 55, 65, 3200),
                                     (37, 27, 60, 70, 3400),
@@ -39,7 +39,7 @@ def test_bme__iter__returns_iterator():
 
 def test_bme_read_updates_temp():
     """  Verify that BME280Sensor(None, testing=True).read() gets the average temp """
-    with mock.patch('mycodo.inputs.bme280.BME280Sensor.get_measurement') as mock_measure:
+    with mock.patch('mycodo.inputs.bme280.InputModule.get_measurement') as mock_measure:
         mock_measure.side_effect = [(67, 23, 50, 60, 3000),
                                     (52, 25, 55, 65, 3200)]
         bme = BME280Sensor(None, testing=True)
@@ -64,7 +64,7 @@ def test_bme_read_updates_temp():
 
 def test_bme_next_returns_dict():
     """ next returns dict(altitude=float,pressure=int,temperature=float) """
-    with mock.patch('mycodo.inputs.bme280.BME280Sensor.get_measurement') as mock_measure:
+    with mock.patch('mycodo.inputs.bme280.InputModule.get_measurement') as mock_measure:
         mock_measure.side_effect = [(67, 23, 50, 60, 3000)]
         bme = BME280Sensor(None, testing=True)
         assert bme.next() == dict(altitude=67.0,
@@ -76,7 +76,7 @@ def test_bme_next_returns_dict():
 
 def test_bme_condition_properties():
     """ verify temperature property """
-    with mock.patch('mycodo.inputs.bme280.BME280Sensor.get_measurement') as mock_measure:
+    with mock.patch('mycodo.inputs.bme280.InputModule.get_measurement') as mock_measure:
         mock_measure.side_effect = [(67, 23, 50, 60, 3000),
                                     (52, 25, 55, 65, 3200)]
         bme = BME280Sensor(None, testing=True)
@@ -105,7 +105,7 @@ def test_bme_condition_properties():
 
 def test_bme_special_method_str():
     """ expect a __str__ format """
-    with mock.patch('mycodo.inputs.bme280.BME280Sensor.get_measurement') as mock_measure:
+    with mock.patch('mycodo.inputs.bme280.InputModule.get_measurement') as mock_measure:
         mock_measure.side_effect = [(0, 0, 0, 0, 0)]
         bme280 = BME280Sensor(None, testing=True)
         bme280.read()
@@ -118,23 +118,23 @@ def test_bme_special_method_str():
 
 def test_bme_special_method_repr():
     """ expect a __repr__ format """
-    with mock.patch('mycodo.inputs.bme280.BME280Sensor.get_measurement') as mock_measure:
+    with mock.patch('mycodo.inputs.bme280.InputModule.get_measurement') as mock_measure:
         mock_measure.side_effect = [(0, 0, 0, 0, 0)]
         bme280 = BME280Sensor(None, testing=True)
         bme280.read()
-        assert "<BME280Sensor(altitude=0.000000)(dewpoint=0.000000)(humidity=0.000000)(pressure=0.000000)(temperature=0.000000)>" in repr(bme280)
+        assert "<InputModule(altitude=0.000000)(dewpoint=0.000000)(humidity=0.000000)(pressure=0.000000)(temperature=0.000000)>" in repr(bme280)
 
 
 def test_bme_raises_exception():
     """ stops iteration on read() error """
-    with mock.patch('mycodo.inputs.bme280.BME280Sensor.get_measurement', side_effect=IOError):
+    with mock.patch('mycodo.inputs.bme280.InputModule.get_measurement', side_effect=IOError):
         with pytest.raises(StopIteration):
             BME280Sensor(None, testing=True).next()
 
 
 def test_bme_read_returns_1_on_exception():
     """ Verify the read() method returns true on error """
-    with mock.patch('mycodo.inputs.bme280.BME280Sensor.get_measurement', side_effect=Exception):
+    with mock.patch('mycodo.inputs.bme280.InputModule.get_measurement', side_effect=Exception):
         assert BME280Sensor(None, testing=True).read()
 
 
@@ -142,7 +142,7 @@ def test_bme_read_logs_unknown_errors():
     """ verify that IOErrors are logged """
     with LogCapture() as log_cap:
 
-        with mock.patch('mycodo.inputs.bme280.BME280Sensor.get_measurement', side_effect=Exception('msg')):
+        with mock.patch('mycodo.inputs.bme280.InputModule.get_measurement', side_effect=Exception('msg')):
             BME280Sensor(None, testing=True).read()
-    expected_logs = ('mycodo.inputs.bme280', 'ERROR', 'BME280Sensor raised an exception when taking a reading: msg')
+    expected_logs = ('mycodo.inputs.bme280', 'ERROR', 'InputModule raised an exception when taking a reading: msg')
     assert expected_logs in log_cap.actual()

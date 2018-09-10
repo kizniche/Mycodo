@@ -13,7 +13,7 @@ from mycodo.inputs.raspi_cpuload import InputModule as RaspberryPiCPULoad
 # ----------------------------
 def test_raspi_cpuload_iterates_using_in():
     """ Verify that a RaspberryPiCPULoad object can use the 'in' operator """
-    with mock.patch('mycodo.inputs.raspi_cpuload.RaspberryPiCPULoad.get_measurement') as mock_measure:
+    with mock.patch('mycodo.inputs.raspi_cpuload.InputModule.get_measurement') as mock_measure:
         mock_measure.side_effect = [(23, 50, 3000),
                                     (25, 55, 3200),
                                     (27, 60, 3400),
@@ -28,7 +28,7 @@ def test_raspi_cpuload_iterates_using_in():
 
 def test_raspi_cpuload__iter__returns_iterator():
     """ The iter methods must return an iterator in order to work properly """
-    with mock.patch('mycodo.inputs.raspi_cpuload.RaspberryPiCPULoad.get_measurement') as mock_measure:
+    with mock.patch('mycodo.inputs.raspi_cpuload.InputModule.get_measurement') as mock_measure:
         mock_measure.side_effect = [(23, 50, 3000),
                                     (25, 55, 3200),
                                     (27, 60, 3400),
@@ -39,7 +39,7 @@ def test_raspi_cpuload__iter__returns_iterator():
 
 def test_raspi_cpuload_read_updates_temp():
     """  Verify that RaspberryPiCPULoad(None, testing=True).read() gets the average temp """
-    with mock.patch('mycodo.inputs.raspi_cpuload.RaspberryPiCPULoad.get_measurement') as mock_measure:
+    with mock.patch('mycodo.inputs.raspi_cpuload.InputModule.get_measurement') as mock_measure:
         mock_measure.side_effect = [(23, 50, 3000),
                                     (25, 55, 3200)]
         raspi_cpuload = RaspberryPiCPULoad(None, testing=True)
@@ -58,7 +58,7 @@ def test_raspi_cpuload_read_updates_temp():
 
 def test_raspi_cpuload_next_returns_dict():
     """ next returns dict(altitude=float,pressure=int,cpu_load_15m=float) """
-    with mock.patch('mycodo.inputs.raspi_cpuload.RaspberryPiCPULoad.get_measurement') as mock_measure:
+    with mock.patch('mycodo.inputs.raspi_cpuload.InputModule.get_measurement') as mock_measure:
         mock_measure.side_effect = [(23, 50, 3000)]
         raspi_cpuload = RaspberryPiCPULoad(None, testing=True)
         assert raspi_cpuload.next() == dict(cpu_load_1m=23.0,
@@ -68,7 +68,7 @@ def test_raspi_cpuload_next_returns_dict():
 
 def test_raspi_cpuload_condition_properties():
     """ verify cpu_load_15m property """
-    with mock.patch('mycodo.inputs.raspi_cpuload.RaspberryPiCPULoad.get_measurement') as mock_measure:
+    with mock.patch('mycodo.inputs.raspi_cpuload.InputModule.get_measurement') as mock_measure:
         mock_measure.side_effect = [(23, 50, 3000),
                                     (25, 55, 3200)]
         raspi_cpuload = RaspberryPiCPULoad(None, testing=True)
@@ -89,7 +89,7 @@ def test_raspi_cpuload_condition_properties():
 
 def test_raspi_cpuload_special_method_str():
     """ expect a __str__ format """
-    with mock.patch('mycodo.inputs.raspi_cpuload.RaspberryPiCPULoad.get_measurement') as mock_measure:
+    with mock.patch('mycodo.inputs.raspi_cpuload.InputModule.get_measurement') as mock_measure:
         mock_measure.side_effect = [(0, 0, 0)]
         raspi_cpuload = RaspberryPiCPULoad(None, testing=True)
         raspi_cpuload.read()
@@ -100,31 +100,31 @@ def test_raspi_cpuload_special_method_str():
 
 def test_raspi_cpuload_special_method_repr():
     """ expect a __repr__ format """
-    with mock.patch('mycodo.inputs.raspi_cpuload.RaspberryPiCPULoad.get_measurement') as mock_measure:
+    with mock.patch('mycodo.inputs.raspi_cpuload.InputModule.get_measurement') as mock_measure:
         mock_measure.side_effect = [(0, 0, 0)]
         raspi_cpuload = RaspberryPiCPULoad(None, testing=True)
         raspi_cpuload.read()
-        assert "<RaspberryPiCPULoad(cpu_load_1m=0.00)(cpu_load_5m=0.00)(cpu_load_15m=0.00)>" in repr(raspi_cpuload)
+        assert "<InputModule(cpu_load_1m=0.00)(cpu_load_5m=0.00)(cpu_load_15m=0.00)>" in repr(raspi_cpuload)
 
 
 def test_raspi_cpuload_raises_exception():
     """ stops iteration on read() error """
-    with mock.patch('mycodo.inputs.raspi_cpuload.RaspberryPiCPULoad.get_measurement', side_effect=IOError):
+    with mock.patch('mycodo.inputs.raspi_cpuload.InputModule.get_measurement', side_effect=IOError):
         with pytest.raises(StopIteration):
             RaspberryPiCPULoad(None, testing=True).next()
 
 
 def test_raspi_cpuload_read_returns_1_on_exception():
     """ Verify the read() method returns true on error """
-    with mock.patch('mycodo.inputs.raspi_cpuload.RaspberryPiCPULoad.get_measurement', side_effect=Exception):
+    with mock.patch('mycodo.inputs.raspi_cpuload.InputModule.get_measurement', side_effect=Exception):
         assert RaspberryPiCPULoad(None, testing=True).read()
 
 
 def test_raspi_cpuload_read_logs_unknown_errors():
     """ verify that IOErrors are logged """
     with LogCapture() as log_cap:
-        with mock.patch('mycodo.inputs.raspi_cpuload.RaspberryPiCPULoad.get_measurement',
+        with mock.patch('mycodo.inputs.raspi_cpuload.InputModule.get_measurement',
                         side_effect=Exception('msg')):
             RaspberryPiCPULoad(None, testing=True).read()
-    expected_logs = ('mycodo.inputs.raspi_cpuload', 'ERROR', 'RaspberryPiCPULoad raised an exception when taking a reading: msg')
+    expected_logs = ('mycodo.inputs.raspi_cpuload', 'ERROR', 'InputModule raised an exception when taking a reading: msg')
     assert expected_logs in log_cap.actual()
