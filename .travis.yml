@@ -18,4 +18,4 @@ install:
   - sed -i '/picamera/d' install/requirements.txt
   - pip3 install --upgrade -r install/requirements.txt
 script:
-  - cd mycodo && pytest tests/software_tests -s
+  - cd mycodo && pytest tests/software_tests
