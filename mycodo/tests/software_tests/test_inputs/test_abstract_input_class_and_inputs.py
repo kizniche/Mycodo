@@ -6,34 +6,33 @@ from testfixtures import LogCapture
 
 from mycodo.inputs.base_input import AbstractInput
 
-from mycodo.inputs.am2315 import AM2315Sensor
-from mycodo.inputs.atlas_ph import AtlaspHSensor
-from mycodo.inputs.atlas_pt1000 import AtlasPT1000Sensor
-from mycodo.inputs.bh1750 import BH1750Sensor
-from mycodo.inputs.bme280 import BME280Sensor
-from mycodo.inputs.bmp180 import BMP180Sensor
-from mycodo.inputs.bmp280 import BMP280Sensor
-from mycodo.inputs.chirp import ChirpSensor
-from mycodo.inputs.dht11 import DHT11Sensor
-from mycodo.inputs.dht22 import DHT22Sensor
-from mycodo.inputs.ds18b20 import DS18B20Sensor
-from mycodo.inputs.htu21d import HTU21DSensor
-from mycodo.inputs.k30 import K30Sensor
-from mycodo.inputs.linux_command import LinuxCommand
-from mycodo.inputs.mh_z16 import MHZ16Sensor
-from mycodo.inputs.mh_z19 import MHZ19Sensor
-from mycodo.inputs.mycodo_ram import MycodoRam
-from mycodo.inputs.raspi import (RaspberryPiCPUTemp,
-                                 RaspberryPiGPUTemp)
-from mycodo.inputs.raspi_cpuload import RaspberryPiCPULoad
-from mycodo.inputs.raspi_freespace import RaspberryPiFreeSpace
-from mycodo.inputs.sht1x_7x import SHT1x7xSensor
-from mycodo.inputs.sht2x import SHT2xSensor
-from mycodo.inputs.signal_pwm import SignalPWMInput
-from mycodo.inputs.signal_revolutions import SignalRPMInput
-from mycodo.inputs.tmp006 import TMP006Sensor
-from mycodo.inputs.tsl2561 import TSL2561Sensor
-from mycodo.inputs.tsl2591_sensor import TSL2591Sensor
+from mycodo.inputs.am2315 import InputModule as AM2315Sensor
+from mycodo.inputs.atlas_ph import InputModule as AtlaspHSensor
+from mycodo.inputs.atlas_pt1000 import InputModule as AtlasPT1000Sensor
+from mycodo.inputs.bh1750 import InputModule as BH1750Sensor
+from mycodo.inputs.bme280 import InputModule as BME280Sensor
+from mycodo.inputs.bmp180 import InputModule as BMP180Sensor
+from mycodo.inputs.bmp280 import InputModule as BMP280Sensor
+from mycodo.inputs.chirp import InputModule as ChirpSensor
+from mycodo.inputs.dht11 import InputModule as DHT11Sensor
+from mycodo.inputs.dht22 import InputModule as DHT22Sensor
+from mycodo.inputs.ds18b20 import InputModule as DS18B20Sensor
+from mycodo.inputs.htu21d import InputModule as HTU21DSensor
+from mycodo.inputs.k30 import InputModule as K30Sensor
+from mycodo.inputs.linux_command import InputModule as LinuxCommand
+from mycodo.inputs.mh_z16 import InputModule as MHZ16Sensor
+from mycodo.inputs.mh_z19 import InputModule as MHZ19Sensor
+from mycodo.inputs.mycodo_ram import InputModule as MycodoRam
+from mycodo.inputs.raspi import InputModule as RaspberryPiCPUTemp
+from mycodo.inputs.raspi_cpuload import InputModule as RaspberryPiCPULoad
+from mycodo.inputs.raspi_freespace import InputModule as RaspberryPiFreeSpace
+from mycodo.inputs.sht1x_7x import InputModule as SHT1x7xSensor
+from mycodo.inputs.sht2x import InputModule as SHT2xSensor
+from mycodo.inputs.signal_pwm import InputModule as SignalPWMInput
+from mycodo.inputs.signal_revolutions import InputModule as SignalRPMInput
+from mycodo.inputs.tmp006 import InputModule as TMP006Sensor
+from mycodo.inputs.tsl2561 import InputModule as TSL2561Sensor
+from mycodo.inputs.tsl2591_sensor import InputModule as TSL2591Sensor
 
 
 input_classes = [
@@ -55,7 +54,6 @@ input_classes = [
     MHZ19Sensor(None, testing=True),
     MycodoRam(None, testing=True),
     RaspberryPiCPUTemp(None, testing=True),
-    RaspberryPiGPUTemp(None, testing=True),
     RaspberryPiCPULoad(None, testing=True),
     RaspberryPiFreeSpace(None, testing=True),
     SHT1x7xSensor(None, testing=True),
