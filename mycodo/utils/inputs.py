@@ -87,7 +87,10 @@ def parse_input_information():
                       'custom_inputs', 'dummy_input.py', 'input_template.py',
                       'parse_inputs.py','sensorutils.py']
 
-    input_paths = ['/var/mycodo-root/mycodo/inputs', '/var/mycodo-root/mycodo/inputs/custom_inputs']
+    path_inputs = os.path.abspath(os.path.join(os.path.dirname(__file__), os.path.pardir) + '/inputs')
+    path_custom_inputs = "{}/custom_inputs".format(path_inputs)
+
+    input_paths = [path_inputs, path_custom_inputs]
 
     dict_inputs = {}
 
