@@ -2,8 +2,6 @@
 import logging
 import time
 
-import pigpio
-
 from mycodo.databases.models import Output
 from mycodo.utils.database import db_retrieve_table_daemon
 from mycodo.inputs.base_input import AbstractInput
@@ -78,6 +76,7 @@ class InputModule(AbstractInput):
         self.pi = None
 
         if not testing:
+            import pigpio
             from mycodo.mycodo_client import DaemonControl
             self.logger = logging.getLogger(
                 'mycodo.inputs.dht22_{id}'.format(id=input_dev.id))
@@ -87,7 +86,8 @@ class InputModule(AbstractInput):
 
             self.control = DaemonControl()
 
-            self.pi = pigpio.pi()
+            self.pigpio = pigpio
+            self.pi = self.pigpio.pi()
 
             self.gpio = int(input_dev.gpio_location)
             self.bad_CS = 0  # Bad checksum count
@@ -260,9 +260,9 @@ class InputModule(AbstractInput):
 
         if initialized:
             try:
-                self.pi.write(self.gpio, pigpio.LOW)
+                self.pi.write(self.gpio, self.pigpio.LOW)
                 time.sleep(0.017)  # 17 ms
-                self.pi.set_mode(self.gpio, pigpio.INPUT)
+                self.pi.set_mode(self.gpio, self.pigpio.INPUT)
                 self.pi.set_watchdog(self.gpio, 200)
                 time.sleep(0.2)
                 if (self.temp_humidity is not None and
@@ -287,14 +287,14 @@ class InputModule(AbstractInput):
         self.high_tick = 0
         self.bit = 40
         self.either_edge_cb = None
-        self.pi.set_pull_up_down(self.gpio, pigpio.PUD_OFF)
+        self.pi.set_pull_up_down(self.gpio, self.pigpio.PUD_OFF)
         self.pi.set_watchdog(self.gpio, 0)  # Kill any watchdogs
         self.register_callbacks()
 
     def register_callbacks(self):
         """ Monitors RISING_EDGE changes using callback """
         self.either_edge_cb = self.pi.callback(self.gpio,
-                                               pigpio.EITHER_EDGE,
+                                               self.pigpio.EITHER_EDGE,
                                                self.either_edge_callback)
 
     def either_edge_callback(self, gpio, level, tick):
@@ -306,12 +306,12 @@ class InputModule(AbstractInput):
         humidity low, temperature high, temperature low, checksum.
         """
         level_handlers = {
-            pigpio.FALLING_EDGE: self._edge_fall,
-            pigpio.RISING_EDGE: self._edge_rise,
-            pigpio.EITHER_EDGE: self._edge_either
+            self.pigpio.FALLING_EDGE: self._edge_fall,
+            self.pigpio.RISING_EDGE: self._edge_rise,
+            self.pigpio.EITHER_EDGE: self._edge_either
         }
         handler = level_handlers[level]
-        diff = pigpio.tickDiff(self.high_tick, tick)
+        diff = self.pigpio.tickDiff(self.high_tick, tick)
         handler(tick, diff)
 
     def _edge_rise(self, tick, diff):
