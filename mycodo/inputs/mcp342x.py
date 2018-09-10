@@ -2,9 +2,6 @@
 import logging
 import time
 
-import smbus
-from MCP342x import MCP342x
-
 # Input information
 INPUT_INFORMATION = {
     'unique_name_input': 'MCP342x',
@@ -46,6 +43,8 @@ class ADCModule(object):
         self.adc_resolution = input_dev.adc_resolution
 
         if not testing:
+            import smbus
+            from MCP342x import MCP342x
             self.logger = logging.getLogger(
                 'mycodo.mcp342x_{id}'.format(id=input_dev.id))
             self.bus = smbus.SMBus(self.i2c_bus)

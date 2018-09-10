@@ -1,8 +1,6 @@
 # coding=utf-8
 import logging
 
-import Adafruit_ADS1x15
-
 # Input information
 INPUT_INFORMATION = {
     'unique_name_input': 'ADS1x15',
@@ -45,6 +43,7 @@ class ADCModule(object):
         self.adc_channel = input_dev.adc_channel
 
         if not testing:
+            import Adafruit_ADS1x15
             self.logger = logging.getLogger(
                 'mycodo.ads1x15_{id}'.format(id=input_dev.id))
             self.adc = Adafruit_ADS1x15.ADS1115(address=self.i2c_address,

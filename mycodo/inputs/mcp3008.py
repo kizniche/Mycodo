@@ -2,8 +2,6 @@
 import argparse
 import logging
 
-import Adafruit_MCP3008
-
 # Input information
 INPUT_INFORMATION = {
     'unique_name_input': 'MCP3008',
@@ -44,6 +42,7 @@ class ADCModule(object):
         self.adc_volts_max = input_dev.adc_volts_max
 
         if not testing:
+            import Adafruit_MCP3008
             self.logger = logging.getLogger(
                 'mycodo.mcp3008_{id}'.format(id=input_dev.id))
             self.adc = Adafruit_MCP3008.MCP3008(clk=self.pin_clock,
