@@ -64,6 +64,7 @@ def list_analog_to_digital_converters():
 
 
 def load_module_from_file(path_file):
+    print("FIL00: {}".format(path_file))
     spec = importlib.util.spec_from_file_location('module.name', path_file)
     input_custom = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(input_custom)
