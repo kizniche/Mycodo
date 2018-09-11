@@ -90,10 +90,18 @@ case "${1:-''}" in
         printf "\nUnrecognized dependency: ${1}"
 
         printf "\nTrying to install with pip..."
-        if ! ${INSTALL_CMD} install-pip-dependency ${1} ; then
-          printf "Failed to install ${1} with pip.\n"
+        if [ "$1" == "-e" ]; then
+          if ! ${INSTALL_CMD} install-pip-dependency -e ${2} ; then
+            printf "Failed to install ${1} ${2} with pip.\n"
+          else
+            printf "Successfully installed with pip.\n"
+          fi
         else
-          printf "Successfully installed with pip.\n"
+          if ! ${INSTALL_CMD} install-pip-dependency ${1} ; then
+            printf "Failed to install ${1} with pip.\n"
+          else
+            printf "Successfully installed with pip.\n"
+          fi
         fi
     ;;
 esac

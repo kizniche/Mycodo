@@ -375,12 +375,22 @@ case "${1:-''}" in
         fi
     ;;
     'install-pip-dependency')
-        printf "\n#### Installing ${2} with pip\n"
-        if [ ! -d ${MYCODO_PATH}/env ]; then
-            printf "\n## Error: Virtualenv doesn't exist. Creating...\n"
-            /bin/bash ${MYCODO_PATH}/mycodo/scripts/upgrade_commands.sh setup-virtualenv
+        if [ -n "$3" ]; then
+          printf "\n#### Installing ${2} ${3} with pip\n"
+          if [ ! -d ${MYCODO_PATH}/env ]; then
+              printf "\n## Error: Virtualenv doesn't exist. Creating...\n"
+              /bin/bash ${MYCODO_PATH}/mycodo/scripts/upgrade_commands.sh setup-virtualenv
+          else
+              ${MYCODO_PATH}/env/bin/pip3 install --upgrade ${2} ${3}
+          fi
         else
-            ${MYCODO_PATH}/env/bin/pip3 install --upgrade ${2}
+          printf "\n#### Installing ${2} with pip\n"
+          if [ ! -d ${MYCODO_PATH}/env ]; then
+              printf "\n## Error: Virtualenv doesn't exist. Creating...\n"
+              /bin/bash ${MYCODO_PATH}/mycodo/scripts/upgrade_commands.sh setup-virtualenv
+          else
+              ${MYCODO_PATH}/env/bin/pip3 install --upgrade ${2}
+          fi
         fi
     ;;
     'update-swap-size')
