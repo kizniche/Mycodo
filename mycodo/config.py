@@ -50,39 +50,39 @@ MATHS = [
 MATH_INFO = {
     'average': {
         'name': 'Average (Multi)',
-        'py-dependencies': [],
+        'dependencies_pip': [],
         'measure': []},
     'average_single': {
         'name': 'Average (Single)',
-        'py-dependencies': [],
+        'dependencies_pip': [],
         'measure': []},
     'difference': {
         'name': 'Difference',
-        'py-dependencies': [],
+        'dependencies_pip': [],
         'measure': []},
     'equation': {
         'name': 'Equation',
-        'py-dependencies': [],
+        'dependencies_pip': [],
         'measure': []},
     'median': {
         'name': 'Median',
-        'py-dependencies': [],
+        'dependencies_pip': [],
         'measure': []},
     'maximum': {
         'name': 'Maximum',
-        'py-dependencies': [],
+        'dependencies_pip': [],
         'measure': []},
     'minimum': {
         'name': 'Minimum',
-        'py-dependencies': [],
+        'dependencies_pip': [],
         'measure': []},
     'humidity': {
         'name': 'Humidity (Wet-Bulb)',
-        'py-dependencies': [],
+        'dependencies_pip': [],
         'measure': ['humidity', 'humidity_ratio', 'specific_enthalpy', 'specific_volume']},
     'verification': {
         'name': 'Verification',
-        'py-dependencies': [],
+        'dependencies_pip': [],
         'measure': []}
 }
 
@@ -99,7 +99,7 @@ METHODS = [
 METHOD_INFO = {
     'DailyBezier': {
         'name': 'DailyBezier',
-        'py-dependencies': ['numpy']}
+        'dependencies_pip': ['numpy']}
 }
 
 # Math controllers
@@ -115,23 +115,23 @@ OUTPUTS = [
 OUTPUT_INFO = {
     'wired': {
         'name': 'GPIO (On/Off)',
-        'py-dependencies': [],
+        'dependencies_pip': [],
         'measure': []},
     'pwm': {
         'name': 'GPIO (PWM)',
-        'py-dependencies': [],
+        'dependencies_pip': [],
         'measure': []},
     'wireless_433MHz_pi_switch': {
         'name': 'Wireless (433MHz)',
-        'py-dependencies': ['rpi_rf'],
+        'dependencies_pip': ['rpi_rf'],
         'measure': []},
     'command': {
         'name': 'Command (On/Off)',
-        'py-dependencies': [],
+        'dependencies_pip': [],
         'measure': []},
     'command_pwm': {
         'name': 'Command (PWM)',
-        'py-dependencies': [],
+        'dependencies_pip': [],
         'measure': []},
 }
 
@@ -139,7 +139,7 @@ OUTPUT_INFO = {
 CALIBRATION_INFO = {
     'CALIBRATE_DS_TYPE': {
         'name': 'DS-Type Sensor Calibration',
-        'py-dependencies': ['w1thermsensor']
+        'dependencies_pip': ['w1thermsensor']
     }
 }
 

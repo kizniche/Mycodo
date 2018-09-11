@@ -10,7 +10,7 @@ INPUT_INFORMATION = {
     'common_name_input': 'GPIO State',
     'common_name_measurements': 'GPIO State',
     'unique_name_measurements': ['gpio_state'],  # List of strings
-    'dependencies_pypi': ['RPi.GPIO'],  # List of strings
+    'dependencies_pip': ['RPi.GPIO'],  # List of strings
     'interfaces': ['GPIO'],  # List of strings
     'options_disabled': ['interface'],
     'options_enabled': ['gpio_location', 'period', 'pre_output'],

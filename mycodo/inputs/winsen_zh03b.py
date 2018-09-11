@@ -14,7 +14,7 @@ INPUT_INFORMATION = {
     'common_name_input': 'ZH03B',
     'common_name_measurements': 'CO2',
     'unique_name_measurements': ['co2'],  # List of strings
-    'dependencies_pypi': ['serial'],  # List of strings
+    'dependencies_pip': ['serial'],  # List of strings
     'interfaces': ['UART'],  # List of strings
     'uart_location': '/dev/ttyAMA0',  # String
     'uart_baud_rate': 9600,  # Integer

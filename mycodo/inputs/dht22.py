@@ -16,7 +16,7 @@ INPUT_INFORMATION = {
     'common_name_input': 'DHT22',
     'common_name_measurements': 'Humidity/Temperature',
     'unique_name_measurements': ['dewpoint', 'humidity', 'temperature'],  # List of strings
-    'dependencies_pypi': ['pigpio'],  # List of strings
+    'dependencies_pip': ['pigpio'],  # List of strings
     'interfaces': ['GPIO'],  # List of strings
     'options_enabled': ['gpio_location', 'period', 'convert_unit', 'pre_output'],
     'options_disabled': ['interface']

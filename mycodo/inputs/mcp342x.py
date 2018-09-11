@@ -9,7 +9,7 @@ INPUT_INFORMATION = {
     'common_name_input': 'MCP342x',
     'common_name_measurements': 'Voltage (Analog-to-Digital Converter)',
     'unique_name_measurements': ['voltage'],  # List of strings
-    'dependencies_pypi': ['MCP342x'],  # List of strings
+    'dependencies_pip': ['MCP342x'],  # List of strings
     'interfaces': ['I2C'],  # List of strings
     'i2c_location': ['0x68', '0x6A', '0x6C', '0x6E', '0x6F'],  # List of strings
     'i2c_address_editable': False,  # Boolean

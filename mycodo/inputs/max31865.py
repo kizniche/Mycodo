@@ -37,7 +37,7 @@ INPUT_INFORMATION = {
     'common_name_input': 'MAX31865',
     'common_name_measurements': 'Temperature',
     'unique_name_measurements': ['temperature'],  # List of strings
-    'dependencies_pypi': ['RPi.GPIO'],  # List of strings
+    'dependencies_pip': ['RPi.GPIO'],  # List of strings
     'interfaces': ['UART'],  # List of strings
     'pin_cs': 8,
     'pin_miso': 9,

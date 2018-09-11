@@ -8,7 +8,7 @@ INPUT_INFORMATION = {
     'common_name_input': 'ADS1x15',
     'common_name_measurements': 'Voltage (Analog-to-Digital Converter)',
     'unique_name_measurements': ['voltage'],  # List of strings
-    'dependencies_pypi': ['Adafruit_ADS1x15', 'Adafruit_GPIO'],  # List of strings
+    'dependencies_pip': ['Adafruit_ADS1x15', 'Adafruit_GPIO'],  # List of strings
     'interfaces': ['I2C'],  # List of strings
     'i2c_location': ['0x48', '0x49', '0x4A', '0x4B'],  # List of strings
     'i2c_address_editable': False,  # Boolean

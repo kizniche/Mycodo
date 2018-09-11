@@ -130,7 +130,7 @@ def parse_input_information():
                 dict_inputs = dict_has_value(dict_inputs, input_custom, 'input_manufacturer')
 
                 # Dependencies
-                dict_inputs = dict_has_value(dict_inputs, input_custom, 'dependencies_pypi')
+                dict_inputs = dict_has_value(dict_inputs, input_custom, 'dependencies_pip')
                 dict_inputs = dict_has_value(dict_inputs, input_custom, 'dependencies_github')
 
                 # Interface

@@ -12,7 +12,7 @@ INPUT_INFORMATION = {
     'common_name_input': 'Signal (PWM)',
     'common_name_measurements': 'Frequency/Pulse Width/Duty Cycle',
     'unique_name_measurements': ['frequency','pulse_width', 'duty_cycle'],  # List of strings
-    'dependencies_pypi': ['pigpio'],  # List of strings
+    'dependencies_pip': ['pigpio'],  # List of strings
     'interfaces': ['GPIO'],  # List of strings
     'weighting': 0.0,  # Float
     'sample_time': 2.0,  # Float

@@ -33,7 +33,7 @@ def get_installed_dependencies():
     for each_section in list_dependencies:
         for device_type in each_section:
             for each_device, each_dict in each_section[device_type].items():
-                if each_device in ['py-dependencies', 'dependencies_pypi']:
+                if each_device == 'dependencies_pip':
                     for each_dep in each_dict:
                         try:
                             module = importlib.util.find_spec(each_dep)

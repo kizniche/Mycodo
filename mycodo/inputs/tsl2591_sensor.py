@@ -11,7 +11,7 @@ INPUT_INFORMATION = {
     'common_name_input': 'TSL2591',
     'common_name_measurements': 'Light',
     'unique_name_measurements': ['light'],  # List of strings
-    'dependencies_pypi': ['tsl2591'],  # List of strings
+    'dependencies_pip': ['tsl2591'],  # List of strings
     'interfaces': ['I2C'],  # List of strings
     'i2c_location': ['0x29'],  # List of strings
     'i2c_address_editable': False,  # Boolean

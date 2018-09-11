@@ -34,7 +34,7 @@ INPUT_INFORMATION = {
     'common_name_input': 'HTU21D',
     'common_name_measurements': 'Humidity/Temperature',
     'unique_name_measurements': ['dewpoint', 'humidity', 'temperature'],  # List of strings
-    'dependencies_pypi': ['pigpio'],  # List of strings
+    'dependencies_pip': ['pigpio'],  # List of strings
     'interfaces': ['I2C'],  # List of strings
     'i2c_location': ['0x40'],  # List of strings
     'i2c_address_editable': False,  # Boolean

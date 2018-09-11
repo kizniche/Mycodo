@@ -9,7 +9,7 @@ INPUT_INFORMATION = {
     'common_name_input': 'MCP3008',
     'common_name_measurements': 'Voltage (Analog-to-Digital Converter)',
     'unique_name_measurements': ['voltage'],  # List of strings
-    'dependencies_pypi': ['Adafruit_MCP3008'],  # List of strings
+    'dependencies_pip': ['Adafruit_MCP3008'],  # List of strings
     'interfaces': ['UART'],  # List of strings
     'analog_to_digital_converter': True,  # Boolean
     'pin_cs': 8,

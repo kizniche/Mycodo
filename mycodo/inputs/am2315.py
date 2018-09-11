@@ -41,7 +41,7 @@ INPUT_INFORMATION = {
     'common_name_input': 'AM2315',
     'common_name_measurements': 'Humidity/Temperature',
     'unique_name_measurements': ['dewpoint', 'humidity', 'temperature'],  # List of strings
-    'dependencies_pypi': ['quick2wire'],  # List of strings
+    'dependencies_pip': ['quick2wire'],  # List of strings
     'interfaces': ['I2C'],  # List of strings
     'i2c_location': ['0x5c'],  # List of strings
     'i2c_address_editable': False,  # Boolean

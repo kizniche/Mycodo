@@ -19,7 +19,7 @@ case "${1:-''}" in
         ${INSTALL_CMD} install-pip-dependency Adafruit_ADS1x15
     ;;
     'Adafruit_BME280')
-        ${INSTALL_DIRECTORY}/env/bin/pip3 install -e git://github.com/adafruit/Adafruit_Python_BME280.git#egg=adafruit-bme280 --upgrade
+        ${INSTALL_CMD} install-pip-dependency -e git://github.com/adafruit/Adafruit_Python_BME280.git#egg=adafruit-bme280
     ;;
     'Adafruit_BMP')
         ${INSTALL_CMD} install-pip-dependency Adafruit_BMP==1.5.4
@@ -31,7 +31,7 @@ case "${1:-''}" in
         ${INSTALL_CMD} install-pip-dependency Adafruit_GPIO
     ;;
     'Adafruit_MAX31855')
-        ${INSTALL_DIRECTORY}/env/bin/pip3 install -e git://github.com/adafruit/Adafruit_Python_MAX31855.git#egg=adafruit-max31855 --upgrade
+        ${INSTALL_CMD} install-pip-dependency -e git://github.com/adafruit/Adafruit_Python_MAX31855.git#egg=adafruit-max31855
     ;;
     'Adafruit_MCP3008')
         ${INSTALL_CMD} install-pip-dependency Adafruit_MCP3008
@@ -47,7 +47,7 @@ case "${1:-''}" in
         ${INSTALL_CMD} install-pip-dependency btlewrap==0.0.2
     ;;
     'cozir')
-        ${INSTALL_DIRECTORY}/env/bin/pip3 install -e git://github.com/pierre-haessig/pycozir.git#egg=cozir --upgrade
+        ${INSTALL_CMD} install-pip-dependency -e git://github.com/pierre-haessig/pycozir.git#egg=cozir --upgrade
     ;;
     'MCP342x')
         ${INSTALL_CMD} install-pip-dependency MCP342x==0.3.3
@@ -78,7 +78,7 @@ case "${1:-''}" in
         ${INSTALL_CMD} install-pip-dependency tsl2561
     ;;
     'tsl2591')
-        ${INSTALL_DIRECTORY}/env/bin/pip3 install -e git://github.com/maxlklaxl/python-tsl2591.git#egg=tsl2591 --upgrade
+        ${INSTALL_CMD} install-pip-dependency -e git://github.com/maxlklaxl/python-tsl2591.git#egg=tsl2591
     ;;
     'w1thermsensor')
         ${INSTALL_CMD} install-pip-dependency w1thermsensor==1.0.5
@@ -88,5 +88,12 @@ case "${1:-''}" in
     ;;
     *)
         printf "\nUnrecognized dependency: ${1}"
+
+        printf "\nTrying to install with pip..."
+        if ! ${INSTALL_CMD} install-pip-dependency ${1} ; then
+          printf "Failed to install ${1} with pip.\n"
+        else
+          printf "Successfully installed with pip.\n"
+        fi
     ;;
 esac

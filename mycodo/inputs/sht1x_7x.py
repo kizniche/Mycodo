@@ -11,7 +11,7 @@ INPUT_INFORMATION = {
     'common_name_input': 'SHT1x/7x',
     'common_name_measurements': 'Humidity/Temperature',
     'unique_name_measurements': ['dewpoint', 'humidity', 'temperature'],  # List of strings
-    'dependencies_pypi': ['sht_sensor'],  # List of strings
+    'dependencies_pip': ['sht_sensor'],  # List of strings
     'interfaces': ['GPIO'],  # List of strings
     'pin_clock': 11,
     'sht_voltage': [('2.5', '2.5V'),

@@ -11,7 +11,7 @@ INPUT_INFORMATION = {
     'common_name_input': 'CCS811',
     'common_name_measurements': 'CO2/VOC/Temperature',
     'unique_name_measurements': ['co2', 'voc', 'temperature'],  # List of strings
-    'dependencies_pypi': ['Adafruit_CCS811', 'Adafruit_GPIO'],  # List of strings
+    'dependencies_pip': ['Adafruit_CCS811', 'Adafruit_GPIO'],  # List of strings
     'interfaces': ['I2C'],  # List of strings
     'i2c_location': ['0x5a', '0x5b'],  # List of strings
     'i2c_address_editable': False,  # Boolean

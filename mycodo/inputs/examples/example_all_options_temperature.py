@@ -21,8 +21,9 @@ INPUT_INFORMATION = {
     # Python module dependencies
     # This must be a module that is able to be installed with pip via pypi.org
     # Leave the list empty if there are no pip or github dependencies
-    'dependencies_pypi': ['random'],  # List of strings
-    'dependencies_github': [],  # List of strings
+    'dependencies_pip': ['random',
+                          'Adafruit_GPIO',
+                          '-e git://github.com/adafruit/Adafruit_Python_BME280.git#egg=adafruit-bme280'],  # List of strings
 
     #
     # The below options are available from the input_dev variable

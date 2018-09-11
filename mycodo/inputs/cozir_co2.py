@@ -12,7 +12,7 @@ INPUT_INFORMATION = {
     'common_name_input': 'Cozir CO2',
     'common_name_measurements': 'CO2/Humidity/Temperature',
     'unique_name_measurements': ['co2', 'dewpoint', 'humidity', 'temperature'],  # List of strings
-    'dependencies_pypi': ['cozir'],  # List of strings
+    'dependencies_pip': ['cozir'],  # List of strings
     'interfaces': ['UART'],  # List of strings
     'uart_location': '/dev/ttyAMA0',  # String
     'options_enabled': ['uart_location', 'period', 'convert_unit', 'pre_output'],

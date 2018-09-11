@@ -11,7 +11,7 @@ INPUT_INFORMATION = {
     'common_name_input': 'TMP006',
     'common_name_measurements': 'Temperature (Object/Die)',
     'unique_name_measurements': ['temperature_object', 'temperature_die'],  # List of strings
-    'dependencies_pypi': ['Adafruit_TMP'],  # List of strings
+    'dependencies_pip': ['Adafruit_TMP'],  # List of strings
     'interfaces': ['I2C'],  # List of strings
     'i2c_location': ['0x40', '0x41', '0x42', '0x43', '0x44', '0x45', '0x46', '0x47'],  # List of strings
     'i2c_address_editable': False,  # Boolean

@@ -33,7 +33,7 @@ INPUT_INFORMATION = {
     'common_name_input': 'MH-Z16',
     'common_name_measurements': 'CO2',
     'unique_name_measurements': ['co2'],  # List of strings
-    'dependencies_pypi': ['serial', 'smbus'],  # List of strings
+    'dependencies_pip': ['serial', 'smbus'],  # List of strings
     'interfaces': ['UART', 'I2C'],  # List of strings
     'i2c_location': ['0x63'],
     'i2c_address_editable': True,  # Boolean

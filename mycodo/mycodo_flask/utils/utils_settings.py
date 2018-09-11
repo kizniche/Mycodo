@@ -17,6 +17,7 @@ from mycodo.databases.models import Camera
 from mycodo.databases.models import Conversion
 from mycodo.databases.models import Dashboard
 from mycodo.databases.models import DisplayOrder
+from mycodo.databases.models import Input
 from mycodo.databases.models import Measurement
 from mycodo.databases.models import Misc
 from mycodo.databases.models import Role
@@ -289,7 +290,6 @@ def settings_input_import(form):
     error = []
 
     input_info = None
-    file_loaded = False
 
     try:
         # correct_format = 'Mycodo_MYCODOVERSION_Settings_DBVERSION_HOST_DATETIME.zip'
@@ -310,13 +310,11 @@ def settings_input_import(form):
 
         try:
             input_info = load_module_from_file(full_path_tmp)
-            file_loaded = True
-        except:
+            if not hasattr(input_info, 'INPUT_INFORMATION'):
+                error.append("Could not load INPUT_INFORMATION dictionary from "
+                             "the uploaded input module")
+        except Exception:
             error.append("Could not load uploaded file as a python module")
-
-        if file_loaded and not hasattr(input_info, 'INPUT_INFORMATION'):
-            error.append("Could not load INPUT_INFORMATION dictionary from "
-                         "the uploaded input module")
 
         dict_inputs = parse_input_information()
         list_inputs = []
@@ -350,9 +348,8 @@ def settings_input_import(form):
 
             if 'unique_name_measurements' not in input_info.INPUT_INFORMATION:
                 error.append("'unique_name_measurements' not found in INPUT_INFORMATION dictionary")
-            elif input_info.INPUT_INFORMATION['unique_name_measurements'] == []:
+            elif not input_info.INPUT_INFORMATION['unique_name_measurements']:
                 error.append("'unique_name_measurements' is empty")
-
 
         if not error:
             # Determine filename
@@ -381,10 +378,31 @@ def settings_input_delete(form):
         controller=gettext("Input"))
     error = []
 
+    input_device_name = None
     install_dir = os.path.abspath(INSTALL_DIRECTORY)
     custom_directory = os.path.join(install_dir, 'mycodo/inputs/custom_inputs')
     file_name = '{}.py'.format(form.input_id.data.lower())
     full_path_file = os.path.join(custom_directory, file_name)
+
+    try:
+        input_info = load_module_from_file(full_path_file)
+        if not hasattr(input_info, 'INPUT_INFORMATION'):
+            error.append("Could not load INPUT_INFORMATION dictionary from "
+                         "the uploaded input module")
+        else:
+            input_device_name = input_info.INPUT_INFORMATION['unique_name_input']
+    except Exception:
+        error.append("Could not load uploaded file as a python module")
+
+    if not error:
+        # Check if any Input entries exist
+        input_dev = Input.query.filter(
+            Input.device == input_device_name).count()
+        if input_dev:
+            error.append("Cannot delete Input Module if there are still "
+                         "Input entries using it. Deactivate and delete all "
+                         "Input entries that use this module before deleting "
+                         "the module.")
 
     if not error:
         os.remove(full_path_file)

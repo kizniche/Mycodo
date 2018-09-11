@@ -12,7 +12,7 @@ INPUT_INFORMATION = {
     'common_name_input': 'Linux Command',
     'common_name_measurements': 'Return Value',
     'unique_name_measurements': [],  # List of strings
-    'dependencies_pypi': ['smbus'],  # List of strings
+    'dependencies_pip': ['smbus'],  # List of strings
     'interfaces': ['Mycodo'],  # List of strings
     'cmd_command': 'shuf -i 50-70 -n 1',
     'measurement': 'Condition',

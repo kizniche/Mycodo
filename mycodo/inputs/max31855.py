@@ -11,7 +11,7 @@ INPUT_INFORMATION = {
     'common_name_input': 'MAX31855',
     'common_name_measurements': 'Temperature (Object/Die)',
     'unique_name_measurements': ['temperature', 'temperature_die'],  # List of strings
-    'dependencies_pypi': ['Adafruit_MAX31855', 'Adafruit_GPIO'],  # List of strings
+    'dependencies_pip': ['Adafruit_MAX31855', 'Adafruit_GPIO'],  # List of strings
     'interfaces': ['UART'],  # List of strings
     'pin_cs': 8,
     'pin_miso': 9,

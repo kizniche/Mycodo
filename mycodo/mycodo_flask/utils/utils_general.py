@@ -699,7 +699,7 @@ def return_dependencies(device_type, dep_type='unmet'):
     for each_section in list_dependencies:
         if device_type in each_section:
             for each_device, each_dict in each_section[device_type].items():
-                if each_device in ['py-dependencies', 'dependencies_pypi']:
+                if each_device == 'dependencies_pip':
                     for each_dep in each_dict:
                         try:
                             module = importlib.util.find_spec(each_dep)
@@ -712,7 +712,7 @@ def return_dependencies(device_type, dep_type='unmet'):
                             if each_dep not in unmet_deps:
                                 unmet_deps.append(each_dep)
 
-                    if each_dict == []:
+                    if not each_dict:
                         met_deps = True
 
     if dep_type == 'unmet':

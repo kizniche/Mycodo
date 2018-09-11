@@ -12,7 +12,7 @@ INPUT_INFORMATION = {
     'common_name_input': 'BMP180',
     'common_name_measurements': 'Pressure/Temperature',
     'unique_name_measurements': ['altitude', 'pressure', 'temperature'],  # List of strings
-    'dependencies_pypi': ['Adafruit_BMP', 'Adafruit_GPIO'],  # List of strings
+    'dependencies_pip': ['Adafruit_BMP', 'Adafruit_GPIO'],  # List of strings
     'interfaces': ['I2C'],  # List of strings
     'i2c_location': ['0x77'],  # List of strings
     'i2c_address_editable': False,  # Boolean

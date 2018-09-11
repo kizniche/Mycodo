@@ -12,11 +12,11 @@ from mycodo.inputs.sensorutils import calculate_dewpoint
 # https://github.com/kizniche/Mycodo/blob/single_file_input_modules/mycodo/inputs/examples/example_all_options_temperature.py
 INPUT_INFORMATION = {
     'unique_name_input': 'TEST_00',
-    'input_manufacturer': 'Company X',
-    'common_name_input': 'Input 00',
+    'input_manufacturer': 'AAA Company X',
+    'common_name_input': 'Dummy Input 00',
     'common_name_measurements': 'Humidity/Temperature',
     'unique_name_measurements': ['dewpoint', 'humidity', 'temperature'],  # List of strings
-    'dependencies_pypi': ['random'],
+    'dependencies_pip': ['random'],
     'interfaces': ['I2C'],
     'i2c_location': ['0x5c'],
     'i2c_address_editable': False,
@@ -47,6 +47,11 @@ class InputModule(AbstractInput):
             # Load dependent modules
             import random
             self.random = random
+
+            # Retrieve options
+            # These options can be used here to initialize an I2C device or elsewhere in this class
+            self.i2c_address = input_dev.i2c_location
+            self.i2c_bus = input_dev.i2c_bus
 
     def __repr__(self):
         """  Representation of object """

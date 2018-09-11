@@ -12,7 +12,7 @@ INPUT_INFORMATION = {
     'common_name_input': 'Atlas EC',
     'common_name_measurements': 'Electrical Conductivity',
     'unique_name_measurements': ['electrical_conductivity'],  # List of strings
-    'dependencies_pypi': [],  # List of strings
+    'dependencies_pip': [],  # List of strings
     'interfaces': ['I2C', 'UART'],  # List of strings
     'i2c_location': ['0x66'],  # List of strings
     'i2c_address_editable': True,  # Boolean

@@ -11,7 +11,7 @@ INPUT_INFORMATION = {
     'common_name_input': 'Miflora',
     'common_name_measurements': 'EC/Light/Moisture/Temperature',
     'unique_name_measurements': ['battery', 'electrical_conductivity', 'light', 'moisture', 'temperature'],  # List of strings
-    'dependencies_pypi': ['miflora', 'bluepy', 'btlewrap'],  # List of strings
+    'dependencies_pip': ['miflora', 'bluepy', 'btlewrap'],  # List of strings
     'interfaces': ['BT'],  # List of strings
     'bt_location': '00:00:00:00:00:00',  # String
     'bt_adapter': 'hci0',  # String

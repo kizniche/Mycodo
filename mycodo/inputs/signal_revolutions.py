@@ -12,7 +12,7 @@ INPUT_INFORMATION = {
     'common_name_input': 'Signal (Revolutions)',
     'common_name_measurements': 'RPM',
     'unique_name_measurements': ['revolutions'],  # List of strings
-    'dependencies_pypi': ['pigpio'],  # List of strings
+    'dependencies_pip': ['pigpio'],  # List of strings
     'interfaces': ['GPIO'],  # List of strings
     'weighting': 0.0,  # Float
     'sample_time': 2.0,  # Float

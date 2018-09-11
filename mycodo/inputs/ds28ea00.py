@@ -12,7 +12,7 @@ INPUT_INFORMATION = {
     'common_name_input': 'DS28EA00',
     'common_name_measurements': 'Temperature',
     'unique_name_measurements': ['temperature'],  # List of strings
-    'dependencies_pypi': ['w1thermsensor'],  # List of strings
+    'dependencies_pip': ['w1thermsensor'],  # List of strings
     'interfaces': ['1WIRE'],  # List of strings
     'w1thermsensor_detect_1wire': True,  # Boolean
     'resolution': [('', 'Use Chip Default'),

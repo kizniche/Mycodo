@@ -11,7 +11,7 @@ INPUT_INFORMATION = {
     'common_name_input': 'Server Port Open',
     'common_name_measurements': 'Boolean',
     'unique_name_measurements': ['boolean'],  # List of strings
-    'dependencies_pypi': [],  # List of strings
+    'dependencies_pip': [],  # List of strings
     'interfaces': ['Mycodo'],  # List of strings
     'location': {
         'title': 'Host Location',

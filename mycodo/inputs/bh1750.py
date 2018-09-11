@@ -16,7 +16,7 @@ INPUT_INFORMATION = {
     'common_name_input': 'BH1750',
     'common_name_measurements': 'Light',
     'unique_name_measurements': ['light'],  # List of strings
-    'dependencies_pypi': ['smbus'],  # List of strings
+    'dependencies_pip': ['smbus'],  # List of strings
     'interfaces': ['I2C'],  # List of strings
     'i2c_location': ['0x23', '0x5c'],  # List of strings
     'i2c_address_editable': False,  # Boolean

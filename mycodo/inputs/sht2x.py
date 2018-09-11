@@ -14,7 +14,7 @@ INPUT_INFORMATION = {
     'common_name_input': 'SHT2x',
     'common_name_measurements': 'Humidity/Temperature',
     'unique_name_measurements': ['dewpoint', 'humidity', 'temperature'],  # List of strings
-    'dependencies_pypi': ['smbus'],  # List of strings
+    'dependencies_pip': ['smbus'],  # List of strings
     'interfaces': ['I2C'],  # List of strings
     'i2c_location': ['0x40'],  # List of strings
     'i2c_address_editable': False,  # Boolean
