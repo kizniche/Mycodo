@@ -329,7 +329,30 @@ def settings_input_import(form):
             elif input_info.INPUT_INFORMATION['unique_name_input'] == '':
                 error.append("'unique_name_input' is empty")
             elif input_info.INPUT_INFORMATION['unique_name_input'].lower() in list_inputs:
-                error.append("'unique_name_input' is not unique, there is already an input with that name")
+                error.append("'unique_name_input' is not unique, there is "
+                             "already an input with that name ({})".format(
+                    input_info.INPUT_INFORMATION['unique_name_input']))
+
+            if 'input_manufacturer' not in input_info.INPUT_INFORMATION:
+                error.append("'input_manufacturer' not found in INPUT_INFORMATION dictionary")
+            elif input_info.INPUT_INFORMATION['input_manufacturer'] == '':
+                error.append("'input_manufacturer' is empty")
+
+            if 'common_name_input' not in input_info.INPUT_INFORMATION:
+                error.append("'common_name_input' not found in INPUT_INFORMATION dictionary")
+            elif input_info.INPUT_INFORMATION['common_name_input'] == '':
+                error.append("'common_name_input' is empty")
+
+            if 'common_name_measurements' not in input_info.INPUT_INFORMATION:
+                error.append("'common_name_measurements' not found in INPUT_INFORMATION dictionary")
+            elif input_info.INPUT_INFORMATION['common_name_measurements'] == '':
+                error.append("'common_name_measurements' is empty")
+
+            if 'unique_name_measurements' not in input_info.INPUT_INFORMATION:
+                error.append("'unique_name_measurements' not found in INPUT_INFORMATION dictionary")
+            elif input_info.INPUT_INFORMATION['unique_name_measurements'] == []:
+                error.append("'unique_name_measurements' is empty")
+
 
         if not error:
             # Determine filename
