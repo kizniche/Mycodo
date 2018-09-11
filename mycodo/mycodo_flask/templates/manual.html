@@ -375,6 +375,7 @@
 <li><a href="#configuration-settings">Configuration Settings</a><ul>
 <li><a href="#general-settings">General Settings</a></li>
 <li><a href="#output-usage-settings">Output Usage Settings</a></li>
+<li><a href="#input-settings">Input Settings</a></li>
 <li><a href="#measurement-settings">Measurement Settings</a></li>
 <li><a href="#users">Users</a></li>
 <li><a href="#user-roles">User Roles</a></li>
@@ -1847,10 +1848,13 @@ signal &lt;http://kylegabriel.com/projects/2016/02
 <h4 id="daily-bezier-curve-method">Daily (Bezier Curve) Method</h4>
 <p>A daily Bezier curve method define the setpoint over the day based on a cubic Bezier curve. If unfamiliar with a Bezier curve, it is recommended you use the <a href="https://www.desmos.com/calculator/cahqdxeshd">graphical Bezier curve generator</a> and use the 8 variables it creates for 4 points (each a set of x and y). The x-axis start (x3) and end (x0) will be automatically stretched or skewed to fit within a 24-hour period and this method will repeat daily.</p>
 <h1 id="create-your-own-input-module">Create Your Own Input Module</h1>
+<p><strong><em>This section is a work-in-progress</em></strong></p>
 <p>If you have a sensor that is not currently supported by Mycodo, you can build your own input module and import it into Mycodo. All information about an input is contained within the input module, set in the dictionary ‘INPUT_INFORMATION’. Each module will require a unique name set in ‘unique_name_input’.</p>
-<p>Example input modules can be found:</p>
-<p><a href="https://github.com/kizniche/Mycodo/blob/single_file_input_modules/mycodo/inputs/custom_inputs/test_humidity_01.py" class="uri">https://github.com/kizniche/Mycodo/blob/single_file_input_modules/mycodo/inputs/custom_inputs/test_humidity_01.py</a></p>
-<p><a href="https://github.com/kizniche/Mycodo/blob/single_file_input_modules/mycodo/inputs/custom_inputs/test_temperature_01.py" class="uri">https://github.com/kizniche/Mycodo/blob/single_file_input_modules/mycodo/inputs/custom_inputs/test_temperature_01.py</a></p>
+<p>Open any of the built-in modules located in the inputs directory for examples of the proper formatting.</p>
+<p>There’s also minimal input module template that can be found:</p>
+<p><a href="https://github.com/kizniche/Mycodo/blob/single_file_input_modules/mycodo/inputs/examples/minimal_humidity_temperature.py" class="uri">https://github.com/kizniche/Mycodo/blob/single_file_input_modules/mycodo/inputs/examples/minimal_humidity_temperature.py</a></p>
+<p>The following link provides the full list of INPUT_INFORMATION options along with descriptions:</p>
+<p><a href="https://github.com/kizniche/Mycodo/blob/single_file_input_modules/mycodo/inputs/examples/example_all_options_temperature.py" class="uri">https://github.com/kizniche/Mycodo/blob/single_file_input_modules/mycodo/inputs/examples/example_all_options_temperature.py</a></p>
 <h1 id="pid-tuning">PID Tuning</h1>
 <p>Function -&gt; PIDs</p>
 <h2 id="pid-control-theory">PID Control Theory</h2>
@@ -1961,8 +1965,29 @@ signal &lt;http://kylegabriel.com/projects/2016/02
 </tr>
 </tbody>
 </table>
+<h2 id="input-settings">Input Settings</h2>
+<p><code>[Gear Icon] -&gt; Configure -&gt; Inputs</code></p>
+<p>Input modules may be imported and used within Mycodo. These modules must follow a specific format. See <a href="#create-your-own-input-module">Create Your Own Input Module</a> for more details.</p>
+<table>
+<colgroup>
+<col style="width: 32%"></col>
+<col style="width: 67%"></col>
+</colgroup>
+<thead>
+<tr class="header">
+<th>Setting</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Import Input Module</td>
+<td>Select your input module file, then click this button to begin the import.</td>
+</tr>
+</tbody>
+</table>
 <h2 id="measurement-settings">Measurement Settings</h2>
-<p><code>[Gear Icon] -&gt; Configure -&gt; Measurement</code></p>
+<p><code>[Gear Icon] -&gt; Configure -&gt; Measurements</code></p>
 <p>New measurements, units, and conversions can be created that can extend functionality of Mycodo beyond the built-in types and equations. Be sure to create units before measurements, as units need to be selected when creating a measurement. A measurement can be created that already exists, allowing additional units to be added to a pre-existing measurement. For example, the measurement ‘altitude’ already exists, however if you wanted to add the unit ‘fathom’, first create the unit ‘fathom’, then create the measurement ‘altitude’ with the ‘fathom’ unit selected. It is okay to create a custom measurement for a measurement that already exist (this is how new units for a currently-installed measurement is added).</p>
 <table>
 <colgroup>

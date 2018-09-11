@@ -1586,13 +1586,19 @@ within a 24-hour period and this method will repeat daily.
 Create Your Own Input Module
 ============================
 
+***This section is a work-in-progress***
+
 If you have a sensor that is not currently supported by Mycodo, you can build your own input module and import it into Mycodo. All information about an input is contained within the input module, set in the dictionary 'INPUT_INFORMATION'. Each module will require a unique name set in 'unique_name_input'.
 
-Example input modules can be found:
+Open any of the built-in modules located in the inputs directory for examples of the proper formatting.
 
-https://github.com/kizniche/Mycodo/blob/single_file_input_modules/mycodo/inputs/custom_inputs/test_humidity_01.py
+There's also minimal input module template that can be found:
 
-https://github.com/kizniche/Mycodo/blob/single_file_input_modules/mycodo/inputs/custom_inputs/test_temperature_01.py
+https://github.com/kizniche/Mycodo/blob/single_file_input_modules/mycodo/inputs/examples/minimal_humidity_temperature.py
+
+The following link provides the full list of INPUT_INFORMATION options along with descriptions:
+
+https://github.com/kizniche/Mycodo/blob/single_file_input_modules/mycodo/inputs/examples/example_all_options_temperature.py
 
 
 PID Tuning
@@ -1839,10 +1845,24 @@ set for each output (see `Output Settings <#output>`__).
 |                       | correspond to the electrical bill).             |
 +-----------------------+-------------------------------------------------+
 
+Input Settings
+--------------
+
+``[Gear Icon] -> Configure -> Inputs``
+
+Input modules may be imported and used within Mycodo. These modules must follow a specific format. See `Create Your Own Input Module <#create-your-own-input-module>`__ for more details.
+
++-----------------------+-------------------------------------------------+
+| Setting               | Description                                     |
++=======================+=================================================+
+| Import Input Module   | Select your input module file, then click this  |
+|                       | button to begin the import.                     |
++-----------------------+-------------------------------------------------+
+
 Measurement Settings
 --------------------
 
-``[Gear Icon] -> Configure -> Measurement``
+``[Gear Icon] -> Configure -> Measurements``
 
 New measurements, units, and conversions can be created that can extend
 functionality of Mycodo beyond the built-in types and equations. Be sure
