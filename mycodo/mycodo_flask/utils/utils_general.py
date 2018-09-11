@@ -763,4 +763,4 @@ def generate_form_input_list(dict_inputs):
     list_inputs_sorted = []
     for each_input in list_tuples_sorted:
         list_inputs_sorted.append(each_input[0])
-    return dict_inputs
+    return list_inputs_sorted
