@@ -161,7 +161,6 @@ def export_influxdb(form):
     flash_success_errors(error, action, url_for('routes_page.page_export'))
 
 
-
 #
 # Import
 #

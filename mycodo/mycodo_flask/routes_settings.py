@@ -12,6 +12,7 @@ from flask import url_for
 from flask.blueprints import Blueprint
 
 from mycodo.config import CAMERA_LIBRARIES
+from mycodo.config import INSTALL_DIRECTORY
 from mycodo.config import LANGUAGES
 from mycodo.config import THEMES
 from mycodo.config_devices_units import MEASUREMENTS
@@ -29,6 +30,7 @@ from mycodo.mycodo_flask.forms import forms_settings
 from mycodo.mycodo_flask.routes_static import inject_variables
 from mycodo.mycodo_flask.utils import utils_general
 from mycodo.mycodo_flask.utils import utils_settings
+from mycodo.utils.inputs import load_module_from_file
 from mycodo.utils.system_pi import add_custom_measurements
 from mycodo.utils.system_pi import add_custom_units
 from mycodo.utils.system_pi import all_conversions
@@ -137,6 +139,60 @@ def settings_general():
                            misc=misc,
                            languages=languages_sorted,
                            form_settings_general=form_settings_general)
+
+
+@blueprint.route('/settings/input', methods=('GET', 'POST'))
+@flask_login.login_required
+def settings_input():
+    """ Display measurement settings """
+    if not utils_general.user_has_permission('view_settings'):
+        return redirect(url_for('routes_general.home'))
+
+    form_input = forms_settings.Input()
+    form_input_delete = forms_settings.InputDel()
+
+    dict_measurements = add_custom_measurements(Measurement.query.all())
+    dict_units = add_custom_units(Unit.query.all())
+
+    # Get list of custom inputs
+    excluded_files = ['__init__.py', '__pycache__']
+    install_dir = os.path.abspath(INSTALL_DIRECTORY)
+    path_custom_inputs = os.path.join(install_dir, 'mycodo/inputs/custom_inputs')
+
+    dict_inputs = {}
+
+    for each_file in os.listdir(path_custom_inputs):
+        if each_file not in excluded_files:
+            try:
+                full_path_file = os.path.join(path_custom_inputs, each_file)
+                input_info = load_module_from_file(full_path_file)
+                dict_inputs[input_info.INPUT_INFORMATION['unique_name_input']] = {}
+                dict_inputs[input_info.INPUT_INFORMATION['unique_name_input']]['common_name_input'] = \
+                    input_info.INPUT_INFORMATION['common_name_input']
+                dict_inputs[input_info.INPUT_INFORMATION['unique_name_input']]['input_manufacturer'] = \
+                    input_info.INPUT_INFORMATION['input_manufacturer']
+                dict_inputs[input_info.INPUT_INFORMATION['unique_name_input']]['common_name_measurements'] = \
+                    input_info.INPUT_INFORMATION['common_name_measurements']
+            except:
+                pass
+
+    if request.method == 'POST':
+        if not utils_general.user_has_permission('edit_controllers'):
+            return redirect(url_for('routes_general.home'))
+
+        if form_input.import_input_upload.data:
+            utils_settings.settings_input_import(form_input)
+        elif form_input_delete.delete_input.data:
+            utils_settings.settings_input_delete(form_input_delete)
+
+        return redirect(url_for('routes_settings.settings_input'))
+
+    return render_template('settings/input.html',
+                           dict_inputs=dict_inputs,
+                           dict_measurements=dict_measurements,
+                           dict_units=dict_units,
+                           form_input=form_input,
+                           form_input_delete=form_input_delete)
 
 
 @blueprint.route('/settings/measurement', methods=('GET', 'POST'))

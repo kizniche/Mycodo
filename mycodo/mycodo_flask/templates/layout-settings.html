@@ -20,6 +20,7 @@
       <div class="col-md-3 col-xs-1 p-l-0 p-r-0 collapse in show" id="sidebar">
         <div class="list-group panel">
           <a class="list-group-item collapsed{% if active_settings == 'general' %} active{% endif %}" href="{{url_for('routes_settings.settings_general')}}"><i class="fas fa-globe"></i>&nbsp;&nbsp;{{_('General')}}</a>
+          <a class="list-group-item collapsed{% if active_settings == 'input' %} active{% endif %}" href="{{url_for('routes_settings.settings_input')}}"><i class="fas fa-sign-in-alt"></i>&nbsp;&nbsp;{{_('Inputs')}}</a>
           <a class="list-group-item collapsed{% if active_settings == 'measurement' %} active{% endif %}" href="{{url_for('routes_settings.settings_measurement')}}"><i class="fas fa-weight"></i>&nbsp;&nbsp;{{_('Measurements')}}</a>
           <a class="list-group-item collapsed{% if active_settings == 'users' %} active{% endif %}" href="{{url_for('routes_settings.settings_users')}}"><i class="fas fa-users"></i>&nbsp;&nbsp;{{_('Users')}}</a>
           <a class="list-group-item collapsed{% if active_settings == 'pi' %} active{% endif %}" href="{{url_for('routes_settings.settings_pi')}}"><i class="fab fa-linux"></i>&nbsp;&nbsp;{{_('Raspberry Pi')}}</a>

@@ -7,6 +7,7 @@ from flask_babel import lazy_gettext
 from flask_wtf import FlaskForm
 from wtforms import BooleanField
 from wtforms import DecimalField
+from wtforms import FileField
 from wtforms import IntegerField
 from wtforms import PasswordField
 from wtforms import SelectMultipleField
@@ -138,6 +139,19 @@ class SettingsGeneral(FlaskForm):
     stats_opt_out = BooleanField(lazy_gettext('Opt-out of statistics'))
     enable_upgrade_check = BooleanField(lazy_gettext('Check for Updates'))
     Submit = SubmitField(lazy_gettext('Save'))
+
+
+#
+# Settings (Input)
+#
+
+class Input(FlaskForm):
+    import_input_file = FileField(lazy_gettext('Upload'))
+    import_input_upload = SubmitField(lazy_gettext('Import Input'))
+
+class InputDel(FlaskForm):
+    input_id = StringField(widget=widgets.HiddenInput())
+    delete_input = SubmitField(lazy_gettext('Delete'))
 
 
 #

@@ -84,7 +84,8 @@ def parse_input_information():
     # startup_timer = timeit.default_timer()
 
     excluded_files = ['__init__.py', '__pycache__', 'base_input.py',
-                      'custom_inputs', 'dummy_input.py', 'input_template.py',
+                      'custom_inputs', 'examples', 'tmp_inputs',
+                      'dummy_input.py', 'input_template.py',
                       'parse_inputs.py','sensorutils.py']
 
     path_inputs = os.path.abspath(os.path.join(os.path.dirname(__file__), os.path.pardir) + '/inputs')

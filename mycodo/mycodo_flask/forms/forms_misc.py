@@ -78,8 +78,6 @@ class ImportInfluxdb(FlaskForm):
     influxdb_import_upload = SubmitField(lazy_gettext('Import Influxdb'))
 
 
-
-
 #
 # Log viewer
 #

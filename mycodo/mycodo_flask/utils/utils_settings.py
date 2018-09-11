@@ -31,8 +31,11 @@ from mycodo.mycodo_flask.utils.utils_general import delete_entry_with_id
 from mycodo.mycodo_flask.utils.utils_general import flash_form_errors
 from mycodo.mycodo_flask.utils.utils_general import flash_success_errors
 from mycodo.utils.database import db_retrieve_table
+from mycodo.utils.inputs import load_module_from_file
+from mycodo.utils.inputs import parse_input_information
 from mycodo.utils.send_data import send_email
 from mycodo.utils.system_pi import all_conversions
+from mycodo.utils.system_pi import assure_path_exists
 from mycodo.utils.system_pi import cmd_output
 from mycodo.utils.utils import test_password
 from mycodo.utils.utils import test_username
@@ -274,6 +277,102 @@ def settings_general_mod(form):
         flash_success_errors(error, action, url_for('routes_settings.settings_general'))
     else:
         flash_form_errors(form)
+
+
+def settings_input_import(form):
+    """
+    Receive an input module file, check it for errors, add it to Mycodo input list
+    """
+    action = '{action} {controller}'.format(
+        action=gettext("Import"),
+        controller=gettext("Input"))
+    error = []
+
+    input_info = None
+    file_loaded = False
+
+    try:
+        # correct_format = 'Mycodo_MYCODOVERSION_Settings_DBVERSION_HOST_DATETIME.zip'
+        install_dir = os.path.abspath(INSTALL_DIRECTORY)
+        tmp_directory = os.path.join(install_dir, 'mycodo/inputs/tmp_inputs')
+        assure_path_exists(tmp_directory)
+        custom_directory = os.path.join(install_dir, 'mycodo/inputs/custom_inputs')
+        assure_path_exists(custom_directory)
+        tmp_name = 'tmp_input_testing.py'
+        full_path_tmp = os.path.join(tmp_directory, tmp_name)
+
+        if not form.import_input_file.data:
+            error.append('No file present')
+        elif form.import_input_file.data.filename == '':
+            error.append('No file name')
+        else:
+            form.import_input_file.data.save(full_path_tmp)
+
+        try:
+            input_info = load_module_from_file(full_path_tmp)
+            file_loaded = True
+        except:
+            error.append("Could not load uploaded file as a python module")
+
+        if file_loaded and not hasattr(input_info, 'INPUT_INFORMATION'):
+            error.append("Could not load INPUT_INFORMATION dictionary from "
+                         "the uploaded input module")
+
+        dict_inputs = parse_input_information()
+        list_inputs = []
+        for each_key in dict_inputs.keys():
+            list_inputs.append(each_key.lower())
+
+        if not error:
+            if 'unique_name_input' not in input_info.INPUT_INFORMATION:
+                error.append("'unique_name_input' not found in INPUT_INFORMATION dictionary")
+            elif input_info.INPUT_INFORMATION['unique_name_input'] == '':
+                error.append("'unique_name_input' is empty")
+            elif input_info.INPUT_INFORMATION['unique_name_input'].lower() in list_inputs:
+                error.append("'unique_name_input' is not unique, there is already an input with that name")
+
+        if not error:
+            # Determine filename
+            unique_name = '{}.py'.format(input_info.INPUT_INFORMATION['unique_name_input'].lower())
+
+            # Move module from temp directory to custom_input directory
+            full_path_custom_inputs = os.path.join(install_dir, 'mycodo/inputs/custom_inputs')
+            full_path_final = os.path.join(full_path_custom_inputs, unique_name)
+            os.rename(full_path_tmp, full_path_final)
+
+            # Reload frontend to refresh the inputs
+            cmd = '{path}/mycodo/scripts/mycodo_wrapper frontend_reload 2>&1'.format(
+                path=install_dir)
+            subprocess.Popen(cmd, shell=True)
+            flash('Frontend reloaded to scan for new Input Modules', 'success')
+
+    except Exception as err:
+        error.append("Exception: {}".format(err))
+
+    flash_success_errors(error, action, url_for('routes_settings.settings_input'))
+
+
+def settings_input_delete(form):
+    action = '{action} {controller}'.format(
+        action=gettext("Import"),
+        controller=gettext("Input"))
+    error = []
+
+    install_dir = os.path.abspath(INSTALL_DIRECTORY)
+    custom_directory = os.path.join(install_dir, 'mycodo/inputs/custom_inputs')
+    file_name = '{}.py'.format(form.input_id.data.lower())
+    full_path_file = os.path.join(custom_directory, file_name)
+
+    if not error:
+        os.remove(full_path_file)
+
+        # Reload frontend to refresh the inputs
+        cmd = '{path}/mycodo/scripts/mycodo_wrapper frontend_reload 2>&1'.format(
+            path=install_dir)
+        subprocess.Popen(cmd, shell=True)
+        flash('Frontend reloaded to scan for new Input Modules', 'success')
+
+    flash_success_errors(error, action, url_for('routes_settings.settings_input'))
 
 
 def settings_measurement_add(form):

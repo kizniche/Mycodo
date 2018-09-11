@@ -193,9 +193,9 @@
 
    {% for each_unit in unit %}
 
-  <form method="post" action="/settings/measurement">
-  {{form_mod_unit.csrf_token}}
-  {{form_mod_unit.unit_id(value=each_unit.unique_id)}}
+    <form method="post" action="/settings/measurement">
+    {{form_mod_unit.csrf_token}}
+    {{form_mod_unit.unit_id(value=each_unit.unique_id)}}
 
       <tr>
         <td>{{each_unit.name_safe}}</td>
@@ -211,7 +211,7 @@
         </td>
       </tr>
 
-  </form>
+    </form>
 
   <div style="clear: both; padding: 0.5em 0;"></div>
 
