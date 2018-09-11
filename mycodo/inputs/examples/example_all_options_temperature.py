@@ -30,7 +30,7 @@ INPUT_INFORMATION = {
     #
 
     # Interface options: 'GPIO', 'I2C', 'UART', '1WIRE', 'BT', 'Mycodo', 'RPi'
-    'interfaces': ['I2C'],  # List of strings
+    'interfaces': ['I2C', 'UART'],  # List of strings
 
     # I2C options
     # Enter more than one if multiple addresses exist.
@@ -56,8 +56,8 @@ INPUT_INFORMATION = {
     # Display options
     # All variables below are able to be used
     # Additionally, location, gpio_location, i2c_location, uart_location may be used
-    'options_enabled': ['period', 'convert_unit', 'pre_output', 'i2c_location'],
-    'options_disabled': [''],
+    'options_enabled': ['i2c_location', 'uart_location', 'period', 'convert_unit', 'pre_output'],
+    'options_disabled': ['interface'],
 
     # 1-Wire options
     #
