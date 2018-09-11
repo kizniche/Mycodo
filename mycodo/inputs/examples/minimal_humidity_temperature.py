@@ -8,7 +8,7 @@ from mycodo.inputs.sensorutils import calculate_dewpoint
 
 # Input information
 # See the inputs directory for examples of working modules
-# The following examples have a full list of options with descriptions:
+# The following example contains a full list of options with descriptions:
 # https://github.com/kizniche/Mycodo/blob/single_file_input_modules/mycodo/inputs/examples/example_all_options_temperature.py
 INPUT_INFORMATION = {
     'unique_name_input': 'TEST_00',
@@ -99,6 +99,7 @@ class InputModule(AbstractInput):
     def get_measurement(self):
         """ Measures temperature and humidity """
         # Resetting these values ensures old measurements aren't mistaken for new measurements
+        self._dewpoint = None
         self._humidity = None
         self._temperature = None
 
@@ -106,7 +107,7 @@ class InputModule(AbstractInput):
         humidity = None
         temperature = None
 
-        # Begin sensor measurement code
+        # Actual input measurement code
         try:
             humidity = self.random.randint(0, 100)
             temperature = self.random.randint(0, 50)
@@ -136,7 +137,8 @@ class InputModule(AbstractInput):
 
     def read(self):
         """
-        Takes a reading and updates the self._temperature and self._humidity values
+        Takes a reading and updates the self._dewpoint, self._temperature, and
+        self._humidity values
         :returns: None on success or 1 on error
         """
         try:
