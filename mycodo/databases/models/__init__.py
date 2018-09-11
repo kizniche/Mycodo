@@ -44,6 +44,8 @@ from .measurement import Unit
 from .method import Method
 from .method import MethodData
 from .misc import Misc
+from .notes import NoteTags
+from .notes import Notes
 from .output import Output
 from .pid import PID
 from .remote import Remote

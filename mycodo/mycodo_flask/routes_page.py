@@ -56,6 +56,8 @@ from mycodo.databases.models import Math
 from mycodo.databases.models import Measurement
 from mycodo.databases.models import Method
 from mycodo.databases.models import Misc
+from mycodo.databases.models import NoteTags
+from mycodo.databases.models import Notes
 from mycodo.databases.models import Output
 from mycodo.databases.models import PID
 from mycodo.databases.models import Unit
@@ -83,6 +85,7 @@ from mycodo.mycodo_flask.utils import utils_general
 from mycodo.mycodo_flask.utils import utils_input
 from mycodo.mycodo_flask.utils import utils_lcd
 from mycodo.mycodo_flask.utils import utils_math
+from mycodo.mycodo_flask.utils import utils_notes
 from mycodo.mycodo_flask.utils import utils_output
 from mycodo.mycodo_flask.utils import utils_pid
 from mycodo.utils.inputs import list_analog_to_digital_converters
@@ -218,19 +221,42 @@ def page_notes():
     """
     Notes page
     """
-    form_notes_add = forms_notes.NoteAdd()
-    form_notes_options = forms_notes.NoteOptions()
-    form_notes_mod = forms_notes.NoteMod()
-
+    form_note_add = forms_notes.NoteAdd()
+    form_note_options = forms_notes.NoteOptions()
+    form_note_mod = forms_notes.NoteMod()
     form_tag_add = forms_notes.TagAdd()
     form_tag_options = forms_notes.TagOptions()
 
+    notes = Notes.query.all()
+    tags = NoteTags.query.all()
+
+    current_date_time = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
+    if request.method == 'POST':
+        if not utils_general.user_has_permission('edit_settings'):
+            return redirect(url_for('routes_page.page_notes'))
+
+        if form_tag_add.tag_add.data:
+            utils_notes.tag_add(form_tag_add)
+        elif form_tag_options.tag_del.data:
+            utils_notes.tag_del(form_tag_add)
+
+        if form_note_add.note_add.data:
+            utils_notes.note_add(form_tag_add)
+        elif form_note_mod.note_save.data:
+            utils_notes.note_mod(form_note_mod)
+        elif form_note_options.note_del.data:
+            utils_notes.note_del(form_tag_options)
+
     return render_template('tools/notes.html',
-                           form_notes_add=form_notes_add,
-                           form_notes_options=form_notes_options,
-                           form_notes_mod=form_notes_mod,
+                           form_note_add=form_note_add,
+                           form_note_options=form_note_options,
+                           form_note_mod=form_note_mod,
                            form_tag_add=form_tag_add,
-                           form_tag_options=form_tag_options)
+                           form_tag_options=form_tag_options,
+                           notes=notes,
+                           tags=tags,
+                           current_date_time=current_date_time)
 
 
 @blueprint.route('/export', methods=('GET', 'POST'))

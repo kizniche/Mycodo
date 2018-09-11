@@ -9,9 +9,13 @@
 <div class="container">
   {% include 'flash_messages.html' %}
 
+ASDF {{ tags }} GHJK
+
   <h4>{{_('Notes')}} <a href="/help#{{help_page[0]}}" target="_blank"><span style="font-size: 16px" class="fas fa-question-circle"></span></a></h4>
 
-  <h3>{{_('Tags')}}</h3>
+  <div style="clear: both; padding: 1em 0;"></div>
+
+  <h3>{{_('Note Tags')}}</h3>
 
   <p>Tags allow categorization of notes. A note may have more than one tag. A tag may be selected to display a set of notes on a graph.</p>
 
@@ -30,45 +34,72 @@
   </div>
   </form>
 
+  {% if tags %}
+
+    {% for each_tag in tags %}
+
+      {{each_tag.name}},
+
+    {% endfor %}
+
+  {% endif %}
+
   <div style="clear: both; padding: 1em 0;"></div>
 
   <h3>{{_('Notes')}}</h3>
 
-  <p>Add note</p>
+  <p>Enter ome or more tag separated by commas (",").</p>
 
   <form method="post" action="/notes" enctype=multipart/form-data>
-  {{form_notes_add.csrf_token}}
+  {{form_note_add.csrf_token}}
   <div class="row">
     <div class="col-auto">
-      {{form_notes_add.name.label(class_='control-label')}}
+      {{form_note_add.name.label(class_='control-label')}}
       <div>
-        {{form_notes_add.name(class_='form-control')}}
+        {{form_note_add.name(class_='form-control')}}
       </div>
     </div>
     <div class="col-auto">
-      {{form_notes_add.tags.label(class_='control-label')}}
+      {{form_note_add.tags.label(class_='control-label')}}
       <div>
-        {{form_notes_add.tags(class_='form-control')}}
+        {{form_note_add.tags(class_='form-control')}}
       </div>
     </div>
-  </div>
-  <div class="row">
-    <div class="col-12">
-      {{form_notes_add.note.label(class_='control-label')}}
-      <div>
-        {{form_notes_add.note(class_='form-control')}}
-      </div>
-    </div>
-    <div class="col-12">
-      <div class="form-group fileinput fileinput-new" data-provides="fileinput">
+    <div class="col-auto">
+      {{form_note_add.files.label(class_='control-label')}}
+      <div class="fileinput fileinput-new" data-provides="fileinput">
         <span class="btn btn-default btn-file"><input id="files" name="files" type="file" /></span>
       </div>
     </div>
+    <div class="col-12">
+      {{form_note_add.note.label(class_='control-label')}}
+      <div>
+        {{form_note_add.note(class_='form-control')}}
+      </div>
+    </div>
+    <div class="col-auto">
+      {{form_note_add.enter_custom_date_time.label(class_='control-label')}}
+      <div class="input-group-text">
+        <input class="form-control" id="enter_custom_date_time" name="enter_custom_date_time" type="checkbox" value="y">
+      </div>
+    </div>
+    <div class="col-auto">
+      {{form_note_add.date_time.label(class_='control-label')}}
+      <div>
+        {{form_note_add.date_time(class_='form-control', value=current_date_time)}}
+      </div>
+    </div>
   </div>
   <div class="row">
     <div class="col-auto">
-      {{form_notes_add.note_add(class_='btn btn-primary')}}
+      <label class="control-label">&nbsp;</label>
+      <div>
+        {{form_note_add.note_add(class_='btn btn-primary')}}
+      </div>
     </div>
+  </div>
+  <div class="row">
+
   </div>
 
   </form>

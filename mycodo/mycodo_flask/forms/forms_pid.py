@@ -7,7 +7,6 @@ from flask_babel import lazy_gettext
 from flask_wtf import FlaskForm
 from wtforms import BooleanField
 from wtforms import DecimalField
-from wtforms import IntegerField
 from wtforms import SelectField
 from wtforms import StringField
 from wtforms import SubmitField

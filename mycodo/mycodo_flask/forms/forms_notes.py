@@ -5,16 +5,12 @@
 
 from flask_babel import lazy_gettext
 from flask_wtf import FlaskForm
+from wtforms import BooleanField
 from wtforms import FileField
-from wtforms import SelectField
 from wtforms import StringField
 from wtforms import SubmitField
 from wtforms import TextAreaField
 from wtforms import widgets
-from wtforms.validators import DataRequired
-
-from mycodo.databases.models import Notes
-from mycodo.databases.models import NoteTags
 
 
 #
@@ -22,15 +18,12 @@ from mycodo.databases.models import NoteTags
 #
 
 class NoteAdd(FlaskForm):
-    list_inputs_sorted = generate_form_input_list(dict_inputs)
-
     name = StringField(lazy_gettext('Name'))
-    tags = SelectField(
-        choices=list_inputs_sorted,
-        validators=[DataRequired()]
-    )
+    tags = StringField('Tags')
     note = TextAreaField(lazy_gettext('Note'))
-    files = FileField(lazy_gettext('Upload'))
+    files = FileField(lazy_gettext('Attach Files'))
+    enter_custom_date_time = BooleanField(lazy_gettext('Use Custom Date/Time'))
+    date_time = StringField('Custom Date/Time')
     note_add = SubmitField(lazy_gettext('Save Note'))
 
 class NoteOptions(FlaskForm):

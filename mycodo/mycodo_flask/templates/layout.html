@@ -196,7 +196,7 @@
           </li>
 
 
-          <li class="nav-item dropdown{% if active_page in ['export', 'usage', 'usage_reports'] %} active{% endif %}">
+          <li class="nav-item dropdown{% if active_page in ['notes', 'export', 'usage', 'usage_reports'] %} active{% endif %}">
             <a class="nav-link dropdown-toggle" href="#" id="dropdown01" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{_('More')}}</a>
             <div class="dropdown-menu" aria-labelledby="dropdown01">
               <a class="dropdown-item{% if active_page == 'notes' %} active{% endif %}" href="{{url_for('routes_page.page_notes')}}"><i class="fas fa-edit"></i> {{_('Notes')}}</a>

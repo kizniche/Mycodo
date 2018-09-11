@@ -21,7 +21,10 @@ from mycodo.databases.models import Math
 from mycodo.databases.models import Measurement
 from mycodo.databases.models import Unit
 from mycodo.databases.utils import session_scope
-from mycodo.config import LIST_DEVICES_ADC
+try:
+    from mycodo.config import LIST_DEVICES_ADC
+except ImportError:
+    LIST_DEVICES_ADC = []
 from mycodo.config import MATH_INFO
 from mycodo.config_devices_units import UNITS
 from mycodo.config_devices_units import MEASUREMENTS

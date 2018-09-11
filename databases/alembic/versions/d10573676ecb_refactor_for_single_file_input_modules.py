@@ -5,8 +5,6 @@ Revises: 7dbc5357d3a9
 Create Date: 2018-09-08 16:26:51.833832
 
 """
-import time
-
 from alembic import op
 import sqlalchemy as sa
 
@@ -28,8 +26,9 @@ def upgrade():
     op.create_table(
         'notes',
         sa.Column('id', sa.Integer, nullable=False, unique=True),
+        sa.Column('unique_id', sa.String, nullable=False, unique=True),
         sa.Column('name', sa.Text),
-        sa.Column('tag', sa.Text),
+        sa.Column('tags', sa.Text),
         sa.Column('files', sa.Text),
         sa.Column('note', sa.Text),
         keep_existing=True)
@@ -37,10 +36,11 @@ def upgrade():
     op.create_table(
         'note_tags',
         sa.Column('id', sa.Integer, nullable=False, unique=True),
+        sa.Column('unique_id', sa.String, nullable=False, unique=True),
         sa.Column('name', sa.Text),
         keep_existing=True)
 
-
+    # New single-file module options
     with op.batch_alter_table("input") as batch_op:
         batch_op.add_column(sa.Column('i2c_location', sa.Text))
         batch_op.add_column(sa.Column('uart_location', sa.Text))
@@ -101,20 +101,16 @@ def upgrade():
             if each_input.device_loc:
                 each_input.uart_location = each_input.device_loc
                 # each_input.device_loc = None
-                print("TEST02")
             if each_input.location and each_input.device in [
                 'ATLAS_EC', 'TSL2591', 'ATLAS_PH', 'BH1750', 'SHT2x',
                 'MH_Z16', 'CHIRP', 'BMP280', 'TMP006', 'AM2315', 'BME280',
                 'ATLAS_PT1000', 'BMP180', 'TSL2561', 'HTU21D', 'HDC1000',
                 'CCS811']:
-                print("TEST00: {}, {}".format(each_input.i2c_location, each_input.location))
                 each_input.i2c_location = each_input.location
-                print("TEST01: {}, {}".format(each_input.i2c_location, each_input.location))
                 # each_input.location = None
             if each_input.location and each_input.device in [
                 'DHT11', 'DHT22', 'SIGNAL_PWM', 'SIGNAL_RPM', 'SHT1x_7x',
                 'GPIO_STATE']:
-                print("TEST01")
                 each_input.gpio_location = each_input.location
                 # each_input.location = None
 
