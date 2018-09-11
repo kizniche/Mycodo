@@ -34,7 +34,6 @@ from mycodo.config import RESTORE_LOG_FILE
 from mycodo.config import STATS_CSV
 from mycodo.config import UPGRADE_INIT_FILE
 from mycodo.config import UPGRADE_LOG_FILE
-from mycodo.config_devices_units import DEVICE_INFO
 from mycodo.databases.models import Misc
 from mycodo.mycodo_flask.extensions import db
 from mycodo.mycodo_flask.forms import forms_dependencies
@@ -273,7 +272,7 @@ def admin_dependencies(device):
         return redirect(url_for('routes_admin.admin_dependencies', device=device))
 
     return render_template('admin/dependencies.html',
-                           measurements=DEVICE_INFO,
+                           measurements=parse_input_information(),
                            unmet_list=unmet_list,
                            device=device,
                            device_name=device_name,

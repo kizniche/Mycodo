@@ -40,7 +40,6 @@ from mycodo.config import OUTPUT_INFO
 from mycodo.config import RESTORE_LOG_FILE
 from mycodo.config import UPGRADE_LOG_FILE
 from mycodo.config import USAGE_REPORTS_PATH
-from mycodo.config_devices_units import DEVICE_INFO
 from mycodo.config_devices_units import MEASUREMENTS
 from mycodo.config_devices_units import UNITS
 from mycodo.config_translations import TOOLTIPS_INPUT
@@ -780,7 +779,7 @@ def page_lcd():
                            lcd=lcd,
                            lcd_data=lcd_data,
                            math=math,
-                           measurements=DEVICE_INFO,
+                           measurements=parse_input_information(),
                            pid=pid,
                            output=output,
                            sensor=input_dev,
@@ -1308,7 +1307,7 @@ def page_data():
                            choices_unit=choices_unit,
                            choices_measurement=choices_measurement,
                            choices_measurements_units=choices_measurements_units,
-                           device_info=DEVICE_INFO,
+                           device_info=parse_input_information(),
                            dict_inputs=dict_inputs,
                            display_order_input=display_order_input,
                            display_order_math=display_order_math,

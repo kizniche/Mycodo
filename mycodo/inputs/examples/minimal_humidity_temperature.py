@@ -7,8 +7,8 @@ from mycodo.inputs.sensorutils import calculate_dewpoint
 
 
 # Input information
-# See the inputs directory for examples of working modules
-# The following example contains a full list of options with descriptions:
+# See the inputs directory for examples of working modules.
+# The following link provides the full list of options with descriptions:
 # https://github.com/kizniche/Mycodo/blob/single_file_input_modules/mycodo/inputs/examples/example_all_options_temperature.py
 INPUT_INFORMATION = {
     'unique_name_input': 'TEST_00',

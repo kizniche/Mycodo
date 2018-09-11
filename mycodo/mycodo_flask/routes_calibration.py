@@ -11,15 +11,16 @@ from flask.blueprints import Blueprint
 from flask_babel import gettext
 from sqlalchemy import or_
 
-from mycodo.config_devices_units import DEVICES
 from mycodo.databases.models import Input
 from mycodo.devices.atlas_scientific_i2c import AtlasScientificI2C
 from mycodo.devices.atlas_scientific_uart import AtlasScientificUART
 from mycodo.mycodo_flask.forms import forms_calibration
 from mycodo.mycodo_flask.routes_static import inject_variables
 from mycodo.mycodo_flask.utils import utils_general
+from mycodo.mycodo_flask.utils.utils_general import generate_form_input_list
 from mycodo.mycodo_flask.utils.utils_general import return_dependencies
 from mycodo.utils.calibration import AtlasScientificCommand
+from mycodo.utils.inputs import parse_input_information
 from mycodo.utils.system_pi import str_is_float
 
 logger = logging.getLogger('mycodo.mycodo_flask.calibration')
@@ -94,11 +95,13 @@ def setup_atlas_ph():
         stage = 1
         selected_input = Input.query.filter_by(
             unique_id=form_ph_calibrate.selected_sensor_id.data).first()
+        dict_inputs = parse_input_information()
+        list_inputs_sorted = generate_form_input_list(dict_inputs)
         if not selected_input:
             flash('Input not found: {}'.format(
                 form_ph_calibrate.selected_sensor_id.data), 'error')
         else:
-            for each_input in DEVICES:
+            for each_input in list_inputs_sorted:
                 if selected_input.device == each_input[0]:
                     input_device_name = each_input[1]
 
@@ -108,7 +111,9 @@ def setup_atlas_ph():
             (next_stage is not None and next_stage > 1)):
         selected_input = Input.query.filter_by(
             unique_id=form_ph_calibrate.hidden_sensor_id.data).first()
-        for each_input in DEVICES:
+        dict_inputs = parse_input_information()
+        list_inputs_sorted = generate_form_input_list(dict_inputs)
+        for each_input in list_inputs_sorted:
             if selected_input.device == each_input[0]:
                 input_device_name = each_input[1]
 

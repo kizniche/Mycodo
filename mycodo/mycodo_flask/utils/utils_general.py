@@ -754,3 +754,13 @@ def use_unit_generate(input_dev, output, math):
 
 def get_ip_address():
     return request.environ.get('HTTP_X_FORWARDED_FOR', 'unknown address')
+
+
+def generate_form_input_list(dict_inputs):
+    # Sort dictionary entries by input_manufacturer, then common_name_input
+    # Results in list of sorted dictionary keys
+    list_tuples_sorted = sorted(dict_inputs.items(), key=lambda x: (x[1]['input_manufacturer'], x[1]['common_name_input']))
+    list_inputs_sorted = []
+    for each_input in list_tuples_sorted:
+        list_inputs_sorted.append(each_input[0])
+    return dict_inputs
