@@ -71,6 +71,7 @@ from mycodo.mycodo_flask.forms import forms_input
 from mycodo.mycodo_flask.forms import forms_lcd
 from mycodo.mycodo_flask.forms import forms_math
 from mycodo.mycodo_flask.forms import forms_misc
+from mycodo.mycodo_flask.forms import forms_notes
 from mycodo.mycodo_flask.forms import forms_output
 from mycodo.mycodo_flask.forms import forms_pid
 from mycodo.mycodo_flask.routes_static import inject_variables
@@ -209,6 +210,27 @@ def page_camera():
                            latest_img_tl=latest_img_tl,
                            latest_img_tl_ts=latest_img_tl_ts,
                            time_now=time_now)
+
+
+@blueprint.route('/notes', methods=('GET', 'POST'))
+@flask_login.login_required
+def page_notes():
+    """
+    Notes page
+    """
+    form_notes_add = forms_notes.NoteAdd()
+    form_notes_options = forms_notes.NoteOptions()
+    form_notes_mod = forms_notes.NoteMod()
+
+    form_tag_add = forms_notes.TagAdd()
+    form_tag_options = forms_notes.TagOptions()
+
+    return render_template('tools/notes.html',
+                           form_notes_add=form_notes_add,
+                           form_notes_options=form_notes_options,
+                           form_notes_mod=form_notes_mod,
+                           form_tag_add=form_tag_add,
+                           form_tag_options=form_tag_options)
 
 
 @blueprint.route('/export', methods=('GET', 'POST'))

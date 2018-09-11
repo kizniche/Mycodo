@@ -24,6 +24,23 @@ depends_on = None
 
 
 def upgrade():
+    # Add notes and note tags tables
+    op.create_table(
+        'notes',
+        sa.Column('id', sa.Integer, nullable=False, unique=True),
+        sa.Column('name', sa.Text),
+        sa.Column('tag', sa.Text),
+        sa.Column('files', sa.Text),
+        sa.Column('note', sa.Text),
+        keep_existing=True)
+
+    op.create_table(
+        'note_tags',
+        sa.Column('id', sa.Integer, nullable=False, unique=True),
+        sa.Column('name', sa.Text),
+        keep_existing=True)
+
+
     with op.batch_alter_table("input") as batch_op:
         batch_op.add_column(sa.Column('i2c_location', sa.Text))
         batch_op.add_column(sa.Column('uart_location', sa.Text))
@@ -109,3 +126,6 @@ def downgrade():
         batch_op.drop_column('i2c_location')
         batch_op.drop_column('uart_location')
         batch_op.drop_column('gpio_location')
+
+    op.drop_table('notes')
+    op.drop_table('note_tags')

@@ -1,0 +1,78 @@
+{% extends "layout.html" %}
+{% set active_page = "notes" %}
+{% set help_page = ["notes", _('Notes')] %}
+
+{% block title %} - {{_('Notes')}}{% endblock %}
+
+{% block body %}
+<!-- Route: /notes -->
+<div class="container">
+  {% include 'flash_messages.html' %}
+
+  <h4>{{_('Notes')}} <a href="/help#{{help_page[0]}}" target="_blank"><span style="font-size: 16px" class="fas fa-question-circle"></span></a></h4>
+
+  <h3>{{_('Tags')}}</h3>
+
+  <p>Tags allow categorization of notes. A note may have more than one tag. A tag may be selected to display a set of notes on a graph.</p>
+
+   <form class="form-horizontal" method="post" action="/notes">
+   {{form_tag_add.csrf_token}}
+   <div class="row align-items-end">
+    <div class="col-auto">
+      {{form_tag_add.tag_name.label(class_='control-label')}}
+      <div>
+        {{form_tag_add.tag_name(class_='form-control')}}
+      </div>
+    </div>
+    <div class="col-auto">
+      {{form_tag_add.tag_add(class_='btn btn-primary')}}
+    </div>
+  </div>
+  </form>
+
+  <div style="clear: both; padding: 1em 0;"></div>
+
+  <h3>{{_('Notes')}}</h3>
+
+  <p>Add note</p>
+
+  <form method="post" action="/notes" enctype=multipart/form-data>
+  {{form_notes_add.csrf_token}}
+  <div class="row">
+    <div class="col-auto">
+      {{form_notes_add.name.label(class_='control-label')}}
+      <div>
+        {{form_notes_add.name(class_='form-control')}}
+      </div>
+    </div>
+    <div class="col-auto">
+      {{form_notes_add.tags.label(class_='control-label')}}
+      <div>
+        {{form_notes_add.tags(class_='form-control')}}
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-12">
+      {{form_notes_add.note.label(class_='control-label')}}
+      <div>
+        {{form_notes_add.note(class_='form-control')}}
+      </div>
+    </div>
+    <div class="col-12">
+      <div class="form-group fileinput fileinput-new" data-provides="fileinput">
+        <span class="btn btn-default btn-file"><input id="files" name="files" type="file" /></span>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-auto">
+      {{form_notes_add.note_add(class_='btn btn-primary')}}
+    </div>
+  </div>
+
+  </form>
+
+</div>
+
+{% endblock %}
