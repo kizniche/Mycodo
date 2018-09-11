@@ -29,7 +29,7 @@ INPUT_INFORMATION = {
     # See the example, below: "self.resolution = input_dev.resolution"
     #
 
-    # Interface options: 'I2C', 'UART'
+    # Interface options: 'GPIO', 'I2C', 'UART', '1WIRE', 'BT', 'Mycodo', 'RPi'
     'interfaces': ['I2C'],  # List of strings
 
     # I2C options

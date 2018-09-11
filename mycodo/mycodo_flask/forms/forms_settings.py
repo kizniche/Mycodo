@@ -147,7 +147,7 @@ class SettingsGeneral(FlaskForm):
 
 class Input(FlaskForm):
     import_input_file = FileField(lazy_gettext('Upload'))
-    import_input_upload = SubmitField(lazy_gettext('Import Input'))
+    import_input_upload = SubmitField(lazy_gettext('Import Input Module'))
 
 class InputDel(FlaskForm):
     input_id = StringField(widget=widgets.HiddenInput())

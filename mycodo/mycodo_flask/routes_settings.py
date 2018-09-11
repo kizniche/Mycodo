@@ -31,6 +31,7 @@ from mycodo.mycodo_flask.routes_static import inject_variables
 from mycodo.mycodo_flask.utils import utils_general
 from mycodo.mycodo_flask.utils import utils_settings
 from mycodo.utils.inputs import load_module_from_file
+from mycodo.utils.inputs import parse_input_information
 from mycodo.utils.system_pi import add_custom_measurements
 from mycodo.utils.system_pi import add_custom_units
 from mycodo.utils.system_pi import all_conversions
@@ -186,6 +187,8 @@ def settings_input():
             utils_settings.settings_input_delete(form_input_delete)
 
         return redirect(url_for('routes_settings.settings_input'))
+
+    dict_inputs = parse_input_information()
 
     return render_template('settings/input.html',
                            dict_inputs=dict_inputs,

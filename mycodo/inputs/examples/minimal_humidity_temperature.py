@@ -1,0 +1,129 @@
+# coding=utf-8
+import logging
+
+from mycodo.inputs.base_input import AbstractInput
+from mycodo.inputs.sensorutils import convert_units
+
+
+# Input information
+# See the following examples for full list of options with descriptions:
+# https://github.com/kizniche/Mycodo/blob/single_file_input_modules/mycodo/inputs/examples/example_all_options_humidity.py
+# https://github.com/kizniche/Mycodo/blob/single_file_input_modules/mycodo/inputs/examples/example_all_options_temperature.py
+INPUT_INFORMATION = {
+    'unique_name_input': 'TEST_00',
+    'input_manufacturer': 'Company X',
+    'common_name_input': 'Input 00',
+    'common_name_measurements': 'Humidity/Temperature',
+    'unique_name_measurements': ['dewpoint', 'humidity', 'temperature'],  # List of strings
+    'dependencies_pypi': ['random'],
+    'interfaces': ['I2C'],
+    'i2c_location': ['0x5c'],
+    'i2c_address_editable': False,
+    'options_enabled': ['period', 'convert_unit', 'pre_output'],
+    'options_disabled': ['interface', 'i2c_location']
+}
+
+
+class InputModule(AbstractInput):
+    """ Input support class """
+    def __init__(self, input_dev, testing=False):
+        super(InputModule, self).__init__()
+        self.logger = logging.getLogger("mycodo.inputs.{name_lower}".format(
+            name_lower=INPUT_INFORMATION['unique_name_input'].lower()))
+
+        self._humidity = None
+        self._temperature = None
+
+        if not testing:
+            self.logger = logging.getLogger(
+                "mycodo.inputs.{name_lower}_{id}".format(
+                    name_lower=INPUT_INFORMATION['unique_name_input'].lower(),
+                    id=input_dev.id))
+            self.convert_to_unit = input_dev.convert_to_unit
+            self.interface = input_dev.interface
+
+            # Load dependent modules
+            import random
+            self.random = random
+
+    def __repr__(self):
+        """  Representation of object """
+        return "<{cls}(humidity={humidity})(temperature={temperature})>".format(
+            cls=type(self).__name__,
+            humidity="{0:.2f}".format(self._humidity),
+            temperature="{0:.2f}".format(self._humidity))
+
+    def __str__(self):
+        """ Return measurement information """
+        return "Humidity: {humidity}, Temperature: {temperature}".format(
+            humidity="{0:.2f}".format(self._humidity),
+            temperature="{0:.2f}".format(self._temperature))
+
+    def __iter__(self):  # must return an iterator
+        """ iterates through readings """
+        return self
+
+    def next(self):
+        """ Get next reading """
+        if self.read():
+            raise StopIteration
+        return dict(humidity=float('{0:.2f}'.format(self._humidity)),
+                    temperature=float('{0:.2f}'.format(self._temperature)))
+
+    @property
+    def humidity(self):
+        """ temperature """
+        if self._humidity is None:
+            self.read()
+        return self._humidity
+
+    @property
+    def temperature(self):
+        """ temperature """
+        if self._temperature is None:
+            self.read()
+        return self._temperature
+
+    def get_measurement(self):
+        """ Measures temperature and humidity """
+        # Resetting these values ensures old measurements aren't mistaken for new measurements
+        self._humidity = None
+        self._temperature = None
+
+        humidity = None
+        temperature = None
+
+        # Begin sensor measurement code
+        humidity = self.random.randint(0, 100)
+        temperature = self.random.randint(0, 50)
+
+        # Unit conversions
+        # A conversion may be specified for each measurement
+
+        # Humidity is returned as %, but may be converted to another unit (e.g. decimal)
+        humidity = convert_units(
+            'humidity', '%', self.convert_to_unit,
+            humidity)
+
+        # Temperature is returned as C, but may be converted to another unit (e.g. K, F)
+        temperature = convert_units(
+            'temperature', 'C', self.convert_to_unit,
+            temperature)
+
+        return humidity, temperature
+
+    def read(self):
+        """
+        Takes a reading and updates the self._temperature and self._humidity values
+        :returns: None on success or 1 on error
+        """
+        try:
+            # These measurements must be in the same order as the returned tuple from get_measurement()
+            self._humidity, self._temperature = self.get_measurement()
+            if self._temperature is not None:
+                return  # success - no errors
+        except Exception as e:
+            self.logger.exception(
+                "{cls} raised an exception when taking a reading: "
+                "{err}".format(cls=type(self).__name__, err=e))
+        return 1
