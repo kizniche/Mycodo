@@ -3,10 +3,12 @@ import logging
 
 from mycodo.inputs.base_input import AbstractInput
 from mycodo.inputs.sensorutils import convert_units
+from mycodo.inputs.sensorutils import calculate_dewpoint
 
 
 # Input information
-# See the following examples for full list of options with descriptions:
+# See the inputs directory for examples of working modules
+# The following examples have a full list of options with descriptions:
 # https://github.com/kizniche/Mycodo/blob/single_file_input_modules/mycodo/inputs/examples/example_all_options_humidity.py
 # https://github.com/kizniche/Mycodo/blob/single_file_input_modules/mycodo/inputs/examples/example_all_options_temperature.py
 INPUT_INFORMATION = {
@@ -31,6 +33,7 @@ class InputModule(AbstractInput):
         self.logger = logging.getLogger("mycodo.inputs.{name_lower}".format(
             name_lower=INPUT_INFORMATION['unique_name_input'].lower()))
 
+        self._dewpoint = None
         self._humidity = None
         self._temperature = None
 
@@ -48,18 +51,20 @@ class InputModule(AbstractInput):
 
     def __repr__(self):
         """  Representation of object """
-        return "<{cls}(humidity={humidity})(temperature={temperature})>".format(
+        return "<{cls}(dewpoint={dewpoint})(humidity={humidity})(temperature={temperature})>".format(
             cls=type(self).__name__,
+            dewpoint="{0:.2f}".format(self._dewpoint),
             humidity="{0:.2f}".format(self._humidity),
             temperature="{0:.2f}".format(self._humidity))
 
     def __str__(self):
         """ Return measurement information """
-        return "Humidity: {humidity}, Temperature: {temperature}".format(
+        return "Dewpoint: {dewpoint}, Humidity: {humidity}, Temperature: {temperature}".format(
+            dewpoint="{0:.2f}".format(self._dewpoint),
             humidity="{0:.2f}".format(self._humidity),
             temperature="{0:.2f}".format(self._temperature))
 
-    def __iter__(self):  # must return an iterator
+    def __iter__(self):
         """ iterates through readings """
         return self
 
@@ -67,9 +72,17 @@ class InputModule(AbstractInput):
         """ Get next reading """
         if self.read():
             raise StopIteration
-        return dict(humidity=float('{0:.2f}'.format(self._humidity)),
+        return dict(dewpoint=float('{0:.2f}'.format(self._dewpoint)),
+                    humidity=float('{0:.2f}'.format(self._humidity)),
                     temperature=float('{0:.2f}'.format(self._temperature)))
 
+    @property
+    def dewpoint(self):
+        """ dewpoint """
+        if self._dewpoint is None:
+            self.read()
+        return self._dewpoint
+    
     @property
     def humidity(self):
         """ temperature """
@@ -90,12 +103,17 @@ class InputModule(AbstractInput):
         self._humidity = None
         self._temperature = None
 
+        dewpoint = None
         humidity = None
         temperature = None
 
         # Begin sensor measurement code
-        humidity = self.random.randint(0, 100)
-        temperature = self.random.randint(0, 50)
+        try:
+            humidity = self.random.randint(0, 100)
+            temperature = self.random.randint(0, 50)
+            dewpoint = calculate_dewpoint(temperature, humidity)
+        except Exception as msg:
+            self.logger.error("Exception: {}".format(msg))
 
         # Unit conversions
         # A conversion may be specified for each measurement
@@ -110,7 +128,12 @@ class InputModule(AbstractInput):
             'temperature', 'C', self.convert_to_unit,
             temperature)
 
-        return humidity, temperature
+        # Dewpoint is returned as C, but may be converted to another unit (e.g. K, F)
+        dewpoint = convert_units(
+            'dewpoint', 'C', self.convert_to_unit,
+            dewpoint)
+
+        return humidity, temperature, dewpoint
 
     def read(self):
         """
@@ -119,7 +142,7 @@ class InputModule(AbstractInput):
         """
         try:
             # These measurements must be in the same order as the returned tuple from get_measurement()
-            self._humidity, self._temperature = self.get_measurement()
+            self._humidity, self._temperature, self._dewpoint = self.get_measurement()
             if self._temperature is not None:
                 return  # success - no errors
         except Exception as e:

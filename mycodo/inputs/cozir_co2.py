@@ -3,7 +3,7 @@ import logging
 
 from mycodo.inputs.base_input import AbstractInput
 from mycodo.inputs.sensorutils import convert_units
-from mycodo.inputs.sensorutils import dewpoint
+from mycodo.inputs.sensorutils import calculate_dewpoint
 
 # Input information
 INPUT_INFORMATION = {
@@ -111,7 +111,7 @@ class InputModule(AbstractInput):
         co2 = self.sensor.read_CO2()
         temperature = self.sensor.read_temperature()
         humidity = self.sensor.read_humidity()
-        dew_pt = dewpoint(temperature, humidity)
+        dew_pt = calculate_dewpoint(temperature, humidity)
 
         # Check for conversions
         co2 = convert_units(

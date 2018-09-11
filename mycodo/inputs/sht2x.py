@@ -5,7 +5,7 @@ import time
 
 from mycodo.inputs.base_input import AbstractInput
 from mycodo.inputs.sensorutils import convert_units
-from mycodo.inputs.sensorutils import dewpoint
+from mycodo.inputs.sensorutils import calculate_dewpoint
 
 # Input information
 INPUT_INFORMATION = {
@@ -124,7 +124,7 @@ class InputModule(AbstractInput):
                 data0 = self.sht2x.read_byte(self.i2c_address)
                 data1 = self.sht2x.read_byte(self.i2c_address)
                 humidity = -6 + (((data0 * 256 + data1) * 125.0) / 65536.0)
-                dew_point = dewpoint(temperature, humidity)
+                dew_point = calculate_dewpoint(temperature, humidity)
                 return dew_point, humidity, temperature
             except Exception as e:
                 self.logger.exception(

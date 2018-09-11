@@ -25,7 +25,7 @@ import time
 
 from mycodo.inputs.base_input import AbstractInput
 from mycodo.inputs.sensorutils import convert_units
-from mycodo.inputs.sensorutils import dewpoint
+from mycodo.inputs.sensorutils import calculate_dewpoint
 
 # Input information
 INPUT_INFORMATION = {
@@ -153,7 +153,7 @@ class InputModule(AbstractInput):
         humi_reading = float(humi_reading)
         uncomp_humidity = ((humi_reading / 65536) * 125) - 6  # formula from datasheet
         humidity = ((25 - temperature) * -0.15) + uncomp_humidity
-        dew_pt = dewpoint(temperature, humidity)
+        dew_pt = calculate_dewpoint(temperature, humidity)
 
         # Check for conversions
         dew_pt = convert_units(

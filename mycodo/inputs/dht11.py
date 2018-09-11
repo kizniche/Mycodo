@@ -6,7 +6,7 @@ from mycodo.databases.models import Output
 from mycodo.utils.database import db_retrieve_table_daemon
 from mycodo.inputs.base_input import AbstractInput
 from mycodo.inputs.sensorutils import convert_units
-from mycodo.inputs.sensorutils import dewpoint
+from mycodo.inputs.sensorutils import calculate_dewpoint
 
 
 # Input information
@@ -234,7 +234,7 @@ class InputModule(AbstractInput):
             self.pi.set_watchdog(self.gpio, 200)
             time.sleep(0.2)
             if self.temp_humidity != 0:
-                self.temp_dew_point = dewpoint(
+                self.temp_dew_point = calculate_dewpoint(
                     self.temp_temperature, self.temp_humidity)
         except Exception as e:
             self.logger.error(

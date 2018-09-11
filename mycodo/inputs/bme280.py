@@ -8,7 +8,7 @@ import logging
 from mycodo.inputs.base_input import AbstractInput
 from mycodo.inputs.sensorutils import altitude
 from mycodo.inputs.sensorutils import convert_units
-from mycodo.inputs.sensorutils import dewpoint
+from mycodo.inputs.sensorutils import calculate_dewpoint
 
 # Input information
 INPUT_INFORMATION = {
@@ -151,7 +151,7 @@ class InputModule(AbstractInput):
 
         dew_pt = convert_units(
             'dewpoint', 'C', self.convert_to_unit,
-            dewpoint(temperature, humidity))
+            calculate_dewpoint(temperature, humidity))
 
         return alt, dew_pt, humidity, pressure, temperature
 

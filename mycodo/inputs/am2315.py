@@ -32,7 +32,7 @@ from mycodo.databases.models import Output
 from mycodo.utils.database import db_retrieve_table_daemon
 from mycodo.inputs.base_input import AbstractInput
 from mycodo.inputs.sensorutils import convert_units
-from mycodo.inputs.sensorutils import dewpoint
+from mycodo.inputs.sensorutils import calculate_dewpoint
 
 # Input information
 INPUT_INFORMATION = {
@@ -192,7 +192,7 @@ class InputModule(AbstractInput):
                         num=num_measure))
                 pass
             else:
-                dew_pt = dewpoint(temperature, humidity)
+                dew_pt = calculate_dewpoint(temperature, humidity)
                 return dew_pt, humidity, temperature
             time.sleep(2)
 

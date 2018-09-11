@@ -56,7 +56,7 @@ def convert_units(measurement, convert_from_unit, convert_to_unit, measure_value
     return return_measurement
 
 
-def dewpoint(t, rh):
+def calculate_dewpoint(t, rh):
     """Calculate dewpoint from temperature and relative humidity"""
     dict_tn = dict(water=243.12, ice=272.62)
     dict_m = dict(water=17.62, ice=22.46)
