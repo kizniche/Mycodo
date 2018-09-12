@@ -27,6 +27,7 @@ def upgrade():
         'notes',
         sa.Column('id', sa.Integer, nullable=False, unique=True),
         sa.Column('unique_id', sa.String, nullable=False, unique=True),
+        sa.Column('date_time', sa.DateTime),
         sa.Column('name', sa.Text),
         sa.Column('tags', sa.Text),
         sa.Column('files', sa.Text),

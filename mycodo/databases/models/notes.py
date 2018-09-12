@@ -1,7 +1,9 @@
 # coding=utf-8
-from mycodo.mycodo_flask.extensions import db
+import datetime
+
 from mycodo.databases import CRUDMixin
 from mycodo.databases import set_uuid
+from mycodo.mycodo_flask.extensions import db
 
 
 class Notes(CRUDMixin, db.Model):
@@ -10,6 +12,7 @@ class Notes(CRUDMixin, db.Model):
 
     id = db.Column(db.Integer, unique=True, primary_key=True)
     unique_id = db.Column(db.String, nullable=False, unique=True, default=set_uuid)  # ID for influxdb entries
+    date_time = db.Column(db.DateTime, default=datetime.datetime.utcnow)
     name = db.Column(db.Text, default=None)
     tags = db.Column(db.Text, default=None)
     files = db.Column(db.Text, default=None)

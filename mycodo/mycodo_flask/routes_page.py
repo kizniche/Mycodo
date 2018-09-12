@@ -226,8 +226,11 @@ def page_notes():
     form_note_mod = forms_notes.NoteMod()
     form_tag_add = forms_notes.TagAdd()
     form_tag_options = forms_notes.TagOptions()
+    form_note_show = forms_notes.NotesShow()
 
-    notes = Notes.query.all()
+    total_notes = Notes.query.count()
+
+    notes = Notes.query.order_by(Notes.id.desc()).limit(10)
     tags = NoteTags.query.all()
 
     current_date_time = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
@@ -236,19 +239,30 @@ def page_notes():
         if not utils_general.user_has_permission('edit_settings'):
             return redirect(url_for('routes_page.page_notes'))
 
-        if form_tag_add.tag_add.data:
-            utils_notes.tag_add(form_tag_add)
-        elif form_tag_options.tag_del.data:
-            utils_notes.tag_del(form_tag_options)
+        if form_note_show.notes_show.data:
+            notes = utils_notes.show_notes(form_note_show)
+        else:
+            if form_tag_add.tag_add.data:
+                utils_notes.tag_add(form_tag_add)
+            elif form_tag_options.tag_del.data:
+                utils_notes.tag_del(form_tag_options)
 
-        if form_note_add.note_add.data:
-            utils_notes.note_add(form_note_add)
-        elif form_note_mod.note_save.data:
-            utils_notes.note_mod(form_note_mod)
-        elif form_note_options.note_del.data:
-            utils_notes.note_del(form_note_options)
+            elif form_note_add.note_add.data:
+                utils_notes.note_add(form_note_add)
+            elif form_note_mod.note_save.data:
+                utils_notes.note_mod(form_note_mod)
+            elif form_note_options.note_del.data:
+                utils_notes.note_del(form_note_options)
 
-        return redirect(url_for('routes_page.page_notes'))
+            return redirect(url_for('routes_page.page_notes'))
+
+    if notes:
+        note_count = notes.count()
+        notes_all = notes.all()
+    else:
+        note_count = 0
+        notes_all = None
+    number_displayed_notes = (note_count, total_notes)
 
     return render_template('tools/notes.html',
                            form_note_add=form_note_add,
@@ -256,9 +270,11 @@ def page_notes():
                            form_note_mod=form_note_mod,
                            form_tag_add=form_tag_add,
                            form_tag_options=form_tag_options,
-                           notes=notes,
+                           form_note_show=form_note_show,
+                           notes=notes_all,
                            tags=tags,
-                           current_date_time=current_date_time)
+                           current_date_time=current_date_time,
+                           number_displayed_notes=number_displayed_notes)
 
 
 @blueprint.route('/export', methods=('GET', 'POST'))

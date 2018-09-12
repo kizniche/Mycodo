@@ -395,6 +395,7 @@
 </ul></li>
 <li><a href="#live-measurements">Live Measurements</a></li>
 <li><a href="#asynchronous-graphs">Asynchronous Graphs</a></li>
+<li><a href="#notes">Notes</a></li>
 <li><a href="#export-import">Export-Import</a></li>
 <li><a href="#dependencies">Dependencies</a></li>
 <li><a href="#camera">Camera</a></li>
@@ -2613,6 +2614,9 @@ signal &lt;http://kylegabriel.com/projects/2016/02
 <p><code>Async</code></p>
 <p>A graphical data display that is useful for viewing data sets spanning relatively long periods of time (weeks/months/years), which could be very data- and processor-intensive to view as a Live Graph. Select a time frame and data will be loaded from that time span, if it exists. The first view will be of the entire selected data set. For every view/zoom, 700 data points will be loaded. If there are more than 700 data points recorded for the time span selected, 700 points will be created from an averaging of the points in that time span. This enables much less data to be used to navigate a large data set. For instance, 4 months of data may be 10 megabytes if all of it were downloaded. However, when viewing a 4 month span, it’s not possible to see every data point of that 10 megabytes, and aggregating of points is inevitable. With asynchronous loading of data, you only download what you see. So, instead of downloading 10 megabytes every graph load, only ~50kb will be downloaded until a new zoom level is selected, at which time only another ~50kb is downloaded.</p>
 <p>Note: Live Graphs require measurements to be acquired, therefore at least one sensor needs to be added and activated in order to display live data.</p>
+<h2 id="notes">Notes</h2>
+<p><code>More -&gt; Notes</code></p>
+<p>Notes may be created that can then be displayed on graphs or referenced at a later time. All notes are timestamped with the date/time of creation or may be created with a custom date/time. Each note must have at least one tag. Tags are what are selected to be displayed on a graph and all notes with that tag will appear in the time frame selected on the graph.</p>
 <h2 id="export-import">Export-Import</h2>
 <p><code>More -&gt; Export Import</code></p>
 <p>Measurements that fall within the selected date/time frame may be exported as CSV with their corresponding timestamps.</p>
@@ -2880,7 +2884,7 @@ sudo service mycodoflask restart</code></pre>
 <li>10 mA max current use during conversion (while requesting data)</li>
 <li>No more than 0.5 Hz sampling rate (once every 2 seconds)</li>
 </ul>
-<h4 id="notes">Notes</h4>
+<h4 id="notes-1">Notes</h4>
 <p>From [@Theoi-Meteoroi](<a href="https://github.com/kizniche/Mycodo/issues/315#issuecomment-344798815" class="uri">https://github.com/kizniche/Mycodo/issues/315#issuecomment-344798815</a>) on GitHub:</p>
 <p>I figured out why this [AM2315] sensor is unreliable with Rpi3 hardware I2C. It is among a number of I2C devices that really hates the BCM2835 clock stretching blunder (hardware bug: <a href="https://github.com/raspberrypi/linux/issues/254">raspberrypi/linux#254</a>). The wakeup attempts fail, consistently. I checked the bitstream with a sniffer, and see that the sensor may respond once out of 20 or so tries (or not at all) but only with a single byte returned. The solution is to use a software implementation of the I2C bus. You need to add pull-up resistors (4.7k is dandy) to 3.3v and install the i2c_gpio device overlay. Seems to work fine now, will run for a few days, but the CRC failures are gone and I get good readings, every time. And no twiddling the power for the sensor is required.</p>
 <p>To enable software I2C, add the following line to your <code>/boot/config.txt</code></p>

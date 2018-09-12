@@ -8,6 +8,7 @@ from flask_wtf import FlaskForm
 from wtforms import BooleanField
 from wtforms import FileField
 from wtforms import StringField
+from wtforms import DateTimeField
 from wtforms import SubmitField
 from wtforms import TextAreaField
 from wtforms import widgets
@@ -19,11 +20,11 @@ from wtforms import widgets
 
 class NoteAdd(FlaskForm):
     name = StringField(lazy_gettext('Name'))
-    tags = StringField('Tags')
+    note_tags = StringField('Tags')
     note = TextAreaField(lazy_gettext('Note'))
     files = FileField(lazy_gettext('Attached Files'))
     enter_custom_date_time = BooleanField(lazy_gettext('Use Custom Date/Time'))
-    date_time = StringField('Custom Date/Time')
+    date_time = DateTimeField('Custom Date/Time', format='%Y-%m-%d %H:%M:%S')
     note_add = SubmitField(lazy_gettext('Save Note'))
 
 
@@ -35,19 +36,23 @@ class NoteOptions(FlaskForm):
 
 class NoteMod(FlaskForm):
     name = StringField(lazy_gettext('Name'))
-    tags = StringField(lazy_gettext('Tags'))
+    note_tags = StringField(lazy_gettext('Tags'))
     files = FileField(lazy_gettext('Attached Files'))
     note = StringField(lazy_gettext('Note'))
     note_save = SubmitField(lazy_gettext('Save'))
 
+class NotesShow(FlaskForm):
+    filter_tags = StringField(lazy_gettext('Filter Tags'))
+    filter_notes = StringField(lazy_gettext('Filter Notes'))
+    notes_show = SubmitField(lazy_gettext('Show Notes'))
 
 #
 # Tags
 #
 
 class TagAdd(FlaskForm):
-    tag_name = StringField(lazy_gettext('Name'))
-    tag_add = SubmitField(lazy_gettext('Save'))
+    tag_name = StringField(lazy_gettext('Tag'))
+    tag_add = SubmitField(lazy_gettext('Create'))
 
 
 class TagOptions(FlaskForm):
