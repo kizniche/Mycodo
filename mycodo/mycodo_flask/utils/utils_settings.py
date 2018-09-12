@@ -20,6 +20,8 @@ from mycodo.databases.models import DisplayOrder
 from mycodo.databases.models import Input
 from mycodo.databases.models import Measurement
 from mycodo.databases.models import Misc
+from mycodo.databases.models import NoteTags
+from mycodo.databases.models import Notes
 from mycodo.databases.models import Role
 from mycodo.databases.models import SMTP
 from mycodo.databases.models import Unit
@@ -984,6 +986,25 @@ def settings_diagnostic_delete_dashboard_elements():
 
     flash_success_errors(error, action, url_for('routes_settings.settings_diagnostic'))
 
+
+def settings_diagnostic_delete_notes_tags():
+    action = '{action} {controller}'.format(
+        action=gettext("Delete"),
+        controller=gettext("All Notes/Tags"))
+    error = []
+
+    if not error:
+        try:
+            for each_tag in db_retrieve_table(NoteTags):
+                db.session.delete(each_tag)
+                db.session.commit()
+            for each_note in db_retrieve_table(Notes):
+                db.session.delete(each_note)
+                db.session.commit()
+        except Exception as except_msg:
+            error.append(except_msg)
+
+    flash_success_errors(error, action, url_for('routes_settings.settings_diagnostic'))
 
 
 def is_valid_hostname(hostname):

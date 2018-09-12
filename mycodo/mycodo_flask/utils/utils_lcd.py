@@ -62,17 +62,15 @@ def lcd_mod(form_mod_lcd):
         controller=gettext("LCD"))
     error = []
 
-    lcd = LCD.query.filter(
+    mod_lcd = LCD.query.filter(
         LCD.unique_id == form_mod_lcd.lcd_id.data).first()
-    if lcd.is_activated:
+    if mod_lcd.is_activated:
         error.append(gettext("Deactivate LCD controller before modifying"
                              " its settings."))
 
     if not error:
         if form_mod_lcd.validate():
             try:
-                mod_lcd = LCD.query.filter(
-                    LCD.unique_id == form_mod_lcd.lcd_id.data).first()
                 mod_lcd.name = form_mod_lcd.name.data
                 mod_lcd.location = form_mod_lcd.location.data
                 mod_lcd.i2c_bus = form_mod_lcd.i2c_bus.data

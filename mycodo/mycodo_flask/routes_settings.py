@@ -363,6 +363,8 @@ def settings_diagnostic():
 
         if form_settings_diagnostic.delete_dashboard_elements.data:
             utils_settings.settings_diagnostic_delete_dashboard_elements()
+        if form_settings_diagnostic.delete_notes_tags.data:
+            utils_settings.settings_diagnostic_delete_notes_tags()
 
         return redirect(url_for('routes_settings.settings_diagnostic'))
 

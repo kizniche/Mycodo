@@ -253,6 +253,8 @@ def page_notes():
                 utils_notes.note_mod(form_note_mod)
             elif form_note_options.note_del.data:
                 utils_notes.note_del(form_note_options)
+            elif form_note_options.note_mod.data:
+                return redirect(url_for('routes_page.page_edit_note', unique_id=form_note_options.note_unique_id.data))
 
             return redirect(url_for('routes_page.page_notes'))
 
@@ -275,6 +277,40 @@ def page_notes():
                            tags=tags,
                            current_date_time=current_date_time,
                            number_displayed_notes=number_displayed_notes)
+
+
+@blueprint.route('/edit_note/<unique_id>', methods=('GET', 'POST'))
+@flask_login.login_required
+def page_edit_note(unique_id):
+    """
+    Edit note page
+    """
+    this_note = Notes.query.filter(Notes.unique_id == unique_id).first()
+
+    form_note_mod = forms_notes.NoteMod()
+
+    tags = NoteTags.query.all()
+
+    if request.method == 'POST':
+        if not utils_general.user_has_permission('edit_settings'):
+            return redirect(url_for('routes_page.page_notes'))
+
+        if form_note_mod.note_save.data:
+            utils_notes.note_mod(form_note_mod)
+        if form_note_mod.note_del.data:
+            utils_notes.note_del(form_note_mod)
+            return redirect(url_for('routes_page.page_notes'))
+        if form_note_mod.note_cancel.data:
+            return redirect(url_for('routes_page.page_notes'))
+
+        return redirect(url_for('routes_page.page_edit_note', unique_id=this_note.unique_id))
+
+    form_note_mod.note.data = this_note.note
+
+    return render_template('tools/note_edit.html',
+                           form_note_mod=form_note_mod,
+                           this_note=this_note,
+                           tags=tags)
 
 
 @blueprint.route('/export', methods=('GET', 'POST'))

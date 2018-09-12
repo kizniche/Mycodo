@@ -6,9 +6,11 @@
 from flask_babel import lazy_gettext
 from flask_wtf import FlaskForm
 from wtforms import BooleanField
-from wtforms import FileField
-from wtforms import StringField
 from wtforms import DateTimeField
+from wtforms import FileField
+from wtforms import SelectField
+from wtforms import SelectMultipleField
+from wtforms import StringField
 from wtforms import SubmitField
 from wtforms import TextAreaField
 from wtforms import widgets
@@ -20,12 +22,12 @@ from wtforms import widgets
 
 class NoteAdd(FlaskForm):
     name = StringField(lazy_gettext('Name'))
-    note_tags = StringField('Tags')
-    note = TextAreaField(lazy_gettext('Note'))
+    note_tags = SelectMultipleField('Tags')
     files = FileField(lazy_gettext('Attached Files'))
     enter_custom_date_time = BooleanField(lazy_gettext('Use Custom Date/Time'))
     date_time = DateTimeField('Custom Date/Time', format='%Y-%m-%d %H:%M:%S')
-    note_add = SubmitField(lazy_gettext('Save Note'))
+    note = TextAreaField(lazy_gettext('Note'))
+    note_add = SubmitField(lazy_gettext('Save'))
 
 
 class NoteOptions(FlaskForm):
@@ -35,16 +37,39 @@ class NoteOptions(FlaskForm):
 
 
 class NoteMod(FlaskForm):
+    note_unique_id = StringField(widget=widgets.HiddenInput())
     name = StringField(lazy_gettext('Name'))
-    note_tags = StringField(lazy_gettext('Tags'))
+    note_tags = SelectMultipleField(lazy_gettext('Tags'))
     files = FileField(lazy_gettext('Attached Files'))
-    note = StringField(lazy_gettext('Note'))
+    enter_custom_date_time = BooleanField(lazy_gettext('Use Custom Date/Time'))
+    date_time = DateTimeField('Custom Date/Time', format='%Y-%m-%d %H:%M:%S')
+    note = TextAreaField(lazy_gettext('Note'))
+    note_cancel = SubmitField(lazy_gettext('Cancel'))
+    note_del = SubmitField(lazy_gettext('Delete'))
     note_save = SubmitField(lazy_gettext('Save'))
 
+
 class NotesShow(FlaskForm):
+    sort_by_choices = [
+        ('id', 'ID'),
+        ('name', 'Name'),
+        ('date', 'Date/Time'),
+        ('tag', 'Tag'),
+        ('file', 'File'),
+        ('note', 'Note')
+    ]
+    sort_direction_choices = [
+        ('desc', 'Descending'),
+        ('asc', 'Ascending')
+    ]
+    filter_names = StringField(lazy_gettext('Filter Names'))
     filter_tags = StringField(lazy_gettext('Filter Tags'))
+    filter_files = StringField(lazy_gettext('Filter Files'))
     filter_notes = StringField(lazy_gettext('Filter Notes'))
+    sort_by = SelectField(lazy_gettext('Sorting'), choices=sort_by_choices)
+    sort_direction = SelectField(lazy_gettext('Sort Direction'), choices=sort_direction_choices)
     notes_show = SubmitField(lazy_gettext('Show Notes'))
+
 
 #
 # Tags
