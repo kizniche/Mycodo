@@ -239,14 +239,16 @@ def page_notes():
         if form_tag_add.tag_add.data:
             utils_notes.tag_add(form_tag_add)
         elif form_tag_options.tag_del.data:
-            utils_notes.tag_del(form_tag_add)
+            utils_notes.tag_del(form_tag_options)
 
         if form_note_add.note_add.data:
-            utils_notes.note_add(form_tag_add)
+            utils_notes.note_add(form_note_add)
         elif form_note_mod.note_save.data:
             utils_notes.note_mod(form_note_mod)
         elif form_note_options.note_del.data:
-            utils_notes.note_del(form_tag_options)
+            utils_notes.note_del(form_note_options)
+
+        return redirect(url_for('routes_page.page_notes'))
 
     return render_template('tools/notes.html',
                            form_note_add=form_note_add,

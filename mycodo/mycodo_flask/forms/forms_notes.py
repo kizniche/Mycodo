@@ -21,21 +21,23 @@ class NoteAdd(FlaskForm):
     name = StringField(lazy_gettext('Name'))
     tags = StringField('Tags')
     note = TextAreaField(lazy_gettext('Note'))
-    files = FileField(lazy_gettext('Attach Files'))
+    files = FileField(lazy_gettext('Attached Files'))
     enter_custom_date_time = BooleanField(lazy_gettext('Use Custom Date/Time'))
     date_time = StringField('Custom Date/Time')
     note_add = SubmitField(lazy_gettext('Save Note'))
 
+
 class NoteOptions(FlaskForm):
-    note_id = StringField(widget=widgets.HiddenInput())
+    note_unique_id = StringField(widget=widgets.HiddenInput())
     note_mod = SubmitField(lazy_gettext('Edit'))
     note_del = SubmitField(lazy_gettext('Delete'))
 
+
 class NoteMod(FlaskForm):
     name = StringField(lazy_gettext('Name'))
-    tag = StringField(lazy_gettext('Tags'))
+    tags = StringField(lazy_gettext('Tags'))
+    files = FileField(lazy_gettext('Attached Files'))
     note = StringField(lazy_gettext('Note'))
-    files = FileField(lazy_gettext('Upload'))
     note_save = SubmitField(lazy_gettext('Save'))
 
 
@@ -47,6 +49,7 @@ class TagAdd(FlaskForm):
     tag_name = StringField(lazy_gettext('Name'))
     tag_add = SubmitField(lazy_gettext('Save'))
 
+
 class TagOptions(FlaskForm):
-    tag_id = StringField(widget=widgets.HiddenInput())
+    tag_unique_id = StringField(lazy_gettext('Tag'), widget=widgets.HiddenInput())
     tag_del = SubmitField(lazy_gettext('Delete'))

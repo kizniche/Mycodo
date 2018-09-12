@@ -2360,6 +2360,13 @@ Note: Live Graphs require measurements to be acquired, therefore at
 least one sensor needs to be added and activated in order to display
 live data.
 
+Notes
+-----
+
+``More -> Notes``
+
+Notes may be created that can then be displayed on graphs or referenced at a later time. All notes are timestamped with the date/time of creation or may be created with a custom date/time. Each note must have at least one tag. Tags are what are selected to be displayed on a graph and all notes with that tag will appear in the time frame selected on the graph.
+
 Export-Import
 -------------
 

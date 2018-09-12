@@ -42,12 +42,16 @@ def tag_add(form):
 
     if not form.tag_name.data:
         error.append("Tag name is empty")
+    if ' ' in form.tag_name.data:
+        error.append("Tag name cannot contain spaces")
+
+    if NoteTags.query.filter(NoteTags.name == form.tag_name.data).count():
+        error.append("Tag already exists")
 
     if not error:
         new_tag = NoteTags()
         new_tag.name = form.tag_name.data
         new_tag.save()
-        db.session.commit()
 
     flash_success_errors(error, action, url_for('routes_page.page_notes'))
 
@@ -59,7 +63,7 @@ def tag_del(form):
     error = []
 
     if not error:
-        pass
+        delete_entry_with_id(NoteTags, form.tag_unique_id.data)
 
     flash_success_errors(error, action, url_for('routes_page.page_notes'))
 
@@ -71,7 +75,12 @@ def note_add(form):
     error = []
 
     if not error:
-        pass
+        new_note = Notes()
+        new_note.name = form.name.data
+        new_note.tags = form.tags.data
+        new_note.files = form.files.data
+        new_note.note = form.note.data
+        new_note.save()
 
     flash_success_errors(error, action, url_for('routes_page.page_notes'))
 
@@ -94,7 +103,10 @@ def note_del(form):
         controller=gettext("Note"))
     error = []
 
+    if not form.note_unique_id.data:
+        error.append("Unique id is empty")
+
     if not error:
-        pass
+        delete_entry_with_id(Notes, form.note_unique_id.data)
 
     flash_success_errors(error, action, url_for('routes_page.page_notes'))

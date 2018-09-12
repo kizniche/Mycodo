@@ -31,6 +31,7 @@ def upgrade():
         sa.Column('tags', sa.Text),
         sa.Column('files', sa.Text),
         sa.Column('note', sa.Text),
+        sa.PrimaryKeyConstraint('id'),
         keep_existing=True)
 
     op.create_table(
@@ -38,6 +39,7 @@ def upgrade():
         sa.Column('id', sa.Integer, nullable=False, unique=True),
         sa.Column('unique_id', sa.String, nullable=False, unique=True),
         sa.Column('name', sa.Text),
+        sa.PrimaryKeyConstraint('id'),
         keep_existing=True)
 
     # New single-file module options
