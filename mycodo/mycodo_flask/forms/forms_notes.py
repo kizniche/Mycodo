@@ -66,7 +66,7 @@ class NotesShow(FlaskForm):
     filter_tags = StringField(lazy_gettext('Filter Tags'))
     filter_files = StringField(lazy_gettext('Filter Files'))
     filter_notes = StringField(lazy_gettext('Filter Notes'))
-    sort_by = SelectField(lazy_gettext('Sorting'), choices=sort_by_choices)
+    sort_by = SelectField(lazy_gettext('Sort By'), choices=sort_by_choices)
     sort_direction = SelectField(lazy_gettext('Sort Direction'), choices=sort_direction_choices)
     notes_show = SubmitField(lazy_gettext('Show Notes'))
 
