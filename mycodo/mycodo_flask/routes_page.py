@@ -303,6 +303,10 @@ def page_note_edit(unique_id):
     """
     Edit note page
     """
+    # Used in software tests to verify function is executing as admin
+    if unique_id == '0':
+        return 'admin logged in'
+
     this_note = Notes.query.filter(Notes.unique_id == unique_id).first()
 
     form_note_mod = forms_notes.NoteMod()
@@ -1238,6 +1242,7 @@ def page_output():
     display_order = csv_to_list_of_str(DisplayOrder.query.first().output)
 
     form_add_output = forms_output.OutputAdd()
+    form_mod_output = forms_output.OutputMod()
     form_mod_output = forms_output.OutputMod()
 
     # Create list of file names from the output_options directory

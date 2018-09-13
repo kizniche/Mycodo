@@ -207,6 +207,7 @@ def method_builder(method_id):
     # Used in software tests to verify function is executing as admin
     if method_id == '-1':
         return 'admin logged in'
+
     # Create new method
     elif method_id == '0':
         form_fail = utils_method.method_create(form_create_method)
