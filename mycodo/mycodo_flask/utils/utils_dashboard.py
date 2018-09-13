@@ -57,17 +57,15 @@ def dashboard_add(form_base, form_object, display_order):
         error = graph_error_check(form_object, error)
         new_graph.graph_type = form_base.dashboard_type.data
         if form_object.math_ids.data:
-            math_ids_joined = ";".join(form_object.math_ids.data)
-            new_graph.math_ids = math_ids_joined
+            new_graph.math_ids = ";".join(form_object.math_ids.data)
         if form_object.pid_ids.data:
-            pid_ids_joined = ";".join(form_object.pid_ids.data)
-            new_graph.pid_ids = pid_ids_joined
+            new_graph.pid_ids = ";".join(form_object.pid_ids.data)
         if form_object.output_ids.data:
-            output_ids_joined = ";".join(form_object.output_ids.data)
-            new_graph.output_ids = output_ids_joined
+            new_graph.output_ids = ";".join(form_object.output_ids.data)
         if form_object.input_ids.data:
-            input_ids_joined = ";".join(form_object.input_ids.data)
-            new_graph.input_ids_measurements = input_ids_joined
+            new_graph.input_ids_measurements = ";".join(form_object.input_ids.data)
+        if form_object.note_tag_ids.data:
+            new_graph.note_tag_ids = ";".join(form_object.note_tag_ids.data)
         new_graph.width = form_base.width.data
         new_graph.height = form_base.height.data
         new_graph.x_axis_duration = form_object.xaxis_duration.data
@@ -212,28 +210,29 @@ def dashboard_mod(form_base, form_object, request_form):
         mod_graph.enable_end_on_tick = form_object.enable_end_on_tick.data
 
         if form_object.math_ids.data:
-            math_ids_joined = ";".join(form_object.math_ids.data)
-            mod_graph.math_ids = math_ids_joined
+            mod_graph.math_ids = ";".join(form_object.math_ids.data)
         else:
             mod_graph.math_ids = ''
 
         if form_object.pid_ids.data:
-            pid_ids_joined = ";".join(form_object.pid_ids.data)
-            mod_graph.pid_ids = pid_ids_joined
+            mod_graph.pid_ids = ";".join(form_object.pid_ids.data)
         else:
             mod_graph.pid_ids = ''
 
         if form_object.output_ids.data:
-            output_ids_joined = ";".join(form_object.output_ids.data)
-            mod_graph.output_ids = output_ids_joined
+            mod_graph.output_ids = ";".join(form_object.output_ids.data)
         else:
             mod_graph.output_ids = ''
 
         if form_object.input_ids.data:
-            input_ids_joined = ";".join(form_object.input_ids.data)
-            mod_graph.input_ids_measurements = input_ids_joined
+            mod_graph.input_ids_measurements = ";".join(form_object.input_ids.data)
         else:
             mod_graph.input_ids_measurements = ''
+
+        if form_object.note_tag_ids.data:
+            mod_graph.note_tag_ids = ";".join(form_object.note_tag_ids.data)
+        else:
+            mod_graph.note_tag_ids = ''
 
         mod_graph.width = form_base.width.data
         mod_graph.height = form_base.height.data

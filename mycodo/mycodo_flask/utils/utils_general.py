@@ -247,6 +247,14 @@ def choices_outputs(output):
     return choices
 
 
+def choices_tags(tags):
+    """ populate form multi-select choices from Tag entries """
+    choices = OrderedDict()
+    for each_tag in tags:
+        choices = form_tag_choices(choices, each_tag)
+    return choices
+
+
 def choices_lcd(inputs, maths, pids, outputs):
     choices = OrderedDict()
     dict_inputs = parse_input_information()
@@ -447,6 +455,14 @@ def form_pid_choices(choices, each_pid):
     value = '{id},duty_cycle'.format(id=each_pid.unique_id)
     display = '[PID {id:02d}] {name} (Output Duty Cycle)'.format(
         id=each_pid.id, name=each_pid.name)
+    choices.update({value: display})
+    return choices
+
+
+def form_tag_choices(choices, each_tag):
+    value = '{id}'.format(id=each_tag.unique_id)
+    display = '[Tag {id:02d}] {name}'.format(
+        id=each_tag.id, name=each_tag.name)
     choices.update({value: display})
     return choices
 

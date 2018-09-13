@@ -1,6 +1,7 @@
 {% set graph_math_ids = each_graph.math_ids.split(';') %}
 {% set graph_output_ids = each_graph.output_ids.split(';') %}
 {% set graph_pid_ids = each_graph.pid_ids.split(';') %}
+{% set graph_note_tag_ids = each_graph.note_tag_ids.split(';') %}
 
   chart_graph[{{chart_number}}] = new Highcharts.StockChart({
     chart : {
@@ -56,6 +57,16 @@
               {%- do count_series.append(1) %}
             {%- endfor -%}
           {%- endfor -%}
+
+          {%- for each_tag in tags -%}
+            {%- for each_id in graph_note_tag_ids if each_tag.unique_id == each_id %}
+          getPastNotes({{chart_number}}, {{count_series|count}}, '{{each_id}}', {{each_graph.x_axis_duration*60}});
+          {% if each_graph.enable_auto_refresh %}
+          getLiveNotes({{chart_number}}, {{count_series|count}}, '{{each_id}}', {{each_graph.x_axis_duration}}, {{each_graph.enable_xaxis_reset|int}}, {{each_graph.refresh_duration}}, {% if each_graph.enable_graph_shift %}true{% else %}false{% endif %});
+          {% endif %}
+              {%- do count_series.append(1) %}
+            {%- endfor -%}
+          {%- endfor -%}
         }
       }
     },
@@ -65,6 +76,22 @@
                 "{{each_color}}",
                {%- endfor -%}],
     {%- endif -%}
+
+    tooltip: {
+      shared: true,
+      formatter: function(){
+        if (this.point) {
+          return '<b>'+ Highcharts.dateFormat('%B %e, %Y %H:%M:%S', this.x) +'</b><br/>' + this.series.name + '<br/>' + this.point.title + '<br/>' + this.point.text;
+        }
+        else {
+          var s = '<b>'+ Highcharts.dateFormat('%B %e, %Y %H:%M:%S', this.x) +'</b>';
+          $.each(this.points, function(i, point) {
+              s += '<br/><span style="color:' + point.color + '">\u25CF</span> ' + point.series.name + ': ' + point.y + ' ' + this.series.tooltipOptions.valueSuffix;
+          });
+          return s;
+        }
+      }
+    },
 
     title: {
       text: '{% if each_graph.enable_title %}{{each_graph.name}}{% endif %}'
@@ -420,6 +447,18 @@
         {% endif %}
       {%- endfor -%}
     {%- endfor -%}
+
+    {%- for each_tag in tags -%}
+      {%- for each_graph_note_tag_id in graph_note_tag_ids if each_tag.unique_id == each_graph_note_tag_id -%}
+        {
+          name: 'Note Tag: {{each_tag.name}}',
+          type: 'flags',
+          data: [],
+          shape: 'squarepin'
+        },
+      {% endfor %}
+    {% endfor %}
+
     ]
   });
 

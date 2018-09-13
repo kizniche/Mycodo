@@ -432,6 +432,38 @@ $(document).ready(function() {
     );
   }
 
+  // Retrieve initial note tag data set from the past (duration set by user)
+  function getPastNotes(chart_number, series, unique_id, past_seconds) {
+    var url = '/past-tag/' + unique_id + '/' + past_seconds;
+    var update_id = chart_number + "-" + series + "-tag-" + unique_id;
+    $.getJSON(url,
+      function(data, responseText, jqXHR) {
+        if (jqXHR.status !== 204) {
+          var past_data = [];
+          for (i = 0; i < data.length; i++){
+            // Push the received data to the graph
+            var new_date = new Date(data[i][0]);
+            var new_time = new_date.getTime();
+
+            chart_graph[chart_number].series[series].addPoint({
+                x: new_time,
+                title: data[i][1],
+                text: data[i][2]
+              }, false, false);
+
+            // Store the epoch time of the last data point received
+            if (i === data.length - 1) {
+              last_output_time_mil[update_id] = new_time;
+            }
+          }
+          chart_graph[chart_number].series[series].isDirty = true;
+          chart_graph[chart_number].xAxis[0].setExtremes(new Date().setMinutes(new Date().getMinutes() - (past_seconds / 60)), new Date().getTime());
+          chart_graph[chart_number].series[series].setData(data, true, false);
+        }
+      }
+    );
+  }
+
   // Return timestamp from epoch
   function epoch_to_timestamp(epoch) {
     var date = new Date(parseFloat(epoch));
@@ -710,6 +742,46 @@ $(document).ready(function() {
   function getLiveData(chart_number, series, sensor_measurement, unique_id, xaxis_duration_min, xaxis_reset, refresh_seconds, graph_shift) {
     setInterval(function () {
       retrieveLiveData(chart_number, series, sensor_measurement, unique_id, xaxis_duration_min, xaxis_reset, refresh_seconds, graph_shift);
+    }, refresh_seconds * 1000);
+  }
+
+  // Retrieve chart notes for the period since the last data acquisition (refresh period set by user)
+  function retrieveLiveNotes(chart_number, series, unique_id, xaxis_duration_min, xaxis_reset, refresh_seconds, graph_shift) {
+    // Build the URL
+    // Instruct only to return data since the time of the last received data point
+    var url = '';
+    var update_id = chart_number + "-" + series + "-" + measurement + "-" + unique_id;
+    if (update_id in last_output_time_mil) {
+      var epoch_mil = (new Date).getTime();
+      var past_seconds = Math.floor((epoch_mil - last_output_time_mil[update_id]) / 1000);
+      url = '/past-tag/' + unique_id + '/' + past_seconds;
+    } else {
+      url = '/past-tag/' + unique_id + '/' + refresh_seconds;
+    }
+    $.getJSON(url,
+      function(data, responseText, jqXHR) {
+        if (jqXHR.status !== 204) {
+          for (i = 0; i < data.length; i++) {
+            var new_date = new Date(data[i][0]);
+            var new_time = new_date.getTime();
+
+            chart_graph[chart_number].series[series].addPoint({
+                name: 'Tag',
+                title: data[i][1],
+                x: new_time
+              }, false, graph_shift);
+          }
+          last_output_time_mil[update_id] = new_time;
+          redrawGraph(chart_number, refresh_seconds, xaxis_duration_min, xaxis_reset);
+        }
+      }
+    );
+  }
+
+  // Repeat function for retrieveLiveData()
+  function getLiveNotes(chart_number, series, unique_id, xaxis_duration_min, xaxis_reset, refresh_seconds, graph_shift) {
+    setInterval(function () {
+      retrieveLiveNotes(chart_number, series, unique_id, xaxis_duration_min, xaxis_reset, refresh_seconds, graph_shift);
     }, refresh_seconds * 1000);
   }
 

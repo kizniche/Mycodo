@@ -31,6 +31,8 @@ from mycodo.config import LOG_PATH
 from mycodo.config import PATH_CAMERAS
 from mycodo.databases.models import Camera
 from mycodo.databases.models import Input
+from mycodo.databases.models import NoteTags
+from mycodo.databases.models import Notes
 from mycodo.databases.models import Math
 from mycodo.databases.models import Output
 from mycodo.databases.models import PID
@@ -295,6 +297,28 @@ def past_data(input_measure, input_id, past_seconds):
     except Exception as e:
         logger.debug("URL for 'past_data' raised and error: "
                      "{err}".format(err=e))
+        return '', 204
+
+
+@blueprint.route('/past-tag/<tag_unique_id>/<past_seconds>')
+@flask_login.login_required
+def past_tag_data(tag_unique_id, past_seconds):
+    """Return data from past_seconds until present from influxdb"""
+    if not str_is_float(past_seconds):
+        return '', 204
+
+    notes_list = []
+
+    tag = NoteTags.query.filter(NoteTags.unique_id == tag_unique_id).first()
+    notes = Notes.query.filter(Notes.date_time >= (datetime.datetime.utcnow() - datetime.timedelta(seconds=int(past_seconds)))).all()
+
+    for each_note in notes:
+        if tag.name in each_note.tags.split(','):
+            notes_list.append([each_note.date_time.strftime("%Y-%m-%dT%H:%M:%S.000000000Z"), each_note.name, each_note.note])
+
+    if notes_list:
+        return jsonify(notes_list)
+    else:
         return '', 204
 
 

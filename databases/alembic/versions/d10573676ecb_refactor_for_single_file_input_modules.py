@@ -43,6 +43,10 @@ def upgrade():
         sa.PrimaryKeyConstraint('id'),
         keep_existing=True)
 
+    # Add note column for graphs
+    with op.batch_alter_table("dashboard") as batch_op:
+        batch_op.add_column(sa.Column('note_tag_ids', sa.Text))
+
     # New single-file module options
     with op.batch_alter_table("input") as batch_op:
         batch_op.add_column(sa.Column('i2c_location', sa.Text))

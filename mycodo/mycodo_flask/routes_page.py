@@ -397,6 +397,7 @@ def page_dashboard():
     pid = PID.query.all()
     measurement = Measurement.query.all()
     unit = Unit.query.all()
+    tags = NoteTags.query.all()
 
     # Create form objects
     form_base = forms_dashboard.DashboardBase()
@@ -433,6 +434,7 @@ def page_dashboard():
     choices_math = utils_general.choices_maths(math)
     choices_output = utils_general.choices_outputs(output)
     choices_pid = utils_general.choices_pids(pid)
+    choices_note_tag = utils_general.choices_tags(tags)
 
     # Generate all measurement and units used
     dict_measurements = add_custom_measurements(measurement)
@@ -563,6 +565,7 @@ def page_dashboard():
                            choices_math=choices_math,
                            choices_output=choices_output,
                            choices_pid=choices_pid,
+                           choices_note_tag=choices_note_tag,
                            custom_yaxes=custom_yaxes,
                            dashboard_element_names=dashboard_element_names,
                            dashboard_elements_hidden=dashboard_elements_hidden,
@@ -572,6 +575,7 @@ def page_dashboard():
                            pid=pid,
                            output=output,
                            input=input_dev,
+                           tags=tags,
                            colors_graph=colors_graph,
                            colors_gauge_angular=colors_gauge_angular,
                            colors_gauge_solid=colors_gauge_solid,

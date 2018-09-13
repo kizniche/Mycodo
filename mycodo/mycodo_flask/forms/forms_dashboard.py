@@ -68,6 +68,7 @@ class DashboardBase(FlaskForm):
 
 class DashboardGraph(FlaskForm):
     math_ids = SelectMultipleField(lazy_gettext('Maths'))
+    note_tag_ids = SelectMultipleField(lazy_gettext('Note Tags'))
     pid_ids = SelectMultipleField(lazy_gettext('PIDs'))
     output_ids = SelectMultipleField(lazy_gettext('Outputs'))
     input_ids = SelectMultipleField(lazy_gettext('Inputs'))

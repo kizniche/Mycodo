@@ -111,6 +111,20 @@
         </select>
       </div>
     </div>
+    <div class="col-auto">
+      {{form_graph.note_tag_ids.label(class_='control-label')}}
+      <div>
+        <select class="form-control btn-default" id="note_tag_ids" name="note_tag_ids" style="width: 100%;" size="{{choices_note_tag|length}}" multiple>
+        {% if choices_note_tag %}
+          {% for each_choice, value in choices_note_tag.items() -%}
+          <option value="{{each_choice}}">{{value}}</option>
+          {% endfor -%}
+        {% else %}
+          <option value="">{{_('None Available')}}</option>
+        {% endif %}
+        </select>
+      </div>
+    </div>
 
   </div>
 
