@@ -610,7 +610,7 @@ class PIDController(threading.Thread):
                         "Last measurement was {last_sec} seconds ago, however"
                         " the maximum measurement age is set to {max_sec}"
                         " seconds.".format(
-                            last_sec=calendar.timegm(time.gmtime())-utc_timestamp,
+                            last_sec=calendar.timegm(time.gmtime()) - utc_timestamp,
                             max_sec=self.max_measure_age
                         ))
                 self.last_measurement_success = True

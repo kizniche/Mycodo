@@ -2089,12 +2089,14 @@ issue. Deleting all Dashboard Elements may be the most economical method
 to enable access to the ``Dash`` page again, at the cost of having to
 readd all the Dashboard Elements that were once there.
 
-+-------------------------------+-------------------------------------------------+
-| Setting                       | Description                                     |
-+===============================+=================================================+
-| Delete All Dashboard Elements | Delete all saved Dashboard Elements from the    |
-|                               | Dashboard.                                      |
-+-------------------------------+-------------------------------------------------+
++--------------------------------+-------------------------------------------------+
+| Setting                        | Description                                     |
++================================+=================================================+
+| Delete All Dashboard Elements  | Delete all saved Dashboard Elements from the    |
+|                                | Dashboard.                                      |
++--------------------------------+-------------------------------------------------+
+| Delete All Notes and Note Tags | Delete all notes and note tags.                 |
++--------------------------------+-------------------------------------------------+
 
 Miscellaneous
 =============
@@ -2365,7 +2367,38 @@ Notes
 
 ``More -> Notes``
 
-Notes may be created that can then be displayed on graphs or referenced at a later time. All notes are timestamped with the date/time of creation or may be created with a custom date/time. Each note must have at least one tag. Tags are what are selected to be displayed on a graph and all notes with that tag will appear in the time frame selected on the graph.
+Notes may be created that can then be displayed on graphs or referenced at a later time. All notes are timestamped with the date/time of creation or may be created with a custom date/time. Each note must have at least one tag selected. Tags are what are selected to be displayed on a graph and all notes with that tag will appear in the time frame selected on the graph.
+
+Tag Options
+```````````
+
++-----------------------+-------------------------------------------------+
+| Setting               | Description                                     |
++=======================+=================================================+
+| Name                  | A name for the tag. Must not contain spaces.    |
++-----------------------+-------------------------------------------------+
+| Rename                | Rename the tag.                                 |
++-----------------------+-------------------------------------------------+
+
+Note Options
+````````````
+
++-----------------------+-------------------------------------------------+
+| Setting               | Description                                     |
++=======================+=================================================+
+| Name                  | A name for the note.                            |
++-----------------------+-------------------------------------------------+
+| Use Custom Date/Time  | Check to enter a custom date/time for the note. |
++-----------------------+-------------------------------------------------+
+| Custom Date/Time      | Store the note with this custom date/time.      |
++-----------------------+-------------------------------------------------+
+| Attached Files        | Attach one or more files to the note.           |
++-----------------------+-------------------------------------------------+
+| Tags                  | Associate the note with at least one tag.       |
++-----------------------+-------------------------------------------------+
+| Note                  | The text body of the note. The text will appear |
+|                       | monospaced, so code will format properly.       |
++-----------------------+-------------------------------------------------+
 
 Export-Import
 -------------

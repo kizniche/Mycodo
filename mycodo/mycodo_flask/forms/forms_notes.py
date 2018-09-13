@@ -82,4 +82,6 @@ class TagAdd(FlaskForm):
 
 class TagOptions(FlaskForm):
     tag_unique_id = StringField(lazy_gettext('Tag'), widget=widgets.HiddenInput())
+    rename = StringField()
+    tag_rename = SubmitField(lazy_gettext('Rename'))
     tag_del = SubmitField(lazy_gettext('Delete'))

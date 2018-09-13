@@ -100,10 +100,10 @@
       <div>
         {{_('Timelapse Parameters')}}:
         <br>Time-lapse: {% if each_camera.timelapse_paused %}Paused{% else %}Running{% endif %}
-        <br/>Start time: {{format_timestamp(each_camera.timelapse_start_time)}}
-        <br/>End time: {{format_timestamp(each_camera.timelapse_end_time)}}
+        <br/>Start time: {{epoch_to_time_string(each_camera.timelapse_start_time)}}
+        <br/>End time: {{epoch_to_time_string(each_camera.timelapse_end_time)}}
         <br/>Interval: {{each_camera.timelapse_interval}} seconds
-        <br/>Next Capture: {{format_timestamp(each_camera.timelapse_next_capture)}}
+        <br/>Next Capture: {{epoch_to_time_string(each_camera.timelapse_next_capture)}}
         <br/>Next capture number: {{each_camera.timelapse_capture_number}}
       </div>
     {% endif %}

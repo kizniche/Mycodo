@@ -2,10 +2,10 @@
 {% set active_page = "notes" %}
 {% set help_page = ["notes", _('Notes')] %}
 
-{% block title %} - {{_('Notes')}}{% endblock %}
+{% block title %} - {{_('Edit Note')}}{% endblock %}
 
 {% block body %}
-<!-- Route: /edit_notes -->
+<!-- Route: /note_edit -->
 <div class="container">
   {% include 'flash_messages.html' %}
 
@@ -17,7 +17,7 @@
 
   <p>Select one or more tag. {{_('Hold down the <kbd>Ctrl</kbd> or <kbd>&#8984;</kbd> key to select more than one')}}.</p>
 
-  <form method="post" action="/edit_note/{{this_note.unique_id}}" enctype=multipart/form-data>
+  <form method="post" action="/note_edit/{{this_note.unique_id}}" enctype=multipart/form-data>
   {{form_note_mod.csrf_token}}
   {{form_note_mod.note_unique_id(value=this_note.unique_id)}}
   <div class="row">
@@ -28,21 +28,15 @@
       </div>
     </div>
     <div class="col-auto">
+      {{form_note_mod.date_time.label(class_='control-label')}}
+      <div>
+        {{form_note_mod.date_time(class_='form-control', value=utc_to_local_time(this_note.date_time))}}
+      </div>
+    </div>
+    <div class="col-auto">
       {{form_note_mod.files.label(class_='control-label')}}
       <div class="fileinput fileinput-new" data-provides="fileinput">
         <span class="btn btn-default btn-file"><input id="files" name="files" type="file" /></span>
-      </div>
-    </div>
-    <div class="col-auto">
-      {{form_note_mod.enter_custom_date_time.label(class_='control-label')}}
-      <div class="input-group-text">
-        <input class="form-control" id="enter_custom_date_time" name="enter_custom_date_time" type="checkbox" value="y">
-      </div>
-    </div>
-    <div class="col-auto">
-      {{form_note_mod.date_time.label(class_='control-label')}}
-      <div>
-        {{form_note_mod.date_time(class_='form-control', value=this_note.date_time)}}
       </div>
     </div>
   </div>
@@ -53,7 +47,7 @@
         <select class="form-control btn-default" id="note_tags" name="note_tags" style="width: 100%;" size="{% if tags|length > 5 %}5{% else %}{{tags|length}}{% endif %}" multiple>
         {% if tags %}
           {% for each_tag in tags -%}
-          <option value="{{each_tag.unique_id}}"{% if each_tag.name in this_note.tags.split(',') %} selected{% endif %}>{{each_tag.name}}</option>
+          <option value="{{each_tag.unique_id}}"{% if each_tag.unique_id in this_note.tags.split(',') %} selected{% endif %}>{{each_tag.name}}</option>
           {% endfor -%}
         {% else %}
           <option value="">{{_('None Available')}}</option>

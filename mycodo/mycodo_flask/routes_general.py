@@ -313,7 +313,7 @@ def past_tag_data(tag_unique_id, past_seconds):
     notes = Notes.query.filter(Notes.date_time >= (datetime.datetime.utcnow() - datetime.timedelta(seconds=int(past_seconds)))).all()
 
     for each_note in notes:
-        if tag.name in each_note.tags.split(','):
+        if tag.unique_id in each_note.tags.split(','):
             notes_list.append([each_note.date_time.strftime("%Y-%m-%dT%H:%M:%S.000000000Z"), each_note.name, each_note.note])
 
     if notes_list:

@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 import logging
+import time
+from datetime import datetime
 
 from flask import flash
 from flask import url_for
@@ -40,21 +42,36 @@ def tag_add(form):
     flash_success_errors(error, action, url_for('routes_page.page_notes'))
 
 
+def tag_rename(form):
+    action = '{action} {controller}'.format(
+        action=gettext("Rename"),
+        controller=gettext("Tag"))
+    error = []
+
+    mod_tag = NoteTags.query.filter(NoteTags.unique_id == form.tag_unique_id.data).first()
+
+    if not form.rename.data:
+        error.append("Tag name is empty")
+    if ' ' in form.rename.data:
+        error.append("Tag name cannot contain spaces")
+
+    if NoteTags.query.filter(NoteTags.name == form.rename.data).count():
+        error.append("Tag already exists")
+
+    if not error:
+        mod_tag.name = form.rename.data
+        db.session.commit()
+
+    flash_success_errors(error, action, url_for('routes_page.page_notes'))
+
+
 def tag_del(form):
     action = '{action} {controller}'.format(
         action=gettext("Delete"),
         controller=gettext("Tag"))
     error = []
 
-    tag = NoteTags.query.filter(NoteTags.unique_id == form.tag_unique_id.data).first()
-
-    tag_used_in_note = False
-    for each_note in Notes.query.all():
-        for each_tag in each_note.tags.split(','):
-            if each_tag == tag.name:
-                tag_used_in_note = True
-
-    if tag_used_in_note:
+    if Notes.query.filter(Notes.tags.ilike("%{0}%".format(form.tag_unique_id.data))).first():
         error.append("Cannot delete tag because it's currently assicuated with at least one note")
 
     if not error:
@@ -85,13 +102,13 @@ def note_add(form):
             if not check_tag:
                 error.append("Invalid tag: {}".format(each_tag))
             else:
-                list_tags.append(check_tag.name)
+                list_tags.append(check_tag.unique_id)
     except Exception as msg:
         error.append("Invalid tag format: {}".format(msg))
 
     if form.enter_custom_date_time.data:
         try:
-            new_note.date_time = form.date_time.data
+            new_note.date_time = datetime_time_to_utc(form.date_time.data)
         except Exception as msg:
             error.append("Error while parsing date/time: {}".format(msg))
 
@@ -123,15 +140,14 @@ def note_mod(form):
             if not check_tag:
                 error.append("Invalid tag: {}".format(each_tag))
             else:
-                list_tags.append(check_tag.name)
+                list_tags.append(check_tag.unique_id)
     except Exception as msg:
         error.append("Invalid tag format: {}".format(msg))
 
-    if form.enter_custom_date_time.data:
-        try:
-            mod_note.date_time = form.date_time.data
-        except:
-            error.append("Error while parsing date/time")
+    try:
+        mod_note.date_time = datetime_time_to_utc(form.date_time.data)
+    except:
+        error.append("Error while parsing date/time")
 
     if form.files.data:
         error.append("Attaching files is not currently implemented. It will be implemented soon.")
@@ -203,7 +219,7 @@ def show_notes(form):
             notes = notes.order_by(Notes.files.desc())
         elif form.sort_by.data == 'note':
             notes = notes.order_by(Notes.note.desc())
-    if form.sort_direction.data == 'asc':
+    elif form.sort_direction.data == 'asc':
         if form.sort_by.data == 'id':
             notes = notes.order_by(Notes.id.asc())
         elif form.sort_by.data == 'name':
@@ -222,3 +238,8 @@ def show_notes(form):
 
     if not error:
         return notes
+
+
+def datetime_time_to_utc(datetime_time):
+    timestamp = str(time.mktime(datetime_time.timetuple()))[:-2]
+    return datetime.utcfromtimestamp(int(timestamp))

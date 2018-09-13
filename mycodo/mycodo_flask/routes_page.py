@@ -1,5 +1,6 @@
 # coding=utf-8
 """ collection of Page endpoints """
+import calendar
 import datetime
 import glob
 import logging
@@ -112,10 +113,25 @@ def inject_dictionary():
 
 
 @blueprint.context_processor
-def epoch_to_time_string():
-    def format_timestamp(epoch):
-        return datetime.datetime.fromtimestamp(epoch).strftime("%Y-%m-%d %H:%M:%S")
-    return dict(format_timestamp=format_timestamp)
+def page_functions():
+    def epoch_to_time_string(epoch):
+        return datetime.datetime.fromtimestamp(epoch).strftime(
+            "%Y-%m-%d %H:%M:%S")
+
+    def get_note_tag_from_unique_id(tag_unique_id):
+        tag = NoteTags.query.filter(NoteTags.unique_id == tag_unique_id).first()
+        if tag and tag.name:
+            return tag.name
+        else:
+            return 'TAG ERROR'
+
+    def utc_to_local_time(utc_dt):
+        utc_timestamp = calendar.timegm(utc_dt.timetuple())
+        return str(datetime.datetime.fromtimestamp(utc_timestamp))
+
+    return dict(epoch_to_time_string=epoch_to_time_string,
+                get_note_tag_from_unique_id=get_note_tag_from_unique_id,
+                utc_to_local_time=utc_to_local_time)
 
 
 @blueprint.route('/camera', methods=('GET', 'POST'))
@@ -244,6 +260,8 @@ def page_notes():
         else:
             if form_tag_add.tag_add.data:
                 utils_notes.tag_add(form_tag_add)
+            elif form_tag_options.tag_rename.data:
+                utils_notes.tag_rename(form_tag_options)
             elif form_tag_options.tag_del.data:
                 utils_notes.tag_del(form_tag_options)
 
@@ -254,7 +272,7 @@ def page_notes():
             elif form_note_options.note_del.data:
                 utils_notes.note_del(form_note_options)
             elif form_note_options.note_mod.data:
-                return redirect(url_for('routes_page.page_edit_note', unique_id=form_note_options.note_unique_id.data))
+                return redirect(url_for('routes_page.page_note_edit', unique_id=form_note_options.note_unique_id.data))
 
             return redirect(url_for('routes_page.page_notes'))
 
@@ -279,9 +297,9 @@ def page_notes():
                            number_displayed_notes=number_displayed_notes)
 
 
-@blueprint.route('/edit_note/<unique_id>', methods=('GET', 'POST'))
+@blueprint.route('/note_edit/<unique_id>', methods=('GET', 'POST'))
 @flask_login.login_required
-def page_edit_note(unique_id):
+def page_note_edit(unique_id):
     """
     Edit note page
     """
@@ -303,7 +321,7 @@ def page_edit_note(unique_id):
         if form_note_mod.note_cancel.data:
             return redirect(url_for('routes_page.page_notes'))
 
-        return redirect(url_for('routes_page.page_edit_note', unique_id=this_note.unique_id))
+        return redirect(url_for('routes_page.page_note_edit', unique_id=this_note.unique_id))
 
     form_note_mod.note.data = this_note.note
 
@@ -640,7 +658,7 @@ def page_graph_async():
                                 datetime.timedelta(seconds=seconds)).strftime('%s')
         selected_ids_measures = request.form.getlist('selected_measure')
 
-    # Generage a dictionary of lists of y-axes
+    # Generate a dictionary of lists of y-axes
     y_axes = utils_dashboard.graph_y_axes_async(dict_measurements,
                                                 selected_ids_measures)
 
