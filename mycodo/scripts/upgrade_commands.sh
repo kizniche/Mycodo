@@ -94,6 +94,7 @@ case "${1:-''}" in
         printf "\n#### Creating files and directories\n"
         mkdir -p /var/log/mycodo
         mkdir -p /var/Mycodo-backups
+        mkdir -p ${MYCODO_PATH}/note_attachments
 
         if [ ! -e /var/log/mycodo/mycodo.log ]; then
             touch /var/log/mycodo/mycodo.log

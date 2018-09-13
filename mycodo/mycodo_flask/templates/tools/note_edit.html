@@ -36,7 +36,7 @@
     <div class="col-auto">
       {{form_note_mod.files.label(class_='control-label')}}
       <div class="fileinput fileinput-new" data-provides="fileinput">
-        <span class="btn btn-default btn-file"><input id="files" name="files" type="file" /></span>
+        <span class="btn btn-default btn-file"><input id="files" name="files" type="file" multiple="" /></span>
       </div>
     </div>
   </div>
@@ -77,6 +77,44 @@
   </div>
 
   </form>
+
+  <div style="clear: both; padding: 0.5em 0;"></div>
+
+{% if this_note.files %}
+
+   <div class="table-responsive">
+    <table class="table">
+      <tr>
+        <td>Attached File</td>
+        <td></td>
+      </tr>
+
+    {% for each_file in this_note.files.split(',') %}
+
+    <form method="post" action="/note_edit/{{this_note.unique_id}}">
+    {{form_note_mod.csrf_token}}
+    {{form_note_mod.note_unique_id(value=this_note.unique_id)}}
+    {{form_note_mod.file_selected(value=each_file)}}
+
+      <tr>
+        <td><pre><a href="/note_attachment/{{each_file}}">{{each_file[37:]}}</a></pre></td>
+        <td>
+          <div class="row no-gutters">
+            <div class="col-auto">
+              {{form_note_mod.file_del(class_='btn btn-primary btn-block', **{'onclick':'return confirm("Are you sure you want to delete this?")'})}}
+            </div>
+          </div>
+        </td>
+      </tr>
+
+    </form>
+
+    {% endfor -%}
+
+    </table>
+   </div>
+
+  {% endif %}
 
   <div style="clear: both; padding: 0.5em 0;"></div>
 

@@ -1,17 +1,22 @@
 # -*- coding: utf-8 -*-
+import glob
 import logging
 import time
 from datetime import datetime
 
+import os
 from flask import flash
 from flask import url_for
 from flask_babel import gettext
 
+from mycodo.config import INSTALL_DIRECTORY
+from mycodo.databases import set_uuid
 from mycodo.databases.models import NoteTags
 from mycodo.databases.models import Notes
 from mycodo.mycodo_flask.extensions import db
 from mycodo.mycodo_flask.utils.utils_general import delete_entry_with_id
 from mycodo.mycodo_flask.utils.utils_general import flash_success_errors
+from mycodo.utils.system_pi import assure_path_exists
 
 logger = logging.getLogger(__name__)
 
@@ -93,8 +98,12 @@ def note_add(form):
 
     new_note = Notes()
 
+    if not form.name.data:
+        error.append("Name cannot be left blank")
     if not form.note_tags.data:
         error.append("At least one tag must be selected")
+    if not form.note.data:
+        error.append("Note cannot be left blank")
 
     try:
         for each_tag in form.note_tags.data:
@@ -103,6 +112,7 @@ def note_add(form):
                 error.append("Invalid tag: {}".format(each_tag))
             else:
                 list_tags.append(check_tag.unique_id)
+        new_note.tags = ",".join(list_tags)
     except Exception as msg:
         error.append("Invalid tag format: {}".format(msg))
 
@@ -113,12 +123,20 @@ def note_add(form):
             error.append("Error while parsing date/time: {}".format(msg))
 
     if form.files.data:
-        error.append("Attaching files is not currently implemented. It will be implemented soon.")
+        new_note.unique_id = set_uuid()
+        install_dir = os.path.abspath(INSTALL_DIRECTORY)
+        note_file_directory = os.path.join(install_dir, 'note_attachments')
+        assure_path_exists(note_file_directory)
+        filename_list = []
+        for each_file in form.files.raw_data:
+            file_name = "{pre}_{name}".format(pre=new_note.unique_id, name=each_file.filename)
+            file_save_path = os.path.join(note_file_directory, file_name)
+            each_file.save(file_save_path)
+            filename_list.append(file_name)
+        new_note.files = ",".join(filename_list)
 
     if not error:
         new_note.name = form.name.data
-        new_note.tags = ",".join(list_tags)
-        new_note.files = form.files.data
         new_note.note = form.note.data
         new_note.save()
 
@@ -133,6 +151,13 @@ def note_mod(form):
     list_tags = []
 
     mod_note = Notes.query.filter(Notes.unique_id == form.note_unique_id.data).first()
+
+    if not form.name.data:
+        error.append("Name cannot be left blank")
+    if not form.note_tags.data:
+        error.append("At least one tag must be selected")
+    if not form.note.data:
+        error.append("Note cannot be left blank")
 
     try:
         for each_tag in form.note_tags.data:
@@ -150,13 +175,58 @@ def note_mod(form):
         error.append("Error while parsing date/time")
 
     if form.files.data:
-        error.append("Attaching files is not currently implemented. It will be implemented soon.")
+        install_dir = os.path.abspath(INSTALL_DIRECTORY)
+        note_file_directory = os.path.join(install_dir, 'note_attachments')
+        assure_path_exists(note_file_directory)
+        if mod_note.files:
+            filename_list = mod_note.files.split(",")
+        else:
+            filename_list = []
+        for each_file in form.files.raw_data:
+            file_name = "{pre}_{name}".format(pre=mod_note.unique_id, name=each_file.filename)
+            file_save_path = os.path.join(note_file_directory, file_name)
+            each_file.save(file_save_path)
+            filename_list.append(file_name)
+        mod_note.files = ",".join(filename_list)
 
     if not error:
         mod_note.name = form.name.data
         mod_note.tags = ",".join(list_tags)
-        mod_note.files = form.files.data
         mod_note.note = form.note.data
+        db.session.commit()
+
+    flash_success_errors(error, action, url_for('routes_page.page_notes'))
+
+
+def file_del(form):
+    action = '{action} {controller}'.format(
+        action=gettext("Delete"),
+        controller=gettext("File"))
+    error = []
+
+    if not form.note_unique_id.data:
+        error.append("Unique id is empty")
+
+    mod_note = Notes.query.filter(Notes.unique_id == form.note_unique_id.data).first()
+    files_list = mod_note.files.split(",")
+
+    if form.file_selected.data in files_list:
+        try:
+            files_list.remove(form.file_selected.data)
+        except:
+            error.append("Could not remove file from filesystem")
+
+    if mod_note.files:
+        try:
+            install_dir = os.path.abspath(INSTALL_DIRECTORY)
+            note_file_directory = os.path.join(install_dir, 'note_attachments')
+            full_file_path = os.path.join(note_file_directory, form.file_selected.data)
+            os.remove(full_file_path)
+        except:
+            error.append("Could not remove file from filesystem")
+
+    if not error:
+        mod_note.files = ",".join(files_list)
         db.session.commit()
 
     flash_success_errors(error, action, url_for('routes_page.page_notes'))
@@ -170,6 +240,15 @@ def note_del(form):
 
     if not form.note_unique_id.data:
         error.append("Unique id is empty")
+
+    note = Notes.query.filter(Notes.unique_id == form.note_unique_id.data).first()
+
+    if note.files:
+        install_dir = os.path.abspath(INSTALL_DIRECTORY)
+        note_file_directory = os.path.join(install_dir, 'note_attachments')
+        delete_string = "{dir}/{id}*".format(dir=note_file_directory, id=form.note_unique_id.data)
+        for filename in glob.glob(delete_string):
+            os.remove(filename)
 
     if not error:
         delete_entry_with_id(Notes, form.note_unique_id.data)

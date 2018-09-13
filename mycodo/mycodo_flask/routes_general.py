@@ -75,6 +75,20 @@ def page_settings():
     return redirect('settings/general')
 
 
+@blueprint.route('/note_attachment/<filename>')
+@flask_login.login_required
+def send_note_attachment(filename):
+    """Return a file from the note attachment directory"""
+    install_dir = os.path.abspath(INSTALL_DIRECTORY)
+    note_file_directory = os.path.join(install_dir, 'note_attachments')
+    file_path = os.path.join(note_file_directory, filename)
+    if file_path is not None:
+        try:
+            return send_file(file_path, as_attachment=True)
+        except Exception as e:
+            logger.exception("Send note attachment")
+
+
 @blueprint.route('/camera/<camera_unique_id>/<img_type>/<filename>')
 @flask_login.login_required
 def camera_img_return_path(camera_unique_id, img_type, filename):

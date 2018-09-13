@@ -96,7 +96,7 @@
     <div class="col-auto">
       {{form_note_add.files.label(class_='control-label')}}
       <div class="fileinput fileinput-new" data-provides="fileinput">
-        <span class="btn btn-default btn-file"><input id="files" name="files" type="file" /></span>
+        <span class="btn btn-default btn-file"><input id="files" name="files" type="file" multiple="" /></span>
       </div>
     </div>
   </div>
@@ -222,7 +222,7 @@
           {{utc_to_local_time(each_note.date_time)}}
           </br>{{each_note.name}} ({% for each_tag in each_note.tags.split(',') %}{{get_note_tag_from_unique_id(each_tag)}}{% if not loop.last %}, {% endif %}{% endfor %})
         </td>
-        <td><pre>{{each_note.files}}</pre></td>
+        <td>{% for each_file in each_note.files.split(',') %}<a href="/note_attachment/{{each_file}}">{{each_file[37:]}}</a>{% if not loop.last %}, {% endif %}{% endfor %}</td>
         <td><pre>{{each_note.note}}</pre></td>
         <td>
           <div class="row no-gutters">

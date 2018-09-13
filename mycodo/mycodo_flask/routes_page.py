@@ -319,6 +319,8 @@ def page_note_edit(unique_id):
 
         if form_note_mod.note_save.data:
             utils_notes.note_mod(form_note_mod)
+        if form_note_mod.file_del.data:
+            utils_notes.file_del(form_note_mod)
         if form_note_mod.note_del.data:
             utils_notes.note_del(form_note_mod)
             return redirect(url_for('routes_page.page_notes'))

@@ -38,12 +38,14 @@ class NoteOptions(FlaskForm):
 
 class NoteMod(FlaskForm):
     note_unique_id = StringField(widget=widgets.HiddenInput())
+    file_selected = StringField(widget=widgets.HiddenInput())
     name = StringField(lazy_gettext('Name'))
     note_tags = SelectMultipleField(lazy_gettext('Tags'))
     files = FileField(lazy_gettext('Attached Files'))
     enter_custom_date_time = BooleanField(lazy_gettext('Use Custom Date/Time'))
     date_time = DateTimeField('Custom Date/Time', format='%Y-%m-%d %H:%M:%S')
     note = TextAreaField(lazy_gettext('Note'))
+    file_del = SubmitField(lazy_gettext('Delete'))
     note_cancel = SubmitField(lazy_gettext('Cancel'))
     note_del = SubmitField(lazy_gettext('Delete'))
     note_save = SubmitField(lazy_gettext('Save'))
