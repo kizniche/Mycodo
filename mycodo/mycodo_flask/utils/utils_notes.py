@@ -192,7 +192,14 @@ def show_notes(form):
         notes = notes.filter(Notes.note.like(looking_for))
 
     if form.filter_tags.data:
-        notes = notes.filter(Notes.tags.in_(form.filter_tags.data.split(',')))
+        unique_ids_of_tags = []
+        for each_tag in form.filter_tags.data.split(','):
+            tag = NoteTags.query.filter(NoteTags.name == each_tag).first()
+            if tag:
+                unique_ids_of_tags.append(tag.unique_id)
+
+        for each_tag_unique_id in unique_ids_of_tags:
+            notes = notes.filter(Notes.tags.like('%{0}%'.format(each_tag_unique_id)))
 
     if form.filter_files.data:
         notes = notes.filter(Notes.tags.in_(form.filter_files.data.split(',')))
