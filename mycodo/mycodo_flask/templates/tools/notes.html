@@ -15,7 +15,7 @@
 
   <h3>{{_('Note Tags')}}</h3>
 
-  <p>Tags allow categorization of notes. A note may have more than one tag. A tag may be selected to display a set of notes on a graph.</p>
+  <p>Tags allow categorization of notes. Each note may have one or more tags. A tag may be selected to display all the notes associated with it on a graph.</p>
 
   <div class="row align-items-end">
     <div class="col-auto">
@@ -72,8 +72,6 @@
 
   <h3>{{_('Add Note')}}</h3>
 
-  <p>Select one or more tag. {{_('Hold down the <kbd>Ctrl</kbd> or <kbd>&#8984;</kbd> key to select more than one')}}.</p>
-
   <form method="post" action="/notes" enctype=multipart/form-data>
   {{form_note_add.csrf_token}}
   <div class="row">
@@ -102,7 +100,7 @@
       </div>
     </div>
   </div>
-  <div class="row">
+  <div class="row align-items-end">
     <div class="col-auto">
       {{form_note_add.note_tags.label(class_='control-label')}}
       <div>
@@ -116,6 +114,9 @@
         {% endif %}
         </select>
       </div>
+    </div>
+    <div class="col-auto">
+      {{_('Select one or more tags')}}. {{_('Hold down the <kbd>Ctrl</kbd> or <kbd>&#8984;</kbd> key to select more than one')}}.
     </div>
   </div>
   <div class="row">

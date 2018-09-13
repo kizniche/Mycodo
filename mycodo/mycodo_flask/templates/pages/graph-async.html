@@ -57,7 +57,7 @@
     </div>
     <div class="row">
       <div class="col-auto">
-        <select class="form-control" id="selected_measure" name="selected_measure" size="{{input_choices|length + math_choices|length + output_choices|length + pid_choices|length}}" multiple>
+        <select class="form-control" id="selected_measure" name="selected_measure" size="{{input_choices|length + math_choices|length + output_choices|length + pid_choices|length + tag_choices|length}}" multiple>
         {% for each_choice, value in input_choices.items() -%}
           <option value="{{each_choice}}"{% if each_choice in selected_ids_measures %} selected{% endif %}>{{value}}</option>
         {% endfor -%}
@@ -68,6 +68,9 @@
           <option value="{{each_choice}}"{% if each_choice in selected_ids_measures %} selected{% endif %}>{{value}}</option>
         {% endfor -%}
         {% for each_choice, value in pid_choices.items() -%}
+          <option value="{{each_choice}}"{% if each_choice in selected_ids_measures %} selected{% endif %}>{{value}}</option>
+        {% endfor -%}
+        {% for each_choice, value in tag_choices.items() -%}
           <option value="{{each_choice}}"{% if each_choice in selected_ids_measures %} selected{% endif %}>{{value}}</option>
         {% endfor -%}
         </select>
@@ -113,20 +116,35 @@ $(document).ready(function() {
             for (i = 0; i < data.length; i++) {
               var new_date = new Date(data[i][0]);
               var new_time = new_date.getTime();
-              new_data.push([new_time, data[i][1]]);
-            }
-            new_data.push([new Date().getTime(), null]);
-            chart[chart_number].series[series].setData(new_data, false, false);
 
-            var nav = chart[chart_number].get('navigator');
-            nav.setData(new_data, false, false);
+              if (sensor_measurement === 'tag') {
+                chart[chart_number].series[series].addPoint({
+                  x: new_time,
+                  title: data[i][1],
+                  text: data[i][2]
+                }, false, false);
+              }
+              else {
+                new_data.push([new_time, data[i][1]]);
+              }
+            }
+
+            if (sensor_measurement !== 'tag') {
+              new_data.push([new Date().getTime(), null]);
+              chart[chart_number].series[series].setData(new_data, false, false);
+              var nav = chart[chart_number].get('navigator');
+              nav.setData(new_data, false, false);
+            }
+
           }
-          chart[chart_number].redraw();
+          if (sensor_measurement !== 'tag') {
+            chart[chart_number].redraw();
+          }
         }
       );
     }
 
-    function set_data_from_url(url, series) {
+    function set_data_from_url(url, series, measure) {
       $.getJSON(url,
         function (data, responseText, jqXHR) {
           if (jqXHR.status !== 204) {
@@ -134,10 +152,21 @@ $(document).ready(function() {
             for (i = 0; i < data.length; i++) {
               var new_date = new Date(data[i][0]);
               var new_time = new_date.getTime();
-              new_data.push([new_time, data[i][1]]);
+              if (measure === 'tag') {
+                chart[0].series[series].addPoint({
+                  x: new_time,
+                  title: data[i][1],
+                  text: data[i][2]
+                }, false, false);
+              }
+              else {
+                new_data.push([new_time, data[i][1]]);
+              }
             }
           }
-          chart[0].series[series].setData(new_data);
+          if (measure !== 'tag') {
+            chart[0].series[series].setData(new_data);
+          }
           chart[0].hideLoading();
         }
       );
@@ -154,8 +183,10 @@ $(document).ready(function() {
         max = e.xAxis[0].max;
       }
       for (var each_series in id_measure) {
-        var url = '/async/' + id_measure[each_series]['measure'] + '/' + id_measure[each_series]['id'] + '/' + Math.round(min) / 1000 + '/' + Math.round(max) / 1000;
-        set_data_from_url(url, each_series)
+        if (id_measure[each_series]['measure'] !== 'tag') {
+          var url = '/async/' + id_measure[each_series]['measure'] + '/' + id_measure[each_series]['id'] + '/' + Math.round(min) / 1000 + '/' + Math.round(max) / 1000;
+          set_data_from_url(url, each_series, id_measure[each_series]['measure'])
+        }
       }
     }
 
@@ -493,7 +524,17 @@ $(document).ready(function() {
             {% endif %}
           {%- endfor -%}
 
+          {% for each_tag in tag if each_tag.unique_id == each_id_meas.split(',')[0] %}
+            {
+              name: 'Note Tag: {{each_tag.name}}',
+              type: 'flags',
+              data: [],
+              shape: 'squarepin'
+            },
+          {% endfor %}
+
         {% endfor %}
+
         ]
     });
 });

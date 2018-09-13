@@ -460,7 +460,7 @@ def form_pid_choices(choices, each_pid):
 
 
 def form_tag_choices(choices, each_tag):
-    value = '{id}'.format(id=each_tag.unique_id)
+    value = '{id},tag'.format(id=each_tag.unique_id)
     display = '[Tag {id:02d}] {name}'.format(
         id=each_tag.id, name=each_tag.name)
     choices.update({value: display})

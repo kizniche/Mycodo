@@ -22,6 +22,7 @@ from flask_babel import gettext
 from flask_csv import send_csv
 from flask_influxdb import InfluxDB
 from flask_limiter import Limiter
+from sqlalchemy import and_
 
 from mycodo.config import INFLUXDB_DATABASE
 from mycodo.config import INFLUXDB_PASSWORD
@@ -31,9 +32,9 @@ from mycodo.config import LOG_PATH
 from mycodo.config import PATH_CAMERAS
 from mycodo.databases.models import Camera
 from mycodo.databases.models import Input
+from mycodo.databases.models import Math
 from mycodo.databases.models import NoteTags
 from mycodo.databases.models import Notes
-from mycodo.databases.models import Math
 from mycodo.databases.models import Output
 from mycodo.databases.models import PID
 from mycodo.devices.camera import camera_record
@@ -280,46 +281,41 @@ def past_data(input_measure, input_id, past_seconds):
     if not str_is_float(past_seconds):
         return '', 204
 
-    current_app.config['INFLUXDB_USER'] = INFLUXDB_USER
-    current_app.config['INFLUXDB_PASSWORD'] = INFLUXDB_PASSWORD
-    current_app.config['INFLUXDB_DATABASE'] = INFLUXDB_DATABASE
-    dbcon = influx_db.connection
-    try:
-        query_str = query_string(
-            input_measure, input_id, past_sec=past_seconds)
-        if query_str == 1:
-            return '', 204
-        raw_data = dbcon.query(query_str).raw
-        if raw_data:
-            return jsonify(raw_data['series'][0]['values'])
+    if input_measure == 'tag':
+        notes_list = []
+
+        tag = NoteTags.query.filter(NoteTags.unique_id == input_id).first()
+        notes = Notes.query.filter(
+            Notes.date_time >= (datetime.datetime.utcnow() - datetime.timedelta(seconds=int(past_seconds)))).all()
+
+        for each_note in notes:
+            if tag.unique_id in each_note.tags.split(','):
+                notes_list.append(
+                    [each_note.date_time.strftime("%Y-%m-%dT%H:%M:%S.000000000Z"), each_note.name, each_note.note])
+
+        if notes_list:
+            return jsonify(notes_list)
         else:
             return '', 204
-    except Exception as e:
-        logger.debug("URL for 'past_data' raised and error: "
-                     "{err}".format(err=e))
-        return '', 204
-
-
-@blueprint.route('/past-tag/<tag_unique_id>/<past_seconds>')
-@flask_login.login_required
-def past_tag_data(tag_unique_id, past_seconds):
-    """Return data from past_seconds until present from influxdb"""
-    if not str_is_float(past_seconds):
-        return '', 204
-
-    notes_list = []
-
-    tag = NoteTags.query.filter(NoteTags.unique_id == tag_unique_id).first()
-    notes = Notes.query.filter(Notes.date_time >= (datetime.datetime.utcnow() - datetime.timedelta(seconds=int(past_seconds)))).all()
-
-    for each_note in notes:
-        if tag.unique_id in each_note.tags.split(','):
-            notes_list.append([each_note.date_time.strftime("%Y-%m-%dT%H:%M:%S.000000000Z"), each_note.name, each_note.note])
-
-    if notes_list:
-        return jsonify(notes_list)
     else:
-        return '', 204
+        current_app.config['INFLUXDB_USER'] = INFLUXDB_USER
+        current_app.config['INFLUXDB_PASSWORD'] = INFLUXDB_PASSWORD
+        current_app.config['INFLUXDB_DATABASE'] = INFLUXDB_DATABASE
+        dbcon = influx_db.connection
+        try:
+            query_str = query_string(
+                input_measure, input_id, past_sec=past_seconds)
+            if query_str == 1:
+                return '', 204
+            raw_data = dbcon.query(query_str).raw
+            if raw_data:
+                return jsonify(raw_data['series'][0]['values'])
+            else:
+                return '', 204
+        except Exception as e:
+            logger.debug("URL for 'past_data' raised and error: "
+                         "{err}".format(err=e))
+            return '', 204
 
 
 @blueprint.route('/export_data/<measurement>/<unique_id>/<start_seconds>/<end_seconds>')
@@ -390,6 +386,28 @@ def async_data(measurement, unique_id, start_seconds, end_seconds):
     Return data from start_seconds to end_seconds from influxdb.
     Used for asynchronous graph display of many points (up to millions).
     """
+    if measurement == 'tag':
+        notes_list = []
+        tag = NoteTags.query.filter(NoteTags.unique_id == unique_id).first()
+
+        start = datetime.datetime.utcfromtimestamp(float(start_seconds))
+        if end_seconds == '0':
+            end = datetime.datetime.utcnow()
+        else:
+            end = datetime.datetime.utcfromtimestamp(float(end_seconds))
+
+        notes = Notes.query.filter(
+            and_(Notes.date_time >= start, Notes.date_time <= end)).all()
+        for each_note in notes:
+            if tag.unique_id in each_note.tags.split(','):
+                notes_list.append(
+                    [each_note.date_time.strftime("%Y-%m-%dT%H:%M:%S.000000000Z"), each_note.name, each_note.note])
+
+        if notes_list:
+            return jsonify(notes_list)
+        else:
+            return '', 204
+
     current_app.config['INFLUXDB_USER'] = INFLUXDB_USER
     current_app.config['INFLUXDB_PASSWORD'] = INFLUXDB_PASSWORD
     current_app.config['INFLUXDB_DATABASE'] = INFLUXDB_DATABASE
