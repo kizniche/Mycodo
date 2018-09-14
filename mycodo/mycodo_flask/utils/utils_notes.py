@@ -107,7 +107,8 @@ def note_add(form):
 
     try:
         for each_tag in form.note_tags.data:
-            check_tag = NoteTags.query.filter(NoteTags.unique_id == each_tag).first()
+            check_tag = NoteTags.query.filter(
+                NoteTags.unique_id == each_tag).first()
             if not check_tag:
                 error.append("Invalid tag: {}".format(each_tag))
             else:
@@ -129,7 +130,8 @@ def note_add(form):
         assure_path_exists(note_file_directory)
         filename_list = []
         for each_file in form.files.raw_data:
-            file_name = "{pre}_{name}".format(pre=new_note.unique_id, name=each_file.filename)
+            file_name = "{pre}_{name}".format(
+                pre=new_note.unique_id, name=each_file.filename)
             file_save_path = os.path.join(note_file_directory, file_name)
             each_file.save(file_save_path)
             filename_list.append(file_name)
@@ -150,7 +152,8 @@ def note_mod(form):
     error = []
     list_tags = []
 
-    mod_note = Notes.query.filter(Notes.unique_id == form.note_unique_id.data).first()
+    mod_note = Notes.query.filter(
+        Notes.unique_id == form.note_unique_id.data).first()
 
     if not form.name.data:
         error.append("Name cannot be left blank")
@@ -161,7 +164,8 @@ def note_mod(form):
 
     try:
         for each_tag in form.note_tags.data:
-            check_tag = NoteTags.query.filter(NoteTags.unique_id == each_tag).first()
+            check_tag = NoteTags.query.filter(
+                NoteTags.unique_id == each_tag).first()
             if not check_tag:
                 error.append("Invalid tag: {}".format(each_tag))
             else:
@@ -183,7 +187,8 @@ def note_mod(form):
         else:
             filename_list = []
         for each_file in form.files.raw_data:
-            file_name = "{pre}_{name}".format(pre=mod_note.unique_id, name=each_file.filename)
+            file_name = "{pre}_{name}".format(
+                pre=mod_note.unique_id, name=each_file.filename)
             file_save_path = os.path.join(note_file_directory, file_name)
             each_file.save(file_save_path)
             filename_list.append(file_name)
@@ -198,6 +203,50 @@ def note_mod(form):
     flash_success_errors(error, action, url_for('routes_page.page_notes'))
 
 
+def file_rename(form):
+    action = '{action} {controller}'.format(
+        action=gettext("Rename"),
+        controller=gettext("File"))
+    error = []
+
+    if not form.note_unique_id.data:
+        error.append("Unique id is empty")
+    if not form.note_unique_id.data:
+        error.append("New file name cannot be blank")
+
+    mod_note = Notes.query.filter(
+        Notes.unique_id == form.note_unique_id.data).first()
+    files_list = mod_note.files.split(",")
+
+    new_file_name = "{id}_{name}".format(
+        id=form.note_unique_id.data,
+        name=form.rename_name.data)
+
+    if form.file_selected.data in files_list:
+        # Replace old name with new name
+        files_list[files_list.index(form.file_selected.data)] = new_file_name
+    else:
+        error.append("File not foun din note")
+
+    if mod_note.files:
+        try:
+            install_dir = os.path.abspath(INSTALL_DIRECTORY)
+            note_file_directory = os.path.join(
+                install_dir, 'note_attachments')
+            full_file_path = os.path.join(
+                note_file_directory, form.file_selected.data)
+            new_file_path = os.path.join(note_file_directory, new_file_name)
+            os.rename(full_file_path, new_file_path)
+        except:
+            error.append("Could not remove file from filesystem")
+
+    if not error:
+        mod_note.files = ",".join(files_list)
+        db.session.commit()
+
+    flash_success_errors(error, action, url_for('routes_page.page_notes'))
+
+
 def file_del(form):
     action = '{action} {controller}'.format(
         action=gettext("Delete"),
@@ -207,14 +256,15 @@ def file_del(form):
     if not form.note_unique_id.data:
         error.append("Unique id is empty")
 
-    mod_note = Notes.query.filter(Notes.unique_id == form.note_unique_id.data).first()
+    mod_note = Notes.query.filter(
+        Notes.unique_id == form.note_unique_id.data).first()
     files_list = mod_note.files.split(",")
 
     if form.file_selected.data in files_list:
         try:
             files_list.remove(form.file_selected.data)
         except:
-            error.append("Could not remove file from filesystem")
+            error.append("Could not remove file from note")
 
     if mod_note.files:
         try:
@@ -241,12 +291,14 @@ def note_del(form):
     if not form.note_unique_id.data:
         error.append("Unique id is empty")
 
-    note = Notes.query.filter(Notes.unique_id == form.note_unique_id.data).first()
+    note = Notes.query.filter(
+        Notes.unique_id == form.note_unique_id.data).first()
 
     if note.files:
         install_dir = os.path.abspath(INSTALL_DIRECTORY)
         note_file_directory = os.path.join(install_dir, 'note_attachments')
-        delete_string = "{dir}/{id}*".format(dir=note_file_directory, id=form.note_unique_id.data)
+        delete_string = "{dir}/{id}*".format(
+            dir=note_file_directory, id=form.note_unique_id.data)
         for filename in glob.glob(delete_string):
             os.remove(filename)
 

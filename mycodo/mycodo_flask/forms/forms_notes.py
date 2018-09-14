@@ -47,6 +47,8 @@ class NoteMod(FlaskForm):
     note = TextAreaField(lazy_gettext('Note'))
     file_del = SubmitField(lazy_gettext('Delete'))
     note_cancel = SubmitField(lazy_gettext('Cancel'))
+    rename_name = StringField()
+    file_rename = SubmitField(lazy_gettext('Rename'))
     note_del = SubmitField(lazy_gettext('Delete'))
     note_save = SubmitField(lazy_gettext('Save'))
 

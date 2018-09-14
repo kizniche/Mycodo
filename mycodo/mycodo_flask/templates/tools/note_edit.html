@@ -99,12 +99,13 @@
       <tr>
         <td><pre><a href="/note_attachment/{{each_file}}">{{each_file[37:]}}</a></pre></td>
         <td>
-          <div class="row no-gutters">
-            <div class="col-auto">
-              {{form_note_mod.file_del(class_='btn btn-primary btn-block', **{'onclick':'return confirm("Are you sure you want to delete this?")'})}}
-            </div>
-          </div>
+          {{form_note_mod.rename_name(class_='form-control', value=each_file[37:])}}
         </td>
+        <td>
+          {{form_note_mod.file_rename(class_='btn btn-primary btn-block')}}
+        </td>
+        <td>
+          {{form_note_mod.file_del(class_='btn btn-primary btn-block', **{'onclick':'return confirm("Are you sure you want to delete this?")'})}}
       </tr>
 
     </form>
