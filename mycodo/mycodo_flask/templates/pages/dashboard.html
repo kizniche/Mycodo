@@ -419,11 +419,11 @@ $(document).ready(function() {
             var new_time = new_date.getTime();
 
             if (sensor_measurement === 'tag') {
-              chart_graph[chart_number].series[series].addPoint({
+              past_data.push({
                 x: new_time,
                 title: data[i][1],
                 text: data[i][2]
-              }, false, false);
+              });
             }
             else {
               past_data.push([new_time, data[i][1]]);
@@ -441,9 +441,7 @@ $(document).ready(function() {
           }
           chart_graph[chart_number].series[series].isDirty = true;
           chart_graph[chart_number].xAxis[0].setExtremes(new Date().setMinutes(new Date().getMinutes() - (past_seconds / 60)), new Date().getTime());
-          if (sensor_measurement !== 'tag') {
-            chart_graph[chart_number].series[series].setData(past_data, true, false);
-          }
+          chart_graph[chart_number].series[series].setData(past_data, true, false);
         }
       }
     );
@@ -726,7 +724,12 @@ $(document).ready(function() {
               chart_graph[chart_number].series[series].addPoint([new_time, data[i][1]], false, graph_shift);
             }
           }
-          last_output_time_mil[update_id] = new_time;
+          if (measurement === 'tag') {
+            last_output_time_mil[update_id] = new_time + 3000;
+          }
+          else {
+            last_output_time_mil[update_id] = new_time;
+          }
           redrawGraph(chart_number, refresh_seconds, xaxis_duration_min, xaxis_reset);
         }
       }
