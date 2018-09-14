@@ -395,7 +395,10 @@
 </ul></li>
 <li><a href="#live-measurements">Live Measurements</a></li>
 <li><a href="#asynchronous-graphs">Asynchronous Graphs</a></li>
-<li><a href="#notes">Notes</a></li>
+<li><a href="#notes">Notes</a><ul>
+<li><a href="#tag-options">Tag Options</a></li>
+<li><a href="#note-options">Note Options</a></li>
+</ul></li>
 <li><a href="#export-import">Export-Import</a></li>
 <li><a href="#dependencies">Dependencies</a></li>
 <li><a href="#camera">Camera</a></li>
@@ -2293,6 +2296,10 @@ signal &lt;http://kylegabriel.com/projects/2016/02
 <td>Delete All Dashboard Elements</td>
 <td>Delete all saved Dashboard Elements from the Dashboard.</td>
 </tr>
+<tr class="even">
+<td>Delete All Notes and Note Tags</td>
+<td>Delete all notes and note tags.</td>
+</tr>
 </tbody>
 </table>
 <h1 id="miscellaneous">Miscellaneous</h1>
@@ -2616,7 +2623,69 @@ signal &lt;http://kylegabriel.com/projects/2016/02
 <p>Note: Live Graphs require measurements to be acquired, therefore at least one sensor needs to be added and activated in order to display live data.</p>
 <h2 id="notes">Notes</h2>
 <p><code>More -&gt; Notes</code></p>
-<p>Notes may be created that can then be displayed on graphs or referenced at a later time. All notes are timestamped with the date/time of creation or may be created with a custom date/time. Each note must have at least one tag. Tags are what are selected to be displayed on a graph and all notes with that tag will appear in the time frame selected on the graph.</p>
+<p>Notes may be created that can then be displayed on graphs or referenced at a later time. All notes are timestamped with the date/time of creation or may be created with a custom date/time. Each note must have at least one tag selected. Tags are what are selected to be displayed on a graph and all notes with that tag will appear in the time frame selected on the graph.</p>
+<h3 id="tag-options">Tag Options</h3>
+<table>
+<colgroup>
+<col style="width: 32%"></col>
+<col style="width: 67%"></col>
+</colgroup>
+<thead>
+<tr class="header">
+<th>Setting</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Name</td>
+<td>A name for the tag. Must not contain spaces.</td>
+</tr>
+<tr class="even">
+<td>Rename</td>
+<td>Rename the tag.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="note-options">Note Options</h3>
+<table>
+<colgroup>
+<col style="width: 32%"></col>
+<col style="width: 67%"></col>
+</colgroup>
+<thead>
+<tr class="header">
+<th>Setting</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Name</td>
+<td>A name for the note.</td>
+</tr>
+<tr class="even">
+<td>Use Custom Date/Time</td>
+<td>Check to enter a custom date/time for the note.</td>
+</tr>
+<tr class="odd">
+<td>Custom Date/Time</td>
+<td>Store the note with this custom date/time.</td>
+</tr>
+<tr class="even">
+<td>Attached Files</td>
+<td>Attach one or more files to the note.</td>
+</tr>
+<tr class="odd">
+<td>Tags</td>
+<td>Associate the note with at least one tag.</td>
+</tr>
+<tr class="even">
+<td>Note</td>
+<td>The text body of the note. The text will appear monospaced, so code will format properly.</td>
+</tr>
+</tbody>
+</table>
 <h2 id="export-import">Export-Import</h2>
 <p><code>More -&gt; Export Import</code></p>
 <p>Measurements that fall within the selected date/time frame may be exported as CSV with their corresponding timestamps.</p>

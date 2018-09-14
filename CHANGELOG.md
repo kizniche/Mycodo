@@ -1,10 +1,11 @@
 ## 6.3.0 (Unreleased)
 
-This release adds the ability to use self-contained input modules. This means a new input can be imported into Mycodo with a single file. Documentation for developing your own input modules is in development. See issue #525 for more information about it's development and discussion.
+This release adds the ability to use self-contained input modules. This means a new input can be imported into Mycodo with a single file. Documentation for developing your own input modules is in development. See issue #525 for more information about it's development and discussion. Also with this release is a new section for Notes (More -> Notes). Notes are associated with one more more tags that can be created. Notes can also have files attached to them. These notes can be displayed on graphs to easily identify when a certain event happened in the past (or future).
 
 ### Features
 
  - Implement self-contained input modules ([#525](https://github.com/kizniche/mycodo/issues/525))
+ - Add Note system ([#527](https://github.com/kizniche/mycodo/issues/527))
 
 ### Miscellaneous
 
