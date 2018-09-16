@@ -7,38 +7,72 @@ from mycodo.inputs.sensorutils import convert_units
 
 # Input information
 INPUT_INFORMATION = {
+    #
+    # Required options
+    #
+
     # Unique name (must be unique from all other inputs)
-    'unique_name_input': 'SEN_TEMP_01',
+    'input_name_unique': 'SEN_TEMP_01',
 
     # Descriptive information
     'input_manufacturer': 'Company YY',
-    'common_name_input': 'Temp Sen01',
+    'input_name': 'Temp Sen01',
 
     # Measurement information
-    'common_name_measurements': 'Temperature',
-    'unique_name_measurements': ['temperature'],  # List of strings
+    'measurements_name': 'Temperature',
+    'measurements_list': ['temperature'],  # List of strings
+
+    # Web User Interface display options
+    # Options that are enabled will be editable from the input options page.
+    # Options that are disabled will appear on the input options page but not be editable.
+    # There are several location options available for use:
+    # 'location', 'gpio_location', 'i2c_location', 'bt_location', and 'uart_location'
+    'options_enabled': ['i2c_location', 'uart_location', 'period', 'convert_unit', 'pre_output'],
+    'options_disabled': ['interface'],
+
+
+    #
+    # Non-required options
+    #
 
     # Python module dependencies
-    # This must be a module that is able to be installed with pip via pypi.org
-    # Leave the list empty if there are no pip or github dependencies
-    'dependencies_pip': ['random',
-                          'Adafruit_GPIO',
-                          '-e git://github.com/adafruit/Adafruit_Python_BME280.git#egg=adafruit-bme280'],  # List of strings
-
-    #
-    # The below options are available from the input_dev variable
-    # See the example, below: "self.resolution = input_dev.resolution"
-    #
+    # This must be a module that is able to be installed with pip or apt (pypi, git, and apt examples below)
+    # Leave the list empty if there are no dependencies
+    'dependencies_module': [  # List of tuples
+        ('pip', 'Adafruit_GPIO', 'Adafruit_GPIO'),
+        ('pip', 'bluepy', 'bluepy==1.1.4'),
+        ('pip', 'adafruit-bme280', '-e git://github.com/adafruit/Adafruit_Python_BME280.git#egg=adafruit-bme280'),
+        ('apt', 'tailwhip', 'apt whiptail'),
+        ('apt', 'zsh', 'apt zsh'),
+    ],
 
     # Interface options: 'GPIO', 'I2C', 'UART', '1WIRE', 'BT', 'Mycodo', 'RPi'
-    'interfaces': ['I2C', 'UART'],  # List of strings
+    'interfaces': [  # List of strings
+        'I2C',
+        'UART'
+    ],
 
     # I2C options
     # Enter more than one if multiple addresses exist.
-    'i2c_location': ['0x01', '0x02'],  # List of strings
+    'i2c_location': [  # List of strings
+        '0x01',
+        '0x02'
+    ],
     'i2c_address_editable': False,  # Boolean
 
-    # Custom location setting
+    # UART options
+    'uart_location': '/dev/ttyAMA0',  # String
+    'baud_rate': 9600,  # Integer
+    'pin_cs': 8,  # Integer
+    'pin_miso': 9,  # Integer
+    'pin_mosi': 10,  # Integer
+    'pin_clock': 11,  # Integer
+
+    # Bluetooth options
+    'bt_location': '00:00:00:00:00:00',  # String
+    'bt_adapter': 'hci0',  # String
+
+    # Custom location options
     # Only one option, editable text box:
     'location': {
         'title': 'Host',
@@ -54,37 +88,17 @@ INPUT_INFORMATION = {
     #                 ('3', 'Option 3'),]
     # },
 
-    # Display options
-    # All variables below are able to be used
-    # Additionally, location, gpio_location, i2c_location, uart_location may be used
-    'options_enabled': ['i2c_location', 'uart_location', 'period', 'convert_unit', 'pre_output'],
-    'options_disabled': ['interface'],
-
-    # 1-Wire options
-    #
+    # 1-Wire option
     # Setting the following to True will use the module w1thermsensor to scan
     # for 1-Wire devices. Put 'location' in 'options_enabled' to display a
     # drop-down menu of detected devices.
     # Note: 'location' should not be set, only added to 'options_enabled'.
-    #
     'w1thermsensor_detect_1wire': False,  # Boolean
 
-    # Bluetooth
-    'bt_location': '00:00:00:00:00:00',  # String
-    'bt_adapter': 'hci0',  # String
-
-    # UART options
-    'uart_location': None,  # String
-    'baud_rate': None,  # Integer
-    'pin_cs': None,  # Integer
-    'pin_miso': None,  # Integer
-    'pin_mosi': None,  # Integer
-    'pin_clock': None,  # Integer
-
     # Host options
-    'times_check': None,  # Integer
-    'deadline': None,  # Integer
-    'port': None,  # Integer
+    'times_check': 1,  # Integer
+    'deadline': 2,  # Integer
+    'port': 80,  # Integer
 
     # Signal options
     'weighting': 0.0,  # Float
@@ -92,33 +106,45 @@ INPUT_INFORMATION = {
 
     # Analog-to-digital converter options
     'analog_to_digital_converter': True,  # Boolean
-    'adc_channel': [(0, 'Channel 0'),
-                    (1, 'Channel 1'),
-                    (2, 'Channel 2'),
-                    (3, 'Channel 3')],  # List of tuples
-    'adc_gain': [(1, '1'),
-                 (2, '2'),
-                 (3, '3'),
-                 (4, '4'),
-                 (8, '8'),
-                 (16, '16')],  # List of tuples
+    'adc_channel': [  # List of tuples
+        (0, 'Channel 0'),
+        (1, 'Channel 1'),
+        (2, 'Channel 2'),
+        (3, 'Channel 3')
+    ],
+    'adc_gain': [  # List of tuples
+        (1, '1'),
+        (2, '2'),
+        (3, '3'),
+        (4, '4'),
+        (8, '8'),
+        (16, '16')
+    ],
     'adc_volts_min': -4.096,  # Float
     'adc_volts_max': 4.096,  # Float
 
     # Miscellaneous options
-    'period': None,  # Float (Input Period, Default: 15.0)
-    'convert_to_unit': [],  # List of strings
-    'cmd_command': None,  # String
-    'resolution': [],  # List of tuples (e.g. [(1, 'option 1 name'), (2, 'option 2 name')]) or list containing one string (e.g. ['12'])
-    'resolution_2': [],  # List of tuples (e.g. [(1, 'option 1 name'), (2, 'option 2 name')]) or list containing one string (e.g. ['12'])
-    'sensitivity': [],  # List of tuples (e.g. [(1, 'option 1 name'), (2, 'option 2 name')]) or list containing one string (e.g. ['12'])
-    'thermocouple_type': [],  # List of tuples (e.g. [(1, 'option 1 name'), (2, 'option 2 name')]) or list containing one string (e.g. ['12'])
-    'sht_voltage': [('2.5', '2.5V'),
-                    ('3.0', '3.0V'),
-                    ('3.5', '3.5V'),
-                    ('4.0', '4.0V'),
-                    ('5.0', '5.0V')],  # List of tuples
-    'ref_ohm': None,  # Integer
+    'period': 15,  # Float
+    'cmd_command': 'shuf -i 50-70 -n 1',  # String
+    'ref_ohm': 0,  # Integer
+
+    # The following options must either be a list of tuples or a list containing one string
+    # 'several_options': [
+    #     (1, 'option 1 name'),
+    #     (2, 'option 2 name')
+    # ],
+    # 'one_option': ['12'],
+    'resolution': [],  # List of tuples or string
+    'resolution_2': [],  # List of tuples or string
+    'sensitivity': [],  # List of tuples or string
+    'thermocouple_type': [],  # List of tuples or string
+    'sht_voltage': [  # List of tuples or string
+        ('2.5', '2.5V'),
+        ('3.0', '3.0V'),
+        ('3.5', '3.5V'),
+        ('4.0', '4.0V'),
+        ('5.0', '5.0V')
+    ],
 }
 
 
@@ -128,7 +154,7 @@ class InputModule(AbstractInput):
     def __init__(self, input_dev, testing=False):
         super(InputModule, self).__init__()
         self.logger = logging.getLogger("mycodo.inputs.{name_lower}".format(
-            name_lower=INPUT_INFORMATION['unique_name_input'].lower()))
+            name_lower=INPUT_INFORMATION['input_name_unique'].lower()))
 
         #
         # Initialize the measurements this input returns
@@ -138,7 +164,7 @@ class InputModule(AbstractInput):
         if not testing:
             self.logger = logging.getLogger(
                 "mycodo.inputs.{name_lower}_{id}".format(
-                    name_lower=INPUT_INFORMATION['unique_name_input'].lower(),
+                    name_lower=INPUT_INFORMATION['input_name_unique'].lower(),
                     id=input_dev.id))
             self.convert_to_unit = input_dev.convert_to_unit
             self.interface = input_dev.interface

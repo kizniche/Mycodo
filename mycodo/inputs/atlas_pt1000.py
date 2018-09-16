@@ -7,15 +7,14 @@ from mycodo.inputs.sensorutils import convert_units
 
 # Input information
 INPUT_INFORMATION = {
-    'unique_name_input': 'ATLAS_PT1000',
+    'input_name_unique': 'ATLAS_PT1000',
     'input_manufacturer': 'Atlas',
-    'common_name_input': 'Atlas PT-1000',
-    'common_name_measurements': 'Temperature',
-    'unique_name_measurements': ['temperature'],  # List of strings
-    'dependencies_pip': [],  # List of strings
-    'interfaces': ['I2C', 'UART'],  # List of strings
-    'i2c_location': ['0x66'],  # List of strings
-    'i2c_address_editable': True,  # Boolean
+    'input_name': 'Atlas PT-1000',
+    'measurements_name': 'Temperature',
+    'measurements_list': ['temperature'],
+    'interfaces': ['I2C', 'UART'],
+    'i2c_location': ['0x66'],
+    'i2c_address_editable': True,
     'uart_location': '/dev/ttyAMA0',
     'options_enabled': ['i2c_location', 'uart_location', 'period', 'convert_unit', 'pre_output'],
     'options_disabled': ['interface']

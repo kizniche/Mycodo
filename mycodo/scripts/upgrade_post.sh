@@ -27,55 +27,14 @@ ${INSTALL_CMD} update-logrotate
 ${INSTALL_CMD} update-pip3
 ${INSTALL_CMD} update-pip3-packages
 ${INSTALL_CMD} update-permissions
+${INSTALL_CMD} upgrade-pip3-packages
 
 printf "\n#### Checking for updates to optional dependencies\n"
 DEPENDENCIES=$(${INSTALL_DIRECTORY}/env/bin/python3 ${INSTALL_DIRECTORY}/mycodo/utils/dependencies_installed.py 2>&1)
-IFS=, read -ra ary <<< "$DEPENDENCIES"
-for opt in "${!ary[@]}"
+IFS=','
+for i in $DEPENDENCIES
 do
-    if [[ ${ary[opt]} ]] ; then
-        if [ "${ary[opt]}" == "Adafruit_ADS1x15" ]; then
-            ${INSTALL_DEP} Adafruit_ADS1x15
-        elif [ "${ary[opt]}" == "Adafruit_BME280" ]; then
-            ${INSTALL_DEP} Adafruit_BME280
-        elif [ "${ary[opt]}" == "Adafruit_BMP" ]; then
-            ${INSTALL_DEP} Adafruit_BMP
-        elif [ "${ary[opt]}" == "Adafruit_CCS811" ]; then
-            ${INSTALL_DEP} Adafruit_CCS811
-        elif [ "${ary[opt]}" == "Adafruit_GPIO" ]; then
-            ${INSTALL_DEP} Adafruit_GPIO
-        elif [ "${ary[opt]}" == "Adafruit_MCP3008" ]; then
-            ${INSTALL_DEP} Adafruit_MCP3008
-        elif [ "${ary[opt]}" == "Adafruit_TMP" ]; then
-            ${INSTALL_DEP} Adafruit_TMP
-        elif [ "${ary[opt]}" == "bluepy" ]; then
-            ${INSTALL_DEP} bluepy
-        elif [ "${ary[opt]}" == "btlewrap" ]; then
-            ${INSTALL_DEP} btlewrap
-        elif [ "${ary[opt]}" == "MCP342x" ]; then
-            ${INSTALL_DEP} MCP342x
-        elif [ "${ary[opt]}" == "miflora" ]; then
-            ${INSTALL_DEP} miflora
-        elif [ "${ary[opt]}" == "pigpio" ]; then
-            ${INSTALL_DEP} update-pigpiod
-        elif [ "${ary[opt]}" == "quick2wire" ]; then
-            ${INSTALL_DEP} quick2wire
-        elif [ "${ary[opt]}" == "rpi_rf" ]; then
-            ${INSTALL_DEP} rpi_rf
-        elif [ "${ary[opt]}" == "sht_sensor" ]; then
-            ${INSTALL_DEP} sht_sensor
-        elif [ "${ary[opt]}" == "tsl2561" ]; then
-            ${INSTALL_DEP} tsl2561
-        elif [ "${ary[opt]}" == "tsl2591" ]; then
-            ${INSTALL_DEP} tsl2591
-        elif [ "${ary[opt]}" == "w1thermsensor" ]; then
-            ${INSTALL_DEP} w1thermsensor
-        elif [ "${ary[opt]}" == "wiringpi" ]; then
-            ${INSTALL_DEP} wiringpi
-        else
-            printf "\n#### No install candidate for ${ary[opt]}\n"
-        fi
-    fi
+    ${INSTALL_DEP} echo $i
 done
 
 ${INSTALL_CMD} update-influxdb

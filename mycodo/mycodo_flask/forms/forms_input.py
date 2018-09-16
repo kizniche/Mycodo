@@ -34,16 +34,16 @@ class InputAdd(FlaskForm):
                 ('{inp},'.format(inp=each_input),
                  '{manuf}: {name}: {meas}'.format(
                      manuf=dict_inputs[each_input]['input_manufacturer'],
-                     name=dict_inputs[each_input]['common_name_input'],
-                     meas=dict_inputs[each_input]['common_name_measurements'])))
+                     name=dict_inputs[each_input]['input_name'],
+                     meas=dict_inputs[each_input]['measurements_name'])))
         else:
             for each_interface in dict_inputs[each_input]['interfaces']:
                 choices_inputs.append(
                     ('{inp},{int}'.format(inp=each_input, int=each_interface),
                      '{manuf}: {name}: {meas} ({int})'.format(
                         manuf=dict_inputs[each_input]['input_manufacturer'],
-                        name=dict_inputs[each_input]['common_name_input'],
-                        meas=dict_inputs[each_input]['common_name_measurements'],
+                        name=dict_inputs[each_input]['input_name'],
+                        meas=dict_inputs[each_input]['measurements_name'],
                         int=each_interface)))
 
     input_type = SelectField(

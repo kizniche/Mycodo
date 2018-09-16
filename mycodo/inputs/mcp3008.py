@@ -4,24 +4,28 @@ import logging
 
 # Input information
 INPUT_INFORMATION = {
-    'unique_name_input': 'MCP3008',
+    'input_name_unique': 'MCP3008',
     'input_manufacturer': 'Microchip',
-    'common_name_input': 'MCP3008',
-    'common_name_measurements': 'Voltage (Analog-to-Digital Converter)',
-    'unique_name_measurements': ['voltage'],  # List of strings
-    'dependencies_pip': ['Adafruit_MCP3008'],  # List of strings
-    'interfaces': ['UART'],  # List of strings
-    'analog_to_digital_converter': True,  # Boolean
+    'input_name': 'MCP3008',
+    'measurements_name': 'Voltage (Analog-to-Digital Converter)',
+    'measurements_list': ['voltage'],
+    'dependencies_module': [
+        ('pip', 'Adafruit_MCP3008', 'Adafruit_MCP3008')
+    ],
+    'interfaces': ['UART'],
+    'analog_to_digital_converter': True,
     'pin_cs': 8,
     'pin_miso': 9,
     'pin_mosi': 10,
     'pin_clock': 11,
-    'adc_channel': [(0, 'Channel 0'),
-                    (1, 'Channel 1'),
-                    (2, 'Channel 2'),
-                    (3, 'Channel 3')],  # List of tuples
-    'adc_volts_min': -4.096,  # Float
-    'adc_volts_max': 4.096,  # Float
+    'adc_channel': [
+        (0, 'Channel 0'),
+        (1, 'Channel 1'),
+        (2, 'Channel 2'),
+        (3, 'Channel 3')
+    ],
+    'adc_volts_min': -4.096,
+    'adc_volts_max': 4.096,
     'options_enabled': ['pin_cs', 'pin_miso', 'pin_mosi', 'pin_clock', 'adc_channel', 'adc_options', 'period', 'pre_output'],
     'options_disabled': ['interface']
 }

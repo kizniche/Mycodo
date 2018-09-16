@@ -9,12 +9,12 @@ from mycodo.inputs.sensorutils import convert_units
 
 # Input information
 INPUT_INFORMATION = {
-    'common_name_input': 'Mycodo RAM',
-    'unique_name_input': 'MYCODO_RAM',
+    'input_name': 'Mycodo RAM',
+    'input_name_unique': 'MYCODO_RAM',
     'input_manufacturer': 'Mycodo',
-    'common_name_measurements': 'Size RAM in Use',
-    'unique_name_measurements': ['disk_space'],  # List of strings
-    'interfaces': ['Mycodo'],  # List of strings
+    'measurements_name': 'Size RAM in Use',
+    'measurements_list': ['disk_space'],
+    'interfaces': ['Mycodo'],
     'options_disabled': ['interface'],
     'options_enabled': ['period', 'convert_unit']
 }

@@ -7,15 +7,18 @@ from mycodo.inputs.sensorutils import convert_units
 
 # Input information
 INPUT_INFORMATION = {
-    'unique_name_input': 'BMP180',
+    'input_name_unique': 'BMP180',
     'input_manufacturer': 'BOSCH',
-    'common_name_input': 'BMP180',
-    'common_name_measurements': 'Pressure/Temperature',
-    'unique_name_measurements': ['altitude', 'pressure', 'temperature'],  # List of strings
-    'dependencies_pip': ['Adafruit_BMP', 'Adafruit_GPIO'],  # List of strings
-    'interfaces': ['I2C'],  # List of strings
-    'i2c_location': ['0x77'],  # List of strings
-    'i2c_address_editable': False,  # Boolean
+    'input_name': 'BMP180',
+    'measurements_name': 'Pressure/Temperature',
+    'measurements_list': ['altitude', 'pressure', 'temperature'],
+    'dependencies_module': [
+        ('pip', 'Adafruit_BMP', 'Adafruit_BMP'),
+        ('pip', 'Adafruit_GPIO', 'Adafruit_GPIO')
+    ],
+    'interfaces': ['I2C'],
+    'i2c_location': ['0x77'],
+    'i2c_address_editable': False,
     'options_enabled': ['i2c_location', 'period', 'convert_unit', 'pre_output'],
     'options_disabled': ['interface']
 }

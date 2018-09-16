@@ -22,7 +22,7 @@ int upgrade_commands(char *argv, char *command) {
 
 int main(int argc, char *argv[]) {
 	setuid(0);
-	char cmd[255];
+	char cmd[1024];
 
 	if (argc > 1) {
 		if (strcmp(argv[1], "backup-create") == 0) {
@@ -89,11 +89,31 @@ int main(int argc, char *argv[]) {
             upgrade_commands(argv[0], "initialize");
 		} else if (strcmp(argv[1], "update_permissions") == 0) {
 			upgrade_commands(argv[0], "update-permissions");
+		} else if (strcmp(argv[1], "install_dependency") == 0 && strcmp(argv[2], "-e") == 0 && (argc == 4)) {
+		    char path[255];
+            strncpy(path, argv[0], sizeof(path));
+            dirname(path);
+			char restoreScript[1024];
+			strncpy(restoreScript, "/bin/bash ", sizeof(restoreScript));
+			strncat(restoreScript, path, sizeof(restoreScript));
+			sprintf(cmd, "/dependencies.sh -e %s", argv[3]);
+			strncat(restoreScript, cmd, sizeof(restoreScript));
+			system(restoreScript);
+		} else if (strcmp(argv[1], "install_dependency") == 0 && strcmp(argv[2], "apt") == 0 && (argc == 4)) {
+		    char path[255];
+            strncpy(path, argv[0], sizeof(path));
+            dirname(path);
+			char restoreScript[1024];
+			strncpy(restoreScript, "/bin/bash ", sizeof(restoreScript));
+			strncat(restoreScript, path, sizeof(restoreScript));
+			sprintf(cmd, "/dependencies.sh apt %s", argv[3]);
+			strncat(restoreScript, cmd, sizeof(restoreScript));
+			system(restoreScript);
 		} else if (strcmp(argv[1], "install_dependency") == 0 && (argc > 2)) {
 		    char path[255];
             strncpy(path, argv[0], sizeof(path));
             dirname(path);
-			char restoreScript[255];
+			char restoreScript[1024];
 			strncpy(restoreScript, "/bin/bash ", sizeof(restoreScript));
 			strncat(restoreScript, path, sizeof(restoreScript));
 			sprintf(cmd, "/dependencies.sh %s", argv[2]);

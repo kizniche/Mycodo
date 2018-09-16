@@ -11,13 +11,15 @@ from mycodo.inputs.sensorutils import calculate_dewpoint
 
 # Input information
 INPUT_INFORMATION = {
-    'unique_name_input': 'DHT22',
+    'input_name_unique': 'DHT22',
     'input_manufacturer': 'AOSONG',
-    'common_name_input': 'DHT22',
-    'common_name_measurements': 'Humidity/Temperature',
-    'unique_name_measurements': ['dewpoint', 'humidity', 'temperature'],  # List of strings
-    'dependencies_pip': ['pigpio'],  # List of strings
-    'interfaces': ['GPIO'],  # List of strings
+    'input_name': 'DHT22',
+    'measurements_name': 'Humidity/Temperature',
+    'measurements_list': ['dewpoint', 'humidity', 'temperature'],
+    'dependencies_module': [
+        ('internal', 'pigpio', 'pigpio')
+    ],
+    'interfaces': ['GPIO'],
     'options_enabled': ['gpio_location', 'period', 'convert_unit', 'pre_output'],
     'options_disabled': ['interface']
 }

@@ -5,13 +5,15 @@ from mycodo.inputs.base_input import AbstractInput
 
 # Input information
 INPUT_INFORMATION = {
-    'unique_name_input': 'GPIO_STATE',
+    'input_name_unique': 'GPIO_STATE',
     'input_manufacturer': 'Raspberry Pi',
-    'common_name_input': 'GPIO State',
-    'common_name_measurements': 'GPIO State',
-    'unique_name_measurements': ['gpio_state'],  # List of strings
-    'dependencies_pip': ['RPi.GPIO'],  # List of strings
-    'interfaces': ['GPIO'],  # List of strings
+    'input_name': 'GPIO State',
+    'measurements_name': 'GPIO State',
+    'measurements_list': ['gpio_state'],
+    'dependencies_module': [
+        ('pip', 'RPi.GPIO', 'RPi.GPIO')
+    ],
+    'interfaces': ['GPIO'],
     'options_disabled': ['interface'],
     'options_enabled': ['gpio_location', 'period', 'pre_output'],
 }

@@ -50,39 +50,39 @@ MATHS = [
 MATH_INFO = {
     'average': {
         'name': 'Average (Multi)',
-        'dependencies_pip': [],
+        'dependencies_module': [],
         'measure': []},
     'average_single': {
         'name': 'Average (Single)',
-        'dependencies_pip': [],
+        'dependencies_module': [],
         'measure': []},
     'difference': {
         'name': 'Difference',
-        'dependencies_pip': [],
+        'dependencies_module': [],
         'measure': []},
     'equation': {
         'name': 'Equation',
-        'dependencies_pip': [],
+        'dependencies_module': [],
         'measure': []},
     'median': {
         'name': 'Median',
-        'dependencies_pip': [],
+        'dependencies_module': [],
         'measure': []},
     'maximum': {
         'name': 'Maximum',
-        'dependencies_pip': [],
+        'dependencies_module': [],
         'measure': []},
     'minimum': {
         'name': 'Minimum',
-        'dependencies_pip': [],
+        'dependencies_module': [],
         'measure': []},
     'humidity': {
         'name': 'Humidity (Wet-Bulb)',
-        'dependencies_pip': [],
+        'dependencies_module': [],
         'measure': ['humidity', 'humidity_ratio', 'specific_enthalpy', 'specific_volume']},
     'verification': {
         'name': 'Verification',
-        'dependencies_pip': [],
+        'dependencies_module': [],
         'measure': []}
 }
 
@@ -99,7 +99,7 @@ METHODS = [
 METHOD_INFO = {
     'DailyBezier': {
         'name': 'DailyBezier',
-        'dependencies_pip': ['numpy']}
+        'dependencies_module': [('internal', 'numpy', 'numpy')]}
 }
 
 # Math controllers
@@ -115,23 +115,25 @@ OUTPUTS = [
 OUTPUT_INFO = {
     'wired': {
         'name': 'GPIO (On/Off)',
-        'dependencies_pip': [],
+        'dependencies_module': [],
         'measure': []},
     'pwm': {
         'name': 'GPIO (PWM)',
-        'dependencies_pip': [],
+        'dependencies_module': [],
         'measure': []},
     'wireless_433MHz_pi_switch': {
         'name': 'Wireless (433MHz)',
-        'dependencies_pip': ['rpi_rf'],
+        'dependencies_module': [
+            ('pip', 'rpi_rf', 'rpi_rf')
+        ],
         'measure': []},
     'command': {
         'name': 'Command (On/Off)',
-        'dependencies_pip': [],
+        'dependencies_module': [],
         'measure': []},
     'command_pwm': {
         'name': 'Command (PWM)',
-        'dependencies_pip': [],
+        'dependencies_module': [],
         'measure': []},
 }
 
@@ -139,7 +141,9 @@ OUTPUT_INFO = {
 CALIBRATION_INFO = {
     'CALIBRATE_DS_TYPE': {
         'name': 'DS-Type Sensor Calibration',
-        'dependencies_pip': ['w1thermsensor']
+        'dependencies_module': [
+            ('pip', 'w1thermsensor', 'w1thermsensor')
+        ]
     }
 }
 

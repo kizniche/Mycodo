@@ -45,7 +45,7 @@ def input_add(form_add):
     # only one comma should be in the input_type string
     if form_add.input_type.data.count(',') > 1:
         error.append("Invalid input module formatting. It appears there is "
-                     "a comma in either 'unique_name_input' or 'interfaces'.")
+                     "a comma in either 'input_name_unique' or 'interfaces'.")
 
     if form_add.input_type.data.count(',') == 1:
         input_name = form_add.input_type.data.split(',')[0]
@@ -75,14 +75,14 @@ def input_add(form_add):
         else:
             new_input.i2c_bus = 0
 
-        if 'common_name_input' in dict_inputs[input_name]:
-            new_input.name = dict_inputs[input_name]['common_name_input']
+        if 'input_name' in dict_inputs[input_name]:
+            new_input.name = dict_inputs[input_name]['input_name']
         else:
             new_input.name = 'Input Name'
 
-        if ('unique_name_measurements' in dict_inputs[input_name] and
-                dict_inputs[input_name]['unique_name_measurements'] != []):
-            new_input.measurements = ",".join(dict_inputs[input_name]['unique_name_measurements'])
+        if ('measurements_list' in dict_inputs[input_name] and
+                dict_inputs[input_name]['measurements_list'] != []):
+            new_input.measurements = ",".join(dict_inputs[input_name]['measurements_list'])
         elif input_name == 'LinuxCommand':
             pass
         else:
@@ -94,8 +94,8 @@ def input_add(form_add):
 
         # Set the default measurement values
         list_units = []
-        if 'unique_name_measurements' in dict_inputs[input_name]:
-            for each_measurement in dict_inputs[input_name]['unique_name_measurements']:
+        if 'measurements_list' in dict_inputs[input_name]:
+            for each_measurement in dict_inputs[input_name]['measurements_list']:
                 if each_measurement in MEASUREMENTS:
                     entry = '{measure},{unit}'.format(
                         measure=each_measurement,
@@ -159,8 +159,6 @@ def input_add(form_add):
 
             if dict_has_value('period'):
                 new_input.period = dict_inputs[input_name]['period']
-            if dict_has_value('convert_to_unit'):
-                new_input.convert_to_unit = ','.join(dict_inputs[input_name]['convert_to_unit'])
 
             # Server Ping options
             if dict_has_value('times_check'):

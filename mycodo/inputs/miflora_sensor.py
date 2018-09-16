@@ -6,15 +6,20 @@ from mycodo.inputs.sensorutils import convert_units
 
 # Input information
 INPUT_INFORMATION = {
-    'unique_name_input': 'MIFLORA',
+    'input_name_unique': 'MIFLORA',
     'input_manufacturer': 'Xiaomi',
-    'common_name_input': 'Miflora',
-    'common_name_measurements': 'EC/Light/Moisture/Temperature',
-    'unique_name_measurements': ['battery', 'electrical_conductivity', 'light', 'moisture', 'temperature'],  # List of strings
-    'dependencies_pip': ['miflora', 'bluepy', 'btlewrap'],  # List of strings
-    'interfaces': ['BT'],  # List of strings
-    'bt_location': '00:00:00:00:00:00',  # String
-    'bt_adapter': 'hci0',  # String
+    'input_name': 'Miflora',
+    'measurements_name': 'EC/Light/Moisture/Temperature',
+    'measurements_list': ['battery', 'electrical_conductivity', 'light', 'moisture', 'temperature'],
+    'dependencies_module': [
+        ('pip', 'miflora', 'miflora'),
+        ('pip', 'btlewrap', 'btlewrap'),
+        ('apt', 'libglib2.0-dev', 'apt libglib2.0-dev'),
+        ('pip', 'bluepy', 'bluepy==1.1.4'),
+    ],
+    'interfaces': ['BT'],
+    'bt_location': '00:00:00:00:00:00',
+    'bt_adapter': 'hci0',
     'options_enabled': ['bt_location', 'period', 'convert_unit', 'pre_output'],
     'options_disabled': ['interface']
 }

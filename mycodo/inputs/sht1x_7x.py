@@ -6,19 +6,23 @@ from mycodo.inputs.sensorutils import convert_units
 
 # Input information
 INPUT_INFORMATION = {
-    'unique_name_input': 'SHT1x_7x',
+    'input_name_unique': 'SHT1x_7x',
     'input_manufacturer': 'Sensirion',
-    'common_name_input': 'SHT1x/7x',
-    'common_name_measurements': 'Humidity/Temperature',
-    'unique_name_measurements': ['dewpoint', 'humidity', 'temperature'],  # List of strings
-    'dependencies_pip': ['sht_sensor'],  # List of strings
-    'interfaces': ['GPIO'],  # List of strings
+    'input_name': 'SHT1x/7x',
+    'measurements_name': 'Humidity/Temperature',
+    'measurements_list': ['dewpoint', 'humidity', 'temperature'],
+    'dependencies_module': [
+        ('pip', 'sht_sensor', 'sht_sensor')
+    ],
+    'interfaces': ['GPIO'],
     'pin_clock': 11,
-    'sht_voltage': [('2.5', '2.5V'),
-                    ('3.0', '3.0V'),
-                    ('3.5', '3.5V'),
-                    ('4.0', '4.0V'),
-                    ('5.0', '5.0V')],  # List of tuples
+    'sht_voltage': [
+        ('2.5', '2.5V'),
+        ('3.0', '3.0V'),
+        ('3.5', '3.5V'),
+        ('4.0', '4.0V'),
+        ('5.0', '5.0V')
+    ],
     'options_enabled': ['gpio_location', 'sht_voltage', 'period', 'pin_clock', 'convert_unit', 'pre_output'],
     'options_disabled': ['interface']
 }

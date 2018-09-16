@@ -22,7 +22,7 @@ depends_on = None
 
 
 def upgrade():
-    # Add notes and note tags tables
+    # Add note and tag tables
     op.create_table(
         'notes',
         sa.Column('id', sa.Integer, nullable=False, unique=True),
@@ -43,17 +43,17 @@ def upgrade():
         sa.PrimaryKeyConstraint('id'),
         keep_existing=True)
 
-    # Add note column for graphs
+    # Add note column to graphs table
     with op.batch_alter_table("dashboard") as batch_op:
         batch_op.add_column(sa.Column('note_tag_ids', sa.Text))
 
-    # New single-file module options
+    # New input options
     with op.batch_alter_table("input") as batch_op:
         batch_op.add_column(sa.Column('i2c_location', sa.Text))
         batch_op.add_column(sa.Column('uart_location', sa.Text))
         batch_op.add_column(sa.Column('gpio_location', sa.Integer))
 
-    # Update unique names for inputs
+    # Rename input names
     with session_scope(MYCODO_DB_PATH) as new_session:
         for each_input in new_session.query(Input).all():
             if each_input.device == 'ATLAS_PT1000_I2C':
@@ -107,19 +107,18 @@ def upgrade():
             # Move values to new respective device locations
             if each_input.device_loc:
                 each_input.uart_location = each_input.device_loc
-                # each_input.device_loc = None
+
             if each_input.location and each_input.device in [
                 'ATLAS_EC', 'TSL2591', 'ATLAS_PH', 'BH1750', 'SHT2x',
                 'MH_Z16', 'CHIRP', 'BMP280', 'TMP006', 'AM2315', 'BME280',
                 'ATLAS_PT1000', 'BMP180', 'TSL2561', 'HTU21D', 'HDC1000',
                 'CCS811']:
                 each_input.i2c_location = each_input.location
-                # each_input.location = None
+
             if each_input.location and each_input.device in [
                 'DHT11', 'DHT22', 'SIGNAL_PWM', 'SIGNAL_RPM', 'SHT1x_7x',
                 'GPIO_STATE']:
-                each_input.gpio_location = each_input.location
-                # each_input.location = None
+                each_input.gpio_location = int(each_input.location)
 
         new_session.commit()
 

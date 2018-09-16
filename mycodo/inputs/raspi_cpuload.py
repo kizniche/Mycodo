@@ -7,12 +7,12 @@ from mycodo.inputs.base_input import AbstractInput
 
 # Input information
 INPUT_INFORMATION = {
-    'unique_name_input': 'RPiCPULoad',
+    'input_name_unique': 'RPiCPULoad',
     'input_manufacturer': 'Raspberry Pi',
-    'common_name_input': 'RPi CPU Load',
-    'common_name_measurements': 'CPULoad',
-    'unique_name_measurements': ['cpu_load_1m', 'cpu_load_5m', 'cpu_load_15m'],  # List of strings
-    'interfaces': ['RPi'],  # List of strings
+    'input_name': 'RPi CPU Load',
+    'measurements_name': 'CPULoad',
+    'measurements_list': ['cpu_load_1m', 'cpu_load_5m', 'cpu_load_15m'],
+    'interfaces': ['RPi'],
     'location': {
         'title': 'Directory',
         'phrase': 'Directory to report the free space of',

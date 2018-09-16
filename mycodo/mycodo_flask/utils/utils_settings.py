@@ -324,38 +324,38 @@ def settings_input_import(form):
             list_inputs.append(each_key.lower())
 
         if not error:
-            if 'unique_name_input' not in input_info.INPUT_INFORMATION:
-                error.append("'unique_name_input' not found in INPUT_INFORMATION dictionary")
-            elif input_info.INPUT_INFORMATION['unique_name_input'] == '':
-                error.append("'unique_name_input' is empty")
-            elif input_info.INPUT_INFORMATION['unique_name_input'].lower() in list_inputs:
-                error.append("'unique_name_input' is not unique, there is "
+            if 'input_name_unique' not in input_info.INPUT_INFORMATION:
+                error.append("'input_name_unique' not found in INPUT_INFORMATION dictionary")
+            elif input_info.INPUT_INFORMATION['input_name_unique'] == '':
+                error.append("'input_name_unique' is empty")
+            elif input_info.INPUT_INFORMATION['input_name_unique'].lower() in list_inputs:
+                error.append("'input_name_unique' is not unique, there is "
                              "already an input with that name ({})".format(
-                    input_info.INPUT_INFORMATION['unique_name_input']))
+                    input_info.INPUT_INFORMATION['input_name_unique']))
 
             if 'input_manufacturer' not in input_info.INPUT_INFORMATION:
                 error.append("'input_manufacturer' not found in INPUT_INFORMATION dictionary")
             elif input_info.INPUT_INFORMATION['input_manufacturer'] == '':
                 error.append("'input_manufacturer' is empty")
 
-            if 'common_name_input' not in input_info.INPUT_INFORMATION:
-                error.append("'common_name_input' not found in INPUT_INFORMATION dictionary")
-            elif input_info.INPUT_INFORMATION['common_name_input'] == '':
-                error.append("'common_name_input' is empty")
+            if 'input_name' not in input_info.INPUT_INFORMATION:
+                error.append("'input_name' not found in INPUT_INFORMATION dictionary")
+            elif input_info.INPUT_INFORMATION['input_name'] == '':
+                error.append("'input_name' is empty")
 
-            if 'common_name_measurements' not in input_info.INPUT_INFORMATION:
-                error.append("'common_name_measurements' not found in INPUT_INFORMATION dictionary")
-            elif input_info.INPUT_INFORMATION['common_name_measurements'] == '':
-                error.append("'common_name_measurements' is empty")
+            if 'measurements_name' not in input_info.INPUT_INFORMATION:
+                error.append("'measurements_name' not found in INPUT_INFORMATION dictionary")
+            elif input_info.INPUT_INFORMATION['measurements_name'] == '':
+                error.append("'measurements_name' is empty")
 
-            if 'unique_name_measurements' not in input_info.INPUT_INFORMATION:
-                error.append("'unique_name_measurements' not found in INPUT_INFORMATION dictionary")
-            elif not input_info.INPUT_INFORMATION['unique_name_measurements']:
-                error.append("'unique_name_measurements' is empty")
+            if 'measurements_list' not in input_info.INPUT_INFORMATION:
+                error.append("'measurements_list' not found in INPUT_INFORMATION dictionary")
+            elif not input_info.INPUT_INFORMATION['measurements_list']:
+                error.append("'measurements_list' is empty")
 
         if not error:
             # Determine filename
-            unique_name = '{}.py'.format(input_info.INPUT_INFORMATION['unique_name_input'].lower())
+            unique_name = '{}.py'.format(input_info.INPUT_INFORMATION['input_name_unique'].lower())
 
             # Move module from temp directory to custom_input directory
             full_path_custom_inputs = os.path.join(install_dir, 'mycodo/inputs/custom_inputs')
@@ -392,7 +392,7 @@ def settings_input_delete(form):
             error.append("Could not load INPUT_INFORMATION dictionary from "
                          "the uploaded input module")
         else:
-            input_device_name = input_info.INPUT_INFORMATION['unique_name_input']
+            input_device_name = input_info.INPUT_INFORMATION['input_name_unique']
     except Exception:
         error.append("Could not load uploaded file as a python module")
 

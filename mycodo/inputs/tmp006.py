@@ -6,15 +6,26 @@ from mycodo.inputs.sensorutils import convert_units
 
 # Input information
 INPUT_INFORMATION = {
-    'unique_name_input': 'TMP006',
+    'input_name_unique': 'TMP006',
     'input_manufacturer': 'Texas Instruments',
-    'common_name_input': 'TMP006',
-    'common_name_measurements': 'Temperature (Object/Die)',
-    'unique_name_measurements': ['temperature_object', 'temperature_die'],  # List of strings
-    'dependencies_pip': ['Adafruit_TMP'],  # List of strings
-    'interfaces': ['I2C'],  # List of strings
-    'i2c_location': ['0x40', '0x41', '0x42', '0x43', '0x44', '0x45', '0x46', '0x47'],  # List of strings
-    'i2c_address_editable': False,  # Boolean
+    'input_name': 'TMP006',
+    'measurements_name': 'Temperature (Object/Die)',
+    'measurements_list': ['temperature_object', 'temperature_die'],
+    'dependencies_module': [
+        ('pip', 'Adafruit_TMP', 'Adafruit_TMP')
+    ],
+    'interfaces': ['I2C'],
+    'i2c_location': [
+        '0x40',
+        '0x41',
+        '0x42',
+        '0x43',
+        '0x44',
+        '0x45',
+        '0x46',
+        '0x47'
+    ],
+    'i2c_address_editable': False,
     'options_enabled': ['i2c_location', 'period', 'convert_unit', 'pre_output'],
     'options_disabled': ['interface']
 }

@@ -7,14 +7,16 @@ from mycodo.inputs.sensorutils import calculate_dewpoint
 
 # Input information
 INPUT_INFORMATION = {
-    'unique_name_input': 'COZIR_CO2',
+    'input_name_unique': 'COZIR_CO2',
     'input_manufacturer': 'Cozir',
-    'common_name_input': 'Cozir CO2',
-    'common_name_measurements': 'CO2/Humidity/Temperature',
-    'unique_name_measurements': ['co2', 'dewpoint', 'humidity', 'temperature'],  # List of strings
-    'dependencies_pip': ['cozir'],  # List of strings
-    'interfaces': ['UART'],  # List of strings
-    'uart_location': '/dev/ttyAMA0',  # String
+    'input_name': 'Cozir CO2',
+    'measurements_name': 'CO2/Humidity/Temperature',
+    'measurements_list': ['co2', 'dewpoint', 'humidity', 'temperature'],
+    'dependencies_module': [
+        ('pip', 'cozir', '-e git://github.com/pierre-haessig/pycozir.git#egg=cozir')
+    ],
+    'interfaces': ['UART'],
+    'uart_location': '/dev/ttyAMA0',
     'options_enabled': ['uart_location', 'period', 'convert_unit', 'pre_output'],
     'options_disabled': ['interface']
 }

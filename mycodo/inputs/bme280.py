@@ -12,15 +12,18 @@ from mycodo.inputs.sensorutils import calculate_dewpoint
 
 # Input information
 INPUT_INFORMATION = {
-    'unique_name_input': 'BME280',
+    'input_name_unique': 'BME280',
     'input_manufacturer': 'BOSCH',
-    'common_name_input': 'BME280',
-    'common_name_measurements': 'Pressure/Humidity/Temperature',
-    'unique_name_measurements': ['altitude', 'dewpoint', 'humidity', 'pressure', 'temperature'],  # List of strings
-    'dependencies_pip': ['Adafruit_BME280', 'Adafruit_GPIO'],  # List of strings
-    'interfaces': ['I2C'],  # List of strings
-    'i2c_location': ['0x76'],  # List of strings
-    'i2c_address_editable': False,  # Boolean
+    'input_name': 'BME280',
+    'measurements_name': 'Pressure/Humidity/Temperature',
+    'measurements_list': ['altitude', 'dewpoint', 'humidity', 'pressure', 'temperature'],
+    'dependencies_module': [
+        ('pip', 'Adafruit_BME280', '-e git://github.com/adafruit/Adafruit_Python_BME280.git#egg=adafruit-bme280'),
+        ('pip', 'Adafruit_GPIO', 'Adafruit_GPIO')
+    ],
+    'interfaces': ['I2C'],
+    'i2c_location': ['0x76'],
+    'i2c_address_editable': False,
     'options_enabled': ['i2c_location', 'period', 'convert_unit', 'pre_output'],
     'options_disabled': ['interface']
 }

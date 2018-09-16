@@ -7,14 +7,16 @@ from mycodo.inputs.sensorutils import convert_units
 
 # Input information
 INPUT_INFORMATION = {
-    'unique_name_input': 'DS18S20',
+    'input_name_unique': 'DS18S20',
     'input_manufacturer': 'MAXIM',
-    'common_name_input': 'DS18S20',
-    'common_name_measurements': 'Temperature',
-    'unique_name_measurements': ['temperature'],  # List of strings
-    'dependencies_pip': ['w1thermsensor'],  # List of strings
-    'interfaces': ['1WIRE'],  # List of strings
-    'w1thermsensor_detect_1wire': True,  # Boolean
+    'input_name': 'DS18S20',
+    'measurements_name': 'Temperature',
+    'measurements_list': ['temperature'],
+    'dependencies_module': [
+        ('pip', 'w1thermsensor', 'w1thermsensor')
+    ],
+    'interfaces': ['1WIRE'],
+    'w1thermsensor_detect_1wire': True,
     'options_disabled': ['interface'],
     'options_enabled': ['location', 'period', 'convert_unit', 'pre_output'],
 }

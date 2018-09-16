@@ -6,15 +6,17 @@ from mycodo.inputs.sensorutils import convert_units
 
 # Input information
 INPUT_INFORMATION = {
-    'unique_name_input': 'TSL2561',
+    'input_name_unique': 'TSL2561',
     'input_manufacturer': 'TAOS',
-    'common_name_input': 'TSL2561',
-    'common_name_measurements': 'Light',
-    'unique_name_measurements': ['light'],  # List of strings
-    'dependencies_pip': ['tsl2561'],  # List of strings
-    'interfaces': ['I2C'],  # List of strings
-    'i2c_location': ['0x39'],  # List of strings
-    'i2c_address_editable': False,  # Boolean
+    'input_name': 'TSL2561',
+    'measurements_name': 'Light',
+    'measurements_list': ['light'],
+    'dependencies_module': [
+        ('pip', 'tsl2561','tsl2561')
+    ],
+    'interfaces': ['I2C'],
+    'i2c_location': ['0x39'],
+    'i2c_address_editable': False,
     'options_enabled': ['i2c_location', 'period', 'convert_unit', 'pre_output'],
     'options_disabled': ['interface']
 }

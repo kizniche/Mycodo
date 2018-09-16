@@ -137,22 +137,27 @@ def admin_backup():
 
 def install_dependencies(dependencies):
     now = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    dependency_list = []
+    for each_dependency in dependencies:
+        if each_dependency[1] not in dependency_list:
+            dependency_list.append(each_dependency[1])
     with open(DEPENDENCY_LOG_FILE, 'a') as f:
         f.write("\n[{time}] Dependency installation beginning. Installing: {deps}\n\n".format(
-            time=now, deps=",".join(dependencies)))
+            time=now, deps=",".join(dependency_list)))
 
     for each_dep in dependencies:
         cmd = "{pth}/mycodo/scripts/mycodo_wrapper install_dependency {dep}" \
               " | ts '[%Y-%m-%d %H:%M:%S]' >> {log} 2>&1".format(
             pth=INSTALL_DIRECTORY,
             log=DEPENDENCY_LOG_FILE,
-            dep=each_dep)
+            dep=each_dep[2])
+        logger.error("CMD: {}".format(cmd))
         dep = subprocess.Popen(cmd, shell=True)
         dep.wait()
         now = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         with open(DEPENDENCY_LOG_FILE, 'a') as f:
             f.write("\n[{time}] Successfully installed {dep}\n\n".format(
-                time=now, dep=each_dep))
+                time=now, dep=each_dep[2]))
 
     cmd = "{pth}/mycodo/scripts/mycodo_wrapper update_permissions" \
           " | ts '[%Y-%m-%d %H:%M:%S]' >> {log}  2>&1".format(
@@ -232,7 +237,7 @@ def admin_dependencies(device):
 
             if device in each_section:
                 for each_device, each_val in each_section[device].items():
-                    if each_device in ['name', 'common_name_input']:
+                    if each_device in ['name', 'input_name']:
                         device_name = each_val
 
             # Determine if there are any unmet dependencies

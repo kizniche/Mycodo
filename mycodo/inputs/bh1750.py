@@ -11,19 +11,20 @@ for num in range(31, 255):
 
 # Input information
 INPUT_INFORMATION = {
-    'unique_name_input': 'BH1750',
+    'input_name_unique': 'BH1750',
     'input_manufacturer': 'ROHM',
-    'common_name_input': 'BH1750',
-    'common_name_measurements': 'Light',
-    'unique_name_measurements': ['light'],  # List of strings
-    'dependencies_pip': ['smbus'],  # List of strings
-    'interfaces': ['I2C'],  # List of strings
-    'i2c_location': ['0x23', '0x5c'],  # List of strings
-    'i2c_address_editable': False,  # Boolean
-    'resolution': [(0, 'Low'),
-                   (1, 'High'),
-                   (2, 'High 2')],  # List of tuples
-    'sensitivity': list_sensitivity,  # List of tuples
+    'input_name': 'BH1750',
+    'measurements_name': 'Light',
+    'measurements_list': ['light'],
+    'interfaces': ['I2C'],
+    'i2c_location': ['0x23', '0x5c'],
+    'i2c_address_editable': False,
+    'resolution': [
+        (0, 'Low'),
+        (1, 'High'),
+        (2, 'High 2')
+    ],
+    'sensitivity': list_sensitivity,
     'options_enabled': ['i2c_location', 'period', 'resolution', 'sensitivity', 'pre_output'],
     'options_disabled': ['interface']
 }

@@ -7,19 +7,23 @@ from mycodo.inputs.sensorutils import convert_units
 
 # Input information
 INPUT_INFORMATION = {
-    'unique_name_input': 'DS1825',
+    'input_name_unique': 'DS1825',
     'input_manufacturer': 'MAXIM',
-    'common_name_input': 'DS1825',
-    'common_name_measurements': 'Temperature',
-    'unique_name_measurements': ['temperature'],  # List of strings
-    'dependencies_pip': ['w1thermsensor'],  # List of strings
-    'interfaces': ['1WIRE'],  # List of strings
-    'w1thermsensor_detect_1wire': True,  # Boolean
-    'resolution': [('', 'Use Chip Default'),
-                   (9, '9-bit, 0.5 °C, 93.75 ms'),
-                   (10, '10-bit, 0.25 °C, 187.5 ms'),
-                   (11, '11-bit, 0.125 °C, 375 ms'),
-                   (12, '12-bit, 0.0625 °C, 750 ms')],  # List of tuples
+    'input_name': 'DS1825',
+    'measurements_name': 'Temperature',
+    'measurements_list': ['temperature'],
+    'dependencies_module': [
+        ('pip', 'w1thermsensor', 'w1thermsensor')
+    ],
+    'interfaces': ['1WIRE'],
+    'w1thermsensor_detect_1wire': True,
+    'resolution': [
+        ('', 'Use Chip Default'),
+        (9, '9-bit, 0.5 °C, 93.75 ms'),
+        (10, '10-bit, 0.25 °C, 187.5 ms'),
+        (11, '11-bit, 0.125 °C, 375 ms'),
+        (12, '12-bit, 0.0625 °C, 750 ms')
+    ],
     'options_disabled': ['interface'],
     'options_enabled': ['location', 'resolution', 'period', 'convert_unit', 'pre_output'],
 }

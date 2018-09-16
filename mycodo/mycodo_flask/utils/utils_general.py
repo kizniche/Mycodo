@@ -317,13 +317,13 @@ def form_input_choices(choices, each_input, dict_inputs):
                 dict_inputs[each_input.device]['analog_to_digital_converter']):
             is_adc = True
 
-        if ('unique_name_measurements' in dict_inputs[each_input.device] and
-                dict_inputs[each_input.device]['unique_name_measurements'] and
-                dict_inputs[each_input.device]['unique_name_measurements'] != 'LinuxCommand' and
+        if ('measurements_list' in dict_inputs[each_input.device] and
+                dict_inputs[each_input.device]['measurements_list'] and
+                dict_inputs[each_input.device]['measurements_list'] != 'LinuxCommand' and
                 not is_adc
         ):
 
-            for each_measure in dict_inputs[each_input.device]['unique_name_measurements']:
+            for each_measure in dict_inputs[each_input.device]['measurements_list']:
                 value = '{id},{meas}'.format(
                     id=each_input.unique_id,
                     meas=each_measure)
@@ -715,18 +715,28 @@ def return_dependencies(device_type, dep_type='unmet'):
     for each_section in list_dependencies:
         if device_type in each_section:
             for each_device, each_dict in each_section[device_type].items():
-                if each_device == 'dependencies_pip':
-                    for each_dep in each_dict:
-                        try:
-                            module = importlib.util.find_spec(each_dep)
-                            if module is None:
-                                if each_dep not in unmet_deps:
-                                    unmet_deps.append(each_dep)
+                if each_device == 'dependencies_module':
+                    for (install_type, package, install_id) in each_dict:
+                        if install_type == 'pip':
+                            try:
+                                module = importlib.util.find_spec(package)
+                                if module is None:
+                                    if (install_type, package, install_id) not in unmet_deps:
+                                        unmet_deps.append((install_type, package, install_id))
+                                else:
+                                    met_deps = True
+                            except ImportError:
+                                if (install_type, package, install_id) not in unmet_deps:
+                                    unmet_deps.append((install_type, package, install_id))
+                        elif install_type == 'apt':
+                            from mycodo.utils.system_pi import cmd_output
+                            cmd = 'dpkg -l {}'.format(package)
+                            _, _, stat = cmd_output(cmd)
+                            if stat:
+                                if (install_type, package, install_id) not in unmet_deps:
+                                    unmet_deps.append((install_type, package, install_id))
                             else:
                                 met_deps = True
-                        except ImportError:
-                            if each_dep not in unmet_deps:
-                                unmet_deps.append(each_dep)
 
                     if not each_dict:
                         met_deps = True
@@ -773,9 +783,9 @@ def get_ip_address():
 
 
 def generate_form_input_list(dict_inputs):
-    # Sort dictionary entries by input_manufacturer, then common_name_input
+    # Sort dictionary entries by input_manufacturer, then input_name
     # Results in list of sorted dictionary keys
-    list_tuples_sorted = sorted(dict_inputs.items(), key=lambda x: (x[1]['input_manufacturer'], x[1]['common_name_input']))
+    list_tuples_sorted = sorted(dict_inputs.items(), key=lambda x: (x[1]['input_manufacturer'], x[1]['input_name']))
     list_inputs_sorted = []
     for each_input in list_tuples_sorted:
         list_inputs_sorted.append(each_input[0])

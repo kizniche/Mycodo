@@ -32,19 +32,23 @@ from mycodo.inputs.sensorutils import convert_units
 
 # Input information
 INPUT_INFORMATION = {
-    'unique_name_input': 'MAX31865',
+    'input_name_unique': 'MAX31865',
     'input_manufacturer': 'MAXIM',
-    'common_name_input': 'MAX31865',
-    'common_name_measurements': 'Temperature',
-    'unique_name_measurements': ['temperature'],  # List of strings
-    'dependencies_pip': ['RPi.GPIO'],  # List of strings
-    'interfaces': ['UART'],  # List of strings
+    'input_name': 'MAX31865',
+    'measurements_name': 'Temperature',
+    'measurements_list': ['temperature'],
+    'dependencies_module': [
+        ('pip', 'RPi.GPIO', 'RPi.GPIO')
+    ],
+    'interfaces': ['UART'],
     'pin_cs': 8,
     'pin_miso': 9,
     'pin_mosi': 10,
     'pin_clock': 11,
-    'thermocouple_type': [('PT100', 'PT-100'),
-                          ('PT1000', 'PT-1000')],
+    'thermocouple_type': [
+        ('PT100', 'PT-100'),
+        ('PT1000', 'PT-1000')
+    ],
     'ref_ohm': 0,
     'options_disabled': ['interface'],
     'options_enabled': ['thermocouple_type', 'pin_cs', 'pin_miso', 'pin_mosi', 'pin_clock', 'ref_ohm', 'period', 'convert_unit', 'pre_output'],

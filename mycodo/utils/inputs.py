@@ -75,7 +75,7 @@ def parse_input_information():
         if (key in input_cus.INPUT_INFORMATION and
                 (input_cus.INPUT_INFORMATION[key] or
                  input_cus.INPUT_INFORMATION[key] == 0)):
-            dict_inp[input_cus.INPUT_INFORMATION['unique_name_input']][key] = \
+            dict_inp[input_cus.INPUT_INFORMATION['input_name_unique']][key] = \
                 input_cus.INPUT_INFORMATION[key]
         return dict_inp
 
@@ -113,24 +113,24 @@ def parse_input_information():
                     skip_file = True
 
             if not skip_file:
-                # logger.info("Found input: {}, {}".format(input_custom.INPUT_INFORMATION['unique_name_input'], full_path))
+                # logger.info("Found input: {}, {}".format(input_custom.INPUT_INFORMATION['input_name_unique'], full_path))
 
                 # Populate dictionary of input information
-                if input_custom.INPUT_INFORMATION['unique_name_input'] in dict_inputs:
+                if input_custom.INPUT_INFORMATION['input_name_unique'] in dict_inputs:
                     logger.error("Error: Cannot add input modules because it does not have a unique name: {name}".format(
-                        name=input_custom.INPUT_INFORMATION['unique_name_input']))
+                        name=input_custom.INPUT_INFORMATION['input_name_unique']))
                 else:
-                    dict_inputs[input_custom.INPUT_INFORMATION['unique_name_input']] = {}
+                    dict_inputs[input_custom.INPUT_INFORMATION['input_name_unique']] = {}
 
-                dict_inputs[input_custom.INPUT_INFORMATION['unique_name_input']]['file_path'] = full_path
+                dict_inputs[input_custom.INPUT_INFORMATION['input_name_unique']]['file_path'] = full_path
 
-                dict_inputs = dict_has_value(dict_inputs, input_custom, 'common_name_input')
-                dict_inputs = dict_has_value(dict_inputs, input_custom, 'common_name_measurements')
-                dict_inputs = dict_has_value(dict_inputs, input_custom, 'unique_name_measurements')
+                dict_inputs = dict_has_value(dict_inputs, input_custom, 'input_name')
+                dict_inputs = dict_has_value(dict_inputs, input_custom, 'measurements_name')
+                dict_inputs = dict_has_value(dict_inputs, input_custom, 'measurements_list')
                 dict_inputs = dict_has_value(dict_inputs, input_custom, 'input_manufacturer')
 
                 # Dependencies
-                dict_inputs = dict_has_value(dict_inputs, input_custom, 'dependencies_pip')
+                dict_inputs = dict_has_value(dict_inputs, input_custom, 'dependencies_module')
                 dict_inputs = dict_has_value(dict_inputs, input_custom, 'dependencies_github')
 
                 # Interface
@@ -184,7 +184,6 @@ def parse_input_information():
 
                 # Misc
                 dict_inputs = dict_has_value(dict_inputs, input_custom, 'period')
-                dict_inputs = dict_has_value(dict_inputs, input_custom, 'convert_to_unit')
                 dict_inputs = dict_has_value(dict_inputs, input_custom, 'sht_voltage')
                 dict_inputs = dict_has_value(dict_inputs, input_custom, 'cmd_command')
                 dict_inputs = dict_has_value(dict_inputs, input_custom, 'resolution')

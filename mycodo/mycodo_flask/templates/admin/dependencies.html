@@ -54,7 +54,7 @@
     <p>The install has been initiated for the following dependencies:</p>
     <ul>
     {% for each_dep in device_unmet_dependencies %}
-      <li>{{each_dep}}</li>
+      <li>{{each_dep[1]}}</li>
     {% endfor %}
     </ul>
     <p>The Dependency Install Log below will refresh every 5 seconds. Wait until all dependencies have been installed to attempt to add the associated device again. You will know the entire install process have completed by "#### All Dependencies have been installed." appearing at the end of the log.</p>
@@ -65,10 +65,10 @@
       {% else %}
 
     <p>There were unmet dependencies encountered when adding the following device: {{device}}</p>
-    <p>The Unmet dependencies are the following python modules:</p>
+    <p>The unmet dependencies are the following python modules:</p>
     <ul>
     {% for each_dep in device_unmet_dependencies %}
-      <li>{{each_dep}}</li>
+      <li>{{each_dep[1]}}</li>
     {% endfor %}
     </ul>
 
@@ -112,7 +112,7 @@
       {% for each_dep, devices in unmet_list.items()|sort(case_sensitive=False) %}
         <tr>
           <th scope="row">{{loop.index}}</th>
-          <td>{{each_dep}}</td>
+          <td>{{each_dep[1]}}</td>
           <td>
         {% for each_device in devices %}<a href="{{each_device}}">{{each_device}}</a>{% if not loop.last %}, {% endif %}{% endfor %}
           </td>
@@ -130,7 +130,7 @@
       <h4>List of devices with unmet dependencies</h4>
       {% for each_device, dependencies in unmet_dependencies.items()|sort(case_sensitive=False) if dependencies %}
       <div>
-        <a href="{{each_device}}">{{each_device}}</a>: {% for each_dep in dependencies %}{{each_dep}}{% if not loop.last %}, {% endif %}{% endfor %}
+        <a href="{{each_device}}">{{each_device}}</a>: {% for each_dep in dependencies %}{{each_dep[1]}}{% if not loop.last %}, {% endif %}{% endfor %}
       </div>
       {% endfor %}
     </div>

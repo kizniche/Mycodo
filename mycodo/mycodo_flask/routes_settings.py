@@ -167,13 +167,13 @@ def settings_input():
             try:
                 full_path_file = os.path.join(path_custom_inputs, each_file)
                 input_info = load_module_from_file(full_path_file)
-                dict_inputs[input_info.INPUT_INFORMATION['unique_name_input']] = {}
-                dict_inputs[input_info.INPUT_INFORMATION['unique_name_input']]['common_name_input'] = \
-                    input_info.INPUT_INFORMATION['common_name_input']
-                dict_inputs[input_info.INPUT_INFORMATION['unique_name_input']]['input_manufacturer'] = \
+                dict_inputs[input_info.INPUT_INFORMATION['input_name_unique']] = {}
+                dict_inputs[input_info.INPUT_INFORMATION['input_name_unique']]['input_name'] = \
+                    input_info.INPUT_INFORMATION['input_name']
+                dict_inputs[input_info.INPUT_INFORMATION['input_name_unique']]['input_manufacturer'] = \
                     input_info.INPUT_INFORMATION['input_manufacturer']
-                dict_inputs[input_info.INPUT_INFORMATION['unique_name_input']]['common_name_measurements'] = \
-                    input_info.INPUT_INFORMATION['common_name_measurements']
+                dict_inputs[input_info.INPUT_INFORMATION['input_name_unique']]['measurements_name'] = \
+                    input_info.INPUT_INFORMATION['measurements_name']
             except:
                 pass
 

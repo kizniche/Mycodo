@@ -9,15 +9,14 @@ from mycodo.inputs.sensorutils import calculate_dewpoint
 
 # Input information
 INPUT_INFORMATION = {
-    'unique_name_input': 'SHT2x',
+    'input_name_unique': 'SHT2x',
     'input_manufacturer': 'Sensirion',
-    'common_name_input': 'SHT2x',
-    'common_name_measurements': 'Humidity/Temperature',
-    'unique_name_measurements': ['dewpoint', 'humidity', 'temperature'],  # List of strings
-    'dependencies_pip': ['smbus'],  # List of strings
-    'interfaces': ['I2C'],  # List of strings
-    'i2c_location': ['0x40'],  # List of strings
-    'i2c_address_editable': False,  # Boolean
+    'input_name': 'SHT2x',
+    'measurements_name': 'Humidity/Temperature',
+    'measurements_list': ['dewpoint', 'humidity', 'temperature'],
+    'interfaces': ['I2C'],
+    'i2c_location': ['0x40'],
+    'i2c_address_editable': False,
     'options_enabled': ['period', 'convert_unit', 'pre_output'],
     'options_disabled': ['interface', 'i2c_location']
 }

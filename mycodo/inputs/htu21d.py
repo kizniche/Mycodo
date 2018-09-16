@@ -29,15 +29,17 @@ from mycodo.inputs.sensorutils import calculate_dewpoint
 
 # Input information
 INPUT_INFORMATION = {
-    'unique_name_input': 'HTU21D',
+    'input_name_unique': 'HTU21D',
     'input_manufacturer': 'Measurement Specialties',
-    'common_name_input': 'HTU21D',
-    'common_name_measurements': 'Humidity/Temperature',
-    'unique_name_measurements': ['dewpoint', 'humidity', 'temperature'],  # List of strings
-    'dependencies_pip': ['pigpio'],  # List of strings
-    'interfaces': ['I2C'],  # List of strings
-    'i2c_location': ['0x40'],  # List of strings
-    'i2c_address_editable': False,  # Boolean
+    'input_name': 'HTU21D',
+    'measurements_name': 'Humidity/Temperature',
+    'measurements_list': ['dewpoint', 'humidity', 'temperature'],
+    'dependencies_module': [
+        ('internal', 'pigpio', 'pigpio')
+    ],
+    'interfaces': ['I2C'],
+    'i2c_location': ['0x40'],
+    'i2c_address_editable': False,
     'options_enabled': ['i2c_location', 'period', 'convert_unit', 'pre_output'],
     'options_disabled': ['interface']
 }

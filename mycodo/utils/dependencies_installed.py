@@ -20,8 +20,6 @@ logger = logging.getLogger("mycodo.dependencies_installed")
 def get_installed_dependencies():
     met_deps = []
 
-    logger.error("TEST00")
-
     dict_inputs = parse_input_information()
 
     list_dependencies = [
@@ -33,20 +31,18 @@ def get_installed_dependencies():
     for each_section in list_dependencies:
         for device_type in each_section:
             for each_device, each_dict in each_section[device_type].items():
-                if each_device == 'dependencies_pip':
-                    for each_dep in each_dict:
-                        try:
-                            module = importlib.util.find_spec(each_dep)
-                            if module is not None:
-                                if each_dep not in met_deps:
-                                    met_deps.append(each_dep)
-                        except Exception:
-                            logger.error(
-                                'Exception while checking python dependency: '
-                                '{dep}'.format(dep=each_dep))
-
-    if os.path.exists('/usr/local/bin/gpio'):
-        met_deps.append('wiringpi')
+                if each_device == 'dependencies_module':
+                    for (install_type, py_module, install_id) in each_dict:
+                        if install_type == 'pip':
+                            try:
+                                module = importlib.util.find_spec(py_module)
+                                if module is not None:
+                                    if (install_type, py_module, install_id) not in met_deps:
+                                        met_deps.append(install_id)
+                            except Exception:
+                                logger.error(
+                                    'Exception while checking python dependency: '
+                                    '{dep}'.format(dep=install_id))
 
     return (',').join(met_deps)
 

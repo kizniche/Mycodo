@@ -11,12 +11,12 @@ from mycodo.inputs.sensorutils import calculate_dewpoint
 # The following link provides the full list of options with descriptions:
 # https://github.com/kizniche/Mycodo/blob/single_file_input_modules/mycodo/inputs/examples/example_all_options_temperature.py
 INPUT_INFORMATION = {
-    'unique_name_input': 'TEST_00',
+    'input_name_unique': 'TEST_00',
     'input_manufacturer': 'AAA Company X',
-    'common_name_input': 'Dummy Input 00',
-    'common_name_measurements': 'Humidity/Temperature',
-    'unique_name_measurements': ['dewpoint', 'humidity', 'temperature'],  # List of strings
-    'dependencies_pip': ['random'],
+    'input_name': 'Dummy Input 00',
+    'measurements_name': 'Humidity/Temperature',
+    'measurements_list': ['dewpoint', 'humidity', 'temperature'],  # List of strings
+    'dependencies_module': ['pip', 'random', 'random'],
     'interfaces': ['I2C'],
     'i2c_location': ['0x5c'],
     'i2c_address_editable': False,
@@ -30,7 +30,7 @@ class InputModule(AbstractInput):
     def __init__(self, input_dev, testing=False):
         super(InputModule, self).__init__()
         self.logger = logging.getLogger("mycodo.inputs.{name_lower}".format(
-            name_lower=INPUT_INFORMATION['unique_name_input'].lower()))
+            name_lower=INPUT_INFORMATION['input_name_unique'].lower()))
 
         self._dewpoint = None
         self._humidity = None
@@ -39,7 +39,7 @@ class InputModule(AbstractInput):
         if not testing:
             self.logger = logging.getLogger(
                 "mycodo.inputs.{name_lower}_{id}".format(
-                    name_lower=INPUT_INFORMATION['unique_name_input'].lower(),
+                    name_lower=INPUT_INFORMATION['input_name_unique'].lower(),
                     id=input_dev.id))
             self.convert_to_unit = input_dev.convert_to_unit
             self.interface = input_dev.interface

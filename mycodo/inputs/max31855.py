@@ -6,13 +6,16 @@ from mycodo.inputs.sensorutils import convert_units
 
 # Input information
 INPUT_INFORMATION = {
-    'unique_name_input': 'MAX31855',
+    'input_name_unique': 'MAX31855',
     'input_manufacturer': 'MAXIM',
-    'common_name_input': 'MAX31855',
-    'common_name_measurements': 'Temperature (Object/Die)',
-    'unique_name_measurements': ['temperature', 'temperature_die'],  # List of strings
-    'dependencies_pip': ['Adafruit_MAX31855', 'Adafruit_GPIO'],  # List of strings
-    'interfaces': ['UART'],  # List of strings
+    'input_name': 'MAX31855',
+    'measurements_name': 'Temperature (Object/Die)',
+    'measurements_list': ['temperature', 'temperature_die'],
+    'dependencies_module': [
+        ('pip', 'Adafruit_MAX31855', '-e git://github.com/adafruit/Adafruit_Python_MAX31855.git#egg=adafruit-max31855'),
+        ('pip', 'Adafruit_GPIO','Adafruit_GPIO')
+    ],
+    'interfaces': ['UART'],
     'pin_cs': 8,
     'pin_miso': 9,
     'pin_clock': 11,

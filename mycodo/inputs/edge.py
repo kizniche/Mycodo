@@ -5,13 +5,15 @@ from mycodo.inputs.base_input import AbstractInput
 
 # Input information
 INPUT_INFORMATION = {
-    'unique_name_input': 'EDGE',
+    'input_name_unique': 'EDGE',
     'input_manufacturer': 'Mycodo',
-    'common_name_input': 'Edge',
-    'common_name_measurements': 'Rising/Falling Edge',
-    'unique_name_measurements': ['edge'],  # List of strings
-    'dependencies_pip': ['RPi.GPIO'],  # List of strings
-    'interfaces': ['GPIO'],  # List of strings
+    'input_name': 'Edge',
+    'measurements_name': 'Rising/Falling Edge',
+    'measurements_list': ['edge'],
+    'dependencies_module': [
+        ('pip', 'RPi.GPIO', 'RPi.GPIO')
+    ],
+    'interfaces': ['GPIO'],
     'options_disabled': ['interface'],
     'options_enabled': ['gpio_location', 'period', 'pre_output'],
 }

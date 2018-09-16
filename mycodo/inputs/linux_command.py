@@ -7,13 +7,12 @@ from mycodo.inputs.base_input import AbstractInput
 
 # Input information
 INPUT_INFORMATION = {
-    'unique_name_input': 'LinuxCommand',
+    'input_name_unique': 'LinuxCommand',
     'input_manufacturer': 'Mycodo',
-    'common_name_input': 'Linux Command',
-    'common_name_measurements': 'Return Value',
-    'unique_name_measurements': [],  # List of strings
-    'dependencies_pip': ['smbus'],  # List of strings
-    'interfaces': ['Mycodo'],  # List of strings
+    'input_name': 'Linux Command',
+    'measurements_name': 'Return Value',
+    'measurements_list': [],
+    'interfaces': ['Mycodo'],
     'cmd_command': 'shuf -i 50-70 -n 1',
     'measurement': 'Condition',
     'measurement_units': 'unit',

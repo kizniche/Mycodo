@@ -8,15 +8,14 @@ from mycodo.inputs.sensorutils import is_device
 
 # Input information
 INPUT_INFORMATION = {
-    'unique_name_input': 'K30',
+    'input_name_unique': 'K30',
     'input_manufacturer': 'CO2Meter',
-    'common_name_input': 'K30',
-    'common_name_measurements': 'CO2',
-    'unique_name_measurements': ['co2'],  # List of strings
-    'dependencies_pip': ['serial'],  # List of strings
-    'interfaces': ['UART'],  # List of strings
-    'uart_location': '/dev/ttyAMA0',  # String
-    'baud_rate': 9600,  # Integer
+    'input_name': 'K30',
+    'measurements_name': 'CO2',
+    'measurements_list': ['co2'],
+    'interfaces': ['UART'],
+    'uart_location': '/dev/ttyAMA0',
+    'baud_rate': 9600,
     'options_disabled': ['interface'],
     'options_enabled': ['uart_location', 'period', 'baud_rate', 'convert_unit', 'pre_output'],
 }

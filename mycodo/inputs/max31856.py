@@ -29,25 +29,29 @@ from mycodo.inputs.sensorutils import convert_units
 
 # Input information
 INPUT_INFORMATION = {
-    'unique_name_input': 'MAX31856',
+    'input_name_unique': 'MAX31856',
     'input_manufacturer': 'MAXIM',
-    'common_name_input': 'MAX31856',
-    'common_name_measurements': 'Temperature (Object/Die)',
-    'unique_name_measurements': ['temperature', 'temperature_die'],  # List of strings
-    'dependencies_pip': ['RPi.GPIO'],  # List of strings
-    'interfaces': ['UART'],  # List of strings
+    'input_name': 'MAX31856',
+    'measurements_name': 'Temperature (Object/Die)',
+    'measurements_list': ['temperature', 'temperature_die'],
+    'dependencies_module': [
+        ('pip', 'RPi.GPIO', 'RPi.GPIO')
+    ],
+    'interfaces': ['UART'],
     'pin_cs': 8,
     'pin_miso': 9,
     'pin_mosi': 10,
     'pin_clock': 11,
-    'thermocouple_type': [('B', 'Type-B'),
-                          ('E', 'Type-E'),
-                          ('J', 'Type-J'),
-                          ('K', 'Type-K'),
-                          ('N', 'Type-N'),
-                          ('R', 'Type-R'),
-                          ('S', 'Type-S'),
-                          ('T', 'Type-T')],
+    'thermocouple_type': [
+        ('B', 'Type-B'),
+        ('E', 'Type-E'),
+        ('J', 'Type-J'),
+        ('K', 'Type-K'),
+        ('N', 'Type-N'),
+        ('R', 'Type-R'),
+        ('S', 'Type-S'),
+        ('T', 'Type-T')
+    ],
     'options_disabled': ['interface'],
     'options_enabled': ['thermocouple_type', 'pin_cs', 'pin_miso', 'pin_mosi', 'pin_clock', 'period', 'convert_unit', 'pre_output'],
 }

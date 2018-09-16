@@ -36,15 +36,17 @@ from mycodo.inputs.sensorutils import calculate_dewpoint
 
 # Input information
 INPUT_INFORMATION = {
-    'unique_name_input': 'AM2315',
+    'input_name_unique': 'AM2315',
     'input_manufacturer': 'AOSONG',
-    'common_name_input': 'AM2315',
-    'common_name_measurements': 'Humidity/Temperature',
-    'unique_name_measurements': ['dewpoint', 'humidity', 'temperature'],  # List of strings
-    'dependencies_pip': ['quick2wire'],  # List of strings
-    'interfaces': ['I2C'],  # List of strings
-    'i2c_location': ['0x5c'],  # List of strings
-    'i2c_address_editable': False,  # Boolean
+    'input_name': 'AM2315',
+    'measurements_name': 'Humidity/Temperature',
+    'measurements_list': ['dewpoint', 'humidity', 'temperature'],
+    'dependencies_module': [
+        ('pip', 'quick2wire', 'quick2wire-api')
+    ],
+    'interfaces': ['I2C'],
+    'i2c_location': ['0x5c'],
+    'i2c_address_editable': False,
     'options_enabled': ['period', 'convert_unit', 'pre_output'],
     'options_disabled': ['interface', 'i2c_location']
 }

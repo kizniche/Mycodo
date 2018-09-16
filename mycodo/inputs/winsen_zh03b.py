@@ -9,15 +9,14 @@ from mycodo.inputs.sensorutils import is_device
 
 # Input information
 INPUT_INFORMATION = {
-    'unique_name_input': 'WINSEN_ZH03B',
+    'input_name_unique': 'WINSEN_ZH03B',
     'input_manufacturer': 'Winsen',
-    'common_name_input': 'ZH03B',
-    'common_name_measurements': 'CO2',
-    'unique_name_measurements': ['co2'],  # List of strings
-    'dependencies_pip': ['serial'],  # List of strings
-    'interfaces': ['UART'],  # List of strings
-    'uart_location': '/dev/ttyAMA0',  # String
-    'uart_baud_rate': 9600,  # Integer
+    'input_name': 'ZH03B',
+    'measurements_name': 'CO2',
+    'measurements_list': ['co2'],
+    'interfaces': ['UART'],
+    'uart_location': '/dev/ttyAMA0',
+    'uart_baud_rate': 9600,
     'options_disabled': ['interface'],
     'options_enabled': ['uart_location', 'uart_baud_rate', 'period', 'convert_unit', 'pre_output'],
 }
