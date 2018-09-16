@@ -108,16 +108,21 @@ def upgrade():
             if each_input.device_loc:
                 each_input.uart_location = each_input.device_loc
 
-            if each_input.location and each_input.device in [
-                'ATLAS_EC', 'TSL2591', 'ATLAS_PH', 'BH1750', 'SHT2x',
-                'MH_Z16', 'CHIRP', 'BMP280', 'TMP006', 'AM2315', 'BME280',
-                'ATLAS_PT1000', 'BMP180', 'TSL2561', 'HTU21D', 'HDC1000',
-                'CCS811']:
-                each_input.i2c_location = each_input.location
+            if each_input.device in [
+                    'MCP3008', 'MAX31855', 'MAX31856', 'MAX31865']:
+                each_input.interface = 'UART'
 
             if each_input.location and each_input.device in [
-                'DHT11', 'DHT22', 'SIGNAL_PWM', 'SIGNAL_RPM', 'SHT1x_7x',
-                'GPIO_STATE']:
+                    'ATLAS_EC', 'TSL2591', 'ATLAS_PH', 'BH1750', 'SHT2x',
+                    'MH_Z16', 'CHIRP', 'BMP280', 'TMP006', 'AM2315', 'BME280',
+                    'ATLAS_PT1000', 'BMP180', 'TSL2561', 'HTU21D', 'HDC1000',
+                    'CCS811', 'MCP342x', 'ADS1x15']:
+                each_input.i2c_location = each_input.location
+                each_input.interface = 'I2C'
+
+            if each_input.location and each_input.device in [
+                    'DHT11', 'DHT22', 'SIGNAL_PWM', 'SIGNAL_RPM', 'SHT1x_7x',
+                    'GPIO_STATE']:
                 each_input.gpio_location = int(each_input.location)
 
         new_session.commit()

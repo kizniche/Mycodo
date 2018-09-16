@@ -29,12 +29,12 @@ ${INSTALL_CMD} update-pip3-packages
 ${INSTALL_CMD} update-permissions
 ${INSTALL_CMD} upgrade-pip3-packages
 
-printf "\n#### Checking for updates to optional dependencies\n"
+printf "\n#### Checking for updates to dependencies\n"
 DEPENDENCIES=$(${INSTALL_DIRECTORY}/env/bin/python3 ${INSTALL_DIRECTORY}/mycodo/utils/dependencies_installed.py 2>&1)
 IFS=','
-for i in $DEPENDENCIES
+for each_dep in $DEPENDENCIES
 do
-    ${INSTALL_DEP} $i
+    ${INSTALL_DEP} $each_dep
 done
 
 ${INSTALL_CMD} update-influxdb

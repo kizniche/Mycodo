@@ -1,16 +1,11 @@
-## 6.3.0 (Unreleased)
+## 6.3.0 (2018-09-16)
 
-This release adds the ability to import input modules, allowing new inputs to be created by the user. Documentation for developing your own input modules is in development. See issue #525 for more information about it's development and discussion. Also with this release is a new section for Notes (More -> Notes). Notes are associated with one more more tags that can be created. Notes can also have files attached to them. These notes can be displayed on graphs to easily identify when a certain event happened in the past (or future).
+This release adds the ability to import input modules, allowing new inputs to be created by the user. Documentation (https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.rst#create-your-own-input-module) for developing your own input modules is in development. See issue #525 for more information about it's development and discussion. Also with this release is a new section for Notes (More -> Notes, https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.rst#notes). Notes are associated with one more more tags that can be created. Notes can also have files attached to them. These notes can be displayed on graphs to easily identify when a certain event happened in the past (or future).
 
 ### Features
 
  - Implement self-contained input modules ([#525](https://github.com/kizniche/mycodo/issues/525))
  - Add Note system ([#527](https://github.com/kizniche/mycodo/issues/527))
- - Input modules can now install apt dependencies in addition to pip
-
-### Miscellaneous
-
- - Update Adafruit-TMP==1.6.3, Adafruit_CCS811==0.2.1, and Adafruit-BMP==1.5.4
 
 
 ## 6.2.4 (2018-09-03)

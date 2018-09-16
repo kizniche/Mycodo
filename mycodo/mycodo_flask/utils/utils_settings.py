@@ -346,12 +346,26 @@ def settings_input_import(form):
             if 'measurements_name' not in input_info.INPUT_INFORMATION:
                 error.append("'measurements_name' not found in INPUT_INFORMATION dictionary")
             elif input_info.INPUT_INFORMATION['measurements_name'] == '':
-                error.append("'measurements_name' is empty")
+                error.append("'measurements_name' list is empty")
 
             if 'measurements_list' not in input_info.INPUT_INFORMATION:
                 error.append("'measurements_list' not found in INPUT_INFORMATION dictionary")
             elif not input_info.INPUT_INFORMATION['measurements_list']:
-                error.append("'measurements_list' is empty")
+                error.append("'measurements_list' list is empty")
+
+            if 'dependencies_module' in input_info.INPUT_INFORMATION:
+                if type(input_info.INPUT_INFORMATION['dependencies_module']) is not list:
+                    error.append("'dependencies_module' must be a list of tuples")
+                else:
+                    for each_dep in input_info.INPUT_INFORMATION['dependencies_module']:
+                        if type(each_dep) is not tuple:
+                            error.append("'dependencies_module' must be a list of tuples")
+                        elif len(each_dep) != 3:
+                            error.append("'dependencies_module': tuples in list must have 3 items")
+                        elif not each_dep[0] or not each_dep[1] or not each_dep[2]:
+                            error.append("'dependencies_module': tuples in list must not be empty")
+                        elif each_dep[0] not in ['internal', 'pip', 'pip-git', 'apt']:
+                            error.append("'dependencies_module': first in tuple must be 'internal', 'pip', 'pip-git', or 'apt'")
 
         if not error:
             # Determine filename

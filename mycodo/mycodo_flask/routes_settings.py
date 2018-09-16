@@ -160,6 +160,17 @@ def settings_input():
     install_dir = os.path.abspath(INSTALL_DIRECTORY)
     path_custom_inputs = os.path.join(install_dir, 'mycodo/inputs/custom_inputs')
 
+    if request.method == 'POST':
+        if not utils_general.user_has_permission('edit_controllers'):
+            return redirect(url_for('routes_general.home'))
+
+        if form_input.import_input_upload.data:
+            utils_settings.settings_input_import(form_input)
+        elif form_input_delete.delete_input.data:
+            utils_settings.settings_input_delete(form_input_delete)
+
+        return redirect(url_for('routes_settings.settings_input'))
+
     dict_inputs = {}
 
     for each_file in os.listdir(path_custom_inputs):
@@ -177,18 +188,7 @@ def settings_input():
             except:
                 pass
 
-    if request.method == 'POST':
-        if not utils_general.user_has_permission('edit_controllers'):
-            return redirect(url_for('routes_general.home'))
-
-        if form_input.import_input_upload.data:
-            utils_settings.settings_input_import(form_input)
-        elif form_input_delete.delete_input.data:
-            utils_settings.settings_input_delete(form_input_delete)
-
-        return redirect(url_for('routes_settings.settings_input'))
-
-    dict_inputs = parse_input_information()
+    # dict_inputs = parse_input_information()
 
     return render_template('settings/input.html',
                            dict_inputs=dict_inputs,

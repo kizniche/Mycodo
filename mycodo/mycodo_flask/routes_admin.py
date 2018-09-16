@@ -151,7 +151,6 @@ def install_dependencies(dependencies):
             pth=INSTALL_DIRECTORY,
             log=DEPENDENCY_LOG_FILE,
             dep=each_dep[1])
-        logger.error("CMD: {}".format(cmd))
         dep = subprocess.Popen(cmd, shell=True)
         dep.wait()
         now = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
