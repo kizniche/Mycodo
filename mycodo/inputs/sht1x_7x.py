@@ -12,7 +12,7 @@ INPUT_INFORMATION = {
     'measurements_name': 'Humidity/Temperature',
     'measurements_list': ['dewpoint', 'humidity', 'temperature'],
     'dependencies_module': [
-        ('pip', 'sht_sensor', 'sht_sensor')
+        ('pip-pypi', 'sht_sensor', 'sht_sensor')
     ],
     'interfaces': ['GPIO'],
     'pin_clock': 11,

@@ -11,7 +11,7 @@ INPUT_INFORMATION = {
     'measurements_name': 'Rising/Falling Edge',
     'measurements_list': ['edge'],
     'dependencies_module': [
-        ('pip', 'RPi.GPIO', 'RPi.GPIO')
+        ('pip-pypi', 'RPi.GPIO', 'RPi.GPIO')
     ],
     'interfaces': ['GPIO'],
     'options_disabled': ['interface'],

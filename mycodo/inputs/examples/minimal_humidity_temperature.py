@@ -17,7 +17,7 @@ INPUT_INFORMATION = {
     'measurements_name': 'Humidity/Temperature',
     'measurements_list': ['dewpoint', 'humidity', 'temperature'],  # List of strings
     'dependencies_module': [
-        ('pip', 'random', 'random')
+        ('pip-pypi', 'random', 'random')
     ],
     'interfaces': ['I2C'],
     'i2c_location': ['0x5c'],

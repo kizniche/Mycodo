@@ -12,8 +12,8 @@ INPUT_INFORMATION = {
     'measurements_name': 'CO2/VOC/Temperature',
     'measurements_list': ['co2', 'voc', 'temperature'],
     'dependencies_module': [
-        ('pip', 'Adafruit_CCS811', 'Adafruit_CCS811'),
-        ('pip', 'Adafruit_GPIO', 'Adafruit_GPIO')
+        ('pip-pypi', 'Adafruit_CCS811', 'Adafruit_CCS811'),
+        ('pip-pypi', 'Adafruit_GPIO', 'Adafruit_GPIO')
     ],
     'interfaces': ['I2C'],
     'i2c_location': ['0x5a', '0x5b'],

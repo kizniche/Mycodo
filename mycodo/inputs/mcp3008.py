@@ -10,7 +10,7 @@ INPUT_INFORMATION = {
     'measurements_name': 'Voltage (Analog-to-Digital Converter)',
     'measurements_list': ['voltage'],
     'dependencies_module': [
-        ('pip', 'Adafruit_MCP3008', 'Adafruit_MCP3008')
+        ('pip-pypi', 'Adafruit_MCP3008', 'Adafruit_MCP3008')
     ],
     'interfaces': ['UART'],
     'analog_to_digital_converter': True,

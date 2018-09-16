@@ -13,7 +13,7 @@ INPUT_INFORMATION = {
     'measurements_name': 'Temperature',
     'measurements_list': ['temperature'],
     'dependencies_module': [
-        ('pip', 'w1thermsensor', 'w1thermsensor')
+        ('pip-pypi', 'w1thermsensor', 'w1thermsensor')
     ],
     'interfaces': ['1WIRE'],
     'w1thermsensor_detect_1wire': True,

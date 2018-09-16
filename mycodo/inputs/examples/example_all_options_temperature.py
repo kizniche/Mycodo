@@ -39,8 +39,8 @@ INPUT_INFORMATION = {
     # This must be a module that is able to be installed with pip or apt (pypi, git, and apt examples below)
     # Leave the list empty if there are no dependencies
     'dependencies_module': [  # List of tuples
-        ('pip', 'Adafruit_GPIO', 'Adafruit_GPIO'),
-        ('pip', 'bluepy', 'bluepy==1.1.4'),
+        ('pip-pypi', 'Adafruit_GPIO', 'Adafruit_GPIO'),
+        ('pip-pypi', 'bluepy', 'bluepy==1.1.4'),
         ('pip-git', 'adafruit-bme280', 'git://github.com/adafruit/Adafruit_Python_BME280.git#egg=adafruit-bme280'),
         ('apt', 'tailwhip', 'whiptail'),
         ('apt', 'zsh', 'zsh'),

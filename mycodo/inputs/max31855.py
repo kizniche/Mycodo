@@ -13,7 +13,7 @@ INPUT_INFORMATION = {
     'measurements_list': ['temperature', 'temperature_die'],
     'dependencies_module': [
         ('pip-git', 'Adafruit_MAX31855', 'git://github.com/adafruit/Adafruit_Python_MAX31855.git#egg=adafruit-max31855'),
-        ('pip', 'Adafruit_GPIO','Adafruit_GPIO')
+        ('pip-pypi', 'Adafruit_GPIO','Adafruit_GPIO')
     ],
     'interfaces': ['UART'],
     'pin_cs': 8,

@@ -12,10 +12,10 @@ INPUT_INFORMATION = {
     'measurements_name': 'EC/Light/Moisture/Temperature',
     'measurements_list': ['battery', 'electrical_conductivity', 'light', 'moisture', 'temperature'],
     'dependencies_module': [
-        ('pip', 'miflora', 'miflora'),
-        ('pip', 'btlewrap', 'btlewrap'),
+        ('pip-pypi', 'miflora', 'miflora'),
+        ('pip-pypi', 'btlewrap', 'btlewrap'),
         ('apt', 'libglib2.0-dev', 'libglib2.0-dev'),
-        ('pip', 'bluepy', 'bluepy==1.1.4'),
+        ('pip-pypi', 'bluepy', 'bluepy==1.2.0'),
     ],
     'interfaces': ['BT'],
     'bt_location': '00:00:00:00:00:00',

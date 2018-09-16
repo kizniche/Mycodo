@@ -12,7 +12,7 @@ INPUT_INFORMATION = {
     'measurements_name': 'Temperature (Object/Die)',
     'measurements_list': ['temperature_object', 'temperature_die'],
     'dependencies_module': [
-        ('pip', 'Adafruit_TMP', 'Adafruit_TMP')
+        ('pip-pypi', 'Adafruit_TMP', 'Adafruit_TMP')
     ],
     'interfaces': ['I2C'],
     'i2c_location': [

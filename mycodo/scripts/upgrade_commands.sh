@@ -466,6 +466,6 @@ case "${1:-''}" in
         systemctl enable ${MYCODO_PATH}/install/mycodoflask.service
     ;;
     *)
-        printf "Error: Unrecognized command\n${HELP_OPTIONS}"
+        printf "Error: Unrecognized command: ${1}\n${HELP_OPTIONS}"
     ;;
 esac

@@ -12,7 +12,7 @@ INPUT_INFORMATION = {
     'measurements_name': 'Light',
     'measurements_list': ['light'],
     'dependencies_module': [
-        ('pip', 'tsl2561','tsl2561')
+        ('pip-pypi', 'tsl2561','tsl2561')
     ],
     'interfaces': ['I2C'],
     'i2c_location': ['0x39'],

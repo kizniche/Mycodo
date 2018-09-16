@@ -38,7 +38,7 @@ INPUT_INFORMATION = {
     'measurements_name': 'Temperature',
     'measurements_list': ['temperature'],
     'dependencies_module': [
-        ('pip', 'RPi.GPIO', 'RPi.GPIO')
+        ('pip-pypi', 'RPi.GPIO', 'RPi.GPIO')
     ],
     'interfaces': ['UART'],
     'pin_cs': 8,

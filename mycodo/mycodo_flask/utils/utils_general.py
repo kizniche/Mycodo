@@ -719,7 +719,7 @@ def return_dependencies(device_type, dep_type='unmet'):
                 if each_device == 'dependencies_module':
                     for (install_type, package, install_id) in each_dict:
                         entry = (package, '{0} {1}'.format(install_type, install_id))
-                        if install_type in ['pip', 'pip-git']:
+                        if install_type in ['pip-pypi', 'pip-git']:
                             try:
                                 module = importlib.util.find_spec(package)
                                 if module is None:

@@ -124,7 +124,7 @@ OUTPUT_INFO = {
     'wireless_433MHz_pi_switch': {
         'name': 'Wireless (433MHz)',
         'dependencies_module': [
-            ('pip', 'rpi_rf', 'rpi_rf')
+            ('pip-pypi', 'rpi_rf', 'rpi_rf')
         ],
         'measure': []},
     'command': {
@@ -142,7 +142,7 @@ CALIBRATION_INFO = {
     'CALIBRATE_DS_TYPE': {
         'name': 'DS-Type Sensor Calibration',
         'dependencies_module': [
-            ('pip', 'w1thermsensor', 'w1thermsensor')
+            ('pip-pypi', 'w1thermsensor', 'w1thermsensor')
         ]
     }
 }

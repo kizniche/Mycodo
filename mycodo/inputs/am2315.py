@@ -42,7 +42,7 @@ INPUT_INFORMATION = {
     'measurements_name': 'Humidity/Temperature',
     'measurements_list': ['dewpoint', 'humidity', 'temperature'],
     'dependencies_module': [
-        ('pip', 'quick2wire', 'quick2wire-api')
+        ('pip-pypi', 'quick2wire', 'quick2wire-api')
     ],
     'interfaces': ['I2C'],
     'i2c_location': ['0x5c'],

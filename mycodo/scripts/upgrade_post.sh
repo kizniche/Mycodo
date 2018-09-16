@@ -27,15 +27,9 @@ ${INSTALL_CMD} update-logrotate
 ${INSTALL_CMD} update-pip3
 ${INSTALL_CMD} update-pip3-packages
 ${INSTALL_CMD} update-permissions
-${INSTALL_CMD} upgrade-pip3-packages
 
 printf "\n#### Checking for updates to dependencies\n"
-DEPENDENCIES=$(${INSTALL_DIRECTORY}/env/bin/python3 ${INSTALL_DIRECTORY}/mycodo/utils/dependencies_installed.py 2>&1)
-IFS=','
-for each_dep in $DEPENDENCIES
-do
-    ${INSTALL_DEP} $each_dep
-done
+${INSTALL_DIRECTORY}/env/bin/python ${INSTALL_DIRECTORY}/mycodo/utils/update_installed_dependencies.py
 
 ${INSTALL_CMD} update-influxdb
 ${INSTALL_CMD} update-alembic

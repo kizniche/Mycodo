@@ -10,7 +10,7 @@ INPUT_INFORMATION = {
     'measurements_name': 'Voltage (Analog-to-Digital Converter)',
     'measurements_list': ['voltage'],
     'dependencies_module': [
-        ('pip', 'MCP342x', 'MCP342x==0.3.3')
+        ('pip-pypi', 'MCP342x', 'MCP342x==0.3.3')
     ],
     'interfaces': ['I2C'],
     'i2c_location': [

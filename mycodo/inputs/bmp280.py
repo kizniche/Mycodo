@@ -16,7 +16,7 @@ INPUT_INFORMATION = {
     'measurements_name': 'Pressure/Temperature',
     'measurements_list': ['altitude', 'pressure', 'temperature'],
     'dependencies_module': [
-        ('pip', 'Adafruit_GPIO', 'Adafruit_GPIO')
+        ('pip-pypi', 'Adafruit_GPIO', 'Adafruit_GPIO')
     ],
     'interfaces': ['I2C'],
     'i2c_location': ['0x77'],
