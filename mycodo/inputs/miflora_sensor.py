@@ -14,7 +14,7 @@ INPUT_INFORMATION = {
     'dependencies_module': [
         ('pip', 'miflora', 'miflora'),
         ('pip', 'btlewrap', 'btlewrap'),
-        ('apt', 'libglib2.0-dev', 'apt libglib2.0-dev'),
+        ('apt', 'libglib2.0-dev', 'libglib2.0-dev'),
         ('pip', 'bluepy', 'bluepy==1.1.4'),
     ],
     'interfaces': ['BT'],

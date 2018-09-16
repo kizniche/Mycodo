@@ -36,6 +36,7 @@ from mycodo.mycodo_flask.extensions import db
 from mycodo.utils.inputs import parse_input_information
 from mycodo.utils.system_pi import add_custom_measurements
 from mycodo.utils.system_pi import add_custom_units
+from mycodo.utils.system_pi import cmd_output
 
 logger = logging.getLogger(__name__)
 
@@ -717,24 +718,23 @@ def return_dependencies(device_type, dep_type='unmet'):
             for each_device, each_dict in each_section[device_type].items():
                 if each_device == 'dependencies_module':
                     for (install_type, package, install_id) in each_dict:
-                        if install_type == 'pip':
+                        entry = (package, '{0} {1}'.format(install_type, install_id))
+                        if install_type in ['pip', 'pip-git']:
                             try:
                                 module = importlib.util.find_spec(package)
                                 if module is None:
-                                    if (install_type, package, install_id) not in unmet_deps:
-                                        unmet_deps.append((install_type, package, install_id))
+                                    if entry not in unmet_deps:
+                                        unmet_deps.append(entry)
                                 else:
                                     met_deps = True
                             except ImportError:
-                                if (install_type, package, install_id) not in unmet_deps:
-                                    unmet_deps.append((install_type, package, install_id))
+                                if entry not in unmet_deps:
+                                    unmet_deps.append(entry)
                         elif install_type == 'apt':
-                            from mycodo.utils.system_pi import cmd_output
                             cmd = 'dpkg -l {}'.format(package)
                             _, _, stat = cmd_output(cmd)
-                            if stat:
-                                if (install_type, package, install_id) not in unmet_deps:
-                                    unmet_deps.append((install_type, package, install_id))
+                            if stat and entry not in unmet_deps:
+                                    unmet_deps.append(entry)
                             else:
                                 met_deps = True
 

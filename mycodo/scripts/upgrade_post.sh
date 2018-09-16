@@ -34,7 +34,7 @@ DEPENDENCIES=$(${INSTALL_DIRECTORY}/env/bin/python3 ${INSTALL_DIRECTORY}/mycodo/
 IFS=','
 for i in $DEPENDENCIES
 do
-    ${INSTALL_DEP} echo $i
+    ${INSTALL_DEP} $i
 done
 
 ${INSTALL_CMD} update-influxdb

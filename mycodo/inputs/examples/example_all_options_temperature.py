@@ -41,9 +41,9 @@ INPUT_INFORMATION = {
     'dependencies_module': [  # List of tuples
         ('pip', 'Adafruit_GPIO', 'Adafruit_GPIO'),
         ('pip', 'bluepy', 'bluepy==1.1.4'),
-        ('pip', 'adafruit-bme280', '-e git://github.com/adafruit/Adafruit_Python_BME280.git#egg=adafruit-bme280'),
-        ('apt', 'tailwhip', 'apt whiptail'),
-        ('apt', 'zsh', 'apt zsh'),
+        ('pip-git', 'adafruit-bme280', 'git://github.com/adafruit/Adafruit_Python_BME280.git#egg=adafruit-bme280'),
+        ('apt', 'tailwhip', 'whiptail'),
+        ('apt', 'zsh', 'zsh'),
     ],
 
     # Interface options: 'GPIO', 'I2C', 'UART', '1WIRE', 'BT', 'Mycodo', 'RPi'

@@ -16,7 +16,9 @@ INPUT_INFORMATION = {
     'input_name': 'Dummy Input 00',
     'measurements_name': 'Humidity/Temperature',
     'measurements_list': ['dewpoint', 'humidity', 'temperature'],  # List of strings
-    'dependencies_module': ['pip', 'random', 'random'],
+    'dependencies_module': [
+        ('pip', 'random', 'random')
+    ],
     'interfaces': ['I2C'],
     'i2c_location': ['0x5c'],
     'i2c_address_editable': False,

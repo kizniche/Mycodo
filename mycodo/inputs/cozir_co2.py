@@ -13,7 +13,7 @@ INPUT_INFORMATION = {
     'measurements_name': 'CO2/Humidity/Temperature',
     'measurements_list': ['co2', 'dewpoint', 'humidity', 'temperature'],
     'dependencies_module': [
-        ('pip', 'cozir', '-e git://github.com/pierre-haessig/pycozir.git#egg=cozir')
+        ('pip-git', 'cozir', 'git://github.com/pierre-haessig/pycozir.git#egg=cozir')
     ],
     'interfaces': ['UART'],
     'uart_location': '/dev/ttyAMA0',

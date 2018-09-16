@@ -139,8 +139,8 @@ def install_dependencies(dependencies):
     now = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     dependency_list = []
     for each_dependency in dependencies:
-        if each_dependency[1] not in dependency_list:
-            dependency_list.append(each_dependency[1])
+        if each_dependency[0] not in dependency_list:
+            dependency_list.append(each_dependency[0])
     with open(DEPENDENCY_LOG_FILE, 'a') as f:
         f.write("\n[{time}] Dependency installation beginning. Installing: {deps}\n\n".format(
             time=now, deps=",".join(dependency_list)))
@@ -150,14 +150,14 @@ def install_dependencies(dependencies):
               " | ts '[%Y-%m-%d %H:%M:%S]' >> {log} 2>&1".format(
             pth=INSTALL_DIRECTORY,
             log=DEPENDENCY_LOG_FILE,
-            dep=each_dep[2])
+            dep=each_dep[1])
         logger.error("CMD: {}".format(cmd))
         dep = subprocess.Popen(cmd, shell=True)
         dep.wait()
         now = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         with open(DEPENDENCY_LOG_FILE, 'a') as f:
             f.write("\n[{time}] Successfully installed {dep}\n\n".format(
-                time=now, dep=each_dep[2]))
+                time=now, dep=each_dep[0]))
 
     cmd = "{pth}/mycodo/scripts/mycodo_wrapper update_permissions" \
           " | ts '[%Y-%m-%d %H:%M:%S]' >> {log}  2>&1".format(

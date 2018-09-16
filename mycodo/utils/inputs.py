@@ -85,8 +85,7 @@ def parse_input_information():
 
     excluded_files = ['__init__.py', '__pycache__', 'base_input.py',
                       'custom_inputs', 'examples', 'tmp_inputs',
-                      'dummy_input.py', 'input_template.py',
-                      'parse_inputs.py','sensorutils.py']
+                      'sensorutils.py']
 
     path_inputs = os.path.abspath(os.path.join(os.path.dirname(__file__), os.path.pardir) + '/inputs')
     path_custom_inputs = "{}/custom_inputs".format(path_inputs)

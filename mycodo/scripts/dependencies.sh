@@ -18,7 +18,10 @@ case "${1:-''}" in
     'apt')
         apt-get install -y ${2}
     ;;
-    '-e')
+    'pip')
+        ${INSTALL_CMD} install-pip-dependency ${2}
+    ;;
+    'pip-git')
         ${INSTALL_CMD} install-pip-dependency -e ${2}
     ;;
     'numpy')

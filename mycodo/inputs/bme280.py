@@ -18,7 +18,7 @@ INPUT_INFORMATION = {
     'measurements_name': 'Pressure/Humidity/Temperature',
     'measurements_list': ['altitude', 'dewpoint', 'humidity', 'pressure', 'temperature'],
     'dependencies_module': [
-        ('pip', 'Adafruit_BME280', '-e git://github.com/adafruit/Adafruit_Python_BME280.git#egg=adafruit-bme280'),
+        ('pip-git', 'Adafruit_BME280', 'git://github.com/adafruit/Adafruit_Python_BME280.git#egg=adafruit-bme280'),
         ('pip', 'Adafruit_GPIO', 'Adafruit_GPIO')
     ],
     'interfaces': ['I2C'],

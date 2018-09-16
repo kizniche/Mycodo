@@ -12,7 +12,7 @@ INPUT_INFORMATION = {
     'measurements_name': 'Light',
     'measurements_list': ['light'],
     'dependencies_module': [
-        ('pip', 'tsl2591', '-e git://github.com/maxlklaxl/python-tsl2591.git#egg=tsl2591')
+        ('pip-git', 'tsl2591', 'git://github.com/maxlklaxl/python-tsl2591.git#egg=tsl2591')
     ],
     'interfaces': ['I2C'],
     'i2c_location': ['0x29'],
