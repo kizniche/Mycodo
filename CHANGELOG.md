@@ -1,3 +1,10 @@
+## 6.3.4 (2018-09-17)
+
+### Bugfixes
+
+ - Fix issue with note system during upgrade ([#529](https://github.com/kizniche/mycodo/issues/529))
+
+
 ## 6.3.3 (2018-09-17)
 
 ### Bugfixes
