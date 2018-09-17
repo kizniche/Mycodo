@@ -329,25 +329,28 @@ def form_input_choices(choices, each_input, dict_inputs):
                     id=each_input.unique_id,
                     meas=each_measure)
 
-                custom_dict_measurements = {}
-                for each_measurement in each_input.convert_to_unit.split(';'):
-                    custom_dict_measurements[each_measurement.split(',')[0]] = each_measurement.split(',')[1]
+                try:
+                    custom_dict_measurements = {}
+                    for each_measurement in each_input.convert_to_unit.split(';'):
+                        custom_dict_measurements[each_measurement.split(',')[0]] = each_measurement.split(',')[1]
 
-                measure_display, unit_display = check_display_names(
-                    each_measure, custom_dict_measurements[each_measure])
+                    measure_display, unit_display = check_display_names(
+                        each_measure, custom_dict_measurements[each_measure])
 
-                if unit_display:
-                    display = '[Input {id:02d}] {name} ({meas}, {unit})'.format(
-                        id=each_input.id,
-                        name=each_input.name,
-                        meas=measure_display,
-                        unit=unit_display)
-                else:
-                    display = '[Input {id:02d}] {name} ({meas})'.format(
-                        id=each_input.id,
-                        name=each_input.name,
-                        meas=measure_display)
-                choices.update({value: display})
+                    if unit_display:
+                        display = '[Input {id:02d}] {name} ({meas}, {unit})'.format(
+                            id=each_input.id,
+                            name=each_input.name,
+                            meas=measure_display,
+                            unit=unit_display)
+                    else:
+                        display = '[Input {id:02d}] {name} ({meas})'.format(
+                            id=each_input.id,
+                            name=each_input.name,
+                            meas=measure_display)
+                    choices.update({value: display})
+                except:
+                    logger.exception("Generating input choices")
 
     # Linux Command Input
     if (each_input.device == 'LinuxCommand' and

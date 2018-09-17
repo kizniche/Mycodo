@@ -98,6 +98,10 @@ def upgrade():
                 each_input.interface = 'UART'
                 each_input.device = 'MH_Z19'
 
+            elif each_input.device == 'COZIR_CO2':
+                each_input.measurements = '{meas},dewpoint'.format(meas=each_input.measurements)
+                each_input.convert_to_unit = '{meas};dewpoint,C'.format(meas=each_input.convert_to_unit)
+
             if (each_input.location == 'RPi' or
                     each_input.device == 'RPiFreeSpace'):
                 each_input.interface = 'RPi'
