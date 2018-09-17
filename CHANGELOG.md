@@ -1,3 +1,10 @@
+## 6.3.6 (2018-09-17)
+
+### Bugfixes
+
+ - Fix issue with Edge devices
+
+
 ## 6.3.5 (2018-09-17)
 
 ### Bugfixes
