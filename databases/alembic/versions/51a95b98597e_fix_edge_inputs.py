@@ -5,8 +5,13 @@ Revises: 74287a59f98a
 Create Date: 2018-09-17 14:54:53.142317
 
 """
-from alembic import op
+import sys
+
+import os
 import sqlalchemy as sa
+from alembic import op
+
+sys.path.append(os.path.abspath(os.path.join(__file__, "../../../..")))
 
 from mycodo.databases.models import Input
 from mycodo.databases.utils import session_scope
