@@ -12,15 +12,16 @@ INPUT_INFORMATION = {
     'input_name': 'Signal (Revolutions)',
     'measurements_name': 'RPM',
     'measurements_list': ['revolutions'],
+    'options_enabled': ['gpio_location', 'rpm_pulses_per_rev', 'weighting', 'sample_time', 'period', 'convert_unit', 'pre_output'],
+    'options_disabled': ['interface'],
+
     'dependencies_module': [
         ('internal', 'pigpio', 'pigpio')
     ],
     'interfaces': ['GPIO'],
     'weighting': 0.0,
     'sample_time': 2.0,
-    'rpm_pulses_per_rev': 1.0,
-    'options_enabled': ['gpio_location', 'rpm_pulses_per_rev', 'weighting', 'sample_time', 'period', 'convert_unit', 'pre_output'],
-    'options_disabled': ['interface']
+    'rpm_pulses_per_rev': 1.0
 }
 
 

@@ -11,14 +11,15 @@ INPUT_INFORMATION = {
     'input_name': 'TSL2561',
     'measurements_name': 'Light',
     'measurements_list': ['light'],
+    'options_enabled': ['i2c_location', 'period', 'convert_unit', 'pre_output'],
+    'options_disabled': ['interface'],
+
     'dependencies_module': [
         ('pip-pypi', 'tsl2561','tsl2561')
     ],
     'interfaces': ['I2C'],
     'i2c_location': ['0x39'],
-    'i2c_address_editable': False,
-    'options_enabled': ['i2c_location', 'period', 'convert_unit', 'pre_output'],
-    'options_disabled': ['interface']
+    'i2c_address_editable': False
 }
 
 

@@ -12,6 +12,9 @@ INPUT_INFORMATION = {
     'input_name': 'DS18B20',
     'measurements_name': 'Temperature',
     'measurements_list': ['temperature'],
+    'options_enabled': ['location', 'resolution', 'period', 'convert_unit', 'pre_output'],
+    'options_disabled': ['interface'],
+
     'dependencies_module': [
         ('pip-pypi', 'w1thermsensor', 'w1thermsensor')
     ],
@@ -23,9 +26,7 @@ INPUT_INFORMATION = {
         (10, '10-bit, 0.25 °C, 187.5 ms'),
         (11, '11-bit, 0.125 °C, 375 ms'),
         (12, '12-bit, 0.0625 °C, 750 ms')
-    ],
-    'options_disabled': ['interface'],
-    'options_enabled': ['location', 'resolution', 'period', 'convert_unit', 'pre_output'],
+    ]
 }
 
 

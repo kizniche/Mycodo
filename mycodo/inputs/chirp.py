@@ -14,11 +14,12 @@ INPUT_INFORMATION = {
     'input_name': 'Chirp',
     'measurements_name': 'Light/Moisture/Temperature',
     'measurements_list': ['light', 'moisture', 'temperature'],
+    'options_enabled': ['i2c_location', 'period', 'convert_unit', 'pre_output'],
+    'options_disabled': ['interface'],
+
     'interfaces': ['I2C'],
     'i2c_location': ['0x40'],
-    'i2c_address_editable': True,
-    'options_enabled': ['i2c_location', 'period', 'convert_unit', 'pre_output'],
-    'options_disabled': ['interface']
+    'i2c_address_editable': True
 }
 
 

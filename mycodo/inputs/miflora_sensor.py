@@ -11,6 +11,9 @@ INPUT_INFORMATION = {
     'input_name': 'Miflora',
     'measurements_name': 'EC/Light/Moisture/Temperature',
     'measurements_list': ['battery', 'electrical_conductivity', 'light', 'moisture', 'temperature'],
+    'options_enabled': ['bt_location', 'period', 'convert_unit', 'pre_output'],
+    'options_disabled': ['interface'],
+
     'dependencies_module': [
         ('pip-pypi', 'miflora', 'miflora'),
         ('pip-pypi', 'btlewrap', 'btlewrap'),
@@ -19,9 +22,7 @@ INPUT_INFORMATION = {
     ],
     'interfaces': ['BT'],
     'bt_location': '00:00:00:00:00:00',
-    'bt_adapter': 'hci0',
-    'options_enabled': ['bt_location', 'period', 'convert_unit', 'pre_output'],
-    'options_disabled': ['interface']
+    'bt_adapter': 'hci0'
 }
 
 

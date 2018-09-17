@@ -14,9 +14,10 @@ INPUT_INFORMATION = {
     'input_manufacturer': 'Mycodo',
     'measurements_name': 'Size RAM in Use',
     'measurements_list': ['disk_space'],
-    'interfaces': ['Mycodo'],
+    'options_enabled': ['period', 'convert_unit'],
     'options_disabled': ['interface'],
-    'options_enabled': ['period', 'convert_unit']
+
+    'interfaces': ['Mycodo']
 }
 
 class InputModule(AbstractInput):

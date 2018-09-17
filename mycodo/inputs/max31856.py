@@ -34,6 +34,9 @@ INPUT_INFORMATION = {
     'input_name': 'MAX31856',
     'measurements_name': 'Temperature (Object/Die)',
     'measurements_list': ['temperature', 'temperature_die'],
+    'options_enabled': ['thermocouple_type', 'pin_cs', 'pin_miso', 'pin_mosi', 'pin_clock', 'period', 'convert_unit', 'pre_output'],
+    'options_disabled': ['interface'],
+
     'dependencies_module': [
         ('pip-pypi', 'RPi.GPIO', 'RPi.GPIO')
     ],
@@ -51,9 +54,7 @@ INPUT_INFORMATION = {
         ('R', 'Type-R'),
         ('S', 'Type-S'),
         ('T', 'Type-T')
-    ],
-    'options_disabled': ['interface'],
-    'options_enabled': ['thermocouple_type', 'pin_cs', 'pin_miso', 'pin_mosi', 'pin_clock', 'period', 'convert_unit', 'pre_output'],
+    ]
 }
 
 

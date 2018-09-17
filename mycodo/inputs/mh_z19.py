@@ -13,11 +13,12 @@ INPUT_INFORMATION = {
     'input_name': 'MH-Z19',
     'measurements_name': 'CO2',
     'measurements_list': ['co2'],
+    'options_enabled': ['uart_location', 'uart_baud_rate', 'period',  'convert_unit', 'pre_output'],
+    'options_disabled': ['interface'],
+
     'interfaces': ['UART'],
     'uart_location': '/dev/ttyAMA0',
-    'uart_baud_rate': 9600,
-    'options_disabled': ['interface'],
-    'options_enabled': ['uart_location', 'uart_baud_rate', 'period',  'convert_unit', 'pre_output'],
+    'uart_baud_rate': 9600
 }
 
 

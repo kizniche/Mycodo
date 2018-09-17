@@ -41,14 +41,15 @@ INPUT_INFORMATION = {
     'input_name': 'AM2315',
     'measurements_name': 'Humidity/Temperature',
     'measurements_list': ['dewpoint', 'humidity', 'temperature'],
+    'options_enabled': ['period', 'convert_unit', 'pre_output'],
+    'options_disabled': ['interface', 'i2c_location'],
+
     'dependencies_module': [
         ('pip-pypi', 'quick2wire', 'quick2wire-api')
     ],
     'interfaces': ['I2C'],
     'i2c_location': ['0x5c'],
-    'i2c_address_editable': False,
-    'options_enabled': ['period', 'convert_unit', 'pre_output'],
-    'options_disabled': ['interface', 'i2c_location']
+    'i2c_address_editable': False
 }
 
 

@@ -11,15 +11,16 @@ INPUT_INFORMATION = {
     'input_name': 'CCS811',
     'measurements_name': 'CO2/VOC/Temperature',
     'measurements_list': ['co2', 'voc', 'temperature'],
+    'options_enabled': ['i2c_location', 'period', 'convert_unit', 'pre_output'],
+    'options_disabled': ['interface'],
+
     'dependencies_module': [
         ('pip-pypi', 'Adafruit_CCS811', 'Adafruit_CCS811'),
         ('pip-pypi', 'Adafruit_GPIO', 'Adafruit_GPIO')
     ],
     'interfaces': ['I2C'],
     'i2c_location': ['0x5a', '0x5b'],
-    'i2c_address_editable': False,
-    'options_enabled': ['i2c_location', 'period', 'convert_unit', 'pre_output'],
-    'options_disabled': ['interface']
+    'i2c_address_editable': False
 }
 
 class InputModule(AbstractInput):

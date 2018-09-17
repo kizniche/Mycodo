@@ -15,12 +15,13 @@ INPUT_INFORMATION = {
     'input_name': 'Atlas pH',
     'measurements_name': 'Ion Concentration',
     'measurements_list': ['ion_concentration'],
+    'options_enabled': ['i2c_location', 'uart_location', 'period', 'convert_unit', 'pre_output'],
+    'options_disabled': ['interface'],
+
     'interfaces': ['I2C', 'UART'],
     'i2c_location': ['0x66'],
     'i2c_address_editable': True,
-    'uart_location': '/dev/ttyAMA0',
-    'options_enabled': ['i2c_location', 'uart_location', 'period', 'convert_unit', 'pre_output'],
-    'options_disabled': ['interface']
+    'uart_location': '/dev/ttyAMA0'
 }
 
 

@@ -1,3 +1,10 @@
+## 6.3.5 (2018-09-17)
+
+### Bugfixes
+
+ - Fix issue with 1-Wire devices ([#529](https://github.com/kizniche/mycodo/issues/529))
+
+
 ## 6.3.4 (2018-09-17)
 
 ### Bugfixes

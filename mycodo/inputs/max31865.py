@@ -37,6 +37,9 @@ INPUT_INFORMATION = {
     'input_name': 'MAX31865',
     'measurements_name': 'Temperature',
     'measurements_list': ['temperature'],
+    'options_enabled': ['thermocouple_type', 'pin_cs', 'pin_miso', 'pin_mosi', 'pin_clock', 'ref_ohm', 'period', 'convert_unit', 'pre_output'],
+    'options_disabled': ['interface'],
+
     'dependencies_module': [
         ('pip-pypi', 'RPi.GPIO', 'RPi.GPIO')
     ],
@@ -49,9 +52,7 @@ INPUT_INFORMATION = {
         ('PT100', 'PT-100'),
         ('PT1000', 'PT-1000')
     ],
-    'ref_ohm': 0,
-    'options_disabled': ['interface'],
-    'options_enabled': ['thermocouple_type', 'pin_cs', 'pin_miso', 'pin_mosi', 'pin_clock', 'ref_ohm', 'period', 'convert_unit', 'pre_output'],
+    'ref_ohm': 0
 }
 
 

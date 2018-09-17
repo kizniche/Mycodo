@@ -12,13 +12,14 @@ INPUT_INFORMATION = {
     'input_name': 'DS18S20',
     'measurements_name': 'Temperature',
     'measurements_list': ['temperature'],
+    'options_enabled': ['location', 'period', 'convert_unit', 'pre_output'],
+    'options_disabled': ['interface'],
+
     'dependencies_module': [
         ('pip-pypi', 'w1thermsensor', 'w1thermsensor')
     ],
     'interfaces': ['1WIRE'],
-    'w1thermsensor_detect_1wire': True,
-    'options_disabled': ['interface'],
-    'options_enabled': ['location', 'period', 'convert_unit', 'pre_output'],
+    'w1thermsensor_detect_1wire': True
 }
 
 

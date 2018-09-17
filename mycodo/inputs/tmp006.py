@@ -11,6 +11,9 @@ INPUT_INFORMATION = {
     'input_name': 'TMP006',
     'measurements_name': 'Temperature (Object/Die)',
     'measurements_list': ['temperature_object', 'temperature_die'],
+    'options_enabled': ['i2c_location', 'period', 'convert_unit', 'pre_output'],
+    'options_disabled': ['interface'],
+
     'dependencies_module': [
         ('pip-pypi', 'Adafruit_TMP', 'Adafruit_TMP')
     ],
@@ -25,9 +28,7 @@ INPUT_INFORMATION = {
         '0x46',
         '0x47'
     ],
-    'i2c_address_editable': False,
-    'options_enabled': ['i2c_location', 'period', 'convert_unit', 'pre_output'],
-    'options_disabled': ['interface']
+    'i2c_address_editable': False
 }
 
 

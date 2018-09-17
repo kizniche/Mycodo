@@ -11,14 +11,15 @@ INPUT_INFORMATION = {
     'input_name': 'TSL2591',
     'measurements_name': 'Light',
     'measurements_list': ['light'],
+    'options_enabled': ['i2c_location', 'period', 'convert_unit', 'pre_output'],
+    'options_disabled': ['interface'],
+
     'dependencies_module': [
         ('pip-git', 'tsl2591', 'git://github.com/maxlklaxl/python-tsl2591.git#egg=tsl2591')
     ],
     'interfaces': ['I2C'],
     'i2c_location': ['0x29'],
-    'i2c_address_editable': False,
-    'options_enabled': ['i2c_location', 'period', 'convert_unit', 'pre_output'],
-    'options_disabled': ['interface']
+    'i2c_address_editable': False
 }
 
 

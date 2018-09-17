@@ -16,6 +16,9 @@ INPUT_INFORMATION = {
     'input_name': 'BH1750',
     'measurements_name': 'Light',
     'measurements_list': ['light'],
+    'options_enabled': ['i2c_location', 'period', 'resolution', 'sensitivity', 'pre_output'],
+    'options_disabled': ['interface'],
+
     'interfaces': ['I2C'],
     'i2c_location': ['0x23', '0x5c'],
     'i2c_address_editable': False,
@@ -24,9 +27,7 @@ INPUT_INFORMATION = {
         (1, 'High'),
         (2, 'High 2')
     ],
-    'sensitivity': list_sensitivity,
-    'options_enabled': ['i2c_location', 'period', 'resolution', 'sensitivity', 'pre_output'],
-    'options_disabled': ['interface']
+    'sensitivity': list_sensitivity
 }
 
 # Define some constants from the datasheet

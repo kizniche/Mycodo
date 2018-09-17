@@ -9,6 +9,9 @@ INPUT_INFORMATION = {
     'input_name': 'MCP3008',
     'measurements_name': 'Voltage (Analog-to-Digital Converter)',
     'measurements_list': ['voltage'],
+    'options_enabled': ['pin_cs', 'pin_miso', 'pin_mosi', 'pin_clock', 'adc_channel', 'adc_options', 'period', 'pre_output'],
+    'options_disabled': ['interface'],
+
     'dependencies_module': [
         ('pip-pypi', 'Adafruit_MCP3008', 'Adafruit_MCP3008')
     ],
@@ -25,9 +28,7 @@ INPUT_INFORMATION = {
         (3, 'Channel 3')
     ],
     'adc_volts_min': -4.096,
-    'adc_volts_max': 4.096,
-    'options_enabled': ['pin_cs', 'pin_miso', 'pin_mosi', 'pin_clock', 'adc_channel', 'adc_options', 'period', 'pre_output'],
-    'options_disabled': ['interface']
+    'adc_volts_max': 4.096
 }
 
 class ADCModule(object):

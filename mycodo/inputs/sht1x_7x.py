@@ -11,6 +11,9 @@ INPUT_INFORMATION = {
     'input_name': 'SHT1x/7x',
     'measurements_name': 'Humidity/Temperature',
     'measurements_list': ['dewpoint', 'humidity', 'temperature'],
+    'options_enabled': ['gpio_location', 'sht_voltage', 'period', 'pin_clock', 'convert_unit', 'pre_output'],
+    'options_disabled': ['interface'],
+
     'dependencies_module': [
         ('pip-pypi', 'sht_sensor', 'sht_sensor')
     ],
@@ -22,9 +25,7 @@ INPUT_INFORMATION = {
         ('3.5', '3.5V'),
         ('4.0', '4.0V'),
         ('5.0', '5.0V')
-    ],
-    'options_enabled': ['gpio_location', 'sht_voltage', 'period', 'pin_clock', 'convert_unit', 'pre_output'],
-    'options_disabled': ['interface']
+    ]
 }
 
 

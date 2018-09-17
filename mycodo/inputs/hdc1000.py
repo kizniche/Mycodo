@@ -19,6 +19,9 @@ INPUT_INFORMATION = {
     'input_name': 'HDC1000',
     'measurements_name': 'Humidity/Temperature',
     'measurements_list': ['dewpoint', 'humidity', 'temperature'],
+    'options_enabled': ['i2c_location', 'period', 'resolution', 'resolution_2', 'convert_unit', 'pre_output'],
+    'options_disabled': ['interface'],
+
     'interfaces': ['I2C'],
     'i2c_location': ['0x40'],
     'i2c_address_editable': False,
@@ -30,9 +33,7 @@ INPUT_INFORMATION = {
         (8, 'Humidity 8-bit'),
         (11, 'Humidity 11-bit'),
         (14, 'Humidity 14-bit')
-    ],
-    'options_enabled': ['i2c_location', 'period', 'resolution', 'resolution_2', 'convert_unit', 'pre_output'],
-    'options_disabled': ['interface']
+    ]
 }
 
 # I2C Address

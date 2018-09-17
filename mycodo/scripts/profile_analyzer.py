@@ -26,7 +26,7 @@
 import argparse
 import datetime
 import logging
-import os.path
+import os
 import re
 
 logging.basicConfig(format='%(asctime)s %(message)s',

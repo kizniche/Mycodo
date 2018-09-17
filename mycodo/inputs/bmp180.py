@@ -12,15 +12,16 @@ INPUT_INFORMATION = {
     'input_name': 'BMP180',
     'measurements_name': 'Pressure/Temperature',
     'measurements_list': ['altitude', 'pressure', 'temperature'],
+    'options_enabled': ['i2c_location', 'period', 'convert_unit', 'pre_output'],
+    'options_disabled': ['interface'],
+
     'dependencies_module': [
         ('pip-pypi', 'Adafruit_BMP', 'Adafruit_BMP'),
         ('pip-pypi', 'Adafruit_GPIO', 'Adafruit_GPIO')
     ],
     'interfaces': ['I2C'],
     'i2c_location': ['0x77'],
-    'i2c_address_editable': False,
-    'options_enabled': ['i2c_location', 'period', 'convert_unit', 'pre_output'],
-    'options_disabled': ['interface']
+    'i2c_address_editable': False
 }
 
 

@@ -34,14 +34,15 @@ INPUT_INFORMATION = {
     'input_name': 'HTU21D',
     'measurements_name': 'Humidity/Temperature',
     'measurements_list': ['dewpoint', 'humidity', 'temperature'],
+    'options_enabled': ['i2c_location', 'period', 'convert_unit', 'pre_output'],
+    'options_disabled': ['interface'],
+
     'dependencies_module': [
         ('internal', 'pigpio', 'pigpio')
     ],
     'interfaces': ['I2C'],
     'i2c_location': ['0x40'],
-    'i2c_address_editable': False,
-    'options_enabled': ['i2c_location', 'period', 'convert_unit', 'pre_output'],
-    'options_disabled': ['interface']
+    'i2c_address_editable': False
 }
 
 

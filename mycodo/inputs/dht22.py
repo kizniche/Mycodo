@@ -16,12 +16,13 @@ INPUT_INFORMATION = {
     'input_name': 'DHT22',
     'measurements_name': 'Humidity/Temperature',
     'measurements_list': ['dewpoint', 'humidity', 'temperature'],
+    'options_enabled': ['gpio_location', 'period', 'convert_unit', 'pre_output'],
+    'options_disabled': ['interface'],
+
     'dependencies_module': [
         ('internal', 'pigpio', 'pigpio')
     ],
-    'interfaces': ['GPIO'],
-    'options_enabled': ['gpio_location', 'period', 'convert_unit', 'pre_output'],
-    'options_disabled': ['interface']
+    'interfaces': ['GPIO']
 }
 
 

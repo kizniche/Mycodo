@@ -12,9 +12,10 @@ INPUT_INFORMATION = {
     'input_name': 'RPi CPU Temp',
     'measurements_name': 'Temperature',
     'measurements_list': ['temperature'],
-    'interfaces': ['RPi'],
-    'options_disabled': ['interface'],
     'options_enabled': ['period', 'convert_unit'],
+    'options_disabled': ['interface'],
+
+    'interfaces': ['RPi']
 }
 
 

@@ -11,6 +11,9 @@ INPUT_INFORMATION = {
     'input_name': 'MAX31855',
     'measurements_name': 'Temperature (Object/Die)',
     'measurements_list': ['temperature', 'temperature_die'],
+    'options_enabled': ['period', 'pin_clock', 'pin_cs', 'pin_miso', 'convert_unit', 'pre_output'],
+    'options_disabled': ['interface'],
+
     'dependencies_module': [
         ('pip-git', 'Adafruit_MAX31855', 'git://github.com/adafruit/Adafruit_Python_MAX31855.git#egg=adafruit-max31855'),
         ('pip-pypi', 'Adafruit_GPIO','Adafruit_GPIO')
@@ -18,9 +21,7 @@ INPUT_INFORMATION = {
     'interfaces': ['UART'],
     'pin_cs': 8,
     'pin_miso': 9,
-    'pin_clock': 11,
-    'options_enabled': ['period', 'pin_clock', 'pin_cs', 'pin_miso', 'convert_unit', 'pre_output'],
-    'options_disabled': ['interface']
+    'pin_clock': 11
 }
 
 

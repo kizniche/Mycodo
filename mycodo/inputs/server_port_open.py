@@ -11,15 +11,16 @@ INPUT_INFORMATION = {
     'input_name': 'Server Port Open',
     'measurements_name': 'Boolean',
     'measurements_list': ['boolean'],
+    'options_enabled': ['location', 'port', 'period', 'pre_output'],
+    'options_disabled': ['interface'],
+
     'interfaces': ['Mycodo'],
     'location': {
         'title': 'Host Location',
         'phrase': 'Host name or IP address',
         'options': [('127.0.0.1', '')]
     },
-    'port': 80,
-    'options_enabled': ['location', 'port', 'period', 'pre_output'],
-    'options_disabled': ['interface']
+    'port': 80
 }
 
 

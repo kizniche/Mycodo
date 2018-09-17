@@ -12,12 +12,13 @@ INPUT_INFORMATION = {
     'input_name': 'Linux Command',
     'measurements_name': 'Return Value',
     'measurements_list': [],
+    'options_enabled': ['period', 'cmd_command', 'measurement_units', 'convert_unit', 'pre_output'],
+    'options_disabled': ['interface'],
+
     'interfaces': ['Mycodo'],
     'cmd_command': 'shuf -i 50-70 -n 1',
     'measurement': 'Condition',
-    'measurement_units': 'unit',
-    'options_enabled': ['period', 'cmd_command', 'measurement_units', 'convert_unit', 'pre_output'],
-    'options_disabled': ['interface']
+    'measurement_units': 'unit'
 }
 
 

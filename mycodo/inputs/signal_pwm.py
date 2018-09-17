@@ -12,14 +12,15 @@ INPUT_INFORMATION = {
     'input_name': 'Signal (PWM)',
     'measurements_name': 'Frequency/Pulse Width/Duty Cycle',
     'measurements_list': ['frequency','pulse_width', 'duty_cycle'],
+    'options_enabled': ['gpio_location', 'weighting', 'sample_time', 'period', 'convert_unit', 'pre_output'],
+    'options_disabled': ['interface'],
+
     'dependencies_module': [
         ('internal', 'pigpio', 'pigpio')
     ],
     'interfaces': ['GPIO'],
     'weighting': 0.0,
-    'sample_time': 2.0,
-    'options_enabled': ['gpio_location', 'weighting', 'sample_time', 'period', 'convert_unit', 'pre_output'],
-    'options_disabled': ['interface']
+    'sample_time': 2.0
 }
 
 

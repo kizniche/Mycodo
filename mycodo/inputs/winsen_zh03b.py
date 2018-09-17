@@ -14,14 +14,15 @@ INPUT_INFORMATION = {
     'input_name': 'ZH03B',
     'measurements_name': 'Particulates',
     'measurements_list': ['particulate_matter_1_0', 'particulate_matter_2_5', 'particulate_matter_10_0'],
+    'options_enabled': ['uart_location', 'uart_baud_rate', 'period', 'convert_unit', 'pre_output'],
+    'options_disabled': ['interface'],
+
     'dependencies_module': [
         ('pip-pypi', 'binascii', 'binascii')
     ],
     'interfaces': ['UART'],
     'uart_location': '/dev/ttyAMA0',
-    'uart_baud_rate': 9600,
-    'options_disabled': ['interface'],
-    'options_enabled': ['uart_location', 'uart_baud_rate', 'period', 'convert_unit', 'pre_output'],
+    'uart_baud_rate': 9600
 }
 
 

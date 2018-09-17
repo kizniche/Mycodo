@@ -13,14 +13,15 @@ INPUT_INFORMATION = {
     'input_name': 'Free Space',
     'measurements_name': 'Unallocated Disk Space',
     'measurements_list': ['disk_space'],
+    'options_enabled': ['location', 'period', 'convert_unit'],
+    'options_disabled': ['interface'],
+
     'interfaces': ['Mycodo'],
     'location': {
         'title': 'Path',
         'phrase': 'The path to monitor the free space of',
         'options': [('/', '')]
-    },
-    'options_disabled': ['interface'],
-    'options_enabled': ['location', 'period', 'convert_unit']
+    }
 }
 
 

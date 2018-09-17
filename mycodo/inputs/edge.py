@@ -10,10 +10,11 @@ INPUT_INFORMATION = {
     'input_name': 'Edge',
     'measurements_name': 'Rising/Falling Edge',
     'measurements_list': ['edge'],
+    'options_enabled': ['gpio_location', 'period', 'pre_output'],
+    'options_disabled': ['interface'],
+
     'dependencies_module': [
         ('pip-pypi', 'RPi.GPIO', 'RPi.GPIO')
     ],
-    'interfaces': ['GPIO'],
-    'options_disabled': ['interface'],
-    'options_enabled': ['gpio_location', 'period', 'pre_output'],
+    'interfaces': ['GPIO']
 }

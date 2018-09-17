@@ -8,6 +8,9 @@ INPUT_INFORMATION = {
     'input_name': 'ADS1x15',
     'measurements_name': 'Voltage (Analog-to-Digital Converter)',
     'measurements_list': ['voltage'],
+    'options_enabled': ['adc_channel', 'adc_gain', 'adc_options', 'period', 'pre_output'],
+    'options_disabled': ['interface', 'i2c_location'],
+
     'dependencies_module': [
         ('pip-pypi', 'Adafruit_ADS1x15', 'Adafruit_ADS1x15'),
         ('pip-pypi', 'Adafruit_GPIO', 'Adafruit_GPIO')
@@ -27,9 +30,7 @@ INPUT_INFORMATION = {
                  (8, '8'),
                  (16, '16')],
     'adc_volts_min': -4.096,
-    'adc_volts_max': 4.096,
-    'options_enabled': ['adc_channel', 'adc_gain', 'adc_options', 'period', 'pre_output'],
-    'options_disabled': ['interface', 'i2c_location']
+    'adc_volts_max': 4.096
 }
 
 

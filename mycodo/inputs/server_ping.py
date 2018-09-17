@@ -11,6 +11,9 @@ INPUT_INFORMATION = {
     'input_name': 'Server Ping',
     'measurements_name': 'Boolean',
     'measurements_list': ['boolean'],
+    'options_enabled': ['location', 'times_check', 'deadline', 'period', 'pre_output'],
+    'options_disabled': ['interface'],
+
     'interfaces': ['Mycodo'],
     'location': {
         'title': 'Host Location',
@@ -18,9 +21,7 @@ INPUT_INFORMATION = {
         'options': [('127.0.0.1', '')]
     },
     'times_check': 1,
-    'deadline': 2,
-    'options_enabled': ['location', 'times_check', 'deadline', 'period', 'pre_output'],
-    'options_disabled': ['interface']
+    'deadline': 2
 }
 
 
