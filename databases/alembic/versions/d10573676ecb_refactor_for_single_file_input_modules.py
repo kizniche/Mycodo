@@ -132,7 +132,10 @@ def upgrade():
             if each_input.location and each_input.device in [
                     'DHT11', 'DHT22', 'SIGNAL_PWM', 'SIGNAL_RPM', 'SHT1x_7x',
                     'GPIO_STATE']:
-                each_input.gpio_location = int(each_input.location)
+                try:
+                    each_input.gpio_location = int(each_input.location)
+                except:
+                    pass
 
         new_session.commit()
 

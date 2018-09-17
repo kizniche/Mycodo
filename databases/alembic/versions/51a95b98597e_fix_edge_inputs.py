@@ -30,7 +30,10 @@ def upgrade():
     with session_scope(MYCODO_DB_PATH) as new_session:
         for each_input in new_session.query(Input).all():
             if each_input.device == 'EDGE':
-                each_input.gpio_location = int(each_input.location)
+                try:
+                    each_input.gpio_location = int(each_input.location)
+                except:
+                    pass
         new_session.commit()
 
 

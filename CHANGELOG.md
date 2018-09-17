@@ -1,3 +1,10 @@
+## 6.3.8 (2018-09-17)
+
+### Bugfixes
+
+ - Fix issue with database upgrade
+
+
 ## 6.3.7 (2018-09-17)
 
 ### Bugfixes
