@@ -12,8 +12,11 @@ INPUT_INFORMATION = {
     'input_name_unique': 'WINSEN_ZH03B',
     'input_manufacturer': 'Winsen',
     'input_name': 'ZH03B',
-    'measurements_name': 'CO2',
-    'measurements_list': ['co2'],
+    'measurements_name': 'Particulates',
+    'measurements_list': ['particulate_matter_1_0', 'particulate_matter_2_5', 'particulate_matter_10_0'],
+    'dependencies_module': [
+        ('pip-pypi', 'binascii', 'binascii')
+    ],
     'interfaces': ['UART'],
     'uart_location': '/dev/ttyAMA0',
     'uart_baud_rate': 9600,

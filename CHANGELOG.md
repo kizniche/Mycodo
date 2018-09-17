@@ -1,3 +1,10 @@
+## 6.3.2 (2018-09-16)
+
+### Bugfixes
+
+ - Fix ZH03B input
+
+
 ## 6.3.1 (2018-09-16)
 
 This release adds the ability to import input modules, allowing new inputs to be created by the user. Documentation (https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.rst#create-your-own-input-module) for developing your own input modules is in development. See issue #525 for more information about it's development and discussion. Also with this release is a new section for Notes (More -> Notes, https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.rst#notes). Notes are associated with one more more tags that can be created. Notes can also have files attached to them. These notes can be displayed on graphs to easily identify when a certain event happened in the past (or future).
