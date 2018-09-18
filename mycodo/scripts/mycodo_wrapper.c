@@ -89,14 +89,14 @@ int main(int argc, char *argv[]) {
             upgrade_commands(argv[0], "initialize");
 		} else if (strcmp(argv[1], "update_permissions") == 0) {
 			upgrade_commands(argv[0], "update-permissions");
-		} else if (strcmp(argv[1], "install_dependency") == 0 && strcmp(argv[2], "pip") == 0 && (argc == 4)) {
+		} else if (strcmp(argv[1], "install_dependency") == 0 && strcmp(argv[2], "pip-pypi") == 0 && (argc == 4)) {
 		    char path[255];
             strncpy(path, argv[0], sizeof(path));
             dirname(path);
 			char restoreScript[1024];
 			strncpy(restoreScript, "/bin/bash ", sizeof(restoreScript));
 			strncat(restoreScript, path, sizeof(restoreScript));
-			sprintf(cmd, "/dependencies.sh pip %s", argv[3]);
+			sprintf(cmd, "/dependencies.sh pip-pypi %s", argv[3]);
 			strncat(restoreScript, cmd, sizeof(restoreScript));
 			system(restoreScript);
 		} else if (strcmp(argv[1], "install_dependency") == 0 && strcmp(argv[2], "pip-git") == 0 && (argc == 4)) {

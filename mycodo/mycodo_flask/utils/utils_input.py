@@ -60,8 +60,11 @@ def input_add(form_add):
     else:
         unmet_deps = return_dependencies(input_name)
         if unmet_deps:
+            list_unmet_deps = []
+            for each_dep in unmet_deps:
+                list_unmet_deps.append(each_dep[0])
             error.append("The {dev} device you're trying to add has unmet dependencies: {dep}".format(
-                dev=input_name, dep=unmet_deps))
+                dev=input_name, dep=', '.join(list_unmet_deps)))
 
     if form_add.validate():
         new_input = Input()

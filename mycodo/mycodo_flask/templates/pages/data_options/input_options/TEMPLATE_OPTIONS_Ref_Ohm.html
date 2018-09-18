@@ -1,4 +1,6 @@
-{% if 'ref_ohm' in dict_inputs[each_input.device]['options_disabled'] or 'ref_ohm' in dict_inputs[each_input.device]['options_enabled'] %}
+{% if 'ref_ohm' in dict_inputs[each_input.device]['options_disabled'] or
+      'ref_ohm' in dict_inputs[each_input.device]['options_enabled']
+  %}
 
 <div class="col-auto">
   {{form_mod_input.ref_ohm.label(class_='control-label')}}

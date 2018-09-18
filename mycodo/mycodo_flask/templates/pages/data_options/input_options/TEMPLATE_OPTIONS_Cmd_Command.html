@@ -1,4 +1,6 @@
-{% if 'cmd_command' in dict_inputs[each_input.device]['options_disabled'] or 'cmd_command' in dict_inputs[each_input.device]['options_enabled'] %}
+{% if 'cmd_command' in dict_inputs[each_input.device]['options_disabled'] or
+      'cmd_command' in dict_inputs[each_input.device]['options_enabled']
+  %}
 
 <div class="col-auto">
   {{form_mod_input.cmd_command.label(class_='control-label')}}

@@ -1,4 +1,5 @@
-{% include 'pages/data_options/input_options/TEMPLATE_GPIO_PIN.html' %}
+{% if each_input.device == 'EDGE' %}
+
 <div class="col-auto">
   {{form_mod_input.switch_edge.label(class_='control-label')}}
   <div>
@@ -22,3 +23,5 @@
   </div>
 </div>
 <input id="period" name="period" type="hidden" value="10">
+
+{% endif %}

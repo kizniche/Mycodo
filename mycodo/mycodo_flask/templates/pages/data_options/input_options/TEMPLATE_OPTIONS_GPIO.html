@@ -1,6 +1,6 @@
-{% if each_input.interface == 'GPIO' %}
-
-  {% if 'gpio_location' in dict_inputs[each_input.device]['options_enabled'] or 'gpio_location' in dict_inputs[each_input.device]['options_disabled'] %}
+{% if 'gpio_location' in dict_inputs[each_input.device]['options_enabled'] or
+      'gpio_location' in dict_inputs[each_input.device]['options_disabled']
+  %}
 
 <div class="col-auto">
   <label class="control-label">{{tooltips_input['gpio_location']['title']}}</label>
@@ -12,7 +12,5 @@
     {%- endif -%}
   </div>
 </div>
-
-  {% endif %}
 
 {% endif %}

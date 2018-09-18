@@ -206,8 +206,11 @@ def setup_ds_resolution():
     # Check if w1thermsensor library is installed
     unmet_deps = return_dependencies('CALIBRATE_DS_TYPE')
     if unmet_deps:
+        list_unmet_deps = []
+        for each_dep in unmet_deps:
+            list_unmet_deps.append(each_dep[0])
         flash("The device you're trying to calibrate has unmet dependencies: {dep}".format(
-            dep=unmet_deps))
+            dep=', '.join(list_unmet_deps)))
         return redirect(url_for('routes_admin.admin_dependencies',
                                 device='CALIBRATE_DS_TYPE'))
 

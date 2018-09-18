@@ -19,10 +19,20 @@ case "${1}" in
         apt-get install -y ${2}
     ;;
     'pip-pypi')
-        ${INSTALL_CMD} install-pip-dependency ${2}
+        if [ ! -e ${INSTALL_DIRECTORY}/env/bin/python3 ]; then
+            printf "\n## Error: Virtualenv doesn't exist. Creating...\n"
+            /bin/bash ${INSTALL_DIRECTORY}/mycodo/scripts/upgrade_commands.sh setup-virtualenv
+        else
+            ${INSTALL_DIRECTORY}/env/bin/pip3 install --upgrade ${2}
+        fi
     ;;
     'pip-git')
-        ${INSTALL_CMD} install-pip-dependency -e ${2}
+        if [ ! -e ${INSTALL_DIRECTORY}/env/bin/python3 ]; then
+            printf "\n## Error: Virtualenv doesn't exist. Creating...\n"
+            /bin/bash ${INSTALL_DIRECTORY}/mycodo/scripts/upgrade_commands.sh setup-virtualenv
+        else
+            ${INSTALL_DIRECTORY}/env/bin/pip3 install --upgrade -e ${2}
+        fi
     ;;
     'numpy')
         ${INSTALL_CMD} install-numpy

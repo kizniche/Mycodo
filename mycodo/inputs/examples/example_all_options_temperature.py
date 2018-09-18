@@ -42,7 +42,7 @@ INPUT_INFORMATION = {
         ('pip-pypi', 'Adafruit_GPIO', 'Adafruit_GPIO'),
         ('pip-pypi', 'bluepy', 'bluepy==1.1.4'),
         ('pip-git', 'adafruit-bme280', 'git://github.com/adafruit/Adafruit_Python_BME280.git#egg=adafruit-bme280'),
-        ('apt', 'tailwhip', 'whiptail'),
+        ('apt', 'whiptail', 'whiptail'),
         ('apt', 'zsh', 'zsh'),
     ],
 

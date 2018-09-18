@@ -58,7 +58,6 @@ Options:
   update-permissions            Set permissions for Mycodo directories/files
   update-pip3                   Update pip
   update-pip3-packages          Update required pip packages
-  install-pip-dependency [dep]  Install [dep]
   update-swap-size              Ensure sqap size is sufficiently large (512 MB)
   install-numpy                 Install numpy
   install-wiringpi              Install wiringpi
@@ -373,25 +372,6 @@ case "${1:-''}" in
         else
             ${MYCODO_PATH}/env/bin/pip3 install --upgrade pip setuptools
             ${MYCODO_PATH}/env/bin/pip3 install --upgrade -r ${MYCODO_PATH}/install/requirements.txt
-        fi
-    ;;
-    'install-pip-dependency')
-        if [ -n "$3" ]; then
-          printf "\n#### Installing ${2} ${3} with pip\n"
-          if [ ! -d ${MYCODO_PATH}/env ]; then
-              printf "\n## Error: Virtualenv doesn't exist. Creating...\n"
-              /bin/bash ${MYCODO_PATH}/mycodo/scripts/upgrade_commands.sh setup-virtualenv
-          else
-              ${MYCODO_PATH}/env/bin/pip3 install --upgrade ${2} ${3}
-          fi
-        else
-          printf "\n#### Installing ${2} with pip\n"
-          if [ ! -d ${MYCODO_PATH}/env ]; then
-              printf "\n## Error: Virtualenv doesn't exist. Creating...\n"
-              /bin/bash ${MYCODO_PATH}/mycodo/scripts/upgrade_commands.sh setup-virtualenv
-          else
-              ${MYCODO_PATH}/env/bin/pip3 install --upgrade ${2}
-          fi
         fi
     ;;
     'update-swap-size')

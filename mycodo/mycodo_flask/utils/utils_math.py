@@ -37,8 +37,11 @@ def math_add(form_add_math):
 
     unmet_deps = return_dependencies(form_add_math.math_type.data)
     if unmet_deps:
+        list_unmet_deps = []
+        for each_dep in unmet_deps:
+            list_unmet_deps.append(each_dep[0])
         error.append("The {dev} device you're trying to add has unmet dependencies: {dep}".format(
-            dev=form_add_math.math_type.data, dep=unmet_deps))
+            dev=form_add_math.math_type.data, dep=', '.join(list_unmet_deps)))
 
     if form_add_math.validate():
         new_math = Math()

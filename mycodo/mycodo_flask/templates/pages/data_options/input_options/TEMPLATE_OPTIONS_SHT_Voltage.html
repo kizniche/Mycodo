@@ -1,4 +1,6 @@
-{% if 'sht_voltage' in dict_inputs[each_input.device]['options_disabled'] or 'sht_voltage' in dict_inputs[each_input.device]['options_enabled'] %}
+{% if 'sht_voltage' in dict_inputs[each_input.device]['options_disabled'] or
+      'sht_voltage' in dict_inputs[each_input.device]['options_enabled']
+  %}
 
   {% if dict_inputs[each_input.device]['sht_voltage']|length == 1 %}
 

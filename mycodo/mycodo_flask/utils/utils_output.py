@@ -36,8 +36,11 @@ def output_add(form_add):
 
     unmet_deps = return_dependencies(form_add.output_type.data)
     if unmet_deps:
+        list_unmet_deps = []
+        for each_dep in unmet_deps:
+            list_unmet_deps.append(each_dep[0])
         error.append("The {dev} device you're trying to add has unmet dependencies: {dep}".format(
-            dev=form_add.output_type.data, dep=unmet_deps))
+            dev=form_add.output_type.data, dep=', '.join(list_unmet_deps)))
 
     if is_int(form_add.output_quantity.data, check_range=[1, 20]):
         for _ in range(0, form_add.output_quantity.data):

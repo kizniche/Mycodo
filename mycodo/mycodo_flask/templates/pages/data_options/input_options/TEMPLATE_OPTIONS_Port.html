@@ -1,4 +1,6 @@
-{% if 'port' in dict_inputs[each_input.device]['options_disabled'] or 'port' in dict_inputs[each_input.device]['options_enabled'] %}
+{% if 'port' in dict_inputs[each_input.device]['options_disabled'] or
+      'port' in dict_inputs[each_input.device]['options_enabled']
+  %}
 
 <div class="col-auto">
   {{form_mod_input.port.label(class_='control-label')}}

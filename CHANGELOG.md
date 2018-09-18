@@ -1,3 +1,11 @@
+## 6.3.9 (2018-09-18)
+
+### Bugfixes
+
+ - Fix issue with installing dependencies ([#531](https://github.com/kizniche/mycodo/issues/531))
+ - Fix issue with Edge devices
+
+
 ## 6.3.8 (2018-09-17)
 
 ### Bugfixes
