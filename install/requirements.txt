@@ -24,10 +24,8 @@ Flask_SSLify
 Flask_WTF == 0.14.2
 geocoder == 1.38.1
 gunicorn == 19.8.1
-imutils == 0.4.6
 influxdb == 5.0.0
 locket == 0.2.0
-pyserial == 3.4
 python-dateutil == 2.7.3
 requests
 rpyc == 3.4.4

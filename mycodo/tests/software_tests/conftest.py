@@ -6,7 +6,6 @@
 from mock import patch, MagicMock
 patch.dict("sys.modules",
            RPi=MagicMock(),
-           imutils=MagicMock(),
            picamera=MagicMock(),
            AM2315=MagicMock(),
            tentacle_pi=MagicMock(),

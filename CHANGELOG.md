@@ -2,6 +2,7 @@
 
 ### Bugfixes
 
+ - Fix issue determining PID setpoint unit on LCDs
  - Fix issue displaying IP address on LCD
 
 

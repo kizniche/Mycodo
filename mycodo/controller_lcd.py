@@ -51,12 +51,12 @@
 import calendar
 import datetime
 import logging
-import smbus
 import threading
 import time
 import timeit
 
 import RPi.GPIO as GPIO
+import smbus
 
 from mycodo.config import MYCODO_VERSION
 from mycodo.config_devices_units import MEASUREMENTS
@@ -68,10 +68,12 @@ from mycodo.databases.models import Math
 from mycodo.databases.models import Measurement
 from mycodo.databases.models import Output
 from mycodo.databases.models import PID
+from mycodo.databases.models import Unit
 from mycodo.mycodo_flask.utils.utils_general import use_unit_generate
 from mycodo.utils.database import db_retrieve_table_daemon
 from mycodo.utils.influx import read_last_influxdb
 from mycodo.utils.system_pi import add_custom_measurements
+from mycodo.utils.system_pi import add_custom_units
 from mycodo.utils.system_pi import cmd_output
 
 
@@ -138,6 +140,9 @@ class LCDController(threading.Thread):
             # Add custom measurement and units to list
             self.list_inputs = add_custom_measurements(
                 db_retrieve_table_daemon(Measurement))
+
+            self.dict_units = add_custom_units(
+                db_retrieve_table_daemon(Unit))
 
             lcd_data = db_retrieve_table_daemon(
                 LCDData).filter(LCDData.lcd_id == lcd.unique_id).all()
@@ -416,14 +421,30 @@ class LCDController(threading.Thread):
         if not device_id:
             return
 
-        # Determine the unit
+        # Determine the unit of the PID setpoint
         if measurement == 'setpoint':
             pid = db_retrieve_table_daemon(PID, unique_id=device_id)
             if pid:
                 if pid.measurement.split(',')[1] in self.list_inputs:
-                    self.lcd_line[display_id][line]['unit'] = self.list_inputs[pid.measurement.split(',')[1]]['unit']
+                    # Determine if the PID input is a math or input controller
+                    pid_math = db_retrieve_table_daemon(Math, unique_id=pid.measurement.split(',')[0])
+                    pid_input = db_retrieve_table_daemon(Input, unique_id=pid.measurement.split(',')[0])
+
+                    list_measure_units = []
+                    setpoint_unit = ''
+                    if pid_math:
+                        list_measure_units = pid_math.measure_units.split(';')
+                    if pid_input:
+                        list_measure_units = pid_input.convert_to_unit.split(';')
+
+                    for each_measure_unit in list_measure_units:
+                        if (len(each_measure_unit.split(',')) == 2 and
+                                each_measure_unit.split(',')[0] == pid.measurement.split(',')[1]):
+                            setpoint_unit = self.dict_units[each_measure_unit.split(',')[1]]['unit']
+                    self.lcd_line[display_id][line]['unit'] = setpoint_unit
                 else:
                     self.lcd_line[display_id][line]['unit'] = ''
+
         elif measurement in self.list_inputs:
             # Get what each measurement uses for a unit
             input_dev = db_retrieve_table_daemon(Input)
