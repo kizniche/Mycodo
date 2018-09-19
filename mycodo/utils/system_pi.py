@@ -129,7 +129,7 @@ def cmd_output(command, su_mycodo=False, stdout_pipe=True):
     if su_mycodo:  # TODO: Remove su as I don't beleive it works
         full_cmd = 'su mycodo && {}'.format(command)
     if stdout_pipe:
-        cmd = subprocess.Popen(full_cmd, stdout=subprocess.PIPE, shell=True, universal_newlines=True)
+        cmd = subprocess.Popen(full_cmd, stdout=subprocess.PIPE, shell=True)
     else:
         cmd = subprocess.Popen(full_cmd, shell=True)
     cmd_out, cmd_err = cmd.communicate()

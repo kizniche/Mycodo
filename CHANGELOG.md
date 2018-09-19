@@ -1,3 +1,10 @@
+## 6.3.10 (Unreleased)
+
+### Bugfixes
+
+ - Fix issue displaying IP address on LCD
+
+
 ## 6.3.9 (2018-09-18)
 
 ### Bugfixes
