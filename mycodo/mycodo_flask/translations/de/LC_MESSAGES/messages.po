@@ -1201,7 +1201,7 @@ msgstr "PISs"
 #: mycodo_flask/forms/forms_dashboard.py:72
 #: mycodo_flask/templates/layout.html:190
 msgid "Outputs"
-msgstr "Messwerte"
+msgstr "Ausgaben"
 
 #: mycodo_flask/forms/forms_dashboard.py:73 mycodo_flask/forms/forms_math.py:42
 msgid "Inputs"
