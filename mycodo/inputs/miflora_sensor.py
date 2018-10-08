@@ -15,9 +15,9 @@ INPUT_INFORMATION = {
     'options_disabled': ['interface'],
 
     'dependencies_module': [
+        ('apt', 'libglib2.0-dev', 'libglib2.0-dev'),
         ('pip-pypi', 'miflora', 'miflora'),
         ('pip-pypi', 'btlewrap', 'btlewrap'),
-        ('apt', 'libglib2.0-dev', 'libglib2.0-dev'),
         ('pip-pypi', 'bluepy', 'bluepy==1.2.0'),
     ],
     'interfaces': ['BT'],
