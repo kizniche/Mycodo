@@ -283,18 +283,21 @@ def input_mod(form_mod, request_form):
             error.append(gettext(
                 "Deactivate sensor controller before modifying its "
                 "settings"))
+
         if (mod_input.device == 'AM2315' and
                 form_mod.period.data < 7):
             error.append(gettext(
                 "Choose a Read Period equal to or greater than 7. The "
                 "AM2315 may become unresponsive if the period is "
                 "below 7."))
+
         if (mod_input.device != 'EDGE' and
                 (mod_input.pre_output_duration and
                  form_mod.period.data < mod_input.pre_output_duration)):
             error.append(gettext(
                 "The Read Period cannot be less than the Pre Output "
                 "Duration"))
+
         if (form_mod.uart_location.data and
                 not os.path.exists(form_mod.uart_location.data)):
             error.append(gettext(
@@ -321,6 +324,9 @@ def input_mod(form_mod, request_form):
                 mod_input.pre_output_id = form_mod.pre_output_id.data
             else:
                 mod_input.pre_output_id = None
+
+            if mod_input.device == 'LinuxCommand':
+                mod_input.measurements = form_mod.selected_measurement_unit.data.split(',')[0]
 
             if (mod_input.device == 'LinuxCommand' or
                     ('analog_to_digital_converter' in dict_inputs[mod_input.device] and
@@ -444,10 +450,13 @@ def input_reorder(input_id, display_order, direction):
 def input_activate(form_mod):
     input_id = form_mod.input_id.data
     input_dev = Input.query.filter(Input.unique_id == input_id).first()
-    if (input_dev.device == 'LinuxCommand' and
-          input_dev.cmd_command is ''):
-        flash("Cannot activate Input without a command set.", "error")
-        return redirect(url_for('routes_page.page_data'))
+    if input_dev.device == 'LinuxCommand':
+        if input_dev.cmd_command is '':
+            flash("Cannot activate Input without Command set.", "error")
+            return redirect(url_for('routes_page.page_data'))
+        if not input_dev.convert_to_unit:
+            flash("Cannot activate Input without Unit Measurement set.", "error")
+            return redirect(url_for('routes_page.page_data'))
     controller_activate_deactivate('activate', 'Input',  input_id)
 
 
