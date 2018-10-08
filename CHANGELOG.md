@@ -10,6 +10,7 @@
  - Fix issue displaying IP address on LCD
  - Fix issue with client activating controllers ([#532](https://github.com/kizniche/mycodo/issues/532))
  - Fix issue with Linux Command Input ([#537](https://github.com/kizniche/mycodo/issues/537))
+ - Fix issue with installing internal dependencies (e.g. pigpiod) ([#538](https://github.com/kizniche/mycodo/issues/538))
  - Fix German "Output" translation
 
 
