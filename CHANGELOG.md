@@ -4,6 +4,7 @@
 
  - Fix issue determining PID setpoint unit on LCDs
  - Fix issue displaying IP address on LCD
+ - Fix issue with client activating controllers ([#532](https://github.com/kizniche/mycodo/issues/532))
 
 
 ## 6.3.9 (2018-09-18)

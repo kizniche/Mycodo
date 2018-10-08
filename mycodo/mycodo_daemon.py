@@ -469,6 +469,7 @@ class DaemonController:
 
             controller_manage = {}
             ready = threading.Event()
+
             if cont_type == 'Conditional':
                 controller_manage['type'] = Conditional
                 controller_manage['function'] = ConditionalController
@@ -491,17 +492,26 @@ class DaemonController:
             # Check if the controller actually exists
             controller = db_retrieve_table_daemon(controller_manage['type'],
                                                   unique_id=cont_id)
-            if controller:
-                self.controller[cont_type][cont_id] = controller_manage['function'](
-                    ready, cont_id)
-                self.controller[cont_type][cont_id].daemon = True
-                self.controller[cont_type][cont_id].start()
-                ready.wait()  # wait for thread to return ready
-                return 0, "{type} controller with ID {id} " \
-                    "activated.".format(type=cont_type, id=cont_id)
-            else:
+            if not controller:
                 return 1, "{type} controller with ID {id} not found.".format(
                     type=cont_type, id=cont_id)
+
+            # set as active in SQL database
+            with session_scope(MYCODO_DB_PATH) as new_session:
+                mod_cont = new_session.query(controller_manage['type']).filter(
+                    controller_manage['type'].unique_id == cont_id).first()
+                mod_cont.is_activated = True
+                new_session.commit()
+
+            self.controller[cont_type][cont_id] = controller_manage['function'](
+                ready, cont_id)
+            self.controller[cont_type][cont_id].daemon = True
+            self.controller[cont_type][cont_id].start()
+            ready.wait()  # wait for thread to return ready
+
+            return 0, "{type} controller with ID {id} " \
+                "activated.".format(type=cont_type, id=cont_id)
+
         except Exception as except_msg:
             message = "Could not activate {type} controller with ID {id}:" \
                       " {err}".format(type=cont_type, id=cont_id,
