@@ -13,6 +13,7 @@
  - Fix issue with installing internal dependencies (e.g. pigpiod) ([#538](https://github.com/kizniche/mycodo/issues/538))
  - Potential fix for Miflora input ([#540](https://github.com/kizniche/mycodo/issues/540))
  - Fix missing Baud Rate option for K30 input ([#541](https://github.com/kizniche/mycodo/issues/541))
+ - Fix 500 Error on Raspberry Pi Config page ([#536](https://github.com/kizniche/mycodo/issues/536))
  - Fix German "Output" translation
 
 
