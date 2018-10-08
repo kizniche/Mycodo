@@ -34,12 +34,12 @@ case "${1}" in
             ${INSTALL_DIRECTORY}/env/bin/pip3 install --upgrade -e ${2}
         fi
     ;;
-    'numpy')
-        ${INSTALL_CMD} install-numpy
-    ;;
     'pigpio')
         ${INSTALL_CMD} install-pigpiod
         ${INSTALL_CMD} enable-pigpiod-low
+    ;;
+    'bcm2835')
+        ${INSTALL_CMD} install-bcm2835
     ;;
     *)
         printf "\nUnrecognized dependency: ${1}"

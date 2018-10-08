@@ -175,6 +175,7 @@ def parse_input_information():
                 dict_inputs = dict_has_value(dict_inputs, input_custom, 'adc_channel')
                 dict_inputs = dict_has_value(dict_inputs, input_custom, 'adc_gain')
                 dict_inputs = dict_has_value(dict_inputs, input_custom, 'adc_resolution')
+                dict_inputs = dict_has_value(dict_inputs, input_custom, 'adc_sample_speed')
                 dict_inputs = dict_has_value(dict_inputs, input_custom, 'adc_volts_min')
                 dict_inputs = dict_has_value(dict_inputs, input_custom, 'adc_volts_max')
                 dict_inputs = dict_has_value(dict_inputs, input_custom, 'adc_units_min')

@@ -8,8 +8,8 @@ from datetime import timedelta
 import os
 from flask_babel import lazy_gettext
 
-MYCODO_VERSION = '6.3.9'
-ALEMBIC_VERSION = '51a95b98597e'
+MYCODO_VERSION = '6.4.0'
+ALEMBIC_VERSION = '1421f1a02f25'
 
 #  FORCE_UPGRADE_MASTER
 #  Set True to enable upgrading to the master branch of the Mycodo repository.
@@ -99,7 +99,7 @@ METHODS = [
 METHOD_INFO = {
     'DailyBezier': {
         'name': 'DailyBezier',
-        'dependencies_module': [('internal', 'numpy', 'numpy')]}
+        'dependencies_module': [('apt', 'python3-numpy', 'python3-numpy')]}
 }
 
 # Math controllers

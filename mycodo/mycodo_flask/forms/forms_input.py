@@ -108,6 +108,7 @@ class InputMod(FlaskForm):
     adc_channel = IntegerField(TOOLTIPS_INPUT['adc_channel']['title'])
     adc_gain = IntegerField(TOOLTIPS_INPUT['adc_gain']['title'])
     adc_resolution = IntegerField(TOOLTIPS_INPUT['adc_resolution']['title'])
+    adc_sample_speed = StringField(TOOLTIPS_INPUT['adc_sample_speed']['title'])
     adc_volts_min = DecimalField(TOOLTIPS_INPUT['adc_volts_min']['title'])
     adc_volts_max = DecimalField(TOOLTIPS_INPUT['adc_volts_max']['title'])
     adc_units_min = DecimalField(TOOLTIPS_INPUT['adc_units_min']['title'])

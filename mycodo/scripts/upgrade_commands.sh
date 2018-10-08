@@ -59,7 +59,6 @@ Options:
   update-pip3                   Update pip
   update-pip3-packages          Update required pip packages
   update-swap-size              Ensure sqap size is sufficiently large (512 MB)
-  install-numpy                 Install numpy
   install-wiringpi              Install wiringpi
   upgrade                       Upgrade Mycodo to the latest release
   upgrade-major-release         Upgrade Mycodo to a major version release
@@ -385,10 +384,6 @@ case "${1:-''}" in
             printf "#### Swap not currently set to 100 MB. Not changing.\n"
         fi
     ;;
-    'install-numpy')
-        printf "\n#### Installing numpy\n"
-        apt-get install -y python3-numpy
-    ;;
     'install-wiringpi')
         printf "\n#### Installing wiringpi\n"
         git clone git://git.drogon.net/wiringPi ${MYCODO_PATH}/install/wiringPi
@@ -396,6 +391,21 @@ case "${1:-''}" in
         ./build
         cd ${MYCODO_PATH}/install
         rm -rf ./wiringPi
+    ;;
+    'install-bcm2835')
+        printf "\n#### Installing bcm2835\n"
+        cd ${MYCODO_PATH}/install
+        apt-get install -y automake libtool
+        wget http://www.airspayce.com/mikem/bcm2835/bcm2835-1.50.tar.gz
+        tar zxvf bcm2835-1.50.tar.gz
+        cd bcm2835-1.50
+        autoreconf -vfi
+        ./configure
+        make
+        sudo make check
+        sudo make install
+        cd ${MYCODO_PATH}/install
+        rm -rf ./bcm2835-1.50
     ;;
     'upgrade')
         /bin/bash ${MYCODO_PATH}/mycodo/scripts/upgrade_mycodo_release.sh

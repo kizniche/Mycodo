@@ -38,7 +38,7 @@ INPUT_INFORMATION = {
     'options_disabled': ['interface'],
 
     'dependencies_module': [
-        ('internal', 'pigpio', 'pigpio')
+        ('internal', 'pip-exists pigpio', 'pigpio')
     ],
     'interfaces': ['I2C'],
     'i2c_location': ['0x40'],

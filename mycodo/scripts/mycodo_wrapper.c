@@ -119,6 +119,16 @@ int main(int argc, char *argv[]) {
 			sprintf(cmd, "/dependencies.sh apt %s", argv[3]);
 			strncat(restoreScript, cmd, sizeof(restoreScript));
 			system(restoreScript);
+		} else if (strcmp(argv[1], "install_dependency") == 0 && strcmp(argv[2], "internal") == 0 && (argc == 4)) {
+		    char path[255];
+            strncpy(path, argv[0], sizeof(path));
+            dirname(path);
+			char restoreScript[1024];
+			strncpy(restoreScript, "/bin/bash ", sizeof(restoreScript));
+			strncat(restoreScript, path, sizeof(restoreScript));
+			sprintf(cmd, "/dependencies.sh %s", argv[3]);
+			strncat(restoreScript, cmd, sizeof(restoreScript));
+			system(restoreScript);
         } else if (strcmp(argv[1], "install_pigpiod") == 0) {
 			upgrade_commands(argv[0], "install-pigpiod");
 		} else if (strcmp(argv[1], "disable_pigpiod") == 0) {

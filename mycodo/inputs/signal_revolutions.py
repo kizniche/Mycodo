@@ -16,7 +16,7 @@ INPUT_INFORMATION = {
     'options_disabled': ['interface'],
 
     'dependencies_module': [
-        ('internal', 'pigpio', 'pigpio')
+        ('internal', 'pip-exists pigpio', 'pigpio')
     ],
     'interfaces': ['GPIO'],
     'weighting': 0.0,

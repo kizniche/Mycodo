@@ -372,6 +372,9 @@ the measurement database to be used throughout the Mycodo system.
 | Gain                  | Analog-to-digital converter only: set the gain  |
 |                       | when acquiring the measurement.                 |
 +-----------------------+-------------------------------------------------+
+| Sample Speed          | Analog-to-digital converter only: set the       |
+|                       | sample speed (typically samples per second).    |
++-----------------------+-------------------------------------------------+
 | Volts Min             | Analog-to-digital converter only: What is the   |
 |                       | minimum voltage to use when scaling to produce  |
 |                       | the unit value for the database. For instance,  |

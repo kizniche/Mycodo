@@ -64,6 +64,7 @@ class Input(CRUDMixin, db.Model):
     adc_channel = db.Column(db.Integer, default=0)
     adc_gain = db.Column(db.Integer, default=1)
     adc_resolution = db.Column(db.Integer, default=18)
+    adc_sample_speed = db.Column(db.Text, default=None)
     adc_volts_min = db.Column(db.Float, default=None)
     adc_volts_max = db.Column(db.Float, default=None)
     adc_units_min = db.Column(db.Float, default=0.0)

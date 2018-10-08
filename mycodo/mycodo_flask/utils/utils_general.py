@@ -737,9 +737,29 @@ def return_dependencies(device_type, dep_type='unmet'):
                             cmd = 'dpkg -l {}'.format(package)
                             _, _, stat = cmd_output(cmd)
                             if stat and entry not in unmet_deps:
-                                    unmet_deps.append(entry)
+                                unmet_deps.append(entry)
                             else:
                                 met_deps = True
+                        elif install_type == 'internal':
+                            if package.startswith('file-exists'):
+                                filepath = package.split(' ')[1]
+                                if not os.path.isfile(filepath):
+                                    if entry not in unmet_deps:
+                                        unmet_deps.append(entry)
+                                    else:
+                                        met_deps = True
+                            if package.startswith('pip-exists'):
+                                py_module = package.split(' ')[1]
+                                try:
+                                    module = importlib.util.find_spec(py_module)
+                                    if module is None:
+                                        if entry not in unmet_deps:
+                                            unmet_deps.append(entry)
+                                    else:
+                                        met_deps = True
+                                except ImportError:
+                                    if entry not in unmet_deps:
+                                        unmet_deps.append(entry)
 
                     if not each_dict:
                         met_deps = True

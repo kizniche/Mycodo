@@ -1,5 +1,9 @@
 ## 6.3.10 (Unreleased)
 
+### Features
+
+ - Add Input: ADS1256 Analog-to-digital converter ([#537](https://github.com/kizniche/mycodo/issues/537))
+
 ### Bugfixes
 
  - Fix issue determining PID setpoint unit on LCDs

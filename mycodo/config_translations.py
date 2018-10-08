@@ -106,6 +106,9 @@ TOOLTIPS_INPUT = {
     'adc_resolution': {
         'title': lazy_gettext('Resolution'),
         'phrase': lazy_gettext('ADC Resolution (see ADC documentation)')},
+    'adc_sample_speed': {
+        'title': lazy_gettext('Sample Speed'),
+        'phrase': lazy_gettext('ADC Sample Speed (see ADC documentation)')},
     'adc_volts_min': {
         'title': lazy_gettext('Volts Min'),
         'phrase': lazy_gettext('Minimum analog to digital converter input voltage.')},

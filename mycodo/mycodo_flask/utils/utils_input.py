@@ -193,6 +193,11 @@ def input_add(form_add):
                     new_input.adc_resolution = dict_inputs[input_name]['adc_resolution'][0]
                 elif len(dict_inputs[input_name]['adc_resolution']) > 1:
                     new_input.adc_resolution = dict_inputs[input_name]['adc_resolution'][0][0]
+            if dict_has_value('adc_sample_speed'):
+                if len(dict_inputs[input_name]['adc_sample_speed']) == 1:
+                    new_input.adc_sample_speed = dict_inputs[input_name]['adc_sample_speed'][0]
+                elif len(dict_inputs[input_name]['adc_sample_speed']) > 1:
+                    new_input.adc_sample_speed = dict_inputs[input_name]['adc_sample_speed'][0][0]
             if dict_has_value('adc_volts_min'):
                 new_input.adc_volts_min = dict_inputs[input_name]['adc_volts_min']
             if dict_has_value('adc_volts_max'):
@@ -372,6 +377,7 @@ def input_mod(form_mod, request_form):
             mod_input.adc_channel = form_mod.adc_channel.data
             mod_input.adc_gain = form_mod.adc_gain.data
             mod_input.adc_resolution = form_mod.adc_resolution.data
+            mod_input.adc_sample_speed = form_mod.adc_sample_speed.data
             mod_input.adc_volts_min = form_mod.adc_volts_min.data
             mod_input.adc_volts_max = form_mod.adc_volts_max.data
             mod_input.adc_units_min = form_mod.adc_units_min.data
