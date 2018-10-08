@@ -13,12 +13,12 @@ INPUT_INFORMATION = {
     'input_name': 'K30',
     'measurements_name': 'CO2',
     'measurements_list': ['co2'],
-    'options_enabled': ['uart_location', 'period', 'baud_rate', 'convert_unit', 'pre_output'],
+    'options_enabled': ['uart_location', 'uart_baud_rate', 'period', 'convert_unit', 'pre_output'],
     'options_disabled': ['interface'],
 
     'interfaces': ['UART'],
     'uart_location': '/dev/ttyAMA0',
-    'baud_rate': 9600
+    'uart_baud_rate': 9600
 }
 
 

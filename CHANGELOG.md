@@ -12,6 +12,7 @@
  - Fix issue with Linux Command Input ([#537](https://github.com/kizniche/mycodo/issues/537))
  - Fix issue with installing internal dependencies (e.g. pigpiod) ([#538](https://github.com/kizniche/mycodo/issues/538))
  - Potential fix for Miflora input ([#540](https://github.com/kizniche/mycodo/issues/540))
+ - Fix missing Baud Rate option for K30 input ([#541](https://github.com/kizniche/mycodo/issues/541))
  - Fix German "Output" translation
 
 
