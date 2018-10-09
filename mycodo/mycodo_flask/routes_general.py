@@ -52,7 +52,12 @@ blueprint = Blueprint('routes_general',
                       template_folder='../templates')
 
 logger = logging.getLogger(__name__)
+
 influx_db = InfluxDB()
+current_app.config['INFLUXDB_USER'] = INFLUXDB_USER
+current_app.config['INFLUXDB_PASSWORD'] = INFLUXDB_PASSWORD
+current_app.config['INFLUXDB_DATABASE'] = INFLUXDB_DATABASE
+current_app.config['INFLUXDB_TIMEOUT'] = 5
 
 limiter = Limiter(key_func=get_ip_address)
 
@@ -255,9 +260,6 @@ def last_data(input_measure, input_id, input_period):
     if not str_is_float(input_period):
         return '', 204
 
-    current_app.config['INFLUXDB_USER'] = INFLUXDB_USER
-    current_app.config['INFLUXDB_PASSWORD'] = INFLUXDB_PASSWORD
-    current_app.config['INFLUXDB_DATABASE'] = INFLUXDB_DATABASE
     dbcon = influx_db.connection
     try:
         if input_period != '0':
@@ -312,9 +314,6 @@ def past_data(input_measure, input_id, past_seconds):
         else:
             return '', 204
     else:
-        current_app.config['INFLUXDB_USER'] = INFLUXDB_USER
-        current_app.config['INFLUXDB_PASSWORD'] = INFLUXDB_PASSWORD
-        current_app.config['INFLUXDB_DATABASE'] = INFLUXDB_DATABASE
         dbcon = influx_db.connection
         try:
             query_str = query_string(
@@ -339,19 +338,16 @@ def export_data(measurement, unique_id, start_seconds, end_seconds):
     Return data from start_seconds to end_seconds from influxdb.
     Used for exporting data.
     """
-    current_app.config['INFLUXDB_USER'] = INFLUXDB_USER
-    current_app.config['INFLUXDB_PASSWORD'] = INFLUXDB_PASSWORD
-    current_app.config['INFLUXDB_DATABASE'] = INFLUXDB_DATABASE
     dbcon = influx_db.connection
 
     output = Output.query.filter(Output.unique_id == unique_id).first()
-    input = Input.query.filter(Input.unique_id == unique_id).first()
+    input_dev = Input.query.filter(Input.unique_id == unique_id).first()
     math = Math.query.filter(Math.unique_id == unique_id).first()
 
     if output:
         name = output.name
-    elif input:
-        name = input.name
+    elif input_dev:
+        name = input_dev.name
     elif math:
         name = math.name
     else:
@@ -422,9 +418,6 @@ def async_data(measurement, unique_id, start_seconds, end_seconds):
         else:
             return '', 204
 
-    current_app.config['INFLUXDB_USER'] = INFLUXDB_USER
-    current_app.config['INFLUXDB_PASSWORD'] = INFLUXDB_PASSWORD
-    current_app.config['INFLUXDB_DATABASE'] = INFLUXDB_DATABASE
     dbcon = influx_db.connection
 
     # Set the time frame to the past year if start/end not specified
@@ -612,9 +605,6 @@ def computer_command(action):
 #
 
 def return_point_timestamp(measure, dev_id, period):
-    current_app.config['INFLUXDB_USER'] = INFLUXDB_USER
-    current_app.config['INFLUXDB_PASSWORD'] = INFLUXDB_PASSWORD
-    current_app.config['INFLUXDB_DATABASE'] = INFLUXDB_DATABASE
     dbcon = influx_db.connection
     query_str = query_string(
         measure, dev_id, value='LAST',

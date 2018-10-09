@@ -16,6 +16,10 @@
  - Fix 500 Error on Raspberry Pi Config page ([#536](https://github.com/kizniche/mycodo/issues/536))
  - Fix German "Output" translation
 
+### Miscellaneous
+
+ - Set InfluxDB timeout to 5 seconds ([#539](https://github.com/kizniche/mycodo/issues/539))
+
 
 ## 6.3.9 (2018-09-18)
 

@@ -116,7 +116,7 @@ def query_string(measurement, unique_id, value=None,
 
 def read_past_influxdb(device_id, measurement, past_seconds):
     client = InfluxDBClient(INFLUXDB_HOST, INFLUXDB_PORT, INFLUXDB_USER,
-                            INFLUXDB_PASSWORD, INFLUXDB_DATABASE)
+                            INFLUXDB_PASSWORD, INFLUXDB_DATABASE, timeout=5)
     query_str = query_string(
         measurement, device_id, past_sec=past_seconds)
     if query_str == 1:
@@ -146,7 +146,7 @@ def read_last_influxdb(device_id, measure_type, duration_sec=None):
     :type duration_sec: int
     """
     client = InfluxDBClient(INFLUXDB_HOST, INFLUXDB_PORT, INFLUXDB_USER,
-                            INFLUXDB_PASSWORD, INFLUXDB_DATABASE)
+                            INFLUXDB_PASSWORD, INFLUXDB_DATABASE, timeout=5)
 
     if duration_sec:
         query = query_string(measure_type, device_id, past_sec=duration_sec)
@@ -180,7 +180,7 @@ def output_sec_on(output_id, past_seconds):
     # Get the number of seconds ON stored in the database
     output = db_retrieve_table_daemon(Output, unique_id=output_id)
     client = InfluxDBClient(INFLUXDB_HOST, INFLUXDB_PORT, INFLUXDB_USER,
-                            INFLUXDB_PASSWORD, INFLUXDB_DATABASE)
+                            INFLUXDB_PASSWORD, INFLUXDB_DATABASE, timeout=5)
     if not output_id:
         return None
 
@@ -253,7 +253,7 @@ def write_influxdb_value(device_id, measure_type, value, timestamp=None):
     :type timestamp: datetime object
     """
     client = InfluxDBClient(INFLUXDB_HOST, INFLUXDB_PORT, INFLUXDB_USER,
-                            INFLUXDB_PASSWORD, INFLUXDB_DATABASE)
+                            INFLUXDB_PASSWORD, INFLUXDB_DATABASE, timeout=5)
     data = [format_influxdb_data(device_id,
                                  measure_type,
                                  value,
@@ -285,7 +285,7 @@ def write_influxdb_list(data):
     :type data: list of dictionaries
     """
     client = InfluxDBClient(INFLUXDB_HOST, INFLUXDB_PORT, INFLUXDB_USER,
-                            INFLUXDB_PASSWORD, INFLUXDB_DATABASE)
+                            INFLUXDB_PASSWORD, INFLUXDB_DATABASE, timeout=5)
     try:
         client.write_points(data)
         return 0
