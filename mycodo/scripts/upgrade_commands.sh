@@ -13,6 +13,8 @@ APT_PKGS="fswebcam gawk gcc git libffi-dev libi2c-dev logrotate \
           moreutils nginx python-setuptools sqlite3 wget \
           python3 python3-dev python3-smbus"
 
+PYTHON_BINARY_SYS_LOC="$(python3.5 -c "import os; print(os.environ['_'])")"
+
 # Get the Mycodo root directory
 SOURCE="${BASH_SOURCE[0]}"
 while [ -h "$SOURCE" ]; do # resolve $SOURCE until the file is no longer a symlink
@@ -21,6 +23,7 @@ while [ -h "$SOURCE" ]; do # resolve $SOURCE until the file is no longer a symli
   [[ $SOURCE != /* ]] && SOURCE="$DIR/$SOURCE" # if $SOURCE was a relative symlink, we need to resolve it relative to the path where the symlink file was located
 done
 MYCODO_PATH="$( cd -P "$( dirname "${SOURCE}" )/../.." && pwd )"
+
 cd ${MYCODO_PATH}
 
 HELP_OPTIONS="upgrade_commands.sh [option] - Program to execute various mycodo commands
@@ -164,7 +167,7 @@ case "${1:-''}" in
             printf "#### Virtualenv doesn't exist. Creating...\n"
             pip install virtualenv --upgrade
             rm -rf ${MYCODO_PATH}/env
-            virtualenv --system-site-packages -p /usr/bin/python3.5 ${MYCODO_PATH}/env
+            virtualenv --system-site-packages -p ${PYTHON_BINARY_SYS_LOC} ${MYCODO_PATH}/env
         else
             printf "#### Virtualenv already exists, skipping creation\n"
         fi
