@@ -19,7 +19,7 @@
 ### Miscellaneous
 
  - Set InfluxDB timeout to 5 seconds ([#539](https://github.com/kizniche/mycodo/issues/539))
- - Update Winsen ZH03B input module code
+ - Update Winsen ZH03B input module code ([#543](https://github.com/kizniche/mycodo/issues/543))
 
 
 ## 6.3.9 (2018-09-18)

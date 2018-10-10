@@ -3,10 +3,6 @@
 # From https://github.com/Theoi-Meteoroi/Winsen_ZH03B
 #
 import logging
-# import sys
-# import os
-#
-# sys.path.append(os.path.abspath(os.path.join(__file__, "../../../")))
 
 from mycodo.inputs.base_input import AbstractInput
 from mycodo.inputs.sensorutils import is_device
@@ -39,6 +35,7 @@ class InputModule(AbstractInput):
         self._pm_1_0 = None
         self._pm_2_5 = None
         self._pm_10_0 = None
+        self.fan_state = None
 
         if not testing:
             import serial
@@ -62,6 +59,7 @@ class InputModule(AbstractInput):
                         timeout=10
                     )
                     self.ser.flushInput()
+                    self.fan_state = self.DormantMode('run')
                 except serial.SerialException:
                     self.logger.exception('Opening serial')
             else:
@@ -119,7 +117,7 @@ class InputModule(AbstractInput):
         return self._pm_10_0
 
     def get_measurement(self):
-        """ Gets the WINSEN_ZH03B's Particulate concentration in μg/m^3 via UART"""
+        """ Gets the WINSEN_ZH03B's Particulate concentration in μg/m^3 via UART """
         if not self.serial_device:  # Don't measure if device isn't validated
             return None, None, None
 
@@ -133,7 +131,9 @@ class InputModule(AbstractInput):
         self.logger.debug("Reading sample")
 
         try:
+            # self.DormantMode('run')
             pm_1_0, pm_2_5, pm_10_0 = self.QAReadSample()
+            # self.DormantMode('sleep')
             self.logger.debug("QAReadSample: {}, {}, {}".format(pm_1_0, pm_2_5, pm_10_0))
         except:
             self.logger.exception("Exception while reading")
@@ -165,8 +165,7 @@ class InputModule(AbstractInput):
             self.acquiring_measurement = False
         return 1
 
-    @staticmethod
-    def HexToByte(hexStr):
+    def HexToByte(self, hexStr):
         """
         Convert a string hex byte values into a byte string. The Hex Byte values may
         or may not be space separated.
@@ -176,7 +175,6 @@ class InputModule(AbstractInput):
         #    hexStr = ''.join( hexStr.split(" ") )
         #    return ''.join( ["%c" % chr( int ( hexStr[i:i+2],16 ) ) \
         #                                   for i in range(0, len( hexStr ), 2) ] )
-
         bytes = []
 
         hexStr = ''.join(hexStr.split(" "))
@@ -207,7 +205,6 @@ class InputModule(AbstractInput):
         Q&A mode requires a command to obtain a reading sample
         Returns: int PM1, int PM25, int PM10
         """
-
         self.ser.flushInput()  # flush input buffer
         self.ser.write(b"\xFF\x01\x86\x00\x00\x00\x00\x00\x79")
         reading = self.HexToByte(((self.binascii.hexlify(self.ser.read(2))).hex()))
@@ -224,8 +221,9 @@ class InputModule(AbstractInput):
         #
         if pwr_status == "sleep":
             self.ser.write(b"\xFF\x01\xA7\x01\x00\x00\x00\x00\x57")
-            response = self.HexToByte(((self.binascii.hexlify(self.ser.read(2))).hex()))
-            if response == "0000":
+            response = self.HexToByte(((self.binascii.hexlify(self.ser.read(3))).hex()))
+            self.ser.flushInput()
+            if response == "ffa701":
                 return "FanOFF"
             else:
                 return "FanERROR"
@@ -234,8 +232,9 @@ class InputModule(AbstractInput):
         #
         if pwr_status == "run":
             self.ser.write(b"\xFF\x01\xA7\x00\x00\x00\x00\x00\x58")
-            response = self.HexToByte(((self.binascii.hexlify(self.ser.read(2))).hex()))
-            if response == "0000":
+            response = self.HexToByte(((self.binascii.hexlify(self.ser.read(3))).hex()))
+            self.ser.flushInput()
+            if response == "ffa701":
                 return "FanON"
             else:
                 return "FanERROR"
@@ -254,17 +253,6 @@ class InputModule(AbstractInput):
                 PM1 = int(self.HexToByte(((self.binascii.hexlify(self.ser.read(2))).hex())), 16)
                 PM25 = int(self.HexToByte(((self.binascii.hexlify(self.ser.read(2))).hex())), 16)
                 PM10 = int(self.HexToByte(((self.binascii.hexlify(self.ser.read(2))).hex())), 16)
-                return (PM1, PM25, PM10)
+                return PM1, PM25, PM10
             else:
                 continue
-
-if __name__ == "__main__":
-    from types import SimpleNamespace
-    input_dev_ = SimpleNamespace()
-    input_dev_.id = 1
-    input_dev_.uart_location = '/dev/ttyUSB0'
-    input_dev_.baud_rate = 9600
-    input_dev_.convert_to_unit = ''
-
-    ads = InputModule(input_dev_)
-    print("Channel 0: {}".format(ads.next()))
