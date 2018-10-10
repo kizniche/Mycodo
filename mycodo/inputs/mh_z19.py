@@ -44,6 +44,7 @@ class InputModule(AbstractInput):
                     self.ser = serial.Serial(self.serial_device,
                                              baudrate=self.baud_rate,
                                              timeout=1)
+                    self.abcoff()
                 except serial.SerialException:
                     self.logger.exception('Opening serial')
             else:
@@ -124,12 +125,16 @@ class InputModule(AbstractInput):
         finally:
             self.acquiring_measurement = False
         return 1
-    
+
     def abcoff(self):
         """
         Turns off Automatic Baseline Correction feature of "B" type sensor.
         Should be run once at the beginning of every activation.
-        The pattern to toggle on is "ff 01 79 a0 00 00 00 00 e6"
         """
-        self.ser.write(bytearray([0xff, 0x01, 0x79, 0x00, 0x00, 0x00, 0x00, 0x00, 0x86]))
-        return
+        self.ser.write(b"\xFF\x01\x79\x00\x00\x00\x00\x00\x86")
+
+    def abcon(self):
+        """
+        Turns on Automatic Baseline Correction feature of "B" type sensor.
+        """
+        self.ser.write(b"\xFF\x01\x79\xA0\x00\x00\x00\x00\xE6")

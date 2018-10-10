@@ -14,6 +14,7 @@
  - Potential fix for Miflora input ([#540](https://github.com/kizniche/mycodo/issues/540))
  - Fix missing Baud Rate option for K30 input ([#541](https://github.com/kizniche/mycodo/issues/541))
  - Fix 500 Error on Raspberry Pi Config page ([#536](https://github.com/kizniche/mycodo/issues/536))
+ - Add turning ABC mode off during MHZ19 input initialization ([#546](https://github.com/kizniche/mycodo/issues/546))
  - Fix German "Output" translation
 
 ### Miscellaneous
