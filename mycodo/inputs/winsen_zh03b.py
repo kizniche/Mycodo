@@ -3,6 +3,10 @@
 # From https://github.com/Theoi-Meteoroi/Winsen_ZH03B
 #
 import logging
+# import sys
+# import os
+#
+# sys.path.append(os.path.abspath(os.path.join(__file__, "../../../")))
 
 from mycodo.inputs.base_input import AbstractInput
 from mycodo.inputs.sensorutils import is_device
@@ -55,8 +59,9 @@ class InputModule(AbstractInput):
                         parity=serial.PARITY_NONE,
                         stopbits=serial.STOPBITS_ONE,
                         bytesize=serial.EIGHTBITS,
-                        timeout=1
+                        timeout=10
                     )
+                    self.ser.flushInput()
                 except serial.SerialException:
                     self.logger.exception('Opening serial')
             else:
@@ -124,24 +129,15 @@ class InputModule(AbstractInput):
         pm_1_0 = None
         pm_2_5 = None
         pm_10_0 = None
-        sampled = False
 
-        self.ser.flushInput()  # flush input buffer
+        self.logger.debug("Reading sample")
 
-        while not sampled:
-            sample = self.ser.read(2)
-
-            # blank line check filter
-            if sample != b'':
-                reading = self.HexToByte(((self.binascii.hexlify(sample)).hex()))
-                if reading == "424d":  # Start of data frame
-                    sampled = True  # Sample will be captured
-                    _ = self.ser.read(8)  # Discard internal status bytes
-                    pm_1_0 = int(self.HexToByte(((self.binascii.hexlify(self.ser.read(2))).hex())), 16)
-                    pm_2_5 = int(self.HexToByte(((self.binascii.hexlify(self.ser.read(2))).hex())), 16)
-                    pm_10_0 = int(self.HexToByte(((self.binascii.hexlify(self.ser.read(2))).hex())), 16)
-            else:
-                continue
+        try:
+            pm_1_0, pm_2_5, pm_10_0 = self.QAReadSample()
+            self.logger.debug("QAReadSample: {}, {}, {}".format(pm_1_0, pm_2_5, pm_10_0))
+        except:
+            self.logger.exception("Exception while reading")
+            return None, None, None
 
         return pm_1_0, pm_2_5, pm_10_0
 
@@ -162,7 +158,7 @@ class InputModule(AbstractInput):
             if self._pm_1_0 is not None:
                 return  # success - no errors
         except Exception as e:
-            self.logger.error(
+            self.logger.exception(
                 "{cls} raised an exception when taking a reading: "
                 "{err}".format(cls=type(self).__name__, err=e))
         finally:
@@ -181,11 +177,94 @@ class InputModule(AbstractInput):
         #    return ''.join( ["%c" % chr( int ( hexStr[i:i+2],16 ) ) \
         #                                   for i in range(0, len( hexStr ), 2) ] )
 
-        bytes_list = []
+        bytes = []
 
         hexStr = ''.join(hexStr.split(" "))
 
         for i in range(0, len(hexStr), 2):
-            bytes_list.append(chr(int(hexStr[i:i + 2], 16)))
+            bytes.append(chr(int(hexStr[i:i + 2], 16)))
 
-        return ''.join(bytes_list)
+        return ''.join(bytes)
+
+    def SetQA(self):
+        """
+        Set ZH03B Question and Answer mode
+        Returns:  Nothing
+        """
+        self.ser.write(b"\xFF\x01\x78\x41\x00\x00\x00\x00\x46")
+        return
+
+    def SetStream(self):
+        """
+        Set to default streaming mode of readings
+        Returns: Nothing
+        """
+        self.ser.write(b"\xFF\x01\x78\x40\x00\x00\x00\x00\x47")
+        return
+
+    def QAReadSample(self):
+        """
+        Q&A mode requires a command to obtain a reading sample
+        Returns: int PM1, int PM25, int PM10
+        """
+
+        self.ser.flushInput()  # flush input buffer
+        self.ser.write(b"\xFF\x01\x86\x00\x00\x00\x00\x00\x79")
+        reading = self.HexToByte(((self.binascii.hexlify(self.ser.read(2))).hex()))
+        PM25 = int(self.HexToByte(((self.binascii.hexlify(self.ser.read(2))).hex())), 16)
+        PM10 = int(self.HexToByte(((self.binascii.hexlify(self.ser.read(2))).hex())), 16)
+        PM1 = int(self.HexToByte(((self.binascii.hexlify(self.ser.read(2))).hex())), 16)
+        return PM1, PM25, PM10
+
+    def DormantMode(self, pwr_status):
+        """
+        Turn dormant mode on or off. Must be on to measure.
+        """
+        #  Turn fan off
+        #
+        if pwr_status == "sleep":
+            self.ser.write(b"\xFF\x01\xA7\x01\x00\x00\x00\x00\x57")
+            response = self.HexToByte(((self.binascii.hexlify(self.ser.read(2))).hex()))
+            if response == "0000":
+                return "FanOFF"
+            else:
+                return "FanERROR"
+
+        #  Turn fan on
+        #
+        if pwr_status == "run":
+            self.ser.write(b"\xFF\x01\xA7\x00\x00\x00\x00\x00\x58")
+            response = self.HexToByte(((self.binascii.hexlify(self.ser.read(2))).hex()))
+            if response == "0000":
+                return "FanON"
+            else:
+                return "FanERROR"
+
+    def ReadSample(self):
+        """
+        Read exactly one sample from the default mode streaming samples
+        """
+        self.ser.flushInput()  # flush input buffer
+        sampled = False
+        while not sampled and self.running:
+            reading = self.HexToByte(((self.binascii.hexlify(self.ser.read(2))).hex()))
+            if reading == "424d":
+                sampled = True
+                status = self.ser.read(8)
+                PM1 = int(self.HexToByte(((self.binascii.hexlify(self.ser.read(2))).hex())), 16)
+                PM25 = int(self.HexToByte(((self.binascii.hexlify(self.ser.read(2))).hex())), 16)
+                PM10 = int(self.HexToByte(((self.binascii.hexlify(self.ser.read(2))).hex())), 16)
+                return (PM1, PM25, PM10)
+            else:
+                continue
+
+if __name__ == "__main__":
+    from types import SimpleNamespace
+    input_dev_ = SimpleNamespace()
+    input_dev_.id = 1
+    input_dev_.uart_location = '/dev/ttyUSB0'
+    input_dev_.baud_rate = 9600
+    input_dev_.convert_to_unit = ''
+
+    ads = InputModule(input_dev_)
+    print("Channel 0: {}".format(ads.next()))

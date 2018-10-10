@@ -126,19 +126,18 @@ def input_add(form_add):
                     new_input.i2c_location = dict_inputs[input_name]['i2c_location'][0]  # First entry in list
 
             # UART options
-            elif input_interface == 'UART':
-                if dict_has_value('uart_location'):
-                    new_input.uart_location = dict_inputs[input_name]['uart_location']
-                if dict_has_value('uart_baud_rate'):
-                    new_input.baud_rate = dict_inputs[input_name]['uart_baud_rate']
-                if dict_has_value('pin_cs'):
-                    new_input.pin_cs = dict_inputs[input_name]['pin_cs']
-                if dict_has_value('pin_miso'):
-                    new_input.pin_miso = dict_inputs[input_name]['pin_miso']
-                if dict_has_value('pin_mosi'):
-                    new_input.pin_mosi = dict_inputs[input_name]['pin_mosi']
-                if dict_has_value('pin_clock'):
-                    new_input.pin_clock = dict_inputs[input_name]['pin_clock']
+            if dict_has_value('uart_location'):
+                new_input.uart_location = dict_inputs[input_name]['uart_location']
+            if dict_has_value('uart_baud_rate'):
+                new_input.baud_rate = dict_inputs[input_name]['uart_baud_rate']
+            if dict_has_value('pin_cs'):
+                new_input.pin_cs = dict_inputs[input_name]['pin_cs']
+            if dict_has_value('pin_miso'):
+                new_input.pin_miso = dict_inputs[input_name]['pin_miso']
+            if dict_has_value('pin_mosi'):
+                new_input.pin_mosi = dict_inputs[input_name]['pin_mosi']
+            if dict_has_value('pin_clock'):
+                new_input.pin_clock = dict_inputs[input_name]['pin_clock']
 
             # Bluetooth (BT) options
             elif input_interface == 'BT':

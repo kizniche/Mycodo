@@ -199,7 +199,7 @@ class InputModule(AbstractInput):
 
         # Measurement failure, power cycle the sensor (if enabled)
         # Then try two more times to get a measurement
-        if self.power_output_id is not None:
+        if self.power_output_id is not None and self.running:
             self.stop_sensor()
             time.sleep(3)
             self.start_sensor()
