@@ -3,6 +3,9 @@
 # From https://github.com/Theoi-Meteoroi/Winsen_ZH03B
 #
 import logging
+import time
+
+from flask_babel import lazy_gettext
 
 from mycodo.inputs.base_input import AbstractInput
 from mycodo.inputs.sensorutils import is_device
@@ -14,7 +17,7 @@ INPUT_INFORMATION = {
     'input_name': 'ZH03B',
     'measurements_name': 'Particulates',
     'measurements_list': ['particulate_matter_1_0', 'particulate_matter_2_5', 'particulate_matter_10_0'],
-    'options_enabled': ['uart_location', 'uart_baud_rate', 'period', 'convert_unit', 'pre_output'],
+    'options_enabled': ['uart_location', 'uart_baud_rate', 'custom_options', 'period', 'convert_unit', 'pre_output'],
     'options_disabled': ['interface'],
 
     'dependencies_module': [
@@ -22,7 +25,24 @@ INPUT_INFORMATION = {
     ],
     'interfaces': ['UART'],
     'uart_location': '/dev/ttyAMA0',
-    'uart_baud_rate': 9600
+    'uart_baud_rate': 9600,
+
+    'custom_options': [
+        {
+            'id': 'modulate_fan',
+            'type': 'checkbox',
+            'default_value': True,
+            'name': lazy_gettext('Fan Off After Measure'),
+            'phrase': lazy_gettext('Turn the fan on only during the measurement')
+        },
+        {
+            'id': 'another_option',
+            'type': 'textbox',
+            'default_value': 'my_text_value',
+            'name': lazy_gettext('Another Custom Option'),
+            'phrase': lazy_gettext('Another custom option description (this is translatable)')
+        }
+    ]
 }
 
 
@@ -35,7 +55,6 @@ class InputModule(AbstractInput):
         self._pm_1_0 = None
         self._pm_2_5 = None
         self._pm_10_0 = None
-        self.fan_state = None
 
         if not testing:
             import serial
@@ -48,6 +67,16 @@ class InputModule(AbstractInput):
             self.convert_to_unit = input_dev.convert_to_unit
             # Check if device is valid
             self.serial_device = is_device(self.uart_location)
+
+            self.fan_state = None
+            self.modulate_fan = None
+
+            for each_option in input_dev.custom_options.split(';'):
+                option = each_option.split(',')[0]
+                value = each_option.split(',')[1]
+                if option == 'modulate_fan':
+                    self.modulate_fan = value
+
             if self.serial_device:
                 try:
                     self.ser = serial.Serial(
@@ -59,7 +88,8 @@ class InputModule(AbstractInput):
                         timeout=10
                     )
                     self.ser.flushInput()
-                    self.fan_state = self.DormantMode('run')
+                    if not self.modulate_fan:
+                        self.fan_state = self.DormantMode('run')
                 except serial.SerialException:
                     self.logger.exception('Opening serial')
             else:
@@ -131,9 +161,12 @@ class InputModule(AbstractInput):
         self.logger.debug("Reading sample")
 
         try:
-            # self.DormantMode('run')
+            if self.modulate_fan:
+                self.DormantMode('run')
+                time.sleep(5)  # Wait 5 seconds for the fan to run before acquiring measurements
             pm_1_0, pm_2_5, pm_10_0 = self.QAReadSample()
-            # self.DormantMode('sleep')
+            if self.modulate_fan:
+                self.DormantMode('sleep')
             self.logger.debug("QAReadSample: {}, {}, {}".format(pm_1_0, pm_2_5, pm_10_0))
         except:
             self.logger.exception("Exception while reading")

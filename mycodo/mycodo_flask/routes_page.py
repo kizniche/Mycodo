@@ -90,6 +90,7 @@ from mycodo.mycodo_flask.utils import utils_notes
 from mycodo.mycodo_flask.utils import utils_output
 from mycodo.mycodo_flask.utils import utils_pid
 from mycodo.utils.inputs import list_analog_to_digital_converters
+from mycodo.utils.inputs import parse_custom_option_values
 from mycodo.utils.inputs import parse_input_information
 from mycodo.utils.sunriseset import Sun
 from mycodo.utils.system_pi import add_custom_measurements
@@ -1317,6 +1318,7 @@ def page_data():
     unit = Unit.query.all()
 
     dict_inputs =  parse_input_information()
+    custom_options_values = parse_custom_option_values(input_dev)
 
     display_order_input = csv_to_list_of_str(DisplayOrder.query.first().inputs)
     display_order_math = csv_to_list_of_str(DisplayOrder.query.first().math)
@@ -1384,7 +1386,7 @@ def page_data():
 
         # Input forms
         if form_add_input.input_add.data:
-            unmet_dependencies = utils_input.input_add(form_add_input)
+            unmet_dependencies = utils_input.input_add(form_add_input, request.form)
         elif form_mod_input.input_mod.data:
             utils_input.input_mod(form_mod_input, request.form)
         elif form_mod_input.input_delete.data:
@@ -1444,6 +1446,7 @@ def page_data():
                            choices_unit=choices_unit,
                            choices_measurement=choices_measurement,
                            choices_measurements_units=choices_measurements_units,
+                           custom_options_values=custom_options_values,
                            device_info=parse_input_information(),
                            dict_inputs=dict_inputs,
                            display_order_input=display_order_input,

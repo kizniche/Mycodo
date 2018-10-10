@@ -34,7 +34,7 @@ logger = logging.getLogger(__name__)
 #
 
 
-def input_add(form_add):
+def input_add(form_add, request_form):
     action = '{action} {controller}'.format(
         action=gettext("Add"),
         controller=gettext("Input"))
@@ -241,6 +241,18 @@ def input_add(form_add):
             if dict_has_value('ref_ohm'):
                 new_input.ref_ohm = dict_inputs[input_name]['ref_ohm']
 
+        #
+        # Custom Options
+        #
+
+        list_options = []
+        for each_option in dict_inputs[input_name]['custom_options']:
+            option = '{id},{value}'.format(
+                id=each_option['id'],
+                value=each_option['default_value'])
+            list_options.append(option)
+        new_input.custom_options = ';'.join(list_options)
+
         try:
             if not error:
                 new_input.save()
@@ -397,6 +409,28 @@ def input_mod(form_mod, request_form):
             # SHT sensor options
             if form_mod.sht_voltage.data:
                 mod_input.sht_voltage = form_mod.sht_voltage.data
+
+            try:
+                # Custom options
+                list_options = []
+                for each_option in dict_inputs[mod_input.device]['custom_options']:
+                    null_value = True
+                    for key in request_form.keys():
+                        if each_option['id'] == key:
+                            option = '{id},{value}'.format(
+                                id=key,
+                                value=request_form.get(key))
+                            list_options.append(option)
+                            null_value = False
+                    if null_value:
+                        option = '{id},'.format(id=each_option['id'])
+                        list_options.append(option)
+
+
+                mod_input.custom_options = ';'.join(list_options)
+            except Exception:
+                logger.exception(1)
+
             db.session.commit()
     except Exception as except_msg:
         error.append(except_msg)

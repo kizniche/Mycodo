@@ -84,6 +84,8 @@ class Input(CRUDMixin, db.Model):
     times_check = db.Column(db.Integer, default=1)
     deadline = db.Column(db.Integer, default=2)
 
+    custom_options = db.Column(db.Text, default='')
+
     # Unused variables
     # TODO: remove unused columns in next major revision
     device_loc = db.Column(db.Text, default=None)  # Device location for UART communication

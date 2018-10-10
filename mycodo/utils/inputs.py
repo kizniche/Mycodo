@@ -70,6 +70,19 @@ def load_module_from_file(path_file):
     return input_custom
 
 
+def parse_custom_option_values(inputs):
+    custom_options_values = {}
+    for each_input in inputs:
+        custom_options_values[each_input.unique_id] = {}
+        if each_input.custom_options:
+            for each_option in each_input.custom_options.split(';'):
+                option = each_option.split(',')[0]
+                value = each_option.split(',')[1]
+                custom_options_values[each_input.unique_id][option] = value
+
+    return custom_options_values
+
+
 def parse_input_information():
     def dict_has_value(dict_inp, input_cus, key):
         if (key in input_cus.INPUT_INFORMATION and
@@ -191,6 +204,8 @@ def parse_input_information():
                 dict_inputs = dict_has_value(dict_inputs, input_custom, 'sensitivity')
                 dict_inputs = dict_has_value(dict_inputs, input_custom, 'thermocouple_type')
                 dict_inputs = dict_has_value(dict_inputs, input_custom, 'ref_ohm')
+
+                dict_inputs = dict_has_value(dict_inputs, input_custom, 'custom_options')
 
     # Uncomment to enable timer, also uncomment line at start of function
     # run_time = timeit.default_timer() - startup_timer

@@ -173,103 +173,103 @@ UNITS = {
         'name': '',
         'unit': ''},
     'µs': {
-        'name': 'Microsecond',
+        'name': lazy_gettext('Microsecond'),
         'unit': 'µs'},
     'μS_cm': {
-        'name': 'Microsiemens per centimeter',
+        'name': lazy_gettext('Microsiemens per centimeter'),
         'unit': 'μS/cm'},
     'bool': {
-        'name': 'Boolean',
+        'name': lazy_gettext('Boolean'),
         'unit': 'bool'},
     'C': {
-        'name': 'Celsius',
+        'name': lazy_gettext('Celsius'),
         'unit': '°C'},
     'cpu_load': {
-        'name': 'CPU Load',
+        'name': lazy_gettext('CPU Load'),
         'unit': ''},
     'decimal': {
-        'name': 'Decimal',
+        'name': lazy_gettext('Decimal'),
         'unit': ''},
     'F': {
-        'name': 'Fahrenheit',
+        'name': lazy_gettext('Fahrenheit'),
         'unit': '°F'},
     'ft': {
-        'name': 'Feet',
+        'name': lazy_gettext('Feet'),
         'unit': 'ft'},
     'GB': {
-        'name': 'Gigabyte',
+        'name': lazy_gettext('Gigabyte'),
         'unit': 'GB'},
     'Hz': {
-        'name': 'Hertz',
+        'name': lazy_gettext('Hertz'),
         'unit': 'Hz'},
     'K': {
-        'name': 'Kelvin',
+        'name': lazy_gettext('Kelvin'),
         'unit': '°K'},
     'kB': {
-        'name': 'Kilobyte',
+        'name': lazy_gettext('Kilobyte'),
         'unit': 'kB'},
     'kg_kg': {
-        'name': 'Kilogram per kilogram',
+        'name': lazy_gettext('Kilogram per kilogram'),
         'unit': 'kg/kg'},
     'kHz': {
-        'name': 'Kilohertz',
+        'name': lazy_gettext('Kilohertz'),
         'unit': 'kHz'},
     'kJ_kg': {
-        'name': 'Kilojoule per kilogram',
+        'name': lazy_gettext('Kilojoule per kilogram'),
         'unit': 'kJ/kg'},
     'kPa': {
-        'name': 'Kilopascals',
+        'name': lazy_gettext('Kilopascals'),
         'unit': 'kPa'},
     'lux': {
-        'name': 'Lux',
+        'name': lazy_gettext('Lux'),
         'unit': 'lx'},
     'm': {
-        'name': 'Meters',
+        'name': lazy_gettext('Meters'),
         'unit': 'm'},
     'm3_kg': {
-        'name': 'Cubic meters per kilogram',
+        'name': lazy_gettext('Cubic meters per kilogram'),
         'unit': 'm^3/kg'},
     'MHz': {
-        'name': 'Megahertz',
+        'name': lazy_gettext('Megahertz'),
         'unit': 'MHz'},
     'MB': {
-        'name': 'Megabyte',
+        'name': lazy_gettext('Megabyte'),
         'unit': 'MB'},
     'minute': {
-        'name': 'Minute',
+        'name': lazy_gettext('Minute'),
         'unit': 'm'},
     'Pa': {
-        'name': 'Pascals',
+        'name': lazy_gettext('Pascals'),
         'unit': 'Pa'},
     'percent': {
-        'name': 'Percent',
+        'name': lazy_gettext('Percent'),
         'unit': '%'},
     'pH': {
-        'name': 'pH',
+        'name': lazy_gettext('pH'),
         'unit': 'pH'},
     'pid_value': {
-        'name': 'PID values',
+        'name': lazy_gettext('PID values'),
         'unit': ''},
     'ppb': {
-        'name': 'Parts per billion',
+        'name': lazy_gettext('Parts per billion'),
         'unit': 'ppb'},
     'ppm': {
-        'name': 'Parts per million',
+        'name': lazy_gettext('Parts per million'),
         'unit': 'ppm'},
     'rpm': {
-        'name': 'RPM',
-        'unit': 'Revolutions per minute'},
+        'name': lazy_gettext('Revolutions per minute'),
+        'unit': 'rpm'},
     'second': {
-        'name': 'Second',
+        'name': lazy_gettext('Second'),
         'unit': 's'},
     'setpoint': {
-        'name': 'Setpoint',
+        'name': lazy_gettext('Setpoint'),
         'unit': ''},
     'μg_m3': {
-        'name': 'Microgram per cubic meter',
+        'name': lazy_gettext('Microgram per cubic meter'),
         'unit': 'μg/m^3'},
     'volts': {
-        'name': 'Volts',
+        'name': lazy_gettext('Volts'),
         'unit': 'V'}
 }
 

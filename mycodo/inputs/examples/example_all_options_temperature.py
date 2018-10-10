@@ -1,9 +1,10 @@
 # coding=utf-8
 import logging
 
+from flask_babel import lazy_gettext
+
 from mycodo.inputs.base_input import AbstractInput
 from mycodo.inputs.sensorutils import convert_units
-
 
 # Input information
 INPUT_INFORMATION = {
@@ -148,6 +149,29 @@ INPUT_INFORMATION = {
         ('4.0', '4.0V'),
         ('5.0', '5.0V')
     ],
+
+    # Custom options
+    # Values are stored as text, therefore if you require a float or integer,
+    # cast it as such in the "Load custom options" section in __init__
+    # Example: self.another_option = int(value)
+    # Make sure your string represents the type you're attempting to cast
+    'custom_options': [
+        {
+            'id': 'modulate_fan',
+            'type': 'checkbox',
+            'default_value': True,
+            'name': lazy_gettext('Fan Off After Measure'),
+            'phrase': lazy_gettext('Turn the fan on only during the measurement')
+        },
+        {
+            'id': 'another_option',
+            'type': 'textbox',
+            'default_value': 'my_text_value',
+            'name': lazy_gettext('Another Custom Option'),
+            'phrase': lazy_gettext('Another custom option description (this is translatable)')
+        }
+
+    ]
 }
 
 
@@ -184,6 +208,21 @@ class InputModule(AbstractInput):
             #
 
             self.resolution = input_dev.resolution
+
+            #
+            # Load custom options
+            #
+
+            self.modulate_fan = None
+            self.another_option = None
+
+            for each_option in input_dev.custom_options.split(';'):
+                option = each_option.split(',')[0]
+                value = each_option.split(',')[1]
+                if option == 'modulate_fan':
+                    self.modulate_fan = value
+                if option == 'another_option':
+                    self.another_option = value
 
             #
             # Initialize the sensor class
