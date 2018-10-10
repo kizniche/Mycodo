@@ -165,7 +165,8 @@ class InputModule(AbstractInput):
             self.acquiring_measurement = False
         return 1
 
-    def HexToByte(self, hexStr):
+    @staticmethod
+    def HexToByte(hexStr):
         """
         Convert a string hex byte values into a byte string. The Hex Byte values may
         or may not be space separated.
