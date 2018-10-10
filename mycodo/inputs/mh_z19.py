@@ -45,6 +45,7 @@ class InputModule(AbstractInput):
                                              baudrate=self.baud_rate,
                                              timeout=1)
                     self.abcoff()
+                    self.set_measure_range(5000)
                 except serial.SerialException:
                     self.logger.exception('Opening serial')
             else:
@@ -131,10 +132,27 @@ class InputModule(AbstractInput):
         Turns off Automatic Baseline Correction feature of "B" type sensor.
         Should be run once at the beginning of every activation.
         """
-        self.ser.write(b"\xFF\x01\x79\x00\x00\x00\x00\x00\x86")
+        self.ser.write(bytearray([0xff, 0x01, 0x79, 0x00, 0x00, 0x00, 0x00, 0x00, 0x86]))
 
     def abcon(self):
         """
         Turns on Automatic Baseline Correction feature of "B" type sensor.
         """
-        self.ser.write(b"\xFF\x01\x79\xA0\x00\x00\x00\x00\xE6")
+        self.ser.write(bytearray([0xff, 0x01, 0x79, 0xa0, 0x00, 0x00, 0x00, 0x00, 0xe6]))
+
+    def set_measure_range(self, measure_range):
+        """
+        Sets the measurement range. Options are: 1000, 2000, 3000, or 5000 (ppmv)
+        :param measure_range: int
+        :return: None
+        """
+        if measure_range == 1000:
+            self.ser.write(bytearray([0xff, 0x01, 0x99, 0x00, 0x00, 0x00, 0x03, 0xe8, 0x7b]))
+        elif measure_range == 2000:
+            self.ser.write(bytearray([0xff, 0x01, 0x99, 0x00, 0x00, 0x00, 0x07, 0xd0, 0x8f]))
+        elif measure_range == 3000:
+            self.ser.write(bytearray([0xff, 0x01, 0x99, 0x00, 0x00, 0x00, 0x0b, 0xb8, 0xa3]))
+        elif measure_range == 5000:
+            self.ser.write(bytearray([0xff, 0x01, 0x99, 0x00, 0x00, 0x00, 0x13, 0x88, 0xcb]))
+        else:
+            return "out of range"
