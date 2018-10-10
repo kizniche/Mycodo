@@ -124,3 +124,12 @@ class InputModule(AbstractInput):
         finally:
             self.acquiring_measurement = False
         return 1
+    
+    def abcoff(self):
+        """
+        Turns off Automatic Baseline Correction feature of "B" type sensor.
+        Should be run once at the beginning of every activation.
+        The pattern to toggle on is "ff 01 79 a0 00 00 00 00 e6"
+        """
+        self.ser.write(bytearray([0xff, 0x01, 0x79, 0x00, 0x00, 0x00, 0x00, 0x00, 0x86]))
+        return
