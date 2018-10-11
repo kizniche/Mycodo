@@ -2785,6 +2785,9 @@ be necessary to attain your desired range.
     `ADS1x15 <#ads1x15>`__: Analog-to-digital converter
     `link <https://www.adafruit.com/product/1085>`__
 
+    `ADS1256 <#ads1256>`__: Analog-to-digital converter
+    `link <http://www.ti.com/product/ADS1256>`__
+
     `MCP3008 <#mcp3008>`__: Analog-to-digital converter
     `link <https://www.adafruit.com/product/856>`__
 
@@ -3117,12 +3120,29 @@ Specifications
 -  Warm-up time: < 1 min. (@ full specs < 15 min)
 -  0.5 Hz sampling rate (once every 2 seconds)
 
+MH-Z16
+``````
+
+Specifications
+''''''''''''''
+
+-  Interface: UART and I2C
+-  0 – 10,000 ppmv
+-  Resolution ratio: 5 ppmv (0 ~ 2000 ppmv), 10 ppmv (2000 ~ 5000 ppmv), ±20 ppmv (5000 ~ 10000 ppmv)
+-  Accuracy: ±50 ppm ±5 %
+-  Repeatability: ±30 ppmv
+-  Non-dispersive infrared (NDIR) technology
+-  Sensor life expectancy: > 5 years
+-  Warm-up time: 3 minutes
+-  Response time: < 30 seconds
+
 MH-Z19
 ``````
 
 Specifications
 ''''''''''''''
 
+-  Interface: UART
 -  0 – 5,000 ppmv
 -  Accuracy: ±50 ppm ±5% of measured value within specifications
 -  Non-dispersive infrared (NDIR) technology
@@ -3267,9 +3287,23 @@ Specifications
 -  Interface: I2C
 -  I2C 7-bit addresses 0x48 - 0x4B
 -  Input channels: 2 (differential), 4 (single-ended)
--  Power: 2.0V to 5.5V
+-  Power: 2.0 - 5.5 V
 -  Sample Rate: 1015: 128SPS to 3.3kSPS, 1115: 8SPS to 860SPS
 -  Resolution: 1015: 12-bit, 1115: 16-bit
+
+ADS1256
+```````
+
+ADS1256
+
+Specifications
+''''''''''''''
+
+-  Interface: SPI
+-  Input channels: 8
+-  Input range: 0 - 5.25 V
+-  Power: 1.8 - 3.6 V
+-  Resolution: 24-bit
 
 MCP3008
 ```````
@@ -3280,7 +3314,7 @@ Specifications
 -  Interface: SPI
 -  8 channels
 -  10-bit resolution
--  0 - 3.3 volt measurements
+-  Input range: 0 - 3.3 V
 
 MCP342x
 ```````
@@ -3343,4 +3377,3 @@ Raspberry Pi, 8 relays, 8 outlets:
 .. |Schematic: Pi, 4 relays, 4 outlets, and 1 DS18B20 sensor| image:: manual_images/Schematic-Pi-4-relays.png
 .. |Schematic: Pi, 8 relays, and 8 outlets| image:: manual_images/Schematic-Pi-8-relays.png
 .. |PID Autotune Output| image:: manual_images/Autotune-Output-Example.png
-

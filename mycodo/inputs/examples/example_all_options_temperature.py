@@ -22,6 +22,21 @@ def constraints_pass_fan_seconds(value):
     return all_passed, errors
 
 
+def constraints_pass_measure_range(value):
+    """
+    Check if the user input is acceptable
+    :param value: float
+    :return: tuple: (bool, list of strings)
+    """
+    errors = []
+    all_passed = True
+    # Ensure valid range is selected
+    if value not in ['1000', '2000', '3000', '5000']:
+        all_passed = False
+        errors.append("Invalid rage")
+    return all_passed, errors
+
+
 # Input information
 INPUT_INFORMATION = {
     #
@@ -186,6 +201,20 @@ INPUT_INFORMATION = {
             'constraints_pass': constraints_pass_fan_seconds,
             'name': lazy_gettext('Fan On Duration'),
             'phrase': lazy_gettext('How long to turn the fan on (seconds) before acquiring measurements')
+        },
+        {
+            'id': 'measure_range',
+            'type': 'select',
+            'default_value': '5000',
+            'options_select': [
+                ('1000', '0 - 1000 ppmv'),
+                ('2000', '0 - 2000 ppmv'),
+                ('3000', '0 - 3000 ppmv'),
+                ('5000', '0 - 5000 ppmv'),
+            ],
+            'constraints_pass': constraints_pass_measure_range,
+            'name': lazy_gettext('Measurement Range'),
+            'phrase': lazy_gettext('Set the measuring range of the sensor')
         }
 
     ]
@@ -233,6 +262,7 @@ class InputModule(AbstractInput):
             # Default values if user settings are not set
             self.fan_modulate = True
             self.fan_seconds = 5.0
+            self.measure_range = '5000'
 
             # User values if user settings are set
             if input_dev.custom_options:
@@ -243,6 +273,8 @@ class InputModule(AbstractInput):
                         self.fan_modulate = bool(value)
                     elif option == 'fan_seconds':
                         self.fan_seconds = float(value)
+                    elif option == 'measure_range':
+                        self.measure_range = value
 
             #
             # Initialize the sensor class
