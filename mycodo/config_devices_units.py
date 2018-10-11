@@ -308,6 +308,8 @@ UNIT_CONVERSIONS = {
     'ppb_to_ppm': 'x/1000',
     'ppm_to_percent': 'x/10000',
     'ppb_to_percent': 'x/10000000',
+    'percent_to_ppm': 'x*10000',
+    'percent_to_ppb': 'x*10000000',
 
     # Number
     'percent_to_decimal': 'x/100',

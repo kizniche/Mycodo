@@ -198,10 +198,13 @@ class InputModule(AbstractInput):
                 self.DormantMode('sleep')
 
             if pm_1_0 > 1000:
+                self.logger.error("PM1 measurement out of range (over 1000 ug/m^3)")
                 pm_1_0 = None
             if pm_2_5 > 1000:
+                self.logger.error("PM2.5 measurement out of range (over 1000 ug/m^3)")
                 pm_2_5 = None
             if pm_10_0 > 1000:
+                self.logger.error("PM10 measurement out of range (over 1000 ug/m^3)")
                 pm_10_0 = None
 
         except:
