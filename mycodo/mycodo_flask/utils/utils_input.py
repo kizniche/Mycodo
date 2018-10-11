@@ -248,11 +248,12 @@ def input_add(form_add, request_form):
         #
 
         list_options = []
-        for each_option in dict_inputs[input_name]['custom_options']:
-            option = '{id},{value}'.format(
-                id=each_option['id'],
-                value=each_option['default_value'])
-            list_options.append(option)
+        if 'custom_options' in dict_inputs[input_name]:
+            for each_option in dict_inputs[input_name]['custom_options']:
+                option = '{id},{value}'.format(
+                    id=each_option['id'],
+                    value=each_option['default_value'])
+                list_options.append(option)
         new_input.custom_options = ';'.join(list_options)
 
         try:
@@ -411,9 +412,9 @@ def input_mod(form_mod, request_form):
         if form_mod.sht_voltage.data:
             mod_input.sht_voltage = form_mod.sht_voltage.data
 
-        try:
-            # Custom options
-            list_options = []
+        # Custom options
+        list_options = []
+        if 'custom_options' in dict_inputs[mod_input.device]:
             for each_option in dict_inputs[mod_input.device]['custom_options']:
                 null_value = True
                 for key in request_form.keys():
@@ -473,9 +474,7 @@ def input_mod(form_mod, request_form):
                     option = '{id},'.format(id=each_option['id'])
                     list_options.append(option)
 
-            mod_input.custom_options = ';'.join(list_options)
-        except Exception:
-            logger.exception(1)
+        mod_input.custom_options = ';'.join(list_options)
 
         if not error:
             db.session.commit()
