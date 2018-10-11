@@ -16,7 +16,7 @@ INPUT_INFORMATION = {
     'options_disabled': ['interface'],
 
     'dependencies_module': [
-        ('pip-git', 'cozir', 'git://github.com/pierre-haessig/pycozir.git#egg=cozir')
+        ('pip-git', 'pycozir', 'git://github.com/pierre-haessig/pycozir.git#egg=pycozir')
     ],
     'interfaces': ['UART'],
     'uart_location': '/dev/ttyAMA0'
@@ -39,7 +39,7 @@ class InputModule(AbstractInput):
         self._temperature = None
 
         if not testing:
-            from cozir import Cozir
+            from pycozir import Cozir
             self.logger = logging.getLogger(
                 "mycodo.inputs.cozir_{id}".format(id=input_dev.id))
             self.uart_location = input_dev.uart_location
