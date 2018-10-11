@@ -447,6 +447,7 @@
 <li><a href="#co2-sensors">CO2 Sensors</a><ul>
 <li><a href="#ccs811">CCS811</a></li>
 <li><a href="#k-30">K-30</a></li>
+<li><a href="#mh-z16">MH-Z16</a></li>
 <li><a href="#mh-z19">MH-Z19</a></li>
 </ul></li>
 <li><a href="#moisture-sensors">Moisture Sensors</a><ul>
@@ -469,6 +470,7 @@
 </ul></li>
 <li><a href="#analog-to-digital-converters-1">Analog to Digital Converters</a><ul>
 <li><a href="#ads1x15">ADS1x15</a></li>
+<li><a href="#ads1256">ADS1256</a></li>
 <li><a href="#mcp3008">MCP3008</a></li>
 <li><a href="#mcp342x">MCP342x</a></li>
 </ul></li>
@@ -2839,6 +2841,7 @@ sudo service mycodoflask restart</code></pre>
 <p>An analog to digital converter (ADC) allows the use of any analog sensor that outputs a variable voltage. A <a href="https://learn.sparkfun.com/tutorials/voltage-dividers">voltage divider</a> may be necessary to attain your desired range.</p>
 <blockquote>
 <p><a href="#ads1x15">ADS1x15</a>: Analog-to-digital converter <a href="https://www.adafruit.com/product/1085">link</a></p>
+<p><a href="#ads1256">ADS1256</a>: Analog-to-digital converter <a href="http://www.ti.com/product/ADS1256">link</a></p>
 <p><a href="#mcp3008">MCP3008</a>: Analog-to-digital converter <a href="https://www.adafruit.com/product/856">link</a></p>
 <p><a href="#mcp342x">MCP342x</a>: Analog-to-digital converter <a href="http://www.dfrobot.com/wiki/index.php/MCP3424_18-Bit_ADC-4_Channel_with_Programmable_Gain_Amplifier_(SKU:DFR0316)">link</a></p>
 </blockquote>
@@ -3032,9 +3035,23 @@ sudo service mycodoflask restart</code></pre>
 <li>Warm-up time: &lt; 1 min. (@ full specs &lt; 15 min)</li>
 <li>0.5 Hz sampling rate (once every 2 seconds)</li>
 </ul>
-<h3 id="mh-z19">MH-Z19</h3>
+<h3 id="mh-z16">MH-Z16</h3>
 <h4 id="specifications-19">Specifications</h4>
 <ul>
+<li>Interface: UART and I2C</li>
+<li>0 – 10,000 ppmv</li>
+<li>Resolution ratio: 5 ppmv (0 ~ 2000 ppmv), 10 ppmv (2000 ~ 5000 ppmv), ±20 ppmv (5000 ~ 10000 ppmv)</li>
+<li>Accuracy: ±50 ppm ±5 %</li>
+<li>Repeatability: ±30 ppmv</li>
+<li>Non-dispersive infrared (NDIR) technology</li>
+<li>Sensor life expectancy: &gt; 5 years</li>
+<li>Warm-up time: 3 minutes</li>
+<li>Response time: &lt; 30 seconds</li>
+</ul>
+<h3 id="mh-z19">MH-Z19</h3>
+<h4 id="specifications-20">Specifications</h4>
+<ul>
+<li>Interface: UART</li>
 <li>0 – 5,000 ppmv</li>
 <li>Accuracy: ±50 ppm ±5% of measured value within specifications</li>
 <li>Non-dispersive infrared (NDIR) technology</li>
@@ -3045,7 +3062,7 @@ sudo service mycodoflask restart</code></pre>
 <h2 id="moisture-sensors">Moisture Sensors</h2>
 <h3 id="chirp">Chirp</h3>
 <p>The Chirp sensor measures moisture, light, and temperature.</p>
-<h4 id="specifications-20">Specifications</h4>
+<h4 id="specifications-21">Specifications</h4>
 <ul>
 <li>Vin: 3 to 5V</li>
 <li>I2C 7-bit address 0x77</li>
@@ -3053,7 +3070,7 @@ sudo service mycodoflask restart</code></pre>
 <h2 id="ph-sensors">pH Sensors</h2>
 <h3 id="atlas-scientific-ph">Atlas Scientific pH</h3>
 <p>The Atlas Scientific pH sensor measures the pH of a liquid.</p>
-<h4 id="specifications-21">Specifications</h4>
+<h4 id="specifications-22">Specifications</h4>
 <ul>
 <li>UART or I2C</li>
 <li>Probe Max Pressure: 690 kPa (100PSI)</li>
@@ -3064,7 +3081,7 @@ sudo service mycodoflask restart</code></pre>
 <h2 id="particulate-sensors">Particulate Sensors</h2>
 <h3 id="winsen-zh03b">Winsen ZH03B</h3>
 <p>Laser Dust sensor module is a common type, small size sensor, using laser scattering principle to detect the dust particles in air, with good selectivity and stability.</p>
-<h4 id="specifications-22">Specifications</h4>
+<h4 id="specifications-23">Specifications</h4>
 <ul>
 <li>Detection: PM1.0, PM2.5, PM10</li>
 <li>Working humidity: 0~85% RH (no condensation)</li>
@@ -3075,7 +3092,7 @@ sudo service mycodoflask restart</code></pre>
 <h2 id="pressure-sensors">Pressure Sensors</h2>
 <h3 id="bme280">BME280</h3>
 <p>The BME280 is the upgrade to the BMP085/BMP180/BMP183. It has a low altitude noise of 0.25m and the same fast conversion time. It has the same specifications, but can use either I2C or SPI.</p>
-<h4 id="specifications-23">Specifications</h4>
+<h4 id="specifications-24">Specifications</h4>
 <ul>
 <li>300-1100 hPa (9000m to -500m above sea level)</li>
 <li>-40 °C to +85 °C operational range</li>
@@ -3089,7 +3106,7 @@ sudo service mycodoflask restart</code></pre>
 </ul>
 <h3 id="bmp085-bmp180">BMP085, BMP180</h3>
 <p>The BMP180 replaces the BMP085. It is completely identical to the BMP085 in terms of firmware/software/interfacing.</p>
-<h4 id="specifications-24">Specifications</h4>
+<h4 id="specifications-25">Specifications</h4>
 <ul>
 <li>300-1100 hPa (9000m to -500m above sea level)</li>
 <li>Up to 0.03hPa / 0.25m resolution</li>
@@ -3104,40 +3121,50 @@ sudo service mycodoflask restart</code></pre>
 <p>The BH1750 is an I2C luminosity sensor that provides a digital value in lux (lx) over a range of 1 - 65535 lx.</p>
 <h3 id="tsl2561">TSL2561</h3>
 <p>The TSL2561 Luminosity Sensor is a sophisticated light sensor which has a flat response across most of the visible spectrum. Unlike simpler sensors, the TSL2561 measures both infrared and visible light to better approximate the response of the human eye. And because the TSL2561 is an integrating sensor (it soaks up light for a predetermined amount of time), it is capable of measuring both small and large amounts of light by changing the integration time.</p>
-<h4 id="specifications-25">Specifications</h4>
+<h4 id="specifications-26">Specifications</h4>
 <ul>
 <li>Light range: 0.1 - 40k+ lux</li>
 <li>Vin: 3V and a low supply</li>
 <li>Max current: 0.6mA.</li>
 </ul>
 <h3 id="tsl2591">TSL2591</h3>
-<h4 id="specifications-26">Specifications</h4>
+<h4 id="specifications-27">Specifications</h4>
 <ul>
 <li>Light range: 188 uLux to 88,000 Lux</li>
 </ul>
 <h2 id="analog-to-digital-converters-1">Analog to Digital Converters</h2>
 <h3 id="ads1x15">ADS1x15</h3>
 <p>(ADS1015, ADS1115)</p>
-<h4 id="specifications-27">Specifications</h4>
+<h4 id="specifications-28">Specifications</h4>
 <ul>
 <li>Interface: I2C</li>
 <li>I2C 7-bit addresses 0x48 - 0x4B</li>
 <li>Input channels: 2 (differential), 4 (single-ended)</li>
-<li>Power: 2.0V to 5.5V</li>
+<li>Power: 2.0 - 5.5 V</li>
 <li>Sample Rate: 1015: 128SPS to 3.3kSPS, 1115: 8SPS to 860SPS</li>
 <li>Resolution: 1015: 12-bit, 1115: 16-bit</li>
 </ul>
+<h3 id="ads1256">ADS1256</h3>
+<p>ADS1256</p>
+<h4 id="specifications-29">Specifications</h4>
+<ul>
+<li>Interface: SPI</li>
+<li>Input channels: 8</li>
+<li>Input range: 0 - 5.25 V</li>
+<li>Power: 1.8 - 3.6 V</li>
+<li>Resolution: 24-bit</li>
+</ul>
 <h3 id="mcp3008">MCP3008</h3>
-<h4 id="specifications-28">Specifications</h4>
+<h4 id="specifications-30">Specifications</h4>
 <ul>
 <li>Interface: SPI</li>
 <li>8 channels</li>
 <li>10-bit resolution</li>
-<li>0 - 3.3 volt measurements</li>
+<li>Input range: 0 - 3.3 V</li>
 </ul>
 <h3 id="mcp342x">MCP342x</h3>
 <p>(MCP3422, MCP3423, MCP3424, MCP3426, MCP3427, MCP3428)</p>
-<h4 id="specifications-29">Specifications</h4>
+<h4 id="specifications-31">Specifications</h4>
 <ul>
 <li>Interface: I2C</li>
 <li>I2C 7-bit addresses 0x68 - 0x6F</li>
