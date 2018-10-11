@@ -40,6 +40,13 @@ INPUT_INFORMATION = {
 
     'custom_options': [
         {
+            'id': 'abc_enable',
+            'type': 'bool',
+            'default_value': False,
+            'name': lazy_gettext('Enable ABC'),
+            'phrase': lazy_gettext('Enable automatic baseline correction (ABC)')
+        },
+        {
             'id': 'measure_range',
             'type': 'select',
             'default_value': '5000',
@@ -65,6 +72,7 @@ class InputModule(AbstractInput):
         self.logger = logging.getLogger("mycodo.inputs.mh_z19")
         self._co2 = None
         self.measure_range = None
+        self.abc_enable = False
 
         if not testing:
             import serial
@@ -89,17 +97,24 @@ class InputModule(AbstractInput):
                     'Check the device location is correct.'.format(
                         dev=self.uart_location))
 
-            self.abcoff()  # Turns off Automatic Baseline Correction (ABC)
-
             if input_dev.custom_options:
                 for each_option in input_dev.custom_options.split(';'):
                     option = each_option.split(',')[0]
                     value = each_option.split(',')[1]
-                    if option == 'measure_range':
+                    if option == 'abc_enable':
+                        self.abc_enable = bool(value)
+                    elif option == 'measure_range':
                         self.measure_range = value
+
+            if self.abc_enable:
+                self.abcon()
+            else:
+                self.abcoff()
 
             if self.measure_range:
                 self.set_measure_range(self.measure_range)
+
+            self.get_measurement(silent=True)    # Throw out first measurement
 
     def __repr__(self):
         """  Representation of object """
@@ -128,7 +143,7 @@ class InputModule(AbstractInput):
             self.read()
         return self._co2
 
-    def get_measurement(self):
+    def get_measurement(self, silent=False):
         """ Gets the MH-Z19's CO2 concentration in ppmv via UART"""
         self._co2 = None
         co2 = None
@@ -137,18 +152,18 @@ class InputModule(AbstractInput):
             return None
 
         self.ser.flushInput()
-        time.sleep(1)
         self.ser.write(bytearray([0xff, 0x01, 0x86, 0x00, 0x00, 0x00, 0x00, 0x00, 0x79]))
         time.sleep(.01)
         resp = self.ser.read(9)
 
         if resp[0] != 0xff or resp[1] != 0x86:
-            self.logger.error("Bad checksum")
+            if not silent:
+                self.logger.error("Bad checksum")
         elif len(resp) >= 4:
             high = resp[2]
             low = resp[3]
             co2 = (high * 256) + low
-        else:
+        elif not silent:
             self.logger.error("Bad response")
 
         co2 = convert_units(

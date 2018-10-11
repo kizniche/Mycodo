@@ -109,8 +109,13 @@ class InputModule(AbstractInput):
                         timeout=10
                     )
                     self.ser.flushInput()
+
                     if not self.fan_modulate:
                         self.fan_state = self.DormantMode('run')
+
+                    time.sleep(0.1)
+                    self.get_measurement(silent=True)  # Throw out first measurement
+
                 except serial.SerialException:
                     self.logger.exception('Opening serial')
             else:
@@ -167,7 +172,7 @@ class InputModule(AbstractInput):
             self.read()
         return self._pm_10_0
 
-    def get_measurement(self):
+    def get_measurement(self, silent=False):
         """ Gets the WINSEN_ZH03B's Particulate concentration in μg/m^3 via UART """
         if not self.serial_device:  # Don't measure if device isn't validated
             return None, None, None
@@ -198,14 +203,17 @@ class InputModule(AbstractInput):
                 self.DormantMode('sleep')
 
             if pm_1_0 > 1000:
-                self.logger.error("PM1 measurement out of range (over 1000 ug/m^3)")
                 pm_1_0 = None
+                if not silent:
+                    self.logger.error("PM1 measurement out of range (over 1000 ug/m^3)")
             if pm_2_5 > 1000:
-                self.logger.error("PM2.5 measurement out of range (over 1000 ug/m^3)")
                 pm_2_5 = None
+                if not silent:
+                    self.logger.error("PM2.5 measurement out of range (over 1000 ug/m^3)")
             if pm_10_0 > 1000:
-                self.logger.error("PM10 measurement out of range (over 1000 ug/m^3)")
                 pm_10_0 = None
+                if not silent:
+                    self.logger.error("PM10 measurement out of range (over 1000 ug/m^3)")
 
         except:
             self.logger.exception("Exception while reading")

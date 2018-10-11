@@ -1,8 +1,13 @@
 ## 6.4.2 (Unreleased)
 
+### Features
+
+ - Add MH-Z19 option: enable/disable automatic baseline correction (ABC)
+
 ### Bugfixes
 
  - Fix Cozir module pycozir egg
+ - Measure and discard often-erroneous first measurement of ZH03B and MH-Z19 sensors
 
 
 ## 6.4.1 (2018-10-11)
