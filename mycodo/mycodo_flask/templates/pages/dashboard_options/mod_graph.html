@@ -216,13 +216,13 @@
       <div class="col-auto">
         <label class="form-check-label" for="custom_yaxis_min_{{index}}">Y-Axis Minimum</label>
         <div>
-          <input id="yaxis_min_{{index}}" class="form-control" name="custom_yaxis_min_{{index}}" type="text" value="{% if custom_yaxes[each_graph.unique_id][each_yaxis] %}{{custom_yaxes[each_graph.unique_id][each_yaxis]['minimum']}}{% endif %}">
+          <input id="yaxis_min_{{index}}" class="form-control" name="custom_yaxis_min_{{index}}" type="number" value="{% if custom_yaxes[each_graph.unique_id][each_yaxis] %}{{custom_yaxes[each_graph.unique_id][each_yaxis]['minimum']}}{% endif %}">
         </div>
       </div>
       <div class="col-auto">
         <label class="form-check-label" for="custom_yaxis_max_{{index}}">Y-Axis Maximum</label>
         <div>
-          <input id="yaxis_max_{{index}}" class="form-control" name="custom_yaxis_max_{{index}}" type="text" value="{% if custom_yaxes[each_graph.unique_id][each_yaxis] %}{{custom_yaxes[each_graph.unique_id][each_yaxis]['maximum']}}{% endif %}">
+          <input id="yaxis_max_{{index}}" class="form-control" name="custom_yaxis_max_{{index}}" type="number" value="{% if custom_yaxes[each_graph.unique_id][each_yaxis] %}{{custom_yaxes[each_graph.unique_id][each_yaxis]['maximum']}}{% endif %}">
         </div>
       </div>
     </div>

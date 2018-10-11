@@ -14,7 +14,7 @@ from mycodo.inputs.sensorutils import is_device
 def constraints_pass_fan_seconds(value):
     """
     Check if the user input is acceptable
-    :param value: value
+    :param value: float
     :return: tuple: (bool, list of strings)
     """
     errors = []
@@ -54,7 +54,7 @@ INPUT_INFORMATION = {
         {
             'id': 'fan_seconds',
             'type': 'float',
-            'default_value': 5.0,
+            'default_value': 50.0,
             'constraints_pass': constraints_pass_fan_seconds,
             'name': lazy_gettext('Fan On Duration'),
             'phrase': lazy_gettext('How long to turn the fan on (seconds) before acquiring measurements')
@@ -87,7 +87,7 @@ class InputModule(AbstractInput):
             self.serial_device = is_device(self.uart_location)
 
             self.fan_modulate = True
-            self.fan_seconds = 5.0
+            self.fan_seconds = 50.0
 
             if input_dev.custom_options:
                 for each_option in input_dev.custom_options.split(';'):
@@ -196,6 +196,14 @@ class InputModule(AbstractInput):
             # Turn the fan off
             if self.fan_modulate:
                 self.DormantMode('sleep')
+
+            if pm_1_0 > 1000:
+                pm_1_0 = None
+            if pm_2_5 > 1000:
+                pm_2_5 = None
+            if pm_10_0 > 1000:
+                pm_10_0 = None
+
         except:
             self.logger.exception("Exception while reading")
             return None, None, None
@@ -216,7 +224,7 @@ class InputModule(AbstractInput):
         try:
             self.acquiring_measurement = True
             self._pm_1_0, self._pm_2_5, self._pm_10_0 = self.get_measurement()
-            if self._pm_1_0 is not None:
+            if None not in [self._pm_1_0, self.pm_2_5, self.pm_10_0]:
                 return  # success - no errors
         except Exception as e:
             self.logger.exception(

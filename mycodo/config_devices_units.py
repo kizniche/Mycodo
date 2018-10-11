@@ -24,7 +24,7 @@ MEASUREMENTS = {
     'co2': {
         'name': lazy_gettext('CO2'),
         'meas': 'co2',
-        'units': ['ppm', 'ppb']},
+        'units': ['ppm', 'ppb', 'percent']},
     'cpu_load_1m': {
         'name': lazy_gettext('CPU Load 1 min'),
         'meas': 'cpu_load',
@@ -306,6 +306,8 @@ UNIT_CONVERSIONS = {
     # Concentration
     'ppm_to_ppb': 'x*1000',
     'ppb_to_ppm': 'x/1000',
+    'ppm_to_percent': 'x/10000',
+    'ppb_to_percent': 'x/10000000',
 
     # Number
     'percent_to_decimal': 'x/100',

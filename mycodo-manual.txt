@@ -426,6 +426,8 @@ the measurement database to be used throughout the Mycodo system.
 
   Gain                                              Analog-to-digital converter only: set the gain when acquiring the measurement.
 
+  Sample Speed                                      Analog-to-digital converter only: set the sample speed (typically samples per second).
+
   Volts Min                                         Analog-to-digital converter only: What is the minimum voltage to use when scaling to produce the unit
                                                     value for the database. For instance, if your ADC is not expected to measure below 0.2 volts for your
                                                     particular circuit, set this to “0.2”.
@@ -3034,7 +3036,7 @@ Specifications
 -   Detection: PM1.0, PM2.5, PM10
 -   Working humidity: 0~85% RH (no condensation)
 -   Working temperature: -10 °C to 50 °C
--   Response time <= 45 sec
+-   Response time (T90) <= 45 seconds
 -   Life span: 3 years (in air)
 
 

@@ -34,7 +34,7 @@
     {% if not is_pwm %}
 
     <div class="col-6">
-      <input class="form-control form-control-sm" id="sec_on_amt_{{each_graph.output_ids.split(',')[0]}}" name="sec_on_amt_{{each_graph.output_ids.split(',')[0]}}" title="Turn output on for a specific number of seconds" type="text" value="" placeholder="Seconds">
+      <input class="form-control form-control-sm" id="sec_on_amt_{{each_graph.output_ids.split(',')[0]}}" name="sec_on_amt_{{each_graph.output_ids.split(',')[0]}}" title="Turn output on for a specific number of seconds" type="number" value="" placeholder="Seconds">
     </div>
     <div class="col-6">
       <input class="form-control btn btn-default btn-sm sec_on_amt" id="turn_on" name="{{each_graph.output_ids.split(',')[0]}}/on/sec/" type="button" value="{{_('Sec On')}}">
@@ -43,7 +43,7 @@
     {% else %}
 
     <div class="col-6">
-      <input class="form-control form-control-sm" id="duty_cycle_on_amt_{{each_graph.output_ids.split(',')[0]}}" name="duty_cycle_on_amt_{{each_graph.output_ids.split(',')[0]}}" title="Select the PWM duty cycle (0.0 - 100.0)" type="text" value="" placeholder="% Duty Cycle">
+      <input class="form-control form-control-sm" id="duty_cycle_on_amt_{{each_graph.output_ids.split(',')[0]}}" name="duty_cycle_on_amt_{{each_graph.output_ids.split(',')[0]}}" title="Select the PWM duty cycle (0.0 - 100.0)" type="number" value="" placeholder="% Duty Cycle">
     </div>
     <div class="col-6">
       <input class="form-control btn btn-default btn-sm duty_cycle_on_amt" id="turn_on" name="{{each_graph.output_ids.split(',')[0]}}/on/pwm/" type="button" value="{{_('PWM On')}}">
@@ -76,7 +76,7 @@
 
     <div class="form-row">
       <div class="col-auto">
-        <input class="form-control" id="sec_on_amt_{{each_graph.output_ids.split(',')[0]}}" name="sec_on_amt_{{each_graph.output_ids.split(',')[0]}}" title="Turn this output on for a specific number of seconds (used to test output)" type="text" value="" placeholder="Seconds">
+        <input class="form-control" id="sec_on_amt_{{each_graph.output_ids.split(',')[0]}}" name="sec_on_amt_{{each_graph.output_ids.split(',')[0]}}" title="Turn this output on for a specific number of seconds (used to test output)" type="number" value="" placeholder="Seconds">
       </div>
       <div class="col-auto">
         <input class="form-control btn btn-default sec_on_amt" id="turn_on" name="{{each_graph.output_ids.split(',')[0]}}/on/sec/" type="button" value="{{_('Turn On')}}">
@@ -87,7 +87,7 @@
 
     <div class="form-row">
       <div class="col-auto">
-        <input class="form-control" id="duty_cycle_on_amt_{{each_graph.output_ids.split(',')[0]}}" name="duty_cycle_on_amt_{{each_graph.output_ids.split(',')[0]}}" title="Select the duty cycle for the PWM when turned on (0.0 - 100.0)" type="text" value="" placeholder="% Duty Cycle">
+        <input class="form-control" id="duty_cycle_on_amt_{{each_graph.output_ids.split(',')[0]}}" name="duty_cycle_on_amt_{{each_graph.output_ids.split(',')[0]}}" title="Select the duty cycle for the PWM when turned on (0.0 - 100.0)" type="number" value="" placeholder="% Duty Cycle">
       </div>
       <div class="col-auto">
         <input class="form-control btn btn-default duty_cycle_on_amt" id="turn_on" name="{{each_graph.output_ids.split(',')[0]}}/on/pwm/" type="button" value="{{_('Turn On')}}">

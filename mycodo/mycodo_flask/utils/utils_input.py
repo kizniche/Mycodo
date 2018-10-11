@@ -448,7 +448,7 @@ def input_mod(form_mod, request_form):
                                         name=each_option['name'],
                                         value=request_form.get(key)))
 
-                        elif each_option['type'] == 'text':
+                        elif each_option['type'] in ['text', 'select']:
                             if 'constraints_pass' in each_option:
                                 constraints_pass, constraints_errors = each_option['constraints_pass'](request_form.get(key))
                             if constraints_pass:

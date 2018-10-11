@@ -2,9 +2,27 @@
 import logging
 import time
 
+from flask_babel import lazy_gettext
+
 from mycodo.inputs.base_input import AbstractInput
 from mycodo.inputs.sensorutils import convert_units
 from mycodo.inputs.sensorutils import is_device
+
+
+def constraints_pass_measure_range(value):
+    """
+    Check if the user input is acceptable
+    :param value: float
+    :return: tuple: (bool, list of strings)
+    """
+    errors = []
+    all_passed = True
+    # Ensure valid range is selected
+    if value not in ['1000', '2000', '3000', '5000']:
+        all_passed = False
+        errors.append("Invalid rage")
+    return all_passed, errors
+
 
 # Input information
 INPUT_INFORMATION = {
@@ -13,12 +31,29 @@ INPUT_INFORMATION = {
     'input_name': 'MH-Z19',
     'measurements_name': 'CO2',
     'measurements_list': ['co2'],
-    'options_enabled': ['uart_location', 'uart_baud_rate', 'period',  'convert_unit', 'pre_output'],
+    'options_enabled': ['uart_location', 'uart_baud_rate', 'custom_options', 'period',  'convert_unit', 'pre_output'],
     'options_disabled': ['interface'],
 
     'interfaces': ['UART'],
     'uart_location': '/dev/ttyAMA0',
-    'uart_baud_rate': 9600
+    'uart_baud_rate': 9600,
+
+    'custom_options': [
+        {
+            'id': 'measure_range',
+            'type': 'select',
+            'default_value': '5000',
+            'options_select': [
+                ('1000', '0 - 1000 ppmv'),
+                ('2000', '0 - 2000 ppmv'),
+                ('3000', '0 - 3000 ppmv'),
+                ('5000', '0 - 5000 ppmv'),
+            ],
+            'constraints_pass': constraints_pass_measure_range,
+            'name': lazy_gettext('Measurement Range'),
+            'phrase': lazy_gettext('Set the measuring range of the sensor')
+        }
+    ]
 }
 
 
@@ -29,6 +64,7 @@ class InputModule(AbstractInput):
         super(InputModule, self).__init__()
         self.logger = logging.getLogger("mycodo.inputs.mh_z19")
         self._co2 = None
+        self.measure_range = None
 
         if not testing:
             import serial
@@ -37,6 +73,7 @@ class InputModule(AbstractInput):
             self.uart_location = input_dev.uart_location
             self.baud_rate = input_dev.baud_rate
             self.convert_to_unit = input_dev.convert_to_unit
+
             # Check if device is valid
             self.serial_device = is_device(self.uart_location)
             if self.serial_device:
@@ -44,8 +81,6 @@ class InputModule(AbstractInput):
                     self.ser = serial.Serial(self.serial_device,
                                              baudrate=self.baud_rate,
                                              timeout=1)
-                    self.abcoff()
-                    self.set_measure_range(5000)
                 except serial.SerialException:
                     self.logger.exception('Opening serial')
             else:
@@ -53,6 +88,18 @@ class InputModule(AbstractInput):
                     'Could not open "{dev}". '
                     'Check the device location is correct.'.format(
                         dev=self.uart_location))
+
+            self.abcoff()  # Turns off Automatic Baseline Correction (ABC)
+
+            if input_dev.custom_options:
+                for each_option in input_dev.custom_options.split(';'):
+                    option = each_option.split(',')[0]
+                    value = each_option.split(',')[1]
+                    if option == 'measure_range':
+                        self.measure_range = value
+
+            if self.measure_range:
+                self.set_measure_range(self.measure_range)
 
     def __repr__(self):
         """  Representation of object """
@@ -94,10 +141,15 @@ class InputModule(AbstractInput):
         self.ser.write(bytearray([0xff, 0x01, 0x86, 0x00, 0x00, 0x00, 0x00, 0x00, 0x79]))
         time.sleep(.01)
         resp = self.ser.read(9)
-        if len(resp) != 0:
+
+        if resp[0] != 0xff or resp[1] != 0x86:
+            self.logger.error("Bad checksum")
+        elif len(resp) >= 4:
             high = resp[2]
             low = resp[3]
             co2 = (high * 256) + low
+        else:
+            self.logger.error("Bad response")
 
         co2 = convert_units(
             'co2', 'ppm', self.convert_to_unit, co2)
@@ -142,17 +194,17 @@ class InputModule(AbstractInput):
 
     def set_measure_range(self, measure_range):
         """
-        Sets the measurement range. Options are: 1000, 2000, 3000, or 5000 (ppmv)
-        :param measure_range: int
+        Sets the measurement range. Options are: '1000', '2000', '3000', or '5000' (ppmv)
+        :param measure_range: string
         :return: None
         """
-        if measure_range == 1000:
+        if measure_range == '1000':
             self.ser.write(bytearray([0xff, 0x01, 0x99, 0x00, 0x00, 0x00, 0x03, 0xe8, 0x7b]))
-        elif measure_range == 2000:
+        elif measure_range == '2000':
             self.ser.write(bytearray([0xff, 0x01, 0x99, 0x00, 0x00, 0x00, 0x07, 0xd0, 0x8f]))
-        elif measure_range == 3000:
+        elif measure_range == '3000':
             self.ser.write(bytearray([0xff, 0x01, 0x99, 0x00, 0x00, 0x00, 0x0b, 0xb8, 0xa3]))
-        elif measure_range == 5000:
+        elif measure_range == '5000':
             self.ser.write(bytearray([0xff, 0x01, 0x99, 0x00, 0x00, 0x00, 0x13, 0x88, 0xcb]))
         else:
             return "out of range"

@@ -257,7 +257,7 @@
               <div>
                 <div class="row small-gutters">
                   <div class="col-xs-6 col-sm-4 col-md-3 small-gutters">
-                    <input class="form-control" id="sec_on_amt_{{each_output.unique_id}}" name="sec_on_amt_{{each_output.unique_id}}" title="Turn this output on for a specific number of seconds (used to test output)" type="text" value="">
+                    <input class="form-control" id="sec_on_amt_{{each_output.unique_id}}" name="sec_on_amt_{{each_output.unique_id}}" title="Turn this output on for a specific number of seconds (used to test output)" type="number" value="">
                   </div>
                   <div class="col-xs-6 col-sm-4 col-md-3 small-gutters">
                     <input class="btn btn-success btn-block sec_on_amt" id="turn_on" name="{{each_output.unique_id}}/on/sec/" type="button" value="{{_('Turn On')}}">
@@ -275,7 +275,7 @@
               <div>
                 <div class="row small-gutters">
                   <div class="col-xs-6 col-sm-4 col-md-3 small-gutters">
-                  <input class="form-control" id="duty_cycle_on_amt_{{each_output.unique_id}}" name="duty_cycle_on_amt_{{each_output.unique_id}}" title="Select the duty cycle for the PWM when turned on (0.0 - 100.0)" type="text" value="">
+                  <input class="form-control" id="duty_cycle_on_amt_{{each_output.unique_id}}" name="duty_cycle_on_amt_{{each_output.unique_id}}" title="Select the duty cycle for the PWM when turned on (0.0 - 100.0)" type="number" value="">
                   </div>
                   <div class="col-xs-6 col-sm-4 col-md-3 small-gutters">
                   <input class="btn btn-success btn-block duty_cycle_on_amt" id="turn_on" name="{{each_output.unique_id}}/on/pwm/" type="button" value="{{_('Turn On')}}">

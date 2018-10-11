@@ -3175,7 +3175,7 @@ Specifications
 -  Detection: PM1.0, PM2.5, PM10
 -  Working humidity: 0~85% RH (no condensation)
 -  Working temperature: -10 °C to 50 °C
--  Response time <= 45 sec
+-  Response time (T90) <= 45 seconds
 -  Life span: 3 years (in air)
 
 Pressure Sensors
