@@ -17,6 +17,7 @@ from wtforms import validators
 from wtforms import widgets
 from wtforms.fields.html5 import EmailField
 from wtforms.validators import DataRequired
+from wtforms.widgets.html5 import NumberInput
 
 
 #
@@ -25,25 +26,42 @@ from wtforms.validators import DataRequired
 
 class SettingsCamera(FlaskForm):
     camera_id = StringField('Camera ID', widget=widgets.HiddenInput())
-    name = StringField(lazy_gettext('Name'))
-    library = StringField(lazy_gettext('Library'))
-    device = StringField(lazy_gettext('Device'))
-    opencv_device = IntegerField(lazy_gettext('OpenCV Device'))
-    hflip = BooleanField(lazy_gettext('Flip image horizontally'))
-    vflip = BooleanField(lazy_gettext('Flip image vertically'))
-    rotation = IntegerField(lazy_gettext('Rotate Image'))
-    height = IntegerField(lazy_gettext('Image Height'))
-    width = IntegerField(lazy_gettext('Image Width'))
-    brightness = DecimalField(lazy_gettext('Brightness'))
-    contrast = DecimalField(lazy_gettext('Contrast'))
-    exposure = DecimalField(lazy_gettext('Exposure'))
-    gain = DecimalField(lazy_gettext('Gain'))
-    hue = DecimalField(lazy_gettext('Hue'))
-    saturation = DecimalField(lazy_gettext('Saturation'))
-    white_balance = DecimalField(lazy_gettext('White Balance'))
+    name = StringField(
+        lazy_gettext('Name'))
+    library = StringField(
+        lazy_gettext('Library'))
+    device = StringField(
+        lazy_gettext('Device'))
+    opencv_device = IntegerField(
+        lazy_gettext('OpenCV Device'), widget = NumberInput())
+    hflip = BooleanField(
+        lazy_gettext('Flip image horizontally'))
+    vflip = BooleanField(
+        lazy_gettext('Flip image vertically'))
+    rotation = IntegerField(
+        lazy_gettext('Rotate Image'), widget = NumberInput())
+    height = IntegerField(
+        lazy_gettext('Image Height'), widget = NumberInput())
+    width = IntegerField(
+        lazy_gettext('Image Width'), widget = NumberInput())
+    brightness = DecimalField(
+        lazy_gettext('Brightness'), widget = NumberInput())
+    contrast = DecimalField(
+        lazy_gettext('Contrast'), widget = NumberInput())
+    exposure = DecimalField(
+        lazy_gettext('Exposure'), widget = NumberInput())
+    gain = DecimalField(
+        lazy_gettext('Gain'), widget = NumberInput())
+    hue = DecimalField(
+        lazy_gettext('Hue'), widget = NumberInput())
+    saturation = DecimalField(
+        lazy_gettext('Saturation'), widget = NumberInput())
+    white_balance = DecimalField(
+        lazy_gettext('White Balance'), widget = NumberInput())
     custom_options = StringField(lazy_gettext('Custom Options'))
     output_id = StringField(lazy_gettext('Output'))
-    output_duration = DecimalField(lazy_gettext('Output Duration'))
+    output_duration = DecimalField(
+        lazy_gettext('Output Duration'), widget = NumberInput())
     cmd_pre_camera = StringField(lazy_gettext('Pre Command'))
     cmd_post_camera = StringField(lazy_gettext('Post Command'))
     camera_add = SubmitField(lazy_gettext('Add Camera'))
@@ -68,7 +86,8 @@ class SettingsEmail(FlaskForm):
             min=1,
             max=65535,
             message=lazy_gettext('Port should be between 1 and 65535')
-        )]
+        )],
+        widget = NumberInput()
     )
     smtp_ssl = BooleanField('Enable SSL')
     smtp_user = StringField(
@@ -95,7 +114,8 @@ class SettingsEmail(FlaskForm):
             min=1,
             message=lazy_gettext('Must have at least one message able to be '
                                  'sent per hour.')
-        )]
+        )],
+        widget = NumberInput()
     )
     send_test = SubmitField(lazy_gettext('Send Test Email'))
     send_test_to_email = EmailField(
@@ -121,21 +141,27 @@ class SettingsGeneral(FlaskForm):
     hide_info = BooleanField(lazy_gettext('Hide info messages'))
     hide_warning = BooleanField(lazy_gettext('Hide warning messages'))
     hide_tooltips = BooleanField(lazy_gettext('Hide Form Tooltips'))
-    max_amps = DecimalField(lazy_gettext('Max Amps'))
-    output_stats_volts = IntegerField(lazy_gettext('Voltage'))
-    output_stats_cost = DecimalField(lazy_gettext('Cost per kWh'))
+    max_amps = DecimalField(
+        lazy_gettext('Max Amps'), widget = NumberInput())
+    output_stats_volts = IntegerField(
+        lazy_gettext('Voltage'), widget = NumberInput())
+    output_stats_cost = DecimalField(
+        lazy_gettext('Cost per kWh'), widget = NumberInput())
     output_stats_currency = StringField(lazy_gettext('Currency Unit'))
     output_stats_day_month = StringField(lazy_gettext('Day of Month'))
     output_usage_report_gen = BooleanField(lazy_gettext('Generate Usage/Cost Report'))
     output_usage_report_span = StringField(lazy_gettext('Time Span to Generate'))
-    output_usage_report_day = IntegerField(lazy_gettext('Day of Week/Month to Generate'))
+    output_usage_report_day = IntegerField(
+        lazy_gettext('Day of Week/Month to Generate'), widget = NumberInput())
     output_usage_report_hour = IntegerField(
         lazy_gettext('Hour of Day to Generate'),
         validators=[validators.NumberRange(
             min=0,
             max=23,
             message=lazy_gettext("Hour Options: 0-23")
-        )])
+        )],
+        widget = NumberInput()
+    )
     stats_opt_out = BooleanField(lazy_gettext('Opt-out of statistics'))
     enable_upgrade_check = BooleanField(lazy_gettext('Check for Updates'))
     Submit = SubmitField(lazy_gettext('Save'))
@@ -297,7 +323,8 @@ class UserMod(FlaskForm):
     )
     role_id = IntegerField(
         lazy_gettext('Role ID'),
-        validators=[DataRequired()]
+        validators=[DataRequired()],
+        widget = NumberInput()
     )
     theme = StringField(lazy_gettext('Theme'))
     save = SubmitField(lazy_gettext('Save'))
@@ -327,11 +354,16 @@ class SettingsPi(FlaskForm):
     pigpiod_sample_rate = StringField(lazy_gettext('Configure pigpiod'))
     change_pigpiod_sample_rate = SubmitField(lazy_gettext('Reconfigure'))
 
-    sample_rate_controller_conditional = DecimalField(lazy_gettext('Conditional Sample Rate (seconds)'))
-    sample_rate_controller_input = DecimalField(lazy_gettext('Input Sample Rate (seconds)'))
-    sample_rate_controller_math = DecimalField(lazy_gettext('Math Sample Rate (seconds)'))
-    sample_rate_controller_output = DecimalField(lazy_gettext('Output Sample Rate (seconds)'))
-    sample_rate_controller_pid = DecimalField(lazy_gettext('PID Sample Rate (seconds)'))
+    sample_rate_controller_conditional = DecimalField(
+        lazy_gettext('Conditional Sample Rate (seconds)'), widget = NumberInput())
+    sample_rate_controller_input = DecimalField(
+        lazy_gettext('Input Sample Rate (seconds)'), widget = NumberInput())
+    sample_rate_controller_math = DecimalField(
+        lazy_gettext('Math Sample Rate (seconds)'), widget = NumberInput())
+    sample_rate_controller_output = DecimalField(
+        lazy_gettext('Output Sample Rate (seconds)'), widget = NumberInput())
+    sample_rate_controller_pid = DecimalField(
+        lazy_gettext('PID Sample Rate (seconds)'), widget = NumberInput())
     save_sample_rates = SubmitField(lazy_gettext('Save Sample Rates'))
 
 

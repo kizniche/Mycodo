@@ -6,6 +6,22 @@ from flask_babel import lazy_gettext
 from mycodo.inputs.base_input import AbstractInput
 from mycodo.inputs.sensorutils import convert_units
 
+
+def constraints_pass_fan_seconds(value):
+    """
+    Check if the user input is acceptable
+    :param value: value
+    :return: tuple: (bool, list of strings)
+    """
+    errors = []
+    all_passed = True
+    # Ensure value is positive
+    if value <= 0:
+        all_passed = False
+        errors.append("Must be a positive value")
+    return all_passed, errors
+
+
 # Input information
 INPUT_INFORMATION = {
     #
@@ -157,18 +173,19 @@ INPUT_INFORMATION = {
     # Make sure your string represents the type you're attempting to cast
     'custom_options': [
         {
-            'id': 'modulate_fan',
-            'type': 'checkbox',
+            'id': 'fan_modulate',
+            'type': 'bool',
             'default_value': True,
             'name': lazy_gettext('Fan Off After Measure'),
             'phrase': lazy_gettext('Turn the fan on only during the measurement')
         },
         {
-            'id': 'another_option',
-            'type': 'textbox',
-            'default_value': 'my_text_value',
-            'name': lazy_gettext('Another Custom Option'),
-            'phrase': lazy_gettext('Another custom option description (this is translatable)')
+            'id': 'fan_seconds',
+            'type': 'float',
+            'default_value': 5.0,
+            'constraints_pass': constraints_pass_fan_seconds,
+            'name': lazy_gettext('Fan On Duration'),
+            'phrase': lazy_gettext('How long to turn the fan on (seconds) before acquiring measurements')
         }
 
     ]
@@ -213,16 +230,19 @@ class InputModule(AbstractInput):
             # Load custom options
             #
 
-            self.modulate_fan = None
-            self.another_option = None
+            # Default values if user settings are not set
+            self.fan_modulate = True
+            self.fan_seconds = 5.0
 
-            for each_option in input_dev.custom_options.split(';'):
-                option = each_option.split(',')[0]
-                value = each_option.split(',')[1]
-                if option == 'modulate_fan':
-                    self.modulate_fan = value
-                if option == 'another_option':
-                    self.another_option = value
+            # User values if user settings are set
+            if input_dev.custom_options:
+                for each_option in input_dev.custom_options.split(';'):
+                    option = each_option.split(',')[0]
+                    value = each_option.split(',')[1]
+                    if option == 'fan_modulate':
+                        self.fan_modulate = bool(value)
+                    elif option == 'fan_seconds':
+                        self.fan_seconds = float(value)
 
             #
             # Initialize the sensor class

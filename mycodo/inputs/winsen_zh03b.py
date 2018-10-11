@@ -58,7 +58,7 @@ INPUT_INFORMATION = {
             'constraints_pass': constraints_pass_fan_seconds,
             'name': lazy_gettext('Fan On Duration'),
             'phrase': lazy_gettext('How long to turn the fan on (seconds) before acquiring measurements')
-        },
+        }
     ]
 }
 
@@ -72,6 +72,7 @@ class InputModule(AbstractInput):
         self._pm_1_0 = None
         self._pm_2_5 = None
         self._pm_10_0 = None
+        self.fan_state = None
 
         if not testing:
             import serial
@@ -85,17 +86,17 @@ class InputModule(AbstractInput):
             # Check if device is valid
             self.serial_device = is_device(self.uart_location)
 
-            self.fan_state = None
             self.fan_modulate = True
             self.fan_seconds = 5.0
 
-            for each_option in input_dev.custom_options.split(';'):
-                option = each_option.split(',')[0]
-                value = each_option.split(',')[1]
-                if option == 'fan_modulate':
-                    self.fan_modulate = bool(value)
-                elif option == 'fan_seconds':
-                    self.fan_seconds = float(value)
+            if input_dev.custom_options:
+                for each_option in input_dev.custom_options.split(';'):
+                    option = each_option.split(',')[0]
+                    value = each_option.split(',')[1]
+                    if option == 'fan_modulate':
+                        self.fan_modulate = bool(value)
+                    elif option == 'fan_seconds':
+                        self.fan_seconds = float(value)
 
             if self.serial_device:
                 try:

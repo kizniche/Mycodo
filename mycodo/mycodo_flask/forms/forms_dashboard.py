@@ -15,6 +15,7 @@ from wtforms import SubmitField
 from wtforms import validators
 from wtforms import widgets
 from wtforms.validators import DataRequired
+from wtforms.widgets.html5 import NumberInput
 
 
 class DashboardBase(FlaskForm):
@@ -40,14 +41,16 @@ class DashboardBase(FlaskForm):
         validators=[validators.NumberRange(
             min=1,
             max=12
-        )]
+        )],
+        widget = NumberInput()
     )
     height = IntegerField(
         lazy_gettext('Height (pixels)'),
         validators=[validators.NumberRange(
             min=100,
             max=10000
-        )]
+        )],
+        widget = NumberInput()
     )
     refresh_duration = IntegerField(
         lazy_gettext('Refresh (seconds)'),
@@ -55,7 +58,8 @@ class DashboardBase(FlaskForm):
             min=1,
             message=lazy_gettext("Number of seconds to wait between acquiring"
                                  " any new measurements.")
-        )]
+        )],
+        widget = NumberInput()
     )
     list_visible_elements = SelectMultipleField(lazy_gettext('Visible Elements'))
     reorder = SubmitField(lazy_gettext('Save Order'))
@@ -78,7 +82,8 @@ class DashboardGraph(FlaskForm):
             min=1,
             message=lazy_gettext("Number of minutes to display of past "
                                  "measurements.")
-        )]
+        )],
+        widget = NumberInput()
     )
     enable_auto_refresh = BooleanField(lazy_gettext('Enable Auto Refresh'))
     enable_xaxis_reset = BooleanField(lazy_gettext('Enable X-Axis Reset'))
@@ -104,36 +109,52 @@ class DashboardGauge(FlaskForm):
         validators=[DataRequired()]
     )
     input_ids = StringField(lazy_gettext('Measurement'))
-    y_axis_min = DecimalField(lazy_gettext('Gauge Min'))
-    y_axis_max = DecimalField(lazy_gettext('Gauge Max'))
-    max_measure_age = IntegerField(lazy_gettext('Max Age (seconds)'))
+    y_axis_min = DecimalField(
+        lazy_gettext('Gauge Min'), widget = NumberInput())
+    y_axis_max = DecimalField(
+        lazy_gettext('Gauge Max'), widget = NumberInput())
+    max_measure_age = IntegerField(
+        lazy_gettext('Max Age (seconds)'), widget = NumberInput())
     enable_timestamp = BooleanField(lazy_gettext('Show Timestamp'))
 
 
 class DashboardMeasurement(FlaskForm):
     measurement_id = StringField(lazy_gettext('Measurement'))
-    max_measure_age = IntegerField(lazy_gettext('Max Age (seconds)'))
-    font_em_value = DecimalField(lazy_gettext('Value Font (em)'))
-    font_em_timestamp = DecimalField(lazy_gettext('Timestamp Font (em)'))
-    decimal_places = IntegerField(lazy_gettext('Decimal Places'))
+    max_measure_age = IntegerField(
+        lazy_gettext('Max Age (seconds)'), widget = NumberInput())
+    font_em_value = DecimalField(
+        lazy_gettext('Value Font (em)'), widget = NumberInput())
+    font_em_timestamp = DecimalField(
+        lazy_gettext('Timestamp Font (em)'), widget = NumberInput())
+    decimal_places = IntegerField(
+        lazy_gettext('Decimal Places'), widget = NumberInput())
 
 
 class DashboardOutput(FlaskForm):
     output_id = StringField(lazy_gettext('Output'))
-    max_measure_age = IntegerField(lazy_gettext('Max Age (seconds)'))
-    font_em_value = DecimalField(lazy_gettext('Value Font (em)'))
-    font_em_timestamp = DecimalField(lazy_gettext('Timestamp Font (em)'))
-    decimal_places = IntegerField(lazy_gettext('Decimal Places'))
+    max_measure_age = IntegerField(
+        lazy_gettext('Max Age (seconds)'), widget = NumberInput())
+    font_em_value = DecimalField(
+        lazy_gettext('Value Font (em)'), widget = NumberInput())
+    font_em_timestamp = DecimalField(
+        lazy_gettext('Timestamp Font (em)'), widget = NumberInput())
+    decimal_places = IntegerField(
+        lazy_gettext('Decimal Places'), widget = NumberInput())
     enable_output_controls = BooleanField(lazy_gettext('Feature Output Controls'))
 
 
 class DashboardPIDControl(FlaskForm):
     pid_id = StringField(lazy_gettext('PID'))
-    max_measure_age = IntegerField(lazy_gettext('Max Age (seconds)'))
-    font_em_value = DecimalField(lazy_gettext('Value Font (em)'))
-    font_em_timestamp = DecimalField(lazy_gettext('Timestamp Font (em)'))
-    camera_max_age = IntegerField(lazy_gettext('Max Age (seconds)'))
-    decimal_places = IntegerField(lazy_gettext('Decimal Places'))
+    max_measure_age = IntegerField(
+        lazy_gettext('Max Age (seconds)'), widget = NumberInput())
+    font_em_value = DecimalField(
+        lazy_gettext('Value Font (em)'), widget = NumberInput())
+    font_em_timestamp = DecimalField(
+        lazy_gettext('Timestamp Font (em)'), widget = NumberInput())
+    camera_max_age = IntegerField(
+        lazy_gettext('Max Age (seconds)'), widget = NumberInput())
+    decimal_places = IntegerField(
+        lazy_gettext('Decimal Places'), widget = NumberInput())
     show_pid_info = BooleanField(lazy_gettext('Show PID Information'))
     show_set_setpoint = BooleanField(lazy_gettext('Show Set Setpoint'))
 
@@ -141,4 +162,5 @@ class DashboardPIDControl(FlaskForm):
 class DashboardCamera(FlaskForm):
     camera_id = StringField(lazy_gettext('Camera'))
     camera_image_type = StringField(lazy_gettext('Image Display Type'))
-    camera_max_age = IntegerField(lazy_gettext('Max Age (seconds)'))
+    camera_max_age = IntegerField(
+        lazy_gettext('Max Age (seconds)'), widget = NumberInput())

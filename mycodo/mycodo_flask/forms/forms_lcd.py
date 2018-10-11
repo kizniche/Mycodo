@@ -13,6 +13,7 @@ from wtforms import SubmitField
 from wtforms import validators
 from wtforms import widgets
 from wtforms.validators import DataRequired
+from wtforms.widgets.html5 import NumberInput
 
 
 class LCDAdd(FlaskForm):
@@ -21,7 +22,8 @@ class LCDAdd(FlaskForm):
         validators=[validators.NumberRange(
             min=1,
             max=20
-        )]
+        )],
+        widget = NumberInput()
     )
     add = SubmitField(lazy_gettext('Add LCDs'))
 
@@ -40,7 +42,8 @@ class LCDMod(FlaskForm):
     i2c_bus = IntegerField(
         "{op} ({unit})".format(op=lazy_gettext('Bus'),
                                unit=lazy_gettext('I<sup>2</sup>C')),
-        validators=[DataRequired()]
+        validators=[DataRequired()],
+        widget = NumberInput()
     )
     period = DecimalField(
         lazy_gettext('Period (seconds)'),
@@ -50,7 +53,8 @@ class LCDMod(FlaskForm):
             message=lazy_gettext("Duration between calculating LCD output "
                                  "and applying to regulation must be between "
                                  "5 and 86400 seconds.")
-        )]
+        )],
+        widget=NumberInput()
     )
     lcd_type = SelectField(
         lazy_gettext('LCD Type'),
@@ -76,38 +80,46 @@ class LCDModDisplay(FlaskForm):
     line_1_display = StringField(lazy_gettext('Line 1'))
     line_1_max_age = IntegerField(
         lazy_gettext('Max Age (seconds)'),
-        validators=[validators.NumberRange(min=1, max=999999999)]
+        validators=[validators.NumberRange(min=1, max=999999999)],
+        widget=NumberInput()
     )
     line_1_decimal_places = IntegerField(
         lazy_gettext('Decimal Places'),
-        validators=[validators.NumberRange(min=0)]
+        validators=[validators.NumberRange(min=0)],
+        widget=NumberInput()
     )
     line_2_display = StringField(lazy_gettext('Line 2'))
     line_2_max_age = IntegerField(
         lazy_gettext('Max Age (seconds)'),
-        validators=[validators.NumberRange(min=1, max=999999999)]
+        validators=[validators.NumberRange(min=1, max=999999999)],
+        widget=NumberInput()
     )
     line_2_decimal_places = IntegerField(
         lazy_gettext('Decimal Places'),
-        validators=[validators.NumberRange(min=0)]
+        validators=[validators.NumberRange(min=0)],
+        widget=NumberInput()
     )
     line_3_display = StringField(lazy_gettext('Line 3'))
     line_3_max_age = IntegerField(
         lazy_gettext('Max Age (seconds)'),
-        validators=[validators.NumberRange(min=1, max=999999999)]
+        validators=[validators.NumberRange(min=1, max=999999999)],
+        widget=NumberInput()
     )
     line_3_decimal_places = IntegerField(
         lazy_gettext('Decimal Places'),
-        validators=[validators.NumberRange(min=0)]
+        validators=[validators.NumberRange(min=0)],
+        widget=NumberInput()
     )
     line_4_display = StringField(lazy_gettext('Line 4'))
     line_4_max_age = IntegerField(
         lazy_gettext('Max Age (seconds)'),
-        validators=[validators.NumberRange(min=1, max=999999999)]
+        validators=[validators.NumberRange(min=1, max=999999999)],
+        widget=NumberInput()
     )
     line_4_decimal_places = IntegerField(
         lazy_gettext('Decimal Places'),
-        validators=[validators.NumberRange(min=0)]
+        validators=[validators.NumberRange(min=0)],
+        widget=NumberInput()
     )
     save_display = SubmitField(lazy_gettext('Save'))
     delete_display = SubmitField(lazy_gettext('Delete'))

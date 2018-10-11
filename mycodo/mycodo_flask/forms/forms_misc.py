@@ -13,6 +13,7 @@ from wtforms import StringField
 from wtforms import SubmitField
 from wtforms import validators
 from wtforms import widgets
+from wtforms.widgets.html5 import NumberInput
 
 
 #
@@ -31,14 +32,16 @@ class Camera(FlaskForm):
         validators=[validators.NumberRange(
             min=0,
             message=lazy_gettext('Photo Interval must be a positive value')
-        )]
+        )],
+        widget = NumberInput()
     )
     timelapse_runtime_sec = DecimalField(
         lazy_gettext('Run Time (seconds)'),
         validators=[validators.NumberRange(
             min=0,
             message=lazy_gettext('Total Run Time must be a positive value')
-        )]
+        )],
+        widget = NumberInput()
     )
     start_stream = SubmitField(lazy_gettext('Start Stream'))
     stop_stream = SubmitField(lazy_gettext('Stop Stream'))
@@ -89,7 +92,8 @@ class LogView(FlaskForm):
         validators=[validators.NumberRange(
             min=1,
             message=lazy_gettext('Number of lines should be greater than 0')
-        )]
+        )],
+        widget = NumberInput()
     )
     loglogin = SubmitField(lazy_gettext('Login'))
     loghttp_access = SubmitField(lazy_gettext('Web Access'))
@@ -108,7 +112,8 @@ class LogView(FlaskForm):
 
 class Upgrade(FlaskForm):
     upgrade = SubmitField(lazy_gettext('Upgrade Mycodo'))
-    upgrade_next_major_version = SubmitField(lazy_gettext('Upgrade Mycodo to Next Major Version'))
+    upgrade_next_major_version = SubmitField(lazy_gettext(
+        'Upgrade Mycodo to Next Major Version'))
 
 
 #

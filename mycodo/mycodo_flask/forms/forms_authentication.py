@@ -13,6 +13,7 @@ from wtforms import SubmitField
 from wtforms import validators
 from wtforms import widgets
 from wtforms.validators import DataRequired
+from wtforms.widgets.html5 import NumberInput
 
 
 #
@@ -66,7 +67,8 @@ class LogView(FlaskForm):
         validators=[validators.NumberRange(
             min=1,
             message=lazy_gettext('Number of lines should be greater than 0')
-        )]
+        )],
+        widget = NumberInput()
     )
     loglogin = SubmitField(lazy_gettext('Login Log'))
     loghttp = SubmitField(lazy_gettext('HTTP Log'))

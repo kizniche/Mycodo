@@ -13,6 +13,7 @@ from wtforms import SubmitField
 from wtforms import validators
 from wtforms import widgets
 from wtforms.validators import DataRequired
+from wtforms.widgets.html5 import NumberInput
 
 
 class PIDModBase(FlaskForm):
@@ -39,44 +40,53 @@ class PIDModBase(FlaskForm):
         validators=[validators.NumberRange(
             min=1.0,
             max=86400.0
-        )]
+        )],
+        widget = NumberInput()
     )
     max_measure_age = DecimalField(
         lazy_gettext('Max Age (seconds)'),
         validators=[validators.NumberRange(
             min=1.0,
             max=86400.0
-        )]
+        )],
+        widget = NumberInput()
     )
     setpoint = DecimalField(
         lazy_gettext('Setpoint'),
         validators=[validators.NumberRange(
             min=-1000000,
             max=1000000
-        )]
+        )],
+        widget = NumberInput()
     )
-    band = DecimalField(lazy_gettext('Band (+/- Setpoint)'))
+    band = DecimalField(
+        lazy_gettext('Band (+/- Setpoint)'), widget = NumberInput())
     store_lower_as_negative = BooleanField(lazy_gettext('Store Lower as Negative'))
     k_p = DecimalField(
         lazy_gettext('Kp Gain'),
         validators=[validators.NumberRange(
             min=0
-        )]
+        )],
+        widget = NumberInput()
     )
     k_i = DecimalField(
         lazy_gettext('Ki Gain'),
         validators=[validators.NumberRange(
             min=0
-        )]
+        )],
+        widget = NumberInput()
     )
     k_d = DecimalField(
         lazy_gettext('Kd Gain'),
         validators=[validators.NumberRange(
             min=0
-        )]
+        )],
+        widget = NumberInput()
     )
-    integrator_max = DecimalField(lazy_gettext('Integrator Min'))
-    integrator_min = DecimalField(lazy_gettext('Integrator Max'))
+    integrator_max = DecimalField(
+        lazy_gettext('Integrator Min'), widget = NumberInput())
+    integrator_min = DecimalField(
+        lazy_gettext('Integrator Max'), widget = NumberInput())
     raise_output_id = StringField(lazy_gettext('Output (Raise)'))
     lower_output_id = StringField(lazy_gettext('Output (Lower)'))
     method_id = StringField(
@@ -91,8 +101,10 @@ class PIDModBase(FlaskForm):
     pid_order_up = SubmitField(lazy_gettext('Up'))
     pid_order_down = SubmitField(lazy_gettext('Down'))
 
-    pid_autotune_noiseband = DecimalField(lazy_gettext('Noise Band'))
-    pid_autotune_outstep = DecimalField(lazy_gettext('Outstep'))
+    pid_autotune_noiseband = DecimalField(
+        lazy_gettext('Noise Band'), widget = NumberInput())
+    pid_autotune_outstep = DecimalField(
+        lazy_gettext('Outstep'), widget = NumberInput())
     pid_autotune = SubmitField(lazy_gettext('Start Autotune'))
 
 
@@ -102,21 +114,24 @@ class PIDModRelayRaise(FlaskForm):
         validators=[validators.NumberRange(
             min=0,
             max=86400
-        )]
+        )],
+        widget = NumberInput()
     )
     raise_max_duration = DecimalField(
         lazy_gettext('Max On Duration (Raise)'),
         validators=[validators.NumberRange(
             min=0,
             max=86400
-        )]
+        )],
+        widget = NumberInput()
     )
     raise_min_off_duration = DecimalField(
         lazy_gettext('Min Off Duration (Raise)'),
         validators=[validators.NumberRange(
             min=0,
             max=86400
-        )]
+        )],
+        widget = NumberInput()
     )
 
 
@@ -126,21 +141,24 @@ class PIDModRelayLower(FlaskForm):
         validators=[validators.NumberRange(
             min=0,
             max=86400
-        )]
+        )],
+        widget = NumberInput()
     )
     lower_max_duration = DecimalField(
         lazy_gettext('Max On Duration (Lower)'),
         validators=[validators.NumberRange(
             min=0,
             max=86400
-        )]
+        )],
+        widget = NumberInput()
     )
     lower_min_off_duration = DecimalField(
         lazy_gettext('Min Off Duration (Lower)'),
         validators=[validators.NumberRange(
             min=0,
             max=86400
-        )]
+        )],
+        widget = NumberInput()
     )
 
 
@@ -150,14 +168,16 @@ class PIDModPWMRaise(FlaskForm):
         validators=[validators.NumberRange(
             min=0,
             max=100
-        )]
+        )],
+        widget = NumberInput()
     )
     raise_max_duty_cycle = DecimalField(
         lazy_gettext('Max Duty Cycle (Raise)'),
         validators=[validators.NumberRange(
             min=0,
             max=100
-        )]
+        )],
+        widget = NumberInput()
     )
 
 
@@ -167,12 +187,14 @@ class PIDModPWMLower(FlaskForm):
         validators=[validators.NumberRange(
             min=0,
             max=100
-        )]
+        )],
+        widget = NumberInput()
     )
     lower_max_duty_cycle = DecimalField(
         lazy_gettext('Max Duty Cycle (Lower)'),
         validators=[validators.NumberRange(
             min=0,
             max=100
-        )]
+        )],
+        widget = NumberInput()
     )

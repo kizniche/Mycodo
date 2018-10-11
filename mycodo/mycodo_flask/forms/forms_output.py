@@ -16,6 +16,7 @@ from wtforms import validators
 from wtforms import widgets
 from wtforms.validators import DataRequired
 from wtforms.validators import Optional
+from wtforms.widgets.html5 import NumberInput
 
 from mycodo.config import OUTPUTS
 
@@ -36,9 +37,12 @@ class OutputMod(FlaskForm):
         lazy_gettext('Name'),
         validators=[DataRequired()]
     )
-    pin = IntegerField(lazy_gettext('Pin'))
-    protocol = IntegerField(lazy_gettext('Protocol'))
-    pulse_length = IntegerField(lazy_gettext('Pulse Length'))
+    pin = IntegerField(
+        lazy_gettext('Pin'), widget = NumberInput())
+    protocol = IntegerField(
+        lazy_gettext('Protocol'), widget = NumberInput())
+    pulse_length = IntegerField(
+        lazy_gettext('Pulse Length'), widget = NumberInput())
     on_command = StringField(lazy_gettext('On Command'))
     off_command = StringField(lazy_gettext('Off Command'))
     pwm_command = StringField(lazy_gettext('PWM Command'))
@@ -50,7 +54,8 @@ class OutputMod(FlaskForm):
             max=50,
             message=lazy_gettext("The current draw of the device connected "
                                  "to this output, in amps.")
-        )]
+        )],
+        widget = NumberInput()
     )
     trigger = SelectField(
         lazy_gettext('On Trigger'),
@@ -69,7 +74,8 @@ class OutputMod(FlaskForm):
         ],
         validators=[DataRequired()]
     )
-    pwm_hertz = IntegerField(lazy_gettext('Frequency (Hertz)'))
+    pwm_hertz = IntegerField(
+        lazy_gettext('Frequency (Hertz)'), widget = NumberInput())
     pwm_library = SelectField(
         lazy_gettext('Library'),
         choices=[
@@ -84,6 +90,7 @@ class OutputMod(FlaskForm):
     order_down = SubmitField(lazy_gettext('Down'))
     pwm_duty_cycle_on = DecimalField(
         '{} (%)'.format(lazy_gettext('Duty Cycle')),
-        validators=[Optional()]
+        validators=[Optional()],
+        widget = NumberInput()
     )
     on_submit = SubmitField(lazy_gettext('Turn On'))

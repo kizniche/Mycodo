@@ -2,7 +2,7 @@
 
   {% for each_option in dict_inputs[each_input.device]['custom_options'] %}
 
-    {% if each_option['type'] in ['text', 'float'] %}
+    {% if each_option['type'] in ['float', 'integer', 'text'] %}
 <div class="col-auto">
   <label class="control-label" for="{{each_option['id']}}">{{each_option['name']}}</label>
   <div>

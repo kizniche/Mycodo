@@ -13,6 +13,7 @@ from wtforms import StringField
 from wtforms import SubmitField
 from wtforms import widgets
 from wtforms.validators import DataRequired
+from wtforms.widgets.html5 import NumberInput
 
 from mycodo.config import MATHS
 
@@ -34,10 +35,12 @@ class MathMod(FlaskForm):
         validators=[DataRequired()])
     period = DecimalField(
         lazy_gettext('Period (seconds)'),
-        validators=[DataRequired()])
+        validators=[DataRequired()],
+        widget = NumberInput())
     max_measure_age = IntegerField(
         lazy_gettext('Max Age (seconds)'),
-        validators=[DataRequired()])
+        validators=[DataRequired()],
+        widget = NumberInput())
     inputs = SelectMultipleField(
         lazy_gettext('Inputs'))
     selected_measurement_unit = StringField(lazy_gettext('Unit Measurement'))
@@ -78,4 +81,5 @@ class MathModHumidity(FlaskForm):
 class MathModVerification(FlaskForm):
     max_difference = DecimalField(
         lazy_gettext('Max Difference'),
-        validators=[DataRequired()])
+        validators=[DataRequired()],
+        widget = NumberInput())
