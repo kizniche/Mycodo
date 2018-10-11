@@ -1,3 +1,9 @@
+## 6.4.1 (2018-10-11)
+
+### Bugfixes
+
+ - Fix database upgrade issue
+
 ## 6.4.0 (2018-10-11)
 
 ### Features

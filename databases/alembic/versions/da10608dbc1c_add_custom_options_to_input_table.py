@@ -20,13 +20,13 @@ def upgrade():
     with op.batch_alter_table("input") as batch_op:
         batch_op.add_column(sa.Column('custom_options', sa.Text))
 
-        op.execute(
-            '''
-            UPDATE input
-            SET custom_options=''
-            WHERE custom_options IS NULL
-            '''
-        )
+    op.execute(
+        '''
+        UPDATE input
+        SET custom_options=''
+        WHERE custom_options IS NULL
+        '''
+    )
 
 
 def downgrade():
