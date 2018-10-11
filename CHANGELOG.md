@@ -4,7 +4,7 @@
 
  - Add Input: ADS1256 Analog-to-digital converter ([#537](https://github.com/kizniche/mycodo/issues/537))
  - Add ability to create custom options for Input modules ([#525](https://github.com/kizniche/mycodo/issues/525))
- - Add conversion from ppm/ppb to percent and vice versa
+ - Add conversions between ppm/ppb and percent
 
 ### Bugfixes
 
