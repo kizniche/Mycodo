@@ -10,6 +10,22 @@ from flask_babel import lazy_gettext
 from mycodo.inputs.base_input import AbstractInput
 from mycodo.inputs.sensorutils import is_device
 
+
+def constraints_pass_fan_seconds(value):
+    """
+    Check if the user input is acceptable
+    :param value: value
+    :return: tuple: (bool, list of strings)
+    """
+    errors = []
+    all_passed = True
+    # Ensure value is positive
+    if value <= 0:
+        all_passed = False
+        errors.append("Must be a positive value")
+    return all_passed, errors
+
+
 # Input information
 INPUT_INFORMATION = {
     'input_name_unique': 'WINSEN_ZH03B',
@@ -29,19 +45,20 @@ INPUT_INFORMATION = {
 
     'custom_options': [
         {
-            'id': 'modulate_fan',
-            'type': 'checkbox',
+            'id': 'fan_modulate',
+            'type': 'bool',
             'default_value': True,
             'name': lazy_gettext('Fan Off After Measure'),
             'phrase': lazy_gettext('Turn the fan on only during the measurement')
         },
         {
-            'id': 'another_option',
-            'type': 'textbox',
-            'default_value': 'my_text_value',
-            'name': lazy_gettext('Another Custom Option'),
-            'phrase': lazy_gettext('Another custom option description (this is translatable)')
-        }
+            'id': 'fan_seconds',
+            'type': 'float',
+            'default_value': 5.0,
+            'constraints_pass': constraints_pass_fan_seconds,
+            'name': lazy_gettext('Fan On Duration'),
+            'phrase': lazy_gettext('How long to turn the fan on (seconds) before acquiring measurements')
+        },
     ]
 }
 
@@ -69,13 +86,16 @@ class InputModule(AbstractInput):
             self.serial_device = is_device(self.uart_location)
 
             self.fan_state = None
-            self.modulate_fan = None
+            self.fan_modulate = True
+            self.fan_seconds = 5.0
 
             for each_option in input_dev.custom_options.split(';'):
                 option = each_option.split(',')[0]
                 value = each_option.split(',')[1]
-                if option == 'modulate_fan':
-                    self.modulate_fan = value
+                if option == 'fan_modulate':
+                    self.fan_modulate = bool(value)
+                elif option == 'fan_seconds':
+                    self.fan_seconds = float(value)
 
             if self.serial_device:
                 try:
@@ -88,7 +108,7 @@ class InputModule(AbstractInput):
                         timeout=10
                     )
                     self.ser.flushInput()
-                    if not self.modulate_fan:
+                    if not self.fan_modulate:
                         self.fan_state = self.DormantMode('run')
                 except serial.SerialException:
                     self.logger.exception('Opening serial')
@@ -161,13 +181,20 @@ class InputModule(AbstractInput):
         self.logger.debug("Reading sample")
 
         try:
-            if self.modulate_fan:
+            if self.fan_modulate:
+                # Allow the fan to run before querying sensor
                 self.DormantMode('run')
-                time.sleep(5)  # Wait 5 seconds for the fan to run before acquiring measurements
+                start_time = time.time()
+                while (self.running and
+                        time.time() - start_time < self.fan_seconds):
+                    time.sleep(0.01)
+
+            # Acquire measurements
             pm_1_0, pm_2_5, pm_10_0 = self.QAReadSample()
-            if self.modulate_fan:
+
+            # Turn the fan off
+            if self.fan_modulate:
                 self.DormantMode('sleep')
-            self.logger.debug("QAReadSample: {}, {}, {}".format(pm_1_0, pm_2_5, pm_10_0))
         except:
             self.logger.exception("Exception while reading")
             return None, None, None

@@ -2,14 +2,14 @@
 
   {% for each_option in dict_inputs[each_input.device]['custom_options'] %}
 
-    {% if each_option['type'] == 'textbox' %}
+    {% if each_option['type'] in ['text', 'float'] %}
 <div class="col-auto">
   <label class="control-label" for="{{each_option['id']}}">{{each_option['name']}}</label>
   <div>
     <input class="form-control" id="{{each_option['id']}}" name="{{each_option['id']}}" title="{{each_option['phrase']}}" type="text" value="{{custom_options_values[each_input.unique_id][each_option['id']]}}">
   </div>
 </div>
-    {% elif each_option['type'] == 'checkbox' %}
+    {% elif each_option['type'] == 'bool' %}
 <div class="col-auto">
   <label class="control-label" for="{{each_option['id']}}">{{each_option['name']}}</label>
   <div class="input-group-text">

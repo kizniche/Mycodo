@@ -25,6 +25,8 @@ from mycodo.mycodo_flask.utils.utils_general import return_dependencies
 from mycodo.utils.inputs import parse_input_information
 from mycodo.utils.system_pi import csv_to_list_of_str
 from mycodo.utils.system_pi import list_to_csv
+from mycodo.utils.system_pi import is_int
+from mycodo.utils.system_pi import str_is_float
 
 logger = logging.getLogger(__name__)
 
@@ -319,119 +321,165 @@ def input_mod(form_mod, request_form):
             error.append(gettext(
                 "Invalid device or improper permissions to read device"))
 
-        if not error:
-            mod_input.name = form_mod.name.data
+        mod_input.name = form_mod.name.data
 
-            if form_mod.location.data:
-                mod_input.location = form_mod.location.data
-            if form_mod.i2c_location.data:
-                mod_input.i2c_location = form_mod.i2c_location.data
-            if form_mod.uart_location.data:
-                mod_input.uart_location = form_mod.uart_location.data
-            if form_mod.gpio_location.data:
-                mod_input.gpio_location = form_mod.gpio_location.data
+        if form_mod.location.data:
+            mod_input.location = form_mod.location.data
+        if form_mod.i2c_location.data:
+            mod_input.i2c_location = form_mod.i2c_location.data
+        if form_mod.uart_location.data:
+            mod_input.uart_location = form_mod.uart_location.data
+        if form_mod.gpio_location.data:
+            mod_input.gpio_location = form_mod.gpio_location.data
 
-            if form_mod.power_output_id.data:
-                mod_input.power_output_id = form_mod.power_output_id.data
-            else:
-                mod_input.power_output_id = None
+        if form_mod.power_output_id.data:
+            mod_input.power_output_id = form_mod.power_output_id.data
+        else:
+            mod_input.power_output_id = None
 
-            if form_mod.pre_output_id.data:
-                mod_input.pre_output_id = form_mod.pre_output_id.data
-            else:
-                mod_input.pre_output_id = None
+        if form_mod.pre_output_id.data:
+            mod_input.pre_output_id = form_mod.pre_output_id.data
+        else:
+            mod_input.pre_output_id = None
 
-            if mod_input.device == 'LinuxCommand':
-                mod_input.measurements = form_mod.selected_measurement_unit.data.split(',')[0]
+        if mod_input.device == 'LinuxCommand':
+            mod_input.measurements = form_mod.selected_measurement_unit.data.split(',')[0]
 
-            if (mod_input.device == 'LinuxCommand' or
-                    ('analog_to_digital_converter' in dict_inputs[mod_input.device] and
-                     dict_inputs[mod_input.device]['analog_to_digital_converter'])):
-                mod_input.convert_to_unit = form_mod.selected_measurement_unit.data
+        if (mod_input.device == 'LinuxCommand' or
+                ('analog_to_digital_converter' in dict_inputs[mod_input.device] and
+                 dict_inputs[mod_input.device]['analog_to_digital_converter'])):
+            mod_input.convert_to_unit = form_mod.selected_measurement_unit.data
 
-            short_list = []
-            mod_units = False
-            for key in request_form.keys():
-                if 'convert_unit' in key:
-                    mod_units = True
-                    for value in request_form.getlist(key):
-                        if value == 'default':
-                            pass
-                        elif (len(value.split(',')) < 2 or
-                                value.split(',')[0] == '' or value.split(',')[1] == ''):
-                            error.append("Invalid custom unit")
-                        else:
-                            short_list.append(value)
-            if mod_units:
-                mod_input.convert_to_unit = ';'.join(short_list)
+        short_list = []
+        mod_units = False
+        for key in request_form.keys():
+            if 'convert_unit' in key:
+                mod_units = True
+                for value in request_form.getlist(key):
+                    if value == 'default':
+                        pass
+                    elif (len(value.split(',')) < 2 or
+                            value.split(',')[0] == '' or value.split(',')[1] == ''):
+                        error.append("Invalid custom unit")
+                    else:
+                        short_list.append(value)
+        if mod_units:
+            mod_input.convert_to_unit = ';'.join(short_list)
 
-            mod_input.i2c_bus = form_mod.i2c_bus.data
-            mod_input.baud_rate = form_mod.baud_rate.data
-            mod_input.pre_output_duration = form_mod.pre_output_duration.data
-            mod_input.pre_output_during_measure = form_mod.pre_output_during_measure.data
-            mod_input.period = form_mod.period.data
-            mod_input.resolution = form_mod.resolution.data
-            mod_input.resolution_2 = form_mod.resolution_2.data
-            mod_input.sensitivity = form_mod.sensitivity.data
-            mod_input.calibrate_sensor_measure = form_mod.calibrate_sensor_measure.data
-            mod_input.cmd_command = form_mod.cmd_command.data
-            mod_input.thermocouple_type = form_mod.thermocouple_type.data
-            mod_input.ref_ohm = form_mod.ref_ohm.data
-            # Serial options
-            mod_input.pin_clock = form_mod.pin_clock.data
-            mod_input.pin_cs = form_mod.pin_cs.data
-            mod_input.pin_mosi = form_mod.pin_mosi.data
-            mod_input.pin_miso = form_mod.pin_miso.data
-            # Bluetooth options
-            mod_input.bt_adapter = form_mod.bt_adapter.data
-            # ADC options
-            mod_input.adc_channel = form_mod.adc_channel.data
-            mod_input.adc_gain = form_mod.adc_gain.data
-            mod_input.adc_resolution = form_mod.adc_resolution.data
-            mod_input.adc_sample_speed = form_mod.adc_sample_speed.data
-            mod_input.adc_volts_min = form_mod.adc_volts_min.data
-            mod_input.adc_volts_max = form_mod.adc_volts_max.data
-            mod_input.adc_units_min = form_mod.adc_units_min.data
-            mod_input.adc_units_max = form_mod.adc_units_max.data
-            mod_input.adc_inverse_unit_scale = form_mod.adc_inverse_unit_scale.data
-            # Switch options
-            mod_input.switch_edge = form_mod.switch_edge.data
-            mod_input.switch_bouncetime = form_mod.switch_bounce_time.data
-            mod_input.switch_reset_period = form_mod.switch_reset_period.data
-            # PWM and RPM options
-            mod_input.weighting = form_mod.weighting.data
-            mod_input.rpm_pulses_per_rev = form_mod.rpm_pulses_per_rev.data
-            mod_input.sample_time = form_mod.sample_time.data
-            # Server options
-            mod_input.port = form_mod.port.data
-            mod_input.times_check = form_mod.times_check.data
-            mod_input.deadline = form_mod.deadline.data
-            # SHT sensor options
-            if form_mod.sht_voltage.data:
-                mod_input.sht_voltage = form_mod.sht_voltage.data
+        mod_input.i2c_bus = form_mod.i2c_bus.data
+        mod_input.baud_rate = form_mod.baud_rate.data
+        mod_input.pre_output_duration = form_mod.pre_output_duration.data
+        mod_input.pre_output_during_measure = form_mod.pre_output_during_measure.data
+        mod_input.period = form_mod.period.data
+        mod_input.resolution = form_mod.resolution.data
+        mod_input.resolution_2 = form_mod.resolution_2.data
+        mod_input.sensitivity = form_mod.sensitivity.data
+        mod_input.calibrate_sensor_measure = form_mod.calibrate_sensor_measure.data
+        mod_input.cmd_command = form_mod.cmd_command.data
+        mod_input.thermocouple_type = form_mod.thermocouple_type.data
+        mod_input.ref_ohm = form_mod.ref_ohm.data
+        # Serial options
+        mod_input.pin_clock = form_mod.pin_clock.data
+        mod_input.pin_cs = form_mod.pin_cs.data
+        mod_input.pin_mosi = form_mod.pin_mosi.data
+        mod_input.pin_miso = form_mod.pin_miso.data
+        # Bluetooth options
+        mod_input.bt_adapter = form_mod.bt_adapter.data
+        # ADC options
+        mod_input.adc_channel = form_mod.adc_channel.data
+        mod_input.adc_gain = form_mod.adc_gain.data
+        mod_input.adc_resolution = form_mod.adc_resolution.data
+        mod_input.adc_sample_speed = form_mod.adc_sample_speed.data
+        mod_input.adc_volts_min = form_mod.adc_volts_min.data
+        mod_input.adc_volts_max = form_mod.adc_volts_max.data
+        mod_input.adc_units_min = form_mod.adc_units_min.data
+        mod_input.adc_units_max = form_mod.adc_units_max.data
+        mod_input.adc_inverse_unit_scale = form_mod.adc_inverse_unit_scale.data
+        # Switch options
+        mod_input.switch_edge = form_mod.switch_edge.data
+        mod_input.switch_bouncetime = form_mod.switch_bounce_time.data
+        mod_input.switch_reset_period = form_mod.switch_reset_period.data
+        # PWM and RPM options
+        mod_input.weighting = form_mod.weighting.data
+        mod_input.rpm_pulses_per_rev = form_mod.rpm_pulses_per_rev.data
+        mod_input.sample_time = form_mod.sample_time.data
+        # Server options
+        mod_input.port = form_mod.port.data
+        mod_input.times_check = form_mod.times_check.data
+        mod_input.deadline = form_mod.deadline.data
+        # SHT sensor options
+        if form_mod.sht_voltage.data:
+            mod_input.sht_voltage = form_mod.sht_voltage.data
 
-            try:
-                # Custom options
-                list_options = []
-                for each_option in dict_inputs[mod_input.device]['custom_options']:
-                    null_value = True
-                    for key in request_form.keys():
-                        if each_option['id'] == key:
+        try:
+            # Custom options
+            list_options = []
+            for each_option in dict_inputs[mod_input.device]['custom_options']:
+                null_value = True
+                for key in request_form.keys():
+                    if each_option['id'] == key:
+                        constraints_pass = True
+                        constraints_errors = []
+                        value = None
+                        if each_option['type'] == 'float':
+                            if str_is_float(request_form.get(key)):
+                                if 'constraints_pass' in each_option:
+                                    constraints_pass, constraints_errors = each_option['constraints_pass'](float(request_form.get(key)))
+                                if constraints_pass:
+                                    value = float(request_form.get(key))
+                            else:
+                                error.append(
+                                    "{name} must represent a float/decimal value "
+                                    "(submitted '{value}')".format(
+                                        name=each_option['name'],
+                                        value=request_form.get(key)))
+
+                        elif each_option['type'] == 'integer':
+                            if is_int(request_form.get(key)):
+                                if 'constraints_pass' in each_option:
+                                    constraints_pass, constraints_errors = each_option['constraints_pass'](int(request_form.get(key)))
+                                if constraints_pass:
+                                    value = int(request_form.get(key))
+                            else:
+                                error.append(
+                                    "{name} must represent an integer value "
+                                    "(submitted '{value}')".format(
+                                        name=each_option['name'],
+                                        value=request_form.get(key)))
+
+                        elif each_option['type'] == 'text':
+                            if 'constraints_pass' in each_option:
+                                constraints_pass, constraints_errors = each_option['constraints_pass'](request_form.get(key))
+                            if constraints_pass:
+                                value = request_form.get(key)
+
+                        elif each_option['type'] == 'bool':
+                            value = bool(request_form.get(key))
+
+                        for each_error in constraints_errors:
+                            error.append(
+                                "Error: {name}: {error}".format(
+                                    name=each_option['name'],
+                                    error=each_error))
+
+                        if value:
+                            null_value = False
                             option = '{id},{value}'.format(
                                 id=key,
-                                value=request_form.get(key))
+                                value=value)
                             list_options.append(option)
-                            null_value = False
-                    if null_value:
-                        option = '{id},'.format(id=each_option['id'])
-                        list_options.append(option)
 
+                if null_value:
+                    option = '{id},'.format(id=each_option['id'])
+                    list_options.append(option)
 
-                mod_input.custom_options = ';'.join(list_options)
-            except Exception:
-                logger.exception(1)
+            mod_input.custom_options = ';'.join(list_options)
+        except Exception:
+            logger.exception(1)
 
+        if not error:
             db.session.commit()
+
     except Exception as except_msg:
         error.append(except_msg)
 
