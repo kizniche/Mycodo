@@ -7,7 +7,7 @@
 ### Bugfixes
 
  - Fix Cozir module pycozir egg
- - Measure and discard often-erroneous first measurement of ZH03B and MH-Z19 sensors
+ - Fix often-erroneous first measurement of ZH03B and MH-Z19 sensors
 
 
 ## 6.4.1 (2018-10-11)

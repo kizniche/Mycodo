@@ -114,7 +114,7 @@ class InputModule(AbstractInput):
             if self.measure_range:
                 self.set_measure_range(self.measure_range)
 
-            self.get_measurement(silent=True)    # Throw out first measurement
+            time.sleep(0.1)
 
     def __repr__(self):
         """  Representation of object """
@@ -157,13 +157,12 @@ class InputModule(AbstractInput):
         resp = self.ser.read(9)
 
         if resp[0] != 0xff or resp[1] != 0x86:
-            if not silent:
-                self.logger.error("Bad checksum")
+            self.logger.error("Bad checksum")
         elif len(resp) >= 4:
             high = resp[2]
             low = resp[3]
             co2 = (high * 256) + low
-        elif not silent:
+        else:
             self.logger.error("Bad response")
 
         co2 = convert_units(
