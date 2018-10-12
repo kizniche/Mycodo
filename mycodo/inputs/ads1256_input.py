@@ -12,8 +12,8 @@ INPUT_INFORMATION = {
     'options_disabled': ['interface'],
 
     'dependencies_module': [
-        ('internal', 'file-exists /usr/local/include/bcm2835.h', 'bcm2835'),
-        ('pip-git', 'ads1256', 'git://github.com/fabiovix/py-ads1256.git#egg=ads1256')
+        ('pip-pypi', 'RPi.GPIO', 'RPi.GPIO'),
+        ('pip-git', 'pyadda', 'git://github.com/jaxbulsara/pyadda.git#egg=pyadda')
     ],
     'interfaces': ['UART'],
     'analog_to_digital_converter': True,
@@ -71,12 +71,31 @@ class ADCModule(object):
         self.adc_channel = input_dev.adc_channel
 
         if not testing:
-            import ads1256
+            import RPi.GPIO as GPIO
+            import pyadda
+            from adc_consts import ADS1256_GAIN
+            from adc_consts import ADS1256_DRATE
+            from adc_consts import ADS1256_SMODE
+
             self.logger = logging.getLogger(
                 'mycodo.ads1256_{id}'.format(id=input_dev.id))
-            self.ads1256 = ads1256
 
-        self.running = True
+            self.ads1256 = pyadda
+
+            # Raspberry pi pin numbering setup
+            GPIO.setwarnings(False)
+            GPIO.setmode(GPIO.BCM)
+
+            PIN_DRDY = 17
+
+            GPIO.setup(PIN_DRDY, GPIO.IN)
+
+            # define gain, sampling rate, and scan mode
+            gain = ADS1256_GAIN[str(self.adc_gain)]
+            samplingRate = ADS1256_DRATE[str(self.adc_sample_speed)]
+            scanMode = ADS1256_SMODE['SINGLE_ENDED']
+
+            self.ads1256.startADC(gain, samplingRate, scanMode)
 
     def __iter__(self):
         """
@@ -99,12 +118,11 @@ class ADCModule(object):
     def get_measurement(self):
         self._voltage = None
 
-        self.ads1256.start(
-            str(self.adc_gain), str(self.adc_sample_speed))
-        voltage = self.ads1256.read_channel(self.adc_channel)
-        self.ads1256.stop()
-
-        return voltage
+        if self.ads1256.collectData() is None:
+            self.logger.error("Could not read chip")
+        else:
+            voltage = self.ads1256.readChannelVolts(self.adc_channel)
+            return voltage
 
     def read(self):
         """
@@ -137,8 +155,8 @@ if __name__ == "__main__":
     from types import SimpleNamespace
     input_dev_ = SimpleNamespace()
     input_dev_.id = 1
-    input_dev_.adc_gain = 1
-    input_dev_.adc_channel = 1
+    input_dev_.adc_gain = '1'
+    input_dev_.adc_channel = 0
     input_dev_.adc_sample_speed = '30000'
 
     ads = ADCModule(input_dev_)

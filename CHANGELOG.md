@@ -8,6 +8,7 @@
 
  - Fix Cozir module pycozir egg
  - Fix often-erroneous first measurement of ZH03B and MH-Z19 sensors
+ - Fix issue with ADS1256 module ([#537](https://github.com/kizniche/mycodo/issues/537))
 
 
 ## 6.4.1 (2018-10-11)

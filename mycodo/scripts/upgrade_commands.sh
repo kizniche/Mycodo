@@ -46,6 +46,7 @@ Options:
   update-alembic                Use alembic to upgrade the mycodo.db settings database
   update-apt                    Update apt sources
   update-cron                   Update cron entries
+  install-bcm2835               Install bcm2835
   install-pigpiod               Install pigpiod
   uninstall-pigpiod             Uninstall pigpiod
   disable-pigpiod               Disable pigpiod
@@ -62,7 +63,6 @@ Options:
   update-pip3                   Update pip
   update-pip3-packages          Update required pip packages
   update-swap-size              Ensure sqap size is sufficiently large (512 MB)
-  install-wiringpi              Install wiringpi
   upgrade                       Upgrade Mycodo to the latest release
   upgrade-major-release         Upgrade Mycodo to a major version release
   upgrade-master                Upgrade Mycodo to the master branch of the Mycodo github repository
@@ -216,6 +216,21 @@ case "${1:-''}" in
         printf "\n#### Updating Mycodo restart monitor crontab entry\n"
         /bin/bash ${MYCODO_PATH}/install/crontab.sh restart_daemon --remove
         /bin/bash ${MYCODO_PATH}/install/crontab.sh restart_daemon
+    ;;
+    'install-bcm2835')
+        printf "\n#### Installing bcm2835\n"
+        cd ${MYCODO_PATH}/install
+        apt-get install -y automake libtool
+        wget http://www.airspayce.com/mikem/bcm2835/bcm2835-1.50.tar.gz
+        tar zxvf bcm2835-1.50.tar.gz
+        cd bcm2835-1.50
+        autoreconf -vfi
+        ./configure
+        make
+        sudo make check
+        sudo make install
+        cd ${MYCODO_PATH}/install
+        rm -rf ./bcm2835-1.50
     ;;
     'install-pigpiod')
         printf "\n#### Installing pigpiod\n"
@@ -386,29 +401,6 @@ case "${1:-''}" in
         else
             printf "#### Swap not currently set to 100 MB. Not changing.\n"
         fi
-    ;;
-    'install-wiringpi')
-        printf "\n#### Installing wiringpi\n"
-        git clone git://git.drogon.net/wiringPi ${MYCODO_PATH}/install/wiringPi
-        cd ${MYCODO_PATH}/install/wiringPi
-        ./build
-        cd ${MYCODO_PATH}/install
-        rm -rf ./wiringPi
-    ;;
-    'install-bcm2835')
-        printf "\n#### Installing bcm2835\n"
-        cd ${MYCODO_PATH}/install
-        apt-get install -y automake libtool
-        wget http://www.airspayce.com/mikem/bcm2835/bcm2835-1.50.tar.gz
-        tar zxvf bcm2835-1.50.tar.gz
-        cd bcm2835-1.50
-        autoreconf -vfi
-        ./configure
-        make
-        sudo make check
-        sudo make install
-        cd ${MYCODO_PATH}/install
-        rm -rf ./bcm2835-1.50
     ;;
     'upgrade')
         /bin/bash ${MYCODO_PATH}/mycodo/scripts/upgrade_mycodo_release.sh
