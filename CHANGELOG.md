@@ -3,6 +3,7 @@
 ### Features
 
  - Add MH-Z19 option: enable/disable automatic baseline correction (ABC)
+ - Add ability to Test/trigger all Conditional Actions of a Conditional ([#524](https://github.com/kizniche/mycodo/issues/524))
 
 ### Bugfixes
 

@@ -106,5 +106,6 @@ class ConditionalActions(FlaskForm):
     do_camera_duration = DecimalField(
         lazy_gettext('Then Duration'), widget = NumberInput())
     add_action = SubmitField(lazy_gettext('Add Action'))
+    test_all_actions = SubmitField(lazy_gettext('Test All Actions'))
     save_action = SubmitField(lazy_gettext('Save'))
     delete_action = SubmitField(lazy_gettext('Delete'))

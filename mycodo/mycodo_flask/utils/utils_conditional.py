@@ -213,6 +213,30 @@ def conditional_action_add(form):
     flash_success_errors(error, action, url_for('routes_page.page_function'))
 
 
+def conditional_action_test_all(form):
+    """Test All Conditional Actions"""
+    error = []
+    action = '{action} {controller}'.format(
+        action=gettext("Test All"),
+        controller='{} {}'.format(gettext("Conditional"), gettext("Action")))
+
+    cond = Conditional.query.filter(
+        Conditional.unique_id == form.conditional_id.data).first()
+    if not cond.is_activated:
+        error.append("Activate the Conditional before testing all Actions")
+
+    try:
+        if not error:
+            control = DaemonControl()
+            control.trigger_conditional_actions(
+                form.conditional_id.data,
+                message="Testing triggering all conditional actions of conditional {}".format(form.conditional_id.data))
+    except Exception as except_msg:
+        error.append(except_msg)
+
+    flash_success_errors(error, action, url_for('routes_page.page_function'))
+
+
 def conditional_action_mod(form):
     """Modify a Conditional Action"""
     error = []

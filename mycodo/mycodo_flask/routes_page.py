@@ -1198,6 +1198,9 @@ def page_function():
         elif form_conditional_actions.add_action.data:
             utils_conditional.conditional_action_add(
                 form_conditional_actions)
+        elif form_conditional_actions.test_all_actions.data:
+            utils_conditional.conditional_action_test_all(
+                form_conditional_actions)
         elif form_conditional_actions.save_action.data:
             utils_conditional.conditional_action_mod(
                 form_conditional_actions)
