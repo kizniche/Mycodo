@@ -9,6 +9,8 @@
 <link href="/static/css/toastr.min.css" rel="stylesheet"/>
 <script src="/static/js/toastr.min.js"></script>
 
+<script type="text/javascript" src="/static/js/multiselect.min.js"></script>
+
 <script type="text/javascript">
   $(document).ready(function() {
     toastr.options = {
@@ -175,8 +177,8 @@
 
     <div style="clear: both; padding: 1em 0;"></div>
 
-    {%- if display_order -%}
-      {%- for order in display_order -%}
+    {%- if display_order_output -%}
+      {%- for order in display_order_output -%}
         {%- for each_output in output if each_output.unique_id == order -%}
 
       <div class="container" style="border: 2px solid #ddd; border-radius: 5px;">
@@ -297,6 +299,52 @@
 
         {%- endfor -%}
       {%- endfor -%}
+
+      <div class="form-inline" style="padding-bottom: 1em;">
+        <div class="form-group">
+          <a data-toggle="collapse" href="#collapseContainerReorder" aria-expanded="false" aria-controls="collapseContainerReorder" class="btn btn-sm btn-primary" role="button">{{_('Output')}} {{_('Reorder')}}</a>
+        </div>
+      </div>
+
+     <div class="collapse" id="collapseContainerReorder" style="padding-bottom: 1em">
+
+      <form method="post" action="/output">
+      {{form_base.csrf_token}}
+
+      <div class="row" style="padding-bottom: 0.5em">
+        <div class="col-auto">
+          {{form_base.reorder(class_='btn btn-primary')}}
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-auto">
+        {{form_base.reorder_type(class_='form-control', value='input')}}
+          <select style="display: none" name="from[]" id="multiselect" class="" size="8" multiple="multiple"></select>
+          <div>
+            <select name="list_visible_elements" id="multiselect_to" class="form-control" size="8" multiple="multiple">
+            {% if display_order_output -%}
+              {% for each_visible in display_order_output if each_visible in names_output %}
+                <option value="{{each_visible}}">{{names_output[each_visible]}}</option>
+              {% endfor %}
+            {% endif %}
+            </select>
+            <div class="row">
+              <div class="col-sm-6">
+                <button type="button" id="multiselect_move_up" class="btn btn-sm btn-block btn-primary"><i class="fa fa-arrow-up"></i></button>
+              </div>
+              <div class="col-sm-6">
+                <button type="button" id="multiselect_move_down" class="btn btn-sm btn-block btn-primary"><i class="fa fa-arrow-down"></i></button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      </form>
+    </div>
+
     {%- endif -%}
 
   </main>
@@ -308,6 +356,17 @@
       $(this).parent().find(".fa-plus-square").removeClass("fa-plus-square").addClass("fa-minus-square");
     }).on('hide.bs.collapse', function(){
       $(this).parent().find(".fa-minus-square").removeClass("fa-minus-square").addClass("fa-plus-square");
+    });
+
+    jQuery(document).ready(function($) {
+        $('#multiselect').multiselect({
+            sort: false,
+            keepRenderingSort: true
+        });
+    });
+
+    $('#collapseContainerReorder').on('shown.bs.collapse', function () {
+      this.scrollIntoView();
     });
   </script>
 

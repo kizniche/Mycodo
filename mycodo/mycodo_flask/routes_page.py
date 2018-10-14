@@ -1282,11 +1282,25 @@ def page_output():
     output = Output.query.all()
     user = User.query.all()
 
-    display_order = csv_to_list_of_str(DisplayOrder.query.first().output)
+    display_order_output = csv_to_list_of_str(DisplayOrder.query.first().output)
 
+    form_base = forms_output.DataBase()
     form_add_output = forms_output.OutputAdd()
     form_mod_output = forms_output.OutputMod()
-    form_mod_output = forms_output.OutputMod()
+
+    # Create dict of Input names
+    names_output = {}
+    all_elements = output
+    for each_element in all_elements:
+        names_output[each_element.unique_id] = '[{id}] {name}'.format(
+            id=each_element.id, name=each_element.name)
+
+    if form_base.reorder.data:
+        if form_base.reorder_type.data == 'input':
+            mod_order = DisplayOrder.query.first()
+            mod_order.output = list_to_csv(form_base.list_visible_elements.data)
+            db.session.commit()
+            display_order_output = csv_to_list_of_str(DisplayOrder.query.first().output)
 
     # Create list of file names from the output_options directory
     # Used in generating the correct options for each output/device
@@ -1311,10 +1325,10 @@ def page_output():
             utils_output.output_del(form_mod_output)
         elif form_mod_output.order_up.data:
             utils_output.output_reorder(form_mod_output.output_id.data,
-                                        display_order, 'up')
+                                        display_order_output, 'up')
         elif form_mod_output.order_down.data:
             utils_output.output_reorder(form_mod_output.output_id.data,
-                                        display_order, 'down')
+                                        display_order_output, 'down')
 
         if unmet_dependencies:
             return redirect(url_for('routes_admin.admin_dependencies',
@@ -1325,11 +1339,13 @@ def page_output():
     return render_template('pages/output.html',
                            camera=camera,
                            conditional_actions_list=CONDITIONAL_ACTIONS,
-                           display_order=display_order,
+                           display_order_output=display_order_output,
+                           form_base=form_base,
                            form_add_output=form_add_output,
                            form_mod_output=form_mod_output,
                            lcd=lcd,
                            misc=misc,
+                           names_output=names_output,
                            outputs=OUTPUTS,
                            output_info=OUTPUT_INFO,
                            output=output,

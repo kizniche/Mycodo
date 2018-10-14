@@ -10,6 +10,7 @@ from wtforms import DecimalField
 from wtforms import HiddenField
 from wtforms import IntegerField
 from wtforms import SelectField
+from wtforms import SelectMultipleField
 from wtforms import StringField
 from wtforms import SubmitField
 from wtforms import validators
@@ -19,6 +20,12 @@ from wtforms.validators import Optional
 from wtforms.widgets.html5 import NumberInput
 
 from mycodo.config import OUTPUTS
+
+
+class DataBase(FlaskForm):
+    reorder_type = StringField('Reorder Type', widget=widgets.HiddenInput())
+    list_visible_elements = SelectMultipleField('New Order')
+    reorder = SubmitField(lazy_gettext('Save Order'))
 
 
 class OutputAdd(FlaskForm):

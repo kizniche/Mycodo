@@ -2,7 +2,7 @@
 
 ### Features
 
- - Add enhanced ability to reorder Input, Math, PID, and Conditional controllers
+ - Add enhanced ability to reorder Input, Output, Math, PID, and Conditional controllers
 
 ### Bugfixes
 
