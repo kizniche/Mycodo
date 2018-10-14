@@ -726,7 +726,6 @@ def return_dependencies(device_type, dep_type='unmet'):
                             try:
                                 module = importlib.util.find_spec(package)
                                 if module is None:
-                                    logger.error("TEST1: {}".format(module))
                                     if entry not in unmet_deps:
                                         unmet_deps.append(entry)
                                 else:
