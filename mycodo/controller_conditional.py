@@ -124,7 +124,7 @@ class ConditionalController(threading.Thread):
         try:
             self.running = True
             self.logger.info(
-                "Conditional controller activated in {:.1f} ms".format(
+                "Activated in {:.1f} ms".format(
                 (timeit.default_timer() - self.thread_startup_timer) * 1000))
             self.ready.set()
 

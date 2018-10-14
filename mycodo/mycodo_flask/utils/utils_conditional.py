@@ -230,7 +230,7 @@ def conditional_action_test_all(form):
             control = DaemonControl()
             control.trigger_conditional_actions(
                 form.conditional_id.data,
-                message="Testing triggering all conditional actions of conditional {}".format(form.conditional_id.data))
+                message="Test triggering all conditional actions of conditional {}".format(form.conditional_id.data))
     except Exception as except_msg:
         error.append(except_msg)
 

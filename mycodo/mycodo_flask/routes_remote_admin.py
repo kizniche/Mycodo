@@ -32,13 +32,6 @@ logger = logging.getLogger(__name__)
 
 @blueprint.context_processor
 @flask_login.login_required
-def inject_hostname():
-    """Variables to send with every login page request"""
-    return dict(host=socket.gethostname())
-
-
-@blueprint.context_processor
-@flask_login.login_required
 def inject_dictionary():
     return inject_variables()
 

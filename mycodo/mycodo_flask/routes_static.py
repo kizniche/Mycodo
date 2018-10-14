@@ -3,6 +3,7 @@ import logging
 import socket
 import traceback
 
+import flask_login
 from flask import current_app
 from flask import redirect
 from flask import render_template
@@ -54,7 +55,8 @@ def inject_variables():
                 hide_alert_info=misc.hide_alert_info,
                 hide_alert_warning=misc.hide_alert_warning,
                 hide_tooltips=misc.hide_tooltips,
-                upgrade_available = misc.mycodo_upgrade_available)
+                upgrade_available = misc.mycodo_upgrade_available,
+                username=flask_login.current_user.name)
 
 
 @blueprint.route('/robots.txt')

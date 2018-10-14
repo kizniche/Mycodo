@@ -43,12 +43,6 @@ blueprint = Blueprint(
 logger = logging.getLogger(__name__)
 
 
-@blueprint.context_processor
-def inject_hostname():
-    """Variables to send with every login page request"""
-    return dict(host=socket.gethostname())
-
-
 @blueprint.route('/create_admin', methods=('GET', 'POST'))
 def create_admin():
     if admin_exists():
@@ -210,7 +204,7 @@ def do_login():
 @flask_login.login_required
 def logout():
     """Log out of the web-ui"""
-    user = User.query.filter(User.name == flask_login.current_user.name).first()
+    user = User.query.filter(User.name == flask_login.current_user).first()
     role_name = Role.query.filter(Role.id == user.role_id).first().name
     login_log(user.name,
               role_name,
