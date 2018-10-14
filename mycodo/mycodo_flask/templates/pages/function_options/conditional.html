@@ -149,4 +149,59 @@
   {%- endfor -%}
 
 {%- endfor -%}
+
+<div class="form-inline" style="padding-bottom: 1em;">
+  <div class="form-group">
+    <a data-toggle="collapse" href="#collapseContainerReorderConditional" aria-expanded="false" aria-controls="collapseContainerReorderConditional" class="btn btn-sm btn-primary" role="button">{{_('Math')}} {{_('Reorder')}}</a>
+  </div>
+</div>
+
+<div class="collapse" id="collapseContainerReorderConditional" style="padding-bottom: 1em">
+
+  <form method="post" action="/function">
+  {{form_base.csrf_token}}
+
+  <div class="row" style="padding-bottom: 0.5em">
+    <div class="col-auto">
+      {{form_base.reorder(class_='btn btn-primary')}}
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-auto">
+    {{form_base.reorder_type(class_='form-control', value='conditional')}}
+      <select style="display: none" name="from[]" id="multiselect2" class="" size="8" multiple="multiple"></select>
+      <div>
+        <select name="list_visible_elements" id="multiselect2_to" class="form-control" size="8" multiple="multiple">
+        {% if display_order_conditional -%}
+          {% for each_visible in display_order_conditional if each_visible in names_conditional %}
+            <option value="{{each_visible}}">{{names_conditional[each_visible]}}</option>
+          {% endfor %}
+        {% endif %}
+        </select>
+        <div class="row">
+          <div class="col-sm-6">
+            <button type="button" id="multiselect2_move_up" class="btn btn-sm btn-block btn-primary"><i class="fa fa-arrow-up"></i></button>
+          </div>
+          <div class="col-sm-6">
+            <button type="button" id="multiselect2_move_down" class="btn btn-sm btn-block btn-primary"><i class="fa fa-arrow-down"></i></button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  </form>
+</div>
+
 {%- endif -%}
+
+<script type="text/javascript">
+jQuery(document).ready(function($) {
+    $('#multiselect2').multiselect({
+        sort: false,
+        keepRenderingSort: true
+    });
+});
+</script>

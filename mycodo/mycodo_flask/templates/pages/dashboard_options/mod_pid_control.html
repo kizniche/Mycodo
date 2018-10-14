@@ -1,33 +1,33 @@
 <div style="padding-right: 0.2em;">
   <div class="text-right align-items-center">
-    <span id="text-output-state-{{chart_number}}"></span> <span style="padding-right: 0.5em"> {{each_graph.name}} [{{'%02d' % each_graph.id}}]</span>
+    <span id="text-output-state-{{chart_number}}"></span> <span style="padding-right: 0.5em"> {{each_dashboard.name}} [{{'%02d' % each_dashboard.id}}]</span>
     <a data-toggle="collapse" href="#collapseContainer{{chart_number}}" aria-expanded="false" aria-controls="collapseContainer{{chart_number}}">
       <span class="collapse-button{{chart_number}} fa fa-2x fa-plus-square"></span>
     </a>
   </div>
 </div>
 
-<div class="pause-background" id="container-pid-{{chart_number}}" style="height: {{each_graph.height}}px">
+<div class="pause-background" id="container-pid-{{chart_number}}" style="height: {{each_dashboard.height}}px">
 
   <div class="row no-gutters" style="padding-top: 0.4em">
     <div class="col-6 text-center no-gutters">
-      <div style="font-size: {{each_graph.font_em_value}}em">
+      <div style="font-size: {{each_dashboard.font_em_value}}em">
         Set: <span id="setpoint-{{chart_number}}"></span>
       </div>
-      <span style="font-size: {{each_graph.font_em_timestamp}}em" id="setpoint-timestamp-{{chart_number}}"></span>
+      <span style="font-size: {{each_dashboard.font_em_timestamp}}em" id="setpoint-timestamp-{{chart_number}}"></span>
     </div>
     <div class="col-6 text-center no-gutters">
-      <div style="font-size: {{each_graph.font_em_value}}em">
+      <div style="font-size: {{each_dashboard.font_em_value}}em">
         Now: <span id="actual-{{chart_number}}"></span>
       </div>
-      <span style="font-size: {{each_graph.font_em_timestamp}}em" id="actual-timestamp-{{chart_number}}"></span>
+      <span style="font-size: {{each_dashboard.font_em_timestamp}}em" id="actual-timestamp-{{chart_number}}"></span>
     </div>
   </div>
 
-  {% if each_graph.show_pid_info %}
+  {% if each_dashboard.show_pid_info %}
   <div class="row">
     <div class="col-sm-12 text-center">
-    {% for each_pid in pid if each_pid.unique_id == each_graph.pid_ids %}
+    {% for each_pid in pid if each_pid.unique_id == each_dashboard.pid_ids %}
     (P: <span id="pid_p_value-{{chart_number}}"></span>) + (I: <span id="pid_i_value-{{chart_number}}"></span>) + (D: <span id="pid_d_value-{{chart_number}}"></span>) = Out: <span id="duration_time-{{chart_number}}"></span><span id="duty_cycle-{{chart_number}}"></span>
     {% endfor %}
     </div>
@@ -36,29 +36,29 @@
 
   <div class="row small-gutters" style="padding: 1em 1.5em 0.5em 1.5em">
     <div id="button-activate-{{chart_number}}" class="col-6">
-      <input class="form-control btn btn-block btn-sm activate_pid" id="activate_pid" name="{{each_graph.pid_ids}}/activate_pid" type="button" value="{{_('Activate')}}">
+      <input class="form-control btn btn-block btn-sm activate_pid" id="activate_pid" name="{{each_dashboard.pid_ids}}/activate_pid" type="button" value="{{_('Activate')}}">
     </div>
     <div id="button-deactivate-{{chart_number}}" class="col-6">
-      <input class="form-control btn btn-block btn-sm deactivate_pid" id="deactivate_pid" name="{{each_graph.pid_ids}}/deactivate_pid" type="button" value="{{_('Deactivate')}}">
+      <input class="form-control btn btn-block btn-sm deactivate_pid" id="deactivate_pid" name="{{each_dashboard.pid_ids}}/deactivate_pid" type="button" value="{{_('Deactivate')}}">
     </div>
     <div id="button-resume-{{chart_number}}" class="col-6">
-      <input class="form-control btn btn-block btn-sm resume_pid" id="resume_pid" name="{{each_graph.pid_ids}}/resume_pid" type="button" value="{{_('Resume')}}">
+      <input class="form-control btn btn-block btn-sm resume_pid" id="resume_pid" name="{{each_dashboard.pid_ids}}/resume_pid" type="button" value="{{_('Resume')}}">
     </div>
     <div id="button-pause-{{chart_number}}" class="col-3">
-      <input class="form-control btn btn-block btn-sm pause_pid" id="pause_pid" name="{{each_graph.pid_ids}}/pause_pid" type="button" value="{{_('Pause')}}">
+      <input class="form-control btn btn-block btn-sm pause_pid" id="pause_pid" name="{{each_dashboard.pid_ids}}/pause_pid" type="button" value="{{_('Pause')}}">
     </div>
     <div id="button-hold-{{chart_number}}" class="col-3">
-      <input class="form-control btn btn-block btn-sm hold_pid" id="hold_pid" name="{{each_graph.pid_ids}}/hold_pid" type="button" value="{{_('Hold')}}">
+      <input class="form-control btn btn-block btn-sm hold_pid" id="hold_pid" name="{{each_dashboard.pid_ids}}/hold_pid" type="button" value="{{_('Hold')}}">
     </div>
   </div>
 
-  {% if each_graph.show_set_setpoint %}
+  {% if each_dashboard.show_set_setpoint %}
   <div class="row small-gutters" style="padding: 0.5em 1.5em 0.5em 1.5em">
     <div class="col-6">
-      <input class="form-control form-control-sm" id="setpoint_pid_{{each_graph.pid_ids}}" name="setpoint_pid_{{each_graph.pid_ids}}" type="number" value="" title="{{_('A numerical value to set the PID setpoint')}}">
+      <input class="form-control form-control-sm" id="setpoint_pid_{{each_dashboard.pid_ids}}" name="setpoint_pid_{{each_dashboard.pid_ids}}" type="number" value="" title="{{_('A numerical value to set the PID setpoint')}}">
     </div>
     <div class="col-6">
-      <input class="form-control btn btn-block btn-sm set_setpoint" id="set_setpoint" name="{{each_graph.pid_ids}}/set_setpoint_pid|" type="button" value="{{_('Set Setpoint')}}">
+      <input class="form-control btn btn-block btn-sm set_setpoint" id="set_setpoint" name="{{each_dashboard.pid_ids}}/set_setpoint_pid|" type="button" value="{{_('Set Setpoint')}}">
     </div>
   </div>
   {% endif %}
@@ -69,26 +69,26 @@
 
   <form method="post" action="/dashboard">
   {{form_base.csrf_token}}
-  {{form_base.dashboard_id(value=each_graph.unique_id)}}
+  {{form_base.dashboard_id(value=each_dashboard.unique_id)}}
   <input type="hidden" name="dashboard_type" value="pid_control">
 
-  {% if not each_graph.show_pid_info %}
+  {% if not each_dashboard.show_pid_info %}
   <div class="row" style="padding-top: 0.7em">
     <div class="col-xs-12 small-gutters" style="text-align: center">
-    {% for each_pid in pid if each_pid.unique_id == each_graph.pid_ids %}
+    {% for each_pid in pid if each_pid.unique_id == each_dashboard.pid_ids %}
     (P: <span id="pid_p_value-{{chart_number}}"></span>) + (I: <span id="pid_i_value-{{chart_number}}"></span>) + (D: <span id="pid_d_value-{{chart_number}}"></span>) = Out: <span id="duration_time-{{chart_number}}"></span><span id="duty_cycle-{{chart_number}}"></span>
     {% endfor %}
     </div>
   </div>
   {% endif %}
 
-    {% if not each_graph.show_set_setpoint %}
+    {% if not each_dashboard.show_set_setpoint %}
     <div class="form-row">
       <div class="col-6">
-        <input class="form-control" id="setpoint_pid_{{each_graph.pid_ids}}" name="setpoint_pid_{{each_graph.pid_ids}}" type="number" value="" title="{{_('A numerical value to set the PID setpoint')}}">
+        <input class="form-control" id="setpoint_pid_{{each_dashboard.pid_ids}}" name="setpoint_pid_{{each_dashboard.pid_ids}}" type="number" value="" title="{{_('A numerical value to set the PID setpoint')}}">
       </div>
       <div class="col-6">
-        <input class="form-control btn btn-default set_setpoint" id="set_setpoint" name="{{each_graph.pid_ids}}/set_setpoint_pid|" type="button" value="{{_('Set Setpoint')}}">
+        <input class="form-control btn btn-default set_setpoint" id="set_setpoint" name="{{each_dashboard.pid_ids}}/set_setpoint_pid|" type="button" value="{{_('Set Setpoint')}}">
       </div>
     </div>
     {% endif %}
@@ -97,7 +97,7 @@
       <div class="col-auto">
         {{form_base.name.label(class_='control-label')}}
         <div>
-          {{form_base.name(class_='form-control', value=each_graph.name, **{'title':_('A name to distinguish this from others')})}}
+          {{form_base.name(class_='form-control', value=each_dashboard.name, **{'title':_('A name to distinguish this from others')})}}
         </div>
       </div>
       <div class="col-auto">
@@ -107,7 +107,7 @@
           {% if pid %}
             <option value="">{{_('Select One')}}</option>
             {% for each_pid in pid -%}
-            <option value="{{each_pid.unique_id}}" {% if each_graph.pid_ids == each_pid.unique_id %}selected{% endif %}>[{{'%02d' % each_pid.id}}] {{each_pid.name}}</option>
+            <option value="{{each_pid.unique_id}}" {% if each_dashboard.pid_ids == each_pid.unique_id %}selected{% endif %}>[{{'%02d' % each_pid.id}}] {{each_pid.name}}</option>
             {% endfor -%}
           {% else %}
             <option value="">{{_('None Available')}}</option>
@@ -120,7 +120,7 @@
         <div>
           <select class="form-control" id="width" name="width">
             {% for n in range(1, 13) %}
-              <option value="{{n}}"{% if n == each_graph.width %} selected{% endif %}>{{n}}/12</option>
+              <option value="{{n}}"{% if n == each_dashboard.width %} selected{% endif %}>{{n}}/12</option>
             {% endfor %}
           </select>
         </div>
@@ -128,45 +128,45 @@
       <div class="col-auto">
         {{form_base.height.label(class_='control-label')}}
         <div>
-          {{form_base.height(class_='form-control', value=each_graph.height)}}
+          {{form_base.height(class_='form-control', value=each_dashboard.height)}}
         </div>
       </div>
       <div class="col-auto">
         {{form_pid.max_measure_age.label(class_='control-label')}}
         <div>
-          {{form_pid.max_measure_age(class_='form-control', value=each_graph.max_measure_age)}}
+          {{form_pid.max_measure_age(class_='form-control', value=each_dashboard.max_measure_age)}}
         </div>
       </div>
       <div class="col-auto">
         {{form_base.refresh_duration.label(class_='control-label')}}
         <div>
-          {{form_base.refresh_duration(class_='form-control', value=each_graph.refresh_duration)}}
+          {{form_base.refresh_duration(class_='form-control', value=each_dashboard.refresh_duration)}}
         </div>
       </div>
      <div class="col-auto">
         {{form_pid.font_em_value.label(class_='control-label')}}
         <div>
-          {{form_pid.font_em_value(class_='form-control', value=each_graph.font_em_value)}}
+          {{form_pid.font_em_value(class_='form-control', value=each_dashboard.font_em_value)}}
         </div>
       </div>
       <div class="col-auto">
         {{form_pid.font_em_timestamp.label(class_='control-label')}}
         <div>
-          {{form_pid.font_em_timestamp(class_='form-control', value=each_graph.font_em_timestamp)}}
+          {{form_pid.font_em_timestamp(class_='form-control', value=each_dashboard.font_em_timestamp)}}
         </div>
       </div>
       <div class="col-auto">
         {{form_pid.decimal_places.label(class_='control-label')}}
         <div>
-          {{form_pid.decimal_places(class_='form-control', value=each_graph.decimal_places)}}
+          {{form_pid.decimal_places(class_='form-control', value=each_dashboard.decimal_places)}}
         </div>
       </div>
       <div class="form-check form-check-inline">
-        <input class="form-check-input" id="show_pid_info" name="show_pid_info" type="checkbox" value="y"{% if each_graph.show_pid_info %} checked{% endif %}>
+        <input class="form-check-input" id="show_pid_info" name="show_pid_info" type="checkbox" value="y"{% if each_dashboard.show_pid_info %} checked{% endif %}>
         {{form_pid.show_pid_info.label(class_='control-label')}}
       </div>
       <div class="form-check form-check-inline">
-        <input class="form-check-input" id="show_set_setpoint" name="show_set_setpoint" type="checkbox" value="y"{% if each_graph.show_set_setpoint %} checked{% endif %}>
+        <input class="form-check-input" id="show_set_setpoint" name="show_set_setpoint" type="checkbox" value="y"{% if each_dashboard.show_set_setpoint %} checked{% endif %}>
         {{form_pid.show_set_setpoint.label(class_='control-label')}}
       </div>
     </div>

@@ -1,13 +1,13 @@
-{% set graph_math_ids = each_graph.math_ids.split(';') %}
-{% set graph_output_ids = each_graph.output_ids.split(';') %}
-{% set graph_pid_ids = each_graph.pid_ids.split(';') %}
-{% set graph_note_tag_ids = each_graph.note_tag_ids.split(';') %}
+{% set graph_math_ids = each_dashboard.math_ids.split(';') %}
+{% set graph_output_ids = each_dashboard.output_ids.split(';') %}
+{% set graph_pid_ids = each_dashboard.pid_ids.split(';') %}
+{% set graph_note_tag_ids = each_dashboard.note_tag_ids.split(';') %}
 
   chart_graph[{{chart_number}}] = new Highcharts.StockChart({
     chart : {
-      renderTo: 'container-graph-{{each_graph.unique_id}}',
+      renderTo: 'container-graph-{{each_dashboard.unique_id}}',
       zoomType: 'x',
-      alignTicks: {% if each_graph.enable_align_ticks %}true{% else %}false{% endif %},
+      alignTicks: {% if each_dashboard.enable_align_ticks %}true{% else %}false{% endif %},
       resetZoomButton: {
         theme: {
           display: 'none'
@@ -20,9 +20,9 @@
 
           {% for each_input in input -%}
             {%- for each_id_and_measure in graph_input_ids if each_input.unique_id == each_id_and_measure.split(',')[0] %}
-          getPastData({{chart_number}}, {{count_series|count}}, '{{each_id_and_measure.split(',')[1]}}', '{{each_input.unique_id}}', {{each_graph.x_axis_duration*60}});
-          {% if each_graph.enable_auto_refresh %}
-          getLiveData({{chart_number}}, {{count_series|count}}, '{{each_id_and_measure.split(',')[1]}}', '{{each_input.unique_id}}', {{each_graph.x_axis_duration}}, {{each_graph.enable_xaxis_reset|int}}, {{each_graph.refresh_duration}}, {% if each_graph.enable_graph_shift %}true{% else %}false{% endif %});
+          getPastData({{chart_number}}, {{count_series|count}}, '{{each_id_and_measure.split(',')[1]}}', '{{each_input.unique_id}}', {{each_dashboard.x_axis_duration*60}});
+          {% if each_dashboard.enable_auto_refresh %}
+          getLiveData({{chart_number}}, {{count_series|count}}, '{{each_id_and_measure.split(',')[1]}}', '{{each_input.unique_id}}', {{each_dashboard.x_axis_duration}}, {{each_dashboard.enable_xaxis_reset|int}}, {{each_dashboard.refresh_duration}}, {% if each_dashboard.enable_graph_shift %}true{% else %}false{% endif %});
           {% endif %}
               {%- do count_series.append(1) %}
             {%- endfor -%}
@@ -30,9 +30,9 @@
 
           {% for each_math in math -%}
             {%- for each_id_and_measure in graph_math_ids if each_math.unique_id == each_id_and_measure.split(',')[0] %}
-          getPastData({{chart_number}}, {{count_series|count}}, '{{each_id_and_measure.split(',')[1]}}', '{{each_math.unique_id}}', {{each_graph.x_axis_duration*60}});
-          {% if each_graph.enable_auto_refresh %}
-          getLiveData({{chart_number}}, {{count_series|count}}, '{{each_id_and_measure.split(',')[1]}}', '{{each_math.unique_id}}', {{each_graph.x_axis_duration}}, {{each_graph.enable_xaxis_reset|int}}, {{each_graph.refresh_duration}}, {% if each_graph.enable_graph_shift %}true{% else %}false{% endif %});
+          getPastData({{chart_number}}, {{count_series|count}}, '{{each_id_and_measure.split(',')[1]}}', '{{each_math.unique_id}}', {{each_dashboard.x_axis_duration*60}});
+          {% if each_dashboard.enable_auto_refresh %}
+          getLiveData({{chart_number}}, {{count_series|count}}, '{{each_id_and_measure.split(',')[1]}}', '{{each_math.unique_id}}', {{each_dashboard.x_axis_duration}}, {{each_dashboard.enable_xaxis_reset|int}}, {{each_dashboard.refresh_duration}}, {% if each_dashboard.enable_graph_shift %}true{% else %}false{% endif %});
           {% endif %}
               {%- do count_series.append(1) %}
             {%- endfor -%}
@@ -40,9 +40,9 @@
 
           {%- for each_output in output -%}
             {%- for each_graph_output_id in graph_output_ids if each_output.unique_id == each_graph_output_id.split(',')[0] %}
-          getPastData({{chart_number}}, {{count_series|count}}, '{{each_graph_output_id.split(',')[1]}}', '{{each_output.unique_id}}', {{each_graph.x_axis_duration*60}});
-          {% if each_graph.enable_auto_refresh %}
-          getLiveData({{chart_number}}, {{count_series|count}}, '{{each_graph_output_id.split(',')[1]}}', '{{each_output.unique_id}}', {{each_graph.x_axis_duration}}, {{each_graph.enable_xaxis_reset|int}}, {{each_graph.refresh_duration}}, {% if each_graph.enable_graph_shift %}true{% else %}false{% endif %});
+          getPastData({{chart_number}}, {{count_series|count}}, '{{each_graph_output_id.split(',')[1]}}', '{{each_output.unique_id}}', {{each_dashboard.x_axis_duration*60}});
+          {% if each_dashboard.enable_auto_refresh %}
+          getLiveData({{chart_number}}, {{count_series|count}}, '{{each_graph_output_id.split(',')[1]}}', '{{each_output.unique_id}}', {{each_dashboard.x_axis_duration}}, {{each_dashboard.enable_xaxis_reset|int}}, {{each_dashboard.refresh_duration}}, {% if each_dashboard.enable_graph_shift %}true{% else %}false{% endif %});
           {% endif %}
               {%- do count_series.append(1) %}
             {%- endfor -%}
@@ -50,9 +50,9 @@
 
           {%- for each_pid in pid -%}
             {%- for each_id_and_measure in graph_pid_ids if each_pid.unique_id == each_id_and_measure.split(',')[0] %}
-          getPastData({{chart_number}}, {{count_series|count}}, '{{each_id_and_measure.split(',')[1]}}', '{{each_id_and_measure.split(',')[0]}}', {{each_graph.x_axis_duration*60}});
-          {% if each_graph.enable_auto_refresh %}
-          getLiveData({{chart_number}}, {{count_series|count}}, '{{each_id_and_measure.split(',')[1]}}', '{{each_id_and_measure.split(',')[0]}}', {{each_graph.x_axis_duration}}, {{each_graph.enable_xaxis_reset|int}}, {{each_graph.refresh_duration}}, {% if each_graph.enable_graph_shift %}true{% else %}false{% endif %});
+          getPastData({{chart_number}}, {{count_series|count}}, '{{each_id_and_measure.split(',')[1]}}', '{{each_id_and_measure.split(',')[0]}}', {{each_dashboard.x_axis_duration*60}});
+          {% if each_dashboard.enable_auto_refresh %}
+          getLiveData({{chart_number}}, {{count_series|count}}, '{{each_id_and_measure.split(',')[1]}}', '{{each_id_and_measure.split(',')[0]}}', {{each_dashboard.x_axis_duration}}, {{each_dashboard.enable_xaxis_reset|int}}, {{each_dashboard.refresh_duration}}, {% if each_dashboard.enable_graph_shift %}true{% else %}false{% endif %});
           {% endif %}
               {%- do count_series.append(1) %}
             {%- endfor -%}
@@ -60,9 +60,9 @@
 
           {%- for each_tag in tags -%}
             {%- for each_id_and_measure in graph_note_tag_ids if each_tag.unique_id == each_id_and_measure.split(',')[0] %}
-          getPastData({{chart_number}}, {{count_series|count}}, '{{each_id_and_measure.split(',')[1]}}', '{{each_id_and_measure.split(',')[0]}}', {{each_graph.x_axis_duration*60}});
-          {% if each_graph.enable_auto_refresh %}
-          getLiveData({{chart_number}}, {{count_series|count}}, '{{each_id_and_measure.split(',')[1]}}', '{{each_id_and_measure.split(',')[0]}}', {{each_graph.x_axis_duration}}, {{each_graph.enable_xaxis_reset|int}}, {{each_graph.refresh_duration}}, {% if each_graph.enable_graph_shift %}true{% else %}false{% endif %});
+          getPastData({{chart_number}}, {{count_series|count}}, '{{each_id_and_measure.split(',')[1]}}', '{{each_id_and_measure.split(',')[0]}}', {{each_dashboard.x_axis_duration*60}});
+          {% if each_dashboard.enable_auto_refresh %}
+          getLiveData({{chart_number}}, {{count_series|count}}, '{{each_id_and_measure.split(',')[1]}}', '{{each_id_and_measure.split(',')[0]}}', {{each_dashboard.x_axis_duration}}, {{each_dashboard.enable_xaxis_reset|int}}, {{each_dashboard.refresh_duration}}, {% if each_dashboard.enable_graph_shift %}true{% else %}false{% endif %});
           {% endif %}
               {%- do count_series.append(1) %}
             {%- endfor -%}
@@ -70,8 +70,8 @@
         }
       }
     },
-    {% if each_graph.use_custom_colors and each_graph.custom_colors -%}
-      {% set color_list = each_graph.custom_colors.split(',') %}
+    {% if each_dashboard.use_custom_colors and each_dashboard.custom_colors -%}
+      {% set color_list = each_dashboard.custom_colors.split(',') %}
       colors: [{%- for each_color in color_list -%}
                 "{{each_color}}",
                {%- endfor -%}],
@@ -97,7 +97,7 @@
     },
 
     title: {
-      text: '{% if each_graph.enable_title %}{{each_graph.name}}{% endif %}'
+      text: '{% if each_dashboard.enable_title %}{{each_dashboard.name}}{% endif %}'
     },
 
     legend: {
@@ -110,14 +110,14 @@
     },
 
     yAxis: [
-    {% for each_axis_meas in y_axes[each_graph.unique_id] if each_axis_meas in dict_units %}
+    {% for each_axis_meas in y_axes[each_dashboard.unique_id] if each_axis_meas in dict_units %}
       {
-        {% if each_graph.enable_manual_y_axis and
-             custom_yaxes[each_graph.unique_id][each_axis_meas]['minimum'] != custom_yaxes[each_graph.unique_id][each_axis_meas]['maximum'] %}
-        min: {{custom_yaxes[each_graph.unique_id][each_axis_meas]['minimum']}},
-        max: {{custom_yaxes[each_graph.unique_id][each_axis_meas]['maximum']}},
-        startOnTick: {% if each_graph.enable_start_on_tick %}true{% else %}false{% endif %},
-        endOnTick: {% if each_graph.enable_end_on_tick %}true{% else %}false{% endif %},
+        {% if each_dashboard.enable_manual_y_axis and
+             custom_yaxes[each_dashboard.unique_id][each_axis_meas]['minimum'] != custom_yaxes[each_dashboard.unique_id][each_axis_meas]['maximum'] %}
+        min: {{custom_yaxes[each_dashboard.unique_id][each_axis_meas]['minimum']}},
+        max: {{custom_yaxes[each_dashboard.unique_id][each_axis_meas]['maximum']}},
+        startOnTick: {% if each_dashboard.enable_start_on_tick %}true{% else %}false{% endif %},
+        endOnTick: {% if each_dashboard.enable_end_on_tick %}true{% else %}false{% endif %},
         {% endif %}
         title: {
           text: '{{dict_units[each_axis_meas]['name']}}{% if dict_units[each_axis_meas]['unit'] != '' %} ({{dict_units[each_axis_meas]['unit']}}){% endif %}'
@@ -136,12 +136,12 @@
     ],
 
     exporting: {
-      enabled: {% if each_graph.enable_export %}true{% else %}false{% endif %},
+      enabled: {% if each_dashboard.enable_export %}true{% else %}false{% endif %},
       fallbackToExportServer: false,
     },
 
     navigator: {
-      enabled: {% if each_graph.enable_navbar %}true{% else %}false{% endif %}
+      enabled: {% if each_dashboard.enable_navbar %}true{% else %}false{% endif %}
     },
 
     scrollbar: {
@@ -149,7 +149,7 @@
     },
 
     rangeSelector: {
-      enabled: {% if each_graph.enable_rangeselect %}true{% else %}false{% endif %},
+      enabled: {% if each_dashboard.enable_rangeselect %}true{% else %}false{% endif %},
       buttons: [{
         count: 1,
         type: 'minute',
@@ -471,47 +471,47 @@
 
     {% for each_input in input -%}
       {%- for each_id_and_measure in graph_input_ids if each_input.unique_id == each_id_and_measure.split(',')[0] %}
-    retrieveLiveData({{chart_number}}, {{count_series|count}}, '{{each_id_and_measure.split(',')[1]}}', '{{each_input.unique_id}}', {{each_graph.x_axis_duration}}, {{each_graph.enable_xaxis_reset|int}}, {{each_graph.refresh_duration}}, {% if each_graph.enable_graph_shift %}true{% else %}false{% endif %});
+    retrieveLiveData({{chart_number}}, {{count_series|count}}, '{{each_id_and_measure.split(',')[1]}}', '{{each_input.unique_id}}', {{each_dashboard.x_axis_duration}}, {{each_dashboard.enable_xaxis_reset|int}}, {{each_dashboard.refresh_duration}}, {% if each_dashboard.enable_graph_shift %}true{% else %}false{% endif %});
         {%- do count_series.append(1) %}
       {%- endfor -%}
     {%- endfor -%}
 
     {% for each_math in math -%}
       {%- for each_id_and_measure in graph_math_ids if each_math.unique_id == each_id_and_measure.split(',')[0] %}
-    retrieveLiveData({{chart_number}}, {{count_series|count}}, '{{each_id_and_measure.split(',')[1]}}', '{{each_math.unique_id}}', {{each_graph.x_axis_duration}}, {{each_graph.enable_xaxis_reset|int}}, {{each_graph.refresh_duration}}, {% if each_graph.enable_graph_shift %}true{% else %}false{% endif %});
+    retrieveLiveData({{chart_number}}, {{count_series|count}}, '{{each_id_and_measure.split(',')[1]}}', '{{each_math.unique_id}}', {{each_dashboard.x_axis_duration}}, {{each_dashboard.enable_xaxis_reset|int}}, {{each_dashboard.refresh_duration}}, {% if each_dashboard.enable_graph_shift %}true{% else %}false{% endif %});
         {%- do count_series.append(1) %}
       {%- endfor -%}
     {%- endfor -%}
 
     {%- for each_output in output -%}
       {%- for each_graph_output_id in graph_output_ids if each_output.unique_id == each_graph_output_id.split(',')[0] %}
-    retrieveLiveData({{chart_number}}, {{count_series|count}}, '{{each_graph_output_id.split(',')[1]}}', '{{each_output.unique_id}}', {{each_graph.x_axis_duration}}, {{each_graph.enable_xaxis_reset|int}}, {{each_graph.refresh_duration}}, {% if each_graph.enable_graph_shift %}true{% else %}false{% endif %});
+    retrieveLiveData({{chart_number}}, {{count_series|count}}, '{{each_graph_output_id.split(',')[1]}}', '{{each_output.unique_id}}', {{each_dashboard.x_axis_duration}}, {{each_dashboard.enable_xaxis_reset|int}}, {{each_dashboard.refresh_duration}}, {% if each_dashboard.enable_graph_shift %}true{% else %}false{% endif %});
         {%- do count_series.append(1) %}
       {%- endfor -%}
     {%- endfor -%}
 
     {%- for each_pid in pid -%}
       {%- for each_id_and_measure in graph_pid_ids if each_pid.unique_id == each_id_and_measure.split(',')[0] %}
-    retrieveLiveData({{chart_number}}, {{count_series|count}}, '{{each_id_and_measure.split(',')[1]}}', '{{each_id_and_measure.split(',')[0]}}', {{each_graph.x_axis_duration}}, {{each_graph.enable_xaxis_reset|int}}, {{each_graph.refresh_duration}}, {% if each_graph.enable_graph_shift %}true{% else %}false{% endif %});
+    retrieveLiveData({{chart_number}}, {{count_series|count}}, '{{each_id_and_measure.split(',')[1]}}', '{{each_id_and_measure.split(',')[0]}}', {{each_dashboard.x_axis_duration}}, {{each_dashboard.enable_xaxis_reset|int}}, {{each_dashboard.refresh_duration}}, {% if each_dashboard.enable_graph_shift %}true{% else %}false{% endif %});
         {%- do count_series.append(1) %}
       {%- endfor -%}
     {%- endfor -%}
 
     {%- for each_tag in tag -%}
       {%- for each_id_and_measure in graph_note_tag_ids if each_pid.unique_id == each_id_and_measure.split(',')[0] %}
-    retrieveLiveData({{chart_number}}, {{count_series|count}}, '{{each_id_and_measure.split(',')[1]}}', '{{each_id_and_measure.split(',')[0]}}', {{each_graph.x_axis_duration}}, {{each_graph.enable_xaxis_reset|int}}, {{each_graph.refresh_duration}}, {% if each_graph.enable_graph_shift %}true{% else %}false{% endif %});
+    retrieveLiveData({{chart_number}}, {{count_series|count}}, '{{each_id_and_measure.split(',')[1]}}', '{{each_id_and_measure.split(',')[0]}}', {{each_dashboard.x_axis_duration}}, {{each_dashboard.enable_xaxis_reset|int}}, {{each_dashboard.refresh_duration}}, {% if each_dashboard.enable_graph_shift %}true{% else %}false{% endif %});
         {%- do count_series.append(1) %}
       {%- endfor -%}
     {%- endfor -%}
   });
 
   $('#resetZoom{{chart_number}}').click(function() {
-    var chart = $('#container-graph-{{each_graph.unique_id}}').highcharts();
+    var chart = $('#container-graph-{{each_dashboard.unique_id}}').highcharts();
     chart.zoomOut();
   });
 
   $('#showhidebutton{{chart_number}}').click(function() {
-    var chart = $('#container-graph-{{each_graph.unique_id}}').highcharts();
+    var chart = $('#container-graph-{{each_dashboard.unique_id}}').highcharts();
     var series = chart.series[0];
     if (series.visible) {
       $(chart.series).each(function(){

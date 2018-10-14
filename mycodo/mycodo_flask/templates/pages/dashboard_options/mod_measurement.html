@@ -1,20 +1,20 @@
 <div style="padding-right: 0.2em;">
   <div class="text-right align-items-center">
-    <span style="padding-right: 0.5em">{{each_graph.name}} [{{'%02d' % each_graph.id}}]</span>
+    <span style="padding-right: 0.5em">{{each_dashboard.name}} [{{'%02d' % each_dashboard.id}}]</span>
     <a data-toggle="collapse" href="#collapseContainer{{chart_number}}" aria-expanded="false" aria-controls="collapseContainer{{chart_number}}">
       <span class="collapse-button fa fa-2x fa-plus-square"></span>
     </a>
   </div>
 </div>
 
-<div id="container-output-{{chart_number}}" style="height: {{each_graph.height}}px; text-align: center">
+<div id="container-output-{{chart_number}}" style="height: {{each_dashboard.height}}px; text-align: center">
 
-  <span style="font-size: {{each_graph.font_em_value}}em" id="value-{{chart_number}}"></span>
-  <br/><span style="font-size: {{each_graph.font_em_timestamp}}em">
+  <span style="font-size: {{each_dashboard.font_em_value}}em" id="value-{{chart_number}}"></span>
+  <br/><span style="font-size: {{each_dashboard.font_em_timestamp}}em">
   {%- for each_input in input -%}
-    {%- if each_input.unique_id == each_graph.input_ids_measurements.split(',')[0] %}
-      {%- if each_graph.input_ids_measurements.split(',')[1] in measurement_units -%}
-        {{measurement_units[each_graph.input_ids_measurements.split(',')[1]]['name']|safe}} ({% if use_unit[each_input.unique_id][each_graph.input_ids_measurements.split(',')[1]] %}{{units[use_unit[each_input.unique_id][each_graph.input_ids_measurements.split(',')[1]]]['unit']}}{% else %}{{measurement_units[each_graph.input_ids_measurements.split(',')[1]]['unit']|safe}}{% endif %})
+    {%- if each_input.unique_id == each_dashboard.input_ids_measurements.split(',')[0] %}
+      {%- if each_dashboard.input_ids_measurements.split(',')[1] in measurement_units -%}
+        {{measurement_units[each_dashboard.input_ids_measurements.split(',')[1]]['name']|safe}} ({% if use_unit[each_input.unique_id][each_dashboard.input_ids_measurements.split(',')[1]] %}{{units[use_unit[each_input.unique_id][each_dashboard.input_ids_measurements.split(',')[1]]]['unit']}}{% else %}{{measurement_units[each_dashboard.input_ids_measurements.split(',')[1]]['unit']|safe}}{% endif %})
       {%- elif each_input.adc_measure -%}
         {{each_input.adc_measure|safe}} ({{each_input.adc_measure_units|safe}})
       {% endif %}
@@ -22,18 +22,18 @@
   {%- endfor -%}
 
   {%- for each_math in math -%}
-    {%- if each_math.unique_id == each_graph.input_ids_measurements.split(',')[0] %}
-      {{dict_measurements[each_graph.input_ids_measurements.split(',')[1]]['name']|safe}} ({{each_math.measure_units|safe}})
+    {%- if each_math.unique_id == each_dashboard.input_ids_measurements.split(',')[0] %}
+      {{dict_measurements[each_dashboard.input_ids_measurements.split(',')[1]]['name']|safe}} ({{each_math.measure_units|safe}})
     {%- endif -%}
   {%- endfor -%}
 
   {%- for each_pid in pid -%}
-    {%- if each_pid.unique_id == each_graph.input_ids_measurements.split(',')[0] %}
-      {{measurement_units[each_graph.input_ids_measurements.split(',')[1]]['name']|safe}} ({{dict_measurements[each_graph.input_ids_measurements.split(',')[1]]['unit']|safe}})
+    {%- if each_pid.unique_id == each_dashboard.input_ids_measurements.split(',')[0] %}
+      {{measurement_units[each_dashboard.input_ids_measurements.split(',')[1]]['name']|safe}} ({{dict_measurements[each_dashboard.input_ids_measurements.split(',')[1]]['unit']|safe}})
     {%- endif -%}
   {%- endfor -%}
   </span>
-  <br/><span style="font-size: {{each_graph.font_em_timestamp}}em" id="timestamp-{{chart_number}}"></span>
+  <br/><span style="font-size: {{each_dashboard.font_em_timestamp}}em" id="timestamp-{{chart_number}}"></span>
 
 </div>
 
@@ -41,14 +41,14 @@
 
   <form method="post" action="/dashboard">
     {{form_base.csrf_token}}
-    {{form_base.dashboard_id(value=each_graph.unique_id)}}
+    {{form_base.dashboard_id(value=each_dashboard.unique_id)}}
     <input type="hidden" name="dashboard_type" value="measurement">
 
     <div class="form-row">
       <div class="col-auto">
         {{form_base.name.label(class_='control-label')}}
         <div>
-          {{form_base.name(class_='form-control', value=each_graph.name, **{'title':_('A name to distinguish this from others')})}}
+          {{form_base.name(class_='form-control', value=each_dashboard.name, **{'title':_('A name to distinguish this from others')})}}
         </div>
       </div>
       <div class="col-auto">
@@ -58,13 +58,13 @@
           {% if choices_input or choices_math or choices_pid %}
             <option value="">{{_('Select One')}}</option>
             {% for each_choice, value in choices_input.items() -%}
-            <option value="{{each_choice}}" {% if each_graph.input_ids_measurements == each_choice %}selected{% endif %}>{{value}}</option>
+            <option value="{{each_choice}}" {% if each_dashboard.input_ids_measurements == each_choice %}selected{% endif %}>{{value}}</option>
             {% endfor -%}
             {% for each_choice, value in choices_math.items() -%}
-            <option value="{{each_choice}}" {% if each_graph.input_ids_measurements == each_choice %}selected{% endif %}>{{value}}</option>
+            <option value="{{each_choice}}" {% if each_dashboard.input_ids_measurements == each_choice %}selected{% endif %}>{{value}}</option>
             {% endfor -%}
             {% for each_choice, value in choices_pid.items() -%}
-            <option value="{{each_choice}}" {% if each_graph.input_ids_measurements == each_choice %}selected{% endif %}>{{value}}</option>
+            <option value="{{each_choice}}" {% if each_dashboard.input_ids_measurements == each_choice %}selected{% endif %}>{{value}}</option>
             {% endfor -%}
           {% else %}
             <option value="">{{_('None Available')}}</option>
@@ -77,7 +77,7 @@
         <div>
           <select class="form-control" id="width" name="width">
             {% for n in range(1, 13) %}
-              <option value="{{n}}"{% if n == each_graph.width %} selected{% endif %}>{{n}}/12</option>
+              <option value="{{n}}"{% if n == each_dashboard.width %} selected{% endif %}>{{n}}/12</option>
             {% endfor %}
           </select>
         </div>
@@ -85,37 +85,37 @@
       <div class="col-auto">
         {{form_base.height.label(class_='control-label')}}
         <div>
-          {{form_base.height(class_='form-control', value=each_graph.height)}}
+          {{form_base.height(class_='form-control', value=each_dashboard.height)}}
         </div>
       </div>
       <div class="col-auto">
         {{form_measurement.max_measure_age.label(class_='control-label')}}
         <div>
-          {{form_measurement.max_measure_age(class_='form-control', value=each_graph.max_measure_age)}}
+          {{form_measurement.max_measure_age(class_='form-control', value=each_dashboard.max_measure_age)}}
         </div>
       </div>
       <div class="col-auto">
         {{form_base.refresh_duration.label(class_='control-label')}}
         <div>
-          {{form_base.refresh_duration(class_='form-control', value=each_graph.refresh_duration)}}
+          {{form_base.refresh_duration(class_='form-control', value=each_dashboard.refresh_duration)}}
         </div>
       </div>
      <div class="col-auto">
         {{form_measurement.font_em_value.label(class_='control-label')}}
         <div>
-          {{form_measurement.font_em_value(class_='form-control', value=each_graph.font_em_value)}}
+          {{form_measurement.font_em_value(class_='form-control', value=each_dashboard.font_em_value)}}
         </div>
       </div>
       <div class="col-auto">
         {{form_measurement.font_em_timestamp.label(class_='control-label')}}
         <div>
-          {{form_measurement.font_em_timestamp(class_='form-control', value=each_graph.font_em_timestamp)}}
+          {{form_measurement.font_em_timestamp(class_='form-control', value=each_dashboard.font_em_timestamp)}}
         </div>
       </div>
       <div class="col-auto">
         {{form_measurement.decimal_places.label(class_='control-label')}}
         <div>
-          {{form_measurement.decimal_places(class_='form-control', value=each_graph.decimal_places)}}
+          {{form_measurement.decimal_places(class_='form-control', value=each_dashboard.decimal_places)}}
         </div>
       </div>
     </div>

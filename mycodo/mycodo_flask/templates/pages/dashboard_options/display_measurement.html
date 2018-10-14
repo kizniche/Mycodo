@@ -1,21 +1,21 @@
 
   {% for each_input in input -%}
     {%- for each_id_and_measure in graph_input_ids if each_input.unique_id == each_id_and_measure.split(',')[0] %}
-  getLastData({{chart_number}}, '{{each_id_and_measure.split(',')[0]}}', '{{each_id_and_measure.split(',')[1]}}', 'measurement', {{each_graph.max_measure_age}}, {{each_graph.decimal_places}});
-  repeatLastData({{chart_number}}, '{{each_id_and_measure.split(',')[0]}}', '{{each_id_and_measure.split(',')[1]}}', 'measurement', {{each_graph.refresh_duration}}, {{each_graph.max_measure_age}}, {{each_graph.decimal_places}});
+  getLastData({{chart_number}}, '{{each_id_and_measure.split(',')[0]}}', '{{each_id_and_measure.split(',')[1]}}', 'measurement', {{each_dashboard.max_measure_age}}, {{each_dashboard.decimal_places}});
+  repeatLastData({{chart_number}}, '{{each_id_and_measure.split(',')[0]}}', '{{each_id_and_measure.split(',')[1]}}', 'measurement', {{each_dashboard.refresh_duration}}, {{each_dashboard.max_measure_age}}, {{each_dashboard.decimal_places}});
     {%- endfor -%}
   {%- endfor -%}
 
   {% for each_math in math -%}
     {%- for each_id_and_measure in graph_input_ids if each_math.unique_id == each_id_and_measure.split(',')[0] %}
-  getLastData({{chart_number}}, '{{each_id_and_measure.split(',')[0]}}', '{{each_id_and_measure.split(',')[1]}}', 'measurement', {{each_graph.max_measure_age}}, {{each_graph.decimal_places}});
-  repeatLastData({{chart_number}}, '{{each_id_and_measure.split(',')[0]}}', '{{each_id_and_measure.split(',')[1]}}', 'measurement', {{each_graph.refresh_duration}}, {{each_graph.max_measure_age}}, {{each_graph.decimal_places}});
+  getLastData({{chart_number}}, '{{each_id_and_measure.split(',')[0]}}', '{{each_id_and_measure.split(',')[1]}}', 'measurement', {{each_dashboard.max_measure_age}}, {{each_dashboard.decimal_places}});
+  repeatLastData({{chart_number}}, '{{each_id_and_measure.split(',')[0]}}', '{{each_id_and_measure.split(',')[1]}}', 'measurement', {{each_dashboard.refresh_duration}}, {{each_dashboard.max_measure_age}}, {{each_dashboard.decimal_places}});
     {%- endfor -%}
   {%- endfor -%}
 
   {%- for each_pid in pid -%}
     {%- for each_id_and_measure in graph_input_ids if each_pid.unique_id == each_id_and_measure.split(',')[0] %}
-  getLastData({{chart_number}}, '{{each_id_and_measure.split(',')[0]}}', '{{each_id_and_measure.split(',')[1]}}', 'measurement', {{each_graph.max_measure_age}}, {{each_graph.decimal_places}});
-  repeatLastData({{chart_number}}, '{{each_id_and_measure.split(',')[0]}}', '{{each_id_and_measure.split(',')[1]}}', 'measurement', {{each_graph.refresh_duration}}, {{each_graph.max_measure_age}}, {{each_graph.decimal_places}});
+  getLastData({{chart_number}}, '{{each_id_and_measure.split(',')[0]}}', '{{each_id_and_measure.split(',')[1]}}', 'measurement', {{each_dashboard.max_measure_age}}, {{each_dashboard.decimal_places}});
+  repeatLastData({{chart_number}}, '{{each_id_and_measure.split(',')[0]}}', '{{each_id_and_measure.split(',')[1]}}', 'measurement', {{each_dashboard.refresh_duration}}, {{each_dashboard.max_measure_age}}, {{each_dashboard.decimal_places}});
     {%- endfor -%}
   {%- endfor -%}

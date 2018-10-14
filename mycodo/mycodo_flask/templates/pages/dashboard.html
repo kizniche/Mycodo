@@ -36,8 +36,8 @@
 {#  yaxes: {{ y_axes }}#}
 {#  </p>#}
 {#  <p>#}
-{#  {% for each_graph in graph %}#}
-{#  each_graph.custom_yaxes: {{ each_graph.custom_yaxes }}<br>#}
+{#  {% for each_dashboard in dashboard %}#}
+{#  each_dashboard.custom_yaxes: {{ each_dashboard.custom_yaxes }}<br>#}
 {#  {% endfor %}#}
 {#  </p>#}
 {#  <p>#}
@@ -69,32 +69,32 @@
   {% if display_order -%}
   {%- for order in display_order -%}
     {%- set chart_number = loop.index -%}
-    {%- for each_graph in graph if each_graph.unique_id == order -%}
+    {%- for each_dashboard in dashboard if each_dashboard.unique_id == order -%}
 
     <div class="col-xs-12 col-sm-
-    {%- if each_graph.width < 13 and each_graph.width > 0 -%}
-      {{each_graph.width}}
+    {%- if each_dashboard.width < 13 and each_dashboard.width > 0 -%}
+      {{each_dashboard.width}}
     {%- else -%}
       12
     {%- endif -%}" style="padding: 0.25em;">
 
       <div style="border: 1px solid #ddd; border-radius: 5px;">
 
-      {% for id, axes in y_axes.items() if id == each_graph.unique_id and each_graph.graph_type in ['graph', 'gauge_angular', 'gauge_solid'] %}
-        <!--Dashboard {{each_graph.unique_id}} y-axes: {{axes|safe}}-->
+      {% for id, axes in y_axes.items() if id == each_dashboard.unique_id and each_dashboard.graph_type in ['graph', 'gauge_angular', 'gauge_solid'] %}
+        <!--Dashboard {{each_dashboard.unique_id}} y-axes: {{axes|safe}}-->
       {% endfor %}
 
-      {% if each_graph.graph_type == 'graph' %}
+      {% if each_dashboard.graph_type == 'graph' %}
         {% include 'pages/dashboard_options/mod_graph.html' %}
-      {% elif each_graph.graph_type in ['gauge_angular', 'gauge_solid'] %}
+      {% elif each_dashboard.graph_type in ['gauge_angular', 'gauge_solid'] %}
         {% include 'pages/dashboard_options/mod_gauge.html' %}
-      {% elif each_graph.graph_type == 'measurement' %}
+      {% elif each_dashboard.graph_type == 'measurement' %}
         {% include 'pages/dashboard_options/mod_measurement.html' %}
-      {% elif each_graph.graph_type == 'output' %}
+      {% elif each_dashboard.graph_type == 'output' %}
         {% include 'pages/dashboard_options/mod_output.html' %}
-      {% elif each_graph.graph_type == 'pid_control' %}
+      {% elif each_dashboard.graph_type == 'pid_control' %}
         {% include 'pages/dashboard_options/mod_pid_control.html' %}
-      {% elif each_graph.graph_type == 'camera' %}
+      {% elif each_dashboard.graph_type == 'camera' %}
         {% include 'pages/dashboard_options/mod_camera.html' %}
 
       {% endif %}
@@ -820,23 +820,23 @@ $(document).ready(function() {
 {% if display_order -%}
   {%- for order in display_order -%}
     {%- set chart_number = loop.index -%}
-    {%- for each_graph in graph if each_graph.unique_id == order -%}
+    {%- for each_dashboard in dashboard if each_dashboard.unique_id == order -%}
 
-      {% set graph_input_ids = each_graph.input_ids_measurements.split(';') %}
+      {% set graph_input_ids = each_dashboard.input_ids_measurements.split(';') %}
 
-      {% if each_graph.graph_type == 'graph' %}
+      {% if each_dashboard.graph_type == 'graph' %}
         {% include 'pages/dashboard_options/display_graph.html' %}
-      {% elif each_graph.graph_type == 'gauge_solid' %}
+      {% elif each_dashboard.graph_type == 'gauge_solid' %}
         {% include 'pages/dashboard_options/display_gauge_solid.html' %}
-      {% elif each_graph.graph_type == 'gauge_angular' %}
+      {% elif each_dashboard.graph_type == 'gauge_angular' %}
         {% include 'pages/dashboard_options/display_gauge_angular.html' %}
-      {% elif each_graph.graph_type == 'measurement' %}
+      {% elif each_dashboard.graph_type == 'measurement' %}
         {% include 'pages/dashboard_options/display_measurement.html' %}
-      {% elif each_graph.graph_type == 'output' %}
+      {% elif each_dashboard.graph_type == 'output' %}
         {% include 'pages/dashboard_options/display_output.html' %}
-      {% elif each_graph.graph_type == 'pid_control' %}
+      {% elif each_dashboard.graph_type == 'pid_control' %}
         {% include 'pages/dashboard_options/display_pid_control.html' %}
-      {% elif each_graph.graph_type == 'camera' %}
+      {% elif each_dashboard.graph_type == 'camera' %}
         {% include 'pages/dashboard_options/display_camera.html' %}
       {% endif %}
 

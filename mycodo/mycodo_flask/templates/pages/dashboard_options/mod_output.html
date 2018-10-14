@@ -1,6 +1,6 @@
 <div style="padding-right: 0.2em;">
   <div class="text-right align-items-center">
-    (<span id="text-output-state-{{chart_number}}"></span>) <span style="padding-right: 0.5em">{{each_graph.name}} [{{'%02d' % each_graph.id}}]</span>
+    (<span id="text-output-state-{{chart_number}}"></span>) <span style="padding-right: 0.5em">{{each_dashboard.name}} [{{'%02d' % each_dashboard.id}}]</span>
     <a data-toggle="collapse" href="#collapseContainer{{chart_number}}" aria-expanded="false" aria-controls="collapseContainer{{chart_number}}">
       <span class="collapse-button fa fa-2x fa-plus-square"></span>
     </a>
@@ -8,24 +8,24 @@
 </div>
 
 {% set is_pwm = [] -%}
-{% for each_output in output if each_output.unique_id == each_graph.output_ids.split(',')[0] and each_output.output_type in ['pwm', 'command_pwm'] %}
+{% for each_output in output if each_output.unique_id == each_dashboard.output_ids.split(',')[0] and each_output.output_type in ['pwm', 'command_pwm'] %}
   {%- do is_pwm.append(1) %}
 {% endfor %}
 
-<div class="pause-background" id="container-output-{{chart_number}}" style="height: {{each_graph.height}}px; text-align: center">
-  <span style="font-size: {{each_graph.font_em_value}}em" id="value-{{chart_number}}"></span>
-  <br/><span style="font-size: {{each_graph.font_em_timestamp}}em" id="timestamp-{{chart_number}}"></span>
+<div class="pause-background" id="container-output-{{chart_number}}" style="height: {{each_dashboard.height}}px; text-align: center">
+  <span style="font-size: {{each_dashboard.font_em_value}}em" id="value-{{chart_number}}"></span>
+  <br/><span style="font-size: {{each_dashboard.font_em_timestamp}}em" id="timestamp-{{chart_number}}"></span>
 
-  {% if each_graph.enable_output_controls %}
+  {% if each_dashboard.enable_output_controls %}
 
   <div class="row small-gutters" style="padding: 0.3em 1.5em 0 1.5em">
     {% if not is_pwm -%}
     <div class="col-6">
-      <input class="form-control btn btn-default btn-sm turn_on" id="turn_on" name="{{each_graph.output_ids.split(',')[0]}}/on/sec/0" type="button" value="{{_('On')}}">
+      <input class="form-control btn btn-default btn-sm turn_on" id="turn_on" name="{{each_dashboard.output_ids.split(',')[0]}}/on/sec/0" type="button" value="{{_('On')}}">
     </div>
     {%- endif %}
     <div class="col-6">
-      <input class="form-control btn btn-default btn-sm turn_off" id="turn_off" name="{{each_graph.output_ids.split(',')[0]}}/off/sec/0" type="button" value="{{_('Off')}}">
+      <input class="form-control btn btn-default btn-sm turn_off" id="turn_off" name="{{each_dashboard.output_ids.split(',')[0]}}/off/sec/0" type="button" value="{{_('Off')}}">
     </div>
   </div>
 
@@ -34,19 +34,19 @@
     {% if not is_pwm %}
 
     <div class="col-6">
-      <input class="form-control form-control-sm" id="sec_on_amt_{{each_graph.output_ids.split(',')[0]}}" name="sec_on_amt_{{each_graph.output_ids.split(',')[0]}}" title="Turn output on for a specific number of seconds" type="number" value="" placeholder="Seconds">
+      <input class="form-control form-control-sm" id="sec_on_amt_{{each_dashboard.output_ids.split(',')[0]}}" name="sec_on_amt_{{each_dashboard.output_ids.split(',')[0]}}" title="Turn output on for a specific number of seconds" type="number" value="" placeholder="Seconds">
     </div>
     <div class="col-6">
-      <input class="form-control btn btn-default btn-sm sec_on_amt" id="turn_on" name="{{each_graph.output_ids.split(',')[0]}}/on/sec/" type="button" value="{{_('Sec On')}}">
+      <input class="form-control btn btn-default btn-sm sec_on_amt" id="turn_on" name="{{each_dashboard.output_ids.split(',')[0]}}/on/sec/" type="button" value="{{_('Sec On')}}">
     </div>
 
     {% else %}
 
     <div class="col-6">
-      <input class="form-control form-control-sm" id="duty_cycle_on_amt_{{each_graph.output_ids.split(',')[0]}}" name="duty_cycle_on_amt_{{each_graph.output_ids.split(',')[0]}}" title="Select the PWM duty cycle (0.0 - 100.0)" type="number" value="" placeholder="% Duty Cycle">
+      <input class="form-control form-control-sm" id="duty_cycle_on_amt_{{each_dashboard.output_ids.split(',')[0]}}" name="duty_cycle_on_amt_{{each_dashboard.output_ids.split(',')[0]}}" title="Select the PWM duty cycle (0.0 - 100.0)" type="number" value="" placeholder="% Duty Cycle">
     </div>
     <div class="col-6">
-      <input class="form-control btn btn-default btn-sm duty_cycle_on_amt" id="turn_on" name="{{each_graph.output_ids.split(',')[0]}}/on/pwm/" type="button" value="{{_('PWM On')}}">
+      <input class="form-control btn btn-default btn-sm duty_cycle_on_amt" id="turn_on" name="{{each_dashboard.output_ids.split(',')[0]}}/on/pwm/" type="button" value="{{_('PWM On')}}">
     </div>
 
     {% endif %}
@@ -59,16 +59,16 @@
 
 <div class="collapse" id="collapseContainer{{chart_number}}" style="padding: 0.5em; width: calc(100% - 1em)">
 
-  {% if not each_graph.enable_output_controls %}
+  {% if not each_dashboard.enable_output_controls %}
 
     <div class="form-row">
       {% if not is_pwm -%}
       <div class="col-auto">
-        <input class="form-control btn btn-default turn_on" id="turn_on" name="{{each_graph.output_ids.split(',')[0]}}/on/sec/0" type="button" value="{{_('On')}}">
+        <input class="form-control btn btn-default turn_on" id="turn_on" name="{{each_dashboard.output_ids.split(',')[0]}}/on/sec/0" type="button" value="{{_('On')}}">
       </div>
       {%- endif %}
       <div class="col-auto">
-        <input class="form-control btn btn-default turn_off" id="turn_off" name="{{each_graph.output_ids.split(',')[0]}}/off/sec/0" type="button" value="{{_('Off')}}">
+        <input class="form-control btn btn-default turn_off" id="turn_off" name="{{each_dashboard.output_ids.split(',')[0]}}/off/sec/0" type="button" value="{{_('Off')}}">
       </div>
     </div>
 
@@ -76,10 +76,10 @@
 
     <div class="form-row">
       <div class="col-auto">
-        <input class="form-control" id="sec_on_amt_{{each_graph.output_ids.split(',')[0]}}" name="sec_on_amt_{{each_graph.output_ids.split(',')[0]}}" title="Turn this output on for a specific number of seconds (used to test output)" type="number" value="" placeholder="Seconds">
+        <input class="form-control" id="sec_on_amt_{{each_dashboard.output_ids.split(',')[0]}}" name="sec_on_amt_{{each_dashboard.output_ids.split(',')[0]}}" title="Turn this output on for a specific number of seconds (used to test output)" type="number" value="" placeholder="Seconds">
       </div>
       <div class="col-auto">
-        <input class="form-control btn btn-default sec_on_amt" id="turn_on" name="{{each_graph.output_ids.split(',')[0]}}/on/sec/" type="button" value="{{_('Turn On')}}">
+        <input class="form-control btn btn-default sec_on_amt" id="turn_on" name="{{each_dashboard.output_ids.split(',')[0]}}/on/sec/" type="button" value="{{_('Turn On')}}">
       </div>
     </div>
 
@@ -87,10 +87,10 @@
 
     <div class="form-row">
       <div class="col-auto">
-        <input class="form-control" id="duty_cycle_on_amt_{{each_graph.output_ids.split(',')[0]}}" name="duty_cycle_on_amt_{{each_graph.output_ids.split(',')[0]}}" title="Select the duty cycle for the PWM when turned on (0.0 - 100.0)" type="number" value="" placeholder="% Duty Cycle">
+        <input class="form-control" id="duty_cycle_on_amt_{{each_dashboard.output_ids.split(',')[0]}}" name="duty_cycle_on_amt_{{each_dashboard.output_ids.split(',')[0]}}" title="Select the duty cycle for the PWM when turned on (0.0 - 100.0)" type="number" value="" placeholder="% Duty Cycle">
       </div>
       <div class="col-auto">
-        <input class="form-control btn btn-default duty_cycle_on_amt" id="turn_on" name="{{each_graph.output_ids.split(',')[0]}}/on/pwm/" type="button" value="{{_('Turn On')}}">
+        <input class="form-control btn btn-default duty_cycle_on_amt" id="turn_on" name="{{each_dashboard.output_ids.split(',')[0]}}/on/pwm/" type="button" value="{{_('Turn On')}}">
       </div>
     </div>
 
@@ -100,14 +100,14 @@
 
   <form method="post" action="/dashboard">
     {{form_base.csrf_token}}
-    {{form_base.dashboard_id(value=each_graph.unique_id)}}
+    {{form_base.dashboard_id(value=each_dashboard.unique_id)}}
     <input type="hidden" name="dashboard_type" value="output">
 
     <div class="form-row">
       <div class="col-auto">
         {{form_base.name.label(class_='control-label')}}
         <div>
-          {{form_base.name(class_='form-control', value=each_graph.name, **{'title':_('A name to distinguish this from others')})}}
+          {{form_base.name(class_='form-control', value=each_dashboard.name, **{'title':_('A name to distinguish this from others')})}}
         </div>
       </div>
       <div class="col-auto">
@@ -117,7 +117,7 @@
           {% if choices_output %}
             <option value="">{{_('Select One')}}</option>
             {% for each_choice, value in choices_output.items() -%}
-              <option value="{{each_choice}}" {% if each_graph.output_ids == each_choice %}selected{% endif %}>{{value}}</option>
+              <option value="{{each_choice}}" {% if each_dashboard.output_ids == each_choice %}selected{% endif %}>{{value}}</option>
             {% endfor -%}
           {% else %}
             <option value="">{{_('None Available')}}</option>
@@ -130,7 +130,7 @@
         <div>
           <select class="form-control" id="width" name="width">
             {% for n in range(1, 13) %}
-              <option value="{{n}}"{% if n == each_graph.width %} selected{% endif %}>{{n}}/12</option>
+              <option value="{{n}}"{% if n == each_dashboard.width %} selected{% endif %}>{{n}}/12</option>
             {% endfor %}
           </select>
         </div>
@@ -138,41 +138,41 @@
       <div class="col-auto">
         {{form_base.height.label(class_='control-label')}}
         <div>
-          {{form_base.height(class_='form-control', value=each_graph.height)}}
+          {{form_base.height(class_='form-control', value=each_dashboard.height)}}
         </div>
       </div>
       <div class="col-auto">
         {{form_output.max_measure_age.label(class_='control-label')}}
         <div>
-          {{form_output.max_measure_age(class_='form-control', value=each_graph.max_measure_age)}}
+          {{form_output.max_measure_age(class_='form-control', value=each_dashboard.max_measure_age)}}
         </div>
       </div>
       <div class="col-auto">
         {{form_base.refresh_duration.label(class_='control-label')}}
         <div>
-          {{form_base.refresh_duration(class_='form-control', value=each_graph.refresh_duration)}}
+          {{form_base.refresh_duration(class_='form-control', value=each_dashboard.refresh_duration)}}
         </div>
       </div>
      <div class="col-auto">
         {{form_output.font_em_value.label(class_='control-label')}}
         <div>
-          {{form_output.font_em_value(class_='form-control', value=each_graph.font_em_value)}}
+          {{form_output.font_em_value(class_='form-control', value=each_dashboard.font_em_value)}}
         </div>
       </div>
       <div class="col-auto">
         {{form_output.font_em_timestamp.label(class_='control-label')}}
         <div>
-          {{form_output.font_em_timestamp(class_='form-control', value=each_graph.font_em_timestamp)}}
+          {{form_output.font_em_timestamp(class_='form-control', value=each_dashboard.font_em_timestamp)}}
         </div>
       </div>
       <div class="col-auto">
         {{form_output.decimal_places.label(class_='control-label')}}
         <div>
-          {{form_output.decimal_places(class_='form-control', value=each_graph.decimal_places)}}
+          {{form_output.decimal_places(class_='form-control', value=each_dashboard.decimal_places)}}
         </div>
       </div>
       <div class="form-check form-check-inline">
-        <input class="form-check-input" id="enable_output_controls" name="enable_output_controls" type="checkbox" value="y"{% if each_graph.enable_output_controls %} checked{% endif %}>
+        <input class="form-check-input" id="enable_output_controls" name="enable_output_controls" type="checkbox" value="y"{% if each_dashboard.enable_output_controls %} checked{% endif %}>
         {{form_output.enable_output_controls.label(class_='control-label')}}
       </div>
     </div>

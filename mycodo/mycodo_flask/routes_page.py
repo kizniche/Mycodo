@@ -416,7 +416,7 @@ def page_dashboard():
     """
     # Retrieve tables from SQL database
     camera = Camera.query.all()
-    graph = Dashboard.query.all()
+    dashboard = Dashboard.query.all()
     input_dev = Input.query.all()
     math = Math.query.all()
     misc = Misc.query.first()
@@ -441,7 +441,7 @@ def page_dashboard():
     # Create list of hidden dashboard element IDs and dict of names
     dashboard_element_names = {}
     dashboard_elements_hidden = []
-    all_elements = Dashboard.query.all()
+    all_elements = dashboard
     for each_element in all_elements:
         dashboard_element_names[each_element.unique_id] = '[{id}] {name}'.format(
                 id=each_element.id, name=each_element.name)
@@ -489,7 +489,7 @@ def page_dashboard():
     colors_gauge_solid_form = OrderedDict()
     colors_gauge_angular = OrderedDict()
     try:
-        for each_graph in graph:
+        for each_graph in dashboard:
             if each_graph.range_colors:  # Split into list
                 color_areas = each_graph.range_colors.split(';')
             else:  # Create empty list
@@ -542,7 +542,7 @@ def page_dashboard():
     use_unit = utils_general.use_unit_generate(input_dev, output, math)
 
     # Generate a dictionary of each graph's y-axis minimum and maximum
-    custom_yaxes = dict_custom_yaxes_min_max(graph, y_axes)
+    custom_yaxes = dict_custom_yaxes_min_max(dashboard, y_axes)
 
     # Detect which form on the page was submitted
     if request.method == 'POST':
@@ -596,7 +596,7 @@ def page_dashboard():
                            custom_yaxes=custom_yaxes,
                            dashboard_element_names=dashboard_element_names,
                            dashboard_elements_hidden=dashboard_elements_hidden,
-                           graph=graph,
+                           dashboard=dashboard,
                            math=math,
                            misc=misc,
                            pid=pid,
@@ -1083,6 +1083,8 @@ def page_function():
     display_order_conditional = csv_to_list_of_str(DisplayOrder.query.first().conditional)
     display_order_pid = csv_to_list_of_str(DisplayOrder.query.first().pid)
 
+    form_base = forms_function.DataBase()
+
     form_add_function = forms_function.FunctionAdd()
     form_mod_pid_base = forms_pid.PIDModBase()
     form_mod_pid_output_raise = forms_pid.PIDModRelayRaise()
@@ -1091,6 +1093,32 @@ def page_function():
     form_mod_pid_pwm_lower = forms_pid.PIDModPWMLower()
     form_conditional = forms_conditional.Conditional()
     form_conditional_actions = forms_conditional.ConditionalActions()
+
+    # Create dict of PID names
+    names_pid = {}
+    all_elements = pid
+    for each_element in all_elements:
+        names_pid[each_element.unique_id] = '[{id}] {name}'.format(
+            id=each_element.id, name=each_element.name)
+
+    # Create dict of Conditional names
+    names_conditional = {}
+    all_elements = conditional
+    for each_element in all_elements:
+        names_conditional[each_element.unique_id] = '[{id}] {name}'.format(
+            id=each_element.id, name=each_element.name)
+
+    if form_base.reorder.data:
+        if form_base.reorder_type.data == 'pid':
+            mod_order = DisplayOrder.query.first()
+            mod_order.pid = list_to_csv(form_base.list_visible_elements.data)
+            db.session.commit()
+            display_order_pid = csv_to_list_of_str(DisplayOrder.query.first().pid)
+        elif form_base.reorder_type.data == 'conditional':
+            mod_order = DisplayOrder.query.first()
+            mod_order.conditional = list_to_csv(form_base.list_visible_elements.data)
+            db.session.commit()
+            display_order_conditional = csv_to_list_of_str(DisplayOrder.query.first().conditional)
 
     # Calculate sunrise/sunset times if conditional controller is set up properly
     sunrise_sunset_calculated = {}
@@ -1222,6 +1250,7 @@ def page_function():
                            controllers=controllers,
                            display_order_conditional=display_order_conditional,
                            display_order_pid=display_order_pid,
+                           form_base=form_base,
                            form_conditional=form_conditional,
                            form_conditional_actions=form_conditional_actions,
                            form_add_function=form_add_function,
@@ -1230,6 +1259,8 @@ def page_function():
                            form_mod_pid_pwm_lower=form_mod_pid_pwm_lower,
                            form_mod_pid_output_raise=form_mod_pid_output_raise,
                            form_mod_pid_output_lower=form_mod_pid_output_lower,
+                           names_pid=names_pid,
+                           names_conditional=names_conditional,
                            input=input_dev,
                            lcd=lcd,
                            math=math,
@@ -1326,6 +1357,8 @@ def page_data():
     display_order_input = csv_to_list_of_str(DisplayOrder.query.first().inputs)
     display_order_math = csv_to_list_of_str(DisplayOrder.query.first().math)
 
+    form_base = forms_input.DataBase()
+
     form_add_input = forms_input.InputAdd()
     form_mod_input = forms_input.InputMod()
 
@@ -1343,6 +1376,32 @@ def page_data():
     choices_unit = utils_general.choices_units(unit)
     choices_measurement = utils_general.choices_measurements(measurement)
     choices_measurements_units = utils_general.choices_measurements_units(measurement, unit)
+
+    # Create dict of Input names
+    names_input = {}
+    all_elements = input_dev
+    for each_element in all_elements:
+        names_input[each_element.unique_id] = '[{id}] {name}'.format(
+            id=each_element.id, name=each_element.name)
+
+    # Create dict of Math names
+    names_math = {}
+    all_elements = math
+    for each_element in all_elements:
+        names_math[each_element.unique_id] = '[{id}] {name}'.format(
+            id=each_element.id, name=each_element.name)
+
+    if form_base.reorder.data:
+        if form_base.reorder_type.data == 'input':
+            mod_order = DisplayOrder.query.first()
+            mod_order.inputs = list_to_csv(form_base.list_visible_elements.data)
+            db.session.commit()
+            display_order_input = csv_to_list_of_str(DisplayOrder.query.first().inputs)
+        elif form_base.reorder_type.data == 'math':
+            mod_order = DisplayOrder.query.first()
+            mod_order.math = list_to_csv(form_base.list_visible_elements.data)
+            db.session.commit()
+            display_order_math = csv_to_list_of_str(DisplayOrder.query.first().math)
 
     # convert dict to list of tuples
     choices = []
@@ -1454,6 +1513,7 @@ def page_data():
                            dict_inputs=dict_inputs,
                            display_order_input=display_order_input,
                            display_order_math=display_order_math,
+                           form_base=form_base,
                            form_add_input=form_add_input,
                            form_mod_input=form_mod_input,
                            form_add_math=form_add_math,
@@ -1465,9 +1525,11 @@ def page_data():
                            form_mod_verification=form_mod_verification,
                            camera=camera,
                            input=input_dev,
+                           names_input=names_input,
                            tooltips_input=TOOLTIPS_INPUT,
                            input_templates=input_templates,
                            math=math,
+                           names_math=names_math,
                            math_info=MATH_INFO,
                            math_templates=math_templates,
                            output=output,

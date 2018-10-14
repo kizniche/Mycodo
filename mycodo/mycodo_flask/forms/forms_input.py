@@ -10,6 +10,7 @@ from wtforms import BooleanField
 from wtforms import DecimalField
 from wtforms import IntegerField
 from wtforms import SelectField
+from wtforms import SelectMultipleField
 from wtforms import StringField
 from wtforms import SubmitField
 from wtforms import validators
@@ -22,6 +23,12 @@ from mycodo.mycodo_flask.utils.utils_general import generate_form_input_list
 from mycodo.utils.inputs import parse_input_information
 
 logger = logging.getLogger("mycodo.forms_input")
+
+
+class DataBase(FlaskForm):
+    reorder_type = StringField('Reorder Type', widget=widgets.HiddenInput())
+    list_visible_elements = SelectMultipleField('New Order')
+    reorder = SubmitField(lazy_gettext('Save Order'))
 
 
 class InputAdd(FlaskForm):

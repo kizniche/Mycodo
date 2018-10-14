@@ -1,27 +1,27 @@
   chart_gauge[{{chart_number}}] = new Highcharts.chart({
     chart: {
-      renderTo: 'container-gauge-{{each_graph.id}}',
+      renderTo: 'container-gauge-{{each_dashboard.id}}',
       type: 'solidgauge',
       events: {
         load: function () {
           {% for each_input in input -%}
             {%- for each_id_and_measure in graph_input_ids if each_input.unique_id == each_id_and_measure.split(',')[0] %}
-          getLastData({{chart_number}}, '{{each_id_and_measure.split(',')[0]}}', '{{each_id_and_measure.split(',')[1]}}', 'gauge', {{each_graph.max_measure_age}});
-          repeatLastData({{chart_number}}, '{{each_id_and_measure.split(',')[0]}}', '{{each_id_and_measure.split(',')[1]}}', 'gauge', {{each_graph.refresh_duration}}, {{each_graph.max_measure_age}});
+          getLastData({{chart_number}}, '{{each_id_and_measure.split(',')[0]}}', '{{each_id_and_measure.split(',')[1]}}', 'gauge', {{each_dashboard.max_measure_age}});
+          repeatLastData({{chart_number}}, '{{each_id_and_measure.split(',')[0]}}', '{{each_id_and_measure.split(',')[1]}}', 'gauge', {{each_dashboard.refresh_duration}}, {{each_dashboard.max_measure_age}});
             {%- endfor -%}
           {%- endfor -%}
 
           {% for each_math in math -%}
             {%- for each_id_and_measure in graph_input_ids if each_math.unique_id == each_id_and_measure.split(',')[0] %}
-          getLastData({{chart_number}}, '{{each_id_and_measure.split(',')[0]}}', '{{each_id_and_measure.split(',')[1]}}', 'gauge', {{each_graph.max_measure_age}});
-          repeatLastData({{chart_number}}, '{{each_id_and_measure.split(',')[0]}}', '{{each_id_and_measure.split(',')[1]}}', 'gauge', {{each_graph.refresh_duration}}, {{each_graph.max_measure_age}});
+          getLastData({{chart_number}}, '{{each_id_and_measure.split(',')[0]}}', '{{each_id_and_measure.split(',')[1]}}', 'gauge', {{each_dashboard.max_measure_age}});
+          repeatLastData({{chart_number}}, '{{each_id_and_measure.split(',')[0]}}', '{{each_id_and_measure.split(',')[1]}}', 'gauge', {{each_dashboard.refresh_duration}}, {{each_dashboard.max_measure_age}});
             {%- endfor -%}
           {%- endfor -%}
 
           {%- for each_pid in pid -%}
             {%- for each_id_and_measure in graph_input_ids if each_pid.unique_id == each_id_and_measure.split(',')[0] %}
-          getLastData({{chart_number}}, '{{each_id_and_measure.split(',')[0]}}', '{{each_id_and_measure.split(',')[1]}}', 'gauge', {{each_graph.max_measure_age}});
-          repeatLastData({{chart_number}}, '{{each_id_and_measure.split(',')[0]}}', '{{each_id_and_measure.split(',')[1]}}', 'gauge', {{each_graph.refresh_duration}}, {{each_graph.max_measure_age}});
+          getLastData({{chart_number}}, '{{each_id_and_measure.split(',')[0]}}', '{{each_id_and_measure.split(',')[1]}}', 'gauge', {{each_dashboard.max_measure_age}});
+          repeatLastData({{chart_number}}, '{{each_id_and_measure.split(',')[0]}}', '{{each_id_and_measure.split(',')[1]}}', 'gauge', {{each_dashboard.refresh_duration}}, {{each_dashboard.max_measure_age}});
             {%- endfor -%}
           {%- endfor -%}
         }
@@ -56,12 +56,12 @@
 
     // the value axis
     yAxis: {
-      min: {{each_graph.y_axis_min}},
-      max: {{each_graph.y_axis_max}},
+      min: {{each_dashboard.y_axis_min}},
+      max: {{each_dashboard.y_axis_max}},
       stops: [
-          {% for n in range(colors_gauge_solid[each_graph.unique_id]|length) %}
+          {% for n in range(colors_gauge_solid[each_dashboard.unique_id]|length) %}
               {% set index = '{0:0>2}'.format(n) %}
-        [{{colors_gauge_solid[each_graph.unique_id][n]['stop']}}, '{{colors_gauge_solid[each_graph.unique_id][n]['hex']}}'],
+        [{{colors_gauge_solid[each_dashboard.unique_id][n]['stop']}}, '{{colors_gauge_solid[each_dashboard.unique_id][n]['hex']}}'],
           {% endfor %}
       ],
       lineWidth: 0,

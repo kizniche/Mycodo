@@ -1,28 +1,28 @@
 <div style="padding-right: 0.2em;">
   <div class="text-right align-items-center">
-    <span style="padding-right: 0.5em"><span id="{{each_graph.id}}-timestamp"></span> {{each_graph.name}} [{{'%02d' % each_graph.id}}]</span>
+    <span style="padding-right: 0.5em"><span id="{{each_dashboard.id}}-timestamp"></span> {{each_dashboard.name}} [{{'%02d' % each_dashboard.id}}]</span>
     <a data-toggle="collapse" href="#collapseContainer{{chart_number}}" aria-expanded="false" aria-controls="collapseContainer{{chart_number}}">
       <span class="collapse-button{{chart_number}} fa fa-2x fa-plus-square"></span>
     </a>
   </div>
 </div>
 
-<div id="container-graph-{{each_graph.id}}" style="height: {{each_graph.height}}px;">
-  <a id="{{each_graph.id}}-image-href" href="" target="_blank"><img id="{{each_graph.id}}-image-src" style="max-height: 100%; max-width: 100%" src=""></a>
+<div id="container-graph-{{each_dashboard.id}}" style="height: {{each_dashboard.height}}px;">
+  <a id="{{each_dashboard.id}}-image-href" href="" target="_blank"><img id="{{each_dashboard.id}}-image-src" style="max-height: 100%; max-width: 100%" src=""></a>
 </div>
 
 <div class="collapse" id="collapseContainer{{chart_number}}" style="padding: 0.5em; width: calc(100% - 1em)">
 
   <form method="post" action="/dashboard">
     {{form_base.csrf_token}}
-    {{form_base.dashboard_id(value=each_graph.unique_id)}}
-    <input type="hidden" name="dashboard_type" value="{{each_graph.graph_type}}">
+    {{form_base.dashboard_id(value=each_dashboard.unique_id)}}
+    <input type="hidden" name="dashboard_type" value="{{each_dashboard.graph_type}}">
 
     <div class="form-row">
       <div class="col-auto">
         {{form_base.name.label(class_='control-label')}}
         <div>
-          {{form_base.name(class_='form-control', value=each_graph.name, **{'title':_('A name to distinguish this from others')})}}
+          {{form_base.name(class_='form-control', value=each_dashboard.name, **{'title':_('A name to distinguish this from others')})}}
         </div>
       </div>
       <div class="col-auto">
@@ -32,7 +32,7 @@
             <option value="">{{_('Select One')}}</option>
           {% if choices_camera %}
           {% for each_choice, value in choices_camera.items() -%}
-            <option value="{{each_choice}}" {% if each_graph.camera_id == each_choice %}selected{% endif %}>{{value}}</option>
+            <option value="{{each_choice}}" {% if each_dashboard.camera_id == each_choice %}selected{% endif %}>{{value}}</option>
           {% endfor -%}
           {% else %}
             <option value="">{{_('None Available')}}</option>
@@ -44,10 +44,10 @@
         {{form_camera.camera_image_type.label(class_='control-label')}}
         <div>
           <select class="form-control" id="camera_image_type" name="camera_image_type">
-            <option value="new_img"{% if each_graph.camera_image_type == 'new_image' %} selected{% endif %}>{{_('Acquire Image (and save new file)')}}</option>
-            <option value="tmp_img"{% if each_graph.camera_image_type == 'tmp_img' %} selected{% endif %}>{{_('Acquire Image (and erase last file)')}}</option>
-            <option value="stream"{% if each_graph.camera_image_type == 'stream' %} selected{% endif %}>{{_('Display Live Video Stream')}}</option>
-            <option value="timelapse"{% if each_graph.camera_image_type == 'timelapse' %} selected{% endif %}>{{_('Display Latest Timelapse Image')}}</option>
+            <option value="new_img"{% if each_dashboard.camera_image_type == 'new_image' %} selected{% endif %}>{{_('Acquire Image (and save new file)')}}</option>
+            <option value="tmp_img"{% if each_dashboard.camera_image_type == 'tmp_img' %} selected{% endif %}>{{_('Acquire Image (and erase last file)')}}</option>
+            <option value="stream"{% if each_dashboard.camera_image_type == 'stream' %} selected{% endif %}>{{_('Display Live Video Stream')}}</option>
+            <option value="timelapse"{% if each_dashboard.camera_image_type == 'timelapse' %} selected{% endif %}>{{_('Display Latest Timelapse Image')}}</option>
           </select>
         </div>
       </div>
@@ -56,28 +56,28 @@
         <div>
           <select class="form-control" id="width" name="width">
             {% for n in range(1, 12) %}
-              <option value="{{n}}"{%- if each_graph.width == n %} selected{%- endif -%}>{{n}}/12</option>
+              <option value="{{n}}"{%- if each_dashboard.width == n %} selected{%- endif -%}>{{n}}/12</option>
             {% endfor %}
-            <option value="12"{%- if each_graph.width == 12 or each_graph.width > 12 or each_graph.width < 1 %} selected{%- endif -%}>12/12</option>
+            <option value="12"{%- if each_dashboard.width == 12 or each_dashboard.width > 12 or each_dashboard.width < 1 %} selected{%- endif -%}>12/12</option>
           </select>
         </div>
       </div>
       <div class="col-auto">
         {{form_base.height.label(class_='control-label')}}
         <div>
-          {{form_base.height(class_='form-control', value=each_graph.height)}}
+          {{form_base.height(class_='form-control', value=each_dashboard.height)}}
         </div>
       </div>
       <div class="col-auto">
         {{form_base.refresh_duration.label(class_='control-label')}}
         <div>
-          {{form_base.refresh_duration(class_='form-control', value=each_graph.refresh_duration)}}
+          {{form_base.refresh_duration(class_='form-control', value=each_dashboard.refresh_duration)}}
         </div>
       </div>
       <div class="col-auto">
         {{form_camera.camera_max_age.label(class_='control-label')}}
         <div>
-          {{form_camera.camera_max_age(class_='form-control', value=each_graph.camera_max_age)}}
+          {{form_camera.camera_max_age(class_='form-control', value=each_dashboard.camera_max_age)}}
         </div>
       </div>
     </div>

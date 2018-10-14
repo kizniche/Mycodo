@@ -1,5 +1,9 @@
 ## 6.4.4 (Unreleased)
 
+### Features
+
+ - Add enhanced ability to reorder Input, Math, PID, and Conditional controllers
+
 ### Bugfixes
 
  - Fix authentication issue with Remote Administration

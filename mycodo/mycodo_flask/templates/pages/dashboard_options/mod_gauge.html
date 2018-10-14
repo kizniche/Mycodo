@@ -1,34 +1,34 @@
 <div style="padding-right: 0.2em;">
   <div class="text-right align-items-center">
-    <span style="padding-right: 0.5em"><span {% if not each_graph.enable_timestamp %}style="display: none;"{% endif %} id="timestamp-{{chart_number}}"></span> {{each_graph.name}} [{{'%02d' % each_graph.id}}]</span>
+    <span style="padding-right: 0.5em"><span {% if not each_dashboard.enable_timestamp %}style="display: none;"{% endif %} id="timestamp-{{chart_number}}"></span> {{each_dashboard.name}} [{{'%02d' % each_dashboard.id}}]</span>
     <a data-toggle="collapse" href="#collapseContainer{{chart_number}}" aria-expanded="false" aria-controls="collapseContainer{{chart_number}}">
       <span class="collapse-button{{chart_number}} fa fa-2x fa-plus-square"></span>
     </a>
   </div>
 </div>
 
-<div id="container-gauge-{{each_graph.id}}" style="height: {{each_graph.height}}px;"></div>
+<div id="container-gauge-{{each_dashboard.id}}" style="height: {{each_dashboard.height}}px;"></div>
 
 <div class="collapse" id="collapseContainer{{chart_number}}" style="padding: 0.5em; width: calc(100% - 1em)">
 
   <form method="post" action="/dashboard">
     {{form_base.csrf_token}}
-    {{form_base.dashboard_id(value=each_graph.unique_id)}}
+    {{form_base.dashboard_id(value=each_dashboard.unique_id)}}
     <input type="hidden" name="dashboard_type" value="gauge">
 
     <div class="form-row">
       <div class="col-auto">
         {{form_base.name.label(class_='control-label')}}
         <div>
-          {{form_base.name(class_='form-control', value=each_graph.name, **{'title':_('A name to distinguish this from others')})}}
+          {{form_base.name(class_='form-control', value=each_dashboard.name, **{'title':_('A name to distinguish this from others')})}}
         </div>
       </div>
       <div class="col-auto">
         {{form_gauge.gauge_type.label(class_='control-label')}}
         <div>
           <select class="form-control" id="gauge_type" name="gauge_type">
-            <option value="gauge_angular"{% if each_graph.graph_type == 'gauge_angular' %} selected{% endif %}>Angular Gauge</option>
-            <option value="gauge_solid"{% if each_graph.graph_type == 'gauge_solid' %} selected{% endif %}>Solid Gauge</option>
+            <option value="gauge_angular"{% if each_dashboard.graph_type == 'gauge_angular' %} selected{% endif %}>Angular Gauge</option>
+            <option value="gauge_solid"{% if each_dashboard.graph_type == 'gauge_solid' %} selected{% endif %}>Solid Gauge</option>
           </select>
         </div>
       </div>
@@ -39,13 +39,13 @@
           {% if choices_input or choices_math or choices_pid %}
             <option value="">{{_('Select One')}}</option>
             {% for each_choice, value in choices_input.items() -%}
-            <option value="{{each_choice}}" {% if each_graph.input_ids_measurements == each_choice %}selected{% endif %}>{{value}}</option>
+            <option value="{{each_choice}}" {% if each_dashboard.input_ids_measurements == each_choice %}selected{% endif %}>{{value}}</option>
             {% endfor -%}
             {% for each_choice, value in choices_math.items() -%}
-            <option value="{{each_choice}}" {% if each_graph.input_ids_measurements == each_choice %}selected{% endif %}>{{value}}</option>
+            <option value="{{each_choice}}" {% if each_dashboard.input_ids_measurements == each_choice %}selected{% endif %}>{{value}}</option>
             {% endfor -%}
             {% for each_choice, value in choices_pid.items() -%}
-            <option value="{{each_choice}}" {% if each_graph.input_ids_measurements == each_choice %}selected{% endif %}>{{value}}</option>
+            <option value="{{each_choice}}" {% if each_dashboard.input_ids_measurements == each_choice %}selected{% endif %}>{{value}}</option>
             {% endfor -%}
           {% else %}
             <option value="">{{_('None Available')}}</option>
@@ -58,7 +58,7 @@
         <div>
           <select class="form-control" id="width" name="width">
             {% for n in range(1, 13) %}
-              <option value="{{n}}"{% if n == each_graph.width %} selected{% endif %}>{{n}}/12</option>
+              <option value="{{n}}"{% if n == each_dashboard.width %} selected{% endif %}>{{n}}/12</option>
             {% endfor %}
           </select>
         </div>
@@ -66,83 +66,83 @@
       <div class="col-auto">
         {{form_base.height.label(class_='control-label')}}
         <div>
-          {{form_base.height(class_='form-control', value=each_graph.height)}}
+          {{form_base.height(class_='form-control', value=each_dashboard.height)}}
         </div>
       </div>
       <div class="col-auto">
         {{form_gauge.max_measure_age.label(class_='control-label')}}
         <div>
-          {{form_gauge.max_measure_age(class_='form-control', value=each_graph.max_measure_age)}}
+          {{form_gauge.max_measure_age(class_='form-control', value=each_dashboard.max_measure_age)}}
         </div>
       </div>
       <div class="col-auto">
         {{form_base.refresh_duration.label(class_='control-label')}}
         <div>
-          {{form_base.refresh_duration(class_='form-control', value=each_graph.refresh_duration)}}
+          {{form_base.refresh_duration(class_='form-control', value=each_dashboard.refresh_duration)}}
         </div>
       </div>
       <div class="col-auto">
         {{form_gauge.y_axis_min.label(class_='control-label')}}
         <div>
-          {{form_gauge.y_axis_min(class_='form-control', value=each_graph.y_axis_min)}}
+          {{form_gauge.y_axis_min(class_='form-control', value=each_dashboard.y_axis_min)}}
         </div>
       </div>
       <div class="col-auto">
         {{form_gauge.y_axis_max.label(class_='control-label')}}
         <div>
-          {{form_gauge.y_axis_max(class_='form-control', value=each_graph.y_axis_max)}}
+          {{form_gauge.y_axis_max(class_='form-control', value=each_dashboard.y_axis_max)}}
         </div>
       </div>
       <div class="form-check form-check-inline">
-        <input class="form-check-input" id="enable_timestamp" name="enable_timestamp" type="checkbox" value="y"{% if each_graph.enable_timestamp %} checked{% endif %}>
+        <input class="form-check-input" id="enable_timestamp" name="enable_timestamp" type="checkbox" value="y"{% if each_dashboard.enable_timestamp %} checked{% endif %}>
         {{form_gauge.enable_timestamp.label(class_='control-label')}}
       </div>
     </div>
 
-        {% if each_graph.graph_type == 'gauge_angular' %}
+        {% if each_dashboard.graph_type == 'gauge_angular' %}
 
-        {% for n in range(colors_gauge_angular[each_graph.unique_id]|length) %}
+        {% for n in range(colors_gauge_angular[each_dashboard.unique_id]|length) %}
           {% set index = '{0:0>2}'.format(n) %}
 
     <div class="form-row">
       <div class="col-auto">
         <label class="control-label" for="color_low_number{{index}}">[{{n}}] Low</label>
         <div>
-          <input class="form-control" id="color_low_number{{index}}" name="color_low_number{{index}}" type="number" value="{{colors_gauge_angular[each_graph.unique_id][n]['low']}}">
+          <input class="form-control" id="color_low_number{{index}}" name="color_low_number{{index}}" type="number" value="{{colors_gauge_angular[each_dashboard.unique_id][n]['low']}}">
         </div>
       </div>
       <div class="col-auto">
         <label class="control-label" for="color_high_number{{index}}">[{{n}}] High</label>
         <div>
-          <input class="form-control" id="color_high_number{{index}}" name="color_high_number{{index}}" type="number" value="{{colors_gauge_angular[each_graph.unique_id][n]['high']}}">
+          <input class="form-control" id="color_high_number{{index}}" name="color_high_number{{index}}" type="number" value="{{colors_gauge_angular[each_dashboard.unique_id][n]['high']}}">
         </div>
       </div>
       <div class="col-auto">
         <label class="control-label" for="color_hex_number{{index}}">[{{n}}] Color</label>
         <div>
-          <input id="color_hex_number{{index}}" name="color_hex_number{{index}}" placeholder="#000000" type="color" value="{{colors_gauge_angular[each_graph.unique_id][n]['hex']}}">
+          <input id="color_hex_number{{index}}" name="color_hex_number{{index}}" placeholder="#000000" type="color" value="{{colors_gauge_angular[each_dashboard.unique_id][n]['hex']}}">
         </div>
       </div>
     </div>
 
         {% endfor %}
 
-        {% elif each_graph.graph_type == 'gauge_solid' %}
+        {% elif each_dashboard.graph_type == 'gauge_solid' %}
 
-        {% for n in range(colors_gauge_solid_form[each_graph.unique_id]|length) %}
+        {% for n in range(colors_gauge_solid_form[each_dashboard.unique_id]|length) %}
           {% set index = '{0:0>2}'.format(n) %}
 
     <div class="form-row">
       <div class="col-auto">
         <label class="control-label" for="color_stop_number{{index}}">[{{n}}] Stop</label>
         <div>
-          <input class="form-control" id="color_stop_number{{index}}" name="color_stop_number{{index}}" type="number" value="{{colors_gauge_solid_form[each_graph.unique_id][n]['stop']}}">
+          <input class="form-control" id="color_stop_number{{index}}" name="color_stop_number{{index}}" type="number" value="{{colors_gauge_solid_form[each_dashboard.unique_id][n]['stop']}}">
         </div>
       </div>
       <div class="col-auto">
         <label class="control-label" for="color_hex_number{{index}}">[{{n}}] Color</label>
         <div>
-          <input id="color_hex_number{{index}}" name="color_hex_number{{index}}" placeholder="#000000" type="color" value="{{colors_gauge_solid_form[each_graph.unique_id][n]['hex']}}">
+          <input id="color_hex_number{{index}}" name="color_hex_number{{index}}" placeholder="#000000" type="color" value="{{colors_gauge_solid_form[each_dashboard.unique_id][n]['hex']}}">
         </div>
       </div>
     </div>
