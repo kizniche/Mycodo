@@ -3,6 +3,7 @@
 ### Bugfixes
 
  - Fix authentication issue with Remote Administration
+ - Fix dependency issue with ADS1256 module
 
 
 ## 6.4.3 (2018-10-13)

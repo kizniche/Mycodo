@@ -2,9 +2,9 @@
 """ flask views that deal with user authentication """
 import json
 import logging
-import socket
 
 import flask_login
+from flask import jsonify
 from flask import redirect
 from flask import render_template
 from flask import request
@@ -12,6 +12,7 @@ from flask import url_for
 from flask.blueprints import Blueprint
 
 from mycodo.databases.models import DisplayOrder
+from mycodo.databases.models import Input
 from mycodo.databases.models import Remote
 from mycodo.mycodo_flask.forms import forms_authentication
 from mycodo.mycodo_flask.routes_static import inject_variables
@@ -106,3 +107,18 @@ def remote_setup():
                            display_order=display_order,
                            remote_hosts=remote_hosts,
                            host_auth=host_auth)
+
+
+@blueprint.route('/remote_get_inputs/')
+@flask_login.login_required
+def remote_get_inputs():
+    """Checks authentication for remote admin"""
+    inputs = Input.query.all()
+    return_inputs = {}
+    for each_input in inputs:
+        return_inputs[each_input.id] = {}
+        return_inputs[each_input.id]['name'] = each_input.name
+        return_inputs[each_input.id]['device'] = each_input.device
+        return_inputs[each_input.id]['is_activated'] = each_input.is_activated
+
+    return jsonify(return_inputs)

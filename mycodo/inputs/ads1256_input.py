@@ -12,6 +12,7 @@ INPUT_INFORMATION = {
     'options_disabled': ['interface'],
 
     'dependencies_module': [
+        ('internal', 'file-exists /usr/local/include/bcm2835.h', 'bcm2835'),
         ('pip-pypi', 'RPi.GPIO', 'RPi.GPIO'),
         ('pip-git', 'pyadda', 'git://github.com/jaxbulsara/pyadda.git#egg=pyadda')
     ],

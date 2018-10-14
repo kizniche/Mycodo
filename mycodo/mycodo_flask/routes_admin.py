@@ -155,7 +155,7 @@ def install_dependencies(dependencies):
         dep.wait()
         now = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         with open(DEPENDENCY_LOG_FILE, 'a') as f:
-            f.write("\n[{time}] Successfully installed {dep}\n\n".format(
+            f.write("\n[{time}] End install of {dep}\n\n".format(
                 time=now, dep=each_dep[0]))
 
     cmd = "{pth}/mycodo/scripts/mycodo_wrapper update_permissions" \
