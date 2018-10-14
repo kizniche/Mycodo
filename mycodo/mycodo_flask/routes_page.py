@@ -275,6 +275,8 @@ def page_notes():
                         host=socket.gethostname().replace(' ', ''),
                         dt=datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S"))
                 )
+        elif form_note_show.notes_import_upload.data:
+            utils_notes.import_notes(form_note_show)
         else:
             if form_tag_add.tag_add.data:
                 utils_notes.tag_add(form_tag_add)

@@ -4,14 +4,17 @@ import glob
 import logging
 import socket
 import time
+import uuid
 import zipfile
 from datetime import datetime
 
 import io
 import os
+import shutil
 from flask import flash
 from flask import url_for
 from flask_babel import gettext
+from werkzeug.utils import secure_filename
 
 from mycodo.config import INSTALL_DIRECTORY
 from mycodo.config import PATH_NOTE_ATTACHMENTS
@@ -399,13 +402,21 @@ def export_notes(form):
         cw = csv.writer(csv_file, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
         cw.writerow(['ID', 'UUID', 'Time', 'Name', 'Note', 'Tags', 'Files'])
         for each_note in notes:
-            tags = []
+            tags = {}
+            list_tag_id_names = []
             for each_tag_id in each_note.tags.split(','):
-                each_tag = NoteTags.query.filter(
+                tag_name = NoteTags.query.filter(
                     NoteTags.unique_id == each_tag_id).first().name
-                tags.append(each_tag)
-            cw.writerow([each_note.id, each_note.unique_id, each_note.date_time,
-                         each_note.name, each_note.note, ','.join(tags), each_note.files])
+                tags[each_tag_id] = tag_name
+                list_tag_id_names.append('{},{}'.format(each_tag_id, tag_name))
+
+            cw.writerow([each_note.id,
+                         each_note.unique_id,
+                         each_note.date_time.strftime("%Y-%m-%d %H:%M:%S"),
+                         each_note.name,
+                         each_note.note,
+                         ';'.join(list_tag_id_names),
+                         each_note.files])
             attach_files.append(each_note.files.split(','))
 
     # Zip csv file and attachments
@@ -426,6 +437,123 @@ def export_notes(form):
         for each_error in error:
             flash('{}'.format(each_error), 'error')
         return notes, None
+
+
+def import_notes(form):
+    """
+    Receive a zip file containing a CSV file and note attachments
+    """
+    action = '{action} {controller}'.format(
+        action=gettext("Import"),
+        controller=gettext("Notes"))
+    error = []
+
+    upload_folder = os.path.join(INSTALL_DIRECTORY, 'upload')
+    tmp_folder = os.path.join(upload_folder, 'mycodo_notes_tmp')
+    full_path = None
+
+    try:
+        if not form.notes_import_file.data:
+            error.append('No file present')
+        elif form.notes_import_file.data.filename == '':
+            error.append('No file name')
+
+        if not error:
+            # Save file to upload directory
+            filename = secure_filename(
+                form.notes_import_file.data.filename)
+            full_path = os.path.join(tmp_folder, filename)
+            assure_path_exists(upload_folder)
+            assure_path_exists(tmp_folder)
+            form.notes_import_file.data.save(
+                os.path.join(tmp_folder, filename))
+
+            # Unzip file
+            try:
+                zip_ref = zipfile.ZipFile(full_path, 'r')
+                zip_ref.extractall(tmp_folder)
+                zip_ref.close()
+            except Exception as err:
+                logger.exception(1)
+                error.append("Exception while extracting zip file: "
+                             "{err}".format(err=err))
+
+        if not error:
+            found_csv = False
+            for each_file in os.listdir(tmp_folder):
+                if each_file.endswith('_notes_exported.csv') and not found_csv:
+                    found_csv = True
+                    count_notes = 0
+                    count_notes_skipped = 0
+                    count_attach = 0
+                    logger.error(each_file)
+
+                    file_csv = os.path.join(tmp_folder, each_file)
+                    path_attachments = os.path.join(tmp_folder, 'attachments')
+
+                    with open(file_csv, 'r' ) as theFile:
+                        reader = csv.DictReader(theFile)
+                        for line in reader:
+                            if not Notes.query.filter(Notes.unique_id == line['UUID']).count():
+                                count_notes += 1
+
+                                new_note = Notes()
+                                new_note.unique_id = line['UUID']
+                                new_note.date_time = datetime.strptime(line['Time'], '%Y-%m-%d %H:%M:%S')
+                                new_note.name = line['Name']
+                                new_note.note = line['Note']
+
+                                tag_ids = []
+                                tags = {}
+                                for each_tag in line['Tags'].split(';'):
+                                    tags[each_tag.split(',')[0]] = each_tag.split(',')[1]
+                                    tag_ids.append(each_tag.split(',')[0])
+
+                                for each_tag_id, each_tag_name in tags.items():
+                                    if (not NoteTags.query.filter(NoteTags.unique_id == each_tag_id).count() and
+                                            not NoteTags.query.filter(NoteTags.name == each_tag_name).count()):
+                                        new_tag = NoteTags()
+                                        new_tag.unique_id = each_tag_id
+                                        new_tag.name = each_tag_name
+                                        new_tag.save()
+
+                                    elif (not NoteTags.query.filter(NoteTags.unique_id == each_tag_id).count() and
+                                            NoteTags.query.filter(NoteTags.name == each_tag_name).count()):
+                                        new_tag = NoteTags()
+                                        new_tag.unique_id = each_tag_id
+                                        new_tag.name = each_tag_name + str(uuid.uuid4())[:8]
+                                        new_tag.save()
+
+                                new_note.tags = ','.join(tag_ids)
+                                new_note.files = line['Files']
+                                new_note.save()
+
+                                for each_file in line['Files'].split(','):
+                                    count_attach += 1
+                                    os.rename(os.path.join(path_attachments, each_file),
+                                              os.path.join(PATH_NOTE_ATTACHMENTS, each_file))
+                            else:
+                                count_notes_skipped += 1
+
+                    if (count_notes + count_attach) == 0:
+                        error.append("0 imported, {notes} skipped".format(
+                            notes=count_notes_skipped))
+                    else:
+                        flash("Imported {notes} notes and {attach} "
+                              "attachments".format(notes=count_notes,
+                                                   attach=count_attach),
+                              "success")
+
+            if not found_csv:
+                error.append("Cannot import notes: Could not find CSV file in ZIP archive.")
+
+    except Exception as err:
+        error.append("Exception: {}".format(err))
+    finally:
+        if os.path.isdir(tmp_folder):
+            shutil.rmtree(tmp_folder)  # Delete tmp directory
+
+    flash_success_errors(error, action, url_for('routes_page.page_export'))
 
 
 def datetime_time_to_utc(datetime_time):

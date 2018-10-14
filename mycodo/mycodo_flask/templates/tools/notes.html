@@ -13,7 +13,7 @@
 
   <div style="clear: both; padding: 1em 0;"></div>
 
-  <h3>{{_('Note Tags')}}</h3>
+  <h3>{{_('Manage')}} {{_('Tags')}}</h3>
 
   <p>Tags allow categorization of notes. Each note may have one or more tags. A tag may be selected to display all the notes associated with it on a graph.</p>
 
@@ -70,7 +70,7 @@
 
   <div style="clear: both; padding: 1em 0;"></div>
 
-  <h3>{{_('Add Note')}}</h3>
+  <h3>{{_('Create')}} {{_('Notes')}}</h3>
 
   <form method="post" action="/notes" enctype=multipart/form-data>
   {{form_note_add.csrf_token}}
@@ -135,7 +135,23 @@
 
   <div style="clear: both; padding: 1em 0;"></div>
 
-  <h3>{{_('Search Notes')}}</h3>
+  <h3>{{_('Import')}} {{_('Notes')}}</h3>
+
+  <form method="post" action="/notes" enctype=multipart/form-data>
+  {{form_note_show.csrf_token}}
+  <div class="form-inline">
+    <div class="form-group fileinput fileinput-new" data-provides="fileinput">
+      <span class="btn btn-default btn-file"><input id="notes_import_file" name="notes_import_file" type="file" /></span>
+    </div>
+    <div class="form-group">
+      {{form_note_show.notes_import_upload(class_='btn btn-primary')}}
+    </div>
+  </div>
+  </form>
+
+  <div style="clear: both; padding: 1em 0;"></div>
+
+  <h3>{{_('Search')}} {{_('Notes')}}</h3>
 
   <p>
     Leave all fields empty and click Show Notes to see all notes.
@@ -201,7 +217,7 @@
 
  {% if notes %}
 
-  <p>Showing {{number_displayed_notes[0]}} of {{number_displayed_notes[1]}} notes</p>
+  <p>{{_('Found')}}: {{number_displayed_notes[0]}}/{{number_displayed_notes[1]}}</p>
 
  <div class="table-responsive">
   <table class="table">

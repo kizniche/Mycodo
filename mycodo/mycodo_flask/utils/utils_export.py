@@ -167,7 +167,7 @@ def export_influxdb(form):
 
 def import_settings(form):
     """
-    Receive a zip file contatining a Mycodo settings database that was
+    Receive a zip file containing a Mycodo settings database that was
     exported with export_settings(), then back up the current Mycodo settings
     database and implement the one form the zip in its's place.
     """
