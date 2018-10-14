@@ -39,6 +39,9 @@ class Camera(CRUDMixin, db.Model):
     timelapse_interval = db.Column(db.Float, default=None)
     timelapse_next_capture = db.Column(db.Float, default=None)
     timelapse_capture_number = db.Column(db.Integer, default=None)
+    path_still = db.Column(db.Text, default='')
+    path_timelapse = db.Column(db.Text, default='')
+    path_video = db.Column(db.Text, default='')
 
     def __repr__(self):
         return "<{cls}(id={s.id}, name='{s.name}', library='{s.library}')>".format(s=self, cls=self.__class__.__name__)

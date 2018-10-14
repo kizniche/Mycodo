@@ -2,7 +2,8 @@
 
 ### Features
 
- - Add enhanced ability to reorder Input, Output, Math, PID, and Conditional controllers
+ - Add enhanced reorder functionality for Input, Output, Math, PID, and Conditional controllers
+ - Add ability to set camera still, timelapse, and video file save locations ([#498](https://github.com/kizniche/mycodo/issues/498))
 
 ### Bugfixes
 

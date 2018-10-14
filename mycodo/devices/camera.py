@@ -38,13 +38,19 @@ def camera_record(record_type, unique_id, duration_sec=None, tmp_filename=None):
     camera_path = assure_path_exists(
         os.path.join(root_path, '{uid}'.format(uid=settings.unique_id)))
     if record_type == 'photo':
-        save_path = assure_path_exists(os.path.join(camera_path, 'still'))
+        if settings.path_still != '':
+            save_path = settings.path_still
+        else:
+            save_path = assure_path_exists(os.path.join(camera_path, 'still'))
         filename = 'Still-{cam_id}-{cam}-{ts}.jpg'.format(
             cam_id=settings.id,
             cam=settings.name,
             ts=timestamp).replace(" ", "_")
     elif record_type == 'timelapse':
-        save_path = assure_path_exists(os.path.join(camera_path, 'timelapse'))
+        if settings.path_timelapse != '':
+            save_path = settings.path_timelapse
+        else:
+            save_path = assure_path_exists(os.path.join(camera_path, 'timelapse'))
         start = datetime.datetime.fromtimestamp(
             settings.timelapse_start_time).strftime("%Y-%m-%d_%H-%M-%S")
         filename = 'Timelapse-{cam_id}-{cam}-{st}-img-{cn:05d}.jpg'.format(
@@ -53,18 +59,22 @@ def camera_record(record_type, unique_id, duration_sec=None, tmp_filename=None):
             st=start,
             cn=settings.timelapse_capture_number).replace(" ", "_")
     elif record_type == 'video':
-        save_path = assure_path_exists(os.path.join(camera_path, 'video'))
+        if settings.path_video != '':
+            save_path = settings.path_video
+        else:
+            save_path = assure_path_exists(os.path.join(camera_path, 'video'))
         filename = 'Video-{cam}-{ts}.h264'.format(
             cam=settings.name,
             ts=timestamp).replace(" ", "_")
     else:
         return
 
+    assure_path_exists(save_path)
+
     if tmp_filename:
         filename = tmp_filename
 
     path_file = os.path.join(save_path, filename)
-
 
     # Turn on output, if configured
     if settings.output_id:
@@ -76,7 +86,6 @@ def camera_record(record_type, unique_id, duration_sec=None, tmp_filename=None):
     # capturing an image.
     if settings.output_duration:
         time.sleep(settings.output_duration)
-
 
     if settings.library == 'picamera':
         # Try 5 times to access the pi camera (in case another process is accessing it)

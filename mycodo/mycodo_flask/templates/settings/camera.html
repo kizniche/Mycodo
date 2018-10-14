@@ -115,6 +115,24 @@
             {{form_camera.output_duration(class_='form-control', value=each_camera.output_duration)}}
            </div>
         </div>
+        <div class="col-auto">
+          {{form_camera.path_still.label(class_='control-label')}}
+          <div>
+            {{form_camera.path_still(class_='form-control', value=each_camera.path_still, **{'title':_('Path to save still image files. Leave blank to use default location.')})}}
+           </div>
+        </div>
+        <div class="col-auto">
+          {{form_camera.path_timelapse.label(class_='control-label')}}
+          <div>
+            {{form_camera.path_timelapse(class_='form-control', value=each_camera.path_timelapse, **{'title':_('Path to save timelapse image files. Leave blank to use default location.')})}}
+           </div>
+        </div>
+        <div class="col-auto">
+          {{form_camera.path_video.label(class_='control-label')}}
+          <div>
+            {{form_camera.path_video(class_='form-control', value=each_camera.path_video, **{'title':_('Path to save video files. Leave blank to use default location.')})}}
+           </div>
+        </div>
       </div>
 
       <div class="row">
