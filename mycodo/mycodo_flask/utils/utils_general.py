@@ -703,7 +703,7 @@ def get_camera_image_info():
             latest_img_tl_ts, latest_img_tl)
 
 
-def return_dependencies(device_type, dep_type='unmet'):
+def return_dependencies(device_type):
     unmet_deps = []
     met_deps = False
 
@@ -721,7 +721,7 @@ def return_dependencies(device_type, dep_type='unmet'):
             for each_device, each_dict in each_section[device_type].items():
                 if each_device == 'dependencies_module':
                     for (install_type, package, install_id) in each_dict:
-                        entry = (package, '{0} {1}'.format(install_type, install_id))
+                        entry = (package, '{0} {1}'.format(install_type, install_id), install_type, install_id)
                         if install_type in ['pip-pypi', 'pip-git']:
                             try:
                                 module = importlib.util.find_spec(package)
@@ -764,10 +764,9 @@ def return_dependencies(device_type, dep_type='unmet'):
                     if not each_dict:
                         met_deps = True
 
-    if dep_type == 'unmet':
-        return unmet_deps
-    else:
-        return met_deps
+    return unmet_deps, met_deps
+
+
 
 
 def use_unit_generate(input_dev, output, math):

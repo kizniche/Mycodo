@@ -193,9 +193,9 @@ def admin_dependencies(device):
     form_dependencies = forms_dependencies.Dependencies()
 
     if device != '0':
-        device_unmet_dependencies = utils_general.return_dependencies(device)
+        device_unmet_dependencies, _ = utils_general.return_dependencies(device)
     elif form_dependencies.device.data:
-        device_unmet_dependencies = utils_general.return_dependencies(form_dependencies.device.data)
+        device_unmet_dependencies, _ = utils_general.return_dependencies(form_dependencies.device.data)
     else:
         device_unmet_dependencies = []
 
@@ -240,14 +240,16 @@ def admin_dependencies(device):
                         device_name = each_val
 
             # Determine if there are any unmet dependencies
+            dep_unmet, dep_met = utils_general.return_dependencies(each_device)
+
             unmet_dependencies.update({
-                each_device: utils_general.return_dependencies(each_device)
+                each_device: dep_unmet
             })
-            if utils_general.return_dependencies(each_device):
+            if dep_unmet:
                 unmet_exist = True
 
             # Determine if there are any met dependencies
-            if utils_general.return_dependencies(each_device, dep_type='met'):
+            if dep_met:
                 if each_device not in met_dependencies:
                     met_dependencies.append(each_device)
                     met_exist = True

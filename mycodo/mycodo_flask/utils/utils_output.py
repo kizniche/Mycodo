@@ -34,10 +34,10 @@ def output_add(form_add):
         controller=gettext("Output"))
     error = []
 
-    unmet_deps = return_dependencies(form_add.output_type.data)
-    if unmet_deps:
+    dep_unmet, _ = return_dependencies(form_add.output_type.data)
+    if dep_unmet:
         list_unmet_deps = []
-        for each_dep in unmet_deps:
+        for each_dep in dep_unmet:
             list_unmet_deps.append(each_dep[0])
         error.append("The {dev} device you're trying to add has unmet dependencies: {dep}".format(
             dev=form_add.output_type.data, dep=', '.join(list_unmet_deps)))
@@ -84,7 +84,7 @@ def output_add(form_add):
         error.append(error_msg)
     flash_success_errors(error, action, url_for('routes_page.page_output'))
 
-    if unmet_deps:
+    if dep_unmet:
         return 1
 
 

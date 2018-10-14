@@ -35,10 +35,10 @@ def math_add(form_add_math):
         controller=gettext("Math"))
     error = []
 
-    unmet_deps = return_dependencies(form_add_math.math_type.data)
-    if unmet_deps:
+    dep_unmet, _ = return_dependencies(form_add_math.math_type.data)
+    if dep_unmet:
         list_unmet_deps = []
-        for each_dep in unmet_deps:
+        for each_dep in dep_unmet:
             list_unmet_deps.append(each_dep[0])
         error.append("The {dev} device you're trying to add has unmet dependencies: {dep}".format(
             dev=form_add_math.math_type.data, dep=', '.join(list_unmet_deps)))
@@ -85,7 +85,7 @@ def math_add(form_add_math):
     else:
         flash_form_errors(form_add_math)
 
-    if unmet_deps:
+    if dep_unmet:
         return 1
 
 

@@ -58,12 +58,12 @@ def input_add(form_add, request_form):
         error.append("Invalid input string (must be a comma-separated string)")
 
     if current_app.config['TESTING']:
-        unmet_deps = False
+        dep_unmet = False
     else:
-        unmet_deps = return_dependencies(input_name)
-        if unmet_deps:
+        dep_unmet, _ = return_dependencies(input_name)
+        if dep_unmet:
             list_unmet_deps = []
-            for each_dep in unmet_deps:
+            for each_dep in dep_unmet:
                 list_unmet_deps.append(each_dep[0])
             error.append("The {dev} device you're trying to add has unmet dependencies: {dep}".format(
                 dev=input_name, dep=', '.join(list_unmet_deps)))
@@ -282,7 +282,7 @@ def input_add(form_add, request_form):
     else:
         flash_form_errors(form_add)
 
-    if unmet_deps:
+    if dep_unmet:
         return 1
 
 
