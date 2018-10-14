@@ -378,45 +378,54 @@ def show_notes(form):
 
 
 def export_notes(form):
+    """
+    Convert note table entries to CSV file, then zip CSV file and note attachments
+    :param form: wtforms form object
+    :return:
+    """
     error = []
     attach_files = []
 
     error, notes = notes_filter(error, form)
 
-    for each_error in error:
-        flash('Error: {}'.format(each_error), 'error')
+    if notes.count() == 0:
+        error.append("Cannot Export Notes: No notes were found with the current search filters.")
 
     date_time_now = datetime.now().strftime("%Y-%m-%d--%H-%M-%S")
     file_name = '{time}_{host}_notes_exported.csv'.format(time=date_time_now, host=socket.gethostname())
     full_path_csv = os.path.join('/var/tmp/', file_name)
 
+    with open(full_path_csv, mode='w') as csv_file:
+        cw = csv.writer(csv_file, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
+        cw.writerow(['ID', 'UUID', 'Time', 'Name', 'Note', 'Tags', 'Files'])
+        for each_note in notes:
+            tags = []
+            for each_tag_id in each_note.tags.split(','):
+                each_tag = NoteTags.query.filter(
+                    NoteTags.unique_id == each_tag_id).first().name
+                tags.append(each_tag)
+            cw.writerow([each_note.id, each_note.unique_id, each_note.date_time,
+                         each_note.name, each_note.note, ','.join(tags), each_note.files])
+            attach_files.append(each_note.files.split(','))
+
+    # Zip csv file and attachments
+    data = io.BytesIO()
+    with zipfile.ZipFile(data, mode='w') as z:
+        z.write(full_path_csv, file_name)
+        for each_file_set in attach_files:
+            for each_file in each_file_set:
+                path_attachment = os.path.join(PATH_NOTE_ATTACHMENTS, each_file)
+                z.write(path_attachment, os.path.join('/attachments', each_file))
+    data.seek(0)
+
+    os.remove(full_path_csv)
+
     if not error:
-        with open(full_path_csv, mode='w') as csv_file:
-            cw = csv.writer(csv_file, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
-            cw.writerow(['ID', 'UUID', 'Time', 'Name', 'Note', 'Tags', 'Files'])
-            for each_note in notes:
-                tags = []
-                for each_tag_id in each_note.tags.split(','):
-                    each_tag = NoteTags.query.filter(
-                        NoteTags.unique_id == each_tag_id).first().name
-                    tags.append(each_tag)
-                cw.writerow([each_note.id, each_note.unique_id, each_note.date_time,
-                             each_note.name, each_note.note, ','.join(tags), each_note.files])
-                attach_files.append(each_note.files.split(','))
-
-        # Zip csv file and attachments
-        data = io.BytesIO()
-        with zipfile.ZipFile(data, mode='w') as z:
-            z.write(full_path_csv, file_name)
-            for each_file_set in attach_files:
-                for each_file in each_file_set:
-                    path_attachment = os.path.join(PATH_NOTE_ATTACHMENTS, each_file)
-                    z.write(path_attachment, os.path.join('/attachments', each_file))
-        data.seek(0)
-
-        os.remove(full_path_csv)
-
-        return data
+        return notes, data
+    else:
+        for each_error in error:
+            flash('{}'.format(each_error), 'error')
+        return notes, None
 
 
 def datetime_time_to_utc(datetime_time):

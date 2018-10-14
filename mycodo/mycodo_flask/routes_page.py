@@ -262,18 +262,19 @@ def page_notes():
         if form_note_show.notes_show.data:
             notes = utils_notes.show_notes(form_note_show)
         elif form_note_show.notes_export.data:
-            data = utils_notes.export_notes(form_note_show)
-            # Send zip file to user
-            return send_file(
-                data,
-                mimetype='application/zip',
-                as_attachment=True,
-                attachment_filename=
-                'Mycodo_Notes_{mv}_{host}_{dt}.zip'.format(
-                    mv=MYCODO_VERSION,
-                    host=socket.gethostname().replace(' ', ''),
-                    dt=datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S"))
-            )
+            notes, data = utils_notes.export_notes(form_note_show)
+            if data:
+                # Send zip file to user
+                return send_file(
+                    data,
+                    mimetype='application/zip',
+                    as_attachment=True,
+                    attachment_filename=
+                    'Mycodo_Notes_{mv}_{host}_{dt}.zip'.format(
+                        mv=MYCODO_VERSION,
+                        host=socket.gethostname().replace(' ', ''),
+                        dt=datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S"))
+                )
         else:
             if form_tag_add.tag_add.data:
                 utils_notes.tag_add(form_tag_add)
