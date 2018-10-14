@@ -1,15 +1,20 @@
 # -*- coding: utf-8 -*-
+import csv
 import glob
 import logging
+import socket
 import time
+import zipfile
 from datetime import datetime
 
+import io
 import os
 from flask import flash
 from flask import url_for
 from flask_babel import gettext
 
 from mycodo.config import INSTALL_DIRECTORY
+from mycodo.config import PATH_NOTE_ATTACHMENTS
 from mycodo.databases import set_uuid
 from mycodo.databases.models import NoteTags
 from mycodo.databases.models import Notes
@@ -126,13 +131,12 @@ def note_add(form):
     if form.files.data:
         new_note.unique_id = set_uuid()
         install_dir = os.path.abspath(INSTALL_DIRECTORY)
-        note_file_directory = os.path.join(install_dir, 'note_attachments')
-        assure_path_exists(note_file_directory)
+        assure_path_exists(PATH_NOTE_ATTACHMENTS)
         filename_list = []
         for each_file in form.files.raw_data:
             file_name = "{pre}_{name}".format(
                 pre=new_note.unique_id, name=each_file.filename)
-            file_save_path = os.path.join(note_file_directory, file_name)
+            file_save_path = os.path.join(PATH_NOTE_ATTACHMENTS, file_name)
             each_file.save(file_save_path)
             filename_list.append(file_name)
         new_note.files = ",".join(filename_list)
@@ -179,9 +183,7 @@ def note_mod(form):
         error.append("Error while parsing date/time")
 
     if form.files.data:
-        install_dir = os.path.abspath(INSTALL_DIRECTORY)
-        note_file_directory = os.path.join(install_dir, 'note_attachments')
-        assure_path_exists(note_file_directory)
+        assure_path_exists(PATH_NOTE_ATTACHMENTS)
         if mod_note.files:
             filename_list = mod_note.files.split(",")
         else:
@@ -189,7 +191,7 @@ def note_mod(form):
         for each_file in form.files.raw_data:
             file_name = "{pre}_{name}".format(
                 pre=mod_note.unique_id, name=each_file.filename)
-            file_save_path = os.path.join(note_file_directory, file_name)
+            file_save_path = os.path.join(PATH_NOTE_ATTACHMENTS, file_name)
             each_file.save(file_save_path)
             filename_list.append(file_name)
         mod_note.files = ",".join(filename_list)
@@ -230,12 +232,9 @@ def file_rename(form):
 
     if mod_note.files:
         try:
-            install_dir = os.path.abspath(INSTALL_DIRECTORY)
-            note_file_directory = os.path.join(
-                install_dir, 'note_attachments')
             full_file_path = os.path.join(
-                note_file_directory, form.file_selected.data)
-            new_file_path = os.path.join(note_file_directory, new_file_name)
+                PATH_NOTE_ATTACHMENTS, form.file_selected.data)
+            new_file_path = os.path.join(PATH_NOTE_ATTACHMENTS, new_file_name)
             os.rename(full_file_path, new_file_path)
         except:
             error.append("Could not remove file from filesystem")
@@ -268,9 +267,7 @@ def file_del(form):
 
     if mod_note.files:
         try:
-            install_dir = os.path.abspath(INSTALL_DIRECTORY)
-            note_file_directory = os.path.join(install_dir, 'note_attachments')
-            full_file_path = os.path.join(note_file_directory, form.file_selected.data)
+            full_file_path = os.path.join(PATH_NOTE_ATTACHMENTS, form.file_selected.data)
             os.remove(full_file_path)
         except:
             error.append("Could not remove file from filesystem")
@@ -295,10 +292,8 @@ def note_del(form):
         Notes.unique_id == form.note_unique_id.data).first()
 
     if note.files:
-        install_dir = os.path.abspath(INSTALL_DIRECTORY)
-        note_file_directory = os.path.join(install_dir, 'note_attachments')
         delete_string = "{dir}/{id}*".format(
-            dir=note_file_directory, id=form.note_unique_id.data)
+            dir=PATH_NOTE_ATTACHMENTS, id=form.note_unique_id.data)
         for filename in glob.glob(delete_string):
             os.remove(filename)
 
@@ -308,11 +303,8 @@ def note_del(form):
     flash_success_errors(error, action, url_for('routes_page.page_notes'))
 
 
-def show_notes(form):
-    error = []
-
+def notes_filter(error, form):
     notes = Notes.query
-
     if form.filter_names.data:
         if '*' in form.filter_names.data or '_' in form.filter_names.data:
             looking_for = form.filter_names.data.replace('_', '__') \
@@ -371,11 +363,60 @@ def show_notes(form):
         elif form.sort_by.data == 'note':
             notes = notes.order_by(Notes.note.asc())
 
+    return error, notes
+
+
+def show_notes(form):
+    error = []
+    error, notes = notes_filter(error, form)
+
     for each_error in error:
         flash('Error: {}'.format(each_error), 'error')
 
     if not error:
         return notes
+
+
+def export_notes(form):
+    error = []
+    attach_files = []
+
+    error, notes = notes_filter(error, form)
+
+    for each_error in error:
+        flash('Error: {}'.format(each_error), 'error')
+
+    date_time_now = datetime.now().strftime("%Y-%m-%d--%H-%M-%S")
+    file_name = '{time}_{host}_notes_exported.csv'.format(time=date_time_now, host=socket.gethostname())
+    full_path_csv = os.path.join('/var/tmp/', file_name)
+
+    if not error:
+        with open(full_path_csv, mode='w') as csv_file:
+            cw = csv.writer(csv_file, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
+            cw.writerow(['ID', 'UUID', 'Time', 'Name', 'Note', 'Tags', 'Files'])
+            for each_note in notes:
+                tags = []
+                for each_tag_id in each_note.tags.split(','):
+                    each_tag = NoteTags.query.filter(
+                        NoteTags.unique_id == each_tag_id).first().name
+                    tags.append(each_tag)
+                cw.writerow([each_note.id, each_note.unique_id, each_note.date_time,
+                             each_note.name, each_note.note, ','.join(tags), each_note.files])
+                attach_files.append(each_note.files.split(','))
+
+        # Zip csv file and attachments
+        data = io.BytesIO()
+        with zipfile.ZipFile(data, mode='w') as z:
+            z.write(full_path_csv, file_name)
+            for each_file_set in attach_files:
+                for each_file in each_file_set:
+                    path_attachment = os.path.join(PATH_NOTE_ATTACHMENTS, each_file)
+                    z.write(path_attachment, os.path.join('/attachments', each_file))
+        data.seek(0)
+
+        os.remove(full_path_csv)
+
+        return data
 
 
 def datetime_time_to_utc(datetime_time):

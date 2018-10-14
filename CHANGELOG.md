@@ -4,6 +4,7 @@
 
  - Add enhanced reorder functionality for Input, Output, Math, PID, and Conditional controllers
  - Add ability to set camera still, timelapse, and video file save locations ([#498](https://github.com/kizniche/mycodo/issues/498))
+ - Add ability to export notes and note attachments ([#548](https://github.com/kizniche/mycodo/issues/548))
 
 ### Bugfixes
 

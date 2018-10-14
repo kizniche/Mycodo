@@ -284,6 +284,9 @@ CAMERA_LIBRARIES = [
 ]
 PATH_CAMERAS = os.path.join(INSTALL_DIRECTORY, 'cameras')
 
+# Notes
+PATH_NOTE_ATTACHMENTS = os.path.join(INSTALL_DIRECTORY, 'note_attachments')
+
 # Influx sensor/device measurement database
 INFLUXDB_HOST = 'localhost'
 INFLUXDB_PORT = 8086

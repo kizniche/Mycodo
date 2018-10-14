@@ -73,6 +73,7 @@ class NotesShow(FlaskForm):
     sort_by = SelectField(lazy_gettext('Sort By'), choices=sort_by_choices)
     sort_direction = SelectField(lazy_gettext('Sort Direction'), choices=sort_direction_choices)
     notes_show = SubmitField(lazy_gettext('Show Notes'))
+    notes_export = SubmitField(lazy_gettext('Export Notes'))
 
 
 #

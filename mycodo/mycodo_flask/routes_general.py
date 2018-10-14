@@ -30,6 +30,7 @@ from mycodo.config import INFLUXDB_USER
 from mycodo.config import INSTALL_DIRECTORY
 from mycodo.config import LOG_PATH
 from mycodo.config import PATH_CAMERAS
+from mycodo.config import PATH_NOTE_ATTACHMENTS
 from mycodo.databases.models import Camera
 from mycodo.databases.models import Input
 from mycodo.databases.models import Math
@@ -81,8 +82,7 @@ def page_settings():
 def send_note_attachment(filename):
     """Return a file from the note attachment directory"""
     install_dir = os.path.abspath(INSTALL_DIRECTORY)
-    note_file_directory = os.path.join(install_dir, 'note_attachments')
-    file_path = os.path.join(note_file_directory, filename)
+    file_path = os.path.join(PATH_NOTE_ATTACHMENTS, filename)
     if file_path is not None:
         try:
             return send_file(file_path, as_attachment=True)
