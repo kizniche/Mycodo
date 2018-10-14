@@ -188,4 +188,8 @@ jQuery(document).ready(function($) {
         keepRenderingSort: true
     });
 });
+
+$('#collapseContainerReorderInput').on('shown.bs.collapse', function () {
+  this.scrollIntoView();
+});
 </script>

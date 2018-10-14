@@ -204,4 +204,8 @@ jQuery(document).ready(function($) {
         keepRenderingSort: true
     });
 });
+
+$('#collapseContainerReorderConditional').on('shown.bs.collapse', function () {
+  this.scrollIntoView();
+});
 </script>

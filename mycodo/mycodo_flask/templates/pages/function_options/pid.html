@@ -326,4 +326,8 @@ jQuery(document).ready(function($) {
         keepRenderingSort: true
     });
 });
+
+$('#collapseContainerReorderPID').on('shown.bs.collapse', function () {
+  this.scrollIntoView();
+});
 </script>

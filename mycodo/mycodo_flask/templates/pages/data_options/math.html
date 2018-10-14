@@ -140,4 +140,8 @@ jQuery(document).ready(function($) {
         keepRenderingSort: true
     });
 });
+
+$('#collapseContainerReorderMath').on('shown.bs.collapse', function () {
+  this.scrollIntoView();
+});
 </script>
