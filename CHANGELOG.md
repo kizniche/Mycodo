@@ -1,3 +1,10 @@
+## 6.4.3 (2018-10-13)
+
+### Bugfixes
+
+ - Fix authentication issue introduced in 6.4.2
+
+
 ## 6.4.2 (2018-10-13)
 
 ### Features

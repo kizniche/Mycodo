@@ -204,7 +204,7 @@ def do_login():
 @flask_login.login_required
 def logout():
     """Log out of the web-ui"""
-    user = User.query.filter(User.name == flask_login.current_user).first()
+    user = User.query.filter(User.name == flask_login.current_user.name).first()
     role_name = Role.query.filter(Role.id == user.role_id).first().name
     login_log(user.name,
               role_name,
