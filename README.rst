@@ -61,7 +61,7 @@ over the course of each day. The blue line is the actual recorded
 temperature. The green vertical bars represent how long a heater has
 been activated for every 20-second period. This regulation was achieved
 with minimal tuning, and already displays a very minimal deviation from
-the setpoint (Â±0.5Â° Celsius). Further tuning would reduce this
+the setpoint (±0.5° Celsius). Further tuning would reduce this
 variability further.
 
 Software Features
@@ -72,7 +72,7 @@ Software Features
    own.
 -  Outputs: Manipulate the environment by switching GPIO pins High or
    Low, switching relays, generating PWM signals, email notifications,
-   executing Linux commands, and more.
+   executing linux commands, and more.
 -  PID Controllers: Couple inputs with outputs to create feedback loops
    in order to regulate environmental conditions.
 -  Methods: Change the desired condition over time (useful for reflow
@@ -85,7 +85,7 @@ Software Features
 -  I2C Multiplexer Support: Allow multiple devices/sensors with the same
    I2C address to be used simultaneously.
 -  Camera support: Raspberry Pi Camera and USB cameras, to stream live
-   video (only Pi camera), capture still images and video, and create
+   video (only Pi cam), capture still images and video, and create
    time-lapses.
 -  Web Interface: Access using a web browser on your local network or
    anywhere in the world with an internet connection.
@@ -93,9 +93,9 @@ Software Features
    encryption and authorization standards.
 -  System upgrade: When a new version is released on github, an upgrade
    can be initiated from the web interface.
--  Languages: English, `EspaÃ±ol (Spanish) <#espa%C3%B1ol-spanish>`__,
+-  Languages: English, `Español (Spanish) <#espa%C3%B1ol-spanish>`__,
    `Deutsche (German) <#deutsche-german>`__,
-   `FranÃ§ais (French) <#fran%C3%A7ais-french>`__,
+   `Français (French) <#fran%C3%A7ais-french>`__,
    `Italian <#italian>`__,
    `Portuguese <#portuguese>`__,
    `Russian <#russian>`__, and
@@ -298,9 +298,9 @@ Languages
 ---------
 
 -  Native: English
--  Complete: `EspaÃ±ol (Spanish) <#espa%C3%B1ol-spanish>`__,
+-  Complete: `Español (Spanish) <#espa%C3%B1ol-spanish>`__,
    `Deutsche (German) <#deutsche-german>`__,
-   `FranÃ§ais (French) <#fran%C3%A7ais-french>`__,
+   `Français (French) <#fran%C3%A7ais-french>`__,
    `Italian <#italian>`__,
    `Portuguese <#portuguese>`__,
    `Russian <#russian>`__, and
@@ -322,74 +322,74 @@ The native language used in the software.
 Deutsche (German)
 ~~~~~~~~~~~~~~~~~
 
-Mycodo ist ein automatisiertes Ãœberwachungs- und Regelsystem, das auf
-dem Raspberry Pi (Versionen Zero, 1, 2 und 3) lÃ¤uft.
+Mycodo ist ein automatisiertes Überwachungs- und Regelsystem, das auf
+dem Raspberry Pi (Versionen Zero, 1, 2 und 3) läuft.
 
-UrsprÃ¼nglich zur Kultivierung von essbaren Pilzen entwickelt, hat Mycodo
-die FÃ¤higkeit, viel mehr zu tun, einschlieÃŸlich der Kultivierung von
+Ursprünglich zur Kultivierung von essbaren Pilzen entwickelt, hat Mycodo
+die Fähigkeit, viel mehr zu tun, einschließlich der Kultivierung von
 Pflanzen, Kultivierung von Mikroorganismen, Aufrechterhaltung der
-Imkerei-HomÃ¶ostase, Inkubation von Tieren und Eiern, Aufrechterhaltung
-aquatischer Systeme, Alterung von KÃ¤se, Fermentierung von Lebensmitteln
+Imkerei-Homöostase, Inkubation von Tieren und Eiern, Aufrechterhaltung
+aquatischer Systeme, Alterung von Käse, Fermentierung von Lebensmitteln
 und Tabak, Kochen Essen (sous-vide) und mehr.
 
 Das System umfasst ein Backend (Daemon) und ein Frontend
-(Benutzerschnittstelle). Das Backend fÃ¼hrt Messungen von Sensoren und
-GerÃ¤ten durch und koordiniert dann verschiedene Reaktionen auf diese
-Messungen, einschlieÃŸlich der FÃ¤higkeit, AusgÃ¤nge (Relais, PWM,
-drahtlose AusgÃ¤nge) zu modulieren, Umgebungsbedingungen mit elektrischen
-GerÃ¤ten unter PID-Kontrolle zu regulieren (stetige Regelung oder
+(Benutzerschnittstelle). Das Backend führt Messungen von Sensoren und
+Geräten durch und koordiniert dann verschiedene Reaktionen auf diese
+Messungen, einschließlich der Fähigkeit, Ausgänge (Relais, PWM,
+drahtlose Ausgänge) zu modulieren, Umgebungsbedingungen mit elektrischen
+Geräten unter PID-Kontrolle zu regulieren (stetige Regelung oder
 Umschaltung) Zeit), Timer planen, Fotos aufnehmen und Videos streamen,
-Aktionen auslÃ¶sen, wenn Messungen bestimmte Bedingungen erfÃ¼llen (Relais
-modulieren, Befehle ausfÃ¼hren, per E-Mail benachrichtigen usw.) und
+Aktionen auslösen, wenn Messungen bestimmte Bedingungen erfüllen (Relais
+modulieren, Befehle ausführen, per E-Mail benachrichtigen usw.) und
 vieles mehr. Das Frontend ist eine Webschnittstelle, die eine einfache
-Navigation und Konfiguration von jedem browserfÃ¤higen GerÃ¤t ermÃ¶glicht.
+Navigation und Konfiguration von jedem browserfähigen Gerät ermöglicht.
 
-EspaÃ±ol (Spanish)
+Español (Spanish)
 ~~~~~~~~~~~~~~~~~
 
 Mycodo es un sistema de control remoto y automatizado con un enfoque en
-la modulaciÃ³n de las condiciones ambientales. Fue construido para
+la modulación de las condiciones ambientales. Fue construido para
 ejecutarse en el Raspberry Pi (versiones Zero, 1, 2 y 3) y tiene como
-objetivo ser fÃ¡cil de instalar y operar.
+objetivo ser fácil de instalar y operar.
 
 El sistema central coordina un conjunto diverso de respuestas a las
-mediciones de sensores, incluyendo acciones tales como grabaciÃ³n de
-cÃ¡mara, notificaciones por correo electrÃ³nico, activaciÃ³n /
-desactivaciÃ³n de relÃ©s, regulaciÃ³n con control PID y mÃ¡s.
+mediciones de sensores, incluyendo acciones tales como grabación de
+cámara, notificaciones por correo electrónico, activación /
+desactivación de relés, regulación con control PID y más.
 
 Mycodo se ha utilizado para cultivar hongos gourmet, cultivar plantas,
 cultivar microorganismos, mantener la homeostasis del apiario de abejas,
-incubar huevos de serpiente y animales jÃ³venes, envejecer quesos,
-fermentar alimentos, mantener sistemas acuÃ¡ticos y mucho mÃ¡s.
+incubar huevos de serpiente y animales jóvenes, envejecer quesos,
+fermentar alimentos, mantener sistemas acuáticos y mucho más.
 
-FranÃ§ais (French)
+Français (French)
 ~~~~~~~~~~~~~~~~~
 
-Mycodo est un systÃ¨me de surveillance Ã  distance et de rÃ©gulation
-automatisÃ©e, axÃ© sur la modulation des conditions environnementales. Il
-a Ã©tÃ© construit pour exÃ©cuter dans le Raspberry Pi (versions Zero, 1, 2
-et 3) et vise Ã  Ãªtre facile Ã  installer et Ã  utiliser.
+Mycodo est un système de surveillance à distance et de régulation
+automatisée, axé sur la modulation des conditions environnementales. Il
+a été construit pour exécuter dans le Raspberry Pi (versions Zero, 1, 2
+et 3) et vise à être facile à installer et à utiliser.
 
-Le systÃ¨me de base coordonne un ensemble divers de rÃ©ponses aux mesures
+Le système de base coordonne un ensemble divers de réponses aux mesures
 de capteurs, y compris des actions telles que l'enregistrement de
-camÃ©ra, les notifications par courrier Ã©lectronique, l'activation /
-dÃ©sactivation de relais, la rÃ©gulation avec contrÃ´le PID, et plus
+caméra, les notifications par courrier électronique, l'activation /
+désactivation de relais, la régulation avec contrôle PID, et plus
 encore.
 
-Mycodo a Ã©tÃ© utilisÃ© pour cultiver des champignons gourmands, cultiver
-des plantes, cultiver des micro-organismes, entretenir l'homÃ©ostasie du
-rucher des abeilles, incuber les Å“ufs de serpent et les jeunes animaux,
-vieillir les fromages, fermenter les aliments, entretenir les systÃ¨mes
+Mycodo a été utilisé pour cultiver des champignons gourmands, cultiver
+des plantes, cultiver des micro-organismes, entretenir l'homéostasie du
+rucher des abeilles, incuber les œufs de serpent et les jeunes animaux,
+vieillir les fromages, fermenter les aliments, entretenir les systèmes
 aquatiques et plus encore.
 
 Italian
 ~~~~~~~
 
-Mycodo Ã¨ un sistema di monitoraggio e regolazione automatico che Ã¨
+Mycodo è un sistema di monitoraggio e regolazione automatico che è
 stato creato per funzionare su Raspberry Pi (versioni Zero, 1, 2 e 3).
 
 Originariamente progettato per coltivare funghi commestibili, Mycodo
-Ã¨ cresciuto fino a comprendere la possibilitÃ  di fare molto di piÃ¹,
+è cresciuto fino a comprendere la possibilità di fare molto di più,
 coltivando piante, coltivando microrganismi, mantenendo l'omeostasi
 delle api apistiche del miele, incubando animali e uova, mantenendo
 sistemi acquatici, formaggi stagionati, alimenti fermentati e tabacco,
@@ -398,74 +398,74 @@ cucinando cibo (sous-vide), e altro ancora.
 Il sistema comprende un backend (demone) e un frontend (interfaccia
 utente). Il back-end esegue misurazioni da sensori e dispositivi,
 quindi coordina una serie diversificata di risposte a tali misurazioni,
-inclusa la possibilitÃ  di modulare le uscite (relÃ¨, PWM, prese wireless),
+inclusa la possibilità di modulare le uscite (relè, PWM, prese wireless),
 regola le condizioni ambientali con dispositivi elettrici sotto controllo
 PID (regolazione costante o commutazione tempo), programmare i timer,
 acquisire foto e riprodurre video in streaming, attivare azioni quando
-le misurazioni soddisfano determinate condizioni (moduli relÃ¨, comandi
-di esecuzione, notifica via e-mail, ecc.) e altro. Il frontend Ã¨
+le misurazioni soddisfano determinate condizioni (moduli relè, comandi
+di esecuzione, notifica via e-mail, ecc.) e altro. Il frontend è
 un'interfaccia web che consente una facile navigazione e configurazione
 da qualsiasi dispositivo abilitato per il browser.
 
 Portuguese
 ~~~~~~~~~~
-Mycodo Ã© um sistema automatizado de monitoramento e regulaÃ§Ã£o que foi
-construÃ­do para rodar no Raspberry Pi (versÃµes Zero, 1, 2 e 3).
+Mycodo é um sistema automatizado de monitoramento e regulação que foi
+construído para rodar no Raspberry Pi (versões Zero, 1, 2 e 3).
 
-Originalmente projetado para cultivar cogumelos comestÃ­veis, o Mycodo
+Originalmente projetado para cultivar cogumelos comestíveis, o Mycodo
 cresceu para incluir a capacidade de fazer muito mais, incluindo
 cultivar plantas, cultivar microorganismos, manter a homeostase do
-apiÃ¡rio de abelhas, incubar animais e ovos, manter sistemas aquÃ¡ticos,
+apiário de abelhas, incubar animais e ovos, manter sistemas aquáticos,
 queijos envelhecidos, fermentar alimentos e tabaco, cozinhar comida
 (sous-vide) e muito mais.
 
 O sistema compreende um backend (daemon) e um frontend (interface de
-usuÃ¡rio). O backend realiza mediÃ§Ãµes a partir de sensores e dispositivos
-e coordena um conjunto diversificado de respostas a essas mediÃ§Ãµes,
-incluindo a capacidade de modular saÃ­das (relÃ©s, PWM, tomadas sem fio),
-regular condiÃ§Ãµes ambientais com dispositivos elÃ©tricos sob controle PID
-(regulaÃ§Ã£o estÃ¡vel ou troca tempo), agendar cronÃ´metros, capturar fotos
-e transmitir vÃ­deo, desencadear aÃ§Ãµes quando as mediÃ§Ãµes atenderem a
-determinadas condiÃ§Ãµes (modular relÃ©s, executar comandos, notificar por
-e-mail etc.) e muito mais. O frontend Ã© uma interface da Web que permite
-fÃ¡cil navegaÃ§Ã£o e configuraÃ§Ã£o a partir de qualquer dispositivo
+usuário). O backend realiza medições a partir de sensores e dispositivos
+e coordena um conjunto diversificado de respostas a essas medições,
+incluindo a capacidade de modular saídas (relés, PWM, tomadas sem fio),
+regular condições ambientais com dispositivos elétricos sob controle PID
+(regulação estável ou troca tempo), agendar cronômetros, capturar fotos
+e transmitir vídeo, desencadear ações quando as medições atenderem a
+determinadas condições (modular relés, executar comandos, notificar por
+e-mail etc.) e muito mais. O frontend é uma interface da Web que permite
+fácil navegação e configuração a partir de qualquer dispositivo
 habilitado para navegador.
 
 Russian
 ~~~~~~~
 
-ÐŸÐµÑ€Ð²Ð¾Ð½Ð°Ñ‡Ð°Ð»ÑŒÐ½Ð¾ Ñ€Ð°Ð·Ñ€Ð°Ð±Ð¾Ñ‚Ð°Ð½Ð½Ñ‹Ð¹ Ð´Ð»Ñ� Ð²Ñ‹Ñ€Ð°Ñ‰Ð¸Ð²Ð°Ð½Ð¸Ñ� Ñ�ÑŠÐµÐ´Ð¾Ð±Ð½Ñ‹Ñ… Ð³Ñ€Ð¸Ð±Ð¾Ð², Mycodo
-Ð²Ñ‹Ñ€Ð¾Ñ�, Ñ‡Ñ‚Ð¾Ð±Ñ‹ Ð²ÐºÐ»ÑŽÑ‡Ð°Ñ‚ÑŒ Ð² Ñ�ÐµÐ±Ñ� Ñ�Ð¿Ð¾Ñ�Ð¾Ð±Ð½Ð¾Ñ�Ñ‚ÑŒ Ð´ÐµÐ»Ð°Ñ‚ÑŒ Ð³Ð¾Ñ€Ð°Ð·Ð´Ð¾ Ð±Ð¾Ð»ÑŒÑˆÐµ, Ð² Ñ‚Ð¾Ð¼
-Ñ‡Ð¸Ñ�Ð»Ðµ Ð²Ñ‹Ñ€Ð°Ñ‰Ð¸Ð²Ð°Ñ‚ÑŒ Ñ€Ð°Ñ�Ñ‚ÐµÐ½Ð¸Ñ�, ÐºÑƒÐ»ÑŒÑ‚Ð¸Ð²Ð¸Ñ€Ð¾Ð²Ð°Ñ‚ÑŒ Ð¼Ð¸ÐºÑ€Ð¾Ð¾Ñ€Ð³Ð°Ð½Ð¸Ð·Ð¼Ñ‹, Ð¿Ð¾Ð´Ð´ÐµÑ€Ð¶Ð¸Ð²Ð°Ñ‚ÑŒ
-Ð³Ð¾Ð¼ÐµÐ¾Ñ�Ñ‚Ð°Ð· Ð¼ÐµÐ´Ð¾Ð½Ð¾Ñ�Ð½Ð¾Ð¹ Ð¿Ñ‡ÐµÐ»Ñ‹, Ð¸Ð½ÐºÑƒÐ±Ð¸Ñ€Ð¾Ð²Ð°Ñ‚ÑŒ Ð¶Ð¸Ð²Ð¾Ñ‚Ð½Ñ‹Ñ… Ð¸ Ñ�Ð¹Ñ†Ð°, Ð¿Ð¾Ð´Ð´ÐµÑ€Ð¶Ð¸Ð²Ð°Ñ‚ÑŒ
-Ð²Ð¾Ð´Ð½Ñ‹Ðµ Ñ�Ð¸Ñ�Ñ‚ÐµÐ¼Ñ‹, Ñ�Ñ‚Ð°Ñ€ÐµÑŽÑ‰Ð¸Ðµ Ñ�Ñ‹Ñ€Ñ‹, Ñ„ÐµÑ€Ð¼ÐµÐ½Ñ‚Ð¸Ñ€Ð¾Ð²Ð°Ñ‚ÑŒ Ð¿Ñ€Ð¾Ð´ÑƒÐºÑ‚Ñ‹ Ð¸ Ñ‚Ð°Ð±Ð°Ðº,
-Ð³Ð¾Ñ‚Ð¾Ð²Ð¸Ñ‚ÑŒ ÐµÐ´Ð° (sous-vide) Ð¸ Ð¼Ð½Ð¾Ð³Ð¾Ðµ Ð´Ñ€ÑƒÐ³Ð¾Ðµ.
+Первоначально разработанный для выращивания съедобных грибов, Mycodo
+вырос, чтобы включать в себя способность делать гораздо больше, в том
+числе выращивать растения, культивировать микроорганизмы, поддерживать
+гомеостаз медоносной пчелы, инкубировать животных и яйца, поддерживать
+водные системы, стареющие сыры, ферментировать продукты и табак,
+готовить еда (sous-vide) и многое другое.
 
-Ð¡Ð¸Ñ�Ñ‚ÐµÐ¼Ð° Ñ�Ð¾Ð´ÐµÑ€Ð¶Ð¸Ñ‚ Ð±Ñ�ÐºÑ�Ð½Ð´ (Ð´ÐµÐ¼Ð¾Ð½) Ð¸ Ð¸Ð½Ñ‚ÐµÑ€Ñ„ÐµÐ¹Ñ� (Ð¿Ð¾Ð»ÑŒÐ·Ð¾Ð²Ð°Ñ‚ÐµÐ»ÑŒÑ�ÐºÐ¸Ð¹
-Ð¸Ð½Ñ‚ÐµÑ€Ñ„ÐµÐ¹Ñ�). Ð‘Ñ�ÐºÑ�Ð½Ð´ Ð²Ñ‹Ð¿Ð¾Ð»Ð½Ñ�ÐµÑ‚ Ð¸Ð·Ð¼ÐµÑ€ÐµÐ½Ð¸Ñ� Ð¾Ñ‚ Ð´Ð°Ñ‚Ñ‡Ð¸ÐºÐ¾Ð² Ð¸ ÑƒÑ�Ñ‚Ñ€Ð¾Ð¹Ñ�Ñ‚Ð², Ð·Ð°Ñ‚ÐµÐ¼
-ÐºÐ¾Ð¾Ñ€Ð´Ð¸Ð½Ð¸Ñ€ÑƒÐµÑ‚ Ñ€Ð°Ð·Ð½Ð¾Ð¾Ð±Ñ€Ð°Ð·Ð½Ñ‹Ðµ Ð¾Ñ‚Ð²ÐµÑ‚Ñ‹ Ð½Ð° Ñ�Ñ‚Ð¸ Ð¸Ð·Ð¼ÐµÑ€ÐµÐ½Ð¸Ñ�, Ð² Ñ‚Ð¾Ð¼ Ñ‡Ð¸Ñ�Ð»Ðµ
-Ð²Ð¾Ð·Ð¼Ð¾Ð¶Ð½Ð¾Ñ�Ñ‚ÑŒ Ð¼Ð¾Ð´ÑƒÐ»Ð¸Ñ€Ð¾Ð²Ð°Ñ‚ÑŒ Ð²Ñ‹Ñ…Ð¾Ð´Ñ‹ (Ñ€ÐµÐ»Ðµ, Ð¨Ð˜Ðœ, Ð±ÐµÑ�Ð¿Ñ€Ð¾Ð²Ð¾Ð´Ð½Ñ‹Ðµ Ñ€Ð¾Ð·ÐµÑ‚ÐºÐ¸),
-Ñ€ÐµÐ³ÑƒÐ»Ð¸Ñ€Ð¾Ð²Ð°Ñ‚ÑŒ ÑƒÑ�Ð»Ð¾Ð²Ð¸Ñ� Ð¾ÐºÑ€ÑƒÐ¶Ð°ÑŽÑ‰ÐµÐ¹ Ñ�Ñ€ÐµÐ´Ñ‹ Ñ� Ð¿Ð¾Ð¼Ð¾Ñ‰ÑŒÑŽ Ñ�Ð»ÐµÐºÑ‚Ñ€Ð¸Ñ‡ÐµÑ�ÐºÐ¸Ñ… ÑƒÑ�Ñ‚Ñ€Ð¾Ð¹Ñ�Ñ‚Ð²
-Ð¿Ð¾Ð´ ÐŸÐ˜Ð”-Ñ€ÐµÐ³ÑƒÐ»Ð¸Ñ€Ð¾Ð²Ð°Ð½Ð¸ÐµÐ¼ (ÑƒÑ�Ñ‚Ð¾Ð¹Ñ‡Ð¸Ð²Ð¾Ðµ Ñ€ÐµÐ³ÑƒÐ»Ð¸Ñ€Ð¾Ð²Ð°Ð½Ð¸Ðµ Ð¸Ð»Ð¸ Ð¸Ð·Ð¼ÐµÐ½ÐµÐ½Ð¸Ðµ Ð²Ñ€ÐµÐ¼Ñ�),
-Ñ€Ð°Ñ�Ð¿Ð¸Ñ�Ð°Ð½Ð¸Ðµ Ñ‚Ð°Ð¹Ð¼ÐµÑ€Ð¾Ð², Ñ�Ð±Ð¾Ñ€ Ñ„Ð¾Ñ‚Ð¾Ð³Ñ€Ð°Ñ„Ð¸Ð¹ Ð¸ Ð¿Ð¾Ñ‚Ð¾ÐºÐ¾Ð²Ð¾Ðµ Ð²Ð¸Ð´ÐµÐ¾, Ñ‚Ñ€Ð¸Ð³Ð³ÐµÑ€Ð½Ñ‹Ðµ
-Ð´ÐµÐ¹Ñ�Ñ‚Ð²Ð¸Ñ�, ÐºÐ¾Ð³Ð´Ð° Ð¸Ð·Ð¼ÐµÑ€ÐµÐ½Ð¸Ñ� Ñ�Ð¾Ð¾Ñ‚Ð²ÐµÑ‚Ñ�Ñ‚Ð²ÑƒÑŽÑ‚ Ð¾Ð¿Ñ€ÐµÐ´ÐµÐ»ÐµÐ½Ð½Ñ‹Ð¼ ÑƒÑ�Ð»Ð¾Ð²Ð¸Ñ�Ð¼
-(Ð¼Ð¾Ð´ÑƒÐ»Ð¸Ñ€Ð¾Ð²Ð°Ñ‚ÑŒ Ñ€ÐµÐ»Ðµ, Ð²Ñ‹Ð¿Ð¾Ð»Ð½Ñ�Ñ‚ÑŒ ÐºÐ¾Ð¼Ð°Ð½Ð´Ñ‹, ÑƒÐ²ÐµÐ´Ð¾Ð¼Ð»Ñ�Ñ‚ÑŒ Ð¿Ð¾ Ñ�Ð»ÐµÐºÑ‚Ñ€Ð¾Ð½Ð½Ð¾Ð¹ Ð¿Ð¾Ñ‡Ñ‚Ðµ
-Ð¸ Ñ‚. Ð´.) Ð¸ Ð¼Ð½Ð¾Ð³Ð¾Ðµ Ð´Ñ€ÑƒÐ³Ð¾Ðµ. Ð˜Ð½Ñ‚ÐµÑ€Ñ„ÐµÐ¹Ñ� - Ñ�Ñ‚Ð¾ Ð²ÐµÐ±-Ð¸Ð½Ñ‚ÐµÑ€Ñ„ÐµÐ¹Ñ�, ÐºÐ¾Ñ‚Ð¾Ñ€Ñ‹Ð¹
-Ð¾Ð±ÐµÑ�Ð¿ÐµÑ‡Ð¸Ð²Ð°ÐµÑ‚ ÑƒÐ´Ð¾Ð±Ð½ÑƒÑŽ Ð½Ð°Ð²Ð¸Ð³Ð°Ñ†Ð¸ÑŽ Ð¸ Ð½Ð°Ñ�Ñ‚Ñ€Ð¾Ð¹ÐºÑƒ Ñ� Ð»ÑŽÐ±Ð¾Ð³Ð¾ ÑƒÑ�Ñ‚Ñ€Ð¾Ð¹Ñ�Ñ‚Ð²Ð° Ñ�
-Ð¿Ð¾Ð´Ð´ÐµÑ€Ð¶ÐºÐ¾Ð¹ Ð±Ñ€Ð°ÑƒÐ·ÐµÑ€Ð°.
+Система содержит бэкэнд (демон) и интерфейс (пользовательский
+интерфейс). Бэкэнд выполняет измерения от датчиков и устройств, затем
+координирует разнообразные ответы на эти измерения, в том числе
+возможность модулировать выходы (реле, ШИМ, беспроводные розетки),
+регулировать условия окружающей среды с помощью электрических устройств
+под ПИД-регулированием (устойчивое регулирование или изменение время),
+расписание таймеров, сбор фотографий и потоковое видео, триггерные
+действия, когда измерения соответствуют определенным условиям
+(модулировать реле, выполнять команды, уведомлять по электронной почте
+и т. д.) и многое другое. Интерфейс - это веб-интерфейс, который
+обеспечивает удобную навигацию и настройку с любого устройства с
+поддержкой браузера.
 
 Chinese
 ~~~~~~~
 
-Mycodoæœ€åˆ�è®¾è®¡ç”¨äºŽç§�æ¤�å�¯é£Ÿç”¨çš„è˜‘è�‡ï¼Œå·²ç»�å�‘å±•åˆ°èƒ½å¤Ÿå�šæ›´å¤šçš„å·¥ä½œï¼ŒåŒ…æ‹¬ç§�æ¤�æ¤�ç‰©ï¼Œ
-åŸ¹å…»å¾®ç”Ÿç‰©ï¼Œç»´æŒ�èœ‚èœœèœ‚æˆ¿ç¨³æ€�ï¼Œå­µåŒ–åŠ¨ç‰©å’Œé¸¡è›‹ï¼Œç»´æŒ�æ°´ç”Ÿç³»ç»Ÿï¼Œé™ˆå¹´å¥¶é…ªï¼Œ
-å�‘é…µé£Ÿå“�å’ŒçƒŸè�‰ï¼Œçƒ¹é¥ªé£Ÿç‰©ï¼ˆsous-videï¼‰ç­‰ç­‰ã€‚
+Mycodo最初设计用于种植可食用的蘑菇，已经发展到能够做更多的工作，包括种植植物，
+培养微生物，维持蜂蜜蜂房稳态，孵化动物和鸡蛋，维持水生系统，陈年奶酪，
+发酵食品和烟草，烹饪食物（sous-vide）等等。
 
-è¯¥ç³»ç»ŸåŒ…æ‹¬å�Žç«¯ï¼ˆå®ˆæŠ¤è¿›ç¨‹ï¼‰å’Œå‰�ç«¯ï¼ˆç”¨æˆ·ç•Œé�¢ï¼‰ã€‚å�Žç«¯ä»Žä¼ æ„Ÿå™¨å’Œè®¾å¤‡è¿›è¡Œæµ‹é‡�ï¼Œ
-ç„¶å�Žå��è°ƒå¯¹è¿™äº›æµ‹é‡�çš„å�„ç§�å“�åº”ï¼ŒåŒ…æ‹¬è°ƒåˆ¶è¾“å‡ºï¼ˆç»§ç”µå™¨ï¼ŒPWMï¼Œæ— çº¿æ�’åº§ï¼‰çš„èƒ½åŠ›ï¼Œ
-é€šè¿‡PIDæŽ§åˆ¶çš„ç”µæ°”è®¾å¤‡è°ƒèŠ‚çŽ¯å¢ƒæ�¡ä»¶ï¼ˆç¨³å®šè°ƒèŠ‚æˆ–è½¬æ�¢æ—¶é—´ï¼‰ï¼Œå®‰æŽ’è®¡æ—¶å™¨ï¼Œæ�•èŽ·ç…§ç‰‡å’Œæµ�è§†é¢‘ï¼Œ
-åœ¨æµ‹é‡�æ»¡è¶³ç‰¹å®šæ�¡ä»¶æ—¶è§¦å�‘åŠ¨ä½œï¼ˆè°ƒåˆ¶ç»§ç”µå™¨ï¼Œæ‰§è¡Œå‘½ä»¤ï¼Œé€šè¿‡ç”µå­�é‚®ä»¶é€šçŸ¥ç­‰ï¼‰
-ç­‰ç­‰ã€‚å‰�ç«¯æ˜¯ä¸€ä¸ªWebç•Œé�¢ï¼Œå�¯ä»¥ä»Žä»»ä½•æ”¯æŒ�æµ�è§ˆå™¨çš„è®¾å¤‡è½»æ�¾å¯¼èˆªå’Œé…�ç½®ã€‚
+该系统包括后端（守护进程）和前端（用户界面）。后端从传感器和设备进行测量，
+然后协调对这些测量的各种响应，包括调制输出（继电器，PWM，无线插座）的能力，
+通过PID控制的电气设备调节环境条件（稳定调节或转换时间），安排计时器，捕获照片和流视频，
+在测量满足特定条件时触发动作（调制继电器，执行命令，通过电子邮件通知等）
+等等。前端是一个Web界面，可以从任何支持浏览器的设备轻松导航和配置。
 
 
 .. |Build Status| image:: https://travis-ci.org/kizniche/Mycodo.svg?branch=master
