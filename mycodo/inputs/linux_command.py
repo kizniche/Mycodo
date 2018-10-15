@@ -33,7 +33,7 @@ class InputModule(AbstractInput):
 
         if not testing:
             self.logger = logging.getLogger(
-                "mycodo.inputs.linux_command_{id}".format(id=input_dev.id))
+                "mycodo.linux_command_{id}".format(id=input_dev.unique_id.split('-')[0]))
             self.cmd_command = input_dev.cmd_command
             self.cmd_measurement = input_dev.measurements
 

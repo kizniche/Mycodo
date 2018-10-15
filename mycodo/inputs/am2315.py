@@ -71,7 +71,7 @@ class InputModule(AbstractInput):
         if not testing:
             from mycodo.mycodo_client import DaemonControl
             self.logger = logging.getLogger(
-                'mycodo.inputs.am2315_{id}'.format(id=input_dev.id))
+                'mycodo.am2315_{id}'.format(id=input_dev.unique_id.split('-')[0]))
             self.i2c_bus = input_dev.i2c_bus
             self.power_output_id = input_dev.power_output_id
             self.convert_to_unit = input_dev.convert_to_unit

@@ -49,7 +49,7 @@ class ADCModule(object):
         if not testing:
             import Adafruit_MCP3008
             self.logger = logging.getLogger(
-                'mycodo.mcp3008_{id}'.format(id=input_dev.id))
+                'mycodo.mcp3008_{id}'.format(id=input_dev.unique_id.split('-')[0]))
             self.adc = Adafruit_MCP3008.MCP3008(clk=self.pin_clock,
                                                 cs=self.pin_cs,
                                                 miso=self.pin_miso,

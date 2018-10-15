@@ -35,7 +35,7 @@ class InputModule(AbstractInput):
 
         if not testing:
             self.logger = logging.getLogger(
-                "mycodo.inputs.raspi_freespace_{id}".format(id=input_dev.id))
+                "mycodo.raspi_freespace_{id}".format(id=input_dev.unique_id.split('-')[0]))
             self.path = input_dev.location
             self.convert_to_unit = input_dev.convert_to_unit
 

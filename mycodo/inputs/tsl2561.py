@@ -34,7 +34,7 @@ class InputModule(AbstractInput):
         if not testing:
             from tsl2561 import TSL2561
             self.logger = logging.getLogger(
-                "mycodo.inputs.tsl2561_{id}".format(id=input_dev.id))
+                "mycodo.tsl2561_{id}".format(id=input_dev.unique_id.split('-')[0]))
             self.i2c_address = int(str(input_dev.i2c_location), 16)
             self.i2c_bus = input_dev.i2c_bus
             self.convert_to_unit = input_dev.convert_to_unit

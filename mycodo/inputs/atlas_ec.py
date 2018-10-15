@@ -34,7 +34,7 @@ class InputModule(AbstractInput):
 
         if not testing:
             self.logger = logging.getLogger(
-                "mycodo.inputs.atlas_ec_{id}".format(id=input_dev.id))
+                "mycodo.inputs.atlas_ec_{id}".format(id=input_dev.unique_id.split('-')[0]))
             self.interface = input_dev.interface
             if self.interface == 'UART':
                 self.uart_location = input_dev.uart_location

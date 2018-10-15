@@ -39,7 +39,7 @@ class InputModule(AbstractInput):
 
         if not testing:
             self.logger = logging.getLogger(
-                "mycodo.inputs.atlas_ph_{id}".format(id=input_dev.id))
+                "mycodo.inputs.atlas_ph_{id}".format(id=input_dev.unique_id.split('-')[0]))
             self.input_dev = input_dev
             self.interface = input_dev.interface
             self.calibrate_sensor_measure = input_dev.calibrate_sensor_measure

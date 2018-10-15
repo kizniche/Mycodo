@@ -63,7 +63,7 @@ class InputModule(AbstractInput):
         if not testing:
             import pigpio
             self.logger = logging.getLogger(
-                "mycodo.inputs.htu21d_{id}".format(id=input_dev.id))
+                "mycodo.htu21d_{id}".format(id=input_dev.unique_id.split('-')[0]))
             self.i2c_bus = input_dev.i2c_bus
             self.i2c_address = 0x40  # HTU21D-F Address
             self.convert_to_unit = input_dev.convert_to_unit

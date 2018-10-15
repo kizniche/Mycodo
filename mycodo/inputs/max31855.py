@@ -40,7 +40,7 @@ class InputModule(AbstractInput):
         if not testing:
             import Adafruit_MAX31855.MAX31855 as MAX31855
             self.logger = logging.getLogger(
-                "mycodo.inputs.max31855_{id}".format(id=input_dev.id))
+                "mycodo.max31855_{id}".format(id=input_dev.unique_id.split('-')[0]))
             self.pin_clock = input_dev.pin_clock
             self.pin_cs = input_dev.pin_cs
             self.pin_miso = input_dev.pin_miso

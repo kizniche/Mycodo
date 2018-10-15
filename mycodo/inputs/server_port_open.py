@@ -37,7 +37,7 @@ class InputModule(AbstractInput):
 
         if not testing:
             self.logger = logging.getLogger(
-                "mycodo.inputs.server_port_open_{id}".format(id=input_dev.id))
+                "mycodo.server_port_open_{id}".format(id=input_dev.unique_id.split('-')[0]))
             self.location = input_dev.location
             self.port = input_dev.port
 

@@ -272,59 +272,63 @@
 
 {%- endfor -%}
 
-<div class="form-inline" style="padding-bottom: 1em;">
-  <div class="form-group">
-    <a data-toggle="collapse" href="#collapseContainerReorderPID" aria-expanded="false" aria-controls="collapseContainerReorderPID" class="btn btn-sm btn-primary" role="button">{{_('PID')}} {{_('Reorder')}}</a>
-  </div>
-</div>
+<div class="container">
 
-<div class="collapse" id="collapseContainerReorderPID" style="padding-bottom: 1em">
-
-  <form method="post" action="/function">
-  {{form_base.csrf_token}}
-
-  <div class="row" style="padding-bottom: 0.5em">
-    <div class="col-auto">
-      {{form_base.reorder(class_='btn btn-primary')}}
+  <div class="form-inline" style="padding-bottom: 1em;">
+    <div class="form-group">
+      <a data-toggle="collapse" href="#collapseContainerReorderPID" aria-expanded="false" aria-controls="collapseContainerReorderPID" class="btn btn-sm btn-primary" role="button">{{_('PID')}} {{_('Reorder')}}</a>
     </div>
   </div>
 
-  <div class="row">
-    <div class="col-auto">
-    {{form_base.reorder_type(class_='form-control', value='pid')}}
-      <select style="display: none" name="from[]" id="multiselect1" class="" size="8" multiple="multiple"></select>
-      <div>
-        <select name="list_visible_elements" id="multiselect1_to" class="form-control" size="8" multiple="multiple">
-        {% if display_order_pid -%}
-          {% for each_visible in display_order_pid if each_visible in names_pid %}
-            <option value="{{each_visible}}">{{names_pid[each_visible]}}</option>
-          {% endfor %}
-        {% endif %}
-        </select>
-        <div class="row">
-          <div class="col-sm-6">
-            <button type="button" id="multiselect1_move_up" class="btn btn-sm btn-block btn-primary"><i class="fa fa-arrow-up"></i></button>
-          </div>
-          <div class="col-sm-6">
-            <button type="button" id="multiselect1_move_down" class="btn btn-sm btn-block btn-primary"><i class="fa fa-arrow-down"></i></button>
-          </div>
-        </div>
+  <div class="collapse" id="collapseContainerReorderPID" style="padding-bottom: 1em">
+
+    <form method="post" action="/function">
+    {{form_base.csrf_token}}
+
+    <div class="row" style="padding-bottom: 0.5em">
+      <div class="col-auto">
+        {{form_base.reorder(class_='btn btn-primary')}}
       </div>
     </div>
 
+    <div class="row">
+      <div class="col-auto">
+      {{form_base.reorder_type(class_='form-control', value='pid')}}
+        <select style="display: none" name="from[]" id="multiselect1" class="" size="8" multiple="multiple"></select>
+        <div>
+          <select name="list_visible_elements" id="multiselect1_to" class="form-control" size="8" multiple="multiple">
+          {% if display_order_pid -%}
+            {% for each_visible in display_order_pid if each_visible in names_pid %}
+              <option value="{{each_visible}}">{{names_pid[each_visible]}}</option>
+            {% endfor %}
+          {% endif %}
+          </select>
+          <div class="row">
+            <div class="col-sm-6">
+              <button type="button" id="multiselect1_move_up" class="btn btn-sm btn-block btn-primary"><i class="fa fa-arrow-up"></i></button>
+            </div>
+            <div class="col-sm-6">
+              <button type="button" id="multiselect1_move_down" class="btn btn-sm btn-block btn-primary"><i class="fa fa-arrow-down"></i></button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    </form>
   </div>
 
-  </form>
 </div>
 
 {%- endif -%}
 
 <script type="text/javascript">
 jQuery(document).ready(function($) {
-    $('#multiselect1').multiselect({
-        sort: false,
-        keepRenderingSort: true
-    });
+  $('#multiselect1').multiselect({
+    sort: false,
+    keepRenderingSort: true
+  });
 });
 
 $('#collapseContainerReorderPID').on('shown.bs.collapse', function () {

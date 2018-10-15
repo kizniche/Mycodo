@@ -49,7 +49,7 @@ class ADCModule(object):
         if not testing:
             import Adafruit_ADS1x15
             self.logger = logging.getLogger(
-                'mycodo.ads1x15_{id}'.format(id=input_dev.id))
+                'mycodo.ads1x15_{id}'.format(id=input_dev.unique_id.split('-')[0]))
             self.adc = Adafruit_ADS1x15.ADS1115(address=self.i2c_address,
                                                 busnum=self.i2c_bus)
 

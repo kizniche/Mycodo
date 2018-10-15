@@ -36,7 +36,7 @@ class InputModule(AbstractInput):
 
         if not testing:
             self.logger = logging.getLogger(
-                "mycodo.inputs.raspi_cpuload_{id}".format(id=input_dev.id))
+                "mycodo.raspi_cpuload_{id}".format(id=input_dev.unique_id.split('-')[0]))
 
     def __repr__(self):
         """  Representation of object """

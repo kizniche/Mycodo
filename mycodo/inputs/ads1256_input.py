@@ -79,7 +79,7 @@ class ADCModule(object):
             from adc_consts import ADS1256_SMODE
 
             self.logger = logging.getLogger(
-                'mycodo.ads1256_{id}'.format(id=input_dev.id))
+                'mycodo.ads1256_{id}'.format(id=input_dev.unique_id.split('-')[0]))
 
             self.ads1256 = pyadda
 

@@ -28,13 +28,13 @@ class InputModule(AbstractInput):
 
     def __init__(self, input_dev, testing=False):
         super(InputModule, self).__init__()
-        self.logger = logging.getLogger("mycodo.inputs.tsl2591_sensor")
+        self.logger = logging.getLogger("mycodo.inputs.tsl2591")
         self._lux = None
 
         if not testing:
             import tsl2591
             self.logger = logging.getLogger(
-                "mycodo.inputs.tsl2591_sensor_{id}".format(id=input_dev.id))
+                "mycodo.tsl2591_{id}".format(id=input_dev.unique_id.split('-')[0]))
             self.i2c_address = int(str(input_dev.i2c_location), 16)
             self.i2c_bus = input_dev.i2c_bus
             self.convert_to_unit = input_dev.convert_to_unit

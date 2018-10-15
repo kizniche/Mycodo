@@ -64,139 +64,145 @@
 
   <div style="padding: 0 1em 0 1em">
 
-  <div class="row">
+  <div class="container-fluid">
 
-  {% if display_order -%}
-  {%- for order in display_order -%}
-    {%- set chart_number = loop.index -%}
-    {%- for each_dashboard in dashboard if each_dashboard.unique_id == order -%}
+    <div class="row">
 
-    <div class="col-xs-12 col-sm-
-    {%- if each_dashboard.width < 13 and each_dashboard.width > 0 -%}
-      {{each_dashboard.width}}
-    {%- else -%}
-      12
-    {%- endif -%}" style="padding: 0.25em;">
+    {% if display_order -%}
+    {%- for order in display_order -%}
+      {%- set chart_number = loop.index -%}
+      {%- for each_dashboard in dashboard if each_dashboard.unique_id == order -%}
 
-      <div style="border: 1px solid #ddd; border-radius: 5px;">
+      <div class="col-xs-12 col-sm-
+      {%- if each_dashboard.width < 13 and each_dashboard.width > 0 -%}
+        {{each_dashboard.width}}
+      {%- else -%}
+        12
+      {%- endif -%}" style="padding: 0.25em;">
 
-      {% for id, axes in y_axes.items() if id == each_dashboard.unique_id and each_dashboard.graph_type in ['graph', 'gauge_angular', 'gauge_solid'] %}
-        <!--Dashboard {{each_dashboard.unique_id}} y-axes: {{axes|safe}}-->
-      {% endfor %}
+        <div style="border: 1px solid #ddd; border-radius: 5px;">
 
-      {% if each_dashboard.graph_type == 'graph' %}
-        {% include 'pages/dashboard_options/mod_graph.html' %}
-      {% elif each_dashboard.graph_type in ['gauge_angular', 'gauge_solid'] %}
-        {% include 'pages/dashboard_options/mod_gauge.html' %}
-      {% elif each_dashboard.graph_type == 'measurement' %}
-        {% include 'pages/dashboard_options/mod_measurement.html' %}
-      {% elif each_dashboard.graph_type == 'output' %}
-        {% include 'pages/dashboard_options/mod_output.html' %}
-      {% elif each_dashboard.graph_type == 'pid_control' %}
-        {% include 'pages/dashboard_options/mod_pid_control.html' %}
-      {% elif each_dashboard.graph_type == 'camera' %}
-        {% include 'pages/dashboard_options/mod_camera.html' %}
+        {% for id, axes in y_axes.items() if id == each_dashboard.unique_id and each_dashboard.graph_type in ['graph', 'gauge_angular', 'gauge_solid'] %}
+          <!--Dashboard {{each_dashboard.unique_id}} y-axes: {{axes|safe}}-->
+        {% endfor %}
 
-      {% endif %}
+        {% if each_dashboard.graph_type == 'graph' %}
+          {% include 'pages/dashboard_options/mod_graph.html' %}
+        {% elif each_dashboard.graph_type in ['gauge_angular', 'gauge_solid'] %}
+          {% include 'pages/dashboard_options/mod_gauge.html' %}
+        {% elif each_dashboard.graph_type == 'measurement' %}
+          {% include 'pages/dashboard_options/mod_measurement.html' %}
+        {% elif each_dashboard.graph_type == 'output' %}
+          {% include 'pages/dashboard_options/mod_output.html' %}
+        {% elif each_dashboard.graph_type == 'pid_control' %}
+          {% include 'pages/dashboard_options/mod_pid_control.html' %}
+        {% elif each_dashboard.graph_type == 'camera' %}
+          {% include 'pages/dashboard_options/mod_camera.html' %}
 
+        {% endif %}
+
+        </div>
       </div>
-    </div>
 
+      {%- endfor -%}
     {%- endfor -%}
-  {%- endfor -%}
-  {%- endif -%}
+    {%- endif -%}
+
+    </div>
 
   </div>
 
   <div style="clear: both"></div>
 
-  <div class="form-inline" style="padding-bottom: 1em;">
-    <div class="form-group">
-      {{form_base.dashboard_type(class_='selectpicker')}}
-    </div>
-    <div class="form-group">
-      <a data-toggle="collapse" href="#collapseContainerReorder" aria-expanded="false" aria-controls="collapseContainerReorder" class="btn btn-sm btn-primary" role="button">{{_('Reorder Elements')}}</a>
-    </div>
-  </div>
+  <div class="container-fluid">
 
-  <div class="collapse" id="collapseContainerReorder" style="padding-bottom: 1em">
-
-    <form method="post" action="/dashboard">
-    {{form_base.csrf_token}}
-
-    <div class="row" style="padding-bottom: 0.5em">
-      <div class="col-auto">
-        {{form_base.reorder(class_='btn btn-primary')}}
+    <div class="form-inline" style="padding-bottom: 1em;">
+      <div class="form-group">
+        {{form_base.dashboard_type(class_='selectpicker')}}
+      </div>
+      <div class="form-group">
+        <a data-toggle="collapse" href="#collapseContainerReorder" aria-expanded="false" aria-controls="collapseContainerReorder" class="btn btn-sm btn-primary" role="button">{{_('Reorder Elements')}}</a>
       </div>
     </div>
 
-    <div class="row">
-      <div class="col-sm-5">
-        Hidden Elements
-        <div>
-          <select name="from[]" id="multiselect" class="form-control" size="8" multiple="multiple">
-            {% for each_hidden in dashboard_elements_hidden %}
-              <option value="{{each_hidden}}">{{dashboard_element_names[each_hidden]}}</option>
-            {% endfor %}
-          </select>
+    <div class="collapse" id="collapseContainerReorder" style="padding-bottom: 1em">
+
+      <form method="post" action="/dashboard">
+      {{form_base.csrf_token}}
+
+      <div class="row" style="padding-bottom: 0.5em">
+        <div class="col-auto">
+          {{form_base.reorder(class_='btn btn-primary')}}
         </div>
       </div>
 
-      <div class="col-sm-2">
-        <label>&nbsp;</label>
-        <div>
-          <button type="button" id="multiselect_rightAll" class="btn btn-sm btn-block btn-primary"><i class="fa fa-forward"></i></button>
-          <button type="button" id="multiselect_rightSelected" class="btn btn-sm btn-block btn-primary"><i class="fa fa-chevron-right"></i></button>
-          <button type="button" id="multiselect_leftSelected" class="btn btn-sm btn-block btn-primary"><i class="fa fa-chevron-left"></i></button>
-          <button type="button" id="multiselect_leftAll" class="btn btn-sm btn-block btn-primary"><i class="fa fa-backward"></i></button>
+      <div class="row">
+        <div class="col-sm-5">
+          Hidden Elements
+          <div>
+            <select name="from[]" id="multiselect" class="form-control" size="8" multiple="multiple">
+              {% for each_hidden in dashboard_elements_hidden %}
+                <option value="{{each_hidden}}">{{dashboard_element_names[each_hidden]}}</option>
+              {% endfor %}
+            </select>
+          </div>
         </div>
-      </div>
 
-      <div class="col-sm-5">
-        Visible Elements
-        <div>
-          <select name="list_visible_elements" id="multiselect_to" class="form-control" size="8" multiple="multiple">
-          {% if display_order -%}
-            {% for each_visible in display_order %}
-              <option value="{{each_visible}}">{{dashboard_element_names[each_visible]}}</option>
-            {% endfor %}
-          {% endif %}
-          </select>
-          <div class="row">
-            <div class="col-sm-6">
-              <button type="button" id="multiselect_move_up" class="btn btn-sm btn-block btn-primary"><i class="fa fa-arrow-up"></i></button>
-            </div>
-            <div class="col-sm-6">
-              <button type="button" id="multiselect_move_down" class="btn btn-sm btn-block btn-primary"><i class="fa fa-arrow-down"></i></button>
+        <div class="col-sm-2">
+          <label>&nbsp;</label>
+          <div>
+            <button type="button" id="multiselect_rightAll" class="btn btn-sm btn-block btn-primary"><i class="fa fa-forward"></i></button>
+            <button type="button" id="multiselect_rightSelected" class="btn btn-sm btn-block btn-primary"><i class="fa fa-chevron-right"></i></button>
+            <button type="button" id="multiselect_leftSelected" class="btn btn-sm btn-block btn-primary"><i class="fa fa-chevron-left"></i></button>
+            <button type="button" id="multiselect_leftAll" class="btn btn-sm btn-block btn-primary"><i class="fa fa-backward"></i></button>
+          </div>
+        </div>
+
+        <div class="col-sm-5">
+          Visible Elements
+          <div>
+            <select name="list_visible_elements" id="multiselect_to" class="form-control" size="8" multiple="multiple">
+            {% if display_order -%}
+              {% for each_visible in display_order %}
+                <option value="{{each_visible}}">{{dashboard_element_names[each_visible]}}</option>
+              {% endfor %}
+            {% endif %}
+            </select>
+            <div class="row">
+              <div class="col-sm-6">
+                <button type="button" id="multiselect_move_up" class="btn btn-sm btn-block btn-primary"><i class="fa fa-arrow-up"></i></button>
+              </div>
+              <div class="col-sm-6">
+                <button type="button" id="multiselect_move_down" class="btn btn-sm btn-block btn-primary"><i class="fa fa-arrow-down"></i></button>
+              </div>
             </div>
           </div>
         </div>
       </div>
+
+      </form>
     </div>
 
-    </form>
-  </div>
+    <div class="add_dashboard_object" style="display: none" id="graph">
+     {% include 'pages/dashboard_options/add_graph.html' %}
+    </div>
+    <div class="add_dashboard_object" style="display: none" id="gauge">
+     {% include 'pages/dashboard_options/add_gauge.html' %}
+    </div>
+    <div class="add_dashboard_object" style="display: none" id="measurement">
+     {% include 'pages/dashboard_options/add_measurement.html' %}
+    </div>
+    <div class="add_dashboard_object" style="display: none" id="output">
+     {% include 'pages/dashboard_options/add_output.html' %}
+    </div>
+    <div class="add_dashboard_object" style="display: none" id="pid_control">
+     {% include 'pages/dashboard_options/add_pid_control.html' %}
+    </div>
+    <div class="add_dashboard_object" style="display: none" id="camera">
+     {% include 'pages/dashboard_options/add_camera.html' %}
+    </div>
 
-  <div class="add_dashboard_object" style="display: none" id="graph">
-   {% include 'pages/dashboard_options/add_graph.html' %}
   </div>
-  <div class="add_dashboard_object" style="display: none" id="gauge">
-   {% include 'pages/dashboard_options/add_gauge.html' %}
-  </div>
-  <div class="add_dashboard_object" style="display: none" id="measurement">
-   {% include 'pages/dashboard_options/add_measurement.html' %}
-  </div>
-  <div class="add_dashboard_object" style="display: none" id="output">
-   {% include 'pages/dashboard_options/add_output.html' %}
-  </div>
-  <div class="add_dashboard_object" style="display: none" id="pid_control">
-   {% include 'pages/dashboard_options/add_pid_control.html' %}
-  </div>
-  <div class="add_dashboard_object" style="display: none" id="camera">
-   {% include 'pages/dashboard_options/add_camera.html' %}
-  </div>
-
-</div>
 
 <script type="text/javascript">
 jQuery(document).ready(function($) {

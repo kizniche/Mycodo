@@ -72,7 +72,7 @@ class InputModule(AbstractInput):
 
         if not testing:
             self.logger = logging.getLogger(
-                "mycodo.inputs.max31856_{id}".format(id=input_dev.id))
+                "mycodo.max31856_{id}".format(id=input_dev.unique_id.split('-')[0]))
             self.pin_clock = input_dev.pin_clock
             self.pin_cs = input_dev.pin_cs
             self.pin_miso = input_dev.pin_miso

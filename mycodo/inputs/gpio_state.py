@@ -31,7 +31,7 @@ class InputModule(AbstractInput):
         if not testing:
             import RPi.GPIO as GPIO
             self.logger = logging.getLogger(
-                "mycodo.inputs.gpio_state_{id}".format(id=input_dev.id))
+                "mycodo.gpio_state_{id}".format(id=input_dev.unique_id.split('-')[0]))
             self.location = int(input_dev.gpio_location)
             self.gpio = GPIO
             self.gpio.setmode(self.gpio.BCM)

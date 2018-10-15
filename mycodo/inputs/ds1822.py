@@ -41,7 +41,7 @@ class InputModule(AbstractInput):
         if not testing:
             from w1thermsensor import W1ThermSensor
             self.logger = logging.getLogger(
-                "mycodo.inputs.ds1822_{id}".format(id=input_dev.id))
+                "mycodo.ds1822_{id}".format(id=input_dev.unique_id.split('-')[0]))
             self.location = input_dev.location
             self.resolution = input_dev.resolution
             self.convert_to_unit = input_dev.convert_to_unit

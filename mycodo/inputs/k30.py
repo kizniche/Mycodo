@@ -33,7 +33,7 @@ class InputModule(AbstractInput):
         if not testing:
             import serial
             self.logger = logging.getLogger(
-                "mycodo.inputs.k30_{id}".format(id=input_dev.id))
+                "mycodo.k30_{id}".format(id=input_dev.unique_id.split('-')[0]))
             self.uart_location = input_dev.uart_location
             self.baud_rate = input_dev.baud_rate
             self.convert_to_unit = input_dev.convert_to_unit

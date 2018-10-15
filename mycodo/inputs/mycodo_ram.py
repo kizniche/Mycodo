@@ -32,7 +32,7 @@ class InputModule(AbstractInput):
 
         if not testing:
             self.logger = logging.getLogger(
-                "mycodo.inputs.mycodo_ram_{id}".format(id=input_dev.id))
+                "mycodo.mycodo_ram_{id}".format(id=input_dev.unique_id.split('-')[0]))
             self.convert_to_unit = input_dev.convert_to_unit
             self.control = DaemonControl()
 

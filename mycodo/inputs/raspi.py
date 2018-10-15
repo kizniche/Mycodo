@@ -29,7 +29,7 @@ class InputModule(AbstractInput):
 
         if not testing:
             self.logger = logging.getLogger(
-                "mycodo.inputs.raspi_{id}".format(id=input_dev.id))
+                "mycodo.raspi_{id}".format(id=input_dev.unique_id.split('-')[0]))
             self.convert_to_unit = input_dev.convert_to_unit
 
     def __repr__(self):
@@ -107,7 +107,7 @@ class RaspberryPiGPUTemp(AbstractInput):
 
         if not testing:
             self.logger = logging.getLogger(
-                "mycodo.inputs.raspi_{id}".format(id=input_dev.id))
+                "mycodo.inputs.raspi_{id}".format(id=input_dev.unique_id.split('-')[0]))
             self.convert_to_unit = input_dev.convert_to_unit
 
     def __repr__(self):

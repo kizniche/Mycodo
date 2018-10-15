@@ -82,7 +82,7 @@ class InputModule(AbstractInput):
             import pigpio
             from mycodo.mycodo_client import DaemonControl
             self.logger = logging.getLogger(
-                'mycodo.inputs.dht22_{id}'.format(id=input_dev.id))
+                'mycodo.dht22_{id}'.format(id=input_dev.unique_id.split('-')[0]))
 
             self.convert_to_unit = input_dev.convert_to_unit
             self.power_output_id = input_dev.power_output_id

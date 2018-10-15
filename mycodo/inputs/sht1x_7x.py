@@ -47,7 +47,7 @@ class InputModule(AbstractInput):
             from sht_sensor import Sht
             from sht_sensor import ShtVDDLevel
             self.logger = logging.getLogger(
-                "mycodo.inputs.sht1x_7x_{id}".format(id=input_dev.id))
+                "mycodo.sht1x_7x_{id}".format(id=input_dev.unique_id.split('-')[0]))
             self.gpio = int(input_dev.gpio_location)
             self.clock_pin = input_dev.clock_pin
             self.convert_to_unit = input_dev.convert_to_unit

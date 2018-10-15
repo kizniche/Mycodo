@@ -59,7 +59,7 @@ class ADCModule(object):
             import smbus
             from MCP342x import MCP342x
             self.logger = logging.getLogger(
-                'mycodo.mcp342x_{id}'.format(id=input_dev.id))
+                'mycodo.mcp342x_{id}'.format(id=input_dev.unique_id.split('-')[0]))
             self.bus = smbus.SMBus(self.i2c_bus)
             self.adc = MCP342x(self.bus,
                                self.i2c_address,

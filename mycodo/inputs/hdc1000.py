@@ -86,7 +86,7 @@ class InputModule(AbstractInput):
 
         if not testing:
             self.logger = logging.getLogger(
-                "mycodo.inputs.hdc1000_{id}".format(id=input_dev.id))
+                "mycodo.hdc1000_{id}".format(id=input_dev.unique_id.split('-')[0]))
             self.i2c_bus = input_dev.i2c_bus
             self.i2c_address = 0x40  # HDC1000-F Address
             self.convert_to_unit = input_dev.convert_to_unit

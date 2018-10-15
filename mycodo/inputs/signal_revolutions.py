@@ -36,7 +36,7 @@ class InputModule(AbstractInput):
         if not testing:
             import pigpio
             self.logger = logging.getLogger(
-                "mycodo.inputs.signal_revolutions_{id}".format(id=input_dev.id))
+                "mycodo.signal_revolutions_{id}".format(id=input_dev.unique_id.split('-')[0]))
             self.gpio = int(input_dev.gpio_location)
             self.convert_to_unit = input_dev.convert_to_unit
             self.weighting = input_dev.weighting

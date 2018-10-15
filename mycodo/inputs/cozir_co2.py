@@ -41,7 +41,7 @@ class InputModule(AbstractInput):
         if not testing:
             from pycozir import Cozir
             self.logger = logging.getLogger(
-                "mycodo.inputs.cozir_{id}".format(id=input_dev.id))
+                "mycodo.cozir_{id}".format(id=input_dev.unique_id.split('-')[0]))
             self.uart_location = input_dev.uart_location
             self.convert_to_unit = input_dev.convert_to_unit
             self.sensor = Cozir(self.uart_location)

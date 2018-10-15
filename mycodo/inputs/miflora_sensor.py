@@ -46,7 +46,7 @@ class InputModule(AbstractInput):
             from miflora.miflora_poller import MiFloraPoller
             from btlewrap import BluepyBackend
             self.logger = logging.getLogger(
-                "mycodo.inputs.miflora_{id}".format(id=input_dev.id))
+                "mycodo.miflora_{id}".format(id=input_dev.unique_id.split('-')[0]))
             self.location = input_dev.location
             self.bt_adapter = input_dev.bt_adapter
             self.convert_to_unit = input_dev.convert_to_unit

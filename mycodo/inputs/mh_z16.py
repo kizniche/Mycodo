@@ -52,7 +52,7 @@ class InputModule(AbstractInput):
 
         if not testing:
             self.logger = logging.getLogger(
-                "mycodo.inputs.mh_z16_{id}".format(id=input_dev.id))
+                "mycodo.mh_z16_{id}".format(id=input_dev.unique_id.split('-')[0]))
             self.interface = input_dev.interface
             self.uart_location = input_dev.uart_location
             self.convert_to_unit = input_dev.convert_to_unit

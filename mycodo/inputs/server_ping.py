@@ -38,7 +38,7 @@ class InputModule(AbstractInput):
 
         if not testing:
             self.logger = logging.getLogger(
-                "mycodo.inputs.server_ping_{id}".format(id=input_dev.id))
+                "mycodo.server_ping_{id}".format(id=input_dev.unique_id.split('-')[0]))
             self.location = input_dev.location
             self.times_check = input_dev.times_check
             self.deadline = input_dev.deadline

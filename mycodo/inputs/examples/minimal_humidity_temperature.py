@@ -42,7 +42,7 @@ class InputModule(AbstractInput):
             self.logger = logging.getLogger(
                 "mycodo.inputs.{name_lower}_{id}".format(
                     name_lower=INPUT_INFORMATION['input_name_unique'].lower(),
-                    id=input_dev.id))
+                    id=input_dev.unique_id.split('-')[0]))
             self.convert_to_unit = input_dev.convert_to_unit
             self.interface = input_dev.interface
 
