@@ -1,9 +1,6 @@
 # Mycodo files
-mycodo_virtualenv/
-camera-stills/
-camera-video/
-camera-timelapse/
-src/
+env/
+camera/
 *.db
 *.pem
 *.bak
