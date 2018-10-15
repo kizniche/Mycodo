@@ -28,7 +28,7 @@ class InputModule(AbstractInput):
 
     def __init__(self, input_dev, testing=False):
         super(InputModule, self).__init__()
-        self.logger = logging.getLogger("mycodo.inputs.tsl2591")
+        self.logger = logging.getLogger("mycodo.inputs.tsl2591_sensor")
         self._lux = None
 
         if not testing:
