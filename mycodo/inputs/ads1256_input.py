@@ -82,21 +82,20 @@ class ADCModule(object):
                 'mycodo.ads1256_{id}'.format(id=input_dev.unique_id.split('-')[0]))
 
             self.ads1256 = pyadda
+            self.GPIO = GPIO
 
             # Raspberry pi pin numbering setup
-            GPIO.setwarnings(False)
-            GPIO.setmode(GPIO.BCM)
+            self.GPIO.setwarnings(False)
+            self.GPIO.setmode(GPIO.BCM)
 
-            PIN_DRDY = 17
+            self.PIN_DRDY = 17
 
-            GPIO.setup(PIN_DRDY, GPIO.IN)
+            self.GPIO.setup(self.PIN_DRDY, GPIO.IN)
 
             # define gain, sampling rate, and scan mode
-            gain = ADS1256_GAIN[str(self.adc_gain)]
-            samplingRate = ADS1256_DRATE[str(self.adc_sample_speed)]
-            scanMode = ADS1256_SMODE['SINGLE_ENDED']
-
-            self.ads1256.startADC(gain, samplingRate, scanMode)
+            self.gain = ADS1256_GAIN[str(self.adc_gain)]
+            self.samplingRate = ADS1256_DRATE[str(self.adc_sample_speed)]
+            self.scanMode = ADS1256_SMODE['SINGLE_ENDED']
 
     def __iter__(self):
         """
@@ -118,12 +117,38 @@ class ADCModule(object):
 
     def get_measurement(self):
         self._voltage = None
+        self.return_voltage = None
 
-        if self.ads1256.collectData() is None:
-            self.logger.error("Could not read chip")
-        else:
-            voltage = self.ads1256.readChannelVolts(self.adc_channel)
-            return voltage
+        adcChannels = 8 - 4 * self.scanMode
+
+        def interruptInterpreter(ch):
+            if ch == self.PIN_DRDY:
+                # collect data from ads1256
+                collect_data = self.ads1256.collectData()
+
+                self.logger.error("TEST00: {}".format(collect_data))
+
+                if collect_data is None:
+                    self.logger.error("Could not read chip")
+                else:
+                    volts = self.ads1256.readAllChannelsVolts(adcChannels)
+                    self.logger.error("TEST01: {}".format(volts))
+
+                    i = 0
+                    for val in volts:
+                        if i == self.adc_channel:
+                            self.return_voltage = val * 1000
+                        self.logger.error("Channel {:d} - {:.3f}mV".format(i, val * 1000))
+                        i += 1
+
+        self.ads1256.startADC(self.gain, self.samplingRate, self.scanMode)
+
+        # wait for DRDY low - indicating data is ready
+        self.GPIO.add_event_detect(self.PIN_DRDY, self.GPIO.FALLING, callback=interruptInterpreter)
+
+        self.ads1256.stopADC()
+
+        return self.return_voltage
 
     def read(self):
         """
