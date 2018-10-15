@@ -146,6 +146,9 @@ class ADCModule(object):
         # wait for DRDY low - indicating data is ready
         self.GPIO.add_event_detect(self.PIN_DRDY, self.GPIO.FALLING, callback=interruptInterpreter)
 
+        while not self.return_voltage:
+            pass
+
         self.ads1256.stopADC()
 
         return self.return_voltage
