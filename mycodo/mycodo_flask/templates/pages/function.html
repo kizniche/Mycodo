@@ -37,14 +37,14 @@
     <div style="clear: both; padding: 1em 0;"></div>
 
   {% if pid %}
-    <h4>{{_('PID Controllers')}} <a href="/help#pid-controller" target="_blank"><span style="font-size: 16px" class="fas fa-question-circle"></span></a></h4>
+    <h4>{{_('PID')}} <a href="/help#pid-controller" target="_blank"><span style="font-size: 16px" class="fas fa-question-circle"></span></a></h4>
     <p>{{_('PID controllers couple an input with a device connected to an output to regulate an environmental condition. For example, this could be a heater and a temperature sensor, allowing the regulation of temperature.')}}</p>
     {% include 'pages/function_options/pid.html' %}
   {% endif %}
 
   {% if conditional %}
-    <h4>{{_('Conditionals')}} <a href="/help#conditional-statements" target="_blank"><span style="font-size: 16px" class="fas fa-question-circle"></span></a></h4>
-    <p>{{_('Conditionals allow certain actions to be carried out when a certain set of conditions are met.')}} See the <a href="/help#conditional-statements">manual</a> for more information.</p>
+    <h4>{{_('Conditional')}} <a href="/help#conditional-statements" target="_blank"><span style="font-size: 16px" class="fas fa-question-circle"></span></a></h4>
+    <p>{{_('Conditional controllers allow certain actions to be carried out when a certain set of conditions are met.')}} See the <a href="/help#conditional-statements">manual</a> for more information.</p>
     {% include 'pages/function_options/conditional.html' %}
   {% endif %}
 

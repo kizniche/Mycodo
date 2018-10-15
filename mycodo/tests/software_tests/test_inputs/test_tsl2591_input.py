@@ -102,5 +102,5 @@ def test_tsl2591_sensor_read_logs_unknown_errors():
     with LogCapture() as log_cap:
         with mock.patch('mycodo.inputs.tsl2591_sensor.InputModule.get_measurement', side_effect=Exception('msg')):
             TSL2591Sensor(None, testing=True).read()
-    expected_logs = ('mycodo.inputs.tsl2591_sensor', 'ERROR', 'InputModule raised an exception when taking a reading: msg')
+    expected_logs = ('mycodo.inputs.tsl2591', 'ERROR', 'InputModule raised an exception when taking a reading: msg')
     assert expected_logs in log_cap.actual()
