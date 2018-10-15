@@ -149,6 +149,8 @@ class ADCModule(object):
         while not self.return_voltage:
             pass
 
+        self.GPIO.remove_event_detect(self.PIN_DRDY)
+
         self.ads1256.stopADC()
 
         return self.return_voltage
