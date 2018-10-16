@@ -84,6 +84,7 @@ class ADCModule(object):
             from ADS1256_definitions import NEG_AIN0
 
             from pipyadc_py3 import ADS1256
+            import glob
 
             ################################################################################
             ###  STEP 0: CONFIGURE CHANNELS AND USE DEFAULT OPTIONS FROM CONFIG FILE: ###
@@ -130,10 +131,14 @@ class ADCModule(object):
             self.logger = logging.getLogger(
                 'mycodo.ads1256_{id}'.format(id=input_dev.unique_id.split('-')[0]))
 
-            self.ads = ADS1256()
-            self.ads.cal_self()
-
-        self.running = True
+            if glob.glob('/dev/spi*'):
+                self.ads = ADS1256()
+                self.ads.cal_self()
+                self.running = True
+            else:
+                raise Exception(
+                    "SPI device /dev/spi* not found. Ensure SPI is enabled "
+                    "and the device is recognized/setup by linux.")
 
     def __iter__(self):
         """
