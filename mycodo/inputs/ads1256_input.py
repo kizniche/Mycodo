@@ -83,7 +83,7 @@ class ADCModule(object):
             from ADS1256_definitions import NEG_AINCOM
             from ADS1256_definitions import NEG_AIN0
 
-            from pipyadc import ADS1256
+            from pipyadc_py3 import ADS1256
 
             ################################################################################
             ###  STEP 0: CONFIGURE CHANNELS AND USE DEFAULT OPTIONS FROM CONFIG FILE: ###
