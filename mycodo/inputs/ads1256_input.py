@@ -13,7 +13,7 @@ INPUT_INFORMATION = {
 
     'dependencies_module': [
         ('pip-pypi', 'wiringpi', 'wiringpi'),
-        ('pip-git', 'pipyadc', 'git://github.com/kizniche/PiPyADC.git#egg=pipyadc')  # PiPyADC ported to Python3
+        ('pip-git', 'pipyadc_py3', 'git://github.com/kizniche/PiPyADC-py3.git#egg=pipyadc_py3')  # PiPyADC ported to Python3
     ],
     'interfaces': ['UART'],
     'analog_to_digital_converter': True,
