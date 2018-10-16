@@ -98,6 +98,8 @@ class ADCModule(object):
             self.samplingRate = ADS1256_DRATE[str(self.adc_sample_speed)]
             self.scanMode = ADS1256_SMODE['SINGLE_ENDED']
 
+        self.running = True
+
     def __iter__(self):
         """
         Support the iterator protocol.
@@ -118,46 +120,37 @@ class ADCModule(object):
 
     def get_measurement(self):
         self._voltage = None
-        self.return_voltage = None
+        self.error = False
+        self.list_values = []
 
         time_now = time.time()
-
-        def interruptInterpreter(ch):
-            if ch == self.PIN_DRDY:
-                adcChannels = 8 - 4 * self.scanMode
-
-                collect_data = self.ads1256.collectData()
-                self.logger.error("TEST00: {}".format(collect_data))
-
-                if collect_data is None:
-                    self.logger.error("Could not read chip")
-
-                volts = self.ads1256.readAllChannelsVolts(adcChannels)
-                self.logger.error("TEST01: {}".format(volts))
-
-                i = 0
-                for val in volts:
-                    if i == self.adc_channel:
-                        self.return_voltage = val * 1000
-                    self.logger.error(
-                        "Channel {:d} - {:.3f}mV".format(i, val * 1000))
-                    i += 1
-
-                self.GPIO.remove_event_detect(self.PIN_DRDY)
-                self.ads1256.stopADC()
 
         self.ads1256.startADC(self.gain, self.samplingRate, self.scanMode)
 
         # wait for DRDY low - indicating data is ready
-        self.GPIO.add_event_detect(
-            self.PIN_DRDY, self.GPIO.FALLING, callback=interruptInterpreter)
+        self.GPIO.add_event_detect(self.PIN_DRDY,
+                                   self.GPIO.FALLING,
+                                   callback=self.interruptInterpreter)
 
         while (self.running and
-               self.return_voltage is None and
-               time_now + 10 > time.time()):
+               len(self.list_values) < 2 and  # 1st measurement will be 0.0
+               time_now + 10 > time.time()):  # Timeout in 10 seconds of trying
             time.sleep(0.1)
 
-        return self.return_voltage
+        self.GPIO.remove_event_detect(self.PIN_DRDY)
+        self.ads1256.stopADC()
+
+        return self.list_values[1]  # Return 2nd measurement
+
+    def interruptInterpreter(self, ch):
+        if ch == self.PIN_DRDY:
+            try:
+                self.ads1256.collectData()
+                # volts_all_channels = self.ads1256.readAllChannelsVolts(8)
+                # self.logger.error("All Voltages: {}".format(volts_all_channels))
+                self.list_values.append(self.ads1256.readChannelVolts(self.adc_channel))
+            except:
+                self.error = True
 
     def read(self):
         """
@@ -175,7 +168,7 @@ class ADCModule(object):
             if self._voltage is not None:
                 return  # success - no errors
         except Exception as e:
-            self.logger.error(
+            self.logger.exception(
                 "{cls} raised an exception when taking a reading: "
                 "{err}".format(cls=type(self).__name__, err=e))
         finally:
@@ -188,11 +181,13 @@ class ADCModule(object):
 
 if __name__ == "__main__":
     from types import SimpleNamespace
+
     input_dev_ = SimpleNamespace()
     input_dev_.id = 1
+    input_dev_.unique_id = '1234-5678'
     input_dev_.adc_gain = '1'
+    input_dev_.adc_sample_speed = '10'
     input_dev_.adc_channel = 0
-    input_dev_.adc_sample_speed = '30000'
 
     ads = ADCModule(input_dev_)
     print("Channel 0: {}".format(ads.next()))

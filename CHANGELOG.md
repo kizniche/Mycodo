@@ -9,7 +9,7 @@
 ### Bugfixes
 
  - Fix authentication issue with Remote Administration
- - Fix dependency issue with ADS1256 module
+ - Fix issues with ADS1256 module ([#537](https://github.com/kizniche/mycodo/issues/537))
 
 
 ## 6.4.3 (2018-10-13)
