@@ -1,5 +1,6 @@
 # coding=utf-8
 import logging
+import time
 
 # Input information
 INPUT_INFORMATION = {
@@ -119,39 +120,42 @@ class ADCModule(object):
         self._voltage = None
         self.return_voltage = None
 
-        adcChannels = 8 - 4 * self.scanMode
+        time_now = time.time()
 
         def interruptInterpreter(ch):
             if ch == self.PIN_DRDY:
-                # collect data from ads1256
-                collect_data = self.ads1256.collectData()
+                adcChannels = 8 - 4 * self.scanMode
 
+                collect_data = self.ads1256.collectData()
                 self.logger.error("TEST00: {}".format(collect_data))
 
                 if collect_data is None:
                     self.logger.error("Could not read chip")
-                else:
-                    volts = self.ads1256.readAllChannelsVolts(adcChannels)
-                    self.logger.error("TEST01: {}".format(volts))
 
-                    i = 0
-                    for val in volts:
-                        if i == self.adc_channel:
-                            self.return_voltage = val * 1000
-                        self.logger.error("Channel {:d} - {:.3f}mV".format(i, val * 1000))
-                        i += 1
+                volts = self.ads1256.readAllChannelsVolts(adcChannels)
+                self.logger.error("TEST01: {}".format(volts))
+
+                i = 0
+                for val in volts:
+                    if i == self.adc_channel:
+                        self.return_voltage = val * 1000
+                    self.logger.error(
+                        "Channel {:d} - {:.3f}mV".format(i, val * 1000))
+                    i += 1
+
+                self.GPIO.remove_event_detect(self.PIN_DRDY)
+                self.ads1256.stopADC()
 
         self.ads1256.startADC(self.gain, self.samplingRate, self.scanMode)
 
         # wait for DRDY low - indicating data is ready
-        self.GPIO.add_event_detect(self.PIN_DRDY, self.GPIO.FALLING, callback=interruptInterpreter)
+        self.GPIO.add_event_detect(
+            self.PIN_DRDY, self.GPIO.FALLING, callback=interruptInterpreter)
 
-        while not self.return_voltage:
-            pass
-
-        self.GPIO.remove_event_detect(self.PIN_DRDY)
-
-        self.ads1256.stopADC()
+        while (self.running and
+               self.return_voltage is None and
+               time_now + 10 > time.time()):
+            time.sleep(0.1)
 
         return self.return_voltage
 
