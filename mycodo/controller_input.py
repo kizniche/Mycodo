@@ -185,11 +185,18 @@ class InputController(threading.Thread):
                         bus=self.input_dev.i2c_bus,
                         i2c=self.input_dev.i2c_location)
                 elif self.interface == 'UART':
-                    self.adc_lock_file = "/var/lock/mycodo_adc_uart-{clock}-{cs}-{miso}-{mosi}".format(
-                        clock=self.input_dev.pin_clock,
-                        cs=self.input_dev.pin_cs,
-                        miso=self.input_dev.pin_miso,
-                        mosi=self.input_dev.pin_mosi)
+                    if None not in [self.input_dev.pin_clock,
+                                    self.input_dev.pin_cs,
+                                    self.input_dev.pin_miso,
+                                    self.input_dev.pin_mosi]:
+                        self.adc_lock_file = "/var/lock/mycodo_adc_uart-{clock}-{cs}-{miso}-{mosi}".format(
+                            clock=self.input_dev.pin_clock,
+                            cs=self.input_dev.pin_cs,
+                            miso=self.input_dev.pin_miso,
+                            mosi=self.input_dev.pin_mosi)
+                    else:
+                        self.adc_lock_file = "/var/lock/mycodo_adc_uart-{dev}".format(
+                            dev=self.device)
 
             else:
                 # Load input module

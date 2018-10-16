@@ -19,6 +19,9 @@ INPUT_INFORMATION = {
     'options_enabled': ['i2c_location', 'period', 'resolution', 'sensitivity', 'pre_output'],
     'options_disabled': ['interface'],
 
+    'dependencies_module': [
+        ('pip-pypi', 'smbus2', 'smbus2')
+    ],
     'interfaces': ['I2C'],
     'i2c_location': ['0x23', '0x5c'],
     'i2c_address_editable': False,
@@ -59,7 +62,7 @@ class InputModule(AbstractInput):
         self._lux = None
 
         if not testing:
-            import smbus
+            from smbus2 import SMBus
             self.logger = logging.getLogger(
                 "mycodo.bh1750_{id}".format(id=input_dev.unique_id.split('-')[0]))
             self.i2c_address = int(str(input_dev.i2c_location), 16)
@@ -67,7 +70,7 @@ class InputModule(AbstractInput):
             self.resolution = input_dev.resolution
             self.sensitivity = input_dev.sensitivity
             self.convert_to_unit = input_dev.convert_to_unit
-            self.i2c_bus = smbus.SMBus(self.i2c_bus)
+            self.i2c_bus = SMBus(self.i2c_bus)
             self.power_down()
             self.set_sensitivity(sensitivity=self.sensitivity)
 

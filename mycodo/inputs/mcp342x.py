@@ -13,6 +13,7 @@ INPUT_INFORMATION = {
     'options_disabled': ['interface', 'i2c_location'],
 
     'dependencies_module': [
+        ('pip-pypi', 'smbus2', 'smbus2'),
         ('pip-pypi', 'MCP342x', 'MCP342x==0.3.3')
     ],
     'interfaces': ['I2C'],
@@ -56,11 +57,11 @@ class ADCModule(object):
         self.adc_resolution = input_dev.adc_resolution
 
         if not testing:
-            import smbus
+            from smbus2 import SMBus
             from MCP342x import MCP342x
             self.logger = logging.getLogger(
                 'mycodo.mcp342x_{id}'.format(id=input_dev.unique_id.split('-')[0]))
-            self.bus = smbus.SMBus(self.i2c_bus)
+            self.bus = SMBus(self.i2c_bus)
             self.adc = MCP342x(self.bus,
                                self.i2c_address,
                                channel=self.adc_channel,
@@ -120,13 +121,14 @@ if __name__ == "__main__":
             self.__dict__.update(kwargs)
 
     input_dev = Data(id='00001',
+                     unique_id='asdf-ghjk',
                      location='0x68',
                      i2c_bus=1,
                      adc_channel=0,
                      adc_gain=1,
                      adc_resolution=12)
 
-    mcp = MCP342xRead(input_dev)
+    mcp = ADCModule(input_dev)
 
     while 1:
         mcp.read()

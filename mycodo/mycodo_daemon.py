@@ -392,9 +392,8 @@ class DaemonController:
     def run(self):
         self.start_all_controllers()
         self.daemon_startup_time = timeit.default_timer() - self.startup_timer
-        self.logger.info("Mycodo daemon v{ver} started in {time:.3f}"
-                         " seconds".format(ver=MYCODO_VERSION,
-                                           time=self.daemon_startup_time))
+        self.logger.info("Mycodo daemon started in {sec:.3f} seconds".format(
+            sec=self.daemon_startup_time))
         self.startup_stats()
         try:
             # loop until daemon is instructed to shut down

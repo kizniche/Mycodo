@@ -36,3 +36,4 @@ WTForms == 2.1
 # Devices and Sensors
 picamera == 1.13
 RPi.GPIO
+smbus2 == 0.2.1

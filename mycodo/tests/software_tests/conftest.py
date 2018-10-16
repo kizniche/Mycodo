@@ -13,7 +13,7 @@ patch.dict("sys.modules",
            Adafruit_TMP=MagicMock(),
            w1thermsensor=MagicMock(),
            sht_sensor=MagicMock(),
-           smbus=MagicMock(),
+           smbus2=MagicMock(),
            ).start()
 
 import pytest

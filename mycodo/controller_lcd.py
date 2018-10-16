@@ -56,7 +56,7 @@ import time
 import timeit
 
 import RPi.GPIO as GPIO
-import smbus
+from smbus2 import SMBus
 
 from mycodo.config import MYCODO_VERSION
 from mycodo.config_devices_units import MEASUREMENTS
@@ -199,7 +199,7 @@ class LCDController(threading.Thread):
 
             # Setup I2C bus
             try:
-                self.bus = smbus.SMBus(self.lcd_i2c_bus)
+                self.bus = SMBus(self.lcd_i2c_bus)
             except Exception as except_msg:
                 self.logger.exception(
                     "Could not initialize I2C bus: {err}".format(

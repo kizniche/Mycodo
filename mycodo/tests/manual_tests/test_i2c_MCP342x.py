@@ -3,12 +3,13 @@
 
 import argparse
 import logging
-import os
 import sys
-import smbus
 import time
+
 import RPi.GPIO as GPIO
+import os
 from MCP342x import MCP342x
+from smbus2 import SMBus
 
 
 class MCP342x_read(object):
@@ -22,7 +23,7 @@ class MCP342x_read(object):
             self.I2C_bus_number = 1
         else:
             self.I2C_bus_number = 0
-        self.bus = smbus.SMBus(self.I2C_bus_number)
+        self.bus = SMBus(self.I2C_bus_number)
         self.lock_file = "/var/lock/mycodo_adc_0x{:02X}.pid".format(self.i2c_address)
 
     def read(self):

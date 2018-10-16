@@ -4,11 +4,12 @@
 #  LCD Code used in part from:
 # <http://code.activestate.com/recipes/577231-discrete-lcd-controller/>
 
-import RPi.GPIO as GPIO
-import smbus
-import os
 import sys
 import time
+
+import RPi.GPIO as GPIO
+import os
+from smbus2 import SMBus
 
 # Check for root priveileges
 if not os.geteuid() == 0:
@@ -53,7 +54,7 @@ try:
         I2C_bus_number = 1
     else:
         I2C_bus_number = 0
-    bus = smbus.SMBus(I2C_bus_number)
+    bus = SMBus(I2C_bus_number)
 except Exception as except_msg:
     print("Could not initialize I2C bus: {}".format(
         except_msg))

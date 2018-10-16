@@ -1,6 +1,5 @@
 # coding=utf-8
 import logging
-import time
 
 # Input information
 INPUT_INFORMATION = {
@@ -13,9 +12,8 @@ INPUT_INFORMATION = {
     'options_disabled': ['interface'],
 
     'dependencies_module': [
-        ('internal', 'file-exists /usr/local/include/bcm2835.h', 'bcm2835'),
-        ('pip-pypi', 'RPi.GPIO', 'RPi.GPIO'),
-        ('pip-git', 'pyadda', 'git://github.com/jaxbulsara/pyadda.git#egg=pyadda')
+        ('pip-pypi', 'wiringpi', 'wiringpi'),
+        ('pip-git', 'pipyadc', 'git://github.com/kizniche/PiPyADC.git#egg=pipyadc')  # PiPyADC ported to Python3
     ],
     'interfaces': ['UART'],
     'analog_to_digital_converter': True,
@@ -73,30 +71,67 @@ class ADCModule(object):
         self.adc_channel = input_dev.adc_channel
 
         if not testing:
-            import RPi.GPIO as GPIO
-            import pyadda
-            from adc_consts import ADS1256_GAIN
-            from adc_consts import ADS1256_DRATE
-            from adc_consts import ADS1256_SMODE
+            from ADS1256_definitions import POS_AIN0
+            from ADS1256_definitions import POS_AIN1
+            from ADS1256_definitions import POS_AIN2
+            from ADS1256_definitions import POS_AIN3
+            from ADS1256_definitions import POS_AIN4
+            from ADS1256_definitions import POS_AIN5
+            from ADS1256_definitions import POS_AIN6
+            from ADS1256_definitions import POS_AIN7
+            from ADS1256_definitions import POS_AINCOM
+            from ADS1256_definitions import NEG_AINCOM
+            from ADS1256_definitions import NEG_AIN0
+
+            from pipyadc import ADS1256
+
+            ################################################################################
+            ###  STEP 0: CONFIGURE CHANNELS AND USE DEFAULT OPTIONS FROM CONFIG FILE: ###
+            #
+            # For channel code values (bitmask) definitions, see ADS1256_definitions.py.
+            # The values representing the negative and positive input pins connected to
+            # the ADS1256 hardware multiplexer must be bitwise OR-ed to form eight-bit
+            # values, which will later be sent to the ADS1256 MUX register. The register
+            # can be explicitly read and set via ADS1256.mux property, but here we define
+            # a list of differential channels to be input to the ADS1256.read_sequence()
+            # method which reads all of them one after another.
+            #
+            # ==> Each channel in this context represents a differential pair of physical
+            # input pins of the ADS1256 input multiplexer.
+            #
+            # ==> For single-ended measurements, simply select AINCOM as the negative input.
+            #
+            # AINCOM does not have to be connected to AGND (0V), but it is if the jumper
+            # on the Waveshare board is set.
+            #
+            # Input pin for the potentiometer on the Waveshare Precision ADC board:
+            POTI = POS_AIN0 | NEG_AINCOM
+            # Light dependant resistor of the same board:
+            LDR = POS_AIN1 | NEG_AINCOM
+            # The other external input screw terminals of the Waveshare board:
+            EXT2, EXT3, EXT4 = POS_AIN2 | NEG_AINCOM, POS_AIN3 | NEG_AINCOM, POS_AIN4 | NEG_AINCOM
+            EXT5, EXT6, EXT7 = POS_AIN5 | NEG_AINCOM, POS_AIN6 | NEG_AINCOM, POS_AIN7 | NEG_AINCOM
+
+            # You can connect any pin as well to the positive as to the negative ADC input.
+            # The following reads the voltage of the potentiometer with negative polarity.
+            # The ADC reading should be identical to that of the POTI channel, but negative.
+            POTI_INVERTED = POS_AINCOM | NEG_AIN0
+
+            # For fun, connect both ADC inputs to the same physical input pin.
+            # The ADC should always read a value close to zero for this.
+            SHORT_CIRCUIT = POS_AIN0 | NEG_AIN0
+
+            # Specify here an arbitrary length list (tuple) of arbitrary input channel pair
+            # eight-bit code values to scan sequentially from index 0 to last.
+            # Eight channels fit on the screen nicely for this example..
+            self.CH_SEQUENCE = (POTI, LDR, EXT2, EXT3, EXT4, EXT7, POTI_INVERTED, SHORT_CIRCUIT)
+            ################################################################################
 
             self.logger = logging.getLogger(
                 'mycodo.ads1256_{id}'.format(id=input_dev.unique_id.split('-')[0]))
 
-            self.ads1256 = pyadda
-            self.GPIO = GPIO
-
-            # Raspberry pi pin numbering setup
-            self.GPIO.setwarnings(False)
-            self.GPIO.setmode(GPIO.BCM)
-
-            self.PIN_DRDY = 17
-
-            self.GPIO.setup(self.PIN_DRDY, GPIO.IN)
-
-            # define gain, sampling rate, and scan mode
-            self.gain = ADS1256_GAIN[str(self.adc_gain)]
-            self.samplingRate = ADS1256_DRATE[str(self.adc_sample_speed)]
-            self.scanMode = ADS1256_SMODE['SINGLE_ENDED']
+            self.ads = ADS1256()
+            self.ads.cal_self()
 
         self.running = True
 
@@ -120,37 +155,12 @@ class ADCModule(object):
 
     def get_measurement(self):
         self._voltage = None
-        self.error = False
-        self.list_values = []
 
-        time_now = time.time()
+        raw_channels = self.ads.read_sequence(self.CH_SEQUENCE)
+        voltages = [i * self.ads.v_per_digit for i in raw_channels]
 
-        self.ads1256.startADC(self.gain, self.samplingRate, self.scanMode)
+        return voltages[self.adc_channel]
 
-        # wait for DRDY low - indicating data is ready
-        self.GPIO.add_event_detect(self.PIN_DRDY,
-                                   self.GPIO.FALLING,
-                                   callback=self.interruptInterpreter)
-
-        while (self.running and
-               len(self.list_values) < 2 and  # 1st measurement will be 0.0
-               time_now + 10 > time.time()):  # Timeout in 10 seconds of trying
-            time.sleep(0.1)
-
-        self.GPIO.remove_event_detect(self.PIN_DRDY)
-        self.ads1256.stopADC()
-
-        return self.list_values[1]  # Return 2nd measurement
-
-    def interruptInterpreter(self, ch):
-        if ch == self.PIN_DRDY:
-            try:
-                self.ads1256.collectData()
-                # volts_all_channels = self.ads1256.readAllChannelsVolts(8)
-                # self.logger.error("All Voltages: {}".format(volts_all_channels))
-                self.list_values.append(self.ads1256.readChannelVolts(self.adc_channel))
-            except:
-                self.error = True
 
     def read(self):
         """

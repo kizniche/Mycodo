@@ -2,7 +2,7 @@
 import logging
 import time
 
-import smbus
+from smbus2 import SMBus
 
 from mycodo.inputs.base_input import AbstractInput
 from mycodo.inputs.sensorutils import convert_units
@@ -17,6 +17,9 @@ INPUT_INFORMATION = {
     'options_enabled': ['i2c_location', 'period', 'convert_unit', 'pre_output'],
     'options_disabled': ['interface'],
 
+    'dependencies_module': [
+        ('pip-pypi', 'smbus2', 'smbus2')
+    ],
     'interfaces': ['I2C'],
     'i2c_location': ['0x40'],
     'i2c_address_editable': True
@@ -43,7 +46,7 @@ class InputModule(AbstractInput):
             self.i2c_address = int(str(input_dev.i2c_location), 16)
             self.i2c_bus = input_dev.i2c_bus
             self.convert_to_unit = input_dev.convert_to_unit
-            self.bus = smbus.SMBus(self.i2c_bus)
+            self.bus = SMBus(self.i2c_bus)
             self.filter_average('lux', init_max=3)
 
     def __repr__(self):

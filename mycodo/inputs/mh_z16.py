@@ -36,6 +36,9 @@ INPUT_INFORMATION = {
     'options_enabled': ['i2c_location', 'uart_location', 'period', 'convert_unit', 'pre_output'],
     'options_disabled': ['interface'],
 
+    'dependencies_module': [
+        ('pip-pypi', 'smbus2', 'smbus2')
+    ],
     'interfaces': ['UART', 'I2C'],
     'i2c_location': ['0x63'],
     'i2c_address_editable': True
@@ -74,7 +77,7 @@ class InputModule(AbstractInput):
                             dev=self.uart_location))
 
             elif self.interface == 'I2C':
-                import smbus
+                from smbus2 import SMBus
 
                 self.i2c_address = int(str(input_dev.i2c_location), 16)
                 self.i2c_bus = input_dev.i2c_bus
@@ -88,7 +91,7 @@ class InputModule(AbstractInput):
                 self.RHR = 0x00 << 3
                 self.TXLVL = 0X08 << 3
                 self.RXLVL = 0X09 << 3
-                self.i2c = smbus.SMBus(self.i2c_bus)
+                self.i2c = SMBus(self.i2c_bus)
                 self.begin()
 
     def __repr__(self):

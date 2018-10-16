@@ -17,6 +17,9 @@ INPUT_INFORMATION = {
     'options_enabled': ['period', 'convert_unit', 'pre_output'],
     'options_disabled': ['interface', 'i2c_location'],
 
+    'dependencies_module': [
+        ('pip-pypi', 'smbus2', 'smbus2')
+    ],
     'interfaces': ['I2C'],
     'i2c_location': ['0x40'],
     'i2c_address_editable': False
@@ -38,13 +41,13 @@ class InputModule(AbstractInput):
         self._temperature = None
 
         if not testing:
-            import smbus
+            from smbus2 import SMBus
             self.logger = logging.getLogger(
                 "mycodo.sht2x_{id}".format(id=input_dev.unique_id.split('-')[0]))
             self.i2c_address = int(str(input_dev.i2c_location), 16)
             self.i2c_bus = input_dev.i2c_bus
             self.convert_to_unit = input_dev.convert_to_unit
-            self.sht2x = smbus.SMBus(self.i2c_bus)
+            self.sht2x = SMBus(self.i2c_bus)
 
     def __repr__(self):
         """  Representation of object """

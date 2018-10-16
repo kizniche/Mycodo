@@ -11,6 +11,10 @@
  - Fix authentication issue with Remote Administration
  - Fix issues with ADS1256 module ([#537](https://github.com/kizniche/mycodo/issues/537))
 
+### Miscellaneous
+
+ - Replace smbus with smbus2 ([#549](https://github.com/kizniche/mycodo/issues/549))
+
 
 ## 6.4.3 (2018-10-13)
 

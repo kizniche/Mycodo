@@ -12,7 +12,7 @@ import sys
 import time
 import argparse
 
-import smbus
+from smbus2 import SMBus
 
 channel_byte = {
     0: 0b00000001,
@@ -28,7 +28,7 @@ channel_byte = {
 
 def I2C_setup(i2c_bus, i2c_address, i2c_channel_setup):
     address = 0x70 + i2c_address % 10
-    bus = smbus.SMBus(i2c_bus)
+    bus = SMBus(i2c_bus)
     bus.write_byte(address, i2c_channel_setup)
     time.sleep(0.1)
     print("TCA9548A I2C channel status:{}".format(bin(bus.read_byte(address))))
