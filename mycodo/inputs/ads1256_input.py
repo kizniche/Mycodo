@@ -1,6 +1,8 @@
 # coding=utf-8
 import logging
 
+from flask_babel import lazy_gettext
+
 # Input information
 INPUT_INFORMATION = {
     'input_name_unique': 'ADS1256',
@@ -8,7 +10,7 @@ INPUT_INFORMATION = {
     'input_name': 'ADS1256',
     'measurements_name': 'Voltage (Analog-to-Digital Converter)',
     'measurements_list': ['voltage'],
-    'options_enabled': ['adc_channel', 'adc_gain', 'adc_sample_speed', 'adc_options', 'period', 'pre_output'],
+    'options_enabled': ['adc_channel', 'adc_gain', 'adc_sample_speed', 'custom_options', 'adc_options', 'period', 'pre_output'],
     'options_disabled': ['interface'],
 
     'dependencies_module': [
@@ -55,7 +57,25 @@ INPUT_INFORMATION = {
         ('2d5', '2.5')
     ],
     'adc_volts_min': -5.0,
-    'adc_volts_max': 5.0
+    'adc_volts_max': 5.0,
+
+    'custom_options': [
+        {
+            'id': 'adc_calibration',
+            'type': 'select',
+            'default_value': '',
+            'options_select': [
+                ('', 'No Calibration'),
+                ('IZ', 'Input Zero (IZ)'),
+                ('IFS', 'Input Full-scale (IFS)'),
+                ('TP', 'IZ + IFS Two-point'),
+                ('OFC', 'Set OFC Register'),
+                ('FSC', 'Set FSC Register')
+            ],
+            'name': lazy_gettext('Calibration'),
+            'phrase': lazy_gettext('Set the calibration method to perform during Input activation')
+        }
+    ]
 }
 
 
@@ -131,9 +151,28 @@ class ADCModule(object):
             self.logger = logging.getLogger(
                 'mycodo.ads1256_{id}'.format(id=input_dev.unique_id.split('-')[0]))
 
+            if input_dev.custom_options:
+                for each_option in input_dev.custom_options.split(';'):
+                    option = each_option.split(',')[0]
+                    value = each_option.split(',')[1]
+                    if option == 'adc_calibration':
+                        self.adc_calibration = value
+
             if glob.glob('/dev/spi*'):
                 self.ads = ADS1256()
-                self.ads.cal_self()
+
+                # Perform selected calibration
+                if self.adc_calibration == 'IZ':
+                    self.ads.cal_self_offset()
+                elif self.adc_calibration == 'IFS':
+                    self.ads.cal_self_gain()
+                elif self.adc_calibration == 'TP':
+                    self.ads.cal_self()
+                elif self.adc_calibration == 'OFC':
+                    self.ads.cal_system_offset()
+                elif self.adc_calibration == 'FSC':
+                    self.ads.cal_system_gain()
+
                 self.running = True
             else:
                 raise Exception(
