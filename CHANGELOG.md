@@ -1,3 +1,15 @@
+## 6.4.5 (Unreleased)
+
+### Bugfixes
+
+ - Fix issues with ADS1256 module ([#537](https://github.com/kizniche/mycodo/issues/537))
+ - Fix issue with saving float values
+
+### Miscellaneous
+
+ - Replace smbus with smbus2 ([#549](https://github.com/kizniche/mycodo/issues/549))
+
+
 ## 6.4.4 (2018-10-14)
 
 ### Features
