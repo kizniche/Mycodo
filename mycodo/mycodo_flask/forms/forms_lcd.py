@@ -53,8 +53,7 @@ class LCDMod(FlaskForm):
             message=lazy_gettext("Duration between calculating LCD output "
                                  "and applying to regulation must be between "
                                  "5 and 86400 seconds.")
-        )],
-        widget=NumberInput()
+        )]
     )
     lcd_type = SelectField(
         lazy_gettext('LCD Type'),

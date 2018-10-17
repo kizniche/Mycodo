@@ -1,5 +1,6 @@
 # coding=utf-8
 import logging
+import time
 
 from flask_babel import lazy_gettext
 
@@ -151,6 +152,8 @@ class ADCModule(object):
             self.logger = logging.getLogger(
                 'mycodo.ads1256_{id}'.format(id=input_dev.unique_id.split('-')[0]))
 
+            self.adc_calibration = None
+
             if input_dev.custom_options:
                 for each_option in input_dev.custom_options.split(';'):
                     option = each_option.split(',')[0]
@@ -199,12 +202,19 @@ class ADCModule(object):
 
     def get_measurement(self):
         self._voltage = None
+        voltage = 0
+        count = 0
 
-        raw_channels = self.ads.read_sequence(self.CH_SEQUENCE)
-        voltages = [i * self.ads.v_per_digit for i in raw_channels]
+        # 2 attempts to get valid measurement
+        while self.running and voltage == 0 and count < 2:
+            raw_channels = self.ads.read_sequence(self.CH_SEQUENCE)
+            voltages = [i * self.ads.v_per_digit for i in raw_channels]
+            voltage = voltages[self.adc_channel]
+            count += 1
+            time.sleep(0.05)
 
-        return voltages[self.adc_channel]
-
+        if voltage:
+            return voltage
 
     def read(self):
         """

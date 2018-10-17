@@ -73,8 +73,7 @@ class InputMod(FlaskForm):
                     validators.NumberRange(
                         min=5.0,
                         max=86400.0
-        )],
-        widget = NumberInput()
+        )]
     )
     location = StringField(lazy_gettext('Location'))  # Access input (GPIO, I2C address, etc.)
     uart_location = StringField(lazy_gettext('UART Device'))  # UART device location type
@@ -140,13 +139,13 @@ class InputMod(FlaskForm):
     adc_sample_speed = StringField(
         TOOLTIPS_INPUT['adc_sample_speed']['title'])
     adc_volts_min = DecimalField(
-        TOOLTIPS_INPUT['adc_volts_min']['title'], widget=NumberInput())
+        TOOLTIPS_INPUT['adc_volts_min']['title'])
     adc_volts_max = DecimalField(
-        TOOLTIPS_INPUT['adc_volts_max']['title'], widget=NumberInput())
+        TOOLTIPS_INPUT['adc_volts_max']['title'])
     adc_units_min = DecimalField(
-        TOOLTIPS_INPUT['adc_units_min']['title'], widget=NumberInput())
+        TOOLTIPS_INPUT['adc_units_min']['title'])
     adc_units_max = DecimalField(
-        TOOLTIPS_INPUT['adc_units_max']['title'], widget=NumberInput())
+        TOOLTIPS_INPUT['adc_units_max']['title'])
     adc_inverse_unit_scale = BooleanField(
         TOOLTIPS_INPUT['adc_inverse_unit_scale']['title'])
 
@@ -161,18 +160,17 @@ class InputMod(FlaskForm):
         validators=[validators.NumberRange(
             min=0,
             max=86400
-        )],
-        widget = NumberInput()
+        )]
     )
     pre_output_during_measure = BooleanField(TOOLTIPS_INPUT['pre_output_during_measure']['title'])
 
     # RPM/Signal
     weighting = DecimalField(
-        TOOLTIPS_INPUT['weighting']['title'], widget=NumberInput())
+        TOOLTIPS_INPUT['weighting']['title'])
     rpm_pulses_per_rev = DecimalField(
-        TOOLTIPS_INPUT['rpm_pulses_per_rev']['title'], widget=NumberInput())
+        TOOLTIPS_INPUT['rpm_pulses_per_rev']['title'])
     sample_time = DecimalField(
-        TOOLTIPS_INPUT['sample_time']['title'], widget=NumberInput())
+        TOOLTIPS_INPUT['sample_time']['title'])
 
     # SHT options
     sht_voltage = StringField(TOOLTIPS_INPUT['sht_voltage']['title'])

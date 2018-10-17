@@ -110,9 +110,9 @@ class DashboardGauge(FlaskForm):
     )
     input_ids = StringField(lazy_gettext('Measurement'))
     y_axis_min = DecimalField(
-        lazy_gettext('Gauge Min'), widget = NumberInput())
+        lazy_gettext('Gauge Min'))
     y_axis_max = DecimalField(
-        lazy_gettext('Gauge Max'), widget = NumberInput())
+        lazy_gettext('Gauge Max'))
     max_measure_age = IntegerField(
         lazy_gettext('Max Age (seconds)'), widget = NumberInput())
     enable_timestamp = BooleanField(lazy_gettext('Show Timestamp'))
@@ -123,9 +123,9 @@ class DashboardMeasurement(FlaskForm):
     max_measure_age = IntegerField(
         lazy_gettext('Max Age (seconds)'), widget = NumberInput())
     font_em_value = DecimalField(
-        lazy_gettext('Value Font (em)'), widget = NumberInput())
+        lazy_gettext('Value Font (em)'))
     font_em_timestamp = DecimalField(
-        lazy_gettext('Timestamp Font (em)'), widget = NumberInput())
+        lazy_gettext('Timestamp Font (em)'))
     decimal_places = IntegerField(
         lazy_gettext('Decimal Places'), widget = NumberInput())
 
@@ -135,9 +135,9 @@ class DashboardOutput(FlaskForm):
     max_measure_age = IntegerField(
         lazy_gettext('Max Age (seconds)'), widget = NumberInput())
     font_em_value = DecimalField(
-        lazy_gettext('Value Font (em)'), widget = NumberInput())
+        lazy_gettext('Value Font (em)'))
     font_em_timestamp = DecimalField(
-        lazy_gettext('Timestamp Font (em)'), widget = NumberInput())
+        lazy_gettext('Timestamp Font (em)'))
     decimal_places = IntegerField(
         lazy_gettext('Decimal Places'), widget = NumberInput())
     enable_output_controls = BooleanField(lazy_gettext('Feature Output Controls'))
@@ -148,9 +148,9 @@ class DashboardPIDControl(FlaskForm):
     max_measure_age = IntegerField(
         lazy_gettext('Max Age (seconds)'), widget = NumberInput())
     font_em_value = DecimalField(
-        lazy_gettext('Value Font (em)'), widget = NumberInput())
+        lazy_gettext('Value Font (em)'))
     font_em_timestamp = DecimalField(
-        lazy_gettext('Timestamp Font (em)'), widget = NumberInput())
+        lazy_gettext('Timestamp Font (em)'))
     camera_max_age = IntegerField(
         lazy_gettext('Max Age (seconds)'), widget = NumberInput())
     decimal_places = IntegerField(

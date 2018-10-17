@@ -33,8 +33,7 @@ class CalibrationAtlasph(FlaskForm):
     clear_calibration = SubmitField(lazy_gettext('Clear Calibration'))
     temperature = DecimalField(
         lazy_gettext('Temperature'),
-        render_kw={"placeholder": 25.00},
-        widget = NumberInput())
+        render_kw={"placeholder": 25.00})
     hidden_next_stage = StringField('Stage', widget=widgets.HiddenInput())
     go_from_first_stage = SubmitField(lazy_gettext('Begin Calibration'))
     go_to_next_stage = SubmitField(lazy_gettext('Continue to Next Stage'))

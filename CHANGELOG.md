@@ -10,6 +10,7 @@
 
  - Fix authentication issue with Remote Administration
  - Fix issues with ADS1256 module ([#537](https://github.com/kizniche/mycodo/issues/537))
+ - Fix issue with saving float values
 
 ### Miscellaneous
 

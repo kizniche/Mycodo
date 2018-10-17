@@ -256,7 +256,7 @@ class InputController(threading.Thread):
                             not self.pre_output_activated):
 
                         # Set up lock
-                        self.input_lock = locket.lock_file(self.lock_file, timeout=120)
+                        self.input_lock = locket.lock_file(self.lock_file, timeout=30)
                         try:
                             self.input_lock.acquire()
                             self.pre_output_locked = True
@@ -353,7 +353,7 @@ class InputController(threading.Thread):
             lock_acquired = False
 
             # Set up lock for ADC
-            adc_lock = locket.lock_file(self.adc_lock_file, timeout=120)
+            adc_lock = locket.lock_file(self.adc_lock_file, timeout=30)
             try:
                 adc_lock.acquire()
                 lock_acquired = True
