@@ -66,11 +66,11 @@ INPUT_INFORMATION = {
             'default_value': '',
             'options_select': [
                 ('', 'No Calibration'),
-                ('IZ', 'Input Zero (IZ)'),
-                ('IFS', 'Input Full-scale (IFS)'),
-                ('TP', 'IZ + IFS Two-point'),
-                ('OFC', 'Set OFC Register'),
-                ('FSC', 'Set FSC Register')
+                ('SELFOCAL', 'Self Offset'),
+                ('SELFGCAL', 'Self Gain)'),
+                ('SELFCAL', 'Self Offset + Self Gain'),
+                ('SYSOCAL', 'System Offset'),
+                ('SYSGCAL', 'System Gain')
             ],
             'name': lazy_gettext('Calibration'),
             'phrase': lazy_gettext('Set the calibration method to perform during Input activation')
@@ -162,15 +162,15 @@ class ADCModule(object):
                 self.ads = ADS1256()
 
                 # Perform selected calibration
-                if self.adc_calibration == 'IZ':
+                if self.adc_calibration == 'SELFOCAL':
                     self.ads.cal_self_offset()
-                elif self.adc_calibration == 'IFS':
+                elif self.adc_calibration == 'SELFGCAL':
                     self.ads.cal_self_gain()
-                elif self.adc_calibration == 'TP':
+                elif self.adc_calibration == 'SELFCAL':
                     self.ads.cal_self()
-                elif self.adc_calibration == 'OFC':
+                elif self.adc_calibration == 'SYSOCAL':
                     self.ads.cal_system_offset()
-                elif self.adc_calibration == 'FSC':
+                elif self.adc_calibration == 'SYSGCAL':
                     self.ads.cal_system_gain()
 
                 self.running = True
