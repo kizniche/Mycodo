@@ -50,29 +50,37 @@ class MethodAdd(FlaskForm):
         render_kw={"placeholder": "YYYY-MM-DD HH:MM:SS"}
     )
     setpoint_start = DecimalField(
-        lazy_gettext('Start Setpoint'))
+        lazy_gettext('Start Setpoint'),
+        widget=NumberInput(step='any'))
     setpoint_end = DecimalField(
-        lazy_gettext('End Setpoint (optional)'))
+        lazy_gettext('End Setpoint (optional)'),
+        widget=NumberInput(step='any'))
     duration = DecimalField(
-        lazy_gettext('Duration (seconds)'))
+        lazy_gettext('Duration (seconds)'),
+        widget=NumberInput(step='any'))
     duration_end = DecimalField(
-        lazy_gettext('Duration to End (seconds)'))
+        lazy_gettext('Duration to End (seconds)'),
+        widget=NumberInput(step='any'))
     amplitude = DecimalField(
-        lazy_gettext('Amplitude'))
+        lazy_gettext('Amplitude'),
+        widget=NumberInput(step='any'))
     frequency = DecimalField(
-        lazy_gettext('Frequency'))
+        lazy_gettext('Frequency'),
+        widget=NumberInput(step='any'))
     shift_angle = DecimalField(
-        lazy_gettext('Angle Shift (0 to 360)'))
+        lazy_gettext('Angle Shift (0 to 360)'),
+        widget=NumberInput(step='any'))
     shiftY = DecimalField(
-        lazy_gettext('Y-Axis Shift'))
-    x0 = DecimalField('X0')
-    y0 = DecimalField('Y0')
-    x1 = DecimalField('X1')
-    y1 = DecimalField('Y1')
-    x2 = DecimalField('X2')
-    y2 = DecimalField('Y2')
-    x3 = DecimalField('X3')
-    y3 = DecimalField('Y3')
+        lazy_gettext('Y-Axis Shift'),
+        widget=NumberInput(step='any'))
+    x0 = DecimalField('X0', widget=NumberInput(step='any'))
+    y0 = DecimalField('Y0', widget=NumberInput(step='any'))
+    x1 = DecimalField('X1', widget=NumberInput(step='any'))
+    y1 = DecimalField('Y1', widget=NumberInput(step='any'))
+    x2 = DecimalField('X2', widget=NumberInput(step='any'))
+    y2 = DecimalField('Y2', widget=NumberInput(step='any'))
+    x3 = DecimalField('X3', widget=NumberInput(step='any'))
+    y3 = DecimalField('Y3', widget=NumberInput(step='any'))
     output_daily_time = StringField(
         lazy_gettext('Time HH:MM:SS'),
         render_kw={"placeholder": "HH:MM:SS"}
@@ -82,7 +90,7 @@ class MethodAdd(FlaskForm):
         render_kw={"placeholder": "YYYY-MM-DD HH:MM:SS"}
     )
     output_duration = IntegerField(
-        lazy_gettext('Duration/Duty Cycle'), widget = NumberInput())
+        lazy_gettext('Duration/Duty Cycle'), widget=NumberInput())
     output_id = StringField(lazy_gettext('Output'),)
     output_state = SelectField(
         lazy_gettext('Relay State'),
@@ -130,17 +138,21 @@ class MethodMod(FlaskForm):
         render_kw={"placeholder": "YYYY-MM-DD HH:MM:SS"}
     )
     duration = DecimalField(
-        lazy_gettext('Duration (seconds)'), widget = NumberInput())
+        lazy_gettext('Duration (seconds)'),
+        widget=NumberInput(step='any'))
     duration_end = DecimalField(
-        lazy_gettext('Duration to End (seconds)'), widget = NumberInput())
+        lazy_gettext('Duration to End (seconds)'),
+        widget=NumberInput(step='any'))
     setpoint_start = DecimalField(
-        lazy_gettext('Start Setpoint'), widget = NumberInput())
+        lazy_gettext('Start Setpoint'),
+        widget=NumberInput(step='any'))
     setpoint_end = DecimalField(
-        lazy_gettext('End Setpoint'), widget = NumberInput())
+        lazy_gettext('End Setpoint'),
+        widget=NumberInput(step='any'))
     output_id = StringField(lazy_gettext('Output'))
     output_state = StringField(lazy_gettext('State'))
     output_duration = IntegerField(
-        lazy_gettext('Duration'), widget = NumberInput())
+        lazy_gettext('Duration'), widget=NumberInput())
     rename = SubmitField(lazy_gettext('Rename'))
     save = SubmitField(lazy_gettext('Save'))
     Delete = SubmitField(lazy_gettext('Delete'))

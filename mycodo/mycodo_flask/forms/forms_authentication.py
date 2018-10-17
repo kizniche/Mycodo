@@ -68,7 +68,7 @@ class LogView(FlaskForm):
             min=1,
             message=lazy_gettext('Number of lines should be greater than 0')
         )],
-        widget = NumberInput()
+        widget=NumberInput()
     )
     loglogin = SubmitField(lazy_gettext('Login Log'))
     loghttp = SubmitField(lazy_gettext('HTTP Log'))

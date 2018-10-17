@@ -33,7 +33,8 @@ class CalibrationAtlasph(FlaskForm):
     clear_calibration = SubmitField(lazy_gettext('Clear Calibration'))
     temperature = DecimalField(
         lazy_gettext('Temperature'),
-        render_kw={"placeholder": 25.00})
+        render_kw={"placeholder": 25.00},
+        widget=NumberInput(step='any'))
     hidden_next_stage = StringField('Stage', widget=widgets.HiddenInput())
     go_from_first_stage = SubmitField(lazy_gettext('Begin Calibration'))
     go_to_next_stage = SubmitField(lazy_gettext('Continue to Next Stage'))
@@ -44,5 +45,5 @@ class CalibrationAtlasph(FlaskForm):
 class SetupDS18B20(FlaskForm):
     device_id = StringField(lazy_gettext('Device'))
     resolution = IntegerField(
-        lazy_gettext('Resolution'), widget = NumberInput())
+        lazy_gettext('Resolution'), widget=NumberInput())
     set_resolution = SubmitField(lazy_gettext('Set Resolution'))

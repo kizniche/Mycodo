@@ -36,11 +36,11 @@ class MathMod(FlaskForm):
     period = DecimalField(
         lazy_gettext('Period (seconds)'),
         validators=[DataRequired()],
-        widget = NumberInput())
+        widget=NumberInput(step='any'))
     max_measure_age = IntegerField(
         lazy_gettext('Max Age (seconds)'),
         validators=[DataRequired()],
-        widget = NumberInput())
+        widget=NumberInput())
     inputs = SelectMultipleField(
         lazy_gettext('Inputs'))
     selected_measurement_unit = StringField(lazy_gettext('Unit Measurement'))
@@ -82,4 +82,4 @@ class MathModVerification(FlaskForm):
     max_difference = DecimalField(
         lazy_gettext('Max Difference'),
         validators=[DataRequired()],
-        widget = NumberInput())
+        widget=NumberInput(step='any'))

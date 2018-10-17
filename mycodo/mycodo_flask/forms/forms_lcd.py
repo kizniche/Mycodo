@@ -23,7 +23,7 @@ class LCDAdd(FlaskForm):
             min=1,
             max=20
         )],
-        widget = NumberInput()
+        widget=NumberInput()
     )
     add = SubmitField(lazy_gettext('Add LCDs'))
 
@@ -43,7 +43,7 @@ class LCDMod(FlaskForm):
         "{op} ({unit})".format(op=lazy_gettext('Bus'),
                                unit=lazy_gettext('I<sup>2</sup>C')),
         validators=[DataRequired()],
-        widget = NumberInput()
+        widget=NumberInput()
     )
     period = DecimalField(
         lazy_gettext('Period (seconds)'),
@@ -53,7 +53,8 @@ class LCDMod(FlaskForm):
             message=lazy_gettext("Duration between calculating LCD output "
                                  "and applying to regulation must be between "
                                  "5 and 86400 seconds.")
-        )]
+        )],
+        widget=NumberInput(step='any')
     )
     lcd_type = SelectField(
         lazy_gettext('LCD Type'),

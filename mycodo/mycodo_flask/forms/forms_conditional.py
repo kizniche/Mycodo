@@ -35,21 +35,27 @@ class Conditional(FlaskForm):
     unique_id_2 = StringField(lazy_gettext('If ID 2'))
     output_state = StringField(lazy_gettext('If State'))
     output_duration = DecimalField(
-        lazy_gettext('If Duration (seconds)'))
+        lazy_gettext('If Duration (seconds)'),
+        widget=NumberInput(step='any'))
     output_duty_cycle = DecimalField(
-        lazy_gettext('If Duty Cycle (%)'))
+        lazy_gettext('If Duty Cycle (%)'),
+        widget=NumberInput(step='any'))
 
     # Input conditional options
     measurement = StringField(lazy_gettext('If Measurement'))
     direction = StringField(lazy_gettext('If State'))
     setpoint = DecimalField(
-        lazy_gettext('If Value'))
+        lazy_gettext('If Value'),
+        widget=NumberInput(step='any'))
     period = DecimalField(
-        lazy_gettext('Period (seconds)'))
+        lazy_gettext('Period (seconds)'),
+        widget=NumberInput(step='any'))
     refractory_period = DecimalField(
-        lazy_gettext('Refractory Period (seconds)'))
+        lazy_gettext('Refractory Period (seconds)'),
+        widget=NumberInput(step='any'))
     max_age = IntegerField(
-        lazy_gettext('Max Age (seconds)'), widget=NumberInput())
+        lazy_gettext('Max Age (seconds)'),
+        widget=NumberInput())
 
     # Edge detection
     edge_detected = StringField(lazy_gettext('If Edge Detected'))
@@ -58,15 +64,20 @@ class Conditional(FlaskForm):
     rise_or_set = StringField(
         lazy_gettext('Rise or Set'))
     latitude = DecimalField(
-        lazy_gettext('Latitude (decimal)'))
+        lazy_gettext('Latitude (decimal)'),
+        widget=NumberInput(step='any'))
     longitude = DecimalField(
-        lazy_gettext('Longitude (decimal)'))
+        lazy_gettext('Longitude (decimal)'),
+        widget=NumberInput(step='any'))
     zenith = DecimalField(
-        lazy_gettext('Zenith'))
+        lazy_gettext('Zenith'),
+        widget=NumberInput(step='any'))
     date_offset_days = IntegerField(
-        lazy_gettext('Date Offset (days)'), widget=NumberInput())
+        lazy_gettext('Date Offset (days)'),
+        widget=NumberInput())
     time_offset_minutes = IntegerField(
-        lazy_gettext('Time Offset (minutes)'), widget=NumberInput())
+        lazy_gettext('Time Offset (minutes)'),
+        widget=NumberInput())
 
     # Timer
     timer_start_offset = IntegerField(
@@ -100,11 +111,14 @@ class ConditionalActions(FlaskForm):
     do_unique_id = StringField(lazy_gettext('Controller ID'))
     do_output_state = StringField(lazy_gettext('Then State'))
     do_output_duration = DecimalField(
-        lazy_gettext('Then Duration (seconds)'))
+        lazy_gettext('Then Duration (seconds)'),
+        widget=NumberInput(step='any'))
     do_output_pwm = DecimalField(
-        lazy_gettext('Then Duty Cycle'))
+        lazy_gettext('Then Duty Cycle'),
+        widget=NumberInput(step='any'))
     do_camera_duration = DecimalField(
-        lazy_gettext('Then Duration'))
+        lazy_gettext('Then Duration'),
+        widget=NumberInput(step='any'))
     add_action = SubmitField(lazy_gettext('Add Action'))
     test_all_actions = SubmitField(lazy_gettext('Test All Actions'))
     save_action = SubmitField(lazy_gettext('Save'))

@@ -73,7 +73,8 @@ class InputMod(FlaskForm):
                     validators.NumberRange(
                         min=5.0,
                         max=86400.0
-        )]
+        )],
+        widget=NumberInput(step='any')
     )
     location = StringField(lazy_gettext('Location'))  # Access input (GPIO, I2C address, etc.)
     uart_location = StringField(lazy_gettext('UART Device'))  # UART device location type
@@ -139,19 +140,25 @@ class InputMod(FlaskForm):
     adc_sample_speed = StringField(
         TOOLTIPS_INPUT['adc_sample_speed']['title'])
     adc_volts_min = DecimalField(
-        TOOLTIPS_INPUT['adc_volts_min']['title'])
+        TOOLTIPS_INPUT['adc_volts_min']['title'],
+        widget=NumberInput(step='any'))
     adc_volts_max = DecimalField(
-        TOOLTIPS_INPUT['adc_volts_max']['title'])
+        TOOLTIPS_INPUT['adc_volts_max']['title'],
+        widget=NumberInput(step='any'))
     adc_units_min = DecimalField(
-        TOOLTIPS_INPUT['adc_units_min']['title'])
+        TOOLTIPS_INPUT['adc_units_min']['title'],
+        widget=NumberInput(step='any'))
     adc_units_max = DecimalField(
-        TOOLTIPS_INPUT['adc_units_max']['title'])
+        TOOLTIPS_INPUT['adc_units_max']['title'],
+        widget=NumberInput(step='any'))
     adc_inverse_unit_scale = BooleanField(
         TOOLTIPS_INPUT['adc_inverse_unit_scale']['title'])
 
     switch_edge = StringField(lazy_gettext('Edge'))
-    switch_bounce_time = IntegerField(lazy_gettext('Bounce Time (ms)'), widget=NumberInput())
-    switch_reset_period = IntegerField(lazy_gettext('Reset Period'), widget=NumberInput())
+    switch_bounce_time = IntegerField(
+        lazy_gettext('Bounce Time (ms)'), widget=NumberInput())
+    switch_reset_period = IntegerField(
+        lazy_gettext('Reset Period'), widget=NumberInput())
 
     # Pre-Output
     pre_output_id = StringField(TOOLTIPS_INPUT['pre_output_id']['title'])
@@ -160,17 +167,21 @@ class InputMod(FlaskForm):
         validators=[validators.NumberRange(
             min=0,
             max=86400
-        )]
+        )],
+        widget=NumberInput(step='any')
     )
     pre_output_during_measure = BooleanField(TOOLTIPS_INPUT['pre_output_during_measure']['title'])
 
     # RPM/Signal
     weighting = DecimalField(
-        TOOLTIPS_INPUT['weighting']['title'])
+        TOOLTIPS_INPUT['weighting']['title'],
+        widget=NumberInput(step='any'))
     rpm_pulses_per_rev = DecimalField(
-        TOOLTIPS_INPUT['rpm_pulses_per_rev']['title'])
+        TOOLTIPS_INPUT['rpm_pulses_per_rev']['title'],
+        widget=NumberInput(step='any'))
     sample_time = DecimalField(
-        TOOLTIPS_INPUT['sample_time']['title'])
+        TOOLTIPS_INPUT['sample_time']['title'],
+        widget=NumberInput(step='any'))
 
     # SHT options
     sht_voltage = StringField(TOOLTIPS_INPUT['sht_voltage']['title'])

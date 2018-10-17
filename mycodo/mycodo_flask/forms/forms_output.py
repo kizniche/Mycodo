@@ -45,11 +45,11 @@ class OutputMod(FlaskForm):
         validators=[DataRequired()]
     )
     pin = IntegerField(
-        lazy_gettext('Pin'), widget = NumberInput())
+        lazy_gettext('Pin'), widget=NumberInput())
     protocol = IntegerField(
-        lazy_gettext('Protocol'), widget = NumberInput())
+        lazy_gettext('Protocol'), widget=NumberInput())
     pulse_length = IntegerField(
-        lazy_gettext('Pulse Length'), widget = NumberInput())
+        lazy_gettext('Pulse Length'), widget=NumberInput())
     on_command = StringField(lazy_gettext('On Command'))
     off_command = StringField(lazy_gettext('Off Command'))
     pwm_command = StringField(lazy_gettext('PWM Command'))
@@ -62,7 +62,7 @@ class OutputMod(FlaskForm):
             message=lazy_gettext("The current draw of the device connected "
                                  "to this output, in amps.")
         )],
-        widget = NumberInput()
+        widget=NumberInput(step='any')
     )
     trigger = SelectField(
         lazy_gettext('On Trigger'),
@@ -82,7 +82,7 @@ class OutputMod(FlaskForm):
         validators=[DataRequired()]
     )
     pwm_hertz = IntegerField(
-        lazy_gettext('Frequency (Hertz)'), widget = NumberInput())
+        lazy_gettext('Frequency (Hertz)'), widget=NumberInput())
     pwm_library = SelectField(
         lazy_gettext('Library'),
         choices=[
@@ -98,6 +98,6 @@ class OutputMod(FlaskForm):
     pwm_duty_cycle_on = DecimalField(
         '{} (%)'.format(lazy_gettext('Duty Cycle')),
         validators=[Optional()],
-        widget = NumberInput()
+        widget=NumberInput(step='any')
     )
     on_submit = SubmitField(lazy_gettext('Turn On'))
