@@ -1,6 +1,7 @@
 # coding=utf-8
 import logging
 import time
+import sys
 
 from flask_babel import lazy_gettext
 
@@ -57,7 +58,7 @@ INPUT_INFORMATION = {
         ('5', '5'),
         ('2d5', '2.5')
     ],
-    'adc_volts_min': -5.0,
+    'adc_volts_min': 0.0,
     'adc_volts_max': 5.0,
 
     'custom_options': [
@@ -83,7 +84,7 @@ INPUT_INFORMATION = {
 class ADCModule(object):
     """ ADC Read """
     def __init__(self, input_dev, testing=False):
-        self.logger = logging.getLogger('mycodo.ads1x15')
+        self.logger = logging.getLogger('mycodo.ads1256')
         self.acquiring_measurement = False
         self._voltage = None
 
@@ -146,7 +147,7 @@ class ADCModule(object):
             # Specify here an arbitrary length list (tuple) of arbitrary input channel pair
             # eight-bit code values to scan sequentially from index 0 to last.
             # Eight channels fit on the screen nicely for this example..
-            self.CH_SEQUENCE = (POTI, LDR, EXT2, EXT3, EXT4, EXT7, POTI_INVERTED, SHORT_CIRCUIT)
+            self.CH_SEQUENCE = (POTI, LDR, EXT2, EXT3, EXT4, EXT5, EXT6, EXT7)
             ################################################################################
 
             self.logger = logging.getLogger(
@@ -211,7 +212,7 @@ class ADCModule(object):
             voltages = [i * self.ads.v_per_digit for i in raw_channels]
             voltage = voltages[self.adc_channel]
             count += 1
-            time.sleep(0.05)
+            time.sleep(0.85)
 
         if voltage:
             return voltage
