@@ -8,7 +8,7 @@ from datetime import timedelta
 import os
 from flask_babel import lazy_gettext
 
-MYCODO_VERSION = '6.4.5'
+MYCODO_VERSION = '7.0.0'
 ALEMBIC_VERSION = '15bd5d08a4f0'
 
 #  FORCE_UPGRADE_MASTER
@@ -147,30 +147,33 @@ CALIBRATION_INFO = {
     }
 }
 
-# PID controllers
-PIDS = [
-    ('pid', 'PID Controller')
-]
-
-def generate_conditional_name(name):
-    return '{}: {}'.format(lazy_gettext('Conditional'), lazy_gettext(name))
 
 # Conditional controllers
-CONDITIONALS = [
-    ('conditional_measurement', generate_conditional_name('Measurement')),
-    ('conditional_output', generate_conditional_name('Output (On/Off)')),
-    ('conditional_output_duration', generate_conditional_name('Output (On Duration)')),
-    ('conditional_output_pwm', generate_conditional_name('Output (PWM)')),
-    ('conditional_edge', generate_conditional_name('Edge')),
-    ('conditional_run_pwm_method', generate_conditional_name('Run PWM Method')),
-    ('conditional_sunrise_sunset', generate_conditional_name('Sunrise/Sunset')),
-    ('conditional_timer_daily_time_point', generate_conditional_name('Timer (Daily Point)')),
-    ('conditional_timer_daily_time_span', generate_conditional_name('Timer (Daily Span)')),
-    ('conditional_timer_duration', generate_conditional_name('Timer (Duration)'))
+CONDITIONAL_CONDITIONS = [
+    ('measurement', 'Measurement'),
+    ('gpio_state', 'GPIO State')
 ]
 
+
+FUNCTION_TYPES = [
+    ('pid', 'PID'),
+    ('conditional', 'Conditional'),
+
+    # Triggers
+    ('edge', 'Edge'),
+    ('output', 'Output (On/Off)'),
+    ('output_duration', 'Output (On Duration)'),
+    ('output_pwm', 'Output (PWM)'),
+    ('timer_daily_time_point', 'Timer (Daily Point)'),
+    ('timer_daily_time_span', 'Timer (Daily Span)'),
+    ('timer_duration', 'Timer (Duration)'),
+    ('run_pwm_method', 'Run PWM Method'),
+    ('sunrise_sunset', 'Sunrise/Sunset'),
+]
+
+
 # Conditional actions
-CONDITIONAL_ACTIONS = [
+FUNCTION_ACTIONS = [
     ('output', lazy_gettext('Output (Duration)')),
     ('output_pwm', lazy_gettext('Output (Duty Cycle)')),
     ('command', lazy_gettext('Execute Command')),
@@ -198,7 +201,6 @@ CALIBRATION_DEVICES = [
     ('setup_atlas_ph', 'Atlas Scientific pH Sensor'),
     ('setup_ds_resolution', 'DS-Type Temperature Sensors (e.g. DS18B20)')
 ]
-
 
 # User Roles
 USER_ROLES = [

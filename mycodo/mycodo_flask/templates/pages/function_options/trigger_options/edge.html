@@ -1,0 +1,31 @@
+<div class="col-xs-12 col-md-4">
+  {{form_trigger.measurement.label(class_='control-label')}}
+  <div>
+    <select class="form-control" id="measurement" name="measurement" style="width: 100%;" title="" data-original-title="{{_('Select the measurement to use as the input')}}">
+    {% set edge_sensor = [] %}
+    {% for each_choice, value in choices_input.items() if each_choice.split(',')[1] == 'edge' -%}
+      {% do edge_sensor.append(1) %}
+    {% endfor -%}
+
+    {% if edge_sensor %}
+      <option value="">{{_('Select One')}}</option>
+      {% for each_choice, value in choices_input.items() if each_choice.split(',')[1] == 'edge' -%}
+      <option value="{{each_choice.split(',')[0]}}"{% if each_trigger.measurement == each_choice.split(',')[0] %} selected{% endif %}>{{value}}</option>
+      {% endfor -%}
+    {% else %}
+      <option value="">{{_('None Available')}}</option>
+    {% endif %}
+    </select>
+  </div>
+</div>
+<div class="col-xs-10 col-sm-3 col-md-2">
+  {{form_trigger.edge_detected.label(class_='control-label')}}
+  <div>
+    <select class="form-control form-tooltip form-dropdown" data-placement="top" id="edge_detected" name="edge_detected" title="{{_('Detect low to high (rising), high to low (falling), or both?')}}">
+      <option value=""></option>
+      <option value="rising"{% if each_trigger.edge_detected == 'rising' %} selected{% endif %}>{{_('Rising')}}</option>
+      <option value="falling"{% if each_trigger.edge_detected == 'falling' %} selected{% endif %}>{{_('Falling')}}</option>
+      <option value="both"{% if each_trigger.edge_detected == 'both' %} selected{% endif %}>{{_('Both')}}</option>
+    </select>
+  </div>
+</div>

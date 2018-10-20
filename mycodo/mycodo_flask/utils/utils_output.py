@@ -198,25 +198,26 @@ def manipulate_output(action, output_id):
     :param action: "add", "del", or "mod"
     :type action: str
     """
-    control = DaemonControl()
-    return_values = control.output_setup(action, output_id)
-    if return_values and len(return_values) > 1:
-        if return_values[0]:
-            flash(gettext("%(err)s",
-                          err='{action} Output: Daemon response: {msg}'.format(
-                              action=action,
-                              msg=return_values[1])),
-                  "error")
-        else:
-            flash(gettext("%(err)s",
-                          err='{action} Output: Daemon response: {msg}'.format(
-                              action=gettext(action),
-                              msg=return_values[1])),
-                  "success")
-    else:
+    try:
+        control = DaemonControl()
+        return_values = control.output_setup(action, output_id)
+        if return_values and len(return_values) > 1:
+            if return_values[0]:
+                flash(gettext("%(err)s",
+                              err='{action} Output: Daemon response: {msg}'.format(
+                                  action=action,
+                                  msg=return_values[1])),
+                      "error")
+            else:
+                flash(gettext("%(err)s",
+                              err='{action} Output: Daemon response: {msg}'.format(
+                                  action=gettext(action),
+                                  msg=return_values[1])),
+                      "success")
+    except Exception as msg:
         flash(gettext("%(err)s",
-                      err='{action} Output: Could not connect to Daemon'.format(
-                          action=action)),
+                      err='{action} Output: Could not connect to Daemon: {error}'.format(
+                          action=action, error=msg)),
               "error")
 
 

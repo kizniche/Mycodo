@@ -26,12 +26,13 @@ from flask_babel import gettext
 
 from mycodo.config import ALEMBIC_VERSION
 from mycodo.config import BACKUP_LOG_FILE
-from mycodo.config import CONDITIONALS
-from mycodo.config import CONDITIONAL_ACTIONS
+from mycodo.config import CONDITIONAL_CONDITIONS
 from mycodo.config import DAEMON_LOG_FILE
 from mycodo.config import DAEMON_PID_FILE
 from mycodo.config import DEPENDENCY_LOG_FILE
 from mycodo.config import FRONTEND_PID_FILE
+from mycodo.config import FUNCTION_ACTIONS
+from mycodo.config import FUNCTION_TYPES
 from mycodo.config import HTTP_ACCESS_LOG_FILE
 from mycodo.config import HTTP_ERROR_LOG_FILE
 from mycodo.config import INSTALL_DIRECTORY
@@ -47,10 +48,11 @@ from mycodo.config import USAGE_REPORTS_PATH
 from mycodo.config_devices_units import MEASUREMENTS
 from mycodo.config_devices_units import UNITS
 from mycodo.config_translations import TOOLTIPS_INPUT
+from mycodo.databases.models import Actions
 from mycodo.databases.models import AlembicVersion
 from mycodo.databases.models import Camera
 from mycodo.databases.models import Conditional
-from mycodo.databases.models import ConditionalActions
+from mycodo.databases.models import ConditionalConditions
 from mycodo.databases.models import Dashboard
 from mycodo.databases.models import DisplayOrder
 from mycodo.databases.models import Input
@@ -64,6 +66,7 @@ from mycodo.databases.models import NoteTags
 from mycodo.databases.models import Notes
 from mycodo.databases.models import Output
 from mycodo.databases.models import PID
+from mycodo.databases.models import Trigger
 from mycodo.databases.models import Unit
 from mycodo.databases.models import User
 from mycodo.devices.camera import camera_record
@@ -80,6 +83,7 @@ from mycodo.mycodo_flask.forms import forms_misc
 from mycodo.mycodo_flask.forms import forms_notes
 from mycodo.mycodo_flask.forms import forms_output
 from mycodo.mycodo_flask.forms import forms_pid
+from mycodo.mycodo_flask.forms import forms_trigger
 from mycodo.mycodo_flask.routes_static import inject_variables
 from mycodo.mycodo_flask.utils import utils_conditional
 from mycodo.mycodo_flask.utils import utils_dashboard
@@ -92,6 +96,7 @@ from mycodo.mycodo_flask.utils import utils_math
 from mycodo.mycodo_flask.utils import utils_notes
 from mycodo.mycodo_flask.utils import utils_output
 from mycodo.mycodo_flask.utils import utils_pid
+from mycodo.mycodo_flask.utils import utils_trigger
 from mycodo.utils.inputs import list_analog_to_digital_converters
 from mycodo.utils.inputs import parse_custom_option_values
 from mycodo.utils.inputs import parse_input_information
@@ -1073,14 +1078,32 @@ def page_function():
     """ Display Function settings """
     camera = Camera.query.all()
     conditional = Conditional.query.all()
-    conditional_actions = ConditionalActions.query.all()
+    conditional_conditions = ConditionalConditions.query.all()
+    actions = Actions.query.all()
     input_dev = Input.query.all()
     lcd = LCD.query.all()
     math = Math.query.all()
     method = Method.query.all()
     output = Output.query.all()
     pid = PID.query.all()
+    trigger = Trigger.query.all()
     user = User.query.all()
+
+    actions_dict = {}
+    actions_dict['conditional'] = {}
+    actions_dict['trigger'] = {}
+    for each_action in actions:
+        if (each_action.function_type == 'conditional' and
+                each_action.unique_id not in actions_dict['conditional']):
+            actions_dict['conditional'][each_action.function_id] = True
+        if (each_action.function_type == 'trigger' and
+                each_action.unique_id not in actions_dict['trigger']):
+            actions_dict['trigger'][each_action.function_id] = True
+
+    conditions_dict = {}
+    for each_condition in conditional_conditions:
+        if each_condition.unique_id not in conditions_dict:
+            conditions_dict[each_condition.conditional_id] = True
 
     controllers = []
     controllers_all = [('Conditional', conditional),
@@ -1101,6 +1124,7 @@ def page_function():
 
     display_order_conditional = csv_to_list_of_str(DisplayOrder.query.first().conditional)
     display_order_pid = csv_to_list_of_str(DisplayOrder.query.first().pid)
+    display_order_trigger = csv_to_list_of_str(DisplayOrder.query.first().trigger)
 
     form_base = forms_function.DataBase()
 
@@ -1110,8 +1134,10 @@ def page_function():
     form_mod_pid_output_lower = forms_pid.PIDModRelayLower()
     form_mod_pid_pwm_raise = forms_pid.PIDModPWMRaise()
     form_mod_pid_pwm_lower = forms_pid.PIDModPWMLower()
+    form_trigger = forms_trigger.Trigger()
     form_conditional = forms_conditional.Conditional()
-    form_conditional_actions = forms_conditional.ConditionalActions()
+    form_conditional_conditions = forms_conditional.ConditionalConditions()
+    form_actions = forms_function.Actions()
 
     # Create dict of PID names
     names_pid = {}
@@ -1141,22 +1167,22 @@ def page_function():
 
     # Calculate sunrise/sunset times if conditional controller is set up properly
     sunrise_sunset_calculated = {}
-    for each_conditional in conditional:
-        if each_conditional.conditional_type == 'conditional_sunrise_sunset':
-            sunrise_sunset_calculated[each_conditional.unique_id] = {}
+    for each_trigger in trigger:
+        if each_trigger.trigger_type == 'sunrise_sunset':
+            sunrise_sunset_calculated[each_trigger.unique_id] = {}
             try:
-                sun = Sun(latitude=each_conditional.latitude,
-                          longitude=each_conditional.longitude,
-                          zenith=each_conditional.zenith)
+                sun = Sun(latitude=each_trigger.latitude,
+                          longitude=each_trigger.longitude,
+                          zenith=each_trigger.zenith)
                 sunrise = sun.get_sunrise_time()
                 sunset = sun.get_sunset_time()
 
                 # Adjust for date offset
-                new_date = datetime.datetime.now() + datetime.timedelta(days=each_conditional.date_offset_days)
+                new_date = datetime.datetime.now() + datetime.timedelta(days=each_trigger.date_offset_days)
 
-                sun = Sun(latitude=each_conditional.latitude,
-                          longitude=each_conditional.longitude,
-                          zenith=each_conditional.zenith,
+                sun = Sun(latitude=each_trigger.latitude,
+                          longitude=each_trigger.longitude,
+                          zenith=each_trigger.zenith,
                           day=new_date.day,
                           month=new_date.month,
                           year=new_date.year)
@@ -1164,18 +1190,18 @@ def page_function():
                 offset_sunset = sun.get_sunset_time()
 
                 # Adjust for time offset
-                offset_sunrise = offset_sunrise['time_local'] + datetime.timedelta(minutes=each_conditional.time_offset_minutes)
-                offset_sunset = offset_sunset['time_local'] + datetime.timedelta(minutes=each_conditional.time_offset_minutes)
+                offset_sunrise = offset_sunrise['time_local'] + datetime.timedelta(minutes=each_trigger.time_offset_minutes)
+                offset_sunset = offset_sunset['time_local'] + datetime.timedelta(minutes=each_trigger.time_offset_minutes)
 
-                sunrise_sunset_calculated[each_conditional.unique_id]['sunrise'] = sunrise['time_local'].strftime("%Y-%m-%d %H:%M")
-                sunrise_sunset_calculated[each_conditional.unique_id]['sunset'] = sunset['time_local'].strftime("%Y-%m-%d %H:%M")
-                sunrise_sunset_calculated[each_conditional.unique_id]['offset_sunrise'] = offset_sunrise.strftime("%Y-%m-%d %H:%M")
-                sunrise_sunset_calculated[each_conditional.unique_id]['offset_sunset'] = offset_sunset.strftime("%Y-%m-%d %H:%M")
+                sunrise_sunset_calculated[each_trigger.unique_id]['sunrise'] = sunrise['time_local'].strftime("%Y-%m-%d %H:%M")
+                sunrise_sunset_calculated[each_trigger.unique_id]['sunset'] = sunset['time_local'].strftime("%Y-%m-%d %H:%M")
+                sunrise_sunset_calculated[each_trigger.unique_id]['offset_sunrise'] = offset_sunrise.strftime("%Y-%m-%d %H:%M")
+                sunrise_sunset_calculated[each_trigger.unique_id]['offset_sunset'] = offset_sunset.strftime("%Y-%m-%d %H:%M")
             except:
-                sunrise_sunset_calculated[each_conditional.unique_id]['sunrise'] = None
-                sunrise_sunset_calculated[each_conditional.unique_id]['sunrise'] = None
-                sunrise_sunset_calculated[each_conditional.unique_id]['offset_sunrise'] = None
-                sunrise_sunset_calculated[each_conditional.unique_id]['offset_sunset'] = None
+                sunrise_sunset_calculated[each_trigger.unique_id]['sunrise'] = None
+                sunrise_sunset_calculated[each_trigger.unique_id]['sunrise'] = None
+                sunrise_sunset_calculated[each_trigger.unique_id]['offset_sunrise'] = None
+                sunrise_sunset_calculated[each_trigger.unique_id]['offset_sunset'] = None
 
     if request.method == 'POST':
         if not utils_general.user_has_permission('edit_controllers'):
@@ -1219,41 +1245,80 @@ def page_function():
             utils_pid.pid_manipulate(
                 form_mod_pid_base.pid_id.data, 'Resume')
 
-        # Conditional form actions
-        elif form_conditional.deactivate_cond.data:
-            utils_conditional.conditional_deactivate(
-                form_conditional.conditional_id.data)
-        elif form_conditional.activate_cond.data:
-            utils_conditional.conditional_activate(
-                form_conditional.conditional_id.data)
-        elif form_conditional.delete_cond.data:
-            utils_conditional.conditional_del(
-                form_conditional.conditional_id.data)
-        elif form_conditional.save_cond.data:
+        # Trigger
+        elif form_trigger.save_trigger.data:
+            utils_trigger.trigger_mod(
+                form_trigger)
+        elif form_trigger.delete_trigger.data:
+            utils_trigger.trigger_del(
+                form_trigger.function_id.data)
+        elif form_trigger.deactivate_trigger.data:
+            utils_trigger.trigger_deactivate(
+                form_trigger.function_id.data)
+        elif form_trigger.activate_trigger.data:
+            utils_trigger.trigger_activate(
+                form_trigger.function_id.data)
+        elif form_trigger.order_up_trigger.data:
+            utils_trigger.trigger_reorder(
+                form_trigger.function_id.data,
+                display_order_trigger, 'up')
+        elif form_trigger.order_down_trigger.data:
+            utils_trigger.trigger_reorder(
+                form_trigger.function_id.data,
+                display_order_trigger, 'down')
+        elif form_trigger.add_action.data:
+            utils_function.action_add(
+                form_trigger)
+        elif form_trigger.test_all_actions.data:
+            utils_function.action_test_all(
+                form_trigger)
+
+        # Conditional
+        elif form_conditional.save_conditional.data:
             utils_conditional.conditional_mod(
                 form_conditional)
+        elif form_conditional.delete_conditional.data:
+            utils_conditional.conditional_del(
+                form_conditional.function_id.data)
+        elif form_conditional.deactivate_cond.data:
+            utils_conditional.conditional_deactivate(
+                form_conditional.function_id.data)
+        elif form_conditional.activate_cond.data:
+            utils_conditional.conditional_activate(
+                form_conditional.function_id.data)
         elif form_conditional.order_up_cond.data:
             utils_conditional.conditional_reorder(
-                form_conditional.conditional_id.data,
+                form_conditional.function_id.data,
                 display_order_conditional, 'up')
         elif form_conditional.order_down_cond.data:
             utils_conditional.conditional_reorder(
-                form_conditional.conditional_id.data,
+                form_conditional.function_id.data,
                 display_order_conditional, 'down')
+        elif form_conditional.add_condition.data:
+            utils_conditional.conditional_condition_add(
+                form_conditional)
+        elif form_conditional.add_action.data:
+            utils_function.action_add(
+                form_conditional)
+        elif form_conditional.test_all_actions.data:
+            utils_function.action_test_all(
+                form_conditional)
 
-        # Conditional Actions form actions
-        elif form_conditional_actions.add_action.data:
-            utils_conditional.conditional_action_add(
-                form_conditional_actions)
-        elif form_conditional_actions.test_all_actions.data:
-            utils_conditional.conditional_action_test_all(
-                form_conditional_actions)
-        elif form_conditional_actions.save_action.data:
-            utils_conditional.conditional_action_mod(
-                form_conditional_actions)
-        elif form_conditional_actions.delete_action.data:
-            utils_conditional.conditional_action_del(
-                form_conditional_actions)
+        # Conditional conditions
+        elif form_conditional_conditions.save_condition.data:
+            utils_conditional.conditional_condition_mod(
+                form_conditional_conditions)
+        elif form_conditional_conditions.delete_condition.data:
+            utils_conditional.conditional_condition_del(
+                form_conditional_conditions)
+
+        # Actions
+        elif form_actions.save_action.data:
+            utils_function.action_mod(
+                form_actions)
+        elif form_actions.delete_action.data:
+            utils_function.action_del(
+                form_actions)
 
         return redirect(url_for('routes_page.page_function'))
 
@@ -1262,22 +1327,29 @@ def page_function():
                            choices_input=choices_input,
                            choices_math=choices_math,
                            choices_pid=choices_pid,
-                           conditional_names=CONDITIONALS,
+                           conditional_conditions_list=CONDITIONAL_CONDITIONS,
                            conditional=conditional,
-                           conditional_actions=conditional_actions,
-                           conditional_actions_list=CONDITIONAL_ACTIONS,
+                           conditional_conditions=conditional_conditions,
+                           conditions_dict=conditions_dict,
+                           actions=actions,
+                           actions_dict=actions_dict,
+                           function_types=FUNCTION_TYPES,
+                           function_actions_list=FUNCTION_ACTIONS,
                            controllers=controllers,
                            display_order_conditional=display_order_conditional,
                            display_order_pid=display_order_pid,
+                           display_order_trigger=display_order_trigger,
                            form_base=form_base,
                            form_conditional=form_conditional,
-                           form_conditional_actions=form_conditional_actions,
+                           form_conditional_conditions=form_conditional_conditions,
+                           form_actions=form_actions,
                            form_add_function=form_add_function,
                            form_mod_pid_base=form_mod_pid_base,
                            form_mod_pid_pwm_raise=form_mod_pid_pwm_raise,
                            form_mod_pid_pwm_lower=form_mod_pid_pwm_lower,
                            form_mod_pid_output_raise=form_mod_pid_output_raise,
                            form_mod_pid_output_lower=form_mod_pid_output_lower,
+                           form_trigger=form_trigger,
                            names_pid=names_pid,
                            names_conditional=names_conditional,
                            input=input_dev,
@@ -1286,6 +1358,7 @@ def page_function():
                            method=method,
                            output=output,
                            pid=pid,
+                           trigger=trigger,
                            units=MEASUREMENTS,
                            user=user,
                            sunrise_sunset_calculated=sunrise_sunset_calculated)
@@ -1357,7 +1430,7 @@ def page_output():
 
     return render_template('pages/output.html',
                            camera=camera,
-                           conditional_actions_list=CONDITIONAL_ACTIONS,
+                           conditional_actions_list=FUNCTION_ACTIONS,
                            display_order_output=display_order_output,
                            form_base=form_base,
                            form_add_output=form_add_output,

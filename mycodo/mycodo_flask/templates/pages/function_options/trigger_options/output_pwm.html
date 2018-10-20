@@ -1,0 +1,28 @@
+<div class="col-auto">
+  <label class='control-label'>Output</label>
+  <div>
+    <select class="form-control form-tooltip form-dropdown" id="unique_id_1" name="unique_id_1" data-placement="top" title="{{_('Trigger this conditional to act when this output turns on or off')}}">
+      <option value="">{{_('Select One')}}</option>
+      {%- for each_output in output if each_output.output_type in ['pwm', 'command_pwm'] -%}
+        <option value="{{each_output.unique_id}}"{% if each_trigger.unique_id_1 == each_output.unique_id %} selected{% endif %}>[{{'%02d' % each_output.id}}] {{each_output.name}}</option>
+      {%- endfor -%}
+    </select>
+  </div>
+</div>
+<div class="col-auto">
+  {{form_trigger.direction.label(class_='control-label')}}
+  <div>
+    <select class="form-control form-tooltip form-dropdown" data-placement="top" id="direction" name="direction" title="{{_('The conditional is triggered when the measured condition is greater than or less than the set value, or the measurement timestamp is greater than the value of seconds')}}">
+      <option value="">{{_('Select One')}}</option>
+      <option value="above"{% if each_trigger.direction == 'above' %} selected{% endif %}>{{_('Greater Than (>)')}}</option>
+      <option value="below"{% if each_trigger.direction == 'below' %} selected{% endif %}>{{_('Less Than (<)')}}</option>
+      <option value="equal"{% if each_trigger.direction == 'equal' %} selected{% endif %}>{{_('Equal To (=)')}}</option>
+    </select>
+  </div>
+</div>
+<div class="col-auto">
+  {{form_trigger.output_duty_cycle.label(class_='control-label')}}
+  <div>
+   {{form_trigger.output_duty_cycle(class_='form-control', value=each_trigger.output_duty_cycle, **{'title':_('The duty cycle of the output to be checked')})}}
+  </div>
+</div>

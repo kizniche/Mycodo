@@ -1140,6 +1140,11 @@ Check if the latest measurement is above or below the set value.
 |                       | device has stopped working).                    |
 +-----------------------+-------------------------------------------------+
 
+Trigger Controller
+``````````````````
+
+A Trigger Controller will execute actions when events are triggered.
+
 Output (On/Off) Conditional Statement If Options
 ''''''''''''''''''''''''''''''''''''''''''''''''
 
@@ -1309,8 +1314,8 @@ Output remains on during this period.
 |                       | Conditional Actions.                            |
 +------------------------+------------------------------------------------+
 
-Conditional Statement Actions
-'''''''''''''''''''''''''''''
+Function Actions
+''''''''''''''''
 
 +-----------------------+-------------------------------------------------+
 | Setting               | Description                                     |
@@ -1341,10 +1346,10 @@ Conditional Statement Actions
 | Photo                 | Capture a photo with the selected camera.       |
 +-----------------------+-------------------------------------------------+
 
-Conditional Statement variables
-'''''''''''''''''''''''''''''''
+Action Command Variables
+''''''''''''''''''''''''
 
-Commands that are executed by conditional statements can now include
+Commands that are executed by actions can now include
 variables. To use, just place the variable name, including "((" and "))"
 in your command, and it will be replaced with the variable's value
 before execution. See the tables below for the currently-supported
@@ -1352,7 +1357,7 @@ variables.
 
 It is recommended to output a test string to a text file to verify the
 output is as expected, with a command such as the following (for a
-Conditional using the Raspberry Pi CPU temperature Input as the
+Function using the Raspberry Pi CPU temperature Input as the
 measurement):
 
 ::
@@ -1365,8 +1370,8 @@ Or for an Output Conditional:
 
     echo "TEST: ((output_pin)), ((output_action)), ((output_duration)), ((output_pwm))" > /home/mycodo/test_output.txt
 
-Measurement Conditional command variables
-'''''''''''''''''''''''''''''''''''''''''
+Measurement Action command variables
+''''''''''''''''''''''''''''''''''''
 
 +---------------------------------------+----------------------------------------------+
 | Variable                              | Description                                  |
@@ -1431,8 +1436,8 @@ Measurement Conditional command variables
 | ((measure\_voltage))                  | Input measurement: voltage                   |
 +---------------------------------------+----------------------------------------------+
 
-Output Conditional command variables
-''''''''''''''''''''''''''''''''''''
+Output Action command variables
+'''''''''''''''''''''''''''''''
 
 +------------------------------+----------------------------------------------+
 | Variable                     | Description                                  |
@@ -1449,8 +1454,8 @@ Output Conditional command variables
 |                              | (will return 0 if not applicable)            |
 +------------------------------+----------------------------------------------+
 
-Edge Conditional command variables
-''''''''''''''''''''''''''''''''''
+Edge Action command variables
+'''''''''''''''''''''''''''''
 
 +-------------------+--------------------------------------------------------------+
 | Variable          | Description                                                  |

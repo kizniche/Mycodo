@@ -1,3 +1,12 @@
+## 7.0.0 (Unreleased)
+
+The next major version of Mycodo brings a redesigned Conditional system. The remnants of Conditionals have been moved to a new controller, called Triggers, which executes actions in response to event triggers (such as time-based events, Output changes, sunrises/sunsets, etc.). The new Conditional system incorporates a powerful way of developing complex conditional statements. See ([#493](https://github.com/kizniche/mycodo/issues/493)) for more information.
+
+### Features
+
+ - Refactor more powerful Conditional system ([#493](https://github.com/kizniche/mycodo/issues/493))
+
+
 ## 6.4.5 (2018-10-17)
 
 ### Bugfixes

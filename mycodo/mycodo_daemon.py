@@ -209,6 +209,13 @@ def mycodo_service(mycodo):
             return mycodo.refresh_daemon_misc_settings()
 
         @staticmethod
+        def exposed_refresh_daemon_trigger_settings(unique_id):
+            """
+            Instruct the daemon to refresh a conditional's settings
+            """
+            return mycodo.refresh_daemon_trigger_settings(unique_id)
+
+        @staticmethod
         def exposed_output_state(output_id):
             """Return the output state (not pin but whether output is on or off"""
             return mycodo.output_state(output_id)
@@ -765,6 +772,14 @@ class DaemonController:
                         time_date=str_next_report))
         except Exception as except_msg:
             message = "Could not refresh misc settings:" \
+                      " {err}".format(err=except_msg)
+            self.logger.exception(message)
+
+    def refresh_daemon_trigger_settings(self, unique_id):
+        try:
+            return self.controller['Trigger'][unique_id].refresh_settings()
+        except Exception as except_msg:
+            message = "Could not refresh trigger settings:" \
                       " {err}".format(err=except_msg)
             self.logger.exception(message)
 

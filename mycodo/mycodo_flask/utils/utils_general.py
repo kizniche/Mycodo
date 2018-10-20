@@ -29,6 +29,7 @@ from mycodo.databases.models import Math
 from mycodo.databases.models import Measurement
 from mycodo.databases.models import PID
 from mycodo.databases.models import Role
+from mycodo.databases.models import Trigger
 from mycodo.databases.models import Unit
 from mycodo.databases.models import User
 from mycodo.mycodo_client import DaemonControl
@@ -68,7 +69,8 @@ def controller_activate_deactivate(controller_action,
         "Input": gettext("Input"),
         "LCD": gettext("LCD"),
         "Math": gettext("Math"),
-        "PID": gettext("PID")
+        "PID": gettext("PID"),
+        "Trigger": gettext("Trigger")
     }
 
     mod_controller = None
@@ -87,6 +89,9 @@ def controller_activate_deactivate(controller_action,
     elif controller_type == 'PID':
         mod_controller = PID.query.filter(
             PID.unique_id == controller_id).first()
+    elif controller_type == 'Trigger':
+        mod_controller = Trigger.query.filter(
+            Trigger.unique_id == controller_id).first()
 
     if mod_controller is None:
         flash("{type} Controller {id} doesn't exist".format(

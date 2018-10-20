@@ -576,8 +576,8 @@ class OutputController(threading.Thread):
         #
         conditionals_output = db_retrieve_table_daemon(Conditional)
         conditionals_output = conditionals_output.filter(
-            or_(Conditional.conditional_type == 'conditional_output',
-                Conditional.conditional_type == 'conditional_output_duration'))
+            or_(Conditional.conditional_type == 'output',
+                Conditional.conditional_type == 'output_duration'))
         conditionals_output = conditionals_output.filter(
             Conditional.unique_id_1 == output_id)
         conditionals_output = conditionals_output.filter(
@@ -633,7 +633,7 @@ class OutputController(threading.Thread):
         #
         conditionals_output_pwm = db_retrieve_table_daemon(Conditional)
         conditionals_output_pwm = conditionals_output_pwm.filter(
-            Conditional.conditional_type == 'conditional_output_pwm')
+            Conditional.conditional_type == 'output_pwm')
         conditionals_output_pwm = conditionals_output_pwm.filter(
             Conditional.unique_id_1 == output_id)
         conditionals_output_pwm = conditionals_output_pwm.filter(

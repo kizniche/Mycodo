@@ -42,8 +42,14 @@
     {% include 'pages/function_options/pid.html' %}
   {% endif %}
 
+  {% if trigger %}
+    <h4>{{_('Trigger')}} <a href="/help#trigger-controller" target="_blank"><span style="font-size: 16px" class="fas fa-question-circle"></span></a></h4>
+    <p>{{_('Trigger controllers allow certain actions to be carried out when events are triggered.')}} See the <a href="/help#trigger">manual</a> for more information.</p>
+    {% include 'pages/function_options/trigger.html' %}
+  {% endif %}
+
   {% if conditional %}
-    <h4>{{_('Conditional')}} <a href="/help#conditional-statements" target="_blank"><span style="font-size: 16px" class="fas fa-question-circle"></span></a></h4>
+    <h4>{{_('Conditional')}} <a href="/help#conditional-controller" target="_blank"><span style="font-size: 16px" class="fas fa-question-circle"></span></a></h4>
     <p>{{_('Conditional controllers allow certain actions to be carried out when a certain set of conditions are met.')}} See the <a href="/help#conditional-statements">manual</a> for more information.</p>
     {% include 'pages/function_options/conditional.html' %}
   {% endif %}
