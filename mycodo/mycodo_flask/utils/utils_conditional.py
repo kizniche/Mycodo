@@ -153,10 +153,10 @@ def conditional_condition_add(form):
             cond_mod = Conditional.query.filter(
                 Conditional.unique_id == form.function_id.data).first()
             if not cond_mod.conditional_statement:
-                new_statement = '{{{id}}}'.format(
+                new_statement = '{{{{{id}}}}}'.format(
                     id=new_condition.unique_id.split('-')[0])
             else:
-                new_statement = '{orig} and {{{id}}}'.format(
+                new_statement = '{orig} and {{{{{id}}}}}'.format(
                     orig=cond_mod.conditional_statement,
                     id=new_condition.unique_id.split('-')[0])
 
@@ -268,24 +268,19 @@ def conditional_activate(cond_id):
         action=gettext("Activate"),
         controller=gettext("Conditional"))
 
-    mod_cond = Conditional.query.filter(
-        Conditional.unique_id == cond_id).first()
+    conditions = ConditionalConditions.query.filter(
+        ConditionalConditions.conditional_id == cond_id).all()
 
-    # Check for errors in the Conditional settings
-    if mod_cond.conditional_type == 'measurement':
-        error = check_cond_measurements(mod_cond, error)
+    for each_condition in conditions:
+        # Check for errors in the Conditional settings
+        if each_condition.condition_type == 'measurement':
+            error = check_cond_measurements(each_condition, error)
 
     # Check for errors in each Conditional Action
     cond_actions = Actions.query.filter(
-        Actions.conditional_id == cond_id).all()
+        Actions.function_id == cond_id).all()
     for each_action in cond_actions:
         error = check_actions(each_action, error)
-
-    if mod_cond.conditional_type == 'run_pwm_method':
-        mod_cond_ready = Conditional.query.filter(
-            Conditional.unique_id == cond_id).first()
-        mod_cond_ready.method_start_time = 'Ready'
-        db.session.commit()
 
     if not error:
         controller_activate_deactivate(

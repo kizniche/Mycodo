@@ -14,6 +14,10 @@ class Trigger(CRUDMixin, db.Model):
     name = db.Column(db.Text, default='Trigger Name')
     is_activated = db.Column(db.Boolean, default=False)
 
+    # Used to hold unique IDs
+    unique_id_1 = db.Column(db.String, default=None)
+    unique_id_2 = db.Column(db.String, default=None)
+
     # Output
     output_state = db.Column(db.Text, default='')  # What action to watch output for
     output_duration = db.Column(db.Float, default=0.0)

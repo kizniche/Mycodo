@@ -516,7 +516,7 @@ class InputController(threading.Thread):
                                     state=state_str,
                                     pin=bcm_pin)
 
-                    self.control.trigger_conditional_actions(
+                    self.control.trigger_trigger_actions(
                         each_conditional.unique_id, message=message,
                         edge=edge)
 

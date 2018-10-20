@@ -28,7 +28,9 @@ def trigger_function_actions(
         cond_id,
         message='', last_measurement=None,
         device_id=None, device_measurement=None, edge=None,
-        output_state=None, on_duration=None, duty_cycle=None):
+        output_state=None, on_duration=None, duty_cycle=None,
+        conditional_statement=None,
+        conditional_statement_replaced=None):
     """
     Execute the Actions belonging to a particular Function
 

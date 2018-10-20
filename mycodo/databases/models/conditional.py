@@ -27,10 +27,6 @@ class ConditionalConditions(CRUDMixin, db.Model):
     conditional_id = db.Column(db.String, db.ForeignKey('conditional.unique_id'), default=None)
     condition_type = db.Column(db.Text, default=None)
 
-    # Used to hold unique IDs
-    unique_id_1 = db.Column(db.String, default=None)
-    unique_id_2 = db.Column(db.String, default=None)
-
     # Sensor/Math
     measurement = db.Column(db.Text, default='')  # which measurement to monitor
     max_age = db.Column(db.Integer, default=120)  # max age of the measurement

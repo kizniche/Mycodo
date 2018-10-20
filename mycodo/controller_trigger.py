@@ -32,7 +32,6 @@ import timeit
 import RPi.GPIO as GPIO
 
 from mycodo.config import SQL_DATABASE_MYCODO
-from mycodo.databases.models import Conditional
 from mycodo.databases.models import Input
 from mycodo.databases.models import Math
 from mycodo.databases.models import Method
@@ -41,6 +40,7 @@ from mycodo.databases.models import Misc
 from mycodo.databases.models import Output
 from mycodo.databases.models import PID
 from mycodo.databases.models import SMTP
+from mycodo.databases.models import Trigger
 from mycodo.databases.utils import session_scope
 from mycodo.mycodo_client import DaemonControl
 from mycodo.utils.database import db_retrieve_table_daemon
@@ -54,29 +54,29 @@ from mycodo.utils.system_pi import time_between_range
 MYCODO_DB_PATH = 'sqlite:///' + SQL_DATABASE_MYCODO
 
 
-class ConditionalController(threading.Thread):
+class TriggerController(threading.Thread):
     """
-    Class to operate Conditional controller
+    Class to operate Trigger controller
 
-    Conditionals are conditional statements that can either be True or False
+    Triggers are conditional statements that can either be True or False
     When a conditional is True, one or more actions associated with that
     conditional are executed.
 
     The main loop in this class will continually check if the timers for
-    Measurement Conditionals have elapsed, then check if any of the
-    conditionals are True with the check_conditionals() function. If any are
-    True, trigger_conditional_actions() will be ran to execute all actions
+    Measurement Triggers have elapsed, then check if any of the
+    conditionals are True with the check_triggers() function. If any are
+    True, trigger_trigger_actions() will be ran to execute all actions
     associated with that particular conditional.
 
     Edge and Output conditionals are triggered from
     the Input and Output controllers, respectively, and the
-    trigger_conditional_actions() function in this class will be ran.
+    trigger_trigger_actions() function in this class will be ran.
     """
     def __init__(self, ready, function_id):
         threading.Thread.__init__(self)
 
         self.logger = logging.getLogger(
-            "mycodo.conditional_{id}".format(id=function_id.split('-')[0]))
+            "mycodo.trigger_{id}".format(id=function_id.split('-')[0]))
 
         self.function_id = function_id
         self.running = False
@@ -119,7 +119,7 @@ class ConditionalController(threading.Thread):
             self.running = True
             self.logger.info(
                 "Activated in {:.1f} ms".format(
-                (timeit.default_timer() - self.thread_startup_timer) * 1000))
+                    (timeit.default_timer() - self.thread_startup_timer) * 1000))
             self.ready.set()
 
             while self.running:
@@ -151,6 +151,7 @@ class ConditionalController(threading.Thread):
                                     pwm_duty_cycle)
                                 if self.trigger_actions_at_period:
                                     trigger_function_actions(
+                                        self.function_id,
                                         duty_cycle=pwm_duty_cycle)
                         else:
                             check_approved = True
@@ -158,8 +159,7 @@ class ConditionalController(threading.Thread):
                     elif (self.conditional_type in [
                             'timer_daily_time_point',
                             'timer_daily_time_span',
-                            'timer_duration']
-                            ):
+                            'timer_duration']):
                         if self.conditional_type == 'timer_daily_time_point':
                             self.timer_period = epoch_of_next_time(
                                 '{hm}:00'.format(hm=self.timer_start_time))
@@ -170,13 +170,13 @@ class ConditionalController(threading.Thread):
                         check_approved = True
 
                     if check_approved:
-                        self.check_conditionals()
+                        self.check_triggers()
 
                 time.sleep(self.sample_rate)
 
             self.running = False
             self.logger.info(
-                "Conditional controller deactivated in {:.1f} ms".format(
+                "Deactivated in {:.1f} ms".format(
                     (timeit.default_timer() -
                      self.thread_shutdown_timer) * 1000))
         except Exception as except_msg:
@@ -194,12 +194,12 @@ class ConditionalController(threading.Thread):
 
         self.pause_loop = False
         self.verify_pause_loop = False
-        return "Conditional settings successfully refreshed"
+        return "Trigger settings successfully refreshed"
 
     def setup_settings(self):
         """ Define all settings """
         cond = db_retrieve_table_daemon(
-            Conditional, unique_id=self.function_id)
+            Trigger, unique_id=self.function_id)
 
         self.conditional_type = cond.conditional_type
         self.is_activated = cond.is_activated
@@ -254,7 +254,7 @@ class ConditionalController(threading.Thread):
                     self.set_output_duty_cycle(cond.unique_id_2,
                                                pwm_duty_cycle)
                     trigger_function_actions(
-                        cond.unique_id, duty_cycle=pwm_duty_cycle)
+                        self.function_id, cond.unique_id, duty_cycle=pwm_duty_cycle)
             else:
                 self.timer_period = now
 
@@ -279,15 +279,15 @@ class ConditionalController(threading.Thread):
             if method.method_type == 'Duration':
                 if self.method_start_act == 'Ended':
                     with session_scope(MYCODO_DB_PATH) as db_session:
-                        mod_conditional = db_session.query(Conditional)
+                        mod_conditional = db_session.query(Trigger)
                         mod_conditional = mod_conditional.filter(
-                            Conditional.unique_id == self.function_id).first()
+                            Trigger.unique_id == self.function_id).first()
                         mod_conditional.is_activated = False
                         db_session.commit()
                     self.stop_controller()
                     self.logger.warning(
                         "Method has ended. "
-                        "Activate the Conditional controller to start it again.")
+                        "Activate the Trigger controller to start it again.")
                 elif (self.method_start_act == 'Ready' or
                         self.method_start_act is None):
                     # Method has been instructed to begin
@@ -298,9 +298,9 @@ class ConditionalController(threading.Thread):
                             seconds=float(method_data_repeat.duration_end))
 
                     with session_scope(MYCODO_DB_PATH) as db_session:
-                        mod_conditional = db_session.query(Conditional)
+                        mod_conditional = db_session.query(Trigger)
                         mod_conditional = mod_conditional.filter(
-                            Conditional.unique_id == self.function_id).first()
+                            Trigger.unique_id == self.function_id).first()
                         mod_conditional.method_start_time = self.method_start_time
                         mod_conditional.method_end_time = self.method_end_time
                         db_session.commit()
@@ -308,10 +308,10 @@ class ConditionalController(threading.Thread):
     def get_method_output(self, method_id):
         """ Get output variable from method """
         this_controller = db_retrieve_table_daemon(
-            Conditional, unique_id=self.function_id)
+            Trigger, unique_id=self.function_id)
         setpoint, ended = calculate_method_setpoint(
             method_id,
-            Conditional,
+            Trigger,
             this_controller,
             Method,
             MethodData,
@@ -325,9 +325,9 @@ class ConditionalController(threading.Thread):
 
         if ended:
             with session_scope(MYCODO_DB_PATH) as db_session:
-                mod_conditional = db_session.query(Conditional)
+                mod_conditional = db_session.query(Trigger)
                 mod_conditional = mod_conditional.filter(
-                    Conditional.unique_id == self.function_id).first()
+                    Trigger.unique_id == self.function_id).first()
                 mod_conditional.is_activated = False
                 db_session.commit()
             self.is_activated = False
@@ -340,16 +340,16 @@ class ConditionalController(threading.Thread):
         self.control.output_on(output_id,
                                duty_cycle=duty_cycle)
 
-    def check_conditionals(self):
+    def check_triggers(self):
         """
-        Check if any Conditionals are activated and
-        execute their actions if the Conditional is true.
+        Check if any Triggers are activated and
+        execute their actions if the Trigger is true.
 
         For example, if measured temperature is above 30C, notify me@gmail.com
 
-        "if measured temperature is above 30C" is the Conditional to check.
-        "notify me@gmail.com" is the Conditional Action to execute if the
-        Conditional is True.
+        "if measured temperature is above 30C" is the Trigger to check.
+        "notify me@gmail.com" is the Trigger Action to execute if the
+        Trigger is True.
         """
         last_measurement = None
         gpio_state = None
@@ -358,11 +358,11 @@ class ConditionalController(threading.Thread):
             id=self.function_id))
 
         cond = db_retrieve_table_daemon(
-            Conditional, unique_id=self.function_id, entry='first')
+            Trigger, unique_id=self.function_id, entry='first')
 
         now = time.time()
         timestamp = datetime.datetime.fromtimestamp(now).strftime('%Y-%m-%d %H:%M:%S')
-        message = "{ts}\n[Conditional {id} ({name})]".format(
+        message = "{ts}\n[Trigger {id} ({name})]".format(
             ts=timestamp,
             name=cond.name,
             id=self.function_id)
@@ -405,7 +405,7 @@ class ConditionalController(threading.Thread):
             logger_cond.error(message)
             return
 
-        # Check Measurement Conditionals
+        # Check Measurement Triggers
         if (cond.conditional_type == 'measurement' and
                 direction and device_id and device_measurement):
 
@@ -417,9 +417,9 @@ class ConditionalController(threading.Thread):
                 if last_measurement is None:
                     message += " Measurement {meas} for device ID {id} not found in the past" \
                                " {value} seconds.".format(
-                        meas=device_measurement,
-                        id=device_id,
-                        value=max_age)
+                                    meas=device_measurement,
+                                    id=device_id,
+                                    value=max_age)
                 else:
                     return
 
@@ -491,7 +491,6 @@ class ConditionalController(threading.Thread):
             message=message, last_measurement=last_measurement,
             device_id=device_id, device_measurement=device_measurement,
             edge=gpio_state)
-
     
     @staticmethod
     def get_last_measurement(unique_id, measurement, duration_sec):

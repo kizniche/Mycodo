@@ -144,9 +144,9 @@ def action_test_all(form):
     try:
         if not error:
             control = DaemonControl()
-            control.trigger_conditional_actions(
-                form.conditional_id.data,
-                message="Test triggering all conditional actions of function {}".format(form.conditional_id.data))
+            control.test_trigger_actions(
+                form.function_id.data,
+                message="Test triggering all actions of function {}".format(form.function_id.data))
     except Exception as except_msg:
         error.append(except_msg)
 

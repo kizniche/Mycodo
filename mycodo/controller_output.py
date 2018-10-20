@@ -32,9 +32,11 @@ from sqlalchemy import and_
 from sqlalchemy import or_
 
 from mycodo.databases.models import Conditional
+from mycodo.databases.models import ConditionalConditions
 from mycodo.databases.models import Misc
 from mycodo.databases.models import Output
 from mycodo.databases.models import SMTP
+from mycodo.databases.models import Trigger
 from mycodo.mycodo_client import DaemonControl
 from mycodo.utils.database import db_retrieve_table_daemon
 from mycodo.utils.influx import write_influxdb_value
@@ -474,7 +476,7 @@ class OutputController(threading.Thread):
             self.output_off_triggered[output_id] = False
 
         if trigger_conditionals:
-            self.check_conditionals(output_id,
+            self.check_triggers(output_id,
                                     state=state,
                                     on_duration=duration,
                                     duty_cycle=duty_cycle)
@@ -566,57 +568,57 @@ class OutputController(threading.Thread):
                         self.output_pin[output_id], 0)
                 self.pwm_state[output_id] = None
 
-    def check_conditionals(self, output_id, state=None, on_duration=None, duty_cycle=None):
+    def check_triggers(self, output_id, state=None, on_duration=None, duty_cycle=None):
         """
         This function is executed whenever an output is turned on or off
-        It is responsible for executing Output Conditionals
+        It is responsible for executing Output Triggers
         """
         #
         # Check On/Off Outputs
         #
-        conditionals_output = db_retrieve_table_daemon(Conditional)
-        conditionals_output = conditionals_output.filter(
-            or_(Conditional.conditional_type == 'output',
-                Conditional.conditional_type == 'output_duration'))
-        conditionals_output = conditionals_output.filter(
-            Conditional.unique_id_1 == output_id)
-        conditionals_output = conditionals_output.filter(
-            Conditional.is_activated == True)
+        trigger_output = db_retrieve_table_daemon(Trigger)
+        trigger_output = trigger_output.filter(
+            or_(Trigger.trigger_type == 'output',
+                Trigger.trigger_type == 'output_duration'))
+        trigger_output = trigger_output.filter(
+            Trigger.unique_id_1 == output_id)
+        trigger_output = trigger_output.filter(
+            Trigger.is_activated == True)
 
-        # Find any Output Conditionals with the output_id of the output that
+        # Find any Output Triggers with the output_id of the output that
         # just changed its state
         if self.is_on(output_id) and on_duration > 0:
-            conditionals_output = conditionals_output.filter(
-                or_(Conditional.output_state == 'on',
-                    Conditional.output_state == 'on_any',
-                    Conditional.output_state == 'equal_greater_than',
-                    Conditional.output_state == 'equal_less_than'))
+            trigger_output = trigger_output.filter(
+                or_(Trigger.output_state == 'on',
+                    Trigger.output_state == 'on_any',
+                    Trigger.output_state == 'equal_greater_than',
+                    Trigger.output_state == 'equal_less_than'))
 
             on_equal_to = and_(
-                Conditional.output_state == 'on',
-                Conditional.output_duration == on_duration)
+                Trigger.output_state == 'on',
+                Trigger.output_duration == on_duration)
             on_greater_than = and_(
-                Conditional.output_state == 'equal_greater_than',
-                on_duration >= Conditional.output_duration)
+                Trigger.output_state == 'equal_greater_than',
+                on_duration >= Trigger.output_duration)
             on_less_than = and_(
-                Conditional.output_state == 'equal_less_than',
-                on_duration <= Conditional.output_duration)
+                Trigger.output_state == 'equal_less_than',
+                on_duration <= Trigger.output_duration)
 
-            conditionals_output = conditionals_output.filter(
-                or_(Conditional.output_state == 'on_any',
+            trigger_output = trigger_output.filter(
+                or_(Trigger.output_state == 'on_any',
                     on_equal_to,
                     on_greater_than,
                     on_less_than))
         else:
-            conditionals_output = conditionals_output.filter(
-                Conditional.output_state == 'off')
+            trigger_output = trigger_output.filter(
+                Trigger.output_state == 'off')
 
-        # Execute the Conditional Actions for each Output Conditional
+        # Execute the Trigger Actions for each Output Trigger
         # for this particular Output device
-        for each_conditional in conditionals_output.all():
+        for each_conditional in trigger_output.all():
             now = time.time()
             timestamp = datetime.datetime.fromtimestamp(now).strftime('%Y-%m-%d %H:%M:%S')
-            message = "{ts}\n[Conditional {cid} ({cname})] Output {oid} ({name}) {state}".format(
+            message = "{ts}\n[Trigger {cid} ({cname})] Output {oid} ({name}) {state}".format(
                 ts=timestamp,
                 cid=each_conditional.unique_id.split('-')[0],
                 cname=each_conditional.name,
@@ -624,31 +626,31 @@ class OutputController(threading.Thread):
                 oid=output_id,
                 state=each_conditional.output_state)
 
-            self.control.trigger_conditional_actions(
+            self.control.trigger_trigger_actions(
                 each_conditional.unique_id, message=message,
                 output_state=state, on_duration=on_duration, duty_cycle=duty_cycle)
 
         #
         # Check PWM Outputs
         #
-        conditionals_output_pwm = db_retrieve_table_daemon(Conditional)
-        conditionals_output_pwm = conditionals_output_pwm.filter(
-            Conditional.conditional_type == 'output_pwm')
-        conditionals_output_pwm = conditionals_output_pwm.filter(
-            Conditional.unique_id_1 == output_id)
-        conditionals_output_pwm = conditionals_output_pwm.filter(
-            Conditional.is_activated == True)
+        trigger_output_pwm = db_retrieve_table_daemon(Trigger)
+        trigger_output_pwm = trigger_output_pwm.filter(
+            Trigger.trigger_type == 'output_pwm')
+        trigger_output_pwm = trigger_output_pwm.filter(
+            Trigger.unique_id_1 == output_id)
+        trigger_output_pwm = trigger_output_pwm.filter(
+            Trigger.is_activated == True)
 
-        # Execute the Conditional Actions for each Output Conditional
+        # Execute the Trigger Actions for each Output Trigger
         # for this particular Output device
-        for each_conditional in conditionals_output_pwm.all():
-            trigger_conditional = False
+        for each_conditional in trigger_output_pwm.all():
+            trigger_trigger = False
             duty_cycle = self.output_state(output_id)
 
             if duty_cycle == 'off':
                 if (each_conditional.direction == 'equal' and
                         each_conditional.output_duty_cycle == 0):
-                    trigger_conditional = True
+                    trigger_trigger = True
             elif (
                     (each_conditional.direction == 'above' and
                      duty_cycle > each_conditional.output_duty_cycle) or
@@ -657,25 +659,25 @@ class OutputController(threading.Thread):
                     (each_conditional.direction == 'equal' and
                      duty_cycle == each_conditional.output_duty_cycle)
                     ):
-                trigger_conditional = True
+                trigger_trigger = True
 
-            if not trigger_conditional:
+            if not trigger_trigger:
                 continue
 
             now = time.time()
             timestamp = datetime.datetime.fromtimestamp(now).strftime('%Y-%m-%d %H:%M:%S')
-            message = "{ts}\n[Conditional {cid} ({cname})] Output {oid} " \
+            message = "{ts}\n[Trigger {cid} ({cname})] Output {oid} " \
                       "({name}) Duty Cycle {actual_dc} {state} {duty_cycle}".format(
-                ts=timestamp,
-                cid=each_conditional.unique_id.split('-')[0],
-                cname=each_conditional.name,
-                name=each_conditional.name,
-                oid=output_id,
-                actual_dc=duty_cycle,
-                state = each_conditional.direction,
-                duty_cycle = each_conditional.output_duty_cycle)
+                        ts=timestamp,
+                        cid=each_conditional.unique_id.split('-')[0],
+                        cname=each_conditional.name,
+                        name=each_conditional.name,
+                        oid=output_id,
+                        actual_dc=duty_cycle,
+                        state = each_conditional.direction,
+                        duty_cycle = each_conditional.output_duty_cycle)
 
-            self.control.trigger_conditional_actions(
+            self.control.trigger_trigger_actions(
                 each_conditional.unique_id, message=message, duty_cycle=duty_cycle)
 
     def all_outputs_initialize(self, outputs):
