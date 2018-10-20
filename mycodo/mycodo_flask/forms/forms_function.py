@@ -11,10 +11,7 @@ from wtforms import SelectMultipleField
 from wtforms import StringField
 from wtforms import SubmitField
 from wtforms import widgets
-from wtforms.validators import DataRequired
 from wtforms.widgets.html5 import NumberInput
-
-from mycodo.config import FUNCTION_TYPES
 
 
 class DataBase(FlaskForm):
@@ -24,11 +21,18 @@ class DataBase(FlaskForm):
 
 
 class FunctionAdd(FlaskForm):
-    func_type = SelectField(
-        choices=FUNCTION_TYPES,
-        validators=[DataRequired()]
-    )
+    func_type = SelectField('Function Type')
     func_add = SubmitField(lazy_gettext('Add'))
+
+
+class FunctionMod(FlaskForm):
+    function_id = StringField('Function ID', widget=widgets.HiddenInput())
+    function_type = StringField('Function Type', widget=widgets.HiddenInput())
+    name = StringField(lazy_gettext('Name'))
+    order_up = SubmitField(lazy_gettext('Up'))
+    order_down = SubmitField(lazy_gettext('Down'))
+    save_function = SubmitField(lazy_gettext('Save'))
+    delete_function = SubmitField(lazy_gettext('Delete'))
 
 
 class Actions(FlaskForm):
@@ -38,6 +42,9 @@ class Actions(FlaskForm):
         'Function ID', widget=widgets.HiddenInput())
     function_action_id = StringField(
         'Function Action ID', widget=widgets.HiddenInput())
+    pause_duration = DecimalField(
+        lazy_gettext('Duration (seconds)'),
+        widget=NumberInput(step='any'))
     do_action_string = StringField(lazy_gettext('Action String'))
     do_unique_id = StringField(lazy_gettext('Controller ID'))
     do_output_state = StringField(lazy_gettext('Then State'))

@@ -181,6 +181,9 @@ def conditional_condition_mod(form):
         controller='{} {}'.format(gettext("Conditional"), gettext("Condition")))
 
     try:
+        conditional = Conditional.query.filter(
+            Conditional.unique_id == form.conditional_id.data).first()
+
         cond_mod = ConditionalConditions.query.filter(
             ConditionalConditions.unique_id == form.conditional_condition_id.data).first()
 
@@ -195,7 +198,7 @@ def conditional_condition_mod(form):
         if not error:
             db.session.commit()
 
-            if cond_mod.is_activated:
+            if conditional.is_activated:
                 control = DaemonControl()
                 return_value = control.refresh_daemon_conditional_settings(
                     form.conditional_id.data)
@@ -235,26 +238,6 @@ def conditional_condition_del(form):
         error.append(except_msg)
     except sqlalchemy.exc.IntegrityError as except_msg:
         error.append(except_msg)
-    except Exception as except_msg:
-        error.append(except_msg)
-
-    flash_success_errors(error, action, url_for('routes_page.page_function'))
-
-
-def conditional_reorder(cond_id, display_order, direction):
-    """Reorder a Conditional"""
-    action = '{action} {controller}'.format(
-        action=gettext("Reorder"),
-        controller=gettext("Conditional"))
-    error = []
-
-    try:
-        status, reord_list = reorder(display_order, cond_id, direction)
-        if status == 'success':
-            DisplayOrder.query.first().conditional = ','.join(map(str, reord_list))
-            db.session.commit()
-        elif status == 'error':
-            error.append(reord_list)
     except Exception as except_msg:
         error.append(except_msg)
 

@@ -19,7 +19,6 @@ from mycodo.mycodo_flask.utils.utils_general import controller_activate_deactiva
 from mycodo.mycodo_flask.utils.utils_general import delete_entry_with_id
 from mycodo.mycodo_flask.utils.utils_general import flash_form_errors
 from mycodo.mycodo_flask.utils.utils_general import flash_success_errors
-from mycodo.mycodo_flask.utils.utils_general import reorder
 from mycodo.utils.system_pi import csv_to_list_of_str
 from mycodo.utils.system_pi import list_to_csv
 
@@ -170,25 +169,6 @@ def pid_del(pid_id):
     except Exception as except_msg:
         error.append(except_msg)
 
-    flash_success_errors(error, action, url_for('routes_page.page_function'))
-
-
-def pid_reorder(pid_id, display_order, direction):
-    action = '{action} {controller}'.format(
-        action=gettext("Reorder"),
-        controller=gettext("PID"))
-    error = []
-    try:
-        status, reord_list = reorder(display_order,
-                                     pid_id,
-                                     direction)
-        if status == 'success':
-            DisplayOrder.query.first().pid = ','.join(map(str, reord_list))
-            db.session.commit()
-        else:
-            error.append(reord_list)
-    except Exception as except_msg:
-        error.append(except_msg)
     flash_success_errors(error, action, url_for('routes_page.page_function'))
 
 

@@ -86,26 +86,5 @@ class Trigger(FlaskForm):
     test_all_actions = SubmitField(lazy_gettext('Test All Actions'))
     delete_trigger = SubmitField(lazy_gettext('Delete'))
     save_trigger = SubmitField(lazy_gettext('Save'))
-    order_up_trigger = SubmitField(lazy_gettext('Up'))
-    order_down_trigger = SubmitField(lazy_gettext('Down'))
-
-class Actions(FlaskForm):
-    function_id = StringField(
-        'Conditional ID', widget=widgets.HiddenInput())
-    function_action_id = StringField(
-        'Conditional Action ID', widget=widgets.HiddenInput())
-    do_action_string = StringField(lazy_gettext('Action String'))
-    do_unique_id = StringField(lazy_gettext('Controller ID'))
-    do_output_state = StringField(lazy_gettext('Then State'))
-    do_output_duration = DecimalField(
-        lazy_gettext('Then Duration (seconds)'),
-        widget=NumberInput(step='any'))
-    do_output_pwm = DecimalField(
-        lazy_gettext('Then Duty Cycle'),
-        widget=NumberInput(step='any'))
-    do_camera_duration = DecimalField(
-        lazy_gettext('Then Duration'),
-        widget=NumberInput(step='any'))
-
-    save_action = SubmitField(lazy_gettext('Save'))
-    delete_action = SubmitField(lazy_gettext('Delete'))
+    order_up = SubmitField(lazy_gettext('Up'))
+    order_down = SubmitField(lazy_gettext('Down'))

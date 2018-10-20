@@ -1,4 +1,13 @@
-{% if each_action.action_type == 'output' %}
+{% if each_action.action_type == 'pause_actions' %}
+
+<div class="col-auto">
+  {{form_actions.pause_duration.label(class_='control-label')}}
+  <div>
+    {{form_actions.pause_duration(class_='form-control', value=each_action.pause_duration, **{'title':_('How long to pause executing actions')})}}
+  </div>
+</div>
+
+{% elif each_action.action_type == 'output' %}
 
 <div class="col-auto">
   {{form_actions.do_unique_id.label(class_='control-label')}}

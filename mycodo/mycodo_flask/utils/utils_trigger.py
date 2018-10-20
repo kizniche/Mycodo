@@ -173,26 +173,6 @@ def trigger_del(trigger_id):
     flash_success_errors(error, action, url_for('routes_page.page_function'))
 
 
-def trigger_reorder(trigger_id, display_order, direction):
-    """Reorder a Trigger"""
-    action = '{action} {controller}'.format(
-        action=gettext("Reorder"),
-        controller=gettext("Trigger"))
-    error = []
-
-    try:
-        status, reord_list = reorder(display_order, trigger_id, direction)
-        if status == 'success':
-            DisplayOrder.query.first().trigger = ','.join(map(str, reord_list))
-            db.session.commit()
-        elif status == 'error':
-            error.append(reord_list)
-    except Exception as except_msg:
-        error.append(except_msg)
-
-    flash_success_errors(error, action, url_for('routes_page.page_function'))
-
-
 def trigger_activate(trigger_id):
     """Activate a Trigger"""
     error = []

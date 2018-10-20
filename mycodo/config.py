@@ -156,24 +156,24 @@ CONDITIONAL_CONDITIONS = [
 
 
 FUNCTION_TYPES = [
-    ('pid', 'PID'),
-    ('conditional', 'Conditional'),
-
-    # Triggers
-    ('edge', 'Edge'),
-    ('output', 'Output (On/Off)'),
-    ('output_duration', 'Output (On Duration)'),
-    ('output_pwm', 'Output (PWM)'),
-    ('timer_daily_time_point', 'Timer (Daily Point)'),
-    ('timer_daily_time_span', 'Timer (Daily Span)'),
-    ('timer_duration', 'Timer (Duration)'),
-    ('run_pwm_method', 'Run PWM Method'),
-    ('sunrise_sunset', 'Sunrise/Sunset'),
+    ('conditional_conditional', 'Conditional', 'Conditional: Conditional'),
+    ('pid_pid', 'PID', 'PID: PID Controller'),
+    ('trigger_edge', 'Edge', 'Trigger: Edge'),
+    ('trigger_output', 'Output (On/Off)', 'Trigger: Output (On/Off)'),
+    ('trigger_output_duration', 'Output (On Duration)', 'Trigger: Output (On Duration)'),
+    ('trigger_output_pwm', 'Output (PWM)', 'Trigger: Output (PWM)'),
+    ('trigger_timer_daily_time_point', 'Timer (Daily Point)', 'Trigger: Timer (Daily Point)'),
+    ('trigger_timer_daily_time_span', 'Timer (Daily Span)', 'Trigger: Timer (Daily Span)'),
+    ('trigger_timer_duration', 'Timer (Duration)', 'Trigger: Timer (Duration)'),
+    ('trigger_run_pwm_method', 'Run PWM Method', 'Trigger: Run PWM Method'),
+    ('trigger_sunrise_sunset', 'Sunrise/Sunset', 'Trigger: Sunrise/Sunset'),
+    ('function_spacer', 'Spacer', 'Spacer')
 ]
 
 
 # Conditional actions
 FUNCTION_ACTIONS = [
+    ('pause_actions', lazy_gettext('Pause Actions')),
     ('output', lazy_gettext('Output (Duration)')),
     ('output_pwm', lazy_gettext('Output (Duty Cycle)')),
     ('command', lazy_gettext('Execute Command')),

@@ -55,6 +55,7 @@ from mycodo.databases.models import Conditional
 from mycodo.databases.models import ConditionalConditions
 from mycodo.databases.models import Dashboard
 from mycodo.databases.models import DisplayOrder
+from mycodo.databases.models import Function
 from mycodo.databases.models import Input
 from mycodo.databases.models import LCD
 from mycodo.databases.models import LCDData
@@ -968,8 +969,6 @@ def page_live():
         DisplayOrder.query.first().inputs)
     math_display_order = csv_to_list_of_str(
         DisplayOrder.query.first().math)
-    pid_display_order = csv_to_list_of_str(
-        DisplayOrder.query.first().pid)
 
     # Generate all measurement and units used
     dict_measurements = add_custom_measurements(measurement)
@@ -1012,7 +1011,6 @@ def page_live():
                            output_type=output_type,
                            pid=pid,
                            input=input_dev,
-                           pid_display_order=pid_display_order,
                            inputs_sorted=inputs_sorted,
                            maths_sorted=maths_sorted,
                            units=UNITS,
@@ -1079,6 +1077,7 @@ def page_function():
     camera = Camera.query.all()
     conditional = Conditional.query.all()
     conditional_conditions = ConditionalConditions.query.all()
+    function_dev = Function.query.all()
     actions = Actions.query.all()
     input_dev = Input.query.all()
     lcd = LCD.query.all()
@@ -1089,9 +1088,10 @@ def page_function():
     trigger = Trigger.query.all()
     user = User.query.all()
 
-    actions_dict = {}
-    actions_dict['conditional'] = {}
-    actions_dict['trigger'] = {}
+    actions_dict = {
+        'conditional': {},
+        'trigger': {}
+    }
     for each_action in actions:
         if (each_action.function_type == 'conditional' and
                 each_action.unique_id not in actions_dict['conditional']):
@@ -1110,7 +1110,8 @@ def page_function():
                        ('Input', input_dev),
                        ('LCD', lcd),
                        ('Math', math),
-                       ('PID', pid)]
+                       ('PID', pid),
+                       ('Trigger', trigger)]
     for each_controller in controllers_all:
         for each_cont in each_controller[1]:
             controllers.append((each_controller[0],
@@ -1122,54 +1123,43 @@ def page_function():
     choices_math = utils_general.choices_maths(math)
     choices_pid = utils_general.choices_pids(pid)
 
-    display_order_conditional = csv_to_list_of_str(DisplayOrder.query.first().conditional)
-    display_order_pid = csv_to_list_of_str(DisplayOrder.query.first().pid)
-    display_order_trigger = csv_to_list_of_str(DisplayOrder.query.first().trigger)
-
     form_base = forms_function.DataBase()
-
     form_add_function = forms_function.FunctionAdd()
     form_mod_pid_base = forms_pid.PIDModBase()
     form_mod_pid_output_raise = forms_pid.PIDModRelayRaise()
     form_mod_pid_output_lower = forms_pid.PIDModRelayLower()
     form_mod_pid_pwm_raise = forms_pid.PIDModPWMRaise()
     form_mod_pid_pwm_lower = forms_pid.PIDModPWMLower()
+    form_function = forms_function.FunctionMod()
     form_trigger = forms_trigger.Trigger()
     form_conditional = forms_conditional.Conditional()
     form_conditional_conditions = forms_conditional.ConditionalConditions()
     form_actions = forms_function.Actions()
 
-    # Create dict of PID names
-    names_pid = {}
-    all_elements = pid
+    # Create dict of Function names
+    names_function = {}
+    all_elements = [conditional, pid, trigger, function_dev]
     for each_element in all_elements:
-        names_pid[each_element.unique_id] = '[{id}] {name}'.format(
-            id=each_element.id, name=each_element.name)
+        for each_function in each_element:
+            names_function[each_function.unique_id] = '[{id}] {name}'.format(
+                id=each_function.unique_id.split('-')[0], name=each_function.name)
 
-    # Create dict of Conditional names
-    names_conditional = {}
-    all_elements = conditional
-    for each_element in all_elements:
-        names_conditional[each_element.unique_id] = '[{id}] {name}'.format(
-            id=each_element.id, name=each_element.name)
+    display_order_function = csv_to_list_of_str(
+        DisplayOrder.query.first().function)
 
     if form_base.reorder.data:
-        if form_base.reorder_type.data == 'pid':
-            mod_order = DisplayOrder.query.first()
-            mod_order.pid = list_to_csv(form_base.list_visible_elements.data)
-            db.session.commit()
-            display_order_pid = csv_to_list_of_str(DisplayOrder.query.first().pid)
-        elif form_base.reorder_type.data == 'conditional':
-            mod_order = DisplayOrder.query.first()
-            mod_order.conditional = list_to_csv(form_base.list_visible_elements.data)
-            db.session.commit()
-            display_order_conditional = csv_to_list_of_str(DisplayOrder.query.first().conditional)
+        mod_order = DisplayOrder.query.first()
+        mod_order.function = list_to_csv(
+            form_base.list_visible_elements.data)
+        db.session.commit()
+        display_order_function = csv_to_list_of_str(
+            DisplayOrder.query.first().function)
 
     # Calculate sunrise/sunset times if conditional controller is set up properly
-    sunrise_sunset_calculated = {}
+    sunrise_set_calc = {}
     for each_trigger in trigger:
-        if each_trigger.trigger_type == 'sunrise_sunset':
-            sunrise_sunset_calculated[each_trigger.unique_id] = {}
+        if each_trigger.trigger_type == 'trigger_sunrise_sunset':
+            sunrise_set_calc[each_trigger.unique_id] = {}
             try:
                 sun = Sun(latitude=each_trigger.latitude,
                           longitude=each_trigger.longitude,
@@ -1178,7 +1168,8 @@ def page_function():
                 sunset = sun.get_sunset_time()
 
                 # Adjust for date offset
-                new_date = datetime.datetime.now() + datetime.timedelta(days=each_trigger.date_offset_days)
+                new_date = datetime.datetime.now() + datetime.timedelta(
+                    days=each_trigger.date_offset_days)
 
                 sun = Sun(latitude=each_trigger.latitude,
                           longitude=each_trigger.longitude,
@@ -1186,22 +1177,28 @@ def page_function():
                           day=new_date.day,
                           month=new_date.month,
                           year=new_date.year)
-                offset_sunrise = sun.get_sunrise_time()
-                offset_sunset = sun.get_sunset_time()
+                offset_rise = sun.get_sunrise_time()
+                offset_set = sun.get_sunset_time()
 
                 # Adjust for time offset
-                offset_sunrise = offset_sunrise['time_local'] + datetime.timedelta(minutes=each_trigger.time_offset_minutes)
-                offset_sunset = offset_sunset['time_local'] + datetime.timedelta(minutes=each_trigger.time_offset_minutes)
+                offset_rise = offset_rise['time_local'] + datetime.timedelta(
+                    minutes=each_trigger.time_offset_minutes)
+                offset_set = offset_set['time_local'] + datetime.timedelta(
+                    minutes=each_trigger.time_offset_minutes)
 
-                sunrise_sunset_calculated[each_trigger.unique_id]['sunrise'] = sunrise['time_local'].strftime("%Y-%m-%d %H:%M")
-                sunrise_sunset_calculated[each_trigger.unique_id]['sunset'] = sunset['time_local'].strftime("%Y-%m-%d %H:%M")
-                sunrise_sunset_calculated[each_trigger.unique_id]['offset_sunrise'] = offset_sunrise.strftime("%Y-%m-%d %H:%M")
-                sunrise_sunset_calculated[each_trigger.unique_id]['offset_sunset'] = offset_sunset.strftime("%Y-%m-%d %H:%M")
+                sunrise_set_calc[each_trigger.unique_id]['sunrise'] = (
+                    sunrise['time_local'].strftime("%Y-%m-%d %H:%M"))
+                sunrise_set_calc[each_trigger.unique_id]['sunset'] = (
+                    sunset['time_local'].strftime("%Y-%m-%d %H:%M"))
+                sunrise_set_calc[each_trigger.unique_id]['offset_sunrise'] = (
+                    offset_rise.strftime("%Y-%m-%d %H:%M"))
+                sunrise_set_calc[each_trigger.unique_id]['offset_sunset'] = (
+                    offset_set.strftime("%Y-%m-%d %H:%M"))
             except:
-                sunrise_sunset_calculated[each_trigger.unique_id]['sunrise'] = None
-                sunrise_sunset_calculated[each_trigger.unique_id]['sunrise'] = None
-                sunrise_sunset_calculated[each_trigger.unique_id]['offset_sunrise'] = None
-                sunrise_sunset_calculated[each_trigger.unique_id]['offset_sunset'] = None
+                sunrise_set_calc[each_trigger.unique_id]['sunrise'] = None
+                sunrise_set_calc[each_trigger.unique_id]['sunrise'] = None
+                sunrise_set_calc[each_trigger.unique_id]['offset_sunrise'] = None
+                sunrise_set_calc[each_trigger.unique_id]['offset_sunset'] = None
 
     if request.method == 'POST':
         if not utils_general.user_has_permission('edit_controllers'):
@@ -1209,7 +1206,21 @@ def page_function():
 
         # Add a new function
         if form_add_function.func_add.data:
-            utils_function.func_add(form_add_function)
+            utils_function.function_add(form_add_function)
+        elif form_function.save_function.data:
+            utils_function.function_mod(
+                form_conditional)
+        elif form_function.delete_function.data:
+            utils_function.function_del(
+                form_conditional.function_id.data)
+        elif form_function.order_up.data:
+            utils_function.function_reorder(
+                form_conditional.function_id.data,
+                display_order_function, 'up')
+        elif form_function.order_down.data:
+            utils_function.function_reorder(
+                form_conditional.function_id.data,
+                display_order_function, 'down')
 
         # PID form actions
         elif form_mod_pid_base.pid_autotune.data:
@@ -1223,12 +1234,14 @@ def page_function():
         elif form_mod_pid_base.pid_delete.data:
             utils_pid.pid_del(
                 form_mod_pid_base.pid_id.data)
-        elif form_mod_pid_base.pid_order_up.data:
-            utils_pid.pid_reorder(
-                form_mod_pid_base.pid_id.data, display_order_pid, 'up')
-        elif form_mod_pid_base.pid_order_down.data:
-            utils_pid.pid_reorder(
-                form_mod_pid_base.pid_id.data, display_order_pid, 'down')
+        elif form_mod_pid_base.order_up.data:
+            utils_function.function_reorder(
+                form_mod_pid_base.pid_id.data,
+                display_order_function, 'up')
+        elif form_mod_pid_base.order_down.data:
+            utils_function.function_reorder(
+                form_mod_pid_base.pid_id.data,
+                display_order_function, 'down')
         elif form_mod_pid_base.pid_activate.data:
             utils_pid.pid_activate(
                 form_mod_pid_base.pid_id.data)
@@ -1258,14 +1271,14 @@ def page_function():
         elif form_trigger.activate_trigger.data:
             utils_trigger.trigger_activate(
                 form_trigger.function_id.data)
-        elif form_trigger.order_up_trigger.data:
-            utils_trigger.trigger_reorder(
+        elif form_trigger.order_up.data:
+            utils_function.function_reorder(
                 form_trigger.function_id.data,
-                display_order_trigger, 'up')
-        elif form_trigger.order_down_trigger.data:
-            utils_trigger.trigger_reorder(
+                display_order_function, 'up')
+        elif form_trigger.order_down.data:
+            utils_function.function_reorder(
                 form_trigger.function_id.data,
-                display_order_trigger, 'down')
+                display_order_function, 'down')
         elif form_trigger.add_action.data:
             utils_function.action_add(
                 form_trigger)
@@ -1286,14 +1299,14 @@ def page_function():
         elif form_conditional.activate_cond.data:
             utils_conditional.conditional_activate(
                 form_conditional.function_id.data)
-        elif form_conditional.order_up_cond.data:
-            utils_conditional.conditional_reorder(
+        elif form_conditional.order_up.data:
+            utils_function.function_reorder(
                 form_conditional.function_id.data,
-                display_order_conditional, 'up')
-        elif form_conditional.order_down_cond.data:
-            utils_conditional.conditional_reorder(
+                display_order_function, 'up')
+        elif form_conditional.order_down.data:
+            utils_function.function_reorder(
                 form_conditional.function_id.data,
-                display_order_conditional, 'down')
+                display_order_function, 'down')
         elif form_conditional.add_condition.data:
             utils_conditional.conditional_condition_add(
                 form_conditional)
@@ -1333,25 +1346,24 @@ def page_function():
                            conditions_dict=conditions_dict,
                            actions=actions,
                            actions_dict=actions_dict,
+                           function_dev=function_dev,
                            function_types=FUNCTION_TYPES,
                            function_actions_list=FUNCTION_ACTIONS,
                            controllers=controllers,
-                           display_order_conditional=display_order_conditional,
-                           display_order_pid=display_order_pid,
-                           display_order_trigger=display_order_trigger,
+                           display_order_function=display_order_function,
                            form_base=form_base,
                            form_conditional=form_conditional,
                            form_conditional_conditions=form_conditional_conditions,
                            form_actions=form_actions,
                            form_add_function=form_add_function,
+                           form_function=form_function,
                            form_mod_pid_base=form_mod_pid_base,
                            form_mod_pid_pwm_raise=form_mod_pid_pwm_raise,
                            form_mod_pid_pwm_lower=form_mod_pid_pwm_lower,
                            form_mod_pid_output_raise=form_mod_pid_output_raise,
                            form_mod_pid_output_lower=form_mod_pid_output_lower,
                            form_trigger=form_trigger,
-                           names_pid=names_pid,
-                           names_conditional=names_conditional,
+                           names_function=names_function,
                            input=input_dev,
                            lcd=lcd,
                            math=math,
@@ -1361,7 +1373,7 @@ def page_function():
                            trigger=trigger,
                            units=MEASUREMENTS,
                            user=user,
-                           sunrise_sunset_calculated=sunrise_sunset_calculated)
+                           sunrise_set_calc=sunrise_set_calc)
 
 
 @blueprint.route('/output', methods=('GET', 'POST'))
@@ -1385,7 +1397,7 @@ def page_output():
     all_elements = output
     for each_element in all_elements:
         names_output[each_element.unique_id] = '[{id}] {name}'.format(
-            id=each_element.id, name=each_element.name)
+            id=each_element.unique_id.split('-')[0], name=each_element.name)
 
     if form_base.reorder.data:
         if form_base.reorder_type.data == 'input':
@@ -1490,14 +1502,14 @@ def page_data():
     all_elements = input_dev
     for each_element in all_elements:
         names_input[each_element.unique_id] = '[{id}] {name}'.format(
-            id=each_element.id, name=each_element.name)
+            id=each_element.unique_id.split('-')[0], name=each_element.name)
 
     # Create dict of Math names
     names_math = {}
     all_elements = math
     for each_element in all_elements:
         names_math[each_element.unique_id] = '[{id}] {name}'.format(
-            id=each_element.id, name=each_element.name)
+            id=each_element.unique_id.split('-')[0], name=each_element.name)
 
     if form_base.reorder.data:
         if form_base.reorder_type.data == 'input':
@@ -1563,10 +1575,10 @@ def page_data():
             utils_input.input_del(form_mod_input)
         elif form_mod_input.input_order_up.data:
             utils_input.input_reorder(form_mod_input.input_id.data,
-                                       display_order_input, 'up')
+                                      display_order_input, 'up')
         elif form_mod_input.input_order_down.data:
             utils_input.input_reorder(form_mod_input.input_id.data,
-                                       display_order_input, 'down')
+                                      display_order_input, 'down')
         elif form_mod_input.input_activate.data:
             utils_input.input_activate(form_mod_input)
         elif form_mod_input.input_deactivate.data:

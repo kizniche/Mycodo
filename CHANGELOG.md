@@ -5,6 +5,7 @@ The next major version of Mycodo brings a redesigned Conditional system. The rem
 ### Features
 
  - Refactor more powerful Conditional system ([#493](https://github.com/kizniche/mycodo/issues/493))
+ - Add new function action: Pause (for a duration of time before executing the actions that come after it)
 
 
 ## 6.4.5 (2018-10-17)

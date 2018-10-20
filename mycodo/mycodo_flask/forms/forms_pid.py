@@ -101,8 +101,8 @@ class PIDModBase(FlaskForm):
     pid_delete = SubmitField(lazy_gettext('Delete'))
     pid_activate = SubmitField(lazy_gettext('Activate'))
     pid_deactivate = SubmitField(lazy_gettext('Deactivate'))
-    pid_order_up = SubmitField(lazy_gettext('Up'))
-    pid_order_down = SubmitField(lazy_gettext('Down'))
+    order_up = SubmitField(lazy_gettext('Up'))
+    order_down = SubmitField(lazy_gettext('Down'))
 
     pid_autotune_noiseband = DecimalField(
         lazy_gettext('Noise Band'),

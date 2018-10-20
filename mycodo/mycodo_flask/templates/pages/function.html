@@ -24,8 +24,13 @@
     {{form_mod_pid_base.csrf_token}}
 
     <div class="row small-gutters">
+
       <div class="col-auto">
-        {{form_add_function.func_type(class_='form-control')}}
+        <select class="form-control form-tooltip form-dropdown" id="func_type" name="func_type">
+          {% for each_function in function_types -%}
+            <option value="{{each_function[0]}}">{{each_function[2]}}</option>
+          {% endfor -%}
+        </select>
       </div>
       <div class="col-auto">
         {{form_add_function.func_add(class_='btn btn-primary')}}
@@ -36,22 +41,67 @@
 
     <div style="clear: both; padding: 1em 0;"></div>
 
-  {% if pid %}
-    <h4>{{_('PID')}} <a href="/help#pid-controller" target="_blank"><span style="font-size: 16px" class="fas fa-question-circle"></span></a></h4>
-    <p>{{_('PID controllers couple an input with a device connected to an output to regulate an environmental condition. For example, this could be a heater and a temperature sensor, allowing the regulation of temperature.')}}</p>
-    {% include 'pages/function_options/pid.html' %}
-  {% endif %}
+  {%- if display_order_function -%}
+    {%- for order in display_order_function -%}
 
-  {% if trigger %}
-    <h4>{{_('Trigger')}} <a href="/help#trigger-controller" target="_blank"><span style="font-size: 16px" class="fas fa-question-circle"></span></a></h4>
-    <p>{{_('Trigger controllers allow certain actions to be carried out when events are triggered.')}} See the <a href="/help#trigger">manual</a> for more information.</p>
-    {% include 'pages/function_options/trigger.html' %}
-  {% endif %}
+      {% include 'pages/function_options/conditional.html' %}
+      {% include 'pages/function_options/pid.html' %}
+      {% include 'pages/function_options/trigger.html' %}
+      {% include 'pages/function_options/spacer.html' %}
 
-  {% if conditional %}
-    <h4>{{_('Conditional')}} <a href="/help#conditional-controller" target="_blank"><span style="font-size: 16px" class="fas fa-question-circle"></span></a></h4>
-    <p>{{_('Conditional controllers allow certain actions to be carried out when a certain set of conditions are met.')}} See the <a href="/help#conditional-statements">manual</a> for more information.</p>
-    {% include 'pages/function_options/conditional.html' %}
+      <div style="padding-bottom: 0.5em; "></div>
+
+    {% endfor %}
+
+    <div class="container">
+
+      <div class="form-inline" style="padding-bottom: 1em;">
+        <div class="form-group">
+          <a data-toggle="collapse" href="#collapseContainerReorderFunction" aria-expanded="false" aria-controls="collapseContainerReorderFunction" class="btn btn-sm btn-primary" role="button">{{_('Function')}} {{_('Reorder')}}</a>
+        </div>
+      </div>
+
+      <div class="collapse" id="collapseContainerReorderFunction" style="padding-bottom: 1em">
+
+        <form method="post" action="/function">
+        {{form_base.csrf_token}}
+
+        <div class="row" style="padding-bottom: 0.5em">
+          <div class="col-auto">
+            {{form_base.reorder(class_='btn btn-primary')}}
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-auto">
+          {{form_base.reorder_type(class_='form-control', value='function')}}
+            <select style="display: none" name="from[]" id="multiselect" class="" size="8" multiple="multiple"></select>
+            <div>
+              <select name="list_visible_elements" id="multiselect_to" class="form-control" size="8" multiple="multiple">
+              {% if display_order_function -%}
+                {% for each_visible in display_order_function if each_visible in names_function %}
+                  <option value="{{each_visible}}">{{names_function[each_visible]}}</option>
+                {% endfor %}
+              {% endif %}
+              </select>
+              <div class="row">
+                <div class="col-sm-6">
+                  <button type="button" id="multiselect_move_up" class="btn btn-sm btn-block btn-primary"><i class="fa fa-arrow-up"></i></button>
+                </div>
+                <div class="col-sm-6">
+                  <button type="button" id="multiselect_move_down" class="btn btn-sm btn-block btn-primary"><i class="fa fa-arrow-down"></i></button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        </form>
+
+      </div>
+
+    </div>
+
   {% endif %}
 
   </div>
@@ -66,6 +116,17 @@
       $(this).parent().find(".fa-plus-square").removeClass("fa-plus-square").addClass("fa-minus-square");
     }).on('hide.bs.collapse', function(){
       $(this).parent().find(".fa-minus-square").removeClass("fa-minus-square").addClass("fa-plus-square");
+    });
+
+    jQuery(document).ready(function($) {
+        $('#multiselect').multiselect({
+            sort: false,
+            keepRenderingSort: true
+        });
+    });
+
+    $('#collapseContainerReorderFunction').on('shown.bs.collapse', function () {
+      this.scrollIntoView();
     });
   </script>
 

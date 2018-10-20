@@ -25,7 +25,7 @@ MYCODO_DB_PATH = 'sqlite:///' + SQL_DATABASE_MYCODO
 
 
 def trigger_function_actions(
-        cond_id,
+        function_id,
         message='', last_measurement=None,
         device_id=None, device_measurement=None, edge=None,
         output_state=None, on_duration=None, duty_cycle=None,
@@ -34,7 +34,7 @@ def trigger_function_actions(
     """
     Execute the Actions belonging to a particular Function
 
-    :param cond_id:
+    :param function_id:
     :param device_id: The unique ID associated with the device_measurement
     :param message: The message generated from the conditional check
     :param last_measurement: The last measurement value
@@ -46,7 +46,7 @@ def trigger_function_actions(
     :return:
     """
     logger_cond = logging.getLogger("mycodo.conditional_{id}".format(
-        id=cond_id))
+        id=function_id))
 
     control = DaemonControl()
 
@@ -70,7 +70,7 @@ def trigger_function_actions(
 
     cond_actions = db_retrieve_table_daemon(Actions)
     cond_actions = cond_actions.filter(
-        Actions.function_id == cond_id).all()
+        Actions.function_id == function_id).all()
 
     if device_id:
         input_dev = db_retrieve_table_daemon(
@@ -97,8 +97,16 @@ def trigger_function_actions(
         message += "\n[Conditional Action {id}]:".format(
             id=cond_action.id, action_type=cond_action.action_type)
 
+        # Pause
+        if cond_action.action_type == 'pause_actions':
+            message += " [{id}] Pause actions for {sec} seconds.".format(
+                id=cond_action.id,
+                sec=cond_action.pause_duration)
+
+            time.sleep(cond_action.pause_duration)
+
         # Actuate output (duration)
-        if (cond_action.action_type == 'output' and cond_action.do_unique_id and
+        elif (cond_action.action_type == 'output' and cond_action.do_unique_id and
                 cond_action.do_output_state in ['on', 'off']):
             this_output = db_retrieve_table_daemon(
                 Output, unique_id=cond_action.do_unique_id, entry='first')

@@ -96,13 +96,9 @@
       <div class="row">
         <div class="col-xs-12 col-sm-6 text-left">
           {%- set input_has_pid = [] -%}
-          {%- if pid_display_order -%}
-            {%- for pid_order in pid_display_order -%}
-              {%- for each_pid in pid if each_pid.unique_id == pid_order and each_pid.is_activated and each_pid.measurement.split(',')[0] == each_input.unique_id -%}
-                {%- do input_has_pid.append(1) -%}
-              {%- endfor -%}
-            {%- endfor -%}
-          {%- endif -%}
+          {%- for each_pid in pid if each_pid.is_activated and each_pid.measurement.split(',')[0] == each_input.unique_id -%}
+            {%- do input_has_pid.append(1) -%}
+          {%- endfor -%}
           {%- if input_has_pid -%}
             <a style="padding-right: 0.5em" data-toggle="collapse" href="#collapseContainer{{collapse_container_number}}" aria-expanded="false" aria-controls="collapseContainer{{collapse_container_number}}"><span class='collapse-button{{collapse_container_number}} fa fa-2x fa-plus-square'></span></a>
           {%- endif -%}
@@ -137,9 +133,7 @@
         </div>
       </div>
 
-        {%- if pid_display_order -%}
-        {%- for pid_order in pid_display_order -%}
-          {%- for each_pid in pid if each_pid.unique_id == pid_order and each_pid.is_activated and each_pid.measurement.split(',')[0] == each_input.unique_id -%}
+      {%- for each_pid in pid and each_pid.is_activated and each_pid.measurement.split(',')[0] == each_input.unique_id -%}
 
       <div class="collapse" id="collapseContainer{{collapse_container_number}}" style="padding: 0.5em 0;">
 
@@ -248,9 +242,7 @@
 
       </div>
 
-          {%- endfor -%}
-        {%- endfor -%}
-        {%- endif -%}
+      {%- endfor -%}
 
     </div>
 
@@ -268,13 +260,9 @@
       <div class="row">
         <div class="col-xs-12 col-sm-6 text-left">
           {%- set math_has_pid = [] -%}
-          {%- if pid_display_order -%}
-            {%- for pid_order in pid_display_order -%}
-              {%- for each_pid in pid if each_pid.unique_id == pid_order and each_pid.is_activated and each_pid.measurement.split(',')[0] == each_math.unique_id -%}
-                {%- do math_has_pid.append(1) -%}
-              {%- endfor -%}
-            {%- endfor -%}
-          {%- endif -%}
+          {%- for each_pid in pid if each_pid.is_activated and each_pid.measurement.split(',')[0] == each_math.unique_id -%}
+            {%- do math_has_pid.append(1) -%}
+          {%- endfor -%}
           {%- if math_has_pid -%}
             <a style="padding-right: 0.5em" data-toggle="collapse" href="#collapseContainer{{collapse_container_number}}" aria-expanded="false" aria-controls="collapseContainer{{collapse_container_number}}"><span class='collapse-button{{collapse_container_number}} fa fa-2x fa-plus-square'></span></a>
           {%- endif -%}
@@ -306,9 +294,7 @@
         </div>
       </div>
 
-        {%- if pid_display_order -%}
-        {%- for pid_order in pid_display_order -%}
-          {%- for each_pid in pid if each_pid.unique_id == pid_order and each_pid.is_activated and each_pid.measurement.split(',')[0] == each_math.unique_id -%}
+        {%- for each_pid in pid if each_pid.is_activated and each_pid.measurement.split(',')[0] == each_math.unique_id -%}
 
       <div class="collapse" id="collapseContainer{{collapse_container_number}}" style="padding: 0.5em 0;">
 
@@ -417,9 +403,7 @@
 
       </div>
 
-          {%- endfor -%}
         {%- endfor -%}
-        {%- endif -%}
 
     </div>
 

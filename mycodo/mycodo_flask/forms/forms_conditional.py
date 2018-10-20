@@ -48,8 +48,8 @@ class Conditional(FlaskForm):
     test_all_actions = SubmitField(lazy_gettext('Test All Actions'))
     delete_conditional = SubmitField(lazy_gettext('Delete'))
     save_conditional = SubmitField(lazy_gettext('Save'))
-    order_up_cond = SubmitField(lazy_gettext('Up'))
-    order_down_cond = SubmitField(lazy_gettext('Down'))
+    order_up = SubmitField(lazy_gettext('Up'))
+    order_down = SubmitField(lazy_gettext('Down'))
 
 
 class ConditionalConditions(FlaskForm):

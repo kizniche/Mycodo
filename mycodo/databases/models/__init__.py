@@ -30,11 +30,13 @@ from mycodo.config import USER_ROLES
 from mycodo.mycodo_flask.extensions import db
 from .alembic_version import AlembicVersion
 from .camera import Camera
-from .conditional import Conditional
-from .conditional import ConditionalConditions
 from .dashboard import Dashboard
 from .display_order import DisplayOrder
 from .function import Actions
+from .function import Conditional
+from .function import ConditionalConditions
+from .function import Function
+from .function import Trigger
 from .input import Input
 from .lcd import LCD
 from .lcd import LCDData
@@ -52,7 +54,6 @@ from .pid import PID
 from .remote import Remote
 from .role import Role
 from .smtp import SMTP
-from .trigger import Trigger
 from .user import User
 
 
