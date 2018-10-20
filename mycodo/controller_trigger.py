@@ -90,7 +90,7 @@ class TriggerController(threading.Thread):
         self.sample_rate = db_retrieve_table_daemon(
             Misc, entry='first').sample_rate_controller_conditional
 
-        self.conditional_type = None
+        self.trigger_type = None
         self.is_activated = None
         self.smtp_max_count = None
         self.email_count = None
@@ -136,11 +136,11 @@ class TriggerController(threading.Thread):
                     check_approved = False
 
                     # Check if the conditional period has elapsed
-                    if self.conditional_type in ['sunrise_sunset', 'run_pwm_method']:
+                    if self.trigger_type in ['sunrise_sunset', 'run_pwm_method']:
                         while self.timer_period < time.time():
                             self.timer_period += self.period
 
-                        if self.conditional_type == 'run_pwm_method':
+                        if self.trigger_type == 'run_pwm_method':
                             # Only execute conditional actions when started
                             # Now only set PWM output
                             pwm_duty_cycle, ended = self.get_method_output(
@@ -156,14 +156,14 @@ class TriggerController(threading.Thread):
                         else:
                             check_approved = True
 
-                    elif (self.conditional_type in [
+                    elif (self.trigger_type in [
                             'timer_daily_time_point',
                             'timer_daily_time_span',
                             'timer_duration']):
-                        if self.conditional_type == 'timer_daily_time_point':
+                        if self.trigger_type == 'timer_daily_time_point':
                             self.timer_period = epoch_of_next_time(
                                 '{hm}:00'.format(hm=self.timer_start_time))
-                        elif self.conditional_type in ['timer_duration',
+                        elif self.trigger_type in ['timer_duration',
                                                        'timer_daily_time_span']:
                             while self.timer_period < time.time():
                                 self.timer_period += self.period
@@ -201,7 +201,7 @@ class TriggerController(threading.Thread):
         cond = db_retrieve_table_daemon(
             Trigger, unique_id=self.function_id)
 
-        self.conditional_type = cond.conditional_type
+        self.trigger_type = cond.trigger_type
         self.is_activated = cond.is_activated
 
         self.smtp_max_count = db_retrieve_table_daemon(
@@ -215,20 +215,20 @@ class TriggerController(threading.Thread):
         self.timer_period = None
 
         # Set up conditional timer (daily time point)
-        if self.conditional_type == 'timer_daily_time_point':
+        if self.trigger_type == 'timer_daily_time_point':
             self.timer_start_time = cond.timer_start_time
             self.timer_period = epoch_of_next_time(
                 '{hm}:00'.format(hm=cond.timer_start_time))
 
         # Set up conditional timer (daily time span)
-        elif self.conditional_type == 'timer_daily_time_span':
+        elif self.trigger_type == 'timer_daily_time_span':
             self.timer_start_time = cond.timer_start_time
             self.timer_end_time = cond.timer_end_time
             self.period = cond.period
             self.timer_period = now
 
         # Set up conditional timer (duration)
-        elif self.conditional_type == 'timer_duration':
+        elif self.trigger_type == 'timer_duration':
             self.period = cond.period
             if cond.timer_start_offset:
                 self.timer_period = now + cond.timer_start_offset
@@ -236,7 +236,7 @@ class TriggerController(threading.Thread):
                 self.timer_period = now
 
         # Set up Run PWM Method conditional
-        elif self.conditional_type == 'run_pwm_method':
+        elif self.trigger_type == 'run_pwm_method':
             self.unique_id_1 = cond.unique_id_1
             self.unique_id_2 = cond.unique_id_2
             self.period = cond.period
@@ -259,7 +259,7 @@ class TriggerController(threading.Thread):
                 self.timer_period = now
 
         # Set up sunrise/sunset conditional
-        elif self.conditional_type == 'sunrise_sunset':
+        elif self.trigger_type == 'sunrise_sunset':
             self.timer_refractory_period = 0
             self.period = 1000
             # Set the next trigger at the specified sunrise/sunset time (+-offsets)
@@ -406,7 +406,7 @@ class TriggerController(threading.Thread):
             return
 
         # Check Measurement Triggers
-        if (cond.conditional_type == 'measurement' and
+        if (cond.trigger_type == 'measurement' and
                 direction and device_id and device_measurement):
 
             # Check if there hasn't been a measurement in the last set number
@@ -452,7 +452,7 @@ class TriggerController(threading.Thread):
         # If the edge detection variable is set, calling this function will
         # trigger an edge detection event. This will merely produce the correct
         # message based on the edge detection settings.
-        elif cond.conditional_type == 'edge':
+        elif cond.trigger_type == 'edge':
             try:
                 GPIO.setmode(GPIO.BCM)
                 GPIO.setup(int(input_dev.pin), GPIO.IN)
@@ -471,16 +471,16 @@ class TriggerController(threading.Thread):
                 return
 
         # Calculate the sunrise/sunset times and find the next time this conditional should trigger
-        elif cond.conditional_type == 'sunrise_sunset':
+        elif cond.trigger_type == 'sunrise_sunset':
             # Since the check time is the trigger time, we will only calculate and set the next trigger time
             self.timer_period = calculate_sunrise_sunset_epoch(cond)
 
         # Set the refractory period
-        if cond.conditional_type == 'measurement':
+        if cond.trigger_type == 'measurement':
             self.timer_refractory_period = time.time() + self.refractory_period
 
         # Check if the current time is between the start and end time
-        if cond.conditional_type == 'timer_daily_time_span':
+        if cond.trigger_type == 'timer_daily_time_span':
             if not time_between_range(self.timer_start_time, self.timer_end_time):
                 return
 

@@ -191,7 +191,7 @@ def trigger_activate(trigger_id):
 
     # Check for errors in each Trigger Action
     cond_actions = Actions.query.filter(
-        Actions.trigger_id == trigger_id).all()
+        Actions.function_id == trigger_id).all()
     for each_action in cond_actions:
         error = check_actions(each_action, error)
 

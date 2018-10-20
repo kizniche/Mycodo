@@ -156,6 +156,7 @@ CONDITIONAL_CONDITIONS = [
 
 
 FUNCTION_TYPES = [
+    ('function_spacer', 'Spacer', 'Function: Spacer'),
     ('conditional_conditional', 'Conditional', 'Conditional: Conditional'),
     ('pid_pid', 'PID', 'PID: PID Controller'),
     ('trigger_edge', 'Edge', 'Trigger: Edge'),
@@ -166,8 +167,7 @@ FUNCTION_TYPES = [
     ('trigger_timer_daily_time_span', 'Timer (Daily Span)', 'Trigger: Timer (Daily Span)'),
     ('trigger_timer_duration', 'Timer (Duration)', 'Trigger: Timer (Duration)'),
     ('trigger_run_pwm_method', 'Run PWM Method', 'Trigger: Run PWM Method'),
-    ('trigger_sunrise_sunset', 'Sunrise/Sunset', 'Trigger: Sunrise/Sunset'),
-    ('function_spacer', 'Spacer', 'Spacer')
+    ('trigger_sunrise_sunset', 'Sunrise/Sunset', 'Trigger: Sunrise/Sunset')
 ]
 
 
