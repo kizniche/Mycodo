@@ -128,6 +128,9 @@ class TriggerController(threading.Thread):
 
                 if (self.is_activated and self.timer_period and
                         self.timer_period < time.time()):
+
+                    self.logger.error("TEST01: {}".format(self.timer_period))
+
                     check_approved = False
 
                     # Check if the trigger period has elapsed
@@ -259,6 +262,8 @@ class TriggerController(threading.Thread):
             self.period = 60
             # Set the next trigger at the specified sunrise/sunset time (+-offsets)
             self.timer_period = calculate_sunrise_sunset_epoch(trigger)
+
+            self.logger.error("TEST00: {}, now: {}".format(self.timer_period, time.time()))
 
     def start_method(self, method_id):
         """ Instruct a method to start running """
