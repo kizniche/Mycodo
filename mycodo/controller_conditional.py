@@ -299,13 +299,16 @@ class ConditionalController(threading.Thread):
         if evaluated_statement is None or not evaluated_statement:
             return
 
+        message += '\n[Conditional Statement: "{statement}", ' \
+                   'Replaced: {replaced}]'.format(
+                        statement=cond.conditional_statement,
+                        replaced=cond_statement_replaced)
+
         # If the code hasn't returned by now, the conditional has been triggered
         # and the actions for that conditional should be executed
         trigger_function_actions(
             self.function_id,
-            message=message,
-            conditional_statement=cond.conditional_statement,
-            conditional_statement_replaced=cond_statement_replaced)
+            message=message)
 
     @staticmethod
     def get_last_measurement(unique_id, measurement, duration_sec):

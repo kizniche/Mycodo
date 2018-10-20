@@ -29,9 +29,7 @@ def trigger_function_actions(
         function_id,
         message='', last_measurement=None,
         device_id=None, device_measurement=None, edge=None,
-        output_state=None, on_duration=None, duty_cycle=None,
-        conditional_statement=None,
-        conditional_statement_replaced=None):
+        output_state=None, on_duration=None, duty_cycle=None):
     """
     Execute the Actions belonging to a particular Function
 
@@ -69,8 +67,8 @@ def trigger_function_actions(
     smtp_wait_timer = smtp_table.smtp_wait_timer
     email_count = smtp_table.email_count
 
-    cond_actions = db_retrieve_table_daemon(Actions)
-    cond_actions = cond_actions.filter(
+    actions = db_retrieve_table_daemon(Actions)
+    actions = actions.filter(
         Actions.function_id == function_id).all()
 
     if device_id:
@@ -94,8 +92,8 @@ def trigger_function_actions(
         if pid:
             device = pid
 
-    for cond_action in cond_actions:
-        message += "\n[Conditional Action {id}]:".format(
+    for cond_action in actions:
+        message += "\n[Action {id}]:".format(
             id=cond_action.id, action_type=cond_action.action_type)
 
         # Pause
