@@ -995,7 +995,8 @@ class DaemonController:
             self, function_id, message='', edge=None,
             output_state=None, on_duration=None, duty_cycle=None):
         try:
-            return self.controller['Trigger'][function_id].trigger_trigger_actions(
+            return trigger_function_actions(
+                function_id,
                 message=message, edge=edge,
                 output_state=output_state, on_duration=on_duration,
                 duty_cycle=duty_cycle)

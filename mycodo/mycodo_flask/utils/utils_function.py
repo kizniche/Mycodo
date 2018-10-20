@@ -82,10 +82,10 @@ def function_mod(form):
         controller=(gettext("Function")))
 
     try:
-        function_mod = Function.query.filter(
+        func_mod = Function.query.filter(
             Function.unique_id == form.function_id.data).first()
 
-        function_mod.name = form.name.data
+        func_mod.name = form.name.data
 
         if not error:
             db.session.commit()
@@ -101,6 +101,7 @@ def function_mod(form):
 
 
 def function_del(function_id):
+    """Delete a Function"""
     action = '{action} {controller}'.format(
         action=gettext("Delete"),
         controller=gettext("Function"))
@@ -120,7 +121,7 @@ def function_del(function_id):
 
 
 def action_add(form):
-    """Add a Conditional Action"""
+    """Add a function Action"""
     error = []
     action = '{action} {controller}'.format(
         action=gettext("Add"),

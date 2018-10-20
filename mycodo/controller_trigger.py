@@ -58,15 +58,13 @@ class TriggerController(threading.Thread):
     """
     Class to operate Trigger controller
 
-    Triggers are conditional statements that can either be True or False
-    When a conditional is True, one or more actions associated with that
-    conditional are executed.
+    Triggers are events that are used to signal when a set of actions
+    should be executed.
 
-    The main loop in this class will continually check if the timers for
-    Measurement Triggers have elapsed, then check if any of the
-    conditionals are True with the check_triggers() function. If any are
-    True, trigger_trigger_actions() will be ran to execute all actions
-    associated with that particular conditional.
+    The main loop in this class will continually check if any timer
+    Triggers have elapsed. If any have, trigger_trigger_actions()
+    will be ran to execute all actions associated with that particular
+    trigger.
 
     Edge and Output conditionals are triggered from
     the Input and Output controllers, respectively, and the
@@ -98,10 +96,7 @@ class TriggerController(threading.Thread):
         self.smtp_wait_timer = None
         self.timer_period = None
         self.period = None
-        self.refractory_period = None
-        self.timer_refractory_period = None
         self.smtp_wait_timer = None
-        self.timer_period = None
         self.timer_start_time = None
         self.timer_end_time = None
         self.unique_id_1 = None
@@ -123,8 +118,8 @@ class TriggerController(threading.Thread):
             self.ready.set()
 
             while self.running:
-                # Pause loop to modify conditional statements.
-                # Prevents execution of conditional while variables are
+                # Pause loop to modify trigger.
+                # Prevents execution of trigger while variables are
                 # being modified.
                 if self.pause_loop:
                     self.verify_pause_loop = True
@@ -135,13 +130,14 @@ class TriggerController(threading.Thread):
                         self.timer_period < time.time()):
                     check_approved = False
 
-                    # Check if the conditional period has elapsed
-                    if self.trigger_type in ['sunrise_sunset', 'run_pwm_method']:
-                        while self.timer_period < time.time():
+                    # Check if the trigger period has elapsed
+                    if self.trigger_type in ['trigger_sunrise_sunset',
+                                             'trigger_run_pwm_method']:
+                        while self.running and self.timer_period < time.time():
                             self.timer_period += self.period
 
-                        if self.trigger_type == 'run_pwm_method':
-                            # Only execute conditional actions when started
+                        if self.trigger_type == 'trigger_run_pwm_method':
+                            # Only execute trigger actions when started
                             # Now only set PWM output
                             pwm_duty_cycle, ended = self.get_method_output(
                                 self.unique_id_1)
@@ -157,15 +153,15 @@ class TriggerController(threading.Thread):
                             check_approved = True
 
                     elif (self.trigger_type in [
-                            'timer_daily_time_point',
-                            'timer_daily_time_span',
-                            'timer_duration']):
-                        if self.trigger_type == 'timer_daily_time_point':
+                            'trigger_timer_daily_time_point',
+                            'trigger_timer_daily_time_span',
+                            'trigger_timer_duration']):
+                        if self.trigger_type == 'trigger_timer_daily_time_point':
                             self.timer_period = epoch_of_next_time(
                                 '{hm}:00'.format(hm=self.timer_start_time))
-                        elif self.trigger_type in ['timer_duration',
-                                                       'timer_daily_time_span']:
-                            while self.timer_period < time.time():
+                        elif self.trigger_type in ['trigger_timer_duration',
+                                                   'trigger_timer_daily_time_span']:
+                            while self.running and self.timer_period < time.time():
                                 self.timer_period += self.period
                         check_approved = True
 
@@ -189,7 +185,7 @@ class TriggerController(threading.Thread):
         while not self.verify_pause_loop:
             time.sleep(0.1)
 
-        self.logger.info("Refreshing conditional settings")
+        self.logger.info("Refreshing trigger settings")
         self.setup_settings()
 
         self.pause_loop = False
@@ -198,11 +194,11 @@ class TriggerController(threading.Thread):
 
     def setup_settings(self):
         """ Define all settings """
-        cond = db_retrieve_table_daemon(
+        trigger = db_retrieve_table_daemon(
             Trigger, unique_id=self.function_id)
 
-        self.trigger_type = cond.trigger_type
-        self.is_activated = cond.is_activated
+        self.trigger_type = trigger.trigger_type
+        self.is_activated = trigger.is_activated
 
         self.smtp_max_count = db_retrieve_table_daemon(
             SMTP, entry='first').hourly_max
@@ -214,56 +210,55 @@ class TriggerController(threading.Thread):
         self.smtp_wait_timer = now + 3600
         self.timer_period = None
 
-        # Set up conditional timer (daily time point)
-        if self.trigger_type == 'timer_daily_time_point':
-            self.timer_start_time = cond.timer_start_time
+        # Set up trigger timer (daily time point)
+        if self.trigger_type == 'trigger_timer_daily_time_point':
+            self.timer_start_time = trigger.timer_start_time
             self.timer_period = epoch_of_next_time(
-                '{hm}:00'.format(hm=cond.timer_start_time))
+                '{hm}:00'.format(hm=trigger.timer_start_time))
 
-        # Set up conditional timer (daily time span)
-        elif self.trigger_type == 'timer_daily_time_span':
-            self.timer_start_time = cond.timer_start_time
-            self.timer_end_time = cond.timer_end_time
-            self.period = cond.period
+        # Set up trigger timer (daily time span)
+        elif self.trigger_type == 'trigger_timer_daily_time_span':
+            self.timer_start_time = trigger.timer_start_time
+            self.timer_end_time = trigger.timer_end_time
+            self.period = trigger.period
             self.timer_period = now
 
-        # Set up conditional timer (duration)
-        elif self.trigger_type == 'timer_duration':
-            self.period = cond.period
-            if cond.timer_start_offset:
-                self.timer_period = now + cond.timer_start_offset
+        # Set up trigger timer (duration)
+        elif self.trigger_type == 'trigger_timer_duration':
+            self.period = trigger.period
+            if trigger.timer_start_offset:
+                self.timer_period = now + trigger.timer_start_offset
             else:
                 self.timer_period = now
 
-        # Set up Run PWM Method conditional
-        elif self.trigger_type == 'run_pwm_method':
-            self.unique_id_1 = cond.unique_id_1
-            self.unique_id_2 = cond.unique_id_2
-            self.period = cond.period
-            self.trigger_actions_at_period = cond.trigger_actions_at_period
-            self.trigger_actions_at_start = cond.trigger_actions_at_start
-            self.method_start_time = cond.method_start_time
-            self.method_end_time = cond.method_end_time
+        # Set up trigger Run PWM Method
+        elif self.trigger_type == 'trigger_run_pwm_method':
+            self.unique_id_1 = trigger.unique_id_1
+            self.unique_id_2 = trigger.unique_id_2
+            self.period = trigger.period
+            self.trigger_actions_at_period = trigger.trigger_actions_at_period
+            self.trigger_actions_at_start = trigger.trigger_actions_at_start
+            self.method_start_time = trigger.method_start_time
+            self.method_end_time = trigger.method_end_time
             if self.is_activated:
-                self.start_method(cond.unique_id_1)
+                self.start_method(trigger.unique_id_1)
             if self.trigger_actions_at_start:
-                self.timer_period = now + cond.period
+                self.timer_period = now + trigger.period
                 if self.is_activated:
                     pwm_duty_cycle = self.get_method_output(
-                        cond.unique_id_1)
-                    self.set_output_duty_cycle(cond.unique_id_2,
+                        trigger.unique_id_1)
+                    self.set_output_duty_cycle(trigger.unique_id_2,
                                                pwm_duty_cycle)
                     trigger_function_actions(
-                        self.function_id, cond.unique_id, duty_cycle=pwm_duty_cycle)
+                        self.function_id, trigger.unique_id, duty_cycle=pwm_duty_cycle)
             else:
                 self.timer_period = now
 
-        # Set up sunrise/sunset conditional
-        elif self.trigger_type == 'sunrise_sunset':
-            self.timer_refractory_period = 0
-            self.period = 1000
+        # Set up trigger sunrise/sunset
+        elif self.trigger_type == 'trigger_sunrise_sunset':
+            self.period = 60
             # Set the next trigger at the specified sunrise/sunset time (+-offsets)
-            self.timer_period = calculate_sunrise_sunset_epoch(cond)
+            self.timer_period = calculate_sunrise_sunset_epoch(trigger)
 
     def start_method(self, method_id):
         """ Instruct a method to start running """
@@ -343,7 +338,7 @@ class TriggerController(threading.Thread):
     def check_triggers(self):
         """
         Check if any Triggers are activated and
-        execute their actions if the Trigger is true.
+        execute their actions if so.
 
         For example, if measured temperature is above 30C, notify me@gmail.com
 
@@ -357,26 +352,22 @@ class TriggerController(threading.Thread):
         logger_cond = logging.getLogger("mycodo.conditional_{id}".format(
             id=self.function_id))
 
-        cond = db_retrieve_table_daemon(
+        trigger = db_retrieve_table_daemon(
             Trigger, unique_id=self.function_id, entry='first')
 
         now = time.time()
         timestamp = datetime.datetime.fromtimestamp(now).strftime('%Y-%m-%d %H:%M:%S')
         message = "{ts}\n[Trigger {id} ({name})]".format(
             ts=timestamp,
-            name=cond.name,
+            name=trigger.name,
             id=self.function_id)
 
-        device_id = cond.measurement.split(',')[0]
+        device_id = trigger.measurement.split(',')[0]
 
-        if len(cond.measurement.split(',')) > 1:
-            device_measurement = cond.measurement.split(',')[1]
+        if len(trigger.measurement.split(',')) > 1:
+            device_measurement = trigger.measurement.split(',')[1]
         else:
             device_measurement = None
-
-        direction = cond.direction
-        setpoint = cond.setpoint
-        max_age = cond.max_age
 
         device = None
 
@@ -405,54 +396,10 @@ class TriggerController(threading.Thread):
             logger_cond.error(message)
             return
 
-        # Check Measurement Triggers
-        if (cond.trigger_type == 'measurement' and
-                direction and device_id and device_measurement):
-
-            # Check if there hasn't been a measurement in the last set number
-            # of seconds. If not, trigger conditional
-            if direction == 'none_found':
-                last_measurement = self.get_last_measurement(
-                    device_id, device_measurement, max_age)
-                if last_measurement is None:
-                    message += " Measurement {meas} for device ID {id} not found in the past" \
-                               " {value} seconds.".format(
-                                    meas=device_measurement,
-                                    id=device_id,
-                                    value=max_age)
-                else:
-                    return
-
-            # Check if last measurement is greater or less than the set value
-            else:
-                last_measurement = self.get_last_measurement(
-                    device_id,
-                    device_measurement,
-                    max_age)
-                if last_measurement is None:
-                    logger_cond.debug("Last measurement not found")
-                    return
-                elif ((direction == 'above' and
-                       last_measurement > setpoint) or
-                      (direction == 'below' and
-                       last_measurement < setpoint)):
-
-                    message += " Measurement {meas}: {value} ".format(
-                        meas=device_measurement,
-                        value=last_measurement)
-                    if direction == 'above':
-                        message += ">"
-                    elif direction == 'below':
-                        message += "<"
-                    message += " {sp} (set value).".format(
-                        sp=setpoint)
-                else:
-                    return  # Not triggered
-
         # If the edge detection variable is set, calling this function will
         # trigger an edge detection event. This will merely produce the correct
         # message based on the edge detection settings.
-        elif cond.trigger_type == 'edge':
+        elif trigger.trigger_type == 'trigger_edge':
             try:
                 GPIO.setmode(GPIO.BCM)
                 GPIO.setup(int(input_dev.pin), GPIO.IN)
@@ -460,32 +407,25 @@ class TriggerController(threading.Thread):
             except:
                 gpio_state = None
                 logger_cond.error("Exception reading the GPIO pin")
-            if (input_dev and
-                    input_dev.location and
-                    gpio_state is not None and
-                    gpio_state == cond.if_sensor_gpio_state):
+            if (gpio_state is not None and
+                    gpio_state == trigger.if_sensor_gpio_state):
                 message += " GPIO State Detected (state = {state}).".format(
-                    state=cond.if_sensor_gpio_state)
+                    state=trigger.if_sensor_gpio_state)
             else:
                 logger_cond.error("GPIO not configured correctly or GPIO state not verified")
                 return
 
-        # Calculate the sunrise/sunset times and find the next time this conditional should trigger
-        elif cond.trigger_type == 'sunrise_sunset':
+        # Calculate the sunrise/sunset times and find the next time this trigger should trigger
+        elif trigger.trigger_type == 'trigger_sunrise_sunset':
             # Since the check time is the trigger time, we will only calculate and set the next trigger time
-            self.timer_period = calculate_sunrise_sunset_epoch(cond)
-
-        # Set the refractory period
-        if cond.trigger_type == 'measurement':
-            self.timer_refractory_period = time.time() + self.refractory_period
+            self.timer_period = calculate_sunrise_sunset_epoch(trigger)
 
         # Check if the current time is between the start and end time
-        if cond.trigger_type == 'timer_daily_time_span':
+        if trigger.trigger_type == 'trigger_timer_daily_time_span':
             if not time_between_range(self.timer_start_time, self.timer_end_time):
                 return
 
-        # If the code hasn't returned by now, the conditional has been triggered
-        # and the actions for that conditional should be executed
+        # If the code hasn't returned by now, action should be executed
         trigger_function_actions(
             self.function_id,
             message=message, last_measurement=last_measurement,

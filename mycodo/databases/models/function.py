@@ -13,8 +13,6 @@ class Function(CRUDMixin, db.Model):
     name = db.Column(db.Text, default='Spacer Name')
 
 
-
-
 class Conditional(CRUDMixin, db.Model):
     __tablename__ = "conditional"
     __table_args__ = {'extend_existing': True}
@@ -89,6 +87,7 @@ class Trigger(CRUDMixin, db.Model):
     trigger_actions_at_start = db.Column(db.Boolean, default=True)
 
     # Edge
+    measurement = db.Column(db.Text, default='')
     edge_detected = db.Column(db.Text, default='')
 
 

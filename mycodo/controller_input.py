@@ -33,11 +33,11 @@ import locket
 import os
 import requests
 
-from mycodo.databases.models import Conditional
 from mycodo.databases.models import Input
 from mycodo.databases.models import Misc
 from mycodo.databases.models import Output
 from mycodo.databases.models import SMTP
+from mycodo.databases.models import Trigger
 from mycodo.mycodo_client import DaemonControl
 from mycodo.utils.database import db_retrieve_table_daemon
 from mycodo.utils.influx import add_measure_influxdb
@@ -492,32 +492,32 @@ class InputController(threading.Thread):
                 args=(self.unique_id, 'edge', rising_or_falling,))
             write_db.start()
 
-            conditionals = db_retrieve_table_daemon(Conditional)
-            conditionals = conditionals.filter(
-                Conditional.conditional_type == 'edge')
-            conditionals = conditionals.filter(
-                Conditional.measurement == self.unique_id)
-            conditionals = conditionals.filter(
-                Conditional.is_activated == True)
+            trigger = db_retrieve_table_daemon(Trigger)
+            trigger = trigger.filter(
+                Trigger.trigger_type == 'trigger_edge')
+            trigger = trigger.filter(
+                Trigger.measurement == self.unique_id)
+            trigger = trigger.filter(
+                Trigger.is_activated == True)
 
-            for each_conditional in conditionals.all():
-                if each_conditional.edge_detected in ['both', state_str.lower()]:
+            for each_trigger in trigger.all():
+                if each_trigger.edge_detected in ['both', state_str.lower()]:
                     now = time.time()
                     timestamp = datetime.datetime.fromtimestamp(
                         now).strftime('%Y-%m-%d %H-%M-%S')
-                    message = "{ts}\n[Conditional {cid} ({cname})] " \
+                    message = "{ts}\n[Trigger {cid} ({cname})] " \
                               "Input {oid} ({name}) {state} edge detected " \
                               "on pin {pin} (BCM)".format(
                                     ts=timestamp,
-                                    cid=each_conditional.id,
-                                    cname=each_conditional.name,
+                                    cid=each_trigger.id,
+                                    cname=each_trigger.name,
                                     oid=self.input_id,
                                     name=self.input_name,
                                     state=state_str,
                                     pin=bcm_pin)
 
                     self.control.trigger_trigger_actions(
-                        each_conditional.unique_id, message=message,
+                        each_trigger.unique_id, message=message,
                         edge=edge)
 
     def is_running(self):
