@@ -13,8 +13,12 @@
   {{form_trigger.output_state.label(class_='control-label')}}
   <select class="form-control form-tooltip form-dropdown" id="output_state" name="output_state" data-placement="top" title="{{_('What action will trigger this conditional statement, on or off?')}}">
     <option value="">{{_('Select One')}}</option>
-    <option value="on"{% if each_trigger.output_state == 'on' %} selected{% endif %}>{{_('On')}}</option>
-    <option value="on_any"{% if each_trigger.output_state == 'on_any' %} selected{% endif %}>{{_('On')}} ({{_('any duration')}})</option>
+    <option value="on_duration_none"{% if each_trigger.output_state == 'on_duration_none' %} selected{% endif %}>{{_('On')}} ({{_('no duration')}})</option>
+    <option value="on_duration_any"{% if each_trigger.output_state == 'on_duration_any' %} selected{% endif %}>{{_('On')}} ({{_('any duration')}})</option>
+    <option value="on_duration_none_any"{% if each_trigger.output_state == 'on_duration_none_any' %} selected{% endif %}>{{_('On')}} ({{_('no or any duration')}})</option>
+    <option value="on_duration_equal"{% if each_trigger.output_state == 'on_duration_equal' %} selected{% endif %}>{{_('On')}} ({{_('equal to duration')}})</option>
+    <option value="on_duration_greater_than"{% if each_trigger.output_state == 'on_duration_greater_than' %} selected{% endif %}>{{_('On')}} ({{_('greater than duration')}})</option>
+    <option value="on_duration_less_than"{% if each_trigger.output_state == 'on_duration_less_than' %} selected{% endif %}>{{_('On')}} ({{_('less than duration')}})</option>
     <option value="off"{% if each_trigger.output_state == 'off' %} selected{% endif %}>{{_('Off')}}</option>
   </select>
 </div>

@@ -154,10 +154,10 @@ class DaemonControl:
         return self.rpyc_client.root.test_trigger_actions(function_id, message)
 
     def trigger_trigger_actions(
-            self, conditional_id, message='', edge=None,
+            self, trigger_id, message='', edge=None,
             output_state=None, on_duration=None, duty_cycle=None):
         return self.rpyc_client.root.trigger_trigger_actions(
-            conditional_id, message, edge=edge, output_state=output_state,
+            trigger_id, message, edge=edge, output_state=output_state,
             on_duration=on_duration, duty_cycle=duty_cycle)
 
     def terminate_daemon(self):

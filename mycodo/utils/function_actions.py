@@ -14,6 +14,7 @@ from mycodo.databases.models import Math
 from mycodo.databases.models import Output
 from mycodo.databases.models import PID
 from mycodo.databases.models import SMTP
+from mycodo.databases.models import Trigger
 from mycodo.databases.utils import session_scope
 from mycodo.devices.camera import camera_record
 from mycodo.mycodo_client import DaemonControl
@@ -45,8 +46,8 @@ def trigger_function_actions(
     :param duty_cycle: If output conditional, the duty cycle
     :return:
     """
-    logger_cond = logging.getLogger("mycodo.conditional_{id}".format(
-        id=function_id))
+    logger_actions = logging.getLogger("mycodo.trigger_function_actions_{id}".format(
+        id=function_id.split('-')[0]))
 
     control = DaemonControl()
 
@@ -412,7 +413,7 @@ def trigger_function_actions(
                     message += " Video attached to email."
                     attachment_type = 'video'
             else:
-                logger_cond.error(
+                logger_actions.error(
                     "Wait {sec:.0f} seconds to email again.".format(
                         sec=smtp_wait_timer - time.time()))
 
@@ -478,7 +479,7 @@ def trigger_function_actions(
                    email_recipients, message,
                    attachment_file, attachment_type)
 
-    logger_cond.debug(message)
+    logger_actions.debug(message)
 
 
 def which_controller(unique_id):
@@ -510,4 +511,9 @@ def which_controller(unique_id):
         controller_object = PID
         controller_entry = db_retrieve_table_daemon(
             PID, unique_id=unique_id)
+    elif db_retrieve_table_daemon(Trigger, unique_id=unique_id):
+        controller_type = 'Trigger'
+        controller_object = Trigger
+        controller_entry = db_retrieve_table_daemon(
+            Trigger, unique_id=unique_id)
     return controller_type, controller_object, controller_entry
