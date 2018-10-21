@@ -53,6 +53,8 @@ def function_add(form_add_func):
             new_func.save()
         elif form_add_func.func_type.data.startswith('function_'):
             new_func = Function().save()
+        elif form_add_func.func_type.data == '':
+            error.append("Must select a function type")
         else:
             error.append("Unknown function type: '{}'".format(
                 form_add_func.func_type.data))
@@ -139,6 +141,9 @@ def action_add(form):
 
     if func and func.is_activated:
         error.append("Deactivate before adding an Action")
+
+    if form.action_type.data == '':
+        error.append("Must select an action")
 
     try:
         new_action = Actions()

@@ -138,6 +138,9 @@ def conditional_condition_add(form):
     if cond.is_activated:
         error.append("Deactivate the Conditional before adding a Condition")
 
+    if form.condition_type.data == '':
+        error.append("Must select a condition")
+
     try:
         new_condition = ConditionalConditions()
         new_condition.conditional_id = form.function_id.data

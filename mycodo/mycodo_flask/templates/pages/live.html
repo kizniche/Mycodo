@@ -133,7 +133,7 @@
         </div>
       </div>
 
-      {%- for each_pid in pid and each_pid.is_activated and each_pid.measurement.split(',')[0] == each_input.unique_id -%}
+      {%- for each_pid in pid if each_pid.is_activated and each_pid.measurement.split(',')[0] == each_input.unique_id -%}
 
       <div class="collapse" id="collapseContainer{{collapse_container_number}}" style="padding: 0.5em 0;">
 
