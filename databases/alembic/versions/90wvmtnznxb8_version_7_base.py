@@ -1,8 +1,8 @@
-"""base Mycodo version 6.0.0
+"""base Mycodo version 7.0.0
 
-Revision ID: 032b48f920b8
+Revision ID: 90wvmtnznxb8
 Revises:
-Create Date: 2018-04-10 23:45:18.650731
+Create Date: 2018-10-21 13:11:10.235402
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '032b48f920b8'
+revision = '90wvmtnznxb8'
 down_revision = None
 branch_labels = None
 depends_on = None
