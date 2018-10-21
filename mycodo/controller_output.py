@@ -641,8 +641,11 @@ class OutputController(threading.Thread):
                 state=each_trigger.output_state)
 
             self.control.trigger_trigger_actions(
-                each_trigger.unique_id, message=message,
-                output_state=state, on_duration=on_duration, duty_cycle=duty_cycle)
+                each_trigger.unique_id,
+                message=message,
+                output_state=state,
+                on_duration=on_duration,
+                duty_cycle=duty_cycle)
 
         #
         # Check PWM Outputs
@@ -688,11 +691,13 @@ class OutputController(threading.Thread):
                         name=each_trigger.name,
                         oid=output_id,
                         actual_dc=duty_cycle,
-                        state = each_trigger.direction,
-                        duty_cycle = each_trigger.output_duty_cycle)
+                        state=each_trigger.direction,
+                        duty_cycle=each_trigger.output_duty_cycle)
 
             self.control.trigger_trigger_actions(
-                each_trigger.unique_id, message=message, duty_cycle=duty_cycle)
+                each_trigger.unique_id,
+                message=message,
+                duty_cycle=duty_cycle)
 
     def all_outputs_initialize(self, outputs):
         for each_output in outputs:

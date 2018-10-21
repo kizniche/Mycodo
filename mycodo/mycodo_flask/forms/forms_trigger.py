@@ -54,7 +54,9 @@ class Trigger(FlaskForm):
         widget=NumberInput())
 
     # Timer
-    period = StringField(lazy_gettext('Period (seconds)'))
+    period = DecimalField(
+        lazy_gettext('Period (seconds)'),
+        widget=NumberInput(step='any'))
     timer_start_offset = IntegerField(
         lazy_gettext('Start Offset (seconds)'), widget=NumberInput())
     timer_start_time = StringField(lazy_gettext('Start Time (HH:MM)'))

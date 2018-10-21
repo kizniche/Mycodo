@@ -16,7 +16,6 @@ from mycodo.mycodo_flask.utils.utils_function import check_actions
 from mycodo.mycodo_flask.utils.utils_general import controller_activate_deactivate
 from mycodo.mycodo_flask.utils.utils_general import delete_entry_with_id
 from mycodo.mycodo_flask.utils.utils_general import flash_success_errors
-from mycodo.mycodo_flask.utils.utils_general import reorder
 from mycodo.utils.system_pi import csv_to_list_of_str
 from mycodo.utils.system_pi import list_to_csv
 
@@ -223,8 +222,8 @@ def conditional_condition_del(form):
         action=gettext("Delete"),
         controller='{} {}'.format(gettext("Conditional"), gettext("Condition")))
 
-    cond = ConditionalConditions.query.filter(
-        ConditionalConditions.unique_id == form.conditional_condition_id.data).first()
+    cond = Conditional.query.filter(
+        Conditional.unique_id == form.conditional_id.data).first()
     if cond.is_activated:
         error.append("Deactivate the Conditional before deleting a Condition")
 
@@ -256,13 +255,19 @@ def conditional_activate(cond_id):
 
     for each_condition in conditions:
         # Check for errors in the Conditional settings
-        if each_condition.condition_type == 'measurement':
-            error = check_cond_measurements(each_condition, error)
+        error = check_cond_measurements(each_condition, error)
 
-    # Check for errors in each Conditional Action
-    cond_actions = Actions.query.filter(
-        Actions.function_id == cond_id).all()
-    for each_action in cond_actions:
+    conditions = ConditionalConditions.query.filter(
+        ConditionalConditions.conditional_id == cond_id)
+    if not conditions.count():
+        error.append("No Conditions found: Add at least one Condition before activating.")
+
+    actions = Actions.query.filter(
+        Actions.function_id == cond_id)
+    if not actions.count():
+        error.append("No Actions found: Add at least one Action before activating.")
+
+    for each_action in actions.all():
         error = check_actions(each_action, error)
 
     if not error:

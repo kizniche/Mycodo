@@ -252,9 +252,14 @@ def action_del(form):
         action=gettext("Delete"),
         controller='{} {}'.format(gettext("Conditional"), gettext("Action")))
 
-    cond = Conditional.query.filter(
-        Conditional.unique_id == form.conditional_id.data).first()
-    if cond.is_activated:
+    conditional = Conditional.query.filter(
+        Conditional.unique_id == form.function_id.data).first()
+
+    trigger = Trigger.query.filter(
+        Trigger.unique_id == form.function_id.data).first()
+
+    if ((conditional and conditional.is_activated) or
+            (trigger and trigger.is_activated)):
         error.append("Deactivate the Conditional before deleting an Action")
 
     try:
