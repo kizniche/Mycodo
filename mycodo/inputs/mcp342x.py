@@ -89,24 +89,24 @@ class ADCModule(object):
 
     def get_measurement(self):
         self._voltages = None
-        voltages = {}
-        voltage_index = 0
-        for each_channel in self.adc_channels_selected:
-            adc = self.MCP342x(self.bus,
-                               self.i2c_address,
-                               channel=each_channel,
-                               gain=self.adc_gain,
-                               resolution=self.adc_resolution)
-            voltages['adc_channel_{}'.format(each_channel)] = adc.convert_and_read()
-            voltage_index += 1
+        # voltages = {}
+        # voltage_index = 0
+        # for each_channel in self.adc_channels_selected:
+        #     adc = self.MCP342x(self.bus,
+        #                        self.i2c_address,
+        #                        channel=each_channel,
+        #                        gain=self.adc_gain,
+        #                        resolution=self.adc_resolution)
+        #     voltages['adc_channel_{}'.format(each_channel)] = adc.convert_and_read()
+        #     voltage_index += 1
 
-        # import random
-        # voltages = {
-        #     'adc_channel_0': random.uniform(1.5, 1.9),
-        #     'adc_channel_1': random.uniform(2.3, 2.5),
-        #     'adc_channel_2': random.uniform(0.5, 0.6),
-        #     'adc_channel_3': random.uniform(3.5, 6.2),
-        # }
+        import random
+        voltages = {
+            'adc_channel_0': random.uniform(1.5, 1.9),
+            'adc_channel_1': random.uniform(2.3, 2.5),
+            'adc_channel_2': random.uniform(0.5, 0.6),
+            'adc_channel_3': random.uniform(3.5, 6.2),
+        }
 
         if voltages:
             return voltages
