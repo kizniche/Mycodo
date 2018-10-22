@@ -61,15 +61,16 @@ class Input(CRUDMixin, db.Model):
     sht_voltage = db.Column(db.Text, default='3.5')
 
     # Analog to digital converter options
-    adc_channel = db.Column(db.Integer, default=0)
+    adc_channels = db.Column(db.Integer, default=0)
+    adc_channels_selected = db.Column(db.Text, default='')
     adc_gain = db.Column(db.Integer, default=1)
     adc_resolution = db.Column(db.Integer, default=18)
     adc_sample_speed = db.Column(db.Text, default=None)
-    adc_volts_min = db.Column(db.Float, default=None)
-    adc_volts_max = db.Column(db.Float, default=None)
-    adc_units_min = db.Column(db.Float, default=0.0)
-    adc_units_max = db.Column(db.Float, default=10)
-    adc_inverse_unit_scale = db.Column(db.Boolean, default=False)
+    adc_volts_min = db.Column(db.Text, default=None)
+    adc_volts_max = db.Column(db.Text, default=None)
+    adc_units_min = db.Column(db.Text, default=None)
+    adc_units_max = db.Column(db.Text, default=None)
+    adc_inverse_unit_scale = db.Column(db.Text, default=None)
 
     # Command options
     cmd_command = db.Column(db.Text, default=None)

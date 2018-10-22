@@ -78,7 +78,7 @@ class Trigger(FlaskForm):
         widget=NumberInput(step='any'))
 
     action_type = SelectField(
-        choices=[('', 'Select one')] + FUNCTION_ACTIONS,
+        choices=[('', lazy_gettext('Select One'))] + FUNCTION_ACTIONS,
         validators=[DataRequired()]
     )
     add_action = SubmitField(lazy_gettext('Add Action'))

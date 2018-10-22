@@ -7,22 +7,19 @@ INPUT_INFORMATION = {
     'input_manufacturer': 'Texas Instruments',
     'input_name': 'ADS1x15',
     'measurements_name': 'Voltage (Analog-to-Digital Converter)',
-    'measurements_list': ['voltage'],
-    'options_enabled': ['adc_channel', 'adc_gain', 'adc_options', 'period', 'pre_output'],
+    'measurements_list': ['adc_channels'],
+    'options_enabled': ['adc_channels', 'adc_gain', 'adc_options', 'period', 'pre_output'],
     'options_disabled': ['interface', 'i2c_location'],
 
     'dependencies_module': [
-        ('pip-pypi', 'Adafruit_ADS1x15', 'Adafruit_ADS1x15'),
-        ('pip-pypi', 'Adafruit_GPIO', 'Adafruit_GPIO')
+        ('pip-pypi', 'Adafruit_GPIO', 'Adafruit_GPIO'),
+        ('pip-pypi', 'Adafruit_ADS1x15', 'Adafruit_ADS1x15')
     ],
     'interfaces': ['I2C'],
     'i2c_location': ['0x48', '0x49', '0x4A', '0x4B'],
     'i2c_address_editable': False,
     'analog_to_digital_converter': True,
-    'adc_channel': [(0, 'Channel 0'),
-                    (1, 'Channel 1'),
-                    (2, 'Channel 2'),
-                    (3, 'Channel 3')],
+    'adc_channels': 4,
     'adc_gain': [(1, '1'),
                  (2, '2'),
                  (3, '3'),
@@ -39,12 +36,16 @@ class ADCModule(object):
     def __init__(self, input_dev, testing=False):
         self.logger = logging.getLogger('mycodo.ads1x15')
         self.acquiring_measurement = False
-        self._voltage = None
+        self._voltages = None
 
         self.i2c_address = int(str(input_dev.location), 16)
         self.i2c_bus = input_dev.i2c_bus
         self.adc_gain = input_dev.adc_gain
-        self.adc_channel = input_dev.adc_channel
+        self.adc_channels = input_dev.adc_channels
+
+        self.adc_channels_selected = []
+        for each_channel in input_dev.adc_channels_selected.split(','):
+            self.adc_channels_selected.append(int(each_channel))
 
         if not testing:
             import Adafruit_ADS1x15
@@ -76,17 +77,22 @@ class ADCModule(object):
         """
         if self.read():
             return None
-        return dict(voltage=float('{0:.4f}'.format(self._voltage)))
+        return self._voltages
 
     @property
-    def voltage(self):
-        return self._voltage
+    def voltages(self):
+        return self._voltages
 
     def get_measurement(self):
-        self._voltage = None
-        voltage = self.adc.read_adc(
-            self.adc_channel, gain=self.adc_gain) / 10000.0
-        return voltage
+        self._voltages = None
+        voltages = {}
+
+        for each_channel in self.adc_channels_selected:
+            voltages['adc_ch{}'.format(each_channel)] = self.adc.read_adc(
+                each_channel, gain=self.adc_gain) / 10000.0
+
+        if voltages:
+            return voltages
 
     def read(self):
         """
@@ -100,8 +106,8 @@ class ADCModule(object):
             return 1
         try:
             self.acquiring_measurement = True
-            self._voltage = self.get_measurement()
-            if self._voltage is not None:
+            self._voltages = self.get_measurement()
+            if self._voltages:
                 return  # success - no errors
         except Exception as e:
             self.logger.error(
@@ -117,18 +123,13 @@ class ADCModule(object):
 
 if __name__ == "__main__":
     from types import SimpleNamespace
-    input_dev = SimpleNamespace()
-    input_dev.id = 1
-    input_dev.location = '0x48'
-    input_dev.i2c_bus = 1
-    input_dev.adc_gain = 1
-    input_dev.adc_channel = 1
+    settings = SimpleNamespace()
+    settings.id = 1
+    settings.location = '0x48'
+    settings.i2c_bus = 1
+    settings.adc_gain = 1
+    settings.adc_channels = 4
+    settings.adc_channels_selected = '0,1,2,3'
 
-    ads = ADS1x15Read(input_dev)
-    print("Channel 0: {}".format(ads.next()))
-    ads = ADS1x15Read(input_dev)
-    print("Channel 1: {}".format(ads.next()))
-    ads = ADS1x15Read(input_dev)
-    print("Channel 2: {}".format(ads.next()))
-    ads = ADS1x15Read(input_dev)
-    print("Channel 3: {}".format(ads.next()))
+    ads = ADCModule(settings)
+    print("Voltages: {}".format(ads.next()))

@@ -20,7 +20,7 @@ FORCE_UPGRADE_MASTER = False
 
 # Final release for each major version number
 # Used to determine proper upgrade page to display
-FINAL_RELEASES = ['5.7.3']
+FINAL_RELEASES = ['5.7.3', '6.4.6']
 
 LANGUAGES = {
     'en': 'English',

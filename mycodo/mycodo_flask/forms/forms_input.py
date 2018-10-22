@@ -131,8 +131,9 @@ class InputMod(FlaskForm):
     bt_adapter = StringField(lazy_gettext('BT Adapter'))
 
     # ADC
-    adc_channel = IntegerField(
-        TOOLTIPS_INPUT['adc_channel']['title'], widget=NumberInput())
+    adc_saving_channel = IntegerField(widget=widgets.HiddenInput())
+    adc_channels_selected = SelectMultipleField(
+        TOOLTIPS_INPUT['adc_channels_selected']['title'], widget=NumberInput())
     adc_gain = IntegerField(
         TOOLTIPS_INPUT['adc_gain']['title'], widget=NumberInput())
     adc_resolution = IntegerField(

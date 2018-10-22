@@ -8,8 +8,8 @@ INPUT_INFORMATION = {
     'input_manufacturer': 'Microchip',
     'input_name': 'MCP3008',
     'measurements_name': 'Voltage (Analog-to-Digital Converter)',
-    'measurements_list': ['voltage'],
-    'options_enabled': ['pin_cs', 'pin_miso', 'pin_mosi', 'pin_clock', 'adc_channel', 'adc_options', 'period', 'pre_output'],
+    'measurements_list': ['adc_channels'],
+    'options_enabled': ['pin_cs', 'pin_miso', 'pin_mosi', 'pin_clock', 'adc_channels', 'adc_options', 'period', 'pre_output'],
     'options_disabled': ['interface'],
 
     'dependencies_module': [
@@ -17,34 +17,34 @@ INPUT_INFORMATION = {
     ],
     'interfaces': ['UART'],
     'analog_to_digital_converter': True,
+    'adc_channels': 4,
     'pin_cs': 8,
     'pin_miso': 9,
     'pin_mosi': 10,
     'pin_clock': 11,
-    'adc_channel': [
-        (0, 'Channel 0'),
-        (1, 'Channel 1'),
-        (2, 'Channel 2'),
-        (3, 'Channel 3')
-    ],
     'adc_volts_min': -4.096,
     'adc_volts_max': 4.096
 }
+
 
 class ADCModule(object):
     """ ADC Read """
     def __init__(self, input_dev, testing=False):
         self.logger = logging.getLogger('mycodo.mcp3008')
         self.acquiring_measurement = False
-        self._voltage = None
+        self._voltages = None
         self.adc = None
 
         self.pin_clock = input_dev.pin_clock
         self.pin_cs = input_dev.pin_cs
         self.pin_miso = input_dev.pin_miso
         self.pin_mosi = input_dev.pin_mosi
-        self.adc_channel = input_dev.adc_channel
         self.adc_volts_max = input_dev.adc_volts_max
+        self.adc_channels = input_dev.adc_channels
+
+        self.adc_channels_selected = []
+        for each_channel in input_dev.adc_channels_selected.split(','):
+            self.adc_channels_selected.append(int(each_channel))
 
         if not testing:
             import Adafruit_MCP3008
@@ -67,16 +67,21 @@ class ADCModule(object):
         """
         if self.read():
             return None
-        return dict(voltage=float('{0:.4f}'.format(self._voltage)))
+        return self._voltages
 
     @property
-    def voltage(self):
-        return self._voltage
+    def voltages(self):
+        return self._voltages
 
     def get_measurement(self):
-        self._voltage = None
-        voltage = (self.adc.read_adc(self.adc_channel) / 1023.0) * self.adc_volts_max
-        return voltage
+        self._voltages = None
+        voltages = {}
+
+        for each_channel in self.adc_channels_selected:
+            voltages['adc_ch{}'.format(each_channel)] = (self.adc.read_adc(each_channel) / 1023.0) * self.adc_volts_max
+
+        if voltages:
+            return voltages
 
     def read(self):
         """
@@ -90,8 +95,8 @@ class ADCModule(object):
             return 1
         try:
             self.acquiring_measurement = True
-            self._voltage = self.get_measurement()
-            if self._voltage is not None:
+            self._voltages = self.get_measurement()
+            if self._voltages:
                 return  # success - no errors
         except Exception as e:
             self.logger.error(

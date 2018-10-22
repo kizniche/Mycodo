@@ -34,12 +34,12 @@ class Conditional(FlaskForm):
         lazy_gettext('Refractory Period (seconds)'),
         widget=NumberInput(step='any'))
     condition_type = SelectField(
-        choices=[('', 'Select one')] + CONDITIONAL_CONDITIONS,
+        choices=[('', lazy_gettext('Select One'))] + CONDITIONAL_CONDITIONS,
         validators=[DataRequired()]
     )
     add_condition = SubmitField(lazy_gettext('Add Condition'))
     action_type = SelectField(
-        choices=[('', 'Select one')] + FUNCTION_ACTIONS,
+        choices=[('', lazy_gettext('Select One'))] + FUNCTION_ACTIONS,
         validators=[DataRequired()]
     )
     add_action = SubmitField(lazy_gettext('Add Action'))

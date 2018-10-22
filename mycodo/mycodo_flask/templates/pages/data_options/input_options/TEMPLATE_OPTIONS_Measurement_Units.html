@@ -4,7 +4,7 @@
   {{form_mod_input.selected_measurement_unit.label(class_='control-label')}}
   <div>
     <select class="form-control form-tooltip form-dropdown" data-placement="top" id="selected_measurement_unit" name="selected_measurement_unit" title="{{tooltips_input['measurement_units']['phrase']}}">
-      <option value="">Select One</option>
+      <option value="">{{_('Select One')}}</option>
       {% for each_submit, each_display in choices_measurements_units.items() %}
       <option value="{{each_submit}}"{% if each_submit == each_input.convert_to_unit %} selected{% endif %}>{{each_display}}</option>
       {% endfor %}

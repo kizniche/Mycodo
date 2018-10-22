@@ -84,6 +84,7 @@ def parse_custom_option_values(inputs):
 
 
 def parse_input_information():
+    """Parses the variables assigned in each Input and return a dictionary of IDs and values"""
     def dict_has_value(dict_inp, input_cus, key):
         if (key in input_cus.INPUT_INFORMATION and
                 (input_cus.INPUT_INFORMATION[key] or
@@ -185,7 +186,8 @@ def parse_input_information():
 
                 # Analog-to-digital converter
                 dict_inputs = dict_has_value(dict_inputs, input_custom, 'analog_to_digital_converter')
-                dict_inputs = dict_has_value(dict_inputs, input_custom, 'adc_channel')
+                dict_inputs = dict_has_value(dict_inputs, input_custom, 'adc_channels')
+                dict_inputs = dict_has_value(dict_inputs, input_custom, 'adc_channels_selected')
                 dict_inputs = dict_has_value(dict_inputs, input_custom, 'adc_gain')
                 dict_inputs = dict_has_value(dict_inputs, input_custom, 'adc_resolution')
                 dict_inputs = dict_has_value(dict_inputs, input_custom, 'adc_sample_speed')

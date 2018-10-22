@@ -107,19 +107,33 @@ class InputController(threading.Thread):
         self.interface = input_dev.interface
         self.period = input_dev.period
 
-        # Analog-to-Digital Controller
-        self.adc_measure = input_dev.convert_to_unit.split(',')[0]
-        self.adc_volts_min = input_dev.adc_volts_min
-        self.adc_volts_max = input_dev.adc_volts_max
-        self.adc_units_min = input_dev.adc_units_min
-        self.adc_units_max = input_dev.adc_units_max
-        self.adc_inverse_unit_scale = input_dev.adc_inverse_unit_scale
-
         # Determine if this input is an analog-to-digital converter
         self.is_adc = False
         if ('analog_to_digital_converter' in self.dict_inputs[self.device] and
                 self.dict_inputs[self.device]['analog_to_digital_converter']):
             self.is_adc = True
+
+            # Analog-to-Digital Converter
+            self.adc_channels = input_dev.adc_channels
+            self.adc_channels_selected = input_dev.adc_channels_selected
+
+            def parse_adc_options(options, number_options=2):
+                dict_options = {}
+                for each_channel in options.split(';'):
+                    if number_options == 2:
+                        dict_options[each_channel.split(',')[1]] = each_channel.split(',')[0]
+                    elif number_options == 3:
+                        dict_options[each_channel.split(',')[2]] = {}
+                        dict_options[each_channel.split(',')[2]]['measurement'] = each_channel.split(',')[0]
+                        dict_options[each_channel.split(',')[2]]['unit'] = each_channel.split(',')[1]
+                return dict_options
+
+            self.convert_to_unit = parse_adc_options(input_dev.convert_to_unit, number_options=3)
+            self.adc_volts_min = parse_adc_options(input_dev.adc_volts_min)
+            self.adc_volts_max = parse_adc_options(input_dev.adc_volts_max)
+            self.adc_units_min = parse_adc_options(input_dev.adc_units_min)
+            self.adc_units_max = parse_adc_options(input_dev.adc_units_max)
+            self.adc_inverse_unit_scale = parse_adc_options(input_dev.adc_inverse_unit_scale)
 
         # Edge detection
         self.switch_edge = input_dev.switch_edge
@@ -180,24 +194,6 @@ class InputController(threading.Thread):
                 # Load analog-to-digital converter module
                 self.measure_input = None
                 self.adc = input_loaded.ADCModule(self.input_dev)
-                if self.interface == 'I2C':
-                    self.adc_lock_file = "/var/lock/mycodo_adc_bus{bus}_0x{i2c:02X}.pid".format(
-                        bus=self.input_dev.i2c_bus,
-                        i2c=self.input_dev.i2c_location)
-                elif self.interface == 'UART':
-                    if None not in [self.input_dev.pin_clock,
-                                    self.input_dev.pin_cs,
-                                    self.input_dev.pin_miso,
-                                    self.input_dev.pin_mosi]:
-                        self.adc_lock_file = "/var/lock/mycodo_adc_uart-{clock}-{cs}-{miso}-{mosi}".format(
-                            clock=self.input_dev.pin_clock,
-                            cs=self.input_dev.pin_cs,
-                            miso=self.input_dev.pin_miso,
-                            mosi=self.input_dev.pin_mosi)
-                    else:
-                        self.adc_lock_file = "/var/lock/mycodo_adc_uart-{dev}".format(
-                            dev=self.device)
-
             else:
                 # Load input module
                 self.adc = None
@@ -350,62 +346,50 @@ class InputController(threading.Thread):
     def read_adc(self):
         """ Read voltage from ADC """
         try:
-            lock_acquired = False
-
-            # Set up lock for ADC
-            adc_lock = locket.lock_file(self.adc_lock_file, timeout=30)
-            try:
-                adc_lock.acquire()
-                lock_acquired = True
-            except:
-                self.logger.error("Could not acquire ADC lock. Breaking for future locking.")
-                os.remove(self.adc_lock_file)
-
-            if not lock_acquired:
-                self.logger.error(
-                    "Unable to acquire lock: {lock}".format(
-                        lock=self.adc_lock_file))
-
             # Get measurement from ADC
             measurements = self.adc.next()
 
             if measurements is not None:
-                # Get the voltage difference between min and max volts
-                diff_voltage = abs(self.adc_volts_max - self.adc_volts_min)
+                for each_channel in self.adc_channels_selected.split(','):
+                    channel_key_str = 'adc_channel_{}'.format(each_channel)
 
-                # Ensure the voltage stays within the min/max bounds
-                if measurements['voltage'] < self.adc_volts_min:
-                    measured_voltage = self.adc_volts_min
-                elif measurements['voltage'] > self.adc_volts_max:
-                    measured_voltage = self.adc_volts_max
-                else:
-                    measured_voltage = measurements['voltage']
+                    # Get the voltage difference between min and max volts
+                    diff_voltage = abs(float(self.adc_volts_max[each_channel]) - float(self.adc_volts_min[each_channel]))
 
-                # Calculate the percentage of the voltage difference
-                percent_diff = ((measured_voltage - self.adc_volts_min) /
-                                diff_voltage)
+                    # Ensure the voltage stays within the min/max bounds
+                    if measurements[channel_key_str] < float(self.adc_volts_min[each_channel]):
+                        measured_voltage = self.adc_volts_min[each_channel]
+                    elif measurements[channel_key_str] > float(self.adc_volts_max[each_channel]):
+                        measured_voltage = float(self.adc_volts_max[each_channel])
+                    else:
+                        measured_voltage = measurements[channel_key_str]
 
-                # Get the units difference between min and max units
-                diff_units = abs(self.adc_units_max - self.adc_units_min)
+                    if self.convert_to_unit[each_channel]['measurement']:
+                        # Calculate the percentage of the voltage difference
+                        percent_diff = ((measured_voltage - float(self.adc_volts_min[each_channel])) /
+                                        diff_voltage)
 
-                # Calculate the measured units from the percent difference
-                if self.adc_inverse_unit_scale:
-                    converted_units = (self.adc_units_max -
-                                       (diff_units * percent_diff))
-                else:
-                    converted_units = (self.adc_units_min +
-                                       (diff_units * percent_diff))
+                        # Get the units difference between min and max units
+                        diff_units = abs(float(self.adc_units_max[each_channel]) - float(self.adc_units_min[each_channel]))
 
-                # Ensure the units stay within the min/max bounds
-                if converted_units < self.adc_units_min:
-                    measurements[self.adc_measure] = self.adc_units_min
-                elif converted_units > self.adc_units_max:
-                    measurements[self.adc_measure] = self.adc_units_max
-                else:
-                    measurements[self.adc_measure] = converted_units
+                        # Calculate the measured units from the percent difference
+                        if self.adc_inverse_unit_scale[each_channel] == 'True':
+                            converted_units = (float(self.adc_units_max[each_channel]) -
+                                               (diff_units * percent_diff))
+                        else:
+                            converted_units = (float(self.adc_units_min[each_channel]) +
+                                               (diff_units * percent_diff))
 
-                if adc_lock and lock_acquired:
-                    adc_lock.release()
+                        # Ensure the units stay within the min/max bounds
+                        measure_str = '{}_{}'.format(
+                            channel_key_str,
+                            self.convert_to_unit[each_channel]['measurement'])
+                        if converted_units < float(self.adc_units_min[each_channel]):
+                            measurements[measure_str] = float(self.adc_units_min[each_channel])
+                        elif converted_units > float(self.adc_units_max[each_channel]):
+                            measurements[measure_str] = float(self.adc_units_max[each_channel])
+                        else:
+                            measurements[measure_str] = converted_units
 
                 return measurements
 

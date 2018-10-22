@@ -357,7 +357,8 @@
 </ul></li>
 <li><a href="#function">Function</a><ul>
 <li><a href="#pid-controller">PID Controller</a></li>
-<li><a href="#conditional-statements">Conditional Statements</a></li>
+<li><a href="#conditional">Conditional</a></li>
+<li><a href="#trigger">Trigger</a></li>
 </ul></li>
 <li><a href="#lcds">LCDs</a></li>
 <li><a href="#methods">Methods</a><ul>
@@ -1252,20 +1253,18 @@ signal &lt;http://kylegabriel.com/projects/2016/02
 2018-08-04 23:47:55,903 - mycodo.pid_3b533dff - INFO - Kp: 5.566074512503456
 2018-08-04 23:47:55,904 - mycodo.pid_3b533dff - INFO - Ki: 0.11927040744014512
 2018-08-04 23:47:55,904 - mycodo.pid_3b533dff - INFO - Kd: 4.101408080354794</code></pre>
-<h3 id="conditional-statements">Conditional Statements</h3>
-<p>A conditional statement is a way to perform certain actions based on whether a condition is true. Conditional statements can be created for both inputs and outputs. Possible conditional statements include:</p>
+<h3 id="conditional">Conditional</h3>
+<p>Conditional controllers are used to perform certain actions based on whether a conditional statement is true. Example conditional statements include:</p>
 <ul>
-<li>If Output #1 turns ON, turn Output #3 ON</li>
-<li>If Output #1 turns ON, turn Output #4 ON for 40 seconds and notify <a href="mailto:critical-issue@domain.com">critical-issue@domain.com</a></li>
-<li>If Output #1 turns ON for any duration, turn Output #4 ON</li>
-<li>If Output #4 turns ON for 21 seconds, turn Output #5 ON for 50 seconds</li>
-<li>If Output #4 turns ON for 20 seconds, turn Output #1 OFF</li>
-<li>If Humidity is Greater Than 80%, turn Output #4 ON for 40 seconds</li>
-<li>If Humidity if Less Than 50%, turn Output #1 ON for 21 seconds, execute ‘/usr/local/bin/script.sh’, and notify <a href="mailto:email@domain.com">email@domain.com</a></li>
-<li>If Temperature if Greater Than 35 C, deactivate PID #1</li>
+<li>{{dj73gs0d}} &lt; 20 and {{02nspgh1}} &gt; 10</li>
+<li>(20 &lt; {{dj73gs0d}} &lt; 30 ) or {{02nspgh1}} &gt; 10</li>
+<li>bool({{dj73gs0d}}) and {{02nspgh1}} &gt; 10</li>
+<li>{{dj73gs0d}} &lt; 20 or ({{02nspgh1}} &gt; 10 and not bool({{ucna62k4}}))</li>
+<li>{{dj73gs0d}} &gt; 20 or int(round({{02nspgh1}})) in [20, 21, 22]</li>
 </ul>
-<p>Before activating any conditional statements or PID controllers, it’s advised to thoroughly explore all possible scenarios and plan a configuration that eliminates conflicts. Then, trial run your configuration before connecting devices to the outputs. Some devices or outputs may respond atypically or fail when switched on and off in rapid succession. Therefore, avoid creating an <a href="https://en.wikipedia.org/wiki/Loop_%28computing%29#Infinite_loops">infinite loop</a> with conditional statements.</p>
-<h4 id="measurement-conditional-statement-if-options">Measurement Conditional Statement If Options</h4>
+<p>Each ID encased in double curly brackets ({{}}) will be converted to the most recent measurement obtained from that particular sensor or device, before being evaluated for its truthness.</p>
+<p>Before activating any conditionals, it’s advised to thoroughly explore all possible scenarios and plan a configuration that eliminates conflicts. Then, trial run your configuration before connecting devices to the outputs. Some devices or outputs may respond atypically or fail when switched on and off in rapid succession. Therefore, avoid creating an <a href="https://en.wikipedia.org/wiki/Loop_%28computing%29#Infinite_loops">infinite loop</a> with conditional statements.</p>
+<h4 id="conditional-options">Conditional Options</h4>
 <p>Check if the latest measurement is above or below the set value.</p>
 <table>
 <colgroup>
@@ -1280,16 +1279,8 @@ signal &lt;http://kylegabriel.com/projects/2016/02
 </thead>
 <tbody>
 <tr class="odd">
-<td>If Measurement</td>
-<td>The measurement that will be checked every Period. By default, a measurement will only be checked for in the past 120 seconds, unless “None Found Last x seconds” in which case the Value will determine the measurement age. The takeaway from this is if a measurement is more than 120 seconds</td>
-</tr>
-<tr class="even">
-<td>If State</td>
-<td>The conditional will trigger if the measurement Greater Than or Less Than the set If Value, or if “No Measurement” is set and the measurement age is greater than Max Age.</td>
-</tr>
-<tr class="odd">
-<td>If Value</td>
-<td>The value that the measurement will be checked against (greater or less than).</td>
+<td>Conditional Statement</td>
+<td>The text string that includes device IDs enclosed in double curly brackets ({{}}) that will be converted to the actual measurement before being evaluated by python to determine if it is True or False. If True, the associated actions will be executed.</td>
 </tr>
 <tr class="even">
 <td>Period (seconds)</td>
@@ -1299,13 +1290,39 @@ signal &lt;http://kylegabriel.com/projects/2016/02
 <td>Refractory Period (seconds)</td>
 <td>The minimum duration (seconds) to wait after a conditional has been triggered to begin evaluating the conditional again.</td>
 </tr>
+</tbody>
+</table>
+<h4 id="conditional-condition-options">Conditional Condition Options</h4>
+<p>Conditional Conditions are variables that can be used within the Conditional Statement.</p>
+<table>
+<colgroup>
+<col style="width: 32%"></col>
+<col style="width: 67%"></col>
+</colgroup>
+<thead>
+<tr class="header">
+<th>Condition</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Measurement</td>
+<td>Acquires the latest measurement from an Input or device. Set Max Age (seconds) to restrict how long to accept values. If the latest value is older than this duration, “None” is returned.</td>
+</tr>
 <tr class="even">
-<td>Max Age (seconds)</td>
-<td>The maximum age the measurement can be. If a measurement isn’t available within this time frame, the conditional will not trigger. The only exception is if “If State” is set to “No Measurement”, which will cause the conditional to trigger when there is no measurement available (indicating the input or measuring device has stopped working).</td>
+<td>GPIO State</td>
+<td>Acquires the current GPIO state and returns True if HIGH or False if LOW. If the latest value is older than this duration, “None” is returned.</td>
+</tr>
+<tr class="odd">
+<td>Refractory Period (seconds)</td>
+<td>The minimum duration (seconds) to wait after a conditional has been triggered to begin evaluating the conditional again.</td>
 </tr>
 </tbody>
 </table>
-<h4 id="output-onoff-conditional-statement-if-options">Output (On/Off) Conditional Statement If Options</h4>
+<h3 id="trigger">Trigger</h3>
+<p>A Trigger Controller will execute actions when events are triggered.</p>
+<h4 id="output-onoff-options">Output (On/Off) Options</h4>
 <p>Monitor the state of an output.</p>
 <table>
 <colgroup>
@@ -1333,7 +1350,7 @@ signal &lt;http://kylegabriel.com/projects/2016/02
 </tr>
 </tbody>
 </table>
-<h4 id="output-pwm-conditional-statement-if-options">Output (PWM) Conditional Statement If Options</h4>
+<h4 id="output-pwm-options">Output (PWM) Options</h4>
 <p>Monitor the state of a PWM output.</p>
 <table>
 <colgroup>
@@ -1361,7 +1378,7 @@ signal &lt;http://kylegabriel.com/projects/2016/02
 </tr>
 </tbody>
 </table>
-<h4 id="edge-conditional-statement-if-options">Edge Conditional Statement If Options</h4>
+<h4 id="edge-options">Edge Options</h4>
 <p>Monitor the state of a pin for a rising and/or falling edge.</p>
 <table>
 <colgroup>
@@ -1381,7 +1398,7 @@ signal &lt;http://kylegabriel.com/projects/2016/02
 </tr>
 </tbody>
 </table>
-<h4 id="run-pwm-method-conditional-statement-if-options">Run PWM Method Conditional Statement If Options</h4>
+<h4 id="run-pwm-method-options">Run PWM Method Options</h4>
 <p>Select a Duration Method and this will set the selected PWM Output to the duty cycle specified by the method.</p>
 <table>
 <colgroup>
@@ -1417,7 +1434,7 @@ signal &lt;http://kylegabriel.com/projects/2016/02
 </tr>
 </tbody>
 </table>
-<h4 id="sunrisesunset-conditional-statement-if-options">Sunrise/Sunset Conditional Statement If Options</h4>
+<h4 id="sunrisesunset-options">Sunrise/Sunset Options</h4>
 <p>Trigger events at sunrise or sunset (or a time offset of those), based on latitude and longitude.</p>
 <table>
 <colgroup>
@@ -1457,7 +1474,7 @@ signal &lt;http://kylegabriel.com/projects/2016/02
 </tr>
 </tbody>
 </table>
-<h4 id="timer-duration-conditional-statement-if-options">Timer (Duration) Conditional Statement If Options</h4>
+<h4 id="timer-duration-options">Timer (Duration) Options</h4>
 <p>Run a timer that triggers Conditional Actions every period.</p>
 <table>
 <colgroup>
@@ -1481,7 +1498,7 @@ signal &lt;http://kylegabriel.com/projects/2016/02
 </tr>
 </tbody>
 </table>
-<p>Timer (Daily Time Point) Conditional Statement If Options ‘’’‘’’‘’’‘’’‘’’‘’’‘’’‘’’‘’’‘’’‘’’‘’’‘’’‘’’‘’’‘’’‘’’</p>
+<h4 id="timer-daily-time-point-options">Timer (Daily Time Point) Options</h4>
 <p>Run a timer that triggers Conditional Actions at a specific time every day.</p>
 <table>
 <colgroup>
@@ -1501,7 +1518,7 @@ signal &lt;http://kylegabriel.com/projects/2016/02
 </tr>
 </tbody>
 </table>
-<p>Timer (Daily Time Span) Conditional Statement If Options ‘’’‘’’‘’’‘’’‘’’‘’’‘’’‘’’‘’’‘’’‘’’‘’’‘’’‘’’‘’’‘’’‘’’</p>
+<h4 id="timer-daily-time-span-options">Timer (Daily Time Span) Options</h4>
 <p>Run a timer that triggers Conditional Actions at a specific period if it’s between the set start and end times. For example, if the Start Time is set to 10:00 and End Time set to 11:00 and Period set to 120 seconds, the Conditional Actions will trigger every 120 seconds when the time is between 10 AM and 11 AM.</p>
 <p>This may be useful, for instance, if you desire an Output to remain on during a particular time period and you want to prevent power outages from interrupting the cycle (which a simple Time Point Timer could not prevent against because it only triggers once at the Start Time). By setting an Output to turn the lights on every few minutes during the Start -&gt; End period, it ensured the Output remains on during this period.</p>
 <table>
@@ -1530,7 +1547,8 @@ signal &lt;http://kylegabriel.com/projects/2016/02
 </tr>
 </tbody>
 </table>
-<h4 id="conditional-statement-actions">Conditional Statement Actions</h4>
+<h4 id="function-actions">Function Actions</h4>
+<p>These are the actions that can be added to Function controllers (i.e. Conditional, Trigger).</p>
 <table>
 <colgroup>
 <col style="width: 32%"></col>
@@ -1585,13 +1603,13 @@ signal &lt;http://kylegabriel.com/projects/2016/02
 </tr>
 </tbody>
 </table>
-<h4 id="conditional-statement-variables">Conditional Statement variables</h4>
-<p>Commands that are executed by conditional statements can now include variables. To use, just place the variable name, including “((” and “))” in your command, and it will be replaced with the variable’s value before execution. See the tables below for the currently-supported variables.</p>
-<p>It is recommended to output a test string to a text file to verify the output is as expected, with a command such as the following (for a Conditional using the Raspberry Pi CPU temperature Input as the measurement):</p>
+<h4 id="action-command-variables">Action Command Variables</h4>
+<p>Commands that are executed by actions can now include variables. To use, just place the variable name encased with double parentheses “(())” in your command, and it will be replaced with the variable’s value before execution. See the tables below for the currently-supported variables.</p>
+<p>It is recommended to output a test string to a text file to verify the output is as expected, with a command such as the following (for a Function using the Raspberry Pi CPU temperature Input as the measurement):</p>
 <pre><code>echo &quot;TEST: ((measure_temperature)), ((measure_location)), ((measure_period))&quot; &gt; /home/mycodo/test_measure.txt</code></pre>
 <p>Or for an Output Conditional:</p>
 <pre><code>echo &quot;TEST: ((output_pin)), ((output_action)), ((output_duration)), ((output_pwm))&quot; &gt; /home/mycodo/test_output.txt</code></pre>
-<h4 id="measurement-conditional-command-variables">Measurement Conditional command variables</h4>
+<h4 id="measurement-action-command-variables">Measurement Action command variables</h4>
 <table>
 <colgroup>
 <col style="width: 45%"></col>
@@ -1714,7 +1732,7 @@ signal &lt;http://kylegabriel.com/projects/2016/02
 </tr>
 </tbody>
 </table>
-<h4 id="output-conditional-command-variables">Output Conditional command variables</h4>
+<h4 id="output-action-command-variables">Output Action command variables</h4>
 <table>
 <colgroup>
 <col style="width: 39%"></col>
@@ -1745,7 +1763,7 @@ signal &lt;http://kylegabriel.com/projects/2016/02
 </tr>
 </tbody>
 </table>
-<h4 id="edge-conditional-command-variables">Edge Conditional command variables</h4>
+<h4 id="edge-action-command-variables">Edge Action command variables</h4>
 <table>
 <colgroup>
 <col style="width: 24%"></col>

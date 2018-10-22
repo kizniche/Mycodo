@@ -97,9 +97,9 @@ TOOLTIPS_INPUT = {
     'rpm_pulses_per_rev': {
         'title': lazy_gettext('Pulses Per Rev'),
         'phrase': lazy_gettext('The number of pulses per revolution to calculate revolutions per minute (RPM)')},
-    'adc_channel': {
-        'title': lazy_gettext('Channel'),
-        'phrase': lazy_gettext('The channel of the analog to digital converter.')},
+    'adc_channels_selected': {
+        'title': lazy_gettext('Channels Enabled'),
+        'phrase': lazy_gettext('The channels to measure from the the analog to digital converter')},
     'adc_gain': {
         'title': lazy_gettext('Gain'),
         'phrase': lazy_gettext('Adjust the gain to change the measurable voltage range. See ADC documentation for details.')},

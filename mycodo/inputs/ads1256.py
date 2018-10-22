@@ -8,11 +8,11 @@ from flask_babel import lazy_gettext
 # Input information
 INPUT_INFORMATION = {
     'input_name_unique': 'ADS1256',
-    'input_manufacturer': 'Texas Instruments',
+    'input_manufacturer': 'Waveshare',
     'input_name': 'ADS1256',
     'measurements_name': 'Voltage (Analog-to-Digital Converter)',
-    'measurements_list': ['voltage'],
-    'options_enabled': ['adc_channel', 'adc_gain', 'adc_sample_speed', 'custom_options', 'adc_options', 'period', 'pre_output'],
+    'measurements_list': ['adc_channels'],
+    'options_enabled': ['adc_channels', 'adc_gain', 'adc_sample_speed', 'custom_options', 'adc_options', 'period', 'pre_output'],
     'options_disabled': ['interface'],
 
     'dependencies_module': [
@@ -21,16 +21,7 @@ INPUT_INFORMATION = {
     ],
     'interfaces': ['UART'],
     'analog_to_digital_converter': True,
-    'adc_channel': [
-        (0, 'Channel 0'),
-        (1, 'Channel 1'),
-        (2, 'Channel 2'),
-        (3, 'Channel 3'),
-        (4, 'Channel 4'),
-        (5, 'Channel 5'),
-        (6, 'Channel 6'),
-        (7, 'Channel 7')
-    ],
+    'adc_channels': 8,
     'adc_gain': [
         (1, '1'),
         (2, '2'),
@@ -86,11 +77,15 @@ class ADCModule(object):
     def __init__(self, input_dev, testing=False):
         self.logger = logging.getLogger('mycodo.ads1256')
         self.acquiring_measurement = False
-        self._voltage = None
+        self._voltages = None
 
         self.adc_gain = input_dev.adc_gain
         self.adc_sample_speed = input_dev.adc_sample_speed
-        self.adc_channel = input_dev.adc_channel
+        self.adc_channels = input_dev.adc_channels
+
+        self.adc_channels_selected = []
+        for each_channel in input_dev.adc_channels_selected.split(','):
+            self.adc_channels_selected.append(int(each_channel))
 
         if not testing:
             from ADS1256_definitions import POS_AIN0
@@ -195,27 +190,32 @@ class ADCModule(object):
         """
         if self.read():
             return None
-        return dict(voltage=float('{0:.4f}'.format(self._voltage)))
+        self.logger.error("Voltages returned: {}".format(self._voltages))
+        return self._voltages
 
     @property
-    def voltage(self):
-        return self._voltage
+    def voltages(self):
+        return self._voltages
 
     def get_measurement(self):
-        self._voltage = None
-        voltage = 0
+        self._voltages = {}
+        voltages = {}
         count = 0
 
         # 2 attempts to get valid measurement
-        while self.running and voltage == 0 and count < 2:
+        while self.running and 0 in voltages.values() and count < 2:
             raw_channels = self.ads.read_sequence(self.CH_SEQUENCE)
             voltages = [i * self.ads.v_per_digit for i in raw_channels]
-            voltage = voltages[self.adc_channel]
             count += 1
+
+            for each_channel, each_voltage in enumerate(voltages, 1):
+                if each_channel in self.adc_channels_selected:
+                    voltages['adc_ch{}'.format(each_channel)] = each_voltage
+
             time.sleep(0.85)
 
-        if voltage:
-            return voltage
+        if voltages:
+            return voltages
 
     def read(self):
         """
@@ -229,8 +229,8 @@ class ADCModule(object):
             return 1
         try:
             self.acquiring_measurement = True
-            self._voltage = self.get_measurement()
-            if self._voltage is not None:
+            self._voltages = self.get_measurement()
+            if self._voltages:
                 return  # success - no errors
         except Exception as e:
             self.logger.exception(

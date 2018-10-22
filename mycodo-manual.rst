@@ -1071,26 +1071,23 @@ And typical Daemon Log output will look like this:
     2018-08-04 23:47:55,904 - mycodo.pid_3b533dff - INFO - Kd: 4.101408080354794
 
 
-Conditional Statements
-``````````````````````
+Conditional
+```````````
 
-A conditional statement is a way to perform certain actions based on
-whether a condition is true. Conditional statements can be created for
-both inputs and outputs. Possible conditional statements include:
+Conditional controllers are used to perform certain actions based on whether a
+conditional statement is true. Example conditional statements include:
 
--  If Output #1 turns ON, turn Output #3 ON
--  If Output #1 turns ON, turn Output #4 ON for 40 seconds and notify
-   critical-issue@domain.com
--  If Output #1 turns ON for any duration, turn Output #4 ON
--  If Output #4 turns ON for 21 seconds, turn Output #5 ON for 50
-   seconds
--  If Output #4 turns ON for 20 seconds, turn Output #1 OFF
--  If Humidity is Greater Than 80%, turn Output #4 ON for 40 seconds
--  If Humidity if Less Than 50%, turn Output #1 ON for 21 seconds,
-   execute '/usr/local/bin/script.sh', and notify email@domain.com
--  If Temperature if Greater Than 35 C, deactivate PID #1
+-  {{dj73gs0d}} < 20 and {{02nspgh1}} > 10
+-  (20 < {{dj73gs0d}} < 30 ) or {{02nspgh1}} > 10
+-  bool({{dj73gs0d}}) and {{02nspgh1}} > 10
+-  {{dj73gs0d}} < 20 or ({{02nspgh1}} > 10 and not bool({{ucna62k4}}))
+-  {{dj73gs0d}} > 20 or int(round({{02nspgh1}})) in [20, 21, 22]
 
-Before activating any conditional statements or PID controllers, it's
+Each ID encased in double curly brackets ({{}}) will be converted to the most
+recent measurement obtained from that particular sensor or device, before
+being evaluated for its truthness.
+
+Before activating any conditionals, it's
 advised to thoroughly explore all possible scenarios and plan a
 configuration that eliminates conflicts. Then, trial run your
 configuration before connecting devices to the outputs. Some devices or
@@ -1099,29 +1096,20 @@ succession. Therefore, avoid creating an `infinite
 loop <https://en.wikipedia.org/wiki/Loop_%28computing%29#Infinite_loops>`__
 with conditional statements.
 
-Measurement Conditional Statement If Options
-''''''''''''''''''''''''''''''''''''''''''''
+Conditional Options
+'''''''''''''''''''
 
 Check if the latest measurement is above or below the set value.
 
 +-----------------------+-------------------------------------------------+
 | Setting               | Description                                     |
 +=======================+=================================================+
-| If Measurement        | The measurement that will be checked every      |
-|                       | Period. By default, a measurement will only be  |
-|                       | checked for in the past 120 seconds, unless     |
-|                       | "None Found Last x seconds" in which case the   |
-|                       | Value will determine the measurement age. The   |
-|                       | takeaway from this is if a measurement is more  |
-|                       | than 120 seconds                                |
-+-----------------------+-------------------------------------------------+
-| If State              | The conditional will trigger if the measurement |
-|                       | Greater Than or Less Than the set If Value, or  |
-|                       | if "No Measurement" is set and the measurement  |
-|                       | age is greater than Max Age.                    |
-+-----------------------+-------------------------------------------------+
-| If Value              | The value that the measurement will be checked  |
-|                       | against (greater or less than).                 |
+| Conditional Statement | The text string that includes device IDs        |
+|                       | enclosed in double curly brackets ({{}}) that   |
+|                       | will be converted to the actual measurement     |
+|                       | before being evaluated by python to determine   |
+|                       | if it is True or False. If True, the associated |
+|                       | actions will be executed.                       |
 +-----------------------+-------------------------------------------------+
 | Period (seconds)      | The period (seconds) between conditional        |
 |                       | checks.                                         |
@@ -1130,22 +1118,38 @@ Check if the latest measurement is above or below the set value.
 | (seconds)             | conditional has been triggered to begin         |
 |                       | evaluating the conditional again.               |
 +-----------------------+-------------------------------------------------+
-| Max Age (seconds)     | The maximum age the measurement can be. If a    |
-|                       | measurement isn't available within this time    |
-|                       | frame, the conditional will not trigger. The    |
-|                       | only exception is if "If State" is set to "No   |
-|                       | Measurement", which will cause the conditional  |
-|                       | to trigger when there is no measurement         |
-|                       | available (indicating the input or measuring    |
-|                       | device has stopped working).                    |
+
+Conditional Condition Options
+'''''''''''''''''''''''''''''
+
+Conditional Conditions are variables that can be used within the Conditional
+Statement.
+
++-----------------------+-------------------------------------------------+
+| Condition             | Description                                     |
++=======================+=================================================+
+| Measurement           | Acquires the latest measurement from an Input   |
+|                       | or device. Set Max Age (seconds) to restrict    |
+|                       | how long to accept values. If the latest value  |
+|                       | is older than this duration, "None" is          |
+|                       | returned.                                       |
++-----------------------+-------------------------------------------------+
+| GPIO State            | Acquires the current GPIO state and returns     |
+|                       | True if HIGH or False if LOW. If the latest     |
+|                       | value is older than this duration, "None" is    |
+|                       | returned.                                       |
++-----------------------+-------------------------------------------------+
+| Refractory Period     | The minimum duration (seconds) to wait after a  |
+| (seconds)             | conditional has been triggered to begin         |
+|                       | evaluating the conditional again.               |
 +-----------------------+-------------------------------------------------+
 
-Trigger Controller
-``````````````````
+Trigger
+```````
 
 A Trigger Controller will execute actions when events are triggered.
 
-Output (On/Off) Conditional Statement If Options
+Output (On/Off) Options
 ''''''''''''''''''''''''''''''''''''''''''''''''
 
 Monitor the state of an output.
@@ -1170,7 +1174,7 @@ Monitor the state of an output.
 |                       | this specific duration.                         |
 +-----------------------+-------------------------------------------------+
 
-Output (PWM) Conditional Statement If Options
+Output (PWM) Options
 '''''''''''''''''''''''''''''''''''''''''''''
 
 Monitor the state of a PWM output.
@@ -1188,7 +1192,7 @@ Monitor the state of a PWM output.
 |                       | against.                                        |
 +-----------------------+-------------------------------------------------+
 
-Edge Conditional Statement If Options
+Edge Options
 '''''''''''''''''''''''''''''''''''''
 
 Monitor the state of a pin for a rising and/or falling edge.
@@ -1204,7 +1208,7 @@ Monitor the state of a pin for a rising and/or falling edge.
 |                       | (Rising and Falling).                           |
 +-----------------------+-------------------------------------------------+
 
-Run PWM Method Conditional Statement If Options
+Run PWM Method Options
 '''''''''''''''''''''''''''''''''''''''''''''''
 
 Select a Duration Method and this will set the selected PWM Output to the
@@ -1226,7 +1230,7 @@ duty cycle specified by the method.
 |                        | Conditional is activated.                       |
 +------------------------+-------------------------------------------------+
 
-Sunrise/Sunset Conditional Statement If Options
+Sunrise/Sunset Options
 '''''''''''''''''''''''''''''''''''''''''''''''
 
 Trigger events at sunrise or sunset (or a time offset of those), based on
@@ -1253,7 +1257,7 @@ latitude and longitude.
 |                       | (positive or negative).                         |
 +-----------------------+-------------------------------------------------+
 
-Timer (Duration) Conditional Statement If Options
+Timer (Duration) Options
 '''''''''''''''''''''''''''''''''''''''''''''''''
 
 Run a timer that triggers Conditional Actions every period.
@@ -1268,7 +1272,7 @@ Run a timer that triggers Conditional Actions every period.
 |                        | seconds after the Conditional is activated.     |
 +------------------------+-------------------------------------------------+
 
-Timer (Daily Time Point) Conditional Statement If Options
+Timer (Daily Time Point) Options
 '''''''''''''''''''''''''''''''''''''''''''''''''''
 
 Run a timer that triggers Conditional Actions at a specific time every day.
@@ -1281,7 +1285,7 @@ Run a timer that triggers Conditional Actions at a specific time every day.
 |                       | MM denoting minutes. Time is in 24-hour format. |
 +-----------------------+-------------------------------------------------+
 
-Timer (Daily Time Span) Conditional Statement If Options
+Timer (Daily Time Span) Options
 '''''''''''''''''''''''''''''''''''''''''''''''''''
 
 Run a timer that triggers Conditional Actions at a specific period if it's
@@ -1317,6 +1321,9 @@ Output remains on during this period.
 Function Actions
 ''''''''''''''''
 
+These are the actions that can be added to Function controllers (i.e.
+Conditional, Trigger).
+
 +-----------------------+-------------------------------------------------+
 | Setting               | Description                                     |
 +=======================+=================================================+
@@ -1350,7 +1357,7 @@ Action Command Variables
 ''''''''''''''''''''''''
 
 Commands that are executed by actions can now include
-variables. To use, just place the variable name, including "((" and "))"
+variables. To use, just place the variable name encased with double parentheses "(())"
 in your command, and it will be replaced with the variable's value
 before execution. See the tables below for the currently-supported
 variables.
@@ -1431,7 +1438,6 @@ Measurement Action command variables
 | ((measure\_temperature\_die))         | Input measurement: temperature (die)         |
 +---------------------------------------+----------------------------------------------+
 | ((measure\_temperature\_object))      | Input measurement: temperature (object)      |
-|                                       |                                              |
 +---------------------------------------+----------------------------------------------+
 | ((measure\_voltage))                  | Input measurement: voltage                   |
 +---------------------------------------+----------------------------------------------+

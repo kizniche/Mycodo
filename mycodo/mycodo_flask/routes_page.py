@@ -1566,9 +1566,15 @@ def page_data():
         if not utils_general.user_has_permission('edit_controllers'):
             return redirect(url_for('routes_page.page_data'))
 
-        # Input forms
+        # Add Input
         if form_add_input.input_add.data:
             unmet_dependencies = utils_input.input_add(form_add_input, request.form)
+
+        # Mod ADC Channel
+        elif form_mod_input.input_mod.data and isinstance(form_mod_input.adc_saving_channel.data, int):
+            utils_input.adc_channel_mod(form_mod_input)
+
+        # Mod other Input settings
         elif form_mod_input.input_mod.data:
             utils_input.input_mod(form_mod_input, request.form)
         elif form_mod_input.input_delete.data:

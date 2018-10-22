@@ -27,7 +27,7 @@
 
       <div class="col-auto">
         <select class="form-control form-tooltip form-dropdown" id="func_type" name="func_type">
-          <option value="">Select one</option>
+          <option value="">{{_('Select One')}}</option>
           {% for each_function in function_types -%}
             <option value="{{each_function[0]}}">{{each_function[2]}}</option>
           {% endfor -%}

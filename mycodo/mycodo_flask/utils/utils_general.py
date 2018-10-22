@@ -326,8 +326,7 @@ def form_input_choices(choices, each_input, dict_inputs):
         if ('measurements_list' in dict_inputs[each_input.device] and
                 dict_inputs[each_input.device]['measurements_list'] and
                 dict_inputs[each_input.device]['measurements_list'] != 'LinuxCommand' and
-                not is_adc
-        ):
+                not is_adc):
 
             for each_measure in dict_inputs[each_input.device]['measurements_list']:
                 value = '{id},{meas}'.format(
@@ -374,22 +373,44 @@ def form_input_choices(choices, each_input, dict_inputs):
     if ('analog_to_digital_converter' in dict_inputs[each_input.device] and
             dict_inputs[each_input.device]['analog_to_digital_converter'] and
             each_input.convert_to_unit != ''):
-        value = '{id},voltage'.format(
-            id=each_input.unique_id)
-        display = '[Input {id:02d}] {name} (Voltage, volts)'.format(
-            id=each_input.id,
-            name=each_input.name)
-        choices.update({value: display})
 
-        value = '{id},{meas}'.format(
-            id=each_input.unique_id,
-            meas=each_input.convert_to_unit.split(',')[0])
-        display = '[Input {id:02d}] {name} ({meas}, {unit})'.format(
-            id=each_input.id,
-            name=each_input.name,
-            meas=dict_measurements[each_input.convert_to_unit.split(',')[0]]['name'],
-            unit=dict_units[each_input.convert_to_unit.split(',')[1]]['unit'])
-        choices.update({value: display})
+        error = False
+        chan_meas_unit_dict = {}
+        channels_measurement_units_list = each_input.convert_to_unit.split(';')
+
+        for each_channel in channels_measurement_units_list:
+            if len(each_channel.split(',')) == 3:
+                chan_meas_unit_dict[each_channel.split(',')[2]] = {}
+                chan_meas_unit_dict[each_channel.split(',')[2]]['measurement'] = each_channel.split(',')[0]
+                chan_meas_unit_dict[each_channel.split(',')[2]]['unit'] = each_channel.split(',')[1]
+            else:
+                error = True
+
+        if not error:
+            for each_channel_sel in each_input.adc_channels_selected.split(','):
+                value = '{id},adc_channel_{chan}_voltage_volts,{chan}'.format(
+                    id=each_input.unique_id,
+                    chan=each_channel_sel)
+                display = '[Input {id:02d}] {name}  (CH{chan}, Voltage, volts)'.format(
+                    id=each_input.id,
+                    name=each_input.name,
+                    chan=int(each_channel_sel) + 1)
+                choices.update({value: display})
+
+                for each_channel_ctu in each_input.convert_to_unit.split(';'):
+                    if each_channel_ctu.split(',')[2] == each_channel_sel and each_channel_ctu.split(',')[0] != '':
+                        value = '{id},adc_channel_{chan}_{meas}_{unit},{chan}'.format(
+                            id=each_input.unique_id,
+                            meas=each_channel_ctu.split(',')[0],
+                            unit=chan_meas_unit_dict[each_channel_sel]['unit'],
+                            chan=each_channel_sel)
+                        display = '[Input {id:02d}] {name} (CH{chan}, {meas}, {unit})'.format(
+                            id=each_input.id,
+                            name=each_input.name,
+                            chan=int(each_channel_sel) + 1,
+                            meas=dict_measurements[chan_meas_unit_dict[each_channel_sel]['measurement']]['name'],
+                            unit=dict_units[chan_meas_unit_dict[each_channel_sel]['unit']]['unit'])
+                        choices.update({value: display})
 
     return choices
 
@@ -772,8 +793,6 @@ def return_dependencies(device_type):
     return unmet_deps, met_deps
 
 
-
-
 def use_unit_generate(input_dev, output, math):
     """Generate dictionary of units to convert to"""
     # TODO: next major version: rename table columns and combine functionality
@@ -781,12 +800,21 @@ def use_unit_generate(input_dev, output, math):
 
     for each_input in input_dev:
         use_unit[each_input.unique_id] = {}
-        for each_measure in each_input.measurements.split(','):
-            for each_unit_set in each_input.convert_to_unit.split(';'):
-                if len(each_unit_set.split(',')) > 1 and each_measure == each_unit_set.split(',')[0]:
-                    use_unit[each_input.unique_id][each_measure] = each_unit_set.split(',')[1]
-                elif each_measure not in use_unit[each_input.unique_id]:
-                    use_unit[each_input.unique_id][each_measure] = None
+
+        if each_input.measurements == 'adc_channels':
+            use_unit[each_input.unique_id]['adc'] = {}
+            for index, each_unit_set in enumerate(each_input.convert_to_unit.split(';')):
+                use_unit[each_input.unique_id]['adc'][str(index)] = {}
+                use_unit[each_input.unique_id]['adc'][str(index)]['voltage'] = 'volts'
+                if len(each_unit_set.split(',')) > 1 and each_unit_set.split(',')[0] != '':
+                    use_unit[each_input.unique_id]['adc'][str(index)][each_unit_set.split(',')[0]] = each_unit_set.split(',')[1]
+        else:
+            for each_measure in each_input.measurements.split(','):
+                for each_unit_set in each_input.convert_to_unit.split(';'):
+                    if len(each_unit_set.split(',')) > 1 and each_measure == each_unit_set.split(',')[0]:
+                        use_unit[each_input.unique_id][each_measure] = each_unit_set.split(',')[1]
+                    elif each_measure not in use_unit[each_input.unique_id]:
+                        use_unit[each_input.unique_id][each_measure] = None
 
     for each_output in output:
         use_unit[each_output.unique_id] = {}

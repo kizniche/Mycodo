@@ -4,9 +4,10 @@ The Mycodo 7.0 brings a redesigned Conditional system. The remnants of Condition
 
 ### Features
 
- - Refactor more powerful Conditional system ([#493](https://github.com/kizniche/mycodo/issues/493))
- - Add Function Action: Pause (for a duration of time before executing the actions that come after it)
+ - Refactor Conditional system ([#493](https://github.com/kizniche/mycodo/issues/493))
+ - Refactor Analog-to-digital converters ([#550](https://github.com/kizniche/mycodo/issues/550))
  - Add Input: MCP9808 high accuracy I2C temperature sensor
+ - Add Function Action: Pause (pause for a duration of time before executing any remaining actions)
 
 
 ## 6.4.5 (2018-10-17)
