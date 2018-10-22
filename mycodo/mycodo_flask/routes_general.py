@@ -315,43 +315,22 @@ def past_data(input_measure, input_id, past_seconds):
         else:
             return '', 204
 
-    elif input_measure.startswith('adc_channel_'):
-        current_app.config['INFLUXDB_USER'] = INFLUXDB_USER
-        current_app.config['INFLUXDB_PASSWORD'] = INFLUXDB_PASSWORD
-        current_app.config['INFLUXDB_DATABASE'] = INFLUXDB_DATABASE
-        current_app.config['INFLUXDB_TIMEOUT'] = 5
-        dbcon = influx_db.connection
-
-        if (input_measure.split('_')[3] == 'voltage' and
-                input_measure.split('_')[4] == 'volts'):
-            input_measure = 'adc_channel_{chan}'.format(
-                chan=input_measure.split('_')[2])
-        else:
-            input_measure = 'adc_channel_{chan}_{meas}'.format(
-                chan=input_measure.split('_')[2],
-                meas=input_measure.split('_')[3])
-
-        try:
-            query_str = query_string(
-                input_measure, input_id, past_sec=past_seconds)
-            if query_str == 1:
-                return '', 204
-            raw_data = dbcon.query(query_str).raw
-            if raw_data:
-                return jsonify(raw_data['series'][0]['values'])
-            else:
-                return '', 204
-        except Exception as e:
-            logger.debug("URL for 'past_data' raised and error: "
-                         "{err}".format(err=e))
-            return '', 204
-
     else:
         current_app.config['INFLUXDB_USER'] = INFLUXDB_USER
         current_app.config['INFLUXDB_PASSWORD'] = INFLUXDB_PASSWORD
         current_app.config['INFLUXDB_DATABASE'] = INFLUXDB_DATABASE
         current_app.config['INFLUXDB_TIMEOUT'] = 5
         dbcon = influx_db.connection
+
+        if input_measure.startswith('adc_channel_'):
+            if (input_measure.split('_')[3] == 'voltage' and
+                    input_measure.split('_')[4] == 'volts'):
+                input_measure = 'adc_channel_{chan}'.format(
+                    chan=input_measure.split('_')[2])
+            else:
+                input_measure = 'adc_channel_{chan}_{meas}'.format(
+                    chan=input_measure.split('_')[2],
+                    meas=input_measure.split('_')[3])
 
         try:
             query_str = query_string(

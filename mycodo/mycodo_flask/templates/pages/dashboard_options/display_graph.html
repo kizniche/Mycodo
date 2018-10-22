@@ -80,14 +80,15 @@
     tooltip: {
       shared: true,
       formatter: function(){
+        var d = new Date(this.x);
         if (this.point) {
-          return '<b>'+ Highcharts.dateFormat('%B %e, %Y %H:%M:%S', this.x)
+          return '<b>'+ Highcharts.dateFormat('%B %e, %Y %H:%M:%S.', this.x) + d.getMilliseconds()
                + '</b><br/>' + this.series.name
                + '<br/>' + this.point.title
                + '<br/>' + this.point.text;
         }
         else {
-          var s = '<b>'+ Highcharts.dateFormat('%B %e, %Y %H:%M:%S', this.x) +'</b>';
+          var s = '<b>' + Highcharts.dateFormat('%B %e, %Y %H:%M:%S.', this.x) + d.getMilliseconds() + '</b>';
           $.each(this.points, function(i, point) {
               s += '<br/><span style="color:' + point.color + '">\u25CF</span> ' + point.series.name + ': ' + Highcharts.numberFormat(point.y, this.series.tooltipOptions.valueDecimals) + ' ' + this.series.tooltipOptions.valueSuffix;
           });
