@@ -9,8 +9,9 @@
           {%- if each_pid.measurement.split(',')[1] in measurement_units -%}
             {{dict_measurements[each_pid.measurement.split(',')[1]]['unit']}}
           {%- else -%}
-            {%- for each_input in input if each_pid.measurement.split(',')[0] == each_input.unique_id and each_input.device == 'LinuxCommand' -%}
-              {{' ' + each_input.cmd_measurement_units}}
+            {%- for each_input in input if each_pid.measurement.split(',')[0] == each_input.unique_id and
+                                           each_input.device == 'LinuxCommand' -%}
+              {{ ' ' + use_unit[each_input.unique_id][each_input.measurements]}}
             {%- endfor -%}
           {%- endif -%}
         {%- endif -%}
@@ -25,8 +26,9 @@
           {%- if each_pid.measurement.split(',')[1] in measurement_units -%}
             {{dict_measurements[each_pid.measurement.split(',')[1]]['unit']}}
           {%- else -%}
-            {%- for each_input in input if each_pid.measurement.split(',')[0] == each_input.unique_id and each_input.device == 'LinuxCommand' -%}
-              {{' ' + each_input.cmd_measurement_units}}
+            {%- for each_input in input if each_pid.measurement.split(',')[0] == each_input.unique_id and
+                                           each_input.device == 'LinuxCommand' -%}
+              {{ ' ' + use_unit[each_input.unique_id][each_input.measurements]}}
             {%- endfor -%}
           {%- endif -%}
         {%- endif -%}

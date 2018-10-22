@@ -1077,13 +1077,13 @@ Conditional
 Conditional controllers are used to perform certain actions based on whether a
 conditional statement is true. Example conditional statements include:
 
--  {{dj73gs0d}} < 20 and {{02nspgh1}} > 10
--  (20 < {{dj73gs0d}} < 30 ) or {{02nspgh1}} > 10
--  bool({{dj73gs0d}}) and {{02nspgh1}} > 10
--  {{dj73gs0d}} < 20 or ({{02nspgh1}} > 10 and not bool({{ucna62k4}}))
--  {{dj73gs0d}} > 20 or int(round({{02nspgh1}})) in [20, 21, 22]
+-  \{\{dj73gs0d\}\} < 20 and \{\{02nspgh1\}\} > 10
+-  (20 < \{\{dj73gs0d\}\} < 30 ) or \{\{02nspgh1\}\} > 10
+-  bool(\{\{dj73gs0d\}\}) and \{\{02nspgh1\}\} > 10
+-  \{\{dj73gs0d\}\} < 20 or (\{\{02nspgh1\}\} > 10 and not bool(\{\{ucna62k4\}\}))
+-  \{\{dj73gs0d\}\} > 20 or int(round(\{\{02nspgh1\}\})) in [20, 21, 22]
 
-Each ID encased in double curly brackets ({{}}) will be converted to the most
+Each ID encased in double curly brackets (\{\{\}\}) will be converted to the most
 recent measurement obtained from that particular sensor or device, before
 being evaluated for its truthness.
 
@@ -1105,7 +1105,7 @@ Check if the latest measurement is above or below the set value.
 | Setting               | Description                                     |
 +=======================+=================================================+
 | Conditional Statement | The text string that includes device IDs        |
-|                       | enclosed in double curly brackets ({{}}) that   |
+|                       | enclosed in double curly brackets (\{\{\}\}) that   |
 |                       | will be converted to the actual measurement     |
 |                       | before being evaluated by python to determine   |
 |                       | if it is True or False. If True, the associated |

@@ -13,10 +13,10 @@
   <br/><span style="font-size: {{each_dashboard.font_em_timestamp}}em">
   {%- for each_input in input -%}
     {%- if each_input.unique_id == each_dashboard.input_ids_measurements.split(',')[0] %}
-      {%- if each_dashboard.input_ids_measurements.split(',')[1] in measurement_units -%}
-        {{measurement_units[each_dashboard.input_ids_measurements.split(',')[1]]['name']|safe}} ({% if use_unit[each_input.unique_id][each_dashboard.input_ids_measurements.split(',')[1]] %}{{units[use_unit[each_input.unique_id][each_dashboard.input_ids_measurements.split(',')[1]]]['unit']}}{% else %}{{measurement_units[each_dashboard.input_ids_measurements.split(',')[1]]['unit']|safe}}{% endif %})
-      {%- elif each_input.adc_measure -%}
-        {{each_input.adc_measure|safe}} ({{each_input.adc_measure_units|safe}})
+      {%- if each_input.measurements != 'adc_channels' -%}
+        {{measurement_units[each_dashboard.input_ids_measurements.split(',')[1]]['name']|safe}} ({{units[use_unit[each_input.unique_id][each_dashboard.input_ids_measurements.split(',')[1]]]['unit']}})
+      {%- elif each_input.measurements == 'adc_channels' -%}
+        {{measurement_units[each_dashboard.input_ids_measurements.split(',')[1].split('_')[3]]['name']|safe}} ({{dict_units[each_dashboard.input_ids_measurements.split(',')[1].split('_')[4]]['unit']}})
       {% endif %}
     {%- endif -%}
   {%- endfor -%}

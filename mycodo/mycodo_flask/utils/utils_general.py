@@ -802,7 +802,7 @@ def use_unit_generate(input_dev, output, math):
         use_unit[each_input.unique_id] = {}
 
         if each_input.measurements == 'adc_channels':
-            use_unit[each_input.unique_id]['adc'] = {}
+            use_unit[each_input.unique_id]['adc'] = OrderedDict()
             for index, each_unit_set in enumerate(each_input.convert_to_unit.split(';')):
                 use_unit[each_input.unique_id]['adc'][str(index)] = {}
                 use_unit[each_input.unique_id]['adc'][str(index)]['voltage'] = 'volts'

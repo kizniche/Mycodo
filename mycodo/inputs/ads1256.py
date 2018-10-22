@@ -133,11 +133,11 @@ class ADCModule(object):
             # You can connect any pin as well to the positive as to the negative ADC input.
             # The following reads the voltage of the potentiometer with negative polarity.
             # The ADC reading should be identical to that of the POTI channel, but negative.
-            POTI_INVERTED = POS_AINCOM | NEG_AIN0
+            # POTI_INVERTED = POS_AINCOM | NEG_AIN0
 
             # For fun, connect both ADC inputs to the same physical input pin.
             # The ADC should always read a value close to zero for this.
-            SHORT_CIRCUIT = POS_AIN0 | NEG_AIN0
+            # SHORT_CIRCUIT = POS_AIN0 | NEG_AIN0
 
             # Specify here an arbitrary length list (tuple) of arbitrary input channel pair
             # eight-bit code values to scan sequentially from index 0 to last.
@@ -199,23 +199,25 @@ class ADCModule(object):
 
     def get_measurement(self):
         self._voltages = {}
-        voltages = {}
+        voltages_list = []
+        voltages_dict = {}
         count = 0
 
         # 2 attempts to get valid measurement
-        while self.running and 0 in voltages.values() and count < 2:
+        while (self.running and count < 2 and
+               (not any(voltages_dict.values()) or 0 in voltages_dict.values())):
             raw_channels = self.ads.read_sequence(self.CH_SEQUENCE)
-            voltages = [i * self.ads.v_per_digit for i in raw_channels]
+            voltages_list = [i * self.ads.v_per_digit for i in raw_channels]
             count += 1
 
-            for each_channel, each_voltage in enumerate(voltages, 1):
+            for each_channel, each_voltage in enumerate(voltages_list, 1):
                 if each_channel in self.adc_channels_selected:
-                    voltages['adc_ch{}'.format(each_channel)] = each_voltage
+                    voltages_dict['adc_channel_{}'.format(each_channel)] = each_voltage
 
             time.sleep(0.85)
 
-        if voltages:
-            return voltages
+        if 0 not in voltages_dict.values():
+            return voltages_dict
 
     def read(self):
         """

@@ -96,10 +96,10 @@
         name: '
         {%- for each_input in input -%}
           {%- for each_id_and_measure in graph_input_ids if each_input.unique_id == each_id_and_measure.split(',')[0] -%}
-            {%- if not each_input.adc_measure -%}
+            {%- if each_input.measurements != 'adc_channels' -%}
               {{measurement_units[each_id_and_measure.split(',')[1]]['name']|safe}}
-            {%- else -%}
-              {{each_input.adc_measure|safe}}
+            {%- elif each_input.measurements == 'adc_channels' -%}
+              {{measurement_units[each_id_and_measure.split(',')[1].split('_')[3]]['name']|safe}}
             {%- endif -%}
           {%- endfor -%}
         {%- endfor -%}
@@ -129,14 +129,14 @@
 
         {%- for each_input in input -%}
           {%- for each_id_and_measure in graph_input_ids if each_input.unique_id == each_id_and_measure.split(',')[0] %}
-            {%- if not each_input.adc_measure %}
+            {%- if each_input.measurements != 'adc_channels' %}
             pointFormatter: function () {
               return '<span style="color:'+ this.series.color + '"">\u25CF</span> ' + this.series.name + ': <b>' + Highcharts.numberFormat(this.y, 2) + '
 
               {%- if use_unit[each_input.unique_id][each_id_and_measure.split(',')[1]] -%}
                 {{' ' + units[use_unit[each_input.unique_id][each_id_and_measure.split(',')[1]]]['unit']}}
-              {%- else -%}
-                {{' ' + measurement_units[each_id_and_measure.split(',')[1]]['unit']|safe}}
+              {%- elif each_input.measurements == 'adc_channels' -%}
+                {{' ' + dict_units[each_id_and_measure.split(',')[1].split('_')[4]]['unit']|safe}}
               {%- endif -%}
 
               </b><br>';
@@ -150,10 +150,8 @@
           {%- for each_id_and_measure in graph_input_ids if each_input.unique_id == each_id_and_measure.split(',')[0] -%}
             {%- if use_unit[each_input.unique_id][each_id_and_measure.split(',')[1]] -%}
               {{' ' + units[use_unit[each_input.unique_id][each_id_and_measure.split(',')[1]]]['unit']}}
-            {%- elif not each_input.adc_measure -%}
-              {{' ' + measurement_units[each_id_and_measure.split(',')[1]]['unit']|safe}}
-            {%- else -%}
-              {{' ' + each_input.adc_measure_units|safe}}
+            {%- elif each_input.measurements == 'adc_channels' -%}
+              {{' ' + dict_units[each_id_and_measure.split(',')[1].split('_')[4]]['unit']|safe}}
             {%- endif -%}
           {%- endfor -%}
         {%- endfor -%}

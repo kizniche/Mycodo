@@ -389,6 +389,18 @@ class MathController(threading.Thread):
             for each_input_set in inputs_list:
                 input_id = each_input_set.split(',')[0]
                 input_measure = each_input_set.split(',')[1]
+
+                # Handle ADC query
+                if input_measure.startswith('adc_channel_'):
+                    if (input_measure.split('_')[3] == 'voltage' and
+                            input_measure.split('_')[4] == 'volts'):
+                        input_measure = 'adc_channel_{chan}'.format(
+                            chan=input_measure.split('_')[2])
+                    else:
+                        input_measure = 'adc_channel_{chan}_{meas}'.format(
+                            chan=input_measure.split('_')[2],
+                            meas=input_measure.split('_')[3])
+
                 last_measurement = read_last_influxdb(
                     input_id,
                     input_measure,

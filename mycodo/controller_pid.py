@@ -162,7 +162,10 @@ class PIDController(threading.Thread):
         self.initialize_values()
 
         # Check if a method is set for this PID
+        self.method_type = None
         self.method_start_act = None
+        self.method_start_time = None
+        self.method_end_time = None
         if self.method_id != '':
             self.setup_method(self.method_id)
 
@@ -586,11 +589,24 @@ class PIDController(threading.Thread):
         :rtype: None
         """
         self.last_measurement_success = False
+        measurement = self.measurement
+
         # Get latest measurement from influxdb
         try:
+            # Handle ADC query
+            if measurement.startswith('adc_channel_'):
+                if (measurement.split('_')[3] == 'voltage' and
+                        measurement.split('_')[4] == 'volts'):
+                    measurement = 'adc_channel_{chan}'.format(
+                        chan=measurement.split('_')[2])
+                else:
+                    measurement = 'adc_channel_{chan}_{meas}'.format(
+                        chan=measurement.split('_')[2],
+                        meas=measurement.split('_')[3])
+
             self.last_measurement = read_last_influxdb(
                 self.dev_unique_id,
-                self.measurement,
+                measurement,
                 int(self.max_measure_age))
             if self.last_measurement:
                 self.last_time = self.last_measurement[0]
@@ -602,7 +618,7 @@ class PIDController(threading.Thread):
                 utc_timestamp = calendar.timegm(utc_dt.timetuple())
                 local_timestamp = str(datetime.datetime.fromtimestamp(utc_timestamp))
                 self.logger.debug("Latest {meas}: {last} @ {ts}".format(
-                    meas=self.measurement,
+                    meas=measurement,
                     last=self.last_measurement,
                     ts=local_timestamp))
                 if calendar.timegm(time.gmtime()) - utc_timestamp > self.max_measure_age:

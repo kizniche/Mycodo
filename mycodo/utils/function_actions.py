@@ -161,9 +161,9 @@ def trigger_function_actions(
             if input_dev:
                 command_str = command_str.replace(
                     "((measure_location))", str(input_dev.location))
-            if input_dev and device_measurement == input_dev.cmd_measurement:
+            if input_dev and device_measurement == input_dev.measurements:
                 command_str = command_str.replace(
-                    "((measure_linux_command))", str(input_dev.location))
+                    "((measure_linux_command))", str(last_measurement))
 
             # Replace output variables
             if output:

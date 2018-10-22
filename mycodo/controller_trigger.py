@@ -431,30 +431,6 @@ class TriggerController(threading.Thread):
             message=message, last_measurement=last_measurement,
             device_id=device_id, device_measurement=device_measurement,
             edge=gpio_state)
-    
-    @staticmethod
-    def get_last_measurement(unique_id, measurement, duration_sec):
-        """
-        Retrieve the latest input measurement
-
-        :return: The latest input value or None if no data available
-        :rtype: float or None
-
-        :param unique_id: ID of controller
-        :type unique_id: str
-        :param measurement: Environmental condition of a input (e.g.
-            temperature, humidity, pressure, etc.)
-        :type measurement: str
-        :param duration_sec: number of seconds to check for a measurement
-            in the past.
-        :type duration_sec: int
-        """
-        last_measurement = read_last_influxdb(
-            unique_id, measurement, duration_sec=duration_sec)
-
-        if last_measurement is not None:
-            last_value = last_measurement[1]
-            return last_value
 
     def is_running(self):
         return self.running

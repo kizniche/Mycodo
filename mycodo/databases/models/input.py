@@ -87,14 +87,6 @@ class Input(CRUDMixin, db.Model):
 
     custom_options = db.Column(db.Text, default='')
 
-    # Unused variables
-    # TODO: remove unused columns in next major revision
-    device_loc = db.Column(db.Text, default=None)  # Device location for UART communication
-    adc_measure = db.Column(db.Text, default=None)
-    adc_measure_units = db.Column(db.Text, default=None)
-    cmd_measurement = db.Column(db.Text, default=None)
-    cmd_measurement_units = db.Column(db.Text, default=None)
-
     def is_active(self):
         """
         :return: Whether the sensor is currently activated

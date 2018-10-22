@@ -29,13 +29,13 @@ class InputModule(AbstractInput):
         super(InputModule, self).__init__()
         self.logger = logging.getLogger("mycodo.inputs.linux_command")
         self._measurement = None
-        self.cmd_measurement = 'measurement'
+        self.measurements = 'measurement'
 
         if not testing:
             self.logger = logging.getLogger(
                 "mycodo.linux_command_{id}".format(id=input_dev.unique_id.split('-')[0]))
-            self.cmd_command = input_dev.cmd_command
-            self.cmd_measurement = input_dev.measurements
+            self.command = input_dev.cmd_command
+            self.measurements = input_dev.measurements
 
     def __repr__(self):
         """  Representation of object """
@@ -55,7 +55,7 @@ class InputModule(AbstractInput):
         """ Get next measurement """
         if self.read():  # raised an error
             raise StopIteration  # required
-        return {self.cmd_measurement: float('{0:.2f}'.format(self._measurement))}
+        return {self.measurements: float('{0:.2f}'.format(self._measurement))}
 
     @property
     def measurement(self):
@@ -68,7 +68,7 @@ class InputModule(AbstractInput):
         """ Determine if the return value of the command is a number """
         self._measurement = None
 
-        out, _, _ = cmd_output(self.cmd_command)
+        out, _, _ = cmd_output(self.command)
         if str_is_float(out):
             return float(out)
         else:

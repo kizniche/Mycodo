@@ -32,41 +32,9 @@
   {% include 'flash_messages.html' %}
   </div>
 
-{#  <p>#}
-{#  yaxes: {{ y_axes }}#}
-{#  </p>#}
-{#  <p>#}
-{#  {% for each_dashboard in dashboard %}#}
-{#  each_dashboard.custom_yaxes: {{ each_dashboard.custom_yaxes }}<br>#}
-{#  {% endfor %}#}
-{#  </p>#}
-{#  <p>#}
-{#  custom_yaxes: {{ custom_yaxes }}#}
-{#  </p>#}
-{#  <p>#}
-{#  use_unit<br>#}
-{#  {% for each_id, each_val in use_unit.items() %}#}
-{#    {{ each_id }}: {{ each_val }}<br>#}
-{#  {% endfor %}#}
-{#  </p>#}
-{#  <p>#}
-{#  dict_units<br>#}
-{#  {% for each_id, each_val in dict_units.items() %}#}
-{#    {{ each_id }}: {{ each_val }}<br>#}
-{#  {% endfor %}#}
-{#  </p>#}
-{#  <p>#}
-{#  dict_measurements<br>#}
-{#  {% for each_id, each_val in dict_measurements.items() %}#}
-{#    {{ each_id }}: {{ each_val }}<br>#}
-{#  {% endfor %}#}
-{#  </p>#}
-
-  <div style="padding: 0 1em 0 1em">
-
   <div class="container-fluid">
 
-    <div class="row">
+    <div class="row small-gutters">
 
     {% if display_order -%}
     {%- for order in display_order -%}
@@ -74,15 +42,14 @@
       {%- for each_dashboard in dashboard if each_dashboard.unique_id == order -%}
 
       <div class="col-xs-12 col-sm-
-      {%- if each_dashboard.width < 13 and each_dashboard.width > 0 -%}
+      {%- if 0 < each_dashboard.width < 13 -%}
         {{each_dashboard.width}}
       {%- else -%}
         12
-      {%- endif -%}" style="padding: 0.25em;">
+      {%- endif %} mb-1" style="border: 1px solid #ddd; border-radius: 5px;">
 
-        <div style="border: 1px solid #ddd; border-radius: 5px;">
-
-        {% for id, axes in y_axes.items() if id == each_dashboard.unique_id and each_dashboard.graph_type in ['graph', 'gauge_angular', 'gauge_solid'] %}
+        {% for id, axes in y_axes.items() if id == each_dashboard.unique_id and
+                                             each_dashboard.graph_type in ['graph', 'gauge_angular', 'gauge_solid'] %}
           <!--Dashboard {{each_dashboard.unique_id}} y-axes: {{axes|safe}}-->
         {% endfor %}
 
@@ -101,7 +68,6 @@
 
         {% endif %}
 
-        </div>
       </div>
 
       {%- endfor -%}

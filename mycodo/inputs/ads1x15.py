@@ -85,14 +85,14 @@ class ADCModule(object):
 
     def get_measurement(self):
         self._voltages = None
-        voltages = {}
+        voltages_dict = {}
 
         for each_channel in self.adc_channels_selected:
-            voltages['adc_ch{}'.format(each_channel)] = self.adc.read_adc(
+            voltages_dict['adc_channel_{}'.format(each_channel)] = self.adc.read_adc(
                 each_channel, gain=self.adc_gain) / 10000.0
 
-        if voltages:
-            return voltages
+        if voltages_dict:
+            return voltages_dict
 
     def read(self):
         """

@@ -22,10 +22,6 @@
   <div class="container">
   {% include 'flash_messages.html' %}
 
-{#  <p>#}
-{#  yaxes: {{ y_axes }}#}
-{#  </p>#}
-
     <h4>{{_('Asynchronous Graphs')}} <a href="/help#{{help_page[0]}}" target="_blank"><span style="font-size: 16px" class="fas fa-question-circle"></span></a></h4>
 
     <p>A graphical data display that is useful for viewing data sets spanning relatively long periods of time (weeks/months/years), which could be very data- and processor-intensive to view as a Live Graph.</p>
@@ -86,7 +82,6 @@
 
   {% if selected_ids_measures %}
   <script>
-
 Highcharts.setOptions({
   global: {
     useUTC: false
@@ -210,14 +205,15 @@ $(document).ready(function() {
         tooltip: {
           shared: true,
           formatter: function(){
+            var d = new Date(this.x);
             if (this.point) {
-              return '<b>'+ Highcharts.dateFormat('%B %e, %Y %H:%M:%S', this.x)
+              return '<b>'+ Highcharts.dateFormat('%B %e, %Y %H:%M:%S.', this.x) + d.getMilliseconds()
                    + '</b><br/>' + this.series.name
                    + '<br/>' + this.point.title
                    + '<br/>' + this.point.text;
             }
             else {
-              var s = '<b>'+ Highcharts.dateFormat('%B %e, %Y %H:%M:%S', this.x) +'</b>';
+              var s = '<b>'+ Highcharts.dateFormat('%B %e, %Y %H:%M:%S.', this.x) + d.getMilliseconds() + '</b>';
               $.each(this.points, function(i, point) {
                   s += '<br/><span style="color:' + point.color + '">\u25CF</span> ' + point.series.name + ': ' + Highcharts.numberFormat(point.y, this.series.tooltipOptions.valueDecimals) + ' ' + this.series.tooltipOptions.valueSuffix;
               });
@@ -307,28 +303,57 @@ $(document).ready(function() {
         },
 
         series: [
-        {% for each_id_meas in selected_ids_measures -%}
+        {% for each_id_meas in selected_ids_measures -%}  {# Start main for #}
 
-          {% for each_input in input if each_input.unique_id == each_id_meas.split(',')[0] %}
+          {% for each_input in input if each_input.unique_id == each_id_meas.split(',')[0] %}  {# Start input for #}
 
-            {% if each_input.device == 'LinuxCommand' %}
+            {% if each_input.device == 'LinuxCommand' %}  {# Command #}
+
           {
-            name: '{{each_input.name}} {{each_input.cmd_measurement}} ({{each_input.cmd_measurement_units}})',
+            name: '{{each_input.name}} ({{measurement_units[each_input.measurements]['name']}}
+              {%- if dict_measurements[each_input.measurements]['unit'] != '' %}
+                {%- if use_unit[each_input.unique_id][each_input.measurements] -%}
+                  {{', '+units[use_unit[each_input.unique_id][each_input.measurements]]['unit']}}
+                {%- else -%}
+                  {{', '+measurement_units[each_input.measurements]['unit']}}
+                {%- endif -%}
+              )
+              {%- endif -%}
+            ',
             type: 'line',
             tooltip: {
-              {% if each_input.cmd_measurement == 'temperature' %}
-              pointFormatter: function () {
-                return '<span style="color:'+ this.series.color + '"">\u25CF</span> ' + this.series.name + ': <b>' + Highcharts.numberFormat(this.y, 2) + '°C (' + Highcharts.numberFormat(((this.y*9/5)+32), 2) + '°F)</b><br>';
-              },
-              {% else %}
-              valueSuffix: ' {{each_input.cmd_measurement_units}}',
+              valueSuffix: '
+                  {%- if use_unit[each_input.unique_id][each_input.measurements] and use_unit[each_input.unique_id][each_input.measurements] in dict_units -%}
+                    {{' ' + dict_units[use_unit[each_input.unique_id][each_input.measurements]]['unit']}}
+                  {%- endif -%}
+              ',
               valueDecimals: 2
-              {% endif %}
             },
-            yAxis: '{{each_input.cmd_measurement}}',
+            yAxis: '
+              {%- if use_unit[each_input.unique_id][each_input.measurements] -%}
+                {{use_unit[each_input.unique_id][each_input.measurements]}}
+              {%- endif -%}
+            ',
             data: []
           },
-            {% endif %}
+
+            {%- elif each_input.measurements == 'adc_channels' -%}  {# ADC #}
+
+              {% set meas_test =  each_id_meas.split(',')[1].split('_') %}
+              {%- if meas_test|length > 1 and meas_test[0] == 'adc' and meas_test[1] == 'channel' -%}
+          {
+            name: '{{each_input.name}} CH{{meas_test[2]|int + 1}} ({{measurement_units[meas_test[3]]['name']}}, {{use_unit[each_input.unique_id]['adc'][meas_test[2]][meas_test[3]]}})',
+            type: 'line',
+            tooltip: {
+              valueSuffix: '{%- if meas_test[4] in dict_units -%}{{' ' + dict_units[meas_test[4]]['unit']}}{%- endif -%}',
+              valueDecimals: 3
+            },
+            yAxis: '{{meas_test[4]}}',
+            data: []
+          },
+              {%- endif -%}
+
+            {% else %}  {# Remaining #}
 
             {%- for each_measurement in each_input.measurements.split(',') -%}
               {%- if each_measurement == each_id_meas.split(',')[1] -%}
@@ -352,58 +377,46 @@ $(document).ready(function() {
               valueSuffix: '
                   {%- if use_unit[each_input.unique_id][each_measurement] and use_unit[each_input.unique_id][each_measurement] in dict_units -%}
                     {{' ' + dict_units[use_unit[each_input.unique_id][each_measurement]]['unit']}}
-                  {%- else -%}
-                    {{' ' + measurement_units[each_measurement]['unit']}}
                   {%- endif -%}
                   ',
               valueDecimals: 2
             },
             yAxis: '
-                  {%- if use_unit[each_input.unique_id][each_measurement] -%}
-                    {{use_unit[each_input.unique_id][each_measurement]}}
-                  {%- else -%}
-                    {{measurement_units[each_measurement]['meas']}}
-                  {%- endif -%}
+              {%- if use_unit[each_input.unique_id][each_measurement] -%}
+                {{use_unit[each_input.unique_id][each_measurement]}}
+              {%- else -%}
+                {{measurement_units[each_measurement]['meas']}}
+              {%- endif -%}
             ',
             data: []
           },
-            {%- elif each_input.adc_measure == each_id_meas.split(',')[1] -%}
-          {
-            name: '{{each_input.name}} {{each_input.adc_measure}}',
-            type: 'line',
-            tooltip: {
-              valueSuffix: ' {{each_input.adc_measure_units}}',
-              valueDecimals: 3
-            },
-            yAxis: '{{each_input.adc_measure}}',
-            data: []
-          },
             {%- endif -%}
-          {%- endfor -%}
 
-          {% endfor %}
+            {%- endfor -%}
+
+          {% endif %}
+
+          {% endfor %}  {# Start input for #}
 
 
           {% for each_math in math if each_math.unique_id == each_id_meas.split(',')[0] %}
           {
-            name: '{{each_math.name}} {% if each_id_meas.split(',')[1] in dict_measurements %}{{dict_measurements[each_id_meas.split(',')[1]]['name']}} ({{dict_measurements[each_id_meas.split(',')[1]]['unit']}}){% else %}{{each_id_meas.split(',')[1]}}{% endif %}',
+            name: '{{each_math.name}} (
+              {%- if each_id_meas.split(',')[1] in dict_measurements -%}
+                {{dict_measurements[each_id_meas.split(',')[1]]['name']}}, {{use_unit[each_math.unique_id][each_id_meas.split(',')[1]]}}
+              {%- endif -%}
+            )',
             type: 'line',
             tooltip: {
-              {% if each_id_meas.split(',')[1] in dict_measurements and dict_measurements[each_id_meas.split(',')[1]]['meas'] == 'temperature' %}
-              pointFormatter: function () {
-                return '<span style="color:'+ this.series.color + '"">\u25CF</span> ' + this.series.name + ': <b>' + Highcharts.numberFormat(this.y, 2) + '°C (' + Highcharts.numberFormat(((this.y*9/5)+32), 2) + '°F)</b><br>';
-              },
-              {% else %}
-              valueSuffix: ' {% if each_id_meas.split(',')[1] in dict_measurements %}{{dict_measurements[each_id_meas.split(',')[1]]['unit']}}{% else %}{{each_math.measure_units}}{% endif %}',
+              valueSuffix: ' {{use_unit[each_math.unique_id][each_id_meas.split(',')[1]]}}',
               valueDecimals: 3
-              {% endif %}
             },
             yAxis: '
-                  {%- if use_unit[each_math.unique_id][each_id_meas.split(',')[1]] -%}
-                    {{use_unit[each_math.unique_id][each_id_meas.split(',')[1]]}}
-                  {%- else -%}
-                    {{measurement_units[each_id_meas.split(',')[1]]['meas']}}
-                  {%- endif -%}
+              {%- if use_unit[each_math.unique_id][each_id_meas.split(',')[1]] -%}
+                {{use_unit[each_math.unique_id][each_id_meas.split(',')[1]]}}
+              {%- else -%}
+                {{measurement_units[each_id_meas.split(',')[1]]['meas']}}
+              {%- endif -%}
             ',
             data: []
           },
@@ -466,7 +479,7 @@ $(document).ready(function() {
                 {{' ' + measurement_units[each_pid.measurement.split(',')[1]]['unit']|safe}}
               {%- else -%}
                 {%- for each_input in input if each_pid.measurement.split(',')[0] == each_input.unique_id and each_input.device == 'LinuxCommand' -%}
-                  {{' ' + each_input.cmd_measurement_units}}
+                  {{ ' ' + use_unit[each_input.unique_id][each_input.measurements]}}
                 {%- endfor -%}
               {%- endif -%}
             {%- endif -%}
@@ -552,7 +565,7 @@ $(document).ready(function() {
             },
           {% endfor %}
 
-        {% endfor %}
+        {% endfor %}  {# End main for #}
 
         ]
     });

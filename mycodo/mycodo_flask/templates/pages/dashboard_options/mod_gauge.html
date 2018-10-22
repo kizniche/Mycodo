@@ -7,9 +7,9 @@
   </div>
 </div>
 
-<div id="container-gauge-{{each_dashboard.id}}" style="height: {{each_dashboard.height}}px;"></div>
+<div id="container-gauge-{{each_dashboard.id}}" style="padding-bottom: 0.1em; height: {{each_dashboard.height}}px;"></div>
 
-<div class="collapse" id="collapseContainer{{chart_number}}" style="padding: 0.5em; width: calc(100% - 1em)">
+<div class="collapse" id="collapseContainer{{chart_number}}" style="padding: 0.5em;">
 
   <form method="post" action="/dashboard">
     {{form_base.csrf_token}}

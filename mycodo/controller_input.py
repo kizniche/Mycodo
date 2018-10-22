@@ -364,6 +364,7 @@ class InputController(threading.Thread):
                     else:
                         measured_voltage = measurements[channel_key_str]
 
+                    # If ADC instructed to convert voltage, calculate and store new measurement
                     if self.convert_to_unit[each_channel]['measurement']:
                         # Calculate the percentage of the voltage difference
                         percent_diff = ((measured_voltage - float(self.adc_volts_min[each_channel])) /

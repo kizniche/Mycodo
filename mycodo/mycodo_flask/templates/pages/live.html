@@ -55,11 +55,15 @@
         {%- for each_measurement in measurement_list %}
           {% if each_measurement == 'edge' -%}
           liveTextData('{{each_input.unique_id}}', '{{each_measurement}}', '0');
+          {% elif each_measurement == 'adc_channels' -%}
+            {% for each_channel, each_measure_set in use_unit[each_input.unique_id]['adc'].items() %}
+              {% for each_measure, each_unit in each_measure_set.items() %}
+                {%- set measure_string = 'adc_channel_' + each_channel + '_' + each_measure + '_' + each_unit -%}
+          liveTextData('{{each_input.unique_id}}', '{{measure_string}}', {{each_input.period + 1}});
+              {% endfor -%}
+            {% endfor -%}
           {% else -%}
           liveTextData('{{each_input.unique_id}}', '{{each_measurement}}', {{each_input.period + 1}});
-          {% endif -%}
-          {%- if each_measurement == 'voltage' %}
-            liveTextData('{{each_input.unique_id}}', '{{each_input.adc_measure}}', {{each_input.period + 1}});
           {%- endif -%}
         {%- endfor -%}
       {%- endfor -%}
@@ -110,11 +114,12 @@
           {%- endif -%}
         </div>
 
+      {% if each_input.measurements != 'adc_channels' %}
+
         <div class="col-xs-12 col-sm-6 text-right">
           {{_('Measurement')}} | {{_('Timestamp')}}
           <div>
             {% for each_measure in each_input.measurements.split(',') %}
-
               {% if each_measure and each_measure in dict_units and dict_units[each_measure]['meas'] == 'temperature' %}
                 <b><span id="{{each_input.unique_id}}-{{each_measure}}-value">0.0</span> {% if use_unit[each_input.unique_id][each_measure] %}{{dict_units[use_unit[each_input.unique_id][each_measure]]['unit']}}{% else %}{{dict_units[each_measure]['unit']}}{% endif %}
                   {%- if each_measure == 'dewpoint' %} DP
@@ -124,13 +129,28 @@
               {% else %}
                 <b><span id="{{each_input.unique_id}}-{{each_measure}}-value">0.0</span> {% if use_unit[each_input.unique_id][each_measure] and use_unit[each_input.unique_id][each_measure] in dict_units %}{{dict_units[use_unit[each_input.unique_id][each_measure]]['unit']}}{% endif %}</b> ({{dict_measurements[each_measure]['name']}}) | <span id="{{each_input.unique_id}}-{{each_measure}}-time">&lt;{{_('Please wait')}}&gt;</span><br>
               {% endif %}
-
             {% endfor %}
-            {%- if each_input.device in list_devices_adc %}
-              <b><span id="{{each_input.unique_id}}-{{each_input.adc_measure}}-value">0.0</span> {{each_input.adc_measure_units}} {{each_input.adc_measure}}</b> | <span id="{{each_input.unique_id}}-{{each_input.adc_measure}}-time">&lt;{{_('Please wait')}}&gt;</span>
-            {% endif %}
           </div>
         </div>
+
+      {% elif each_input.measurements == 'adc_channels' %}
+
+        <div class="col-xs-12 col-sm-6 text-right">
+          {{_('Measurement')}} | {{_('Timestamp')}}
+        {% for each_channel, each_measure_set in use_unit[each_input.unique_id]['adc'].items() %}
+          {% for each_measure, each_unit in each_measure_set.items() %}
+
+          {% set measure_string = 'adc_channel_' + each_channel + '_' + each_measure + '_' + each_unit %}
+          <div>
+            <b><span id="{{each_input.unique_id}}-{{measure_string}}-value">0.0</span> {{dict_units[each_unit]['unit']}}</b> ({{dict_measurements[each_measure]['name']}}) CH{{each_channel|int + 1}} | <span id="{{each_input.unique_id}}-{{measure_string}}-time">&lt;{{_('Please wait')}}&gt;</span><br>
+          </div>
+
+          {% endfor %}
+        {% endfor %}
+        </div>
+
+      {% endif %}
+
       </div>
 
       {%- for each_pid in pid if each_pid.is_activated and each_pid.measurement.split(',')[0] == each_input.unique_id -%}

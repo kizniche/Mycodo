@@ -312,10 +312,24 @@ class LCDController(threading.Thread):
                         '/.*/',
                         duration_sec=self.lcd_max_age[display_id][i])
                 else:
+                    measurement = self.lcd_line[display_id][i]['measure']
+
+                    # Handle ADC query
+                    if measurement.startswith('adc_channel_'):
+                        if (measurement.split('_')[3] == 'voltage' and
+                                measurement.split('_')[4] == 'volts'):
+                            measurement = 'adc_channel_{chan}'.format(
+                                chan=measurement.split('_')[2])
+                        else:
+                            measurement = 'adc_channel_{chan}_{meas}'.format(
+                                chan=measurement.split('_')[2],
+                                meas=measurement.split('_')[3])
+
                     last_measurement = read_last_influxdb(
                         self.lcd_line[display_id][i]['id'],
-                        self.lcd_line[display_id][i]['measure'],
+                        measurement,
                         duration_sec=self.lcd_max_age[display_id][i])
+
                 if last_measurement:
                     self.lcd_line[display_id][i]['time'] = last_measurement[0]
                     if self.lcd_decimal_places[display_id][i] == 0:
@@ -332,6 +346,7 @@ class LCDController(threading.Thread):
                         self.lcd_line[display_id][i]['measure'],
                         self.lcd_line[display_id][i]['measure_val'], local_timestamp))
                     return True
+
                 else:
                     self.lcd_line[display_id][i]['time'] = None
                     self.lcd_line[display_id][i]['measure_val'] = None

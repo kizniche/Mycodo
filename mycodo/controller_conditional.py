@@ -327,6 +327,17 @@ class ConditionalController(threading.Thread):
             in the past.
         :type duration_sec: int
         """
+        # Handle ADC query
+        if measurement.startswith('adc_channel_'):
+            if (measurement.split('_')[3] == 'voltage' and
+                    measurement.split('_')[4] == 'volts'):
+                measurement = 'adc_channel_{chan}'.format(
+                    chan=measurement.split('_')[2])
+            else:
+                measurement = 'adc_channel_{chan}_{meas}'.format(
+                    chan=measurement.split('_')[2],
+                    meas=measurement.split('_')[3])
+
         last_measurement = read_last_influxdb(
             unique_id, measurement, duration_sec=duration_sec)
 

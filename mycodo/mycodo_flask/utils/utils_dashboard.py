@@ -522,47 +522,57 @@ def graph_y_axes_async(dict_measurements, ids_measures):
 
         # Iterate through each set of ID and measurement of the dashboard element
         for each_id_measure in ids_measures:
-            if len(each_id_measure.split(',')) == 2:
 
-                unique_id = each_id_measure.split(',')[0]
-                measurement = each_id_measure.split(',')[1]
+            if len(each_id_measure.split(',')) > 1 and each_id_measure.split(',')[1].startswith('adc_channel_'):
+                unit = each_id_measure.split(',')[1].split('_')[4]
 
-                # Iterate through each device entry
-                for each_device_entry in each_device:
+                if not y_axes:
+                    y_axes = [unit]
+                elif y_axes and unit not in y_axes:
+                    y_axes.append(unit)
 
-                    # If the ID saved to the dashboard element matches the table entry ID
-                    if each_device_entry.unique_id == unique_id:
+            else:
+                if len(each_id_measure.split(',')) == 2:
 
-                        y_axes = check_func(each_device,
-                                            unique_id,
-                                            y_axes,
-                                            measurement,
-                                            dict_measurements,
-                                            input_dev,
-                                            output,
-                                            math)
+                    unique_id = each_id_measure.split(',')[0]
+                    measurement = each_id_measure.split(',')[1]
 
-            elif len(each_id_measure.split(',')) == 3:
+                    # Iterate through each device entry
+                    for each_device_entry in each_device:
 
-                unique_id = each_id_measure.split(',')[0]
-                measurement = each_id_measure.split(',')[1]
-                unit = each_id_measure.split(',')[2]
+                        # If the ID saved to the dashboard element matches the table entry ID
+                        if each_device_entry.unique_id == unique_id:
 
-                # Iterate through each device entry
-                for each_device_entry in each_device:
+                            y_axes = check_func(each_device,
+                                                unique_id,
+                                                y_axes,
+                                                measurement,
+                                                dict_measurements,
+                                                input_dev,
+                                                output,
+                                                math)
 
-                    # If the ID saved to the dashboard element matches the table entry ID
-                    if each_device_entry.unique_id == unique_id:
+                elif len(each_id_measure.split(',')) == 3:
 
-                        y_axes = check_func(each_device,
-                                            unique_id,
-                                            y_axes,
-                                            measurement,
-                                            dict_measurements,
-                                            input_dev,
-                                            output,
-                                            math,
-                                            unit=unit)
+                    unique_id = each_id_measure.split(',')[0]
+                    measurement = each_id_measure.split(',')[1]
+                    unit = each_id_measure.split(',')[2]
+
+                    # Iterate through each device entry
+                    for each_device_entry in each_device:
+
+                        # If the ID saved to the dashboard element matches the table entry ID
+                        if each_device_entry.unique_id == unique_id:
+
+                            y_axes = check_func(each_device,
+                                                unique_id,
+                                                y_axes,
+                                                measurement,
+                                                dict_measurements,
+                                                input_dev,
+                                                output,
+                                                math,
+                                                unit=unit)
 
     return y_axes
 
