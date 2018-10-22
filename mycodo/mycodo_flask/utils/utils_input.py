@@ -574,7 +574,11 @@ def adc_channel_mod(form_mod):
         channels_list = []
         for each_channel in mod_input.convert_to_unit.split(';'):
             if len(each_channel.split(',')) == 3:
-                if form_mod.adc_saving_channel.data == int(each_channel.split(',')[2]):
+                if (form_mod.adc_saving_channel.data == int(each_channel.split(',')[2]) and
+                        form_mod.selected_measurement_unit.data.split(',')[0] == ''):
+                    channels_list.append(',,{chan}'.format(
+                        chan=each_channel.split(',')[2]))
+                elif form_mod.adc_saving_channel.data == int(each_channel.split(',')[2]):
                     channels_list.append('{meas},{unit},{chan}'.format(
                         meas=form_mod.selected_measurement_unit.data.split(',')[0],
                         unit=form_mod.selected_measurement_unit.data.split(',')[1],
