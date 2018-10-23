@@ -46,6 +46,7 @@ from mycodo.mycodo_flask.utils.utils_general import get_ip_address
 from mycodo.utils.influx import query_string
 from mycodo.utils.system_pi import assure_path_exists
 from mycodo.utils.system_pi import str_is_float
+from mycodo.utils.influx import check_if_adc_measurement
 
 blueprint = Blueprint('routes_general',
                       __name__,
@@ -96,8 +97,7 @@ def camera_img_return_path(camera_unique_id, img_type, filename):
     """Return an image from stills or timelapses"""
     camera = Camera.query.filter(Camera.unique_id == camera_unique_id).first()
     camera_path = assure_path_exists(
-        os.path.join(PATH_CAMERAS, '{uid}'.format(
-            id=camera.id, uid=camera.unique_id)))
+        os.path.join(PATH_CAMERAS, '{uid}'.format(uid=camera.unique_id)))
 
     if img_type in ['still', 'timelapse']:
         path = os.path.join(camera_path, img_type)
@@ -264,15 +264,7 @@ def last_data(input_measure, input_id, input_period):
 
     try:
         # Handle ADC request
-        if input_measure.startswith('adc_channel_'):
-            if (input_measure.split('_')[3] == 'voltage' and
-                    input_measure.split('_')[4] == 'volts'):
-                input_measure = 'adc_channel_{chan}'.format(
-                    chan=input_measure.split('_')[2])
-            else:
-                input_measure = 'adc_channel_{chan}_{meas}'.format(
-                    chan=input_measure.split('_')[2],
-                    meas=input_measure.split('_')[3])
+        input_measure = check_if_adc_measurement(input_measure)
 
         if input_period != '0':
             query_str = query_string(
@@ -334,15 +326,7 @@ def past_data(input_measure, input_id, past_seconds):
         dbcon = influx_db.connection
 
         # Handle ADC request
-        if input_measure.startswith('adc_channel_'):
-            if (input_measure.split('_')[3] == 'voltage' and
-                    input_measure.split('_')[4] == 'volts'):
-                input_measure = 'adc_channel_{chan}'.format(
-                    chan=input_measure.split('_')[2])
-            else:
-                input_measure = 'adc_channel_{chan}_{meas}'.format(
-                    chan=input_measure.split('_')[2],
-                    meas=input_measure.split('_')[3])
+        input_measure = check_if_adc_measurement(input_measure)
 
         try:
             query_str = query_string(
@@ -393,6 +377,9 @@ def export_data(measurement, unique_id, start_seconds, end_seconds):
     end = datetime.datetime.fromtimestamp(float(end_seconds))
     end += utc_offset_timedelta
     end_str = end.strftime('%Y-%m-%dT%H:%M:%S.%fZ')
+
+    # Handle ADC request
+    measurement = check_if_adc_measurement(measurement)
 
     query_str = query_string(
         measurement, unique_id,
@@ -458,15 +445,7 @@ def async_data(measurement, unique_id, start_seconds, end_seconds):
     dbcon = influx_db.connection
 
     # Handle ADC request
-    if measurement.startswith('adc_channel_'):
-        if (measurement.split('_')[3] == 'voltage' and
-                measurement.split('_')[4] == 'volts'):
-            measurement = 'adc_channel_{chan}'.format(
-                chan=measurement.split('_')[2])
-        else:
-            measurement = 'adc_channel_{chan}_{meas}'.format(
-                chan=measurement.split('_')[2],
-                meas=measurement.split('_')[3])
+    measurement = check_if_adc_measurement(measurement)
 
     # Set the time frame to the past year if start/end not specified
     if start_seconds == '0' and end_seconds == '0':
@@ -658,6 +637,10 @@ def return_point_timestamp(measure, dev_id, period):
     current_app.config['INFLUXDB_DATABASE'] = INFLUXDB_DATABASE
     current_app.config['INFLUXDB_TIMEOUT'] = 5
     dbcon = influx_db.connection
+
+    # Handle ADC request
+    measure = check_if_adc_measurement(measure)
+
     query_str = query_string(
         measure, dev_id, value='LAST',
         past_sec=period)
@@ -678,6 +661,7 @@ def return_point_timestamp(measure, dev_id, period):
         return [None, None]
     except Exception as e:
         return [None, None]
+
 
 @blueprint.route('/last_pid/<input_id>/<input_period>')
 @flask_login.login_required

@@ -692,7 +692,7 @@ def get_camera_image_info():
 
     for each_camera in camera:
         camera_path = os.path.join(PATH_CAMERAS, '{uid}'.format(
-            id=each_camera.id, uid=each_camera.unique_id))
+            uid=each_camera.unique_id))
         try:
             latest_still_img_full_path = max(glob.iglob(
                 '{path}/still/Still-{cam_id}-*.jpg'.format(

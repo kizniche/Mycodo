@@ -155,10 +155,10 @@ def conditional_condition_add(form):
             cond_mod = Conditional.query.filter(
                 Conditional.unique_id == form.function_id.data).first()
             if not cond_mod.conditional_statement:
-                new_statement = '{{{{{id}}}}}'.format(
+                new_statement = '{{{id}}}'.format(
                     id=new_condition.unique_id.split('-')[0])
             else:
-                new_statement = '{orig} and {{{{{id}}}}}'.format(
+                new_statement = '{orig} and {{{id}}}'.format(
                     orig=cond_mod.conditional_statement,
                     id=new_condition.unique_id.split('-')[0])
 

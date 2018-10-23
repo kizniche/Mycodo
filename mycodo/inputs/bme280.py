@@ -17,8 +17,8 @@ INPUT_INFORMATION = {
     'input_name': 'BME280',
     'measurements_name': 'Pressure/Humidity/Temperature',
     'measurements_list': ['altitude', 'dewpoint', 'humidity', 'pressure', 'temperature'],
-    'options_enabled': ['i2c_location', 'period', 'convert_unit', 'pre_output'],
-    'options_disabled': ['interface'],
+    'options_enabled': ['period', 'convert_unit', 'pre_output'],
+    'options_disabled': ['interface', 'i2c_location'],
 
     'dependencies_module': [
         ('pip-pypi', 'Adafruit_GPIO', 'Adafruit_GPIO'),

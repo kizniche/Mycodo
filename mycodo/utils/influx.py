@@ -19,6 +19,23 @@ from mycodo.utils.database import db_retrieve_table_daemon
 logger = logging.getLogger("mycodo.influxdb")
 
 
+def check_if_adc_measurement(measurement):
+    if measurement.startswith('adc_channel_'):
+        """
+        Check if measurement is from an analog-to-digital controller and 
+        return proper measurement.
+        """
+        if (measurement.split('_')[3] == 'voltage' and
+                measurement.split('_')[4] == 'volts'):
+            measurement = 'adc_channel_{chan}'.format(
+                chan=measurement.split('_')[2])
+        else:
+            measurement = 'adc_channel_{chan}_{meas}'.format(
+                chan=measurement.split('_')[2],
+                meas=measurement.split('_')[3])
+    return measurement
+
+
 def add_measure_influxdb(unique_id, measurements):
     """
     Add a measurement entries to InfluxDB

@@ -71,6 +71,7 @@ from mycodo.databases.models import PID
 from mycodo.databases.models import Unit
 from mycodo.mycodo_flask.utils.utils_general import use_unit_generate
 from mycodo.utils.database import db_retrieve_table_daemon
+from mycodo.utils.influx import check_if_adc_measurement
 from mycodo.utils.influx import read_last_influxdb
 from mycodo.utils.system_pi import add_custom_measurements
 from mycodo.utils.system_pi import add_custom_units
@@ -315,15 +316,7 @@ class LCDController(threading.Thread):
                     measurement = self.lcd_line[display_id][i]['measure']
 
                     # Handle ADC query
-                    if measurement.startswith('adc_channel_'):
-                        if (measurement.split('_')[3] == 'voltage' and
-                                measurement.split('_')[4] == 'volts'):
-                            measurement = 'adc_channel_{chan}'.format(
-                                chan=measurement.split('_')[2])
-                        else:
-                            measurement = 'adc_channel_{chan}_{meas}'.format(
-                                chan=measurement.split('_')[2],
-                                meas=measurement.split('_')[3])
+                    measurement = check_if_adc_measurement(measurement)
 
                     last_measurement = read_last_influxdb(
                         self.lcd_line[display_id][i]['id'],

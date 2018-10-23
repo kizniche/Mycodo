@@ -119,14 +119,15 @@ class InputController(threading.Thread):
 
             def parse_adc_options(options, number_options=2):
                 dict_options = {}
-                for each_channel in options.split(';'):
-                    if number_options == 2:
-                        dict_options[each_channel.split(',')[1]] = each_channel.split(',')[0]
-                    elif number_options == 3:
-                        dict_options[each_channel.split(',')[2]] = {}
-                        dict_options[each_channel.split(',')[2]]['measurement'] = each_channel.split(',')[0]
-                        dict_options[each_channel.split(',')[2]]['unit'] = each_channel.split(',')[1]
-                return dict_options
+                if options:
+                    for each_channel in options.split(';'):
+                        if number_options == 2:
+                            dict_options[each_channel.split(',')[1]] = each_channel.split(',')[0]
+                        elif number_options == 3:
+                            dict_options[each_channel.split(',')[2]] = {}
+                            dict_options[each_channel.split(',')[2]]['measurement'] = each_channel.split(',')[0]
+                            dict_options[each_channel.split(',')[2]]['unit'] = each_channel.split(',')[1]
+                    return dict_options
 
             self.convert_to_unit = parse_adc_options(input_dev.convert_to_unit, number_options=3)
             self.adc_volts_min = parse_adc_options(input_dev.adc_volts_min)
@@ -353,19 +354,20 @@ class InputController(threading.Thread):
                 for each_channel in self.adc_channels_selected.split(','):
                     channel_key_str = 'adc_channel_{}'.format(each_channel)
 
-                    # Get the voltage difference between min and max volts
-                    diff_voltage = abs(float(self.adc_volts_max[each_channel]) - float(self.adc_volts_min[each_channel]))
-
-                    # Ensure the voltage stays within the min/max bounds
-                    if measurements[channel_key_str] < float(self.adc_volts_min[each_channel]):
-                        measured_voltage = self.adc_volts_min[each_channel]
-                    elif measurements[channel_key_str] > float(self.adc_volts_max[each_channel]):
-                        measured_voltage = float(self.adc_volts_max[each_channel])
-                    else:
-                        measured_voltage = measurements[channel_key_str]
-
                     # If ADC instructed to convert voltage, calculate and store new measurement
                     if self.convert_to_unit[each_channel]['measurement']:
+                        # Get the voltage difference between min and max volts
+                        diff_voltage = abs(
+                            float(self.adc_volts_max[each_channel]) - float(self.adc_volts_min[each_channel]))
+
+                        # Ensure the voltage stays within the min/max bounds
+                        if measurements[channel_key_str] < float(self.adc_volts_min[each_channel]):
+                            measured_voltage = self.adc_volts_min[each_channel]
+                        elif measurements[channel_key_str] > float(self.adc_volts_max[each_channel]):
+                            measured_voltage = float(self.adc_volts_max[each_channel])
+                        else:
+                            measured_voltage = measurements[channel_key_str]
+
                         # Calculate the percentage of the voltage difference
                         percent_diff = ((measured_voltage - float(self.adc_volts_min[each_channel])) /
                                         diff_voltage)

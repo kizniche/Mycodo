@@ -67,6 +67,7 @@ from mycodo.databases.models import PID
 from mycodo.databases.utils import session_scope
 from mycodo.mycodo_client import DaemonControl
 from mycodo.utils.database import db_retrieve_table_daemon
+from mycodo.utils.influx import check_if_adc_measurement
 from mycodo.utils.influx import read_last_influxdb
 from mycodo.utils.influx import write_influxdb_value
 from mycodo.utils.method import calculate_method_setpoint
@@ -594,15 +595,7 @@ class PIDController(threading.Thread):
         # Get latest measurement from influxdb
         try:
             # Handle ADC query
-            if measurement.startswith('adc_channel_'):
-                if (measurement.split('_')[3] == 'voltage' and
-                        measurement.split('_')[4] == 'volts'):
-                    measurement = 'adc_channel_{chan}'.format(
-                        chan=measurement.split('_')[2])
-                else:
-                    measurement = 'adc_channel_{chan}_{meas}'.format(
-                        chan=measurement.split('_')[2],
-                        meas=measurement.split('_')[3])
+            measurement = check_if_adc_measurement(measurement)
 
             self.last_measurement = read_last_influxdb(
                 self.dev_unique_id,

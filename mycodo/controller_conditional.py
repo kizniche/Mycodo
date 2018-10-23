@@ -44,6 +44,7 @@ from mycodo.databases.models import SMTP
 from mycodo.mycodo_client import DaemonControl
 from mycodo.utils.database import db_retrieve_table_daemon
 from mycodo.utils.function_actions import trigger_function_actions
+from mycodo.utils.influx import check_if_adc_measurement
 from mycodo.utils.influx import read_last_influxdb
 
 MYCODO_DB_PATH = 'sqlite:///' + SQL_DATABASE_MYCODO
@@ -279,7 +280,7 @@ class ConditionalController(threading.Thread):
         cond_statement_replaced = cond.conditional_statement
         for each_condition_id, each_value in conditions_check.items():
             cond_statement_replaced = cond_statement_replaced.replace(
-                '{{{{{id}}}}}'.format(id=each_condition_id), str(each_value))
+                '{{{id}}}'.format(id=each_condition_id), str(each_value))
 
         # Set the refractory period
         if self.timer_refractory_period:
@@ -328,15 +329,7 @@ class ConditionalController(threading.Thread):
         :type duration_sec: int
         """
         # Handle ADC query
-        if measurement.startswith('adc_channel_'):
-            if (measurement.split('_')[3] == 'voltage' and
-                    measurement.split('_')[4] == 'volts'):
-                measurement = 'adc_channel_{chan}'.format(
-                    chan=measurement.split('_')[2])
-            else:
-                measurement = 'adc_channel_{chan}_{meas}'.format(
-                    chan=measurement.split('_')[2],
-                    meas=measurement.split('_')[3])
+        measurement = check_if_adc_measurement(measurement)
 
         last_measurement = read_last_influxdb(
             unique_id, measurement, duration_sec=duration_sec)

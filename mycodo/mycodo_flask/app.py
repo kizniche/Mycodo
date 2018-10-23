@@ -81,7 +81,7 @@ def register_extensions(app):
 
     # Limit authentication blueprint requests to 60 per minute
     limiter = Limiter(app, key_func=get_ip_address)
-    limiter.limit("60/minute")(routes_authentication.blueprint)
+    limiter.limit("100/minute")(routes_authentication.blueprint)
 
     # Language translations
     babel = Babel(app)

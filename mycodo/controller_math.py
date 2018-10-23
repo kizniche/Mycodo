@@ -40,6 +40,7 @@ from mycodo.inputs.sensorutils import convert_units
 from mycodo.mycodo_client import DaemonControl
 from mycodo.utils.database import db_retrieve_table_daemon
 from mycodo.utils.influx import add_measure_influxdb
+from mycodo.utils.influx import check_if_adc_measurement
 from mycodo.utils.influx import read_last_influxdb
 from mycodo.utils.influx import read_past_influxdb
 
@@ -390,16 +391,8 @@ class MathController(threading.Thread):
                 input_id = each_input_set.split(',')[0]
                 input_measure = each_input_set.split(',')[1]
 
-                # Handle ADC query
-                if input_measure.startswith('adc_channel_'):
-                    if (input_measure.split('_')[3] == 'voltage' and
-                            input_measure.split('_')[4] == 'volts'):
-                        input_measure = 'adc_channel_{chan}'.format(
-                            chan=input_measure.split('_')[2])
-                    else:
-                        input_measure = 'adc_channel_{chan}_{meas}'.format(
-                            chan=input_measure.split('_')[2],
-                            meas=input_measure.split('_')[3])
+                # Handle ADC request
+                input_measure = check_if_adc_measurement(input_measure)
 
                 last_measurement = read_last_influxdb(
                     input_id,
