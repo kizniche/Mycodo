@@ -4,10 +4,7 @@ import logging
 import time  # used for sleep delay and timestamps
 
 import io  # used to create file streams
-import locket
-import os
 
-from mycodo.config import ATLAS_PH_LOCK_FILE
 from mycodo.utils.system_pi import str_is_float
 
 
@@ -74,39 +71,21 @@ class AtlasScientificI2C:
 
     def query(self, query_str):
         """ Send command to board and read response """
-        lock_acquired = False
-        lock_file_amend = '{lf}.{dev}'.format(lf=ATLAS_PH_LOCK_FILE,
-                                              dev=self.current_addr)
         try:
-            # Set up lock
-            lock = locket.lock_file(lock_file_amend, timeout=120)
-            try:
-                lock.acquire()
-                lock_acquired = True
-            except:
-                self.logger.error("Could not acquire lock. Breaking for future locking.")
-                os.remove(lock_file_amend)
+            # write a command to the board, wait the correct timeout,
+            # and read the response
+            self.write(query_str)
 
-            if lock_acquired:
-                # write a command to the board, wait the correct timeout,
-                # and read the response
-                self.write(query_str)
-
-                # the read and calibration commands require a longer timeout
-                if ((query_str.upper().startswith("R")) or
-                        (query_str.upper().startswith("CAL"))):
-                    time.sleep(self.long_timeout)
-                elif query_str.upper().startswith("SLEEP"):
-                    return "sleep mode"
-                else:
-                    time.sleep(self.short_timeout)
-
-                response = self.read()
-                lock.release()
-                return response
+            # the read and calibration commands require a longer timeout
+            if ((query_str.upper().startswith("R")) or
+                    (query_str.upper().startswith("CAL"))):
+                time.sleep(self.long_timeout)
+            elif query_str.upper().startswith("SLEEP"):
+                return "sleep mode"
             else:
-                self.logger.error("Could not acquire Atlas I2C lock")
+                time.sleep(self.short_timeout)
 
+            return self.read()
         except Exception as err:
             self.logger.debug(
                 "{cls} raised an exception when taking a reading: "

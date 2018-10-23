@@ -43,10 +43,11 @@ from mycodo.mycodo_client import DaemonControl
 from mycodo.mycodo_flask.routes_authentication import clear_cookie_auth
 from mycodo.mycodo_flask.utils import utils_general
 from mycodo.mycodo_flask.utils.utils_general import get_ip_address
+from mycodo.utils.image import generate_thermal_image_from_pixels
+from mycodo.utils.influx import check_if_adc_measurement
 from mycodo.utils.influx import query_string
 from mycodo.utils.system_pi import assure_path_exists
 from mycodo.utils.system_pi import str_is_float
-from mycodo.utils.influx import check_if_adc_measurement
 
 blueprint = Blueprint('routes_general',
                       __name__,
@@ -82,7 +83,6 @@ def page_settings():
 @flask_login.login_required
 def send_note_attachment(filename):
     """Return a file from the note attachment directory"""
-    install_dir = os.path.abspath(INSTALL_DIRECTORY)
     file_path = os.path.join(PATH_NOTE_ATTACHMENTS, filename)
     if file_path is not None:
         try:
@@ -342,6 +342,51 @@ def past_data(input_measure, input_id, past_seconds):
             logger.debug("URL for 'past_data' raised and error: "
                          "{err}".format(err=e))
             return '', 204
+
+
+@blueprint.route('/generate_thermal_image/<unique_id>/<timestamp>')
+@flask_login.login_required
+def generate_thermal_image_from_timestamp(unique_id, timestamp):
+    """Return a file from the note attachment directory"""
+    ts_now = datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
+    camera_path = assure_path_exists(
+        os.path.join(PATH_CAMERAS, '{uid}'.format(uid=unique_id)))
+    filename = 'Still-{uid}-{ts}.jpg'.format(
+        uid=unique_id,
+        ts=ts_now).replace(" ", "_")
+    save_path = assure_path_exists(os.path.join(camera_path, 'thermal'))
+    assure_path_exists(save_path)
+    path_file = os.path.join(save_path, filename)
+
+    current_app.config['INFLUXDB_USER'] = INFLUXDB_USER
+    current_app.config['INFLUXDB_PASSWORD'] = INFLUXDB_PASSWORD
+    current_app.config['INFLUXDB_DATABASE'] = INFLUXDB_DATABASE
+    current_app.config['INFLUXDB_TIMEOUT'] = 5
+    dbcon = influx_db.connection
+
+    input_dev = Input.query.filter(Input.unique_id == unique_id).first()
+    pixels = []
+    success = True
+
+    for each_channel in range(input_dev.adc_channels):
+        measurement = 'adc_channel_{chan}'.format(
+            chan=each_channel)
+        query_str = query_string(measurement, unique_id, ts_str=timestamp)
+        if query_str == 1:
+            logger.error('Invalid query string')
+            success = False
+        else:
+            raw_data = dbcon.query(query_str).raw
+            if not raw_data or 'series' not in raw_data:
+                logger.error('No measurements to export in this time period')
+            else:
+                pixels.append(raw_data['series'][0]['values'][0][1])
+
+    # logger.error("generate_thermal_image_from_timestamp: success: {}, pixels: {}".format(success, pixels))
+
+    generate_thermal_image_from_pixels(pixels, 8, 8, path_file)
+
+    return send_file(path_file, mimetype='image/jpeg')
 
 
 @blueprint.route('/export_data/<measurement>/<unique_id>/<start_seconds>/<end_seconds>')

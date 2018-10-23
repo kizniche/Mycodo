@@ -26,7 +26,7 @@ import logging
 
 import os
 
-logger = logging.getLogger("mycodo.input_parser")
+logger = logging.getLogger("mycodo.utils.inputs")
 
 
 def list_devices_using_interface(interface):

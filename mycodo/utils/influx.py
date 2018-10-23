@@ -103,7 +103,7 @@ def format_influxdb_data(device_id, measure_type, value, timestamp=None):
 
 
 def query_string(measurement, unique_id, value=None,
-                 start_str=None, end_str=None,
+                 ts_str=None, start_str=None, end_str=None,
                  past_sec=None, group_sec=None, limit=None):
     """Generate influxdb query string"""
     query = "SELECT "
@@ -118,6 +118,8 @@ def query_string(measurement, unique_id, value=None,
 
     query += " FROM {meas} WHERE device_id='{id}'".format(
         meas=measurement, id=unique_id)
+    if ts_str:
+        query += " AND time = '{ts}'".format(ts=ts_str)
     if start_str:
         query += " AND time >= '{start}'".format(start=start_str)
     if end_str:

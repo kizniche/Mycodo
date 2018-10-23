@@ -225,9 +225,9 @@ def page_camera():
 
     # Get the full path and timestamps of latest still and time-lapse images
     (latest_img_still_ts,
-    latest_img_still,
-    latest_img_tl_ts,
-    latest_img_tl) = utils_general.get_camera_image_info()
+     latest_img_still,
+     latest_img_tl_ts,
+     latest_img_tl) = utils_general.get_camera_image_info()
 
     time_now = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
 
