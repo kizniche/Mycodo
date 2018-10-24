@@ -3,6 +3,7 @@ import calendar
 import datetime
 import logging
 import subprocess
+import time
 from importlib import import_module
 
 import flask_login
@@ -368,10 +369,16 @@ def generate_thermal_image_from_timestamp(unique_id, timestamp):
     pixels = []
     success = True
 
+    start = int(int(timestamp) / 1000.0)  # Round down
+    end = start + 1  # Round up
+
+    start_timestamp = time.strftime('%Y-%m-%dT%H:%M:%S.000000000Z', time.gmtime(start))
+    end_timestamp = time.strftime('%Y-%m-%dT%H:%M:%S.000000000Z', time.gmtime(end))
+
     for each_channel in range(input_dev.adc_channels):
         measurement = 'adc_channel_{chan}'.format(
             chan=each_channel)
-        query_str = query_string(measurement, unique_id, ts_str=timestamp)
+        query_str = query_string(measurement, unique_id, start_str=start_timestamp, end_str=end_timestamp)
         if query_str == 1:
             logger.error('Invalid query string')
             success = False
@@ -379,14 +386,17 @@ def generate_thermal_image_from_timestamp(unique_id, timestamp):
             raw_data = dbcon.query(query_str).raw
             if not raw_data or 'series' not in raw_data:
                 logger.error('No measurements to export in this time period')
+                success = False
             else:
                 pixels.append(raw_data['series'][0]['values'][0][1])
 
     # logger.error("generate_thermal_image_from_timestamp: success: {}, pixels: {}".format(success, pixels))
 
-    generate_thermal_image_from_pixels(pixels, 8, 8, path_file)
-
-    return send_file(path_file, mimetype='image/jpeg')
+    if success:
+        generate_thermal_image_from_pixels(pixels, 8, 8, path_file)
+        return send_file(path_file, mimetype='image/jpeg')
+    else:
+        return "Could not generate image"
 
 
 @blueprint.route('/export_data/<measurement>/<unique_id>/<start_seconds>/<end_seconds>')

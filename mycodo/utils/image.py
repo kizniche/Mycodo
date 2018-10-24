@@ -27,15 +27,16 @@ logger = logging.getLogger("mycodo.utils.image")
 
 
 def generate_thermal_image_from_pixels(
-        pixels, nx, ny, path_file, scale=25, temp_min=None, temp_max=None):
+        pixels, nx, ny, path_file, rotate_ccw=270, scale=25, temp_min=None, temp_max=None):
     """ Generate and save image from list of pixels """
     from colour import Color
     from PIL import Image
     from PIL import ImageDraw
 
-    if pixels != nx * ny:
+    if len(pixels) != nx * ny:
         logger.error("{nx} * {ny} does not equal {px}".format(
-            nx=nx, ny=ny, px=pixels))
+            nx=nx, ny=ny, px=len(pixels)))
+        return
 
     # output image buffer
     image = Image.new("RGB", (nx, ny), "white")
@@ -62,6 +63,9 @@ def generate_thermal_image_from_pixels(
     for ix in range(nx):
         for iy in range(ny):
             draw.point([(ix, iy % nx)], fill=colors[constrain(int(pixels[ix + nx * iy]), 0, COLORDEPTH - 1)])
+
+    if rotate_ccw:
+        image = image.rotate(rotate_ccw)
 
     # scale and save
     image.resize((nx * scale, ny * scale), Image.BICUBIC).save(path_file)

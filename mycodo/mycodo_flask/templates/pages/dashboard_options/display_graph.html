@@ -77,26 +77,6 @@
                {%- endfor -%}],
     {%- endif -%}
 
-    tooltip: {
-      shared: true,
-      formatter: function(){
-        var d = new Date(this.x);
-        if (this.point) {
-          return '<b>'+ Highcharts.dateFormat('%B %e, %Y %H:%M:%S.', this.x) + d.getMilliseconds()
-               + '</b><br/>' + this.series.name
-               + '<br/>' + this.point.title
-               + '<br/>' + this.point.text;
-        }
-        else {
-          var s = '<b>' + Highcharts.dateFormat('%B %e, %Y %H:%M:%S.', this.x) + d.getMilliseconds() + '</b>';
-          $.each(this.points, function(i, point) {
-              s += '<br/><span style="color:' + point.color + '">\u25CF</span> ' + point.series.name + ': ' + Highcharts.numberFormat(point.y, this.series.tooltipOptions.valueDecimals) + ' ' + this.series.tooltipOptions.valueSuffix;
-          });
-          return s;
-        }
-      }
-    },
-
     title: {
       text: '{% if each_dashboard.enable_title %}{{each_dashboard.name}}{% endif %}'
     },
@@ -203,6 +183,67 @@
       href: "https://github.com/kizniche/Mycodo",
       text: "Mycodo"
     },
+
+    tooltip: {
+      shared: true,
+      formatter: function(){
+        var d = new Date(this.x);
+        if (this.point) {
+          return '<b>'+ Highcharts.dateFormat('%B %e, %Y %H:%M:%S.', this.x) + d.getMilliseconds()
+               + '</b><br/>' + this.series.name
+               + '<br/>' + this.point.title
+               + '<br/>' + this.point.text;
+        }
+        else {
+          var s = '<b>' + Highcharts.dateFormat('%B %e, %Y %H:%M:%S.', this.x) + d.getMilliseconds() + '</b>';
+          $.each(this.points, function(i, point) {
+              s += '<br/><span style="color:' + point.color + '">\u25CF</span> ' + point.series.name + ': ' + Highcharts.numberFormat(point.y, this.series.tooltipOptions.valueDecimals) + ' ' + this.series.tooltipOptions.valueSuffix;
+          });
+          return s;
+        }
+      }
+    },
+
+{#    // Generate  thermal image from pixel data#}
+{#    // point click event opens image in a new window#}
+{#    plotOptions: {#}
+{#      series: {#}
+{#        cursor: 'pointer',#}
+{#        point: {#}
+{#          events: {#}
+{#            click: function () {#}
+{#              URL = '/generate_thermal_image/f36ce034-3129-456d-b877-ff0d5587e375/' + this.x;#}
+{#              window.open(URL, "_blank");#}
+{#            }#}
+{#          }#}
+{#        }#}
+{#      }#}
+{#    },#}
+
+{#    plotOptions: {#}
+{#      series: {#}
+{#        cursor: 'pointer',#}
+{#        point: {#}
+{#          events: {#}
+{#            click: function(e){#}
+{#              hs.htmlExpand(null, {#}
+{#                pageOrigin: {#}
+{#                  x: e.pageX || e.clientX,#}
+{#                  y: e.pageY || e.clientY#}
+{#                },#}
+{#                headingText: this.series.name,#}
+{#                maincontentText: '<img src="/generate_thermal_image/f36ce034-3129-456d-b877-ff0d5587e375/' + this.x + '">',#}
+{#                width: 215,#}
+{#                height: 255,#}
+{#              });#}
+{#            }#}
+{#          }#}
+{#        },#}
+{#        marker: {#}
+{#          lineWidth: 1#}
+{#        }#}
+{#      }#}
+{#    },#}
 
     series: [
     {% for each_input in input -%}

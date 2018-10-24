@@ -6,14 +6,20 @@
 
 {% block head %}
 
-  <script type="text/javascript" src="/static/js/highstock.src.js"></script>
+  <script type="text/javascript" src="/static/js/highstock.js"></script>
   <script type="text/javascript" src="/static/js/highcharts-more.js"></script>
-  <script type="text/javascript" src="/static/js/modules/solid-gauge.js"></script>
+
+  <script type="text/javascript" src="/static/js/modules/data.js"></script>
   <script type="text/javascript" src="/static/js/modules/exporting.js"></script>
-  <script type="text/javascript" src="/static/js/modules/canvas-tools.js"></script>
-  <script type="text/javascript" src="/static/js/modules/export-csv.js"></script>
-  <script type="text/javascript" src="/static/js/modules/jspdf.min.js"></script>
-  <script type="text/javascript" src="/static/js/modules/highcharts-export-clientside.js"></script>
+  <script type="text/javascript" src="/static/js/modules/export-data.js"></script>
+  <script type="text/javascript" src="/static/js/modules/offline-exporting.js"></script>
+
+  {# Graph popup effect#}
+  <script type="text/javascript" src="/static/js/modules/highslide-full.js"></script>
+  <script type="text/javascript" src="/static/js/modules/highslide.config.js"></script>
+  <link href="/static/css/highslide.css" rel="stylesheet">
+
+  <script type="text/javascript" src="/static/js/modules/solid-gauge.js"></script>
 
   <script type="text/javascript" src="/static/js/multiselect.min.js"></script>
 
