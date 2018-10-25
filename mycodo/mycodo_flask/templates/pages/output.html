@@ -126,16 +126,13 @@
     );
   }
 
-  function liveGPIOData() {
-    setInterval(function () {
-      gpioState();
-    }, 5000);  // Refresh duration in milliseconds
-  }
-  
   $(function() {
     gpioState();  // Update when page first loads
-    liveGPIOData();  // Update every 5 seconds
+    setInterval(function () {  // Refresh every 5 seconds
+      gpioState();
+    }, 5000);
   });
+
 </script>
 {% endblock %}
 
