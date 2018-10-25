@@ -131,20 +131,11 @@
       gpioState();
     }, 5000);  // Refresh duration in milliseconds
   }
-
-  {% set output_has_gpio = [] %}
-  {% for each_output in output %}
-    {% if each_output.pin and -1 < each_output.pin < 40 -%}
-      {% do output_has_gpio.append(1) %}
-    {% endif %}
-  {%- endfor -%}
-
-  {% if output_has_gpio -%}
+  
   $(function() {
     gpioState();  // Update when page first loads
     liveGPIOData();  // Update every 5 seconds
   });
-  {% endif %}
 </script>
 {% endblock %}
 
