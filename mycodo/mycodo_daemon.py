@@ -224,8 +224,9 @@ def mycodo_service(mycodo):
             return mycodo.output_state(output_id)
 
         @staticmethod
-        def exposed_output_on(output_id, duration=0.0, min_off=0.0,
-                             duty_cycle=0.0, trigger_conditionals=True):
+        def exposed_output_on(
+                output_id, duration=0.0, min_off=0.0,
+                duty_cycle=0.0, trigger_conditionals=True):
             """Turns output on from the client"""
             return mycodo.output_on(output_id,
                                     duration=duration,
@@ -811,18 +812,21 @@ class DaemonController:
         :type trigger_conditionals: bool
         """
         try:
-            self.controller['Output'].output_on_off(
+            return_status = self.controller['Output'].output_on_off(
                 output_id,
                 'off',
                 trigger_conditionals=trigger_conditionals)
-            return "Turned off"
+            if return_status:
+                return "Error"
+            else:
+                return "Turned off"
         except Exception as except_msg:
             message = "Could not turn output off:" \
                       " {err}".format(err=except_msg)
             self.logger.exception(message)
 
     def output_on(self, output_id, duration=0.0, min_off=0.0,
-                 duty_cycle=0.0, trigger_conditionals=True):
+                  duty_cycle=0.0, trigger_conditionals=True):
         """
         Turn output on using default output controller
 
@@ -832,20 +836,23 @@ class DaemonController:
         :type duration: float
         :param min_off: Don't turn on if not off for at least this duration (0 = disabled)
         :type min_off: float
-        :param duty_cycle: PWM duty cycle (0-100)
+        :param duty_cycle: PWM duty cycle % (0-100)
         :type duty_cycle: float
         :param trigger_conditionals: bool
         :type trigger_conditionals: Indicate whether to trigger conditional statements
         """
         try:
-            self.controller['Output'].output_on_off(
+            return_status = self.controller['Output'].output_on_off(
                 output_id,
                 'on',
                 duration=duration,
                 min_off=min_off,
                 duty_cycle=duty_cycle,
                 trigger_conditionals=trigger_conditionals)
-            return "Turned on"
+            if return_status:
+                return "Error"
+            else:
+                return "Turned on"
         except Exception as except_msg:
             message = "Could not turn output on:" \
                       " {err}".format(err=except_msg)
