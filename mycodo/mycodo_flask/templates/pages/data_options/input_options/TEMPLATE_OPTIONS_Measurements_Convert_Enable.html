@@ -1,0 +1,10 @@
+{% if 'measurements_convert' in dict_inputs[each_input.device]['options_enabled'] %}
+
+<div class="col-auto">
+  {{form_mod_input.measurements_convert_enabled.label(class_='control-label')}}
+  <div class="input-group-text">
+    <input id="measurements_convert_enabled" name="measurements_convert_enabled" type="checkbox" title="{{tooltips_input['measurements_convert_enabled']['phrase']}}" value="y"{% if each_input.measurements_convert_enabled %} checked{% endif %}>
+  </div>
+</div>
+
+{% endif %}

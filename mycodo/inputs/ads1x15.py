@@ -7,10 +7,20 @@ INPUT_INFORMATION = {
     'input_manufacturer': 'Texas Instruments',
     'input_name': 'ADS1x15',
     'measurements_name': 'Voltage (Analog-to-Digital Converter)',
-    'measurements_list': ['adc_channels'],
-    'options_enabled': ['adc_channels', 'adc_gain', 'adc_options', 'period', 'pre_output'],
+    'measurements_dict': ['channel_{}'.format(i) for i in range(4)],  # 4 Channels
+    'channels': 4,
+    'options_enabled': [
+        'measurements_select',
+        'channels_convert',
+        'adc_gain',
+        'period',
+        'pre_output'
+    ],
     'options_disabled': ['interface', 'i2c_location'],
 
+    'measurements_convert_enabled': True,
+    'channels_measurement': 'electrical_potential',
+    'channels_unit': 'V',
     'dependencies_module': [
         ('pip-pypi', 'Adafruit_GPIO', 'Adafruit_GPIO'),
         ('pip-pypi', 'Adafruit_ADS1x15', 'Adafruit_ADS1x15')
@@ -18,20 +28,18 @@ INPUT_INFORMATION = {
     'interfaces': ['I2C'],
     'i2c_location': ['0x48', '0x49', '0x4A', '0x4B'],
     'i2c_address_editable': False,
-    'analog_to_digital_converter': True,
-    'adc_channels': 4,
     'adc_gain': [(1, '1'),
                  (2, '2'),
                  (3, '3'),
                  (4, '4'),
                  (8, '8'),
                  (16, '16')],
-    'adc_volts_min': -4.096,
-    'adc_volts_max': 4.096
+    'scale_from_min': -4.096,
+    'scale_from_max': 4.096
 }
 
 
-class ADCModule(object):
+class ChannelModule(object):
     """ ADC Read """
     def __init__(self, input_dev, testing=False):
         self.logger = logging.getLogger('mycodo.ads1x15')
@@ -41,11 +49,11 @@ class ADCModule(object):
         self.i2c_address = int(str(input_dev.location), 16)
         self.i2c_bus = input_dev.i2c_bus
         self.adc_gain = input_dev.adc_gain
-        self.adc_channels = input_dev.adc_channels
+        self.channels = input_dev.channels
 
-        self.adc_channels_selected = []
-        for each_channel in input_dev.adc_channels_selected.split(','):
-            self.adc_channels_selected.append(int(each_channel))
+        self.measurements_selected = []
+        for each_channel in input_dev.measurements_selected.split(','):
+            self.measurements_selected.append(int(each_channel))
 
         if not testing:
             import Adafruit_ADS1x15
@@ -87,8 +95,8 @@ class ADCModule(object):
         self._voltages = None
         voltages_dict = {}
 
-        for each_channel in self.adc_channels_selected:
-            voltages_dict['adc_channel_{}'.format(each_channel)] = self.adc.read_adc(
+        for each_channel in self.measurements_selected:
+            voltages_dict['channel_{}'.format(each_channel)] = self.adc.read_adc(
                 each_channel, gain=self.adc_gain) / 10000.0
 
         if voltages_dict:
@@ -128,8 +136,8 @@ if __name__ == "__main__":
     settings.location = '0x48'
     settings.i2c_bus = 1
     settings.adc_gain = 1
-    settings.adc_channels = 4
-    settings.adc_channels_selected = '0,1,2,3'
+    settings.channels = 4
+    settings.measurements_selected = '0,1,2,3'
 
     ads = ADCModule(settings)
     print("Voltages: {}".format(ads.next()))

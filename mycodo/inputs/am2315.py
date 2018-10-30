@@ -40,7 +40,7 @@ INPUT_INFORMATION = {
     'input_manufacturer': 'AOSONG',
     'input_name': 'AM2315',
     'measurements_name': 'Humidity/Temperature',
-    'measurements_list': ['dewpoint', 'humidity', 'temperature'],
+    'measurements_dict': ['dewpoint', 'humidity', 'temperature'],
     'options_enabled': ['period', 'convert_unit', 'pre_output'],
     'options_disabled': ['interface', 'i2c_location'],
 

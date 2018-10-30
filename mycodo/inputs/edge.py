@@ -9,7 +9,7 @@ INPUT_INFORMATION = {
     'input_manufacturer': 'Mycodo',
     'input_name': 'Edge',
     'measurements_name': 'Rising/Falling Edge',
-    'measurements_list': ['edge'],
+    'measurements_dict': ['edge'],
     'options_enabled': ['gpio_location', 'period', 'pre_output'],
     'options_disabled': ['interface'],
 

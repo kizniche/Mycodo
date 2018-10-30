@@ -13,6 +13,7 @@ from flask_babel import gettext
 from mycodo.config_devices_units import MEASUREMENTS
 from mycodo.databases.models import DisplayOrder
 from mycodo.databases.models import Input
+from mycodo.databases.models import InputMeasurements
 from mycodo.databases.models import PID
 from mycodo.mycodo_flask.extensions import db
 from mycodo.mycodo_flask.utils.utils_general import add_display_order
@@ -85,38 +86,9 @@ def input_add(form_add, request_form):
         else:
             new_input.name = 'Input Name'
 
-        if ('measurements_list' in dict_inputs[input_name] and
-                dict_inputs[input_name]['measurements_list'] != []):
-            new_input.measurements = ",".join(dict_inputs[input_name]['measurements_list'])
-        elif input_name == 'LinuxCommand':
-            pass
-        else:
-            error.append("No measurements defined for this input.")
-
         #
         # Set default values for new input being added
         #
-
-        # Set the default measurement values
-        list_units = []
-        if 'measurements_list' in dict_inputs[input_name]:
-            for each_measurement in dict_inputs[input_name]['measurements_list']:
-
-                if each_measurement == 'adc_channels':
-                    for each_channel in range(dict_inputs[input_name]['adc_channels']):
-                        entry = ',,{chan}'.format(
-                            chan=each_channel)
-                        list_units.append(entry)
-                else:
-                    if each_measurement in MEASUREMENTS:
-                        entry = '{measure},{unit}'.format(
-                            measure=each_measurement,
-                            unit=MEASUREMENTS[each_measurement]['units'][0])
-                        list_units.append(entry)
-                    else:
-                        error.append("Measurement '{measure}' not recognized.".format(
-                            measure=each_measurement))
-            new_input.convert_to_unit = ";".join(list_units)
 
         # input add options
         if input_name in dict_inputs:
@@ -170,6 +142,8 @@ def input_add(form_add, request_form):
 
             if dict_has_value('period'):
                 new_input.period = dict_inputs[input_name]['period']
+            if dict_has_value('measurements_convert_enabled'):
+                new_input.measurements_convert_enabled = dict_inputs[input_name]['measurements_convert_enabled']
 
             # Server Ping options
             if dict_has_value('times_check'):
@@ -201,35 +175,6 @@ def input_add(form_add, request_form):
                     new_input.adc_sample_speed = dict_inputs[input_name]['adc_sample_speed'][0]
                 elif len(dict_inputs[input_name]['adc_sample_speed']) > 1:
                     new_input.adc_sample_speed = dict_inputs[input_name]['adc_sample_speed'][0][0]
-
-            # ADC channel-specific options
-            try:
-                if dict_has_value('adc_channels'):
-                    new_input.adc_channels = dict_inputs[input_name]['adc_channels']
-                    channels_selected_list = []
-                    for i in range(dict_inputs[input_name]['adc_channels']):
-                        channels_selected_list.append(str(i))
-                    new_input.adc_channels_selected = ','.join(channels_selected_list)
-
-                def adc_options_generate(option_value):
-                    list_adc_options = []
-                    for each_chan in range(dict_inputs[input_name]['adc_channels']):
-                        entry = '{value},{chan}'.format(
-                            value=option_value,
-                            chan=each_chan)
-                        list_adc_options.append(entry)
-                    return ";".join(list_adc_options)
-
-                if dict_has_value('adc_volts_min'):
-                    new_input.adc_volts_min = adc_options_generate(dict_inputs[input_name]['adc_volts_min'])
-                if dict_has_value('adc_volts_max'):
-                    new_input.adc_volts_max = adc_options_generate(dict_inputs[input_name]['adc_volts_max'])
-
-                new_input.adc_units_min = adc_options_generate(0)
-                new_input.adc_units_max = adc_options_generate(10)
-                new_input.adc_inverse_unit_scale = adc_options_generate(False)
-            except:
-                logger.exception(1)
 
             # Linux command
             if dict_has_value('cmd_command'):
@@ -288,6 +233,22 @@ def input_add(form_add, request_form):
                     display_order, new_input.unique_id)
                 db.session.commit()
 
+                if ('measurements_dict' in dict_inputs[input_name] and
+                        dict_inputs[input_name]['measurements_dict'] != []):
+                    for each_measurement, each_measurement_data in dict_inputs[input_name]['measurements_dict'].items():
+                        for each_unit, number_channels in each_measurement_data.items():
+                            for each_channel in range(number_channels):
+                                new_measurement = InputMeasurements()
+                                new_measurement.input_id = new_input.unique_id
+                                new_measurement.measurement = each_measurement
+                                new_measurement.unit = each_unit
+                                new_measurement.channel = each_channel
+                                if number_channels == 1:
+                                    new_measurement.single_channel = True
+                                else:
+                                    new_measurement.single_channel = False
+                                new_measurement.save()
+
                 flash(gettext(
                     "%(type)s Input with ID %(id)s (%(uuid)s) successfully added",
                     type=input_name,
@@ -321,8 +282,7 @@ def input_mod(form_mod, request_form):
 
         if mod_input.is_activated:
             error.append(gettext(
-                "Deactivate sensor controller before modifying its "
-                "settings"))
+                "Deactivate controller before modifying its settings"))
 
         if (mod_input.device == 'AM2315' and
                 form_mod.period.data < 7):
@@ -364,7 +324,7 @@ def input_mod(form_mod, request_form):
         else:
             mod_input.pre_output_id = None
 
-        if mod_input.device == 'LinuxCommand' and mod_input.measurements != 'adc_channels':
+        if mod_input.device == 'LinuxCommand' and not mod_input.measurements.startswith('channel_'):
             mod_input.measurements = form_mod.selected_measurement_unit.data.split(',')[0]
 
         if mod_input.device == 'LinuxCommand':
@@ -406,67 +366,8 @@ def input_mod(form_mod, request_form):
         # Bluetooth options
         mod_input.bt_adapter = form_mod.bt_adapter.data
 
-        # ADC options
-        if mod_input.adc_channels_selected != ','.join(form_mod.adc_channels_selected.data):
-            mod_input.adc_channels_selected = ','.join(form_mod.adc_channels_selected.data)
-
-            old_channels_dict = {}
-            for each_old_channel in mod_input.convert_to_unit.split(';'):
-                if len(each_old_channel.split(',')) == 3:
-                    old_channels_dict[each_old_channel.split(',')[2]] = '{meas},{unit},{chan}'.format(
-                        meas=each_old_channel.split(',')[0],
-                        unit=each_old_channel.split(',')[1],
-                        chan=each_old_channel.split(',')[2])
-
-            new_channels_dict = {}
-            for each_channel_new in form_mod.adc_channels_selected.data:
-                if each_channel_new in old_channels_dict:
-                    new_channels_dict[each_channel_new] = old_channels_dict[each_channel_new]
-                else:
-                    new_channels_dict[each_channel_new] = 'voltage,volts,{chan}'.format(
-                        chan=each_channel_new)
-
-            new_channels_list = []
-            for each_channel in new_channels_dict:
-                new_channels_list.append(new_channels_dict[each_channel])
-
-            mod_input.convert_to_unit = ';'.join(new_channels_list)
-
-            def adc_save_single_mod(saved_data, form_data, default_value):
-                old_chan_dict = {}
-                for each_old_chan in saved_data.split(';'):
-                    if len(each_old_chan.split(',')) == 2:
-                        old_chan_dict[each_old_chan.split(',')[1]] = '{value},{chan}'.format(
-                            value=each_old_chan.split(',')[0],
-                            chan=each_old_chan.split(',')[1])
-
-                new_chan_dict = {}
-                for each_chan_new in form_mod.adc_channels_selected.data:
-                    if each_chan_new in old_chan_dict:
-                        new_chan_dict[each_chan_new] = old_chan_dict[each_chan_new]
-                    else:
-                        new_chan_dict[each_chan_new] = '{value},{chan}'.format(
-                            value=default_value,
-                            chan=each_chan_new)
-
-                new_chan_list = []
-                for each_chan in new_chan_dict:
-                    new_chan_list.append(new_chan_dict[each_chan])
-
-                return ';'.join(new_chan_list)
-
-            mod_input.adc_volts_min = adc_save_single_mod(
-                mod_input.adc_volts_min, form_mod.adc_volts_min.data,
-                dict_inputs[mod_input.device]['adc_volts_min'])
-            mod_input.adc_volts_max = adc_save_single_mod(
-                mod_input.adc_volts_max, form_mod.adc_volts_max.data,
-                dict_inputs[mod_input.device]['adc_volts_min'])
-            mod_input.adc_units_min = adc_save_single_mod(
-                mod_input.adc_units_min, form_mod.adc_units_min.data, 0)
-            mod_input.adc_units_max = adc_save_single_mod(
-                mod_input.adc_units_max, form_mod.adc_units_max.data, 10)
-            mod_input.adc_inverse_unit_scale = adc_save_single_mod(
-                mod_input.adc_inverse_unit_scale, form_mod.adc_inverse_unit_scale.data, False)
+        # Channel options
+        mod_input.measurements_convert_enabled = form_mod.measurements_convert_enabled.data
 
         mod_input.adc_gain = form_mod.adc_gain.data
         mod_input.adc_resolution = form_mod.adc_resolution.data
@@ -561,59 +462,34 @@ def input_mod(form_mod, request_form):
     flash_success_errors(error, action, url_for('routes_page.page_data'))
 
 
-def adc_channel_mod(form_mod):
+def measurement_mod(form):
     action = '{action} {controller}'.format(
         action=gettext("Modify"),
-        controller=gettext("Channel"))
+        controller=gettext("Measurement"))
     error = []
 
     try:
-        mod_input = Input.query.filter(
-            Input.unique_id == form_mod.input_id.data).first()
+        mod_meas = InputMeasurements.query.filter(
+            InputMeasurements.unique_id == form.input_measurement_id.data).first()
 
-        channels_list = []
-        for each_channel in mod_input.convert_to_unit.split(';'):
-            if len(each_channel.split(',')) == 3:
-                if (form_mod.adc_saving_channel.data == int(each_channel.split(',')[2]) and
-                        form_mod.selected_measurement_unit.data.split(',')[0] == ''):
-                    channels_list.append(',,{chan}'.format(
-                        chan=each_channel.split(',')[2]))
-                elif form_mod.adc_saving_channel.data == int(each_channel.split(',')[2]):
-                    channels_list.append('{meas},{unit},{chan}'.format(
-                        meas=form_mod.selected_measurement_unit.data.split(',')[0],
-                        unit=form_mod.selected_measurement_unit.data.split(',')[1],
-                        chan=each_channel.split(',')[2]))
-                else:
-                    channels_list.append('{meas},{unit},{chan}'.format(
-                        meas=each_channel.split(',')[0],
-                        unit=each_channel.split(',')[1],
-                        chan=each_channel.split(',')[2]))
-        mod_input.convert_to_unit = ';'.join(channels_list)
+        mod_input = Input.query.filter(Input.unique_id == mod_meas.input_id).first()
+        if mod_input.is_activated:
+            error.append(gettext(
+                "Deactivate controller before modifying its settings"))
 
-        def adc_save_single(saved_data, form_data):
-            def_chan_list = []
-            for def_each_chan in saved_data.split(';'):
-                if len(def_each_chan.split(',')) == 2:
-                    if form_mod.adc_saving_channel.data == int(def_each_chan.split(',')[1]):
-                        def_chan_list.append('{val},{chan}'.format(
-                            val=form_data,
-                            chan=def_each_chan.split(',')[1]))
-                    else:
-                        def_chan_list.append('{val},{chan}'.format(
-                            val=def_each_chan.split(',')[0],
-                            chan=def_each_chan.split(',')[1]))
-            return ';'.join(def_chan_list)
+        if form.rescaled_measurement_unit.data != '' and ',' in form.rescaled_measurement_unit.data:
+            mod_meas.rescaled_measurement = form.rescaled_measurement_unit.data.split(',')[0]
+            mod_meas.rescaled_unit = form.rescaled_measurement_unit.data.split(',')[1]
 
-        mod_input.adc_volts_min = adc_save_single(
-            mod_input.adc_volts_min, form_mod.adc_volts_min.data)
-        mod_input.adc_volts_max = adc_save_single(
-            mod_input.adc_volts_max, form_mod.adc_volts_max.data)
-        mod_input.adc_units_min = adc_save_single(
-            mod_input.adc_units_min, form_mod.adc_units_min.data)
-        mod_input.adc_units_max = adc_save_single(
-            mod_input.adc_units_max, form_mod.adc_units_max.data)
-        mod_input.adc_inverse_unit_scale = adc_save_single(
-            mod_input.adc_inverse_unit_scale, form_mod.adc_inverse_unit_scale.data)
+        mod_meas.scale_from_min = form.scale_from_min.data
+        mod_meas.scale_from_max = form.scale_from_max.data
+        mod_meas.scale_to_min = form.scale_to_min.data
+        mod_meas.scale_to_max = form.scale_to_max.data
+        mod_meas.invert_scale = form.invert_scale.data
+
+        if form.convert_to_measurement_unit.data != '' and ',' in form.convert_to_measurement_unit.data:
+            mod_meas.converted_measurement = form.convert_to_measurement_unit.data.split(',')[0]
+            mod_meas.converted_unit = form.convert_to_measurement_unit.data.split(',')[1]
 
         if not error:
             db.session.commit()
@@ -636,9 +512,16 @@ def input_del(form_mod):
     try:
         input_dev = Input.query.filter(
             Input.unique_id == input_id).first()
+
         if input_dev.is_activated:
             input_deactivate_associated_controllers(input_id)
             controller_activate_deactivate('deactivate', 'Input', input_id)
+
+        input_measurements = InputMeasurements.query.filter(
+            InputMeasurements.input_id == input_id).all()
+
+        for each_measurement in input_measurements:
+            delete_entry_with_id(InputMeasurements, each_measurement.unique_id)
 
         delete_entry_with_id(Input, input_id)
         try:

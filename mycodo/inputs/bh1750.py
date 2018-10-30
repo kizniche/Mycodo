@@ -15,7 +15,7 @@ INPUT_INFORMATION = {
     'input_manufacturer': 'ROHM',
     'input_name': 'BH1750',
     'measurements_name': 'Light',
-    'measurements_list': ['light'],
+    'measurements_dict': ['light'],
     'options_enabled': ['i2c_location', 'period', 'resolution', 'sensitivity', 'pre_output'],
     'options_disabled': ['interface'],
 

@@ -11,7 +11,7 @@ INPUT_INFORMATION = {
     'input_manufacturer': 'Mycodo',
     'input_name': 'Linux Command',
     'measurements_name': 'Return Value',
-    'measurements_list': [],
+    'measurements_dict': [],
     'options_enabled': ['period', 'cmd_command', 'measurement_units', 'convert_unit', 'pre_output'],
     'options_disabled': ['interface'],
 

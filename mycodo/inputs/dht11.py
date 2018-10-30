@@ -15,7 +15,7 @@ INPUT_INFORMATION = {
     'input_manufacturer': 'AOSONG',
     'input_name': 'DHT11',
     'measurements_name': 'Humidity/Temperature',
-    'measurements_list': ['dewpoint', 'humidity', 'temperature'],
+    'measurements_dict': ['dewpoint', 'humidity', 'temperature'],
     'options_enabled': ['gpio_location', 'period', 'convert_unit', 'pre_output'],
     'options_disabled': ['interface'],
 

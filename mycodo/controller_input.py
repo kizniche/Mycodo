@@ -34,12 +34,14 @@ import os
 import requests
 
 from mycodo.databases.models import Input
+from mycodo.databases.models import InputMeasurements
 from mycodo.databases.models import Misc
 from mycodo.databases.models import Output
 from mycodo.databases.models import SMTP
 from mycodo.databases.models import Trigger
 from mycodo.mycodo_client import DaemonControl
 from mycodo.utils.database import db_retrieve_table_daemon
+from mycodo.utils.influx import add_measurements_influxdb
 from mycodo.utils.influx import add_measure_influxdb
 from mycodo.utils.influx import write_influxdb_value
 from mycodo.utils.inputs import load_module_from_file
@@ -97,44 +99,17 @@ class InputController(threading.Thread):
         self.input_id = input_id
         input_dev = db_retrieve_table_daemon(
             Input, unique_id=self.input_id)
+        self.input_measurements = db_retrieve_table_daemon(
+            InputMeasurements).filter(
+                InputMeasurements.input_id == self.input_id).all()
 
         self.input_dev = input_dev
         self.input_name = input_dev.name
         self.unique_id = input_dev.unique_id
         self.gpio_location = input_dev.gpio_location
-        self.measurements = input_dev.measurements
         self.device = input_dev.device
         self.interface = input_dev.interface
         self.period = input_dev.period
-
-        # Determine if this input is an analog-to-digital converter
-        self.is_adc = False
-        if ('analog_to_digital_converter' in self.dict_inputs[self.device] and
-                self.dict_inputs[self.device]['analog_to_digital_converter']):
-            self.is_adc = True
-
-            # Analog-to-Digital Converter
-            self.adc_channels = input_dev.adc_channels
-            self.adc_channels_selected = input_dev.adc_channels_selected
-
-            def parse_adc_options(options, number_options=2):
-                dict_options = {}
-                if options:
-                    for each_channel in options.split(';'):
-                        if number_options == 2:
-                            dict_options[each_channel.split(',')[1]] = each_channel.split(',')[0]
-                        elif number_options == 3:
-                            dict_options[each_channel.split(',')[2]] = {}
-                            dict_options[each_channel.split(',')[2]]['measurement'] = each_channel.split(',')[0]
-                            dict_options[each_channel.split(',')[2]]['unit'] = each_channel.split(',')[1]
-                    return dict_options
-
-            self.convert_to_unit = parse_adc_options(input_dev.convert_to_unit, number_options=3)
-            self.adc_volts_min = parse_adc_options(input_dev.adc_volts_min)
-            self.adc_volts_max = parse_adc_options(input_dev.adc_volts_max)
-            self.adc_units_min = parse_adc_options(input_dev.adc_units_min)
-            self.adc_units_max = parse_adc_options(input_dev.adc_units_max)
-            self.adc_inverse_unit_scale = parse_adc_options(input_dev.adc_inverse_unit_scale)
 
         # Edge detection
         self.switch_edge = input_dev.switch_edge
@@ -190,14 +165,7 @@ class InputController(threading.Thread):
             if self.device == 'EDGE':
                 # Edge detection handled internally, no module to load
                 self.measure_input = None
-
-            elif self.is_adc:
-                # Load analog-to-digital converter module
-                self.measure_input = None
-                self.adc = input_loaded.ADCModule(self.input_dev)
             else:
-                # Load input module
-                self.adc = None
                 self.measure_input = input_loaded.InputModule(self.input_dev)
 
         else:
@@ -322,7 +290,9 @@ class InputController(threading.Thread):
 
                         # Add measurement(s) to influxdb
                         if self.measurement_success:
-                            add_measure_influxdb(self.unique_id, self.measurement)
+                            add_measurements_influxdb(self.unique_id, self.measurement)
+                            # else:
+                            #     add_measure_influxdb(self.unique_id, self.measurement)
                             self.measurement_success = False
 
                 self.trigger_cond = False
@@ -344,55 +314,55 @@ class InputController(threading.Thread):
             self.logger.exception("Error: {err}".format(
                 err=except_msg))
 
-    def read_adc(self):
-        """ Read voltage from ADC """
+    def read_channels(self):
+        """ Read channels """
         try:
-            # Get measurement from ADC
-            measurements = self.adc.next()
+            # Get measurement from channels
+            measurements = self.measure_input.next()
 
             if measurements is not None:
-                for each_channel in self.adc_channels_selected.split(','):
-                    channel_key_str = 'adc_channel_{}'.format(each_channel)
-
-                    # If ADC instructed to convert voltage, calculate and store new measurement
-                    if self.convert_to_unit[each_channel]['measurement']:
-                        # Get the voltage difference between min and max volts
-                        diff_voltage = abs(
-                            float(self.adc_volts_max[each_channel]) - float(self.adc_volts_min[each_channel]))
-
-                        # Ensure the voltage stays within the min/max bounds
-                        if measurements[channel_key_str] < float(self.adc_volts_min[each_channel]):
-                            measured_voltage = self.adc_volts_min[each_channel]
-                        elif measurements[channel_key_str] > float(self.adc_volts_max[each_channel]):
-                            measured_voltage = float(self.adc_volts_max[each_channel])
-                        else:
-                            measured_voltage = measurements[channel_key_str]
-
-                        # Calculate the percentage of the voltage difference
-                        percent_diff = ((measured_voltage - float(self.adc_volts_min[each_channel])) /
-                                        diff_voltage)
-
-                        # Get the units difference between min and max units
-                        diff_units = abs(float(self.adc_units_max[each_channel]) - float(self.adc_units_min[each_channel]))
-
-                        # Calculate the measured units from the percent difference
-                        if self.adc_inverse_unit_scale[each_channel] == 'True':
-                            converted_units = (float(self.adc_units_max[each_channel]) -
-                                               (diff_units * percent_diff))
-                        else:
-                            converted_units = (float(self.adc_units_min[each_channel]) +
-                                               (diff_units * percent_diff))
-
-                        # Ensure the units stay within the min/max bounds
-                        measure_str = '{}_{}'.format(
-                            channel_key_str,
-                            self.convert_to_unit[each_channel]['measurement'])
-                        if converted_units < float(self.adc_units_min[each_channel]):
-                            measurements[measure_str] = float(self.adc_units_min[each_channel])
-                        elif converted_units > float(self.adc_units_max[each_channel]):
-                            measurements[measure_str] = float(self.adc_units_max[each_channel])
-                        else:
-                            measurements[measure_str] = converted_units
+                # for each_channel in self.measurements_selected.split(','):
+                #     channel_key_str = 'channel_{}'.format(each_channel)
+                #
+                #     # If instructed to convert measurement, calculate and store new measurement
+                #     if self.convert_to_unit[each_channel]['measurement']:
+                #         # Get the difference between min and max volts
+                #         diff_voltage = abs(
+                #             float(self.scale_from_max[each_channel]) - float(self.scale_from_min[each_channel]))
+                #
+                #         # Ensure the value stays within the min/max bounds
+                #         if measurements[channel_key_str] < float(self.scale_from_min[each_channel]):
+                #             measured_voltage = self.scale_from_min[each_channel]
+                #         elif measurements[channel_key_str] > float(self.scale_from_max[each_channel]):
+                #             measured_voltage = float(self.scale_from_max[each_channel])
+                #         else:
+                #             measured_voltage = measurements[channel_key_str]
+                #
+                #         # Calculate the percentage of the difference
+                #         percent_diff = ((measured_voltage - float(self.scale_from_min[each_channel])) /
+                #                         diff_voltage)
+                #
+                #         # Get the units difference between min and max units
+                #         diff_units = abs(float(self.scale_to_max[each_channel]) - float(self.scale_to_min[each_channel]))
+                #
+                #         # Calculate the measured units from the percent difference
+                #         if self.invert_scale[each_channel] == 'True':
+                #             converted_units = (float(self.scale_to_max[each_channel]) -
+                #                                (diff_units * percent_diff))
+                #         else:
+                #             converted_units = (float(self.scale_to_min[each_channel]) +
+                #                                (diff_units * percent_diff))
+                #
+                #         # Ensure the units stay within the min/max bounds
+                #         measure_str = '{}_{}'.format(
+                #             channel_key_str,
+                #             self.convert_to_unit[each_channel]['measurement'])
+                #         if converted_units < float(self.scale_to_min[each_channel]):
+                #             measurements[measure_str] = float(self.scale_to_min[each_channel])
+                #         elif converted_units > float(self.scale_to_max[each_channel]):
+                #             measurements[measure_str] = float(self.scale_to_max[each_channel])
+                #         else:
+                #             measurements[measure_str] = converted_units
 
                 return measurements
 
@@ -418,29 +388,26 @@ class InputController(threading.Thread):
             self.measurement_success = False
             return 1
 
-        if self.adc:
-            measurements = self.read_adc()
-        else:
-            try:
-                # Get measurement from input
-                measurements = self.measure_input.next()
-                # Reset StopIteration counter on successful read
-                if self.stop_iteration_counter:
-                    self.stop_iteration_counter = 0
-            except StopIteration:
-                self.stop_iteration_counter += 1
-                # Notify after 3 consecutive errors. Prevents filling log
-                # with many one-off errors over long periods of time
-                if self.stop_iteration_counter > 2:
-                    self.stop_iteration_counter = 0
-                    self.logger.error(
-                        "StopIteration raised. Possibly could not read "
-                        "input. Ensure it's connected properly and "
-                        "detected.")
-            except Exception as except_msg:
-                self.logger.exception(
-                    "Error while attempting to read input: {err}".format(
-                        err=except_msg))
+        try:
+            # Get measurement from input
+            measurements = self.measure_input.next()
+            # Reset StopIteration counter on successful read
+            if self.stop_iteration_counter:
+                self.stop_iteration_counter = 0
+        except StopIteration:
+            self.stop_iteration_counter += 1
+            # Notify after 3 consecutive errors. Prevents filling log
+            # with many one-off errors over long periods of time
+            if self.stop_iteration_counter > 2:
+                self.stop_iteration_counter = 0
+                self.logger.error(
+                    "StopIteration raised. Possibly could not read "
+                    "input. Ensure it's connected properly and "
+                    "detected.")
+        except Exception as except_msg:
+            self.logger.exception(
+                "Error while attempting to read input: {err}".format(
+                    err=except_msg))
 
         if self.device_recognized and measurements is not None:
             self.measurement = Measurement(measurements)
@@ -514,7 +481,7 @@ class InputController(threading.Thread):
         self.thread_shutdown_timer = timeit.default_timer()
 
         # Execute stop_sensor() if not EDGE or ADC
-        if self.device != 'EDGE' and not self.is_adc:
+        if self.device != 'EDGE':
             self.measure_input.stop_sensor()
 
         # Ensure pre-output is off

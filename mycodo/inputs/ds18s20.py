@@ -11,7 +11,7 @@ INPUT_INFORMATION = {
     'input_manufacturer': 'MAXIM',
     'input_name': 'DS18S20',
     'measurements_name': 'Temperature',
-    'measurements_list': ['temperature'],
+    'measurements_dict': ['temperature'],
     'options_enabled': ['location', 'period', 'convert_unit', 'pre_output'],
     'options_disabled': ['interface'],
 

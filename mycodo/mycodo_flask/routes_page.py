@@ -57,6 +57,7 @@ from mycodo.databases.models import Dashboard
 from mycodo.databases.models import DisplayOrder
 from mycodo.databases.models import Function
 from mycodo.databases.models import Input
+from mycodo.databases.models import InputMeasurements
 from mycodo.databases.models import LCD
 from mycodo.databases.models import LCDData
 from mycodo.databases.models import Math
@@ -443,6 +444,7 @@ def page_dashboard():
     camera = Camera.query.all()
     dashboard = Dashboard.query.all()
     input_dev = Input.query.all()
+    input_measurements = InputMeasurements.query.all()
     math = Math.query.all()
     misc = Misc.query.first()
     output = Output.query.all()
@@ -564,7 +566,7 @@ def page_dashboard():
     y_axes = utils_dashboard.graph_y_axes(dict_measurements)
 
     # Get what each measurement uses for a unit
-    use_unit = utils_general.use_unit_generate(input_dev, output, math)
+    use_unit = utils_general.use_unit_generate(input_dev, input_measurements, output, math)
 
     # Generate a dictionary of each graph's y-axis minimum and maximum
     custom_yaxes = dict_custom_yaxes_min_max(dashboard, y_axes)
@@ -653,6 +655,7 @@ def page_dashboard():
 def page_graph_async():
     """ Generate graphs using asynchronous data retrieval """
     input_dev = Input.query.all()
+    input_measurements = InputMeasurements.query.all()
     math = Math.query.all()
     output = Output.query.all()
     pid = PID.query.all()
@@ -665,7 +668,7 @@ def page_graph_async():
     dict_units = add_custom_units(unit)
 
     # Get what each measurement uses for a unit
-    use_unit = utils_general.use_unit_generate(input_dev, output, math)
+    use_unit = utils_general.use_unit_generate(input_dev, input_measurements, output, math)
 
     input_choices = utils_general.choices_inputs(input_dev)
     math_choices = utils_general.choices_maths(math)
@@ -959,6 +962,7 @@ def page_live():
     pid = PID.query.all()
     output = Output.query.all()
     input_dev = Input.query.all()
+    input_measurements = InputMeasurements.query.all()
     math = Math.query.all()
     method = Method.query.all()
     measurement = Measurement.query.all()
@@ -998,7 +1002,7 @@ def page_live():
         output_type[each_output.unique_id] = each_output.output_type
 
     # Get what each measurement uses for a unit
-    use_unit = utils_general.use_unit_generate(input_dev, output, math)
+    use_unit = utils_general.use_unit_generate(input_dev, input_measurements, output, math)
 
     return render_template('pages/live.html',
                            dict_measurements=dict_measurements,
@@ -1011,6 +1015,7 @@ def page_live():
                            output_type=output_type,
                            pid=pid,
                            input=input_dev,
+                           input_measurements=input_measurements,
                            inputs_sorted=inputs_sorted,
                            maths_sorted=maths_sorted,
                            units=UNITS,
@@ -1466,12 +1471,13 @@ def page_data():
     pid = PID.query.all()
     output = Output.query.all()
     input_dev = Input.query.all()
+    input_measurements = InputMeasurements.query.all()
     math = Math.query.all()
     user = User.query.all()
     measurement = Measurement.query.all()
     unit = Unit.query.all()
 
-    dict_inputs =  parse_input_information()
+    dict_inputs = parse_input_information()
     custom_options_values = parse_custom_option_values(input_dev)
 
     display_order_input = csv_to_list_of_str(DisplayOrder.query.first().inputs)
@@ -1481,6 +1487,7 @@ def page_data():
 
     form_add_input = forms_input.InputAdd()
     form_mod_input = forms_input.InputMod()
+    form_mod_input_measurement = forms_input.InputMeasurementMod()
 
     form_add_math = forms_math.MathAdd()
     form_mod_math = forms_math.MathMod()
@@ -1570,9 +1577,9 @@ def page_data():
         if form_add_input.input_add.data:
             unmet_dependencies = utils_input.input_add(form_add_input, request.form)
 
-        # Mod ADC Channel
-        elif form_mod_input.input_mod.data and isinstance(form_mod_input.adc_saving_channel.data, int):
-            utils_input.adc_channel_mod(form_mod_input)
+        # Mod Measurement
+        elif form_mod_input_measurement.input_measurement_mod.data:
+            utils_input.measurement_mod(form_mod_input_measurement)
 
         # Mod other Input settings
         elif form_mod_input.input_mod.data:
@@ -1642,6 +1649,7 @@ def page_data():
                            form_base=form_base,
                            form_add_input=form_add_input,
                            form_mod_input=form_mod_input,
+                           form_mod_input_measurement=form_mod_input_measurement,
                            form_add_math=form_add_math,
                            form_mod_average_single=form_mod_average_single,
                            form_mod_math=form_mod_math,
@@ -1651,6 +1659,7 @@ def page_data():
                            form_mod_verification=form_mod_verification,
                            camera=camera,
                            input=input_dev,
+                           input_measurements=input_measurements,
                            names_input=names_input,
                            tooltips_input=TOOLTIPS_INPUT,
                            input_templates=input_templates,

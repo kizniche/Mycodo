@@ -12,7 +12,7 @@ INPUT_INFORMATION = {
     'input_manufacturer': 'CO2Meter',
     'input_name': 'K30',
     'measurements_name': 'CO2',
-    'measurements_list': ['co2'],
+    'measurements_dict': ['co2'],
     'options_enabled': ['uart_location', 'uart_baud_rate', 'period', 'convert_unit', 'pre_output'],
     'options_disabled': ['interface'],
 

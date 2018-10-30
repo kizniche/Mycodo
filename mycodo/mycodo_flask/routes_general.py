@@ -45,7 +45,7 @@ from mycodo.mycodo_flask.routes_authentication import clear_cookie_auth
 from mycodo.mycodo_flask.utils import utils_general
 from mycodo.mycodo_flask.utils.utils_general import get_ip_address
 from mycodo.utils.image import generate_thermal_image_from_pixels
-from mycodo.utils.influx import check_if_adc_measurement
+from mycodo.utils.influx import check_if_channel_measurement
 from mycodo.utils.influx import query_string
 from mycodo.utils.system_pi import assure_path_exists
 from mycodo.utils.system_pi import str_is_float
@@ -250,9 +250,9 @@ def download_file(dl_type, filename):
     return '', 204
 
 
-@blueprint.route('/last/<input_measure>/<input_id>/<input_period>')
+@blueprint.route('/last/<input_id>/<input_measure>/<input_unit>/<input_channel>/<input_period>')
 @flask_login.login_required
-def last_data(input_measure, input_id, input_period):
+def last_data(input_id, input_measure, input_unit, input_channel, input_period):
     """Return the most recent time and value from influxdb"""
     if not str_is_float(input_period):
         return '', 204
@@ -264,16 +264,16 @@ def last_data(input_measure, input_id, input_period):
     dbcon = influx_db.connection
 
     try:
-        # Handle ADC request
-        input_measure = check_if_adc_measurement(input_measure)
-
         if input_period != '0':
             query_str = query_string(
-                input_measure, input_id, value='LAST',
-                past_sec=input_period)
+                input_measure, input_id,
+                unit=input_unit, channel=input_channel,
+                value='LAST', past_sec=input_period)
         else:
             query_str = query_string(
-                input_measure, input_id, value='LAST')
+                input_measure, input_id,
+                unit=input_unit, channel=input_channel,
+                value='LAST')
         if query_str == 1:
             return '', 204
         raw_data = dbcon.query(query_str).raw
@@ -295,14 +295,14 @@ def last_data(input_measure, input_id, input_period):
         return '', 204
 
 
-@blueprint.route('/past/<input_measure>/<input_id>/<past_seconds>')
+@blueprint.route('/past/<input_id>/<measurement>/<unit>/<channel>/<past_seconds>')
 @flask_login.login_required
-def past_data(input_measure, input_id, past_seconds):
+def past_data(input_id, measurement, unit, channel, past_seconds):
     """Return data from past_seconds until present from influxdb"""
     if not str_is_float(past_seconds):
         return '', 204
 
-    if input_measure == 'tag':
+    if measurement == 'tag':
         notes_list = []
 
         tag = NoteTags.query.filter(NoteTags.unique_id == input_id).first()
@@ -326,12 +326,10 @@ def past_data(input_measure, input_id, past_seconds):
         current_app.config['INFLUXDB_TIMEOUT'] = 5
         dbcon = influx_db.connection
 
-        # Handle ADC request
-        input_measure = check_if_adc_measurement(input_measure)
-
         try:
             query_str = query_string(
-                input_measure, input_id, past_sec=past_seconds)
+                measurement, input_id,
+                unit=unit, channel=channel, past_sec=past_seconds)
             if query_str == 1:
                 return '', 204
             raw_data = dbcon.query(query_str).raw
@@ -375,8 +373,8 @@ def generate_thermal_image_from_timestamp(unique_id, timestamp):
     start_timestamp = time.strftime('%Y-%m-%dT%H:%M:%S.000000000Z', time.gmtime(start))
     end_timestamp = time.strftime('%Y-%m-%dT%H:%M:%S.000000000Z', time.gmtime(end))
 
-    for each_channel in range(input_dev.adc_channels):
-        measurement = 'adc_channel_{chan}'.format(
+    for each_channel in range(input_dev.channels):
+        measurement = 'channel_{chan}'.format(
             chan=each_channel)
         query_str = query_string(measurement, unique_id, start_str=start_timestamp, end_str=end_timestamp)
         if query_str == 1:
@@ -399,9 +397,9 @@ def generate_thermal_image_from_timestamp(unique_id, timestamp):
         return "Could not generate image"
 
 
-@blueprint.route('/export_data/<measurement>/<unique_id>/<start_seconds>/<end_seconds>')
+@blueprint.route('/export_data/<unique_id>/<measurement>/<unit>/<channel>/<start_seconds>/<end_seconds>')
 @flask_login.login_required
-def export_data(measurement, unique_id, start_seconds, end_seconds):
+def export_data(unique_id, measurement, unit, channel, start_seconds, end_seconds):
     """
     Return data from start_seconds to end_seconds from influxdb.
     Used for exporting data.
@@ -433,11 +431,8 @@ def export_data(measurement, unique_id, start_seconds, end_seconds):
     end += utc_offset_timedelta
     end_str = end.strftime('%Y-%m-%dT%H:%M:%S.%fZ')
 
-    # Handle ADC request
-    measurement = check_if_adc_measurement(measurement)
-
     query_str = query_string(
-        measurement, unique_id,
+        measurement, unique_id, unit=unit, channel=channel,
         start_str=start_str, end_str=end_str)
     if query_str == 1:
         flash('Invalid query string', 'error')
@@ -464,9 +459,9 @@ def export_data(measurement, unique_id, start_seconds, end_seconds):
     return send_csv(csv_data, csv_filename, [col_1, col_2])
 
 
-@blueprint.route('/async/<measurement>/<unique_id>/<start_seconds>/<end_seconds>')
+@blueprint.route('/async/<unique_id>/<measurement>/<unit>/<channel>/<start_seconds>/<end_seconds>')
 @flask_login.login_required
-def async_data(measurement, unique_id, start_seconds, end_seconds):
+def async_data(unique_id, measurement, unit, channel, start_seconds, end_seconds):
     """
     Return data from start_seconds to end_seconds from influxdb.
     Used for asynchronous graph display of many points (up to millions).
@@ -499,14 +494,11 @@ def async_data(measurement, unique_id, start_seconds, end_seconds):
     current_app.config['INFLUXDB_TIMEOUT'] = 5
     dbcon = influx_db.connection
 
-    # Handle ADC request
-    measurement = check_if_adc_measurement(measurement)
-
     # Set the time frame to the past year if start/end not specified
     if start_seconds == '0' and end_seconds == '0':
         # Get how many points there are in the past year
         query_str = query_string(
-            measurement, unique_id, value='COUNT')
+            measurement, unique_id, unit=unit, channel=channel, value='COUNT')
         if query_str == 1:
             return '', 204
         raw_data = dbcon.query(query_str).raw
@@ -514,7 +506,7 @@ def async_data(measurement, unique_id, start_seconds, end_seconds):
         count_points = raw_data['series'][0]['values'][0][1]
         # Get the timestamp of the first point in the past year
         query_str = query_string(
-            measurement, unique_id, limit=1)
+            measurement, unique_id, unit=unit, channel=channel, limit=1)
         if query_str == 1:
             return '', 204
         raw_data = dbcon.query(query_str).raw
@@ -529,7 +521,7 @@ def async_data(measurement, unique_id, start_seconds, end_seconds):
         end = datetime.datetime.utcnow()
         end_str = end.strftime('%Y-%m-%dT%H:%M:%S.%fZ')
         query_str = query_string(
-            measurement, unique_id,
+            measurement, unique_id, unit=unit, channel=channel,
             value='COUNT', start_str=start_str, end_str=end_str)
         if query_str == 1:
             return '', 204
@@ -538,7 +530,7 @@ def async_data(measurement, unique_id, start_seconds, end_seconds):
         count_points = raw_data['series'][0]['values'][0][1]
         # Get the timestamp of the first point in the past year
         query_str = query_string(
-            measurement, unique_id,
+            measurement, unique_id, unit=unit, channel=channel,
             start_str=start_str, end_str=end_str, limit=1)
         if query_str == 1:
             return '', 204
@@ -551,7 +543,7 @@ def async_data(measurement, unique_id, start_seconds, end_seconds):
         end = datetime.datetime.utcfromtimestamp(float(end_seconds))
         end_str = end.strftime('%Y-%m-%dT%H:%M:%S.%fZ')
         query_str = query_string(
-            measurement, unique_id,
+            measurement, unique_id, unit=unit, channel=channel,
             value='COUNT', start_str=start_str, end_str=end_str)
         if query_str == 1:
             return '', 204
@@ -560,7 +552,7 @@ def async_data(measurement, unique_id, start_seconds, end_seconds):
         count_points = raw_data['series'][0]['values'][0][1]
         # Get the timestamp of the first point in the past year
         query_str = query_string(
-            measurement, unique_id,
+            measurement, unique_id, unit=unit, channel=channel,
             start_str=start_str, end_str=end_str, limit=1)
         if query_str == 1:
             return '', 204
@@ -593,7 +585,8 @@ def async_data(measurement, unique_id, start_seconds, end_seconds):
 
         try:
             query_str = query_string(
-                measurement, unique_id, value='MEAN',
+                measurement, unique_id,
+                unit=unit, channel=channel,value='MEAN',
                 start_str=start_str, end_str=end_str,
                 group_sec=group_seconds)
             if query_str == 1:
@@ -608,7 +601,7 @@ def async_data(measurement, unique_id, start_seconds, end_seconds):
     else:
         try:
             query_str = query_string(
-                measurement, unique_id,
+                measurement, unique_id, unit=unit, channel=channel,
                 start_str=start_str, end_str=end_str)
             if query_str == 1:
                 return '', 204
@@ -692,9 +685,6 @@ def return_point_timestamp(measure, dev_id, period):
     current_app.config['INFLUXDB_DATABASE'] = INFLUXDB_DATABASE
     current_app.config['INFLUXDB_TIMEOUT'] = 5
     dbcon = influx_db.connection
-
-    # Handle ADC request
-    measure = check_if_adc_measurement(measure)
 
     query_str = query_string(
         measure, dev_id, value='LAST',

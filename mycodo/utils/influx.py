@@ -19,43 +19,73 @@ from mycodo.utils.database import db_retrieve_table_daemon
 logger = logging.getLogger("mycodo.influxdb")
 
 
-def check_if_adc_measurement(measurement):
-    if measurement.startswith('adc_channel_'):
+def check_if_channel_measurement(measurement):
+    if measurement.startswith('channel_'):
         """
         Check if measurement is from an analog-to-digital controller and 
         return proper measurement.
         """
-        if (measurement.split('_')[3] == 'voltage' and
-                measurement.split('_')[4] == 'volts'):
-            measurement = 'adc_channel_{chan}'.format(
+        if (measurement.split('_')[3] == 'electrical_conductivity' and
+                measurement.split('_')[4] == 'V'):
+            measurement = 'channel_{chan}'.format(
                 chan=measurement.split('_')[2])
         else:
-            measurement = 'adc_channel_{chan}_{meas}'.format(
+            measurement = 'channel_{chan}_{meas}'.format(
                 chan=measurement.split('_')[2],
                 meas=measurement.split('_')[3])
     return measurement
 
 
-def add_measure_influxdb(unique_id, measurements):
+def add_measurements_influxdb(unique_id, measurements):
     """
-    Add a measurement entries to InfluxDB
 
     :param unique_id:
     :param measurements:
-    :return: None
+    :return:
     """
     data = []
-    for each_measurement, each_value in measurements.values.items():
-        data.append(format_influxdb_data(unique_id,
-                                         each_measurement,
-                                         each_value))
+    for each_measurement, each_measurement_data in measurements.values.items():
+        for each_unit, channel_data in each_measurement_data.items():
+            for each_channel, each_value in channel_data.items():
+                data.append(format_influxdb_data(
+                    unique_id,
+                    each_measurement,
+                    each_value,
+                    channel=each_channel,
+                    unit=each_unit))
     write_db = threading.Thread(
         target=write_influxdb_list,
         args=(data,))
     write_db.start()
 
 
-def format_influxdb_data(device_id, measure_type, value, timestamp=None):
+def add_measure_influxdb(unique_id, measurements, unit=None):
+    """
+    Add a measurement entries to InfluxDB
+
+    :param unique_id:
+    :param measurements:
+    :param unit:
+    :return: None
+    """
+    data = []
+    for each_measurement, each_value in measurements.values.items():
+        if unit:
+            data.append(format_influxdb_data(unique_id,
+                                             each_measurement,
+                                             each_value,
+                                             unit=unit))
+        else:
+            data.append(format_influxdb_data(unique_id,
+                                             each_measurement,
+                                             each_value))
+    write_db = threading.Thread(
+        target=write_influxdb_list,
+        args=(data,))
+    write_db.start()
+
+
+def format_influxdb_data(device_id, measure_type, value, channel=None, unit=None, timestamp=None):
     """
     Format data for entry into an Influxdb database
 
@@ -79,30 +109,30 @@ def format_influxdb_data(device_id, measure_type, value, timestamp=None):
     """
     checked_value = float(value)
 
+    influx_dict = {
+        'measurement':  measure_type,
+        'tags': {
+            "device_id": device_id
+        },
+        'fields': {
+            "value": checked_value
+        }
+    }
+
+    if unit:
+        influx_dict['tags']['unit'] = unit
+
+    if channel is not None:
+        influx_dict['tags']['channel'] = channel
+
     if timestamp:
-        return {
-            "measurement": measure_type,
-            "tags": {
-                "device_id": device_id
-            },
-            "time": timestamp.strftime('%Y-%m-%dT%H:%M:%S.%fZ'),
-            "fields": {
-                "value": checked_value
-            }
-        }
-    else:
-        return {
-            "measurement": measure_type,
-            "tags": {
-                "device_id": device_id
-            },
-            "fields": {
-                "value": checked_value
-            }
-        }
+        influx_dict['measurement'] = timestamp.strftime('%Y-%m-%dT%H:%M:%S.%fZ')
+
+    return influx_dict
 
 
-def query_string(measurement, unique_id, value=None,
+def query_string(measurement, unique_id,
+                 value=None, unit=None, channel=None,
                  ts_str=None, start_str=None, end_str=None,
                  past_sec=None, group_sec=None, limit=None):
     """Generate influxdb query string"""
@@ -118,6 +148,11 @@ def query_string(measurement, unique_id, value=None,
 
     query += " FROM {meas} WHERE device_id='{id}'".format(
         meas=measurement, id=unique_id)
+
+    if unit:
+        query += " AND unit='{unit}'".format(unit=unit)
+    if channel is not None:
+        query += " AND channel='{chane}'".format(chane=channel)
     if ts_str:
         query += " AND time = '{ts}'".format(ts=ts_str)
     if start_str:

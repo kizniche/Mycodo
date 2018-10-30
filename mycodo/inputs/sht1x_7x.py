@@ -10,7 +10,7 @@ INPUT_INFORMATION = {
     'input_manufacturer': 'Sensirion',
     'input_name': 'SHT1x/7x',
     'measurements_name': 'Humidity/Temperature',
-    'measurements_list': ['dewpoint', 'humidity', 'temperature'],
+    'measurements_dict': ['dewpoint', 'humidity', 'temperature'],
     'options_enabled': ['gpio_location', 'sht_voltage', 'period', 'pin_clock', 'convert_unit', 'pre_output'],
     'options_disabled': ['interface'],
 

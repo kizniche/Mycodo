@@ -13,9 +13,9 @@
   <br/><span style="font-size: {{each_dashboard.font_em_timestamp}}em">
   {%- for each_input in input -%}
     {%- if each_input.unique_id == each_dashboard.input_ids_measurements.split(',')[0] %}
-      {%- if each_input.measurements != 'adc_channels' -%}
+      {%- if not each_input.measurements.startswith('channel_') -%}
         {{measurement_units[each_dashboard.input_ids_measurements.split(',')[1]]['name']|safe}} ({{units[use_unit[each_input.unique_id][each_dashboard.input_ids_measurements.split(',')[1]]]['unit']}})
-      {%- elif each_input.measurements == 'adc_channels' -%}
+      {%- elif each_input.measurements.startswith('channel_') -%}
         {{measurement_units[each_dashboard.input_ids_measurements.split(',')[1].split('_')[3]]['name']|safe}} ({{dict_units[each_dashboard.input_ids_measurements.split(',')[1].split('_')[4]]['unit']}})
       {% endif %}
     {%- endif -%}

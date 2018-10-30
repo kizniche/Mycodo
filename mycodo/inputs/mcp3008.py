@@ -8,26 +8,37 @@ INPUT_INFORMATION = {
     'input_manufacturer': 'Microchip',
     'input_name': 'MCP3008',
     'measurements_name': 'Voltage (Analog-to-Digital Converter)',
-    'measurements_list': ['adc_channels'],
-    'options_enabled': ['pin_cs', 'pin_miso', 'pin_mosi', 'pin_clock', 'adc_channels', 'adc_options', 'period', 'pre_output'],
+    'measurements_dict': ['channel_{}'.format(i) for i in range(4)],  # 4 Channels
+    'channels': 4,
+    'options_enabled': [
+        'pin_cs',
+        'pin_miso',
+        'pin_mosi',
+        'pin_clock',
+        'measurements_select',
+        'channels_convert',
+        'period',
+        'pre_output'
+    ],
     'options_disabled': ['interface'],
 
+    'measurements_convert_enabled': True,
+    'channels_measurement': 'electrical_potential',
+    'channels_unit': 'V',
     'dependencies_module': [
         ('pip-pypi', 'Adafruit_MCP3008', 'Adafruit_MCP3008')
     ],
     'interfaces': ['UART'],
-    'analog_to_digital_converter': True,
-    'adc_channels': 4,
     'pin_cs': 8,
     'pin_miso': 9,
     'pin_mosi': 10,
     'pin_clock': 11,
-    'adc_volts_min': -4.096,
-    'adc_volts_max': 4.096
+    'scale_from_min': -4.096,
+    'scale_from_max': 4.096
 }
 
 
-class ADCModule(object):
+class ChannelModule(object):
     """ ADC Read """
     def __init__(self, input_dev, testing=False):
         self.logger = logging.getLogger('mycodo.mcp3008')
@@ -39,12 +50,12 @@ class ADCModule(object):
         self.pin_cs = input_dev.pin_cs
         self.pin_miso = input_dev.pin_miso
         self.pin_mosi = input_dev.pin_mosi
-        self.adc_volts_max = input_dev.adc_volts_max
-        self.adc_channels = input_dev.adc_channels
+        self.scale_from_max = input_dev.scale_from_max
+        self.channels = input_dev.channels
 
-        self.adc_channels_selected = []
-        for each_channel in input_dev.adc_channels_selected.split(','):
-            self.adc_channels_selected.append(int(each_channel))
+        self.measurements_selected = []
+        for each_channel in input_dev.measurements_selected.split(','):
+            self.measurements_selected.append(int(each_channel))
 
         if not testing:
             import Adafruit_MCP3008
@@ -77,9 +88,9 @@ class ADCModule(object):
         self._voltages = None
         voltages_dict = {}
 
-        for each_channel in self.adc_channels_selected:
-            voltages_dict['adc_channel_{}'.format(each_channel)] = (
-                (self.adc.read_adc(each_channel) / 1023.0) * self.adc_volts_max)
+        for each_channel in self.measurements_selected:
+            voltages_dict['channel_{}'.format(each_channel)] = (
+                (self.adc.read_adc(each_channel) / 1023.0) * self.scale_from_max)
 
         if voltages_dict:
             return voltages_dict

@@ -24,6 +24,7 @@ from mycodo.config_devices_units import UNITS
 from mycodo.databases.models import Camera
 from mycodo.databases.models import Conditional
 from mycodo.databases.models import Input
+from mycodo.databases.models import InputMeasurements
 from mycodo.databases.models import LCD
 from mycodo.databases.models import Math
 from mycodo.databases.models import Measurement
@@ -317,44 +318,52 @@ def form_input_choices(choices, each_input, dict_inputs):
     dict_measurements = add_custom_measurements(Measurement.query.all())
     dict_units = add_custom_units(Unit.query.all())
 
+    input_measurements = InputMeasurements.query.filter(
+        InputMeasurements.input_id == each_input.unique_id).all()
+
     if each_input.device in dict_inputs:
-        is_adc = False
-        if ('analog_to_digital_converter' in dict_inputs[each_input.device] and
-                dict_inputs[each_input.device]['analog_to_digital_converter']):
-            is_adc = True
+        if ('measurements_dict' in dict_inputs[each_input.device] and
+                dict_inputs[each_input.device]['measurements_dict'] and
+                dict_inputs[each_input.device]['measurements_dict'] != 'LinuxCommand'):
 
-        if ('measurements_list' in dict_inputs[each_input.device] and
-                dict_inputs[each_input.device]['measurements_list'] and
-                dict_inputs[each_input.device]['measurements_list'] != 'LinuxCommand' and
-                not is_adc):
+            for each_measure, unit_data in dict_inputs[each_input.device]['measurements_dict'].items():
+                for each_unit, number_channels in unit_data.items():
+                    for each_channel in range(number_channels):
+                        value = '{id},{meas},{unit},{chan}'.format(
+                            id=each_input.unique_id,
+                            meas=each_measure,
+                            unit=each_unit,
+                            chan=each_channel)
 
-            for each_measure in dict_inputs[each_input.device]['measurements_list']:
-                value = '{id},{meas}'.format(
-                    id=each_input.unique_id,
-                    meas=each_measure)
+                        try:
+                            custom_dict_measurements = {}
+                            for each_meas in input_measurements:
+                                custom_dict_measurements[each_meas.measurement] = each_meas.unit
 
-                try:
-                    custom_dict_measurements = {}
-                    for each_measurement in each_input.convert_to_unit.split(';'):
-                        custom_dict_measurements[each_measurement.split(',')[0]] = each_measurement.split(',')[1]
+                            measure_display, unit_display = check_display_names(
+                                each_measure, custom_dict_measurements[each_measure])
 
-                    measure_display, unit_display = check_display_names(
-                        each_measure, custom_dict_measurements[each_measure])
+                            if number_channels > 1:
+                                channel_name = ' CH{chan}'.format(chan=each_channel)
+                            else:
+                                channel_name = ''
 
-                    if unit_display:
-                        display = '[Input {id:02d}] {name} ({meas}, {unit})'.format(
-                            id=each_input.id,
-                            name=each_input.name,
-                            meas=measure_display,
-                            unit=unit_display)
-                    else:
-                        display = '[Input {id:02d}] {name} ({meas})'.format(
-                            id=each_input.id,
-                            name=each_input.name,
-                            meas=measure_display)
-                    choices.update({value: display})
-                except:
-                    logger.exception("Generating input choices")
+                            if unit_display:
+                                display = '[Input {id:02d}] {name}{chan} ({meas}, {unit})'.format(
+                                    id=each_input.id,
+                                    name=each_input.name,
+                                    chan=channel_name,
+                                    meas=measure_display,
+                                    unit=unit_display)
+                            else:
+                                display = '[Input {id:02d}] {name}{chan} ({meas})'.format(
+                                    id=each_input.id,
+                                    name=each_input.name,
+                                    chan=channel_name,
+                                    meas=measure_display)
+                            choices.update({value: display})
+                        except:
+                            logger.exception("Generating input choices")
 
     # Linux Command Input
     if (each_input.device == 'LinuxCommand' and
@@ -387,11 +396,11 @@ def form_input_choices(choices, each_input, dict_inputs):
                 error = True
 
         if not error:
-            for each_channel_sel in each_input.adc_channels_selected.split(','):
-                value = '{id},adc_channel_{chan}_voltage_volts,{chan}'.format(
+            for each_channel_sel in each_input.measurements_selected.split(','):
+                value = '{id},channel_{chan},electrical_conductivity,V,{chan}'.format(
                     id=each_input.unique_id,
                     chan=each_channel_sel)
-                display = '[Input {id:02d}] {name}  (CH{chan}, Voltage, volts)'.format(
+                display = '[Input {id:02d}] {name}  (CH{chan}, Volts)'.format(
                     id=each_input.id,
                     name=each_input.name,
                     chan=int(each_channel_sel) + 1)
@@ -399,7 +408,7 @@ def form_input_choices(choices, each_input, dict_inputs):
 
                 for each_channel_ctu in each_input.convert_to_unit.split(';'):
                     if each_channel_ctu.split(',')[2] == each_channel_sel and each_channel_ctu.split(',')[0] != '':
-                        value = '{id},adc_channel_{chan}_{meas}_{unit},{chan}'.format(
+                        value = '{id},channel_{chan},{meas},{unit},{chan}'.format(
                             id=each_input.unique_id,
                             meas=each_channel_ctu.split(',')[0],
                             unit=chan_meas_unit_dict[each_channel_sel]['unit'],
@@ -793,7 +802,7 @@ def return_dependencies(device_type):
     return unmet_deps, met_deps
 
 
-def use_unit_generate(input_dev, output, math):
+def use_unit_generate(input_dev, input_measurements, output, math):
     """Generate dictionary of units to convert to"""
     # TODO: next major version: rename table columns and combine functionality
     use_unit = {}
@@ -801,20 +810,13 @@ def use_unit_generate(input_dev, output, math):
     for each_input in input_dev:
         use_unit[each_input.unique_id] = {}
 
-        if each_input.measurements == 'adc_channels':
-            use_unit[each_input.unique_id]['adc'] = OrderedDict()
-            for index, each_unit_set in enumerate(each_input.convert_to_unit.split(';')):
-                use_unit[each_input.unique_id]['adc'][str(index)] = {}
-                use_unit[each_input.unique_id]['adc'][str(index)]['voltage'] = 'volts'
-                if len(each_unit_set.split(',')) > 1 and each_unit_set.split(',')[0] != '':
-                    use_unit[each_input.unique_id]['adc'][str(index)][each_unit_set.split(',')[0]] = each_unit_set.split(',')[1]
-        else:
-            for each_measure in each_input.measurements.split(','):
-                for each_unit_set in each_input.convert_to_unit.split(';'):
-                    if len(each_unit_set.split(',')) > 1 and each_measure == each_unit_set.split(',')[0]:
-                        use_unit[each_input.unique_id][each_measure] = each_unit_set.split(',')[1]
-                    elif each_measure not in use_unit[each_input.unique_id]:
-                        use_unit[each_input.unique_id][each_measure] = None
+        for each_meas in input_measurements:
+            if each_meas.input_id == each_input.unique_id:
+                if each_meas.measurement not in use_unit[each_input.unique_id]:
+                    use_unit[each_input.unique_id][each_meas.measurement] = {}
+                if each_meas.unit not in use_unit[each_input.unique_id][each_meas.measurement]:
+                    use_unit[each_input.unique_id][each_meas.measurement][each_meas.unit] = OrderedDict()
+                use_unit[each_input.unique_id][each_meas.measurement][each_meas.unit][each_meas.channel] = None
 
     for each_output in output:
         use_unit[each_output.unique_id] = {}

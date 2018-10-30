@@ -15,7 +15,7 @@ INPUT_INFORMATION = {
     'input_manufacturer': 'AAA Company X',
     'input_name': 'Dummy Input 00',
     'measurements_name': 'Humidity/Temperature',
-    'measurements_list': ['dewpoint', 'humidity', 'temperature'],  # List of strings
+    'measurements_dict': ['dewpoint', 'humidity', 'temperature'],  # List of strings
     'dependencies_module': [
         ('pip-pypi', 'random', 'random')
     ],

@@ -13,7 +13,7 @@ INPUT_INFORMATION = {
     'input_name_unique': 'MYCODO_RAM',
     'input_manufacturer': 'Mycodo',
     'measurements_name': 'Size RAM in Use',
-    'measurements_list': ['disk_space'],
+    'measurements_dict': ['disk_space'],
     'options_enabled': ['period', 'convert_unit'],
     'options_disabled': ['interface'],
 

@@ -20,9 +20,12 @@
 
           {% for each_input in input -%}
             {%- for each_id_and_measure in graph_input_ids if each_input.unique_id == each_id_and_measure.split(',')[0] %}
-          getPastData({{chart_number}}, {{count_series|count}}, '{{each_id_and_measure.split(',')[1]}}', '{{each_input.unique_id}}', {{each_dashboard.x_axis_duration*60}});
+              {% set measurement = each_id_and_measure.split(',')[1] %}
+              {% set unit = each_id_and_measure.split(',')[2] %}
+              {% set channel = each_id_and_measure.split(',')[3] %}
+          getPastData({{chart_number}}, {{count_series|count}}, '{{each_input.unique_id}}', '{{measurement}}', '{{unit}}', '{{channel}}', {{each_dashboard.x_axis_duration*60}});
           {% if each_dashboard.enable_auto_refresh %}
-          getLiveData({{chart_number}}, {{count_series|count}}, '{{each_id_and_measure.split(',')[1]}}', '{{each_input.unique_id}}', {{each_dashboard.x_axis_duration}}, {{each_dashboard.enable_xaxis_reset|int}}, {{each_dashboard.refresh_duration}}, {% if each_dashboard.enable_graph_shift %}true{% else %}false{% endif %});
+          getLiveData({{chart_number}}, {{count_series|count}}, '{{each_input.unique_id}}', '{{measurement}}', '{{unit}}', '{{channel}}', {{each_dashboard.x_axis_duration}}, {{each_dashboard.enable_xaxis_reset|int}}, {{each_dashboard.refresh_duration}}, {% if each_dashboard.enable_graph_shift %}true{% else %}false{% endif %});
           {% endif %}
               {%- do count_series.append(1) %}
             {%- endfor -%}
@@ -249,66 +252,24 @@
     {% for each_input in input -%}
       {%- for each_id_and_measure in graph_input_ids if each_input.unique_id == each_id_and_measure.split(',')[0] -%}
 
-        {%- if each_input.measurements != 'adc_channels' -%}
+        {%- set each_measurement = each_id_and_measure.split(',')[1] -%}
+        {%- set each_unit = each_id_and_measure.split(',')[2] -%}
+        {%- set each_channel = each_id_and_measure.split(',')[3] -%}
 
-          {%- for each_measurement in each_input.measurements.split(',') -%}
-            {%- if each_measurement == each_id_and_measure.split(',')[1] -%}
       {
-        name: '{{each_input.name}} ({{measurement_units[each_measurement]['name']}}
-        {%- if dict_measurements[each_measurement]['unit'] != '' %}
-          {%- if use_unit[each_input.unique_id][each_measurement] and units[use_unit[each_input.unique_id][each_measurement]]['unit'] -%}
-            {{', ' + units[use_unit[each_input.unique_id][each_measurement]]['unit']}}
-          {%- endif -%}
-        )
-        {%- endif -%}
-      ',
+        name: '{{each_input.name}} CH{{each_channel}} ({{measurement_units[each_measurement]['name']}}, {{units[each_unit]['unit']}})',
         {% if measurement_units[each_measurement]['meas'] == 'edge' %}
         type: 'column',
         {% else %}
         type: 'line',
         {% endif %}
         tooltip: {
-          valueSuffix: '
-            {%- if use_unit[each_input.unique_id][each_measurement] and use_unit[each_input.unique_id][each_measurement] in dict_units -%}
-              {{' ' + dict_units[use_unit[each_input.unique_id][each_measurement]]['unit']}}
-            {%- endif -%}
-            ',
+          valueSuffix: '{{units[each_unit]['unit']}}',
           valueDecimals: 3
         },
-        yAxis: '
-            {%- if use_unit[each_input.unique_id][each_measurement] -%}
-              {{use_unit[each_input.unique_id][each_measurement]}}
-            {%- else -%}
-              {{measurement_units[each_measurement]['meas']}}
-            {%- endif -%}
-        ',
+        yAxis: '{{each_unit}}',
         data: []
       },
-            {% endif %}
-          {% endfor %}
-
-        {%- elif each_input.measurements == 'adc_channels' -%}
-
-          {% set meas_test =  each_id_and_measure.split(',')[1].split('_') %}
-
-          {%- if meas_test|length > 1 and meas_test[0] == 'adc' and meas_test[1] == 'channel' -%}
-      {
-        name: '{{each_input.name}} CH{{meas_test[2]|int + 1}} ({{measurement_units[meas_test[3]]['name']}}, {{use_unit[each_input.unique_id]['adc'][meas_test[2]][meas_test[3]]}})',
-        type: 'line',
-        tooltip: {
-          valueSuffix: '
-              {%- if meas_test[4] in dict_units -%}
-                {{' ' + dict_units[meas_test[4]]['unit']}}
-              {%- endif -%}
-          ',
-          valueDecimals: 3
-        },
-        yAxis: '{{meas_test[4]}}',
-        data: []
-      },
-          {%- endif -%}
-
-        {%- endif -%}
 
       {%- endfor -%}
     {% endfor %}

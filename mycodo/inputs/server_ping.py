@@ -10,7 +10,7 @@ INPUT_INFORMATION = {
     'input_manufacturer': 'Mycodo',
     'input_name': 'Server Ping',
     'measurements_name': 'Boolean',
-    'measurements_list': ['boolean'],
+    'measurements_dict': ['boolean'],
     'options_enabled': ['location', 'times_check', 'deadline', 'period', 'pre_output'],
     'options_disabled': ['interface'],
 

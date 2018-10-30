@@ -14,7 +14,7 @@ INPUT_INFORMATION = {
     'input_manufacturer': 'Atlas',
     'input_name': 'Atlas pH',
     'measurements_name': 'Ion Concentration',
-    'measurements_list': ['ion_concentration'],
+    'measurements_dict': ['ion_concentration'],
     'options_enabled': ['i2c_location', 'uart_location', 'period', 'convert_unit', 'pre_output'],
     'options_disabled': ['interface'],
 

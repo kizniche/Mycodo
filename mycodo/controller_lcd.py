@@ -71,7 +71,7 @@ from mycodo.databases.models import PID
 from mycodo.databases.models import Unit
 from mycodo.mycodo_flask.utils.utils_general import use_unit_generate
 from mycodo.utils.database import db_retrieve_table_daemon
-from mycodo.utils.influx import check_if_adc_measurement
+from mycodo.utils.influx import check_if_channel_measurement
 from mycodo.utils.influx import read_last_influxdb
 from mycodo.utils.system_pi import add_custom_measurements
 from mycodo.utils.system_pi import add_custom_units
@@ -316,7 +316,7 @@ class LCDController(threading.Thread):
                     measurement = self.lcd_line[display_id][i]['measure']
 
                     # Handle ADC query
-                    measurement = check_if_adc_measurement(measurement)
+                    measurement = check_if_channel_measurement(measurement)
 
                     last_measurement = read_last_influxdb(
                         self.lcd_line[display_id][i]['id'],
@@ -456,9 +456,10 @@ class LCDController(threading.Thread):
         elif measurement in self.list_inputs:
             # Get what each measurement uses for a unit
             input_dev = db_retrieve_table_daemon(Input)
+            input_measurements = db_retrieve_table_daemon(InputMeasurements)
             output = db_retrieve_table_daemon(Output)
             math = db_retrieve_table_daemon(Math)
-            use_unit = use_unit_generate(input_dev, output, math)
+            use_unit = use_unit_generate(input_dev, input_measurements, output, math)
             if (device_id in use_unit and
                     measurement in use_unit[device_id] and
                     use_unit[device_id][measurement] is not None):

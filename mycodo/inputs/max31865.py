@@ -36,7 +36,7 @@ INPUT_INFORMATION = {
     'input_manufacturer': 'MAXIM',
     'input_name': 'MAX31865',
     'measurements_name': 'Temperature',
-    'measurements_list': ['temperature'],
+    'measurements_dict': ['temperature'],
     'options_enabled': ['thermocouple_type', 'pin_cs', 'pin_miso', 'pin_mosi', 'pin_clock', 'ref_ohm', 'period', 'convert_unit', 'pre_output'],
     'options_disabled': ['interface'],
 

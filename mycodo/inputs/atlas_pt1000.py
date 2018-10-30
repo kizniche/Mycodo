@@ -3,7 +3,13 @@ import logging
 
 from mycodo.utils.system_pi import str_is_float
 from mycodo.inputs.base_input import AbstractInput
-from mycodo.inputs.sensorutils import convert_units
+
+# Measurements
+measurements = {
+    'temperature': {
+        'C': 1
+    }
+}
 
 # Input information
 INPUT_INFORMATION = {
@@ -11,8 +17,15 @@ INPUT_INFORMATION = {
     'input_manufacturer': 'Atlas',
     'input_name': 'Atlas PT-1000',
     'measurements_name': 'Temperature',
-    'measurements_list': ['temperature'],
-    'options_enabled': ['i2c_location', 'uart_location', 'period', 'convert_unit', 'pre_output'],
+    'measurements_dict': measurements,
+
+    'options_enabled': [
+        'i2c_location',
+        'uart_location',
+        'measurements_select',
+        'measurements_convert',
+        'period',
+        'pre_output'],
     'options_disabled': ['interface'],
 
     'interfaces': ['I2C', 'UART'],
@@ -41,19 +54,18 @@ class InputModule(AbstractInput):
             elif self.interface == 'I2C':
                 self.i2c_address = int(str(input_dev.i2c_location), 16)
                 self.i2c_bus = input_dev.i2c_bus
-            self.convert_to_unit = input_dev.convert_to_unit
             self.initialize_sensor()
 
     def __repr__(self):
         """  Representation of object """
-        return "<{cls}(temperature={temp})>".format(
+        return "<{cls}({temp})>".format(
             cls=type(self).__name__,
-            temp="{0:.2f}".format(self._temperature))
+            temp=self._temperature)
 
     def __str__(self):
         """ Return temperature information """
-        return "Temperature: {temp}".format(
-            temp="{0:.2f}".format(self._temperature))
+        return "{temp}".format(
+            temp=self._temperature)
 
     def __iter__(self):  # must return an iterator
         """ Atlas_PT1000Sensor iterates through live temperature readings """
@@ -63,7 +75,7 @@ class InputModule(AbstractInput):
         """ Get next temperature reading """
         if self.read():  # raised an error
             raise StopIteration  # required
-        return dict(temperature=float('{0:.2f}'.format(self._temperature)))
+        return self._temperature
 
     @property
     def temperature(self):
@@ -126,10 +138,15 @@ class InputModule(AbstractInput):
                 self.logger.error('I2C device is not set up.'
                                   'Check the log for errors.')
 
-        temp = convert_units(
-            'temperature', 'C', self.convert_to_unit, temp)
+        return_dict = {
+            'temperature': {
+                'C': {
+                    0: temp
+                }
+            }
+        }
 
-        return temp
+        return return_dict
 
     def read(self):
         """

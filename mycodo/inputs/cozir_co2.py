@@ -11,7 +11,7 @@ INPUT_INFORMATION = {
     'input_manufacturer': 'Cozir',
     'input_name': 'Cozir CO2',
     'measurements_name': 'CO2/Humidity/Temperature',
-    'measurements_list': ['co2', 'dewpoint', 'humidity', 'temperature'],
+    'measurements_dict': ['co2', 'dewpoint', 'humidity', 'temperature'],
     'options_enabled': ['uart_location', 'period', 'convert_unit', 'pre_output'],
     'options_disabled': ['interface'],
 

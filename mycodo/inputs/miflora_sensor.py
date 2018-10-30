@@ -10,7 +10,7 @@ INPUT_INFORMATION = {
     'input_manufacturer': 'Xiaomi',
     'input_name': 'Miflora',
     'measurements_name': 'EC/Light/Moisture/Temperature',
-    'measurements_list': ['battery', 'electrical_conductivity', 'light', 'moisture', 'temperature'],
+    'measurements_dict': ['battery', 'electrical_conductivity', 'light', 'moisture', 'temperature'],
     'options_enabled': ['bt_location', 'period', 'convert_unit', 'pre_output'],
     'options_disabled': ['interface'],
 

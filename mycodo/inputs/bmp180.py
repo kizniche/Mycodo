@@ -11,7 +11,7 @@ INPUT_INFORMATION = {
     'input_manufacturer': 'BOSCH',
     'input_name': 'BMP180',
     'measurements_name': 'Pressure/Temperature',
-    'measurements_list': ['altitude', 'pressure', 'temperature'],
+    'measurements_dict': ['altitude', 'pressure', 'temperature'],
     'options_enabled': ['period', 'convert_unit', 'pre_output'],
     'options_disabled': ['interface', 'i2c_location'],
 

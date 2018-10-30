@@ -9,7 +9,7 @@ INPUT_INFORMATION = {
     'input_manufacturer': 'Raspberry Pi',
     'input_name': 'GPIO State',
     'measurements_name': 'GPIO State',
-    'measurements_list': ['gpio_state'],
+    'measurements_dict': ['gpio_state'],
     'options_enabled': ['gpio_location', 'period', 'pre_output'],
     'options_disabled': ['interface'],
 

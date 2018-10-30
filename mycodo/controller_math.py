@@ -40,7 +40,7 @@ from mycodo.inputs.sensorutils import convert_units
 from mycodo.mycodo_client import DaemonControl
 from mycodo.utils.database import db_retrieve_table_daemon
 from mycodo.utils.influx import add_measure_influxdb
-from mycodo.utils.influx import check_if_adc_measurement
+from mycodo.utils.influx import check_if_channel_measurement
 from mycodo.utils.influx import read_last_influxdb
 from mycodo.utils.influx import read_past_influxdb
 
@@ -392,7 +392,7 @@ class MathController(threading.Thread):
                 input_measure = each_input_set.split(',')[1]
 
                 # Handle ADC request
-                input_measure = check_if_adc_measurement(input_measure)
+                input_measure = check_if_channel_measurement(input_measure)
 
                 last_measurement = read_last_influxdb(
                     input_id,

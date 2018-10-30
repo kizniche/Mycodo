@@ -61,6 +61,14 @@ MEASUREMENTS = {
         'name': lazy_gettext('Electrical Conductivity'),
         'meas': 'electrical_conductivity',
         'units': ['μS_cm']},
+    'electrical_current': {
+        'name': lazy_gettext('Electrical Current'),
+        'meas': 'electrical_current',
+        'units': ['A']},
+    'electrical_potential': {
+        'name': lazy_gettext('Electrical Potential'),
+        'meas': 'electrical_potential',
+        'units': ['V']},
     'frequency': {
         'name': lazy_gettext('Frequency'),
         'meas': 'frequency',
@@ -161,10 +169,6 @@ MEASUREMENTS = {
         'name': lazy_gettext('VOC'),
         'meas': 'voc',
         'units': ['ppb', 'ppm']},
-    'voltage': {
-        'name': lazy_gettext('Voltage'),
-        'meas': 'voltage',
-        'units': ['volts']},
 }
 
 # Measurement units
@@ -178,6 +182,9 @@ UNITS = {
     'μS_cm': {
         'name': lazy_gettext('Microsiemens per centimeter'),
         'unit': 'μS/cm'},
+    'A': {
+        'name': lazy_gettext('Amp'),
+        'unit': 'A'},
     'bool': {
         'name': lazy_gettext('Boolean'),
         'unit': 'bool'},
@@ -194,7 +201,7 @@ UNITS = {
         'name': lazy_gettext('Fahrenheit'),
         'unit': '°F'},
     'ft': {
-        'name': lazy_gettext('Feet'),
+        'name': lazy_gettext('Foot'),
         'unit': 'ft'},
     'GB': {
         'name': lazy_gettext('Gigabyte'),
@@ -218,13 +225,13 @@ UNITS = {
         'name': lazy_gettext('Kilojoule per kilogram'),
         'unit': 'kJ/kg'},
     'kPa': {
-        'name': lazy_gettext('Kilopascals'),
+        'name': lazy_gettext('Kilopascal'),
         'unit': 'kPa'},
     'lux': {
         'name': lazy_gettext('Lux'),
         'unit': 'lx'},
     'm': {
-        'name': lazy_gettext('Meters'),
+        'name': lazy_gettext('Meter'),
         'unit': 'm'},
     'm3_kg': {
         'name': lazy_gettext('Cubic meters per kilogram'),
@@ -239,7 +246,7 @@ UNITS = {
         'name': lazy_gettext('Minute'),
         'unit': 'm'},
     'Pa': {
-        'name': lazy_gettext('Pascals'),
+        'name': lazy_gettext('Pascal'),
         'unit': 'Pa'},
     'percent': {
         'name': lazy_gettext('Percent'),
@@ -268,8 +275,8 @@ UNITS = {
     'μg_m3': {
         'name': lazy_gettext('Microgram per cubic meter'),
         'unit': 'μg/m^3'},
-    'volts': {
-        'name': lazy_gettext('Volts'),
+    'V': {
+        'name': lazy_gettext('Volt'),
         'unit': 'V'}
 }
 

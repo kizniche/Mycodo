@@ -33,7 +33,7 @@ INPUT_INFORMATION = {
     'input_manufacturer': 'MAXIM',
     'input_name': 'MAX31856',
     'measurements_name': 'Temperature (Object/Die)',
-    'measurements_list': ['temperature', 'temperature_die'],
+    'measurements_dict': ['temperature', 'temperature_die'],
     'options_enabled': ['thermocouple_type', 'pin_cs', 'pin_miso', 'pin_mosi', 'pin_clock', 'period', 'convert_unit', 'pre_output'],
     'options_disabled': ['interface'],
 

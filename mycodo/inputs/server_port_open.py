@@ -10,7 +10,7 @@ INPUT_INFORMATION = {
     'input_manufacturer': 'Mycodo',
     'input_name': 'Server Port Open',
     'measurements_name': 'Boolean',
-    'measurements_list': ['boolean'],
+    'measurements_dict': ['boolean'],
     'options_enabled': ['location', 'port', 'period', 'pre_output'],
     'options_disabled': ['interface'],
 

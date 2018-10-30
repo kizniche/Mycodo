@@ -137,10 +137,12 @@ def parse_input_information():
 
                 dict_inputs[input_custom.INPUT_INFORMATION['input_name_unique']]['file_path'] = full_path
 
+                dict_inputs = dict_has_value(dict_inputs, input_custom, 'input_manufacturer')
                 dict_inputs = dict_has_value(dict_inputs, input_custom, 'input_name')
                 dict_inputs = dict_has_value(dict_inputs, input_custom, 'measurements_name')
-                dict_inputs = dict_has_value(dict_inputs, input_custom, 'measurements_list')
-                dict_inputs = dict_has_value(dict_inputs, input_custom, 'input_manufacturer')
+                dict_inputs = dict_has_value(dict_inputs, input_custom, 'measurements_dict')
+                dict_inputs = dict_has_value(dict_inputs, input_custom, 'measurements_convert_enabled')
+                dict_inputs = dict_has_value(dict_inputs, input_custom, 'measurements_rescale')
 
                 # Dependencies
                 dict_inputs = dict_has_value(dict_inputs, input_custom, 'dependencies_module')
@@ -185,17 +187,9 @@ def parse_input_information():
                 dict_inputs = dict_has_value(dict_inputs, input_custom, 'sample_time')
 
                 # Analog-to-digital converter
-                dict_inputs = dict_has_value(dict_inputs, input_custom, 'analog_to_digital_converter')
-                dict_inputs = dict_has_value(dict_inputs, input_custom, 'adc_channels')
-                dict_inputs = dict_has_value(dict_inputs, input_custom, 'adc_channels_selected')
                 dict_inputs = dict_has_value(dict_inputs, input_custom, 'adc_gain')
                 dict_inputs = dict_has_value(dict_inputs, input_custom, 'adc_resolution')
                 dict_inputs = dict_has_value(dict_inputs, input_custom, 'adc_sample_speed')
-                dict_inputs = dict_has_value(dict_inputs, input_custom, 'adc_volts_min')
-                dict_inputs = dict_has_value(dict_inputs, input_custom, 'adc_volts_max')
-                dict_inputs = dict_has_value(dict_inputs, input_custom, 'adc_units_min')
-                dict_inputs = dict_has_value(dict_inputs, input_custom, 'adc_units_max')
-                dict_inputs = dict_has_value(dict_inputs, input_custom, 'adc_inverse_unit_scale')
 
                 # Misc
                 dict_inputs = dict_has_value(dict_inputs, input_custom, 'period')

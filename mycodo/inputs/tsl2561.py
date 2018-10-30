@@ -10,7 +10,7 @@ INPUT_INFORMATION = {
     'input_manufacturer': 'TAOS',
     'input_name': 'TSL2561',
     'measurements_name': 'Light',
-    'measurements_list': ['light'],
+    'measurements_dict': ['light'],
     'options_enabled': ['i2c_location', 'period', 'convert_unit', 'pre_output'],
     'options_disabled': ['interface'],
 

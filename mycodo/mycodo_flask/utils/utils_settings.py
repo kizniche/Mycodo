@@ -348,10 +348,10 @@ def settings_input_import(form):
             elif input_info.INPUT_INFORMATION['measurements_name'] == '':
                 error.append("'measurements_name' list is empty")
 
-            if 'measurements_list' not in input_info.INPUT_INFORMATION:
-                error.append("'measurements_list' not found in INPUT_INFORMATION dictionary")
-            elif not input_info.INPUT_INFORMATION['measurements_list']:
-                error.append("'measurements_list' list is empty")
+            if 'measurements_dict' not in input_info.INPUT_INFORMATION:
+                error.append("'measurements_dict' not found in INPUT_INFORMATION dictionary")
+            elif not input_info.INPUT_INFORMATION['measurements_dict']:
+                error.append("'measurements_dict' list is empty")
 
             if 'dependencies_module' in input_info.INPUT_INFORMATION:
                 if type(input_info.INPUT_INFORMATION['dependencies_module']) is not list:

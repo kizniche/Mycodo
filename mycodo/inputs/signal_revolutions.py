@@ -11,7 +11,7 @@ INPUT_INFORMATION = {
     'input_manufacturer': 'Mycodo',
     'input_name': 'Signal (Revolutions)',
     'measurements_name': 'RPM',
-    'measurements_list': ['revolutions'],
+    'measurements_dict': ['revolutions'],
     'options_enabled': ['gpio_location', 'rpm_pulses_per_rev', 'weighting', 'sample_time', 'period', 'convert_unit', 'pre_output'],
     'options_disabled': ['interface'],
 

@@ -16,7 +16,7 @@ INPUT_INFORMATION = {
     'input_manufacturer': 'BOSCH',
     'input_name': 'BME280',
     'measurements_name': 'Pressure/Humidity/Temperature',
-    'measurements_list': ['altitude', 'dewpoint', 'humidity', 'pressure', 'temperature'],
+    'measurements_dict': ['altitude', 'dewpoint', 'humidity', 'pressure', 'temperature'],
     'options_enabled': ['period', 'convert_unit', 'pre_output'],
     'options_disabled': ['interface', 'i2c_location'],
 

@@ -13,7 +13,7 @@ INPUT_INFORMATION = {
     'input_manufacturer': 'Catnip Electronics',
     'input_name': 'Chirp',
     'measurements_name': 'Light/Moisture/Temperature',
-    'measurements_list': ['light', 'moisture', 'temperature'],
+    'measurements_dict': ['light', 'moisture', 'temperature'],
     'options_enabled': ['i2c_location', 'period', 'convert_unit', 'pre_output'],
     'options_disabled': ['interface'],
 

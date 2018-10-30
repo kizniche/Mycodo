@@ -18,7 +18,7 @@ INPUT_INFORMATION = {
     'input_manufacturer': 'Texas Instruments',
     'input_name': 'HDC1000',
     'measurements_name': 'Humidity/Temperature',
-    'measurements_list': ['dewpoint', 'humidity', 'temperature'],
+    'measurements_dict': ['dewpoint', 'humidity', 'temperature'],
     'options_enabled': ['i2c_location', 'period', 'resolution', 'resolution_2', 'convert_unit', 'pre_output'],
     'options_disabled': ['interface'],
 

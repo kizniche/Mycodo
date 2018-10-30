@@ -10,7 +10,7 @@ INPUT_INFORMATION = {
     'input_manufacturer': 'MAXIM',
     'input_name': 'MAX31855',
     'measurements_name': 'Temperature (Object/Die)',
-    'measurements_list': ['temperature', 'temperature_die'],
+    'measurements_dict': ['temperature', 'temperature_die'],
     'options_enabled': ['period', 'pin_clock', 'pin_cs', 'pin_miso', 'convert_unit', 'pre_output'],
     'options_disabled': ['interface'],
 

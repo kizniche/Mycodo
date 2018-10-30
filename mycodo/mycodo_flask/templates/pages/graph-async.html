@@ -342,12 +342,12 @@ $(document).ready(function() {
             data: []
           },
 
-            {%- elif each_input.measurements == 'adc_channels' -%}  {# ADC #}
+            {%- elif each_input.measurements.startswith('channel_') -%}  {# ADC #}
 
               {% set meas_test =  each_id_meas.split(',')[1].split('_') %}
-              {%- if meas_test|length > 1 and meas_test[0] == 'adc' and meas_test[1] == 'channel' -%}
+              {%- if meas_test|length > 1 and meas_test[0] == 'channel_' -%}
           {
-            name: '{{each_input.name}} CH{{meas_test[2]|int + 1}} ({{measurement_units[meas_test[3]]['name']}}, {{use_unit[each_input.unique_id]['adc'][meas_test[2]][meas_test[3]]}})',
+            name: '{{each_input.name}} CH{{meas_test[2]|int + 1}} ({{measurement_units[meas_test[3]]['name']}}, {{use_unit[each_input.unique_id]['channels'][meas_test[2]][meas_test[3]]}})',
             type: 'line',
             tooltip: {
               valueSuffix: '{%- if meas_test[4] in dict_units -%}{{' ' + dict_units[meas_test[4]]['unit']}}{%- endif -%}',

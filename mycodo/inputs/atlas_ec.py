@@ -11,7 +11,7 @@ INPUT_INFORMATION = {
     'input_manufacturer': 'Atlas',
     'input_name': 'Atlas EC',
     'measurements_name': 'Electrical Conductivity',
-    'measurements_list': ['electrical_conductivity'],
+    'measurements_dict': ['electrical_conductivity'],
     'options_enabled': ['i2c_location', 'uart_location', 'period', 'convert_unit', 'pre_output'],
     'options_disabled': ['interface'],
 

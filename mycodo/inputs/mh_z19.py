@@ -30,7 +30,7 @@ INPUT_INFORMATION = {
     'input_manufacturer': 'Winsen',
     'input_name': 'MH-Z19',
     'measurements_name': 'CO2',
-    'measurements_list': ['co2'],
+    'measurements_dict': ['co2'],
     'options_enabled': ['uart_location', 'uart_baud_rate', 'custom_options', 'period',  'convert_unit', 'pre_output'],
     'options_disabled': ['interface'],
 

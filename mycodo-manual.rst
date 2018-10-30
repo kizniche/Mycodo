@@ -1602,7 +1602,7 @@ Create Your Own Input Module
 
 ***This section is a work-in-progress***
 
-If you have a sensor that is not currently supported by Mycodo, you can build your own input module and import it into Mycodo. All information about an input is contained within the input module, set in the dictionary 'INPUT_INFORMATION'. Each module will requires at a minimum for these variables to be set: 'input_name_unique', 'input_manufacturer', 'input_name', 'measurements_name', and 'measurements_list'.
+If you have a sensor that is not currently supported by Mycodo, you can build your own input module and import it into Mycodo. All information about an input is contained within the input module, set in the dictionary 'INPUT_INFORMATION'. Each module will requires at a minimum for these variables to be set: 'input_name_unique', 'input_manufacturer', 'input_name', 'measurements_name', and 'measurements_dict'.
 
 Open any of the built-in modules located in the inputs directory (https://github.com/kizniche/Mycodo/mycodo/inputs/) for examples of the proper formatting.
 

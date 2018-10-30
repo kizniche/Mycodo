@@ -10,7 +10,7 @@ INPUT_INFORMATION = {
     'input_manufacturer': 'Ams',
     'input_name': 'CCS811',
     'measurements_name': 'CO2/VOC/Temperature',
-    'measurements_list': ['co2', 'voc', 'temperature'],
+    'measurements_dict': ['co2', 'voc', 'temperature'],
     'options_enabled': ['i2c_location', 'period', 'convert_unit', 'pre_output'],
     'options_disabled': ['interface'],
 

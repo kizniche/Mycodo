@@ -1,14 +1,24 @@
 # coding=utf-8
 import logging
 import time
+from collections import OrderedDict
 from datetime import datetime
 
 import os
 
 from mycodo.config import PATH_CAMERAS
+from mycodo.databases.models import InputMeasurements
+from mycodo.inputs.base_input import AbstractInput
+from mycodo.utils.database import db_retrieve_table_daemon
+from mycodo.utils.image import generate_thermal_image_from_pixels
 from mycodo.utils.system_pi import assure_path_exists
 
-from mycodo.utils.image import generate_thermal_image_from_pixels
+# Measurements
+measurements = {
+    'temperature': {
+        'C': 64
+    }
+}
 
 # Input information
 INPUT_INFORMATION = {
@@ -16,8 +26,19 @@ INPUT_INFORMATION = {
     'input_manufacturer': 'Panasonic',
     'input_name': 'AMG8833',
     'measurements_name': '8x8 Temperature Grid',
-    'measurements_list': ['adc_channels'],
-    'options_enabled': ['i2c_location', 'adc_channels', 'period', 'adc_options', 'pre_output'],
+    'measurements_dict': measurements,
+    'measurements_convert_enabled': False,
+    'measurements_rescale': True,
+    'scale_from_min': 0.0,
+    'scale_from_max': 5.0,
+
+    'options_enabled': [
+        'i2c_location',
+        'measurements_select',
+        'measurements_convert',
+        'period',
+        'pre_output'
+    ],
     'options_disabled': ['interface'],
 
     'dependencies_module': [
@@ -28,19 +49,18 @@ INPUT_INFORMATION = {
         ('pip-pypi', 'w1thermsensor', 'w1thermsensor'),
         ('pip-pypi', 'w1thermsensor', 'w1thermsensor')
     ],
+
     'interfaces': ['I2C'],
     'i2c_location': ['0x69', '0x68'],
     'i2c_address_editable': False,
-
-    'analog_to_digital_converter': True,
-    'adc_channels': 64,
 }
 
 
-class ADCModule(object):
+class InputModule(AbstractInput):
     """ A sensor support class that monitors the AMG8833's temperature """
 
     def __init__(self, input_dev, testing=False):
+        super(InputModule, self).__init__()
         self.logger = logging.getLogger("mycodo.inputs.amg8833")
         self._temperatures = None
 
@@ -52,9 +72,9 @@ class ADCModule(object):
         self.nx = 8
         self.ny = 8
 
-        self.adc_channels_selected = []
-        for each_channel in input_dev.adc_channels_selected.split(','):
-            self.adc_channels_selected.append(int(each_channel))
+        self.input_measurements = db_retrieve_table_daemon(
+            InputMeasurements).filter(
+                InputMeasurements.input_id == input_dev.unique_id).all()
 
         if not testing:
             from Adafruit_AMG88xx import Adafruit_AMG88xx
@@ -63,23 +83,13 @@ class ADCModule(object):
             self.Adafruit_AMG88xx = Adafruit_AMG88xx
             self.i2c_address = int(str(input_dev.i2c_location), 16)
             self.i2c_bus = input_dev.i2c_bus
-            self.convert_to_unit = input_dev.convert_to_unit
             self.input_dev = input_dev
             self.sensor = self.Adafruit_AMG88xx(address=self.i2c_address,
                                                 busnum=self.i2c_bus)
             time.sleep(.1)  # wait for it to boot
 
-    def __repr__(self):
-        """  Representation of object """
-        return "<{cls}(temperature={temp})>".format(
-            cls=type(self).__name__, temp="{0:.2f}".format(self._temperatures))
-
-    def __str__(self):
-        """ Return temperature information """
-        return "Temperatures: {}".format("{0:.2f}".format(self._temperatures))
-
     def __iter__(self):  # must return an iterator
-        """ DS18B20Sensor iterates through live temperature readings """
+        """ Support the iterator protocol. """
         return self
 
     def next(self):
@@ -98,7 +108,12 @@ class ADCModule(object):
     def get_measurement(self):
         """ Gets the AMG8833's measurements """
         self._temperatures = None
-        pixels_dict = {}
+
+        pixels_dict = {
+            'temperature': {
+                'C': OrderedDict()
+            }
+        }
 
         pixels = self.sensor.readPixels()
 
@@ -107,9 +122,9 @@ class ADCModule(object):
             self.logger.error("Max Pixel = {0} C".format(max(pixels)))
             self.logger.error("Thermistor = {0} C".format(self.sensor.readThermistor()))
 
-        for index, each_pixel in enumerate(pixels):
-            if index in self.adc_channels_selected:
-                pixels_dict['adc_channel_{}'.format(index)] = each_pixel
+        for meas in self.input_measurements:
+            if meas.is_enabled:
+                pixels_dict[meas.measurement][meas.unit][meas.channel] = pixels[meas.channel]
 
         if self.save_image:
             timestamp = datetime.now().strftime('%Y-%m-%d_%H-%M-%S')

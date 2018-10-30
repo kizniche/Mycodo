@@ -18,7 +18,6 @@ class Input(CRUDMixin, db.Model):
     interface = db.Column(db.Text, default=None)  # Communication interface (I2C, UART, etc.)
     period = db.Column(db.Float, default=15.0)  # Duration between readings
     power_output_id = db.Column(db.String, default=None)
-    measurements = db.Column(db.Text, default='')  # Measurements separated by commas
     resolution = db.Column(db.Integer, default=0)
     resolution_2 = db.Column(db.Integer, default=0)
     sensitivity = db.Column(db.Integer, default=0)
@@ -26,11 +25,11 @@ class Input(CRUDMixin, db.Model):
     ref_ohm = db.Column(db.Integer, default=None)
     calibrate_sensor_measure = db.Column(db.Text, default=None)  # sensor ID and measurement (CSV)
 
-    # TODO: Next major version: rename "convert_to_unit" to "selected_units"
-    convert_to_unit = db.Column(db.Text, default='')
-
     location = db.Column(db.Text, default='')  # GPIO pin or i2c address to communicate with sensor
     gpio_location = db.Column(db.Integer, default=None)  # Pin location for GPIO communication
+
+    # Channels
+    measurements_convert_enabled = db.Column(db.Boolean, default=None)
 
     # I2C
     i2c_location = db.Column(db.Text, default=None)  # Address location for I2C communication
@@ -61,16 +60,9 @@ class Input(CRUDMixin, db.Model):
     sht_voltage = db.Column(db.Text, default='3.5')
 
     # Analog to digital converter options
-    adc_channels = db.Column(db.Integer, default=0)
-    adc_channels_selected = db.Column(db.Text, default='')
     adc_gain = db.Column(db.Integer, default=1)
     adc_resolution = db.Column(db.Integer, default=18)
     adc_sample_speed = db.Column(db.Text, default='')
-    adc_volts_min = db.Column(db.Text, default='')
-    adc_volts_max = db.Column(db.Text, default='')
-    adc_units_min = db.Column(db.Text, default='')
-    adc_units_max = db.Column(db.Text, default='')
-    adc_inverse_unit_scale = db.Column(db.Text, default='')
 
     # Command options
     cmd_command = db.Column(db.Text, default=None)
@@ -96,3 +88,36 @@ class Input(CRUDMixin, db.Model):
 
     def __repr__(self):
         return "<{cls}(id={s.id})>".format(s=self, cls=self.__class__.__name__)
+
+
+class InputMeasurements(CRUDMixin, db.Model):
+    __tablename__ = "input_measurements"
+    __table_args__ = {'extend_existing': True}
+
+    id = db.Column(db.Integer, unique=True, primary_key=True)
+    unique_id = db.Column(db.String, nullable=False, unique=True, default=set_uuid)
+
+    name = db.Column(db.Text, default='')
+    input_id = db.Column(db.Text, default=None)
+
+    # Default measurement/unit
+    is_enabled = db.Column(db.Boolean, default=True)
+    measurement = db.Column(db.Text, default='')
+    unit = db.Column(db.Text, default='')
+    channel = db.Column(db.Integer, default=None)
+    single_channel = db.Column(db.Boolean, default=None)
+
+    # Rescale measurement
+    measurement_rescaled = db.Column(db.Boolean, default=False)
+    invert_scale = db.Column(db.Boolean, default=False)
+    rescaled_measurement = db.Column(db.Text, default='')
+    rescaled_unit = db.Column(db.Text, default='')
+    scale_from_min = db.Column(db.Float, default=0)
+    scale_from_max = db.Column(db.Float, default=10)
+    scale_to_min = db.Column(db.Float, default=0)
+    scale_to_max = db.Column(db.Float, default=20)
+
+    # Converted measurement/unit (from either rescaled or default)
+    convert_measurement = db.Column(db.Boolean, default=False)
+    converted_measurement = db.Column(db.Text, default='')
+    converted_unit = db.Column(db.Text, default='')

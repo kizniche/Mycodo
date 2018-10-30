@@ -52,7 +52,7 @@ INPUT_INFORMATION = {
 
     # Measurement information
     'measurements_name': 'Temperature',
-    'measurements_list': ['temperature'],  # List of strings
+    'measurements_dict': ['temperature'],  # List of strings
 
     # Web User Interface display options
     # Options that are enabled will be editable from the input options page.
@@ -141,12 +141,6 @@ INPUT_INFORMATION = {
 
     # Analog-to-digital converter options
     'analog_to_digital_converter': True,  # Boolean
-    'adc_channel': [  # List of tuples
-        (0, 'Channel 0'),
-        (1, 'Channel 1'),
-        (2, 'Channel 2'),
-        (3, 'Channel 3')
-    ],
     'adc_gain': [  # List of tuples
         (1, '1'),
         (2, '2'),
@@ -155,8 +149,8 @@ INPUT_INFORMATION = {
         (8, '8'),
         (16, '16')
     ],
-    'adc_volts_min': -4.096,  # Float
-    'adc_volts_max': 4.096,  # Float
+    'scale_from_min': -4.096,  # Float
+    'scale_from_max': 4.096,  # Float
 
     # Miscellaneous options
     'period': 15,  # Float

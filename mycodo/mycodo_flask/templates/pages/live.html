@@ -6,17 +6,19 @@
 
 {% block head %}
   <script>
-    function updateMeasurements(input_id, sensor_measurement, period) {
-      var url = '/last/' + sensor_measurement + '/' + input_id + '/' + period.toString();
+    function updateMeasurements(input_id, measurement, unit, channel, period) {
+      var url = '/last/' + input_id + '/' + measurement + '/' + unit + '/' + channel + '/' + period.toString();
+      var measure_string = '';
+      measure_string = input_id + '-' + measurement + '-' + unit + '-' + channel;
       $.ajax(url, {
         success: function(data, responseText, jqXHR) {
           if (jqXHR.status === 204) {
-            document.getElementById(input_id + "-" + sensor_measurement + "-time").innerHTML = "No Data Last " + period.toString() + " sec";
-            document.getElementById(input_id + "-" + sensor_measurement + "-value").innerHTML = "0";
+            document.getElementById(measure_string + "-time").innerHTML = "No Data Last " + period.toString() + " sec";
+            document.getElementById(measure_string + "-value").innerHTML = "0";
           }
           else {
             var time = data[0];
-            var measurement = parseFloat(data[1].toFixed(3));
+            var measurement_val = parseFloat(data[1].toFixed(3));
             var date = new Date(parseFloat(time));
             var year = date.getFullYear();
             var month = date.getMonth() + 1;
@@ -24,54 +26,45 @@
             var hours = date.getHours();
             var minutes = "0" + date.getMinutes();
             var seconds = "0" + date.getSeconds();
-            document.getElementById(input_id + "-" + sensor_measurement + "-time").innerHTML = year + "/" + month + "/" + day + " " + hours + ':' + minutes.substr(-2) + ':' + seconds.substr(-2);
-            document.getElementById(input_id + "-" + sensor_measurement + "-value").innerHTML = measurement;
+            document.getElementById(measure_string + "-time").innerHTML = year + "/" + month + "/" + day + " " + hours + ':' + minutes.substr(-2) + ':' + seconds.substr(-2);
+            document.getElementById(measure_string + "-value").innerHTML = measurement_val;
           }
         },
         error: function(XMLHttpRequest, textStatus, errorThrown) {
-          document.getElementById(input_id + "-" + sensor_measurement + "-time").innerHTML = "No Data Last " + period.toString() + " sec";
-          document.getElementById(input_id + "-" + sensor_measurement + "-value").innerHTML = "0";
+          document.getElementById(measure_string + "-time").innerHTML = "No Data Last " + period.toString() + " sec";
+          document.getElementById(measure_string + "-value").innerHTML = "0";
         },
         cache: false
       });
     }
 
-    function liveTextData(input_id, sensor_measurement, period) {
+    function liveTextData(input_id, measurement, unit, channel, period) {
       // Update when page first loads
-      updateMeasurements(input_id, sensor_measurement, period);
+      updateMeasurements(input_id, measurement, unit, channel, period);
       setInterval(function () {
         // Update after every 30 seconds
-        updateMeasurements(input_id, sensor_measurement, period);
+        updateMeasurements(input_id, measurement, unit, channel, period);
       }, 30000);
     }
+
+
 
     $(function() {
       {%- set temperatures = ['dewpoint',
                               'temperature',
                               'temperature_die',
                               'temperature_object'] -%}
+
       {%- for each_input in input if each_input.is_activated -%}
-        {%- set measurement_list = each_input.measurements.split(',') -%}
-        {%- for each_measurement in measurement_list %}
-          {% if each_measurement == 'edge' -%}
-          liveTextData('{{each_input.unique_id}}', '{{each_measurement}}', '0');
-          {% elif each_measurement == 'adc_channels' -%}
-            {% for each_channel, each_measure_set in use_unit[each_input.unique_id]['adc'].items() %}
-              {% for each_measure, each_unit in each_measure_set.items() %}
-                {%- set measure_string = 'adc_channel_' + each_channel + '_' + each_measure + '_' + each_unit -%}
-          liveTextData('{{each_input.unique_id}}', '{{measure_string}}', {{each_input.period + 1}});
-              {% endfor -%}
-            {% endfor -%}
-          {% else -%}
-          liveTextData('{{each_input.unique_id}}', '{{each_measurement}}', {{each_input.period + 1}});
-          {%- endif -%}
-        {%- endfor -%}
+        {% for each_meas in input_measurements if each_meas.input_id == each_input.unique_id and each_meas.is_enabled %}
+          liveTextData('{{each_input.unique_id}}', '{{each_meas.measurement}}', '{{each_meas.unit}}', '{{each_meas.channel}}', {{each_input.period + 1}});
+        {% endfor %}
       {%- endfor -%}
 
       {%- for each_math in math if each_math.is_activated -%}
         {%- set measurement_list = each_math.measure.split(',') -%}
         {%- for each_measurement in measurement_list %}
-          liveTextData('{{each_math.unique_id}}', '{{each_measurement}}', {{each_math.period + 1}});
+          liveTextData('{{each_math.unique_id}}', '{{each_measurement}}', '', '', {{each_math.period + 1}});
         {%- endfor -%}
       {%- endfor -%}
     });
@@ -114,43 +107,15 @@
           {%- endif -%}
         </div>
 
-      {% if each_input.measurements != 'adc_channels' %}
-
         <div class="col-xs-12 col-sm-6 text-right">
           {{_('Measurement')}} | {{_('Timestamp')}}
+        {% for each_meas in input_measurements if each_meas.input_id == each_input.unique_id and each_meas.is_enabled %}
+          {% set measure_string = each_input.unique_id + '-' + each_meas.measurement + '-' + each_meas.unit + '-' + each_meas.channel|string %}
           <div>
-            {% for each_measure in each_input.measurements.split(',') %}
-              {% if each_measure and each_measure in dict_units and dict_units[each_measure]['meas'] == 'temperature' %}
-                <b><span id="{{each_input.unique_id}}-{{each_measure}}-value">0.0</span> {% if use_unit[each_input.unique_id][each_measure] %}{{dict_units[use_unit[each_input.unique_id][each_measure]]['unit']}}{% else %}{{dict_units[each_measure]['unit']}}{% endif %}
-                  {%- if each_measure == 'dewpoint' %} DP
-                  {% elif each_measure == 'temperature_object' %} Obj
-                  {% elif each_measure == 'temperature_die' %} Die
-                  {%- endif -%}</b> ({{dict_measurements[each_measure]['name']}}) | <span id="{{each_input.unique_id}}-{{each_measure}}-time">&lt;{{_('Please wait')}}&gt;</span><br>
-              {% else %}
-                <b><span id="{{each_input.unique_id}}-{{each_measure}}-value">0.0</span> {% if use_unit[each_input.unique_id][each_measure] and use_unit[each_input.unique_id][each_measure] in dict_units %}{{dict_units[use_unit[each_input.unique_id][each_measure]]['unit']}}{% endif %}</b> ({{dict_measurements[each_measure]['name']}}) | <span id="{{each_input.unique_id}}-{{each_measure}}-time">&lt;{{_('Please wait')}}&gt;</span><br>
-              {% endif %}
-            {% endfor %}
+            <b><span id="{{measure_string}}-value">0.0</span> {{dict_units[each_meas.unit]['unit']}}</b> ({{dict_measurements[each_meas.measurement]['name']}}){% if not each_meas.single_channel %} CH{{each_meas.channel + 1}}{% endif %} | <span id="{{measure_string}}-time">&lt;{{_('Please wait')}}&gt;</span><br>
           </div>
-        </div>
-
-      {% elif each_input.measurements == 'adc_channels' %}
-
-        <div class="col-xs-12 col-sm-6 text-right">
-          {{_('Measurement')}} | {{_('Timestamp')}}
-        {% for each_channel, each_measure_set in use_unit[each_input.unique_id]['adc'].items() %}
-          {% for each_measure, each_unit in each_measure_set.items() %}
-
-          {% set measure_string = 'adc_channel_' + each_channel + '_' + each_measure + '_' + each_unit %}
-          <div>
-            <b><span id="{{each_input.unique_id}}-{{measure_string}}-value">0.0</span> {{dict_units[each_unit]['unit']}}</b> ({{dict_measurements[each_measure]['name']}}) CH{{each_channel|int + 1}} | <span id="{{each_input.unique_id}}-{{measure_string}}-time">&lt;{{_('Please wait')}}&gt;</span><br>
-          </div>
-
-          {% endfor %}
         {% endfor %}
         </div>
-
-      {% endif %}
-
       </div>
 
       {%- for each_pid in pid if each_pid.is_activated and each_pid.measurement.split(',')[0] == each_input.unique_id -%}

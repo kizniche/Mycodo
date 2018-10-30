@@ -44,7 +44,7 @@ from mycodo.databases.models import SMTP
 from mycodo.mycodo_client import DaemonControl
 from mycodo.utils.database import db_retrieve_table_daemon
 from mycodo.utils.function_actions import trigger_function_actions
-from mycodo.utils.influx import check_if_adc_measurement
+from mycodo.utils.influx import check_if_channel_measurement
 from mycodo.utils.influx import read_last_influxdb
 
 MYCODO_DB_PATH = 'sqlite:///' + SQL_DATABASE_MYCODO
@@ -329,7 +329,7 @@ class ConditionalController(threading.Thread):
         :type duration_sec: int
         """
         # Handle ADC query
-        measurement = check_if_adc_measurement(measurement)
+        measurement = check_if_channel_measurement(measurement)
 
         last_measurement = read_last_influxdb(
             unique_id, measurement, duration_sec=duration_sec)

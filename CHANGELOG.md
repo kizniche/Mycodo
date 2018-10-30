@@ -6,6 +6,7 @@ The Mycodo 7.0 brings a redesigned Conditional system. The remnants of Condition
 
  - Refactor Conditional system ([#493](https://github.com/kizniche/mycodo/issues/493))
  - Refactor Analog-to-digital converters ([#550](https://github.com/kizniche/mycodo/issues/550))
+ - Refactor Measurement/Unit system ([#550](https://github.com/kizniche/mycodo/issues/550))
  - Add Input: MCP9808 high accuracy I2C temperature sensor
  - Add Input: AMG8833 I2C 8x8 pixel thermal sensor
  - Add Function Action: Pause (pause for a duration of time before executing any remaining actions)

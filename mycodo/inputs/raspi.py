@@ -11,7 +11,7 @@ INPUT_INFORMATION = {
     'input_manufacturer': 'Raspberry Pi',
     'input_name': 'RPi CPU Temp',
     'measurements_name': 'Temperature',
-    'measurements_list': ['temperature'],
+    'measurements_dict': ['temperature'],
     'options_enabled': ['period', 'convert_unit'],
     'options_disabled': ['interface'],
 

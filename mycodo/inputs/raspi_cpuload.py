@@ -11,7 +11,7 @@ INPUT_INFORMATION = {
     'input_manufacturer': 'Raspberry Pi',
     'input_name': 'RPi CPU Load',
     'measurements_name': 'CPULoad',
-    'measurements_list': ['cpu_load_1m', 'cpu_load_5m', 'cpu_load_15m'],
+    'measurements_dict': ['cpu_load_1m', 'cpu_load_5m', 'cpu_load_15m'],
     'options_enabled': ['location', 'period'],
     'options_disabled': ['interface'],
 

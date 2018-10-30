@@ -97,36 +97,40 @@ TOOLTIPS_INPUT = {
     'rpm_pulses_per_rev': {
         'title': lazy_gettext('Pulses Per Rev'),
         'phrase': lazy_gettext('The number of pulses per revolution to calculate revolutions per minute (RPM)')},
-    'adc_channels_selected': {
-        'title': lazy_gettext('Channels Enabled'),
-        'phrase': lazy_gettext('The channels to measure from the the analog to digital converter')},
+    'measurements_selected': {
+        'title': lazy_gettext('Measurements Enabled'),
+        'phrase': lazy_gettext('The measurements to record')},
+    'measurements_convert_enabled': {
+        'title': lazy_gettext('Enable Measurement Convert'),
+        'phrase': lazy_gettext('Enable conversion of each measurement')},
+    'scale_from_min': {
+        'title': lazy_gettext('Unscaled Unit Min'),
+        'phrase': lazy_gettext('Unscaled minimum unit')},
+    'scale_from_max': {
+        'title': lazy_gettext('Unscaled Unit Max'),
+        'phrase': lazy_gettext('Unscaled maximum unit')},
+    'scale_to_min': {
+        'title': lazy_gettext('Resacled Unit Min'),
+        'phrase': lazy_gettext('Rescaled minimum unit')},
+    'scale_to_max': {
+        'title': lazy_gettext('Rescaled Unit Max'),
+        'phrase': lazy_gettext('Rescaled maximum unit')},
+    'invert_scale': {
+        'title': lazy_gettext('Invert Scale'),
+        'phrase': lazy_gettext('Invert the scale')},
+    'sht_voltage': {
+        'title': lazy_gettext('Voltage'),
+        'phrase': lazy_gettext('The input voltage to the sensor')},
     'adc_gain': {
         'title': lazy_gettext('Gain'),
-        'phrase': lazy_gettext('Adjust the gain to change the measurable voltage range. See ADC documentation for details.')},
+        'phrase': lazy_gettext(
+            'Adjust the gain to change the measurable voltage range. See ADC documentation for details.')},
     'adc_resolution': {
         'title': lazy_gettext('Resolution'),
         'phrase': lazy_gettext('ADC Resolution (see ADC documentation)')},
     'adc_sample_speed': {
         'title': lazy_gettext('Sample Speed'),
         'phrase': lazy_gettext('ADC Sample Speed (see ADC documentation)')},
-    'adc_volts_min': {
-        'title': lazy_gettext('Volts Min'),
-        'phrase': lazy_gettext('Minimum analog to digital converter input voltage.')},
-    'adc_volts_max': {
-        'title': lazy_gettext('Volts Max'),
-        'phrase': lazy_gettext('Maximum analog to digital converter input voltage.')},
-    'adc_units_min': {
-        'title': lazy_gettext('Units Min'),
-        'phrase': lazy_gettext('Minimum unit to convert the voltage to.')},
-    'adc_units_max': {
-        'title': lazy_gettext('Units Max'),
-        'phrase': lazy_gettext('Maximum unit to convert the voltage to.')},
-    'adc_inverse_unit_scale': {
-        'title': lazy_gettext('Inverse Unit Scale'),
-        'phrase': lazy_gettext('Inverse the scale (example: a high measurement returns a low unit value)')},
-    'sht_voltage': {
-        'title': lazy_gettext('Voltage'),
-        'phrase': lazy_gettext('The input voltage to the sensor')},
     # '': {
     #     'title': lazy_gettext(''),
     #     'phrase': lazy_gettext('')},

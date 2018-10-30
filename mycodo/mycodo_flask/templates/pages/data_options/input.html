@@ -107,7 +107,9 @@
         {% include 'pages/data_options/input_options/TEMPLATE_OPTIONS_Resolution_2.html' %}
         {% include 'pages/data_options/input_options/TEMPLATE_OPTIONS_Sensitivity.html' %}
 
-        {% include 'pages/data_options/input_options/TEMPLATE_OPTIONS_ADC_Channels.html' %}
+        {% include 'pages/data_options/input_options/TEMPLATE_OPTIONS_Measurements_Select.html' %}
+        {% include 'pages/data_options/input_options/TEMPLATE_OPTIONS_Measurements_Convert_Enable.html' %}
+
         {% include 'pages/data_options/input_options/TEMPLATE_OPTIONS_ADC_Gain.html' %}
         {% include 'pages/data_options/input_options/TEMPLATE_OPTIONS_ADC_Resolution.html' %}
         {% include 'pages/data_options/input_options/TEMPLATE_OPTIONS_ADC_Sample_Speed.html' %}
@@ -124,8 +126,8 @@
 
     </form>
 
-      {% if 'adc_options' in dict_inputs[each_input.device]['options_disabled'] or
-            'adc_options' in dict_inputs[each_input.device]['options_enabled'] %}
+      {% if 'measurements_convert' in dict_inputs[each_input.device]['options_enabled'] and
+            each_input.measurements_convert_enabled %}
 
         <div class="row small-gutters" style="border-bottom: 1px solid #ddd; padding: 0.5em">
           <div class="col-12">
@@ -136,7 +138,7 @@
           </div>
         </div>
 
-        {% include 'pages/data_options/input_options/TEMPLATE_OPTIONS_ADC_Options.html' %}
+        {% include 'pages/data_options/input_options/TEMPLATE_OPTIONS_Measurements_Convert.html' %}
       {% endif %}
 
   </div> <!- collapse container end ->

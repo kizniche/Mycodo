@@ -32,7 +32,7 @@ INPUT_INFORMATION = {
     'input_manufacturer': 'Winsen',
     'input_name': 'MH-Z16',
     'measurements_name': 'CO2',
-    'measurements_list': ['co2'],
+    'measurements_dict': ['co2'],
     'options_enabled': ['i2c_location', 'uart_location', 'period', 'convert_unit', 'pre_output'],
     'options_disabled': ['interface'],
 

@@ -10,7 +10,7 @@ INPUT_INFORMATION = {
     'input_manufacturer': 'Texas Instruments',
     'input_name': 'TMP006',
     'measurements_name': 'Temperature (Object/Die)',
-    'measurements_list': ['temperature_object', 'temperature_die'],
+    'measurements_dict': ['temperature_object', 'temperature_die'],
     'options_enabled': ['i2c_location', 'period', 'convert_unit', 'pre_output'],
     'options_disabled': ['interface'],
 

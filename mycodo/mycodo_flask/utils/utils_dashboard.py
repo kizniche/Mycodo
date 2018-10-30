@@ -10,6 +10,7 @@ from flask_babel import gettext
 from mycodo.databases.models import Dashboard
 from mycodo.databases.models import DisplayOrder
 from mycodo.databases.models import Input
+from mycodo.databases.models import InputMeasurements
 from mycodo.databases.models import Math
 from mycodo.databases.models import Output
 from mycodo.databases.models import PID
@@ -425,6 +426,7 @@ def graph_y_axes(dict_measurements):
 
     graph = Dashboard.query.all()
     input_dev = Input.query.all()
+    input_measurements = InputMeasurements.query.all()
     math = Math.query.all()
     output = Output.query.all()
     pid = PID.query.all()
@@ -452,53 +454,54 @@ def graph_y_axes(dict_measurements):
             # dashboard element
             for each_id_measure in ids_and_measures:
 
-                if len(each_id_measure.split(',')) > 1 and each_id_measure.split(',')[1].startswith('adc_channel_'):
+                if len(each_id_measure.split(',')) == 4:
                     if each_graph.unique_id not in y_axes:
                         y_axes[each_graph.unique_id] = []
 
-                    unit = each_id_measure.split(',')[1].split('_')[4]
+                    unit = each_id_measure.split(',')[2]
 
                     if not y_axes[each_graph.unique_id]:
                         y_axes[each_graph.unique_id] = [unit]
                     elif y_axes[each_graph.unique_id] and unit not in y_axes[each_graph.unique_id]:
                         y_axes.setdefault(each_graph.unique_id, []).append(unit)
 
-                else:
-                    if len(each_id_measure.split(',')) == 2:
-                        if each_graph.unique_id not in y_axes:
-                            y_axes[each_graph.unique_id] = []
+                elif len(each_id_measure.split(',')) == 2:
+                    if each_graph.unique_id not in y_axes:
+                        y_axes[each_graph.unique_id] = []
 
-                        unique_id = each_id_measure.split(',')[0]
-                        measurement = each_id_measure.split(',')[1]
+                    unique_id = each_id_measure.split(',')[0]
+                    measurement = each_id_measure.split(',')[1]
 
-                        y_axes[each_graph.unique_id] = check_func(
-                            each_device,
-                            unique_id,
-                            y_axes[each_graph.unique_id],
-                            measurement,
-                            dict_measurements,
-                            input_dev,
-                            output,
-                            math)
+                    y_axes[each_graph.unique_id] = check_func(
+                        each_device,
+                        unique_id,
+                        y_axes[each_graph.unique_id],
+                        measurement,
+                        dict_measurements,
+                        input_dev,
+                        input_measurements,
+                        output,
+                        math)
 
-                    elif len(each_id_measure.split(',')) == 3:
-                        if each_graph.unique_id not in y_axes:
-                            y_axes[each_graph.unique_id] = []
+                elif len(each_id_measure.split(',')) == 3:
+                    if each_graph.unique_id not in y_axes:
+                        y_axes[each_graph.unique_id] = []
 
-                        unique_id = each_id_measure.split(',')[0]
-                        measurement = each_id_measure.split(',')[1]
-                        unit = each_id_measure.split(',')[2]
+                    unique_id = each_id_measure.split(',')[0]
+                    measurement = each_id_measure.split(',')[1]
+                    unit = each_id_measure.split(',')[2]
 
-                        y_axes[each_graph.unique_id] = check_func(
-                            each_device,
-                            unique_id,
-                            y_axes[each_graph.unique_id],
-                            measurement,
-                            dict_measurements,
-                            input_dev,
-                            output,
-                            math,
-                            unit=unit)
+                    y_axes[each_graph.unique_id] = check_func(
+                        each_device,
+                        unique_id,
+                        y_axes[each_graph.unique_id],
+                        measurement,
+                        dict_measurements,
+                        input_dev,
+                        input_measurements,
+                        output,
+                        math,
+                        unit=unit)
 
     return y_axes
 
@@ -511,6 +514,7 @@ def graph_y_axes_async(dict_measurements, ids_measures):
     y_axes = []
 
     input_dev = Input.query.all()
+    input_measurements = InputMeasurements.query.all()
     math = Math.query.all()
     output = Output.query.all()
     pid = PID.query.all()
@@ -523,7 +527,7 @@ def graph_y_axes_async(dict_measurements, ids_measures):
         # Iterate through each set of ID and measurement of the dashboard element
         for each_id_measure in ids_measures:
 
-            if len(each_id_measure.split(',')) > 1 and each_id_measure.split(',')[1].startswith('adc_channel_'):
+            if len(each_id_measure.split(',')) > 1 and each_id_measure.split(',')[1].startswith('channel_'):
                 unit = each_id_measure.split(',')[1].split('_')[4]
 
                 if not y_axes:
@@ -549,6 +553,7 @@ def graph_y_axes_async(dict_measurements, ids_measures):
                                                 measurement,
                                                 dict_measurements,
                                                 input_dev,
+                                                input_measurements,
                                                 output,
                                                 math)
 
@@ -570,6 +575,7 @@ def graph_y_axes_async(dict_measurements, ids_measures):
                                                 measurement,
                                                 dict_measurements,
                                                 input_dev,
+                                                input_measurements,
                                                 output,
                                                 math,
                                                 unit=unit)
@@ -577,7 +583,7 @@ def graph_y_axes_async(dict_measurements, ids_measures):
     return y_axes
 
 
-def check_func(all_devices, unique_id, y_axes, measurement, dict_measurements, input_dev, output, math, unit=None):
+def check_func(all_devices, unique_id, y_axes, measurement, dict_measurements, input_dev, input_measurements, output, math, unit=None):
     """
     Generate a list of y-axes for Live and Asynchronous Graphs
     :param all_devices: Input, Math, Output, and PID SQL entries of a table
@@ -595,7 +601,7 @@ def check_func(all_devices, unique_id, y_axes, measurement, dict_measurements, i
         # If the ID saved to the dashboard element matches the table entry ID
         if each_device.unique_id == unique_id:
 
-            use_unit = use_unit_generate(input_dev, output, math)
+            use_unit = use_unit_generate(input_dev, input_measurements, output, math)
 
             # Add duration
             if measurement == 'duration_time':

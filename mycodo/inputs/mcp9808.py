@@ -7,16 +7,29 @@ from mycodo.inputs.sensorutils import convert_units
 # Input information
 INPUT_INFORMATION = {
     'input_name_unique': 'MCP9898',
-    'input_manufacturer': 'MICROCHIP',
+    'input_manufacturer': 'Microchip',
     'input_name': 'MCP9898',
     'measurements_name': 'Temperature',
-    'measurements_list': ['temperature'],
-    'options_enabled': ['i2c_location', 'period', 'convert_unit', 'pre_output'],
+    'measurements_dict': ['temperature'],
+    'options_enabled': [
+        'i2c_location',
+        'period',
+        'convert_unit',
+        'pre_output'
+    ],
     'options_disabled': ['interface'],
 
     'dependencies_module': [
-        ('pip-pypi', 'Adafruit_GPIO', 'Adafruit_GPIO'),
-        ('pip-git', 'Adafruit_MCP9808', 'git://github.com/adafruit/Adafruit_Python_MCP9808.git#egg=adafruit-mcp9808'),
+        (
+            'pip-pypi',
+            'Adafruit_GPIO',
+            'Adafruit_GPIO'
+         ),
+        (
+            'pip-git',
+            'Adafruit_MCP9808',
+            'git://github.com/adafruit/Adafruit_Python_MCP9808.git#egg=adafruit-mcp9808'
+        ),
     ],
     'interfaces': ['I2C'],
     'i2c_location': ['0x18', '0x19', '0x1a', '0x1b', '0x1c', '0x1d', '0x1e', '0x1f'],

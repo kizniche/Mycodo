@@ -11,17 +11,27 @@ INPUT_INFORMATION = {
     'input_manufacturer': 'Waveshare',
     'input_name': 'ADS1256',
     'measurements_name': 'Voltage (Analog-to-Digital Converter)',
-    'measurements_list': ['adc_channels'],
-    'options_enabled': ['adc_channels', 'adc_gain', 'adc_sample_speed', 'custom_options', 'adc_options', 'period', 'pre_output'],
+    'measurements_dict': ['channel_{}'.format(i) for i in range(8)],  # 8 Channels
+    'channels': 8,
+    'options_enabled': [
+        'measurements_select',
+        'channels_convert',
+        'adc_gain',
+        'adc_sample_speed',
+        'custom_options',
+        'period',
+        'pre_output'
+    ],
     'options_disabled': ['interface'],
 
+    'measurements_convert_enabled': True,
+    'channels_measurement': 'electrical_potential',
+    'channels_unit': 'V',
     'dependencies_module': [
         ('pip-pypi', 'wiringpi', 'wiringpi'),
         ('pip-git', 'pipyadc_py3', 'git://github.com/kizniche/PiPyADC-py3.git#egg=pipyadc_py3')  # PiPyADC ported to Python3
     ],
     'interfaces': ['UART'],
-    'analog_to_digital_converter': True,
-    'adc_channels': 8,
     'adc_gain': [
         (1, '1'),
         (2, '2'),
@@ -49,8 +59,8 @@ INPUT_INFORMATION = {
         ('5', '5'),
         ('2d5', '2.5')
     ],
-    'adc_volts_min': 0.0,
-    'adc_volts_max': 5.0,
+    'scale_from_min': 0.0,
+    'scale_from_max': 5.0,
 
     'custom_options': [
         {
@@ -68,11 +78,11 @@ INPUT_INFORMATION = {
             'name': lazy_gettext('Calibration'),
             'phrase': lazy_gettext('Set the calibration method to perform during Input activation')
         }
-    ]
+    ],
 }
 
 
-class ADCModule(object):
+class ChannelModule(object):
     """ ADC Read """
     def __init__(self, input_dev, testing=False):
         self.logger = logging.getLogger('mycodo.ads1256')
@@ -81,11 +91,11 @@ class ADCModule(object):
 
         self.adc_gain = input_dev.adc_gain
         self.adc_sample_speed = input_dev.adc_sample_speed
-        self.adc_channels = input_dev.adc_channels
+        self.channels = input_dev.channels
 
-        self.adc_channels_selected = []
-        for each_channel in input_dev.adc_channels_selected.split(','):
-            self.adc_channels_selected.append(int(each_channel))
+        self.measurements_selected = []
+        for each_channel in input_dev.measurements_selected.split(','):
+            self.measurements_selected.append(int(each_channel))
 
         if not testing:
             from ADS1256_definitions import POS_AIN0
@@ -174,8 +184,8 @@ class ADCModule(object):
             count += 1
 
             for each_channel, each_voltage in enumerate(voltages_list, 1):
-                if each_channel in self.adc_channels_selected:
-                    voltages_dict['adc_channel_{}'.format(each_channel)] = each_voltage
+                if each_channel in self.measurements_selected:
+                    voltages_dict['channel_{}'.format(each_channel)] = each_voltage
 
             time.sleep(0.85)
 
@@ -217,7 +227,7 @@ if __name__ == "__main__":
     input_dev_.unique_id = '1234-5678'
     input_dev_.adc_gain = '1'
     input_dev_.adc_sample_speed = '10'
-    input_dev_.adc_channel = 0
+    input_dev_.channels = 8
 
     ads = ADCModule(input_dev_)
     print("Channel 0: {}".format(ads.next()))

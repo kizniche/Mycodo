@@ -2,20 +2,43 @@
 import logging
 import time
 
+from mycodo.inputs.base_input import AbstractInput
+
+# Measurements
+measurements = {
+    'electrical_potential': {
+        'V': 4
+    }
+}
+
 # Input information
 INPUT_INFORMATION = {
     'input_name_unique': 'MCP342x',
     'input_manufacturer': 'Microchip',
     'input_name': 'MCP342x',
     'measurements_name': 'Voltage (Analog-to-Digital Converter)',
-    'measurements_list': ['adc_channels'],
-    'options_enabled': ['i2c_location', 'adc_channels', 'adc_gain', 'adc_resolution', 'adc_options', 'period', 'pre_output'],
+    'measurements_dict': measurements,
+    'measurements_convert_enabled': True,
+    'measurements_rescale': True,
+    'scale_from_min': -4.096,
+    'scale_from_max': 4.096,
+
+    'options_enabled': [
+        'i2c_location',
+        'measurements_select',
+        'measurements_convert',
+        'adc_gain',
+        'adc_resolution',
+        'period',
+        'pre_output'
+    ],
     'options_disabled': ['interface'],
 
     'dependencies_module': [
         ('pip-pypi', 'smbus2', 'smbus2'),
         ('pip-pypi', 'MCP342x', 'MCP342x==0.3.3')
     ],
+
     'interfaces': ['I2C'],
     'i2c_location': [
         '0x68',
@@ -25,8 +48,7 @@ INPUT_INFORMATION = {
         '0x6F'
     ],
     'i2c_address_editable': False,
-    'analog_to_digital_converter': True,
-    'adc_channels': 4,
+
     'adc_gain': [
         (1, '1'),
         (2, '2'),
@@ -38,15 +60,14 @@ INPUT_INFORMATION = {
         (14, '14'),
         (16, '16'),
         (18, '18')
-    ],
-    'adc_volts_min': -4.096,
-    'adc_volts_max': 4.096
+    ]
 }
 
 
-class ADCModule(object):
+class InputModule(AbstractInput):
     """ ADC Read """
     def __init__(self, input_dev, testing=False):
+        super(InputModule, self).__init__()
         self.logger = logging.getLogger('mycodo.mcp342x')
         self.acquiring_measurement = False
         self._voltages = None
@@ -55,11 +76,6 @@ class ADCModule(object):
         self.i2c_bus = input_dev.i2c_bus
         self.adc_gain = input_dev.adc_gain
         self.adc_resolution = input_dev.adc_resolution
-        self.adc_channels = input_dev.adc_channels
-
-        self.adc_channels_selected = []
-        for each_channel in input_dev.adc_channels_selected.split(','):
-            self.adc_channels_selected.append(int(each_channel))
 
         if not testing:
             from smbus2 import SMBus
@@ -89,29 +105,30 @@ class ADCModule(object):
 
     def get_measurement(self):
         self._voltages = None
-        voltages_dict = {}
-        voltage_index = 0
 
-        for each_channel in self.adc_channels_selected:
-            adc = self.MCP342x(self.bus,
-                               self.i2c_address,
-                               channel=each_channel,
-                               gain=self.adc_gain,
-                               resolution=self.adc_resolution)
-            voltages_dict['adc_channel_{}'.format(each_channel)] = adc.convert_and_read()
-            voltage_index += 1
+        return_dict = {
+            'electrical_potential': {
+                'V': {}
+            }
+        }
+
+        # for each_channel in range(4):
+        #     adc = self.MCP342x(self.bus,
+        #                        self.i2c_address,
+        #                        channel=each_channel,
+        #                        gain=self.adc_gain,
+        #                        resolution=self.adc_resolution)
+        #     return_dict['electrical_potential']['V'][each_channel] = adc.convert_and_read()
 
         # Dummy data for testing
-        # import random
-        # voltages_dict = {
-        #     'adc_channel_0': random.uniform(1.5, 1.9),
-        #     'adc_channel_1': random.uniform(2.3, 2.5),
-        #     'adc_channel_2': random.uniform(0.5, 0.6),
-        #     'adc_channel_3': random.uniform(3.5, 6.2),
-        # }
+        import random
+        for _ in range(4):
+            return_dict['electrical_potential']['V'][0] = random.uniform(1.5, 1.9)
+            return_dict['electrical_potential']['V'][1] = random.uniform(2.3, 2.5)
+            return_dict['electrical_potential']['V'][2] = random.uniform(0.5, 0.6)
+            return_dict['electrical_potential']['V'][3] = random.uniform(3.5, 6.2)
 
-        if voltages_dict:
-            return voltages_dict
+        return return_dict
 
     def read(self):
         """
@@ -146,10 +163,10 @@ if __name__ == "__main__":
                     unique_id='asdf-ghjk',
                     i2c_address='0x68',
                     i2c_bus=1,
-                    adc_channels=4,
-                    adc_channels_selected='0,1,2,3',
-                    adc_gain=1,
-                    adc_resolution=12)
+                    channels=4,
+                    measurements_selected='0,1,2,3',
+                    gain=1,
+                    resolution=12)
 
     mcp = ADCModule(settings)
 
