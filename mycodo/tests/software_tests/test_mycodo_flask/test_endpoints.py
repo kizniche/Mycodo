@@ -153,21 +153,20 @@ def test_add_all_data_devices_logged_in_as_admin(_, testapp):
     dict_inputs = parse_input_information()
     list_inputs_sorted = generate_form_input_list(dict_inputs)
 
-    choice_input = []
-
+    choices_input = []
     for each_input in list_inputs_sorted:
         if 'interfaces' not in dict_inputs[each_input]:
-            choice_input.append('{inp},'.format(inp=each_input))
+            choices_input.append('{inp},'.format(inp=each_input))
         else:
             for each_interface in dict_inputs[each_input]['interfaces']:
-                choice_input.append('{inp},{int}'.format(inp=each_input, int=each_interface))
+                choices_input.append('{inp},{int}'.format(inp=each_input, int=each_interface))
 
-    for each_input in choice_input:
+    for each_input in choices_input:
         print("Testing {}".format(each_input))
         response = add_data(testapp, data_type='input', input_type=each_input)
 
         # Verify success message flashed
-        assert "{} Input with ID".format(each_input) in response
+        assert "{} Input with ID".format(each_input.split(',')[0]) in response
         assert "successfully added" in response
 
         # Verify data was entered into the database
