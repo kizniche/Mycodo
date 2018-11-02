@@ -189,6 +189,7 @@ class InputMeasurementMod(FlaskForm):
         lazy_gettext('Name'),
         validators=[DataRequired()]
     )
+    select_measurement_unit = StringField(lazy_gettext('Unit Measurement'))
 
     scale_from_min = DecimalField(
         TOOLTIPS_INPUT['scale_from_min']['title'],

@@ -1,14 +1,16 @@
 # coding=utf-8
 import logging
 
+from mycodo.databases.models import InputMeasurements
 from mycodo.inputs.base_input import AbstractInput
+from mycodo.utils.database import db_retrieve_table_daemon
 from mycodo.utils.system_pi import cmd_output
 from mycodo.utils.system_pi import str_is_float
 
 # Measurements
 measurements = {
-    'linux_command': {
-        'linux_command': {0: {}}
+    'temperature': {
+        'C': {0: {}}
     }
 }
 
@@ -21,18 +23,15 @@ INPUT_INFORMATION = {
     'measurements_dict': measurements,
 
     'options_enabled': [
+        'measurements_select_measurement_unit',
         'period',
         'cmd_command',
-        'measurement_units',
-        'measurements_convert',
         'pre_output'
     ],
     'options_disabled': ['interface'],
 
     'interfaces': ['Mycodo'],
     'cmd_command': 'shuf -i 50-70 -n 1',
-    'measurement': 'Condition',
-    'measurement_units': 'unit'
 }
 
 
@@ -50,17 +49,23 @@ class InputModule(AbstractInput):
 
             self.command = input_dev.cmd_command
 
+            self.input_measurement = db_retrieve_table_daemon(
+                InputMeasurements).filter(
+                    InputMeasurements.input_id == input_dev.unique_id).first()
+            self.measurement = self.input_measurement.measurement
+            self.unit = self.input_measurement.unit
+
     def get_measurement(self):
         """ Determine if the return value of the command is a number """
         return_dict = {
-            'linux_command': {
-                'linux_command': {}
+            self.measurement: {
+                self.unit: {}
             }
         }
 
         out, _, _ = cmd_output(self.command)
         if str_is_float(out):
-            return_dict['linux_command']['linux_command'][0] = float(out)
+            return_dict[self.measurement][self.unit][0] = float(out)
             return return_dict
         else:
             self.logger.error(

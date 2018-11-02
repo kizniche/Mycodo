@@ -481,6 +481,10 @@ def measurement_mod(form):
 
         mod_meas.name = form.name.data
 
+        if form.select_measurement_unit.data:
+            mod_meas.measurement = form.select_measurement_unit.data.split(',')[0]
+            mod_meas.unit = form.select_measurement_unit.data.split(',')[1]
+
         if form.rescaled_measurement_unit.data != '' and ',' in form.rescaled_measurement_unit.data:
             mod_meas.rescaled_measurement = form.rescaled_measurement_unit.data.split(',')[0]
             mod_meas.rescaled_unit = form.rescaled_measurement_unit.data.split(',')[1]

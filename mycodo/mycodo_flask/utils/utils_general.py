@@ -365,62 +365,6 @@ def form_input_choices(choices, each_input, dict_inputs):
                         except:
                             logger.exception("Generating input choices")
 
-    # Linux Command Input
-    if (each_input.device == 'LinuxCommand' and
-            each_input.convert_to_unit != ''):
-        value = '{id},{meas}'.format(
-            id=each_input.unique_id,
-            meas=each_input.convert_to_unit.split(',')[0])
-        display = '[Input {id:02d}] {name} ({meas}, {unit})'.format(
-            id=each_input.id,
-            name=each_input.name,
-            meas=dict_measurements[each_input.convert_to_unit.split(',')[0]]['name'],
-            unit=dict_units[each_input.convert_to_unit.split(',')[1]]['unit'])
-        choices.update({value: display})
-
-    # ADC
-    if ('analog_to_digital_converter' in dict_inputs[each_input.device] and
-            dict_inputs[each_input.device]['analog_to_digital_converter'] and
-            each_input.convert_to_unit != ''):
-
-        error = False
-        chan_meas_unit_dict = {}
-        channels_measurement_units_list = each_input.convert_to_unit.split(';')
-
-        for each_channel in channels_measurement_units_list:
-            if len(each_channel.split(',')) == 3:
-                chan_meas_unit_dict[each_channel.split(',')[2]] = {}
-                chan_meas_unit_dict[each_channel.split(',')[2]]['measurement'] = each_channel.split(',')[0]
-                chan_meas_unit_dict[each_channel.split(',')[2]]['unit'] = each_channel.split(',')[1]
-            else:
-                error = True
-
-        if not error:
-            for each_channel_sel in each_input.measurements_selected.split(','):
-                value = '{id},channel_{chan},electrical_conductivity,V,{chan}'.format(
-                    id=each_input.unique_id,
-                    chan=each_channel_sel)
-                display = '[Input {id:02d}] {name}  (CH{chan}, Volts)'.format(
-                    id=each_input.id,
-                    name=each_input.name,
-                    chan=int(each_channel_sel) + 1)
-                choices.update({value: display})
-
-                for each_channel_ctu in each_input.convert_to_unit.split(';'):
-                    if each_channel_ctu.split(',')[2] == each_channel_sel and each_channel_ctu.split(',')[0] != '':
-                        value = '{id},channel_{chan},{meas},{unit},{chan}'.format(
-                            id=each_input.unique_id,
-                            meas=each_channel_ctu.split(',')[0],
-                            unit=chan_meas_unit_dict[each_channel_sel]['unit'],
-                            chan=each_channel_sel)
-                        display = '[Input {id:02d}] {name} (CH{chan}, {meas}, {unit})'.format(
-                            id=each_input.id,
-                            name=each_input.name,
-                            chan=int(each_channel_sel) + 1,
-                            meas=dict_measurements[chan_meas_unit_dict[each_channel_sel]['measurement']]['name'],
-                            unit=dict_units[chan_meas_unit_dict[each_channel_sel]['unit']]['unit'])
-                        choices.update({value: display})
-
     return choices
 
 
