@@ -50,13 +50,7 @@ def input_add(form_add, request_form):
         error.append("Invalid input module formatting. It appears there is "
                      "a comma in either 'input_name_unique' or 'interfaces'.")
 
-    if form_add.input_type.data.count(',') == 1:
-        input_name = form_add.input_type.data.split(',')[0]
-        input_interface = form_add.input_type.data.split(',')[1]
-    else:
-        input_name = ''
-        input_interface = ''
-        error.append("Invalid input string (must be a comma-separated string)")
+    input_name = form_add.input_type.data
 
     if current_app.config['TESTING']:
         dep_unmet = False
@@ -72,9 +66,6 @@ def input_add(form_add, request_form):
     if form_add.validate():
         new_input = Input()
         new_input.device = input_name
-
-        if input_interface:
-            new_input.interface = input_interface
 
         if GPIO.RPI_INFO['P1_REVISION'] in [2, 3]:
             new_input.i2c_bus = 1
@@ -101,8 +92,11 @@ def input_add(form_add, request_form):
             # Interfacing options
             #
 
+            if dict_has_value('interface'):
+                new_input.interface = dict_inputs[input_name]['interface']
+
             # I2C options
-            if input_interface == 'I2C':
+            if new_input.interface == 'I2C':
                 if dict_has_value('i2c_location'):
                     new_input.i2c_location = dict_inputs[input_name]['i2c_location'][0]  # First entry in list
 
@@ -121,14 +115,14 @@ def input_add(form_add, request_form):
                 new_input.pin_clock = dict_inputs[input_name]['pin_clock']
 
             # Bluetooth (BT) options
-            elif input_interface == 'BT':
+            elif new_input.interface == 'BT':
                 if dict_has_value('bt_location'):
                     new_input.location = dict_inputs[input_name]['bt_location']
                 if dict_has_value('bt_adapter'):
                     new_input.bt_adapter = dict_inputs[input_name]['bt_adapter']
 
             # GPIO options
-            elif input_interface == 'GPIO':
+            elif new_input.interface == 'GPIO':
                 if dict_has_value('gpio_location'):
                     new_input.gpio_location = dict_inputs[input_name]['gpio_location']
 

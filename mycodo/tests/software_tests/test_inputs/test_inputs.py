@@ -70,6 +70,12 @@ input_classes = [
 # ----------------------------
 #   AM2315 tests
 # ----------------------------
+def test_inputs_have_depreciated_stop_sensor():
+    """ Verify that the input objects have the stop_sensor() method """
+    for each_class in input_classes:
+        assert hasattr(each_class, 'stop_sensor')
+
+
 def test__iter__returns_iterator():
     """ The iter methods must return an iterator in order to work properly """
     for each_class in input_classes:
@@ -78,7 +84,7 @@ def test__iter__returns_iterator():
         with mock.patch('mycodo.inputs.{fn}.InputModule.get_measurement'.format(fn=filename)) as mock_measure:
             mock_measure.side_effect = [dict(temperature={'C': {0: 24}}, humidity={'percent': {0: 55}}),
                                         dict(temperature={'C': {0: 25}}, humidity={'percent': {0: 76}})]
-            assert isinstance(each_class.__iter__(), Iterator)
+            assert isinstance(each_class.__iter__(), Iterator), "{cls} is not an iterator instance".format(cls=each_class.__class__.__name__)
 
 
 def test_read_updates_temp():

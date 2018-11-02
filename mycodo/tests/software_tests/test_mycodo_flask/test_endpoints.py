@@ -53,7 +53,7 @@ def test_routes_when_not_logged_in(testapp):
         'admin/backup',
         'admin/statistics',
         'admin/upgrade',
-        'async/0/0/0/0',
+        'async/0/0/0/0/0/0',
         'camera',
         'dl/0/0',
         'data',
@@ -65,7 +65,7 @@ def test_routes_when_not_logged_in(testapp):
         'graph-async',
         'help',
         'info',
-        'last/0/0/0',
+        'last/0/0/0/0/0',
         'lcd',
         'live',
         'logout',
@@ -74,7 +74,7 @@ def test_routes_when_not_logged_in(testapp):
         'method-build/0',
         'method-data/0',
         'method-delete/0',
-        'past/0/0/0',
+        'past/0/0/0/0/0',
         'output',
         'remote/setup',
         'settings/alerts',
@@ -149,19 +149,18 @@ def test_add_all_data_devices_logged_in_as_admin(_, testapp):
     # Add All Inputs
     input_count = 0
     for each_input, each_data in parse_input_information().items():
-        for each_interface in each_data['interfaces']:
-            response = add_data(testapp, data_type='input', input_type='{},{}'.format(each_input, each_interface))
+        response = add_data(testapp, data_type='input', input_type=each_input)
 
-            # Verify success message flashed
-            assert "{} Input with ID".format(each_input) in response
-            assert "successfully added" in response
+        # Verify success message flashed
+        assert "{} Input with ID".format(each_input) in response
+        assert "successfully added" in response
 
-            # Verify data was entered into the database
-            input_count += 1
-            assert Input.query.count() == input_count, "Number of Inputs doesn't match: In DB {}, Should be: {}".format(Input.query.count(), input_count)
+        # Verify data was entered into the database
+        input_count += 1
+        assert Input.query.count() == input_count, "Number of Inputs doesn't match: In DB {}, Should be: {}".format(Input.query.count(), input_count)
 
-            input_dev = Input.query.filter(Input.id == input_count).first()
-            assert each_data['input_name'] in input_dev.name, "Input name doesn't match: {}".format(each_input)
+        input_dev = Input.query.filter(Input.id == input_count).first()
+        assert each_data['input_name'] in input_dev.name, "Input name doesn't match: {}".format(each_input)
 
     # Add All Maths
     math_count = 0
