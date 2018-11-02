@@ -175,7 +175,7 @@ def test_add_all_data_devices_logged_in_as_admin(_, testapp):
         assert Input.query.count() == input_count, "Number of Inputs doesn't match: In DB {}, Should be: {}".format(Input.query.count(), input_count)
 
         input_dev = Input.query.filter(Input.id == input_count).first()
-        assert choice_name in input_dev.name, "Input name doesn't match: {}".format(choice_name)
+        assert dict_inputs[choice_name]['input_name'] in input_dev.name, "Input name doesn't match: {}".format(choice_name)
 
     # Add All Maths
     math_count = 0
