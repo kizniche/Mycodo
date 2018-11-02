@@ -37,12 +37,22 @@ class InputAdd(FlaskForm):
     list_inputs_sorted = generate_form_input_list(dict_inputs)
 
     for each_input in list_inputs_sorted:
-        choices_inputs.append(
-            ('{inp}'.format(inp=each_input),
-             '{manuf}: {name}: {meas}'.format(
-                 manuf=dict_inputs[each_input]['input_manufacturer'],
-                 name=dict_inputs[each_input]['input_name'],
-                 meas=dict_inputs[each_input]['measurements_name'])))
+        if 'interfaces' not in dict_inputs[each_input]:
+            choices_inputs.append(
+                ('{inp},'.format(inp=each_input),
+                 '{manuf}: {name}: {meas}'.format(
+                     manuf=dict_inputs[each_input]['input_manufacturer'],
+                     name=dict_inputs[each_input]['input_name'],
+                     meas=dict_inputs[each_input]['measurements_name'])))
+        else:
+            for each_interface in dict_inputs[each_input]['interfaces']:
+                choices_inputs.append(
+                    ('{inp},{int}'.format(inp=each_input, int=each_interface),
+                     '{manuf}: {name}: {meas} ({int})'.format(
+                         manuf=dict_inputs[each_input]['input_manufacturer'],
+                         name=dict_inputs[each_input]['input_name'],
+                         meas=dict_inputs[each_input]['measurements_name'],
+                         int=each_interface)))
 
     input_type = SelectField(
         choices=choices_inputs,

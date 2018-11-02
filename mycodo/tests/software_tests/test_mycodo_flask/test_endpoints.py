@@ -6,6 +6,7 @@ from mycodo.config import MATH_INFO
 from mycodo.databases.models import Input
 from mycodo.databases.models import Math
 from mycodo.databases.models import User
+from mycodo.mycodo_flask.utils.utils_general import generate_form_input_list
 from mycodo.tests.software_tests.conftest import login_user
 from mycodo.tests.software_tests.factories import UserFactory
 from mycodo.utils.inputs import parse_input_information
@@ -148,7 +149,21 @@ def test_add_all_data_devices_logged_in_as_admin(_, testapp):
 
     # Add All Inputs
     input_count = 0
-    for each_input, each_data in parse_input_information().items():
+
+    dict_inputs = parse_input_information()
+    list_inputs_sorted = generate_form_input_list(dict_inputs)
+
+    choice_input = []
+
+    for each_input in list_inputs_sorted:
+        if 'interfaces' not in dict_inputs[each_input]:
+            choice_input.append('{inp},'.format(inp=each_input))
+        else:
+            for each_interface in dict_inputs[each_input]['interfaces']:
+                choice_input.append('{inp},{int}'.format(inp=each_input, int=each_interface))
+
+    for each_input in choice_input:
+        print("Testing {}".format(each_input))
         response = add_data(testapp, data_type='input', input_type=each_input)
 
         # Verify success message flashed
@@ -160,7 +175,7 @@ def test_add_all_data_devices_logged_in_as_admin(_, testapp):
         assert Input.query.count() == input_count, "Number of Inputs doesn't match: In DB {}, Should be: {}".format(Input.query.count(), input_count)
 
         input_dev = Input.query.filter(Input.id == input_count).first()
-        assert each_data['input_name'] in input_dev.name, "Input name doesn't match: {}".format(each_input)
+        assert each_input in input_dev.name, "Input name doesn't match: {}".format(each_input)
 
     # Add All Maths
     math_count = 0
