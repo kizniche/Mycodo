@@ -23,8 +23,14 @@ import logging
 import time
 
 from mycodo.inputs.base_input import AbstractInput
-from mycodo.inputs.sensorutils import convert_units
 from mycodo.inputs.sensorutils import is_device
+
+# Measurements
+measurements = {
+    'co2': {
+        'ppm': {0: {}}
+    }
+}
 
 # Input information
 INPUT_INFORMATION = {
@@ -32,13 +38,22 @@ INPUT_INFORMATION = {
     'input_manufacturer': 'Winsen',
     'input_name': 'MH-Z16',
     'measurements_name': 'CO2',
-    'measurements_dict': ['co2'],
-    'options_enabled': ['i2c_location', 'uart_location', 'period', 'convert_unit', 'pre_output'],
+    'measurements_dict': measurements,
+
+    'options_enabled': [
+        'i2c_location',
+        'uart_location',
+        'measurements_convert',
+        'period',
+        'measurements_convert',
+        'pre_output'
+    ],
     'options_disabled': ['interface'],
 
     'dependencies_module': [
         ('pip-pypi', 'smbus2', 'smbus2')
     ],
+
     'interfaces': ['UART', 'I2C'],
     'i2c_location': ['0x63'],
     'i2c_address_editable': True
@@ -51,14 +66,14 @@ class InputModule(AbstractInput):
     def __init__(self, input_dev, testing=False):
         super(InputModule, self).__init__()
         self.logger = logging.getLogger("mycodo.inputs.mh_z16")
-        self._co2 = None
+        self._measurements = None
 
         if not testing:
             self.logger = logging.getLogger(
                 "mycodo.mh_z16_{id}".format(id=input_dev.unique_id.split('-')[0]))
+
             self.interface = input_dev.interface
             self.uart_location = input_dev.uart_location
-            self.convert_to_unit = input_dev.convert_to_unit
 
             if self.interface == 'UART':
                 import serial
@@ -94,36 +109,14 @@ class InputModule(AbstractInput):
                 self.i2c = SMBus(self.i2c_bus)
                 self.begin()
 
-    def __repr__(self):
-        """  Representation of object """
-        return "<{cls}(co2={co2})>".format(
-            cls=type(self).__name__,
-            co2="{0:.2f}".format(self._co2))
-
-    def __str__(self):
-        """ Return CO2 information """
-        return "CO2: {co2}".format(co2="{0:.2f}".format(self._co2))
-
-    def __iter__(self):  # must return an iterator
-        """ MH-Z16 iterates through live CO2 readings """
-        return self
-
-    def next(self):
-        """ Get next CO2 reading """
-        if self.read():  # raised an error
-            raise StopIteration  # required
-        return dict(co2=float('{0:.2f}'.format(self._co2)))
-
-    @property
-    def co2(self):
-        """ CO2 concentration in ppmv """
-        if self._co2 is None:  # update if needed
-            self.read()
-        return self._co2
-
     def get_measurement(self):
         """ Gets the MH-Z16's CO2 concentration in ppmv via UART"""
-        self._co2 = None
+        return_dict = {
+            'co2': {
+                'ppm': {}
+            }
+        }
+
         co2 = None
 
         if self.interface == 'UART':
@@ -148,33 +141,9 @@ class InputModule(AbstractInput):
             except Exception:
                 co2 = None
 
-        co2 = convert_units(
-            'co2', 'ppm', self.convert_to_unit, co2)
+        return_dict['co2']['ppm'][0] = co2
 
-        return co2
-
-    def read(self):
-        """
-        Takes a reading from the MH-Z16 and updates the self._co2 value
-
-        :returns: None on success or 1 on error
-        """
-        if self.acquiring_measurement:
-            self.logger.error("Attempting to acquire a measurement when a"
-                              " measurement is already being acquired.")
-            return 1
-        try:
-            self.acquiring_measurement = True
-            self._co2 = self.get_measurement()
-            if self._co2 is not None:
-                return  # success - no errors
-        except Exception as e:
-            self.logger.error(
-                "{cls} raised an exception when taking a reading: "
-                "{err}".format(cls=type(self).__name__, err=e))
-        finally:
-            self.acquiring_measurement = False
-        return 1
+        return return_dict
 
     def begin(self):
         try:

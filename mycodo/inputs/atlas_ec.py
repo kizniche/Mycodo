@@ -1,9 +1,15 @@
 # coding=utf-8
 import logging
 
-from mycodo.utils.system_pi import str_is_float
 from mycodo.inputs.base_input import AbstractInput
-from mycodo.inputs.sensorutils import convert_units
+from mycodo.utils.system_pi import str_is_float
+
+# Measurements
+measurements = {
+    'electrical_conductivity': {
+        'μS_cm': {0: {}}
+    }
+}
 
 # Input information
 INPUT_INFORMATION = {
@@ -11,8 +17,14 @@ INPUT_INFORMATION = {
     'input_manufacturer': 'Atlas',
     'input_name': 'Atlas EC',
     'measurements_name': 'Electrical Conductivity',
-    'measurements_dict': ['electrical_conductivity'],
-    'options_enabled': ['i2c_location', 'uart_location', 'period', 'convert_unit', 'pre_output'],
+    'measurements_dict': measurements,
+
+    'options_enabled': [
+        'i2c_location',
+        'uart_location',
+        'measurements_convert',
+        'period',
+        'pre_output'],
     'options_disabled': ['interface'],
 
     'interfaces': ['I2C', 'UART'],
@@ -28,53 +40,24 @@ class InputModule(AbstractInput):
     def __init__(self, input_dev, testing=False):
         super(InputModule, self).__init__()
         self.logger = logging.getLogger("mycodo.inputs.atlas_ec")
-        self._electrical_conductivity = None
+        self._measurements = None
         self.atlas_sensor_uart = None
         self.atlas_sensor_i2c = None
 
         if not testing:
             self.logger = logging.getLogger(
                 "mycodo.inputs.atlas_ec_{id}".format(id=input_dev.unique_id.split('-')[0]))
+
             self.interface = input_dev.interface
             if self.interface == 'UART':
                 self.uart_location = input_dev.uart_location
             if self.interface == 'I2C':
                 self.i2c_address = int(str(input_dev.i2c_location), 16)
                 self.i2c_bus = input_dev.i2c_bus
-            self.input_dev = input_dev
-            self.convert_to_unit = input_dev.convert_to_unit
             try:
                 self.initialize_sensor()
             except Exception:
                 self.logger.exception("Exception while initializing sensor")
-
-    def __repr__(self):
-        """ Representation of object """
-        return "<{cls}(electrical_conductivity={ec})>".format(
-            cls=type(self).__name__,
-            ec="{0:.2f}".format(self._electrical_conductivity))
-
-    def __str__(self):
-        """ Return Electrical Conductivity information """
-        return "Electrical Conductivity: {ec}".format(
-            ec="{0:.2f}".format(self._electrical_conductivity))
-
-    def __iter__(self):  # must return an iterator
-        """ Atlas Electrical Conductivity sensor iterates through live Electrical Conductivity readings """
-        return self
-
-    def next(self):
-        """ Get next Electrical Conductivity reading """
-        if self.read():  # raised an error
-            raise StopIteration  # required
-        return dict(electrical_conductivity=float(self._electrical_conductivity))
-
-    @property
-    def electrical_conductivity(self):
-        """ Electrical Conductivity """
-        if self._electrical_conductivity is None:  # update if needed
-            self.read()
-        return self._electrical_conductivity
 
     def initialize_sensor(self):
         from mycodo.devices.atlas_scientific_i2c import AtlasScientificI2C
@@ -93,8 +76,14 @@ class InputModule(AbstractInput):
 
     def get_measurement(self):
         """ Gets the sensor's Electrical Conductivity measurement via UART/I2C """
-        self._electrical_conductivity = None
+        self._measurements = None
         electrical_conductivity = None
+
+        return_dict = {
+            'temperature': {
+                'C': {}
+            }
+        }
 
         # Read sensor via UART
         if self.interface == 'UART':
@@ -149,24 +138,7 @@ class InputModule(AbstractInput):
                 self.logger.error(
                     'I2C device is not set up. Check the log for errors.')
 
-        electrical_conductivity = convert_units(
-            'electrical_conductivity', 'μS_cm', self.convert_to_unit,
-            electrical_conductivity)
+        return_dict['electrical_conductivity']['μS_cm'][0] = electrical_conductivity
 
-        return electrical_conductivity
-
-    def read(self):
-        """
-        Takes a reading from the sensor and updates the self._electrical_conductivity value
-
-        :returns: None on success or 1 on error
-        """
-        try:
-            self._electrical_conductivity = self.get_measurement()
-            if self._electrical_conductivity is not None:
-                return # success - no errors
-        except Exception as e:
-            self.logger.exception(
-                "{cls} raised an exception when taking a reading: "
-                "{err}".format(cls=type(self).__name__, err=e))
-        return 1
+        if return_dict['electrical_conductivity']['μS_cm'][0] is not None:
+            return return_dict

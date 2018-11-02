@@ -5,6 +5,9 @@
 {% block title %} - {{_('Data')}}{% endblock %}
 
 {% block head %}
+  <link href="/static/css/select2.min.css" rel="stylesheet" />
+  <script src="/static/js/select2.min.js"></script>
+
   <script type="text/javascript" src="/static/js/multiselect.min.js"></script>
 {% endblock %}
 
@@ -27,7 +30,7 @@
           {{form_add_input.input_add(class_='btn btn-primary')}}
         </div>
         <div class="col-auto">
-          {{form_add_input.input_type(class_='form-control')}}
+          {{form_add_input.input_type(class_='form-control js-example-basic-single')}}
         </div>
       </div>
     </form>
@@ -39,7 +42,7 @@
           {{form_add_math.math_add(class_='btn btn-primary')}}
         </div>
         <div class="col-auto">
-          {{form_add_math.math_type(class_='form-control')}}
+          {{form_add_math.math_type(class_='form-control js-example-basic-single')}}
         </div>
       </div>
     </form>
@@ -63,6 +66,10 @@
       $(this).parent().find(".fa-plus-square").removeClass("fa-plus-square").addClass("fa-minus-square");
     }).on('hide.bs.collapse', function(){
       $(this).parent().find(".fa-minus-square").removeClass("fa-minus-square").addClass("fa-plus-square");
+    });
+
+    $(document).ready(function() {
+      $('.js-example-basic-single').select2();
     });
   </script>
 

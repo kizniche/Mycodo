@@ -13,11 +13,10 @@
   <br/><span style="font-size: {{each_dashboard.font_em_timestamp}}em">
   {%- for each_input in input -%}
     {%- if each_input.unique_id == each_dashboard.input_ids_measurements.split(',')[0] %}
-      {%- if not each_input.measurements.startswith('channel_') -%}
-        {{measurement_units[each_dashboard.input_ids_measurements.split(',')[1]]['name']|safe}} ({{units[use_unit[each_input.unique_id][each_dashboard.input_ids_measurements.split(',')[1]]]['unit']}})
-      {%- elif each_input.measurements.startswith('channel_') -%}
-        {{measurement_units[each_dashboard.input_ids_measurements.split(',')[1].split('_')[3]]['name']|safe}} ({{dict_units[each_dashboard.input_ids_measurements.split(',')[1].split('_')[4]]['unit']}})
-      {% endif %}
+      {% set measurement = each_dashboard.input_ids_measurements.split(',')[1] %}
+      {% set unit = each_dashboard.input_ids_measurements.split(',')[2] %}
+      {% set channel = each_dashboard.input_ids_measurements.split(',')[3] %}
+      {{each_input.name}}<br>CH{{(channel|int + 1)|string}}, {{measurement_units[measurement]['name']}} ({{units[unit]['unit']}})
     {%- endif -%}
   {%- endfor -%}
 

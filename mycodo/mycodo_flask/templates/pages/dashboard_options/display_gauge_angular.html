@@ -11,8 +11,11 @@
         load: function () {
         {% for each_input in input -%}
           {%- for each_id_and_measure in graph_input_ids if each_input.unique_id == each_id_and_measure.split(',')[0] %}
-        getLastData({{chart_number}}, '{{each_id_and_measure.split(',')[0]}}', '{{each_id_and_measure.split(',')[1]}}', 'gauge', {{each_dashboard.max_measure_age}});
-        repeatLastData({{chart_number}}, '{{each_id_and_measure.split(',')[0]}}', '{{each_id_and_measure.split(',')[1]}}', 'gauge', {{each_dashboard.refresh_duration}}, {{each_dashboard.max_measure_age}});
+            {% set measurement = each_id_and_measure.split(',')[1] %}
+            {% set unit = each_id_and_measure.split(',')[2] %}
+            {% set channel = each_id_and_measure.split(',')[3] %}
+        getLastData({{chart_number}}, '{{each_input.unique_id}}', '{{measurement}}', '{{unit}}', '{{channel}}', 'gauge', {{each_dashboard.max_measure_age}});
+        repeatLastData({{chart_number}}, '{{each_input.unique_id}}', '{{measurement}}', '{{unit}}', '{{channel}}', 'gauge', {{each_dashboard.refresh_duration}}, {{each_dashboard.max_measure_age}});
           {%- endfor -%}
         {%- endfor -%}
 
@@ -96,11 +99,9 @@
         name: '
         {%- for each_input in input -%}
           {%- for each_id_and_measure in graph_input_ids if each_input.unique_id == each_id_and_measure.split(',')[0] -%}
-            {%- if not each_input.measurements.startswith('channel_') -%}
-              {{measurement_units[each_id_and_measure.split(',')[1]]['name']|safe}}
-            {%- elif each_input.measurements.startswith('channel_') -%}
-              {{measurement_units[each_id_and_measure.split(',')[1].split('_')[3]]['name']|safe}}
-            {%- endif -%}
+            {%- set measurement = each_id_and_measure.split(',')[1] -%}
+            {%- set channel = each_id_and_measure.split(',')[3] -%}
+            {{each_input.name}} (CH{{(channel|int + 1)|string}}, {{measurement_units[measurement]['name']}})
           {%- endfor -%}
         {%- endfor -%}
 
@@ -129,30 +130,20 @@
 
         {%- for each_input in input -%}
           {%- for each_id_and_measure in graph_input_ids if each_input.unique_id == each_id_and_measure.split(',')[0] %}
-            {%- if not each_input.measurements.startswith('channel_') %}
-            pointFormatter: function () {
-              return '<span style="color:'+ this.series.color + '"">\u25CF</span> ' + this.series.name + ': <b>' + Highcharts.numberFormat(this.y, 2) + '
-
-              {%- if use_unit[each_input.unique_id][each_id_and_measure.split(',')[1]] -%}
-                {{' ' + units[use_unit[each_input.unique_id][each_id_and_measure.split(',')[1]]]['unit']}}
-              {%- elif each_input.measurements.startswith('channel_') -%}
-                {{' ' + dict_units[each_id_and_measure.split(',')[1].split('_')[4]]['unit']|safe}}
-              {%- endif -%}
-
-              </b><br>';
+            {%- set unit = each_id_and_measure.split(',')[2] -%}
+             pointFormatter: function () {
+              return '<span style="color:'+ this.series.color + '"">\u25CF</span> ' + this.series.name + ':<b> ' + Highcharts.numberFormat(this.y, 2) + ' {{units[unit]['unit']}}</b><br>';
             },
-            {% endif %}
           {%- endfor -%}
         {%- endfor -%}
 
             valueSuffix: '
         {%- for each_input in input -%}
           {%- for each_id_and_measure in graph_input_ids if each_input.unique_id == each_id_and_measure.split(',')[0] -%}
-            {%- if use_unit[each_input.unique_id][each_id_and_measure.split(',')[1]] -%}
-              {{' ' + units[use_unit[each_input.unique_id][each_id_and_measure.split(',')[1]]]['unit']}}
-            {%- elif each_input.measurements.startswith('channel_') -%}
-              {{' ' + dict_units[each_id_and_measure.split(',')[1].split('_')[4]]['unit']|safe}}
-            {%- endif -%}
+            {%- set measurement = each_id_and_measure.split(',')[1] -%}
+            {%- set unit = each_id_and_measure.split(',')[2] -%}
+            {%- set channel = each_id_and_measure.split(',')[3] -%}
+            {{' ' + units[unit]['unit']}}
           {%- endfor -%}
         {%- endfor -%}
 

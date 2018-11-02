@@ -327,8 +327,8 @@ def form_input_choices(choices, each_input, dict_inputs):
                 dict_inputs[each_input.device]['measurements_dict'] != 'LinuxCommand'):
 
             for each_measure, unit_data in dict_inputs[each_input.device]['measurements_dict'].items():
-                for each_unit, number_channels in unit_data.items():
-                    for each_channel in range(number_channels):
+                for each_unit, channel_data in unit_data.items():
+                    for each_channel, each_channel_data in channel_data.items():
                         value = '{id},{meas},{unit},{chan}'.format(
                             id=each_input.unique_id,
                             meas=each_measure,
@@ -343,7 +343,7 @@ def form_input_choices(choices, each_input, dict_inputs):
                             measure_display, unit_display = check_display_names(
                                 each_measure, custom_dict_measurements[each_measure])
 
-                            if number_channels > 1:
+                            if len(channel_data) > 1:
                                 channel_name = ' CH{chan}'.format(chan=each_channel)
                             else:
                                 channel_name = ''
@@ -507,16 +507,18 @@ def form_tag_choices(choices, each_tag):
 
 
 def form_output_choices(choices, each_output):
-    if 'pwm' in each_output.output_type:
-        value = '{id},duty_cycle'.format(id=each_output.unique_id)
-        display = '[Output {id:02d}] {name} (Duty Cycle)'.format(
-            id=each_output.id, name=each_output.name)
-        choices.update({value: display})
-    else:
-        value = '{id},duration_time'.format(id=each_output.unique_id)
-        display = '[Output {id:02d}] {name} (Duration)'.format(
-            id=each_output.id, name=each_output.name)
-        choices.update({value: display})
+    value = '{id},{meas},{unit},{chan}'.format(
+        id=each_output.unique_id,
+        meas=each_output.measurement,
+        unit=each_output.unit,
+        chan=each_output.channel)
+    display = '[Output {id:02d}] {name} CH{chan}, {meas} ({unit})'.format(
+        id=each_output.id,
+        name=each_output.name,
+        chan=each_output.channel,
+        meas=MEASUREMENTS[each_output.measurement]['name'],
+        unit=UNITS[each_output.unit]['unit'])
+    choices.update({value: display})
     return choices
 
 

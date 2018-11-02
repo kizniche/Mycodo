@@ -1,8 +1,19 @@
 # coding=utf-8
 import logging
 
+from mycodo.databases.models import InputMeasurements
 from mycodo.inputs.base_input import AbstractInput
-from mycodo.inputs.sensorutils import convert_units
+from mycodo.utils.database import db_retrieve_table_daemon
+
+# Measurements
+measurements = {
+    'temperature': {
+        'C': {
+            0: {'name': 'Object'},
+            1: {'name': 'Die'}
+        }
+    }
+}
 
 # Input information
 INPUT_INFORMATION = {
@@ -10,13 +21,21 @@ INPUT_INFORMATION = {
     'input_manufacturer': 'Texas Instruments',
     'input_name': 'TMP006',
     'measurements_name': 'Temperature (Object/Die)',
-    'measurements_dict': ['temperature_object', 'temperature_die'],
-    'options_enabled': ['i2c_location', 'period', 'convert_unit', 'pre_output'],
+    'measurements_dict': measurements,
+
+    'options_enabled': [
+        'i2c_location',
+        'measurements_select',
+        'measurements_convert',
+        'period',
+        'pre_output'
+    ],
     'options_disabled': ['interface'],
 
     'dependencies_module': [
         ('pip-pypi', 'Adafruit_TMP', 'Adafruit_TMP')
     ],
+
     'interfaces': ['I2C'],
     'i2c_location': [
         '0x40',
@@ -45,80 +64,30 @@ class InputModule(AbstractInput):
             from Adafruit_TMP import TMP006
             self.logger = logging.getLogger(
                 "mycodo.tmp006_{id}".format(id=input_dev.unique_id.split('-')[0]))
+
+            self.input_measurements = db_retrieve_table_daemon(
+                InputMeasurements).filter(
+                    InputMeasurements.input_id == input_dev.unique_id).all()
+
             self.i2c_address = int(str(input_dev.i2c_location), 16)
             self.i2c_bus = input_dev.i2c_bus
-            self.convert_to_unit = input_dev.convert_to_unit
             self.sensor = TMP006.TMP006(
                 address=self.i2c_address, busnum=self.i2c_bus)
 
-    def __repr__(self):
-        """  Representation of object """
-        return "<{cls}(temperature_die={tdie})(temperature_object={tobj})>".format(
-            cls=type(self).__name__,
-            tdie="{0:.2f}".format(self._temperature_die),
-            tobj="{0:.2f}".format(self._temperature_object))
-
-    def __str__(self):
-        """ Return temperature information """
-        return "Temperature (Die): {tdie}, Temperature (Object): {tobj}".format(
-            tdie="{0:.2f}".format(self._temperature_die),
-            tobj="{0:.2f}".format(self._temperature_object))
-
-    def __iter__(self):  # must return an iterator
-        """ TMP006Sensor iterates through live temperature readings """
-        return self
-
-    def next(self):
-        """ Get next temperature reading """
-        if self.read():  # raised an error
-            raise StopIteration  # required
-        return dict(temperature_die=float('{0:.2f}'.format(self._temperature_die)),
-                    temperature_object=float('{0:.2f}'.format(self._temperature_object)))
-
-    @property
-    def temperature_die(self):
-        """ Die temperature in celsius """
-        if self._temperature_die is None:  # update if needed
-            self.read()
-        return self._temperature_die
-
-    @property
-    def temperature_object(self):
-        """ Object temperature in celsius """
-        if self._temperature_object is None:  # update if needed
-            self.read()
-        return self._temperature_object
-
     def get_measurement(self):
         """ Gets the TMP006's temperature in Celsius """
-        self._temperature_die = None
-        self._temperature_object = None
+        return_dict = {
+            'temperature': {
+                'C': {}
+            }
+        }
 
         self.sensor.begin()
 
-        temperature_die = convert_units(
-            'temperature_die', 'C', self.convert_to_unit,
-            self.sensor.readDieTempC())
+        if self.is_enabled('temperature', 'C', 0):
+            return_dict['temperature']['C'][0] = self.sensor.readObjTempC()
 
-        temperature_object = convert_units(
-            'temperature_object', 'C', self.convert_to_unit,
-            self.sensor.readObjTempC())
+        if self.is_enabled('temperature', 'C', 1):
+            return_dict['temperature']['C'][0] = self.sensor.readDieTempC()
 
-        return temperature_die, temperature_object
-
-    def read(self):
-        """
-        Takes a reading from the TMP006 and updates the self._temperature_die
-        and self._temperature_object values
-
-        :returns: None on success or 1 on error
-        """
-        try:
-            self._temperature_die, self._temperature_object = self.get_measurement()
-            if self._temperature_die is not None:
-                return  # success - no errors
-        except Exception as e:
-            self.logger.exception(
-                "{cls} raised an exception when taking a reading: "
-                "{err}".format(cls=type(self).__name__, err=e))
-        return 1
+        return return_dict

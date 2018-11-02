@@ -13,10 +13,15 @@ from mycodo.utils.database import db_retrieve_table_daemon
 from mycodo.utils.image import generate_thermal_image_from_pixels
 from mycodo.utils.system_pi import assure_path_exists
 
+# Channels
+channels = {}
+for each_channel in range(64):
+    channels[each_channel] = {}
+
 # Measurements
 measurements = {
     'temperature': {
-        'C': 64
+        'C': channels
     }
 }
 
@@ -62,7 +67,7 @@ class InputModule(AbstractInput):
     def __init__(self, input_dev, testing=False):
         super(InputModule, self).__init__()
         self.logger = logging.getLogger("mycodo.inputs.amg8833")
-        self._temperatures = None
+        self._measurements = None
 
         self.save_image = False
         self.temp_max = None
@@ -72,14 +77,15 @@ class InputModule(AbstractInput):
         self.nx = 8
         self.ny = 8
 
-        self.input_measurements = db_retrieve_table_daemon(
-            InputMeasurements).filter(
-                InputMeasurements.input_id == input_dev.unique_id).all()
-
         if not testing:
             from Adafruit_AMG88xx import Adafruit_AMG88xx
             self.logger = logging.getLogger(
                 "mycodo.ds18b20_{id}".format(id=input_dev.unique_id.split('-')[0]))
+
+            self.input_measurements = db_retrieve_table_daemon(
+                InputMeasurements).filter(
+                    InputMeasurements.input_id == input_dev.unique_id).all()
+
             self.Adafruit_AMG88xx = Adafruit_AMG88xx
             self.i2c_address = int(str(input_dev.i2c_location), 16)
             self.i2c_bus = input_dev.i2c_bus
@@ -88,26 +94,9 @@ class InputModule(AbstractInput):
                                                 busnum=self.i2c_bus)
             time.sleep(.1)  # wait for it to boot
 
-    def __iter__(self):  # must return an iterator
-        """ Support the iterator protocol. """
-        return self
-
-    def next(self):
-        """ Get next temperature reading """
-        if self.read():  # raised an error
-            raise StopIteration  # required
-        return self._temperatures
-
-    @property
-    def temperatures(self):
-        """ AMG8833 temperature in celsius """
-        if self._temperatures is None:  # update if needed
-            self.read()
-        return self._temperatures
-
     def get_measurement(self):
         """ Gets the AMG8833's measurements """
-        self._temperatures = None
+        self._measurements = None
 
         pixels_dict = {
             'temperature': {
@@ -148,21 +137,3 @@ class InputModule(AbstractInput):
 
         if pixels_dict:
             return pixels_dict
-
-    def read(self):
-        """
-        Takes a reading from the AMG8833 and updates the self._temperature value
-
-        :returns: None on success or 1 on error
-        """
-        try:
-            self._temperatures = self.get_measurement()
-            if self._temperatures:
-                return  # success - no errors
-        except Exception as e:
-            self.logger.exception(
-                "{cls} raised an exception when taking a reading: "
-                "{err}".format(cls=type(self).__name__, err=e))
-        return 1
-
-

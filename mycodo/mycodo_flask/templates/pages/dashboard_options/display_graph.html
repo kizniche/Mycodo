@@ -20,9 +20,9 @@
 
           {% for each_input in input -%}
             {%- for each_id_and_measure in graph_input_ids if each_input.unique_id == each_id_and_measure.split(',')[0] %}
-              {% set measurement = each_id_and_measure.split(',')[1] %}
-              {% set unit = each_id_and_measure.split(',')[2] %}
-              {% set channel = each_id_and_measure.split(',')[3] %}
+              {%- set measurement = each_id_and_measure.split(',')[1] -%}
+              {%- set unit = each_id_and_measure.split(',')[2] -%}
+              {%- set channel = each_id_and_measure.split(',')[3] -%}
           getPastData({{chart_number}}, {{count_series|count}}, '{{each_input.unique_id}}', '{{measurement}}', '{{unit}}', '{{channel}}', {{each_dashboard.x_axis_duration*60}});
           {% if each_dashboard.enable_auto_refresh %}
           getLiveData({{chart_number}}, {{count_series|count}}, '{{each_input.unique_id}}', '{{measurement}}', '{{unit}}', '{{channel}}', {{each_dashboard.x_axis_duration}}, {{each_dashboard.enable_xaxis_reset|int}}, {{each_dashboard.refresh_duration}}, {% if each_dashboard.enable_graph_shift %}true{% else %}false{% endif %});
@@ -43,9 +43,12 @@
 
           {%- for each_output in output -%}
             {%- for each_graph_output_id in graph_output_ids if each_output.unique_id == each_graph_output_id.split(',')[0] %}
-          getPastData({{chart_number}}, {{count_series|count}}, '{{each_graph_output_id.split(',')[1]}}', '{{each_output.unique_id}}', {{each_dashboard.x_axis_duration*60}});
+              {%- set measurement = each_graph_output_id.split(',')[1] -%}
+              {%- set unit = each_graph_output_id.split(',')[2] -%}
+              {%- set channel = each_graph_output_id.split(',')[3] -%}
+          getPastData({{chart_number}}, {{count_series|count}}, '{{each_output.unique_id}}', '{{measurement}}', '{{unit}}', '{{channel}}', {{each_dashboard.x_axis_duration*60}});
           {% if each_dashboard.enable_auto_refresh %}
-          getLiveData({{chart_number}}, {{count_series|count}}, '{{each_graph_output_id.split(',')[1]}}', '{{each_output.unique_id}}', {{each_dashboard.x_axis_duration}}, {{each_dashboard.enable_xaxis_reset|int}}, {{each_dashboard.refresh_duration}}, {% if each_dashboard.enable_graph_shift %}true{% else %}false{% endif %});
+          getLiveData({{chart_number}}, {{count_series|count}}, '{{each_output.unique_id}}', '{{measurement}}', '{{unit}}', '{{channel}}', {{each_dashboard.x_axis_duration}}, {{each_dashboard.enable_xaxis_reset|int}}, {{each_dashboard.refresh_duration}}, {% if each_dashboard.enable_graph_shift %}true{% else %}false{% endif %});
           {% endif %}
               {%- do count_series.append(1) %}
             {%- endfor -%}
@@ -251,20 +254,18 @@
     series: [
     {% for each_input in input -%}
       {%- for each_id_and_measure in graph_input_ids if each_input.unique_id == each_id_and_measure.split(',')[0] -%}
-
         {%- set each_measurement = each_id_and_measure.split(',')[1] -%}
         {%- set each_unit = each_id_and_measure.split(',')[2] -%}
         {%- set each_channel = each_id_and_measure.split(',')[3] -%}
-
       {
-        name: '{{each_input.name}} CH{{each_channel}} ({{measurement_units[each_measurement]['name']}}, {{units[each_unit]['unit']}})',
+        name: '{{each_input.name}} (CH{{(each_channel|int + 1)|string}}, {{measurement_units[each_measurement]['name']}})',
         {% if measurement_units[each_measurement]['meas'] == 'edge' %}
         type: 'column',
         {% else %}
         type: 'line',
         {% endif %}
         tooltip: {
-          valueSuffix: '{{units[each_unit]['unit']}}',
+          valueSuffix: ' {{units[each_unit]['unit']}}',
           valueDecimals: 3
         },
         yAxis: '{{each_unit}}',
@@ -280,11 +281,9 @@
         {%- for each_measurement in each_math.measure.split(',') -%}
 
           {% for each_set in each_math.measure_units.split(';') if each_measurement == each_set.split(',')[0] %}
-            {% set measure = each_id_and_measure.split(',')[0] %}
-            {% set unit = each_id_and_measure.split(',')[1] %}
-
+            {%- set measure = each_id_and_measure.split(',')[0] -%}
+            {%- set unit = each_id_and_measure.split(',')[1] -%}
             {%- if each_measurement == each_id_and_measure.split(',')[1] -%}
-
         {
           name: '{{each_math.name}} ({{measurement_units[each_measurement]['name']}}
               {%- if dict_measurements[each_measurement]['unit'] != '' %}
@@ -318,7 +317,6 @@
               ',
           data: []
         },
-
             {%- endif -%}
           {% endfor %}
 
@@ -329,37 +327,23 @@
 
     {%- for each_output in output -%}
       {%- for each_graph_output_id in graph_output_ids if each_output.unique_id == each_graph_output_id.split(',')[0] -%}
-        {% if each_graph_output_id.split(',')[1] == 'duration_time' %}
+        {%- set measurement = each_graph_output_id.split(',')[1] -%}
+        {%- set unit = each_graph_output_id.split(',')[2] -%}
+        {%- set channel = each_graph_output_id.split(',')[3] -%}
         {
-          name: '{{each_output.name}} ({{_('Duration')}}, s)',
+          name: '{{each_output.name}} ({{measurement_units[measurement]['name']}})',
           type: 'column',
           dataGrouping: {
             approximation: 'high',
             groupPixelWidth: 1
           },
           tooltip: {
-            valueSuffix: ' sec',
+            valueSuffix: ' {{units[unit]['unit']}}',
             valueDecimals: 2
           },
-          yAxis: 'second',
+          yAxis: '{{unit}}',
           data: []
         },
-        {% elif each_graph_output_id.split(',')[1] == 'duty_cycle' %}
-        {
-          name: '{{each_output.name}} ({{_('Duty Cycle')}}, %)',
-          type: 'column',
-          dataGrouping: {
-            approximation: 'high',
-            groupPixelWidth: 1
-          },
-          tooltip: {
-            valueSuffix: ' %',
-            valueDecimals: 2
-          },
-          yAxis: 'percent',
-          data: []
-        },
-        {% endif %}
       {%- endfor -%}
     {%- endfor -%}
 
@@ -486,7 +470,10 @@
 
     {% for each_input in input -%}
       {%- for each_id_and_measure in graph_input_ids if each_input.unique_id == each_id_and_measure.split(',')[0] %}
-    retrieveLiveData({{chart_number}}, {{count_series|count}}, '{{each_id_and_measure.split(',')[1]}}', '{{each_input.unique_id}}', {{each_dashboard.x_axis_duration}}, {{each_dashboard.enable_xaxis_reset|int}}, {{each_dashboard.refresh_duration}}, {% if each_dashboard.enable_graph_shift %}true{% else %}false{% endif %});
+        {%- set measurement = each_id_and_measure.split(',')[1] -%}
+        {%- set unit = each_id_and_measure.split(',')[2] -%}
+        {%- set channel = each_id_and_measure.split(',')[3] -%}
+    retrieveLiveData({{chart_number}}, {{count_series|count}}, '{{each_input.unique_id}}', '{{measurement}}', '{{unit}}', '{{channel}}', {{each_dashboard.x_axis_duration}}, {{each_dashboard.enable_xaxis_reset|int}}, {{each_dashboard.refresh_duration}}, {% if each_dashboard.enable_graph_shift %}true{% else %}false{% endif %});
         {%- do count_series.append(1) %}
       {%- endfor -%}
     {%- endfor -%}
@@ -500,7 +487,10 @@
 
     {%- for each_output in output -%}
       {%- for each_graph_output_id in graph_output_ids if each_output.unique_id == each_graph_output_id.split(',')[0] %}
-    retrieveLiveData({{chart_number}}, {{count_series|count}}, '{{each_graph_output_id.split(',')[1]}}', '{{each_output.unique_id}}', {{each_dashboard.x_axis_duration}}, {{each_dashboard.enable_xaxis_reset|int}}, {{each_dashboard.refresh_duration}}, {% if each_dashboard.enable_graph_shift %}true{% else %}false{% endif %});
+        {%- set measurement = each_graph_output_id.split(',')[1] -%}
+        {%- set unit = each_graph_output_id.split(',')[2] -%}
+        {%- set channel = each_graph_output_id.split(',')[3] -%}
+    retrieveLiveData({{chart_number}}, {{count_series|count}}, '{{each_output.unique_id}}', '{{measurement}}', '{{unit}}', '{{channel}}', {{each_dashboard.x_axis_duration}}, {{each_dashboard.enable_xaxis_reset|int}}, {{each_dashboard.refresh_duration}}, {% if each_dashboard.enable_graph_shift %}true{% else %}false{% endif %});
         {%- do count_series.append(1) %}
       {%- endfor -%}
     {%- endfor -%}

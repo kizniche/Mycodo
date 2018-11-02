@@ -7,8 +7,10 @@ import time
 
 from flask_babel import lazy_gettext
 
+from mycodo.databases.models import InputMeasurements
 from mycodo.inputs.base_input import AbstractInput
 from mycodo.inputs.sensorutils import is_device
+from mycodo.utils.database import db_retrieve_table_daemon
 
 
 def constraints_pass_fan_seconds(value):
@@ -26,19 +28,42 @@ def constraints_pass_fan_seconds(value):
     return all_passed, errors
 
 
+# Measurements
+measurements = {
+    'particulate_matter_1_0': {
+        'μg_m3': {0: {}}
+    },
+    'particulate_matter_2_5': {
+        'μg_m3': {0: {}}
+    },
+    'particulate_matter_10_0': {
+        'μg_m3': {0: {}}
+    }
+}
+
 # Input information
 INPUT_INFORMATION = {
     'input_name_unique': 'WINSEN_ZH03B',
     'input_manufacturer': 'Winsen',
     'input_name': 'ZH03B',
     'measurements_name': 'Particulates',
-    'measurements_dict': ['particulate_matter_1_0', 'particulate_matter_2_5', 'particulate_matter_10_0'],
-    'options_enabled': ['uart_location', 'uart_baud_rate', 'custom_options', 'period', 'convert_unit', 'pre_output'],
+    'measurements_dict': measurements,
+
+    'options_enabled': [
+        'measurements_select',
+        'measurements_convert',
+        'uart_location',
+        'uart_baud_rate',
+        'custom_options',
+        'period',
+        'pre_output'
+    ],
     'options_disabled': ['interface'],
 
     'dependencies_module': [
         ('pip-pypi', 'binascii', 'binascii')
     ],
+
     'interfaces': ['UART'],
     'uart_location': '/dev/ttyAMA0',
     'uart_baud_rate': 9600,
@@ -69,20 +94,21 @@ class InputModule(AbstractInput):
     def __init__(self, input_dev, testing=False):
         super(InputModule, self).__init__()
         self.logger = logging.getLogger("mycodo.inputs.winsen_zh03b")
-        self._pm_1_0 = None
-        self._pm_2_5 = None
-        self._pm_10_0 = None
-        self.fan_state = None
+        self._measurements = None
 
         if not testing:
             import serial
             import binascii
             self.logger = logging.getLogger(
                 "mycodo.winsen_zh03b_{id}".format(id=input_dev.unique_id.split('-')[0]))
+
+            self.input_measurements = db_retrieve_table_daemon(
+                InputMeasurements).filter(
+                    InputMeasurements.input_id == input_dev.unique_id).all()
+
             self.binascii = binascii
             self.uart_location = input_dev.uart_location
             self.baud_rate = input_dev.baud_rate
-            self.convert_to_unit = input_dev.convert_to_unit
             # Check if device is valid
             self.serial_device = is_device(self.uart_location)
 
@@ -123,62 +149,23 @@ class InputModule(AbstractInput):
                     'Check the device location is correct.'.format(
                         dev=self.uart_location))
 
-    def __repr__(self):
-        """  Representation of object """
-        return "<{cls}(particulate_matter_1_0={pm_1_0})(particulate_matter_2_5={pm_2_5})(particulate_matter_10_0={pm_10_0})>".format(
-            cls=type(self).__name__,
-            pm_1_0="{0:.2f}".format(self._pm_1_0),
-            pm_2_5="{0:.2f}".format(self._pm_2_5),
-            pm_10_0="{0:.2f}".format(self._pm_10_0))
-
-    def __str__(self):
-        """ Return Particulate information """
-        return "PM1: {pm_1_0}, PM2.5: {pm_2_5}, PM10: {pm_10_0}".format(
-            pm_1_0="{0:.2f}".format(self._pm_1_0),
-            pm_2_5="{0:.2f}".format(self._pm_2_5),
-            pm_10_0="{0:.2f}".format(self._pm_10_0))
-
-    def __iter__(self):  # must return an iterator
-        """ WINSEN_ZH03B iterates through live Particulate readings """
-        return self
-
-    def next(self):
-        """ Get next Particulate reading """
-        if self.read():  # raised an error
-            raise StopIteration  # required
-        return dict(particulate_matter_1_0=float('{0:.2f}'.format(self._pm_1_0)),
-                    particulate_matter_2_5=float('{0:.2f}'.format(self._pm_2_5)),
-                    particulate_matter_10_0=float('{0:.2f}'.format(self._pm_10_0)))
-
-    @property
-    def pm_1_0(self):
-        """ PM1 concentration in μg/m^3 """
-        if self._pm_1_0 is None:  # update if needed
-            self.read()
-        return self._pm_1_0
-
-    @property
-    def pm_2_5(self):
-        """ PM2.5 concentration in μg/m^3 """
-        if self._pm_2_5 is None:  # update if needed
-            self.read()
-        return self._pm_2_5
-
-    @property
-    def pm_10_0(self):
-        """ PM10 concentration in μg/m^3 """
-        if self._pm_10_0 is None:  # update if needed
-            self.read()
-        return self._pm_10_0
-
     def get_measurement(self):
         """ Gets the WINSEN_ZH03B's Particulate concentration in μg/m^3 via UART """
         if not self.serial_device:  # Don't measure if device isn't validated
-            return None, None, None
+            return None
 
-        self._pm_1_0 = None
-        self._pm_2_5 = None
-        self._pm_10_0 = None
+        return_dict = {
+            'particulate_matter_1_0': {
+                'μg_m3': {}
+            },
+            'particulate_matter_2_5': {
+                'μg_m3': {}
+            },
+            'particulate_matter_10_0': {
+                'μg_m3': {}
+            }
+        }
+
         pm_1_0 = None
         pm_2_5 = None
         pm_10_0 = None
@@ -197,49 +184,33 @@ class InputModule(AbstractInput):
             # Acquire measurements
             pm_1_0, pm_2_5, pm_10_0 = self.QAReadSample()
 
+            if pm_1_0 > 1000:
+                pm_1_0 = 1001
+                self.logger.error("PM1 measurement out of range (over 1000 ug/m^3)")
+            if pm_2_5 > 1000:
+                pm_2_5 = 1001
+                self.logger.error("PM2.5 measurement out of range (over 1000 ug/m^3)")
+            if pm_10_0 > 1000:
+                pm_10_0 = 1001
+                self.logger.error("PM10 measurement out of range (over 1000 ug/m^3)")
+
+            if self.is_enabled('particulate_matter_1_0', 'μg_m3', 0):
+                return_dict['particulate_matter_1_0']['μg_m3'][0] = pm_1_0
+
+            if self.is_enabled('particulate_matter_2_5', 'μg_m3', 0):
+                return_dict['particulate_matter_2_5']['μg_m3'][0] = pm_2_5
+
+            if self.is_enabled('particulate_matter_10_0', 'μg_m3', 0):
+                return_dict['particulate_matter_10_0']['μg_m3'][0] = pm_10_0
+
             # Turn the fan off
             if self.fan_modulate:
                 self.DormantMode('sleep')
-
-            if pm_1_0 > 1000:
-                pm_1_0 = None
-                self.logger.error("PM1 measurement out of range (over 1000 ug/m^3)")
-            if pm_2_5 > 1000:
-                pm_2_5 = None
-                self.logger.error("PM2.5 measurement out of range (over 1000 ug/m^3)")
-            if pm_10_0 > 1000:
-                pm_10_0 = None
-                self.logger.error("PM10 measurement out of range (over 1000 ug/m^3)")
-
         except:
             self.logger.exception("Exception while reading")
-            return None, None, None
+            return None
 
-        return pm_1_0, pm_2_5, pm_10_0
-
-    def read(self):
-        """
-        Takes a reading from the WINSEN_ZH03B and updates the self._pm_1_0,
-        self._pm_2_5, self._pm_10_0 values
-
-        :returns: None on success or 1 on error
-        """
-        if self.acquiring_measurement:
-            self.logger.error("Attempting to acquire a measurement when a"
-                              " measurement is already being acquired.")
-            return 1
-        try:
-            self.acquiring_measurement = True
-            self._pm_1_0, self._pm_2_5, self._pm_10_0 = self.get_measurement()
-            if None not in [self._pm_1_0, self.pm_2_5, self.pm_10_0]:
-                return  # success - no errors
-        except Exception as e:
-            self.logger.exception(
-                "{cls} raised an exception when taking a reading: "
-                "{err}".format(cls=type(self).__name__, err=e))
-        finally:
-            self.acquiring_measurement = False
-        return 1
+        return return_dict
 
     @staticmethod
     def HexToByte(hexStr):

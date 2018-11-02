@@ -282,8 +282,10 @@ class OutputController(threading.Thread):
                             target=write_influxdb_value,
                             args=(self.output_unique_id[output_id],
                                   'duration_time',
-                                  duration_on,
-                                  timestamp,))
+                                  duration_on,),
+                            kwargs={'unit': 's',
+                                    'channel': 0,
+                                    'timestamp': timestamp})
                         write_db.start()
 
                     return 0
@@ -361,7 +363,9 @@ class OutputController(threading.Thread):
                     target=write_influxdb_value,
                     args=(self.output_unique_id[output_id],
                           'duty_cycle',
-                          duty_cycle,))
+                          duty_cycle,),
+                    kwargs={'unit': 'percent',
+                            'channel': 0})
                 write_db.start()
 
             # PWM output
@@ -392,7 +396,9 @@ class OutputController(threading.Thread):
                     target=write_influxdb_value,
                     args=(self.output_unique_id[output_id],
                           'duty_cycle',
-                          duty_cycle,))
+                          duty_cycle,),
+                    kwargs={'unit': 'percent',
+                            'channel': 0})
                 write_db.start()
 
         # Signaled to turn output off
@@ -427,7 +433,9 @@ class OutputController(threading.Thread):
                     target=write_influxdb_value,
                     args=(self.output_unique_id[output_id],
                           'duty_cycle',
-                          duty_cycle,))
+                          duty_cycle,),
+                    kwargs={'unit': 'percent',
+                            'channel': 0})
                 write_db.start()
 
             # Write output duration on to database
@@ -467,8 +475,10 @@ class OutputController(threading.Thread):
                     target=write_influxdb_value,
                     args=(self.output_unique_id[output_id],
                           'duration_time',
-                          duration_sec,
-                          timestamp,))
+                          duration_sec,),
+                    kwargs={'unit': 's',
+                            'channel': 0,
+                            'timestamp': timestamp})
                 write_db.start()
 
             self.output_off_triggered[output_id] = False

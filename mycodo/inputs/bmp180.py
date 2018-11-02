@@ -3,7 +3,21 @@ import logging
 import time
 
 from mycodo.inputs.base_input import AbstractInput
-from mycodo.inputs.sensorutils import convert_units
+from mycodo.databases.models import InputMeasurements
+from mycodo.utils.database import db_retrieve_table_daemon
+
+# Measurements
+measurements = {
+    'altitude': {
+        'm': {0: {}}
+    },
+    'pressure': {
+        'Pa': {0: {}}
+    },
+    'temperature': {
+        'C': {0: {}}
+    }
+}
 
 # Input information
 INPUT_INFORMATION = {
@@ -11,8 +25,14 @@ INPUT_INFORMATION = {
     'input_manufacturer': 'BOSCH',
     'input_name': 'BMP180',
     'measurements_name': 'Pressure/Temperature',
-    'measurements_dict': ['altitude', 'pressure', 'temperature'],
-    'options_enabled': ['period', 'convert_unit', 'pre_output'],
+    'measurements_dict': measurements,
+
+    'options_enabled': [
+        'measurements_select',
+        'measurements_convert',
+        'period',
+        'pre_output'
+    ],
     'options_disabled': ['interface', 'i2c_location'],
 
     'dependencies_module': [
@@ -35,99 +55,43 @@ class InputModule(AbstractInput):
     def __init__(self, input_dev, testing=False):
         super(InputModule, self).__init__()
         self.logger = logging.getLogger("mycodo.inputs.bmp180")
-        self._altitude = None
-        self._pressure = None
-        self._temperature = None
+        self._measurements = None
 
         if not testing:
             from Adafruit_BMP import BMP085
             self.logger = logging.getLogger(
                 "mycodo.bmp180_{id}".format(id=input_dev.unique_id.split('-')[0]))
+
+            self.input_measurements = db_retrieve_table_daemon(
+                InputMeasurements).filter(
+                    InputMeasurements.input_id == input_dev.unique_id).all()
+
             self.i2c_bus = input_dev.i2c_bus
-            self.convert_to_unit = input_dev.convert_to_unit
             self.bmp = BMP085.BMP085(busnum=self.i2c_bus)
-
-    def __repr__(self):
-        """  Representation of object """
-        return "<{cls}(temperature={temp})(pressure={press})" \
-               "(altitude={alt})>".format(
-                cls=type(self).__name__,
-                alt="{0:.6f}".format(self._altitude),
-                press="{0:.6f}".format(self._pressure),
-                temp="{0:.6f}".format(self._temperature))
-
-    def __str__(self):
-        """ Return measurement information """
-        return "Temperature: {temp}, Pressure: {press}, " \
-               "Altitude: {alt}".format(
-                alt="{0:.6f}".format(self._altitude),
-                press="{0:.6f}".format(self._pressure),
-                temp="{0:.6f}".format(self._temperature))
-
-    def __iter__(self):  # must return an iterator
-        """ SensorClass iterates through live measurement readings """
-        return self
-
-    def next(self):
-        """ Get next measurement reading """
-        if self.read():  # raised an error
-            raise StopIteration  # required
-        return dict(altitude=float(self._altitude),
-                    pressure=float(self._pressure),
-                    temperature=float(self._temperature))
-
-    @property
-    def altitude(self):
-        """ BMP180/085 altitude in meters """
-        if self._altitude is None:  # update if needed
-            self.read()
-        return self._altitude
-
-    @property
-    def pressure(self):
-        """ BME180/085 pressure in Pascals """
-        if self._pressure is None:  # update if needed
-            self.read()
-        return self._pressure
-
-    @property
-    def temperature(self):
-        """ BMP180/085 temperature in Celsius """
-        if self._temperature is None:  # update if needed
-            self.read()
-        return self._temperature
 
     def get_measurement(self):
         """ Gets the measurement in units by reading the BMP180/085 """
         time.sleep(2)
 
-        temperature = convert_units(
-            'temperature', 'C', self.convert_to_unit,
-            self.bmp.read_temperature())
+        return_dict = {
+            'altitude': {
+                'm': {}
+            },
+            'pressure': {
+                'Pa': {}
+            },
+            'temperature': {
+                'C': {}
+            }
+        }
 
-        pressure = convert_units(
-            'pressure', 'Pa', self.convert_to_unit,
-            self.bmp.read_pressure())
+        if self.is_enabled('temperature', 'C', 0):
+            return_dict['temperature']['C'][0] = self.bmp.read_temperature()
 
-        altitude = convert_units(
-            'altitude', 'm', self.convert_to_unit,
-            self.bmp.read_altitude())
+        if self.is_enabled('pressure', 'Pa', 0):
+            return_dict['pressure']['Pa'][0] = self.bmp.read_pressure()
 
-        return temperature, pressure, altitude
+        if self.is_enabled('altitude', 'm', 0):
+            return_dict['altitude']['m'][0] = self.bmp.read_altitude()
 
-    def read(self):
-        """
-        Takes a reading from the BMP180/085 and updates the self._humidity and
-        self._temperature values
-
-        :returns: None on success or 1 on error
-        """
-        try:
-            self._temperature, self._pressure, self._altitude = self.get_measurement()
-            if self._temperature is not None:
-                return  # success - no errors
-        except Exception as e:
-            self.logger.exception(
-                "{cls} raised an exception when taking a reading: "
-                "{err}".format(cls=type(self).__name__, err=e))
-        return 1
+        return return_dict

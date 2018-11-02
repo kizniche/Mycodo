@@ -2,7 +2,6 @@
 import logging
 
 from mycodo.inputs.base_input import AbstractInput
-from mycodo.inputs.sensorutils import convert_units
 from mycodo.inputs.sensorutils import calculate_dewpoint
 
 
@@ -22,7 +21,7 @@ INPUT_INFORMATION = {
     'interfaces': ['I2C'],
     'i2c_location': ['0x5c'],
     'i2c_address_editable': False,
-    'options_enabled': ['period', 'convert_unit', 'pre_output'],
+    'options_enabled': ['period', 'measurements_convert', 'pre_output'],
     'options_disabled': ['interface', 'i2c_location']
 }
 
@@ -43,7 +42,6 @@ class InputModule(AbstractInput):
                 "mycodo.inputs.{name_lower}_{id}".format(
                     name_lower=INPUT_INFORMATION['input_name_unique'].lower(),
                     id=input_dev.unique_id.split('-')[0]))
-            self.convert_to_unit = input_dev.convert_to_unit
             self.interface = input_dev.interface
 
             # Load dependent modules

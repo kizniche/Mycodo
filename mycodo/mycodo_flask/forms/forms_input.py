@@ -185,6 +185,10 @@ class InputMod(FlaskForm):
 class InputMeasurementMod(FlaskForm):
     input_id = StringField('Input ID', widget=widgets.HiddenInput())
     input_measurement_id = StringField(widget=widgets.HiddenInput())
+    name = StringField(
+        lazy_gettext('Name'),
+        validators=[DataRequired()]
+    )
 
     scale_from_min = DecimalField(
         TOOLTIPS_INPUT['scale_from_min']['title'],

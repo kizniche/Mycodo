@@ -2,12 +2,24 @@
 import logging
 import time
 
+from mycodo.databases.models import InputMeasurements
 from mycodo.databases.models import Output
-from mycodo.utils.database import db_retrieve_table_daemon
 from mycodo.inputs.base_input import AbstractInput
-from mycodo.inputs.sensorutils import convert_units
 from mycodo.inputs.sensorutils import calculate_dewpoint
+from mycodo.utils.database import db_retrieve_table_daemon
 
+# Measurements
+measurements = {
+    'temperature': {
+        'C': {0: {}}
+    },
+    'humidity': {
+        'percent': {0: {}}
+    },
+    'dewpoint': {
+        'C': {0: {}}
+    },
+}
 
 # Input information
 INPUT_INFORMATION = {
@@ -15,13 +27,21 @@ INPUT_INFORMATION = {
     'input_manufacturer': 'AOSONG',
     'input_name': 'DHT11',
     'measurements_name': 'Humidity/Temperature',
-    'measurements_dict': ['dewpoint', 'humidity', 'temperature'],
-    'options_enabled': ['gpio_location', 'period', 'convert_unit', 'pre_output'],
+    'measurements_dict': measurements,
+
+    'options_enabled': [
+        'gpio_location',
+        'measurements_select',
+        'measurements_convert',
+        'period',
+        'pre_output'
+    ],
     'options_disabled': ['interface'],
 
     'dependencies_module': [
         ('internal', 'pip-exists pigpio', 'pigpio')
     ],
+
     'interfaces': ['GPIO']
 }
 
@@ -52,9 +72,7 @@ class InputModule(AbstractInput):
         """
         super(InputModule, self).__init__()
         self.logger = logging.getLogger('mycodo.inputs.dht11')
-        self._dew_point = None
-        self._humidity = None
-        self._temperature = None
+        self._measurements = None
         self.temp_temperature = 0
         self.temp_humidity = 0
         self.temp_dew_point = None
@@ -67,12 +85,14 @@ class InputModule(AbstractInput):
             self.logger = logging.getLogger(
                 'mycodo.dht11_{id}'.format(id=input_dev.unique_id.split('-')[0]))
 
-            self.convert_to_unit = input_dev.convert_to_unit
+            self.input_measurements = db_retrieve_table_daemon(
+                InputMeasurements).filter(
+                    InputMeasurements.input_id == input_dev.unique_id).all()
+
             self.gpio = int(input_dev.gpio_location)
             self.power_output_id = input_dev.power_output_id
 
             self.control = DaemonControl()
-
             self.pigpio = pigpio
             self.pi = self.pigpio.pi()
 
@@ -82,59 +102,19 @@ class InputModule(AbstractInput):
 
         self.start_sensor()
 
-    def __repr__(self):
-        """  Representation of object """
-        return "<{cls}(dewpoint={dpt})(humidity={hum})(temperature={temp})>".format(
-            cls=type(self).__name__,
-            dpt="{0:.2f}".format(self._dew_point),
-            hum="{0:.2f}".format(float(self._humidity)),
-            temp="{0:.2f}".format(float(self._temperature)))
-
-    def __str__(self):
-        """ Return measurement information """
-        return "Dew Point: {dpt}, Humidity: {hum}, Temperature: {temp}".format(
-            dpt="{0:.2f}".format(self._dew_point),
-            hum="{0:.2f}".format(float(self._humidity)),
-            temp="{0:.2f}".format(float(self._temperature)))
-
-    def __iter__(self):  # must return an iterator
-        """ DHT11Sensor iterates through live measurement readings """
-        return self
-
-    def next(self):
-        """ Get next measurement reading """
-        if self.read():  # raised an error
-            raise StopIteration  # required
-        return dict(dewpoint=float('{0:.2f}'.format(self._dew_point)),
-                    humidity=float("{0:.2f}".format(float(self._humidity))),
-                    temperature=float("{0:.2f}".format(float(self._temperature))))
-
-    @property
-    def dew_point(self):
-        """ DHT11 dew point in Celsius """
-        if self._dew_point is None:  # update if needed
-            self.read()
-        return self._dew_point
-
-    @property
-    def humidity(self):
-        """ DHT11 relative humidity in percent """
-        if self._humidity is None:  # update if needed
-            self.read()
-        return self._humidity
-
-    @property
-    def temperature(self):
-        """ DHT11 temperature in Celsius """
-        if self._temperature is None:  # update if needed
-            self.read()
-        return self._temperature
-
     def get_measurement(self):
         """ Gets the humidity and temperature """
-        self._dew_point = None
-        self._humidity = None
-        self._temperature = None
+        return_dict = {
+            'temperature': {
+                'C': {}
+            },
+            'humidity': {
+                'percent': {}
+            },
+            'dewpoint': {
+                'C': {}
+            },
+        }
 
         if not self.pi.connected:  # Check if pigpiod is running
             self.logger.error("Could not connect to pigpiod."
@@ -160,18 +140,13 @@ class InputModule(AbstractInput):
         for _ in range(2):
             self.measure_sensor()
             if self.temp_dew_point is not None:
-                self.temp_dew_point = convert_units(
-                    'dewpoint', 'C', self.convert_to_unit,
-                    self.temp_dew_point)
-                self.temp_temperature = convert_units(
-                    'temperature', 'C', self.convert_to_unit,
-                    self.temp_temperature)
-                self.temp_humidity = convert_units(
-                    'humidity', 'percent', self.convert_to_unit,
-                    self.temp_humidity)
-                return (self.temp_dew_point,
-                        self.temp_humidity,
-                        self.temp_temperature)  # success - no errors
+                if self.is_enabled('temperature', 'C', 0):
+                    return_dict['temperature']['C'][0] = self.temp_temperature
+                if self.is_enabled('humidity', 'percent', 0):
+                    return_dict['humidity']['percent'][0] = self.temp_humidity
+                if self.is_enabled('dewpoint', 'C', 0):
+                    return_dict['dewpoint']['C'][0] = self.temp_dew_point
+                return return_dict  # success - no errors
             time.sleep(2)
 
         # Measurement failure, power cycle the sensor (if enabled)
@@ -183,41 +158,17 @@ class InputModule(AbstractInput):
             for _ in range(2):
                 self.measure_sensor()
                 if self.temp_dew_point is not None:
-                    self.temp_dew_point = convert_units(
-                        'dewpoint', 'C', self.convert_to_unit,
-                        self.temp_dew_point)
-                    self.temp_temperature = convert_units(
-                        'temperature', 'C', self.convert_to_unit,
-                        self.temp_temperature)
-                    self.temp_humidity = convert_units(
-                        'humidity', 'percent', self.convert_to_unit,
-                        self.temp_humidity)
-                    return (self.temp_dew_point,
-                            self.temp_humidity,
-                            self.temp_temperature)  # success - no errors
+                    if self.is_enabled('temperature', 'C', 0):
+                        return_dict['temperature']['C'][0] = self.temp_temperature
+                    if self.is_enabled('humidity', 'percent', 0):
+                        return_dict['humidity']['percent'][0] = self.temp_humidity
+                    if self.is_enabled('dewpoint', 'C', 0):
+                        return_dict['dewpoint']['C'][0] = self.temp_dew_point
+                    return return_dict  # success - no errors
                 time.sleep(2)
 
         self.logger.error("Could not acquire a measurement")
-        return None, None, None
-
-    def read(self):
-        """
-        Takes a reading from the DHT11 and updates the self.dew_point,
-        self._humidity, and self._temperature values
-
-        :returns: None on success or 1 on error
-        """
-        try:
-            (self._dew_point,
-             self._humidity,
-             self._temperature) = self.get_measurement()
-            if self._dew_point is not None:
-                return  # success - no errors
-        except Exception as e:
-            self.logger.exception(
-                "{cls} raised an exception when taking a reading: "
-                "{err}".format(cls=type(self).__name__, err=e))
-        return 1
+        return None
 
     def measure_sensor(self):
         self.temp_temperature = 0
@@ -255,8 +206,6 @@ class InputModule(AbstractInput):
         Kills any watchdogs.
         Setup callbacks
         """
-        self._humidity = 0
-        self._temperature = 0
         self.high_tick = 0
         self.bit = 40
         self.either_edge_cb = None

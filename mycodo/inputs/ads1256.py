@@ -1,21 +1,39 @@
 # coding=utf-8
 import logging
-import time
-import sys
 
 from flask_babel import lazy_gettext
+
+from mycodo.databases.models import InputMeasurements
+from mycodo.inputs.base_input import AbstractInput
+from mycodo.utils.database import db_retrieve_table_daemon
+
+# Channels
+channels = {}
+for each_channel in range(8):
+    channels[each_channel] = {}
+
+# Measurements
+measurements = {
+    'electrical_potential': {
+        'V': channels
+    }
+}
 
 # Input information
 INPUT_INFORMATION = {
     'input_name_unique': 'ADS1256',
-    'input_manufacturer': 'Waveshare',
+    'input_manufacturer': 'Texas Instruments',
     'input_name': 'ADS1256',
-    'measurements_name': 'Voltage (Analog-to-Digital Converter)',
-    'measurements_dict': ['channel_{}'.format(i) for i in range(8)],  # 8 Channels
-    'channels': 8,
+    'measurements_name': 'Voltage (Waveshare, Analog-to-Digital Converter)',
+    'measurements_dict': measurements,
+    'measurements_convert_enabled': True,
+    'measurements_rescale': True,
+    'scale_from_min': 0.0,
+    'scale_from_max': 5.0,
+
     'options_enabled': [
         'measurements_select',
-        'channels_convert',
+        'measurements_convert',
         'adc_gain',
         'adc_sample_speed',
         'custom_options',
@@ -24,14 +42,12 @@ INPUT_INFORMATION = {
     ],
     'options_disabled': ['interface'],
 
-    'measurements_convert_enabled': True,
-    'channels_measurement': 'electrical_potential',
-    'channels_unit': 'V',
     'dependencies_module': [
         ('pip-pypi', 'wiringpi', 'wiringpi'),
         ('pip-git', 'pipyadc_py3', 'git://github.com/kizniche/PiPyADC-py3.git#egg=pipyadc_py3')  # PiPyADC ported to Python3
     ],
     'interfaces': ['UART'],
+
     'adc_gain': [
         (1, '1'),
         (2, '2'),
@@ -59,8 +75,6 @@ INPUT_INFORMATION = {
         ('5', '5'),
         ('2d5', '2.5')
     ],
-    'scale_from_min': 0.0,
-    'scale_from_max': 5.0,
 
     'custom_options': [
         {
@@ -82,20 +96,12 @@ INPUT_INFORMATION = {
 }
 
 
-class ChannelModule(object):
+class InputModule(AbstractInput):
     """ ADC Read """
     def __init__(self, input_dev, testing=False):
+        super(InputModule, self).__init__()
         self.logger = logging.getLogger('mycodo.ads1256')
-        self.acquiring_measurement = False
-        self._voltages = None
-
-        self.adc_gain = input_dev.adc_gain
-        self.adc_sample_speed = input_dev.adc_sample_speed
-        self.channels = input_dev.channels
-
-        self.measurements_selected = []
-        for each_channel in input_dev.measurements_selected.split(','):
-            self.measurements_selected.append(int(each_channel))
+        self._measurements = None
 
         if not testing:
             from ADS1256_definitions import POS_AIN0
@@ -122,6 +128,13 @@ class ChannelModule(object):
                 'mycodo.ads1256_{id}'.format(id=input_dev.unique_id.split('-')[0]))
 
             self.adc_calibration = None
+
+            self.input_measurements = db_retrieve_table_daemon(
+                InputMeasurements).filter(
+                    InputMeasurements.input_id == input_dev.unique_id).all()
+
+            self.adc_gain = input_dev.adc_gain
+            self.adc_sample_speed = input_dev.adc_sample_speed
 
             if input_dev.custom_options:
                 for each_option in input_dev.custom_options.split(';'):
@@ -151,30 +164,17 @@ class ChannelModule(object):
                     "SPI device /dev/spi* not found. Ensure SPI is enabled "
                     "and the device is recognized/setup by linux.")
 
-    def __iter__(self):
-        """
-        Support the iterator protocol.
-        """
-        return self
-
-    def next(self):
-        """
-        Call the read method and return voltage information.
-        """
-        if self.read():
-            return None
-        self.logger.error("Voltages returned: {}".format(self._voltages))
-        return self._voltages
-
-    @property
-    def voltages(self):
-        return self._voltages
-
     def get_measurement(self):
-        self._voltages = {}
+        self._measurements = {}
         voltages_list = []
         voltages_dict = {}
         count = 0
+
+        return_dict = {
+            'electrical_potential': {
+                'V': {}
+            }
+        }
 
         # 2 attempts to get valid measurement
         while (self.running and count < 2 and
@@ -183,40 +183,18 @@ class ChannelModule(object):
             voltages_list = [i * self.ads.v_per_digit for i in raw_channels]
             count += 1
 
-            for each_channel, each_voltage in enumerate(voltages_list, 1):
-                if each_channel in self.measurements_selected:
-                    voltages_dict['channel_{}'.format(each_channel)] = each_voltage
+        if not voltages_list or 0 in voltages_list:
+            self.logger.error(
+                "ADC returned measurement of 0 (indicating "
+                "something is wrong).")
+            return
 
-            time.sleep(0.85)
+        for each_measure in self.input_measurements:
+            if each_measure.is_enabled:
+                return_dict['electrical_potential']['V'][each_measure.channel] = voltages_list[each_measure.channel]
 
-        if 0 not in voltages_dict.values():
-            return voltages_dict
-
-    def read(self):
-        """
-        Takes a reading
-
-        :returns: None on success or 1 on error
-        """
-        if self.acquiring_measurement:
-            self.logger.error("Attempting to acquire a measurement when a"
-                              " measurement is already being acquired.")
-            return 1
-        try:
-            self.acquiring_measurement = True
-            self._voltages = self.get_measurement()
-            if self._voltages:
-                return  # success - no errors
-        except Exception as e:
-            self.logger.exception(
-                "{cls} raised an exception when taking a reading: "
-                "{err}".format(cls=type(self).__name__, err=e))
-        finally:
-            self.acquiring_measurement = False
-        return 1
-
-    def stop_sensor(self):
-        self.running = False
+        if return_dict['electrical_potential']['V']:
+            return return_dict
 
 
 if __name__ == "__main__":
@@ -229,5 +207,5 @@ if __name__ == "__main__":
     input_dev_.adc_sample_speed = '10'
     input_dev_.channels = 8
 
-    ads = ADCModule(input_dev_)
+    ads = InputModule(input_dev_)
     print("Channel 0: {}".format(ads.next()))

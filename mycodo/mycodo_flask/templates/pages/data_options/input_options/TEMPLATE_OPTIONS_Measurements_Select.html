@@ -3,7 +3,7 @@
 <div class="col-auto">
   <label class="control-label">{{tooltips_input['measurements_selected']['title']}}</label>
   <div>
-    <select class="form-control form-tooltip form-dropdown" data-placement="top" id="measurements_selected" name="measurements_selected" title="{{tooltips_input['measurements_selected']['phrase']}}" size="10" multiple>
+    <select class="form-control form-tooltip form-dropdown" data-placement="top" id="measurements_selected" name="measurements_selected" title="{{tooltips_input['measurements_selected']['phrase']}}" size="{{[10, input_number_measurements[each_input.unique_id]]|min}}" multiple>
       {% for each_measurement in input_measurements if each_measurement.input_id == each_input.unique_id %}
         <option value="{{each_measurement.unique_id}}"{% if each_measurement.is_enabled %} selected{% endif %}>{{measurements[each_measurement.measurement]['name']}} {% if each_measurement.channel != None and not each_measurement.single_channel %} (Channel {{each_measurement.channel + 1}}){% endif %}</option>
       {% endfor %}

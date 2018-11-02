@@ -236,14 +236,16 @@ def input_add(form_add, request_form):
                 if ('measurements_dict' in dict_inputs[input_name] and
                         dict_inputs[input_name]['measurements_dict'] != []):
                     for each_measurement, each_measurement_data in dict_inputs[input_name]['measurements_dict'].items():
-                        for each_unit, number_channels in each_measurement_data.items():
-                            for each_channel in range(number_channels):
+                        for each_unit, channel_data in each_measurement_data.items():
+                            for each_channel, each_channel_data in channel_data.items():
                                 new_measurement = InputMeasurements()
+                                if 'name' in each_channel_data and each_channel_data['name']:
+                                    new_measurement.name = each_channel_data['name']
                                 new_measurement.input_id = new_input.unique_id
                                 new_measurement.measurement = each_measurement
                                 new_measurement.unit = each_unit
                                 new_measurement.channel = each_channel
-                                if number_channels == 1:
+                                if len(channel_data) == 1:
                                     new_measurement.single_channel = True
                                 else:
                                     new_measurement.single_channel = False
@@ -476,6 +478,8 @@ def measurement_mod(form):
         if mod_input.is_activated:
             error.append(gettext(
                 "Deactivate controller before modifying its settings"))
+
+        mod_meas.name = form.name.data
 
         if form.rescaled_measurement_unit.data != '' and ',' in form.rescaled_measurement_unit.data:
             mod_meas.rescaled_measurement = form.rescaled_measurement_unit.data.split(',')[0]

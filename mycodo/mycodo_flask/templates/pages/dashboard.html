@@ -438,11 +438,11 @@ $(document).ready(function() {
   }
 
   // Retrieve the latest/last measurement for gauges/outputs
-  function getLastData(chart_number, dev_id, measurement_name, measure_type, max_measure_age_sec, decimal_places) {
+  function getLastData(chart_number, dev_id, measurement, unit, channel, measure_type, max_measure_age_sec, decimal_places) {
     if (decimal_places === null) {
       decimal_places = 1;
     }
-    var url = '/last/' + measurement_name + '/' + dev_id + '/' + max_measure_age_sec.toString();
+    var url = '/last/' + dev_id + '/' + measurement + '/' + unit + '/' + channel + '/' + max_measure_age_sec.toString();
     $.ajax(url, {
       success: function(data, responseText, jqXHR) {
         if (jqXHR.status === 204) {
@@ -464,9 +464,9 @@ $(document).ready(function() {
             new_point.update(measurement);
           } else {
             if (measure_type === "output") {
-              if (measurement_name === 'duration_time') {
+              if (measurement === 'duration_time') {
                 units = ' sec';
-              } else if (measurement_name === 'duty_cycle') {
+              } else if (measurement === 'duty_cycle') {
                 units = ' %';
               }
             }
@@ -485,9 +485,9 @@ $(document).ready(function() {
   }
 
   // Repeat function for getLastData()
-  function repeatLastData(chart_number, dev_id, measurement, measure_type, period_sec, max_measure_age_sec, decimal_places) {
+  function repeatLastData(chart_number, dev_id, measurement, unit, channel, measure_type, period_sec, max_measure_age_sec, decimal_places) {
     setInterval(function () {
-      getLastData(chart_number, dev_id, measurement, measure_type, max_measure_age_sec, decimal_places)
+      getLastData(chart_number, dev_id, measurement, unit, channel, measure_type, max_measure_age_sec, decimal_places)
     }, period_sec * 1000);
   }
 

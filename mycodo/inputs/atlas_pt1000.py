@@ -1,13 +1,13 @@
 # coding=utf-8
 import logging
 
-from mycodo.utils.system_pi import str_is_float
 from mycodo.inputs.base_input import AbstractInput
+from mycodo.utils.system_pi import str_is_float
 
 # Measurements
 measurements = {
     'temperature': {
-        'C': 1
+        'C': {0: {}}
     }
 }
 
@@ -22,7 +22,6 @@ INPUT_INFORMATION = {
     'options_enabled': [
         'i2c_location',
         'uart_location',
-        'measurements_select',
         'measurements_convert',
         'period',
         'pre_output'],
@@ -41,13 +40,14 @@ class InputModule(AbstractInput):
     def __init__(self, input_dev, testing=False):
         super(InputModule, self).__init__()
         self.logger = logging.getLogger("mycodo.inputs.atlas_pt1000")
-        self._temperature = None
+        self._measurements = None
         self.atlas_sensor_uart = None
         self.atlas_sensor_i2c = None
 
         if not testing:
             self.logger = logging.getLogger(
                 "mycodo.inputs.atlas_pt1000_{id}".format(id=input_dev.unique_id.split('-')[0]))
+
             self.interface = input_dev.interface
             if self.interface == 'UART':
                 self.uart_location = input_dev.uart_location
@@ -55,34 +55,6 @@ class InputModule(AbstractInput):
                 self.i2c_address = int(str(input_dev.i2c_location), 16)
                 self.i2c_bus = input_dev.i2c_bus
             self.initialize_sensor()
-
-    def __repr__(self):
-        """  Representation of object """
-        return "<{cls}({temp})>".format(
-            cls=type(self).__name__,
-            temp=self._temperature)
-
-    def __str__(self):
-        """ Return temperature information """
-        return "{temp}".format(
-            temp=self._temperature)
-
-    def __iter__(self):  # must return an iterator
-        """ Atlas_PT1000Sensor iterates through live temperature readings """
-        return self
-
-    def next(self):
-        """ Get next temperature reading """
-        if self.read():  # raised an error
-            raise StopIteration  # required
-        return self._temperature
-
-    @property
-    def temperature(self):
-        """ CPU temperature in celsius """
-        if self._temperature is None:  # update if needed
-            self.read()
-        return self._temperature
 
     def initialize_sensor(self):
         from mycodo.devices.atlas_scientific_i2c import AtlasScientificI2C
@@ -103,8 +75,14 @@ class InputModule(AbstractInput):
 
     def get_measurement(self):
         """ Gets the Atlas PT1000's temperature in Celsius """
-        self._temperature = None
+        self._measurements = None
         temp = None
+
+        return_dict = {
+            'temperature': {
+                'C': {}
+            }
+        }
 
         if self.interface == 'UART':
             if self.atlas_sensor_uart.setup:
@@ -138,28 +116,7 @@ class InputModule(AbstractInput):
                 self.logger.error('I2C device is not set up.'
                                   'Check the log for errors.')
 
-        return_dict = {
-            'temperature': {
-                'C': {
-                    0: temp
-                }
-            }
-        }
+        return_dict['temperature']['C'][0] = temp
 
-        return return_dict
-
-    def read(self):
-        """
-        Takes a reading from the PT-1000 and updates self._temperature
-
-        :returns: None on success or 1 on error
-        """
-        try:
-            self._temperature = self.get_measurement()
-            if self._temperature is not None:
-                return  # success - no errors
-        except Exception as e:
-            self.logger.exception(
-                "{cls} raised an exception when taking a reading: "
-                "{err}".format(cls=type(self).__name__, err=e))
-        return 1
+        if return_dict['temperature']['C'][0] is not None:
+            return return_dict

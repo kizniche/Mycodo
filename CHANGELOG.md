@@ -10,6 +10,7 @@ The Mycodo 7.0 brings a redesigned Conditional system. The remnants of Condition
  - Add Input: MCP9808 high accuracy I2C temperature sensor
  - Add Input: AMG8833 I2C 8x8 pixel thermal sensor
  - Add Function Action: Pause (pause for a duration of time before executing any remaining actions)
+ - Add ability to search Input selection dropdown
 
 
 ## 6.4.5 (2018-10-17)

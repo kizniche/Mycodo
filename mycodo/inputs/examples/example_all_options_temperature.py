@@ -4,7 +4,6 @@ import logging
 from flask_babel import lazy_gettext
 
 from mycodo.inputs.base_input import AbstractInput
-from mycodo.inputs.sensorutils import convert_units
 
 
 def constraints_pass_fan_seconds(value):
@@ -59,7 +58,7 @@ INPUT_INFORMATION = {
     # Options that are disabled will appear on the input options page but not be editable.
     # There are several location options available for use:
     # 'location', 'gpio_location', 'i2c_location', 'bt_location', and 'uart_location'
-    'options_enabled': ['i2c_location', 'uart_location', 'period', 'convert_unit', 'pre_output'],
+    'options_enabled': ['i2c_location', 'uart_location', 'period', 'measurements_convert', 'pre_output'],
     'options_disabled': ['interface'],
 
 
@@ -233,7 +232,6 @@ class InputModule(AbstractInput):
                 "mycodo.inputs.{name_lower}_{id}".format(
                     name_lower=INPUT_INFORMATION['input_name_unique'].lower(),
                     id=input_dev.unique_id.split('-')[0]))
-            self.convert_to_unit = input_dev.convert_to_unit
             self.interface = input_dev.interface
 
             #

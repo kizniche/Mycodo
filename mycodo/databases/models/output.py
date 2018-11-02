@@ -14,6 +14,9 @@ class Output(CRUDMixin, db.Model):
     unique_id = db.Column(db.String, nullable=False, unique=True, default=set_uuid)  # ID for influxdb entries
     output_type = db.Column(db.Text, default='wired')  # Options: 'command', 'wired', 'wireless_433MHz_pi_switch', 'pwm'
     name = db.Column(db.Text, default='Output')
+    measurement = db.Column(db.Text, default=None)
+    unit = db.Column(db.Text, default=None)
+    channel = db.Column(db.Integer, default=None)
     pin = db.Column(db.Integer, default=None)  # Pin connected to the device/output
     trigger = db.Column(db.Boolean, default=True)  # GPIO output to turn output on (True=HIGH, False=LOW)
     amps = db.Column(db.Float, default=0.0)  # The current drawn by the device connected to the output

@@ -1,6 +1,8 @@
+{% set unique_id = each_dashboard.output_ids.split(',')[0] %}
+{% set measurement = each_dashboard.output_ids.split(',')[1] %}
+{% set unit = each_dashboard.output_ids.split(',')[2] %}
+  getLastData({{chart_number}}, '{{unique_id}}', '{{measurement}}', '{{unit}}', '0', 'output', {{each_dashboard.max_measure_age}}, {{each_dashboard.decimal_places}});
+  repeatLastData({{chart_number}}, '{{unique_id}}', '{{measurement}}', '{{unit}}', '0', 'output', {{each_dashboard.refresh_duration}}, {{each_dashboard.max_measure_age}}, {{each_dashboard.decimal_places}});
 
-  getLastData({{chart_number}}, '{{each_dashboard.output_ids.split(',')[0]}}', '{{each_dashboard.output_ids.split(',')[1]}}', 'output', {{each_dashboard.max_measure_age}}, {{each_dashboard.decimal_places}});
-  repeatLastData({{chart_number}}, '{{each_dashboard.output_ids.split(',')[0]}}', '{{each_dashboard.output_ids.split(',')[1]}}', 'output', {{each_dashboard.refresh_duration}}, {{each_dashboard.max_measure_age}}, {{each_dashboard.decimal_places}});
-
-  getGPIOState({{chart_number}}, '{{each_dashboard.output_ids.split(',')[0]}}', {{each_dashboard.decimal_places}});
-  repeatGPIOState({{chart_number}}, '{{each_dashboard.output_ids.split(',')[0]}}', {{each_dashboard.refresh_duration}}, {{each_dashboard.decimal_places}});
+  getGPIOState({{chart_number}}, '{{unique_id}}', {{each_dashboard.decimal_places}});
+  repeatGPIOState({{chart_number}}, '{{unique_id}}', {{each_dashboard.refresh_duration}}, {{each_dashboard.decimal_places}});

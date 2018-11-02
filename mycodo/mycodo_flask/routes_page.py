@@ -1497,12 +1497,20 @@ def page_data():
     form_mod_humidity = forms_math.MathModHumidity()
     form_mod_verification = forms_math.MathModVerification()
 
+    # Create list of choices to be used in dropdown menus
     choices_input = utils_general.choices_inputs(input_dev)
     choices_math = utils_general.choices_maths(math)
     choices_output = utils_general.choices_outputs(output)
     choices_unit = utils_general.choices_units(unit)
     choices_measurement = utils_general.choices_measurements(measurement)
     choices_measurements_units = utils_general.choices_measurements_units(measurement, unit)
+
+    # Build dict of number of measurements for each input
+    input_number_measurements = {}
+    for each_measurement in input_measurements:
+        if each_measurement.input_id not in input_number_measurements:
+            input_number_measurements[each_measurement.input_id] = 0
+        input_number_measurements[each_measurement.input_id] += 1
 
     # Create dict of Input names
     names_input = {}
@@ -1660,6 +1668,7 @@ def page_data():
                            camera=camera,
                            input=input_dev,
                            input_measurements=input_measurements,
+                           input_number_measurements=input_number_measurements,
                            names_input=names_input,
                            tooltips_input=TOOLTIPS_INPUT,
                            input_templates=input_templates,

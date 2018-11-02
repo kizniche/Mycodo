@@ -48,7 +48,7 @@ MEASUREMENTS = {
     'duration_time': {
         'name': lazy_gettext('Duration'),
         'meas': 'duration_time',
-        'units': ['second']},
+        'units': ['s']},
     'duty_cycle': {
         'name': lazy_gettext('Duty Cycle'),
         'meas': 'duty_cycle',
@@ -157,14 +157,6 @@ MEASUREMENTS = {
         'name': lazy_gettext('Temperature'),
         'meas': 'temperature',
         'units': ['C', 'F', 'K']},
-    'temperature_object': {
-        'name': lazy_gettext('Temperature (Obj)'),
-        'meas': 'temperature',
-        'units': ['C', 'F', 'K']},
-    'temperature_die': {
-        'name': lazy_gettext('Temperature (Die)'),
-        'meas': 'temperature',
-        'units': ['C', 'F', 'K']},
     'voc': {
         'name': lazy_gettext('VOC'),
         'meas': 'voc',
@@ -266,7 +258,7 @@ UNITS = {
     'rpm': {
         'name': lazy_gettext('Revolutions per minute'),
         'unit': 'rpm'},
-    'second': {
+    's': {
         'name': lazy_gettext('Second'),
         'unit': 's'},
     'setpoint': {

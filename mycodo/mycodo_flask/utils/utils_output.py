@@ -23,7 +23,6 @@ from mycodo.utils.system_pi import list_to_csv
 logger = logging.getLogger(__name__)
 
 
-
 #
 # Output manipulation
 #
@@ -48,6 +47,19 @@ def output_add(form_add):
                 new_output = Output()
                 new_output.name = OUTPUT_INFO[form_add.output_type.data]['name']
                 new_output.output_type = form_add.output_type.data
+
+                if form_add.output_type.data in ['wired',
+                                                 'wireless_433MHz_pi_switch',
+                                                 'command', ]:
+                    new_output.measurement = 'duration_time'
+                    new_output.unit = 's'
+                elif form_add.output_type.data in ['command_pwm',
+                                                   'pwm']:
+                    new_output.measurement = 'duty_cycle'
+                    new_output.unit = 'percent'
+
+                new_output.channel = 0
+
                 if form_add.output_type.data == 'wired':
                     new_output.on_at_start = False
                 elif form_add.output_type.data == 'wireless_433MHz_pi_switch':

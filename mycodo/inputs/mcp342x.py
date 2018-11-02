@@ -2,12 +2,19 @@
 import logging
 import time
 
+from mycodo.databases.models import InputMeasurements
 from mycodo.inputs.base_input import AbstractInput
+from mycodo.utils.database import db_retrieve_table_daemon
+
+# Channels
+channels = {}
+for each_channel in range(4):
+    channels[each_channel] = {}
 
 # Measurements
 measurements = {
     'electrical_potential': {
-        'V': 4
+        'V': channels
     }
 }
 
@@ -70,7 +77,7 @@ class InputModule(AbstractInput):
         super(InputModule, self).__init__()
         self.logger = logging.getLogger('mycodo.mcp342x')
         self.acquiring_measurement = False
-        self._voltages = None
+        self._measurements = None
 
         self.i2c_address = int(str(input_dev.i2c_location), 16)
         self.i2c_bus = input_dev.i2c_bus
@@ -82,29 +89,16 @@ class InputModule(AbstractInput):
             from MCP342x import MCP342x
             self.logger = logging.getLogger(
                 'mycodo.mcp342x_{id}'.format(id=input_dev.unique_id.split('-')[0]))
+
+            self.input_measurements = db_retrieve_table_daemon(
+                InputMeasurements).filter(
+                    InputMeasurements.input_id == input_dev.unique_id).all()
+
             self.MCP342x = MCP342x
             self.bus = SMBus(self.i2c_bus)
 
-    def __iter__(self):
-        """
-        Support the iterator protocol.
-        """
-        return self
-
-    def next(self):
-        """
-        Call the read method and return voltage information.
-        """
-        if self.read():
-            return None
-        return self._voltages
-
-    @property
-    def voltages(self):
-        return self._voltages
-
     def get_measurement(self):
-        self._voltages = None
+        self._measurements = None
 
         return_dict = {
             'electrical_potential': {
@@ -112,13 +106,14 @@ class InputModule(AbstractInput):
             }
         }
 
-        # for each_channel in range(4):
-        #     adc = self.MCP342x(self.bus,
-        #                        self.i2c_address,
-        #                        channel=each_channel,
-        #                        gain=self.adc_gain,
-        #                        resolution=self.adc_resolution)
-        #     return_dict['electrical_potential']['V'][each_channel] = adc.convert_and_read()
+        # for each_measure in self.input_measurements:
+        #     if each_measure.is_enabled:
+        #         adc = self.MCP342x(self.bus,
+        #                            self.i2c_address,
+        #                            channel=each_measure.channel,
+        #                            gain=self.adc_gain,
+        #                            resolution=self.adc_resolution)
+        #         return_dict['electrical_potential']['V'][each_measure.channel] = adc.convert_and_read()
 
         # Dummy data for testing
         import random
@@ -128,30 +123,8 @@ class InputModule(AbstractInput):
             return_dict['electrical_potential']['V'][2] = random.uniform(0.5, 0.6)
             return_dict['electrical_potential']['V'][3] = random.uniform(3.5, 6.2)
 
-        return return_dict
-
-    def read(self):
-        """
-        Takes a reading
-
-        :returns: None on success or 1 on error
-        """
-        if self.acquiring_measurement:
-            self.logger.error("Attempting to acquire a measurement when a"
-                              " measurement is already being acquired.")
-            return 1
-        try:
-            self.acquiring_measurement = True
-            self._voltages = self.get_measurement()
-            if self._voltages:
-                return  # success - no errors
-        except Exception as e:
-            self.logger.exception(
-                "{cls} raised an exception when taking a reading: "
-                "{err}".format(cls=type(self).__name__, err=e))
-        finally:
-            self.acquiring_measurement = False
-        return 1
+        if return_dict['electrical_potential']['V']:
+            return return_dict
 
 
 if __name__ == "__main__":

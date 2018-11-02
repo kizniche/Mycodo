@@ -5,7 +5,6 @@ import time
 from flask_babel import lazy_gettext
 
 from mycodo.inputs.base_input import AbstractInput
-from mycodo.inputs.sensorutils import convert_units
 from mycodo.inputs.sensorutils import is_device
 
 
@@ -24,14 +23,29 @@ def constraints_pass_measure_range(value):
     return all_passed, errors
 
 
+# Measurements
+measurements = {
+    'co2': {
+        'ppm': {0: {}}
+    }
+}
+
 # Input information
 INPUT_INFORMATION = {
     'input_name_unique': 'MH_Z19',
     'input_manufacturer': 'Winsen',
     'input_name': 'MH-Z19',
     'measurements_name': 'CO2',
-    'measurements_dict': ['co2'],
-    'options_enabled': ['uart_location', 'uart_baud_rate', 'custom_options', 'period',  'convert_unit', 'pre_output'],
+    'measurements_dict': measurements,
+
+    'options_enabled': [
+        'uart_location',
+        'uart_baud_rate',
+        'measurements_convert',
+        'custom_options',
+        'period',
+        'pre_output'
+    ],
     'options_disabled': ['interface'],
 
     'interfaces': ['UART'],
@@ -70,7 +84,7 @@ class InputModule(AbstractInput):
     def __init__(self, input_dev, testing=False):
         super(InputModule, self).__init__()
         self.logger = logging.getLogger("mycodo.inputs.mh_z19")
-        self._co2 = None
+        self._measurements = None
         self.measure_range = None
         self.abc_enable = False
 
@@ -78,9 +92,9 @@ class InputModule(AbstractInput):
             import serial
             self.logger = logging.getLogger(
                 "mycodo.mhz19_{id}".format(id=input_dev.unique_id.split('-')[0]))
+
             self.uart_location = input_dev.uart_location
             self.baud_rate = input_dev.baud_rate
-            self.convert_to_unit = input_dev.convert_to_unit
 
             # Check if device is valid
             self.serial_device = is_device(self.uart_location)
@@ -116,36 +130,14 @@ class InputModule(AbstractInput):
 
             time.sleep(0.1)
 
-    def __repr__(self):
-        """  Representation of object """
-        return "<{cls}(co2={co2})>".format(
-            cls=type(self).__name__,
-            co2="{0:.2f}".format(self._co2))
-
-    def __str__(self):
-        """ Return CO2 information """
-        return "CO2: {co2}".format(co2="{0:.2f}".format(self._co2))
-
-    def __iter__(self):  # must return an iterator
-        """ MH-Z19 iterates through live CO2 readings """
-        return self
-
-    def next(self):
-        """ Get next CO2 reading """
-        if self.read():  # raised an error
-            raise StopIteration  # required
-        return dict(co2=float('{0:.2f}'.format(self._co2)))
-
-    @property
-    def co2(self):
-        """ CO2 concentration in ppmv """
-        if self._co2 is None:  # update if needed
-            self.read()
-        return self._co2
-
     def get_measurement(self, silent=False):
         """ Gets the MH-Z19's CO2 concentration in ppmv via UART"""
-        self._co2 = None
+        return_dict = {
+            'co2': {
+                'ppm': {}
+            }
+        }
+
         co2 = None
 
         if not self.serial_device:  # Don't measure if device isn't validated
@@ -165,33 +157,9 @@ class InputModule(AbstractInput):
         else:
             self.logger.error("Bad response")
 
-        co2 = convert_units(
-            'co2', 'ppm', self.convert_to_unit, co2)
+        return_dict['co2']['ppm'][0] = co2
 
-        return co2
-
-    def read(self):
-        """
-        Takes a reading from the MH-Z19 and updates the self._co2 value
-
-        :returns: None on success or 1 on error
-        """
-        if self.acquiring_measurement:
-            self.logger.error("Attempting to acquire a measurement when a"
-                              " measurement is already being acquired.")
-            return 1
-        try:
-            self.acquiring_measurement = True
-            self._co2 = self.get_measurement()
-            if self._co2 is not None:
-                return  # success - no errors
-        except Exception as e:
-            self.logger.error(
-                "{cls} raised an exception when taking a reading: "
-                "{err}".format(cls=type(self).__name__, err=e))
-        finally:
-            self.acquiring_measurement = False
-        return 1
+        return return_dict
 
     def abcoff(self):
         """

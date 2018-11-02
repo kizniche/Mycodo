@@ -39,8 +39,8 @@ def check_if_channel_measurement(measurement):
 def add_measurements_influxdb(unique_id, measurements):
     """
 
-    :param unique_id:
-    :param measurements:
+    :param unique_id: Unique ID of device
+    :param measurements: dict of measurements
     :return:
     """
     data = []
@@ -85,7 +85,7 @@ def add_measure_influxdb(unique_id, measurements, unit=None):
     write_db.start()
 
 
-def format_influxdb_data(device_id, measure_type, value, channel=None, unit=None, timestamp=None):
+def format_influxdb_data(unique_id, measurement, value, unit=None, channel=None, timestamp=None):
     """
     Format data for entry into an Influxdb database
 
@@ -96,11 +96,11 @@ def format_influxdb_data(device_id, measure_type, value, channel=None, unit=None
     :return: list of measurement type, tags, and value
     :rtype: list
 
-    :param device_id: 8-character alpha-numeric ID associated with device
-    :type device_id: str
-    :param measure_type: The type of data being entered into the Influxdb
+    :param unique_id: 8-character alpha-numeric ID associated with device
+    :type unique_id: str
+    :param measurement: The type of data being entered into the Influxdb
         database (ex. 'temperature', 'duration_time')
-    :type measure_type: str
+    :type measurement: str
     :param value: The value being entered into the Influxdb database
     :type value: int or float
     :param timestamp: If supplied, this timestamp will be used in the influxdb
@@ -110,9 +110,9 @@ def format_influxdb_data(device_id, measure_type, value, channel=None, unit=None
     checked_value = float(value)
 
     influx_dict = {
-        'measurement':  measure_type,
+        'measurement':  measurement,
         'tags': {
-            "device_id": device_id
+            "device_id": unique_id
         },
         'fields': {
             "value": checked_value
@@ -126,7 +126,7 @@ def format_influxdb_data(device_id, measure_type, value, channel=None, unit=None
         influx_dict['tags']['channel'] = channel
 
     if timestamp:
-        influx_dict['measurement'] = timestamp.strftime('%Y-%m-%dT%H:%M:%S.%fZ')
+        influx_dict['time'] = timestamp.strftime('%Y-%m-%dT%H:%M:%S.%fZ')
 
     return influx_dict
 
@@ -168,11 +168,11 @@ def query_string(measurement, unique_id,
     return query
 
 
-def read_past_influxdb(device_id, measurement, past_seconds):
+def read_past_influxdb(unique_id, measurement, past_seconds):
     client = InfluxDBClient(INFLUXDB_HOST, INFLUXDB_PORT, INFLUXDB_USER,
                             INFLUXDB_PASSWORD, INFLUXDB_DATABASE, timeout=5)
     query_str = query_string(
-        measurement, device_id, past_sec=past_seconds)
+        measurement, unique_id, past_sec=past_seconds)
     if query_str == 1:
         return '', 204
     raw_data = client.query(query_str).raw
@@ -180,7 +180,7 @@ def read_past_influxdb(device_id, measurement, past_seconds):
         return raw_data['series'][0]['values']
 
 
-def read_last_influxdb(device_id, measure_type, duration_sec=None):
+def read_last_influxdb(unique_id, measurement, duration_sec=None):
     """
     Query Influxdb for the last entry.
 
@@ -190,12 +190,12 @@ def read_last_influxdb(device_id, measure_type, duration_sec=None):
     :return: list of time and value
     :rtype: list
 
-    :param device_id: What device_id tag to query in the Influxdb
+    :param unique_id: What unique_id tag to query in the Influxdb
         database (ex. '00000001')
-    :type device_id: str
-    :param measure_type: What measurement to query in the Influxdb
+    :type unique_id: str
+    :param measurement: What measurement to query in the Influxdb
         database (ex. 'temperature', 'duration_time')
-    :type measure_type: str
+    :type measurement: str
     :param duration_sec: How many seconds to look for a past measurement
     :type duration_sec: int
     """
@@ -203,9 +203,9 @@ def read_last_influxdb(device_id, measure_type, duration_sec=None):
                             INFLUXDB_PASSWORD, INFLUXDB_DATABASE, timeout=5)
 
     if duration_sec:
-        query = query_string(measure_type, device_id, past_sec=duration_sec)
+        query = query_string(measurement, unique_id, past_sec=duration_sec)
     else:
-        query = query_string(measure_type, device_id, value='LAST')
+        query = query_string(measurement, unique_id, value='LAST')
 
     try:
         last_measurement = client.query(query).raw
@@ -285,7 +285,7 @@ def valid_uuid(uuid_str):
     return val.hex == uuid_str.replace('-', '')
 
 
-def write_influxdb_value(device_id, measure_type, value, timestamp=None):
+def write_influxdb_value(unique_id, measurement, value, unit=None, channel=None, timestamp=None):
     """
     Write a value into an Influxdb database
 
@@ -295,12 +295,12 @@ def write_influxdb_value(device_id, measure_type, value, timestamp=None):
     :return: success (0) or failure (1)
     :rtype: bool
 
-    :param device_id: What device_id tag to enter in the Influxdb
+    :param unique_id: What unique_id tag to enter in the Influxdb
         database (ex. '00000001')
-    :type device_id: str
-    :param measure_type: What type of measurement for the Influxdb
+    :type unique_id: str
+    :param measurement: What type of measurement for the Influxdb
         database entry (ex. 'temperature')
-    :type measure_type: str
+    :type measurement: str
     :param value: The value being entered into the Influxdb database
     :type value: int or float
     :param timestamp: If supplied, this timestamp will be used in the influxdb
@@ -308,19 +308,22 @@ def write_influxdb_value(device_id, measure_type, value, timestamp=None):
     """
     client = InfluxDBClient(INFLUXDB_HOST, INFLUXDB_PORT, INFLUXDB_USER,
                             INFLUXDB_PASSWORD, INFLUXDB_DATABASE, timeout=5)
-    data = [format_influxdb_data(device_id,
-                                 measure_type,
+    data = [format_influxdb_data(unique_id,
+                                 measurement,
                                  value,
-                                 timestamp)]
+                                 unit=unit,
+                                 channel=channel,
+                                 timestamp=timestamp)]
 
     try:
+        logger.error(data)
         client.write_points(data)
         return 0
     except Exception as except_msg:
         logger.debug(
             "Failed to write measurement to influxdb (Device ID: {id}). Data "
             "that was submitted for writing: {data}. Exception: {err}".format(
-                id=device_id, data=data, err=except_msg))
+                id=unique_id, data=data, err=except_msg))
         return 1
 
 
