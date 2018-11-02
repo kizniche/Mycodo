@@ -162,11 +162,12 @@ def test_add_all_data_devices_logged_in_as_admin(_, testapp):
                 choices_input.append('{inp},{int}'.format(inp=each_input, int=each_interface))
 
     for each_input in choices_input:
+        choice_name = each_input.split(',')[0]
         print("Testing {}".format(each_input))
         response = add_data(testapp, data_type='input', input_type=each_input)
 
         # Verify success message flashed
-        assert "{} Input with ID".format(each_input.split(',')[0]) in response
+        assert "{} Input with ID".format(choice_name) in response
         assert "successfully added" in response
 
         # Verify data was entered into the database
@@ -174,7 +175,7 @@ def test_add_all_data_devices_logged_in_as_admin(_, testapp):
         assert Input.query.count() == input_count, "Number of Inputs doesn't match: In DB {}, Should be: {}".format(Input.query.count(), input_count)
 
         input_dev = Input.query.filter(Input.id == input_count).first()
-        assert each_input in input_dev.name, "Input name doesn't match: {}".format(each_input)
+        assert choice_name in input_dev.name, "Input name doesn't match: {}".format(choice_name)
 
     # Add All Maths
     math_count = 0

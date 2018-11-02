@@ -37,7 +37,7 @@ logger = logging.getLogger(__name__)
 #
 
 
-def input_add(form_add, request_form):
+def input_add(form_add):
     action = '{action} {controller}'.format(
         action=gettext("Add"),
         controller=gettext("Input"))

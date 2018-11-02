@@ -1583,7 +1583,7 @@ def page_data():
 
         # Add Input
         if form_add_input.input_add.data:
-            unmet_dependencies = utils_input.input_add(form_add_input, request.form)
+            unmet_dependencies = utils_input.input_add(form_add_input)
 
         # Mod Measurement
         elif form_mod_input_measurement.input_measurement_mod.data:
