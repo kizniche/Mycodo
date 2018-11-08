@@ -131,7 +131,7 @@ class InputModule(AbstractInput):
 
             self.input_measurements = db_retrieve_table_daemon(
                 InputMeasurements).filter(
-                    InputMeasurements.input_id == input_dev.unique_id).all()
+                    InputMeasurements.input_id == input_dev.unique_id)
 
             self.adc_gain = input_dev.adc_gain
             self.adc_sample_speed = input_dev.adc_sample_speed
@@ -189,7 +189,7 @@ class InputModule(AbstractInput):
                 "something is wrong).")
             return
 
-        for each_measure in self.input_measurements:
+        for each_measure in self.input_measurements.all():
             if each_measure.is_enabled:
                 return_dict['electrical_potential']['V'][each_measure.channel] = voltages_list[each_measure.channel]
 

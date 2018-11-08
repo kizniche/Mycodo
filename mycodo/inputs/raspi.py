@@ -48,7 +48,7 @@ class InputModule(AbstractInput):
 
             self.input_measurements = db_retrieve_table_daemon(
                 InputMeasurements).filter(
-                    InputMeasurements.input_id == input_dev.unique_id).all()
+                    InputMeasurements.input_id == input_dev.unique_id)
 
     def get_measurement(self):
         """ Gets the Raspberry pi's temperature in Celsius by reading the temp file and div by 1000 """

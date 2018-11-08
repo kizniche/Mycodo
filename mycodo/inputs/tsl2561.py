@@ -27,6 +27,8 @@ INPUT_INFORMATION = {
     'options_disabled': ['interface'],
 
     'dependencies_module': [
+        ('pip-pypi', 'Adafruit_GPIO', 'Adafruit_GPIO'),
+        ('pip-pypi', 'Adafruit_PureIO', 'Adafruit_PureIO'),
         ('pip-pypi', 'tsl2561', 'tsl2561')
     ],
 
@@ -48,7 +50,6 @@ class InputModule(AbstractInput):
             from tsl2561 import TSL2561
             self.logger = logging.getLogger(
                 "mycodo.tsl2561_{id}".format(id=input_dev.unique_id.split('-')[0]))
-
             self.i2c_address = int(str(input_dev.i2c_location), 16)
             self.i2c_bus = input_dev.i2c_bus
             self.tsl = TSL2561(address=self.i2c_address, busnum=self.i2c_bus)
@@ -61,6 +62,8 @@ class InputModule(AbstractInput):
             }
         }
 
+        from tsl2561.constants import TSL2561_INTEGRATIONTIME_402MS
+        self.tsl.set_integration_time(TSL2561_INTEGRATIONTIME_402MS)
         saturated = False
         try:
             return_dict['light']['lux'][0] = self.tsl.lux()

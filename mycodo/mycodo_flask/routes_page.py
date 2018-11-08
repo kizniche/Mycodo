@@ -494,6 +494,10 @@ def page_dashboard():
     dict_measurements = add_custom_measurements(measurement)
     dict_units = add_custom_units(unit)
 
+    input_measurements_dict = {}
+    for meas in input_measurements:
+        input_measurements_dict[meas.unique_id] = meas
+
     # Add multi-select values as form choices, for validation
     form_graph.math_ids.choices = []
     form_graph.pid_ids.choices = []
@@ -629,6 +633,7 @@ def page_dashboard():
                            pid=pid,
                            output=output,
                            input=input_dev,
+                           input_measurements_dict=input_measurements_dict,
                            tags=tags,
                            colors_graph=colors_graph,
                            colors_gauge_angular=colors_gauge_angular,

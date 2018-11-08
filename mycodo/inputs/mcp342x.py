@@ -92,7 +92,7 @@ class InputModule(AbstractInput):
 
             self.input_measurements = db_retrieve_table_daemon(
                 InputMeasurements).filter(
-                    InputMeasurements.input_id == input_dev.unique_id).all()
+                    InputMeasurements.input_id == input_dev.unique_id)
 
             self.MCP342x = MCP342x
             self.bus = SMBus(self.i2c_bus)
@@ -106,7 +106,7 @@ class InputModule(AbstractInput):
             }
         }
 
-        # for each_measure in self.input_measurements:
+        # for each_measure in self.input_measurements.all():
         #     if each_measure.is_enabled:
         #         adc = self.MCP342x(self.bus,
         #                            self.i2c_address,

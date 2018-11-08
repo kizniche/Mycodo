@@ -42,6 +42,7 @@ from .input import InputMeasurements
 from .lcd import LCD
 from .lcd import LCDData
 from .math import Math
+from .math import MathMeasurements
 from .measurement import Conversion
 from .measurement import Measurement
 from .measurement import Unit

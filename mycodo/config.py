@@ -79,7 +79,12 @@ MATH_INFO = {
     'humidity': {
         'name': 'Humidity (Wet-Bulb)',
         'dependencies_module': [],
-        'measure': ['humidity', 'humidity_ratio', 'specific_enthalpy', 'specific_volume']},
+        'measure': [
+            {'humidity': {'percent': {0}}},
+            {'humidity_ratio': {'kg_kg': {0}}},
+            {'specific_enthalpy': {'kJ_kg': {0}}},
+            {'specific_volume': {'m3_kg': {0}}}
+        ]},
     'verification': {
         'name': 'Verification',
         'dependencies_module': [],

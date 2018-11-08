@@ -454,7 +454,20 @@ def graph_y_axes(dict_measurements):
             # dashboard element
             for each_id_measure in ids_and_measures:
 
-                if len(each_id_measure.split(',')) == 4:
+                if each_device == input_dev:
+                    if each_graph.unique_id not in y_axes:
+                        y_axes[each_graph.unique_id] = []
+
+                    measure_id = each_id_measure.split(',')[1]
+
+                    for each_measure in input_measurements:
+                        if each_measure.unique_id == measure_id:
+                            if not y_axes[each_graph.unique_id]:
+                                y_axes[each_graph.unique_id] = [each_measure.unit]
+                            elif y_axes[each_graph.unique_id] and each_measure.unit not in y_axes[each_graph.unique_id]:
+                                y_axes.setdefault(each_graph.unique_id, []).append(each_measure.unit)
+
+                elif len(each_id_measure.split(',')) == 4:
                     if each_graph.unique_id not in y_axes:
                         y_axes[each_graph.unique_id] = []
 
@@ -583,7 +596,16 @@ def graph_y_axes_async(dict_measurements, ids_measures):
     return y_axes
 
 
-def check_func(all_devices, unique_id, y_axes, measurement, dict_measurements, input_dev, input_measurements, output, math, unit=None):
+def check_func(all_devices,
+               unique_id,
+               y_axes,
+               measurement,
+               dict_measurements,
+               input_dev,
+               input_measurements,
+               output,
+               math,
+               unit=None):
     """
     Generate a list of y-axes for Live and Asynchronous Graphs
     :param all_devices: Input, Math, Output, and PID SQL entries of a table
@@ -592,6 +614,9 @@ def check_func(all_devices, unique_id, y_axes, measurement, dict_measurements, i
     :param measurement:
     :param dict_measurements:
     :param input_dev:
+    :param input_measurements:
+    :param output:
+    :param math:
     :param unit:
     :return: None
     """
@@ -612,12 +637,6 @@ def check_func(all_devices, unique_id, y_axes, measurement, dict_measurements, i
             elif measurement == 'duty_cycle':
                 if 'percent' not in y_axes:
                     y_axes.append('percent')
-
-            # Use Linux Command measurement
-            elif (all_devices == input_dev and
-                    len(each_device.convert_to_unit.split(',')) == 2 and
-                    each_device.convert_to_unit.split(',')[1] not in y_axes):
-                y_axes.append(each_device.convert_to_unit.split(',')[1])
 
             # Use custom-converted units
             elif (unique_id in use_unit and

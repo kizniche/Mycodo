@@ -138,7 +138,7 @@ class AbstractInput(object):
         """
         if name not in self.avg_max:
             if init_max != 0 and init_max < 2:
-                logger.error("init_max must be greater than 1")
+                self.logger.error("init_max must be greater than 1")
             elif init_max > 1:
                 self.avg_max[name] = init_max
                 self.avg_meas[name] = []

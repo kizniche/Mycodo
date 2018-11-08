@@ -70,7 +70,7 @@ class InputModule(AbstractInput):
 
             self.input_measurements = db_retrieve_table_daemon(
                 InputMeasurements).filter(
-                    InputMeasurements.input_id == input_dev.unique_id).all()
+                    InputMeasurements.input_id == input_dev.unique_id)
 
             self.pin_clock = input_dev.pin_clock
             self.pin_cs = input_dev.pin_cs
@@ -92,7 +92,7 @@ class InputModule(AbstractInput):
             }
         }
 
-        for each_measure in self.input_measurements:
+        for each_measure in self.input_measurements.all():
             if each_measure.is_enabled:
                 return_dict['electrical_potential']['V'][each_measure.channel] = (
                 (self.adc.read_adc(each_measure.channel) / 1023.0) * self.scale_from_max)

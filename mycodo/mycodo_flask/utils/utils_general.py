@@ -326,44 +326,47 @@ def form_input_choices(choices, each_input, dict_inputs):
                 dict_inputs[each_input.device]['measurements_dict'] and
                 dict_inputs[each_input.device]['measurements_dict'] != 'LinuxCommand'):
 
-            for each_measure, unit_data in dict_inputs[each_input.device]['measurements_dict'].items():
-                for each_unit, channel_data in unit_data.items():
-                    for each_channel, each_channel_data in channel_data.items():
-                        value = '{id},{meas},{unit},{chan}'.format(
-                            id=each_input.unique_id,
-                            meas=each_measure,
-                            unit=each_unit,
-                            chan=each_channel)
+            for each_measure in input_measurements:
+                value = '{input_id},{meas_id}'.format(
+                    input_id=each_input.unique_id,
+                    meas_id=each_measure.unique_id)
 
-                        try:
-                            custom_dict_measurements = {}
-                            for each_meas in input_measurements:
-                                custom_dict_measurements[each_meas.measurement] = each_meas.unit
+                try:
+                    custom_dict_measurements = {}
+                    for each_meas in input_measurements:
+                        custom_dict_measurements[each_meas.measurement] = each_meas.unit
 
-                            measure_display, unit_display = check_display_names(
-                                each_measure, custom_dict_measurements[each_measure])
+                    measure_display, unit_display = check_display_names(
+                        each_measure.measurement, custom_dict_measurements[each_measure.measurement])
 
-                            if len(channel_data) > 1:
-                                channel_name = ' CH{chan}'.format(chan=each_channel)
-                            else:
-                                channel_name = ''
+                    if not each_measure.single_channel:
+                        channel_number = ' CH{chan}'.format(chan=each_measure.channel)
+                    else:
+                        channel_number = ''
 
-                            if unit_display:
-                                display = '[Input {id:02d}] {name}{chan} ({meas}, {unit})'.format(
-                                    id=each_input.id,
-                                    name=each_input.name,
-                                    chan=channel_name,
-                                    meas=measure_display,
-                                    unit=unit_display)
-                            else:
-                                display = '[Input {id:02d}] {name}{chan} ({meas})'.format(
-                                    id=each_input.id,
-                                    name=each_input.name,
-                                    chan=channel_name,
-                                    meas=measure_display)
-                            choices.update({value: display})
-                        except:
-                            logger.exception("Generating input choices")
+                    if each_measure.name:
+                        channel_name = ' ({name})'.format(name=each_measure.name)
+                    else:
+                        channel_name = ''
+
+                    channel_info = "{}{}".format(channel_number, channel_name)
+
+                    if unit_display:
+                        display = '[Input {id:02d}] {name}{chan} ({meas}, {unit})'.format(
+                            id=each_input.id,
+                            name=each_input.name,
+                            chan=channel_info,
+                            meas=measure_display,
+                            unit=unit_display)
+                    else:
+                        display = '[Input {id:02d}] {name}{chan} ({meas})'.format(
+                            id=each_input.id,
+                            name=each_input.name,
+                            chan=channel_info,
+                            meas=measure_display)
+                    choices.update({value: display})
+                except:
+                    logger.exception("Generating input choices")
 
     return choices
 

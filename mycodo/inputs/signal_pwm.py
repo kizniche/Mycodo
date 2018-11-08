@@ -63,7 +63,7 @@ class InputModule(AbstractInput):
 
             self.input_measurements = db_retrieve_table_daemon(
                 InputMeasurements).filter(
-                    InputMeasurements.input_id == input_dev.unique_id).all()
+                    InputMeasurements.input_id == input_dev.unique_id)
 
             self.gpio = int(input_dev.gpio_location)
             self.weighting = input_dev.weighting

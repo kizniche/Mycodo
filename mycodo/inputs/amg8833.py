@@ -84,7 +84,7 @@ class InputModule(AbstractInput):
 
             self.input_measurements = db_retrieve_table_daemon(
                 InputMeasurements).filter(
-                    InputMeasurements.input_id == input_dev.unique_id).all()
+                    InputMeasurements.input_id == input_dev.unique_id)
 
             self.Adafruit_AMG88xx = Adafruit_AMG88xx
             self.i2c_address = int(str(input_dev.i2c_location), 16)
@@ -111,7 +111,7 @@ class InputModule(AbstractInput):
             self.logger.error("Max Pixel = {0} C".format(max(pixels)))
             self.logger.error("Thermistor = {0} C".format(self.sensor.readThermistor()))
 
-        for meas in self.input_measurements:
+        for meas in self.input_measurements.all():
             if meas.is_enabled:
                 pixels_dict[meas.measurement][meas.unit][meas.channel] = pixels[meas.channel]
 

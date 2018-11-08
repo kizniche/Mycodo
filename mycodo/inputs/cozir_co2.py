@@ -40,7 +40,7 @@ INPUT_INFORMATION = {
     'options_disabled': ['interface'],
 
     'dependencies_module': [
-        ('pip-git', 'pycozir', 'git://github.com/pierre-haessig/pycozir.git#egg=pycozir')
+        ('pip-git', 'cozir', 'git://github.com/pierre-haessig/pycozir.git#egg=pycozir')
     ],
 
     'interfaces': ['UART'],
@@ -57,23 +57,23 @@ class InputModule(AbstractInput):
 
     def __init__(self, input_dev, testing=False):
         super(InputModule, self).__init__()
-        self.logger = logging.getLogger("mycodo.inputs.cozir")
+        self.logger = logging.getLogger("mycodo.inputs.cozir_co2")
         self._measurements = None
 
         if not testing:
-            from pycozir import Cozir
+            from cozir import Cozir
             self.logger = logging.getLogger(
-                "mycodo.cozir_{id}".format(id=input_dev.unique_id.split('-')[0]))
+                "mycodo.cozir_co2_{id}".format(id=input_dev.unique_id.split('-')[0]))
 
             self.input_measurements = db_retrieve_table_daemon(
                 InputMeasurements).filter(
-                    InputMeasurements.input_id == input_dev.unique_id).all()
+                    InputMeasurements.input_id == input_dev.unique_id)
 
             self.uart_location = input_dev.uart_location
             self.sensor = Cozir(self.uart_location)
 
     def get_measurement(self):
-        """ Gets the humidity and temperature """
+        """ Gets the measurements """
         return_dict = {
             'co2': {
                 'ppm': {}
@@ -92,18 +92,17 @@ class InputModule(AbstractInput):
         if self.is_enabled('co2', 'ppm', 0):
             return_dict['co2']['ppm'][0] = self.sensor.read_CO2()
 
-        temperature = self.sensor.read_temperature()
-
         if self.is_enabled('temperature', 'C', 0):
-            return_dict['temperature']['C'][0] = temperature
-
-        humidity = self.sensor.read_humidity()
+            return_dict['temperature']['C'][0] = self.sensor.read_temperature()
 
         if self.is_enabled('humidity', 'percent', 0):
-            return_dict['humidity']['percent'][0] = humidity
+            return_dict['humidity']['percent'][0] = self.sensor.read_humidity()
 
-        if self.is_enabled('dewpoint', 'C', 0):
+        if (self.is_enabled('temperature', 'C', 0) and
+                self.is_enabled('humidity', 'percent', 0) and
+                self.is_enabled('dewpoint', 'C', 0)):
             return_dict['dewpoint']['C'][0] = calculate_dewpoint(
-                temperature, humidity)
+                return_dict['temperature']['C'][0],
+                return_dict['humidity']['percent'][0])
 
         return return_dict

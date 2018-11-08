@@ -11,6 +11,7 @@ from mycodo.config_devices_units import MEASUREMENTS
 from mycodo.databases.models import DisplayOrder
 from mycodo.databases.models import Input
 from mycodo.databases.models import Math
+from mycodo.databases.models import MathMeasurements
 from mycodo.mycodo_flask.extensions import db
 from mycodo.mycodo_flask.utils.utils_general import add_display_order
 from mycodo.mycodo_flask.utils.utils_general import controller_activate_deactivate
@@ -50,17 +51,6 @@ def math_add(form_add_math):
 
         if form_add_math.math_type.data in MATH_INFO:
             new_math.name += '{name}'.format(name=MATH_INFO[form_add_math.math_type.data]['name'])
-            new_math.measure = ",".join(MATH_INFO[form_add_math.math_type.data]['measure'])
-
-        # Set the default measurement values
-        list_units = []
-        for each_measurement in MATH_INFO[form_add_math.math_type.data]['measure']:
-            if each_measurement in MEASUREMENTS:
-                entry = '{measure},{unit}'.format(
-                    measure=each_measurement,
-                    unit=MEASUREMENTS[each_measurement]['units'][0])
-                list_units.append(entry)
-        new_math.measure_units = ";".join(list_units)
 
         try:
             new_math.save()
@@ -70,6 +60,24 @@ def math_add(form_add_math):
             DisplayOrder.query.first().math = add_display_order(
                 display_order, new_math.unique_id)
             db.session.commit()
+
+            if not MATH_INFO[form_add_math.math_type.data]['measure']:
+                new_measurement = MathMeasurements()
+                new_measurement.save()
+            else:
+                for each_measurement, unit_info in MATH_INFO[form_add_math.math_type.data]['measure'].items():
+                    for each_unit, channel_data in unit_info.items():
+                        for each_channel in channel_data.keys():
+                            new_measurement = MathMeasurements()
+                            new_measurement.math_id = new_math.unique_id
+                            new_measurement.measurement = each_measurement
+                            new_measurement.unit = each_unit
+                            new_measurement.channel = each_channel
+                            if len(channel_data) == 1:
+                                new_measurement.single_channel = True
+                            else:
+                                new_measurement.single_channel = False
+                            new_measurement.save()
 
             flash(gettext(
                 "%(type)s Math with ID %(id)s (%(uuid)s) successfully added",

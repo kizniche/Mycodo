@@ -40,6 +40,8 @@
 
   <div class="container-fluid">
 
+  {{ y_axes }}
+
     <div class="row small-gutters">
 
     {% if display_order -%}
@@ -384,9 +386,9 @@ $(document).ready(function() {
   }
 
   // Retrieve initial graph data set from the past (duration set by user)
-  function getPastData(chart_number, series, unique_id, measurement, unit, channel, past_seconds) {
-    var url = '/past/' + unique_id + '/' + measurement + '/' + unit + '/' + channel + '/' + past_seconds;
-    var update_id = chart_number + "-" + series + "-" + unique_id + "-" + measurement + "-" + unit + "-" + channel;
+  function getPastData(chart_number, series, unique_id, measure_type, measurement_id, past_seconds) {
+    var url = '/past/' + unique_id + '/' + measure_type + '/' + measurement_id + '/' + past_seconds;
+    var update_id = chart_number + "-" + series + "-" + unique_id + "-" + measure_type + '-' + measurement_id;
     $.getJSON(url,
       function(data, responseText, jqXHR) {
         if (jqXHR.status !== 204) {
@@ -396,7 +398,7 @@ $(document).ready(function() {
             var new_date = new Date(data[i][0]);
             var new_time = new_date.getTime();
 
-            if (measurement === 'tag') {
+            if (measure_type === 'tag') {
               past_data.push({
                 x: new_time,
                 title: data[i][1],
@@ -409,7 +411,7 @@ $(document).ready(function() {
 
             // Store the epoch time of the last data point received
             if (i === data.length - 1) {
-              if (measurement === 'tag') {
+              if (measure_type === 'tag') {
                 last_output_time_mil[update_id] = new_time + 3000;
               }
               else {
@@ -672,20 +674,25 @@ $(document).ready(function() {
   }
 
   // Retrieve chart data for the period since the last data acquisition (refresh period set by user)
-  function retrieveLiveData(chart_number, series, unique_id,
-                            measurement, unit, channel,
-                            xaxis_duration_min, xaxis_reset,
-                            refresh_seconds, graph_shift) {
+  function retrieveLiveData(chart_number,
+                            series,
+                            unique_id,
+                            measure_type,
+                            measurement_id,
+                            xaxis_duration_min,
+                            xaxis_reset,
+                            refresh_seconds,
+                            graph_shift) {
     // Build the URL
     // Instruct only to return data since the time of the last received data point
     var url = '';
-    var update_id = chart_number + "-" + series + "-" + unique_id + "-" + measurement + "-" + unit + "-" + channel;
+    var update_id = chart_number + "-" + series + "-" + unique_id + "-" + measure_type + '-' + measurement_id;
     if (update_id in last_output_time_mil) {
       var epoch_mil = (new Date).getTime();
       var past_seconds = Math.floor((epoch_mil - last_output_time_mil[update_id]) / 1000);
-      url = '/past/' + unique_id + '/' + measurement + '/'  + unit + '/'  + channel + '/'  + past_seconds;
+      url = '/past/' + unique_id + '/' + measure_type + '/' + measurement_id + '/' + past_seconds;
     } else {
-      url = '/past/' + unique_id + '/' + measurement + '/'  + unit + '/'  + channel + '/'  + refresh_seconds;
+      url = '/past/' + unique_id + '/' + measure_type + '/' + measurement_id + '/' + refresh_seconds;
     }
     $.getJSON(url,
       function(data, responseText, jqXHR) {
@@ -694,7 +701,7 @@ $(document).ready(function() {
             var new_date = new Date(data[i][0]);
             var new_time = new_date.getTime();
 
-            if (measurement === 'tag') {
+            if (measure_type === 'tag') {
               chart_graph[chart_number].series[series].addPoint({
                 x: new_time,
                 title: data[i][1],
@@ -705,7 +712,7 @@ $(document).ready(function() {
               chart_graph[chart_number].series[series].addPoint([new_time, data[i][1]], false, graph_shift);
             }
           }
-          if (measurement === 'tag') {
+          if (measure_type === 'tag') {
             last_output_time_mil[update_id] = new_time + 3000;
           }
           else {
@@ -718,9 +725,25 @@ $(document).ready(function() {
   }
 
   // Repeat function for retrieveLiveData()
-  function getLiveData(chart_number, series, unique_id,  measurement, unit, channel, xaxis_duration_min, xaxis_reset, refresh_seconds, graph_shift) {
+  function getLiveData(chart_number,
+                       series,
+                       unique_id,
+                       measure_type,
+                       measurement_id,
+                       xaxis_duration_min,
+                       xaxis_reset,
+                       refresh_seconds,
+                       graph_shift) {
     setInterval(function () {
-      retrieveLiveData(chart_number, series, unique_id, measurement, unit, channel, xaxis_duration_min, xaxis_reset, refresh_seconds, graph_shift);
+      retrieveLiveData(chart_number,
+                       series,
+                       unique_id,
+                       measure_type,
+                       measurement_id,
+                       xaxis_duration_min,
+                       xaxis_reset,
+                       refresh_seconds,
+                       graph_shift);
     }, refresh_seconds * 1000);
   }
 

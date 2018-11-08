@@ -34,6 +34,7 @@ from mycodo.config import PATH_CAMERAS
 from mycodo.config import PATH_NOTE_ATTACHMENTS
 from mycodo.databases.models import Camera
 from mycodo.databases.models import Input
+from mycodo.databases.models import InputMeasurements
 from mycodo.databases.models import Math
 from mycodo.databases.models import NoteTags
 from mycodo.databases.models import Notes
@@ -294,14 +295,14 @@ def last_data(unique_id, measurement, unit, channel, period):
         return '', 204
 
 
-@blueprint.route('/past/<unique_id>/<measurement>/<unit>/<channel>/<past_seconds>')
+@blueprint.route('/past/<unique_id>/<measure_type>/<measurement_id>/<past_seconds>')
 @flask_login.login_required
-def past_data(unique_id, measurement, unit, channel, past_seconds):
+def past_data(unique_id, measure_type, measurement_id, past_seconds):
     """Return data from past_seconds until present from influxdb"""
     if not str_is_float(past_seconds):
         return '', 204
 
-    if measurement == 'tag':
+    if measure_type == 'tag':
         notes_list = []
 
         tag = NoteTags.query.filter(NoteTags.unique_id == unique_id).first()
@@ -318,12 +319,28 @@ def past_data(unique_id, measurement, unit, channel, past_seconds):
         else:
             return '', 204
 
-    else:
+    elif measure_type in ['input', 'output']:
         current_app.config['INFLUXDB_USER'] = INFLUXDB_USER
         current_app.config['INFLUXDB_PASSWORD'] = INFLUXDB_PASSWORD
         current_app.config['INFLUXDB_DATABASE'] = INFLUXDB_DATABASE
         current_app.config['INFLUXDB_TIMEOUT'] = 5
         dbcon = influx_db.connection
+
+        if measure_type == 'input':
+            measure = InputMeasurements.query.filter(InputMeasurements.unique_id == measurement_id).first()
+        elif measure_type == 'math':
+            measure = Math.query.filter(Math.unique_id == measurement_id).first()
+        elif measure_type == 'output':
+            measure = Output.query.filter(Output.unique_id == measurement_id).first()
+        else:
+            measure = None
+
+        if not measure:
+            return "Could not find measurement"
+
+        measurement = measure.measurement
+        unit = measure.unit
+        channel = measure.channel
 
         try:
             query_str = query_string(

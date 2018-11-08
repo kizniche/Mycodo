@@ -69,7 +69,7 @@ class InputModule(AbstractInput):
 
             self.input_measurements = db_retrieve_table_daemon(
                 InputMeasurements).filter(
-                    InputMeasurements.input_id == input_dev.unique_id).all()
+                    InputMeasurements.input_id == input_dev.unique_id)
 
             self.i2c_address = int(str(input_dev.location), 16)
             self.i2c_bus = input_dev.i2c_bus
@@ -97,7 +97,7 @@ class InputModule(AbstractInput):
             }
         }
 
-        for each_measure in self.input_measurements:
+        for each_measure in self.input_measurements.all():
             if each_measure.is_enabled:
                 return_dict['electrical_potential']['V'][each_measure.channel] = self.adc.read_adc(
                     each_measure.channel, gain=self.adc_gain) / 10000.0
