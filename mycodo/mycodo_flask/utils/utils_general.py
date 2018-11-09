@@ -27,6 +27,7 @@ from mycodo.databases.models import Input
 from mycodo.databases.models import InputMeasurements
 from mycodo.databases.models import LCD
 from mycodo.databases.models import Math
+from mycodo.databases.models import MathMeasurements
 from mycodo.databases.models import Measurement
 from mycodo.databases.models import PID
 from mycodo.databases.models import Role
@@ -372,40 +373,24 @@ def form_input_choices(choices, each_input, dict_inputs):
 
 
 def form_math_choices(choices, each_math):
-    # Only one measurement specified, use unit specified
-    if (';' not in each_math.measure and
-            len(each_math.measure_units.split(',')) == 2):
-        measurement = each_math.measure_units.split(',')[0]
-        unit = each_math.measure_units.split(',')[1]
-        value = '{id},{meas},{unit}'.format(
-            id=each_math.unique_id,
-            meas=measurement,
-            unit=unit)
+    math_measurements = MathMeasurements.query.filter(
+        MathMeasurements.math_id == each_math.unique_id).all()
 
-        measure_display, unit_display = check_display_names(measurement, unit)
-        display = '[Math {id:02d}] {name} ({meas}, {unit})'.format(
-            id=each_math.id,
-            name=each_math.name,
-            meas=measure_display,
-            unit=unit_display)
-        choices.update({value: display})
-    else:
-        for each_set in each_math.measure_units.split(';'):
-            if len(each_set.split(',')) == 2:
-                measurement = each_set.split(',')[0]
-                unit = each_set.split(',')[1]
-                value = '{id},{meas},{unit}'.format(
-                    id=each_math.unique_id,
-                    meas=measurement,
-                    unit=unit)
+    for each_measure in math_measurements:
+        if each_measure.measurement and each_measure.unit:
+            value = '{input_id},{meas_id}'.format(
+                input_id=each_math.unique_id,
+                meas_id=each_measure.unique_id)
 
-                measure_display, unit_display = check_display_names(measurement, unit)
-                display = '[Math {id:02d}] {name} ({meas}, {unit})'.format(
-                    id=each_math.id,
-                    name=each_math.name,
-                    meas=measure_display,
-                    unit=unit_display)
-                choices.update({value: display})
+            measure_display, unit_display = check_display_names(
+                each_measure.measurement, each_measure.unit)
+            display = '[Math {id:02d}] {name} ({meas}, {unit})'.format(
+                id=each_math.id,
+                name=each_math.name,
+                meas=measure_display,
+                unit=unit_display)
+            choices.update({value: display})
+
     return choices
 
 
@@ -454,11 +439,7 @@ def form_tag_choices(choices, each_tag):
 
 
 def form_output_choices(choices, each_output):
-    value = '{id},{meas},{unit},{chan}'.format(
-        id=each_output.unique_id,
-        meas=each_output.measurement,
-        unit=each_output.unit,
-        chan=each_output.channel)
+    value = '{id},output'.format(id=each_output.unique_id)
     display = '[Output {id:02d}] {name} CH{chan}, {meas} ({unit})'.format(
         id=each_output.id,
         name=each_output.name,
@@ -751,7 +732,7 @@ def return_dependencies(device_type):
     return unmet_deps, met_deps
 
 
-def use_unit_generate(input_dev, input_measurements, output, math):
+def use_unit_generate(input_dev, input_measurements, output, math, math_measurements):
     """Generate dictionary of units to convert to"""
     # TODO: next major version: rename table columns and combine functionality
     use_unit = {}
@@ -774,12 +755,14 @@ def use_unit_generate(input_dev, input_measurements, output, math):
 
     for each_math in math:
         use_unit[each_math.unique_id] = {}
-        for each_measure in each_math.measure.split(','):
-            for each_unit_set in each_math.measure_units.split(';'):
-                if len(each_unit_set.split(',')) > 1 and each_measure == each_unit_set.split(',')[0]:
-                    use_unit[each_math.unique_id][each_measure] = each_unit_set.split(',')[1]
-                elif each_measure not in use_unit[each_math.unique_id]:
-                    use_unit[each_math.unique_id][each_measure] = None
+
+        for each_meas in math_measurements:
+            if each_meas.math_id == each_math.unique_id:
+                if each_meas.measurement not in use_unit[each_math.unique_id]:
+                    use_unit[each_math.unique_id][each_meas.measurement] = {}
+                if each_meas.unit not in use_unit[each_math.unique_id][each_meas.measurement]:
+                    use_unit[each_math.unique_id][each_meas.measurement][each_meas.unit] = OrderedDict()
+                use_unit[each_math.unique_id][each_meas.measurement][each_meas.unit][each_meas.channel] = None
 
     return use_unit
 

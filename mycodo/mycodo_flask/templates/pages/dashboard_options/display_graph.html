@@ -30,10 +30,11 @@
           {%- endfor -%}
 
           {% for each_math in math -%}
-            {%- for each_id_and_measure in graph_math_ids if each_math.unique_id == each_id_and_measure.split(',')[0] %}
-          getPastData({{chart_number}}, {{count_series|count}}, '{{each_id_and_measure.split(',')[1]}}', 'math', '{{each_math.unique_id}}', {{each_dashboard.x_axis_duration*60}});
+            {%- for math_and_measurement_id in graph_math_ids if each_math.unique_id == math_and_measurement_id.split(',')[0] %}
+              {%- set measurement_id = input_and_measurement_ids.split(',')[1] -%}
+          getPastData({{chart_number}}, {{count_series|count}}, '{{each_math.unique_id}}', 'math', '{{measurement_id}}', {{each_dashboard.x_axis_duration*60}});
           {% if each_dashboard.enable_auto_refresh %}
-          getLiveData({{chart_number}}, {{count_series|count}}, '{{each_id_and_measure.split(',')[1]}}', 'math', '{{each_math.unique_id}}', {{each_dashboard.x_axis_duration}}, {{each_dashboard.enable_xaxis_reset|int}}, {{each_dashboard.refresh_duration}}, {% if each_dashboard.enable_graph_shift %}true{% else %}false{% endif %});
+          getLiveData({{chart_number}}, {{count_series|count}}, '{{each_math.unique_id}}', 'math', '{{measurement_id}}', {{each_dashboard.x_axis_duration}}, {{each_dashboard.enable_xaxis_reset|int}}, {{each_dashboard.refresh_duration}}, {% if each_dashboard.enable_graph_shift %}true{% else %}false{% endif %});
           {% endif %}
               {%- do count_series.append(1) %}
             {%- endfor -%}
@@ -41,8 +42,6 @@
 
           {%- for each_output in output -%}
             {%- for each_graph_output_id in graph_output_ids if each_output.unique_id == each_graph_output_id.split(',')[0] %}
-              {%- set measurement = each_graph_output_id.split(',')[1] -%}
-              {%- set unit = each_graph_output_id.split(',')[2] -%}
           getPastData({{chart_number}}, {{count_series|count}}, '{{each_output.unique_id}}', 'output', '{{each_output.unique_id}}', {{each_dashboard.x_axis_duration*60}});
           {% if each_dashboard.enable_auto_refresh %}
           getLiveData({{chart_number}}, {{count_series|count}}, '{{each_output.unique_id}}', 'output', '{{each_output.unique_id}}', {{each_dashboard.x_axis_duration}}, {{each_dashboard.enable_xaxis_reset|int}}, {{each_dashboard.refresh_duration}}, {% if each_dashboard.enable_graph_shift %}true{% else %}false{% endif %});
@@ -252,13 +251,12 @@
     {% for each_input in input -%}
       {%- for input_and_measurement_ids in graph_input_ids if each_input.unique_id == input_and_measurement_ids.split(',')[0] -%}
         {%- set measurement_id = input_and_measurement_ids.split(',')[1] -%}
-
         {%- if measurement_id in input_measurements_dict -%}
 
       {
         name: '{{each_input.name}} (
         {%- if not input_measurements_dict[measurement_id].single_channel -%}
-          CH{{(input_measurements_dict[measurement_id].channel|int + 1)|string + ', '}}
+          {{'CH' + (input_measurements_dict[measurement_id].channel + 1)|string + ', '}}
         {%- endif -%}
           {{measurement_units[input_measurements_dict[measurement_id].measurement]['name']}})',
         {% if measurement_units[input_measurements_dict[measurement_id].measurement]['meas'] == 'edge' %}
@@ -275,7 +273,6 @@
       },
 
         {%- endif -%}
-
       {%- endfor -%}
     {% endfor %}
 
@@ -331,21 +328,18 @@
 
     {%- for each_output in output -%}
       {%- for each_graph_output_id in graph_output_ids if each_output.unique_id == each_graph_output_id.split(',')[0] -%}
-        {%- set measurement = each_graph_output_id.split(',')[1] -%}
-        {%- set unit = each_graph_output_id.split(',')[2] -%}
-        {%- set channel = each_graph_output_id.split(',')[3] -%}
         {
-          name: '{{each_output.name}} ({{measurement_units[measurement]['name']}})',
+          name: '{{each_output.name}} ({{measurement_units[each_output.measurement]['name']}})',
           type: 'column',
           dataGrouping: {
             approximation: 'high',
             groupPixelWidth: 1
           },
           tooltip: {
-            valueSuffix: ' {{units[unit]['unit']}}',
+            valueSuffix: ' {{units[each_output.unit]['unit']}}',
             valueDecimals: 2
           },
-          yAxis: '{{unit}}',
+          yAxis: '{{each_output.unit}}',
           data: []
         },
       {%- endfor -%}

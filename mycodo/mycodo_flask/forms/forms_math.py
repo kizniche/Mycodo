@@ -16,6 +16,7 @@ from wtforms.validators import DataRequired
 from wtforms.widgets.html5 import NumberInput
 
 from mycodo.config import MATHS
+from mycodo.config_translations import TOOLTIPS_INPUT
 
 
 class MathAdd(FlaskForm):
@@ -83,3 +84,16 @@ class MathModVerification(FlaskForm):
         lazy_gettext('Max Difference'),
         validators=[DataRequired()],
         widget=NumberInput(step='any'))
+
+
+class MathMeasurementMod(FlaskForm):
+    math_id = StringField('Math ID', widget=widgets.HiddenInput())
+    math_measurement_id = StringField(widget=widgets.HiddenInput())
+    name = StringField(
+        lazy_gettext('Name'),
+        validators=[DataRequired()]
+    )
+    select_measurement_unit = StringField(lazy_gettext('Unit Measurement'))
+    convert_to_measurement_unit = StringField(lazy_gettext('Convert to Measurement'))
+
+    math_measurement_mod = SubmitField(lazy_gettext('Save'))

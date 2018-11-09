@@ -135,32 +135,10 @@ def trigger_del(trigger_id):
 
             delete_entry_with_id(Trigger, trigger_id)
 
-            display_order = csv_to_list_of_str(
-                DisplayOrder.query.first().trigger)
-
-            try:
-                display_order.remove(trigger_id)
-                DisplayOrder.query.first().trigger = list_to_csv(
-                    display_order)
-            except Exception:  # id not in list
-                pass
-
+            display_order = csv_to_list_of_str(DisplayOrder.query.first().function)
+            display_order.remove(trigger_id)
+            DisplayOrder.query.first().function = list_to_csv(display_order)
             db.session.commit()
-
-            # Check display order for trigger IDs that don't exist
-            # Delete any non-existent IDs from order list
-            fixed_display_order = display_order
-            fixed = False
-            for each_id in display_order:
-                if not Trigger.query.filter(
-                        Trigger.unique_id == each_id).count():
-                    fixed = True
-                    fixed_display_order.remove(each_id)
-            if fixed:
-                DisplayOrder.query.first().trigger = list_to_csv(
-                    fixed_display_order)
-                db.session.commit()
-
     except sqlalchemy.exc.OperationalError as except_msg:
         error.append(except_msg)
     except sqlalchemy.exc.IntegrityError as except_msg:

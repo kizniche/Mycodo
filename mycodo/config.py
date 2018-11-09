@@ -51,44 +51,53 @@ MATH_INFO = {
     'average': {
         'name': 'Average (Multi)',
         'dependencies_module': [],
-        'measure': []},
+        'measure': {}
+    },
     'average_single': {
         'name': 'Average (Single)',
         'dependencies_module': [],
-        'measure': []},
+        'measure': {}
+    },
     'difference': {
         'name': 'Difference',
         'dependencies_module': [],
-        'measure': []},
+        'measure': {}
+    },
     'equation': {
         'name': 'Equation',
         'dependencies_module': [],
-        'measure': []},
+        'measure': {}
+    },
     'median': {
         'name': 'Median',
         'dependencies_module': [],
-        'measure': []},
+        'measure': {}
+    },
     'maximum': {
         'name': 'Maximum',
         'dependencies_module': [],
-        'measure': []},
+        'measure': {}
+    },
     'minimum': {
         'name': 'Minimum',
         'dependencies_module': [],
-        'measure': []},
+        'measure': {}
+    },
     'humidity': {
         'name': 'Humidity (Wet-Bulb)',
         'dependencies_module': [],
-        'measure': [
-            {'humidity': {'percent': {0}}},
-            {'humidity_ratio': {'kg_kg': {0}}},
-            {'specific_enthalpy': {'kJ_kg': {0}}},
-            {'specific_volume': {'m3_kg': {0}}}
-        ]},
+        'measure': {
+            'humidity': {'percent': {0: {}}},
+            'humidity_ratio': {'kg_kg': {0: {}}},
+            'specific_enthalpy': {'kJ_kg': {0: {}}},
+            'specific_volume': {'m3_kg': {0: {}}}
+        }
+    },
     'verification': {
         'name': 'Verification',
         'dependencies_module': [],
-        'measure': []}
+        'measure': {}
+    }
 }
 
 # Methods
@@ -121,25 +130,48 @@ OUTPUT_INFO = {
     'wired': {
         'name': 'GPIO (On/Off)',
         'dependencies_module': [],
-        'measure': []},
+        'measure': {
+            'duration_time': {'s': {0: {}}}
+        }},
     'pwm': {
         'name': 'GPIO (PWM)',
         'dependencies_module': [],
-        'measure': []},
+        'measure': {
+            'duty_cycle': {'percent': {0: {}}}
+        }},
     'wireless_433MHz_pi_switch': {
         'name': 'Wireless (433MHz)',
         'dependencies_module': [
             ('pip-pypi', 'rpi_rf', 'rpi_rf')
         ],
-        'measure': []},
+        'measure': {
+            'duration_time': {'s': {0: {}}}
+        }},
     'command': {
         'name': 'Command (On/Off)',
         'dependencies_module': [],
-        'measure': []},
+        'measure': {
+            'duration_time': {'s': {0: {}}}
+        }},
     'command_pwm': {
         'name': 'Command (PWM)',
         'dependencies_module': [],
-        'measure': []},
+        'measure': {
+            'duty_cycle': {'percent': {0: {}}}
+        }}
+}
+
+PID_INFO = {
+    'measure': {
+        'setpoint': {'setpoint': {0: {'name': 'Setpoint'}}},
+        'setpoint_band_min': {'setpoint': {0: {'name': 'Setpoint Band Min'}}},
+        'setpoint_band_max': {'setpoint': {0: {'name': 'Setpoint Band Max'}}},
+        'pid_p_value': {'pid_value': {0: {}}},
+        'pid_i_value': {'pid_value': {0: {}}},
+        'pid_d_value': {'pid_value': {0: {}}},
+        'duration_time': {'s': {0: {'name': 'Output (Duration)'}}},
+        'duty_cycle': {'percent': {0: {'name': 'Output (Duty Cycle)'}}}
+    }
 }
 
 # Calibration

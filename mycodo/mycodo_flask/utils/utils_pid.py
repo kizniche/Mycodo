@@ -162,9 +162,9 @@ def pid_del(pid_id):
 
         delete_entry_with_id(PID, pid_id)
 
-        display_order = csv_to_list_of_str(DisplayOrder.query.first().pid)
+        display_order = csv_to_list_of_str(DisplayOrder.query.first().function)
         display_order.remove(pid_id)
-        DisplayOrder.query.first().pid = list_to_csv(display_order)
+        DisplayOrder.query.first().function = list_to_csv(display_order)
         db.session.commit()
     except Exception as except_msg:
         error.append(except_msg)

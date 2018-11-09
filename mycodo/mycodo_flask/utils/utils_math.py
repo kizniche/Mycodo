@@ -63,12 +63,16 @@ def math_add(form_add_math):
 
             if not MATH_INFO[form_add_math.math_type.data]['measure']:
                 new_measurement = MathMeasurements()
+                new_measurement.math_id = new_math.unique_id
+                new_measurement.enable_convert = False
                 new_measurement.save()
             else:
                 for each_measurement, unit_info in MATH_INFO[form_add_math.math_type.data]['measure'].items():
                     for each_unit, channel_data in unit_info.items():
-                        for each_channel in channel_data.keys():
+                        for each_channel, extra_data in channel_data.items():
                             new_measurement = MathMeasurements()
+                            if 'name' in extra_data and extra_data['name']:
+                                new_measurement.name = extra_data['name']
                             new_measurement.math_id = new_math.unique_id
                             new_measurement.measurement = each_measurement
                             new_measurement.unit = each_unit
@@ -77,6 +81,7 @@ def math_add(form_add_math):
                                 new_measurement.single_channel = True
                             else:
                                 new_measurement.single_channel = False
+                            new_measurement.enable_convert = True
                             new_measurement.save()
 
             flash(gettext(
@@ -215,19 +220,27 @@ def math_del(form_mod_math):
         controller=gettext("Math"))
     error = []
 
+    math_id = form_mod_math.math_id.data
+
     try:
         math = Math.query.filter(
-            Math.unique_id == form_mod_math.math_id.data).first()
+            Math.unique_id == math_id).first()
         if math.is_activated:
             controller_activate_deactivate(
                 'deactivate',
                 'Math',
                 form_mod_math.math_id.data)
 
-        delete_entry_with_id(Math, form_mod_math.math_id.data)
+        math_measurements = MathMeasurements.query.filter(
+            MathMeasurements.math_id == math_id).all()
+
+        for each_measurement in math_measurements:
+            delete_entry_with_id(MathMeasurements, each_measurement.unique_id)
+
+        delete_entry_with_id(Math, math_id)
         try:
             display_order = csv_to_list_of_str(DisplayOrder.query.first().math)
-            display_order.remove(form_mod_math.math_id.data)
+            display_order.remove(math_id)
             DisplayOrder.query.first().math = list_to_csv(display_order)
         except Exception:  # id not in list
             pass

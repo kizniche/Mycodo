@@ -90,32 +90,10 @@ def conditional_del(cond_id):
 
             delete_entry_with_id(Conditional, cond_id)
 
-            display_order = csv_to_list_of_str(
-                DisplayOrder.query.first().conditional)
-
-            try:
-                display_order.remove(cond_id)
-                DisplayOrder.query.first().conditional = list_to_csv(
-                    display_order)
-            except Exception:  # id not in list
-                pass
-
+            display_order = csv_to_list_of_str(DisplayOrder.query.first().function)
+            display_order.remove(cond_id)
+            DisplayOrder.query.first().function = list_to_csv(display_order)
             db.session.commit()
-
-            # Check display order for conditional IDs that don't exist
-            # Delete any non-existent IDs from order list
-            fixed_display_order = display_order
-            fixed = False
-            for each_id in display_order:
-                if not Conditional.query.filter(
-                        Conditional.unique_id == each_id).count():
-                    fixed = True
-                    fixed_display_order.remove(each_id)
-            if fixed:
-                DisplayOrder.query.first().conditional = list_to_csv(
-                    fixed_display_order)
-                db.session.commit()
-
     except sqlalchemy.exc.OperationalError as except_msg:
         error.append(except_msg)
     except sqlalchemy.exc.IntegrityError as except_msg:

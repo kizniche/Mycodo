@@ -2,7 +2,7 @@
   <div class="col-auto">
     {{form_mod_math.inputs.label(class_='control-label')}}
     <div>
-      <select class="form-control btn-default" id="inputs" name="inputs" style="width: 100%;" size="{{choices_input|length+choices_math|length}}" multiple>
+      <select class="form-control btn-sm" id="inputs" name="inputs" style="width: 100%;" size="{{choices_input|length+choices_math|length}}" multiple>
       {% if choices_input or choices_math %}
         {% for each_choice, value in choices_input.items() -%}
         <option value="{{each_choice}}"{%- if each_math.inputs and each_choice|string in each_math.inputs %} selected{%- endif -%}>{{value}}</option>

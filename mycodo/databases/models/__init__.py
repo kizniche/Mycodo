@@ -53,6 +53,7 @@ from .notes import NoteTags
 from .notes import Notes
 from .output import Output
 from .pid import PID
+from .pid import PIDMeasurements
 from .remote import Remote
 from .role import Role
 from .smtp import SMTP

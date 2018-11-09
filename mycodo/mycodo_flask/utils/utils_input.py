@@ -237,10 +237,10 @@ def input_add(form_add):
                         dict_inputs[input_name]['measurements_dict'] != []):
                     for each_measurement, each_measurement_data in dict_inputs[input_name]['measurements_dict'].items():
                         for each_unit, channel_data in each_measurement_data.items():
-                            for each_channel, each_channel_data in channel_data.items():
+                            for each_channel, extra_data in channel_data.items():
                                 new_measurement = InputMeasurements()
-                                if 'name' in each_channel_data and each_channel_data['name']:
-                                    new_measurement.name = each_channel_data['name']
+                                if 'name' in extra_data and extra_data['name']:
+                                    new_measurement.name = extra_data['name']
                                 new_measurement.input_id = new_input.unique_id
                                 new_measurement.measurement = each_measurement
                                 new_measurement.unit = each_unit

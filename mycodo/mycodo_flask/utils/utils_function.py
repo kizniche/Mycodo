@@ -7,12 +7,14 @@ from flask_babel import gettext
 from sqlalchemy import and_
 
 from mycodo.config import FUNCTION_TYPES
+from mycodo.config import PID_INFO
 from mycodo.databases.models import Actions
 from mycodo.databases.models import Camera
 from mycodo.databases.models import Conditional
 from mycodo.databases.models import DisplayOrder
 from mycodo.databases.models import Function
 from mycodo.databases.models import PID
+from mycodo.databases.models import PIDMeasurements
 from mycodo.databases.models import Trigger
 from mycodo.mycodo_client import DaemonControl
 from mycodo.mycodo_flask.extensions import db
@@ -44,6 +46,24 @@ def function_add(form_add_func):
             new_func = Conditional().save()
         elif form_add_func.func_type.data.startswith('pid_'):
             new_func = PID().save()
+
+            for each_measurement, unit_info in PID_INFO['measure'].items():
+                for each_unit, channel_data in unit_info.items():
+                    for each_channel, extra_data in channel_data.items():
+                        new_measurement = PIDMeasurements()
+                        if 'name' in extra_data:
+                            new_measurement.name = extra_data['name']
+                        new_measurement.pid_id = new_func.unique_id
+                        new_measurement.measurement = each_measurement
+                        new_measurement.unit = each_unit
+                        new_measurement.channel = each_channel
+                        if len(channel_data) == 1:
+                            new_measurement.single_channel = True
+                        else:
+                            new_measurement.single_channel = False
+                        new_measurement.enable_convert = True
+                        new_measurement.save()
+
         elif form_add_func.func_type.data.startswith('trigger_'):
             new_func = Trigger().save()
             for id, name, _ in FUNCTION_TYPES:

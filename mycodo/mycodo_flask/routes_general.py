@@ -36,6 +36,7 @@ from mycodo.databases.models import Camera
 from mycodo.databases.models import Input
 from mycodo.databases.models import InputMeasurements
 from mycodo.databases.models import Math
+from mycodo.databases.models import MathMeasurements
 from mycodo.databases.models import NoteTags
 from mycodo.databases.models import Notes
 from mycodo.databases.models import Output
@@ -250,49 +251,59 @@ def download_file(dl_type, filename):
     return '', 204
 
 
-@blueprint.route('/last/<unique_id>/<measurement>/<unit>/<channel>/<period>')
+@blueprint.route('/last/<unique_id>/<measure_type>/<measurement_id>/<period>')
 @flask_login.login_required
-def last_data(unique_id, measurement, unit, channel, period):
+def last_data(unique_id, measure_type, measurement_id, period):
     """Return the most recent time and value from influxdb"""
     if not str_is_float(period):
         return '', 204
 
-    current_app.config['INFLUXDB_USER'] = INFLUXDB_USER
-    current_app.config['INFLUXDB_PASSWORD'] = INFLUXDB_PASSWORD
-    current_app.config['INFLUXDB_DATABASE'] = INFLUXDB_DATABASE
-    current_app.config['INFLUXDB_TIMEOUT'] = 5
-    dbcon = influx_db.connection
+    if measure_type in ['input', 'math', 'output']:
+        current_app.config['INFLUXDB_USER'] = INFLUXDB_USER
+        current_app.config['INFLUXDB_PASSWORD'] = INFLUXDB_PASSWORD
+        current_app.config['INFLUXDB_DATABASE'] = INFLUXDB_DATABASE
+        current_app.config['INFLUXDB_TIMEOUT'] = 5
+        dbcon = influx_db.connection
 
-    try:
-        if period != '0':
-            query_str = query_string(
-                measurement, unique_id,
-                unit=unit, channel=channel,
-                value='LAST', past_sec=period)
+        if measure_type == 'input':
+            measure = InputMeasurements.query.filter(InputMeasurements.unique_id == measurement_id).first()
+        elif measure_type == 'math':
+            measure = MathMeasurements.query.filter(MathMeasurements.unique_id == measurement_id).first()
+        elif measure_type == 'output':
+            measure = Output.query.filter(Output.unique_id == unique_id).first()
         else:
-            query_str = query_string(
-                measurement, unique_id,
-                unit=unit, channel=channel,
-                value='LAST')
-        if query_str == 1:
+            measure = None
+
+        try:
+            if period != '0':
+                query_str = query_string(
+                    measure.measurement, unique_id,
+                    unit=measure.unit, channel=measure.channel,
+                    value='LAST', past_sec=period)
+            else:
+                query_str = query_string(
+                    measure.measurement, unique_id,
+                    unit=measure.unit, channel=measure.channel,
+                    value='LAST')
+            if query_str == 1:
+                return '', 204
+            raw_data = dbcon.query(query_str).raw
+            number = len(raw_data['series'][0]['values'])
+            time_raw = raw_data['series'][0]['values'][number - 1][0]
+            value = raw_data['series'][0]['values'][number - 1][1]
+            value = float(value)
+            # Convert date-time to epoch (potential bottleneck for data)
+            dt = date_parse(time_raw)
+            timestamp = calendar.timegm(dt.timetuple()) * 1000
+            live_data = '[{},{}]'.format(timestamp, value)
+            return Response(live_data, mimetype='text/json')
+        except KeyError:
+            logger.debug("No Data returned form influxdb")
             return '', 204
-        raw_data = dbcon.query(query_str).raw
-        number = len(raw_data['series'][0]['values'])
-        time_raw = raw_data['series'][0]['values'][number - 1][0]
-        value = raw_data['series'][0]['values'][number - 1][1]
-        value = float(value)
-        # Convert date-time to epoch (potential bottleneck for data)
-        dt = date_parse(time_raw)
-        timestamp = calendar.timegm(dt.timetuple()) * 1000
-        live_data = '[{},{}]'.format(timestamp, value)
-        return Response(live_data, mimetype='text/json')
-    except KeyError:
-        logger.debug("No Data returned form influxdb")
-        return '', 204
-    except Exception as e:
-        logger.exception("URL for 'last_data' raised and error: "
-                         "{err}".format(err=e))
-        return '', 204
+        except Exception as e:
+            logger.exception("URL for 'last_data' raised and error: "
+                             "{err}".format(err=e))
+            return '', 204
 
 
 @blueprint.route('/past/<unique_id>/<measure_type>/<measurement_id>/<past_seconds>')
@@ -319,7 +330,7 @@ def past_data(unique_id, measure_type, measurement_id, past_seconds):
         else:
             return '', 204
 
-    elif measure_type in ['input', 'output']:
+    elif measure_type in ['input', 'math', 'output']:
         current_app.config['INFLUXDB_USER'] = INFLUXDB_USER
         current_app.config['INFLUXDB_PASSWORD'] = INFLUXDB_PASSWORD
         current_app.config['INFLUXDB_DATABASE'] = INFLUXDB_DATABASE

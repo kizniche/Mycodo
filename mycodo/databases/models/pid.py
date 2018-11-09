@@ -51,3 +51,21 @@ class PID(CRUDMixin, db.Model):
 
     def __repr__(self):
         return "<{cls}(id={s.id})>".format(s=self, cls=self.__class__.__name__)
+
+
+class PIDMeasurements(CRUDMixin, db.Model):
+    __tablename__ = "pid_measurements"
+    __table_args__ = {'extend_existing': True}
+
+    id = db.Column(db.Integer, unique=True, primary_key=True)
+    unique_id = db.Column(db.String, nullable=False, unique=True, default=set_uuid)
+
+    name = db.Column(db.Text, default='')
+    pid_id = db.Column(db.Text, db.ForeignKey('pid.unique_id'), default=None)
+
+    # Default measurement/unit
+    is_enabled = db.Column(db.Boolean, default=True)
+    measurement = db.Column(db.Text, default='')
+    unit = db.Column(db.Text, default='')
+    channel = db.Column(db.Integer, default=None)
+    single_channel = db.Column(db.Boolean, default=None)

@@ -303,6 +303,10 @@ def write_influxdb_value(unique_id, measurement, value, unit=None, channel=None,
     :type measurement: str
     :param value: The value being entered into the Influxdb database
     :type value: int or float
+    :param unit:
+    :type unit:
+    :param channel:
+    :type channel:
     :param timestamp: If supplied, this timestamp will be used in the influxdb
     :type timestamp: datetime object
     """
@@ -316,7 +320,6 @@ def write_influxdb_value(unique_id, measurement, value, unit=None, channel=None,
                                  timestamp=timestamp)]
 
     try:
-        logger.error(data)
         client.write_points(data)
         return 0
     except Exception as except_msg:

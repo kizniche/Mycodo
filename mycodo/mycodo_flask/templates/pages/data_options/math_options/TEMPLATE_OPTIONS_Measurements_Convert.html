@@ -1,0 +1,62 @@
+{% for each_measurement in math_measurements if each_measurement.math_id == each_math.unique_id and each_measurement.is_enabled %}
+
+<form method="post" action="/data">
+{{form_mod_math_measurement.csrf_token}}
+{{form_mod_math_measurement.math_id(value=each_math.unique_id)}}
+{{form_mod_math_measurement.math_measurement_id(value=each_measurement.unique_id)}}
+
+<div class="row small-gutters align-items-end" style="padding: 0.5em">
+  <div class="col-auto small-gutters">
+    {{form_mod_math_measurement.math_measurement_mod(class_='form-control btn btn-sm btn-block')}}
+  </div>
+
+  {% if each_measurement.measurement and each_measurement.unit %}
+
+  <div class="col-auto">
+    <input class="form-control btn btn-sm btn-block" disabled="" title="" value="{% if each_measurement.channel != None and not each_measurement.single_channel %}CH{{each_measurement.channel + 1}} {% endif %}{{measurements[each_measurement.measurement]['name']}} ({{units[each_measurement.unit]['unit']}})" type="text">
+  </div>
+
+  {% endif %}
+
+  <div class="col-auto">
+    {{form_mod_math_measurement.name.label(class_='control-label')}}
+    <div>
+      {{form_mod_math_measurement.name(class_='form-control', value=each_measurement.name, **{'title':_('A name to distinguish this from others')})}}
+    </div>
+  </div>
+
+  {% if each_measurement.enable_convert %}
+
+  <div class="col-auto">
+    {{form_mod_math_measurement.convert_to_measurement_unit.label(class_='control-label')}}
+    <div>
+      <select class="form-control" id="convert_to_measurement_unit" name="convert_to_measurement_unit">
+        <option value="">{{_('Do Not Convert')}}</option>
+        {% for each_submit, each_display in choices_measurements_units.items() %}
+        <option value="{{each_submit}}"{% if each_submit == each_measurement.converted_measurement + ',' + each_measurement.converted_unit %} selected{% endif %}>{{each_display}}</option>
+        {% endfor %}
+      </select>
+    </div>
+  </div>
+
+  {% else %}
+
+  <div class="col-auto">
+    {{form_mod_math_measurement.select_measurement_unit.label(class_='control-label')}}
+    <div>
+      <select class="form-control" id="select_measurement_unit" name="select_measurement_unit">
+        <option value="">{{_('Select One')}}</option>
+        {% for each_submit, each_display in choices_measurements_units.items() %}
+        <option value="{{each_submit}}"{% if each_submit == each_measurement.measurement + ',' + each_measurement.unit %} selected{% endif %}>{{each_display}}</option>
+        {% endfor %}
+      </select>
+    </div>
+  </div>
+
+  {% endif %}
+
+</div>
+
+</form>
+
+{% endfor %}

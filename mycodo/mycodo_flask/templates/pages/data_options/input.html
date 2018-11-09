@@ -17,14 +17,14 @@
 
     <div class="col-xs-2 col-sm-1 text-center icon-fh">
       <a data-toggle="collapse" href="#collapseContainer-input-{{each_input.id}}" aria-expanded="false" aria-controls="collapseContainer{{each_input.id}}">
-        <span style="font-size: 3em" class="collapse-button{{each_input.id}} fa fa-plus-square"></span>
+        <span style="font-size: 2.8em" class="collapse-button{{each_input.id}} fa fa-plus-square"></span>
       </a>
     </div>
     <div class="col-xs-5 col-sm-3">
       {{form_mod_input.name(class_='form-control', value=each_input.name, **{'title':_('A name to distinguish this from others')})}}
     </div>
     <div class="col-xs-5 col-sm-2">
-      <input class="form-control btn btn-default btn-block" disabled="" title="[{{'%02d' % each_input.id}}] UUID: {{each_input.unique_id}}" value="{% if each_input.interface and each_input.interface not in ['RPi', 'Mycodo']%}[{{each_input.interface}}] {% endif %}{% if each_input.device in dict_inputs %}{{dict_inputs[each_input.device]['input_name']}}{% endif %}" type="text">
+      <input class="form-control btn btn-sm btn-block" disabled="" title="[{{'%02d' % each_input.id}}] UUID: {{each_input.unique_id}}" value="{% if each_input.interface and each_input.interface not in ['RPi', 'Mycodo']%}[{{each_input.interface}}] {% endif %}{% if each_input.device in dict_inputs %}{{dict_inputs[each_input.device]['input_name']}}{% endif %}" type="text">
     </div>
     <div class="col-xs-4 col-xs-offset-2 col-sm-2 col-sm-offset-0">
     {% if each_input.is_activated -%}
@@ -33,20 +33,20 @@
         {%- do has_active_pid.append(1) -%}
       {%- endfor -%}
       {% if has_active_pid -%}
-        {{form_mod_input.input_deactivate(class_='form-control btn btn-default btn-block',**{'onclick':'return confirm("There are currently active PID controllers that rely on this Input to be active. Select OK to deactivate this input and all associated PID controllers, otherwise click Cancel to leave them active.")'})}}
+        {{form_mod_input.input_deactivate(class_='form-control btn btn-sm',**{'onclick':'return confirm("There are currently active PID controllers that rely on this Input to be active. Select OK to deactivate this input and all associated PID controllers, otherwise click Cancel to leave them active.")'})}}
       {% else -%}
-        {{form_mod_input.input_deactivate(class_='form-control btn btn-default btn-block')}}
+        {{form_mod_input.input_deactivate(class_='form-control btn btn-sm')}}
       {% endif -%}
     {% else -%}
-      {{form_mod_input.input_activate(class_='form-control btn btn-default btn-block')}}
+      {{form_mod_input.input_activate(class_='form-control btn btn-sm')}}
     {% endif -%}
     </div>
 
     <div class="col-xs-3 col-sm-2">
-      {{form_mod_input.input_order_up(class_='form-control btn btn-default btn-block')}}
+      {{form_mod_input.input_order_up(class_='form-control btn btn-sm btn-block')}}
     </div>
     <div class="col-xs-3 col-sm-2">
-      {{form_mod_input.input_order_down(class_='form-control btn btn-default btn-block')}}
+      {{form_mod_input.input_order_down(class_='form-control btn btn-sm btn-block')}}
     </div>
 
   </div>
@@ -60,13 +60,13 @@
 
     <div class="row small-gutters" style="padding: 0.5em">
       <div class="col-auto small-gutters">
-        {{form_mod_input.input_mod(class_='form-control btn btn-default btn-block')}}
+        {{form_mod_input.input_mod(class_='form-control btn btn-sm btn-block')}}
       </div>
       <div class="col-auto small-gutters">
         {% if has_active_pid or has_active_lcd -%}
-          {{form_mod_input.input_delete(class_='form-control btn btn-default btn-block',**{'onclick':'return confirm("Note: there are currently an active PID that relies on this to operate. Deleting it will deactivate the PID. Are you sure you want to delete this?")'})}}
+          {{form_mod_input.input_delete(class_='form-control btn btn-sm btn-block',**{'onclick':'return confirm("Note: there are currently an active PID that relies on this to operate. Deleting it will deactivate the PID. Are you sure you want to delete this?")'})}}
         {% else -%}
-          {{form_mod_input.input_delete(class_='form-control btn btn-default btn-block',**{'onclick':'return confirm("Are you sure you want to delete this?")'})}}
+          {{form_mod_input.input_delete(class_='form-control btn btn-sm btn-block',**{'onclick':'return confirm("Are you sure you want to delete this?")'})}}
         {% endif -%}
       </div>
     </div>
@@ -125,13 +125,13 @@
 
     </form>
 
-        <div class="row small-gutters" style="border-bottom: 1px solid #ddd; padding: 0.5em">
-          <div class="col-12">
-            <h5>{{_('Measurement Settings')}}</h5>
-          </div>
-        </div>
+    <div class="row small-gutters" style="border-bottom: 1px solid #ddd; padding: 0.5em">
+      <div class="col-12">
+        <h5>{{_('Measurement Settings')}}</h5>
+      </div>
+    </div>
 
-        {% include 'pages/data_options/input_options/TEMPLATE_OPTIONS_Measurements_Convert.html' %}
+    {% include 'pages/data_options/input_options/TEMPLATE_OPTIONS_Measurements_Convert.html' %}
 
   </div> <!- collapse container end ->
 

@@ -96,7 +96,7 @@
     <div class="col-auto">
       {{form_note_add.files.label(class_='control-label')}}
       <div class="fileinput fileinput-new" data-provides="fileinput">
-        <span class="btn btn-default btn-file"><input id="files" name="files" type="file" multiple="" /></span>
+        <span class="btn btn-sm btn-file"><input id="files" name="files" type="file" multiple="" /></span>
       </div>
     </div>
   </div>
@@ -110,7 +110,7 @@
     <div class="col-xs-12 col-sm-4 col-md-3">
       {{form_note_add.note_tags.label(class_='control-label')}}
       <div>
-        <select class="form-control btn-default" id="note_tags" name="note_tags" style="width: 100%;" size="7" multiple>
+        <select class="form-control btn-sm" id="note_tags" name="note_tags" style="width: 100%;" size="7" multiple>
         {% if tags %}
           {% for each_tag in tags -%}
           <option value="{{each_tag.unique_id}}">{{each_tag.name}}</option>
@@ -141,7 +141,7 @@
   {{form_note_show.csrf_token}}
   <div class="form-inline">
     <div class="form-group fileinput fileinput-new" data-provides="fileinput">
-      <span class="btn btn-default btn-file"><input id="notes_import_file" name="notes_import_file" type="file" /></span>
+      <span class="btn btn-sm btn-file"><input id="notes_import_file" name="notes_import_file" type="file" /></span>
     </div>
     <div class="form-group">
       {{form_note_show.notes_import_upload(class_='btn btn-primary')}}

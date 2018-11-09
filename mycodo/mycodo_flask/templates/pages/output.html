@@ -179,7 +179,7 @@
 
           <div class="col-xs-2 col-sm-1 text-center icon-fh">
             <a data-toggle="collapse" href="#collapseContainer{{each_output.unique_id}}" aria-expanded="false" aria-controls="collapseContainer{{each_output.unique_id}}">
-              <span style="font-size: 3em" class="collapse-button{{each_output.unique_id}} fa fa-plus-square"></span>
+              <span style="font-size: 2.8em" class="collapse-button{{each_output.unique_id}} fa fa-plus-square"></span>
             </a>
           </div>
 
@@ -187,12 +187,12 @@
             {{form_mod_output.name(class_='form-control', value=each_output.name, **{'title':_('A name to distinguish this from others')})}}
           </div>
           <div class="col-xs-5 col-sm-6 col-md-6 col-lg-2 small-gutters">
-            <input class="form-control btn btn-default btn-block" disabled="" id="{{each_output.unique_id}}-input-output-state" title="[{{'%02d' % each_output.id}}] UUID: {{each_output.unique_id}}" value="{{ _('Unconfigured')}}" type="text">
+            <input class="form-control btn btn-sm btn-block" disabled="" id="{{each_output.unique_id}}-input-output-state" title="[{{'%02d' % each_output.id}}] UUID: {{each_output.unique_id}}" value="{{ _('Unconfigured')}}" type="text">
           </div>
 
         {% if each_output.output_type not in ['pwm', 'command_pwm'] -%}
           <div class="col-xs-5 col-sm-6 col-md-4 col-lg-2 small-gutters">
-            <input class="form-control btn btn-success btn-block turn_on" id="turn_on" name="{{each_output.unique_id}}/on/sec/0" type="button" value="{{_('On')}}">
+            <input class="form-control btn btn-sm btn-success btn-block turn_on" id="turn_on" name="{{each_output.unique_id}}/on/sec/0" type="button" value="{{_('On')}}">
           </div>
         {%- endif %}
 
@@ -201,14 +201,14 @@
         {% else %}
           <div class="col-xs-5 col-sm-6 col-md-8 col-lg-4 small-gutters">
         {% endif %}
-            <input class="form-control btn btn-danger btn-block turn_off" id="turn_off" name="{{each_output.unique_id}}/off/sec/0" type="button" value="{{_('Off')}}">
+            <input class="form-control btn btn-sm btn-danger btn-block turn_off" id="turn_off" name="{{each_output.unique_id}}/off/sec/0" type="button" value="{{_('Off')}}">
           </div>
 
           <div class="col small-gutters">
-            {{form_mod_output.order_up(class_='form-control btn btn-default btn-block')}}
+            {{form_mod_output.order_up(class_='form-control btn btn-sm btn-block')}}
           </div>
           <div class="col small-gutters">
-            {{form_mod_output.order_down(class_='form-control btn btn-default btn-block')}}
+            {{form_mod_output.order_down(class_='form-control btn btn-sm btn-block')}}
           </div>
 
         </div>
@@ -220,10 +220,10 @@
               <input class="form-control" disabled="" value="{{output_info[each_output.output_type]['name']}}" type="text">
             </div>
             <div class="col-xs-3 col-sm-3 col-md-4">
-              {{form_mod_output.save(class_='form-control btn btn-default btn-block')}}
+              {{form_mod_output.save(class_='form-control btn btn-sm btn-block')}}
             </div>
             <div class="col-xs-3 col-sm-3 col-md-4">
-              {{form_mod_output.delete(class_='form-control btn btn-default btn-block', **{'onclick':'return confirm("Are you sure you want to delete this?")'})}}
+              {{form_mod_output.delete(class_='form-control btn btn-sm btn-block', **{'onclick':'return confirm("Are you sure you want to delete this?")'})}}
             </div>
 
           {% for each_output_template in output_templates if each_output_template[:-5] == each_output.output_type %}

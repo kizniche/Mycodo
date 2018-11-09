@@ -40,8 +40,6 @@
 
   <div class="container-fluid">
 
-  {{ y_axes }}
-
     <div class="row small-gutters">
 
     {% if display_order -%}
@@ -440,18 +438,18 @@ $(document).ready(function() {
   }
 
   // Retrieve the latest/last measurement for gauges/outputs
-  function getLastData(chart_number, dev_id, measurement, unit, channel, measure_type, max_measure_age_sec, decimal_places) {
+  function getLastData(chart_number, dash_type, unique_id, measure_type, measurement_id, max_measure_age_sec, decimal_places) {
     if (decimal_places === null) {
       decimal_places = 1;
     }
-    var url = '/last/' + dev_id + '/' + measurement + '/' + unit + '/' + channel + '/' + max_measure_age_sec.toString();
+    var url = '/last/' + unique_id + '/' + measure_type + '/' + measurement_id + '/' + max_measure_age_sec.toString();
     $.ajax(url, {
       success: function(data, responseText, jqXHR) {
         if (jqXHR.status === 204) {
-          if (measure_type === "gauge") {
+          if (dash_type === "gauge") {
             var null_point = chart_gauge[chart_number].series[0].points[0];
             null_point.update(null);
-          } else if (['measurement', 'output', 'pid_control'].indexOf(measure_type) >= 0) {
+          } else if (['measurement', 'output', 'pid_control'].indexOf(dash_type) >= 0) {
             document.getElementById('value-' + chart_number).innerHTML = 'NO DATA';
             document.getElementById('timestamp-' + chart_number).innerHTML = 'MAX AGE EXCEEDED';
           }
@@ -461,14 +459,14 @@ $(document).ready(function() {
           var measurement = data[1];
           var units = '';
 
-          if (measure_type === "gauge") {
+          if (dash_type === "gauge") {
             var new_point = chart_gauge[chart_number].series[0].points[0];
             new_point.update(measurement);
           } else {
-            if (measure_type === "output") {
-              if (measurement === 'duration_time') {
-                units = ' sec';
-              } else if (measurement === 'duty_cycle') {
+            if (dash_type === "output") {
+              if (measurement_id === 's') {
+                units = ' s';
+              } else if (measurement_id === 'percent') {
                 units = ' %';
               }
             }
@@ -478,7 +476,7 @@ $(document).ready(function() {
         }
       },
       error: function(XMLHttpRequest, textStatus, errorThrown) {
-        if (measure_type === "gauge") {
+        if (dash_type === "gauge") {
           var point = chart_gauge[chart_number].series[0].points[0];
           point.update(null);
         }
@@ -487,9 +485,9 @@ $(document).ready(function() {
   }
 
   // Repeat function for getLastData()
-  function repeatLastData(chart_number, dev_id, measurement, unit, channel, measure_type, period_sec, max_measure_age_sec, decimal_places) {
+  function repeatLastData(chart_number, dash_type, dev_id, measure_type, measurement_id, period_sec, max_measure_age_sec, decimal_places) {
     setInterval(function () {
-      getLastData(chart_number, dev_id, measurement, unit, channel, measure_type, max_measure_age_sec, decimal_places)
+      getLastData(chart_number, dash_type, dev_id, measure_type, measurement_id, max_measure_age_sec, decimal_places)
     }, period_sec * 1000);
   }
 

@@ -62,9 +62,11 @@ from mycodo.config import MYCODO_VERSION
 from mycodo.config_devices_units import MEASUREMENTS
 from mycodo.config_devices_units import UNITS
 from mycodo.databases.models import Input
+from mycodo.databases.models import InputMeasurements
 from mycodo.databases.models import LCD
 from mycodo.databases.models import LCDData
 from mycodo.databases.models import Math
+from mycodo.databases.models import MathMeasurements
 from mycodo.databases.models import Measurement
 from mycodo.databases.models import Output
 from mycodo.databases.models import PID
@@ -459,7 +461,10 @@ class LCDController(threading.Thread):
             input_measurements = db_retrieve_table_daemon(InputMeasurements)
             output = db_retrieve_table_daemon(Output)
             math = db_retrieve_table_daemon(Math)
-            use_unit = use_unit_generate(input_dev, input_measurements, output, math)
+            math_measurements = db_retrieve_table_daemon(MathMeasurements)
+            use_unit = use_unit_generate(
+                input_dev, input_measurements, output, math, math_measurements)
+
             if (device_id in use_unit and
                     measurement in use_unit[device_id] and
                     use_unit[device_id][measurement] is not None):

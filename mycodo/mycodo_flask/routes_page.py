@@ -61,6 +61,7 @@ from mycodo.databases.models import InputMeasurements
 from mycodo.databases.models import LCD
 from mycodo.databases.models import LCDData
 from mycodo.databases.models import Math
+from mycodo.databases.models import MathMeasurements
 from mycodo.databases.models import Measurement
 from mycodo.databases.models import Method
 from mycodo.databases.models import Misc
@@ -446,6 +447,7 @@ def page_dashboard():
     input_dev = Input.query.all()
     input_measurements = InputMeasurements.query.all()
     math = Math.query.all()
+    math_measurements = MathMeasurements.query.all()
     misc = Misc.query.first()
     output = Output.query.all()
     pid = PID.query.all()
@@ -570,7 +572,8 @@ def page_dashboard():
     y_axes = utils_dashboard.graph_y_axes(dict_measurements)
 
     # Get what each measurement uses for a unit
-    use_unit = utils_general.use_unit_generate(input_dev, input_measurements, output, math)
+    use_unit = utils_general.use_unit_generate(
+        input_dev, input_measurements, output, math, math_measurements)
 
     # Generate a dictionary of each graph's y-axis minimum and maximum
     custom_yaxes = dict_custom_yaxes_min_max(dashboard, y_axes)
@@ -662,6 +665,7 @@ def page_graph_async():
     input_dev = Input.query.all()
     input_measurements = InputMeasurements.query.all()
     math = Math.query.all()
+    math_measurements = MathMeasurements.query.all()
     output = Output.query.all()
     pid = PID.query.all()
     measurement = Measurement.query.all()
@@ -673,7 +677,8 @@ def page_graph_async():
     dict_units = add_custom_units(unit)
 
     # Get what each measurement uses for a unit
-    use_unit = utils_general.use_unit_generate(input_dev, input_measurements, output, math)
+    use_unit = utils_general.use_unit_generate(
+        input_dev, input_measurements, output, math, math_measurements)
 
     input_choices = utils_general.choices_inputs(input_dev)
     math_choices = utils_general.choices_maths(math)
@@ -969,6 +974,7 @@ def page_live():
     input_dev = Input.query.all()
     input_measurements = InputMeasurements.query.all()
     math = Math.query.all()
+    math_measurements = MathMeasurements.query.all()
     method = Method.query.all()
     measurement = Measurement.query.all()
     unit = Unit.query.all()
@@ -1007,7 +1013,8 @@ def page_live():
         output_type[each_output.unique_id] = each_output.output_type
 
     # Get what each measurement uses for a unit
-    use_unit = utils_general.use_unit_generate(input_dev, input_measurements, output, math)
+    use_unit = utils_general.use_unit_generate(
+        input_dev, input_measurements, output, math, math_measurements)
 
     return render_template('pages/live.html',
                            dict_measurements=dict_measurements,
@@ -1478,6 +1485,7 @@ def page_data():
     input_dev = Input.query.all()
     input_measurements = InputMeasurements.query.all()
     math = Math.query.all()
+    math_measurements = MathMeasurements.query.all()
     user = User.query.all()
     measurement = Measurement.query.all()
     unit = Unit.query.all()
@@ -1496,6 +1504,7 @@ def page_data():
 
     form_add_math = forms_math.MathAdd()
     form_mod_math = forms_math.MathMod()
+    form_mod_math_measurement = forms_math.MathMeasurementMod()
     form_mod_average_single = forms_math.MathModAverageSingle()
     form_mod_difference = forms_math.MathModDifference()
     form_mod_equation = forms_math.MathModEquation()
@@ -1666,6 +1675,7 @@ def page_data():
                            form_add_math=form_add_math,
                            form_mod_average_single=form_mod_average_single,
                            form_mod_math=form_mod_math,
+                           form_mod_math_measurement=form_mod_math_measurement,
                            form_mod_difference=form_mod_difference,
                            form_mod_equation=form_mod_equation,
                            form_mod_humidity=form_mod_humidity,
@@ -1678,6 +1688,7 @@ def page_data():
                            tooltips_input=TOOLTIPS_INPUT,
                            input_templates=input_templates,
                            math=math,
+                           math_measurements=math_measurements,
                            names_math=names_math,
                            math_info=MATH_INFO,
                            math_templates=math_templates,
