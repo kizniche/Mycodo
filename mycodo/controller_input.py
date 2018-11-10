@@ -39,10 +39,10 @@ from mycodo.databases.models import Misc
 from mycodo.databases.models import Output
 from mycodo.databases.models import SMTP
 from mycodo.databases.models import Trigger
+from mycodo.inputs.sensorutils import convert_units
 from mycodo.mycodo_client import DaemonControl
 from mycodo.utils.database import db_retrieve_table_daemon
 from mycodo.utils.influx import add_measurements_influxdb
-from mycodo.utils.influx import add_measure_influxdb
 from mycodo.utils.influx import write_influxdb_value
 from mycodo.utils.inputs import load_module_from_file
 from mycodo.utils.inputs import parse_input_information
@@ -101,7 +101,7 @@ class InputController(threading.Thread):
             Input, unique_id=self.input_id)
         self.input_measurements = db_retrieve_table_daemon(
             InputMeasurements).filter(
-                InputMeasurements.input_id == self.input_id).all()
+                InputMeasurements.input_id == self.input_id)
 
         self.input_dev = input_dev
         self.input_name = input_dev.name
@@ -290,7 +290,32 @@ class InputController(threading.Thread):
 
                         # Add measurement(s) to influxdb
                         if self.measurement_success:
-                            add_measurements_influxdb(self.unique_id, self.measurement)
+
+                            # Convert units before adding measurements to database
+                            measurements_record = {}
+                            for each_channel, each_measurement in self.measurement.values.items():
+                                measurement = self.input_measurements.filter(
+                                    InputMeasurements.channel == each_channel).first()
+
+                                if measurement.converted_unit not in ['', None]:
+                                    converted_measurement = measurement.converted_measurement
+                                    converted_unit = measurement.converted_unit
+                                    converted_value = convert_units(
+                                        each_measurement['unit'], measurement.converted_unit, each_measurement['value'])
+
+                                    measurements_record[each_channel] = {
+                                        'measurement': converted_measurement,
+                                        'unit': converted_unit,
+                                        'value': converted_value
+                                    }
+                                else:
+                                    measurements_record[each_channel] = {
+                                        'measurement': each_measurement['measurement'],
+                                        'unit': each_measurement['unit'],
+                                        'value': each_measurement['value']
+                                    }
+
+                            add_measurements_influxdb(self.unique_id, measurements_record)
                             # else:
                             #     add_measure_influxdb(self.unique_id, self.measurement)
                             self.measurement_success = False

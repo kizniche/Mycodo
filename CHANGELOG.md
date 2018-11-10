@@ -12,6 +12,10 @@ The Mycodo 7.0 brings a redesigned Conditional system. The remnants of Condition
  - Add Function Action: Pause (pause for a duration of time before executing any remaining actions)
  - Add ability to search Input selection dropdown
 
+### Miscellaneous
+
+ - Upgrade InfluxDB from 1.6.0 to 1.7.0
+
 
 ## 6.4.5 (2018-10-17)
 

@@ -254,21 +254,29 @@
         {%- if measurement_id in input_measurements_dict -%}
 
       {
-        name: '{{each_input.name}} (
-        {%- if not input_measurements_dict[measurement_id].single_channel -%}
-          {{'CH' + (input_measurements_dict[measurement_id].channel + 1)|string + ', '}}
-        {%- endif -%}
-          {{measurement_units[input_measurements_dict[measurement_id].measurement]['name']}})',
+        name: '{{each_input.name}} ({{'CH' + (input_measurements_dict[measurement_id].channel + 1)|string + ', '}} {{measurement_units[input_measurements_dict[measurement_id].measurement]['name']}})',
         {% if measurement_units[input_measurements_dict[measurement_id].measurement]['meas'] == 'edge' %}
         type: 'column',
         {% else %}
         type: 'line',
         {% endif %}
         tooltip: {
-          valueSuffix: ' {{units[input_measurements_dict[measurement_id].unit]['unit']}}',
+          valueSuffix: '
+          {%- if input_measurements_dict[measurement_id].converted_unit != '' -%}
+            {{' ' + units[input_measurements_dict[measurement_id].converted_unit]['unit']}}
+          {%- else -%}
+            {{' ' + units[input_measurements_dict[measurement_id].unit]['unit']}}
+          {%- endif -%}
+          ',
           valueDecimals: 3
         },
-        yAxis: '{{input_measurements_dict[measurement_id].unit}}',
+        yAxis: '
+          {%- if input_measurements_dict[measurement_id].converted_unit != '' -%}
+            {{input_measurements_dict[measurement_id].converted_unit}}
+          {%- else -%}
+            {{input_measurements_dict[measurement_id].unit}}
+          {%- endif -%}
+            ',
         data: []
       },
 

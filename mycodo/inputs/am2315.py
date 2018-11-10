@@ -35,17 +35,29 @@ from mycodo.inputs.sensorutils import calculate_dewpoint
 from mycodo.utils.database import db_retrieve_table_daemon
 
 # Measurements
-measurements = {
-    'temperature': {
-        'C': {0: {}}
+measurements_dict = {
+    0: {
+        'measurement': 'temperature',
+        'unit': 'C',
+        'name': ''
     },
-    'humidity': {
-        'percent': {0: {}}
+    1: {
+        'measurement': 'humidity',
+        'unit': 'percent',
+        'name': ''
     },
-    'dewpoint': {
-        'C': {0: {}}
+    2: {
+        'measurement': 'dewpoint',
+        'unit': 'C',
+        'name': ''
     }
 }
+
+# measurements = [
+#     (0, 'temperature', 'C'),
+#     (1, 'humidity', 'percent'),
+#     (2, 'dewpoint', 'C')
+# ]
 
 # Input information
 INPUT_INFORMATION = {
@@ -53,7 +65,7 @@ INPUT_INFORMATION = {
     'input_manufacturer': 'AOSONG',
     'input_name': 'AM2315',
     'measurements_name': 'Humidity/Temperature',
-    'measurements_dict': measurements,
+    'measurements_dict': measurements_dict,
     'measurements_convert_enabled': False,
     'measurements_rescale': False,
 
@@ -105,17 +117,7 @@ class InputModule(AbstractInput):
 
     def get_measurement(self):
         """ Gets the humidity and temperature """
-        return_dict = {
-            'temperature': {
-                'C': {}
-            },
-            'humidity': {
-                'percent': {}
-            },
-            'dewpoint': {
-                'C': {}
-            }
-        }
+        return_dict = measurements_dict.copy()
 
         temperature = None
         humidity = None
@@ -156,14 +158,14 @@ class InputModule(AbstractInput):
                 time.sleep(2)
 
         if measurements_success:
-            if self.is_enabled('temperature', 'C', 0):
-                return_dict['temperature']['C'][0] = temperature
+            if self.is_enabled(0):
+                return_dict[0]['value'] = temperature
 
-            if self.is_enabled('humidity', 'percent', 0):
-                return_dict['humidity']['percent'][0] = humidity
+            if self.is_enabled(1):
+                return_dict[1]['value'] = humidity
 
-            if self.is_enabled('dewpoint', 'C', 0):
-                return_dict['dewpoint']['C'][0] = dew_point
+            if self.is_enabled(2):
+                return_dict[2]['value'] = dew_point(temperature, humidity)
 
             return return_dict
         else:
@@ -267,9 +269,9 @@ class AM2315:
         humidity = (humid_H*256+humid_L)/10
 
         # Check for negative temp
-		# 16-Sep-2014
-		# Thanks to Ethan for pointing out this bug!
-		# ethansimpson@xtra.co.nz
+        # 16-Sep-2014
+        # Thanks to Ethan for pointing out this bug!
+        # ethansimpson@xtra.co.nz
         if temp_H&0x08:
            negative = True
         # Mask the negative flag

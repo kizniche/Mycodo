@@ -29,15 +29,21 @@ def constraints_pass_fan_seconds(value):
 
 
 # Measurements
-measurements = {
-    'particulate_matter_1_0': {
-        'μg_m3': {0: {}}
+measurements_dict = {
+    0: {
+        'measurement': 'particulate_matter_1_0',
+        'unit': 'ug_m3',
+        'name': ''
     },
-    'particulate_matter_2_5': {
-        'μg_m3': {0: {}}
+    1: {
+        'measurement': 'particulate_matter_2_5',
+        'unit': 'ug_m3',
+        'name': ''
     },
-    'particulate_matter_10_0': {
-        'μg_m3': {0: {}}
+    2: {
+        'measurement': 'particulate_matter_10_0',
+        'unit': 'ug_m3',
+        'name': ''
     }
 }
 
@@ -47,7 +53,7 @@ INPUT_INFORMATION = {
     'input_manufacturer': 'Winsen',
     'input_name': 'ZH03B',
     'measurements_name': 'Particulates',
-    'measurements_dict': measurements,
+    'measurements_dict': measurements_dict,
 
     'options_enabled': [
         'measurements_select',
@@ -72,7 +78,7 @@ INPUT_INFORMATION = {
         {
             'id': 'fan_modulate',
             'type': 'bool',
-            'default_value': True,
+            'default_value': False,
             'name': lazy_gettext('Fan Off After Measure'),
             'phrase': lazy_gettext('Turn the fan on only during the measurement')
         },
@@ -154,17 +160,7 @@ class InputModule(AbstractInput):
         if not self.serial_device:  # Don't measure if device isn't validated
             return None
 
-        return_dict = {
-            'particulate_matter_1_0': {
-                'μg_m3': {}
-            },
-            'particulate_matter_2_5': {
-                'μg_m3': {}
-            },
-            'particulate_matter_10_0': {
-                'μg_m3': {}
-            }
-        }
+        return_dict = measurements_dict.copy()
 
         pm_1_0 = None
         pm_2_5 = None
@@ -194,23 +190,23 @@ class InputModule(AbstractInput):
                 pm_10_0 = 1001
                 self.logger.error("PM10 measurement out of range (over 1000 ug/m^3)")
 
-            if self.is_enabled('particulate_matter_1_0', 'μg_m3', 0):
-                return_dict['particulate_matter_1_0']['μg_m3'][0] = pm_1_0
+            if self.is_enabled(0):
+                return_dict[0]['value'] = pm_1_0
 
-            if self.is_enabled('particulate_matter_2_5', 'μg_m3', 0):
-                return_dict['particulate_matter_2_5']['μg_m3'][0] = pm_2_5
+            if self.is_enabled(1):
+                return_dict[1]['value'] = pm_2_5
 
-            if self.is_enabled('particulate_matter_10_0', 'μg_m3', 0):
-                return_dict['particulate_matter_10_0']['μg_m3'][0] = pm_10_0
+            if self.is_enabled(2):
+                return_dict[2]['value'] = pm_10_0
 
             # Turn the fan off
             if self.fan_modulate:
                 self.DormantMode('sleep')
+
+            return return_dict
         except:
             self.logger.exception("Exception while reading")
             return None
-
-        return return_dict
 
     @staticmethod
     def HexToByte(hexStr):

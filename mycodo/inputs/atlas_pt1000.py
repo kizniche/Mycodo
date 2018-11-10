@@ -5,9 +5,11 @@ from mycodo.inputs.base_input import AbstractInput
 from mycodo.utils.system_pi import str_is_float
 
 # Measurements
-measurements = {
-    'temperature': {
-        'C': {0: {}}
+measurements_dict = {
+    0: {
+        'measurement': 'temperature',
+        'unit': 'C',
+        'name': ''
     }
 }
 
@@ -17,7 +19,7 @@ INPUT_INFORMATION = {
     'input_manufacturer': 'Atlas',
     'input_name': 'Atlas PT-1000',
     'measurements_name': 'Temperature',
-    'measurements_dict': measurements,
+    'measurements_dict': measurements_dict,
 
     'options_enabled': [
         'i2c_location',
@@ -78,11 +80,7 @@ class InputModule(AbstractInput):
         self._measurements = None
         temp = None
 
-        return_dict = {
-            'temperature': {
-                'C': {}
-            }
-        }
+        return_dict = measurements_dict.copy()
 
         if self.interface == 'UART':
             if self.atlas_sensor_uart.setup:
@@ -116,7 +114,6 @@ class InputModule(AbstractInput):
                 self.logger.error('I2C device is not set up.'
                                   'Check the log for errors.')
 
-        return_dict['temperature']['C'][0] = temp
+        return_dict[0]['value'] = temp
 
-        if return_dict['temperature']['C'][0] is not None:
-            return return_dict
+        return return_dict

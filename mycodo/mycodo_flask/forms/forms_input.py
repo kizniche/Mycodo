@@ -99,8 +99,6 @@ class InputMod(FlaskForm):
 
     measurements_selected = SelectMultipleField(
         TOOLTIPS_INPUT['measurements_selected']['title'], widget=NumberInput())
-    measurements_convert_enabled = BooleanField(
-        TOOLTIPS_INPUT['measurements_convert_enabled']['title'])
 
     # Server options
     host = StringField(lazy_gettext('Host'))
@@ -207,6 +205,6 @@ class InputMeasurementMod(FlaskForm):
         TOOLTIPS_INPUT['invert_scale']['title'])
 
     rescaled_measurement_unit = StringField(lazy_gettext('Rescaled Measurement'))
-    convert_to_measurement_unit = StringField(lazy_gettext('Convert to Measurement'))
+    convert_to_measurement_unit = StringField(TOOLTIPS_INPUT['convert_to_measurement_unit']['title'])
 
     input_measurement_mod = SubmitField(lazy_gettext('Save'))

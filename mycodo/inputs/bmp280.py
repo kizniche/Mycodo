@@ -4,21 +4,27 @@
 import logging
 import time
 
-from mycodo.inputs.base_input import AbstractInput
-from mycodo.inputs.sensorutils import altitude
 from mycodo.databases.models import InputMeasurements
+from mycodo.inputs.base_input import AbstractInput
+from mycodo.inputs.sensorutils import calculate_altitude
 from mycodo.utils.database import db_retrieve_table_daemon
 
 # Measurements
-measurements = {
-    'altitude': {
-        'm': {0: {}}
+measurements_dict = {
+    0: {
+        'measurement': 'pressure',
+        'unit': 'Pa',
+        'name': ''
     },
-    'pressure': {
-        'Pa': {0: {}}
+    1: {
+        'measurement': 'temperature',
+        'unit': 'C',
+        'name': ''
     },
-    'temperature': {
-        'C': {0: {}}
+    2: {
+        'measurement': 'altitude',
+        'unit': 'm',
+        'name': ''
     }
 }
 
@@ -28,7 +34,7 @@ INPUT_INFORMATION = {
     'input_manufacturer': 'BOSCH',
     'input_name': 'BMP280',
     'measurements_name': 'Pressure/Temperature',
-    'measurements_dict': measurements,
+    'measurements_dict': measurements_dict,
 
     'options_enabled': [
         'i2c_location',
@@ -124,28 +130,18 @@ class InputModule(AbstractInput):
 
     def get_measurement(self):
         """ Gets the measurement in units by reading the """
-        return_dict = {
-            'altitude': {
-                'm': {}
-            },
-            'pressure': {
-                'Pa': {}
-            },
-            'temperature': {
-                'C': {}
-            }
-        }
-
-        if self.is_enabled('temperature', 'C', 0):
-            return_dict['temperature']['C'][0] = self.read_temperature()
+        return_dict = measurements_dict.copy()
 
         pressure_pa = self.read_pressure()
 
-        if self.is_enabled('pressure', 'Pa', 0):
-            return_dict['pressure']['Pa'][0] = pressure_pa
+        if self.is_enabled(0):
+            return_dict[0]['value'] = pressure_pa
 
-        if self.is_enabled('altitude', 'm', 0):
-            return_dict['altitude']['m'][0] = altitude(pressure_pa)
+        if self.is_enabled(1):
+            return_dict[1]['value'] = self.read_temperature()
+
+        if self.is_enabled(2):
+            return_dict[2]['value'] = calculate_altitude(pressure_pa)
 
         return return_dict
 

@@ -464,10 +464,16 @@ def graph_y_axes(dict_measurements):
 
                     for each_measure in input_measurements:
                         if each_measure.unique_id == measure_id:
-                            if not y_axes[each_graph.unique_id]:
-                                y_axes[each_graph.unique_id] = [each_measure.unit]
-                            elif y_axes[each_graph.unique_id] and each_measure.unit not in y_axes[each_graph.unique_id]:
-                                y_axes.setdefault(each_graph.unique_id, []).append(each_measure.unit)
+                            if each_measure.converted_unit:
+                                if not y_axes[each_graph.unique_id]:
+                                    y_axes[each_graph.unique_id] = [each_measure.converted_unit]
+                                elif y_axes[each_graph.unique_id] and each_measure.converted_unit not in y_axes[each_graph.unique_id]:
+                                    y_axes.setdefault(each_graph.unique_id, []).append(each_measure.converted_unit)
+                            else:
+                                if not y_axes[each_graph.unique_id]:
+                                    y_axes[each_graph.unique_id] = [each_measure.unit]
+                                elif y_axes[each_graph.unique_id] and each_measure.unit not in y_axes[each_graph.unique_id]:
+                                    y_axes.setdefault(each_graph.unique_id, []).append(each_measure.unit)
 
                 elif each_device == output and ',' in each_id_measure:
                     if each_graph.unique_id not in y_axes:

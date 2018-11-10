@@ -391,5 +391,6 @@ class SettingsPi(FlaskForm):
 #
 
 class SettingsDiagnostic(FlaskForm):
+    delete_inputs = SubmitField(lazy_gettext('Delete All Inputs'))
     delete_dashboard_elements = SubmitField(lazy_gettext('Delete All Dashboard Elements'))
     delete_notes_tags = SubmitField(lazy_gettext('Delete All Notes and Note Tags'))

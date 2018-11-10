@@ -44,15 +44,16 @@ def add_measurements_influxdb(unique_id, measurements):
     :return:
     """
     data = []
-    for each_measurement, each_measurement_data in measurements.values.items():
-        for each_unit, channel_data in each_measurement_data.items():
-            for each_channel, each_value in channel_data.items():
-                data.append(format_influxdb_data(
-                    unique_id,
-                    each_measurement,
-                    each_value,
-                    channel=each_channel,
-                    unit=each_unit))
+
+    for each_channel, each_measurement in measurements.items():
+        if 'value' in each_measurement:
+            data.append(format_influxdb_data(
+                unique_id,
+                each_measurement['unit'],
+                each_measurement['value'],
+                channel=each_channel,
+                measure=each_measurement['measurement']))
+
     write_db = threading.Thread(
         target=write_influxdb_list,
         args=(data,))
@@ -85,24 +86,28 @@ def add_measure_influxdb(unique_id, measurements, unit=None):
     write_db.start()
 
 
-def format_influxdb_data(unique_id, measurement, value, unit=None, channel=None, timestamp=None):
+def format_influxdb_data(unique_id, unit, value, channel=None, measure=None, timestamp=None):
     """
     Format data for entry into an Influxdb database
 
     example:
-        format_influxdb_data('00000001', 'temperature', 37.5)
-        format_influxdb_data('00000002', 'duration_time', 15.2)
+        format_influxdb_data('00000001', 'C', 37.5, measure='temperature', channel=0)
+        format_influxdb_data('00000002', 's', 15.2, measure='duration_time', channel=1)
 
-    :return: list of measurement type, tags, and value
+    :return: list of unit type, tags, and value
     :rtype: list
 
     :param unique_id: 8-character alpha-numeric ID associated with device
     :type unique_id: str
-    :param measurement: The type of data being entered into the Influxdb
-        database (ex. 'temperature', 'duration_time')
-    :type measurement: str
+    :param unit: The type of data being entered into the Influxdb
+        database (ex. 'C', 'mg')
+    :type unit: str
     :param value: The value being entered into the Influxdb database
     :type value: int or float
+    :param measure:
+    :type measure: str
+    :param channel:
+    :type channel: int
     :param timestamp: If supplied, this timestamp will be used in the influxdb
     :type timestamp: datetime object
 
@@ -110,17 +115,17 @@ def format_influxdb_data(unique_id, measurement, value, unit=None, channel=None,
     checked_value = float(value)
 
     influx_dict = {
-        'measurement':  measurement,
+        'measurement': unit,
         'tags': {
-            "device_id": unique_id
+            'device_id': unique_id
         },
         'fields': {
-            "value": checked_value
+            'value': checked_value
         }
     }
 
-    if unit:
-        influx_dict['tags']['unit'] = unit
+    if measure:
+        influx_dict['tags']['measure'] = measure
 
     if channel is not None:
         influx_dict['tags']['channel'] = channel
@@ -131,8 +136,8 @@ def format_influxdb_data(unique_id, measurement, value, unit=None, channel=None,
     return influx_dict
 
 
-def query_string(measurement, unique_id,
-                 value=None, unit=None, channel=None,
+def query_string(unit, unique_id,
+                 value=None, measure=None, channel=None,
                  ts_str=None, start_str=None, end_str=None,
                  past_sec=None, group_sec=None, limit=None):
     """Generate influxdb query string"""
@@ -146,13 +151,13 @@ def query_string(measurement, unique_id,
     else:
         query += "value"
 
-    query += " FROM {meas} WHERE device_id='{id}'".format(
-        meas=measurement, id=unique_id)
+    query += " FROM {unit} WHERE device_id='{id}'".format(
+        unit=unit, id=unique_id)
 
-    if unit:
-        query += " AND unit='{unit}'".format(unit=unit)
     if channel is not None:
-        query += " AND channel='{chane}'".format(chane=channel)
+        query += " AND channel='{channel}'".format(channel=channel)
+    if measure:
+        query += " AND measure='{measure}'".format(measure=measure)
     if ts_str:
         query += " AND time = '{ts}'".format(ts=ts_str)
     if start_str:

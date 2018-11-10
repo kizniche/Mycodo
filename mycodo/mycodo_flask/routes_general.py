@@ -277,13 +277,13 @@ def last_data(unique_id, measure_type, measurement_id, period):
         try:
             if period != '0':
                 query_str = query_string(
-                    measure.measurement, unique_id,
-                    unit=measure.unit, channel=measure.channel,
+                    measure.unit, unique_id,
+                    measure=measure.measurement, channel=measure.channel,
                     value='LAST', past_sec=period)
             else:
                 query_str = query_string(
-                    measure.measurement, unique_id,
-                    unit=measure.unit, channel=measure.channel,
+                    measure.unit, unique_id,
+                    measure=measure.measurement, channel=measure.channel,
                     value='LAST')
             if query_str == 1:
                 return '', 204
@@ -340,7 +340,7 @@ def past_data(unique_id, measure_type, measurement_id, past_seconds):
         if measure_type == 'input':
             measure = InputMeasurements.query.filter(InputMeasurements.unique_id == measurement_id).first()
         elif measure_type == 'math':
-            measure = Math.query.filter(Math.unique_id == measurement_id).first()
+            measure = MathMeasurements.query.filter(MathMeasurements.unique_id == measurement_id).first()
         elif measure_type == 'output':
             measure = Output.query.filter(Output.unique_id == measurement_id).first()
         else:
@@ -349,17 +349,25 @@ def past_data(unique_id, measure_type, measurement_id, past_seconds):
         if not measure:
             return "Could not find measurement"
 
-        measurement = measure.measurement
-        unit = measure.unit
         channel = measure.channel
+
+        if measure.converted_unit:
+            measurement = measure.converted_measurement
+            unit = measure.converted_unit
+        else:
+            measurement = measure.measurement
+            unit = measure.unit
 
         try:
             query_str = query_string(
-                measurement, unique_id,
-                unit=unit, channel=channel, past_sec=past_seconds)
+                unit, unique_id,
+                measure=measurement, channel=channel, past_sec=past_seconds)
+
             if query_str == 1:
                 return '', 204
+
             raw_data = dbcon.query(query_str).raw
+
             if 'series' in raw_data:
                 return jsonify(raw_data['series'][0]['values'])
             else:
@@ -461,8 +469,8 @@ def export_data(unique_id, measurement, unit, channel, start_seconds, end_second
     end_str = end.strftime('%Y-%m-%dT%H:%M:%S.%fZ')
 
     query_str = query_string(
-        measurement, unique_id,
-        unit=unit, channel=channel,
+        unit, unique_id,
+        measure=measurement, channel=channel,
         start_str=start_str, end_str=end_str)
     if query_str == 1:
         flash('Invalid query string', 'error')

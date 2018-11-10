@@ -5,8 +5,10 @@ from mycodo.inputs.base_input import AbstractInput
 
 # Measurements
 measurements = {
-    'light': {
-        'lux': {0: {}}
+    0: {
+        'measurement': 'light',
+        'unit': 'lux',
+        'name': ''
     }
 }
 
@@ -56,17 +58,13 @@ class InputModule(AbstractInput):
 
     def get_measurement(self):
         """ Gets the TSL2561's lux """
-        return_dict = {
-            'light': {
-                'lux': {}
-            }
-        }
+        return_dict = measurements.copy()
 
         from tsl2561.constants import TSL2561_INTEGRATIONTIME_402MS
         self.tsl.set_integration_time(TSL2561_INTEGRATIONTIME_402MS)
         saturated = False
         try:
-            return_dict['light']['lux'][0] = self.tsl.lux()
+            return_dict[0]['value'] = self.tsl.lux()
             return return_dict
         except Exception as err:
             if 'saturated' in repr(err):
@@ -82,7 +80,7 @@ class InputModule(AbstractInput):
             self.tsl.set_integration_time(TSL2561_INTEGRATIONTIME_101MS)
             saturated = False
             try:
-                return_dict['light']['lux'][0] = self.tsl.lux()
+                return_dict[0]['value'] = self.tsl.lux()
                 return return_dict
             except Exception as err:
                 if 'saturated' in repr(err):
@@ -97,14 +95,14 @@ class InputModule(AbstractInput):
             from tsl2561.constants import TSL2561_INTEGRATIONTIME_13MS
             self.tsl.set_integration_time(TSL2561_INTEGRATIONTIME_13MS)
             try:
-                return_dict['light']['lux'][0] = self.tsl.lux()
+                return_dict[0]['value'] = self.tsl.lux()
                 return return_dict
             except Exception as err:
                 if 'saturated' in repr(err):
                     self.logger.error(
                         "Could not obtain measurement: Sensor is saturated. "
                         "Recording value as 65536.")
-                    return_dict['light']['lux'][0] = 65536.0
+                    return_dict[0]['value'] = 65536.0
                     return return_dict
                 else:
                     self.logger.exception("Error: {}".format(err))

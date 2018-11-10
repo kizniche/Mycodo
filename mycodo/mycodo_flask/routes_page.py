@@ -51,6 +51,7 @@ from mycodo.config_translations import TOOLTIPS_INPUT
 from mycodo.databases.models import Actions
 from mycodo.databases.models import AlembicVersion
 from mycodo.databases.models import Camera
+from mycodo.databases.models import Conversion
 from mycodo.databases.models import Conditional
 from mycodo.databases.models import ConditionalConditions
 from mycodo.databases.models import Dashboard
@@ -1489,6 +1490,7 @@ def page_data():
     user = User.query.all()
     measurement = Measurement.query.all()
     unit = Unit.query.all()
+    conversion = Conversion.query.all()
 
     dict_inputs = parse_input_information()
     custom_options_values = parse_custom_option_values(input_dev)
@@ -1518,6 +1520,8 @@ def page_data():
     choices_unit = utils_general.choices_units(unit)
     choices_measurement = utils_general.choices_measurements(measurement)
     choices_measurements_units = utils_general.choices_measurements_units(measurement, unit)
+    choices_conversions = utils_general.choices_conversion(
+        conversion, measurement, unit, input_measurements)
 
     # Build dict of number of measurements for each input
     input_number_measurements = {}
@@ -1663,6 +1667,7 @@ def page_data():
                            choices_unit=choices_unit,
                            choices_measurement=choices_measurement,
                            choices_measurements_units=choices_measurements_units,
+                           choices_conversions=choices_conversions,
                            custom_options_values=custom_options_values,
                            device_info=parse_input_information(),
                            dict_inputs=dict_inputs,

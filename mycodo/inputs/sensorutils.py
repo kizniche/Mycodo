@@ -15,7 +15,7 @@ from mycodo.utils.system_pi import all_conversions
 logger = logging.getLogger("mycodo.sensor_utils")
 
 
-def altitude(pressure_pa, sea_level_pa=101325.0):
+def calculate_altitude(pressure_pa, sea_level_pa=101325.0):
     """
     Calculates the altitude (m) from pressure (Pa)
     :param pressure_pa: Measured pressure (Pa)
@@ -30,12 +30,11 @@ def altitude(pressure_pa, sea_level_pa=101325.0):
     return float("{:.3f}".format(alt_meters))
 
 
-def convert_units(measurement, convert_from_unit, convert_to_unit, measure_value):
+def convert_units(convert_from_unit, convert_to_unit, measure_value):
     """
     Convert from one unit to another, such as ppm to ppb.
     See UNIT_CONVERSIONS in config_devices_units.py for available conversions.
 
-    :param measurement: measurement from MEASUREMENTS in config_devices_units.py
     :param convert_from_unit: unit to convert from, from UNITS in config_devices_units.py
     :param convert_to_unit: string of "measurement,unit" of desired units to use (separated by ";")
     :param measure_value: The value to convert
@@ -44,15 +43,13 @@ def convert_units(measurement, convert_from_unit, convert_to_unit, measure_value
     return_measurement = measure_value
     conversions_dict = all_conversions(
         db_retrieve_table_daemon(Conversion, entry='all'))
-    if convert_to_unit:
-        for each_unit in convert_to_unit.split(';'):
-            if each_unit.split(',')[0] == measurement:
-                conversion = convert_from_unit + '_to_' + each_unit.split(',')[1]
-                if each_unit.split(',')[1] == convert_from_unit:
-                    return return_measurement
-                elif conversion in conversions_dict:
-                    replaced_str = conversions_dict[conversion].replace('x', str(return_measurement))
-                    return float('{0:.5f}'.format(eval(replaced_str)))
+
+    conversion = convert_from_unit + '_to_' + convert_to_unit
+    if convert_to_unit == convert_from_unit:
+        return return_measurement
+    elif conversion in conversions_dict:
+        replaced_str = conversions_dict[conversion].replace('x', str(return_measurement))
+        return float('{0:.5f}'.format(eval(replaced_str)))
     return return_measurement
 
 

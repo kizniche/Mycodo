@@ -100,15 +100,15 @@ MEASUREMENTS = {
     'particulate_matter_1_0': {
         'name': lazy_gettext('PM1'),
         'meas': 'particulate_matter_1_0',
-        'units': ['μg_m3']},
+        'units': ['ug_m3']},
     'particulate_matter_2_5': {
         'name': lazy_gettext('PM2.5'),
         'meas': 'particulate_matter_2_5',
-        'units': ['μg_m3']},
+        'units': ['ug_m3']},
     'particulate_matter_10_0': {
         'name': lazy_gettext('PM10'),
         'meas': 'particulate_matter_10_0',
-        'units': ['μg_m3']},
+        'units': ['ug_m3']},
     'pid_p_value': {
         'name': lazy_gettext('PID P-Value'),
         'meas': 'pid_value',
@@ -264,9 +264,9 @@ UNITS = {
     'setpoint': {
         'name': lazy_gettext('Setpoint'),
         'unit': ''},
-    'μg_m3': {
+    'ug_m3': {
         'name': lazy_gettext('Microgram per cubic meter'),
-        'unit': 'μg/m^3'},
+        'unit': 'ug/m^3'},
     'V': {
         'name': lazy_gettext('Volt'),
         'unit': 'V'}
@@ -319,6 +319,6 @@ UNIT_CONVERSIONS = {
     'kPa_to_Pa': 'x*1000',
 
     # Time
-    'second_to_minute': 'x/60',
-    'minute_to_second': 'x*60'
+    's_to_minute': 'x/60',
+    'minute_to_s': 'x*60'
 }

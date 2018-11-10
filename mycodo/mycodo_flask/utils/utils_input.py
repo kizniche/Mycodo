@@ -235,21 +235,16 @@ def input_add(form_add):
 
                 if ('measurements_dict' in dict_inputs[input_name] and
                         dict_inputs[input_name]['measurements_dict'] != []):
-                    for each_measurement, each_measurement_data in dict_inputs[input_name]['measurements_dict'].items():
-                        for each_unit, channel_data in each_measurement_data.items():
-                            for each_channel, extra_data in channel_data.items():
-                                new_measurement = InputMeasurements()
-                                if 'name' in extra_data and extra_data['name']:
-                                    new_measurement.name = extra_data['name']
-                                new_measurement.input_id = new_input.unique_id
-                                new_measurement.measurement = each_measurement
-                                new_measurement.unit = each_unit
-                                new_measurement.channel = each_channel
-                                if len(channel_data) == 1:
-                                    new_measurement.single_channel = True
-                                else:
-                                    new_measurement.single_channel = False
-                                new_measurement.save()
+                    for each_channel in dict_inputs[input_name]['measurements_dict']:
+                        measure_info = dict_inputs[input_name]['measurements_dict'][each_channel]
+                        new_measurement = InputMeasurements()
+                        if 'name' in measure_info:
+                            new_measurement.name = measure_info['name']
+                        new_measurement.input_id = new_input.unique_id
+                        new_measurement.measurement = measure_info['measurement']
+                        new_measurement.unit = measure_info['unit']
+                        new_measurement.channel = each_channel
+                        new_measurement.save()
 
                 flash(gettext(
                     "%(type)s Input with ID %(id)s (%(uuid)s) successfully added",
@@ -367,9 +362,6 @@ def input_mod(form_mod, request_form):
         mod_input.pin_miso = form_mod.pin_miso.data
         # Bluetooth options
         mod_input.bt_adapter = form_mod.bt_adapter.data
-
-        # Channel options
-        mod_input.measurements_convert_enabled = form_mod.measurements_convert_enabled.data
 
         mod_input.adc_gain = form_mod.adc_gain.data
         mod_input.adc_resolution = form_mod.adc_resolution.data
@@ -495,9 +487,11 @@ def measurement_mod(form):
         mod_meas.scale_to_max = form.scale_to_max.data
         mod_meas.invert_scale = form.invert_scale.data
 
-        if form.convert_to_measurement_unit.data != '' and ',' in form.convert_to_measurement_unit.data:
-            mod_meas.converted_measurement = form.convert_to_measurement_unit.data.split(',')[0]
-            mod_meas.converted_unit = form.convert_to_measurement_unit.data.split(',')[1]
+        if ',' in form.convert_to_measurement_unit.data:
+            unit = form.convert_to_measurement_unit.data.split(',')[0]
+            measure = form.convert_to_measurement_unit.data.split(',')[1]
+            mod_meas.converted_unit = unit
+            mod_meas.converted_measurement = measure
 
         if not error:
             db.session.commit()

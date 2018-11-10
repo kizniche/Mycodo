@@ -5,9 +5,11 @@ from mycodo.inputs.base_input import AbstractInput
 from mycodo.utils.system_pi import str_is_float
 
 # Measurements
-measurements = {
-    'electrical_conductivity': {
-        'μS_cm': {0: {}}
+measurements_dict = {
+    0: {
+        'measurement': 'electrical_conductivity',
+        'unit': 'μS_cm',
+        'name': ''
     }
 }
 
@@ -17,7 +19,7 @@ INPUT_INFORMATION = {
     'input_manufacturer': 'Atlas',
     'input_name': 'Atlas EC',
     'measurements_name': 'Electrical Conductivity',
-    'measurements_dict': measurements,
+    'measurements_dict': measurements_dict,
 
     'options_enabled': [
         'i2c_location',
@@ -79,11 +81,7 @@ class InputModule(AbstractInput):
         self._measurements = None
         electrical_conductivity = None
 
-        return_dict = {
-            'temperature': {
-                'C': {}
-            }
-        }
+        return_dict = measurements_dict.copy()
 
         # Read sensor via UART
         if self.interface == 'UART':
@@ -138,7 +136,6 @@ class InputModule(AbstractInput):
                 self.logger.error(
                     'I2C device is not set up. Check the log for errors.')
 
-        return_dict['electrical_conductivity']['μS_cm'][0] = electrical_conductivity
+        return_dict[0]['value'] = electrical_conductivity
 
-        if return_dict['electrical_conductivity']['μS_cm'][0] is not None:
-            return return_dict
+        return return_dict

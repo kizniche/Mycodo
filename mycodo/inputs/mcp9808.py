@@ -4,19 +4,21 @@ import logging
 from mycodo.inputs.base_input import AbstractInput
 
 # Measurements
-measurements = {
-    'temperature': {
-        'C': {0: {}}
+measurements_dict = {
+    0: {
+        'measurement': 'temperature',
+        'unit': 'C',
+        'name': ''
     }
 }
 
 # Input information
 INPUT_INFORMATION = {
-    'input_name_unique': 'MCP9898',
+    'input_name_unique': 'MCP9808',
     'input_manufacturer': 'Microchip',
-    'input_name': 'MCP9898',
+    'input_name': 'MCP9808',
     'measurements_name': 'Temperature',
-    'measurements_dict': measurements,
+    'measurements_dict': measurements_dict,
 
     'options_enabled': [
         'i2c_location',
@@ -76,14 +78,10 @@ class InputModule(AbstractInput):
 
     def get_measurement(self):
         """ Gets the MCP9808's temperature in Celsius """
-        return_dict = {
-            'temperature': {
-                'C': {}
-            }
-        }
+        return_dict = measurements_dict.copy()
 
         try:
-            return_dict['temperature']['C'][0] = self.sensor.readTempC()
+            return_dict[0]['value'] = self.sensor.readTempC()
         except:
             self.logger.exception("Inout read failure")
 

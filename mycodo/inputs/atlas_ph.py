@@ -8,9 +8,11 @@ from mycodo.utils.influx import read_last_influxdb
 from mycodo.utils.system_pi import str_is_float
 
 # Measurements
-measurements = {
-    'ion_concentration': {
-        'pH': {0: {}}
+measurements_dict = {
+    0: {
+        'measurement': 'ion_concentration',
+        'unit': 'pH',
+        'name': ''
     }
 }
 
@@ -20,7 +22,7 @@ INPUT_INFORMATION = {
     'input_manufacturer': 'Atlas',
     'input_name': 'Atlas pH',
     'measurements_name': 'Ion Concentration',
-    'measurements_dict': measurements,
+    'measurements_dict': measurements_dict,
 
     'options_enabled': [
         'i2c_location',
@@ -86,11 +88,7 @@ class InputModule(AbstractInput):
         self._measurements = None
         ph = None
 
-        return_dict = {
-            'ion_concentration': {
-                'pH': {}
-            }
-        }
+        return_dict = measurements_dict.copy()
 
         # Calibrate the pH measurement based on a temperature measurement
         if (self.calibrate_sensor_measure and
@@ -168,7 +166,6 @@ class InputModule(AbstractInput):
                 self.logger.error(
                     'I2C device is not set up. Check the log for errors.')
 
-        return_dict['ion_concentration']['pH'][0] = ph
+        return_dict[0]['value'] = ph
 
-        if return_dict['ion_concentration']['pH'][0] is not None:
-            return return_dict
+        return return_dict

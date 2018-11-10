@@ -21,6 +21,7 @@ from mycodo.config import OUTPUT_INFO
 from mycodo.config import PATH_CAMERAS
 from mycodo.config_devices_units import MEASUREMENTS
 from mycodo.config_devices_units import UNITS
+from mycodo.config_devices_units import UNIT_CONVERSIONS
 from mycodo.databases.models import Camera
 from mycodo.databases.models import Conditional
 from mycodo.databases.models import Input
@@ -37,6 +38,7 @@ from mycodo.databases.models import User
 from mycodo.mycodo_client import DaemonControl
 from mycodo.mycodo_flask.extensions import db
 from mycodo.utils.inputs import parse_input_information
+from mycodo.utils.system_pi import add_custom_conversions
 from mycodo.utils.system_pi import add_custom_measurements
 from mycodo.utils.system_pi import add_custom_units
 from mycodo.utils.system_pi import cmd_output
@@ -162,6 +164,40 @@ def choices_measurements_units(measurements, units):
                 display += ' ({unit})'.format(
                     unit=dict_units[each_unit]['unit'])
             choices.update({value: display})
+
+    return choices
+
+
+def choices_conversion(conversions, measurements, units, input_measurements):
+    dict_units = add_custom_units(units)
+    dict_measurements = add_custom_measurements(measurements)
+    dict_conversions = add_custom_conversions(conversions)
+
+    # Sort dictionary by keys
+    sorted_keys = sorted(list(dict_measurements), key=lambda s: s.casefold())
+    sorted_dict_measurements = OrderedDict()
+    for each_key in sorted_keys:
+        sorted_dict_measurements[each_key] = dict_measurements[each_key]
+
+    choices = {}
+    for each_input_measurement in input_measurements:
+        if each_input_measurement.unique_id not in choices:
+            choices[each_input_measurement.unique_id] = OrderedDict()
+
+        for each_meas, each_info in sorted_dict_measurements.items():
+            for each_unit in each_info['units']:
+
+                    for each_conversion in dict_conversions:
+                        conversion_from_unit = each_conversion.split('_')[0]
+                        conversion_to_unit = each_conversion.split('_')[2]
+
+                        if each_unit == each_input_measurement.unit == conversion_from_unit:
+                            value = '{unit},{meas}'.format(unit=conversion_to_unit, meas=each_meas)
+                            display = '{meas}: {name} ({unit})'.format(
+                                meas=dict_measurements[each_meas]['name'],
+                                name=dict_units[conversion_to_unit]['name'],
+                                unit=dict_units[conversion_to_unit]['unit'])
+                            choices[each_input_measurement.unique_id].update({value: display})
 
     return choices
 
@@ -316,9 +352,6 @@ def choices_lcd(inputs, maths, pids, outputs):
 
 
 def form_input_choices(choices, each_input, dict_inputs):
-    dict_measurements = add_custom_measurements(Measurement.query.all())
-    dict_units = add_custom_units(Unit.query.all())
-
     input_measurements = InputMeasurements.query.filter(
         InputMeasurements.input_id == each_input.unique_id).all()
 
@@ -337,13 +370,16 @@ def form_input_choices(choices, each_input, dict_inputs):
                     for each_meas in input_measurements:
                         custom_dict_measurements[each_meas.measurement] = each_meas.unit
 
-                    measure_display, unit_display = check_display_names(
-                        each_measure.measurement, custom_dict_measurements[each_measure.measurement])
-
-                    if not each_measure.single_channel:
-                        channel_number = ' CH{chan}'.format(chan=each_measure.channel)
+                    if each_measure.converted_unit not in ['', None]:
+                        measure_display, unit_display = check_display_names(
+                            each_measure.converted_measurement,
+                            each_measure.converted_unit)
                     else:
-                        channel_number = ''
+                        measure_display, unit_display = check_display_names(
+                            each_measure.measurement,
+                            custom_dict_measurements[each_measure.measurement])
+
+                    channel_number = ' CH{chan}'.format(chan=each_measure.channel)
 
                     if each_measure.name:
                         channel_name = ' ({name})'.format(name=each_measure.name)
@@ -366,9 +402,8 @@ def form_input_choices(choices, each_input, dict_inputs):
                             chan=channel_info,
                             meas=measure_display)
                     choices.update({value: display})
-                except:
-                    logger.exception("Generating input choices")
-
+                except Exception as msg:
+                    logger.exception("Generating input choices: {}".format(msg))
     return choices
 
 

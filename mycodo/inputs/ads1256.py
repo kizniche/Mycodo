@@ -1,5 +1,6 @@
 # coding=utf-8
 import logging
+from collections import OrderedDict
 
 from flask_babel import lazy_gettext
 
@@ -7,17 +8,14 @@ from mycodo.databases.models import InputMeasurements
 from mycodo.inputs.base_input import AbstractInput
 from mycodo.utils.database import db_retrieve_table_daemon
 
-# Channels
-channels = {}
-for each_channel in range(8):
-    channels[each_channel] = {}
-
 # Measurements
-measurements = {
-    'electrical_potential': {
-        'V': channels
+measurements_dict = OrderedDict()
+for each_channel in range(8):
+    measurements_dict[each_channel] = {
+        'measurement': 'temperature',
+        'unit': 'C',
+        'name': ''
     }
-}
 
 # Input information
 INPUT_INFORMATION = {
@@ -25,7 +23,7 @@ INPUT_INFORMATION = {
     'input_manufacturer': 'Texas Instruments',
     'input_name': 'ADS1256',
     'measurements_name': 'Voltage (Waveshare, Analog-to-Digital Converter)',
-    'measurements_dict': measurements,
+    'measurements_dict': measurements_dict,
     'measurements_convert_enabled': True,
     'measurements_rescale': True,
     'scale_from_min': 0.0,
@@ -98,9 +96,10 @@ INPUT_INFORMATION = {
 
 class InputModule(AbstractInput):
     """ ADC Read """
-    def __init__(self, input_dev, testing=False):
+    def __init__(self, input_dev, testing=False, run_main=True):
         super(InputModule, self).__init__()
         self.logger = logging.getLogger('mycodo.ads1256')
+        self.run_main = run_main
         self._measurements = None
 
         if not testing:
@@ -170,11 +169,7 @@ class InputModule(AbstractInput):
         voltages_dict = {}
         count = 0
 
-        return_dict = {
-            'electrical_potential': {
-                'V': {}
-            }
-        }
+        return_dict = measurements_dict.copy()
 
         # 2 attempts to get valid measurement
         while (self.running and count < 2 and
@@ -191,21 +186,19 @@ class InputModule(AbstractInput):
 
         for each_measure in self.input_measurements.all():
             if each_measure.is_enabled:
-                return_dict['electrical_potential']['V'][each_measure.channel] = voltages_list[each_measure.channel]
+                return_dict[each_measure.channel]['value'] = voltages_list[each_measure.channel]
 
-        if return_dict['electrical_potential']['V']:
-            return return_dict
+        return return_dict
 
 
 if __name__ == "__main__":
     from types import SimpleNamespace
+    settings = SimpleNamespace()
+    settings.id = 1
+    settings.unique_id = '1234-5678'
+    settings.adc_gain = '1'
+    settings.adc_sample_speed = '10'
+    settings.channels = 8
 
-    input_dev_ = SimpleNamespace()
-    input_dev_.id = 1
-    input_dev_.unique_id = '1234-5678'
-    input_dev_.adc_gain = '1'
-    input_dev_.adc_sample_speed = '10'
-    input_dev_.channels = 8
-
-    ads = InputModule(input_dev_)
-    print("Channel 0: {}".format(ads.next()))
+    measurements = InputModule(settings, run_main=True).next()
+    print("Measurements: {}".format(InputModule(settings).next()))

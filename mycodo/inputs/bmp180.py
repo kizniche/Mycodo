@@ -2,20 +2,27 @@
 import logging
 import time
 
-from mycodo.inputs.base_input import AbstractInput
 from mycodo.databases.models import InputMeasurements
+from mycodo.inputs.base_input import AbstractInput
+from mycodo.inputs.sensorutils import calculate_altitude
 from mycodo.utils.database import db_retrieve_table_daemon
 
 # Measurements
-measurements = {
-    'altitude': {
-        'm': {0: {}}
+measurements_dict = {
+    0: {
+        'measurement': 'pressure',
+        'unit': 'Pa',
+        'name': ''
     },
-    'pressure': {
-        'Pa': {0: {}}
+    1: {
+        'measurement': 'temperature',
+        'unit': 'C',
+        'name': ''
     },
-    'temperature': {
-        'C': {0: {}}
+    2: {
+        'measurement': 'altitude',
+        'unit': 'm',
+        'name': ''
     }
 }
 
@@ -25,7 +32,7 @@ INPUT_INFORMATION = {
     'input_manufacturer': 'BOSCH',
     'input_name': 'BMP180',
     'measurements_name': 'Pressure/Temperature',
-    'measurements_dict': measurements,
+    'measurements_dict': measurements_dict,
 
     'options_enabled': [
         'measurements_select',
@@ -73,25 +80,17 @@ class InputModule(AbstractInput):
         """ Gets the measurement in units by reading the BMP180/085 """
         time.sleep(2)
 
-        return_dict = {
-            'altitude': {
-                'm': {}
-            },
-            'pressure': {
-                'Pa': {}
-            },
-            'temperature': {
-                'C': {}
-            }
-        }
+        return_dict = measurements_dict.copy()
 
-        if self.is_enabled('temperature', 'C', 0):
-            return_dict['temperature']['C'][0] = self.bmp.read_temperature()
+        pressure_pa = self.bmp.read_pressure()
 
-        if self.is_enabled('pressure', 'Pa', 0):
-            return_dict['pressure']['Pa'][0] = self.bmp.read_pressure()
+        if self.is_enabled(0):
+            return_dict[0]['value'] = pressure_pa
 
-        if self.is_enabled('altitude', 'm', 0):
-            return_dict['altitude']['m'][0] = self.bmp.read_altitude()
+        if self.is_enabled(1):
+            return_dict[1]['value'] = self.bmp.read_temperature()
+
+        if self.is_enabled(2):
+            return_dict[2]['value'] = calculate_altitude(pressure_pa)
 
         return return_dict

@@ -11,9 +11,11 @@ for num in range(31, 255):
     list_sensitivity.append((num, str(num)))
 
 # Measurements
-measurements = {
-    'light': {
-        'lux': {0: {}}
+measurements_dict = {
+    0: {
+        'measurement': 'light',
+        'unit': 'lux',
+        'name': ''
     }
 }
 
@@ -23,7 +25,7 @@ INPUT_INFORMATION = {
     'input_manufacturer': 'ROHM',
     'input_name': 'BH1750',
     'measurements_name': 'Light',
-    'measurements_dict': measurements,
+    'measurements_dict': measurements_dict,
 
     'options_enabled': [
         'i2c_location',
@@ -103,11 +105,7 @@ class InputModule(AbstractInput):
 
     def get_measurement(self):
         """ Gets the BH1750's lux """
-        return_dict = {
-            'light': {
-                'lux': {}
-            }
-        }
+        return_dict = measurements_dict.copy()
 
         if self.resolution == 0:
             lux = self.measure_low_res()
@@ -118,10 +116,9 @@ class InputModule(AbstractInput):
         else:
             return None
 
-        return_dict['light']['lux'][0] = lux
+        return_dict[0]['value'] = lux
 
-        if return_dict['light']['lux'][0] is not None:
-            return return_dict
+        return return_dict
 
     def _set_mode(self, mode):
         self.mode = mode

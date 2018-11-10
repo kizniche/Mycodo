@@ -28,8 +28,9 @@ class AbstractInput(object):
 
     """
 
-    def __init__(self):
+    def __init__(self, run_main=False):
         self.logger = logging.getLogger('mycodo.inputs.base_input')
+        self.run_main = run_main
         self._measurements = None
         self.avg_max = {}
         self.avg_index = {}
@@ -160,12 +161,12 @@ class AbstractInput(object):
 
         return average
 
-    def is_enabled(self, measurement, unit, channel):
-        if (self.input_measurements and
+    def is_enabled(self, channel):
+        if self.run_main:
+            return True
+        elif (self.input_measurements and
                 self.input_measurements.filter(and_(
                     InputMeasurements.is_enabled == True,
-                    InputMeasurements.measurement == measurement,
-                    InputMeasurements.unit == unit,
                     InputMeasurements.channel == channel)).count()):
             return True
 

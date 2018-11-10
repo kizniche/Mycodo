@@ -13,17 +13,14 @@ from mycodo.utils.database import db_retrieve_table_daemon
 from mycodo.utils.image import generate_thermal_image_from_pixels
 from mycodo.utils.system_pi import assure_path_exists
 
-# Channels
-channels = {}
-for each_channel in range(64):
-    channels[each_channel] = {}
-
 # Measurements
-measurements = {
-    'temperature': {
-        'C': channels
+measurements_dict = OrderedDict()
+for each_channel in range(64):
+    measurements_dict[each_channel] = {
+        'measurement': 'temperature',
+        'unit': 'C',
+        'name': ''
     }
-}
 
 # Input information
 INPUT_INFORMATION = {
@@ -31,7 +28,7 @@ INPUT_INFORMATION = {
     'input_manufacturer': 'Panasonic',
     'input_name': 'AMG8833',
     'measurements_name': '8x8 Temperature Grid',
-    'measurements_dict': measurements,
+    'measurements_dict': measurements_dict,
     'measurements_convert_enabled': False,
     'measurements_rescale': True,
     'scale_from_min': 0.0,
@@ -98,11 +95,7 @@ class InputModule(AbstractInput):
         """ Gets the AMG8833's measurements """
         self._measurements = None
 
-        pixels_dict = {
-            'temperature': {
-                'C': OrderedDict()
-            }
-        }
+        return_dict = measurements_dict.copy()
 
         pixels = self.sensor.readPixels()
 
@@ -113,7 +106,7 @@ class InputModule(AbstractInput):
 
         for meas in self.input_measurements.all():
             if meas.is_enabled:
-                pixels_dict[meas.measurement][meas.unit][meas.channel] = pixels[meas.channel]
+                return_dict[meas.channel]['value'] = pixels[meas.channel]
 
         if self.save_image:
             timestamp = datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
@@ -135,5 +128,4 @@ class InputModule(AbstractInput):
                 temp_min=self.temp_min,
                 temp_max=self.temp_max)
 
-        if pixels_dict:
-            return pixels_dict
+        return return_dict

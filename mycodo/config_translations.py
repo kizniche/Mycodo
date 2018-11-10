@@ -100,9 +100,6 @@ TOOLTIPS_INPUT = {
     'measurements_selected': {
         'title': lazy_gettext('Measurements Enabled'),
         'phrase': lazy_gettext('The measurements to record')},
-    'measurements_convert_enabled': {
-        'title': lazy_gettext('Enable Measurement Convert'),
-        'phrase': lazy_gettext('Enable conversion of each measurement')},
     'scale_from_min': {
         'title': lazy_gettext('Unscaled Unit Min'),
         'phrase': lazy_gettext('Unscaled minimum unit')},
@@ -118,6 +115,9 @@ TOOLTIPS_INPUT = {
     'invert_scale': {
         'title': lazy_gettext('Invert Scale'),
         'phrase': lazy_gettext('Invert the scale')},
+    'convert_to_measurement_unit': {
+        'title': lazy_gettext('Convert to Unit'),
+        'phrase': lazy_gettext('Convert the measurement to a different unit')},
     'sht_voltage': {
         'title': lazy_gettext('Voltage'),
         'phrase': lazy_gettext('The input voltage to the sensor')},

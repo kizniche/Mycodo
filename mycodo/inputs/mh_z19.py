@@ -24,9 +24,11 @@ def constraints_pass_measure_range(value):
 
 
 # Measurements
-measurements = {
-    'co2': {
-        'ppm': {0: {}}
+measurements_dict = {
+    0: {
+        'measurement': 'co2',
+        'unit': 'ppm',
+        'name': ''
     }
 }
 
@@ -36,7 +38,7 @@ INPUT_INFORMATION = {
     'input_manufacturer': 'Winsen',
     'input_name': 'MH-Z19',
     'measurements_name': 'CO2',
-    'measurements_dict': measurements,
+    'measurements_dict': measurements_dict,
 
     'options_enabled': [
         'uart_location',
@@ -132,11 +134,7 @@ class InputModule(AbstractInput):
 
     def get_measurement(self, silent=False):
         """ Gets the MH-Z19's CO2 concentration in ppmv via UART"""
-        return_dict = {
-            'co2': {
-                'ppm': {}
-            }
-        }
+        return_dict = measurements_dict.copy()
 
         co2 = None
 
@@ -157,7 +155,7 @@ class InputModule(AbstractInput):
         else:
             self.logger.error("Bad response")
 
-        return_dict['co2']['ppm'][0] = co2
+        return_dict[0]['value'] = co2
 
         return return_dict
 

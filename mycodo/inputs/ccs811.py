@@ -6,15 +6,21 @@ from mycodo.databases.models import InputMeasurements
 from mycodo.utils.database import db_retrieve_table_daemon
 
 # Measurements
-measurements = {
-    'co2': {
-        'ppm': {0: {}}
+measurements_dict = {
+    0: {
+        'measurement': 'co2',
+        'unit': 'ppm',
+        'name': ''
     },
-    'voc': {
-        'ppb': {0: {}}
+    1: {
+        'measurement': 'voc',
+        'unit': 'ppb',
+        'name': ''
     },
-    'temperature': {
-        'C': {0: {}}
+    2: {
+        'measurement': 'temperature',
+        'unit': 'C',
+        'name': ''
     }
 }
 
@@ -24,7 +30,7 @@ INPUT_INFORMATION = {
     'input_manufacturer': 'Ams',
     'input_name': 'CCS811',
     'measurements_name': 'CO2/VOC/Temperature',
-    'measurements_dict': measurements,
+    'measurements_dict': measurements_dict,
 
     'options_enabled': [
         'i2c_location',
@@ -79,28 +85,15 @@ class InputModule(AbstractInput):
 
     def get_measurement(self):
         """ Gets the CO2, VOC, and temperature """
-        return_dict = {
-            'co2': {
-                'ppm': {}
-            },
-            'voc': {
-                'ppb': {}
-            },
-            'temperature': {
-                'C': {}
-            }
-        }
+        return_dict = measurements_dict.copy()
 
-        if self.is_enabled('temperature', 'C', 0):
-            return_dict['temperature']['C'][0] = self.sensor.calculateTemperature()
+        if self.is_enabled(0):
+            return_dict[0]['value'] = self.sensor.calculateTemperature()
 
-        if not self.sensor.readData():
-            if self.is_enabled('voc', 'ppb', 0):
-                return_dict['voc']['ppb'][0] = self.sensor.getTVOC()
+        if self.is_enabled(0):
+            return_dict[0]['value'] = self.sensor.getTVOC()
 
-            if self.is_enabled('co2', 'ppm', 0):
-                return_dict['co2']['ppm'][0] = self.sensor.geteCO2()
+        if self.is_enabled(0):
+            return_dict[0]['value'] = self.sensor.geteCO2()
 
-            return return_dict
-        else:
-            return None
+        return return_dict
