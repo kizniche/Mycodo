@@ -6,12 +6,16 @@ from mycodo.inputs.base_input import AbstractInput
 from mycodo.utils.database import db_retrieve_table_daemon
 
 # Measurements
-measurements = {
-    'temperature': {
-        'C': {
-            0: {'name': 'Object'},
-            1: {'name': 'Die'}
-        }
+measurements_dict = {
+    0: {
+        'measurement': 'temperature',
+        'unit': 'C',
+        'name': 'Object'
+    },
+    1: {
+        'measurement': 'temperature',
+        'unit': 'C',
+        'name': 'Die'
     }
 }
 
@@ -21,14 +25,13 @@ INPUT_INFORMATION = {
     'input_manufacturer': 'MAXIM',
     'input_name': 'MAX31855',
     'measurements_name': 'Temperature (Object/Die)',
-    'measurements_dict': measurements,
+    'measurements_dict': measurements_dict,
 
     'options_enabled': [
         'pin_clock',
         'pin_cs',
         'pin_miso',
         'measurements_select',
-        'measurements_convert',
         'period',
         'pre_output'
     ],
@@ -75,16 +78,12 @@ class InputModule(AbstractInput):
 
     def get_measurement(self):
         """ Gets the measurement in units by reading the """
-        return_dict = {
-            'temperature': {
-                'C': {}
-            }
-        }
+        return_dict = measurements_dict.copy()
 
-        if self.is_enabled('temperature', 'C', 0):
-            return_dict['temperature']['C'][0] = self.sensor.readTempC()
+        if self.is_enabled(0):
+            return_dict[0]['value'] = self.sensor.readTempC()
 
-        if self.is_enabled('temperature', 'C', 1):
-            return_dict['temperature']['C'][1] = self.sensor.readInternalC()
+        if self.is_enabled(1):
+            return_dict[1]['value'] = self.sensor.readInternalC()
 
         return return_dict

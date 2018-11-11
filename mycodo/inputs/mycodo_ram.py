@@ -6,9 +6,10 @@ from mycodo.inputs.base_input import AbstractInput
 from mycodo.mycodo_client import DaemonControl
 
 # Measurements
-measurements = {
-    'disk_space': {
-        'MB': {0: {}}
+measurements_dict = {
+    0: {
+        'measurement': 'disk_space',
+        'unit': 'MB'
     }
 }
 
@@ -18,10 +19,9 @@ INPUT_INFORMATION = {
     'input_name_unique': 'MYCODO_RAM',
     'input_manufacturer': 'Mycodo',
     'measurements_name': 'Size RAM in Use',
-    'measurements_dict': measurements,
+    'measurements_dict': measurements_dict,
 
     'options_enabled': [
-        'measurements_convert',
         'period'
     ],
     'options_disabled': ['interface'],
@@ -48,16 +48,11 @@ class InputModule(AbstractInput):
 
     def get_measurement(self):
         """ Gets the measurement in units by reading resource """
-        return_dict = {
-            'disk_space': {
-                'MB': {}
-            }
-        }
+        return_dict = measurements_dict.copy()
 
         try:
-            return_dict['disk_space']['MB'][0] = resource.getrusage(
+            return_dict[0]['value'] = resource.getrusage(
                 resource.RUSAGE_SELF).ru_maxrss / float(1000)
+            return return_dict
         except Exception:
             pass
-
-        return return_dict

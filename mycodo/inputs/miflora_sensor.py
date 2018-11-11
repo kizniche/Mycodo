@@ -6,21 +6,26 @@ from mycodo.inputs.base_input import AbstractInput
 from mycodo.utils.database import db_retrieve_table_daemon
 
 # Measurements
-measurements = {
-    'battery': {
-        'percent': {0: {}}
+measurements_dict = {
+    0: {
+        'measurement': 'battery',
+        'unit': 'percent'
     },
-    'electrical_conductivity': {
-        'μS_cm': {0: {}}
+    1: {
+        'measurement': 'electrical_conductivity',
+        'unit': 'uS_cm'
     },
-    'light': {
-        'lux': {0: {}}
+    2: {
+        'measurement': 'light',
+        'unit': 'lux'
     },
-    'moisture': {
-        'unitless': {0: {}}
+    3: {
+        'measurement': 'moisture',
+        'unit': 'unitless'
     },
-    'temperature': {
-        'C': {0: {}}
+    4: {
+        'measurement': 'temperature',
+        'unit': 'C'
     }
 }
 
@@ -30,12 +35,11 @@ INPUT_INFORMATION = {
     'input_manufacturer': 'Xiaomi',
     'input_name': 'Miflora',
     'measurements_name': 'EC/Light/Moisture/Temperature',
-    'measurements_dict': measurements,
+    'measurements_dict': measurements_dict,
 
     'options_enabled': [
         'bt_location',
         'measurements_select',
-        'measurements_convert',
         'period',
         'pre_output'
     ],
@@ -88,37 +92,21 @@ class InputModule(AbstractInput):
         from miflora.miflora_poller import MI_TEMPERATURE
         from miflora.miflora_poller import MI_BATTERY
 
-        return_dict = {
-            'battery': {
-                'percent': {}
-            },
-            'electrical_conductivity': {
-                'μS_cm': {}
-            },
-            'light': {
-                'lux': {}
-            },
-            'moisture': {
-                'unitless': {}
-            },
-            'temperature': {
-                'C': {}
-            }
-        }
+        return_dict = measurements_dict.copy()
 
-        if self.is_enabled('battery', 'percent', 0):
-            return_dict['battery']['percent'][0] = self.poller.parameter_value(MI_BATTERY)
+        if self.is_enabled(0):
+            return_dict[0]['value'] = self.poller.parameter_value(MI_BATTERY)
 
-        if self.is_enabled('electrical_conductivity', 'μS_cm', 0):
-            return_dict['electrical_conductivity']['μS_cm'][0] = self.poller.parameter_value(MI_CONDUCTIVITY)
+        if self.is_enabled(1):
+            return_dict[1]['value'] = self.poller.parameter_value(MI_CONDUCTIVITY)
 
-        if self.is_enabled('light', 'lux', 0):
-            return_dict['light']['lux'][0] = self.poller.parameter_value(MI_LIGHT)
+        if self.is_enabled(2):
+            return_dict[2]['value'] = self.poller.parameter_value(MI_LIGHT)
 
-        if self.is_enabled('moisture', 'unitless', 0):
-            return_dict['moisture']['unitless'][0] = self.poller.parameter_value(MI_MOISTURE)
+        if self.is_enabled(3):
+            return_dict[3]['value'] = self.poller.parameter_value(MI_MOISTURE)
 
-        if self.is_enabled('temperature', 'C', 0):
-            return_dict['temperature']['C'][0] = self.poller.parameter_value(MI_TEMPERATURE)
+        if self.is_enabled(4):
+            return_dict[4]['value'] = self.poller.parameter_value(MI_TEMPERATURE)
 
         return return_dict

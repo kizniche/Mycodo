@@ -3,18 +3,22 @@ import logging
 
 from mycodo.databases.models import InputMeasurements
 from mycodo.inputs.base_input import AbstractInput
+from mycodo.inputs.sensorutils import calculate_dewpoint
 from mycodo.utils.database import db_retrieve_table_daemon
 
 # Measurements
-measurements = {
-    'temperature': {
-        'C': {0: {}}
+measurements_dict = {
+    0: {
+        'measurement': 'temperature',
+        'unit': 'C'
     },
-    'humidity': {
-        'percent': {0: {}}
+    1: {
+        'measurement': 'humidity',
+        'unit': 'percent'
     },
-    'dewpoint': {
-        'C': {0: {}}
+    2: {
+        'measurement': 'dewpoint',
+        'unit': 'C'
     }
 }
 
@@ -24,13 +28,12 @@ INPUT_INFORMATION = {
     'input_manufacturer': 'Sensirion',
     'input_name': 'SHT1x/7x',
     'measurements_name': 'Humidity/Temperature',
-    'measurements_dict':measurements,
+    'measurements_dict': measurements_dict,
 
     'options_enabled': [
         'gpio_location',
         'sht_voltage',
         'measurements_select',
-        'measurements_convert',
         'period',
         'pin_clock',
         'pre_output'
@@ -93,30 +96,18 @@ class InputModule(AbstractInput):
 
     def get_measurement(self):
         """ Gets the humidity and temperature """
-        return_dict = {
-            'temperature': {
-                'C': {}
-            },
-            'humidity': {
-                'percent': {}
-            },
-            'dewpoint': {
-                'C': {}
-            }
-        }
+        return_dict = measurements_dict.copy()
 
-        temperature = self.sht_sensor.read_t()
+        if self.is_enabled(0):
+            return_dict[0]['value'] = self.sht_sensor.read_t()
 
-        if self.is_enabled('temperature', 'C', 0):
-            return_dict['temperature']['C'][0] = temperature
+        if self.is_enabled(1):
+            return_dict[1]['value'] = self.sht_sensor.read_rh()
 
-        humidity = self.sht_sensor.read_rh()
-
-        if self.is_enabled('humidity', 'percent', 0):
-            return_dict['humidity']['percent'][0] = humidity
-
-        if self.is_enabled('dewpoint', 'C', 0):
-            return_dict['dewpoint']['C'][0] = self.sht_sensor.read_dew_point(
-                temperature, humidity)
+        if (self.is_enabled(2) and
+                self.is_enabled(0) and
+                self.is_enabled(1)):
+            return_dict[2]['value'] = calculate_dewpoint(
+                return_dict[0]['value'], return_dict[1]['value'])
 
         return return_dict

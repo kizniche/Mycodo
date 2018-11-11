@@ -99,6 +99,7 @@ class InputController(threading.Thread):
         self.input_id = input_id
         input_dev = db_retrieve_table_daemon(
             Input, unique_id=self.input_id)
+
         self.input_measurements = db_retrieve_table_daemon(
             InputMeasurements).filter(
                 InputMeasurements.input_id == self.input_id)
@@ -297,7 +298,7 @@ class InputController(threading.Thread):
                                 measurement = self.input_measurements.filter(
                                     InputMeasurements.channel == each_channel).first()
 
-                                if measurement.converted_unit not in ['', None]:
+                                if measurement.converted_unit not in ['', None] and 'value' in each_measurement:
                                     converted_measurement = measurement.converted_measurement
                                     converted_unit = measurement.converted_unit
                                     converted_value = convert_units(
@@ -346,7 +347,7 @@ class InputController(threading.Thread):
             measurements = self.measure_input.next()
 
             if measurements is not None:
-                # for each_channel in self.measurements_selected.split(','):
+                # for each_channel in self.measurements_enabled.split(','):
                 #     channel_key_str = 'channel_{}'.format(each_channel)
                 #
                 #     # If instructed to convert measurement, calculate and store new measurement

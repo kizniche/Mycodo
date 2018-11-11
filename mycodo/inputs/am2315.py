@@ -38,26 +38,17 @@ from mycodo.utils.database import db_retrieve_table_daemon
 measurements_dict = {
     0: {
         'measurement': 'temperature',
-        'unit': 'C',
-        'name': ''
+        'unit': 'C'
     },
     1: {
         'measurement': 'humidity',
-        'unit': 'percent',
-        'name': ''
+        'unit': 'percent'
     },
     2: {
         'measurement': 'dewpoint',
-        'unit': 'C',
-        'name': ''
+        'unit': 'C'
     }
 }
-
-# measurements = [
-#     (0, 'temperature', 'C'),
-#     (1, 'humidity', 'percent'),
-#     (2, 'dewpoint', 'C')
-# ]
 
 # Input information
 INPUT_INFORMATION = {
@@ -71,7 +62,6 @@ INPUT_INFORMATION = {
 
     'options_enabled': [
         'measurements_select',
-        'measurements_convert',
         'period',
         'pre_output'
     ],
@@ -164,8 +154,11 @@ class InputModule(AbstractInput):
             if self.is_enabled(1):
                 return_dict[1]['value'] = humidity
 
-            if self.is_enabled(2):
-                return_dict[2]['value'] = dew_point(temperature, humidity)
+            if (self.is_enabled(2) and
+                    self.is_enabled(0) and
+                    self.is_enabled(1)):
+                return_dict[2]['value'] = calculate_dewpoint(
+                    return_dict[0]['value'], return_dict[1]['value'])
 
             return return_dict
         else:

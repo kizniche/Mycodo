@@ -8,9 +8,10 @@ from mycodo.inputs.sensorutils import is_device
 from mycodo.utils.database import db_retrieve_table_daemon
 
 # Measurements
-measurements = {
-    'co2': {
-        'ppm': {0: {}}
+measurements_dict = {
+    0: {
+        'measurement': 'co2',
+        'unit': 'ppm'
     }
 }
 
@@ -20,12 +21,11 @@ INPUT_INFORMATION = {
     'input_manufacturer': 'CO2Meter',
     'input_name': 'K30',
     'measurements_name': 'CO2',
-    'measurements_dict': measurements,
+    'measurements_dict': measurements_dict,
 
     'options_enabled': [
         'uart_location',
         'uart_baud_rate',
-        'measurements_convert',
         'period',
         'pre_output'
     ],
@@ -72,11 +72,7 @@ class InputModule(AbstractInput):
         if not self.serial_device:  # Don't measure if device isn't validated
             return None
 
-        return_dict = {
-            'co2': {
-                'ppm': {}
-            }
-        }
+        return_dict = measurements_dict.copy()
 
         co2 = None
 
@@ -90,6 +86,6 @@ class InputModule(AbstractInput):
             low = resp[4]
             co2 = (high * 256) + low
 
-        return_dict['co2']['ppm'][0] = co2
+        return_dict[0]['value'] = co2
 
         return return_dict

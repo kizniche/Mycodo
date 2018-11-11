@@ -1,22 +1,18 @@
 # coding=utf-8
 import logging
-import time
+from collections import OrderedDict
 
 from mycodo.databases.models import InputMeasurements
 from mycodo.inputs.base_input import AbstractInput
 from mycodo.utils.database import db_retrieve_table_daemon
 
-# Channels
-channels = {}
-for each_channel in range(4):
-    channels[each_channel] = {}
-
 # Measurements
-measurements = {
-    'electrical_potential': {
-        'V': channels
+measurements_dict = OrderedDict()
+for each_channel in range(4):
+    measurements_dict[each_channel] = {
+        'measurement': 'electrical_potential',
+        'unit': 'V'
     }
-}
 
 # Input information
 INPUT_INFORMATION = {
@@ -24,7 +20,7 @@ INPUT_INFORMATION = {
     'input_manufacturer': 'Microchip',
     'input_name': 'MCP342x',
     'measurements_name': 'Voltage (Analog-to-Digital Converter)',
-    'measurements_dict': measurements,
+    'measurements_dict': measurements_dict,
     'measurements_convert_enabled': True,
     'measurements_rescale': True,
     'scale_from_min': -4.096,
@@ -33,7 +29,6 @@ INPUT_INFORMATION = {
     'options_enabled': [
         'i2c_location',
         'measurements_select',
-        'measurements_convert',
         'adc_gain',
         'adc_resolution',
         'period',
@@ -100,11 +95,7 @@ class InputModule(AbstractInput):
     def get_measurement(self):
         self._measurements = None
 
-        return_dict = {
-            'electrical_potential': {
-                'V': {}
-            }
-        }
+        return_dict = measurements_dict.copy()
 
         # for each_measure in self.input_measurements.all():
         #     if each_measure.is_enabled:
@@ -113,36 +104,30 @@ class InputModule(AbstractInput):
         #                            channel=each_measure.channel,
         #                            gain=self.adc_gain,
         #                            resolution=self.adc_resolution)
-        #         return_dict['electrical_potential']['V'][each_measure.channel] = adc.convert_and_read()
+        #         return_dict[each_measure.channel]['value'] = adc.convert_and_read()
 
         # Dummy data for testing
         import random
-        for _ in range(4):
-            return_dict['electrical_potential']['V'][0] = random.uniform(1.5, 1.9)
-            return_dict['electrical_potential']['V'][1] = random.uniform(2.3, 2.5)
-            return_dict['electrical_potential']['V'][2] = random.uniform(0.5, 0.6)
-            return_dict['electrical_potential']['V'][3] = random.uniform(3.5, 6.2)
+        return_dict[0]['value'] = random.uniform(1.5, 1.9)
+        return_dict[1]['value'] = random.uniform(2.3, 2.5)
+        return_dict[2]['value'] = random.uniform(0.5, 0.6)
+        return_dict[3]['value'] = random.uniform(3.5, 6.2)
 
-        if return_dict['electrical_potential']['V']:
-            return return_dict
+        return return_dict
 
 
 if __name__ == "__main__":
-    class Data:
-        def __init__(self, **kwargs):
-            self.__dict__.update(kwargs)
+    from types import SimpleNamespace
+    settings = SimpleNamespace()
+    settings.id = 1
+    settings.unique_id='0000-0000'
+    settings.i2c_location = '0x68'
+    settings.i2c_bus = 1
+    settings.adc_gain = 1
+    settings.adc_resolution = 12
+    settings.channels = 4
+    settings.run_main = True
 
-    settings = Data(id='00001',
-                    unique_id='asdf-ghjk',
-                    i2c_address='0x68',
-                    i2c_bus=1,
-                    channels=4,
-                    measurements_selected='0,1,2,3',
-                    gain=1,
-                    resolution=12)
+    measurements = InputModule(settings).next()
 
-    mcp = ADCModule(settings)
-
-    while 1:
-        print("Voltages: {}".format(mcp.next()))
-        time.sleep(1)
+    print("Measurements: {}".format(measurements))

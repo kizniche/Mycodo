@@ -6,9 +6,10 @@ import os
 from mycodo.inputs.base_input import AbstractInput
 
 # Measurements
-measurements = {
-    'disk_space': {
-        'MB': {0: {}}
+measurements_dict = {
+    0: {
+        'measurement': 'disk_space',
+        'unit': 'MB'
     }
 }
 
@@ -18,11 +19,10 @@ INPUT_INFORMATION = {
     'input_manufacturer': 'Mycodo',
     'input_name': 'Free Space',
     'measurements_name': 'Unallocated Disk Space',
-    'measurements_dict': measurements,
+    'measurements_dict': measurements_dict,
 
     'options_enabled': [
         'location',
-        'measurements_convert',
         'period'
     ],
     'options_disabled': ['interface'],
@@ -52,13 +52,9 @@ class InputModule(AbstractInput):
 
     def get_measurement(self):
         """ Gets the free space """
-        return_dict = {
-            'disk_space': {
-                'MB': {}
-            }
-        }
+        return_dict = measurements_dict.copy()
 
         f = os.statvfs(self.path)
-        return_dict['disk_space']['MB'][0] = (f.f_bsize * f.f_bavail) / 1000000.0
+        return_dict[0]['value'] = (f.f_bsize * f.f_bavail) / 1000000.0
 
         return return_dict

@@ -7,18 +7,22 @@ from mycodo.databases.models import InputMeasurements
 from mycodo.utils.database import db_retrieve_table_daemon
 
 # Measurements
-measurements = {
-    'co2': {
-        'ppm': {0: {}}
+measurements_dict = {
+    0: {
+        'measurement': 'co2',
+        'unit': 'ppm'
     },
-    'dewpoint': {
-        'C': {0: {}}
+    1: {
+        'measurement': 'temperature',
+        'unit': 'C'
     },
-    'temperature': {
-        'C': {0: {}}
+    2: {
+        'measurement': 'humidity',
+        'unit': 'percent'
     },
-    'humidity': {
-        'percent': {0: {}}
+    3: {
+        'measurement': 'dewpoint',
+        'unit': 'C'
     }
 }
 
@@ -28,12 +32,11 @@ INPUT_INFORMATION = {
     'input_manufacturer': 'Cozir',
     'input_name': 'Cozir CO2',
     'measurements_name': 'CO2/Humidity/Temperature',
-    'measurements_dict': measurements,
+    'measurements_dict': measurements_dict,
 
     'options_enabled': [
         'uart_location',
         'measurements_select',
-        'measurements_convert',
         'period',
         'pre_output'
     ],
@@ -74,35 +77,21 @@ class InputModule(AbstractInput):
 
     def get_measurement(self):
         """ Gets the measurements """
-        return_dict = {
-            'co2': {
-                'ppm': {}
-            },
-            'dewpoint': {
-                'C': {}
-            },
-            'temperature': {
-                'C': {}
-            },
-            'humidity': {
-                'percent': {}
-            }
-        }
+        return_dict = measurements_dict.copy()
 
-        if self.is_enabled('co2', 'ppm', 0):
-            return_dict['co2']['ppm'][0] = self.sensor.read_CO2()
+        if self.is_enabled(0):
+            return_dict[0]['value'] = self.sensor.read_CO2()
 
-        if self.is_enabled('temperature', 'C', 0):
-            return_dict['temperature']['C'][0] = self.sensor.read_temperature()
+        if self.is_enabled(1):
+            return_dict[1]['value'] = self.sensor.read_temperature()
 
-        if self.is_enabled('humidity', 'percent', 0):
-            return_dict['humidity']['percent'][0] = self.sensor.read_humidity()
+        if self.is_enabled(2):
+            return_dict[2]['value'] = self.sensor.read_humidity()
 
-        if (self.is_enabled('temperature', 'C', 0) and
-                self.is_enabled('humidity', 'percent', 0) and
-                self.is_enabled('dewpoint', 'C', 0)):
-            return_dict['dewpoint']['C'][0] = calculate_dewpoint(
-                return_dict['temperature']['C'][0],
-                return_dict['humidity']['percent'][0])
+        if (self.is_enabled(3) and
+                self.is_enabled(1) and
+                self.is_enabled(2)):
+            return_dict[3]['value'] = calculate_dewpoint(
+                return_dict[1]['value'], return_dict[2]['value'])
 
         return return_dict

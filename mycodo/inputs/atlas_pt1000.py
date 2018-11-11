@@ -8,8 +8,7 @@ from mycodo.utils.system_pi import str_is_float
 measurements_dict = {
     0: {
         'measurement': 'temperature',
-        'unit': 'C',
-        'name': ''
+        'unit': 'C'
     }
 }
 
@@ -24,7 +23,6 @@ INPUT_INFORMATION = {
     'options_enabled': [
         'i2c_location',
         'uart_location',
-        'measurements_convert',
         'period',
         'pre_output'],
     'options_disabled': ['interface'],

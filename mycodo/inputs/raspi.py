@@ -7,12 +7,16 @@ from mycodo.inputs.base_input import AbstractInput
 from mycodo.utils.database import db_retrieve_table_daemon
 
 # Measurements
-measurements = {
-    'temperature': {
-        'C': {
-            0: {'name': 'CPU'},
-            1: {'name': 'GPU'}
-        }
+measurements_dict = {
+    0: {
+        'measurement': 'temperature',
+        'unit': 'C',
+        'name': 'CPU'
+    },
+    1: {
+        'measurement': 'temperature',
+        'unit': 'C',
+        'name': 'GPU'
     }
 }
 
@@ -22,10 +26,9 @@ INPUT_INFORMATION = {
     'input_manufacturer': 'Raspberry Pi',
     'input_name': 'RPi CPU Temp',
     'measurements_name': 'Temperature',
-    'measurements_dict': measurements,
+    'measurements_dict': measurements_dict,
 
     'options_enabled': [
-        'measurements_convert',
         'period'
     ],
     'options_disabled': ['interface'],
@@ -62,23 +65,19 @@ class InputModule(AbstractInput):
         # soft, hard = resource.getrlimit(resource.RLIMIT_NOFILE)
         # self.logger.info("LIMIT: Soft: {sft}, Hard: {hrd}".format(sft=soft, hrd=hard))
 
-        return_dict = {
-            'temperature': {
-                'C': {}
-            }
-        }
+        return_dict = measurements_dict.copy()
 
-        if self.is_enabled('temperature', 'C', 0):
+        if self.is_enabled(0):
             # CPU temperature
             with open('/sys/class/thermal/thermal_zone0/temp') as cpu_temp_file:
                 temperature_cpu = float(cpu_temp_file.read()) / 1000
-                return_dict['temperature']['C'][0] = temperature_cpu
+                return_dict[0]['value'] = temperature_cpu
 
-        if self.is_enabled('temperature', 'C', 1):
+        if self.is_enabled(1):
             # GPU temperature
             temperature_gpu = subprocess.check_output(
                 ('/opt/vc/bin/vcgencmd', 'measure_temp'))
-            return_dict['temperature']['C'][1] = float(
+            return_dict[1]['value'] = float(
                 temperature_gpu.split('=')[1].split("'")[0])
 
         return return_dict

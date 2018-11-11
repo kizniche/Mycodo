@@ -9,15 +9,18 @@ from mycodo.inputs.sensorutils import calculate_dewpoint
 from mycodo.utils.database import db_retrieve_table_daemon
 
 # Measurements
-measurements = {
-    'temperature': {
-        'C': {0: {}}
+measurements_dict = {
+    0: {
+        'measurement': 'temperature',
+        'unit': 'C'
     },
-    'humidity': {
-        'percent': {0: {}}
+    1: {
+        'measurement': 'humidity',
+        'unit': 'percent'
     },
-    'dewpoint': {
-        'C': {0: {}}
+    2: {
+        'measurement': 'dewpoint',
+        'unit': 'C'
     }
 }
 
@@ -27,11 +30,10 @@ INPUT_INFORMATION = {
     'input_manufacturer': 'Sensirion',
     'input_name': 'SHT2x',
     'measurements_name': 'Humidity/Temperature',
-    'measurements_dict': measurements,
+    'measurements_dict': measurements_dict,
 
     'options_enabled': [
         'measurements_select',
-        'measurements_convert',
         'period',
         'pre_output'
     ],
@@ -74,21 +76,7 @@ class InputModule(AbstractInput):
 
     def get_measurement(self):
         """ Gets the humidity and temperature """
-        return_dict = {
-            'temperature': {
-                'C': {}
-            },
-            'humidity': {
-                'percent': {}
-            },
-            'dewpoint': {
-                'C': {}
-            }
-        }
-
-        dew_point = None
-        humidity = None
-        temperature = None
+        return_dict = measurements_dict.copy()
 
         for _ in range(2):
             try:
@@ -110,22 +98,23 @@ class InputModule(AbstractInput):
                 data0 = self.sht2x.read_byte(self.i2c_address)
                 data1 = self.sht2x.read_byte(self.i2c_address)
                 humidity = -6 + (((data0 * 256 + data1) * 125.0) / 65536.0)
-                return dew_point, humidity, temperature
+
+                if self.is_enabled(0):
+                    return_dict[0]['value'] = temperature
+
+                if self.is_enabled(1):
+                    return_dict[1]['value'] = humidity
+
+                if (self.is_enabled(2) and
+                        self.is_enabled(0) and
+                        self.is_enabled(1)):
+                    return_dict[2]['value'] = calculate_dewpoint(
+                        return_dict[0]['value'], return_dict[1]['value'])
+
+                return return_dict
             except Exception as e:
                 self.logger.exception(
                     "Exception when taking a reading: {err}".format(err=e))
             # Send soft reset and try a second read
             self.sht2x.write_byte(self.i2c_address, 0xFE)
             time.sleep(0.1)
-
-        if self.is_enabled('temperature', 'C', 0):
-            return_dict['temperature']['C'][0] = temperature
-
-        if self.is_enabled('humidity', 'percent', 0):
-            return_dict['humidity']['percent'][0] = humidity
-
-        if self.is_enabled('dewpoint', 'C', 0):
-            return_dict['dewpoint']['C'][0] = calculate_dewpoint(
-                temperature, humidity)
-
-        return return_dict

@@ -9,18 +9,15 @@ from mycodo.utils.database import db_retrieve_table_daemon
 measurements_dict = {
     0: {
         'measurement': 'co2',
-        'unit': 'ppm',
-        'name': ''
+        'unit': 'ppm'
     },
     1: {
         'measurement': 'voc',
-        'unit': 'ppb',
-        'name': ''
+        'unit': 'ppb'
     },
     2: {
         'measurement': 'temperature',
-        'unit': 'C',
-        'name': ''
+        'unit': 'C'
     }
 }
 
@@ -35,7 +32,6 @@ INPUT_INFORMATION = {
     'options_enabled': [
         'i2c_location',
         'measurements_select',
-        'measurements_convert',
         'period',
         'pre_output'
     ],

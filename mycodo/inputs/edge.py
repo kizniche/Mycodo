@@ -4,9 +4,10 @@ import logging
 from mycodo.inputs.base_input import AbstractInput
 
 # Measurements
-measurements = {
-    'edge': {
-        'bool': {0: {}}
+measurements_dict = {
+    0: {
+        'measurement': 'edge',
+        'unit': 'bool'
     }
 }
 
@@ -16,7 +17,7 @@ INPUT_INFORMATION = {
     'input_manufacturer': 'Mycodo',
     'input_name': 'Edge',
     'measurements_name': 'Rising/Falling Edge',
-    'measurements_dict': measurements,
+    'measurements_dict': measurements_dict,
 
     'options_enabled': [
         'gpio_location',

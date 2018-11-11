@@ -10,9 +10,8 @@ from mycodo.utils.database import db_retrieve_table_daemon
 measurements_dict = OrderedDict()
 for each_channel in range(4):
     measurements_dict[each_channel] = {
-        'measurement': 'temperature',
-        'unit': 'C',
-        'name': ''
+        'measurement': 'electrical_potential',
+        'unit': 'V'
     }
 
 # Input information
@@ -81,7 +80,7 @@ class InputModule(AbstractInput):
                 InputMeasurements).filter(
                     InputMeasurements.input_id == input_dev.unique_id)
 
-            self.i2c_address = int(str(input_dev.location), 16)
+            self.i2c_address = int(str(input_dev.i2c_location), 16)
             self.i2c_bus = input_dev.i2c_bus
             self.adc_gain = input_dev.adc_gain
             self.adc = Adafruit_ADS1x15.ADS1115(address=self.i2c_address,
@@ -105,7 +104,8 @@ if __name__ == "__main__":
     from types import SimpleNamespace
     settings = SimpleNamespace()
     settings.id = 1
-    settings.location = '0x48'
+    settings.unique_id = '0000-0000'
+    settings.i2c_location = '0x48'
     settings.i2c_bus = 1
     settings.adc_gain = 1
     settings.channels = 4

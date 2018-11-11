@@ -4,9 +4,10 @@ import logging
 from mycodo.inputs.base_input import AbstractInput
 
 # Measurements
-measurements = {
-    'gpio_state': {
-        'bool': {0: {}}
+measurements_dict = {
+    0: {
+        'measurement': 'gpio_state',
+        'unit': 'bool'
     }
 }
 
@@ -16,7 +17,7 @@ INPUT_INFORMATION = {
     'input_manufacturer': 'Raspberry Pi',
     'input_name': 'GPIO State',
     'measurements_name': 'GPIO State',
-    'measurements_dict': measurements,
+    'measurements_dict': measurements_dict,
 
     'options_enabled': [
         'gpio_location',
@@ -53,13 +54,9 @@ class InputModule(AbstractInput):
 
     def get_measurement(self):
         """ Gets the GPIO state via RPi.GPIO """
-        return_dict = {
-            'gpio_state': {
-                'bool': {}
-            }
-        }
+        return_dict = measurements_dict.copy()
 
-        return_dict['gpio_state']['bool'][0] = self.gpio.input(self.location)
+        return_dict[0]['value'] = self.gpio.input(self.location)
 
         return return_dict
 

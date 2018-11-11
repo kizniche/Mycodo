@@ -36,6 +36,14 @@ def constraints_pass_measure_range(value):
     return all_passed, errors
 
 
+# Measurements
+measurements_dict = {
+    0: {
+        'measurement': 'temperature',
+        'unit': 'C'
+    }
+}
+
 # Input information
 INPUT_INFORMATION = {
     #
@@ -51,14 +59,19 @@ INPUT_INFORMATION = {
 
     # Measurement information
     'measurements_name': 'Temperature',
-    'measurements_dict': ['temperature'],  # List of strings
+    'measurements_dict': measurements_dict,
 
     # Web User Interface display options
     # Options that are enabled will be editable from the input options page.
     # Options that are disabled will appear on the input options page but not be editable.
     # There are several location options available for use:
     # 'location', 'gpio_location', 'i2c_location', 'bt_location', and 'uart_location'
-    'options_enabled': ['i2c_location', 'uart_location', 'period', 'measurements_convert', 'pre_output'],
+    'options_enabled': [
+        'i2c_location',
+        'uart_location',
+        'period',
+        'pre_output'
+    ],
     'options_disabled': ['interface'],
 
 
@@ -225,7 +238,7 @@ class InputModule(AbstractInput):
         #
         # Initialize the measurements this input returns
         #
-        self._temperature = None
+        self._measurements = None
 
         if not testing:
             self.logger = logging.getLogger(
@@ -284,80 +297,22 @@ class InputModule(AbstractInput):
                 # No UART driver available for this input
                 pass
 
-    def __repr__(self):
-        """  Representation of object """
-        return "<{cls}(temperature={temperature})>".format(
-            cls=type(self).__name__,
-            temperature="{0:.2f}".format(self._temperature))
-
-    def __str__(self):
-        """ Return measurement information """
-        return "Temperature: {temperature}".format(
-            temperature="{0:.2f}".format(self._temperature))
-
-    def __iter__(self):  # must return an iterator
-        """ DummySensor iterates through readings """
-        return self
-
-    def next(self):
-        """ Get next reading """
-        if self.read():
-            raise StopIteration
-        return dict(temperature=float('{0:.2f}'.format(self._temperature)))
-
-    @property
-    def temperature(self):
-        """ temperature """
-        if self._temperature is None:
-            self.read()
-        return self._temperature
-
     def get_measurement(self):
         """ Gets the temperature and humidity """
         #
-        # Resetting these values ensures old measurements aren't mistaken for new measurements
+        # Copy measurements dictionary
         #
-        self._temperature = None
 
-        temperature = None
+        return_dict = measurements_dict.copy()
 
         #
         # Begin sensor measurement code
         #
 
-        temperature = self.random.randint(50, 70)
+        return_dict[0]['value'] = self.random.randint(50, 70)
 
         #
         # End sensor measurement code
         #
 
-        #
-        # Unit conversions
-        # A conversion may be specified for each measurement, if more than one unit exists for that particular measurement
-        #
-
-        # Temperature is returned in C, but it may be converted to another unit (e.g. K, F)
-        temperature = convert_units(
-            'temperature', 'C', self.convert_to_unit,
-            temperature)
-
-        return temperature
-
-    def read(self):
-        """
-        Takes a reading and updates the self._temperature and self._humidity values
-
-        :returns: None on success or 1 on error
-        """
-        try:
-            #
-            # These measurements must be in the same order as the returned tuple from get_measurement()
-            #
-            self._temperature = self.get_measurement()
-            if self._temperature is not None:
-                return  # success - no errors
-        except Exception as e:
-            self.logger.exception(
-                "{cls} raised an exception when taking a reading: "
-                "{err}".format(cls=type(self).__name__, err=e))
-        return 1
+        return return_dict

@@ -10,10 +10,41 @@
     {{form_mod_math_measurement.math_measurement_mod(class_='form-control btn btn-sm btn-block')}}
   </div>
 
-  {% if each_measurement.measurement and each_measurement.unit %}
+  {% if each_math.math_type == 'average_single' and ',' in each_math.inputs %}
+
+    {% if ',' in each_math.inputs and each_math.inputs.split(',')[1] in math_measurements_dict %}
+
+      {%- set measurement = math_measurements_dict[each_math.inputs.split(',')[1]] -%}
+
+      {% if measurement.unit and measurement.measurement %}
+  <div class="col-auto">
+    <input class="form-control btn btn-sm btn-block" disabled="" title="" value="{% if measurement.channel != None %}CH{{measurement.channel + 1}} {% endif %}{{dict_measurements[measurement.measurement]['name']}} ({{dict_units[measurement.unit]['unit']}})" type="text">
+  </div>
+      {% endif %}
+
+    {% elif ',' in each_math.inputs and each_math.inputs.split(',')[1] in input_measurements_dict %}
+      {%- set measurement = input_measurements_dict[each_math.inputs.split(',')[1]] -%}
+
+      {% if measurement.unit and measurement.measurement %}
+
+        test01
+  <div class="col-auto">
+    <input class="form-control btn btn-sm btn-block" disabled="" title="" value="{% if measurement.channel != None %}CH{{measurement.channel + 1}} {% endif %}{{dict_measurements[measurement.measurement]['name']}} ({{dict_units[measurement.unit]['unit']}})" type="text">
+  </div>
+      {% endif %}
+
+    {% endif %}
+
+  {% elif each_measurement.measurement and each_measurement.unit %}
 
   <div class="col-auto">
-    <input class="form-control btn btn-sm btn-block" disabled="" title="" value="{% if each_measurement.channel != None and not each_measurement.single_channel %}CH{{each_measurement.channel + 1}} {% endif %}{{measurements[each_measurement.measurement]['name']}} ({{units[each_measurement.unit]['unit']}})" type="text">
+    <input class="form-control btn btn-sm btn-block" disabled="" title="" value="{% if each_measurement.channel != None %}CH{{each_measurement.channel + 1}} {% endif %}{{dict_measurements[each_measurement.measurement]['name']}} ({{dict_units[each_measurement.unit]['unit']}})" type="text">
+  </div>
+
+  {% else %}
+
+  <div class="col-auto">
+    <input class="form-control btn btn-sm btn-block" disabled="" title="" value="CH{{each_measurement.channel + 1}}: {{_('No Measurement/Unit Selected')}}" type="text">
   </div>
 
   {% endif %}
@@ -25,26 +56,12 @@
     </div>
   </div>
 
-  {% if each_measurement.enable_convert %}
-
-  <div class="col-auto">
-    {{form_mod_math_measurement.convert_to_measurement_unit.label(class_='control-label')}}
-    <div>
-      <select class="form-control" id="convert_to_measurement_unit" name="convert_to_measurement_unit">
-        <option value="">{{_('Do Not Convert')}}</option>
-        {% for each_submit, each_display in choices_measurements_units.items() %}
-        <option value="{{each_submit}}"{% if each_submit == each_measurement.converted_measurement + ',' + each_measurement.converted_unit %} selected{% endif %}>{{each_display}}</option>
-        {% endfor %}
-      </select>
-    </div>
-  </div>
-
-  {% else %}
+  {% if dict_measure_info[each_math.unique_id]['channels'] == 1 %}
 
   <div class="col-auto">
     {{form_mod_math_measurement.select_measurement_unit.label(class_='control-label')}}
     <div>
-      <select class="form-control" id="select_measurement_unit" name="select_measurement_unit">
+      <select class="form-control form-tooltip form-dropdown" data-placement="top" id="select_measurement_unit" name="select_measurement_unit" title="{{tooltips_input['select_measurement_unit']['phrase']}}">
         <option value="">{{_('Select One')}}</option>
         {% for each_submit, each_display in choices_measurements_units.items() %}
         <option value="{{each_submit}}"{% if each_submit == each_measurement.measurement + ',' + each_measurement.unit %} selected{% endif %}>{{each_display}}</option>

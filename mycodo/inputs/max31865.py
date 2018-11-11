@@ -32,9 +32,10 @@ from mycodo.utils.database import db_retrieve_table_daemon
 # import numpy  # Used for more accurate temperature calculation
 
 # Measurements
-measurements = {
-    'temperature': {
-        'C': {0: {}}
+measurements_dict = {
+    0: {
+        'measurement': 'temperature',
+        'unit': 'C'
     }
 }
 
@@ -44,7 +45,7 @@ INPUT_INFORMATION = {
     'input_manufacturer': 'MAXIM',
     'input_name': 'MAX31865',
     'measurements_name': 'Temperature',
-    'measurements_dict': measurements,
+    'measurements_dict': measurements_dict,
 
     'options_enabled': [
         'thermocouple_type',
@@ -53,7 +54,6 @@ INPUT_INFORMATION = {
         'pin_mosi',
         'pin_clock',
         'ref_ohm',
-        'measurements_convert',
         'period',
         'pre_output'
     ],
@@ -104,13 +104,10 @@ class InputModule(AbstractInput):
 
     def get_measurement(self):
         """ Gets the measurement in units by reading the """
-        return_dict = {
-            'temperature': {
-                'C': {}
-            }
-        }
+        return_dict = measurements_dict.copy()
 
-        return_dict['temperature']['C'][0] = self.sensor.readTemp(self.thermocouple_type, self.ref_ohm)
+        return_dict[0]['value'] = self.sensor.readTemp(
+            self.thermocouple_type, self.ref_ohm)
 
         return return_dict
 

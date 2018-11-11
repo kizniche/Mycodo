@@ -13,18 +13,15 @@ from mycodo.utils.database import db_retrieve_table_daemon
 measurements_dict = {
     0: {
         'measurement': 'pressure',
-        'unit': 'Pa',
-        'name': ''
+        'unit': 'Pa'
     },
     1: {
         'measurement': 'temperature',
-        'unit': 'C',
-        'name': ''
+        'unit': 'C'
     },
     2: {
         'measurement': 'altitude',
-        'unit': 'm',
-        'name': ''
+        'unit': 'm'
     }
 }
 
@@ -39,7 +36,6 @@ INPUT_INFORMATION = {
     'options_enabled': [
         'i2c_location',
         'measurements_select',
-        'measurements_convert',
         'period',
         'pre_output'
     ],
@@ -132,16 +128,15 @@ class InputModule(AbstractInput):
         """ Gets the measurement in units by reading the """
         return_dict = measurements_dict.copy()
 
-        pressure_pa = self.read_pressure()
-
         if self.is_enabled(0):
-            return_dict[0]['value'] = pressure_pa
+            return_dict[0]['value'] = self.read_pressure()
 
         if self.is_enabled(1):
             return_dict[1]['value'] = self.read_temperature()
 
-        if self.is_enabled(2):
-            return_dict[2]['value'] = calculate_altitude(pressure_pa)
+        if self.is_enabled(2) and self.is_enabled(0):
+            return_dict[2]['value'] = calculate_altitude(
+                return_dict[0]['value'])
 
         return return_dict
 

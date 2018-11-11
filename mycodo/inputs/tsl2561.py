@@ -4,13 +4,21 @@ import logging
 from mycodo.inputs.base_input import AbstractInput
 
 # Measurements
-measurements = {
+measurements_dict = {
     0: {
         'measurement': 'light',
-        'unit': 'lux',
-        'name': ''
+        'unit': 'full'
+    },
+    1: {
+        'measurement': 'light',
+        'unit': 'ir'
+    },
+    2: {
+        'measurement': 'light',
+        'unit': 'lux'
     }
 }
+
 
 # Input information
 INPUT_INFORMATION = {
@@ -18,11 +26,11 @@ INPUT_INFORMATION = {
     'input_manufacturer': 'TAOS',
     'input_name': 'TSL2561',
     'measurements_name': 'Light',
-    'measurements_dict': measurements,
+    'measurements_dict': measurements_dict,
 
     'options_enabled': [
         'i2c_location',
-        'measurements_convert',
+        'measurements_select',
         'period',
         'pre_output'
     ],
@@ -43,9 +51,10 @@ INPUT_INFORMATION = {
 class InputModule(AbstractInput):
     """ A sensor support class that monitors the TSL2561's lux """
 
-    def __init__(self, input_dev, testing=False):
+    def __init__(self, input_dev, testing=False, run_main=True):
         super(InputModule, self).__init__()
         self.logger = logging.getLogger("mycodo.inputs.tsl2561")
+        self.run_main = run_main
         self._measurements = None
 
         if not testing:
@@ -58,13 +67,26 @@ class InputModule(AbstractInput):
 
     def get_measurement(self):
         """ Gets the TSL2561's lux """
-        return_dict = measurements.copy()
+        return_dict = measurements_dict.copy()
 
         from tsl2561.constants import TSL2561_INTEGRATIONTIME_402MS
         self.tsl.set_integration_time(TSL2561_INTEGRATIONTIME_402MS)
         saturated = False
         try:
-            return_dict[0]['value'] = self.tsl.lux()
+            full, ir = self.tsl._get_luminosity()
+
+            if self.is_enabled(0):
+                return_dict[0]['value'] = full
+
+            if self.is_enabled(1):
+                return_dict[1]['value'] = ir
+
+            if (self.is_enabled(2) and
+                    self.is_enabled(0) and
+                    self.is_enabled(1)):
+                return_dict[2]['value'] = self.tsl._calculate_lux(
+                    return_dict[0]['value'], return_dict[1]['value'])
+
             return return_dict
         except Exception as err:
             if 'saturated' in repr(err):
@@ -80,7 +102,20 @@ class InputModule(AbstractInput):
             self.tsl.set_integration_time(TSL2561_INTEGRATIONTIME_101MS)
             saturated = False
             try:
-                return_dict[0]['value'] = self.tsl.lux()
+                full, ir = self.tsl._get_luminosity()
+
+                if self.is_enabled(0):
+                    return_dict[0]['value'] = full
+
+                if self.is_enabled(1):
+                    return_dict[1]['value'] = ir
+
+                if (self.is_enabled(2) and
+                        self.is_enabled(0) and
+                        self.is_enabled(1)):
+                    return_dict[2]['value'] = self.tsl._calculate_lux(
+                        return_dict[0]['value'], return_dict[1]['value'])
+
                 return return_dict
             except Exception as err:
                 if 'saturated' in repr(err):
@@ -95,7 +130,20 @@ class InputModule(AbstractInput):
             from tsl2561.constants import TSL2561_INTEGRATIONTIME_13MS
             self.tsl.set_integration_time(TSL2561_INTEGRATIONTIME_13MS)
             try:
-                return_dict[0]['value'] = self.tsl.lux()
+                full, ir = self.tsl._get_luminosity()
+
+                if self.is_enabled(0):
+                    return_dict[0]['value'] = full
+
+                if self.is_enabled(1):
+                    return_dict[1]['value'] = ir
+
+                if (self.is_enabled(2) and
+                        self.is_enabled(0) and
+                        self.is_enabled(1)):
+                    return_dict[2]['value'] = self.tsl._calculate_lux(
+                        return_dict[0]['value'], return_dict[1]['value'])
+
                 return return_dict
             except Exception as err:
                 if 'saturated' in repr(err):
@@ -106,3 +154,16 @@ class InputModule(AbstractInput):
                     return return_dict
                 else:
                     self.logger.exception("Error: {}".format(err))
+
+
+if __name__ == "__main__":
+    from types import SimpleNamespace
+    settings = SimpleNamespace()
+    settings.id = 1
+    settings.unique_id = '0000-0000'
+    settings.i2c_location = '0x39'
+    settings.i2c_bus = 1
+    settings.run_main = True
+
+    measurements = InputModule(settings, run_main=True).next()
+    print("Measurements: {}".format(measurements))

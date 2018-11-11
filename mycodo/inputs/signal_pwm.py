@@ -7,15 +7,18 @@ from mycodo.inputs.base_input import AbstractInput
 from mycodo.utils.database import db_retrieve_table_daemon
 
 # Measurements
-measurements = {
-    'frequency': {
-        'Hz': {0: {}}
+measurements_dict = {
+    0: {
+        'measurement': 'frequency',
+        'unit': 'Hz'
     },
-    'pulse_width': {
-        'µs': {0: {}}
+    1: {
+        'measurement': 'pulse_width',
+        'unit': 'us'
     },
-    'duty_cycle': {
-        'percent': {0: {}}
+    2: {
+        'measurement': 'duty_cycle',
+        'unit': 'percent'
     }
 }
 
@@ -25,12 +28,11 @@ INPUT_INFORMATION = {
     'input_manufacturer': 'Mycodo',
     'input_name': 'Signal (PWM)',
     'measurements_name': 'Frequency/Pulse Width/Duty Cycle',
-    'measurements_dict': measurements,
+    'measurements_dict': measurements_dict,
 
     'options_enabled': [
         'gpio_location',
         'measurements_select',
-        'measurements_convert',
         'weighting',
         'sample_time',
         'period',
@@ -72,17 +74,7 @@ class InputModule(AbstractInput):
 
     def get_measurement(self):
         """ Gets the pwm """
-        return_dict = {
-            'frequency': {
-                'Hz': {}
-            },
-            'pulse_width': {
-                'µs': {}
-            },
-            'duty_cycle': {
-                'percent': {}
-            },
-        }
+        return_dict = measurements_dict.copy()
 
         pi = self.pigpio.pi()
         if not pi.connected:  # Check if pigpiod is running
@@ -95,14 +87,14 @@ class InputModule(AbstractInput):
 
         time.sleep(self.sample_time)
 
-        if self.is_enabled('frequency', 'Hz', 0):
-            return_dict['frequency']['Hz'][0] = read_pwm.frequency()
+        if self.is_enabled(0):
+            return_dict[0]['value'] = read_pwm.frequency()
 
-        if self.is_enabled('pulse_width', 'µs', 0):
-            return_dict['pulse_width']['µs'][0] = int(read_pwm.pulse_width() + 0.5)
+        if self.is_enabled(1):
+            return_dict[1]['value'] = int(read_pwm.pulse_width() + 0.5)
 
-        if self.is_enabled('duty_cycle', 'percent', 0):
-            return_dict['duty_cycle']['percent'][0] = read_pwm.duty_cycle()
+        if self.is_enabled(2):
+            return_dict[2]['value'] = read_pwm.duty_cycle()
 
         read_pwm.cancel()
         pi.stop()

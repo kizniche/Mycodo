@@ -44,7 +44,10 @@ class MathMod(FlaskForm):
         widget=NumberInput())
     inputs = SelectMultipleField(
         lazy_gettext('Inputs'))
-    selected_measurement_unit = StringField(lazy_gettext('Unit Measurement'))
+    select_measurement_unit = StringField(
+        TOOLTIPS_INPUT['select_measurement_unit']['title'])
+    measurements_enabled = SelectMultipleField(
+        TOOLTIPS_INPUT['measurements_enabled']['title'])
     math_mod = SubmitField(lazy_gettext('Save'))
     math_delete = SubmitField(lazy_gettext('Delete'))
     math_activate = SubmitField(lazy_gettext('Activate'))
@@ -93,7 +96,9 @@ class MathMeasurementMod(FlaskForm):
         lazy_gettext('Name'),
         validators=[DataRequired()]
     )
-    select_measurement_unit = StringField(lazy_gettext('Unit Measurement'))
-    convert_to_measurement_unit = StringField(lazy_gettext('Convert to Measurement'))
+    select_measurement_unit = StringField(
+        TOOLTIPS_INPUT['select_measurement_unit']['title'])
+    convert_to_measurement_unit = StringField(
+        lazy_gettext('Convert to Measurement'))
 
     math_measurement_mod = SubmitField(lazy_gettext('Save'))

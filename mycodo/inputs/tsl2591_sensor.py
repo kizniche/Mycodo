@@ -6,9 +6,18 @@ from mycodo.inputs.base_input import AbstractInput
 from mycodo.utils.database import db_retrieve_table_daemon
 
 # Measurements
-measurements = {
-    'light': {
-        'lux': {0: {}}
+measurements_dict = {
+    0: {
+        'measurement': 'light',
+        'unit': 'full'
+    },
+    1: {
+        'measurement': 'light',
+        'unit': 'ir'
+    },
+    2: {
+        'measurement': 'light',
+        'unit': 'lux'
     }
 }
 
@@ -18,11 +27,11 @@ INPUT_INFORMATION = {
     'input_manufacturer': 'TAOS',
     'input_name': 'TSL2591',
     'measurements_name': 'Light',
-    'measurements_dict': measurements,
+    'measurements_dict': measurements_dict,
 
     'options_enabled': [
         'i2c_location',
-        'measurements_convert',
+        'measurements_select',
         'period',
         'pre_output'
     ],
@@ -58,15 +67,20 @@ class InputModule(AbstractInput):
 
     def get_measurement(self):
         """ Gets the TSL2591's lux """
-        return_dict = {
-            'light': {
-                'lux': {}
-            }
-        }
+        return_dict = measurements_dict.copy()
 
         full, ir = self.tsl.get_full_luminosity()  # read raw values (full spectrum and ir spectrum)
 
-        # convert raw values to lux (and convert to user-selected unit, if necessary)
-        return_dict['light']['lux'][0] = self.tsl.calculate_lux(full, ir)
+        if self.is_enabled(0):
+            return_dict[0]['value'] = full
+
+        if self.is_enabled(1):
+            return_dict[1]['value'] = ir
+
+        if (self.is_enabled(2) and
+                self.is_enabled(0) and
+                self.is_enabled(1)):
+            return_dict[2]['value'] = self.tsl.calculate_lux(
+                return_dict[0]['value'], return_dict[1]['value'])
 
         return return_dict

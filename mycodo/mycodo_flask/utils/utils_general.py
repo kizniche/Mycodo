@@ -377,9 +377,9 @@ def form_input_choices(choices, each_input, dict_inputs):
                     else:
                         measure_display, unit_display = check_display_names(
                             each_measure.measurement,
-                            custom_dict_measurements[each_measure.measurement])
+                            each_measure.unit)
 
-                    channel_number = ' CH{chan}'.format(chan=each_measure.channel)
+                    channel_number = ' CH{chan}'.format(chan=each_measure.channel + 1)
 
                     if each_measure.name:
                         channel_name = ' ({name})'.format(name=each_measure.name)
@@ -421,7 +421,7 @@ def form_math_choices(choices, each_math):
                 each_measure.measurement, each_measure.unit)
             display = '[Math {id:02d}] {name} ({meas}, {unit})'.format(
                 id=each_math.id,
-                name=each_math.name,
+                name=each_measure.name,
                 meas=measure_display,
                 unit=unit_display)
             choices.update({value: display})

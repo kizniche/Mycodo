@@ -21,7 +21,9 @@ TOOLTIPS_INPUT = {
         'phrase': lazy_gettext('Turn the selected output on before taking every measurement')},
     'pre_output_duration': {
         'title': lazy_gettext('Pre Out Duration'),
-        'phrase': lazy_gettext('If a Pre Output is selected, set the duration (seconds) to turn the Pre Output on for before every measurement is acquired.')},
+        'phrase': lazy_gettext(
+            'If a Pre Output is selected, set the duration (seconds) to turn '
+            'the Pre Output on for before every measurement is acquired.')},
     'pre_output_during_measure': {
         'title': lazy_gettext('Pre During Measure'),
         'phrase': lazy_gettext('Check to turn the output off after (opposed to before) the measurement is complete')},
@@ -90,14 +92,16 @@ TOOLTIPS_INPUT = {
         'phrase': lazy_gettext('Host port number')},
     'weighting': {
         'title': lazy_gettext('Weighting'),
-        'phrase': lazy_gettext('The weighting of the previous measurement on the current measurement. Range: 0.0 - 1.0. Used for smoothing measurements. 0.0 means no weighting.')},
+        'phrase': lazy_gettext(
+            'The weighting of the previous measurement on the current measurement. '
+            'Range: 0.0 - 1.0. Used for smoothing measurements. 0.0 means no weighting.')},
     'sample_time': {
         'title': lazy_gettext('Sample Time'),
         'phrase': lazy_gettext('The amount of time (seconds) to sample the input before caluclating the measurement')},
     'rpm_pulses_per_rev': {
         'title': lazy_gettext('Pulses Per Rev'),
         'phrase': lazy_gettext('The number of pulses per revolution to calculate revolutions per minute (RPM)')},
-    'measurements_selected': {
+    'measurements_enabled': {
         'title': lazy_gettext('Measurements Enabled'),
         'phrase': lazy_gettext('The measurements to record')},
     'scale_from_min': {
@@ -131,6 +135,10 @@ TOOLTIPS_INPUT = {
     'adc_sample_speed': {
         'title': lazy_gettext('Sample Speed'),
         'phrase': lazy_gettext('ADC Sample Speed (see ADC documentation)')},
+    'select_measurement_unit': {
+        'title': lazy_gettext('Measurement Unit'),
+        'phrase': lazy_gettext(
+            'Select the measurement and unit to store this measurement in the database')},
     # '': {
     #     'title': lazy_gettext(''),
     #     'phrase': lazy_gettext('')},

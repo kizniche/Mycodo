@@ -19,6 +19,8 @@ from mycodo.databases.models import Dashboard
 from mycodo.databases.models import DisplayOrder
 from mycodo.databases.models import Input
 from mycodo.databases.models import InputMeasurements
+from mycodo.databases.models import Math
+from mycodo.databases.models import MathMeasurements
 from mycodo.databases.models import Measurement
 from mycodo.databases.models import Misc
 from mycodo.databases.models import NoteTags
@@ -999,6 +1001,32 @@ def settings_diagnostic_delete_inputs():
                         db.session.delete(each_measurement)
                 db.session.delete(each_input)  # Delete the input
             display_order.input = ''  # Clear the order
+            db.session.commit()
+        except Exception as except_msg:
+            error.append(except_msg)
+
+    flash_success_errors(error, action, url_for('routes_settings.settings_diagnostic'))
+
+
+def settings_diagnostic_delete_maths():
+    action = '{action} {controller}'.format(
+        action=gettext("Delete"),
+        controller=gettext("All Maths"))
+    error = []
+
+    maths = db_retrieve_table(Math)
+    math_measurements = db_retrieve_table(MathMeasurements)
+    display_order = db_retrieve_table(DisplayOrder, entry='first')
+
+    if not error:
+        try:
+            for each_math in maths:
+                # Delete all measurements associated
+                for each_measurement in math_measurements:
+                    if each_measurement.math_id == each_math.unique_id:
+                        db.session.delete(each_measurement)
+                db.session.delete(each_math)
+            display_order.math = ''
             db.session.commit()
         except Exception as except_msg:
             error.append(except_msg)

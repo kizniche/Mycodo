@@ -25,6 +25,11 @@
     </div>
     <div class="row mt-3">
       <div class="col-12">
+        {{form_settings_diagnostic.delete_maths(class_='btn btn-primary', **{'onclick':'return confirm("Are you sure you want to delete this?")'})}}
+      </div>
+    </div>
+    <div class="row mt-3">
+      <div class="col-12">
         {{form_settings_diagnostic.delete_notes_tags(class_='btn btn-primary', **{'onclick':'return confirm("Are you sure you want to delete this?")'})}}
       </div>
     </div>

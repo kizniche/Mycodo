@@ -39,9 +39,7 @@ MATHS = [
     ('average_single', 'Average (Single Input)'),
     ('difference', 'Difference'),
     ('equation', 'Equation'),
-    ('median', 'Median'),
-    ('maximum', 'Maximum'),
-    ('minimum', 'Minimum'),
+    ('statistics', 'Statistics'),
     ('humidity', 'Humidity (Wet/Dry-Bulb)'),
     ('verification', 'Verification')
 ]
@@ -87,10 +85,63 @@ MATH_INFO = {
         'name': 'Humidity (Wet-Bulb)',
         'dependencies_module': [],
         'measure': {
-            'humidity': {'percent': {0: {}}},
-            'humidity_ratio': {'kg_kg': {0: {}}},
-            'specific_enthalpy': {'kJ_kg': {0: {}}},
-            'specific_volume': {'m3_kg': {0: {}}}
+            0: {
+                'measurement': 'humidity',
+                'unit': 'percent'
+            },
+            1: {
+                'measurement': 'humidity_ratio',
+                'unit': 'kg_kg'
+            },
+            2: {
+                'measurement': 'specific_enthalpy',
+                'unit': 'kJ_kg'
+            },
+            3: {
+                'measurement': 'specific_volume',
+                'unit': 'm3_kg'
+            }
+        }
+    },
+    'statistics': {
+        'name': 'Statistics',
+        'dependencies_module': [],
+        'measure': {
+            0: {
+                'measurement': '',
+                'unit': '',
+                'name': 'Mean'
+            },
+            1: {
+                'measurement': '',
+                'unit': '',
+                'name': 'Median'
+            },
+            2: {
+                'measurement': '',
+                'unit': '',
+                'name': 'Minimum'
+            },
+            3: {
+                'measurement': '',
+                'unit': '',
+                'name': 'Maximum'
+            },
+            4: {
+                'measurement': '',
+                'unit': '',
+                'name': 'Standard Deviation'
+            },
+            5: {
+                'measurement': '',
+                'unit': '',
+                'name': 'St. Dev. of Mean (upper)'
+            },
+            6: {
+                'measurement': '',
+                'unit': '',
+                'name': 'St. Dev. of Mean (lower)'
+            }
         }
     },
     'verification': {

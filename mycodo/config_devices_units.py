@@ -60,7 +60,7 @@ MEASUREMENTS = {
     'electrical_conductivity': {
         'name': lazy_gettext('Electrical Conductivity'),
         'meas': 'electrical_conductivity',
-        'units': ['μS_cm']},
+        'units': ['uS_cm']},
     'electrical_current': {
         'name': lazy_gettext('Electrical Current'),
         'meas': 'electrical_current',
@@ -92,7 +92,7 @@ MEASUREMENTS = {
     'light': {
         'name': lazy_gettext('Light'),
         'meas': 'light',
-        'units': ['lux']},
+        'units': ['full', 'ir', 'lux']},
     'moisture': {
         'name': lazy_gettext('Moisture'),
         'meas': 'moisture',
@@ -128,7 +128,7 @@ MEASUREMENTS = {
     'pulse_width': {
         'name': lazy_gettext('Pulse Width'),
         'meas': 'pulse_width',
-        'units': ['µs']},
+        'units': ['us']},
     'revolutions': {
         'name': lazy_gettext('Revolutions'),
         'meas': 'revolutions',
@@ -168,10 +168,10 @@ UNITS = {
     'unitless': {
         'name': '',
         'unit': ''},
-    'µs': {
+    'us': {
         'name': lazy_gettext('Microsecond'),
         'unit': 'µs'},
-    'μS_cm': {
+    'uS_cm': {
         'name': lazy_gettext('Microsiemens per centimeter'),
         'unit': 'μS/cm'},
     'A': {
@@ -195,12 +195,18 @@ UNITS = {
     'ft': {
         'name': lazy_gettext('Foot'),
         'unit': 'ft'},
+    'full': {
+        'name': lazy_gettext('Full'),
+        'unit': 'full'},
     'GB': {
         'name': lazy_gettext('Gigabyte'),
         'unit': 'GB'},
     'Hz': {
         'name': lazy_gettext('Hertz'),
         'unit': 'Hz'},
+    'ir': {
+        'name': lazy_gettext('Infrared'),
+        'unit': 'IR'},
     'K': {
         'name': lazy_gettext('Kelvin'),
         'unit': '°K'},
@@ -266,7 +272,7 @@ UNITS = {
         'unit': ''},
     'ug_m3': {
         'name': lazy_gettext('Microgram per cubic meter'),
-        'unit': 'ug/m^3'},
+        'unit': 'μg/m^3'},
     'V': {
         'name': lazy_gettext('Volt'),
         'unit': 'V'}

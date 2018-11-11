@@ -29,12 +29,16 @@ from mycodo.inputs.base_input import AbstractInput
 from mycodo.utils.database import db_retrieve_table_daemon
 
 # Measurements
-measurements = {
-    'temperature': {
-        'C': {
-            0: {'name': 'Object'},
-            1: {'name': 'Die'}
-        }
+measurements_dict = {
+    0: {
+        'measurement': 'temperature',
+        'unit': 'C',
+        'name': 'Object'
+    },
+    1: {
+        'measurement': 'temperature',
+        'unit': 'C',
+        'name': 'Die'
     }
 }
 
@@ -44,7 +48,7 @@ INPUT_INFORMATION = {
     'input_manufacturer': 'MAXIM',
     'input_name': 'MAX31856',
     'measurements_name': 'Temperature (Object/Die)',
-    'measurements_dict': measurements,
+    'measurements_dict': measurements_dict,
 
     'options_enabled': [
         'thermocouple_type',
@@ -53,7 +57,6 @@ INPUT_INFORMATION = {
         'pin_mosi',
         'pin_clock',
         'measurements_select',
-        'measurements_convert',
         'period',
         'pre_output'
     ],
@@ -129,19 +132,16 @@ class InputModule(AbstractInput):
 
     def get_measurement(self):
         """ Gets the measurement in units by reading the """
-        return_dict = {
-            'temperature': {
-                'C': {}
-            }
-        }
+        return_dict = measurements_dict.copy()
 
-        if self.is_enabled('temperature', 'C', 0):
-            return_dict['temperature']['C'][0] = self.sensor.readThermocoupleTemp()
+        if self.is_enabled(0):
+            return_dict[0]['value'] = self.sensor.readThermocoupleTemp()
 
-        if self.is_enabled('temperature', 'C', 1):
-            return_dict['temperature']['C'][1] = self.sensor.readJunctionTemp()
+        if self.is_enabled(1):
+            return_dict[1]['value'] = self.sensor.readJunctionTemp()
 
         return return_dict
+
 
 class max31856(object):
     """Read Temperature on the Raspberry PI from the MAX31856 chip using GPIO

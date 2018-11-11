@@ -173,11 +173,13 @@ def query_string(unit, unique_id,
     return query
 
 
-def read_past_influxdb(unique_id, measurement, past_seconds):
+def read_past_influxdb(unique_id, unit, measurement, channel, past_seconds):
     client = InfluxDBClient(INFLUXDB_HOST, INFLUXDB_PORT, INFLUXDB_USER,
                             INFLUXDB_PASSWORD, INFLUXDB_DATABASE, timeout=5)
-    query_str = query_string(
-        measurement, unique_id, past_sec=past_seconds)
+    query_str = query_string(unit, unique_id,
+                             measure=measurement,
+                             channel=channel,
+                             past_sec=past_seconds)
     if query_str == 1:
         return '', 204
     raw_data = client.query(query_str).raw
@@ -185,7 +187,7 @@ def read_past_influxdb(unique_id, measurement, past_seconds):
         return raw_data['series'][0]['values']
 
 
-def read_last_influxdb(unique_id, measurement, duration_sec=None):
+def read_last_influxdb(unique_id, unit, measurement, channel, duration_sec=None):
     """
     Query Influxdb for the last entry.
 
@@ -196,11 +198,16 @@ def read_last_influxdb(unique_id, measurement, duration_sec=None):
     :rtype: list
 
     :param unique_id: What unique_id tag to query in the Influxdb
-        database (ex. '00000001')
+        database (eg. '00000001')
     :type unique_id: str
+    :param unit: What unit to query in the Influxdb
+        database (eg. 'C', 's')
+    :type unit: str
     :param measurement: What measurement to query in the Influxdb
-        database (ex. 'temperature', 'duration_time')
+        database (eg. 'temperature', 'duration_time')
     :type measurement: str
+    :param channel: Channel
+    :type channel: int
     :param duration_sec: How many seconds to look for a past measurement
     :type duration_sec: int
     """
@@ -208,9 +215,15 @@ def read_last_influxdb(unique_id, measurement, duration_sec=None):
                             INFLUXDB_PASSWORD, INFLUXDB_DATABASE, timeout=5)
 
     if duration_sec:
-        query = query_string(measurement, unique_id, past_sec=duration_sec)
+        query = query_string(unit, unique_id,
+                             measure=measurement,
+                             channel=channel,
+                             past_sec=duration_sec)
     else:
-        query = query_string(measurement, unique_id, value='LAST')
+        query = query_string(unit, unique_id,
+                             measure=measurement,
+                             channel=channel,
+                             value='LAST')
 
     try:
         last_measurement = client.query(query).raw

@@ -9,15 +9,18 @@ from mycodo.databases.models import InputMeasurements
 from mycodo.utils.database import db_retrieve_table_daemon
 
 # Measurements
-measurements = {
-    'light': {
-        'lux': {0: {}}
+measurements_dict = {
+    0: {
+        'measurement': 'light',
+        'unit': 'lux'
     },
-    'moisture': {
-        'unitless': {0: {}}
+    1: {
+        'measurement': 'moisture',
+        'unit': 'unitless'
     },
-    'temperature': {
-        'C': {0: {}}
+    2: {
+        'measurement': 'temperature',
+        'unit': 'C'
     }
 }
 
@@ -27,12 +30,11 @@ INPUT_INFORMATION = {
     'input_manufacturer': 'Catnip Electronics',
     'input_name': 'Chirp',
     'measurements_name': 'Light/Moisture/Temperature',
-    'measurements_dict': measurements,
+    'measurements_dict': measurements_dict,
 
     'options_enabled': [
         'i2c_location',
         'measurements_select',
-        'measurements_convert',
         'period',
         'pre_output'
     ],
@@ -75,26 +77,16 @@ class InputModule(AbstractInput):
 
     def get_measurement(self):
         """ Gets the light, moisture, and temperature """
-        return_dict = {
-            'light': {
-                'lux': {}
-            },
-            'moisture': {
-                'unitless': {}
-            },
-            'temperature': {
-                'C': {}
-            }
-        }
+        return_dict = measurements_dict.copy()
 
-        if self.is_enabled('light', 'lux', 0):
-            return_dict['light']['lux'][0] = self.filter_average('lux', measurement=self.light())
+        if self.is_enabled(0):
+            return_dict[0]['value'] = self.filter_average('lux', measurement=self.light())
 
-        if self.is_enabled('moisture', 'unitless', 0):
-            return_dict['moisture']['unitless'][0] = self.moist()
+        if self.is_enabled(1):
+            return_dict[1]['value'] = self.moist()
 
-        if self.is_enabled('temperature', 'C', 0):
-            return_dict['temperature']['C'][0] = self.temp() / 10.0
+        if self.is_enabled(2):
+            return_dict[2]['value'] = self.temp() / 10.0
 
         return return_dict
 

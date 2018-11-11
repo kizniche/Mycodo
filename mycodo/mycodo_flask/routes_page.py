@@ -501,6 +501,10 @@ def page_dashboard():
     for meas in input_measurements:
         input_measurements_dict[meas.unique_id] = meas
 
+    math_measurements_dict = {}
+    for meas in math_measurements:
+        math_measurements_dict[meas.unique_id] = meas
+
     # Add multi-select values as form choices, for validation
     form_graph.math_ids.choices = []
     form_graph.pid_ids.choices = []
@@ -633,6 +637,7 @@ def page_dashboard():
                            dashboard_elements_hidden=dashboard_elements_hidden,
                            dashboard=dashboard,
                            math=math,
+                           math_measurements_dict=math_measurements_dict,
                            misc=misc,
                            pid=pid,
                            output=output,
@@ -1523,12 +1528,22 @@ def page_data():
     choices_conversions = utils_general.choices_conversion(
         conversion, measurement, unit, input_measurements)
 
-    # Build dict of number of measurements for each input
-    input_number_measurements = {}
-    for each_measurement in input_measurements:
-        if each_measurement.input_id not in input_number_measurements:
-            input_number_measurements[each_measurement.input_id] = 0
-        input_number_measurements[each_measurement.input_id] += 1
+    # Generate dict that incorporate user-added measurements/units
+    dict_units = add_custom_units(unit)
+    dict_measurements = add_custom_measurements(measurement)
+    
+    # Dict of the number of channels for each input/math
+    dict_measure_info = {}
+    for each_input in input_dev:
+        if each_input.unique_id not in dict_measure_info:
+            dict_measure_info[each_input.unique_id] = {}
+        dict_measure_info[each_input.unique_id]['channels'] = InputMeasurements.query.filter(
+            InputMeasurements.input_id == each_input.unique_id).count()
+    for each_math in math:
+        if each_math.unique_id not in dict_measure_info:
+            dict_measure_info[each_math.unique_id] = {}
+        dict_measure_info[each_math.unique_id]['channels'] = MathMeasurements.query.filter(
+            MathMeasurements.math_id == each_math.unique_id).count()
 
     # Create dict of Input names
     names_input = {}
@@ -1544,6 +1559,7 @@ def page_data():
         names_math[each_element.unique_id] = '[{id}] {name}'.format(
             id=each_element.unique_id.split('-')[0], name=each_element.name)
 
+    # Reorder
     if form_base.reorder.data:
         if form_base.reorder_type.data == 'input':
             mod_order = DisplayOrder.query.first()
@@ -1603,7 +1619,7 @@ def page_data():
         if form_add_input.input_add.data:
             unmet_dependencies = utils_input.input_add(form_add_input)
 
-        # Mod Measurement
+        # Mod Input Measurement
         elif form_mod_input_measurement.input_measurement_mod.data:
             utils_input.measurement_mod(form_mod_input_measurement)
 
@@ -1623,9 +1639,15 @@ def page_data():
         elif form_mod_input.input_deactivate.data:
             utils_input.input_deactivate(form_mod_input)
 
-        # Math forms
+        # Add Math
         elif form_add_math.math_add.data:
             unmet_dependencies = utils_math.math_add(form_add_math)
+
+        # Mod Math Measurement
+        elif form_mod_math_measurement.math_measurement_mod.data:
+            utils_math.math_measurement_mod(form_mod_math_measurement)
+
+        # Mod other Math settings
         elif form_mod_math.math_mod.data:
             math_type = Math.query.filter(
                 Math.unique_id == form_mod_math.math_id.data).first().math_type
@@ -1671,6 +1693,7 @@ def page_data():
                            custom_options_values=custom_options_values,
                            device_info=parse_input_information(),
                            dict_inputs=dict_inputs,
+                           dict_measure_info=dict_measure_info,
                            display_order_input=display_order_input,
                            display_order_math=display_order_math,
                            form_base=form_base,
@@ -1688,7 +1711,6 @@ def page_data():
                            camera=camera,
                            input=input_dev,
                            input_measurements=input_measurements,
-                           input_number_measurements=input_number_measurements,
                            names_input=names_input,
                            tooltips_input=TOOLTIPS_INPUT,
                            input_templates=input_templates,
@@ -1699,8 +1721,8 @@ def page_data():
                            math_templates=math_templates,
                            output=output,
                            pid=pid,
-                           measurements=MEASUREMENTS,
-                           units=UNITS,
+                           dict_measurements=dict_measurements,
+                           dict_units=dict_units,
                            user=user,
                            w1thermsensor_sensors=w1thermsensor_sensors,
                            lcd=lcd)

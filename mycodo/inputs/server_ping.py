@@ -6,9 +6,10 @@ import os
 from mycodo.inputs.base_input import AbstractInput
 
 # Measurements
-measurements = {
-    'boolean': {
-        'bool': {0: {}}
+measurements_dict = {
+    0: {
+        'measurement': 'boolean',
+        'unit': 'bool'
     }
 }
 
@@ -18,7 +19,7 @@ INPUT_INFORMATION = {
     'input_manufacturer': 'Mycodo',
     'input_name': 'Server Ping',
     'measurements_name': 'Boolean',
-    'measurements_dict': measurements,
+    'measurements_dict': measurements_dict,
 
     'options_enabled': [
         'location',
@@ -61,19 +62,15 @@ class InputModule(AbstractInput):
 
     def get_measurement(self):
         """ Determine if the return value of the command is a number """
-        return_dict = {
-            'boolean': {
-                'bool': {}
-            }
-        }
+        return_dict = measurements_dict.copy()
 
         response = os.system(
             "ping -c {times} -w {deadline} {host} > /dev/null 2>&1".format(
                 times=self.times_check, deadline=self.deadline, host=self.location))
 
         if response == 0:
-            return_dict['boolean']['bool'][0] = 1  # Server is up
+            return_dict[0]['value'] = 1  # Server is up
         else:
-            return_dict['boolean']['bool'][0] = 0  # Server is down
+            return_dict[0]['value'] = 0  # Server is down
 
         return return_dict

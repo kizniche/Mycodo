@@ -18,8 +18,7 @@ measurements_dict = OrderedDict()
 for each_channel in range(64):
     measurements_dict[each_channel] = {
         'measurement': 'temperature',
-        'unit': 'C',
-        'name': ''
+        'unit': 'C'
     }
 
 # Input information
@@ -37,7 +36,6 @@ INPUT_INFORMATION = {
     'options_enabled': [
         'i2c_location',
         'measurements_select',
-        'measurements_convert',
         'period',
         'pre_output'
     ],

@@ -15,16 +15,19 @@ from mycodo.inputs.sensorutils import calculate_dewpoint
 from mycodo.utils.database import db_retrieve_table_daemon
 
 # Measurements
-measurements = {
-    'temperature': {
-        'C': {0: {}}
+measurements_dict = {
+    0: {
+        'measurement': 'temperature',
+        'unit': 'C'
     },
-    'humidity': {
-        'percent': {0: {}}
+    1: {
+        'measurement': 'humidity',
+        'unit': 'percent'
     },
-    'dewpoint': {
-        'C': {0: {}}
-    },
+    2: {
+        'measurement': 'dewpoint',
+        'unit': 'C'
+    }
 }
 
 # Input information
@@ -33,12 +36,11 @@ INPUT_INFORMATION = {
     'input_manufacturer': 'Texas Instruments',
     'input_name': 'HDC1000',
     'measurements_name': 'Humidity/Temperature',
-    'measurements_dict': measurements,
+    'measurements_dict': measurements_dict,
 
     'options_enabled': [
         'i2c_location',
         'measurements_select',
-        'measurements_convert',
         'period',
         'resolution',
         'resolution_2',
@@ -147,31 +149,19 @@ class InputModule(AbstractInput):
 
     def get_measurement(self):
         """ Gets the humidity and temperature """
-        return_dict = {
-            'temperature': {
-                'C': {}
-            },
-            'humidity': {
-                'percent': {}
-            },
-            'dewpoint': {
-                'C': {}
-            },
-        }
+        return_dict = measurements_dict.copy()
 
-        temperature = self.read_temperature()
+        if self.is_enabled(0):
+            return_dict[0]['value'] = self.read_temperature()
 
-        if self.is_enabled('temperature', 'C', 0):
-            return_dict['temperature']['C'][0] = temperature
+        if self.is_enabled(1):
+            return_dict[1]['value'] = self.read_humidity()
 
-        humidity = self.read_humidity()
-
-        if self.is_enabled('humidity', 'percent', 0):
-            return_dict['humidity']['percent'][0] = humidity
-
-        if self.is_enabled('dewpoint', 'C', 0):
-            return_dict['dewpoint']['C'][0] = calculate_dewpoint(
-                temperature, humidity)
+        if (self.is_enabled(2) and
+                self.is_enabled(0) and
+                self.is_enabled(1)):
+            return_dict[2]['value'] = calculate_dewpoint(
+                return_dict[0]['value'], return_dict[1]['value'])
 
         return return_dict
 

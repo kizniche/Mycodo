@@ -27,8 +27,7 @@ def constraints_pass_measure_range(value):
 measurements_dict = {
     0: {
         'measurement': 'co2',
-        'unit': 'ppm',
-        'name': ''
+        'unit': 'ppm'
     }
 }
 
@@ -43,7 +42,6 @@ INPUT_INFORMATION = {
     'options_enabled': [
         'uart_location',
         'uart_baud_rate',
-        'measurements_convert',
         'custom_options',
         'period',
         'pre_output'

@@ -12,9 +12,8 @@ from mycodo.utils.database import db_retrieve_table_daemon
 measurements_dict = OrderedDict()
 for each_channel in range(8):
     measurements_dict[each_channel] = {
-        'measurement': 'temperature',
-        'unit': 'C',
-        'name': ''
+        'measurement': 'electrical_potential',
+        'unit': 'V'
     }
 
 # Input information
@@ -31,7 +30,6 @@ INPUT_INFORMATION = {
 
     'options_enabled': [
         'measurements_select',
-        'measurements_convert',
         'adc_gain',
         'adc_sample_speed',
         'custom_options',
@@ -195,7 +193,7 @@ if __name__ == "__main__":
     from types import SimpleNamespace
     settings = SimpleNamespace()
     settings.id = 1
-    settings.unique_id = '1234-5678'
+    settings.unique_id = '0000-0000'
     settings.adc_gain = '1'
     settings.adc_sample_speed = '10'
     settings.channels = 8

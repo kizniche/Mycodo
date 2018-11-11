@@ -26,9 +26,10 @@ from mycodo.inputs.base_input import AbstractInput
 from mycodo.inputs.sensorutils import is_device
 
 # Measurements
-measurements = {
-    'co2': {
-        'ppm': {0: {}}
+measurements_dict = {
+    0: {
+        'measurement': 'co2',
+        'unit': 'ppm'
     }
 }
 
@@ -38,14 +39,12 @@ INPUT_INFORMATION = {
     'input_manufacturer': 'Winsen',
     'input_name': 'MH-Z16',
     'measurements_name': 'CO2',
-    'measurements_dict': measurements,
+    'measurements_dict': measurements_dict,
 
     'options_enabled': [
         'i2c_location',
         'uart_location',
-        'measurements_convert',
         'period',
-        'measurements_convert',
         'pre_output'
     ],
     'options_disabled': ['interface'],
@@ -111,11 +110,7 @@ class InputModule(AbstractInput):
 
     def get_measurement(self):
         """ Gets the MH-Z16's CO2 concentration in ppmv via UART"""
-        return_dict = {
-            'co2': {
-                'ppm': {}
-            }
-        }
+        return_dict = measurements_dict.copy()
 
         co2 = None
 
@@ -141,7 +136,7 @@ class InputModule(AbstractInput):
             except Exception:
                 co2 = None
 
-        return_dict['co2']['ppm'][0] = co2
+        return_dict[0]['value'] = co2
 
         return return_dict
 

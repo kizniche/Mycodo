@@ -5,9 +5,10 @@ import time
 from mycodo.inputs.base_input import AbstractInput
 
 # Measurements
-measurements = {
-    'revolutions': {
-        'rpm': {0: {}}
+measurements_dict = {
+    0: {
+        'measurement': 'revolutions',
+        'unit': 'rpm'
     }
 }
 
@@ -17,11 +18,10 @@ INPUT_INFORMATION = {
     'input_manufacturer': 'Mycodo',
     'input_name': 'Signal (Revolutions)',
     'measurements_name': 'RPM',
-    'measurements_dict': measurements,
+    'measurements_dict': measurements_dict,
 
     'options_enabled': [
         'gpio_location',
-        'measurements_convert',
         'rpm_pulses_per_rev',
         'weighting',
         'sample_time',
@@ -62,11 +62,7 @@ class InputModule(AbstractInput):
 
     def get_measurement(self):
         """ Gets the revolutions """
-        return_dict = {
-            'revolutions': {
-                'rpm': {}
-            }
-        }
+        return_dict = measurements_dict.copy()
 
         pi = self.pigpio.pi()
         if not pi.connected:  # Check if pigpiod is running
@@ -89,7 +85,7 @@ class InputModule(AbstractInput):
         pi.stop()
 
         if rpm or rpm == 0:
-            return_dict['revolutions']['rpm'][0] = rpm
+            return_dict[0]['value'] = rpm
             return return_dict
 
 

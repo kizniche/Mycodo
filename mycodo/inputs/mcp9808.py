@@ -7,8 +7,7 @@ from mycodo.inputs.base_input import AbstractInput
 measurements_dict = {
     0: {
         'measurement': 'temperature',
-        'unit': 'C',
-        'name': ''
+        'unit': 'C'
     }
 }
 
@@ -22,7 +21,6 @@ INPUT_INFORMATION = {
 
     'options_enabled': [
         'i2c_location',
-        'measurements_convert',
         'period',
         'pre_output'
     ],
@@ -82,7 +80,6 @@ class InputModule(AbstractInput):
 
         try:
             return_dict[0]['value'] = self.sensor.readTempC()
-        except:
-            self.logger.exception("Inout read failure")
-
-        return return_dict
+            return return_dict
+        except Exception as msg:
+            self.logger.exception("Inout read failure: {}".format(msg))

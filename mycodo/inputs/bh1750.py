@@ -14,8 +14,7 @@ for num in range(31, 255):
 measurements_dict = {
     0: {
         'measurement': 'light',
-        'unit': 'lux',
-        'name': ''
+        'unit': 'lux'
     }
 }
 
@@ -29,7 +28,6 @@ INPUT_INFORMATION = {
 
     'options_enabled': [
         'i2c_location',
-        'measurements_convert',
         'period',
         'resolution',
         'sensitivity',

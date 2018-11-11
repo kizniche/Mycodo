@@ -1,22 +1,20 @@
 # coding=utf-8
 import argparse
 import logging
+from collections import OrderedDict
 
 from mycodo.databases.models import InputMeasurements
 from mycodo.inputs.base_input import AbstractInput
 from mycodo.utils.database import db_retrieve_table_daemon
 
-# Channels
-channels = {}
-for each_channel in range(4):
-    channels[each_channel] = {}
 
 # Measurements
-measurements = {
-    'electrical_potential': {
-        'V': channels
+measurements_dict = OrderedDict()
+for each_channel in range(4):
+    measurements_dict[each_channel] = {
+        'measurement': 'electrical_potential',
+        'unit': 'V'
     }
-}
 
 # Input information
 INPUT_INFORMATION = {
@@ -24,7 +22,7 @@ INPUT_INFORMATION = {
     'input_manufacturer': 'Microchip',
     'input_name': 'MCP3008',
     'measurements_name': 'Voltage (Analog-to-Digital Converter)',
-    'measurements_dict': measurements,
+    'measurements_dict': measurements_dict,
     'measurements_convert_enabled': True,
     'measurements_rescale': True,
     'scale_from_min': -4.096,
@@ -86,19 +84,14 @@ class InputModule(AbstractInput):
     def get_measurement(self):
         self._measurements = None
 
-        return_dict = {
-            'electrical_potential': {
-                'V': {}
-            }
-        }
+        return_dict = measurements_dict.copy()
 
         for each_measure in self.input_measurements.all():
             if each_measure.is_enabled:
-                return_dict['electrical_potential']['V'][each_measure.channel] = (
-                (self.adc.read_adc(each_measure.channel) / 1023.0) * self.scale_from_max)
+                return_dict[each_measure.channel]['value'] = (
+                    (self.adc.read_adc(each_measure.channel) / 1023.0) * self.scale_from_max)
 
-        if return_dict['electrical_potential']['V']:
-            return return_dict
+        return return_dict
 
 
 def parse_args(parser):

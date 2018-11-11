@@ -9,15 +9,18 @@ from mycodo.inputs.sensorutils import calculate_dewpoint
 from mycodo.utils.database import db_retrieve_table_daemon
 
 # Measurements
-measurements = {
-    'temperature': {
-        'C': {0: {}}
+measurements_dict = {
+    0: {
+        'measurement': 'temperature',
+        'unit': 'C'
     },
-    'humidity': {
-        'percent': {0: {}}
+    1: {
+        'measurement': 'humidity',
+        'unit': 'percent'
     },
-    'dewpoint': {
-        'C': {0: {}}
+    2: {
+        'measurement': 'dewpoint',
+        'unit': 'C'
     }
 }
 
@@ -27,12 +30,11 @@ INPUT_INFORMATION = {
     'input_manufacturer': 'AOSONG',
     'input_name': 'DHT22',
     'measurements_name': 'Humidity/Temperature',
-    'measurements_dict': measurements,
+    'measurements_dict': measurements_dict,
 
     'options_enabled': [
         'gpio_location',
         'measurements_select',
-        'measurements_convert',
         'period',
         'pre_output'
     ],
@@ -125,17 +127,7 @@ class InputModule(AbstractInput):
 
     def get_measurement(self):
         """ Gets the humidity and temperature """
-        return_dict = {
-            'temperature': {
-                'C': {}
-            },
-            'humidity': {
-                'percent': {}
-            },
-            'dewpoint': {
-                'C': {}
-            }
-        }
+        return_dict = measurements_dict.copy()
 
         if not self.pi.connected:  # Check if pigpiod is running
             self.logger.error('Could not connect to pigpiod. '
@@ -158,12 +150,14 @@ class InputModule(AbstractInput):
         for _ in range(4):
             self.measure_sensor()
             if self.temp_dew_point is not None:
-                if self.is_enabled('temperature', 'C', 0):
-                    return_dict['temperature']['C'][0] = self.temp_temperature
-                if self.is_enabled('humidity', 'percent', 0):
-                    return_dict['humidity']['percent'][0] = self.temp_humidity
-                if self.is_enabled('dewpoint', 'C', 0):
-                    return_dict['dewpoint']['C'][0] = self.temp_dew_point
+                if self.is_enabled(0):
+                    return_dict[0]['value'] = self.temp_temperature
+                if self.is_enabled(1):
+                    return_dict[1]['value'] = self.temp_humidity
+                if (self.is_enabled(2) and
+                        self.is_enabled(0) and
+                        self.is_enabled(1)):
+                    return_dict[2]['value'] = self.temp_dew_point
                 return return_dict  # success - no errors
             time.sleep(2)
 
@@ -176,12 +170,14 @@ class InputModule(AbstractInput):
             for _ in range(2):
                 self.measure_sensor()
                 if self.temp_dew_point is not None:
-                    if self.is_enabled('temperature', 'C', 0):
-                        return_dict['temperature']['C'][0] = self.temp_temperature
-                    if self.is_enabled('humidity', 'percent', 0):
-                        return_dict['humidity']['percent'][0] = self.temp_humidity
-                    if self.is_enabled('dewpoint', 'C', 0):
-                        return_dict['dewpoint']['C'][0] = self.temp_dew_point
+                    if self.is_enabled(0):
+                        return_dict[0]['value'] = self.temp_temperature
+                    if self.is_enabled(1):
+                        return_dict[1]['value'] = self.temp_humidity
+                    if (self.is_enabled(2) and
+                            self.is_enabled(0) and
+                            self.is_enabled(1)):
+                        return_dict[2]['value'] = self.temp_dew_point
                     return return_dict  # success - no errors
                 time.sleep(2)
 

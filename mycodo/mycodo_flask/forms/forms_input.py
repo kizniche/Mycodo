@@ -97,8 +97,8 @@ class InputMod(FlaskForm):
     sensitivity = IntegerField(
         lazy_gettext('Sensitivity'), widget=NumberInput())
 
-    measurements_selected = SelectMultipleField(
-        TOOLTIPS_INPUT['measurements_selected']['title'], widget=NumberInput())
+    measurements_enabled = SelectMultipleField(
+        TOOLTIPS_INPUT['measurements_enabled']['title'])
 
     # Server options
     host = StringField(lazy_gettext('Host'))
@@ -187,7 +187,8 @@ class InputMeasurementMod(FlaskForm):
         lazy_gettext('Name'),
         validators=[DataRequired()]
     )
-    select_measurement_unit = StringField(lazy_gettext('Unit Measurement'))
+    select_measurement_unit = StringField(
+        TOOLTIPS_INPUT['select_measurement_unit']['title'])
 
     scale_from_min = DecimalField(
         TOOLTIPS_INPUT['scale_from_min']['title'],
@@ -204,7 +205,9 @@ class InputMeasurementMod(FlaskForm):
     invert_scale = BooleanField(
         TOOLTIPS_INPUT['invert_scale']['title'])
 
-    rescaled_measurement_unit = StringField(lazy_gettext('Rescaled Measurement'))
-    convert_to_measurement_unit = StringField(TOOLTIPS_INPUT['convert_to_measurement_unit']['title'])
+    rescaled_measurement_unit = StringField(
+        lazy_gettext('Rescaled Measurement'))
+    convert_to_measurement_unit = StringField(
+        TOOLTIPS_INPUT['convert_to_measurement_unit']['title'])
 
     input_measurement_mod = SubmitField(lazy_gettext('Save'))

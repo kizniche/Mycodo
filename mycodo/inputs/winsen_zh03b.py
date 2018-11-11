@@ -32,18 +32,15 @@ def constraints_pass_fan_seconds(value):
 measurements_dict = {
     0: {
         'measurement': 'particulate_matter_1_0',
-        'unit': 'ug_m3',
-        'name': ''
+        'unit': 'ug_m3'
     },
     1: {
         'measurement': 'particulate_matter_2_5',
-        'unit': 'ug_m3',
-        'name': ''
+        'unit': 'ug_m3'
     },
     2: {
         'measurement': 'particulate_matter_10_0',
-        'unit': 'ug_m3',
-        'name': ''
+        'unit': 'ug_m3'
     }
 }
 
@@ -57,7 +54,6 @@ INPUT_INFORMATION = {
 
     'options_enabled': [
         'measurements_select',
-        'measurements_convert',
         'uart_location',
         'uart_baud_rate',
         'custom_options',

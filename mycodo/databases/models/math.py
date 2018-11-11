@@ -32,11 +32,11 @@ class Math(CRUDMixin, db.Model):
 
     # Humidity calculation
     dry_bulb_t_id = db.Column(db.Text, default=None)
-    dry_bulb_t_measure = db.Column(db.Text, default=None)
+    dry_bulb_t_measure_id = db.Column(db.Text, default=None)
     wet_bulb_t_id = db.Column(db.Text, default=None)
-    wet_bulb_t_measure = db.Column(db.Text, default=None)
+    wet_bulb_t_measure_id = db.Column(db.Text, default=None)
     pressure_pa_id = db.Column(db.Text, default=None)
-    pressure_pa_measure = db.Column(db.Text, default=None)
+    pressure_pa_measure_id = db.Column(db.Text, default=None)
 
     def is_active(self):
         """
@@ -66,6 +66,5 @@ class MathMeasurements(CRUDMixin, db.Model):
     channel = db.Column(db.Integer, default=None)
 
     # Converted measurement/unit (from either rescaled or default)
-    enable_convert = db.Column(db.Boolean, default=False)
     converted_measurement = db.Column(db.Text, default='')
     converted_unit = db.Column(db.Text, default='')

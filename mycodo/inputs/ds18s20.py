@@ -5,9 +5,10 @@ import time
 from mycodo.inputs.base_input import AbstractInput
 
 # Measurements
-measurements = {
-    'temperature': {
-        'C': {0: {}}
+measurements_dict = {
+    0: {
+        'measurement': 'temperature',
+        'unit': 'C'
     }
 }
 
@@ -17,11 +18,10 @@ INPUT_INFORMATION = {
     'input_manufacturer': 'MAXIM',
     'input_name': 'DS18S20',
     'measurements_name': 'Temperature',
-    'measurements_dict': measurements,
+    'measurements_dict': measurements_dict,
 
     'options_enabled': [
         'location',
-        'measurements_convert',
         'period',
         'pre_output'
     ],
@@ -55,25 +55,16 @@ class InputModule(AbstractInput):
 
     def get_measurement(self):
         """ Gets the DS18S20's temperature in Celsius """
-        return_dict = {
-            'temperature': {
-                'C': {}
-            }
-        }
+        return_dict = measurements_dict.copy()
 
-        temperature = None
         n = 2
         for i in range(n):
             try:
-                temperature = self.sensor.get_temperature()
-                break
+                return_dict[0]['value'] = self.sensor.get_temperature()
+                return return_dict
             except Exception as e:
                 if i == n:
                     self.logger.exception(
                         "{cls} raised an exception when taking a reading: "
                         "{err}".format(cls=type(self).__name__, err=e))
                 time.sleep(1)
-
-        return_dict['temperature']['C'][0] = temperature
-
-        return return_dict

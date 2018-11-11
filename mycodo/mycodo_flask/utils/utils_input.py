@@ -322,10 +322,20 @@ def input_mod(form_mod, request_form):
             mod_input.pre_output_id = None
 
         if mod_input.device == 'LinuxCommand' and not mod_input.measurements.startswith('channel_'):
-            mod_input.measurements = form_mod.selected_measurement_unit.data.split(',')[0]
+            mod_input.measurements = form_mod.select_measurement_unit.data.split(',')[0]
 
         if mod_input.device == 'LinuxCommand':
-            mod_input.convert_to_unit = form_mod.selected_measurement_unit.data
+            mod_input.convert_to_unit = form_mod.select_measurement_unit.data
+
+        # Enable/disable Channels
+        measurements = InputMeasurements.query.filter(
+            InputMeasurements.input_id == form_mod.input_id.data).all()
+        if form_mod.measurements_enabled.data:
+            for each_measurement in measurements:
+                if each_measurement.unique_id in form_mod.measurements_enabled.data:
+                    each_measurement.is_enabled = True
+                else:
+                    each_measurement.is_enabled = False
 
         short_list = []
         mod_units = False
@@ -340,8 +350,6 @@ def input_mod(form_mod, request_form):
                         error.append("Invalid custom unit")
                     else:
                         short_list.append(value)
-        if mod_units:
-            mod_input.convert_to_unit = ';'.join(short_list)
 
         mod_input.i2c_bus = form_mod.i2c_bus.data
         mod_input.baud_rate = form_mod.baud_rate.data
@@ -473,9 +481,12 @@ def measurement_mod(form):
 
         mod_meas.name = form.name.data
 
-        if form.select_measurement_unit.data:
+        if ',' in form.select_measurement_unit.data:
             mod_meas.measurement = form.select_measurement_unit.data.split(',')[0]
             mod_meas.unit = form.select_measurement_unit.data.split(',')[1]
+        else:
+            mod_meas.measurement = ''
+            mod_meas.unit = ''
 
         if form.rescaled_measurement_unit.data != '' and ',' in form.rescaled_measurement_unit.data:
             mod_meas.rescaled_measurement = form.rescaled_measurement_unit.data.split(',')[0]
@@ -492,6 +503,9 @@ def measurement_mod(form):
             measure = form.convert_to_measurement_unit.data.split(',')[1]
             mod_meas.converted_unit = unit
             mod_meas.converted_measurement = measure
+        else:
+            mod_meas.converted_unit = ''
+            mod_meas.converted_measurement = ''
 
         if not error:
             db.session.commit()

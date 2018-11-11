@@ -10,7 +10,7 @@
     {{form_mod_input_measurement.input_measurement_mod(class_='form-control btn btn-sm btn-block')}}
   </div>
   <div class="col-auto">
-    <input class="form-control btn btn-sm btn-block" disabled="" title="" value="{% if each_measurement.channel != None and not each_measurement.single_channel %}CH{{each_measurement.channel + 1}} {% endif %}{{measurements[each_measurement.measurement]['name']}} ({{units[each_measurement.unit]['unit']}})" type="text">
+    <input class="form-control btn btn-sm btn-block" disabled="" title="" value="{% if each_measurement.channel != None %}CH{{each_measurement.channel + 1}} {% endif %}{{dict_measurements[each_measurement.measurement]['name']}} ({{dict_units[each_measurement.unit]['unit']}})" type="text">
   </div>
 
 {% if 'measurements_select_measurement_unit' in dict_inputs[each_input.device]['options_enabled'] %}

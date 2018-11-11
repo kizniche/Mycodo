@@ -15,28 +15,23 @@ from mycodo.utils.database import db_retrieve_table_daemon
 measurements_dict = {
     0: {
         'measurement': 'pressure',
-        'unit': 'Pa',
-        'name': ''
+        'unit': 'Pa'
     },
     1: {
         'measurement': 'temperature',
-        'unit': 'C',
-        'name': ''
+        'unit': 'C'
     },
     2: {
         'measurement': 'humidity',
-        'unit': 'percent',
-        'name': ''
+        'unit': 'percent'
     },
     3: {
         'measurement': 'dewpoint',
-        'unit': 'C',
-        'name': ''
+        'unit': 'C'
     },
     4: {
         'measurement': 'altitude',
-        'unit': 'm',
-        'name': ''
+        'unit': 'm'
     }
 
 }
@@ -51,7 +46,6 @@ INPUT_INFORMATION = {
 
     'options_enabled': [
         'measurements_select',
-        'measurements_convert',
         'period',
         'pre_output'
     ],
@@ -97,26 +91,22 @@ class InputModule(AbstractInput):
         """ Gets the measurement in units by reading the """
         return_dict = measurements_dict.copy()
 
-        pressure_pa = self.sensor.read_pressure()
-
         if self.is_enabled(0):
-            return_dict[0]['value'] = pressure_pa
-
-        temperature = self.sensor.read_temperature()
+            return_dict[0]['value'] = self.sensor.read_pressure()
 
         if self.is_enabled(1):
-            return_dict[1]['value'] = temperature
-
-        humidity = self.sensor.read_humidity()
+            return_dict[1]['value'] = self.sensor.read_temperature()
 
         if self.is_enabled(2):
-            return_dict[2]['value'] = humidity
+            return_dict[2]['value'] = self.sensor.read_humidity()
 
-        if self.is_enabled(3):
+        if (self.is_enabled(3) and
+                self.is_enabled(1) and
+                self.is_enabled(2)):
             return_dict[3]['value'] = calculate_dewpoint(
-                temperature, humidity)
+                return_dict[1]['value'], return_dict[2]['value'])
 
-        if self.is_enabled(4):
-            return_dict[4]['value'] = calculate_altitude(pressure_pa)
+        if self.is_enabled(4) and self.is_enabled(0):
+            return_dict[4]['value'] = calculate_altitude(return_dict[0]['value'])
 
         return return_dict

@@ -64,25 +64,18 @@ def math_add(form_add_math):
             if not MATH_INFO[form_add_math.math_type.data]['measure']:
                 new_measurement = MathMeasurements()
                 new_measurement.math_id = new_math.unique_id
-                new_measurement.enable_convert = False
+                new_measurement.channel = 0
                 new_measurement.save()
             else:
-                for each_measurement, unit_info in MATH_INFO[form_add_math.math_type.data]['measure'].items():
-                    for each_unit, channel_data in unit_info.items():
-                        for each_channel, extra_data in channel_data.items():
-                            new_measurement = MathMeasurements()
-                            if 'name' in extra_data and extra_data['name']:
-                                new_measurement.name = extra_data['name']
-                            new_measurement.math_id = new_math.unique_id
-                            new_measurement.measurement = each_measurement
-                            new_measurement.unit = each_unit
-                            new_measurement.channel = each_channel
-                            if len(channel_data) == 1:
-                                new_measurement.single_channel = True
-                            else:
-                                new_measurement.single_channel = False
-                            new_measurement.enable_convert = True
-                            new_measurement.save()
+                for each_channel, measure_info in MATH_INFO[form_add_math.math_type.data]['measure'].items():
+                    new_measurement = MathMeasurements()
+                    if 'name' in measure_info and measure_info['name']:
+                        new_measurement.name = measure_info['name']
+                    new_measurement.math_id = new_math.unique_id
+                    new_measurement.measurement = measure_info['measurement']
+                    new_measurement.unit = measure_info['unit']
+                    new_measurement.channel = each_channel
+                    new_measurement.save()
 
             flash(gettext(
                 "%(type)s Math with ID %(id)s (%(uuid)s) successfully added",
@@ -108,10 +101,6 @@ def math_mod(form_mod_math, form_mod_type=None):
         controller=gettext("Math"))
     error = []
 
-    if not form_mod_math.validate():
-        error.append(gettext("Error in form field(s)"))
-        flash_form_errors(form_mod_math)
-
     try:
         mod_math = Math.query.filter(
             Math.unique_id == form_mod_math.math_id.data).first()
@@ -129,12 +118,31 @@ def math_mod(form_mod_math, form_mod_type=None):
         mod_math.period = form_mod_math.period.data
         mod_math.max_measure_age = form_mod_math.max_measure_age.data
 
+        measurements = MathMeasurements.query.filter(
+            MathMeasurements.math_id == form_mod_math.math_id.data).all()
+
+        # Set each measurement to the same measurement/unit
+        if form_mod_math.select_measurement_unit.data:
+            for each_measurement in measurements:
+                if ',' in form_mod_math.select_measurement_unit.data:
+                    each_measurement.measurement = form_mod_math.select_measurement_unit.data.split(',')[0]
+                    each_measurement.unit = form_mod_math.select_measurement_unit.data.split(',')[1]
+                else:
+                    each_measurement.measurement = ''
+                    each_measurement.unit = ''
+
+        # Enable/disable Channels
+        if form_mod_math.measurements_enabled.data:
+            for each_measurement in measurements:
+                if each_measurement.unique_id in form_mod_math.measurements_enabled.data:
+                    each_measurement.is_enabled = True
+                else:
+                    each_measurement.is_enabled = False
+
         # Collect inputs and measurement name and units
         if mod_math.math_type in ['average',
                                   'difference',
-                                  'median',
-                                  'maximum',
-                                  'minimum',
+                                  'statistics',
                                   'verification']:
             if len(form_mod_math.inputs.data) < 2:
                 error.append("At least two Inputs must be selected")
@@ -143,18 +151,6 @@ def math_mod(form_mod_math, form_mod_type=None):
                 mod_math.inputs = inputs_joined
             else:
                 mod_math.inputs = ''
-
-        # Set measurement and units
-        if mod_math.math_type in ['average',
-                                  'average_single',
-                                  'difference',
-                                  'equation',
-                                  'median',
-                                  'maximum',
-                                  'minimum',
-                                  'verification']:
-            mod_math.measure = form_mod_math.selected_measurement_unit.data.split(',')[0]
-            mod_math.measure_units = form_mod_math.selected_measurement_unit.data
 
         if mod_math.math_type == 'average_single':
             mod_math.inputs = form_mod_type.average_input.data
@@ -171,37 +167,31 @@ def math_mod(form_mod_math, form_mod_type=None):
 
         elif mod_math.math_type == 'humidity':
             mod_math.dry_bulb_t_id = form_mod_type.dry_bulb_temperature.data.split(',')[0]
-            mod_math.dry_bulb_t_measure = form_mod_type.dry_bulb_temperature.data.split(',')[1]
+            mod_math.dry_bulb_t_measure_id = form_mod_type.dry_bulb_temperature.data.split(',')[1]
             dbt_input = Input.query.filter(
                 Input.unique_id == mod_math.dry_bulb_t_id).first()
             dbt_math = Input.query.filter(
                 Math.unique_id == mod_math.dry_bulb_t_id).first()
             if not dbt_input and not dbt_math:
                 error.append("Invalid dry-bulb temperature selection: Must be a valid Input or Math")
-            if 'temperature' not in mod_math.dry_bulb_t_measure:
-                error.append("Invalid dry-bulb temperature selection: Must be a temperature measurement")
 
             mod_math.wet_bulb_t_id = form_mod_type.wet_bulb_temperature.data.split(',')[0]
-            mod_math.wet_bulb_t_measure = form_mod_type.wet_bulb_temperature.data.split(',')[1]
+            mod_math.wet_bulb_t_measure_id = form_mod_type.wet_bulb_temperature.data.split(',')[1]
             wbt_input = Input.query.filter(
                 Input.unique_id == mod_math.wet_bulb_t_id).first()
             wbt_math = Input.query.filter(
                 Math.unique_id == mod_math.wet_bulb_t_id).first()
             if not wbt_input and not wbt_math:
                 error.append("Invalid wet-bulb temperature selection: Must be a valid Input or Math")
-            if 'temperature' not in mod_math.wet_bulb_t_measure:
-                error.append("Invalid wet-bulb temperature selection: Must be a temperature measurement")
 
             if form_mod_type.pressure.data:
                 mod_math.pressure_pa_id = form_mod_type.pressure.data.split(',')[0]
                 pressure_input = Input.query.filter(
                     Input.unique_id == mod_math.pressure_pa_id).first()
-                if not pressure_input or 'pressure' not in pressure_input.measurements:
-                    error.append("Invalid pressure selection")
-                mod_math.pressure_pa_measure = form_mod_type.pressure.data.split(',')[1]
+                mod_math.pressure_pa_measure_id = form_mod_type.pressure.data.split(',')[1]
             else:
                 mod_math.pressure_pa_id = None
-                mod_math.pressure_pa_measure = None
+                mod_math.pressure_pa_measure_id = None
 
         elif mod_math.math_type == 'verification':
             mod_math.max_difference = form_mod_type.max_difference.data
@@ -209,6 +199,50 @@ def math_mod(form_mod_math, form_mod_type=None):
         if not error:
             db.session.commit()
     except Exception as except_msg:
+        logger.exception(1)
+        error.append(except_msg)
+
+    flash_success_errors(error, action, url_for('routes_page.page_data'))
+
+
+def math_measurement_mod(form):
+    action = '{action} {controller}'.format(
+        action=gettext("Modify"),
+        controller=gettext("Measurement"))
+    error = []
+
+    try:
+        mod_meas = MathMeasurements.query.filter(
+            MathMeasurements.unique_id == form.math_measurement_id.data).first()
+
+        mod_math = Math.query.filter(Math.unique_id == mod_meas.math_id).first()
+        if mod_math.is_activated:
+            error.append(gettext(
+                "Deactivate controller before modifying its settings"))
+
+        mod_meas.name = form.name.data
+
+        if ',' in form.select_measurement_unit.data:
+            mod_meas.measurement = form.select_measurement_unit.data.split(',')[0]
+            mod_meas.unit = form.select_measurement_unit.data.split(',')[1]
+        else:
+            mod_meas.measurement = ''
+            mod_meas.unit = ''
+
+        if ',' in form.convert_to_measurement_unit.data:
+            unit = form.convert_to_measurement_unit.data.split(',')[0]
+            measure = form.convert_to_measurement_unit.data.split(',')[1]
+            mod_meas.converted_unit = unit
+            mod_meas.converted_measurement = measure
+        else:
+            mod_meas.converted_unit = ''
+            mod_meas.converted_measurement = ''
+
+        if not error:
+            db.session.commit()
+
+    except Exception as except_msg:
+        logger.exception(1)
         error.append(except_msg)
 
     flash_success_errors(error, action, url_for('routes_page.page_data'))
