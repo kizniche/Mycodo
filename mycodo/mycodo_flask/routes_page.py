@@ -384,9 +384,19 @@ def page_export():
     output = Output.query.all()
     input_dev = Input.query.all()
     math = Math.query.all()
+
+    unit = Unit.query.all()
+    measurement = Measurement.query.all()
+
+    # Generate all measurement and units used
+    dict_measurements = add_custom_measurements(measurement)
+    dict_units = add_custom_units(unit)
+
     output_choices = utils_general.choices_outputs(output)
-    input_choices = utils_general.choices_inputs(input_dev)
-    math_choices = utils_general.choices_maths(math)
+    input_choices = utils_general.choices_inputs(
+        input_dev, dict_units, dict_measurements)
+    math_choices = utils_general.choices_maths(
+        math, dict_units, dict_measurements)
 
     if request.method == 'POST':
         if not utils_general.user_has_permission('edit_controllers'):
