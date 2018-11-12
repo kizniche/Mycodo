@@ -595,6 +595,7 @@ def graph_y_axes_async(dict_measurements, ids_measures):
     math_measurements = MathMeasurements.query.all()
     output = Output.query.all()
     pid = PID.query.all()
+    pid_measurements = PIDMeasurements.query.all()
 
     devices_list = [input_dev, math, output, pid]
 
@@ -603,6 +604,64 @@ def graph_y_axes_async(dict_measurements, ids_measures):
 
         # Iterate through each set of ID and measurement of the dashboard element
         for each_id_measure in ids_measures:
+
+            if each_device == input_dev and ',' in each_id_measure:
+                measure_id = each_id_measure.split(',')[1]
+
+                for each_measure in input_measurements:
+                    if each_measure.unique_id == measure_id:
+                        if each_measure.converted_unit:
+                            if not y_axes:
+                                y_axes = [each_measure.converted_unit]
+                            elif y_axes and each_measure.converted_unit not in y_axes:
+                                y_axes.append(each_measure.converted_unit)
+                        else:
+                            if not y_axes:
+                                y_axes = [each_measure.unit]
+                            elif y_axes and each_measure.unit not in y_axes:
+                                y_axes.append(each_measure.unit)
+
+            if each_device == math and ',' in each_id_measure:
+                measure_id = each_id_measure.split(',')[1]
+
+                for each_measure in math_measurements:
+                    if each_measure.unique_id == measure_id:
+                        if each_measure.converted_unit:
+                            if not y_axes:
+                                y_axes = [each_measure.converted_unit]
+                            elif y_axes and each_measure.converted_unit not in y_axes:
+                                y_axes.append(each_measure.converted_unit)
+                        else:
+                            if not y_axes:
+                                y_axes = [each_measure.unit]
+                            elif y_axes and each_measure.unit not in y_axes:
+                                y_axes.append(each_measure.unit)
+
+            if each_device == pid and ',' in each_id_measure:
+                measure_id = each_id_measure.split(',')[1]
+
+                for each_measure in pid_measurements:
+                    if each_measure.unique_id == measure_id:
+                        if each_measure.converted_unit:
+                            if not y_axes:
+                                y_axes = [each_measure.converted_unit]
+                            elif y_axes and each_measure.converted_unit not in y_axes:
+                                y_axes.append(each_measure.converted_unit)
+                        else:
+                            if not y_axes:
+                                y_axes = [each_measure.unit]
+                            elif y_axes and each_measure.unit not in y_axes:
+                                y_axes.append(each_measure.unit)
+
+            elif each_device == output and ',' in each_id_measure:
+                output_id = each_id_measure.split(',')[0]
+
+                for each_output in output:
+                    if each_output.unique_id == output_id:
+                        if not y_axes:
+                            y_axes = [each_output.unit]
+                        elif y_axes and each_output.unit not in y_axes:
+                            y_axes.append(each_output.unit)
 
             if len(each_id_measure.split(',')) > 1 and each_id_measure.split(',')[1].startswith('channel_'):
                 unit = each_id_measure.split(',')[1].split('_')[4]

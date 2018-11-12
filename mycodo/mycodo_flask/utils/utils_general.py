@@ -357,8 +357,7 @@ def form_input_choices(choices, each_input, dict_inputs):
 
     if each_input.device in dict_inputs:
         if ('measurements_dict' in dict_inputs[each_input.device] and
-                dict_inputs[each_input.device]['measurements_dict'] and
-                dict_inputs[each_input.device]['measurements_dict'] != 'LinuxCommand'):
+                dict_inputs[each_input.device]['measurements_dict']):
 
             for each_measure in input_measurements:
                 value = '{input_id},{meas_id}'.format(

@@ -27,6 +27,8 @@
   <div class="container">
   {% include 'flash_messages.html' %}
 
+  {{ y_axes }}
+
     <h4>{{_('Asynchronous Graphs')}} <a href="/help#{{help_page[0]}}" target="_blank"><span style="font-size: 16px" class="fas fa-question-circle"></span></a></h4>
 
     <p>A graphical data display that is useful for viewing data sets spanning relatively long periods of time (weeks/months/years), which could be very data- and processor-intensive to view as a Live Graph.</p>
@@ -308,258 +310,172 @@ $(document).ready(function() {
         },
 
         series: [
-        {% for each_id_meas in selected_ids_measures -%}  {# Start main for #}
 
-          {% for each_input in input if each_input.unique_id == each_id_meas.split(',')[0] %}  {# Start input for #}
+        {% for each_id_meas in selected_ids_measures -%}
+          {%- set device_id = each_id_meas.split(',')[0] -%}
+          {%- set measurement_id = each_id_meas.split(',')[1] -%}
 
-            {% if each_input.device == 'LinuxCommand' %}  {# Command #}
+          {% for each_input in input if each_input.unique_id == device_id -%}
+            {%- if measurement_id in input_measurements_dict -%}
 
-          {
-            name: '{{each_input.name}} ({{measurement_units[each_input.measurements]['name']}}
-              {%- if dict_measurements[each_input.measurements]['unit'] != '' %}
-                {%- if use_unit[each_input.unique_id][each_input.measurements] -%}
-                  {{', '+units[use_unit[each_input.unique_id][each_input.measurements]]['unit']}}
-                {%- else -%}
-                  {{', '+measurement_units[each_input.measurements]['unit']}}
+            {
+              name: '{{each_input.name}}
+
+                {%- if input_measurements_dict[measurement_id].name -%}
+                  {{' (' + input_measurements_dict[measurement_id].name}})
                 {%- endif -%}
-              )
-              {%- endif -%}
-            ',
-            type: 'line',
-            tooltip: {
-              valueSuffix: '
-                  {%- if use_unit[each_input.unique_id][each_input.measurements] and use_unit[each_input.unique_id][each_input.measurements] in dict_units -%}
-                    {{' ' + dict_units[use_unit[each_input.unique_id][each_input.measurements]]['unit']}}
-                  {%- endif -%}
-              ',
-              valueDecimals: 2
-            },
-            yAxis: '
-              {%- if use_unit[each_input.unique_id][each_input.measurements] -%}
-                {{use_unit[each_input.unique_id][each_input.measurements]}}
-              {%- endif -%}
-            ',
-            data: []
-          },
 
-            {%- elif each_input.measurements.startswith('channel_') -%}  {# ADC #}
+                {{' (CH' + (input_measurements_dict[measurement_id].channel + 1)|string}}
 
-              {% set meas_test =  each_id_meas.split(',')[1].split('_') %}
-              {%- if meas_test|length > 1 and meas_test[0] == 'channel_' -%}
-          {
-            name: '{{each_input.name}} CH{{meas_test[2]|int + 1}} ({{measurement_units[meas_test[3]]['name']}}, {{use_unit[each_input.unique_id]['channels'][meas_test[2]][meas_test[3]]}})',
-            type: 'line',
-            tooltip: {
-              valueSuffix: '{%- if meas_test[4] in dict_units -%}{{' ' + dict_units[meas_test[4]]['unit']}}{%- endif -%}',
-              valueDecimals: 3
-            },
-            yAxis: '{{meas_test[4]}}',
-            data: []
-          },
-              {%- endif -%}
-
-            {% else %}  {# Remaining #}
-
-            {%- for each_measurement in each_input.measurements.split(',') -%}
-              {%- if each_measurement == each_id_meas.split(',')[1] -%}
-          {
-            name: '{{each_input.name}} ({{measurement_units[each_measurement]['name']}}
-              {%- if dict_measurements[each_measurement]['unit'] != '' %}
-                {%- if use_unit[each_input.unique_id][each_measurement] -%}
-                  {{', '+units[use_unit[each_input.unique_id][each_measurement]]['unit']}}
+                {%- if input_measurements_dict[measurement_id].converted_unit -%}
+                  {{', ' + measurement_units[input_measurements_dict[measurement_id].converted_measurement]['name']}}
                 {%- else -%}
-                  {{', '+measurement_units[each_measurement]['unit']}}
+                  {{', ' + measurement_units[input_measurements_dict[measurement_id].measurement]['name']}}
                 {%- endif -%}
-              )
+
+                {%- if input_measurements_dict[measurement_id].converted_unit -%}
+                  {{', ' + units[input_measurements_dict[measurement_id].converted_unit]['name']}}
+                {%- else -%}
+                  {{', ' + units[input_measurements_dict[measurement_id].unit]['name']}}
+                {%- endif -%}
+
+                )',
+
+              {% if measurement_units[input_measurements_dict[measurement_id].measurement]['meas'] == 'edge' %}
+              type: 'column',
+              {% else %}
+              type: 'line',
+              {% endif %}
+              tooltip: {
+                valueSuffix: '
+                {%- if input_measurements_dict[measurement_id].converted_unit -%}
+                  {{' ' + units[input_measurements_dict[measurement_id].converted_unit]['unit']}}
+                {%- else -%}
+                  {{' ' + units[input_measurements_dict[measurement_id].unit]['unit']}}
+                {%- endif -%}
+                ',
+                valueDecimals: 3
+              },
+              yAxis: '
+                {%- if input_measurements_dict[measurement_id].converted_unit -%}
+                  {{input_measurements_dict[measurement_id].converted_unit}}
+                {%- else -%}
+                  {{input_measurements_dict[measurement_id].unit}}
+                {%- endif -%}
+                  ',
+              data: []
+            },
+
+            {%- endif -%}
+          {% endfor %}
+
+          {% for each_math in math if each_math.unique_id == each_id_meas.split(',')[0] -%}
+            {%- set measurement_id = each_id_meas.split(',')[1] -%}
+            {%- if measurement_id in math_measurements_dict -%}
+
+            {
+            name: '{{each_math.name}}
+
+              {%- if math_measurements_dict[measurement_id].name -%}
+                {{' (' + math_measurements_dict[measurement_id].name}})
               {%- endif -%}
-            ',
-            {% if dict_measurements[each_measurement]['meas'] == 'edge' %}
+
+                {{' (CH' + (math_measurements_dict[measurement_id].channel + 1)|string}}
+
+              {%- if math_measurements_dict[measurement_id].converted_unit -%}
+                {{', ' + measurement_units[math_measurements_dict[measurement_id].converted_measurement]['name']}}
+              {%- else -%}
+                {{', ' + measurement_units[math_measurements_dict[measurement_id].measurement]['name']}}
+              {%- endif -%}
+
+              {%- if math_measurements_dict[measurement_id].converted_unit -%}
+                {{', ' + units[math_measurements_dict[measurement_id].converted_unit]['name']}}
+              {%- else -%}
+                {{', ' + units[math_measurements_dict[measurement_id].unit]['name']}}
+              {%- endif -%}
+
+              )',
+
+            {% if measurement_units[math_measurements_dict[measurement_id].measurement]['meas'] == 'edge' %}
             type: 'column',
             {% else %}
             type: 'line',
             {% endif %}
             tooltip: {
               valueSuffix: '
-                  {%- if use_unit[each_input.unique_id][each_measurement] and use_unit[each_input.unique_id][each_measurement] in dict_units -%}
-                    {{' ' + dict_units[use_unit[each_input.unique_id][each_measurement]]['unit']}}
-                  {%- endif -%}
-                  ',
-              valueDecimals: 2
-            },
-            yAxis: '
-              {%- if use_unit[each_input.unique_id][each_measurement] -%}
-                {{use_unit[each_input.unique_id][each_measurement]}}
+              {%- if math_measurements_dict[measurement_id].converted_unit -%}
+                {{' ' + units[math_measurements_dict[measurement_id].converted_unit]['unit']}}
               {%- else -%}
-                {{measurement_units[each_measurement]['meas']}}
+                {{' ' + units[math_measurements_dict[measurement_id].unit]['unit']}}
               {%- endif -%}
-            ',
-            data: []
-          },
-            {%- endif -%}
-
-            {%- endfor -%}
-
-          {% endif %}
-
-          {% endfor %}  {# Start input for #}
-
-
-          {% for each_math in math if each_math.unique_id == each_id_meas.split(',')[0] %}
-          {
-            name: '{{each_math.name}} (
-              {%- if each_id_meas.split(',')[1] in dict_measurements -%}
-                {{dict_measurements[each_id_meas.split(',')[1]]['name']}}, {{use_unit[each_math.unique_id][each_id_meas.split(',')[1]]}}
-              {%- endif -%}
-            )',
-            type: 'line',
-            tooltip: {
-              valueSuffix: ' {{use_unit[each_math.unique_id][each_id_meas.split(',')[1]]}}',
+              ',
               valueDecimals: 3
             },
             yAxis: '
-              {%- if use_unit[each_math.unique_id][each_id_meas.split(',')[1]] -%}
-                {{use_unit[each_math.unique_id][each_id_meas.split(',')[1]]}}
+              {%- if math_measurements_dict[measurement_id].converted_unit -%}
+                {{math_measurements_dict[measurement_id].converted_unit}}
               {%- else -%}
-                {{measurement_units[each_id_meas.split(',')[1]]['meas']}}
+                {{math_measurements_dict[measurement_id].unit}}
               {%- endif -%}
-            ',
+                ',
             data: []
           },
+            {%- endif -%}
           {% endfor %}
 
-          {%- for each_output in output if each_output.unique_id == each_id_meas.split(',')[0] -%}
-            {% if each_id_meas.split(',')[1] == 'duration_time' %}
-          {
-            name: '{{each_output.name}} (sec)',
-            type: 'column',
-            dataGrouping: {
-              approximation: 'low',
-              groupPixelWidth: 3
-            },
-            tooltip: {
-              valueSuffix: ' sec',
-              valueDecimals: 2
-            },
-            yAxis: 'second',
-            data: []
-          },
-            {% elif each_id_meas.split(',')[1] == 'duty_cycle' %}
-          {
-            name: '{{each_output.name}} (%)',
-            type: 'column',
-            dataGrouping: {
-              approximation: 'low',
-              groupPixelWidth: 3
-            },
-            tooltip: {
-              valueSuffix: ' %',
-              valueDecimals: 2
-            },
-            yAxis: 'duty_cycle',
-            data: []
-          },
-            {% endif %}
-          {%- endfor -%}
+          {%- for each_pid in pid if each_pid.unique_id == device_id -%}
+            {%- if measurement_id in pid_measurements_dict -%}
 
-          {%- for each_pid in pid if each_pid.unique_id == each_id_meas.split(',')[0] -%}
-            {% if each_id_meas.split(',')[1] in ['setpoint', 'setpoint_band_min', 'setpoint_band_max'] and each_pid.measurement %}
-        {
-          name: '{{each_pid.name}} (
-          {%- if each_id_meas.split(',')[1] == 'setpoint' -%}
-            {{_('Setpoint')}}
-          {%- elif each_id_meas.split(',')[1] == 'setpoint_band_min' -%}
-            {{_('Band Min')}}
-          {%- elif each_id_meas.split(',')[1] == 'setpoint_band_max' -%}
-            {{_('Band Max')}}
-          {%- endif -%}
-          )',
-          type: 'line',
-          tooltip: {
-            valueSuffix: '
-          {%- for each_input in input if each_pid.measurement.split(',')[0] == each_input.unique_id -%}
-            {%- if use_unit[each_input.unique_id][each_pid.measurement.split(',')[1]] -%}
-              {{' ' + units[use_unit[each_input.unique_id][each_pid.measurement.split(',')[1]]]['unit']}}
-            {%- else -%}
-              {%- if each_pid.measurement.split(',')[1] in measurement_units -%}
-                {{' ' + measurement_units[each_pid.measurement.split(',')[1]]['unit']|safe}}
-              {%- else -%}
-                {%- for each_input in input if each_pid.measurement.split(',')[0] == each_input.unique_id and each_input.device == 'LinuxCommand' -%}
-                  {{ ' ' + use_unit[each_input.unique_id][each_input.measurements]}}
-                {%- endfor -%}
-              {%- endif -%}
+            {
+              name: '{{each_pid.name}}
+
+                {%- if pid_measurements_dict[measurement_id].name -%}
+                  {{' (' + pid_measurements_dict[measurement_id].name}})
+                {%- endif -%}
+
+                  {{' (CH' + (pid_measurements_dict[measurement_id].channel + 1)|string}}
+
+                {%- if pid_measurements_dict[measurement_id].converted_unit -%}
+                  {{', ' + measurement_units[pid_measurements_dict[measurement_id].converted_measurement]['name']}}
+                {%- else -%}
+                  {{', ' + measurement_units[pid_measurements_dict[measurement_id].measurement]['name']}}
+                {%- endif -%}
+
+                {%- if pid_measurements_dict[measurement_id].converted_unit -%}
+                  {{', ' + units[pid_measurements_dict[measurement_id].converted_unit]['name']}}
+                {%- else -%}
+                  {{', ' + units[pid_measurements_dict[measurement_id].unit]['name']}}
+                {%- endif -%}
+
+                )',
+
+              {% if measurement_units[pid_measurements_dict[measurement_id].measurement]['meas'] == 'edge' %}
+              type: 'column',
+              {% else %}
+              type: 'line',
+              {% endif %}
+              tooltip: {
+                valueSuffix: '
+                {%- if pid_measurements_dict[measurement_id].converted_unit -%}
+                  {{' ' + units[pid_measurements_dict[measurement_id].converted_unit]['unit']}}
+                {%- else -%}
+                  {{' ' + units[pid_measurements_dict[measurement_id].unit]['unit']}}
+                {%- endif -%}
+                ',
+                valueDecimals: 3
+              },
+              yAxis: '
+                {%- if pid_measurements_dict[measurement_id].converted_unit -%}
+                  {{pid_measurements_dict[measurement_id].converted_unit}}
+                {%- else -%}
+                  {{pid_measurements_dict[measurement_id].unit}}
+                {%- endif -%}
+                  ',
+              data: []
+            },
+
             {%- endif -%}
-          {%- endfor -%}
-          ',
-            valueDecimals: 2
-          },
-          yAxis: '
-          {%- for each_input in input if each_pid.measurement.split(',')[0] == each_input.unique_id -%}
-            {%- if use_unit[each_input.unique_id][each_pid.measurement.split(',')[1]] -%}
-              {{use_unit[each_input.unique_id][each_pid.measurement.split(',')[1]]}}
-            {%- else -%}
-              {{each_pid.measurement.split(',')[1]}}
-            {%- endif -%}
-          {%- endfor -%}
-          ',
-          data: []
-        },
-        {% elif each_id_meas.split(',')[1] == 'pid_p_value' %}
-        {
-          name: '{{each_pid.name}} (P-Value)',
-          type: 'line',
-          tooltip: {
-            valueSuffix: '',
-            valueDecimals: 2
-          },
-          yAxis: 'pid_value',
-          data: []
-        },
-        {% elif each_id_meas.split(',')[1] == 'pid_i_value' %}
-        {
-          name: '{{each_pid.name}} (I-Value)',
-          type: 'line',
-          tooltip: {
-            valueSuffix: '',
-            valueDecimals: 2
-          },
-          yAxis: 'pid_value',
-          data: []
-        },
-        {% elif each_id_meas.split(',')[1] == 'pid_d_value' %}
-        {
-          name: '{{each_pid.name}} (D-Value)',
-          type: 'line',
-          tooltip: {
-            valueSuffix: '',
-            valueDecimals: 2
-          },
-          yAxis: 'pid_value',
-          data: []
-        },
-        {% elif each_id_meas.split(',')[1] == 'duration_time' %}
-        {
-          name: '{{each_pid.name}} ({{_('Output')}} {{_('Duration')}}, sec)',
-          type: 'line',
-          tooltip: {
-            valueSuffix: ' sec',
-            valueDecimals: 2
-          },
-          yAxis: 'second',
-          data: []
-        },
-        {% elif each_id_meas.split(',')[1] == 'duty_cycle' %}
-        {
-          name: '{{each_pid.name}} ({{_('Output')}} {{_('Duty Cycle')}}, %)',
-          type: 'line',
-          tooltip: {
-            valueSuffix: ' %',
-            valueDecimals: 2
-          },
-          yAxis: 'duty_cycle',
-          data: []
-        },
-            {% endif %}
-          {%- endfor -%}
+          {% endfor %}
 
           {% for each_tag in tag if each_tag.unique_id == each_id_meas.split(',')[0] %}
             {
@@ -569,6 +485,23 @@ $(document).ready(function() {
               shape: 'squarepin'
             },
           {% endfor %}
+
+          {%- for each_output in output if each_output.unique_id == device_id -%}
+              {
+                name: '{{each_output.name}} ({{measurement_units[each_output.measurement]['name']}})',
+                type: 'column',
+                dataGrouping: {
+                  approximation: 'high',
+                  groupPixelWidth: 1
+                },
+                tooltip: {
+                  valueSuffix: ' {{units[each_output.unit]['unit']}}',
+                  valueDecimals: 2
+                },
+                yAxis: '{{each_output.unit}}',
+                data: []
+              },
+          {%- endfor -%}
 
         {% endfor %}  {# End main for #}
 

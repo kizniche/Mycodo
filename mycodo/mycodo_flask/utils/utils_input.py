@@ -320,12 +320,6 @@ def input_mod(form_mod, request_form):
         else:
             mod_input.pre_output_id = None
 
-        if mod_input.device == 'LinuxCommand' and not mod_input.measurements.startswith('channel_'):
-            mod_input.measurements = form_mod.select_measurement_unit.data.split(',')[0]
-
-        if mod_input.device == 'LinuxCommand':
-            mod_input.convert_to_unit = form_mod.select_measurement_unit.data
-
         # Enable/disable Channels
         measurements = InputMeasurements.query.filter(
             InputMeasurements.device_id == form_mod.input_id.data).all()

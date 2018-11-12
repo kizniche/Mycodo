@@ -371,25 +371,6 @@
       {%- endfor -%}
     {% endfor %}
 
-    {%- for each_output in output -%}
-      {%- for each_graph_output_id in graph_output_ids if each_output.unique_id == each_graph_output_id.split(',')[0] -%}
-        {
-          name: '{{each_output.name}} ({{measurement_units[each_output.measurement]['name']}})',
-          type: 'column',
-          dataGrouping: {
-            approximation: 'high',
-            groupPixelWidth: 1
-          },
-          tooltip: {
-            valueSuffix: ' {{units[each_output.unit]['unit']}}',
-            valueDecimals: 2
-          },
-          yAxis: '{{each_output.unit}}',
-          data: []
-        },
-      {%- endfor -%}
-    {%- endfor -%}
-
     {%- for each_pid in pid -%}
       {%- for pid_and_measurement_ids in graph_pid_ids if each_pid.unique_id == pid_and_measurement_ids.split(',')[0] -%}
         {%- set measurement_id = pid_and_measurement_ids.split(',')[1] -%}
@@ -458,6 +439,25 @@
         },
       {% endfor %}
     {% endfor %}
+
+    {%- for each_output in output -%}
+      {%- for each_graph_output_id in graph_output_ids if each_output.unique_id == each_graph_output_id.split(',')[0] -%}
+        {
+          name: '{{each_output.name}} ({{measurement_units[each_output.measurement]['name']}})',
+          type: 'column',
+          dataGrouping: {
+            approximation: 'high',
+            groupPixelWidth: 1
+          },
+          tooltip: {
+            valueSuffix: ' {{units[each_output.unit]['unit']}}',
+            valueDecimals: 2
+          },
+          yAxis: '{{each_output.unit}}',
+          data: []
+        },
+      {%- endfor -%}
+    {%- endfor -%}
 
     ]
   });

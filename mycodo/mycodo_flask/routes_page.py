@@ -681,6 +681,7 @@ def page_graph_async():
     math_measurements = MathMeasurements.query.all()
     output = Output.query.all()
     pid = PID.query.all()
+    pid_measurements = PIDMeasurements.query.all()
     measurement = Measurement.query.all()
     unit = Unit.query.all()
     tag = NoteTags.query.all()
@@ -701,6 +702,18 @@ def page_graph_async():
 
     selected_ids_measures = []
     start_time_epoch = 0
+
+    input_measurements_dict = {}
+    for meas in input_measurements:
+        input_measurements_dict[meas.unique_id] = meas
+
+    math_measurements_dict = {}
+    for meas in math_measurements:
+        math_measurements_dict[meas.unique_id] = meas
+
+    pid_measurements_dict = {}
+    for meas in pid_measurements:
+        pid_measurements_dict[meas.unique_id] = meas
 
     if request.method == 'POST':
         seconds = 0
@@ -731,9 +744,12 @@ def page_graph_async():
                            measurement_units=MEASUREMENTS,
                            use_unit=use_unit,
                            input=input_dev,
+                           input_measurements_dict=input_measurements_dict,
                            math=math,
+                           math_measurements_dict=math_measurements_dict,
                            output=output,
                            pid=pid,
+                           pid_measurements_dict=pid_measurements_dict,
                            tag=tag,
                            units=UNITS,
                            input_choices=input_choices,
