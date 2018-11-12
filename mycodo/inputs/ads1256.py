@@ -128,7 +128,7 @@ class InputModule(AbstractInput):
 
             self.input_measurements = db_retrieve_table_daemon(
                 InputMeasurements).filter(
-                    InputMeasurements.input_id == input_dev.unique_id)
+                    InputMeasurements.device_id == input_dev.unique_id)
 
             self.adc_gain = input_dev.adc_gain
             self.adc_sample_speed = input_dev.adc_sample_speed

@@ -79,7 +79,7 @@ class InputModule(AbstractInput):
 
             self.input_measurements = db_retrieve_table_daemon(
                 InputMeasurements).filter(
-                    InputMeasurements.input_id == input_dev.unique_id)
+                    InputMeasurements.device_id == input_dev.unique_id)
 
             self.Adafruit_AMG88xx = Adafruit_AMG88xx
             self.i2c_address = int(str(input_dev.i2c_location), 16)

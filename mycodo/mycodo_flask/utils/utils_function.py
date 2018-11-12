@@ -47,22 +47,19 @@ def function_add(form_add_func):
         elif form_add_func.func_type.data.startswith('pid_'):
             new_func = PID().save()
 
-            for each_measurement, unit_info in PID_INFO['measure'].items():
-                for each_unit, channel_data in unit_info.items():
-                    for each_channel, extra_data in channel_data.items():
-                        new_measurement = PIDMeasurements()
-                        if 'name' in extra_data:
-                            new_measurement.name = extra_data['name']
-                        new_measurement.pid_id = new_func.unique_id
-                        new_measurement.measurement = each_measurement
-                        new_measurement.unit = each_unit
-                        new_measurement.channel = each_channel
-                        if len(channel_data) == 1:
-                            new_measurement.single_channel = True
-                        else:
-                            new_measurement.single_channel = False
-                        new_measurement.enable_convert = True
-                        new_measurement.save()
+            for each_channel, measure_info in PID_INFO['measure'].items():
+                new_measurement = PIDMeasurements()
+
+                if 'name' in measure_info:
+                    new_measurement.name = measure_info['name']
+                if 'measurement_type' in measure_info:
+                    new_measurement.measurement_type = measure_info['measurement_type']
+
+                new_measurement.device_id = new_func.unique_id
+                new_measurement.measurement = measure_info['measurement']
+                new_measurement.unit = measure_info['unit']
+                new_measurement.channel = each_channel
+                new_measurement.save()
 
         elif form_add_func.func_type.data.startswith('trigger_'):
             new_func = Trigger().save()

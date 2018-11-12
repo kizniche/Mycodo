@@ -212,16 +212,52 @@ OUTPUT_INFO = {
         }}
 }
 
+
 PID_INFO = {
     'measure': {
-        'setpoint': {'setpoint': {0: {'name': 'Setpoint'}}},
-        'setpoint_band_min': {'setpoint': {0: {'name': 'Setpoint Band Min'}}},
-        'setpoint_band_max': {'setpoint': {0: {'name': 'Setpoint Band Max'}}},
-        'pid_p_value': {'pid_value': {0: {}}},
-        'pid_i_value': {'pid_value': {0: {}}},
-        'pid_d_value': {'pid_value': {0: {}}},
-        'duration_time': {'s': {0: {'name': 'Output (Duration)'}}},
-        'duty_cycle': {'percent': {0: {'name': 'Output (Duty Cycle)'}}}
+        0: {
+            'measurement': '',
+            'unit': '',
+            'name': 'Setpoint',
+            'measurement_type': 'setpoint'
+        },
+        1: {
+            'measurement': '',
+            'unit': '',
+            'name': 'Setpoint Band (Min)',
+            'measurement_type': 'setpoint'
+        },
+        2: {
+            'measurement': '',
+            'unit': '',
+            'name': 'Setpoint Band (Max)',
+            'measurement_type': 'setpoint'
+        },
+        3: {
+            'measurement': 'pid_p_value',
+            'unit': 'pid_value',
+            'name': 'P-value'
+        },
+        4: {
+            'measurement': 'pid_i_value',
+            'unit': 'pid_value',
+            'name': 'I-value'
+        },
+        5: {
+            'measurement': 'pid_d_value',
+            'unit': 'pid_value',
+            'name': 'D-value'
+        },
+        6: {
+            'measurement': 'duration_time',
+            'unit': 's',
+            'name': 'Output Duration'
+        },
+        7: {
+            'measurement': 'duty_cycle',
+            'unit': 'percent',
+            'name': 'Output Duty Cycle'
+        }
     }
 }
 

@@ -46,7 +46,7 @@ def add_measurements_influxdb(unique_id, measurements):
     data = []
 
     for each_channel, each_measurement in measurements.items():
-        if 'value' in each_measurement:
+        if 'value' in each_measurement and each_measurement['value'] is not None:
             data.append(format_influxdb_data(
                 unique_id,
                 each_measurement['unit'],
@@ -303,7 +303,7 @@ def valid_uuid(uuid_str):
     return val.hex == uuid_str.replace('-', '')
 
 
-def write_influxdb_value(unique_id, measurement, value, unit=None, channel=None, timestamp=None):
+def write_influxdb_value(unique_id, unit, value, measure=None, channel=None, timestamp=None):
     """
     Write a value into an Influxdb database
 
@@ -331,10 +331,10 @@ def write_influxdb_value(unique_id, measurement, value, unit=None, channel=None,
     client = InfluxDBClient(INFLUXDB_HOST, INFLUXDB_PORT, INFLUXDB_USER,
                             INFLUXDB_PASSWORD, INFLUXDB_DATABASE, timeout=5)
     data = [format_influxdb_data(unique_id,
-                                 measurement,
+                                 unit,
                                  value,
-                                 unit=unit,
                                  channel=channel,
+                                 measure=measure,
                                  timestamp=timestamp)]
 
     try:

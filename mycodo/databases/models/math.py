@@ -57,7 +57,7 @@ class MathMeasurements(CRUDMixin, db.Model):
     unique_id = db.Column(db.String, nullable=False, unique=True, default=set_uuid)
 
     name = db.Column(db.Text, default='')
-    math_id = db.Column(db.Text, db.ForeignKey('math.unique_id'), default=None)
+    device_id = db.Column(db.Text, db.ForeignKey('math.unique_id'), default=None)
 
     # Default measurement/unit
     is_enabled = db.Column(db.Boolean, default=True)

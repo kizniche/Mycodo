@@ -21,7 +21,6 @@ from mycodo.config import OUTPUT_INFO
 from mycodo.config import PATH_CAMERAS
 from mycodo.config_devices_units import MEASUREMENTS
 from mycodo.config_devices_units import UNITS
-from mycodo.config_devices_units import UNIT_CONVERSIONS
 from mycodo.databases.models import Camera
 from mycodo.databases.models import Conditional
 from mycodo.databases.models import Input
@@ -31,6 +30,7 @@ from mycodo.databases.models import Math
 from mycodo.databases.models import MathMeasurements
 from mycodo.databases.models import Measurement
 from mycodo.databases.models import PID
+from mycodo.databases.models import PIDMeasurements
 from mycodo.databases.models import Role
 from mycodo.databases.models import Trigger
 from mycodo.databases.models import Unit
@@ -353,7 +353,7 @@ def choices_lcd(inputs, maths, pids, outputs):
 
 def form_input_choices(choices, each_input, dict_inputs):
     input_measurements = InputMeasurements.query.filter(
-        InputMeasurements.input_id == each_input.unique_id).all()
+        InputMeasurements.device_id == each_input.unique_id).all()
 
     if each_input.device in dict_inputs:
         if ('measurements_dict' in dict_inputs[each_input.device] and
@@ -409,7 +409,7 @@ def form_input_choices(choices, each_input, dict_inputs):
 
 def form_math_choices(choices, each_math):
     math_measurements = MathMeasurements.query.filter(
-        MathMeasurements.math_id == each_math.unique_id).all()
+        MathMeasurements.device_id == each_math.unique_id).all()
 
     for each_measure in math_measurements:
         if each_measure.measurement and each_measure.unit:
@@ -430,38 +430,24 @@ def form_math_choices(choices, each_math):
 
 
 def form_pid_choices(choices, each_pid):
-    value = '{id},setpoint'.format(id=each_pid.unique_id)
-    display = '[PID {id:02d}] {name} (Setpoint)'.format(
-        id=each_pid.id, name=each_pid.name)
-    choices.update({value: display})
-    value = '{id},setpoint_band_min'.format(id=each_pid.unique_id)
-    display = '[PID {id:02d}] {name} (Band Min)'.format(
-        id=each_pid.id, name=each_pid.name)
-    choices.update({value: display})
-    value = '{id},setpoint_band_max'.format(id=each_pid.unique_id)
-    display = '[PID {id:02d}] {name} (Band Max)'.format(
-        id=each_pid.id, name=each_pid.name)
-    choices.update({value: display})
-    value = '{id},pid_p_value'.format(id=each_pid.unique_id)
-    display = '[PID {id:02d}] {name} (P-Value)'.format(
-        id=each_pid.id, name=each_pid.name)
-    choices.update({value: display})
-    value = '{id},pid_i_value'.format(id=each_pid.unique_id)
-    display = '[PID {id:02d}] {name} (I-Value)'.format(
-        id=each_pid.id, name=each_pid.name)
-    choices.update({value: display})
-    value = '{id},pid_d_value'.format(id=each_pid.unique_id)
-    display = '[PID {id:02d}] {name} (D-Value)'.format(
-        id=each_pid.id, name=each_pid.name)
-    choices.update({value: display})
-    value = '{id},duration_time'.format(id=each_pid.unique_id)
-    display = '[PID {id:02d}] {name} (Output Duration)'.format(
-        id=each_pid.id, name=each_pid.name)
-    choices.update({value: display})
-    value = '{id},duty_cycle'.format(id=each_pid.unique_id)
-    display = '[PID {id:02d}] {name} (Output Duty Cycle)'.format(
-        id=each_pid.id, name=each_pid.name)
-    choices.update({value: display})
+    pid_measurements = PIDMeasurements.query.filter(
+        PIDMeasurements.device_id == each_pid.unique_id).all()
+
+    for each_measure in pid_measurements:
+        if each_measure.measurement and each_measure.unit:
+            value = '{input_id},{meas_id}'.format(
+                input_id=each_pid.unique_id,
+                meas_id=each_measure.unique_id)
+
+            measure_display, unit_display = check_display_names(
+                each_measure.measurement, each_measure.unit)
+            display = '[Math {id:02d}] {name} ({meas}, {unit})'.format(
+                id=each_pid.id,
+                name=each_measure.name,
+                meas=measure_display,
+                unit=unit_display)
+            choices.update({value: display})
+
     return choices
 
 
@@ -772,32 +758,27 @@ def use_unit_generate(input_dev, input_measurements, output, math, math_measurem
     # TODO: next major version: rename table columns and combine functionality
     use_unit = {}
 
-    for each_input in input_dev:
-        use_unit[each_input.unique_id] = {}
+    # Input and Math controllers have measurement tables with the same schema
+    list_devices_with_measurements = [
+        input_dev, math
+    ]
 
-        for each_meas in input_measurements:
-            if each_meas.input_id == each_input.unique_id:
-                if each_meas.measurement not in use_unit[each_input.unique_id]:
-                    use_unit[each_input.unique_id][each_meas.measurement] = {}
-                if each_meas.unit not in use_unit[each_input.unique_id][each_meas.measurement]:
-                    use_unit[each_input.unique_id][each_meas.measurement][each_meas.unit] = OrderedDict()
-                use_unit[each_input.unique_id][each_meas.measurement][each_meas.unit][each_meas.channel] = None
+    for devices in list_devices_with_measurements:
+        for each_device in devices:
+            use_unit[each_device.unique_id] = {}
+
+            for each_meas in input_measurements:
+                if each_meas.device_id == each_device.unique_id:
+                    if each_meas.measurement not in use_unit[each_device.unique_id]:
+                        use_unit[each_device.unique_id][each_meas.measurement] = {}
+                    if each_meas.unit not in use_unit[each_device.unique_id][each_meas.measurement]:
+                        use_unit[each_device.unique_id][each_meas.measurement][each_meas.unit] = OrderedDict()
+                    use_unit[each_device.unique_id][each_meas.measurement][each_meas.unit][each_meas.channel] = None
 
     for each_output in output:
         use_unit[each_output.unique_id] = {}
         if each_output.output_type == 'wired':
             use_unit[each_output.unique_id]['duration_time'] = 'second'
-
-    for each_math in math:
-        use_unit[each_math.unique_id] = {}
-
-        for each_meas in math_measurements:
-            if each_meas.math_id == each_math.unique_id:
-                if each_meas.measurement not in use_unit[each_math.unique_id]:
-                    use_unit[each_math.unique_id][each_meas.measurement] = {}
-                if each_meas.unit not in use_unit[each_math.unique_id][each_meas.measurement]:
-                    use_unit[each_math.unique_id][each_meas.measurement][each_meas.unit] = OrderedDict()
-                use_unit[each_math.unique_id][each_meas.measurement][each_meas.unit][each_meas.channel] = None
 
     return use_unit
 

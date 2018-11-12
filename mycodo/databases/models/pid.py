@@ -61,10 +61,15 @@ class PIDMeasurements(CRUDMixin, db.Model):
     unique_id = db.Column(db.String, nullable=False, unique=True, default=set_uuid)
 
     name = db.Column(db.Text, default='')
-    pid_id = db.Column(db.Text, db.ForeignKey('pid.unique_id'), default=None)
+    device_id = db.Column(db.Text, db.ForeignKey('pid.unique_id'), default=None)
 
     # Default measurement/unit
     is_enabled = db.Column(db.Boolean, default=True)
     measurement = db.Column(db.Text, default='')
+    measurement_type = db.Column(db.Text, default='')
     unit = db.Column(db.Text, default='')
     channel = db.Column(db.Integer, default=None)
+
+    # Converted measurement/unit (from either rescaled or default)
+    converted_measurement = db.Column(db.Text, default='')
+    converted_unit = db.Column(db.Text, default='')

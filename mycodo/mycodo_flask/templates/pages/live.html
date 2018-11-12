@@ -54,7 +54,7 @@
                               'temperature_object'] -%}
 
       {%- for each_input in input if each_input.is_activated -%}
-        {% for each_meas in input_measurements if each_meas.input_id == each_input.unique_id and each_meas.is_enabled %}
+        {% for each_meas in input_measurements if each_meas.device_id == each_input.unique_id and each_meas.is_enabled %}
           liveTextData('{{each_input.unique_id}}', 'input', '{{each_meas.unique_id}}', {{each_input.period + 1}});
         {% endfor %}
       {%- endfor -%}
@@ -107,7 +107,7 @@
 
         <div class="col-xs-12 col-sm-6 text-right">
           {{_('Measurement')}} | {{_('Timestamp')}}
-        {% for each_meas in input_measurements if each_meas.input_id == each_input.unique_id and each_meas.is_enabled %}
+        {% for each_meas in input_measurements if each_meas.device_id == each_input.unique_id and each_meas.is_enabled %}
           {% set measure_string = each_input.unique_id + '-input-' + each_meas.unique_id %}
           <div>
             <b><span id="{{measure_string}}-value">0.0</span> {{dict_units[each_meas.unit]['unit']}}</b> ({{dict_measurements[each_meas.measurement]['name']}}){% if not each_meas.single_channel %} CH{{each_meas.channel + 1}}{% endif %} | <span id="{{measure_string}}-time">&lt;{{_('Please wait')}}&gt;</span><br>

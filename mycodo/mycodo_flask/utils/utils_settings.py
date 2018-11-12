@@ -33,9 +33,11 @@ from mycodo.mycodo_client import DaemonControl
 from mycodo.mycodo_flask.extensions import db
 from mycodo.mycodo_flask.utils.utils_general import choices_measurements
 from mycodo.mycodo_flask.utils.utils_general import choices_units
+from mycodo.mycodo_flask.utils.utils_general import controller_activate_deactivate
 from mycodo.mycodo_flask.utils.utils_general import delete_entry_with_id
 from mycodo.mycodo_flask.utils.utils_general import flash_form_errors
 from mycodo.mycodo_flask.utils.utils_general import flash_success_errors
+from mycodo.mycodo_flask.utils.utils_input import input_deactivate_associated_controllers
 from mycodo.utils.database import db_retrieve_table
 from mycodo.utils.inputs import load_module_from_file
 from mycodo.utils.inputs import parse_input_information
@@ -995,11 +997,18 @@ def settings_diagnostic_delete_inputs():
     if not error:
         try:
             for each_input in inputs:
+                # Deactivate any active controllers using the input
+                if each_input.is_activated:
+                    input_deactivate_associated_controllers(each_input.unique_id)
+                    controller_activate_deactivate('deactivate', 'Input', each_input.unique_id)
+
                 # Delete all measurements associated with the input
                 for each_measurement in input_measurements:
-                    if each_measurement.input_id == each_input.unique_id:
+                    if each_measurement.device_id == each_input.unique_id:
                         db.session.delete(each_measurement)
-                db.session.delete(each_input)  # Delete the input
+
+                # Delete the input
+                db.session.delete(each_input)
             display_order.input = ''  # Clear the order
             db.session.commit()
         except Exception as except_msg:
@@ -1021,9 +1030,13 @@ def settings_diagnostic_delete_maths():
     if not error:
         try:
             for each_math in maths:
+                # Deactivate any active controllers using the input
+                if each_math.is_activated:
+                    controller_activate_deactivate('deactivate', 'Math', each_math.unique_id)
+
                 # Delete all measurements associated
                 for each_measurement in math_measurements:
-                    if each_measurement.math_id == each_math.unique_id:
+                    if each_measurement.device_id == each_math.unique_id:
                         db.session.delete(each_measurement)
                 db.session.delete(each_math)
             display_order.math = ''

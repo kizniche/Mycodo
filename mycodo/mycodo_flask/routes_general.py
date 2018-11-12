@@ -41,6 +41,7 @@ from mycodo.databases.models import NoteTags
 from mycodo.databases.models import Notes
 from mycodo.databases.models import Output
 from mycodo.databases.models import PID
+from mycodo.databases.models import PIDMeasurements
 from mycodo.devices.camera import camera_record
 from mycodo.mycodo_client import DaemonControl
 from mycodo.mycodo_flask.routes_authentication import clear_cookie_auth
@@ -330,7 +331,7 @@ def past_data(unique_id, measure_type, measurement_id, past_seconds):
         else:
             return '', 204
 
-    elif measure_type in ['input', 'math', 'output']:
+    elif measure_type in ['input', 'math', 'output', 'pid']:
         current_app.config['INFLUXDB_USER'] = INFLUXDB_USER
         current_app.config['INFLUXDB_PASSWORD'] = INFLUXDB_PASSWORD
         current_app.config['INFLUXDB_DATABASE'] = INFLUXDB_DATABASE
@@ -343,6 +344,8 @@ def past_data(unique_id, measure_type, measurement_id, past_seconds):
             measure = MathMeasurements.query.filter(MathMeasurements.unique_id == measurement_id).first()
         elif measure_type == 'output':
             measure = Output.query.filter(Output.unique_id == measurement_id).first()
+        elif measure_type == 'pid':
+            measure = PIDMeasurements.query.filter(PIDMeasurements.unique_id == measurement_id).first()
         else:
             measure = None
 

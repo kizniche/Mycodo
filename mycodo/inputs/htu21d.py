@@ -89,7 +89,7 @@ class InputModule(AbstractInput):
 
             self.input_measurements = db_retrieve_table_daemon(
                 InputMeasurements).filter(
-                    InputMeasurements.input_id == input_dev.unique_id)
+                    InputMeasurements.device_id == input_dev.unique_id)
 
             self.i2c_bus = input_dev.i2c_bus
             self.i2c_address = 0x40  # HTU21D-F Address

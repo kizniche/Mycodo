@@ -70,6 +70,7 @@ from mycodo.databases.models import NoteTags
 from mycodo.databases.models import Notes
 from mycodo.databases.models import Output
 from mycodo.databases.models import PID
+from mycodo.databases.models import PIDMeasurements
 from mycodo.databases.models import Trigger
 from mycodo.databases.models import Unit
 from mycodo.databases.models import User
@@ -452,6 +453,7 @@ def page_dashboard():
     misc = Misc.query.first()
     output = Output.query.all()
     pid = PID.query.all()
+    pid_measurements = PIDMeasurements.query.all()
     measurement = Measurement.query.all()
     unit = Unit.query.all()
     tags = NoteTags.query.all()
@@ -504,6 +506,10 @@ def page_dashboard():
     math_measurements_dict = {}
     for meas in math_measurements:
         math_measurements_dict[meas.unique_id] = meas
+
+    pid_measurements_dict = {}
+    for meas in pid_measurements:
+        pid_measurements_dict[meas.unique_id] = meas
 
     # Add multi-select values as form choices, for validation
     form_graph.math_ids.choices = []
@@ -640,6 +646,7 @@ def page_dashboard():
                            math_measurements_dict=math_measurements_dict,
                            misc=misc,
                            pid=pid,
+                           pid_measurements_dict=pid_measurements_dict,
                            output=output,
                            input=input_dev,
                            input_measurements_dict=input_measurements_dict,
@@ -1538,12 +1545,12 @@ def page_data():
         if each_input.unique_id not in dict_measure_info:
             dict_measure_info[each_input.unique_id] = {}
         dict_measure_info[each_input.unique_id]['channels'] = InputMeasurements.query.filter(
-            InputMeasurements.input_id == each_input.unique_id).count()
+            InputMeasurements.device_id == each_input.unique_id).count()
     for each_math in math:
         if each_math.unique_id not in dict_measure_info:
             dict_measure_info[each_math.unique_id] = {}
         dict_measure_info[each_math.unique_id]['channels'] = MathMeasurements.query.filter(
-            MathMeasurements.math_id == each_math.unique_id).count()
+            MathMeasurements.device_id == each_math.unique_id).count()
 
     # Create dict of Input names
     names_input = {}
@@ -1627,7 +1634,7 @@ def page_data():
         elif form_mod_input.input_mod.data:
             utils_input.input_mod(form_mod_input, request.form)
         elif form_mod_input.input_delete.data:
-            utils_input.input_del(form_mod_input)
+            utils_input.input_del(form_mod_input.input_id.data)
         elif form_mod_input.input_order_up.data:
             utils_input.input_reorder(form_mod_input.input_id.data,
                                       display_order_input, 'up')

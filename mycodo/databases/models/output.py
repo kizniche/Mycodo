@@ -16,6 +16,8 @@ class Output(CRUDMixin, db.Model):
     name = db.Column(db.Text, default='Output')
     measurement = db.Column(db.Text, default=None)
     unit = db.Column(db.Text, default=None)
+    converted_measurement = db.Column(db.Text, default=None)
+    converted_unit = db.Column(db.Text, default=None)
     channel = db.Column(db.Integer, default=None)
     pin = db.Column(db.Integer, default=None)  # Pin connected to the device/output
     trigger = db.Column(db.Boolean, default=True)  # GPIO output to turn output on (True=HIGH, False=LOW)

@@ -14,6 +14,9 @@ from mycodo.config import INSTALL_DIRECTORY
 from mycodo.config_devices_units import MEASUREMENTS
 from mycodo.config_devices_units import UNITS
 from mycodo.config_devices_units import UNIT_CONVERSIONS
+from mycodo.databases.models import InputMeasurements
+from mycodo.databases.models import MathMeasurements
+from mycodo.utils.database import db_retrieve_table_daemon
 
 logger = logging.getLogger("mycodo.system_pi")
 
@@ -104,6 +107,23 @@ def all_conversions(conversions):
         sorted_dict_conversions[each_key] = conversions_combined[each_key]
 
     return sorted_dict_conversions
+
+
+def get_input_or_math_measurement(measurement_id):
+    """ Find measurement """
+    measurement_input = db_retrieve_table_daemon(
+        InputMeasurements).filter(
+        InputMeasurements.unique_id == measurement_id).first()
+    measurement_math = db_retrieve_table_daemon(
+        MathMeasurements).filter(
+        MathMeasurements.unique_id == measurement_id).first()
+    if measurement_input:
+        measurement = measurement_input
+    elif measurement_math:
+        measurement = measurement_math
+    else:
+        return None
+    return measurement
 
 
 def time_between_range(start_time, end_time):

@@ -4,7 +4,7 @@
   <label class="control-label">{{tooltips_input['measurements_enabled']['title']}}</label>
   <div>
     <select class="form-control form-tooltip form-dropdown" data-placement="top" id="measurements_enabled" name="measurements_enabled" title="{{tooltips_input['measurements_enabled']['phrase']}}" size="{{[10, dict_measure_info[each_input.unique_id]['channels']]|min}}" multiple>
-      {% for each_measurement in input_measurements if each_measurement.input_id == each_input.unique_id %}
+      {% for each_measurement in input_measurements if each_measurement.device_id == each_input.unique_id %}
         <option value="{{each_measurement.unique_id}}"{% if each_measurement.is_enabled %} selected{% endif %}>{{dict_measurements[each_measurement.measurement]['name']}} {% if each_measurement.channel != None %} (CH{{each_measurement.channel + 1}}{% if each_measurement.unit in dict_units %}, {{dict_units[each_measurement.unit]['name']}}{% endif %}){% endif %}</option>
       {% endfor %}
     </select>

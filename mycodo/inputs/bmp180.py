@@ -67,7 +67,7 @@ class InputModule(AbstractInput):
 
             self.input_measurements = db_retrieve_table_daemon(
                 InputMeasurements).filter(
-                    InputMeasurements.input_id == input_dev.unique_id)
+                    InputMeasurements.device_id == input_dev.unique_id)
 
             self.i2c_bus = input_dev.i2c_bus
             self.bmp = BMP085.BMP085(busnum=self.i2c_bus)

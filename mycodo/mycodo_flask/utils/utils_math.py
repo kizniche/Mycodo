@@ -63,7 +63,7 @@ def math_add(form_add_math):
 
             if not MATH_INFO[form_add_math.math_type.data]['measure']:
                 new_measurement = MathMeasurements()
-                new_measurement.math_id = new_math.unique_id
+                new_measurement.device_id = new_math.unique_id
                 new_measurement.channel = 0
                 new_measurement.save()
             else:
@@ -71,7 +71,7 @@ def math_add(form_add_math):
                     new_measurement = MathMeasurements()
                     if 'name' in measure_info and measure_info['name']:
                         new_measurement.name = measure_info['name']
-                    new_measurement.math_id = new_math.unique_id
+                    new_measurement.device_id = new_math.unique_id
                     new_measurement.measurement = measure_info['measurement']
                     new_measurement.unit = measure_info['unit']
                     new_measurement.channel = each_channel
@@ -119,7 +119,7 @@ def math_mod(form_mod_math, form_mod_type=None):
         mod_math.max_measure_age = form_mod_math.max_measure_age.data
 
         measurements = MathMeasurements.query.filter(
-            MathMeasurements.math_id == form_mod_math.math_id.data).all()
+            MathMeasurements.device_id == form_mod_math.math_id.data).all()
 
         # Set each measurement to the same measurement/unit
         if form_mod_math.select_measurement_unit.data:
@@ -215,7 +215,7 @@ def math_measurement_mod(form):
         mod_meas = MathMeasurements.query.filter(
             MathMeasurements.unique_id == form.math_measurement_id.data).first()
 
-        mod_math = Math.query.filter(Math.unique_id == mod_meas.math_id).first()
+        mod_math = Math.query.filter(Math.unique_id == mod_meas.device_id).first()
         if mod_math.is_activated:
             error.append(gettext(
                 "Deactivate controller before modifying its settings"))
@@ -266,7 +266,7 @@ def math_del(form_mod_math):
                 form_mod_math.math_id.data)
 
         math_measurements = MathMeasurements.query.filter(
-            MathMeasurements.math_id == math_id).all()
+            MathMeasurements.device_id == math_id).all()
 
         for each_measurement in math_measurements:
             delete_entry_with_id(MathMeasurements, each_measurement.unique_id)

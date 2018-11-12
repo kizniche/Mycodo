@@ -102,7 +102,7 @@ class InputController(threading.Thread):
 
         self.input_measurements = db_retrieve_table_daemon(
             InputMeasurements).filter(
-                InputMeasurements.input_id == self.input_id)
+                InputMeasurements.device_id == self.input_id)
 
         self.input_dev = input_dev
         self.input_name = input_dev.name

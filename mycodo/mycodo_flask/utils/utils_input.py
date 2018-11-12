@@ -10,7 +10,6 @@ from flask import redirect
 from flask import url_for
 from flask_babel import gettext
 
-from mycodo.config_devices_units import MEASUREMENTS
 from mycodo.databases.models import DisplayOrder
 from mycodo.databases.models import Input
 from mycodo.databases.models import InputMeasurements
@@ -25,8 +24,8 @@ from mycodo.mycodo_flask.utils.utils_general import reorder
 from mycodo.mycodo_flask.utils.utils_general import return_dependencies
 from mycodo.utils.inputs import parse_input_information
 from mycodo.utils.system_pi import csv_to_list_of_str
-from mycodo.utils.system_pi import list_to_csv
 from mycodo.utils.system_pi import is_int
+from mycodo.utils.system_pi import list_to_csv
 from mycodo.utils.system_pi import str_is_float
 
 logger = logging.getLogger(__name__)
@@ -240,7 +239,7 @@ def input_add(form_add):
                         new_measurement = InputMeasurements()
                         if 'name' in measure_info:
                             new_measurement.name = measure_info['name']
-                        new_measurement.input_id = new_input.unique_id
+                        new_measurement.device_id = new_input.unique_id
                         new_measurement.measurement = measure_info['measurement']
                         new_measurement.unit = measure_info['unit']
                         new_measurement.channel = each_channel
@@ -329,7 +328,7 @@ def input_mod(form_mod, request_form):
 
         # Enable/disable Channels
         measurements = InputMeasurements.query.filter(
-            InputMeasurements.input_id == form_mod.input_id.data).all()
+            InputMeasurements.device_id == form_mod.input_id.data).all()
         if form_mod.measurements_enabled.data:
             for each_measurement in measurements:
                 if each_measurement.unique_id in form_mod.measurements_enabled.data:
@@ -474,7 +473,7 @@ def measurement_mod(form):
         mod_meas = InputMeasurements.query.filter(
             InputMeasurements.unique_id == form.input_measurement_id.data).first()
 
-        mod_input = Input.query.filter(Input.unique_id == mod_meas.input_id).first()
+        mod_input = Input.query.filter(Input.unique_id == mod_meas.device_id).first()
         if mod_input.is_activated:
             error.append(gettext(
                 "Deactivate controller before modifying its settings"))
@@ -517,13 +516,11 @@ def measurement_mod(form):
     flash_success_errors(error, action, url_for('routes_page.page_data'))
 
 
-def input_del(form_mod):
+def input_del(input_id):
     action = '{action} {controller}'.format(
         action=gettext("Delete"),
         controller=gettext("Input"))
     error = []
-
-    input_id = form_mod.input_id.data
 
     try:
         input_dev = Input.query.filter(
@@ -534,7 +531,7 @@ def input_del(form_mod):
             controller_activate_deactivate('deactivate', 'Input', input_id)
 
         input_measurements = InputMeasurements.query.filter(
-            InputMeasurements.input_id == input_id).all()
+            InputMeasurements.device_id == input_id).all()
 
         for each_measurement in input_measurements:
             delete_entry_with_id(InputMeasurements, each_measurement.unique_id)

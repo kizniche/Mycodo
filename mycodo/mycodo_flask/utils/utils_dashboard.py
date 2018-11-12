@@ -15,6 +15,7 @@ from mycodo.databases.models import Math
 from mycodo.databases.models import MathMeasurements
 from mycodo.databases.models import Output
 from mycodo.databases.models import PID
+from mycodo.databases.models import PIDMeasurements
 from mycodo.mycodo_flask.extensions import db
 from mycodo.mycodo_flask.utils.utils_general import add_display_order
 from mycodo.mycodo_flask.utils.utils_general import delete_entry_with_id
@@ -432,6 +433,7 @@ def graph_y_axes(dict_measurements):
     math_measurements = MathMeasurements.query.all()
     output = Output.query.all()
     pid = PID.query.all()
+    pid_measurements = PIDMeasurements.query.all()
 
     devices_list = [input_dev, math, output, pid]
 
@@ -482,6 +484,25 @@ def graph_y_axes(dict_measurements):
                     measure_id = each_id_measure.split(',')[1]
 
                     for each_measure in math_measurements:
+                        if each_measure.unique_id == measure_id:
+                            if each_measure.converted_unit:
+                                if not y_axes[each_graph.unique_id]:
+                                    y_axes[each_graph.unique_id] = [each_measure.converted_unit]
+                                elif y_axes[each_graph.unique_id] and each_measure.converted_unit not in y_axes[each_graph.unique_id]:
+                                    y_axes.setdefault(each_graph.unique_id, []).append(each_measure.converted_unit)
+                            else:
+                                if not y_axes[each_graph.unique_id]:
+                                    y_axes[each_graph.unique_id] = [each_measure.unit]
+                                elif y_axes[each_graph.unique_id] and each_measure.unit not in y_axes[each_graph.unique_id]:
+                                    y_axes.setdefault(each_graph.unique_id, []).append(each_measure.unit)
+
+                if each_device == pid and ',' in each_id_measure:
+                    if each_graph.unique_id not in y_axes:
+                        y_axes[each_graph.unique_id] = []
+
+                    measure_id = each_id_measure.split(',')[1]
+
+                    for each_measure in pid_measurements:
                         if each_measure.unique_id == measure_id:
                             if each_measure.converted_unit:
                                 if not y_axes[each_graph.unique_id]:

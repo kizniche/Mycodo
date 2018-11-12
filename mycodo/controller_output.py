@@ -281,9 +281,9 @@ class OutputController(threading.Thread):
                         write_db = threading.Thread(
                             target=write_influxdb_value,
                             args=(self.output_unique_id[output_id],
-                                  'duration_time',
+                                  's',
                                   duration_on,),
-                            kwargs={'unit': 's',
+                            kwargs={'measure': 'duration_time',
                                     'channel': 0,
                                     'timestamp': timestamp})
                         write_db.start()
@@ -362,9 +362,9 @@ class OutputController(threading.Thread):
                 write_db = threading.Thread(
                     target=write_influxdb_value,
                     args=(self.output_unique_id[output_id],
-                          'duty_cycle',
+                          'percent',
                           duty_cycle,),
-                    kwargs={'unit': 'percent',
+                    kwargs={'measure': 'duty_cycle',
                             'channel': 0})
                 write_db.start()
 
@@ -395,9 +395,9 @@ class OutputController(threading.Thread):
                 write_db = threading.Thread(
                     target=write_influxdb_value,
                     args=(self.output_unique_id[output_id],
-                          'duty_cycle',
+                          'percent',
                           duty_cycle,),
-                    kwargs={'unit': 'percent',
+                    kwargs={'measure': 'duty_cycle',
                             'channel': 0})
                 write_db.start()
 
@@ -432,9 +432,9 @@ class OutputController(threading.Thread):
                 write_db = threading.Thread(
                     target=write_influxdb_value,
                     args=(self.output_unique_id[output_id],
-                          'duty_cycle',
+                          'percent',
                           duty_cycle,),
-                    kwargs={'unit': 'percent',
+                    kwargs={'measure': 'duty_cycle',
                             'channel': 0})
                 write_db.start()
 
@@ -474,9 +474,9 @@ class OutputController(threading.Thread):
                 write_db = threading.Thread(
                     target=write_influxdb_value,
                     args=(self.output_unique_id[output_id],
-                          'duration_time',
+                          's',
                           duration_sec,),
-                    kwargs={'unit': 's',
+                    kwargs={'measure': 'duration_time',
                             'channel': 0,
                             'timestamp': timestamp})
                 write_db.start()

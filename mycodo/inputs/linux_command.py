@@ -51,7 +51,7 @@ class InputModule(AbstractInput):
 
             self.input_measurement = db_retrieve_table_daemon(
                 InputMeasurements).filter(
-                    InputMeasurements.input_id == input_dev.unique_id).first()
+                    InputMeasurements.device_id == input_dev.unique_id).first()
             self.measurement = self.input_measurement.measurement
             self.unit = self.input_measurement.unit
 

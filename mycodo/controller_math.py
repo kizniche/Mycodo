@@ -34,7 +34,6 @@ import urllib3
 
 import mycodo.utils.psypy as SI
 from mycodo.databases.models import Input
-from mycodo.databases.models import InputMeasurements
 from mycodo.databases.models import Math
 from mycodo.databases.models import MathMeasurements
 from mycodo.databases.models import Misc
@@ -45,6 +44,7 @@ from mycodo.utils.database import db_retrieve_table_daemon
 from mycodo.utils.influx import add_measurements_influxdb
 from mycodo.utils.influx import read_last_influxdb
 from mycodo.utils.influx import read_past_influxdb
+from mycodo.utils.system_pi import get_input_or_math_measurement
 
 
 class Measurement:
@@ -101,7 +101,7 @@ class MathController(threading.Thread):
 
             self.math_measurements = db_retrieve_table_daemon(
                 MathMeasurements).filter(
-                    MathMeasurements.math_id == self.math_id)
+                    MathMeasurements.device_id == self.math_id)
 
             # General variables
             self.unique_id = math.unique_id
@@ -197,7 +197,7 @@ class MathController(threading.Thread):
 
             device_id = self.inputs.split(',')[0]
             device_measurement_id = self.inputs.split(',')[1]
-            measurement = self.get_input_or_math_measurement(
+            measurement = get_input_or_math_measurement(
                 device_measurement_id)
             try:
                 last_measurements = read_past_influxdb(
@@ -434,23 +434,6 @@ class MathController(threading.Thread):
             "One or more inputs were not within the Max Age that has been "
             "set. Ensure all Inputs are operating properly.")
 
-    @staticmethod
-    def get_input_or_math_measurement(measurement_id):
-        """ Find measurement """
-        measurement_input = db_retrieve_table_daemon(
-            InputMeasurements).filter(
-            InputMeasurements.unique_id == measurement_id).first()
-        measurement_math = db_retrieve_table_daemon(
-            MathMeasurements).filter(
-            MathMeasurements.unique_id == measurement_id).first()
-        if measurement_input:
-            measurement = measurement_input
-        elif measurement_math:
-            measurement = measurement_math
-        else:
-            return None
-        return measurement
-
     def get_measurements_from_str(self, device):
         try:
             measurements = []
@@ -459,7 +442,7 @@ class MathController(threading.Thread):
                 device_id = each_device_set.split(',')[0]
                 device_measure_id = each_device_set.split(',')[1]
 
-                measurement = self.get_input_or_math_measurement(
+                measurement = get_input_or_math_measurement(
                     device_measure_id)
                 if not measurement:
                     return False, None
@@ -481,7 +464,7 @@ class MathController(threading.Thread):
             return False, "Influxdb: Unknown Error: {err}".format(err=msg)
 
     def get_measurements_from_id(self, device_id, measure_id):
-        measurement = self.get_input_or_math_measurement(measure_id)
+        measurement = get_input_or_math_measurement(measure_id)
 
         measurement = read_last_influxdb(
             device_id,

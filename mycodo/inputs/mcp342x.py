@@ -87,7 +87,7 @@ class InputModule(AbstractInput):
 
             self.input_measurements = db_retrieve_table_daemon(
                 InputMeasurements).filter(
-                    InputMeasurements.input_id == input_dev.unique_id)
+                    InputMeasurements.device_id == input_dev.unique_id)
 
             self.MCP342x = MCP342x
             self.bus = SMBus(self.i2c_bus)
