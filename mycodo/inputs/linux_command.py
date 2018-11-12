@@ -8,9 +8,10 @@ from mycodo.utils.system_pi import cmd_output
 from mycodo.utils.system_pi import str_is_float
 
 # Measurements
-measurements = {
-    'temperature': {
-        'C': {0: {}}
+measurements_dict = {
+    0: {
+        'measurement': '',
+        'unit': ''
     }
 }
 
@@ -20,7 +21,7 @@ INPUT_INFORMATION = {
     'input_manufacturer': 'Mycodo',
     'input_name': 'Linux Command',
     'measurements_name': 'Return Value',
-    'measurements_dict': measurements,
+    'measurements_dict': measurements_dict,
 
     'options_enabled': [
         'measurements_select_measurement_unit',
@@ -49,23 +50,13 @@ class InputModule(AbstractInput):
 
             self.command = input_dev.cmd_command
 
-            self.input_measurement = db_retrieve_table_daemon(
-                InputMeasurements).filter(
-                    InputMeasurements.device_id == input_dev.unique_id).first()
-            self.measurement = self.input_measurement.measurement
-            self.unit = self.input_measurement.unit
-
     def get_measurement(self):
         """ Determine if the return value of the command is a number """
-        return_dict = {
-            self.measurement: {
-                self.unit: {}
-            }
-        }
+        return_dict = measurements_dict.copy()
 
         out, _, _ = cmd_output(self.command)
         if str_is_float(out):
-            return_dict[self.measurement][self.unit][0] = float(out)
+            return_dict[0]['value'] = float(out)
             return return_dict
         else:
             self.logger.error(
