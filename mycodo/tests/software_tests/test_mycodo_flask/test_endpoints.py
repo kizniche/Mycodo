@@ -54,7 +54,7 @@ def test_routes_when_not_logged_in(testapp):
         'admin/backup',
         'admin/statistics',
         'admin/upgrade',
-        'async/0/0/0/0/0/0',
+        'async/0/0/0/0/0',
         'camera',
         'dl/0/0',
         'data',
