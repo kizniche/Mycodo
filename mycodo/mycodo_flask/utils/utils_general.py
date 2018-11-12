@@ -440,7 +440,7 @@ def form_pid_choices(choices, each_pid):
 
             measure_display, unit_display = check_display_names(
                 each_measure.measurement, each_measure.unit)
-            display = '[Math {id:02d}] {name} ({meas}, {unit})'.format(
+            display = '[PID {id:02d}] {name} ({meas}, {unit})'.format(
                 id=each_pid.id,
                 name=each_measure.name,
                 meas=measure_display,

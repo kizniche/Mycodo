@@ -479,15 +479,6 @@ $(document).ready(function() {
             {%- endif -%}
           {% endfor %}
 
-          {% for each_tag in tag if each_tag.unique_id == each_id_meas.split(',')[0] %}
-            {
-              name: 'Note Tag: {{each_tag.name}}',
-              type: 'flags',
-              data: [],
-              shape: 'squarepin'
-            },
-          {% endfor %}
-
           {%- for each_output in output if each_output.unique_id == device_id -%}
               {
                 name: '{{each_output.name}} ({{measurement_units[each_output.measurement]['name']}})',
@@ -504,6 +495,15 @@ $(document).ready(function() {
                 data: []
               },
           {%- endfor -%}
+
+          {% for each_tag in tag if each_tag.unique_id == device_id %}
+            {
+              name: 'Note Tag: {{each_tag.name}}',
+              type: 'flags',
+              data: [],
+              shape: 'squarepin'
+            },
+          {% endfor %}
 
         {% endfor %}  {# End main for #}
 

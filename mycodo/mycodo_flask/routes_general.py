@@ -350,7 +350,7 @@ def past_data(unique_id, measure_type, measurement_id, past_seconds):
         elif measure_type == 'math':
             measure = MathMeasurements.query.filter(MathMeasurements.unique_id == measurement_id).first()
         elif measure_type == 'output':
-            measure = Output.query.filter(Output.unique_id == measurement_id).first()
+            measure = Output.query.filter(Output.unique_id == unique_id).first()
         elif measure_type == 'pid':
             measure = PIDMeasurements.query.filter(PIDMeasurements.unique_id == measurement_id).first()
         else:
@@ -518,7 +518,7 @@ def async_data(device_id, device_type, measurement_id, start_seconds, end_second
     """
     if device_type == 'tag':
         notes_list = []
-        tag = NoteTags.query.filter(NoteTags.device_id == device_id).first()
+        tag = NoteTags.query.filter(NoteTags.unique_id == device_id).first()
 
         start = datetime.datetime.utcfromtimestamp(float(start_seconds))
         if end_seconds == '0':
@@ -529,7 +529,7 @@ def async_data(device_id, device_type, measurement_id, start_seconds, end_second
         notes = Notes.query.filter(
             and_(Notes.date_time >= start, Notes.date_time <= end)).all()
         for each_note in notes:
-            if tag.device_id in each_note.tags.split(','):
+            if tag.unique_id in each_note.tags.split(','):
                 notes_list.append(
                     [each_note.date_time.strftime("%Y-%m-%dT%H:%M:%S.000000000Z"), each_note.name, each_note.note])
 
@@ -549,7 +549,7 @@ def async_data(device_id, device_type, measurement_id, start_seconds, end_second
     elif device_type == 'math':
         measure = MathMeasurements.query.filter(MathMeasurements.unique_id == measurement_id).first()
     elif device_type == 'output':
-        measure = Output.query.filter(Output.unique_id == measurement_id).first()
+        measure = Output.query.filter(Output.unique_id == device_id).first()
     elif device_type == 'pid':
         measure = PIDMeasurements.query.filter(PIDMeasurements.unique_id == measurement_id).first()
     else:

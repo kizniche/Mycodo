@@ -17,7 +17,7 @@
 
   <p>Tags allow categorization of notes. Each note may have one or more tags. A tag may be selected to display all the notes associated with it on a graph.</p>
 
-  <div class="row align-items-end">
+  <div class="row small-gutters align-items-end">
     <div class="col-auto">
       <form class="form-horizontal" method="post" action="/notes">
       {{form_tag_add.csrf_token}}
@@ -37,7 +37,7 @@
   <form class="form-horizontal" method="post" action="/notes">
   {{form_tag_options.csrf_token}}
 
-    <div class="row align-items-end mt-3">
+    <div class="row small-gutters align-items-end mt-3">
       <div class="col-auto">
         <select class="form-control" id="tag_unique_id" name="tag_unique_id" title="" data-original-title="Select the tag to delete">
           {%- for each_tag in tags -%}
@@ -74,7 +74,7 @@
 
   <form method="post" action="/notes" enctype=multipart/form-data>
   {{form_note_add.csrf_token}}
-  <div class="row">
+  <div class="row small-gutters">
     <div class="col-auto">
       {{form_note_add.name.label(class_='control-label')}}
       <div>
@@ -100,7 +100,7 @@
       </div>
     </div>
   </div>
-  <div class="row">
+  <div class="row small-gutters">
     <div class="col-xs-12 col-sm-8 col-md-9">
       {{form_note_add.note.label(class_='control-label')}}
       <div>
@@ -161,7 +161,7 @@
 
   <form method="post" action="/notes" enctype=multipart/form-data>
   {{form_note_add.csrf_token}}
-  <div class="row align-items-end">
+  <div class="row  small-gutters align-items-end">
     <div class="col-auto">
       {{form_note_show.filter_names.label(class_='control-label')}}
       <div>
@@ -187,7 +187,8 @@
       </div>
     </div>
   </div>
-  <div class="row align-items-end">
+
+  <div class="row small-gutters align-items-end">
     <div class="col-auto">
       {{form_note_show.sort_by.label(class_='control-label')}}
       <div>
