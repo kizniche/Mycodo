@@ -25,7 +25,7 @@ class MethodCreate(FlaskForm):
         validators=[DataRequired()]
     )
     controller_type = HiddenField('Controller Type')
-    Submit = SubmitField(lazy_gettext('Create New Method'))
+    Submit = SubmitField(lazy_gettext('Add'))
 
 
 class MethodAdd(FlaskForm):

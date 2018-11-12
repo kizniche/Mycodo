@@ -20,7 +20,7 @@
       <div class="col-auto">
         {{form_ds.device_id.label(class_='control-label')}}
         <div>
-          <select class="form-control" id="device_id" name="device_id" title="" data-original-title="{{_('Select a DS18B20 sensor')}}">
+          <select class="selectpicker" id="device_id" name="device_id" title="" data-original-title="{{_('Select a DS18B20 sensor')}}">
           {% if ds_inputs %}
             {% for each_ds in ds_inputs %}
               <option value="{{each_ds}}">{{each_ds}}</option>
@@ -34,7 +34,7 @@
       <div class="col-auto">
         {{form_ds.resolution.label(class_='control-label')}}
         <div>
-          <select class="form-control" id="resolution" name="resolution" title="" data-original-title="{{_('Select a resolution')}}">
+          <select class="selectpicker" id="resolution" name="resolution" title="" data-original-title="{{_('Select a resolution')}}">
             <option value="9">9-bit, 0.5 °C, 93.75 ms</option>
             <option value="10">10-bit, 0.25 °C, 187.5 ms</option>
             <option value="11">11-bit, 0.125 °C, 375 ms</option>

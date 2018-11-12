@@ -152,10 +152,10 @@
 
       <div class="row small-gutters" style="padding-left: 0.75em">
         <div class="col-sm-3 col-md-2 col-lg-1">
-          {{form_add_output.output_quantity(class_='form-control', type="number", value=1, **{'title':_('Quantity')})}}
+          {{form_add_output.output_quantity(class_='form-control', type="number", value=1, **{'title': _('Quantity')})}}
         </div>
         <div class="col-auto">
-          {{form_add_output.output_type(class_='form-control')}}
+          {{form_add_output.output_type(class_='selectpicker', **{'title': _('Output') + ': ' + _('Select One')})}}
         </div>
         <div class="col-auto">
           {{form_add_output.output_add(class_='btn btn-primary btn-block')}}

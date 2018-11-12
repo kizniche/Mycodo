@@ -25,11 +25,11 @@
 
   <form method="post" action="/export">
   {{form_export_measurements.csrf_token}}
-  <div class="row" style="padding-top: 1em">
-    <div class="col-xs-12 col-sm-6">
+  <div class="row small-gutters" style="padding-top: 1em">
+    <div class="col-auto">
       {{form_export_measurements.measurement.label(class_='control-label')}}
       <div>
-        <select class="form-control" id="measurement" name="measurement">
+        <select class="selectpicker" id="measurement" name="measurement">
         {% for each_choice, value in input_choices.items() -%}
           <option value="{{each_choice}}">{{value}}</option>
         {% endfor -%}

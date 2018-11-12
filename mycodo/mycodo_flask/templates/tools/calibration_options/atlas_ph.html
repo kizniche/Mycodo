@@ -81,7 +81,7 @@ function startTimer() {
     {{form_ph_calibrate.hidden_next_stage(value=1)}}
     <div class="row small-gutters">
       <div class="col-auto small-gutters">
-        <select class="form-control" id="selected_sensor_id" name="selected_sensor_id" title="" data-original-title="Select which Atlas Scientific pH sensor to calibrate">
+        <select class="selectpicker" id="selected_sensor_id" name="selected_sensor_id" title="" data-original-title="Select which Atlas Scientific pH sensor to calibrate">
           {% if sensor %}
             {%- for each_sensor in sensor -%}
               <option value="{{each_sensor.unique_id}}">{{each_sensor.id}} ({{each_sensor.name}})</option>
@@ -92,10 +92,10 @@ function startTimer() {
         </select>
       </div>
       <div class="col-auto small-gutters">
-        {{form_ph_calibrate.go_from_first_stage(class_='form-control btn btn-sm')}}
+        {{form_ph_calibrate.go_from_first_stage(class_='form-control btn-default')}}
       </div>
       <div class="col-auto small-gutters">
-        {{form_ph_calibrate.clear_calibration(class_='form-control btn btn-sm')}}
+        {{form_ph_calibrate.clear_calibration(class_='form-control btn-default')}}
       </div>
     </div>
     </form>

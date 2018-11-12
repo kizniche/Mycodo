@@ -25,7 +25,7 @@ class LCDAdd(FlaskForm):
         )],
         widget=NumberInput()
     )
-    add = SubmitField(lazy_gettext('Add LCDs'))
+    add = SubmitField(lazy_gettext('Add'))
 
 
 class LCDMod(FlaskForm):

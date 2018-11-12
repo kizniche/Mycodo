@@ -391,5 +391,5 @@ def get_raspi_config_settings():
     spi_status, _, _ = cmd_output("raspi-config nonint get_spi")
     settings['spi_enabled'] = not bool(int(spi_status))
     hostname_out, _, _ = cmd_output("raspi-config nonint get_hostname")
-    settings['hostname'] = hostname_out
+    settings['hostname'] = hostname_out.decode("utf-8")
     return settings

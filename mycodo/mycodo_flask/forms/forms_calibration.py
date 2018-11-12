@@ -23,7 +23,7 @@ class Calibration(FlaskForm):
         choices=CALIBRATION_DEVICES,
         validators=[DataRequired()]
     )
-    submit = SubmitField(lazy_gettext('Select Device'))
+    submit = SubmitField(lazy_gettext('Select'))
 
 
 # Atlas Scientific pH sensor

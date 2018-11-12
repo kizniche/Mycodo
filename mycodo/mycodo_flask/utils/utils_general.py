@@ -335,7 +335,8 @@ def choices_lcd(inputs, maths, pids, outputs, dict_units, dict_measurements):
             id=each_pid.id,
             name=each_pid.name)
         choices.update({value: display})
-        choices = form_pid_choices(choices, each_pid)
+        choices = form_pid_choices(
+            choices, each_pid, dict_units, dict_measurements)
 
     # Outputs
     for each_output in outputs:

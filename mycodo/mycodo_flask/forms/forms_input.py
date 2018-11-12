@@ -32,7 +32,7 @@ class DataBase(FlaskForm):
 
 
 class InputAdd(FlaskForm):
-    choices_inputs = [('', lazy_gettext('Select Input to Add'))]
+    choices_inputs = []
     dict_inputs = parse_input_information()
     list_inputs_sorted = generate_form_input_list(dict_inputs)
 
@@ -58,7 +58,7 @@ class InputAdd(FlaskForm):
         choices=choices_inputs,
         validators=[DataRequired()]
     )
-    input_add = SubmitField(lazy_gettext('Add Input'))
+    input_add = SubmitField(lazy_gettext('Add'))
 
 
 class InputMod(FlaskForm):

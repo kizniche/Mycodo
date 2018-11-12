@@ -215,9 +215,13 @@ def input_add(form_add):
         list_options = []
         if 'custom_options' in dict_inputs[input_name]:
             for each_option in dict_inputs[input_name]['custom_options']:
+                if each_option['default_value'] is False:
+                    default_value = ''
+                else:
+                    default_value = each_option['default_value']
                 option = '{id},{value}'.format(
                     id=each_option['id'],
-                    value=each_option['default_value'])
+                    value=default_value)
                 list_options.append(option)
         new_input.custom_options = ';'.join(list_options)
 

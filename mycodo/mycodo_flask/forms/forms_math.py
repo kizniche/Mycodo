@@ -20,13 +20,11 @@ from mycodo.config_translations import TOOLTIPS_INPUT
 
 
 class MathAdd(FlaskForm):
-    choices_maths = [('', lazy_gettext('Select Math to Add'))] + MATHS
-
     math_type = SelectField(
-        choices=choices_maths,
+        choices=MATHS,
         validators=[DataRequired()]
     )
-    math_add = SubmitField(lazy_gettext('Add Math'))
+    math_add = SubmitField(lazy_gettext('Add'))
 
 
 class MathMod(FlaskForm):

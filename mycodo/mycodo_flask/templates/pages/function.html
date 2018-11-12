@@ -23,11 +23,9 @@
     <form id="new_function_form" method="post" action="/function">
     {{form_mod_pid_base.csrf_token}}
 
-    <div class="row small-gutters">
-
+    <div class="row small-gutters" style="padding-left: 0.75em">
       <div class="col-auto">
-        <select class="form-control form-tooltip form-dropdown" id="func_type" name="func_type">
-          <option value="">{{_('Select One')}}</option>
+        <select class="selectpicker" title="{{_('Function')}}: {{_('Select One')}}" id="func_type" name="func_type">
           {% for each_function in function_types -%}
             <option value="{{each_function[0]}}">{{each_function[2]}}</option>
           {% endfor -%}
@@ -49,8 +47,6 @@
       {% include 'pages/function_options/pid.html' %}
       {% include 'pages/function_options/trigger.html' %}
       {% include 'pages/function_options/spacer.html' %}
-
-      <div style="padding-bottom: 0.5em; "></div>
 
     {% endfor %}
 
