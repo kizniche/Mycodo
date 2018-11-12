@@ -273,18 +273,25 @@ def last_data(unique_id, measure_type, measurement_id, period):
         elif measure_type == 'output':
             measure = Output.query.filter(Output.unique_id == unique_id).first()
         else:
-            measure = None
+            return '', 204
+
+        if measure.converted_unit and measure.converted_measurement:
+            measurement = measure.converted_measurement
+            unit = measure.converted_unit
+        else:
+            measurement = measure.measurement
+            unit = measure.unit
 
         try:
             if period != '0':
                 query_str = query_string(
-                    measure.unit, unique_id,
-                    measure=measure.measurement, channel=measure.channel,
+                    unit, unique_id,
+                    measure=measurement, channel=measure.channel,
                     value='LAST', past_sec=period)
             else:
                 query_str = query_string(
-                    measure.unit, unique_id,
-                    measure=measure.measurement, channel=measure.channel,
+                    unit, unique_id,
+                    measure=measurement, channel=measure.channel,
                     value='LAST')
             if query_str == 1:
                 return '', 204

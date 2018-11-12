@@ -24,11 +24,12 @@ measurements_dict = {
 INPUT_INFORMATION = {
     'input_name_unique': 'RPi',
     'input_manufacturer': 'Raspberry Pi',
-    'input_name': 'RPi CPU Temp',
+    'input_name': 'RPi Temp',
     'measurements_name': 'Temperature',
     'measurements_dict': measurements_dict,
 
     'options_enabled': [
+        'measurements_select',
         'period'
     ],
     'options_disabled': ['interface'],
@@ -78,6 +79,6 @@ class InputModule(AbstractInput):
             temperature_gpu = subprocess.check_output(
                 ('/opt/vc/bin/vcgencmd', 'measure_temp'))
             return_dict[1]['value'] = float(
-                temperature_gpu.split('=')[1].split("'")[0])
+                temperature_gpu.split(b'=')[1].split(b"'")[0])
 
         return return_dict
