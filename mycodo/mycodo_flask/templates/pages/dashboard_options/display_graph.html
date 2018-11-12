@@ -261,7 +261,13 @@
         {%- if measurement_id in input_measurements_dict -%}
 
       {
-        name: '{{each_input.name}} ({{'CH' + (input_measurements_dict[measurement_id].channel + 1)|string}}
+        name: '{{each_input.name}}
+
+          {%- if input_measurements_dict[measurement_id].name -%}
+            {{' (' + input_measurements_dict[measurement_id].name}})
+          {%- endif -%}
+
+          {{' (CH' + (input_measurements_dict[measurement_id].channel + 1)|string}}
 
           {%- if input_measurements_dict[measurement_id].converted_unit -%}
             {{', ' + measurement_units[input_measurements_dict[measurement_id].converted_measurement]['name']}}
@@ -316,7 +322,7 @@
         name: '{{each_math.name}}
 
           {%- if math_measurements_dict[measurement_id].name -%}
-            {{' ' + math_measurements_dict[measurement_id].name}}
+            {{' (' + math_measurements_dict[measurement_id].name}})
           {%- endif -%}
 
             {{' (CH' + (math_measurements_dict[measurement_id].channel + 1)|string}}
@@ -393,7 +399,7 @@
         name: '{{each_pid.name}}
 
           {%- if pid_measurements_dict[measurement_id].name -%}
-            {{' ' + pid_measurements_dict[measurement_id].name}}
+            {{' (' + pid_measurements_dict[measurement_id].name}})
           {%- endif -%}
 
             {{' (CH' + (pid_measurements_dict[measurement_id].channel + 1)|string}}

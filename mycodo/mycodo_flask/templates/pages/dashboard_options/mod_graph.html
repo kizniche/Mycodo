@@ -70,7 +70,7 @@
       <div class="col-auto">
         {{form_graph.input_ids.label(class_='control-label')}}
         <div>
-          <select class="form-control btn-sm" id="input_ids" name="input_ids" style="width: 100%;" size="{{choices_input|length}}" multiple>
+          <select class="form-control btn-sm" id="input_ids" name="input_ids" style="width: 100%;" size="{{[choices_input|length, 20]|min}}" multiple>
           {% if choices_input %}
             {% for each_choice, value in choices_input.items() -%}
             <option value="{{each_choice}}"{%- if each_choice|string in each_dashboard.input_ids_measurements %} selected{%- endif -%}>{{value}}</option>
@@ -84,7 +84,7 @@
       <div class="col-auto">
         {{form_graph.math_ids.label(class_='control-label')}}
         <div>
-          <select class="form-control btn-sm" id="math_ids" name="math_ids" style="width: 100%;" size="{{choices_math|length}}" multiple>
+          <select class="form-control btn-sm" id="math_ids" name="math_ids" style="width: 100%;" size="{{[choices_math|length, 20]|min}}" multiple>
           {% if choices_math %}
             {% for each_choice, value in choices_math.items() -%}
             <option value="{{each_choice}}"{%- if each_choice|string in each_dashboard.math_ids %} selected{%- endif -%}>{{value}}</option>
@@ -98,7 +98,7 @@
       <div class="col-auto">
         {{form_graph.output_ids.label(class_='control-label')}}
         <div>
-          <select class="form-control btn-sm" id="output_ids" name="output_ids" style="width: 100%;" size="{{choices_output|length}}" multiple>
+          <select class="form-control btn-sm" id="output_ids" name="output_ids" style="width: 100%;" size="{{[choices_output|length, 20]|min}}" multiple>
           {% if choices_output %}
             {% for each_choice, value in choices_output.items() -%}
             <option value="{{each_choice}}"{%- if each_choice|string in each_dashboard.output_ids %} selected{%- endif -%}>{{value}}</option>
@@ -112,7 +112,7 @@
       <div class="col-auto">
         {{form_graph.pid_ids.label(class_='control-label')}}
         <div>
-          <select class="form-control btn-sm" id="pid_ids" name="pid_ids" style="width: 100%;" size="{{choices_pid|length}}" multiple>
+          <select class="form-control btn-sm" id="pid_ids" name="pid_ids" style="width: 100%;" size="{{[choices_pid|length, 20]|min}}" multiple>
           {% if choices_pid %}
             {% for each_choice, value in choices_pid.items() -%}
               <option value="{{each_choice}}"{%- if each_choice|string in each_dashboard.pid_ids %} selected{%- endif -%}>{{value}}</option>
@@ -126,7 +126,7 @@
       <div class="col-auto">
         {{form_graph.note_tag_ids.label(class_='control-label')}}
         <div>
-          <select class="form-control btn-sm" id="note_tag_ids" name="note_tag_ids" style="width: 100%;" size="{{choices_note_tag|length}}" multiple>
+          <select class="form-control btn-sm" id="note_tag_ids" name="note_tag_ids" style="width: 100%;" size="{{[choices_note_tag|length, 20]|min}}" multiple>
           {% if choices_note_tag %}
             {% for each_choice, value in choices_note_tag.items() -%}
               <option value="{{each_choice}}"{%- if each_choice|string in each_dashboard.note_tag_ids %} selected{%- endif -%}>{{value}}</option>
