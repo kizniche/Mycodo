@@ -66,7 +66,7 @@ class Trigger(FlaskForm):
     trigger_actions_at_period = BooleanField(lazy_gettext('Trigger Every Period'))
     trigger_actions_at_start = BooleanField(lazy_gettext('Trigger when Activated'))
 
-    # Output conditional options
+    # Output
     unique_id_1 = StringField(lazy_gettext('If ID 1'))
     unique_id_2 = StringField(lazy_gettext('If ID 2'))
     output_state = StringField(lazy_gettext('If State'))

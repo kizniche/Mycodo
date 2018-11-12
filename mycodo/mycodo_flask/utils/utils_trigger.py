@@ -54,7 +54,7 @@ def trigger_mod(form):
         elif trigger.trigger_type == 'trigger_output_pwm':
             error = check_form_output_pwm(form, error)
             trigger.unique_id_1 = form.unique_id_1.data
-            trigger.direction = form.direction.data
+            trigger.output_state = form.output_state.data
             trigger.output_duty_cycle = form.output_duty_cycle.data
 
         elif trigger.trigger_type == 'trigger_run_pwm_method':
@@ -250,9 +250,9 @@ def check_form_output_pwm(form, error):
     if not form.unique_id_1.data:
         error.append("{id} must be set".format(
             id=form.unique_id_1.label.text))
-    if not form.direction or form.direction == '':
+    if not form.output_state or form.output_state == '':
         error.append("State must be set".format(
-            dir=form.direction))
+            dir=form.output_state))
     if not 0 <= form.output_duty_cycle.data <= 100:
         error.append("{id} must >= 0 and <= 100".format(
             id=form.output_duty_cycle.label.text))

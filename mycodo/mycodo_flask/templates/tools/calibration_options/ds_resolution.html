@@ -16,7 +16,7 @@
   <p>Set the precision of DS18B20, DS1822, DS28EA00, and DS1825 sensors. Below are the resolutions, precisions, and response times that may be set for any detected DS-type sensors. This setting will be written to the EEPROM to allow persistence after power loss. The EEPROM has a limited amount of writes (>50k).</p>
 
     <form method="post" action="/setup_ds_resolution">
-    <div class="row small-gutters">
+    <div class="row align-items-end small-gutters">
       <div class="col-auto">
         {{form_ds.device_id.label(class_='control-label')}}
         <div>
@@ -43,10 +43,7 @@
         </div>
       </div>
       <div class="col-auto">
-        <label class="control-label">&nbsp;</label>
-        <div>
-          {{form_ds.set_resolution(class_='form-control btn btn-primary')}}
-        </div>
+        {{form_ds.set_resolution(class_='form-control btn btn-primary')}}
       </div>
     </div>
     </form>

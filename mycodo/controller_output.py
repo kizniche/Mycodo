@@ -675,15 +675,15 @@ class OutputController(threading.Thread):
             duty_cycle = self.output_state(output_id)
 
             if duty_cycle == 'off':
-                if (each_trigger.direction == 'equal' and
+                if (each_trigger.output_state == 'equal' and
                         each_trigger.output_duty_cycle == 0):
                     trigger_trigger = True
             elif (
-                    (each_trigger.direction == 'above' and
+                    (each_trigger.output_state == 'above' and
                      duty_cycle > each_trigger.output_duty_cycle) or
-                    (each_trigger.direction == 'below' and
+                    (each_trigger.output_state == 'below' and
                      duty_cycle < each_trigger.output_duty_cycle) or
-                    (each_trigger.direction == 'equal' and
+                    (each_trigger.output_state == 'equal' and
                      duty_cycle == each_trigger.output_duty_cycle)
                     ):
                 trigger_trigger = True
@@ -701,7 +701,7 @@ class OutputController(threading.Thread):
                         name=each_trigger.name,
                         oid=output_id,
                         actual_dc=duty_cycle,
-                        state=each_trigger.direction,
+                        state=each_trigger.output_state,
                         duty_cycle=each_trigger.output_duty_cycle)
 
             self.control.trigger_trigger_actions(

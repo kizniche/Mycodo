@@ -12,7 +12,7 @@
 
     <div class="col-xs-2 col-sm-1 text-center icon-fh">
       <a data-toggle="collapse" href="#collapseContainer-conditional-{{each_cond.id}}" aria-expanded="false" aria-controls="collapseContainer-conditional-{{each_cond.id}}">
-        <span style="font-size: 2.8em" class="collapse-button{{each_cond.id}} fa fa-plus-square"></span>
+        <span style="font-size: 3.6em" class="collapse-button{{each_cond.id}} fa fa-plus-square"></span>
       </a>
     </div>
     <div class="col-xs-5 col-sm-4 col-md-3 col-lg-4">
@@ -76,7 +76,7 @@
       </div>
     </div>
 
-    <div class="row small-gutters" style="padding: 1.5em 0 0.2em 0.1em">
+    <div class="row align-items-end small-gutters" style="padding: 1.5em 0 0.2em 0.1em">
       <div class="col-auto">
         {{form_conditional.condition_type(class_='form-control btn btn-sm')}}
       </div>
@@ -84,7 +84,8 @@
         {{form_conditional.add_condition(class_='form-control btn btn-sm')}}
       </div>
     </div>
-    <div class="row small-gutters" style="padding: 1.5em 0 0.2em 0.1em">
+
+    <div class="row align-items-end small-gutters" style="border-bottom: 1px solid #ddd; padding: 1.5em 0 0.2em 0.1em">
       <div class="col-auto">
         {{form_conditional.action_type(class_='form-control')}}
       </div>
@@ -108,19 +109,14 @@
     {{form_conditional_conditions.conditional_id(class_='form-control', value=each_cond.unique_id)}}
     {{form_conditional_conditions.conditional_condition_id(class_='form-control', value=each_condition.unique_id)}}
 
-    <div class="row small-gutters" style="border-bottom: 1px solid #ddd; padding-bottom: 0.3em">
+    <div class="row align-items-end small-gutters" style="border-bottom: 1px solid #ddd; padding-bottom: 0.3em">
       <div class="col-auto">
-        <label class='control-label'>&nbsp;</label>
-        <div>
-          <input class="form-control btn btn-sm btn-block" disabled="" value="{% for each_con in conditional_conditions_list if each_condition.condition_type == each_con[0] %}[{{each_condition.unique_id.split('-')[0]}}] {{each_con[1]}}{% endfor %}" type="text">
-        </div>
+        <input class="form-control btn btn-sm btn-block" disabled="" value="{% for each_con in conditional_conditions_list if each_condition.condition_type == each_con[0] %}[{{each_condition.unique_id.split('-')[0]}}] {{each_con[1]}}{% endfor %}" type="text">
       </div>
       <div class="col-auto">
-        <label class='control-label'>&nbsp;</label>
         {{form_conditional_conditions.save_condition(class_='form-control btn btn-sm')}}
       </div>
       <div class="col-auto">
-        <label class='control-label'>&nbsp;</label>
         {{form_conditional_conditions.delete_condition(class_='form-control btn btn-sm', **{'onclick':'return confirm("Are you sure you want to delete this?")'})}}
       </div>
 
@@ -150,19 +146,14 @@
     {{form_actions.function_id(class_='form-control', value=each_cond.unique_id)}}
     {{form_actions.function_action_id(class_='form-control', value=each_action.unique_id)}}
 
-    <div class="row small-gutters" style="border-bottom: 1px solid #ddd; padding-bottom: 0.3em">
+    <div class="row align-items-end small-gutters" style="border-bottom: 1px solid #ddd; padding-bottom: 0.3em">
       <div class="col-sm-2">
-        <label class='control-label'>&nbsp;</label>
-        <div>
-          <input class="form-control btn btn-sm btn-block" disabled="" value="[{{loop.index}}] {% for each_act in function_actions_list if each_action.action_type == each_act[0] %}{{each_act[1]}}{% endfor %}" type="text">
-        </div>
+        <input class="form-control btn btn-sm btn-block" disabled="" value="[{{loop.index}}] {% for each_act in function_actions_list if each_action.action_type == each_act[0] %}{{each_act[1]}}{% endfor %}" type="text">
       </div>
       <div class="col-auto">
-        <label class='control-label'>&nbsp;</label>
         {{form_actions.save_action(class_='form-control btn btn-sm')}}
       </div>
       <div class="col-auto">
-        <label class='control-label'>&nbsp;</label>
         {{form_actions.delete_action(class_='form-control btn btn-sm', **{'onclick':'return confirm("Are you sure you want to delete this?")'})}}
       </div>
 

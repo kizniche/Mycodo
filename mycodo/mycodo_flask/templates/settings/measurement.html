@@ -14,8 +14,7 @@
   <form class="form-horizontal" method="post" action="/settings/measurement">
   {{form_add_measurement.hidden_tag()}}
 
-  <div class="row small-gutters">
-
+  <div class="row align-items-end small-gutters">
     <div class="col-xs-6 col-sm-3 col-md-3">
       {{form_add_measurement.name.label(class_='control-label')}}
       <div>
@@ -33,10 +32,7 @@
       </div>
     </div>
     <div class="col-xs-4 col-sm-3 col-md-3">
-      <label class="control-label">&nbsp;</label>
-      <div>
-        {{form_add_measurement.add_measurement(class_='btn btn-primary')}}
-      </div>
+      {{form_add_measurement.add_measurement(class_='btn btn-primary')}}
     </div>
   </div>
 
@@ -49,8 +45,7 @@
   <form class="form-horizontal" method="post" action="/settings/measurement">
   {{form_add_unit.hidden_tag()}}
 
-  <div class="row small-gutters">
-
+  <div class="row align-items-end small-gutters">
     <div class="col-xs-6 col-sm-3 col-md-3">
       {{form_add_unit.name.label(class_='control-label')}}
       <div>
@@ -64,10 +59,7 @@
       </div>
     </div>
     <div class="col-xs-4 col-sm-3 col-md-3">
-      <label class="control-label">&nbsp;</label>
-      <div>
-        {{form_add_unit.add_unit(class_='btn btn-primary')}}
-      </div>
+      {{form_add_unit.add_unit(class_='btn btn-primary')}}
     </div>
   </div>
 
@@ -80,8 +72,7 @@
   <form class="form-horizontal" method="post" action="/settings/measurement">
   {{form_add_conversion.hidden_tag()}}
 
-  <div class="row small-gutters">
-
+  <div class="row align-items-end small-gutters">
     <div class="col-xs-6 col-sm-3 col-md-3">
       {{form_add_conversion.convert_unit_from.label(class_='control-label')}}
       <div>
@@ -109,10 +100,7 @@
       </div>
     </div>
     <div class="col-xs-4 col-sm-3 col-md-3">
-      <label class="control-label">&nbsp;</label>
-      <div>
-        {{form_add_conversion.add_conversion(class_='btn btn-primary')}}
-      </div>
+      {{form_add_conversion.add_conversion(class_='btn btn-primary')}}
     </div>
   </div>
 

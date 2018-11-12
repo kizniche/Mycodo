@@ -487,17 +487,20 @@ def page_dashboard():
         # Retrieve the order to display graphs
         display_order = csv_to_list_of_str(DisplayOrder.query.first().dashboard)
 
-    # Retrieve all choices to populate form drop-down menu
-    choices_camera = utils_general.choices_id_name(camera)
-    choices_input = utils_general.choices_inputs(input_dev)
-    choices_math = utils_general.choices_maths(math)
-    choices_output = utils_general.choices_outputs(output)
-    choices_pid = utils_general.choices_pids(pid)
-    choices_note_tag = utils_general.choices_tags(tags)
-
     # Generate all measurement and units used
     dict_measurements = add_custom_measurements(measurement)
     dict_units = add_custom_units(unit)
+
+    # Retrieve all choices to populate form drop-down menu
+    choices_camera = utils_general.choices_id_name(camera)
+    choices_input = utils_general.choices_inputs(
+        input_dev, dict_units, dict_measurements)
+    choices_math = utils_general.choices_maths(
+        math, dict_units, dict_measurements)
+    choices_output = utils_general.choices_outputs(output)
+    choices_pid = utils_general.choices_pids(
+        pid, dict_units, dict_measurements)
+    choices_note_tag = utils_general.choices_tags(tags)
 
     input_measurements_dict = {}
     for meas in input_measurements:
@@ -694,10 +697,13 @@ def page_graph_async():
     use_unit = utils_general.use_unit_generate(
         input_dev, input_measurements, output, math, math_measurements)
 
-    input_choices = utils_general.choices_inputs(input_dev)
-    math_choices = utils_general.choices_maths(math)
+    input_choices = utils_general.choices_inputs(
+        input_dev, dict_units, dict_measurements)
+    math_choices = utils_general.choices_maths(
+        math, dict_units, dict_measurements)
     output_choices = utils_general.choices_outputs(output)
-    pid_choices = utils_general.choices_pids(pid)
+    pid_choices = utils_general.choices_pids(
+        pid, dict_units, dict_measurements)
     tag_choices = utils_general.choices_tags(tag)
 
     selected_ids_measures = []
@@ -938,10 +944,16 @@ def page_lcd():
     pid = PID.query.all()
     output = Output.query.all()
     input_dev = Input.query.all()
+    unit = Unit.query.all()
+    measurement = Measurement.query.all()
 
     display_order = csv_to_list_of_str(DisplayOrder.query.first().lcd)
 
-    choices_lcd = utils_general.choices_lcd(input_dev, math, pid, output)
+    dict_units = add_custom_units(unit)
+    dict_measurements = add_custom_measurements(measurement)
+
+    choices_lcd = utils_general.choices_lcd(
+        input_dev, math, pid, output, dict_units, dict_measurements)
 
     form_lcd_add = forms_lcd.LCDAdd()
     form_lcd_mod = forms_lcd.LCDMod()
@@ -1134,6 +1146,9 @@ def page_function():
     trigger = Trigger.query.all()
     user = User.query.all()
 
+    unit = Unit.query.all()
+    measurement = Measurement.query.all()
+
     actions_dict = {
         'conditional': {},
         'trigger': {}
@@ -1165,9 +1180,16 @@ def page_function():
                                 each_cont.id,
                                 each_cont.name))
 
-    choices_input = utils_general.choices_inputs(input_dev)
-    choices_math = utils_general.choices_maths(math)
-    choices_pid = utils_general.choices_pids(pid)
+    # Generate all measurement and units used
+    dict_measurements = add_custom_measurements(measurement)
+    dict_units = add_custom_units(unit)
+
+    choices_input = utils_general.choices_inputs(
+        input_dev, dict_units, dict_measurements)
+    choices_math = utils_general.choices_maths(
+        math, dict_units, dict_measurements)
+    choices_pid = utils_general.choices_pids(
+        pid, dict_units, dict_measurements)
 
     form_base = forms_function.DataBase()
     form_add_function = forms_function.FunctionAdd()
@@ -1541,9 +1563,15 @@ def page_data():
     form_mod_humidity = forms_math.MathModHumidity()
     form_mod_verification = forms_math.MathModVerification()
 
+    # Generate dict that incorporate user-added measurements/units
+    dict_units = add_custom_units(unit)
+    dict_measurements = add_custom_measurements(measurement)
+
     # Create list of choices to be used in dropdown menus
-    choices_input = utils_general.choices_inputs(input_dev)
-    choices_math = utils_general.choices_maths(math)
+    choices_input = utils_general.choices_inputs(
+        input_dev, dict_units, dict_measurements)
+    choices_math = utils_general.choices_maths(
+        math, dict_units, dict_measurements)
     choices_output = utils_general.choices_outputs(output)
     choices_unit = utils_general.choices_units(unit)
     choices_measurement = utils_general.choices_measurements(measurement)
@@ -1551,22 +1579,18 @@ def page_data():
     choices_conversions = utils_general.choices_conversion(
         conversion, measurement, unit, input_measurements)
 
-    # Generate dict that incorporate user-added measurements/units
-    dict_units = add_custom_units(unit)
-    dict_measurements = add_custom_measurements(measurement)
-    
     # Dict of the number of channels for each input/math
     dict_measure_info = {}
     for each_input in input_dev:
-        if each_input.unique_id not in dict_measure_info:
-            dict_measure_info[each_input.unique_id] = {}
-        dict_measure_info[each_input.unique_id]['channels'] = InputMeasurements.query.filter(
-            InputMeasurements.device_id == each_input.unique_id).count()
+        dict_measure_info[each_input.unique_id] = {
+            'channels': InputMeasurements.query.filter(
+                InputMeasurements.device_id == each_input.unique_id).count()
+        }
     for each_math in math:
-        if each_math.unique_id not in dict_measure_info:
-            dict_measure_info[each_math.unique_id] = {}
-        dict_measure_info[each_math.unique_id]['channels'] = MathMeasurements.query.filter(
-            MathMeasurements.device_id == each_math.unique_id).count()
+        dict_measure_info[each_math.unique_id] = {
+            'channels': MathMeasurements.query.filter(
+                MathMeasurements.device_id == each_math.unique_id).count()
+        }
 
     # Create dict of Input names
     names_input = {}

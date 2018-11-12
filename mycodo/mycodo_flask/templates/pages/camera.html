@@ -64,7 +64,7 @@
       <div class="row">
         Time-lapse parameters:
       </div>
-      <div class="row small-gutters">
+      <div class="row align-items-end small-gutters">
         <div class="col-auto">
           {{form_camera.timelapse_interval.label(class_='control-label')}}
           <div>
@@ -78,10 +78,7 @@
           </div>
         </div>
         <div class="col-auto">
-          <label>&nbsp;</label>
-          <div>
-            {{form_camera.start_timelapse(class_='form-control btn btn-sm')}}
-          </div>
+          {{form_camera.start_timelapse(class_='form-control btn btn-sm')}}
         </div>
       </div>
     </div>

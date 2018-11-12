@@ -22,7 +22,7 @@
       <input type="hidden" name="form-name" value="add_remote">
       {{form_setup.csrf_token}}
 
-    <div class="form-row">
+    <div class="form-row align-items-end">
       <div class="col-auto">
         {{form_setup.host.label(class_='control-label')}}
         <div>
@@ -42,10 +42,7 @@
         </div>
       </div>
       <div class="col-auto">
-        <label class='control-label'>&nbsp;</label>
-        <div>
-          {{form_setup.add(class_='form-control btn btn-sm')}}
-        </div>
+        {{form_setup.add(class_='form-control btn btn-sm')}}
       </div>
     </div>
 
@@ -57,7 +54,7 @@
       {{form_setup.csrf_token}}
       {{form_setup.remote_id(value=each_host.unique_id)}}
 
-      <div class="form-row" style="padding: 2em 0">
+      <div class="form-row align-items-end" style="padding: 2em 0">
         <div class="col-2">
           <label class='control-label'>ID</label>
           <div>
@@ -93,10 +90,7 @@
           </div>
         </div>
         <div class="col-auto">
-          <label class='control-label'>&nbsp;</label>
-          <div>
-            {{form_setup.delete(class_='form-control btn btn-sm')}}
-          </div>
+          {{form_setup.delete(class_='form-control btn btn-sm')}}
         </div>
       </div>
 

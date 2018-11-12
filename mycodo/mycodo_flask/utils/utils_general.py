@@ -180,24 +180,21 @@ def choices_conversion(conversions, measurements, units, input_measurements):
         sorted_dict_measurements[each_key] = dict_measurements[each_key]
 
     choices = {}
-    for each_input_measurement in input_measurements:
-        if each_input_measurement.unique_id not in choices:
-            choices[each_input_measurement.unique_id] = OrderedDict()
+    for each_measurement in input_measurements:
+        if each_measurement.unique_id not in choices:
+            choices[each_measurement.unique_id] = OrderedDict()
 
-        for each_meas, each_info in sorted_dict_measurements.items():
-            for each_unit in each_info['units']:
+        for each_conversion in dict_conversions:
+            conversion_from_unit = each_conversion.split('_')[0]
+            conversion_to_unit = each_conversion.split('_')[2]
 
-                    for each_conversion in dict_conversions:
-                        conversion_from_unit = each_conversion.split('_')[0]
-                        conversion_to_unit = each_conversion.split('_')[2]
-
-                        if each_unit == each_input_measurement.unit == conversion_from_unit:
-                            value = '{unit},{meas}'.format(unit=conversion_to_unit, meas=each_meas)
-                            display = '{meas}: {name} ({unit})'.format(
-                                meas=dict_measurements[each_meas]['name'],
-                                name=dict_units[conversion_to_unit]['name'],
-                                unit=dict_units[conversion_to_unit]['unit'])
-                            choices[each_input_measurement.unique_id].update({value: display})
+            if each_measurement.unit == conversion_from_unit:
+                value = '{unit},{meas}'.format(unit=conversion_to_unit, meas=each_measurement.measurement)
+                display = '{meas}: {name} ({unit})'.format(
+                    meas=dict_measurements[each_measurement.measurement]['name'],
+                    name=dict_units[conversion_to_unit]['name'],
+                    unit=dict_units[conversion_to_unit]['unit'])
+                choices[each_measurement.unique_id].update({value: display})
 
     return choices
 
@@ -257,29 +254,30 @@ def choices_units(units):
     return sorted_dict_choices
 
 
-def choices_inputs(inputs):
+def choices_inputs(inputs, dict_units, dict_measurements):
     """ populate form multi-select choices from Input entries """
     choices = OrderedDict()
-    dict_inputs = parse_input_information()
-
     for each_input in inputs:
-        choices = form_input_choices(choices, each_input, dict_inputs)
+        choices = form_input_choices(
+            choices, each_input, dict_units, dict_measurements)
     return choices
 
 
-def choices_maths(maths):
+def choices_maths(maths, dict_units, dict_measurements):
     """ populate form multi-select choices from Math entries """
     choices = OrderedDict()
     for each_math in maths:
-        choices = form_math_choices(choices, each_math)
+        choices = form_math_choices(
+            choices, each_math, dict_units, dict_measurements)
     return choices
 
 
-def choices_pids(pid):
+def choices_pids(pid, dict_units, dict_measurements):
     """ populate form multi-select choices from PID entries """
     choices = OrderedDict()
     for each_pid in pid:
-        choices = form_pid_choices(choices, each_pid)
+        choices = form_pid_choices(
+            choices, each_pid, dict_units, dict_measurements)
     return choices
 
 
@@ -299,9 +297,8 @@ def choices_tags(tags):
     return choices
 
 
-def choices_lcd(inputs, maths, pids, outputs):
+def choices_lcd(inputs, maths, pids, outputs, dict_units, dict_measurements):
     choices = OrderedDict()
-    dict_inputs = parse_input_information()
 
     # Display IP address
     value = '0000,IP'
@@ -316,7 +313,8 @@ def choices_lcd(inputs, maths, pids, outputs):
             id=each_input.id,
             name=each_input.name)
         choices.update({value: display})
-        choices = form_input_choices(choices, each_input, dict_inputs)
+        choices = form_input_choices(
+            choices, each_input, dict_units, dict_measurements)
 
     # Maths
     for each_math in maths:
@@ -326,7 +324,8 @@ def choices_lcd(inputs, maths, pids, outputs):
             id=each_math.id,
             name=each_math.name)
         choices.update({value: display})
-        choices = form_math_choices(choices, each_math)
+        choices = form_math_choices(
+            choices, each_math, dict_units, dict_measurements)
 
     # PIDs
     for each_pid in pids:
@@ -351,62 +350,59 @@ def choices_lcd(inputs, maths, pids, outputs):
     return choices
 
 
-def form_input_choices(choices, each_input, dict_inputs):
+def form_input_choices(choices, each_input, dict_units, dict_measurements):
     input_measurements = InputMeasurements.query.filter(
         InputMeasurements.device_id == each_input.unique_id).all()
 
-    if each_input.device in dict_inputs:
-        if ('measurements_dict' in dict_inputs[each_input.device] and
-                dict_inputs[each_input.device]['measurements_dict']):
+    try:
+        for each_measure in input_measurements:
+            value = '{input_id},{meas_id}'.format(
+                input_id=each_input.unique_id,
+                meas_id=each_measure.unique_id)
 
-            for each_measure in input_measurements:
-                value = '{input_id},{meas_id}'.format(
-                    input_id=each_input.unique_id,
-                    meas_id=each_measure.unique_id)
+            if each_measure.converted_unit not in ['', None]:
+                measure_display, unit_display = check_display_names(
+                    each_measure.converted_measurement,
+                    each_measure.converted_unit,
+                    dict_units,
+                    dict_measurements)
+            else:
+                measure_display, unit_display = check_display_names(
+                    each_measure.measurement,
+                    each_measure.unit,
+                    dict_units,
+                    dict_measurements)
 
-                try:
-                    custom_dict_measurements = {}
-                    for each_meas in input_measurements:
-                        custom_dict_measurements[each_meas.measurement] = each_meas.unit
+            channel_number = ' CH{chan}'.format(chan=each_measure.channel + 1)
 
-                    if each_measure.converted_unit not in ['', None]:
-                        measure_display, unit_display = check_display_names(
-                            each_measure.converted_measurement,
-                            each_measure.converted_unit)
-                    else:
-                        measure_display, unit_display = check_display_names(
-                            each_measure.measurement,
-                            each_measure.unit)
+            if each_measure.name:
+                channel_name = ' ({name})'.format(name=each_measure.name)
+            else:
+                channel_name = ''
 
-                    channel_number = ' CH{chan}'.format(chan=each_measure.channel + 1)
+            channel_info = "{}{}".format(channel_number, channel_name)
 
-                    if each_measure.name:
-                        channel_name = ' ({name})'.format(name=each_measure.name)
-                    else:
-                        channel_name = ''
+            if unit_display:
+                display = '[Input {id:02d}] {name}{chan} ({meas}, {unit})'.format(
+                    id=each_input.id,
+                    name=each_input.name,
+                    chan=channel_info,
+                    meas=measure_display,
+                    unit=unit_display)
+            else:
+                display = '[Input {id:02d}] {name}{chan} ({meas})'.format(
+                    id=each_input.id,
+                    name=each_input.name,
+                    chan=channel_info,
+                    meas=measure_display)
+            choices.update({value: display})
+    except Exception as msg:
+        logger.exception("Generating input choices: {}".format(msg))
 
-                    channel_info = "{}{}".format(channel_number, channel_name)
-
-                    if unit_display:
-                        display = '[Input {id:02d}] {name}{chan} ({meas}, {unit})'.format(
-                            id=each_input.id,
-                            name=each_input.name,
-                            chan=channel_info,
-                            meas=measure_display,
-                            unit=unit_display)
-                    else:
-                        display = '[Input {id:02d}] {name}{chan} ({meas})'.format(
-                            id=each_input.id,
-                            name=each_input.name,
-                            chan=channel_info,
-                            meas=measure_display)
-                    choices.update({value: display})
-                except Exception as msg:
-                    logger.exception("Generating input choices: {}".format(msg))
     return choices
 
 
-def form_math_choices(choices, each_math):
+def form_math_choices(choices, each_math, dict_units, dict_measurements):
     math_measurements = MathMeasurements.query.filter(
         MathMeasurements.device_id == each_math.unique_id).all()
 
@@ -417,7 +413,10 @@ def form_math_choices(choices, each_math):
                 meas_id=each_measure.unique_id)
 
             measure_display, unit_display = check_display_names(
-                each_measure.measurement, each_measure.unit)
+                each_measure.measurement,
+                each_measure.unit,
+                dict_units,
+                dict_measurements)
             display = '[Math {id:02d}] {name} ({meas}, {unit})'.format(
                 id=each_math.id,
                 name=each_measure.name,
@@ -428,7 +427,7 @@ def form_math_choices(choices, each_math):
     return choices
 
 
-def form_pid_choices(choices, each_pid):
+def form_pid_choices(choices, each_pid, dict_units, dict_measurements):
     pid_measurements = PIDMeasurements.query.filter(
         PIDMeasurements.device_id == each_pid.unique_id).all()
 
@@ -439,7 +438,10 @@ def form_pid_choices(choices, each_pid):
                 meas_id=each_measure.unique_id)
 
             measure_display, unit_display = check_display_names(
-                each_measure.measurement, each_measure.unit)
+                each_measure.measurement,
+                each_measure.unit,
+                dict_units,
+                dict_measurements)
             display = '[PID {id:02d}] {name} ({meas}, {unit})'.format(
                 id=each_pid.id,
                 name=each_measure.name,
@@ -470,9 +472,7 @@ def form_output_choices(choices, each_output):
     return choices
 
 
-def check_display_names(measure, unit):
-    dict_measurements = add_custom_measurements(Measurement.query.all())
-    dict_units = add_custom_units(Unit.query.all())
+def check_display_names(measure, unit, dict_units, dict_measurements):
     if measure in dict_measurements:
         measure = dict_measurements[measure]['name']
     if unit in dict_units:

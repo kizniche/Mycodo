@@ -9,37 +9,32 @@
   <!-- Route: /settings/camera -->
   <h3 style="text-align: right; padding-bottom: 1.3em;"><a href="/help#camera-settings" target="_blank"><span style="font-size: 16px" class="fas fa-question-circle"></span></a> {{_('Camera Settings')}}</h3>
 
-  <div class="text-right">
-    <form method="post" action="/settings/camera">
-      <div class="row">
-        {{form_camera.csrf_token}}
-        <div class="col">
-          {{form_camera.name.label(class_='control-label')}}
-          <div>
-            {{form_camera.name(class_='form-control', value='Camera Name')}}
-          </div>
-        </div>
-        <div class="col"">
-          {{form_camera.library.label(class_='control-label')}}
-          <div>
-            <select class="form-control" id="library" name="library" title="" data-original-title="Select the library to use to communicate with the camera">
-              {%- for each_library in camera_libraries -%}
-                <option value="{{each_library}}">{{each_library}}</option>
-              {%- endfor -%}
-            </select>
-          </div>
-        </div>
-        <div class="col">
-          <label></label>
-          <div>
-            {{form_camera.camera_add(class_='btn btn-primary btn-block')}}
-          </div>
+  <form method="post" action="/settings/camera">
+    <div class="row align-items-end small-gutters">
+      {{form_camera.csrf_token}}
+      <div class="col-auto">
+        {{form_camera.name.label(class_='control-label')}}
+        <div>
+          {{form_camera.name(class_='form-control', value='Camera Name')}}
         </div>
       </div>
-    </form>
-  </div>
+      <div class="col-auto">
+        {{form_camera.library.label(class_='control-label')}}
+        <div>
+          <select class="form-control" id="library" name="library" title="" data-original-title="Select the library to use to communicate with the camera">
+            {%- for each_library in camera_libraries -%}
+              <option value="{{each_library}}">{{each_library}}</option>
+            {%- endfor -%}
+          </select>
+        </div>
+      </div>
+      <div class="col-auto">
+        {{form_camera.camera_add(class_='btn btn-primary btn-block')}}
+      </div>
+    </div>
+  </form>
 
-  <p style="text-align: right;">Note: Not all camera settings will work with every camera.</p>
+  <p>Note: Not all camera settings will work with every camera.</p>
 
   <div style="clear: both; padding: 1em 0;"></div>
 
