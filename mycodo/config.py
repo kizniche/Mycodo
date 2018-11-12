@@ -66,21 +66,6 @@ MATH_INFO = {
         'dependencies_module': [],
         'measure': {}
     },
-    'median': {
-        'name': 'Median',
-        'dependencies_module': [],
-        'measure': {}
-    },
-    'maximum': {
-        'name': 'Maximum',
-        'dependencies_module': [],
-        'measure': {}
-    },
-    'minimum': {
-        'name': 'Minimum',
-        'dependencies_module': [],
-        'measure': {}
-    },
     'humidity': {
         'name': 'Humidity (Wet-Bulb)',
         'dependencies_module': [],
