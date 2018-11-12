@@ -576,9 +576,6 @@ def input_activate(form_mod):
         if input_dev.cmd_command is '':
             flash("Cannot activate Input without Command set.", "error")
             return redirect(url_for('routes_page.page_data'))
-        if not input_dev.convert_to_unit:
-            flash("Cannot activate Input without Unit Measurement set.", "error")
-            return redirect(url_for('routes_page.page_data'))
     controller_activate_deactivate('activate', 'Input',  input_id)
 
 

@@ -48,6 +48,10 @@ class InputModule(AbstractInput):
             self.logger = logging.getLogger(
                 "mycodo.linux_command_{id}".format(id=input_dev.unique_id.split('-')[0]))
 
+            self.input_measurements = db_retrieve_table_daemon(
+                InputMeasurements).filter(
+                InputMeasurements.device_id == input_dev.unique_id)
+
             self.command = input_dev.cmd_command
 
     def get_measurement(self):
@@ -55,11 +59,20 @@ class InputModule(AbstractInput):
         return_dict = measurements_dict.copy()
 
         out, _, _ = cmd_output(self.command)
+
         if str_is_float(out):
-            return_dict[0]['value'] = float(out)
-            return return_dict
+            list_measurements = [float(out)]
         else:
             self.logger.error(
                 "The command returned a non-numerical value. "
                 "Ensure only one numerical value is returned "
                 "by the command.")
+            return
+
+        for channel, meas in enumerate(self.input_measurements.all()):
+            if meas.is_enabled:
+                return_dict[channel]['unit'] = meas.unit
+                return_dict[channel]['measurement'] = meas.measurement
+                return_dict[channel]['value'] = list_measurements[channel]
+
+        return return_dict
