@@ -27,8 +27,6 @@
   <div class="container">
   {% include 'flash_messages.html' %}
 
-  {{ y_axes }}
-
     <h4>{{_('Asynchronous Graphs')}} <a href="/help#{{help_page[0]}}" target="_blank"><span style="font-size: 16px" class="fas fa-question-circle"></span></a></h4>
 
     <p>A graphical data display that is useful for viewing data sets spanning relatively long periods of time (weeks/months/years), which could be very data- and processor-intensive to view as a Live Graph.</p>
@@ -62,19 +60,19 @@
       <div class="col-auto">
         <select class="form-control" id="selected_measure" name="selected_measure" size="{{input_choices|length + math_choices|length + output_choices|length + pid_choices|length + tag_choices|length}}" multiple>
         {% for each_choice, value in input_choices.items() -%}
-          <option value="{{each_choice}}"{% if each_choice in selected_ids_measures %} selected{% endif %}>{{value}}</option>
+          <option value="{{each_choice}},input"{% if each_choice + ',input' in selected_ids_measures %} selected{% endif %}>{{value}}</option>
         {% endfor -%}
         {% for each_choice, value in math_choices.items() -%}
-          <option value="{{each_choice}}"{% if each_choice in selected_ids_measures %} selected{% endif %}>{{value}}</option>
+          <option value="{{each_choice}},math"{% if each_choice + ',math' in selected_ids_measures %} selected{% endif %}>{{value}}</option>
         {% endfor -%}
         {% for each_choice, value in output_choices.items() -%}
-          <option value="{{each_choice}}"{% if each_choice in selected_ids_measures %} selected{% endif %}>{{value}}</option>
+          <option value="{{each_choice}},output"{% if each_choice + ',output' in selected_ids_measures %} selected{% endif %}>{{value}}</option>
         {% endfor -%}
         {% for each_choice, value in pid_choices.items() -%}
-          <option value="{{each_choice}}"{% if each_choice in selected_ids_measures %} selected{% endif %}>{{value}}</option>
+          <option value="{{each_choice}},pid"{% if each_choice + ',pid' in selected_ids_measures %} selected{% endif %}>{{value}}</option>
         {% endfor -%}
         {% for each_choice, value in tag_choices.items() -%}
-          <option value="{{each_choice}}"{% if each_choice in selected_ids_measures %} selected{% endif %}>{{value}}</option>
+          <option value="{{each_choice}},tag"{% if each_choice + ',tag' in selected_ids_measures %} selected{% endif %}>{{value}}</option>
         {% endfor -%}
         </select>
       </div>
@@ -102,15 +100,16 @@ $(document).ready(function() {
     var id_measure = [
     {% for each_id_meas in selected_ids_measures %}
     {
-      id: '{{each_id_meas.split(',')[0]}}',
-      measure: '{{each_id_meas.split(',')[1]}}'
+      device_id: '{{each_id_meas.split(',')[0]}}',
+      measurement_id: '{{each_id_meas.split(',')[1]}}',
+      device_type: '{{each_id_meas.split(',')[2]}}'
     },
     {% endfor %}
     ];
     var chart = [];
 
-    function getPastData(chart_number, series, input_id, sensor_measurement, start_time) {
-      var url = '/async/' + sensor_measurement + '/' + input_id + '/' + start_time + '/0';
+    function getPastData(chart_number, series, device_id, device_type, measurement_id, start_time) {
+      var url = '/async/' + device_id + '/' + device_type + '/' + measurement_id + '/' + start_time + '/0';
       $.getJSON(url,
         function(data, responseText, jqXHR) {
           if (jqXHR.status !== 204) {
@@ -119,7 +118,7 @@ $(document).ready(function() {
               var new_date = new Date(data[i][0]);
               var new_time = new_date.getTime();
 
-              if (sensor_measurement === 'tag') {
+              if (device_type === 'tag') {
                 chart[chart_number].series[series].addPoint({
                   x: new_time,
                   title: data[i][1],
@@ -131,7 +130,7 @@ $(document).ready(function() {
               }
             }
 
-            if (sensor_measurement !== 'tag') {
+            if (device_type !== 'tag') {
               new_data.push([new Date().getTime(), null]);
               chart[chart_number].series[series].setData(new_data, false, false);
               var nav = chart[chart_number].get('navigator');
@@ -139,14 +138,14 @@ $(document).ready(function() {
             }
 
           }
-          if (sensor_measurement !== 'tag') {
+          if (device_type !== 'tag') {
             chart[chart_number].redraw();
           }
         }
       );
     }
 
-    function set_data_from_url(url, series, measure) {
+    function set_data_from_url(url, series, device_type) {
       $.getJSON(url,
         function (data, responseText, jqXHR) {
           if (jqXHR.status !== 204) {
@@ -154,7 +153,7 @@ $(document).ready(function() {
             for (i = 0; i < data.length; i++) {
               var new_date = new Date(data[i][0]);
               var new_time = new_date.getTime();
-              if (measure === 'tag') {
+              if (device_type === 'tag') {
                 chart[0].series[series].addPoint({
                   x: new_time,
                   title: data[i][1],
@@ -166,7 +165,7 @@ $(document).ready(function() {
               }
             }
           }
-          if (measure !== 'tag') {
+          if (device_type !== 'tag') {
             chart[0].series[series].setData(new_data);
           }
           chart[0].hideLoading();
@@ -185,9 +184,9 @@ $(document).ready(function() {
         max = e.xAxis[0].max;
       }
       for (var each_series in id_measure) {
-        if (id_measure[each_series]['measure'] !== 'tag') {
-          var url = '/async/' + id_measure[each_series]['measure'] + '/' + id_measure[each_series]['id'] + '/' + Math.round(min) / 1000 + '/' + Math.round(max) / 1000;
-          set_data_from_url(url, each_series, id_measure[each_series]['measure'])
+        if (id_measure[each_series]['device_type'] !== 'tag') {
+          var url = '/async/' + id_measure[each_series]['device_id'] + '/' + id_measure[each_series]['device_type'] + '/' + id_measure[each_series]['measurement_id'] + '/' + Math.round(min) / 1000 + '/' + Math.round(max) / 1000;
+          set_data_from_url(url, each_series, id_measure[each_series]['device_type'])
         }
       }
     }
@@ -201,7 +200,10 @@ $(document).ready(function() {
             load: function () {
               {% set count_series = [] -%}
               {% for each_id_meas in selected_ids_measures %}
-              getPastData(0, {{count_series|count}}, '{{each_id_meas.split(',')[0]}}', '{{each_id_meas.split(',')[1]}}', '{{start_time_epoch}}');
+                {%- set device_id = each_id_meas.split(',')[0] -%}
+                {%- set measurement_id = each_id_meas.split(',')[1] -%}
+                {%- set device_type = each_id_meas.split(',')[2] -%}
+              getPastData(0, {{count_series|count}}, '{{device_id}}', '{{device_type}}', '{{measurement_id}}', '{{start_time_epoch}}');
                 {%- do count_series.append(1) %}
               {% endfor %}
             },
