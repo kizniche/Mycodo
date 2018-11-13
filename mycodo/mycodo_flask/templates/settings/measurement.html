@@ -219,6 +219,7 @@
     <div class="table-responsive">
       <table class="table">
         <tr>
+          <td>{{_('ID')}}</td>
           <td>{{form_mod_conversion.convert_unit_from.label(class_='control-label')}}</td>
           <td>{{form_mod_conversion.convert_unit_to.label(class_='control-label')}}</td>
           <td>{{form_mod_conversion.equation.label(class_='control-label')}}</td>
@@ -232,6 +233,9 @@
   {{form_mod_conversion.conversion_id(value=each_conversion.unique_id)}}
 
       <tr>
+        <td>
+          <input class="form-control btn btn-sm btn-block" disabled="" title="[{{'%02d' % each_conversion.id}}] UUID: {{each_conversion.unique_id}}" value="[{{'%02d' % each_conversion.id}}]" type="text">
+        </td>
         <td>
           <select class="form-control" id="convert_unit_from" name="convert_unit_from">
             {% for each_unit, each_display in choices_units.items() %}
@@ -257,8 +261,6 @@
       </tr>
 
   </form>
-
-  <div style="clear: both; padding: 0.5em 0;"></div>
 
   {% endfor -%}
 
@@ -313,33 +315,6 @@
       <td>{{each_unit}}</td>
       <td>{{each_info['name']}}</td>
       <td>{{each_info['unit']}}</td>
-      <td></td>
-    </tr>
-
-  {% endfor %}
-
-    </table>
-  </div>
-
-  <hr>
-
-  <h3>{{_('All')}} {{_('Conversions')}}</h3>
-
-    <div class="table-responsive">
-      <table class="table">
-        <tr>
-          <td>{{form_mod_conversion.convert_unit_from.label(class_='control-label')}}</td>
-          <td>{{form_mod_conversion.convert_unit_to.label(class_='control-label')}}</td>
-          <td>{{form_mod_conversion.equation.label(class_='control-label')}}</td>
-          <td></td>
-        </tr>
-
-  {% for each_conversion, each_info in conversions_dict.items() %}
-
-    <tr>
-      <td>{{each_conversion.split('_to_')[0]}}</td>
-      <td>{{each_conversion.split('_to_')[1]}}</td>
-      <td>{{each_info}}</td>
       <td></td>
     </tr>
 

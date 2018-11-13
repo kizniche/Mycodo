@@ -278,53 +278,55 @@ UNITS = {
         'unit': 'V'}
 }
 
-# Supported conversions
-UNIT_CONVERSIONS = {
+# Initial conversions
+# These are added to the SQLite database when it's created
+# Users may add or delete after that
+UNIT_CONVERSIONS = [
     # Temperature
-    'C_to_F': 'x*(9/5)+32',
-    'C_to_K': 'x+273.15',
-    'F_to_C': '(x-32)*5/9',
-    'F_to_K': '(x+459.67)*5/9',
-    'K_to_C': 'x-273.15',
-    'K_to_F': '(x*9/5)−459.67',
+    ('C', 'F', 'x*(9/5)+32'),
+    ('C', 'K', 'x+273.15'),
+    ('F', 'C', '(x-32)*5/9'),
+    ('F', 'K', '(x+459.67)*5/9'),
+    ('K', 'C', 'x-273.15'),
+    ('K', 'F', '(x*9/5)−459.67'),
 
     # Frequency
-    'Hz_to_kHz': 'x/1000',
-    'Hz_to_MHz': 'x/1000000',
-    'kHz_to_Hz': 'x*1000',
-    'kHz_to_MHz': 'x/1000',
-    'MHz_to_Hz': 'x*1000000',
-    'MHz_to_kHz': 'x*1000',
+    ('Hz', 'kHz', 'x/1000'),
+    ('Hz', 'MHz', 'x/1000000'),
+    ('kHz', 'Hz', 'x*1000'),
+    ('kHz', 'MHz', 'x/1000'),
+    ('MHz', 'Hz', 'x*1000000'),
+    ('MHz', 'kHz', 'x*1000'),
 
     # Length
-    'm_to_ft': 'x*3.2808399',
-    'ft_to_m': 'x/3.2808399',
+    ('m', 'ft', 'x*3.2808399'),
+    ('ft', 'm', 'x/3.2808399'),
 
     # Disk size
-    'kB_to_MB': 'x/1000',
-    'kB_to_GB': 'x/1000000',
-    'MB_to_kB': 'x*1000',
-    'MB_to_GB': 'x/1000',
-    'GB_to_kB': 'x*1000000',
-    'GB_to_MB': 'X*1000',
+    ('kB', 'MB', 'x/1000'),
+    ('kB', 'GB', 'x/1000000'),
+    ('MB', 'kB', 'x*1000'),
+    ('MB', 'GB', 'x/1000'),
+    ('GB', 'kB', 'x*1000000'),
+    ('GB', 'MB', 'X*1000'),
 
     # Concentration
-    'ppm_to_ppb': 'x*1000',
-    'ppb_to_ppm': 'x/1000',
-    'ppm_to_percent': 'x/10000',
-    'ppb_to_percent': 'x/10000000',
-    'percent_to_ppm': 'x*10000',
-    'percent_to_ppb': 'x*10000000',
+    ('ppm', 'ppb', 'x*1000'),
+    ('ppb', 'ppm', 'x/1000'),
+    ('ppm', 'percent', 'x/10000'),
+    ('ppb', 'percent', 'x/10000000'),
+    ('percent', 'ppm', 'x*10000'),
+    ('percent', 'ppb', 'x*10000000'),
 
     # Number
-    'percent_to_decimal': 'x/100',
-    'decimal_to_percent': 'x*100',
+    ('percent', 'decimal', 'x/100'),
+    ('decimal', 'percent', 'x*100'),
 
     # Pressure
-    'Pa_to_kPa': 'x/1000',
-    'kPa_to_Pa': 'x*1000',
+    ('Pa', 'kPa', 'x/1000'),
+    ('kPa', 'Pa', 'x*1000'),
 
     # Time
-    's_to_minute': 'x/60',
-    'minute_to_s': 'x*60'
-}
+    ('s', 'minute', 'x/60'),
+    ('minute', 's', 'x*60')
+]

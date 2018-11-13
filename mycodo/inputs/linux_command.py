@@ -31,6 +31,7 @@ INPUT_INFORMATION = {
     ],
     'options_disabled': ['interface'],
 
+    'enable_channel_unit_select': True,
     'interfaces': ['Mycodo'],
     'cmd_command': 'shuf -i 50-70 -n 1',
 }

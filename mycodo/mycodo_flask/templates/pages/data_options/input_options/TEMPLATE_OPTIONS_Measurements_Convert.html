@@ -103,14 +103,10 @@
     {{form_mod_input_measurement.convert_to_measurement_unit.label(class_='control-label')}}
     <div>
       <select class="form-control form-tooltip form-dropdown" id="convert_to_measurement_unit" name="convert_to_measurement_unit" data-placement="top" title="{{tooltips_input['convert_to_measurement_unit']['phrase']}}">
-      {% if choices_conversions[each_measurement.unique_id] %}
         <option value="">{{_('Do Not Convert')}}</option>
-        {% for each_submit, each_display in choices_conversions[each_measurement.unique_id].items() %}
-        <option value="{{each_submit}}"{% if each_submit == each_measurement.converted_unit + ',' + each_measurement.converted_measurement %} selected{% endif %}>{{each_display}}</option>
-        {% endfor %}
-      {% else %}
-        <option value="">{{_('No Conversions Available')}}</option>
-      {% endif %}
+      {% for each_conversion in conversion if each_conversion.convert_unit_from == each_measurement.unit %}
+        <option value="{{each_conversion.unique_id}}"{% if each_conversion.unique_id == each_measurement.conversion_id %} selected{% endif %}>[{{each_conversion.id + 1}}] Convert to {{dict_units[each_conversion.convert_unit_to]['name']}} ({{dict_units[each_conversion.convert_unit_to]['unit']}})</option>
+      {% endfor %}
       </select>
     </div>
   </div>

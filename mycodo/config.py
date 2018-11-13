@@ -324,7 +324,10 @@ USER_ROLES = [
          view_settings=True, view_camera=True, view_stats=True, view_logs=True),
     dict(id=4, name='Guest',
          edit_settings=False, edit_controllers=False, edit_users=False,
-         view_settings=False, view_camera=False, view_stats=False, view_logs=False)
+         view_settings=False, view_camera=False, view_stats=False, view_logs=False),
+    dict(id=5, name='Kiosk',
+         edit_settings=False, edit_controllers=False, edit_users=False,
+         view_settings=False, view_camera=True, view_stats=True, view_logs=False)
 ]
 
 # Web UI themes

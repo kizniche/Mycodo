@@ -30,27 +30,18 @@ def calculate_altitude(pressure_pa, sea_level_pa=101325.0):
     return float("{:.3f}".format(alt_meters))
 
 
-def convert_units(convert_from_unit, convert_to_unit, measure_value):
+def convert_units(conversion_id, measure_value):
     """
     Convert from one unit to another, such as ppm to ppb.
     See UNIT_CONVERSIONS in config_devices_units.py for available conversions.
 
-    :param convert_from_unit: unit to convert from, from UNITS in config_devices_units.py
-    :param convert_to_unit: string of "measurement,unit" of desired units to use (separated by ";")
+    :param conversion_id: conversion ID
     :param measure_value: The value to convert
     :return: converted value
     """
-    return_measurement = measure_value
-    conversions_dict = all_conversions(
-        db_retrieve_table_daemon(Conversion, entry='all'))
-
-    conversion = convert_from_unit + '_to_' + convert_to_unit
-    if convert_to_unit == convert_from_unit:
-        return return_measurement
-    elif conversion in conversions_dict:
-        replaced_str = conversions_dict[conversion].replace('x', str(return_measurement))
-        return float('{0:.5f}'.format(eval(replaced_str)))
-    return return_measurement
+    conversion = db_retrieve_table_daemon(Conversion, unique_id=conversion_id)
+    replaced_str = conversion.equation.replace('x', str(measure_value))
+    return float('{0:.5f}'.format(eval(replaced_str)))
 
 
 def calculate_dewpoint(t, rh):

@@ -39,30 +39,6 @@ def add_custom_units(units):
     return sorted_dict_units
 
 
-def add_custom_conversions(conversions):
-    """
-    Returns the measurement dictionary appended with custom conversions
-    """
-    return_conversions = UNIT_CONVERSIONS
-
-    for each_conversion in conversions:
-        conversion_name = "{from_unit}_to_{to_unit}".format(
-            from_unit=each_conversion.convert_unit_from,
-            to_unit=each_conversion.convert_unit_to)
-
-        if conversion_name not in return_conversions:
-            return_conversions.update(
-                {conversion_name: each_conversion.equation})
-
-    # Sort dictionary by keys
-    sorted_keys = sorted(list(return_conversions), key=lambda s: s.casefold())
-    sorted_dict_conversions = OrderedDict()
-    for each_key in sorted_keys:
-        sorted_dict_conversions[each_key] = return_conversions[each_key]
-
-    return sorted_dict_conversions
-
-
 def add_custom_measurements(measurements):
     """
     Returns the measurement dictionary appended with custom measurements/units
@@ -91,7 +67,7 @@ def add_custom_measurements(measurements):
 
 
 def all_conversions(conversions):
-    conversions_combined = UNIT_CONVERSIONS
+    conversions_combined = OrderedDict()
     for each_conversion in conversions:
         convert_str = '{fr}_to_{to}'.format(
             fr=each_conversion.convert_unit_from,

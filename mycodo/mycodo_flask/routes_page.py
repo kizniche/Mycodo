@@ -1021,6 +1021,7 @@ def page_live():
     """ Page of recent and updating input data """
     # Retrieve tables for the data displayed on the live page
     pid = PID.query.all()
+    pid_measurements = PIDMeasurements.query.all()
     output = Output.query.all()
     input_dev = Input.query.all()
     input_measurements = InputMeasurements.query.all()
@@ -1039,6 +1040,20 @@ def page_live():
     # Generate all measurement and units used
     dict_measurements = add_custom_measurements(measurement)
     dict_units = add_custom_units(unit)
+
+    dict_measurements_units = {}
+    list_devices = [
+        input_measurements,
+        math_measurements,
+        pid_measurements
+    ]
+    for measurements in list_devices:
+        for each_measurement in measurements:
+            if each_measurement.conversion_id:
+                conversion = Conversion.query.filter(Conversion.unique_id == each_measurement.conversion_id).first()
+                dict_measurements_units[each_measurement.unique_id] = conversion.convert_unit_to
+            else:
+                dict_measurements_units[each_measurement.unique_id] = each_measurement.unit
 
     # Filter only activated input controllers
     inputs_sorted = []
@@ -1070,6 +1085,7 @@ def page_live():
     return render_template('pages/live.html',
                            dict_measurements=dict_measurements,
                            dict_units=dict_units,
+                           dict_measurements_units=dict_measurements_units,
                            list_devices_adc=list_analog_to_digital_converters(),
                            measurement_units=MEASUREMENTS,
                            math=math,
@@ -1586,8 +1602,6 @@ def page_data():
     choices_unit = utils_general.choices_units(unit)
     choices_measurement = utils_general.choices_measurements(measurement)
     choices_measurements_units = utils_general.choices_measurements_units(measurement, unit)
-    choices_conversions = utils_general.choices_conversion(
-        conversion, measurement, unit, input_measurements)
 
     # Dict of the number of channels for each input/math
     dict_measure_info = {}
@@ -1746,7 +1760,7 @@ def page_data():
                            choices_unit=choices_unit,
                            choices_measurement=choices_measurement,
                            choices_measurements_units=choices_measurements_units,
-                           choices_conversions=choices_conversions,
+                           conversion=conversion,
                            custom_options_values=custom_options_values,
                            device_info=parse_input_information(),
                            dict_inputs=dict_inputs,

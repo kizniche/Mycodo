@@ -15,6 +15,7 @@ The Mycodo 7.0 brings a redesigned Conditional system. The remnants of Condition
 ### Miscellaneous
 
  - Upgrade InfluxDB from 1.6.0 to 1.7.0
+ - Add User Role: Kiosk
 
 
 ## 6.4.5 (2018-10-17)

@@ -116,6 +116,4 @@ class InputMeasurements(CRUDMixin, db.Model):
     scale_to_min = db.Column(db.Float, default=0)
     scale_to_max = db.Column(db.Float, default=20)
 
-    # Converted measurement/unit (from either rescaled or default)
-    converted_measurement = db.Column(db.Text, default='')
-    converted_unit = db.Column(db.Text, default='')
+    conversion_id = db.Column(db.Text, db.ForeignKey('conversion.unique_id'), default='')

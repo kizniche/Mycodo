@@ -65,6 +65,4 @@ class MathMeasurements(CRUDMixin, db.Model):
     unit = db.Column(db.Text, default='')
     channel = db.Column(db.Integer, default=None)
 
-    # Converted measurement/unit (from either rescaled or default)
-    converted_measurement = db.Column(db.Text, default='')
-    converted_unit = db.Column(db.Text, default='')
+    conversion_id = db.Column(db.Text, db.ForeignKey('conversion.unique_id'), default='')

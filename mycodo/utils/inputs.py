@@ -148,6 +148,8 @@ def parse_input_information():
                 dict_inputs = dict_has_value(dict_inputs, input_custom, 'dependencies_module')
                 dict_inputs = dict_has_value(dict_inputs, input_custom, 'dependencies_github')
 
+                dict_inputs = dict_has_value(dict_inputs, input_custom, 'enable_channel_unit_select')
+
                 # Interface
                 dict_inputs = dict_has_value(dict_inputs, input_custom, 'interfaces')
 

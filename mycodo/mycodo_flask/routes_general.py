@@ -33,6 +33,7 @@ from mycodo.config import LOG_PATH
 from mycodo.config import PATH_CAMERAS
 from mycodo.config import PATH_NOTE_ATTACHMENTS
 from mycodo.databases.models import Camera
+from mycodo.databases.models import Conversion
 from mycodo.databases.models import Input
 from mycodo.databases.models import InputMeasurements
 from mycodo.databases.models import Math
@@ -272,12 +273,16 @@ def last_data(unique_id, measure_type, measurement_id, period):
             measure = MathMeasurements.query.filter(MathMeasurements.unique_id == measurement_id).first()
         elif measure_type == 'output':
             measure = Output.query.filter(Output.unique_id == unique_id).first()
+        elif measure_type == 'pid':
+            measure = PIDMeasurements.query.filter(PIDMeasurements.unique_id == measurement_id).first()
         else:
             return '', 204
 
-        if measure.converted_unit and measure.converted_measurement:
-            measurement = measure.converted_measurement
-            unit = measure.converted_unit
+        if measure.conversion_id:
+            conversion = Conversion.query.filter(
+                Conversion.unique_id == measure.conversion_id).first()
+            measurement = None
+            unit = conversion.convert_unit_to
         else:
             measurement = measure.measurement
             unit = measure.unit
@@ -361,9 +366,11 @@ def past_data(unique_id, measure_type, measurement_id, past_seconds):
 
         channel = measure.channel
 
-        if measure.converted_unit:
-            measurement = measure.converted_measurement
-            unit = measure.converted_unit
+        if measure.conversion_id:
+            conversion = Conversion.query.filter(
+                Conversion.unique_id == measure.conversion_id).first()
+            measurement = None
+            unit = conversion.convert_unit_to
         else:
             measurement = measure.measurement
             unit = measure.unit
@@ -560,9 +567,11 @@ def async_data(device_id, device_type, measurement_id, start_seconds, end_second
 
     channel = measure.channel
 
-    if measure.converted_unit:
-        measurement = measure.converted_measurement
-        unit = measure.converted_unit
+    if measure.conversion_id:
+        conversion = Conversion.query.filter(
+            Conversion.unique_id == measure.conversion_id).first()
+        measurement = None
+        unit = conversion.convert_unit_to
     else:
         measurement = measure.measurement
         unit = measure.unit

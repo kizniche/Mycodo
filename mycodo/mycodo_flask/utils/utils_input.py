@@ -478,12 +478,15 @@ def measurement_mod(form):
 
         mod_meas.name = form.name.data
 
-        if ',' in form.select_measurement_unit.data:
-            mod_meas.measurement = form.select_measurement_unit.data.split(',')[0]
-            mod_meas.unit = form.select_measurement_unit.data.split(',')[1]
-        else:
-            mod_meas.measurement = ''
-            mod_meas.unit = ''
+        input_info = parse_input_information()
+        if ('enable_channel_unit_select' in input_info[mod_input.device] and
+                input_info[mod_input.device]['enable_channel_unit_select']):
+            if ',' in form.select_measurement_unit.data:
+                mod_meas.measurement = form.select_measurement_unit.data.split(',')[0]
+                mod_meas.unit = form.select_measurement_unit.data.split(',')[1]
+            else:
+                mod_meas.measurement = ''
+                mod_meas.unit = ''
 
         if form.rescaled_measurement_unit.data != '' and ',' in form.rescaled_measurement_unit.data:
             mod_meas.rescaled_measurement = form.rescaled_measurement_unit.data.split(',')[0]
@@ -494,15 +497,7 @@ def measurement_mod(form):
         mod_meas.scale_to_min = form.scale_to_min.data
         mod_meas.scale_to_max = form.scale_to_max.data
         mod_meas.invert_scale = form.invert_scale.data
-
-        if ',' in form.convert_to_measurement_unit.data:
-            unit = form.convert_to_measurement_unit.data.split(',')[0]
-            measure = form.convert_to_measurement_unit.data.split(',')[1]
-            mod_meas.converted_unit = unit
-            mod_meas.converted_measurement = measure
-        else:
-            mod_meas.converted_unit = ''
-            mod_meas.converted_measurement = ''
+        mod_meas.conversion_id = form.convert_to_measurement_unit.data
 
         if not error:
             db.session.commit()

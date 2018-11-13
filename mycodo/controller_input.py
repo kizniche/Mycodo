@@ -35,6 +35,7 @@ import requests
 
 from mycodo.databases.models import Input
 from mycodo.databases.models import InputMeasurements
+from mycodo.databases.models import Conversion
 from mycodo.databases.models import Misc
 from mycodo.databases.models import Output
 from mycodo.databases.models import SMTP
@@ -103,6 +104,8 @@ class InputController(threading.Thread):
         self.input_measurements = db_retrieve_table_daemon(
             InputMeasurements).filter(
                 InputMeasurements.device_id == self.input_id)
+
+        self.conversions = db_retrieve_table_daemon(Conversion)
 
         self.input_dev = input_dev
         self.input_name = input_dev.name
@@ -298,15 +301,15 @@ class InputController(threading.Thread):
                                 measurement = self.input_measurements.filter(
                                     InputMeasurements.channel == each_channel).first()
 
-                                if measurement.converted_unit not in ['', None] and 'value' in each_measurement:
-                                    converted_measurement = measurement.converted_measurement
-                                    converted_unit = measurement.converted_unit
+                                if measurement.conversion_id not in ['', None] and 'value' in each_measurement:
+                                    conversion = self.conversions.filter(
+                                        Conversion.unique_id == measurement.conversion_id).first()
                                     converted_value = convert_units(
-                                        each_measurement['unit'], measurement.converted_unit, each_measurement['value'])
+                                        measurement.conversion_id, each_measurement['value'])
 
                                     measurements_record[each_channel] = {
-                                        'measurement': converted_measurement,
-                                        'unit': converted_unit,
+                                        'measurement': None,
+                                        'unit': conversion.convert_unit_to,
                                         'value': converted_value
                                     }
                                 else:
@@ -317,8 +320,6 @@ class InputController(threading.Thread):
                                     }
 
                             add_measurements_influxdb(self.unique_id, measurements_record)
-                            # else:
-                            #     add_measure_influxdb(self.unique_id, self.measurement)
                             self.measurement_success = False
 
                 self.trigger_cond = False

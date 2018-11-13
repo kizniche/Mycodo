@@ -175,7 +175,7 @@
 
     <div style="clear: both; padding: 1em 0;"></div>
 
-    {% for each_role in user_roles if each_role.id > 4 %}
+    {% for each_role in user_roles if each_role.id > 1 %}
 
       <form method="post" action="/settings/users">
       {{form_user_roles.csrf_token}}
