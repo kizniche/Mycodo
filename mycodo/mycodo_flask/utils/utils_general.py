@@ -750,7 +750,6 @@ def return_dependencies(device_type):
 
 def use_unit_generate(input_dev, input_measurements, output, math, math_measurements):
     """Generate dictionary of units to convert to"""
-    # TODO: next major version: rename table columns and combine functionality
     use_unit = {}
 
     # Input and Math controllers have measurement tables with the same schema

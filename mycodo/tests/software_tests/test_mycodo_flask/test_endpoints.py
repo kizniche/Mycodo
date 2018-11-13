@@ -244,11 +244,11 @@ def add_data(testapp, data_type='input', input_type='RPi'):
     if data_type == 'input':
         form = testapp.get('/data').maybe_follow().forms['new_input_form']
         form.select(name='input_type', value=input_type)
-        response = form.submit(name='input_add', value='Add Input').maybe_follow()
+        response = form.submit(name='input_add', value='Add').maybe_follow()
     elif data_type == 'math':
         form = testapp.get('/data').maybe_follow().forms['new_math_form']
         form.select(name='math_type', value=input_type)
-        response = form.submit(name='math_add', value='Add Math').maybe_follow()
+        response = form.submit(name='math_add', value='Add').maybe_follow()
     # response.showbrowser()
     return response
 

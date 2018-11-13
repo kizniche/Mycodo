@@ -93,10 +93,6 @@ def parse_input_information():
                 input_cus.INPUT_INFORMATION[key]
         return dict_inp
 
-    # Uncomment to enable timer
-    # import timeit
-    # startup_timer = timeit.default_timer()
-
     excluded_files = ['__init__.py', '__pycache__', 'base_input.py',
                       'custom_inputs', 'examples', 'tmp_inputs',
                       'sensorutils.py']
@@ -126,7 +122,9 @@ def parse_input_information():
                     skip_file = True
 
             if not skip_file:
-                # logger.info("Found input: {}, {}".format(input_custom.INPUT_INFORMATION['input_name_unique'], full_path))
+                # logger.info("Found input: {}, {}".format(
+                #     input_custom.INPUT_INFORMATION['input_name_unique'],
+                #     full_path))
 
                 # Populate dictionary of input information
                 if input_custom.INPUT_INFORMATION['input_name_unique'] in dict_inputs:
@@ -204,9 +202,5 @@ def parse_input_information():
                 dict_inputs = dict_has_value(dict_inputs, input_custom, 'ref_ohm')
 
                 dict_inputs = dict_has_value(dict_inputs, input_custom, 'custom_options')
-
-    # Uncomment to enable timer, also uncomment line at start of function
-    # run_time = timeit.default_timer() - startup_timer
-    # logger.info("Input parse time: {time:.1f} ms".format(time=run_time*1000))
 
     return dict_inputs
