@@ -234,7 +234,7 @@
 
       <tr>
         <td>
-          <input class="form-control btn btn-sm btn-block" disabled="" title="[{{'%02d' % each_conversion.id}}] UUID: {{each_conversion.unique_id}}" value="[{{'%02d' % each_conversion.id}}]" type="text">
+          {{'%02d' % each_conversion.id}}
         </td>
         <td>
           <select class="form-control" id="convert_unit_from" name="convert_unit_from">
@@ -249,14 +249,14 @@
             {% endfor %}
           </select>
         </td>
-        <td>{{form_mod_conversion.equation(class_='form-control', value=each_conversion.equation)}}</td>
         <td>
-          <div class="col-12 small-gutters">
-            {{form_mod_conversion.save_conversion(class_='btn btn-primary btn-block')}}
-          </div>
-          <div class="col-12 small-gutters">
-            {{form_mod_conversion.delete_conversion(class_='btn btn-primary btn-block', **{'onclick':'return confirm("Are you sure you want to delete this?")'})}}
-          </div>
+          {{form_mod_conversion.equation(class_='form-control', value=each_conversion.equation)}}
+        </td>
+        <td>
+          {{form_mod_conversion.save_conversion(class_='btn btn-primary btn-block')}}
+        </td>
+        <td>
+          {{form_mod_conversion.delete_conversion(class_='btn btn-primary btn-block', **{'onclick':'return confirm("Are you sure you want to delete this?")'})}}
         </td>
       </tr>
 

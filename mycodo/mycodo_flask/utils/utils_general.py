@@ -29,12 +29,10 @@ from mycodo.databases.models import Conversion
 from mycodo.databases.models import LCD
 from mycodo.databases.models import Math
 from mycodo.databases.models import MathMeasurements
-from mycodo.databases.models import Measurement
 from mycodo.databases.models import PID
 from mycodo.databases.models import PIDMeasurements
 from mycodo.databases.models import Role
 from mycodo.databases.models import Trigger
-from mycodo.databases.models import Unit
 from mycodo.databases.models import User
 from mycodo.mycodo_client import DaemonControl
 from mycodo.mycodo_flask.extensions import db
@@ -49,6 +47,33 @@ logger = logging.getLogger(__name__)
 #
 # Activate/deactivate controller
 #
+
+def enabled_measurments_missing_unit(device_id, error):
+    try:
+        if InputMeasurements.query.filter(
+                InputMeasurements.device_id == device_id).count():
+            measurements = InputMeasurements.query.filter(
+                InputMeasurements.device_id == device_id)
+        elif MathMeasurements.query.filter(
+                MathMeasurements.device_id == device_id).count():
+            measurements = MathMeasurements.query.filter(
+                MathMeasurements.device_id == device_id)
+        elif PIDMeasurements.query.filter(
+                PIDMeasurements.device_id == device_id).count():
+            measurements = PIDMeasurements.query.filter(
+                PIDMeasurements.device_id == device_id)
+        else:
+            measurements = None
+            error.append("Could not find measurments")
+
+        if measurements:
+            for each_meas in measurements:
+                if each_meas.unit in ['', None]:
+                    error.append("Unit not set for channel {chan}".format(
+                        chan=each_meas.channel + 1))
+    finally:
+        return error
+
 
 def controller_activate_deactivate(controller_action,
                                    controller_type,
@@ -65,6 +90,8 @@ def controller_activate_deactivate(controller_action,
     """
     if not user_has_permission('edit_controllers'):
         return redirect(url_for('routes_general.home'))
+
+    error = []
 
     activated = bool(controller_action == 'activate')
 
@@ -84,15 +111,21 @@ def controller_activate_deactivate(controller_action,
     elif controller_type == 'Input':
         mod_controller = Input.query.filter(
             Input.unique_id == controller_id).first()
+        if activated:
+            error = enabled_measurments_missing_unit(controller_id, error)
     elif controller_type == 'LCD':
         mod_controller = LCD.query.filter(
             LCD.unique_id == controller_id).first()
     elif controller_type == 'Math':
         mod_controller = Math.query.filter(
             Math.unique_id == controller_id).first()
+        if activated:
+            error = enabled_measurments_missing_unit(controller_id, error)
     elif controller_type == 'PID':
         mod_controller = PID.query.filter(
             PID.unique_id == controller_id).first()
+        if activated:
+            error = enabled_measurments_missing_unit(controller_id, error)
     elif controller_type == 'Trigger':
         mod_controller = Trigger.query.filter(
             Trigger.unique_id == controller_id).first()
@@ -103,38 +136,43 @@ def controller_activate_deactivate(controller_action,
         return redirect(url_for('routes_general.home'))
 
     try:
-        mod_controller.is_activated = activated
-        db.session.commit()
+        if not error:
+            mod_controller.is_activated = activated
+            db.session.commit()
 
-        if activated:
-            flash(gettext("%(cont)s controller activated in SQL database",
-                          cont=translated_names[controller_type]),
-                  "success")
-        else:
-            flash(gettext("%(cont)s controller deactivated in SQL database",
-                          cont=translated_names[controller_type]),
-                  "success")
+            if activated:
+                flash(gettext("%(cont)s controller activated in SQL database",
+                              cont=translated_names[controller_type]),
+                      "success")
+            else:
+                flash(gettext("%(cont)s controller deactivated in SQL database",
+                              cont=translated_names[controller_type]),
+                      "success")
     except Exception as except_msg:
         flash(gettext("Error: %(err)s",
                       err='SQL: {msg}'.format(msg=except_msg)),
               "error")
 
     try:
-        control = DaemonControl()
-        if controller_action == 'activate':
-            return_values = control.controller_activate(controller_type,
-                                                        controller_id)
-        else:
-            return_values = control.controller_deactivate(controller_type,
-                                                          controller_id)
-        if return_values[0]:
-            flash("{err}".format(err=return_values[1]), "error")
-        else:
-            flash("{err}".format(err=return_values[1]), "success")
+        if not error:
+            control = DaemonControl()
+            if controller_action == 'activate':
+                return_values = control.controller_activate(controller_type,
+                                                            controller_id)
+            else:
+                return_values = control.controller_deactivate(controller_type,
+                                                              controller_id)
+            if return_values[0]:
+                flash("{err}".format(err=return_values[1]), "error")
+            else:
+                flash("{err}".format(err=return_values[1]), "success")
     except Exception as except_msg:
         flash(gettext("Error: %(err)s",
                       err='Daemon: {msg}'.format(msg=except_msg)),
               "error")
+
+    for each_error in error:
+        flash(each_error, 'error')
 
 
 #

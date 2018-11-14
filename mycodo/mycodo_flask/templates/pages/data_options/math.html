@@ -81,12 +81,14 @@
         </div>
       </div>
 
+      {% if 'enable_single_measurement_select' in math_info[each_math.math_type] and math_info[each_math.math_type]['enable_single_measurement_select'] %}
+
       <div class="col-auto">
         {{form_mod_math.select_measurement_unit.label(class_='control-label')}}
         <div>
           <select class="form-control form-tooltip form-dropdown" data-placement="top" id="select_measurement_unit" name="select_measurement_unit" title="{{tooltips_input['select_measurement_unit']['phrase']}}">
             <option value="">{{_('Select One')}}</option>
-        {% for each_measurement in math_measurements if each_measurement.channel == 0 %}
+        {% for each_measurement in math_measurements if each_measurement.channel == 0 and each_measurement.device_id == each_math.unique_id %}
           {% for each_submit, each_display in choices_measurements_units.items() %}
             <option value="{{each_submit}}"{% if each_submit == each_measurement.measurement + ',' + each_measurement.unit %} selected{% endif %}>{{each_display}}</option>
           {% endfor %}
@@ -94,6 +96,8 @@
           </select>
         </div>
       </div>
+
+      {% endif %}
 
     {% endif %}
 

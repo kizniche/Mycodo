@@ -33,7 +33,8 @@ from statistics import stdev
 import urllib3
 
 import mycodo.utils.psypy as SI
-from mycodo.databases.models import Input
+from mycodo.databases.models import Conversion
+from mycodo.databases.models import InputMeasurements
 from mycodo.databases.models import Math
 from mycodo.databases.models import MathMeasurements
 from mycodo.databases.models import Misc
@@ -172,6 +173,8 @@ class MathController(threading.Thread):
                 err=except_msg))
 
     def calculate_math(self):
+        measurement_dict = {}
+
         if self.math_type == 'average':
 
             measurement = self.math_measurements.filter(
@@ -187,7 +190,6 @@ class MathController(threading.Thread):
                         'value': average
                     }
                 }
-                add_measurements_influxdb(self.unique_id, measurement_dict)
             elif measure:
                 self.logger.error(measure)
             else:
@@ -221,7 +223,6 @@ class MathController(threading.Thread):
                             'value': average
                         }
                     }
-                    add_measurements_influxdb(self.unique_id, measurement_dict)
                 else:
                     self.error_not_within_max_age()
             except Exception as msg:
@@ -247,7 +248,6 @@ class MathController(threading.Thread):
                         'value': difference
                     }
                 }
-                add_measurements_influxdb(self.unique_id, measurement_dict)
             elif measure:
                 self.logger.error(measure)
             else:
@@ -269,7 +269,6 @@ class MathController(threading.Thread):
                         'value': float(equation_output)
                     }
                 }
-                add_measurements_influxdb(self.unique_id, measurement_dict)
             elif measure:
                 self.logger.error(measure)
             else:
@@ -298,7 +297,6 @@ class MathController(threading.Thread):
                     stdev_mean_lower
                 ]
 
-                measurement_dict = {}
                 for each_measurement in self.math_measurements.all():
                     measurement_dict[each_measurement.channel] = {
                             'measurement': each_measurement.measurement,
@@ -306,7 +304,6 @@ class MathController(threading.Thread):
                             'value': list_measurement[each_measurement.channel]
                     }
 
-                add_measurements_influxdb(self.unique_id, measurement_dict)
             elif measure:
                 self.logger.error(measure)
             else:
@@ -329,7 +326,6 @@ class MathController(threading.Thread):
                         'value': difference
                     }
                 }
-                add_measurements_influxdb(self.unique_id, measurement_dict)
             elif measure:
                 self.logger.error(measure)
             else:
@@ -338,6 +334,7 @@ class MathController(threading.Thread):
         elif self.math_type == 'humidity':
 
             pressure_pa = 101325
+            critical_error = False
 
             if self.pressure_pa_id and self.pressure_pa_measure_id:
                 success_pa, pressure = self.get_measurements_from_id(
@@ -345,14 +342,28 @@ class MathController(threading.Thread):
                 if success_pa:
                     pressure_pa = int(pressure[1])
                     # Pressure must be in Pa, convert if not
-                    pressure_conf = db_retrieve_table_daemon(
-                        Input, unique_id=self.pressure_pa_id)
-                    for each_measure in pressure_conf.convert_to_unit.split(';'):
-                        measure = each_measure.split(',')[0]
-                        unit = each_measure.split(',')[1]
-                        if measure == 'pressure' and unit != 'Pa':
-                            pressure_pa = convert_units(
-                                unit, 'Pa', pressure_pa)
+
+                    if db_retrieve_table_daemon(InputMeasurements, unique_id=self.pressure_pa_measure_id):
+                        measurement = db_retrieve_table_daemon(InputMeasurements, unique_id=self.pressure_pa_measure_id)
+                    elif db_retrieve_table_daemon(MathMeasurements, unique_id=self.pressure_pa_measure_id):
+                        measurement = db_retrieve_table_daemon(MathMeasurements, unique_id=self.pressure_pa_measure_id)
+                    else:
+                        self.logger.error("Could not find pressure measurement")
+                        measurement = None
+                        critical_error = True
+
+                    if measurement and measurement.unit != 'Pa':
+                        for each_conv in db_retrieve_table_daemon(Conversion, entry='all'):
+                            if (each_conv.convert_unit_from == measurement.unit and
+                                    each_conv.convert_unit_to == 'Pa'):
+                                pressure_pa = convert_units(
+                                    each_conv.unique_id, pressure_pa)
+                            else:
+                                self.logger.error(
+                                    "Could not find conversion for unit "
+                                    "{unit} to Pa (Pascals)".format(
+                                        unit=measurement.unit))
+                                critical_error = True
 
             success_dbt, dry_bulb_t = self.get_measurements_from_id(
                 self.dry_bulb_t_id, self.dry_bulb_t_measure_id)
@@ -363,24 +374,49 @@ class MathController(threading.Thread):
                 dbt_kelvin = float(dry_bulb_t[1])
                 wbt_kelvin = float(wet_bulb_t[1])
 
-                # Temperatures must be in Kelvin, convert if not
-                dry_bulb_conf = db_retrieve_table_daemon(
-                    Input, unique_id=self.dry_bulb_t_id)
-                for each_measure in dry_bulb_conf.convert_to_unit.split(';'):
-                    measure = each_measure.split(',')[0]
-                    unit = each_measure.split(',')[1]
-                    if measure == 'temperature' and unit != 'K':
-                        dbt_kelvin = convert_units(
-                            unit, 'K', dbt_kelvin)
+                if db_retrieve_table_daemon(InputMeasurements, unique_id=self.dry_bulb_t_measure_id):
+                    measurement = db_retrieve_table_daemon(InputMeasurements, unique_id=self.dry_bulb_t_measure_id)
+                elif db_retrieve_table_daemon(MathMeasurements, unique_id=self.dry_bulb_t_measure_id):
+                    measurement = db_retrieve_table_daemon(MathMeasurements, unique_id=self.dry_bulb_t_measure_id)
+                else:
+                    self.logger.error("Could not find pressure measurement")
+                    measurement = None
+                    critical_error = True
 
-                wet_bulb_conf = db_retrieve_table_daemon(
-                    Input, unique_id=self.wet_bulb_t_id)
-                for each_measure in wet_bulb_conf.convert_to_unit.split(';'):
-                    measure = each_measure.split(',')[0]
-                    unit = each_measure.split(',')[1]
-                    if measure == 'temperature' and unit != 'K':
-                        wbt_kelvin = convert_units(
-                            unit, 'K', wbt_kelvin)
+                if measurement and measurement.unit != 'K':
+                    for each_conv in db_retrieve_table_daemon(Conversion, entry='all'):
+                        if (each_conv.convert_unit_from == measurement.unit and
+                                each_conv.convert_unit_to == 'K'):
+                            dbt_kelvin = convert_units(
+                                each_conv.unique_id, dbt_kelvin)
+                        else:
+                            self.logger.error(
+                                "Could not find conversion for unit "
+                                "{unit} to K (Kelvin)".format(
+                                    unit=measurement.unit))
+                            critical_error = True
+
+                    if db_retrieve_table_daemon(InputMeasurements, unique_id=self.dry_bulb_t_measure_id):
+                        measurement = db_retrieve_table_daemon(InputMeasurements, unique_id=self.dry_bulb_t_measure_id)
+                    elif db_retrieve_table_daemon(MathMeasurements, unique_id=self.dry_bulb_t_measure_id):
+                        measurement = db_retrieve_table_daemon(MathMeasurements, unique_id=self.dry_bulb_t_measure_id)
+                    else:
+                        self.logger.error("Could not find pressure measurement")
+                        measurement = None
+                        critical_error = True
+
+                    if measurement and measurement.unit != 'K':
+                        for each_conv in db_retrieve_table_daemon(Conversion, entry='all'):
+                            if (each_conv.convert_unit_from == measurement.unit and
+                                    each_conv.convert_unit_to == 'K'):
+                                wbt_kelvin = convert_units(
+                                    each_conv.unique_id, wbt_kelvin)
+                            else:
+                                self.logger.error(
+                                    "Could not find conversion for unit "
+                                    "{unit} to K (Kelvin)".format(
+                                        unit=measurement.unit))
+                                critical_error = True
 
                 # Convert temperatures to Kelvin (already done above)
                 # dbt_kelvin = celsius_to_kelvin(dry_bulb_t_c)
@@ -388,8 +424,13 @@ class MathController(threading.Thread):
                 psypi = None
 
                 try:
-                    psypi = SI.state(
-                        "DBT", dbt_kelvin, "WBT", wbt_kelvin, pressure_pa)
+                    if not critical_error:
+                        psypi = SI.state(
+                            "DBT", dbt_kelvin, "WBT", wbt_kelvin, pressure_pa)
+                    else:
+                        self.logger.error(
+                            "One or more critical errors prevented the "
+                            "humidity from being calculated")
                 except TypeError as err:
                     self.logger.error("TypeError: {msg}".format(msg=err))
 
@@ -417,17 +458,20 @@ class MathController(threading.Thread):
                         humidity_ratio
                     ]
 
-                    measurement_dict = {}
                     for each_measurement in self.math_measurements.all():
                         measurement_dict[each_measurement.channel] = {
                             'measurement': each_measurement.measurement,
                             'unit': each_measurement.unit,
                             'value': list_measurement[each_measurement.channel]
                         }
-
-                    add_measurements_influxdb(self.unique_id, measurement_dict)
             else:
                 self.error_not_within_max_age()
+
+        else:
+            self.logger.error("Unknown math type: {type}".format(type=self.math_type))
+
+        # Finally, add measurements to influxdb
+        add_measurements_influxdb(self.unique_id, measurement_dict)
 
     def error_not_within_max_age(self):
         self.logger.error(

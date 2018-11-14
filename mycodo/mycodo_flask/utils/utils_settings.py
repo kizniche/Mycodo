@@ -678,15 +678,20 @@ def settings_convert_mod(form):
     error = []
 
     if 'x' not in form.equation.data:
-        error.append("'x' must appear in the equation.")
+        error.append("'x' must appear in the equation")
 
     try:
         mod_conversion = Conversion.query.filter(
             Conversion.unique_id == form.conversion_id.data).first()
 
-        error = check_conversion_being_used(mod_conversion, error)
+        # Don't allow conversion to be changed for an active controller
+        error = check_conversion_being_used(mod_conversion, error, state='active')
 
         if not error:
+            # Don't allow from conversion to be changed for an inactive controller
+            if mod_conversion.convert_unit_from != form.convert_unit_from.data:
+                error = check_conversion_being_used(mod_conversion, error, state='inactive')
+
             mod_conversion.convert_unit_from = form.convert_unit_from.data
             mod_conversion.convert_unit_to = form.convert_unit_to.data
             mod_conversion.equation = form.equation.data
@@ -708,9 +713,13 @@ def settings_convert_del(unique_id):
         conv = Conversion.query.filter(
             Conversion.unique_id == unique_id).first()
 
-        error = check_conversion_being_used(conv, error)
+        # Don't allow conversion to be changed for an active controller
+        error = check_conversion_being_used(conv, error, state='active')
 
-        delete_entry_with_id(Conversion, unique_id)
+        if not error:
+            # Delete conversion from any controllers
+            remove_conversion_from_controllers(unique_id)
+            delete_entry_with_id(Conversion, unique_id)
     except Exception as except_msg:
         error.append(except_msg)
 
@@ -718,9 +727,9 @@ def settings_convert_del(unique_id):
         error, action, url_for('routes_settings.settings_measurement'))
 
 
-def check_conversion_being_used(conv, error):
+def check_conversion_being_used(conv, error, state=None):
     """
-    Check if a controller is currently active and using the conversion
+    Check if a controller is currently active/inactive and using the conversion
     If so, cannot edit the database/modify the conversion
     """
     try:
@@ -739,21 +748,46 @@ def check_conversion_being_used(conv, error):
 
         for each_device, measurements in list_measurements:
             for each_meas in measurements:
-                is_activated = each_device.query.filter(
-                    each_device.unique_id == each_meas.device_id).first().is_activated
-                if conv.unique_id == each_meas.conversion_id and is_activated:
-                    error.append(
-                        "Cannot delete conversion [{cid}] ({conv}): "
-                        "Currently in use for measurement {meas}, "
-                        "for device {dev}".format(
-                            cid=conv.id,
-                            conv=conv.unique_id,
-                            meas=each_meas.unique_id,
-                            dev=each_meas.device_id))
+                if conv.unique_id == each_meas.conversion_id:
+
+                    if ((state == 'active' and each_device.query.filter(
+                            each_device.unique_id == each_meas.device_id).first().is_activated) or
+                            (state == 'inactive' and not each_device.query.filter(
+                             each_device.unique_id == each_meas.device_id).first().is_activated)):
+                        error.append(
+                            "Conversion [{cid}] ({conv}): "
+                            "Currently in use for measurement {meas}, "
+                            "for device {dev}".format(
+                                cid=conv.id,
+                                conv=conv.unique_id,
+                                meas=each_meas.unique_id,
+                                dev=each_meas.device_id))
     except Exception as except_msg:
         error.append(except_msg)
     finally:
         return error
+
+
+def remove_conversion_from_controllers(conv_id):
+    """
+    Find measurements using the conversion and delete the reference to the conversion_id
+    """
+    input_measurements = InputMeasurements.query.all()
+    math_measurements = MathMeasurements.query.all()
+    pid_measurements = PIDMeasurements.query.all()
+
+    list_measurements = [
+        input_measurements,
+        math_measurements,
+        pid_measurements
+    ]
+
+    for measurements in list_measurements:
+        for each_meas in measurements:
+            if each_meas.conversion_id == conv_id:
+                each_meas.conversion_id = ''
+
+    db.session.commit()
 
 
 def settings_pi_mod(form):

@@ -7,7 +7,6 @@ from flask import url_for
 from flask_babel import gettext
 
 from mycodo.config import MATH_INFO
-from mycodo.config_devices_units import MEASUREMENTS
 from mycodo.databases.models import DisplayOrder
 from mycodo.databases.models import Input
 from mycodo.databases.models import Math
@@ -186,8 +185,6 @@ def math_mod(form_mod_math, form_mod_type=None):
 
             if form_mod_type.pressure.data:
                 mod_math.pressure_pa_id = form_mod_type.pressure.data.split(',')[0]
-                pressure_input = Input.query.filter(
-                    Input.unique_id == mod_math.pressure_pa_id).first()
                 mod_math.pressure_pa_measure_id = form_mod_type.pressure.data.split(',')[1]
             else:
                 mod_math.pressure_pa_id = None
@@ -222,21 +219,16 @@ def math_measurement_mod(form):
 
         mod_meas.name = form.name.data
 
-        if ',' in form.select_measurement_unit.data:
-            mod_meas.measurement = form.select_measurement_unit.data.split(',')[0]
-            mod_meas.unit = form.select_measurement_unit.data.split(',')[1]
-        else:
-            mod_meas.measurement = ''
-            mod_meas.unit = ''
+        if form.select_measurement_unit.data:
+            if ',' in form.select_measurement_unit.data:
+                mod_meas.measurement = form.select_measurement_unit.data.split(',')[0]
+                mod_meas.unit = form.select_measurement_unit.data.split(',')[1]
+            else:
+                mod_meas.measurement = ''
+                mod_meas.unit = ''
 
-        if ',' in form.convert_to_measurement_unit.data:
-            unit = form.convert_to_measurement_unit.data.split(',')[0]
-            measure = form.convert_to_measurement_unit.data.split(',')[1]
-            mod_meas.converted_unit = unit
-            mod_meas.converted_measurement = measure
-        else:
-            mod_meas.converted_unit = ''
-            mod_meas.converted_measurement = ''
+        if form.convert_to_measurement_unit.data:
+            mod_meas.conversion_id = form.convert_to_measurement_unit.data
 
         if not error:
             db.session.commit()

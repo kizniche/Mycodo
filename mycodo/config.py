@@ -49,26 +49,31 @@ MATH_INFO = {
     'average': {
         'name': 'Average (Multi)',
         'dependencies_module': [],
+        'enable_measurements_select': True,
         'measure': {}
     },
     'average_single': {
         'name': 'Average (Single)',
         'dependencies_module': [],
+        'enable_measurements_select': True,
         'measure': {}
     },
     'difference': {
         'name': 'Difference',
         'dependencies_module': [],
+        'enable_measurements_select': True,
         'measure': {}
     },
     'equation': {
         'name': 'Equation',
         'dependencies_module': [],
+        'enable_measurements_select': True,
         'measure': {}
     },
     'humidity': {
         'name': 'Humidity (Wet-Bulb)',
         'dependencies_module': [],
+        'enable_measurements_convert': True,
         'measure': {
             0: {
                 'measurement': 'humidity',
@@ -91,6 +96,7 @@ MATH_INFO = {
     'statistics': {
         'name': 'Statistics',
         'dependencies_module': [],
+        'enable_single_measurement_select': True,
         'measure': {
             0: {
                 'measurement': '',
@@ -132,6 +138,7 @@ MATH_INFO = {
     'verification': {
         'name': 'Verification',
         'dependencies_module': [],
+        'enable_measurements_select': True,
         'measure': {}
     }
 }
