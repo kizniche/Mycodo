@@ -48,11 +48,6 @@
     }
 
     $(function() {
-      {%- set temperatures = ['dewpoint',
-                              'temperature',
-                              'temperature_die',
-                              'temperature_object'] -%}
-
       {%- for each_input in input if each_input.is_activated -%}
         {% for each_meas in input_measurements if each_meas.device_id == each_input.unique_id and each_meas.is_enabled %}
           liveTextData('{{each_input.unique_id}}', 'input', '{{each_meas.unique_id}}', {{each_input.period + 1}});
@@ -60,10 +55,9 @@
       {%- endfor -%}
 
       {%- for each_math in math if each_math.is_activated -%}
-        {%- set measurement_list = each_math.measure.split(',') -%}
-        {%- for each_measurement in measurement_list %}
-          liveTextData('{{each_math.unique_id}}', '{{each_measurement}}', '', '', {{each_math.period + 1}});
-        {%- endfor -%}
+        {% for each_meas in math_measurements if each_meas.device_id == each_math.unique_id and each_meas.is_enabled %}
+          liveTextData('{{each_math.unique_id}}', 'math', '{{each_meas.unique_id}}', {{each_math.period + 1}});
+        {% endfor %}
       {%- endfor -%}
     });
   </script>
@@ -273,24 +267,30 @@
 
         <div class="col-xs-12 col-sm-6 text-right">
           {{_('Measurement')}} | {{_('Timestamp')}}
+        {% for each_meas in math_measurements if each_meas.device_id == each_math.unique_id and each_meas.is_enabled %}
+          {% set measure_string = each_math.unique_id + '-math-' + each_meas.unique_id %}
           <div>
-          {% for each_measure_unit in each_math.measure_units.split(';') %}
-            {% set each_measure = each_measure_unit.split(',')[0] %}
-            {% set each_unit = each_measure_unit.split(',')[1] %}
-            {% if each_measure and each_measure in dict_units and dict_units[each_measure]['meas'] == 'temperature' %}
-              <b><span id="{{each_math.unique_id}}-{{each_measure}}-value">0.0</span> {{dict_units[each_measure]['unit']}}
-                {%- if each_measure == 'dewpoint' %} DP
-                {% elif each_measure == 'temperature_object' %} Obj
-                {% elif each_measure == 'temperature_die' %} Die
-                {%- endif -%}</b> ({{dict_measurements[each_measure]['name']}}) | <span id="{{each_math.unique_id}}-{{each_measure}}-time">&lt;{{_('Please wait')}}&gt;</span><br>
-            {% elif each_measure and each_measure in dict_measurements and each_unit and each_unit in dict_units %}
-              <b><span id="{{each_math.unique_id}}-{{each_measure}}-value">0.0</span> {{dict_units[each_unit]['unit']}}</b> ({{dict_measurements[each_measure]['name']}}) | <span id="{{each_math.unique_id}}-{{each_measure}}-time">&lt;{{_('Please wait')}}&gt;</span><br>
-            {% else %}
-              <b><span id="{{each_math.unique_id}}-{{each_measure}}-value">0.0</span> {{each_unit}}</b> ({{each_measure}}) | <span id="{{each_math.unique_id}}-{{each_measure}}-time">&lt;{{_('Please wait')}}&gt;</span><br>
-            {% endif %}
-          {% endfor %}
+            <b><span id="{{measure_string}}-value">0.0</span>
+
+          {%- if dict_units[dict_measurements_units[each_meas.unique_id]]['unit'] -%}
+            {{' ' + dict_units[dict_measurements_units[each_meas.unique_id]]['unit']}}
+          {%- endif -%}</b>
+
+          {%- if not each_meas.conversion_id -%}
+            {{' (' + dict_measurements[each_meas.measurement]['name'] + ') '}}
+          {%- else -%}
+            {{' (' + dict_units[dict_measurements_units[each_meas.unique_id]]['name'] + ') '}}
+          {%- endif -%}
+
+          {%- if each_meas.name -%}
+            {{' (' + each_meas.name + ') '}}
+          {%- endif -%}
+
+            CH{{each_meas.channel + 1}} | <span id="{{measure_string}}-time">&lt;{{_('Please wait')}}&gt;</span><br>
           </div>
+        {% endfor %}
         </div>
+
       </div>
 
         {%- for each_pid in pid if each_pid.is_activated and each_pid.measurement.split(',')[0] == each_math.unique_id -%}

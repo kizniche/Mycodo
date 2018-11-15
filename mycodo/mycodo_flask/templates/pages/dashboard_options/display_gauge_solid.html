@@ -107,8 +107,17 @@
         {%- endfor -%}
 
         {%- for each_math in math -%}
-          {%- for each_id_and_measure in graph_input_ids if each_math.unique_id == each_id_and_measure.split(',')[0] -%}
-            {{each_math.measure|safe}}
+          {%- for device_and_measurement_ids in graph_math_ids if each_math.unique_id == device_and_measurement_ids.split(',')[0] -%}
+            {%- set measurement_id = device_and_measurement_ids.split(',')[1] -%}
+            {%- if measurement_id in math_measurements_dict -%}
+
+            {{each_math.name}} (
+              {%- if not math_measurements_dict[measurement_id].single_channel -%}
+                {{'CH' + (math_measurements_dict[measurement_id].channel|int + 1)|string + ', '}}
+              {%- endif -%}
+            {{measurement_units[math_measurements_dict[measurement_id].measurement]['name']}}
+
+            {%- endif -%}
           {%- endfor -%}
         {%- endfor -%}
 
@@ -134,6 +143,15 @@
           {%- endfor -%}
         {%- endfor -%}
 
+        {%- for each_math in math -%}
+          {%- for device_and_measurement_ids in graph_math_ids if each_math.unique_id == device_and_measurement_ids.split(',')[0] %}
+            {%- set measurement_id = device_and_measurement_ids.split(',')[1] -%}
+        pointFormatter: function () {
+            return '<span style="color:'+ this.series.color + '"">\u25CF</span> ' + this.series.name + ':<b> ' + Highcharts.numberFormat(this.y, 2) + ' {{units[math_measurements_dict[measurement_id].unit]['unit']}}</b><br>';
+        },
+          {%- endfor -%}
+        {%- endfor -%}
+
         valueSuffix: '
         {%- for each_input in input -%}
           {%- for device_and_measurement_ids in graph_input_ids if each_input.unique_id == device_and_measurement_ids.split(',')[0] -%}
@@ -143,8 +161,9 @@
         {%- endfor -%}
 
         {%- for each_math in math -%}
-          {%- for each_id_and_measure in graph_input_ids if each_math.unique_id == each_id_and_measure.split(',')[0] %}
-            {{' ' + each_math.measure_units|safe}}
+          {%- for device_and_measurement_ids in graph_math_ids if each_math.unique_id == device_and_measurement_ids.split(',')[0] -%}
+            {%- set measurement_id = device_and_measurement_ids.split(',')[1] -%}
+            {{' ' + units[math_measurements_dict[measurement_id].unit]['unit']}}
           {%- endfor -%}
         {%- endfor -%}
 

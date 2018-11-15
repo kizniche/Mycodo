@@ -1089,6 +1089,7 @@ def page_live():
                            list_devices_adc=list_analog_to_digital_converters(),
                            measurement_units=MEASUREMENTS,
                            math=math,
+                           math_measurements=math_measurements,
                            method=method,
                            output=output,
                            output_type=output_type,
