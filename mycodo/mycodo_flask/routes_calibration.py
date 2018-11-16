@@ -67,9 +67,7 @@ def setup_atlas_ph():
 
     form_ph_calibrate = forms_calibration.CalibrationAtlasph()
 
-    input_dev = Input.query.filter(
-        or_(Input.device == 'ATLAS_PH_UART',
-            Input.device == 'ATLAS_PH_I2C')).all()
+    input_dev = Input.query.filter(Input.device == 'ATLAS_PH').all()
     stage = 0
     next_stage = None
     selected_input = None
@@ -82,7 +80,7 @@ def setup_atlas_ph():
     # Clear Calibration memory
     if form_ph_calibrate.clear_calibration.data:
         selected_input = Input.query.filter_by(
-            unique_id=form_ph_calibrate.selected_sensor_id.data).first()
+            unique_id=form_ph_calibrate.selected_input_id.data).first()
         atlas_command = AtlasScientificCommand(selected_input)
         status, message = atlas_command.calibrate('clear_calibration')
         if status:
@@ -94,12 +92,12 @@ def setup_atlas_ph():
     elif form_ph_calibrate.go_from_first_stage.data:
         stage = 1
         selected_input = Input.query.filter_by(
-            unique_id=form_ph_calibrate.selected_sensor_id.data).first()
+            unique_id=form_ph_calibrate.selected_input_id.data).first()
         dict_inputs = parse_input_information()
         list_inputs_sorted = generate_form_input_list(dict_inputs)
         if not selected_input:
             flash('Input not found: {}'.format(
-                form_ph_calibrate.selected_sensor_id.data), 'error')
+                form_ph_calibrate.selected_input_id.data), 'error')
         else:
             for each_input in list_inputs_sorted:
                 if selected_input.device == each_input[0]:
@@ -110,7 +108,7 @@ def setup_atlas_ph():
             form_ph_calibrate.go_to_last_stage.data or
             (next_stage is not None and next_stage > 1)):
         selected_input = Input.query.filter_by(
-            unique_id=form_ph_calibrate.hidden_sensor_id.data).first()
+            unique_id=form_ph_calibrate.hidden_input_id.data).first()
         dict_inputs = parse_input_information()
         list_inputs_sorted = generate_form_input_list(dict_inputs)
         for each_input in list_inputs_sorted:
@@ -124,7 +122,7 @@ def setup_atlas_ph():
             stage = 1
         else:
             temp = '{temp:.2f}'.format(
-                temp=form_ph_calibrate.temperature.data)
+                temp=float(form_ph_calibrate.temperature.data))
             stage, complete_with_error = dual_commands_to_sensor(
                 selected_input, 'temperature', temp, 'continuous', 1)
     elif next_stage == 3:
@@ -140,9 +138,9 @@ def setup_atlas_ph():
     return render_template('tools/calibration_options/atlas_ph.html',
                            complete_with_error=complete_with_error,
                            form_ph_calibrate=form_ph_calibrate,
-                           sensor=input_dev,
-                           sensor_device_name=input_device_name,
-                           selected_sensor=selected_input,
+                           input=input_dev,
+                           input_device_name=input_device_name,
+                           selected_input=selected_input,
                            stage=stage)
 
 
