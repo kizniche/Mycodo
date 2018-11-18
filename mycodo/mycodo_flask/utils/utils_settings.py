@@ -16,17 +16,15 @@ from mycodo.config import INSTALL_DIRECTORY
 from mycodo.databases.models import Camera
 from mycodo.databases.models import Conversion
 from mycodo.databases.models import Dashboard
+from mycodo.databases.models import DeviceMeasurements
 from mycodo.databases.models import DisplayOrder
 from mycodo.databases.models import Input
-from mycodo.databases.models import InputMeasurements
 from mycodo.databases.models import Math
-from mycodo.databases.models import MathMeasurements
 from mycodo.databases.models import Measurement
 from mycodo.databases.models import Misc
 from mycodo.databases.models import NoteTags
 from mycodo.databases.models import Notes
 from mycodo.databases.models import PID
-from mycodo.databases.models import PIDMeasurements
 from mycodo.databases.models import Role
 from mycodo.databases.models import SMTP
 from mycodo.databases.models import Unit
@@ -736,18 +734,16 @@ def check_conversion_being_used(conv, error, state=None):
         input_dev = Input
         math = Math
         pid = PID
-        input_measurements = InputMeasurements.query.all()
-        math_measurements = MathMeasurements.query.all()
-        pid_measurements = PIDMeasurements.query.all()
+        device_measurements = DeviceMeasurements.query.all()
 
         list_measurements = [
-            (input_dev, input_measurements),
-            (math, math_measurements),
-            (pid, pid_measurements)
+            input_dev,
+            math,
+            pid,
         ]
 
-        for each_device, measurements in list_measurements:
-            for each_meas in measurements:
+        for each_device in list_measurements:
+            for each_meas in device_measurements:
                 if conv.unique_id == each_meas.conversion_id:
 
                     if ((state == 'active' and each_device.query.filter(
@@ -772,17 +768,9 @@ def remove_conversion_from_controllers(conv_id):
     """
     Find measurements using the conversion and delete the reference to the conversion_id
     """
-    input_measurements = InputMeasurements.query.all()
-    math_measurements = MathMeasurements.query.all()
-    pid_measurements = PIDMeasurements.query.all()
+    device_measurements = DeviceMeasurements.query.all()
 
-    list_measurements = [
-        input_measurements,
-        math_measurements,
-        pid_measurements
-    ]
-
-    for measurements in list_measurements:
+    for measurements in device_measurements:
         for each_meas in measurements:
             if each_meas.conversion_id == conv_id:
                 each_meas.conversion_id = ''
@@ -1099,7 +1087,7 @@ def settings_diagnostic_delete_inputs():
     error = []
 
     inputs = db_retrieve_table(Input)
-    input_measurements = db_retrieve_table(InputMeasurements)
+    device_measurements = db_retrieve_table(DeviceMeasurements)
     display_order = db_retrieve_table(DisplayOrder, entry='first')
 
     if not error:
@@ -1111,7 +1099,7 @@ def settings_diagnostic_delete_inputs():
                     controller_activate_deactivate('deactivate', 'Input', each_input.unique_id)
 
                 # Delete all measurements associated with the input
-                for each_measurement in input_measurements:
+                for each_measurement in device_measurements:
                     if each_measurement.device_id == each_input.unique_id:
                         db.session.delete(each_measurement)
 
@@ -1132,7 +1120,7 @@ def settings_diagnostic_delete_maths():
     error = []
 
     maths = db_retrieve_table(Math)
-    math_measurements = db_retrieve_table(MathMeasurements)
+    device_measurements = db_retrieve_table(DeviceMeasurements)
     display_order = db_retrieve_table(DisplayOrder, entry='first')
 
     if not error:
@@ -1143,7 +1131,7 @@ def settings_diagnostic_delete_maths():
                     controller_activate_deactivate('deactivate', 'Math', each_math.unique_id)
 
                 # Delete all measurements associated
-                for each_measurement in math_measurements:
+                for each_measurement in device_measurements:
                     if each_measurement.device_id == each_math.unique_id:
                         db.session.delete(each_measurement)
                 db.session.delete(each_math)

@@ -39,12 +39,11 @@ from .function import ConditionalConditions
 from .function import Function
 from .function import Trigger
 from .input import Input
-from .input import InputMeasurements
 from .lcd import LCD
 from .lcd import LCDData
 from .math import Math
-from .math import MathMeasurements
 from .measurement import Conversion
+from .measurement import DeviceMeasurements
 from .measurement import Measurement
 from .measurement import Unit
 from .method import Method
@@ -54,7 +53,6 @@ from .notes import NoteTags
 from .notes import Notes
 from .output import Output
 from .pid import PID
-from .pid import PIDMeasurements
 from .remote import Remote
 from .role import Role
 from .smtp import SMTP

@@ -2,7 +2,7 @@
 import logging
 import time
 
-from mycodo.databases.models import InputMeasurements
+from mycodo.databases.models import DeviceMeasurements
 from mycodo.databases.models import Output
 from mycodo.inputs.base_input import AbstractInput
 from mycodo.inputs.sensorutils import calculate_dewpoint
@@ -99,9 +99,9 @@ class InputModule(AbstractInput):
             self.logger = logging.getLogger(
                 'mycodo.dht22_{id}'.format(id=input_dev.unique_id.split('-')[0]))
 
-            self.input_measurements = db_retrieve_table_daemon(
-                InputMeasurements).filter(
-                    InputMeasurements.device_id == input_dev.unique_id)
+            self.device_measurements = db_retrieve_table_daemon(
+                DeviceMeasurements).filter(
+                    DeviceMeasurements.device_id == input_dev.unique_id)
 
             self.power_output_id = input_dev.power_output_id
 

@@ -33,8 +33,8 @@ import locket
 import os
 import requests
 
+from mycodo.databases.models import DeviceMeasurements
 from mycodo.databases.models import Input
-from mycodo.databases.models import InputMeasurements
 from mycodo.databases.models import Conversion
 from mycodo.databases.models import Misc
 from mycodo.databases.models import Output
@@ -101,9 +101,9 @@ class InputController(threading.Thread):
         input_dev = db_retrieve_table_daemon(
             Input, unique_id=self.input_id)
 
-        self.input_measurements = db_retrieve_table_daemon(
-            InputMeasurements).filter(
-                InputMeasurements.device_id == self.input_id)
+        self.device_measurements = db_retrieve_table_daemon(
+            DeviceMeasurements).filter(
+                DeviceMeasurements.device_id == self.input_id)
 
         self.conversions = db_retrieve_table_daemon(Conversion)
 
@@ -298,8 +298,8 @@ class InputController(threading.Thread):
                             # Convert units before adding measurements to database
                             measurements_record = {}
                             for each_channel, each_measurement in self.measurement.values.items():
-                                measurement = self.input_measurements.filter(
-                                    InputMeasurements.channel == each_channel).first()
+                                measurement = self.device_measurements.filter(
+                                    DeviceMeasurements.channel == each_channel).first()
 
                                 if measurement.conversion_id not in ['', None] and 'value' in each_measurement:
                                     conversion = self.conversions.filter(

@@ -7,7 +7,7 @@ from datetime import datetime
 import os
 
 from mycodo.config import PATH_CAMERAS
-from mycodo.databases.models import InputMeasurements
+from mycodo.databases.models import DeviceMeasurements
 from mycodo.inputs.base_input import AbstractInput
 from mycodo.utils.database import db_retrieve_table_daemon
 from mycodo.utils.image import generate_thermal_image_from_pixels
@@ -77,9 +77,9 @@ class InputModule(AbstractInput):
             self.logger = logging.getLogger(
                 "mycodo.ds18b20_{id}".format(id=input_dev.unique_id.split('-')[0]))
 
-            self.input_measurements = db_retrieve_table_daemon(
-                InputMeasurements).filter(
-                    InputMeasurements.device_id == input_dev.unique_id)
+            self.device_measurements = db_retrieve_table_daemon(
+                DeviceMeasurements).filter(
+                    DeviceMeasurements.device_id == input_dev.unique_id)
 
             self.Adafruit_AMG88xx = Adafruit_AMG88xx
             self.i2c_address = int(str(input_dev.i2c_location), 16)
@@ -102,7 +102,7 @@ class InputModule(AbstractInput):
             self.logger.error("Max Pixel = {0} C".format(max(pixels)))
             self.logger.error("Thermistor = {0} C".format(self.sensor.readThermistor()))
 
-        for meas in self.input_measurements.all():
+        for meas in self.device_measurements.all():
             if meas.is_enabled:
                 return_dict[meas.channel]['value'] = pixels[meas.channel]
 

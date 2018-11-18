@@ -1,4 +1,4 @@
-{% for each_measurement in math_measurements if each_measurement.device_id == each_math.unique_id and each_measurement.is_enabled %}
+{% for each_measurement in device_measurements if each_measurement.device_id == each_math.unique_id and each_measurement.is_enabled %}
 
 <form method="post" action="/data">
 {{form_mod_math_measurement.csrf_token}}
@@ -12,9 +12,9 @@
 
   {% if each_math.math_type == 'average_single' and ',' in each_math.inputs %}
 
-    {% if ',' in each_math.inputs and each_math.inputs.split(',')[1] in math_measurements_dict %}
+    {% if ',' in each_math.inputs and each_math.inputs.split(',')[1] in device_measurements_dict %}
 
-      {%- set measurement = math_measurements_dict[each_math.inputs.split(',')[1]] -%}
+      {%- set measurement = device_measurements_dict[each_math.inputs.split(',')[1]] -%}
 
       {% if measurement.unit and measurement.measurement %}
   <div class="col-auto">
@@ -22,8 +22,8 @@
   </div>
       {% endif %}
 
-    {% elif ',' in each_math.inputs and each_math.inputs.split(',')[1] in input_measurements_dict %}
-      {%- set measurement = input_measurements_dict[each_math.inputs.split(',')[1]] -%}
+    {% elif ',' in each_math.inputs and each_math.inputs.split(',')[1] in device_measurements_dict %}
+      {%- set measurement = device_measurements_dict[each_math.inputs.split(',')[1]] -%}
 
       {% if measurement.unit and measurement.measurement %}
 

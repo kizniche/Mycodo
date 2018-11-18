@@ -34,15 +34,13 @@ from mycodo.config import PATH_CAMERAS
 from mycodo.config import PATH_NOTE_ATTACHMENTS
 from mycodo.databases.models import Camera
 from mycodo.databases.models import Conversion
+from mycodo.databases.models import DeviceMeasurements
 from mycodo.databases.models import Input
-from mycodo.databases.models import InputMeasurements
 from mycodo.databases.models import Math
-from mycodo.databases.models import MathMeasurements
 from mycodo.databases.models import NoteTags
 from mycodo.databases.models import Notes
 from mycodo.databases.models import Output
 from mycodo.databases.models import PID
-from mycodo.databases.models import PIDMeasurements
 from mycodo.devices.camera import camera_record
 from mycodo.mycodo_client import DaemonControl
 from mycodo.mycodo_flask.routes_authentication import clear_cookie_auth
@@ -267,14 +265,10 @@ def last_data(unique_id, measure_type, measurement_id, period):
         current_app.config['INFLUXDB_TIMEOUT'] = 5
         dbcon = influx_db.connection
 
-        if measure_type == 'input':
-            measure = InputMeasurements.query.filter(InputMeasurements.unique_id == measurement_id).first()
-        elif measure_type == 'math':
-            measure = MathMeasurements.query.filter(MathMeasurements.unique_id == measurement_id).first()
+        if measure_type in ['input', 'math', 'pid']:
+            measure = DeviceMeasurements.query.filter(DeviceMeasurements.unique_id == measurement_id).first()
         elif measure_type == 'output':
             measure = Output.query.filter(Output.unique_id == unique_id).first()
-        elif measure_type == 'pid':
-            measure = PIDMeasurements.query.filter(PIDMeasurements.unique_id == measurement_id).first()
         else:
             return '', 204
 
@@ -350,14 +344,10 @@ def past_data(unique_id, measure_type, measurement_id, past_seconds):
         current_app.config['INFLUXDB_TIMEOUT'] = 5
         dbcon = influx_db.connection
 
-        if measure_type == 'input':
-            measure = InputMeasurements.query.filter(InputMeasurements.unique_id == measurement_id).first()
-        elif measure_type == 'math':
-            measure = MathMeasurements.query.filter(MathMeasurements.unique_id == measurement_id).first()
+        if measure_type in ['input', 'math', 'pid']:
+            measure = DeviceMeasurements.query.filter(DeviceMeasurements.unique_id == measurement_id).first()
         elif measure_type == 'output':
             measure = Output.query.filter(Output.unique_id == unique_id).first()
-        elif measure_type == 'pid':
-            measure = PIDMeasurements.query.filter(PIDMeasurements.unique_id == measurement_id).first()
         else:
             measure = None
 
@@ -551,14 +541,10 @@ def async_data(device_id, device_type, measurement_id, start_seconds, end_second
     current_app.config['INFLUXDB_TIMEOUT'] = 5
     dbcon = influx_db.connection
 
-    if device_type == 'input':
-        measure = InputMeasurements.query.filter(InputMeasurements.unique_id == measurement_id).first()
-    elif device_type == 'math':
-        measure = MathMeasurements.query.filter(MathMeasurements.unique_id == measurement_id).first()
+    if device_type in ['input', 'math', 'pid']:
+        measure = DeviceMeasurements.query.filter(DeviceMeasurements.unique_id == measurement_id).first()
     elif device_type == 'output':
         measure = Output.query.filter(Output.unique_id == device_id).first()
-    elif device_type == 'pid':
-        measure = PIDMeasurements.query.filter(PIDMeasurements.unique_id == measurement_id).first()
     else:
         measure = None
 

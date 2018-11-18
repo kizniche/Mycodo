@@ -2,7 +2,7 @@
 import logging
 
 from mycodo.inputs.base_input import AbstractInput
-from mycodo.databases.models import InputMeasurements
+from mycodo.databases.models import DeviceMeasurements
 from mycodo.utils.database import db_retrieve_table_daemon
 
 # Measurements
@@ -66,9 +66,9 @@ class InputModule(AbstractInput):
             self.logger = logging.getLogger(
                 "mycodo.ccs811_{id}".format(id=input_dev.unique_id.split('-')[0]))
 
-            self.input_measurements = db_retrieve_table_daemon(
-                InputMeasurements).filter(
-                    InputMeasurements.device_id == input_dev.unique_id)
+            self.device_measurements = db_retrieve_table_daemon(
+                DeviceMeasurements).filter(
+                    DeviceMeasurements.device_id == input_dev.unique_id)
 
             self.i2c_address = int(str(input_dev.i2c_location), 16)
             self.i2c_bus = input_dev.i2c_bus

@@ -11,10 +11,10 @@ from mycodo.config import PID_INFO
 from mycodo.databases.models import Actions
 from mycodo.databases.models import Camera
 from mycodo.databases.models import Conditional
+from mycodo.databases.models import DeviceMeasurements
 from mycodo.databases.models import DisplayOrder
 from mycodo.databases.models import Function
 from mycodo.databases.models import PID
-from mycodo.databases.models import PIDMeasurements
 from mycodo.databases.models import Trigger
 from mycodo.mycodo_client import DaemonControl
 from mycodo.mycodo_flask.extensions import db
@@ -48,7 +48,7 @@ def function_add(form_add_func):
             new_func = PID().save()
 
             for each_channel, measure_info in PID_INFO['measure'].items():
-                new_measurement = PIDMeasurements()
+                new_measurement = DeviceMeasurements()
 
                 if 'name' in measure_info:
                     new_measurement.name = measure_info['name']

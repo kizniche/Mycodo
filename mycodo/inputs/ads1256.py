@@ -4,7 +4,7 @@ from collections import OrderedDict
 
 from flask_babel import lazy_gettext
 
-from mycodo.databases.models import InputMeasurements
+from mycodo.databases.models import DeviceMeasurements
 from mycodo.inputs.base_input import AbstractInput
 from mycodo.utils.database import db_retrieve_table_daemon
 
@@ -126,9 +126,9 @@ class InputModule(AbstractInput):
 
             self.adc_calibration = None
 
-            self.input_measurements = db_retrieve_table_daemon(
-                InputMeasurements).filter(
-                    InputMeasurements.device_id == input_dev.unique_id)
+            self.device_measurements = db_retrieve_table_daemon(
+                DeviceMeasurements).filter(
+                    DeviceMeasurements.device_id == input_dev.unique_id)
 
             self.adc_gain = input_dev.adc_gain
             self.adc_sample_speed = input_dev.adc_sample_speed
@@ -182,7 +182,7 @@ class InputModule(AbstractInput):
                 "something is wrong).")
             return
 
-        for each_measure in self.input_measurements.all():
+        for each_measure in self.device_measurements.all():
             if each_measure.is_enabled:
                 return_dict[each_measure.channel]['value'] = voltages_list[each_measure.channel]
 

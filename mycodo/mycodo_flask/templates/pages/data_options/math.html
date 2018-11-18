@@ -74,7 +74,7 @@
         <label class="control-label">{{tooltips_input['measurements_enabled']['title']}}</label>
         <div>
           <select class="form-control form-tooltip form-dropdown" data-placement="top" id="measurements_enabled" name="measurements_enabled" title="{{tooltips_input['measurements_enabled']['phrase']}}" size="{{[10, dict_measure_info[each_math.unique_id]['channels']]|min}}" multiple>
-            {% for each_measurement in math_measurements if each_measurement.device_id == each_math.unique_id %}
+            {% for each_measurement in device_measurements if each_measurement.device_id == each_math.unique_id %}
               <option value="{{each_measurement.unique_id}}"{% if each_measurement.is_enabled %} selected{% endif %}>{{each_measurement.name}} {% if each_measurement.measurement in dict_measurements %}{{dict_measurements[each_measurement.measurement]['name']}} {% endif %}{% if each_measurement.channel != None %} (CH{{each_measurement.channel + 1}}{% if each_measurement.unit in dict_units %}, {{dict_units[each_measurement.unit]['name']}}{% endif %}){% endif %}</option>
             {% endfor %}
           </select>
@@ -88,7 +88,7 @@
         <div>
           <select class="form-control form-tooltip form-dropdown" data-placement="top" id="select_measurement_unit" name="select_measurement_unit" title="{{tooltips_input['select_measurement_unit']['phrase']}}">
             <option value="">{{_('Select One')}}</option>
-        {% for each_measurement in math_measurements if each_measurement.channel == 0 and each_measurement.device_id == each_math.unique_id %}
+        {% for each_measurement in device_measurements if each_measurement.channel == 0 and each_measurement.device_id == each_math.unique_id %}
           {% for each_submit, each_display in choices_measurements_units.items() %}
             <option value="{{each_submit}}"{% if each_submit == each_measurement.measurement + ',' + each_measurement.unit %} selected{% endif %}>{{each_display}}</option>
           {% endfor %}

@@ -2,7 +2,7 @@
 import logging
 import time
 
-from mycodo.databases.models import InputMeasurements
+from mycodo.databases.models import DeviceMeasurements
 from mycodo.inputs.base_input import AbstractInput
 from mycodo.inputs.sensorutils import is_device
 from mycodo.utils.database import db_retrieve_table_daemon

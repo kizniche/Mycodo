@@ -12,7 +12,7 @@ import logging
 
 from sqlalchemy import and_
 
-from mycodo.databases.models import InputMeasurements
+from mycodo.databases.models import DeviceMeasurements
 
 
 class AbstractInput(object):
@@ -37,7 +37,7 @@ class AbstractInput(object):
         self.avg_meas = {}
         self.acquiring_measurement = False
         self.running = True
-        self.input_measurements = None
+        self.device_measurements = None
 
     def __iter__(self):
         """ Support the iterator protocol """
@@ -164,10 +164,10 @@ class AbstractInput(object):
     def is_enabled(self, channel):
         if self.run_main:
             return True
-        elif (self.input_measurements and
-                self.input_measurements.filter(and_(
-                    InputMeasurements.is_enabled == True,
-                    InputMeasurements.channel == channel)).count()):
+        elif (self.device_measurements and
+                self.device_measurements.filter(and_(
+                    DeviceMeasurements.is_enabled == True,
+                    DeviceMeasurements.channel == channel)).count()):
             return True
 
     def stop_sensor(self):

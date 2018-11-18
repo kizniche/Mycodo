@@ -7,7 +7,7 @@ import time
 
 from flask_babel import lazy_gettext
 
-from mycodo.databases.models import InputMeasurements
+from mycodo.databases.models import DeviceMeasurements
 from mycodo.inputs.base_input import AbstractInput
 from mycodo.inputs.sensorutils import is_device
 from mycodo.utils.database import db_retrieve_table_daemon
@@ -97,6 +97,7 @@ class InputModule(AbstractInput):
         super(InputModule, self).__init__()
         self.logger = logging.getLogger("mycodo.inputs.winsen_zh03b")
         self._measurements = None
+        self.fan_is_on = False
 
         if not testing:
             import serial
@@ -104,9 +105,9 @@ class InputModule(AbstractInput):
             self.logger = logging.getLogger(
                 "mycodo.winsen_zh03b_{id}".format(id=input_dev.unique_id.split('-')[0]))
 
-            self.input_measurements = db_retrieve_table_daemon(
-                InputMeasurements).filter(
-                    InputMeasurements.device_id == input_dev.unique_id)
+            self.device_measurements = db_retrieve_table_daemon(
+                DeviceMeasurements).filter(
+                    DeviceMeasurements.device_id == input_dev.unique_id)
 
             self.binascii = binascii
             self.uart_location = input_dev.uart_location
@@ -139,7 +140,7 @@ class InputModule(AbstractInput):
                     self.ser.flushInput()
 
                     if not self.fan_modulate:
-                        self.fan_state = self.DormantMode('run')
+                        self.dormant_mode('run')
 
                     time.sleep(0.1)
 
@@ -158,73 +159,65 @@ class InputModule(AbstractInput):
 
         return_dict = measurements_dict.copy()
 
-        pm_1_0 = None
-        pm_2_5 = None
-        pm_10_0 = None
-
         self.logger.debug("Reading sample")
 
-        try:
-            if self.fan_modulate:
-                # Allow the fan to run before querying sensor
-                self.DormantMode('run')
-                start_time = time.time()
-                while (self.running and
-                        time.time() - start_time < self.fan_seconds):
-                    time.sleep(0.01)
+        if self.fan_modulate and not self.fan_is_on:
+            # Allow the fan to run before querying sensor
+            self.dormant_mode('run')
+            start_time = time.time()
+            while (self.running and
+                    time.time() - start_time < self.fan_seconds):
+                time.sleep(0.01)
 
-            # Acquire measurements
-            pm_1_0, pm_2_5, pm_10_0 = self.QAReadSample()
+        # Acquire measurements
+        pm_1_0, pm_2_5, pm_10_0 = self.qa_read_sample()
 
-            if pm_1_0 > 1000:
-                pm_1_0 = 1001
-                self.logger.error("PM1 measurement out of range (over 1000 ug/m^3)")
-            if pm_2_5 > 1000:
-                pm_2_5 = 1001
-                self.logger.error("PM2.5 measurement out of range (over 1000 ug/m^3)")
-            if pm_10_0 > 1000:
-                pm_10_0 = 1001
-                self.logger.error("PM10 measurement out of range (over 1000 ug/m^3)")
+        if pm_1_0 > 1000:
+            pm_1_0 = 1001
+            self.logger.error("PM1 measurement out of range (over 1000 ug/m^3)")
+        if pm_2_5 > 1000:
+            pm_2_5 = 1001
+            self.logger.error("PM2.5 measurement out of range (over 1000 ug/m^3)")
+        if pm_10_0 > 1000:
+            pm_10_0 = 1001
+            self.logger.error("PM10 measurement out of range (over 1000 ug/m^3)")
 
-            if self.is_enabled(0):
-                return_dict[0]['value'] = pm_1_0
+        if self.is_enabled(0):
+            return_dict[0]['value'] = pm_1_0
 
-            if self.is_enabled(1):
-                return_dict[1]['value'] = pm_2_5
+        if self.is_enabled(1):
+            return_dict[1]['value'] = pm_2_5
 
-            if self.is_enabled(2):
-                return_dict[2]['value'] = pm_10_0
+        if self.is_enabled(2):
+            return_dict[2]['value'] = pm_10_0
 
-            # Turn the fan off
-            if self.fan_modulate:
-                self.DormantMode('sleep')
+        # Turn the fan off
+        if self.fan_modulate:
+            self.dormant_mode('sleep')  
 
-            return return_dict
-        except:
-            self.logger.exception("Exception while reading")
-            return None
+        return return_dict
 
     @staticmethod
-    def HexToByte(hexStr):
+    def hex_to_byte(hex_str):
         """
         Convert a string hex byte values into a byte string. The Hex Byte values may
         or may not be space separated.
         """
         # The list comprehension implementation is fractionally slower in this case
         #
-        #    hexStr = ''.join( hexStr.split(" ") )
-        #    return ''.join( ["%c" % chr( int ( hexStr[i:i+2],16 ) ) \
-        #                                   for i in range(0, len( hexStr ), 2) ] )
-        bytes = []
+        #    hex_str = ''.join( hex_str.split(" ") )
+        #    return ''.join( ["%c" % chr( int ( hex_str[i:i+2],16 ) ) \
+        #                                   for i in range(0, len( hex_str ), 2) ] )
+        bytes_ = []
 
-        hexStr = ''.join(hexStr.split(" "))
+        hex_str = ''.join(hex_str.split(" "))
 
-        for i in range(0, len(hexStr), 2):
-            bytes.append(chr(int(hexStr[i:i + 2], 16)))
+        for i in range(0, len(hex_str), 2):
+            bytes_.append(chr(int(hex_str[i:i + 2], 16)))
 
-        return ''.join(bytes)
+        return ''.join(bytes_)
 
-    def SetQA(self):
+    def set_qa(self):
         """
         Set ZH03B Question and Answer mode
         Returns:  Nothing
@@ -232,7 +225,7 @@ class InputModule(AbstractInput):
         self.ser.write(b"\xFF\x01\x78\x41\x00\x00\x00\x00\x46")
         return
 
-    def SetStream(self):
+    def set_stream(self):
         """
         Set to default streaming mode of readings
         Returns: Nothing
@@ -240,59 +233,59 @@ class InputModule(AbstractInput):
         self.ser.write(b"\xFF\x01\x78\x40\x00\x00\x00\x00\x47")
         return
 
-    def QAReadSample(self):
+    def qa_read_sample(self):
         """
         Q&A mode requires a command to obtain a reading sample
         Returns: int PM1, int PM25, int PM10
         """
         self.ser.flushInput()  # flush input buffer
         self.ser.write(b"\xFF\x01\x86\x00\x00\x00\x00\x00\x79")
-        reading = self.HexToByte(((self.binascii.hexlify(self.ser.read(2))).hex()))
-        PM25 = int(self.HexToByte(((self.binascii.hexlify(self.ser.read(2))).hex())), 16)
-        PM10 = int(self.HexToByte(((self.binascii.hexlify(self.ser.read(2))).hex())), 16)
-        PM1 = int(self.HexToByte(((self.binascii.hexlify(self.ser.read(2))).hex())), 16)
-        return PM1, PM25, PM10
+        reading = self.hex_to_byte(((self.binascii.hexlify(self.ser.read(2))).hex()))
+        pm_25 = int(self.hex_to_byte(((self.binascii.hexlify(self.ser.read(2))).hex())), 16)
+        pm_10 = int(self.hex_to_byte(((self.binascii.hexlify(self.ser.read(2))).hex())), 16)
+        pm_1 = int(self.hex_to_byte(((self.binascii.hexlify(self.ser.read(2))).hex())), 16)
+        return pm_1, pm_25, pm_10
 
-    def DormantMode(self, pwr_status):
+    def dormant_mode(self, pwr_status):
         """
         Turn dormant mode on or off. Must be on to measure.
         """
         #  Turn fan off
-        #
         if pwr_status == "sleep":
             self.ser.write(b"\xFF\x01\xA7\x01\x00\x00\x00\x00\x57")
-            response = self.HexToByte(((self.binascii.hexlify(self.ser.read(3))).hex()))
+            response = self.hex_to_byte(((self.binascii.hexlify(self.ser.read(3))).hex()))
             self.ser.flushInput()
             if response == "ffa701":
+                self.fan_is_on = False
                 return "FanOFF"
             else:
                 return "FanERROR"
 
         #  Turn fan on
-        #
         if pwr_status == "run":
             self.ser.write(b"\xFF\x01\xA7\x00\x00\x00\x00\x00\x58")
-            response = self.HexToByte(((self.binascii.hexlify(self.ser.read(3))).hex()))
+            response = self.hex_to_byte(((self.binascii.hexlify(self.ser.read(3))).hex()))
             self.ser.flushInput()
             if response == "ffa701":
+                self.fan_is_on = True
                 return "FanON"
             else:
                 return "FanERROR"
 
-    def ReadSample(self):
+    def read_sample(self):
         """
         Read exactly one sample from the default mode streaming samples
         """
         self.ser.flushInput()  # flush input buffer
         sampled = False
         while not sampled and self.running:
-            reading = self.HexToByte(((self.binascii.hexlify(self.ser.read(2))).hex()))
+            reading = self.hex_to_byte(((self.binascii.hexlify(self.ser.read(2))).hex()))
             if reading == "424d":
                 sampled = True
                 status = self.ser.read(8)
-                PM1 = int(self.HexToByte(((self.binascii.hexlify(self.ser.read(2))).hex())), 16)
-                PM25 = int(self.HexToByte(((self.binascii.hexlify(self.ser.read(2))).hex())), 16)
-                PM10 = int(self.HexToByte(((self.binascii.hexlify(self.ser.read(2))).hex())), 16)
-                return PM1, PM25, PM10
+                pm_1 = int(self.hex_to_byte(((self.binascii.hexlify(self.ser.read(2))).hex())), 16)
+                pm_25 = int(self.hex_to_byte(((self.binascii.hexlify(self.ser.read(2))).hex())), 16)
+                pm_10 = int(self.hex_to_byte(((self.binascii.hexlify(self.ser.read(2))).hex())), 16)
+                return pm_1, pm_25, pm_10
             else:
                 continue

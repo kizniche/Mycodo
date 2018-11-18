@@ -3,7 +3,7 @@ import argparse
 import logging
 from collections import OrderedDict
 
-from mycodo.databases.models import InputMeasurements
+from mycodo.databases.models import DeviceMeasurements
 from mycodo.inputs.base_input import AbstractInput
 from mycodo.utils.database import db_retrieve_table_daemon
 
@@ -66,9 +66,9 @@ class InputModule(AbstractInput):
             self.logger = logging.getLogger(
                 'mycodo.mcp3008_{id}'.format(id=input_dev.unique_id.split('-')[0]))
 
-            self.input_measurements = db_retrieve_table_daemon(
-                InputMeasurements).filter(
-                    InputMeasurements.device_id == input_dev.unique_id)
+            self.device_measurements = db_retrieve_table_daemon(
+                DeviceMeasurements).filter(
+                    DeviceMeasurements.device_id == input_dev.unique_id)
 
             self.pin_clock = input_dev.pin_clock
             self.pin_cs = input_dev.pin_cs
@@ -86,7 +86,7 @@ class InputModule(AbstractInput):
 
         return_dict = measurements_dict.copy()
 
-        for each_measure in self.input_measurements.all():
+        for each_measure in self.device_measurements.all():
             if each_measure.is_enabled:
                 return_dict[each_measure.channel]['value'] = (
                     (self.adc.read_adc(each_measure.channel) / 1023.0) * self.scale_from_max)

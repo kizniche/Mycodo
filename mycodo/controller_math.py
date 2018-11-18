@@ -34,9 +34,8 @@ import urllib3
 
 import mycodo.utils.psypy as SI
 from mycodo.databases.models import Conversion
-from mycodo.databases.models import InputMeasurements
+from mycodo.databases.models import DeviceMeasurements
 from mycodo.databases.models import Math
-from mycodo.databases.models import MathMeasurements
 from mycodo.databases.models import Misc
 from mycodo.databases.models import SMTP
 from mycodo.inputs.sensorutils import convert_units
@@ -100,9 +99,9 @@ class MathController(threading.Thread):
             self.math_id = math_id
             math = db_retrieve_table_daemon(Math, unique_id=self.math_id)
 
-            self.math_measurements = db_retrieve_table_daemon(
-                MathMeasurements).filter(
-                    MathMeasurements.device_id == self.math_id)
+            self.device_measurements = db_retrieve_table_daemon(
+                DeviceMeasurements).filter(
+                    DeviceMeasurements.device_id == self.math_id)
 
             # General variables
             self.unique_id = math.unique_id
@@ -177,8 +176,8 @@ class MathController(threading.Thread):
 
         if self.math_type == 'average':
 
-            measurement = self.math_measurements.filter(
-                MathMeasurements.channel == 0).first()
+            measurement = self.device_measurements.filter(
+                DeviceMeasurements.channel == 0).first()
             success, measure = self.get_measurements_from_str(self.inputs)
             if success:
                 average = float(sum(measure) / float(len(measure)))
@@ -230,8 +229,8 @@ class MathController(threading.Thread):
 
         elif self.math_type == 'difference':
 
-            measurement = self.math_measurements.filter(
-                MathMeasurements.channel == 0).first()
+            measurement = self.device_measurements.filter(
+                DeviceMeasurements.channel == 0).first()
             success, measure = self.get_measurements_from_str(self.inputs)
             if success:
                 if self.difference_reverse_order:
@@ -255,8 +254,8 @@ class MathController(threading.Thread):
 
         elif self.math_type == 'equation':
 
-            measurement = self.math_measurements.filter(
-                MathMeasurements.channel == 0).first()
+            measurement = self.device_measurements.filter(
+                DeviceMeasurements.channel == 0).first()
             success, measure = self.get_measurements_from_str(self.inputs)
             if success:
                 replaced_str = self.equation.replace('x', str(measure[0]))
@@ -297,7 +296,7 @@ class MathController(threading.Thread):
                     stdev_mean_lower
                 ]
 
-                for each_measurement in self.math_measurements.all():
+                for each_measurement in self.device_measurements.all():
                     measurement_dict[each_measurement.channel] = {
                             'measurement': each_measurement.measurement,
                             'unit': each_measurement.unit,
@@ -311,8 +310,8 @@ class MathController(threading.Thread):
 
         elif self.math_type == 'verification':
 
-            measurement = self.math_measurements.filter(
-                MathMeasurements.channel == 0).first()
+            measurement = self.device_measurements.filter(
+                DeviceMeasurements.channel == 0).first()
             success, measure = self.get_measurements_from_str(self.inputs)
             if (success and
                     max(measure) - min(measure) <
@@ -343,10 +342,8 @@ class MathController(threading.Thread):
                     pressure_pa = int(pressure[1])
                     # Pressure must be in Pa, convert if not
 
-                    if db_retrieve_table_daemon(InputMeasurements, unique_id=self.pressure_pa_measure_id):
-                        measurement = db_retrieve_table_daemon(InputMeasurements, unique_id=self.pressure_pa_measure_id)
-                    elif db_retrieve_table_daemon(MathMeasurements, unique_id=self.pressure_pa_measure_id):
-                        measurement = db_retrieve_table_daemon(MathMeasurements, unique_id=self.pressure_pa_measure_id)
+                    if db_retrieve_table_daemon(DeviceMeasurements, unique_id=self.pressure_pa_measure_id):
+                        measurement = db_retrieve_table_daemon(DeviceMeasurements, unique_id=self.pressure_pa_measure_id)
                     else:
                         self.logger.error("Could not find pressure measurement")
                         measurement = None
@@ -374,10 +371,8 @@ class MathController(threading.Thread):
                 dbt_kelvin = float(dry_bulb_t[1])
                 wbt_kelvin = float(wet_bulb_t[1])
 
-                if db_retrieve_table_daemon(InputMeasurements, unique_id=self.dry_bulb_t_measure_id):
-                    measurement = db_retrieve_table_daemon(InputMeasurements, unique_id=self.dry_bulb_t_measure_id)
-                elif db_retrieve_table_daemon(MathMeasurements, unique_id=self.dry_bulb_t_measure_id):
-                    measurement = db_retrieve_table_daemon(MathMeasurements, unique_id=self.dry_bulb_t_measure_id)
+                if db_retrieve_table_daemon(DeviceMeasurements, unique_id=self.dry_bulb_t_measure_id):
+                    measurement = db_retrieve_table_daemon(DeviceMeasurements, unique_id=self.dry_bulb_t_measure_id)
                 else:
                     self.logger.error("Could not find pressure measurement")
                     measurement = None
@@ -396,10 +391,8 @@ class MathController(threading.Thread):
                                     unit=measurement.unit))
                             critical_error = True
 
-                    if db_retrieve_table_daemon(InputMeasurements, unique_id=self.dry_bulb_t_measure_id):
-                        measurement = db_retrieve_table_daemon(InputMeasurements, unique_id=self.dry_bulb_t_measure_id)
-                    elif db_retrieve_table_daemon(MathMeasurements, unique_id=self.dry_bulb_t_measure_id):
-                        measurement = db_retrieve_table_daemon(MathMeasurements, unique_id=self.dry_bulb_t_measure_id)
+                    if db_retrieve_table_daemon(DeviceMeasurements, unique_id=self.dry_bulb_t_measure_id):
+                        measurement = db_retrieve_table_daemon(DeviceMeasurements, unique_id=self.dry_bulb_t_measure_id)
                     else:
                         self.logger.error("Could not find pressure measurement")
                         measurement = None
@@ -458,7 +451,7 @@ class MathController(threading.Thread):
                         humidity_ratio
                     ]
 
-                    for each_measurement in self.math_measurements.all():
+                    for each_measurement in self.device_measurements.all():
                         measurement_dict[each_measurement.channel] = {
                             'measurement': each_measurement.measurement,
                             'unit': each_measurement.unit,

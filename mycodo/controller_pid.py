@@ -57,6 +57,7 @@ import timeit
 import requests
 
 from mycodo.config import SQL_DATABASE_MYCODO
+from mycodo.databases.models import DeviceMeasurements
 from mycodo.databases.models import Input
 from mycodo.databases.models import Math
 from mycodo.databases.models import Method
@@ -64,7 +65,6 @@ from mycodo.databases.models import MethodData
 from mycodo.databases.models import Misc
 from mycodo.databases.models import Output
 from mycodo.databases.models import PID
-from mycodo.databases.models import PIDMeasurements
 from mycodo.databases.utils import session_scope
 from mycodo.mycodo_client import DaemonControl
 from mycodo.utils.database import db_retrieve_table_daemon
@@ -100,7 +100,7 @@ class PIDController(threading.Thread):
         self.sample_rate = db_retrieve_table_daemon(
             Misc, entry='first').sample_rate_controller_pid
 
-        self.pid_measurements = db_retrieve_table_daemon(PIDMeasurements)
+        self.device_measurements = db_retrieve_table_daemon(DeviceMeasurements)
 
         self.PID_Controller = None
         self.control_variable = 0.0
@@ -442,8 +442,8 @@ class PIDController(threading.Thread):
         ]
 
         measurement_dict = {}
-        measurements = self.pid_measurements.filter(
-            PIDMeasurements.device_id == self.pid_id).all()
+        measurements = self.device_measurements.filter(
+            DeviceMeasurements.device_id == self.pid_id).all()
         for each_channel, each_measurement in enumerate(measurements):
             if (each_measurement.channel not in measurement_dict and
                     each_measurement.channel < len(list_measurements)):

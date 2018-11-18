@@ -55,14 +55,13 @@ from mycodo.databases.models import Conversion
 from mycodo.databases.models import Conditional
 from mycodo.databases.models import ConditionalConditions
 from mycodo.databases.models import Dashboard
+from mycodo.databases.models import DeviceMeasurements
 from mycodo.databases.models import DisplayOrder
 from mycodo.databases.models import Function
 from mycodo.databases.models import Input
-from mycodo.databases.models import InputMeasurements
 from mycodo.databases.models import LCD
 from mycodo.databases.models import LCDData
 from mycodo.databases.models import Math
-from mycodo.databases.models import MathMeasurements
 from mycodo.databases.models import Measurement
 from mycodo.databases.models import Method
 from mycodo.databases.models import Misc
@@ -70,7 +69,6 @@ from mycodo.databases.models import NoteTags
 from mycodo.databases.models import Notes
 from mycodo.databases.models import Output
 from mycodo.databases.models import PID
-from mycodo.databases.models import PIDMeasurements
 from mycodo.databases.models import Trigger
 from mycodo.databases.models import Unit
 from mycodo.databases.models import User
@@ -457,13 +455,11 @@ def page_dashboard():
     camera = Camera.query.all()
     dashboard = Dashboard.query.all()
     input_dev = Input.query.all()
-    input_measurements = InputMeasurements.query.all()
+    device_measurements = DeviceMeasurements.query.all()
     math = Math.query.all()
-    math_measurements = MathMeasurements.query.all()
     misc = Misc.query.first()
     output = Output.query.all()
     pid = PID.query.all()
-    pid_measurements = PIDMeasurements.query.all()
     measurement = Measurement.query.all()
     unit = Unit.query.all()
     tags = NoteTags.query.all()
@@ -512,17 +508,9 @@ def page_dashboard():
         pid, dict_units, dict_measurements)
     choices_note_tag = utils_general.choices_tags(tags)
 
-    input_measurements_dict = {}
-    for meas in input_measurements:
-        input_measurements_dict[meas.unique_id] = meas
-
-    math_measurements_dict = {}
-    for meas in math_measurements:
-        math_measurements_dict[meas.unique_id] = meas
-
-    pid_measurements_dict = {}
-    for meas in pid_measurements:
-        pid_measurements_dict[meas.unique_id] = meas
+    device_measurements_dict = {}
+    for meas in device_measurements:
+        device_measurements_dict[meas.unique_id] = meas
 
     # Add multi-select values as form choices, for validation
     form_graph.math_ids.choices = []
@@ -597,7 +585,7 @@ def page_dashboard():
 
     # Get what each measurement uses for a unit
     use_unit = utils_general.use_unit_generate(
-        input_dev, input_measurements, output, math, math_measurements)
+        device_measurements, input_dev, output, math)
 
     # Generate a dictionary of each graph's y-axis minimum and maximum
     custom_yaxes = dict_custom_yaxes_min_max(dashboard, y_axes)
@@ -655,14 +643,12 @@ def page_dashboard():
                            dashboard_element_names=dashboard_element_names,
                            dashboard_elements_hidden=dashboard_elements_hidden,
                            dashboard=dashboard,
+                           device_measurements_dict=device_measurements_dict,
                            math=math,
-                           math_measurements_dict=math_measurements_dict,
                            misc=misc,
                            pid=pid,
-                           pid_measurements_dict=pid_measurements_dict,
                            output=output,
                            input=input_dev,
-                           input_measurements_dict=input_measurements_dict,
                            tags=tags,
                            colors_graph=colors_graph,
                            colors_gauge_angular=colors_gauge_angular,
@@ -689,12 +675,10 @@ def page_dashboard():
 def page_graph_async():
     """ Generate graphs using asynchronous data retrieval """
     input_dev = Input.query.all()
-    input_measurements = InputMeasurements.query.all()
+    device_measurements = DeviceMeasurements.query.all()
     math = Math.query.all()
-    math_measurements = MathMeasurements.query.all()
     output = Output.query.all()
     pid = PID.query.all()
-    pid_measurements = PIDMeasurements.query.all()
     measurement = Measurement.query.all()
     unit = Unit.query.all()
     tag = NoteTags.query.all()
@@ -705,7 +689,7 @@ def page_graph_async():
 
     # Get what each measurement uses for a unit
     use_unit = utils_general.use_unit_generate(
-        input_dev, input_measurements, output, math, math_measurements)
+        device_measurements, input_dev, output, math)
 
     input_choices = utils_general.choices_inputs(
         input_dev, dict_units, dict_measurements)
@@ -719,17 +703,9 @@ def page_graph_async():
     selected_ids_measures = []
     start_time_epoch = 0
 
-    input_measurements_dict = {}
-    for meas in input_measurements:
-        input_measurements_dict[meas.unique_id] = meas
-
-    math_measurements_dict = {}
-    for meas in math_measurements:
-        math_measurements_dict[meas.unique_id] = meas
-
-    pid_measurements_dict = {}
-    for meas in pid_measurements:
-        pid_measurements_dict[meas.unique_id] = meas
+    device_measurements_dict = {}
+    for meas in device_measurements:
+        device_measurements_dict[meas.unique_id] = meas
 
     if request.method == 'POST':
         seconds = 0
@@ -755,17 +731,15 @@ def page_graph_async():
 
     return render_template('pages/graph-async.html',
                            start_time_epoch=start_time_epoch,
+                           device_measurements_dict=device_measurements_dict,
                            dict_measurements=dict_measurements,
                            dict_units=dict_units,
                            measurement_units=MEASUREMENTS,
                            use_unit=use_unit,
                            input=input_dev,
-                           input_measurements_dict=input_measurements_dict,
                            math=math,
-                           math_measurements_dict=math_measurements_dict,
                            output=output,
                            pid=pid,
-                           pid_measurements_dict=pid_measurements_dict,
                            tag=tag,
                            units=UNITS,
                            input_choices=input_choices,
@@ -1020,14 +994,10 @@ def page_lcd():
 def page_live():
     """ Page of recent and updating input data """
     # Retrieve tables for the data displayed on the live page
-    pid = PID.query.all()
-    pid_measurements = PIDMeasurements.query.all()
+    device_measurements = DeviceMeasurements.query.all()
     output = Output.query.all()
     input_dev = Input.query.all()
-    input_measurements = InputMeasurements.query.all()
     math = Math.query.all()
-    math_measurements = MathMeasurements.query.all()
-    method = Method.query.all()
     measurement = Measurement.query.all()
     unit = Unit.query.all()
 
@@ -1042,18 +1012,12 @@ def page_live():
     dict_units = add_custom_units(unit)
 
     dict_measurements_units = {}
-    list_devices = [
-        input_measurements,
-        math_measurements,
-        pid_measurements
-    ]
-    for measurements in list_devices:
-        for each_measurement in measurements:
-            if each_measurement.conversion_id:
-                conversion = Conversion.query.filter(Conversion.unique_id == each_measurement.conversion_id).first()
-                dict_measurements_units[each_measurement.unique_id] = conversion.convert_unit_to
-            else:
-                dict_measurements_units[each_measurement.unique_id] = each_measurement.unit
+    for each_measurement in device_measurements:
+        if each_measurement.conversion_id:
+            conversion = Conversion.query.filter(Conversion.unique_id == each_measurement.conversion_id).first()
+            dict_measurements_units[each_measurement.unique_id] = conversion.convert_unit_to
+        else:
+            dict_measurements_units[each_measurement.unique_id] = each_measurement.unit
 
     # Filter only activated input controllers
     inputs_sorted = []
@@ -1080,22 +1044,17 @@ def page_live():
 
     # Get what each measurement uses for a unit
     use_unit = utils_general.use_unit_generate(
-        input_dev, input_measurements, output, math, math_measurements)
+        device_measurements, input_dev, output, math)
 
     return render_template('pages/live.html',
+                           device_measurements=device_measurements,
                            dict_measurements=dict_measurements,
                            dict_units=dict_units,
                            dict_measurements_units=dict_measurements_units,
                            list_devices_adc=list_analog_to_digital_converters(),
                            measurement_units=MEASUREMENTS,
                            math=math,
-                           math_measurements=math_measurements,
-                           method=method,
-                           output=output,
-                           output_type=output_type,
-                           pid=pid,
                            input=input_dev,
-                           input_measurements=input_measurements,
                            inputs_sorted=inputs_sorted,
                            maths_sorted=maths_sorted,
                            units=UNITS,
@@ -1561,9 +1520,8 @@ def page_data():
     pid = PID.query.all()
     output = Output.query.all()
     input_dev = Input.query.all()
-    input_measurements = InputMeasurements.query.all()
+    device_measurements = DeviceMeasurements.query.all()
     math = Math.query.all()
-    math_measurements = MathMeasurements.query.all()
     user = User.query.all()
     measurement = Measurement.query.all()
     unit = Unit.query.all()
@@ -1608,13 +1566,13 @@ def page_data():
     dict_measure_info = {}
     for each_input in input_dev:
         dict_measure_info[each_input.unique_id] = {
-            'channels': InputMeasurements.query.filter(
-                InputMeasurements.device_id == each_input.unique_id).count()
+            'channels': DeviceMeasurements.query.filter(
+                DeviceMeasurements.device_id == each_input.unique_id).count()
         }
     for each_math in math:
         dict_measure_info[each_math.unique_id] = {
-            'channels': MathMeasurements.query.filter(
-                MathMeasurements.device_id == each_math.unique_id).count()
+            'channels': DeviceMeasurements.query.filter(
+                DeviceMeasurements.device_id == each_math.unique_id).count()
         }
 
     # Create dict of Input names
@@ -1764,6 +1722,7 @@ def page_data():
                            conversion=conversion,
                            custom_options_values=custom_options_values,
                            device_info=parse_input_information(),
+                           device_measurements=device_measurements,
                            dict_inputs=dict_inputs,
                            dict_measure_info=dict_measure_info,
                            display_order_input=display_order_input,
@@ -1782,12 +1741,10 @@ def page_data():
                            form_mod_verification=form_mod_verification,
                            camera=camera,
                            input=input_dev,
-                           input_measurements=input_measurements,
                            names_input=names_input,
                            tooltips_input=TOOLTIPS_INPUT,
                            input_templates=input_templates,
                            math=math,
-                           math_measurements=math_measurements,
                            names_math=names_math,
                            math_info=MATH_INFO,
                            math_templates=math_templates,

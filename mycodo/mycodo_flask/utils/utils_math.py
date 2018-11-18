@@ -7,10 +7,10 @@ from flask import url_for
 from flask_babel import gettext
 
 from mycodo.config import MATH_INFO
+from mycodo.databases.models import DeviceMeasurements
 from mycodo.databases.models import DisplayOrder
 from mycodo.databases.models import Input
 from mycodo.databases.models import Math
-from mycodo.databases.models import MathMeasurements
 from mycodo.mycodo_flask.extensions import db
 from mycodo.mycodo_flask.utils.utils_general import add_display_order
 from mycodo.mycodo_flask.utils.utils_general import controller_activate_deactivate
@@ -61,13 +61,13 @@ def math_add(form_add_math):
             db.session.commit()
 
             if not MATH_INFO[form_add_math.math_type.data]['measure']:
-                new_measurement = MathMeasurements()
+                new_measurement = DeviceMeasurements()
                 new_measurement.device_id = new_math.unique_id
                 new_measurement.channel = 0
                 new_measurement.save()
             else:
                 for each_channel, measure_info in MATH_INFO[form_add_math.math_type.data]['measure'].items():
-                    new_measurement = MathMeasurements()
+                    new_measurement = DeviceMeasurements()
                     if 'name' in measure_info and measure_info['name']:
                         new_measurement.name = measure_info['name']
                     new_measurement.device_id = new_math.unique_id
@@ -117,8 +117,8 @@ def math_mod(form_mod_math, form_mod_type=None):
         mod_math.period = form_mod_math.period.data
         mod_math.max_measure_age = form_mod_math.max_measure_age.data
 
-        measurements = MathMeasurements.query.filter(
-            MathMeasurements.device_id == form_mod_math.math_id.data).all()
+        measurements = DeviceMeasurements.query.filter(
+            DeviceMeasurements.device_id == form_mod_math.math_id.data).all()
 
         # Set each measurement to the same measurement/unit
         if form_mod_math.select_measurement_unit.data:
@@ -209,8 +209,8 @@ def math_measurement_mod(form):
     error = []
 
     try:
-        mod_meas = MathMeasurements.query.filter(
-            MathMeasurements.unique_id == form.math_measurement_id.data).first()
+        mod_meas = DeviceMeasurements.query.filter(
+            DeviceMeasurements.unique_id == form.math_measurement_id.data).first()
 
         mod_math = Math.query.filter(Math.unique_id == mod_meas.device_id).first()
         if mod_math.is_activated:
@@ -257,11 +257,11 @@ def math_del(form_mod_math):
                 'Math',
                 form_mod_math.math_id.data)
 
-        math_measurements = MathMeasurements.query.filter(
-            MathMeasurements.device_id == math_id).all()
+        device_measurements = DeviceMeasurements.query.filter(
+            DeviceMeasurements.device_id == math_id).all()
 
-        for each_measurement in math_measurements:
-            delete_entry_with_id(MathMeasurements, each_measurement.unique_id)
+        for each_measurement in device_measurements:
+            delete_entry_with_id(DeviceMeasurements, each_measurement.unique_id)
 
         delete_entry_with_id(Math, math_id)
         try:

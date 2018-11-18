@@ -7,13 +7,13 @@ from flask import redirect
 from flask import url_for
 from flask_babel import gettext
 
+from mycodo.databases.models import DeviceMeasurements
 from mycodo.databases.models import DisplayOrder
 from mycodo.databases.models import Input
 from mycodo.databases.models import Math
 from mycodo.databases.models import Method
 from mycodo.databases.models import Output
 from mycodo.databases.models import PID
-from mycodo.databases.models import PIDMeasurements
 from mycodo.mycodo_client import DaemonControl
 from mycodo.mycodo_flask.extensions import db
 from mycodo.mycodo_flask.utils.utils_general import controller_activate_deactivate
@@ -75,8 +75,8 @@ def pid_mod(form_mod_pid_base,
         measurement_id = form_mod_pid_base.measurement.data.split(',')[1]
         selected_measurement = get_input_or_math_measurement(measurement_id)
 
-        measurements = PIDMeasurements.query.filter(
-            PIDMeasurements.device_id == form_mod_pid_base.pid_id.data).all()
+        measurements = DeviceMeasurements.query.filter(
+            DeviceMeasurements.device_id == form_mod_pid_base.pid_id.data).all()
         for each_measurement in measurements:
             # Only set channels 0, 1, 2
             if each_measurement.channel in [0, 1, 2]:
@@ -176,11 +176,11 @@ def pid_del(pid_id):
         if pid.is_activated:
             pid_deactivate(pid_id)
 
-        pid_measurements = PIDMeasurements.query.filter(
-            PIDMeasurements.device_id == pid_id).all()
+        device_measurements = DeviceMeasurements.query.filter(
+            DeviceMeasurements.device_id == pid_id).all()
 
-        for each_measurement in pid_measurements:
-            delete_entry_with_id(PIDMeasurements, each_measurement.unique_id)
+        for each_measurement in device_measurements:
+            delete_entry_with_id(DeviceMeasurements, each_measurement.unique_id)
 
         delete_entry_with_id(PID, pid_id)
         try:

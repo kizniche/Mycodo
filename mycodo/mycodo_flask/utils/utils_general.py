@@ -23,14 +23,12 @@ from mycodo.config_devices_units import MEASUREMENTS
 from mycodo.config_devices_units import UNITS
 from mycodo.databases.models import Camera
 from mycodo.databases.models import Conditional
+from mycodo.databases.models import DeviceMeasurements
 from mycodo.databases.models import Input
-from mycodo.databases.models import InputMeasurements
 from mycodo.databases.models import Conversion
 from mycodo.databases.models import LCD
 from mycodo.databases.models import Math
-from mycodo.databases.models import MathMeasurements
 from mycodo.databases.models import PID
-from mycodo.databases.models import PIDMeasurements
 from mycodo.databases.models import Role
 from mycodo.databases.models import Trigger
 from mycodo.databases.models import User
@@ -50,18 +48,10 @@ logger = logging.getLogger(__name__)
 
 def enabled_measurments_missing_unit(device_id, error):
     try:
-        if InputMeasurements.query.filter(
-                InputMeasurements.device_id == device_id).count():
-            measurements = InputMeasurements.query.filter(
-                InputMeasurements.device_id == device_id)
-        elif MathMeasurements.query.filter(
-                MathMeasurements.device_id == device_id).count():
-            measurements = MathMeasurements.query.filter(
-                MathMeasurements.device_id == device_id)
-        elif PIDMeasurements.query.filter(
-                PIDMeasurements.device_id == device_id).count():
-            measurements = PIDMeasurements.query.filter(
-                PIDMeasurements.device_id == device_id)
+        if DeviceMeasurements.query.filter(
+                DeviceMeasurements.device_id == device_id).count():
+            measurements = DeviceMeasurements.query.filter(
+                DeviceMeasurements.device_id == device_id)
         else:
             measurements = None
             error.append("Could not find measurments")
@@ -359,11 +349,11 @@ def choices_lcd(inputs, maths, pids, outputs, dict_units, dict_measurements):
 
 
 def form_input_choices(choices, each_input, dict_units, dict_measurements):
-    input_measurements = InputMeasurements.query.filter(
-        InputMeasurements.device_id == each_input.unique_id).all()
+    device_measurements = DeviceMeasurements.query.filter(
+        DeviceMeasurements.device_id == each_input.unique_id).all()
 
     try:
-        for each_measure in input_measurements:
+        for each_measure in device_measurements:
             value = '{input_id},{meas_id}'.format(
                 input_id=each_input.unique_id,
                 meas_id=each_measure.unique_id)
@@ -409,10 +399,10 @@ def form_input_choices(choices, each_input, dict_units, dict_measurements):
 
 
 def form_math_choices(choices, each_math, dict_units, dict_measurements):
-    math_measurements = MathMeasurements.query.filter(
-        MathMeasurements.device_id == each_math.unique_id).all()
+    device_measurements = DeviceMeasurements.query.filter(
+        DeviceMeasurements.device_id == each_math.unique_id).all()
 
-    for each_measure in math_measurements:
+    for each_measure in device_measurements:
         if each_measure.measurement and each_measure.unit:
             value = '{input_id},{meas_id}'.format(
                 input_id=each_math.unique_id,
@@ -446,10 +436,10 @@ def form_math_choices(choices, each_math, dict_units, dict_measurements):
 
 
 def form_pid_choices(choices, each_pid, dict_units, dict_measurements):
-    pid_measurements = PIDMeasurements.query.filter(
-        PIDMeasurements.device_id == each_pid.unique_id).all()
+    device_measurements = DeviceMeasurements.query.filter(
+        DeviceMeasurements.device_id == each_pid.unique_id).all()
 
-    for each_measure in pid_measurements:
+    for each_measure in device_measurements:
         if each_measure.measurement and each_measure.unit:
             value = '{input_id},{meas_id}'.format(
                 input_id=each_pid.unique_id,
@@ -786,7 +776,7 @@ def return_dependencies(device_type):
     return unmet_deps, met_deps
 
 
-def use_unit_generate(input_dev, input_measurements, output, math, math_measurements):
+def use_unit_generate(device_measurements, input_dev, output, math):
     """Generate dictionary of units to convert to"""
     use_unit = {}
 
@@ -799,7 +789,7 @@ def use_unit_generate(input_dev, input_measurements, output, math, math_measurem
         for each_device in devices:
             use_unit[each_device.unique_id] = {}
 
-            for each_meas in input_measurements:
+            for each_meas in device_measurements:
                 if each_meas.device_id == each_device.unique_id:
                     if each_meas.measurement not in use_unit[each_device.unique_id]:
                         use_unit[each_device.unique_id][each_meas.measurement] = {}

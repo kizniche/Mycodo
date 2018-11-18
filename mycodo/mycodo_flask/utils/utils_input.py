@@ -10,9 +10,9 @@ from flask import redirect
 from flask import url_for
 from flask_babel import gettext
 
+from mycodo.databases.models import DeviceMeasurements
 from mycodo.databases.models import DisplayOrder
 from mycodo.databases.models import Input
-from mycodo.databases.models import InputMeasurements
 from mycodo.databases.models import PID
 from mycodo.mycodo_flask.extensions import db
 from mycodo.mycodo_flask.utils.utils_general import add_display_order
@@ -240,7 +240,7 @@ def input_add(form_add):
                         dict_inputs[input_name]['measurements_dict'] != []):
                     for each_channel in dict_inputs[input_name]['measurements_dict']:
                         measure_info = dict_inputs[input_name]['measurements_dict'][each_channel]
-                        new_measurement = InputMeasurements()
+                        new_measurement = DeviceMeasurements()
                         if 'name' in measure_info:
                             new_measurement.name = measure_info['name']
                         new_measurement.device_id = new_input.unique_id
@@ -325,8 +325,8 @@ def input_mod(form_mod, request_form):
             mod_input.pre_output_id = None
 
         # Enable/disable Channels
-        measurements = InputMeasurements.query.filter(
-            InputMeasurements.device_id == form_mod.input_id.data).all()
+        measurements = DeviceMeasurements.query.filter(
+            DeviceMeasurements.device_id == form_mod.input_id.data).all()
         if form_mod.measurements_enabled.data:
             for each_measurement in measurements:
                 if each_measurement.unique_id in form_mod.measurements_enabled.data:
@@ -468,8 +468,8 @@ def measurement_mod(form):
     error = []
 
     try:
-        mod_meas = InputMeasurements.query.filter(
-            InputMeasurements.unique_id == form.input_measurement_id.data).first()
+        mod_meas = DeviceMeasurements.query.filter(
+            DeviceMeasurements.unique_id == form.input_measurement_id.data).first()
 
         mod_input = Input.query.filter(Input.unique_id == mod_meas.device_id).first()
         if mod_input.is_activated:
@@ -523,11 +523,11 @@ def input_del(input_id):
             input_deactivate_associated_controllers(input_id)
             controller_activate_deactivate('deactivate', 'Input', input_id)
 
-        input_measurements = InputMeasurements.query.filter(
-            InputMeasurements.device_id == input_id).all()
+        device_measurements = DeviceMeasurements.query.filter(
+            DeviceMeasurements.device_id == input_id).all()
 
-        for each_measurement in input_measurements:
-            delete_entry_with_id(InputMeasurements, each_measurement.unique_id)
+        for each_measurement in device_measurements:
+            delete_entry_with_id(DeviceMeasurements, each_measurement.unique_id)
 
         delete_entry_with_id(Input, input_id)
         try:

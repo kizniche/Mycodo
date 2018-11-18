@@ -1,4 +1,4 @@
-{% for each_measurement in input_measurements if each_measurement.device_id == each_input.unique_id and each_measurement.is_enabled %}
+{% for each_measurement in device_measurements if each_measurement.device_id == each_input.unique_id and each_measurement.is_enabled %}
 
 <form method="post" action="/data">
 {{form_mod_input_measurement.csrf_token}}
