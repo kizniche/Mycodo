@@ -334,20 +334,6 @@ def input_mod(form_mod, request_form):
                 else:
                     each_measurement.is_enabled = False
 
-        short_list = []
-        mod_units = False
-        for key in request_form.keys():
-            if 'convert_unit' in key:
-                mod_units = True
-                for value in request_form.getlist(key):
-                    if value == 'default':
-                        pass
-                    elif (len(value.split(',')) < 2 or
-                            value.split(',')[0] == '' or value.split(',')[1] == ''):
-                        error.append("Invalid custom unit")
-                    else:
-                        short_list.append(value)
-
         mod_input.i2c_bus = form_mod.i2c_bus.data
         mod_input.baud_rate = form_mod.baud_rate.data
         mod_input.pre_output_duration = form_mod.pre_output_duration.data
