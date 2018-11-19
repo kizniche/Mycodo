@@ -203,15 +203,16 @@ def setup_ds_resolution():
     inputs = Input.query.all()
 
     # Check if w1thermsensor library is installed
-    dep_unmet, _ = return_dependencies('CALIBRATE_DS_TYPE')
-    if dep_unmet:
-        list_unmet_deps = []
-        for each_dep in dep_unmet:
-            list_unmet_deps.append(each_dep[0])
-        flash("The device you're trying to calibrate has unmet dependencies: {dep}".format(
-            dep=', '.join(list_unmet_deps)))
-        return redirect(url_for('routes_admin.admin_dependencies',
-                                device='CALIBRATE_DS_TYPE'))
+    if not current_app.config['TESTING']:
+        dep_unmet, _ = return_dependencies('CALIBRATE_DS_TYPE')
+        if dep_unmet:
+            list_unmet_deps = []
+            for each_dep in dep_unmet:
+                list_unmet_deps.append(each_dep[0])
+            flash("The device you're trying to calibrate has unmet dependencies: {dep}".format(
+                dep=', '.join(list_unmet_deps)))
+            return redirect(url_for('routes_admin.admin_dependencies',
+                                    device='CALIBRATE_DS_TYPE'))
 
     # If DS18B20 inputs added, compile a list of detected inputs
     ds_inputs = []
