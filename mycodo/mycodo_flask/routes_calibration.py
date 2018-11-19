@@ -216,9 +216,10 @@ def setup_ds_resolution():
     # If DS18B20 inputs added, compile a list of detected inputs
     ds_inputs = []
     try:
-        from w1thermsensor import W1ThermSensor
-        for each_input in W1ThermSensor.get_available_sensors():
-            ds_inputs.append(each_input.id)
+        if not current_app.config['TESTING']:
+            from w1thermsensor import W1ThermSensor
+            for each_input in W1ThermSensor.get_available_sensors():
+                ds_inputs.append(each_input.id)
     except OSError:
         flash("Unable to detect DS18B20 Inputs in '/sys/bus/w1/devices'. "
               "Make 1-wire support is enabled with 'sudo raspi-config'.",
