@@ -3,13 +3,13 @@
 import logging
 
 import flask_login
+from flask import current_app
 from flask import flash
 from flask import redirect
 from flask import render_template
 from flask import url_for
 from flask.blueprints import Blueprint
 from flask_babel import gettext
-from sqlalchemy import or_
 
 from mycodo.databases.models import Input
 from mycodo.devices.atlas_scientific_i2c import AtlasScientificI2C
@@ -224,13 +224,33 @@ def setup_ds_resolution():
               "Make 1-wire support is enabled with 'sudo raspi-config'.",
               "error")
 
-    if form_ds.set_resolution.data and form_ds.device_id.data:
+    if (not current_app.config['TESTING'] and
+            form_ds.set_resolution.data and
+            form_ds.device_id.data):
         try:
             from w1thermsensor import W1ThermSensor
-            sensor = W1ThermSensor(input_id=form_ds.device_id.data)
-            # sensor = W1ThermSensor(W1ThermSensor.THERM_SENSOR_DS18B20, "00000588806a")
-            sensor.set_precision(
-                form_ds.set_resolution.data,persist=True)
+            input_dev = Input.query.filter(Input.unique_id == form_ds.device_id.data).first()
+            input_type = None
+            if input_dev.device == 'DS18B20':
+                input_type = W1ThermSensor.THERM_SENSOR_DS18B20
+            if input_dev.device == 'DS18S20':
+                input_type = W1ThermSensor.THERM_SENSOR_DS18S20
+            if input_dev.device == 'DS1822':
+                input_type = W1ThermSensor.THERM_SENSOR_DS1822
+            if input_dev.device == 'DS28EA00':
+                input_type = W1ThermSensor.THERM_SENSOR_DS28EA00
+            if input_dev.device == 'DS1825':
+                input_type = W1ThermSensor.THERM_SENSOR_DS1825
+            if input_dev.device == 'MAX31850K':
+                input_type = W1ThermSensor.THERM_SENSOR_MAX31850K
+            else:
+                flash("Unknown input type: {}".format(input_dev.device),
+                      "error")
+
+            if input_type:
+                sensor = W1ThermSensor(sensor_type=input_type, sensor_id=input_dev.location)
+                sensor.set_precision(
+                    form_ds.set_resolution.data, persist=True)
             flash("Successfully set sensor {id} resolution to "
                   "{bit}-bit".format(id=form_ds.device_id.data,
                                      bit=form_ds.set_resolution.data),

@@ -5,6 +5,7 @@ The Mycodo 7.0 brings a redesigned Conditional system. The remnants of Condition
 ### Bugfixes
 
  - Fix issue preventing PID Method from changing setpoint (#566)
+ - Fix issue with calibration of DS-type sensors
 
 ### Features
 
