@@ -134,7 +134,6 @@ def test_routes_logged_in_as_admin(_, testapp):
         ('output', '<!-- Route: /output -->'),
         ('remote/setup', '<!-- Route: /remote/setup -->'),
         ('setup_atlas_ph', '<!-- Route: /setup_atlas_ph -->'),
-        ('setup_ds_resolution', '<!-- Route: /setup_ds_resolution -->'),
         ('usage', '<!-- Route: /usage -->'),
         ('usage_reports', '<!-- Route: /usage_reports -->')
     ]

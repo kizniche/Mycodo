@@ -191,6 +191,7 @@ def setup_atlas_ph_measure(input_id):
     else:
         return ph
 
+
 @blueprint.route('/setup_ds_resolution', methods=('GET', 'POST'))
 @flask_login.login_required
 def setup_ds_resolution():
@@ -242,6 +243,7 @@ def setup_ds_resolution():
                            ds_inputs=ds_inputs,
                            form_ds=form_ds,
                            inputs=inputs)
+
 
 def dual_commands_to_sensor(input_sel, first_cmd, amount,
                             second_cmd, current_stage):

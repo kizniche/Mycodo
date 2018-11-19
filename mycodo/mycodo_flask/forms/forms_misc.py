@@ -130,7 +130,3 @@ class Backup(FlaskForm):
     delete = SubmitField(lazy_gettext('Delete Backup'))
     full_path = HiddenField()
     selected_dir = HiddenField()
-
-# Asynchronous Graphs
-class Backup(FlaskForm):
-    backup = SubmitField(lazy_gettext('Create Backup'))
