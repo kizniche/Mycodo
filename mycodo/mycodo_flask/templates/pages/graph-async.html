@@ -24,6 +24,7 @@
 
 {% block body %}
   <!-- Route: /graph-async -->
+
   <div class="container">
   {% include 'flash_messages.html' %}
 
@@ -32,11 +33,21 @@
     <p>A graphical data display that is useful for viewing data sets spanning relatively long periods of time (weeks/months/years), which could be very data- and processor-intensive to view as a Live Graph.</p>
 
   {% if selected_ids_measures %}
-    <div id="container" style="height: 600px; min-width: 300px"></div>
+  </div>
+
+  <div id="container" style="height: {{async_height}}px; min-width: 300px"></div>
+
+  <div class="container">
   {% endif %}
 
     <form method="post" action="/graph-async">
     <div class="form-row" style="padding: 1em 0">
+      <div class="col-auto">
+        Height:
+      </div>
+      <div class="col-auto">
+        <input class="form-control" id="async_height" name="async_height" type="number" value="{{async_height}}">
+      </div>
       <div class="col-auto">
         <input class="btn btn-primary" type="submit" name="submit" value="All Data">
       </div>

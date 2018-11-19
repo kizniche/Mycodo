@@ -420,7 +420,7 @@ class PIDController(threading.Thread):
                 else:
                     self.method_start_act = 'Ended'
 
-            self.method_id = method_id
+        self.method_id = method_id
 
     def write_pid_values(self):
         """ Write PID values to the measurement database """

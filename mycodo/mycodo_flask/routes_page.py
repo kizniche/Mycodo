@@ -707,7 +707,11 @@ def page_graph_async():
     for meas in device_measurements:
         device_measurements_dict[meas.unique_id] = meas
 
+    async_height = 600
+
     if request.method == 'POST':
+        if request.form['async_height']:
+            async_height = request.form['async_height']
         seconds = 0
         if request.form['submit'] == 'All Data':
             pass
@@ -730,6 +734,7 @@ def page_graph_async():
                                                 selected_ids_measures)
 
     return render_template('pages/graph-async.html',
+                           async_height=async_height,
                            start_time_epoch=start_time_epoch,
                            device_measurements_dict=device_measurements_dict,
                            dict_measurements=dict_measurements,

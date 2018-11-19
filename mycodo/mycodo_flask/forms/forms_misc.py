@@ -66,15 +66,19 @@ class ExportMeasurements(FlaskForm):
     date_range = StringField(lazy_gettext('Time Range DD/MM/YYYY HH:MM'))
     export_data_csv = SubmitField(lazy_gettext('Export Data as CSV'))
 
+
 class ExportSettings(FlaskForm):
     export_settings_zip = SubmitField(lazy_gettext('Export Settings'))
+
 
 class ImportSettings(FlaskForm):
     settings_import_file = FileField('Upload')
     settings_import_upload = SubmitField(lazy_gettext('Import Settings'))
 
+
 class ExportInfluxdb(FlaskForm):
     export_influxdb_zip = SubmitField(lazy_gettext('Export Influxdb'))
+
 
 class ImportInfluxdb(FlaskForm):
     influxdb_import_file = FileField('Upload')
@@ -126,3 +130,7 @@ class Backup(FlaskForm):
     delete = SubmitField(lazy_gettext('Delete Backup'))
     full_path = HiddenField()
     selected_dir = HiddenField()
+
+# Asynchronous Graphs
+class Backup(FlaskForm):
+    backup = SubmitField(lazy_gettext('Create Backup'))
