@@ -268,7 +268,7 @@ UNITS = {
         'name': lazy_gettext('Second'),
         'unit': 's'},
     'setpoint': {
-        'name': lazy_gettext('Setpoint'),
+        'name': 'Setpoint',
         'unit': ''},
     'ug_m3': {
         'name': lazy_gettext('Microgram per cubic meter'),

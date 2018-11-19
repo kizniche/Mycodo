@@ -11,8 +11,11 @@ from flask import flash
 from flask import redirect
 from flask import url_for
 from flask_babel import gettext
+from sqlalchemy import and_
 
 from mycodo.config import INSTALL_DIRECTORY
+from mycodo.config_devices_units import MEASUREMENTS
+from mycodo.config_devices_units import UNITS
 from mycodo.databases.models import Camera
 from mycodo.databases.models import Conversion
 from mycodo.databases.models import Dashboard
@@ -471,13 +474,20 @@ def settings_measurement_add(form):
         action=gettext("Add"),
         controller=gettext("Measurement"))
     error = []
+    choices_meas = choices_measurements(Measurement.query.all())
 
     new_measurement = Measurement()
-    new_measurement.name_safe = re.sub('[^0-9a-zA-Z]+', '_', form.name.data).lower()
-    if new_measurement.name_safe.endswith('_'):
-        new_measurement.name_safe = new_measurement.name_safe[:-1]
     new_measurement.name = form.name.data
     new_measurement.units = ",".join(form.units.data)
+
+    name_safe = re.sub('[^0-9a-zA-Z]+', '_', form.name.data).lower()
+    if name_safe.endswith('_'):
+        name_safe = name_safe[:-1]
+    if name_safe in choices_meas:
+        error.append("Measurement name already exists: {name}".format(
+            name=name_safe))
+
+    new_measurement.name_safe = name_safe
 
     try:
         if not error:
@@ -501,25 +511,25 @@ def settings_measurement_mod(form):
         action=gettext("Modify"),
         controller=gettext("Measurement"))
     error = []
-
-    name_safe = re.sub('[^0-9a-zA-Z]+', '_', form.name.data).lower()
-    measurements = Measurement.query.all()
-    choices_meas = choices_measurements(measurements)
-
-    if name_safe in choices_meas:
-        error.append("'{name}' already exists in the measurement database. "
-                     "Choose a unique name.".format(name=name_safe))
-
     try:
         mod_measurement = Measurement.query.filter(
             Measurement.unique_id == form.measurement_id.data).first()
+        mod_measurement.name = form.name.data
+        mod_measurement.units = ",".join(form.units.data)
+
+        name_safe = re.sub('[^0-9a-zA-Z]+', '_', form.name.data).lower()
+        if name_safe.endswith('_'):
+            name_safe = name_safe[:-1]
+        if (Measurement.query.filter(
+                and_(Measurement.name_safe == name_safe,
+                     Measurement.unique_id != mod_measurement.unique_id)).count() or
+                name_safe in MEASUREMENTS):
+            error.append("Measurement name already exists: {name}".format(
+                name=name_safe))
+        else:
+            mod_measurement.name_safe = name_safe
 
         if not error:
-            mod_measurement.name_safe = re.sub('[^0-9a-zA-Z]+', '_', form.name.data).lower()
-            if mod_measurement.name_safe.endswith('_'):
-                mod_measurement.name_safe = mod_measurement.name_safe[:-1]
-            mod_measurement.name = form.name.data
-            mod_measurement.units = ",".join(form.units.data)
             db.session.commit()
     except Exception as except_msg:
         error.append(except_msg)
@@ -548,15 +558,17 @@ def settings_unit_add(form):
         action=gettext("Add"),
         controller=gettext("Unit"))
     error = []
+    units = Unit.query.all()
+    choices_unit = choices_units(units)
 
     if form.validate():
         name_safe = re.sub('[^0-9a-zA-Z]+', '_', form.unit.data).lower()
-        units = Unit.query.all()
-        choices_unit = choices_units(units)
+        if name_safe.endswith('_'):
+            name_safe = name_safe[:-1]
 
         if name_safe in choices_unit:
-            error.append("'{name}' already exists in the unit database. "
-                         "Choose a unique name.".format(name=name_safe))
+            error.append("Unit name already exists: {name}".format(
+                name=name_safe))
 
         new_unit = Unit()
         new_unit.name_safe = name_safe
@@ -587,23 +599,26 @@ def settings_unit_mod(form):
         action=gettext("Modify"),
         controller=gettext("Unit"))
     error = []
-
-    name_safe = re.sub('[^0-9a-zA-Z]+', '_', form.unit.data).lower()
-    units = Unit.query.all()
-    choices_unit = choices_units(units)
-
-    if name_safe in choices_unit:
-        error.append("'{name}' already exists in the unit database. "
-                     "Choose a unique name.".format(name=name_safe))
-
     try:
         mod_unit = Unit.query.filter(
             Unit.unique_id == form.unit_id.data).first()
+        mod_unit.name = form.name.data
+        mod_unit.unit = form.unit.data
+
+        name_safe = re.sub('[^0-9a-zA-Z]+', '_', form.name.data).lower()
+        if name_safe.endswith('_'):
+            name_safe = name_safe[:-1]
+
+        if (Unit.query.filter(
+                and_(Unit.name_safe == name_safe,
+                     Unit.unique_id != mod_unit.unique_id)).count() or
+                name_safe in UNITS):
+            error.append("Unit name already exists: {name}".format(
+                name=name_safe))
+        else:
+            mod_unit.name_safe = name_safe
 
         if not error:
-            mod_unit.name_safe = name_safe
-            mod_unit.name = form.name.data
-            mod_unit.unit = form.unit.data
             db.session.commit()
     except Exception as except_msg:
         error.append(except_msg)
@@ -690,8 +705,9 @@ def settings_convert_mod(form):
             if mod_conversion.convert_unit_from != form.convert_unit_from.data:
                 error = check_conversion_being_used(mod_conversion, error, state='inactive')
 
-            mod_conversion.convert_unit_from = form.convert_unit_from.data
-            mod_conversion.convert_unit_to = form.convert_unit_to.data
+            if not mod_conversion.protected:
+                mod_conversion.convert_unit_from = form.convert_unit_from.data
+                mod_conversion.convert_unit_to = form.convert_unit_to.data
             mod_conversion.equation = form.equation.data
             db.session.commit()
     except Exception as except_msg:

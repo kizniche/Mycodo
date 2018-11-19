@@ -22,6 +22,7 @@
 import subprocess
 
 import sqlalchemy
+from sqlalchemy import and_
 from flask import current_app
 
 from mycodo.config import ALEMBIC_VERSION
@@ -153,9 +154,12 @@ def populate_db():
         SMTP(id=1).save()
 
     # Populate conversion tables
-    if not Conversion.query.count():
-        for (conv_from, conv_to, equation) in UNIT_CONVERSIONS:
+    for (conv_from, conv_to, equation) in UNIT_CONVERSIONS:
+        if not Conversion.query.filter(
+                and_(Conversion.convert_unit_from == conv_from,
+                     Conversion.convert_unit_to == conv_to)).count():
             new_conv = Conversion()
+            new_conv.protected = True
             new_conv.convert_unit_from = conv_from
             new_conv.convert_unit_to = conv_to
             new_conv.equation = equation

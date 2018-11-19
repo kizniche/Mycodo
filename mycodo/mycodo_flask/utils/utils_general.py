@@ -226,6 +226,17 @@ def choices_measurements(measurements):
 def choices_units(units):
     """ populate form multi-select choices from Units entries """
     choices = OrderedDict()
+    for each_unit, each_info in UNITS.items():
+        if each_info['name']:
+            value = '{unit}'.format(
+                unit=each_unit)
+            unit = ''
+            if each_info['unit']:
+                unit = ' ({})'.format(each_info['unit'])
+            display = '{name}{unit}'.format(
+                name=each_info['name'],
+                unit=unit)
+            choices.update({value: display})
     for each_unit in units:
         value = '{unit}'.format(
             unit=each_unit.name_safe)
@@ -233,14 +244,6 @@ def choices_units(units):
             name=each_unit.name,
             unit=each_unit.unit)
         choices.update({value: display})
-    for each_unit, each_info in UNITS.items():
-        if each_info['unit']:
-            value = '{unit}'.format(
-                unit=each_unit)
-            display = '{name} ({unit})'.format(
-                name=each_info['name'],
-                unit=each_info['unit'])
-            choices.update({value: display})
 
     # Sort dictionary by keys
     sorted_keys = sorted(list(choices), key=lambda s: s.casefold())

@@ -41,6 +41,7 @@ class Conversion(CRUDMixin, db.Model):
     convert_unit_from = db.Column(db.Text)
     convert_unit_to = db.Column(db.Text)
     equation = db.Column(db.Text)
+    protected = db.Column(db.Boolean, default=False)
 
     def __repr__(self):
         return "<{cls}(id={s.id})>".format(s=self, cls=self.__class__.__name__)
