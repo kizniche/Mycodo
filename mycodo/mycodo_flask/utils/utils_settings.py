@@ -12,6 +12,7 @@ from flask import redirect
 from flask import url_for
 from flask_babel import gettext
 from sqlalchemy import and_
+from sqlalchemy import or_
 
 from mycodo.config import INSTALL_DIRECTORY
 from mycodo.config_devices_units import MEASUREMENTS
@@ -562,7 +563,7 @@ def settings_unit_add(form):
     choices_unit = choices_units(units)
 
     if form.validate():
-        name_safe = re.sub('[^0-9a-zA-Z]+', '_', form.unit.data).lower()
+        name_safe = re.sub('[^0-9a-zA-Z]+', '_', form.name.data).lower()
         if name_safe.endswith('_'):
             name_safe = name_safe[:-1]
 
@@ -602,12 +603,15 @@ def settings_unit_mod(form):
     try:
         mod_unit = Unit.query.filter(
             Unit.unique_id == form.unit_id.data).first()
-        mod_unit.name = form.name.data
-        mod_unit.unit = form.unit.data
 
         name_safe = re.sub('[^0-9a-zA-Z]+', '_', form.name.data).lower()
         if name_safe.endswith('_'):
             name_safe = name_safe[:-1]
+
+        conversions = Conversion.query.filter(or_(
+            Conversion.convert_unit_from == mod_unit.name_safe,
+            Conversion.convert_unit_to == mod_unit.name_safe
+        )).count()
 
         if (Unit.query.filter(
                 and_(Unit.name_safe == name_safe,
@@ -615,7 +619,13 @@ def settings_unit_mod(form):
                 name_safe in UNITS):
             error.append("Unit name already exists: {name}".format(
                 name=name_safe))
+        elif mod_unit.name_safe != name_safe and conversions:
+            error.append(
+                "Unit belongs to a conversion."
+                "Delete conversion(s) before changing unit.")
         else:
+            mod_unit.name = form.name.data
+            mod_unit.unit = form.unit.data
             mod_unit.name_safe = name_safe
 
         if not error:
@@ -633,8 +643,22 @@ def settings_unit_del(unique_id):
         controller=gettext("Unit"))
     error = []
 
+    del_unit = Unit.query.filter(
+        Unit.unique_id == unique_id).first()
+
+    conversions = Conversion.query.filter(or_(
+        Conversion.convert_unit_from == del_unit.name_safe,
+        Conversion.convert_unit_to == del_unit.name_safe
+    )).count()
+
+    if conversions:
+        error.append(
+            "Unit belongs to a conversion."
+            "Delete conversion(s) before deleting unit.")
+
     try:
-        delete_entry_with_id(Unit, unique_id)
+        if not error:
+            delete_entry_with_id(Unit, unique_id)
     except Exception as except_msg:
         error.append(except_msg)
 

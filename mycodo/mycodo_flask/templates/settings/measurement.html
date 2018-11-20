@@ -240,6 +240,7 @@
         <td>
         {% if not each_conversion.protected %}
           <select class="form-control" id="convert_unit_from" name="convert_unit_from">
+            <option value=""></option>
             {% for each_unit, each_display in choices_units.items() %}
             <option value="{{each_unit}}"{% if each_unit == each_conversion.convert_unit_from %} selected{% endif %}>{{each_display}}</option>
             {% endfor %}
@@ -252,6 +253,7 @@
         <td>
         {% if not each_conversion.protected %}
           <select class="form-control" id="convert_unit_to" name="convert_unit_to">
+            <option value=""></option>
             {% for each_unit, each_display in choices_units.items() %}
             <option value="{{each_unit}}"{% if each_unit == each_conversion.convert_unit_to %} selected{% endif %}>{{each_display}}</option>
             {% endfor %}
