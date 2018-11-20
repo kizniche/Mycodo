@@ -573,7 +573,7 @@ def graph_y_axes_async(dict_measurements, ids_measures):
                                 Conversion.unique_id == each_measure.conversion_id).first()
                             if not y_axes:
                                 y_axes = [conversion.convert_unit_to]
-                            elif y_axes and each_measure.convert_unit_to not in y_axes:
+                            elif y_axes and conversion.convert_unit_to not in y_axes:
                                 y_axes.append(conversion.convert_unit_to)
                         else:
                             if not y_axes:
