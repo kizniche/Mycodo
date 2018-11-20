@@ -69,7 +69,11 @@ def function_add(form_add_func):
             new_func.trigger_type = form_add_func.func_type.data
             new_func.save()
         elif form_add_func.func_type.data.startswith('function_'):
-            new_func = Function().save()
+            new_func = Function()
+            if form_add_func.func_type.data == 'function_spacer':
+                new_func.name = 'Spacer'
+            new_func.function_type = form_add_func.func_type.data
+            new_func.save()
         elif form_add_func.func_type.data == '':
             error.append("Must select a function type")
         else:
@@ -127,6 +131,13 @@ def function_del(function_id):
     error = []
 
     try:
+        # Delete Actions
+        actions = Actions.query.filter(
+            Actions.function_id == function_id).all()
+        for each_action in actions:
+            delete_entry_with_id(Actions,
+                                 each_action.unique_id)
+
         delete_entry_with_id(Function, function_id)
 
         display_order = csv_to_list_of_str(DisplayOrder.query.first().function)
@@ -152,11 +163,14 @@ def action_add(form):
     elif form.function_type.data == 'trigger':
         func = Trigger.query.filter(
             Trigger.unique_id == form.function_id.data).first()
+    elif form.function_type.data == 'function_actions':
+        func = Function.query.filter(
+            Function.unique_id == form.function_id.data).first()
     else:
         func = None
-        error.append("Function type must be either 'conditional' or 'trigger'")
+        error.append("Invalid Function type: {}".format(form.function_type.data))
 
-    if func and func.is_activated:
+    if form.function_type.data != 'function_actions' and func and func.is_activated:
         error.append("Deactivate before adding an Action")
 
     if form.action_type.data == '':
@@ -300,8 +314,8 @@ def action_del(form):
     flash_success_errors(error, action, url_for('routes_page.page_function'))
 
 
-def action_test_all(form):
-    """Test All Conditional Actions"""
+def action_execute_all(form):
+    """Execute All Conditional Actions"""
     error = []
 
     func_type = None
@@ -315,14 +329,18 @@ def action_test_all(form):
         func_type = gettext("Trigger")
         func = Trigger.query.filter(
             Trigger.unique_id == form.function_id.data).first()
+    elif form.function_type.data == 'function_actions':
+        func_type = gettext("Function")
+        func = Function.query.filter(
+            Function.unique_id == form.function_id.data).first()
     else:
         error.append("Unknown Function type")
 
     action = '{action} {controller}'.format(
-        action=gettext("Test All"),
-        controller='{} {}'.format(func_type, gettext("Action")))
+        action=gettext("Execute All"),
+        controller='{} {}'.format(func_type, gettext("Actions")))
 
-    if func and not func.is_activated:
+    if form.function_type.data != 'function_actions' and func and not func.is_activated:
         error.append("Activate the Conditional before testing all Actions")
 
     try:

@@ -1,6 +1,6 @@
 ## 7.0.0 (Unreleased)
 
-The Mycodo 7.0 brings a redesigned Conditional system. The remnants of Conditionals have been moved to a new controller, called Triggers, which executes actions in response to event triggers (such as time-based events, Output changes, sunrises/sunsets, etc.). The new Conditional system incorporates a powerful way of developing complex conditional statements. See ([#493](https://github.com/kizniche/mycodo/issues/493)) for more information. Since earlier version are not compatible with 7.0, all users will have to perform a fresh install or delete their settings database. An option will be presented on the upgrade page to delete the database and perform an upgrade.
+The Mycodo 7.0 brings a redesigned measurement/unit and Conditional systems. The remnants of Conditionals have been moved to a new controller, called Triggers, which executes actions in response to event triggers (such as time-based events, Output changes, sunrises/sunsets, etc.). The new Conditional system incorporates a powerful way of developing complex conditional statements. See ([#493](https://github.com/kizniche/mycodo/issues/493)) for more information. Since earlier version are not compatible with 7.0, all users will have to perform a fresh install or delete their settings database. An option will be presented on the upgrade page to delete the database and perform an upgrade.
 
 ### Bugfixes
 
@@ -9,16 +9,17 @@ The Mycodo 7.0 brings a redesigned Conditional system. The remnants of Condition
 
 ### Features
 
- - Refactor Conditional system ([#493](https://github.com/kizniche/mycodo/issues/493))
- - Refactor Analog-to-digital converters ([#550](https://github.com/kizniche/mycodo/issues/550))
- - Refactor Measurement/Unit system ([#550](https://github.com/kizniche/mycodo/issues/550))
  - Add Input: MCP9808 high accuracy I2C temperature sensor
  - Add Input: AMG8833 I2C 8x8 pixel thermal sensor
+ - Add ability to search Input selection dropdown list
+ - Add Function: Execute Actions
  - Add Function Action: Pause (pause for a duration of time before executing any remaining actions)
- - Add ability to search Input selection dropdown
 
 ### Miscellaneous
 
+ - Refactor Conditional system ([#493](https://github.com/kizniche/mycodo/issues/493))
+ - Refactor Analog-to-digital converters ([#550](https://github.com/kizniche/mycodo/issues/550))
+ - Refactor Measurement/Unit system ([#550](https://github.com/kizniche/mycodo/issues/550))
  - Upgrade InfluxDB from 1.6.0 to 1.7.0
  - Add User Role: Kiosk
 

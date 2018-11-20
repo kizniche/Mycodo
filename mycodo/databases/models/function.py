@@ -10,7 +10,8 @@ class Function(CRUDMixin, db.Model):
 
     id = db.Column(db.Integer, unique=True, primary_key=True)
     unique_id = db.Column(db.String, nullable=False, unique=True, default=set_uuid)
-    name = db.Column(db.Text, default='Spacer Name')
+    function_type = db.Column(db.Text, default='')
+    name = db.Column(db.Text, default='Function Name')
 
 
 class Conditional(CRUDMixin, db.Model):
@@ -97,7 +98,7 @@ class Actions(CRUDMixin, db.Model):
 
     id = db.Column(db.Integer, unique=True, primary_key=True)
     unique_id = db.Column(db.String, nullable=False, unique=True, default=set_uuid)
-    function_id = db.Column(db.String, db.ForeignKey('conditional.unique_id'), default=None)
+    function_id = db.Column(db.String, default=None)
     function_type = db.Column(db.Text, default='')
     action_type = db.Column(db.Text, default='')  # what action, such as 'email', 'execute command', 'flash LCD'
 

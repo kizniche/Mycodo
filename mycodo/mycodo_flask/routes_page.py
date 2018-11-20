@@ -1263,7 +1263,7 @@ def page_function():
         if not utils_general.user_has_permission('edit_controllers'):
             return redirect(url_for('routes_general.home'))
 
-        # Add a new function
+        # Function
         if form_add_function.func_add.data:
             utils_function.function_add(form_add_function)
         elif form_function.save_function.data:
@@ -1280,8 +1280,11 @@ def page_function():
             utils_function.function_reorder(
                 form_conditional.function_id.data,
                 display_order_function, 'down')
+        elif form_function.execute_all_actions.data:
+            utils_function.action_execute_all(
+                form_conditional)
 
-        # PID form actions
+        # PID
         elif form_mod_pid_base.pid_autotune.data:
             utils_pid.pid_autotune(form_mod_pid_base)
         elif form_mod_pid_base.pid_mod.data:
@@ -1342,7 +1345,7 @@ def page_function():
             utils_function.action_add(
                 form_trigger)
         elif form_trigger.test_all_actions.data:
-            utils_function.action_test_all(
+            utils_function.action_execute_all(
                 form_trigger)
 
         # Conditional
@@ -1373,7 +1376,7 @@ def page_function():
             utils_function.action_add(
                 form_conditional)
         elif form_conditional.test_all_actions.data:
-            utils_function.action_test_all(
+            utils_function.action_execute_all(
                 form_conditional)
 
         # Conditional conditions
@@ -1385,7 +1388,7 @@ def page_function():
                 form_conditional_conditions)
 
         # Actions
-        elif form_actions.save_action.data:
+        elif form_function.save_action.data:
             utils_function.action_mod(
                 form_actions)
         elif form_actions.delete_action.data:

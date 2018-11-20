@@ -1,4 +1,4 @@
-{%- for each_function in function_dev if each_function.unique_id == order -%}
+{%- for each_function in function_dev if each_function.unique_id == order and each_function.function_type == 'function_spacer' -%}
 
 <div class="container" style="border: 2px solid #ddd; border-radius: 5px;">
   <form method="post" action="/function">

@@ -273,6 +273,7 @@ CONDITIONAL_CONDITIONS = [
 
 FUNCTION_TYPES = [
     ('function_spacer', 'Spacer', 'Function: Spacer'),
+    ('function_actions', 'Actions', 'Function: Execute Actions'),
     ('conditional_conditional', 'Conditional', 'Conditional: Conditional'),
     ('pid_pid', 'PID', 'PID: PID Controller'),
     ('trigger_edge', 'Edge', 'Trigger: Edge'),
