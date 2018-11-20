@@ -62,10 +62,6 @@ INPUT_INFORMATION = {
     ],
     'options_disabled': ['interface'],
 
-    'dependencies_module': [
-        ('pip-pypi', 'binascii', 'binascii')
-    ],
-
     'interfaces': ['UART'],
     'uart_location': '/dev/ttyAMA0',
     'uart_baud_rate': 9600,
