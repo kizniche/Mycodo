@@ -46,7 +46,7 @@ logger = logging.getLogger(__name__)
 # Activate/deactivate controller
 #
 
-def enabled_measurments_missing_unit(device_id, error):
+def check_for_valid_unit_and_conversion(device_id, error):
     try:
         if DeviceMeasurements.query.filter(
                 DeviceMeasurements.device_id == device_id).count():
@@ -58,9 +58,21 @@ def enabled_measurments_missing_unit(device_id, error):
 
         if measurements:
             for each_meas in measurements:
+                # Check that unit is set
                 if each_meas.unit in ['', None]:
                     error.append("Unit not set for channel {chan}".format(
                         chan=each_meas.channel + 1))
+
+                # If conversion ID set, check if it's valid
+                if each_meas.conversion_id:
+                    conversion = Conversion.query.filter(
+                        Conversion.unique_id == each_meas.conversion_id).count()
+                    if not conversion:
+                        error.append(
+                            "Invalid conversion ID {cid} "
+                            "for measurement with ID {meas}".format(
+                                cid=each_meas.conversion_id,
+                                meas=each_meas.unique_id))
     finally:
         return error
 
@@ -102,7 +114,7 @@ def controller_activate_deactivate(controller_action,
         mod_controller = Input.query.filter(
             Input.unique_id == controller_id).first()
         if activated:
-            error = enabled_measurments_missing_unit(controller_id, error)
+            error = check_for_valid_unit_and_conversion(controller_id, error)
     elif controller_type == 'LCD':
         mod_controller = LCD.query.filter(
             LCD.unique_id == controller_id).first()
@@ -110,12 +122,12 @@ def controller_activate_deactivate(controller_action,
         mod_controller = Math.query.filter(
             Math.unique_id == controller_id).first()
         if activated:
-            error = enabled_measurments_missing_unit(controller_id, error)
+            error = check_for_valid_unit_and_conversion(controller_id, error)
     elif controller_type == 'PID':
         mod_controller = PID.query.filter(
             PID.unique_id == controller_id).first()
         if activated:
-            error = enabled_measurments_missing_unit(controller_id, error)
+            error = check_for_valid_unit_and_conversion(controller_id, error)
     elif controller_type == 'Trigger':
         mod_controller = Trigger.query.filter(
             Trigger.unique_id == controller_id).first()

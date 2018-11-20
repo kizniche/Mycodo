@@ -21,7 +21,7 @@ logger = logging.getLogger("mycodo.system_pi")
 
 
 def add_custom_units(units):
-    return_units = UNITS
+    return_units = UNITS.copy()
 
     for each_unit in units:
         return_units.update(

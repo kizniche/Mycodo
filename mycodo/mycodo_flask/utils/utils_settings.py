@@ -615,7 +615,7 @@ def settings_unit_mod(form):
 
         if (Unit.query.filter(
                 and_(Unit.name_safe == name_safe,
-                     Unit.unique_id != mod_unit.unique_id)).count() or
+                     Unit.unique_id != form.unit_id.data)).count() or
                 name_safe in UNITS):
             error.append("Unit name already exists: {name}".format(
                 name=name_safe))
@@ -771,33 +771,33 @@ def check_conversion_being_used(conv, error, state=None):
     If so, cannot edit the database/modify the conversion
     """
     try:
-        input_dev = Input
-        math = Math
-        pid = PID
         device_measurements = DeviceMeasurements.query.all()
 
         list_measurements = [
-            input_dev,
-            math,
-            pid,
+            Input,
+            Math,
+            PID,
         ]
 
-        for each_device in list_measurements:
-            for each_meas in device_measurements:
-                if conv.unique_id == each_meas.conversion_id:
+        for each_device_type in list_measurements:
+            for each_device in each_device_type.query.all():
+                for each_meas in device_measurements:
+                    if (each_device.unique_id == each_meas.device_id and
+                            conv.unique_id == each_meas.conversion_id):
 
-                    if ((state == 'active' and each_device.query.filter(
-                            each_device.unique_id == each_meas.device_id).first().is_activated) or
-                            (state == 'inactive' and not each_device.query.filter(
-                             each_device.unique_id == each_meas.device_id).first().is_activated)):
-                        error.append(
-                            "Conversion [{cid}] ({conv}): "
-                            "Currently in use for measurement {meas}, "
-                            "for device {dev}".format(
-                                cid=conv.id,
-                                conv=conv.unique_id,
-                                meas=each_meas.unique_id,
-                                dev=each_meas.device_id))
+                        detected_device = each_device_type.query.filter(
+                            each_device_type.unique_id == each_meas.device_id).first()
+
+                        if ((state == 'active' and detected_device.is_activated) or
+                                (state == 'inactive' and not detected_device.is_activated)):
+                            error.append(
+                                "Conversion [{cid}] ({conv}): "
+                                "Currently in use for measurement {meas}, "
+                                "for device {dev}".format(
+                                    cid=conv.id,
+                                    conv=conv.unique_id,
+                                    meas=each_meas.unique_id,
+                                    dev=each_meas.device_id))
     except Exception as except_msg:
         error.append(except_msg)
     finally:
@@ -810,10 +810,9 @@ def remove_conversion_from_controllers(conv_id):
     """
     device_measurements = DeviceMeasurements.query.all()
 
-    for measurements in device_measurements:
-        for each_meas in measurements:
-            if each_meas.conversion_id == conv_id:
-                each_meas.conversion_id = ''
+    for each_meas in device_measurements:
+        if each_meas.conversion_id == conv_id:
+            each_meas.conversion_id = ''
 
     db.session.commit()
 
