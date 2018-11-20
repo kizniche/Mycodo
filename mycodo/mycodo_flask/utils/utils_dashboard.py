@@ -469,7 +469,7 @@ def graph_y_axes(dict_measurements):
                                     Conversion.unique_id == each_measure.conversion_id).first()
                                 if not y_axes[each_graph.unique_id]:
                                     y_axes[each_graph.unique_id] = [conversion.convert_unit_to]
-                                elif y_axes[each_graph.unique_id] and each_measure.convert_unit_to not in y_axes[each_graph.unique_id]:
+                                elif y_axes[each_graph.unique_id] and conversion.convert_unit_to not in y_axes[each_graph.unique_id]:
                                     y_axes.setdefault(each_graph.unique_id, []).append(conversion.convert_unit_to)
                             else:
                                 if not y_axes[each_graph.unique_id]:
