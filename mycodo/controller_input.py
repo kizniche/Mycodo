@@ -295,39 +295,37 @@ class InputController(threading.Thread):
                         # Add measurement(s) to influxdb
                         if self.measurement_success:
 
-                            # Convert units before adding measurements to database
                             measurements_record = {}
                             for each_channel, each_measurement in self.measurement.values.items():
                                 measurement = self.device_measurements.filter(
                                     DeviceMeasurements.channel == each_channel).first()
 
-                                # Unrescaled, unconverted measurement
+                                # Unscaled, unconverted measurement
                                 measurements_record[each_channel] = {
                                     'measurement': each_measurement['measurement'],
                                     'unit': each_measurement['unit'],
                                     'value': each_measurement['value']
                                 }
 
+                                # Scaling needs to come before conversion
+                                # Scale measurement
                                 if (measurement.rescaled_measurement and
                                         measurement.rescaled_unit):
-                                    # Store rescaled measurement
                                     scaled_value = measurements_record[each_channel] = self.rescale_measurements(
                                         measurement, measurements_record[each_channel]['value'])
-
                                     measurements_record[each_channel] = {
                                         'measurement': measurement.rescaled_measurement,
                                         'unit': measurement.rescaled_unit,
                                         'value': scaled_value
                                     }
 
+                                # Convert measurement
                                 if measurement.conversion_id not in ['', None] and 'value' in each_measurement:
-                                    # Store converted measurements
                                     conversion = self.conversions.filter(
                                         Conversion.unique_id == measurement.conversion_id).first()
                                     converted_value = convert_units(
                                         measurement.conversion_id,
                                         measurements_record[each_channel]['value'])
-
                                     measurements_record[each_channel] = {
                                         'measurement': None,
                                         'unit': conversion.convert_unit_to,

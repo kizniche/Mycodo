@@ -20,6 +20,7 @@ The Mycodo 7.0 brings a redesigned measurement/unit and Conditional systems. The
  - Refactor Conditional system ([#493](https://github.com/kizniche/mycodo/issues/493))
  - Refactor Analog-to-digital converters ([#550](https://github.com/kizniche/mycodo/issues/550))
  - Refactor Measurement/Unit system ([#550](https://github.com/kizniche/mycodo/issues/550))
+ - Refactor Conversion system ([#493](https://github.com/kizniche/mycodo/issues/493))
  - Upgrade InfluxDB from 1.6.0 to 1.7.0
  - Add User Role: Kiosk
 
