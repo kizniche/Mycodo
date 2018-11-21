@@ -379,6 +379,12 @@ def form_input_choices(choices, each_input, dict_units, dict_measurements):
                 display_unit = find_name_unit(
                     dict_units, conv.convert_unit_to)
                 display_measurement = None
+            elif (each_measure.rescaled_measurement and
+                    each_measure.rescaled_unit):
+                display_unit = find_name_unit(
+                    dict_units, each_measure.rescaled_unit)
+                display_measurement = find_name_measurement(
+                    dict_measurements, each_measure.rescaled_measurement)
             else:
                 display_unit = find_name_unit(
                     dict_units, each_measure.unit)

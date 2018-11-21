@@ -23,7 +23,6 @@ INPUT_INFORMATION = {
     'input_name': 'ADS1256',
     'measurements_name': 'Voltage (Waveshare, Analog-to-Digital Converter)',
     'measurements_dict': measurements_dict,
-    'measurements_convert_enabled': True,
     'measurements_rescale': True,
     'scale_from_min': 0.0,
     'scale_from_max': 5.0,

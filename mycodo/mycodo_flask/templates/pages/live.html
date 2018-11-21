@@ -103,10 +103,10 @@
             {{' ' + dict_units[dict_measurements_units[each_meas.unique_id]]['unit']}}
           {%- endif -%}</b>
 
-          {%- if not each_meas.conversion_id -%}
-            {{' (' + dict_measurements[each_meas.measurement]['name'] + ') '}}
-          {%- else -%}
+          {%- if each_meas.conversion_id or each_meas.rescaled_unit -%}
             {{' (' + dict_units[dict_measurements_units[each_meas.unique_id]]['name'] + ') '}}
+          {%- else -%}
+            {{' (' + dict_measurements[each_meas.measurement]['name'] + ') '}}
           {%- endif -%}
 
           {%- if each_meas.name -%}

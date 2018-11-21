@@ -141,8 +141,6 @@ def input_add(form_add):
 
             if dict_has_value('period'):
                 new_input.period = dict_inputs[input_name]['period']
-            if dict_has_value('measurements_convert_enabled'):
-                new_input.measurements_convert_enabled = dict_inputs[input_name]['measurements_convert_enabled']
 
             # Server Ping options
             if dict_has_value('times_check'):

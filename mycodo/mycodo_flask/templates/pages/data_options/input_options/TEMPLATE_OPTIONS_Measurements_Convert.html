@@ -104,8 +104,13 @@
     <div>
       <select class="form-control form-tooltip form-dropdown" id="convert_to_measurement_unit" name="convert_to_measurement_unit" data-placement="top" title="{{tooltips_input['convert_to_measurement_unit']['phrase']}}">
         <option value="">{{_('Do Not Convert')}}</option>
-      {% for each_conversion in conversion if each_conversion.convert_unit_from == each_measurement.unit and each_conversion.convert_unit_to in dict_units %}
+      {% for each_conversion in conversion %}
+        {% if each_conversion.convert_unit_to in dict_units and
+              (each_conversion.convert_unit_from == each_measurement.unit or
+               each_conversion.convert_unit_from == each_measurement.rescaled_unit)
+        %}
         <option value="{{each_conversion.unique_id}}"{% if each_conversion.unique_id == each_measurement.conversion_id %} selected{% endif %}>[{{each_conversion.id + 1}}] Convert to {{dict_units[each_conversion.convert_unit_to]['name']}} ({{dict_units[each_conversion.convert_unit_to]['unit']}})</option>
+        {% endif %}
       {% endfor %}
       </select>
     </div>

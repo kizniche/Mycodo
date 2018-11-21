@@ -14,16 +14,16 @@ from mycodo.utils.database import db_retrieve_table_daemon
 # Measurements
 measurements_dict = {
     0: {
-        'measurement': 'pressure',
-        'unit': 'Pa'
-    },
-    1: {
         'measurement': 'temperature',
         'unit': 'C'
     },
-    2: {
+    1: {
         'measurement': 'humidity',
         'unit': 'percent'
+    },
+    2: {
+        'measurement': 'pressure',
+        'unit': 'Pa'
     },
     3: {
         'measurement': 'dewpoint',
@@ -45,11 +45,12 @@ INPUT_INFORMATION = {
     'measurements_dict': measurements_dict,
 
     'options_enabled': [
+        'i2c_location',
         'measurements_select',
         'period',
         'pre_output'
     ],
-    'options_disabled': ['interface', 'i2c_location'],
+    'options_disabled': ['interface'],
 
     'dependencies_module': [
         ('pip-pypi', 'Adafruit_GPIO', 'Adafruit_GPIO'),
@@ -57,7 +58,10 @@ INPUT_INFORMATION = {
     ],
 
     'interfaces': ['I2C'],
-    'i2c_location': ['0x76'],
+    'i2c_location': [
+        '0x76',
+        '0x77'
+    ],
     'i2c_address_editable': False
 }
 
@@ -92,21 +96,21 @@ class InputModule(AbstractInput):
         return_dict = measurements_dict.copy()
 
         if self.is_enabled(0):
-            return_dict[0]['value'] = self.sensor.read_pressure()
+            return_dict[0]['value'] = self.sensor.read_temperature()
 
         if self.is_enabled(1):
-            return_dict[1]['value'] = self.sensor.read_temperature()
+            return_dict[1]['value'] = self.sensor.read_humidity()
 
         if self.is_enabled(2):
-            return_dict[2]['value'] = self.sensor.read_humidity()
+            return_dict[2]['value'] = self.sensor.read_pressure()
 
         if (self.is_enabled(3) and
-                self.is_enabled(1) and
-                self.is_enabled(2)):
+                self.is_enabled(0) and
+                self.is_enabled(1)):
             return_dict[3]['value'] = calculate_dewpoint(
-                return_dict[1]['value'], return_dict[2]['value'])
+                return_dict[0]['value'], return_dict[1]['value'])
 
-        if self.is_enabled(4) and self.is_enabled(0):
-            return_dict[4]['value'] = calculate_altitude(return_dict[0]['value'])
+        if self.is_enabled(4) and self.is_enabled(2):
+            return_dict[4]['value'] = calculate_altitude(return_dict[2]['value'])
 
         return return_dict

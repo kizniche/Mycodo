@@ -464,6 +464,7 @@ def graph_y_axes(dict_measurements):
 
                     for each_measure in device_measurements:
                         if each_measure.unique_id == measure_id:
+
                             if each_measure.conversion_id:
                                 conversion = Conversion.query.filter(
                                     Conversion.unique_id == each_measure.conversion_id).first()
@@ -471,6 +472,12 @@ def graph_y_axes(dict_measurements):
                                     y_axes[each_graph.unique_id] = [conversion.convert_unit_to]
                                 elif y_axes[each_graph.unique_id] and conversion.convert_unit_to not in y_axes[each_graph.unique_id]:
                                     y_axes.setdefault(each_graph.unique_id, []).append(conversion.convert_unit_to)
+                            elif (each_measure.rescaled_measurement and
+                                    each_measure.rescaled_unit):
+                                if not y_axes[each_graph.unique_id]:
+                                    y_axes[each_graph.unique_id] = [each_measure.rescaled_unit]
+                                elif y_axes[each_graph.unique_id] and each_measure.rescaled_unit not in y_axes[each_graph.unique_id]:
+                                    y_axes.setdefault(each_graph.unique_id, []).append(each_measure.rescaled_unit)
                             else:
                                 if not y_axes[each_graph.unique_id]:
                                     y_axes[each_graph.unique_id] = [each_measure.unit]
@@ -568,6 +575,7 @@ def graph_y_axes_async(dict_measurements, ids_measures):
 
                 for each_measure in device_measurements:
                     if each_measure.unique_id == measure_id:
+
                         if each_measure.conversion_id:
                             conversion = Conversion.query.filter(
                                 Conversion.unique_id == each_measure.conversion_id).first()
@@ -575,6 +583,12 @@ def graph_y_axes_async(dict_measurements, ids_measures):
                                 y_axes = [conversion.convert_unit_to]
                             elif y_axes and conversion.convert_unit_to not in y_axes:
                                 y_axes.append(conversion.convert_unit_to)
+                        elif (each_measure.rescaled_measurement and
+                                each_measure.rescaled_unit):
+                            if not y_axes:
+                                y_axes = [each_measure.rescaled_unit]
+                            elif y_axes and each_measure.rescaled_unit not in y_axes:
+                                y_axes.append(each_measure.rescaled_unit)
                         else:
                             if not y_axes:
                                 y_axes = [each_measure.unit]

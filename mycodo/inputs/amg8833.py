@@ -28,7 +28,6 @@ INPUT_INFORMATION = {
     'input_name': 'AMG8833',
     'measurements_name': '8x8 Temperature Grid',
     'measurements_dict': measurements_dict,
-    'measurements_convert_enabled': False,
     'measurements_rescale': True,
     'scale_from_min': 0.0,
     'scale_from_max': 5.0,

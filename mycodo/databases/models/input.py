@@ -28,9 +28,6 @@ class Input(CRUDMixin, db.Model):
     location = db.Column(db.Text, default='')  # GPIO pin or i2c address to communicate with sensor
     gpio_location = db.Column(db.Integer, default=None)  # Pin location for GPIO communication
 
-    # Channels
-    measurements_convert_enabled = db.Column(db.Boolean, default=None)
-
     # I2C
     i2c_location = db.Column(db.Text, default=None)  # Address location for I2C communication
     i2c_bus = db.Column(db.Integer, default='')  # I2C bus the sensor is connected to

@@ -277,6 +277,10 @@ def last_data(unique_id, measure_type, measurement_id, period):
                 Conversion.unique_id == measure.conversion_id).first()
             measurement = None
             unit = conversion.convert_unit_to
+        elif (measure.rescaled_measurement and
+                measure.rescaled_unit):
+            measurement = measure.rescaled_measurement
+            unit = measure.rescaled_unit
         else:
             measurement = measure.measurement
             unit = measure.unit
@@ -361,6 +365,10 @@ def past_data(unique_id, measure_type, measurement_id, past_seconds):
                 Conversion.unique_id == measure.conversion_id).first()
             measurement = None
             unit = conversion.convert_unit_to
+        elif (measure.rescaled_measurement and
+                measure.rescaled_unit):
+            measurement = measure.rescaled_measurement
+            unit = measure.rescaled_unit
         else:
             measurement = measure.measurement
             unit = measure.unit
@@ -558,6 +566,10 @@ def async_data(device_id, device_type, measurement_id, start_seconds, end_second
             Conversion.unique_id == measure.conversion_id).first()
         measurement = None
         unit = conversion.convert_unit_to
+    elif (measure.rescaled_measurement and
+          measure.rescaled_unit):
+        measurement = measure.rescaled_measurement
+        unit = measure.rescaled_unit
     else:
         measurement = measure.measurement
         unit = measure.unit

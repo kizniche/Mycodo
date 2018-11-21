@@ -639,6 +639,7 @@ def page_dashboard():
                            choices_output=choices_output,
                            choices_pid=choices_pid,
                            choices_note_tag=choices_note_tag,
+                           conversion=Conversion,
                            custom_yaxes=custom_yaxes,
                            dashboard_element_names=dashboard_element_names,
                            dashboard_elements_hidden=dashboard_elements_hidden,
@@ -734,6 +735,7 @@ def page_graph_async():
                                                 selected_ids_measures)
 
     return render_template('pages/graph-async.html',
+                           conversion=Conversion,
                            async_height=async_height,
                            start_time_epoch=start_time_epoch,
                            device_measurements_dict=device_measurements_dict,
@@ -1019,8 +1021,12 @@ def page_live():
     dict_measurements_units = {}
     for each_measurement in device_measurements:
         if each_measurement.conversion_id:
-            conversion = Conversion.query.filter(Conversion.unique_id == each_measurement.conversion_id).first()
+            conversion = Conversion.query.filter(
+                Conversion.unique_id == each_measurement.conversion_id).first()
             dict_measurements_units[each_measurement.unique_id] = conversion.convert_unit_to
+        elif (each_measurement.rescaled_measurement and
+                each_measurement.rescaled_unit):
+            dict_measurements_units[each_measurement.unique_id] = each_measurement.rescaled_unit
         else:
             dict_measurements_units[each_measurement.unique_id] = each_measurement.unit
 

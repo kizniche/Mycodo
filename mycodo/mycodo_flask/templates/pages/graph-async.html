@@ -340,14 +340,18 @@ $(document).ready(function() {
 
                 {{' (CH' + (device_measurements_dict[measurement_id].channel + 1)|string}}
 
-                {%- if device_measurements_dict[measurement_id].converted_unit -%}
-                  {{', ' + measurement_units[device_measurements_dict[measurement_id].converted_measurement]['name']}}
+                {%- if device_measurements_dict[measurement_id].conversion_id -%}
+                  {# DO NOTHING #}
+                {%- elif device_measurements_dict[measurement_id].rescaled_measurement -%}
+                  {{', ' + measurement_units[device_measurements_dict[measurement_id].rescaled_measurement]['name']}}
                 {%- else -%}
                   {{', ' + measurement_units[device_measurements_dict[measurement_id].measurement]['name']}}
                 {%- endif -%}
 
-                {%- if device_measurements_dict[measurement_id].converted_unit -%}
-                  {{', ' + units[device_measurements_dict[measurement_id].converted_unit]['name']}}
+                {%- if device_measurements_dict[measurement_id].conversion_id -%}
+                  {{', ' + units[conversion.query.filter(conversion.unique_id == device_measurements_dict[measurement_id].conversion_id).first().convert_unit_to]['name']}}
+                {%- elif device_measurements_dict[measurement_id].rescaled_unit -%}
+                  {{', ' + units[device_measurements_dict[measurement_id].rescaled_unit]['name']}}
                 {%- else -%}
                   {{', ' + units[device_measurements_dict[measurement_id].unit]['name']}}
                 {%- endif -%}
@@ -361,8 +365,10 @@ $(document).ready(function() {
               {% endif %}
               tooltip: {
                 valueSuffix: '
-                {%- if device_measurements_dict[measurement_id].converted_unit -%}
-                  {{' ' + units[device_measurements_dict[measurement_id].converted_unit]['unit']}}
+                {%- if device_measurements_dict[measurement_id].conversion_id -%}
+                  {{' ' + units[conversion.query.filter(conversion.unique_id == device_measurements_dict[measurement_id].conversion_id).first().convert_unit_to]['unit']}}
+                {%- elif device_measurements_dict[measurement_id].rescaled_unit -%}
+                  {{' ' + units[device_measurements_dict[measurement_id].rescaled_unit]['unit']}}
                 {%- else -%}
                   {{' ' + units[device_measurements_dict[measurement_id].unit]['unit']}}
                 {%- endif -%}
@@ -370,8 +376,10 @@ $(document).ready(function() {
                 valueDecimals: 3
               },
               yAxis: '
-                {%- if device_measurements_dict[measurement_id].converted_unit -%}
-                  {{device_measurements_dict[measurement_id].converted_unit}}
+                {%- if device_measurements_dict[measurement_id].conversion_id -%}
+                  {{conversion.query.filter(conversion.unique_id == device_measurements_dict[measurement_id].conversion_id).first().convert_unit_to}}
+                {%- elif device_measurements_dict[measurement_id].rescaled_unit -%}
+                  {{device_measurements_dict[measurement_id].rescaled_unit}}
                 {%- else -%}
                   {{device_measurements_dict[measurement_id].unit}}
                 {%- endif -%}

@@ -23,7 +23,6 @@ INPUT_INFORMATION = {
     'input_name': 'MCP3008',
     'measurements_name': 'Voltage (Analog-to-Digital Converter)',
     'measurements_dict': measurements_dict,
-    'measurements_convert_enabled': True,
     'measurements_rescale': True,
     'scale_from_min': -4.096,
     'scale_from_max': 4.096,

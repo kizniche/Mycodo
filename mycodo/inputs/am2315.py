@@ -57,7 +57,6 @@ INPUT_INFORMATION = {
     'input_name': 'AM2315',
     'measurements_name': 'Humidity/Temperature',
     'measurements_dict': measurements_dict,
-    'measurements_convert_enabled': False,
     'measurements_rescale': False,
 
     'options_enabled': [

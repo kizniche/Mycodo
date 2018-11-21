@@ -66,7 +66,6 @@ class DeviceMeasurements(CRUDMixin, db.Model):
     channel = db.Column(db.Integer, default=None)
 
     # Rescale measurement
-    measurement_rescaled = db.Column(db.Boolean, default=False)
     invert_scale = db.Column(db.Boolean, default=False)
     rescaled_measurement = db.Column(db.Text, default='')
     rescaled_unit = db.Column(db.Text, default='')
