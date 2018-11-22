@@ -499,66 +499,66 @@ produce a new value that may be used within Mycodo.
                                 of the selected measurements.
   ------------------------------------------------------------------------
 
-  ------------------------------------------------------------------------
-  Setting                 Description
-  ----------------------- ------------------------------------------------
-  Input                   Select the Inputs to use with the particular
-                          Math controller
+  ---------------------------------------------------------------------------------
+  Setting                    Description
+  -------------------------- ------------------------------------------------------
+  Input                      Select the Inputs to use with the particular Math
+                             controller
 
-  Period (seconds)        The duration of time between calculating and
-                          storing a new value
+  Period (seconds)           The duration of time between calculating and storing a
+                             new value
 
-  Max Age (seconds)       The maximum allowed age of the Input
-                          measurements. If an Input measurement is older
-                          than this period, the calculation is cancelled
-                          and the new value is not stored in the database.
-                          Consequently, if another controller has a Max
-                          Age set and cannot retrieve a current Math
-                          value, it will cease functioning. A PID
-                          controller, for instance, may stop regulating if
-                          there is no new Math value created, preventing
-                          the PID controller from continuing to run when
-                          it should not.
+  Max Age (seconds)          The maximum allowed age of the Input measurements. If
+                             an Input measurement is older than this period, the
+                             calculation is cancelled and the new value is not
+                             stored in the database. Consequently, if another
+                             controller has a Max Age set and cannot retrieve a
+                             current Math value, it will cease functioning. A PID
+                             controller, for instance, may stop regulating if there
+                             is no new Math value created, preventing the PID
+                             controller from continuing to run when it should not.
 
-  Measurement             This is the condition being measured. For
-                          instance, if all of the selected measurements
-                          are temperature, this should also be
-                          temperature. A list of the pre-defined
-                          measurements that may be used is below.
+  Start Offset (seconds)     Wait this duration before attempting the first
+                             calculation/measurement.
 
-  Units                   This is the units to display along with the
-                          measurement, on Graphs. If a pre-defined
-                          measurement is used, this field will default to
-                          the units associated with that measurement.
+  Measurement                This is the condition being measured. For instance, if
+                             all of the selected measurements are temperature, this
+                             should also be temperature. A list of the pre-defined
+                             measurements that may be used is below.
 
-  Reverse Equation        For Difference calculations, this will reverse
-                          the equation order, from value_1 - value_2 to
-                          value_2 - value_1.
+  Units                      This is the units to display along with the
+                             measurement, on Graphs. If a pre-defined measurement
+                             is used, this field will default to the units
+                             associated with that measurement.
 
-  Absolute Value          For Difference calculations, this will yield an
-                          absolute value (positive number).
+  Reverse Equation           For Difference calculations, this will reverse the
+                             equation order, from value_1 - value_2 to
+                             value_2 - value_1.
 
-  Max Difference          If the difference between any selected Input is
-                          greater than this value, no new value will be
-                          stored in the database.
+  Absolute Value             For Difference calculations, this will yield an
+                             absolute value (positive number).
 
-  Dry-Bulb Temperature    The measurement that will serve as the dry-bulb
-                          temperature (this is the warmer of the two
-                          temperature measurements)
+  Max Difference             If the difference between any selected Input is
+                             greater than this value, no new value will be stored
+                             in the database.
 
-  Wet-Bulb Temperature    The measurement that will serve as the wet-bulb
-                          temperature (this is the colder of the two
-                          temperature measurements)
+  Dry-Bulb Temperature       The measurement that will serve as the dry-bulb
+                             temperature (this is the warmer of the two temperature
+                             measurements)
 
-  Pressure                This is an optional pressure measurement that
-                          can be used to calculate the percent relative
-                          humidity. If disabled, a default 101325 Pa will
-                          be used in the calculation.
+  Wet-Bulb Temperature       The measurement that will serve as the wet-bulb
+                             temperature (this is the colder of the two temperature
+                             measurements)
 
-  Equation                An equation that will be solved with Python’s
-                          eval() function. Let “x” represent the input
-                          value. Valid equation symbols include: + - * / ^
-  ------------------------------------------------------------------------
+  Pressure                   This is an optional pressure measurement that can be
+                             used to calculate the percent relative humidity. If
+                             disabled, a default 101325 Pa will be used in the
+                             calculation.
+
+  Equation                   An equation that will be solved with Python’s eval()
+                             function. Let “x” represent the input value. Valid
+                             equation symbols include: + - * / ^
+  ---------------------------------------------------------------------------------
 
 
 Output

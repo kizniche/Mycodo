@@ -796,38 +796,42 @@ signal &lt;http://kylegabriel.com/projects/2016/02
 <td>The maximum allowed age of the Input measurements. If an Input measurement is older than this period, the calculation is cancelled and the new value is not stored in the database. Consequently, if another controller has a Max Age set and cannot retrieve a current Math value, it will cease functioning. A PID controller, for instance, may stop regulating if there is no new Math value created, preventing the PID controller from continuing to run when it should not.</td>
 </tr>
 <tr class="even">
+<td>Start Offset (seconds)</td>
+<td>Wait this duration before attempting the first calculation/measurement.</td>
+</tr>
+<tr class="odd">
 <td>Measurement</td>
 <td>This is the condition being measured. For instance, if all of the selected measurements are temperature, this should also be temperature. A list of the pre-defined measurements that may be used is below.</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>Units</td>
 <td>This is the units to display along with the measurement, on Graphs. If a pre-defined measurement is used, this field will default to the units associated with that measurement.</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>Reverse Equation</td>
 <td>For Difference calculations, this will reverse the equation order, from <code>value_1 - value_2</code> to <code>value_2 - value_1</code>.</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>Absolute Value</td>
 <td>For Difference calculations, this will yield an absolute value (positive number).</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>Max Difference</td>
 <td>If the difference between any selected Input is greater than this value, no new value will be stored in the database.</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>Dry-Bulb Temperature</td>
 <td>The measurement that will serve as the dry-bulb temperature (this is the warmer of the two temperature measurements)</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>Wet-Bulb Temperature</td>
 <td>The measurement that will serve as the wet-bulb temperature (this is the colder of the two temperature measurements)</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>Pressure</td>
 <td>This is an optional pressure measurement that can be used to calculate the percent relative humidity. If disabled, a default 101325 Pa will be used in the calculation.</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>Equation</td>
 <td>An equation that will be solved with Python’s eval() function. Let “x” represent the input value. Valid equation symbols include: + - * / ^</td>
 </tr>

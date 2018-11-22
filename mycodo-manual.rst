@@ -480,6 +480,9 @@ produce a new value that may be used within Mycodo.
 |                       | preventing the PID controller from continuing   |
 |                       | to run when it should not.                      |
 +-----------------------+-------------------------------------------------+
+| Start Offset (seconds)| Wait this duration before attempting the first  |
+|                       | calculation/measurement.                        |
++-----------------------+-------------------------------------------------+
 | Measurement           | This is the condition being measured. For       |
 |                       | instance, if all of the selected measurements   |
 |                       | are temperature, this should also be            |
