@@ -204,7 +204,7 @@ class OutputController(threading.Thread):
                     # Calculate command, given flow rate
                     minutes_to_run = self.output_flow_rate[output_id] * volume_ml
 
-                    self.atlas_command[output_id].send_command(
+                    self.atlas_command[output_id].write(
                         'D,{ml:.2f},{min:.3f}'.format(
                             ml=volume_ml, min=minutes_to_run))
 
@@ -217,7 +217,7 @@ class OutputController(threading.Thread):
                                 'channel': 0})
                     write_db.start()
             elif state == 'off':
-                self.atlas_command[output_id].send_command('X')
+                self.atlas_command[output_id].write('X')
 
         # Signaled to turn output on
         if state == 'on':

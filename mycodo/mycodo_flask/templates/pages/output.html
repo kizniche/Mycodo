@@ -190,7 +190,7 @@
             <input class="form-control btn btn-sm btn-block" disabled="" id="{{each_output.unique_id}}-input-output-state" title="[{{'%02d' % each_output.id}}] UUID: {{each_output.unique_id}}" value="{{ _('Unconfigured')}}" type="text">
           </div>
 
-        {% if each_output.output_type not in ['pwm', 'command_pwm'] -%}
+        {% if each_output.output_type not in ['pwm', 'command_pwm', 'atlas_ezo_pmp'] -%}
           <div class="col-xs-5 col-sm-6 col-md-4 col-lg-2 small-gutters">
             <input class="form-control btn btn-sm btn-success btn-block turn_on" id="turn_on" name="{{each_output.unique_id}}/on/sec/0" type="button" value="{{_('On')}}">
           </div>
@@ -251,6 +251,24 @@
                   </div>
                   <div class="col-xs-6 col-sm-4 col-md-3 small-gutters">
                     <input class="btn btn-success btn-block sec_on_amt" id="turn_on" name="{{each_output.unique_id}}/on/sec/" type="button" value="{{_('Turn On')}}">
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {% elif each_output.output_type == 'atlas_ezo_pmp' %}
+
+          <div class="row">
+            <div class="col">
+              <label class='control-label'>{{_('Amount to Dispense (ml)')}}</label>
+              <div>
+                <div class="row small-gutters">
+                  <div class="col-xs-6 col-sm-4 col-md-3 small-gutters">
+                    <input class="form-control" id="sec_on_amt_{{each_output.unique_id}}" name="sec_on_amt_{{each_output.unique_id}}" title="Use this output to pump a volume of liquid" type="text" value="">
+                  </div>
+                  <div class="col-xs-6 col-sm-4 col-md-3 small-gutters">
+                    <input class="btn btn-success btn-block sec_on_amt" id="turn_on" name="{{each_output.unique_id}}/on/sec/" type="button" value="{{_('Pump Volume')}}">
                   </div>
                 </div>
               </div>

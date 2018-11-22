@@ -98,6 +98,9 @@ class AtlasScientificUART:
             self.logger.exception('UART device not initialized')
             return None
 
+    def write(self, cmd):
+        self.send_cmd(cmd)
+
     def send_cmd(self, cmd):
         """
         Send command to the Atlas Sensor.
