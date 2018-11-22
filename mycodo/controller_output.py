@@ -35,8 +35,9 @@ from mycodo.databases.models import Misc
 from mycodo.databases.models import Output
 from mycodo.databases.models import SMTP
 from mycodo.databases.models import Trigger
+from mycodo.devices.atlas_scientific_i2c import AtlasScientificI2C
+from mycodo.devices.atlas_scientific_uart import AtlasScientificUART
 from mycodo.mycodo_client import DaemonControl
-from mycodo.utils.calibration import AtlasScientificCommand
 from mycodo.utils.database import db_retrieve_table_daemon
 from mycodo.utils.influx import write_influxdb_value
 from mycodo.utils.system_pi import cmd_output
@@ -64,6 +65,7 @@ class OutputController(threading.Thread):
         self.output_type = {}
         self.output_interface = {}
         self.output_location = {}
+        self.output_i2c_bus = {}
         self.output_baud_rate = {}
         self.output_name = {}
         self.output_pin = {}
@@ -90,6 +92,10 @@ class OutputController(threading.Thread):
         self.pwm_invert_signal = {}
         self.pwm_state = {}
         self.pwm_time_turned_on = {}
+
+        # Atlas
+        self.output_flow_rate = {}
+        self.atlas_command = {}
 
         self.output_time_turned_on = {}
 
@@ -190,29 +196,28 @@ class OutputController(threading.Thread):
 
         # Atlas EZP-PMP must have a duration (ml)
         if self.output_type[output_id] == 'atlas_ezo_pmp':
-            if not duration:
-                self.logger.error("EZP-PMP volume value must be greater than 0")
-            else:
-                from types import SimpleNamespace
-                settings = SimpleNamespace()
-                settings.interface = self.output_interface[output_id]
-                if self.output_interface[output_id] == 'I2C':
-                    settings.i2c_location = self.output_location[output_id]
-                if self.output_interface[output_id] == 'UART':
-                    settings.uart_location = self.output_location[output_id]
-                    settings.baud_rate = self.output_baud_rate[output_id]
+            volume_ml = duration
+            if state == 'on':
+                if not volume_ml:
+                    self.logger.error("EZP-PMP volume value must be greater than 0")
+                else:
+                    # Calculate command, given flow rate
+                    minutes_to_run = self.output_flow_rate[output_id] * volume_ml
 
-                atlas_command = AtlasScientificCommand(settings)
-                atlas_command.send_command('D,{ml:.2f}'.format(ml=duration))
+                    self.atlas_command[output_id].send_command(
+                        'D,{ml:.2f},{min:.3f}'.format(
+                            ml=volume_ml, min=minutes_to_run))
 
-                write_db = threading.Thread(
-                    target=write_influxdb_value,
-                    args=(self.output_unique_id[output_id],
-                          'ml',
-                          duration,),
-                    kwargs={'measure': 'volume',
-                            'channel': 0})
-                write_db.start()
+                    write_db = threading.Thread(
+                        target=write_influxdb_value,
+                        args=(self.output_unique_id[output_id],
+                              'ml',
+                              volume_ml,),
+                        kwargs={'measure': 'volume',
+                                'channel': 0})
+                    write_db.start()
+            elif state == 'off':
+                self.atlas_command[output_id].send_command('X')
 
         # Signaled to turn output on
         if state == 'on':
@@ -746,6 +751,7 @@ class OutputController(threading.Thread):
             self.output_type[each_output.unique_id] = each_output.output_type
             self.output_interface[each_output.unique_id] = each_output.interface
             self.output_location[each_output.unique_id] = each_output.location
+            self.output_i2c_bus[each_output.unique_id] = each_output.i2c_bus
             self.output_baud_rate[each_output.unique_id] = each_output.baud_rate
             self.output_name[each_output.unique_id] = each_output.name
             self.output_pin[each_output.unique_id] = each_output.pin
@@ -762,6 +768,7 @@ class OutputController(threading.Thread):
             self.output_on_command[each_output.unique_id] = each_output.on_command
             self.output_off_command[each_output.unique_id] = each_output.off_command
             self.output_pwm_command[each_output.unique_id] = each_output.pwm_command
+            self.output_flow_rate[each_output.unique_id] = each_output.flow_rate
 
             self.pwm_hertz[each_output.unique_id] = each_output.pwm_hertz
             self.pwm_library[each_output.unique_id] = each_output.pwm_library
@@ -770,6 +777,9 @@ class OutputController(threading.Thread):
 
             if self.output_pin[each_output.unique_id] is not None:
                 self.setup_pin(each_output.unique_id)
+
+            if self.output_type[each_output.unique_id] == 'atlas_ezo_pmp':
+                self.setup_atlas_command(each_output.unique_id)
 
             self.logger.debug("{id} ({name}) Initialized".format(
                 id=each_output.unique_id.split('-')[0], name=each_output.name))
@@ -818,6 +828,7 @@ class OutputController(threading.Thread):
             self.output_unique_id[output_id] = output.unique_id
             self.output_type[output_id] = output.output_type
             self.output_interface[output_id] = output.interface
+            self.output_i2c_bus[output_id] = output.i2c_bus
             self.output_location[output_id] = output.location
             self.output_baud_rate[output_id] = output.baud_rate
             self.output_name[output_id] = output.name
@@ -835,6 +846,7 @@ class OutputController(threading.Thread):
             self.output_on_command[output_id] = output.on_command
             self.output_off_command[output_id] = output.off_command
             self.output_pwm_command[output_id] = output.pwm_command
+            self.output_flow_rate[output_id] = output.flow_rate
 
             self.pwm_hertz[output_id] = output.pwm_hertz
             self.pwm_library[output_id] = output.pwm_library
@@ -843,6 +855,9 @@ class OutputController(threading.Thread):
 
             if self.output_pin[output_id]:
                 self.setup_pin(output.unique_id)
+
+            if self.output_type[output.unique_id] == 'atlas_ezo_pmp':
+                self.setup_atlas_command(output.unique_id)
 
             message = "Output {id} ({name}) initialized".format(
                 id=self.output_unique_id[output_id].split('-')[0],
@@ -882,6 +897,7 @@ class OutputController(threading.Thread):
             self.output_type.pop(output_id, None)
             self.output_interface.pop(output_id, None)
             self.output_location.pop(output_id, None)
+            self.output_i2c_bus.pop(output_id, None)
             self.output_baud_rate.pop(output_id, None)
             self.output_name.pop(output_id, None)
             self.output_pin.pop(output_id, None)
@@ -906,10 +922,23 @@ class OutputController(threading.Thread):
             self.pwm_state.pop(output_id, None)
             self.pwm_time_turned_on.pop(output_id, None)
 
+            self.output_flow_rate.pop(output_id, None)
+            self.atlas_command.pop(output_id, None)
+
             return 0, "success"
         except Exception as msg:
             return 1, "Del_Output Error: ID {id}: {msg}".format(
                 id=output_id, msg=msg)
+
+    def setup_atlas_command(self, output_id):
+        if self.output_interface[output_id] == 'I2C':
+            self.atlas_command[output_id] = AtlasScientificI2C(
+                i2c_address=int(str(self.output_location[output_id]), 16),
+                i2c_bus=self.output_i2c_bus[output_id])
+        elif self.output_interface[output_id] == 'UART':
+            self.atlas_command[output_id] = AtlasScientificUART(
+                self.output_location[output_id],
+                baudrate=self.output_baud_rate[output_id])
 
     def output_sec_currently_on(self, output_id):
         if not self.is_on(output_id):

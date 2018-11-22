@@ -217,7 +217,7 @@
 
           <div class="row small-gutters">
             <div class="col-xs-6 col-sm-6 col-md-4">
-              <input class="form-control" disabled="" value="{{output_info[each_output.output_type]['name']}}" type="text">
+              <input class="form-control" disabled="" value="{{output_info[each_output.output_type]['name']}} ({{each_output.interface}})" type="text">
             </div>
             <div class="col-xs-3 col-sm-3 col-md-4">
               {{form_mod_output.save(class_='form-control btn btn-sm btn-block')}}

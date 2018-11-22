@@ -40,6 +40,9 @@ class Output(CRUDMixin, db.Model):
     pwm_library = db.Column(db.Text, default=None)  # Library to produce PWM
     pwm_invert_signal = db.Column(db.Boolean, default=False)  # 90% duty cycle would become 10%
 
+    # Atlas EZO-PMP
+    flow_rate = db.Column(db.Float, default=None)  # example: ml per minute
+
     def __repr__(self):
         return "<{cls}(id={s.id})>".format(s=self, cls=self.__class__.__name__)
 

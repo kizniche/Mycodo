@@ -83,6 +83,7 @@ def output_add(form_add):
                     new_output.pwm_hertz = 22000
                     new_output.pwm_library = 'pigpio_any'
                 elif output_type == 'atlas_ezo_pmp':
+                    new_output.flow_rate = 10
                     if interface == 'I2C':
                         new_output.location = '0x67'
                         new_output.i2c_bus = 1
@@ -159,6 +160,10 @@ def output_mod(form_output):
             mod_output.pwm_invert_signal = form_output.pwm_invert_signal.data
         elif mod_output.output_type.startswith('atlas_ezo_pmp'):
             mod_output.location = form_output.location.data
+            if form_output.flow_rate.data > 105 or form_output.flow_rate.data < 0.5:
+                error.append("Flow Rate must be between 0.5 and 105 ml/min")
+            else:
+                mod_output.flow_rate = form_output.flow_rate.data
             if form_output.i2c_bus.data:
                 mod_output.i2c_bus = form_output.i2c_bus.data
             if form_output.baud_rate.data:

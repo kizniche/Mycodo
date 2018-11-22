@@ -197,7 +197,7 @@ def gpio_state():
                 state[each_output.unique_id] = 'on'
             else:
                 state[each_output.unique_id] = 'off'
-        elif (each_output.output_type in ['command', 'command_pwm'] or
+        elif (each_output.output_type in ['command', 'command_pwm', 'atlas_ezo_pmp'] or
                 (each_output.output_type in ['pwm', 'wireless_433MHz_pi_switch'] and
                  each_output.pin and
                  -1 < each_output.pin < 40)):

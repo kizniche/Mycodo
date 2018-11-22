@@ -94,6 +94,10 @@ class OutputMod(FlaskForm):
         ],
         validators=[DataRequired()]
     )
+    flow_rate = DecimalField(
+        lazy_gettext('Flow Rate (ml/min)'),
+        widget=NumberInput(step='any')
+    )
     save = SubmitField(lazy_gettext('Save'))
     delete = SubmitField(lazy_gettext('Delete'))
     order_up = SubmitField(lazy_gettext('Up'))
