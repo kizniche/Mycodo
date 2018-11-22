@@ -1,9 +1,10 @@
 <h4>{{_('Input')}} <a href="/help#input" target="_blank"><span style="font-size: 16px" class="fas fa-question-circle"></span></a></h4>
 <p>{{_('Inputs, such as sensors, ADC signals, or even a response from a command, enable measuring conditions in the environment or elsewhere. Add, configure, and activate inputs to begin recording measurements to the database and allow them to be used throughout Mycodo.')}}</p>
 
-{%- if display_order_input -%}
-{%- for order in display_order_input -%}
-  {%- for each_input in input if each_input.unique_id == order -%}
+{% for each_order_input_id in display_order_input -%}
+  {%- set all_input = table_input.query.filter(table_input.unique_id == each_order_input_id).all() -%}
+  {%- if all_input -%}
+    {%- for each_input in all_input -%}
 
 <div class="container" style="border: 2px solid #ddd; border-radius: 5px;">
 
@@ -136,8 +137,11 @@
 
 <div style="clear: both; padding-bottom: 0.5em;"></div>
 
-  {%- endfor -%}
+    {%- endfor -%}
+  {%- endif -%}
 {%- endfor -%}
+
+{%- if display_order_input -%}
 
 <div class="container">
 

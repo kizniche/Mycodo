@@ -14,6 +14,7 @@ The Mycodo 7.0 brings a redesigned measurement/unit and Conditional systems. The
  - Add ability to search Input selection dropdown list
  - Add Function: Execute Actions
  - Add Function Action: Pause (pause for a duration of time before executing any remaining actions)
+ - Add Math controller option: Start Offset (seconds)
 
 ### Miscellaneous
 

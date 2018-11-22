@@ -183,7 +183,7 @@
       <div class="form-check">
         {% set index = '{0:0>2}'.format(n) %}
         <input id="color_number{{index}}" name="color_number{{index}}" placeholder="#000000" type="color" value="{{colors_graph[each_dashboard.unique_id][n]['color']}}">
-        <label for="color_number{{index}}">{{colors_graph[each_dashboard.unique_id][n]['name']}} ({{colors_graph[each_dashboard.unique_id][n]['measure']}})</label>
+        <label for="color_number{{index}}">{{colors_graph[each_dashboard.unique_id][n]['name']}}, CH{{colors_graph[each_dashboard.unique_id][n]['channel']}} ({{dict_units[colors_graph[each_dashboard.unique_id][n]['unit']]['name']}})</label>
       </div>
     </div>
       {% endfor %}
@@ -232,18 +232,18 @@
     </div>
   {% endfor %}
 
-    <div class="row small-gutters btn-group" style="padding: 1em 1em 0.5em 0.8em;">
+    <div class="row small-gutters" style="padding: 1em 1em 0 0.8em;">
       <div class="col-auto">
-        {{form_base.modify(class_='form-control btn btn-sm')}}
+        {{form_base.modify(class_='btn btn-primary')}}
       </div>
       <div class="col-auto">
-        {{form_base.delete(class_='form-control btn btn-sm',**{'onclick':'return confirm("Are you sure you want to delete this?")'})}}
+        {{form_base.delete(class_='btn btn-primary',**{'onclick':'return confirm("Are you sure you want to delete this?")'})}}
       </div>
       <div class="col-auto">
-        {{form_base.order_up(class_='form-control btn btn-sm')}}
+        {{form_base.order_up(class_='btn btn-primary')}}
       </div>
       <div class="col-auto">
-        {{form_base.order_down(class_='form-control btn btn-sm')}}
+        {{form_base.order_down(class_='btn btn-primary')}}
       </div>
     </div>
 

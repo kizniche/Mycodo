@@ -1,4 +1,8 @@
-{% for each_measurement in device_measurements if each_measurement.device_id == each_math.unique_id and each_measurement.is_enabled %}
+{%- set all_measurements = table_device_measurements.query.filter(
+                               and_(table_device_measurements.device_id == each_math.unique_id,
+                                    table_device_measurements.is_enabled)).all() -%}
+{%- if all_measurements %}
+  {% for each_measurement in all_measurements %}
 
 <form method="post" action="/data">
 {{form_mod_math_measurement.csrf_token}}
@@ -78,10 +82,14 @@
     {{form_mod_math_measurement.convert_to_measurement_unit.label(class_='control-label')}}
     <div>
       <select class="form-control form-tooltip form-dropdown" id="convert_to_measurement_unit" name="convert_to_measurement_unit" data-placement="top" title="{{tooltips_input['convert_to_measurement_unit']['phrase']}}">
-        <option value="">{{_('Do Not Convert')}}</option>
-      {% for each_conversion in conversion if each_conversion.convert_unit_from == each_measurement.unit %}
+        <option value="">{{_('Do Not Convert')}}
+    {%- set all_conversion = table_conversion.query.filter(
+                table-conversion.convert_unit_from == each_measurement.unit).all() -%}
+    {%- if all_conversion -%}
+      {% for each_conversion in all_conversion -%}
         <option value="{{each_conversion.unique_id}}"{% if each_conversion.unique_id == each_measurement.conversion_id %} selected{% endif %}>[{{each_conversion.id + 1}}] Convert to {{dict_units[each_conversion.convert_unit_to]['name']}} ({{dict_units[each_conversion.convert_unit_to]['unit']}})</option>
-      {% endfor %}
+      {%- endfor -%}
+    {%- endif -%}
       </select>
     </div>
   </div>
@@ -92,4 +100,5 @@
 
 </form>
 
-{% endfor %}
+  {% endfor %}
+{% endif %}

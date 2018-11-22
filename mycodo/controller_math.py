@@ -110,6 +110,7 @@ class MathController(threading.Thread):
             self.is_activated = math.is_activated
             self.period = math.period
             self.max_measure_age = math.max_measure_age
+            self.start_offset = math.start_offset
 
             # Inputs to calculate with
             self.inputs = math.inputs
@@ -133,7 +134,7 @@ class MathController(threading.Thread):
             self.pressure_pa_id = math.pressure_pa_id
             self.pressure_pa_measure_id = math.pressure_pa_measure_id
 
-            self.timer = time.time() + self.period
+            self.timer = time.time() + self.start_offset
         except Exception as except_msg:
             self.logger.exception("Init Error: {err}".format(
                 err=except_msg))

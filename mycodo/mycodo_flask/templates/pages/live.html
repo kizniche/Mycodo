@@ -48,14 +48,14 @@
     }
 
     $(function() {
-      {%- for each_input in input if each_input.is_activated -%}
-        {% for each_meas in device_measurements if each_meas.device_id == each_input.unique_id and each_meas.is_enabled %}
+      {%- for each_input in table_input.query.filter(table_input.is_activated).all() -%}
+        {% for each_meas in table_device_measurements.query.filter(table_device_measurements.device_id == each_input.unique_id).all() if each_meas.is_enabled %}
           liveTextData('{{each_input.unique_id}}', 'input', '{{each_meas.unique_id}}', {{each_input.period + 1}});
         {% endfor %}
       {%- endfor -%}
 
-      {%- for each_math in math if each_math.is_activated -%}
-        {% for each_meas in device_measurements if each_meas.device_id == each_math.unique_id and each_meas.is_enabled %}
+      {%- for each_math in table_math.query.filter(table_math.is_activated).all() -%}
+        {% for each_meas in table_device_measurements.query.filter(table_device_measurements.device_id == each_math.unique_id).all() if each_meas.is_enabled %}
           liveTextData('{{each_math.unique_id}}', 'math', '{{each_meas.unique_id}}', {{each_math.period + 1}});
         {% endfor %}
       {%- endfor -%}
@@ -69,16 +69,17 @@
 
     {% include 'flash_messages.html' %}
 
-    {%- if inputs_sorted|length == 0 and maths_sorted|length == 0 -%}
+    {%- if display_order_input|length == 0 and display_order_math|length == 0 -%}
     <div>
       {{_('No Data Sources Activated')}}. <a href="/data">Click here</a> to go to the Data page. Read the <a href="/help">Manual</a> to become more familiar with the system and configuration options.
     </div>
     {%- endif -%}
 
-    {%- for each_input_sorted in inputs_sorted -%}
-      {%- set collapse_container_number = loop.index -%}
-
-      {%- for each_input in input if each_input.unique_id == each_input_sorted -%}
+    {% for each_order_input_id in display_order_input -%}
+      {%- set each_input = table_input.query.filter(
+                              and_(table_input.unique_id == each_order_input_id,
+                                   table_input.is_activated)).first() -%}
+      {%- if each_input -%}
 
     <div style="padding: 0.5em; margin-bottom: 0.7em; border: 1px solid #ddd; border-radius: 5px;">
 
@@ -94,7 +95,7 @@
 
         <div class="col-xs-12 col-sm-6 text-right">
           {{_('Measurement')}} | {{_('Timestamp')}}
-        {% for each_meas in device_measurements if each_meas.device_id == each_input.unique_id and each_meas.is_enabled %}
+        {% for each_meas in table_device_measurements.query.filter(table_device_measurements.device_id == each_input.unique_id).all() if each_meas.is_enabled %}
           {% set measure_string = each_input.unique_id + '-input-' + each_meas.unique_id %}
           <div>
             <b><span id="{{measure_string}}-value">0.0</span>
@@ -121,26 +122,19 @@
 
     </div>
 
-      {%- endfor -%}
+      {%- endif -%}
     {%- endfor -%}
 
-
-    {%- for each_math_sorted in maths_sorted -%}
-      {%- set collapse_container_number = loop.index -%}
-
-      {%- for each_math in math if each_math.unique_id == each_math_sorted -%}
+    {% for each_order_math_id in display_order_math %}
+      {%- set each_math = table_math.query.filter(
+                             and_(table_math.unique_id == each_order_math_id,
+                                  table_math.is_activated)).first() -%}
+      {%- if each_math -%}
 
     <div style="padding: 0.5em; margin-bottom: 0.7em; border: 1px solid #ddd; border-radius: 5px;">
 
       <div class="row">
         <div class="col-xs-12 col-sm-6 text-left">
-          {%- set math_has_pid = [] -%}
-          {%- for each_pid in pid if each_pid.is_activated and each_pid.measurement.split(',')[0] == each_math.unique_id -%}
-            {%- do math_has_pid.append(1) -%}
-          {%- endfor -%}
-          {%- if math_has_pid -%}
-            <a style="padding-right: 0.5em" data-toggle="collapse" href="#collapseContainer{{collapse_container_number}}" aria-expanded="false" aria-controls="collapseContainer{{collapse_container_number}}"><span class='collapse-button{{collapse_container_number}} fa fa-2x fa-plus-square'></span></a>
-          {%- endif -%}
           {{each_math.name}} (Math {{each_math.unique_id[:8]}})
           <div>
             {{_('Math (%(type)s), %(sec)s second interval', type=each_math.math_type, sec=each_math.period)}}
@@ -149,7 +143,7 @@
 
         <div class="col-xs-12 col-sm-6 text-right">
           {{_('Measurement')}} | {{_('Timestamp')}}
-        {% for each_meas in device_measurements if each_meas.device_id == each_math.unique_id and each_meas.is_enabled %}
+        {% for each_meas in table_device_measurements.query.filter(table_device_measurements.device_id == each_math.unique_id).all() if each_meas.is_enabled %}
           {% set measure_string = each_math.unique_id + '-math-' + each_meas.unique_id %}
           <div>
             <b><span id="{{measure_string}}-value">0.0</span>
@@ -177,7 +171,7 @@
 
     </div>
 
-      {%- endfor -%}
+      {% endif %}
     {%- endfor -%}
 
   </main>

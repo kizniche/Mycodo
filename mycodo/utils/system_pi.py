@@ -279,14 +279,14 @@ def celsius_to_kelvin(celsius):
 
 def csv_to_list_of_str(str_csv):
     """ return a list of strings from a string of csv strings """
+    list_str = []
     if str_csv:
-        list_str = []
         for x in str_csv.split(','):
             try:
                 list_str.append(x)
             except:
                 pass
-        return list_str
+    return list_str
 
 
 def list_to_csv(display_order):

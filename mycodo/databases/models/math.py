@@ -15,6 +15,7 @@ class Math(CRUDMixin, db.Model):
     is_activated = db.Column(db.Boolean, default=False)
     period = db.Column(db.Float, default=15.0)  # Duration between readings
     max_measure_age = db.Column(db.Integer, default=60)
+    start_offset = db.Column(db.Integer, default=10)
 
     # Difference options
     difference_reverse_order = db.Column(db.Boolean, default=False)  # False: var1 - var2 or True: var2 - var1

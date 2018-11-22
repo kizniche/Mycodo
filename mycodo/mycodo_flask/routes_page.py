@@ -23,6 +23,7 @@ from flask import send_file
 from flask import url_for
 from flask.blueprints import Blueprint
 from flask_babel import gettext
+from sqlalchemy import and_
 
 from mycodo.config import ALEMBIC_VERSION
 from mycodo.config import BACKUP_LOG_FILE
@@ -51,9 +52,9 @@ from mycodo.config_translations import TOOLTIPS_INPUT
 from mycodo.databases.models import Actions
 from mycodo.databases.models import AlembicVersion
 from mycodo.databases.models import Camera
-from mycodo.databases.models import Conversion
 from mycodo.databases.models import Conditional
 from mycodo.databases.models import ConditionalConditions
+from mycodo.databases.models import Conversion
 from mycodo.databases.models import Dashboard
 from mycodo.databases.models import DeviceMeasurements
 from mycodo.databases.models import DisplayOrder
@@ -474,16 +475,16 @@ def page_dashboard():
     form_pid = forms_dashboard.DashboardPIDControl()
 
     # Retrieve the order to display graphs
-    display_order = csv_to_list_of_str(DisplayOrder.query.first().dashboard)
+    display_order_dashboard = csv_to_list_of_str(
+        DisplayOrder.query.first().dashboard)
 
     # Create list of hidden dashboard element IDs and dict of names
     dashboard_element_names = {}
     dashboard_elements_hidden = []
-    all_elements = dashboard
-    for each_element in all_elements:
+    for each_element in dashboard:
         dashboard_element_names[each_element.unique_id] = '[{id}] {name}'.format(
                 id=each_element.id, name=each_element.name)
-        if not display_order or each_element.unique_id not in display_order:
+        if not display_order_dashboard or each_element.unique_id not in display_order_dashboard:
             dashboard_elements_hidden.append(each_element.unique_id)
 
     if form_base.reorder.data:
@@ -633,18 +634,23 @@ def page_dashboard():
         return redirect(url_for('routes_page.page_dashboard'))
 
     return render_template('pages/dashboard.html',
+                           table_conversion=Conversion,
+                           table_dashboard=Dashboard,
+                           table_input=Input,
+                           table_math=Math,
                            choices_camera=choices_camera,
                            choices_input=choices_input,
                            choices_math=choices_math,
                            choices_output=choices_output,
                            choices_pid=choices_pid,
                            choices_note_tag=choices_note_tag,
-                           conversion=Conversion,
                            custom_yaxes=custom_yaxes,
                            dashboard_element_names=dashboard_element_names,
                            dashboard_elements_hidden=dashboard_elements_hidden,
-                           dashboard=dashboard,
                            device_measurements_dict=device_measurements_dict,
+                           dict_measurements=dict_measurements,
+                           dict_units=dict_units,
+                           display_order_dashboard=display_order_dashboard,
                            math=math,
                            misc=misc,
                            pid=pid,
@@ -655,12 +661,9 @@ def page_dashboard():
                            colors_gauge_angular=colors_gauge_angular,
                            colors_gauge_solid=colors_gauge_solid,
                            colors_gauge_solid_form=colors_gauge_solid_form,
-                           dict_measurements=dict_measurements,
-                           dict_units=dict_units,
                            measurement_units=MEASUREMENTS,
                            units=UNITS,
                            use_unit=use_unit,
-                           display_order=display_order,
                            form_base=form_base,
                            form_camera=form_camera,
                            form_graph=form_graph,
@@ -1000,23 +1003,24 @@ def page_lcd():
 @flask_login.login_required
 def page_live():
     """ Page of recent and updating input data """
-    # Retrieve tables for the data displayed on the live page
+    # Get what each measurement uses for a unit
     device_measurements = DeviceMeasurements.query.all()
-    output = Output.query.all()
     input_dev = Input.query.all()
+    output = Output.query.all()
     math = Math.query.all()
-    measurement = Measurement.query.all()
-    unit = Unit.query.all()
+
+    use_unit = utils_general.use_unit_generate(
+        device_measurements, input_dev, output, math)
 
     # Display orders
-    input_display_order = csv_to_list_of_str(
+    display_order_input = csv_to_list_of_str(
         DisplayOrder.query.first().inputs)
-    math_display_order = csv_to_list_of_str(
+    display_order_math = csv_to_list_of_str(
         DisplayOrder.query.first().math)
 
     # Generate all measurement and units used
-    dict_measurements = add_custom_measurements(measurement)
-    dict_units = add_custom_units(unit)
+    dict_measurements = add_custom_measurements(Measurement.query.all())
+    dict_units = add_custom_units(Unit.query.all())
 
     dict_measurements_units = {}
     for each_measurement in device_measurements:
@@ -1030,44 +1034,18 @@ def page_live():
         else:
             dict_measurements_units[each_measurement.unique_id] = each_measurement.unit
 
-    # Filter only activated input controllers
-    inputs_sorted = []
-    if input_display_order:
-        for each_input_order in input_display_order:
-            for each_input in input_dev:
-                if (each_input_order == each_input.unique_id and
-                        each_input.is_activated):
-                    inputs_sorted.append(each_input.unique_id)
-
-    # Filter only activated math controllers
-    maths_sorted = []
-    if input_display_order and math_display_order:
-        for each_math_order in math_display_order:
-            for each_math in math:
-                if (each_math_order == each_math.unique_id and
-                        each_math.is_activated):
-                    maths_sorted.append(each_math.unique_id)
-
-    # Store all output types
-    output_type = {}
-    for each_output in output:
-        output_type[each_output.unique_id] = each_output.output_type
-
-    # Get what each measurement uses for a unit
-    use_unit = utils_general.use_unit_generate(
-        device_measurements, input_dev, output, math)
-
     return render_template('pages/live.html',
-                           device_measurements=device_measurements,
+                           and_=and_,
+                           table_device_measurements=DeviceMeasurements,
+                           table_input=Input,
+                           table_math=Math,
                            dict_measurements=dict_measurements,
                            dict_units=dict_units,
                            dict_measurements_units=dict_measurements_units,
+                           display_order_input=display_order_input,
+                           display_order_math=display_order_math,
                            list_devices_adc=list_analog_to_digital_converters(),
                            measurement_units=MEASUREMENTS,
-                           math=math,
-                           input=input_dev,
-                           inputs_sorted=inputs_sorted,
-                           maths_sorted=maths_sorted,
                            units=UNITS,
                            use_unit=use_unit)
 
@@ -1529,17 +1507,13 @@ def page_output():
 @flask_login.login_required
 def page_data():
     """ Display Data page """
-    camera = Camera.query.all()
-    lcd = LCD.query.all()
     pid = PID.query.all()
     output = Output.query.all()
     input_dev = Input.query.all()
-    device_measurements = DeviceMeasurements.query.all()
     math = Math.query.all()
     user = User.query.all()
     measurement = Measurement.query.all()
     unit = Unit.query.all()
-    conversion = Conversion.query.all()
 
     dict_inputs = parse_input_information()
     custom_options_values = parse_custom_option_values(input_dev)
@@ -1727,25 +1701,26 @@ def page_data():
             return redirect(url_for('routes_page.page_data'))
 
     return render_template('pages/data.html',
+                           and_=and_,
                            choices_input=choices_input,
                            choices_math=choices_math,
                            choices_output=choices_output,
-                           choices_unit=choices_unit,
                            choices_measurement=choices_measurement,
                            choices_measurements_units=choices_measurements_units,
-                           conversion=conversion,
+                           choices_unit=choices_unit,
                            custom_options_values=custom_options_values,
                            device_info=parse_input_information(),
-                           device_measurements=device_measurements,
                            dict_inputs=dict_inputs,
                            dict_measure_info=dict_measure_info,
+                           dict_measurements=dict_measurements,
+                           dict_units=dict_units,
                            display_order_input=display_order_input,
                            display_order_math=display_order_math,
                            form_base=form_base,
                            form_add_input=form_add_input,
+                           form_add_math=form_add_math,
                            form_mod_input=form_mod_input,
                            form_mod_input_measurement=form_mod_input_measurement,
-                           form_add_math=form_add_math,
                            form_mod_average_single=form_mod_average_single,
                            form_mod_math=form_mod_math,
                            form_mod_math_measurement=form_mod_math_measurement,
@@ -1753,22 +1728,20 @@ def page_data():
                            form_mod_equation=form_mod_equation,
                            form_mod_humidity=form_mod_humidity,
                            form_mod_verification=form_mod_verification,
-                           camera=camera,
-                           input=input_dev,
-                           names_input=names_input,
-                           tooltips_input=TOOLTIPS_INPUT,
                            input_templates=input_templates,
-                           math=math,
-                           names_math=names_math,
                            math_info=MATH_INFO,
                            math_templates=math_templates,
+                           names_input=names_input,
+                           names_math=names_math,
                            output=output,
                            pid=pid,
-                           dict_measurements=dict_measurements,
-                           dict_units=dict_units,
+                           table_conversion=Conversion,
+                           table_device_measurements=DeviceMeasurements,
+                           table_input=Input,
+                           table_math=Math,
+                           tooltips_input=TOOLTIPS_INPUT,
                            user=user,
-                           w1thermsensor_sensors=w1thermsensor_sensors,
-                           lcd=lcd)
+                           w1thermsensor_sensors=w1thermsensor_sensors)
 
 
 @blueprint.route('/usage')
@@ -1836,7 +1809,6 @@ def dict_custom_colors():
         ]
 
     color_count = OrderedDict()
-
     try:
         graph = Dashboard.query.all()
         for each_graph in graph:
@@ -1860,7 +1832,17 @@ def dict_custom_colors():
             if each_graph.input_ids_measurements:
                 for each_set in each_graph.input_ids_measurements.split(';'):
                     input_unique_id = each_set.split(',')[0]
-                    input_measure = each_set.split(',')[1]
+                    input_measure_id = each_set.split(',')[1]
+                    measurement = DeviceMeasurements.query.filter(
+                        DeviceMeasurements.unique_id == input_measure_id).first()
+                    if measurement.conversion_id:
+                        conversion = Conversion.query.filter(
+                            Conversion.unique_id == measurement.conversion_id).first()
+                        unit = conversion.convert_unit_to
+                    elif measurement.rescaled_unit:
+                        unit = measurement.rescaled_unit
+                    else:
+                        unit = measurement.unit
                     input_dev = Input.query.filter_by(
                         unique_id=input_unique_id).first()
                     if (index < len(each_graph.input_ids_measurements.split(';')) and
@@ -1872,7 +1854,8 @@ def dict_custom_colors():
                         total.append({
                             'unique_id': input_unique_id,
                             'name': input_dev.name,
-                            'measure': input_measure,
+                            'channel': measurement.channel,
+                            'unit': unit,
                             'color': color})
                         index += 1
                 index_sum += index
@@ -1881,7 +1864,17 @@ def dict_custom_colors():
                 index = 0
                 for each_set in each_graph.math_ids.split(';'):
                     math_unique_id = each_set.split(',')[0]
-                    math_measure = each_set.split(',')[1]
+                    math_measure_id = each_set.split(',')[1]
+                    measurement = DeviceMeasurements.query.filter(
+                        DeviceMeasurements.unique_id == math_measure_id).first()
+                    if measurement.conversion_id:
+                        conversion = Conversion.query.filter(
+                            Conversion.unique_id == measurement.conversion_id).first()
+                        unit = conversion.convert_unit_to
+                    elif measurement.rescaled_unit:
+                        unit = measurement.rescaled_unit
+                    else:
+                        unit = measurement.unit
                     math = Math.query.filter_by(
                         unique_id=math_unique_id).first()
                     if (index < len(each_graph.math_ids.split(';')) and
@@ -1893,7 +1886,8 @@ def dict_custom_colors():
                         total.append({
                             'unique_id': math_unique_id,
                             'name': math.name,
-                            'measure': math_measure,
+                            'channel': measurement.channel,
+                            'unit': unit,
                             'color': color})
                         index += 1
                 index_sum += index
