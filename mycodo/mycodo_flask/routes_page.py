@@ -618,7 +618,7 @@ def page_dashboard():
 
         if form_base.create.data:
             utils_dashboard.dashboard_add(
-                form_base, form_dashboard_object, display_order)
+                form_base, form_dashboard_object, display_order_dashboard)
         elif form_base.modify.data:
             utils_dashboard.dashboard_mod(
                 form_base, form_dashboard_object, request.form)
@@ -626,10 +626,10 @@ def page_dashboard():
             utils_dashboard.dashboard_del(form_base)
         elif form_base.order_up.data:
             utils_dashboard.dashboard_reorder(
-                form_base.dashboard_id.data, display_order, 'up')
+                form_base.dashboard_id.data, display_order_dashboard, 'up')
         elif form_base.order_down.data:
             utils_dashboard.dashboard_reorder(
-                form_base.dashboard_id.data, display_order, 'down')
+                form_base.dashboard_id.data, display_order_dashboard, 'down')
 
         return redirect(url_for('routes_page.page_dashboard'))
 
