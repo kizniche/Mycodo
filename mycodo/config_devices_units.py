@@ -161,6 +161,10 @@ MEASUREMENTS = {
         'name': lazy_gettext('VOC'),
         'meas': 'voc',
         'units': ['ppb', 'ppm']},
+    'volume': {
+        'name': lazy_gettext('Volume'),
+        'meas': 'volume',
+        'units': ['ml']},
 }
 
 # Measurement units
@@ -231,6 +235,9 @@ UNITS = {
     'm': {
         'name': lazy_gettext('Meter'),
         'unit': 'm'},
+    'ml': {
+        'name': lazy_gettext('Milliliter'),
+        'unit': 'ml'},
     'm3_kg': {
         'name': lazy_gettext('Cubic meters per kilogram'),
         'unit': 'm^3/kg'},

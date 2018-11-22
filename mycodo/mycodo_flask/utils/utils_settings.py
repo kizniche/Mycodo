@@ -28,6 +28,7 @@ from mycodo.databases.models import Measurement
 from mycodo.databases.models import Misc
 from mycodo.databases.models import NoteTags
 from mycodo.databases.models import Notes
+from mycodo.databases.models import Output
 from mycodo.databases.models import PID
 from mycodo.databases.models import Role
 from mycodo.databases.models import SMTP
@@ -1218,6 +1219,28 @@ def settings_diagnostic_delete_notes_tags():
             for each_note in db_retrieve_table(Notes):
                 db.session.delete(each_note)
                 db.session.commit()
+        except Exception as except_msg:
+            error.append(except_msg)
+
+    flash_success_errors(error, action, url_for('routes_settings.settings_diagnostic'))
+
+
+def settings_diagnostic_delete_outputs():
+    action = '{action} {controller}'.format(
+        action=gettext("Delete"),
+        controller=gettext("All Outputs"))
+    error = []
+
+    output = db_retrieve_table(Output)
+    display_order = db_retrieve_table(DisplayOrder, entry='first')
+
+    if not error:
+        try:
+            for each_output in output:
+                db.session.delete(each_output)
+                db.session.commit()
+            display_order.output = ''
+            db.session.commit()
         except Exception as except_msg:
             error.append(except_msg)
 

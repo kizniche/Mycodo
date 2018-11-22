@@ -1500,6 +1500,7 @@ def page_output():
                            output_info=OUTPUT_INFO,
                            output=output,
                            output_templates=output_templates,
+                           tooltips_input=TOOLTIPS_INPUT,
                            user=user)
 
 

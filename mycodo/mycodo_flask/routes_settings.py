@@ -369,6 +369,8 @@ def settings_diagnostic():
             utils_settings.settings_diagnostic_delete_maths()
         if form_settings_diagnostic.delete_notes_tags.data:
             utils_settings.settings_diagnostic_delete_notes_tags()
+        if form_settings_diagnostic.delete_outputs.data:
+            utils_settings.settings_diagnostic_delete_outputs()
 
         return redirect(url_for('routes_settings.settings_diagnostic'))
 

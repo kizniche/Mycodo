@@ -161,11 +161,13 @@ METHOD_INFO = {
 
 # Math controllers
 OUTPUTS = [
-    ('wired', 'GPIO (On/Off)'),
-    ('pwm', 'GPIO (PWM)'),
-    ('command', 'Command (On/Off)'),
-    ('command_pwm', 'Command (PWM)'),
-    ('wireless_433MHz_pi_switch', 'Wireless (433MHz)')
+    ('wired,GPIO', 'GPIO (On/Off)'),
+    ('pwm,GPIO', 'GPIO (PWM)'),
+    ('command,GPIO', 'Command (On/Off)'),
+    ('command_pwm,GPIO', 'Command (PWM)'),
+    ('wireless_433MHz_pi_switch,GPIO', 'Wireless (433MHz)'),
+    ('atlas_ezo_pmp,I2C', 'Atlas EZO-PMP (I2C)'),
+    ('atlas_ezo_pmp,UART', 'Atlas EZO-PMP (UART)')
 ]
 
 # Outputs
@@ -201,6 +203,12 @@ OUTPUT_INFO = {
         'dependencies_module': [],
         'measure': {
             'duty_cycle': {'percent': {0: {}}}
+        }},
+    'atlas_ezo_pmp': {
+        'name': 'Atlas EZO-PMP',
+        'dependencies_module': [],
+        'measure': {
+            'volume': {'ml': {0: {}}}
         }}
 }
 

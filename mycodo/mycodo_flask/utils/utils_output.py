@@ -44,38 +44,51 @@ def output_add(form_add):
     if is_int(form_add.output_quantity.data, check_range=[1, 20]):
         for _ in range(0, form_add.output_quantity.data):
             try:
-                new_output = Output()
-                new_output.name = OUTPUT_INFO[form_add.output_type.data]['name']
-                new_output.output_type = form_add.output_type.data
+                output_type = form_add.output_type.data.split(',')[0]
+                interface = form_add.output_type.data.split(',')[1]
 
-                if form_add.output_type.data in ['wired',
-                                                 'wireless_433MHz_pi_switch',
-                                                 'command', ]:
+                new_output = Output()
+                new_output.name = OUTPUT_INFO[output_type]['name']
+                new_output.output_type = output_type
+                new_output.interface = interface
+
+                if output_type in ['wired',
+                                   'wireless_433MHz_pi_switch',
+                                   'command', ]:
                     new_output.measurement = 'duration_time'
                     new_output.unit = 's'
-                elif form_add.output_type.data in ['command_pwm',
-                                                   'pwm']:
+                elif output_type in ['command_pwm', 'pwm']:
                     new_output.measurement = 'duty_cycle'
                     new_output.unit = 'percent'
+                elif output_type == 'atlas_ezo_pmp':
+                    new_output.measurement = 'volume'
+                    new_output.unit = 'ml'
 
                 new_output.channel = 0
 
-                if form_add.output_type.data == 'wired':
+                if output_type == 'wired':
                     new_output.on_at_start = False
-                elif form_add.output_type.data == 'wireless_433MHz_pi_switch':
+                elif output_type == 'wireless_433MHz_pi_switch':
                     new_output.pin = None
                     new_output.protocol = 1
                     new_output.pulse_length = 189
                     new_output.on_command = '22559'
                     new_output.off_command = '22558'
-                elif form_add.output_type.data == 'command':
+                elif output_type == 'command':
                     new_output.on_command = '/home/pi/script_on.sh'
                     new_output.off_command = '/home/pi/script_off.sh'
-                elif form_add.output_type.data == 'command_pwm':
+                elif output_type == 'command_pwm':
                     new_output.pwm_command = '/home/pi/script_pwm.sh ((duty_cycle))'
-                elif form_add.output_type.data == 'pwm':
+                elif output_type == 'pwm':
                     new_output.pwm_hertz = 22000
                     new_output.pwm_library = 'pigpio_any'
+                elif output_type == 'atlas_ezo_pmp':
+                    if interface == 'I2C':
+                        new_output.location = '0x67'
+                        new_output.i2c_bus = 1
+                    elif interface == 'UART':
+                        new_output.location = '/dev/ttyAMA0'
+                        new_output.baud_rate = 9600
 
                 if not error:
                     new_output.save()
@@ -144,12 +157,23 @@ def output_mod(form_output):
             mod_output.pwm_hertz = form_output.pwm_hertz.data
             mod_output.pwm_library = form_output.pwm_library.data
             mod_output.pwm_invert_signal = form_output.pwm_invert_signal.data
+        elif mod_output.output_type.startswith('atlas_ezo_pmp'):
+            mod_output.location = form_output.location.data
+            if form_output.i2c_bus.data:
+                mod_output.i2c_bus = form_output.i2c_bus.data
+            if form_output.baud_rate.data:
+                mod_output.baud_rate = form_output.baud_rate.data
 
         if (form_output.on_at_start.data == '-1' or
                 mod_output.output_type in ['pwm', 'command_pwm']):
             mod_output.on_at_start = None
-        else:
-            mod_output.on_at_start = bool(int(form_output.on_at_start.data))
+        elif form_output.on_at_start.data is not None:
+            try:
+                mod_output.on_at_start = bool(int(form_output.on_at_start.data))
+            except Exception:
+                logger.error(
+                    "Error: Could not handle form_output.on_at_start.data: "
+                    "{}".format(form_output.on_at_start.data))
 
         if not error:
             db.session.commit()

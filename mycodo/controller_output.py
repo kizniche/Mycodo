@@ -36,6 +36,7 @@ from mycodo.databases.models import Output
 from mycodo.databases.models import SMTP
 from mycodo.databases.models import Trigger
 from mycodo.mycodo_client import DaemonControl
+from mycodo.utils.calibration import AtlasScientificCommand
 from mycodo.utils.database import db_retrieve_table_daemon
 from mycodo.utils.influx import write_influxdb_value
 from mycodo.utils.system_pi import cmd_output
@@ -61,6 +62,9 @@ class OutputController(threading.Thread):
         self.output_id = {}
         self.output_unique_id = {}
         self.output_type = {}
+        self.output_interface = {}
+        self.output_location = {}
+        self.output_baud_rate = {}
         self.output_name = {}
         self.output_pin = {}
         self.output_amps = {}
@@ -183,6 +187,32 @@ class OutputController(threading.Thread):
                 "It doesn't exist".format(
                     state=state, id=output_id))
             return 1
+
+        # Atlas EZP-PMP must have a duration (ml)
+        if self.output_type[output_id] == 'atlas_ezo_pmp':
+            if not duration:
+                self.logger.error("EZP-PMP volume value must be greater than 0")
+            else:
+                from types import SimpleNamespace
+                settings = SimpleNamespace()
+                settings.interface = self.output_interface[output_id]
+                if self.output_interface[output_id] == 'I2C':
+                    settings.i2c_location = self.output_location[output_id]
+                if self.output_interface[output_id] == 'UART':
+                    settings.uart_location = self.output_location[output_id]
+                    settings.baud_rate = self.output_baud_rate[output_id]
+
+                atlas_command = AtlasScientificCommand(settings)
+                atlas_command.send_command('D,{ml:.2f}'.format(ml=duration))
+
+                write_db = threading.Thread(
+                    target=write_influxdb_value,
+                    args=(self.output_unique_id[output_id],
+                          'ml',
+                          duration,),
+                    kwargs={'measure': 'volume',
+                            'channel': 0})
+                write_db.start()
 
         # Signaled to turn output on
         if state == 'on':
@@ -714,6 +744,9 @@ class OutputController(threading.Thread):
             self.output_id[each_output.unique_id] = each_output.id
             self.output_unique_id[each_output.unique_id] = each_output.unique_id
             self.output_type[each_output.unique_id] = each_output.output_type
+            self.output_interface[each_output.unique_id] = each_output.interface
+            self.output_location[each_output.unique_id] = each_output.location
+            self.output_baud_rate[each_output.unique_id] = each_output.baud_rate
             self.output_name[each_output.unique_id] = each_output.name
             self.output_pin[each_output.unique_id] = each_output.pin
             self.output_amps[each_output.unique_id] = each_output.amps
@@ -784,6 +817,9 @@ class OutputController(threading.Thread):
             self.output_id[output_id] = output.id
             self.output_unique_id[output_id] = output.unique_id
             self.output_type[output_id] = output.output_type
+            self.output_interface[output_id] = output.interface
+            self.output_location[output_id] = output.location
+            self.output_baud_rate[output_id] = output.baud_rate
             self.output_name[output_id] = output.name
             self.output_pin[output_id] = output.pin
             self.output_amps[output_id] = output.amps
@@ -844,6 +880,9 @@ class OutputController(threading.Thread):
             self.output_id.pop(output_id, None)
             self.output_unique_id.pop(output_id, None)
             self.output_type.pop(output_id, None)
+            self.output_interface.pop(output_id, None)
+            self.output_location.pop(output_id, None)
+            self.output_baud_rate.pop(output_id, None)
             self.output_name.pop(output_id, None)
             self.output_pin.pop(output_id, None)
             self.output_amps.pop(output_id, None)
@@ -1039,7 +1078,8 @@ class OutputController(threading.Thread):
             return True
         elif self.output_type[output_id] in ['command',
                                              'command_pwm',
-                                             'wireless_433MHz_pi_switch']:
+                                             'wireless_433MHz_pi_switch',
+                                             'atlas_ezo_pmp']:
             return True
         elif self.output_type[output_id] == 'pwm':
             if output_id in self.pwm_output:
