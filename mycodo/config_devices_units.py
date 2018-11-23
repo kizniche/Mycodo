@@ -98,15 +98,15 @@ MEASUREMENTS = {
         'meas': 'moisture',
         'units': ['unitless']},
     'particulate_matter_1_0': {
-        'name': lazy_gettext('PM1'),
+        'name': 'PM1',
         'meas': 'particulate_matter_1_0',
         'units': ['ug_m3']},
     'particulate_matter_2_5': {
-        'name': lazy_gettext('PM2.5'),
+        'name': 'PM2.5',
         'meas': 'particulate_matter_2_5',
         'units': ['ug_m3']},
     'particulate_matter_10_0': {
-        'name': lazy_gettext('PM10'),
+        'name': 'PM10',
         'meas': 'particulate_matter_10_0',
         'units': ['ug_m3']},
     'pid_p_value': {
@@ -264,18 +264,18 @@ UNITS = {
         'unit': ''},
     'ppb': {
         'name': lazy_gettext('Parts per billion'),
-        'unit': 'ppb'},
+        'unit': 'PPB'},
     'ppm': {
         'name': lazy_gettext('Parts per million'),
-        'unit': 'ppm'},
+        'unit': 'PPM'},
     'rpm': {
         'name': lazy_gettext('Revolutions per minute'),
-        'unit': 'rpm'},
+        'unit': 'RPM'},
     's': {
         'name': lazy_gettext('Second'),
         'unit': 's'},
     'setpoint': {
-        'name': 'Setpoint',
+        'name': lazy_gettext('Setpoint'),
         'unit': ''},
     'ug_m3': {
         'name': lazy_gettext('Microgram per cubic meter'),

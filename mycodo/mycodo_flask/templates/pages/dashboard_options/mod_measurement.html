@@ -136,18 +136,18 @@
       </div>
     </div>
 
-    <div class="form-row btn-group" style="padding-top: 1em;">
-      <div class="form-group">
-        {{form_base.modify(class_='form-control btn btn-sm')}}
+    <div class="row small-gutters" style="padding: 1em 1em 0 0.8em;">
+      <div class="col-auto">
+        {{form_base.modify(class_='btn btn-primary')}}
       </div>
-      <div class="form-group">
-        {{form_base.delete(class_='form-control btn btn-sm',**{'onclick':'return confirm("Are you sure you want to delete this?")'})}}
+      <div class="col-auto">
+        {{form_base.delete(class_='btn btn-primary',**{'onclick':'return confirm("Are you sure you want to delete this?")'})}}
       </div>
-      <div class="form-group">
-        {{form_base.order_up(class_='form-control btn btn-sm')}}
+      <div class="col-auto">
+        {{form_base.order_up(class_='btn btn-primary')}}
       </div>
-      <div class="form-group">
-        {{form_base.order_down(class_='form-control btn btn-sm')}}
+      <div class="col-auto">
+        {{form_base.order_down(class_='btn btn-primary')}}
       </div>
     </div>
   </form>
