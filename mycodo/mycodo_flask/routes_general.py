@@ -774,7 +774,7 @@ def computer_command(action):
 # PID Dashboard object routes
 #
 
-def return_point_timestamp(measure, dev_id, period):
+def return_point_timestamp(dev_id, unit, period, measurement=None, channel=None):
     current_app.config['INFLUXDB_USER'] = INFLUXDB_USER
     current_app.config['INFLUXDB_PASSWORD'] = INFLUXDB_PASSWORD
     current_app.config['INFLUXDB_DATABASE'] = INFLUXDB_DATABASE
@@ -782,7 +782,11 @@ def return_point_timestamp(measure, dev_id, period):
     dbcon = influx_db.connection
 
     query_str = query_string(
-        measure, dev_id, value='LAST',
+        unit,
+        dev_id,
+        measure=measurement,
+        channel=channel,
+        value='LAST',
         past_sec=period)
     if query_str == 1:
         return [None, None]
@@ -803,29 +807,50 @@ def return_point_timestamp(measure, dev_id, period):
         return [None, None]
 
 
-@blueprint.route('/last_pid/<input_id>/<input_period>')
+@blueprint.route('/last_pid/<pid_id>/<input_period>')
 @flask_login.login_required
-def last_data_pid(input_id, input_period):
+def last_data_pid(pid_id, input_period):
     """Return the most recent time and value from influxdb"""
     if not str_is_float(input_period):
         return '', 204
 
     try:
-        pid = PID.query.filter(PID.unique_id == input_id).first()
-        measure_id = pid.measurement.split(',')[0]
-        measure_type = pid.measurement.split(',')[1]
+        pid = PID.query.filter(PID.unique_id == pid_id).first()
+        device_id = pid.measurement.split(',')[0]
+        measurement_id = pid.measurement.split(',')[1]
+
+        actual_measurement = DeviceMeasurements.query.filter(
+            DeviceMeasurements.unique_id == measurement_id).first()
+        actual_cnversion = Conversion.query.filter(
+            Conversion.unique_id == actual_measurement.conversion_id).first()
+
+        (actual_channel,
+         actual_unit,
+         actual_measurement) = return_measurement_info(
+            actual_measurement, actual_cnversion)
+
+        setpoint_info = DeviceMeasurements.query.filter(
+            and_(DeviceMeasurements.device_id == pid_id,
+                 DeviceMeasurements.measurement_type == 'setpoint')).first()
+        setpoint_measurement = setpoint_info.measurement
+        setpoint_unit = setpoint_info.unit
 
         live_data = {
             'activated': pid.is_activated,
             'paused': pid.is_paused,
             'held': pid.is_held,
-            'setpoint': return_point_timestamp('setpoint', input_id, input_period),
-            'pid_p_value': return_point_timestamp('pid_p_value', input_id, input_period),
-            'pid_i_value': return_point_timestamp('pid_i_value', input_id, input_period),
-            'pid_d_value': return_point_timestamp('pid_d_value', input_id, input_period),
-            'duration_time': return_point_timestamp('duration_time', input_id, input_period),
-            'duty_cycle': return_point_timestamp('duty_cycle', input_id, input_period),
-            'actual': return_point_timestamp(measure_type, measure_id, input_period)
+            'setpoint': return_point_timestamp(pid_id, setpoint_unit, input_period, measurement=setpoint_measurement),
+            'pid_p_value': return_point_timestamp(pid_id, 'pid_value', input_period, measurement='pid_p_value'),
+            'pid_i_value': return_point_timestamp(pid_id, 'pid_value', input_period, measurement='pid_i_value'),
+            'pid_d_value': return_point_timestamp(pid_id, 'pid_value', input_period, measurement='pid_d_value'),
+            'duration_time': return_point_timestamp(pid_id, 's', input_period, measurement='duration_time'),
+            'duty_cycle': return_point_timestamp(pid_id, 'percent', input_period, measurement='duty_cycle'),
+            'actual': return_point_timestamp(
+                device_id,
+                actual_unit,
+                input_period,
+                measurement=actual_measurement,
+                channel=actual_channel)
         }
         return jsonify(live_data)
     except KeyError:

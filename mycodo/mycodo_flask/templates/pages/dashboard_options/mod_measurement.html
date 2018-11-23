@@ -14,13 +14,13 @@
       {%- set measurement_id = each_dashboard.input_ids_measurements.split(',')[1] -%}
       {%- if measurement_id in device_measurements_dict -%}
 
-  <span style="font-size: {{each_dashboard.font_em_value}}em" id="value-{{chart_number}}"></span> {{units[device_measurements_dict[measurement_id].unit]['unit']}}
+  <span style="font-size: {{each_dashboard.font_em_value}}em" id="value-{{chart_number}}"></span> {{dict_units[device_measurements_dict[measurement_id].unit]['unit']}}
   <br/><span style="font-size: {{each_dashboard.font_em_timestamp}}em">
       {{each_input.name}} (
         {%- if not device_measurements_dict[measurement_id].single_channel -%}
           {{'CH' + (device_measurements_dict[measurement_id].channel|int + 1)|string + ', '}}
         {%- endif -%}
-      {{measurement_units[device_measurements_dict[measurement_id].measurement]['name']}}
+      {{dict_measurements[device_measurements_dict[measurement_id].measurement]['name']}}
 
       {%- endif -%}
     {%- endif -%}
@@ -31,13 +31,13 @@
       {%- set measurement_id = each_dashboard.input_ids_measurements.split(',')[1] -%}
       {%- if measurement_id in device_measurements_dict -%}
 
-  <span style="font-size: {{each_dashboard.font_em_value}}em" id="value-{{chart_number}}"></span> {{units[device_measurements_dict[measurement_id].unit]['unit']}}
+  <span style="font-size: {{each_dashboard.font_em_value}}em" id="value-{{chart_number}}"></span> {{dict_units[device_measurements_dict[measurement_id].unit]['unit']}}
   <br/><span style="font-size: {{each_dashboard.font_em_timestamp}}em">
       {{each_math.name}} (
         {%- if not device_measurements_dict[measurement_id].single_channel -%}
           {{'CH' + (device_measurements_dict[measurement_id].channel|int + 1)|string + ', '}}
         {%- endif -%}
-      {{measurement_units[device_measurements_dict[measurement_id].measurement]['name']}}
+      {{dict_measurements[device_measurements_dict[measurement_id].measurement]['name']}}
 
       {%- endif -%}
     {%- endif -%}
@@ -45,7 +45,7 @@
 
   {%- for each_pid in pid -%}
     {%- if each_pid.unique_id == each_dashboard.input_ids_measurements.split(',')[0] %}
-      {{measurement_units[each_dashboard.input_ids_measurements.split(',')[1]]['name']|safe}} ({{dict_measurements[each_dashboard.input_ids_measurements.split(',')[1]]['unit']|safe}})
+      {{dict_measurements[each_dashboard.input_ids_measurements.split(',')[1]]['name']|safe}} ({{dict_measurements[each_dashboard.input_ids_measurements.split(',')[1]]['unit']|safe}})
     {%- endif -%}
   {%- endfor -%})
   </span>

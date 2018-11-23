@@ -1,38 +1,35 @@
-
   {%- for each_pid in pid -%}
-    {%- if each_pid.unique_id == each_dashboard.pid_ids.split(',')[0] %}
+    {%- if each_pid.unique_id == each_dashboard.pid_ids %}
   getLastDataPID({{chart_number}}, '{{each_dashboard.pid_ids}}', {{each_dashboard.max_measure_age}}, {{each_dashboard.decimal_places}}, '
-      {%- for each_input in input if each_pid.measurement.split(',')[0] == each_input.unique_id -%}
-        {%- if use_unit[each_input.unique_id][each_pid.measurement.split(',')[1]] -%}
-          {{units[use_unit[each_input.unique_id][each_pid.measurement.split(',')[1]]]['unit']}}
+      {%- set device_id = each_pid.measurement.split(',')[0] -%}
+      {%- set measurement_id = each_pid.measurement.split(',')[1] -%}
+      {%- set device_measurement = table_device_measurements.query.filter(table_device_measurements.unique_id == measurement_id).first() -%}
+
+      {%- if device_measurement -%}
+        {%- if device_measurement.conversion_id -%}
+          {{dict_units[table_conversion.query.filter(table_conversion.unique_id == device_measurement.conversion_id).first().convert_unit_to]['unit']}}
+        {%- elif device_measurement.rescaled_unit -%}
+          {{dict_units[device_measurement.rescaled_unit]['unit']}}
         {%- else -%}
-          {%- if each_pid.measurement.split(',')[1] in measurement_units -%}
-            {{dict_measurements[each_pid.measurement.split(',')[1]]['unit']}}
-          {%- else -%}
-            {%- for each_input in input if each_pid.measurement.split(',')[0] == each_input.unique_id and
-                                           each_input.device == 'LinuxCommand' -%}
-              {{ ' ' + use_unit[each_input.unique_id][each_input.measurements]}}
-            {%- endfor -%}
-          {%- endif -%}
+          {{dict_units[device_measurement.unit]['unit']}}
         {%- endif -%}
-      {%- endfor -%}
+      {%- endif -%}
       ');
 
   repeatLastDataPID({{chart_number}}, '{{each_dashboard.pid_ids}}', {{each_dashboard.refresh_duration}}, {{each_dashboard.max_measure_age}}, {{each_dashboard.decimal_places}}, '
-      {%- for each_input in input if each_pid.measurement.split(',')[0] == each_input.unique_id -%}
-        {%- if use_unit[each_input.unique_id][each_pid.measurement.split(',')[1]] -%}
-          {{units[use_unit[each_input.unique_id][each_pid.measurement.split(',')[1]]]['unit']}}
+      {%- set device_id = each_pid.measurement.split(',')[0] -%}
+      {%- set measurement_id = each_pid.measurement.split(',')[1] -%}
+      {%- set device_measurement = table_device_measurements.query.filter(table_device_measurements.unique_id == measurement_id).first() -%}
+
+      {%- if device_measurement -%}
+        {%- if device_measurement.conversion_id -%}
+          {{dict_units[table_conversion.query.filter(table_conversion.unique_id == device_measurement.conversion_id).first().convert_unit_to]['unit']}}
+        {%- elif device_measurement.rescaled_unit -%}
+          {{dict_units[device_measurement.rescaled_unit]['unit']}}
         {%- else -%}
-          {%- if each_pid.measurement.split(',')[1] in measurement_units -%}
-            {{dict_measurements[each_pid.measurement.split(',')[1]]['unit']}}
-          {%- else -%}
-            {%- for each_input in input if each_pid.measurement.split(',')[0] == each_input.unique_id and
-                                           each_input.device == 'LinuxCommand' -%}
-              {{ ' ' + use_unit[each_input.unique_id][each_input.measurements]}}
-            {%- endfor -%}
-          {%- endif -%}
+          {{dict_units[device_measurement.unit]['unit']}}
         {%- endif -%}
-      {%- endfor -%}
+      {%- endif -%}
       ');
     {%- endif -%}
   {%- endfor -%}

@@ -59,8 +59,6 @@ import RPi.GPIO as GPIO
 from smbus2 import SMBus
 
 from mycodo.config import MYCODO_VERSION
-from mycodo.config_devices_units import MEASUREMENTS
-from mycodo.config_devices_units import UNITS
 from mycodo.databases.models import Conversion
 from mycodo.databases.models import DeviceMeasurements
 from mycodo.databases.models import Input
@@ -133,18 +131,17 @@ class LCDController(threading.Thread):
             self.list_pids = ['setpoint', 'pid_time']
             self.list_outputs = ['duration_time', 'output_time', 'output_state']
 
-            self.list_inputs = MEASUREMENTS
+            # Add custom measurement and units to list
+            self.list_inputs = add_custom_measurements(
+                db_retrieve_table_daemon(Measurement, entry='all'))
+
             self.list_inputs.update(
                 {'input_time': {'unit': None, 'name': 'Time'}})
             self.list_inputs.update(
                 {'pid_time': {'unit': None, 'name': 'Time'}})
 
-            # Add custom measurement and units to list
-            self.list_inputs = add_custom_measurements(
-                db_retrieve_table_daemon(Measurement))
-
             self.dict_units = add_custom_units(
-                db_retrieve_table_daemon(Unit))
+                db_retrieve_table_daemon(Unit, entry='all'))
 
             lcd_data = db_retrieve_table_daemon(
                 LCDData).filter(LCDData.lcd_id == lcd.unique_id).all()
@@ -418,8 +415,6 @@ class LCDController(threading.Thread):
         return gpio_state
 
     def setup_lcd_line(self, display_id, line, device_id, measurement_id):
-        dict_units = add_custom_units(UNITS)
-
         device_measurement = db_retrieve_table_daemon(
             DeviceMeasurements, unique_id=measurement_id)
         conversion = db_retrieve_table_daemon(
@@ -439,8 +434,8 @@ class LCDController(threading.Thread):
         if not device_id:
             return
 
-        if unit in dict_units:
-            self.lcd_line[display_id][line]['unit'] = dict_units[unit]['name_safe']
+        if unit in self.dict_units:
+            self.lcd_line[display_id][line]['unit'] = unit
         else:
             self.lcd_line[display_id][line]['unit'] = ''
 

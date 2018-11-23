@@ -27,8 +27,7 @@ def add_custom_units(units):
         return_units.update(
             {each_unit.name_safe: {
                 'unit': each_unit.unit,
-                'name': each_unit.name,
-                'name_safe': each_unit.name_safe}})
+                'name': each_unit.name}})
 
     # Sort dictionary by keys, ignoring case
     sorted_keys = sorted(list(return_units), key=lambda s: s.casefold())

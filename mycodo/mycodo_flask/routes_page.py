@@ -47,7 +47,6 @@ from mycodo.config import RESTORE_LOG_FILE
 from mycodo.config import UPGRADE_LOG_FILE
 from mycodo.config import USAGE_REPORTS_PATH
 from mycodo.config_devices_units import MEASUREMENTS
-from mycodo.config_devices_units import UNITS
 from mycodo.config_translations import TOOLTIPS_INPUT
 from mycodo.databases.models import Actions
 from mycodo.databases.models import AlembicVersion
@@ -385,12 +384,9 @@ def page_export():
     input_dev = Input.query.all()
     math = Math.query.all()
 
-    unit = Unit.query.all()
-    measurement = Measurement.query.all()
-
     # Generate all measurement and units used
-    dict_measurements = add_custom_measurements(measurement)
-    dict_units = add_custom_units(unit)
+    dict_measurements = add_custom_measurements(Measurement.query.all())
+    dict_units = add_custom_units(Unit.query.all())
 
     output_choices = utils_general.choices_outputs(output)
     input_choices = utils_general.choices_inputs(
@@ -462,8 +458,6 @@ def page_dashboard():
     misc = Misc.query.first()
     output = Output.query.all()
     pid = PID.query.all()
-    measurement = Measurement.query.all()
-    unit = Unit.query.all()
     tags = NoteTags.query.all()
 
     # Create form objects
@@ -485,19 +479,22 @@ def page_dashboard():
     for each_element in dashboard:
         dashboard_element_names[each_element.unique_id] = '[{id}] {name}'.format(
                 id=each_element.id, name=each_element.name)
-        if not display_order_dashboard or each_element.unique_id not in display_order_dashboard:
+        if (not display_order_dashboard or
+                each_element.unique_id not in display_order_dashboard):
             dashboard_elements_hidden.append(each_element.unique_id)
 
     if form_base.reorder.data:
         mod_order = DisplayOrder.query.first()
-        mod_order.dashboard = list_to_csv(form_base.list_visible_elements.data)
+        mod_order.dashboard = list_to_csv(
+            form_base.list_visible_elements.data)
         db.session.commit()
         # Retrieve the order to display graphs
-        display_order = csv_to_list_of_str(DisplayOrder.query.first().dashboard)
+        display_order_dashboard = csv_to_list_of_str(
+            DisplayOrder.query.first().dashboard)
 
     # Generate all measurement and units used
-    dict_measurements = add_custom_measurements(measurement)
-    dict_units = add_custom_units(unit)
+    dict_measurements = add_custom_measurements(Measurement.query.all())
+    dict_units = add_custom_units(Unit.query.all())
 
     # Retrieve all choices to populate form drop-down menu
     choices_camera = utils_general.choices_id_name(camera)
@@ -639,6 +636,7 @@ def page_dashboard():
                            table_dashboard=Dashboard,
                            table_input=Input,
                            table_math=Math,
+                           table_device_measurements=DeviceMeasurements,
                            choices_camera=choices_camera,
                            choices_input=choices_input,
                            choices_math=choices_math,
@@ -662,8 +660,6 @@ def page_dashboard():
                            colors_gauge_angular=colors_gauge_angular,
                            colors_gauge_solid=colors_gauge_solid,
                            colors_gauge_solid_form=colors_gauge_solid_form,
-                           measurement_units=MEASUREMENTS,
-                           units=UNITS,
                            use_unit=use_unit,
                            form_base=form_base,
                            form_camera=form_camera,
@@ -684,13 +680,11 @@ def page_graph_async():
     math = Math.query.all()
     output = Output.query.all()
     pid = PID.query.all()
-    measurement = Measurement.query.all()
-    unit = Unit.query.all()
     tag = NoteTags.query.all()
 
     # Generate all measurement and units used
-    dict_measurements = add_custom_measurements(measurement)
-    dict_units = add_custom_units(unit)
+    dict_measurements = add_custom_measurements(Measurement.query.all())
+    dict_units = add_custom_units(Unit.query.all())
 
     # Get what each measurement uses for a unit
     use_unit = utils_general.use_unit_generate(
@@ -745,14 +739,12 @@ def page_graph_async():
                            device_measurements_dict=device_measurements_dict,
                            dict_measurements=dict_measurements,
                            dict_units=dict_units,
-                           measurement_units=MEASUREMENTS,
                            use_unit=use_unit,
                            input=input_dev,
                            math=math,
                            output=output,
                            pid=pid,
                            tag=tag,
-                           units=UNITS,
                            input_choices=input_choices,
                            math_choices=math_choices,
                            output_choices=output_choices,
@@ -939,13 +931,11 @@ def page_lcd():
     pid = PID.query.all()
     output = Output.query.all()
     input_dev = Input.query.all()
-    unit = Unit.query.all()
-    measurement = Measurement.query.all()
 
     display_order = csv_to_list_of_str(DisplayOrder.query.first().lcd)
 
-    dict_units = add_custom_units(unit)
-    dict_measurements = add_custom_measurements(measurement)
+    dict_units = add_custom_units(Unit.query.all())
+    dict_measurements = add_custom_measurements(Measurement.query.all())
 
     choices_lcd = utils_general.choices_lcd(
         input_dev, math, pid, output, dict_units, dict_measurements)
@@ -1043,7 +1033,6 @@ def page_live():
                            display_order_math=display_order_math,
                            list_devices_adc=list_analog_to_digital_converters(),
                            measurement_units=MEASUREMENTS,
-                           units=UNITS,
                            use_unit=use_unit)
 
 
@@ -1089,7 +1078,7 @@ def page_logview():
                 command, stdout=subprocess.PIPE, shell=True)
             (log_output, _) = log.communicate()
             log.wait()
-            log_output = str(log_output, 'latin1')
+            log_output = str(log_output, 'latin-1')
         else:
             log_output = 404
 
@@ -1118,8 +1107,29 @@ def page_function():
     trigger = Trigger.query.all()
     user = User.query.all()
 
-    unit = Unit.query.all()
-    measurement = Measurement.query.all()
+    form_base = forms_function.DataBase()
+    form_add_function = forms_function.FunctionAdd()
+    form_mod_pid_base = forms_pid.PIDModBase()
+    form_mod_pid_output_raise = forms_pid.PIDModRelayRaise()
+    form_mod_pid_output_lower = forms_pid.PIDModRelayLower()
+    form_mod_pid_pwm_raise = forms_pid.PIDModPWMRaise()
+    form_mod_pid_pwm_lower = forms_pid.PIDModPWMLower()
+    form_function = forms_function.FunctionMod()
+    form_trigger = forms_trigger.Trigger()
+    form_conditional = forms_conditional.Conditional()
+    form_conditional_conditions = forms_conditional.ConditionalConditions()
+    form_actions = forms_function.Actions()
+
+    # Generate all measurement and units used
+    dict_measurements = add_custom_measurements(Measurement.query.all())
+    dict_units = add_custom_units(Unit.query.all())
+
+    choices_input = utils_general.choices_inputs(
+        input_dev, dict_units, dict_measurements)
+    choices_math = utils_general.choices_maths(
+        math, dict_units, dict_measurements)
+    choices_pid = utils_general.choices_pids(
+        pid, dict_units, dict_measurements)
 
     actions_dict = {
         'conditional': {},
@@ -1151,30 +1161,6 @@ def page_function():
                                 each_cont.unique_id,
                                 each_cont.id,
                                 each_cont.name))
-
-    # Generate all measurement and units used
-    dict_measurements = add_custom_measurements(measurement)
-    dict_units = add_custom_units(unit)
-
-    choices_input = utils_general.choices_inputs(
-        input_dev, dict_units, dict_measurements)
-    choices_math = utils_general.choices_maths(
-        math, dict_units, dict_measurements)
-    choices_pid = utils_general.choices_pids(
-        pid, dict_units, dict_measurements)
-
-    form_base = forms_function.DataBase()
-    form_add_function = forms_function.FunctionAdd()
-    form_mod_pid_base = forms_pid.PIDModBase()
-    form_mod_pid_output_raise = forms_pid.PIDModRelayRaise()
-    form_mod_pid_output_lower = forms_pid.PIDModRelayLower()
-    form_mod_pid_pwm_raise = forms_pid.PIDModPWMRaise()
-    form_mod_pid_pwm_lower = forms_pid.PIDModPWMLower()
-    form_function = forms_function.FunctionMod()
-    form_trigger = forms_trigger.Trigger()
-    form_conditional = forms_conditional.Conditional()
-    form_conditional_conditions = forms_conditional.ConditionalConditions()
-    form_actions = forms_function.Actions()
 
     # Create dict of Function names
     names_function = {}

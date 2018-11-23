@@ -24,6 +24,8 @@ from mycodo.config_devices_units import UNITS
 from mycodo.databases.models import Camera
 from mycodo.databases.models import Conditional
 from mycodo.databases.models import DeviceMeasurements
+from mycodo.databases.models import Measurement
+from mycodo.databases.models import Unit
 from mycodo.databases.models import Input
 from mycodo.databases.models import Conversion
 from mycodo.databases.models import LCD
@@ -183,14 +185,13 @@ def controller_activate_deactivate(controller_action,
 
 def choices_measurements_units(measurements, units):
     dict_measurements = add_custom_measurements(measurements)
+    dict_units = add_custom_units(units)
 
     # Sort dictionary by keys
     sorted_keys = sorted(list(dict_measurements), key=lambda s: s.casefold())
     sorted_dict_measurements = OrderedDict()
     for each_key in sorted_keys:
         sorted_dict_measurements[each_key] = dict_measurements[each_key]
-
-    dict_units = add_custom_units(units)
 
     choices = OrderedDict()
     for each_meas, each_info in sorted_dict_measurements.items():
@@ -502,13 +503,16 @@ def form_tag_choices(choices, each_tag):
 
 
 def form_output_choices(choices, each_output):
+    dict_measurements = add_custom_measurements(Measurement.query.all())
+    dict_units = add_custom_units(Unit.query.all())
+
     value = '{id},output'.format(id=each_output.unique_id)
     display = '[Output {id:02d}] {name} CH{chan}, {meas} ({unit})'.format(
         id=each_output.id,
         name=each_output.name,
         chan=each_output.channel,
-        meas=MEASUREMENTS[each_output.measurement]['name'],
-        unit=UNITS[each_output.unit]['unit'])
+        meas=dict_measurements[each_output.measurement]['name'],
+        unit=dict_units[each_output.unit]['unit'])
     choices.update({value: display})
     return choices
 

@@ -289,22 +289,22 @@
           {%- if device_measurements_dict[measurement_id].conversion_id -%}
             {# DO NOTHING #}
           {%- elif device_measurements_dict[measurement_id].rescaled_measurement -%}
-            {{', ' + measurement_units[device_measurements_dict[measurement_id].rescaled_measurement]['name']}}
+            {{', ' + dict_measurements[device_measurements_dict[measurement_id].rescaled_measurement]['name']}}
           {%- else -%}
-            {{', ' + measurement_units[device_measurements_dict[measurement_id].measurement]['name']}}
+            {{', ' + dict_measurements[device_measurements_dict[measurement_id].measurement]['name']}}
           {%- endif -%}
 
           {%- if device_measurements_dict[measurement_id].conversion_id -%}
-            {{', ' + units[table_conversion.query.filter(table_conversion.unique_id == device_measurements_dict[measurement_id].conversion_id).first().convert_unit_to]['name']}}
+            {{', ' + dict_units[table_conversion.query.filter(table_conversion.unique_id == device_measurements_dict[measurement_id].conversion_id).first().convert_unit_to]['name']}}
           {%- elif device_measurements_dict[measurement_id].rescaled_unit -%}
-            {{', ' + units[device_measurements_dict[measurement_id].rescaled_unit]['name']}}
+            {{', ' + dict_units[device_measurements_dict[measurement_id].rescaled_unit]['name']}}
           {%- else -%}
-            {{', ' + units[device_measurements_dict[measurement_id].unit]['name']}}
+            {{', ' + dict_units[device_measurements_dict[measurement_id].unit]['name']}}
           {%- endif -%}
 
           )',
 
-        {% if measurement_units[device_measurements_dict[measurement_id].measurement]['meas'] == 'edge' -%}
+        {% if dict_measurements[device_measurements_dict[measurement_id].measurement]['meas'] == 'edge' -%}
         type: 'column',
         {% else -%}
         type: 'line',
@@ -312,11 +312,11 @@
         tooltip: {
           valueSuffix: '
           {%- if device_measurements_dict[measurement_id].convertsion_id -%}
-            {{' ' + units[table_conversion.query.filter(table_conversion.unique_id == device_measurements_dict[measurement_id].conversion_id).first().convert_unit_to]['unit']}}
+            {{' ' + dict_units[table_conversion.query.filter(table_conversion.unique_id == device_measurements_dict[measurement_id].conversion_id).first().convert_unit_to]['unit']}}
           {%- elif device_measurements_dict[measurement_id].rescaled_unit -%}
-            {{' ' + units[device_measurements_dict[measurement_id].rescaled_unit]['unit']}}
+            {{' ' + dict_units[device_measurements_dict[measurement_id].rescaled_unit]['unit']}}
           {%- else -%}
-            {{' ' + units[device_measurements_dict[measurement_id].unit]['unit']}}
+            {{' ' + dict_units[device_measurements_dict[measurement_id].unit]['unit']}}
           {%- endif -%}
           ',
           valueDecimals: 3
@@ -354,20 +354,20 @@
             {{' (CH' + (device_measurements_dict[measurement_id].channel + 1)|string}}
 
           {%- if device_measurements_dict[measurement_id].converted_unit -%}
-            {{', ' + measurement_units[device_measurements_dict[measurement_id].converted_measurement]['name']}}
+            {{', ' + dict_measurements[device_measurements_dict[measurement_id].converted_measurement]['name']}}
           {%- else -%}
-            {{', ' + measurement_units[device_measurements_dict[measurement_id].measurement]['name']}}
+            {{', ' + dict_measurements[device_measurements_dict[measurement_id].measurement]['name']}}
           {%- endif -%}
 
           {%- if device_measurements_dict[measurement_id].converted_unit -%}
-            {{', ' + units[device_measurements_dict[measurement_id].converted_unit]['name']}}
+            {{', ' + dict_units[device_measurements_dict[measurement_id].converted_unit]['name']}}
           {%- else -%}
-            {{', ' + units[device_measurements_dict[measurement_id].unit]['name']}}
+            {{', ' + dict_units[device_measurements_dict[measurement_id].unit]['name']}}
           {%- endif -%}
 
           )',
 
-        {% if measurement_units[device_measurements_dict[measurement_id].measurement]['meas'] == 'edge' %}
+        {% if dict_measurements[device_measurements_dict[measurement_id].measurement]['meas'] == 'edge' %}
         type: 'column',
         {% else %}
         type: 'line',
@@ -375,9 +375,9 @@
         tooltip: {
           valueSuffix: '
           {%- if device_measurements_dict[measurement_id].converted_unit -%}
-            {{' ' + units[device_measurements_dict[measurement_id].converted_unit]['unit']}}
+            {{' ' + dict_units[device_measurements_dict[measurement_id].converted_unit]['unit']}}
           {%- else -%}
-            {{' ' + units[device_measurements_dict[measurement_id].unit]['unit']}}
+            {{' ' + dict_units[device_measurements_dict[measurement_id].unit]['unit']}}
           {%- endif -%}
           ',
           valueDecimals: 3
@@ -412,20 +412,20 @@
             {{' (CH' + (device_measurements_dict[measurement_id].channel + 1)|string}}
 
           {%- if device_measurements_dict[measurement_id].converted_unit -%}
-            {{', ' + measurement_units[device_measurements_dict[measurement_id].converted_measurement]['name']}}
+            {{', ' + dict_measurements[device_measurements_dict[measurement_id].converted_measurement]['name']}}
           {%- else -%}
-            {{', ' + measurement_units[device_measurements_dict[measurement_id].measurement]['name']}}
+            {{', ' + dict_measurements[device_measurements_dict[measurement_id].measurement]['name']}}
           {%- endif -%}
 
           {%- if device_measurements_dict[measurement_id].converted_unit -%}
-            {{', ' + units[device_measurements_dict[measurement_id].converted_unit]['name']}}
+            {{', ' + dict_units[device_measurements_dict[measurement_id].converted_unit]['name']}}
           {%- else -%}
-            {{', ' + units[device_measurements_dict[measurement_id].unit]['name']}}
+            {{', ' + dict_units[device_measurements_dict[measurement_id].unit]['name']}}
           {%- endif -%}
 
           )',
 
-        {% if measurement_units[device_measurements_dict[measurement_id].measurement]['meas'] == 'edge' %}
+        {% if dict_measurements[device_measurements_dict[measurement_id].measurement]['meas'] == 'edge' %}
         type: 'column',
         {% else %}
         type: 'line',
@@ -433,9 +433,9 @@
         tooltip: {
           valueSuffix: '
           {%- if device_measurements_dict[measurement_id].converted_unit -%}
-            {{' ' + units[device_measurements_dict[measurement_id].converted_unit]['unit']}}
+            {{' ' + dict_units[device_measurements_dict[measurement_id].converted_unit]['unit']}}
           {%- else -%}
-            {{' ' + units[device_measurements_dict[measurement_id].unit]['unit']}}
+            {{' ' + dict_units[device_measurements_dict[measurement_id].unit]['unit']}}
           {%- endif -%}
           ',
           valueDecimals: 3
@@ -469,14 +469,14 @@
     {%- for each_output in output -%}
       {%- for each_graph_output_id in graph_output_ids if each_output.unique_id == each_graph_output_id.split(',')[0] -%}
         {
-          name: '{{each_output.name}} ({{measurement_units[each_output.measurement]['name']}})',
+          name: '{{each_output.name}} ({{dict_measurements[each_output.measurement]['name']}})',
           type: 'column',
           dataGrouping: {
             approximation: 'high',
             groupPixelWidth: 1
           },
           tooltip: {
-            valueSuffix: ' {{units[each_output.unit]['unit']}}',
+            valueSuffix: ' {{dict_units[each_output.unit]['unit']}}',
             valueDecimals: 2
           },
           yAxis: '{{each_output.unit}}',
