@@ -49,6 +49,7 @@ from mycodo.mycodo_flask.utils.utils_general import get_ip_address
 from mycodo.utils.image import generate_thermal_image_from_pixels
 from mycodo.utils.influx import query_string
 from mycodo.utils.system_pi import assure_path_exists
+from mycodo.utils.system_pi import return_measurement_info
 from mycodo.utils.system_pi import str_is_float
 
 blueprint = Blueprint('routes_general',
@@ -266,35 +267,29 @@ def last_data(unique_id, measure_type, measurement_id, period):
         dbcon = influx_db.connection
 
         if measure_type in ['input', 'math', 'pid']:
-            measure = DeviceMeasurements.query.filter(DeviceMeasurements.unique_id == measurement_id).first()
+            measure = DeviceMeasurements.query.filter(
+                DeviceMeasurements.unique_id == measurement_id).first()
         elif measure_type == 'output':
-            measure = Output.query.filter(Output.unique_id == unique_id).first()
+            measure = Output.query.filter(
+                Output.unique_id == unique_id).first()
         else:
             return '', 204
 
-        if measure.conversion_id:
-            conversion = Conversion.query.filter(
-                Conversion.unique_id == measure.conversion_id).first()
-            measurement = None
-            unit = conversion.convert_unit_to
-        elif (measure.rescaled_measurement and
-                measure.rescaled_unit):
-            measurement = measure.rescaled_measurement
-            unit = measure.rescaled_unit
-        else:
-            measurement = measure.measurement
-            unit = measure.unit
+        conversion = Conversion.query.filter(
+            Conversion.unique_id == measure.conversion_id).first()
+        channel, unit, measurement = return_measurement_info(
+            measure, conversion)
 
         try:
             if period != '0':
                 query_str = query_string(
                     unit, unique_id,
-                    measure=measurement, channel=measure.channel,
+                    measure=measurement, channel=channel,
                     value='LAST', past_sec=period)
             else:
                 query_str = query_string(
                     unit, unique_id,
-                    measure=measurement, channel=measure.channel,
+                    measure=measurement, channel=channel,
                     value='LAST')
             if query_str == 1:
                 return '', 204
@@ -358,20 +353,10 @@ def past_data(unique_id, measure_type, measurement_id, past_seconds):
         if not measure:
             return "Could not find measurement"
 
-        channel = measure.channel
-
-        if measure.conversion_id:
-            conversion = Conversion.query.filter(
-                Conversion.unique_id == measure.conversion_id).first()
-            measurement = None
-            unit = conversion.convert_unit_to
-        elif (measure.rescaled_measurement and
-                measure.rescaled_unit):
-            measurement = measure.rescaled_measurement
-            unit = measure.rescaled_unit
-        else:
-            measurement = measure.measurement
-            unit = measure.unit
+        conversion = Conversion.query.filter(
+            Conversion.unique_id == measure.conversion_id).first()
+        channel, unit, measurement = return_measurement_info(
+            measure, conversion)
 
         try:
             query_str = query_string(
@@ -559,20 +544,9 @@ def async_data(device_id, device_type, measurement_id, start_seconds, end_second
     if not measure:
         return "Could not find measurement"
 
-    channel = measure.channel
-
-    if measure.conversion_id:
-        conversion = Conversion.query.filter(
-            Conversion.unique_id == measure.conversion_id).first()
-        measurement = None
-        unit = conversion.convert_unit_to
-    elif (measure.rescaled_measurement and
-          measure.rescaled_unit):
-        measurement = measure.rescaled_measurement
-        unit = measure.rescaled_unit
-    else:
-        measurement = measure.measurement
-        unit = measure.unit
+    conversion = Conversion.query.filter(
+        Conversion.unique_id == measure.conversion_id).first()
+    channel, unit, measurement = return_measurement_info(measure, conversion)
 
     # Set the time frame to the past year if start/end not specified
     if start_seconds == '0' and end_seconds == '0':

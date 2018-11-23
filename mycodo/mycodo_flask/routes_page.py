@@ -109,6 +109,7 @@ from mycodo.utils.system_pi import add_custom_measurements
 from mycodo.utils.system_pi import add_custom_units
 from mycodo.utils.system_pi import csv_to_list_of_str
 from mycodo.utils.system_pi import list_to_csv
+from mycodo.utils.system_pi import return_measurement_info
 from mycodo.utils.tools import return_output_usage
 
 logger = logging.getLogger('mycodo.mycodo_flask.routes_page')
@@ -1023,16 +1024,12 @@ def page_live():
     dict_units = add_custom_units(Unit.query.all())
 
     dict_measurements_units = {}
+
     for each_measurement in device_measurements:
-        if each_measurement.conversion_id:
-            conversion = Conversion.query.filter(
-                Conversion.unique_id == each_measurement.conversion_id).first()
-            dict_measurements_units[each_measurement.unique_id] = conversion.convert_unit_to
-        elif (each_measurement.rescaled_measurement and
-                each_measurement.rescaled_unit):
-            dict_measurements_units[each_measurement.unique_id] = each_measurement.rescaled_unit
-        else:
-            dict_measurements_units[each_measurement.unique_id] = each_measurement.unit
+        conversion = Conversion.query.filter(
+            Conversion.unique_id == each_measurement.conversion_id).first()
+        _, unit, _ = return_measurement_info(each_measurement, conversion)
+        dict_measurements_units[each_measurement.unique_id] = unit
 
     return render_template('pages/live.html',
                            and_=and_,
@@ -1834,16 +1831,14 @@ def dict_custom_colors():
                 for each_set in each_graph.input_ids_measurements.split(';'):
                     input_unique_id = each_set.split(',')[0]
                     input_measure_id = each_set.split(',')[1]
-                    measurement = DeviceMeasurements.query.filter(
+
+                    device_measurement = DeviceMeasurements.query.filter(
                         DeviceMeasurements.unique_id == input_measure_id).first()
-                    if measurement.conversion_id:
-                        conversion = Conversion.query.filter(
-                            Conversion.unique_id == measurement.conversion_id).first()
-                        unit = conversion.convert_unit_to
-                    elif measurement.rescaled_unit:
-                        unit = measurement.rescaled_unit
-                    else:
-                        unit = measurement.unit
+                    conversion = Conversion.query.filter(
+                        Conversion.unique_id == device_measurement.conversion_id).first()
+                    channel, unit, measurement = return_measurement_info(
+                        device_measurement, conversion)
+
                     input_dev = Input.query.filter_by(
                         unique_id=input_unique_id).first()
                     if (index < len(each_graph.input_ids_measurements.split(';')) and
@@ -1855,8 +1850,9 @@ def dict_custom_colors():
                         total.append({
                             'unique_id': input_unique_id,
                             'name': input_dev.name,
-                            'channel': measurement.channel,
+                            'channel': channel,
                             'unit': unit,
+                            'measure': measurement,
                             'color': color})
                         index += 1
                 index_sum += index
@@ -1866,16 +1862,13 @@ def dict_custom_colors():
                 for each_set in each_graph.math_ids.split(';'):
                     math_unique_id = each_set.split(',')[0]
                     math_measure_id = each_set.split(',')[1]
-                    measurement = DeviceMeasurements.query.filter(
+
+                    device_measurement = DeviceMeasurements.query.filter(
                         DeviceMeasurements.unique_id == math_measure_id).first()
-                    if measurement.conversion_id:
-                        conversion = Conversion.query.filter(
-                            Conversion.unique_id == measurement.conversion_id).first()
-                        unit = conversion.convert_unit_to
-                    elif measurement.rescaled_unit:
-                        unit = measurement.rescaled_unit
-                    else:
-                        unit = measurement.unit
+                    conversion = Conversion.query.filter(
+                        Conversion.unique_id == device_measurement.conversion_id).first()
+                    channel, unit, measurement = return_measurement_info(device_measurement, conversion)
+
                     math = Math.query.filter_by(
                         unique_id=math_unique_id).first()
                     if (index < len(each_graph.math_ids.split(';')) and
@@ -1887,11 +1880,41 @@ def dict_custom_colors():
                         total.append({
                             'unique_id': math_unique_id,
                             'name': math.name,
-                            'channel': measurement.channel,
+                            'channel': channel,
                             'unit': unit,
+                            'measure': measurement,
                             'color': color})
                         index += 1
                 index_sum += index
+
+            if each_graph.pid_ids:
+                index = 0
+                for each_set in each_graph.pid_ids.split(';'):
+                    pid_unique_id = each_set.split(',')[0]
+                    pid_measure_id = each_set.split(',')[1]
+
+                    device_measurement = DeviceMeasurements.query.filter(
+                        DeviceMeasurements.unique_id == pid_measure_id).first()
+                    conversion = Conversion.query.filter(
+                        Conversion.unique_id == device_measurement.conversion_id).first()
+                    channel, unit, measurement = return_measurement_info(device_measurement, conversion)
+
+                    pid = PID.query.filter_by(
+                        unique_id=pid_unique_id).first()
+                    if (index < len(each_graph.pid_ids.split(';')) and
+                            len(colors) > index_sum + index):
+                        color = colors[index_sum + index]
+                    else:
+                        color = '#FF00AA'
+                    if pid is not None:
+                        total.append({
+                            'unique_id': pid_unique_id,
+                            'name': pid.name,
+                            'channel': channel,
+                            'unit': unit,
+                            'measure': measurement,
+                            'color': color})
+                        index += 1
 
             if each_graph.output_ids:
                 index = 0
@@ -1912,26 +1935,6 @@ def dict_custom_colors():
                             'color': color})
                         index += 1
                 index_sum += index
-
-            if each_graph.pid_ids:
-                index = 0
-                for each_set in each_graph.pid_ids.split(';'):
-                    pid_unique_id = each_set.split(',')[0]
-                    pid_measure = each_set.split(',')[1]
-                    pid = PID.query.filter_by(
-                        unique_id=pid_unique_id).first()
-                    if (index < len(each_graph.pid_ids.split(';')) and
-                            len(colors) > index_sum + index):
-                        color = colors[index_sum + index]
-                    else:
-                        color = '#FF00AA'
-                    if pid is not None:
-                        total.append({
-                            'unique_id': pid_unique_id,
-                            'name': pid.name,
-                            'measure': pid_measure,
-                            'color': color})
-                        index += 1
 
             color_count.update({each_graph.unique_id: total})
     except IndexError:

@@ -19,23 +19,6 @@ from mycodo.utils.database import db_retrieve_table_daemon
 logger = logging.getLogger("mycodo.influxdb")
 
 
-def check_if_channel_measurement(measurement):
-    if measurement.startswith('channel_'):
-        """
-        Check if measurement is from an analog-to-digital controller and 
-        return proper measurement.
-        """
-        if (measurement.split('_')[3] == 'electrical_conductivity' and
-                measurement.split('_')[4] == 'V'):
-            measurement = 'channel_{chan}'.format(
-                chan=measurement.split('_')[2])
-        else:
-            measurement = 'channel_{chan}_{meas}'.format(
-                chan=measurement.split('_')[2],
-                meas=measurement.split('_')[3])
-    return measurement
-
-
 def add_measurements_influxdb(unique_id, measurements):
     """
 
@@ -205,11 +188,11 @@ def read_last_influxdb(unique_id, unit, measurement, channel, duration_sec=None)
     :type unit: str
     :param measurement: What measurement to query in the Influxdb
         database (eg. 'temperature', 'duration_time')
-    :type measurement: str
+    :type measurement: str or None
     :param channel: Channel
-    :type channel: int
+    :type channel: int or None
     :param duration_sec: How many seconds to look for a past measurement
-    :type duration_sec: int
+    :type duration_sec: int or None
     """
     client = InfluxDBClient(INFLUXDB_HOST, INFLUXDB_PORT, INFLUXDB_USER,
                             INFLUXDB_PASSWORD, INFLUXDB_DATABASE, timeout=5)

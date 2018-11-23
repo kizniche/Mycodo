@@ -27,7 +27,8 @@ def add_custom_units(units):
         return_units.update(
             {each_unit.name_safe: {
                 'unit': each_unit.unit,
-                'name': each_unit.name}})
+                'name': each_unit.name,
+                'name_safe': each_unit.name_safe}})
 
     # Sort dictionary by keys, ignoring case
     sorted_keys = sorted(list(return_units), key=lambda s: s.casefold())
@@ -36,6 +37,23 @@ def add_custom_units(units):
         sorted_dict_units[each_key] = return_units[each_key]
 
     return sorted_dict_units
+
+
+def return_measurement_info(device_measurement, conversion):
+    try:
+        if device_measurement.conversion_id:
+            unit = conversion.convert_unit_to
+            measurement = None
+        elif device_measurement.rescaled_unit:
+            unit = device_measurement.rescaled_unit
+            measurement = device_measurement.rescaled_measurement
+        else:
+            unit = device_measurement.unit
+            measurement = device_measurement.measurement
+        return device_measurement.channel, unit, measurement
+    except Exception:
+        logger.exception("{}, {}".format(device_measurement, conversion))
+        return None, None, None
 
 
 def add_custom_measurements(measurements):

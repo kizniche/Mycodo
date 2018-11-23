@@ -35,17 +35,15 @@ import RPi.GPIO as GPIO
 from mycodo.config import SQL_DATABASE_MYCODO
 from mycodo.databases.models import Conditional
 from mycodo.databases.models import ConditionalConditions
-from mycodo.databases.models import Input
-from mycodo.databases.models import Math
+from mycodo.databases.models import Conversion
+from mycodo.databases.models import DeviceMeasurements
 from mycodo.databases.models import Misc
-from mycodo.databases.models import Output
-from mycodo.databases.models import PID
 from mycodo.databases.models import SMTP
 from mycodo.mycodo_client import DaemonControl
 from mycodo.utils.database import db_retrieve_table_daemon
 from mycodo.utils.function_actions import trigger_function_actions
-from mycodo.utils.influx import check_if_channel_measurement
 from mycodo.utils.influx import read_last_influxdb
+from mycodo.utils.system_pi import return_measurement_info
 
 MYCODO_DB_PATH = 'sqlite:///' + SQL_DATABASE_MYCODO
 
@@ -220,47 +218,28 @@ class ConditionalController(threading.Thread):
             conditions_check[each_condition.unique_id.split('-')[0]] = {}
 
             device_id = each_condition.measurement.split(',')[0]
+            measurement_id = each_condition.measurement.split(',')[1]
 
-            if len(each_condition.measurement.split(',')) > 1:
-                device_measurement = each_condition.measurement.split(',')[1]
-            else:
-                device_measurement = None
+            measurement = db_retrieve_table_daemon(
+                DeviceMeasurements, unique_id=measurement_id)
+            conversion = db_retrieve_table_daemon(
+                Conversion, unique_id=measurement.conversion_id)
+            channel, unit, measurement = return_measurement_info(measurement, conversion)
+
+            if not measurement:
+                self.logger.error(
+                    "Could not determine measurement from measurement ID: "
+                    "{}".format(measurement_id))
+                return
 
             max_age = each_condition.max_age
-
-            device = None
-
-            input_dev = db_retrieve_table_daemon(
-                Input, unique_id=device_id, entry='first')
-            if input_dev:
-                device = input_dev
-
-            math = db_retrieve_table_daemon(
-                Math, unique_id=device_id, entry='first')
-            if math:
-                device = math
-
-            output = db_retrieve_table_daemon(
-                Output, unique_id=device_id, entry='first')
-            if output:
-                device = output
-
-            pid = db_retrieve_table_daemon(
-                PID, unique_id=device_id, entry='first')
-            if pid:
-                device = pid
-
-            if not device:
-                message += " Error: Controller not Input, Math, Output, or PID"
-                logger_cond.error(message)
-                return
 
             # Check Measurement Conditions
             if each_condition.condition_type == 'measurement':
                 # Check if there hasn't been a measurement in the last set number
                 # of seconds. If not, trigger conditional
                 last_measurement = self.get_last_measurement(
-                    device_id, device_measurement, max_age)
+                    device_id, unit, measurement, channel, max_age)
                 conditions_check[each_condition.unique_id.split('-')[0]] = last_measurement
 
             # If the edge detection variable is set, calling this function will
@@ -312,27 +291,34 @@ class ConditionalController(threading.Thread):
             message=message)
 
     @staticmethod
-    def get_last_measurement(unique_id, measurement, duration_sec):
+    def get_last_measurement(unique_id, unit, measurement, channel, duration_sec):
         """
         Retrieve the latest input measurement
 
         :return: The latest input value or None if no data available
         :rtype: float or None
 
-        :param unique_id: ID of controller
+        :param unique_id: What unique_id tag to query in the Influxdb
+            database (eg. '00000001')
         :type unique_id: str
-        :param measurement: Environmental condition of a input (e.g.
-            temperature, humidity, pressure, etc.)
-        :type measurement: str
-        :param duration_sec: number of seconds to check for a measurement
-            in the past.
-        :type duration_sec: int
+        :param unit: What unit to query in the Influxdb
+            database (eg. 'C', 's')
+        :type unit: str
+        :param measurement: What measurement to query in the Influxdb
+            database (eg. 'temperature', 'duration_time')
+        :type measurement: str or None
+        :param channel: Channel
+        :type channel: int or None
+        :param duration_sec: How many seconds to look for a past measurement
+        :type duration_sec: int or None
         """
-        # Handle ADC query
-        measurement = check_if_channel_measurement(measurement)
 
         last_measurement = read_last_influxdb(
-            unique_id, measurement, duration_sec=duration_sec)
+            unique_id,
+            unit,
+            measurement,
+            channel,
+            duration_sec=duration_sec)
 
         if last_measurement is not None:
             last_value = last_measurement[1]

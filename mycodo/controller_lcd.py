@@ -61,6 +61,7 @@ from smbus2 import SMBus
 from mycodo.config import MYCODO_VERSION
 from mycodo.config_devices_units import MEASUREMENTS
 from mycodo.config_devices_units import UNITS
+from mycodo.databases.models import Conversion
 from mycodo.databases.models import DeviceMeasurements
 from mycodo.databases.models import Input
 from mycodo.databases.models import LCD
@@ -70,13 +71,12 @@ from mycodo.databases.models import Measurement
 from mycodo.databases.models import Output
 from mycodo.databases.models import PID
 from mycodo.databases.models import Unit
-from mycodo.mycodo_flask.utils.utils_general import use_unit_generate
 from mycodo.utils.database import db_retrieve_table_daemon
-from mycodo.utils.influx import check_if_channel_measurement
 from mycodo.utils.influx import read_last_influxdb
 from mycodo.utils.system_pi import add_custom_measurements
 from mycodo.utils.system_pi import add_custom_units
 from mycodo.utils.system_pi import cmd_output
+from mycodo.utils.system_pi import return_measurement_info
 
 
 class LCDController(threading.Thread):
@@ -312,16 +312,15 @@ class LCDController(threading.Thread):
                     last_measurement = read_last_influxdb(
                         self.lcd_line[display_id][i]['id'],
                         '/.*/',
+                        None,
+                        None,
                         duration_sec=self.lcd_max_age[display_id][i])
                 else:
-                    measurement = self.lcd_line[display_id][i]['measure']
-
-                    # Handle ADC query
-                    measurement = check_if_channel_measurement(measurement)
-
                     last_measurement = read_last_influxdb(
                         self.lcd_line[display_id][i]['id'],
-                        measurement,
+                        self.lcd_line[display_id][i]['unit'],
+                        self.lcd_line[display_id][i]['measure'],
+                        self.lcd_line[display_id][i]['channel'],
                         duration_sec=self.lcd_max_age[display_id][i])
 
                 if last_measurement:
@@ -418,59 +417,29 @@ class LCDController(threading.Thread):
             gpio_state = 'Off'
         return gpio_state
 
-    def setup_lcd_line(self, display_id, line, device_id, measurement):
+    def setup_lcd_line(self, display_id, line, device_id, measurement_id):
+        dict_units = add_custom_units(UNITS)
+
+        measurement = db_retrieve_table_daemon(
+            DeviceMeasurements, unique_id=measurement_id)
+        conversion = db_retrieve_table_daemon(
+            Conversion, unique_id=measurement.conversion_id)
+        channel, unit, measurement = return_measurement_info(measurement, conversion)
+
         self.lcd_line[display_id][line]['setup'] = False
         self.lcd_line[display_id][line]['id'] = device_id
         self.lcd_line[display_id][line]['name'] = None
-        self.lcd_line[display_id][line]['unit'] = None
-        self.lcd_line[display_id][line]['measure'] = measurement
+        self.lcd_line[display_id][line]['unit'] = unit
+        self.lcd_line[display_id][line]['measure'] = measurement.measurement
+        self.lcd_line[display_id][line]['channel'] = measurement.channel
 
-        if 'time' in measurement:
+        if 'time' in measurement_id:
             self.lcd_line[display_id][line]['measure'] = 'time'
         if not device_id:
             return
 
-        # Determine the unit of the PID setpoint
-        if measurement == 'setpoint':
-            pid = db_retrieve_table_daemon(PID, unique_id=device_id)
-            if pid:
-                if pid.measurement.split(',')[1] in self.list_inputs:
-                    # Determine if the PID input is a math or input controller
-                    pid_math = db_retrieve_table_daemon(Math, unique_id=pid.measurement.split(',')[0])
-                    pid_input = db_retrieve_table_daemon(Input, unique_id=pid.measurement.split(',')[0])
-
-                    list_measure_units = []
-                    setpoint_unit = ''
-                    if pid_math:
-                        list_measure_units = pid_math.measure_units.split(';')
-                    if pid_input:
-                        list_measure_units = pid_input.convert_to_unit.split(';')
-
-                    for each_measure_unit in list_measure_units:
-                        if (len(each_measure_unit.split(',')) == 2 and
-                                each_measure_unit.split(',')[0] == pid.measurement.split(',')[1]):
-                            setpoint_unit = self.dict_units[each_measure_unit.split(',')[1]]['unit']
-                    self.lcd_line[display_id][line]['unit'] = setpoint_unit
-                else:
-                    self.lcd_line[display_id][line]['unit'] = ''
-
-        elif measurement in self.list_inputs:
-            # Get what each measurement uses for a unit
-            input_dev = db_retrieve_table_daemon(Input)
-            device_measurements = db_retrieve_table_daemon(DeviceMeasurements)
-            output = db_retrieve_table_daemon(Output)
-            math = db_retrieve_table_daemon(Math)
-            use_unit = use_unit_generate(
-                device_measurements, input_dev, output, math)
-
-            if (device_id in use_unit and
-                    measurement in use_unit[device_id] and
-                    use_unit[device_id][measurement] is not None):
-                self.lcd_line[display_id][line]['unit'] = UNITS[use_unit[device_id][measurement]]['unit']
-            elif 'unit' in self.list_inputs[measurement]:
-                self.lcd_line[display_id][line]['unit'] = self.list_inputs[measurement]['unit']
-            else:
-                self.lcd_line[display_id][line]['unit'] = ''
+        if unit in dict_units:
+            self.lcd_line[display_id][line]['unit'] = dict_units[unit]['name_safe']
         else:
             self.lcd_line[display_id][line]['unit'] = ''
 
