@@ -326,12 +326,10 @@ class FaultError(Exception):
 
 
 if __name__ == "__main__":
-    import max31865
-
     csPin = 8
     misoPin = 9
     mosiPin = 10
     clkPin = 11
-    max = max31865.max31865(csPin, misoPin, mosiPin, clkPin)
-    tempC = max.readTemp('PT100')
+    max = max31865_sen(csPin, misoPin, mosiPin, clkPin)
+    print("Temp: {}".format(max.readTemp('PT100', 400)))
     max.cleanupGPIO()
