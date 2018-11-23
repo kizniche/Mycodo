@@ -546,7 +546,8 @@ def async_data(device_id, device_type, measurement_id, start_seconds, end_second
 
     conversion = Conversion.query.filter(
         Conversion.unique_id == measure.conversion_id).first()
-    channel, unit, measurement = return_measurement_info(measure, conversion)
+    channel, unit, measurement = return_measurement_info(
+        measure, conversion)
 
     # Set the time frame to the past year if start/end not specified
     if start_seconds == '0' and end_seconds == '0':

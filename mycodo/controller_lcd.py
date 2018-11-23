@@ -420,11 +420,12 @@ class LCDController(threading.Thread):
     def setup_lcd_line(self, display_id, line, device_id, measurement_id):
         dict_units = add_custom_units(UNITS)
 
-        measurement = db_retrieve_table_daemon(
+        device_measurement = db_retrieve_table_daemon(
             DeviceMeasurements, unique_id=measurement_id)
         conversion = db_retrieve_table_daemon(
-            Conversion, unique_id=measurement.conversion_id)
-        channel, unit, measurement = return_measurement_info(measurement, conversion)
+            Conversion, unique_id=device_measurement.conversion_id)
+        channel, unit, measurement = return_measurement_info(
+            device_measurement, conversion)
 
         self.lcd_line[display_id][line]['setup'] = False
         self.lcd_line[display_id][line]['id'] = device_id

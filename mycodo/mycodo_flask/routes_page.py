@@ -1867,7 +1867,8 @@ def dict_custom_colors():
                         DeviceMeasurements.unique_id == math_measure_id).first()
                     conversion = Conversion.query.filter(
                         Conversion.unique_id == device_measurement.conversion_id).first()
-                    channel, unit, measurement = return_measurement_info(device_measurement, conversion)
+                    channel, unit, measurement = return_measurement_info(
+                        device_measurement, conversion)
 
                     math = Math.query.filter_by(
                         unique_id=math_unique_id).first()
@@ -1897,7 +1898,8 @@ def dict_custom_colors():
                         DeviceMeasurements.unique_id == pid_measure_id).first()
                     conversion = Conversion.query.filter(
                         Conversion.unique_id == device_measurement.conversion_id).first()
-                    channel, unit, measurement = return_measurement_info(device_measurement, conversion)
+                    channel, unit, measurement = return_measurement_info(
+                        device_measurement, conversion)
 
                     pid = PID.query.filter_by(
                         unique_id=pid_unique_id).first()
