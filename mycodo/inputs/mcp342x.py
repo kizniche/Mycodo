@@ -96,21 +96,21 @@ class InputModule(AbstractInput):
 
         return_dict = measurements_dict.copy()
 
-        # for each_measure in self.device_measurements.all():
-        #     if each_measure.is_enabled:
-        #         adc = self.MCP342x(self.bus,
-        #                            self.i2c_address,
-        #                            channel=each_measure.channel,
-        #                            gain=self.adc_gain,
-        #                            resolution=self.adc_resolution)
-        #         return_dict[each_measure.channel]['value'] = adc.convert_and_read()
+        for each_measure in self.device_measurements.all():
+            if each_measure.is_enabled:
+                adc = self.MCP342x(self.bus,
+                                   self.i2c_address,
+                                   channel=each_measure.channel,
+                                   gain=self.adc_gain,
+                                   resolution=self.adc_resolution)
+                return_dict[each_measure.channel]['value'] = adc.convert_and_read()
 
         # Dummy data for testing
-        import random
-        return_dict[0]['value'] = random.uniform(1.5, 1.9)
-        return_dict[1]['value'] = random.uniform(2.3, 2.5)
-        return_dict[2]['value'] = random.uniform(0.5, 0.6)
-        return_dict[3]['value'] = random.uniform(3.5, 6.2)
+        # import random
+        # return_dict[0]['value'] = random.uniform(1.5, 1.9)
+        # return_dict[1]['value'] = random.uniform(2.3, 2.5)
+        # return_dict[2]['value'] = random.uniform(0.5, 0.6)
+        # return_dict[3]['value'] = random.uniform(3.5, 6.2)
 
         return return_dict
 
