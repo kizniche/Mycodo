@@ -220,11 +220,12 @@ class ConditionalController(threading.Thread):
             device_id = each_condition.measurement.split(',')[0]
             measurement_id = each_condition.measurement.split(',')[1]
 
-            measurement = db_retrieve_table_daemon(
+            device_measurement = db_retrieve_table_daemon(
                 DeviceMeasurements, unique_id=measurement_id)
             conversion = db_retrieve_table_daemon(
-                Conversion, unique_id=measurement.conversion_id)
-            channel, unit, measurement = return_measurement_info(measurement, conversion)
+                Conversion, unique_id=device_measurement.conversion_id)
+            channel, unit, measurement = return_measurement_info(
+                device_measurement, conversion)
 
             if not measurement:
                 self.logger.error(

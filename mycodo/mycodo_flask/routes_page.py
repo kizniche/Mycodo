@@ -1369,7 +1369,7 @@ def page_function():
                 form_conditional_conditions)
 
         # Actions
-        elif form_function.save_action.data:
+        elif form_actions.save_action.data:
             utils_function.action_mod(
                 form_actions)
         elif form_actions.delete_action.data:
