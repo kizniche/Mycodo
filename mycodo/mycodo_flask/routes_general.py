@@ -436,9 +436,9 @@ def generate_thermal_image_from_timestamp(unique_id, timestamp):
         return "Could not generate image"
 
 
-@blueprint.route('/export_data/<unique_id>/<measurement>/<unit>/<channel>/<start_seconds>/<end_seconds>')
+@blueprint.route('/export_data/<unique_id>/<measurement_id>/<start_seconds>/<end_seconds>')
 @flask_login.login_required
-def export_data(unique_id, measurement, unit, channel, start_seconds, end_seconds):
+def export_data(unique_id, measurement_id, start_seconds, end_seconds):
     """
     Return data from start_seconds to end_seconds from influxdb.
     Used for exporting data.
@@ -461,6 +461,13 @@ def export_data(unique_id, measurement, unit, channel, start_seconds, end_second
         name = math.name
     else:
         name = None
+
+    device_measurement = DeviceMeasurements.query.filter(
+        DeviceMeasurements.unique_id == measurement_id).first()
+    conversion = Conversion.query.filter(
+        Conversion.unique_id == device_measurement.conversion_id).first()
+    channel, unit, measurement = return_measurement_info(
+        device_measurement, conversion)
 
     utc_offset_timedelta = datetime.datetime.utcnow() - datetime.datetime.now()
     start = datetime.datetime.fromtimestamp(float(start_seconds))
