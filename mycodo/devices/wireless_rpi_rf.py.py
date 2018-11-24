@@ -5,7 +5,7 @@ import time
 
 from rpi_rf import RFDevice
 
-logger = logging.getLogger("mycodo.device.wireless_433mhz")
+logger = logging.getLogger("mycodo.device.wireless_rpi_rf")
 
 
 class Transmit433MHz:

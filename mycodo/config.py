@@ -166,7 +166,7 @@ OUTPUTS = [
     ('pwm,GPIO', 'PWM (GPIO)'),
     ('command,GPIO', 'On/Off (Command)'),
     ('command_pwm,GPIO', 'PWM (Command)'),
-    ('wireless_rpi_rf,GPIO', 'Wireless 433MHz (rpi_rf)'),
+    ('wireless_rpi_rf,GPIO', 'Wireless 315/433MHz LPD/SRD (rpi-rf)'),
     ('atlas_ezo_pmp,I2C', 'Atlas EZO-PMP (I2C)'),
     ('atlas_ezo_pmp,UART', 'Atlas EZO-PMP (UART)')
 ]

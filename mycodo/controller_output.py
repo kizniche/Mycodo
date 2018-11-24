@@ -1015,7 +1015,7 @@ class OutputController(threading.Thread):
                         err=except_msg))
 
         elif self.output_type[output_id] == 'wireless_rpi_rf':
-            from mycodo.devices.wireless_433mhz import Transmit433MHz
+            from mycodo.devices.wireless_rpi_rf import Transmit433MHz
             self.wireless_pi_switch[output_id] = Transmit433MHz(
                 self.output_pin[output_id],
                 protocol=int(self.output_protocol[output_id]),

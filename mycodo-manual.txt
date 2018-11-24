@@ -11,6 +11,7 @@ Mycodo Manual
     -   [Output](#output)
         -   [PWM](#pwm)
         -   [Relays](#relays)
+        -   [Pumps](#pumps)
     -   [Function](#function)
         -   [PID Controller](#pid-controller)
         -   [Conditional](#conditional)
@@ -19,7 +20,6 @@ Mycodo Manual
     -   [Methods](#methods)
         -   [Universal Options](#universal-options)
         -   [Specific Method Options](#specific-method-options)
--   [Create Your Own Input Module](#create-your-own-input-module)
 -   [PID Tuning](#pid-tuning)
     -   [PID Control Theory](#pid-control-theory)
     -   [Quick Setup Examples](#quick-setup-examples)
@@ -37,6 +37,7 @@ Mycodo Manual
     -   [Camera Settings](#camera-settings)
     -   [Diagnostic Settings](#diagnostic-settings)
 -   [Miscellaneous](#miscellaneous)
+    -   [Create an Input Module](#create-an-input-module)
     -   [Dashboard](#dashboard)
         -   [Graphs](#graphs)
         -   [Gauges](#gauges)
@@ -59,54 +60,47 @@ Mycodo Manual
     -   [Daemon Not Running](#daemon-not-running)
     -   [Incorrect Database Version](#incorrect-database-version)
     -   [More](#more)
--   [Device Interfaces](#device-interfaces)
-    -   [1-Wire](#wire)
-    -   [GPIO](#gpio)
-    -   [Serial](#serial)
-    -   [I2C](#i2c)
+-   [Devices](#devices)
+    -   [Input Devices](#input-devices)
+    -   [Output Devices](#output-devices)
     -   [Edge Detection](#edge-detection)
     -   [I2C Multiplexers](#i2c-multiplexers)
     -   [Analog-to-Digital Converters](#analog-to-digital-converters)
 -   [Device Specific Information](#device-specific-information)
     -   [LCD Displays](#lcd-displays)
-    -   [Temperature Sensors](#temperature-sensors)
+    -   [Output Device Details](#output-device-details)
+        -   [Atlas Scientific EZO-PMP](#atlas-scientific-ezo-pmp)
+    -   [Input Device Details](#input-device-details)
         -   [Raspberry Pi](#raspberry-pi)
+        -   [AM2315](#am2315)
+        -   [Atlas Scientific pH](#atlas-scientific-ph)
         -   [Atlas Scientific PT-1000](#atlas-scientific-pt-1000)
+        -   [BH1750](#bh1750)
+        -   [BME280](#bme280)
+        -   [BMP085, BMP180](#bmp085-bmp180)
+        -   [CCS811](#ccs811)
+        -   [Chirp](#chirp)
+        -   [DHT11](#dht11)
+        -   [DHT22, AM2302](#dht22-am2302)
         -   [DS18B20](#ds18b20)
         -   [DS18S20](#ds18s20)
         -   [DS1822](#ds1822)
         -   [DS28EA00](#ds28ea00)
         -   [DS1825](#ds1825)
+        -   [HTU21D](#htu21d)
+        -   [K-30](#k-30)
         -   [MAX31850K](#max31850k)
         -   [MAX31855K](#max31855k)
         -   [MAX31856](#max31856)
         -   [MAX31865](#max31865)
-        -   [TMP006, TMP007](#tmp006-tmp007)
-    -   [Temperature Humidity Sensors](#temperature-humidity-sensors)
-        -   [AM2315](#am2315)
-        -   [DHT11](#dht11)
-        -   [DHT22, AM2302](#dht22-am2302)
-        -   [HTU21D](#htu21d)
-        -   [SHT1x](#sht1x)
-        -   [SHT7x](#sht7x)
-    -   [CO2 Sensors](#co2-sensors)
-        -   [CCS811](#ccs811)
-        -   [K-30](#k-30)
         -   [MH-Z16](#mh-z16)
         -   [MH-Z19](#mh-z19)
-    -   [Moisture Sensors](#moisture-sensors)
-        -   [Chirp](#chirp)
-    -   [pH Sensors](#ph-sensors)
-        -   [Atlas Scientific pH](#atlas-scientific-ph)
-    -   [Particulate Sensors](#particulate-sensors)
-        -   [Winsen ZH03B](#winsen-zh03b)
-    -   [Pressure Sensors](#pressure-sensors)
-        -   [BME280](#bme280)
-        -   [BMP085, BMP180](#bmp085-bmp180)
-    -   [Luminosity Sensors](#luminosity-sensors)
-        -   [BH1750](#bh1750)
+        -   [SHT1x](#sht1x)
+        -   [SHT7x](#sht7x)
+        -   [TMP006, TMP007](#tmp006-tmp007)
         -   [TSL2561](#tsl2561)
         -   [TSL2591](#tsl2591)
+        -   [Winsen ZH03B](#winsen-zh03b)
     -   [Analog to Digital Converters](#analog-to-digital-converters-1)
         -   [ADS1x15](#ads1x15)
         -   [ADS1256](#ads1256)
@@ -162,9 +156,9 @@ Output controllers produce changes to the general input/output (GPIO)
 pins or may be configured to execute linux commands in order to allow an
 unlimited number of potential uses. There are a few different types of
 outputs: simple switching of pins (HIGH/LOW), generating pulse-width
-modulated (PWM) signals, switching 433 MHz wireless relays, and linux
-command execution. The most common setup is using a relay to switch
-electrical devices on and off.
+modulated (PWM) signals, switching 315/433 MHz wireless outlets, and
+linux command execution. The most common setup is using a relay to
+switch electrical devices on and off.
 
 When Inputs and Outputs are combined, PID controllers may be used to
 create a feedback loop that uses the Output device to modulate an
@@ -342,121 +336,188 @@ In addition to several supported sensors and devices, a Linux command
 may be specified that will be executed and the return value stored in
 the measurement database to be used throughout the Mycodo system.
 
-  --------------------------------------------------------------------------------------------------------------------------------------------------------
-  Setting                                           Description
-  ------------------------------------------------- ------------------------------------------------------------------------------------------------------
-  Activate                                          After the sensor has been properly configured, activation begins acquiring measurements from the
-                                                    sensor. Any activated conditional statements will now being operating.
+  ------------------------------------------------------------------------
+  Setting                 Description
+  ----------------------- ------------------------------------------------
+  Activate                After the sensor has been properly configured,
+                          activation begins acquiring measurements from
+                          the sensor. Any activated conditional statements
+                          will now being operating.
 
-  Deactivate                                        Deactivation stops measurements from being acquired from the sensor. All associated conditional
-                                                    statements will cease to operate.
+  Deactivate              Deactivation stops measurements from being
+                          acquired from the sensor. All associated
+                          conditional statements will cease to operate.
 
-  Save                                              Save the current configuration entered into the input boxes for a particular sensor.
+  Save                    Save the current configuration entered into the
+                          input boxes for a particular sensor.
 
-  Delete                                            Delete a particular sensor.
+  Delete                  Delete a particular sensor.
 
-  Up/Down                                           Move a particular sensor up or down in the order displayed.
+  Up/Down                 Move a particular sensor up or down in the order
+                          displayed.
 
-  Power Output                                      Select a output that powers the sensor. This enables powering cycling (turn off then on) when the
-                                                    sensor returns 3 consecutive errors to attempt to fix the issue. Transistors may also be used instead
-                                                    of a relay (note: NPN transistors are preferred over PNP for powering sensors).
+  Power Output            Select a output that powers the sensor. This
+                          enables powering cycling (turn off then on) when
+                          the sensor returns 3 consecutive errors to
+                          attempt to fix the issue. Transistors may also
+                          be used instead of a relay (note: NPN
+                          transistors are preferred over PNP for powering
+                          sensors).
 
-  Location                                          Depending on what sensor is being used, you will need to either select a serial number (DS18B20
-                                                    temperature sensor), a GPIO pin (in the case of sensors read by a GPIO), or an I2C address. or other.
+  Location                Depending on what sensor is being used, you will
+                          need to either select a serial number (DS18B20
+                          temperature sensor), a GPIO pin (in the case of
+                          sensors read by a GPIO), or an I2C address. or
+                          other.
 
-  I2C Bus                                           The bus to be used to communicate with the I2C address.
+  I2C Bus                 The bus to be used to communicate with the I2C
+                          address.
 
-  Period (seconds)                                  After the sensor is successfully read and a database entry is made, this is the duration of time
-                                                    waited until the sensor is measured again.
+  Period (seconds)        After the sensor is successfully read and a
+                          database entry is made, this is the duration of
+                          time waited until the sensor is measured again.
 
-  Measurement Unit                                  Select the unit to save the measurement as (only available for select measurements).
+  Measurement Unit        Select the unit to save the measurement as (only
+                          available for select measurements).
 
-  Pre Output                                        If you require a output to be activated before a measurement is made (for instance, if you have a pump
-                                                    that extracts air to a chamber where the sensor resides), this is the output number that will be
-                                                    activated. The output will be activated for a duration defined by the Pre Duration, then once the
-                                                    output turns off, a measurement by the sensor is made.
+  Pre Output              If you require a output to be activated before a
+                          measurement is made (for instance, if you have a
+                          pump that extracts air to a chamber where the
+                          sensor resides), this is the output number that
+                          will be activated. The output will be activated
+                          for a duration defined by the Pre Duration, then
+                          once the output turns off, a measurement by the
+                          sensor is made.
 
-  Pre Output Duration (seconds)                     This is the duration of time that the Pre Output runs for before the sensor measurement is obtained.
+  Pre Output Duration     This is the duration of time that the Pre Output
+  (seconds)               runs for before the sensor measurement is
+                          obtained.
 
-  Pre Output During Measurement                     If enabled, the Pre Output stays on during the acquisition of a measurement. If disabled, the Pre
-                                                    Output is turned off directly before acquiring a measurement.
+  Pre Output During       If enabled, the Pre Output stays on during the
+  Measurement             acquisition of a measurement. If disabled, the
+                          Pre Output is turned off directly before
+                          acquiring a measurement.
 
-  Command                                           A linux command (executed as the user ‘mycodo’) that the return value becomes the measurement
+  Command                 A linux command (executed as the user ‘mycodo’)
+                          that the return value becomes the measurement
 
-  Command Measurement                               The measured condition (e.g. temperature, humidity, etc.) from the linux command
+  Command Measurement     The measured condition (e.g. temperature,
+                          humidity, etc.) from the linux command
 
-  Command Units                                     The units of the measurement condition from the linux command
+  Command Units           The units of the measurement condition from the
+                          linux command
 
-  Edge                                              Edge sensors only: Select whether the Rising or Falling (or both) edges of a changing voltage are
-                                                    detected. A number of devices to do this when in-line with a circuit supplying a 3.3-volt input signal
-                                                    to a GPIO, such as simple mechanical switch, a button, a magnet (reed/hall) sensor, a PIR motion
-                                                    detector, and more.
+  Edge                    Edge sensors only: Select whether the Rising or
+                          Falling (or both) edges of a changing voltage
+                          are detected. A number of devices to do this
+                          when in-line with a circuit supplying a 3.3-volt
+                          input signal to a GPIO, such as simple
+                          mechanical switch, a button, a magnet
+                          (reed/hall) sensor, a PIR motion detector, and
+                          more.
 
-  Bounce Time (ms)                                  Edge sensors only: This is the number of milliseconds to bounce the input signal. This is commonly
-                                                    called debouncing a
-                                                    signal <http://kylegabriel.com/projects/2016/02
-                                                    /morse-code-translator.html#debouncing>__. and may be necessary if using a mechanical circuit.
+  Bounce Time (ms)        Edge sensors only: This is the number of
+                          milliseconds to bounce the input signal. This is
+                          commonly called debouncing a signal [1] and may
+                          be necessary if using a mechanical circuit.
 
-  Reset Period (seconds)                            Edge sensors only: This is the period of time after an edge detection that another edge will not be
-                                                    recorded. This enables devices such as PIR motion sensors that may stay activated for longer periods
-                                                    of time.
+  Reset Period (seconds)  Edge sensors only: This is the period of time
+                          after an edge detection that another edge will
+                          not be recorded. This enables devices such as
+                          PIR motion sensors that may stay activated for
+                          longer periods of time.
 
-  Measurement                                       Analog-to-digital converter only: The type of measurement being acquired by the ADC. For instance, if
-                                                    the resistance of a photocell is being measured through a voltage divider, this measurement would be
-                                                    “light”.
+  Measurement             Analog-to-digital converter only: The type of
+                          measurement being acquired by the ADC. For
+                          instance, if the resistance of a photocell is
+                          being measured through a voltage divider, this
+                          measurement would be “light”.
 
-  Units                                             Analog-to-digital converter only: This is the unit of the measurement. With the above example of
-                                                    “light” as the measurement, the unit may be “lux” or “intensity”.
+  Units                   Analog-to-digital converter only: This is the
+                          unit of the measurement. With the above example
+                          of “light” as the measurement, the unit may be
+                          “lux” or “intensity”.
 
-  BT Adapter                                        The Bluetooth adapter to communicate with the input.
+  BT Adapter              The Bluetooth adapter to communicate with the
+                          input.
 
-  Clock Pin                                         The GPIO (using BCM numbering) connected to the Clock pin of the ADC
+  Clock Pin               The GPIO (using BCM numbering) connected to the
+                          Clock pin of the ADC
 
-  CS Pin                                            The GPIO (using BCM numbering) connected to the CS pin of the ADC
+  CS Pin                  The GPIO (using BCM numbering) connected to the
+                          CS pin of the ADC
 
-  MISO Pin                                          The GPIO (using BCM numbering) connected to the MISO pin of the ADC
+  MISO Pin                The GPIO (using BCM numbering) connected to the
+                          MISO pin of the ADC
 
-  MOSI Pin                                          The GPIO (using BCM numbering) connected to the MOSI pin of the ADC
+  MOSI Pin                The GPIO (using BCM numbering) connected to the
+                          MOSI pin of the ADC
 
-  RTD Probe Type                                    Select to measure from a PT100 or PT1000 probe.
+  RTD Probe Type          Select to measure from a PT100 or PT1000 probe.
 
-  Resistor Reference (Ohm)                          If your reference resistor is not the default (400 Ohm for PT100, 4000 Ohm for PT1000), you can
-                                                    manually set this value. Several manufacturers now use 430 Ohm resistors on their circuit boards,
-                                                    therefore it’s recommended to verify the accuracy of your measurements and adjust this value if
-                                                    necessary.
+  Resistor Reference      If your reference resistor is not the default
+  (Ohm)                   (400 Ohm for PT100, 4000 Ohm for PT1000), you
+                          can manually set this value. Several
+                          manufacturers now use 430 Ohm resistors on their
+                          circuit boards, therefore it’s recommended to
+                          verify the accuracy of your measurements and
+                          adjust this value if necessary.
 
-  Channel                                           Analog-to-digital converter only: This is the channel to obtain the voltage measurement from the ADC.
+  Channel                 Analog-to-digital converter only: This is the
+                          channel to obtain the voltage measurement from
+                          the ADC.
 
-  Gain                                              Analog-to-digital converter only: set the gain when acquiring the measurement.
+  Gain                    Analog-to-digital converter only: set the gain
+                          when acquiring the measurement.
 
-  Sample Speed                                      Analog-to-digital converter only: set the sample speed (typically samples per second).
+  Sample Speed            Analog-to-digital converter only: set the sample
+                          speed (typically samples per second).
 
-  Volts Min                                         Analog-to-digital converter only: What is the minimum voltage to use when scaling to produce the unit
-                                                    value for the database. For instance, if your ADC is not expected to measure below 0.2 volts for your
-                                                    particular circuit, set this to “0.2”.
+  Volts Min               Analog-to-digital converter only: What is the
+                          minimum voltage to use when scaling to produce
+                          the unit value for the database. For instance,
+                          if your ADC is not expected to measure below 0.2
+                          volts for your particular circuit, set this to
+                          “0.2”.
 
-  Volts Max                                         Analog-to-digital converter only: This is similar to the Min option above, however it is setting the
-                                                    ceiling to the voltage range. Units Min Analog-to-digital converter only: This value will be the lower
-                                                    value of a range that will use the Min and Max Voltages, above, to produce a unit output. For
-                                                    instance, if your voltage range is 0.0 - 1.0 volts, and the unit range is 1 - 60, and a voltage of 0.5
-                                                    is measured, in addition to 0.5 being stored in the database, 30 will be stored as well. This enables
-                                                    creating calibrated scales to use with your particular circuit.
+  Volts Max               Analog-to-digital converter only: This is
+                          similar to the Min option above, however it is
+                          setting the ceiling to the voltage range. Units
+                          Min Analog-to-digital converter only: This value
+                          will be the lower value of a range that will use
+                          the Min and Max Voltages, above, to produce a
+                          unit output. For instance, if your voltage range
+                          is 0.0 - 1.0 volts, and the unit range is 1 -
+                          60, and a voltage of 0.5 is measured, in
+                          addition to 0.5 being stored in the database, 30
+                          will be stored as well. This enables creating
+                          calibrated scales to use with your particular
+                          circuit.
 
-  Units Max                                         Analog-to-digital converter only: This is similar to the Min option above, however it is setting the
-                                                    ceiling to the unit range.
+  Units Max               Analog-to-digital converter only: This is
+                          similar to the Min option above, however it is
+                          setting the ceiling to the unit range.
 
-  Weighting                                         The This is a number between 0 and 1 and indicates how much the old reading affects the new reading.
-                                                    It defaults to 0 which means the old reading has no effect. This may be used to smooth the data.
+  Weighting               The This is a number between 0 and 1 and
+                          indicates how much the old reading affects the
+                          new reading. It defaults to 0 which means the
+                          old reading has no effect. This may be used to
+                          smooth the data.
 
-  Pulses Per Rev                                    The number of pulses for a complete revolution.
+  Pulses Per Rev          The number of pulses for a complete revolution.
 
-  Port                                              The server port to be queried (Server Port Open input).
+  Port                    The server port to be queried (Server Port Open
+                          input).
 
-  Times to Check                                    The number of times to attempt to ping a server (Server Ping input).
+  Times to Check          The number of times to attempt to ping a server
+                          (Server Ping input).
 
-  Deadline (seconds)                                The maximum amount of time to wait for each ping attempt, after which 0 (offline) will be returned
-                                                    (Server Ping input).
-  --------------------------------------------------------------------------------------------------------------------------------------------------------
+  Deadline (seconds)      The maximum amount of time to wait for each ping
+                          attempt, after which 0 (offline) will be
+                          returned (Server Ping input).
+  ------------------------------------------------------------------------
+
+1.  Debouncing a signal
 
 Math
 
@@ -567,8 +628,82 @@ Setup -> Outputs
 
 Outputs are various signals that can be generated that operate devices.
 An output can be a PWM signal, a simple HIGH/LOW signal to operate a
-relay, or a 433MHz signal to switch a radio frequency-operated relay, or
-an execution of a command on the linux system Mycodo runs on.
+relay, a 315/433 MHz signal to switch a radio frequency-operated relay,
+driving of pumps and motors, or an execution of a command on the linux
+system Mycodo runs on, to name a few.
+
+  ------------------------------------------------------------------------
+  Setting                 Description
+  ----------------------- ------------------------------------------------
+  Pin                     This is the GPIO that will be the signal to the
+                          output, using BCM numbering.
+
+  WiringPi Pin            This is the GPIO that will be the signal to the
+                          output, using WiringPi numbering.
+
+  On Trigger              This is the state of the GPIO to signal the
+                          output to turn the device on. HIGH will send a
+                          3.3-volt signal and LOW will send a 0-volt
+                          signal. If you output completes the circuit (and
+                          the device powers on) when a 3.3-volt signal is
+                          sent, then set this to HIGH. If the device
+                          powers when a 0-volt signal is sent, set this to
+                          LOW.
+
+  Protocol                This is the protocol to use to transmit via
+                          315/433 MHz. Default is 1, but if this doesn’t
+                          work, increment the number.
+
+  UART Device             The UART device connected to the device.
+
+  Baud Rate               The baud rate of the UART device.
+
+  I2C Address             The I2C address of the device.
+
+  I2C Bus                 The I2C bus the device is connected to.
+
+  Flow Rate               The flow rate to dispense the volume (ml/min).
+
+  Pulse Length            This is the pulse length to transmit via 315/433
+                          MHz. Default is 189 ms.
+
+  Bit Length              This is the bit length to transmit via 315/433
+                          MHz. Default is 24-bit.
+
+  On Command              This is the command used to turn the output on.
+                          For wireless relays, this is the numerical
+                          command to be transmitted, and for command
+                          outputs this is the command to be executed.
+
+  Off Command             This is the command used to turn the output off.
+                          For wireless relays, this is the numerical
+                          command to be transmitted, and for command
+                          outputs this is the command to be executed.
+
+  PWM Command             This is the command used to set the duty cycle.
+                          The string “((duty_cycle))” in the command will
+                          be replaced with the actual duty cycle before
+                          the command is executed. Ensure “((duty_cycle))”
+                          is included in your command for this feature to
+                          work correctly.
+
+  Current Draw (amps)     The is the amount of current the device powered
+                          by the output draws. Note: this value should be
+                          calculated based on the voltage set in the
+                          Output Usage Settings.
+
+  Start State             This specifies whether the output should be ON
+                          or OFF when mycodo initially starts. Wireless
+                          relays have an additional option ‘Neither’ which
+                          will not issue an on or off command when Mycodo
+                          starts or stops.
+
+  Seconds to turn On      This is a way to turn a output on for a specific
+                          duration of time. This can be useful for testing
+                          the outputs and powered devices or the measured
+                          effects a device may have on an environmental
+                          condition.
+  ------------------------------------------------------------------------
 
 PWM
 
@@ -701,21 +836,21 @@ voltage you are using, if not being driven by the GPIO pin), set it to
 
 Wireless
 
-Certain 433 MHz wireless relays may be used, however you will need to
-set the pin of the transmitter (using BCM numbering), pulse length, bit
-length, protocol, on command, and off command. To determine your On and
-Off commands, connect a 433 MHz receiver to your Pi, then run the
-receiver script, below, replacing 17 with the pin your receiver is
-connected to (BCM numbering), and press one of the buttons (either on or
-off) on your remote to detect the numeric code associated with that
-button.
+Certain 315/433 MHz wireless relays may be used, however you will need
+to set the pin of the transmitter (using BCM numbering), pulse length,
+bit length, protocol, on command, and off command. To determine your On
+and Off commands, connect a 315/433 MHz receiver to your Pi, then run
+the receiver script, below, replacing 17 with the pin your receiver is
+connected to (using BCM numbering), and press one of the buttons on your
+remote (either on or off) to detect the numeric code associated with
+that button.
 
-    sudo ~/Mycodo/env/bin/python ~/Mycodo/mycodo/devices/wireless_433mhz.py -d 2 -g 17
+    sudo ~/Mycodo/env/bin/python ~/Mycodo/mycodo/devices/wireless_rpi_rf.py -d 2 -g 17
 
 433 MHz wireless relays have been successfully tested with SMAKN 433MHz
 RF Transmitters/Receivers and Etekcity Wireless Remote Control
 Electrical Outlets (see Issue 88 for more information). If you have a
-433 MHz transmitter/receiver and a wireless relay that does not work
+315/433 MHz transmitter/receiver and a wireless relay that does not work
 with the current code, submit a new issue with details of your hardware.
 
 Command
@@ -725,7 +860,7 @@ the output is turned on, off, or a duty cycle. Commands will be executed
 as the user ‘root’.
 
 Wireless and Command Output Note: Since the wireless protocol only
-allows 1-way communication to 433 MHz devices, wireless relays are
+allows 1-way communication to 315/433 MHz devices, wireless relays are
 assumed to be off until they are turned on, and therefore will appear
 red (off) when added. If a wireless relay is turned off or on outside
 Mycodo (by a remote, for instance), Mycodo will _NOT_ be able to
@@ -734,68 +869,10 @@ relay was last. This is, if Mycodo turns the wireless relay on, and a
 remote is used to turn the relay off, Mycodo will still assume the relay
 is on.
 
-  ------------------------------------------------------------------------
-  Setting                 Description
-  ----------------------- ------------------------------------------------
-  BCM Pin                 This is the GPIO that will be the signal to the
-                          output, using BCM numbering.
+Pumps
 
-  On Trigger              This is the state of the GPIO to signal the
-                          output to turn the device on. HIGH will send a
-                          3.3-volt signal and LOW will send a 0-volt
-                          signal. If you output completes the circuit (and
-                          the device powers on) when a 3.3-volt signal is
-                          sent, then set this to HIGH. If the device
-                          powers when a 0-volt signal is sent, set this to
-                          LOW.
-
-  WiringPi Pin            This is the GPIO that will be the signal to the
-                          output, using WiringPi numbering.
-
-  Protocol                This is the protocol to use to transmit via
-                          433MHz. Default is 1, but if this doesn’t work,
-                          increment the number.
-
-  Pulse Length            This is the pulse length to transmit via 433MHz.
-                          Default is 189 ms.
-
-  Bit Length              This is the bit length to transmit via 433MHz.
-                          Default is 24-bit.
-
-  On Command              This is the command used to turn the output on.
-                          For wireless relays, this is the numerical
-                          command to be transmitted, and for command
-                          outputs this is the command to be executed.
-
-  Off Command             This is the command used to turn the output off.
-                          For wireless relays, this is the numerical
-                          command to be transmitted, and for command
-                          outputs this is the command to be executed.
-
-  PWM Command             This is the command used to set the duty cycle.
-                          The string “((duty_cycle))” in the command will
-                          be replaced with the actual duty cycle before
-                          the command is executed. Ensure “((duty_cycle))”
-                          is included in your command for this feature to
-                          work correctly.
-
-  Current Draw (amps)     The is the amount of current the device powered
-                          by the output draws. Note: this value should be
-                          calculated based on the voltage set in the
-                          Output Usage Settings.
-
-  Start State             This specifies whether the output should be ON
-                          or OFF when mycodo initially starts. Wireless
-                          relays have an additional option ‘Neither’ which
-                          will not issue an on or off command when Mycodo
-                          starts or stops.
-
-  Seconds to turn On      This is a way to turn a output on for a specific
-                          duration of time. This can be useful for testing
-                          the outputs and powered devices or the measured
-                          effects a device may have on an environmental
-                          condition.
-  ------------------------------------------------------------------------
+Currently, only one pump is supported, the Atlas Scientific EZO-PMP
+peristaltic pump.
 
 
 Function
@@ -1562,35 +1639,6 @@ end (x0) will be automatically stretched or skewed to fit within a
 
 
 
-CREATE YOUR OWN INPUT MODULE
-
-
-_THIS SECTION IS A WORK-IN-PROGRESS_
-
-If you have a sensor that is not currently supported by Mycodo, you can
-build your own input module and import it into Mycodo. All information
-about an input is contained within the input module, set in the
-dictionary ‘INPUT_INFORMATION’. Each module will requires at a minimum
-for these variables to be set: ‘input_name_unique’,
-‘input_manufacturer’, ‘input_name’, ‘measurements_name’, and
-‘measurements_dict’.
-
-Open any of the built-in modules located in the inputs directory
-(https://github.com/kizniche/Mycodo/mycodo/inputs/) for examples of the
-proper formatting.
-
-There’s also minimal input module template that generates random data as
-an example:
-
-https://github.com/kizniche/Mycodo/mycodo/inputs/examples/minimal_humidity_temperature.py
-
-The following link provides the full list of available INPUT_INFORMATION
-options along with descriptions:
-
-https://github.com/kizniche/Mycodo/mycodo/inputs/examples/example_all_options_temperature.py
-
-
-
 PID TUNING
 
 
@@ -1830,8 +1878,7 @@ Input Settings
 [Gear Icon] -> Configure -> Inputs
 
 Input modules may be imported and used within Mycodo. These modules must
-follow a specific format. See Create Your Own Input Module for more
-details.
+follow a specific format. See Create an Input Module for more details.
 
   ------------------------------------------------------------------------
   Setting                 Description
@@ -2075,6 +2122,33 @@ of having to readd all the Dashboard Elements that were once there.
 
 
 MISCELLANEOUS
+
+
+Create an Input Module
+
+_THIS SECTION IS A WORK-IN-PROGRESS_
+
+If you have a sensor that is not currently supported by Mycodo, you can
+build your own input module and import it into Mycodo. All information
+about an input is contained within the input module, set in the
+dictionary ‘INPUT_INFORMATION’. Each module will requires at a minimum
+for these variables to be set: ‘input_name_unique’,
+‘input_manufacturer’, ‘input_name’, ‘measurements_name’, and
+‘measurements_dict’.
+
+Open any of the built-in modules located in the inputs directory
+(https://github.com/kizniche/Mycodo/tree/master/mycodo/inputs/) for
+examples of the proper formatting.
+
+There’s also minimal input module template that generates random data as
+an example:
+
+https://github.com/kizniche/Mycodo/tree/master/mycodo/inputs/examples/minimal_humidity_temperature.py
+
+The following link provides the full list of available INPUT_INFORMATION
+options along with descriptions:
+
+https://github.com/kizniche/Mycodo/tree/master/mycodo/inputs/examples/example_all_options_temperature.py
 
 
 Dashboard
@@ -2541,51 +2615,14 @@ information about diagnosing issues.
 
 
 
-DEVICE INTERFACES
+DEVICES
 
 
-Inputs are categorized below by their communication interface.
+All Input and Output devices are listed below.
 
-
-1-Wire
+The I2C interface should be enabled with raspi-config.
 
 The 1-wire interface should be configured with these instructions.
-
-  DS18B20: Temperature link
-
-  DS18S20: Temperature link
-
-  DS1822: Temperature link
-
-  DS28EA00: Temperature link
-
-  DS1825: Temperature link
-
-  MAX31850K: Temperature link
-
-
-GPIO
-
-  DHT11, DHT22/AM2302: Relative humidity and temperature link
-
-  SHT1x/SHT7x, SHT2x: Relative humidity and temperature link
-
-
-Serial
-
-  Atlas Scientific pH: pH link
-
-  Atlas Scientific PT-1000: Temperature link
-
-  K30: Carbon dioxide (CO2) in ppmv link
-
-  MAX31855K: Temperature link
-
-  MAX31856: Temperature link
-
-  MAX31865: Temperature link
-
-  MH-Z19: Carbon dioxide (CO2) in ppmv link
 
 This documentation provides specific installation procedures for
 configuring UART with the Raspberry Pi version 1 or 2.
@@ -2614,11 +2651,7 @@ Find the line “enable_uart=0” and change it to “enable_uart=1”, then
 reboot.
 
 
-I2C
-
-The I2C interface should be enabled with raspi-config.
-
-SENSORS
+Input Devices
 
   AM2315: Relative humidity, temperature link
 
@@ -2634,7 +2667,35 @@ SENSORS
 
   CCS811: CO2, VOC, temperature link
 
+  Chirp: Moisture, light, and temperature link
+
+  DS18B20: Temperature link
+
+  DS18S20: Temperature link
+
+  DS1822: Temperature link
+
+  DS28EA00: Temperature link
+
+  DS1825: Temperature link
+
+  DHT11, DHT22/AM2302: Relative humidity and temperature link
+
   HTU21D: Relative humidity and temperature link
+
+  K30: Carbon dioxide (CO2) in ppmv link
+
+  MAX31850K: Temperature link
+
+  MAX31855K: Temperature link
+
+  MAX31856: Temperature link
+
+  MAX31865: Temperature link
+
+  MH-Z19: Carbon dioxide (CO2) in ppmv link
+
+  SHT1x/SHT7x, SHT2x: Relative humidity and temperature link
 
   TMP006, TMP007: Contactless temperature link
 
@@ -2642,7 +2703,10 @@ SENSORS
 
   TSL2591: Light link
 
-  Chirp: link Moisture, light, and temperature
+
+Output Devices
+
+  Atlas EZO-PMP Peristaltic Pump: Carbon dioxide (CO2) in ppmv link
 
 
 Edge Detection
@@ -2723,13 +2787,79 @@ image is the type of device that should be compatible.
 [image4] 
 
 
-Temperature Sensors
+Output Device Details
+
+Atlas Scientific EZO-PMP
+
+Embedded Dosing Pump
+
+Specifications
+
+-   Flow Rate: 0.5 ml to 105 ml/min
+-   Accuracy: ±1%
+-   Calibration: Single point
+-   Tubing Size: Any 5.. O.D. tubing
+-   Interfaces: I2C and UART
+-   Operating Voltages: 3.3V - 5V (logic), 12V - 24V (motor)
+-   Pump Head: 2 meters
+
+
+Input Device Details
 
 Raspberry Pi
 
 The Raspberry Pi has an integrated temperature sensor on the BCM2835 SoC
 that measure the temperature of the CPU/GPU. This is the easiest sensor
 to set up in Mycodo, as it is immediately available to be used.
+
+AM2315
+
+Specifications
+
+-   0-100% humidity readings with 1% (10-90% RH) and 3% (0-10% RH and
+    90-100% RH) accuracy
+-   -20 °C to 80 °C temperature readings ±0.1 °C typical accuracy
+-   3.5 to 5.5V power and I/O
+-   10 mA max current use during conversion (while requesting data)
+-   No more than 0.5 Hz sampling rate (once every 2 seconds)
+
+Notes
+
+From
+[@Theoi-Meteoroi](https://github.com/kizniche/Mycodo/issues/315#issuecomment-344798815)
+on GitHub:
+
+I figured out why this [AM2315] sensor is unreliable with Rpi3 hardware
+I2C. It is among a number of I2C devices that really hates the BCM2835
+clock stretching blunder (hardware bug: raspberrypi/linux#254). The
+wakeup attempts fail, consistently. I checked the bitstream with a
+sniffer, and see that the sensor may respond once out of 20 or so tries
+(or not at all) but only with a single byte returned. The solution is to
+use a software implementation of the I2C bus. You need to add pull-up
+resistors (4.7k is dandy) to 3.3v and install the i2c_gpio device
+overlay. Seems to work fine now, will run for a few days, but the CRC
+failures are gone and I get good readings, every time. And no twiddling
+the power for the sensor is required.
+
+To enable software I2C, add the following line to your /boot/config.txt
+
+dtoverlay=i2c-gpio,i2c_gpio_sda=23,i2c_gpio_scl=24,i2c_gpio_delay_us=4
+
+After rebooting, a new I2C bus at /dev/i2c-3 should exist with SDA on
+pin 23 (BCM) and SCL on pin 24 (BCM). Make sure you add the appropriate
+pull-up resistors before connecting any devices.
+
+Atlas Scientific pH
+
+The Atlas Scientific pH sensor measures the pH of a liquid.
+
+Specifications
+
+-   UART or I2C
+-   Probe Max Pressure: 690 kPa (100PSI)
+-   Probe Max Depth 60 M (197 ft)
+-   Probe Weight: 49 grams
+-   Probe can be fully submerged in fresh or salt water indefinitely
 
 Atlas Scientific PT-1000
 
@@ -2752,6 +2882,92 @@ Specifications
 -   Full temperature sensing range: -200 °C to 850 °C
 -   Cable max temp 125 °C
 -   Cable min temp -55 °C
+
+BH1750
+
+The BH1750 is an I2C luminosity sensor that provides a digital value in
+lux (lx) over a range of 1 - 65535 lx.
+
+BME280
+
+The BME280 is the upgrade to the BMP085/BMP180/BMP183. It has a low
+altitude noise of 0.25m and the same fast conversion time. It has the
+same specifications, but can use either I2C or SPI.
+
+Specifications
+
+-   300-1100 hPa (9000m to -500m above sea level)
+-   -40 °C to +85 °C operational range
+-   ±3% humidity accuracy tolerance
+-   ±1% humidity hysteresis
+-   ±1 hPa pressure accuracy
+-   ±2 °C temperature accuracy
+-   Vin: 3 to 5V
+-   Logic: 3 to 5V compliant
+-   I2C 7-bit address 0x76 or 0x77
+
+BMP085, BMP180
+
+The BMP180 replaces the BMP085. It is completely identical to the BMP085
+in terms of firmware/software/interfacing.
+
+Specifications
+
+-   300-1100 hPa (9000m to -500m above sea level)
+-   Up to 0.03hPa / 0.25m resolution
+-   -40 °C to +85 °C operational range
+-   ±2 °C temperature accuracy
+-   Vin: 3 to 5V
+-   Logic: 3 to 5V compliant
+-   I2C 7-bit address 0x77
+
+CCS811
+
+Be aware that the CCS811 datasheet recommends a burn-in of 48 hours and
+a run-in of 20 minutes (you must allow 20 minutes for the sensor to warm
+up and output valid data).
+
+Specifications
+
+-   400 – 8,192 ppmv CO2
+-   0 - 1,187 ppbv VOC
+-   Ambient temperature measured from 10K NTC Thermistor (separate from
+    chip, may or may not be included on the board you purchase)
+-   Warm-up time: ~ 20 min.
+
+Chirp
+
+The Chirp sensor measures moisture, light, and temperature.
+
+Specifications
+
+-   Vin: 3 to 5V
+-   I2C 7-bit address 0x77
+
+DHT11
+
+Specifications
+
+-   3 to 5V power and I/O
+-   2.5mA max current use during conversion (while requesting data)
+-   20-80% humidity readings with 5% accuracy
+-   0 °C to 50 °C temperature readings ±2 °C accuracy
+-   No more than 1 Hz sampling rate (once every second)
+
+DHT22, AM2302
+
+Compared to the DHT11, this sensor is more precise, more accurate and
+works in a bigger range of temperature/humidity, but its larger and more
+expensive. The wiring is the same as the DHT11.
+
+Specifications
+
+-   0-100% humidity readings with 2% (10-90% RH) and 5% (0-10% RH and
+    90-100% RH) accuracy
+-   -40 °C to 80 °C temperature readings ±0.5 °C accuracy
+-   3 to 5V power and I/O
+-   2.5mA max current use during conversion (while requesting data)
+-   No more than 0.5 Hz sampling rate (once every 2 seconds)
 
 DS18B20
 
@@ -2803,6 +3019,35 @@ Specifications
 -   ±0.5 °C Accuracy from -10 °C to +85 °C
 -   9 to 12 bit selectable resolution
 
+HTU21D
+
+Specifications
+
+-   0-100% humidity readings with 2% (20-80% RH) and 2%-5% (0-20% RH and
+    80-100% RH) accuracy
+-   Optimum accuracy measurements within 5 to 95% RH
+-   -30 °C to 90 °C temperature readings ±1 °C typical accuracy
+
+K-30
+
+[image5] 
+
+Be very careful when connecting the K-30, as there is no reverse-voltage
+protection and improper connections could destroy your sensor.
+
+Wiring instructions for the Raspberry Pi can be found here.
+
+Specifications
+
+-   0 – 10,000 ppmv (0 - 5,000 ppmv within specifications)
+-   Repeatability: ±20 ppm ±1% of measured value within specifications
+-   Accuracy: ±30 ppm ±3% of measured value within specifications
+-   Non-dispersive infrared (NDIR) technology
+-   Sensor life expectancy: > 15 years
+-   Self-diagnostics: complete function check of the sensor module
+-   Warm-up time: < 1 min. (@ full specs < 15 min)
+-   0.5 Hz sampling rate (once every 2 seconds)
+
 MAX31850K
 
 Specifications
@@ -2845,155 +3090,6 @@ Specifications
 -   -200 °C to 850 °C
 -   Works with the PT100 and PT1000 RTD
 
-TMP006, TMP007
-
-The TMP006 Breakout can measure the temperature of an object without
-making contact with it. By using a thermopile to detect and absorb the
-infrared energy an object is emitting, the TMP006 Breakout can determine
-how hot or cold the object is.
-
-Specifications
-
--   Usable temperature range: -40 °C to 125 °C
--   Optimal operating voltage of 3.3V to 5V (tolerant up to 7V max)
-
-
-Temperature Humidity Sensors
-
-AM2315
-
-Specifications
-
--   0-100% humidity readings with 1% (10-90% RH) and 3% (0-10% RH and
-    90-100% RH) accuracy
--   -20 °C to 80 °C temperature readings ±0.1 °C typical accuracy
--   3.5 to 5.5V power and I/O
--   10 mA max current use during conversion (while requesting data)
--   No more than 0.5 Hz sampling rate (once every 2 seconds)
-
-Notes
-
-From
-[@Theoi-Meteoroi](https://github.com/kizniche/Mycodo/issues/315#issuecomment-344798815)
-on GitHub:
-
-I figured out why this [AM2315] sensor is unreliable with Rpi3 hardware
-I2C. It is among a number of I2C devices that really hates the BCM2835
-clock stretching blunder (hardware bug: raspberrypi/linux#254). The
-wakeup attempts fail, consistently. I checked the bitstream with a
-sniffer, and see that the sensor may respond once out of 20 or so tries
-(or not at all) but only with a single byte returned. The solution is to
-use a software implementation of the I2C bus. You need to add pull-up
-resistors (4.7k is dandy) to 3.3v and install the i2c_gpio device
-overlay. Seems to work fine now, will run for a few days, but the CRC
-failures are gone and I get good readings, every time. And no twiddling
-the power for the sensor is required.
-
-To enable software I2C, add the following line to your /boot/config.txt
-
-dtoverlay=i2c-gpio,i2c_gpio_sda=23,i2c_gpio_scl=24,i2c_gpio_delay_us=4
-
-After rebooting, a new I2C bus at /dev/i2c-3 should exist with SDA on
-pin 23 (BCM) and SCL on pin 24 (BCM). Make sure you add the appropriate
-pull-up resistors before connecting any devices.
-
-DHT11
-
-Specifications
-
--   3 to 5V power and I/O
--   2.5mA max current use during conversion (while requesting data)
--   20-80% humidity readings with 5% accuracy
--   0 °C to 50 °C temperature readings ±2 °C accuracy
--   No more than 1 Hz sampling rate (once every second)
-
-DHT22, AM2302
-
-Compared to the DHT11, this sensor is more precise, more accurate and
-works in a bigger range of temperature/humidity, but its larger and more
-expensive. The wiring is the same as the DHT11.
-
-Specifications
-
--   0-100% humidity readings with 2% (10-90% RH) and 5% (0-10% RH and
-    90-100% RH) accuracy
--   -40 °C to 80 °C temperature readings ±0.5 °C accuracy
--   3 to 5V power and I/O
--   2.5mA max current use during conversion (while requesting data)
--   No more than 0.5 Hz sampling rate (once every 2 seconds)
-
-HTU21D
-
-Specifications
-
--   0-100% humidity readings with 2% (20-80% RH) and 2%-5% (0-20% RH and
-    80-100% RH) accuracy
--   Optimum accuracy measurements within 5 to 95% RH
--   -30 °C to 90 °C temperature readings ±1 °C typical accuracy
-
-SHT1x
-
-(SHT10, SHT11, SHT15)
-
-Specifications
-
--   0-100% humidity readings with 2%-5% (10-90% RH) and 2%-7.5% (0-10%
-    RH and 90-100% RH) accuracy
--   -40 °C to 125 °C temperature readings ±0.5 °C, ±0.4 °C, and ±0.3 °C
-    typical accuracy (respectively)
--   2.4 to 5.5V power and I/O
--   No more than 0.125 Hz sampling rate (once every 8 seconds)
-
-SHT7x
-
-(SHT71, SHT75)
-
-Specifications
-
--   0-100% humidity readings with 2%-3% (10-90% RH) and 2%-5% (0-10% RH
-    and 90-100% RH) accuracy
--   -40 °C to 125 °C temperature readings ±0.4 °C and ±0.3 °C typical
-    accuracy (respectively)
--   2.4 to 5.5V power and I/O
--   No more than 0.125 Hz sampling rate (once every 8 seconds)
-
-
-CO2 Sensors
-
-CCS811
-
-Be aware that the CCS811 datasheet recommends a burn-in of 48 hours and
-a run-in of 20 minutes (you must allow 20 minutes for the sensor to warm
-up and output valid data).
-
-Specifications
-
--   400 – 8,192 ppmv CO2
--   0 - 1,187 ppbv VOC
--   Ambient temperature measured from 10K NTC Thermistor (separate from
-    chip, may or may not be included on the board you purchase)
--   Warm-up time: ~ 20 min.
-
-K-30
-
-[image5] 
-
-Be very careful when connecting the K-30, as there is no reverse-voltage
-protection and improper connections could destroy your sensor.
-
-Wiring instructions for the Raspberry Pi can be found here.
-
-Specifications
-
--   0 – 10,000 ppmv (0 - 5,000 ppmv within specifications)
--   Repeatability: ±20 ppm ±1% of measured value within specifications
--   Accuracy: ±30 ppm ±3% of measured value within specifications
--   Non-dispersive infrared (NDIR) technology
--   Sensor life expectancy: > 15 years
--   Self-diagnostics: complete function check of the sensor module
--   Warm-up time: < 1 min. (@ full specs < 15 min)
--   0.5 Hz sampling rate (once every 2 seconds)
-
 MH-Z16
 
 Specifications
@@ -3021,93 +3117,43 @@ Specifications
 -   Warm-up time: 3 min.
 -   0.2 Hz sampling rate (once every 5 seconds)
 
+SHT1x
 
-Moisture Sensors
-
-Chirp
-
-The Chirp sensor measures moisture, light, and temperature.
+(SHT10, SHT11, SHT15)
 
 Specifications
 
--   Vin: 3 to 5V
--   I2C 7-bit address 0x77
+-   0-100% humidity readings with 2%-5% (10-90% RH) and 2%-7.5% (0-10%
+    RH and 90-100% RH) accuracy
+-   -40 °C to 125 °C temperature readings ±0.5 °C, ±0.4 °C, and ±0.3 °C
+    typical accuracy (respectively)
+-   2.4 to 5.5V power and I/O
+-   No more than 0.125 Hz sampling rate (once every 8 seconds)
 
+SHT7x
 
-pH Sensors
-
-Atlas Scientific pH
-
-The Atlas Scientific pH sensor measures the pH of a liquid.
-
-Specifications
-
--   UART or I2C
--   Probe Max Pressure: 690 kPa (100PSI)
--   Probe Max Depth 60 M (197 ft)
--   Probe Weight: 49 grams
--   Probe can be fully submerged in fresh or salt water indefinitely
-
-
-Particulate Sensors
-
-Winsen ZH03B
-
-Laser Dust sensor module is a common type, small size sensor, using
-laser scattering principle to detect the dust particles in air, with
-good selectivity and stability.
+(SHT71, SHT75)
 
 Specifications
 
--   Detection: PM1.0, PM2.5, PM10
--   Working humidity: 0~85% RH (no condensation)
--   Working temperature: -10 °C to 50 °C
--   Response time (T90) <= 45 seconds
--   Life span: 3 years (in air)
+-   0-100% humidity readings with 2%-3% (10-90% RH) and 2%-5% (0-10% RH
+    and 90-100% RH) accuracy
+-   -40 °C to 125 °C temperature readings ±0.4 °C and ±0.3 °C typical
+    accuracy (respectively)
+-   2.4 to 5.5V power and I/O
+-   No more than 0.125 Hz sampling rate (once every 8 seconds)
 
+TMP006, TMP007
 
-Pressure Sensors
-
-BME280
-
-The BME280 is the upgrade to the BMP085/BMP180/BMP183. It has a low
-altitude noise of 0.25m and the same fast conversion time. It has the
-same specifications, but can use either I2C or SPI.
-
-Specifications
-
--   300-1100 hPa (9000m to -500m above sea level)
--   -40 °C to +85 °C operational range
--   ±3% humidity accuracy tolerance
--   ±1% humidity hysteresis
--   ±1 hPa pressure accuracy
--   ±2 °C temperature accuracy
--   Vin: 3 to 5V
--   Logic: 3 to 5V compliant
--   I2C 7-bit address 0x76 or 0x77
-
-BMP085, BMP180
-
-The BMP180 replaces the BMP085. It is completely identical to the BMP085
-in terms of firmware/software/interfacing.
+The TMP006 Breakout can measure the temperature of an object without
+making contact with it. By using a thermopile to detect and absorb the
+infrared energy an object is emitting, the TMP006 Breakout can determine
+how hot or cold the object is.
 
 Specifications
 
--   300-1100 hPa (9000m to -500m above sea level)
--   Up to 0.03hPa / 0.25m resolution
--   -40 °C to +85 °C operational range
--   ±2 °C temperature accuracy
--   Vin: 3 to 5V
--   Logic: 3 to 5V compliant
--   I2C 7-bit address 0x77
-
-
-Luminosity Sensors
-
-BH1750
-
-The BH1750 is an I2C luminosity sensor that provides a digital value in
-lux (lx) over a range of 1 - 65535 lx.
+-   Usable temperature range: -40 °C to 125 °C
+-   Optimal operating voltage of 3.3V to 5V (tolerant up to 7V max)
 
 TSL2561
 
@@ -3130,6 +3176,20 @@ TSL2591
 Specifications
 
 -   Light range: 188 uLux to 88,000 Lux
+
+Winsen ZH03B
+
+Laser Dust sensor module is a common type, small size sensor, using
+laser scattering principle to detect the dust particles in air, with
+good selectivity and stability.
+
+Specifications
+
+-   Detection: PM1.0, PM2.5, PM10
+-   Working humidity: 0~85% RH (no condensation)
+-   Working temperature: -10 °C to 50 °C
+-   Response time (T90) <= 45 seconds
+-   Life span: 3 years (in air)
 
 
 Analog to Digital Converters
