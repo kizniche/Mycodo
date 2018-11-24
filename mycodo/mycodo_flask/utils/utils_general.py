@@ -40,6 +40,7 @@ from mycodo.utils.inputs import parse_input_information
 from mycodo.utils.system_pi import add_custom_measurements
 from mycodo.utils.system_pi import add_custom_units
 from mycodo.utils.system_pi import cmd_output
+from mycodo.utils.system_pi import return_measurement_info
 
 logger = logging.getLogger(__name__)
 
@@ -368,37 +369,26 @@ def form_input_choices(choices, each_input, dict_units, dict_measurements):
     device_measurements = DeviceMeasurements.query.filter(
         DeviceMeasurements.device_id == each_input.unique_id).all()
 
-    try:
-        for each_measure in device_measurements:
+    for each_measure in device_measurements:
+
+        device_measurement = DeviceMeasurements.query.filter(
+            DeviceMeasurements.unique_id == each_measure.unique_id).first()
+        conversion = Conversion.query.filter(
+            Conversion.unique_id == each_measure.conversion_id).first()
+        channel, unit, measurement = return_measurement_info(
+            device_measurement, conversion)
+
+        if unit:
             value = '{input_id},{meas_id}'.format(
                 input_id=each_input.unique_id,
                 meas_id=each_measure.unique_id)
 
-            if each_measure.conversion_id not in ['', None]:
-                conv = Conversion.query.filter(
-                    Conversion.unique_id == each_measure.conversion_id).first()
-                display_unit = find_name_unit(
-                    dict_units, conv.convert_unit_to)
-                display_measurement = None
-            elif (each_measure.rescaled_measurement and
-                    each_measure.rescaled_unit):
-                display_unit = find_name_unit(
-                    dict_units, each_measure.rescaled_unit)
-                display_measurement = find_name_measurement(
-                    dict_measurements, each_measure.rescaled_measurement)
-            else:
-                display_unit = find_name_unit(
-                    dict_units, each_measure.unit)
-                display_measurement = find_name_measurement(
-                    dict_measurements, each_measure.measurement)
+            display_unit = find_name_unit(
+                dict_units, unit)
+            display_measurement = find_name_measurement(
+                dict_measurements, measurement)
 
-            if display_measurement:
-                measurement_unit = '{meas} ({unit})'.format(
-                    meas=display_measurement, unit=display_unit)
-            else:
-                measurement_unit = '({unit})'.format(unit=display_unit)
-
-            channel_number = ' CH{chan}'.format(chan=each_measure.channel + 1)
+            channel_number = 'CH{chan}'.format(chan=channel + 1)
 
             if each_measure.name:
                 channel_name = ' ({name})'.format(name=each_measure.name)
@@ -407,15 +397,22 @@ def form_input_choices(choices, each_input, dict_units, dict_measurements):
 
             channel_info = "{}{}".format(channel_number, channel_name)
 
-            display = '[Input {id:02d}] {name}{chan} {meas}'.format(
+            if display_measurement and display_unit:
+                measurement_unit = '{meas} ({unit})'.format(
+                    meas=display_measurement, unit=display_unit)
+            elif display_measurement:
+                measurement_unit = '{meas}'.format(
+                    meas=display_measurement)
+            else:
+                measurement_unit = '({unit})'.format(unit=display_unit)
+
+            display = '[Input {id:02d}] {i_name} {chan} {meas}'.format(
                 id=each_input.id,
-                name=each_input.name,
+                i_name=each_input.name,
                 chan=channel_info,
                 meas=measurement_unit)
 
             choices.update({value: display})
-    except Exception as msg:
-        logger.exception("Generating input choices: {}".format(msg))
 
     return choices
 
@@ -425,32 +422,46 @@ def form_math_choices(choices, each_math, dict_units, dict_measurements):
         DeviceMeasurements.device_id == each_math.unique_id).all()
 
     for each_measure in device_measurements:
-        if each_measure.measurement and each_measure.unit:
+
+        device_measurement = DeviceMeasurements.query.filter(
+            DeviceMeasurements.unique_id == each_measure.unique_id).first()
+        conversion = Conversion.query.filter(
+            Conversion.unique_id == each_measure.conversion_id).first()
+        channel, unit, measurement = return_measurement_info(
+            device_measurement, conversion)
+
+        if unit:
             value = '{input_id},{meas_id}'.format(
                 input_id=each_math.unique_id,
                 meas_id=each_measure.unique_id)
 
-            if each_measure.conversion_id not in ['', None]:
-                conv = Conversion.query.filter(
-                    Conversion.unique_id == each_measure.conversion_id).first()
-                display_unit = find_name_unit(
-                    dict_units, conv.convert_unit_to)
-                display_measurement = None
-            else:
-                display_unit = find_name_unit(
-                    dict_units, each_measure.unit)
-                display_measurement = find_name_measurement(
-                    dict_measurements, each_measure.measurement)
+            display_unit = find_name_unit(
+                dict_units, unit)
+            display_measurement = find_name_measurement(
+                dict_measurements, measurement)
 
-            if display_measurement:
+            channel_number = 'CH{chan}'.format(chan=channel + 1)
+
+            if each_measure.name:
+                channel_name = ' ({name})'.format(name=each_measure.name)
+            else:
+                channel_name = ''
+
+            channel_info = "{}{}".format(channel_number, channel_name)
+
+            if display_measurement and display_unit:
                 measurement_unit = '{meas} ({unit})'.format(
                     meas=display_measurement, unit=display_unit)
+            elif display_measurement:
+                measurement_unit = '{meas}'.format(
+                    meas=display_measurement)
             else:
                 measurement_unit = '({unit})'.format(unit=display_unit)
 
-            display = '[Math {id:02d}] {name} {meas}'.format(
+            display = '[Math {id:02d}] {i_name} {chan} {meas}'.format(
                 id=each_math.id,
-                name=each_measure.name,
+                i_name=each_math.name,
+                chan=channel_info,
                 meas=measurement_unit)
             choices.update({value: display})
 
@@ -462,32 +473,46 @@ def form_pid_choices(choices, each_pid, dict_units, dict_measurements):
         DeviceMeasurements.device_id == each_pid.unique_id).all()
 
     for each_measure in device_measurements:
-        if each_measure.measurement and each_measure.unit:
+
+        device_measurement = DeviceMeasurements.query.filter(
+            DeviceMeasurements.unique_id == each_measure.unique_id).first()
+        conversion = Conversion.query.filter(
+            Conversion.unique_id == each_measure.conversion_id).first()
+        channel, unit, measurement = return_measurement_info(
+            device_measurement, conversion)
+
+        if unit:
             value = '{input_id},{meas_id}'.format(
                 input_id=each_pid.unique_id,
                 meas_id=each_measure.unique_id)
 
-            if each_measure.conversion_id not in ['', None]:
-                conv = Conversion.query.filter(
-                    Conversion.unique_id == each_measure.conversion_id).first()
-                display_unit = find_name_unit(
-                    dict_units, conv.convert_unit_to)
-                display_measurement = None
-            else:
-                display_unit = find_name_unit(
-                    dict_units, each_measure.unit)
-                display_measurement = find_name_measurement(
-                    dict_measurements, each_measure.measurement)
+            display_unit = find_name_unit(
+                dict_units, unit)
+            display_measurement = find_name_measurement(
+                dict_measurements, measurement)
 
-            if display_measurement:
+            channel_number = 'CH{chan}'.format(chan=channel + 1)
+
+            if each_measure.name:
+                channel_name = ' ({name})'.format(name=each_measure.name)
+            else:
+                channel_name = ''
+
+            channel_info = "{}{}".format(channel_number, channel_name)
+
+            if display_measurement and display_unit:
                 measurement_unit = '{meas} ({unit})'.format(
                     meas=display_measurement, unit=display_unit)
+            elif display_measurement:
+                measurement_unit = '{meas}'.format(
+                    meas=display_measurement)
             else:
                 measurement_unit = '({unit})'.format(unit=display_unit)
 
-            display = '[PID {id:02d}] {name} {meas}'.format(
+            display = '[PID {id:02d}] {i_name} {chan} {meas}'.format(
                 id=each_pid.id,
-                name=each_measure.name,
+                i_name=each_pid.name,
+                chan=channel_info,
                 meas=measurement_unit)
             choices.update({value: display})
 

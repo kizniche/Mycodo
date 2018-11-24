@@ -224,7 +224,7 @@ class OutputController(threading.Thread):
 
             # Check if pin is valid
             if (self.output_type[output_id] in [
-                    'pwm', 'wired', 'wireless_433MHz_pi_switch'] and
+                    'pwm', 'wired', 'wireless_rpi_rf'] and
                     self.output_pin[output_id] is None):
                 self.logger.warning(
                     "Invalid pin for output {id} ({name}): {pin}.".format(
@@ -235,7 +235,7 @@ class OutputController(threading.Thread):
 
             # Check if max amperage will be exceeded
             if self.output_type[output_id] in [
-                    'command', 'wired', 'wireless_433MHz_pi_switch']:
+                    'command', 'wired', 'wireless_rpi_rf']:
                 current_amps = self.current_amp_load()
                 max_amps = db_retrieve_table_daemon(Misc, entry='first').max_amps
                 if current_amps + self.output_amps[output_id] > max_amps:
@@ -271,7 +271,7 @@ class OutputController(threading.Thread):
 
             # Turn output on for a duration
             if (self.output_type[output_id] in [
-                    'command', 'wired', 'wireless_433MHz_pi_switch'] and
+                    'command', 'wired', 'wireless_rpi_rf'] and
                     duration != 0):
                 time_now = datetime.datetime.now()
 
@@ -357,7 +357,7 @@ class OutputController(threading.Thread):
 
             # Just turn output on
             elif self.output_type[output_id] in [
-                    'command', 'wired', 'wireless_433MHz_pi_switch']:
+                    'command', 'wired', 'wireless_rpi_rf']:
                 if self.is_on(output_id):
                     self.logger.debug(
                         "Output {id} ({name}) is already on.".format(
@@ -445,7 +445,7 @@ class OutputController(threading.Thread):
                 return
 
             if (self.output_type[output_id] in [
-                    'pwm', 'wired', 'wireless_433MHz_pi_switch'] and
+                    'pwm', 'wired', 'wireless_rpi_rf'] and
                     self.output_pin[output_id] is None):
                 return
 
@@ -534,7 +534,7 @@ class OutputController(threading.Thread):
                 GPIO.output(self.output_pin[output_id],
                             not self.output_trigger[output_id])
 
-        elif self.output_type[output_id] == 'wireless_433MHz_pi_switch':
+        elif self.output_type[output_id] == 'wireless_rpi_rf':
             if state == 'on':
                 self.wireless_pi_switch[output_id].transmit(
                     int(self.output_on_command[output_id]))
@@ -1014,7 +1014,7 @@ class OutputController(threading.Thread):
                         trigger=self.output_trigger[output_id],
                         err=except_msg))
 
-        elif self.output_type[output_id] == 'wireless_433MHz_pi_switch':
+        elif self.output_type[output_id] == 'wireless_rpi_rf':
             from mycodo.devices.wireless_433mhz import Transmit433MHz
             self.wireless_pi_switch[output_id] = Transmit433MHz(
                 self.output_pin[output_id],
@@ -1060,7 +1060,7 @@ class OutputController(threading.Thread):
                         self.output_trigger[output_id] == GPIO.input(self.output_pin[output_id])):
                     return 'on'
             elif self.output_type[output_id] in ['command',
-                                                 'wireless_433MHz_pi_switch']:
+                                                 'wireless_rpi_rf']:
                 if (self.output_time_turned_on[output_id] or
                         self.output_on_until[output_id] > datetime.datetime.now()):
                     return 'on'
@@ -1082,7 +1082,7 @@ class OutputController(threading.Thread):
             return self.output_trigger[output_id] == GPIO.input(self.output_pin[output_id])
         elif self.output_type[output_id] in ['command',
                                              'command_pwm',
-                                             'wireless_433MHz_pi_switch']:
+                                             'wireless_rpi_rf']:
             if self.output_time_turned_on[output_id]:
                 return True
         elif self.output_type[output_id] == 'pwm':
@@ -1107,7 +1107,7 @@ class OutputController(threading.Thread):
             return True
         elif self.output_type[output_id] in ['command',
                                              'command_pwm',
-                                             'wireless_433MHz_pi_switch',
+                                             'wireless_rpi_rf',
                                              'atlas_ezo_pmp']:
             return True
         elif self.output_type[output_id] == 'pwm':

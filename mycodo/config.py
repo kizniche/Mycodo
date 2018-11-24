@@ -55,7 +55,8 @@ MATH_INFO = {
     'average_single': {
         'name': 'Average (Single)',
         'dependencies_module': [],
-        'enable_measurements_select': True,
+        'enable_measurements_select': False,
+        'enable_measurements_convert': True,
         'measure': {}
     },
     'difference': {
@@ -161,11 +162,11 @@ METHOD_INFO = {
 
 # Math controllers
 OUTPUTS = [
-    ('wired,GPIO', 'GPIO (On/Off)'),
-    ('pwm,GPIO', 'GPIO (PWM)'),
-    ('command,GPIO', 'Command (On/Off)'),
-    ('command_pwm,GPIO', 'Command (PWM)'),
-    ('wireless_433MHz_pi_switch,GPIO', 'Wireless (433MHz)'),
+    ('wired,GPIO', 'On/Off (GPIO)'),
+    ('pwm,GPIO', 'PWM (GPIO)'),
+    ('command,GPIO', 'On/Off (Command)'),
+    ('command_pwm,GPIO', 'PWM (Command)'),
+    ('wireless_rpi_rf,GPIO', 'Wireless 433MHz (rpi_rf)'),
     ('atlas_ezo_pmp,I2C', 'Atlas EZO-PMP (I2C)'),
     ('atlas_ezo_pmp,UART', 'Atlas EZO-PMP (UART)')
 ]
@@ -184,7 +185,7 @@ OUTPUT_INFO = {
         'measure': {
             'duty_cycle': {'percent': {0: {}}}
         }},
-    'wireless_433MHz_pi_switch': {
+    'wireless_rpi_rf': {
         'name': 'Wireless (433MHz)',
         'dependencies_module': [
             ('pip-pypi', 'rpi_rf', 'rpi_rf')

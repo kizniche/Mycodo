@@ -101,7 +101,7 @@ def all_conversions(conversions):
     return sorted_dict_conversions
 
 
-def get_input_or_math_measurement(measurement_id):
+def get_measurement(measurement_id):
     """ Find measurement """
     device_measurement = db_retrieve_table_daemon(
         DeviceMeasurements).filter(

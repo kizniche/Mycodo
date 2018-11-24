@@ -157,12 +157,19 @@ def query_string(unit, unique_id,
 
 
 def read_past_influxdb(unique_id, unit, measurement, channel, past_seconds):
-    client = InfluxDBClient(INFLUXDB_HOST, INFLUXDB_PORT, INFLUXDB_USER,
-                            INFLUXDB_PASSWORD, INFLUXDB_DATABASE, timeout=5)
-    query_str = query_string(unit, unique_id,
-                             measure=measurement,
-                             channel=channel,
-                             past_sec=past_seconds)
+    client = InfluxDBClient(
+        INFLUXDB_HOST,
+        INFLUXDB_PORT,
+        INFLUXDB_USER,
+        INFLUXDB_PASSWORD,
+        INFLUXDB_DATABASE,
+        timeout=5)
+    query_str = query_string(
+        unit,
+        unique_id,
+        measure=measurement,
+        channel=channel,
+        past_sec=past_seconds)
     if query_str == 1:
         return '', 204
     raw_data = client.query(query_str).raw

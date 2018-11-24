@@ -1802,7 +1802,7 @@ msgstr "Начальное состояние"
 
 #: mycodo_flask/forms/forms_output.py:66
 #: mycodo_flask/templates/pages/output_options/command.html:17
-#: mycodo_flask/templates/pages/output_options/wireless_433MHz_pi_switch.html:41
+#: mycodo_flask/templates/pages/output_options/wireless_rpi_rf.html:41
 msgid "Neither"
 msgstr "ни"
 
@@ -1815,7 +1815,7 @@ msgstr "ни"
 #: mycodo_flask/templates/pages/output.html:205
 #: mycodo_flask/templates/pages/output_options/command.html:18
 #: mycodo_flask/templates/pages/output_options/wired.html:20
-#: mycodo_flask/templates/pages/output_options/wireless_433MHz_pi_switch.html:42
+#: mycodo_flask/templates/pages/output_options/wireless_rpi_rf.html:42
 msgid "On"
 msgstr "На"
 
@@ -1827,7 +1827,7 @@ msgstr "На"
 #: mycodo_flask/templates/pages/output.html:214
 #: mycodo_flask/templates/pages/output_options/command.html:19
 #: mycodo_flask/templates/pages/output_options/wired.html:21
-#: mycodo_flask/templates/pages/output_options/wireless_433MHz_pi_switch.html:43
+#: mycodo_flask/templates/pages/output_options/wireless_rpi_rf.html:43
 msgid "Off"
 msgstr "от"
 
@@ -4008,7 +4008,7 @@ msgstr ""
 
 #: mycodo_flask/templates/pages/output_options/command.html:16
 #: mycodo_flask/templates/pages/output_options/wired.html:19
-#: mycodo_flask/templates/pages/output_options/wireless_433MHz_pi_switch.html:40
+#: mycodo_flask/templates/pages/output_options/wireless_rpi_rf.html:40
 msgid "When Mycodo starts, set the output state"
 msgstr "Когда Mycodo запускается, установите выходное состояние"
 
@@ -4053,7 +4053,7 @@ msgstr ""
 msgid "What state triggers the output to turn on? High or Low?"
 msgstr "Какое состояние запускает вывод? Высокий или низкий?"
 
-#: mycodo_flask/templates/pages/output_options/wireless_433MHz_pi_switch.html:4
+#: mycodo_flask/templates/pages/output_options/wireless_rpi_rf.html:4
 msgid ""
 "The GPIO pin (using WiringPi numbering) connected to the 433 MHz "
 "transmitter data pin"
@@ -4061,19 +4061,19 @@ msgstr ""
 "Вывод GPIO (с использованием нумерации WiringPi), подключенный к выходу "
 "данных передатчика 433 МГц"
 
-#: mycodo_flask/templates/pages/output_options/wireless_433MHz_pi_switch.html:10
+#: mycodo_flask/templates/pages/output_options/wireless_rpi_rf.html:10
 msgid "Wireless 433 MHz protocol"
 msgstr "Беспроводной протокол 433 МГц"
 
-#: mycodo_flask/templates/pages/output_options/wireless_433MHz_pi_switch.html:22
+#: mycodo_flask/templates/pages/output_options/wireless_rpi_rf.html:22
 msgid "Wireless 433 MHz pulse length"
 msgstr "Беспроволочная длина импульса 433 МГц"
 
-#: mycodo_flask/templates/pages/output_options/wireless_433MHz_pi_switch.html:28
+#: mycodo_flask/templates/pages/output_options/wireless_rpi_rf.html:28
 msgid "Wireless 433 MHz On command"
 msgstr "Беспроводная команда 433 МГц"
 
-#: mycodo_flask/templates/pages/output_options/wireless_433MHz_pi_switch.html:34
+#: mycodo_flask/templates/pages/output_options/wireless_rpi_rf.html:34
 msgid "Wireless 433 MHz Off command"
 msgstr "Беспроводная команда 433 МГц Off"
 

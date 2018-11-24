@@ -44,7 +44,8 @@ from mycodo.utils.database import db_retrieve_table_daemon
 from mycodo.utils.influx import add_measurements_influxdb
 from mycodo.utils.influx import read_last_influxdb
 from mycodo.utils.influx import read_past_influxdb
-from mycodo.utils.system_pi import get_input_or_math_measurement
+from mycodo.utils.system_pi import get_measurement
+from mycodo.utils.system_pi import return_measurement_info
 
 
 class Measurement:
@@ -177,16 +178,22 @@ class MathController(threading.Thread):
 
         if self.math_type == 'average':
 
-            measurement = self.device_measurements.filter(
+            device_measurement = self.device_measurements.filter(
                 DeviceMeasurements.channel == 0).first()
+
+            conversion = db_retrieve_table_daemon(
+                Conversion, unique_id=device_measurement.conversion_id)
+            channel, unit, measurement = return_measurement_info(
+                device_measurement, conversion)
+
             success, measure = self.get_measurements_from_str(self.inputs)
             if success:
                 average = float(sum(measure) / float(len(measure)))
 
                 measurement_dict = {
-                    measurement.channel: {
-                        'measurement': measurement.measurement,
-                        'unit': measurement.unit,
+                    channel: {
+                        'measurement': measurement,
+                        'unit': unit,
                         'value': average
                     }
                 }
@@ -198,15 +205,21 @@ class MathController(threading.Thread):
         elif self.math_type == 'average_single':
 
             device_id = self.inputs.split(',')[0]
-            device_measurement_id = self.inputs.split(',')[1]
-            measurement = get_input_or_math_measurement(
-                device_measurement_id)
+            measurement_id = self.inputs.split(',')[1]
+
+            device_measurement = db_retrieve_table_daemon(
+                DeviceMeasurements, unique_id=measurement_id)
+            conversion = db_retrieve_table_daemon(
+                Conversion, unique_id=device_measurement.conversion_id)
+            channel, unit, measurement = return_measurement_info(
+                device_measurement, conversion)
+
             try:
                 last_measurements = read_past_influxdb(
                     device_id,
-                    measurement.unit,
-                    measurement.measurement,
-                    measurement.channel,
+                    unit,
+                    measurement,
+                    channel,
                     self.max_measure_age)
 
                 if last_measurements:
@@ -217,21 +230,27 @@ class MathController(threading.Thread):
                     average = sum(measure_list) / float(len(measure_list))
 
                     measurement_dict = {
-                        measurement.channel: {
-                            'measurement': measurement.measurement,
-                            'unit': measurement.unit,
+                        channel: {
+                            'measurement': measurement,
+                            'unit': unit,
                             'value': average
                         }
                     }
                 else:
                     self.error_not_within_max_age()
             except Exception as msg:
-                self.logger.error("average_single Error: {err}".format(err=msg))
+                self.logger.exception("average_single Error: {err}".format(err=msg))
 
         elif self.math_type == 'difference':
 
-            measurement = self.device_measurements.filter(
+            device_measurement = self.device_measurements.filter(
                 DeviceMeasurements.channel == 0).first()
+
+            conversion = db_retrieve_table_daemon(
+                Conversion, unique_id=device_measurement.conversion_id)
+            channel, unit, measurement = return_measurement_info(
+                device_measurement, conversion)
+
             success, measure = self.get_measurements_from_str(self.inputs)
             if success:
                 if self.difference_reverse_order:
@@ -242,9 +261,9 @@ class MathController(threading.Thread):
                     difference = abs(difference)
 
                 measurement_dict = {
-                    measurement.channel: {
-                        'measurement': measurement.measurement,
-                        'unit': measurement.unit,
+                    channel: {
+                        'measurement': measurement,
+                        'unit': unit,
                         'value': difference
                     }
                 }
@@ -255,17 +274,23 @@ class MathController(threading.Thread):
 
         elif self.math_type == 'equation':
 
-            measurement = self.device_measurements.filter(
+            device_measurement = self.device_measurements.filter(
                 DeviceMeasurements.channel == 0).first()
+
+            conversion = db_retrieve_table_daemon(
+                Conversion, unique_id=device_measurement.conversion_id)
+            channel, unit, measurement = return_measurement_info(
+                device_measurement, conversion)
+
             success, measure = self.get_measurements_from_str(self.inputs)
             if success:
                 replaced_str = self.equation.replace('x', str(measure[0]))
                 equation_output = eval(replaced_str)
 
                 measurement_dict = {
-                    measurement.channel: {
-                        'measurement': measurement.measurement,
-                        'unit': measurement.unit,
+                    channel: {
+                        'measurement': measurement,
+                        'unit': unit,
                         'value': float(equation_output)
                     }
                 }
@@ -298,10 +323,15 @@ class MathController(threading.Thread):
                 ]
 
                 for each_measurement in self.device_measurements.all():
-                    measurement_dict[each_measurement.channel] = {
-                            'measurement': each_measurement.measurement,
-                            'unit': each_measurement.unit,
-                            'value': list_measurement[each_measurement.channel]
+                    conversion = db_retrieve_table_daemon(
+                        Conversion, unique_id=each_measurement.conversion_id)
+                    channel, unit, measurement = return_measurement_info(
+                        each_measurement, conversion)
+
+                    measurement_dict[channel] = {
+                            'measurement': measurement,
+                            'unit': unit,
+                            'value': list_measurement[channel]
                     }
 
             elif measure:
@@ -311,8 +341,14 @@ class MathController(threading.Thread):
 
         elif self.math_type == 'verification':
 
-            measurement = self.device_measurements.filter(
+            device_measurement = self.device_measurements.filter(
                 DeviceMeasurements.channel == 0).first()
+
+            conversion = db_retrieve_table_daemon(
+                Conversion, unique_id=device_measurement.conversion_id)
+            channel, unit, measurement = return_measurement_info(
+                device_measurement, conversion)
+
             success, measure = self.get_measurements_from_str(self.inputs)
             if (success and
                     max(measure) - min(measure) <
@@ -320,9 +356,9 @@ class MathController(threading.Thread):
                 difference = max(measure) - min(measure)
 
                 measurement_dict = {
-                    measurement.channel: {
-                        'measurement': measurement.measurement,
-                        'unit': measurement.unit,
+                    channel: {
+                        'measurement': measurement,
+                        'unit': unit,
                         'value': difference
                     }
                 }
@@ -453,10 +489,15 @@ class MathController(threading.Thread):
                     ]
 
                     for each_measurement in self.device_measurements.all():
-                        measurement_dict[each_measurement.channel] = {
-                            'measurement': each_measurement.measurement,
-                            'unit': each_measurement.unit,
-                            'value': list_measurement[each_measurement.channel]
+                        conversion = db_retrieve_table_daemon(
+                            Conversion, unique_id=each_measurement.conversion_id)
+                        channel, unit, measurement = return_measurement_info(
+                            each_measurement, conversion)
+
+                        measurement_dict[channel] = {
+                            'measurement': measurement,
+                            'unit': unit,
+                            'value': list_measurement[channel]
                         }
             else:
                 self.error_not_within_max_age()
@@ -480,7 +521,7 @@ class MathController(threading.Thread):
                 device_id = each_device_set.split(',')[0]
                 device_measure_id = each_device_set.split(',')[1]
 
-                measurement = get_input_or_math_measurement(
+                measurement = get_measurement(
                     device_measure_id)
                 if not measurement:
                     return False, None
@@ -502,7 +543,7 @@ class MathController(threading.Thread):
             return False, "Influxdb: Unknown Error: {err}".format(err=msg)
 
     def get_measurements_from_id(self, device_id, measure_id):
-        measurement = get_input_or_math_measurement(measure_id)
+        measurement = get_measurement(measure_id)
 
         measurement = read_last_influxdb(
             device_id,

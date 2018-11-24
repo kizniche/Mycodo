@@ -1775,7 +1775,7 @@ msgstr "开始状态"
 
 #: mycodo_flask/forms/forms_output.py:66
 #: mycodo_flask/templates/pages/output_options/command.html:17
-#: mycodo_flask/templates/pages/output_options/wireless_433MHz_pi_switch.html:41
+#: mycodo_flask/templates/pages/output_options/wireless_rpi_rf.html:41
 msgid "Neither"
 msgstr "也不"
 
@@ -1788,7 +1788,7 @@ msgstr "也不"
 #: mycodo_flask/templates/pages/output.html:205
 #: mycodo_flask/templates/pages/output_options/command.html:18
 #: mycodo_flask/templates/pages/output_options/wired.html:20
-#: mycodo_flask/templates/pages/output_options/wireless_433MHz_pi_switch.html:42
+#: mycodo_flask/templates/pages/output_options/wireless_rpi_rf.html:42
 msgid "On"
 msgstr "上"
 
@@ -1800,7 +1800,7 @@ msgstr "上"
 #: mycodo_flask/templates/pages/output.html:214
 #: mycodo_flask/templates/pages/output_options/command.html:19
 #: mycodo_flask/templates/pages/output_options/wired.html:21
-#: mycodo_flask/templates/pages/output_options/wireless_433MHz_pi_switch.html:43
+#: mycodo_flask/templates/pages/output_options/wireless_rpi_rf.html:43
 msgid "Off"
 msgstr "离"
 
@@ -3804,7 +3804,7 @@ msgstr "指示输出关闭时执行的命令（作为用户mycodo）"
 
 #: mycodo_flask/templates/pages/output_options/command.html:16
 #: mycodo_flask/templates/pages/output_options/wired.html:19
-#: mycodo_flask/templates/pages/output_options/wireless_433MHz_pi_switch.html:40
+#: mycodo_flask/templates/pages/output_options/wireless_rpi_rf.html:40
 msgid "When Mycodo starts, set the output state"
 msgstr "当Mycodo启动时，设置输出状态"
 
@@ -3843,25 +3843,25 @@ msgstr "GPIO引脚（使用BCM编号）连接到输出信号引脚"
 msgid "What state triggers the output to turn on? High or Low?"
 msgstr "什么状态触发输出打开？高还是低？"
 
-#: mycodo_flask/templates/pages/output_options/wireless_433MHz_pi_switch.html:4
+#: mycodo_flask/templates/pages/output_options/wireless_rpi_rf.html:4
 msgid ""
 "The GPIO pin (using WiringPi numbering) connected to the 433 MHz "
 "transmitter data pin"
 msgstr "GPIO引脚（使用WiringPi编号）连接到433 MHz发送器数据引脚"
 
-#: mycodo_flask/templates/pages/output_options/wireless_433MHz_pi_switch.html:10
+#: mycodo_flask/templates/pages/output_options/wireless_rpi_rf.html:10
 msgid "Wireless 433 MHz protocol"
 msgstr "无线433 MHz协议"
 
-#: mycodo_flask/templates/pages/output_options/wireless_433MHz_pi_switch.html:22
+#: mycodo_flask/templates/pages/output_options/wireless_rpi_rf.html:22
 msgid "Wireless 433 MHz pulse length"
 msgstr "无线433 MHz脉冲长度"
 
-#: mycodo_flask/templates/pages/output_options/wireless_433MHz_pi_switch.html:28
+#: mycodo_flask/templates/pages/output_options/wireless_rpi_rf.html:28
 msgid "Wireless 433 MHz On command"
 msgstr "无线433 MHz开启命令"
 
-#: mycodo_flask/templates/pages/output_options/wireless_433MHz_pi_switch.html:34
+#: mycodo_flask/templates/pages/output_options/wireless_rpi_rf.html:34
 msgid "Wireless 433 MHz Off command"
 msgstr "无线433 MHz关闭命令"
 

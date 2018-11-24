@@ -74,7 +74,7 @@ from mycodo.utils.influx import write_influxdb_value
 from mycodo.utils.method import calculate_method_setpoint
 from mycodo.utils.pid_autotune import PIDAutotune
 from mycodo.utils.pid_controller import PIDControl
-from mycodo.utils.system_pi import get_input_or_math_measurement
+from mycodo.utils.system_pi import get_measurement
 
 MYCODO_DB_PATH = 'sqlite:///' + SQL_DATABASE_MYCODO
 
@@ -580,7 +580,7 @@ class PIDController(threading.Thread):
 
         # Get latest measurement from influxdb
         try:
-            measurement = get_input_or_math_measurement(self.measurement_id)
+            measurement = get_measurement(self.measurement_id)
 
             self.last_measurement = read_last_influxdb(
                 self.device_id,
@@ -668,7 +668,7 @@ class PIDController(threading.Thread):
 
                     elif self.raise_output_type in ['command',
                                                     'wired',
-                                                    'wireless_433MHz_pi_switch']:
+                                                    'wireless_rpi_rf']:
                         # Ensure the output on duration doesn't exceed the set maximum
                         if (self.raise_max_duration and
                                 self.control_variable > self.raise_max_duration):
@@ -745,7 +745,7 @@ class PIDController(threading.Thread):
 
                     elif self.lower_output_type in ['command',
                                                     'wired',
-                                                    'wireless_433MHz_pi_switch']:
+                                                    'wireless_rpi_rf']:
                         # Ensure the output on duration doesn't exceed the set maximum
                         if (self.lower_max_duration and
                                 abs(self.control_variable) > self.lower_max_duration):

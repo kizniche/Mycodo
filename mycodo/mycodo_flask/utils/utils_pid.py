@@ -22,7 +22,7 @@ from mycodo.mycodo_flask.utils.utils_general import flash_form_errors
 from mycodo.mycodo_flask.utils.utils_general import flash_success_errors
 from mycodo.utils.system_pi import csv_to_list_of_str
 from mycodo.utils.system_pi import list_to_csv
-from mycodo.utils.system_pi import get_input_or_math_measurement
+from mycodo.utils.system_pi import get_measurement
 
 logger = logging.getLogger(__name__)
 
@@ -73,7 +73,7 @@ def pid_mod(form_mod_pid_base,
     # Change measurement information
     if ',' in form_mod_pid_base.measurement.data:
         measurement_id = form_mod_pid_base.measurement.data.split(',')[1]
-        selected_measurement = get_input_or_math_measurement(measurement_id)
+        selected_measurement = get_measurement(measurement_id)
 
         measurements = DeviceMeasurements.query.filter(
             DeviceMeasurements.device_id == form_mod_pid_base.pid_id.data).all()

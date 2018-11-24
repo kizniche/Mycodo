@@ -264,13 +264,13 @@ UNITS = {
         'unit': ''},
     'ppb': {
         'name': lazy_gettext('Parts per billion'),
-        'unit': 'PPB'},
+        'unit': 'ppb'},
     'ppm': {
         'name': lazy_gettext('Parts per million'),
-        'unit': 'PPM'},
+        'unit': 'ppm'},
     'rpm': {
         'name': lazy_gettext('Revolutions per minute'),
-        'unit': 'RPM'},
+        'unit': 'rpm'},
     's': {
         'name': lazy_gettext('Second'),
         'unit': 's'},

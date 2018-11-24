@@ -53,7 +53,7 @@ def output_add(form_add):
                 new_output.interface = interface
 
                 if output_type in ['wired',
-                                   'wireless_433MHz_pi_switch',
+                                   'wireless_rpi_rf',
                                    'command', ]:
                     new_output.measurement = 'duration_time'
                     new_output.unit = 's'
@@ -68,7 +68,7 @@ def output_add(form_add):
 
                 if output_type == 'wired':
                     new_output.on_at_start = False
-                elif output_type == 'wireless_433MHz_pi_switch':
+                elif output_type == 'wireless_rpi_rf':
                     new_output.pin = None
                     new_output.protocol = 1
                     new_output.pulse_length = 189
@@ -131,7 +131,7 @@ def output_mod(form_output):
                 error.append("BCM Pin must be an integer")
             mod_output.pin = form_output.pin.data
             mod_output.trigger = bool(int(form_output.trigger.data))
-        elif mod_output.output_type == 'wireless_433MHz_pi_switch':
+        elif mod_output.output_type == 'wireless_rpi_rf':
             if not is_int(form_output.pin.data):
                 error.append("Pin must be an integer")
             if not is_int(form_output.protocol.data):
@@ -280,7 +280,7 @@ def output_on_off(form_output):
             error.append(gettext("Cannot modulate output with a GPIO of 0"))
         elif form_output.on_submit.data:
             if output.output_type in ['wired',
-                                      'wireless_433MHz_pi_switch',
+                                      'wireless_rpi_rf',
                                       'command']:
                 if float(form_output.sec_on.data) <= 0:
                     error.append(gettext("Value must be greater than 0"))

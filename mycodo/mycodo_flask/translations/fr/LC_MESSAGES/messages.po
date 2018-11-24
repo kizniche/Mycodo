@@ -1805,7 +1805,7 @@ msgstr "Etat de départ"
 
 #: mycodo_flask/forms/forms_output.py:66
 #: mycodo_flask/templates/pages/output_options/command.html:17
-#: mycodo_flask/templates/pages/output_options/wireless_433MHz_pi_switch.html:41
+#: mycodo_flask/templates/pages/output_options/wireless_rpi_rf.html:41
 msgid "Neither"
 msgstr "Ni"
 
@@ -1818,7 +1818,7 @@ msgstr "Ni"
 #: mycodo_flask/templates/pages/output.html:205
 #: mycodo_flask/templates/pages/output_options/command.html:18
 #: mycodo_flask/templates/pages/output_options/wired.html:20
-#: mycodo_flask/templates/pages/output_options/wireless_433MHz_pi_switch.html:42
+#: mycodo_flask/templates/pages/output_options/wireless_rpi_rf.html:42
 msgid "On"
 msgstr "Sur"
 
@@ -1830,7 +1830,7 @@ msgstr "Sur"
 #: mycodo_flask/templates/pages/output.html:214
 #: mycodo_flask/templates/pages/output_options/command.html:19
 #: mycodo_flask/templates/pages/output_options/wired.html:21
-#: mycodo_flask/templates/pages/output_options/wireless_433MHz_pi_switch.html:43
+#: mycodo_flask/templates/pages/output_options/wireless_rpi_rf.html:43
 msgid "Off"
 msgstr "De"
 
@@ -4022,7 +4022,7 @@ msgstr ""
 
 #: mycodo_flask/templates/pages/output_options/command.html:16
 #: mycodo_flask/templates/pages/output_options/wired.html:19
-#: mycodo_flask/templates/pages/output_options/wireless_433MHz_pi_switch.html:40
+#: mycodo_flask/templates/pages/output_options/wireless_rpi_rf.html:40
 msgid "When Mycodo starts, set the output state"
 msgstr "Lorsque Mycodo démarre, définissez l'état de sortie"
 
@@ -4067,7 +4067,7 @@ msgstr ""
 msgid "What state triggers the output to turn on? High or Low?"
 msgstr "Quel état déclenche l'activation de la sortie? Haut ou bas?"
 
-#: mycodo_flask/templates/pages/output_options/wireless_433MHz_pi_switch.html:4
+#: mycodo_flask/templates/pages/output_options/wireless_rpi_rf.html:4
 msgid ""
 "The GPIO pin (using WiringPi numbering) connected to the 433 MHz "
 "transmitter data pin"
@@ -4075,19 +4075,19 @@ msgstr ""
 "La broche GPIO (utilisant la numérotation WiringPi) connectée à la broche"
 " de données du transmetteur 433 MHz"
 
-#: mycodo_flask/templates/pages/output_options/wireless_433MHz_pi_switch.html:10
+#: mycodo_flask/templates/pages/output_options/wireless_rpi_rf.html:10
 msgid "Wireless 433 MHz protocol"
 msgstr "Protocole sans fil 433 MHz"
 
-#: mycodo_flask/templates/pages/output_options/wireless_433MHz_pi_switch.html:22
+#: mycodo_flask/templates/pages/output_options/wireless_rpi_rf.html:22
 msgid "Wireless 433 MHz pulse length"
 msgstr "Longueur d'impulsion sans fil 433 MHz"
 
-#: mycodo_flask/templates/pages/output_options/wireless_433MHz_pi_switch.html:28
+#: mycodo_flask/templates/pages/output_options/wireless_rpi_rf.html:28
 msgid "Wireless 433 MHz On command"
 msgstr "Sans fil 433 MHz sur commande"
 
-#: mycodo_flask/templates/pages/output_options/wireless_433MHz_pi_switch.html:34
+#: mycodo_flask/templates/pages/output_options/wireless_rpi_rf.html:34
 msgid "Wireless 433 MHz Off command"
 msgstr "Commande sans fil 433 MHz"
 

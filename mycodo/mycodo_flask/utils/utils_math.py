@@ -7,6 +7,7 @@ from flask import url_for
 from flask_babel import gettext
 
 from mycodo.config import MATH_INFO
+from mycodo.databases.models import Conversion
 from mycodo.databases.models import DeviceMeasurements
 from mycodo.databases.models import DisplayOrder
 from mycodo.databases.models import Input
@@ -20,7 +21,9 @@ from mycodo.mycodo_flask.utils.utils_general import flash_success_errors
 from mycodo.mycodo_flask.utils.utils_general import reorder
 from mycodo.mycodo_flask.utils.utils_general import return_dependencies
 from mycodo.utils.system_pi import csv_to_list_of_str
+from mycodo.utils.system_pi import get_measurement
 from mycodo.utils.system_pi import list_to_csv
+from mycodo.utils.system_pi import return_measurement_info
 
 logger = logging.getLogger(__name__)
 
@@ -154,6 +157,20 @@ def math_mod(form_mod_math, form_mod_type=None):
 
         if mod_math.math_type == 'average_single':
             mod_math.inputs = form_mod_type.average_input.data
+
+            # Change measurement information
+            if form_mod_type.average_input.data and ',' in form_mod_type.average_input.data:
+                measurement_id = form_mod_type.average_input.data.split(',')[1]
+                selected_measurement = get_measurement(measurement_id)
+                conversion = Conversion.query.filter(
+                    Conversion.unique_id == selected_measurement.conversion_id).first()
+                channel, unit, measurement = return_measurement_info(
+                    selected_measurement, conversion)
+
+                mod_measurement = DeviceMeasurements.query.filter(
+                    DeviceMeasurements.device_id == form_mod_math.math_id.data).first()
+                mod_measurement.measurement = measurement
+                mod_measurement.unit = unit
 
         if mod_math.math_type == 'difference':
             if len(form_mod_math.inputs.data) != 2:

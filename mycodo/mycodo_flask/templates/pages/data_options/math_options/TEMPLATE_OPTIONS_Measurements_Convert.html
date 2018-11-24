@@ -14,35 +14,29 @@
     {{form_mod_math_measurement.math_measurement_mod(class_='form-control btn btn-sm btn-block')}}
   </div>
 
-  {% if each_math.math_type == 'average_single' and ',' in each_math.inputs %}
+  {%- set conversion = table_conversion.query.filter(table_conversion.unique_id == each_measurement.conversion_id).first() -%}
+  {% if conversion %}
 
-    {% if ',' in each_math.inputs and each_math.inputs.split(',')[1] in device_measurements_dict %}
-
-      {%- set measurement = device_measurements_dict[each_math.inputs.split(',')[1]] -%}
-
-      {% if measurement.unit and measurement.measurement %}
   <div class="col-auto">
-    <input class="form-control btn btn-sm btn-block" disabled="" title="" value="{% if measurement.channel != None %}CH{{measurement.channel + 1}} {% endif %}{{dict_measurements[measurement.measurement]['name']}} ({{dict_units[measurement.unit]['unit']}})" type="text">
+    <input class="form-control btn btn-sm btn-block" disabled="" title="" value="{% if each_measurement.channel != None %}CH{{each_measurement.channel + 1}} {% endif %}{{dict_units[conversion.convert_unit_to]['name']}} ({{dict_units[conversion.convert_unit_to]['unit']}})" type="text">
   </div>
-      {% endif %}
 
-    {% elif ',' in each_math.inputs and each_math.inputs.split(',')[1] in device_measurements_dict %}
-      {%- set measurement = device_measurements_dict[each_math.inputs.split(',')[1]] -%}
+  {% elif rescaled_measurement and rescaled_unit %}
 
-      {% if measurement.unit and measurement.measurement %}
-
-        test01
   <div class="col-auto">
-    <input class="form-control btn btn-sm btn-block" disabled="" title="" value="{% if measurement.channel != None %}CH{{measurement.channel + 1}} {% endif %}{{dict_measurements[measurement.measurement]['name']}} ({{dict_units[measurement.unit]['unit']}})" type="text">
+    <input class="form-control btn btn-sm btn-block" disabled="" title="" value="{% if each_measurement.channel != None %}CH{{each_measurement.channel + 1}} {% endif %}{{dict_measurements[each_measurement.rescaled_measurement]['name']}} ({{dict_units[each_measurement.rescaled_unit]['unit']}})" type="text">
   </div>
-      {% endif %}
-
-    {% endif %}
 
   {% elif each_measurement.measurement and each_measurement.unit %}
 
   <div class="col-auto">
     <input class="form-control btn btn-sm btn-block" disabled="" title="" value="{% if each_measurement.channel != None %}CH{{each_measurement.channel + 1}} {% endif %}{{dict_measurements[each_measurement.measurement]['name']}} ({{dict_units[each_measurement.unit]['unit']}})" type="text">
+  </div>
+
+  {% elif each_measurement.unit %}
+
+  <div class="col-auto">
+    <input class="form-control btn btn-sm btn-block" disabled="" title="" value="{% if each_measurement.channel != None %}CH{{each_measurement.channel + 1}} {% endif %}{{dict_units[each_measurement.unit]['name']}} ({{dict_units[each_measurement.unit]['unit']}})" type="text">
   </div>
 
   {% else %}

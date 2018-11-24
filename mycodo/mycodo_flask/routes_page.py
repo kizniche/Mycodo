@@ -496,6 +496,16 @@ def page_dashboard():
     dict_measurements = add_custom_measurements(Measurement.query.all())
     dict_units = add_custom_units(Unit.query.all())
 
+    dict_measure_measurements = {}
+    dict_measure_units = {}
+
+    for each_measurement in device_measurements:
+        conversion = Conversion.query.filter(
+            Conversion.unique_id == each_measurement.conversion_id).first()
+        _, unit, measurement = return_measurement_info(each_measurement, conversion)
+        dict_measure_measurements[each_measurement.unique_id] = measurement
+        dict_measure_units[each_measurement.unique_id] = unit
+
     # Retrieve all choices to populate form drop-down menu
     choices_camera = utils_general.choices_id_name(camera)
     choices_input = utils_general.choices_inputs(
@@ -647,6 +657,8 @@ def page_dashboard():
                            dashboard_element_names=dashboard_element_names,
                            dashboard_elements_hidden=dashboard_elements_hidden,
                            device_measurements_dict=device_measurements_dict,
+                           dict_measure_measurements=dict_measure_measurements,
+                           dict_measure_units=dict_measure_units,
                            dict_measurements=dict_measurements,
                            dict_units=dict_units,
                            display_order_dashboard=display_order_dashboard,
@@ -706,6 +718,16 @@ def page_graph_async():
     for meas in device_measurements:
         device_measurements_dict[meas.unique_id] = meas
 
+    dict_measure_measurements = {}
+    dict_measure_units = {}
+
+    for each_measurement in device_measurements:
+        conversion = Conversion.query.filter(
+            Conversion.unique_id == each_measurement.conversion_id).first()
+        _, unit, measurement = return_measurement_info(each_measurement, conversion)
+        dict_measure_measurements[each_measurement.unique_id] = measurement
+        dict_measure_units[each_measurement.unique_id] = unit
+
     async_height = 600
 
     if request.method == 'POST':
@@ -737,6 +759,8 @@ def page_graph_async():
                            async_height=async_height,
                            start_time_epoch=start_time_epoch,
                            device_measurements_dict=device_measurements_dict,
+                           dict_measure_measurements=dict_measure_measurements,
+                           dict_measure_units=dict_measure_units,
                            dict_measurements=dict_measurements,
                            dict_units=dict_units,
                            use_unit=use_unit,
@@ -1013,13 +1037,15 @@ def page_live():
     dict_measurements = add_custom_measurements(Measurement.query.all())
     dict_units = add_custom_units(Unit.query.all())
 
-    dict_measurements_units = {}
+    dict_measure_measurements = {}
+    dict_measure_units = {}
 
     for each_measurement in device_measurements:
         conversion = Conversion.query.filter(
             Conversion.unique_id == each_measurement.conversion_id).first()
-        _, unit, _ = return_measurement_info(each_measurement, conversion)
-        dict_measurements_units[each_measurement.unique_id] = unit
+        _, unit, measurement = return_measurement_info(each_measurement, conversion)
+        dict_measure_measurements[each_measurement.unique_id] = measurement
+        dict_measure_units[each_measurement.unique_id] = unit
 
     return render_template('pages/live.html',
                            and_=and_,
@@ -1028,7 +1054,8 @@ def page_live():
                            table_math=Math,
                            dict_measurements=dict_measurements,
                            dict_units=dict_units,
-                           dict_measurements_units=dict_measurements_units,
+                           dict_measure_measurements=dict_measure_measurements,
+                           dict_measure_units=dict_measure_units,
                            display_order_input=display_order_input,
                            display_order_math=display_order_math,
                            list_devices_adc=list_analog_to_digital_converters(),
@@ -1839,6 +1866,7 @@ def dict_custom_colors():
                             'channel': channel,
                             'unit': unit,
                             'measure': measurement,
+                            'measure_name': device_measurement.name,
                             'color': color})
                         index += 1
                 index_sum += index
@@ -1870,6 +1898,7 @@ def dict_custom_colors():
                             'channel': channel,
                             'unit': unit,
                             'measure': measurement,
+                            'measure_name': device_measurement.name,
                             'color': color})
                         index += 1
                 index_sum += index
