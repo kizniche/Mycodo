@@ -5,7 +5,8 @@
 <div class="col-auto">
   <label class="control-label">{{tooltips_input['measurements_enabled']['title']}}</label>
   <div>
-    <select class="form-control form-tooltip form-dropdown" data-placement="top" id="measurements_enabled" name="measurements_enabled" title="{{tooltips_input['measurements_enabled']['phrase']}}" size="{{[10, dict_measure_info[each_input.unique_id]['channels']]|min}}" multiple>
+  {% set channels = table_device_measurements.query.filter(table_device_measurements.device_id == each_input.unique_id).count() %}
+    <select class="form-control form-tooltip form-dropdown" data-placement="top" id="measurements_enabled" name="measurements_enabled" title="{{tooltips_input['measurements_enabled']['phrase']}}" size="{{[10, channels]|min}}" multiple>
 
   {%- for each_measurement in all_measurements -%}
        <option value="{{each_measurement.unique_id}}"{% if each_measurement.is_enabled %} selected{% endif %}>{{dict_measurements[each_measurement.measurement]['name']}}

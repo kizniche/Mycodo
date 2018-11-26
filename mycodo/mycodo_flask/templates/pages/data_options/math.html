@@ -2,6 +2,7 @@
 <p>{{_('Math can be performed on one or more Inputs in order to produce a new value')}}</p>
 
 {% for each_order_math_id in display_order_math -%}
+  {% set channels = table_device_measurements.query.filter(table_device_measurements.device_id == each_order_math_id).count() %}
   {%- set all_math = table_math.query.filter(table_math.unique_id == each_order_math_id).all() -%}
   {%- if all_math -%}
     {%- for each_math in all_math -%}
@@ -75,12 +76,12 @@
         </div>
       </div>
 
-    {% if dict_measure_info[each_math.unique_id]['channels'] > 1 %}
+    {% if channels > 1 %}
 
       <div class="col-auto">
         <label class="control-label">{{tooltips_input['measurements_enabled']['title']}}</label>
         <div>
-          <select class="form-control form-tooltip form-dropdown" data-placement="top" id="measurements_enabled" name="measurements_enabled" title="{{tooltips_input['measurements_enabled']['phrase']}}" size="{{[10, dict_measure_info[each_math.unique_id]['channels']]|min}}" multiple>
+          <select class="form-control form-tooltip form-dropdown" data-placement="top" id="measurements_enabled" name="measurements_enabled" title="{{tooltips_input['measurements_enabled']['phrase']}}" size="{{[10, channels]|min}}" multiple>
     {%- set all_measurements = table_device_measurements.query.filter(
                 and_(table_device_measurements.device_id == each_math.unique_id,
                      table_device_measurements.is_enabled)).all() -%}

@@ -1518,6 +1518,9 @@ def page_output():
 @flask_login.login_required
 def page_data():
     """ Display Data page """
+    import timeit
+    startup_timer = timeit.default_timer()
+
     pid = PID.query.all()
     output = Output.query.all()
     input_dev = Input.query.all()
@@ -1526,11 +1529,23 @@ def page_data():
     measurement = Measurement.query.all()
     unit = Unit.query.all()
 
+    logger.error("TEST00: {}".format(timeit.default_timer() - startup_timer))
+
     dict_inputs = parse_input_information()
+
+    logger.error("TEST01: {}".format(timeit.default_timer() - startup_timer))
+
     custom_options_values = parse_custom_option_values(input_dev)
 
+    logger.error("TEST02: {}".format(timeit.default_timer() - startup_timer))
+
     display_order_input = csv_to_list_of_str(DisplayOrder.query.first().inputs)
+
+    logger.error("TEST03: {}".format(timeit.default_timer() - startup_timer))
+
     display_order_math = csv_to_list_of_str(DisplayOrder.query.first().math)
+
+    logger.error("TEST04: {}".format(timeit.default_timer() - startup_timer))
 
     form_base = forms_input.DataBase()
 
@@ -1547,9 +1562,16 @@ def page_data():
     form_mod_humidity = forms_math.MathModHumidity()
     form_mod_verification = forms_math.MathModVerification()
 
+    logger.error("TEST05: {}".format(timeit.default_timer() - startup_timer))
+
     # Generate dict that incorporate user-added measurements/units
     dict_units = add_custom_units(unit)
+
+    logger.error("TEST06: {}".format(timeit.default_timer() - startup_timer))
+
     dict_measurements = add_custom_measurements(measurement)
+
+    logger.error("TEST07: {}".format(timeit.default_timer() - startup_timer))
 
     # Create list of choices to be used in dropdown menus
     choices_input = utils_general.choices_inputs(
@@ -1561,18 +1583,7 @@ def page_data():
     choices_measurement = utils_general.choices_measurements(measurement)
     choices_measurements_units = utils_general.choices_measurements_units(measurement, unit)
 
-    # Dict of the number of channels for each input/math
-    dict_measure_info = {}
-    for each_input in input_dev:
-        dict_measure_info[each_input.unique_id] = {
-            'channels': DeviceMeasurements.query.filter(
-                DeviceMeasurements.device_id == each_input.unique_id).count()
-        }
-    for each_math in math:
-        dict_measure_info[each_math.unique_id] = {
-            'channels': DeviceMeasurements.query.filter(
-                DeviceMeasurements.device_id == each_math.unique_id).count()
-        }
+    logger.error("TEST09: {}".format(timeit.default_timer() - startup_timer))
 
     # Create dict of Input names
     names_input = {}
@@ -1587,6 +1598,8 @@ def page_data():
     for each_element in all_elements:
         names_math[each_element.unique_id] = '[{id}] {name}'.format(
             id=each_element.unique_id.split('-')[0], name=each_element.name)
+
+    logger.error("TEST10: {}".format(timeit.default_timer() - startup_timer))
 
     # Reorder
     if form_base.reorder.data:
@@ -1607,6 +1620,8 @@ def page_data():
         choices.append((each_key, each_value))
     form_mod_math.inputs.choices = choices
 
+    logger.error("TEST11: {}".format(timeit.default_timer() - startup_timer))
+
     # Create list of file names from the math_options directory
     # Used in generating the correct options for each math controller
     math_templates = []
@@ -1626,6 +1641,8 @@ def page_data():
     for (_, _, file_names) in os.walk(input_path):
         input_templates.extend(file_names)
         break
+
+    logger.error("TEST12: {}".format(timeit.default_timer() - startup_timer))
 
     # If DS18B20 inputs added, compile a list of detected inputs
     w1thermsensor_sensors = []
@@ -1722,7 +1739,6 @@ def page_data():
                            custom_options_values=custom_options_values,
                            device_info=parse_input_information(),
                            dict_inputs=dict_inputs,
-                           dict_measure_info=dict_measure_info,
                            dict_measurements=dict_measurements,
                            dict_units=dict_units,
                            display_order_input=display_order_input,
