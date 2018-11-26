@@ -41,7 +41,16 @@ def output_add(form_add):
         error.append("The {dev} device you're trying to add has unmet dependencies: {dep}".format(
             dev=form_add.output_type.data, dep=', '.join(list_unmet_deps)))
 
-    if is_int(form_add.output_quantity.data, check_range=[1, 20]):
+    if len(form_add.output_type.data.split(',')) < 2:
+        error.append("Must select an Output type")
+
+    if not is_int(form_add.output_quantity.data, check_range=[1, 20]):
+        error.append("{error}. {accepted_values}: 1-20".format(
+            error=gettext("Invalid quantity"),
+            accepted_values=gettext("Acceptable values")
+        ))
+
+    if not error:
         for _ in range(0, form_add.output_quantity.data):
             try:
                 output_type = form_add.output_type.data.split(',')[0]
@@ -102,12 +111,7 @@ def output_add(form_add):
                 error.append(except_msg)
             except sqlalchemy.exc.IntegrityError as except_msg:
                 error.append(except_msg)
-    else:
-        error_msg = "{error}. {accepted_values}: 1-20".format(
-            error=gettext("Invalid quantity"),
-            accepted_values=gettext("Acceptable values")
-        )
-        error.append(error_msg)
+
     flash_success_errors(error, action, url_for('routes_page.page_output'))
 
     if dep_unmet:

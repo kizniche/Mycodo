@@ -475,6 +475,9 @@ def measurement_mod(form):
         if form.rescaled_measurement_unit.data != '' and ',' in form.rescaled_measurement_unit.data:
             mod_meas.rescaled_measurement = form.rescaled_measurement_unit.data.split(',')[0]
             mod_meas.rescaled_unit = form.rescaled_measurement_unit.data.split(',')[1]
+        elif form.rescaled_measurement_unit.data == '':
+            mod_meas.rescaled_measurement = ''
+            mod_meas.rescaled_unit = ''
 
         mod_meas.scale_from_min = form.scale_from_min.data
         mod_meas.scale_from_max = form.scale_from_max.data

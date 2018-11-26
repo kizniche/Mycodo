@@ -65,7 +65,7 @@
     {{form_mod_input_measurement.rescaled_measurement_unit.label(class_='control-label')}}
     <div>
       <select class="form-control" id="rescaled_measurement_unit" name="rescaled_measurement_unit">
-        <option value="">{{_('Select One')}}</option>
+        <option value="">{{_('Do Not Rescale')}}</option>
         {% for each_submit, each_display in choices_measurements_units.items() %}
         <option value="{{each_submit}}"{% if each_submit == each_measurement.rescaled_measurement + ',' + each_measurement.rescaled_unit %} selected{% endif %}>{{each_display}}</option>
         {% endfor %}
