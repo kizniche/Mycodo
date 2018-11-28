@@ -295,11 +295,12 @@ def choices_pids(pid, dict_units, dict_measurements):
     return choices
 
 
-def choices_outputs(output):
+def choices_outputs(output, dict_units, dict_measurements):
     """ populate form multi-select choices from Output entries """
     choices = OrderedDict()
     for each_output in output:
-        choices = form_output_choices(choices, each_output)
+        choices = form_output_choices(
+            choices, each_output, dict_units, dict_measurements)
     return choices
 
 
@@ -354,7 +355,7 @@ def choices_lcd(inputs, maths, pids, outputs, dict_units, dict_measurements):
 
     # Outputs
     for each_output in outputs:
-        value = '{id},pid_time'.format(
+        value = '{id},output_time'.format(
             id=each_output.unique_id)
         display = '[Output {id:02d}] {name} (Timestamp)'.format(
             id=each_output.id,
@@ -371,12 +372,10 @@ def form_input_choices(choices, each_input, dict_units, dict_measurements):
 
     for each_measure in device_measurements:
 
-        device_measurement = DeviceMeasurements.query.filter(
-            DeviceMeasurements.unique_id == each_measure.unique_id).first()
         conversion = Conversion.query.filter(
             Conversion.unique_id == each_measure.conversion_id).first()
         channel, unit, measurement = return_measurement_info(
-            device_measurement, conversion)
+            each_measure, conversion)
 
         if unit:
             value = '{input_id},{meas_id}'.format(
@@ -388,14 +387,13 @@ def form_input_choices(choices, each_input, dict_units, dict_measurements):
             display_measurement = find_name_measurement(
                 dict_measurements, measurement)
 
-            channel_number = 'CH{chan}'.format(chan=channel + 1)
-
             if each_measure.name:
                 channel_name = ' ({name})'.format(name=each_measure.name)
             else:
                 channel_name = ''
 
-            channel_info = "{}{}".format(channel_number, channel_name)
+            channel_info = "CH{cnum}{cname}".format(
+                cnum=channel + 1, cname=channel_name)
 
             if display_measurement and display_unit:
                 measurement_unit = '{meas} ({unit})'.format(
@@ -423,12 +421,10 @@ def form_math_choices(choices, each_math, dict_units, dict_measurements):
 
     for each_measure in device_measurements:
 
-        device_measurement = DeviceMeasurements.query.filter(
-            DeviceMeasurements.unique_id == each_measure.unique_id).first()
         conversion = Conversion.query.filter(
             Conversion.unique_id == each_measure.conversion_id).first()
         channel, unit, measurement = return_measurement_info(
-            device_measurement, conversion)
+            each_measure, conversion)
 
         if unit:
             value = '{input_id},{meas_id}'.format(
@@ -440,14 +436,11 @@ def form_math_choices(choices, each_math, dict_units, dict_measurements):
             display_measurement = find_name_measurement(
                 dict_measurements, measurement)
 
-            channel_number = 'CH{chan}'.format(chan=channel + 1)
-
             if each_measure.name:
-                channel_name = ' ({name})'.format(name=each_measure.name)
+                channel_info = 'CH{cnum} ({cname})'.format(
+                    cnum=channel + 1, cname=each_measure.name)
             else:
-                channel_name = ''
-
-            channel_info = "{}{}".format(channel_number, channel_name)
+                channel_info = 'CH{cnum}'.format(cnum=channel + 1)
 
             if display_measurement and display_unit:
                 measurement_unit = '{meas} ({unit})'.format(
@@ -474,12 +467,10 @@ def form_pid_choices(choices, each_pid, dict_units, dict_measurements):
 
     for each_measure in device_measurements:
 
-        device_measurement = DeviceMeasurements.query.filter(
-            DeviceMeasurements.unique_id == each_measure.unique_id).first()
         conversion = Conversion.query.filter(
             Conversion.unique_id == each_measure.conversion_id).first()
         channel, unit, measurement = return_measurement_info(
-            device_measurement, conversion)
+            each_measure, conversion)
 
         if unit:
             value = '{input_id},{meas_id}'.format(
@@ -491,14 +482,11 @@ def form_pid_choices(choices, each_pid, dict_units, dict_measurements):
             display_measurement = find_name_measurement(
                 dict_measurements, measurement)
 
-            channel_number = 'CH{chan}'.format(chan=channel + 1)
-
             if each_measure.name:
-                channel_name = ' ({name})'.format(name=each_measure.name)
+                channel_info = 'CH{cnum} ({cname})'.format(
+                    cnum=channel + 1, cname=each_measure.name)
             else:
-                channel_name = ''
-
-            channel_info = "{}{}".format(channel_number, channel_name)
+                channel_info = 'CH{cnum}'.format(cnum=channel + 1)
 
             if display_measurement and display_unit:
                 measurement_unit = '{meas} ({unit})'.format(
@@ -527,10 +515,7 @@ def form_tag_choices(choices, each_tag):
     return choices
 
 
-def form_output_choices(choices, each_output):
-    dict_measurements = add_custom_measurements(Measurement.query.all())
-    dict_units = add_custom_units(Unit.query.all())
-
+def form_output_choices(choices, each_output, dict_units, dict_measurements):
     value = '{id},output'.format(id=each_output.unique_id)
     display = '[Output {id:02d}] {name} CH{chan}, {meas} ({unit})'.format(
         id=each_output.id,

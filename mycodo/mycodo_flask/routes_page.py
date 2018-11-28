@@ -388,7 +388,8 @@ def page_export():
     dict_measurements = add_custom_measurements(Measurement.query.all())
     dict_units = add_custom_units(Unit.query.all())
 
-    output_choices = utils_general.choices_outputs(output)
+    output_choices = utils_general.choices_outputs(
+        output, dict_units, dict_measurements)
     input_choices = utils_general.choices_inputs(
         input_dev, dict_units, dict_measurements)
     math_choices = utils_general.choices_maths(
@@ -460,6 +461,10 @@ def page_dashboard():
     pid = PID.query.all()
     tags = NoteTags.query.all()
 
+    # Retrieve the order to display graphs
+    display_order_dashboard = csv_to_list_of_str(
+        DisplayOrder.query.first().dashboard)
+
     # Create form objects
     form_base = forms_dashboard.DashboardBase()
     form_camera = forms_dashboard.DashboardCamera()
@@ -469,9 +474,47 @@ def page_dashboard():
     form_output = forms_dashboard.DashboardOutput()
     form_pid = forms_dashboard.DashboardPIDControl()
 
-    # Retrieve the order to display graphs
-    display_order_dashboard = csv_to_list_of_str(
-        DisplayOrder.query.first().dashboard)
+    # Detect which form on the page was submitted
+    if request.method == 'POST':
+        if not utils_general.user_has_permission('edit_controllers'):
+            return redirect(url_for('routes_general.home'))
+
+        # Determine which form was submitted
+        form_dashboard_object = None
+        if form_base.create.data or form_base.modify.data:
+            if form_base.dashboard_type.data == 'graph':
+                form_dashboard_object = form_graph
+            elif form_base.dashboard_type.data == 'gauge':
+                form_dashboard_object = form_gauge
+            elif form_base.dashboard_type.data == 'measurement':
+                form_dashboard_object = form_measurement
+            elif form_base.dashboard_type.data == 'output':
+                form_dashboard_object = form_output
+            elif form_base.dashboard_type.data == 'pid_control':
+                form_dashboard_object = form_pid
+            elif form_base.dashboard_type.data == 'camera':
+                form_dashboard_object = form_camera
+            else:
+                flash("Unknown Dashboard Object type: {type}".format(
+                    type=form_base.dashboard_type.data), "error")
+                return redirect(url_for('routes_page.page_dashboard'))
+
+        if form_base.create.data:
+            utils_dashboard.dashboard_add(
+                form_base, form_dashboard_object, display_order_dashboard)
+        elif form_base.modify.data:
+            utils_dashboard.dashboard_mod(
+                form_base, form_dashboard_object, request.form)
+        elif form_base.delete.data:
+            utils_dashboard.dashboard_del(form_base)
+        elif form_base.order_up.data:
+            utils_dashboard.dashboard_reorder(
+                form_base.dashboard_id.data, display_order_dashboard, 'up')
+        elif form_base.order_down.data:
+            utils_dashboard.dashboard_reorder(
+                form_base.dashboard_id.data, display_order_dashboard, 'down')
+
+        return redirect(url_for('routes_page.page_dashboard'))
 
     # Create list of hidden dashboard element IDs and dict of names
     dashboard_element_names = {}
@@ -512,7 +555,8 @@ def page_dashboard():
         input_dev, dict_units, dict_measurements)
     choices_math = utils_general.choices_maths(
         math, dict_units, dict_measurements)
-    choices_output = utils_general.choices_outputs(output)
+    choices_output = utils_general.choices_outputs(
+        output, dict_units, dict_measurements)
     choices_pid = utils_general.choices_pids(
         pid, dict_units, dict_measurements)
     choices_note_tag = utils_general.choices_tags(tags)
@@ -599,48 +643,6 @@ def page_dashboard():
     # Generate a dictionary of each graph's y-axis minimum and maximum
     custom_yaxes = dict_custom_yaxes_min_max(dashboard, y_axes)
 
-    # Detect which form on the page was submitted
-    if request.method == 'POST':
-        if not utils_general.user_has_permission('edit_controllers'):
-            return redirect(url_for('routes_general.home'))
-
-        # Determine which form was submitted
-        form_dashboard_object = None
-        if form_base.create.data or form_base.modify.data:
-            if form_base.dashboard_type.data == 'graph':
-                form_dashboard_object = form_graph
-            elif form_base.dashboard_type.data == 'gauge':
-                form_dashboard_object = form_gauge
-            elif form_base.dashboard_type.data == 'measurement':
-                form_dashboard_object = form_measurement
-            elif form_base.dashboard_type.data == 'output':
-                form_dashboard_object = form_output
-            elif form_base.dashboard_type.data == 'pid_control':
-                form_dashboard_object = form_pid
-            elif form_base.dashboard_type.data == 'camera':
-                form_dashboard_object = form_camera
-            else:
-                flash("Unknown Dashboard Object type: {type}".format(
-                    type=form_base.dashboard_type.data), "error")
-                return redirect(url_for('routes_page.page_dashboard'))
-
-        if form_base.create.data:
-            utils_dashboard.dashboard_add(
-                form_base, form_dashboard_object, display_order_dashboard)
-        elif form_base.modify.data:
-            utils_dashboard.dashboard_mod(
-                form_base, form_dashboard_object, request.form)
-        elif form_base.delete.data:
-            utils_dashboard.dashboard_del(form_base)
-        elif form_base.order_up.data:
-            utils_dashboard.dashboard_reorder(
-                form_base.dashboard_id.data, display_order_dashboard, 'up')
-        elif form_base.order_down.data:
-            utils_dashboard.dashboard_reorder(
-                form_base.dashboard_id.data, display_order_dashboard, 'down')
-
-        return redirect(url_for('routes_page.page_dashboard'))
-
     return render_template('pages/dashboard.html',
                            table_conversion=Conversion,
                            table_dashboard=Dashboard,
@@ -706,7 +708,8 @@ def page_graph_async():
         input_dev, dict_units, dict_measurements)
     math_choices = utils_general.choices_maths(
         math, dict_units, dict_measurements)
-    output_choices = utils_general.choices_outputs(output)
+    output_choices = utils_general.choices_outputs(
+        output, dict_units, dict_measurements)
     pid_choices = utils_general.choices_pids(
         pid, dict_units, dict_measurements)
     tag_choices = utils_general.choices_tags(tag)
@@ -1134,6 +1137,9 @@ def page_function():
     trigger = Trigger.query.all()
     user = User.query.all()
 
+    display_order_function = csv_to_list_of_str(
+        DisplayOrder.query.first().function)
+
     form_base = forms_function.DataBase()
     form_add_function = forms_function.FunctionAdd()
     form_mod_pid_base = forms_pid.PIDModBase()
@@ -1146,112 +1152,6 @@ def page_function():
     form_conditional = forms_conditional.Conditional()
     form_conditional_conditions = forms_conditional.ConditionalConditions()
     form_actions = forms_function.Actions()
-
-    # Generate all measurement and units used
-    dict_measurements = add_custom_measurements(Measurement.query.all())
-    dict_units = add_custom_units(Unit.query.all())
-
-    choices_input = utils_general.choices_inputs(
-        input_dev, dict_units, dict_measurements)
-    choices_math = utils_general.choices_maths(
-        math, dict_units, dict_measurements)
-    choices_pid = utils_general.choices_pids(
-        pid, dict_units, dict_measurements)
-
-    actions_dict = {
-        'conditional': {},
-        'trigger': {}
-    }
-    for each_action in actions:
-        if (each_action.function_type == 'conditional' and
-                each_action.unique_id not in actions_dict['conditional']):
-            actions_dict['conditional'][each_action.function_id] = True
-        if (each_action.function_type == 'trigger' and
-                each_action.unique_id not in actions_dict['trigger']):
-            actions_dict['trigger'][each_action.function_id] = True
-
-    conditions_dict = {}
-    for each_condition in conditional_conditions:
-        if each_condition.unique_id not in conditions_dict:
-            conditions_dict[each_condition.conditional_id] = True
-
-    controllers = []
-    controllers_all = [('Conditional', conditional),
-                       ('Input', input_dev),
-                       ('LCD', lcd),
-                       ('Math', math),
-                       ('PID', pid),
-                       ('Trigger', trigger)]
-    for each_controller in controllers_all:
-        for each_cont in each_controller[1]:
-            controllers.append((each_controller[0],
-                                each_cont.unique_id,
-                                each_cont.id,
-                                each_cont.name))
-
-    # Create dict of Function names
-    names_function = {}
-    all_elements = [conditional, pid, trigger, function_dev]
-    for each_element in all_elements:
-        for each_function in each_element:
-            names_function[each_function.unique_id] = '[{id}] {name}'.format(
-                id=each_function.unique_id.split('-')[0], name=each_function.name)
-
-    display_order_function = csv_to_list_of_str(
-        DisplayOrder.query.first().function)
-
-    if form_base.reorder.data:
-        mod_order = DisplayOrder.query.first()
-        mod_order.function = list_to_csv(
-            form_base.list_visible_elements.data)
-        db.session.commit()
-        display_order_function = csv_to_list_of_str(
-            DisplayOrder.query.first().function)
-
-    # Calculate sunrise/sunset times if conditional controller is set up properly
-    sunrise_set_calc = {}
-    for each_trigger in trigger:
-        if each_trigger.trigger_type == 'trigger_sunrise_sunset':
-            sunrise_set_calc[each_trigger.unique_id] = {}
-            try:
-                sun = Sun(latitude=each_trigger.latitude,
-                          longitude=each_trigger.longitude,
-                          zenith=each_trigger.zenith)
-                sunrise = sun.get_sunrise_time()
-                sunset = sun.get_sunset_time()
-
-                # Adjust for date offset
-                new_date = datetime.datetime.now() + datetime.timedelta(
-                    days=each_trigger.date_offset_days)
-
-                sun = Sun(latitude=each_trigger.latitude,
-                          longitude=each_trigger.longitude,
-                          zenith=each_trigger.zenith,
-                          day=new_date.day,
-                          month=new_date.month,
-                          year=new_date.year)
-                offset_rise = sun.get_sunrise_time()
-                offset_set = sun.get_sunset_time()
-
-                # Adjust for time offset
-                offset_rise = offset_rise['time_local'] + datetime.timedelta(
-                    minutes=each_trigger.time_offset_minutes)
-                offset_set = offset_set['time_local'] + datetime.timedelta(
-                    minutes=each_trigger.time_offset_minutes)
-
-                sunrise_set_calc[each_trigger.unique_id]['sunrise'] = (
-                    sunrise['time_local'].strftime("%Y-%m-%d %H:%M"))
-                sunrise_set_calc[each_trigger.unique_id]['sunset'] = (
-                    sunset['time_local'].strftime("%Y-%m-%d %H:%M"))
-                sunrise_set_calc[each_trigger.unique_id]['offset_sunrise'] = (
-                    offset_rise.strftime("%Y-%m-%d %H:%M"))
-                sunrise_set_calc[each_trigger.unique_id]['offset_sunset'] = (
-                    offset_set.strftime("%Y-%m-%d %H:%M"))
-            except:
-                sunrise_set_calc[each_trigger.unique_id]['sunrise'] = None
-                sunrise_set_calc[each_trigger.unique_id]['sunrise'] = None
-                sunrise_set_calc[each_trigger.unique_id]['offset_sunrise'] = None
-                sunrise_set_calc[each_trigger.unique_id]['offset_sunset'] = None
 
     if request.method == 'POST':
         if not utils_general.user_has_permission('edit_controllers'):
@@ -1391,6 +1291,109 @@ def page_function():
 
         return redirect(url_for('routes_page.page_function'))
 
+    if form_base.reorder.data:
+        mod_order = DisplayOrder.query.first()
+        mod_order.function = list_to_csv(
+            form_base.list_visible_elements.data)
+        db.session.commit()
+        display_order_function = csv_to_list_of_str(
+            DisplayOrder.query.first().function)
+
+    # Generate all measurement and units used
+    dict_measurements = add_custom_measurements(Measurement.query.all())
+    dict_units = add_custom_units(Unit.query.all())
+
+    choices_input = utils_general.choices_inputs(
+        input_dev, dict_units, dict_measurements)
+    choices_math = utils_general.choices_maths(
+        math, dict_units, dict_measurements)
+    choices_pid = utils_general.choices_pids(
+        pid, dict_units, dict_measurements)
+
+    actions_dict = {
+        'conditional': {},
+        'trigger': {}
+    }
+    for each_action in actions:
+        if (each_action.function_type == 'conditional' and
+                each_action.unique_id not in actions_dict['conditional']):
+            actions_dict['conditional'][each_action.function_id] = True
+        if (each_action.function_type == 'trigger' and
+                each_action.unique_id not in actions_dict['trigger']):
+            actions_dict['trigger'][each_action.function_id] = True
+
+    conditions_dict = {}
+    for each_condition in conditional_conditions:
+        if each_condition.unique_id not in conditions_dict:
+            conditions_dict[each_condition.conditional_id] = True
+
+    controllers = []
+    controllers_all = [('Conditional', conditional),
+                       ('Input', input_dev),
+                       ('LCD', lcd),
+                       ('Math', math),
+                       ('PID', pid),
+                       ('Trigger', trigger)]
+    for each_controller in controllers_all:
+        for each_cont in each_controller[1]:
+            controllers.append((each_controller[0],
+                                each_cont.unique_id,
+                                each_cont.id,
+                                each_cont.name))
+
+    # Create dict of Function names
+    names_function = {}
+    all_elements = [conditional, pid, trigger, function_dev]
+    for each_element in all_elements:
+        for each_function in each_element:
+            names_function[each_function.unique_id] = '[{id}] {name}'.format(
+                id=each_function.unique_id.split('-')[0], name=each_function.name)
+
+    # Calculate sunrise/sunset times if conditional controller is set up properly
+    sunrise_set_calc = {}
+    for each_trigger in trigger:
+        if each_trigger.trigger_type == 'trigger_sunrise_sunset':
+            sunrise_set_calc[each_trigger.unique_id] = {}
+            try:
+                sun = Sun(latitude=each_trigger.latitude,
+                          longitude=each_trigger.longitude,
+                          zenith=each_trigger.zenith)
+                sunrise = sun.get_sunrise_time()
+                sunset = sun.get_sunset_time()
+
+                # Adjust for date offset
+                new_date = datetime.datetime.now() + datetime.timedelta(
+                    days=each_trigger.date_offset_days)
+
+                sun = Sun(latitude=each_trigger.latitude,
+                          longitude=each_trigger.longitude,
+                          zenith=each_trigger.zenith,
+                          day=new_date.day,
+                          month=new_date.month,
+                          year=new_date.year)
+                offset_rise = sun.get_sunrise_time()
+                offset_set = sun.get_sunset_time()
+
+                # Adjust for time offset
+                offset_rise = offset_rise['time_local'] + datetime.timedelta(
+                    minutes=each_trigger.time_offset_minutes)
+                offset_set = offset_set['time_local'] + datetime.timedelta(
+                    minutes=each_trigger.time_offset_minutes)
+
+                sunrise_set_calc[each_trigger.unique_id]['sunrise'] = (
+                    sunrise['time_local'].strftime("%Y-%m-%d %H:%M"))
+                sunrise_set_calc[each_trigger.unique_id]['sunset'] = (
+                    sunset['time_local'].strftime("%Y-%m-%d %H:%M"))
+                sunrise_set_calc[each_trigger.unique_id]['offset_sunrise'] = (
+                    offset_rise.strftime("%Y-%m-%d %H:%M"))
+                sunrise_set_calc[each_trigger.unique_id]['offset_sunset'] = (
+                    offset_set.strftime("%Y-%m-%d %H:%M"))
+            except:
+                sunrise_set_calc[each_trigger.unique_id]['sunrise'] = None
+                sunrise_set_calc[each_trigger.unique_id]['sunrise'] = None
+                sunrise_set_calc[each_trigger.unique_id]['offset_sunrise'] = None
+                sunrise_set_calc[each_trigger.unique_id]['offset_sunset'] = None
+
     return render_template('pages/function.html',
                            camera=camera,
                            choices_input=choices_input,
@@ -1442,35 +1445,12 @@ def page_output():
     output = Output.query.all()
     user = User.query.all()
 
-    display_order_output = csv_to_list_of_str(DisplayOrder.query.first().output)
+    display_order_output = csv_to_list_of_str(
+        DisplayOrder.query.first().output)
 
     form_base = forms_output.DataBase()
     form_add_output = forms_output.OutputAdd()
     form_mod_output = forms_output.OutputMod()
-
-    # Create dict of Input names
-    names_output = {}
-    all_elements = output
-    for each_element in all_elements:
-        names_output[each_element.unique_id] = '[{id}] {name}'.format(
-            id=each_element.unique_id.split('-')[0], name=each_element.name)
-
-    if form_base.reorder.data:
-        if form_base.reorder_type.data == 'input':
-            mod_order = DisplayOrder.query.first()
-            mod_order.output = list_to_csv(form_base.list_visible_elements.data)
-            db.session.commit()
-            display_order_output = csv_to_list_of_str(DisplayOrder.query.first().output)
-
-    # Create list of file names from the output_options directory
-    # Used in generating the correct options for each output/device
-    output_templates = []
-    output_path = os.path.join(
-        INSTALL_DIRECTORY,
-        'mycodo/mycodo_flask/templates/pages/output_options')
-    for (_, _, file_names) in os.walk(output_path):
-        output_templates.extend(file_names)
-        break
 
     if request.method == 'POST':
         unmet_dependencies = None
@@ -1496,6 +1476,30 @@ def page_output():
         else:
             return redirect(url_for('routes_page.page_output'))
 
+    if form_base.reorder.data:
+        if form_base.reorder_type.data == 'input':
+            mod_order = DisplayOrder.query.first()
+            mod_order.output = list_to_csv(form_base.list_visible_elements.data)
+            db.session.commit()
+            display_order_output = csv_to_list_of_str(DisplayOrder.query.first().output)
+
+    # Create dict of Input names
+    names_output = {}
+    all_elements = output
+    for each_element in all_elements:
+        names_output[each_element.unique_id] = '[{id}] {name}'.format(
+            id=each_element.unique_id.split('-')[0], name=each_element.name)
+
+    # Create list of file names from the output_options directory
+    # Used in generating the correct options for each output/device
+    output_templates = []
+    output_path = os.path.join(
+        INSTALL_DIRECTORY,
+        'mycodo/mycodo_flask/templates/pages/output_options')
+    for (_, _, file_names) in os.walk(output_path):
+        output_templates.extend(file_names)
+        break
+
     return render_template('pages/output.html',
                            camera=camera,
                            conditional_actions_list=FUNCTION_ACTIONS,
@@ -1518,9 +1522,6 @@ def page_output():
 @flask_login.login_required
 def page_data():
     """ Display Data page """
-    import timeit
-    startup_timer = timeit.default_timer()
-
     pid = PID.query.all()
     output = Output.query.all()
     input_dev = Input.query.all()
@@ -1529,23 +1530,8 @@ def page_data():
     measurement = Measurement.query.all()
     unit = Unit.query.all()
 
-    logger.error("TEST00: {}".format(timeit.default_timer() - startup_timer))
-
-    dict_inputs = parse_input_information()
-
-    logger.error("TEST01: {}".format(timeit.default_timer() - startup_timer))
-
-    custom_options_values = parse_custom_option_values(input_dev)
-
-    logger.error("TEST02: {}".format(timeit.default_timer() - startup_timer))
-
     display_order_input = csv_to_list_of_str(DisplayOrder.query.first().inputs)
-
-    logger.error("TEST03: {}".format(timeit.default_timer() - startup_timer))
-
     display_order_math = csv_to_list_of_str(DisplayOrder.query.first().math)
-
-    logger.error("TEST04: {}".format(timeit.default_timer() - startup_timer))
 
     form_base = forms_input.DataBase()
 
@@ -1561,100 +1547,6 @@ def page_data():
     form_mod_equation = forms_math.MathModEquation()
     form_mod_humidity = forms_math.MathModHumidity()
     form_mod_verification = forms_math.MathModVerification()
-
-    logger.error("TEST05: {}".format(timeit.default_timer() - startup_timer))
-
-    # Generate dict that incorporate user-added measurements/units
-    dict_units = add_custom_units(unit)
-
-    logger.error("TEST06: {}".format(timeit.default_timer() - startup_timer))
-
-    dict_measurements = add_custom_measurements(measurement)
-
-    logger.error("TEST07: {}".format(timeit.default_timer() - startup_timer))
-
-    # Create list of choices to be used in dropdown menus
-    choices_input = utils_general.choices_inputs(
-        input_dev, dict_units, dict_measurements)
-    choices_math = utils_general.choices_maths(
-        math, dict_units, dict_measurements)
-    choices_output = utils_general.choices_outputs(output)
-    choices_unit = utils_general.choices_units(unit)
-    choices_measurement = utils_general.choices_measurements(measurement)
-    choices_measurements_units = utils_general.choices_measurements_units(measurement, unit)
-
-    logger.error("TEST09: {}".format(timeit.default_timer() - startup_timer))
-
-    # Create dict of Input names
-    names_input = {}
-    all_elements = input_dev
-    for each_element in all_elements:
-        names_input[each_element.unique_id] = '[{id}] {name}'.format(
-            id=each_element.unique_id.split('-')[0], name=each_element.name)
-
-    # Create dict of Math names
-    names_math = {}
-    all_elements = math
-    for each_element in all_elements:
-        names_math[each_element.unique_id] = '[{id}] {name}'.format(
-            id=each_element.unique_id.split('-')[0], name=each_element.name)
-
-    logger.error("TEST10: {}".format(timeit.default_timer() - startup_timer))
-
-    # Reorder
-    if form_base.reorder.data:
-        if form_base.reorder_type.data == 'input':
-            mod_order = DisplayOrder.query.first()
-            mod_order.inputs = list_to_csv(form_base.list_visible_elements.data)
-            db.session.commit()
-            display_order_input = csv_to_list_of_str(DisplayOrder.query.first().inputs)
-        elif form_base.reorder_type.data == 'math':
-            mod_order = DisplayOrder.query.first()
-            mod_order.math = list_to_csv(form_base.list_visible_elements.data)
-            db.session.commit()
-            display_order_math = csv_to_list_of_str(DisplayOrder.query.first().math)
-
-    # convert dict to list of tuples
-    choices = []
-    for each_key, each_value in choices_input.items():
-        choices.append((each_key, each_value))
-    form_mod_math.inputs.choices = choices
-
-    logger.error("TEST11: {}".format(timeit.default_timer() - startup_timer))
-
-    # Create list of file names from the math_options directory
-    # Used in generating the correct options for each math controller
-    math_templates = []
-    math_path = os.path.join(
-        INSTALL_DIRECTORY,
-        'mycodo/mycodo_flask/templates/pages/data_options/math_options')
-    for (_, _, file_names) in os.walk(math_path):
-        math_templates.extend(file_names)
-        break
-
-    # Create list of file names from the input_options directory
-    # Used in generating the correct options for each input controller
-    input_templates = []
-    input_path = os.path.join(
-        INSTALL_DIRECTORY,
-        'mycodo/mycodo_flask/templates/pages/data_options/input_options')
-    for (_, _, file_names) in os.walk(input_path):
-        input_templates.extend(file_names)
-        break
-
-    logger.error("TEST12: {}".format(timeit.default_timer() - startup_timer))
-
-    # If DS18B20 inputs added, compile a list of detected inputs
-    w1thermsensor_sensors = []
-    if Input.query.filter(Input.device == 'DS18B20').count():
-        try:
-            from w1thermsensor import W1ThermSensor
-            for each_sensor in W1ThermSensor.get_available_sensors():
-                w1thermsensor_sensors.append(each_sensor.id)
-        except OSError:
-            flash("Unable to detect DS18B20 Inputs in '/sys/bus/w1/devices'. "
-                  "Make 1-wire support is enabled with 'sudo raspi-config'.",
-                  "error")
 
     if request.method == 'POST':
         unmet_dependencies = None
@@ -1727,6 +1619,83 @@ def page_data():
                                     device=form_add_input.input_type.data.split(',')[0]))
         else:
             return redirect(url_for('routes_page.page_data'))
+
+    dict_inputs = parse_input_information()
+    custom_options_values = parse_custom_option_values(input_dev)
+
+    # Generate dict that incorporate user-added measurements/units
+    dict_units = add_custom_units(unit)
+    dict_measurements = add_custom_measurements(measurement)
+
+    # Create list of choices to be used in dropdown menus
+    choices_input = utils_general.choices_inputs(
+        input_dev, dict_units, dict_measurements)
+    choices_math = utils_general.choices_maths(
+        math, dict_units, dict_measurements)
+    choices_output = utils_general.choices_outputs(
+        output, dict_units, dict_measurements)
+    choices_unit = utils_general.choices_units(unit)
+    choices_measurement = utils_general.choices_measurements(measurement)
+    choices_measurements_units = utils_general.choices_measurements_units(measurement, unit)
+
+    # Create dict of Input names
+    names_input = {}
+    all_elements = input_dev
+    for each_element in all_elements:
+        names_input[each_element.unique_id] = '[{id}] {name}'.format(
+            id=each_element.unique_id.split('-')[0], name=each_element.name)
+
+    # Create dict of Math names
+    names_math = {}
+    all_elements = math
+    for each_element in all_elements:
+        names_math[each_element.unique_id] = '[{id}] {name}'.format(
+            id=each_element.unique_id.split('-')[0], name=each_element.name)
+
+    # Reorder
+    if form_base.reorder.data:
+        if form_base.reorder_type.data == 'input':
+            mod_order = DisplayOrder.query.first()
+            mod_order.inputs = list_to_csv(form_base.list_visible_elements.data)
+            db.session.commit()
+            display_order_input = csv_to_list_of_str(DisplayOrder.query.first().inputs)
+        elif form_base.reorder_type.data == 'math':
+            mod_order = DisplayOrder.query.first()
+            mod_order.math = list_to_csv(form_base.list_visible_elements.data)
+            db.session.commit()
+            display_order_math = csv_to_list_of_str(DisplayOrder.query.first().math)
+
+    # Create list of file names from the math_options directory
+    # Used in generating the correct options for each math controller
+    math_templates = []
+    math_path = os.path.join(
+        INSTALL_DIRECTORY,
+        'mycodo/mycodo_flask/templates/pages/data_options/math_options')
+    for (_, _, file_names) in os.walk(math_path):
+        math_templates.extend(file_names)
+        break
+
+    # Create list of file names from the input_options directory
+    # Used in generating the correct options for each input controller
+    input_templates = []
+    input_path = os.path.join(
+        INSTALL_DIRECTORY,
+        'mycodo/mycodo_flask/templates/pages/data_options/input_options')
+    for (_, _, file_names) in os.walk(input_path):
+        input_templates.extend(file_names)
+        break
+
+    # If DS18B20 inputs added, compile a list of detected inputs
+    w1thermsensor_sensors = []
+    if Input.query.filter(Input.device == 'DS18B20').count():
+        try:
+            from w1thermsensor import W1ThermSensor
+            for each_sensor in W1ThermSensor.get_available_sensors():
+                w1thermsensor_sensors.append(each_sensor.id)
+        except OSError:
+            flash("Unable to detect DS18B20 Inputs in '/sys/bus/w1/devices'. "
+                  "Make 1-wire support is enabled with 'sudo raspi-config'.",
+                  "error")
 
     return render_template('pages/data.html',
                            and_=and_,
