@@ -104,3 +104,8 @@ class MathMeasurementMod(FlaskForm):
         lazy_gettext('Convert to Measurement'))
 
     math_measurement_mod = SubmitField(lazy_gettext('Save'))
+
+
+class MathModMisc(FlaskForm):
+    unique_id_1 = StringField()
+    unique_id_2 = StringField()

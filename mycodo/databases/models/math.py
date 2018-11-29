@@ -39,6 +39,12 @@ class Math(CRUDMixin, db.Model):
     pressure_pa_id = db.Column(db.Text, default=None)
     pressure_pa_measure_id = db.Column(db.Text, default=None)
 
+    # Misc IDs
+    unique_id_1 = db.Column(db.Text, default=None)
+    unique_measurement_id_1 = db.Column(db.Text, default=None)
+    unique_id_2 = db.Column(db.Text, default=None)
+    unique_measurement_id_2 = db.Column(db.Text, default=None)
+
     def is_active(self):
         """
         :return: Whether the sensor is currently activated

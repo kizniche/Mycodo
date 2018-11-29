@@ -211,6 +211,25 @@ def math_mod(form_mod_math, form_mod_type=None):
         elif mod_math.math_type == 'verification':
             mod_math.max_difference = form_mod_type.max_difference.data
 
+        elif mod_math.math_type == 'vapor_pressure_deficit':
+            mod_math.unique_id_1 = form_mod_type.unique_id_1.data.split(',')[0]
+            mod_math.unique_measurement_id_1 = form_mod_type.unique_id_1.data.split(',')[1]
+            vpd_input = Input.query.filter(
+                Input.unique_id == mod_math.unique_id_1).first()
+            vpd_math = Input.query.filter(
+                Math.unique_id == mod_math.unique_id_1).first()
+            if not vpd_input and not vpd_math:
+                error.append("Invalid vapor pressure deficit temperature selection: Must be a valid Input or Math")
+
+            mod_math.unique_id_2 = form_mod_type.unique_id_2.data.split(',')[0]
+            mod_math.unique_measurement_id_2 = form_mod_type.unique_id_2.data.split(',')[1]
+            vpd_input = Input.query.filter(
+                Input.unique_id == mod_math.unique_id_2).first()
+            vpd_math = Input.query.filter(
+                Math.unique_id == mod_math.unique_id_2).first()
+            if not vpd_input and not vpd_math:
+                error.append("Invalid vapor pressure deficit humidity selection: Must be a valid Input or Math")
+
         if not error:
             db.session.commit()
     except Exception as except_msg:

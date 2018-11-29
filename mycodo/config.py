@@ -35,44 +35,45 @@ LANGUAGES = {
 
 # Math controllers
 MATHS = [
-    ('average', 'Average (Multiple Inputs)'),
-    ('average_single', 'Average (Single Input)'),
-    ('difference', 'Difference'),
-    ('equation', 'Equation'),
-    ('statistics', 'Statistics'),
-    ('humidity', 'Humidity (Wet/Dry-Bulb)'),
-    ('verification', 'Verification')
+    ('average', lazy_gettext('Average (Multiple Inputs)')),
+    ('average_single', lazy_gettext('Average (Single Input)')),
+    ('difference', lazy_gettext('Difference')),
+    ('equation', lazy_gettext('Equation')),
+    ('statistics', lazy_gettext('Statistics')),
+    ('humidity', lazy_gettext('Humidity (Wet/Dry-Bulb)')),
+    ('verification', lazy_gettext('Verification')),
+    ('vapor_pressure_deficit', lazy_gettext('Vapor Pressure Deficit'))
 ]
 
 # Math info
 MATH_INFO = {
     'average': {
-        'name': 'Average (Multi)',
+        'name': lazy_gettext('Average (Multi)'),
         'dependencies_module': [],
         'enable_measurements_select': True,
         'measure': {}
     },
     'average_single': {
-        'name': 'Average (Single)',
+        'name': lazy_gettext('Average (Single)'),
         'dependencies_module': [],
         'enable_measurements_select': False,
         'enable_measurements_convert': True,
         'measure': {}
     },
     'difference': {
-        'name': 'Difference',
+        'name': lazy_gettext('Difference'),
         'dependencies_module': [],
         'enable_measurements_select': True,
         'measure': {}
     },
     'equation': {
-        'name': 'Equation',
+        'name': lazy_gettext('Equation'),
         'dependencies_module': [],
         'enable_measurements_select': True,
         'measure': {}
     },
     'humidity': {
-        'name': 'Humidity (Wet-Bulb)',
+        'name': lazy_gettext('Humidity (Wet-Bulb)'),
         'dependencies_module': [],
         'enable_measurements_convert': True,
         'measure': {
@@ -95,7 +96,7 @@ MATH_INFO = {
         }
     },
     'statistics': {
-        'name': 'Statistics',
+        'name': lazy_gettext('Statistics'),
         'dependencies_module': [],
         'enable_single_measurement_select': True,
         'measure': {
@@ -137,20 +138,31 @@ MATH_INFO = {
         }
     },
     'verification': {
-        'name': 'Verification',
+        'name': lazy_gettext('Verification'),
         'dependencies_module': [],
         'enable_measurements_select': True,
         'measure': {}
+    },
+    'vapor_pressure_deficit': {
+        'name': lazy_gettext('Vapor Pressure Deficit'),
+        'dependencies_module': [],
+        'enable_measurements_select': False,
+        'measure': {
+            0: {
+                'measurement': 'vapor_pressure_deficit',
+                'unit': 'Pa'
+            }
+        }
     }
 }
 
 # Methods
 METHODS = [
-    ('Date', 'Time/Date'),
-    ('Duration', 'Duration'),
-    ('Daily', 'Daily (Time-Based)'),
-    ('DailySine', 'Daily (Sine Wave)'),
-    ('DailyBezier', 'Daily (Bezier Curve)')
+    ('Date', lazy_gettext('Time/Date')),
+    ('Duration', lazy_gettext('Duration')),
+    ('Daily', lazy_gettext('Daily (Time-Based)')),
+    ('DailySine', lazy_gettext('Daily (Sine Wave)')),
+    ('DailyBezier', lazy_gettext('Daily (Bezier Curve)'))
 ]
 
 # Method info
@@ -162,13 +174,13 @@ METHOD_INFO = {
 
 # Math controllers
 OUTPUTS = [
-    ('wired,GPIO', 'On/Off (GPIO)'),
-    ('pwm,GPIO', 'PWM (GPIO)'),
-    ('command,GPIO', 'On/Off (Command)'),
-    ('command_pwm,GPIO', 'PWM (Command)'),
-    ('wireless_rpi_rf,GPIO', 'Wireless 315/433MHz LPD/SRD (rpi-rf)'),
-    ('atlas_ezo_pmp,I2C', 'Atlas EZO-PMP (I2C)'),
-    ('atlas_ezo_pmp,UART', 'Atlas EZO-PMP (UART)')
+    ('wired,GPIO', lazy_gettext('On/Off (GPIO)')),
+    ('pwm,GPIO', lazy_gettext('PWM (GPIO)')),
+    ('command,GPIO', lazy_gettext('On/Off (Command)')),
+    ('command_pwm,GPIO', lazy_gettext('PWM (Command)')),
+    ('wireless_rpi_rf,GPIO', lazy_gettext('Wireless 315/433MHz LPD/SRD (rpi-rf)')),
+    ('atlas_ezo_pmp,I2C', lazy_gettext('Atlas EZO-PMP (I2C)')),
+    ('atlas_ezo_pmp,UART', lazy_gettext('Atlas EZO-PMP (UART)'))
 ]
 
 # Outputs
@@ -265,7 +277,7 @@ PID_INFO = {
 # Calibration
 CALIBRATION_INFO = {
     'CALIBRATE_DS_TYPE': {
-        'name': 'DS-Type Sensor Calibration',
+        'name': lazy_gettext('DS-Type Sensor Calibration'),
         'dependencies_module': [
             ('pip-pypi', 'w1thermsensor', 'w1thermsensor')
         ]
@@ -275,25 +287,25 @@ CALIBRATION_INFO = {
 
 # Conditional controllers
 CONDITIONAL_CONDITIONS = [
-    ('measurement', 'Measurement'),
-    ('gpio_state', 'GPIO State')
+    ('measurement', lazy_gettext('Measurement')),
+    ('gpio_state', lazy_gettext('GPIO State'))
 ]
 
 
 FUNCTION_TYPES = [
-    ('function_spacer', 'Spacer', 'Function: Spacer'),
-    ('function_actions', 'Actions', 'Function: Execute Actions'),
-    ('conditional_conditional', 'Conditional', 'Conditional: Conditional'),
-    ('pid_pid', 'PID', 'PID: PID Controller'),
-    ('trigger_edge', 'Edge', 'Trigger: Edge'),
-    ('trigger_output', 'Output (On/Off)', 'Trigger: Output (On/Off)'),
-    ('trigger_output_duration', 'Output (On Duration)', 'Trigger: Output (On Duration)'),
-    ('trigger_output_pwm', 'Output (PWM)', 'Trigger: Output (PWM)'),
-    ('trigger_timer_daily_time_point', 'Timer (Daily Point)', 'Trigger: Timer (Daily Point)'),
-    ('trigger_timer_daily_time_span', 'Timer (Daily Span)', 'Trigger: Timer (Daily Span)'),
-    ('trigger_timer_duration', 'Timer (Duration)', 'Trigger: Timer (Duration)'),
-    ('trigger_run_pwm_method', 'Run PWM Method', 'Trigger: Run PWM Method'),
-    ('trigger_sunrise_sunset', 'Sunrise/Sunset', 'Trigger: Sunrise/Sunset')
+    ('function_spacer', 'Spacer', lazy_gettext('Function: Spacer')),
+    ('function_actions', 'Actions', lazy_gettext('Function: Execute Actions')),
+    ('conditional_conditional', 'Conditional', lazy_gettext('Conditional: Conditional')),
+    ('pid_pid', 'PID', lazy_gettext('PID: PID Controller')),
+    ('trigger_edge', 'Edge', lazy_gettext('Trigger: Edge')),
+    ('trigger_output', 'Output (On/Off)', lazy_gettext('Trigger: Output (On/Off)')),
+    ('trigger_output_duration', 'Output (On Duration)', lazy_gettext('Trigger: Output (On Duration)')),
+    ('trigger_output_pwm', 'Output (PWM)', lazy_gettext('Trigger: Output (PWM)')),
+    ('trigger_timer_daily_time_point', 'Timer (Daily Point)', lazy_gettext('Trigger: Timer (Daily Point)')),
+    ('trigger_timer_daily_time_span', 'Timer (Daily Span)', lazy_gettext('Trigger: Timer (Daily Span)')),
+    ('trigger_timer_duration', 'Timer (Duration)', lazy_gettext('Trigger: Timer (Duration)')),
+    ('trigger_run_pwm_method', 'Run PWM Method', lazy_gettext('Trigger: Run PWM Method')),
+    ('trigger_sunrise_sunset', 'Sunrise/Sunset', lazy_gettext('Trigger: Sunrise/Sunset'))
 ]
 
 

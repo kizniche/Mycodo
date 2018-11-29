@@ -38,6 +38,7 @@ from mycodo.databases.models import DeviceMeasurements
 from mycodo.databases.models import Math
 from mycodo.databases.models import Misc
 from mycodo.databases.models import SMTP
+from mycodo.inputs.sensorutils import calculate_vapor_pressure_deficit
 from mycodo.inputs.sensorutils import convert_units
 from mycodo.mycodo_client import DaemonControl
 from mycodo.utils.database import db_retrieve_table_daemon
@@ -134,6 +135,12 @@ class MathController(threading.Thread):
             self.wet_bulb_t_measure_id = math.wet_bulb_t_measure_id
             self.pressure_pa_id = math.pressure_pa_id
             self.pressure_pa_measure_id = math.pressure_pa_measure_id
+
+            # Misc ids
+            self.unique_id_1 = math.unique_id_1
+            self.unique_measurement_id_1 = math.unique_measurement_id_1
+            self.unique_id_2 = math.unique_id_2
+            self.unique_measurement_id_2 = math.unique_measurement_id_2
 
             self.timer = time.time() + self.start_offset
         except Exception as except_msg:
@@ -416,37 +423,41 @@ class MathController(threading.Thread):
                     critical_error = True
 
                 if measurement and measurement.unit != 'K':
+                    conversion_found = False
                     for each_conv in db_retrieve_table_daemon(Conversion, entry='all'):
                         if (each_conv.convert_unit_from == measurement.unit and
                                 each_conv.convert_unit_to == 'K'):
                             dbt_kelvin = convert_units(
                                 each_conv.unique_id, dbt_kelvin)
-                        else:
-                            self.logger.error(
-                                "Could not find conversion for unit "
-                                "{unit} to K (Kelvin)".format(
-                                    unit=measurement.unit))
-                            critical_error = True
-
-                    if db_retrieve_table_daemon(DeviceMeasurements, unique_id=self.dry_bulb_t_measure_id):
-                        measurement = db_retrieve_table_daemon(DeviceMeasurements, unique_id=self.dry_bulb_t_measure_id)
-                    else:
-                        self.logger.error("Could not find pressure measurement")
-                        measurement = None
+                            conversion_found = True
+                    if not conversion_found:
+                        self.logger.error(
+                            "Could not find conversion for unit "
+                            "{unit} to K (Kelvin)".format(
+                                unit=measurement.unit))
                         critical_error = True
 
-                    if measurement and measurement.unit != 'K':
-                        for each_conv in db_retrieve_table_daemon(Conversion, entry='all'):
-                            if (each_conv.convert_unit_from == measurement.unit and
-                                    each_conv.convert_unit_to == 'K'):
-                                wbt_kelvin = convert_units(
-                                    each_conv.unique_id, wbt_kelvin)
-                            else:
-                                self.logger.error(
-                                    "Could not find conversion for unit "
-                                    "{unit} to K (Kelvin)".format(
-                                        unit=measurement.unit))
-                                critical_error = True
+                if db_retrieve_table_daemon(DeviceMeasurements, unique_id=self.dry_bulb_t_measure_id):
+                    measurement = db_retrieve_table_daemon(DeviceMeasurements, unique_id=self.dry_bulb_t_measure_id)
+                else:
+                    self.logger.error("Could not find pressure measurement")
+                    measurement = None
+                    critical_error = True
+
+                if measurement and measurement.unit != 'K':
+                    conversion_found = False
+                    for each_conv in db_retrieve_table_daemon(Conversion, entry='all'):
+                        if (each_conv.convert_unit_from == measurement.unit and
+                                each_conv.convert_unit_to == 'K'):
+                            wbt_kelvin = convert_units(
+                                each_conv.unique_id, wbt_kelvin)
+                            conversion_found = True
+                    if not conversion_found:
+                        self.logger.error(
+                            "Could not find conversion for unit "
+                            "{unit} to K (Kelvin)".format(
+                                unit=measurement.unit))
+                        critical_error = True
 
                 # Convert temperatures to Kelvin (already done above)
                 # dbt_kelvin = celsius_to_kelvin(dry_bulb_t_c)
@@ -499,6 +510,98 @@ class MathController(threading.Thread):
                             'unit': unit,
                             'value': list_measurement[channel]
                         }
+            else:
+                self.error_not_within_max_age()
+
+        elif self.math_type == 'vapor_pressure_deficit':
+
+            vpd_pa = None
+            critical_error = False
+
+            success_dbt, temperature = self.get_measurements_from_id(
+                self.unique_id_1, self.unique_measurement_id_1)
+            success_wbt, humidity = self.get_measurements_from_id(
+                self.unique_id_2, self.unique_measurement_id_2)
+
+            if success_dbt and success_wbt:
+                vpd_temperature_celsius = float(temperature[1])
+                vpd_humidity_percent = float(humidity[1])
+
+                if db_retrieve_table_daemon(
+                        DeviceMeasurements,
+                        unique_id=self.unique_measurement_id_1):
+                    measurement = db_retrieve_table_daemon(
+                        DeviceMeasurements,
+                        unique_id=self.unique_measurement_id_1)
+                else:
+                    self.logger.error("Could not find temperature measurement")
+                    measurement = None
+                    critical_error = True
+
+                if measurement and measurement.unit != 'C':
+                    conversion_found = False
+                    for each_conv in db_retrieve_table_daemon(Conversion, entry='all'):
+                        if (each_conv.convert_unit_from == measurement.unit and
+                                each_conv.convert_unit_to == 'C'):
+                            vpd_temperature_celsius = convert_units(
+                                each_conv.unique_id, vpd_temperature_celsius)
+                            conversion_found = True
+                    if not conversion_found:
+                        self.logger.error(
+                            "Could not find conversion for unit "
+                            "{unit} to C (Celsius)".format(
+                                unit=measurement.unit))
+                        critical_error = True
+
+                if db_retrieve_table_daemon(
+                        DeviceMeasurements,
+                        unique_id=self.unique_measurement_id_2):
+                    measurement = db_retrieve_table_daemon(
+                        DeviceMeasurements,
+                        unique_id=self.unique_measurement_id_2)
+                else:
+                    self.logger.error("Could not find humidity measurement")
+                    measurement = None
+                    critical_error = True
+
+                if measurement and measurement.unit != 'percent':
+                    conversion_found = False
+                    for each_conv in db_retrieve_table_daemon(Conversion, entry='all'):
+                        if (each_conv.convert_unit_from == measurement.unit and
+                                each_conv.convert_unit_to == 'percent'):
+                            vpd_humidity_percent = convert_units(
+                                each_conv.unique_id, vpd_humidity_percent)
+                            conversion_found = True
+                    if not conversion_found:
+                        self.logger.error(
+                            "Could not find conversion for unit "
+                            "{unit} to percent (%)".format(
+                                unit=measurement.unit))
+                        critical_error = True
+
+                try:
+                    if not critical_error:
+                        vpd_pa = calculate_vapor_pressure_deficit(
+                            vpd_temperature_celsius, vpd_humidity_percent)
+                    else:
+                        self.logger.error(
+                            "One or more critical errors prevented the "
+                            "vapor pressure deficit from being calculated")
+                except TypeError as err:
+                    self.logger.error("TypeError: {msg}".format(msg=err))
+
+                if vpd_pa:
+                    measure = self.device_measurements.first()
+                    conversion = db_retrieve_table_daemon(
+                        Conversion, unique_id=measure.conversion_id)
+                    channel, unit, measurement = return_measurement_info(
+                        measure, conversion)
+
+                    measurement_dict[channel] = {
+                        'measurement': measurement,
+                        'unit': unit,
+                        'value': vpd_pa
+                    }
             else:
                 self.error_not_within_max_age()
 

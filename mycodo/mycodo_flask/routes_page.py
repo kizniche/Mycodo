@@ -1547,6 +1547,7 @@ def page_data():
     form_mod_equation = forms_math.MathModEquation()
     form_mod_humidity = forms_math.MathModHumidity()
     form_mod_verification = forms_math.MathModVerification()
+    form_mod_misc = forms_math.MathModMisc()
 
     if request.method == 'POST':
         unmet_dependencies = None
@@ -1599,6 +1600,8 @@ def page_data():
                 utils_math.math_mod(form_mod_math, form_mod_equation)
             elif math_type == 'verification':
                 utils_math.math_mod(form_mod_math, form_mod_verification)
+            elif math_type == 'vapor_pressure_deficit':
+                utils_math.math_mod(form_mod_math, form_mod_misc)
             else:
                 utils_math.math_mod(form_mod_math)
         elif form_mod_math.math_delete.data:
@@ -1724,6 +1727,7 @@ def page_data():
                            form_mod_equation=form_mod_equation,
                            form_mod_humidity=form_mod_humidity,
                            form_mod_verification=form_mod_verification,
+                           form_mod_misc=form_mod_misc,
                            input_templates=input_templates,
                            math_info=MATH_INFO,
                            math_templates=math_templates,
