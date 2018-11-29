@@ -157,6 +157,10 @@ MEASUREMENTS = {
         'name': lazy_gettext('Temperature'),
         'meas': 'temperature',
         'units': ['C', 'F', 'K']},
+    'vapor_pressure_deficit': {
+        'name': lazy_gettext('Vapor Pressure Deficit'),
+        'meas': 'vapor_pressure_deficit',
+        'units': ['Pa']},
     'voc': {
         'name': lazy_gettext('VOC'),
         'meas': 'voc',

@@ -6,6 +6,7 @@ import time
 from mycodo.databases.models import DeviceMeasurements
 from mycodo.inputs.base_input import AbstractInput
 from mycodo.inputs.sensorutils import calculate_dewpoint
+from mycodo.inputs.sensorutils import calculate_vapor_pressure_deficit
 from mycodo.utils.database import db_retrieve_table_daemon
 
 # Measurements
@@ -21,6 +22,10 @@ measurements_dict = {
     2: {
         'measurement': 'dewpoint',
         'unit': 'C'
+    },
+    3: {
+        'measurement': 'vapor_pressure_deficit',
+        'unit': 'Pa'
     }
 }
 
@@ -109,6 +114,12 @@ class InputModule(AbstractInput):
                         self.is_enabled(0) and
                         self.is_enabled(1)):
                     return_dict[2]['value'] = calculate_dewpoint(
+                        return_dict[0]['value'], return_dict[1]['value'])
+
+                if (self.is_enabled(3) and
+                        self.is_enabled(0) and
+                        self.is_enabled(1)):
+                    return_dict[3]['value'] = calculate_vapor_pressure_deficit(
                         return_dict[0]['value'], return_dict[1]['value'])
 
                 return return_dict

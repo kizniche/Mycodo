@@ -16,6 +16,7 @@ The Mycodo 7.0 brings a redesigned measurement/unit and Conditional systems. The
  - Add Function: Execute Actions
  - Add Function Action: Pause (pause for a duration of time before executing any remaining actions)
  - Add Math controller option: Start Offset (seconds)
+ - Add Vapor Pressure Deficit calculation to Inputs that measure temperature and relative humidity ([#572](https://github.com/kizniche/mycodo/issues/572))
 
 ### Miscellaneous
 

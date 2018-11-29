@@ -62,6 +62,15 @@ def calculate_dewpoint(t, rh):
             / (m - math.log(rh / 100.0) - m * t / (tn + t)))
 
 
+def calculate_saturated_vapor_pressure(temperature):
+    return 610.7 * 10 ** (7.5 * temperature / (237.3 + temperature))
+
+
+def calculate_vapor_pressure_deficit(temperature, relative_humidity):
+    svp = calculate_saturated_vapor_pressure(temperature)
+    return ((100 - relative_humidity) / 100) * svp
+
+
 def is_device(path):
     """Determines if a path exists, created to check if a /dev/device exists"""
     try:

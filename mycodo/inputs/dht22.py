@@ -6,6 +6,7 @@ from mycodo.databases.models import DeviceMeasurements
 from mycodo.databases.models import Output
 from mycodo.inputs.base_input import AbstractInput
 from mycodo.inputs.sensorutils import calculate_dewpoint
+from mycodo.inputs.sensorutils import calculate_vapor_pressure_deficit
 from mycodo.utils.database import db_retrieve_table_daemon
 
 # Measurements
@@ -21,6 +22,10 @@ measurements_dict = {
     2: {
         'measurement': 'dewpoint',
         'unit': 'C'
+    },
+    3: {
+        'measurement': 'vapor_pressure_deficit',
+        'unit': 'Pa'
     }
 }
 
@@ -89,6 +94,7 @@ class InputModule(AbstractInput):
         self.temp_temperature = None
         self.temp_humidity = None
         self.temp_dew_point = None
+        self.temp_vpd = None
         self.power_output_id = None
         self.powered = False
         self.pi = None
@@ -158,6 +164,10 @@ class InputModule(AbstractInput):
                         self.is_enabled(0) and
                         self.is_enabled(1)):
                     return_dict[2]['value'] = self.temp_dew_point
+                if (self.is_enabled(3) and
+                        self.is_enabled(0) and
+                        self.is_enabled(1)):
+                    return_dict[3]['value'] = self.temp_vpd
                 return return_dict  # success - no errors
             time.sleep(2)
 
@@ -178,6 +188,10 @@ class InputModule(AbstractInput):
                             self.is_enabled(0) and
                             self.is_enabled(1)):
                         return_dict[2]['value'] = self.temp_dew_point
+                    if (self.is_enabled(3) and
+                            self.is_enabled(0) and
+                            self.is_enabled(1)):
+                        return_dict[3]['value'] = self.temp_vpd
                     return return_dict  # success - no errors
                 time.sleep(2)
 
@@ -188,6 +202,7 @@ class InputModule(AbstractInput):
         self.temp_temperature = None
         self.temp_humidity = None
         self.temp_dew_point = None
+        self.temp_vpd = None
 
         initialized = False
 
@@ -213,6 +228,8 @@ class InputModule(AbstractInput):
                 if (self.temp_humidity is not None and
                         self.temp_temperature is not None):
                     self.temp_dew_point = calculate_dewpoint(
+                        self.temp_temperature, self.temp_humidity)
+                    self.temp_vpd = calculate_vapor_pressure_deficit(
                         self.temp_temperature, self.temp_humidity)
             except Exception as e:
                 self.logger.exception(

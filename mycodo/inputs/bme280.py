@@ -9,6 +9,7 @@ from mycodo.databases.models import DeviceMeasurements
 from mycodo.inputs.base_input import AbstractInput
 from mycodo.inputs.sensorutils import calculate_altitude
 from mycodo.inputs.sensorutils import calculate_dewpoint
+from mycodo.inputs.sensorutils import calculate_vapor_pressure_deficit
 from mycodo.utils.database import db_retrieve_table_daemon
 
 # Measurements
@@ -32,6 +33,10 @@ measurements_dict = {
     4: {
         'measurement': 'altitude',
         'unit': 'm'
+    },
+    5: {
+        'measurement': 'vapor_pressure_deficit',
+        'unit': 'Pa'
     }
 
 }
@@ -112,5 +117,11 @@ class InputModule(AbstractInput):
 
         if self.is_enabled(4) and self.is_enabled(2):
             return_dict[4]['value'] = calculate_altitude(return_dict[2]['value'])
+
+        if (self.is_enabled(5) and
+                self.is_enabled(0) and
+                self.is_enabled(1)):
+            return_dict[5]['value'] = calculate_vapor_pressure_deficit(
+                return_dict[0]['value'], return_dict[1]['value'])
 
         return return_dict
