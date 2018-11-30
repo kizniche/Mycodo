@@ -144,7 +144,7 @@ MATH_INFO = {
     }
 }
 
-# Math controllers
+# Math form dropdown
 MATHS = [
     ('average', MATH_INFO['average']['name']),
     ('average_single',MATH_INFO['average']['name']),
@@ -156,49 +156,57 @@ MATHS = [
     ('vapor_pressure_deficit', MATH_INFO['average']['name'])
 ]
 
-# Methods
-METHODS = [
-    ('Date', lazy_gettext('Time/Date')),
-    ('Duration', lazy_gettext('Duration')),
-    ('Daily', lazy_gettext('Daily (Time-Based)')),
-    ('DailySine', lazy_gettext('Daily (Sine Wave)')),
-    ('DailyBezier', lazy_gettext('Daily (Bezier Curve)'))
-]
-
 # Method info
 METHOD_INFO = {
+    'Date': {
+        'name': lazy_gettext('Time/Date'),
+        'dependencies_module': []
+    },
+    'Duration': {
+        'name': lazy_gettext('Duration'),
+        'dependencies_module': []
+    },
+    'Daily': {
+        'name': lazy_gettext('Daily (Time-Based)'),
+        'dependencies_module': []
+    },
+    'DailySine': {
+        'name': lazy_gettext('Daily (Sine Wave)'),
+        'dependencies_module': []
+    },
     'DailyBezier': {
-        'name': 'DailyBezier',
-        'dependencies_module': [('apt', 'python3-numpy', 'python3-numpy')]}
+        'name': lazy_gettext('Daily (Bezier Curve)'),
+        'dependencies_module': [
+            ('apt', 'python3-numpy', 'python3-numpy')
+        ]
+    }
 }
 
-# Math controllers
-OUTPUTS = [
-    ('wired,GPIO', lazy_gettext('On/Off (GPIO)')),
-    ('pwm,GPIO', lazy_gettext('PWM (GPIO)')),
-    ('command,GPIO', lazy_gettext('On/Off (Command)')),
-    ('command_pwm,GPIO', lazy_gettext('PWM (Command)')),
-    ('wireless_rpi_rf,GPIO', lazy_gettext('Wireless 315/433MHz LPD/SRD (rpi-rf)')),
-    ('atlas_ezo_pmp,I2C', lazy_gettext('Atlas EZO-PMP (I2C)')),
-    ('atlas_ezo_pmp,UART', lazy_gettext('Atlas EZO-PMP (UART)'))
+# Method form dropdown
+METHODS = [
+    ('Date', METHOD_INFO['Date']['name']),
+    ('Duration', METHOD_INFO['Duration']['name']),
+    ('Daily', METHOD_INFO['Daily']['name']),
+    ('DailySine', METHOD_INFO['DailySine']['name']),
+    ('DailyBezier', METHOD_INFO['DailyBezier']['name'])
 ]
 
 # Outputs
 OUTPUT_INFO = {
     'wired': {
-        'name': 'GPIO (On/Off)',
+        'name': lazy_gettext('On/Off (GPIO)'),
         'dependencies_module': [],
         'measure': {
             'duration_time': {'s': {0: {}}}
         }},
     'pwm': {
-        'name': 'GPIO (PWM)',
+        'name': lazy_gettext('PWM (GPIO)'),
         'dependencies_module': [],
         'measure': {
             'duty_cycle': {'percent': {0: {}}}
         }},
     'wireless_rpi_rf': {
-        'name': 'Wireless (433MHz)',
+        'name': lazy_gettext('Wireless 315/433MHz LPD/SRD (rpi-rf)'),
         'dependencies_module': [
             ('pip-pypi', 'rpi_rf', 'rpi_rf')
         ],
@@ -206,25 +214,37 @@ OUTPUT_INFO = {
             'duration_time': {'s': {0: {}}}
         }},
     'command': {
-        'name': 'Command (On/Off)',
+        'name': lazy_gettext('On/Off (Command)'),
         'dependencies_module': [],
         'measure': {
             'duration_time': {'s': {0: {}}}
         }},
     'command_pwm': {
-        'name': 'Command (PWM)',
+        'name': lazy_gettext('PWM (Command)'),
         'dependencies_module': [],
         'measure': {
             'duty_cycle': {'percent': {0: {}}}
         }},
     'atlas_ezo_pmp': {
-        'name': 'Atlas EZO-PMP',
+        'name': lazy_gettext('Atlas EZO-PMP'),
         'dependencies_module': [],
         'measure': {
             'volume': {'ml': {0: {}}}
         }}
 }
 
+# Output form dropdown
+OUTPUTS = [
+    ('wired,GPIO', OUTPUT_INFO['wired']['name']),
+    ('pwm,GPIO', OUTPUT_INFO['pwm']['name']),
+    ('command,GPIO', OUTPUT_INFO['command']['name']),
+    ('command_pwm,GPIO', OUTPUT_INFO['command_pwm']['name']),
+    ('wireless_rpi_rf,GPIO', OUTPUT_INFO['wireless_rpi_rf']['name']),
+    ('atlas_ezo_pmp,I2C', '{} ({})'.format(
+        OUTPUT_INFO['atlas_ezo_pmp']['name'], lazy_gettext('I2C'))),
+    ('atlas_ezo_pmp,UART', '{} ({})'.format(
+        OUTPUT_INFO['atlas_ezo_pmp']['name'], lazy_gettext('UART')))
+]
 
 PID_INFO = {
     'measure': {
@@ -284,13 +304,11 @@ CALIBRATION_INFO = {
     }
 }
 
-
 # Conditional controllers
 CONDITIONAL_CONDITIONS = [
     ('measurement', lazy_gettext('Measurement')),
     ('gpio_state', lazy_gettext('GPIO State'))
 ]
-
 
 FUNCTION_TYPES = [
     ('function_spacer', 'Spacer', lazy_gettext('Function: Spacer')),
@@ -307,7 +325,6 @@ FUNCTION_TYPES = [
     ('trigger_run_pwm_method', 'Run PWM Method', lazy_gettext('Trigger: Run PWM Method')),
     ('trigger_sunrise_sunset', 'Sunrise/Sunset', lazy_gettext('Trigger: Sunrise/Sunset'))
 ]
-
 
 # Conditional actions
 FUNCTION_ACTIONS = [
