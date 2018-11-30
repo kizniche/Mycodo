@@ -216,7 +216,9 @@ class OutputController(threading.Thread):
                             'channel': 0})
                 write_db.start()
             elif state == 'off' or volume_ml == 0:
-                self.atlas_command[output_id].write('X')
+                write_cmd = 'X'
+                self.logger.error("EZO-PMP command: {}".format(write_cmd))
+                self.atlas_command[output_id].write(write_cmd)
             else:
                 self.logger.error(
                     "Invalid parameters: ID: {id}, State: {state}, volume: {vol}".format(
