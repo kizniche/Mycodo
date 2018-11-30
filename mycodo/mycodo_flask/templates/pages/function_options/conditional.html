@@ -62,6 +62,12 @@
           {{form_conditional.conditional_statement(class_='form-control', value=each_cond.conditional_statement, **{'title':_('The conditional statement to evaluate. If the statement is true, all actions will be executed.')})}}
         </div>
       </div>
+      <div class="col-md-12 col-lg-6">
+        {{form_conditional.modules_load.label(class_='control-label')}}
+        <div>
+          {{form_conditional.modules_load(class_='form-control', value=each_cond.modules_load, **{'title':_('Extra modules to load that are used in the conditional statement.')})}}
+        </div>
+      </div>
       <div class="col-auto">
         {{form_conditional.period.label(class_='control-label')}}
         <div>

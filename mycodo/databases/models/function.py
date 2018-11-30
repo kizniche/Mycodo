@@ -26,6 +26,7 @@ class Conditional(CRUDMixin, db.Model):
     conditional_statement = db.Column(db.Text, default='')
     period = db.Column(db.Float, default=60.0)
     refractory_period = db.Column(db.Float, default=0.0)
+    modules_load = db.Column(db.Text, default='')
 
 
 class ConditionalConditions(CRUDMixin, db.Model):

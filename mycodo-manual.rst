@@ -1135,6 +1135,13 @@ Check if the latest measurement is above or below the set value.
 | (seconds)             | conditional has been triggered to begin         |
 |                       | evaluating the conditional again.               |
 +-----------------------+-------------------------------------------------+
+| Load Modules          | List any extra modules to load that will be     |
+|                       | used in the conditional statement. You may use  |
+|                       | multiple separated by a comma. For example, two |
+|                       | additional modules may be loaded with the       |
+|                       | following: "import numpy,from statistics import |
+|                       | stdev"                                          |
++-----------------------+-------------------------------------------------+
 
 Conditional Condition Options
 '''''''''''''''''''''''''''''

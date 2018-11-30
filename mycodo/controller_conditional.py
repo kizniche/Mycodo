@@ -92,6 +92,8 @@ class ConditionalController(threading.Thread):
         self.timer_period = None
         self.period = None
         self.refractory_period = None
+        self.conditional_statement = None
+        self.modules_load = None
         self.timer_refractory_period = None
         self.smtp_wait_timer = None
         self.timer_period = None
@@ -178,8 +180,10 @@ class ConditionalController(threading.Thread):
         self.smtp_wait_timer = now + 3600
         self.timer_period = None
 
+        self.conditional_statement = cond.conditional_statement
         self.period = cond.period
         self.refractory_period = cond.refractory_period
+        self.modules_load = cond.modules_load
         self.timer_refractory_period = 0
         self.smtp_wait_timer = now + 3600
         self.timer_period = now + self.period
@@ -256,20 +260,29 @@ class ConditionalController(threading.Thread):
                     logger_cond.error("Exception reading the GPIO pin")
                 conditions_check[each_condition.unique_id.split('-')[0]] = gpio_state
 
-        # Evaluate conditional statement
-        cond_statement_replaced = cond.conditional_statement
+        # Replace measurements in conditional statement
+        cond_statement_replaced = self.conditional_statement
+        # logger_cond.info("Conditional Statement (pre-replacement): {}".format(self.conditional_statement))
         for each_condition_id, each_value in conditions_check.items():
             cond_statement_replaced = cond_statement_replaced.replace(
                 '{{{id}}}'.format(id=each_condition_id), str(each_value))
+        # logger_cond.info("Conditional Statement (replaced): {}".format(cond_statement_replaced))
 
         # Set the refractory period
         if self.timer_refractory_period:
             self.timer_refractory_period = time.time() + self.refractory_period
 
         try:
-            # logger_cond.info("Conditional Statement (replaced) {}".format(cond_statement_replaced))
+            # Load modules
+            if self.modules_load:
+                for each_module in self.modules_load.split(','):
+                    # logger_cond.info("Loading module: {}".format(each_module))
+                    exec each_module
+
+
+            # Evaluate conditional statement
             evaluated_statement = eval(cond_statement_replaced)
-            # logger_cond.info("Conditional Statement (evaluated) {}".format(eval(cond_statement_replaced)))
+            # logger_cond.info("Conditional Statement (evaluated): {}".format(eval(cond_statement_replaced)))
         except:
             logger_cond.error(
                 "Error evaluating conditional statement. "
