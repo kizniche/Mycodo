@@ -191,10 +191,10 @@ def test_add_all_data_devices_logged_in_as_admin(_, testapp):
         # Verify data was entered into the database
         math_count += 1
         actual_count = Math.query.count()
-        assert actual_count == math_count, "Number of Maths doesn't match: In DB {}, Should be: {}".format(actual_count, math_count)
+        assert actual_count == math_count, "Number of Maths don't match: In DB {}, Should be: {}".format(actual_count, math_count)
 
         math_dev = Math.query.filter(Math.id == math_count).first()
-        assert each_data['name'] in math_dev.name, "Math name doesn't match: {}".format(each_math)
+        assert each_math in math_dev.math_type, "Math type doesn't match: {}".format(each_math)
 
 
 # ---------------------------

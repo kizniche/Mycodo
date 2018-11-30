@@ -33,28 +33,16 @@ LANGUAGES = {
     'zh': '中文 (Chinese)'
 }
 
-# Math controllers
-MATHS = [
-    ('average', lazy_gettext('Average (Multiple Inputs)')),
-    ('average_single', lazy_gettext('Average (Single Input)')),
-    ('difference', lazy_gettext('Difference')),
-    ('equation', lazy_gettext('Equation')),
-    ('statistics', lazy_gettext('Statistics')),
-    ('humidity', lazy_gettext('Humidity (Wet/Dry-Bulb)')),
-    ('verification', lazy_gettext('Verification')),
-    ('vapor_pressure_deficit', lazy_gettext('Vapor Pressure Deficit'))
-]
-
 # Math info
 MATH_INFO = {
     'average': {
-        'name': lazy_gettext('Average (Multi)'),
+        'name': lazy_gettext('Average (Multiple Inputs)'),
         'dependencies_module': [],
         'enable_measurements_select': True,
         'measure': {}
     },
     'average_single': {
-        'name': lazy_gettext('Average (Single)'),
+        'name': lazy_gettext('Average (Single Input)'),
         'dependencies_module': [],
         'enable_measurements_select': False,
         'enable_measurements_convert': True,
@@ -73,7 +61,7 @@ MATH_INFO = {
         'measure': {}
     },
     'humidity': {
-        'name': lazy_gettext('Humidity (Wet-Bulb)'),
+        'name': lazy_gettext('Humidity (Wet/Dry-Bulb)'),
         'dependencies_module': [],
         'enable_measurements_convert': True,
         'measure': {
@@ -155,6 +143,18 @@ MATH_INFO = {
         }
     }
 }
+
+# Math controllers
+MATHS = [
+    ('average', MATH_INFO['average']['name']),
+    ('average_single',MATH_INFO['average']['name']),
+    ('difference', MATH_INFO['average']['name']),
+    ('equation', MATH_INFO['average']['name']),
+    ('statistics', MATH_INFO['average']['name']),
+    ('humidity', MATH_INFO['average']['name']),
+    ('verification', MATH_INFO['average']['name']),
+    ('vapor_pressure_deficit', MATH_INFO['average']['name'])
+]
 
 # Methods
 METHODS = [
