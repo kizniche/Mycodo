@@ -59,7 +59,6 @@
     </ul>
     <p>The Dependency Install Log below will refresh every 5 seconds. Wait until all dependencies have been installed to attempt to add the associated device again. You will know the entire install process have completed by "#### All Dependencies have been installed." appearing at the end of the log.</p>
     <p>If there's an issue with the install and you need to reset the install state, delete ~/Mycodo/.dependency to restore dependency install functionality.</p>
-    <p>After dependencies are installed, it may be necessary to restart the daemon for the new modules to be recognized. This can be performed by selecting Config [Gear Icon] -> Restart Backend</p>
 
     <pre style="overflow:auto; resize: vertical; height:400px" id="dependency_status"></pre>
 
@@ -73,7 +72,7 @@
     {% endfor %}
     </ul>
 
-    <p>To install these dependencies, click the Install button below and wait for the install to complete before attempting to add the device again.</p>
+    <p>To install these dependencies, click the Install button below and wait for the install to complete before attempting to add the device again. Note that the frontend and the backend daemon will be restarted following install of the dependencies to allow them to detect the newly-installed modules. If you do not wish the daemon to restart, postpone installing dependencies until your system is at a point where this can occur.</p>
 
     <form method="post" action="/admin/dependencies/{{device}}">
       {{form_dependencies.csrf_token}}

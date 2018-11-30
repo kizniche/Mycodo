@@ -54,6 +54,7 @@ The Mycodo 7.0 brings a redesigned measurement/unit and Conditional systems. The
  - Fix authentication issue with Remote Administration
  - Fix issues with ADS1256 module ([#537](https://github.com/kizniche/mycodo/issues/537))
  - Fix issue with saving float values
+ - Fix module load issue by restarting the daemon after installing dependencies ([#569](https://github.com/kizniche/mycodo/issues/569))
 
 ### Miscellaneous
 
