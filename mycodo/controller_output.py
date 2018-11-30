@@ -194,30 +194,33 @@ class OutputController(threading.Thread):
                     state=state, id=output_id))
             return 1
 
-        # Atlas EZP-PMP must have a duration (ml)
+        # Atlas EZP-PMP
         if self.output_type[output_id] == 'atlas_ezo_pmp':
             volume_ml = duration
-            if state == 'on':
-                if not volume_ml:
-                    self.logger.error("EZP-PMP volume value must be greater than 0")
-                else:
-                    # Calculate command, given flow rate
-                    minutes_to_run = self.output_flow_rate[output_id] * volume_ml
+            if state == 'on' and volume_ml > 0:
+                # Calculate command, given flow rate
+                minutes_to_run = self.output_flow_rate[output_id] * volume_ml
 
-                    self.atlas_command[output_id].write(
-                        'D,{ml:.2f},{min:.3f}'.format(
-                            ml=volume_ml, min=minutes_to_run))
+                write_cmd = 'D,{ml:.2f},{min:.2f}'.format(
+                        ml=volume_ml, min=minutes_to_run)
+                self.logger.error("EZO-PMP command: {}".format(write_cmd))
 
-                    write_db = threading.Thread(
-                        target=write_influxdb_value,
-                        args=(self.output_unique_id[output_id],
-                              'ml',
-                              volume_ml,),
-                        kwargs={'measure': 'volume',
-                                'channel': 0})
-                    write_db.start()
-            elif state == 'off':
+                self.atlas_command[output_id].write(write_cmd)
+
+                write_db = threading.Thread(
+                    target=write_influxdb_value,
+                    args=(self.output_unique_id[output_id],
+                          'ml',
+                          volume_ml,),
+                    kwargs={'measure': 'volume',
+                            'channel': 0})
+                write_db.start()
+            elif state == 'off' or volume_ml == 0:
                 self.atlas_command[output_id].write('X')
+            else:
+                self.logger.error(
+                    "Invalid parameters: ID: {id}, State: {state}, volume: {vol}".format(
+                        id=output_id, state=state, vol=volume_ml))
 
         # Signaled to turn output on
         if state == 'on':
