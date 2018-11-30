@@ -64,14 +64,14 @@
       {%- set chart_number = loop.index -%}
       <div style="margin-bottom: 1em; border: 2px solid #ddd; border-radius: 5px;">
         <div class="row small-gutters" style="padding: 0 1em">
-          <div class="col-xs-12 col-sm-6">
+          <div class="col-auto">
             <input class="form-control btn btn-sm" disabled="" title="[{{'%02d' % each_method.id}} UUID: {{each_method.unique_id}}" value="[{{each_method.method_type}}] {{each_method.name}}" type="text">
           </div>
-          <div class="col-xs-12 col-sm-3">
-            <a href="/method-delete/{{each_method.unique_id}}" class="form-control btn btn-sm" role="button" onclick="return confirm('Are you sure you want to delete this?')">Delete Method</a>
+          <div class="col-auto">
+            <a href="/method-delete/{{each_method.unique_id}}" class="btn btn-primary" role="button" onclick="return confirm('Are you sure you want to delete this?')">{{_('Delete')}}</a>
           </div>
-          <div class="col-xs-12 col-sm-3">
-            <a href="/method-build/{{each_method.unique_id}}" class="form-control btn btn-sm" role="button">Edit Method</a>
+          <div class="col-auto">
+            <a href="/method-build/{{each_method.unique_id}}" class="btn btn-primary" role="button">{{_('Edit')}}</a>
           </div>
         </div>
 
