@@ -407,6 +407,7 @@
 <li><a href="#output-usage">Output Usage</a></li>
 <li><a href="#backup-restore">Backup-Restore</a></li>
 <li><a href="#system-information">System Information</a></li>
+<li><a href="#usb-device-persistence-across-reboots">USB Device Persistence Across Reboots</a></li>
 </ul></li>
 <li><a href="#troubleshooting">Troubleshooting</a><ul>
 <li><a href="#daemon-not-running">Daemon Not Running</a></li>
@@ -1304,6 +1305,10 @@ usage: mycodo-client [-h] [--activatecontroller CONTROLLER ID]
 <tr class="odd">
 <td>Refractory Period (seconds)</td>
 <td>The minimum duration (seconds) to wait after a conditional has been triggered to begin evaluating the conditional again.</td>
+</tr>
+<tr class="even">
+<td>Load Modules</td>
+<td>List any extra modules to load that will be used in the conditional statement. You may use multiple separated by a comma. For example, two additional modules may be loaded with the following: “import numpy,from statistics import stdev”</td>
 </tr>
 </tbody>
 </table>
@@ -2784,6 +2789,34 @@ sudo /bin/bash ~/Mycodo/mycodo/scripts/upgrade_post.sh</code></pre>
 </tr>
 </tbody>
 </table>
+<h2 id="usb-device-persistence-across-reboots">USB Device Persistence Across Reboots</h2>
+<p>From <a href="https://github.com/kizniche/Mycodo/issues/547#issuecomment-428752904">(#547) Theoi-Meteoroi on Github</a>:</p>
+<p>Using USB devices, such as USB-to-serial interfaces to connect a sensor, while convenient, poses an issue if there are multiple devices when the system reboots. After a reboot, there is no guarantee the device will persist with the same name. For instance, if Sensor A is /dev/ttyUSB0 and Sensor B is /dev/ttyUSB1, after a reboot Sensor A may be /dev/ttyUSB1 and Sensor B may be /dev/ttyUSB0. This will cause Mycodo to query the wrong device for a measurement, potentially causing a mis-measurement, or worse, an incorrect measurement because the response is not from the correct sensor (I’ve seen my temperature sensor read 700+ degrees celsius because of this!). Follow the instructions below to alleviate this issue.</p>
+<blockquote>
+<p>I use udev to create a persistent device name (‘/dev/dust-sensor’) that will be linked to the /dev/ttyUSBn that is chosen at device arrival in the kernel. The only requirement is some attribute returned from the USB device that is unique. The common circumstance is that none of the attributes are unique and you get stuck with just VID and PID, which is ok as long as you don’t have any other adapters that report the same VID and PID. If you have multiple adapters with the same VID and PID, then hopefully they have some unique attribute. This command will walk the attributes. Run on each USB device and then compare differences to possibly find some attribute to use.</p>
+</blockquote>
+<p><code>udevadm info --name=/dev/ttyUSB0 --attribute-walk</code></p>
+<p>I ended up using the serial number on the ZH03B to program the USB adapter serial field. This way guarantees unique serial numbers rather than me trying to remember what was the last serial number I used to increment by 1.</p>
+<p>When you plug a USB device in it can be enumerated to different device names by the operating system. To fix this problem for this sensor on linux, I changed attributes that make the connection unique.</p>
+<p>First - find the VID and PID for the USB device:</p>
+<pre><code>pi@raspberry:~ $ lsusb
+Bus 001 Device 008: ID 10c4:ea60 Cygnal Integrated Products, Inc. CP210x UART Bridge / myAVR mySmartUSB light
+Bus 001 Device 003: ID 0424:ec00 Standard Microsystems Corp. SMSC9512/9514 Fast Ethernet Adapter
+Bus 001 Device 002: ID 0424:9514 Standard Microsystems Corp. SMC9514 Hub
+Bus 001 Device 001: ID 1d6b:0002 Linux Foundation 2.0 root hub</code></pre>
+<p>In this case the Vendor ID is 10c4 The Product ID is ea60</p>
+<p>Since I changed the serial number field - this will be unique.</p>
+<pre><code>pi@raspberry:~ $ udevadm info --name=/dev/ttyUSB0 --attribute-walk | grep serial
+SUBSYSTEMS==&quot;usb-serial&quot;
+ATTRS{serial}==&quot;ZH03B180904&quot;
+ATTRS{serial}==&quot;3f980000.usb&quot;</code></pre>
+<p>Now I have an attribute to tell udev what to do. I create a file in /etc/udev/rules.d with a name like “99-dustsensor.rules”. In that file I tell udev what device name to create when it sees this device plugged in:</p>
+<p><code>SUBSYSTEM==&quot;tty&quot;, ATTRS{idVendor}==&quot;10c4&quot;, ATTRS{idProduct}==&quot;ea60&quot;, ATTRS{serial}==&quot;ZH03B180904&quot; SYMLINK+=&quot;dust-sensor&quot;</code></p>
+<p>To test the new rule:</p>
+<pre><code>pi@raspberry:/dev $ sudo udevadm trigger
+pi@raspberry:/dev $ ls -al dust-sensor
+lrwxrwxrwx 1 root root 7 Oct 6 21:04 dust-sensor -&gt; ttyUSB0</code></pre>
+<p>Now, every time the dust sensor is plugged in, it shows up at /dev/dust-sensor</p>
 <h1 id="troubleshooting">Troubleshooting</h1>
 <h2 id="daemon-not-running">Daemon Not Running</h2>
 <ul>

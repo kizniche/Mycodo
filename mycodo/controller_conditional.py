@@ -277,8 +277,7 @@ class ConditionalController(threading.Thread):
             if self.modules_load:
                 for each_module in self.modules_load.split(','):
                     # logger_cond.info("Loading module: {}".format(each_module))
-                    exec each_module
-
+                    exec(each_module)
 
             # Evaluate conditional statement
             evaluated_statement = eval(cond_statement_replaced)
