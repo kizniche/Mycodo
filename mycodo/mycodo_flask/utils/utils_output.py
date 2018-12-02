@@ -38,8 +38,10 @@ def output_add(form_add):
         list_unmet_deps = []
         for each_dep in dep_unmet:
             list_unmet_deps.append(each_dep[0])
-        error.append("The {dev} device you're trying to add has unmet dependencies: {dep}".format(
-            dev=form_add.output_type.data, dep=', '.join(list_unmet_deps)))
+        error.append(
+            "The {dev} device you're trying to add has unmet dependencies: "
+            "{dep}".format(dev=form_add.output_type.data,
+                           dep=', '.join(list_unmet_deps)))
 
     if len(form_add.output_type.data.split(',')) < 2:
         error.append("Must select an Output type")
@@ -57,7 +59,7 @@ def output_add(form_add):
                 interface = form_add.output_type.data.split(',')[1]
 
                 new_output = Output()
-                new_output.name = OUTPUT_INFO[output_type]['name']
+                new_output.name = str(OUTPUT_INFO[output_type]['name'])
                 new_output.output_type = output_type
                 new_output.interface = interface
 
@@ -102,7 +104,8 @@ def output_add(form_add):
 
                 if not error:
                     new_output.save()
-                    display_order = csv_to_list_of_str(DisplayOrder.query.first().output)
+                    display_order = csv_to_list_of_str(
+                        DisplayOrder.query.first().output)
                     DisplayOrder.query.first().output = add_display_order(
                         display_order, new_output.unique_id)
                     db.session.commit()
