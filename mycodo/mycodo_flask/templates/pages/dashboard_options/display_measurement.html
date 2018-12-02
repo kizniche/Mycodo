@@ -1,24 +1,26 @@
 
+  {%- set decimals = table_dashboard.query.filter(table_dashboard.unique_id == each_dashboard_id).first().decimal_places -%}
+
   {% for each_input in input -%}
     {%- for device_and_measurement_ids in graph_input_ids if each_input.unique_id == device_and_measurement_ids.split(',')[0] %}
       {%- set measurement_id = device_and_measurement_ids.split(',')[1] -%}
-  getLastData({{chart_number}}, 'measurement', '{{each_input.unique_id}}', 'input', '{{measurement_id}}', {{each_dashboard.max_measure_age}});
-  repeatLastData({{chart_number}}, 'measurement', '{{each_input.unique_id}}', 'input', '{{measurement_id}}', {{each_dashboard.refresh_duration}}, {{each_dashboard.max_measure_age}});
+  getLastData({{chart_number}}, 'measurement', '{{each_input.unique_id}}', 'input', '{{measurement_id}}', {{each_dashboard.max_measure_age}}, {{decimals}});
+  repeatLastData({{chart_number}}, 'measurement', '{{each_input.unique_id}}', 'input', '{{measurement_id}}', {{each_dashboard.refresh_duration}}, {{each_dashboard.max_measure_age}}, {{decimals}});
     {%- endfor -%}
   {%- endfor -%}
 
   {% for each_math in math -%}
     {%- for device_and_measurement_ids in graph_input_ids if each_math.unique_id == device_and_measurement_ids.split(',')[0] %}
       {%- set measurement_id = device_and_measurement_ids.split(',')[1] -%}
-  getLastData({{chart_number}}, 'measurement', '{{each_math.unique_id}}', 'math', '{{measurement_id}}', {{each_dashboard.max_measure_age}});
-  repeatLastData({{chart_number}}, 'measurement', '{{each_math.unique_id}}', 'math', '{{measurement_id}}', {{each_dashboard.refresh_duration}}, {{each_dashboard.max_measure_age}});
+  getLastData({{chart_number}}, 'measurement', '{{each_math.unique_id}}', 'math', '{{measurement_id}}', {{each_dashboard.max_measure_age}}, {{decimals}});
+  repeatLastData({{chart_number}}, 'measurement', '{{each_math.unique_id}}', 'math', '{{measurement_id}}', {{each_dashboard.refresh_duration}}, {{each_dashboard.max_measure_age}}, {{decimals}});
     {%- endfor -%}
   {%- endfor -%}
 
   {%- for each_pid in pid -%}
     {%- for device_and_measurement_ids in graph_input_ids if each_pid.unique_id == device_and_measurement_ids.split(',')[0] %}
       {%- set measurement_id = device_and_measurement_ids.split(',')[1] -%}
-  getLastData({{chart_number}},  'measurement', '{{each_pid.unique_id}}', 'pid', '{{measurement_id}}',  {{each_dashboard.max_measure_age}});
-  repeatLastData({{chart_number}},  'measurement', '{{each_pid.unique_id}}', 'pid', '{{measurement_id}}',  {{each_dashboard.refresh_duration}}, {{each_dashboard.max_measure_age}});
+  getLastData({{chart_number}},  'measurement', '{{each_pid.unique_id}}', 'pid', '{{measurement_id}}',  {{each_dashboard.max_measure_age}}, {{decimals}});
+  repeatLastData({{chart_number}},  'measurement', '{{each_pid.unique_id}}', 'pid', '{{measurement_id}}',  {{each_dashboard.refresh_duration}}, {{each_dashboard.max_measure_age}}, {{decimals}});
     {%- endfor -%}
   {%- endfor -%}
