@@ -2780,7 +2780,7 @@ Input Devices
     `MH-Z19 <#mh-z19>`__: Carbon dioxide (CO2) in ppmv
     `link <http://www.winsen-sensor.com/products/ndir-co2-sensor/mh-z19.html>`__
 
-    `SHT1x <#sht1x>`__/`SHT7x <#sht7x>`__, SHT2x: Relative humidity and temperature
+    `SHT1x <#sht1x>`__/`SHT31 <#sht31>`__/`SHT7x <#sht7x>`__: Relative humidity and temperature
     `link <https://github.com/mk-fg/sht-sensor>`__
 
     `TMP006, TMP007 <#tmp006-tmp007>`__: Contactless temperature
@@ -3279,6 +3279,15 @@ Specifications
    accuracy (respectively)
 -  2.4 to 5.5V power and I/O
 -  No more than 0.125 Hz sampling rate (once every 8 seconds)
+
+SHT31
+`````
+
+Specifications
+''''''''''''''
+
+-  ±2% relative humidity and ±0.3°C accuracy for most uses
+-  -40 °C to 125 °C temperature
 
 SHT7x
 `````
