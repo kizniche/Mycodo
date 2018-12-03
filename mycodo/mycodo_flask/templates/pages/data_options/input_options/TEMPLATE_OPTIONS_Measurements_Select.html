@@ -8,36 +8,7 @@
   {% set channels = table_device_measurements.query.filter(table_device_measurements.device_id == each_input.unique_id).count() %}
     <select class="form-control form-tooltip form-dropdown" data-placement="top" id="measurements_enabled" name="measurements_enabled" title="{{tooltips_input['measurements_enabled']['phrase']}}" size="{{[10, channels]|min}}" multiple>
 
-  {%- for each_measurement in all_measurements -%}
-       <option value="{{each_measurement.unique_id}}"{% if each_measurement.is_enabled %} selected{% endif %}>
-
-    {%- if each_measurement.channel != None -%}
-      {{'CH' + (each_measurement.channel + 1)|string + ': '}}
-    {%- endif -%}
-
-    {{dict_measurements[each_measurement.measurement]['name']}}
-
-    {%- if each_measurement.name or each_measurement.unit in dict_units -%}
-       {{' ('}}
-    {%- endif -%}
-
-    {%- if each_measurement.name -%}
-      {{each_measurement.name}}
-    {%- endif -%}
-
-    {%- if each_measurement.unit in dict_units -%}
-      {%- if each_measurement.name -%}
-        {{', '}}
-      {%- endif -%}
-      {{dict_units[each_measurement.unit]['name']}}
-    {%- endif -%}
-
-    {%- if each_measurement.name or each_measurement.unit in dict_units -%}
-      )
-    {%- endif -%}
-       </option>
-
-  {%- endfor -%}
+  {% include 'pages/data_options/TEMPLATE_Measurements_Enabled_Info.html' %}
 
     </select>
   </div>

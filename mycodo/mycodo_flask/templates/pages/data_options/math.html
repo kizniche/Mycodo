@@ -85,11 +85,9 @@
     {%- set all_measurements = table_device_measurements.query.filter(
                 and_(table_device_measurements.device_id == each_math.unique_id,
                      table_device_measurements.is_enabled)).all() -%}
-    {%- if all_measurements -%}
-      {% for each_measurement in all_measurements %}
-              <option value="{{each_measurement.unique_id}}"{% if each_measurement.is_enabled %} selected{% endif %}>{{each_measurement.name}} {% if each_measurement.measurement in dict_measurements %}{{dict_measurements[each_measurement.measurement]['name']}} {% endif %}{% if each_measurement.channel != None %} (CH{{each_measurement.channel + 1}}{% if each_measurement.unit in dict_units %}, {{dict_units[each_measurement.unit]['name']}}{% endif %}){% endif %}</option>
-      {% endfor %}
-    {% endif %}
+
+          {% include 'pages/data_options/TEMPLATE_Measurements_Enabled_Info.html' %}
+
           </select>
         </div>
       </div>
