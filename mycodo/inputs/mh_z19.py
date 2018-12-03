@@ -19,7 +19,7 @@ def constraints_pass_measure_range(value):
     # Ensure valid range is selected
     if value not in ['1000', '2000', '3000', '5000']:
         all_passed = False
-        errors.append("Invalid rage")
+        errors.append("Invalid range")
     return all_passed, errors
 
 
