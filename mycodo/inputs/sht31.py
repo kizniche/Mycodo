@@ -15,20 +15,6 @@ from mycodo.inputs.sensorutils import calculate_vapor_pressure_deficit
 from mycodo.utils.database import db_retrieve_table_daemon
 
 
-def constraints_pass_measure_range(value):
-    """
-    Check if the user input is acceptable
-    :param value: float
-    :return: tuple: (bool, list of strings)
-    """
-    errors = []
-    all_passed = True
-    # Ensure valid range is selected
-    if value not in ['1000', '2000', '3000', '5000']:
-        all_passed = False
-        errors.append("Invalid rage")
-    return all_passed, errors
-
 def constraints_pass_positive_value(value):
     """
     Check if the user input is acceptable
