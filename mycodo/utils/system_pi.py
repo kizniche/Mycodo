@@ -40,10 +40,14 @@ def add_custom_units(units):
 
 def return_measurement_info(device_measurement, conversion):
     try:
-        if device_measurement.conversion_id:
+        if (device_measurement and
+                device_measurement.conversion_id and
+                conversion):
             unit = conversion.convert_unit_to
             measurement = None
-        elif device_measurement.rescaled_unit:
+        elif (device_measurement and
+                device_measurement.rescaled_unit and
+                device_measurement.rescaled_measurement):
             unit = device_measurement.rescaled_unit
             measurement = device_measurement.rescaled_measurement
         else:

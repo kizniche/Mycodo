@@ -159,8 +159,11 @@ def math_mod(form_mod_math, form_mod_type=None):
             if form_mod_type.average_input.data and ',' in form_mod_type.average_input.data:
                 measurement_id = form_mod_type.average_input.data.split(',')[1]
                 selected_measurement = get_measurement(measurement_id)
-                conversion = Conversion.query.filter(
-                    Conversion.unique_id == selected_measurement.conversion_id).first()
+                if selected_measurement:
+                    conversion = Conversion.query.filter(
+                        Conversion.unique_id == selected_measurement.conversion_id).first()
+                else:
+                    conversion = None
                 channel, unit, measurement = return_measurement_info(
                     selected_measurement, conversion)
 

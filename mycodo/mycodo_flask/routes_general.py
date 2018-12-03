@@ -275,8 +275,11 @@ def last_data(unique_id, measure_type, measurement_id, period):
         else:
             return '', 204
 
-        conversion = Conversion.query.filter(
-            Conversion.unique_id == measure.conversion_id).first()
+        if measure:
+            conversion = Conversion.query.filter(
+                Conversion.unique_id == measure.conversion_id).first()
+        else:
+            conversion = None
         channel, unit, measurement = return_measurement_info(
             measure, conversion)
 
@@ -353,8 +356,11 @@ def past_data(unique_id, measure_type, measurement_id, past_seconds):
         if not measure:
             return "Could not find measurement"
 
-        conversion = Conversion.query.filter(
-            Conversion.unique_id == measure.conversion_id).first()
+        if measure:
+            conversion = Conversion.query.filter(
+                Conversion.unique_id == measure.conversion_id).first()
+        else:
+            conversion = None
         channel, unit, measurement = return_measurement_info(
             measure, conversion)
 
@@ -464,8 +470,11 @@ def export_data(unique_id, measurement_id, start_seconds, end_seconds):
 
     device_measurement = DeviceMeasurements.query.filter(
         DeviceMeasurements.unique_id == measurement_id).first()
-    conversion = Conversion.query.filter(
-        Conversion.unique_id == device_measurement.conversion_id).first()
+    if device_measurement:
+        conversion = Conversion.query.filter(
+            Conversion.unique_id == device_measurement.conversion_id).first()
+    else:
+        conversion = None
     channel, unit, measurement = return_measurement_info(
         device_measurement, conversion)
 
@@ -551,8 +560,11 @@ def async_data(device_id, device_type, measurement_id, start_seconds, end_second
     if not measure:
         return "Could not find measurement"
 
-    conversion = Conversion.query.filter(
-        Conversion.unique_id == measure.conversion_id).first()
+    if measure:
+        conversion = Conversion.query.filter(
+            Conversion.unique_id == measure.conversion_id).first()
+    else:
+        conversion = None
     channel, unit, measurement = return_measurement_info(
         measure, conversion)
 
@@ -828,8 +840,11 @@ def last_data_pid(pid_id, input_period):
 
         actual_measurement = DeviceMeasurements.query.filter(
             DeviceMeasurements.unique_id == measurement_id).first()
-        actual_cnversion = Conversion.query.filter(
-            Conversion.unique_id == actual_measurement.conversion_id).first()
+        if actual_measurement:
+            actual_cnversion = Conversion.query.filter(
+                Conversion.unique_id == actual_measurement.conversion_id).first()
+        else:
+            conversion = None
 
         (actual_channel,
          actual_unit,

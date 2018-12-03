@@ -371,7 +371,6 @@ def form_input_choices(choices, each_input, dict_units, dict_measurements):
         DeviceMeasurements.device_id == each_input.unique_id).all()
 
     for each_measure in device_measurements:
-
         conversion = Conversion.query.filter(
             Conversion.unique_id == each_measure.conversion_id).first()
         channel, unit, measurement = return_measurement_info(
@@ -420,7 +419,6 @@ def form_math_choices(choices, each_math, dict_units, dict_measurements):
         DeviceMeasurements.device_id == each_math.unique_id).all()
 
     for each_measure in device_measurements:
-
         conversion = Conversion.query.filter(
             Conversion.unique_id == each_measure.conversion_id).first()
         channel, unit, measurement = return_measurement_info(
@@ -466,7 +464,6 @@ def form_pid_choices(choices, each_pid, dict_units, dict_measurements):
         DeviceMeasurements.device_id == each_pid.unique_id).all()
 
     for each_measure in device_measurements:
-
         conversion = Conversion.query.filter(
             Conversion.unique_id == each_measure.conversion_id).first()
         channel, unit, measurement = return_measurement_info(

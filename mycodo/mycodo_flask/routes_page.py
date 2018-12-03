@@ -1836,8 +1836,11 @@ def dict_custom_colors():
 
                     device_measurement = DeviceMeasurements.query.filter(
                         DeviceMeasurements.unique_id == input_measure_id).first()
-                    conversion = Conversion.query.filter(
-                        Conversion.unique_id == device_measurement.conversion_id).first()
+                    if device_measurement:
+                        conversion = Conversion.query.filter(
+                            Conversion.unique_id == device_measurement.conversion_id).first()
+                    else:
+                        conversion = None
                     channel, unit, measurement = return_measurement_info(
                         device_measurement, conversion)
 
@@ -1848,7 +1851,7 @@ def dict_custom_colors():
                         color = colors[index]
                     else:
                         color = '#FF00AA'
-                    if input_dev is not None:
+                    if None not in [input_dev, device_measurement]:
                         total.append({
                             'unique_id': input_unique_id,
                             'name': input_dev.name,
@@ -1868,8 +1871,11 @@ def dict_custom_colors():
 
                     device_measurement = DeviceMeasurements.query.filter(
                         DeviceMeasurements.unique_id == math_measure_id).first()
-                    conversion = Conversion.query.filter(
-                        Conversion.unique_id == device_measurement.conversion_id).first()
+                    if device_measurement:
+                        conversion = Conversion.query.filter(
+                            Conversion.unique_id == device_measurement.conversion_id).first()
+                    else:
+                        conversion = None
                     channel, unit, measurement = return_measurement_info(
                         device_measurement, conversion)
 
@@ -1900,8 +1906,11 @@ def dict_custom_colors():
 
                     device_measurement = DeviceMeasurements.query.filter(
                         DeviceMeasurements.unique_id == pid_measure_id).first()
-                    conversion = Conversion.query.filter(
-                        Conversion.unique_id == device_measurement.conversion_id).first()
+                    if device_measurement:
+                        conversion = Conversion.query.filter(
+                            Conversion.unique_id == device_measurement.conversion_id).first()
+                    else:
+                        conversion = None
                     channel, unit, measurement = return_measurement_info(
                         device_measurement, conversion)
 

@@ -188,8 +188,11 @@ class MathController(threading.Thread):
             device_measurement = self.device_measurements.filter(
                 DeviceMeasurements.channel == 0).first()
 
-            conversion = db_retrieve_table_daemon(
-                Conversion, unique_id=device_measurement.conversion_id)
+            if device_measurement:
+                conversion = db_retrieve_table_daemon(
+                    Conversion, unique_id=device_measurement.conversion_id)
+            else:
+                conversion = None
             channel, unit, measurement = return_measurement_info(
                 device_measurement, conversion)
 
@@ -216,8 +219,11 @@ class MathController(threading.Thread):
 
             device_measurement = db_retrieve_table_daemon(
                 DeviceMeasurements, unique_id=measurement_id)
-            conversion = db_retrieve_table_daemon(
-                Conversion, unique_id=device_measurement.conversion_id)
+            if device_measurement:
+                conversion = db_retrieve_table_daemon(
+                    Conversion, unique_id=device_measurement.conversion_id)
+            else:
+                conversion = None
             channel, unit, measurement = return_measurement_info(
                 device_measurement, conversion)
 
@@ -252,9 +258,11 @@ class MathController(threading.Thread):
 
             device_measurement = self.device_measurements.filter(
                 DeviceMeasurements.channel == 0).first()
-
-            conversion = db_retrieve_table_daemon(
-                Conversion, unique_id=device_measurement.conversion_id)
+            if device_measurement:
+                conversion = db_retrieve_table_daemon(
+                    Conversion, unique_id=device_measurement.conversion_id)
+            else:
+                conversion = None
             channel, unit, measurement = return_measurement_info(
                 device_measurement, conversion)
 
@@ -283,9 +291,11 @@ class MathController(threading.Thread):
 
             device_measurement = self.device_measurements.filter(
                 DeviceMeasurements.channel == 0).first()
-
-            conversion = db_retrieve_table_daemon(
-                Conversion, unique_id=device_measurement.conversion_id)
+            if device_measurement:
+                conversion = db_retrieve_table_daemon(
+                    Conversion, unique_id=device_measurement.conversion_id)
+            else:
+                conversion = None
             channel, unit, measurement = return_measurement_info(
                 device_measurement, conversion)
 
@@ -350,9 +360,11 @@ class MathController(threading.Thread):
 
             device_measurement = self.device_measurements.filter(
                 DeviceMeasurements.channel == 0).first()
-
-            conversion = db_retrieve_table_daemon(
-                Conversion, unique_id=device_measurement.conversion_id)
+            if device_measurement:
+                conversion = db_retrieve_table_daemon(
+                    Conversion, unique_id=device_measurement.conversion_id)
+            else:
+                conversion = None
             channel, unit, measurement = return_measurement_info(
                 device_measurement, conversion)
 
