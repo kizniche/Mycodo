@@ -214,13 +214,25 @@ OUTPUT_INFO = {
             'duration_time': {'s': {0: {}}}
         }},
     'command': {
-        'name': lazy_gettext('On/Off (Command)'),
+        'name': lazy_gettext('On/Off (Linux Command)'),
         'dependencies_module': [],
         'measure': {
             'duration_time': {'s': {0: {}}}
         }},
     'command_pwm': {
-        'name': lazy_gettext('PWM (Command)'),
+        'name': lazy_gettext('PWM (Linux Command)'),
+        'dependencies_module': [],
+        'measure': {
+            'duty_cycle': {'percent': {0: {}}}
+        }},
+    'python': {
+        'name': lazy_gettext('On/Off (Python Command)'),
+        'dependencies_module': [],
+        'measure': {
+            'duration_time': {'s': {0: {}}}
+        }},
+    'python_pwm': {
+        'name': lazy_gettext('PWM (Python Command)'),
         'dependencies_module': [],
         'measure': {
             'duty_cycle': {'percent': {0: {}}}
@@ -239,6 +251,8 @@ OUTPUTS = [
     ('pwm,GPIO', OUTPUT_INFO['pwm']['name']),
     ('command,GPIO', OUTPUT_INFO['command']['name']),
     ('command_pwm,GPIO', OUTPUT_INFO['command_pwm']['name']),
+    ('python,GPIO', OUTPUT_INFO['python']['name']),
+    ('python_pwm,GPIO', OUTPUT_INFO['python_pwm']['name']),
     ('wireless_rpi_rf,GPIO', OUTPUT_INFO['wireless_rpi_rf']['name']),
     ('atlas_ezo_pmp,I2C', '{} ({})'.format(
         OUTPUT_INFO['atlas_ezo_pmp']['name'], lazy_gettext('I2C'))),

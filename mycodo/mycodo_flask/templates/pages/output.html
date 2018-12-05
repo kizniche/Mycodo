@@ -190,13 +190,13 @@
             <input class="form-control btn btn-sm btn-block" disabled="" id="{{each_output.unique_id}}-input-output-state" title="[{{'%02d' % each_output.id}}] UUID: {{each_output.unique_id}}" value="{{ _('Unconfigured')}}" type="text">
           </div>
 
-        {% if each_output.output_type not in ['pwm', 'command_pwm', 'atlas_ezo_pmp'] -%}
+        {% if each_output.output_type not in ['pwm', 'command_pwm', 'python_pwm', 'atlas_ezo_pmp'] -%}
           <div class="col-xs-5 col-sm-6 col-md-4 col-lg-2 small-gutters">
             <input class="form-control btn btn-sm btn-success btn-block turn_on" id="turn_on" name="{{each_output.unique_id}}/on/sec/0" type="button" value="{{_('On')}}">
           </div>
         {%- endif %}
 
-        {% if each_output.output_type not in ['pwm', 'command_pwm'] -%}
+        {% if each_output.output_type not in ['pwm', 'command_pwm', 'python_pwm'] -%}
           <div class="col-xs-5 col-sm-6 col-md-4 col-lg-2 small-gutters">
         {% else %}
           <div class="col-xs-5 col-sm-6 col-md-8 col-lg-4 small-gutters">
@@ -239,7 +239,7 @@
 
           </div>
 
-          {% if each_output.output_type in ['wired', 'wireless_rpi_rf', 'command'] %}
+          {% if each_output.output_type in ['wired', 'wireless_rpi_rf', 'command', 'python'] %}
 
           <div class="row">
             <div class="col">
@@ -275,7 +275,7 @@
             </div>
           </div>
 
-          {% elif each_output.output_type in ['pwm', 'command_pwm'] %}
+          {% elif each_output.output_type in ['pwm', 'command_pwm', 'python_pwm'] %}
 
           <div class="row">
             <div class="col">

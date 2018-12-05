@@ -15,6 +15,7 @@ The Mycodo 7.0 brings a redesigned measurement/unit and Conditional systems. The
  - Add Input: AMG8833 I2C 8x8 pixel thermal sensor
  - Add Input: SHT31 I2C humidity/temperature sensor
  - Add ability to search Input selection dropdown list
+ - Add Output: Python Command (On/Off and PWM)
  - Add Output: Atlas EZO-PMP Peristaltic Pump ([#562](https://github.com/kizniche/mycodo/issues/562))
  - Add Function: Execute Actions
  - Add Function Action: Pause (pause for a duration of time before executing any remaining actions)

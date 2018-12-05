@@ -23,11 +23,13 @@
 
 import datetime
 import logging
+import sys
 import threading
 import time
 import timeit
 
 import RPi.GPIO as GPIO
+from io import StringIO
 from sqlalchemy import and_
 from sqlalchemy import or_
 
@@ -77,13 +79,13 @@ class OutputController(threading.Thread):
         self.output_on_duration = {}
         self.output_off_triggered = {}
 
-        # wireless
         self.output_protocol = {}
         self.output_pulse_length = {}
         self.output_on_command = {}
         self.output_off_command = {}
         self.output_pwm_command = {}
         self.wireless_pi_switch = {}
+        self.modules_load = {}
 
         # PWM
         self.pwm_hertz = {}
@@ -134,7 +136,7 @@ class OutputController(threading.Thread):
                     if (self.output_on_until[output_id] < current_time and
                             self.output_on_duration[output_id] and
                             not self.output_off_triggered[output_id] and
-                            ('command' in self.output_type[output_id] or
+                            (self.output_type[output_id] in ['command', 'command_pwn', 'python', 'python_pwm'] or
                              self.output_pin[output_id] is not None)):
 
                         # Use threads to prevent a slow execution of a
@@ -239,8 +241,10 @@ class OutputController(threading.Thread):
                 return 1
 
             # Check if max amperage will be exceeded
-            if self.output_type[output_id] in [
-                    'command', 'wired', 'wireless_rpi_rf']:
+            if self.output_type[output_id] in ['command',
+                                               'python',
+                                               'wired',
+                                               'wireless_rpi_rf']:
                 current_amps = self.current_amp_load()
                 max_amps = db_retrieve_table_daemon(Misc, entry='first').max_amps
                 if current_amps + self.output_amps[output_id] > max_amps:
@@ -275,8 +279,10 @@ class OutputController(threading.Thread):
                         return 1
 
             # Turn output on for a duration
-            if (self.output_type[output_id] in [
-                    'command', 'wired', 'wireless_rpi_rf'] and
+            if (self.output_type[output_id] in ['command',
+                                                'python',
+                                                'wired',
+                                                'wireless_rpi_rf'] and
                     duration != 0):
                 time_now = datetime.datetime.now()
 
@@ -361,8 +367,10 @@ class OutputController(threading.Thread):
                     self.output_on_duration[output_id] = True
 
             # Just turn output on
-            elif self.output_type[output_id] in [
-                    'command', 'wired', 'wireless_rpi_rf']:
+            elif self.output_type[output_id] in ['command',
+                                                 'python',
+                                                 'wired',
+                                                 'wireless_rpi_rf']:
                 if self.is_on(output_id):
                     self.logger.debug(
                         "Output {id} ({name}) is already on.".format(
@@ -382,7 +390,8 @@ class OutputController(threading.Thread):
                     self.output_switch(output_id, 'on')
 
             # PWM command output
-            elif self.output_type[output_id] == 'command_pwm':
+            elif self.output_type[output_id] in ['command_pwm',
+                                                 'python_pwm']:
                 if self.pwm_invert_signal[output_id]:
                     duty_cycle = 100.0 - abs(duty_cycle)
 
@@ -449,8 +458,9 @@ class OutputController(threading.Thread):
                                   "set up properly.".format(id=output_id))
                 return
 
-            if (self.output_type[output_id] in [
-                    'pwm', 'wired', 'wireless_rpi_rf'] and
+            if (self.output_type[output_id] in ['pwm',
+                                                'wired',
+                                                'wireless_rpi_rf'] and
                     self.output_pin[output_id] is None):
                 return
 
@@ -461,7 +471,9 @@ class OutputController(threading.Thread):
                     name=self.output_name[output_id]))
 
             # Write PWM duty cycle to database
-            if self.output_type[output_id] in ['pwm', 'command_pwm']:
+            if self.output_type[output_id] in ['pwm',
+                                               'command_pwm',
+                                               'python_pwm']:
                 if self.pwm_invert_signal[output_id]:
                     duty_cycle = 100.0
                 else:
@@ -615,6 +627,85 @@ class OutputController(threading.Thread):
                     self.pwm_output[output_id].set_PWM_dutycycle(
                         self.output_pin[output_id], 0)
                 self.pwm_state[output_id] = None
+
+        elif self.output_type[output_id] == 'python':
+            # create file-like string to capture output
+            codeOut = StringIO()
+            codeErr = StringIO()
+            # capture output and errors
+            sys.stdout = codeOut
+            sys.stderr = codeErr
+
+            # Load modules
+            if self.modules_load[output_id]:
+                for each_module in self.modules_load[output_id].split(','):
+                    # logger_cond.info("Loading module: {}".format(each_module))
+                    exec (each_module)
+
+            if state == 'on' and self.output_on_command[output_id]:
+                exec(self.output_on_command[output_id])
+            elif state == 'off' and self.output_off_command[output_id]:
+                exec (self.output_off_command[output_id])
+            else:
+                return
+
+            # restore stdout and stderr
+            sys.stdout = sys.__stdout__
+            sys.stderr = sys.__stderr__
+            py_error = codeErr.getvalue()
+            py_output = codeOut.getvalue()
+
+            self.logger.debug(
+                "Output {state} command returned: "
+                "Error: {err}, Output: {out}".format(
+                    state=state,
+                    err=py_error,
+                    out=py_output))
+
+            codeOut.close()
+            codeErr.close()
+
+        elif self.output_type[output_id] == 'python_pwm':
+            if self.output_pwm_command[output_id]:
+                # create file-like string to capture output
+                codeOut = StringIO()
+                codeErr = StringIO()
+                # capture output and errors
+                sys.stdout = codeOut
+                sys.stderr = codeErr
+
+                # Load modules
+                if self.modules_load[output_id]:
+                    for each_module in self.modules_load[output_id].split(','):
+                        # logger_cond.info("Loading module: {}".format(each_module))
+                        exec (each_module)
+
+                if state == 'on' and 100 >= duty_cycle >= 0:
+                    cmd = self.output_pwm_command[output_id].replace('((duty_cycle))', str(duty_cycle))
+                    exec(cmd)
+                    self.pwm_state[output_id] = abs(duty_cycle)
+                elif state == 'off' or duty_cycle == 0:
+                    cmd = self.output_pwm_command[output_id].replace('((duty_cycle))', str(0.0))
+                    exec(cmd)
+                    self.pwm_state[output_id] = None
+                else:
+                    return
+
+                # restore stdout and stderr
+                sys.stdout = sys.__stdout__
+                sys.stderr = sys.__stderr__
+                py_error = codeErr.getvalue()
+                py_output = codeOut.getvalue()
+
+                self.logger.debug(
+                    "Output duty cycle {duty_cycle} command returned: "
+                    "Error: {err}, Output: {out}".format(
+                        duty_cycle=duty_cycle,
+                        err=py_error,
+                        out=py_output))
+
+                codeOut.close()
+                codeErr.close()
 
     def check_triggers(self, output_id, state=None, on_duration=None, duty_cycle=None):
         """
@@ -774,6 +865,7 @@ class OutputController(threading.Thread):
             self.output_off_command[each_output.unique_id] = each_output.off_command
             self.output_pwm_command[each_output.unique_id] = each_output.pwm_command
             self.output_flow_rate[each_output.unique_id] = each_output.flow_rate
+            self.modules_load[each_output.unique_id] = each_output.modules_load
 
             self.pwm_hertz[each_output.unique_id] = each_output.pwm_hertz
             self.pwm_library[each_output.unique_id] = each_output.pwm_library
@@ -852,6 +944,7 @@ class OutputController(threading.Thread):
             self.output_off_command[output_id] = output.off_command
             self.output_pwm_command[output_id] = output.pwm_command
             self.output_flow_rate[output_id] = output.flow_rate
+            self.modules_load[output_id] = output.modules_load
 
             self.pwm_hertz[output_id] = output.pwm_hertz
             self.pwm_library[output_id] = output.pwm_library
@@ -919,6 +1012,7 @@ class OutputController(threading.Thread):
             self.output_off_command.pop(output_id, None)
             self.output_pwm_command.pop(output_id, None)
             self.wireless_pi_switch.pop(output_id, None)
+            self.modules_load.pop(output_id, None)
 
             self.pwm_hertz.pop(output_id, None)
             self.pwm_library.pop(output_id, None)
@@ -1065,11 +1159,14 @@ class OutputController(threading.Thread):
                         self.output_trigger[output_id] == GPIO.input(self.output_pin[output_id])):
                     return 'on'
             elif self.output_type[output_id] in ['command',
+                                                 'python',
                                                  'wireless_rpi_rf']:
                 if (self.output_time_turned_on[output_id] or
                         self.output_on_until[output_id] > datetime.datetime.now()):
                     return 'on'
-            elif self.output_type[output_id] in ['pwm', 'command_pwm']:
+            elif self.output_type[output_id] in ['pwm',
+                                                 'command_pwm',
+                                                 'python_pwm']:
                 if output_id in self.pwm_state and self.pwm_state[output_id]:
                     return self.pwm_state[output_id]
         return 'off'
@@ -1087,6 +1184,8 @@ class OutputController(threading.Thread):
             return self.output_trigger[output_id] == GPIO.input(self.output_pin[output_id])
         elif self.output_type[output_id] in ['command',
                                              'command_pwm',
+                                             'python',
+                                             'python_pwm',
                                              'wireless_rpi_rf']:
             if self.output_time_turned_on[output_id]:
                 return True
@@ -1112,6 +1211,8 @@ class OutputController(threading.Thread):
             return True
         elif self.output_type[output_id] in ['command',
                                              'command_pwm',
+                                             'python',
+                                             'python_pwm',
                                              'wireless_rpi_rf',
                                              'atlas_ezo_pmp']:
             return True

@@ -198,7 +198,11 @@ def gpio_state():
                 state[each_output.unique_id] = 'on'
             else:
                 state[each_output.unique_id] = 'off'
-        elif (each_output.output_type in ['command', 'command_pwm', 'atlas_ezo_pmp'] or
+        elif (each_output.output_type in ['command',
+                                          'command_pwm',
+                                          'python',
+                                          'python_pwm',
+                                          'atlas_ezo_pmp'] or
                 (each_output.output_type in ['pwm', 'wireless_rpi_rf'] and
                  each_output.pin and
                  -1 < each_output.pin < 40)):
@@ -225,7 +229,11 @@ def gpio_state_unique_id(unique_id):
             state = 'on'
         else:
             state = 'off'
-    elif (output.output_type in ['command', 'command_pwm'] or
+    elif (output.output_type in ['command',
+                                 'command_pwm',
+                                 'python',
+                                 'python_pwm',
+                                 'atlas_ezo_pmp'] or
             (output.output_type in ['pwm', 'wireless_rpi_rf'] and
              output.pin and -1 < output.pin < 40)):
         state = daemon_control.output_state(output.unique_id)

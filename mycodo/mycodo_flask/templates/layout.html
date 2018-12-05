@@ -131,6 +131,7 @@
   {% if not hide_tooltips %}
     $(document).ready(function(){
       $('input[title]').tooltip({placement:'top'});
+      $('textarea[title]').tooltip({placement:'top'});
       $('.form-dropdown').dropdown();
       $('.form-dropdown').tooltip();
     });

@@ -65,10 +65,13 @@ def output_add(form_add):
 
                 if output_type in ['wired',
                                    'wireless_rpi_rf',
-                                   'command', ]:
+                                   'command',
+                                   'python']:
                     new_output.measurement = 'duration_time'
                     new_output.unit = 's'
-                elif output_type in ['command_pwm', 'pwm']:
+                elif output_type in ['command_pwm',
+                                     'pwm',
+                                     'python_pwm']:
                     new_output.measurement = 'duty_cycle'
                     new_output.unit = 'percent'
                 elif output_type == 'atlas_ezo_pmp':
@@ -93,6 +96,22 @@ def output_add(form_add):
                 elif output_type == 'pwm':
                     new_output.pwm_hertz = 22000
                     new_output.pwm_library = 'pigpio_any'
+                elif output_type == 'python':
+                    new_output.on_command = """
+with open("/home/pi/Mycodo/OutputTest.txt", "a") as myfile:
+    myfile.write("ON\\n")
+"""
+                    new_output.off_command = """
+with open("/home/pi/Mycodo/OutputTest.txt", "a") as myfile:
+    myfile.write("OFF\\n")
+"""
+                    new_output.modules_load = ''
+                elif output_type == 'python_pwm':
+                    new_output.pwm_command = """
+with open("/home/pi/Mycodo/OutputTest.txt", "a") as myfile:
+    myfile.write("Duty Cycle: ((duty_cycle)) %\\n")
+"""
+                    new_output.modules_load = ''
                 elif output_type == 'atlas_ezo_pmp':
                     new_output.flow_rate = 10
                     if interface == 'I2C':
@@ -154,12 +173,18 @@ def output_mod(form_output):
             mod_output.pulse_length = form_output.pulse_length.data
             mod_output.on_command = form_output.on_command.data
             mod_output.off_command = form_output.off_command.data
-        elif mod_output.output_type == 'command':
+        elif mod_output.output_type in ['command',
+                                        'python']:
             mod_output.on_command = form_output.on_command.data
             mod_output.off_command = form_output.off_command.data
-        elif mod_output.output_type == 'command_pwm':
+            if mod_output.output_type == 'python':
+                mod_output.modules_load = form_output.modules_load.data
+        elif mod_output.output_type in ['command_pwm',
+                                        'python_pwm']:
             mod_output.pwm_command = form_output.pwm_command.data
             mod_output.pwm_invert_signal = form_output.pwm_invert_signal.data
+            if mod_output.output_type == 'python_pwm':
+                mod_output.modules_load = form_output.modules_load.data
         elif mod_output.output_type == 'pwm':
             mod_output.pin = form_output.pin.data
             mod_output.pwm_hertz = form_output.pwm_hertz.data
