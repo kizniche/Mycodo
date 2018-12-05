@@ -529,8 +529,8 @@ Output
 Outputs are various signals that can be generated that operate devices.
 An output can be a PWM signal, a simple HIGH/LOW signal to operate a
 relay, a 315/433 MHz signal to switch a radio frequency-operated relay,
-driving of pumps and motors, or an execution of a command on the linux system
-Mycodo runs on, to name a few.
+driving of pumps and motors, or an execution of a linux or Python command,
+to name a few.
 
 
 +-----------------------+-------------------------------------------------+
@@ -575,18 +575,33 @@ Mycodo runs on, to name a few.
 |                       | For wireless relays, this is the numerical      |
 |                       | command to be transmitted, and for command      |
 |                       | outputs this is the command to be executed.     |
+|                       | Commands may be for the linux terminal or       |
+|                       | Python 3 (depending on which output type        |
+|                       | selected).                                      |
 +-----------------------+-------------------------------------------------+
 | Off Command           | This is the command used to turn the output     |
 |                       | off. For wireless relays, this is the numerical |
 |                       | command to be transmitted, and for command      |
 |                       | outputs this is the command to be executed.     |
+|                       | Commands may be for the linux terminal or       |
+|                       | Python 3 (depending on which output type        |
+|                       | selected).                                      |
 +-----------------------+-------------------------------------------------+
 | PWM Command           | This is the command used to set the duty cycle. |
 |                       | The string "((duty\_cycle))" in the command     |
 |                       | will be replaced with the actual duty cycle     |
 |                       | before the command is executed. Ensure          |
 |                       | "((duty\_cycle))" is included in your command   |
-|                       | for this feature to work correctly.             |
+|                       | for this feature to work correctly. Commands    |
+|                       | may be for the linux terminal or Python 3       |
+|                       | (depending on which output type selected).      |
++-----------------------+-------------------------------------------------+
+| Load Modules          | List any extra modules to load that will be     |
+|                       | used in the conditional statement. You may use  |
+|                       | multiple separated by a comma. For example, two |
+|                       | additional modules may be loaded with the       |
+|                       | following: "import numpy,from statistics import |
+|                       | stdev"                                          |
 +-----------------------+-------------------------------------------------+
 | Current Draw (amps)   | The is the amount of current the device powered |
 |                       | by the output draws. Note: this value should be |
