@@ -361,7 +361,8 @@ def choices_lcd(inputs, maths, pids, outputs, dict_units, dict_measurements):
             id=each_output.id,
             name=each_output.name)
         choices.update({value: display})
-        choices = form_output_choices(choices, each_output)
+        choices = form_output_choices(
+            choices, each_output, dict_units, dict_measurements)
 
     return choices
 
@@ -548,7 +549,10 @@ def choices_id_name(table):
 
 
 def user_has_permission(permission):
-    """ Determine if the currently-logged-in user has permission to perform a spceific action """
+    """
+    Determine if the currently-logged-in user has permission to perform a
+    specific action.
+    """
     user = User.query.filter(User.name == flask_login.current_user.name).first()
     role = Role.query.filter(Role.id == user.role_id).first()
     if ((permission == 'edit_settings' and role.edit_settings) or
