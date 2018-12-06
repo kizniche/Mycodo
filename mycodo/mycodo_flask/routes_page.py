@@ -1935,18 +1935,29 @@ def dict_custom_colors():
                 index = 0
                 for each_set in each_graph.output_ids.split(';'):
                     output_unique_id = each_set.split(',')[0]
-                    output = Output.query.filter_by(
+
+                    device_measurement = Output.query.filter_by(
                         unique_id=output_unique_id).first()
+                    if device_measurement:
+                        conversion = Conversion.query.filter(
+                            Conversion.unique_id == device_measurement.conversion_id).first()
+                    else:
+                        conversion = None
+                    channel, unit, measurement = return_measurement_info(
+                        device_measurement, conversion)
+
                     if (index < len(each_graph.output_ids.split(',')) and
                             len(colors) > index_sum + index):
                         color = colors[index_sum + index]
                     else:
                         color = '#FF00AA'
-                    if output is not None:
+                    if device_measurement is not None:
                         total.append({
                             'unique_id': output_unique_id,
-                            'name': output.name,
-                            'measure': 'output duration',
+                            'name': device_measurement.name,
+                            'channel': channel,
+                            'unit': unit,
+                            'measure': measurement,
                             'color': color})
                         index += 1
                 index_sum += index

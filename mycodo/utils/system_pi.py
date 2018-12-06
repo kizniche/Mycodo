@@ -46,6 +46,8 @@ def return_measurement_info(device_measurement, conversion):
             unit = conversion.convert_unit_to
             measurement = None
         elif (device_measurement and
+                hasattr(device_measurement, 'rescaled_unit') and
+                hasattr(device_measurement, 'rescaled_measurement') and
                 device_measurement.rescaled_unit and
                 device_measurement.rescaled_measurement):
             unit = device_measurement.rescaled_unit
