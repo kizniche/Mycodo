@@ -415,8 +415,13 @@ class LCDController(threading.Thread):
         return gpio_state
 
     def setup_lcd_line(self, display_id, line, device_id, measurement_id):
-        device_measurement = db_retrieve_table_daemon(
-            DeviceMeasurements, unique_id=measurement_id)
+        if measurement_id == 'output':
+            device_measurement = db_retrieve_table_daemon(
+                Output, unique_id=device_id)
+        else:
+            device_measurement = db_retrieve_table_daemon(
+                DeviceMeasurements, unique_id=measurement_id)
+
         if device_measurement:
             conversion = db_retrieve_table_daemon(
                 Conversion, unique_id=device_measurement.conversion_id)
@@ -429,8 +434,8 @@ class LCDController(threading.Thread):
         self.lcd_line[display_id][line]['id'] = device_id
         self.lcd_line[display_id][line]['name'] = None
         self.lcd_line[display_id][line]['unit'] = unit
-        self.lcd_line[display_id][line]['measure'] = measurement.measurement
-        self.lcd_line[display_id][line]['channel'] = measurement.channel
+        self.lcd_line[display_id][line]['measure'] = measurement
+        self.lcd_line[display_id][line]['channel'] = channel
 
         if 'time' in measurement_id:
             self.lcd_line[display_id][line]['measure'] = 'time'
