@@ -15,15 +15,14 @@ from wtforms import widgets
 from wtforms.validators import DataRequired
 from wtforms.widgets.html5 import NumberInput
 
+from mycodo.config import LCDS
+
 
 class LCDAdd(FlaskForm):
-    quantity = IntegerField(
-        lazy_gettext('Quantity'),
-        validators=[validators.NumberRange(
-            min=1,
-            max=20
-        )],
-        widget=NumberInput()
+    lcd_type = SelectField(
+        lazy_gettext('LCD Type'),
+        choices=LCDS,
+        validators=[DataRequired()]
     )
     add = SubmitField(lazy_gettext('Add'))
 
@@ -55,14 +54,6 @@ class LCDMod(FlaskForm):
                                  "5 and 86400 seconds.")
         )],
         widget=NumberInput(step='any')
-    )
-    lcd_type = SelectField(
-        lazy_gettext('LCD Type'),
-        choices=[
-            ('16x2', '16x2'),
-            ('20x4', '20x4')
-        ],
-        validators=[DataRequired()]
     )
     add_display = SubmitField(lazy_gettext('Add Display Set'))
     save = SubmitField(lazy_gettext('Save'))

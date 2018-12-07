@@ -972,11 +972,12 @@ def page_lcd():
     form_lcd_display = forms_lcd.LCDModDisplay()
 
     if request.method == 'POST':
+        unmet_dependencies = None
         if not utils_general.user_has_permission('edit_controllers'):
             return redirect(url_for('routes_general.home'))
 
         if form_lcd_add.add.data:
-            utils_lcd.lcd_add(form_lcd_add.quantity.data)
+            unmet_dependencies = utils_lcd.lcd_add(form_lcd_add)
         elif form_lcd_mod.save.data:
             utils_lcd.lcd_mod(form_lcd_mod)
         elif form_lcd_mod.delete.data:
@@ -1000,7 +1001,11 @@ def page_lcd():
         elif form_lcd_display.delete_display.data:
             utils_lcd.lcd_display_del(form_lcd_display.lcd_data_id.data)
 
-        return redirect(url_for('routes_page.page_lcd'))
+        if unmet_dependencies:
+            return redirect(url_for('routes_admin.admin_dependencies',
+                                    device=form_lcd_add.lcd_type.data))
+        else:
+            return redirect(url_for('routes_page.page_lcd'))
 
     return render_template('pages/lcd.html',
                            choices_lcd=choices_lcd,

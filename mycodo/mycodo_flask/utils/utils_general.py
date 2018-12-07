@@ -15,6 +15,7 @@ from flask import url_for
 from flask_babel import gettext
 
 from mycodo.config import CALIBRATION_INFO
+from mycodo.config import LCD_INFO
 from mycodo.config import MATH_INFO
 from mycodo.config import METHOD_INFO
 from mycodo.config import OUTPUT_INFO
@@ -23,11 +24,9 @@ from mycodo.config_devices_units import MEASUREMENTS
 from mycodo.config_devices_units import UNITS
 from mycodo.databases.models import Camera
 from mycodo.databases.models import Conditional
-from mycodo.databases.models import DeviceMeasurements
-from mycodo.databases.models import Measurement
-from mycodo.databases.models import Unit
-from mycodo.databases.models import Input
 from mycodo.databases.models import Conversion
+from mycodo.databases.models import DeviceMeasurements
+from mycodo.databases.models import Input
 from mycodo.databases.models import LCD
 from mycodo.databases.models import Math
 from mycodo.databases.models import PID
@@ -756,6 +755,7 @@ def return_dependencies(device_type):
 
     list_dependencies = [
         dict_inputs,
+        LCD_INFO,
         MATH_INFO,
         METHOD_INFO,
         OUTPUT_INFO,

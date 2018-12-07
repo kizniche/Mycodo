@@ -33,6 +33,34 @@ LANGUAGES = {
     'zh': '中文 (Chinese)'
 }
 
+# LCD info
+LCD_INFO = {
+    '16x2_generic': {
+        'name': lazy_gettext('Generic 16x2'),
+        'dependencies_module': []
+    },
+    '16x4_generic': {
+        'name': lazy_gettext('Generic 16x4'),
+        'dependencies_module': []
+    },
+    '128x32_pioled': {
+        'name': lazy_gettext('PiOLED 128x32'),
+        'dependencies_module': [
+            ('pip-pypi', 'PIL', 'Pillow'),
+            ('pip-pypi', 'Adafruit_GPIO', 'Adafruit_GPIO'),
+            ('pip-pypi', 'Adafruit_PureIO', 'Adafruit_PureIO'),
+            ('pip-git', 'Adafruit_SSD1306', 'git://github.com/adafruit/Adafruit_Python_SSD1306.git#egg=adafruit-ssd1306')
+        ]
+    }
+}
+
+# Math form dropdown
+LCDS = [
+    ('16x2_generic', LCD_INFO['16x2_generic']['name']),
+    ('16x4_generic', LCD_INFO['16x4_generic']['name']),
+    ('128x32_pioled', LCD_INFO['128x32_pioled']['name'])
+]
+
 # Math info
 MATH_INFO = {
     'average': {
