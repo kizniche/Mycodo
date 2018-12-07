@@ -418,6 +418,8 @@ class LCDController(threading.Thread):
         if measurement_id == 'output':
             device_measurement = db_retrieve_table_daemon(
                 Output, unique_id=device_id)
+        elif measurement_id == 'IP':
+            device_measurement = None
         else:
             device_measurement = db_retrieve_table_daemon(
                 DeviceMeasurements, unique_id=measurement_id)
@@ -425,10 +427,12 @@ class LCDController(threading.Thread):
         if device_measurement:
             conversion = db_retrieve_table_daemon(
                 Conversion, unique_id=device_measurement.conversion_id)
+            channel, unit, measurement = return_measurement_info(
+                device_measurement, conversion)
         else:
-            conversion = None
-        channel, unit, measurement = return_measurement_info(
-            device_measurement, conversion)
+            channel = None
+            unit = None
+            measurement = None
 
         self.lcd_line[display_id][line]['setup'] = False
         self.lcd_line[display_id][line]['id'] = device_id
