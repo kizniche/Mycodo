@@ -57,7 +57,6 @@ import timeit
 
 import RPi.GPIO as GPIO
 
-from mycodo.devices.lcd_generic import LCD_Generic
 from mycodo.config import MYCODO_VERSION
 from mycodo.databases.models import Conversion
 from mycodo.databases.models import DeviceMeasurements
@@ -69,6 +68,8 @@ from mycodo.databases.models import Measurement
 from mycodo.databases.models import Output
 from mycodo.databases.models import PID
 from mycodo.databases.models import Unit
+from mycodo.devices.lcd_generic import LCD_Generic
+from mycodo.devices.lcd_pioled import LCD_Pioled
 from mycodo.utils.database import db_retrieve_table_daemon
 from mycodo.utils.influx import read_last_influxdb
 from mycodo.utils.system_pi import add_custom_measurements
@@ -182,7 +183,7 @@ class LCDController(threading.Thread):
                                  '16x4_generic']:
                 self.lcd_out = LCD_Generic(lcd_dev)
             elif self.lcd_type == '128x32_pioled':
-                self.lcd_out = None
+                self.lcd_out = LCD_Pioled(lcd_dev)
 
             self.lcd_init()
 
