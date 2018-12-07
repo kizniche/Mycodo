@@ -105,3 +105,13 @@ class LCD_Generic:
         self.lcd_byte(line_write, self.LCD_CMD)
         for i in range(self.LCD_WIDTH):
             self.lcd_byte(ord(message[i]), self.LCD_CHR)
+
+    def lcd_write_lines(self, line_1, line_2, line_3, line_4):
+        if line_1:
+            self.lcd_string_write(line_1, 1)
+        if line_2:
+            self.lcd_string_write(line_2, 2)
+        if line_3:
+            self.lcd_string_write(line_3, 3)
+        if line_4:
+            self.lcd_string_write(line_4, 4)

@@ -177,8 +177,6 @@ class LCDController(threading.Thread):
                         each_lcd_display.line_4_id,
                         each_lcd_display.line_4_measurement)
 
-            self.LCD_WIDTH = self.lcd_x_characters  # Max characters per line
-
             if self.lcd_type in ['16x2_generic',
                                  '16x4_generic']:
                 self.lcd_out = LCD_Generic(lcd_dev)
@@ -188,8 +186,9 @@ class LCDController(threading.Thread):
             self.lcd_init()
 
             if self.lcd_initialized:
-                self.lcd_out.lcd_string_write('Mycodo {}'.format(MYCODO_VERSION), 1)
-                self.lcd_out.lcd_string_write('Start {}'.format(self.lcd_name), 2)
+                line_1 = 'Mycodo {}'.format(MYCODO_VERSION)
+                line_2 = 'Start {}'.format(self.lcd_name)
+                self.lcd_out.lcd_write_lines(line_1, line_2, None, None)
         except Exception as except_msg:
             self.logger.exception("Error: {err}".format(err=except_msg))
 
@@ -261,8 +260,9 @@ class LCDController(threading.Thread):
             self.logger.exception("Exception: {err}".format(err=except_msg))
         finally:
             self.lcd_out.lcd_init()  # Blank LCD
-            self.lcd_out.lcd_string_write('Mycodo {}'.format(MYCODO_VERSION), 1)
-            self.lcd_out.lcd_string_write('Stop {}'.format(self.lcd_name), 2)
+            line_1 = 'Mycodo {}'.format(MYCODO_VERSION)
+            line_2 = 'Stop {}'.format(self.lcd_name)
+            self.lcd_out.lcd_write_lines(line_1, line_2, None, None)
             self.logger.info("Deactivated in {:.1f} ms".format(
                 (timeit.default_timer() - self.thread_shutdown_timer) * 1000))
             self.running = False
@@ -382,29 +382,23 @@ class LCDController(threading.Thread):
         """ Output to all LCDs all at once """
         self.lcd_out.lcd_init()
         display_id = self.display_ids[self.display_count]
-
-        if self.lcd_type in ['16x2_generic',
-                             '16x4_generic']:
-            for i in range(1, self.lcd_y_lines + 1):
-                self.lcd_out.lcd_string_write(self.lcd_string_line[display_id][i], i)
-        elif self.lcd_type == '128x32_pioled':
-            if self.lcd_string_line[display_id][1]:
-                line_1 = self.lcd_string_line[display_id][1]
-            else:
-                line_1 = ''
-            if self.lcd_string_line[display_id][2]:
-                line_2 = self.lcd_string_line[display_id][2]
-            else:
-                line_2 = ''
-            if self.lcd_string_line[display_id][3]:
-                line_3 = self.lcd_string_line[display_id][3]
-            else:
-                line_3 = ''
-            if self.lcd_string_line[display_id][4]:
-                line_4 = self.lcd_string_line[display_id][4]
-            else:
-                line_4 = ''
-            self.lcd_out.write_lines(line_1, line_2, line_3, line_4)
+        if self.lcd_string_line[display_id][1]:
+            line_1 = self.lcd_string_line[display_id][1]
+        else:
+            line_1 = None
+        if self.lcd_string_line[display_id][2]:
+            line_2 = self.lcd_string_line[display_id][2]
+        else:
+            line_2 = None
+        if self.lcd_string_line[display_id][3]:
+            line_3 = self.lcd_string_line[display_id][3]
+        else:
+            line_3 = None
+        if self.lcd_string_line[display_id][4]:
+            line_4 = self.lcd_string_line[display_id][4]
+        else:
+            line_4 = None
+        self.lcd_out.lcd_write_lines(line_1, line_2, line_3, line_4)
 
 
     @staticmethod
