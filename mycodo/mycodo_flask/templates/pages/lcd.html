@@ -78,7 +78,7 @@
       </div>
     </div>
 
-    <div class="collapse" id="collapseContainer{{each_lcd.unique_id}}">
+    <div class="collapse" id="collapseContainer{{each_lcd.unique_id}}" style="padding-top: 0.2em; padding-bottom: 0.2em">
 
       <div class="row small-gutters">
         <div class="col-auto">
@@ -86,6 +86,9 @@
         </div>
         <div class="col-auto">
           {{form_lcd_mod.save(class_='form-control btn btn-sm')}}
+        </div>
+        <div class="col-auto">
+          {{form_lcd_mod.add_display(class_='form-control btn btn-sm')}}
         </div>
       </div>
       <div class="row small-gutters">
@@ -141,17 +144,12 @@
           </div>
         </div>
       </div>
-      <div class="row small-gutters" style="padding: 1em 0 0.3em 0">
-        <div class="col-auto">
-          {{form_lcd_mod.add_display(class_='form-control btn btn-sm')}}
-        </div>
-      </div>
 
       </form>
 
       {% for each_lcd_display in lcd_data if each_lcd_display.lcd_id == each_lcd.unique_id %}
 
-      <form method="post" action="/lcd" style="border-top: 1px solid #ddd;">
+      <form method="post" action="/lcd" style="margin-top: 0.2em; border-top: 1px solid #ddd;">
       {{form_lcd_display.csrf_token}}
       {{form_lcd_display.lcd_id(value=each_lcd.unique_id)}}
       {{form_lcd_display.lcd_data_id(value=each_lcd_display.unique_id)}}
