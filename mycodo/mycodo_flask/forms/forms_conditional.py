@@ -34,6 +34,9 @@ class Conditional(FlaskForm):
     refractory_period = DecimalField(
         lazy_gettext('Refractory Period (seconds)'),
         widget=NumberInput(step='any'))
+    start_offset = DecimalField(
+        lazy_gettext('Start Offset (seconds)'),
+        widget=NumberInput(step='any'))
     condition_type = SelectField(
         choices=[('', lazy_gettext('Select One'))] + CONDITIONAL_CONDITIONS,
         validators=[DataRequired()]

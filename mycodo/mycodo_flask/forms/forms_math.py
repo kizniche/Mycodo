@@ -40,10 +40,9 @@ class MathMod(FlaskForm):
         lazy_gettext('Max Age (seconds)'),
         validators=[DataRequired()],
         widget=NumberInput())
-    start_offset = IntegerField(
+    start_offset = DecimalField(
         lazy_gettext('Start Offset (seconds)'),
-        validators=[DataRequired()],
-        widget=NumberInput())
+        widget=NumberInput(step='any'))
     inputs = SelectMultipleField(
         lazy_gettext('Inputs'))
     select_measurement_unit = StringField(

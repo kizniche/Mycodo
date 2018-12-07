@@ -138,6 +138,7 @@ class PIDController(threading.Thread):
         self.integrator_min = None
         self.integrator_max = None
         self.period = None
+        self.start_offset = None
         self.max_measure_age = None
         self.default_setpoint = None
         self.setpoint = None
@@ -165,9 +166,10 @@ class PIDController(threading.Thread):
         self.lower_output_type = None
 
         self.first_start = True
-        self.timer = time.time()
 
         self.initialize_values()
+
+        self.timer = time.time() + self.start_offset
 
         # Check if a method is set for this PID
         self.method_type = None
@@ -257,6 +259,7 @@ class PIDController(threading.Thread):
         self.integrator_min = pid.integrator_min
         self.integrator_max = pid.integrator_max
         self.period = pid.period
+        self.start_offset = pid.start_offset
         self.max_measure_age = pid.max_measure_age
         self.default_setpoint = pid.setpoint
         self.setpoint = pid.setpoint

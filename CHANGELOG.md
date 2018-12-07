@@ -23,6 +23,7 @@ The Mycodo 7.0 brings a redesigned measurement/unit and Conditional systems. The
  - Add Vapor Pressure Deficit calculation to Inputs that measure temperature and relative humidity ([#572](https://github.com/kizniche/mycodo/issues/572))
  - Add Vapor Pressure Deficit Math controller ([#572](https://github.com/kizniche/mycodo/issues/572))
  - Add ability to import additional Python modules before evaluating conditional statement
+ - Add Start Offset option for PID, Math, and Conditionals
 
 ### Miscellaneous
 

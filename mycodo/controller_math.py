@@ -111,8 +111,8 @@ class MathController(threading.Thread):
             self.math_type = math.math_type
             self.is_activated = math.is_activated
             self.period = math.period
-            self.max_measure_age = math.max_measure_age
             self.start_offset = math.start_offset
+            self.max_measure_age = math.max_measure_age
 
             # Inputs to calculate with
             self.inputs = math.inputs

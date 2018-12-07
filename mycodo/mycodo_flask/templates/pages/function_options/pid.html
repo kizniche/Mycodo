@@ -102,6 +102,12 @@
         </div>
       </div>
       <div class="col-auto">
+        {{form_mod_pid_base.start_offset.label(class_='control-label')}}
+        <div>
+          {{form_mod_pid_base.start_offset(class_='form-control', value=each_pid.start_offset, **{'title':_('The duration (seconds) to wait before the first operation')})}}
+        </div>
+      </div>
+      <div class="col-auto">
         {{form_mod_pid_base.max_measure_age.label(class_='control-label')}}
         <div>
           {{form_mod_pid_base.max_measure_age(class_='form-control', value=each_pid.max_measure_age, **{'title':_('Maximum allowable measurement age (to allow the PID controller to manipulate outputs, the measurement must have occurred in the past x seconds)')})}}

@@ -75,6 +75,12 @@
         </div>
       </div>
       <div class="col-auto">
+        {{form_conditional.start_offset.label(class_='control-label')}}
+        <div>
+          {{form_conditional.start_offset(class_='form-control', value=each_cond.start_offset, **{'title':_('The duration (seconds) to wait before the first operation')})}}
+        </div>
+      </div>
+      <div class="col-auto">
         {{form_conditional.refractory_period.label(class_='control-label')}}
         <div>
           {{form_conditional.refractory_period(class_='form-control', value=each_cond.refractory_period, **{'title':_('The minimum duration after a conditional trigger to wait before beggining monitoring again')})}}

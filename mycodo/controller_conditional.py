@@ -91,6 +91,7 @@ class ConditionalController(threading.Thread):
         self.smtp_wait_timer = None
         self.timer_period = None
         self.period = None
+        self.start_offset = None
         self.refractory_period = None
         self.conditional_statement = None
         self.modules_load = None
@@ -182,11 +183,12 @@ class ConditionalController(threading.Thread):
 
         self.conditional_statement = cond.conditional_statement
         self.period = cond.period
+        self.start_offset = cond.start_offset
         self.refractory_period = cond.refractory_period
         self.modules_load = cond.modules_load
         self.timer_refractory_period = 0
         self.smtp_wait_timer = now + 3600
-        self.timer_period = now + self.period
+        self.timer_period = now + self.start_offset
 
     def check_conditionals(self):
         """
@@ -272,7 +274,7 @@ class ConditionalController(threading.Thread):
         # logger_cond.info("Conditional Statement (replaced): {}".format(cond_statement_replaced))
 
         # Set the refractory period
-        if self.timer_refractory_period:
+        if self.refractory_period:
             self.timer_refractory_period = time.time() + self.refractory_period
 
         try:

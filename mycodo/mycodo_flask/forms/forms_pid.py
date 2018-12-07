@@ -43,6 +43,9 @@ class PIDModBase(FlaskForm):
         )],
         widget=NumberInput(step='any')
     )
+    start_offset = DecimalField(
+        lazy_gettext('Start Offset (seconds)'),
+        widget=NumberInput(step='any'))
     max_measure_age = DecimalField(
         lazy_gettext('Max Age (seconds)'),
         validators=[validators.NumberRange(

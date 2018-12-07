@@ -36,6 +36,7 @@ def conditional_mod(form):
         cond_mod.conditional_statement = form.conditional_statement.data
         cond_mod.modules_load = form.modules_load.data
         cond_mod.period = form.period.data
+        cond_mod.start_offset = form.start_offset.data
         cond_mod.refractory_period = form.refractory_period.data
 
         if not error:
