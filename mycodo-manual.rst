@@ -2893,9 +2893,11 @@ Device Specific Information
 LCD Displays
 ------------
 
-There are only a few number fo LCDs that are supported. Only 16x2 and
-20x4 character LCD displays with I2C backpacks are supported. The below
-image is the type of device that should be compatible.
+There are only a few number fo LCDs that are supported. 16x2 and
+20x4 character LCD displays with I2C backpacks and the `PiOLED
+128x32 <https://www.adafruit.com/product/3527>`__  are supported.
+The below image is the type of device with the I2C backpack that
+should be compatible.
 
 |image4| 
 
