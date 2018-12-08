@@ -8,22 +8,20 @@ from PIL import ImageDraw
 from PIL import ImageFont
 
 logger = logging.getLogger("mycodo.device.lcd_pioled")
-RST = None # on the PiOLED this pin isnt used
 
 
 class LCD_Pioled:
     """Output to the PiOLED I2C LCD"""
 
     def __init__(self, lcd_dev):
-        self.logger = logging.getLogger("mycodo.lcd_{id}".format(id=lcd_dev.lcd_id.split('-')[0]))
+        self.logger = logging.getLogger("mycodo.lcd_{id}".format(id=lcd_dev.unique_id.split('-')[0]))
 
-        self.lcd_id = lcd_dev.lcd_id
         self.i2c_address = int(lcd_dev.location, 16)
         self.i2c_bus = lcd_dev.i2c_bus
         self.lcd_x_characters = lcd_dev.x_characters
         self.lcd_y_lines = lcd_dev.y_lines
 
-        self.disp = Adafruit_SSD1306.SSD1306_128_32(rst=RST)
+        self.disp = Adafruit_SSD1306.SSD1306_128_32(rst=None)
         self.disp.begin()
 
     def lcd_init(self):
