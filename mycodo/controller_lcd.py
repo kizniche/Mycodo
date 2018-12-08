@@ -275,11 +275,11 @@ class LCDController(threading.Thread):
     def get_measurement(self, display_id, i):
         try:
             if self.lcd_line[display_id][i]['measure'] == 'IP':
-                str_IP_cmd = "ip addr | grep 'state UP' -A2 | tail -n1 | awk '{print $2}' | cut -f1  -d'/'"
-                IP_out, _, _ = cmd_output(str_IP_cmd)
+                str_ip_cmd = "ip addr | grep 'state UP' -A2 | tail -n1 | awk '{print $2}' | cut -f1  -d'/'"
+                ip_out, _, _ = cmd_output(str_ip_cmd)
                 self.lcd_line[display_id][i]['name'] = ''
                 self.lcd_line[display_id][i]['unit'] = ''
-                self.lcd_line[display_id][i]['measure_val'] = IP_out.rstrip().decode("utf-8")
+                self.lcd_line[display_id][i]['measure_val'] = ip_out.rstrip().decode("utf-8")
                 return True
             elif self.lcd_line[display_id][i]['measure'] == 'output_state':
                 self.lcd_line[display_id][i]['measure_val'] = self.output_state(
@@ -380,26 +380,21 @@ class LCDController(threading.Thread):
 
     def output_lcds(self):
         """ Output to all LCDs all at once """
+        line_1 = None
+        line_2 = None
+        line_3 = None
+        line_4 = None
         self.lcd_out.lcd_init()
         display_id = self.display_ids[self.display_count]
         if self.lcd_string_line[display_id][1]:
-            line_1 = self.lcd_string_line[display_id][1]
-        else:
-            line_1 = None
+            line_1 = self.lcd_string_line[display_id][1]            
         if self.lcd_string_line[display_id][2]:
-            line_2 = self.lcd_string_line[display_id][2]
-        else:
-            line_2 = None
+            line_2 = self.lcd_string_line[display_id][2]            
         if self.lcd_string_line[display_id][3]:
-            line_3 = self.lcd_string_line[display_id][3]
-        else:
-            line_3 = None
+            line_3 = self.lcd_string_line[display_id][3]            
         if self.lcd_string_line[display_id][4]:
-            line_4 = self.lcd_string_line[display_id][4]
-        else:
-            line_4 = None
+            line_4 = self.lcd_string_line[display_id][4]            
         self.lcd_out.lcd_write_lines(line_1, line_2, line_3, line_4)
-
 
     @staticmethod
     def output_state(output_id):
