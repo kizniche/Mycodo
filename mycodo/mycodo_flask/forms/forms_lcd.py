@@ -35,8 +35,7 @@ class LCDMod(FlaskForm):
     )
     location = StringField(
         "{op} ({unit})".format(op=lazy_gettext('Address'),
-                               unit=lazy_gettext('I<sup>2</sup>C')),
-        validators=[DataRequired()]
+                               unit=lazy_gettext('I<sup>2</sup>C'))
     )
     i2c_bus = IntegerField(
         "{op} ({unit})".format(op=lazy_gettext('Bus'),
