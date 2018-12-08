@@ -1,7 +1,7 @@
 # coding=utf-8
-import argparse
 import logging
 import time
+
 from smbus2 import SMBus
 
 logger = logging.getLogger("mycodo.device.lcd_generic")
