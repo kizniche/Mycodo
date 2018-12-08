@@ -56,7 +56,6 @@ class OutputMod(FlaskForm):
     on_command = StringField(lazy_gettext('On Command'))
     off_command = StringField(lazy_gettext('Off Command'))
     pwm_command = StringField(lazy_gettext('PWM Command'))
-    modules_load = StringField(lazy_gettext('Load Modules'))
     pwm_invert_signal = BooleanField(lazy_gettext('Invert Signal'))
     amps = DecimalField(
         lazy_gettext('Current Draw (amps)'),

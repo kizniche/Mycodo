@@ -34,7 +34,6 @@ def conditional_mod(form):
             Conditional.unique_id == form.function_id.data).first()
         cond_mod.name = form.name.data
         cond_mod.conditional_statement = form.conditional_statement.data
-        cond_mod.modules_load = form.modules_load.data
         cond_mod.period = form.period.data
         cond_mod.start_offset = form.start_offset.data
         cond_mod.refractory_period = form.refractory_period.data
@@ -131,20 +130,6 @@ def conditional_condition_add(form):
 
         if not error:
             new_condition.save()
-
-            cond_mod = Conditional.query.filter(
-                Conditional.unique_id == form.function_id.data).first()
-            if not cond_mod.conditional_statement:
-                new_statement = '{{{id}}}'.format(
-                    id=new_condition.unique_id.split('-')[0])
-            else:
-                new_statement = '{orig} and {{{id}}}'.format(
-                    orig=cond_mod.conditional_statement,
-                    id=new_condition.unique_id.split('-')[0])
-
-            cond_mod.conditional_statement = new_statement
-            db.session.commit()
-
     except sqlalchemy.exc.OperationalError as except_msg:
         error.append(except_msg)
     except sqlalchemy.exc.IntegrityError as except_msg:

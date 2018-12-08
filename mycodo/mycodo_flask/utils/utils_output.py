@@ -110,7 +110,6 @@ with open("/home/pi/Mycodo/OutputTest.txt", "a") as myfile:
     myfile.write(write_string)
 
 """
-                    new_output.modules_load = ''
                 elif output_type == 'python_pwm':
                     new_output.pwm_command = """
 timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
@@ -119,7 +118,6 @@ write_string = "{ts}: ID {id}: Duty Cycle: ((duty_cycle)) %\\n".format(
 with open("/home/pi/Mycodo/OutputTest.txt", "a") as myfile:
     myfile.write(write_string)
 """
-                    new_output.modules_load = ''
                 elif output_type == 'atlas_ezo_pmp':
                     new_output.flow_rate = 10
                     if interface == 'I2C':
@@ -185,14 +183,10 @@ def output_mod(form_output):
                                         'python']:
             mod_output.on_command = form_output.on_command.data
             mod_output.off_command = form_output.off_command.data
-            if mod_output.output_type == 'python':
-                mod_output.modules_load = form_output.modules_load.data
         elif mod_output.output_type in ['command_pwm',
                                         'python_pwm']:
             mod_output.pwm_command = form_output.pwm_command.data
             mod_output.pwm_invert_signal = form_output.pwm_invert_signal.data
-            if mod_output.output_type == 'python_pwm':
-                mod_output.modules_load = form_output.modules_load.data
         elif mod_output.output_type == 'pwm':
             mod_output.pin = form_output.pin.data
             mod_output.pwm_hertz = form_output.pwm_hertz.data

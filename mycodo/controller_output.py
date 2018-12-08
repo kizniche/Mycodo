@@ -85,7 +85,6 @@ class OutputController(threading.Thread):
         self.output_off_command = {}
         self.output_pwm_command = {}
         self.wireless_pi_switch = {}
-        self.modules_load = {}
 
         # PWM
         self.pwm_hertz = {}
@@ -636,12 +635,6 @@ class OutputController(threading.Thread):
             sys.stdout = codeOut
             sys.stderr = codeErr
 
-            # Load modules
-            if self.modules_load[output_id]:
-                for each_module in self.modules_load[output_id].split(','):
-                    # logger_cond.info("Loading module: {}".format(each_module))
-                    exec (each_module)
-
             if state == 'on' and self.output_on_command[output_id]:
                 exec(self.output_on_command[output_id])
             elif state == 'off' and self.output_off_command[output_id]:
@@ -673,12 +666,6 @@ class OutputController(threading.Thread):
                 # capture output and errors
                 sys.stdout = codeOut
                 sys.stderr = codeErr
-
-                # Load modules
-                if self.modules_load[output_id]:
-                    for each_module in self.modules_load[output_id].split(','):
-                        # logger_cond.info("Loading module: {}".format(each_module))
-                        exec (each_module)
 
                 if state == 'on' and 100 >= duty_cycle >= 0:
                     cmd = self.output_pwm_command[output_id].replace('((duty_cycle))', str(duty_cycle))
@@ -865,7 +852,6 @@ class OutputController(threading.Thread):
             self.output_off_command[each_output.unique_id] = each_output.off_command
             self.output_pwm_command[each_output.unique_id] = each_output.pwm_command
             self.output_flow_rate[each_output.unique_id] = each_output.flow_rate
-            self.modules_load[each_output.unique_id] = each_output.modules_load
 
             self.pwm_hertz[each_output.unique_id] = each_output.pwm_hertz
             self.pwm_library[each_output.unique_id] = each_output.pwm_library
@@ -944,7 +930,6 @@ class OutputController(threading.Thread):
             self.output_off_command[output_id] = output.off_command
             self.output_pwm_command[output_id] = output.pwm_command
             self.output_flow_rate[output_id] = output.flow_rate
-            self.modules_load[output_id] = output.modules_load
 
             self.pwm_hertz[output_id] = output.pwm_hertz
             self.pwm_library[output_id] = output.pwm_library
@@ -1012,7 +997,6 @@ class OutputController(threading.Thread):
             self.output_off_command.pop(output_id, None)
             self.output_pwm_command.pop(output_id, None)
             self.wireless_pi_switch.pop(output_id, None)
-            self.modules_load.pop(output_id, None)
 
             self.pwm_hertz.pop(output_id, None)
             self.pwm_library.pop(output_id, None)

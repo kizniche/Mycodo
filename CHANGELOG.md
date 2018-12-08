@@ -11,20 +11,18 @@ The Mycodo 7.0 introduces many redesigned systems, including measurements/units,
 
 ### Features
 
+ - Add Function: Execute Actions
+ - Add Function Action: Pause (pause for a duration of time between executing specific actions)
  - Add Input: MCP9808 I2C high accuracy temperature sensor
  - Add Input: AMG8833 I2C 8x8 pixel thermal sensor
  - Add Input: SHT31 I2C humidity/temperature sensor
- - Add ability to search Input selection dropdown list
+ - Add LCD: PiOLED 128x32 ([#579](https://github.com/kizniche/mycodo/issues/579))
  - Add Output: Python Command (On/Off and PWM)
  - Add Output: Atlas EZO-PMP Peristaltic Pump ([#562](https://github.com/kizniche/mycodo/issues/562))
- - Add Function: Execute Actions
- - Add Function Action: Pause (pause for a duration of time before executing any remaining actions)
- - Add Math controller option: Start Offset (seconds)
  - Add Vapor Pressure Deficit calculation to Inputs that measure temperature and relative humidity ([#572](https://github.com/kizniche/mycodo/issues/572))
  - Add Vapor Pressure Deficit Math controller ([#572](https://github.com/kizniche/mycodo/issues/572))
- - Add ability to import additional Python modules before evaluating conditional statement
  - Add Start Offset option for PID, Math, and Conditionals
- - Add LCD: PiOLED 128x32 ([#579](https://github.com/kizniche/mycodo/issues/579))
+ - Add ability to search Input selection dropdown list
 
 ### Miscellaneous
 

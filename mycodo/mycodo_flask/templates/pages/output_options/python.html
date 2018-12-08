@@ -10,12 +10,6 @@
     <textarea class="form-control" id="off_command" name="off_command" rows="5" type="text" title="{{_('Command to execute (as user mycodo) when the output is instructed to turn off')}}">{{each_output.off_command}}</textarea>
    </div>
 </div>
-<div class="col-md-12 col-lg-6">
-  {{form_mod_output.modules_load.label(class_='control-label')}}
-  <div>
-    {{form_mod_output.modules_load(class_='form-control', value=each_output.modules_load, **{'title':_('Extra python modules to load.')})}}
-  </div>
-</div>
 <div class="col-auto">
   {{form_mod_output.on_at_start.label(class_='control-label')}}
   <div>

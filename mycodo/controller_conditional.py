@@ -26,11 +26,13 @@
 
 import datetime
 import logging
+import sys
 import threading
 import time
 import timeit
 
 import RPi.GPIO as GPIO
+from io import StringIO
 
 from mycodo.config import SQL_DATABASE_MYCODO
 from mycodo.databases.models import Conditional
@@ -43,6 +45,7 @@ from mycodo.mycodo_client import DaemonControl
 from mycodo.utils.database import db_retrieve_table_daemon
 from mycodo.utils.function_actions import trigger_function_actions
 from mycodo.utils.influx import read_last_influxdb
+from mycodo.utils.system_pi import is_int
 from mycodo.utils.system_pi import return_measurement_info
 
 MYCODO_DB_PATH = 'sqlite:///' + SQL_DATABASE_MYCODO
@@ -94,7 +97,6 @@ class ConditionalController(threading.Thread):
         self.start_offset = None
         self.refractory_period = None
         self.conditional_statement = None
-        self.modules_load = None
         self.timer_refractory_period = None
         self.smtp_wait_timer = None
         self.timer_period = None
@@ -185,7 +187,6 @@ class ConditionalController(threading.Thread):
         self.period = cond.period
         self.start_offset = cond.start_offset
         self.refractory_period = cond.refractory_period
-        self.modules_load = cond.modules_load
         self.timer_refractory_period = 0
         self.smtp_wait_timer = now + 3600
         self.timer_period = now + self.start_offset
@@ -278,14 +279,32 @@ class ConditionalController(threading.Thread):
             self.timer_refractory_period = time.time() + self.refractory_period
 
         try:
-            # Load modules
-            if self.modules_load:
-                for each_module in self.modules_load.split(','):
-                    # logger_cond.info("Loading module: {}".format(each_module))
-                    exec(each_module)
+            codeOut = StringIO()
+            codeErr = StringIO()
+            # capture output and errors
+            sys.stdout = codeOut
+            sys.stderr = codeErr
 
-            # Evaluate conditional statement
-            evaluated_statement = eval(cond_statement_replaced)
+            exec(cond_statement_replaced)
+
+            # restore stdout and stderr
+            sys.stdout = sys.__stdout__
+            sys.stderr = sys.__stderr__
+            py_error = codeErr.getvalue()
+            py_output = codeOut.getvalue()
+
+            # Evaluate conditional returned value (should be string of "1" (True) or "0" (False))
+            if is_int(py_output):
+                evaluated_statement = bool(int(py_output))
+            else:
+                evaluated_statement = False
+
+            if py_error:
+                self.logger.error("Error: {err}".format(err=py_error))
+
+            codeOut.close()
+            codeErr.close()
+
             # logger_cond.info("Conditional Statement (evaluated): {}".format(eval(cond_statement_replaced)))
         except:
             logger_cond.error(

@@ -3,7 +3,7 @@ Mycodo Manual
 -------------
 
 .. contents::
-   :depth: 3
+    :depth: 3
 
 
 About Mycodo
@@ -13,15 +13,16 @@ Mycodo is an automated monitoring and regulation system that was built
 to run on the `Raspberry Pi <https://en.wikipedia.org/wiki/Raspberry_Pi>`__
 (versions Zero, 1, 2, and 3).
 
-Originally designed to cultivate edible mushrooms, Mycodo has grown to
-include the ability to do much more, including cultivating plants,
-culturing microorganisms, maintaining honey bee apiary homeostasis,
-incubating animals and eggs, maintaining aquatic systems, aging cheeses,
-fermenting foods and tobacco, cooking food (sous-vide), and more.
+Originally developed for cultivating edible mushrooms, Mycodo has grown
+to do much more, including growing plants, culturing microorganisms,
+maintaining animal environments (laboratory honey bee apiary, young
+mammal and snake egg incubation, aquariums, herptariums), fermenting and
+curing tobacco, fermenting and aging foods (beer, cheese, tempeh), cooking
+food (sous-vide), and more.
 
-The system comprises a backend (daemon) and a frontend (user interface).
-The backend conducts measurements from sensors and devices, then
-coordinate a diverse set of responses to those measurements, including
+The system comprises a backend (daemon) and a frontend (web server).
+The backend acquires measurements from sensors and devices, and
+coordinates a diverse set of responses to those measurements, including
 the ability to modulate outputs (relays, PWM, wireless outlets),
 regulate environmental conditions with electrical devices under PID
 control (steady regulation or changing over time), schedule timers,
@@ -34,27 +35,27 @@ Brief Overview
 ==============
 
 There are a number of different uses for Mycodo. Some users simply store
-sensor measurements to monitor conditions remotely from their phone,
-others regulate the environmental conditions of a physical space, while
-others capture motion-activated or timelapse photography, and more.
+sensor measurements to monitor conditions remotely, others regulate the
+environmental conditions of a physical space, while others capture
+motion-activated or timelapse photography, and more.
 
 Input controllers acquire measurements and store them in a
 `time series database <https://en.wikipedia.org/wiki/Time_series_database>`__.
 Measurements typically come from sensors, but may also be configured to
-use the return value of a linux command, making integrating new inputs
-very easy.
+use the return value of linux or Python commands, or math equations,
+making a very powerful system for acquiring and generating data.
 
 Output controllers produce changes to the general input/output (GPIO)
-pins or may be configured to execute linux commands in order to allow an
-unlimited number of potential uses. There are a few different types of
+pins or may be configured to execute linux or Python commands, enabling
+a large number of potential uses. There are a few different types of
 outputs: simple switching of pins (HIGH/LOW), generating pulse-width
-modulated (PWM) signals, switching 315/433 MHz wireless outlets, and linux
-command execution. The most common setup is using a relay to switch
-electrical devices on and off.
+modulated (PWM) signals, switching 315/433 MHz wireless outlets, as well as
+executing linux and Python commands. The most common output is using a relay
+to switch electrical devices on and off.
 
 When Inputs and Outputs are combined, PID controllers may be used to
 create a feedback loop that uses the Output device to modulate an
-environmental condition the Input detects. Certain Inputs may be coupled
+environmental condition the Input measures. Certain Inputs may be coupled
 with certain Outputs to create a variety of different control and
 regulation applications. Beyond simple regulation, Methods may be used
 to create changing setpoints over time, enabling such things as thermal
@@ -63,9 +64,10 @@ beverage fermentation or curing, and cooking food
 (`sous-vide <https://en.wikipedia.org/wiki/Sous-vide>`__), to name a
 few.
 
-Conditionals can be set to trigger events based on specific dates and times or
-according to durations of time. Conditionals are fairly basic, but can be
-configured in very complex ways. Don't underestimate a good conditional.
+Triggers can be set to activate events based on specific dates and times or
+according to durations of time. Conditionals are used to activates certain
+events based on the truth of custom user statements (e.g. "Sensor1 > 23 and 10
+< Sensor2 < 30").
 
 Frequently Asked Questions
 ==========================
@@ -152,11 +154,11 @@ Here is how I generally set up Mycodo to monitor and regulate:
 Yes, ~/Mycodo/mycodo/mycodo\_client.py has this functionality, but
 there's a lot to be desired. Below may not be the most current list of
 commands, so it's recommended to execute the installed symlink
-``mycodo-client -h`` to see a full list with descriptions.
+``mycodo-client --help`` to see a full list with descriptions.
 
 ::
 
-    pi@raspberry:~/Mycodo $ mycodo-client --help
+    pi@raspberry:~ $ mycodo-client --help
     usage: mycodo-client [-h] [--activatecontroller CONTROLLER ID]
                          [--deactivatecontroller CONTROLLER ID] [--pid_pause ID]
                          [--pid_hold ID] [--pid_resume ID] [--pid_get_setpoint ID]
@@ -167,8 +169,63 @@ commands, so it's recommended to execute the installed symlink
                          [--pid_set_integrator ID INTEGRATOR]
                          [--pid_set_derivator ID DERIVATOR] [--pid_set_kp ID KP]
                          [--pid_set_ki ID KI] [--pid_set_kd ID KD] [-c] [--ramuse]
-                         [--relayoff RELAYID] [--relayon RELAYID]
-                         [--duration SECONDS] [--dutycycle DUTYCYCLE] [-t]
+                         [--lcd_backlight_on LCDID] [--lcd_backlight_off LCDID]
+                         [--lcd_reset LCDID] [--output_state OUTPUTID]
+                         [--output_currently_on OUTPUTID] [--outputoff OUTPUTID]
+                         [--outputon OUTPUTID] [--duration SECONDS]
+                         [--dutycycle DUTYCYCLE] [-t]
+
+    Client for Mycodo daemon.
+
+    optional arguments:
+      -h, --help            show this help message and exit
+      --activatecontroller CONTROLLER ID
+                            Activate controller. Options: Conditional, LCD, Math,
+                            PID, Input
+      --deactivatecontroller CONTROLLER ID
+                            Deactivate controller. Options: Conditional, LCD,
+                            Math, PID, Input
+      --pid_pause ID        Pause PID controller.
+      --pid_hold ID         Hold PID controller.
+      --pid_resume ID       Resume PID controller.
+      --pid_get_setpoint ID
+                            Get the setpoint value of the PID controller.
+      --pid_get_error ID    Get the error value of the PID controller.
+      --pid_get_integrator ID
+                            Get the integrator value of the PID controller.
+      --pid_get_derivator ID
+                            Get the derivator value of the PID controller.
+      --pid_get_kp ID       Get the Kp gain of the PID controller.
+      --pid_get_ki ID       Get the Ki gain of the PID controller.
+      --pid_get_kd ID       Get the Kd gain of the PID controller.
+      --pid_set_setpoint ID SETPOINT
+                            Set the setpoint value of the PID controller.
+      --pid_set_integrator ID INTEGRATOR
+                            Set the integrator value of the PID controller.
+      --pid_set_derivator ID DERIVATOR
+                            Set the derivator value of the PID controller.
+      --pid_set_kp ID KP    Set the Kp gain of the PID controller.
+      --pid_set_ki ID KI    Set the Ki gain of the PID controller.
+      --pid_set_kd ID KD    Set the Kd gain of the PID controller.
+      -c, --checkdaemon     Check if all active daemon controllers are running
+      --ramuse              Return the amount of ram used by the Mycodo daemon
+      --lcd_backlight_on LCDID
+                            Turn on LCD backlight with LCD ID
+      --lcd_backlight_off LCDID
+                            Turn off LCD backlight with LCD ID
+      --lcd_reset LCDID     Reset LCD with LCD ID
+      --output_state OUTPUTID
+                            State of output with output ID
+      --output_currently_on OUTPUTID
+                            How many seconds an output has currently been active
+                            for
+      --outputoff OUTPUTID  Turn off output with output ID
+      --outputon OUTPUTID   Turn on output with output ID
+      --duration SECONDS    Turn on output for a duration of time (seconds)
+      --dutycycle DUTYCYCLE
+                            Turn on PWM output for a duty cycle (%)
+      -t, --terminate       Terminate the daemon
+
 
 --------------
 
@@ -205,6 +262,40 @@ Features
 The following sections describe the essential modules of Mycodo that can
 be used to perform functions or communicate with other parts of Mycodo.
 Each section performs specific tasks or groups of related tasks.
+
+Mycodo Client
+-------------
+
+-a      Output all.
+-b      Output both (this description is quite
+        long).
+-c arg  Output just arg.
+--long  Output all day long.
+
+-p     This option has two paragraphs in the
+       description. This is the first.
+
+       This is the second.  Blank lines may be
+       omitted between options (as above) or
+       left in (as here and below).
+-test  this is a test
+
+--very-long-option  A VMS-style option.  Note
+                    the adjustment for the
+                    required two spaces.
+
+--an-even-longer-option   The description can
+                          also start on the
+                          next line.
+
+-2, --two  This option has two variants.
+
+-f FILE, --file=FILE  These two options are
+                      synonyms; both have
+                      arguments.
+
+/V  A VMS/DOS-style option.
+
 
 Data
 ----
@@ -596,13 +687,6 @@ to name a few.
 |                       | may be for the linux terminal or Python 3       |
 |                       | (depending on which output type selected).      |
 +-----------------------+-------------------------------------------------+
-| Load Modules          | List any extra modules to load that will be     |
-|                       | used in the conditional statement. You may use  |
-|                       | multiple separated by a comma. For example, two |
-|                       | additional modules may be loaded with the       |
-|                       | following: "import numpy,from statistics import |
-|                       | stdev"                                          |
-+-----------------------+-------------------------------------------------+
 | Current Draw (amps)   | The is the amount of current the device powered |
 |                       | by the output draws. Note: this value should be |
 |                       | calculated based on the voltage set in the      |
@@ -859,6 +943,27 @@ resumes operation.
 | Resume                | Resume a PID controller from being held or      |
 |                       | paused.                                         |
 +-----------------------+-------------------------------------------------+
+| Direction             | This is the direction that you wish to          |
+|                       | regulate. For example, if you only require the  |
+|                       | temperature to be raised, set this to "Up," but |
+|                       | if you require regulation up and down, set this |
+|                       | to "Both."                                      |
++-----------------------+-------------------------------------------------+
+| Period                | This is the duration between when the PID       |
+|                       | acquires a measurement, the PID is updated, and |
+|                       | the output is modulated.                        |
++-----------------------+-------------------------------------------------+
+| Start Offset (seconds)| Wait this duration before attempting the first  |
+|                       | calculation/measurement.                        |
++-----------------------+-------------------------------------------------+
+| Max Age               | The time (in seconds) that the sensor           |
+|                       | measurement age is required to be less than. If |
+|                       | the measurement is not younger than this age,   |
+|                       | the measurement is thrown out and the PID will  |
+|                       | not actuate the output. This is a safety        |
+|                       | measure to ensure the PID is only using recent  |
+|                       | measurements.                                   |
++-----------------------+-------------------------------------------------+
 | Setpoint              | This is the specific point you would like the   |
 |                       | environment to be regulated at. For example, if |
 |                       | you would like the humidity regulated to 60%,   |
@@ -887,25 +992,34 @@ resumes operation.
 |                       | positive values to be stored in the measurement |
 |                       | database.                                       |
 +-----------------------+-------------------------------------------------+
-| Direction             | This is the direction that you wish to          |
-|                       | regulate. For example, if you only require the  |
-|                       | temperature to be raised, set this to "Up," but |
-|                       | if you require regulation up and down, set this |
-|                       | to "Both."                                      |
+| K\ :sub:`P` Gain      | Proportional coefficient (non-negative).        |
+|                       | Accounts for present values of the error. For   |
+|                       | example, if the error is large and positive,    |
+|                       | the control output will also be large and       |
+|                       | positive.                                       |
 +-----------------------+-------------------------------------------------+
-| Period                | This is the duration between when the PID       |
-|                       | acquires a measurement, the PID is updated, and |
-|                       | the output is modulated.                        |
+| K\ :sub:`I` Gain      | Integral coefficient (non-negative). Accounts   |
+|                       | for past values of the error. For example, if   |
+|                       | the current output is not sufficiently strong,  |
+|                       | the integral of the error will accumulate over  |
+|                       | time, and the controller will respond by        |
+|                       | applying a stronger action.                     |
 +-----------------------+-------------------------------------------------+
-| Max Age               | The time (in seconds) that the sensor           |
-|                       | measurement age is required to be less than. If |
-|                       | the measurement is not younger than this age,   |
-|                       | the measurement is thrown out and the PID will  |
-|                       | not actuate the output. This is a safety        |
-|                       | measure to ensure the PID is only using recent  |
-|                       | measurements.                                   |
+| K\ :sub:`D` Gain      | Derivative coefficient (non-negative). Accounts |
+|                       | for predicted future values of the error, based |
+|                       | on its current rate of change.                  |
 +-----------------------+-------------------------------------------------+
-| Raise Output          | This is the output that will cause the          |
+| Integrator Min        | The minimum allowed integrator value, for       |
+|                       | calculating Ki\_total: (Ki\_total = Ki \*       |
+|                       | integrator; and PID output = Kp\_total +        |
+|                       | Ki\_total + Kd\_total)                          |
++-----------------------+-------------------------------------------------+
+| Integrator Max        | The maximum allowed integrator value, for       |
+|                       | calculating Ki\_total: (Ki\_total = Ki \*       |
+|                       | integrator; and PID output = Kp\_total +        |
+|                       | Ki\_total + Kd\_total)                          |
++-----------------------+-------------------------------------------------+
+| Output (Raise)        | This is the output that will cause the          |
 |                       | particular environmental condition to rise. In  |
 |                       | the case of raising the temperature, this may   |
 |                       | be a heating pad or coil.                       |
@@ -920,7 +1034,7 @@ resumes operation.
 |                       | exceeds this number, the Up Output will turn on |
 |                       | for no greater than this duration of time.      |
 +-----------------------+-------------------------------------------------+
-| Lower Output          | This is the output that will cause the          |
+| Output (Lower)        | This is the output that will cause the          |
 |                       | particular environmental condition to lower. In |
 |                       | the case of lowering the CO2, this may be an    |
 |                       | exhaust fan.                                    |
@@ -936,33 +1050,10 @@ resumes operation.
 |                       | exceeds this number, the Down Output will turn  |
 |                       | on for no greater than this duration of time.   |
 +-----------------------+-------------------------------------------------+
-| K\ :sub:`P`           | Proportional coefficient (non-negative).        |
-|                       | Accounts for present values of the error. For   |
-|                       | example, if the error is large and positive,    |
-|                       | the control output will also be large and       |
-|                       | positive.                                       |
+| Setpoint Tracking     | Set a method to change the setpoint over time.  |
+| Method                |                                                 |
 +-----------------------+-------------------------------------------------+
-| K\ :sub:`I`           | Integral coefficient (non-negative). Accounts   |
-|                       | for past values of the error. For example, if   |
-|                       | the current output is not sufficiently strong,  |
-|                       | the integral of the error will accumulate over  |
-|                       | time, and the controller will respond by        |
-|                       | applying a stronger action.                     |
-+-----------------------+-------------------------------------------------+
-| K\ :sub:`D`           | Derivative coefficient (non-negative). Accounts |
-|                       | for predicted future values of the error, based |
-|                       | on its current rate of change.                  |
-+-----------------------+-------------------------------------------------+
-| Integrator Min        | The minimum allowed integrator value, for       |
-|                       | calculating Ki\_total: (Ki\_total = Ki \*       |
-|                       | integrator; and PID output = Kp\_total +        |
-|                       | Ki\_total + Kd\_total)                          |
-+-----------------------+-------------------------------------------------+
-| Integrator Max        | The maximum allowed integrator value, for       |
-|                       | calculating Ki\_total: (Ki\_total = Ki \*       |
-|                       | integrator; and PID output = Kp\_total +        |
-|                       | Ki\_total + Kd\_total)                          |
-+-----------------------+-------------------------------------------------+
+
 
 PID Autotune
 ''''''''''''
@@ -1107,17 +1198,44 @@ Conditional
 ```````````
 
 Conditional controllers are used to perform certain actions based on whether a
-conditional statement is true. Example conditional statements include:
+conditional statement is true. Python 3 is the environment that these condionals
+will be executed. For the conditional to be true (and trigger the actions), the
+code must print a "1" and for the conditional to be false (and not trigger the
+actions), the code must print a "0" or print nothing.
+Example conditionals are below:
 
--  {dj73gs0d} < 20 and {02nspgh1} > 10
--  (20 < {dj73gs0d} < 30 ) or {02nspgh1} > 10
--  bool({dj73gs0d}) and {02nspgh1} > 10
--  {dj73gs0d} < 20 or ({02nspgh1} > 10 and not bool({ucna62k4}))
--  {dj73gs0d} > 20 or int(round({02nspgh1})) in [20, 21, 22]
+::
+
+    # Example 1
+    sum = {bf43a998} + {dh54wqno}
+    if {bf43a998} > 2 and 10 < {dh54wqno} < 23 and sum < 30.5:
+        print(1)  # True (Do trigger actions)
+    else:
+        print(0)  # False (Do not trigger actions)
+
+    # Example 2
+    if {dj73gs0d} < 20 and {02nspgh1} > 10:
+        print(1)
+
+    # Example 3
+    if (20 < {dj73gs0d} < 30 ) or {02nspgh1} > 10:
+        print(1)
+
+    # Example 4
+    if bool({dj73gs0d}) and {02nspgh1} > 10:
+        print(1)
+
+    # Example 5
+    if {dj73gs0d} < 20 or ({02nspgh1} > 10 and not bool({ucna62k4})):
+        print(1)
+
+    # Example 6
+    if {dj73gs0d} > 20 or int(round({02nspgh1})) in [20, 21, 22]:
+        print(1)
+
 
 Each ID encased in curly brackets ({}) will be converted to the most
-recent measurement obtained from that particular sensor or device, before
-being evaluated for its truthness.
+recent measurement obtained from that particular sensor or device.
 
 Before activating any conditionals, it's
 advised to thoroughly explore all possible scenarios and plan a
@@ -1149,13 +1267,6 @@ Check if the latest measurement is above or below the set value.
 | Refractory Period     | The minimum duration (seconds) to wait after a  |
 | (seconds)             | conditional has been triggered to begin         |
 |                       | evaluating the conditional again.               |
-+-----------------------+-------------------------------------------------+
-| Load Modules          | List any extra modules to load that will be     |
-|                       | used in the conditional statement. You may use  |
-|                       | multiple separated by a comma. For example, two |
-|                       | additional modules may be loaded with the       |
-|                       | following: "import numpy,from statistics import |
-|                       | stdev"                                          |
 +-----------------------+-------------------------------------------------+
 
 Conditional Condition Options

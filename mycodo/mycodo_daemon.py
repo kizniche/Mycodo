@@ -91,6 +91,11 @@ def mycodo_service(mycodo):
         """
 
         @staticmethod
+        def exposed_lcd_reset(lcd_id, state):
+            """Resets an LCD"""
+            return mycodo.lcd_reset(lcd_id)
+
+        @staticmethod
         def exposed_lcd_backlight(lcd_id, state):
             """Turns an LCD backlight on or off"""
             return mycodo.lcd_backlight(lcd_id, state)
@@ -624,6 +629,28 @@ class DaemonController:
             self.dict_input_information = parse_input_information()
         except Exception:
             self.logger.exception("Exception while parsing inputs")
+
+    def lcd_reset(self, lcd_id):
+        """
+        Resets an LCD
+
+        :return: success or error message
+        :rtype: str
+
+        :param lcd_id: Which LCD controller ID is to be affected?
+        :type lcd_id: str
+
+        """
+        try:
+            return self.controller['LCD'][lcd_id].lcd_init(lcd_id)
+        except KeyError:
+            message = "Cannot reset LCD, LCD not running"
+            self.logger.exception(message)
+            return 0, message
+        except Exception as except_msg:
+            message = "Could not reset LCD:" \
+                      " {err}".format(err=except_msg)
+            self.logger.exception(message)
 
     def lcd_backlight(self, lcd_id, state):
         """

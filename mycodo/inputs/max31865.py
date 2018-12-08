@@ -25,9 +25,7 @@ import logging
 import math
 import time
 
-from mycodo.databases.models import DeviceMeasurements
 from mycodo.inputs.base_input import AbstractInput
-from mycodo.utils.database import db_retrieve_table_daemon
 
 # import numpy  # Used for more accurate temperature calculation
 
