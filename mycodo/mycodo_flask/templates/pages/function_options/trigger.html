@@ -1,0 +1,132 @@
+{%- for each_trigger in trigger if each_trigger.unique_id == order -%}
+
+<div class="container" style="border: 2px solid #ddd; border-radius: 5px;">
+  <form method="post" action="/function">
+  {{form_trigger.csrf_token}}
+  {{form_trigger.function_id(class_='form-control', value=each_trigger.unique_id)}}
+  {{form_trigger.function_type(class_='form-control', value='trigger')}}
+
+  <div class="{% if each_trigger.is_activated -%}active-background
+              {% else -%}inactive-background
+              {% endif -%} row small-gutters" style="border-bottom: 1px solid #ddd; padding: 0.3em 0.2em 0.3em 0.3em;">
+
+    <div class="col-xs-2 col-sm-1 text-center icon-fh">
+      <a data-toggle="collapse" href="#collapseContainer-trigger-{{each_trigger.id}}" aria-expanded="false" aria-controls="collapseContainer-trigger-{{each_trigger.id}}">
+        <span style="font-size: 3.6em" class="collapse-button{{each_trigger.id}} fa fa-plus-square"></span>
+      </a>
+    </div>
+    <div class="col-xs-5 col-sm-4 col-md-3 col-lg-4">
+      {{form_trigger.name(class_='form-control', value=each_trigger.name, **{'title':_('A name to distinguish this from others')})}}
+    </div>
+    <div class="col-xs-5 col-sm-3 col-md-4 col-lg-3">
+      <input class="form-control btn btn-sm" disabled="" title="UUID: {{each_trigger.unique_id}}" value="
+        {% for each_function in function_types if each_trigger.trigger_type == each_function[0] %}[{{each_function[1]}}]{% endfor %}
+        {%- if each_trigger.is_activated %} {{_('Active')}}
+        {%- else %} {{_('Inactive')}}
+        {%-endif -%}
+      " type="text">
+    </div>
+
+    <div class="col-xs-6 col-sm-4 col-md-4 col-lg-4">
+      {%- if each_trigger.is_activated %}
+        {{form_trigger.deactivate_trigger(class_='form-control btn btn-sm')}}
+      {%- else %}
+        {{form_trigger.activate_trigger(class_='form-control btn btn-sm')}}
+      {%- endif -%}
+    </div>
+  </div>
+
+  <div class="collapse" id="collapseContainer-trigger-{{each_trigger.id}}">
+
+    <div class="row small-gutters" style="padding: 0.3em 0.2em 0.3em 0.3em;">
+      <div class="col-auto">
+        {{form_trigger.save_trigger(class_='form-control btn btn-sm')}}
+      </div>
+      <div class="col-auto">
+        {{form_trigger.delete_trigger(class_='form-control btn btn-sm', **{'onclick':'return confirm("Are you sure you want to delete this?")'})}}
+      </div>
+      <div class="col-auto">
+        {{form_trigger.test_all_actions(class_='form-control btn btn-sm')}}
+      </div>
+      <div class="col-auto">
+        {{form_trigger.order_up(class_='form-control btn btn-sm')}}
+      </div>
+      <div class="col-auto">
+        {{form_trigger.order_down(class_='form-control btn btn-sm')}}
+      </div>
+    </div>
+
+    <div class="row small-gutters" style="padding: 0.3em 0.2em 0.3em 0.3em;">
+
+  {% if each_trigger.trigger_type == 'trigger_output' %}
+    {% include 'pages/function_options/trigger_options/output.html' %}
+  {% elif each_trigger.trigger_type == 'trigger_output_duration' %}
+    {% include 'pages/function_options/trigger_options/output_duration.html' %}
+  {% elif each_trigger.trigger_type == 'trigger_output_pwm' %}
+    {% include 'pages/function_options/trigger_options/output_pwm.html' %}
+  {% elif each_trigger.trigger_type == 'trigger_edge' %}
+    {% include 'pages/function_options/trigger_options/edge.html' %}
+  {% elif each_trigger.trigger_type == 'trigger_run_pwm_method' %}
+    {% include 'pages/function_options/trigger_options/run_pwm_method.html' %}
+  {% elif each_trigger.trigger_type == 'trigger_sunrise_sunset' %}
+    {% include 'pages/function_options/trigger_options/sunrise_sunset.html' %}
+  {% elif each_trigger.trigger_type == 'trigger_timer_daily_time_point' %}
+    {% include 'pages/function_options/trigger_options/timer_daily_time_point.html' %}
+  {% elif each_trigger.trigger_type == 'trigger_timer_daily_time_span' %}
+    {% include 'pages/function_options/trigger_options/timer_daily_time_span.html' %}
+  {% elif each_trigger.trigger_type == 'trigger_timer_duration' %}
+    {% include 'pages/function_options/trigger_options/timer_duration.html' %}
+  {% endif %}
+
+    </div>
+
+    <div class="row small-gutters" style="padding: 1.5em 0 0.2em 0.1em">
+      <div class="col-auto">
+        {{form_trigger.action_type(class_='form-control')}}
+      </div>
+      <div class="col-auto">
+        {{form_trigger.add_action(class_='form-control btn btn-sm')}}
+      </div>
+    </div>
+
+    </form>
+
+  {% if actions_dict['trigger'][each_trigger.unique_id] %}
+
+    <h5>{{_('Actions')}} <a href="/help#function-actions" target="_blank"><span style="font-size: 16px" class="fas fa-question-circle"></span></a></h5>
+
+  {% endif %}
+
+  {% for each_action in actions if each_action.function_id == each_trigger.unique_id %}
+
+    <form method="post" action="/function">
+    {{form_actions.csrf_token}}
+    {{form_actions.function_type(class_='form-control', value='trigger')}}
+    {{form_actions.function_id(class_='form-control', value=each_trigger.unique_id)}}
+    {{form_actions.function_action_id(class_='form-control', value=each_action.unique_id)}}
+
+    <div class="row align-items-end small-gutters" style="border-bottom: 1px solid #ddd; padding-bottom: 0.3em">
+      <div class="col-auto">
+        <input class="form-control btn btn-sm btn-block" disabled="" value="[{{loop.index}}] {% for each_act in function_actions_list if each_action.action_type == each_act[0] %}{{each_act[1]}}{% endfor %}" type="text">
+      </div>
+      <div class="col-auto">
+        {{form_actions.save_action(class_='form-control btn btn-sm')}}
+      </div>
+      <div class="col-auto">
+        {{form_actions.delete_action(class_='form-control btn btn-sm', **{'onclick':'return confirm("Are you sure you want to delete this?")'})}}
+      </div>
+
+      {% include 'pages/function_options/actions.html' %}
+
+    </div>
+    </form>
+
+  {% endfor %}
+
+  </div>
+
+</div>
+
+<div style="padding-bottom: 0.5em; "></div>
+
+{% endfor %}

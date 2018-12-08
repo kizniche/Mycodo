@@ -72,7 +72,7 @@
     {% endfor %}
     </ul>
 
-    <p>To install these dependencies, click the Install button below and wait for the install to complete before attempting to add the device again.</p>
+    <p>To install these dependencies, click the Install button below and wait for the install to complete before attempting to add the device again. Note that the frontend and the backend daemon will be restarted following install of the dependencies to allow them to detect the newly-installed modules. If you do not wish the daemon to restart, postpone installing dependencies until your system is at a point where this can occur.</p>
 
     <form method="post" action="/admin/dependencies/{{device}}">
       {{form_dependencies.csrf_token}}

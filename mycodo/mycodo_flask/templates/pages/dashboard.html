@@ -6,14 +6,20 @@
 
 {% block head %}
 
-  <script type="text/javascript" src="/static/js/highstock.src.js"></script>
+  <script type="text/javascript" src="/static/js/highstock.js"></script>
   <script type="text/javascript" src="/static/js/highcharts-more.js"></script>
-  <script type="text/javascript" src="/static/js/modules/solid-gauge.js"></script>
+
+  <script type="text/javascript" src="/static/js/modules/data.js"></script>
   <script type="text/javascript" src="/static/js/modules/exporting.js"></script>
-  <script type="text/javascript" src="/static/js/modules/canvas-tools.js"></script>
-  <script type="text/javascript" src="/static/js/modules/export-csv.js"></script>
-  <script type="text/javascript" src="/static/js/modules/jspdf.min.js"></script>
-  <script type="text/javascript" src="/static/js/modules/highcharts-export-clientside.js"></script>
+  <script type="text/javascript" src="/static/js/modules/export-data.js"></script>
+  <script type="text/javascript" src="/static/js/modules/offline-exporting.js"></script>
+
+  {# Graph popup effect#}
+  <script type="text/javascript" src="/static/js/modules/highslide-full.js"></script>
+  <script type="text/javascript" src="/static/js/modules/highslide.config.js"></script>
+  <link href="/static/css/highslide.css" rel="stylesheet">
+
+  <script type="text/javascript" src="/static/js/modules/solid-gauge.js"></script>
 
   <script type="text/javascript" src="/static/js/multiselect.min.js"></script>
 
@@ -32,57 +38,24 @@
   {% include 'flash_messages.html' %}
   </div>
 
-{#  <p>#}
-{#  yaxes: {{ y_axes }}#}
-{#  </p>#}
-{#  <p>#}
-{#  {% for each_dashboard in dashboard %}#}
-{#  each_dashboard.custom_yaxes: {{ each_dashboard.custom_yaxes }}<br>#}
-{#  {% endfor %}#}
-{#  </p>#}
-{#  <p>#}
-{#  custom_yaxes: {{ custom_yaxes }}#}
-{#  </p>#}
-{#  <p>#}
-{#  use_unit<br>#}
-{#  {% for each_id, each_val in use_unit.items() %}#}
-{#    {{ each_id }}: {{ each_val }}<br>#}
-{#  {% endfor %}#}
-{#  </p>#}
-{#  <p>#}
-{#  dict_units<br>#}
-{#  {% for each_id, each_val in dict_units.items() %}#}
-{#    {{ each_id }}: {{ each_val }}<br>#}
-{#  {% endfor %}#}
-{#  </p>#}
-{#  <p>#}
-{#  dict_measurements<br>#}
-{#  {% for each_id, each_val in dict_measurements.items() %}#}
-{#    {{ each_id }}: {{ each_val }}<br>#}
-{#  {% endfor %}#}
-{#  </p>#}
-
-  <div style="padding: 0 1em 0 1em">
-
   <div class="container-fluid">
 
-    <div class="row">
+    <div class="row small-gutters">
 
-    {% if display_order -%}
-    {%- for order in display_order -%}
+    {%- for each_dashboard_id in display_order_dashboard -%}
       {%- set chart_number = loop.index -%}
-      {%- for each_dashboard in dashboard if each_dashboard.unique_id == order -%}
+      {%- set each_dashboard = table_dashboard.query.filter(table_dashboard.unique_id == each_dashboard_id).first() -%}
+        {%- if each_dashboard -%}
 
       <div class="col-xs-12 col-sm-
-      {%- if each_dashboard.width < 13 and each_dashboard.width > 0 -%}
+      {%- if 0 < each_dashboard.width < 13 -%}
         {{each_dashboard.width}}
       {%- else -%}
         12
-      {%- endif -%}" style="padding: 0.25em;">
+      {%- endif %} mb-1" style="border: 1px solid #ddd; border-radius: 5px;">
 
-        <div style="border: 1px solid #ddd; border-radius: 5px;">
-
-        {% for id, axes in y_axes.items() if id == each_dashboard.unique_id and each_dashboard.graph_type in ['graph', 'gauge_angular', 'gauge_solid'] %}
+        {% for id, axes in y_axes.items() if id == each_dashboard.unique_id and
+                                             each_dashboard.graph_type in ['graph', 'gauge_angular', 'gauge_solid'] %}
           <!--Dashboard {{each_dashboard.unique_id}} y-axes: {{axes|safe}}-->
         {% endfor %}
 
@@ -98,15 +71,12 @@
           {% include 'pages/dashboard_options/mod_pid_control.html' %}
         {% elif each_dashboard.graph_type == 'camera' %}
           {% include 'pages/dashboard_options/mod_camera.html' %}
-
         {% endif %}
 
-        </div>
       </div>
 
-      {%- endfor -%}
+      {%- endif -%}
     {%- endfor -%}
-    {%- endif -%}
 
     </div>
 
@@ -118,7 +88,7 @@
 
     <div class="form-inline" style="padding-bottom: 1em;">
       <div class="form-group">
-        {{form_base.dashboard_type(class_='selectpicker')}}
+        {{form_base.dashboard_type(class_='selectpicker', **{'data-style': 'btn-sm'})}}
       </div>
       <div class="form-group">
         <a data-toggle="collapse" href="#collapseContainerReorder" aria-expanded="false" aria-controls="collapseContainerReorder" class="btn btn-sm btn-primary" role="button">{{_('Reorder Elements')}}</a>
@@ -136,7 +106,7 @@
         </div>
       </div>
 
-      <div class="row">
+      <div class="row align-items-end">
         <div class="col-sm-5">
           Hidden Elements
           <div>
@@ -149,13 +119,10 @@
         </div>
 
         <div class="col-sm-2">
-          <label>&nbsp;</label>
-          <div>
-            <button type="button" id="multiselect_rightAll" class="btn btn-sm btn-block btn-primary"><i class="fa fa-forward"></i></button>
-            <button type="button" id="multiselect_rightSelected" class="btn btn-sm btn-block btn-primary"><i class="fa fa-chevron-right"></i></button>
-            <button type="button" id="multiselect_leftSelected" class="btn btn-sm btn-block btn-primary"><i class="fa fa-chevron-left"></i></button>
-            <button type="button" id="multiselect_leftAll" class="btn btn-sm btn-block btn-primary"><i class="fa fa-backward"></i></button>
-          </div>
+          <button type="button" id="multiselect_rightAll" class="btn btn-sm btn-block btn-primary"><i class="fa fa-forward"></i></button>
+          <button type="button" id="multiselect_rightSelected" class="btn btn-sm btn-block btn-primary"><i class="fa fa-chevron-right"></i></button>
+          <button type="button" id="multiselect_leftSelected" class="btn btn-sm btn-block btn-primary"><i class="fa fa-chevron-left"></i></button>
+          <button type="button" id="multiselect_leftAll" class="btn btn-sm btn-block btn-primary"><i class="fa fa-backward"></i></button>
         </div>
 
         <div class="col-sm-5">
@@ -412,9 +379,9 @@ $(document).ready(function() {
   }
 
   // Retrieve initial graph data set from the past (duration set by user)
-  function getPastData(chart_number, series, sensor_measurement, unique_id, past_seconds) {
-    var url = '/past/' + sensor_measurement + '/' + unique_id + '/' + past_seconds;
-    var update_id = chart_number + "-" + series + "-" + sensor_measurement + "-" + unique_id;
+  function getPastData(chart_number, series, unique_id, measure_type, measurement_id, past_seconds) {
+    var url = '/past/' + unique_id + '/' + measure_type + '/' + measurement_id + '/' + past_seconds;
+    var update_id = chart_number + "-" + series + "-" + unique_id + "-" + measure_type + '-' + measurement_id;
     $.getJSON(url,
       function(data, responseText, jqXHR) {
         if (jqXHR.status !== 204) {
@@ -424,7 +391,7 @@ $(document).ready(function() {
             var new_date = new Date(data[i][0]);
             var new_time = new_date.getTime();
 
-            if (sensor_measurement === 'tag') {
+            if (measure_type === 'tag') {
               past_data.push({
                 x: new_time,
                 title: data[i][1],
@@ -437,7 +404,7 @@ $(document).ready(function() {
 
             // Store the epoch time of the last data point received
             if (i === data.length - 1) {
-              if (sensor_measurement === 'tag') {
+              if (measure_type === 'tag') {
                 last_output_time_mil[update_id] = new_time + 3000;
               }
               else {
@@ -466,18 +433,18 @@ $(document).ready(function() {
   }
 
   // Retrieve the latest/last measurement for gauges/outputs
-  function getLastData(chart_number, dev_id, measurement_name, measure_type, max_measure_age_sec, decimal_places) {
+  function getLastData(chart_number, dash_type, unique_id, measure_type, measurement_id, max_measure_age_sec, decimal_places) {
     if (decimal_places === null) {
       decimal_places = 1;
     }
-    var url = '/last/' + measurement_name + '/' + dev_id + '/' + max_measure_age_sec.toString();
+    var url = '/last/' + unique_id + '/' + measure_type + '/' + measurement_id + '/' + max_measure_age_sec.toString();
     $.ajax(url, {
       success: function(data, responseText, jqXHR) {
         if (jqXHR.status === 204) {
-          if (measure_type === "gauge") {
+          if (dash_type === "gauge") {
             var null_point = chart_gauge[chart_number].series[0].points[0];
             null_point.update(null);
-          } else if (['measurement', 'output', 'pid_control'].indexOf(measure_type) >= 0) {
+          } else if (['measurement', 'output', 'pid_control'].indexOf(dash_type) >= 0) {
             document.getElementById('value-' + chart_number).innerHTML = 'NO DATA';
             document.getElementById('timestamp-' + chart_number).innerHTML = 'MAX AGE EXCEEDED';
           }
@@ -487,14 +454,14 @@ $(document).ready(function() {
           var measurement = data[1];
           var units = '';
 
-          if (measure_type === "gauge") {
+          if (dash_type === "gauge") {
             var new_point = chart_gauge[chart_number].series[0].points[0];
             new_point.update(measurement);
           } else {
-            if (measure_type === "output") {
-              if (measurement_name === 'duration_time') {
-                units = ' sec';
-              } else if (measurement_name === 'duty_cycle') {
+            if (dash_type === "output") {
+              if (measurement_id === 's') {
+                units = ' s';
+              } else if (measurement_id === 'percent') {
                 units = ' %';
               }
             }
@@ -504,7 +471,7 @@ $(document).ready(function() {
         }
       },
       error: function(XMLHttpRequest, textStatus, errorThrown) {
-        if (measure_type === "gauge") {
+        if (dash_type === "gauge") {
           var point = chart_gauge[chart_number].series[0].points[0];
           point.update(null);
         }
@@ -513,9 +480,9 @@ $(document).ready(function() {
   }
 
   // Repeat function for getLastData()
-  function repeatLastData(chart_number, dev_id, measurement, measure_type, period_sec, max_measure_age_sec, decimal_places) {
+  function repeatLastData(chart_number, dash_type, dev_id, measure_type, measurement_id, period_sec, max_measure_age_sec, decimal_places) {
     setInterval(function () {
-      getLastData(chart_number, dev_id, measurement, measure_type, max_measure_age_sec, decimal_places)
+      getLastData(chart_number, dash_type, dev_id, measure_type, measurement_id, max_measure_age_sec, decimal_places)
     }, period_sec * 1000);
   }
 
@@ -700,17 +667,25 @@ $(document).ready(function() {
   }
 
   // Retrieve chart data for the period since the last data acquisition (refresh period set by user)
-  function retrieveLiveData(chart_number, series, measurement, unique_id, xaxis_duration_min, xaxis_reset, refresh_seconds, graph_shift) {
+  function retrieveLiveData(chart_number,
+                            series,
+                            unique_id,
+                            measure_type,
+                            measurement_id,
+                            xaxis_duration_min,
+                            xaxis_reset,
+                            refresh_seconds,
+                            graph_shift) {
     // Build the URL
     // Instruct only to return data since the time of the last received data point
     var url = '';
-    var update_id = chart_number + "-" + series + "-" + measurement + "-" + unique_id;
+    var update_id = chart_number + "-" + series + "-" + unique_id + "-" + measure_type + '-' + measurement_id;
     if (update_id in last_output_time_mil) {
       var epoch_mil = (new Date).getTime();
       var past_seconds = Math.floor((epoch_mil - last_output_time_mil[update_id]) / 1000);
-      url = '/past/' + measurement + '/' + unique_id + '/' + past_seconds;
+      url = '/past/' + unique_id + '/' + measure_type + '/' + measurement_id + '/' + past_seconds;
     } else {
-      url = '/past/' + measurement + '/' + unique_id + '/' + refresh_seconds;
+      url = '/past/' + unique_id + '/' + measure_type + '/' + measurement_id + '/' + refresh_seconds;
     }
     $.getJSON(url,
       function(data, responseText, jqXHR) {
@@ -719,7 +694,7 @@ $(document).ready(function() {
             var new_date = new Date(data[i][0]);
             var new_time = new_date.getTime();
 
-            if (measurement === 'tag') {
+            if (measure_type === 'tag') {
               chart_graph[chart_number].series[series].addPoint({
                 x: new_time,
                 title: data[i][1],
@@ -730,7 +705,7 @@ $(document).ready(function() {
               chart_graph[chart_number].series[series].addPoint([new_time, data[i][1]], false, graph_shift);
             }
           }
-          if (measurement === 'tag') {
+          if (measure_type === 'tag') {
             last_output_time_mil[update_id] = new_time + 3000;
           }
           else {
@@ -743,9 +718,25 @@ $(document).ready(function() {
   }
 
   // Repeat function for retrieveLiveData()
-  function getLiveData(chart_number, series, sensor_measurement, unique_id, xaxis_duration_min, xaxis_reset, refresh_seconds, graph_shift) {
+  function getLiveData(chart_number,
+                       series,
+                       unique_id,
+                       measure_type,
+                       measurement_id,
+                       xaxis_duration_min,
+                       xaxis_reset,
+                       refresh_seconds,
+                       graph_shift) {
     setInterval(function () {
-      retrieveLiveData(chart_number, series, sensor_measurement, unique_id, xaxis_duration_min, xaxis_reset, refresh_seconds, graph_shift);
+      retrieveLiveData(chart_number,
+                       series,
+                       unique_id,
+                       measure_type,
+                       measurement_id,
+                       xaxis_duration_min,
+                       xaxis_reset,
+                       refresh_seconds,
+                       graph_shift);
     }, refresh_seconds * 1000);
   }
 
@@ -823,10 +814,10 @@ $(document).ready(function() {
     return Highcharts.Color(color).setOpacity(0.6).get('rgba');
   });
 
-{% if display_order -%}
-  {%- for order in display_order -%}
-    {%- set chart_number = loop.index -%}
-    {%- for each_dashboard in dashboard if each_dashboard.unique_id == order -%}
+{%- for each_dashboard_id in display_order_dashboard -%}
+  {%- set chart_number = loop.index -%}
+  {%- set each_dashboard = table_dashboard.query.filter(table_dashboard.unique_id == each_dashboard_id).first() -%}
+    {%- if each_dashboard -%}
 
       {% set graph_input_ids = each_dashboard.input_ids_measurements.split(';') %}
 
@@ -846,9 +837,8 @@ $(document).ready(function() {
         {% include 'pages/dashboard_options/display_camera.html' %}
       {% endif %}
 
-    {%- endfor -%}
-  {%- endfor -%}
-{%- endif -%}
+  {%- endif -%}
+{%- endfor -%}
 
 });
 </script>

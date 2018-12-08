@@ -1,6 +1,18 @@
 # coding=utf-8
 import logging
-import time
+from collections import OrderedDict
+
+from mycodo.databases.models import DeviceMeasurements
+from mycodo.inputs.base_input import AbstractInput
+from mycodo.utils.database import db_retrieve_table_daemon
+
+# Measurements
+measurements_dict = OrderedDict()
+for each_channel in range(4):
+    measurements_dict[each_channel] = {
+        'measurement': 'electrical_potential',
+        'unit': 'V'
+    }
 
 # Input information
 INPUT_INFORMATION = {
@@ -8,14 +20,26 @@ INPUT_INFORMATION = {
     'input_manufacturer': 'Microchip',
     'input_name': 'MCP342x',
     'measurements_name': 'Voltage (Analog-to-Digital Converter)',
-    'measurements_list': ['voltage'],
-    'options_enabled': ['adc_channel', 'adc_gain', 'adc_options', 'period', 'pre_output'],
-    'options_disabled': ['interface', 'i2c_location'],
+    'measurements_dict': measurements_dict,
+    'measurements_rescale': True,
+    'scale_from_min': -4.096,
+    'scale_from_max': 4.096,
+
+    'options_enabled': [
+        'i2c_location',
+        'measurements_select',
+        'adc_gain',
+        'adc_resolution',
+        'period',
+        'pre_output'
+    ],
+    'options_disabled': ['interface'],
 
     'dependencies_module': [
         ('pip-pypi', 'smbus2', 'smbus2'),
         ('pip-pypi', 'MCP342x', 'MCP342x==0.3.3')
     ],
+
     'interfaces': ['I2C'],
     'i2c_location': [
         '0x68',
@@ -25,34 +49,32 @@ INPUT_INFORMATION = {
         '0x6F'
     ],
     'i2c_address_editable': False,
-    'analog_to_digital_converter': True,
-    'adc_channel': [
-        (0, 'Channel 0'),
-        (1, 'Channel 1'),
-        (2, 'Channel 2'),
-        (3, 'Channel 3')
-    ],
+
     'adc_gain': [
         (1, '1'),
         (2, '2'),
         (4, '4'),
         (8, '8')
     ],
-    'adc_volts_min': -4.096,
-    'adc_volts_max': 4.096
+    'adc_resolution': [
+        (12, '12'),
+        (14, '14'),
+        (16, '16'),
+        (18, '18')
+    ]
 }
 
 
-class ADCModule(object):
+class InputModule(AbstractInput):
     """ ADC Read """
     def __init__(self, input_dev, testing=False):
+        super(InputModule, self).__init__()
         self.logger = logging.getLogger('mycodo.mcp342x')
         self.acquiring_measurement = False
-        self._voltage = None
+        self._measurements = None
 
-        self.i2c_address = int(str(input_dev.location), 16)
+        self.i2c_address = int(str(input_dev.i2c_location), 16)
         self.i2c_bus = input_dev.i2c_bus
-        self.adc_channel = input_dev.adc_channel
         self.adc_gain = input_dev.adc_gain
         self.adc_resolution = input_dev.adc_resolution
 
@@ -61,76 +83,50 @@ class ADCModule(object):
             from MCP342x import MCP342x
             self.logger = logging.getLogger(
                 'mycodo.mcp342x_{id}'.format(id=input_dev.unique_id.split('-')[0]))
+
+            self.device_measurements = db_retrieve_table_daemon(
+                DeviceMeasurements).filter(
+                    DeviceMeasurements.device_id == input_dev.unique_id)
+
+            self.MCP342x = MCP342x
             self.bus = SMBus(self.i2c_bus)
-            self.adc = MCP342x(self.bus,
-                               self.i2c_address,
-                               channel=self.adc_channel,
-                               gain=self.adc_gain,
-                               resolution=self.adc_resolution)
-
-    def __iter__(self):
-        """
-        Support the iterator protocol.
-        """
-        return self
-
-    def next(self):
-        """
-        Call the read method and return voltage information.
-        """
-        if self.read():
-            return None
-        return dict(voltage=float('{0:.4f}'.format(self._voltage)))
-
-    @property
-    def voltage(self):
-        return self._voltage
 
     def get_measurement(self):
-        self._voltage = None
-        voltage = self.adc.convert_and_read()
-        return voltage
+        self._measurements = None
 
-    def read(self):
-        """
-        Takes a reading
+        return_dict = measurements_dict.copy()
 
-        :returns: None on success or 1 on error
-        """
-        if self.acquiring_measurement:
-            self.logger.error("Attempting to acquire a measurement when a"
-                              " measurement is already being acquired.")
-            return 1
-        try:
-            self.acquiring_measurement = True
-            self._voltage = self.get_measurement()
-            if self._voltage is not None:
-                return  # success - no errors
-        except Exception as e:
-            self.logger.error(
-                "{cls} raised an exception when taking a reading: "
-                "{err}".format(cls=type(self).__name__, err=e))
-        finally:
-            self.acquiring_measurement = False
-        return 1
+        for each_measure in self.device_measurements.all():
+            if each_measure.is_enabled:
+                adc = self.MCP342x(self.bus,
+                                   self.i2c_address,
+                                   channel=each_measure.channel,
+                                   gain=self.adc_gain,
+                                   resolution=self.adc_resolution)
+                return_dict[each_measure.channel]['value'] = adc.convert_and_read()
+
+        # Dummy data for testing
+        # import random
+        # return_dict[0]['value'] = random.uniform(1.5, 1.9)
+        # return_dict[1]['value'] = random.uniform(2.3, 2.5)
+        # return_dict[2]['value'] = random.uniform(0.5, 0.6)
+        # return_dict[3]['value'] = random.uniform(3.5, 6.2)
+
+        return return_dict
 
 
 if __name__ == "__main__":
-    class Data:
-        def __init__(self, **kwargs):
-            self.__dict__.update(kwargs)
+    from types import SimpleNamespace
+    settings = SimpleNamespace()
+    settings.id = 1
+    settings.unique_id='0000-0000'
+    settings.i2c_location = '0x68'
+    settings.i2c_bus = 1
+    settings.adc_gain = 1
+    settings.adc_resolution = 12
+    settings.channels = 4
+    settings.run_main = True
 
-    input_dev = Data(id='00001',
-                     unique_id='asdf-ghjk',
-                     location='0x68',
-                     i2c_bus=1,
-                     adc_channel=0,
-                     adc_gain=1,
-                     adc_resolution=12)
+    measurements = InputModule(settings).next()
 
-    mcp = ADCModule(input_dev)
-
-    while 1:
-        mcp.read()
-        print("Voltage: {}".format(mcp.voltage))
-        time.sleep(1)
+    print("Measurements: {}".format(measurements))

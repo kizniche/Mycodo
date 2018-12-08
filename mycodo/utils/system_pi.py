@@ -14,12 +14,14 @@ from mycodo.config import INSTALL_DIRECTORY
 from mycodo.config_devices_units import MEASUREMENTS
 from mycodo.config_devices_units import UNITS
 from mycodo.config_devices_units import UNIT_CONVERSIONS
+from mycodo.databases.models import DeviceMeasurements
+from mycodo.utils.database import db_retrieve_table_daemon
 
 logger = logging.getLogger("mycodo.system_pi")
 
 
 def add_custom_units(units):
-    return_units = UNITS
+    return_units = UNITS.copy()
 
     for each_unit in units:
         return_units.update(
@@ -34,6 +36,29 @@ def add_custom_units(units):
         sorted_dict_units[each_key] = return_units[each_key]
 
     return sorted_dict_units
+
+
+def return_measurement_info(device_measurement, conversion):
+    try:
+        if (device_measurement and
+                device_measurement.conversion_id and
+                conversion):
+            unit = conversion.convert_unit_to
+            measurement = None
+        elif (device_measurement and
+                hasattr(device_measurement, 'rescaled_unit') and
+                hasattr(device_measurement, 'rescaled_measurement') and
+                device_measurement.rescaled_unit and
+                device_measurement.rescaled_measurement):
+            unit = device_measurement.rescaled_unit
+            measurement = device_measurement.rescaled_measurement
+        else:
+            unit = device_measurement.unit
+            measurement = device_measurement.measurement
+        return device_measurement.channel, unit, measurement
+    except Exception:
+        logger.exception("{}, {}".format(device_measurement, conversion))
+        return None, None, None
 
 
 def add_custom_measurements(measurements):
@@ -64,7 +89,7 @@ def add_custom_measurements(measurements):
 
 
 def all_conversions(conversions):
-    conversions_combined = UNIT_CONVERSIONS
+    conversions_combined = OrderedDict()
     for each_conversion in conversions:
         convert_str = '{fr}_to_{to}'.format(
             fr=each_conversion.convert_unit_from,
@@ -80,6 +105,17 @@ def all_conversions(conversions):
         sorted_dict_conversions[each_key] = conversions_combined[each_key]
 
     return sorted_dict_conversions
+
+
+def get_measurement(measurement_id):
+    """ Find measurement """
+    device_measurement = db_retrieve_table_daemon(
+        DeviceMeasurements).filter(
+        DeviceMeasurements.unique_id == measurement_id).first()
+    if device_measurement:
+        return device_measurement
+    else:
+        return None
 
 
 def time_between_range(start_time, end_time):
@@ -266,14 +302,14 @@ def celsius_to_kelvin(celsius):
 
 def csv_to_list_of_str(str_csv):
     """ return a list of strings from a string of csv strings """
+    list_str = []
     if str_csv:
-        list_str = []
         for x in str_csv.split(','):
             try:
                 list_str.append(x)
             except:
                 pass
-        return list_str
+    return list_str
 
 
 def list_to_csv(display_order):

@@ -44,6 +44,9 @@ class OutputMod(FlaskForm):
         lazy_gettext('Name'),
         validators=[DataRequired()]
     )
+    location = StringField(lazy_gettext('Location'))
+    i2c_bus = IntegerField(lazy_gettext('I2C Bus'))
+    baud_rate = IntegerField(lazy_gettext('Baud Rate'))
     pin = IntegerField(
         lazy_gettext('Pin'), widget=NumberInput())
     protocol = IntegerField(
@@ -53,6 +56,7 @@ class OutputMod(FlaskForm):
     on_command = StringField(lazy_gettext('On Command'))
     off_command = StringField(lazy_gettext('Off Command'))
     pwm_command = StringField(lazy_gettext('PWM Command'))
+    modules_load = StringField(lazy_gettext('Load Modules'))
     pwm_invert_signal = BooleanField(lazy_gettext('Invert Signal'))
     amps = DecimalField(
         lazy_gettext('Current Draw (amps)'),
@@ -90,6 +94,10 @@ class OutputMod(FlaskForm):
             ("pigpio_hardware", lazy_gettext('Hardware Pin, <= 30 MHz'))
         ],
         validators=[DataRequired()]
+    )
+    flow_rate = DecimalField(
+        lazy_gettext('Flow Rate (ml/min)'),
+        widget=NumberInput(step='any')
     )
     save = SubmitField(lazy_gettext('Save'))
     delete = SubmitField(lazy_gettext('Delete'))

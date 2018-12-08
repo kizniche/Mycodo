@@ -4,7 +4,6 @@ import logging
 from flask_babel import lazy_gettext
 
 from mycodo.inputs.base_input import AbstractInput
-from mycodo.inputs.sensorutils import convert_units
 
 
 def constraints_pass_fan_seconds(value):
@@ -37,6 +36,14 @@ def constraints_pass_measure_range(value):
     return all_passed, errors
 
 
+# Measurements
+measurements_dict = {
+    0: {
+        'measurement': 'temperature',
+        'unit': 'C'
+    }
+}
+
 # Input information
 INPUT_INFORMATION = {
     #
@@ -52,14 +59,19 @@ INPUT_INFORMATION = {
 
     # Measurement information
     'measurements_name': 'Temperature',
-    'measurements_list': ['temperature'],  # List of strings
+    'measurements_dict': measurements_dict,
 
     # Web User Interface display options
     # Options that are enabled will be editable from the input options page.
     # Options that are disabled will appear on the input options page but not be editable.
     # There are several location options available for use:
     # 'location', 'gpio_location', 'i2c_location', 'bt_location', and 'uart_location'
-    'options_enabled': ['i2c_location', 'uart_location', 'period', 'convert_unit', 'pre_output'],
+    'options_enabled': [
+        'i2c_location',
+        'uart_location',
+        'period',
+        'pre_output'
+    ],
     'options_disabled': ['interface'],
 
 
@@ -141,12 +153,6 @@ INPUT_INFORMATION = {
 
     # Analog-to-digital converter options
     'analog_to_digital_converter': True,  # Boolean
-    'adc_channel': [  # List of tuples
-        (0, 'Channel 0'),
-        (1, 'Channel 1'),
-        (2, 'Channel 2'),
-        (3, 'Channel 3')
-    ],
     'adc_gain': [  # List of tuples
         (1, '1'),
         (2, '2'),
@@ -155,8 +161,8 @@ INPUT_INFORMATION = {
         (8, '8'),
         (16, '16')
     ],
-    'adc_volts_min': -4.096,  # Float
-    'adc_volts_max': 4.096,  # Float
+    'scale_from_min': -4.096,  # Float
+    'scale_from_max': 4.096,  # Float
 
     # Miscellaneous options
     'period': 15,  # Float
@@ -232,14 +238,13 @@ class InputModule(AbstractInput):
         #
         # Initialize the measurements this input returns
         #
-        self._temperature = None
+        self._measurements = None
 
         if not testing:
             self.logger = logging.getLogger(
                 "mycodo.inputs.{name_lower}_{id}".format(
                     name_lower=INPUT_INFORMATION['input_name_unique'].lower(),
                     id=input_dev.unique_id.split('-')[0]))
-            self.convert_to_unit = input_dev.convert_to_unit
             self.interface = input_dev.interface
 
             #
@@ -292,80 +297,22 @@ class InputModule(AbstractInput):
                 # No UART driver available for this input
                 pass
 
-    def __repr__(self):
-        """  Representation of object """
-        return "<{cls}(temperature={temperature})>".format(
-            cls=type(self).__name__,
-            temperature="{0:.2f}".format(self._temperature))
-
-    def __str__(self):
-        """ Return measurement information """
-        return "Temperature: {temperature}".format(
-            temperature="{0:.2f}".format(self._temperature))
-
-    def __iter__(self):  # must return an iterator
-        """ DummySensor iterates through readings """
-        return self
-
-    def next(self):
-        """ Get next reading """
-        if self.read():
-            raise StopIteration
-        return dict(temperature=float('{0:.2f}'.format(self._temperature)))
-
-    @property
-    def temperature(self):
-        """ temperature """
-        if self._temperature is None:
-            self.read()
-        return self._temperature
-
     def get_measurement(self):
         """ Gets the temperature and humidity """
         #
-        # Resetting these values ensures old measurements aren't mistaken for new measurements
+        # Copy measurements dictionary
         #
-        self._temperature = None
 
-        temperature = None
+        return_dict = measurements_dict.copy()
 
         #
         # Begin sensor measurement code
         #
 
-        temperature = self.random.randint(50, 70)
+        return_dict[0]['value'] = self.random.randint(50, 70)
 
         #
         # End sensor measurement code
         #
 
-        #
-        # Unit conversions
-        # A conversion may be specified for each measurement, if more than one unit exists for that particular measurement
-        #
-
-        # Temperature is returned in C, but it may be converted to another unit (e.g. K, F)
-        temperature = convert_units(
-            'temperature', 'C', self.convert_to_unit,
-            temperature)
-
-        return temperature
-
-    def read(self):
-        """
-        Takes a reading and updates the self._temperature and self._humidity values
-
-        :returns: None on success or 1 on error
-        """
-        try:
-            #
-            # These measurements must be in the same order as the returned tuple from get_measurement()
-            #
-            self._temperature = self.get_measurement()
-            if self._temperature is not None:
-                return  # success - no errors
-        except Exception as e:
-            self.logger.exception(
-                "{cls} raised an exception when taking a reading: "
-                "{err}".format(cls=type(self).__name__, err=e))
-        return 1
+        return return_dict

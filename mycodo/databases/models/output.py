@@ -12,8 +12,16 @@ class Output(CRUDMixin, db.Model):
 
     id = db.Column(db.Integer, unique=True, primary_key=True)
     unique_id = db.Column(db.String, nullable=False, unique=True, default=set_uuid)  # ID for influxdb entries
-    output_type = db.Column(db.Text, default='wired')  # Options: 'command', 'wired', 'wireless_433MHz_pi_switch', 'pwm'
+    output_type = db.Column(db.Text, default='wired')  # Options: 'command', 'wired', 'wireless_rpi_rf', 'pwm'
+    interface = db.Column(db.Text, default='')
+    location = db.Column(db.Text, default='')
+    i2c_bus = db.Column(db.Integer, default=None)
+    baud_rate = db.Column(db.Integer, default=None)
     name = db.Column(db.Text, default='Output')
+    measurement = db.Column(db.Text, default=None)
+    unit = db.Column(db.Text, default=None)
+    conversion_id = db.Column(db.Text, db.ForeignKey('conversion.unique_id'), default='')
+    channel = db.Column(db.Integer, default=None)
     pin = db.Column(db.Integer, default=None)  # Pin connected to the device/output
     trigger = db.Column(db.Boolean, default=True)  # GPIO output to turn output on (True=HIGH, False=LOW)
     amps = db.Column(db.Float, default=0.0)  # The current drawn by the device connected to the output
@@ -26,11 +34,15 @@ class Output(CRUDMixin, db.Model):
     on_command = db.Column(db.Text, default=None)
     off_command = db.Column(db.Text, default=None)
     pwm_command = db.Column(db.Text, default=None)
+    modules_load = db.Column(db.Text, default=None)
 
     # PWM
     pwm_hertz = db.Column(db.Integer, default=None)  # PWM Hertz
     pwm_library = db.Column(db.Text, default=None)  # Library to produce PWM
     pwm_invert_signal = db.Column(db.Boolean, default=False)  # 90% duty cycle would become 10%
+
+    # Atlas EZO-PMP
+    flow_rate = db.Column(db.Float, default=None)  # example: ml per minute
 
     def __repr__(self):
         return "<{cls}(id={s.id})>".format(s=self, cls=self.__class__.__name__)

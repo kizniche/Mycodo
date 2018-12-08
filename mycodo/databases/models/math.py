@@ -14,9 +14,8 @@ class Math(CRUDMixin, db.Model):
     math_type = db.Column(db.Text, default=None)
     is_activated = db.Column(db.Boolean, default=False)
     period = db.Column(db.Float, default=15.0)  # Duration between readings
+    start_offset = db.Column(db.Float, default=10.0)
     max_measure_age = db.Column(db.Integer, default=60)
-    measure = db.Column(db.Text, default='Measurement')
-    measure_units = db.Column(db.Text, default='unit')
 
     # Difference options
     difference_reverse_order = db.Column(db.Boolean, default=False)  # False: var1 - var2 or True: var2 - var1
@@ -34,11 +33,17 @@ class Math(CRUDMixin, db.Model):
 
     # Humidity calculation
     dry_bulb_t_id = db.Column(db.Text, default=None)
-    dry_bulb_t_measure = db.Column(db.Text, default=None)
+    dry_bulb_t_measure_id = db.Column(db.Text, default=None)
     wet_bulb_t_id = db.Column(db.Text, default=None)
-    wet_bulb_t_measure = db.Column(db.Text, default=None)
+    wet_bulb_t_measure_id = db.Column(db.Text, default=None)
     pressure_pa_id = db.Column(db.Text, default=None)
-    pressure_pa_measure = db.Column(db.Text, default=None)
+    pressure_pa_measure_id = db.Column(db.Text, default=None)
+
+    # Misc IDs
+    unique_id_1 = db.Column(db.Text, default=None)
+    unique_measurement_id_1 = db.Column(db.Text, default=None)
+    unique_id_2 = db.Column(db.Text, default=None)
+    unique_measurement_id_2 = db.Column(db.Text, default=None)
 
     def is_active(self):
         """

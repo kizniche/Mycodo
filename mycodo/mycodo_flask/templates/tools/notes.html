@@ -17,7 +17,7 @@
 
   <p>Tags allow categorization of notes. Each note may have one or more tags. A tag may be selected to display all the notes associated with it on a graph.</p>
 
-  <div class="row align-items-end">
+  <div class="row small-gutters align-items-end">
     <div class="col-auto">
       <form class="form-horizontal" method="post" action="/notes">
       {{form_tag_add.csrf_token}}
@@ -37,9 +37,9 @@
   <form class="form-horizontal" method="post" action="/notes">
   {{form_tag_options.csrf_token}}
 
-    <div class="row align-items-end mt-3">
+    <div class="row small-gutters align-items-end mt-3">
       <div class="col-auto">
-        <select class="form-control" id="tag_unique_id" name="tag_unique_id" title="" data-original-title="Select the tag to delete">
+        <select class="selectpicker" id="tag_unique_id" name="tag_unique_id" title="" data-original-title="Select the tag to delete">
           {%- for each_tag in tags -%}
             <option value="{{each_tag.unique_id}}">{{each_tag.name}}</option>
           {%- endfor -%}
@@ -74,7 +74,7 @@
 
   <form method="post" action="/notes" enctype=multipart/form-data>
   {{form_note_add.csrf_token}}
-  <div class="row">
+  <div class="row small-gutters">
     <div class="col-auto">
       {{form_note_add.name.label(class_='control-label')}}
       <div>
@@ -84,7 +84,7 @@
     <div class="col-auto">
       {{form_note_add.enter_custom_date_time.label(class_='control-label')}}
       <div class="input-group-text">
-        <input class="form-control" id="enter_custom_date_time" name="enter_custom_date_time" type="checkbox" value="y">
+        <input id="enter_custom_date_time" name="enter_custom_date_time" type="checkbox" value="y">
       </div>
     </div>
     <div class="col-auto">
@@ -96,11 +96,11 @@
     <div class="col-auto">
       {{form_note_add.files.label(class_='control-label')}}
       <div class="fileinput fileinput-new" data-provides="fileinput">
-        <span class="btn btn-default btn-file"><input id="files" name="files" type="file" multiple="" /></span>
+        <span class="btn btn-sm btn-file"><input id="files" name="files" type="file" multiple="" /></span>
       </div>
     </div>
   </div>
-  <div class="row">
+  <div class="row small-gutters">
     <div class="col-xs-12 col-sm-8 col-md-9">
       {{form_note_add.note.label(class_='control-label')}}
       <div>
@@ -110,7 +110,7 @@
     <div class="col-xs-12 col-sm-4 col-md-3">
       {{form_note_add.note_tags.label(class_='control-label')}}
       <div>
-        <select class="form-control btn-default" id="note_tags" name="note_tags" style="width: 100%;" size="7" multiple>
+        <select class="form-control btn-sm" id="note_tags" name="note_tags" style="width: 100%;" size="7" multiple>
         {% if tags %}
           {% for each_tag in tags -%}
           <option value="{{each_tag.unique_id}}">{{each_tag.name}}</option>
@@ -141,7 +141,7 @@
   {{form_note_show.csrf_token}}
   <div class="form-inline">
     <div class="form-group fileinput fileinput-new" data-provides="fileinput">
-      <span class="btn btn-default btn-file"><input id="notes_import_file" name="notes_import_file" type="file" /></span>
+      <span class="btn btn-sm btn-file"><input id="notes_import_file" name="notes_import_file" type="file" /></span>
     </div>
     <div class="form-group">
       {{form_note_show.notes_import_upload(class_='btn btn-primary')}}
@@ -161,7 +161,7 @@
 
   <form method="post" action="/notes" enctype=multipart/form-data>
   {{form_note_add.csrf_token}}
-  <div class="row align-items-end">
+  <div class="row  small-gutters align-items-end">
     <div class="col-auto">
       {{form_note_show.filter_names.label(class_='control-label')}}
       <div>
@@ -187,17 +187,18 @@
       </div>
     </div>
   </div>
-  <div class="row align-items-end">
+
+  <div class="row small-gutters align-items-end">
     <div class="col-auto">
       {{form_note_show.sort_by.label(class_='control-label')}}
       <div>
-        {{form_note_show.sort_by(class_='form-control')}}
+        {{form_note_show.sort_by(class_='selectpicker')}}
       </div>
     </div>
     <div class="col-auto">
       {{form_note_show.sort_direction.label(class_='control-label')}}
       <div>
-        {{form_note_show.sort_direction(class_='form-control')}}
+        {{form_note_show.sort_direction(class_='selectpicker')}}
       </div>
     </div>
     <div class="col-auto">

@@ -10,7 +10,7 @@ from flask import redirect
 from flask import url_for
 from flask_babel import gettext
 
-from mycodo.config_devices_units import MEASUREMENTS
+from mycodo.databases.models import DeviceMeasurements
 from mycodo.databases.models import DisplayOrder
 from mycodo.databases.models import Input
 from mycodo.databases.models import PID
@@ -24,8 +24,8 @@ from mycodo.mycodo_flask.utils.utils_general import reorder
 from mycodo.mycodo_flask.utils.utils_general import return_dependencies
 from mycodo.utils.inputs import parse_input_information
 from mycodo.utils.system_pi import csv_to_list_of_str
-from mycodo.utils.system_pi import list_to_csv
 from mycodo.utils.system_pi import is_int
+from mycodo.utils.system_pi import list_to_csv
 from mycodo.utils.system_pi import str_is_float
 
 logger = logging.getLogger(__name__)
@@ -36,7 +36,7 @@ logger = logging.getLogger(__name__)
 #
 
 
-def input_add(form_add, request_form):
+def input_add(form_add):
     action = '{action} {controller}'.format(
         action=gettext("Add"),
         controller=gettext("Input"))
@@ -85,31 +85,9 @@ def input_add(form_add, request_form):
         else:
             new_input.name = 'Input Name'
 
-        if ('measurements_list' in dict_inputs[input_name] and
-                dict_inputs[input_name]['measurements_list'] != []):
-            new_input.measurements = ",".join(dict_inputs[input_name]['measurements_list'])
-        elif input_name == 'LinuxCommand':
-            pass
-        else:
-            error.append("No measurements defined for this input.")
-
         #
         # Set default values for new input being added
         #
-
-        # Set the default measurement values
-        list_units = []
-        if 'measurements_list' in dict_inputs[input_name]:
-            for each_measurement in dict_inputs[input_name]['measurements_list']:
-                if each_measurement in MEASUREMENTS:
-                    entry = '{measure},{unit}'.format(
-                        measure=each_measurement,
-                        unit=MEASUREMENTS[each_measurement]['units'][0])
-                    list_units.append(entry)
-                else:
-                    error.append("Measurement '{measure}' not recognized.".format(
-                        measure=each_measurement))
-            new_input.convert_to_unit = ";".join(list_units)
 
         # input add options
         if input_name in dict_inputs:
@@ -179,11 +157,6 @@ def input_add(form_add, request_form):
                 new_input.sample_time = dict_inputs[input_name]['sample_time']
 
             # Analog-to-digital converter options
-            if dict_has_value('adc_channel'):
-                if len(dict_inputs[input_name]['adc_channel']) == 1:
-                    new_input.adc_channel = dict_inputs[input_name]['adc_channel'][0]
-                elif len(dict_inputs[input_name]['adc_channel']) > 1:
-                    new_input.adc_channel = dict_inputs[input_name]['adc_channel'][0][0]
             if dict_has_value('adc_gain'):
                 if len(dict_inputs[input_name]['adc_gain']) == 1:
                     new_input.adc_gain = dict_inputs[input_name]['adc_gain'][0]
@@ -199,16 +172,6 @@ def input_add(form_add, request_form):
                     new_input.adc_sample_speed = dict_inputs[input_name]['adc_sample_speed'][0]
                 elif len(dict_inputs[input_name]['adc_sample_speed']) > 1:
                     new_input.adc_sample_speed = dict_inputs[input_name]['adc_sample_speed'][0][0]
-            if dict_has_value('adc_volts_min'):
-                new_input.adc_volts_min = dict_inputs[input_name]['adc_volts_min']
-            if dict_has_value('adc_volts_max'):
-                new_input.adc_volts_max = dict_inputs[input_name]['adc_volts_max']
-            if dict_has_value('adc_units_min'):
-                new_input.adc_units_min = dict_inputs[input_name]['adc_units_min']
-            if dict_has_value('adc_units_max'):
-                new_input.adc_units_max = dict_inputs[input_name]['adc_units_max']
-            if dict_has_value('adc_inverse_unit_scale'):
-                new_input.adc_inverse_unit_scale = dict_inputs[input_name]['adc_inverse_unit_scale']
 
             # Linux command
             if dict_has_value('cmd_command'):
@@ -250,9 +213,13 @@ def input_add(form_add, request_form):
         list_options = []
         if 'custom_options' in dict_inputs[input_name]:
             for each_option in dict_inputs[input_name]['custom_options']:
+                if each_option['default_value'] is False:
+                    default_value = ''
+                else:
+                    default_value = each_option['default_value']
                 option = '{id},{value}'.format(
                     id=each_option['id'],
-                    value=each_option['default_value'])
+                    value=default_value)
                 list_options.append(option)
         new_input.custom_options = ';'.join(list_options)
 
@@ -266,6 +233,19 @@ def input_add(form_add, request_form):
                 DisplayOrder.query.first().inputs = add_display_order(
                     display_order, new_input.unique_id)
                 db.session.commit()
+
+                if ('measurements_dict' in dict_inputs[input_name] and
+                        dict_inputs[input_name]['measurements_dict'] != []):
+                    for each_channel in dict_inputs[input_name]['measurements_dict']:
+                        measure_info = dict_inputs[input_name]['measurements_dict'][each_channel]
+                        new_measurement = DeviceMeasurements()
+                        if 'name' in measure_info:
+                            new_measurement.name = measure_info['name']
+                        new_measurement.device_id = new_input.unique_id
+                        new_measurement.measurement = measure_info['measurement']
+                        new_measurement.unit = measure_info['unit']
+                        new_measurement.channel = each_channel
+                        new_measurement.save()
 
                 flash(gettext(
                     "%(type)s Input with ID %(id)s (%(uuid)s) successfully added",
@@ -300,8 +280,7 @@ def input_mod(form_mod, request_form):
 
         if mod_input.is_activated:
             error.append(gettext(
-                "Deactivate sensor controller before modifying its "
-                "settings"))
+                "Deactivate controller before modifying its settings"))
 
         if (mod_input.device == 'AM2315' and
                 form_mod.period.data < 7):
@@ -343,29 +322,15 @@ def input_mod(form_mod, request_form):
         else:
             mod_input.pre_output_id = None
 
-        if mod_input.device == 'LinuxCommand':
-            mod_input.measurements = form_mod.selected_measurement_unit.data.split(',')[0]
-
-        if (mod_input.device == 'LinuxCommand' or
-                ('analog_to_digital_converter' in dict_inputs[mod_input.device] and
-                 dict_inputs[mod_input.device]['analog_to_digital_converter'])):
-            mod_input.convert_to_unit = form_mod.selected_measurement_unit.data
-
-        short_list = []
-        mod_units = False
-        for key in request_form.keys():
-            if 'convert_unit' in key:
-                mod_units = True
-                for value in request_form.getlist(key):
-                    if value == 'default':
-                        pass
-                    elif (len(value.split(',')) < 2 or
-                            value.split(',')[0] == '' or value.split(',')[1] == ''):
-                        error.append("Invalid custom unit")
-                    else:
-                        short_list.append(value)
-        if mod_units:
-            mod_input.convert_to_unit = ';'.join(short_list)
+        # Enable/disable Channels
+        measurements = DeviceMeasurements.query.filter(
+            DeviceMeasurements.device_id == form_mod.input_id.data).all()
+        if form_mod.measurements_enabled.data:
+            for each_measurement in measurements:
+                if each_measurement.unique_id in form_mod.measurements_enabled.data:
+                    each_measurement.is_enabled = True
+                else:
+                    each_measurement.is_enabled = False
 
         mod_input.i2c_bus = form_mod.i2c_bus.data
         mod_input.baud_rate = form_mod.baud_rate.data
@@ -386,16 +351,11 @@ def input_mod(form_mod, request_form):
         mod_input.pin_miso = form_mod.pin_miso.data
         # Bluetooth options
         mod_input.bt_adapter = form_mod.bt_adapter.data
-        # ADC options
-        mod_input.adc_channel = form_mod.adc_channel.data
+
         mod_input.adc_gain = form_mod.adc_gain.data
         mod_input.adc_resolution = form_mod.adc_resolution.data
         mod_input.adc_sample_speed = form_mod.adc_sample_speed.data
-        mod_input.adc_volts_min = form_mod.adc_volts_min.data
-        mod_input.adc_volts_max = form_mod.adc_volts_max.data
-        mod_input.adc_units_min = form_mod.adc_units_min.data
-        mod_input.adc_units_max = form_mod.adc_units_max.data
-        mod_input.adc_inverse_unit_scale = form_mod.adc_inverse_unit_scale.data
+
         # Switch options
         mod_input.switch_edge = form_mod.switch_edge.data
         mod_input.switch_bouncetime = form_mod.switch_bounce_time.data
@@ -485,20 +445,76 @@ def input_mod(form_mod, request_form):
     flash_success_errors(error, action, url_for('routes_page.page_data'))
 
 
-def input_del(form_mod):
+def measurement_mod(form):
+    action = '{action} {controller}'.format(
+        action=gettext("Modify"),
+        controller=gettext("Measurement"))
+    error = []
+
+    try:
+        mod_meas = DeviceMeasurements.query.filter(
+            DeviceMeasurements.unique_id == form.input_measurement_id.data).first()
+
+        mod_input = Input.query.filter(Input.unique_id == mod_meas.device_id).first()
+        if mod_input.is_activated:
+            error.append(gettext(
+                "Deactivate controller before modifying its settings"))
+
+        mod_meas.name = form.name.data
+
+        input_info = parse_input_information()
+        if ('enable_channel_unit_select' in input_info[mod_input.device] and
+                input_info[mod_input.device]['enable_channel_unit_select']):
+            if ',' in form.select_measurement_unit.data:
+                mod_meas.measurement = form.select_measurement_unit.data.split(',')[0]
+                mod_meas.unit = form.select_measurement_unit.data.split(',')[1]
+            else:
+                mod_meas.measurement = ''
+                mod_meas.unit = ''
+
+        if form.rescaled_measurement_unit.data != '' and ',' in form.rescaled_measurement_unit.data:
+            mod_meas.rescaled_measurement = form.rescaled_measurement_unit.data.split(',')[0]
+            mod_meas.rescaled_unit = form.rescaled_measurement_unit.data.split(',')[1]
+        elif form.rescaled_measurement_unit.data == '':
+            mod_meas.rescaled_measurement = ''
+            mod_meas.rescaled_unit = ''
+
+        mod_meas.scale_from_min = form.scale_from_min.data
+        mod_meas.scale_from_max = form.scale_from_max.data
+        mod_meas.scale_to_min = form.scale_to_min.data
+        mod_meas.scale_to_max = form.scale_to_max.data
+        mod_meas.invert_scale = form.invert_scale.data
+        mod_meas.conversion_id = form.convert_to_measurement_unit.data
+
+        if not error:
+            db.session.commit()
+
+    except Exception as except_msg:
+        logger.exception(1)
+        error.append(except_msg)
+
+    flash_success_errors(error, action, url_for('routes_page.page_data'))
+
+
+def input_del(input_id):
     action = '{action} {controller}'.format(
         action=gettext("Delete"),
         controller=gettext("Input"))
     error = []
 
-    input_id = form_mod.input_id.data
-
     try:
         input_dev = Input.query.filter(
             Input.unique_id == input_id).first()
+
         if input_dev.is_activated:
             input_deactivate_associated_controllers(input_id)
             controller_activate_deactivate('deactivate', 'Input', input_id)
+
+        device_measurements = DeviceMeasurements.query.filter(
+            DeviceMeasurements.device_id == input_id).all()
+
+        for each_measurement in device_measurements:
+            delete_entry_with_id(DeviceMeasurements, each_measurement.unique_id)
 
         delete_entry_with_id(Input, input_id)
         try:
@@ -539,9 +555,6 @@ def input_activate(form_mod):
     if input_dev.device == 'LinuxCommand':
         if input_dev.cmd_command is '':
             flash("Cannot activate Input without Command set.", "error")
-            return redirect(url_for('routes_page.page_data'))
-        if not input_dev.convert_to_unit:
-            flash("Cannot activate Input without Unit Measurement set.", "error")
             return redirect(url_for('routes_page.page_data'))
     controller_activate_deactivate('activate', 'Input',  input_id)
 

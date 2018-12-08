@@ -62,6 +62,9 @@
   <link href="/static/css/fa-svg-with-js.css" rel="stylesheet">
   <script src="/static/js/fontawesome-all.min.js"></script>
 
+  <link href="/static/css/bootstrap-select.min.css" rel="stylesheet">
+  <script src="/static/js/bootstrap-select.min.js"></script>
+
   <script>
 
   function check_daemon_status() {
@@ -128,6 +131,7 @@
   {% if not hide_tooltips %}
     $(document).ready(function(){
       $('input[title]').tooltip({placement:'top'});
+      $('textarea[title]').tooltip({placement:'top'});
       $('.form-dropdown').dropdown();
       $('.form-dropdown').tooltip();
     });
@@ -254,7 +258,6 @@
     </nav>
 
     {%- block body %}{% endblock -%}
-
     <script src="/static/js/bootstrap.min.js"></script>
     <script>
     $(document).ready(function(){
@@ -264,6 +267,8 @@
     window.onload = function() {
       set_navbar_classes();
     }
+
+    $('.selectpicker').selectpicker();
     </script>
   </body>
 </html>

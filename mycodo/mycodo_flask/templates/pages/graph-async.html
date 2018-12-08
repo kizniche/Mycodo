@@ -3,10 +3,15 @@
 {% set help_page = ["asynchronous-graphs", _('Asynchronous Graphs')] %}
 
 {% block head %}
-  <script src="/static/js/highstock.src.js"></script>
-  <script src="/static/js/modules/exporting.js"></script>
-  <script src="/static/js/modules/canvas-tools.js"></script>
-  <script src="/static/js/modules/export-csv.js"></script>
+  <script src="/static/js/highstock.js"></script>
+
+  <script type="text/javascript" src="/static/js/modules/exporting.js"></script>
+  <script type="text/javascript" src="/static/js/modules/offline-exporting.js"></script>
+  <script type="text/javascript" src="/static/js/modules/export-data.js"></script>
+  <script type="text/javascript" src="/static/js/modules/canvas-tools.js"></script>
+  <script type="text/javascript" src="/static/js/modules/jspdf.min.js"></script>
+  <script type="text/javascript" src="/static/js/modules/highcharts-export-clientside.js"></script>
+
   <script src="/static/js/modules/jspdf.min.js"></script>
   <script src="/static/js/modules/highcharts-export-clientside.js"></script>
   {% if current_user.theme in dark_themes %}
@@ -19,23 +24,30 @@
 
 {% block body %}
   <!-- Route: /graph-async -->
+
   <div class="container">
   {% include 'flash_messages.html' %}
-
-{#  <p>#}
-{#  yaxes: {{ y_axes }}#}
-{#  </p>#}
 
     <h4>{{_('Asynchronous Graphs')}} <a href="/help#{{help_page[0]}}" target="_blank"><span style="font-size: 16px" class="fas fa-question-circle"></span></a></h4>
 
     <p>A graphical data display that is useful for viewing data sets spanning relatively long periods of time (weeks/months/years), which could be very data- and processor-intensive to view as a Live Graph.</p>
 
   {% if selected_ids_measures %}
-    <div id="container" style="height: 600px; min-width: 300px"></div>
+  </div>
+
+  <div id="container" style="height: {{async_height}}px; min-width: 300px"></div>
+
+  <div class="container">
   {% endif %}
 
     <form method="post" action="/graph-async">
     <div class="form-row" style="padding: 1em 0">
+      <div class="col-auto">
+        Height:
+      </div>
+      <div class="col-auto">
+        <input class="form-control" id="async_height" name="async_height" type="number" value="{{async_height}}">
+      </div>
       <div class="col-auto">
         <input class="btn btn-primary" type="submit" name="submit" value="All Data">
       </div>
@@ -59,19 +71,19 @@
       <div class="col-auto">
         <select class="form-control" id="selected_measure" name="selected_measure" size="{{input_choices|length + math_choices|length + output_choices|length + pid_choices|length + tag_choices|length}}" multiple>
         {% for each_choice, value in input_choices.items() -%}
-          <option value="{{each_choice}}"{% if each_choice in selected_ids_measures %} selected{% endif %}>{{value}}</option>
+          <option value="{{each_choice}},input"{% if each_choice + ',input' in selected_ids_measures %} selected{% endif %}>{{value}}</option>
         {% endfor -%}
         {% for each_choice, value in math_choices.items() -%}
-          <option value="{{each_choice}}"{% if each_choice in selected_ids_measures %} selected{% endif %}>{{value}}</option>
+          <option value="{{each_choice}},math"{% if each_choice + ',math' in selected_ids_measures %} selected{% endif %}>{{value}}</option>
         {% endfor -%}
         {% for each_choice, value in output_choices.items() -%}
-          <option value="{{each_choice}}"{% if each_choice in selected_ids_measures %} selected{% endif %}>{{value}}</option>
+          <option value="{{each_choice}},output"{% if each_choice + ',output' in selected_ids_measures %} selected{% endif %}>{{value}}</option>
         {% endfor -%}
         {% for each_choice, value in pid_choices.items() -%}
-          <option value="{{each_choice}}"{% if each_choice in selected_ids_measures %} selected{% endif %}>{{value}}</option>
+          <option value="{{each_choice}},pid"{% if each_choice + ',pid' in selected_ids_measures %} selected{% endif %}>{{value}}</option>
         {% endfor -%}
         {% for each_choice, value in tag_choices.items() -%}
-          <option value="{{each_choice}}"{% if each_choice in selected_ids_measures %} selected{% endif %}>{{value}}</option>
+          <option value="{{each_choice}},tag"{% if each_choice + ',tag' in selected_ids_measures %} selected{% endif %}>{{value}}</option>
         {% endfor -%}
         </select>
       </div>
@@ -86,7 +98,6 @@
 
   {% if selected_ids_measures %}
   <script>
-
 Highcharts.setOptions({
   global: {
     useUTC: false
@@ -100,15 +111,16 @@ $(document).ready(function() {
     var id_measure = [
     {% for each_id_meas in selected_ids_measures %}
     {
-      id: '{{each_id_meas.split(',')[0]}}',
-      measure: '{{each_id_meas.split(',')[1]}}'
+      device_id: '{{each_id_meas.split(',')[0]}}',
+      measurement_id: '{{each_id_meas.split(',')[1]}}',
+      device_type: '{{each_id_meas.split(',')[2]}}'
     },
     {% endfor %}
     ];
     var chart = [];
 
-    function getPastData(chart_number, series, input_id, sensor_measurement, start_time) {
-      var url = '/async/' + sensor_measurement + '/' + input_id + '/' + start_time + '/0';
+    function getPastData(chart_number, series, device_id, device_type, measurement_id, start_time) {
+      var url = '/async/' + device_id + '/' + device_type + '/' + measurement_id + '/' + start_time + '/0';
       $.getJSON(url,
         function(data, responseText, jqXHR) {
           if (jqXHR.status !== 204) {
@@ -117,7 +129,7 @@ $(document).ready(function() {
               var new_date = new Date(data[i][0]);
               var new_time = new_date.getTime();
 
-              if (sensor_measurement === 'tag') {
+              if (device_type === 'tag') {
                 chart[chart_number].series[series].addPoint({
                   x: new_time,
                   title: data[i][1],
@@ -129,7 +141,7 @@ $(document).ready(function() {
               }
             }
 
-            if (sensor_measurement !== 'tag') {
+            if (device_type !== 'tag') {
               new_data.push([new Date().getTime(), null]);
               chart[chart_number].series[series].setData(new_data, false, false);
               var nav = chart[chart_number].get('navigator');
@@ -137,14 +149,14 @@ $(document).ready(function() {
             }
 
           }
-          if (sensor_measurement !== 'tag') {
+          if (device_type !== 'tag') {
             chart[chart_number].redraw();
           }
         }
       );
     }
 
-    function set_data_from_url(url, series, measure) {
+    function set_data_from_url(url, series, device_type) {
       $.getJSON(url,
         function (data, responseText, jqXHR) {
           if (jqXHR.status !== 204) {
@@ -152,7 +164,7 @@ $(document).ready(function() {
             for (i = 0; i < data.length; i++) {
               var new_date = new Date(data[i][0]);
               var new_time = new_date.getTime();
-              if (measure === 'tag') {
+              if (device_type === 'tag') {
                 chart[0].series[series].addPoint({
                   x: new_time,
                   title: data[i][1],
@@ -164,7 +176,7 @@ $(document).ready(function() {
               }
             }
           }
-          if (measure !== 'tag') {
+          if (device_type !== 'tag') {
             chart[0].series[series].setData(new_data);
           }
           chart[0].hideLoading();
@@ -183,9 +195,9 @@ $(document).ready(function() {
         max = e.xAxis[0].max;
       }
       for (var each_series in id_measure) {
-        if (id_measure[each_series]['measure'] !== 'tag') {
-          var url = '/async/' + id_measure[each_series]['measure'] + '/' + id_measure[each_series]['id'] + '/' + Math.round(min) / 1000 + '/' + Math.round(max) / 1000;
-          set_data_from_url(url, each_series, id_measure[each_series]['measure'])
+        if (id_measure[each_series]['device_type'] !== 'tag') {
+          var url = '/async/' + id_measure[each_series]['device_id'] + '/' + id_measure[each_series]['device_type'] + '/' + id_measure[each_series]['measurement_id'] + '/' + Math.round(min) / 1000 + '/' + Math.round(max) / 1000;
+          set_data_from_url(url, each_series, id_measure[each_series]['device_type'])
         }
       }
     }
@@ -199,7 +211,10 @@ $(document).ready(function() {
             load: function () {
               {% set count_series = [] -%}
               {% for each_id_meas in selected_ids_measures %}
-              getPastData(0, {{count_series|count}}, '{{each_id_meas.split(',')[0]}}', '{{each_id_meas.split(',')[1]}}', '{{start_time_epoch}}');
+                {%- set device_id = each_id_meas.split(',')[0] -%}
+                {%- set measurement_id = each_id_meas.split(',')[1] -%}
+                {%- set device_type = each_id_meas.split(',')[2] -%}
+              getPastData(0, {{count_series|count}}, '{{device_id}}', '{{device_type}}', '{{measurement_id}}', '{{start_time_epoch}}');
                 {%- do count_series.append(1) %}
               {% endfor %}
             },
@@ -210,14 +225,15 @@ $(document).ready(function() {
         tooltip: {
           shared: true,
           formatter: function(){
+            var d = new Date(this.x);
             if (this.point) {
-              return '<b>'+ Highcharts.dateFormat('%B %e, %Y %H:%M:%S', this.x)
+              return '<b>'+ Highcharts.dateFormat('%B %e, %Y %H:%M:%S.', this.x) + d.getMilliseconds()
                    + '</b><br/>' + this.series.name
                    + '<br/>' + this.point.title
                    + '<br/>' + this.point.text;
             }
             else {
-              var s = '<b>'+ Highcharts.dateFormat('%B %e, %Y %H:%M:%S', this.x) +'</b>';
+              var s = '<b>'+ Highcharts.dateFormat('%B %e, %Y %H:%M:%S.', this.x) + d.getMilliseconds() + '</b>';
               $.each(this.points, function(i, point) {
                   s += '<br/><span style="color:' + point.color + '">\u25CF</span> ' + point.series.name + ': ' + Highcharts.numberFormat(point.y, this.series.tooltipOptions.valueDecimals) + ' ' + this.series.tooltipOptions.valueSuffix;
               });
@@ -307,243 +323,179 @@ $(document).ready(function() {
         },
 
         series: [
+
         {% for each_id_meas in selected_ids_measures -%}
+          {%- set device_id = each_id_meas.split(',')[0] -%}
+          {%- set measurement_id = each_id_meas.split(',')[1] -%}
 
-          {% for each_input in input if each_input.unique_id == each_id_meas.split(',')[0] %}
+          {% for each_input in input if each_input.unique_id == device_id -%}
+            {%- if measurement_id in device_measurements_dict -%}
 
-            {% if each_input.device == 'LinuxCommand' %}
-          {
-            name: '{{each_input.name}} {{each_input.cmd_measurement}} ({{each_input.cmd_measurement_units}})',
-            type: 'line',
-            tooltip: {
-              {% if each_input.cmd_measurement == 'temperature' %}
-              pointFormatter: function () {
-                return '<span style="color:'+ this.series.color + '"">\u25CF</span> ' + this.series.name + ': <b>' + Highcharts.numberFormat(this.y, 2) + '°C (' + Highcharts.numberFormat(((this.y*9/5)+32), 2) + '°F)</b><br>';
-              },
-              {% else %}
-              valueSuffix: ' {{each_input.cmd_measurement_units}}',
-              valueDecimals: 2
-              {% endif %}
-            },
-            yAxis: '{{each_input.cmd_measurement}}',
-            data: []
-          },
-            {% endif %}
+            {
+              name: '{{each_input.name}}
 
-            {%- for each_measurement in each_input.measurements.split(',') -%}
-              {%- if each_measurement == each_id_meas.split(',')[1] -%}
-          {
-            name: '{{each_input.name}} ({{measurement_units[each_measurement]['name']}}
-              {%- if dict_measurements[each_measurement]['unit'] != '' %}
-                {%- if use_unit[each_input.unique_id][each_measurement] -%}
-                  {{', '+units[use_unit[each_input.unique_id][each_measurement]]['unit']}}
-                {%- else -%}
-                  {{', '+measurement_units[each_measurement]['unit']}}
+                {%- if device_measurements_dict[measurement_id].name -%}
+                  {{' (' + device_measurements_dict[measurement_id].name}})
                 {%- endif -%}
-              )
+
+                {{' (CH' + (device_measurements_dict[measurement_id].channel + 1)|string}}
+
+                {%- if dict_measure_measurements[measurement_id] in dict_measurements and
+                 dict_measurements[dict_measure_measurements[measurement_id]]['name'] -%}
+                  {{', ' + dict_measurements[dict_measure_measurements[measurement_id]]['name']}}
+                {%- endif -%}
+
+                {%- if dict_measure_units[measurement_id] in dict_units and
+                       dict_units[dict_measure_units[measurement_id]]['unit'] -%}
+                  {{', ' + dict_units[dict_measure_units[measurement_id]]['unit']}}
+                {%- endif -%}
+
+                )',
+
+              {% if dict_measure_measurements[measurement_id] in dict_measurements and
+                    dict_measurements[dict_measure_measurements[measurement_id]]['meas'] == 'edge' %}
+              type: 'column',
+              {% else %}
+              type: 'line',
+              {% endif %}
+              tooltip: {
+                valueSuffix: '
+                {%- if dict_measure_units[measurement_id] in dict_units and
+                     dict_units[dict_measure_units[measurement_id]]['unit'] -%}
+                {{' ' + dict_units[dict_measure_units[measurement_id]]['unit']}}
+                {%- endif -%}
+                ',
+                valueDecimals: 3
+              },
+              yAxis: '
+                {%- if measurement_id in dict_measure_units -%}
+                  {{dict_measure_units[measurement_id]}}
+                {%- endif -%}
+                  ',
+              data: []
+            },
+
+            {%- endif -%}
+          {% endfor %}
+
+          {% for each_math in math if each_math.unique_id == each_id_meas.split(',')[0] -%}
+            {%- set measurement_id = each_id_meas.split(',')[1] -%}
+            {%- if measurement_id in device_measurements_dict -%}
+
+            {
+            name: '{{each_math.name}}
+
+              {%- if device_measurements_dict[measurement_id].name -%}
+                {{' (' + device_measurements_dict[measurement_id].name}})
               {%- endif -%}
-            ',
-            {% if dict_measurements[each_measurement]['meas'] == 'edge' %}
+
+                {{' (CH' + (device_measurements_dict[measurement_id].channel + 1)|string}}
+
+              {%- if dict_measure_measurements[measurement_id] in dict_measurements and
+               dict_measurements[dict_measure_measurements[measurement_id]]['name'] -%}
+                {{', ' + dict_measurements[dict_measure_measurements[measurement_id]]['name']}}
+              {%- endif -%}
+
+              {%- if dict_measure_units[measurement_id] in dict_units and
+                     dict_units[dict_measure_units[measurement_id]]['unit'] -%}
+                {{', ' + dict_units[dict_measure_units[measurement_id]]['unit']}}
+              {%- endif -%}
+
+              )',
+
+            {% if dict_measure_measurements[measurement_id] in dict_measurements and
+                  dict_measurements[dict_measure_measurements[measurement_id]]['meas'] == 'edge' %}
             type: 'column',
             {% else %}
             type: 'line',
             {% endif %}
             tooltip: {
               valueSuffix: '
-                  {%- if use_unit[each_input.unique_id][each_measurement] and use_unit[each_input.unique_id][each_measurement] in dict_units -%}
-                    {{' ' + dict_units[use_unit[each_input.unique_id][each_measurement]]['unit']}}
-                  {%- else -%}
-                    {{' ' + measurement_units[each_measurement]['unit']}}
-                  {%- endif -%}
-                  ',
-              valueDecimals: 2
-            },
-            yAxis: '
-                  {%- if use_unit[each_input.unique_id][each_measurement] -%}
-                    {{use_unit[each_input.unique_id][each_measurement]}}
-                  {%- else -%}
-                    {{measurement_units[each_measurement]['meas']}}
-                  {%- endif -%}
-            ',
-            data: []
-          },
-            {%- elif each_input.adc_measure == each_id_meas.split(',')[1] -%}
-          {
-            name: '{{each_input.name}} {{each_input.adc_measure}}',
-            type: 'line',
-            tooltip: {
-              valueSuffix: ' {{each_input.adc_measure_units}}',
-              valueDecimals: 3
-            },
-            yAxis: '{{each_input.adc_measure}}',
-            data: []
-          },
-            {%- endif -%}
-          {%- endfor -%}
-
-          {% endfor %}
-
-
-          {% for each_math in math if each_math.unique_id == each_id_meas.split(',')[0] %}
-          {
-            name: '{{each_math.name}} {% if each_id_meas.split(',')[1] in dict_measurements %}{{dict_measurements[each_id_meas.split(',')[1]]['name']}} ({{dict_measurements[each_id_meas.split(',')[1]]['unit']}}){% else %}{{each_id_meas.split(',')[1]}}{% endif %}',
-            type: 'line',
-            tooltip: {
-              {% if each_id_meas.split(',')[1] in dict_measurements and dict_measurements[each_id_meas.split(',')[1]]['meas'] == 'temperature' %}
-              pointFormatter: function () {
-                return '<span style="color:'+ this.series.color + '"">\u25CF</span> ' + this.series.name + ': <b>' + Highcharts.numberFormat(this.y, 2) + '°C (' + Highcharts.numberFormat(((this.y*9/5)+32), 2) + '°F)</b><br>';
-              },
-              {% else %}
-              valueSuffix: ' {% if each_id_meas.split(',')[1] in dict_measurements %}{{dict_measurements[each_id_meas.split(',')[1]]['unit']}}{% else %}{{each_math.measure_units}}{% endif %}',
-              valueDecimals: 3
-              {% endif %}
-            },
-            yAxis: '
-                  {%- if use_unit[each_math.unique_id][each_id_meas.split(',')[1]] -%}
-                    {{use_unit[each_math.unique_id][each_id_meas.split(',')[1]]}}
-                  {%- else -%}
-                    {{measurement_units[each_id_meas.split(',')[1]]['meas']}}
-                  {%- endif -%}
-            ',
-            data: []
-          },
-          {% endfor %}
-
-          {%- for each_output in output if each_output.unique_id == each_id_meas.split(',')[0] -%}
-            {% if each_id_meas.split(',')[1] == 'duration_time' %}
-          {
-            name: '{{each_output.name}} (sec)',
-            type: 'column',
-            dataGrouping: {
-              approximation: 'low',
-              groupPixelWidth: 3
-            },
-            tooltip: {
-              valueSuffix: ' sec',
-              valueDecimals: 2
-            },
-            yAxis: 'second',
-            data: []
-          },
-            {% elif each_id_meas.split(',')[1] == 'duty_cycle' %}
-          {
-            name: '{{each_output.name}} (%)',
-            type: 'column',
-            dataGrouping: {
-              approximation: 'low',
-              groupPixelWidth: 3
-            },
-            tooltip: {
-              valueSuffix: ' %',
-              valueDecimals: 2
-            },
-            yAxis: 'duty_cycle',
-            data: []
-          },
-            {% endif %}
-          {%- endfor -%}
-
-          {%- for each_pid in pid if each_pid.unique_id == each_id_meas.split(',')[0] -%}
-            {% if each_id_meas.split(',')[1] in ['setpoint', 'setpoint_band_min', 'setpoint_band_max'] and each_pid.measurement %}
-        {
-          name: '{{each_pid.name}} (
-          {%- if each_id_meas.split(',')[1] == 'setpoint' -%}
-            {{_('Setpoint')}}
-          {%- elif each_id_meas.split(',')[1] == 'setpoint_band_min' -%}
-            {{_('Band Min')}}
-          {%- elif each_id_meas.split(',')[1] == 'setpoint_band_max' -%}
-            {{_('Band Max')}}
-          {%- endif -%}
-          )',
-          type: 'line',
-          tooltip: {
-            valueSuffix: '
-          {%- for each_input in input if each_pid.measurement.split(',')[0] == each_input.unique_id -%}
-            {%- if use_unit[each_input.unique_id][each_pid.measurement.split(',')[1]] -%}
-              {{' ' + units[use_unit[each_input.unique_id][each_pid.measurement.split(',')[1]]]['unit']}}
-            {%- else -%}
-              {%- if each_pid.measurement.split(',')[1] in measurement_units -%}
-                {{' ' + measurement_units[each_pid.measurement.split(',')[1]]['unit']|safe}}
-              {%- else -%}
-                {%- for each_input in input if each_pid.measurement.split(',')[0] == each_input.unique_id and each_input.device == 'LinuxCommand' -%}
-                  {{' ' + each_input.cmd_measurement_units}}
-                {%- endfor -%}
+              {%- if dict_measure_units[measurement_id] in dict_units and
+                     dict_units[dict_measure_units[measurement_id]]['unit'] -%}
+                {{' ' + dict_units[dict_measure_units[measurement_id]]['unit']}}
               {%- endif -%}
+              ',
+              valueDecimals: 3
+            },
+            yAxis: '
+              {%- if measurement_id in dict_measure_units -%}
+                {{dict_measure_units[measurement_id]}}
+              {%- endif -%}
+                ',
+            data: []
+          },
             {%- endif -%}
-          {%- endfor -%}
-          ',
-            valueDecimals: 2
-          },
-          yAxis: '
-          {%- for each_input in input if each_pid.measurement.split(',')[0] == each_input.unique_id -%}
-            {%- if use_unit[each_input.unique_id][each_pid.measurement.split(',')[1]] -%}
-              {{use_unit[each_input.unique_id][each_pid.measurement.split(',')[1]]}}
-            {%- else -%}
-              {{each_pid.measurement.split(',')[1]}}
+          {% endfor %}
+
+          {%- for each_pid in pid if each_pid.unique_id == device_id -%}
+            {%- if measurement_id in device_measurements_dict -%}
+
+            {
+              name: '{{each_pid.name}}
+
+                {%- if device_measurements_dict[measurement_id].name -%}
+                  {{' (' + device_measurements_dict[measurement_id].name}})
+                {%- endif -%}
+
+                  {{' (CH' + (device_measurements_dict[measurement_id].channel + 1)|string}}
+
+                {%- if dict_measure_measurements[measurement_id] in dict_measurements and
+                 dict_measurements[dict_measure_measurements[measurement_id]]['name'] -%}
+                  {{', ' + dict_measurements[dict_measure_measurements[measurement_id]]['name']}}
+                {%- endif -%}
+
+                {%- if dict_measure_units[measurement_id] in dict_units and
+                       dict_units[dict_measure_units[measurement_id]]['unit'] -%}
+                  {{', ' + dict_units[dict_measure_units[measurement_id]]['unit']}}
+                {%- endif -%}
+
+                )',
+
+              {% if dict_measure_measurements[measurement_id] in dict_measurements and
+                    dict_measurements[dict_measure_measurements[measurement_id]]['meas'] == 'edge' %}
+              type: 'column',
+              {% else %}
+              type: 'line',
+              {% endif %}
+              tooltip: {
+                valueSuffix: '
+                {%- if dict_measure_units[measurement_id] in dict_units and
+                       dict_units[dict_measure_units[measurement_id]]['unit'] -%}
+                  {{' ' + dict_units[dict_measure_units[measurement_id]]['unit']}}
+                {%- endif -%}
+                ',
+                valueDecimals: 3
+              },
+              yAxis: '
+                {%- if measurement_id in dict_measure_units -%}
+                  {{dict_measure_units[measurement_id]}}
+                {%- endif -%}
+                  ',
+              data: []
+            },
+
             {%- endif -%}
-          {%- endfor -%}
-          ',
-          data: []
-        },
-        {% elif each_id_meas.split(',')[1] == 'pid_p_value' %}
-        {
-          name: '{{each_pid.name}} (P-Value)',
-          type: 'line',
-          tooltip: {
-            valueSuffix: '',
-            valueDecimals: 2
-          },
-          yAxis: 'pid_value',
-          data: []
-        },
-        {% elif each_id_meas.split(',')[1] == 'pid_i_value' %}
-        {
-          name: '{{each_pid.name}} (I-Value)',
-          type: 'line',
-          tooltip: {
-            valueSuffix: '',
-            valueDecimals: 2
-          },
-          yAxis: 'pid_value',
-          data: []
-        },
-        {% elif each_id_meas.split(',')[1] == 'pid_d_value' %}
-        {
-          name: '{{each_pid.name}} (D-Value)',
-          type: 'line',
-          tooltip: {
-            valueSuffix: '',
-            valueDecimals: 2
-          },
-          yAxis: 'pid_value',
-          data: []
-        },
-        {% elif each_id_meas.split(',')[1] == 'duration_time' %}
-        {
-          name: '{{each_pid.name}} ({{_('Output')}} {{_('Duration')}}, sec)',
-          type: 'line',
-          tooltip: {
-            valueSuffix: ' sec',
-            valueDecimals: 2
-          },
-          yAxis: 'second',
-          data: []
-        },
-        {% elif each_id_meas.split(',')[1] == 'duty_cycle' %}
-        {
-          name: '{{each_pid.name}} ({{_('Output')}} {{_('Duty Cycle')}}, %)',
-          type: 'line',
-          tooltip: {
-            valueSuffix: ' %',
-            valueDecimals: 2
-          },
-          yAxis: 'duty_cycle',
-          data: []
-        },
-            {% endif %}
+          {% endfor %}
+
+          {%- for each_output in output if each_output.unique_id == device_id -%}
+              {
+                name: '{{each_output.name}} ({{dict_measurements[each_output.measurement]['name']}})',
+                type: 'column',
+                dataGrouping: {
+                  approximation: 'high',
+                  groupPixelWidth: 1
+                },
+                tooltip: {
+                  valueSuffix: ' {{dict_units[each_output.unit]['unit']}}',
+                  valueDecimals: 2
+                },
+                yAxis: '{{each_output.unit}}',
+                data: []
+              },
           {%- endfor -%}
 
-          {% for each_tag in tag if each_tag.unique_id == each_id_meas.split(',')[0] %}
+          {% for each_tag in tag if each_tag.unique_id == device_id %}
             {
               name: 'Note Tag: {{each_tag.name}}',
               type: 'flags',
@@ -552,7 +504,7 @@ $(document).ready(function() {
             },
           {% endfor %}
 
-        {% endfor %}
+        {% endfor %}  {# End main for #}
 
         ]
     });

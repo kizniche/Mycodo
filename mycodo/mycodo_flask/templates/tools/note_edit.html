@@ -36,7 +36,7 @@
     <div class="col-auto">
       {{form_note_mod.files.label(class_='control-label')}}
       <div class="fileinput fileinput-new" data-provides="fileinput">
-        <span class="btn btn-default btn-file"><input id="files" name="files" type="file" multiple="" /></span>
+        <span class="btn btn-sm btn-file"><input id="files" name="files" type="file" multiple="" /></span>
       </div>
     </div>
   </div>
@@ -44,7 +44,7 @@
     <div class="col-auto">
       {{form_note_mod.note_tags.label(class_='control-label')}}
       <div>
-        <select class="form-control btn-default" id="note_tags" name="note_tags" style="width: 100%;" size="{% if tags|length > 5 %}5{% else %}{{tags|length}}{% endif %}" multiple>
+        <select class="form-control btn-sm" id="note_tags" name="note_tags" style="width: 100%;" size="{% if tags|length > 5 %}5{% else %}{{tags|length}}{% endif %}" multiple>
         {% if tags %}
           {% for each_tag in tags -%}
           <option value="{{each_tag.unique_id}}"{% if each_tag.unique_id in this_note.tags.split(',') %} selected{% endif %}>{{each_tag.name}}</option>

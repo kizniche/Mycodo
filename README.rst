@@ -72,7 +72,7 @@ Software Features
    own.
 -  Outputs: Manipulate the environment by switching GPIO pins High or
    Low, switching relays, generating PWM signals, email notifications,
-   executing linux commands, and more.
+   executing linux/Python 3 commands, and more.
 -  PID Controllers: Couple inputs with outputs to create feedback loops
    in order to regulate environmental conditions.
 -  Methods: Change the desired condition over time (useful for reflow

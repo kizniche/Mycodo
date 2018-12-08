@@ -2,8 +2,25 @@
 import logging
 import time
 
+from mycodo.databases.models import DeviceMeasurements
 from mycodo.inputs.base_input import AbstractInput
-from mycodo.inputs.sensorutils import convert_units
+from mycodo.utils.database import db_retrieve_table_daemon
+
+# Measurements
+measurements_dict = {
+    0: {
+        'measurement': 'frequency',
+        'unit': 'Hz'
+    },
+    1: {
+        'measurement': 'pulse_width',
+        'unit': 'us'
+    },
+    2: {
+        'measurement': 'duty_cycle',
+        'unit': 'percent'
+    }
+}
 
 # Input information
 INPUT_INFORMATION = {
@@ -11,13 +28,22 @@ INPUT_INFORMATION = {
     'input_manufacturer': 'Mycodo',
     'input_name': 'Signal (PWM)',
     'measurements_name': 'Frequency/Pulse Width/Duty Cycle',
-    'measurements_list': ['frequency','pulse_width', 'duty_cycle'],
-    'options_enabled': ['gpio_location', 'weighting', 'sample_time', 'period', 'convert_unit', 'pre_output'],
+    'measurements_dict': measurements_dict,
+
+    'options_enabled': [
+        'gpio_location',
+        'measurements_select',
+        'weighting',
+        'sample_time',
+        'period',
+        'pre_output'
+    ],
     'options_disabled': ['interface'],
 
     'dependencies_module': [
         ('internal', 'pip-exists pigpio', 'pigpio')
     ],
+
     'interfaces': ['GPIO'],
     'weighting': 0.0,
     'sample_time': 2.0
@@ -30,112 +56,50 @@ class InputModule(AbstractInput):
     def __init__(self, input_dev, testing=False):
         super(InputModule, self).__init__()
         self.logger = logging.getLogger("mycodo.inputs.signal_pwm")
-        self._frequency = None
-        self._pulse_width = None
-        self._duty_cycle = None
+        self._measurements = None
 
         if not testing:
             import pigpio
             self.logger = logging.getLogger(
                 "mycodo.signal_pwm_{id}".format(id=input_dev.unique_id.split('-')[0]))
+
+            self.device_measurements = db_retrieve_table_daemon(
+                DeviceMeasurements).filter(
+                    DeviceMeasurements.device_id == input_dev.unique_id)
+
             self.gpio = int(input_dev.gpio_location)
-            self.convert_to_unit = input_dev.convert_to_unit
             self.weighting = input_dev.weighting
             self.sample_time = input_dev.sample_time
             self.pigpio = pigpio
 
-    def __repr__(self):
-        """  Representation of object """
-        return "<{cls}(frequency={f})(pulse_width={pw})(duty_cycle={dc})>".format(
-            cls=type(self).__name__,
-            f="{0:.2f}".format(self._frequency),
-            pw="{0:.2f}".format(self._pulse_width),
-            dc="{0:.2f}".format(self._duty_cycle))
-
-    def __str__(self):
-        """ Return pwm information """
-        return "Frequency: {f:.2f}, Pulse Width: {pw:.2f}, " \
-               "Duty Cycle: {dc:.2f}".format(f=self._frequency,
-                                             pw=self._pulse_width,
-                                             dc=self._duty_cycle)
-
-    def __iter__(self):  # must return an iterator
-        """ Iterates through live pwm readings """
-        return self
-
-    def next(self):
-        """ Get next pwm reading """
-        if self.read():  # raised an error
-            raise StopIteration  # required
-        return dict(frequency=float('{0:.2f}'.format(self._frequency)),
-                    pulse_width=float('{0:.2f}'.format(self._pulse_width)),
-                    duty_cycle=float('{0:.2f}'.format(self._duty_cycle)))
-
-    @property
-    def frequency(self):
-        """ frequency """
-        if self._frequency is None:  # update if needed
-            self.read()
-        return self._frequency
-
-    @property
-    def pulse_width(self):
-        """ pulse width """
-        if self._pulse_width is None:  # update if needed
-            self.read()
-        return self._pulse_width
-
-    @property
-    def duty_cycle(self):
-        """ duty cycle """
-        if self._duty_cycle is None:  # update if needed
-            self.read()
-        return self._duty_cycle
-
     def get_measurement(self):
         """ Gets the pwm """
-        self._frequency = None
-        self._pulse_width = None
-        self._duty_cycle = None
+        return_dict = measurements_dict.copy()
 
         pi = self.pigpio.pi()
         if not pi.connected:  # Check if pigpiod is running
-            self.logger.error("Could not connect to pigpiod."
-                         "Ensure it is running and try again.")
-            return None, None, None
+            self.logger.error(
+                "Could not connect to pigpiod."
+                "Ensure it is running and try again.")
+            return None
 
         read_pwm = ReadPWM(pi, self.gpio, self.pigpio, self.weighting)
+
         time.sleep(self.sample_time)
-        frequency = convert_units(
-            'frequency', 'Hz', self.convert_to_unit,
-            read_pwm.frequency())
-        pulse_width = int(read_pwm.pulse_width() + 0.5)
-        duty_cycle = read_pwm.duty_cycle()
+
+        if self.is_enabled(0):
+            return_dict[0]['value'] = read_pwm.frequency()
+
+        if self.is_enabled(1):
+            return_dict[1]['value'] = int(read_pwm.pulse_width() + 0.5)
+
+        if self.is_enabled(2):
+            return_dict[2]['value'] = read_pwm.duty_cycle()
+
         read_pwm.cancel()
         pi.stop()
 
-        duty_cycle = convert_units(
-            'duty_cycle', 'percent', self.convert_to_unit,
-            duty_cycle)
-
-        return frequency, pulse_width, duty_cycle
-
-    def read(self):
-        """
-        Takes a reading from the pin and updates the self._pwm value
-
-        :returns: None on success or 1 on error
-        """
-        try:
-            (self._frequency,
-             self._pulse_width,
-             self._duty_cycle) = self.get_measurement()
-            if self._frequency is not None:
-                return  # success - no errors
-        except Exception as e:
-            self.logger.error("{cls} raised an exception when taking a reading: "
-                         "{err}".format(cls=type(self).__name__, err=e))
-        return 1
+        return return_dict
 
 
 class ReadPWM:

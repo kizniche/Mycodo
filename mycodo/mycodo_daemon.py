@@ -55,6 +55,7 @@ from mycodo.controller_lcd import LCDController
 from mycodo.controller_math import MathController
 from mycodo.controller_output import OutputController
 from mycodo.controller_pid import PIDController
+from mycodo.controller_trigger import TriggerController
 from mycodo.databases.models import Camera
 from mycodo.databases.models import Conditional
 from mycodo.databases.models import Input
@@ -62,6 +63,7 @@ from mycodo.databases.models import LCD
 from mycodo.databases.models import Math
 from mycodo.databases.models import Misc
 from mycodo.databases.models import PID
+from mycodo.databases.models import Trigger
 from mycodo.databases.utils import session_scope
 from mycodo.devices.camera import camera_record
 from mycodo.utils.database import db_retrieve_table_daemon
@@ -73,6 +75,7 @@ from mycodo.utils.statistics import return_stat_file_dict
 from mycodo.utils.statistics import send_anonymous_stats
 from mycodo.utils.tools import generate_output_usage_report
 from mycodo.utils.tools import next_schedule
+from mycodo.utils.function_actions import trigger_function_actions
 
 
 MYCODO_DB_PATH = 'sqlite:///' + SQL_DATABASE_MYCODO
@@ -209,13 +212,21 @@ def mycodo_service(mycodo):
             return mycodo.refresh_daemon_misc_settings()
 
         @staticmethod
+        def exposed_refresh_daemon_trigger_settings(unique_id):
+            """
+            Instruct the daemon to refresh a conditional's settings
+            """
+            return mycodo.refresh_daemon_trigger_settings(unique_id)
+
+        @staticmethod
         def exposed_output_state(output_id):
             """Return the output state (not pin but whether output is on or off"""
             return mycodo.output_state(output_id)
 
         @staticmethod
-        def exposed_output_on(output_id, duration=0.0, min_off=0.0,
-                             duty_cycle=0.0, trigger_conditionals=True):
+        def exposed_output_on(
+                output_id, duration=0.0, min_off=0.0,
+                duty_cycle=0.0, trigger_conditionals=True):
             """Turns output on from the client"""
             return mycodo.output_on(output_id,
                                     duration=duration,
@@ -239,12 +250,19 @@ def mycodo_service(mycodo):
             return mycodo.output_setup(action, output_id)
 
         @staticmethod
-        def exposed_trigger_conditional_actions(
-                conditional_id, message='', edge=None, output_state=None,
+        def exposed_test_trigger_actions(
+                function_id, message=''):
+            """Test triggering actions"""
+            return mycodo.test_trigger_actions(
+                function_id, message)
+
+        @staticmethod
+        def exposed_trigger_trigger_actions(
+                function_id, message='', edge=None, output_state=None,
                 on_duration=None, duty_cycle=None):
-            """Return the output state (not pin but whether output is on or off"""
-            return mycodo.trigger_conditional_actions(
-                conditional_id, message, edge=edge, output_state=output_state,
+            """Trigger actions"""
+            return mycodo.trigger_trigger_actions(
+                function_id, message, edge=edge, output_state=output_state,
                 on_duration=on_duration, duty_cycle=duty_cycle)
 
         @staticmethod
@@ -353,13 +371,15 @@ class DaemonController:
             'Input': {},
             'LCD': {},
             'Math': {},
-            'PID': {}
+            'PID': {},
+            'Trigger': {}
         }
 
         # Controllers that may launch multiple threads
         # Order matters for starting and shutting down
         self.cont_types = [
             'Conditional',
+            'Trigger',
             'Input',
             'Math',
             'PID',
@@ -484,6 +504,9 @@ class DaemonController:
             elif cont_type == 'PID':
                 controller_manage['type'] = PID
                 controller_manage['function'] = PIDController
+            elif cont_type == 'Trigger':
+                controller_manage['type'] = Trigger
+                controller_manage['function'] = TriggerController
             else:
                 return 1, "'{type}' not a valid controller type.".format(
                     type=cont_type)
@@ -568,6 +591,9 @@ class DaemonController:
             for cond_id in self.controller['Conditional']:
                 if not self.controller['Conditional'][cond_id].is_running():
                     return "Error: Conditional ID {}".format(cond_id)
+            for input_id in self.controller['Input']:
+                if not self.controller['Input'][input_id].is_running():
+                    return "Error: Input ID {}".format(input_id)
             for lcd_id in self.controller['LCD']:
                 if not self.controller['LCD'][lcd_id].is_running():
                     return "Error: LCD ID {}".format(lcd_id)
@@ -577,9 +603,9 @@ class DaemonController:
             for pid_id in self.controller['PID']:
                 if not self.controller['PID'][pid_id].is_running():
                     return "Error: PID ID {}".format(pid_id)
-            for input_id in self.controller['Input']:
-                if not self.controller['Input'][input_id].is_running():
-                    return "Error: Input ID {}".format(input_id)
+            for trigger_id in self.controller['Trigger']:
+                if not self.controller['Trigger'][trigger_id].is_running():
+                    return "Error: Trigger ID {}".format(trigger_id)
             if not self.controller['Output'].is_running():
                 return "Error: Output controller"
             if not self.controller['Conditional'].is_running():
@@ -768,6 +794,14 @@ class DaemonController:
                       " {err}".format(err=except_msg)
             self.logger.exception(message)
 
+    def refresh_daemon_trigger_settings(self, unique_id):
+        try:
+            return self.controller['Trigger'][unique_id].refresh_settings()
+        except Exception as except_msg:
+            message = "Could not refresh trigger settings:" \
+                      " {err}".format(err=except_msg)
+            self.logger.exception(message)
+
     def output_off(self, output_id, trigger_conditionals=True):
         """
         Turn output off using default output controller
@@ -778,18 +812,21 @@ class DaemonController:
         :type trigger_conditionals: bool
         """
         try:
-            self.controller['Output'].output_on_off(
+            return_status = self.controller['Output'].output_on_off(
                 output_id,
                 'off',
                 trigger_conditionals=trigger_conditionals)
-            return "Turned off"
+            if return_status:
+                return "Error"
+            else:
+                return "Turned off"
         except Exception as except_msg:
             message = "Could not turn output off:" \
                       " {err}".format(err=except_msg)
             self.logger.exception(message)
 
     def output_on(self, output_id, duration=0.0, min_off=0.0,
-                 duty_cycle=0.0, trigger_conditionals=True):
+                  duty_cycle=0.0, trigger_conditionals=True):
         """
         Turn output on using default output controller
 
@@ -799,20 +836,23 @@ class DaemonController:
         :type duration: float
         :param min_off: Don't turn on if not off for at least this duration (0 = disabled)
         :type min_off: float
-        :param duty_cycle: PWM duty cycle (0-100)
+        :param duty_cycle: PWM duty cycle % (0-100)
         :type duty_cycle: float
         :param trigger_conditionals: bool
         :type trigger_conditionals: Indicate whether to trigger conditional statements
         """
         try:
-            self.controller['Output'].output_on_off(
+            return_status = self.controller['Output'].output_on_off(
                 output_id,
                 'on',
                 duration=duration,
                 min_off=min_off,
                 duty_cycle=duty_cycle,
                 trigger_conditionals=trigger_conditionals)
-            return "Turned on"
+            if return_status:
+                return "Error"
+            else:
+                return "Turned on"
         except Exception as except_msg:
             message = "Could not turn output on:" \
                       " {err}".format(err=except_msg)
@@ -878,9 +918,10 @@ class DaemonController:
             db_tables = {
                 'Conditional': db_retrieve_table_daemon(Conditional, entry='all'),
                 'Input': db_retrieve_table_daemon(Input, entry='all'),
+                'LCD': db_retrieve_table_daemon(LCD, entry='all'),
                 'Math': db_retrieve_table_daemon(Math, entry='all'),
                 'PID': db_retrieve_table_daemon(PID, entry='all'),
-                'LCD': db_retrieve_table_daemon(LCD, entry='all')
+                'Trigger': db_retrieve_table_daemon(Trigger, entry='all')
             }
 
             self.logger.debug("Starting Output controller")
@@ -948,11 +989,21 @@ class DaemonController:
                 "Output controller had an issue stopping: {err}".format(
                     err=err))
 
-    def trigger_conditional_actions(
-            self, conditional_id, message='', edge=None,
+    def test_trigger_actions(
+            self, function_id, message=''):
+        try:
+            return trigger_function_actions(function_id, message=message)
+        except Exception as except_msg:
+            message = "Could not trigger Conditional Actions:" \
+                      " {err}".format(err=except_msg)
+            self.logger.exception(message)
+
+    def trigger_trigger_actions(
+            self, function_id, message='', edge=None,
             output_state=None, on_duration=None, duty_cycle=None):
         try:
-            return self.controller['Conditional'][conditional_id].trigger_conditional_actions(
+            return trigger_function_actions(
+                function_id,
                 message=message, edge=edge,
                 output_state=output_state, on_duration=on_duration,
                 duty_cycle=duty_cycle)

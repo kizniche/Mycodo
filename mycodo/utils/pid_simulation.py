@@ -256,6 +256,7 @@ def parser_add_args(parser):
         '--maxout', dest='out_max', metavar='x', default=100.0,
         type=float, help='maximum PID controller output (default: 100)')
 
+
 if __name__ == '__main__':
     parse = argparse.ArgumentParser()
     parser_add_args(parse)

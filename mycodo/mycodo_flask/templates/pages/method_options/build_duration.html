@@ -68,11 +68,11 @@
   <div class="col-auto">
     <label class='control-label'></label>
     <div>
-      {{form_add_method.save(class_='form-control btn btn-default')}}
+      {{form_add_method.save(class_='form-control btn btn-sm')}}
     </div>
   </div>
 </div>
-<div class="row small-gutters" style="padding: 0.7em">
+<div class="row align-items-end small-gutters" style="padding: 0.7em">
   <div style="padding: 1em">
     {{_('Use the following options to instruct the method to restart when it reaches the end.')}}
     {{_('If you do not wish for the method to repeat, do not use this option.')}}
@@ -85,9 +85,6 @@
     </div>
   </div>
   <div class="col-auto">
-    <label class='control-label'>&nbsp;</label>
-    <div>
-      {{form_add_method.restart(class_='form-control btn btn-default',**{'onclick':'return confirm("This will instruct the method to be restarted once it finishes. No more durations may be added if this option is used. Confirm adding restart at the end of this method?")'})}}
-    </div>
+    {{form_add_method.restart(class_='btn btn-primary',**{'onclick':'return confirm("This will instruct the method to be restarted once it finishes. No more durations may be added if this option is used. Confirm adding restart at the end of this method?")'})}}
   </div>
 </div>

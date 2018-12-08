@@ -25,11 +25,11 @@
 
   <form method="post" action="/export">
   {{form_export_measurements.csrf_token}}
-  <div class="row" style="padding-top: 1em">
-    <div class="col-xs-12 col-sm-6">
+  <div class="row small-gutters" style="padding-top: 1em">
+    <div class="col-auto">
       {{form_export_measurements.measurement.label(class_='control-label')}}
       <div>
-        <select class="form-control" id="measurement" name="measurement">
+        <select class="selectpicker" id="measurement" name="measurement">
         {% for each_choice, value in input_choices.items() -%}
           <option value="{{each_choice}}">{{value}}</option>
         {% endfor -%}
@@ -77,7 +77,7 @@
   {{form_import_influxdb.csrf_token}}
   <div class="form-inline">
     <div class="form-group fileinput fileinput-new" data-provides="fileinput">
-      <span class="btn btn-default btn-file"><input id="influxdb_import_file" name="influxdb_import_file" type="file" /></span>
+      <span class="btn btn-sm btn-file"><input id="influxdb_import_file" name="influxdb_import_file" type="file" /></span>
     </div>
     <div class="form-group">
       {{form_import_influxdb.influxdb_import_upload(class_='btn btn-primary')}}
@@ -106,7 +106,7 @@
   {{form_import_settings.csrf_token}}
   <div class="form-inline">
     <div class="form-group fileinput fileinput-new" data-provides="fileinput">
-      <span class="btn btn-default btn-file"><input id="settings_import_file" name="settings_import_file" type="file" /></span>
+      <span class="btn btn-sm btn-file"><input id="settings_import_file" name="settings_import_file" type="file" /></span>
     </div>
     <div class="form-group">
       {{form_import_settings.settings_import_upload(class_='btn btn-primary')}}

@@ -26,6 +26,7 @@ from mycodo.config import DEPENDENCY_LOG_FILE
 from mycodo.config import FINAL_RELEASES
 from mycodo.config import FORCE_UPGRADE_MASTER
 from mycodo.config import INSTALL_DIRECTORY
+from mycodo.config import LCD_INFO
 from mycodo.config import MATH_INFO
 from mycodo.config import METHOD_INFO
 from mycodo.config import MYCODO_VERSION
@@ -172,6 +173,13 @@ def install_dependencies(dependencies):
     init = subprocess.Popen(cmd, shell=True)
     init.wait()
 
+    cmd = "{pth}/mycodo/scripts/mycodo_wrapper daemon_restart" \
+          " | ts '[%Y-%m-%d %H:%M:%S]' >> {log}  2>&1".format(
+        pth=INSTALL_DIRECTORY,
+        log=DEPENDENCY_LOG_FILE)
+    init = subprocess.Popen(cmd, shell=True)
+    init.wait()
+
     now = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     with open(DEPENDENCY_LOG_FILE, 'a') as f:
         f.write("\n[{time}] #### All Dependencies have been installed.\n\n".format(time=now))
@@ -226,6 +234,7 @@ def admin_dependencies(device):
 
     list_dependencies = [
         dict_inputs,
+        LCD_INFO,
         MATH_INFO,
         METHOD_INFO,
         OUTPUT_INFO,

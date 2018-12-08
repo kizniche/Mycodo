@@ -4,11 +4,6 @@ import logging
 import time  # used for sleep delay and timestamps
 
 import io  # used to create file streams
-import locket
-import os
-
-from mycodo.config import ATLAS_PH_LOCK_FILE
-from mycodo.utils.system_pi import str_is_float
 
 
 class AtlasScientificI2C:
@@ -52,61 +47,37 @@ class AtlasScientificI2C:
     def write(self, cmd):
         """ Append the null character and send the command over I2C"""
         cmd += "\00"
-        if type(cmd) is str:
-            cmd = cmd.encode()
-        self.file_write.write(cmd)
+        self.file_write.write(cmd.encode('latin-1'))
 
     def read(self, num_of_bytes=31):
         """ Read a specified number of bytes from I2C, then parse and display the result """
         res = self.file_read.read(num_of_bytes)  # read from the board
-        response = list(filter(lambda x: x != '\x00', res.decode()))  # remove the null characters to get the response
-        if ord(response[0]) == 1:  # if the response isn't an error
+        if res[0] == 1:  # if the response isn't an error
+            response = list(filter(lambda x: x != '\x00', res.decode()))  # remove the null characters
             # change MSB to 0 for all received characters except the first and get a list of characters
             char_list = map(lambda x: chr(ord(x) & ~0x80), list(response[1:]))
             # NOTE: having to change the MSB to 0 is a glitch in the raspberry pi, and you shouldn't have to do this!
-            str_float = ''.join(char_list)
-            if str_is_float(str_float):
-                return "success", str_float  # convert the char list to a string and returns it
-            else:
-                return "error", "returned string does not represent a float value: {str}".format(str=str_float)
+            return "success", ''.join(char_list)  # convert the char list to a string and returns it
         else:
-            return "error", str(ord(response[0]))
+            return "error", str(res[0])
 
     def query(self, query_str):
         """ Send command to board and read response """
-        lock_acquired = False
-        lock_file_amend = '{lf}.{dev}'.format(lf=ATLAS_PH_LOCK_FILE,
-                                              dev=self.current_addr)
         try:
-            # Set up lock
-            lock = locket.lock_file(lock_file_amend, timeout=120)
-            try:
-                lock.acquire()
-                lock_acquired = True
-            except:
-                self.logger.error("Could not acquire lock. Breaking for future locking.")
-                os.remove(lock_file_amend)
+            # write a command to the board, wait the correct timeout,
+            # and read the response
+            self.write(query_str)
 
-            if lock_acquired:
-                # write a command to the board, wait the correct timeout,
-                # and read the response
-                self.write(query_str)
-
-                # the read and calibration commands require a longer timeout
-                if ((query_str.upper().startswith("R")) or
-                        (query_str.upper().startswith("CAL"))):
-                    time.sleep(self.long_timeout)
-                elif query_str.upper().startswith("SLEEP"):
-                    return "sleep mode"
-                else:
-                    time.sleep(self.short_timeout)
-
-                response = self.read()
-                lock.release()
-                return response
+            # the read and calibration commands require a longer timeout
+            if ((query_str.upper().startswith("R")) or
+                    (query_str.upper().startswith("CAL"))):
+                time.sleep(self.long_timeout)
+            elif query_str.upper().startswith("SLEEP"):
+                return "sleep mode"
             else:
-                self.logger.error("Could not acquire Atlas I2C lock")
+                time.sleep(self.short_timeout)
 
+            return self.read()
         except Exception as err:
             self.logger.debug(
                 "{cls} raised an exception when taking a reading: "
@@ -118,7 +89,7 @@ class AtlasScientificI2C:
         self.file_write.close()
 
     def list_i2c_devices(self):
-        """ Determine the addresses of conencted I2C devices """
+        """ Determine the addresses of connected I2C devices """
         prev_addr = self.current_addr  # save the current address so we can restore it after
         i2c_devices = []
         for i in range(0, 128):

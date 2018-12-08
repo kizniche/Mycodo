@@ -4,9 +4,26 @@
 import logging
 import time
 
+from mycodo.databases.models import DeviceMeasurements
 from mycodo.inputs.base_input import AbstractInput
-from mycodo.inputs.sensorutils import altitude
-from mycodo.inputs.sensorutils import convert_units
+from mycodo.inputs.sensorutils import calculate_altitude
+from mycodo.utils.database import db_retrieve_table_daemon
+
+# Measurements
+measurements_dict = {
+    0: {
+        'measurement': 'pressure',
+        'unit': 'Pa'
+    },
+    1: {
+        'measurement': 'temperature',
+        'unit': 'C'
+    },
+    2: {
+        'measurement': 'altitude',
+        'unit': 'm'
+    }
+}
 
 # Input information
 INPUT_INFORMATION = {
@@ -14,8 +31,14 @@ INPUT_INFORMATION = {
     'input_manufacturer': 'BOSCH',
     'input_name': 'BMP280',
     'measurements_name': 'Pressure/Temperature',
-    'measurements_list': ['altitude', 'pressure', 'temperature'],
-    'options_enabled': ['i2c_location', 'period', 'convert_unit', 'pre_output'],
+    'measurements_dict': measurements_dict,
+
+    'options_enabled': [
+        'i2c_location',
+        'measurements_select',
+        'period',
+        'pre_output'
+    ],
     'options_disabled': ['interface'],
 
     'dependencies_module': [
@@ -71,17 +94,19 @@ class InputModule(AbstractInput):
     def __init__(self, input_dev, mode=BMP280_STANDARD, testing=False):
         super(InputModule, self).__init__()
         self.logger = logging.getLogger("mycodo.inputs.bmp280")
-        self._altitude = None
-        self._pressure = None
-        self._temperature = None
+        self._measurements = None
 
         if not testing:
             import Adafruit_GPIO.I2C as I2C
             self.logger = logging.getLogger(
                 "mycodo.bmp280_{id}".format(id=input_dev.unique_id.split('-')[0]))
+
+            self.device_measurements = db_retrieve_table_daemon(
+                DeviceMeasurements).filter(
+                    DeviceMeasurements.device_id == input_dev.unique_id)
+
             self.i2c_address = int(str(input_dev.i2c_location), 16)
             self.i2c_bus = input_dev.i2c_bus
-            self.convert_to_unit = input_dev.convert_to_unit
             if mode not in [BMP280_ULTRALOWPOWER,
                             BMP280_STANDARD,
                             BMP280_HIGHRES,
@@ -99,97 +124,21 @@ class InputModule(AbstractInput):
             self._load_calibration()
             self._tfine = 0
 
-    def __repr__(self):
-        """  Representation of object """
-        return "<{cls}(temperature={temp})(pressure={press})" \
-               "(altitude={alt})>".format(
-                cls=type(self).__name__,
-                alt="{0:.6f}".format(self._altitude),
-                press="{0:.6f}".format(self._pressure),
-                temp="{0:.6f}".format(self._temperature))
-
-    def __str__(self):
-        """ Return measurement information """
-        return "Temperature: {temp}, Pressure: {press}, " \
-               "Altitude: {alt}".format(
-                alt="{0:.6f}".format(self._altitude),
-                press="{0:.6f}".format(self._pressure),
-                temp="{0:.6f}".format(self._temperature))
-
-    def __iter__(self):  # must return an iterator
-        """ SensorClass iterates through live measurement readings """
-        return self
-
-    def next(self):
-        """ Get next measurement reading """
-        if self.read():  # raised an error
-            raise StopIteration  # required
-        return dict(altitude=float(self._altitude),
-                    pressure=float(self._pressure),
-                    temperature=float(self._temperature))
-
-    @property
-    def altitude(self):
-        """ BMP280 altitude in meters """
-        if self._altitude is None:  # update if needed
-            self.read()
-        return self._altitude
-
-    @property
-    def pressure(self):
-        """ BME280 pressure in Pascals """
-        if self._pressure is None:  # update if needed
-            self.read()
-        return self._pressure
-
-    @property
-    def temperature(self):
-        """ BMP280 temperature in Celsius """
-        if self._temperature is None:  # update if needed
-            self.read()
-        return self._temperature
-
     def get_measurement(self):
         """ Gets the measurement in units by reading the """
-        self._altitude = None
-        self._pressure = None
-        self._temperature = None
+        return_dict = measurements_dict.copy()
 
-        temperature = convert_units(
-            'temperature', 'C', self.convert_to_unit,
-            self.read_temperature())
+        if self.is_enabled(0):
+            return_dict[0]['value'] = self.read_pressure()
 
-        pressure_pa = self.read_pressure()
-        pressure = convert_units(
-            'pressure', 'Pa', self.convert_to_unit,
-            pressure_pa)
+        if self.is_enabled(1):
+            return_dict[1]['value'] = self.read_temperature()
 
-        alt = convert_units(
-            'altitude', 'm', self.convert_to_unit,
-            altitude(pressure_pa))
+        if self.is_enabled(2) and self.is_enabled(0):
+            return_dict[2]['value'] = calculate_altitude(
+                return_dict[0]['value'])
 
-        return temperature, pressure, alt
-
-    def read(self):
-        """
-        Takes a reading from the BMP280 and updates the self._humidity and
-        self._temperature values
-
-        :returns: None on success or 1 on error
-        """
-        try:
-            (self._temperature,
-             self._pressure,
-             self._altitude) = self.get_measurement()
-            if None not in [self._temperature,
-                            self._pressure,
-                            self._altitude]:
-                return  # success - no errors
-        except Exception as e:
-            self.logger.exception(
-                "{cls} raised an exception when taking a reading: "
-                "{err}".format(cls=type(self).__name__, err=e))
-        return 1
+        return return_dict
 
     def _load_calibration(self):
         self.cal_REGISTER_DIG_T1 = self._device.readU16LE(BMP280_REGISTER_DIG_T1)  # UINT16
@@ -205,18 +154,18 @@ class InputModule(AbstractInput):
         self.cal_REGISTER_DIG_P8 = self._device.readS16LE(BMP280_REGISTER_DIG_P8)  # INT16
         self.cal_REGISTER_DIG_P9 = self._device.readS16LE(BMP280_REGISTER_DIG_P9)  # INT16
 
-        self.logger.debug('T1 = {0:6d}'.format(self.cal_REGISTER_DIG_T1))
-        self.logger.debug('T2 = {0:6d}'.format(self.cal_REGISTER_DIG_T2))
-        self.logger.debug('T3 = {0:6d}'.format(self.cal_REGISTER_DIG_T3))
-        self.logger.debug('P1 = {0:6d}'.format(self.cal_REGISTER_DIG_P1))
-        self.logger.debug('P2 = {0:6d}'.format(self.cal_REGISTER_DIG_P2))
-        self.logger.debug('P3 = {0:6d}'.format(self.cal_REGISTER_DIG_P3))
-        self.logger.debug('P4 = {0:6d}'.format(self.cal_REGISTER_DIG_P4))
-        self.logger.debug('P5 = {0:6d}'.format(self.cal_REGISTER_DIG_P5))
-        self.logger.debug('P6 = {0:6d}'.format(self.cal_REGISTER_DIG_P6))
-        self.logger.debug('P7 = {0:6d}'.format(self.cal_REGISTER_DIG_P7))
-        self.logger.debug('P8 = {0:6d}'.format(self.cal_REGISTER_DIG_P8))
-        self.logger.debug('P9 = {0:6d}'.format(self.cal_REGISTER_DIG_P9))
+        # self.logger.debug('T1 = {0:6d}'.format(self.cal_REGISTER_DIG_T1))
+        # self.logger.debug('T2 = {0:6d}'.format(self.cal_REGISTER_DIG_T2))
+        # self.logger.debug('T3 = {0:6d}'.format(self.cal_REGISTER_DIG_T3))
+        # self.logger.debug('P1 = {0:6d}'.format(self.cal_REGISTER_DIG_P1))
+        # self.logger.debug('P2 = {0:6d}'.format(self.cal_REGISTER_DIG_P2))
+        # self.logger.debug('P3 = {0:6d}'.format(self.cal_REGISTER_DIG_P3))
+        # self.logger.debug('P4 = {0:6d}'.format(self.cal_REGISTER_DIG_P4))
+        # self.logger.debug('P5 = {0:6d}'.format(self.cal_REGISTER_DIG_P5))
+        # self.logger.debug('P6 = {0:6d}'.format(self.cal_REGISTER_DIG_P6))
+        # self.logger.debug('P7 = {0:6d}'.format(self.cal_REGISTER_DIG_P7))
+        # self.logger.debug('P8 = {0:6d}'.format(self.cal_REGISTER_DIG_P8))
+        # self.logger.debug('P9 = {0:6d}'.format(self.cal_REGISTER_DIG_P9))
 
     def _load_datasheet_calibration(self):
         """data from the datasheet example, useful for debug"""

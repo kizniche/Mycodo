@@ -147,11 +147,17 @@ class DaemonControl:
     def refresh_daemon_misc_settings(self):
         return self.rpyc_client.root.refresh_daemon_misc_settings()
 
-    def trigger_conditional_actions(
-            self, conditional_id, message='', edge=None,
+    def refresh_daemon_trigger_settings(self, unique_id):
+        return self.rpyc_client.root.refresh_daemon_trigger_settings(unique_id)
+
+    def test_trigger_actions(self, function_id, message=''):
+        return self.rpyc_client.root.test_trigger_actions(function_id, message)
+
+    def trigger_trigger_actions(
+            self, trigger_id, message='', edge=None,
             output_state=None, on_duration=None, duty_cycle=None):
-        return self.rpyc_client.root.trigger_conditional_actions(
-            conditional_id, message, edge=edge, output_state=output_state,
+        return self.rpyc_client.root.trigger_trigger_actions(
+            trigger_id, message, edge=edge, output_state=output_state,
             on_duration=on_duration, duty_cycle=duty_cycle)
 
     def terminate_daemon(self):
@@ -183,45 +189,45 @@ def parseargs(parser):
 
     # PID manipulate
     parser.add_argument('--pid_pause', nargs=1,
-                        metavar=('ID'), type=str,
+                        metavar='ID', type=str,
                         help='Pause PID controller.',
                         required=False)
     parser.add_argument('--pid_hold', nargs=1,
-                        metavar=('ID'), type=str,
+                        metavar='ID', type=str,
                         help='Hold PID controller.',
                         required=False)
     parser.add_argument('--pid_resume', nargs=1,
-                        metavar=('ID'), type=str,
+                        metavar='ID', type=str,
                         help='Resume PID controller.',
                         required=False)
 
     # PID get
     parser.add_argument('--pid_get_setpoint', nargs=1,
-                        metavar=('ID'), type=str,
+                        metavar='ID', type=str,
                         help='Get the setpoint value of the PID controller.',
                         required=False)
     parser.add_argument('--pid_get_error', nargs=1,
-                        metavar=('ID'), type=str,
+                        metavar='ID', type=str,
                         help='Get the error value of the PID controller.',
                         required=False)
     parser.add_argument('--pid_get_integrator', nargs=1,
-                        metavar=('ID'), type=str,
+                        metavar='ID', type=str,
                         help='Get the integrator value of the PID controller.',
                         required=False)
     parser.add_argument('--pid_get_derivator', nargs=1,
-                        metavar=('ID'), type=str,
+                        metavar='ID', type=str,
                         help='Get the derivator value of the PID controller.',
                         required=False)
     parser.add_argument('--pid_get_kp', nargs=1,
-                        metavar=('ID'), type=str,
+                        metavar='ID', type=str,
                         help='Get the Kp gain of the PID controller.',
                         required=False)
     parser.add_argument('--pid_get_ki', nargs=1,
-                        metavar=('ID'), type=str,
+                        metavar='ID', type=str,
                         help='Get the Ki gain of the PID controller.',
                         required=False)
     parser.add_argument('--pid_get_kd', nargs=1,
-                        metavar=('ID'), type=str,
+                        metavar='ID', type=str,
                         help='Get the Kd gain of the PID controller.',
                         required=False)
 
@@ -307,9 +313,9 @@ if __name__ == "__main__":
         if args.duration:
             return_msg = daemon.output_on(
                 args.outputon, duration=args.duration)
-        elif args.duty_cycle:
+        elif args.dutycycle:
             return_msg = daemon.output_on(
-                args.outputon, duty_cycle=args.duty_cycle)
+                args.outputon, duty_cycle=args.dutycycle)
         else:
             return_msg = daemon.output_on(args.outputon)
         logger.info("[Remote command] Turn on output with ID '{id}': "

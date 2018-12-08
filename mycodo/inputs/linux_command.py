@@ -1,9 +1,19 @@
 # coding=utf-8
 import logging
 
+from mycodo.databases.models import DeviceMeasurements
+from mycodo.inputs.base_input import AbstractInput
+from mycodo.utils.database import db_retrieve_table_daemon
 from mycodo.utils.system_pi import cmd_output
 from mycodo.utils.system_pi import str_is_float
-from mycodo.inputs.base_input import AbstractInput
+
+# Measurements
+measurements_dict = {
+    0: {
+        'measurement': '',
+        'unit': ''
+    }
+}
 
 # Input information
 INPUT_INFORMATION = {
@@ -11,14 +21,19 @@ INPUT_INFORMATION = {
     'input_manufacturer': 'Mycodo',
     'input_name': 'Linux Command',
     'measurements_name': 'Return Value',
-    'measurements_list': [],
-    'options_enabled': ['period', 'cmd_command', 'measurement_units', 'convert_unit', 'pre_output'],
+    'measurements_dict': measurements_dict,
+
+    'options_enabled': [
+        'measurements_select_measurement_unit',
+        'period',
+        'cmd_command',
+        'pre_output'
+    ],
     'options_disabled': ['interface'],
 
+    'enable_channel_unit_select': True,
     'interfaces': ['Mycodo'],
     'cmd_command': 'shuf -i 50-70 -n 1',
-    'measurement': 'Condition',
-    'measurement_units': 'unit'
 }
 
 
@@ -28,68 +43,37 @@ class InputModule(AbstractInput):
     def __init__(self, input_dev, testing=False):
         super(InputModule, self).__init__()
         self.logger = logging.getLogger("mycodo.inputs.linux_command")
-        self._measurement = None
-        self.cmd_measurement = 'measurement'
+        self._measurements = None
 
         if not testing:
             self.logger = logging.getLogger(
                 "mycodo.linux_command_{id}".format(id=input_dev.unique_id.split('-')[0]))
-            self.cmd_command = input_dev.cmd_command
-            self.cmd_measurement = input_dev.measurements
 
-    def __repr__(self):
-        """  Representation of object """
-        return "<{cls}(measurement={cond})>".format(
-            cls=type(self).__name__,
-            cond="{0:.2f}".format(self._measurement))
+            self.device_measurements = db_retrieve_table_daemon(
+                DeviceMeasurements).filter(
+                DeviceMeasurements.device_id == input_dev.unique_id)
 
-    def __str__(self):
-        """ Return command output """
-        return "Measurement: {}".format("{0:.2f}".format(self._measurement))
-
-    def __iter__(self):  # must return an iterator
-        """ LinuxCommand iterates through executing a command """
-        return self
-
-    def next(self):
-        """ Get next measurement """
-        if self.read():  # raised an error
-            raise StopIteration  # required
-        return {self.cmd_measurement: float('{0:.2f}'.format(self._measurement))}
-
-    @property
-    def measurement(self):
-        """ Command returns a measurement """
-        if self._measurement is None:  # update if needed
-            self.read()
-        return self._measurement
+            self.command = input_dev.cmd_command
 
     def get_measurement(self):
         """ Determine if the return value of the command is a number """
-        self._measurement = None
+        return_dict = measurements_dict.copy()
 
-        out, _, _ = cmd_output(self.cmd_command)
+        out, _, _ = cmd_output(self.command)
+
         if str_is_float(out):
-            return float(out)
+            list_measurements = [float(out)]
         else:
             self.logger.error(
                 "The command returned a non-numerical value. "
                 "Ensure only one numerical value is returned "
                 "by the command.")
-            return None
+            return
 
-    def read(self):
-        """
-        Executes a command and updates the self._measurement value
+        for channel, meas in enumerate(self.device_measurements.all()):
+            if meas.is_enabled:
+                return_dict[channel]['unit'] = meas.unit
+                return_dict[channel]['measurement'] = meas.measurement
+                return_dict[channel]['value'] = list_measurements[channel]
 
-        :returns: None on success or 1 on error
-        """
-        try:
-            self._measurement = self.get_measurement()
-            if self._measurement is not None:
-                return  # success - no errors
-        except Exception as e:
-            self.logger.exception(
-                "{cls} raised an exception when taking a reading: "
-                "{err}".format(cls=type(self).__name__, err=e))
-        return 1
+        return return_dict

@@ -11,17 +11,25 @@ from flask import flash
 from flask import redirect
 from flask import url_for
 from flask_babel import gettext
+from sqlalchemy import and_
+from sqlalchemy import or_
 
 from mycodo.config import INSTALL_DIRECTORY
+from mycodo.config_devices_units import MEASUREMENTS
+from mycodo.config_devices_units import UNITS
 from mycodo.databases.models import Camera
 from mycodo.databases.models import Conversion
 from mycodo.databases.models import Dashboard
+from mycodo.databases.models import DeviceMeasurements
 from mycodo.databases.models import DisplayOrder
 from mycodo.databases.models import Input
+from mycodo.databases.models import Math
 from mycodo.databases.models import Measurement
 from mycodo.databases.models import Misc
 from mycodo.databases.models import NoteTags
 from mycodo.databases.models import Notes
+from mycodo.databases.models import Output
+from mycodo.databases.models import PID
 from mycodo.databases.models import Role
 from mycodo.databases.models import SMTP
 from mycodo.databases.models import Unit
@@ -30,9 +38,11 @@ from mycodo.mycodo_client import DaemonControl
 from mycodo.mycodo_flask.extensions import db
 from mycodo.mycodo_flask.utils.utils_general import choices_measurements
 from mycodo.mycodo_flask.utils.utils_general import choices_units
+from mycodo.mycodo_flask.utils.utils_general import controller_activate_deactivate
 from mycodo.mycodo_flask.utils.utils_general import delete_entry_with_id
 from mycodo.mycodo_flask.utils.utils_general import flash_form_errors
 from mycodo.mycodo_flask.utils.utils_general import flash_success_errors
+from mycodo.mycodo_flask.utils.utils_input import input_deactivate_associated_controllers
 from mycodo.utils.database import db_retrieve_table
 from mycodo.utils.inputs import load_module_from_file
 from mycodo.utils.inputs import parse_input_information
@@ -82,7 +92,8 @@ def user_roles(form):
             except sqlalchemy.exc.IntegrityError as except_msg:
                 error.append(except_msg)
         elif form.save_role.data:
-            mod_role = Role.query.filter(Role.unique_id == form.role_id.data).first()
+            mod_role = Role.query.filter(
+                Role.unique_id == form.role_id.data).first()
             mod_role.view_logs = form.view_logs.data
             mod_role.view_camera = form.view_camera.data
             mod_role.view_stats = form.view_stats.data
@@ -92,14 +103,17 @@ def user_roles(form):
             mod_role.edit_controllers = form.edit_controllers.data
             db.session.commit()
         elif form.delete_role.data:
-            if User().query.filter(User.role_id == form.role_id.data).count():
+            user = User().query.filter(User.role_id == form.role_id.data)
+            if user.first().id == 1:
+                error.append("Cannot delete user: this user is protected")
+            if user.count():
                 error.append(
                     "Cannot delete role if it is assigned to a user. "
                     "Change the user to another role and try again.")
             else:
-                delete_entry_with_id(Role,
-                                     form.role_id.data)
-    flash_success_errors(error, action, url_for('routes_settings.settings_users'))
+                delete_entry_with_id(Role, form.role_id.data)
+    flash_success_errors(
+        error, action, url_for('routes_settings.settings_users'))
 
 
 def user_add(form):
@@ -143,7 +157,8 @@ def user_add(form):
             except sqlalchemy.exc.IntegrityError as except_msg:
                 error.append(except_msg)
 
-        flash_success_errors(error, action, url_for('routes_settings.settings_users'))
+        flash_success_errors(
+            error, action, url_for('routes_settings.settings_users'))
     else:
         flash_form_errors(form)
 
@@ -167,7 +182,8 @@ def user_mod(form):
             if not test_password(form.password_new.data):
                 error.append(gettext("Invalid password"))
             if form.password_new.data != form.password_repeat.data:
-                error.append(gettext("Passwords do not match. Please try again."))
+                error.append(gettext(
+                    "Passwords do not match. Please try again."))
             mod_user.password_hash = bcrypt.hashpw(
                 form.password_new.data.encode('utf-8'),
                 bcrypt.gensalt())
@@ -179,7 +195,8 @@ def user_mod(form):
         if (mod_user.role_id == 1 and
                 mod_user.role_id != form.role_id.data and
                 flask_login.current_user.name == current_user_name):
-            error.append("Cannot change currently-logged in user's role from Admin")
+            error.append(
+                "Cannot change currently-logged in user's role from Admin")
 
         if not error:
             mod_user.role_id = form.role_id.data
@@ -190,7 +207,8 @@ def user_mod(form):
     except Exception as except_msg:
         error.append(except_msg)
 
-    flash_success_errors(error, action, url_for('routes_settings.settings_users'))
+    flash_success_errors(
+        error, action, url_for('routes_settings.settings_users'))
 
 
 def user_del(form):
@@ -214,7 +232,8 @@ def user_del(form):
         except Exception as except_msg:
             error.append(except_msg)
 
-    flash_success_errors(error, action, url_for('routes_settings.settings_users'))
+    flash_success_errors(
+        error, action, url_for('routes_settings.settings_users'))
 
 
 #
@@ -277,7 +296,8 @@ def settings_general_mod(form):
             except Exception as except_msg:
                 error.append(except_msg)
 
-        flash_success_errors(error, action, url_for('routes_settings.settings_general'))
+        flash_success_errors(
+            error, action, url_for('routes_settings.settings_general'))
     else:
         flash_form_errors(form)
 
@@ -325,33 +345,43 @@ def settings_input_import(form):
 
         if not error:
             if 'input_name_unique' not in input_info.INPUT_INFORMATION:
-                error.append("'input_name_unique' not found in INPUT_INFORMATION dictionary")
+                error.append(
+                    "'input_name_unique' not found in "
+                    "INPUT_INFORMATION dictionary")
             elif input_info.INPUT_INFORMATION['input_name_unique'] == '':
                 error.append("'input_name_unique' is empty")
             elif input_info.INPUT_INFORMATION['input_name_unique'].lower() in list_inputs:
-                error.append("'input_name_unique' is not unique, there is "
-                             "already an input with that name ({})".format(
-                    input_info.INPUT_INFORMATION['input_name_unique']))
+                error.append(
+                    "'input_name_unique' is not unique, there "
+                    "is already an input with that name ({})".format(
+                        input_info.INPUT_INFORMATION['input_name_unique']))
 
             if 'input_manufacturer' not in input_info.INPUT_INFORMATION:
-                error.append("'input_manufacturer' not found in INPUT_INFORMATION dictionary")
+                error.append(
+                    "'input_manufacturer' not found in "
+                    "INPUT_INFORMATION dictionary")
             elif input_info.INPUT_INFORMATION['input_manufacturer'] == '':
                 error.append("'input_manufacturer' is empty")
 
             if 'input_name' not in input_info.INPUT_INFORMATION:
-                error.append("'input_name' not found in INPUT_INFORMATION dictionary")
+                error.append(
+                    "'input_name' not found in INPUT_INFORMATION dictionary")
             elif input_info.INPUT_INFORMATION['input_name'] == '':
                 error.append("'input_name' is empty")
 
             if 'measurements_name' not in input_info.INPUT_INFORMATION:
-                error.append("'measurements_name' not found in INPUT_INFORMATION dictionary")
+                error.append(
+                    "'measurements_name' not found in "
+                    "INPUT_INFORMATION dictionary")
             elif input_info.INPUT_INFORMATION['measurements_name'] == '':
                 error.append("'measurements_name' list is empty")
 
-            if 'measurements_list' not in input_info.INPUT_INFORMATION:
-                error.append("'measurements_list' not found in INPUT_INFORMATION dictionary")
-            elif not input_info.INPUT_INFORMATION['measurements_list']:
-                error.append("'measurements_list' list is empty")
+            if 'measurements_dict' not in input_info.INPUT_INFORMATION:
+                error.append(
+                    "'measurements_dict' not found in "
+                    "INPUT_INFORMATION dictionary")
+            elif not input_info.INPUT_INFORMATION['measurements_dict']:
+                error.append("'measurements_dict' list is empty")
 
             if 'dependencies_module' in input_info.INPUT_INFORMATION:
                 if type(input_info.INPUT_INFORMATION['dependencies_module']) is not list:
@@ -359,13 +389,22 @@ def settings_input_import(form):
                 else:
                     for each_dep in input_info.INPUT_INFORMATION['dependencies_module']:
                         if type(each_dep) is not tuple:
-                            error.append("'dependencies_module' must be a list of tuples")
+                            error.append(
+                                "'dependencies_module' must be a list of "
+                                "tuples")
                         elif len(each_dep) != 3:
-                            error.append("'dependencies_module': tuples in list must have 3 items")
+                            error.append(
+                                "'dependencies_module': tuples in list must "
+                                "have 3 items")
                         elif not each_dep[0] or not each_dep[1] or not each_dep[2]:
-                            error.append("'dependencies_module': tuples in list must not be empty")
+                            error.append(
+                                "'dependencies_module': tuples in list must "
+                                "not be empty")
                         elif each_dep[0] not in ['internal', 'pip-pypi', 'pip-git', 'apt']:
-                            error.append("'dependencies_module': first in tuple must be 'internal', 'pip-pypi', 'pip-git', or 'apt'")
+                            error.append(
+                                "'dependencies_module': first in tuple "
+                                "must be 'internal', 'pip-pypi', 'pip-git', "
+                                "or 'apt'")
 
         if not error:
             # Determine filename
@@ -437,13 +476,20 @@ def settings_measurement_add(form):
         action=gettext("Add"),
         controller=gettext("Measurement"))
     error = []
+    choices_meas = choices_measurements(Measurement.query.all())
 
     new_measurement = Measurement()
-    new_measurement.name_safe = re.sub('[^0-9a-zA-Z]+', '_', form.name.data).lower()
-    if new_measurement.name_safe.endswith('_'):
-        new_measurement.name_safe = new_measurement.name_safe[:-1]
     new_measurement.name = form.name.data
     new_measurement.units = ",".join(form.units.data)
+
+    name_safe = re.sub('[^0-9a-zA-Z]+', '_', form.name.data).lower()
+    if name_safe.endswith('_'):
+        name_safe = name_safe[:-1]
+    if name_safe in choices_meas:
+        error.append("Measurement name already exists: {name}".format(
+            name=name_safe))
+
+    new_measurement.name_safe = name_safe
 
     try:
         if not error:
@@ -458,7 +504,8 @@ def settings_measurement_add(form):
     except sqlalchemy.exc.IntegrityError as except_msg:
         error.append(except_msg)
 
-    flash_success_errors(error, action, url_for('routes_settings.settings_measurement'))
+    flash_success_errors(
+        error, action, url_for('routes_settings.settings_measurement'))
 
 
 def settings_measurement_mod(form):
@@ -466,30 +513,31 @@ def settings_measurement_mod(form):
         action=gettext("Modify"),
         controller=gettext("Measurement"))
     error = []
-
-    name_safe = re.sub('[^0-9a-zA-Z]+', '_', form.name.data).lower()
-    measurements = Measurement.query.all()
-    choices_meas = choices_measurements(measurements)
-
-    if name_safe in choices_meas:
-        error.append("'{name}' already exists in the measurement database. "
-                     "Choose a unique name.".format(name=name_safe))
-
     try:
         mod_measurement = Measurement.query.filter(
             Measurement.unique_id == form.measurement_id.data).first()
+        mod_measurement.name = form.name.data
+        mod_measurement.units = ",".join(form.units.data)
+
+        name_safe = re.sub('[^0-9a-zA-Z]+', '_', form.name.data).lower()
+        if name_safe.endswith('_'):
+            name_safe = name_safe[:-1]
+        if (Measurement.query.filter(
+                and_(Measurement.name_safe == name_safe,
+                     Measurement.unique_id != mod_measurement.unique_id)).count() or
+                name_safe in MEASUREMENTS):
+            error.append("Measurement name already exists: {name}".format(
+                name=name_safe))
+        else:
+            mod_measurement.name_safe = name_safe
 
         if not error:
-            mod_measurement.name_safe = re.sub('[^0-9a-zA-Z]+', '_', form.name.data).lower()
-            if mod_measurement.name_safe.endswith('_'):
-                mod_measurement.name_safe = mod_measurement.name_safe[:-1]
-            mod_measurement.name = form.name.data
-            mod_measurement.units = ",".join(form.units.data)
             db.session.commit()
     except Exception as except_msg:
         error.append(except_msg)
 
-    flash_success_errors(error, action, url_for('routes_settings.settings_measurement'))
+    flash_success_errors(
+        error, action, url_for('routes_settings.settings_measurement'))
 
 
 def settings_measurement_del(unique_id):
@@ -503,7 +551,8 @@ def settings_measurement_del(unique_id):
     except Exception as except_msg:
         error.append(except_msg)
 
-    flash_success_errors(error, action, url_for('routes_settings.settings_measurement'))
+    flash_success_errors(
+        error, action, url_for('routes_settings.settings_measurement'))
 
 
 def settings_unit_add(form):
@@ -511,15 +560,17 @@ def settings_unit_add(form):
         action=gettext("Add"),
         controller=gettext("Unit"))
     error = []
+    units = Unit.query.all()
+    choices_unit = choices_units(units)
 
     if form.validate():
-        name_safe = re.sub('[^0-9a-zA-Z]+', '_', form.unit.data).lower()
-        units = Unit.query.all()
-        choices_unit = choices_units(units)
+        name_safe = re.sub('[^0-9a-zA-Z]+', '_', form.name.data).lower()
+        if name_safe.endswith('_'):
+            name_safe = name_safe[:-1]
 
         if name_safe in choices_unit:
-            error.append("'{name}' already exists in the unit database. "
-                         "Choose a unique name.".format(name=name_safe))
+            error.append("Unit name already exists: {name}".format(
+                name=name_safe))
 
         new_unit = Unit()
         new_unit.name_safe = name_safe
@@ -539,7 +590,8 @@ def settings_unit_add(form):
         except sqlalchemy.exc.IntegrityError as except_msg:
             error.append(except_msg)
 
-        flash_success_errors(error, action, url_for('routes_settings.settings_measurement'))
+        flash_success_errors(
+            error, action, url_for('routes_settings.settings_measurement'))
     else:
         flash_form_errors(form)
 
@@ -549,28 +601,41 @@ def settings_unit_mod(form):
         action=gettext("Modify"),
         controller=gettext("Unit"))
     error = []
-
-    name_safe = re.sub('[^0-9a-zA-Z]+', '_', form.unit.data).lower()
-    units = Unit.query.all()
-    choices_unit = choices_units(units)
-
-    if name_safe in choices_unit:
-        error.append("'{name}' already exists in the unit database. "
-                     "Choose a unique name.".format(name=name_safe))
-
     try:
         mod_unit = Unit.query.filter(
             Unit.unique_id == form.unit_id.data).first()
 
-        if not error:
-            mod_unit.name_safe = name_safe
+        name_safe = re.sub('[^0-9a-zA-Z]+', '_', form.name.data).lower()
+        if name_safe.endswith('_'):
+            name_safe = name_safe[:-1]
+
+        conversions = Conversion.query.filter(or_(
+            Conversion.convert_unit_from == mod_unit.name_safe,
+            Conversion.convert_unit_to == mod_unit.name_safe
+        )).count()
+
+        if (Unit.query.filter(
+                and_(Unit.name_safe == name_safe,
+                     Unit.unique_id != form.unit_id.data)).count() or
+                name_safe in UNITS):
+            error.append("Unit name already exists: {name}".format(
+                name=name_safe))
+        elif mod_unit.name_safe != name_safe and conversions:
+            error.append(
+                "Unit belongs to a conversion."
+                "Delete conversion(s) before changing unit.")
+        else:
             mod_unit.name = form.name.data
             mod_unit.unit = form.unit.data
+            mod_unit.name_safe = name_safe
+
+        if not error:
             db.session.commit()
     except Exception as except_msg:
         error.append(except_msg)
 
-    flash_success_errors(error, action, url_for('routes_settings.settings_measurement'))
+    flash_success_errors(
+        error, action, url_for('routes_settings.settings_measurement'))
 
 
 def settings_unit_del(unique_id):
@@ -579,12 +644,27 @@ def settings_unit_del(unique_id):
         controller=gettext("Unit"))
     error = []
 
+    del_unit = Unit.query.filter(
+        Unit.unique_id == unique_id).first()
+
+    conversions = Conversion.query.filter(or_(
+        Conversion.convert_unit_from == del_unit.name_safe,
+        Conversion.convert_unit_to == del_unit.name_safe
+    )).count()
+
+    if conversions:
+        error.append(
+            "Unit belongs to a conversion."
+            "Delete conversion(s) before deleting unit.")
+
     try:
-        delete_entry_with_id(Unit, unique_id)
+        if not error:
+            delete_entry_with_id(Unit, unique_id)
     except Exception as except_msg:
         error.append(except_msg)
 
-    flash_success_errors(error, action, url_for('routes_settings.settings_measurement'))
+    flash_success_errors(
+        error, action, url_for('routes_settings.settings_measurement'))
 
 
 def settings_convert_add(form):
@@ -623,7 +703,8 @@ def settings_convert_add(form):
         except sqlalchemy.exc.IntegrityError as except_msg:
             error.append(except_msg)
 
-        flash_success_errors(error, action, url_for('routes_settings.settings_measurement'))
+        flash_success_errors(
+            error, action, url_for('routes_settings.settings_measurement'))
     else:
         flash_form_errors(form)
 
@@ -634,30 +715,31 @@ def settings_convert_mod(form):
         controller=gettext("Conversion"))
     error = []
 
-    conversion = Conversion.query.all()
-
-    conversion_str = '{fr}_to_{to}'.format(
-        fr=form.convert_unit_from.data, to=form.convert_unit_to.data)
-    if conversion_str in all_conversions(conversion):
-        error.append("Conversion '{cs}' already exists.".format(
-            cs=conversion_str))
-
     if 'x' not in form.equation.data:
-        error.append("'x' must appear in the equation.")
+        error.append("'x' must appear in the equation")
 
     try:
         mod_conversion = Conversion.query.filter(
             Conversion.unique_id == form.conversion_id.data).first()
 
+        # Don't allow conversion to be changed for an active controller
+        error = check_conversion_being_used(mod_conversion, error, state='active')
+
         if not error:
-            mod_conversion.convert_unit_from = form.convert_unit_from.data
-            mod_conversion.convert_unit_to = form.convert_unit_to.data
+            # Don't allow from conversion to be changed for an inactive controller
+            if mod_conversion.convert_unit_from != form.convert_unit_from.data:
+                error = check_conversion_being_used(mod_conversion, error, state='inactive')
+
+            if not mod_conversion.protected:
+                mod_conversion.convert_unit_from = form.convert_unit_from.data
+                mod_conversion.convert_unit_to = form.convert_unit_to.data
             mod_conversion.equation = form.equation.data
             db.session.commit()
     except Exception as except_msg:
         error.append(except_msg)
 
-    flash_success_errors(error, action, url_for('routes_settings.settings_measurement'))
+    flash_success_errors(
+        error, action, url_for('routes_settings.settings_measurement'))
 
 
 def settings_convert_del(unique_id):
@@ -667,14 +749,73 @@ def settings_convert_del(unique_id):
     error = []
 
     try:
-        conversion = Conversion.query.filter(
+        conv = Conversion.query.filter(
             Conversion.unique_id == unique_id).first()
 
-        delete_entry_with_id(Conversion, unique_id)
+        # Don't allow conversion to be changed for an active controller
+        error = check_conversion_being_used(conv, error, state='active')
+
+        if not error:
+            # Delete conversion from any controllers
+            remove_conversion_from_controllers(unique_id)
+            delete_entry_with_id(Conversion, unique_id)
     except Exception as except_msg:
         error.append(except_msg)
 
-    flash_success_errors(error, action, url_for('routes_settings.settings_measurement'))
+    flash_success_errors(
+        error, action, url_for('routes_settings.settings_measurement'))
+
+
+def check_conversion_being_used(conv, error, state=None):
+    """
+    Check if a controller is currently active/inactive and using the conversion
+    If so, cannot edit the database/modify the conversion
+    """
+    try:
+        device_measurements = DeviceMeasurements.query.all()
+
+        list_measurements = [
+            Input,
+            Math,
+            PID,
+        ]
+
+        for each_device_type in list_measurements:
+            for each_device in each_device_type.query.all():
+                for each_meas in device_measurements:
+                    if (each_device.unique_id == each_meas.device_id and
+                            conv.unique_id == each_meas.conversion_id):
+
+                        detected_device = each_device_type.query.filter(
+                            each_device_type.unique_id == each_meas.device_id).first()
+
+                        if ((state == 'active' and detected_device.is_activated) or
+                                (state == 'inactive' and not detected_device.is_activated)):
+                            error.append(
+                                "Conversion [{cid}] ({conv}): "
+                                "Currently in use for measurement {meas}, "
+                                "for device {dev}".format(
+                                    cid=conv.id,
+                                    conv=conv.unique_id,
+                                    meas=each_meas.unique_id,
+                                    dev=each_meas.device_id))
+    except Exception as except_msg:
+        error.append(except_msg)
+    finally:
+        return error
+
+
+def remove_conversion_from_controllers(conv_id):
+    """
+    Find measurements using the conversion and delete the reference to the conversion_id
+    """
+    device_measurements = DeviceMeasurements.query.all()
+
+    for each_meas in device_measurements:
+        if each_meas.conversion_id == conv_id:
+            each_meas.conversion_id = ''
+
+    db.session.commit()
 
 
 def settings_pi_mod(form):
@@ -979,10 +1120,73 @@ def camera_del(form_camera):
     flash_success_errors(error, action, url_for('routes_settings.settings_camera'))
 
 
+def settings_diagnostic_delete_inputs():
+    action = '{action} {controller}'.format(
+        action=gettext("Delete"),
+        controller=gettext("All Inputs"))
+    error = []
+
+    inputs = db_retrieve_table(Input)
+    device_measurements = db_retrieve_table(DeviceMeasurements)
+    display_order = db_retrieve_table(DisplayOrder, entry='first')
+
+    if not error:
+        try:
+            for each_input in inputs:
+                # Deactivate any active controllers using the input
+                if each_input.is_activated:
+                    input_deactivate_associated_controllers(each_input.unique_id)
+                    controller_activate_deactivate('deactivate', 'Input', each_input.unique_id)
+
+                # Delete all measurements associated with the input
+                for each_measurement in device_measurements:
+                    if each_measurement.device_id == each_input.unique_id:
+                        db.session.delete(each_measurement)
+
+                # Delete the input
+                db.session.delete(each_input)
+            display_order.input = ''  # Clear the order
+            db.session.commit()
+        except Exception as except_msg:
+            error.append(except_msg)
+
+    flash_success_errors(error, action, url_for('routes_settings.settings_diagnostic'))
+
+
+def settings_diagnostic_delete_maths():
+    action = '{action} {controller}'.format(
+        action=gettext("Delete"),
+        controller=gettext("All Maths"))
+    error = []
+
+    maths = db_retrieve_table(Math)
+    device_measurements = db_retrieve_table(DeviceMeasurements)
+    display_order = db_retrieve_table(DisplayOrder, entry='first')
+
+    if not error:
+        try:
+            for each_math in maths:
+                # Deactivate any active controllers using the input
+                if each_math.is_activated:
+                    controller_activate_deactivate('deactivate', 'Math', each_math.unique_id)
+
+                # Delete all measurements associated
+                for each_measurement in device_measurements:
+                    if each_measurement.device_id == each_math.unique_id:
+                        db.session.delete(each_measurement)
+                db.session.delete(each_math)
+            display_order.math = ''
+            db.session.commit()
+        except Exception as except_msg:
+            error.append(except_msg)
+
+    flash_success_errors(error, action, url_for('routes_settings.settings_diagnostic'))
+
+
 def settings_diagnostic_delete_dashboard_elements():
     action = '{action} {controller}'.format(
         action=gettext("Delete"),
-        controller=gettext("All Graphs"))
+        controller=gettext("All Dashboard Elements"))
     error = []
 
     dashboard = db_retrieve_table(Dashboard)
@@ -1015,6 +1219,28 @@ def settings_diagnostic_delete_notes_tags():
             for each_note in db_retrieve_table(Notes):
                 db.session.delete(each_note)
                 db.session.commit()
+        except Exception as except_msg:
+            error.append(except_msg)
+
+    flash_success_errors(error, action, url_for('routes_settings.settings_diagnostic'))
+
+
+def settings_diagnostic_delete_outputs():
+    action = '{action} {controller}'.format(
+        action=gettext("Delete"),
+        controller=gettext("All Outputs"))
+    error = []
+
+    output = db_retrieve_table(Output)
+    display_order = db_retrieve_table(DisplayOrder, entry='first')
+
+    if not error:
+        try:
+            for each_output in output:
+                db.session.delete(each_output)
+                db.session.commit()
+            display_order.output = ''
+            db.session.commit()
         except Exception as except_msg:
             error.append(except_msg)
 

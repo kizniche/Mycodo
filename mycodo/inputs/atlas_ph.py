@@ -2,11 +2,18 @@
 import logging
 import time
 
+from mycodo.inputs.base_input import AbstractInput
 from mycodo.utils.calibration import AtlasScientificCommand
 from mycodo.utils.influx import read_last_influxdb
 from mycodo.utils.system_pi import str_is_float
-from mycodo.inputs.base_input import AbstractInput
-from mycodo.inputs.sensorutils import convert_units
+
+# Measurements
+measurements_dict = {
+    0: {
+        'measurement': 'ion_concentration',
+        'unit': 'pH'
+    }
+}
 
 # Input information
 INPUT_INFORMATION = {
@@ -14,8 +21,14 @@ INPUT_INFORMATION = {
     'input_manufacturer': 'Atlas',
     'input_name': 'Atlas pH',
     'measurements_name': 'Ion Concentration',
-    'measurements_list': ['ion_concentration'],
-    'options_enabled': ['i2c_location', 'uart_location', 'period', 'convert_unit', 'pre_output'],
+    'measurements_dict': measurements_dict,
+
+    'options_enabled': [
+        'i2c_location',
+        'uart_location',
+        'period',
+        'pre_output'
+    ],
     'options_disabled': ['interface'],
 
     'interfaces': ['I2C', 'UART'],
@@ -31,50 +44,24 @@ class InputModule(AbstractInput):
     def __init__(self, input_dev, testing=False):
         super(InputModule, self).__init__()
         self.logger = logging.getLogger("mycodo.inputs.atlas_ph")
-        self._ph = None
+        self._measurements = None
         self.atlas_sensor_uart = None
         self.atlas_sensor_i2c = None
+        self.uart_location = None
         self.i2c_address = None
         self.i2c_bus = None
 
         if not testing:
             self.logger = logging.getLogger(
                 "mycodo.inputs.atlas_ph_{id}".format(id=input_dev.unique_id.split('-')[0]))
+
             self.input_dev = input_dev
             self.interface = input_dev.interface
             self.calibrate_sensor_measure = input_dev.calibrate_sensor_measure
-            self.convert_to_unit = input_dev.convert_to_unit
             try:
                 self.initialize_sensor()
             except Exception:
                 self.logger.exception("Exception while initializing sensor")
-
-    def __repr__(self):
-        """ Representation of object """
-        return "<{cls}(ph={ph})>".format(
-            cls=type(self).__name__,
-            ph="{0:.2f}".format(self._ph))
-
-    def __str__(self):
-        """ Return pH information """
-        return "pH: {ph}".format(ph="{0:.2f}".format(self._ph))
-
-    def __iter__(self):  # must return an iterator
-        """ Atlas pH sensor iterates through live pH readings """
-        return self
-
-    def next(self):
-        """ Get next pH reading """
-        if self.read():  # raised an error
-            raise StopIteration  # required
-        return dict(ph=float(self._ph))
-
-    @property
-    def ph(self):
-        """ pH (potential hydrogen) in moles/liter """
-        if self._ph is None:  # update if needed
-            self.read()
-        return self._ph
 
     def initialize_sensor(self):
         from mycodo.devices.atlas_scientific_i2c import AtlasScientificI2C
@@ -96,8 +83,10 @@ class InputModule(AbstractInput):
 
     def get_measurement(self):
         """ Gets the sensor's pH measurement via UART/I2C """
-        self._ph = None
+        self._measurements = None
         ph = None
+
+        return_dict = measurements_dict.copy()
 
         # Calibrate the pH measurement based on a temperature measurement
         if (self.calibrate_sensor_measure and
@@ -175,24 +164,6 @@ class InputModule(AbstractInput):
                 self.logger.error(
                     'I2C device is not set up. Check the log for errors.')
 
-        ph = convert_units(
-            'ion_concentration', 'pH', self.convert_to_unit,
-            ph)
+        return_dict[0]['value'] = ph
 
-        return ph
-
-    def read(self):
-        """
-        Takes a reading from the sensor and updates the self._ph value
-
-        :returns: None on success or 1 on error
-        """
-        try:
-            self._ph = self.get_measurement()
-            if self._ph is not None:
-                return # success - no errors
-        except Exception as e:
-            self.logger.exception(
-                "{cls} raised an exception when taking a reading: "
-                "{err}".format(cls=type(self).__name__, err=e))
-        return 1
+        return return_dict

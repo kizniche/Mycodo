@@ -21,7 +21,7 @@ class AtlasScientificUART:
         try:
             self.ser = serial.Serial(port=serial_device,
                                      baudrate=baudrate,
-                                     timeout=0)
+                                     timeout=5)
             self.setup = True
         except serial.SerialException as err:
             self.logger.exception(
@@ -97,6 +97,9 @@ class AtlasScientificUART:
         except AttributeError:
             self.logger.exception('UART device not initialized')
             return None
+
+    def write(self, cmd):
+        self.send_cmd(cmd)
 
     def send_cmd(self, cmd):
         """

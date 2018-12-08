@@ -24,24 +24,24 @@
         <input class="form-control" disabled="" title="UUID: {{each_camera.unique_id}}" value="[{{'%02d' % each_camera.id}}] ({{each_camera.library}}) {{each_camera.name}}" type="text">
       </div>
       <div class="col-xs-12 col-sm-3">
-        {{form_camera.capture_still(class_='form-control btn btn-default')}}
+        {{form_camera.capture_still(class_='form-control btn btn-sm')}}
       </div>
       {% if not each_camera.stream_started -%}
         {% if not each_camera.timelapse_started %}
           <div class="col-xs-12 col-sm-3">
-            <a data-toggle="collapse" href="#collapseContainerTimelapse-{{each_camera.unique_id}}" aria-expanded="false" aria-controls="collapseContainerTimelapse-{{each_camera.unique_id}}" class="form-control btn btn-default" role="button">{{_('Create Timelapse')}}</a>
+            <a data-toggle="collapse" href="#collapseContainerTimelapse-{{each_camera.unique_id}}" aria-expanded="false" aria-controls="collapseContainerTimelapse-{{each_camera.unique_id}}" class="form-control btn btn-sm" role="button">{{_('Create Timelapse')}}</a>
           </div>
         {% else %}
           {% if each_camera.timelapse_paused %}
             <div class="col-xs-12 col-sm-3">
-              {{form_camera.resume_timelapse(class_='form-control btn btn-default')}}
+              {{form_camera.resume_timelapse(class_='form-control btn btn-sm')}}
             </div>
           {% else %}
             <div class="col-xs-12 col-sm-3">
-              {{form_camera.pause_timelapse(class_='form-control btn btn-default')}}
+              {{form_camera.pause_timelapse(class_='form-control btn btn-sm')}}
             </div>
             <div class="col-xs-12 col-sm-3">
-              {{form_camera.stop_timelapse(class_='form-control btn btn-default')}}
+              {{form_camera.stop_timelapse(class_='form-control btn btn-sm')}}
             </div>
           {% endif %}
         {% endif %}
@@ -51,9 +51,9 @@
             not each_camera.timelapse_started %}
         <div class="col-xs-12 col-sm-3">
           {% if each_camera.stream_started -%}
-            {{form_camera.stop_stream(class_='form-control btn btn-default')}}
+            {{form_camera.stop_stream(class_='form-control btn btn-sm')}}
           {% else %}
-            {{form_camera.start_stream(class_='form-control btn btn-default')}}
+            {{form_camera.start_stream(class_='form-control btn btn-sm')}}
           {%- endif %}
         </div>
       {%- endif %}
@@ -64,7 +64,7 @@
       <div class="row">
         Time-lapse parameters:
       </div>
-      <div class="row small-gutters">
+      <div class="row align-items-end small-gutters">
         <div class="col-auto">
           {{form_camera.timelapse_interval.label(class_='control-label')}}
           <div>
@@ -78,10 +78,7 @@
           </div>
         </div>
         <div class="col-auto">
-          <label>&nbsp;</label>
-          <div>
-            {{form_camera.start_timelapse(class_='form-control btn btn-default')}}
-          </div>
+          {{form_camera.start_timelapse(class_='form-control btn btn-sm')}}
         </div>
       </div>
     </div>
