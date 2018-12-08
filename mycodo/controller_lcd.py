@@ -188,7 +188,7 @@ class LCDController(threading.Thread):
             if self.lcd_initialized:
                 line_1 = 'Mycodo {}'.format(MYCODO_VERSION)
                 line_2 = 'Start {}'.format(self.lcd_name)
-                self.lcd_out.lcd_write_lines(line_1, line_2, None, None)
+                self.lcd_out.lcd_write_lines(line_1, line_2, '', '')
         except Exception as except_msg:
             self.logger.exception("Error: {err}".format(err=except_msg))
 
@@ -217,6 +217,9 @@ class LCDController(threading.Thread):
                                     display_id,
                                     i)
                             else:
+                                self.logger.error("TEST00: {}, {}".format(
+                                    self.lcd_line[display_id][i]['id'],
+                                    self.lcd_line[display_id][i]['setup']))
                                 self.lcd_string_line[display_id][i] = 'ID NOT FOUND'
                         # Output lines to the LCD
                         if self.running:
@@ -262,7 +265,7 @@ class LCDController(threading.Thread):
             self.lcd_out.lcd_init()  # Blank LCD
             line_1 = 'Mycodo {}'.format(MYCODO_VERSION)
             line_2 = 'Stop {}'.format(self.lcd_name)
-            self.lcd_out.lcd_write_lines(line_1, line_2, None, None)
+            self.lcd_out.lcd_write_lines(line_1, line_2, '', '')
             self.logger.info("Deactivated in {:.1f} ms".format(
                 (timeit.default_timer() - self.thread_shutdown_timer) * 1000))
             self.running = False
@@ -380,10 +383,10 @@ class LCDController(threading.Thread):
 
     def output_lcds(self):
         """ Output to all LCDs all at once """
-        line_1 = None
-        line_2 = None
-        line_3 = None
-        line_4 = None
+        line_1 = ''
+        line_2 = ''
+        line_3 = ''
+        line_4 = ''
         self.lcd_out.lcd_init()
         display_id = self.display_ids[self.display_count]
         if self.lcd_string_line[display_id][1]:
