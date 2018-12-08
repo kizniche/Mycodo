@@ -217,12 +217,6 @@ class LCDController(threading.Thread):
                                     display_id,
                                     i)
                             else:
-                                self.logger.error("TEST00: {}, {}, {}, {}, {}".format(
-                                    self.lcd_line[display_id][i]['id'],
-                                    self.lcd_line[display_id][i]['setup'],
-                                    self.lcd_line[display_id][i]['measure'],
-                                    self.lcd_line[display_id][i]['name'],
-                                    self.lcd_line[display_id][i]['unit']))
                                 self.lcd_string_line[display_id][i] = 'ID NOT FOUND'
                         # Output lines to the LCD
                         if self.running:
@@ -441,6 +435,10 @@ class LCDController(threading.Thread):
 
         if 'time' in measurement_id:
             self.lcd_line[display_id][line]['measure'] = 'time'
+        elif measurement_id == 'IP':
+            self.lcd_line[display_id][line]['measure'] = 'IP'
+            self.lcd_line[display_id][line]['name'] = ''
+
         if not device_id:
             return
 
@@ -461,7 +459,7 @@ class LCDController(threading.Thread):
             if controller_found:
                 self.lcd_line[display_id][line]['name'] = controller_found.name
 
-        if (measurement_id in ['IP', 'time'] or
+        if (self.lcd_line[display_id][line]['measure'] in ['IP', 'time'] or
                 None not in [self.lcd_line[display_id][line]['name'],
                              self.lcd_line[display_id][line]['unit']]):
             self.lcd_line[display_id][line]['setup'] = True

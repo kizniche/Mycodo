@@ -193,7 +193,7 @@ UNITS = {
         'unit': '°C'},
     'cpu_load': {
         'name': lazy_gettext('CPU Load'),
-        'unit': ''},
+        'unit': 'Proc.'},
     'decimal': {
         'name': lazy_gettext('Decimal'),
         'unit': ''},
