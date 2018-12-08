@@ -461,7 +461,7 @@ class LCDController(threading.Thread):
             if controller_found:
                 self.lcd_line[display_id][line]['name'] = controller_found.name
 
-        if (self.lcd_line[display_id][line]['measure'] in ['IP', 'time'] or
+        if (measurement_id in ['IP', 'time'] or
                 None not in [self.lcd_line[display_id][line]['name'],
                              self.lcd_line[display_id][line]['unit']]):
             self.lcd_line[display_id][line]['setup'] = True
