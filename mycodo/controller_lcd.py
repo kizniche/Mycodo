@@ -217,9 +217,12 @@ class LCDController(threading.Thread):
                                     display_id,
                                     i)
                             else:
-                                self.logger.error("TEST00: {}, {}".format(
+                                self.logger.error("TEST00: {}, {}, {}, {}, {}".format(
                                     self.lcd_line[display_id][i]['id'],
-                                    self.lcd_line[display_id][i]['setup']))
+                                    self.lcd_line[display_id][i]['setup'],
+                                    self.lcd_line[display_id][i]['measure'],
+                                    self.lcd_line[display_id][i]['name'],
+                                    self.lcd_line[display_id][i]['unit']))
                                 self.lcd_string_line[display_id][i] = 'ID NOT FOUND'
                         # Output lines to the LCD
                         if self.running:
