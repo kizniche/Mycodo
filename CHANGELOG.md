@@ -1,3 +1,8 @@
+## 6.4.6 (2018-12-08)
+
+This is the final release of version 6.x. Upgrading to 7.x will require a database wipe. This will be an option presented in the Mycodo upgrade page. If you do not want to lose your Mycodo data (settings AND measurement data), do not upgrade to 7.x.
+
+
 ## 6.4.5 (2018-10-17)
 
 ### Bugfixes

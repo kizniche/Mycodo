@@ -8,7 +8,7 @@ from datetime import timedelta
 import os
 from flask_babel import lazy_gettext
 
-MYCODO_VERSION = '6.4.5'
+MYCODO_VERSION = '6.4.6'
 ALEMBIC_VERSION = '15bd5d08a4f0'
 
 #  FORCE_UPGRADE_MASTER
@@ -20,7 +20,7 @@ FORCE_UPGRADE_MASTER = False
 
 # Final release for each major version number
 # Used to determine proper upgrade page to display
-FINAL_RELEASES = ['5.7.3']
+FINAL_RELEASES = ['5.7.3', '6.4.6']
 
 LANGUAGES = {
     'en': 'English',
