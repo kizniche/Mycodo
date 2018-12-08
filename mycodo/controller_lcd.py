@@ -94,8 +94,8 @@ class LCDController(threading.Thread):
         self.lcd_initialized = False
         self.lcd_is_on = False
         self.lcd_id = lcd_id
-        self.display_ids = []
-        self.display_count = 0
+        self.display_sets = []
+        self.display_set_count = 0
 
         try:
             lcd_dev = db_retrieve_table_daemon(LCD, unique_id=self.lcd_id)
@@ -133,7 +133,7 @@ class LCDController(threading.Thread):
             self.lcd_decimal_places = {}
 
             for each_lcd_display in lcd_data:
-                self.display_ids.append(each_lcd_display.unique_id)
+                self.display_sets.append(each_lcd_display.unique_id)
                 self.lcd_string_line[each_lcd_display.unique_id] = {}
                 self.lcd_line[each_lcd_display.unique_id] = {}
                 self.lcd_max_age[each_lcd_display.unique_id] = {}
@@ -179,11 +179,13 @@ class LCDController(threading.Thread):
                                  '16x4_generic']:
                 from mycodo.devices.lcd_generic import LCD_Generic
                 self.lcd_out = LCD_Generic(lcd_dev)
+                self.lcd_init()
             elif self.lcd_type == '128x32_pioled':
                 from mycodo.devices.lcd_pioled import LCD_Pioled
                 self.lcd_out = LCD_Pioled(lcd_dev)
-
-            self.lcd_init()
+                self.lcd_init()
+            else:
+                self.logger.error("Unknown LCD type: {}".format(self.lcd_type))
 
             if self.lcd_initialized:
                 line_1 = 'Mycodo {}'.format(MYCODO_VERSION)
@@ -207,36 +209,36 @@ class LCDController(threading.Thread):
                         time.time() > self.timer):
                     try:
                         # Acquire all measurements to be displayed on the LCD
-                        display_id = self.display_ids[self.display_count]
-                        for i in range(1, self.lcd_y_lines + 1):
+                        display_id = self.display_sets[self.display_set_count]
+                        for line in range(1, self.lcd_y_lines + 1):
                             if not self.running:
                                 break
-                            if self.lcd_line[display_id][i]['id'] and self.lcd_line[display_id][i]['setup']:
+                            if self.lcd_line[display_id][line]['id'] and self.lcd_line[display_id][line]['setup']:
                                 self.create_lcd_line(
-                                    self.get_measurement(display_id, i),
+                                    self.get_measurement(display_id, line),
                                     display_id,
-                                    i)
+                                    line)
                             else:
-                                self.lcd_string_line[display_id][i] = 'ID NOT FOUND'
+                                self.lcd_string_line[display_id][line] = 'LCD LINE ERROR'
                         # Output lines to the LCD
                         if self.running:
                             self.output_lcds()
                     except KeyError:
-                        self.logger.error(
+                        self.logger.exception(
                             "KeyError: Unable to output to LCD.")
                     except IOError:
-                        self.logger.error(
+                        self.logger.exception(
                             "IOError: Unable to output to LCD.")
                     except Exception:
                         self.logger.exception(
                             "Exception: Unable to output to LCD.")
 
                     # Increment display counter to show the next display
-                    if len(self.display_ids) > 1:
-                        if self.display_count < len(self.display_ids) - 1:
-                            self.display_count += 1
+                    if len(self.display_sets) > 1:
+                        if self.display_set_count < len(self.display_sets) - 1:
+                            self.display_set_count += 1
                         else:
-                            self.display_count = 0
+                            self.display_set_count = 0
 
                     self.timer = time.time() + self.lcd_period
 
@@ -385,7 +387,7 @@ class LCDController(threading.Thread):
         line_3 = ''
         line_4 = ''
         self.lcd_out.lcd_init()
-        display_id = self.display_ids[self.display_count]
+        display_id = self.display_sets[self.display_set_count]
         if self.lcd_string_line[display_id][1]:
             line_1 = self.lcd_string_line[display_id][1]            
         if self.lcd_string_line[display_id][2]:

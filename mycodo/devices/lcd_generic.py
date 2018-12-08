@@ -98,7 +98,7 @@ class LCD_Generic:
         time.sleep(self.E_DELAY)
 
     def lcd_string_write(self, message, line):
-        """ Send string to display """
+        """ Send strings to display """
         line_write = self.LCD_LINE[line]
         message = message.ljust(self.LCD_WIDTH, " ")
         self.lcd_byte(line_write, self.LCD_CMD)
