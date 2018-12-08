@@ -98,6 +98,7 @@ Mycodo Manual
         -   [MH-Z16](#mh-z16)
         -   [MH-Z19](#mh-z19)
         -   [SHT1x](#sht1x)
+        -   [SHT31](#sht31)
         -   [SHT7x](#sht7x)
         -   [TMP006, TMP007](#tmp006-tmp007)
         -   [TSL2561](#tsl2561)
@@ -631,8 +632,8 @@ Setup -> Outputs
 Outputs are various signals that can be generated that operate devices.
 An output can be a PWM signal, a simple HIGH/LOW signal to operate a
 relay, a 315/433 MHz signal to switch a radio frequency-operated relay,
-driving of pumps and motors, or an execution of a command on the linux
-system Mycodo runs on, to name a few.
+driving of pumps and motors, or an execution of a linux or Python
+command, to name a few.
 
   ------------------------------------------------------------------------
   Setting                 Description
@@ -676,18 +677,31 @@ system Mycodo runs on, to name a few.
                           For wireless relays, this is the numerical
                           command to be transmitted, and for command
                           outputs this is the command to be executed.
+                          Commands may be for the linux terminal or Python
+                          3 (depending on which output type selected).
 
   Off Command             This is the command used to turn the output off.
                           For wireless relays, this is the numerical
                           command to be transmitted, and for command
                           outputs this is the command to be executed.
+                          Commands may be for the linux terminal or Python
+                          3 (depending on which output type selected).
 
   PWM Command             This is the command used to set the duty cycle.
                           The string “((duty_cycle))” in the command will
                           be replaced with the actual duty cycle before
                           the command is executed. Ensure “((duty_cycle))”
                           is included in your command for this feature to
-                          work correctly.
+                          work correctly. Commands may be for the linux
+                          terminal or Python 3 (depending on which output
+                          type selected).
+
+  Load Modules            List any extra modules to load that will be used
+                          in the conditional statement. You may use
+                          multiple separated by a comma. For example, two
+                          additional modules may be loaded with the
+                          following: “import numpy,from statistics import
+                          stdev”
 
   Current Draw (amps)     The is the amount of current the device powered
                           by the output draws. Note: this value should be
@@ -2776,7 +2790,7 @@ Input Devices
 
   MH-Z19: Carbon dioxide (CO2) in ppmv link
 
-  SHT1x/SHT7x, SHT2x: Relative humidity and temperature link
+  SHT1x/SHT31/SHT7x: Relative humidity and temperature link
 
   TMP006, TMP007: Contactless temperature link
 
@@ -3210,6 +3224,13 @@ Specifications
     typical accuracy (respectively)
 -   2.4 to 5.5V power and I/O
 -   No more than 0.125 Hz sampling rate (once every 8 seconds)
+
+SHT31
+
+Specifications
+
+-   ±2% relative humidity and ±0.3°C accuracy for most uses
+-   -40 °C to 125 °C temperature
 
 SHT7x
 

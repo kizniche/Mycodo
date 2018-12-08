@@ -452,6 +452,7 @@
 <li><a href="#mh-z16">MH-Z16</a></li>
 <li><a href="#mh-z19">MH-Z19</a></li>
 <li><a href="#sht1x">SHT1x</a></li>
+<li><a href="#sht31">SHT31</a></li>
 <li><a href="#sht7x">SHT7x</a></li>
 <li><a href="#tmp006-tmp007">TMP006, TMP007</a></li>
 <li><a href="#tsl2561">TSL2561</a></li>
@@ -829,7 +830,7 @@ usage: mycodo-client [-h] [--activatecontroller CONTROLLER ID]
 </table>
 <h2 id="output">Output</h2>
 <p><code>Setup -&gt; Outputs</code></p>
-<p>Outputs are various signals that can be generated that operate devices. An output can be a PWM signal, a simple HIGH/LOW signal to operate a relay, a 315/433 MHz signal to switch a radio frequency-operated relay, driving of pumps and motors, or an execution of a command on the linux system Mycodo runs on, to name a few.</p>
+<p>Outputs are various signals that can be generated that operate devices. An output can be a PWM signal, a simple HIGH/LOW signal to operate a relay, a 315/433 MHz signal to switch a radio frequency-operated relay, driving of pumps and motors, or an execution of a linux or Python command, to name a few.</p>
 <table>
 <colgroup>
 <col style="width: 32%"></col>
@@ -888,25 +889,29 @@ usage: mycodo-client [-h] [--activatecontroller CONTROLLER ID]
 </tr>
 <tr class="even">
 <td>On Command</td>
-<td>This is the command used to turn the output on. For wireless relays, this is the numerical command to be transmitted, and for command outputs this is the command to be executed.</td>
+<td>This is the command used to turn the output on. For wireless relays, this is the numerical command to be transmitted, and for command outputs this is the command to be executed. Commands may be for the linux terminal or Python 3 (depending on which output type selected).</td>
 </tr>
 <tr class="odd">
 <td>Off Command</td>
-<td>This is the command used to turn the output off. For wireless relays, this is the numerical command to be transmitted, and for command outputs this is the command to be executed.</td>
+<td>This is the command used to turn the output off. For wireless relays, this is the numerical command to be transmitted, and for command outputs this is the command to be executed. Commands may be for the linux terminal or Python 3 (depending on which output type selected).</td>
 </tr>
 <tr class="even">
 <td>PWM Command</td>
-<td>This is the command used to set the duty cycle. The string “((duty_cycle))” in the command will be replaced with the actual duty cycle before the command is executed. Ensure “((duty_cycle))” is included in your command for this feature to work correctly.</td>
+<td>This is the command used to set the duty cycle. The string “((duty_cycle))” in the command will be replaced with the actual duty cycle before the command is executed. Ensure “((duty_cycle))” is included in your command for this feature to work correctly. Commands may be for the linux terminal or Python 3 (depending on which output type selected).</td>
 </tr>
 <tr class="odd">
+<td>Load Modules</td>
+<td>List any extra modules to load that will be used in the conditional statement. You may use multiple separated by a comma. For example, two additional modules may be loaded with the following: “import numpy,from statistics import stdev”</td>
+</tr>
+<tr class="even">
 <td>Current Draw (amps)</td>
 <td>The is the amount of current the device powered by the output draws. Note: this value should be calculated based on the voltage set in the <a href="#output-usage-settings">Output Usage Settings</a>.</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>Start State</td>
 <td>This specifies whether the output should be ON or OFF when mycodo initially starts. Wireless relays have an additional option ‘Neither’ which will not issue an on or off command when Mycodo starts or stops.</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>Seconds to turn On</td>
 <td>This is a way to turn a output on for a specific duration of time. This can be useful for testing the outputs and powered devices or the measured effects a device may have on an environmental condition.</td>
 </tr>
@@ -2875,7 +2880,7 @@ sudo service mycodoflask restart</code></pre>
 <p><a href="#max31856">MAX31856</a>: Temperature <a href="https://www.adafruit.com/product/3263">link</a></p>
 <p><a href="#max31856">MAX31865</a>: Temperature <a href="https://www.adafruit.com/product/3328">link</a></p>
 <p><a href="#mh-z19">MH-Z19</a>: Carbon dioxide (CO2) in ppmv <a href="http://www.winsen-sensor.com/products/ndir-co2-sensor/mh-z19.html">link</a></p>
-<p><a href="#sht1x">SHT1x</a>/<a href="#sht7x">SHT7x</a>, SHT2x: Relative humidity and temperature <a href="https://github.com/mk-fg/sht-sensor">link</a></p>
+<p><a href="#sht1x">SHT1x</a>/<a href="#sht31">SHT31</a>/<a href="#sht7x">SHT7x</a>: Relative humidity and temperature <a href="https://github.com/mk-fg/sht-sensor">link</a></p>
 <p><a href="#tmp006-tmp007">TMP006, TMP007</a>: Contactless temperature <a href="https://www.sparkfun.com/products/11859">link</a></p>
 <p><a href="#tsl2561">TSL2561</a>: Light <a href="https://www.sparkfun.com/products/12055">link</a></p>
 <p><a href="#tsl2591">TSL2591</a>: Light <a href="https://www.adafruit.com/product/1980">link</a></p>
@@ -3157,9 +3162,15 @@ sudo service mycodoflask restart</code></pre>
 <li>2.4 to 5.5V power and I/O</li>
 <li>No more than 0.125 Hz sampling rate (once every 8 seconds)</li>
 </ul>
+<h3 id="sht31">SHT31</h3>
+<h4 id="specifications-24">Specifications</h4>
+<ul>
+<li>±2% relative humidity and ±0.3°C accuracy for most uses</li>
+<li>-40 °C to 125 °C temperature</li>
+</ul>
 <h3 id="sht7x">SHT7x</h3>
 <p>(SHT71, SHT75)</p>
-<h4 id="specifications-24">Specifications</h4>
+<h4 id="specifications-25">Specifications</h4>
 <ul>
 <li>0-100% humidity readings with 2%-3% (10-90% RH) and 2%-5% (0-10% RH and 90-100% RH) accuracy</li>
 <li>-40 °C to 125 °C temperature readings ±0.4 °C and ±0.3 °C typical accuracy (respectively)</li>
@@ -3168,27 +3179,27 @@ sudo service mycodoflask restart</code></pre>
 </ul>
 <h3 id="tmp006-tmp007">TMP006, TMP007</h3>
 <p>The TMP006 Breakout can measure the temperature of an object without making contact with it. By using a thermopile to detect and absorb the infrared energy an object is emitting, the TMP006 Breakout can determine how hot or cold the object is.</p>
-<h4 id="specifications-25">Specifications</h4>
+<h4 id="specifications-26">Specifications</h4>
 <ul>
 <li>Usable temperature range: -40 °C to 125 °C</li>
 <li>Optimal operating voltage of 3.3V to 5V (tolerant up to 7V max)</li>
 </ul>
 <h3 id="tsl2561">TSL2561</h3>
 <p>The TSL2561 Luminosity Sensor is a sophisticated light sensor which has a flat response across most of the visible spectrum. Unlike simpler sensors, the TSL2561 measures both infrared and visible light to better approximate the response of the human eye. And because the TSL2561 is an integrating sensor (it soaks up light for a predetermined amount of time), it is capable of measuring both small and large amounts of light by changing the integration time.</p>
-<h4 id="specifications-26">Specifications</h4>
+<h4 id="specifications-27">Specifications</h4>
 <ul>
 <li>Light range: 0.1 - 40k+ lux</li>
 <li>Vin: 3V and a low supply</li>
 <li>Max current: 0.6mA.</li>
 </ul>
 <h3 id="tsl2591">TSL2591</h3>
-<h4 id="specifications-27">Specifications</h4>
+<h4 id="specifications-28">Specifications</h4>
 <ul>
 <li>Light range: 188 uLux to 88,000 Lux</li>
 </ul>
 <h3 id="winsen-zh03b">Winsen ZH03B</h3>
 <p>Laser Dust sensor module is a common type, small size sensor, using laser scattering principle to detect the dust particles in air, with good selectivity and stability.</p>
-<h4 id="specifications-28">Specifications</h4>
+<h4 id="specifications-29">Specifications</h4>
 <ul>
 <li>Detection: PM1.0, PM2.5, PM10</li>
 <li>Working humidity: 0~85% RH (no condensation)</li>
@@ -3199,7 +3210,7 @@ sudo service mycodoflask restart</code></pre>
 <h2 id="analog-to-digital-converters-1">Analog to Digital Converters</h2>
 <h3 id="ads1x15">ADS1x15</h3>
 <p>(ADS1015, ADS1115)</p>
-<h4 id="specifications-29">Specifications</h4>
+<h4 id="specifications-30">Specifications</h4>
 <ul>
 <li>Interface: I2C</li>
 <li>I2C 7-bit addresses 0x48 - 0x4B</li>
@@ -3210,7 +3221,7 @@ sudo service mycodoflask restart</code></pre>
 </ul>
 <h3 id="ads1256">ADS1256</h3>
 <p>ADS1256</p>
-<h4 id="specifications-30">Specifications</h4>
+<h4 id="specifications-31">Specifications</h4>
 <ul>
 <li>Interface: SPI</li>
 <li>Input channels: 8</li>
@@ -3219,7 +3230,7 @@ sudo service mycodoflask restart</code></pre>
 <li>Resolution: 24-bit</li>
 </ul>
 <h3 id="mcp3008">MCP3008</h3>
-<h4 id="specifications-31">Specifications</h4>
+<h4 id="specifications-32">Specifications</h4>
 <ul>
 <li>Interface: SPI</li>
 <li>8 channels</li>
@@ -3228,7 +3239,7 @@ sudo service mycodoflask restart</code></pre>
 </ul>
 <h3 id="mcp342x">MCP342x</h3>
 <p>(MCP3422, MCP3423, MCP3424, MCP3426, MCP3427, MCP3428)</p>
-<h4 id="specifications-32">Specifications</h4>
+<h4 id="specifications-33">Specifications</h4>
 <ul>
 <li>Interface: I2C</li>
 <li>I2C 7-bit addresses 0x68 - 0x6F</li>
