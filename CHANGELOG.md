@@ -7,7 +7,7 @@
 
 ### Features
 
- - Add Input: SHT31 Smart Gadget Bluetooth humidity/temperature sensor ([#559](https://github.com/kizniche/mycodo/issues/559))
+ - Add Input: SHT31 Smart Gadget (Bluetooth) humidity/temperature sensor ([#559](https://github.com/kizniche/mycodo/issues/559))
 
 
 ## 7.0.0 (2018-12-08)
@@ -25,12 +25,12 @@ The Mycodo 7.0 introduces many redesigned systems, including measurements/units,
 
  - Add Function: Execute Actions
  - Add Function Action: Pause (pause for a duration of time between executing specific actions)
- - Add Input: MCP9808 I2C high accuracy temperature sensor
- - Add Input: AMG8833 I2C 8x8 pixel thermal sensor
- - Add Input: SHT31 I2C humidity/temperature sensor
- - Add LCD: PiOLED 128x32 ([#579](https://github.com/kizniche/mycodo/issues/579))
+ - Add Input: MCP9808 (I2C) high accuracy temperature sensor
+ - Add Input: AMG8833 (I2C) 8x8 pixel thermal sensor
+ - Add Input: SHT31 (I2C) humidity/temperature sensor
+ - Add LCD: PiOLED 128x32 (I2C) LCD ([#579](https://github.com/kizniche/mycodo/issues/579))
  - Add Output: Python Command (On/Off and PWM)
- - Add Output: Atlas EZO-PMP Peristaltic Pump ([#562](https://github.com/kizniche/mycodo/issues/562))
+ - Add Output: Atlas EZO-PMP (I2C/UART) Peristaltic Pump ([#562](https://github.com/kizniche/mycodo/issues/562))
  - Add Vapor Pressure Deficit calculation to Inputs that measure temperature and relative humidity ([#572](https://github.com/kizniche/mycodo/issues/572))
  - Add Vapor Pressure Deficit Math controller ([#572](https://github.com/kizniche/mycodo/issues/572))
  - Add Start Offset option for PID, Math, and Conditionals

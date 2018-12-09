@@ -122,5 +122,8 @@ class InputModule(AbstractInput):
 
     def stop_sensor(self):
         """ Called when sensors are deactivated """
-        self.p.disconnect()
+        try:
+            self.p.disconnect()
+        except Exception as msg:
+            self.logger.error("Error: {err}".format(err=msg))
         self.running = False
