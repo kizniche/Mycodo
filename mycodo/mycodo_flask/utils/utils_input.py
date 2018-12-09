@@ -14,6 +14,7 @@ from mycodo.databases.models import DeviceMeasurements
 from mycodo.databases.models import DisplayOrder
 from mycodo.databases.models import Input
 from mycodo.databases.models import PID
+from mycodo.mycodo_client import DaemonControl
 from mycodo.mycodo_flask.extensions import db
 from mycodo.mycodo_flask.utils.utils_general import add_display_order
 from mycodo.mycodo_flask.utils.utils_general import controller_activate_deactivate
@@ -576,3 +577,26 @@ def input_deactivate_associated_controllers(input_id):
             controller_activate_deactivate('deactivate',
                                            'PID',
                                            each_pid.unique_id)
+
+
+def force_acquire_measurements(unique_id):
+    action = '{action}, {controller}'.format(
+        action=gettext("Force Measurements"),
+        controller=gettext("Input"))
+    error = []
+
+    try:
+        mod_input = Input.query.filter(
+            Input.unique_id == unique_id).first()
+
+        if not mod_input.is_activated:
+            error.append(gettext(
+                "Activate controller before attempting to force the acquisition of measurements"))
+
+        if not error:
+            control = DaemonControl()
+            status = control.input_force_measurements(unique_id)
+            flash("Daemon response: {}".format(status), "success")
+    except Exception as except_msg:
+        error.append(except_msg)
+    flash_success_errors(error, action, url_for('routes_page.page_data'))

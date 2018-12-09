@@ -211,7 +211,7 @@ class InputController(threading.Thread):
                         time.sleep(0.1)
 
                 if self.force_measurements_trigger:
-                    self.acquire_measurments_now()
+                    self.acquire_measurements_now()
                     self.force_measurements_trigger = False
 
                 if self.device not in ['EDGE']:
@@ -511,9 +511,9 @@ class InputController(threading.Thread):
 
     def force_measurements(self):
         self.force_measurements_trigger = True
-        return "Force measurements triggered"
+        return "Input instructed to begin acquiring measurements"
 
-    def acquire_measurments_now(self):
+    def acquire_measurements_now(self):
         try:
             self.update_measure()
             add_measurements_influxdb(

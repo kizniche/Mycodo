@@ -1561,9 +1561,7 @@ def page_data():
 
         # Misc Input
         if form_mod_input.input_acquire_measurements.data:
-            control = DaemonControl()
-            status = control.input_force_measurements(form_mod_input.input_id.data)
-            flash("Force acquisition of Input measurements Daemon response: {}".format(status), "success")
+            utils_input.force_acquire_measurements(form_mod_input.input_id.data)
 
         # Add Input
         elif form_add_input.input_add.data:
