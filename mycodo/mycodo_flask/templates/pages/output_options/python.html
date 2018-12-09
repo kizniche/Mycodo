@@ -1,0 +1,22 @@
+<div class="col-md-12 col-lg-6">
+  {{form_mod_output.on_command.label(class_='control-label')}}
+  <div>
+    <textarea class="form-control" id="on_command" name="on_command" rows="5" type="text" title="{{_('Command to execute (as user mycodo) when the output is instructed to turn on')}}">{{each_output.on_command}}</textarea>
+   </div>
+</div>
+<div class="col-md-12 col-lg-6">
+  {{form_mod_output.off_command.label(class_='control-label')}}
+  <div>
+    <textarea class="form-control" id="off_command" name="off_command" rows="5" type="text" title="{{_('Command to execute (as user mycodo) when the output is instructed to turn off')}}">{{each_output.off_command}}</textarea>
+   </div>
+</div>
+<div class="col-auto">
+  {{form_mod_output.on_at_start.label(class_='control-label')}}
+  <div>
+    <select class="form-control form-tooltip form-dropdown" id="on_at_start" name="on_at_start" data-placement="top" title="{{_('When Mycodo starts, set the output state')}}">
+      <option value="-1"{% if each_output.on_at_start == none %} selected{% endif %}>{{_('Neither')}}</option>
+      <option value="1"{% if each_output.on_at_start == 1 %} selected{% endif %}>{{_('On')}}</option>
+      <option value="0"{% if each_output.on_at_start == 0 %} selected{% endif %}>{{_('Off')}}</option>
+    </select>
+  </div>
+</div>

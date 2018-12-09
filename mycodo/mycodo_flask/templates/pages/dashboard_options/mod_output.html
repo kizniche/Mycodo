@@ -20,33 +20,30 @@
 
   <div class="row small-gutters" style="padding: 0.3em 1.5em 0 1.5em">
     {% if not is_pwm -%}
-    <div class="col-6">
-      <input class="form-control btn btn-default btn-sm turn_on" id="turn_on" name="{{each_dashboard.output_ids.split(',')[0]}}/on/sec/0" type="button" value="{{_('On')}}">
+    <div class="col-auto">
+      <input class="btn btn-sm turn_on" id="turn_on" name="{{each_dashboard.output_ids.split(',')[0]}}/on/sec/0" type="button" value="{{_('On')}}">
     </div>
     {%- endif %}
-    <div class="col-6">
-      <input class="form-control btn btn-default btn-sm turn_off" id="turn_off" name="{{each_dashboard.output_ids.split(',')[0]}}/off/sec/0" type="button" value="{{_('Off')}}">
+    <div class="col-auto">
+      <input class="btn btn-sm turn_off" id="turn_off" name="{{each_dashboard.output_ids.split(',')[0]}}/off/sec/0" type="button" value="{{_('Off')}}">
     </div>
-  </div>
-
-  <div class="row small-gutters" style="padding: 0 1.5em 0 1.5em">
 
     {% if not is_pwm %}
 
-    <div class="col-6">
-      <input class="form-control form-control-sm" id="sec_on_amt_{{each_dashboard.output_ids.split(',')[0]}}" name="sec_on_amt_{{each_dashboard.output_ids.split(',')[0]}}" title="Turn output on for a specific number of seconds" type="number" value="" placeholder="Seconds">
+    <div class="col-auto">
+      <input class="form-control-sm" id="sec_on_amt_{{each_dashboard.output_ids.split(',')[0]}}" name="sec_on_amt_{{each_dashboard.output_ids.split(',')[0]}}" title="Turn output on for a specific number of seconds" type="number" step="any" value="" placeholder="Seconds">
     </div>
-    <div class="col-6">
-      <input class="form-control btn btn-default btn-sm sec_on_amt" id="turn_on" name="{{each_dashboard.output_ids.split(',')[0]}}/on/sec/" type="button" value="{{_('Sec On')}}">
+    <div class="col-auto">
+      <input class="btn btn-sm sec_on_amt" id="turn_on" name="{{each_dashboard.output_ids.split(',')[0]}}/on/sec/" type="button" value="{{_('Sec On')}}">
     </div>
 
     {% else %}
 
-    <div class="col-6">
-      <input class="form-control form-control-sm" id="duty_cycle_on_amt_{{each_dashboard.output_ids.split(',')[0]}}" name="duty_cycle_on_amt_{{each_dashboard.output_ids.split(',')[0]}}" title="Select the PWM duty cycle (0.0 - 100.0)" type="number" value="" placeholder="% Duty Cycle">
+    <div class="col-auto">
+      <input class="form-control-sm" id="duty_cycle_on_amt_{{each_dashboard.output_ids.split(',')[0]}}" name="duty_cycle_on_amt_{{each_dashboard.output_ids.split(',')[0]}}" title="Select the PWM duty cycle (0.0 - 100.0)" type="number" step="any" value="" placeholder="% Duty Cycle">
     </div>
-    <div class="col-6">
-      <input class="form-control btn btn-default btn-sm duty_cycle_on_amt" id="turn_on" name="{{each_dashboard.output_ids.split(',')[0]}}/on/pwm/" type="button" value="{{_('PWM On')}}">
+    <div class="col-auto">
+      <input class="btn btn-sm duty_cycle_on_amt" id="turn_on" name="{{each_dashboard.output_ids.split(',')[0]}}/on/pwm/" type="button" value="{{_('PWM On')}}">
     </div>
 
     {% endif %}
@@ -64,11 +61,11 @@
     <div class="form-row">
       {% if not is_pwm -%}
       <div class="col-auto">
-        <input class="form-control btn btn-default turn_on" id="turn_on" name="{{each_dashboard.output_ids.split(',')[0]}}/on/sec/0" type="button" value="{{_('On')}}">
+        <input class="form-control btn btn-sm turn_on" id="turn_on" name="{{each_dashboard.output_ids.split(',')[0]}}/on/sec/0" type="button" value="{{_('On')}}">
       </div>
       {%- endif %}
       <div class="col-auto">
-        <input class="form-control btn btn-default turn_off" id="turn_off" name="{{each_dashboard.output_ids.split(',')[0]}}/off/sec/0" type="button" value="{{_('Off')}}">
+        <input class="form-control btn btn-sm turn_off" id="turn_off" name="{{each_dashboard.output_ids.split(',')[0]}}/off/sec/0" type="button" value="{{_('Off')}}">
       </div>
     </div>
 
@@ -76,10 +73,10 @@
 
     <div class="form-row">
       <div class="col-auto">
-        <input class="form-control" id="sec_on_amt_{{each_dashboard.output_ids.split(',')[0]}}" name="sec_on_amt_{{each_dashboard.output_ids.split(',')[0]}}" title="Turn this output on for a specific number of seconds (used to test output)" type="number" value="" placeholder="Seconds">
+        <input class="form-control" id="sec_on_amt_{{each_dashboard.output_ids.split(',')[0]}}" name="sec_on_amt_{{each_dashboard.output_ids.split(',')[0]}}" title="Turn this output on for a specific number of seconds (used to test output)" type="number" step="any" value="" placeholder="Seconds">
       </div>
       <div class="col-auto">
-        <input class="form-control btn btn-default sec_on_amt" id="turn_on" name="{{each_dashboard.output_ids.split(',')[0]}}/on/sec/" type="button" value="{{_('Turn On')}}">
+        <input class="form-control btn btn-sm sec_on_amt" id="turn_on" name="{{each_dashboard.output_ids.split(',')[0]}}/on/sec/" type="button" value="{{_('Turn On')}}">
       </div>
     </div>
 
@@ -87,10 +84,10 @@
 
     <div class="form-row">
       <div class="col-auto">
-        <input class="form-control" id="duty_cycle_on_amt_{{each_dashboard.output_ids.split(',')[0]}}" name="duty_cycle_on_amt_{{each_dashboard.output_ids.split(',')[0]}}" title="Select the duty cycle for the PWM when turned on (0.0 - 100.0)" type="number" value="" placeholder="% Duty Cycle">
+        <input class="form-control" id="duty_cycle_on_amt_{{each_dashboard.output_ids.split(',')[0]}}" name="duty_cycle_on_amt_{{each_dashboard.output_ids.split(',')[0]}}" title="Select the duty cycle for the PWM when turned on (0.0 - 100.0)" type="number" step="any" value="" placeholder="% Duty Cycle">
       </div>
       <div class="col-auto">
-        <input class="form-control btn btn-default duty_cycle_on_amt" id="turn_on" name="{{each_dashboard.output_ids.split(',')[0]}}/on/pwm/" type="button" value="{{_('Turn On')}}">
+        <input class="form-control btn btn-sm duty_cycle_on_amt" id="turn_on" name="{{each_dashboard.output_ids.split(',')[0]}}/on/pwm/" type="button" value="{{_('Turn On')}}">
       </div>
     </div>
 
@@ -177,19 +174,20 @@
       </div>
     </div>
 
-    <div class="form-row btn-group" style="padding-top: 1em;">
-      <div class="form-group">
-        {{form_base.modify(class_='form-control btn btn-default')}}
+    <div class="row small-gutters" style="padding: 1em 1em 0 0.8em;">
+      <div class="col-auto">
+        {{form_base.modify(class_='btn btn-primary')}}
       </div>
-      <div class="form-group">
-        {{form_base.delete(class_='form-control btn btn-default',**{'onclick':'return confirm("Are you sure you want to delete this?")'})}}
+      <div class="col-auto">
+        {{form_base.delete(class_='btn btn-primary',**{'onclick':'return confirm("Are you sure you want to delete this?")'})}}
       </div>
-      <div class="form-group">
-        {{form_base.order_up(class_='form-control btn btn-default')}}
+      <div class="col-auto">
+        {{form_base.order_up(class_='btn btn-primary')}}
       </div>
-      <div class="form-group">
-        {{form_base.order_down(class_='form-control btn btn-default')}}
+      <div class="col-auto">
+        {{form_base.order_down(class_='btn btn-primary')}}
       </div>
     </div>
   </form>
+
 </div>

@@ -79,9 +79,9 @@ def register_extensions(app):
     db.init_app(app)
     influx_db.init_app(app)
 
-    # Limit authentication blueprint requests to 60 per minute
+    # Limit authentication blueprint requests to 200 per minute
     limiter = Limiter(app, key_func=get_ip_address)
-    limiter.limit("60/minute")(routes_authentication.blueprint)
+    limiter.limit("200/minute")(routes_authentication.blueprint)
 
     # Language translations
     babel = Babel(app)

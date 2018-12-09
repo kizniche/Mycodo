@@ -1,4 +1,4 @@
-<div class="text-right" style="padding-right: 0.2em;">
+<div class="col-12 text-right small-gutters" style="padding-right: 0.2em;">
   <span style="padding-right: 0.5em">{{each_dashboard.name}} [{{'%02d' % each_dashboard.id}}]</span>
   <button style="margin-bottom: 1em" class="btn btn-sm" id="updateData{{chart_number}}">Update</button>
   <button style="margin-bottom: 1em" class="btn btn-sm" id="resetZoom{{chart_number}}">Reset</button>
@@ -8,16 +8,18 @@
   </a>
 </div>
 
-<div id="container-graph-{{each_dashboard.unique_id}}" style="height: {{each_dashboard.height}}px;"></div>
+<div class="col-12 small-gutters">
+  <div id="container-graph-{{each_dashboard.unique_id}}" style="padding-bottom: 0.1em; height: {{each_dashboard.height}}px;"></div>
+</div>
 
-<div class="collapse" id="collapseContainer{{chart_number}}" style="padding: 0.5em; width: calc(100% - 1em)">
+<div class="collapse" id="collapseContainer{{chart_number}}" style="padding: 0.5em;">
 
   <form method="post" action="/dashboard">
     {{form_base.csrf_token}}
     {{form_base.dashboard_id(value=each_dashboard.unique_id)}}
     <input type="hidden" name="dashboard_type" value="{{each_dashboard.graph_type}}">
 
-    <div style="padding: 0.5em;" class="form-row small-gutters">
+    <div class="form-row">
       <div class="col-auto">
         {{form_base.name.label(class_='control-label')}}
         <div>
@@ -64,10 +66,11 @@
     <div style="clear: both"></div>
 
     <div class="form-row">
+
       <div class="col-auto">
         {{form_graph.input_ids.label(class_='control-label')}}
         <div>
-          <select class="form-control btn-default" id="input_ids" name="input_ids" style="width: 100%;" size="{{choices_input|length}}" multiple>
+          <select class="form-control btn-sm" id="input_ids" name="input_ids" style="width: 100%;" size="{{[choices_input|length, 20]|min}}" multiple>
           {% if choices_input %}
             {% for each_choice, value in choices_input.items() -%}
             <option value="{{each_choice}}"{%- if each_choice|string in each_dashboard.input_ids_measurements %} selected{%- endif -%}>{{value}}</option>
@@ -81,7 +84,7 @@
       <div class="col-auto">
         {{form_graph.math_ids.label(class_='control-label')}}
         <div>
-          <select class="form-control btn-default" id="math_ids" name="math_ids" style="width: 100%;" size="{{choices_math|length}}" multiple>
+          <select class="form-control btn-sm" id="math_ids" name="math_ids" style="width: 100%;" size="{{[choices_math|length, 20]|min}}" multiple>
           {% if choices_math %}
             {% for each_choice, value in choices_math.items() -%}
             <option value="{{each_choice}}"{%- if each_choice|string in each_dashboard.math_ids %} selected{%- endif -%}>{{value}}</option>
@@ -95,7 +98,7 @@
       <div class="col-auto">
         {{form_graph.output_ids.label(class_='control-label')}}
         <div>
-          <select class="form-control btn-default" id="output_ids" name="output_ids" style="width: 100%;" size="{{choices_output|length}}" multiple>
+          <select class="form-control btn-sm" id="output_ids" name="output_ids" style="width: 100%;" size="{{[choices_output|length, 20]|min}}" multiple>
           {% if choices_output %}
             {% for each_choice, value in choices_output.items() -%}
             <option value="{{each_choice}}"{%- if each_choice|string in each_dashboard.output_ids %} selected{%- endif -%}>{{value}}</option>
@@ -109,7 +112,7 @@
       <div class="col-auto">
         {{form_graph.pid_ids.label(class_='control-label')}}
         <div>
-          <select class="form-control btn-default" id="pid_ids" name="pid_ids" style="width: 100%;" size="{{choices_pid|length}}" multiple>
+          <select class="form-control btn-sm" id="pid_ids" name="pid_ids" style="width: 100%;" size="{{[choices_pid|length, 20]|min}}" multiple>
           {% if choices_pid %}
             {% for each_choice, value in choices_pid.items() -%}
               <option value="{{each_choice}}"{%- if each_choice|string in each_dashboard.pid_ids %} selected{%- endif -%}>{{value}}</option>
@@ -123,7 +126,7 @@
       <div class="col-auto">
         {{form_graph.note_tag_ids.label(class_='control-label')}}
         <div>
-          <select class="form-control btn-default" id="note_tag_ids" name="note_tag_ids" style="width: 100%;" size="{{choices_note_tag|length}}" multiple>
+          <select class="form-control btn-sm" id="note_tag_ids" name="note_tag_ids" style="width: 100%;" size="{{[choices_note_tag|length, 20]|min}}" multiple>
           {% if choices_note_tag %}
             {% for each_choice, value in choices_note_tag.items() -%}
               <option value="{{each_choice}}"{%- if each_choice|string in each_dashboard.note_tag_ids %} selected{%- endif -%}>{{value}}</option>
@@ -134,13 +137,14 @@
           </select>
         </div>
       </div>
+
     </div>
 
     <div class="form-row">
       {{_('Hold down the <kbd>Ctrl</kbd> or <kbd>&#8984;</kbd> key to select more than one')}}.
     </div>
 
-    <div class="form-row">
+    <div class="form-row" style="padding-left: 0.5em">
       <div class="form-check form-check-inline">
         <input class="form-check-input" id="enable_xaxis_reset" name="enable_xaxis_reset" type="checkbox" value="y"{% if each_dashboard.enable_xaxis_reset %} checked{% endif %}>
         {{form_graph.enable_xaxis_reset.label(class_='control-label')}}
@@ -167,24 +171,28 @@
       </div>
     </div>
 
-    <div class="form-row" style="padding: 1em 0 0.5em 1em">
+    <div class="form-row" style="padding-left: 0.5em">
       <div class="form-check">
         <input class="form-check-input" id="use_custom_colors" name="use_custom_colors" type="checkbox" value="y"{% if each_dashboard.use_custom_colors %} checked{% endif %}>
         {{form_graph.use_custom_colors.label(class_='control-label')}}
       </div>
     </div>
 
-    <div class="form-row">
       {% for n in range(colors_graph[each_dashboard.unique_id]|length) %}
+    <div class="form-row">
       <div class="form-check">
         {% set index = '{0:0>2}'.format(n) %}
         <input id="color_number{{index}}" name="color_number{{index}}" placeholder="#000000" type="color" value="{{colors_graph[each_dashboard.unique_id][n]['color']}}">
-        <label for="color_number{{index}}">{{colors_graph[each_dashboard.unique_id][n]['name']}} ({{colors_graph[each_dashboard.unique_id][n]['measure']}})</label>
+        <label for="color_number{{index}}">{{colors_graph[each_dashboard.unique_id][n]['name']}}, CH{{colors_graph[each_dashboard.unique_id][n]['channel']}}
+        {%- if colors_graph[each_dashboard.unique_id][n]['measure_name'] -%}
+          {{', ' + colors_graph[each_dashboard.unique_id][n]['measure_name']}}
+        {%- endif -%}
+          {{' (' + dict_units[colors_graph[each_dashboard.unique_id][n]['unit']]['name']}})</label>
       </div>
-      {% endfor %}
     </div>
+      {% endfor %}
 
-    <div class="form-row" style="padding-top: 0.5em">
+    <div class="form-row" style="padding-left: 0.5em">
       <div class="form-check form-check-inline">
         <input class="form-check-input" id="enable_manual_y_axis" name="enable_manual_y_axis" type="checkbox" value="y"{% if each_dashboard.enable_manual_y_axis %} checked{% endif %}>
         {{form_graph.enable_manual_y_axis.label(class_='control-label')}}
@@ -205,13 +213,13 @@
 
   {% for each_yaxis in y_axes[each_dashboard.unique_id] if each_yaxis in dict_units %}
     {% set index = '{0:0>2}'.format(loop.index) %}
-    <div class="form-row" style="padding-top: 0.5em">
+    <div class="row" style="padding-top: 0.5em">
       <div class="col-auto">
         {{dict_units[each_yaxis]['name']}}{% if dict_units[each_yaxis]['unit'] != '' %} ({{dict_units[each_yaxis]['unit']}}){% endif %}
       </div>
     </div>
 
-    <div class="form-row" style="padding-top: 0.2em">
+    <div class="form-row">
       <input type="hidden" name="custom_yaxis_name_{{index}}" value="{{each_yaxis}}">
       <div class="col-auto">
         <label class="form-check-label" for="custom_yaxis_min_{{index}}">Y-Axis Minimum</label>
@@ -228,19 +236,21 @@
     </div>
   {% endfor %}
 
-    <div class="form-row btn-group" style="padding: 1em;">
+    <div class="row small-gutters" style="padding: 1em 1em 0 0.8em;">
       <div class="col-auto">
-        {{form_base.modify(class_='form-control btn btn-default')}}
+        {{form_base.modify(class_='btn btn-primary')}}
       </div>
       <div class="col-auto">
-        {{form_base.delete(class_='form-control btn btn-default',**{'onclick':'return confirm("Are you sure you want to delete this?")'})}}
+        {{form_base.delete(class_='btn btn-primary',**{'onclick':'return confirm("Are you sure you want to delete this?")'})}}
       </div>
       <div class="col-auto">
-        {{form_base.order_up(class_='form-control btn btn-default')}}
+        {{form_base.order_up(class_='btn btn-primary')}}
       </div>
       <div class="col-auto">
-        {{form_base.order_down(class_='form-control btn btn-default')}}
+        {{form_base.order_down(class_='btn btn-primary')}}
       </div>
     </div>
+
   </form>
+
 </div>

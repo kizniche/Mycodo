@@ -3,13 +3,13 @@
 import logging
 
 import flask_login
+from flask import current_app
 from flask import flash
 from flask import redirect
 from flask import render_template
 from flask import url_for
 from flask.blueprints import Blueprint
 from flask_babel import gettext
-from sqlalchemy import or_
 
 from mycodo.databases.models import Input
 from mycodo.devices.atlas_scientific_i2c import AtlasScientificI2C
@@ -67,9 +67,7 @@ def setup_atlas_ph():
 
     form_ph_calibrate = forms_calibration.CalibrationAtlasph()
 
-    input_dev = Input.query.filter(
-        or_(Input.device == 'ATLAS_PH_UART',
-            Input.device == 'ATLAS_PH_I2C')).all()
+    input_dev = Input.query.filter(Input.device == 'ATLAS_PH').all()
     stage = 0
     next_stage = None
     selected_input = None
@@ -82,7 +80,7 @@ def setup_atlas_ph():
     # Clear Calibration memory
     if form_ph_calibrate.clear_calibration.data:
         selected_input = Input.query.filter_by(
-            unique_id=form_ph_calibrate.selected_sensor_id.data).first()
+            unique_id=form_ph_calibrate.selected_input_id.data).first()
         atlas_command = AtlasScientificCommand(selected_input)
         status, message = atlas_command.calibrate('clear_calibration')
         if status:
@@ -94,12 +92,12 @@ def setup_atlas_ph():
     elif form_ph_calibrate.go_from_first_stage.data:
         stage = 1
         selected_input = Input.query.filter_by(
-            unique_id=form_ph_calibrate.selected_sensor_id.data).first()
+            unique_id=form_ph_calibrate.selected_input_id.data).first()
         dict_inputs = parse_input_information()
         list_inputs_sorted = generate_form_input_list(dict_inputs)
         if not selected_input:
             flash('Input not found: {}'.format(
-                form_ph_calibrate.selected_sensor_id.data), 'error')
+                form_ph_calibrate.selected_input_id.data), 'error')
         else:
             for each_input in list_inputs_sorted:
                 if selected_input.device == each_input[0]:
@@ -110,7 +108,7 @@ def setup_atlas_ph():
             form_ph_calibrate.go_to_last_stage.data or
             (next_stage is not None and next_stage > 1)):
         selected_input = Input.query.filter_by(
-            unique_id=form_ph_calibrate.hidden_sensor_id.data).first()
+            unique_id=form_ph_calibrate.hidden_input_id.data).first()
         dict_inputs = parse_input_information()
         list_inputs_sorted = generate_form_input_list(dict_inputs)
         for each_input in list_inputs_sorted:
@@ -124,7 +122,7 @@ def setup_atlas_ph():
             stage = 1
         else:
             temp = '{temp:.2f}'.format(
-                temp=form_ph_calibrate.temperature.data)
+                temp=float(form_ph_calibrate.temperature.data))
             stage, complete_with_error = dual_commands_to_sensor(
                 selected_input, 'temperature', temp, 'continuous', 1)
     elif next_stage == 3:
@@ -140,9 +138,9 @@ def setup_atlas_ph():
     return render_template('tools/calibration_options/atlas_ph.html',
                            complete_with_error=complete_with_error,
                            form_ph_calibrate=form_ph_calibrate,
-                           sensor=input_dev,
-                           sensor_device_name=input_device_name,
-                           selected_sensor=selected_input,
+                           input=input_dev,
+                           input_device_name=input_device_name,
+                           selected_input=selected_input,
                            stage=stage)
 
 
@@ -193,6 +191,7 @@ def setup_atlas_ph_measure(input_id):
     else:
         return ph
 
+
 @blueprint.route('/setup_ds_resolution', methods=('GET', 'POST'))
 @flask_login.login_required
 def setup_ds_resolution():
@@ -204,34 +203,56 @@ def setup_ds_resolution():
     inputs = Input.query.all()
 
     # Check if w1thermsensor library is installed
-    dep_unmet, _ = return_dependencies('CALIBRATE_DS_TYPE')
-    if dep_unmet:
-        list_unmet_deps = []
-        for each_dep in dep_unmet:
-            list_unmet_deps.append(each_dep[0])
-        flash("The device you're trying to calibrate has unmet dependencies: {dep}".format(
-            dep=', '.join(list_unmet_deps)))
-        return redirect(url_for('routes_admin.admin_dependencies',
-                                device='CALIBRATE_DS_TYPE'))
+    if not current_app.config['TESTING']:
+        dep_unmet, _ = return_dependencies('CALIBRATE_DS_TYPE')
+        if dep_unmet:
+            list_unmet_deps = []
+            for each_dep in dep_unmet:
+                list_unmet_deps.append(each_dep[0])
+            flash("The device you're trying to calibrate has unmet dependencies: {dep}".format(
+                dep=', '.join(list_unmet_deps)))
+            return redirect(url_for('routes_admin.admin_dependencies',
+                                    device='CALIBRATE_DS_TYPE'))
 
     # If DS18B20 inputs added, compile a list of detected inputs
     ds_inputs = []
     try:
-        from w1thermsensor import W1ThermSensor
-        for each_input in W1ThermSensor.get_available_sensors():
-            ds_inputs.append(each_input.id)
+        if not current_app.config['TESTING']:
+            from w1thermsensor import W1ThermSensor
+            for each_input in W1ThermSensor.get_available_sensors():
+                ds_inputs.append(each_input.id)
     except OSError:
         flash("Unable to detect DS18B20 Inputs in '/sys/bus/w1/devices'. "
               "Make 1-wire support is enabled with 'sudo raspi-config'.",
               "error")
 
-    if form_ds.set_resolution.data and form_ds.device_id.data:
+    if (not current_app.config['TESTING'] and
+            form_ds.set_resolution.data and
+            form_ds.device_id.data):
         try:
             from w1thermsensor import W1ThermSensor
-            sensor = W1ThermSensor(input_id=form_ds.device_id.data)
-            # sensor = W1ThermSensor(W1ThermSensor.THERM_SENSOR_DS18B20, "00000588806a")
-            sensor.set_precision(
-                form_ds.set_resolution.data,persist=True)
+            input_dev = Input.query.filter(Input.unique_id == form_ds.device_id.data).first()
+            input_type = None
+            if input_dev.device == 'DS18B20':
+                input_type = W1ThermSensor.THERM_SENSOR_DS18B20
+            if input_dev.device == 'DS18S20':
+                input_type = W1ThermSensor.THERM_SENSOR_DS18S20
+            if input_dev.device == 'DS1822':
+                input_type = W1ThermSensor.THERM_SENSOR_DS1822
+            if input_dev.device == 'DS28EA00':
+                input_type = W1ThermSensor.THERM_SENSOR_DS28EA00
+            if input_dev.device == 'DS1825':
+                input_type = W1ThermSensor.THERM_SENSOR_DS1825
+            if input_dev.device == 'MAX31850K':
+                input_type = W1ThermSensor.THERM_SENSOR_MAX31850K
+            else:
+                flash("Unknown input type: {}".format(input_dev.device),
+                      "error")
+
+            if input_type:
+                sensor = W1ThermSensor(sensor_type=input_type, sensor_id=input_dev.location)
+                sensor.set_precision(
+                    form_ds.set_resolution.data, persist=True)
             flash("Successfully set sensor {id} resolution to "
                   "{bit}-bit".format(id=form_ds.device_id.data,
                                      bit=form_ds.set_resolution.data),
@@ -244,6 +265,7 @@ def setup_ds_resolution():
                            ds_inputs=ds_inputs,
                            form_ds=form_ds,
                            inputs=inputs)
+
 
 def dual_commands_to_sensor(input_sel, first_cmd, amount,
                             second_cmd, current_stage):

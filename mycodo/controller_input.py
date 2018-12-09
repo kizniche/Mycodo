@@ -33,14 +33,17 @@ import locket
 import os
 import requests
 
-from mycodo.databases.models import Conditional
+from mycodo.databases.models import DeviceMeasurements
 from mycodo.databases.models import Input
+from mycodo.databases.models import Conversion
 from mycodo.databases.models import Misc
 from mycodo.databases.models import Output
 from mycodo.databases.models import SMTP
+from mycodo.databases.models import Trigger
+from mycodo.inputs.sensorutils import convert_units
 from mycodo.mycodo_client import DaemonControl
 from mycodo.utils.database import db_retrieve_table_daemon
-from mycodo.utils.influx import add_measure_influxdb
+from mycodo.utils.influx import add_measurements_influxdb
 from mycodo.utils.influx import write_influxdb_value
 from mycodo.utils.inputs import load_module_from_file
 from mycodo.utils.inputs import parse_input_information
@@ -98,28 +101,19 @@ class InputController(threading.Thread):
         input_dev = db_retrieve_table_daemon(
             Input, unique_id=self.input_id)
 
+        self.device_measurements = db_retrieve_table_daemon(
+            DeviceMeasurements).filter(
+                DeviceMeasurements.device_id == self.input_id)
+
+        self.conversions = db_retrieve_table_daemon(Conversion)
+
         self.input_dev = input_dev
         self.input_name = input_dev.name
         self.unique_id = input_dev.unique_id
         self.gpio_location = input_dev.gpio_location
-        self.measurements = input_dev.measurements
         self.device = input_dev.device
         self.interface = input_dev.interface
         self.period = input_dev.period
-
-        # Analog-to-Digital Controller
-        self.adc_measure = input_dev.convert_to_unit.split(',')[0]
-        self.adc_volts_min = input_dev.adc_volts_min
-        self.adc_volts_max = input_dev.adc_volts_max
-        self.adc_units_min = input_dev.adc_units_min
-        self.adc_units_max = input_dev.adc_units_max
-        self.adc_inverse_unit_scale = input_dev.adc_inverse_unit_scale
-
-        # Determine if this input is an analog-to-digital converter
-        self.is_adc = False
-        if ('analog_to_digital_converter' in self.dict_inputs[self.device] and
-                self.dict_inputs[self.device]['analog_to_digital_converter']):
-            self.is_adc = True
 
         # Edge detection
         self.switch_edge = input_dev.switch_edge
@@ -175,32 +169,7 @@ class InputController(threading.Thread):
             if self.device == 'EDGE':
                 # Edge detection handled internally, no module to load
                 self.measure_input = None
-
-            elif self.is_adc:
-                # Load analog-to-digital converter module
-                self.measure_input = None
-                self.adc = input_loaded.ADCModule(self.input_dev)
-                if self.interface == 'I2C':
-                    self.adc_lock_file = "/var/lock/mycodo_adc_bus{bus}_0x{i2c:02X}.pid".format(
-                        bus=self.input_dev.i2c_bus,
-                        i2c=self.input_dev.i2c_location)
-                elif self.interface == 'UART':
-                    if None not in [self.input_dev.pin_clock,
-                                    self.input_dev.pin_cs,
-                                    self.input_dev.pin_miso,
-                                    self.input_dev.pin_mosi]:
-                        self.adc_lock_file = "/var/lock/mycodo_adc_uart-{clock}-{cs}-{miso}-{mosi}".format(
-                            clock=self.input_dev.pin_clock,
-                            cs=self.input_dev.pin_cs,
-                            miso=self.input_dev.pin_miso,
-                            mosi=self.input_dev.pin_mosi)
-                    else:
-                        self.adc_lock_file = "/var/lock/mycodo_adc_uart-{dev}".format(
-                            dev=self.device)
-
             else:
-                # Load input module
-                self.adc = None
                 self.measure_input = input_loaded.InputModule(self.input_dev)
 
         else:
@@ -325,7 +294,46 @@ class InputController(threading.Thread):
 
                         # Add measurement(s) to influxdb
                         if self.measurement_success:
-                            add_measure_influxdb(self.unique_id, self.measurement)
+
+                            measurements_record = {}
+                            for each_channel, each_measurement in self.measurement.values.items():
+                                measurement = self.device_measurements.filter(
+                                    DeviceMeasurements.channel == each_channel).first()
+
+                                if 'value' in each_measurement:
+                                    # Unscaled, unconverted measurement
+                                    measurements_record[each_channel] = {
+                                        'measurement': each_measurement['measurement'],
+                                        'unit': each_measurement['unit'],
+                                        'value': each_measurement['value']
+                                    }
+
+                                    # Scaling needs to come before conversion
+                                    # Scale measurement
+                                    if (measurement.rescaled_measurement and
+                                            measurement.rescaled_unit):
+                                        scaled_value = measurements_record[each_channel] = self.rescale_measurements(
+                                            measurement, measurements_record[each_channel]['value'])
+                                        measurements_record[each_channel] = {
+                                            'measurement': measurement.rescaled_measurement,
+                                            'unit': measurement.rescaled_unit,
+                                            'value': scaled_value
+                                        }
+
+                                    # Convert measurement
+                                    if measurement.conversion_id not in ['', None] and 'value' in each_measurement:
+                                        conversion = self.conversions.filter(
+                                            Conversion.unique_id == measurement.conversion_id).first()
+                                        converted_value = convert_units(
+                                            measurement.conversion_id,
+                                            measurements_record[each_channel]['value'])
+                                        measurements_record[each_channel] = {
+                                            'measurement': None,
+                                            'unit': conversion.convert_unit_to,
+                                            'value': converted_value
+                                        }
+
+                            add_measurements_influxdb(self.unique_id, measurements_record)
                             self.measurement_success = False
 
                 self.trigger_cond = False
@@ -347,74 +355,51 @@ class InputController(threading.Thread):
             self.logger.exception("Error: {err}".format(
                 err=except_msg))
 
-    def read_adc(self):
-        """ Read voltage from ADC """
+    def rescale_measurements(self, measurement, measurement_value):
+        """ Read channels """
         try:
-            lock_acquired = False
 
-            # Set up lock for ADC
-            adc_lock = locket.lock_file(self.adc_lock_file, timeout=30)
-            try:
-                adc_lock.acquire()
-                lock_acquired = True
-            except:
-                self.logger.error("Could not acquire ADC lock. Breaking for future locking.")
-                os.remove(self.adc_lock_file)
+            # Get the difference between min and max volts
+            diff_voltage = abs(
+                float(measurement.scale_from_max) - float(measurement.scale_from_min))
 
-            if not lock_acquired:
-                self.logger.error(
-                    "Unable to acquire lock: {lock}".format(
-                        lock=self.adc_lock_file))
+            # Ensure the value stays within the min/max bounds
+            if measurement_value < float(measurement.scale_from_min):
+                measured_voltage = measurement.scale_from_min
+            elif measurement_value > float(measurement.scale_from_max):
+                measured_voltage = float(measurement.scale_from_max)
+            else:
+                measured_voltage = measurement_value
 
-            # Get measurement from ADC
-            measurements = self.adc.next()
+            # Calculate the percentage of the difference
+            percent_diff = ((measured_voltage - float(measurement.scale_from_min)) /
+                            diff_voltage)
 
-            if measurements is not None:
-                # Get the voltage difference between min and max volts
-                diff_voltage = abs(self.adc_volts_max - self.adc_volts_min)
+            # Get the units difference between min and max units
+            diff_units = abs(float(measurement.scale_to_max) - float(measurement.scale_to_min))
 
-                # Ensure the voltage stays within the min/max bounds
-                if measurements['voltage'] < self.adc_volts_min:
-                    measured_voltage = self.adc_volts_min
-                elif measurements['voltage'] > self.adc_volts_max:
-                    measured_voltage = self.adc_volts_max
-                else:
-                    measured_voltage = measurements['voltage']
+            # Calculate the measured units from the percent difference
+            if measurement.invert_scale:
+                converted_units = (float(measurement.scale_to_max) -
+                                   (diff_units * percent_diff))
+            else:
+                converted_units = (float(measurement.scale_to_min) +
+                                   (diff_units * percent_diff))
 
-                # Calculate the percentage of the voltage difference
-                percent_diff = ((measured_voltage - self.adc_volts_min) /
-                                diff_voltage)
+            # Ensure the units stay within the min/max bounds
+            if converted_units < float(measurement.scale_to_min):
+                rescaled_measurement = float(measurement.scale_to_min)
+            elif converted_units > float(measurement.scale_to_max):
+                rescaled_measurement = float(measurement.scale_to_max)
+            else:
+                rescaled_measurement = converted_units
 
-                # Get the units difference between min and max units
-                diff_units = abs(self.adc_units_max - self.adc_units_min)
-
-                # Calculate the measured units from the percent difference
-                if self.adc_inverse_unit_scale:
-                    converted_units = (self.adc_units_max -
-                                       (diff_units * percent_diff))
-                else:
-                    converted_units = (self.adc_units_min +
-                                       (diff_units * percent_diff))
-
-                # Ensure the units stay within the min/max bounds
-                if converted_units < self.adc_units_min:
-                    measurements[self.adc_measure] = self.adc_units_min
-                elif converted_units > self.adc_units_max:
-                    measurements[self.adc_measure] = self.adc_units_max
-                else:
-                    measurements[self.adc_measure] = converted_units
-
-                if adc_lock and lock_acquired:
-                    adc_lock.release()
-
-                return measurements
+            return rescaled_measurement
 
         except Exception as except_msg:
             self.logger.exception(
-                "Error while attempting to read adc: {err}".format(
+                "Error while attempting to rescale measurement: {err}".format(
                     err=except_msg))
-
-        return None
 
     def update_measure(self):
         """
@@ -431,29 +416,26 @@ class InputController(threading.Thread):
             self.measurement_success = False
             return 1
 
-        if self.adc:
-            measurements = self.read_adc()
-        else:
-            try:
-                # Get measurement from input
-                measurements = self.measure_input.next()
-                # Reset StopIteration counter on successful read
-                if self.stop_iteration_counter:
-                    self.stop_iteration_counter = 0
-            except StopIteration:
-                self.stop_iteration_counter += 1
-                # Notify after 3 consecutive errors. Prevents filling log
-                # with many one-off errors over long periods of time
-                if self.stop_iteration_counter > 2:
-                    self.stop_iteration_counter = 0
-                    self.logger.error(
-                        "StopIteration raised. Possibly could not read "
-                        "input. Ensure it's connected properly and "
-                        "detected.")
-            except Exception as except_msg:
-                self.logger.exception(
-                    "Error while attempting to read input: {err}".format(
-                        err=except_msg))
+        try:
+            # Get measurement from input
+            measurements = self.measure_input.next()
+            # Reset StopIteration counter on successful read
+            if self.stop_iteration_counter:
+                self.stop_iteration_counter = 0
+        except StopIteration:
+            self.stop_iteration_counter += 1
+            # Notify after 3 consecutive errors. Prevents filling log
+            # with many one-off errors over long periods of time
+            if self.stop_iteration_counter > 2:
+                self.stop_iteration_counter = 0
+                self.logger.error(
+                    "StopIteration raised. Possibly could not read "
+                    "input. Ensure it's connected properly and "
+                    "detected.")
+        except Exception as except_msg:
+            self.logger.exception(
+                "Error while attempting to read input: {err}".format(
+                    err=except_msg))
 
         if self.device_recognized and measurements is not None:
             self.measurement = Measurement(measurements)
@@ -481,44 +463,44 @@ class InputController(threading.Thread):
                     (self.switch_edge == 'both' and gpio_state)):
                 rising_or_falling = 1  # Rising edge detected
                 state_str = 'Rising'
-                conditional_edge = 1
+                edge = 1
             else:
                 rising_or_falling = -1  # Falling edge detected
                 state_str = 'Falling'
-                conditional_edge = 0
+                edge = 0
 
             write_db = threading.Thread(
                 target=write_influxdb_value,
                 args=(self.unique_id, 'edge', rising_or_falling,))
             write_db.start()
 
-            conditionals = db_retrieve_table_daemon(Conditional)
-            conditionals = conditionals.filter(
-                Conditional.conditional_type == 'conditional_edge')
-            conditionals = conditionals.filter(
-                Conditional.measurement == self.unique_id)
-            conditionals = conditionals.filter(
-                Conditional.is_activated == True)
+            trigger = db_retrieve_table_daemon(Trigger)
+            trigger = trigger.filter(
+                Trigger.trigger_type == 'trigger_edge')
+            trigger = trigger.filter(
+                Trigger.measurement == self.unique_id)
+            trigger = trigger.filter(
+                Trigger.is_activated == True)
 
-            for each_conditional in conditionals.all():
-                if each_conditional.edge_detected in ['both', state_str.lower()]:
+            for each_trigger in trigger.all():
+                if each_trigger.edge_detected in ['both', state_str.lower()]:
                     now = time.time()
                     timestamp = datetime.datetime.fromtimestamp(
                         now).strftime('%Y-%m-%d %H-%M-%S')
-                    message = "{ts}\n[Conditional {cid} ({cname})] " \
+                    message = "{ts}\n[Trigger {cid} ({cname})] " \
                               "Input {oid} ({name}) {state} edge detected " \
                               "on pin {pin} (BCM)".format(
                                     ts=timestamp,
-                                    cid=each_conditional.id,
-                                    cname=each_conditional.name,
+                                    cid=each_trigger.id,
+                                    cname=each_trigger.name,
                                     oid=self.input_id,
                                     name=self.input_name,
                                     state=state_str,
                                     pin=bcm_pin)
 
-                    self.control.trigger_conditional_actions(
-                        each_conditional.unique_id, message=message,
-                        edge=conditional_edge)
+                    self.control.trigger_trigger_actions(
+                        each_trigger.unique_id, message=message,
+                        edge=edge)
 
     def is_running(self):
         return self.running
@@ -527,7 +509,7 @@ class InputController(threading.Thread):
         self.thread_shutdown_timer = timeit.default_timer()
 
         # Execute stop_sensor() if not EDGE or ADC
-        if self.device != 'EDGE' and not self.is_adc:
+        if self.device != 'EDGE':
             self.measure_input.stop_sensor()
 
         # Ensure pre-output is off

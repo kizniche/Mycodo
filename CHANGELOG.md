@@ -1,3 +1,39 @@
+## 7.0.0 (2018-12-08)
+
+The Mycodo 7.0 introduces many redesigned systems, including measurements/units, conversions, conditionals, and more (see full list, below). The remnants of Conditionals have been moved to a new controller, called Triggers, which executes actions in response to event triggers (such as time-based events, Output changes, sunrises/sunsets, etc.). The new Conditional system incorporates a powerful way of developing complex conditional statements. See ([#493](https://github.com/kizniche/mycodo/issues/493)) for more information. Since earlier version are not compatible with 7.x, all 6.x users will have to perform a fresh install or delete their settings database. An option will be presented on the upgrade page to delete the database and perform an upgrade.
+
+### Bugfixes
+
+ - Fix issue preventing PID Method from changing setpoint (#566)
+ - Fix issue with calibration of DS-type sensors
+ - Fix module loading issue by restarting the daemon following dependency install ([#569](https://github.com/kizniche/mycodo/issues/569))
+ - Fix issue adding Daily Time-Based method ([#550](https://github.com/kizniche/mycodo/issues/550))
+
+### Features
+
+ - Add Function: Execute Actions
+ - Add Function Action: Pause (pause for a duration of time between executing specific actions)
+ - Add Input: MCP9808 I2C high accuracy temperature sensor
+ - Add Input: AMG8833 I2C 8x8 pixel thermal sensor
+ - Add Input: SHT31 I2C humidity/temperature sensor
+ - Add LCD: PiOLED 128x32 ([#579](https://github.com/kizniche/mycodo/issues/579))
+ - Add Output: Python Command (On/Off and PWM)
+ - Add Output: Atlas EZO-PMP Peristaltic Pump ([#562](https://github.com/kizniche/mycodo/issues/562))
+ - Add Vapor Pressure Deficit calculation to Inputs that measure temperature and relative humidity ([#572](https://github.com/kizniche/mycodo/issues/572))
+ - Add Vapor Pressure Deficit Math controller ([#572](https://github.com/kizniche/mycodo/issues/572))
+ - Add Start Offset option for PID, Math, and Conditionals
+ - Add ability to search Input selection dropdown list
+
+### Miscellaneous
+
+ - Refactor Conditional system ([#493](https://github.com/kizniche/mycodo/issues/493))
+ - Refactor Analog-to-digital converters ([#550](https://github.com/kizniche/mycodo/issues/550))
+ - Refactor Measurement/Unit system ([#550](https://github.com/kizniche/mycodo/issues/550))
+ - Refactor Conversion system ([#493](https://github.com/kizniche/mycodo/issues/493))
+ - Upgrade InfluxDB from 1.6.0 to 1.7.0
+ - Add User Role: Kiosk
+
+
 ## 6.4.7 (2018-12-08)
 
 This is the final release of version 6.x. Upgrading to 7.x will require a database wipe. This will be an option presented in the Mycodo upgrade page. If you do not want to lose your Mycodo data (settings AND measurement data), do not upgrade to 7.x.

@@ -21,36 +21,35 @@
     <form id="new_input_form" method="post" action="/data" style="padding-bottom: 0.5em">
       {{form_add_input.hidden_tag()}}
       <input type="hidden" name="form-name" value="addSensor">
-
-      <div class="row small-gutters">
+      <div class="row small-gutters" style="padding-left: 0.75em">
         <div class="col-auto">
-          {{form_add_input.input_add(class_='btn btn-primary')}}
+          {{form_add_input.input_type(class_='selectpicker', **{'data-live-search': 'true', 'title': _('Input') + ': ' + _('Select One')})}}
         </div>
         <div class="col-auto">
-          {{form_add_input.input_type(class_='form-control')}}
+          {{form_add_input.input_add(class_='btn btn-primary')}}
         </div>
       </div>
     </form>
 
     <form id="new_math_form" method="post" action="/data">
       {{form_add_math.hidden_tag()}}
-      <div class="row small-gutters">
+      <div class="row small-gutters" style="padding-left: 0.75em">
         <div class="col-auto">
-          {{form_add_math.math_add(class_='btn btn-primary')}}
+          {{form_add_math.math_type(class_='selectpicker', **{'title': _('Math') + ': ' + _('Select One')})}}
         </div>
         <div class="col-auto">
-          {{form_add_math.math_type(class_='form-control')}}
+          {{form_add_math.math_add(class_='btn btn-primary')}}
         </div>
       </div>
     </form>
 
-    <div style="clear: both; padding: 0.5em 0;"></div>
+    <div style="clear: both; padding: 1em 0;"></div>
 
-    {% if input %}
+    {% if display_order_input %}
       {% include 'pages/data_options/input.html' %}
     {% endif %}
 
-    {% if math %}
+    {% if display_order_math %}
       {% include 'pages/data_options/math.html' %}
     {% endif %}
 

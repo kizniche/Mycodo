@@ -90,6 +90,9 @@ class DaemonControl:
     def lcd_flash(self, lcd_id, state):
         return self.rpyc_client.root.lcd_flash(lcd_id, state)
 
+    def lcd_reset(self, lcd_id):
+        return self.rpyc_client.root.lcd_reset(lcd_id)
+
     def is_in_virtualenv(self):
         return self.rpyc_client.root.is_in_virtualenv()
 
@@ -147,11 +150,17 @@ class DaemonControl:
     def refresh_daemon_misc_settings(self):
         return self.rpyc_client.root.refresh_daemon_misc_settings()
 
-    def trigger_conditional_actions(
-            self, conditional_id, message='', edge=None,
+    def refresh_daemon_trigger_settings(self, unique_id):
+        return self.rpyc_client.root.refresh_daemon_trigger_settings(unique_id)
+
+    def test_trigger_actions(self, function_id, message=''):
+        return self.rpyc_client.root.test_trigger_actions(function_id, message)
+
+    def trigger_trigger_actions(
+            self, trigger_id, message='', edge=None,
             output_state=None, on_duration=None, duty_cycle=None):
-        return self.rpyc_client.root.trigger_conditional_actions(
-            conditional_id, message, edge=edge, output_state=output_state,
+        return self.rpyc_client.root.trigger_trigger_actions(
+            trigger_id, message, edge=edge, output_state=output_state,
             on_duration=on_duration, duty_cycle=duty_cycle)
 
     def terminate_daemon(self):
@@ -183,45 +192,45 @@ def parseargs(parser):
 
     # PID manipulate
     parser.add_argument('--pid_pause', nargs=1,
-                        metavar=('ID'), type=str,
+                        metavar='ID', type=str,
                         help='Pause PID controller.',
                         required=False)
     parser.add_argument('--pid_hold', nargs=1,
-                        metavar=('ID'), type=str,
+                        metavar='ID', type=str,
                         help='Hold PID controller.',
                         required=False)
     parser.add_argument('--pid_resume', nargs=1,
-                        metavar=('ID'), type=str,
+                        metavar='ID', type=str,
                         help='Resume PID controller.',
                         required=False)
 
     # PID get
     parser.add_argument('--pid_get_setpoint', nargs=1,
-                        metavar=('ID'), type=str,
+                        metavar='ID', type=str,
                         help='Get the setpoint value of the PID controller.',
                         required=False)
     parser.add_argument('--pid_get_error', nargs=1,
-                        metavar=('ID'), type=str,
+                        metavar='ID', type=str,
                         help='Get the error value of the PID controller.',
                         required=False)
     parser.add_argument('--pid_get_integrator', nargs=1,
-                        metavar=('ID'), type=str,
+                        metavar='ID', type=str,
                         help='Get the integrator value of the PID controller.',
                         required=False)
     parser.add_argument('--pid_get_derivator', nargs=1,
-                        metavar=('ID'), type=str,
+                        metavar='ID', type=str,
                         help='Get the derivator value of the PID controller.',
                         required=False)
     parser.add_argument('--pid_get_kp', nargs=1,
-                        metavar=('ID'), type=str,
+                        metavar='ID', type=str,
                         help='Get the Kp gain of the PID controller.',
                         required=False)
     parser.add_argument('--pid_get_ki', nargs=1,
-                        metavar=('ID'), type=str,
+                        metavar='ID', type=str,
                         help='Get the Ki gain of the PID controller.',
                         required=False)
     parser.add_argument('--pid_get_kd', nargs=1,
-                        metavar=('ID'), type=str,
+                        metavar='ID', type=str,
                         help='Get the Kd gain of the PID controller.',
                         required=False)
 
@@ -251,12 +260,30 @@ def parseargs(parser):
                         help='Set the Kd gain of the PID controller.',
                         required=False)
 
+    # Daemon
     parser.add_argument('-c', '--checkdaemon', action='store_true',
                         help="Check if all active daemon controllers are running")
     parser.add_argument('--ramuse', action='store_true',
                         help="Return the amount of ram used by the Mycodo daemon")
 
+    # LCD
+    parser.add_argument('--lcd_backlight_on', metavar='LCDID', type=str,
+                        help='Turn on LCD backlight with LCD ID',
+                        required=False)
+    parser.add_argument('--lcd_backlight_off', metavar='LCDID', type=str,
+                        help='Turn off LCD backlight with LCD ID',
+                        required=False)
+    parser.add_argument('--lcd_reset', metavar='LCDID', type=str,
+                        help='Reset LCD with LCD ID',
+                        required=False)
+
     # Output
+    parser.add_argument('--output_state', metavar='OUTPUTID', type=str,
+                        help='State of output with output ID',
+                        required=False)
+    parser.add_argument('--output_currently_on', metavar='OUTPUTID', type=str,
+                        help='How many seconds an output has currently been active for',
+                        required=False)
     parser.add_argument('--outputoff', metavar='OUTPUTID', type=str,
                         help='Turn off output with output ID',
                         required=False)
@@ -293,6 +320,41 @@ if __name__ == "__main__":
             "[Remote command] Daemon Ram in Use: {msg} MB".format(
                 msg=return_msg))
 
+    elif args.lcd_reset:
+        return_msg = daemon.lcd_reset(args.lcd_reset)
+        logger.info("[Remote command] Reset LCD with ID '{id}': "
+                    "Server returned: {msg}".format(
+                        id=args.lcd_reset,
+                        msg=return_msg))
+
+    elif args.lcd_backlight_off:
+        return_msg = daemon.lcd_backlight(args.lcd_backlight_off, 0)
+        logger.info("[Remote command] Turn off LCD backlight with ID '{id}': "
+                    "Server returned: {msg}".format(
+                        id=args.lcd_backlight_off,
+                        msg=return_msg))
+
+    elif args.lcd_backlight_on:
+        return_msg = daemon.lcd_backlight(args.lcd_backlight_on, 1)
+        logger.info("[Remote command] Turn on LCD backlight with ID '{id}': "
+                    "Server returned: {msg}".format(
+                        id=args.lcd_backlight_on,
+                        msg=return_msg))
+
+    elif args.output_currently_on:
+        return_msg = daemon.output_sec_currently_on(args.output_currently_on)
+        logger.info("[Remote command] How many seconds output has been on. ID '{id}': "
+                    "Server returned: {msg}".format(
+                        id=args.output_currently_on,
+                        msg=return_msg))
+
+    elif args.output_state:
+        return_msg = daemon.output_state(args.output_state)
+        logger.info("[Remote command] State of output with ID '{id}': "
+                    "Server returned: {msg}".format(
+                        id=args.output_state,
+                        msg=return_msg))
+
     elif args.outputoff:
         return_msg = daemon.output_off(args.outputoff)
         logger.info("[Remote command] Turn off output with ID '{id}': "
@@ -307,9 +369,9 @@ if __name__ == "__main__":
         if args.duration:
             return_msg = daemon.output_on(
                 args.outputon, duration=args.duration)
-        elif args.duty_cycle:
+        elif args.dutycycle:
             return_msg = daemon.output_on(
-                args.outputon, duty_cycle=args.duty_cycle)
+                args.outputon, duty_cycle=args.dutycycle)
         else:
             return_msg = daemon.output_on(args.outputon)
         logger.info("[Remote command] Turn on output with ID '{id}': "

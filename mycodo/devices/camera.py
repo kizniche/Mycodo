@@ -6,13 +6,13 @@ import time
 import os
 import picamera
 
-from mycodo.config import INSTALL_DIRECTORY
+from mycodo.config import PATH_CAMERAS
 from mycodo.databases.models import Camera
+from mycodo.mycodo_client import DaemonControl
 from mycodo.utils.database import db_retrieve_table_daemon
 from mycodo.utils.system_pi import assure_path_exists
 from mycodo.utils.system_pi import cmd_output
 from mycodo.utils.system_pi import set_user_grp
-from mycodo.mycodo_client import DaemonControl
 
 logger = logging.getLogger('mycodo.devices.picamera')
 
@@ -33,10 +33,9 @@ def camera_record(record_type, unique_id, duration_sec=None, tmp_filename=None):
     daemon_control = None
     settings = db_retrieve_table_daemon(Camera, unique_id=unique_id)
     timestamp = datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
-    root_path = os.path.abspath(os.path.join(INSTALL_DIRECTORY, 'cameras'))
-    assure_path_exists(root_path)
+    assure_path_exists(PATH_CAMERAS)
     camera_path = assure_path_exists(
-        os.path.join(root_path, '{uid}'.format(uid=settings.unique_id)))
+        os.path.join(PATH_CAMERAS, '{uid}'.format(uid=settings.unique_id)))
     if record_type == 'photo':
         if settings.path_still != '':
             save_path = settings.path_still

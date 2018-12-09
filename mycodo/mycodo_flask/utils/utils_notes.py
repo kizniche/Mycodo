@@ -39,10 +39,14 @@ def tag_add(form):
         controller=gettext("Tag"))
     error = []
 
+    disallowed_tag_names = ['device_id', 'unit', 'channel']
+
     if not form.tag_name.data:
         error.append("Tag name is empty")
     if ' ' in form.tag_name.data:
         error.append("Tag name cannot contain spaces")
+    elif form.tag_name.data in disallowed_tag_names:
+        error.append("Tag name cannot be from this list: {}".format(disallowed_tag_names))
 
     if NoteTags.query.filter(NoteTags.name == form.tag_name.data).count():
         error.append("Tag already exists")

@@ -75,7 +75,7 @@ class SettingsCamera(FlaskForm):
     path_still = StringField(lazy_gettext('Still Image Path'))
     path_timelapse = StringField(lazy_gettext('Timelapse Path'))
     path_video = StringField(lazy_gettext('Video Path'))
-    camera_add = SubmitField(lazy_gettext('Add Camera'))
+    camera_add = SubmitField(lazy_gettext('Add'))
     camera_mod = SubmitField(lazy_gettext('Save'))
     camera_del = SubmitField(lazy_gettext('Delete'))
 
@@ -392,4 +392,7 @@ class SettingsPi(FlaskForm):
 
 class SettingsDiagnostic(FlaskForm):
     delete_dashboard_elements = SubmitField(lazy_gettext('Delete All Dashboard Elements'))
+    delete_inputs = SubmitField(lazy_gettext('Delete All Inputs'))
+    delete_maths = SubmitField(lazy_gettext('Delete All Maths'))
     delete_notes_tags = SubmitField(lazy_gettext('Delete All Notes and Note Tags'))
+    delete_outputs = SubmitField(lazy_gettext('Delete All Outputs'))

@@ -8,8 +8,8 @@ from datetime import timedelta
 import os
 from flask_babel import lazy_gettext
 
-MYCODO_VERSION = '6.4.7'
-ALEMBIC_VERSION = '15bd5d08a4f0'
+MYCODO_VERSION = '7.0.0'
+ALEMBIC_VERSION = '90wvmtnznxb8'
 
 #  FORCE_UPGRADE_MASTER
 #  Set True to enable upgrading to the master branch of the Mycodo repository.
@@ -33,144 +33,344 @@ LANGUAGES = {
     'zh': '中文 (Chinese)'
 }
 
-# Math controllers
-MATHS = [
-    ('average', 'Average (Multiple Inputs)'),
-    ('average_single', 'Average (Single Input)'),
-    ('difference', 'Difference'),
-    ('equation', 'Equation'),
-    ('median', 'Median'),
-    ('maximum', 'Maximum'),
-    ('minimum', 'Minimum'),
-    ('humidity', 'Humidity (Wet/Dry-Bulb)'),
-    ('verification', 'Verification')
+# LCD info
+LCD_INFO = {
+    '16x2_generic': {
+        'name': lazy_gettext('Generic 16x2'),
+        'dependencies_module': []
+    },
+    '16x4_generic': {
+        'name': lazy_gettext('Generic 16x4'),
+        'dependencies_module': []
+    },
+    '128x32_pioled': {
+        'name': lazy_gettext('PiOLED 128x32'),
+        'dependencies_module': [
+            ('pip-pypi', 'PIL', 'Pillow'),
+            ('pip-pypi', 'Adafruit_GPIO', 'Adafruit_GPIO'),
+            ('pip-pypi', 'Adafruit_PureIO', 'Adafruit_PureIO'),
+            ('pip-git', 'Adafruit_SSD1306', 'git://github.com/adafruit/Adafruit_Python_SSD1306.git#egg=adafruit-ssd1306')
+        ]
+    }
+}
+
+# Math form dropdown
+LCDS = [
+    ('16x2_generic', LCD_INFO['16x2_generic']['name']),
+    ('16x4_generic', LCD_INFO['16x4_generic']['name']),
+    ('128x32_pioled', LCD_INFO['128x32_pioled']['name'])
 ]
 
 # Math info
 MATH_INFO = {
     'average': {
-        'name': 'Average (Multi)',
+        'name': lazy_gettext('Average (Multiple Inputs)'),
         'dependencies_module': [],
-        'measure': []},
+        'enable_measurements_select': True,
+        'measure': {}
+    },
     'average_single': {
-        'name': 'Average (Single)',
+        'name': lazy_gettext('Average (Single Input)'),
         'dependencies_module': [],
-        'measure': []},
+        'enable_measurements_select': False,
+        'enable_measurements_convert': True,
+        'measure': {}
+    },
     'difference': {
-        'name': 'Difference',
+        'name': lazy_gettext('Difference'),
         'dependencies_module': [],
-        'measure': []},
+        'enable_measurements_select': True,
+        'measure': {}
+    },
     'equation': {
-        'name': 'Equation',
+        'name': lazy_gettext('Equation'),
         'dependencies_module': [],
-        'measure': []},
-    'median': {
-        'name': 'Median',
-        'dependencies_module': [],
-        'measure': []},
-    'maximum': {
-        'name': 'Maximum',
-        'dependencies_module': [],
-        'measure': []},
-    'minimum': {
-        'name': 'Minimum',
-        'dependencies_module': [],
-        'measure': []},
+        'enable_measurements_select': True,
+        'measure': {}
+    },
     'humidity': {
-        'name': 'Humidity (Wet-Bulb)',
+        'name': lazy_gettext('Humidity (Wet/Dry-Bulb)'),
         'dependencies_module': [],
-        'measure': ['humidity', 'humidity_ratio', 'specific_enthalpy', 'specific_volume']},
+        'enable_measurements_convert': True,
+        'measure': {
+            0: {
+                'measurement': 'humidity',
+                'unit': 'percent'
+            },
+            1: {
+                'measurement': 'humidity_ratio',
+                'unit': 'kg_kg'
+            },
+            2: {
+                'measurement': 'specific_enthalpy',
+                'unit': 'kJ_kg'
+            },
+            3: {
+                'measurement': 'specific_volume',
+                'unit': 'm3_kg'
+            }
+        }
+    },
+    'statistics': {
+        'name': lazy_gettext('Statistics'),
+        'dependencies_module': [],
+        'enable_single_measurement_select': True,
+        'measure': {
+            0: {
+                'measurement': '',
+                'unit': '',
+                'name': 'Mean'
+            },
+            1: {
+                'measurement': '',
+                'unit': '',
+                'name': 'Median'
+            },
+            2: {
+                'measurement': '',
+                'unit': '',
+                'name': 'Minimum'
+            },
+            3: {
+                'measurement': '',
+                'unit': '',
+                'name': 'Maximum'
+            },
+            4: {
+                'measurement': '',
+                'unit': '',
+                'name': 'Standard Deviation'
+            },
+            5: {
+                'measurement': '',
+                'unit': '',
+                'name': 'St. Dev. of Mean (upper)'
+            },
+            6: {
+                'measurement': '',
+                'unit': '',
+                'name': 'St. Dev. of Mean (lower)'
+            }
+        }
+    },
     'verification': {
-        'name': 'Verification',
+        'name': lazy_gettext('Verification'),
         'dependencies_module': [],
-        'measure': []}
+        'enable_measurements_select': True,
+        'measure': {}
+    },
+    'vapor_pressure_deficit': {
+        'name': lazy_gettext('Vapor Pressure Deficit'),
+        'dependencies_module': [],
+        'enable_measurements_select': False,
+        'measure': {
+            0: {
+                'measurement': 'vapor_pressure_deficit',
+                'unit': 'Pa'
+            }
+        }
+    }
 }
 
-# Methods
-METHODS = [
-    ('Date', 'Time/Date'),
-    ('Duration', 'Duration'),
-    ('Daily', 'Daily (Time-Based)'),
-    ('DailySine', 'Daily (Sine Wave)'),
-    ('DailyBezier', 'Daily (Bezier Curve)')
+# Math form dropdown
+MATHS = [
+    ('average', MATH_INFO['average']['name']),
+    ('average_single',MATH_INFO['average']['name']),
+    ('difference', MATH_INFO['average']['name']),
+    ('equation', MATH_INFO['average']['name']),
+    ('statistics', MATH_INFO['average']['name']),
+    ('humidity', MATH_INFO['average']['name']),
+    ('verification', MATH_INFO['average']['name']),
+    ('vapor_pressure_deficit', MATH_INFO['average']['name'])
 ]
 
 # Method info
 METHOD_INFO = {
+    'Date': {
+        'name': lazy_gettext('Time/Date'),
+        'dependencies_module': []
+    },
+    'Duration': {
+        'name': lazy_gettext('Duration'),
+        'dependencies_module': []
+    },
+    'Daily': {
+        'name': lazy_gettext('Daily (Time-Based)'),
+        'dependencies_module': []
+    },
+    'DailySine': {
+        'name': lazy_gettext('Daily (Sine Wave)'),
+        'dependencies_module': []
+    },
     'DailyBezier': {
-        'name': 'DailyBezier',
-        'dependencies_module': [('apt', 'python3-numpy', 'python3-numpy')]}
+        'name': lazy_gettext('Daily (Bezier Curve)'),
+        'dependencies_module': [
+            ('apt', 'python3-numpy', 'python3-numpy')
+        ]
+    }
 }
 
-# Math controllers
-OUTPUTS = [
-    ('wired', 'GPIO (On/Off)'),
-    ('pwm', 'GPIO (PWM)'),
-    ('command', 'Command (On/Off)'),
-    ('command_pwm', 'Command (PWM)'),
-    ('wireless_433MHz_pi_switch', 'Wireless (433MHz)')
+# Method form dropdown
+METHODS = [
+    ('Date', METHOD_INFO['Date']['name']),
+    ('Duration', METHOD_INFO['Duration']['name']),
+    ('Daily', METHOD_INFO['Daily']['name']),
+    ('DailySine', METHOD_INFO['DailySine']['name']),
+    ('DailyBezier', METHOD_INFO['DailyBezier']['name'])
 ]
 
 # Outputs
 OUTPUT_INFO = {
     'wired': {
-        'name': 'GPIO (On/Off)',
+        'name': lazy_gettext('On/Off (GPIO)'),
         'dependencies_module': [],
-        'measure': []},
+        'measure': {
+            'duration_time': {'s': {0: {}}}
+        }},
     'pwm': {
-        'name': 'GPIO (PWM)',
+        'name': lazy_gettext('PWM (GPIO)'),
         'dependencies_module': [],
-        'measure': []},
-    'wireless_433MHz_pi_switch': {
-        'name': 'Wireless (433MHz)',
+        'measure': {
+            'duty_cycle': {'percent': {0: {}}}
+        }},
+    'wireless_rpi_rf': {
+        'name': lazy_gettext('Wireless 315/433MHz LPD/SRD (rpi-rf)'),
         'dependencies_module': [
             ('pip-pypi', 'rpi_rf', 'rpi_rf')
         ],
-        'measure': []},
+        'measure': {
+            'duration_time': {'s': {0: {}}}
+        }},
     'command': {
-        'name': 'Command (On/Off)',
+        'name': lazy_gettext('On/Off (Linux Command)'),
         'dependencies_module': [],
-        'measure': []},
+        'measure': {
+            'duration_time': {'s': {0: {}}}
+        }},
     'command_pwm': {
-        'name': 'Command (PWM)',
+        'name': lazy_gettext('PWM (Linux Command)'),
         'dependencies_module': [],
-        'measure': []},
+        'measure': {
+            'duty_cycle': {'percent': {0: {}}}
+        }},
+    'python': {
+        'name': lazy_gettext('On/Off (Python Command)'),
+        'dependencies_module': [],
+        'measure': {
+            'duration_time': {'s': {0: {}}}
+        }},
+    'python_pwm': {
+        'name': lazy_gettext('PWM (Python Command)'),
+        'dependencies_module': [],
+        'measure': {
+            'duty_cycle': {'percent': {0: {}}}
+        }},
+    'atlas_ezo_pmp': {
+        'name': lazy_gettext('Atlas EZO-PMP'),
+        'dependencies_module': [],
+        'measure': {
+            'volume': {'ml': {0: {}}}
+        }}
+}
+
+# Output form dropdown
+OUTPUTS = [
+    ('wired,GPIO', OUTPUT_INFO['wired']['name']),
+    ('pwm,GPIO', OUTPUT_INFO['pwm']['name']),
+    ('command,GPIO', OUTPUT_INFO['command']['name']),
+    ('command_pwm,GPIO', OUTPUT_INFO['command_pwm']['name']),
+    ('python,GPIO', OUTPUT_INFO['python']['name']),
+    ('python_pwm,GPIO', OUTPUT_INFO['python_pwm']['name']),
+    ('wireless_rpi_rf,GPIO', OUTPUT_INFO['wireless_rpi_rf']['name']),
+    ('atlas_ezo_pmp,I2C', '{} ({})'.format(
+        OUTPUT_INFO['atlas_ezo_pmp']['name'], lazy_gettext('I2C'))),
+    ('atlas_ezo_pmp,UART', '{} ({})'.format(
+        OUTPUT_INFO['atlas_ezo_pmp']['name'], lazy_gettext('UART')))
+]
+
+PID_INFO = {
+    'measure': {
+        0: {
+            'measurement': '',
+            'unit': '',
+            'name': 'Setpoint',
+            'measurement_type': 'setpoint'
+        },
+        1: {
+            'measurement': '',
+            'unit': '',
+            'name': 'Setpoint Band (Min)',
+            'measurement_type': 'setpoint'
+        },
+        2: {
+            'measurement': '',
+            'unit': '',
+            'name': 'Setpoint Band (Max)',
+            'measurement_type': 'setpoint'
+        },
+        3: {
+            'measurement': 'pid_p_value',
+            'unit': 'pid_value',
+            'name': 'P-value'
+        },
+        4: {
+            'measurement': 'pid_i_value',
+            'unit': 'pid_value',
+            'name': 'I-value'
+        },
+        5: {
+            'measurement': 'pid_d_value',
+            'unit': 'pid_value',
+            'name': 'D-value'
+        },
+        6: {
+            'measurement': 'duration_time',
+            'unit': 's',
+            'name': 'Output Duration'
+        },
+        7: {
+            'measurement': 'duty_cycle',
+            'unit': 'percent',
+            'name': 'Output Duty Cycle'
+        }
+    }
 }
 
 # Calibration
 CALIBRATION_INFO = {
     'CALIBRATE_DS_TYPE': {
-        'name': 'DS-Type Sensor Calibration',
+        'name': lazy_gettext('DS-Type Sensor Calibration'),
         'dependencies_module': [
             ('pip-pypi', 'w1thermsensor', 'w1thermsensor')
         ]
     }
 }
 
-# PID controllers
-PIDS = [
-    ('pid', 'PID Controller')
+# Conditional controllers
+CONDITIONAL_CONDITIONS = [
+    ('measurement', lazy_gettext('Measurement')),
+    ('gpio_state', lazy_gettext('GPIO State'))
 ]
 
-def generate_conditional_name(name):
-    return '{}: {}'.format(lazy_gettext('Conditional'), lazy_gettext(name))
-
-# Conditional controllers
-CONDITIONALS = [
-    ('conditional_measurement', generate_conditional_name('Measurement')),
-    ('conditional_output', generate_conditional_name('Output (On/Off)')),
-    ('conditional_output_duration', generate_conditional_name('Output (On Duration)')),
-    ('conditional_output_pwm', generate_conditional_name('Output (PWM)')),
-    ('conditional_edge', generate_conditional_name('Edge')),
-    ('conditional_run_pwm_method', generate_conditional_name('Run PWM Method')),
-    ('conditional_sunrise_sunset', generate_conditional_name('Sunrise/Sunset')),
-    ('conditional_timer_daily_time_point', generate_conditional_name('Timer (Daily Point)')),
-    ('conditional_timer_daily_time_span', generate_conditional_name('Timer (Daily Span)')),
-    ('conditional_timer_duration', generate_conditional_name('Timer (Duration)'))
+FUNCTION_TYPES = [
+    ('function_spacer', 'Spacer', lazy_gettext('Function: Spacer')),
+    ('function_actions', 'Actions', lazy_gettext('Function: Execute Actions')),
+    ('conditional_conditional', 'Conditional', lazy_gettext('Conditional: Conditional')),
+    ('pid_pid', 'PID', lazy_gettext('PID: PID Controller')),
+    ('trigger_edge', 'Edge', lazy_gettext('Trigger: Edge')),
+    ('trigger_output', 'Output (On/Off)', lazy_gettext('Trigger: Output (On/Off)')),
+    ('trigger_output_duration', 'Output (On Duration)', lazy_gettext('Trigger: Output (On Duration)')),
+    ('trigger_output_pwm', 'Output (PWM)', lazy_gettext('Trigger: Output (PWM)')),
+    ('trigger_timer_daily_time_point', 'Timer (Daily Point)', lazy_gettext('Trigger: Timer (Daily Point)')),
+    ('trigger_timer_daily_time_span', 'Timer (Daily Span)', lazy_gettext('Trigger: Timer (Daily Span)')),
+    ('trigger_timer_duration', 'Timer (Duration)', lazy_gettext('Trigger: Timer (Duration)')),
+    ('trigger_run_pwm_method', 'Run PWM Method', lazy_gettext('Trigger: Run PWM Method')),
+    ('trigger_sunrise_sunset', 'Sunrise/Sunset', lazy_gettext('Trigger: Sunrise/Sunset'))
 ]
 
 # Conditional actions
-CONDITIONAL_ACTIONS = [
+FUNCTION_ACTIONS = [
+    ('pause_actions', lazy_gettext('Pause Actions')),
     ('output', lazy_gettext('Output (Duration)')),
     ('output_pwm', lazy_gettext('Output (Duty Cycle)')),
     ('command', lazy_gettext('Execute Command')),
@@ -199,7 +399,6 @@ CALIBRATION_DEVICES = [
     ('setup_ds_resolution', 'DS-Type Temperature Sensors (e.g. DS18B20)')
 ]
 
-
 # User Roles
 USER_ROLES = [
     dict(id=1, name='Admin',
@@ -213,7 +412,10 @@ USER_ROLES = [
          view_settings=True, view_camera=True, view_stats=True, view_logs=True),
     dict(id=4, name='Guest',
          edit_settings=False, edit_controllers=False, edit_users=False,
-         view_settings=False, view_camera=False, view_stats=False, view_logs=False)
+         view_settings=False, view_camera=False, view_stats=False, view_logs=False),
+    dict(id=5, name='Kiosk',
+         edit_settings=False, edit_controllers=False, edit_users=False,
+         view_settings=False, view_camera=True, view_stats=True, view_logs=False)
 ]
 
 # Web UI themes
@@ -229,9 +431,9 @@ THEMES = [
     ('lux', 'Lux'),
     ('materia', 'Materia'),
     ('minty', 'Minty'),
+    ('pulse', 'Pulse'),
     ('sandstone', 'Sandstone'),
     ('simplex', 'Simplex'),
-    ('sketchy', 'Sketchy'),
     ('slate', 'Slate'),
     ('solar', 'Solar'),
     ('spacelab', 'Spacelab'),

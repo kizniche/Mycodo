@@ -48,7 +48,7 @@ MEASUREMENTS = {
     'duration_time': {
         'name': lazy_gettext('Duration'),
         'meas': 'duration_time',
-        'units': ['second']},
+        'units': ['s']},
     'duty_cycle': {
         'name': lazy_gettext('Duty Cycle'),
         'meas': 'duty_cycle',
@@ -60,7 +60,15 @@ MEASUREMENTS = {
     'electrical_conductivity': {
         'name': lazy_gettext('Electrical Conductivity'),
         'meas': 'electrical_conductivity',
-        'units': ['μS_cm']},
+        'units': ['uS_cm']},
+    'electrical_current': {
+        'name': lazy_gettext('Electrical Current'),
+        'meas': 'electrical_current',
+        'units': ['A']},
+    'electrical_potential': {
+        'name': lazy_gettext('Electrical Potential'),
+        'meas': 'electrical_potential',
+        'units': ['V']},
     'frequency': {
         'name': lazy_gettext('Frequency'),
         'meas': 'frequency',
@@ -84,23 +92,23 @@ MEASUREMENTS = {
     'light': {
         'name': lazy_gettext('Light'),
         'meas': 'light',
-        'units': ['lux']},
+        'units': ['full', 'ir', 'lux']},
     'moisture': {
         'name': lazy_gettext('Moisture'),
         'meas': 'moisture',
         'units': ['unitless']},
     'particulate_matter_1_0': {
-        'name': lazy_gettext('PM1'),
+        'name': 'PM1',
         'meas': 'particulate_matter_1_0',
-        'units': ['μg_m3']},
+        'units': ['ug_m3']},
     'particulate_matter_2_5': {
-        'name': lazy_gettext('PM2.5'),
+        'name': 'PM2.5',
         'meas': 'particulate_matter_2_5',
-        'units': ['μg_m3']},
+        'units': ['ug_m3']},
     'particulate_matter_10_0': {
-        'name': lazy_gettext('PM10'),
+        'name': 'PM10',
         'meas': 'particulate_matter_10_0',
-        'units': ['μg_m3']},
+        'units': ['ug_m3']},
     'pid_p_value': {
         'name': lazy_gettext('PID P-Value'),
         'meas': 'pid_value',
@@ -120,7 +128,7 @@ MEASUREMENTS = {
     'pulse_width': {
         'name': lazy_gettext('Pulse Width'),
         'meas': 'pulse_width',
-        'units': ['µs']},
+        'units': ['us']},
     'revolutions': {
         'name': lazy_gettext('Revolutions'),
         'meas': 'revolutions',
@@ -149,22 +157,18 @@ MEASUREMENTS = {
         'name': lazy_gettext('Temperature'),
         'meas': 'temperature',
         'units': ['C', 'F', 'K']},
-    'temperature_object': {
-        'name': lazy_gettext('Temperature (Obj)'),
-        'meas': 'temperature',
-        'units': ['C', 'F', 'K']},
-    'temperature_die': {
-        'name': lazy_gettext('Temperature (Die)'),
-        'meas': 'temperature',
-        'units': ['C', 'F', 'K']},
+    'vapor_pressure_deficit': {
+        'name': lazy_gettext('Vapor Pressure Deficit'),
+        'meas': 'vapor_pressure_deficit',
+        'units': ['Pa']},
     'voc': {
         'name': lazy_gettext('VOC'),
         'meas': 'voc',
         'units': ['ppb', 'ppm']},
-    'voltage': {
-        'name': lazy_gettext('Voltage'),
-        'meas': 'voltage',
-        'units': ['volts']},
+    'volume': {
+        'name': lazy_gettext('Volume'),
+        'meas': 'volume',
+        'units': ['ml']},
 }
 
 # Measurement units
@@ -172,12 +176,15 @@ UNITS = {
     'unitless': {
         'name': '',
         'unit': ''},
-    'µs': {
+    'us': {
         'name': lazy_gettext('Microsecond'),
         'unit': 'µs'},
-    'μS_cm': {
+    'uS_cm': {
         'name': lazy_gettext('Microsiemens per centimeter'),
         'unit': 'μS/cm'},
+    'A': {
+        'name': lazy_gettext('Amp'),
+        'unit': 'A'},
     'bool': {
         'name': lazy_gettext('Boolean'),
         'unit': 'bool'},
@@ -186,7 +193,7 @@ UNITS = {
         'unit': '°C'},
     'cpu_load': {
         'name': lazy_gettext('CPU Load'),
-        'unit': ''},
+        'unit': 'Proc.'},
     'decimal': {
         'name': lazy_gettext('Decimal'),
         'unit': ''},
@@ -194,14 +201,20 @@ UNITS = {
         'name': lazy_gettext('Fahrenheit'),
         'unit': '°F'},
     'ft': {
-        'name': lazy_gettext('Feet'),
+        'name': lazy_gettext('Foot'),
         'unit': 'ft'},
+    'full': {
+        'name': lazy_gettext('Full'),
+        'unit': 'full'},
     'GB': {
         'name': lazy_gettext('Gigabyte'),
         'unit': 'GB'},
     'Hz': {
         'name': lazy_gettext('Hertz'),
         'unit': 'Hz'},
+    'ir': {
+        'name': lazy_gettext('Infrared'),
+        'unit': 'IR'},
     'K': {
         'name': lazy_gettext('Kelvin'),
         'unit': '°K'},
@@ -218,14 +231,17 @@ UNITS = {
         'name': lazy_gettext('Kilojoule per kilogram'),
         'unit': 'kJ/kg'},
     'kPa': {
-        'name': lazy_gettext('Kilopascals'),
+        'name': lazy_gettext('Kilopascal'),
         'unit': 'kPa'},
     'lux': {
         'name': lazy_gettext('Lux'),
         'unit': 'lx'},
     'm': {
-        'name': lazy_gettext('Meters'),
+        'name': lazy_gettext('Meter'),
         'unit': 'm'},
+    'ml': {
+        'name': lazy_gettext('Milliliter'),
+        'unit': 'ml'},
     'm3_kg': {
         'name': lazy_gettext('Cubic meters per kilogram'),
         'unit': 'm^3/kg'},
@@ -239,7 +255,7 @@ UNITS = {
         'name': lazy_gettext('Minute'),
         'unit': 'm'},
     'Pa': {
-        'name': lazy_gettext('Pascals'),
+        'name': lazy_gettext('Pascal'),
         'unit': 'Pa'},
     'percent': {
         'name': lazy_gettext('Percent'),
@@ -259,67 +275,69 @@ UNITS = {
     'rpm': {
         'name': lazy_gettext('Revolutions per minute'),
         'unit': 'rpm'},
-    'second': {
+    's': {
         'name': lazy_gettext('Second'),
         'unit': 's'},
     'setpoint': {
         'name': lazy_gettext('Setpoint'),
         'unit': ''},
-    'μg_m3': {
+    'ug_m3': {
         'name': lazy_gettext('Microgram per cubic meter'),
         'unit': 'μg/m^3'},
-    'volts': {
-        'name': lazy_gettext('Volts'),
+    'V': {
+        'name': lazy_gettext('Volt'),
         'unit': 'V'}
 }
 
-# Supported conversions
-UNIT_CONVERSIONS = {
+# Initial conversions
+# These are added to the SQLite database when it's created
+# Users may add or delete after that
+UNIT_CONVERSIONS = [
     # Temperature
-    'C_to_F': 'x*(9/5)+32',
-    'C_to_K': 'x+273.15',
-    'F_to_C': '(x-32)*5/9',
-    'F_to_K': '(x+459.67)*5/9',
-    'K_to_C': 'x-273.15',
-    'K_to_F': '(x*9/5)−459.67',
+    ('C', 'F', 'x*(9/5)+32'),
+    ('C', 'K', 'x+273.15'),
+    ('F', 'C', '(x-32)*5/9'),
+    ('F', 'K', '(x+459.67)*5/9'),
+    ('K', 'C', 'x-273.15'),
+    ('K', 'F', '(x*9/5)−459.67'),
 
     # Frequency
-    'Hz_to_kHz': 'x/1000',
-    'Hz_to_MHz': 'x/1000000',
-    'kHz_to_Hz': 'x*1000',
-    'kHz_to_MHz': 'x/1000',
-    'MHz_to_Hz': 'x*1000000',
-    'MHz_to_kHz': 'x*1000',
+    ('Hz', 'kHz', 'x/1000'),
+    ('Hz', 'MHz', 'x/1000000'),
+    ('kHz', 'Hz', 'x*1000'),
+    ('kHz', 'MHz', 'x/1000'),
+    ('MHz', 'Hz', 'x*1000000'),
+    ('MHz', 'kHz', 'x*1000'),
 
     # Length
-    'm_to_ft': 'x*3.2808399',
-    'ft_to_m': 'x/3.2808399',
+    ('m', 'ft', 'x*3.2808399'),
+    ('ft', 'm', 'x/3.2808399'),
 
     # Disk size
-    'kB_to_MB': 'x/1000',
-    'kB_to_GB': 'x/1000000',
-    'MB_to_kB': 'x*1000',
-    'MB_to_GB': 'x/1000',
-    'GB_to_kB': 'x*1000000',
-    'GB_to_MB': 'X*1000',
+    ('kB', 'MB', 'x/1000'),
+    ('kB', 'GB', 'x/1000000'),
+    ('MB', 'kB', 'x*1000'),
+    ('MB', 'GB', 'x/1000'),
+    ('GB', 'kB', 'x*1000000'),
+    ('GB', 'MB', 'X*1000'),
 
     # Concentration
-    'ppm_to_ppb': 'x*1000',
-    'ppb_to_ppm': 'x/1000',
-    'ppm_to_percent': 'x/10000',
-    'ppb_to_percent': 'x/10000000',
-    'percent_to_ppm': 'x*10000',
-    'percent_to_ppb': 'x*10000000',
+    ('ppm', 'ppb', 'x*1000'),
+    ('ppb', 'ppm', 'x/1000'),
+    ('ppm', 'percent', 'x/10000'),
+    ('ppb', 'percent', 'x/10000000'),
+    ('percent', 'ppm', 'x*10000'),
+    ('percent', 'ppb', 'x*10000000'),
 
     # Number
-    'percent_to_decimal': 'x/100',
-    'decimal_to_percent': 'x*100',
+    ('percent', 'decimal', 'x/100'),
+    ('decimal', 'percent', 'x*100'),
 
     # Pressure
-    'Pa_to_kPa': 'x/1000',
-    'kPa_to_Pa': 'x*1000',
+    ('Pa', 'kPa', 'x/1000'),
+    ('kPa', 'Pa', 'x*1000'),
 
     # Time
-    'second_to_minute': 'x/60',
-    'minute_to_second': 'x*60'
-}
+    ('s', 'minute', 'x/60'),
+    ('minute', 's', 'x*60')
+]

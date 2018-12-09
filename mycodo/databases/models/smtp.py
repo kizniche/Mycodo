@@ -14,7 +14,9 @@ class SMTP(CRUDMixin, db.Model):
     user = db.Column(db.Text, default='email@gmail.com')
     passw = db.Column(db.Text, default='password')
     email_from = db.Column(db.Text, default='email@gmail.com')
-    hourly_max = db.Column(db.Integer, default=2)
+    hourly_max = db.Column(db.Integer, default=5)
+    email_count = db.Column(db.Integer, default=0)
+    smtp_wait_timer = db.Column(db.Integer, default=0)
 
     def __repr__(self):
         return "<{cls}(id={s.id})>".format(s=self, cls=self.__class__.__name__)

@@ -56,11 +56,10 @@ import time
 import timeit
 
 import RPi.GPIO as GPIO
-from smbus2 import SMBus
 
 from mycodo.config import MYCODO_VERSION
-from mycodo.config_devices_units import MEASUREMENTS
-from mycodo.config_devices_units import UNITS
+from mycodo.databases.models import Conversion
+from mycodo.databases.models import DeviceMeasurements
 from mycodo.databases.models import Input
 from mycodo.databases.models import LCD
 from mycodo.databases.models import LCDData
@@ -69,12 +68,12 @@ from mycodo.databases.models import Measurement
 from mycodo.databases.models import Output
 from mycodo.databases.models import PID
 from mycodo.databases.models import Unit
-from mycodo.mycodo_flask.utils.utils_general import use_unit_generate
 from mycodo.utils.database import db_retrieve_table_daemon
 from mycodo.utils.influx import read_last_influxdb
 from mycodo.utils.system_pi import add_custom_measurements
 from mycodo.utils.system_pi import add_custom_units
 from mycodo.utils.system_pi import cmd_output
+from mycodo.utils.system_pi import return_measurement_info
 
 
 class LCDController(threading.Thread):
@@ -92,60 +91,41 @@ class LCDController(threading.Thread):
         self.thread_shutdown_timer = 0
         self.ready = ready
         self.flash_lcd_on = False
-        self.lcd_initilized = False
+        self.lcd_initialized = False
         self.lcd_is_on = False
         self.lcd_id = lcd_id
-        self.display_ids = []
-        self.display_count = 0
-
-        self.LCD_LINE = {
-            1: 0x80,
-            2: 0xC0,
-            3: 0x94,
-            4: 0xD4
-        }
-
-        self.LCD_CHR = 1  # Mode - Sending data
-        self.LCD_CMD = 0  # Mode - SenLCDding command
-
-        self.LCD_BACKLIGHT = 0x08  # On
-        self.LCD_BACKLIGHT_OFF = 0x00  # Off
-
-        self.ENABLE = 0b00000100  # Enable bit
-
-        # Timing constants
-        self.E_PULSE = 0.0005
-        self.E_DELAY = 0.0005
+        self.display_sets = []
+        self.display_set_count = 0
 
         try:
-            lcd = db_retrieve_table_daemon(LCD, unique_id=self.lcd_id)
-            self.lcd_name = lcd.name
-            self.lcd_location = lcd.location
-            self.lcd_i2c_bus = lcd.i2c_bus
-            self.lcd_period = lcd.period
-            self.lcd_x_characters = lcd.x_characters
-            self.lcd_y_lines = lcd.y_lines
+            lcd_dev = db_retrieve_table_daemon(LCD, unique_id=self.lcd_id)
+            self.lcd_type = lcd_dev.lcd_type
+            self.lcd_name = lcd_dev.name
+            self.lcd_i2c_address = int(lcd_dev.location, 16)
+            self.lcd_i2c_bus = lcd_dev.i2c_bus
+            self.lcd_period = lcd_dev.period
+            self.lcd_x_characters = lcd_dev.x_characters
+            self.lcd_y_lines = lcd_dev.y_lines
             self.timer = time.time() + self.lcd_period
             self.backlight_timer = time.time()
 
             self.list_pids = ['setpoint', 'pid_time']
             self.list_outputs = ['duration_time', 'output_time', 'output_state']
 
-            self.list_inputs = MEASUREMENTS
+            # Add custom measurement and units to list
+            self.list_inputs = add_custom_measurements(
+                db_retrieve_table_daemon(Measurement, entry='all'))
+
             self.list_inputs.update(
                 {'input_time': {'unit': None, 'name': 'Time'}})
             self.list_inputs.update(
                 {'pid_time': {'unit': None, 'name': 'Time'}})
 
-            # Add custom measurement and units to list
-            self.list_inputs = add_custom_measurements(
-                db_retrieve_table_daemon(Measurement))
-
             self.dict_units = add_custom_units(
-                db_retrieve_table_daemon(Unit))
+                db_retrieve_table_daemon(Unit, entry='all'))
 
             lcd_data = db_retrieve_table_daemon(
-                LCDData).filter(LCDData.lcd_id == lcd.unique_id).all()
+                LCDData).filter(LCDData.lcd_id == lcd_dev.unique_id).all()
 
             self.lcd_string_line = {}
             self.lcd_line = {}
@@ -153,7 +133,7 @@ class LCDController(threading.Thread):
             self.lcd_decimal_places = {}
 
             for each_lcd_display in lcd_data:
-                self.display_ids.append(each_lcd_display.unique_id)
+                self.display_sets.append(each_lcd_display.unique_id)
                 self.lcd_string_line[each_lcd_display.unique_id] = {}
                 self.lcd_line[each_lcd_display.unique_id] = {}
                 self.lcd_max_age[each_lcd_display.unique_id] = {}
@@ -195,24 +175,22 @@ class LCDController(threading.Thread):
                         each_lcd_display.line_4_id,
                         each_lcd_display.line_4_measurement)
 
-            self.LCD_WIDTH = self.lcd_x_characters  # Max characters per line
+            if self.lcd_type in ['16x2_generic',
+                                 '16x4_generic']:
+                from mycodo.devices.lcd_generic import LCD_Generic
+                self.lcd_out = LCD_Generic(lcd_dev)
+                self.lcd_init()
+            elif self.lcd_type == '128x32_pioled':
+                from mycodo.devices.lcd_pioled import LCD_Pioled
+                self.lcd_out = LCD_Pioled(lcd_dev)
+                self.lcd_init()
+            else:
+                self.logger.error("Unknown LCD type: {}".format(self.lcd_type))
 
-            # Setup I2C bus
-            try:
-                self.bus = SMBus(self.lcd_i2c_bus)
-            except Exception as except_msg:
-                self.logger.exception(
-                    "Could not initialize I2C bus: {err}".format(
-                        err=except_msg))
-
-            self.I2C_ADDR = int(self.lcd_location, 16)
-            self.lcd_init()
-
-            if self.lcd_initilized:
-                self.lcd_string_write('Mycodo {}'.format(MYCODO_VERSION),
-                                      self.LCD_LINE[1])
-                self.lcd_string_write('Start {}'.format(
-                    self.lcd_name), self.LCD_LINE[2])
+            if self.lcd_initialized:
+                line_1 = 'Mycodo {}'.format(MYCODO_VERSION)
+                line_2 = 'Start {}'.format(self.lcd_name)
+                self.lcd_out.lcd_write_lines(line_1, line_2, '', '')
         except Exception as except_msg:
             self.logger.exception("Error: {err}".format(err=except_msg))
 
@@ -224,49 +202,49 @@ class LCDController(threading.Thread):
             self.ready.set()
 
             while self.running:
-                if not self.lcd_initilized:
+                if not self.lcd_initialized:
                     self.stop_controller()
                 elif (self.lcd_is_on and
-                        self.lcd_initilized and
+                        self.lcd_initialized and
                         time.time() > self.timer):
                     try:
                         # Acquire all measurements to be displayed on the LCD
-                        display_id = self.display_ids[self.display_count]
-                        for i in range(1, self.lcd_y_lines + 1):
+                        display_id = self.display_sets[self.display_set_count]
+                        for line in range(1, self.lcd_y_lines + 1):
                             if not self.running:
                                 break
-                            if self.lcd_line[display_id][i]['id'] and self.lcd_line[display_id][i]['setup']:
+                            if self.lcd_line[display_id][line]['id'] and self.lcd_line[display_id][line]['setup']:
                                 self.create_lcd_line(
-                                    self.get_measurement(display_id, i),
+                                    self.get_measurement(display_id, line),
                                     display_id,
-                                    i)
+                                    line)
                             else:
-                                self.lcd_string_line[display_id][i] = 'ID NOT FOUND'
+                                self.lcd_string_line[display_id][line] = 'LCD LINE ERROR'
                         # Output lines to the LCD
                         if self.running:
                             self.output_lcds()
                     except KeyError:
-                        self.logger.error(
+                        self.logger.exception(
                             "KeyError: Unable to output to LCD.")
                     except IOError:
-                        self.logger.error(
+                        self.logger.exception(
                             "IOError: Unable to output to LCD.")
                     except Exception:
                         self.logger.exception(
                             "Exception: Unable to output to LCD.")
 
                     # Increment display counter to show the next display
-                    if len(self.display_ids) > 1:
-                        if self.display_count < len(self.display_ids) - 1:
-                            self.display_count += 1
+                    if len(self.display_sets) > 1:
+                        if self.display_set_count < len(self.display_sets) - 1:
+                            self.display_set_count += 1
                         else:
-                            self.display_count = 0
+                            self.display_set_count = 0
 
                     self.timer = time.time() + self.lcd_period
 
                 elif not self.lcd_is_on:
                     # Turn backlight off
-                    self.lcd_byte(0x01, self.LCD_CMD, self.LCD_BACKLIGHT_OFF)
+                    self.lcd_out.lcd_backlight(0)
 
                 if self.flash_lcd_on:
                     if time.time() > self.backlight_timer:
@@ -283,23 +261,27 @@ class LCDController(threading.Thread):
         except Exception as except_msg:
             self.logger.exception("Exception: {err}".format(err=except_msg))
         finally:
-            self.lcd_init()  # Blank LCD
-            self.lcd_string_write('Mycodo {}'.format(MYCODO_VERSION),
-                                  self.LCD_LINE[1])
-            self.lcd_string_write('Stop {}'.format(self.lcd_name),
-                                  self.LCD_LINE[2])
+            self.lcd_out.lcd_init()  # Blank LCD
+            line_1 = 'Mycodo {}'.format(MYCODO_VERSION)
+            line_2 = 'Stop {}'.format(self.lcd_name)
+            self.lcd_out.lcd_write_lines(line_1, line_2, '', '')
             self.logger.info("Deactivated in {:.1f} ms".format(
                 (timeit.default_timer() - self.thread_shutdown_timer) * 1000))
             self.running = False
 
+    def lcd_init(self):
+        self.lcd_out.lcd_init()
+        self.lcd_initialized = True
+        self.lcd_is_on = True
+
     def get_measurement(self, display_id, i):
         try:
             if self.lcd_line[display_id][i]['measure'] == 'IP':
-                str_IP_cmd = "ip addr | grep 'state UP' -A2 | tail -n1 | awk '{print $2}' | cut -f1  -d'/'"
-                IP_out, _, _ = cmd_output(str_IP_cmd)
+                str_ip_cmd = "ip addr | grep 'state UP' -A2 | tail -n1 | awk '{print $2}' | cut -f1  -d'/'"
+                ip_out, _, _ = cmd_output(str_ip_cmd)
                 self.lcd_line[display_id][i]['name'] = ''
                 self.lcd_line[display_id][i]['unit'] = ''
-                self.lcd_line[display_id][i]['measure_val'] = IP_out.rstrip().decode("utf-8")
+                self.lcd_line[display_id][i]['measure_val'] = ip_out.rstrip().decode("utf-8")
                 return True
             elif self.lcd_line[display_id][i]['measure'] == 'output_state':
                 self.lcd_line[display_id][i]['measure_val'] = self.output_state(
@@ -310,12 +292,17 @@ class LCDController(threading.Thread):
                     last_measurement = read_last_influxdb(
                         self.lcd_line[display_id][i]['id'],
                         '/.*/',
+                        None,
+                        None,
                         duration_sec=self.lcd_max_age[display_id][i])
                 else:
                     last_measurement = read_last_influxdb(
                         self.lcd_line[display_id][i]['id'],
+                        self.lcd_line[display_id][i]['unit'],
                         self.lcd_line[display_id][i]['measure'],
+                        self.lcd_line[display_id][i]['channel'],
                         duration_sec=self.lcd_max_age[display_id][i])
+
                 if last_measurement:
                     self.lcd_line[display_id][i]['time'] = last_measurement[0]
                     if self.lcd_decimal_places[display_id][i] == 0:
@@ -332,6 +319,7 @@ class LCDController(threading.Thread):
                         self.lcd_line[display_id][i]['measure'],
                         self.lcd_line[display_id][i]['measure_val'], local_timestamp))
                     return True
+
                 else:
                     self.lcd_line[display_id][i]['time'] = None
                     self.lcd_line[display_id][i]['measure_val'] = None
@@ -394,10 +382,21 @@ class LCDController(threading.Thread):
 
     def output_lcds(self):
         """ Output to all LCDs all at once """
-        self.lcd_init()
-        display_id = self.display_ids[self.display_count]
-        for i in range(1, self.lcd_y_lines + 1):
-            self.lcd_string_write(self.lcd_string_line[display_id][i], self.LCD_LINE[i])
+        line_1 = ''
+        line_2 = ''
+        line_3 = ''
+        line_4 = ''
+        self.lcd_out.lcd_init()
+        display_id = self.display_sets[self.display_set_count]
+        if self.lcd_string_line[display_id][1]:
+            line_1 = self.lcd_string_line[display_id][1]            
+        if self.lcd_string_line[display_id][2]:
+            line_2 = self.lcd_string_line[display_id][2]            
+        if self.lcd_string_line[display_id][3]:
+            line_3 = self.lcd_string_line[display_id][3]            
+        if self.lcd_string_line[display_id][4]:
+            line_4 = self.lcd_string_line[display_id][4]            
+        self.lcd_out.lcd_write_lines(line_1, line_2, line_3, line_4)
 
     @staticmethod
     def output_state(output_id):
@@ -409,56 +408,44 @@ class LCDController(threading.Thread):
             gpio_state = 'Off'
         return gpio_state
 
-    def setup_lcd_line(self, display_id, line, device_id, measurement):
+    def setup_lcd_line(self, display_id, line, device_id, measurement_id):
+        if measurement_id == 'output':
+            device_measurement = db_retrieve_table_daemon(
+                Output, unique_id=device_id)
+        elif measurement_id == 'IP':
+            device_measurement = None
+        else:
+            device_measurement = db_retrieve_table_daemon(
+                DeviceMeasurements, unique_id=measurement_id)
+
+        if device_measurement:
+            conversion = db_retrieve_table_daemon(
+                Conversion, unique_id=device_measurement.conversion_id)
+            channel, unit, measurement = return_measurement_info(
+                device_measurement, conversion)
+        else:
+            channel = None
+            unit = None
+            measurement = None
+
         self.lcd_line[display_id][line]['setup'] = False
         self.lcd_line[display_id][line]['id'] = device_id
         self.lcd_line[display_id][line]['name'] = None
-        self.lcd_line[display_id][line]['unit'] = None
+        self.lcd_line[display_id][line]['unit'] = unit
         self.lcd_line[display_id][line]['measure'] = measurement
+        self.lcd_line[display_id][line]['channel'] = channel
 
-        if 'time' in measurement:
+        if 'time' in measurement_id:
             self.lcd_line[display_id][line]['measure'] = 'time'
+        elif measurement_id == 'IP':
+            self.lcd_line[display_id][line]['measure'] = 'IP'
+            self.lcd_line[display_id][line]['name'] = ''
+
         if not device_id:
             return
 
-        # Determine the unit of the PID setpoint
-        if measurement == 'setpoint':
-            pid = db_retrieve_table_daemon(PID, unique_id=device_id)
-            if pid:
-                if pid.measurement.split(',')[1] in self.list_inputs:
-                    # Determine if the PID input is a math or input controller
-                    pid_math = db_retrieve_table_daemon(Math, unique_id=pid.measurement.split(',')[0])
-                    pid_input = db_retrieve_table_daemon(Input, unique_id=pid.measurement.split(',')[0])
-
-                    list_measure_units = []
-                    setpoint_unit = ''
-                    if pid_math:
-                        list_measure_units = pid_math.measure_units.split(';')
-                    if pid_input:
-                        list_measure_units = pid_input.convert_to_unit.split(';')
-
-                    for each_measure_unit in list_measure_units:
-                        if (len(each_measure_unit.split(',')) == 2 and
-                                each_measure_unit.split(',')[0] == pid.measurement.split(',')[1]):
-                            setpoint_unit = self.dict_units[each_measure_unit.split(',')[1]]['unit']
-                    self.lcd_line[display_id][line]['unit'] = setpoint_unit
-                else:
-                    self.lcd_line[display_id][line]['unit'] = ''
-
-        elif measurement in self.list_inputs:
-            # Get what each measurement uses for a unit
-            input_dev = db_retrieve_table_daemon(Input)
-            output = db_retrieve_table_daemon(Output)
-            math = db_retrieve_table_daemon(Math)
-            use_unit = use_unit_generate(input_dev, output, math)
-            if (device_id in use_unit and
-                    measurement in use_unit[device_id] and
-                    use_unit[device_id][measurement] is not None):
-                self.lcd_line[display_id][line]['unit'] = UNITS[use_unit[device_id][measurement]]['unit']
-            elif 'unit' in self.list_inputs[measurement]:
-                self.lcd_line[display_id][line]['unit'] = self.list_inputs[measurement]['unit']
-            else:
-                self.lcd_line[display_id][line]['unit'] = ''
+        if unit in self.dict_units:
+            self.lcd_line[display_id][line]['unit'] = unit
         else:
             self.lcd_line[display_id][line]['unit'] = ''
 
@@ -479,6 +466,15 @@ class LCDController(threading.Thread):
                              self.lcd_line[display_id][line]['unit']]):
             self.lcd_line[display_id][line]['setup'] = True
 
+    def lcd_backlight(self, state):
+        """ Turn the backlight on or off """
+        if state:
+            self.lcd_out.lcd_backlight(state)
+            self.lcd_is_on = True
+            self.timer = time.time() - 1  # Induce LCD to update after turning backlight on
+        else:
+            self.lcd_is_on = False  # Instruct LCD backlight to turn off
+
     def lcd_flash(self, state):
         """ Enable the LCD to begin or end flashing """
         if state:
@@ -488,62 +484,6 @@ class LCDController(threading.Thread):
             self.flash_lcd_on = False
             self.lcd_backlight(True)
             return 1, "LCD {} Reset".format(self.lcd_id)
-
-    def lcd_backlight(self, state):
-        """ Turn the backlight on or off """
-        if state:
-            self.lcd_is_on = True
-            self.lcd_byte(0x01, self.LCD_CMD, self.LCD_BACKLIGHT)
-            self.timer = time.time() - 1  # Induce LCD to update after turning backlight on
-        else:
-            self.lcd_is_on = False  # Instruct LCD backlight to turn off
-
-    def lcd_init(self):
-        """ Initialize LCD display """
-        try:
-            self.lcd_byte(0x33, self.LCD_CMD)  # 110011 Initialise
-            self.lcd_byte(0x32, self.LCD_CMD)  # 110010 Initialise
-            self.lcd_byte(0x06, self.LCD_CMD)  # 000110 Cursor move direction
-            self.lcd_byte(0x0C, self.LCD_CMD)  # 001100 Display On,Cursor Off, Blink Off
-            self.lcd_byte(0x28, self.LCD_CMD)  # 101000 Data length, number of lines, font size
-            self.lcd_byte(0x01, self.LCD_CMD)  # 000001 Clear display
-            time.sleep(self.E_DELAY)
-            self.lcd_initilized = True
-            self.lcd_is_on = True
-        except Exception as err:
-            self.logger.error(
-                "Could not initialize LCD. Check your configuration and wiring. Error: {err}".format(err=err))
-
-    def lcd_byte(self, bits, mode, backlight=None):
-        """ Send byte to data pins """
-        if backlight is None:
-            backlight = self.LCD_BACKLIGHT
-        # bits = the data
-        # mode = 1 for data
-        #        0 for command
-        bits_high = mode | (bits & 0xF0) | backlight
-        bits_low = mode | ((bits << 4) & 0xF0) | backlight
-        # High bits
-        self.bus.write_byte(self.I2C_ADDR, bits_high)
-        self.lcd_toggle_enable(bits_high)
-        # Low bits
-        self.bus.write_byte(self.I2C_ADDR, bits_low)
-        self.lcd_toggle_enable(bits_low)
-
-    def lcd_toggle_enable(self, bits):
-        """ Toggle enable """
-        time.sleep(self.E_DELAY)
-        self.bus.write_byte(self.I2C_ADDR, (bits | self.ENABLE))
-        time.sleep(self.E_PULSE)
-        self.bus.write_byte(self.I2C_ADDR, (bits & ~self.ENABLE))
-        time.sleep(self.E_DELAY)
-
-    def lcd_string_write(self, message, line):
-        """ Send string to display """
-        message = message.ljust(self.LCD_WIDTH, " ")
-        self.lcd_byte(line, self.LCD_CMD)
-        for i in range(self.LCD_WIDTH):
-            self.lcd_byte(ord(message[i]), self.LCD_CHR)
 
     def is_running(self):
         """ returns if the controller is running """

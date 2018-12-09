@@ -31,10 +31,8 @@ from mycodo.mycodo_flask.routes_static import inject_variables
 from mycodo.mycodo_flask.utils import utils_general
 from mycodo.mycodo_flask.utils import utils_settings
 from mycodo.utils.inputs import load_module_from_file
-from mycodo.utils.inputs import parse_input_information
 from mycodo.utils.system_pi import add_custom_measurements
 from mycodo.utils.system_pi import add_custom_units
-from mycodo.utils.system_pi import all_conversions
 from mycodo.utils.system_pi import cmd_output
 
 logger = logging.getLogger('mycodo.mycodo_flask.settings')
@@ -220,7 +218,6 @@ def settings_measurement():
     # Generate all measurement and units used
     dict_measurements = add_custom_measurements(measurement)
     dict_units = add_custom_units(unit)
-    conversions_dict = all_conversions(conversion)
 
     if request.method == 'POST':
         if not utils_general.user_has_permission('edit_controllers'):
@@ -252,10 +249,7 @@ def settings_measurement():
     return render_template('settings/measurement.html',
                            dict_measurements=dict_measurements,
                            dict_units=dict_units,
-                           conversions_dict=conversions_dict,
                            choices_units=choices_units,
-                           units=UNITS,
-                           measurement_units=MEASUREMENTS,
                            measurement=measurement,
                            unit=unit,
                            conversion=conversion,
@@ -363,8 +357,14 @@ def settings_diagnostic():
 
         if form_settings_diagnostic.delete_dashboard_elements.data:
             utils_settings.settings_diagnostic_delete_dashboard_elements()
+        if form_settings_diagnostic.delete_inputs.data:
+            utils_settings.settings_diagnostic_delete_inputs()
+        if form_settings_diagnostic.delete_maths.data:
+            utils_settings.settings_diagnostic_delete_maths()
         if form_settings_diagnostic.delete_notes_tags.data:
             utils_settings.settings_diagnostic_delete_notes_tags()
+        if form_settings_diagnostic.delete_outputs.data:
+            utils_settings.settings_diagnostic_delete_outputs()
 
         return redirect(url_for('routes_settings.settings_diagnostic'))
 
@@ -387,5 +387,5 @@ def get_raspi_config_settings():
     spi_status, _, _ = cmd_output("raspi-config nonint get_spi")
     settings['spi_enabled'] = not bool(int(spi_status))
     hostname_out, _, _ = cmd_output("raspi-config nonint get_hostname")
-    settings['hostname'] = hostname_out
+    settings['hostname'] = hostname_out.decode("utf-8")
     return settings

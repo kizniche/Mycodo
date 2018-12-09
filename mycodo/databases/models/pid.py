@@ -19,6 +19,7 @@ class PID(CRUDMixin, db.Model):
     is_preset = db.Column(db.Boolean, default=False)  # Is config saved as a preset?
     preset_name = db.Column(db.Text, default='')  # Name for preset
     period = db.Column(db.Float, default=30.0)
+    start_offset = db.Column(db.Float, default=30.0)
     max_measure_age = db.Column(db.Float, default=120.0)
     measurement = db.Column(db.Text, default='')  # What condition is the controller regulating?
     direction = db.Column(db.Text, default='raise')  # Direction of regulation (raise, lower, both)

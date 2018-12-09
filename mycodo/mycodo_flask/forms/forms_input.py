@@ -32,7 +32,7 @@ class DataBase(FlaskForm):
 
 
 class InputAdd(FlaskForm):
-    choices_inputs = [('', lazy_gettext('Select Input to Add'))]
+    choices_inputs = []
     dict_inputs = parse_input_information()
     list_inputs_sorted = generate_form_input_list(dict_inputs)
 
@@ -49,20 +49,21 @@ class InputAdd(FlaskForm):
                 choices_inputs.append(
                     ('{inp},{int}'.format(inp=each_input, int=each_interface),
                      '{manuf}: {name}: {meas} ({int})'.format(
-                        manuf=dict_inputs[each_input]['input_manufacturer'],
-                        name=dict_inputs[each_input]['input_name'],
-                        meas=dict_inputs[each_input]['measurements_name'],
-                        int=each_interface)))
+                         manuf=dict_inputs[each_input]['input_manufacturer'],
+                         name=dict_inputs[each_input]['input_name'],
+                         meas=dict_inputs[each_input]['measurements_name'],
+                         int=each_interface)))
 
     input_type = SelectField(
         choices=choices_inputs,
         validators=[DataRequired()]
     )
-    input_add = SubmitField(lazy_gettext('Add Input'))
+    input_add = SubmitField(lazy_gettext('Add'))
 
 
 class InputMod(FlaskForm):
     input_id = StringField('Input ID', widget=widgets.HiddenInput())
+    input_measurement_id = StringField(widget=widgets.HiddenInput())
     name = StringField(
         lazy_gettext('Name'),
         validators=[DataRequired()]
@@ -95,8 +96,9 @@ class InputMod(FlaskForm):
         lazy_gettext('Resolution'), widget=NumberInput())
     sensitivity = IntegerField(
         lazy_gettext('Sensitivity'), widget=NumberInput())
-    convert_to_unit = StringField(lazy_gettext('Unit'))
-    selected_measurement_unit = StringField(lazy_gettext('Unit Measurement'))
+
+    measurements_enabled = SelectMultipleField(
+        TOOLTIPS_INPUT['measurements_enabled']['title'])
 
     # Server options
     host = StringField(lazy_gettext('Host'))
@@ -131,28 +133,12 @@ class InputMod(FlaskForm):
     bt_adapter = StringField(lazy_gettext('BT Adapter'))
 
     # ADC
-    adc_channel = IntegerField(
-        TOOLTIPS_INPUT['adc_channel']['title'], widget=NumberInput())
     adc_gain = IntegerField(
         TOOLTIPS_INPUT['adc_gain']['title'], widget=NumberInput())
     adc_resolution = IntegerField(
         TOOLTIPS_INPUT['adc_resolution']['title'], widget=NumberInput())
     adc_sample_speed = StringField(
         TOOLTIPS_INPUT['adc_sample_speed']['title'])
-    adc_volts_min = DecimalField(
-        TOOLTIPS_INPUT['adc_volts_min']['title'],
-        widget=NumberInput(step='any'))
-    adc_volts_max = DecimalField(
-        TOOLTIPS_INPUT['adc_volts_max']['title'],
-        widget=NumberInput(step='any'))
-    adc_units_min = DecimalField(
-        TOOLTIPS_INPUT['adc_units_min']['title'],
-        widget=NumberInput(step='any'))
-    adc_units_max = DecimalField(
-        TOOLTIPS_INPUT['adc_units_max']['title'],
-        widget=NumberInput(step='any'))
-    adc_inverse_unit_scale = BooleanField(
-        TOOLTIPS_INPUT['adc_inverse_unit_scale']['title'])
 
     switch_edge = StringField(lazy_gettext('Edge'))
     switch_bounce_time = IntegerField(
@@ -192,3 +178,36 @@ class InputMod(FlaskForm):
     input_deactivate = SubmitField(lazy_gettext('Deactivate'))
     input_order_up = SubmitField(lazy_gettext('Up'))
     input_order_down = SubmitField(lazy_gettext('Down'))
+
+
+class InputMeasurementMod(FlaskForm):
+    input_id = StringField('Input ID', widget=widgets.HiddenInput())
+    input_measurement_id = StringField(widget=widgets.HiddenInput())
+    name = StringField(
+        lazy_gettext('Name'),
+        validators=[DataRequired()]
+    )
+    select_measurement_unit = StringField(
+        TOOLTIPS_INPUT['select_measurement_unit']['title'])
+
+    scale_from_min = DecimalField(
+        TOOLTIPS_INPUT['scale_from_min']['title'],
+        widget=NumberInput(step='any'))
+    scale_from_max = DecimalField(
+        TOOLTIPS_INPUT['scale_from_max']['title'],
+        widget=NumberInput(step='any'))
+    scale_to_min = DecimalField(
+        TOOLTIPS_INPUT['scale_to_min']['title'],
+        widget=NumberInput(step='any'))
+    scale_to_max = DecimalField(
+        TOOLTIPS_INPUT['scale_to_max']['title'],
+        widget=NumberInput(step='any'))
+    invert_scale = BooleanField(
+        TOOLTIPS_INPUT['invert_scale']['title'])
+
+    rescaled_measurement_unit = StringField(
+        lazy_gettext('Rescaled Measurement'))
+    convert_to_measurement_unit = StringField(
+        TOOLTIPS_INPUT['convert_to_measurement_unit']['title'])
+
+    input_measurement_mod = SubmitField(lazy_gettext('Save'))

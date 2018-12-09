@@ -3,7 +3,14 @@ import logging
 import time
 
 from mycodo.inputs.base_input import AbstractInput
-from mycodo.inputs.sensorutils import convert_units
+
+# Measurements
+measurements_dict = {
+    0: {
+        'measurement': 'revolutions',
+        'unit': 'rpm'
+    }
+}
 
 # Input information
 INPUT_INFORMATION = {
@@ -11,13 +18,22 @@ INPUT_INFORMATION = {
     'input_manufacturer': 'Mycodo',
     'input_name': 'Signal (Revolutions)',
     'measurements_name': 'RPM',
-    'measurements_list': ['revolutions'],
-    'options_enabled': ['gpio_location', 'rpm_pulses_per_rev', 'weighting', 'sample_time', 'period', 'convert_unit', 'pre_output'],
+    'measurements_dict': measurements_dict,
+
+    'options_enabled': [
+        'gpio_location',
+        'rpm_pulses_per_rev',
+        'weighting',
+        'sample_time',
+        'period',
+        'pre_output'
+    ],
     'options_disabled': ['interface'],
 
     'dependencies_module': [
         ('internal', 'pip-exists pigpio', 'pigpio')
     ],
+
     'interfaces': ['GPIO'],
     'weighting': 0.0,
     'sample_time': 2.0,
@@ -31,49 +47,22 @@ class InputModule(AbstractInput):
     def __init__(self, input_dev, testing=False):
         super(InputModule, self).__init__()
         self.logger = logging.getLogger("mycodo.inputs.signal_revolutions")
-        self._revolutions = None
+        self._measurements = None
 
         if not testing:
             import pigpio
             self.logger = logging.getLogger(
                 "mycodo.signal_revolutions_{id}".format(id=input_dev.unique_id.split('-')[0]))
+
             self.gpio = int(input_dev.gpio_location)
-            self.convert_to_unit = input_dev.convert_to_unit
             self.weighting = input_dev.weighting
             self.rpm_pulses_per_rev = input_dev.rpm_pulses_per_rev
             self.sample_time = input_dev.sample_time
             self.pigpio = pigpio
 
-    def __repr__(self):
-        """  Representation of object """
-        return "<{cls}(revolutions={revolutions})>".format(
-            cls=type(self).__name__,
-            revolutions="{0:.2f}".format(self._revolutions))
-
-    def __str__(self):
-        """ Return rpm information """
-        return "Revolutions: {0:.2f}".format(self._revolutions)
-
-    def __iter__(self):  # must return an iterator
-        """ Iterates through live rpm readings """
-        return self
-
-    def next(self):
-        """ Get next revolutions reading """
-        if self.read():  # raised an error
-            raise StopIteration  # required
-        return dict(revolutions=float('{0:.2f}'.format(self._revolutions)))
-
-    @property
-    def revolutions(self):
-        """ revolutions """
-        if self._revolutions is None:  # update if needed
-            self.read()
-        return self._revolutions
-
     def get_measurement(self):
         """ Gets the revolutions """
-        self._revolutions = None
+        return_dict = measurements_dict.copy()
 
         pi = self.pigpio.pi()
         if not pi.connected:  # Check if pigpiod is running
@@ -82,44 +71,22 @@ class InputModule(AbstractInput):
             return None
 
         read_revolutions = ReadRPM(pi,
-                           self.gpio,
-                           self.pigpio,
-                           self.rpm_pulses_per_rev,
-                           self.weighting)
+                                   self.gpio,
+                                   self.pigpio,
+                                   self.rpm_pulses_per_rev,
+                                   self.weighting)
         time.sleep(self.sample_time)
 
         rpm = read_revolutions.RPM()
         if rpm:
             rpm = int(rpm + 0.5)
 
-        rpm = convert_units(
-            'revolutions', 'RPM', self.convert_to_unit,
-            rpm)
-
         read_revolutions.cancel()
         pi.stop()
 
-        if rpm:
-            return rpm
-        elif rpm == 0:
-            return 0
-        else:
-            return None
-
-    def read(self):
-        """
-        Takes a reading from the pin and updates the self._revolutions value
-
-        :returns: None on success or 1 on error
-        """
-        try:
-            self._revolutions = self.get_measurement()
-            if self._revolutions is not None:
-                return  # success - no errors
-        except Exception as e:
-            self.logger.exception("{cls} raised an exception when taking a reading: "
-                         "{err}".format(cls=type(self).__name__, err=e))
-        return 1
+        if rpm or rpm == 0:
+            return_dict[0]['value'] = rpm
+            return return_dict
 
 
 class ReadRPM:

@@ -1,6 +1,20 @@
 # coding=utf-8
 import argparse
 import logging
+from collections import OrderedDict
+
+from mycodo.databases.models import DeviceMeasurements
+from mycodo.inputs.base_input import AbstractInput
+from mycodo.utils.database import db_retrieve_table_daemon
+
+
+# Measurements
+measurements_dict = OrderedDict()
+for each_channel in range(4):
+    measurements_dict[each_channel] = {
+        'measurement': 'electrical_potential',
+        'unit': 'V'
+    }
 
 # Input information
 INPUT_INFORMATION = {
@@ -8,98 +22,75 @@ INPUT_INFORMATION = {
     'input_manufacturer': 'Microchip',
     'input_name': 'MCP3008',
     'measurements_name': 'Voltage (Analog-to-Digital Converter)',
-    'measurements_list': ['voltage'],
-    'options_enabled': ['pin_cs', 'pin_miso', 'pin_mosi', 'pin_clock', 'adc_channel', 'adc_options', 'period', 'pre_output'],
+    'measurements_dict': measurements_dict,
+    'measurements_rescale': True,
+    'scale_from_min': -4.096,
+    'scale_from_max': 4.096,
+
+    'options_enabled': [
+        'pin_cs',
+        'pin_miso',
+        'pin_mosi',
+        'pin_clock',
+        'measurements_select',
+        'channels_convert',
+        'period',
+        'pre_output'
+    ],
     'options_disabled': ['interface'],
 
     'dependencies_module': [
         ('pip-pypi', 'Adafruit_MCP3008', 'Adafruit_MCP3008')
     ],
+
     'interfaces': ['UART'],
-    'analog_to_digital_converter': True,
     'pin_cs': 8,
     'pin_miso': 9,
     'pin_mosi': 10,
-    'pin_clock': 11,
-    'adc_channel': [
-        (0, 'Channel 0'),
-        (1, 'Channel 1'),
-        (2, 'Channel 2'),
-        (3, 'Channel 3')
-    ],
-    'adc_volts_min': -4.096,
-    'adc_volts_max': 4.096
+    'pin_clock': 11
 }
 
-class ADCModule(object):
+
+class InputModule(AbstractInput):
     """ ADC Read """
     def __init__(self, input_dev, testing=False):
+        super(InputModule, self).__init__()
         self.logger = logging.getLogger('mycodo.mcp3008')
         self.acquiring_measurement = False
-        self._voltage = None
+        self._measurements = None
         self.adc = None
-
-        self.pin_clock = input_dev.pin_clock
-        self.pin_cs = input_dev.pin_cs
-        self.pin_miso = input_dev.pin_miso
-        self.pin_mosi = input_dev.pin_mosi
-        self.adc_channel = input_dev.adc_channel
-        self.adc_volts_max = input_dev.adc_volts_max
 
         if not testing:
             import Adafruit_MCP3008
             self.logger = logging.getLogger(
                 'mycodo.mcp3008_{id}'.format(id=input_dev.unique_id.split('-')[0]))
+
+            self.device_measurements = db_retrieve_table_daemon(
+                DeviceMeasurements).filter(
+                    DeviceMeasurements.device_id == input_dev.unique_id)
+
+            self.pin_clock = input_dev.pin_clock
+            self.pin_cs = input_dev.pin_cs
+            self.pin_miso = input_dev.pin_miso
+            self.pin_mosi = input_dev.pin_mosi
+            self.scale_from_max = input_dev.scale_from_max
+
             self.adc = Adafruit_MCP3008.MCP3008(clk=self.pin_clock,
                                                 cs=self.pin_cs,
                                                 miso=self.pin_miso,
                                                 mosi=self.pin_mosi)
 
-    def __iter__(self):
-        """
-        Support the iterator protocol.
-        """
-        return self
-
-    def next(self):
-        """
-        Call the read method and return voltage information.
-        """
-        if self.read():
-            return None
-        return dict(voltage=float('{0:.4f}'.format(self._voltage)))
-
-    @property
-    def voltage(self):
-        return self._voltage
-
     def get_measurement(self):
-        self._voltage = None
-        voltage = (self.adc.read_adc(self.adc_channel) / 1023.0) * self.adc_volts_max
-        return voltage
+        self._measurements = None
 
-    def read(self):
-        """
-        Takes a reading
+        return_dict = measurements_dict.copy()
 
-        :returns: None on success or 1 on error
-        """
-        if self.acquiring_measurement:
-            self.logger.error("Attempting to acquire a measurement when a"
-                              " measurement is already being acquired.")
-            return 1
-        try:
-            self.acquiring_measurement = True
-            self._voltage = self.get_measurement()
-            if self._voltage is not None:
-                return  # success - no errors
-        except Exception as e:
-            self.logger.error(
-                "{cls} raised an exception when taking a reading: "
-                "{err}".format(cls=type(self).__name__, err=e))
-        finally:
-            self.acquiring_measurement = False
-        return 1
+        for each_measure in self.device_measurements.all():
+            if each_measure.is_enabled:
+                return_dict[each_measure.channel]['value'] = (
+                    (self.adc.read_adc(each_measure.channel) / 1023.0) * self.scale_from_max)
+
+        return return_dict
 
 
 def parse_args(parser):
@@ -123,6 +114,7 @@ def parse_args(parser):
 
 
 if __name__ == '__main__':
+    import Adafruit_MCP3008
     parser = argparse.ArgumentParser(
         description='MCP3008 Analog-to-Digital Converter Read Test Script')
     args = parse_args(parser)

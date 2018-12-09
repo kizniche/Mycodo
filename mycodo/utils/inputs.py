@@ -26,7 +26,7 @@ import logging
 
 import os
 
-logger = logging.getLogger("mycodo.input_parser")
+logger = logging.getLogger("mycodo.utils.inputs")
 
 
 def list_devices_using_interface(interface):
@@ -84,6 +84,7 @@ def parse_custom_option_values(inputs):
 
 
 def parse_input_information():
+    """Parses the variables assigned in each Input and return a dictionary of IDs and values"""
     def dict_has_value(dict_inp, input_cus, key):
         if (key in input_cus.INPUT_INFORMATION and
                 (input_cus.INPUT_INFORMATION[key] or
@@ -91,10 +92,6 @@ def parse_input_information():
             dict_inp[input_cus.INPUT_INFORMATION['input_name_unique']][key] = \
                 input_cus.INPUT_INFORMATION[key]
         return dict_inp
-
-    # Uncomment to enable timer
-    # import timeit
-    # startup_timer = timeit.default_timer()
 
     excluded_files = ['__init__.py', '__pycache__', 'base_input.py',
                       'custom_inputs', 'examples', 'tmp_inputs',
@@ -125,7 +122,9 @@ def parse_input_information():
                     skip_file = True
 
             if not skip_file:
-                # logger.info("Found input: {}, {}".format(input_custom.INPUT_INFORMATION['input_name_unique'], full_path))
+                # logger.info("Found input: {}, {}".format(
+                #     input_custom.INPUT_INFORMATION['input_name_unique'],
+                #     full_path))
 
                 # Populate dictionary of input information
                 if input_custom.INPUT_INFORMATION['input_name_unique'] in dict_inputs:
@@ -136,14 +135,17 @@ def parse_input_information():
 
                 dict_inputs[input_custom.INPUT_INFORMATION['input_name_unique']]['file_path'] = full_path
 
+                dict_inputs = dict_has_value(dict_inputs, input_custom, 'input_manufacturer')
                 dict_inputs = dict_has_value(dict_inputs, input_custom, 'input_name')
                 dict_inputs = dict_has_value(dict_inputs, input_custom, 'measurements_name')
-                dict_inputs = dict_has_value(dict_inputs, input_custom, 'measurements_list')
-                dict_inputs = dict_has_value(dict_inputs, input_custom, 'input_manufacturer')
+                dict_inputs = dict_has_value(dict_inputs, input_custom, 'measurements_dict')
+                dict_inputs = dict_has_value(dict_inputs, input_custom, 'measurements_rescale')
 
                 # Dependencies
                 dict_inputs = dict_has_value(dict_inputs, input_custom, 'dependencies_module')
                 dict_inputs = dict_has_value(dict_inputs, input_custom, 'dependencies_github')
+
+                dict_inputs = dict_has_value(dict_inputs, input_custom, 'enable_channel_unit_select')
 
                 # Interface
                 dict_inputs = dict_has_value(dict_inputs, input_custom, 'interfaces')
@@ -184,16 +186,9 @@ def parse_input_information():
                 dict_inputs = dict_has_value(dict_inputs, input_custom, 'sample_time')
 
                 # Analog-to-digital converter
-                dict_inputs = dict_has_value(dict_inputs, input_custom, 'analog_to_digital_converter')
-                dict_inputs = dict_has_value(dict_inputs, input_custom, 'adc_channel')
                 dict_inputs = dict_has_value(dict_inputs, input_custom, 'adc_gain')
                 dict_inputs = dict_has_value(dict_inputs, input_custom, 'adc_resolution')
                 dict_inputs = dict_has_value(dict_inputs, input_custom, 'adc_sample_speed')
-                dict_inputs = dict_has_value(dict_inputs, input_custom, 'adc_volts_min')
-                dict_inputs = dict_has_value(dict_inputs, input_custom, 'adc_volts_max')
-                dict_inputs = dict_has_value(dict_inputs, input_custom, 'adc_units_min')
-                dict_inputs = dict_has_value(dict_inputs, input_custom, 'adc_units_max')
-                dict_inputs = dict_has_value(dict_inputs, input_custom, 'adc_inverse_unit_scale')
 
                 # Misc
                 dict_inputs = dict_has_value(dict_inputs, input_custom, 'period')
@@ -206,9 +201,5 @@ def parse_input_information():
                 dict_inputs = dict_has_value(dict_inputs, input_custom, 'ref_ohm')
 
                 dict_inputs = dict_has_value(dict_inputs, input_custom, 'custom_options')
-
-    # Uncomment to enable timer, also uncomment line at start of function
-    # run_time = timeit.default_timer() - startup_timer
-    # logger.info("Input parse time: {time:.1f} ms".format(time=run_time*1000))
 
     return dict_inputs

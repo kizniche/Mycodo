@@ -3,7 +3,7 @@ Mycodo
 
 Environmental Regulation System
 
-Latest version: 6.4.7 |Build Status| |Codacy Badge| |DOI|
+Latest version: 7.0.0 |Build Status| |Codacy Badge| |DOI|
 
 `Mycodo Manual <https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.rst>`__
 (`PDF <https://github.com/kizniche/Mycodo/raw/master/mycodo-manual.pdf>`__,
@@ -72,7 +72,7 @@ Software Features
    own.
 -  Outputs: Manipulate the environment by switching GPIO pins High or
    Low, switching relays, generating PWM signals, email notifications,
-   executing linux commands, and more.
+   executing linux/Python 3 commands, and more.
 -  PID Controllers: Couple inputs with outputs to create feedback loops
    in order to regulate environmental conditions.
 -  Methods: Change the desired condition over time (useful for reflow

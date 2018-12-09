@@ -1,8 +1,17 @@
 # coding=utf-8
 import logging
+
 import os
 
 from mycodo.inputs.base_input import AbstractInput
+
+# Measurements
+measurements_dict = {
+    0: {
+        'measurement': 'boolean',
+        'unit': 'bool'
+    }
+}
 
 # Input information
 INPUT_INFORMATION = {
@@ -10,8 +19,14 @@ INPUT_INFORMATION = {
     'input_manufacturer': 'Mycodo',
     'input_name': 'Server Port Open',
     'measurements_name': 'Boolean',
-    'measurements_list': ['boolean'],
-    'options_enabled': ['location', 'port', 'period', 'pre_output'],
+    'measurements_dict': measurements_dict,
+
+    'options_enabled': [
+        'location',
+        'port',
+        'period',
+        'pre_output'
+    ],
     'options_disabled': ['interface'],
 
     'interfaces': ['Mycodo'],
@@ -38,60 +53,21 @@ class InputModule(AbstractInput):
         if not testing:
             self.logger = logging.getLogger(
                 "mycodo.server_port_open_{id}".format(id=input_dev.unique_id.split('-')[0]))
+
             self.location = input_dev.location
             self.port = input_dev.port
 
-    def __repr__(self):
-        """  Representation of object """
-        return "<{cls}(measurement={cond})>".format(
-            cls=type(self).__name__,
-            cond="{0:.2f}".format(self._measurement))
-
-    def __str__(self):
-        """ Return command output """
-        return "Boolean: {}".format("{0}".format(self._measurement))
-
-    def __iter__(self):  # must return an iterator
-        """ ServerPing iterates through pinging a server """
-        return self
-
-    def next(self):
-        """ Get next measurement """
-        if self.read():  # raised an error
-            raise StopIteration  # required
-        return {'boolean': float('{0}'.format(self._measurement))}
-
-    @property
-    def measurement(self):
-        """ Command returns a measurement """
-        if self._measurement is None:  # update if needed
-            self.read()
-        return self._measurement
-
     def get_measurement(self):
         """ Determine if the return value of the command is a number """
-        self._measurement = None
+        return_dict = measurements_dict.copy()
 
         response = os.system(
             "nc -zv {host} {port} > /dev/null 2>&1".format(
                 port=self.port,  host=self.location))
+
         if response == 0:
-            return 1  # Server is up
+            return_dict[0]['value'] = 1
         else:
-            return 0  # Server is down
+            return_dict[0]['value'] = 0
 
-    def read(self):
-        """
-        Executes a command and updates the self._measurement value
-
-        :returns: None on success or 1 on error
-        """
-        try:
-            self._measurement = self.get_measurement()
-            if self._measurement is not None:
-                return  # success - no errors
-        except Exception as e:
-            self.logger.exception(
-                "{cls} raised an exception when taking a reading: "
-                "{err}".format(cls=type(self).__name__, err=e))
-        return 1
+        return return_dict

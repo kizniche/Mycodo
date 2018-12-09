@@ -29,6 +29,7 @@ logger = logging.getLogger(__name__)
 # Export
 #
 
+
 def export_measurements(form):
     """
     Take user input to query the InfluxDB and return a CSV file of timestamps
@@ -50,11 +51,11 @@ def export_measurements(form):
                     time.strptime(end_time, '%m/%d/%Y %H:%M')))
 
                 unique_id = form.measurement.data.split(',')[0]
-                measurement = form.measurement.data.split(',')[1]
+                measurement_id = form.measurement.data.split(',')[1]
 
-                url = '/export_data/{meas}/{id}/{start}/{end}'.format(
-                    meas=measurement,
+                url = '/export_data/{id}/{meas}/{start}/{end}'.format(
                     id=unique_id,
+                    meas=measurement_id,
                     start=start_seconds, end=end_seconds)
                 return url
         except Exception as err:

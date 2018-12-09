@@ -9,29 +9,45 @@
 
 <div id="container-output-{{chart_number}}" style="height: {{each_dashboard.height}}px; text-align: center">
 
-  <span style="font-size: {{each_dashboard.font_em_value}}em" id="value-{{chart_number}}"></span>
-  <br/><span style="font-size: {{each_dashboard.font_em_timestamp}}em">
   {%- for each_input in input -%}
-    {%- if each_input.unique_id == each_dashboard.input_ids_measurements.split(',')[0] %}
-      {%- if each_dashboard.input_ids_measurements.split(',')[1] in measurement_units -%}
-        {{measurement_units[each_dashboard.input_ids_measurements.split(',')[1]]['name']|safe}} ({% if use_unit[each_input.unique_id][each_dashboard.input_ids_measurements.split(',')[1]] %}{{units[use_unit[each_input.unique_id][each_dashboard.input_ids_measurements.split(',')[1]]]['unit']}}{% else %}{{measurement_units[each_dashboard.input_ids_measurements.split(',')[1]]['unit']|safe}}{% endif %})
-      {%- elif each_input.adc_measure -%}
-        {{each_input.adc_measure|safe}} ({{each_input.adc_measure_units|safe}})
-      {% endif %}
+    {%- if each_input.unique_id == each_dashboard.input_ids_measurements.split(',')[0] -%}
+      {%- set measurement_id = each_dashboard.input_ids_measurements.split(',')[1] -%}
+      {%- if measurement_id in device_measurements_dict -%}
+
+  <span style="font-size: {{each_dashboard.font_em_value}}em" id="value-{{chart_number}}"></span> {{dict_units[device_measurements_dict[measurement_id].unit]['unit']}}
+  <br/><span style="font-size: {{each_dashboard.font_em_timestamp}}em">
+      {{each_input.name}} (
+        {%- if not device_measurements_dict[measurement_id].single_channel -%}
+          {{'CH' + (device_measurements_dict[measurement_id].channel|int + 1)|string + ', '}}
+        {%- endif -%}
+      {{dict_measurements[device_measurements_dict[measurement_id].measurement]['name']}}
+
+      {%- endif -%}
     {%- endif -%}
   {%- endfor -%}
 
   {%- for each_math in math -%}
-    {%- if each_math.unique_id == each_dashboard.input_ids_measurements.split(',')[0] %}
-      {{dict_measurements[each_dashboard.input_ids_measurements.split(',')[1]]['name']|safe}} ({{each_math.measure_units|safe}})
+    {%- if each_math.unique_id == each_dashboard.input_ids_measurements.split(',')[0] -%}
+      {%- set measurement_id = each_dashboard.input_ids_measurements.split(',')[1] -%}
+      {%- if measurement_id in device_measurements_dict -%}
+
+  <span style="font-size: {{each_dashboard.font_em_value}}em" id="value-{{chart_number}}"></span> {{dict_units[device_measurements_dict[measurement_id].unit]['unit']}}
+  <br/><span style="font-size: {{each_dashboard.font_em_timestamp}}em">
+      {{each_math.name}} (
+        {%- if not device_measurements_dict[measurement_id].single_channel -%}
+          {{'CH' + (device_measurements_dict[measurement_id].channel|int + 1)|string + ', '}}
+        {%- endif -%}
+      {{dict_measurements[device_measurements_dict[measurement_id].measurement]['name']}}
+
+      {%- endif -%}
     {%- endif -%}
   {%- endfor -%}
 
   {%- for each_pid in pid -%}
     {%- if each_pid.unique_id == each_dashboard.input_ids_measurements.split(',')[0] %}
-      {{measurement_units[each_dashboard.input_ids_measurements.split(',')[1]]['name']|safe}} ({{dict_measurements[each_dashboard.input_ids_measurements.split(',')[1]]['unit']|safe}})
+      {{dict_measurements[each_dashboard.input_ids_measurements.split(',')[1]]['name']|safe}} ({{dict_measurements[each_dashboard.input_ids_measurements.split(',')[1]]['unit']|safe}})
     {%- endif -%}
-  {%- endfor -%}
+  {%- endfor -%})
   </span>
   <br/><span style="font-size: {{each_dashboard.font_em_timestamp}}em" id="timestamp-{{chart_number}}"></span>
 
@@ -120,18 +136,18 @@
       </div>
     </div>
 
-    <div class="form-row btn-group" style="padding-top: 1em;">
-      <div class="form-group">
-        {{form_base.modify(class_='form-control btn btn-default')}}
+    <div class="row small-gutters" style="padding: 1em 1em 0 0.8em;">
+      <div class="col-auto">
+        {{form_base.modify(class_='btn btn-primary')}}
       </div>
-      <div class="form-group">
-        {{form_base.delete(class_='form-control btn btn-default',**{'onclick':'return confirm("Are you sure you want to delete this?")'})}}
+      <div class="col-auto">
+        {{form_base.delete(class_='btn btn-primary',**{'onclick':'return confirm("Are you sure you want to delete this?")'})}}
       </div>
-      <div class="form-group">
-        {{form_base.order_up(class_='form-control btn btn-default')}}
+      <div class="col-auto">
+        {{form_base.order_up(class_='btn btn-primary')}}
       </div>
-      <div class="form-group">
-        {{form_base.order_down(class_='form-control btn btn-default')}}
+      <div class="col-auto">
+        {{form_base.order_down(class_='btn btn-primary')}}
       </div>
     </div>
   </form>

@@ -1,0 +1,6 @@
+<div class="col-md-12 col-lg-6">
+  {{form_mod_output.pwm_command.label(class_='control-label')}}
+  <div>
+    <textarea class="form-control" id="pwm_command" name="pwm_command" rows="5" title="{{_('Command to execute (as user mycodo) to set the PWM duty cycle (%%)')}}">{{each_output.pwm_command}}</textarea>
+   </div>
+</div>

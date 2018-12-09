@@ -3,11 +3,13 @@ import logging
 
 import sqlalchemy
 from RPi import GPIO
+from flask import current_app
 from flask import flash
 from flask import redirect
 from flask import url_for
 from flask_babel import gettext
 
+from mycodo.config import LCD_INFO
 from mycodo.databases.models import DisplayOrder
 from mycodo.databases.models import LCD
 from mycodo.databases.models import LCDData
@@ -19,6 +21,7 @@ from mycodo.mycodo_flask.utils.utils_general import delete_entry_with_id
 from mycodo.mycodo_flask.utils.utils_general import flash_form_errors
 from mycodo.mycodo_flask.utils.utils_general import flash_success_errors
 from mycodo.mycodo_flask.utils.utils_general import reorder
+from mycodo.mycodo_flask.utils.utils_general import return_dependencies
 from mycodo.utils.system_pi import csv_to_list_of_str
 from mycodo.utils.system_pi import list_to_csv
 
@@ -29,19 +32,47 @@ logger = logging.getLogger(__name__)
 # LCD Manipulation
 #
 
-def lcd_add(quantity):
+def lcd_add(form):
     action = '{action} {controller}'.format(
         action=gettext("Add"),
         controller=gettext("LCD"))
     error = []
-    for _ in range(0, quantity):
-        try:
-            new_lcd = LCD()
-            new_lcd_data = LCDData()
-            if GPIO.RPI_REVISION == 2 or GPIO.RPI_REVISION == 3:
-                new_lcd.i2c_bus = 1
-            else:
-                new_lcd.i2c_bus = 0
+
+    if current_app.config['TESTING']:
+        dep_unmet = False
+    else:
+        dep_unmet, _ = return_dependencies(form.lcd_type.data)
+        if dep_unmet:
+            list_unmet_deps = []
+            for each_dep in dep_unmet:
+                list_unmet_deps.append(each_dep[0])
+            error.append("The {dev} device you're trying to add has unmet dependencies: {dep}".format(
+                dev=form.lcd_type.data, dep=', '.join(list_unmet_deps)))
+
+    try:
+        new_lcd = LCD()
+        new_lcd_data = LCDData()
+        if GPIO.RPI_REVISION == 2 or GPIO.RPI_REVISION == 3:
+            new_lcd.i2c_bus = 1
+        else:
+            new_lcd.i2c_bus = 0
+        new_lcd.lcd_type = form.lcd_type.data
+        new_lcd.name = str(LCD_INFO[form.lcd_type.data]['name'])
+
+        if form.lcd_type.data == '128x32_pioled':
+            new_lcd.location = '0x3c'
+            new_lcd.x_characters = 21
+            new_lcd.y_lines = 4
+        elif form.lcd_type.data == '16x2_generic':
+            new_lcd.location = '0x27'
+            new_lcd.x_characters = 16
+            new_lcd.y_lines = 2
+        elif form.lcd_type.data == '16x4_generic':
+            new_lcd.location = '0x27'
+            new_lcd.x_characters = 16
+            new_lcd.y_lines = 4
+
+        if not error:
             new_lcd.save()
             new_lcd_data.lcd_id = new_lcd.unique_id
             new_lcd_data.save()
@@ -49,11 +80,14 @@ def lcd_add(quantity):
             DisplayOrder.query.first().lcd = add_display_order(
                 display_order, new_lcd.unique_id)
             db.session.commit()
-        except sqlalchemy.exc.OperationalError as except_msg:
-            error.append(except_msg)
-        except sqlalchemy.exc.IntegrityError as except_msg:
-            error.append(except_msg)
-        flash_success_errors(error, action, url_for('routes_page.page_lcd'))
+    except sqlalchemy.exc.OperationalError as except_msg:
+        error.append(except_msg)
+    except sqlalchemy.exc.IntegrityError as except_msg:
+        error.append(except_msg)
+    flash_success_errors(error, action, url_for('routes_page.page_lcd'))
+
+    if dep_unmet:
+        return 1
 
 
 def lcd_mod(form_mod_lcd):
@@ -75,8 +109,6 @@ def lcd_mod(form_mod_lcd):
                 mod_lcd.location = form_mod_lcd.location.data
                 mod_lcd.i2c_bus = form_mod_lcd.i2c_bus.data
                 mod_lcd.period = form_mod_lcd.period.data
-                mod_lcd.x_characters = int(form_mod_lcd.lcd_type.data.split("x")[0])
-                mod_lcd.y_lines = int(form_mod_lcd.lcd_type.data.split("x")[1])
                 db.session.commit()
             except Exception as except_msg:
                 error.append(except_msg)

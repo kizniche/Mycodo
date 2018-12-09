@@ -28,11 +28,32 @@ import logging
 import math
 import time
 
+from mycodo.databases.models import DeviceMeasurements
 from mycodo.databases.models import Output
-from mycodo.utils.database import db_retrieve_table_daemon
 from mycodo.inputs.base_input import AbstractInput
-from mycodo.inputs.sensorutils import convert_units
 from mycodo.inputs.sensorutils import calculate_dewpoint
+from mycodo.inputs.sensorutils import calculate_vapor_pressure_deficit
+from mycodo.utils.database import db_retrieve_table_daemon
+
+# Measurements
+measurements_dict = {
+    0: {
+        'measurement': 'temperature',
+        'unit': 'C'
+    },
+    1: {
+        'measurement': 'humidity',
+        'unit': 'percent'
+    },
+    2: {
+        'measurement': 'dewpoint',
+        'unit': 'C'
+    },
+    3: {
+        'measurement': 'vapor_pressure_deficit',
+        'unit': 'Pa'
+    }
+}
 
 # Input information
 INPUT_INFORMATION = {
@@ -40,8 +61,14 @@ INPUT_INFORMATION = {
     'input_manufacturer': 'AOSONG',
     'input_name': 'AM2315',
     'measurements_name': 'Humidity/Temperature',
-    'measurements_list': ['dewpoint', 'humidity', 'temperature'],
-    'options_enabled': ['period', 'convert_unit', 'pre_output'],
+    'measurements_dict': measurements_dict,
+    'measurements_rescale': False,
+
+    'options_enabled': [
+        'measurements_select',
+        'period',
+        'pre_output'
+    ],
     'options_disabled': ['interface', 'i2c_location'],
 
     'dependencies_module': [
@@ -62,9 +89,8 @@ class InputModule(AbstractInput):
     def __init__(self, input_dev, testing=False):
         super(InputModule, self).__init__()
         self.logger = logging.getLogger('mycodo.inputs.am2315')
-        self._dew_point = None
-        self._humidity = None
-        self._temperature = None
+        self.name = INPUT_INFORMATION['input_name_unique']
+        self._measurements = None
         self.powered = False
         self.am = None
 
@@ -72,66 +98,25 @@ class InputModule(AbstractInput):
             from mycodo.mycodo_client import DaemonControl
             self.logger = logging.getLogger(
                 'mycodo.am2315_{id}'.format(id=input_dev.unique_id.split('-')[0]))
+
+            self.device_measurements = db_retrieve_table_daemon(
+                DeviceMeasurements).filter(
+                    DeviceMeasurements.device_id == input_dev.unique_id)
+
             self.i2c_bus = input_dev.i2c_bus
             self.power_output_id = input_dev.power_output_id
-            self.convert_to_unit = input_dev.convert_to_unit
             self.control = DaemonControl()
             self.start_sensor()
             self.am = AM2315(self.i2c_bus)
 
-    def __repr__(self):
-        """  Representation of object """
-        return "<{cls}(dewpoint={dpt})(humidity={hum})(temperature={temp})>".format(
-            cls=type(self).__name__,
-            dpt="{0:.2f}".format(self._dew_point),
-            hum="{0:.2f}".format(self._humidity),
-            temp="{0:.2f}".format(self._temperature))
-
-    def __str__(self):
-        """ Return measurement information """
-        return "Dew Point: {dpt}, Humidity: {hum}, Temperature: {temp}".format(
-            dpt="{0:.2f}".format(self._dew_point),
-            hum="{0:.2f}".format(self._humidity),
-            temp="{0:.2f}".format(self._temperature))
-
-    def __iter__(self):  # must return an iterator
-        """ AM2315Sensor iterates through live measurement readings """
-        return self
-
-    def next(self):
-        """ Get next measurement reading """
-        if self.read():  # raised an error
-            raise StopIteration  # required
-        return dict(dewpoint=float('{0:.2f}'.format(self._dew_point)),
-                    humidity=float('{0:.2f}'.format(self._humidity)),
-                    temperature=float('{0:.2f}'.format(self._temperature)))
-
-    @property
-    def dew_point(self):
-        """ AM2315 dew point in Celsius """
-        if self._dew_point is None:  # update if needed
-            self.read()
-        return self._dew_point
-
-    @property
-    def humidity(self):
-        """ AM2315 relative humidity in percent """
-        if self._humidity is None:  # update if needed
-            self.read()
-        return self._humidity
-
-    @property
-    def temperature(self):
-        """ AM2315 temperature in Celsius """
-        if self._temperature is None:  # update if needed
-            self.read()
-        return self._temperature
-
     def get_measurement(self):
         """ Gets the humidity and temperature """
-        self._dew_point = None
-        self._humidity = None
-        self._temperature = None
+        return_dict = measurements_dict.copy()
+
+        temperature = None
+        humidity = None
+        dew_point = None
+        measurements_success = False
 
         # Ensure if the power pin turns off, it is turned back on
         if (self.power_output_id and
@@ -149,41 +134,45 @@ class InputModule(AbstractInput):
         for _ in range(2):
             dew_point, humidity, temperature = self.return_measurements()
             if dew_point is not None:
-                dew_point = convert_units(
-                    'dewpoint', 'C', self.convert_to_unit,
-                    dew_point)
-                temperature = convert_units(
-                    'temperature', 'C', self.convert_to_unit,
-                    temperature)
-                humidity = convert_units(
-                    'humidity', 'percent', self.convert_to_unit,
-                    humidity)
-                return dew_point, humidity, temperature  # success - no errors
+                measurements_success = True
+                break
             time.sleep(2)
 
         # Measurement failure, power cycle the sensor (if enabled)
         # Then try two more times to get a measurement
-        if self.power_output_id:
+        if self.power_output_id and not measurements_success:
             self.stop_sensor()
             time.sleep(2)
             self.start_sensor()
             for _ in range(2):
                 dew_point, humidity, temperature = self.return_measurements()
                 if dew_point is not None:
-                    dew_point = convert_units(
-                        'dewpoint', 'C', self.convert_to_unit,
-                        dew_point)
-                    temperature = convert_units(
-                        'temperature', 'C', self.convert_to_unit,
-                        temperature)
-                    humidity = convert_units(
-                        'humidity', 'percent', self.convert_to_unit,
-                        humidity)
-                    return dew_point, humidity, temperature  # success
+                    measurements_success = True
+                    break
                 time.sleep(2)
 
-        self.logger.debug("Could not acquire a measurement")
-        return None, None, None
+        if measurements_success:
+            if self.is_enabled(0):
+                return_dict[0]['value'] = temperature
+
+            if self.is_enabled(1):
+                return_dict[1]['value'] = humidity
+
+            if (self.is_enabled(2) and
+                    self.is_enabled(0) and
+                    self.is_enabled(1)):
+                return_dict[2]['value'] = calculate_dewpoint(
+                    return_dict[0]['value'], return_dict[1]['value'])
+
+            if (self.is_enabled(3) and
+                    self.is_enabled(0) and
+                    self.is_enabled(1)):
+                return_dict[3]['value'] = calculate_vapor_pressure_deficit(
+                    return_dict[0]['value'], return_dict[1]['value'])
+
+            return return_dict
+        else:
+            self.logger.debug("Could not acquire a measurement")
 
     def return_measurements(self):
         # Retry measurement if CRC fails
@@ -201,25 +190,6 @@ class InputModule(AbstractInput):
 
         self.logger.error("All measurements returned failed CRC")
         return None, None, None
-
-    def read(self):
-        """
-        Takes a reading from the AM2315 and updates the self.dew_point,
-        self._humidity, and self._temperature values
-
-        :returns: None on success or 1 on error
-        """
-        try:
-            (self._dew_point,
-             self._humidity,
-             self._temperature) = self.get_measurement()
-            if self._dew_point is not None:
-                return  # success - no errors
-        except Exception as e:
-            self.logger.exception(
-                "{cls} raised an exception when taking a reading: "
-                "{err}".format(cls=type(self).__name__, err=e))
-        return 1
 
     def start_sensor(self):
         """ Turn the sensor on """
@@ -302,9 +272,9 @@ class AM2315:
         humidity = (humid_H*256+humid_L)/10
 
         # Check for negative temp
-		# 16-Sep-2014
-		# Thanks to Ethan for pointing out this bug!
-		# ethansimpson@xtra.co.nz
+        # 16-Sep-2014
+        # Thanks to Ethan for pointing out this bug!
+        # ethansimpson@xtra.co.nz
         if temp_H&0x08:
            negative = True
         # Mask the negative flag

@@ -26,9 +26,16 @@ import math
 import time
 
 from mycodo.inputs.base_input import AbstractInput
-from mycodo.inputs.sensorutils import convert_units
 
 # import numpy  # Used for more accurate temperature calculation
+
+# Measurements
+measurements_dict = {
+    0: {
+        'measurement': 'temperature',
+        'unit': 'C'
+    }
+}
 
 # Input information
 INPUT_INFORMATION = {
@@ -36,13 +43,24 @@ INPUT_INFORMATION = {
     'input_manufacturer': 'MAXIM',
     'input_name': 'MAX31865',
     'measurements_name': 'Temperature',
-    'measurements_list': ['temperature'],
-    'options_enabled': ['thermocouple_type', 'pin_cs', 'pin_miso', 'pin_mosi', 'pin_clock', 'ref_ohm', 'period', 'convert_unit', 'pre_output'],
+    'measurements_dict': measurements_dict,
+
+    'options_enabled': [
+        'thermocouple_type',
+        'pin_cs',
+        'pin_miso',
+        'pin_mosi',
+        'pin_clock',
+        'ref_ohm',
+        'period',
+        'pre_output'
+    ],
     'options_disabled': ['interface'],
 
     'dependencies_module': [
         ('pip-pypi', 'RPi.GPIO', 'RPi.GPIO')
     ],
+
     'interfaces': ['UART'],
     'pin_cs': 8,
     'pin_miso': 9,
@@ -65,77 +83,31 @@ class InputModule(AbstractInput):
     def __init__(self, input_dev, testing=False):
         super(InputModule, self).__init__()
         self.logger = logging.getLogger("mycodo.inputs.max31865")
-        self._temperature = None
+        self._measurements = None
 
         if not testing:
             self.logger = logging.getLogger(
                 "mycodo.max31865_{id}".format(id=input_dev.unique_id.split('-')[0]))
+
             self.pin_clock = input_dev.pin_clock
             self.pin_cs = input_dev.pin_cs
             self.pin_miso = input_dev.pin_miso
             self.pin_mosi = input_dev.pin_mosi
             self.thermocouple_type = input_dev.thermocouple_type
             self.ref_ohm = input_dev.ref_ohm
-            self.convert_to_unit = input_dev.convert_to_unit
             self.sensor = max31865_sen(self.pin_cs,
                                        self.pin_miso,
                                        self.pin_mosi,
                                        self.pin_clock)
 
-    def __repr__(self):
-        """  Representation of object """
-        return "<{cls}(temperature={temp})>".format(
-            cls=type(self).__name__,
-            temp="{0:.2f}".format(self._temperature))
-
-    def __str__(self):
-        """ Return measurement information """
-        return "Temperature: {temp}".format(
-            temp="{0:.2f}".format(self._temperature))
-
-    def __iter__(self):  # must return an iterator
-        """ SensorClass iterates through live measurement readings """
-        return self
-
-    def next(self):
-        """ Get next measurement reading """
-        if self.read():  # raised an error
-            raise StopIteration  # required
-        return dict(temperature=float('{0:.2f}'.format(self._temperature)))
-
-    @property
-    def temperature(self):
-        """ MAX31865 temperature in Celsius """
-        if self._temperature is None:  # update if needed
-            self.read()
-        return self._temperature
-
     def get_measurement(self):
         """ Gets the measurement in units by reading the """
-        self._temperature = None
+        return_dict = measurements_dict.copy()
 
-        temp = self.sensor.readTemp(self.thermocouple_type, self.ref_ohm)
-        temp = convert_units(
-            'temperature', 'C', self.convert_to_unit, temp)
+        return_dict[0]['value'] = self.sensor.readTemp(
+            self.thermocouple_type, self.ref_ohm)
 
-        return temp
-
-    def read(self):
-        """
-        Takes a reading from the MAX31865 and updates the
-        self._temperature value
-
-        :returns: None on success or 1 on error
-        """
-        try:
-            self._temperature = self.get_measurement()
-            if self._temperature is not None:
-                return  # success - no errors
-        except Exception as e:
-            self.logger.exception(
-                "{cls} raised an exception when taking a reading: "
-                "{err}".format(cls=type(self).__name__, err=e))
-        return 1
+        return return_dict
 
     def stop_sensor(self):
         """ Called by InputController class when sensors are deactivated """
@@ -352,12 +324,10 @@ class FaultError(Exception):
 
 
 if __name__ == "__main__":
-    import max31865
-
     csPin = 8
     misoPin = 9
     mosiPin = 10
     clkPin = 11
-    max = max31865.max31865(csPin, misoPin, mosiPin, clkPin)
-    tempC = max.readTemp('PT100')
+    max = max31865_sen(csPin, misoPin, mosiPin, clkPin)
+    print("Temp: {}".format(max.readTemp('PT100', 400)))
     max.cleanupGPIO()

@@ -26,6 +26,7 @@
 import datetime
 import logging
 import math
+import time
 
 from dateutil import tz
 from dateutil.parser import parse
@@ -158,6 +159,43 @@ class Sun:
             'time_utc': time_utc,
             'time_local': time_local
         }
+
+
+def calculate_sunrise_sunset_epoch(trigger):
+    try:
+        # Adjust for date offset
+        now = datetime.datetime.now()
+        new_date = now + datetime.timedelta(days=trigger.date_offset_days)
+
+        sun = Sun(latitude=trigger.latitude,
+                  longitude=trigger.longitude,
+                  zenith=trigger.zenith,
+                  day=new_date.day,
+                  month=new_date.month,
+                  year=new_date.year)
+        sunrise = sun.get_sunrise_time()
+        sunset = sun.get_sunset_time()
+
+        # Adjust for time offset
+        new_sunrise = sunrise['time_local'] + datetime.timedelta(minutes=trigger.time_offset_minutes)
+        new_sunset = sunset['time_local'] + datetime.timedelta(minutes=trigger.time_offset_minutes)
+
+        if trigger.rise_or_set == 'sunrise':
+            # If the sunrise is in the past, add a day
+            if float(new_sunrise.strftime('%s')) < time.time():
+                tomorrow_sunrise = new_sunrise + datetime.timedelta(days=1)
+                return float(tomorrow_sunrise.strftime('%s'))
+            else:
+                return float(new_sunrise.strftime('%s'))
+        elif trigger.rise_or_set == 'sunset':
+            # If the sunrise is in the past, add a day
+            if float(new_sunset.strftime('%s')) < time.time():
+                tomorrow_sunset = new_sunset + datetime.timedelta(days=1)
+                return float(tomorrow_sunset.strftime('%s'))
+            else:
+                return float(new_sunset.strftime('%s'))
+    except:
+        return None
 
 
 if __name__ == '__main__':

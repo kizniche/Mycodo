@@ -10,7 +10,9 @@ NotImplementedErrors
 """
 import logging
 
-logger = logging.getLogger('mycodo.inputs.base_input')
+from sqlalchemy import and_
+
+from mycodo.databases.models import DeviceMeasurements
 
 
 class AbstractInput(object):
@@ -26,41 +28,104 @@ class AbstractInput(object):
 
     """
 
-    def __init__(self):
+    def __init__(self, run_main=False):
+        self.logger = logging.getLogger('mycodo.inputs.base_input')
+        self.run_main = run_main
+        self._measurements = None
         self.avg_max = {}
         self.avg_index = {}
         self.avg_meas = {}
         self.acquiring_measurement = False
         self.running = True
+        self.device_measurements = None
 
     def __iter__(self):
         """ Support the iterator protocol """
         return self
 
+    def __repr__(self):
+        """  Representation of object """
+        return_str = '<{cls}'.format(cls=type(self).__name__)
+        if self._measurements:
+            for each_measurement, unit_data in self._measurements.items():
+                for each_unit, channel_data in unit_data.items():
+                    for each_channel in channel_data:
+                        return_str = '{prev}({meas},{unit},{chan},{val})'.format(
+                            prev=return_str,
+                            meas=each_measurement,
+                            unit=each_unit,
+                            chan=each_channel,
+                            val=self._measurements[each_measurement][each_unit][each_channel])
+            return_str = '{prev}>'.format(prev=return_str)
+            return return_str
+        else:
+            return "Measurements dictionary empty"
+
+    def __str__(self):
+        """ Return measurement information """
+        return_str = ''
+        skip_first_separator = False
+        if self._measurements:
+            for each_measurement, unit_data in self._measurements.items():
+                for each_unit, channel_data in unit_data.items():
+                    for each_channel in channel_data:
+                        if skip_first_separator:
+                            return_str = '{prev};'.format(prev=return_str)
+                        else:
+                            skip_first_separator = True
+                        return_str = '{prev}{meas},{unit},{chan},{val}'.format(
+                            prev=return_str,
+                            meas=each_measurement,
+                            unit=each_unit,
+                            chan=each_channel,
+                            val=self._measurements[each_measurement][each_unit][each_channel])
+            return return_str
+        else:
+            return "Measurements dictionary empty"
+
     def __next__(self):
         return self.next()
 
     def next(self):
-        """
-        Get next temperature reading.  Required by iterators.  Must raise StopIterator
-        when exhausted.
+        """ Get next measurement reading """
+        self._measurements = None
+        if self.read():  # raised an error
+            raise StopIteration  # required
+        return self.measurements
 
-        This method calls read() to update the sensor data and then
-        returns a dict containing the measurement type as the key and the value
+    @property
+    def measurements(self):
+        """ Store measurements """
+        if self._measurements is None:  # update if needed
+            self.read()
+        return self._measurements
 
-        example:
-            def next(self):
-                ''' example of next method '''
-                if self.read():  # take measurement raised an error
-                    raise StopIteration  # required behavior
-                return dict(temperature=float('{0:.2f}'.format(self._temperature)))
-
-        :returns dict: dict(measurement_type=value)
-        :rtype: dict
-        """
-        logger.error("{cls} did not overwrite the next() method.  All subclasses of the AbstractInput class"
-                     " are required to overwrite this method".format(cls=type(self).__name__))
+    def get_measurement(self):
+        self.logger.error(
+            "{cls} did not overwrite the get_measurement() method. All "
+            "subclasses of the AbstractInput class are required to overwrite "
+            "this method".format(cls=type(self).__name__))
         raise NotImplementedError
+
+    def read(self):
+        """
+        Takes a reading
+
+        :returns: None on success or 1 on error
+        """
+        try:
+            self._measurements = self.get_measurement()
+            if self._measurements is not None:
+                return  # success - no errors
+        except IOError as e:
+            self.logger.error(
+                "{cls}.get_measurement() method raised IOError: "
+                "{err}".format(cls=type(self).__name__, err=e))
+        except Exception as e:
+            self.logger.exception(
+                "{cls} raised an exception when taking a reading: "
+                "{err}".format(cls=type(self).__name__, err=e))
+        return 1
 
     def filter_average(self, name, init_max=0, measurement=None):
         """
@@ -74,7 +139,7 @@ class AbstractInput(object):
         """
         if name not in self.avg_max:
             if init_max != 0 and init_max < 2:
-                logger.error("init_max must be greater than 1")
+                self.logger.error("init_max must be greater than 1")
             elif init_max > 1:
                 self.avg_max[name] = init_max
                 self.avg_meas[name] = []
@@ -96,19 +161,22 @@ class AbstractInput(object):
 
         return average
 
+    def is_enabled(self, channel):
+        if self.run_main:
+            return True
+        elif (self.device_measurements and
+                self.device_measurements.filter(and_(
+                    DeviceMeasurements.is_enabled == True,
+                    DeviceMeasurements.channel == channel)).count()):
+            return True
+
     def stop_sensor(self):
-        """ Called by InputController class when sensors are deactivated """
+        """ Called when sensors are deactivated """
         self.running = False
 
     def start_sensor(self):
         """ Not used yet """
         self.running = True
-
-    def read(self):
-        """ Causes the sensor to take a reading """
-        logger.error("{cls} did not overwrite the read() method.  All subclasses of the AbstractInput class"
-                     " are required to overwrite this method".format(cls=type(self).__name__))
-        raise NotImplementedError
 
     def is_acquiring_measurement(self):
         return self.acquiring_measurement

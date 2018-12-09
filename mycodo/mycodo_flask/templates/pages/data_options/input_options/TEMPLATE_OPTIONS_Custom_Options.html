@@ -14,7 +14,7 @@
   <label class="control-label" for="{{each_option['id']}}">{{each_option['name']}}</label>
   <div>
     <select class="form-control form-tooltip form-dropdown" data-placement="top" id="{{each_option['id']}}" name="{{each_option['id']}}" title="{{each_option['phrase']}}">
-      <option value="">Select One</option>
+      <option value="">{{_('Select One')}}</option>
       {% for each_set in each_option['options_select'] %}
       <option value="{{each_set[0]}}"{% if each_set[0] == custom_options_values[each_input.unique_id][each_option['id']] %} selected{% endif %}>{{each_set[1]}}</option>
       {% endfor %}

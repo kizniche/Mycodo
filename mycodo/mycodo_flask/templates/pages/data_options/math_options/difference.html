@@ -1,6 +1,4 @@
 <div class="row small-gutters" style="padding: 0.5em">
-  {% include 'pages/data_options/math_options/form_options/measure_units.html' %}
-
   <div class="col-auto">
     {{form_mod_difference.difference_reverse_order.label(class_='control-label')}}
     <div class="input-group-text">
@@ -13,7 +11,6 @@
       <input id="difference_absolute" name="difference_absolute" type="checkbox" value="y"{% if each_math.difference_absolute %} checked{% endif %}>
     </div>
   </div>
-
 </div>
 
 <div style="clear: both"></div>

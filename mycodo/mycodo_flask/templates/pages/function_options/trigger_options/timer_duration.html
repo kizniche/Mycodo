@@ -1,0 +1,12 @@
+<div class="col-auto">
+  {{form_trigger.period.label(class_='control-label')}}
+  <div>
+   {{form_trigger.period(class_='form-control', value=each_trigger.period, **{'title':_('Trigger conditional actions at an interval of time')})}}
+  </div>
+</div>
+<div class="col-auto">
+  {{form_trigger.timer_start_offset.label(class_='control-label')}}
+  <div>
+   {{form_trigger.timer_start_offset(class_='form-control', value=each_trigger.timer_start_offset, **{'title':_('A duration to wait before beginning the timer')})}}
+  </div>
+</div>

@@ -3,11 +3,20 @@ import logging
 import time
 
 from mycodo.inputs.base_input import AbstractInput
-from mycodo.inputs.sensorutils import convert_units
+from mycodo.databases.models import DeviceMeasurements
+from mycodo.utils.database import db_retrieve_table_daemon
 
 list_sensitivity = []
 for num in range(31, 255):
     list_sensitivity.append((num, str(num)))
+
+# Measurements
+measurements_dict = {
+    0: {
+        'measurement': 'light',
+        'unit': 'lux'
+    }
+}
 
 # Input information
 INPUT_INFORMATION = {
@@ -15,13 +24,21 @@ INPUT_INFORMATION = {
     'input_manufacturer': 'ROHM',
     'input_name': 'BH1750',
     'measurements_name': 'Light',
-    'measurements_list': ['light'],
-    'options_enabled': ['i2c_location', 'period', 'resolution', 'sensitivity', 'pre_output'],
+    'measurements_dict': measurements_dict,
+
+    'options_enabled': [
+        'i2c_location',
+        'period',
+        'resolution',
+        'sensitivity',
+        'pre_output'
+    ],
     'options_disabled': ['interface'],
 
     'dependencies_module': [
         ('pip-pypi', 'smbus2', 'smbus2')
     ],
+
     'interfaces': ['I2C'],
     'i2c_location': ['0x23', '0x5c'],
     'i2c_address_editable': False,
@@ -59,50 +76,34 @@ class InputModule(AbstractInput):
     def __init__(self, input_dev, testing=False):
         super(InputModule, self).__init__()
         self.logger = logging.getLogger("mycodo.inputs.bh1750")
-        self._lux = None
+        self._measurements = None
 
         if not testing:
             from smbus2 import SMBus
             self.logger = logging.getLogger(
                 "mycodo.bh1750_{id}".format(id=input_dev.unique_id.split('-')[0]))
+
+            self.device_measurements = db_retrieve_table_daemon(
+                DeviceMeasurements).filter(
+                    DeviceMeasurements.device_id == input_dev.unique_id)
+
             self.i2c_address = int(str(input_dev.i2c_location), 16)
-            self.i2c_bus = input_dev.i2c_bus
             self.resolution = input_dev.resolution
             self.sensitivity = input_dev.sensitivity
-            self.convert_to_unit = input_dev.convert_to_unit
-            self.i2c_bus = SMBus(self.i2c_bus)
+            self.i2c_bus = SMBus(input_dev.i2c_bus)
             self.power_down()
             self.set_sensitivity(sensitivity=self.sensitivity)
-
-    def __repr__(self):
-        """  Representation of object """
-        return "<{cls}(lux={lux})>".format(cls=type(self).__name__,
-                                           lux="{0:.2f}".format(self._lux))
-
-    def __str__(self):
-        """ Return lux information """
-        return "Lux: {lux}".format(lux="{0:.2f}".format(self._lux))
-
-    def __iter__(self):  # must return an iterator
-        """ BH1750Sensor iterates through live lux readings """
-        return self
-
-    def next(self):
-        """ Get next lux reading """
-        if self.read():  # raised an error
-            raise StopIteration  # required
-        return dict(lux=float('{0:.2f}'.format(self._lux)))
 
     @property
     def lux(self):
         """ BH1750 luminosity in lux """
-        if self._lux is None:  # update if needed
+        if self._measurements is None:  # update if needed
             self.read()
-        return self._lux
+        return self._measurements
 
     def get_measurement(self):
         """ Gets the BH1750's lux """
-        self._lux = None
+        return_dict = measurements_dict.copy()
 
         if self.resolution == 0:
             lux = self.measure_low_res()
@@ -113,27 +114,9 @@ class InputModule(AbstractInput):
         else:
             return None
 
-        lux = convert_units(
-            'light', 'lux', self.convert_to_unit,
-            lux)
+        return_dict[0]['value'] = lux
 
-        return lux
-
-    def read(self):
-        """
-        Takes a reading from the BH1750 and updates the self._lux value
-
-        :returns: None on success or 1 on error
-        """
-        try:
-            self._lux = self.get_measurement()
-            if self._lux is not None:
-                return  # success - no errors
-        except Exception as e:
-            self.logger.exception(
-                "{cls} raised an exception when taking a reading: "
-                "{err}".format(cls=type(self).__name__, err=e))
-        return 1
+        return return_dict
 
     def _set_mode(self, mode):
         self.mode = mode

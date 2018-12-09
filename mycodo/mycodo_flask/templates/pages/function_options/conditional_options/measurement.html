@@ -1,54 +1,23 @@
-<div class="row small-gutters" style="border-bottom: 1px solid #ddd; padding-bottom: 0.2em">
-  <div class="col-auto">
-    {{form_conditional.measurement.label(class_='control-label')}}
-    <div>
-      <select class="form-control" id="measurement" name="measurement" style="width: 100%;" title="" data-original-title="{{_('Select the measurement to use as the input')}}">
-          <option value="">{{_('Select One')}}</option>
-        {% for each_choice, value in choices_input.items() if each_choice.split(',')[1] != 'edge' -%}
-          <option value="{{each_choice}}"{% if each_cond.measurement == each_choice %} selected{% endif %}>{{value}}</option>
-        {% endfor -%}
-        {% for each_choice, value in choices_math.items() -%}
-          <option value="{{each_choice}}"{% if each_cond.measurement == each_choice %} selected{% endif %}>{{value}}</option>
-        {% endfor -%}
-        {% for each_choice, value in choices_pid.items() -%}
-          <option value="{{each_choice}}"{% if each_cond.measurement == each_choice %} selected{% endif %}>{{value}}</option>
-        {% endfor -%}
-        </select>
-    </div>
-  </div>
-  <div class="col-auto">
-    {{form_conditional.direction.label(class_='control-label')}}
-    <div>
-      <select class="form-control form-tooltip form-dropdown" data-placement="top" id="direction" name="direction" title="{{_('The conditional is triggered when the measured condition is greater than or less than the set value, or the measurement timestamp is greater than the value of seconds')}}">
+<div class="col-auto">
+  {{form_conditional_conditions.measurement.label(class_='control-label')}}
+  <div>
+    <select class="form-control" id="measurement" name="measurement" style="width: 100%;" title="" data-original-title="{{_('Select the measurement to use as the input')}}">
         <option value="">{{_('Select One')}}</option>
-        <option value="above"{% if each_cond.direction == 'above' %} selected{% endif %}>{{_('Greater Than (>)')}}</option>
-        <option value="below"{% if each_cond.direction == 'below' %} selected{% endif %}>{{_('Less Than (<)')}}</option>
-        <option value="none_found"{% if each_cond.direction == 'none_found' %} selected{% endif %}>{{_('No Measurement')}}</option>
+      {% for each_choice, value in choices_input.items() if each_choice.split(',')[1] != 'edge' -%}
+        <option value="{{each_choice}}"{% if each_condition.measurement == each_choice %} selected{% endif %}>{{value}}</option>
+      {% endfor -%}
+      {% for each_choice, value in choices_math.items() -%}
+        <option value="{{each_choice}}"{% if each_condition.measurement == each_choice %} selected{% endif %}>{{value}}</option>
+      {% endfor -%}
+      {% for each_choice, value in choices_pid.items() -%}
+        <option value="{{each_choice}}"{% if each_condition.measurement == each_choice %} selected{% endif %}>{{value}}</option>
+      {% endfor -%}
       </select>
-    </div>
   </div>
-  <div class="col-auto">
-    {{form_conditional.setpoint.label(class_='control-label')}}
-    <div>
-      {{form_conditional.setpoint(class_='form-control', value=each_cond.setpoint, **{'title':_('What value to check the measurement against?')})}}
-    </div>
-  </div>
-  <div class="col-auto">
-    {{form_conditional.max_age.label(class_='control-label')}}
-    <div>
-      {{form_conditional.max_age(class_='form-control', value=each_cond.max_age, **{'title':_('Do not accept measurements older than this age')})}}
-    </div>
-  </div>
-  <div class="col-auto">
-    {{form_conditional.period.label(class_='control-label')}}
-    <div>
-      {{form_conditional.period(class_='form-control', value=each_cond.period, **{'title':_('The duration between checking whether the conditional is true')})}}
-    </div>
-  </div>
-  <div class="col-auto">
-    {{form_conditional.refractory_period.label(class_='control-label')}}
-    <div>
-      {{form_conditional.refractory_period(class_='form-control', value=each_cond.refractory_period, **{'title':_('The minimum duration after a conditional trigger to wait before beggining monitoring again')})}}
-    </div>
+</div>
+<div class="col-auto">
+  {{form_conditional_conditions.max_age.label(class_='control-label')}}
+  <div>
+    {{form_conditional_conditions.max_age(class_='form-control', value=each_condition.max_age, **{'title':_('Do not accept measurements older than this age')})}}
   </div>
 </div>

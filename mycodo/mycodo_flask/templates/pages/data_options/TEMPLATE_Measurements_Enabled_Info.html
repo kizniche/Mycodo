@@ -1,0 +1,51 @@
+{% if all_measurements %}
+  {%- for each_measurement in all_measurements -%}
+       <option value="{{each_measurement.unique_id}}"{% if each_measurement.is_enabled %} selected{% endif %}>
+
+    {%- if each_measurement.channel != None -%}
+      {{'CH' + (each_measurement.channel + 1)|string + ': '}}
+    {%- endif -%}
+       
+    {%- if each_measurement.conversion_id -%}
+      {%- set measurement = None -%}
+    {%- elif each_measurement.rescaled_measurement -%}
+      {%- set measurement = each_measurement.rescaled_measurement -%}
+    {%- else -%}
+      {%- set measurement = each_measurement.measurement -%}
+    {%- endif -%}
+
+    {%- if measurement in dict_measurements -%}
+      {{dict_measurements[each_measurement.measurement]['name']}}
+    {%- endif -%}
+
+    {%- if each_measurement.name or each_measurement.unit in dict_units -%}
+       {{' ('}}
+    {%- endif -%}
+
+    {%- if each_measurement.name -%}
+      {{each_measurement.name}}
+    {%- endif -%}
+
+    {%- if each_measurement.conversion_id -%}
+      {%- set unit = table_conversion.query.filter(table_conversion.unique_id == each_measurement.conversion_id).first().unit -%}
+    {%- elif each_measurement.rescaled_unit -%}
+      {%- set unit = each_measurement.rescaled_unit -%}
+    {%- else -%}
+      {%- set unit = each_measurement.unit -%}
+    {%- endif -%}
+
+    {%- if unit in dict_units -%}
+      {%- if each_measurement.name -%}
+        {{', '}}
+      {%- endif -%}
+      {{dict_units[unit]['name']}}
+    {%- endif -%}
+
+    {%- if each_measurement.name or unit in dict_units -%}
+      )
+    {%- endif -%}
+
+       </option>
+
+  {%- endfor -%}
+{%- endif -%}
