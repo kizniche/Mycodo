@@ -106,7 +106,9 @@ def lcd_mod(form_mod_lcd):
         if form_mod_lcd.validate():
             try:
                 mod_lcd.name = form_mod_lcd.name.data
-                mod_lcd.location = form_mod_lcd.location.data
+                if mod_lcd.lcd_type in ['16x2_generic',
+                                        '16x4_generic']:
+                    mod_lcd.location = form_mod_lcd.location.data
                 mod_lcd.i2c_bus = form_mod_lcd.i2c_bus.data
                 mod_lcd.period = form_mod_lcd.period.data
                 db.session.commit()
