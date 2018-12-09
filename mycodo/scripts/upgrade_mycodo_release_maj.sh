@@ -246,4 +246,4 @@ EOF
   exec /bin/bash /tmp/upgrade_mycodo_stagetwo.sh
 }
 
-runSelfUpgrade
+runSelfUpgrade "${1}"
