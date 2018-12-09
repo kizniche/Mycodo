@@ -1,4 +1,4 @@
-## 7.0.1 (Unreleased)
+## 7.0.1 (2018-12-09)
 
 ### Bugfixes
 
@@ -15,7 +15,6 @@
  ### Miscellaneous
 
  - Add verification for Conditional Statement code
- - Improve SHT31 Smart Gadget module code
 
 
 ## 7.0.0 (2018-12-08)
