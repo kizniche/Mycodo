@@ -74,6 +74,7 @@ class InputModule(AbstractInput):
 
         if not testing:
             from bluepy.btle import UUID, Peripheral
+            from bluepy import btle
             self.logger = logging.getLogger(
                 "mycodo.sensor_gadget_sht31_{id}".format(id=input_dev.unique_id.split('-')[0]))
 
@@ -81,6 +82,7 @@ class InputModule(AbstractInput):
                 DeviceMeasurements).filter(
                     DeviceMeasurements.device_id == input_dev.unique_id)
 
+            self.btle = btle
             self.location = input_dev.location
             self.bt_adapter = input_dev.bt_adapter
 
@@ -90,33 +92,48 @@ class InputModule(AbstractInput):
 
     def get_measurement(self):
         """ Gets the light, moisture, and temperature """
+        humidity = None
+        temperature = None
         return_dict = measurements_dict.copy()
 
-        sht31_service = self.p.getServiceByUUID(self.uuid_humidity_service)
-        ch = sht31_service.getCharacteristics(self.uuid_humidity_char)[0]
-        humidity = struct.unpack('<f', ch.read())[0]
+        def read_data():
+            sht31_service = self.p.getServiceByUUID(self.uuid_humidity_service)
+            ch = sht31_service.getCharacteristics(self.uuid_humidity_char)[0]
+            hum = struct.unpack('<f', ch.read())[0]
 
-        sht31_service = self.p.getServiceByUUID(self.uuid_temperature_service)
-        ch = sht31_service.getCharacteristics(self.uuid_temperature_char)[0]
-        temperature = struct.unpack('<f', ch.read())[0]
+            sht31_service = self.p.getServiceByUUID(self.uuid_temperature_service)
+            ch = sht31_service.getCharacteristics(self.uuid_temperature_char)[0]
+            temp = struct.unpack('<f', ch.read())[0]
 
-        if self.is_enabled(0):
-            return_dict[0]['value'] = temperature
+            return hum, temp
 
-        if self.is_enabled(1):
-            return_dict[1]['value'] = humidity
+        try:
+            humidity, temperature = read_data()
+        except self.btle.BTLEException as e:
+            if e.code != self.btle.BTLEException.DISCONNECTED:
+                self.p.connect(self.location,
+                               "random",
+                               iface=self.bt_adapter)
+                humidity, temperature = read_data()
 
-        if (self.is_enabled(2) and
-                self.is_enabled(0) and
-                self.is_enabled(1)):
-            return_dict[2]['value'] = calculate_dewpoint(
-                return_dict[0]['value'], return_dict[1]['value'])
+        if None not in [humidity, temperature]:
+            if self.is_enabled(0):
+                return_dict[0]['value'] = temperature
 
-        if (self.is_enabled(3) and
-                self.is_enabled(0) and
-                self.is_enabled(1)):
-            return_dict[3]['value'] = calculate_vapor_pressure_deficit(
-                return_dict[0]['value'], return_dict[1]['value'])
+            if self.is_enabled(1):
+                return_dict[1]['value'] = humidity
+
+            if (self.is_enabled(2) and
+                    self.is_enabled(0) and
+                    self.is_enabled(1)):
+                return_dict[2]['value'] = calculate_dewpoint(
+                    return_dict[0]['value'], return_dict[1]['value'])
+
+            if (self.is_enabled(3) and
+                    self.is_enabled(0) and
+                    self.is_enabled(1)):
+                return_dict[3]['value'] = calculate_vapor_pressure_deficit(
+                    return_dict[0]['value'], return_dict[1]['value'])
 
         return return_dict
 
