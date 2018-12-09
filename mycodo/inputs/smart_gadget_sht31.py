@@ -126,7 +126,7 @@ class InputModule(AbstractInput):
             try:
                 self.p.disconnect()
             except self.btle.BTLEException as e:
-                self.logger.error("Error: {}".format(e))
+                self.logger.error("Disconnect Error: {}".format(e))
 
         except self.btle.BTLEException as e:
             self.logger.error("Error: {}".format(e))

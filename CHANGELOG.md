@@ -4,6 +4,7 @@
 
  - Fix PiOLED LCD from changing I2C address when options are saved ([#579](https://github.com/kizniche/mycodo/issues/579))
  - Fix Generic 16x2/16x4 LCD display issue ([#578](https://github.com/kizniche/mycodo/issues/578))
+ - Fix Math Add dropdown items having the same name ([#580](https://github.com/kizniche/mycodo/issues/580))
 
 ### Features
 

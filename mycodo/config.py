@@ -175,13 +175,13 @@ MATH_INFO = {
 # Math form dropdown
 MATHS = [
     ('average', MATH_INFO['average']['name']),
-    ('average_single',MATH_INFO['average']['name']),
-    ('difference', MATH_INFO['average']['name']),
-    ('equation', MATH_INFO['average']['name']),
-    ('statistics', MATH_INFO['average']['name']),
-    ('humidity', MATH_INFO['average']['name']),
-    ('verification', MATH_INFO['average']['name']),
-    ('vapor_pressure_deficit', MATH_INFO['average']['name'])
+    ('average_single', MATH_INFO['average_single']['name']),
+    ('difference', MATH_INFO['difference']['name']),
+    ('equation', MATH_INFO['equation']['name']),
+    ('statistics', MATH_INFO['statistics']['name']),
+    ('humidity', MATH_INFO['humidity']['name']),
+    ('verification', MATH_INFO['verification']['name']),
+    ('vapor_pressure_deficit', MATH_INFO['vapor_pressure_deficit']['name'])
 ]
 
 # Method info
