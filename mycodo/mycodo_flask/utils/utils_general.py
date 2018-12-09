@@ -315,9 +315,8 @@ def choices_lcd(inputs, maths, pids, outputs, dict_units, dict_measurements):
     choices = OrderedDict()
 
     # Display IP address
-    value = '0000,IP'
-    display = 'IP Address of Raspberry Pi'
-    choices.update({value: display})
+    choices.update({'0000,BLANK': 'Blank Line'})
+    choices.update({'0000,IP': 'IP Address of Raspberry Pi'})
 
     # Inputs
     for each_input in inputs:

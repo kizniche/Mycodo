@@ -1250,10 +1250,16 @@ Conditional
 
 Conditional controllers are used to perform certain actions based on
 whether a conditional statement is true. Python 3 is the environment
-that these condionals will be executed. For the conditional to be true
+that these conditionals will be executed. For the conditional to be true
 (and trigger the actions), the code must print a “1” and for the
 conditional to be false (and not trigger the actions), the code must
-print a “0” or print nothing. Example conditionals are below:
+print a “0” or print nothing.
+
+Since the Python code contained in the Conditional Statement must be
+formatted properly, it’s best to familiarize yourself with the basics of
+Python.
+
+Example conditionals are below:
 
     # Example 1
     sum = {bf43a998} + {dh54wqno}
@@ -1283,7 +1289,8 @@ print a “0” or print nothing. Example conditionals are below:
         print(1)
 
 Each ID encased in curly brackets ({}) will be converted to the most
-recent measurement obtained from that particular sensor or device.
+recent measurement obtained from that particular sensor or device under
+Conditions.
 
 Before activating any conditionals, it’s advised to thoroughly explore
 all possible scenarios and plan a configuration that eliminates

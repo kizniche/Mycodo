@@ -8,6 +8,7 @@
 ### Features
 
  - Add Input: SHT31 Smart Gadget (Bluetooth) humidity/temperature sensor ([#559](https://github.com/kizniche/mycodo/issues/559))
+ - Add blank line to LCD display options ([#579](https://github.com/kizniche/mycodo/issues/579))
 
  ### Miscellaneous
 

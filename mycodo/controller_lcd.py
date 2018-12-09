@@ -276,7 +276,12 @@ class LCDController(threading.Thread):
 
     def get_measurement(self, display_id, i):
         try:
-            if self.lcd_line[display_id][i]['measure'] == 'IP':
+            if self.lcd_line[display_id][i]['measure'] == 'BLANK':
+                self.lcd_line[display_id][i]['name'] = ''
+                self.lcd_line[display_id][i]['unit'] = ''
+                self.lcd_line[display_id][i]['measure_val'] = ''
+                return True
+            elif self.lcd_line[display_id][i]['measure'] == 'IP':
                 str_ip_cmd = "ip addr | grep 'state UP' -A2 | tail -n1 | awk '{print $2}' | cut -f1  -d'/'"
                 ip_out, _, _ = cmd_output(str_ip_cmd)
                 self.lcd_line[display_id][i]['name'] = ''
@@ -412,7 +417,7 @@ class LCDController(threading.Thread):
         if measurement_id == 'output':
             device_measurement = db_retrieve_table_daemon(
                 Output, unique_id=device_id)
-        elif measurement_id == 'IP':
+        elif measurement_id in ['BLANK', 'IP']:
             device_measurement = None
         else:
             device_measurement = db_retrieve_table_daemon(
@@ -437,8 +442,8 @@ class LCDController(threading.Thread):
 
         if 'time' in measurement_id:
             self.lcd_line[display_id][line]['measure'] = 'time'
-        elif measurement_id == 'IP':
-            self.lcd_line[display_id][line]['measure'] = 'IP'
+        elif measurement_id in ['BLANK', 'IP']:
+            self.lcd_line[display_id][line]['measure'] = measurement_id
             self.lcd_line[display_id][line]['name'] = ''
 
         if not device_id:
@@ -461,7 +466,7 @@ class LCDController(threading.Thread):
             if controller_found:
                 self.lcd_line[display_id][line]['name'] = controller_found.name
 
-        if (self.lcd_line[display_id][line]['measure'] in ['IP', 'time'] or
+        if (self.lcd_line[display_id][line]['measure'] in ['BLANK', 'IP', 'time'] or
                 None not in [self.lcd_line[display_id][line]['name'],
                              self.lcd_line[display_id][line]['unit']]):
             self.lcd_line[display_id][line]['setup'] = True

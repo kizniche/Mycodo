@@ -1198,10 +1198,15 @@ Conditional
 ```````````
 
 Conditional controllers are used to perform certain actions based on whether a
-conditional statement is true. Python 3 is the environment that these condionals
+conditional statement is true. Python 3 is the environment that these conditionals
 will be executed. For the conditional to be true (and trigger the actions), the
 code must print a "1" and for the conditional to be false (and not trigger the
 actions), the code must print a "0" or print nothing.
+
+Since the Python code contained in the Conditional Statement must be formatted
+properly, it's best to familiarize yourself with the
+`basics of Python <https://realpython.com/python-conditional-statements/>`__.
+
 Example conditionals are below:
 
 ::
@@ -1235,14 +1240,14 @@ Example conditionals are below:
 
 
 Each ID encased in curly brackets ({}) will be converted to the most
-recent measurement obtained from that particular sensor or device.
+recent measurement obtained from that particular sensor or device under
+Conditions.
 
-Before activating any conditionals, it's
-advised to thoroughly explore all possible scenarios and plan a
-configuration that eliminates conflicts. Then, trial run your
-configuration before connecting devices to the outputs. Some devices or
-outputs may respond atypically or fail when switched on and off in rapid
-succession. Therefore, avoid creating an
+Before activating any conditionals, it's advised to thoroughly explore all
+possible scenarios and plan a configuration that eliminates conflicts. Then,
+trial run your configuration before connecting devices to the outputs. Some
+devices or outputs may respond atypically or fail when switched on and off in
+rapid succession. Therefore, avoid creating an
 `infinite loop <https://en.wikipedia.org/wiki/Loop_%28computing%29#Infinite_loops>`__
 with conditional statements.
 
