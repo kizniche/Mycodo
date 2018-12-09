@@ -38,6 +38,15 @@ def add_custom_units(units):
     return sorted_dict_units
 
 
+def test_python_execute(code_string):
+    try:
+        exec(code_string)
+    except Exception as e:
+        return 1, e
+    else:
+        return 0, None
+
+
 def return_measurement_info(device_measurement, conversion):
     try:
         if (device_measurement and

@@ -1419,7 +1419,7 @@ msgid "Down"
 msgstr "下"
 
 #: mycodo_flask/forms/forms_conditional.py:67
-msgid "If Measurement"
+msgid "Measurement"
 msgstr "如果测量"
 
 #: mycodo_flask/forms/forms_conditional.py:69

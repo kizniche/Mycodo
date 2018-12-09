@@ -18,6 +18,7 @@ from mycodo.mycodo_flask.utils.utils_general import delete_entry_with_id
 from mycodo.mycodo_flask.utils.utils_general import flash_success_errors
 from mycodo.utils.system_pi import csv_to_list_of_str
 from mycodo.utils.system_pi import list_to_csv
+from mycodo.utils.system_pi import test_python_execute
 
 logger = logging.getLogger(__name__)
 
@@ -33,7 +34,31 @@ def conditional_mod(form):
         cond_mod = Conditional.query.filter(
             Conditional.unique_id == form.function_id.data).first()
         cond_mod.name = form.name.data
-        cond_mod.conditional_statement = form.conditional_statement.data
+
+        # Replace measurements in conditional statement
+        conditions = ConditionalConditions.query.filter(
+            ConditionalConditions.conditional_id == form.function_id.data).all()
+        cond_statement_replaced = form.conditional_statement.data
+        for each_condition in conditions:
+            cond_statement_replaced = cond_statement_replaced.replace(
+                '{{{id}}}'.format(id=each_condition.unique_id.split('-')[0]), str(100))
+
+        # Test conditional statement
+        status, msg = test_python_execute(cond_statement_replaced)
+        if not status:
+            # No errors found executing code
+            cond_mod.conditional_statement = form.conditional_statement.data
+        else:
+            error.append(
+                "Error encountered while checking Conditional Statement code"
+                " for validity."
+                "\nError: {err}"
+                "\n\nCode entered:\n{codeo}"
+                "\n\nCode tested with IDs replaced:\n{coder}".format(
+                    err=msg,
+                    codeo=form.conditional_statement.data,
+                    coder=cond_statement_replaced))
+
         cond_mod.period = form.period.data
         cond_mod.start_offset = form.start_offset.data
         cond_mod.refractory_period = form.refractory_period.data

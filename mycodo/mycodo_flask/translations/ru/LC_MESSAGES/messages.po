@@ -1442,8 +1442,8 @@ msgid "Down"
 msgstr "вниз"
 
 #: mycodo_flask/forms/forms_conditional.py:67
-msgid "If Measurement"
-msgstr "Если измерение"
+msgid "Measurement"
+msgstr "измерение"
 
 #: mycodo_flask/forms/forms_conditional.py:69
 #: mycodo_flask/forms/forms_dashboard.py:119

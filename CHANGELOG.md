@@ -9,6 +9,10 @@
 
  - Add Input: SHT31 Smart Gadget (Bluetooth) humidity/temperature sensor ([#559](https://github.com/kizniche/mycodo/issues/559))
 
+ ### Miscellaneous
+
+ - Add verification for Conditional Statement code
+
 
 ## 7.0.0 (2018-12-08)
 

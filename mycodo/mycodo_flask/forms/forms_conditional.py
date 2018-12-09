@@ -63,7 +63,7 @@ class ConditionalConditions(FlaskForm):
 
     # Measurement
     input_id = StringField('Input ID', widget=widgets.HiddenInput())
-    measurement = StringField(lazy_gettext('If Measurement'))
+    measurement = StringField(lazy_gettext('Measurement'))
     max_age = IntegerField(
         lazy_gettext('Max Age (seconds)'),
         widget=NumberInput())

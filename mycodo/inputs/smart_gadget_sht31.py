@@ -32,7 +32,7 @@ measurements_dict = {
 INPUT_INFORMATION = {
     'input_name_unique': 'SMART_GADGET_SHT31',
     'input_manufacturer': 'Sensorion',
-    'input_name': 'SHT31 Smart Gadget',
+    'input_name': 'Smart Gadget (SHT31)',
     'measurements_name': 'Humidity/Temperature',
     'measurements_dict': measurements_dict,
 
@@ -110,11 +110,13 @@ class InputModule(AbstractInput):
         try:
             humidity, temperature = read_data()
         except self.btle.BTLEException as e:
-            if e.code != self.btle.BTLEException.DISCONNECTED:
+            try:
                 self.p.connect(self.location,
                                "random",
                                iface=self.bt_adapter)
                 humidity, temperature = read_data()
+            except self.btle.BTLEException as e:
+                self.logger.error("Error: {}".format(e))
 
         if None not in [humidity, temperature]:
             if self.is_enabled(0):

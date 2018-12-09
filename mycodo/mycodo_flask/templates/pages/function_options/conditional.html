@@ -117,7 +117,7 @@
 
     <div class="row align-items-end small-gutters" style="border-bottom: 1px solid #ddd; padding-bottom: 0.3em">
       <div class="col-auto">
-        <input class="form-control btn btn-sm btn-block" disabled="" value="{% for each_con in conditional_conditions_list if each_condition.condition_type == each_con[0] %}[{{each_condition.unique_id.split('-')[0]}}] {{each_con[1]}}{% endfor %}" type="text">
+        <input class="form-control btn btn-sm btn-block" disabled="" value="{% for each_con in conditional_conditions_list if each_condition.condition_type == each_con[0] %}{{"{" + each_condition.unique_id.split('-')[0] + "}"}} {{each_con[1]}}{% endfor %}" title="{{_('This {ID} is what should be used in the Conditional Statement Python code')}}" type="text">
       </div>
       <div class="col-auto">
         {{form_conditional_conditions.save_condition(class_='form-control btn btn-sm')}}
