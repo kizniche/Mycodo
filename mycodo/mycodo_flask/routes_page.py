@@ -1559,8 +1559,14 @@ def page_data():
         if not utils_general.user_has_permission('edit_controllers'):
             return redirect(url_for('routes_page.page_data'))
 
+        # Misc Input
+        if form_mod_input.input_acquire_measurements.data:
+            control = DaemonControl()
+            status = control.input_force_measurements(form_mod_input.input_id.data)
+            flash("Force acquisition of Input measurements Daemon response: {}".format(status), "success")
+
         # Add Input
-        if form_add_input.input_add.data:
+        elif form_add_input.input_add.data:
             unmet_dependencies = utils_input.input_add(form_add_input)
 
         # Mod Input Measurement

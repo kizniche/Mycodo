@@ -86,39 +86,25 @@ class InputModule(AbstractInput):
             self.location = input_dev.location
             self.bt_adapter = input_dev.bt_adapter
 
-            self.p = Peripheral(self.location,
+            self.p = Peripheral(None,
                                 "random",
                                 iface=self.bt_adapter)
 
     def get_measurement(self):
         """ Gets the light, moisture, and temperature """
-        humidity = None
-        temperature = None
         return_dict = measurements_dict.copy()
 
-        def read_data():
+        try:
+            self.p.connect(self.location, "random", iface=self.bt_adapter)
+
             sht31_service = self.p.getServiceByUUID(self.uuid_humidity_service)
             ch = sht31_service.getCharacteristics(self.uuid_humidity_char)[0]
-            hum = struct.unpack('<f', ch.read())[0]
+            humidity = struct.unpack('<f', ch.read())[0]
 
             sht31_service = self.p.getServiceByUUID(self.uuid_temperature_service)
             ch = sht31_service.getCharacteristics(self.uuid_temperature_char)[0]
-            temp = struct.unpack('<f', ch.read())[0]
+            temperature = struct.unpack('<f', ch.read())[0]
 
-            return hum, temp
-
-        try:
-            humidity, temperature = read_data()
-        except self.btle.BTLEException as e:
-            try:
-                self.p.connect(self.location,
-                               "random",
-                               iface=self.bt_adapter)
-                humidity, temperature = read_data()
-            except self.btle.BTLEException as e:
-                self.logger.error("Error: {}".format(e))
-
-        if None not in [humidity, temperature]:
             if self.is_enabled(0):
                 return_dict[0]['value'] = temperature
 
@@ -136,6 +122,14 @@ class InputModule(AbstractInput):
                     self.is_enabled(1)):
                 return_dict[3]['value'] = calculate_vapor_pressure_deficit(
                     return_dict[0]['value'], return_dict[1]['value'])
+
+            try:
+                self.p.disconnect()
+            except self.btle.BTLEException as e:
+                self.logger.error("Error: {}".format(e))
+
+        except self.btle.BTLEException as e:
+            self.logger.error("Error: {}".format(e))
 
         return return_dict
 

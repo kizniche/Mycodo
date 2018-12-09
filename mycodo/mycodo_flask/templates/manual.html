@@ -645,142 +645,146 @@ optional arguments:
 <td>Delete a particular sensor.</td>
 </tr>
 <tr class="odd">
+<td>Acquire Measurements Now</td>
+<td>Force the input to conduct measurements and them in the database.</td>
+</tr>
+<tr class="even">
 <td>Up/Down</td>
 <td>Move a particular sensor up or down in the order displayed.</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>Power Output</td>
 <td>Select a output that powers the sensor. This enables powering cycling (turn off then on) when the sensor returns 3 consecutive errors to attempt to fix the issue. Transistors may also be used instead of a relay (note: NPN transistors are preferred over PNP for powering sensors).</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>Location</td>
 <td>Depending on what sensor is being used, you will need to either select a serial number (DS18B20 temperature sensor), a GPIO pin (in the case of sensors read by a GPIO), or an I2C address. or other.</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>I2C Bus</td>
 <td>The bus to be used to communicate with the I2C address.</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>Period (seconds)</td>
 <td>After the sensor is successfully read and a database entry is made, this is the duration of time waited until the sensor is measured again.</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>Measurement Unit</td>
 <td>Select the unit to save the measurement as (only available for select measurements).</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>Pre Output</td>
 <td>If you require a output to be activated before a measurement is made (for instance, if you have a pump that extracts air to a chamber where the sensor resides), this is the output number that will be activated. The output will be activated for a duration defined by the Pre Duration, then once the output turns off, a measurement by the sensor is made.</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>Pre Output Duration (seconds)</td>
 <td>This is the duration of time that the Pre Output runs for before the sensor measurement is obtained.</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>Pre Output During Measurement</td>
 <td>If enabled, the Pre Output stays on during the acquisition of a measurement. If disabled, the Pre Output is turned off directly before acquiring a measurement.</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>Command</td>
 <td>A linux command (executed as the user ‘mycodo’) that the return value becomes the measurement</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>Command Measurement</td>
 <td>The measured condition (e.g. temperature, humidity, etc.) from the linux command</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>Command Units</td>
 <td>The units of the measurement condition from the linux command</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>Edge</td>
 <td>Edge sensors only: Select whether the Rising or Falling (or both) edges of a changing voltage are detected. A number of devices to do this when in-line with a circuit supplying a 3.3-volt input signal to a GPIO, such as simple mechanical switch, a button, a magnet (reed/hall) sensor, a PIR motion detector, and more.</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>Bounce Time (ms)</td>
 <td>Edge sensors only: This is the number of milliseconds to bounce the input signal. This is commonly called debouncing a signal [1] and may be necessary if using a mechanical circuit.</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>Reset Period (seconds)</td>
 <td>Edge sensors only: This is the period of time after an edge detection that another edge will not be recorded. This enables devices such as PIR motion sensors that may stay activated for longer periods of time.</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>Measurement</td>
 <td>Analog-to-digital converter only: The type of measurement being acquired by the ADC. For instance, if the resistance of a photocell is being measured through a voltage divider, this measurement would be “light”.</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>Units</td>
 <td>Analog-to-digital converter only: This is the unit of the measurement. With the above example of “light” as the measurement, the unit may be “lux” or “intensity”.</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>BT Adapter</td>
 <td>The Bluetooth adapter to communicate with the input.</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>Clock Pin</td>
 <td>The GPIO (using BCM numbering) connected to the Clock pin of the ADC</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>CS Pin</td>
 <td>The GPIO (using BCM numbering) connected to the CS pin of the ADC</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>MISO Pin</td>
 <td>The GPIO (using BCM numbering) connected to the MISO pin of the ADC</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>MOSI Pin</td>
 <td>The GPIO (using BCM numbering) connected to the MOSI pin of the ADC</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>RTD Probe Type</td>
 <td>Select to measure from a PT100 or PT1000 probe.</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>Resistor Reference (Ohm)</td>
 <td>If your reference resistor is not the default (400 Ohm for PT100, 4000 Ohm for PT1000), you can manually set this value. Several manufacturers now use 430 Ohm resistors on their circuit boards, therefore it’s recommended to verify the accuracy of your measurements and adjust this value if necessary.</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>Channel</td>
 <td>Analog-to-digital converter only: This is the channel to obtain the voltage measurement from the ADC.</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>Gain</td>
 <td>Analog-to-digital converter only: set the gain when acquiring the measurement.</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>Sample Speed</td>
 <td>Analog-to-digital converter only: set the sample speed (typically samples per second).</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>Volts Min</td>
 <td>Analog-to-digital converter only: What is the minimum voltage to use when scaling to produce the unit value for the database. For instance, if your ADC is not expected to measure below 0.2 volts for your particular circuit, set this to “0.2”.</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>Volts Max</td>
 <td>Analog-to-digital converter only: This is similar to the Min option above, however it is setting the ceiling to the voltage range. Units Min Analog-to-digital converter only: This value will be the lower value of a range that will use the Min and Max Voltages, above, to produce a unit output. For instance, if your voltage range is 0.0 - 1.0 volts, and the unit range is 1 - 60, and a voltage of 0.5 is measured, in addition to 0.5 being stored in the database, 30 will be stored as well. This enables creating calibrated scales to use with your particular circuit.</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>Units Max</td>
 <td>Analog-to-digital converter only: This is similar to the Min option above, however it is setting the ceiling to the unit range.</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>Weighting</td>
 <td>The This is a number between 0 and 1 and indicates how much the old reading affects the new reading. It defaults to 0 which means the old reading has no effect. This may be used to smooth the data.</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>Pulses Per Rev</td>
 <td>The number of pulses for a complete revolution.</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>Port</td>
 <td>The server port to be queried (Server Port Open input).</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>Times to Check</td>
 <td>The number of times to attempt to ping a server (Server Ping input).</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>Deadline (seconds)</td>
 <td>The maximum amount of time to wait for each ping attempt, after which 0 (offline) will be returned (Server Ping input).</td>
 </tr>

@@ -174,6 +174,7 @@ class InputMod(FlaskForm):
 
     input_mod = SubmitField(lazy_gettext('Save'))
     input_delete = SubmitField(lazy_gettext('Delete'))
+    input_acquire_measurements = SubmitField(lazy_gettext('Acquire Measurements Now'))
     input_activate = SubmitField(lazy_gettext('Activate'))
     input_deactivate = SubmitField(lazy_gettext('Deactivate'))
     input_order_up = SubmitField(lazy_gettext('Up'))

@@ -339,6 +339,9 @@ the measurement database to be used throughout the Mycodo system.
 +-----------------------+-------------------------------------------------+
 | Delete                | Delete a particular sensor.                     |
 +-----------------------+-------------------------------------------------+
+| Acquire Measurements  | Force the input to conduct measurements and     |
+| Now                   | them in the database.                           |
++-----------------------+-------------------------------------------------+
 | Up/Down               | Move a particular sensor up or down in the      |
 |                       | order displayed.                                |
 +-----------------------+-------------------------------------------------+

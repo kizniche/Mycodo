@@ -84,6 +84,9 @@ class DaemonControl:
     def input_information_update(self):
         return self.rpyc_client.root.input_information_update()
 
+    def input_force_measurements(self, input_id):
+        return self.rpyc_client.root.input_force_measurements(input_id)
+
     def lcd_backlight(self, lcd_id, state):
         return self.rpyc_client.root.lcd_backlight(lcd_id, state)
 
@@ -266,6 +269,11 @@ def parseargs(parser):
     parser.add_argument('--ramuse', action='store_true',
                         help="Return the amount of ram used by the Mycodo daemon")
 
+    # Inputs
+    parser.add_argument('--input_force_measurements', metavar='INPUTID', type=str,
+                        help='Force acquiring measurements for Input ID',
+                        required=False)
+
     # LCD
     parser.add_argument('--lcd_backlight_on', metavar='LCDID', type=str,
                         help='Turn on LCD backlight with LCD ID',
@@ -319,6 +327,13 @@ if __name__ == "__main__":
         logger.info(
             "[Remote command] Daemon Ram in Use: {msg} MB".format(
                 msg=return_msg))
+
+    elif args.input_force_measurements:
+        return_msg = daemon.input_force_measurements(args.input_force_measurements)
+        logger.info("[Remote command] Fore acquiring measurements for Input with ID '{id}': "
+                    "Server returned: {msg}".format(
+                        id=args.input_force_measurements,
+                        msg=return_msg))
 
     elif args.lcd_reset:
         return_msg = daemon.lcd_reset(args.lcd_reset)

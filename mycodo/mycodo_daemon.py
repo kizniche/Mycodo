@@ -91,7 +91,7 @@ def mycodo_service(mycodo):
         """
 
         @staticmethod
-        def exposed_lcd_reset(lcd_id, state):
+        def exposed_lcd_reset(lcd_id):
             """Resets an LCD"""
             return mycodo.lcd_reset(lcd_id)
 
@@ -151,6 +151,11 @@ def mycodo_service(mycodo):
         def exposed_input_information_update():
             """Updates all input information"""
             return mycodo.input_information_update()
+
+        @staticmethod
+        def exposed_input_force_measurements(input_id):
+            """Updates all input information"""
+            return mycodo.input_force_measurements(input_id)
 
         @staticmethod
         def exposed_is_in_virtualenv():
@@ -630,6 +635,24 @@ class DaemonController:
         except Exception:
             self.logger.exception("Exception while parsing inputs")
 
+    def input_force_measurements(self, input_id):
+        """
+        Force Input measurements to be acquired
+
+        :return: success or error message
+        :rtype: str
+
+        :param input_id: Which Input controller ID is to be affected?
+        :type input_id: str
+
+        """
+        try:
+            return self.controller['Input'][input_id].force_measurements()
+        except Exception as except_msg:
+            message = "Cannot force acquisition of Input measurements:" \
+                      " {err}".format(err=except_msg)
+            self.logger.exception(message)
+
     def lcd_reset(self, lcd_id):
         """
         Resets an LCD
@@ -642,7 +665,7 @@ class DaemonController:
 
         """
         try:
-            return self.controller['LCD'][lcd_id].lcd_init(lcd_id)
+            return self.controller['LCD'][lcd_id].lcd_init()
         except KeyError:
             message = "Cannot reset LCD, LCD not running"
             self.logger.exception(message)

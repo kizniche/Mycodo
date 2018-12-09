@@ -91,6 +91,7 @@ class InputController(threading.Thread):
         self.control = DaemonControl()
         self.pause_loop = False
         self.verify_pause_loop = True
+        self.force_measurements_trigger = False
 
         self.dict_inputs = parse_input_information()
 
@@ -209,6 +210,10 @@ class InputController(threading.Thread):
                     while self.pause_loop:
                         time.sleep(0.1)
 
+                if self.force_measurements_trigger:
+                    self.acquire_measurments_now()
+                    self.force_measurements_trigger = False
+
                 if self.device not in ['EDGE']:
                     now = time.time()
                     # Signal that a measurement needs to be obtained
@@ -294,46 +299,8 @@ class InputController(threading.Thread):
 
                         # Add measurement(s) to influxdb
                         if self.measurement_success:
-
-                            measurements_record = {}
-                            for each_channel, each_measurement in self.measurement.values.items():
-                                measurement = self.device_measurements.filter(
-                                    DeviceMeasurements.channel == each_channel).first()
-
-                                if 'value' in each_measurement:
-                                    # Unscaled, unconverted measurement
-                                    measurements_record[each_channel] = {
-                                        'measurement': each_measurement['measurement'],
-                                        'unit': each_measurement['unit'],
-                                        'value': each_measurement['value']
-                                    }
-
-                                    # Scaling needs to come before conversion
-                                    # Scale measurement
-                                    if (measurement.rescaled_measurement and
-                                            measurement.rescaled_unit):
-                                        scaled_value = measurements_record[each_channel] = self.rescale_measurements(
-                                            measurement, measurements_record[each_channel]['value'])
-                                        measurements_record[each_channel] = {
-                                            'measurement': measurement.rescaled_measurement,
-                                            'unit': measurement.rescaled_unit,
-                                            'value': scaled_value
-                                        }
-
-                                    # Convert measurement
-                                    if measurement.conversion_id not in ['', None] and 'value' in each_measurement:
-                                        conversion = self.conversions.filter(
-                                            Conversion.unique_id == measurement.conversion_id).first()
-                                        converted_value = convert_units(
-                                            measurement.conversion_id,
-                                            measurements_record[each_channel]['value'])
-                                        measurements_record[each_channel] = {
-                                            'measurement': None,
-                                            'unit': conversion.convert_unit_to,
-                                            'value': converted_value
-                                        }
-
-                            add_measurements_influxdb(self.unique_id, measurements_record)
+                            add_measurements_influxdb(
+                                self.unique_id, self.create_measurements_dict())
                             self.measurement_success = False
 
                 self.trigger_cond = False
@@ -501,6 +468,59 @@ class InputController(threading.Thread):
                     self.control.trigger_trigger_actions(
                         each_trigger.unique_id, message=message,
                         edge=edge)
+
+    def create_measurements_dict(self):
+        measurements_record = {}
+        for each_channel, each_measurement in self.measurement.values.items():
+            measurement = self.device_measurements.filter(
+                DeviceMeasurements.channel == each_channel).first()
+
+            if 'value' in each_measurement:
+                # Unscaled, unconverted measurement
+                measurements_record[each_channel] = {
+                    'measurement': each_measurement['measurement'],
+                    'unit': each_measurement['unit'],
+                    'value': each_measurement['value']
+                }
+
+                # Scaling needs to come before conversion
+                # Scale measurement
+                if (measurement.rescaled_measurement and
+                        measurement.rescaled_unit):
+                    scaled_value = measurements_record[each_channel] = self.rescale_measurements(
+                        measurement, measurements_record[each_channel]['value'])
+                    measurements_record[each_channel] = {
+                        'measurement': measurement.rescaled_measurement,
+                        'unit': measurement.rescaled_unit,
+                        'value': scaled_value
+                    }
+
+                # Convert measurement
+                if measurement.conversion_id not in ['', None] and 'value' in each_measurement:
+                    conversion = self.conversions.filter(
+                        Conversion.unique_id == measurement.conversion_id).first()
+                    converted_value = convert_units(
+                        measurement.conversion_id,
+                        measurements_record[each_channel]['value'])
+                    measurements_record[each_channel] = {
+                        'measurement': None,
+                        'unit': conversion.convert_unit_to,
+                        'value': converted_value
+                    }
+        return measurements_record
+
+    def force_measurements(self):
+        self.force_measurements_trigger = True
+        return "Force measurements triggered"
+
+    def acquire_measurments_now(self):
+        try:
+            self.update_measure()
+            add_measurements_influxdb(
+                self.unique_id, self.create_measurements_dict())
+            return "Success"
+        except Exception as msg:
+            return "Failure: {}".format(msg)
 
     def is_running(self):
         return self.running
