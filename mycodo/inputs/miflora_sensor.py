@@ -54,7 +54,7 @@ INPUT_INFORMATION = {
 
     'interfaces': ['BT'],
     'bt_location': '00:00:00:00:00:00',
-    'bt_adapter': 'hci0'
+    'bt_adapter': '0'
 }
 
 
@@ -82,7 +82,7 @@ class InputModule(AbstractInput):
 
             self.location = input_dev.location
             self.bt_adapter = input_dev.bt_adapter
-            self.poller = MiFloraPoller(self.location, BluepyBackend, adapter=self.bt_adapter)
+            self.poller = MiFloraPoller(self.location, BluepyBackend, adapter='hci{}'.format(self.bt_adapter))
 
     def get_measurement(self):
         """ Gets the light, moisture, and temperature """

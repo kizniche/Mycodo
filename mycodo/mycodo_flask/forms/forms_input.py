@@ -130,7 +130,7 @@ class InputMod(FlaskForm):
         TOOLTIPS_INPUT['pin_miso']['title'], widget=NumberInput())
 
     # Bluetooth Communication
-    bt_adapter = StringField(lazy_gettext('BT Adapter'))
+    bt_adapter = StringField(lazy_gettext('BT Adapter (hci[X])'))
 
     # ADC
     adc_gain = IntegerField(
