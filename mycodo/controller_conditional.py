@@ -202,8 +202,6 @@ class ConditionalController(threading.Thread):
         "notify me@gmail.com" is the Condition Action to execute if the
         Conditional is True.
         """
-        logger_cond = logging.getLogger("mycodo.conditional_{id}".format(
-            id=self.function_id))
 
         cond = db_retrieve_table_daemon(
             Conditional, unique_id=self.function_id, entry='first')
@@ -263,16 +261,16 @@ class ConditionalController(threading.Thread):
                     gpio_state = GPIO.input(int(each_condition.gpio_pin))
                 except:
                     gpio_state = None
-                    logger_cond.error("Exception reading the GPIO pin")
+                    self.logger.error("Exception reading the GPIO pin")
                 conditions_check[each_condition.unique_id.split('-')[0]] = gpio_state
 
         # Replace measurements in conditional statement
         cond_statement_replaced = self.conditional_statement
-        # logger_cond.info("Conditional Statement (pre-replacement): {}".format(self.conditional_statement))
+        # self.logger.info("Conditional Statement (pre-replacement):\n{}".format(self.conditional_statement))
         for each_condition_id, each_value in conditions_check.items():
             cond_statement_replaced = cond_statement_replaced.replace(
                 '{{{id}}}'.format(id=each_condition_id), str(each_value))
-        # logger_cond.info("Conditional Statement (replaced): {}".format(cond_statement_replaced))
+        # self.logger.info("Conditional Statement (replaced):\n{}".format(cond_statement_replaced))
 
         # Set the refractory period
         if self.refractory_period:
@@ -305,9 +303,9 @@ class ConditionalController(threading.Thread):
             codeOut.close()
             codeErr.close()
 
-            # logger_cond.info("Conditional Statement (evaluated): {}".format(eval(cond_statement_replaced)))
+            # self.logger.info("Conditional Statement (evaluated): {}".format(eval(cond_statement_replaced)))
         except:
-            logger_cond.error(
+            self.logger.error(
                 "Error evaluating conditional statement. "
                 "Replaced Conditional Statement: '{cond_rep}'".format(
                     cond_rep=cond_statement_replaced))

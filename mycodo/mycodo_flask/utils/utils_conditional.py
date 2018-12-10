@@ -39,25 +39,36 @@ def conditional_mod(form):
         conditions = ConditionalConditions.query.filter(
             ConditionalConditions.conditional_id == form.function_id.data).all()
         cond_statement_replaced = form.conditional_statement.data
+        cond_statement_replaced_number = None
+        cond_statement_replaced_none = None
         for each_condition in conditions:
-            cond_statement_replaced = cond_statement_replaced.replace(
+            cond_statement_replaced_number = cond_statement_replaced.replace(
                 '{{{id}}}'.format(id=each_condition.unique_id.split('-')[0]), str(100))
+        for each_condition in conditions:
+            cond_statement_replaced_none = cond_statement_replaced.replace(
+                '{{{id}}}'.format(id=each_condition.unique_id.split('-')[0]), 'None')
 
         # Test conditional statement
-        status, msg = test_python_execute(cond_statement_replaced)
-        if not status:
+        status_num, msg_num = test_python_execute(cond_statement_replaced_number)
+        status_none, msg_none = test_python_execute(cond_statement_replaced_none)
+
+        if not status_num and not status_none:
             # No errors found executing code
             cond_mod.conditional_statement = form.conditional_statement.data
         else:
             error.append(
                 "Error encountered while checking Conditional Statement code"
                 " for validity."
-                "\nError: {err}"
                 "\n\nCode entered:\n{codeo}"
-                "\n\nCode tested with IDs replaced:\n{coder}".format(
-                    err=msg,
+                "\n\nCode tested with IDs replaced with numbers:\n{code_num}"
+                "\nErrors from this code: {err_num}"
+                "\n\nCode tested with IDs replaced with None:\n{code_none}"
+                "\nErrors from this code: {err_none}".format(
                     codeo=form.conditional_statement.data,
-                    coder=cond_statement_replaced))
+                    code_num=cond_statement_replaced_number,
+                    err_num=status_num,
+                    code_none=cond_statement_replaced_none,
+                    err_none=msg_none))
 
         cond_mod.period = form.period.data
         cond_mod.start_offset = form.start_offset.data

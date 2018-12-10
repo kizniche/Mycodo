@@ -32,7 +32,6 @@ INPUT_INFORMATION = {
     'measurements_dict': measurements_dict,
 
     'options_enabled': [
-        'location',
         'measurements_select',
         'period'
     ],
