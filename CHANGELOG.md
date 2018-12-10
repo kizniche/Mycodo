@@ -1,3 +1,10 @@
+## 7.0.2 (Unreleased)
+
+### Bugfixes
+
+ - Fix inability to reorder Dashboard, Data, Output, and Function elements
+
+
 ## 7.0.1 (2018-12-09)
 
 ### Bugfixes

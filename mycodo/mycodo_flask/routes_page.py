@@ -479,6 +479,16 @@ def page_dashboard():
         if not utils_general.user_has_permission('edit_controllers'):
             return redirect(url_for('routes_general.home'))
 
+        # Reorder
+        if form_base.reorder.data:
+            mod_order = DisplayOrder.query.first()
+            mod_order.dashboard = list_to_csv(
+                form_base.list_visible_elements.data)
+            db.session.commit()
+            # Retrieve the order to display graphs
+            display_order_dashboard = csv_to_list_of_str(
+                DisplayOrder.query.first().dashboard)
+
         # Determine which form was submitted
         form_dashboard_object = None
         if form_base.create.data or form_base.modify.data:
@@ -521,19 +531,10 @@ def page_dashboard():
     dashboard_elements_hidden = []
     for each_element in dashboard:
         dashboard_element_names[each_element.unique_id] = '[{id}] {name}'.format(
-                id=each_element.id, name=each_element.name)
+            id=each_element.id, name=each_element.name)
         if (not display_order_dashboard or
                 each_element.unique_id not in display_order_dashboard):
             dashboard_elements_hidden.append(each_element.unique_id)
-
-    if form_base.reorder.data:
-        mod_order = DisplayOrder.query.first()
-        mod_order.dashboard = list_to_csv(
-            form_base.list_visible_elements.data)
-        db.session.commit()
-        # Retrieve the order to display graphs
-        display_order_dashboard = csv_to_list_of_str(
-            DisplayOrder.query.first().dashboard)
 
     # Generate all measurement and units used
     dict_measurements = add_custom_measurements(Measurement.query.all())
@@ -1162,6 +1163,15 @@ def page_function():
         if not utils_general.user_has_permission('edit_controllers'):
             return redirect(url_for('routes_general.home'))
 
+        # Reorder
+        if form_base.reorder.data:
+            mod_order = DisplayOrder.query.first()
+            mod_order.function = list_to_csv(
+                form_base.list_visible_elements.data)
+            db.session.commit()
+            display_order_function = csv_to_list_of_str(
+                DisplayOrder.query.first().function)
+
         # Function
         if form_add_function.func_add.data:
             utils_function.function_add(form_add_function)
@@ -1194,30 +1204,30 @@ def page_function():
                               form_mod_pid_output_lower)
         elif form_mod_pid_base.pid_delete.data:
             utils_pid.pid_del(
-                form_mod_pid_base.pid_id.data)
+                form_mod_pid_base.function_id.data)
         elif form_mod_pid_base.order_up.data:
             utils_function.function_reorder(
-                form_mod_pid_base.pid_id.data,
+                form_mod_pid_base.function_id.data,
                 display_order_function, 'up')
         elif form_mod_pid_base.order_down.data:
             utils_function.function_reorder(
-                form_mod_pid_base.pid_id.data,
+                form_mod_pid_base.function_id.data,
                 display_order_function, 'down')
         elif form_mod_pid_base.pid_activate.data:
             utils_pid.pid_activate(
-                form_mod_pid_base.pid_id.data)
+                form_mod_pid_base.function_id.data)
         elif form_mod_pid_base.pid_deactivate.data:
             utils_pid.pid_deactivate(
-                form_mod_pid_base.pid_id.data)
+                form_mod_pid_base.function_id.data)
         elif form_mod_pid_base.pid_hold.data:
             utils_pid.pid_manipulate(
-                form_mod_pid_base.pid_id.data, 'Hold')
+                form_mod_pid_base.function_id.data, 'Hold')
         elif form_mod_pid_base.pid_pause.data:
             utils_pid.pid_manipulate(
-                form_mod_pid_base.pid_id.data, 'Pause')
+                form_mod_pid_base.function_id.data, 'Pause')
         elif form_mod_pid_base.pid_resume.data:
             utils_pid.pid_manipulate(
-                form_mod_pid_base.pid_id.data, 'Resume')
+                form_mod_pid_base.function_id.data, 'Resume')
 
         # Trigger
         elif form_trigger.save_trigger.data:
@@ -1295,14 +1305,6 @@ def page_function():
                 form_actions)
 
         return redirect(url_for('routes_page.page_function'))
-
-    if form_base.reorder.data:
-        mod_order = DisplayOrder.query.first()
-        mod_order.function = list_to_csv(
-            form_base.list_visible_elements.data)
-        db.session.commit()
-        display_order_function = csv_to_list_of_str(
-            DisplayOrder.query.first().function)
 
     # Generate all measurement and units used
     dict_measurements = add_custom_measurements(Measurement.query.all())
@@ -1462,6 +1464,14 @@ def page_output():
         if not utils_general.user_has_permission('edit_controllers'):
             return redirect(url_for('routes_page.page_output'))
 
+        # Reorder
+        if form_base.reorder.data:
+            if form_base.reorder_type.data == 'input':
+                mod_order = DisplayOrder.query.first()
+                mod_order.output = list_to_csv(form_base.list_visible_elements.data)
+                db.session.commit()
+                display_order_output = csv_to_list_of_str(DisplayOrder.query.first().output)
+
         if form_add_output.output_add.data:
             unmet_dependencies = utils_output.output_add(form_add_output)
         elif form_mod_output.save.data:
@@ -1480,13 +1490,6 @@ def page_output():
                                     device=form_add_output.output_type.data))
         else:
             return redirect(url_for('routes_page.page_output'))
-
-    if form_base.reorder.data:
-        if form_base.reorder_type.data == 'input':
-            mod_order = DisplayOrder.query.first()
-            mod_order.output = list_to_csv(form_base.list_visible_elements.data)
-            db.session.commit()
-            display_order_output = csv_to_list_of_str(DisplayOrder.query.first().output)
 
     # Create dict of Input names
     names_output = {}
@@ -1558,6 +1561,19 @@ def page_data():
         unmet_dependencies = None
         if not utils_general.user_has_permission('edit_controllers'):
             return redirect(url_for('routes_page.page_data'))
+
+        # Reorder
+        if form_base.reorder.data:
+            if form_base.reorder_type.data == 'input':
+                mod_order = DisplayOrder.query.first()
+                mod_order.inputs = list_to_csv(form_base.list_visible_elements.data)
+                db.session.commit()
+                display_order_input = csv_to_list_of_str(DisplayOrder.query.first().inputs)
+            elif form_base.reorder_type.data == 'math':
+                mod_order = DisplayOrder.query.first()
+                mod_order.math = list_to_csv(form_base.list_visible_elements.data)
+                db.session.commit()
+                display_order_math = csv_to_list_of_str(DisplayOrder.query.first().math)
 
         # Misc Input
         if form_mod_input.input_acquire_measurements.data:
@@ -1663,19 +1679,6 @@ def page_data():
     for each_element in all_elements:
         names_math[each_element.unique_id] = '[{id}] {name}'.format(
             id=each_element.unique_id.split('-')[0], name=each_element.name)
-
-    # Reorder
-    if form_base.reorder.data:
-        if form_base.reorder_type.data == 'input':
-            mod_order = DisplayOrder.query.first()
-            mod_order.inputs = list_to_csv(form_base.list_visible_elements.data)
-            db.session.commit()
-            display_order_input = csv_to_list_of_str(DisplayOrder.query.first().inputs)
-        elif form_base.reorder_type.data == 'math':
-            mod_order = DisplayOrder.query.first()
-            mod_order.math = list_to_csv(form_base.list_visible_elements.data)
-            db.session.commit()
-            display_order_math = csv_to_list_of_str(DisplayOrder.query.first().math)
 
     # Create list of file names from the math_options directory
     # Used in generating the correct options for each math controller

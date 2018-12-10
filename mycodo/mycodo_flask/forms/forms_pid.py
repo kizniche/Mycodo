@@ -17,7 +17,8 @@ from wtforms.widgets.html5 import NumberInput
 
 
 class PIDModBase(FlaskForm):
-    pid_id = StringField('PID ID', widget=widgets.HiddenInput())
+    function_id = StringField('Function ID', widget=widgets.HiddenInput())
+    function_type = StringField('Function Type', widget=widgets.HiddenInput())
     name = StringField(
         lazy_gettext('Name'),
         validators=[DataRequired()]

@@ -51,7 +51,8 @@
     <div style="padding: 0.5em 0">
       <br>Refer to the <a href="https://github.com/kizniche/Mycodo/blob/master/CHANGELOG.md" target="_blank">Changelog</a> for a list of all changes.
     </div>
-    <p>Version incompatibility detected! The settings database in {{current_latest_major_version}} is not compatible with <= {{current_release}} versions, therefore the database will have to be recreated in order to upgrade. No settings or configurations will be transferred to v{{current_latest_release}}, so it is advisable to backup these settings by either saving the settings database (~/Mycodo/databases/mycodo.db) or writing down information (GPIO pins, PID settings, etc.). I repeat, this will effectively be deleting your database during the upgrade (though there will be the ability to restore a previous backup with a database).</p>
+      <p>Major version upgrade: <a href="https://github.com/kizniche/Mycodo/releases/tag/v{{current_latest_major_version}}.0.0" target="_blank">{{current_latest_major_version}}.0.0</a></p>
+      <p>Version incompatibility detected! The settings database in {{current_latest_major_version}}.x is not compatible with <= {{current_release}} versions, therefore the database will have to be recreated in order to upgrade. No settings or configurations will be transferred to v{{current_latest_release}}, so it is advisable to backup these settings by either saving the settings database (~/Mycodo/databases/mycodo.db) or writing down information (GPIO pins, PID settings, etc.). I repeat, this will effectively be deleting your database during the upgrade (though there will be the ability to restore a previous backup with a database).</p>
     <p>If you would like to upgrade to Mycodo v{{current_latest_release}}, select the button below.</p>
     <div class="form-inline" style="padding-bottom: 1em">
       <form method="post" action="/admin/upgrade">
@@ -70,7 +71,7 @@
     <div style="padding: 0.5em 0">
       <p>{{_('Mycodo is currently in the process of an upgrade')}}</p>
       <p>{{_('If an upgrade is not currently in progress, you may delete the ~/Mycodo/.upgrade file to be able to reinitiate the upgrade process.')}}</p>
-      <p>{{_('An upgrade often takes several minutes, and in some cases longer, to complete. Give the process ample time to run before doing anything. When the upgrade has successfully finished, the daemon status indicator at the top left will change from red to green. Some drivers require the backend to be restarted for them to become active (if you experience an erorr, attempt to restart the backend before creating a new github issue')}}</p>
+      <p>{{_('An upgrade often takes several minutes, and in some cases longer, to complete. Give the process ample time to run before doing anything. When the upgrade has successfully finished, the daemon status indicator at the top left will change from red to green. Some drivers require the backend to be restarted for them to become active. If you experience an erorr, attempt to restart the backend before creating a new github issue.')}}</p>
       <p>{{_('You can monitor the upgrade progress with the live log view, below, by navigating to Configure -> Mycodo Logs -> Upgrade Log, or by opening /var/log/mycodo/mycodoupgrade.log. Below are the last 40 lines of the upgrade log, updated every 5 seconds. If an error occurs, it is advisable to inspect the entire log in order to diagnose the issue.')}}</p>
     </div>
     <pre style="overflow:auto; resize: vertical; height:400px" id="upgrade_status"></pre>

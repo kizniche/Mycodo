@@ -5,7 +5,8 @@
   <form method="post" action="/function">
   <input type="hidden" name="form-name" value="modPID">
   {{form_mod_pid_base.csrf_token}}
-  {{form_mod_pid_base.pid_id(value=each_pid.unique_id)}}
+  {{form_mod_pid_base.function_id(value=each_pid.unique_id)}}
+  {{form_mod_pid_base.function_type(class_='form-control', value='pid')}}
 
   <div class="{% if each_pid.is_activated and not each_pid.is_paused -%}active-background
               {% elif each_pid.is_activated and each_pid.is_paused -%}pause-background

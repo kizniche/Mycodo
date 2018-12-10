@@ -45,13 +45,13 @@ def pid_mod(form_mod_pid_base,
         flash_form_errors(form_mod_pid_base)
 
     mod_pid = PID.query.filter(
-        PID.unique_id == form_mod_pid_base.pid_id.data).first()
+        PID.unique_id == form_mod_pid_base.function_id.data).first()
 
     # Check if a specific setting can be modified if the PID is active
     if mod_pid.is_activated:
         error = can_set_output(
             error,
-            form_mod_pid_base.pid_id.data,
+            form_mod_pid_base.function_id.data,
             form_mod_pid_base.raise_output_id.data,
             form_mod_pid_base.lower_output_id.data)
 
@@ -77,7 +77,7 @@ def pid_mod(form_mod_pid_base,
         selected_measurement = get_measurement(measurement_id)
 
         measurements = DeviceMeasurements.query.filter(
-            DeviceMeasurements.device_id == form_mod_pid_base.pid_id.data).all()
+            DeviceMeasurements.device_id == form_mod_pid_base.function_id.data).all()
         for each_measurement in measurements:
             # Only set channels 0, 1, 2
             if each_measurement.channel in [0, 1, 2]:
@@ -156,7 +156,7 @@ def pid_mod(form_mod_pid_base,
             # If the controller is active or paused, refresh variables in thread
             if mod_pid.is_activated:
                 control = DaemonControl()
-                return_value = control.pid_mod(form_mod_pid_base.pid_id.data)
+                return_value = control.pid_mod(form_mod_pid_base.function_id.data)
                 flash(gettext(
                     "PID Controller settings refresh response: %(resp)s",
                     resp=return_value), "success")
@@ -205,14 +205,14 @@ def pid_autotune(form_mod_pid_base):
     try:
         # Activate autotune flag in PID config
         mod_pid = PID.query.filter(
-            PID.unique_id == form_mod_pid_base.pid_id.data).first()
+            PID.unique_id == form_mod_pid_base.function_id.data).first()
         mod_pid.autotune_activated = True
         mod_pid.autotune_noiseband = form_mod_pid_base.pid_autotune_noiseband.data
         mod_pid.autotune_outstep = form_mod_pid_base.pid_autotune_outstep.data
         db.session.commit()
 
         # Activate PID
-        pid_activate(form_mod_pid_base.pid_id.data)
+        pid_activate(form_mod_pid_base.function_id.data)
     except Exception as except_msg:
         error.append(except_msg)
     flash_success_errors(error, action, url_for('routes_page.page_function'))
