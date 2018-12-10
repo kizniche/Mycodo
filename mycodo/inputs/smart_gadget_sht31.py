@@ -1,12 +1,14 @@
 # coding=utf-8
 import logging
+import time
+
 import struct
 
 from mycodo.databases.models import DeviceMeasurements
 from mycodo.inputs.base_input import AbstractInput
-from mycodo.utils.database import db_retrieve_table_daemon
 from mycodo.inputs.sensorutils import calculate_dewpoint
 from mycodo.inputs.sensorutils import calculate_vapor_pressure_deficit
+from mycodo.utils.database import db_retrieve_table_daemon
 
 # Measurements
 measurements_dict = {
@@ -73,7 +75,7 @@ class InputModule(AbstractInput):
         self.uuid_temperature_char = '00002235-B38D-4985-720E-0F993A68EE41'
 
         if not testing:
-            from bluepy.btle import UUID, Peripheral
+            from bluepy.btle import Peripheral
             from bluepy import btle
             self.logger = logging.getLogger(
                 "mycodo.sensor_gadget_sht31_{id}".format(id=input_dev.unique_id.split('-')[0]))
@@ -95,7 +97,20 @@ class InputModule(AbstractInput):
         return_dict = measurements_dict.copy()
 
         try:
-            self.p.connect(self.location, "random", iface=self.bt_adapter)
+            connected = False
+            connect_error = None
+            for _ in range(3):
+                try:
+                    self.p.connect(self.location, "random", iface=self.bt_adapter)
+                    connected = True
+                    break
+                except self.btle.BTLEException as e:
+                    connect_error = e
+                time.sleep(1)
+
+            if not connected:
+                self.logger.error("Tried 3 times to connect but couldn't. Error: {}".format(connect_error))
+                return
 
             sht31_service = self.p.getServiceByUUID(self.uuid_humidity_service)
             ch = sht31_service.getCharacteristics(self.uuid_humidity_char)[0]
