@@ -266,11 +266,11 @@ class ConditionalController(threading.Thread):
 
         # Replace measurements in conditional statement
         cond_statement_replaced = self.conditional_statement
-        self.logger.info("Conditional Statement (pre-replacement):\n{}".format(self.conditional_statement))
+        # self.logger.info("Conditional Statement (pre-replacement):\n{}".format(self.conditional_statement))
         for each_condition_id, each_value in conditions_check.items():
             cond_statement_replaced = cond_statement_replaced.replace(
                 '{{{id}}}'.format(id=each_condition_id), str(each_value))
-        self.logger.info("Conditional Statement (replaced):\n{}".format(cond_statement_replaced))
+        # self.logger.info("Conditional Statement (replaced):\n{}".format(cond_statement_replaced))
 
         # Set the refractory period
         if self.refractory_period:

@@ -4,6 +4,10 @@
 
  - Fix inability to reorder Dashboard, Data, Output, and Function elements
 
+### Features
+
+ - Add Additional check for Conditional Statements if {ID} is replaced with None ([#571](https://github.com/kizniche/mycodo/issues/571))
+
 
 ## 7.0.1 (2018-12-09)
 
