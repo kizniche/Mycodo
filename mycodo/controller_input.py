@@ -33,17 +33,17 @@ import locket
 import os
 import requests
 
+from mycodo.databases.models import Conversion
 from mycodo.databases.models import DeviceMeasurements
 from mycodo.databases.models import Input
-from mycodo.databases.models import Conversion
 from mycodo.databases.models import Misc
 from mycodo.databases.models import Output
 from mycodo.databases.models import SMTP
 from mycodo.databases.models import Trigger
-from mycodo.inputs.sensorutils import convert_units
 from mycodo.mycodo_client import DaemonControl
 from mycodo.utils.database import db_retrieve_table_daemon
 from mycodo.utils.influx import add_measurements_influxdb
+from mycodo.utils.influx import parse_measurement
 from mycodo.utils.influx import write_influxdb_value
 from mycodo.utils.inputs import load_module_from_file
 from mycodo.utils.inputs import parse_input_information
@@ -322,52 +322,6 @@ class InputController(threading.Thread):
             self.logger.exception("Error: {err}".format(
                 err=except_msg))
 
-    def rescale_measurements(self, measurement, measurement_value):
-        """ Read channels """
-        try:
-
-            # Get the difference between min and max volts
-            diff_voltage = abs(
-                float(measurement.scale_from_max) - float(measurement.scale_from_min))
-
-            # Ensure the value stays within the min/max bounds
-            if measurement_value < float(measurement.scale_from_min):
-                measured_voltage = measurement.scale_from_min
-            elif measurement_value > float(measurement.scale_from_max):
-                measured_voltage = float(measurement.scale_from_max)
-            else:
-                measured_voltage = measurement_value
-
-            # Calculate the percentage of the difference
-            percent_diff = ((measured_voltage - float(measurement.scale_from_min)) /
-                            diff_voltage)
-
-            # Get the units difference between min and max units
-            diff_units = abs(float(measurement.scale_to_max) - float(measurement.scale_to_min))
-
-            # Calculate the measured units from the percent difference
-            if measurement.invert_scale:
-                converted_units = (float(measurement.scale_to_max) -
-                                   (diff_units * percent_diff))
-            else:
-                converted_units = (float(measurement.scale_to_min) +
-                                   (diff_units * percent_diff))
-
-            # Ensure the units stay within the min/max bounds
-            if converted_units < float(measurement.scale_to_min):
-                rescaled_measurement = float(measurement.scale_to_min)
-            elif converted_units > float(measurement.scale_to_max):
-                rescaled_measurement = float(measurement.scale_to_max)
-            else:
-                rescaled_measurement = converted_units
-
-            return rescaled_measurement
-
-        except Exception as except_msg:
-            self.logger.exception(
-                "Error while attempting to rescale measurement: {err}".format(
-                    err=except_msg))
-
     def update_measure(self):
         """
         Retrieve measurement from input
@@ -476,37 +430,16 @@ class InputController(threading.Thread):
                 DeviceMeasurements.channel == each_channel).first()
 
             if 'value' in each_measurement:
-                # Unscaled, unconverted measurement
-                measurements_record[each_channel] = {
-                    'measurement': each_measurement['measurement'],
-                    'unit': each_measurement['unit'],
-                    'value': each_measurement['value']
-                }
+                conversion = self.conversions.filter(
+                    Conversion.unique_id == measurement.conversion_id).first()
 
-                # Scaling needs to come before conversion
-                # Scale measurement
-                if (measurement.rescaled_measurement and
-                        measurement.rescaled_unit):
-                    scaled_value = measurements_record[each_channel] = self.rescale_measurements(
-                        measurement, measurements_record[each_channel]['value'])
-                    measurements_record[each_channel] = {
-                        'measurement': measurement.rescaled_measurement,
-                        'unit': measurement.rescaled_unit,
-                        'value': scaled_value
-                    }
 
-                # Convert measurement
-                if measurement.conversion_id not in ['', None] and 'value' in each_measurement:
-                    conversion = self.conversions.filter(
-                        Conversion.unique_id == measurement.conversion_id).first()
-                    converted_value = convert_units(
-                        measurement.conversion_id,
-                        measurements_record[each_channel]['value'])
-                    measurements_record[each_channel] = {
-                        'measurement': None,
-                        'unit': conversion.convert_unit_to,
-                        'value': converted_value
-                    }
+                measurements_record = parse_measurement(
+                    conversion,
+                    measurement,
+                    measurements_record,
+                    each_channel,
+                    each_measurement)
         return measurements_record
 
     def force_measurements(self):

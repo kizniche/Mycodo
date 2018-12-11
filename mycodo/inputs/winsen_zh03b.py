@@ -13,7 +13,7 @@ from mycodo.inputs.sensorutils import is_device
 from mycodo.utils.database import db_retrieve_table_daemon
 
 
-def constraints_pass_fan_seconds(value):
+def constraints_pass_positive_value(value):
     """
     Check if the user input is acceptable
     :param value: float
@@ -78,7 +78,7 @@ INPUT_INFORMATION = {
             'id': 'fan_seconds',
             'type': 'float',
             'default_value': 50.0,
-            'constraints_pass': constraints_pass_fan_seconds,
+            'constraints_pass': constraints_pass_positive_value,
             'name': lazy_gettext('Fan On Duration'),
             'phrase': lazy_gettext('How long to turn the fan on (seconds) before acquiring measurements')
         }
