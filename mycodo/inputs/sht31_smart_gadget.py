@@ -231,7 +231,7 @@ class InputModule(AbstractInput):
                         measurement_single[1]['unit'],
                         value=measurement_single[1]['value'],
                         measure=measurement_single[1]['measurement'],
-                        channel=0,
+                        channel=1,
                         timestamp=datetime.datetime.utcfromtimestamp(each_time / 1000))
 
                 # Reset log and set logging interval
