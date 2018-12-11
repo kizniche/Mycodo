@@ -1262,34 +1262,49 @@ Since the Python code contained in the Conditional Statement must be
 formatted properly, it’s best to familiarize yourself with the basics of
 Python.
 
+IMPORTANT: If a measurement hasn’t been acquired within the Max Age that
+is set, “None” will be returned and substituted with the {ID} in the
+code. It is very important that you account for this. All examples below
+incorporate a test for the measurement being None, and this should not
+be removed. If an error occurs (such as if the statement resolves to
+comparing None to a numerical value, such as “None < 23”), then the
+conditional will not trigger and will throw an error in the daemon log.
+Accounting for None is useful for determining if an Input is no longer
+acquiring measurements.
+
 Example conditionals are below:
 
     # Example 1
-    sum = {bf43a998} + {dh54wqno}
-    if {bf43a998} > 2 and 10 < {dh54wqno} < 23 and sum < 30.5:
-        print(1)  # True (Do trigger actions)
+    if None not in [{bf43a998}, {dh54wqno}]:
+        sum = {bf43a998} + {dh54wqno}
+        if {bf43a998} > 2 and 10 < {dh54wqno} < 23 and sum < 30.5:
+            print(1)  # True (Do trigger actions)
     else:
         print(0)  # False (Do not trigger actions)
 
     # Example 2
-    if {dj73gs0d} < 20 and {02nspgh1} > 10:
-        print(1)
+    if None not in [{dj73gs0d}, {02nspgh1}]:
+        if {dj73gs0d} < 20 and {02nspgh1} > 10:
+            print(1)
 
     # Example 3
-    if (20 < {dj73gs0d} < 30 ) or {02nspgh1} > 10:
+    if {dj73gs0d} != None and 20 < {dj73gs0d} < 30:
         print(1)
 
     # Example 4
-    if bool({dj73gs0d}) and {02nspgh1} > 10:
-        print(1)
+    if None not in [{dj73gs0d}, {02nspgh1}]:
+        if bool({dj73gs0d}) and {02nspgh1} > 10:
+            print(1)
 
     # Example 5
-    if {dj73gs0d} < 20 or ({02nspgh1} > 10 and not bool({ucna62k4})):
-        print(1)
+    if None not in [{dj73gs0d}, {02nspgh1}, {ucna62k4}]:
+        if {dj73gs0d} < 20 or ({02nspgh1} > 10 and not bool({ucna62k4})):
+            print(1)
 
     # Example 6
-    if {dj73gs0d} > 20 or int(round({02nspgh1})) in [20, 21, 22]:
-        print(1)
+    if None not in [{dj73gs0d}, {02nspgh1}]:
+        if {dj73gs0d} > 20 or int(round({02nspgh1})) in [20, 21, 22]:
+            print(1)
 
 Each ID encased in curly brackets ({}) will be converted to the most
 recent measurement obtained from that particular sensor or device under

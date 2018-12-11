@@ -58,14 +58,13 @@ INPUT_INFORMATION = {
 
 class InputModule(AbstractInput):
     """
-    A sensor support class that measures the Miflora's electrical
-    conductivity, moisture, temperature, and light.
+    A support class for Sensorion's SHT31 Smart Gadget
 
     """
 
     def __init__(self, input_dev, testing=False):
         super(InputModule, self).__init__()
-        self.logger = logging.getLogger("mycodo.inputs.sensor_gadget_sht31")
+        self.logger = logging.getLogger("mycodo.inputs.sht31_smart_gadget")
         self._measurements = None
 
         self.uuid_humidity_service = '00001234-B38D-4985-720E-0F993A68EE41'
@@ -74,11 +73,18 @@ class InputModule(AbstractInput):
         self.uuid_temperature_service = '00002234-B38D-4985-720E-0F993A68EE41'
         self.uuid_temperature_char = '00002235-B38D-4985-720E-0F993A68EE41'
 
+        self.uuid_logger_service = '0000F234-B38D-4985-720E-0F993A68EE41'
+        self.uuid_sync_time_ms = '0000F235-B38D-4985-720E-0F993A68EE41'
+        self.uuid_oldest_timestamp_ms = '0000F236-B38D-4985-720E-0F993A68EE41'
+        self.uuid_newest_timestamp_ms = '0000F237-B38D-4985-720E-0F993A68EE41'
+        self.uuid_start_logger_download = '0000F238-B38D-4985-720E-0F993A68EE41'
+        self.uuid_logger_interval_ms_char = '0000F239-B38D-4985-720E-0F993A68EE41'
+
         if not testing:
             from bluepy.btle import Peripheral
             from bluepy import btle
             self.logger = logging.getLogger(
-                "mycodo.sensor_gadget_sht31_{id}".format(id=input_dev.unique_id.split('-')[0]))
+                "mycodo.sht31_smart_gadget_{id}".format(id=input_dev.unique_id.split('-')[0]))
 
             self.device_measurements = db_retrieve_table_daemon(
                 DeviceMeasurements).filter(
@@ -88,36 +94,45 @@ class InputModule(AbstractInput):
             self.location = input_dev.location
             self.bt_adapter = input_dev.bt_adapter
 
+            # Create Peripheral but do not connect yet
             self.p = Peripheral(None,
                                 "random",
                                 iface=self.bt_adapter)
 
     def get_measurement(self):
-        """ Gets the light, moisture, and temperature """
+        """ Obtain and return the measurements """
         return_dict = measurements_dict.copy()
 
         try:
+            # Make three attempts to connect
             connected = False
             connect_error = None
             for _ in range(3):
                 try:
-                    self.p.connect(self.location, "random", iface=self.bt_adapter)
+                    self.p.connect(
+                        self.location, "random", iface=self.bt_adapter)
                     connected = True
                     break
                 except self.btle.BTLEException as e:
                     connect_error = e
-                time.sleep(1)
+                time.sleep(0.5)
 
             if not connected:
-                self.logger.error("Tried 3 times to connect but couldn't. Error: {}".format(connect_error))
+                self.logger.error(
+                    "Could not connect (made 3 attempts). Error: {}".format(
+                        connect_error))
                 return
 
-            sht31_service = self.p.getServiceByUUID(self.uuid_humidity_service)
-            ch = sht31_service.getCharacteristics(self.uuid_humidity_char)[0]
+            sht31_service_hum = self.p.getServiceByUUID(
+                self.uuid_humidity_service)
+            ch = sht31_service_hum.getCharacteristics(
+                self.uuid_humidity_char)[0]
             humidity = struct.unpack('<f', ch.read())[0]
 
-            sht31_service = self.p.getServiceByUUID(self.uuid_temperature_service)
-            ch = sht31_service.getCharacteristics(self.uuid_temperature_char)[0]
+            sht31_service_temp = self.p.getServiceByUUID(
+                self.uuid_temperature_service)
+            ch = sht31_service_temp.getCharacteristics(
+                self.uuid_temperature_char)[0]
             temperature = struct.unpack('<f', ch.read())[0]
 
             if self.is_enabled(0):
@@ -149,7 +164,7 @@ class InputModule(AbstractInput):
         return return_dict
 
     def stop_sensor(self):
-        """ Called when sensors are deactivated """
+        """ Called when the sensor is deactivated """
         try:
             self.p.disconnect()
         except Exception as msg:
