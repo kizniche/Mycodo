@@ -29,6 +29,7 @@ def constraints_pass_positive_value(value):
         errors.append("Must be a positive value")
     return all_passed, errors
 
+
 # Measurements
 measurements_dict = {
     0: {
@@ -216,7 +217,7 @@ class InputModule(AbstractInput):
                     measurement_single = {
                         1: {
                             'measurement': 'humidity',
-                            'unit': '%',
+                            'unit': 'percent',
                             'value': each_measure
                         }
                     }
