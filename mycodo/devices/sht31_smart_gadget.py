@@ -56,20 +56,22 @@ class MyDelegate(DefaultDelegate):
         if 0 < len(unpackedData):
             # logging data
             self.sustainedNotifications[typeData] = 0
-            for x in unpackedData:
-                self.parent.loggedData[typeData][
-                    self.parent.newestTimeStampMs - runnumber * self.parent.loggerInterval] = x
+            for measurement in unpackedData:
+                # The first measurement is the most recent (runnumber = 1),
+                # which has the timestamp equal to self.parent.newestTimeStampMs
+                timestamp = self.parent.newestTimeStampMs - ((runnumber - 1) * self.parent.loggerInterval)
+                self.parent.loggedData[typeData][timestamp] = measurement
                 runnumber += 1
         else:
-            # non logging data
+            # Non-logging data
             self.sustainedNotifications[typeData] += 1
-            if 1 < self.sustainedNotifications[typeData]:
-                # logging data transmission done
-                self.sustainedNotifications[typeData] = 2
-                if 1 < self.sustainedNotifications['Temp'] and 1 < self.sustainedNotifications['Humi']:
-                    self.parent.loggingReadout = False
-                    self.parent.setTemperatureNotification(False)
-                    self.parent.setHumidityNotification(False)
+            v = (self.sustainedNotifications['Temp'],
+                 self.sustainedNotifications['Humi'])
+            if all(x > 1 for x in v):
+                # End communication
+                self.parent.loggingReadout = False
+                self.parent.setTemperatureNotification(False)
+                self.parent.setHumidityNotification(False)
 
 
 class SHT31:
