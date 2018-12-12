@@ -174,20 +174,25 @@ class InputModule(AbstractInput):
         # Clear data previously stored in dictionary
         self.gadget.clear_logged_data()
 
+        # # Download stored data from the device
+        # self.gadget.readLoggedDataInterval(start_ms=self.gadget.newestTimeStampMs)
+
         # Download stored data from the device
-        self.gadget.readLoggedDataInterval(start_ms=self.gadget.newestTimeStampMs)
+        self.gadget.readLoggedDataInterval()
+
         while self.running:
             if (not self.gadget.waitForNotifications(5) or
                     not self.gadget.isLogReadoutInProgress()):
                 break  # Done reading data
 
-        list_timestamps = []
+        list_timestamps_temp = []
+        list_timestamps_humi = []
 
         # Store logged temperatures
         measurement = self.device_measurements.filter(DeviceMeasurements.channel == 0).first()
         conversion = db_retrieve_table_daemon(Conversion, unique_id=measurement.conversion_id)
         for each_time, each_measure in self.gadget.loggedData['Temp'].items():
-            list_timestamps.append(each_time)
+            list_timestamps_temp.append(each_time)
             measurement_single = {
                 0: {
                     'measurement': 'temperature',
@@ -214,6 +219,7 @@ class InputModule(AbstractInput):
         measurement = self.device_measurements.filter(DeviceMeasurements.channel == 1).first()
         conversion = db_retrieve_table_daemon(Conversion, unique_id=measurement.conversion_id)
         for each_time, each_measure in self.gadget.loggedData['Humi'].items():
+            list_timestamps_humi.append(each_time)
             measurement_single = {
                 1: {
                     'measurement': 'humidity',
@@ -236,11 +242,20 @@ class InputModule(AbstractInput):
                     channel=1,
                     timestamp=datetime.datetime.utcfromtimestamp(each_time / 1000))
 
+        # Find timestamps in both lists
+        list_timestamps_both = []
+        for each_timestamp in list_timestamps_temp:
+            if each_timestamp in list_timestamps_humi:
+                list_timestamps_both.append(each_timestamp)
+
         # Calculate dew points and vapor pressure deficits from retrieved data
-        for each_timestamp in list_timestamps:
+        for each_timestamp in list_timestamps_both:
+
             if (self.is_enabled(3) and
                     self.is_enabled(0) and
                     self.is_enabled(1)):
+                measurement = self.device_measurements.filter(DeviceMeasurements.channel == 3).first()
+                conversion = db_retrieve_table_daemon(Conversion, unique_id=measurement.conversion_id)
                 dewpoint = calculate_dewpoint(
                     self.gadget.loggedData['Temp'][each_timestamp],
                     self.gadget.loggedData['Humi'][each_timestamp])
@@ -268,6 +283,8 @@ class InputModule(AbstractInput):
             if (self.is_enabled(4) and
                     self.is_enabled(0) and
                     self.is_enabled(1)):
+                measurement = self.device_measurements.filter(DeviceMeasurements.channel == 4).first()
+                conversion = db_retrieve_table_daemon(Conversion, unique_id=measurement.conversion_id)
                 vpd = calculate_vapor_pressure_deficit(
                     self.gadget.loggedData['Temp'][each_timestamp],
                     self.gadget.loggedData['Humi'][each_timestamp])
@@ -291,6 +308,9 @@ class InputModule(AbstractInput):
                     measure=measurement_single[4]['measurement'],
                     channel=4,
                     timestamp=datetime.datetime.utcfromtimestamp(each_timestamp / 1000))
+
+        # Reset log and set logging interval
+        self.gadget.setLoggerIntervalMs(self.logging_interval * 1000)
 
     def get_device_information(self):
         if 'Timestamp' not in self.device_information:
