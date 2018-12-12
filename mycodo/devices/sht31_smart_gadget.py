@@ -24,6 +24,7 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
+import logging
 import time
 
 import struct
@@ -33,6 +34,7 @@ from bluepy.btle import UUID, Peripheral, DefaultDelegate
 class MyDelegate(DefaultDelegate):
     def __init__(self, parent):
         DefaultDelegate.__init__(self)
+        self.logger = logging.getLogger("mycodo.device.sht31_smart_gadget.delegate")
         self.parent = parent
         self.sustainedNotifications = {
             'Temp': 0,
@@ -46,9 +48,9 @@ class MyDelegate(DefaultDelegate):
         runnumber = unpackedData.pop(0)
 
         typeData = ''
-        if 55 is cHandle:
+        if cHandle == 55:
             typeData = 'Temp'
-        elif 50 is cHandle:
+        elif cHandle == 50:
             typeData = 'Humi'
 
         if 0 < len(unpackedData):
@@ -57,10 +59,10 @@ class MyDelegate(DefaultDelegate):
             for x in unpackedData:
                 self.parent.loggedData[typeData][
                     self.parent.newestTimeStampMs - runnumber * self.parent.loggerInterval] = x
-                runnumber = runnumber + 1
+                runnumber += 1
         else:
             # non logging data
-            self.sustainedNotifications[typeData] = self.sustainedNotifications[typeData] + 1
+            self.sustainedNotifications[typeData] += 1
             if 1 < self.sustainedNotifications[typeData]:
                 # logging data transmission done
                 self.sustainedNotifications[typeData] = 2
@@ -69,8 +71,10 @@ class MyDelegate(DefaultDelegate):
                     self.parent.setTemperatureNotification(False)
                     self.parent.setHumidityNotification(False)
 
+
 class SHT31:
     def __init__(self, addr=None, iface=None):
+        self.logger = logging.getLogger("mycodo.device.sht31_smart_gadget.sht31")
         self.loggedData = {'Temp': {}, 'Humi': {}}
         self.newestTimeStampMs = 0
         self.loggerInterval = 0
@@ -156,8 +160,8 @@ class SHT31:
     def readBattery(self):
         return int.from_bytes(self.characteristics['Battery'].read(), byteorder='little')
 
-    def setSyncTimeMs(self, timestamp=time.time()):
-        timestampMs = int(round(timestamp * 1000))
+    def setSyncTimeMs(self, timestamp=None):
+        timestampMs = timestamp if timestamp else int(round(time.time() * 1000))
         self.characteristics['SyncTimeMs'].write(
             timestampMs.to_bytes(8, byteorder='little'))
 
@@ -186,17 +190,17 @@ class SHT31:
         self.characteristics['LoggerIntervalMs'].write(
             (int(milliseconds)).to_bytes(4, byteorder='little'))
 
-    def readLoggedDataInterval(self, startMs=None, stopMs=None):
+    def readLoggedDataInterval(self, start_ms=None, stop_ms=None):
         self.setSyncTimeMs()
-        time.sleep(1)  # Sleep 1s to enable the gadget to set the SyncTime; otherwise 0 is read when readNewestTimestampMs is used
+        time.sleep(1)  # Sleep 1s to enable the gadget to set SyncTime; otherwise 0 is read from readNewestTimestampMs()
         self.setTemperatureNotification(True)
         self.setHumidityNotification(True)
 
         self.loggerInterval = self.readLoggerIntervalMs()
-        if startMs is not None:
-            self.setOldestTimestampMs(startMs)
-        if stopMs is not None:
-            self.setNewestTimestampMs(stopMs)
+        if start_ms:
+            self.setOldestTimestampMs(start_ms)
+        if stop_ms:
+            self.setNewestTimestampMs(stop_ms)
 
         self.newestTimeStampMs = self.readNewestTimestampMs()
         self.loggingReadout = True
@@ -207,3 +211,6 @@ class SHT31:
 
     def isLogReadoutInProgress(self):
         return self.loggingReadout
+
+    def clear_logged_data(self):
+        self.loggedData = {'Temp': {}, 'Humi': {}}
