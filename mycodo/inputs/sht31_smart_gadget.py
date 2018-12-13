@@ -111,7 +111,7 @@ class InputModule(AbstractInput):
         self.unique_id = input_dev.unique_id
         self._measurements = None
         self.download_stored_data = None
-        self.logging_interval = None
+        self.logging_interval_ms = None
         self.gadget = None
         self.connected = False
         self.connect_error = None
@@ -136,7 +136,7 @@ class InputModule(AbstractInput):
                     if option == 'download_stored_data':
                         self.download_stored_data = bool(value)
                     elif option == 'logging_interval':
-                        self.logging_interval = int(value)
+                        self.logging_interval_ms = int(value) * 1000
 
             self.SHT31 = SHT31
             self.btle = btle
@@ -174,11 +174,12 @@ class InputModule(AbstractInput):
         # Clear data previously stored in dictionary
         self.gadget.clear_logged_data()
 
-        # # Download stored data from the device
-        # self.gadget.readLoggedDataInterval(start_ms=self.gadget.newestTimeStampMs)
+        # Download stored data starting from self.gadget.newestTimeStampMs
+        self.gadget.readLoggedDataInterval(
+            start_ms=self.gadget.newestTimeStampMs)
 
-        # Download stored data from the device
-        self.gadget.readLoggedDataInterval()
+        # Download all stored data from the device
+        # self.gadget.readLoggedDataInterval()
 
         while self.running:
             if (not self.gadget.waitForNotifications(5) or
@@ -188,7 +189,7 @@ class InputModule(AbstractInput):
         list_timestamps_temp = []
         list_timestamps_humi = []
 
-        # Store logged temperatures
+        # Store logged temperature
         measurement = self.device_measurements.filter(DeviceMeasurements.channel == 0).first()
         conversion = db_retrieve_table_daemon(Conversion, unique_id=measurement.conversion_id)
         for each_time, each_measure in self.gadget.loggedData['Temp'].items():
@@ -215,7 +216,7 @@ class InputModule(AbstractInput):
                     channel=0,
                     timestamp=datetime.datetime.utcfromtimestamp(each_time / 1000))
 
-        # Store logged humidities
+        # Store logged humidity
         measurement = self.device_measurements.filter(DeviceMeasurements.channel == 1).first()
         conversion = db_retrieve_table_daemon(Conversion, unique_id=measurement.conversion_id)
         for each_time, each_measure in self.gadget.loggedData['Humi'].items():
@@ -242,15 +243,14 @@ class InputModule(AbstractInput):
                     channel=1,
                     timestamp=datetime.datetime.utcfromtimestamp(each_time / 1000))
 
-        # Find timestamps in both lists
+        # Find common timestamps from both temperature and humidity lists
         list_timestamps_both = []
         for each_timestamp in list_timestamps_temp:
             if each_timestamp in list_timestamps_humi:
                 list_timestamps_both.append(each_timestamp)
 
-        # Calculate dew points and vapor pressure deficits from retrieved data
         for each_timestamp in list_timestamps_both:
-
+            # Calculate and store dew point
             if (self.is_enabled(3) and
                     self.is_enabled(0) and
                     self.is_enabled(1)):
@@ -280,6 +280,7 @@ class InputModule(AbstractInput):
                     channel=3,
                     timestamp=datetime.datetime.utcfromtimestamp(each_timestamp / 1000))
 
+            # Calculate and store vapor pressure deficit
             if (self.is_enabled(4) and
                     self.is_enabled(0) and
                     self.is_enabled(1)):
@@ -310,13 +311,13 @@ class InputModule(AbstractInput):
                     timestamp=datetime.datetime.utcfromtimestamp(each_timestamp / 1000))
 
         # Reset log and set logging interval
-        self.gadget.setLoggerIntervalMs(self.logging_interval * 1000)
+        # self.gadget.setLoggerIntervalMs(self.logging_interval_ms)
 
     def get_device_information(self):
-        if 'Timestamp' not in self.device_information:
+        if 'info_timestamp' not in self.device_information:
             self.initialize()
 
-        if 'Timestamp' in self.device_information:
+        if 'info_timestamp' in self.device_information:
             return self.device_information
 
     def get_measurement(self):
@@ -330,13 +331,21 @@ class InputModule(AbstractInput):
             self.connect()
 
         if self.connected:
-            if self.is_enabled(2):
-                return_dict[2]['value'] = self.gadget.readBattery()
-
+            # Download stored data
             if self.download_stored_data:
                 self.download_data()
 
-            # Get temperature and humidity last so their timestamp in the database will be the most accurate
+            # Set logging interval if not already set
+            if ('logger_interval_ms' in self.device_information
+                    and self.logging_interval_ms != self.device_information['logger_interval_ms']):
+                self.set_logging_interval()
+
+            # Get battery percent charge
+            if self.is_enabled(2):
+                return_dict[2]['value'] = self.gadget.readBattery()
+
+            # Get temperature and humidity last so their timestamp in the
+            # database will be the most accurate
             if self.is_enabled(0):
                 return_dict[0]['value'] = self.gadget.readTemperature()
 
@@ -360,20 +369,27 @@ class InputModule(AbstractInput):
             return return_dict
 
     def initialize(self):
-        self.connect()
+        """Initialize the device by obtaining sensor information"""
+        if not self.connected:
+            self.connect()
 
         if self.connected:
-            # Download data before setting interval (resets memory)
-            if self.download_stored_data:
-                self.download_data()
-
-            # Reset log and set logging interval
-            self.gadget.setLoggerIntervalMs(self.logging_interval * 1000)
-
             # Fill device information dictionary
-            self.device_information['DeviceName'] = self.gadget.readDeviceName()
-            self.device_information['LoggerIntervalMs'] = self.gadget.readLoggerIntervalMs()
-            self.device_information['Battery'] = self.gadget.readBattery()
-            self.device_information['Timestamp'] = int(time.time() * 1000)
-            # self.logger.info("Device Information: {}".format(self.device_information))
+            self.device_information['device_name'] = self.gadget.readDeviceName()
+            self.device_information['logger_interval_ms'] = self.gadget.readLoggerIntervalMs()
+            self.device_information['battery'] = self.gadget.readBattery()
+            self.device_information['info_timestamp'] = int(time.time() * 1000)
+            self.logger.info("Name: {name}, Log Interval: {sec} sec".format(
+                name=self.device_information['device_name'],
+                sec=self.device_information['logger_interval_ms'] / 1000))
             self.initialized = True
+
+    def set_logging_interval(self):
+        """Set logging interval (resets memory; set after downloading data)"""
+        if not self.connected:
+            self.connect()
+
+        if self.connected:
+            self.gadget.setLoggerIntervalMs(self.logging_interval_ms)
+            self.logger.info(
+                "Set log interval: {} sec".format(self.logging_interval_ms / 1000))

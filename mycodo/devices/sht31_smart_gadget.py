@@ -1,7 +1,7 @@
 # coding=utf-8
 #
-# Code partly from https://github.com/Mailblocker/SmartGadgetReader
-# with license, below.
+# Code from https://github.com/Mailblocker/pySmartGadget with modifications.
+# Mailblocker/pySmartGadget license, below.
 #
 # MIT License
 #
@@ -24,6 +24,7 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
+
 import logging
 import time
 
