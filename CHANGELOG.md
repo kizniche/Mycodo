@@ -9,6 +9,10 @@
  - Add Additional check for Conditional Statements if {ID} is replaced with None ([#571](https://github.com/kizniche/mycodo/issues/571))
  - Add ability to set Logging Interval and download logged data from SHT31 Smart Gadget ([#559](https://github.com/kizniche/mycodo/issues/559))
 
+### Miscellaneous
+
+ - Add check so SHT31 Smart Gadget user options don't cause the number of stored measurements to exceed the internal memory
+
 
 ## 7.0.1 (2018-12-09)
 

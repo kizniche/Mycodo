@@ -15,9 +15,10 @@ from mycodo.inputs.sensorutils import calculate_vapor_pressure_deficit
 from mycodo.utils.database import db_retrieve_table_daemon
 
 
-def constraints_pass_positive_value(value):
+def constraints_pass_positive_value(mod_input, value):
     """
     Check if the user input is acceptable
+    :param mod_input: SQL object with user-saved Input options
     :param value: float
     :return: tuple: (bool, list of strings)
     """
@@ -27,7 +28,22 @@ def constraints_pass_positive_value(value):
     if value <= 0:
         all_passed = False
         errors.append("Must be a positive value")
-    return all_passed, errors
+
+    measurements_can_be_stored = 16512  # The memory of the device only permits 16512 measurements to be stored
+    measurements_per_period = int(mod_input.period / value)
+    if measurements_per_period > measurements_can_be_stored:
+        all_passed = False
+        errors.append(
+            "Number of calculated measurements exceeds device memory: With a "
+            "Logging Interval of {li} seconds and a download period of {per} "
+            "seconds, {meas_t} measurements will be conducted, however, only "
+            "{meas_a} measurements can be stored on the device. Either "
+            "increase your Logging Interval or decrease the Input Period.".format(
+                li=value,
+                per=mod_input.period,
+                meas_t=measurements_per_period,
+                meas_a=measurements_can_be_stored))
+    return all_passed, errors, mod_input
 
 
 # Measurements
@@ -93,7 +109,8 @@ INPUT_INFORMATION = {
             'default_value': 600,
             'constraints_pass': constraints_pass_positive_value,
             'name': lazy_gettext('Set Logging Interval'),
-            'phrase': lazy_gettext('Set the logging interval (seconds) the device will store measurements on its internal memory.')
+            'phrase': lazy_gettext(
+                'Set the logging interval (seconds) the device will store measurements on its internal memory.')
         }
     ]
 }
@@ -177,9 +194,6 @@ class InputModule(AbstractInput):
         # Download stored data starting from self.gadget.newestTimeStampMs
         self.gadget.readLoggedDataInterval(
             start_ms=self.gadget.newestTimeStampMs)
-
-        # Download all stored data from the device
-        # self.gadget.readLoggedDataInterval()
 
         while self.running:
             if (not self.gadget.waitForNotifications(5) or
@@ -309,9 +323,6 @@ class InputModule(AbstractInput):
                     measure=measurement_single[4]['measurement'],
                     channel=4,
                     timestamp=datetime.datetime.utcfromtimestamp(each_timestamp / 1000))
-
-        # Reset log and set logging interval
-        # self.gadget.setLoggerIntervalMs(self.logging_interval_ms)
 
     def get_device_information(self):
         if 'info_timestamp' not in self.device_information:

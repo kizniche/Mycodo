@@ -8,9 +8,10 @@ from mycodo.inputs.base_input import AbstractInput
 from mycodo.inputs.sensorutils import is_device
 
 
-def constraints_pass_measure_range(value):
+def constraints_pass_measure_range(mod_input, value):
     """
     Check if the user input is acceptable
+    :param mod_input: SQL object with user-saved Input options
     :param value: float
     :return: tuple: (bool, list of strings)
     """
@@ -20,7 +21,7 @@ def constraints_pass_measure_range(value):
     if value not in ['1000', '2000', '3000', '5000']:
         all_passed = False
         errors.append("Invalid range")
-    return all_passed, errors
+    return all_passed, errors, mod_input
 
 
 # Measurements

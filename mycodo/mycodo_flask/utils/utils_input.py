@@ -386,7 +386,10 @@ def input_mod(form_mod, request_form):
                         if each_option['type'] == 'float':
                             if str_is_float(request_form.get(key)):
                                 if 'constraints_pass' in each_option:
-                                    constraints_pass, constraints_errors = each_option['constraints_pass'](float(request_form.get(key)))
+                                    (constraints_pass,
+                                     constraints_errors,
+                                     mod_input) = each_option['constraints_pass'](
+                                        mod_input, float(request_form.get(key)))
                                 if constraints_pass:
                                     value = float(request_form.get(key))
                             else:
@@ -399,7 +402,10 @@ def input_mod(form_mod, request_form):
                         elif each_option['type'] == 'integer':
                             if is_int(request_form.get(key)):
                                 if 'constraints_pass' in each_option:
-                                    constraints_pass, constraints_errors = each_option['constraints_pass'](int(request_form.get(key)))
+                                    (constraints_pass,
+                                     constraints_errors,
+                                     mod_input) = each_option['constraints_pass'](
+                                        mod_input, int(request_form.get(key)))
                                 if constraints_pass:
                                     value = int(request_form.get(key))
                             else:
@@ -411,7 +417,10 @@ def input_mod(form_mod, request_form):
 
                         elif each_option['type'] in ['text', 'select']:
                             if 'constraints_pass' in each_option:
-                                constraints_pass, constraints_errors = each_option['constraints_pass'](request_form.get(key))
+                                (constraints_pass,
+                                 constraints_errors,
+                                 mod_input) = each_option['constraints_pass'](
+                                    mod_input, request_form.get(key))
                             if constraints_pass:
                                 value = request_form.get(key)
 

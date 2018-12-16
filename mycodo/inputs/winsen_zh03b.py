@@ -13,9 +13,10 @@ from mycodo.inputs.sensorutils import is_device
 from mycodo.utils.database import db_retrieve_table_daemon
 
 
-def constraints_pass_positive_value(value):
+def constraints_pass_positive_value(mod_input, value):
     """
     Check if the user input is acceptable
+    :param mod_input: SQL object with user-saved Input options
     :param value: float
     :return: tuple: (bool, list of strings)
     """
@@ -25,7 +26,7 @@ def constraints_pass_positive_value(value):
     if value <= 0:
         all_passed = False
         errors.append("Must be a positive value")
-    return all_passed, errors
+    return all_passed, errors, mod_input
 
 
 # Measurements

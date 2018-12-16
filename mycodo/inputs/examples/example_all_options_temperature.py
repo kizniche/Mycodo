@@ -6,9 +6,10 @@ from flask_babel import lazy_gettext
 from mycodo.inputs.base_input import AbstractInput
 
 
-def constraints_pass_fan_seconds(value):
+def constraints_pass_fan_seconds(mod_input, value):
     """
     Check if the user input is acceptable
+    :param mod_input: SQL object with user-saved Input options
     :param value: value
     :return: tuple: (bool, list of strings)
     """
@@ -18,12 +19,13 @@ def constraints_pass_fan_seconds(value):
     if value <= 0:
         all_passed = False
         errors.append("Must be a positive value")
-    return all_passed, errors
+    return all_passed, errors, mod_input
 
 
-def constraints_pass_measure_range(value):
+def constraints_pass_measure_range(mod_input, value):
     """
     Check if the user input is acceptable
+    :param mod_input: SQL object with user-saved Input options
     :param value: float
     :return: tuple: (bool, list of strings)
     """
@@ -33,7 +35,7 @@ def constraints_pass_measure_range(value):
     if value not in ['1000', '2000', '3000', '5000']:
         all_passed = False
         errors.append("Invalid rage")
-    return all_passed, errors
+    return all_passed, errors, mod_input
 
 
 # Measurements
@@ -69,6 +71,7 @@ INPUT_INFORMATION = {
     'options_enabled': [
         'i2c_location',
         'uart_location',
+        'custom_options',
         'period',
         'pre_output'
     ],
