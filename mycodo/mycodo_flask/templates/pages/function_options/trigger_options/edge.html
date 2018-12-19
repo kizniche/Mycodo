@@ -2,19 +2,18 @@
   {{form_trigger.measurement.label(class_='control-label')}}
   <div>
     <select class="form-control" id="measurement" name="measurement" style="width: 100%;" title="" data-original-title="{{_('Select the measurement to use as the input')}}">
+      <option value="">{{_('Select One')}}</option>
     {% set edge_sensor = [] %}
-    {% for each_choice, value in choices_input.items() if each_choice.split(',')[1] == 'edge' -%}
-      {% do edge_sensor.append(1) %}
+    {% for each_choice, value in choices_input.items() -%}
+      {%- if table_input.query.filter(table_input.unique_id == each_choice.split(',')[0]).first().device == 'EDGE' -%}
+        {% do edge_sensor.append(1) %}
+      <option value="{{each_choice.split(',')[0]}}"{% if each_trigger.measurement == each_choice.split(',')[0] %} selected{% endif %}>{{value}}</option>
+      {%- endif -%}
     {% endfor -%}
 
-    {% if edge_sensor %}
-      <option value="">{{_('Select One')}}</option>
-      {% for each_choice, value in choices_input.items() if each_choice.split(',')[1] == 'edge' -%}
-      <option value="{{each_choice.split(',')[0]}}"{% if each_trigger.measurement == each_choice.split(',')[0] %} selected{% endif %}>{{value}}</option>
-      {% endfor -%}
-    {% else %}
+    {% if not edge_sensor -%}
       <option value="">{{_('None Available')}}</option>
-    {% endif %}
+    {% endif -%}
     </select>
   </div>
 </div>
