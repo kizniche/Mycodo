@@ -125,6 +125,9 @@ class MathController(threading.Thread):
             self.equation_input = math.equation_input
             self.equation = math.equation
 
+            # Redundancy variables
+            self.order_of_use = math.order_of_use
+
             # Verification variables
             self.max_difference = math.max_difference
 
@@ -314,6 +317,46 @@ class MathController(threading.Thread):
             elif measure:
                 self.logger.error(measure)
             else:
+                self.error_not_within_max_age()
+
+        elif self.math_type == 'redundancy':
+            list_order = self.order_of_use.split(';')
+            measurement_success = False
+
+            for order, each_id_measurement_id in enumerate(list_order):
+                device_id = each_id_measurement_id.split(',')[0]
+                measurement_id = each_id_measurement_id.split(',')[1]
+
+                device_measurement = self.device_measurements.filter(
+                    DeviceMeasurements.channel == 0).first()
+                if device_measurement:
+                    conversion = db_retrieve_table_daemon(
+                        Conversion, unique_id=device_measurement.conversion_id)
+                else:
+                    conversion = None
+                channel, unit, measurement = return_measurement_info(
+                    device_measurement, conversion)
+
+                try:
+                    success_measure, measure = self.get_measurements_from_id(
+                        device_id, measurement_id)
+
+                    if success_measure:
+                        measurement_dict = {
+                            channel: {
+                                'measurement': measurement,
+                                'unit': unit,
+                                'value': float(measure[1]),
+                                'timestamp': measure[0],
+                            }
+                        }
+                        measurement_success = True
+                        break
+
+                except Exception as msg:
+                    self.logger.exception("redundancy Error: {err}".format(err=msg))
+
+            if not measurement_success:
                 self.error_not_within_max_age()
 
         elif self.math_type == 'statistics':

@@ -17,13 +17,13 @@
     {% if each_measurement.unit and each_measurement.measurement %}
 
   <div class="col-auto">
-    <input class="form-control btn btn-sm btn-block" disabled="" title="" value="{% if each_measurement.channel != None %}CH{{each_measurement.channel + 1}} {% endif %}{{dict_measurements[each_measurement.measurement]['name']}} ({{dict_units[each_measurement.unit]['unit']}})" type="text">
+    <input class="form-control btn btn-sm btn-block" disabled="" title="UUID: {{each_measurement.unique_id}}" value="{% if each_measurement.channel != None %}CH{{each_measurement.channel + 1}} {% endif %}{{dict_measurements[each_measurement.measurement]['name']}} ({{dict_units[each_measurement.unit]['unit']}})" type="text">
   </div>
 
     {% else %}
 
   <div class="col-auto">
-    <input class="form-control btn btn-sm btn-block" disabled="" title="" value="{% if each_measurement.channel != None %}CH{{each_measurement.channel + 1}} {% endif %}" type="text">
+    <input class="form-control btn btn-sm btn-block" disabled="" title="UUID: {{each_measurement.unique_id}}" value="{% if each_measurement.channel != None %}CH{{each_measurement.channel + 1}} {% endif %}" type="text">
   </div>
 
     {% endif %}

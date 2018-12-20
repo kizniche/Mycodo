@@ -56,7 +56,16 @@
 
       {%- for each_math in table_math.query.filter(table_math.is_activated).all() -%}
         {% for each_meas in table_device_measurements.query.filter(table_device_measurements.device_id == each_math.unique_id).all() if each_meas.is_enabled %}
+
+          {%- if each_math.math_type == 'redundancy' -%}
+
+          liveTextData('{{each_math.unique_id}}', 'math', '{{each_meas.unique_id}}', 14400);
+
+          {%- else -%}
+
           liveTextData('{{each_math.unique_id}}', 'math', '{{each_meas.unique_id}}', {{each_math.period + 1}});
+
+          {%- endif -%}
         {% endfor %}
       {%- endfor -%}
     });

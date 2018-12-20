@@ -531,6 +531,19 @@ produce a new value that may be used within Mycodo.
 +---------------------------------+-------------------------------------------------+
 | Equation                        | Stores the calculated value of an equation.     |
 +---------------------------------+-------------------------------------------------+
+| Redundancy                      | Select multiple Inputs and if one input isn't   |
+|                                 | available, the next measurement will be used.   |
+|                                 | For example, this is useful if an Input stops   |
+|                                 | but you don't want a PID controller to stop     |
+|                                 | working if there is another measurement that    |
+|                                 | can be used. More than one Input can be         |
+|                                 | and the preferred Order of Use can be defined.  |
++---------------------------------+-------------------------------------------------+
+| Verification                    | Ensures the greatest difference between any     |
+|                                 | selected Inputs is less than Max Difference,    |
+|                                 | and if so, stores the average of the selected   |
+|                                 | measurements.                                   |
++---------------------------------+-------------------------------------------------+
 | Median                          | Stores the statistical median from the selected |
 |                                 | measurements.                                   |
 +---------------------------------+-------------------------------------------------+
@@ -544,11 +557,7 @@ produce a new value that may be used within Mycodo.
 |                                 | humidity from the dry-bulb and wet-bulb         |
 |                                 | temperatures, and optional pressure.            |
 +---------------------------------+-------------------------------------------------+
-| Verification                    | Ensures the greatest difference between any     |
-|                                 | selected Inputs is less than Max Difference,    |
-|                                 | and if so, stores the average of the selected   |
-|                                 | measurements.                                   |
-+---------------------------------+-------------------------------------------------+
+
 
 +-----------------------+-------------------------------------------------+
 | Setting               | Description                                     |
@@ -613,6 +622,10 @@ produce a new value that may be used within Mycodo.
 |                       | eval() function. Let "x" represent the input    |
 |                       | value. Valid equation symbols include: + - \* / |
 |                       | ^                                               |
++-----------------------+-------------------------------------------------+
+| Order of Use          | This is the order in which the selected Inputs  |
+|                       | will be used. This must be a comma separated    |
+|                       | list of Input IDs (integers, not UUIDs).        |
 +-----------------------+-------------------------------------------------+
 
 Output

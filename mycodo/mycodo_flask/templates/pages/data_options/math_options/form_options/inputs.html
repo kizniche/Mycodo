@@ -1,19 +1,20 @@
-<div class="row small-gutters" style="padding: 0.5em">
-  <div class="col-auto">
-    {{form_mod_math.inputs.label(class_='control-label')}}
-    <div>
-      <select class="form-control btn-sm" id="inputs" name="inputs" style="width: 100%;" size="{{choices_input|length+choices_math|length}}" multiple>
-      {% if choices_input or choices_math %}
-        {% for each_choice, value in choices_input.items() -%}
-        <option value="{{each_choice}}"{%- if each_math.inputs and each_choice|string in each_math.inputs %} selected{%- endif -%}>{{value}}</option>
-        {% endfor -%}
-        {% for each_choice, value in choices_math.items() -%}
-        <option value="{{each_choice}}"{%- if each_math.inputs and each_choice|string in each_math.inputs %} selected{%- endif -%}>{{value}}</option>
-        {% endfor -%}
-      {% else %}
-        <option value="">{{_('None Available')}}</option>
-      {% endif %}
-      </select>
-    </div>
+<div class="col-auto">
+  {{form_mod_math.inputs.label(class_='control-label')}}
+  <div>
+    <select class="form-control btn-sm" id="inputs" name="inputs" style="width: 100%;" size="{{choices_input|length+choices_math|length}}" multiple>
+    {% if choices_input or choices_math %}
+      {% for each_choice, value in choices_input.items() -%}
+      <option value="{{each_choice}}"{%- if each_math.inputs and each_choice|string in each_math.inputs %} selected{%- endif -%}>{{value}}</option>
+      {% endfor -%}
+      {% for each_choice, value in choices_math.items() -%}
+      <option value="{{each_choice}}"{%- if each_math.inputs and each_choice|string in each_math.inputs %} selected{%- endif -%}>{{value}}</option>
+      {% endfor -%}
+    {% else %}
+      <option value="">{{_('None Available')}}</option>
+    {% endif %}
+    </select>
+  </div>
+  <div class="form-row">
+    {{_('Hold down the <kbd>Ctrl</kbd> or <kbd>&#8984;</kbd> key to select more than one')}}.
   </div>
 </div>

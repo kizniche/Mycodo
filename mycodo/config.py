@@ -9,7 +9,7 @@ import os
 from flask_babel import lazy_gettext
 
 MYCODO_VERSION = '7.0.1'
-ALEMBIC_VERSION = '90wvmtnznxb8'
+ALEMBIC_VERSION = '8e5a8351ad7a'
 
 #  FORCE_UPGRADE_MASTER
 #  Set True to enable upgrading to the master branch of the Mycodo repository.
@@ -111,6 +111,12 @@ MATH_INFO = {
             }
         }
     },
+    'redundancy': {
+        'name': lazy_gettext('Redundancy'),
+        'dependencies_module': [],
+        'enable_measurements_select': True,
+        'measure': {}
+    },
     'statistics': {
         'name': lazy_gettext('Statistics'),
         'dependencies_module': [],
@@ -178,9 +184,10 @@ MATHS = [
     ('average_single', MATH_INFO['average_single']['name']),
     ('difference', MATH_INFO['difference']['name']),
     ('equation', MATH_INFO['equation']['name']),
+    ('redundancy', MATH_INFO['redundancy']['name']),
+    ('verification', MATH_INFO['verification']['name']),
     ('statistics', MATH_INFO['statistics']['name']),
     ('humidity', MATH_INFO['humidity']['name']),
-    ('verification', MATH_INFO['verification']['name']),
     ('vapor_pressure_deficit', MATH_INFO['vapor_pressure_deficit']['name'])
 ]
 

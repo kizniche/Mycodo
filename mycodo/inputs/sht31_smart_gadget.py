@@ -29,6 +29,7 @@ def constraints_pass_positive_value(mod_input, value):
         all_passed = False
         errors.append("Must be a positive value")
 
+    # Ensure logging interval and period options don't cause measurements to exceed device memory
     measurements_can_be_stored = 16512  # The memory of the device only permits 16512 measurements to be stored
     measurements_per_period = int(mod_input.period / value)
     if measurements_per_period > measurements_can_be_stored:
@@ -402,5 +403,6 @@ class InputModule(AbstractInput):
 
         if self.connected:
             self.gadget.setLoggerIntervalMs(self.logging_interval_ms)
+            self.device_information['logger_interval_ms'] = self.logging_interval_ms
             self.logger.info(
                 "Set log interval: {} sec".format(self.logging_interval_ms / 1000))

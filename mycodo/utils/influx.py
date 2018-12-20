@@ -31,39 +31,20 @@ def add_measurements_influxdb(unique_id, measurements):
 
     for each_channel, each_measurement in measurements.items():
         if 'value' in each_measurement and each_measurement['value'] is not None:
+
+            if 'timestamp' in each_measurement:
+                timestamp = each_measurement['timestamp']
+            else:
+                timestamp = None
+
             data.append(format_influxdb_data(
                 unique_id,
                 each_measurement['unit'],
                 each_measurement['value'],
                 channel=each_channel,
-                measure=each_measurement['measurement']))
+                measure=each_measurement['measurement'],
+                timestamp=timestamp))
 
-    write_db = threading.Thread(
-        target=write_influxdb_list,
-        args=(data,))
-    write_db.start()
-
-
-def add_measure_influxdb(unique_id, measurements, unit=None):
-    """
-    Add a measurement entries to InfluxDB
-
-    :param unique_id:
-    :param measurements:
-    :param unit:
-    :return: None
-    """
-    data = []
-    for each_measurement, each_value in measurements.values.items():
-        if unit:
-            data.append(format_influxdb_data(unique_id,
-                                             each_measurement,
-                                             each_value,
-                                             unit=unit))
-        else:
-            data.append(format_influxdb_data(unique_id,
-                                             each_measurement,
-                                             each_value))
     write_db = threading.Thread(
         target=write_influxdb_list,
         args=(data,))
@@ -115,7 +96,10 @@ def format_influxdb_data(unique_id, unit, value, channel=None, measure=None, tim
         influx_dict['tags']['channel'] = channel
 
     if timestamp:
-        influx_dict['time'] = timestamp.strftime('%Y-%m-%dT%H:%M:%S.%fZ')
+        if type(timestamp) == str:
+            influx_dict['time'] = timestamp
+        else:
+            influx_dict['time'] = timestamp.strftime('%Y-%m-%dT%H:%M:%S.%fZ')
 
     return influx_dict
 

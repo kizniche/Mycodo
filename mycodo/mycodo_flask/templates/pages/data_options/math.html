@@ -165,7 +165,7 @@
 
     <div class="row">
       <div class="col-auto">
-      {{form_base.reorder_type(class_='form-control', value='math')}}
+        {{form_base.reorder_type(class_='form-control', value='math')}}
         <select style="display: none" name="from[]" id="multiselect2" class="" size="8" multiple="multiple"></select>
         <div>
           <select name="list_visible_elements" id="multiselect2_to" class="form-control" size="8" multiple="multiple">
@@ -185,7 +185,6 @@
           </div>
         </div>
       </div>
-
     </div>
 
     </form>
@@ -196,14 +195,14 @@
 {%- endif -%}
 
 <script type="text/javascript">
-jQuery(document).ready(function($) {
+  jQuery(document).ready(function($) {
     $('#multiselect2').multiselect({
-        sort: false,
-        keepRenderingSort: true
+      sort: false,
+      keepRenderingSort: true
     });
-});
+  });
 
-$('#collapseContainerReorderMath').on('shown.bs.collapse', function () {
-  this.scrollIntoView();
-});
+  $('#collapseContainerReorderMath').on('shown.bs.collapse', function () {
+    this.scrollIntoView();
+  });
 </script>

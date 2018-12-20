@@ -109,7 +109,7 @@ def math_mod(form_mod_math, form_mod_type=None):
                 "Deactivate Math controller before modifying its "
                 "settings"))
 
-        if form_mod_type and not form_mod_type.validate():
+        if mod_math.math_type != 'redundancy' and form_mod_type and not form_mod_type.validate():
             error.append(gettext("Error in form field(s)"))
             flash_form_errors(form_mod_type)
 
@@ -139,8 +139,11 @@ def math_mod(form_mod_math, form_mod_type=None):
                 else:
                     each_measurement.is_enabled = False
 
+        original_inputs = mod_math.inputs
+
         # Collect inputs and measurement name and units
         if mod_math.math_type in ['average',
+                                  'redundancy',
                                   'difference',
                                   'statistics',
                                   'verification']:
@@ -172,13 +175,22 @@ def math_mod(form_mod_math, form_mod_type=None):
                 mod_measurement.measurement = measurement
                 mod_measurement.unit = unit
 
-        if mod_math.math_type == 'difference':
+        elif mod_math.math_type == 'redundancy':
+            # If input selection changes, create the default order list that can then be modified
+            if original_inputs != ';'.join(form_mod_math.inputs.data):
+                mod_math.order_of_use = ';'.join(form_mod_math.inputs.data)
+            else:
+                # Ensure order_of_use includes all input IDs and is properly formatted
+                if mod_math.inputs:
+                    mod_math.order_of_use = ';'.join(form_mod_type.order_of_use.data)
+
+        elif mod_math.math_type == 'difference':
             if len(form_mod_math.inputs.data) != 2:
                 error.append("Only two Inputs must be selected")
             mod_math.difference_reverse_order = form_mod_type.difference_reverse_order.data
             mod_math.difference_absolute = form_mod_type.difference_absolute.data
 
-        if mod_math.math_type == 'equation':
+        elif mod_math.math_type == 'equation':
             mod_math.equation_input = form_mod_type.equation_input.data
             mod_math.equation = form_mod_type.equation.data
 

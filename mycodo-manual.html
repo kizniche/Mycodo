@@ -824,6 +824,14 @@ optional arguments:
 <td>Stores the calculated value of an equation.</td>
 </tr>
 <tr class="odd">
+<td>Redundancy</td>
+<td>Select multiple Inputs and if one input isn’t available, the next measurement will be used. For example, this is useful if an Input stops but you don’t want a PID controller to stop working if there is another measurement that can be used. More than one Input can be and the preferred Order of Use can be defined.</td>
+</tr>
+<tr class="even">
+<td>Verification</td>
+<td>Ensures the greatest difference between any selected Inputs is less than Max Difference, and if so, stores the average of the selected measurements.</td>
+</tr>
+<tr class="odd">
 <td>Median</td>
 <td>Stores the statistical median from the selected measurements.</td>
 </tr>
@@ -838,10 +846,6 @@ optional arguments:
 <tr class="even">
 <td>Humidity</td>
 <td>Calculates and stores the percent relative humidity from the dry-bulb and wet-bulb temperatures, and optional pressure.</td>
-</tr>
-<tr class="odd">
-<td>Verification</td>
-<td>Ensures the greatest difference between any selected Inputs is less than Max Difference, and if so, stores the average of the selected measurements.</td>
 </tr>
 </tbody>
 </table>
@@ -908,6 +912,10 @@ optional arguments:
 <tr class="odd">
 <td>Equation</td>
 <td>An equation that will be solved with Python’s eval() function. Let “x” represent the input value. Valid equation symbols include: + - * / ^</td>
+</tr>
+<tr class="even">
+<td>Order of Use</td>
+<td>This is the order in which the selected Inputs will be used. This must be a comma separated list of Input IDs (integers, not UUIDs).</td>
 </tr>
 </tbody>
 </table>

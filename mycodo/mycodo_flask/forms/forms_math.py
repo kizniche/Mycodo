@@ -83,6 +83,11 @@ class MathModHumidity(FlaskForm):
                                  opt=lazy_gettext('optional')))
 
 
+class MathModRedundancy(FlaskForm):
+    order_of_use = SelectMultipleField(
+        lazy_gettext('Order of Use'))
+
+
 class MathModVerification(FlaskForm):
     max_difference = DecimalField(
         lazy_gettext('Max Difference'),

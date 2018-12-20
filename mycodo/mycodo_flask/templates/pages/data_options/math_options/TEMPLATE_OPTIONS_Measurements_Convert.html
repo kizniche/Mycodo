@@ -18,31 +18,31 @@
   {% if conversion %}
 
   <div class="col-auto">
-    <input class="form-control btn btn-sm btn-block" disabled="" title="" value="{% if each_measurement.channel != None %}CH{{each_measurement.channel + 1}} {% endif %}{{dict_units[conversion.convert_unit_to]['name']}} ({{dict_units[conversion.convert_unit_to]['unit']}})" type="text">
+    <input class="form-control btn btn-sm btn-block" disabled="" title="UUID: {{each_measurement.unique_id}}" value="{% if each_measurement.channel != None %}CH{{each_measurement.channel + 1}} {% endif %}{{dict_units[conversion.convert_unit_to]['name']}} ({{dict_units[conversion.convert_unit_to]['unit']}})" type="text">
   </div>
 
   {% elif rescaled_measurement and rescaled_unit %}
 
   <div class="col-auto">
-    <input class="form-control btn btn-sm btn-block" disabled="" title="" value="{% if each_measurement.channel != None %}CH{{each_measurement.channel + 1}} {% endif %}{{dict_measurements[each_measurement.rescaled_measurement]['name']}} ({{dict_units[each_measurement.rescaled_unit]['unit']}})" type="text">
+    <input class="form-control btn btn-sm btn-block" disabled="" title="UUID: {{each_measurement.unique_id}}" value="{% if each_measurement.channel != None %}CH{{each_measurement.channel + 1}} {% endif %}{{dict_measurements[each_measurement.rescaled_measurement]['name']}} ({{dict_units[each_measurement.rescaled_unit]['unit']}})" type="text">
   </div>
 
   {% elif each_measurement.measurement and each_measurement.unit %}
 
   <div class="col-auto">
-    <input class="form-control btn btn-sm btn-block" disabled="" title="" value="{% if each_measurement.channel != None %}CH{{each_measurement.channel + 1}} {% endif %}{{dict_measurements[each_measurement.measurement]['name']}} ({{dict_units[each_measurement.unit]['unit']}})" type="text">
+    <input class="form-control btn btn-sm btn-block" disabled="" title="UUID: {{each_measurement.unique_id}}" value="{% if each_measurement.channel != None %}CH{{each_measurement.channel + 1}} {% endif %}{{dict_measurements[each_measurement.measurement]['name']}} ({{dict_units[each_measurement.unit]['unit']}})" type="text">
   </div>
 
   {% elif each_measurement.unit %}
 
   <div class="col-auto">
-    <input class="form-control btn btn-sm btn-block" disabled="" title="" value="{% if each_measurement.channel != None %}CH{{each_measurement.channel + 1}} {% endif %}{{dict_units[each_measurement.unit]['name']}} ({{dict_units[each_measurement.unit]['unit']}})" type="text">
+    <input class="form-control btn btn-sm btn-block" disabled="" title="UUID: {{each_measurement.unique_id}}" value="{% if each_measurement.channel != None %}CH{{each_measurement.channel + 1}} {% endif %}{{dict_units[each_measurement.unit]['name']}} ({{dict_units[each_measurement.unit]['unit']}})" type="text">
   </div>
 
   {% else %}
 
   <div class="col-auto">
-    <input class="form-control btn btn-sm btn-block" disabled="" title="" value="CH{{each_measurement.channel + 1}}: {{_('No Measurement/Unit Selected')}}" type="text">
+    <input class="form-control btn btn-sm btn-block" disabled="" title="UUID: {{each_measurement.unique_id}}" value="CH{{each_measurement.channel + 1}}: {{_('No Measurement/Unit Selected')}}" type="text">
   </div>
 
   {% endif %}

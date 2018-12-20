@@ -17,6 +17,9 @@ class Math(CRUDMixin, db.Model):
     start_offset = db.Column(db.Float, default=10.0)
     max_measure_age = db.Column(db.Integer, default=60)
 
+    # Backup options
+    order_of_use = db.Column(db.Text, default='')
+
     # Difference options
     difference_reverse_order = db.Column(db.Boolean, default=False)  # False: var1 - var2 or True: var2 - var1
     difference_absolute = db.Column(db.Boolean, default=False)
