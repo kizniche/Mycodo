@@ -1402,6 +1402,7 @@ def page_function():
                 sunrise_set_calc[each_trigger.unique_id]['offset_sunset'] = None
 
     return render_template('pages/function.html',
+                           table_input=Input,
                            camera=camera,
                            choices_input=choices_input,
                            choices_math=choices_math,

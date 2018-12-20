@@ -3,6 +3,7 @@
 ### Bugfixes
 
  - Fix inability to reorder Dashboard, Data, Output, and Function elements
+ - Fix Edge Inputs not appearing in Edge Trigger input selection
 
 ### Features
 
