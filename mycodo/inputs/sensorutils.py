@@ -43,8 +43,20 @@ def convert_units(conversion_id, measure_value):
     return float('{0:.5f}'.format(eval(replaced_str)))
 
 
+def convert_from_x_to_y_unit(unit_from, unit_to, in_value):
+    conversion = db_retrieve_table_daemon(Conversion)
+    conversion = conversion.filter(Conversion.convert_unit_from == unit_from)
+    conversion = conversion.filter(Conversion.convert_unit_to == unit_to).first()
+    if conversion:
+        replaced_str = conversion.equation.replace('x', str(in_value))
+        return float('{0:.5f}'.format(eval(replaced_str)))
+    else:
+        logger.error("Conversion not found for {uf} to {ut}".format(
+            uf=unit_to, ut=unit_from))
+
+
 def calculate_dewpoint(t, rh):
-    """Calculate dewpoint from temperature and relative humidity"""
+    """Calculate dewpoint from temperature (Celsius) and relative humidity (percent)"""
     dict_tn = dict(water=243.12, ice=272.62)
     dict_m = dict(water=17.62, ice=22.46)
     if t >= 0:
