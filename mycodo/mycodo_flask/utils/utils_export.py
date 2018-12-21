@@ -135,7 +135,7 @@ def export_influxdb(form):
             # Zip all files in the influx_backup directory
             data = io.BytesIO()
             with zipfile.ZipFile(data, mode='w') as z:
-                for root, dirs, files in os.walk(influx_backup_dir):
+                for _, _, files in os.walk(influx_backup_dir):
                     for filename in files:
                         z.write(os.path.join(influx_backup_dir, filename),
                                 filename)
@@ -150,11 +150,10 @@ def export_influxdb(form):
                 data,
                 mimetype='application/zip',
                 as_attachment=True,
-                attachment_filename=
-                    'Mycodo_{mv}_Influxdb_{iv}_{host}_{dt}.zip'.format(
-                        mv=MYCODO_VERSION, iv=influxd_version,
-                        host=socket.gethostname().replace(' ', ''),
-                        dt=datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S"))
+                attachment_filename='Mycodo_{mv}_Influxdb_{iv}_{host}_{dt}.zip'.format(
+                     mv=MYCODO_VERSION, iv=influxd_version,
+                     host=socket.gethostname().replace(' ', ''),
+                     dt=datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S"))
             )
     except Exception as err:
         error.append("Error: {}".format(err))
@@ -277,8 +276,8 @@ def import_settings(form):
                 # Stop Mycodo daemon (backend)
                 cmd = "{pth}/mycodo/scripts/mycodo_wrapper " \
                       "daemon_stop".format(
-                    pth=INSTALL_DIRECTORY)
-                out, _, _ = cmd_output(cmd)
+                        pth=INSTALL_DIRECTORY)
+                _, _, _ = cmd_output(cmd)
 
                 # Backup current database and replace with extracted mycodo.db
                 imported_database = os.path.join(
@@ -292,8 +291,8 @@ def import_settings(form):
                 # Start Mycodo daemon (backend)
                 cmd = "{pth}/mycodo/scripts/mycodo_wrapper " \
                       "daemon_start".format(
-                    pth=INSTALL_DIRECTORY)
-                out, _, _ = cmd_output(cmd)
+                        pth=INSTALL_DIRECTORY)
+                _, _, _ = cmd_output(cmd)
 
                 # Delete tmp directory if it exists
                 if os.path.isdir(tmp_folder):

@@ -190,15 +190,15 @@ class max31865_sen(object):
         [rtd_msb, rtd_lsb] = [out[1], out[2]]
         rtd_ADC_Code = ((rtd_msb << 8) | rtd_lsb) >> 1
 
-        temp_C = self.calcPTTemp(rtd_ADC_Code, device, resistor_ref)
+        temp_c = self.calcPTTemp(rtd_ADC_Code, device, resistor_ref)
         # print("Temperature: {temp} C".format(temp=temp_C))
 
-        [hft_msb, hft_lsb] = [out[3], out[4]]
-        hft = ((hft_msb << 8) | hft_lsb) >> 1
+        # [hft_msb, hft_lsb] = [out[3], out[4]]
+        # hft = ((hft_msb << 8) | hft_lsb) >> 1
         # print("high fault threshold: {}".format(hft))
 
-        [lft_msb, lft_lsb] = [out[5], out[6]]
-        lft = ((lft_msb << 8) | lft_lsb) >> 1
+        # [lft_msb, lft_lsb] = [out[5], out[6]]
+        # lft = ((lft_msb << 8) | lft_lsb) >> 1
         # print("low fault threshold: {}".format(lft))
 
         status = out[7]
@@ -214,14 +214,14 @@ class max31865_sen(object):
         # bits 1,0 don't care
         # print "Status byte: %x" % status
 
-        if ((status & 0x80) == 1):
+        if (status & 0x80) == 1:
             raise FaultError("High threshold limit (Cable fault/open)")
-        if ((status & 0x40) == 1):
+        if (status & 0x40) == 1:
             raise FaultError("Low threshold limit (Cable fault/short)")
-        if ((status & 0x04) == 1):
+        if (status & 0x04) == 1:
             raise FaultError("Overvoltage or Undervoltage Error")
 
-        return temp_C
+        return temp_c
 
     def writeRegister(self, regNum, dataByte):
         self.GPIO.output(self.csPin, self.GPIO.LOW)
@@ -243,7 +243,7 @@ class max31865_sen(object):
         # 0x to specify 'read register value'
         self.sendByte(regNumStart)
 
-        for byte in range(numRegisters):
+        for _ in range(numRegisters):
             data = self.recvByte()
             out.append(data)
 
@@ -251,7 +251,7 @@ class max31865_sen(object):
         return out
 
     def sendByte(self, byte):
-        for bit in range(8):
+        for _ in range(8):
             self.GPIO.output(self.clkPin, self.GPIO.HIGH)
             if (byte & 0x80):
                 self.GPIO.output(self.mosiPin, self.GPIO.HIGH)
@@ -262,7 +262,7 @@ class max31865_sen(object):
 
     def recvByte(self):
         byte = 0x00
-        for bit in range(8):
+        for _ in range(8):
             self.GPIO.output(self.clkPin, self.GPIO.HIGH)
             byte <<= 1
             if self.GPIO.input(self.misoPin):
@@ -270,7 +270,8 @@ class max31865_sen(object):
             self.GPIO.output(self.clkPin, self.GPIO.LOW)
         return byte
 
-    def calcPTTemp(self, RTD_ADC_Code, device='PT100', resistor_ref=None):
+    @staticmethod
+    def calcPTTemp(RTD_ADC_Code, device='PT100', resistor_ref=None):
         # Reference Resistor
         if resistor_ref:
             R_REF = resistor_ref
@@ -328,6 +329,6 @@ if __name__ == "__main__":
     misoPin = 9
     mosiPin = 10
     clkPin = 11
-    max = max31865_sen(csPin, misoPin, mosiPin, clkPin)
-    print("Temp: {}".format(max.readTemp('PT100', 400)))
-    max.cleanupGPIO()
+    max_input = max31865_sen(csPin, misoPin, mosiPin, clkPin)
+    print("Temp: {}".format(max_input.readTemp('PT100', 400)))
+    max_input.cleanupGPIO()

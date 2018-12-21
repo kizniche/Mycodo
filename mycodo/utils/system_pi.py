@@ -277,7 +277,7 @@ def get_directory_size(start_path='.', exclude=[]):
     A list of directories may be excluded
     """
     total_size = 0
-    for dirpath, dirnames, filenames in os.walk(start_path):
+    for dirpath, _, filenames in os.walk(start_path):
         skip_dir = False
         for each_exclusion in exclude:
             test_exclude = os.path.join(start_path, each_exclusion)

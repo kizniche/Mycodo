@@ -51,13 +51,13 @@ def generate_thermal_image_from_pixels(
     def constrain(val, min_val, max_val):
         return min(max_val, max(min_val, val))
 
-    def map(x, in_min, in_max, out_min, out_max):
+    def map_it(x, in_min, in_max, out_min, out_max):
         return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min
 
     # map sensor readings to color map
     MINTEMP = min(pixels) if temp_min is None else temp_min
     MAXTEMP = max(pixels) if temp_max is None else temp_max
-    pixels = [map(p, MINTEMP, MAXTEMP, 0, COLORDEPTH - 1) for p in pixels]
+    pixels = [map_it(p, MINTEMP, MAXTEMP, 0, COLORDEPTH - 1) for p in pixels]
 
     # create the image
     for ix in range(nx):

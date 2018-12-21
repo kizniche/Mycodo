@@ -867,7 +867,7 @@ def custom_yaxes_str_from_form(form):
                 yaxes[unique_number]['maximum'] = value
     # Create a list of CSV sets in the format 'y-axis, minimum, maximum'
     yaxes_list = []
-    for each_yaxis, yaxis_type in yaxes.items():
+    for _, yaxis_type in yaxes.items():
         yaxes_list.append('{},{},{}'.format(yaxis_type['name'], yaxis_type['minimum'], yaxis_type['maximum']))
     # Join the list of CSV sets with ';'
     return ';'.join(yaxes_list)

@@ -15,8 +15,6 @@ from mycodo.config import CAMERA_LIBRARIES
 from mycodo.config import INSTALL_DIRECTORY
 from mycodo.config import LANGUAGES
 from mycodo.config import THEMES
-from mycodo.config_devices_units import MEASUREMENTS
-from mycodo.config_devices_units import UNITS
 from mycodo.databases.models import Camera
 from mycodo.databases.models import Conversion
 from mycodo.databases.models import Measurement

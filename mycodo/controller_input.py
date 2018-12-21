@@ -433,7 +433,6 @@ class InputController(threading.Thread):
                 conversion = self.conversions.filter(
                     Conversion.unique_id == measurement.conversion_id).first()
 
-
                 measurements_record = parse_measurement(
                     conversion,
                     measurement,

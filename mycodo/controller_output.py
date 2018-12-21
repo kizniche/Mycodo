@@ -594,7 +594,6 @@ class OutputController(threading.Thread):
                         ret=cmd_return))
 
         elif self.output_type[output_id] == 'pwm':
-            import pigpio
             if state == 'on':
                 if self.pwm_library[output_id] == 'pigpio_hardware':
                     self.pwm_output[output_id].hardware_PWM(

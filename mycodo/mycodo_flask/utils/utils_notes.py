@@ -137,7 +137,6 @@ def note_add(form):
 
     if form.files.data:
         new_note.unique_id = set_uuid()
-        install_dir = os.path.abspath(INSTALL_DIRECTORY)
         assure_path_exists(PATH_NOTE_ATTACHMENTS)
         filename_list = []
         for each_file in form.files.raw_data:

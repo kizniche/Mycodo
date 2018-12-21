@@ -830,7 +830,7 @@ def return_point_timestamp(dev_id, unit, period, measurement=None, channel=None)
         return [timestamp, value]
     except KeyError:
         return [None, None]
-    except Exception as e:
+    except Exception:
         return [None, None]
 
 
@@ -852,7 +852,7 @@ def last_data_pid(pid_id, input_period):
             actual_cnversion = Conversion.query.filter(
                 Conversion.unique_id == actual_measurement.conversion_id).first()
         else:
-            conversion = None
+            actual_cnversion = None
 
         (actual_channel,
          actual_unit,

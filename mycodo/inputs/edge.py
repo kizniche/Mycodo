@@ -1,7 +1,4 @@
 # coding=utf-8
-import logging
-
-from mycodo.inputs.base_input import AbstractInput
 
 # Measurements
 measurements_dict = {

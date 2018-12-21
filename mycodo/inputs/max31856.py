@@ -303,7 +303,7 @@ class max31856(object):
 
     def recvByte(self):
         byte = 0x00
-        for bit in range(8):
+        for _ in range(8):
             self.GPIO.output(self.clkPin, self.GPIO.HIGH)
             byte <<= 1
             if self.GPIO.input(self.misoPin):

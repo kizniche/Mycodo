@@ -20,7 +20,7 @@ class LCD_Generic:
         self.i2c_bus = lcd_dev.i2c_bus
         self.lcd_x_characters = lcd_dev.x_characters
         self.lcd_y_lines = lcd_dev.y_lines
-        
+
         self.LCD_LINE = {
             1: 0x80,
             2: 0xC0,

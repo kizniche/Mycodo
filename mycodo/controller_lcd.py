@@ -394,13 +394,13 @@ class LCDController(threading.Thread):
         self.lcd_out.lcd_init()
         display_id = self.display_sets[self.display_set_count]
         if 1 in self.lcd_string_line[display_id] and self.lcd_string_line[display_id][1]:
-            line_1 = self.lcd_string_line[display_id][1]            
+            line_1 = self.lcd_string_line[display_id][1]
         if 2 in self.lcd_string_line[display_id] and self.lcd_string_line[display_id][2]:
-            line_2 = self.lcd_string_line[display_id][2]            
+            line_2 = self.lcd_string_line[display_id][2]
         if 3 in self.lcd_string_line[display_id] and self.lcd_string_line[display_id][3]:
-            line_3 = self.lcd_string_line[display_id][3]            
+            line_3 = self.lcd_string_line[display_id][3]
         if 4 in self.lcd_string_line[display_id] and self.lcd_string_line[display_id][4]:
-            line_4 = self.lcd_string_line[display_id][4]            
+            line_4 = self.lcd_string_line[display_id][4]
         self.lcd_out.lcd_write_lines(line_1, line_2, line_3, line_4)
 
     @staticmethod

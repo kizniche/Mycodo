@@ -256,12 +256,12 @@ def pid_activate(pid_id):
         error, pid_id, pid.raise_output_id, pid.lower_output_id)
 
     device_unique_id = pid.measurement.split(',')[0]
-    input = Input.query.filter(
+    input_dev = Input.query.filter(
         Input.unique_id == device_unique_id).first()
     math = Math.query.filter(
         Math.unique_id == device_unique_id).first()
 
-    if (input and not input.is_activated) or (math and not math.is_activated):
+    if (input_dev and not input_dev.is_activated) or (math and not math.is_activated):
         error.append(gettext(
             "Cannot activate PID controller if the associated sensor "
             "controller is inactive"))

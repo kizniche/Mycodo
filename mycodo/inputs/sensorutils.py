@@ -10,7 +10,6 @@ import os
 
 from mycodo.databases.models import Conversion
 from mycodo.utils.database import db_retrieve_table_daemon
-from mycodo.utils.system_pi import all_conversions
 
 logger = logging.getLogger("mycodo.sensor_utils")
 

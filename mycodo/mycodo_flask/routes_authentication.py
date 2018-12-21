@@ -3,7 +3,6 @@
 
 import datetime
 import logging
-import socket
 import time
 
 import flask_login

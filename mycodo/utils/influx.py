@@ -96,7 +96,7 @@ def format_influxdb_data(unique_id, unit, value, channel=None, measure=None, tim
         influx_dict['tags']['channel'] = channel
 
     if timestamp:
-        if type(timestamp) == str:
+        if isinstance(timestamp, str):
             influx_dict['time'] = timestamp
         else:
             influx_dict['time'] = timestamp.strftime('%Y-%m-%dT%H:%M:%S.%fZ')
@@ -108,12 +108,14 @@ def parse_measurement(conversion,
                       measurement,
                       measurements_record,
                       each_channel,
-                      each_measurement):
+                      each_measurement,
+                      timestamp=None):
     # Unscaled, unconverted measurement
     measurements_record[each_channel] = {
         'measurement': each_measurement['measurement'],
         'unit': each_measurement['unit'],
-        'value': each_measurement['value']
+        'value': each_measurement['value'],
+        'timestamp': timestamp
     }
 
     # Scaling needs to come before conversion
@@ -125,7 +127,8 @@ def parse_measurement(conversion,
         measurements_record[each_channel] = {
             'measurement': measurement.rescaled_measurement,
             'unit': measurement.rescaled_unit,
-            'value': scaled_value
+            'value': scaled_value,
+            'timestamp': timestamp
         }
 
     # Convert measurement
@@ -136,7 +139,8 @@ def parse_measurement(conversion,
         measurements_record[each_channel] = {
             'measurement': None,
             'unit': conversion.convert_unit_to,
-            'value': converted_value
+            'value': converted_value,
+            'timestamp': timestamp
         }
     return measurements_record
 
@@ -375,9 +379,9 @@ def write_influxdb_value(unique_id, unit, value, measure=None, channel=None, tim
     :param unique_id: What unique_id tag to enter in the Influxdb
         database (ex. '00000001')
     :type unique_id: str
-    :param measurement: What type of measurement for the Influxdb
+    :param measure: What type of measurement for the Influxdb
         database entry (ex. 'temperature')
-    :type measurement: str
+    :type measure: str
     :param value: The value being entered into the Influxdb database
     :type value: int or float
     :param unit:

@@ -22,7 +22,6 @@
 #
 #  Contact at kylegabriel.com
 #
-
 import datetime
 import logging
 import threading
@@ -45,7 +44,6 @@ from mycodo.databases.utils import session_scope
 from mycodo.mycodo_client import DaemonControl
 from mycodo.utils.database import db_retrieve_table_daemon
 from mycodo.utils.function_actions import trigger_function_actions
-from mycodo.utils.influx import read_last_influxdb
 from mycodo.utils.method import calculate_method_setpoint
 from mycodo.utils.sunriseset import calculate_sunrise_sunset_epoch
 from mycodo.utils.system_pi import epoch_of_next_time

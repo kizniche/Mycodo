@@ -323,7 +323,7 @@ class MathController(threading.Thread):
             list_order = self.order_of_use.split(';')
             measurement_success = False
 
-            for order, each_id_measurement_id in enumerate(list_order):
+            for each_id_measurement_id in list_order:
                 device_id = each_id_measurement_id.split(',')[0]
                 measurement_id = each_id_measurement_id.split(',')[1]
 

@@ -81,28 +81,23 @@ class InputModule(AbstractInput):
         # Resetting these values ensures old measurements aren't mistaken for new measurements
         return_dict = measurements_dict.copy()
 
-        dewpoint = None
-        humidity = None
-        temperature = None
-
         # Actual input measurement code
         try:
             humidity = self.random.randint(0, 100)
             temperature = self.random.randint(0, 50)
-            dewpoint = calculate_dewpoint(temperature, humidity)
-        except Exception as msg:
-            self.logger.error("Exception: {}".format(msg))
 
-        if self.is_enabled(0):
-            return_dict[0]['value'] = temperature
+            if self.is_enabled(0):
+                return_dict[0]['value'] = temperature
 
-        if self.is_enabled(1):
-            return_dict[1]['value'] = humidity
+            if self.is_enabled(1):
+                return_dict[1]['value'] = humidity
 
-        if (self.is_enabled(2) and
-                self.is_enabled(0) and
-                self.is_enabled(1)):
-            return_dict[2]['value'] = calculate_dewpoint(
-                return_dict[0]['value'], return_dict[1]['value'])
+            if (self.is_enabled(2) and
+                    self.is_enabled(0) and
+                    self.is_enabled(1)):
+                return_dict[2]['value'] = calculate_dewpoint(
+                    return_dict[0]['value'], return_dict[1]['value'])
 
             return return_dict
+        except Exception as msg:
+            self.logger.error("Exception: {}".format(msg))

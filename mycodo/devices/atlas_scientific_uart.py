@@ -31,7 +31,7 @@ class AtlasScientificUART:
 
     def read_line(self):
         """
-        taken from the ftdi library and modified to 
+        taken from the ftdi library and modified to
         use the ezo line separator "\r"
         """
         lsl = len('\r')
@@ -109,7 +109,7 @@ class AtlasScientificUART:
         :return:
         """
         buf = "{cmd}\r".format(cmd=cmd)  # add carriage return
-        if type(buf) is str:
+        if isinstance(buf, str):
             buf = buf.encode()
         try:
             self.ser.write(buf)

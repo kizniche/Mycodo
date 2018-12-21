@@ -49,7 +49,7 @@ def conditional_mod(form):
                 '{{{id}}}'.format(id=each_condition.unique_id.split('-')[0]), 'None')
 
         # Test conditional statement
-        status_num, msg_num = test_python_execute(cond_statement_replaced_number)
+        status_num, _ = test_python_execute(cond_statement_replaced_number)
         status_none, msg_none = test_python_execute(cond_statement_replaced_none)
 
         if not status_num and not status_none:

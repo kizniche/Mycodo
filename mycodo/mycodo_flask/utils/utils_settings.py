@@ -384,11 +384,11 @@ def settings_input_import(form):
                 error.append("'measurements_dict' list is empty")
 
             if 'dependencies_module' in input_info.INPUT_INFORMATION:
-                if type(input_info.INPUT_INFORMATION['dependencies_module']) is not list:
+                if not isinstance(input_info.INPUT_INFORMATION['dependencies_module'], list):
                     error.append("'dependencies_module' must be a list of tuples")
                 else:
                     for each_dep in input_info.INPUT_INFORMATION['dependencies_module']:
-                        if type(each_dep) is not tuple:
+                        if not isinstance(each_dep, tuple):
                             error.append(
                                 "'dependencies_module' must be a list of "
                                 "tuples")

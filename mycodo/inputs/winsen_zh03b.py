@@ -190,7 +190,7 @@ class InputModule(AbstractInput):
 
         # Turn the fan off
         if self.fan_modulate:
-            self.dormant_mode('sleep')  
+            self.dormant_mode('sleep')
 
         return return_dict
 

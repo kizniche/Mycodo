@@ -825,7 +825,7 @@ def page_info():
         try:
             i2c_devices = glob.glob("/dev/i2c-*")
             i2c_devices_sorted = OrderedDict()
-            for index, each_dev in enumerate(i2c_devices):
+            for each_dev in i2c_devices:
                 device_int = int(each_dev.replace("/dev/i2c-", ""))
                 i2cdetect = subprocess.Popen(
                     "i2cdetect -y {dev}".format(dev=device_int),

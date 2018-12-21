@@ -167,7 +167,7 @@ def math_mod(form_mod_math, form_mod_type=None):
                         Conversion.unique_id == selected_measurement.conversion_id).first()
                 else:
                     conversion = None
-                channel, unit, measurement = return_measurement_info(
+                _, unit, measurement = return_measurement_info(
                     selected_measurement, conversion)
 
                 mod_measurement = DeviceMeasurements.query.filter(

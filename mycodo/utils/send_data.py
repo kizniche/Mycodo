@@ -51,7 +51,7 @@ def send_email(smtp_host, smtp_ssl, smtp_port, smtp_user, smtp_pass,
     :rtype: bool
     """
     try:
-        recipients = email_to if type(email_to) is list else [email_to]
+        recipients = email_to if isinstance(email_to, list) else [email_to]
 
         # Create the enclosing (outer) message
         outer = MIMEMultipart()

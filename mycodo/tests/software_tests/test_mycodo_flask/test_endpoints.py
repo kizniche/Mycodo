@@ -181,7 +181,7 @@ def test_add_all_data_devices_logged_in_as_admin(_, testapp):
 
     # Add All Maths
     math_count = 0
-    for each_math, each_data in MATH_INFO.items():
+    for each_math in MATH_INFO.keys():
         response = add_data(testapp, data_type='math', input_type=each_math)
 
         # Verify success message flashed
