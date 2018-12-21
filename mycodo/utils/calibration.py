@@ -27,7 +27,7 @@ class AtlasScientificCommand:
                 i2c_address=int(str(input_dev.i2c_location), 16),
                 i2c_bus=input_dev.i2c_bus)
 
-        self.board_version, self.board_info = self.board_version()
+        self.board_version, self.board_info = self.get_board_version()
 
         if self.board_version == 0:
             logger.error("Unable to retrieve device info (this indicates the "
@@ -36,7 +36,7 @@ class AtlasScientificCommand:
             logger.debug("Device Info: {info}".format(info=self.board_info))
             logger.debug("Detected Version: {ver}".format(ver=self.board_version))
 
-    def board_version(self):
+    def get_board_version(self):
         """Return the board version of the Atlas Scientific pH sensor"""
         info = None
 

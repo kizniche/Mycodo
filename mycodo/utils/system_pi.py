@@ -271,7 +271,7 @@ def get_directory_free_space(path):
     return statvfs.f_frsize * statvfs.f_bavail
 
 
-def get_directory_size(start_path='.', exclude=[]):
+def get_directory_size(start_path='.', exclude=None):
     """
     Returns the size of a directory
     A list of directories may be excluded
@@ -279,10 +279,11 @@ def get_directory_size(start_path='.', exclude=[]):
     total_size = 0
     for dirpath, _, filenames in os.walk(start_path):
         skip_dir = False
-        for each_exclusion in exclude:
-            test_exclude = os.path.join(start_path, each_exclusion)
-            if dirpath.startswith(test_exclude + '/'):
-                skip_dir = True
+        if exclude:
+            for each_exclusion in exclude:
+                test_exclude = os.path.join(start_path, each_exclusion)
+                if dirpath.startswith(test_exclude + '/'):
+                    skip_dir = True
         if not skip_dir:
             for f in filenames:
                 fp = os.path.join(dirpath, f)

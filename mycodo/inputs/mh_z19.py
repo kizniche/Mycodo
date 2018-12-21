@@ -131,7 +131,7 @@ class InputModule(AbstractInput):
 
             time.sleep(0.1)
 
-    def get_measurement(self, silent=False):
+    def get_measurement(self):
         """ Gets the MH-Z19's CO2 concentration in ppmv via UART"""
         return_dict = measurements_dict.copy()
 
