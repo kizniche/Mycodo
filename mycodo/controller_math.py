@@ -126,7 +126,7 @@ class MathController(threading.Thread):
             self.equation = math.equation
 
             # Redundancy variables
-            self.order_of_use = None
+            self.order_of_use = math.order_of_use
 
             # Verification variables
             self.max_difference = math.max_difference
