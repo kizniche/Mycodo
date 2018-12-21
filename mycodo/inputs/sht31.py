@@ -86,7 +86,8 @@ INPUT_INFORMATION = {
             'type': 'bool',
             'default_value': False,
             'name': lazy_gettext('Enable Heater'),
-            'phrase': lazy_gettext('Enable heater to evaporate condensation. Turn on heater x seconds every y measurements.')
+            'phrase': lazy_gettext(
+                'Enable heater to evaporate condensation. Turn on heater x seconds every y measurements.')
         },
         {
             'id': 'heater_seconds',
@@ -124,8 +125,10 @@ class InputModule(AbstractInput):
 
         if not testing:
             from Adafruit_SHT31 import SHT31
+
             self.logger = logging.getLogger(
-                "mycodo.sht31_{id}".format(id=input_dev.unique_id.split('-')[0]))
+                "mycodo.sht31_{id}".format(
+                    id=input_dev.unique_id.split('-')[0]))
 
             self.device_measurements = db_retrieve_table_daemon(
                 DeviceMeasurements).filter(
@@ -144,8 +147,9 @@ class InputModule(AbstractInput):
 
             self.i2c_address = int(str(input_dev.i2c_location), 16)
             self.i2c_bus = input_dev.i2c_bus
-            self.sensor = SHT31(address=self.i2c_address,
-                                busnum=self.i2c_bus)
+            self.sensor = SHT31(
+                address=self.i2c_address,
+                busnum=self.i2c_bus)
 
     def get_measurement(self):
         """ Gets the measurement in units by reading the """
@@ -179,3 +183,22 @@ class InputModule(AbstractInput):
                 self.sensor.set_heater(False)
 
         return return_dict
+
+    def status(self):
+        status = self.sensor.read_status()
+        is_data_crc_error = self.sensor.is_data_crc_error()
+        is_command_error = self.sensor.is_command_error()
+        is_reset_detected = self.sensor.is_reset_detected()
+        is_tracking_temperature_alert = self.sensor.is_tracking_temperature_alert()
+        is_tracking_humidity_alert = self.sensor.is_tracking_humidity_alert()
+        is_heater_active = self.sensor.is_heater_active()
+        is_alert_pending = self.sensor.is_alert_pending()
+        self.logger.info('Status           = {:04X}'.format(status))
+        self.logger.info('  Data CRC Error = {}'.format(is_data_crc_error))
+        self.logger.info('  Command Error  = {}'.format(is_command_error))
+        self.logger.info('  Reset Detected = {}'.format(is_reset_detected))
+        self.logger.info('  Tracking Temp  = {}'.format(is_tracking_temperature_alert))
+        self.logger.info('  Tracking RH    = {}'.format(is_tracking_humidity_alert))
+        self.logger.info('  Heater Active  = {}'.format(is_heater_active))
+        self.logger.info('  Alert Pending  = {}'.format(is_alert_pending))
+        time.sleep(0.1)
