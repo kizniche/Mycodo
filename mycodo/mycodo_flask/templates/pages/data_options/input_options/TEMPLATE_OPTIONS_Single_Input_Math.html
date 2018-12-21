@@ -1,0 +1,22 @@
+{% if 'single_input_math' in dict_inputs[each_input.device]['options_enabled'] %}
+
+<div class="col-auto">
+  {{form_mod_input.calibrate_sensor_measure.label(class_='control-label')}}
+  <div>
+    <select class="form-control btn-sm" id="calibrate_sensor_measure" name="calibrate_sensor_measure">
+      <option value="">{{_('Disabled')}}</option>
+    {% if choices_input or choices_math %}
+      {% for each_choice, value in choices_input.items() -%}
+      <option value="{{each_choice}}"{%- if each_input.calibrate_sensor_measure and each_choice|string in each_input.calibrate_sensor_measure %} selected{%- endif -%}>{{value}}</option>
+      {% endfor -%}
+      {% for each_choice, value in choices_math.items() -%}
+      <option value="{{each_choice}}"{%- if each_input.calibrate_sensor_measure and each_choice|string in each_input.calibrate_sensor_measure %} selected{%- endif -%}>{{value}}</option>
+      {% endfor -%}
+    {% else %}
+      <option value="">{{_('None Available')}}</option>
+    {% endif %}
+    </select>
+  </div>
+</div>
+
+{% endif %}

@@ -87,8 +87,14 @@
 
         {% include 'pages/data_options/input_options/TEMPLATE_OPTIONS_Location.html' %}
 
+        {% if each_input.device != 'EDGE' -%}
+          {% include 'pages/data_options/input_options/TEMPLATE_OPTIONS_Period.html' %}
+          {% include 'pages/data_options/input_options/TEMPLATE_OPTIONS_Pre_Output.html' %}
+        {% endif %}
+
         {% include 'pages/data_options/input_options/TEMPLATE_OPTIONS_Custom_Options.html' %}
 
+        {% include 'pages/data_options/input_options/TEMPLATE_OPTIONS_Single_Input_Math.html' %}
         {% include 'pages/data_options/input_options/TEMPLATE_OPTIONS_EDGE.html' %}
 
         {% include 'pages/data_options/input_options/TEMPLATE_OPTIONS_Times_Check.html' %}
@@ -115,11 +121,6 @@
         {% include 'pages/data_options/input_options/TEMPLATE_OPTIONS_ADC_Gain.html' %}
         {% include 'pages/data_options/input_options/TEMPLATE_OPTIONS_ADC_Resolution.html' %}
         {% include 'pages/data_options/input_options/TEMPLATE_OPTIONS_ADC_Sample_Speed.html' %}
-
-        {% if each_input.device != 'EDGE' -%}
-          {% include 'pages/data_options/input_options/TEMPLATE_OPTIONS_Period.html' %}
-          {% include 'pages/data_options/input_options/TEMPLATE_OPTIONS_Pre_Output.html' %}
-        {% endif %}
       {% endif %}
 
     </div>

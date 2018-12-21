@@ -4,6 +4,7 @@
 
  - Fix inability to reorder Dashboard, Data, Output, and Function elements
  - Fix Edge Inputs not appearing in Edge Trigger input selection
+ - Fix use of Atlas pH temperature calibration from Input/Math
 
 ### Features
 

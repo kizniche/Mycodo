@@ -2,10 +2,33 @@
 import logging
 import time
 
+from flask_babel import lazy_gettext
+
+from mycodo.databases.models import Conversion
+from mycodo.databases.models import DeviceMeasurements
 from mycodo.inputs.base_input import AbstractInput
 from mycodo.utils.calibration import AtlasScientificCommand
+from mycodo.utils.database import db_retrieve_table_daemon
 from mycodo.utils.influx import read_last_influxdb
+from mycodo.utils.system_pi import return_measurement_info
 from mycodo.utils.system_pi import str_is_float
+
+
+def constraints_pass_positive_value(mod_input, value):
+    """
+    Check if the user input is acceptable
+    :param mod_input: SQL object with user-saved Input options
+    :param value: float or int
+    :return: tuple: (bool, list of strings)
+    """
+    errors = []
+    all_passed = True
+    # Ensure value is positive
+    if value <= 0:
+        all_passed = False
+        errors.append("Must be a positive value")
+    return all_passed, errors, mod_input
+
 
 # Measurements
 measurements_dict = {
@@ -14,6 +37,7 @@ measurements_dict = {
         'unit': 'pH'
     }
 }
+
 
 # Input information
 INPUT_INFORMATION = {
@@ -27,6 +51,8 @@ INPUT_INFORMATION = {
         'i2c_location',
         'uart_location',
         'period',
+        'single_input_math',
+        'custom_options',
         'pre_output'
     ],
     'options_disabled': ['interface'],
@@ -34,7 +60,18 @@ INPUT_INFORMATION = {
     'interfaces': ['I2C', 'UART'],
     'i2c_location': ['0x66'],
     'i2c_address_editable': True,
-    'uart_location': '/dev/ttyAMA0'
+    'uart_location': '/dev/ttyAMA0',
+
+    'custom_options': [
+        {
+            'id': 'max_age',
+            'type': 'integer',
+            'default_value': 120,
+            'constraints_pass': constraints_pass_positive_value,
+            'name': lazy_gettext('Calibration Max Age'),
+            'phrase': lazy_gettext('The Max Age (seconds) of the Input/Math to use for calibration')
+        }
+    ]
 }
 
 
@@ -58,6 +95,15 @@ class InputModule(AbstractInput):
             self.input_dev = input_dev
             self.interface = input_dev.interface
             self.calibrate_sensor_measure = input_dev.calibrate_sensor_measure
+            self.max_age = None
+
+            if input_dev.custom_options:
+                for each_option in input_dev.custom_options.split(';'):
+                    option = each_option.split(',')[0]
+                    value = each_option.split(',')[1]
+                    if option == 'max_age':
+                        self.max_age = int(value)
+
             try:
                 self.initialize_sensor()
             except Exception:
@@ -94,9 +140,25 @@ class InputModule(AbstractInput):
             self.logger.debug("pH sensor set to calibrate temperature")
 
             device_id = self.calibrate_sensor_measure.split(',')[0]
-            measurement = self.calibrate_sensor_measure.split(',')[1]
+            measurement_id = self.calibrate_sensor_measure.split(',')[1]
+
+            device_measurement = self.device_measurements.filter(
+                DeviceMeasurements.unique_id == measurement_id).first()
+            if device_measurement:
+                conversion = db_retrieve_table_daemon(
+                    Conversion, unique_id=device_measurement.conversion_id)
+            else:
+                conversion = None
+            channel, unit, measurement = return_measurement_info(
+                device_measurement, conversion)
+
             last_measurement = read_last_influxdb(
-                device_id, measurement, duration_sec=300)
+                device_id,
+                measurement.unit,
+                measurement.measurement,
+                measurement.channel,
+                self.max_age)
+
             if last_measurement:
                 self.logger.debug(
                     "Latest temperature used to calibrate: {temp}".format(
@@ -110,6 +172,10 @@ class InputModule(AbstractInput):
                 self.logger.debug(
                     "Calibration returned: {val}, {msg}".format(
                         val=ret_value, msg=ret_msg))
+            else:
+                self.logger.error(
+                    "Calibration measurement not found within the past "
+                    "{} seconds".format(self.max_age))
 
         # Read sensor via UART
         if self.interface == 'UART':
