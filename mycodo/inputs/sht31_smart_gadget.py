@@ -207,73 +207,76 @@ class InputModule(AbstractInput):
         # Store logged temperature
         measurement = self.device_measurements.filter(DeviceMeasurements.channel == 0).first()
         conversion = db_retrieve_table_daemon(Conversion, unique_id=measurement.conversion_id)
-        for each_time, each_measure in self.gadget.loggedData['Temp'].items():
-            list_timestamps_temp.append(each_time)
-            measurement_single = {
-                0: {
-                    'measurement': 'temperature',
-                    'unit': 'C',
-                    'value': each_measure
-                }
-            }
-            measurement_single = parse_measurement(
-                conversion,
-                measurement,
-                measurement_single,
-                measurement.channel,
-                measurement_single[0])
+        for each_ts, each_measure in self.gadget.loggedData['Temp'].items():
+            list_timestamps_temp.append(each_ts)
+            datetime_ts = datetime.datetime.utcfromtimestamp(each_ts / 1000)
             if self.is_enabled(0):
+                measurement_single = {
+                    0: {
+                        'measurement': 'temperature',
+                        'unit': 'C',
+                        'value': each_measure
+                    }
+                }
+                measurement_single = parse_measurement(
+                    conversion,
+                    measurement,
+                    measurement_single,
+                    measurement.channel,
+                    measurement_single[0])
                 write_influxdb_value(
                     self.unique_id,
                     measurement_single[0]['unit'],
                     value=measurement_single[0]['value'],
                     measure=measurement_single[0]['measurement'],
                     channel=0,
-                    timestamp=datetime.datetime.utcfromtimestamp(each_time / 1000))
+                    timestamp=datetime_ts)
 
         # Store logged humidity
         measurement = self.device_measurements.filter(DeviceMeasurements.channel == 1).first()
         conversion = db_retrieve_table_daemon(Conversion, unique_id=measurement.conversion_id)
-        for each_time, each_measure in self.gadget.loggedData['Humi'].items():
-            list_timestamps_humi.append(each_time)
-            measurement_single = {
-                1: {
-                    'measurement': 'humidity',
-                    'unit': 'percent',
-                    'value': each_measure
-                }
-            }
-            measurement_single = parse_measurement(
-                conversion,
-                measurement,
-                measurement_single,
-                measurement.channel,
-                measurement_single[1])
+        for each_ts, each_measure in self.gadget.loggedData['Humi'].items():
+            list_timestamps_humi.append(each_ts)
+            datetime_ts = datetime.datetime.utcfromtimestamp(each_ts / 1000)
             if self.is_enabled(1):
+                measurement_single = {
+                    1: {
+                        'measurement': 'humidity',
+                        'unit': 'percent',
+                        'value': each_measure
+                    }
+                }
+                measurement_single = parse_measurement(
+                    conversion,
+                    measurement,
+                    measurement_single,
+                    measurement.channel,
+                    measurement_single[1])
                 write_influxdb_value(
                     self.unique_id,
                     measurement_single[1]['unit'],
                     value=measurement_single[1]['value'],
                     measure=measurement_single[1]['measurement'],
                     channel=1,
-                    timestamp=datetime.datetime.utcfromtimestamp(each_time / 1000))
+                    timestamp=datetime_ts)
 
         # Find common timestamps from both temperature and humidity lists
-        list_timestamps_both = []
-        for each_timestamp in list_timestamps_temp:
-            if each_timestamp in list_timestamps_humi:
-                list_timestamps_both.append(each_timestamp)
+        list_timestamps_both = list(
+            set(list_timestamps_temp).intersection(list_timestamps_humi))
 
-        for each_timestamp in list_timestamps_both:
+        for each_ts in list_timestamps_both:
+            datetime_ts = datetime.datetime.utcfromtimestamp(each_ts / 1000)
             # Calculate and store dew point
             if (self.is_enabled(3) and
                     self.is_enabled(0) and
                     self.is_enabled(1)):
-                measurement = self.device_measurements.filter(DeviceMeasurements.channel == 3).first()
-                conversion = db_retrieve_table_daemon(Conversion, unique_id=measurement.conversion_id)
+                measurement = self.device_measurements.filter(
+                    DeviceMeasurements.channel == 3).first()
+                conversion = db_retrieve_table_daemon(
+                    Conversion, unique_id=measurement.conversion_id)
                 dewpoint = calculate_dewpoint(
-                    self.gadget.loggedData['Temp'][each_timestamp],
-                    self.gadget.loggedData['Humi'][each_timestamp])
+                    self.gadget.loggedData['Temp'][each_ts],
+                    self.gadget.loggedData['Humi'][each_ts])
                 measurement_single = {
                     3: {
                         'measurement': 'dewpoint',
@@ -293,17 +296,19 @@ class InputModule(AbstractInput):
                     value=measurement_single[3]['value'],
                     measure=measurement_single[3]['measurement'],
                     channel=3,
-                    timestamp=datetime.datetime.utcfromtimestamp(each_timestamp / 1000))
+                    timestamp=datetime_ts)
 
             # Calculate and store vapor pressure deficit
             if (self.is_enabled(4) and
                     self.is_enabled(0) and
                     self.is_enabled(1)):
-                measurement = self.device_measurements.filter(DeviceMeasurements.channel == 4).first()
-                conversion = db_retrieve_table_daemon(Conversion, unique_id=measurement.conversion_id)
+                measurement = self.device_measurements.filter(
+                    DeviceMeasurements.channel == 4).first()
+                conversion = db_retrieve_table_daemon(
+                    Conversion, unique_id=measurement.conversion_id)
                 vpd = calculate_vapor_pressure_deficit(
-                    self.gadget.loggedData['Temp'][each_timestamp],
-                    self.gadget.loggedData['Humi'][each_timestamp])
+                    self.gadget.loggedData['Temp'][each_ts],
+                    self.gadget.loggedData['Humi'][each_ts])
                 measurement_single = {
                     4: {
                         'measurement': 'vapor_pressure_deficit',
@@ -323,7 +328,7 @@ class InputModule(AbstractInput):
                     value=measurement_single[4]['value'],
                     measure=measurement_single[4]['measurement'],
                     channel=4,
-                    timestamp=datetime.datetime.utcfromtimestamp(each_timestamp / 1000))
+                    timestamp=datetime_ts)
 
     def get_device_information(self):
         if 'info_timestamp' not in self.device_information:
