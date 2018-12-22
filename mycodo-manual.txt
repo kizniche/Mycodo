@@ -1548,30 +1548,44 @@ Conditional, Trigger).
   ------------------------------------------------------------------------
   Setting                 Description
   ----------------------- ------------------------------------------------
-  Output                  Turn a output on, off, or on for a duration of
+  Pause Actions           Pause executing actions for a duration of time
+                          (seconds).
+
+  Output (Duration)       Turn a output on, off, or on for a duration of
                           time.
 
-  Command                 Execute a command in the linux shell (as user
+  Output (Duty Cycle)     Turn a PWM output off or on for a duty cycle.
+
+  Execute Command         Execute a command in the linux shell (as user
                           mycodo).
 
-  Activate PID            Activate a particular PID controller.
+  Create Note             Create a note containing the conditional
+                          statement and actions, using a particular tag.
 
-  Deactivate PID          Deactivate a particular PID controller.
+  Activate Controller     Activate a particular controller.
 
-  Pause PID               Pause a particular PID controller.
+  Deactivate Controller   Deactivate a particular controller.
 
-  Hold PID                Hold a particular PID controller.
+  PID Pause               Pause a particular PID controller.
 
-  Resume PID              Resume a particular PID controller.
+  PID Hold                Hold a particular PID controller.
 
-  Email                   Send an email containing information about the
-                          current condition that triggered the conditional
-                          to send the email.
+  PID Resume              Resume a particular PID controller.
 
-  Flash LCD               Have an LCD screen begin flashing in order to
-                          alert.
+  PID Set Method          Set the Method of a particular PID controller.
 
-  Photo                   Capture a photo with the selected camera.
+  PID Set Setpoint        Set the Setpint of a particular PID controller.
+
+  Email Notification      Send an email containing the conditional
+                          statement and actions.
+
+  LCD Backlight           Turn the LCD backlight on or off. Note: Only
+                          some LCDs are supported.
+
+  LCD Flash               Start of stop the LCD flashing to indicate an
+                          alert. Note: Only some LCDs are supported.
+
+  Capture Photo           Capture a photo with the selected camera.
   ------------------------------------------------------------------------
 
 Action Command Variables

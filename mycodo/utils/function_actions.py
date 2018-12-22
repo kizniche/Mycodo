@@ -11,6 +11,8 @@ from mycodo.databases.models import Conditional
 from mycodo.databases.models import Input
 from mycodo.databases.models import LCD
 from mycodo.databases.models import Math
+from mycodo.databases.models import NoteTags
+from mycodo.databases.models import Notes
 from mycodo.databases.models import Output
 from mycodo.databases.models import PID
 from mycodo.databases.models import SMTP
@@ -54,6 +56,9 @@ def trigger_function_actions(
     # encountered. An email is sent to all recipients after all actions
     # have been executed.
     email_recipients = []
+
+    # List of tags to add to a note
+    note_tags = []
 
     attachment_file = False
     attachment_type = False
@@ -191,6 +196,13 @@ def trigger_function_actions(
             _, _, cmd_status = cmd_output(command_str)
 
             message += "(return status: {stat}).".format(stat=cmd_status)
+
+        # Create Note
+        elif cond_action.action_type == 'create_note':
+            tag_name = db_retrieve_table_daemon(
+                NoteTags, unique_id=cond_action.do_action_string).name
+            note_tags.append(cond_action.do_action_string)
+            message += " Create note with tag '{}'.".format(tag_name)
 
         # Capture photo
         elif cond_action.action_type in ['photo', 'photo_email']:
@@ -476,6 +488,22 @@ def trigger_function_actions(
                    smtp.user, smtp.passw, smtp.email_from,
                    email_recipients, message,
                    attachment_file, attachment_type)
+
+    # Create a note with the tags from the unique_ids in the list note_tags
+    if note_tags:
+        list_tags = []
+        for each_note_tag_id in note_tags:
+            check_tag = db_retrieve_table_daemon(
+                NoteTags, unique_id=each_note_tag_id)
+            if check_tag:
+                list_tags.append(each_note_tag_id)
+        if list_tags:
+            with session_scope(MYCODO_DB_PATH) as db_session:
+                new_note = Notes()
+                new_note.name = 'Action'
+                new_note.tags = ','.join(list_tags)
+                new_note.note = message
+                db_session.add(new_note)
 
     logger_actions.debug(message)
 

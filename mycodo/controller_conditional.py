@@ -314,10 +314,9 @@ class ConditionalController(threading.Thread):
         if evaluated_statement is None or not evaluated_statement:
             return
 
-        message += '\n[Conditional Statement: "{statement}", ' \
-                   'Replaced: {replaced}]'.format(
-                        statement=cond.conditional_statement,
-                        replaced=cond_statement_replaced)
+        message += '\n[Conditional Statement:\n{statement}\n\nReplaced:\n{replaced}\n]'.format(
+            statement=cond.conditional_statement,
+            replaced=cond_statement_replaced)
 
         # If the code hasn't returned by now, the conditional has been triggered
         # and the actions for that conditional should be executed

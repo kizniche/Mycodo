@@ -87,7 +87,7 @@ function startTimer() {
               <option value="{{each_input.unique_id}}">{{each_input.id}} ({{each_input.name}})</option>
             {%- endfor -%}
           {% else %}
-            <option value="">{{_('No Sensors Found')}}</option>
+            <option value="">{{_('None Available')}}</option>
           {% endif %}
         </select>
       </div>

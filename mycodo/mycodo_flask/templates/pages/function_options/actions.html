@@ -144,6 +144,25 @@
   See <a href="/help#action-command-variables">Conditional Statement Variables</a> for a list of replaceable variables able to be used in commands.
 </div>
 
+{% elif each_action.action_type == 'create_note' %}
+
+<div class="col-auto">
+  <label class='control-label'>{{_('Tag')}}</label>
+  <select class="form-control form-tooltip form-dropdown" id="do_action_string" name="do_action_string" data-placement="top" title="{{_('Tag to save note with')}}">
+    {% if tags %}
+      <option value="">{{_('Select One')}}</option>
+      {%- for each_tag in tags -%}
+    <option value="{{each_tag.unique_id}}"{% if each_action.do_action_string == each_tag.unique_id %} selected{% endif %}>{{each_tag.name}}</option>
+      {%- endfor -%}
+    {% else %}
+    <option value="">{{_('None Available')}}</option>
+    {% endif %}
+  </select>
+</div>
+<div class="col-auto">
+  Tags can be created on the <a href="/notes">notes page</a>.
+</div>
+
 {% elif each_action.action_type in ['activate_controller',
                                     'deactivate_controller'] %}
 

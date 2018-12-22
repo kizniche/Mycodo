@@ -1,3 +1,14 @@
+## 7.0.3 (Unreleased)
+
+### Bugfixes
+
+ - Fix rendering new lines in Note text on graphs
+
+### Features
+
+ - Add Function Action: Create Note
+
+
 ## 7.0.2 (2018-12-21)
 
 ### Bugfixes

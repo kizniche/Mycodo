@@ -381,6 +381,7 @@ FUNCTION_ACTIONS = [
     ('output', lazy_gettext('Output (Duration)')),
     ('output_pwm', lazy_gettext('Output (Duty Cycle)')),
     ('command', lazy_gettext('Execute Command')),
+    ('create_note', lazy_gettext('Create Note')),
     ('activate_controller', lazy_gettext('Activate Controller')),
     ('deactivate_controller', lazy_gettext('Deactivate Controller')),
     ('pause_pid', lazy_gettext('PID Pause')),

@@ -275,7 +275,7 @@ def action_mod(form):
             mod_action.do_unique_id = form.do_unique_id.data
             mod_action.do_camera_duration = form.do_camera_duration.data
 
-        elif mod_action.action_type == 'command':
+        elif mod_action.action_type in ['command', 'create_note']:
             mod_action.do_action_string = form.do_action_string.data
 
         if not error:

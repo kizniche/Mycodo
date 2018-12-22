@@ -1138,6 +1138,7 @@ def page_function():
     lcd = LCD.query.all()
     math = Math.query.all()
     method = Method.query.all()
+    tags = NoteTags.query.all()
     output = Output.query.all()
     pid = PID.query.all()
     trigger = Trigger.query.all()
@@ -1437,6 +1438,7 @@ def page_function():
                            method=method,
                            output=output,
                            pid=pid,
+                           tags=tags,
                            trigger=trigger,
                            units=MEASUREMENTS,
                            user=user,
