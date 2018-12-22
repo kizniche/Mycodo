@@ -1538,7 +1538,8 @@ Conditional, Trigger).
 +-----------------------+-------------------------------------------------+
 | PID Set Method        | Set the Method of a particular PID controller.  |
 +-----------------------+-------------------------------------------------+
-| PID Set Setpoint      | Set the Setpint of a particular PID controller. |
+| PID Set Setpoint      | Set the Setpoint of a particular PID            |
+|                       | controller.                                     |
 +-----------------------+-------------------------------------------------+
 | Email Notification    | Send an email containing the conditional        |
 |                       | statement and actions.                          |
