@@ -7,6 +7,7 @@
 ### Features
 
  - Add Function Action: Create Note
+ - Add Input: Sonoff TH10/16 humidity and temperature sensor ([#583](https://github.com/kizniche/mycodo/issues/583))
 
 
 ## 7.0.2 (2018-12-21)
