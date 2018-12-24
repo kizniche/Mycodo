@@ -46,6 +46,7 @@ LCD_INFO = {
     '128x32_pioled': {
         'name': lazy_gettext('PiOLED 128x32'),
         'dependencies_module': [
+            ('apt', 'libjpeg-dev', 'libjpeg-dev'),
             ('pip-pypi', 'PIL', 'Pillow'),
             ('pip-pypi', 'Adafruit_GPIO', 'Adafruit_GPIO'),
             ('pip-pypi', 'Adafruit_PureIO', 'Adafruit_PureIO'),

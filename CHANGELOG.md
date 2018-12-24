@@ -4,6 +4,7 @@
 
  - Fix rendering new lines in Note text on graphs
  - Fix display of proper unit on Measurement Dashboard element ([#583](https://github.com/kizniche/mycodo/issues/583))
+ - Fix missing libjpeg-dev dependency for PiOLED ([#584](https://github.com/kizniche/mycodo/issues/584))
 
 ### Features
 
