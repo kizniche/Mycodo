@@ -12,6 +12,7 @@ from flask import url_for
 from flask.blueprints import Blueprint
 from flask_babel import gettext
 
+from mycodo.config import PATH_1WIRE
 from mycodo.databases.models import Input
 from mycodo.devices.atlas_scientific_i2c import AtlasScientificI2C
 from mycodo.devices.atlas_scientific_uart import AtlasScientificUART
@@ -218,9 +219,10 @@ def setup_ds_resolution():
     # If DS18B20 inputs added, compile a list of detected inputs
     ds_inputs = []
     try:
-        for each_name in os.listdir('/sys/bus/w1/devices/'):
-            if 'bus' not in each_name:
-                ds_inputs.append(each_name)
+        if os.path.isdir(PATH_1WIRE):
+            for each_name in os.listdir(PATH_1WIRE):
+                if 'bus' not in each_name:
+                    ds_inputs.append(each_name)
     except OSError:
         flash("Unable to detect 1-wire devices in '/sys/bus/w1/devices'. "
               "Make 1-wire support is enabled with 'sudo raspi-config'.",

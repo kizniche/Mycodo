@@ -43,6 +43,7 @@ from mycodo.config import MATH_INFO
 from mycodo.config import MYCODO_VERSION
 from mycodo.config import OUTPUTS
 from mycodo.config import OUTPUT_INFO
+from mycodo.config import PATH_1WIRE
 from mycodo.config import RESTORE_LOG_FILE
 from mycodo.config import UPGRADE_LOG_FILE
 from mycodo.config import USAGE_REPORTS_PATH
@@ -1709,9 +1710,10 @@ def page_data():
 
     # If DS18B20 inputs added, compile a list of detected inputs
     devices_1wire = []
-    for each_name in os.listdir('/sys/bus/w1/devices/'):
-        if 'bus' not in each_name:
-            devices_1wire.append(each_name)
+    if os.path.isdir(PATH_1WIRE):
+        for each_name in os.listdir(PATH_1WIRE):
+            if 'bus' not in each_name:
+                devices_1wire.append(each_name)
 
     return render_template('pages/data.html',
                            and_=and_,
