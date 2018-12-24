@@ -3,6 +3,7 @@
 import logging
 
 import flask_login
+import os
 from flask import current_app
 from flask import flash
 from flask import redirect
@@ -217,12 +218,11 @@ def setup_ds_resolution():
     # If DS18B20 inputs added, compile a list of detected inputs
     ds_inputs = []
     try:
-        if not current_app.config['TESTING']:
-            from w1thermsensor import W1ThermSensor
-            for each_input in W1ThermSensor.get_available_sensors():
-                ds_inputs.append(each_input.id)
+        for each_name in os.listdir('/sys/bus/w1/devices/'):
+            if 'bus' not in each_name:
+                ds_inputs.append(each_name)
     except OSError:
-        flash("Unable to detect DS18B20 Inputs in '/sys/bus/w1/devices'. "
+        flash("Unable to detect 1-wire devices in '/sys/bus/w1/devices'. "
               "Make 1-wire support is enabled with 'sudo raspi-config'.",
               "error")
 

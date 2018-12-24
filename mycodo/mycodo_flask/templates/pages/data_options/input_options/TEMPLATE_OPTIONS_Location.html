@@ -12,10 +12,10 @@
   <label class="control-label">{{tooltips_input['w1thermsensor_id']['title']}}</label>
   <div>
     <select class="form-control form-tooltip form-dropdown" data-placement="top" id="location" name="location" title="{{tooltips_input['w1thermsensor_id']['phrase']}}">
-      {% if w1thermsensor_sensors != [] %}
+      {% if devices_1wire != [] %}
         <option value=""></option>
-        {% for each_w1thermsensor in w1thermsensor_sensors %}
-          <option value="{{each_w1thermsensor}}"{% if each_input.location == each_w1thermsensor %} selected{% endif %}>{{each_w1thermsensor}}</option>
+        {% for each_1wire_dev in devices_1wire %}
+          <option value="{{each_1wire_dev}}"{% if each_input.location == each_1wire_dev %} selected{% endif %}>{{each_1wire_dev}}</option>
         {% endfor %}
       {% else %}
         <option value="">None Detected</option>

@@ -45,8 +45,7 @@ INPUT_INFORMATION = {
         ('apt', 'zlib1g-dev', 'zlib1g-dev'),
         ('pip-pypi', 'colour', 'colour'),
         ('pip-pypi', 'PIL', 'Pillow'),
-        ('pip-pypi', 'w1thermsensor', 'w1thermsensor'),
-        ('pip-pypi', 'w1thermsensor', 'w1thermsensor')
+        ('pip-git', 'Adafruit_AMG88xx', 'git://github.com/adafruit/Adafruit_AMG88xx_python.git#egg=adafruit-amg88xx')
     ],
 
     'interfaces': ['I2C'],

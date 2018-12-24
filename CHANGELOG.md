@@ -5,12 +5,17 @@
  - Fix rendering new lines in Note text on graphs
  - Fix display of proper unit on Measurement Dashboard element ([#583](https://github.com/kizniche/mycodo/issues/583))
  - Fix missing libjpeg-dev dependency for PiOLED ([#584](https://github.com/kizniche/mycodo/issues/584))
+ - Fix dependencies for AMG88xx Input
 
 ### Features
 
  - Add Function Action: Create Note
  - Add Input: Sonoff TH10/16 humidity and temperature sensor ([#583](https://github.com/kizniche/mycodo/issues/583))
  - Add Input: AM2320 I2C humidity and temperature sensor ([#585](https://github.com/kizniche/mycodo/issues/585))
+
+### Miscellaneous
+
+ - Change method for detecting 1-wire devices ([#582](https://github.com/kizniche/mycodo/issues/582))
 
 
 ## 7.0.2 (2018-12-21)

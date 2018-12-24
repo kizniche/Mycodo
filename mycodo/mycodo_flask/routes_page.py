@@ -1708,16 +1708,10 @@ def page_data():
         break
 
     # If DS18B20 inputs added, compile a list of detected inputs
-    w1thermsensor_sensors = []
-    if Input.query.filter(Input.device == 'DS18B20').count():
-        try:
-            from w1thermsensor import W1ThermSensor
-            for each_sensor in W1ThermSensor.get_available_sensors():
-                w1thermsensor_sensors.append(each_sensor.id)
-        except OSError:
-            flash("Unable to detect DS18B20 Inputs in '/sys/bus/w1/devices'. "
-                  "Make 1-wire support is enabled with 'sudo raspi-config'.",
-                  "error")
+    devices_1wire = []
+    for each_name in os.listdir('/sys/bus/w1/devices/'):
+        if 'bus' not in each_name:
+            devices_1wire.append(each_name)
 
     return render_template('pages/data.html',
                            and_=and_,
@@ -1761,7 +1755,7 @@ def page_data():
                            table_math=Math,
                            tooltips_input=TOOLTIPS_INPUT,
                            user=user,
-                           w1thermsensor_sensors=w1thermsensor_sensors)
+                           devices_1wire=devices_1wire)
 
 
 @blueprint.route('/usage')
