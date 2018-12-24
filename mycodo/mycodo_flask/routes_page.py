@@ -540,6 +540,7 @@ def page_dashboard():
     dict_measurements = add_custom_measurements(Measurement.query.all())
     dict_units = add_custom_units(Unit.query.all())
 
+    # Generate dictionary of each measurement ID with the correct measurement/unit used with it
     dict_measure_measurements = {}
     dict_measure_units = {}
 

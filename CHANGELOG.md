@@ -3,6 +3,7 @@
 ### Bugfixes
 
  - Fix rendering new lines in Note text on graphs
+ - Fix display of proper unit on Measurement Dashboard element ([#583](https://github.com/kizniche/mycodo/issues/583))
 
 ### Features
 
