@@ -2896,6 +2896,9 @@ Input Devices
     `AM2315 <#am2315>`__: Relative humidity, temperature
     `link <https://www.adafruit.com/product/1293>`__
 
+    `AM2320 <#am2320>`__: Relative humidity, temperature
+    `link <https://www.adafruit.com/product/3721>`__
+
     `Atlas Scientific pH <#atlas-scientific-ph>`__: pH
     `link <https://www.atlas-scientific.com/ph.html>`__
 
@@ -2956,8 +2959,10 @@ Input Devices
     `MH-Z19 <#mh-z19>`__: Carbon dioxide (CO2) in ppmv
     `link <http://www.winsen-sensor.com/products/ndir-co2-sensor/mh-z19.html>`__
 
-    `SHT1x <#sht1x>`__/`SHT31 <#sht31>`__/`SHT7x <#sht7x>`__: Relative humidity and temperature
+    `SHT1x <#sht1x>`__/`SHT31 <#sht31>`__/`SHT7x <#sht7x>`__/`SHT31 Smart Gadget<#sht31>`__: Relative humidity and temperature
     `link <https://github.com/mk-fg/sht-sensor>`__
+
+    `Sonoff TH10/16 (Tasmota firmware) <#sonoff-th10-16>`__: Relative humidity and temperature
 
     `TMP006, TMP007 <#tmp006-tmp007>`__: Contactless temperature
     `link <https://www.sparkfun.com/products/11859>`__
@@ -3108,7 +3113,7 @@ Notes
 '''''
 
 From
-[@Theoi-Meteoroi](https://github.com/kizniche/Mycodo/issues/315#issuecomment-344798815)
+`@Theoi-Meteoroi <https://github.com/kizniche/Mycodo/issues/315#issuecomment-344798815>`__
 on GitHub:
 
 I figured out why this [AM2315] sensor is unreliable with Rpi3 hardware
@@ -3132,6 +3137,14 @@ To enable software I2C, add the following line to your
 After rebooting, a new I2C bus at /dev/i2c-3 should exist with SDA on
 pin 23 (BCM) and SCL on pin 24 (BCM). Make sure you add the appropriate
 pull-up resistors before connecting any devices.
+
+AM2320
+``````
+
+Specifications
+''''''''''''''
+
+-  ±0.5 °C accuracy
 
 Atlas Scientific pH
 ```````````````````
@@ -3461,6 +3474,8 @@ Specifications
 SHT31
 `````
 
+This includes the sensor itself and the SHT31 Smart Gadget.
+
 Specifications
 ''''''''''''''
 
@@ -3481,6 +3496,22 @@ Specifications
    (respectively)
 -  2.4 to 5.5V power and I/O
 -  No more than 0.125 Hz sampling rate (once every 8 seconds)
+
+Sonoff TH10/16
+''''''''''''''
+
+(TH10, TH16)
+
+The Sonoff TH10/TH16 supports four kinds of temperature monitor and humidity
+monitor sensors: Si7021, AM2301, DS18B20, and DHT11.
+
+This wifi-enabled ESP8266 based device uses the Tasmota firmware that can be
+found `here <https://github.com/arendst/Sonoff-Tasmota>`__.
+
+Specifications
+''''''''''''''
+
+- Remote ON/OFF–Turn electrical devices on/off, can work without TH sensor
 
 TMP006, TMP007
 ``````````````

@@ -8,6 +8,7 @@
 
  - Add Function Action: Create Note
  - Add Input: Sonoff TH10/16 humidity and temperature sensor ([#583](https://github.com/kizniche/mycodo/issues/583))
+ - Add Input: AM2320 I2C humidity and temperature sensor ([#585](https://github.com/kizniche/mycodo/issues/585))
 
 
 ## 7.0.2 (2018-12-21)

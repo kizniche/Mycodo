@@ -40,7 +40,7 @@ measurements_dict = {
 INPUT_INFORMATION = {
     'input_name_unique': 'TH16_10',
     'input_manufacturer': 'Sonoff',
-    'input_name': 'TH16/10',
+    'input_name': 'TH16/10 (Tasmota firmware)',
     'measurements_name': 'Humidity/Temperature',
     'measurements_dict': measurements_dict,
 

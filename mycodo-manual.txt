@@ -76,6 +76,7 @@ Mycodo Manual
     -   [Input Device Details](#input-device-details)
         -   [Raspberry Pi](#raspberry-pi)
         -   [AM2315](#am2315)
+        -   [AM2320](#am2320)
         -   [Atlas Scientific pH](#atlas-scientific-ph)
         -   [Atlas Scientific PT-1000](#atlas-scientific-pt-1000)
         -   [BH1750](#bh1750)
@@ -2902,6 +2903,8 @@ Input Devices
 
   AM2315: Relative humidity, temperature link
 
+  AM2320: Relative humidity, temperature link
+
   Atlas Scientific pH: pH link
 
   Atlas Scientific PT-1000: Temperature link
@@ -2942,7 +2945,10 @@ Input Devices
 
   MH-Z19: Carbon dioxide (CO2) in ppmv link
 
-  SHT1x/SHT31/SHT7x: Relative humidity and temperature link
+  SHT1x/SHT31/SHT7x/SHT31 Smart Gadget: Relative humidity and
+  temperature link
+
+  Sonoff TH10/16 (Tasmota firmware): Relative humidity and temperature
 
   TMP006, TMP007: Contactless temperature link
 
@@ -3073,9 +3079,7 @@ Specifications
 
 Notes
 
-From
-[@Theoi-Meteoroi](https://github.com/kizniche/Mycodo/issues/315#issuecomment-344798815)
-on GitHub:
+From @Theoi-Meteoroi on GitHub:
 
 I figured out why this [AM2315] sensor is unreliable with Rpi3 hardware
 I2C. It is among a number of I2C devices that really hates the BCM2835
@@ -3096,6 +3100,12 @@ dtoverlay=i2c-gpio,i2c_gpio_sda=23,i2c_gpio_scl=24,i2c_gpio_delay_us=4
 After rebooting, a new I2C bus at /dev/i2c-3 should exist with SDA on
 pin 23 (BCM) and SCL on pin 24 (BCM). Make sure you add the appropriate
 pull-up resistors before connecting any devices.
+
+AM2320
+
+Specifications
+
+-   ±0.5 °C accuracy
 
 Atlas Scientific pH
 
@@ -3380,6 +3390,8 @@ Specifications
 
 SHT31
 
+This includes the sensor itself and the SHT31 Smart Gadget.
+
 Specifications
 
 -   ±2% relative humidity and ±0.3°C accuracy for most uses
@@ -3397,6 +3409,21 @@ Specifications
     accuracy (respectively)
 -   2.4 to 5.5V power and I/O
 -   No more than 0.125 Hz sampling rate (once every 8 seconds)
+
+Sonoff TH10/16
+
+(TH10, TH16)
+
+The Sonoff TH10/TH16 supports four kinds of temperature monitor and
+humidity monitor sensors: Si7021, AM2301, DS18B20, and DHT11.
+
+This wifi-enabled ESP8266 based device uses the Tasmota firmware that
+can be found here.
+
+Specifications
+
+-   Remote ON/OFF–Turn electrical devices on/off, can work without TH
+    sensor
 
 TMP006, TMP007
 
