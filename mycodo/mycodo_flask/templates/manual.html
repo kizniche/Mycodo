@@ -1706,247 +1706,68 @@ if None not in [{dj73gs0d}, {02nspgh1}]:
 </thead>
 <tbody>
 <tr class="odd">
-<td>Pause Actions</td>
+<td>Actions: Pause</td>
 <td>Pause executing actions for a duration of time (seconds).</td>
 </tr>
 <tr class="even">
-<td>Output (Duration)</td>
-<td>Turn a output on, off, or on for a duration of time.</td>
-</tr>
-<tr class="odd">
-<td>Output (Duty Cycle)</td>
-<td>Turn a PWM output off or on for a duty cycle.</td>
-</tr>
-<tr class="even">
-<td>Execute Command</td>
-<td>Execute a command in the linux shell (as user mycodo).</td>
+<td>Camera: Capture Photo</td>
+<td>Capture a photo with the selected camera.</td>
 </tr>
 <tr class="odd">
 <td>Create Note</td>
 <td>Create a note containing the conditional statement and actions, using a particular tag.</td>
 </tr>
 <tr class="even">
-<td>Activate Controller</td>
+<td>Controller: Activate</td>
 <td>Activate a particular controller.</td>
 </tr>
 <tr class="odd">
-<td>Deactivate Controller</td>
+<td>Controller: Deactivate</td>
 <td>Deactivate a particular controller.</td>
 </tr>
 <tr class="even">
-<td>PID Pause</td>
-<td>Pause a particular PID controller.</td>
-</tr>
-<tr class="odd">
-<td>PID Hold</td>
-<td>Hold a particular PID controller.</td>
-</tr>
-<tr class="even">
-<td>PID Resume</td>
-<td>Resume a particular PID controller.</td>
-</tr>
-<tr class="odd">
-<td>PID Set Method</td>
-<td>Set the Method of a particular PID controller.</td>
-</tr>
-<tr class="even">
-<td>PID Set Setpoint</td>
-<td>Set the Setpoint of a particular PID controller.</td>
-</tr>
-<tr class="odd">
 <td>Email Notification</td>
 <td>Send an email containing the conditional statement and actions.</td>
 </tr>
+<tr class="odd">
+<td>Execute Command</td>
+<td>Execute a command in the linux shell (as user mycodo).</td>
+</tr>
 <tr class="even">
-<td>LCD Backlight</td>
+<td>LCD: Backlight</td>
 <td>Turn the LCD backlight on or off. Note: Only some LCDs are supported.</td>
 </tr>
 <tr class="odd">
-<td>LCD Flash</td>
+<td>LCD: Flash</td>
 <td>Start of stop the LCD flashing to indicate an alert. Note: Only some LCDs are supported.</td>
 </tr>
 <tr class="even">
-<td>Capture Photo</td>
-<td>Capture a photo with the selected camera.</td>
+<td>Output: Duration</td>
+<td>Turn a output on, off, or on for a duration of time.</td>
 </tr>
-</tbody>
-</table>
-<h4 id="action-command-variables">Action Command Variables</h4>
-<p>Commands that are executed by actions can now include variables. To use, just place the variable name encased with double parentheses “(())” in your command, and it will be replaced with the variable’s value before execution. See the tables below for the currently-supported variables.</p>
-<p>It is recommended to output a test string to a text file to verify the output is as expected, with a command such as the following (for a Function using the Raspberry Pi CPU temperature Input as the measurement):</p>
-<pre><code>echo &quot;TEST: ((measure_temperature)), ((measure_location)), ((measure_period))&quot; &gt; /home/mycodo/test_measure.txt</code></pre>
-<p>Or for an Output Conditional:</p>
-<pre><code>echo &quot;TEST: ((output_pin)), ((output_action)), ((output_duration)), ((output_pwm))&quot; &gt; /home/mycodo/test_output.txt</code></pre>
-<h4 id="measurement-action-command-variables">Measurement Action command variables</h4>
-<table>
-<colgroup>
-<col style="width: 45%"></col>
-<col style="width: 54%"></col>
-</colgroup>
-<thead>
-<tr class="header">
-<th>Variable</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
 <tr class="odd">
-<td>((measure_location))</td>
-<td>Input location (such as GPIO pin, I2C address, etc.)</td>
+<td>Output: Duty Cycle</td>
+<td>Turn a PWM output off or on for a duty cycle.</td>
 </tr>
 <tr class="even">
-<td>((measure_period))</td>
-<td>The period (seconds) between measurements (input, math, or PID)</td>
+<td>PID: Pause</td>
+<td>Pause a particular PID controller.</td>
 </tr>
 <tr class="odd">
-<td>((measure_linux_command))</td>
-<td>Input measurement: Linux Command return value</td>
+<td>PID: Hold</td>
+<td>Hold a particular PID controller.</td>
 </tr>
 <tr class="even">
-<td>((measure_altitude))</td>
-<td>Input measurement: altitude</td>
+<td>PID: Resume</td>
+<td>Resume a particular PID controller.</td>
 </tr>
 <tr class="odd">
-<td>((measure_battery))</td>
-<td>Input measurement: battery</td>
+<td>PID: Set Method</td>
+<td>Set the Method of a particular PID controller.</td>
 </tr>
 <tr class="even">
-<td>((measure_boolean))</td>
-<td>Input measurement: boolean</td>
-</tr>
-<tr class="odd">
-<td>((measure_co2))</td>
-<td>Input measurement: CO2</td>
-</tr>
-<tr class="even">
-<td>((measure_cpu_load_1m))</td>
-<td>Input measurement: CPU load (1 min)</td>
-</tr>
-<tr class="odd">
-<td>((measure_cpu_load_5m))</td>
-<td>Input measurement: CPU load (5 min)</td>
-</tr>
-<tr class="even">
-<td>((measure_cpu_load_15m))</td>
-<td>Input measurement: CPU load (15 min)</td>
-</tr>
-<tr class="odd">
-<td>((measure_dewpoint))</td>
-<td>Input measurement: dew point</td>
-</tr>
-<tr class="even">
-<td>((measure_disk_space))</td>
-<td>Input measurement: disk space</td>
-</tr>
-<tr class="odd">
-<td>((measure_duty_cycle))</td>
-<td>Input measurement: duty cycle</td>
-</tr>
-<tr class="even">
-<td>((measure_edge))</td>
-<td>Input measurement: edge detected (1 or -1)</td>
-</tr>
-<tr class="odd">
-<td>((measure_electrical_conductivity))</td>
-<td>Input measurement: Electrical Conductivity (uS/cm)</td>
-</tr>
-<tr class="even">
-<td>((measure_frequency))</td>
-<td>Input measurement: frequency</td>
-</tr>
-<tr class="odd">
-<td>((measure_humidity))</td>
-<td>Input measurement: humidity</td>
-</tr>
-<tr class="even">
-<td>((measure_lux))</td>
-<td>Input measurement: lux</td>
-</tr>
-<tr class="odd">
-<td>((measure_moisture))</td>
-<td>Input measurement: moisture</td>
-</tr>
-<tr class="even">
-<td>((measure_ph))</td>
-<td>Input measurement: ph</td>
-</tr>
-<tr class="odd">
-<td>((measure_pressure))</td>
-<td>Input measurement: pressure</td>
-</tr>
-<tr class="even">
-<td>((measure_pulse_width))</td>
-<td>Input measurement: pulse width</td>
-</tr>
-<tr class="odd">
-<td>((measure_revolutions))</td>
-<td>Input measurement: RPM</td>
-</tr>
-<tr class="even">
-<td>((measure_temperature))</td>
-<td>Input measurement: temperature</td>
-</tr>
-<tr class="odd">
-<td>((measure_temperature_die))</td>
-<td>Input measurement: temperature (die)</td>
-</tr>
-<tr class="even">
-<td>((measure_temperature_object))</td>
-<td>Input measurement: temperature (object)</td>
-</tr>
-<tr class="odd">
-<td>((measure_voltage))</td>
-<td>Input measurement: voltage</td>
-</tr>
-</tbody>
-</table>
-<h4 id="output-action-command-variables">Output Action command variables</h4>
-<table>
-<colgroup>
-<col style="width: 39%"></col>
-<col style="width: 60%"></col>
-</colgroup>
-<thead>
-<tr class="header">
-<th>Variable</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>((output_pin))</td>
-<td>The output pin</td>
-</tr>
-<tr class="even">
-<td>((output_action))</td>
-<td>The state change of the output (turned on = 1, turned off = 0)</td>
-</tr>
-<tr class="odd">
-<td>((output_duration))</td>
-<td>The number of seconds the output turned on for (will return 0 if not applicable)</td>
-</tr>
-<tr class="even">
-<td>((output_pwm))</td>
-<td>The PWM duty cycle the output turned on for (will return 0 if not applicable)</td>
-</tr>
-</tbody>
-</table>
-<h4 id="edge-action-command-variables">Edge Action command variables</h4>
-<table>
-<colgroup>
-<col style="width: 24%"></col>
-<col style="width: 75%"></col>
-</colgroup>
-<thead>
-<tr class="header">
-<th>Variable</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>((edge_state))</td>
-<td>The state of the GPIO pin (on/rising = 1, off/falling = 0)</td>
+<td>PID: Set Setpoint</td>
+<td>Set the Setpoint of a particular PID controller.</td>
 </tr>
 </tbody>
 </table>

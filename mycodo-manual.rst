@@ -1512,162 +1512,46 @@ Conditional, Trigger).
 +-----------------------+-------------------------------------------------+
 | Setting               | Description                                     |
 +=======================+=================================================+
-| Pause Actions         | Pause executing actions for a duration of time  |
+| Actions: Pause        | Pause executing actions for a duration of time  |
 |                       | (seconds).                                      |
 +-----------------------+-------------------------------------------------+
-| Output (Duration)     | Turn a output on, off, or on for a duration of  |
-|                       | time.                                           |
-+-----------------------+-------------------------------------------------+
-| Output (Duty Cycle)   | Turn a PWM output off or on for a duty cycle.   |
-+-----------------------+-------------------------------------------------+
-| Execute Command       | Execute a command in the linux shell (as user   |
-|                       | mycodo).                                        |
+| Camera: Capture Photo | Capture a photo with the selected camera.       |
 +-----------------------+-------------------------------------------------+
 | Create Note           | Create a note containing the conditional        |
 |                       | statement and actions, using a particular tag.  |
 +-----------------------+-------------------------------------------------+
-| Activate Controller   | Activate a particular controller.               |
+| Controller: Activate  | Activate a particular controller.               |
 +-----------------------+-------------------------------------------------+
-| Deactivate Controller | Deactivate a particular controller.             |
-+-----------------------+-------------------------------------------------+
-| PID Pause             | Pause a particular PID controller.              |
-+-----------------------+-------------------------------------------------+
-| PID Hold              | Hold a particular PID controller.               |
-+-----------------------+-------------------------------------------------+
-| PID Resume            | Resume a particular PID controller.             |
-+-----------------------+-------------------------------------------------+
-| PID Set Method        | Set the Method of a particular PID controller.  |
-+-----------------------+-------------------------------------------------+
-| PID Set Setpoint      | Set the Setpoint of a particular PID            |
-|                       | controller.                                     |
+| Controller: Deactivate| Deactivate a particular controller.             |
 +-----------------------+-------------------------------------------------+
 | Email Notification    | Send an email containing the conditional        |
 |                       | statement and actions.                          |
 +-----------------------+-------------------------------------------------+
-| LCD Backlight         | Turn the LCD backlight on or off. Note: Only    |
+| Execute Command       | Execute a command in the linux shell (as user   |
+|                       | mycodo).                                        |
++-----------------------+-------------------------------------------------+
+| LCD: Backlight        | Turn the LCD backlight on or off. Note: Only    |
 |                       | some LCDs are supported.                        |
 +-----------------------+-------------------------------------------------+
-| LCD Flash             | Start of stop the LCD flashing to indicate an   |
+| LCD: Flash            | Start of stop the LCD flashing to indicate an   |
 |                       | alert. Note: Only some LCDs are supported.      |
 +-----------------------+-------------------------------------------------+
-| Capture Photo         | Capture a photo with the selected camera.       |
+| Output: Duration      | Turn a output on, off, or on for a duration of  |
+|                       | time.                                           |
 +-----------------------+-------------------------------------------------+
-
-Action Command Variables
-''''''''''''''''''''''''
-
-Commands that are executed by actions can now include
-variables. To use, just place the variable name encased with double parentheses "(())"
-in your command, and it will be replaced with the variable's value
-before execution. See the tables below for the currently-supported
-variables.
-
-It is recommended to output a test string to a text file to verify the
-output is as expected, with a command such as the following (for a
-Function using the Raspberry Pi CPU temperature Input as the
-measurement):
-
-::
-
-    echo "TEST: ((measure_temperature)), ((measure_location)), ((measure_period))" > /home/mycodo/test_measure.txt
-
-Or for an Output Conditional:
-
-::
-
-    echo "TEST: ((output_pin)), ((output_action)), ((output_duration)), ((output_pwm))" > /home/mycodo/test_output.txt
-
-Measurement Action command variables
-''''''''''''''''''''''''''''''''''''
-
-+---------------------------------------+----------------------------------------------+
-| Variable                              | Description                                  |
-+=======================================+==============================================+
-| ((measure\_location))                 | Input location (such as GPIO pin, I2C        |
-|                                       | address, etc.)                               |
-+---------------------------------------+----------------------------------------------+
-| ((measure\_period))                   | The period (seconds) between measurements    |
-|                                       | (input, math, or PID)                        |
-+---------------------------------------+----------------------------------------------+
-| ((measure\_linux\_command))           | Input measurement: Linux Command return      |
-|                                       | value                                        |
-+---------------------------------------+----------------------------------------------+
-| ((measure\_altitude))                 | Input measurement: altitude                  |
-+---------------------------------------+----------------------------------------------+
-| ((measure\_battery))                  | Input measurement: battery                   |
-+---------------------------------------+----------------------------------------------+
-| ((measure\_boolean))                  | Input measurement: boolean                   |
-+---------------------------------------+----------------------------------------------+
-| ((measure\_co2))                      | Input measurement: CO2                       |
-+---------------------------------------+----------------------------------------------+
-| ((measure\_cpu\_load\_1m))            | Input measurement: CPU load (1 min)          |
-+---------------------------------------+----------------------------------------------+
-| ((measure\_cpu\_load\_5m))            | Input measurement: CPU load (5 min)          |
-+---------------------------------------+----------------------------------------------+
-| ((measure\_cpu\_load\_15m))           | Input measurement: CPU load (15 min)         |
-+---------------------------------------+----------------------------------------------+
-| ((measure\_dewpoint))                 | Input measurement: dew point                 |
-+---------------------------------------+----------------------------------------------+
-| ((measure\_disk\_space))              | Input measurement: disk space                |
-+---------------------------------------+----------------------------------------------+
-| ((measure\_duty\_cycle))              | Input measurement: duty cycle                |
-+---------------------------------------+----------------------------------------------+
-| ((measure\_edge))                     | Input measurement: edge detected (1 or -1)   |
-+---------------------------------------+----------------------------------------------+
-| ((measure\_electrical\_conductivity)) | Input measurement: Electrical Conductivity   |
-|                                       | (uS/cm)                                      |
-+---------------------------------------+----------------------------------------------+
-| ((measure\_frequency))                | Input measurement: frequency                 |
-+---------------------------------------+----------------------------------------------+
-| ((measure\_humidity))                 | Input measurement: humidity                  |
-+---------------------------------------+----------------------------------------------+
-| ((measure\_lux))                      | Input measurement: lux                       |
-+---------------------------------------+----------------------------------------------+
-| ((measure\_moisture))                 | Input measurement: moisture                  |
-+---------------------------------------+----------------------------------------------+
-| ((measure\_ph))                       | Input measurement: ph                        |
-+---------------------------------------+----------------------------------------------+
-| ((measure\_pressure))                 | Input measurement: pressure                  |
-+---------------------------------------+----------------------------------------------+
-| ((measure\_pulse\_width))             | Input measurement: pulse width               |
-+---------------------------------------+----------------------------------------------+
-| ((measure\_revolutions))              | Input measurement: RPM                       |
-+---------------------------------------+----------------------------------------------+
-| ((measure\_temperature))              | Input measurement: temperature               |
-+---------------------------------------+----------------------------------------------+
-| ((measure\_temperature\_die))         | Input measurement: temperature (die)         |
-+---------------------------------------+----------------------------------------------+
-| ((measure\_temperature\_object))      | Input measurement: temperature (object)      |
-+---------------------------------------+----------------------------------------------+
-| ((measure\_voltage))                  | Input measurement: voltage                   |
-+---------------------------------------+----------------------------------------------+
-
-Output Action command variables
-'''''''''''''''''''''''''''''''
-
-+------------------------------+----------------------------------------------+
-| Variable                     | Description                                  |
-+==============================+==============================================+
-| ((output\_pin))              | The output pin                               |
-+------------------------------+----------------------------------------------+
-| ((output\_action))           | The state change of the output (turned on =  |
-|                              | 1, turned off = 0)                           |
-+------------------------------+----------------------------------------------+
-| ((output\_duration))         | The number of seconds the output turned on   |
-|                              | for (will return 0 if not applicable)        |
-+------------------------------+----------------------------------------------+
-| ((output\_pwm))              | The PWM duty cycle the output turned on for  |
-|                              | (will return 0 if not applicable)            |
-+------------------------------+----------------------------------------------+
-
-Edge Action command variables
-'''''''''''''''''''''''''''''
-
-+-------------------+--------------------------------------------------------------+
-| Variable          | Description                                                  |
-+===================+==============================================================+
-| ((edge\_state))   | The state of the GPIO pin (on/rising = 1, off/falling = 0)   |
-+-------------------+--------------------------------------------------------------+
+| Output: Duty Cycle    | Turn a PWM output off or on for a duty cycle.   |
++-----------------------+-------------------------------------------------+
+| PID: Pause            | Pause a particular PID controller.              |
++-----------------------+-------------------------------------------------+
+| PID: Hold             | Hold a particular PID controller.               |
++-----------------------+-------------------------------------------------+
+| PID: Resume           | Resume a particular PID controller.             |
++-----------------------+-------------------------------------------------+
+| PID: Set Method       | Set the Method of a particular PID controller.  |
++-----------------------+-------------------------------------------------+
+| PID: Set Setpoint     | Set the Setpoint of a particular PID            |
+|                       | controller.                                     |
++-----------------------+-------------------------------------------------+
 
 LCDs
 ----

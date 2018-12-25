@@ -1549,152 +1549,44 @@ Conditional, Trigger).
   ------------------------------------------------------------------------
   Setting                 Description
   ----------------------- ------------------------------------------------
-  Pause Actions           Pause executing actions for a duration of time
+  Actions: Pause          Pause executing actions for a duration of time
                           (seconds).
 
-  Output (Duration)       Turn a output on, off, or on for a duration of
-                          time.
-
-  Output (Duty Cycle)     Turn a PWM output off or on for a duty cycle.
-
-  Execute Command         Execute a command in the linux shell (as user
-                          mycodo).
+  Camera: Capture Photo   Capture a photo with the selected camera.
 
   Create Note             Create a note containing the conditional
                           statement and actions, using a particular tag.
 
-  Activate Controller     Activate a particular controller.
+  Controller: Activate    Activate a particular controller.
 
-  Deactivate Controller   Deactivate a particular controller.
-
-  PID Pause               Pause a particular PID controller.
-
-  PID Hold                Hold a particular PID controller.
-
-  PID Resume              Resume a particular PID controller.
-
-  PID Set Method          Set the Method of a particular PID controller.
-
-  PID Set Setpoint        Set the Setpoint of a particular PID controller.
+  Controller: Deactivate  Deactivate a particular controller.
 
   Email Notification      Send an email containing the conditional
                           statement and actions.
 
-  LCD Backlight           Turn the LCD backlight on or off. Note: Only
+  Execute Command         Execute a command in the linux shell (as user
+                          mycodo).
+
+  LCD: Backlight          Turn the LCD backlight on or off. Note: Only
                           some LCDs are supported.
 
-  LCD Flash               Start of stop the LCD flashing to indicate an
+  LCD: Flash              Start of stop the LCD flashing to indicate an
                           alert. Note: Only some LCDs are supported.
 
-  Capture Photo           Capture a photo with the selected camera.
-  ------------------------------------------------------------------------
+  Output: Duration        Turn a output on, off, or on for a duration of
+                          time.
 
-Action Command Variables
+  Output: Duty Cycle      Turn a PWM output off or on for a duty cycle.
 
-Commands that are executed by actions can now include variables. To use,
-just place the variable name encased with double parentheses “(())” in
-your command, and it will be replaced with the variable’s value before
-execution. See the tables below for the currently-supported variables.
+  PID: Pause              Pause a particular PID controller.
 
-It is recommended to output a test string to a text file to verify the
-output is as expected, with a command such as the following (for a
-Function using the Raspberry Pi CPU temperature Input as the
-measurement):
+  PID: Hold               Hold a particular PID controller.
 
-    echo "TEST: ((measure_temperature)), ((measure_location)), ((measure_period))" > /home/mycodo/test_measure.txt
+  PID: Resume             Resume a particular PID controller.
 
-Or for an Output Conditional:
+  PID: Set Method         Set the Method of a particular PID controller.
 
-    echo "TEST: ((output_pin)), ((output_action)), ((output_duration)), ((output_pwm))" > /home/mycodo/test_output.txt
-
-Measurement Action command variables
-
-  ---------------------------------------------------------------------------------
-  Variable                              Description
-  ------------------------------------- -------------------------------------------
-  ((measure_location))                  Input location (such as GPIO pin, I2C
-                                        address, etc.)
-
-  ((measure_period))                    The period (seconds) between measurements
-                                        (input, math, or PID)
-
-  ((measure_linux_command))             Input measurement: Linux Command return
-                                        value
-
-  ((measure_altitude))                  Input measurement: altitude
-
-  ((measure_battery))                   Input measurement: battery
-
-  ((measure_boolean))                   Input measurement: boolean
-
-  ((measure_co2))                       Input measurement: CO2
-
-  ((measure_cpu_load_1m))               Input measurement: CPU load (1 min)
-
-  ((measure_cpu_load_5m))               Input measurement: CPU load (5 min)
-
-  ((measure_cpu_load_15m))              Input measurement: CPU load (15 min)
-
-  ((measure_dewpoint))                  Input measurement: dew point
-
-  ((measure_disk_space))                Input measurement: disk space
-
-  ((measure_duty_cycle))                Input measurement: duty cycle
-
-  ((measure_edge))                      Input measurement: edge detected (1 or -1)
-
-  ((measure_electrical_conductivity))   Input measurement: Electrical Conductivity
-                                        (uS/cm)
-
-  ((measure_frequency))                 Input measurement: frequency
-
-  ((measure_humidity))                  Input measurement: humidity
-
-  ((measure_lux))                       Input measurement: lux
-
-  ((measure_moisture))                  Input measurement: moisture
-
-  ((measure_ph))                        Input measurement: ph
-
-  ((measure_pressure))                  Input measurement: pressure
-
-  ((measure_pulse_width))               Input measurement: pulse width
-
-  ((measure_revolutions))               Input measurement: RPM
-
-  ((measure_temperature))               Input measurement: temperature
-
-  ((measure_temperature_die))           Input measurement: temperature (die)
-
-  ((measure_temperature_object))        Input measurement: temperature (object)
-
-  ((measure_voltage))                   Input measurement: voltage
-  ---------------------------------------------------------------------------------
-
-Output Action command variables
-
-  ------------------------------------------------------------------------
-  Variable                     Description
-  ---------------------------- -------------------------------------------
-  ((output_pin))               The output pin
-
-  ((output_action))            The state change of the output (turned on =
-                               1, turned off = 0)
-
-  ((output_duration))          The number of seconds the output turned on
-                               for (will return 0 if not applicable)
-
-  ((output_pwm))               The PWM duty cycle the output turned on for
-                               (will return 0 if not applicable)
-  ------------------------------------------------------------------------
-
-Edge Action command variables
-
-  ------------------------------------------------------------------------
-  Variable          Description
-  ----------------- ------------------------------------------------------
-  ((edge_state))    The state of the GPIO pin (on/rising = 1, off/falling
-                    = 0)
+  PID: Set Setpoint       Set the Setpoint of a particular PID controller.
   ------------------------------------------------------------------------
 
 

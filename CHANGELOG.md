@@ -16,6 +16,7 @@
 ### Miscellaneous
 
  - Change method for detecting 1-wire devices ([#582](https://github.com/kizniche/mycodo/issues/582))
+ - Disable variable replacement in Command Execution Function Action until it can be fixed to work with new measurement system
 
 
 ## 7.0.2 (2018-12-21)

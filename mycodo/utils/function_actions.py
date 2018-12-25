@@ -155,40 +155,41 @@ def trigger_function_actions(
             # Replace string variables with actual values
             command_str = cond_action.do_action_string
 
-            # Replace measurement variables
-            if last_measurement:
-                command_str = command_str.replace(
-                    "((measure_{var}))".format(
-                        var=device_measurement), str(last_measurement))
-            if device and device.period:
-                command_str = command_str.replace(
-                    "((measure_period))", str(device.period))
-            if input_dev:
-                command_str = command_str.replace(
-                    "((measure_location))", str(input_dev.location))
-            if input_dev and device_measurement == input_dev.measurements:
-                command_str = command_str.replace(
-                    "((measure_linux_command))", str(last_measurement))
-
-            # Replace output variables
-            if output:
-                if output.pin:
-                    command_str = command_str.replace(
-                        "((output_pin))", str(output.pin))
-                if output_state:
-                    command_str = command_str.replace(
-                        "((output_action))", str(output_state))
-                if on_duration:
-                    command_str = command_str.replace(
-                        "((output_duration))", str(on_duration))
-                if duty_cycle:
-                    command_str = command_str.replace(
-                        "((output_pwm))", str(duty_cycle))
-
-            # Replace edge variables
-            if edge:
-                command_str = command_str.replace(
-                    "((edge_state))", str(edge))
+            # TODO: Maybe get this working again with the new measurement system
+            # # Replace measurement variables
+            # if last_measurement:
+            #     command_str = command_str.replace(
+            #         "((measure_{var}))".format(
+            #             var=device_measurement), str(last_measurement))
+            # if device and device.period:
+            #     command_str = command_str.replace(
+            #         "((measure_period))", str(device.period))
+            # if input_dev:
+            #     command_str = command_str.replace(
+            #         "((measure_location))", str(input_dev.location))
+            # if input_dev and device_measurement == input_dev.measurements:
+            #     command_str = command_str.replace(
+            #         "((measure_linux_command))", str(last_measurement))
+            #
+            # # Replace output variables
+            # if output:
+            #     if output.pin:
+            #         command_str = command_str.replace(
+            #             "((output_pin))", str(output.pin))
+            #     if output_state:
+            #         command_str = command_str.replace(
+            #             "((output_action))", str(output_state))
+            #     if on_duration:
+            #         command_str = command_str.replace(
+            #             "((output_duration))", str(on_duration))
+            #     if duty_cycle:
+            #         command_str = command_str.replace(
+            #             "((output_pwm))", str(duty_cycle))
+            #
+            # # Replace edge variables
+            # if edge:
+            #     command_str = command_str.replace(
+            #         "((edge_state))", str(edge))
 
             message += " Execute '{com}' ".format(
                 com=command_str)
