@@ -1712,8 +1712,8 @@ def page_data():
     devices_1wire = []
     if os.path.isdir(PATH_1WIRE):
         for each_name in os.listdir(PATH_1WIRE):
-            if 'bus' not in each_name:
-                devices_1wire.append(each_name)
+            if 'bus' not in each_name and '-' is in each_name:
+                devices_1wire.append(each_name.split('-')[1])
 
     return render_template('pages/data.html',
                            and_=and_,
