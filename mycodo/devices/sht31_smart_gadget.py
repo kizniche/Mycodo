@@ -29,7 +29,9 @@ import logging
 import time
 
 import struct
-from bluepy.btle import UUID, Peripheral, DefaultDelegate
+from bluepy.btle import DefaultDelegate
+from bluepy.btle import Peripheral
+from bluepy.btle import UUID
 
 
 class MyDelegate(DefaultDelegate):

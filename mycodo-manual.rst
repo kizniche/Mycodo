@@ -240,6 +240,26 @@ fast-switching solid state relay, an
 
 --------------
 
+*I have a PID controller that uses one temperature sensor. If this sensor stops working, my entire PID controller stops working. Is there a way to prevent this by setting up a second sensor to be used in case the first one fails?*
+
+Yes, you can use as many sensors as you would like to create a redundant system so your PID doesn't stop working if one or more sensors fail. To do this, follow the below instructions:
+
+1. Add and activate all your sensors. For this example, we will use three temperature sensors, Sensor1, Sensor2, and Sensor3, that return measurements in degrees Celsius.
+2. Go to the Setup -> Data page and add the Math controller "Redundancy".
+3. In the options of the Redundancy controller, set the Period, Start Offset, and Max Age.
+4. In the options of the Redundancy controller, select Sensor1, Sensor2, and Sensor3 for the Input option and click Save.
+5. In the options of the Redundancy controller, change the order you wish to use the sensors under Order of Use. For this example, we will use the default order (Sensor1, Sensor2, Sensor3).
+6. In the options of the Redundancy controller, under Measurement Settings, select Celsius for the Measurement Unit and click Save under Measurement Settings.
+7. Activate the Redundancy Math controller.
+8. Go to the Live page and verify the Redundancy Math controller is working correctly by returning a value from one of the three selected Inputs. If the first sensor is working correctly, it should return this value. You can deactivate the first sensor (mimicking the first sensor stopped working) and see if the second sensor's value is then returned.
+9. Go to the Setup -> Functions page and select the new Redundancy Math controller for the PID Measurement option.
+
+The PID controller will now use the measurement returned from the Redundancy Math controller, which in turn will acquire its measurement in the following way:
+
+If a measurement can be found within the Max Age for Sensor1, the measurement for Sensor1 will be returned. If a measurement from Sensor1 could not be acquired, and if a measurement can be found within the Max Age for Sensor2, the measurement for Sensor2 will be returned. If a measurement from Sensor2 could not be acquired, and if a measurement can be found within the Max Age for Sensor3, the measurement for Sensor3 will be returned. If a measurement from Sensor3 could not be acquired, then the Redundancy Math controller will not return a measurement at all (indicating all three sensors are not working). It is advised to set up a Conditional to send a notification email to yourself if one or more measurements are unable to be acquired.
+
+--------------
+
 Upgrading
 =========
 

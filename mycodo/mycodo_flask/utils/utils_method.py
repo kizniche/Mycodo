@@ -209,6 +209,9 @@ def method_add(form_add_method):
         controller=gettext("Method"))
     error = []
 
+    start_time = None
+    end_time = None
+
     method = Method.query.filter(
         Method.unique_id == form_add_method.method_id.data).first()
     display_order = csv_to_list_of_str(method.method_order)
@@ -251,15 +254,19 @@ def method_add(form_add_method):
 
         if form_add_method.method_select.data == 'setpoint':
             if method.method_type == 'Date':
-                start_time = datetime.strptime(form_add_method.time_start.data,
-                                               '%Y-%m-%d %H:%M:%S')
-                end_time = datetime.strptime(form_add_method.time_end.data,
-                                             '%Y-%m-%d %H:%M:%S')
+                start_time = datetime.strptime(
+                    form_add_method.time_start.data,
+                    '%Y-%m-%d %H:%M:%S')
+                end_time = datetime.strptime(
+                    form_add_method.time_end.data,
+                    '%Y-%m-%d %H:%M:%S')
             elif method.method_type == 'Daily':
-                start_time = datetime.strptime(form_add_method.daily_time_start.data,
-                                               '%H:%M:%S')
-                end_time = datetime.strptime(form_add_method.daily_time_end.data,
-                                             '%H:%M:%S')
+                start_time = datetime.strptime(
+                    form_add_method.daily_time_start.data,
+                    '%H:%M:%S')
+                end_time = datetime.strptime(
+                    form_add_method.daily_time_end.data,
+                    '%H:%M:%S')
 
             if method.method_type in ['Date', 'Daily']:
                 # Check if the start time comes after the last entry's end time
@@ -272,13 +279,18 @@ def method_add(form_add_method):
 
                 if last_method is not None:
                     if method.method_type == 'Date':
-                        last_method_end_time = datetime.strptime(last_method.time_end,
-                                                                 '%Y-%m-%d %H:%M:%S')
+                        last_method_end_time = datetime.strptime(
+                            last_method.time_end,
+                            '%Y-%m-%d %H:%M:%S')
                     elif method.method_type == 'Daily':
-                        last_method_end_time = datetime.strptime(last_method.time_end,
-                                                                 '%H:%M:%S')
+                        last_method_end_time = datetime.strptime(
+                            last_method.time_end,
+                            '%H:%M:%S')
+                    else:
+                        last_method_end_time = None
 
-                    if start_time < last_method_end_time:
+                    if (start_time and last_method_end_time and
+                            start_time < last_method_end_time):
                         flash(gettext("The new entry start time (%(st)s) "
                                       "cannot overlap the last entry's end "
                                       "time (%(et)s). Note: They may be the "
@@ -290,19 +302,23 @@ def method_add(form_add_method):
 
         elif form_add_method.method_select.data == 'output':
             if method.method_type == 'Date':
-                start_time = datetime.strptime(form_add_method.output_time.data,
-                                               '%Y-%m-%d %H:%M:%S')
+                start_time = datetime.strptime(
+                    form_add_method.output_time.data,
+                    '%Y-%m-%d %H:%M:%S')
             elif method.method_type == 'Daily':
-                start_time = datetime.strptime(form_add_method.output_daily_time.data,
-                                               '%H:%M:%S')
+                start_time = datetime.strptime(
+                    form_add_method.output_daily_time.data,
+                    '%H:%M:%S')
 
         add_method_data = MethodData()
         add_method_data.method_id = form_add_method.method_id.data
 
         if method.method_type == 'Date':
             if form_add_method.method_select.data == 'setpoint':
-                add_method_data.time_start = start_time.strftime('%Y-%m-%d %H:%M:%S')
-                add_method_data.time_end = end_time.strftime('%Y-%m-%d %H:%M:%S')
+                add_method_data.time_start = start_time.strftime(
+                    '%Y-%m-%d %H:%M:%S')
+                add_method_data.time_end = end_time.strftime(
+                    '%Y-%m-%d %H:%M:%S')
             if form_add_method.method_select.data == 'output':
                 add_method_data.time_start = form_add_method.output_time.data
         elif method.method_type == 'Daily':
@@ -465,8 +481,6 @@ def method_mod(form_mod_method):
                 method_data.time_start = form_mod_method.output_time.data
             elif method.method_type == 'Duration':
                 method_data.duration_sec = form_mod_method.duration.data
-                if form_mod_method.duration_sec.data == 0:
-                    method_data.duration_end = form_mod_method.duration_end.data
             if form_mod_method.output_id.data == '':
                 method_data.output_id = None
             else:
@@ -488,6 +502,7 @@ def method_mod(form_mod_method):
             db.session.commit()
 
     except Exception as except_msg:
+        logger.exception(1)
         error.append(except_msg)
     flash_success_errors(error, action, url_for('routes_method.method_list'))
 

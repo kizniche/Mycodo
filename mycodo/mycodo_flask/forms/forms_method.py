@@ -89,8 +89,9 @@ class MethodAdd(FlaskForm):
         lazy_gettext('Time YYYY-MM-DD HH:MM:SS'),
         render_kw={"placeholder": "YYYY-MM-DD HH:MM:SS"}
     )
-    output_duration = IntegerField(
-        lazy_gettext('Duration/Duty Cycle'), widget=NumberInput())
+    output_duration = DecimalField(
+        lazy_gettext('Duration/Duty Cycle'),
+        widget=NumberInput(step='any'))
     output_id = StringField(lazy_gettext('Output'),)
     output_state = SelectField(
         lazy_gettext('Relay State'),
@@ -151,8 +152,9 @@ class MethodMod(FlaskForm):
         widget=NumberInput(step='any'))
     output_id = StringField(lazy_gettext('Output'))
     output_state = StringField(lazy_gettext('State'))
-    output_duration = IntegerField(
-        lazy_gettext('Duration'), widget=NumberInput())
+    output_duration = DecimalField(
+        lazy_gettext('Duration/Duty Cycle'),
+        widget=NumberInput(step='any'))
     rename = SubmitField(lazy_gettext('Rename'))
     save = SubmitField(lazy_gettext('Save'))
     Delete = SubmitField(lazy_gettext('Delete'))

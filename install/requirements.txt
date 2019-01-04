@@ -2,38 +2,38 @@
 # Command: sudo apt-get install python3 python3-dev
 
 # Testing
-testfixtures == 6.0.2
+testfixtures == 6.4.1
 mock == 2.0.0
-pytest == 3.8.0
-factory_boy == 2.8.1
-webtest == 2.0.29
+pytest == 4.0.2
+factory_boy == 2.11.1
+webtest == 2.0.32
 
-alembic == 0.9.9
+alembic == 1.0.5
 argparse == 1.4.0
-bcrypt == 3.1.4
-daemonize == 2.4.7
+bcrypt == 3.1.5
+daemonize == 2.5.0
 Flask == 1.0.2
-Flask_Babel == 0.11.2
+Flask_Babel == 0.12.2
 Flask_Compress == 1.4.0
-Flask_CSV == 1.1.0
-Flask_InfluxDB == 0.1
+Flask_CSV == 1.2.0
+Flask_InfluxDB == 0.2
 Flask_Limiter == 1.0.1
 Flask_Login == 0.4.1
 Flask_SQLAlchemy == 2.3.2
-Flask_SSLify
+Flask_SSLify == 0.1.5
 Flask_WTF == 0.14.2
 geocoder == 1.38.1
-gunicorn == 19.8.1
+gunicorn == 19.9.0
 influxdb == 5.0.0
 locket == 0.2.0
 pyserial
-python-dateutil == 2.7.3
+python-dateutil == 2.7.5
 requests
-rpyc == 3.4.4
-SQLAlchemy == 1.2.7
-WTForms == 2.1
+rpyc == 4.0.2
+SQLAlchemy == 1.2.15
+WTForms == 2.2.1
 
 # Devices and Sensors
 picamera == 1.13
 RPi.GPIO
-smbus2 == 0.2.1
+smbus2 == 0.2.2
