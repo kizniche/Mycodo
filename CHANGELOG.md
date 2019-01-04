@@ -1,3 +1,10 @@
+## 7.0.4 (Unreleased)
+
+### Features
+
+ - Add ability to delete .dependency and .upgrade files from the web UI ([#590](https://github.com/kizniche/mycodo/issues/590))
+
+
 ## 7.0.3 (2018-12-25)
 
 ### Bugfixes

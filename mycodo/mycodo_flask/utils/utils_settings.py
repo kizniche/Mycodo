@@ -14,7 +14,9 @@ from flask_babel import gettext
 from sqlalchemy import and_
 from sqlalchemy import or_
 
+from mycodo.config import DEPENDENCY_INIT_FILE
 from mycodo.config import INSTALL_DIRECTORY
+from mycodo.config import UPGRADE_INIT_FILE
 from mycodo.config_devices_units import MEASUREMENTS
 from mycodo.config_devices_units import UNITS
 from mycodo.databases.models import Camera
@@ -1241,6 +1243,32 @@ def settings_diagnostic_delete_outputs():
                 db.session.commit()
             display_order.output = ''
             db.session.commit()
+        except Exception as except_msg:
+            error.append(except_msg)
+
+    flash_success_errors(error, action, url_for('routes_settings.settings_diagnostic'))
+
+
+def settings_diagnostic_delete_file(delete_type):
+    action = '{action} {controller}'.format(
+        action=gettext("Delete"),
+        controller=gettext("File"))
+    error = []
+
+    if not error:
+        try:
+            file_remove = None
+            if delete_type == 'dependency':
+                file_remove = os.path.abspath(DEPENDENCY_INIT_FILE)
+            elif delete_type == 'upgrade':
+                file_remove = os.path.abspath(UPGRADE_INIT_FILE)
+            if file_remove:
+                if os.path.isfile(file_remove):
+                    os.remove(file_remove)
+                else:
+                    error.append("File not found: {}".format(file_remove))
+            else:
+                error.append("Unknown file: {}".format(delete_type))
         except Exception as except_msg:
             error.append(except_msg)
 
