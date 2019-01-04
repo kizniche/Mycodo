@@ -1,5 +1,9 @@
 ## 7.0.4 (Unreleased)
 
+### Bugfixes
+
+ - Fix 1-wire address configuration issue ([#582](https://github.com/kizniche/mycodo/issues/582))
+
 ### Features
 
  - Add ability to delete .dependency and .upgrade files from the web UI ([#590](https://github.com/kizniche/mycodo/issues/590))
