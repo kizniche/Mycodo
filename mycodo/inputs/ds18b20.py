@@ -1,8 +1,28 @@
 # coding=utf-8
 import logging
+import subprocess
 import time
 
+from flask_babel import lazy_gettext
+
 from mycodo.inputs.base_input import AbstractInput
+
+
+def constraints_pass_measure_range(mod_input, value):
+    """
+    Check if the user input is acceptable
+    :param mod_input: SQL object with user-saved Input options
+    :param value: str
+    :return: tuple: (bool, list of strings)
+    """
+    errors = []
+    all_passed = True
+    # Ensure valid range is selected
+    if value not in ['w1thermsensor', 'ow_shell']:
+        all_passed = False
+        errors.append("Invalid range")
+    return all_passed, errors, mod_input
+
 
 # Measurements
 measurements_dict = {
@@ -22,6 +42,7 @@ INPUT_INFORMATION = {
 
     'options_enabled': [
         'location',
+        'custom_options',
         'resolution',
         'period',
         'pre_output'
@@ -29,7 +50,8 @@ INPUT_INFORMATION = {
     'options_disabled': ['interface'],
 
     'dependencies_module': [
-        ('pip-pypi', 'w1thermsensor', 'w1thermsensor')
+        ('pip-pypi', 'w1thermsensor', 'w1thermsensor'),
+        ('apt', 'ow-shell', 'ow-shell'),
     ],
 
     'interfaces': ['1WIRE'],
@@ -40,6 +62,21 @@ INPUT_INFORMATION = {
         (10, '10-bit, 0.25 °C, 187.5 ms'),
         (11, '11-bit, 0.125 °C, 375 ms'),
         (12, '12-bit, 0.0625 °C, 750 ms')
+    ],
+
+    'custom_options': [
+        {
+            'id': 'library',
+            'type': 'select',
+            'default_value': 'w1thermsensor',
+            'options_select': [
+                ('w1thermsensor', 'w1thermsensor'),
+                ('ow_shell', 'ow-shell')
+            ],
+            'constraints_pass': constraints_pass_measure_range,
+            'name': lazy_gettext('Library'),
+            'phrase': lazy_gettext('Select the library used to communicate')
+        }
     ]
 }
 
@@ -57,12 +94,25 @@ class InputModule(AbstractInput):
             self.logger = logging.getLogger(
                 "mycodo.ds18b20_{id}".format(id=input_dev.unique_id.split('-')[0]))
 
+            self.interface = input_dev.interface
             self.location = input_dev.location
             self.resolution = input_dev.resolution
-            self.sensor = W1ThermSensor(W1ThermSensor.THERM_SENSOR_DS18B20,
-                                        self.location)
-            if self.resolution:
-                self.sensor.set_precision(self.resolution)
+            self.library = None
+
+            if input_dev.custom_options:
+                for each_option in input_dev.custom_options.split(';'):
+                    option = each_option.split(',')[0]
+                    value = each_option.split(',')[1]
+                    if option == 'library':
+                        self.library = value
+
+            if self.library == 'w1thermsensor':
+                self.sensor = W1ThermSensor(W1ThermSensor.THERM_SENSOR_DS18B20,
+                                            self.location)
+                if self.resolution:
+                    self.sensor.set_precision(self.resolution)
+            elif self.library == 'ow_shell':
+                pass
 
     def get_measurement(self):
         """ Gets the DS18B20's temperature in Celsius """
@@ -72,7 +122,24 @@ class InputModule(AbstractInput):
         n = 2
         for i in range(n):
             try:
-                temperature = self.sensor.get_temperature()
+                if self.library == 'w1thermsensor':
+                    temperature = self.sensor.get_temperature()
+                elif self.library == 'ow_shell':
+                    command = 'owread /{id}/temperature; echo'.format(
+                        id=self.location)
+                    owread = subprocess.Popen(
+                        command, stdout=subprocess.PIPE, shell=True)
+                    (owread_output, _) = owread.communicate()
+                    owread.wait()
+                    if owread_output:
+                        try:
+                            self.logger.error("TEST00: '{}', '{}', '{}'".format(
+                                owread_output,
+                                owread_output.decode("latin1"),
+                                float(owread_output.decode("latin1"))))
+                            temperature = float(owread_output.decode("latin1"))
+                        except Exception:
+                            self.logger.exception(1)
                 break
             except Exception as e:
                 if i == n:

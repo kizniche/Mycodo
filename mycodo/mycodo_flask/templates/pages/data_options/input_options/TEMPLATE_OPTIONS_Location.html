@@ -4,27 +4,38 @@
 
 <div class="col-auto">
 
-  {% if 'location' in dict_inputs[each_input.device]['options_enabled'] and
-        each_input.interface == '1WIRE' and
-        dict_inputs[each_input.device]['w1thermsensor_detect_1wire']
-  %}
+  {% if 'location' in dict_inputs[each_input.device]['options_enabled'] %}
+
+    {% if each_input.interface == '1WIRE' %}
 
   <label class="control-label">{{tooltips_input['w1thermsensor_id']['title']}}</label>
   <div>
     <select class="form-control form-tooltip form-dropdown" data-placement="top" id="location" name="location" title="{{tooltips_input['w1thermsensor_id']['phrase']}}">
-      {% if devices_1wire != [] %}
+      {% if custom_options_values[each_input.unique_id]['library'] == 'w1thermsensor' %}
+        {% if devices_1wire_w1thermsensor != [] %}
         <option value=""></option>
-        {% for each_1wire_dev in devices_1wire %}
-          <option value="{{each_1wire_dev}}"{% if each_input.location == each_1wire_dev %} selected{% endif %}>{{each_1wire_dev}}</option>
-        {% endfor %}
-      {% else %}
+          {% for each_1wire_dev, each_1wire_name in devices_1wire_w1thermsensor %}
+          <option value="{{each_1wire_dev}}"{% if each_input.location == each_1wire_dev %} selected{% endif %}>{{each_1wire_name}}</option>
+          {% endfor %}
+        {% else %}
         <option value="">None Detected</option>
+        {% endif %}
+      {% elif custom_options_values[each_input.unique_id]['library'] == 'ow_shell' %}
+        {% if devices_1wire_ow_shell != [] %}
+        <option value=""></option>
+          {% for each_1wire_dev, each_1wire_name in devices_1wire_ow_shell %}
+          <option value="{{each_1wire_dev}}"{% if each_input.location == each_1wire_dev %} selected{% endif %}>{{each_1wire_name}}</option>
+          {% endfor %}
+        {% else %}
+        <option value="">None Detected</option>
+        {% endif %}
       {% endif %}
     </select>
   </div>
 
-  {% elif 'location' in dict_inputs[each_input.device]['options_enabled'] and
-          dict_inputs[each_input.device]['location']['options']|length > 1 %}
+    {% elif 'location' in dict_inputs[each_input.device] and
+            dict_inputs[each_input.device]['location']['options']|length > 1
+    %}
 
   <label class="control-label">{{_(dict_inputs[each_input.device]['location']['title'])}}</label>
   <div>
@@ -35,6 +46,8 @@
       {% endfor %}
     </select>
   </div>
+
+    {% endif %}
 
   {% else %}
 

@@ -21,7 +21,7 @@
       <div class="col-auto">
         {{form_camera.library.label(class_='control-label')}}
         <div>
-          <select class="form-control" id="library" name="library" title="" data-original-title="Select the library to use to communicate with the camera">
+          <select class="form-control" id="library" name="library" title="" data-original-title="Select the library used to communicate">
             {%- for each_library in camera_libraries -%}
               <option value="{{each_library}}">{{each_library}}</option>
             {%- endfor -%}

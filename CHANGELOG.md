@@ -2,11 +2,11 @@
 
 ### Bugfixes
 
- - Fix 1-wire address configuration issue ([#582](https://github.com/kizniche/mycodo/issues/582))
- - Fix issue with converted measurements being used with Conditionals ([#592](https://github.com/kizniche/mycodo/issues/592))
+ - Fix issue with converted measurements unable to be used with Conditionals ([#592](https://github.com/kizniche/mycodo/issues/592))
 
 ### Features
 
+ - Add OWFS support for 1-wire devices (currently only testing DS18B20) ([#582](https://github.com/kizniche/mycodo/issues/582))
  - Add ability to delete .dependency and .upgrade files from the web UI ([#590](https://github.com/kizniche/mycodo/issues/590))
 
 ### Miscellaneous

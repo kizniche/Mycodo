@@ -1711,14 +1711,14 @@ def page_data():
         break
 
     # If DS18B20 inputs added, compile a list of detected inputs
-    devices_1wire = []
+    devices_1wire_w1thermsensor = []
     if os.path.isdir(PATH_1WIRE):
         for each_name in os.listdir(PATH_1WIRE):
             if 'bus' not in each_name and '-' in each_name:
-                devices_1wire.append(each_name.split('-')[1])
+                devices_1wire_w1thermsensor.append(each_name.split('-')[1])
 
     # Add 1-wire devices from ow-shell (if installed)
-    ow_list = []
+    devices_1wire_ow_shell = []
     if not dpkg_package_exists('ow-shell'):
         logger.debug("Package 'ow-shell' not found")
     else:
@@ -1727,12 +1727,10 @@ def page_data():
             test_cmd = subprocess.check_output(['owdir']).splitlines()
             for each_ow in test_cmd:
                 str_ow = re.sub("\ |\/|\'", "", each_ow.decode("utf-8"))  # Strip / and '
-                if '.' in str_ow and len(str_ow.split('.')[1]) == 12:
-                    str_1wire = str_ow.split('.')[1]
-                    ow_list.append(str_1wire)
+                if '.' in str_ow and len(str_ow) == 15:
+                    devices_1wire_ow_shell.append(str_ow)
         except Exception:
             logger.exception("Error finding 1-wire devices with 'owdir'")
-    devices_1wire += ow_list
 
     return render_template('pages/data.html',
                            and_=and_,
@@ -1776,7 +1774,8 @@ def page_data():
                            table_math=Math,
                            tooltips_input=TOOLTIPS_INPUT,
                            user=user,
-                           devices_1wire=devices_1wire)
+                           devices_1wire_ow_shell=devices_1wire_ow_shell,
+                           devices_1wire_w1thermsensor=devices_1wire_w1thermsensor)
 
 
 @blueprint.route('/usage')
