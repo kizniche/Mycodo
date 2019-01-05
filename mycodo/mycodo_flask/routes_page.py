@@ -950,8 +950,7 @@ def page_info():
                            uname=uname_output,
                            uptime=uptime_output,
                            virtualenv_daemon=virtualenv_daemon,
-                           virtualenv_flask=virtualenv_flask,
-                           test=test)
+                           virtualenv_flask=virtualenv_flask)
 
 
 @blueprint.route('/lcd', methods=('GET', 'POST'))
