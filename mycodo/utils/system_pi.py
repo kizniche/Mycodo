@@ -47,6 +47,13 @@ def test_python_execute(code_string):
         return 0, None
 
 
+def dpkg_package_exists(package_name):
+    cmd = 'dpkg -l {}'.format(package_name)
+    _, _, stat = cmd_output(cmd)
+    if not stat:
+        return True
+
+
 def return_measurement_info(device_measurement, conversion):
     try:
         if (device_measurement and

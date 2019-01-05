@@ -14,6 +14,7 @@ from importlib import import_module
 
 import flask_login
 import os
+import re
 from flask import current_app
 from flask import flash
 from flask import redirect
@@ -108,6 +109,7 @@ from mycodo.utils.sunriseset import Sun
 from mycodo.utils.system_pi import add_custom_measurements
 from mycodo.utils.system_pi import add_custom_units
 from mycodo.utils.system_pi import csv_to_list_of_str
+from mycodo.utils.system_pi import dpkg_package_exists
 from mycodo.utils.system_pi import list_to_csv
 from mycodo.utils.system_pi import return_measurement_info
 from mycodo.utils.tools import return_output_usage
@@ -948,7 +950,8 @@ def page_info():
                            uname=uname_output,
                            uptime=uptime_output,
                            virtualenv_daemon=virtualenv_daemon,
-                           virtualenv_flask=virtualenv_flask)
+                           virtualenv_flask=virtualenv_flask,
+                           test=test)
 
 
 @blueprint.route('/lcd', methods=('GET', 'POST'))
@@ -1714,6 +1717,23 @@ def page_data():
         for each_name in os.listdir(PATH_1WIRE):
             if 'bus' not in each_name and '-' in each_name:
                 devices_1wire.append(each_name.split('-')[1])
+
+    # Add 1-wire devices from ow-shell (if installed)
+    ow_list = []
+    if not dpkg_package_exists('ow-shell'):
+        logger.debug("Package 'ow-shell' not found")
+    else:
+        logger.debug("Package 'ow-shell' found")
+        try:
+            test_cmd = subprocess.check_output(['owdir']).splitlines()
+            for each_ow in test_cmd:
+                str_ow = re.sub("\ |\/|\'", "", each_ow.decode("utf-8"))  # Strip / and '
+                if '.' in str_ow and len(str_ow.split('.')[1]) == 12:
+                    str_1wire = str_ow.split('.')[1]
+                    ow_list.append(str_1wire)
+        except Exception:
+            logger.exception("Error finding 1-wire devices with 'owdir'")
+    devices_1wire += ow_list
 
     return render_template('pages/data.html',
                            and_=and_,

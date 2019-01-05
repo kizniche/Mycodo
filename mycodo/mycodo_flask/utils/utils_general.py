@@ -38,7 +38,7 @@ from mycodo.mycodo_flask.extensions import db
 from mycodo.utils.inputs import parse_input_information
 from mycodo.utils.system_pi import add_custom_measurements
 from mycodo.utils.system_pi import add_custom_units
-from mycodo.utils.system_pi import cmd_output
+from mycodo.utils.system_pi import dpkg_package_exists
 from mycodo.utils.system_pi import return_measurement_info
 
 logger = logging.getLogger(__name__)
@@ -765,7 +765,11 @@ def return_dependencies(device_type):
             for each_device, each_dict in each_section[device_type].items():
                 if each_device == 'dependencies_module':
                     for (install_type, package, install_id) in each_dict:
-                        entry = (package, '{0} {1}'.format(install_type, install_id), install_type, install_id)
+                        entry = (
+                            package, '{0} {1}'.format(install_type, install_id),
+                            install_type,
+                            install_id
+                        )
                         if install_type in ['pip-pypi', 'pip-git']:
                             try:
                                 module = importlib.util.find_spec(package)
@@ -778,15 +782,14 @@ def return_dependencies(device_type):
                                 if entry not in unmet_deps:
                                     unmet_deps.append(entry)
                         elif install_type == 'apt':
-                            cmd = 'dpkg -l {}'.format(package)
-                            _, _, stat = cmd_output(cmd)
-                            if stat and entry not in unmet_deps:
+                            if (not dpkg_package_exists(package) and
+                                    entry not in unmet_deps):
                                 unmet_deps.append(entry)
                             else:
                                 met_deps = True
                         elif install_type == 'internal':
                             if package.startswith('file-exists'):
-                                filepath = package.split(' ')[1]
+                                filepath = package.split(' ', 1)[1]
                                 if not os.path.isfile(filepath):
                                     if entry not in unmet_deps:
                                         unmet_deps.append(entry)
