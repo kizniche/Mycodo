@@ -14,8 +14,8 @@
       {% if custom_options_values[each_input.unique_id]['library'] == 'w1thermsensor' %}
         {% if devices_1wire_w1thermsensor != [] %}
         <option value=""></option>
-          {% for each_1wire_dev, each_1wire_name in devices_1wire_w1thermsensor %}
-          <option value="{{each_1wire_dev}}"{% if each_input.location == each_1wire_dev %} selected{% endif %}>{{each_1wire_name}}</option>
+          {% for each_1wire_dev in devices_1wire_w1thermsensor %}
+          <option value="{{each_1wire_dev}}"{% if each_input.location == each_1wire_dev %} selected{% endif %}>{{each_1wire_dev}}</option>
           {% endfor %}
         {% else %}
         <option value="">None Detected</option>
@@ -23,8 +23,8 @@
       {% elif custom_options_values[each_input.unique_id]['library'] == 'ow_shell' %}
         {% if devices_1wire_ow_shell != [] %}
         <option value=""></option>
-          {% for each_1wire_dev, each_1wire_name in devices_1wire_ow_shell %}
-          <option value="{{each_1wire_dev}}"{% if each_input.location == each_1wire_dev %} selected{% endif %}>{{each_1wire_name}}</option>
+          {% for each_1wire_dev in devices_1wire_ow_shell %}
+          <option value="{{each_1wire_dev}}"{% if each_input.location == each_1wire_dev %} selected{% endif %}>{{each_1wire_dev}}</option>
           {% endfor %}
         {% else %}
         <option value="">None Detected</option>
