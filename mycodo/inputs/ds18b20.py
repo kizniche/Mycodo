@@ -125,21 +125,31 @@ class InputModule(AbstractInput):
                 if self.library == 'w1thermsensor':
                     temperature = self.sensor.get_temperature()
                 elif self.library == 'ow_shell':
-                    command = 'owread /{id}/temperature; echo'.format(
-                        id=self.location)
-                    owread = subprocess.Popen(
-                        command, stdout=subprocess.PIPE, shell=True)
-                    (owread_output, _) = owread.communicate()
-                    owread.wait()
-                    if owread_output:
-                        try:
+                    str_temperature = 'temperature'
+                    if self.resolution == 9:
+                        str_temperature = 'temperature9'
+                    if self.resolution == 10:
+                        str_temperature = 'temperature10'
+                    if self.resolution == 11:
+                        str_temperature = 'temperature11'
+                    if self.resolution == 12:
+                        str_temperature = 'temperature12'
+                    try:
+                        command = 'owread /{id}/{temp}; echo'.format(
+                            id=self.location,
+                            temp=str_temperature)
+                        owread = subprocess.Popen(
+                            command, stdout=subprocess.PIPE, shell=True)
+                        (owread_output, _) = owread.communicate()
+                        owread.wait()
+                        if owread_output:
                             self.logger.error("TEST00: '{}', '{}', '{}'".format(
                                 owread_output,
                                 owread_output.decode("latin1"),
                                 float(owread_output.decode("latin1"))))
                             temperature = float(owread_output.decode("latin1"))
-                        except Exception:
-                            self.logger.exception(1)
+                    except Exception:
+                        self.logger.exception(1)
                 break
             except Exception as e:
                 if i == n:
