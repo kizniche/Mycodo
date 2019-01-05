@@ -37,7 +37,8 @@ from bluepy.btle import UUID
 class MyDelegate(DefaultDelegate):
     def __init__(self, parent):
         DefaultDelegate.__init__(self)
-        self.logger = logging.getLogger("mycodo.device.sht31_smart_gadget.delegate")
+        self.logger = logging.getLogger(
+            "mycodo.device.sht31_smart_gadget.delegate")
         self.parent = parent
         self.sustainedNotifications = {
             'Temp': 0,
@@ -45,9 +46,11 @@ class MyDelegate(DefaultDelegate):
         }
 
     def handleNotification(self, cHandle, data):
-        # data format for logging data: runnumber (4 bytes (unsigned int)) + N * value (N * 4 bytes (float32); while: 1 <= N <=4 )
+        # data format for logging data:
+        # runnumber (4 bytes (unsigned int)) + N * value (N * 4 bytes (float32); while: 1 <= N <=4 )
         # data format for non-logging data: value (4 bytes (float32))
-        unpackedData = list(struct.unpack('I' + str(int((len(data) - 4) / 4)) + 'f', data))
+        unpackedData = list(struct.unpack(
+            'I' + str(int((len(data) - 4) / 4)) + 'f', data))
         runnumber = unpackedData.pop(0)
 
         typeData = ''
@@ -62,7 +65,8 @@ class MyDelegate(DefaultDelegate):
             for measurement in unpackedData:
                 # The first measurement is the most recent (runnumber = 1),
                 # which has the timestamp equal to self.parent.newestTimeStampMs
-                timestamp = self.parent.newestTimeStampMs - ((runnumber - 1) * self.parent.loggerInterval)
+                timestamp = self.parent.newestTimeStampMs - (
+                        (runnumber - 1) * self.parent.loggerInterval)
                 self.parent.loggedData[typeData][timestamp] = measurement
                 runnumber += 1
         else:
@@ -79,7 +83,8 @@ class MyDelegate(DefaultDelegate):
 
 class SHT31:
     def __init__(self, addr=None, iface=None):
-        self.logger = logging.getLogger("mycodo.device.sht31_smart_gadget.sht31")
+        self.logger = logging.getLogger(
+            "mycodo.device.sht31_smart_gadget.sht31")
         self.loggedData = {'Temp': {}, 'Humi': {}}
         self.newestTimeStampMs = 0
         self.loggerInterval = 0
@@ -93,33 +98,33 @@ class SHT31:
 
     def getCharacteristics(self):
         self.characteristics = {
-            # READ WRITE
-            'DeviceName':
-                self.peripheral.getCharacteristics(uuid=UUID("00002a00-0000-1000-8000-00805f9b34fb"))[0],
-            # READ NOTIFY
-            'Battery':
-                self.peripheral.getCharacteristics(uuid=UUID(0x2A19))[0],
-            # WRITE
-            'SyncTimeMs':
-                self.peripheral.getCharacteristics(uuid=UUID("0000f235-b38d-4985-720e-0f993a68ee41"))[0],
-            # READ WRITE
-            'OldestTimeStampMs':
-                self.peripheral.getCharacteristics(uuid=UUID("0000f236-b38d-4985-720e-0f993a68ee41"))[0],
-            # READ WRITE
-            'NewestTimeStampMs':
-                self.peripheral.getCharacteristics(uuid=UUID("0000f237-b38d-4985-720e-0f993a68ee41"))[0],
-            # WRITE NOTIFY
-            'StartLoggerDownload':
-                self.peripheral.getCharacteristics(uuid=UUID("0000f238-b38d-4985-720e-0f993a68ee41"))[0],
-            # READ NOTIFY
-            'LoggerIntervalMs':
-                self.peripheral.getCharacteristics(uuid=UUID("0000f239-b38d-4985-720e-0f993a68ee41"))[0],
-            # READ NOTIFY
-            'Humidity':
-                self.peripheral.getCharacteristics(uuid=UUID("00001235-b38d-4985-720e-0f993a68ee41"))[0],
-            # READ NOTIFY
-            'Temperature':
-                self.peripheral.getCharacteristics(uuid=UUID("00002235-b38d-4985-720e-0f993a68ee41"))[0]
+            'DeviceName':  # READ WRITE
+                self.peripheral.getCharacteristics(
+                    uuid=UUID("00002a00-0000-1000-8000-00805f9b34fb"))[0],
+            'Battery':  # READ NOTIFY
+                self.peripheral.getCharacteristics(
+                    uuid=UUID(0x2A19))[0],
+            'SyncTimeMs':  # WRITE
+                self.peripheral.getCharacteristics(
+                    uuid=UUID("0000f235-b38d-4985-720e-0f993a68ee41"))[0],
+            'OldestTimeStampMs':  # READ WRITE
+                self.peripheral.getCharacteristics(
+                    uuid=UUID("0000f236-b38d-4985-720e-0f993a68ee41"))[0],
+            'NewestTimeStampMs':  # READ WRITE
+                self.peripheral.getCharacteristics(
+                    uuid=UUID("0000f237-b38d-4985-720e-0f993a68ee41"))[0],
+            'StartLoggerDownload':  # WRITE NOTIFY
+                self.peripheral.getCharacteristics(
+                    uuid=UUID("0000f238-b38d-4985-720e-0f993a68ee41"))[0],
+            'LoggerIntervalMs':  # READ NOTIFY
+                self.peripheral.getCharacteristics(
+                    uuid=UUID("0000f239-b38d-4985-720e-0f993a68ee41"))[0],
+            'Humidity':  # READ NOTIFY
+                self.peripheral.getCharacteristics(
+                    uuid=UUID("00001235-b38d-4985-720e-0f993a68ee41"))[0],
+            'Temperature':  # READ NOTIFY
+                self.peripheral.getCharacteristics(
+                    uuid=UUID("00002235-b38d-4985-720e-0f993a68ee41"))[0]
         }
 
     def connect(self, addr, iface=None):
@@ -137,7 +142,8 @@ class SHT31:
         return self.characteristics['DeviceName'].write(name.encode('ascii'))
 
     def readTemperature(self):
-        return struct.unpack('f', self.characteristics['Temperature'].read())[0]
+        return struct.unpack(
+            'f', self.characteristics['Temperature'].read())[0]
 
     def setTemperatureNotification(self, enabled):
         if enabled:
@@ -150,7 +156,8 @@ class SHT31:
                 int(0).to_bytes(1, byteorder='little'))
 
     def readHumidity(self):
-        return struct.unpack('f', self.characteristics['Humidity'].read())[0]
+        return struct.unpack(
+            'f', self.characteristics['Humidity'].read())[0]
 
     def setHumidityNotification(self, enabled):
         if enabled:
@@ -163,27 +170,33 @@ class SHT31:
                 int(0).to_bytes(1, byteorder='little'))
 
     def readBattery(self):
-        return int.from_bytes(self.characteristics['Battery'].read(), byteorder='little')
+        return int.from_bytes(self.characteristics['Battery'].read(),
+                              byteorder='little')
 
-    def setSyncTimeMs(self, timestamp=None):
-        timestampMs = timestamp if timestamp else int(round(time.time() * 1000))
+    def setSyncTimeMs(self, ts=None):
+        timestampMs = ts if ts else int(round(time.time() * 1000))
         self.characteristics['SyncTimeMs'].write(
             timestampMs.to_bytes(8, byteorder='little'))
 
     def readOldestTimestampMs(self):
-        return int.from_bytes(self.characteristics['OldestTimeStampMs'].read(), byteorder='little')
+        return int.from_bytes(self.characteristics['OldestTimeStampMs'].read(),
+                              byteorder='little')
 
     def setOldestTimestampMs(self, value):
-        self.characteristics['OldestTimeStampMs'].write(value.to_bytes(8, byteorder='little'))
+        self.characteristics['OldestTimeStampMs'].write(
+            value.to_bytes(8, byteorder='little'))
 
     def readNewestTimestampMs(self):
-        return int.from_bytes(self.characteristics['NewestTimeStampMs'].read(), byteorder='little')
+        return int.from_bytes(self.characteristics['NewestTimeStampMs'].read(),
+                              byteorder='little')
 
     def setNewestTimestampMs(self, value):
-        self.characteristics['NewestTimeStampMs'].write(value.to_bytes(8, byteorder='little'))
+        self.characteristics['NewestTimeStampMs'].write(
+            value.to_bytes(8, byteorder='little'))
 
     def readLoggerIntervalMs(self):
-        return int.from_bytes(self.characteristics['LoggerIntervalMs'].read(), byteorder='little')
+        return int.from_bytes(self.characteristics['LoggerIntervalMs'].read(),
+                              byteorder='little')
 
     def setLoggerIntervalMs(self, milliseconds):
         monthMs = (30 * 24 * 60 * 60 * 1000)
@@ -197,7 +210,9 @@ class SHT31:
 
     def readLoggedDataInterval(self, start_ms=None, stop_ms=None):
         self.setSyncTimeMs()
-        time.sleep(1)  # Sleep 1s to enable the gadget to set SyncTime; otherwise 0 is read from readNewestTimestampMs()
+        # Sleep 1s to enable the gadget to set SyncTime,
+        # otherwise 0 is read from readNewestTimestampMs()
+        time.sleep(1)
         self.setTemperatureNotification(True)
         self.setHumidityNotification(True)
 
@@ -209,7 +224,8 @@ class SHT31:
 
         self.newestTimeStampMs = self.readNewestTimestampMs()
         self.loggingReadout = True
-        self.characteristics['StartLoggerDownload'].write((1).to_bytes(1, byteorder='little'))
+        self.characteristics['StartLoggerDownload'].write(
+            (1).to_bytes(1, byteorder='little'))
 
     def waitForNotifications(self, timeout):
         return self.peripheral.waitForNotifications(timeout)

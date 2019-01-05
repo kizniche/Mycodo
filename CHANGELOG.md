@@ -3,6 +3,7 @@
 ### Bugfixes
 
  - Fix 1-wire address configuration issue ([#582](https://github.com/kizniche/mycodo/issues/582))
+ - Fix issue with converted measurements being used with Conditionals ([#592](https://github.com/kizniche/mycodo/issues/592))
 
 ### Features
 

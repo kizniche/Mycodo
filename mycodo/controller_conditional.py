@@ -235,9 +235,9 @@ class ConditionalController(threading.Thread):
             channel, unit, measurement = return_measurement_info(
                 device_measurement, conversion)
 
-            if not measurement:
+            if None in [channel, unit]:
                 self.logger.error(
-                    "Could not determine measurement from measurement ID: "
+                    "Could not determine channel or unit from measurement ID: "
                     "{}".format(measurement_id))
                 return
 
