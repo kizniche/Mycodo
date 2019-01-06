@@ -1,1 +1,0 @@
-@reboot /usr/local/bin/pigpiod -s 1 &

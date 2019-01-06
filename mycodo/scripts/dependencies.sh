@@ -36,7 +36,6 @@ case "${1}" in
     ;;
     'pigpio')
         ${INSTALL_CMD} install-pigpiod
-        ${INSTALL_CMD} enable-pigpiod-low
     ;;
     'bcm2835')
         ${INSTALL_CMD} install-bcm2835

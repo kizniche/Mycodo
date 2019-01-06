@@ -211,8 +211,6 @@ case "${1:-''}" in
         apt-get update
     ;;
     'update-cron')
-        printf "\n#### Updating Mycodo crontab entry\n"
-        /bin/bash ${MYCODO_PATH}/install/crontab.sh mycodo --remove
         printf "\n#### Updating Mycodo restart monitor crontab entry\n"
         /bin/bash ${MYCODO_PATH}/install/crontab.sh restart_daemon --remove
         /bin/bash ${MYCODO_PATH}/install/crontab.sh restart_daemon

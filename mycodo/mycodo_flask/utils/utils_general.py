@@ -796,7 +796,7 @@ def return_dependencies(device_type):
                                     else:
                                         met_deps = True
                             if package.startswith('pip-exists'):
-                                py_module = package.split(' ')[1]
+                                py_module = package.split(' ', 1)[1]
                                 try:
                                     module = importlib.util.find_spec(py_module)
                                     if module is None:
