@@ -897,18 +897,24 @@ def last_data_pid(pid_id, input_period):
                     Conversion.unique_id == setpoint_measurement.conversion_id).first()
                 _, setpoint_unit, _ = return_measurement_info(setpoint_measurement, conversion)
 
+        p_value = return_point_timestamp(
+            pid_id, 'pid_value', input_period, measurement='pid_p_value')
+        i_value = return_point_timestamp(
+            pid_id, 'pid_value', input_period, measurement='pid_i_value')
+        d_value = return_point_timestamp(
+            pid_id, 'pid_value', input_period, measurement='pid_d_value')
+        pid_value = [p_value[0], '{:.3f}'.format(float(p_value[1]) + float(i_value[1]) + float(d_value[1]))]
+
         live_data = {
             'activated': pid.is_activated,
             'paused': pid.is_paused,
             'held': pid.is_held,
             'setpoint': return_point_timestamp(
                 pid_id, setpoint_unit, input_period, measurement=setpoint_measurement.measurement),
-            'pid_p_value': return_point_timestamp(
-                pid_id, 'pid_value', input_period, measurement='pid_p_value'),
-            'pid_i_value': return_point_timestamp(
-                pid_id, 'pid_value', input_period, measurement='pid_i_value'),
-            'pid_d_value': return_point_timestamp(
-                pid_id, 'pid_value', input_period, measurement='pid_d_value'),
+            'pid_p_value': p_value,
+            'pid_i_value': i_value,
+            'pid_d_value': d_value,
+            'pid_pid_value': pid_value,
             'duration_time': return_point_timestamp(
                 pid_id, 's', input_period, measurement='duration_time'),
             'duty_cycle': return_point_timestamp(

@@ -507,6 +507,7 @@ $(document).ready(function() {
     document.getElementById('pid_p_value-' + chart_number).innerHTML = 'ERR';
     document.getElementById('pid_i_value-' + chart_number).innerHTML = 'ERR';
     document.getElementById('pid_d_value-' + chart_number).innerHTML = 'ERR';
+    document.getElementById('pid_pid_value-' + chart_number).innerHTML = 'ERR';
     document.getElementById('duration_time-' + chart_number).innerHTML = 'ERR';
     document.getElementById('actual-' + chart_number).innerHTML = 'ERR';
     document.getElementById('actual-timestamp-' + chart_number).innerHTML = 'ERR';
@@ -535,6 +536,7 @@ $(document).ready(function() {
               print_pid_value(data, 'pid_p_value', chart_number, 1, '');
               print_pid_value(data, 'pid_i_value', chart_number, 1, '');
               print_pid_value(data, 'pid_d_value', chart_number, 1, '');
+              print_pid_value(data, 'pid_pid_value', chart_number, 1, '');
 
               {#Find which PID output is more recent, seconds on or duty cycle#}
               if (data['duration_time'][1] !== null && data['duty_cycle'][1] !== null) {
@@ -569,6 +571,7 @@ $(document).ready(function() {
               print_pid_value(data, 'pid_p_value', chart_number, 1, '');
               print_pid_value(data, 'pid_i_value', chart_number, 1, '');
               print_pid_value(data, 'pid_d_value', chart_number, 1, '');
+              print_pid_value(data, 'pid_pid_value', chart_number, 1, '');
 
               {#Find which PID output is more recent, seconds on or duty cycle#}
               if (data['duration_time'][1] !== null && data['duty_cycle'][1] !== null) {
@@ -601,6 +604,7 @@ $(document).ready(function() {
               print_pid_value(data, 'pid_p_value', chart_number, 1, '');
               print_pid_value(data, 'pid_i_value', chart_number, 1, '');
               print_pid_value(data, 'pid_d_value', chart_number, 1, '');
+              print_pid_value(data, 'pid_pid_value', chart_number, 1, '');
 
               {#Find which PID output is more recent, seconds on or duty cycle#}
               if (data['duration_time'][1] !== null && data['duty_cycle'][1] !== null) {
@@ -634,6 +638,7 @@ $(document).ready(function() {
             document.getElementById('pid_p_value-' + chart_number).innerHTML = '0';
             document.getElementById('pid_i_value-' + chart_number).innerHTML = '0';
             document.getElementById('pid_d_value-' + chart_number).innerHTML = '0';
+            document.getElementById('pid_pid_value-' + chart_number).innerHTML = '0';
             document.getElementById('duration_time-' + chart_number).innerHTML = '0';
             document.getElementById('duty_cycle-' + chart_number).innerHTML = '';
             print_pid_value(data, 'actual', chart_number, decimal_places, ' ' + units);

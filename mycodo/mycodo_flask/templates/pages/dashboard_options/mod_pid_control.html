@@ -28,7 +28,8 @@
   <div class="row">
     <div class="col-sm-12 text-center">
     {% for each_pid in pid if each_pid.unique_id == each_dashboard.pid_ids %}
-    (P: <span id="pid_p_value-{{chart_number}}"></span>) + (I: <span id="pid_i_value-{{chart_number}}"></span>) + (D: <span id="pid_d_value-{{chart_number}}"></span>) = Out: <span id="duration_time-{{chart_number}}"></span><span id="duty_cycle-{{chart_number}}"></span>
+    P <span id="pid_p_value-{{chart_number}}"></span> + I <span id="pid_i_value-{{chart_number}}"></span> + D <span id="pid_d_value-{{chart_number}}"></span> = <span id="pid_pid_value-{{chart_number}}"></span>
+    <br/>Last Out: <span id="duration_time-{{chart_number}}"></span><span id="duty_cycle-{{chart_number}}"></span>, <span style="font-size: {{each_dashboard.font_em_timestamp}}em" id="duration_time-timestamp-{{chart_number}}"></span><span style="font-size: {{each_dashboard.font_em_timestamp}}em" id="duty_cycle-timestamp-{{chart_number}}"></span>
     {% endfor %}
     </div>
   </div>
