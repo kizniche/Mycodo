@@ -142,10 +142,6 @@ class InputModule(AbstractInput):
                         (owread_output, _) = owread.communicate()
                         owread.wait()
                         if owread_output:
-                            self.logger.error("TEST00: '{}', '{}', '{}'".format(
-                                owread_output,
-                                owread_output.decode("latin1"),
-                                float(owread_output.decode("latin1"))))
                             temperature = float(owread_output.decode("latin1"))
                     except Exception:
                         self.logger.exception(1)

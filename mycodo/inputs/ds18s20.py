@@ -1,8 +1,28 @@
 # coding=utf-8
 import logging
+import subprocess
 import time
 
+from flask_babel import lazy_gettext
+
 from mycodo.inputs.base_input import AbstractInput
+
+
+def constraints_pass_measure_range(mod_input, value):
+    """
+    Check if the user input is acceptable
+    :param mod_input: SQL object with user-saved Input options
+    :param value: str
+    :return: tuple: (bool, list of strings)
+    """
+    errors = []
+    all_passed = True
+    # Ensure valid range is selected
+    if value not in ['w1thermsensor', 'ow_shell']:
+        all_passed = False
+        errors.append("Invalid range")
+    return all_passed, errors, mod_input
+
 
 # Measurements
 measurements_dict = {
@@ -22,16 +42,33 @@ INPUT_INFORMATION = {
 
     'options_enabled': [
         'location',
+        'custom_options',
         'period',
         'pre_output'
     ],
     'options_disabled': ['interface'],
 
     'dependencies_module': [
-        ('pip-pypi', 'w1thermsensor', 'w1thermsensor')
+        ('pip-pypi', 'w1thermsensor', 'w1thermsensor'),
+        ('apt', 'ow-shell', 'ow-shell')
     ],
 
     'interfaces': ['1WIRE'],
+
+    'custom_options': [
+        {
+            'id': 'library',
+            'type': 'select',
+            'default_value': 'w1thermsensor',
+            'options_select': [
+                ('w1thermsensor', 'w1thermsensor'),
+                ('ow_shell', 'ow-shell')
+            ],
+            'constraints_pass': constraints_pass_measure_range,
+            'name': lazy_gettext('Library'),
+            'phrase': lazy_gettext('Select the library used to communicate')
+        }
+    ]
 }
 
 
@@ -49,8 +86,20 @@ class InputModule(AbstractInput):
                 "mycodo.ds18s20_{id}".format(id=input_dev.unique_id.split('-')[0]))
 
             self.location = input_dev.location
-            self.sensor = W1ThermSensor(W1ThermSensor.THERM_SENSOR_DS18S20,
-                                        self.location)
+            self.library = None
+
+            if input_dev.custom_options:
+                for each_option in input_dev.custom_options.split(';'):
+                    option = each_option.split(',')[0]
+                    value = each_option.split(',')[1]
+                    if option == 'library':
+                        self.library = value
+
+            if self.library == 'w1thermsensor':
+                self.sensor = W1ThermSensor(W1ThermSensor.THERM_SENSOR_DS18S20,
+                                            self.location)
+            elif self.library == 'ow_shell':
+                pass
 
     def get_measurement(self):
         """ Gets the DS18S20's temperature in Celsius """
@@ -59,7 +108,20 @@ class InputModule(AbstractInput):
         n = 2
         for i in range(n):
             try:
-                return_dict[0]['value'] = self.sensor.get_temperature()
+                if self.library == 'w1thermsensor':
+                    return_dict[0]['value'] = self.sensor.get_temperature()
+                elif self.library == 'ow_shell':
+                    try:
+                        command = 'owread /{id}/temperature; echo'.format(
+                            id=self.location)
+                        owread = subprocess.Popen(
+                            command, stdout=subprocess.PIPE, shell=True)
+                        (owread_output, _) = owread.communicate()
+                        owread.wait()
+                        if owread_output:
+                            return_dict[0]['value'] = float(owread_output.decode("latin1"))
+                    except Exception:
+                        self.logger.exception(1)
                 return return_dict
             except Exception as e:
                 if i == n:

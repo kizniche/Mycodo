@@ -10,7 +10,7 @@
 
 ### Features
 
- - Add OWFS support for 1-wire devices (currently only testing DS18B20) ([#582](https://github.com/kizniche/mycodo/issues/582))
+ - Add OWFS support for 1-wire devices (currently only DS18B20, DS18S20 supported) ([#582](https://github.com/kizniche/mycodo/issues/582))
  - Add ability to delete .dependency and .upgrade files from the web UI ([#590](https://github.com/kizniche/mycodo/issues/590))
 
 ### Miscellaneous
