@@ -89,7 +89,9 @@ INPUT_INFORMATION = {
     'options_disabled': ['interface'],
 
     'dependencies_module': [
+        ('apt', 'pi-bluetooth', 'pi-bluetooth'),
         ('pip-pypi', 'bluepy', 'bluepy')
+
     ],
 
     'interfaces': ['BT'],

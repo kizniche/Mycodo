@@ -153,9 +153,6 @@ def parse_input_information():
                 # Nonstandard (I2C, UART, etc.) location
                 dict_inputs = dict_has_value(dict_inputs, input_custom, 'location')
 
-                # 1WIRE
-                dict_inputs = dict_has_value(dict_inputs, input_custom, 'w1thermsensor_detect_1wire')
-
                 # I2C
                 dict_inputs = dict_has_value(dict_inputs, input_custom, 'i2c_location')
                 dict_inputs = dict_has_value(dict_inputs, input_custom, 'i2c_address_editable')

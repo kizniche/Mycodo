@@ -3,6 +3,7 @@
 ### Bugfixes
 
  - Fix issue with converted measurements unable to be used with Conditionals ([#592](https://github.com/kizniche/mycodo/issues/592))
+ - Add pi-bluetooth to SHT31 Smart Gadget dependencies ([#588](https://github.com/kizniche/mycodo/issues/588))
 
 ### Features
 

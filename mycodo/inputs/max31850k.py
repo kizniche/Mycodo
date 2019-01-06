@@ -31,8 +31,7 @@ INPUT_INFORMATION = {
         ('pip-pypi', 'w1thermsensor', 'w1thermsensor')
     ],
 
-    'interfaces': ['1WIRE'],
-    'w1thermsensor_detect_1wire': True
+    'interfaces': ['1WIRE']
 }
 
 

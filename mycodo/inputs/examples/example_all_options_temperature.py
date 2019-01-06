@@ -138,13 +138,6 @@ INPUT_INFORMATION = {
     #                 ('3', 'Option 3'),]
     # },
 
-    # 1-Wire option
-    # Setting the following to True will use the module w1thermsensor to scan
-    # for 1-Wire devices. Put 'location' in 'options_enabled' to display a
-    # drop-down menu of detected devices.
-    # Note: 'location' should not be set, only added to 'options_enabled'.
-    'w1thermsensor_detect_1wire': False,  # Boolean
-
     # Host options
     'times_check': 1,  # Integer
     'deadline': 2,  # Integer

@@ -51,11 +51,10 @@ INPUT_INFORMATION = {
 
     'dependencies_module': [
         ('pip-pypi', 'w1thermsensor', 'w1thermsensor'),
-        ('apt', 'ow-shell', 'ow-shell'),
+        ('apt', 'ow-shell', 'ow-shell')
     ],
 
     'interfaces': ['1WIRE'],
-    'w1thermsensor_detect_1wire': True,
     'resolution': [
         ('', 'Use Chip Default'),
         (9, '9-bit, 0.5 °C, 93.75 ms'),

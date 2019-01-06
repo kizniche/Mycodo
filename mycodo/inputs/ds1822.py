@@ -33,7 +33,6 @@ INPUT_INFORMATION = {
     ],
 
     'interfaces': ['1WIRE'],
-    'w1thermsensor_detect_1wire': True,
     'resolution': [
         ('', 'Use Chip Default'),
         (9, '9-bit, 0.5 °C, 93.75 ms'),

@@ -32,7 +32,6 @@ INPUT_INFORMATION = {
     ],
 
     'interfaces': ['1WIRE'],
-    'w1thermsensor_detect_1wire': True
 }
 
 
