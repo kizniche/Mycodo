@@ -288,8 +288,20 @@ def last_data(unique_id, measure_type, measurement_id, period):
                 Conversion.unique_id == measure.conversion_id).first()
         else:
             conversion = None
+
         channel, unit, measurement = return_measurement_info(
             measure, conversion)
+
+        if hasattr(measure, 'measurement_type') and measure.measurement_type == 'setpoint':
+            setpoint_pid = PID.query.filter(PID.unique_id == measure.device_id).first()
+            if setpoint_pid and ',' in setpoint_pid.measurement:
+                pid_measurement = setpoint_pid.measurement.split(',')[1]
+                setpoint_measurement = DeviceMeasurements.query.filter(
+                    DeviceMeasurements.unique_id == pid_measurement).first()
+                if setpoint_measurement:
+                    conversion = Conversion.query.filter(
+                        Conversion.unique_id == setpoint_measurement.conversion_id).first()
+                    _, unit, measurement = return_measurement_info(setpoint_measurement, conversion)
 
         try:
             if period != '0':
@@ -873,22 +885,34 @@ def last_data_pid(pid_id, input_period):
          actual_measurement) = return_measurement_info(
             actual_measurement, actual_cnversion)
 
-        setpoint_info = DeviceMeasurements.query.filter(
-            and_(DeviceMeasurements.device_id == pid_id,
-                 DeviceMeasurements.measurement_type == 'setpoint')).first()
-        setpoint_measurement = setpoint_info.measurement
-        setpoint_unit = setpoint_info.unit
+        setpoint_measurement = None
+        setpoint_unit = None
+        setpoint_pid = PID.query.filter(PID.unique_id == pid_id).first()
+        if setpoint_pid and ',' in setpoint_pid.measurement:
+            pid_measurement = setpoint_pid.measurement.split(',')[1]
+            setpoint_measurement = DeviceMeasurements.query.filter(
+                DeviceMeasurements.unique_id == pid_measurement).first()
+            if setpoint_measurement:
+                conversion = Conversion.query.filter(
+                    Conversion.unique_id == setpoint_measurement.conversion_id).first()
+                _, setpoint_unit, _ = return_measurement_info(setpoint_measurement, conversion)
 
         live_data = {
             'activated': pid.is_activated,
             'paused': pid.is_paused,
             'held': pid.is_held,
-            'setpoint': return_point_timestamp(pid_id, setpoint_unit, input_period, measurement=setpoint_measurement),
-            'pid_p_value': return_point_timestamp(pid_id, 'pid_value', input_period, measurement='pid_p_value'),
-            'pid_i_value': return_point_timestamp(pid_id, 'pid_value', input_period, measurement='pid_i_value'),
-            'pid_d_value': return_point_timestamp(pid_id, 'pid_value', input_period, measurement='pid_d_value'),
-            'duration_time': return_point_timestamp(pid_id, 's', input_period, measurement='duration_time'),
-            'duty_cycle': return_point_timestamp(pid_id, 'percent', input_period, measurement='duty_cycle'),
+            'setpoint': return_point_timestamp(
+                pid_id, setpoint_unit, input_period, measurement=setpoint_measurement.measurement),
+            'pid_p_value': return_point_timestamp(
+                pid_id, 'pid_value', input_period, measurement='pid_p_value'),
+            'pid_i_value': return_point_timestamp(
+                pid_id, 'pid_value', input_period, measurement='pid_i_value'),
+            'pid_d_value': return_point_timestamp(
+                pid_id, 'pid_value', input_period, measurement='pid_d_value'),
+            'duration_time': return_point_timestamp(
+                pid_id, 's', input_period, measurement='duration_time'),
+            'duty_cycle': return_point_timestamp(
+                pid_id, 'percent', input_period, measurement='duty_cycle'),
             'actual': return_point_timestamp(
                 device_id,
                 actual_unit,
