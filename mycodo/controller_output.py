@@ -187,6 +187,14 @@ class OutputController(threading.Thread):
         :param trigger_conditionals: Whether to trigger conditionals to act or not
         :type trigger_conditionals: bool
         """
+        self.logger.debug("output_on_off({}, {}, {}, {}, {}, {})".format(
+            output_id,
+            state,
+            duration,
+            min_off,
+            duty_cycle,
+            trigger_conditionals))
+
         # Check if output exists
         if output_id not in self.output_id:
             self.logger.warning(
@@ -1170,7 +1178,7 @@ class OutputController(threading.Thread):
                                              'python',
                                              'python_pwm',
                                              'wireless_rpi_rf']:
-            if self.output_time_turned_on[output_id]:
+            if self.output_time_turned_on[output_id] or self.output_on_duration[output_id]:
                 return True
         elif self.output_type[output_id] == 'pwm':
             if self.pwm_time_turned_on[output_id]:

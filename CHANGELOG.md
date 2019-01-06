@@ -4,6 +4,9 @@
 
  - Fix issue with converted measurements unable to be used with Conditionals ([#592](https://github.com/kizniche/mycodo/issues/592))
  - Add pi-bluetooth to SHT31 Smart Gadget dependencies ([#588](https://github.com/kizniche/mycodo/issues/588))
+ - Fix issue using PIDs and Graphs with converted measurement units ([#594](https://github.com/kizniche/mycodo/issues/594))
+ - Fix issue with mixed up order of Graph series
+ - Fix issue recording output durations
 
 ### Features
 

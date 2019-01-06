@@ -24,6 +24,7 @@ from mycodo.mycodo_flask.utils.utils_general import reorder
 from mycodo.mycodo_flask.utils.utils_general import use_unit_generate
 from mycodo.utils.system_pi import csv_to_list_of_str
 from mycodo.utils.system_pi import list_to_csv
+from mycodo.utils.system_pi import return_measurement_info
 
 logger = logging.getLogger(__name__)
 
@@ -42,7 +43,6 @@ def dashboard_add(form_base, form_object, display_order):
         action=gettext("Add"),
         controller=gettext("Dashboard"))
     error = []
-    dashboard_type = ''
 
     new_graph = Dashboard()
     new_graph.name = form_base.name.data
@@ -462,27 +462,30 @@ def graph_y_axes(dict_measurements):
 
                     measure_id = each_id_measure.split(',')[1]
 
-                    for each_measure in device_measurements:
-                        if each_measure.unique_id == measure_id:
+                    for each_measurement in device_measurements:
+                        if each_measurement.unique_id == measure_id:
 
-                            if each_measure.conversion_id:
-                                conversion = Conversion.query.filter(
-                                    Conversion.unique_id == each_measure.conversion_id).first()
-                                if not y_axes[each_graph.unique_id]:
-                                    y_axes[each_graph.unique_id] = [conversion.convert_unit_to]
-                                elif y_axes[each_graph.unique_id] and conversion.convert_unit_to not in y_axes[each_graph.unique_id]:
-                                    y_axes.setdefault(each_graph.unique_id, []).append(conversion.convert_unit_to)
-                            elif (each_measure.rescaled_measurement and
-                                    each_measure.rescaled_unit):
-                                if not y_axes[each_graph.unique_id]:
-                                    y_axes[each_graph.unique_id] = [each_measure.rescaled_unit]
-                                elif y_axes[each_graph.unique_id] and each_measure.rescaled_unit not in y_axes[each_graph.unique_id]:
-                                    y_axes.setdefault(each_graph.unique_id, []).append(each_measure.rescaled_unit)
+                            unit = None
+                            if each_measurement.measurement_type == 'setpoint':
+                                setpoint_pid = PID.query.filter(PID.unique_id == each_measurement.device_id).first()
+                                if setpoint_pid and ',' in setpoint_pid.measurement:
+                                    pid_measurement = setpoint_pid.measurement.split(',')[1]
+                                    setpoint_measurement = DeviceMeasurements.query.filter(
+                                        DeviceMeasurements.unique_id == pid_measurement).first()
+                                    if setpoint_measurement:
+                                        conversion = Conversion.query.filter(
+                                            Conversion.unique_id == setpoint_measurement.conversion_id).first()
+                                        _, unit, measurement = return_measurement_info(setpoint_measurement, conversion)
                             else:
+                                conversion = Conversion.query.filter(
+                                    Conversion.unique_id == each_measurement.conversion_id).first()
+                                _, unit, _ = return_measurement_info(each_measurement, conversion)
+
+                            if unit:
                                 if not y_axes[each_graph.unique_id]:
-                                    y_axes[each_graph.unique_id] = [each_measure.unit]
-                                elif y_axes[each_graph.unique_id] and each_measure.unit not in y_axes[each_graph.unique_id]:
-                                    y_axes.setdefault(each_graph.unique_id, []).append(each_measure.unit)
+                                    y_axes[each_graph.unique_id] = [unit]
+                                elif y_axes[each_graph.unique_id] and unit not in y_axes[each_graph.unique_id]:
+                                    y_axes.setdefault(each_graph.unique_id, []).append(unit)
 
                 elif each_device == output and ',' in each_id_measure:
                     if each_graph.unique_id not in y_axes:

@@ -124,7 +124,7 @@ class DaemonControl:
         return self.rpyc_client.root.output_off(output_id, trigger_conditionals)
 
     def output_on(self, output_id, duration=0.0, min_off=0.0,
-                 duty_cycle=0.0, trigger_conditionals=True):
+                  duty_cycle=0.0, trigger_conditionals=True):
         return self.rpyc_client.root.output_on(
             output_id, duration=duration, min_off=min_off,
             duty_cycle=duty_cycle, trigger_conditionals=trigger_conditionals)

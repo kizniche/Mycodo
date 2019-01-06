@@ -57,6 +57,7 @@ import timeit
 import requests
 
 from mycodo.config import SQL_DATABASE_MYCODO
+from mycodo.databases.models import Conversion
 from mycodo.databases.models import DeviceMeasurements
 from mycodo.databases.models import Input
 from mycodo.databases.models import Math
@@ -75,6 +76,7 @@ from mycodo.utils.method import calculate_method_setpoint
 from mycodo.utils.pid_autotune import PIDAutotune
 from mycodo.utils.pid_controller import PIDControl
 from mycodo.utils.system_pi import get_measurement
+from mycodo.utils.system_pi import return_measurement_info
 
 MYCODO_DB_PATH = 'sqlite:///' + SQL_DATABASE_MYCODO
 
@@ -427,7 +429,6 @@ class PIDController(threading.Thread):
 
     def write_pid_values(self):
         """ Write PID values to the measurement database """
-
         if self.band:
             setpoint_band_lower = self.setpoint - self.band
             setpoint_band_upper = self.setpoint + self.band
@@ -450,11 +451,31 @@ class PIDController(threading.Thread):
         for each_channel, each_measurement in enumerate(measurements):
             if (each_measurement.channel not in measurement_dict and
                     each_measurement.channel < len(list_measurements)):
-                measurement_dict[each_channel] = {
-                    'measurement': each_measurement.measurement,
-                    'unit': each_measurement.unit,
-                    'value': list_measurements[each_channel]
-                }
+
+                # If setpoint, get unit from PID measurement
+                if each_measurement.measurement_type == 'setpoint':
+                    setpoint_pid = db_retrieve_table_daemon(
+                        PID, unique_id=each_measurement.device_id)
+                    if setpoint_pid and ',' in setpoint_pid.measurement:
+                        pid_measurement = setpoint_pid.measurement.split(',')[1]
+                        setpoint_measurement = db_retrieve_table_daemon(
+                            DeviceMeasurements, unique_id=pid_measurement)
+                        if setpoint_measurement:
+                            conversion = db_retrieve_table_daemon(
+                                Conversion, unique_id=setpoint_measurement.conversion_id)
+                            _, unit, _ = return_measurement_info(
+                                setpoint_measurement, conversion)
+                            measurement_dict[each_channel] = {
+                                'measurement': each_measurement.measurement,
+                                'unit': unit,
+                                'value': list_measurements[each_channel]
+                            }
+                else:
+                    measurement_dict[each_channel] = {
+                        'measurement': each_measurement.measurement,
+                        'unit': each_measurement.unit,
+                        'value': list_measurements[each_channel]
+                    }
 
         add_measurements_influxdb(self.pid_id, measurement_dict)
 
@@ -583,13 +604,21 @@ class PIDController(threading.Thread):
 
         # Get latest measurement from influxdb
         try:
-            measurement = get_measurement(self.measurement_id)
+            device_measurement = get_measurement(self.measurement_id)
+
+            if device_measurement:
+                conversion = db_retrieve_table_daemon(
+                    Conversion, unique_id=device_measurement.conversion_id)
+            else:
+                conversion = None
+            channel, unit, measurement = return_measurement_info(
+                device_measurement, conversion)
 
             self.last_measurement = read_last_influxdb(
                 self.device_id,
-                measurement.unit,
-                measurement.measurement,
-                measurement.channel,
+                unit,
+                measurement,
+                channel,
                 int(self.max_measure_age))
 
             if self.last_measurement:
@@ -601,8 +630,9 @@ class PIDController(threading.Thread):
                     '%Y-%m-%dT%H:%M:%S')
                 utc_timestamp = calendar.timegm(utc_dt.timetuple())
                 local_timestamp = str(datetime.datetime.fromtimestamp(utc_timestamp))
-                self.logger.debug("Latest {meas}: {last} @ {ts}".format(
-                    meas=measurement,
+                self.logger.debug("Latest (CH{ch}, Unit: {unit}): {last} @ {ts}".format(
+                    ch=channel,
+                    unit=unit,
                     last=self.last_measurement,
                     ts=local_timestamp))
                 if calendar.timegm(time.gmtime()) - utc_timestamp > self.max_measure_age:

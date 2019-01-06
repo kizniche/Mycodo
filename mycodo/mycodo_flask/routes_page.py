@@ -548,11 +548,26 @@ def page_dashboard():
     dict_measure_units = {}
 
     for each_measurement in device_measurements:
-        conversion = Conversion.query.filter(
-            Conversion.unique_id == each_measurement.conversion_id).first()
-        _, unit, measurement = return_measurement_info(each_measurement, conversion)
-        dict_measure_measurements[each_measurement.unique_id] = measurement
-        dict_measure_units[each_measurement.unique_id] = unit
+        # If the measurement is a PID setpoint, set unit to PID measurement.
+        measurement = None
+        unit = None
+        if each_measurement.measurement_type == 'setpoint':
+            setpoint_pid = PID.query.filter(PID.unique_id == each_measurement.device_id).first()
+            if setpoint_pid and ',' in setpoint_pid.measurement:
+                pid_measurement = setpoint_pid.measurement.split(',')[1]
+                setpoint_measurement = DeviceMeasurements.query.filter(
+                    DeviceMeasurements.unique_id == pid_measurement).first()
+                if setpoint_measurement:
+                    conversion = Conversion.query.filter(
+                        Conversion.unique_id == setpoint_measurement.conversion_id).first()
+                    _, unit, measurement = return_measurement_info(setpoint_measurement, conversion)
+        else:
+            conversion = Conversion.query.filter(
+                Conversion.unique_id == each_measurement.conversion_id).first()
+            _, unit, measurement = return_measurement_info(each_measurement, conversion)
+        if unit:
+            dict_measure_measurements[each_measurement.unique_id] = measurement
+            dict_measure_units[each_measurement.unique_id] = unit
 
     # Retrieve all choices to populate form drop-down menu
     choices_camera = utils_general.choices_id_name(camera)

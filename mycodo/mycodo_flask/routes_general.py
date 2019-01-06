@@ -355,9 +355,11 @@ def past_data(unique_id, measure_type, measurement_id, past_seconds):
         dbcon = influx_db.connection
 
         if measure_type in ['input', 'math', 'pid']:
-            measure = DeviceMeasurements.query.filter(DeviceMeasurements.unique_id == measurement_id).first()
+            measure = DeviceMeasurements.query.filter(
+                DeviceMeasurements.unique_id == measurement_id).first()
         elif measure_type == 'output':
-            measure = Output.query.filter(Output.unique_id == unique_id).first()
+            measure = Output.query.filter(
+                Output.unique_id == unique_id).first()
         else:
             measure = None
 
@@ -369,8 +371,20 @@ def past_data(unique_id, measure_type, measurement_id, past_seconds):
                 Conversion.unique_id == measure.conversion_id).first()
         else:
             conversion = None
+
         channel, unit, measurement = return_measurement_info(
             measure, conversion)
+
+        if hasattr(measure, 'measurement_type') and measure.measurement_type == 'setpoint':
+            setpoint_pid = PID.query.filter(PID.unique_id == measure.device_id).first()
+            if setpoint_pid and ',' in setpoint_pid.measurement:
+                pid_measurement = setpoint_pid.measurement.split(',')[1]
+                setpoint_measurement = DeviceMeasurements.query.filter(
+                    DeviceMeasurements.unique_id == pid_measurement).first()
+                if setpoint_measurement:
+                    conversion = Conversion.query.filter(
+                        Conversion.unique_id == setpoint_measurement.conversion_id).first()
+                    _, unit, measurement = return_measurement_info(setpoint_measurement, conversion)
 
         try:
             query_str = query_string(
