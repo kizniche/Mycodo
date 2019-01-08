@@ -17,7 +17,7 @@ class AtlasScientificFTDI(Device):
         self.logger = logging.getLogger(
             "mycodo.device.atlas_scientific_ftdi_{dev}".format(dev=serial_device))
         time.sleep(1)
-        dev.flush()
+        self.flush()
         self.setup = True
 
     def read_line(self, size=0):
