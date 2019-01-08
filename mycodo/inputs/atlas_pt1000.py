@@ -110,12 +110,12 @@ class InputModule(AbstractInput):
                 elif str_is_float(lines):
                     temp = float(lines)
                     self.logger.debug(
-                        'Value[0] is float: {val}'.format(val=temp))
+                        'Value is float: {val}'.format(val=temp))
                 else:
                     self.logger.error(
                         'Unknown value: {val}'.format(val=lines))
             else:
-                self.logger.error('UART device is not set up. '
+                self.logger.error('FTDI device is not set up. '
                                   'Check the log for errors.')
 
         elif self.interface == 'UART':

@@ -230,7 +230,7 @@ class InputModule(AbstractInput):
                                 'Value[0] is not float or "check probe": '
                                 '{val}'.format(val=ph))
             else:
-                self.logger.error('UART device is not set up.'
+                self.logger.error('FTDI device is not set up.'
                                   'Check the log for errors.')
 
         # Read sensor via UART
