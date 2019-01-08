@@ -45,9 +45,9 @@ class SHT31Delegate(DefaultDelegate):
         self.offset = 0
 
     def prepareLoggerReadout(self, loggerInterval, newestTimeStampMs):
-            self.__loggerInterval = loggerInterval
-            self.__newestTimeStampMs = newestTimeStampMs
-            self.loggingReadout = True
+        self.__loggerInterval = loggerInterval
+        self.__newestTimeStampMs = newestTimeStampMs
+        self.loggingReadout = True
 
     def handleNotification(self, cHandle, data):
         dataTypes = {55: 'Temp', 50: 'Humi'}
@@ -141,7 +141,6 @@ class SHT31:
                 self.__peripheral.getCharacteristics(
                     uuid=UUID("00002235-b38d-4985-720e-0f993a68ee41"))[0]
         }
-
         if self.readFirmwareRevisionString() == '1.3':
             # Error in the documentation/firmware of 1.3 runnumber does not start with 0 it starts with 1,
             # therefore insert an offset here
