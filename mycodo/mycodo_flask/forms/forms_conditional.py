@@ -37,9 +37,7 @@ class Conditional(FlaskForm):
         lazy_gettext('Start Offset (seconds)'),
         widget=NumberInput(step='any'))
     condition_type = SelectField(
-        choices=[('', lazy_gettext('Select One'))] + CONDITIONAL_CONDITIONS,
-        validators=[DataRequired()]
-    )
+        choices=[('', lazy_gettext('Select One'))] + CONDITIONAL_CONDITIONS)
     add_condition = SubmitField(lazy_gettext('Add Condition'))
     action_type = SelectField(
         choices=[('', lazy_gettext('Select One'))] + FUNCTION_ACTIONS)
