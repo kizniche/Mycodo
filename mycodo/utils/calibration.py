@@ -2,8 +2,6 @@
 import logging
 import time
 
-
-
 logger = logging.getLogger("mycodo.atlas_scientific")
 
 

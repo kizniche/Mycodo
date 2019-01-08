@@ -193,7 +193,7 @@ class InputModule(AbstractInput):
                     "Calibration measurement not found within the past "
                     "{} seconds".format(self.max_age))
 
-        # Read sensor via UART
+        # Read sensor via FTDI
         if self.interface == 'FTDI':
             if self.atlas_sensor_uart.setup:
                 self.atlas_sensor_ftdi.send_cmd('R')
