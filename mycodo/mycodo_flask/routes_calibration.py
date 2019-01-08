@@ -14,8 +14,6 @@ from flask_babel import gettext
 
 from mycodo.config import PATH_1WIRE
 from mycodo.databases.models import Input
-from mycodo.devices.atlas_scientific_i2c import AtlasScientificI2C
-from mycodo.devices.atlas_scientific_uart import AtlasScientificUART
 from mycodo.mycodo_flask.forms import forms_calibration
 from mycodo.mycodo_flask.routes_static import inject_variables
 from mycodo.mycodo_flask.utils import utils_general
@@ -162,7 +160,8 @@ def setup_atlas_ph_measure(input_id):
     error = None
 
     if selected_input.interface == 'FTDI':
-        ph_input_uart = AtlasScientificUART(
+        from mycodo.devices.atlas_scientific_ftdi import AtlasScientificFTDI
+        ph_input_uart = AtlasScientificFTDI(
             selected_input.uart_location, baudrate=selected_input.baud_rate)
         ph_input_uart.send_cmd('R')
         lines = ph_input_uart.read_lines()
@@ -180,6 +179,7 @@ def setup_atlas_ph_measure(input_id):
                 val=lines[0])
 
     elif selected_input.interface == 'UART':
+        from mycodo.devices.atlas_scientific_uart import AtlasScientificUART
         ph_input_uart = AtlasScientificUART(
             selected_input.uart_location, baudrate=selected_input.baud_rate)
         lines = ph_input_uart.query('R')
@@ -197,6 +197,7 @@ def setup_atlas_ph_measure(input_id):
                 val=lines[0])
 
     elif selected_input.interface == 'I2C':
+        from mycodo.devices.atlas_scientific_i2c import AtlasScientificI2C
         ph_input_i2c = AtlasScientificI2C(
             i2c_address=int(str(selected_input.i2c_location), 16),
             i2c_bus=selected_input.i2c_bus)
