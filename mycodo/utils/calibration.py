@@ -2,6 +2,7 @@
 import logging
 import time
 
+from mycodo.devices.atlas_scientific_ftdi import AtlasScientificFTDI
 from mycodo.devices.atlas_scientific_i2c import AtlasScientificI2C
 from mycodo.devices.atlas_scientific_uart import AtlasScientificUART
 
@@ -19,7 +20,10 @@ class AtlasScientificCommand:
         self.ph_sensor_i2c = None
         self.interface = input_dev.interface
 
-        if self.interface == 'UART':
+        if self.interface == 'FTDI':
+            self.ph_sensor_ftdi = AtlasScientificFTDI(
+                input_dev.ftdi_location)
+        elif self.interface == 'UART':
             self.ph_sensor_uart = AtlasScientificUART(
                 input_dev.uart_location,
                 baudrate=input_dev.baud_rate)
@@ -42,7 +46,10 @@ class AtlasScientificCommand:
         info = None
 
         try:
-            if self.interface == 'UART':
+            if self.interface == 'FTDI':
+                self.ph_sensor_ftdi.send_cmd('i')
+                info = self.ph_sensor_ftdi.read_lines()[0]
+            elif self.interface == 'UART':
                 info = self.ph_sensor_uart.query('i')[0]
             elif self.interface == 'I2C':
                 info = self.ph_sensor_i2c.query('i')
@@ -114,7 +121,10 @@ class AtlasScientificCommand:
         try:
             return_value = "No message"
             if cmd_send is not None:
-                if self.interface == 'UART':
+                if self.interface == 'FTDI':
+                    self.ph_sensor_ftdi.send_cmd(cmd_send)
+                    return_value = self.ph_sensor_ftdi.read_lines()
+                elif self.interface == 'UART':
                     return_value = self.ph_sensor_uart.query(cmd_send)
                 elif self.interface == 'I2C':
                     return_value = self.ph_sensor_i2c.query(cmd_send)
@@ -127,4 +137,3 @@ class AtlasScientificCommand:
                          "the board: {err}".format(cls=type(self).__name__,
                                                    err=err))
             return 1, err
-

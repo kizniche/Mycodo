@@ -157,6 +157,9 @@ def parse_input_information():
                 dict_inputs = dict_has_value(dict_inputs, input_custom, 'i2c_location')
                 dict_inputs = dict_has_value(dict_inputs, input_custom, 'i2c_address_editable')
 
+                # FTDI
+                dict_inputs = dict_has_value(dict_inputs, input_custom, 'ftdi_location')
+
                 # UART
                 dict_inputs = dict_has_value(dict_inputs, input_custom, 'uart_location')
                 dict_inputs = dict_has_value(dict_inputs, input_custom, 'uart_baud_rate')

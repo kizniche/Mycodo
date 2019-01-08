@@ -109,6 +109,8 @@ def input_add(form_add):
             # UART options
             if dict_has_value('uart_location'):
                 new_input.uart_location = dict_inputs[input_name]['uart_location']
+            if dict_has_value('ftdi_location'):
+                new_input.uart_location = dict_inputs[input_name]['ftdi_location']
             if dict_has_value('uart_baud_rate'):
                 new_input.baud_rate = dict_inputs[input_name]['uart_baud_rate']
             if dict_has_value('pin_cs'):
@@ -308,6 +310,8 @@ def input_mod(form_mod, request_form):
             mod_input.location = form_mod.location.data
         if form_mod.i2c_location.data:
             mod_input.i2c_location = form_mod.i2c_location.data
+        if form_mod.ftdi_location.data:
+            mod_input.ftdi_location = form_mod.ftdi_location.data
         if form_mod.uart_location.data:
             mod_input.uart_location = form_mod.uart_location.data
         if form_mod.gpio_location.data:

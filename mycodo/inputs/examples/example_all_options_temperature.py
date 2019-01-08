@@ -67,9 +67,10 @@ INPUT_INFORMATION = {
     # Options that are enabled will be editable from the input options page.
     # Options that are disabled will appear on the input options page but not be editable.
     # There are several location options available for use:
-    # 'location', 'gpio_location', 'i2c_location', 'bt_location', and 'uart_location'
+    # 'location', 'gpio_location', 'i2c_location', 'bt_location', 'ftdi_location', and 'uart_location'
     'options_enabled': [
         'i2c_location',
+        'ftdi_location',
         'uart_location',
         'custom_options',
         'period',

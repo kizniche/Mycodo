@@ -161,7 +161,25 @@ def setup_atlas_ph_measure(input_id):
     ph = None
     error = None
 
-    if selected_input.interface == 'UART':
+    if selected_input.interface == 'FTDI':
+        ph_input_uart = AtlasScientificUART(
+            selected_input.uart_location, baudrate=selected_input.baud_rate)
+        ph_input_uart.send_cmd('R')
+        lines = ph_input_uart.read_lines()
+        logger.debug("All Lines: {lines}".format(lines=lines))
+
+        if 'check probe' in lines:
+            error = '"check probe" returned from input'
+        elif not lines:
+            error = 'Nothing returned from input'
+        elif str_is_float(lines[0]):
+            ph = lines[0]
+            logger.debug('Value[0] is float: {val}'.format(val=ph))
+        else:
+            error = 'Value[0] is not float or "check probe": {val}'.format(
+                val=lines[0])
+
+    elif selected_input.interface == 'UART':
         ph_input_uart = AtlasScientificUART(
             selected_input.uart_location, baudrate=selected_input.baud_rate)
         lines = ph_input_uart.query('R')
@@ -177,6 +195,7 @@ def setup_atlas_ph_measure(input_id):
         else:
             error = 'Value[0] is not float or "check probe": {val}'.format(
                 val=lines[0])
+
     elif selected_input.interface == 'I2C':
         ph_input_i2c = AtlasScientificI2C(
             i2c_address=int(str(selected_input.i2c_location), 16),
