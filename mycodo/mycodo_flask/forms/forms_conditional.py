@@ -42,9 +42,7 @@ class Conditional(FlaskForm):
     )
     add_condition = SubmitField(lazy_gettext('Add Condition'))
     action_type = SelectField(
-        choices=[('', lazy_gettext('Select One'))] + FUNCTION_ACTIONS,
-        validators=[DataRequired()]
-    )
+        choices=[('', lazy_gettext('Select One'))] + FUNCTION_ACTIONS)
     add_action = SubmitField(lazy_gettext('Add Action'))
     activate_cond = SubmitField(lazy_gettext('Activate'))
     deactivate_cond = SubmitField(lazy_gettext('Deactivate'))

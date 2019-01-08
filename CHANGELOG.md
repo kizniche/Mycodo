@@ -4,10 +4,11 @@
 
  - Fix missing Atlas pH Input baud rate option ([#597](https://github.com/kizniche/mycodo/issues/597))
  - Fix properly displaying I2C/UART Input options
+ - Fix issue requiring action selection to submit form ([#595](https://github.com/kizniche/mycodo/issues/595))
 
 ### Features
 
- - Add FTDI support for Atlas pH, PT100 (temperature), and electrical conductivity sensors ([#597](https://github.com/kizniche/mycodo/issues/597))
+ - Add FTDI support for Atlas Scientific sensors ([#597](https://github.com/kizniche/mycodo/issues/597))
 
 ### Miscellaneous
 

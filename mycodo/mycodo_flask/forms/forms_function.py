@@ -33,9 +33,7 @@ class FunctionMod(FlaskForm):
     function_type = StringField('Function Type', widget=widgets.HiddenInput())
     name = StringField(lazy_gettext('Name'))
     action_type = SelectField(
-        choices=[('', lazy_gettext('Select One'))] + FUNCTION_ACTIONS,
-        validators=[DataRequired()]
-    )
+        choices=[('', lazy_gettext('Select One'))] + FUNCTION_ACTIONS)
     add_action = SubmitField(lazy_gettext('Add Action'))
     order_up = SubmitField(lazy_gettext('Up'))
     order_down = SubmitField(lazy_gettext('Down'))
