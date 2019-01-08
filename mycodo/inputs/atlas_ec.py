@@ -98,7 +98,7 @@ class InputModule(AbstractInput):
 
         # Read sensor via UART
         if self.interface == 'FTDI':
-            if self.atlas_sensor_uart.setup:
+            if self.atlas_sensor_ftdi.setup:
                 self.atlas_sensor_ftdi.send_cmd('R')
                 lines = self.atlas_sensor_ftdi.read_lines()
                 if lines:

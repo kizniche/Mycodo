@@ -95,7 +95,7 @@ class InputModule(AbstractInput):
         return_dict = measurements_dict.copy()
 
         if self.interface == 'UART':
-            if self.atlas_sensor_uart.setup:
+            if self.atlas_sensor_ftdi.setup:
                 self.atlas_sensor_ftdi.send_cmd('R')
                 lines = self.atlas_sensor_ftdi.read_lines()
                 self.logger.debug("All Lines: {lines}".format(lines=lines))
