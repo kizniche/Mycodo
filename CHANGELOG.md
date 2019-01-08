@@ -9,6 +9,10 @@
 
  - Add FTDI support for Atlas pH, PT100 (temperature), and electrical conductivity sensors ([#597](https://github.com/kizniche/mycodo/issues/597))
 
+### Miscellaneous
+
+ - Update SHT31 Smart Gadget Input module
+
 
 ## 7.0.4 (2018-01-07)
 

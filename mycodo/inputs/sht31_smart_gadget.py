@@ -196,7 +196,7 @@ class InputModule(AbstractInput):
 
         # Download stored data starting from self.gadget.newestTimeStampMs
         self.gadget.readLoggedDataInterval(
-            start_ms=self.gadget.newestTimeStampMs)
+            startMs=self.gadget.newestTimeStampMs)
 
         while self.running:
             if (not self.gadget.waitForNotifications(5) or
@@ -394,13 +394,27 @@ class InputModule(AbstractInput):
 
         if self.connected:
             # Fill device information dictionary
+            self.device_information['manufacturer'] = self.gadget.readManufacturerNameString()
+            self.device_information['model'] = self.gadget.readModelNumberString()
+            self.device_information['serial_number'] = self.gadget.readSerialNumberString()
             self.device_information['device_name'] = self.gadget.readDeviceName()
+            self.device_information['firmware_revision'] = self.gadget.readFirmwareRevisionString()
+            self.device_information['hardware_revision'] = self.gadget.readHardwareRevisionString()
+            self.device_information['software_revision'] = self.gadget.readSoftwareRevisionString()
             self.device_information['logger_interval_ms'] = self.gadget.readLoggerIntervalMs()
             self.device_information['battery'] = self.gadget.readBattery()
             self.device_information['info_timestamp'] = int(time.time() * 1000)
-            self.logger.info("Name: {name}, Log Interval: {sec} sec".format(
-                name=self.device_information['device_name'],
-                sec=self.device_information['logger_interval_ms'] / 1000))
+            self.logger.info(
+                "{man}, {mod}, SN: {sn}, Name: {name}, Firmware: {fw}, "
+                "Hardware: {hw}, Software: {sw}, Log Interval: {sec} sec".format(
+                    man=self.device_information['manufacturer'],
+                    mod=self.device_information['model'],
+                    sn=self.device_information['serial_number'],
+                    name=self.device_information['device_name'],
+                    fw=self.device_information['firmware_revision'],
+                    hw=self.device_information['hardware_revision'],
+                    sw=self.device_information['software_revision'],
+                    sec=self.device_information['logger_interval_ms'] / 1000))
             self.initialized = True
 
     def set_logging_interval(self):
