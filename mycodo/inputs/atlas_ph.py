@@ -50,6 +50,7 @@ INPUT_INFORMATION = {
     'options_enabled': [
         'i2c_location',
         'uart_location',
+        'uart_baud_rate',
         'period',
         'single_input_math',
         'custom_options',
@@ -61,6 +62,7 @@ INPUT_INFORMATION = {
     'i2c_location': ['0x66'],
     'i2c_address_editable': True,
     'uart_location': '/dev/ttyAMA0',
+    'uart_baud_rate': 9600,
 
     'custom_options': [
         {

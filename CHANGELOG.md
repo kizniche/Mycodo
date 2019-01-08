@@ -1,3 +1,11 @@
+## 7.0.5 (Unreleased)
+
+### Bugfixes
+
+ - Fix missing Atlas pH Input baud rate option ([#597](https://github.com/kizniche/mycodo/issues/597))
+ - Fix properly displaying I2C/UART Input options
+
+
 ## 7.0.4 (2018-01-07)
 
 ### Bugfixes

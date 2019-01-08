@@ -1,18 +1,22 @@
-{% if 'uart_baud_rate' in dict_inputs[each_input.device]['options_disabled'] or
-      'uart_baud_rate' in dict_inputs[each_input.device]['options_enabled']
+{% if each_input.interface == 'UART' %}
+
+  {% if 'uart_baud_rate' in dict_inputs[each_input.device]['options_disabled'] or
+        'uart_baud_rate' in dict_inputs[each_input.device]['options_enabled']
   %}
 
-<div class="col-auto">
-  {{form_mod_input.baud_rate.label(class_='control-label')}}
-  <div>
+  <div class="col-auto">
+    {{form_mod_input.baud_rate.label(class_='control-label')}}
+    <div>
 
-  {%- if 'period' in dict_inputs[each_input.device]['options_disabled'] -%}
-    {{form_mod_input.baud_rate(class_='form-control', value=each_input.baud_rate, disabled=True, **{'title': tooltips_input['uart_baud_rate']['phrase']})}}
-  {% else %}
-    {{form_mod_input.baud_rate(class_='form-control', value=each_input.baud_rate, **{'title': tooltips_input['uart_baud_rate']['phrase']})}}
-  {%- endif -%}
+    {%- if 'period' in dict_inputs[each_input.device]['options_disabled'] -%}
+      {{form_mod_input.baud_rate(class_='form-control', value=each_input.baud_rate, disabled=True, **{'title': tooltips_input['uart_baud_rate']['phrase']})}}
+    {% else %}
+      {{form_mod_input.baud_rate(class_='form-control', value=each_input.baud_rate, **{'title': tooltips_input['uart_baud_rate']['phrase']})}}
+    {%- endif -%}
 
+    </div>
   </div>
-</div>
+
+  {% endif %}
 
 {% endif %}
