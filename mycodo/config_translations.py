@@ -36,6 +36,9 @@ TOOLTIPS_INPUT = {
     'i2c_bus': {
         'title': lazy_gettext('I<sup>2</sup>C Bus'),
         'phrase': lazy_gettext('The I2C bus the device is connected to')},
+    'ftdi_location': {
+        'title': lazy_gettext('FTDI Device'),
+        'phrase': lazy_gettext('The FTDI device (e.g. /dev/ttyUSB1)')},
     'uart_location': {
         'title': lazy_gettext('UART Device'),
         'phrase': lazy_gettext('The UART device location (e.g. /dev/ttyUSB1)')},

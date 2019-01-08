@@ -78,6 +78,7 @@ class InputMod(FlaskForm):
         widget=NumberInput(step='any')
     )
     location = StringField(lazy_gettext('Location'))  # Access input (GPIO, I2C address, etc.)
+    ftdi_location = StringField(lazy_gettext('FTDI Device'))  # FTDI device location type
     uart_location = StringField(lazy_gettext('UART Device'))  # UART device location type
     i2c_location = StringField(lazy_gettext('I<sup>2</sup>C Address'))  # I2C device location type
     gpio_location = IntegerField(lazy_gettext('GPIO Pin'))  # GPIO device location type
