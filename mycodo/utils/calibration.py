@@ -2,9 +2,7 @@
 import logging
 import time
 
-from mycodo.devices.atlas_scientific_ftdi import AtlasScientificFTDI
-from mycodo.devices.atlas_scientific_i2c import AtlasScientificI2C
-from mycodo.devices.atlas_scientific_uart import AtlasScientificUART
+
 
 logger = logging.getLogger("mycodo.atlas_scientific")
 
@@ -21,13 +19,16 @@ class AtlasScientificCommand:
         self.interface = input_dev.interface
 
         if self.interface == 'FTDI':
+            from mycodo.devices.atlas_scientific_ftdi import AtlasScientificFTDI
             self.ph_sensor_ftdi = AtlasScientificFTDI(
                 input_dev.ftdi_location)
         elif self.interface == 'UART':
+            from mycodo.devices.atlas_scientific_uart import AtlasScientificUART
             self.ph_sensor_uart = AtlasScientificUART(
                 input_dev.uart_location,
                 baudrate=input_dev.baud_rate)
         elif self.interface == 'I2C':
+            from mycodo.devices.atlas_scientific_i2c import AtlasScientificI2C
             self.ph_sensor_i2c = AtlasScientificI2C(
                 i2c_address=int(str(input_dev.i2c_location), 16),
                 i2c_bus=input_dev.i2c_bus)
