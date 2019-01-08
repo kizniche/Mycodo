@@ -37,8 +37,9 @@ class AtlasScientificCommand:
             logger.error("Unable to retrieve device info (this indicates the "
                          "device was not properly initialized or connected)")
         else:
-            logger.debug("Device Info: {info}".format(info=self.board_info))
-            logger.debug("Detected Version: {ver}".format(ver=self.board_version))
+            # TODO: Change back to debug
+            logger.error("Device Info: {info}".format(info=self.board_info))
+            logger.error("Detected Version: {ver}".format(ver=self.board_version))
 
     def get_board_version(self):
         """Return the board version of the Atlas Scientific pH sensor"""
