@@ -54,6 +54,7 @@ class AtlasScientificCommand:
                 info = self.ph_sensor_i2c.query('i')
         except TypeError:
             logger.exception("Unable to determine board version of Atlas sensor")
+            return 0, None
 
         # Check first letter of info response
         # "P" indicates a legacy board version
@@ -65,6 +66,7 @@ class AtlasScientificCommand:
                     return 1, each_line  # Older board version
                 elif ',' in each_line and len(each_line.split(',')) == 3:
                     return 2, each_line  # Newer board version
+        return 0, None
 
     def calibrate(self, command, temperature=None, custom_cmd=None):
         """
