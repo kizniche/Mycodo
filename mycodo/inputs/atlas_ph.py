@@ -126,7 +126,7 @@ class InputModule(AbstractInput):
             self.ftdi_location = self.input_dev.ftdi_location
             self.logger = logging.getLogger(
                 "mycodo.inputs.atlas_ph_ftdi_{ftdi}".format(
-                    ftdi=self.uart_location))
+                    ftdi=self.ftdi_location))
             self.atlas_sensor_ftdi = AtlasScientificFTDI(self.ftdi_location)
         elif self.interface == 'UART':
             self.uart_location = self.input_dev.uart_location
@@ -195,7 +195,7 @@ class InputModule(AbstractInput):
 
         # Read sensor via FTDI
         if self.interface == 'FTDI':
-            if self.atlas_sensor_uart.setup:
+            if self.atlas_sensor_ftdi.setup:
                 self.atlas_sensor_ftdi.send_cmd('R')
                 lines = self.atlas_sensor_ftdi.read_lines()
                 if lines:
