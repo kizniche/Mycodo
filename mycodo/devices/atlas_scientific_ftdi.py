@@ -69,7 +69,7 @@ class AtlasScientificFTDI(Device):
         except FtdiError:
             print("Failed to send command to the sensor.")
 
-         return False
+        return False
 
 
 def get_ftdi_device_list():
