@@ -47,9 +47,9 @@ class AtlasScientificCommand:
         try:
             if self.interface == 'FTDI':
                 self.ph_sensor_ftdi.send_cmd('i')
-                info = self.ph_sensor_ftdi.read_lines()[0]
+                info = self.ph_sensor_ftdi.read_lines()
             elif self.interface == 'UART':
-                info = self.ph_sensor_uart.query('i')[0]
+                info = self.ph_sensor_uart.query('i')
             elif self.interface == 'I2C':
                 info = self.ph_sensor_i2c.query('i')
         except TypeError:
@@ -59,10 +59,12 @@ class AtlasScientificCommand:
         # "P" indicates a legacy board version
         if info is None:
             return 0, None
-        elif info[0] == 'P':
-            return 1, info  # Older board version
-        else:
-            return 2, info  # Newer board version
+        elif info is list:
+            for each_line in info:
+                if each_line == 'P':
+                    return 1, each_line  # Older board version
+                elif ',' in each_line and len(each_line.split(',')) == 3:
+                    return 2, each_line  # Newer board version
 
     def calibrate(self, command, temperature=None, custom_cmd=None):
         """
