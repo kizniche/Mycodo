@@ -70,7 +70,7 @@ class InputModule(AbstractInput):
         from mycodo.devices.atlas_scientific_uart import AtlasScientificUART
         if self.interface == 'FTDI':
             self.logger = logging.getLogger(
-                "mycodo.inputs.atlas_electrical_conductivity_ftdi_{ftdi}".format(
+                "mycodo.inputs.atlas_pt1000_ftdi_{ftdi}".format(
                     ftdi=self.ftdi_location))
             self.atlas_sensor_ftdi = AtlasScientificFTDI(self.ftdi_location)
         elif self.interface == 'UART':
@@ -102,14 +102,18 @@ class InputModule(AbstractInput):
 
                 if 'check probe' in lines:
                     self.logger.error('"check probe" returned from sensor')
-                elif str_is_float(lines[0]):
-                    temp = float(lines[0])
+                elif lines is list:
+                    if str_is_float(lines[0]):
+                        temp = float(lines[0])
+                        self.logger.debug(
+                            'Value[0] is float: {val}'.format(val=temp))
+                elif str_is_float(lines):
+                    temp = float(lines)
                     self.logger.debug(
                         'Value[0] is float: {val}'.format(val=temp))
                 else:
                     self.logger.error(
-                        'Value[0] is not float or "check probe": '
-                        '{val}'.format(val=lines[0]))
+                        'Unknown value: {val}'.format(val=lines))
             else:
                 self.logger.error('UART device is not set up. '
                                   'Check the log for errors.')
