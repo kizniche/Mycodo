@@ -96,8 +96,7 @@ class InputModule(AbstractInput):
 
         if self.interface == 'FTDI':
             if self.atlas_sensor_ftdi.setup:
-                self.atlas_sensor_ftdi.send_cmd('R')
-                lines = self.atlas_sensor_ftdi.read_lines()
+                lines = self.atlas_sensor_ftdi.query('R')
                 self.logger.debug("All Lines: {lines}".format(lines=lines))
 
                 if 'check probe' in lines:

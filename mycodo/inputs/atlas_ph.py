@@ -196,8 +196,7 @@ class InputModule(AbstractInput):
         # Read sensor via FTDI
         if self.interface == 'FTDI':
             if self.atlas_sensor_ftdi.setup:
-                self.atlas_sensor_ftdi.send_cmd('R')
-                lines = self.atlas_sensor_ftdi.read_lines()
+                lines = self.atlas_sensor_ftdi.query('R')
                 if lines:
                     self.logger.debug(
                         "All Lines: {lines}".format(lines=lines))

@@ -20,6 +20,19 @@ class AtlasScientificFTDI(Device):
         self.flush()
         self.setup = True
 
+    def query(self, query_str):
+        """ Send command and return reply """
+        try:
+            self.send_cmd(query_str)
+            time.sleep(1.3)
+            response = self.read_lines()
+            return response
+        except Exception as err:
+            self.logger.exception(
+                "{cls} raised an exception when taking a reading: "
+                "{err}".format(cls=type(self).__name__, err=err))
+            return None
+
     def read_line(self, size=0):
         """
         taken from the ftdi library and modified to

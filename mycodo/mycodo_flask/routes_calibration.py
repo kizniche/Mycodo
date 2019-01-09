@@ -162,8 +162,7 @@ def setup_atlas_ph_measure(input_id):
     if selected_input.interface == 'FTDI':
         from mycodo.devices.atlas_scientific_ftdi import AtlasScientificFTDI
         ph_input_ftdi = AtlasScientificFTDI(selected_input.ftdi_location)
-        ph_input_ftdi.send_cmd('R')
-        lines = ph_input_ftdi.read_lines()
+        lines = ph_input_ftdi.query('R')
         logger.debug("All Lines: {lines}".format(lines=lines))
 
         if 'check probe' in lines:

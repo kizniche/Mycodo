@@ -47,8 +47,7 @@ class AtlasScientificCommand:
 
         try:
             if self.interface == 'FTDI':
-                self.ph_sensor_ftdi.send_cmd('i')
-                info = self.ph_sensor_ftdi.read_lines()
+                info = self.ph_sensor_ftdi.query('i')
             elif self.interface == 'UART':
                 info = self.ph_sensor_uart.query('i')
             elif self.interface == 'I2C':
@@ -126,8 +125,7 @@ class AtlasScientificCommand:
             return_value = "No message"
             if cmd_send is not None:
                 if self.interface == 'FTDI':
-                    self.ph_sensor_ftdi.send_cmd(cmd_send)
-                    return_value = self.ph_sensor_ftdi.read_lines()
+                    return_value = self.ph_sensor_ftdi.query(cmd_send)
                 elif self.interface == 'UART':
                     return_value = self.ph_sensor_uart.query(cmd_send)
                 elif self.interface == 'I2C':
