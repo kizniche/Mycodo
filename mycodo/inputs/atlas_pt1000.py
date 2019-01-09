@@ -102,7 +102,7 @@ class InputModule(AbstractInput):
 
                 if 'check probe' in lines:
                     self.logger.error('"check probe" returned from sensor')
-                elif lines is list:
+                elif isinstance(lines, list):
                     if str_is_float(lines[0]):
                         temp = float(lines[0])
                         self.logger.debug(
