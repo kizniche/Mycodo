@@ -912,7 +912,7 @@ class OutputController(threading.Thread):
 
             # Turn current pin off
             if output_id in self.output_pin and self.output_state(output_id) != 'off':
-                self.output_switch(output_id, 'off')
+                self.output_on_off(output_id, 'off')
 
             self.output_id[output_id] = output.id
             self.output_unique_id[output_id] = output.unique_id

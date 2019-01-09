@@ -5,6 +5,7 @@
  - Fix missing Atlas pH Input baud rate option ([#597](https://github.com/kizniche/mycodo/issues/597))
  - Fix properly displaying I2C/UART Input options
  - Fix issue requiring action selection to submit form ([#595](https://github.com/kizniche/mycodo/issues/595))
+ - Fix output duration not being logged if settings saved while output is currently on
 
 ### Features
 
