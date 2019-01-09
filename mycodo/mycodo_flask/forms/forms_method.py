@@ -7,7 +7,6 @@ from flask_babel import lazy_gettext
 from flask_wtf import FlaskForm
 from wtforms import DecimalField
 from wtforms import HiddenField
-from wtforms import IntegerField
 from wtforms import SelectField
 from wtforms import StringField
 from wtforms import SubmitField
@@ -16,10 +15,12 @@ from wtforms.validators import DataRequired
 from wtforms.widgets.html5 import NumberInput
 
 from mycodo.config import METHODS
+from mycodo.config_translations import TOOLTIPS_SETTINGS
 
 
 class MethodCreate(FlaskForm):
-    name = StringField(lazy_gettext('Name'))
+    name = StringField(
+        TOOLTIPS_SETTINGS['name']['title'])
     method_type = SelectField(
         choices=METHODS,
         validators=[DataRequired()]
@@ -113,7 +114,8 @@ class MethodMod(FlaskForm):
         'Method Data ID', widget=widgets.HiddenInput())
     method_type = HiddenField('Method Type')
     method_select = HiddenField('Method Select')
-    name = StringField(lazy_gettext('Name'))
+    name = StringField(
+        TOOLTIPS_SETTINGS['name']['title'])
     daily_time_start = StringField(
         lazy_gettext('Start HH:MM:SS'),
         render_kw={"placeholder": "HH:MM:SS"}

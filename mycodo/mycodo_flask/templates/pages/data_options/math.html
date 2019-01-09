@@ -23,7 +23,7 @@
       </a>
     </div>
     <div class="col-xs-5 col-sm-3">
-      {{form_mod_math.name(class_='form-control', value=each_math.name, **{'title':_('A name to distinguish this from others')})}}
+      {{form_mod_math.name(class_='form-control', value=each_math.name, **{'title': tooltips_settings['name']['phrase']})}}
     </div>
     <div class="col-xs-5 col-sm-2">
       <input class="form-control btn btn-sm btn-block" disabled="" title="UUID: {{each_math.unique_id}}" value="[{{'%02d' % each_math.id}}] {% if each_math.math_type in math_info %}{{math_info[each_math.math_type]['name']}}{% endif %}" type="text">

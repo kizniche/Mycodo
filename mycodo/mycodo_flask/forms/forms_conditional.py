@@ -11,11 +11,11 @@ from wtforms import SelectField
 from wtforms import StringField
 from wtforms import SubmitField
 from wtforms import widgets
-from wtforms.validators import DataRequired
 from wtforms.widgets.html5 import NumberInput
 
-from mycodo.config import FUNCTION_ACTIONS
 from mycodo.config import CONDITIONAL_CONDITIONS
+from mycodo.config import FUNCTION_ACTIONS
+from mycodo.config_translations import TOOLTIPS_SETTINGS
 
 
 #
@@ -25,7 +25,8 @@ from mycodo.config import CONDITIONAL_CONDITIONS
 class Conditional(FlaskForm):
     function_id = StringField('Function ID', widget=widgets.HiddenInput())
     function_type = StringField('Function Type', widget=widgets.HiddenInput())
-    name = StringField(lazy_gettext('Name'))
+    name = StringField(
+        TOOLTIPS_SETTINGS['name']['title'])
     conditional_statement = StringField(lazy_gettext('Conditional Statement'))
     period = DecimalField(
         lazy_gettext('Period (seconds)'),

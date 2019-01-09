@@ -15,12 +15,14 @@ from wtforms import widgets
 from wtforms.validators import DataRequired
 from wtforms.widgets.html5 import NumberInput
 
+from mycodo.config_translations import TOOLTIPS_SETTINGS
+
 
 class PIDModBase(FlaskForm):
     function_id = StringField('Function ID', widget=widgets.HiddenInput())
     function_type = StringField('Function Type', widget=widgets.HiddenInput())
     name = StringField(
-        lazy_gettext('Name'),
+        TOOLTIPS_SETTINGS['name']['title'],
         validators=[DataRequired()]
     )
     measurement = StringField(

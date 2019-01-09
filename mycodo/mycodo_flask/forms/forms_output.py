@@ -39,27 +39,32 @@ class OutputAdd(FlaskForm):
 
 
 class OutputMod(FlaskForm):
-    output_id = StringField('Relay ID', widget=widgets.HiddenInput())
-    output_pin = HiddenField('Relay Pin')
+    output_id = StringField('Output ID', widget=widgets.HiddenInput())
+    output_pin = HiddenField('Output Pin')
     name = StringField(
-        lazy_gettext('Name'),
+        TOOLTIPS_SETTINGS['name']['title'],
         validators=[DataRequired()]
     )
     location = StringField(lazy_gettext('Location'))
-    i2c_bus = IntegerField(lazy_gettext('I2C Bus'))
-    baud_rate = IntegerField(lazy_gettext('Baud Rate'))
-    pin = IntegerField(
-        lazy_gettext('Pin'), widget=NumberInput())
+    i2c_bus = IntegerField(
+        TOOLTIPS_SETTINGS['i2c_bus']['title'])
+    baud_rate = IntegerField(
+        TOOLTIPS_SETTINGS['baud_rate']['title'])
+    gpio_location = IntegerField(
+        TOOLTIPS_SETTINGS['gpio_location']['title'], widget=NumberInput())
     protocol = IntegerField(
-        lazy_gettext('Protocol'), widget=NumberInput())
+        TOOLTIPS_SETTINGS['protocol']['title'], widget=NumberInput())
     pulse_length = IntegerField(
-        lazy_gettext('Pulse Length'), widget=NumberInput())
-    on_command = StringField(lazy_gettext('On Command'))
-    off_command = StringField(lazy_gettext('Off Command'))
-    pwm_command = StringField(lazy_gettext('PWM Command'))
+        TOOLTIPS_SETTINGS['pulse_length']['title'], widget=NumberInput())
+    on_command = StringField(
+        TOOLTIPS_SETTINGS['on_command']['title'])
+    off_command = StringField(
+        TOOLTIPS_SETTINGS['off_command']['title'])
+    pwm_command = StringField(
+        TOOLTIPS_SETTINGS['pwm_command']['title'])
     pwm_invert_signal = BooleanField(lazy_gettext('Invert Signal'))
     amps = DecimalField(
-        lazy_gettext('Current Draw (amps)'),
+        TOOLTIPS_SETTINGS['amps']['title'],
         validators=[validators.NumberRange(
             min=0,
             max=50,
@@ -69,7 +74,7 @@ class OutputMod(FlaskForm):
         widget=NumberInput(step='any')
     )
     trigger = SelectField(
-        lazy_gettext('On Trigger'),
+        TOOLTIPS_SETTINGS['trigger']['title'],
         choices=[
             ("1", lazy_gettext('High')),
             ("0", lazy_gettext('Low'))
@@ -77,7 +82,7 @@ class OutputMod(FlaskForm):
         validators=[Optional()]
     )
     on_at_start = SelectField(
-        lazy_gettext('Start State'),
+        TOOLTIPS_SETTINGS['on_at_start']['title'],
         choices=[
             ("-1", lazy_gettext('Neither')),
             ("1", lazy_gettext('On')),
@@ -88,9 +93,9 @@ class OutputMod(FlaskForm):
     trigger_functions_at_start = BooleanField(
         TOOLTIPS_SETTINGS['trigger_functions_at_start']['title'])
     pwm_hertz = IntegerField(
-        lazy_gettext('Frequency (Hertz)'), widget=NumberInput())
+        TOOLTIPS_SETTINGS['pwm_hertz']['title'], widget=NumberInput())
     pwm_library = SelectField(
-        lazy_gettext('Library'),
+        TOOLTIPS_SETTINGS['pwm_library']['title'],
         choices=[
             ("pigpio_any", lazy_gettext('Any Pin, <= 40 kHz')),
             ("pigpio_hardware", lazy_gettext('Hardware Pin, <= 30 MHz'))
@@ -98,16 +103,11 @@ class OutputMod(FlaskForm):
         validators=[DataRequired()]
     )
     flow_rate = DecimalField(
-        lazy_gettext('Flow Rate (ml/min)'),
+        TOOLTIPS_SETTINGS['trigger_functions_at_start']['title'],
         widget=NumberInput(step='any')
     )
     save = SubmitField(lazy_gettext('Save'))
     delete = SubmitField(lazy_gettext('Delete'))
     order_up = SubmitField(lazy_gettext('Up'))
     order_down = SubmitField(lazy_gettext('Down'))
-    pwm_duty_cycle_on = DecimalField(
-        '{} (%)'.format(lazy_gettext('Duty Cycle')),
-        validators=[Optional()],
-        widget=NumberInput(step='any')
-    )
     on_submit = SubmitField(lazy_gettext('Turn On'))

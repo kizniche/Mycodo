@@ -7,47 +7,96 @@ from flask_babel import lazy_gettext
 
 
 TOOLTIPS_SETTINGS = {
-    #
-    # Inputs
-    #
-    'interface': {
-        'title': lazy_gettext('Interface'),
-        'phrase': lazy_gettext('The interface used to communicate')},
-    'period': {
-        'title': lazy_gettext('Period'),
-        'phrase': lazy_gettext('The duration (seconds) between input reads')},
+    '1wire_id': {
+        'title': lazy_gettext('1-Wire Device ID'),
+        'phrase': lazy_gettext('Select the 1-wire device ID')},
+    'adc_gain': {
+        'title': lazy_gettext('Gain'),
+        'phrase': lazy_gettext('Adjust the gain to change the measurable voltage range. See ADC documentation for details.')},
+    'adc_resolution': {
+        'title': lazy_gettext('Resolution'),
+        'phrase': lazy_gettext('ADC Resolution (see ADC documentation)')},
+    'adc_sample_speed': {
+        'title': lazy_gettext('Sample Speed'),
+        'phrase': lazy_gettext('ADC Sample Speed (see ADC documentation)')},
+    'amps': {
+        'title': lazy_gettext('Current Draw (amps)'),
+        'phrase': lazy_gettext('The number of amps the output device draws (at 120/240 VAC)')},
+    'baud_rate': {
+        'title': lazy_gettext('Baud Rate'),
+        'phrase': lazy_gettext('The UART baud rate')},
+    'bt_location': {
+        'title': lazy_gettext('MAC (XX:XX:XX:XX:XX:XX)'),
+        'phrase': lazy_gettext('The MAC address of the input')},
+    'bt_adapter': {
+        'title': lazy_gettext('BT Adapter'),
+        'phrase': lazy_gettext('The Bluetooth adapter of the input')},
+    'cmd_command': {
+        'title': lazy_gettext('Command'),
+        'phrase': lazy_gettext('The command to executed (as user mycodo) to return a measurement value')},
     'convert_unit': {
         'title': None,
         'phrase': lazy_gettext('Select the unit of the measurement to be stored in the database')},
-    'pre_output_id': {
-        'title': lazy_gettext('Pre Output'),
-        'phrase': lazy_gettext('Turn the selected output on before taking every measurement')},
-    'pre_output_duration': {
-        'title': lazy_gettext('Pre Out Duration'),
-        'phrase': lazy_gettext(
-            'If a Pre Output is selected, set the duration (seconds) to turn '
-            'the Pre Output on for before every measurement is acquired.')},
-    'pre_output_during_measure': {
-        'title': lazy_gettext('Pre During Measure'),
-        'phrase': lazy_gettext('Check to turn the output off after (opposed to before) the measurement is complete')},
-    'gpio_location': {
-        'title': lazy_gettext('GPIO'),
-        'phrase': lazy_gettext('The GPIO pin (BCM numbering) to access the device')},
-    'i2c_location': {
-        'title': lazy_gettext('I<sup>2</sup>C Address'),
-        'phrase': lazy_gettext('The I2C address of the device')},
-    'i2c_bus': {
-        'title': lazy_gettext('I<sup>2</sup>C Bus'),
-        'phrase': lazy_gettext('The I2C bus the device is connected to')},
+    'convert_to_measurement_unit': {
+        'title': lazy_gettext('Convert to Unit'),
+        'phrase': lazy_gettext('Convert the measurement to a different unit')},
+    'deadline': {
+        'title': lazy_gettext('Deadline'),
+        'phrase': lazy_gettext('Time (seconds) to wait until failure')},
+    'duration_on_seconds': {
+        'title': lazy_gettext('Duration On (seconds)'),
+        'phrase': lazy_gettext('Turn on for a duration of time (seconds)')},
+    'duty_cycle': {
+        'title': '{} (%)'.format(lazy_gettext('Duty Cycle')),
+        'phrase': lazy_gettext('Duty cycle for the PWM (percent, 0.0 - 100.0)')},
+    'flow_rate': {
+        'title': lazy_gettext('Flow Rate (ml/min)'),
+        'phrase': lazy_gettext('Flow rate in ml/minute')},
     'ftdi_location': {
         'title': lazy_gettext('FTDI Device'),
         'phrase': lazy_gettext('The FTDI device (e.g. /dev/ttyUSB1)')},
-    'uart_location': {
-        'title': lazy_gettext('UART Device'),
-        'phrase': lazy_gettext('The UART device location (e.g. /dev/ttyUSB1)')},
-    'uart_baud_rate': {
-        'title': lazy_gettext('Baud Rate'),
-        'phrase': lazy_gettext('The UART baud rate')},
+    'gpio_location': {
+        'title': lazy_gettext('Pin (GPIO)'),
+        'phrase': lazy_gettext('The GPIO pin using BCM numbering')},
+    'host': {
+        'title': lazy_gettext('Host'),
+        'phrase': lazy_gettext('Host address or IP')},
+    'i2c_bus': {
+        'title': lazy_gettext('I<sup>2</sup>C Bus'),
+        'phrase': lazy_gettext('The I2C bus the device is connected to')},
+    'i2c_location': {
+        'title': lazy_gettext('I<sup>2</sup>C Address'),
+        'phrase': lazy_gettext('The I2C address of the device')},
+    'interface': {
+        'title': lazy_gettext('Interface'),
+        'phrase': lazy_gettext('The interface used to communicate')},
+    'invert_scale': {
+        'title': lazy_gettext('Invert Scale'),
+        'phrase': lazy_gettext('Invert the scale')},
+    'measurement_units': {
+        'title': lazy_gettext('Unit Measurement'),
+        'phrase': lazy_gettext('Select a unit for the stored value')},
+    'measurements_enabled': {
+        'title': lazy_gettext('Measurements Enabled'),
+        'phrase': lazy_gettext('The measurements to record')},
+    'name': {
+        'title': lazy_gettext('Name'),
+        'phrase': lazy_gettext('A name to distinguish this from others')},
+    'off_command': {
+        'title': lazy_gettext('Off Command'),
+        'phrase': lazy_gettext('Command to execute (as user mycodo) when the output is instructed to turn off')},
+    'on_at_start': {
+        'title': lazy_gettext('Start State'),
+        'phrase': lazy_gettext('When Mycodo starts, set the output state')},
+    'on_command': {
+        'title': lazy_gettext('On Command'),
+        'phrase': lazy_gettext('Command to execute (as user mycodo) when the output is instructed to turn on')},
+    'period': {
+        'title': lazy_gettext('Period'),
+        'phrase': lazy_gettext('The duration (seconds) between input reads')},
+    'pin_clock': {
+        'title': lazy_gettext('Clock Pin'),
+        'phrase': lazy_gettext('The GPIO (using BCM numbering) connected to the Clock pin')},
     'pin_cs': {
         'title': lazy_gettext('CS Pin'),
         'phrase': lazy_gettext('The GPIO (using BCM numbering) connected to the Cable Select pin')},
@@ -57,59 +106,53 @@ TOOLTIPS_SETTINGS = {
     'pin_mosi': {
         'title': lazy_gettext('MOSI Pin'),
         'phrase': lazy_gettext('The GPIO (using BCM numbering) connected to the MOSI pin')},
-    'pin_clock': {
-        'title': lazy_gettext('Clock Pin'),
-        'phrase': lazy_gettext('The GPIO (using BCM numbering) connected to the Clock pin')},
-    'bt_location': {
-        'title': lazy_gettext('MAC (XX:XX:XX:XX:XX:XX)'),
-        'phrase': lazy_gettext('The MAC address of the input')},
-    'bt_adapter': {
-        'title': lazy_gettext('BT Adapter'),
-        'phrase': lazy_gettext('The Bluetooth adapter of the input')},
-    'w1thermsensor_id': {
-        'title': lazy_gettext('Device ID'),
-        'phrase': lazy_gettext('Select the ID of the desired DS18B20 sensor')},
-    'resolution': {
-        'title': lazy_gettext('Resolution'),
-        'phrase': lazy_gettext('Measurement resolution')},
-    'sensitivity': {
-        'title': lazy_gettext('Sensitivity'),
-        'phrase': lazy_gettext('Measurement sensitivity')},
-    'thermocouple_type': {
-        'title': lazy_gettext('RTD Probe Type'),
-        'phrase': lazy_gettext('The type of thermocouple connected')},
-    'ref_ohm': {
-        'title': lazy_gettext('Reference Resistance'),
-        'phrase': lazy_gettext('Reference resistance (Ohm)')},
-    'cmd_command': {
-        'title': lazy_gettext('Command'),
-        'phrase': lazy_gettext('The command to executed (as user mycodo) to return a measurement value')},
-    'measurement_units': {
-        'title': lazy_gettext('Unit Measurement'),
-        'phrase': lazy_gettext('Select a unit for the stored value')},
-    'times_check': {
-        'title': lazy_gettext('Times Check'),
-        'phrase': lazy_gettext('Number of times to check')},
-    'deadline': {
-        'title': lazy_gettext('Deadline'),
-        'phrase': lazy_gettext('Time (seconds) to wait until failure')},
     'port': {
         'title': lazy_gettext('Port'),
         'phrase': lazy_gettext('Host port number')},
-    'weighting': {
-        'title': lazy_gettext('Weighting'),
+    'pre_output_duration': {
+        'title': lazy_gettext('Pre Out Duration'),
         'phrase': lazy_gettext(
-            'The weighting of the previous measurement on the current measurement. '
-            'Range: 0.0 - 1.0. Used for smoothing measurements. 0.0 means no weighting.')},
-    'sample_time': {
-        'title': lazy_gettext('Sample Time'),
-        'phrase': lazy_gettext('The amount of time (seconds) to sample the input before caluclating the measurement')},
+            'If a Pre Output is selected, set the duration (seconds) to turn '
+            'the Pre Output on for before every measurement is acquired.')},
+    'pre_output_during_measure': {
+        'title': lazy_gettext('Pre During Measure'),
+        'phrase': lazy_gettext('Check to turn the output off after (opposed to before) the measurement is complete')},
+    'pre_output_id': {
+        'title': lazy_gettext('Pre Output'),
+        'phrase': lazy_gettext('Turn the selected output on before taking every measurement')},
+    'protocol': {
+        'title': lazy_gettext('Protocol'),
+        'phrase': lazy_gettext('Wireless 433 MHz protocol')},
+    'pulse_length': {
+        'title': lazy_gettext('Pulse Length'),
+        'phrase': lazy_gettext('Wireless 433 MHz pulse length')},
+    'pump_amount': {
+        'title': lazy_gettext('Amount to Dispense (ml)'),
+        'phrase': lazy_gettext('Volume in ml to pump')},
+    'pwm_command': {
+        'title': lazy_gettext('PWM Command'),
+        'phrase': lazy_gettext('Command to execute (as user mycodo) to set the PWM duty cycle (%%)')},
+    'pwm_hertz': {
+        'title': lazy_gettext('Frequency (Hertz)'),
+        'phrase': lazy_gettext('The Hertz to output the PWM signal (0 - 70,000)')},
+    'pwm_library': {
+        'title': lazy_gettext('Library'),
+        'phrase': lazy_gettext('Which method to produce the PWM signal (hardware pins can produce higher frequencies)')},
+    'ref_ohm': {
+        'title': lazy_gettext('Reference Resistance'),
+        'phrase': lazy_gettext('Reference resistance (Ohm)')},
+    'resolution': {
+        'title': lazy_gettext('Resolution'),
+        'phrase': lazy_gettext('Measurement resolution')},
+    'resolution_2': {
+        'title': lazy_gettext('Resolution'),
+        'phrase': lazy_gettext('Measurement resolution')},
     'rpm_pulses_per_rev': {
         'title': lazy_gettext('Pulses Per Rev'),
         'phrase': lazy_gettext('The number of pulses per revolution to calculate revolutions per minute (RPM)')},
-    'measurements_enabled': {
-        'title': lazy_gettext('Measurements Enabled'),
-        'phrase': lazy_gettext('The measurements to record')},
+    'sample_time': {
+        'title': lazy_gettext('Sample Time'),
+        'phrase': lazy_gettext('The amount of time (seconds) to sample the input before caluclating the measurement')},
     'scale_from_min': {
         'title': lazy_gettext('Unscaled Unit Min'),
         'phrase': lazy_gettext('Unscaled minimum unit')},
@@ -117,41 +160,49 @@ TOOLTIPS_SETTINGS = {
         'title': lazy_gettext('Unscaled Unit Max'),
         'phrase': lazy_gettext('Unscaled maximum unit')},
     'scale_to_min': {
-        'title': lazy_gettext('Resacled Unit Min'),
+        'title': lazy_gettext('Rescaled Unit Min'),
         'phrase': lazy_gettext('Rescaled minimum unit')},
     'scale_to_max': {
         'title': lazy_gettext('Rescaled Unit Max'),
         'phrase': lazy_gettext('Rescaled maximum unit')},
-    'invert_scale': {
-        'title': lazy_gettext('Invert Scale'),
-        'phrase': lazy_gettext('Invert the scale')},
-    'convert_to_measurement_unit': {
-        'title': lazy_gettext('Convert to Unit'),
-        'phrase': lazy_gettext('Convert the measurement to a different unit')},
+    'select_measurement_unit': {
+        'title': lazy_gettext('Measurement Unit'),
+        'phrase': lazy_gettext('Select the measurement and unit to store this measurement in the database')},
+    'sensitivity': {
+        'title': lazy_gettext('Sensitivity'),
+        'phrase': lazy_gettext('Measurement sensitivity')},
     'sht_voltage': {
         'title': lazy_gettext('Voltage'),
         'phrase': lazy_gettext('The input voltage to the sensor')},
-    'adc_gain': {
-        'title': lazy_gettext('Gain'),
-        'phrase': lazy_gettext(
-            'Adjust the gain to change the measurable voltage range. See ADC documentation for details.')},
-    'adc_resolution': {
-        'title': lazy_gettext('Resolution'),
-        'phrase': lazy_gettext('ADC Resolution (see ADC documentation)')},
-    'adc_sample_speed': {
-        'title': lazy_gettext('Sample Speed'),
-        'phrase': lazy_gettext('ADC Sample Speed (see ADC documentation)')},
-    'select_measurement_unit': {
-        'title': lazy_gettext('Measurement Unit'),
-        'phrase': lazy_gettext(
-            'Select the measurement and unit to store this measurement in the database')},
-
-    #
-    # Outputs
-    #
+    'switch_edge': {
+        'title': lazy_gettext('Edge'),
+        'phrase': lazy_gettext('Edge detection: low to high (rising), high to low (falling), or both')},
+    'switch_bouncetime': {
+        'title': lazy_gettext('Bounce Time (ms)'),
+        'phrase': lazy_gettext('The amount of time (miliseconds) to bounce the input signal')},
+    'switch_reset_period': {
+        'title': lazy_gettext('Reset Period'),
+        'phrase': lazy_gettext('Wait a period of time (seconds) after the first edge detection to begin detecting again')},
+    'thermocouple_type': {
+        'title': lazy_gettext('RTD Probe Type'),
+        'phrase': lazy_gettext('The type of thermocouple connected')},
+    'times_check': {
+        'title': lazy_gettext('Times Check'),
+        'phrase': lazy_gettext('Number of times to check')},
+    'trigger': {
+        'title': lazy_gettext('On Trigger'),
+        'phrase': lazy_gettext('What state triggers the output to turn on? High or Low?')},
     'trigger_functions_at_start': {
-        'title': lazy_gettext('Trigger at Start'),
-        'phrase': lazy_gettext('Whether or not to trigger Functions at startup if Output turns On')},
+        'title': lazy_gettext('Trigger at Startup'),
+        'phrase': lazy_gettext('Whether or not to trigger Functions when Mycodo starts')},
+    'uart_location': {
+        'title': lazy_gettext('UART Device'),
+        'phrase': lazy_gettext('The UART device location (e.g. /dev/ttyUSB1)')},
+    'weighting': {
+        'title': lazy_gettext('Weighting'),
+        'phrase': lazy_gettext(
+            'The weighting of the previous measurement on the current measurement. '
+            'Range: 0.0 - 1.0. Used for smoothing measurements. 0.0 means no weighting.')},
 
     # '': {
     #     'title': lazy_gettext(''),

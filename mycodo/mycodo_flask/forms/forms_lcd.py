@@ -16,6 +16,7 @@ from wtforms.validators import DataRequired
 from wtforms.widgets.html5 import NumberInput
 
 from mycodo.config import LCDS
+from mycodo.config_translations import TOOLTIPS_SETTINGS
 
 
 class LCDAdd(FlaskForm):
@@ -30,7 +31,7 @@ class LCDAdd(FlaskForm):
 class LCDMod(FlaskForm):
     lcd_id = StringField('LCD ID', widget=widgets.HiddenInput())
     name = StringField(
-        lazy_gettext('Name'),
+        TOOLTIPS_SETTINGS['name']['title'],
         validators=[DataRequired()]
     )
     location = StringField(

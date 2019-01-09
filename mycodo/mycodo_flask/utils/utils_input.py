@@ -363,7 +363,7 @@ def input_mod(form_mod, request_form):
 
         # Switch options
         mod_input.switch_edge = form_mod.switch_edge.data
-        mod_input.switch_bouncetime = form_mod.switch_bounce_time.data
+        mod_input.switch_bouncetime = form_mod.switch_bouncetime.data
         mod_input.switch_reset_period = form_mod.switch_reset_period.data
         # PWM and RPM options
         mod_input.weighting = form_mod.weighting.data

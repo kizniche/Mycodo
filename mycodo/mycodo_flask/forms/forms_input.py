@@ -65,7 +65,7 @@ class InputMod(FlaskForm):
     input_id = StringField('Input ID', widget=widgets.HiddenInput())
     input_measurement_id = StringField(widget=widgets.HiddenInput())
     name = StringField(
-        lazy_gettext('Name'),
+        TOOLTIPS_SETTINGS['name']['title'],
         validators=[DataRequired()]
     )
     period = DecimalField(
@@ -77,33 +77,37 @@ class InputMod(FlaskForm):
         )],
         widget=NumberInput(step='any')
     )
-    location = StringField(lazy_gettext('Location'))  # Access input (GPIO, I2C address, etc.)
-    ftdi_location = StringField(lazy_gettext('FTDI Device'))  # FTDI device location type
-    uart_location = StringField(lazy_gettext('UART Device'))  # UART device location type
-    i2c_location = StringField(lazy_gettext('I<sup>2</sup>C Address'))  # I2C device location type
+    location = StringField(lazy_gettext('Location'))
+    ftdi_location = StringField(
+        TOOLTIPS_SETTINGS['ftdi_location']['title'])
+    uart_location = StringField(
+        TOOLTIPS_SETTINGS['uart_location']['title'])
+    i2c_location = StringField(
+        TOOLTIPS_SETTINGS['i2c_location']['title'])
     gpio_location = IntegerField(
         TOOLTIPS_SETTINGS['gpio_location']['title'])
 
     i2c_bus = IntegerField(
-        lazy_gettext('I<sup>2</sup>C Bus'), widget=NumberInput())
+        TOOLTIPS_SETTINGS['i2c_bus']['title'], widget=NumberInput())
     baud_rate = IntegerField(
-        lazy_gettext('Baud Rate'), widget=NumberInput())
+        TOOLTIPS_SETTINGS['baud_rate']['title'], widget=NumberInput())
     power_output_id = StringField(
         lazy_gettext('Power Output'))  # For powering input
     calibrate_sensor_measure = StringField(
         lazy_gettext('Calibration Measurement'))
     resolution = IntegerField(
-        lazy_gettext('Resolution'), widget=NumberInput())
+        TOOLTIPS_SETTINGS['resolution']['title'], widget=NumberInput())
     resolution_2 = IntegerField(
-        lazy_gettext('Resolution'), widget=NumberInput())
+        TOOLTIPS_SETTINGS['resolution']['title'], widget=NumberInput())
     sensitivity = IntegerField(
-        lazy_gettext('Sensitivity'), widget=NumberInput())
+        TOOLTIPS_SETTINGS['sensitivity']['title'], widget=NumberInput())
 
     measurements_enabled = SelectMultipleField(
         TOOLTIPS_SETTINGS['measurements_enabled']['title'])
 
     # Server options
-    host = StringField(lazy_gettext('Host'))
+    host = StringField(
+        TOOLTIPS_SETTINGS['host']['title'])
     port = IntegerField(
         TOOLTIPS_SETTINGS['port']['title'], widget=NumberInput())
     times_check = IntegerField(
@@ -143,7 +147,7 @@ class InputMod(FlaskForm):
         TOOLTIPS_SETTINGS['adc_sample_speed']['title'])
 
     switch_edge = StringField(lazy_gettext('Edge'))
-    switch_bounce_time = IntegerField(
+    switch_bouncetime = IntegerField(
         lazy_gettext('Bounce Time (ms)'), widget=NumberInput())
     switch_reset_period = IntegerField(
         lazy_gettext('Reset Period'), widget=NumberInput())
@@ -187,8 +191,7 @@ class InputMeasurementMod(FlaskForm):
     input_id = StringField('Input ID', widget=widgets.HiddenInput())
     input_measurement_id = StringField(widget=widgets.HiddenInput())
     name = StringField(
-        lazy_gettext('Name'),
-        validators=[DataRequired()]
+        TOOLTIPS_SETTINGS['name']['title'], validators=[DataRequired()]
     )
     select_measurement_unit = StringField(
         TOOLTIPS_SETTINGS['select_measurement_unit']['title'])

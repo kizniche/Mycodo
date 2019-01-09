@@ -17,6 +17,8 @@ from wtforms import widgets
 from wtforms.validators import DataRequired
 from wtforms.widgets.html5 import NumberInput
 
+from mycodo.config_translations import TOOLTIPS_SETTINGS
+
 
 class DashboardBase(FlaskForm):
     dashboard_id = StringField('Dash Object ID', widget=widgets.HiddenInput())
@@ -33,7 +35,7 @@ class DashboardBase(FlaskForm):
         validators=[DataRequired()]
     )
     name = StringField(
-        lazy_gettext('Name'),
+        TOOLTIPS_SETTINGS['name']['title'],
         validators=[DataRequired()]
     )
     width = IntegerField(

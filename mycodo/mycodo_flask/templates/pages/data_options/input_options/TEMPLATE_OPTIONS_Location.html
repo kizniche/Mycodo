@@ -8,9 +8,9 @@
 
     {% if each_input.interface == '1WIRE' %}
 
-  <label class="control-label">{{tooltips_settings['w1thermsensor_id']['title']}}</label>
+  <label class="control-label">{{tooltips_settings['1wire_id']['title']}}</label>
   <div>
-    <select class="form-control form-tooltip form-dropdown" data-placement="top" id="location" name="location" title="{{tooltips_settings['w1thermsensor_id']['phrase']}}">
+    <select class="form-control form-tooltip form-dropdown" data-placement="top" id="location" name="location" title="{{tooltips_settings['1wire_id']['phrase']}}">
       {% if custom_options_values[each_input.unique_id]['library'] == 'w1thermsensor' %}
         {% if devices_1wire_w1thermsensor != [] %}
         <option value=""></option>
@@ -37,9 +37,9 @@
             dict_inputs[each_input.device]['location']['options']|length > 1
     %}
 
-  <label class="control-label">{{_(dict_inputs[each_input.device]['location']['title'])}}</label>
+  {{form_mod_input.location.label(class_='control-label')}}
   <div>
-    <select class="form-control form-tooltip form-dropdown" data-placement="top" id="location" name="location" title="{{_(dict_inputs[each_input.device]['location']['phrase'])}}">
+    <select class="form-control form-tooltip form-dropdown" data-placement="top" id="location" name="location" title="{{dict_inputs[each_input.device]['location']['phrase']}}">
       <option value=""></option>
       {% for each_value, each_name in dict_inputs[each_input.device]['location']['options'] %}
         <option value="{{each_value}}"{% if each_input.location == each_value %} selected{% endif %}>{{each_name}}</option>
@@ -51,10 +51,10 @@
 
   {% else %}
 
-  <label class="control-label">{{_(dict_inputs[each_input.device]['location']['title'])}}</label>
+  {{form_mod_input.location.label(class_='control-label')}}
   <div>
     {%- if 'location' in dict_inputs[each_input.device]['options_disabled'] -%}
-      {{form_mod_input.location(class_='form-control', value=each_input.location, disabled=True, **{'title': _(dict_inputs[each_input.device]['location']['phrase'])})}}
+      {{form_mod_input.location(class_='form-control', value=each_input.location, disabled=True, **{'title': dict_inputs[each_input.device]['location']['phrase']})}}
     {% else %}
       {{form_mod_input.location(class_='form-control', value=each_input.location, **{'title': _(dict_inputs[each_input.device]['location']['phrase'])})}}
     {%- endif -%}

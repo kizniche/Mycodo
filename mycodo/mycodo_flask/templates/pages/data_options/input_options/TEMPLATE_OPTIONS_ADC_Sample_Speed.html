@@ -1,7 +1,7 @@
 {% if 'adc_sample_speed' in dict_inputs[each_input.device]['options_enabled'] %}
 
 <div class="col-auto">
-  <label class="control-label">{{tooltips_settings['adc_sample_speed']['title']}}</label>
+  {{form_mod_input.adc_sample_speed.label(class_='control-label')}}
   <div>
     <select class="form-control form-tooltip form-dropdown" data-placement="top" id="adc_sample_speed" name="adc_sample_speed" title="{{tooltips_settings['adc_sample_speed']['phrase']}}">
       <option value=""></option>

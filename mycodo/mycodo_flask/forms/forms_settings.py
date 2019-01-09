@@ -19,6 +19,8 @@ from wtforms.fields.html5 import EmailField
 from wtforms.validators import DataRequired
 from wtforms.widgets.html5 import NumberInput
 
+from mycodo.config_translations import TOOLTIPS_SETTINGS
+
 
 #
 # Settings (Camera)
@@ -27,7 +29,7 @@ from wtforms.widgets.html5 import NumberInput
 class SettingsCamera(FlaskForm):
     camera_id = StringField('Camera ID', widget=widgets.HiddenInput())
     name = StringField(
-        lazy_gettext('Name'))
+        TOOLTIPS_SETTINGS['name']['title'])
     library = StringField(
         lazy_gettext('Library'))
     device = StringField(

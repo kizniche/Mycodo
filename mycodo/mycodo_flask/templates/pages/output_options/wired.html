@@ -1,13 +1,13 @@
 <div class="col-auto">
-  {{form_mod_output.pin.label(class_='control-label')}}
+  {{form_mod_output.gpio_location.label(class_='control-label')}}
   <div>
-    {{form_mod_output.pin(class_='form-control', value=each_output.pin, **{'title':_('The GPIO pin (using BCM numbering) connected to the output signal pin')})}}
+    {{form_mod_output.gpio_location(class_='form-control', value=each_output.pin, **{'title': tooltips_settings['gpio_location']['phrase']})}}
    </div>
 </div>
 <div class="col-auto">
   {{form_mod_output.trigger.label(class_='control-label')}}
   <div>
-    <select class="form-control form-tooltip form-dropdown" id="trigger" name="trigger" data-placement="top" title="{{_('What state triggers the output to turn on? High or Low?')}}">
+    <select class="form-control form-tooltip form-dropdown" id="trigger" name="trigger" data-placement="top" title="{{tooltips_settings['trigger']['phrase']}}">
       <option value="1"{% if each_output.trigger %} selected{% endif %}>{{_('High')}}</option>
       <option value="0"{% if not each_output.trigger %} selected{% endif %}>{{_('Low')}}</option>
     </select>
@@ -16,7 +16,7 @@
 <div class="col-auto">
   {{form_mod_output.on_at_start.label(class_='control-label')}}
   <div>
-    <select class="form-control form-tooltip form-dropdown" id="on_at_start" name="on_at_start" data-placement="top" title="{{_('When Mycodo starts, set the output state')}}">
+    <select class="form-control form-tooltip form-dropdown" id="on_at_start" name="on_at_start" data-placement="top" title="{{tooltips_settings['on_at_start']['phrase']}}">
       <option value="1"{% if each_output.on_at_start %} selected{% endif %}>{{_('On')}}</option>
       <option value="0"{% if not each_output.on_at_start %} selected{% endif %}>{{_('Off')}}</option>
     </select>

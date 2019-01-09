@@ -1,13 +1,13 @@
 {% if each_output.interface == 'I2C' %}
 
 <div class="col-auto">
-  <label class='control-label'>{{tooltips_settings['i2c_location']['title']}}</label>
+  {{form_mod_output.i2c_location.label(class_='control-label')}}
   <div>
     {{form_mod_output.location(class_='form-control', value=each_output.location, **{'title': tooltips_settings['i2c_location']['phrase']})}}
   </div>
 </div>
 <div class="col-auto">
-  <label class='control-label'>{{tooltips_settings['i2c_bus']['title']}}</label>
+  {{form_mod_output.i2c_bus.label(class_='control-label')}}
   <div>
     {{form_mod_output.i2c_bus(class_='form-control', value=each_output.i2c_bus, **{'title': tooltips_settings['i2c_bus']['phrase']})}}
   </div>
@@ -16,7 +16,7 @@
 {% elif each_output.interface == 'UART' %}
 
 <div class="col-auto">
-  <label class='control-label'>{{tooltips_settings['uart_location']['title']}}</label>
+  {{form_mod_output.uart_location.label(class_='control-label')}}
   <div>
     {{form_mod_output.location(class_='form-control', value=each_output.location, **{'title': tooltips_settings['uart_location']['phrase']})}}
   </div>
@@ -24,7 +24,7 @@
 <div class="col-auto">
   {{form_mod_output.baud_rate.label(class_='control-label')}}
   <div>
-    {{form_mod_output.baud_rate(class_='form-control', value=each_output.baud_rate, **{'title': tooltips_settings['uart_baud_rate']['phrase']})}}
+    {{form_mod_output.baud_rate(class_='form-control', value=each_output.baud_rate, **{'title': tooltips_settings['baud_rate']['phrase']})}}
   </div>
 </div>
 
@@ -33,6 +33,6 @@
 <div class="col-auto">
   {{form_mod_output.flow_rate.label(class_='control-label')}}
   <div>
-    {{form_mod_output.flow_rate(class_='form-control', value=each_output.flow_rate, **{'title':_('Flow rate in ml/minute')})}}
+    {{form_mod_output.flow_rate(class_='form-control', value=each_output.flow_rate, **{'title': tooltips_settings['flow_rate']['phrase']})}}
   </div>
 </div>

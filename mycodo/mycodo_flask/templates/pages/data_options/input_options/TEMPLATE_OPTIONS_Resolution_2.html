@@ -3,18 +3,18 @@
   {% if dict_inputs[each_input.device]['resolution']|length == 1 %}
 
 <div class="col-auto">
-  <label class="control-label">{{tooltips_settings['resolution']['title']}}</label>
+  {{form_mod_input.resolution_2.label(class_='control-label')}}
   <div>
-    {{form_mod_input.resolution_2(class_='form-control', value=each_input.resolution, **{'title': tooltips_settings['resolution']['phrase']})}}
+    {{form_mod_input.resolution_2(class_='form-control', value=each_input.resolution, **{'title': tooltips_settings['resolution_2']['phrase']})}}
   </div>
 </div>
 
   {% elif dict_inputs[each_input.device]['resolution']|length > 1 %}
 
 <div class="col-auto">
-  <label>{{tooltips_settings['resolution']['title']}}</label>
+  {{form_mod_input.resolution_2.label(class_='control-label')}}
   <div>
-    <select class="form-control form-tooltip form-dropdown" data-placement="top" id="resolution_2" name="resolution_2" title="{{tooltips_settings['resolution']['phrase']}}">
+    <select class="form-control form-tooltip form-dropdown" data-placement="top" id="resolution_2" name="resolution_2" title="{{tooltips_settings['resolution_2']['phrase']}}">
     {% for each_value, each_name in dict_inputs[each_input.device]['resolution_2'] %}
       <option value="{{each_value}}"{% if each_input.resolution_2 == each_value %} selected{% endif %}>{{each_name}}</option>
     {% endfor %}

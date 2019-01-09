@@ -15,6 +15,7 @@ from flask import url_for
 from flask_babel import gettext
 
 from mycodo.config import METHOD_INFO
+from mycodo.config_translations import TOOLTIPS_SETTINGS
 from mycodo.databases.models import DisplayOrder
 from mycodo.databases.models import Method
 from mycodo.databases.models import MethodData
@@ -294,7 +295,8 @@ def method_builder(method_id):
                                last_setpoint=last_setpoint,
                                form_create_method=form_create_method,
                                form_add_method=form_add_method,
-                               form_mod_method=form_mod_method)
+                               form_mod_method=form_mod_method,
+                               tooltips_settings=TOOLTIPS_SETTINGS,)
 
     return redirect('/method')
 

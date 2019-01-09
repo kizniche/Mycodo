@@ -184,7 +184,7 @@
           </div>
 
           <div class="col-xs-5 col-sm-5 col-md-5 col-lg-3 small-gutters">
-            {{form_mod_output.name(class_='form-control', value=each_output.name, **{'title':_('A name to distinguish this from others')})}}
+            {{form_mod_output.name(class_='form-control', value=each_output.name, **{'title': tooltips_settings['name']['phrase']})}}
           </div>
           <div class="col-xs-5 col-sm-6 col-md-6 col-lg-2 small-gutters">
             <input class="form-control btn btn-sm btn-block" disabled="" id="{{each_output.unique_id}}-input-output-state" title="[{{'%02d' % each_output.id}}] UUID: {{each_output.unique_id}}" value="{{ _('Unconfigured')}}" type="text">
@@ -233,7 +233,7 @@
             <div class="col-xs-6 col-sm-4 col-md-3">
               {{form_mod_output.amps.label(class_='control-label')}}
               <div>
-                {{form_mod_output.amps(class_='form-control', value=each_output.amps, **{'title':_('The number of amps the output device draws (at 120/240 VAC)')})}}
+                {{form_mod_output.amps(class_='form-control', value=each_output.amps, **{'title': tooltips_settings['amps']['phrase']})}}
                </div>
             </div>
 
@@ -243,11 +243,11 @@
 
           <div class="row">
             <div class="col">
-              <label class='control-label'>{{_('Duration On (seconds)')}}</label>
+              <label class='control-label'>{{tooltips_settings['duration_on_seconds']['title']}}</label>
               <div>
                 <div class="row small-gutters">
                   <div class="col-xs-6 col-sm-4 col-md-3 small-gutters">
-                    <input class="form-control" id="sec_on_amt_{{each_output.unique_id}}" name="sec_on_amt_{{each_output.unique_id}}" title="Turn this output on for a specific number of seconds (used to test output)" type="text" value="">
+                    <input class="form-control" id="sec_on_amt_{{each_output.unique_id}}" name="sec_on_amt_{{each_output.unique_id}}" title="{{tooltips_settings['duration_on_seconds']['phrase']}}" type="text" value="">
                   </div>
                   <div class="col-xs-6 col-sm-4 col-md-3 small-gutters">
                     <input class="btn btn-success btn-block sec_on_amt" id="turn_on" name="{{each_output.unique_id}}/on/sec/" type="button" value="{{_('Turn On')}}">
@@ -261,11 +261,11 @@
 
           <div class="row">
             <div class="col">
-              <label class='control-label'>{{_('Amount to Dispense (ml)')}}</label>
+              <label class='control-label'>{{tooltips_settings['pump_amount']['title']}}</label>
               <div>
                 <div class="row small-gutters">
                   <div class="col-xs-6 col-sm-4 col-md-3 small-gutters">
-                    <input class="form-control" id="sec_on_amt_{{each_output.unique_id}}" name="sec_on_amt_{{each_output.unique_id}}" title="Use this output to pump a volume of liquid" type="text" value="">
+                    <input class="form-control" id="sec_on_amt_{{each_output.unique_id}}" name="sec_on_amt_{{each_output.unique_id}}" title="{{tooltips_settings['pump_amount']['phrase']}}" type="text" value="">
                   </div>
                   <div class="col-xs-6 col-sm-4 col-md-3 small-gutters">
                     <input class="btn btn-success btn-block sec_on_amt" id="turn_on" name="{{each_output.unique_id}}/on/sec/" type="button" value="{{_('Pump Volume')}}">
@@ -279,11 +279,11 @@
 
           <div class="row">
             <div class="col">
-              <label class='control-label'>{{_('Duty Cycle')}} (%)</label>
+              <label class='control-label'>{{tooltips_settings['duty_cycle']['title']}}</label>
               <div>
                 <div class="row small-gutters">
                   <div class="col-xs-6 col-sm-4 col-md-3 small-gutters">
-                  <input class="form-control" id="duty_cycle_on_amt_{{each_output.unique_id}}" name="duty_cycle_on_amt_{{each_output.unique_id}}" title="Select the duty cycle for the PWM when turned on (0.0 - 100.0)" type="number" value="">
+                  <input class="form-control" id="duty_cycle_on_amt_{{each_output.unique_id}}" name="duty_cycle_on_amt_{{each_output.unique_id}}" title="{{tooltips_settings['duty_cycle']['phrase']}}" type="number" value="">
                   </div>
                   <div class="col-xs-6 col-sm-4 col-md-3 small-gutters">
                   <input class="btn btn-success btn-block duty_cycle_on_amt" id="turn_on" name="{{each_output.unique_id}}/on/pwm/" type="button" value="{{_('Turn On')}}">

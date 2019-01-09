@@ -13,10 +13,10 @@ from wtforms import SelectMultipleField
 from wtforms import StringField
 from wtforms import SubmitField
 from wtforms import widgets
-from wtforms.validators import DataRequired
 from wtforms.widgets.html5 import NumberInput
 
 from mycodo.config import FUNCTION_ACTIONS
+from mycodo.config_translations import TOOLTIPS_SETTINGS
 
 
 class DataBase(FlaskForm):
@@ -28,7 +28,8 @@ class DataBase(FlaskForm):
 class Trigger(FlaskForm):
     function_id = StringField('Function ID', widget=widgets.HiddenInput())
     function_type = StringField('Function Type', widget=widgets.HiddenInput())
-    name = StringField(lazy_gettext('Name'))
+    name = StringField(
+        TOOLTIPS_SETTINGS['name']['title'])
 
     # Edge detection
     measurement = StringField(lazy_gettext('Measurement'))

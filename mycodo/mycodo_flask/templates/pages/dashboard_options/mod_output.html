@@ -104,7 +104,7 @@
       <div class="col-auto">
         {{form_base.name.label(class_='control-label')}}
         <div>
-          {{form_base.name(class_='form-control', value=each_dashboard.name, **{'title':_('A name to distinguish this from others')})}}
+          {{form_base.name(class_='form-control', value=each_dashboard.name, **{'title': tooltips_settings['name']['phrase']})}}
         </div>
       </div>
       <div class="col-auto">

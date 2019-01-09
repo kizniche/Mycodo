@@ -15,13 +15,16 @@ from wtforms import SubmitField
 from wtforms import TextAreaField
 from wtforms import widgets
 
+from mycodo.config_translations import TOOLTIPS_SETTINGS
+
 
 #
 # Notes
 #
 
 class NoteAdd(FlaskForm):
-    name = StringField(lazy_gettext('Name'))
+    name = StringField(
+        TOOLTIPS_SETTINGS['name']['title'])
     note_tags = SelectMultipleField('Tags')
     files = FileField(lazy_gettext('Attached Files'))
     enter_custom_date_time = BooleanField(lazy_gettext('Use Custom Date/Time'))
@@ -39,7 +42,8 @@ class NoteOptions(FlaskForm):
 class NoteMod(FlaskForm):
     note_unique_id = StringField(widget=widgets.HiddenInput())
     file_selected = StringField(widget=widgets.HiddenInput())
-    name = StringField(lazy_gettext('Name'))
+    name = StringField(
+        TOOLTIPS_SETTINGS['name']['title'])
     note_tags = SelectMultipleField(lazy_gettext('Tags'))
     files = FileField(lazy_gettext('Attached Files'))
     enter_custom_date_time = BooleanField(lazy_gettext('Use Custom Date/Time'))

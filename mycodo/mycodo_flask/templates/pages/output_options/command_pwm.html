@@ -1,7 +1,7 @@
 <div class="col-auto">
   {{form_mod_output.pwm_command.label(class_='control-label')}}
   <div>
-    {{form_mod_output.pwm_command(class_='form-control', value=each_output.pwm_command, **{'title':_('Command to execute (as user mycodo) to set the PWM duty cycle (%%)')})}}
+    {{form_mod_output.pwm_command(class_='form-control', value=each_output.pwm_command, **{'title': tooltips_settings['pwm_command']['phrase']})}}
    </div>
 </div>
 <div class="col-auto">

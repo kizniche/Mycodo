@@ -702,6 +702,7 @@ def page_dashboard():
                            form_measurement=form_measurement,
                            form_output=form_output,
                            form_pid=form_pid,
+                           tooltips_settings=TOOLTIPS_SETTINGS,
                            y_axes=y_axes)
 
 
@@ -1039,7 +1040,8 @@ def page_lcd():
                            display_order=display_order,
                            form_lcd_add=form_lcd_add,
                            form_lcd_mod=form_lcd_mod,
-                           form_lcd_display=form_lcd_display)
+                           form_lcd_display=form_lcd_display,
+                           tooltips_settings=TOOLTIPS_SETTINGS,)
 
 
 @blueprint.route('/live', methods=('GET', 'POST'))
@@ -1458,6 +1460,7 @@ def page_function():
                            output=output,
                            pid=pid,
                            tags=tags,
+                           tooltips_settings=TOOLTIPS_SETTINGS,
                            trigger=trigger,
                            units=MEASUREMENTS,
                            user=user,

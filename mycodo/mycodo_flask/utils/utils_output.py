@@ -162,12 +162,12 @@ def output_mod(form_output):
             mod_output.trigger_functions_at_start = form_output.trigger_functions_at_start.data
 
         if mod_output.output_type == 'wired':
-            if not is_int(form_output.pin.data):
-                error.append("BCM Pin must be an integer")
-            mod_output.pin = form_output.pin.data
+            if not is_int(form_output.gpio_location.data):
+                error.append("BCM GPIO Pin must be an integer")
+            mod_output.pin = form_output.gpio_location.data
             mod_output.trigger = bool(int(form_output.trigger.data))
         elif mod_output.output_type == 'wireless_rpi_rf':
-            if not is_int(form_output.pin.data):
+            if not is_int(form_output.gpio_location.data):
                 error.append("Pin must be an integer")
             if not is_int(form_output.protocol.data):
                 error.append("Protocol must be an integer")
@@ -177,7 +177,7 @@ def output_mod(form_output):
                 error.append("On Command must be an integer")
             if not is_int(form_output.off_command.data):
                 error.append("Off Command must be an integer")
-            mod_output.pin = form_output.pin.data
+            mod_output.pin = form_output.gpio_location.data
             mod_output.protocol = form_output.protocol.data
             mod_output.pulse_length = form_output.pulse_length.data
             mod_output.on_command = form_output.on_command.data
@@ -191,7 +191,7 @@ def output_mod(form_output):
             mod_output.pwm_command = form_output.pwm_command.data
             mod_output.pwm_invert_signal = form_output.pwm_invert_signal.data
         elif mod_output.output_type == 'pwm':
-            mod_output.pin = form_output.pin.data
+            mod_output.pin = form_output.gpio_location.data
             mod_output.pwm_hertz = form_output.pwm_hertz.data
             mod_output.pwm_library = form_output.pwm_library.data
             mod_output.pwm_invert_signal = form_output.pwm_invert_signal.data

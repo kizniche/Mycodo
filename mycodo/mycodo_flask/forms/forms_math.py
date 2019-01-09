@@ -30,7 +30,7 @@ class MathAdd(FlaskForm):
 class MathMod(FlaskForm):
     math_id = StringField('Math ID', widget=widgets.HiddenInput())
     name = StringField(
-        lazy_gettext('Name'),
+        TOOLTIPS_SETTINGS['name']['title'],
         validators=[DataRequired()])
     period = DecimalField(
         lazy_gettext('Period (seconds)'),
@@ -99,7 +99,7 @@ class MathMeasurementMod(FlaskForm):
     math_id = StringField('Math ID', widget=widgets.HiddenInput())
     math_measurement_id = StringField(widget=widgets.HiddenInput())
     name = StringField(
-        lazy_gettext('Name'),
+        TOOLTIPS_SETTINGS['name']['title'],
         validators=[DataRequired()]
     )
     select_measurement_unit = StringField(

@@ -41,7 +41,7 @@
         <div class="col-auto">
           {{form_mod_method.name.label(class_='control-label')}}
           <div>
-            {{form_mod_method.name(class_='form-control', value=method.name, **{'title':_('A name to distinguish this from others')})}}
+            {{form_mod_method.name(class_='form-control', value=method.name, **{'title': tooltips_settings['name']['phrase']})}}
           </div>
         </div>
         <div class="col-auto">

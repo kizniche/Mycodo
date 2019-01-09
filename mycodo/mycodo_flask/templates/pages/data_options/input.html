@@ -22,7 +22,7 @@
       </a>
     </div>
     <div class="col-xs-5 col-sm-3">
-      {{form_mod_input.name(class_='form-control', value=each_input.name, **{'title':_('A name to distinguish this from others')})}}
+      {{form_mod_input.name(class_='form-control', value=each_input.name, **{'title': tooltips_settings['name']['phrase']})}}
     </div>
     <div class="col-xs-5 col-sm-2">
       <input class="form-control btn btn-sm btn-block" disabled="" title="[{{'%02d' % each_input.id}}] UUID: {{each_input.unique_id}}" value="{% if each_input.interface and each_input.interface not in ['RPi', 'Mycodo']%}[{{each_input.interface}}] {% endif %}{% if each_input.device in dict_inputs %}{{dict_inputs[each_input.device]['input_name']}}{% endif %}" type="text">

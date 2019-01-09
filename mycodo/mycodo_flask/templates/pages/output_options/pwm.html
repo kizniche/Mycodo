@@ -2,15 +2,15 @@
 Note: See the <a href="/help#pwm" target="_blank">PWM</a> section of the manual for PWM information and determining which pins may be used for each library option.
 </div>
 <div class="col-auto">
-  {{form_mod_output.pin.label(class_='control-label')}}
+  {{form_mod_output.gpio_location.label(class_='control-label')}}
   <div>
-    {{form_mod_output.pin(class_='form-control', value=each_output.pin, **{'title':_('The GPIO pin (using BCM numbering) to output the PWM signal')})}}
+    {{form_mod_output.gpio_location(class_='form-control', value=each_output.pin, **{'title': tooltips_settings['gpio_location']['phrase']})}}
    </div>
 </div>
 <div class="col-auto">
   {{form_mod_output.pwm_library.label(class_='control-label')}}
   <div>
-    <select class="form-control form-tooltip form-dropdown" id="pwm_library" name="pwm_library" data-placement="top" title="{{_('Which method to produce the PWM signal (hardware pins can produce higher frequencies)')}}">
+    <select class="form-control form-tooltip form-dropdown" id="pwm_library" name="pwm_library" data-placement="top" title="{{tooltips_settings['pwm_library']['phrase']}}">
       <option value="pigpio_any"{% if each_output.pwm_library == 'pigpio_any' %} selected{% endif %}>{{_('Any Pin, <= 40kHz')}}</option>
       <option value="pigpio_hardware"{% if each_output.pwm_library == 'pigpio_hardware' %} selected{% endif %}>{{_('Hardware Pin, <= 30MHz')}}</option>
     </select>
@@ -20,7 +20,7 @@ Note: See the <a href="/help#pwm" target="_blank">PWM</a> section of the manual 
 <div class="col-auto">
   {{form_mod_output.pwm_hertz.label(class_='control-label')}}
   <div>
-    {{form_mod_output.pwm_hertz(class_='form-control', value=each_output.pwm_hertz, **{'title':_('The Hertz to output the PWM signal (0 - 70,000)')})}}
+    {{form_mod_output.pwm_hertz(class_='form-control', value=each_output.pwm_hertz, **{'title': tooltips_settings['pwm_hertz']['phrase']})}}
   </div>
 </div>
 <div class="col-auto">

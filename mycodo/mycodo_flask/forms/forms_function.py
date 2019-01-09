@@ -11,10 +11,10 @@ from wtforms import SelectMultipleField
 from wtforms import StringField
 from wtforms import SubmitField
 from wtforms import widgets
-from wtforms.validators import DataRequired
 from wtforms.widgets.html5 import NumberInput
 
 from mycodo.config import FUNCTION_ACTIONS
+from mycodo.config_translations import TOOLTIPS_SETTINGS
 
 
 class DataBase(FlaskForm):
@@ -31,7 +31,8 @@ class FunctionAdd(FlaskForm):
 class FunctionMod(FlaskForm):
     function_id = StringField('Function ID', widget=widgets.HiddenInput())
     function_type = StringField('Function Type', widget=widgets.HiddenInput())
-    name = StringField(lazy_gettext('Name'))
+    name = StringField(
+        TOOLTIPS_SETTINGS['name']['title'])
     action_type = SelectField(
         choices=[('', lazy_gettext('Select One'))] + FUNCTION_ACTIONS)
     add_action = SubmitField(lazy_gettext('Add Action'))

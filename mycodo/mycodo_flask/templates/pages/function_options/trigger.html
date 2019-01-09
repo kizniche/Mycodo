@@ -16,7 +16,7 @@
       </a>
     </div>
     <div class="col-xs-5 col-sm-4 col-md-3 col-lg-4">
-      {{form_trigger.name(class_='form-control', value=each_trigger.name, **{'title':_('A name to distinguish this from others')})}}
+      {{form_trigger.name(class_='form-control', value=each_trigger.name, **{'title': tooltips_settings['name']['phrase']})}}
     </div>
     <div class="col-xs-5 col-sm-3 col-md-4 col-lg-3">
       <input class="form-control btn btn-sm" disabled="" title="UUID: {{each_trigger.unique_id}}" value="

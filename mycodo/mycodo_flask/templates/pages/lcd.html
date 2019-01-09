@@ -51,7 +51,7 @@
         </a>
       </div>
       <div class="col-sm-6 col-lg-3 no-gutters">
-        {{form_lcd_mod.name(class_='form-control', value=each_lcd.name, **{'title':_('A name to distinguish this from others')})}}
+        {{form_lcd_mod.name(class_='form-control', value=each_lcd.name, **{'title': tooltips_settings['name']['phrase']})}}
       </div>
       <div class="col-sm-5 col-lg-2 no-gutters">
         <input class="form-control btn btn-sm" title="[{{'%02d' % each_lcd.id}}] UUID: {{each_lcd.unique_id}}" disabled="" value="
