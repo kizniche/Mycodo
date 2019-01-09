@@ -735,6 +735,10 @@ to name a few.
 |                       | which will not issue an on or off command when  |
 |                       | Mycodo starts or stops.                         |
 +-----------------------+-------------------------------------------------+
+| Trigger at Startup    | Select to enable triggering Functions (such as  |
+|                       | Output Triggers) when Mycodo starts and if      |
+|                       | Start State is set to ON.                       |
++-----------------------+-------------------------------------------------+
 | Seconds to turn On    | This is a way to turn a output on for a         |
 |                       | specific duration of time. This can be useful   |
 |                       | for testing the outputs and powered devices or  |

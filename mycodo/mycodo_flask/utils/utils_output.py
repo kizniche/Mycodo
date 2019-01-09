@@ -158,6 +158,9 @@ def output_mod(form_output):
         mod_output.name = form_output.name.data
         mod_output.amps = form_output.amps.data
 
+        if form_output.trigger_functions_at_start.data:
+            mod_output.trigger_functions_at_start = form_output.trigger_functions_at_start.data
+
         if mod_output.output_type == 'wired':
             if not is_int(form_output.pin.data):
                 error.append("BCM Pin must be an integer")

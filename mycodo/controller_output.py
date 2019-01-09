@@ -74,6 +74,8 @@ class OutputController(threading.Thread):
         self.output_amps = {}
         self.output_trigger = {}
         self.output_on_at_start = {}
+        self.trigger_functions_at_start = {}
+
         self.output_on_until = {}
         self.output_last_duration = {}
         self.output_on_duration = {}
@@ -859,6 +861,7 @@ class OutputController(threading.Thread):
             self.output_off_command[each_output.unique_id] = each_output.off_command
             self.output_pwm_command[each_output.unique_id] = each_output.pwm_command
             self.output_flow_rate[each_output.unique_id] = each_output.flow_rate
+            self.trigger_functions_at_start[each_output.unique_id] = each_output.trigger_functions_at_start
 
             self.pwm_hertz[each_output.unique_id] = each_output.pwm_hertz
             self.pwm_library[each_output.unique_id] = each_output.pwm_library
@@ -881,11 +884,15 @@ class OutputController(threading.Thread):
                     self.output_type[each_output_id] == 'pwm'):
                 pass  # Don't turn on or off
             elif self.output_on_at_start[each_output_id]:
-                self.output_on_off(each_output_id, 'on',
-                                   trigger_conditionals=False)
+                self.output_on_off(
+                    each_output_id,
+                    'on',
+                    trigger_conditionals=self.trigger_functions_at_start[self.output_id])
             else:
-                self.output_on_off(each_output_id, 'off',
-                                   trigger_conditionals=False)
+                self.output_on_off(
+                    each_output_id,
+                    'off',
+                    trigger_conditionals=False)
 
     def cleanup_gpio(self):
         for each_output_pin in self.output_pin:
@@ -937,6 +944,7 @@ class OutputController(threading.Thread):
             self.output_off_command[output_id] = output.off_command
             self.output_pwm_command[output_id] = output.pwm_command
             self.output_flow_rate[output_id] = output.flow_rate
+            self.trigger_functions_at_start[output_id] = output.trigger_functions_at_start
 
             self.pwm_hertz[output_id] = output.pwm_hertz
             self.pwm_library[output_id] = output.pwm_library
@@ -1004,6 +1012,7 @@ class OutputController(threading.Thread):
             self.output_off_command.pop(output_id, None)
             self.output_pwm_command.pop(output_id, None)
             self.wireless_pi_switch.pop(output_id, None)
+            self.trigger_functions_at_start.pop(output_id, None)
 
             self.pwm_hertz.pop(output_id, None)
             self.pwm_library.pop(output_id, None)

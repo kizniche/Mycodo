@@ -20,6 +20,7 @@ from wtforms.validators import Optional
 from wtforms.widgets.html5 import NumberInput
 
 from mycodo.config import OUTPUTS
+from mycodo.config_translations import TOOLTIPS_SETTINGS
 
 
 class DataBase(FlaskForm):
@@ -84,6 +85,8 @@ class OutputMod(FlaskForm):
         ],
         validators=[DataRequired()]
     )
+    trigger_functions_at_start = BooleanField(
+        TOOLTIPS_SETTINGS['trigger_functions_at_start']['title'])
     pwm_hertz = IntegerField(
         lazy_gettext('Frequency (Hertz)'), widget=NumberInput())
     pwm_library = SelectField(

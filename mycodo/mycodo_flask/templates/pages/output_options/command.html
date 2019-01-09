@@ -20,3 +20,9 @@
     </select>
   </div>
 </div>
+<div class="col-auto">
+  {{form_mod_output.trigger_functions_at_start.label(class_='control-label')}}
+  <div class="input-group-text">
+    <input id="trigger_functions_at_start" name="trigger_functions_at_start" type="checkbox" title="{{tooltips_settings['trigger_functions_at_start']['phrase']}}" value="y"{% if each_output.trigger_functions_at_start %} checked{% endif %}>
+  </div>
+</div>

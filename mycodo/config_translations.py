@@ -6,7 +6,10 @@
 from flask_babel import lazy_gettext
 
 
-TOOLTIPS_INPUT = {
+TOOLTIPS_SETTINGS = {
+    #
+    # Inputs
+    #
     'interface': {
         'title': lazy_gettext('Interface'),
         'phrase': lazy_gettext('The interface used to communicate')},
@@ -142,6 +145,14 @@ TOOLTIPS_INPUT = {
         'title': lazy_gettext('Measurement Unit'),
         'phrase': lazy_gettext(
             'Select the measurement and unit to store this measurement in the database')},
+
+    #
+    # Outputs
+    #
+    'trigger_functions_at_start': {
+        'title': lazy_gettext('Trigger at Start'),
+        'phrase': lazy_gettext('Whether or not to trigger Functions at startup if Output turns On')},
+
     # '': {
     #     'title': lazy_gettext(''),
     #     'phrase': lazy_gettext('')},

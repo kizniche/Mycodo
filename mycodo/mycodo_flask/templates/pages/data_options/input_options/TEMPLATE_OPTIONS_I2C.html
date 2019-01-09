@@ -11,9 +11,9 @@
     %}
 
     <div class="col-auto">
-      <label class="control-label">{{tooltips_input['i2c_location']['title']}}</label>
+      <label class="control-label">{{tooltips_settings['i2c_location']['title']}}</label>
       <div>
-        {{form_mod_input.i2c_location(class_='form-control', value=each_input.i2c_location, disabled=True, **{'title': tooltips_input['i2c_location']['phrase']})}}
+        {{form_mod_input.i2c_location(class_='form-control', value=each_input.i2c_location, disabled=True, **{'title': tooltips_settings['i2c_location']['phrase']})}}
       </div>
     </div>
 
@@ -22,18 +22,18 @@
       {% if dict_inputs[each_input.device]['i2c_address_editable'] %}
 
       <div class="col-auto">
-        <label class="control-label">{{tooltips_input['i2c_location']['title']}}</label>
+        <label class="control-label">{{tooltips_settings['i2c_location']['title']}}</label>
         <div>
-          {{form_mod_input.i2c_location(class_='form-control', value=each_input.i2c_location, **{'title': tooltips_input['i2c_location']['phrase']})}}
+          {{form_mod_input.i2c_location(class_='form-control', value=each_input.i2c_location, **{'title': tooltips_settings['i2c_location']['phrase']})}}
         </div>
       </div>
 
       {% elif dict_inputs[each_input.device]['i2c_location']|length > 1 %}
 
       <div class="col-auto">
-      <label>{{tooltips_input['i2c_location']['title']}}</label>
+      <label>{{tooltips_settings['i2c_location']['title']}}</label>
       <div>
-        <select class="form-control form-tooltip form-dropdown" data-placement="top" id="i2c_location" name="i2c_location" title="{{tooltips_input['i2c_location']['phrase']}}">
+        <select class="form-control form-tooltip form-dropdown" data-placement="top" id="i2c_location" name="i2c_location" title="{{tooltips_settings['i2c_location']['phrase']}}">
           <option value=""></option>
         {% for each_address in dict_inputs[each_input.device]['i2c_location'] %}
           <option value="{{each_address}}"{% if each_input.i2c_location == each_address %} selected{% endif %}>{{_('Address')}} {{each_address}}</option>
@@ -47,9 +47,9 @@
     {% endif %}
 
     <div class="col-auto">
-      <label class="control-label">{{tooltips_input['i2c_bus']['title']}}</label>
+      <label class="control-label">{{tooltips_settings['i2c_bus']['title']}}</label>
       <div>
-        {{form_mod_input.i2c_bus(class_='form-control', value=each_input.i2c_bus, **{'title': tooltips_input['i2c_bus']['phrase']})}}
+        {{form_mod_input.i2c_bus(class_='form-control', value=each_input.i2c_bus, **{'title': tooltips_settings['i2c_bus']['phrase']})}}
       </div>
     </div>
 

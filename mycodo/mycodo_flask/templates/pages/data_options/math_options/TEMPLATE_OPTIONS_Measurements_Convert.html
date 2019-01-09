@@ -59,7 +59,7 @@
   <div class="col-auto">
     {{form_mod_math_measurement.select_measurement_unit.label(class_='control-label')}}
     <div>
-      <select class="form-control form-tooltip form-dropdown" data-placement="top" id="select_measurement_unit" name="select_measurement_unit" title="{{tooltips_input['select_measurement_unit']['phrase']}}">
+      <select class="form-control form-tooltip form-dropdown" data-placement="top" id="select_measurement_unit" name="select_measurement_unit" title="{{tooltips_settings['select_measurement_unit']['phrase']}}">
         <option value="">{{_('Select One')}}</option>
         {% for each_submit, each_display in choices_measurements_units.items() %}
         <option value="{{each_submit}}"{% if each_submit == each_measurement.measurement + ',' + each_measurement.unit %} selected{% endif %}>{{each_display}}</option>
@@ -75,7 +75,7 @@
   <div class="col-auto">
     {{form_mod_math_measurement.convert_to_measurement_unit.label(class_='control-label')}}
     <div>
-      <select class="form-control form-tooltip form-dropdown" id="convert_to_measurement_unit" name="convert_to_measurement_unit" data-placement="top" title="{{tooltips_input['convert_to_measurement_unit']['phrase']}}">
+      <select class="form-control form-tooltip form-dropdown" id="convert_to_measurement_unit" name="convert_to_measurement_unit" data-placement="top" title="{{tooltips_settings['convert_to_measurement_unit']['phrase']}}">
         <option value="">{{_('Do Not Convert')}}
     {%- set all_conversion = table_conversion.query.filter(
                 table_conversion.convert_unit_from == each_measurement.unit).all() -%}

@@ -40,25 +40,25 @@
   <div class="col-auto">
     {{form_mod_input_measurement.scale_from_min.label(class_='control-label')}}
     <div>
-      <input class="form-control" id="scale_from_min" name="scale_from_min" step="any" title="{{tooltips_input['scale_from_min']['phrase']}}" type="number" value="{{each_measurement.scale_from_min}}">
+      <input class="form-control" id="scale_from_min" name="scale_from_min" step="any" title="{{tooltips_settings['scale_from_min']['phrase']}}" type="number" value="{{each_measurement.scale_from_min}}">
     </div>
   </div>
   <div class="col-auto">
     {{form_mod_input_measurement.scale_from_max.label(class_='control-label')}}
     <div>
-      <input class="form-control" id="scale_from_max" name="scale_from_max" step="any" title="{{tooltips_input['scale_from_max']['phrase']}}" type="number" value="{{each_measurement.scale_from_max}}">
+      <input class="form-control" id="scale_from_max" name="scale_from_max" step="any" title="{{tooltips_settings['scale_from_max']['phrase']}}" type="number" value="{{each_measurement.scale_from_max}}">
     </div>
   </div>
   <div class="col-auto">
     {{form_mod_input_measurement.scale_to_min.label(class_='control-label')}}
     <div>
-      <input class="form-control" id="scale_to_min" name="scale_to_min" step="any" title="{{tooltips_input['scale_to_min']['phrase']}}" type="number" value="{{each_measurement.scale_to_min}}">
+      <input class="form-control" id="scale_to_min" name="scale_to_min" step="any" title="{{tooltips_settings['scale_to_min']['phrase']}}" type="number" value="{{each_measurement.scale_to_min}}">
     </div>
   </div>
   <div class="col-auto">
     {{form_mod_input_measurement.scale_to_max.label(class_='control-label')}}
     <div>
-      <input class="form-control" id="scale_to_max" name="scale_to_max" step="any" title="{{tooltips_input['scale_to_max']['phrase']}}" type="number" value="{{each_measurement.scale_to_max}}">
+      <input class="form-control" id="scale_to_max" name="scale_to_max" step="any" title="{{tooltips_settings['scale_to_max']['phrase']}}" type="number" value="{{each_measurement.scale_to_max}}">
     </div>
   </div>
   <div class="col-auto">
@@ -76,9 +76,9 @@
     {{form_mod_input_measurement.invert_scale.label(class_='control-label')}}
     <div class="input-group-text">
     {%- if each_measurement.invert_scale == 'True' -%}
-      {{form_mod_input_measurement.invert_scale(checked=True, class_='checkbox-big', **{'title': tooltips_input['invert_scale']['phrase']})}}
+      {{form_mod_input_measurement.invert_scale(checked=True, class_='checkbox-big', **{'title': tooltips_settings['invert_scale']['phrase']})}}
     {%- else -%}
-      {{form_mod_input_measurement.invert_scale(class_='checkbox-big', **{'title': tooltips_input['invert_scale']['phrase']})}}
+      {{form_mod_input_measurement.invert_scale(class_='checkbox-big', **{'title': tooltips_settings['invert_scale']['phrase']})}}
     {%- endif -%}
     </div>
   </div>
@@ -104,7 +104,7 @@
   <div class="col-auto">
     {{form_mod_input_measurement.convert_to_measurement_unit.label(class_='control-label')}}
     <div>
-      <select class="form-control form-tooltip form-dropdown" id="convert_to_measurement_unit" name="convert_to_measurement_unit" data-placement="top" title="{{tooltips_input['convert_to_measurement_unit']['phrase']}}">
+      <select class="form-control form-tooltip form-dropdown" id="convert_to_measurement_unit" name="convert_to_measurement_unit" data-placement="top" title="{{tooltips_settings['convert_to_measurement_unit']['phrase']}}">
         <option value="">{{_('Do Not Convert')}}</option>
       {%- set all_conversion = table_conversion.query.all() -%}
       {%- if all_conversion -%}

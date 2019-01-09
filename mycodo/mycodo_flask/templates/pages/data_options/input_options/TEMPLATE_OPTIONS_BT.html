@@ -1,15 +1,15 @@
 {% if 'bt_location' in dict_inputs[each_input.device]['options_enabled'] %}
 
 <div class="col-auto">
-  <label class="control-label">{{tooltips_input['bt_location']['title']}}</label>
+  <label class="control-label">{{tooltips_settings['bt_location']['title']}}</label>
   <div>
-    {{form_mod_input.location(class_='form-control', value=each_input.location, **{'title': tooltips_input['bt_location']['phrase']})}}
+    {{form_mod_input.location(class_='form-control', value=each_input.location, **{'title': tooltips_settings['bt_location']['phrase']})}}
   </div>
 </div>
 <div class="col-auto">
   {{form_mod_input.bt_adapter.label(class_='control-label')}}
   <div>
-    {{form_mod_input.bt_adapter(class_='form-control', value=each_input.bt_adapter, **{'title': tooltips_input['bt_adapter']['title']})}}
+    {{form_mod_input.bt_adapter(class_='form-control', value=each_input.bt_adapter, **{'title': tooltips_settings['bt_adapter']['title']})}}
   </div>
 </div>
 

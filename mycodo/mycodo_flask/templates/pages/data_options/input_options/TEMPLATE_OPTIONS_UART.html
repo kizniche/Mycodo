@@ -3,7 +3,7 @@
   {% if 'uart_location' in dict_inputs[each_input.device]['options_disabled'] %}
 
 <div class="col-auto">
-  <label class="control-label">{{tooltips_input['uart_location']['title']}}</label>
+  <label class="control-label">{{tooltips_settings['uart_location']['title']}}</label>
   <div>
     {{form_mod_input.uart_location(class_='form-control', value=each_input.uart_location, disabled=True)}}
   </div>
@@ -14,9 +14,9 @@
   {% if 'uart_location' in dict_inputs[each_input.device]['options_enabled']  %}
 
 <div class="col-auto">
-  <label class="control-label">{{tooltips_input['uart_location']['title']}}</label>
+  <label class="control-label">{{tooltips_settings['uart_location']['title']}}</label>
   <div>
-    {{form_mod_input.uart_location(class_='form-control', value=each_input.uart_location, **{'title': tooltips_input['uart_location']['phrase']})}}
+    {{form_mod_input.uart_location(class_='form-control', value=each_input.uart_location, **{'title': tooltips_settings['uart_location']['phrase']})}}
   </div>
 </div>
 
@@ -25,9 +25,9 @@
   {% if 'pin_cs' in dict_inputs[each_input.device]['options_enabled']  %}
 
 <div class="col-auto">
-  <label class="control-label">{{tooltips_input['pin_cs']['title']}}</label>
+  <label class="control-label">{{tooltips_settings['pin_cs']['title']}}</label>
   <div>
-    {{form_mod_input.pin_cs(class_='form-control', value=each_input.pin_cs, **{'title': tooltips_input['pin_cs']['phrase']})}}
+    {{form_mod_input.pin_cs(class_='form-control', value=each_input.pin_cs, **{'title': tooltips_settings['pin_cs']['phrase']})}}
   </div>
 </div>
 
@@ -36,9 +36,9 @@
   {% if 'pin_miso' in dict_inputs[each_input.device]['options_enabled']  %}
 
 <div class="col-auto">
-  <label class="control-label">{{tooltips_input['pin_miso']['title']}}</label>
+  <label class="control-label">{{tooltips_settings['pin_miso']['title']}}</label>
   <div>
-    {{form_mod_input.pin_miso(class_='form-control', value=each_input.pin_miso, **{'title': tooltips_input['pin_miso']['phrase']})}}
+    {{form_mod_input.pin_miso(class_='form-control', value=each_input.pin_miso, **{'title': tooltips_settings['pin_miso']['phrase']})}}
   </div>
 </div>
 
@@ -47,9 +47,9 @@
   {% if 'pin_mosi' in dict_inputs[each_input.device]['options_enabled']  %}
 
 <div class="col-auto">
-  <label class="control-label">{{tooltips_input['pin_mosi']['title']}}</label>
+  <label class="control-label">{{tooltips_settings['pin_mosi']['title']}}</label>
   <div>
-    {{form_mod_input.pin_mosi(class_='form-control', value=each_input.pin_mosi, **{'title': tooltips_input['pin_mosi']['phrase']})}}
+    {{form_mod_input.pin_mosi(class_='form-control', value=each_input.pin_mosi, **{'title': tooltips_settings['pin_mosi']['phrase']})}}
   </div>
 </div>
 
@@ -58,9 +58,9 @@
   {% if 'pin_clock' in dict_inputs[each_input.device]['options_enabled']  %}
 
 <div class="col-auto">
-  <label class="control-label">{{tooltips_input['pin_clock']['title']}}</label>
+  <label class="control-label">{{tooltips_settings['pin_clock']['title']}}</label>
   <div>
-    {{form_mod_input.pin_clock(class_='form-control', value=each_input.pin_clock, **{'title': tooltips_input['pin_clock']['phrase']})}}
+    {{form_mod_input.pin_clock(class_='form-control', value=each_input.pin_clock, **{'title': tooltips_settings['pin_clock']['phrase']})}}
   </div>
 </div>
 

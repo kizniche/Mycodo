@@ -34,6 +34,7 @@ class Output(CRUDMixin, db.Model):
     on_command = db.Column(db.Text, default=None)
     off_command = db.Column(db.Text, default=None)
     pwm_command = db.Column(db.Text, default=None)
+    trigger_functions_at_start = db.Column(db.Boolean, default=True)
 
     # PWM
     pwm_hertz = db.Column(db.Integer, default=None)  # PWM Hertz

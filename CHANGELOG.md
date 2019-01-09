@@ -10,6 +10,7 @@
 ### Features
 
  - Add FTDI support for Atlas Scientific sensors ([#597](https://github.com/kizniche/mycodo/issues/597))
+ - Add Output option to trigger Functions at startup
 
 ### Miscellaneous
 

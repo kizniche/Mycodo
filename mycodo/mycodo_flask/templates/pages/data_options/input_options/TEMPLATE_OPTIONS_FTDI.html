@@ -3,7 +3,7 @@
   {% if 'ftdi_location' in dict_inputs[each_input.device]['options_disabled'] %}
 
 <div class="col-auto">
-  <label class="control-label">{{tooltips_input['ftdi_location']['title']}}</label>
+  <label class="control-label">{{tooltips_settings['ftdi_location']['title']}}</label>
   <div>
     {{form_mod_input.ftdi_location(class_='form-control', value=each_input.ftdi_location, disabled=True)}}
   </div>
@@ -14,9 +14,9 @@
   {% if 'ftdi_location' in dict_inputs[each_input.device]['options_enabled']  %}
 
 <div class="col-auto">
-  <label class="control-label">{{tooltips_input['ftdi_location']['title']}}</label>
+  <label class="control-label">{{tooltips_settings['ftdi_location']['title']}}</label>
   <div>
-    {{form_mod_input.ftdi_location(class_='form-control', value=each_input.ftdi_location, **{'title': tooltips_input['ftdi_location']['phrase']})}}
+    {{form_mod_input.ftdi_location(class_='form-control', value=each_input.ftdi_location, **{'title': tooltips_settings['ftdi_location']['phrase']})}}
   </div>
 </div>
 

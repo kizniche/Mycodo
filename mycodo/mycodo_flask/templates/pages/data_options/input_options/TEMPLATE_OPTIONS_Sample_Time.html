@@ -7,9 +7,9 @@
   <div>
 
   {%- if 'sample_time' in dict_inputs[each_input.device]['options_disabled'] -%}
-    {{form_mod_input.sample_time(class_='form-control', value=each_input.sample_time, disabled=True, **{'title': tooltips_input['sample_time']['phrase']})}}
+    {{form_mod_input.sample_time(class_='form-control', value=each_input.sample_time, disabled=True, **{'title': tooltips_settings['sample_time']['phrase']})}}
   {% else %}
-    {{form_mod_input.sample_time(class_='form-control', value=each_input.sample_time, **{'title': tooltips_input['sample_time']['phrase']})}}
+    {{form_mod_input.sample_time(class_='form-control', value=each_input.sample_time, **{'title': tooltips_settings['sample_time']['phrase']})}}
   {%- endif -%}
 
   </div>

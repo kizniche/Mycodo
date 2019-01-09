@@ -16,7 +16,7 @@ from wtforms.validators import DataRequired
 from wtforms.widgets.html5 import NumberInput
 
 from mycodo.config import MATHS
-from mycodo.config_translations import TOOLTIPS_INPUT
+from mycodo.config_translations import TOOLTIPS_SETTINGS
 
 
 class MathAdd(FlaskForm):
@@ -46,9 +46,9 @@ class MathMod(FlaskForm):
     inputs = SelectMultipleField(
         lazy_gettext('Inputs'))
     select_measurement_unit = StringField(
-        TOOLTIPS_INPUT['select_measurement_unit']['title'])
+        TOOLTIPS_SETTINGS['select_measurement_unit']['title'])
     measurements_enabled = SelectMultipleField(
-        TOOLTIPS_INPUT['measurements_enabled']['title'])
+        TOOLTIPS_SETTINGS['measurements_enabled']['title'])
     math_mod = SubmitField(lazy_gettext('Save'))
     math_delete = SubmitField(lazy_gettext('Delete'))
     math_activate = SubmitField(lazy_gettext('Activate'))
@@ -103,7 +103,7 @@ class MathMeasurementMod(FlaskForm):
         validators=[DataRequired()]
     )
     select_measurement_unit = StringField(
-        TOOLTIPS_INPUT['select_measurement_unit']['title'])
+        TOOLTIPS_SETTINGS['select_measurement_unit']['title'])
     convert_to_measurement_unit = StringField(
         lazy_gettext('Convert to Measurement'))
 

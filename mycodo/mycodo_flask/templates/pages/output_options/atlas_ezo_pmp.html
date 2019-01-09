@@ -1,30 +1,30 @@
 {% if each_output.interface == 'I2C' %}
 
 <div class="col-auto">
-  <label class='control-label'>{{tooltips_input['i2c_location']['title']}}</label>
+  <label class='control-label'>{{tooltips_settings['i2c_location']['title']}}</label>
   <div>
-    {{form_mod_output.location(class_='form-control', value=each_output.location, **{'title': tooltips_input['i2c_location']['phrase']})}}
+    {{form_mod_output.location(class_='form-control', value=each_output.location, **{'title': tooltips_settings['i2c_location']['phrase']})}}
   </div>
 </div>
 <div class="col-auto">
-  <label class='control-label'>{{tooltips_input['i2c_bus']['title']}}</label>
+  <label class='control-label'>{{tooltips_settings['i2c_bus']['title']}}</label>
   <div>
-    {{form_mod_output.i2c_bus(class_='form-control', value=each_output.i2c_bus, **{'title': tooltips_input['i2c_bus']['phrase']})}}
+    {{form_mod_output.i2c_bus(class_='form-control', value=each_output.i2c_bus, **{'title': tooltips_settings['i2c_bus']['phrase']})}}
   </div>
 </div>
 
 {% elif each_output.interface == 'UART' %}
 
 <div class="col-auto">
-  <label class='control-label'>{{tooltips_input['uart_location']['title']}}</label>
+  <label class='control-label'>{{tooltips_settings['uart_location']['title']}}</label>
   <div>
-    {{form_mod_output.location(class_='form-control', value=each_output.location, **{'title': tooltips_input['uart_location']['phrase']})}}
+    {{form_mod_output.location(class_='form-control', value=each_output.location, **{'title': tooltips_settings['uart_location']['phrase']})}}
   </div>
 </div>
 <div class="col-auto">
   {{form_mod_output.baud_rate.label(class_='control-label')}}
   <div>
-    {{form_mod_output.baud_rate(class_='form-control', value=each_output.baud_rate, **{'title': tooltips_input['uart_baud_rate']['phrase']})}}
+    {{form_mod_output.baud_rate(class_='form-control', value=each_output.baud_rate, **{'title': tooltips_settings['uart_baud_rate']['phrase']})}}
   </div>
 </div>
 
