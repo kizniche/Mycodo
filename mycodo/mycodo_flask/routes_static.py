@@ -14,6 +14,7 @@ from flask.blueprints import Blueprint
 
 from mycodo.config import MYCODO_VERSION
 from mycodo.config import THEMES_DARK
+from mycodo.config_translations import TOOLTIPS_SETTINGS
 from mycodo.databases.models import Misc
 from mycodo.mycodo_client import DaemonControl
 from mycodo.mycodo_flask.routes_authentication import admin_exists
@@ -55,6 +56,7 @@ def inject_variables():
                 hide_alert_info=misc.hide_alert_info,
                 hide_alert_warning=misc.hide_alert_warning,
                 hide_tooltips=misc.hide_tooltips,
+                tooltips_settings=TOOLTIPS_SETTINGS,
                 upgrade_available = misc.mycodo_upgrade_available,
                 username=flask_login.current_user.name)
 

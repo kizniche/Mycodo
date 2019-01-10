@@ -49,7 +49,6 @@ from mycodo.config import RESTORE_LOG_FILE
 from mycodo.config import UPGRADE_LOG_FILE
 from mycodo.config import USAGE_REPORTS_PATH
 from mycodo.config_devices_units import MEASUREMENTS
-from mycodo.config_translations import TOOLTIPS_SETTINGS
 from mycodo.databases.models import Actions
 from mycodo.databases.models import AlembicVersion
 from mycodo.databases.models import Camera
@@ -702,7 +701,6 @@ def page_dashboard():
                            form_measurement=form_measurement,
                            form_output=form_output,
                            form_pid=form_pid,
-                           tooltips_settings=TOOLTIPS_SETTINGS,
                            y_axes=y_axes)
 
 
@@ -1040,8 +1038,7 @@ def page_lcd():
                            display_order=display_order,
                            form_lcd_add=form_lcd_add,
                            form_lcd_mod=form_lcd_mod,
-                           form_lcd_display=form_lcd_display,
-                           tooltips_settings=TOOLTIPS_SETTINGS,)
+                           form_lcd_display=form_lcd_display)
 
 
 @blueprint.route('/live', methods=('GET', 'POST'))
@@ -1460,7 +1457,6 @@ def page_function():
                            output=output,
                            pid=pid,
                            tags=tags,
-                           tooltips_settings=TOOLTIPS_SETTINGS,
                            trigger=trigger,
                            units=MEASUREMENTS,
                            user=user,
@@ -1547,7 +1543,6 @@ def page_output():
                            output_info=OUTPUT_INFO,
                            output=output,
                            output_templates=output_templates,
-                           tooltips_settings=TOOLTIPS_SETTINGS,
                            user=user)
 
 
@@ -1790,7 +1785,6 @@ def page_data():
                            table_device_measurements=DeviceMeasurements,
                            table_input=Input,
                            table_math=Math,
-                           tooltips_settings=TOOLTIPS_SETTINGS,
                            user=user,
                            devices_1wire_ow_shell=devices_1wire_ow_shell,
                            devices_1wire_w1thermsensor=devices_1wire_w1thermsensor)

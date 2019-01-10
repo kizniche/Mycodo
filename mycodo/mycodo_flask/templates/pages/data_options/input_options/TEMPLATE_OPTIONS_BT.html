@@ -1,7 +1,7 @@
 {% if 'bt_location' in dict_inputs[each_input.device]['options_enabled'] %}
 
 <div class="col-auto">
-  {{form_mod_input.bt_location.label(class_='control-label')}}
+  <label class="control-label">{{tooltips_settings['bt_location']['title']}}</label>
   <div>
     {{form_mod_input.location(class_='form-control', value=each_input.location, **{'title': tooltips_settings['bt_location']['phrase']})}}
   </div>

@@ -54,8 +54,7 @@ def calibration_select():
             page=form_calibration.selection.data)
         return redirect(url_for(route))
     return render_template('tools/calibration.html',
-                           form_calibration=form_calibration,
-                           tooltips_settings=TOOLTIPS_SETTINGS)
+                           form_calibration=form_calibration)
 
 
 @blueprint.route('/setup_atlas_ph', methods=('GET', 'POST'))
@@ -143,8 +142,7 @@ def setup_atlas_ph():
                            input=input_dev,
                            input_device_name=input_device_name,
                            selected_input=selected_input,
-                           stage=stage,
-                           tooltips_settings=TOOLTIPS_SETTINGS)
+                           stage=stage)
 
 
 @blueprint.route('/setup_atlas_ph_measure/<input_id>')
@@ -287,8 +285,7 @@ def setup_ds_resolution():
     return render_template('tools/calibration_options/ds_resolution.html',
                            ds_inputs=ds_inputs,
                            form_ds=form_ds,
-                           inputs=inputs,
-                           tooltips_settings=TOOLTIPS_SETTINGS)
+                           inputs=inputs)
 
 
 def dual_commands_to_sensor(input_sel, first_cmd, amount,

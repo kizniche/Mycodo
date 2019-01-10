@@ -186,8 +186,7 @@ def method_list():
                            method=method,
                            method_all=method_all,
                            method_info=METHOD_INFO,
-                           form_create_method=form_create_method,
-                           tooltips_settings=TOOLTIPS_SETTINGS)
+                           form_create_method=form_create_method)
 
 
 @blueprint.route('/method-build/<method_id>', methods=('GET', 'POST'))
@@ -296,8 +295,7 @@ def method_builder(method_id):
                                last_setpoint=last_setpoint,
                                form_create_method=form_create_method,
                                form_add_method=form_add_method,
-                               form_mod_method=form_mod_method,
-                               tooltips_settings=TOOLTIPS_SETTINGS)
+                               form_mod_method=form_mod_method)
 
     return redirect('/method')
 
