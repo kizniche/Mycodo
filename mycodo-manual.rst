@@ -1238,7 +1238,13 @@ Conditional
 ```````````
 
 Conditional controllers are used to perform certain actions based on whether a
-conditional statement is true. Python 3 is the environment that these conditionals
+conditional statement is true, which is typically based on a measurement or GPIO
+state.
+
+Conditional Setup Guide
+'''''''''''''''''''''''
+
+Python 3 is the environment that these conditionals
 will be executed. For the conditional to be true (and trigger the actions), the
 code must print a "1" and for the conditional to be false (and not trigger the
 actions), the code must print a "0" or print nothing.
@@ -1256,7 +1262,29 @@ as "None < 23"), then the conditional will not trigger and will throw an error
 in the daemon log. Accounting for None is useful for determining if an Input is
 no longer acquiring measurements.
 
-Example conditionals are below:
+To create a basic conditional, follow these steps, following along with the
+numbers in the screenshots, below:
+
+1. Go to the ```Setup -> Functions``` page and add a ```Controller: Conditional```.
+2. Next to (1), select ```Measurement```, then select ```Add Condition```.
+3. Next to (2), select ```Output (Duration)``` (or any other action), then select ```Add Action```.
+4. Select a measurement (3), then select ```Save``` (4).
+5. Select a ```Controller ID``` (5) for an Output, then select ```Save``` (6).
+6. Make note of what your Measurement ID (7) is and replace the Measurement IDs in the ```Conditional Statement``` (8) with that ID, then select ```Save``` (9).
+
+If your ```Conditional Statement``` has been formatted correctly, your
+Conditional will save and it will be ready to activate. See the example
+```Conditional Statements```, below, for a very brief set of possible
+statements that can be used. Keep in mind there are many more possibilities
+than these and I only include them here as a primer for developing your own
+```Conditional Statement```. Refer to an introductory Python guide for learning
+about Python syntax and other conditional statement options.
+
+|Screenshot-Mycodo-Conditional-Guide-01|
+
+|Screenshot-Mycodo-Conditional-Guide-02|
+
+Example ```Conditional Statements``` are below:
 
 ::
 
@@ -3578,4 +3606,6 @@ Raspberry Pi, 8 relays, 8 outlets:
 .. |Schematic-Sensor-DS18B20-03| image:: manual_images/Schematic-Sensor-DS18B20-03.jpg
 .. |Schematic: Pi, 4 relays, 4 outlets, and 1 DS18B20 sensor| image:: manual_images/Schematic-Pi-4-relays.png
 .. |Schematic: Pi, 8 relays, and 8 outlets| image:: manual_images/Schematic-Pi-8-relays.png
+.. |Screenshot-Mycodo-Conditional-Guide-01| image:: manual_images/Screenshot-Mycodo-Conditional-Guide-01.png
+.. |Screenshot-Mycodo-Conditional-Guide-02| image:: manual_images/Screenshot-Mycodo-Conditional-Guide-02.png
 .. |PID Autotune Output| image:: manual_images/Autotune-Output-Example.png

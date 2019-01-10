@@ -47,12 +47,9 @@ def function_add(form_add_func):
             new_func = Conditional()
             new_func.conditional_statement = """
 # This is an example. Change the Condition IDs/code to suit your needs.
-if None not in [{bf43a998}, {dh54wqno}]:
-    sum = {bf43a998} + {dh54wqno}
-    if {bf43a998} > 2 and 10 < {dh54wqno} < 23 and sum < 30.5:
-        print(1)  # True (Do trigger actions)
-else:
-    print(0)  # False (Do not trigger actions)
+if {bf43a998} is not None:
+    if {bf43a998} < 23:
+        print(1)  # If True, trigger actions
 """
             new_func.save()
         elif form_add_func.func_type.data.startswith('pid_'):
