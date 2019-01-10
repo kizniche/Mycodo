@@ -16,7 +16,7 @@
     <form method="post" action="/calibration">
     <div class="row small-gutters">
       <div class="col-auto">
-        {{form_calibration.selection(class_='selectpicker', **{'title': _('Calibration') + ': ' + _('Select One')})}}
+        {{form_calibration.selection(class_='selectpicker', **{'title': tooltips_settings['calibration']['title'] + ': ' + tooltips_settings['select_one']['title']})}}
       </div>
       <div class="col-auto">
         {{form_calibration.submit(class_='form-control btn btn-primary')}}

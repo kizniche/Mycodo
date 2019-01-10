@@ -27,7 +27,7 @@ class DashboardBase(FlaskForm):
             ('', lazy_gettext('Add Dashboard Element')),
             ('graph', lazy_gettext('Graph')),
             ('gauge', lazy_gettext('Gauge')),
-            ('measurement', lazy_gettext('Measurement')),
+            ('measurement', TOOLTIPS_SETTINGS['measurement']['title']),
             ('output', lazy_gettext('Output')),
             ('pid_control', lazy_gettext('PID Control')),
             ('camera', lazy_gettext('Camera')),
@@ -64,12 +64,18 @@ class DashboardBase(FlaskForm):
         widget=NumberInput()
     )
     list_visible_elements = SelectMultipleField(lazy_gettext('Visible Elements'))
-    reorder = SubmitField(lazy_gettext('Save Order'))
-    create = SubmitField(lazy_gettext('Create'))
-    modify = SubmitField(lazy_gettext('Save'))
-    delete = SubmitField(lazy_gettext('Delete'))
-    order_up = SubmitField(lazy_gettext('Up'))
-    order_down = SubmitField(lazy_gettext('Down'))
+    reorder = SubmitField(
+        TOOLTIPS_SETTINGS['save_order']['title'])
+    create = SubmitField(
+        TOOLTIPS_SETTINGS['create']['title'])
+    modify = SubmitField(
+        TOOLTIPS_SETTINGS['save']['title'])
+    delete = SubmitField(
+        TOOLTIPS_SETTINGS['delete']['title'])
+    order_up = SubmitField(
+        TOOLTIPS_SETTINGS['up']['title'])
+    order_down = SubmitField(
+        TOOLTIPS_SETTINGS['down']['title'])
 
 
 class DashboardGraph(FlaskForm):
@@ -110,7 +116,8 @@ class DashboardGauge(FlaskForm):
         ],
         validators=[DataRequired()]
     )
-    input_ids = StringField(lazy_gettext('Measurement'))
+    input_ids = StringField(
+        TOOLTIPS_SETTINGS['measurement']['title'])
     y_axis_min = DecimalField(
         lazy_gettext('Gauge Min'),
         widget=NumberInput(step='any'))
@@ -118,15 +125,16 @@ class DashboardGauge(FlaskForm):
         lazy_gettext('Gauge Max'),
         widget=NumberInput(step='any'))
     max_measure_age = IntegerField(
-        lazy_gettext('Max Age (seconds)'),
+        TOOLTIPS_SETTINGS['max_age']['title'],
         widget=NumberInput())
     enable_timestamp = BooleanField(lazy_gettext('Show Timestamp'))
 
 
 class DashboardMeasurement(FlaskForm):
-    measurement_id = StringField(lazy_gettext('Measurement'))
+    measurement_id = StringField(
+        TOOLTIPS_SETTINGS['measurement']['title'])
     max_measure_age = IntegerField(
-        lazy_gettext('Max Age (seconds)'),
+        TOOLTIPS_SETTINGS['max_age']['title'],
         widget=NumberInput())
     font_em_value = DecimalField(
         lazy_gettext('Value Font (em)'),
@@ -142,7 +150,7 @@ class DashboardMeasurement(FlaskForm):
 class DashboardOutput(FlaskForm):
     output_id = StringField(lazy_gettext('Output'))
     max_measure_age = IntegerField(
-        lazy_gettext('Max Age (seconds)'),
+        TOOLTIPS_SETTINGS['max_age']['title'],
         widget=NumberInput())
     font_em_value = DecimalField(
         lazy_gettext('Value Font (em)'),
@@ -159,7 +167,7 @@ class DashboardOutput(FlaskForm):
 class DashboardPIDControl(FlaskForm):
     pid_id = StringField(lazy_gettext('PID'))
     max_measure_age = IntegerField(
-        lazy_gettext('Max Age (seconds)'),
+        TOOLTIPS_SETTINGS['max_age']['title'],
         widget=NumberInput())
     font_em_value = DecimalField(
         lazy_gettext('Value Font (em)'),
@@ -168,7 +176,7 @@ class DashboardPIDControl(FlaskForm):
         lazy_gettext('Timestamp Font (em)'),
         widget=NumberInput(step='any'))
     camera_max_age = IntegerField(
-        lazy_gettext('Max Age (seconds)'),
+        TOOLTIPS_SETTINGS['max_age']['title'],
         widget=NumberInput())
     decimal_places = IntegerField(
         lazy_gettext('Decimal Places'),
@@ -181,4 +189,5 @@ class DashboardCamera(FlaskForm):
     camera_id = StringField(lazy_gettext('Camera'))
     camera_image_type = StringField(lazy_gettext('Image Display Type'))
     camera_max_age = IntegerField(
-        lazy_gettext('Max Age (seconds)'), widget=NumberInput())
+        TOOLTIPS_SETTINGS['max_age']['title'],
+        widget=NumberInput())

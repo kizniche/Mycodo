@@ -23,7 +23,7 @@
       <input type="hidden" name="form-name" value="addSensor">
       <div class="row small-gutters" style="padding-left: 0.75em">
         <div class="col-auto">
-          {{form_add_input.input_type(class_='selectpicker', **{'data-live-search': 'true', 'title': _('Input') + ': ' + _('Select One')})}}
+          {{form_add_input.input_type(class_='selectpicker', **{'data-live-search': 'true', 'title': _('Input') + ': ' + tooltips_settings['select_one']['title']})}}
         </div>
         <div class="col-auto">
           {{form_add_input.input_add(class_='btn btn-primary')}}
@@ -35,7 +35,7 @@
       {{form_add_math.hidden_tag()}}
       <div class="row small-gutters" style="padding-left: 0.75em">
         <div class="col-auto">
-          {{form_add_math.math_type(class_='selectpicker', **{'title': _('Math') + ': ' + _('Select One')})}}
+          {{form_add_math.math_type(class_='selectpicker', **{'title': _('Math') + ': ' + tooltips_settings['select_one']['title']})}}
         </div>
         <div class="col-auto">
           {{form_add_math.math_add(class_='btn btn-primary')}}

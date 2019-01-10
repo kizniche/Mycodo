@@ -10,6 +10,7 @@ from flask import url_for
 from flask_babel import gettext
 
 from mycodo.config import LCD_INFO
+from mycodo.config_translations import TOOLTIPS_SETTINGS
 from mycodo.databases.models import DisplayOrder
 from mycodo.databases.models import LCD
 from mycodo.databases.models import LCDData
@@ -34,7 +35,7 @@ logger = logging.getLogger(__name__)
 
 def lcd_add(form):
     action = '{action} {controller}'.format(
-        action=gettext("Add"),
+        action=TOOLTIPS_SETTINGS['add']['title'],
         controller=gettext("LCD"))
     error = []
 
@@ -92,7 +93,7 @@ def lcd_add(form):
 
 def lcd_mod(form_mod_lcd):
     action = '{action} {controller}'.format(
-        action=gettext("Modify"),
+        action=TOOLTIPS_SETTINGS['modify']['title'],
         controller=gettext("LCD"))
     error = []
 
@@ -121,7 +122,7 @@ def lcd_mod(form_mod_lcd):
 
 def lcd_del(lcd_id):
     action = '{action} {controller}'.format(
-        action=gettext("Delete"),
+        action=TOOLTIPS_SETTINGS['delete']['title'],
         controller=gettext("LCD"))
     error = []
 
@@ -171,7 +172,7 @@ def lcd_reorder(lcd_id, display_order, direction):
 
 def lcd_activate(lcd_id):
     action = '{action} {controller}'.format(
-        action=gettext("Activate"),
+        action=TOOLTIPS_SETTINGS['activate']['title'],
         controller=gettext("LCD"))
     error = []
 
@@ -227,7 +228,7 @@ def lcd_reset_flashing(lcd_id):
 
 def lcd_display_add(form):
     action = '{action} {controller}'.format(
-        action=gettext("Add"),
+        action=TOOLTIPS_SETTINGS['add']['title'],
         controller=gettext("Display"))
     error = []
 
@@ -252,7 +253,7 @@ def lcd_display_add(form):
 
 def lcd_display_mod(form):
     action = '{action} {controller}'.format(
-        action=gettext("Mod"),
+        action=TOOLTIPS_SETTINGS['modify']['title'],
         controller=gettext("Display"))
     error = []
 
@@ -318,7 +319,7 @@ def lcd_display_mod(form):
 
 def lcd_display_del(lcd_data_id, delete_last=False):
     action = '{action} {controller}'.format(
-        action=gettext("Delete"),
+        action=TOOLTIPS_SETTINGS['delete']['title'],
         controller=gettext("Display"))
     error = []
 

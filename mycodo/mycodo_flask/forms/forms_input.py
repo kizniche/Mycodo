@@ -28,7 +28,8 @@ logger = logging.getLogger("mycodo.forms_input")
 class DataBase(FlaskForm):
     reorder_type = StringField('Reorder Type', widget=widgets.HiddenInput())
     list_visible_elements = SelectMultipleField('New Order')
-    reorder = SubmitField(lazy_gettext('Save Order'))
+    reorder = SubmitField(
+        TOOLTIPS_SETTINGS['save_order']['title'])
 
 
 class InputAdd(FlaskForm):
@@ -58,7 +59,8 @@ class InputAdd(FlaskForm):
         choices=choices_inputs,
         validators=[DataRequired()]
     )
-    input_add = SubmitField(lazy_gettext('Add'))
+    input_add = SubmitField(
+        TOOLTIPS_SETTINGS['add']['title'])
 
 
 class InputMod(FlaskForm):
@@ -153,7 +155,8 @@ class InputMod(FlaskForm):
         lazy_gettext('Reset Period'), widget=NumberInput())
 
     # Pre-Output
-    pre_output_id = StringField(TOOLTIPS_SETTINGS['pre_output_id']['title'])
+    pre_output_id = StringField(
+        TOOLTIPS_SETTINGS['pre_output_id']['title'])
     pre_output_duration = DecimalField(
         TOOLTIPS_SETTINGS['pre_output_duration']['title'],
         validators=[validators.NumberRange(
@@ -162,7 +165,8 @@ class InputMod(FlaskForm):
         )],
         widget=NumberInput(step='any')
     )
-    pre_output_during_measure = BooleanField(TOOLTIPS_SETTINGS['pre_output_during_measure']['title'])
+    pre_output_during_measure = BooleanField(
+        TOOLTIPS_SETTINGS['pre_output_during_measure']['title'])
 
     # RPM/Signal
     weighting = DecimalField(
@@ -176,15 +180,22 @@ class InputMod(FlaskForm):
         widget=NumberInput(step='any'))
 
     # SHT options
-    sht_voltage = StringField(TOOLTIPS_SETTINGS['sht_voltage']['title'])
+    sht_voltage = StringField(
+        TOOLTIPS_SETTINGS['sht_voltage']['title'])
 
-    input_mod = SubmitField(lazy_gettext('Save'))
-    input_delete = SubmitField(lazy_gettext('Delete'))
+    input_mod = SubmitField(
+        TOOLTIPS_SETTINGS['save']['title'])
+    input_delete = SubmitField(
+        TOOLTIPS_SETTINGS['delete']['title'])
     input_acquire_measurements = SubmitField(lazy_gettext('Acquire Measurements Now'))
-    input_activate = SubmitField(lazy_gettext('Activate'))
-    input_deactivate = SubmitField(lazy_gettext('Deactivate'))
-    input_order_up = SubmitField(lazy_gettext('Up'))
-    input_order_down = SubmitField(lazy_gettext('Down'))
+    input_activate = SubmitField(
+        TOOLTIPS_SETTINGS['activate']['title'])
+    input_deactivate = SubmitField(
+        TOOLTIPS_SETTINGS['deactivate']['title'])
+    input_order_up = SubmitField(
+        TOOLTIPS_SETTINGS['up']['title'])
+    input_order_down = SubmitField(
+        TOOLTIPS_SETTINGS['down']['title'])
 
 
 class InputMeasurementMod(FlaskForm):
@@ -216,4 +227,5 @@ class InputMeasurementMod(FlaskForm):
     convert_to_measurement_unit = StringField(
         TOOLTIPS_SETTINGS['convert_to_measurement_unit']['title'])
 
-    input_measurement_mod = SubmitField(lazy_gettext('Save'))
+    input_measurement_mod = SubmitField(
+        TOOLTIPS_SETTINGS['save']['title'])

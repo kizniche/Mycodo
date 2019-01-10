@@ -7,6 +7,49 @@ from flask_babel import lazy_gettext
 
 
 TOOLTIPS_SETTINGS = {
+    # Words
+    'add': {
+        'title': lazy_gettext('Add')},
+    'activate': {
+        'title': lazy_gettext('Activate')},
+    'calibration': {
+        'title': lazy_gettext('Calibration')},
+    'cancel': {
+        'title': lazy_gettext('Cancel')},
+    'create': {
+        'title': lazy_gettext('Create')},
+    'deactivate': {
+        'title': lazy_gettext('Deactivate')},
+    'delete': {
+        'title': lazy_gettext('Delete')},
+    'down': {
+        'title': lazy_gettext('Down')},
+    'edit': {
+        'title': lazy_gettext('Edit')},
+    'input': {
+        'title': lazy_gettext('Input')},
+    'measurement': {
+        'title': lazy_gettext('Measurement')},
+    'modify': {
+        'title': lazy_gettext('Modify')},
+    'none_available': {
+        'title': lazy_gettext('None Available')},
+    'off': {
+        'title': lazy_gettext('Off')},
+    'on': {
+        'title': lazy_gettext('On')},
+    'rename': {
+        'title': lazy_gettext('Rename')},
+    'save': {
+        'title': lazy_gettext('Save')},
+    'save_order': {
+        'title': lazy_gettext('Save Order')},
+    'select_one': {
+        'title': lazy_gettext('Select One')},
+    'up': {
+        'title': lazy_gettext('Up')},
+
+    # Phrases
     '1wire_id': {
         'title': lazy_gettext('1-Wire Device ID'),
         'phrase': lazy_gettext('Select the 1-wire device ID')},
@@ -73,6 +116,9 @@ TOOLTIPS_SETTINGS = {
     'invert_scale': {
         'title': lazy_gettext('Invert Scale'),
         'phrase': lazy_gettext('Invert the scale')},
+    'max_age': {
+        'title': lazy_gettext('Max Age (seconds)'),
+        'phrase': lazy_gettext('The maximum allowable measurement age')},
     'measurement_units': {
         'title': lazy_gettext('Unit Measurement'),
         'phrase': lazy_gettext('Select a unit for the stored value')},

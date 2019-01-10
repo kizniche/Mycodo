@@ -6,6 +6,7 @@ from flask import flash
 from flask import url_for
 from flask_babel import gettext
 
+from mycodo.config_translations import TOOLTIPS_SETTINGS
 from mycodo.databases.models import Actions
 from mycodo.databases.models import DisplayOrder
 from mycodo.databases.models import Trigger
@@ -26,7 +27,7 @@ def trigger_mod(form):
     """Modify a Trigger"""
     error = []
     action = '{action} {controller}'.format(
-        action=gettext("Mod"),
+        action=TOOLTIPS_SETTINGS['modify']['title'],
         controller=gettext("Trigger"))
 
     try:
@@ -114,7 +115,7 @@ def trigger_del(trigger_id):
     """Delete a Trigger"""
     error = []
     action = '{action} {controller}'.format(
-        action=gettext("Delete"),
+        action=TOOLTIPS_SETTINGS['delete']['title'],
         controller=gettext("Trigger"))
 
     trigger = Trigger.query.filter(
@@ -153,7 +154,7 @@ def trigger_activate(trigger_id):
     """Activate a Trigger"""
     error = []
     action = '{action} {controller}'.format(
-        action=gettext("Activate"),
+        action=TOOLTIPS_SETTINGS['activate']['title'],
         controller=gettext("Trigger"))
 
     mod_trigger = Trigger.query.filter(
@@ -193,7 +194,7 @@ def trigger_deactivate(trigger_id):
     """Deactivate a Trigger"""
     error = []
     action = '{action} {controller}'.format(
-        action=gettext("Deactivate"),
+        action=TOOLTIPS_SETTINGS['deactivate']['title'],
         controller=gettext("Trigger"))
 
     if not error:

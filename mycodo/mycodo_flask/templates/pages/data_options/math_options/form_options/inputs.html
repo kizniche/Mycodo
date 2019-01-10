@@ -10,7 +10,7 @@
       <option value="{{each_choice}}"{%- if each_math.inputs and each_choice|string in each_math.inputs %} selected{%- endif -%}>{{value}}</option>
       {% endfor -%}
     {% else %}
-      <option value="">{{_('None Available')}}</option>
+      <option value="">{{tooltips_settings['none_available']['title']}}</option>
     {% endif %}
     </select>
   </div>

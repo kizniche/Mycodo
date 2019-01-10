@@ -38,18 +38,24 @@ class Conditional(FlaskForm):
         lazy_gettext('Start Offset (seconds)'),
         widget=NumberInput(step='any'))
     condition_type = SelectField(
-        choices=[('', lazy_gettext('Select One'))] + CONDITIONAL_CONDITIONS)
+        choices=[('', TOOLTIPS_SETTINGS['select_one']['title'])] + CONDITIONAL_CONDITIONS)
     add_condition = SubmitField(lazy_gettext('Add Condition'))
     action_type = SelectField(
-        choices=[('', lazy_gettext('Select One'))] + FUNCTION_ACTIONS)
+        choices=[('', TOOLTIPS_SETTINGS['select_one']['title'])] + FUNCTION_ACTIONS)
     add_action = SubmitField(lazy_gettext('Add Action'))
-    activate_cond = SubmitField(lazy_gettext('Activate'))
-    deactivate_cond = SubmitField(lazy_gettext('Deactivate'))
+    activate_cond = SubmitField(
+        TOOLTIPS_SETTINGS['activate']['title'])
+    deactivate_cond = SubmitField(
+        TOOLTIPS_SETTINGS['deactivate']['title'])
     test_all_actions = SubmitField(lazy_gettext('Test All Actions'))
-    delete_conditional = SubmitField(lazy_gettext('Delete'))
-    save_conditional = SubmitField(lazy_gettext('Save'))
-    order_up = SubmitField(lazy_gettext('Up'))
-    order_down = SubmitField(lazy_gettext('Down'))
+    delete_conditional = SubmitField(
+        TOOLTIPS_SETTINGS['delete']['title'])
+    save_conditional = SubmitField(
+        TOOLTIPS_SETTINGS['save']['title'])
+    order_up = SubmitField(
+        TOOLTIPS_SETTINGS['up']['title'])
+    order_down = SubmitField(
+        TOOLTIPS_SETTINGS['down']['title'])
 
 
 class ConditionalConditions(FlaskForm):
@@ -60,9 +66,10 @@ class ConditionalConditions(FlaskForm):
 
     # Measurement
     input_id = StringField('Input ID', widget=widgets.HiddenInput())
-    measurement = StringField(lazy_gettext('Measurement'))
+    measurement = StringField(
+        TOOLTIPS_SETTINGS['measurement']['title'])
     max_age = IntegerField(
-        lazy_gettext('Max Age (seconds)'),
+        TOOLTIPS_SETTINGS['max_age']['title'],
         widget=NumberInput())
 
     # GPIO State
@@ -70,5 +77,7 @@ class ConditionalConditions(FlaskForm):
         lazy_gettext('GPIO Pin (BCM)'),
         widget=NumberInput())
 
-    save_condition = SubmitField(lazy_gettext('Save'))
-    delete_condition = SubmitField(lazy_gettext('Delete'))
+    save_condition = SubmitField(
+        TOOLTIPS_SETTINGS['save']['title'])
+    delete_condition = SubmitField(
+        TOOLTIPS_SETTINGS['delete']['title'])

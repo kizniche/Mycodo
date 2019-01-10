@@ -25,7 +25,7 @@
 
     <div class="row small-gutters" style="padding-left: 0.75em">
       <div class="col-auto">
-        <select class="selectpicker" title="{{_('Function')}}: {{_('Select One')}}" id="func_type" name="func_type">
+        <select class="selectpicker" title="{{_('Function')}}: {{tooltips_settings['select_one']['title']}}" id="func_type" name="func_type">
           {% for each_function in function_types -%}
             <option value="{{each_function[0]}}">{{each_function[2]}}</option>
           {% endfor -%}

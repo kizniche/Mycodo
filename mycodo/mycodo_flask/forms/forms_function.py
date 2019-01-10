@@ -20,12 +20,14 @@ from mycodo.config_translations import TOOLTIPS_SETTINGS
 class DataBase(FlaskForm):
     reorder_type = StringField('Reorder Type', widget=widgets.HiddenInput())
     list_visible_elements = SelectMultipleField('New Order')
-    reorder = SubmitField(lazy_gettext('Save Order'))
+    reorder = SubmitField(
+        TOOLTIPS_SETTINGS['save_order']['title'])
 
 
 class FunctionAdd(FlaskForm):
     func_type = SelectField('Function Type')
-    func_add = SubmitField(lazy_gettext('Add'))
+    func_add = SubmitField(
+        TOOLTIPS_SETTINGS['add']['title'])
 
 
 class FunctionMod(FlaskForm):
@@ -34,13 +36,17 @@ class FunctionMod(FlaskForm):
     name = StringField(
         TOOLTIPS_SETTINGS['name']['title'])
     action_type = SelectField(
-        choices=[('', lazy_gettext('Select One'))] + FUNCTION_ACTIONS)
+        choices=[('', TOOLTIPS_SETTINGS['select_one']['title'])] + FUNCTION_ACTIONS)
     add_action = SubmitField(lazy_gettext('Add Action'))
-    order_up = SubmitField(lazy_gettext('Up'))
-    order_down = SubmitField(lazy_gettext('Down'))
+    order_up = SubmitField(
+        TOOLTIPS_SETTINGS['up']['title'])
+    order_down = SubmitField(
+        TOOLTIPS_SETTINGS['down']['title'])
     execute_all_actions = SubmitField(lazy_gettext('Execute All Actions'))
-    save_function = SubmitField(lazy_gettext('Save'))
-    delete_function = SubmitField(lazy_gettext('Delete'))
+    save_function = SubmitField(
+        TOOLTIPS_SETTINGS['save']['title'])
+    delete_function = SubmitField(
+        TOOLTIPS_SETTINGS['delete']['title'])
 
 
 class Actions(FlaskForm):
@@ -66,5 +72,7 @@ class Actions(FlaskForm):
         lazy_gettext('Then Duration'),
         widget=NumberInput(step='any'))
 
-    save_action = SubmitField(lazy_gettext('Save'))
-    delete_action = SubmitField(lazy_gettext('Delete'))
+    save_action = SubmitField(
+        TOOLTIPS_SETTINGS['save']['title'])
+    delete_action = SubmitField(
+        TOOLTIPS_SETTINGS['delete']['title'])

@@ -26,7 +26,8 @@ from mycodo.config_translations import TOOLTIPS_SETTINGS
 class DataBase(FlaskForm):
     reorder_type = StringField('Reorder Type', widget=widgets.HiddenInput())
     list_visible_elements = SelectMultipleField('New Order')
-    reorder = SubmitField(lazy_gettext('Save Order'))
+    reorder = SubmitField(
+        TOOLTIPS_SETTINGS['save_order']['title'])
 
 
 class OutputAdd(FlaskForm):
@@ -35,7 +36,8 @@ class OutputAdd(FlaskForm):
         choices=OUTPUTS,
         validators=[DataRequired()]
     )
-    output_add = SubmitField(lazy_gettext('Add'))
+    output_add = SubmitField(
+        TOOLTIPS_SETTINGS['add']['title'])
 
 
 class OutputMod(FlaskForm):
@@ -85,8 +87,8 @@ class OutputMod(FlaskForm):
         TOOLTIPS_SETTINGS['on_at_start']['title'],
         choices=[
             ("-1", lazy_gettext('Neither')),
-            ("1", lazy_gettext('On')),
-            ("0", lazy_gettext('Off'))
+            ("1", TOOLTIPS_SETTINGS['on']['title']),
+            ("0", TOOLTIPS_SETTINGS['off']['title'])
         ],
         validators=[DataRequired()]
     )
@@ -106,8 +108,12 @@ class OutputMod(FlaskForm):
         TOOLTIPS_SETTINGS['trigger_functions_at_start']['title'],
         widget=NumberInput(step='any')
     )
-    save = SubmitField(lazy_gettext('Save'))
-    delete = SubmitField(lazy_gettext('Delete'))
-    order_up = SubmitField(lazy_gettext('Up'))
-    order_down = SubmitField(lazy_gettext('Down'))
+    save = SubmitField(
+        TOOLTIPS_SETTINGS['save']['title'])
+    delete = SubmitField(
+        TOOLTIPS_SETTINGS['delete']['title'])
+    order_up = SubmitField(
+        TOOLTIPS_SETTINGS['up']['title'])
+    order_down = SubmitField(
+        TOOLTIPS_SETTINGS['down']['title'])
     on_submit = SubmitField(lazy_gettext('Turn On'))

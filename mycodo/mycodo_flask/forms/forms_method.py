@@ -26,7 +26,8 @@ class MethodCreate(FlaskForm):
         validators=[DataRequired()]
     )
     controller_type = HiddenField('Controller Type')
-    Submit = SubmitField(lazy_gettext('Add'))
+    Submit = SubmitField(
+        TOOLTIPS_SETTINGS['add']['title'])
 
 
 class MethodAdd(FlaskForm):
@@ -157,6 +158,9 @@ class MethodMod(FlaskForm):
     output_duration = DecimalField(
         lazy_gettext('Duration/Duty Cycle'),
         widget=NumberInput(step='any'))
-    rename = SubmitField(lazy_gettext('Rename'))
-    save = SubmitField(lazy_gettext('Save'))
-    Delete = SubmitField(lazy_gettext('Delete'))
+    rename = SubmitField(
+        TOOLTIPS_SETTINGS['rename']['title'])
+    save = SubmitField(
+        TOOLTIPS_SETTINGS['save']['title'])
+    Delete = SubmitField(
+        TOOLTIPS_SETTINGS['delete']['title'])

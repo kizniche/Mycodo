@@ -186,7 +186,8 @@ def method_list():
                            method=method,
                            method_all=method_all,
                            method_info=METHOD_INFO,
-                           form_create_method=form_create_method)
+                           form_create_method=form_create_method,
+                           tooltips_settings=TOOLTIPS_SETTINGS)
 
 
 @blueprint.route('/method-build/<method_id>', methods=('GET', 'POST'))
@@ -296,7 +297,7 @@ def method_builder(method_id):
                                form_create_method=form_create_method,
                                form_add_method=form_add_method,
                                form_mod_method=form_mod_method,
-                               tooltips_settings=TOOLTIPS_SETTINGS,)
+                               tooltips_settings=TOOLTIPS_SETTINGS)
 
     return redirect('/method')
 
@@ -306,7 +307,7 @@ def method_builder(method_id):
 def method_delete(method_id):
     """Delete a method"""
     action = '{action} {controller}'.format(
-        action=gettext("Delete"),
+        action=TOOLTIPS_SETTINGS['delete']['title'],
         controller=gettext("Method"))
 
     if not utils_general.user_has_permission('edit_settings'):

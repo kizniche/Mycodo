@@ -87,7 +87,7 @@ function startTimer() {
               <option value="{{each_input.unique_id}}">{{each_input.id}} ({{each_input.name}})</option>
             {%- endfor -%}
           {% else %}
-            <option value="">{{_('None Available')}}</option>
+            <option value="">{{tooltips_settings['none_available']['title']}}</option>
           {% endif %}
         </select>
       </div>
@@ -107,7 +107,7 @@ function startTimer() {
     <p>{{_('Refer to the logs for details')}}</p>
       {% else %}
 
-    <p>1. {{_('Calibration')}}{% if input_device_name %}: {{input_device_name}}{% endif %} {{selected_input.id}} ({{selected_input.name}})</p>
+    <p>1. {{tooltips_settings['calibration']['title']}}{% if input_device_name %}: {{input_device_name}}{% endif %} {{selected_input.id}} ({{selected_input.name}})</p>
     <p>{{_('Ensure all pH calibration solutions are the same temperature. Enter the temperature (in Celsius) of your solutions, then click Continue.')}}</p>
 
     <form method="post" action="/setup_atlas_ph">
@@ -132,7 +132,7 @@ function startTimer() {
     <p>{{_('Refer to the logs for details')}}</p>
       {% else %}
 
-    <p>2. {{_('Calibration')}}{% if input_device_name %}: {{input_device_name}}{% endif %} {{selected_input.id}} ({{selected_input.name}})</p>
+    <p>2. {{tooltips_settings['calibration']['title']}}{% if input_device_name %}: {{input_device_name}}{% endif %} {{selected_input.id}} ({{selected_input.name}})</p>
     <p>{{_('Insert the probe into the pH %(ph)s solution, then click Ready', ph='7.0')}}</p>
 
     <form method="post" action="/setup_atlas_ph">
@@ -163,7 +163,7 @@ function startTimer() {
     <p>{{_('Refer to the logs for details')}}</p>
       {% else %}
 
-    <p>3. {{_('Calibration')}}{% if input_device_name %}: {{input_device_name}}{% endif %} {{selected_input.id}} ({{selected_input.name}})</p>
+    <p>3. {{tooltips_settings['calibration']['title']}}{% if input_device_name %}: {{input_device_name}}{% endif %} {{selected_input.id}} ({{selected_input.name}})</p>
     <p>{{_('Remove the pH probe from the pH %(ph)s solution and rinse it with distilled water', ph='7.0')}}</p>
     <p>{{_('Insert the probe into the pH %(ph)s solution, then click Ready', ph='4.0')}}</p>
 
@@ -195,7 +195,7 @@ function startTimer() {
     <p>{{_('Refer to the logs for details')}}</p>
       {% else %}
 
-    <p>4. {{_('Calibration')}}{% if input_device_name %}: {{input_device_name}}{% endif %} {{selected_input.id}} ({{selected_input.name}})</p>
+    <p>4. {{tooltips_settings['calibration']['title']}}{% if input_device_name %}: {{input_device_name}}{% endif %} {{selected_input.id}} ({{selected_input.name}})</p>
     <p>{{_('Remove the pH probe from the pH %(ph)s solution and rinse it with distilled water', ph='4.0')}}</p>
     <p>{{_('Insert the probe into the pH %(ph)s solution, then click Ready', ph='10.0')}}</p>
 
@@ -222,7 +222,7 @@ function startTimer() {
 
     {% elif stage == 5 %}
 
-    <p>5. {{_('Calibration')}}{% if input_device_name %}: {{input_device_name}}{% endif %} {{selected_input.id}} ({{selected_input.name}}): {% if complete_with_error %}{{_('Calibration Failed')}}{% else %}{{_('Calibration Succeeded')}}{% endif %}</p>
+    <p>5. {{tooltips_settings['calibration']['title']}}{% if input_device_name %}: {{input_device_name}}{% endif %} {{selected_input.id}} ({{selected_input.name}}): {% if complete_with_error %}{{_('Calibration Failed')}}{% else %}{{_('Calibration Succeeded')}}{% endif %}</p>
 
       {% if complete_with_error %}
     <p>

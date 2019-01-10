@@ -13,6 +13,7 @@ from flask.blueprints import Blueprint
 from flask_babel import gettext
 
 from mycodo.config import PATH_1WIRE
+from mycodo.config_translations import TOOLTIPS_SETTINGS
 from mycodo.databases.models import Input
 from mycodo.mycodo_flask.forms import forms_calibration
 from mycodo.mycodo_flask.routes_static import inject_variables
@@ -53,7 +54,8 @@ def calibration_select():
             page=form_calibration.selection.data)
         return redirect(url_for(route))
     return render_template('tools/calibration.html',
-                           form_calibration=form_calibration)
+                           form_calibration=form_calibration,
+                           tooltips_settings=TOOLTIPS_SETTINGS)
 
 
 @blueprint.route('/setup_atlas_ph', methods=('GET', 'POST'))
@@ -141,7 +143,8 @@ def setup_atlas_ph():
                            input=input_dev,
                            input_device_name=input_device_name,
                            selected_input=selected_input,
-                           stage=stage)
+                           stage=stage,
+                           tooltips_settings=TOOLTIPS_SETTINGS)
 
 
 @blueprint.route('/setup_atlas_ph_measure/<input_id>')
@@ -284,7 +287,8 @@ def setup_ds_resolution():
     return render_template('tools/calibration_options/ds_resolution.html',
                            ds_inputs=ds_inputs,
                            form_ds=form_ds,
-                           inputs=inputs)
+                           inputs=inputs,
+                           tooltips_settings=TOOLTIPS_SETTINGS)
 
 
 def dual_commands_to_sensor(input_sel, first_cmd, amount,
@@ -309,7 +313,7 @@ def dual_commands_to_sensor(input_sel, first_cmd, amount,
 
     first_status, first_return_str = atlas_command.calibrate(first_cmd, temperature=set_temp)
     info_str = "{act}: {lvl} ({amt} {unit}): {resp}".format(
-        act=gettext('Calibration'), lvl=first_cmd, amt=amount, unit=unit, resp=first_return_str)
+        act=TOOLTIPS_SETTINGS['calibration']['title'], lvl=first_cmd, amt=amount, unit=unit, resp=first_return_str)
 
     if first_status:
         flash(info_str, "error")

@@ -98,7 +98,7 @@
         {{form_mod_math.select_measurement_unit.label(class_='control-label')}}
         <div>
           <select class="form-control form-tooltip form-dropdown" data-placement="top" id="select_measurement_unit" name="select_measurement_unit" title="{{tooltips_settings['select_measurement_unit']['phrase']}}">
-            <option value="">{{_('Select One')}}</option>
+            <option value="">{{tooltips_settings['select_one']['title']}}</option>
 
     {%- set each_measurement = table_device_measurements.query.filter(
                 and_(table_device_measurements.device_id == each_math.unique_id,

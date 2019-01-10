@@ -24,7 +24,8 @@ class MathAdd(FlaskForm):
         choices=MATHS,
         validators=[DataRequired()]
     )
-    math_add = SubmitField(lazy_gettext('Add'))
+    math_add = SubmitField(
+        TOOLTIPS_SETTINGS['add']['title'])
 
 
 class MathMod(FlaskForm):
@@ -37,7 +38,7 @@ class MathMod(FlaskForm):
         validators=[DataRequired()],
         widget=NumberInput(step='any'))
     max_measure_age = IntegerField(
-        lazy_gettext('Max Age (seconds)'),
+        TOOLTIPS_SETTINGS['max_age']['title'],
         validators=[DataRequired()],
         widget=NumberInput())
     start_offset = DecimalField(
@@ -49,16 +50,22 @@ class MathMod(FlaskForm):
         TOOLTIPS_SETTINGS['select_measurement_unit']['title'])
     measurements_enabled = SelectMultipleField(
         TOOLTIPS_SETTINGS['measurements_enabled']['title'])
-    math_mod = SubmitField(lazy_gettext('Save'))
-    math_delete = SubmitField(lazy_gettext('Delete'))
-    math_activate = SubmitField(lazy_gettext('Activate'))
-    math_deactivate = SubmitField(lazy_gettext('Deactivate'))
-    math_order_up = SubmitField(lazy_gettext('Up'))
-    math_order_down = SubmitField(lazy_gettext('Down'))
+    math_mod = SubmitField(
+        TOOLTIPS_SETTINGS['save']['title'])
+    math_delete = SubmitField(
+        TOOLTIPS_SETTINGS['delete']['title'])
+    math_activate = SubmitField(
+        TOOLTIPS_SETTINGS['activate']['title'])
+    math_deactivate = SubmitField(
+        TOOLTIPS_SETTINGS['deactivate']['title'])
+    math_order_up = SubmitField(
+        TOOLTIPS_SETTINGS['up']['title'])
+    math_order_down = SubmitField(
+        TOOLTIPS_SETTINGS['down']['title'])
 
 
 class MathModAverageSingle(FlaskForm):
-    average_input = StringField(lazy_gettext('Input'))
+    average_input = StringField(TOOLTIPS_SETTINGS['input']['title'])
 
 
 class MathModDifference(FlaskForm):
@@ -67,7 +74,7 @@ class MathModDifference(FlaskForm):
 
 
 class MathModEquation(FlaskForm):
-    equation_input = StringField(lazy_gettext('Input'))
+    equation_input = StringField(TOOLTIPS_SETTINGS['input']['title'])
     equation = StringField(lazy_gettext('Equation'))
 
 
@@ -107,7 +114,8 @@ class MathMeasurementMod(FlaskForm):
     convert_to_measurement_unit = StringField(
         lazy_gettext('Convert to Measurement'))
 
-    math_measurement_mod = SubmitField(lazy_gettext('Save'))
+    math_measurement_mod = SubmitField(
+        TOOLTIPS_SETTINGS['save']['title'])
 
 
 class MathModMisc(FlaskForm):

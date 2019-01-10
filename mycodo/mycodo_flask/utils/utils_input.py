@@ -10,6 +10,7 @@ from flask import redirect
 from flask import url_for
 from flask_babel import gettext
 
+from mycodo.config_translations import TOOLTIPS_SETTINGS
 from mycodo.databases.models import DeviceMeasurements
 from mycodo.databases.models import DisplayOrder
 from mycodo.databases.models import Input
@@ -39,8 +40,8 @@ logger = logging.getLogger(__name__)
 
 def input_add(form_add):
     action = '{action} {controller}'.format(
-        action=gettext("Add"),
-        controller=gettext("Input"))
+        action=TOOLTIPS_SETTINGS['add']['title'],
+        controller=TOOLTIPS_SETTINGS['input']['title'])
     error = []
 
     dict_inputs = parse_input_information()
@@ -271,8 +272,8 @@ def input_add(form_add):
 
 def input_mod(form_mod, request_form):
     action = '{action} {controller}'.format(
-        action=gettext("Modify"),
-        controller=gettext("Input"))
+        action=TOOLTIPS_SETTINGS['modify']['title'],
+        controller=TOOLTIPS_SETTINGS['input']['title'])
     error = []
 
     dict_inputs = parse_input_information()
@@ -461,8 +462,8 @@ def input_mod(form_mod, request_form):
 
 def measurement_mod(form):
     action = '{action} {controller}'.format(
-        action=gettext("Modify"),
-        controller=gettext("Measurement"))
+        action=TOOLTIPS_SETTINGS['modify']['title'],
+        controller=TOOLTIPS_SETTINGS['measurement']['title'])
     error = []
 
     try:
@@ -512,8 +513,8 @@ def measurement_mod(form):
 
 def input_del(input_id):
     action = '{action} {controller}'.format(
-        action=gettext("Delete"),
-        controller=gettext("Input"))
+        action=TOOLTIPS_SETTINGS['delete']['title'],
+        controller=TOOLTIPS_SETTINGS['input']['title'])
     error = []
 
     try:
@@ -548,7 +549,7 @@ def input_del(input_id):
 def input_reorder(input_id, display_order, direction):
     action = '{action} {controller}'.format(
         action=gettext("Reorder"),
-        controller=gettext("Input"))
+        controller=TOOLTIPS_SETTINGS['input']['title'])
     error = []
 
     try:
@@ -595,7 +596,7 @@ def input_deactivate_associated_controllers(input_id):
 def force_acquire_measurements(unique_id):
     action = '{action}, {controller}'.format(
         action=gettext("Force Measurements"),
-        controller=gettext("Input"))
+        controller=TOOLTIPS_SETTINGS['input']['title'])
     error = []
 
     try:

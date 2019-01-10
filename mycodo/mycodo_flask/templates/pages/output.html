@@ -155,7 +155,7 @@
           {{form_add_output.output_quantity(class_='form-control', type="number", value=1, **{'title': _('Quantity')})}}
         </div>
         <div class="col-auto">
-          {{form_add_output.output_type(class_='selectpicker', **{'title': _('Output') + ': ' + _('Select One')})}}
+          {{form_add_output.output_type(class_='selectpicker', **{'title': _('Output') + ': ' + tooltips_settings['select_one']['title']})}}
         </div>
         <div class="col-auto">
           {{form_add_output.output_add(class_='btn btn-primary btn-block')}}
@@ -192,7 +192,7 @@
 
         {% if each_output.output_type not in ['pwm', 'command_pwm', 'python_pwm', 'atlas_ezo_pmp'] -%}
           <div class="col-xs-5 col-sm-6 col-md-4 col-lg-2 small-gutters">
-            <input class="form-control btn btn-sm btn-success btn-block turn_on" id="turn_on" name="{{each_output.unique_id}}/on/sec/0" type="button" value="{{_('On')}}">
+            <input class="form-control btn btn-sm btn-success btn-block turn_on" id="turn_on" name="{{each_output.unique_id}}/on/sec/0" type="button" value="{{tooltips_settings['on']['title']}}">
           </div>
         {%- endif %}
 
@@ -201,7 +201,7 @@
         {% else %}
           <div class="col-xs-5 col-sm-6 col-md-8 col-lg-4 small-gutters">
         {% endif %}
-            <input class="form-control btn btn-sm btn-danger btn-block turn_off" id="turn_off" name="{{each_output.unique_id}}/off/sec/0" type="button" value="{{_('Off')}}">
+            <input class="form-control btn btn-sm btn-danger btn-block turn_off" id="turn_off" name="{{each_output.unique_id}}/off/sec/0" type="button" value="{{tooltips_settings['off']['title']}}">
           </div>
 
           <div class="col small-gutters">

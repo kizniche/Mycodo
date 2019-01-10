@@ -18,6 +18,7 @@ from werkzeug.utils import secure_filename
 
 from mycodo.config import INSTALL_DIRECTORY
 from mycodo.config import PATH_NOTE_ATTACHMENTS
+from mycodo.config_translations import TOOLTIPS_SETTINGS
 from mycodo.databases import set_uuid
 from mycodo.databases.models import NoteTags
 from mycodo.databases.models import Notes
@@ -35,7 +36,7 @@ logger = logging.getLogger(__name__)
 
 def tag_add(form):
     action = '{action} {controller}'.format(
-        action=gettext("Add"),
+        action=TOOLTIPS_SETTINGS['add']['title'],
         controller=gettext("Tag"))
     error = []
 
@@ -84,7 +85,7 @@ def tag_rename(form):
 
 def tag_del(form):
     action = '{action} {controller}'.format(
-        action=gettext("Delete"),
+        action=TOOLTIPS_SETTINGS['delete']['title'],
         controller=gettext("Tag"))
     error = []
 
@@ -103,7 +104,7 @@ def tag_del(form):
 
 def note_add(form):
     action = '{action} {controller}'.format(
-        action=gettext("Add"),
+        action=TOOLTIPS_SETTINGS['add']['title'],
         controller=gettext("Note"))
     error = []
     list_tags = []
@@ -157,7 +158,7 @@ def note_add(form):
 
 def note_mod(form):
     action = '{action} {controller}'.format(
-        action=gettext("Mod"),
+        action=TOOLTIPS_SETTINGS['modify']['title'],
         controller=gettext("Note"))
     error = []
     list_tags = []
@@ -254,7 +255,7 @@ def file_rename(form):
 
 def file_del(form):
     action = '{action} {controller}'.format(
-        action=gettext("Delete"),
+        action=TOOLTIPS_SETTINGS['delete']['title'],
         controller=gettext("File"))
     error = []
 
@@ -287,7 +288,7 @@ def file_del(form):
 
 def note_del(form):
     action = '{action} {controller}'.format(
-        action=gettext("Delete"),
+        action=TOOLTIPS_SETTINGS['delete']['title'],
         controller=gettext("Note"))
     error = []
 

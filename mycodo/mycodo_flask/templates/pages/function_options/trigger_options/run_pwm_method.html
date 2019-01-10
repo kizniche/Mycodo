@@ -2,7 +2,7 @@
   <label class='control-label'>Duration Method</label>
   <div>
     <select class="form-control form-tooltip form-dropdown" id="unique_id_1" name="unique_id_1" data-placement="top" title="{{_('Run this duration method, using the output value to set the Duty Cycle of a PWM output')}}">
-      <option value="">{{_('Select One')}}</option>
+      <option value="">{{tooltips_settings['select_one']['title']}}</option>
       {%- for each_method in method if each_method.method_type == 'Duration' -%}
         <option value="{{each_method.unique_id}}"{% if each_trigger.unique_id_1 == each_method.unique_id %} selected{% endif %}>[{{'%02d' % each_method.id}}] {{each_method.name}}</option>
       {%- endfor -%}
@@ -13,7 +13,7 @@
   <label class='control-label'>PWM Output</label>
   <div>
     <select class="form-control form-tooltip form-dropdown" id="unique_id_2" name="unique_id_2" data-placement="top" title="{{_('Apply the Duty Cycle to this PWM Output')}}">
-      <option value="">{{_('Select One')}}</option>
+      <option value="">{{tooltips_settings['select_one']['title']}}</option>
       {%- for each_output in output if each_output.output_type in ['pwm', 'command_pwm'] -%}
         <option value="{{each_output.unique_id}}"{% if each_trigger.unique_id_2 == each_output.unique_id %} selected{% endif %}>[{{'%02d' % each_output.id}}] {{each_output.name}}</option>
       {%- endfor -%}

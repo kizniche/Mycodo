@@ -8,6 +8,8 @@ from datetime import timedelta
 import os
 from flask_babel import lazy_gettext
 
+from mycodo.config_translations import TOOLTIPS_SETTINGS
+
 MYCODO_VERSION = '7.0.4'
 ALEMBIC_VERSION = '0797d251d77d'
 
@@ -356,7 +358,7 @@ CALIBRATION_INFO = {
 
 # Conditional controllers
 CONDITIONAL_CONDITIONS = [
-    ('measurement', lazy_gettext('Measurement')),
+    ('measurement', TOOLTIPS_SETTINGS['measurement']['title']),
     ('gpio_state', lazy_gettext('GPIO State'))
 ]
 

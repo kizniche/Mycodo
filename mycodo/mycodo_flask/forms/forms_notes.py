@@ -30,13 +30,16 @@ class NoteAdd(FlaskForm):
     enter_custom_date_time = BooleanField(lazy_gettext('Use Custom Date/Time'))
     date_time = DateTimeField('Custom Date/Time', format='%Y-%m-%d %H:%M:%S')
     note = TextAreaField(lazy_gettext('Note'))
-    note_add = SubmitField(lazy_gettext('Save'))
+    note_add = SubmitField(
+        TOOLTIPS_SETTINGS['save']['title'])
 
 
 class NoteOptions(FlaskForm):
     note_unique_id = StringField(widget=widgets.HiddenInput())
-    note_mod = SubmitField(lazy_gettext('Edit'))
-    note_del = SubmitField(lazy_gettext('Delete'))
+    note_mod = SubmitField(
+        TOOLTIPS_SETTINGS['edit']['title'])
+    note_del = SubmitField(
+        TOOLTIPS_SETTINGS['delete']['title'])
 
 
 class NoteMod(FlaskForm):
@@ -49,12 +52,17 @@ class NoteMod(FlaskForm):
     enter_custom_date_time = BooleanField(lazy_gettext('Use Custom Date/Time'))
     date_time = DateTimeField('Custom Date/Time', format='%Y-%m-%d %H:%M:%S')
     note = TextAreaField(lazy_gettext('Note'))
-    file_del = SubmitField(lazy_gettext('Delete'))
-    note_cancel = SubmitField(lazy_gettext('Cancel'))
+    file_del = SubmitField(
+        TOOLTIPS_SETTINGS['delete']['title'])
+    note_cancel = SubmitField(
+        TOOLTIPS_SETTINGS['cancel']['title'])
     rename_name = StringField()
-    file_rename = SubmitField(lazy_gettext('Rename'))
-    note_del = SubmitField(lazy_gettext('Delete'))
-    note_save = SubmitField(lazy_gettext('Save'))
+    file_rename = SubmitField(
+        TOOLTIPS_SETTINGS['rename']['title'])
+    note_del = SubmitField(
+        TOOLTIPS_SETTINGS['delete']['title'])
+    note_save = SubmitField(
+        TOOLTIPS_SETTINGS['save']['title'])
 
 
 class NotesShow(FlaskForm):
@@ -88,11 +96,14 @@ class NotesShow(FlaskForm):
 
 class TagAdd(FlaskForm):
     tag_name = StringField(lazy_gettext('Tag'))
-    tag_add = SubmitField(lazy_gettext('Create'))
+    tag_add = SubmitField(
+        TOOLTIPS_SETTINGS['create']['title'])
 
 
 class TagOptions(FlaskForm):
     tag_unique_id = StringField(lazy_gettext('Tag'), widget=widgets.HiddenInput())
     rename = StringField()
-    tag_rename = SubmitField(lazy_gettext('Rename'))
-    tag_del = SubmitField(lazy_gettext('Delete'))
+    tag_rename = SubmitField(
+        TOOLTIPS_SETTINGS['rename']['title'])
+    tag_del = SubmitField(
+        TOOLTIPS_SETTINGS['delete']['title'])

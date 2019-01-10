@@ -22,6 +22,7 @@ from mycodo.config import OUTPUT_INFO
 from mycodo.config import PATH_CAMERAS
 from mycodo.config_devices_units import MEASUREMENTS
 from mycodo.config_devices_units import UNITS
+from mycodo.config_translations import TOOLTIPS_SETTINGS
 from mycodo.databases.models import Camera
 from mycodo.databases.models import Conditional
 from mycodo.databases.models import Conversion
@@ -101,7 +102,7 @@ def controller_activate_deactivate(controller_action,
 
     translated_names = {
         "Conditional": gettext("Conditional"),
-        "Input": gettext("Input"),
+        "Input": TOOLTIPS_SETTINGS['input']['title'],
         "LCD": gettext("LCD"),
         "Math": gettext("Math"),
         "PID": gettext("PID"),
@@ -574,7 +575,7 @@ def delete_entry_with_id(table, entry_id):
         db.session.commit()
         flash(gettext("%(msg)s",
                       msg='{action} {table} with ID: {id}'.format(
-                          action=gettext("Delete"),
+                          action=TOOLTIPS_SETTINGS['delete']['title'],
                           table=table.__tablename__,
                           id=entry_id)),
               "success")
@@ -586,7 +587,7 @@ def delete_entry_with_id(table, entry_id):
               "error")
         flash(gettext("%(msg)s",
                       msg='{action} {id}: {err}'.format(
-                          action=gettext("Delete"),
+                          action=TOOLTIPS_SETTINGS['delete']['title'],
                           id=entry_id,
                           err=gettext("Entry with ID %(id)s not found",
                                       id=entry_id))),

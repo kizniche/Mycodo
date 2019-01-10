@@ -6,6 +6,7 @@ from flask import flash
 from flask import url_for
 from flask_babel import gettext
 
+from mycodo.config_translations import TOOLTIPS_SETTINGS
 from mycodo.databases.models import DisplayOrder
 from mycodo.databases.models import Method
 from mycodo.databases.models import MethodData
@@ -205,7 +206,7 @@ def method_create(form_create_method):
 def method_add(form_add_method):
     """ Add line to method_data table """
     action = '{action} {controller}'.format(
-        action=gettext("Add"),
+        action=TOOLTIPS_SETTINGS['add']['title'],
         controller=gettext("Method"))
     error = []
 
@@ -389,7 +390,7 @@ def method_add(form_add_method):
 
 def method_mod(form_mod_method):
     action = '{action} {controller}'.format(
-        action=gettext("Modify"),
+        action=TOOLTIPS_SETTINGS['modify']['title'],
         controller=gettext("Method"))
     error = []
 
@@ -509,7 +510,7 @@ def method_mod(form_mod_method):
 
 def method_del(method_id):
     action = '{action} {controller}'.format(
-        action=gettext("Delete"),
+        action=TOOLTIPS_SETTINGS['delete']['title'],
         controller=gettext("Method"))
     error = []
 

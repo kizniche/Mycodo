@@ -6,7 +6,7 @@
     {{form_mod_humidity.dry_bulb_temperature.label(class_='control-label')}}
     <div>
       <select class="form-control" id="dry_bulb_temperature" name="dry_bulb_temperature">
-        <option value="">{{_('Select One')}}</option>
+        <option value="">{{tooltips_settings['select_one']['title']}}</option>
       {% if choices_input or choices_math %}
         {% for each_choice, value in choices_input.items() -%}
         <option value="{{each_choice}}"{%- if each_math.dry_bulb_t_id == each_choice.split(',')[0] and each_math.dry_bulb_t_measure_id == each_choice.split(',')[1] %} selected{%- endif -%}>{{value}}</option>
@@ -15,7 +15,7 @@
         <option value="{{each_choice}}"{%- if each_math.dry_bulb_t_id == each_choice.split(',')[0] and each_math.dry_bulb_t_measure_id == each_choice.split(',')[1] %} selected{%- endif -%}>{{value}}</option>
         {% endfor -%}
       {% else %}
-        <option value="">{{_('None Available')}}</option>
+        <option value="">{{tooltips_settings['none_available']['title']}}</option>
       {% endif %}
       </select>
     </div>
@@ -24,7 +24,7 @@
     {{form_mod_humidity.wet_bulb_temperature.label(class_='control-label')}}
     <div>
       <select class="form-control" id="wet_bulb_temperature" name="wet_bulb_temperature">
-        <option value="">{{_('Select One')}}</option>
+        <option value="">{{tooltips_settings['select_one']['title']}}</option>
       {% if choices_input or choices_math %}
         {% for each_choice, value in choices_input.items() -%}
         <option value="{{each_choice}}"{%- if each_math.wet_bulb_t_id == each_choice.split(',')[0] and each_math.wet_bulb_t_measure_id == each_choice.split(',')[1] %} selected{%- endif -%}>{{value}}</option>
@@ -33,7 +33,7 @@
         <option value="{{each_choice}}"{%- if each_math.wet_bulb_t_id == each_choice.split(',')[0] and each_math.wet_bulb_t_measure_id == each_choice.split(',')[1] %} selected{%- endif -%}>{{value}}</option>
         {% endfor -%}
       {% else %}
-        <option value="">{{_('None Available')}}</option>
+        <option value="">{{tooltips_settings['none_available']['title']}}</option>
       {% endif %}
       </select>
     </div>
@@ -51,7 +51,7 @@
         <option value="{{each_choice}}"{%- if each_math.inputs and each_choice|string in each_math.inputs %} selected{%- endif -%}>{{value}}</option>
         {% endfor -%}
       {% else %}
-        <option value="">{{_('None Available')}}</option>
+        <option value="">{{tooltips_settings['none_available']['title']}}</option>
       {% endif %}
       </select>
     </div>

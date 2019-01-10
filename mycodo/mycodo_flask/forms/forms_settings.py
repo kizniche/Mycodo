@@ -77,9 +77,12 @@ class SettingsCamera(FlaskForm):
     path_still = StringField(lazy_gettext('Still Image Path'))
     path_timelapse = StringField(lazy_gettext('Timelapse Path'))
     path_video = StringField(lazy_gettext('Video Path'))
-    camera_add = SubmitField(lazy_gettext('Add'))
-    camera_mod = SubmitField(lazy_gettext('Save'))
-    camera_del = SubmitField(lazy_gettext('Delete'))
+    camera_add = SubmitField(
+        TOOLTIPS_SETTINGS['add']['title'])
+    camera_mod = SubmitField(
+        TOOLTIPS_SETTINGS['save']['title'])
+    camera_del = SubmitField(
+        TOOLTIPS_SETTINGS['delete']['title'])
 
 
 #
@@ -139,7 +142,8 @@ class SettingsEmail(FlaskForm):
             validators.Optional()
         ]
     )
-    save = SubmitField('Save')
+    save = SubmitField(
+        TOOLTIPS_SETTINGS['save']['title'])
 
 
 #
@@ -180,7 +184,8 @@ class SettingsGeneral(FlaskForm):
     )
     stats_opt_out = BooleanField(lazy_gettext('Opt-out of statistics'))
     enable_upgrade_check = BooleanField(lazy_gettext('Check for Updates'))
-    Submit = SubmitField(lazy_gettext('Save'))
+    Submit = SubmitField(
+        TOOLTIPS_SETTINGS['save']['title'])
 
 
 #
@@ -193,7 +198,8 @@ class Input(FlaskForm):
 
 class InputDel(FlaskForm):
     input_id = StringField(widget=widgets.HiddenInput())
-    delete_input = SubmitField(lazy_gettext('Delete'))
+    delete_input = SubmitField(
+        TOOLTIPS_SETTINGS['delete']['title'])
 
 
 #
@@ -210,8 +216,10 @@ class MeasurementMod(FlaskForm):
     measurement_id = StringField('Measurement ID', widget=widgets.HiddenInput())
     name = StringField(lazy_gettext('Measurement Name'))
     units = SelectMultipleField(lazy_gettext('Measurement Units'))
-    save_measurement = SubmitField(lazy_gettext('Save'))
-    delete_measurement = SubmitField(lazy_gettext('Delete'))
+    save_measurement = SubmitField(
+        TOOLTIPS_SETTINGS['save']['title'])
+    delete_measurement = SubmitField(
+        TOOLTIPS_SETTINGS['delete']['title'])
 
 
 class UnitAdd(FlaskForm):
@@ -226,8 +234,10 @@ class UnitMod(FlaskForm):
     unit_id = StringField('Unit ID', widget=widgets.HiddenInput())
     name = StringField(lazy_gettext('Unit Name'))
     unit = StringField(lazy_gettext('Unit Abbreviation'))
-    save_unit = SubmitField(lazy_gettext('Save'))
-    delete_unit = SubmitField(lazy_gettext('Delete'))
+    save_unit = SubmitField(
+        TOOLTIPS_SETTINGS['save']['title'])
+    delete_unit = SubmitField(
+        TOOLTIPS_SETTINGS['delete']['title'])
 
 
 class ConversionAdd(FlaskForm):
@@ -245,8 +255,10 @@ class ConversionMod(FlaskForm):
     convert_unit_from = StringField(lazy_gettext('Convert From Unit'))
     convert_unit_to = StringField(lazy_gettext('Convert To Unit'))
     equation = StringField(lazy_gettext('Equation'))
-    save_conversion = SubmitField(lazy_gettext('Save'))
-    delete_conversion = SubmitField(lazy_gettext('Delete'))
+    save_conversion = SubmitField(
+        TOOLTIPS_SETTINGS['save']['title'])
+    delete_conversion = SubmitField(
+        TOOLTIPS_SETTINGS['delete']['title'])
 
 
 #
@@ -267,8 +279,10 @@ class UserRoles(FlaskForm):
     edit_settings = BooleanField(lazy_gettext('Edit Settings'))
     role_id = StringField('Role ID', widget=widgets.HiddenInput())
     add_role = SubmitField(lazy_gettext('Add Role'))
-    save_role = SubmitField(lazy_gettext('Save'))
-    delete_role = SubmitField(lazy_gettext('Delete'))
+    save_role = SubmitField(
+        TOOLTIPS_SETTINGS['save']['title'])
+    delete_role = SubmitField(
+        TOOLTIPS_SETTINGS['delete']['title'])
 
 
 class UserAdd(FlaskForm):
@@ -343,8 +357,10 @@ class UserMod(FlaskForm):
         widget=NumberInput()
     )
     theme = StringField(lazy_gettext('Theme'))
-    save = SubmitField(lazy_gettext('Save'))
-    delete = SubmitField(lazy_gettext('Delete'))
+    save = SubmitField(
+        TOOLTIPS_SETTINGS['save']['title'])
+    delete = SubmitField(
+        TOOLTIPS_SETTINGS['delete']['title'])
 
 
 #

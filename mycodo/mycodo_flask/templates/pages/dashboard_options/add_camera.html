@@ -46,13 +46,13 @@
       {{form_camera.camera_id.label(class_='control-label')}}
       <div>
         <select class="form-control" id="camera_id" name="camera_id" style="width: 100%;">
-          <option value="">{{_('Select One')}}</option>
+          <option value="">{{tooltips_settings['select_one']['title']}}</option>
         {% if choices_camera %}
           {% for each_choice, value in choices_camera.items() -%}
           <option value="{{each_choice}}">{{value}}</option>
           {% endfor -%}
         {% else %}
-          <option value="">{{_('None Available')}}</option>
+          <option value="">{{tooltips_settings['none_available']['title']}}</option>
         {% endif %}
         </select>
       </div>

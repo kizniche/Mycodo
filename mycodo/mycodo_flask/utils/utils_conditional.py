@@ -6,6 +6,7 @@ from flask import flash
 from flask import url_for
 from flask_babel import gettext
 
+from mycodo.config_translations import TOOLTIPS_SETTINGS
 from mycodo.databases.models import Actions
 from mycodo.databases.models import Conditional
 from mycodo.databases.models import ConditionalConditions
@@ -27,7 +28,7 @@ def conditional_mod(form):
     """Modify a Conditional"""
     error = []
     action = '{action} {controller}'.format(
-        action=gettext("Mod"),
+        action=TOOLTIPS_SETTINGS['modify']['title'],
         controller=gettext("Conditional"))
 
     try:
@@ -99,7 +100,7 @@ def conditional_del(cond_id):
     """Delete a Conditional"""
     error = []
     action = '{action} {controller}'.format(
-        action=gettext("Delete"),
+        action=TOOLTIPS_SETTINGS['delete']['title'],
         controller=gettext("Conditional"))
 
     cond = Conditional.query.filter(
@@ -145,7 +146,7 @@ def conditional_condition_add(form):
     """Add a Conditional Condition"""
     error = []
     action = '{action} {controller}'.format(
-        action=gettext("Add"),
+        action=TOOLTIPS_SETTINGS['add']['title'],
         controller='{} {}'.format(gettext("Conditional"), gettext("Condition")))
 
     cond = Conditional.query.filter(
@@ -180,7 +181,7 @@ def conditional_condition_mod(form):
     """Modify a Conditional condition"""
     error = []
     action = '{action} {controller}'.format(
-        action=gettext("Mod"),
+        action=TOOLTIPS_SETTINGS['modify']['title'],
         controller='{} {}'.format(gettext("Conditional"), gettext("Condition")))
 
     try:
@@ -223,7 +224,7 @@ def conditional_condition_del(form):
     """Delete a Conditional Condition"""
     error = []
     action = '{action} {controller}'.format(
-        action=gettext("Delete"),
+        action=TOOLTIPS_SETTINGS['delete']['title'],
         controller='{} {}'.format(gettext("Conditional"), gettext("Condition")))
 
     cond = Conditional.query.filter(
@@ -251,7 +252,7 @@ def conditional_activate(cond_id):
     """Activate a Conditional"""
     error = []
     action = '{action} {controller}'.format(
-        action=gettext("Activate"),
+        action=TOOLTIPS_SETTINGS['activate']['title'],
         controller=gettext("Conditional"))
 
     conditions = ConditionalConditions.query.filter(
@@ -287,7 +288,7 @@ def conditional_deactivate(cond_id):
     """Deactivate a Conditional"""
     error = []
     action = '{action} {controller}'.format(
-        action=gettext("Deactivate"),
+        action=TOOLTIPS_SETTINGS['deactivate']['title'],
         controller=gettext("Conditional"))
 
     if not error:

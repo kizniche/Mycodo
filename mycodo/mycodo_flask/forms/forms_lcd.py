@@ -25,7 +25,8 @@ class LCDAdd(FlaskForm):
         choices=LCDS,
         validators=[DataRequired()]
     )
-    add = SubmitField(lazy_gettext('Add'))
+    add = SubmitField(
+        TOOLTIPS_SETTINGS['add']['title'])
 
 
 class LCDMod(FlaskForm):
@@ -56,12 +57,18 @@ class LCDMod(FlaskForm):
         widget=NumberInput(step='any')
     )
     add_display = SubmitField(lazy_gettext('Add Display Set'))
-    save = SubmitField(lazy_gettext('Save'))
-    delete = SubmitField(lazy_gettext('Delete'))
-    activate = SubmitField(lazy_gettext('Activate'))
-    deactivate = SubmitField(lazy_gettext('Deactivate'))
-    reorder_up = SubmitField(lazy_gettext('Up'))
-    reorder_down = SubmitField(lazy_gettext('Down'))
+    save = SubmitField(
+        TOOLTIPS_SETTINGS['save']['title'])
+    delete = SubmitField(
+        TOOLTIPS_SETTINGS['delete']['title'])
+    activate = SubmitField(
+        TOOLTIPS_SETTINGS['activate']['title'])
+    deactivate = SubmitField(
+        TOOLTIPS_SETTINGS['deactivate']['title'])
+    reorder_up = SubmitField(
+        TOOLTIPS_SETTINGS['up']['title'])
+    reorder_down = SubmitField(
+        TOOLTIPS_SETTINGS['down']['title'])
     reset_flashing = SubmitField(lazy_gettext('Reset LCD'))
 
 
@@ -70,7 +77,7 @@ class LCDModDisplay(FlaskForm):
     lcd_data_id = StringField('LCD Data ID', widget=widgets.HiddenInput())
     line_1_display = StringField(lazy_gettext('Line 1'))
     line_1_max_age = IntegerField(
-        lazy_gettext('Max Age (seconds)'),
+        TOOLTIPS_SETTINGS['max_age']['title'],
         validators=[validators.NumberRange(min=1, max=999999999)],
         widget=NumberInput()
     )
@@ -81,7 +88,7 @@ class LCDModDisplay(FlaskForm):
     )
     line_2_display = StringField(lazy_gettext('Line 2'))
     line_2_max_age = IntegerField(
-        lazy_gettext('Max Age (seconds)'),
+        TOOLTIPS_SETTINGS['max_age']['title'],
         validators=[validators.NumberRange(min=1, max=999999999)],
         widget=NumberInput()
     )
@@ -92,7 +99,7 @@ class LCDModDisplay(FlaskForm):
     )
     line_3_display = StringField(lazy_gettext('Line 3'))
     line_3_max_age = IntegerField(
-        lazy_gettext('Max Age (seconds)'),
+        TOOLTIPS_SETTINGS['max_age']['title'],
         validators=[validators.NumberRange(min=1, max=999999999)],
         widget=NumberInput()
     )
@@ -103,7 +110,7 @@ class LCDModDisplay(FlaskForm):
     )
     line_4_display = StringField(lazy_gettext('Line 4'))
     line_4_max_age = IntegerField(
-        lazy_gettext('Max Age (seconds)'),
+        TOOLTIPS_SETTINGS['max_age']['title'],
         validators=[validators.NumberRange(min=1, max=999999999)],
         widget=NumberInput()
     )
@@ -112,5 +119,7 @@ class LCDModDisplay(FlaskForm):
         validators=[validators.NumberRange(min=0)],
         widget=NumberInput()
     )
-    save_display = SubmitField(lazy_gettext('Save'))
-    delete_display = SubmitField(lazy_gettext('Delete'))
+    save_display = SubmitField(
+        TOOLTIPS_SETTINGS['save']['title'])
+    delete_display = SubmitField(
+        TOOLTIPS_SETTINGS['delete']['title'])

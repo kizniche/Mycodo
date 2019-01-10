@@ -7,6 +7,7 @@ from flask import url_for
 from flask_babel import gettext
 
 from mycodo.config import MATH_INFO
+from mycodo.config_translations import TOOLTIPS_SETTINGS
 from mycodo.databases.models import Conversion
 from mycodo.databases.models import DeviceMeasurements
 from mycodo.databases.models import DisplayOrder
@@ -34,7 +35,7 @@ logger = logging.getLogger(__name__)
 
 def math_add(form_add_math):
     action = '{action} {controller}'.format(
-        action=gettext("Add"),
+        action=TOOLTIPS_SETTINGS['add']['title'],
         controller=gettext("Math"))
     error = []
 
@@ -96,7 +97,7 @@ def math_add(form_add_math):
 
 def math_mod(form_mod_math, form_mod_type=None):
     action = '{action} {controller}'.format(
-        action=gettext("Modify"),
+        action=TOOLTIPS_SETTINGS['modify']['title'],
         controller=gettext("Math"))
     error = []
 
@@ -253,8 +254,8 @@ def math_mod(form_mod_math, form_mod_type=None):
 
 def math_measurement_mod(form):
     action = '{action} {controller}'.format(
-        action=gettext("Modify"),
-        controller=gettext("Measurement"))
+        action=TOOLTIPS_SETTINGS['modify']['title'],
+        controller=TOOLTIPS_SETTINGS['measurement']['title'])
     error = []
 
     try:
@@ -291,7 +292,7 @@ def math_measurement_mod(form):
 
 def math_del(form_mod_math):
     action = '{action} {controller}'.format(
-        action=gettext("Delete"),
+        action=TOOLTIPS_SETTINGS['delete']['title'],
         controller=gettext("Math"))
     error = []
 

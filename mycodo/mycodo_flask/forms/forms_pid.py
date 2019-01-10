@@ -26,7 +26,7 @@ class PIDModBase(FlaskForm):
         validators=[DataRequired()]
     )
     measurement = StringField(
-        lazy_gettext('Measurement'),
+        TOOLTIPS_SETTINGS['measurement']['title'],
         validators=[DataRequired()]
     )
     direction = SelectField(
@@ -50,7 +50,7 @@ class PIDModBase(FlaskForm):
         lazy_gettext('Start Offset (seconds)'),
         widget=NumberInput(step='any'))
     max_measure_age = DecimalField(
-        lazy_gettext('Max Age (seconds)'),
+        TOOLTIPS_SETTINGS['max_age']['title'],
         validators=[validators.NumberRange(
             min=1.0,
             max=86400.0
@@ -100,15 +100,21 @@ class PIDModBase(FlaskForm):
     lower_output_id = StringField(lazy_gettext('Output (Lower)'))
     method_id = StringField(
         'Setpoint Tracking Method', widget=widgets.HiddenInput())
-    pid_mod = SubmitField(lazy_gettext('Save'))
+    pid_mod = SubmitField(
+        TOOLTIPS_SETTINGS['save']['title'])
     pid_hold = SubmitField(lazy_gettext('Hold'))
     pid_pause = SubmitField(lazy_gettext('Pause'))
     pid_resume = SubmitField(lazy_gettext('Resume'))
-    pid_delete = SubmitField(lazy_gettext('Delete'))
-    pid_activate = SubmitField(lazy_gettext('Activate'))
-    pid_deactivate = SubmitField(lazy_gettext('Deactivate'))
-    order_up = SubmitField(lazy_gettext('Up'))
-    order_down = SubmitField(lazy_gettext('Down'))
+    pid_delete = SubmitField(
+        TOOLTIPS_SETTINGS['delete']['title'])
+    pid_activate = SubmitField(
+        TOOLTIPS_SETTINGS['activate']['title'])
+    pid_deactivate = SubmitField(
+        TOOLTIPS_SETTINGS['deactivate']['title'])
+    order_up = SubmitField(
+        TOOLTIPS_SETTINGS['up']['title'])
+    order_down = SubmitField(
+        TOOLTIPS_SETTINGS['down']['title'])
 
     pid_autotune_noiseband = DecimalField(
         lazy_gettext('Noise Band'),

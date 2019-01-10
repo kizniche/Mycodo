@@ -8,6 +8,7 @@ from sqlalchemy import and_
 
 from mycodo.config import FUNCTION_TYPES
 from mycodo.config import PID_INFO
+from mycodo.config_translations import TOOLTIPS_SETTINGS
 from mycodo.databases.models import Actions
 from mycodo.databases.models import Camera
 from mycodo.databases.models import Conditional
@@ -35,7 +36,7 @@ logger = logging.getLogger(__name__)
 
 def function_add(form_add_func):
     action = '{action} {controller}'.format(
-        action=gettext("Add"),
+        action=TOOLTIPS_SETTINGS['add']['title'],
         controller=gettext("Function"))
     error = []
 
@@ -111,7 +112,7 @@ def function_mod(form):
     """Modify a Function"""
     error = []
     action = '{action} {controller}'.format(
-        action=gettext("Mod"),
+        action=TOOLTIPS_SETTINGS['modify']['title'],
         controller=(gettext("Function")))
 
     try:
@@ -136,7 +137,7 @@ def function_mod(form):
 def function_del(function_id):
     """Delete a Function"""
     action = '{action} {controller}'.format(
-        action=gettext("Delete"),
+        action=TOOLTIPS_SETTINGS['delete']['title'],
         controller=gettext("Function"))
     error = []
 
@@ -164,7 +165,7 @@ def action_add(form):
     """Add a function Action"""
     error = []
     action = '{action} {controller}'.format(
-        action=gettext("Add"),
+        action=TOOLTIPS_SETTINGS['add']['title'],
         controller='{} {}'.format(gettext("Conditional"), gettext("Action")))
 
     if form.function_type.data == 'conditional':
@@ -209,7 +210,7 @@ def action_mod(form):
     """Modify a Conditional Action"""
     error = []
     action = '{action} {controller}'.format(
-        action=gettext("Mod"),
+        action=TOOLTIPS_SETTINGS['modify']['title'],
         controller='{} {}'.format(gettext("Conditional"), gettext("Action")))
 
     error = check_form_actions(form, error)
@@ -295,7 +296,7 @@ def action_del(form):
     """Delete a Conditional Action"""
     error = []
     action = '{action} {controller}'.format(
-        action=gettext("Delete"),
+        action=TOOLTIPS_SETTINGS['delete']['title'],
         controller='{} {}'.format(gettext("Conditional"), gettext("Action")))
 
     conditional = Conditional.query.filter(

@@ -19,6 +19,7 @@ from mycodo.config import INSTALL_DIRECTORY
 from mycodo.config import UPGRADE_INIT_FILE
 from mycodo.config_devices_units import MEASUREMENTS
 from mycodo.config_devices_units import UNITS
+from mycodo.config_translations import TOOLTIPS_SETTINGS
 from mycodo.databases.models import Camera
 from mycodo.databases.models import Conversion
 from mycodo.databases.models import Dashboard
@@ -65,11 +66,11 @@ logger = logging.getLogger(__name__)
 def user_roles(form):
     action = None
     if form.add_role.data:
-        action = gettext("Add")
+        action = TOOLTIPS_SETTINGS['add']['title']
     elif form.save_role.data:
-        action = gettext("Modify")
+        action = TOOLTIPS_SETTINGS['modify']['title']
     elif form.delete_role.data:
-        action = gettext("Delete")
+        action = TOOLTIPS_SETTINGS['delete']['title']
 
     action = '{action} {controller}'.format(
         action=action,
@@ -120,7 +121,7 @@ def user_roles(form):
 
 def user_add(form):
     action = '{action} {controller} {user}'.format(
-        action=gettext("Add"),
+        action=TOOLTIPS_SETTINGS['add']['title'],
         controller=gettext("User"),
         user=form.user_name.data.lower())
     error = []
@@ -169,7 +170,7 @@ def user_mod(form):
     mod_user = User.query.filter(
         User.unique_id == form.user_id.data).first()
     action = '{action} {controller} {user}'.format(
-        action=gettext("Modify"),
+        action=TOOLTIPS_SETTINGS['modify']['title'],
         controller=gettext("User"),
         user=mod_user.name)
     error = []
@@ -218,7 +219,7 @@ def user_del(form):
     user_name = User.query.filter(
         User.unique_id == form.user_id.data).first().name
     action = '{action} {controller} {user}'.format(
-        action=gettext("Delete"),
+        action=TOOLTIPS_SETTINGS['delete']['title'],
         controller=gettext("User"),
         user=user_name)
     error = []
@@ -245,7 +246,7 @@ def user_del(form):
 def settings_general_mod(form):
     """ Modify General settings """
     action = '{action} {controller}'.format(
-        action=gettext("Modify"),
+        action=TOOLTIPS_SETTINGS['modify']['title'],
         controller=gettext("General Settings"))
     error = []
 
@@ -310,7 +311,7 @@ def settings_input_import(form):
     """
     action = '{action} {controller}'.format(
         action=gettext("Import"),
-        controller=gettext("Input"))
+        controller=TOOLTIPS_SETTINGS['input']['title'])
     error = []
 
     input_info = None
@@ -432,7 +433,7 @@ def settings_input_import(form):
 def settings_input_delete(form):
     action = '{action} {controller}'.format(
         action=gettext("Import"),
-        controller=gettext("Input"))
+        controller=TOOLTIPS_SETTINGS['input']['title'])
     error = []
 
     input_device_name = None
@@ -475,8 +476,8 @@ def settings_input_delete(form):
 
 def settings_measurement_add(form):
     action = '{action} {controller}'.format(
-        action=gettext("Add"),
-        controller=gettext("Measurement"))
+        action=TOOLTIPS_SETTINGS['add']['title'],
+        controller=TOOLTIPS_SETTINGS['measurement']['title'])
     error = []
     choices_meas = choices_measurements(Measurement.query.all())
 
@@ -512,8 +513,8 @@ def settings_measurement_add(form):
 
 def settings_measurement_mod(form):
     action = '{action} {controller}'.format(
-        action=gettext("Modify"),
-        controller=gettext("Measurement"))
+        action=TOOLTIPS_SETTINGS['modify']['title'],
+        controller=TOOLTIPS_SETTINGS['measurement']['title'])
     error = []
     try:
         mod_measurement = Measurement.query.filter(
@@ -544,8 +545,8 @@ def settings_measurement_mod(form):
 
 def settings_measurement_del(unique_id):
     action = '{action} {controller}'.format(
-        action=gettext("Delete"),
-        controller=gettext("Measurement"))
+        action=TOOLTIPS_SETTINGS['delete']['title'],
+        controller=TOOLTIPS_SETTINGS['measurement']['title'])
     error = []
 
     try:
@@ -559,7 +560,7 @@ def settings_measurement_del(unique_id):
 
 def settings_unit_add(form):
     action = '{action} {controller}'.format(
-        action=gettext("Add"),
+        action=TOOLTIPS_SETTINGS['add']['title'],
         controller=gettext("Unit"))
     error = []
     units = Unit.query.all()
@@ -600,7 +601,7 @@ def settings_unit_add(form):
 
 def settings_unit_mod(form):
     action = '{action} {controller}'.format(
-        action=gettext("Modify"),
+        action=TOOLTIPS_SETTINGS['modify']['title'],
         controller=gettext("Unit"))
     error = []
     try:
@@ -642,7 +643,7 @@ def settings_unit_mod(form):
 
 def settings_unit_del(unique_id):
     action = '{action} {controller}'.format(
-        action=gettext("Delete"),
+        action=TOOLTIPS_SETTINGS['delete']['title'],
         controller=gettext("Unit"))
     error = []
 
@@ -671,7 +672,7 @@ def settings_unit_del(unique_id):
 
 def settings_convert_add(form):
     action = '{action} {controller}'.format(
-        action=gettext("Add"),
+        action=TOOLTIPS_SETTINGS['add']['title'],
         controller=gettext("Conversion"))
     error = []
 
@@ -713,7 +714,7 @@ def settings_convert_add(form):
 
 def settings_convert_mod(form):
     action = '{action} {controller}'.format(
-        action=gettext("Modify"),
+        action=TOOLTIPS_SETTINGS['modify']['title'],
         controller=gettext("Conversion"))
     error = []
 
@@ -746,7 +747,7 @@ def settings_convert_mod(form):
 
 def settings_convert_del(unique_id):
     action = '{action} {controller}'.format(
-        action=gettext("Delete"),
+        action=TOOLTIPS_SETTINGS['delete']['title'],
         controller=gettext("Conversion"))
     error = []
 
@@ -969,7 +970,7 @@ def settings_pi_mod(form):
 def settings_alert_mod(form_mod_alert):
     """ Modify Alert settings """
     action = '{action} {controller}'.format(
-        action=gettext("Modify"),
+        action=TOOLTIPS_SETTINGS['modify']['title'],
         controller=gettext("Alert Settings"))
     error = []
 
@@ -1007,7 +1008,7 @@ def settings_alert_mod(form_mod_alert):
 
 def camera_add(form_camera):
     action = '{action} {controller}'.format(
-        action=gettext("Add"),
+        action=TOOLTIPS_SETTINGS['add']['title'],
         controller=gettext("Camera"))
     error = []
 
@@ -1041,7 +1042,7 @@ def camera_add(form_camera):
 
 def camera_mod(form_camera):
     action = '{action} {controller}'.format(
-        action=gettext("Modify"),
+        action=TOOLTIPS_SETTINGS['modify']['title'],
         controller=gettext("Camera"))
     error = []
 
@@ -1102,7 +1103,7 @@ def camera_mod(form_camera):
 
 def camera_del(form_camera):
     action = '{action} {controller}'.format(
-        action=gettext("Delete"),
+        action=TOOLTIPS_SETTINGS['delete']['title'],
         controller=gettext("Camera"))
     error = []
 
@@ -1124,7 +1125,7 @@ def camera_del(form_camera):
 
 def settings_diagnostic_delete_inputs():
     action = '{action} {controller}'.format(
-        action=gettext("Delete"),
+        action=TOOLTIPS_SETTINGS['delete']['title'],
         controller=gettext("All Inputs"))
     error = []
 
@@ -1157,7 +1158,7 @@ def settings_diagnostic_delete_inputs():
 
 def settings_diagnostic_delete_maths():
     action = '{action} {controller}'.format(
-        action=gettext("Delete"),
+        action=TOOLTIPS_SETTINGS['delete']['title'],
         controller=gettext("All Maths"))
     error = []
 
@@ -1187,7 +1188,7 @@ def settings_diagnostic_delete_maths():
 
 def settings_diagnostic_delete_dashboard_elements():
     action = '{action} {controller}'.format(
-        action=gettext("Delete"),
+        action=TOOLTIPS_SETTINGS['delete']['title'],
         controller=gettext("All Dashboard Elements"))
     error = []
 
@@ -1209,7 +1210,7 @@ def settings_diagnostic_delete_dashboard_elements():
 
 def settings_diagnostic_delete_notes_tags():
     action = '{action} {controller}'.format(
-        action=gettext("Delete"),
+        action=TOOLTIPS_SETTINGS['delete']['title'],
         controller=gettext("All Notes/Tags"))
     error = []
 
@@ -1229,7 +1230,7 @@ def settings_diagnostic_delete_notes_tags():
 
 def settings_diagnostic_delete_outputs():
     action = '{action} {controller}'.format(
-        action=gettext("Delete"),
+        action=TOOLTIPS_SETTINGS['delete']['title'],
         controller=gettext("All Outputs"))
     error = []
 
@@ -1251,7 +1252,7 @@ def settings_diagnostic_delete_outputs():
 
 def settings_diagnostic_delete_file(delete_type):
     action = '{action} {controller}'.format(
-        action=gettext("Delete"),
+        action=TOOLTIPS_SETTINGS['delete']['title'],
         controller=gettext("File"))
     error = []
 

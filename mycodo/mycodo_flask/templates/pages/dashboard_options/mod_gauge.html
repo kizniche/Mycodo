@@ -37,7 +37,7 @@
         <div>
           <select class="form-control" id="input_ids" name="input_ids" style="width: 100%;">
           {% if choices_input or choices_math or choices_pid %}
-            <option value="">{{_('Select One')}}</option>
+            <option value="">{{tooltips_settings['select_one']['title']}}</option>
             {% for each_choice, value in choices_input.items() -%}
             <option value="{{each_choice}}" {% if each_dashboard.input_ids_measurements == each_choice %}selected{% endif %}>{{value}}</option>
             {% endfor -%}
@@ -48,7 +48,7 @@
             <option value="{{each_choice}}" {% if each_dashboard.input_ids_measurements == each_choice %}selected{% endif %}>{{value}}</option>
             {% endfor -%}
           {% else %}
-            <option value="">{{_('None Available')}}</option>
+            <option value="">{{tooltips_settings['none_available']['title']}}</option>
           {% endif %}
           </select>
         </div>

@@ -24,8 +24,8 @@
   {{form_actions.do_output_state.label(class_='control-label')}}
   <select class="form-control form-tooltip form-dropdown" id="do_output_state" name="do_output_state" data-placement="top" title="{{_('Turn the output on or off')}}">
     <option value=""></option>
-    <option value="on"{% if each_action.do_output_state == 'on' %} selected{% endif %}>{{_('On')}}</option>
-    <option value="off"{% if each_action.do_output_state == 'off' %} selected{% endif %}>{{_('Off')}}</option>
+    <option value="on"{% if each_action.do_output_state == 'on' %} selected{% endif %}>{{tooltips_settings['on']['title']}}</option>
+    <option value="off"{% if each_action.do_output_state == 'off' %} selected{% endif %}>{{tooltips_settings['off']['title']}}</option>
   </select>
 </div>
 <div class="col-auto">
@@ -150,12 +150,12 @@
   <label class='control-label'>{{_('Tag')}}</label>
   <select class="form-control form-tooltip form-dropdown" id="do_action_string" name="do_action_string" data-placement="top" title="{{_('Tag to save note with')}}">
     {% if tags %}
-      <option value="">{{_('Select One')}}</option>
+      <option value="">{{tooltips_settings['select_one']['title']}}</option>
       {%- for each_tag in tags -%}
     <option value="{{each_tag.unique_id}}"{% if each_action.do_action_string == each_tag.unique_id %} selected{% endif %}>{{each_tag.name}}</option>
       {%- endfor -%}
     {% else %}
-    <option value="">{{_('None Available')}}</option>
+    <option value="">{{tooltips_settings['none_available']['title']}}</option>
     {% endif %}
   </select>
 </div>

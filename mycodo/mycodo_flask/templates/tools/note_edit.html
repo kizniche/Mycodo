@@ -50,7 +50,7 @@
           <option value="{{each_tag.unique_id}}"{% if each_tag.unique_id in this_note.tags.split(',') %} selected{% endif %}>{{each_tag.name}}</option>
           {% endfor -%}
         {% else %}
-          <option value="">{{_('None Available')}}</option>
+          <option value="">{{tooltips_settings['none_available']['title']}}</option>
         {% endif %}
         </select>
       </div>

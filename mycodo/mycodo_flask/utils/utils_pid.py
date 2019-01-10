@@ -7,6 +7,7 @@ from flask import redirect
 from flask import url_for
 from flask_babel import gettext
 
+from mycodo.config_translations import TOOLTIPS_SETTINGS
 from mycodo.databases.models import DeviceMeasurements
 from mycodo.databases.models import DisplayOrder
 from mycodo.databases.models import Input
@@ -21,8 +22,8 @@ from mycodo.mycodo_flask.utils.utils_general import delete_entry_with_id
 from mycodo.mycodo_flask.utils.utils_general import flash_form_errors
 from mycodo.mycodo_flask.utils.utils_general import flash_success_errors
 from mycodo.utils.system_pi import csv_to_list_of_str
-from mycodo.utils.system_pi import list_to_csv
 from mycodo.utils.system_pi import get_measurement
+from mycodo.utils.system_pi import list_to_csv
 
 logger = logging.getLogger(__name__)
 
@@ -36,7 +37,7 @@ def pid_mod(form_mod_pid_base,
             form_mod_pid_pwm_raise, form_mod_pid_pwm_lower,
             form_mod_pid_output_raise, form_mod_pid_output_lower):
     action = '{action} {controller}'.format(
-        action=gettext("Modify"),
+        action=TOOLTIPS_SETTINGS['modify']['title'],
         controller=gettext("PID"))
     error = []
 
@@ -167,7 +168,7 @@ def pid_mod(form_mod_pid_base,
 
 def pid_del(pid_id):
     action = '{action} {controller}'.format(
-        action=gettext("Delete"),
+        action=TOOLTIPS_SETTINGS['delete']['title'],
         controller=gettext("PID"))
     error = []
 
@@ -244,7 +245,7 @@ def pid_activate(pid_id):
         return redirect(url_for('routes_page.page_function'))
 
     action = '{action} {controller}'.format(
-        action=gettext("Activate"),
+        action=TOOLTIPS_SETTINGS['activate']['title'],
         controller=gettext("PID"))
     error = []
 

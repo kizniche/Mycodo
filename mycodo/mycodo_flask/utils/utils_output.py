@@ -7,6 +7,7 @@ from flask import url_for
 from flask_babel import gettext
 
 from mycodo.config import OUTPUT_INFO
+from mycodo.config_translations import TOOLTIPS_SETTINGS
 from mycodo.databases.models import DisplayOrder
 from mycodo.databases.models import Output
 from mycodo.mycodo_client import DaemonControl
@@ -29,7 +30,7 @@ logger = logging.getLogger(__name__)
 
 def output_add(form_add):
     action = '{action} {controller}'.format(
-        action=gettext("Add"),
+        action=TOOLTIPS_SETTINGS['add']['title'],
         controller=gettext("Output"))
     error = []
 
@@ -148,7 +149,7 @@ with open("/home/pi/Mycodo/OutputTest.txt", "a") as myfile:
 
 def output_mod(form_output):
     action = '{action} {controller}'.format(
-        action=gettext("Modify"),
+        action=TOOLTIPS_SETTINGS['modify']['title'],
         controller=gettext("Output"))
     error = []
 
@@ -227,7 +228,7 @@ def output_mod(form_output):
 
 def output_del(form_output):
     action = '{action} {controller}'.format(
-        action=gettext("Delete"),
+        action=TOOLTIPS_SETTINGS['delete']['title'],
         controller=gettext("Output"))
     error = []
 
