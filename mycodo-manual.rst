@@ -1263,9 +1263,9 @@ in the daemon log. Accounting for None is useful for determining if an Input is
 no longer acquiring measurements.
 
 To create a basic conditional, follow these steps, using the numbers in the
-screenshots that correspond to the numbers in parentheses:
+screenshots, below, that correspond to the numbers in parentheses:
 
-1. Go to the ``Setup -> Functions`` select "Controller: Conditional", then click ``Add``.
+1. Go to the ``Setup -> Functions`` page, select "Controller: Conditional", then click ``Add``.
 2. Next to (1), select "Measurement", then click ``Add Condition``.
 3. Next to (2), select "Output (Duration)" (or any other action), then click ``Add Action``.
 4. Select a measurement (3), then click ``Save`` (4).
