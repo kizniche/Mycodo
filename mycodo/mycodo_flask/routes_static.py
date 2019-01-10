@@ -48,16 +48,16 @@ def inject_variables():
         daemon_status = '0'
 
     misc = Misc.query.first()
-    return dict(daemon_status=daemon_status,
-                dark_themes=THEMES_DARK,
-                mycodo_version=MYCODO_VERSION,
-                host=socket.gethostname(),
-                hide_alert_success=misc.hide_alert_success,
+    return dict(dark_themes=THEMES_DARK,
+                daemon_status=daemon_status,
                 hide_alert_info=misc.hide_alert_info,
+                hide_alert_success=misc.hide_alert_success,
                 hide_alert_warning=misc.hide_alert_warning,
                 hide_tooltips=misc.hide_tooltips,
+                host=socket.gethostname(),
+                mycodo_version=MYCODO_VERSION,
                 tooltips_settings=TOOLTIPS_SETTINGS,
-                upgrade_available = misc.mycodo_upgrade_available,
+                upgrade_available=misc.mycodo_upgrade_available,
                 username=flask_login.current_user.name)
 
 
