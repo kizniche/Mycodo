@@ -18,7 +18,7 @@ from werkzeug.utils import secure_filename
 
 from mycodo.config import INSTALL_DIRECTORY
 from mycodo.config import PATH_NOTE_ATTACHMENTS
-from mycodo.config_translations import TOOLTIPS_SETTINGS
+from mycodo.config_translations import TRANSLATIONS
 from mycodo.databases import set_uuid
 from mycodo.databases.models import NoteTags
 from mycodo.databases.models import Notes
@@ -36,8 +36,8 @@ logger = logging.getLogger(__name__)
 
 def tag_add(form):
     action = '{action} {controller}'.format(
-        action=TOOLTIPS_SETTINGS['add']['title'],
-        controller=gettext("Tag"))
+        action=TRANSLATIONS['add']['title'],
+        controller=TRANSLATIONS['tag']['title'])
     error = []
 
     disallowed_tag_names = ['device_id', 'unit', 'channel']
@@ -62,8 +62,8 @@ def tag_add(form):
 
 def tag_rename(form):
     action = '{action} {controller}'.format(
-        action=gettext("Rename"),
-        controller=gettext("Tag"))
+        action=TRANSLATIONS['rename']['title'],
+        controller=TRANSLATIONS['tag']['title'])
     error = []
 
     mod_tag = NoteTags.query.filter(NoteTags.unique_id == form.tag_unique_id.data).first()
@@ -85,8 +85,8 @@ def tag_rename(form):
 
 def tag_del(form):
     action = '{action} {controller}'.format(
-        action=TOOLTIPS_SETTINGS['delete']['title'],
-        controller=gettext("Tag"))
+        action=TRANSLATIONS['delete']['title'],
+        controller=TRANSLATIONS['tag']['title'])
     error = []
 
     if Notes.query.filter(Notes.tags.ilike("%{0}%".format(form.tag_unique_id.data))).first():
@@ -104,8 +104,8 @@ def tag_del(form):
 
 def note_add(form):
     action = '{action} {controller}'.format(
-        action=TOOLTIPS_SETTINGS['add']['title'],
-        controller=gettext("Note"))
+        action=TRANSLATIONS['add']['title'],
+        controller=TRANSLATIONS['note']['title'])
     error = []
     list_tags = []
 
@@ -158,8 +158,8 @@ def note_add(form):
 
 def note_mod(form):
     action = '{action} {controller}'.format(
-        action=TOOLTIPS_SETTINGS['modify']['title'],
-        controller=gettext("Note"))
+        action=TRANSLATIONS['modify']['title'],
+        controller=TRANSLATIONS['note']['title'])
     error = []
     list_tags = []
 
@@ -214,7 +214,7 @@ def note_mod(form):
 
 def file_rename(form):
     action = '{action} {controller}'.format(
-        action=gettext("Rename"),
+        action=TRANSLATIONS['rename']['title'],
         controller=gettext("File"))
     error = []
 
@@ -255,7 +255,7 @@ def file_rename(form):
 
 def file_del(form):
     action = '{action} {controller}'.format(
-        action=TOOLTIPS_SETTINGS['delete']['title'],
+        action=TRANSLATIONS['delete']['title'],
         controller=gettext("File"))
     error = []
 
@@ -288,8 +288,8 @@ def file_del(form):
 
 def note_del(form):
     action = '{action} {controller}'.format(
-        action=TOOLTIPS_SETTINGS['delete']['title'],
-        controller=gettext("Note"))
+        action=TRANSLATIONS['delete']['title'],
+        controller=TRANSLATIONS['note']['title'])
     error = []
 
     if not form.note_unique_id.data:
@@ -449,7 +449,7 @@ def import_notes(form):
     """
     action = '{action} {controller}'.format(
         action=gettext("Import"),
-        controller=gettext("Notes"))
+        controller=TRANSLATIONS['note']['title'])
     error = []
 
     upload_folder = os.path.join(INSTALL_DIRECTORY, 'upload')

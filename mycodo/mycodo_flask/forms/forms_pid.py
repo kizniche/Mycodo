@@ -15,18 +15,18 @@ from wtforms import widgets
 from wtforms.validators import DataRequired
 from wtforms.widgets.html5 import NumberInput
 
-from mycodo.config_translations import TOOLTIPS_SETTINGS
+from mycodo.config_translations import TRANSLATIONS
 
 
 class PIDModBase(FlaskForm):
     function_id = StringField('Function ID', widget=widgets.HiddenInput())
     function_type = StringField('Function Type', widget=widgets.HiddenInput())
     name = StringField(
-        TOOLTIPS_SETTINGS['name']['title'],
+        TRANSLATIONS['name']['title'],
         validators=[DataRequired()]
     )
     measurement = StringField(
-        TOOLTIPS_SETTINGS['measurement']['title'],
+        TRANSLATIONS['measurement']['title'],
         validators=[DataRequired()]
     )
     direction = SelectField(
@@ -50,7 +50,7 @@ class PIDModBase(FlaskForm):
         lazy_gettext('Start Offset (seconds)'),
         widget=NumberInput(step='any'))
     max_measure_age = DecimalField(
-        TOOLTIPS_SETTINGS['max_age']['title'],
+        TRANSLATIONS['max_age']['title'],
         validators=[validators.NumberRange(
             min=1.0,
             max=86400.0
@@ -101,20 +101,20 @@ class PIDModBase(FlaskForm):
     method_id = StringField(
         'Setpoint Tracking Method', widget=widgets.HiddenInput())
     pid_mod = SubmitField(
-        TOOLTIPS_SETTINGS['save']['title'])
+        TRANSLATIONS['save']['title'])
     pid_hold = SubmitField(lazy_gettext('Hold'))
     pid_pause = SubmitField(lazy_gettext('Pause'))
     pid_resume = SubmitField(lazy_gettext('Resume'))
     pid_delete = SubmitField(
-        TOOLTIPS_SETTINGS['delete']['title'])
+        TRANSLATIONS['delete']['title'])
     pid_activate = SubmitField(
-        TOOLTIPS_SETTINGS['activate']['title'])
+        TRANSLATIONS['activate']['title'])
     pid_deactivate = SubmitField(
-        TOOLTIPS_SETTINGS['deactivate']['title'])
+        TRANSLATIONS['deactivate']['title'])
     order_up = SubmitField(
-        TOOLTIPS_SETTINGS['up']['title'])
+        TRANSLATIONS['up']['title'])
     order_down = SubmitField(
-        TOOLTIPS_SETTINGS['down']['title'])
+        TRANSLATIONS['down']['title'])
 
     pid_autotune_noiseband = DecimalField(
         lazy_gettext('Noise Band'),

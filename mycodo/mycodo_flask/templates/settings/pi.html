@@ -1,9 +1,9 @@
 {% extends "layout-settings.html" %}
 {% set active_page = "settings" %}
 {% set active_settings = "pi" %}
-{% set help_page = ["pi-settings", _('Pi Settings')] %}
+{% set help_page = ["pi-settings", dict_translation['settings']['title'] + ': ' + _('Raspberry Pi')] %}
 
-{% block title %} - {{_('Pi Settings')}}{% endblock %}
+{% block title %} - {{dict_translation['settings']['title'] + ': ' + _('Raspberry Pi')}}{% endblock %}
 
 {% block settings %}
   <!-- Route: /settings/pi -->

@@ -22,7 +22,7 @@ from mycodo.config import OUTPUT_INFO
 from mycodo.config import PATH_CAMERAS
 from mycodo.config_devices_units import MEASUREMENTS
 from mycodo.config_devices_units import UNITS
-from mycodo.config_translations import TOOLTIPS_SETTINGS
+from mycodo.config_translations import TRANSLATIONS
 from mycodo.databases.models import Camera
 from mycodo.databases.models import Conditional
 from mycodo.databases.models import Conversion
@@ -101,12 +101,12 @@ def controller_activate_deactivate(controller_action,
     activated = bool(controller_action == 'activate')
 
     translated_names = {
-        "Conditional": gettext("Conditional"),
-        "Input": TOOLTIPS_SETTINGS['input']['title'],
-        "LCD": gettext("LCD"),
-        "Math": gettext("Math"),
-        "PID": gettext("PID"),
-        "Trigger": gettext("Trigger")
+        "Conditional": TRANSLATIONS['conditional']['title'],
+        "Input": TRANSLATIONS['input']['title'],
+        "LCD": TRANSLATIONS['lcd']['title'],
+        "Math": TRANSLATIONS['math']['title'],
+        "PID": TRANSLATIONS['pid']['title'],
+        "Trigger": TRANSLATIONS['trigger']['title']
     }
 
     mod_controller = None
@@ -146,13 +146,17 @@ def controller_activate_deactivate(controller_action,
             db.session.commit()
 
             if activated:
-                flash(gettext("%(cont)s controller activated in SQL database",
-                              cont=translated_names[controller_type]),
-                      "success")
+                flash(
+                    "{} {} (SQL)".format(
+                        translated_names[controller_type],
+                        TRANSLATIONS['activated']['title']),
+                    "success")
             else:
-                flash(gettext("%(cont)s controller deactivated in SQL database",
-                              cont=translated_names[controller_type]),
-                      "success")
+                flash(
+                    "{} {} (SQL)".format(
+                        translated_names[controller_type],
+                        TRANSLATIONS['deactivated']['title']),
+                    "success")
     except Exception as except_msg:
         flash(gettext("Error: %(err)s",
                       err='SQL: {msg}'.format(msg=except_msg)),
@@ -162,18 +166,17 @@ def controller_activate_deactivate(controller_action,
         if not error:
             control = DaemonControl()
             if controller_action == 'activate':
-                return_values = control.controller_activate(controller_type,
-                                                            controller_id)
+                return_values = control.controller_activate(
+                    controller_type,controller_id)
             else:
-                return_values = control.controller_deactivate(controller_type,
-                                                              controller_id)
+                return_values = control.controller_deactivate(
+                    controller_type, controller_id)
             if return_values[0]:
                 flash("{err}".format(err=return_values[1]), "error")
             else:
                 flash("{err}".format(err=return_values[1]), "success")
     except Exception as except_msg:
-        flash(gettext("Error: %(err)s",
-                      err='Daemon: {msg}'.format(msg=except_msg)),
+        flash('{}: {}'.format(TRANSLATIONS['error']['title'], except_msg),
               "error")
 
     for each_error in error:
@@ -575,7 +578,7 @@ def delete_entry_with_id(table, entry_id):
         db.session.commit()
         flash(gettext("%(msg)s",
                       msg='{action} {table} with ID: {id}'.format(
-                          action=TOOLTIPS_SETTINGS['delete']['title'],
+                          action=TRANSLATIONS['delete']['title'],
                           table=table.__tablename__,
                           id=entry_id)),
               "success")
@@ -587,7 +590,7 @@ def delete_entry_with_id(table, entry_id):
               "error")
         flash(gettext("%(msg)s",
                       msg='{action} {id}: {err}'.format(
-                          action=TOOLTIPS_SETTINGS['delete']['title'],
+                          action=TRANSLATIONS['delete']['title'],
                           id=entry_id,
                           err=gettext("Entry with ID %(id)s not found",
                                       id=entry_id))),
@@ -610,13 +613,11 @@ def flash_success_errors(error, action, redirect_url):
         for each_error in error:
             flash(gettext("%(msg)s",
                           msg='{action}: {err}'.format(
-                              action=action,
-                              err=each_error)),
+                              action=action, err=each_error)),
                   "error")
         return redirect(redirect_url)
     else:
-        flash(gettext("%(msg)s",
-                      msg=action),
+        flash(gettext("%(msg)s", msg=action),
               "success")
 
 

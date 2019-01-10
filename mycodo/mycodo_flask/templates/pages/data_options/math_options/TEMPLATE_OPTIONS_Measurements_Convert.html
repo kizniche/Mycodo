@@ -50,7 +50,7 @@
   <div class="col-auto">
     {{form_mod_math_measurement.name.label(class_='control-label')}}
     <div>
-      {{form_mod_math_measurement.name(class_='form-control', value=each_measurement.name, **{'title': tooltips_settings['name']['phrase']})}}
+      {{form_mod_math_measurement.name(class_='form-control', value=each_measurement.name, **{'title': dict_translation['name']['phrase']})}}
     </div>
   </div>
 
@@ -59,8 +59,8 @@
   <div class="col-auto">
     {{form_mod_math_measurement.select_measurement_unit.label(class_='control-label')}}
     <div>
-      <select class="form-control form-tooltip form-dropdown" data-placement="top" id="select_measurement_unit" name="select_measurement_unit" title="{{tooltips_settings['select_measurement_unit']['phrase']}}">
-        <option value="">{{tooltips_settings['select_one']['title']}}</option>
+      <select class="form-control form-tooltip form-dropdown" data-placement="top" id="select_measurement_unit" name="select_measurement_unit" title="{{dict_translation['select_measurement_unit']['phrase']}}">
+        <option value="">{{dict_translation['select_one']['title']}}</option>
         {% for each_submit, each_display in choices_measurements_units.items() %}
         <option value="{{each_submit}}"{% if each_submit == each_measurement.measurement + ',' + each_measurement.unit %} selected{% endif %}>{{each_display}}</option>
         {% endfor %}
@@ -75,7 +75,7 @@
   <div class="col-auto">
     {{form_mod_math_measurement.convert_to_measurement_unit.label(class_='control-label')}}
     <div>
-      <select class="form-control form-tooltip form-dropdown" id="convert_to_measurement_unit" name="convert_to_measurement_unit" data-placement="top" title="{{tooltips_settings['convert_to_measurement_unit']['phrase']}}">
+      <select class="form-control form-tooltip form-dropdown" id="convert_to_measurement_unit" name="convert_to_measurement_unit" data-placement="top" title="{{dict_translation['convert_to_measurement_unit']['phrase']}}">
         <option value="">{{_('Do Not Convert')}}
     {%- set all_conversion = table_conversion.query.filter(
                 table_conversion.convert_unit_from == each_measurement.unit).all() -%}

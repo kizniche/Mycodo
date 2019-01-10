@@ -1,9 +1,9 @@
 {% extends "layout-settings.html" %}
 {% set active_page = "settings" %}
 {% set active_settings = "camera" %}
-{% set help_page = ["camera-settings", _('Camera Settings')] %}
+{% set help_page = ["camera-settings", dict_translation['settings']['title'] + ': ' + dict_translation['camera']['title']] %}
 
-{% block title %} - {{_('Camera Settings')}}{% endblock %}
+{% block title %} - {{dict_translation['settings']['title'] + ': ' + dict_translation['camera']['title']}}{% endblock %}
 
 {% block settings %}
   <!-- Route: /settings/camera -->

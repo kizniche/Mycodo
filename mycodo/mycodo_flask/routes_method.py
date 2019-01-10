@@ -15,7 +15,7 @@ from flask import url_for
 from flask_babel import gettext
 
 from mycodo.config import METHOD_INFO
-from mycodo.config_translations import TOOLTIPS_SETTINGS
+from mycodo.config_translations import TRANSLATIONS
 from mycodo.databases.models import DisplayOrder
 from mycodo.databases.models import Method
 from mycodo.databases.models import MethodData
@@ -305,7 +305,7 @@ def method_builder(method_id):
 def method_delete(method_id):
     """Delete a method"""
     action = '{action} {controller}'.format(
-        action=TOOLTIPS_SETTINGS['delete']['title'],
+        action=TRANSLATIONS['delete']['title'],
         controller=gettext("Method"))
 
     if not utils_general.user_has_permission('edit_settings'):

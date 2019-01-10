@@ -1,8 +1,8 @@
 {% extends "layout.html" %}
 {% set active_page = "method_list" %}
-{% set help_page = ["methods", _('Methods')] %}
+{% set help_page = ["methods", dict_translation['method']['title']] %}
 
-{% block title %} - {{_('Method-Builder')}}{% endblock %}
+{% block title %} - {{dict_translation['method']['title']}}{% endblock %}
 
 {% block head %}
   <script src="/static/js/highcharts.js"></script>
@@ -29,7 +29,7 @@
 
     <div class="container" style="margin-bottom: 1.5em; padding: 1em; border: 2px solid #ddd; border-radius: 5px;">
       <div>
-        {{_('Method-Builder')}}: [{{method.unique_id}}] {{method.method_type}}
+        {{dict_translation['method']['title']}}: [{{method.unique_id}}] {{method.method_type}}
       </div>
 
       <form method="post" action="/method-build/{{method.unique_id}}">
@@ -41,7 +41,7 @@
         <div class="col-auto">
           {{form_mod_method.name.label(class_='control-label')}}
           <div>
-            {{form_mod_method.name(class_='form-control', value=method.name, **{'title': tooltips_settings['name']['phrase']})}}
+            {{form_mod_method.name(class_='form-control', value=method.name, **{'title': dict_translation['name']['phrase']})}}
           </div>
         </div>
         <div class="col-auto">

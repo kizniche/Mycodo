@@ -8,7 +8,7 @@ from datetime import timedelta
 import os
 from flask_babel import lazy_gettext
 
-from mycodo.config_translations import TOOLTIPS_SETTINGS
+from mycodo.config_translations import TRANSLATIONS
 
 MYCODO_VERSION = '7.0.4'
 ALEMBIC_VERSION = '0797d251d77d'
@@ -358,45 +358,90 @@ CALIBRATION_INFO = {
 
 # Conditional controllers
 CONDITIONAL_CONDITIONS = [
-    ('measurement', TOOLTIPS_SETTINGS['measurement']['title']),
+    ('measurement', TRANSLATIONS['measurement']['title']),
     ('gpio_state', lazy_gettext('GPIO State'))
 ]
 
 FUNCTION_TYPES = [
-    ('function_spacer', 'Spacer', lazy_gettext('Function: Spacer')),
-    ('function_actions', 'Actions', lazy_gettext('Function: Execute Actions')),
-    ('conditional_conditional', 'Conditional', lazy_gettext('Conditional: Conditional')),
-    ('pid_pid', 'PID', lazy_gettext('PID: PID Controller')),
-    ('trigger_edge', 'Edge', lazy_gettext('Trigger: Edge')),
-    ('trigger_output', 'Output (On/Off)', lazy_gettext('Trigger: Output (On/Off)')),
-    ('trigger_output_duration', 'Output (On Duration)', lazy_gettext('Trigger: Output (On Duration)')),
-    ('trigger_output_pwm', 'Output (PWM)', lazy_gettext('Trigger: Output (PWM)')),
-    ('trigger_timer_daily_time_point', 'Timer (Daily Point)', lazy_gettext('Trigger: Timer (Daily Point)')),
-    ('trigger_timer_daily_time_span', 'Timer (Daily Span)', lazy_gettext('Trigger: Timer (Daily Span)')),
-    ('trigger_timer_duration', 'Timer (Duration)', lazy_gettext('Trigger: Timer (Duration)')),
-    ('trigger_run_pwm_method', 'Run PWM Method', lazy_gettext('Trigger: Run PWM Method')),
-    ('trigger_sunrise_sunset', 'Sunrise/Sunset', lazy_gettext('Trigger: Sunrise/Sunset'))
+    (
+        'function_spacer',
+        lazy_gettext('Spacer'),
+        '{}: {}'.format(TRANSLATIONS['function']['title'], lazy_gettext('Spacer'))),
+    (
+        'function_actions',
+        TRANSLATIONS['actions']['title'],
+        '{}: {}'.format(TRANSLATIONS['function']['title'], lazy_gettext('Execute Actions'))),
+    (
+        'conditional_conditional',
+        TRANSLATIONS['conditional']['title'],
+        '{}: {}'.format(TRANSLATIONS['controller']['title'], TRANSLATIONS['conditional']['title'])),
+    (
+        'pid_pid',
+        TRANSLATIONS['pid']['title'],
+        '{}: {}'.format(TRANSLATIONS['controller']['title'], TRANSLATIONS['pid']['title'])),
+    (
+        'trigger_edge',
+        TRANSLATIONS['edge']['title'],
+        '{}: {}'.format(TRANSLATIONS['trigger']['title'], TRANSLATIONS['edge']['title'])),
+    (
+        'trigger_output',
+        '{} ({}/{})'.format(TRANSLATIONS['output']['title'], TRANSLATIONS['on']['title'],
+                            TRANSLATIONS['off']['title']),
+        '{}: {} ({}/{})'.format(TRANSLATIONS['trigger']['title'], TRANSLATIONS['output']['title'],
+                                TRANSLATIONS['on']['title'], TRANSLATIONS['off']['title'])),
+    (
+        'trigger_output_duration',
+        '{} ({})'.format(TRANSLATIONS['output']['title'], TRANSLATIONS['duration']['title']),
+        '{}: {} ({})'.format(TRANSLATIONS['trigger']['title'], TRANSLATIONS['output']['title'],
+                             TRANSLATIONS['duration']['title'])),
+    (
+        'trigger_output_pwm',
+        '{} ({})'.format(TRANSLATIONS['output']['title'], TRANSLATIONS['pwm']['title']),
+        '{}: {} ({})'.format(TRANSLATIONS['trigger']['title'], TRANSLATIONS['output']['title'],
+                             TRANSLATIONS['pwm']['title'])),
+    (
+        'trigger_timer_daily_time_point',
+        'Timer (Daily Point)',
+        lazy_gettext('Trigger: Timer (Daily Point)')),
+    (
+        'trigger_timer_daily_time_span',
+        '{} ({})'.format(TRANSLATIONS['timer']['title'], lazy_gettext('Daily Span')),
+        '{}: {} ({})'.format(TRANSLATIONS['trigger']['title'], TRANSLATIONS['timer']['title'],
+                             lazy_gettext('Daily Span'))),
+    (
+        'trigger_timer_duration',
+        '{} ({})'.format(TRANSLATIONS['timer']['title'], TRANSLATIONS['duration']['title']),
+        '{}: {} ({})'.format(TRANSLATIONS['trigger']['title'], TRANSLATIONS['timer']['title'],
+                             TRANSLATIONS['duration']['title'])),
+    (
+        'trigger_run_pwm_method',
+        lazy_gettext('Run PWM Method'),
+        '{}: ({})'.format(TRANSLATIONS['trigger']['title'], lazy_gettext('Run PWM Method'))),
+    (
+        'trigger_sunrise_sunset',
+        lazy_gettext('Sunrise/Sunset'),
+        '{}: ({})'.format(TRANSLATIONS['trigger']['title'], lazy_gettext('Sunrise/Sunset')))
 ]
 
 # Conditional actions
 FUNCTION_ACTIONS = [
-    ('pause_actions', lazy_gettext('Actions: Pause')),
+    ('pause_actions', '{}: {}'.format(TRANSLATIONS['actions']['title'], TRANSLATIONS['pause']['title'])),
     ('photo', lazy_gettext('Camera: Capture Photo')),
-    ('activate_controller', lazy_gettext('Controller: Activate')),
-    ('deactivate_controller', lazy_gettext('Controller: Deactivate')),
+    ('activate_controller', '{}: {}'.format(TRANSLATIONS['controller']['title'], TRANSLATIONS['activate']['title'])),
+    ('deactivate_controller', '{}: {}'.format(TRANSLATIONS['controller']['title'], TRANSLATIONS['deactivate']['title'])),
     ('create_note', lazy_gettext('Create Note')),
     ('email', lazy_gettext('Email Notification')),
     ('command', lazy_gettext('Execute Command')),
-    ('lcd_backlight_off', lazy_gettext('LCD: Backlight Off')),
-    ('lcd_backlight_on', lazy_gettext('LCD: Backlight On')),
-    ('flash_lcd_off', lazy_gettext('LCD: Flashing Off')),
-    ('flash_lcd_on', lazy_gettext('LCD: Flashing On')),
-    ('output', lazy_gettext('Output: Duration')),
-    ('output_pwm', lazy_gettext('Output: Duty Cycle')),
-    ('pause_pid', lazy_gettext('PID: Pause')),
-    ('resume_pid', lazy_gettext('PID: Resume')),
-    ('method_pid', lazy_gettext('PID: Set Method')),
-    ('setpoint_pid', lazy_gettext('PID: Set Setpoint')),
+    ('lcd_backlight_off', '{}: {}'.format(TRANSLATIONS['lcd']['title'], lazy_gettext('Backlight Off'))),
+    ('lcd_backlight_on', '{}: {}'.format(TRANSLATIONS['lcd']['title'], lazy_gettext('LCD: Backlight On'))),
+    ('flash_lcd_off', '{}: {}'.format(TRANSLATIONS['lcd']['title'], lazy_gettext('LCD: Flashing Off'))),
+    ('flash_lcd_on', '{}: {}'.format(TRANSLATIONS['lcd']['title'], lazy_gettext('LCD: Flashing On'))),
+    ('output', '{}: {}'.format(TRANSLATIONS['output']['title'], TRANSLATIONS['duration']['title'])),
+    ('output_pwm', '{}: {}'.format(TRANSLATIONS['output']['title'], TRANSLATIONS['duty_cycle']['title'])),
+    ('pause_pid', '{}: {}'.format(TRANSLATIONS['pid']['title'], TRANSLATIONS['pause']['title'])),
+    ('resume_pid', '{}: {}'.format(TRANSLATIONS['pid']['title'], TRANSLATIONS['resume']['title'])),
+    ('method_pid', '{}: {}'.format(TRANSLATIONS['pid']['title'], lazy_gettext('Set Method'))),
+    ('setpoint_pid', '{}: {}'.format(TRANSLATIONS['pid']['title'], lazy_gettext('Set Setpoint'))),
 
     # TODO: These have been disabled until they can be properly tested
     # ('photo_email', lazy_gettext('Email Photo')),

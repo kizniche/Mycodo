@@ -7,7 +7,7 @@ from flask import url_for
 from flask_babel import gettext
 
 from mycodo.config import OUTPUT_INFO
-from mycodo.config_translations import TOOLTIPS_SETTINGS
+from mycodo.config_translations import TRANSLATIONS
 from mycodo.databases.models import DisplayOrder
 from mycodo.databases.models import Output
 from mycodo.mycodo_client import DaemonControl
@@ -30,8 +30,8 @@ logger = logging.getLogger(__name__)
 
 def output_add(form_add):
     action = '{action} {controller}'.format(
-        action=TOOLTIPS_SETTINGS['add']['title'],
-        controller=gettext("Output"))
+        action=TRANSLATIONS['add']['title'],
+        controller=TRANSLATIONS['output']['title'])
     error = []
 
     dep_unmet, _ = return_dependencies(form_add.output_type.data)
@@ -149,8 +149,8 @@ with open("/home/pi/Mycodo/OutputTest.txt", "a") as myfile:
 
 def output_mod(form_output):
     action = '{action} {controller}'.format(
-        action=TOOLTIPS_SETTINGS['modify']['title'],
-        controller=gettext("Output"))
+        action=TRANSLATIONS['modify']['title'],
+        controller=TRANSLATIONS['output']['title'])
     error = []
 
     try:
@@ -228,8 +228,8 @@ def output_mod(form_output):
 
 def output_del(form_output):
     action = '{action} {controller}'.format(
-        action=TOOLTIPS_SETTINGS['delete']['title'],
-        controller=gettext("Output"))
+        action=TRANSLATIONS['delete']['title'],
+        controller=TRANSLATIONS['output']['title'])
     error = []
 
     try:
@@ -247,8 +247,8 @@ def output_del(form_output):
 
 def output_reorder(output_id, display_order, direction):
     action = '{action} {controller}'.format(
-        action=gettext("Reorder"),
-        controller=gettext("Output"))
+        action=TRANSLATIONS['reorder']['title'],
+        controller=TRANSLATIONS['output']['title'])
     error = []
     try:
         status, reord_list = reorder(display_order,
@@ -308,7 +308,7 @@ def manipulate_output(action, output_id):
 def output_on_off(form_output):
     action = '{action} {controller}'.format(
         action=gettext("Actuate"),
-        controller=gettext("Output"))
+        controller=TRANSLATIONS['output']['title'])
     error = []
 
     try:

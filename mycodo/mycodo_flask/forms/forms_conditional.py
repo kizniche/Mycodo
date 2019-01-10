@@ -15,7 +15,7 @@ from wtforms.widgets.html5 import NumberInput
 
 from mycodo.config import CONDITIONAL_CONDITIONS
 from mycodo.config import FUNCTION_ACTIONS
-from mycodo.config_translations import TOOLTIPS_SETTINGS
+from mycodo.config_translations import TRANSLATIONS
 
 
 #
@@ -26,7 +26,7 @@ class Conditional(FlaskForm):
     function_id = StringField('Function ID', widget=widgets.HiddenInput())
     function_type = StringField('Function Type', widget=widgets.HiddenInput())
     name = StringField(
-        TOOLTIPS_SETTINGS['name']['title'])
+        TRANSLATIONS['name']['title'])
     conditional_statement = StringField(lazy_gettext('Conditional Statement'))
     period = DecimalField(
         lazy_gettext('Period (seconds)'),
@@ -38,24 +38,24 @@ class Conditional(FlaskForm):
         lazy_gettext('Start Offset (seconds)'),
         widget=NumberInput(step='any'))
     condition_type = SelectField(
-        choices=[('', TOOLTIPS_SETTINGS['select_one']['title'])] + CONDITIONAL_CONDITIONS)
+        choices=[('', TRANSLATIONS['select_one']['title'])] + CONDITIONAL_CONDITIONS)
     add_condition = SubmitField(lazy_gettext('Add Condition'))
     action_type = SelectField(
-        choices=[('', TOOLTIPS_SETTINGS['select_one']['title'])] + FUNCTION_ACTIONS)
+        choices=[('', TRANSLATIONS['select_one']['title'])] + FUNCTION_ACTIONS)
     add_action = SubmitField(lazy_gettext('Add Action'))
     activate_cond = SubmitField(
-        TOOLTIPS_SETTINGS['activate']['title'])
+        TRANSLATIONS['activate']['title'])
     deactivate_cond = SubmitField(
-        TOOLTIPS_SETTINGS['deactivate']['title'])
+        TRANSLATIONS['deactivate']['title'])
     test_all_actions = SubmitField(lazy_gettext('Test All Actions'))
     delete_conditional = SubmitField(
-        TOOLTIPS_SETTINGS['delete']['title'])
+        TRANSLATIONS['delete']['title'])
     save_conditional = SubmitField(
-        TOOLTIPS_SETTINGS['save']['title'])
+        TRANSLATIONS['save']['title'])
     order_up = SubmitField(
-        TOOLTIPS_SETTINGS['up']['title'])
+        TRANSLATIONS['up']['title'])
     order_down = SubmitField(
-        TOOLTIPS_SETTINGS['down']['title'])
+        TRANSLATIONS['down']['title'])
 
 
 class ConditionalConditions(FlaskForm):
@@ -67,9 +67,9 @@ class ConditionalConditions(FlaskForm):
     # Measurement
     input_id = StringField('Input ID', widget=widgets.HiddenInput())
     measurement = StringField(
-        TOOLTIPS_SETTINGS['measurement']['title'])
+        TRANSLATIONS['measurement']['title'])
     max_age = IntegerField(
-        TOOLTIPS_SETTINGS['max_age']['title'],
+        TRANSLATIONS['max_age']['title'],
         widget=NumberInput())
 
     # GPIO State
@@ -78,6 +78,6 @@ class ConditionalConditions(FlaskForm):
         widget=NumberInput())
 
     save_condition = SubmitField(
-        TOOLTIPS_SETTINGS['save']['title'])
+        TRANSLATIONS['save']['title'])
     delete_condition = SubmitField(
-        TOOLTIPS_SETTINGS['delete']['title'])
+        TRANSLATIONS['delete']['title'])

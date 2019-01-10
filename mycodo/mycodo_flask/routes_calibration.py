@@ -13,7 +13,7 @@ from flask.blueprints import Blueprint
 from flask_babel import gettext
 
 from mycodo.config import PATH_1WIRE
-from mycodo.config_translations import TOOLTIPS_SETTINGS
+from mycodo.config_translations import TRANSLATIONS
 from mycodo.databases.models import Input
 from mycodo.mycodo_flask.forms import forms_calibration
 from mycodo.mycodo_flask.routes_static import inject_variables
@@ -310,7 +310,7 @@ def dual_commands_to_sensor(input_sel, first_cmd, amount,
 
     first_status, first_return_str = atlas_command.calibrate(first_cmd, temperature=set_temp)
     info_str = "{act}: {lvl} ({amt} {unit}): {resp}".format(
-        act=TOOLTIPS_SETTINGS['calibration']['title'], lvl=first_cmd, amt=amount, unit=unit, resp=first_return_str)
+        act=TRANSLATIONS['calibration']['title'], lvl=first_cmd, amt=amount, unit=unit, resp=first_return_str)
 
     if first_status:
         flash(info_str, "error")

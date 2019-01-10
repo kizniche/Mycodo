@@ -8,7 +8,7 @@ from sqlalchemy import and_
 
 from mycodo.config import FUNCTION_TYPES
 from mycodo.config import PID_INFO
-from mycodo.config_translations import TOOLTIPS_SETTINGS
+from mycodo.config_translations import TRANSLATIONS
 from mycodo.databases.models import Actions
 from mycodo.databases.models import Camera
 from mycodo.databases.models import Conditional
@@ -36,8 +36,8 @@ logger = logging.getLogger(__name__)
 
 def function_add(form_add_func):
     action = '{action} {controller}'.format(
-        action=TOOLTIPS_SETTINGS['add']['title'],
-        controller=gettext("Function"))
+        action=TRANSLATIONS['add']['title'],
+        controller=TRANSLATIONS['function']['title'])
     error = []
 
     new_func = None
@@ -112,8 +112,8 @@ def function_mod(form):
     """Modify a Function"""
     error = []
     action = '{action} {controller}'.format(
-        action=TOOLTIPS_SETTINGS['modify']['title'],
-        controller=(gettext("Function")))
+        action=TRANSLATIONS['modify']['title'],
+        controller=TRANSLATIONS['function']['title'])
 
     try:
         func_mod = Function.query.filter(
@@ -137,8 +137,8 @@ def function_mod(form):
 def function_del(function_id):
     """Delete a Function"""
     action = '{action} {controller}'.format(
-        action=TOOLTIPS_SETTINGS['delete']['title'],
-        controller=gettext("Function"))
+        action=TRANSLATIONS['delete']['title'],
+        controller=TRANSLATIONS['function']['title'])
     error = []
 
     try:
@@ -165,8 +165,9 @@ def action_add(form):
     """Add a function Action"""
     error = []
     action = '{action} {controller}'.format(
-        action=TOOLTIPS_SETTINGS['add']['title'],
-        controller='{} {}'.format(gettext("Conditional"), gettext("Action")))
+        action=TRANSLATIONS['add']['title'],
+        controller='{} {}'.format(TRANSLATIONS['conditional']['title'],
+                                  TRANSLATIONS['actions']['title']))
 
     if form.function_type.data == 'conditional':
         func = Conditional.query.filter(
@@ -210,8 +211,8 @@ def action_mod(form):
     """Modify a Conditional Action"""
     error = []
     action = '{action} {controller}'.format(
-        action=TOOLTIPS_SETTINGS['modify']['title'],
-        controller='{} {}'.format(gettext("Conditional"), gettext("Action")))
+        action=TRANSLATIONS['modify']['title'],
+        controller='{} {}'.format(TRANSLATIONS['conditional']['title'], TRANSLATIONS['actions']['title']))
 
     error = check_form_actions(form, error)
 
@@ -296,8 +297,8 @@ def action_del(form):
     """Delete a Conditional Action"""
     error = []
     action = '{action} {controller}'.format(
-        action=TOOLTIPS_SETTINGS['delete']['title'],
-        controller='{} {}'.format(gettext("Conditional"), gettext("Action")))
+        action=TRANSLATIONS['delete']['title'],
+        controller='{} {}'.format(TRANSLATIONS['conditional']['title'], TRANSLATIONS['actions']['title']))
 
     conditional = Conditional.query.filter(
         Conditional.unique_id == form.function_id.data).first()
@@ -333,23 +334,24 @@ def action_execute_all(form):
     func = None
 
     if form.function_type.data == 'conditional':
-        func_type = gettext("Conditional")
+        func_type = TRANSLATIONS['conditional']['title']
         func = Conditional.query.filter(
             Conditional.unique_id == form.function_id.data).first()
     elif form.function_type.data == 'trigger':
-        func_type = gettext("Trigger")
+        func_type = TRANSLATIONS['trigger']['title']
         func = Trigger.query.filter(
             Trigger.unique_id == form.function_id.data).first()
     elif form.function_type.data == 'function_actions':
-        func_type = gettext("Function")
+        func_type = TRANSLATIONS['function']['title']
         func = Function.query.filter(
             Function.unique_id == form.function_id.data).first()
     else:
-        error.append("Unknown Function type")
+        error.append("Unknown Function type: '{}'".format(
+            form.function_type.data))
 
     action = '{action} {controller}'.format(
         action=gettext("Execute All"),
-        controller='{} {}'.format(func_type, gettext("Actions")))
+        controller='{} {}'.format(func_type, TRANSLATIONS['actions']['title']))
 
     if form.function_type.data != 'function_actions' and func and not func.is_activated:
         error.append("Activate the Conditional before testing all Actions")
@@ -368,13 +370,12 @@ def action_execute_all(form):
 
 def function_reorder(function_id, display_order, direction):
     action = '{action} {controller}'.format(
-        action=gettext("Reorder"),
-        controller=gettext("Function"))
+        action=TRANSLATIONS['reorder']['title'],
+        controller=TRANSLATIONS['function']['title'])
     error = []
     try:
-        status, reord_list = reorder(display_order,
-                                     function_id,
-                                     direction)
+        status, reord_list = reorder(
+            display_order, function_id, direction)
         if status == 'success':
             DisplayOrder.query.first().function = ','.join(map(str, reord_list))
             db.session.commit()

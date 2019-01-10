@@ -6,7 +6,7 @@ from flask import flash
 from flask import url_for
 from flask_babel import gettext
 
-from mycodo.config_translations import TOOLTIPS_SETTINGS
+from mycodo.config_translations import TRANSLATIONS
 from mycodo.databases.models import Actions
 from mycodo.databases.models import DisplayOrder
 from mycodo.databases.models import Trigger
@@ -27,8 +27,8 @@ def trigger_mod(form):
     """Modify a Trigger"""
     error = []
     action = '{action} {controller}'.format(
-        action=TOOLTIPS_SETTINGS['modify']['title'],
-        controller=gettext("Trigger"))
+        action=TRANSLATIONS['modify']['title'],
+        controller=TRANSLATIONS['trigger']['title'])
 
     try:
         trigger = Trigger.query.filter(
@@ -115,8 +115,8 @@ def trigger_del(trigger_id):
     """Delete a Trigger"""
     error = []
     action = '{action} {controller}'.format(
-        action=TOOLTIPS_SETTINGS['delete']['title'],
-        controller=gettext("Trigger"))
+        action=TRANSLATIONS['delete']['title'],
+        controller=TRANSLATIONS['trigger']['title'])
 
     trigger = Trigger.query.filter(
         Trigger.unique_id == trigger_id).first()
@@ -154,8 +154,8 @@ def trigger_activate(trigger_id):
     """Activate a Trigger"""
     error = []
     action = '{action} {controller}'.format(
-        action=TOOLTIPS_SETTINGS['activate']['title'],
-        controller=gettext("Trigger"))
+        action=TRANSLATIONS['activate']['title'],
+        controller=TRANSLATIONS['trigger']['title'])
 
     mod_trigger = Trigger.query.filter(
         Trigger.unique_id == trigger_id).first()
@@ -194,8 +194,8 @@ def trigger_deactivate(trigger_id):
     """Deactivate a Trigger"""
     error = []
     action = '{action} {controller}'.format(
-        action=TOOLTIPS_SETTINGS['deactivate']['title'],
-        controller=gettext("Trigger"))
+        action=TRANSLATIONS['deactivate']['title'],
+        controller=TRANSLATIONS['trigger']['title'])
 
     if not error:
         controller_activate_deactivate(

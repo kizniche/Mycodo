@@ -7,9 +7,9 @@
   <div>
 
   {%- if 'rpm_pulses_per_rev' in dict_inputs[each_input.device]['options_disabled'] -%}
-    {{form_mod_input.rpm_pulses_per_rev(class_='form-control', value=each_input.rpm_pulses_per_rev, disabled=True, **{'title': tooltips_settings['rpm_pulses_per_rev']['phrase']})}}
+    {{form_mod_input.rpm_pulses_per_rev(class_='form-control', value=each_input.rpm_pulses_per_rev, disabled=True, **{'title': dict_translation['rpm_pulses_per_rev']['phrase']})}}
   {% else %}
-    {{form_mod_input.rpm_pulses_per_rev(class_='form-control', value=each_input.rpm_pulses_per_rev, **{'title': tooltips_settings['rpm_pulses_per_rev']['phrase']})}}
+    {{form_mod_input.rpm_pulses_per_rev(class_='form-control', value=each_input.rpm_pulses_per_rev, **{'title': dict_translation['rpm_pulses_per_rev']['phrase']})}}
   {%- endif -%}
 
   </div>

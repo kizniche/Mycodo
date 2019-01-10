@@ -7,7 +7,7 @@ from flask import url_for
 from flask_babel import gettext
 
 from mycodo.config import MATH_INFO
-from mycodo.config_translations import TOOLTIPS_SETTINGS
+from mycodo.config_translations import TRANSLATIONS
 from mycodo.databases.models import Conversion
 from mycodo.databases.models import DeviceMeasurements
 from mycodo.databases.models import DisplayOrder
@@ -35,8 +35,8 @@ logger = logging.getLogger(__name__)
 
 def math_add(form_add_math):
     action = '{action} {controller}'.format(
-        action=TOOLTIPS_SETTINGS['add']['title'],
-        controller=gettext("Math"))
+        action=TRANSLATIONS['add']['title'],
+        controller=TRANSLATIONS['math']['title'])
     error = []
 
     dep_unmet, _ = return_dependencies(form_add_math.math_type.data)
@@ -97,8 +97,8 @@ def math_add(form_add_math):
 
 def math_mod(form_mod_math, form_mod_type=None):
     action = '{action} {controller}'.format(
-        action=TOOLTIPS_SETTINGS['modify']['title'],
-        controller=gettext("Math"))
+        action=TRANSLATIONS['modify']['title'],
+        controller=TRANSLATIONS['math']['title'])
     error = []
 
     try:
@@ -254,8 +254,8 @@ def math_mod(form_mod_math, form_mod_type=None):
 
 def math_measurement_mod(form):
     action = '{action} {controller}'.format(
-        action=TOOLTIPS_SETTINGS['modify']['title'],
-        controller=TOOLTIPS_SETTINGS['measurement']['title'])
+        action=TRANSLATIONS['modify']['title'],
+        controller=TRANSLATIONS['measurement']['title'])
     error = []
 
     try:
@@ -292,8 +292,8 @@ def math_measurement_mod(form):
 
 def math_del(form_mod_math):
     action = '{action} {controller}'.format(
-        action=TOOLTIPS_SETTINGS['delete']['title'],
-        controller=gettext("Math"))
+        action=TRANSLATIONS['delete']['title'],
+        controller=TRANSLATIONS['math']['title'])
     error = []
 
     math_id = form_mod_math.math_id.data
@@ -329,8 +329,8 @@ def math_del(form_mod_math):
 
 def math_reorder(math_id, display_order, direction):
     action = '{action} {controller}'.format(
-        action=gettext("Reorder"),
-        controller=gettext("Math"))
+        action=TRANSLATIONS['reorder']['title'],
+        controller=TRANSLATIONS['math']['title'])
     error = []
     try:
         status, reord_list = reorder(display_order,
@@ -347,12 +347,10 @@ def math_reorder(math_id, display_order, direction):
 
 
 def math_activate(form_mod_math):
-    controller_activate_deactivate('activate',
-                                   'Math',
-                                   form_mod_math.math_id.data)
+    controller_activate_deactivate(
+        'activate', 'Math', form_mod_math.math_id.data)
 
 
 def math_deactivate(form_mod_math):
-    controller_activate_deactivate('deactivate',
-                                   'Math',
-                                   form_mod_math.math_id.data)
+    controller_activate_deactivate(
+        'deactivate', 'Math', form_mod_math.math_id.data)

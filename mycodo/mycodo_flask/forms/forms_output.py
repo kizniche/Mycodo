@@ -20,14 +20,14 @@ from wtforms.validators import Optional
 from wtforms.widgets.html5 import NumberInput
 
 from mycodo.config import OUTPUTS
-from mycodo.config_translations import TOOLTIPS_SETTINGS
+from mycodo.config_translations import TRANSLATIONS
 
 
 class DataBase(FlaskForm):
     reorder_type = StringField('Reorder Type', widget=widgets.HiddenInput())
     list_visible_elements = SelectMultipleField('New Order')
     reorder = SubmitField(
-        TOOLTIPS_SETTINGS['save_order']['title'])
+        TRANSLATIONS['save_order']['title'])
 
 
 class OutputAdd(FlaskForm):
@@ -37,36 +37,36 @@ class OutputAdd(FlaskForm):
         validators=[DataRequired()]
     )
     output_add = SubmitField(
-        TOOLTIPS_SETTINGS['add']['title'])
+        TRANSLATIONS['add']['title'])
 
 
 class OutputMod(FlaskForm):
     output_id = StringField('Output ID', widget=widgets.HiddenInput())
     output_pin = HiddenField('Output Pin')
     name = StringField(
-        TOOLTIPS_SETTINGS['name']['title'],
+        TRANSLATIONS['name']['title'],
         validators=[DataRequired()]
     )
     location = StringField(lazy_gettext('Location'))
     i2c_bus = IntegerField(
-        TOOLTIPS_SETTINGS['i2c_bus']['title'])
+        TRANSLATIONS['i2c_bus']['title'])
     baud_rate = IntegerField(
-        TOOLTIPS_SETTINGS['baud_rate']['title'])
+        TRANSLATIONS['baud_rate']['title'])
     gpio_location = IntegerField(
-        TOOLTIPS_SETTINGS['gpio_location']['title'], widget=NumberInput())
+        TRANSLATIONS['gpio_location']['title'], widget=NumberInput())
     protocol = IntegerField(
-        TOOLTIPS_SETTINGS['protocol']['title'], widget=NumberInput())
+        TRANSLATIONS['protocol']['title'], widget=NumberInput())
     pulse_length = IntegerField(
-        TOOLTIPS_SETTINGS['pulse_length']['title'], widget=NumberInput())
+        TRANSLATIONS['pulse_length']['title'], widget=NumberInput())
     on_command = StringField(
-        TOOLTIPS_SETTINGS['on_command']['title'])
+        TRANSLATIONS['on_command']['title'])
     off_command = StringField(
-        TOOLTIPS_SETTINGS['off_command']['title'])
+        TRANSLATIONS['off_command']['title'])
     pwm_command = StringField(
-        TOOLTIPS_SETTINGS['pwm_command']['title'])
+        TRANSLATIONS['pwm_command']['title'])
     pwm_invert_signal = BooleanField(lazy_gettext('Invert Signal'))
     amps = DecimalField(
-        TOOLTIPS_SETTINGS['amps']['title'],
+        TRANSLATIONS['amps']['title'],
         validators=[validators.NumberRange(
             min=0,
             max=50,
@@ -76,7 +76,7 @@ class OutputMod(FlaskForm):
         widget=NumberInput(step='any')
     )
     trigger = SelectField(
-        TOOLTIPS_SETTINGS['trigger']['title'],
+        TRANSLATIONS['trigger']['title'],
         choices=[
             ("1", lazy_gettext('High')),
             ("0", lazy_gettext('Low'))
@@ -84,20 +84,20 @@ class OutputMod(FlaskForm):
         validators=[Optional()]
     )
     on_at_start = SelectField(
-        TOOLTIPS_SETTINGS['on_at_start']['title'],
+        TRANSLATIONS['on_at_start']['title'],
         choices=[
             ("-1", lazy_gettext('Neither')),
-            ("1", TOOLTIPS_SETTINGS['on']['title']),
-            ("0", TOOLTIPS_SETTINGS['off']['title'])
+            ("1", TRANSLATIONS['on']['title']),
+            ("0", TRANSLATIONS['off']['title'])
         ],
         validators=[DataRequired()]
     )
     trigger_functions_at_start = BooleanField(
-        TOOLTIPS_SETTINGS['trigger_functions_at_start']['title'])
+        TRANSLATIONS['trigger_functions_at_start']['title'])
     pwm_hertz = IntegerField(
-        TOOLTIPS_SETTINGS['pwm_hertz']['title'], widget=NumberInput())
+        TRANSLATIONS['pwm_hertz']['title'], widget=NumberInput())
     pwm_library = SelectField(
-        TOOLTIPS_SETTINGS['pwm_library']['title'],
+        TRANSLATIONS['pwm_library']['title'],
         choices=[
             ("pigpio_any", lazy_gettext('Any Pin, <= 40 kHz')),
             ("pigpio_hardware", lazy_gettext('Hardware Pin, <= 30 MHz'))
@@ -105,15 +105,15 @@ class OutputMod(FlaskForm):
         validators=[DataRequired()]
     )
     flow_rate = DecimalField(
-        TOOLTIPS_SETTINGS['trigger_functions_at_start']['title'],
+        TRANSLATIONS['trigger_functions_at_start']['title'],
         widget=NumberInput(step='any')
     )
     save = SubmitField(
-        TOOLTIPS_SETTINGS['save']['title'])
+        TRANSLATIONS['save']['title'])
     delete = SubmitField(
-        TOOLTIPS_SETTINGS['delete']['title'])
+        TRANSLATIONS['delete']['title'])
     order_up = SubmitField(
-        TOOLTIPS_SETTINGS['up']['title'])
+        TRANSLATIONS['up']['title'])
     order_down = SubmitField(
-        TOOLTIPS_SETTINGS['down']['title'])
+        TRANSLATIONS['down']['title'])
     on_submit = SubmitField(lazy_gettext('Turn On'))

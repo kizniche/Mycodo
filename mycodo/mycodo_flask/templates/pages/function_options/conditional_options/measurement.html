@@ -2,7 +2,7 @@
   {{form_conditional_conditions.measurement.label(class_='control-label')}}
   <div>
     <select class="form-control" id="measurement" name="measurement" style="width: 100%;" title="" data-original-title="{{_('Select the measurement to use as the input')}}">
-        <option value="">{{tooltips_settings['select_one']['title']}}</option>
+        <option value="">{{dict_translation['select_one']['title']}}</option>
       {% for each_choice, value in choices_input.items() if each_choice.split(',')[1] != 'edge' -%}
         <option value="{{each_choice}}"{% if each_condition.measurement == each_choice %} selected{% endif %}>{{value}}</option>
       {% endfor -%}

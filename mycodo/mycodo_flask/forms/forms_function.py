@@ -14,39 +14,39 @@ from wtforms import widgets
 from wtforms.widgets.html5 import NumberInput
 
 from mycodo.config import FUNCTION_ACTIONS
-from mycodo.config_translations import TOOLTIPS_SETTINGS
+from mycodo.config_translations import TRANSLATIONS
 
 
 class DataBase(FlaskForm):
     reorder_type = StringField('Reorder Type', widget=widgets.HiddenInput())
     list_visible_elements = SelectMultipleField('New Order')
     reorder = SubmitField(
-        TOOLTIPS_SETTINGS['save_order']['title'])
+        TRANSLATIONS['save_order']['title'])
 
 
 class FunctionAdd(FlaskForm):
     func_type = SelectField('Function Type')
     func_add = SubmitField(
-        TOOLTIPS_SETTINGS['add']['title'])
+        TRANSLATIONS['add']['title'])
 
 
 class FunctionMod(FlaskForm):
     function_id = StringField('Function ID', widget=widgets.HiddenInput())
     function_type = StringField('Function Type', widget=widgets.HiddenInput())
     name = StringField(
-        TOOLTIPS_SETTINGS['name']['title'])
+        TRANSLATIONS['name']['title'])
     action_type = SelectField(
-        choices=[('', TOOLTIPS_SETTINGS['select_one']['title'])] + FUNCTION_ACTIONS)
+        choices=[('', TRANSLATIONS['select_one']['title'])] + FUNCTION_ACTIONS)
     add_action = SubmitField(lazy_gettext('Add Action'))
     order_up = SubmitField(
-        TOOLTIPS_SETTINGS['up']['title'])
+        TRANSLATIONS['up']['title'])
     order_down = SubmitField(
-        TOOLTIPS_SETTINGS['down']['title'])
+        TRANSLATIONS['down']['title'])
     execute_all_actions = SubmitField(lazy_gettext('Execute All Actions'))
     save_function = SubmitField(
-        TOOLTIPS_SETTINGS['save']['title'])
+        TRANSLATIONS['save']['title'])
     delete_function = SubmitField(
-        TOOLTIPS_SETTINGS['delete']['title'])
+        TRANSLATIONS['delete']['title'])
 
 
 class Actions(FlaskForm):
@@ -73,6 +73,6 @@ class Actions(FlaskForm):
         widget=NumberInput(step='any'))
 
     save_action = SubmitField(
-        TOOLTIPS_SETTINGS['save']['title'])
+        TRANSLATIONS['save']['title'])
     delete_action = SubmitField(
-        TOOLTIPS_SETTINGS['delete']['title'])
+        TRANSLATIONS['delete']['title'])

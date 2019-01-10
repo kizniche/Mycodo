@@ -37,19 +37,19 @@
 
   <div class="row small-gutters" style="padding: 1em 1.5em 0.5em 1.5em">
     <div id="button-activate-{{chart_number}}" class="col-6">
-      <input class="btn btn-block btn-sm activate_pid" id="activate_pid" name="{{each_dashboard.pid_ids}}/activate_pid" type="button" value="{{_('Activate')}}">
+      <input class="btn btn-block btn-sm activate_pid" id="activate_pid" name="{{each_dashboard.pid_ids}}/activate_pid" type="button" value="{{dict_translate['activate']['title']}}">
     </div>
     <div id="button-deactivate-{{chart_number}}" class="col-6">
-      <input class="btn btn-block btn-sm deactivate_pid" id="deactivate_pid" name="{{each_dashboard.pid_ids}}/deactivate_pid" type="button" value="{{_('Deactivate')}}">
+      <input class="btn btn-block btn-sm deactivate_pid" id="deactivate_pid" name="{{each_dashboard.pid_ids}}/deactivate_pid" type="button" value="{{dict_translate['deactivate']['title']}}">
     </div>
     <div id="button-resume-{{chart_number}}" class="col-6">
-      <input class="btn btn-block btn-sm resume_pid" id="resume_pid" name="{{each_dashboard.pid_ids}}/resume_pid" type="button" value="{{_('Resume')}}">
+      <input class="btn btn-block btn-sm resume_pid" id="resume_pid" name="{{each_dashboard.pid_ids}}/resume_pid" type="button" value="{{dict_translate['resume']['title']}}">
     </div>
     <div id="button-pause-{{chart_number}}" class="col-3">
-      <input class="btn btn-block btn-sm pause_pid" id="pause_pid" name="{{each_dashboard.pid_ids}}/pause_pid" type="button" value="{{_('Pause')}}">
+      <input class="btn btn-block btn-sm pause_pid" id="pause_pid" name="{{each_dashboard.pid_ids}}/pause_pid" type="button" value="{{dict_translate['pause']['title']}}">
     </div>
     <div id="button-hold-{{chart_number}}" class="col-3">
-      <input class="btn btn-block btn-sm hold_pid" id="hold_pid" name="{{each_dashboard.pid_ids}}/hold_pid" type="button" value="{{_('Hold')}}">
+      <input class="btn btn-block btn-sm hold_pid" id="hold_pid" name="{{each_dashboard.pid_ids}}/hold_pid" type="button" value="{{dict_translate['hold']['title']}}">
     </div>
   </div>
 
@@ -98,7 +98,7 @@
       <div class="col-auto">
         {{form_base.name.label(class_='control-label')}}
         <div>
-          {{form_base.name(class_='form-control', value=each_dashboard.name, **{'title': tooltips_settings['name']['phrase']})}}
+          {{form_base.name(class_='form-control', value=each_dashboard.name, **{'title': dict_translation['name']['phrase']})}}
         </div>
       </div>
       <div class="col-auto">
@@ -106,12 +106,12 @@
         <div>
           <select class="form-control" id="pid_id" name="pid_id" style="width: 100%;">
           {% if pid %}
-            <option value="">{{tooltips_settings['select_one']['title']}}</option>
+            <option value="">{{dict_translation['select_one']['title']}}</option>
             {% for each_pid in pid -%}
             <option value="{{each_pid.unique_id}}" {% if each_dashboard.pid_ids == each_pid.unique_id %}selected{% endif %}>[{{'%02d' % each_pid.id}}] {{each_pid.name}}</option>
             {% endfor -%}
           {% else %}
-            <option value="">{{tooltips_settings['none_available']['title']}}</option>
+            <option value="">{{dict_translation['none_available']['title']}}</option>
           {% endif %}
           </select>
         </div>

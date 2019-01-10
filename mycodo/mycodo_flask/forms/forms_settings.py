@@ -19,7 +19,7 @@ from wtforms.fields.html5 import EmailField
 from wtforms.validators import DataRequired
 from wtforms.widgets.html5 import NumberInput
 
-from mycodo.config_translations import TOOLTIPS_SETTINGS
+from mycodo.config_translations import TRANSLATIONS
 
 
 #
@@ -29,7 +29,7 @@ from mycodo.config_translations import TOOLTIPS_SETTINGS
 class SettingsCamera(FlaskForm):
     camera_id = StringField('Camera ID', widget=widgets.HiddenInput())
     name = StringField(
-        TOOLTIPS_SETTINGS['name']['title'])
+        TRANSLATIONS['name']['title'])
     library = StringField(
         lazy_gettext('Library'))
     device = StringField(
@@ -68,9 +68,10 @@ class SettingsCamera(FlaskForm):
         lazy_gettext('White Balance'),
         widget=NumberInput(step='any'))
     custom_options = StringField(lazy_gettext('Custom Options'))
-    output_id = StringField(lazy_gettext('Output'))
+    output_id = StringField(TRANSLATIONS['output']['title'])
     output_duration = DecimalField(
-        lazy_gettext('Output Duration'),
+        '{} ({})'.format(TRANSLATIONS['duration']['title'],
+                         TRANSLATIONS['output']['title']),
         widget=NumberInput(step='any'))
     cmd_pre_camera = StringField(lazy_gettext('Pre Command'))
     cmd_post_camera = StringField(lazy_gettext('Post Command'))
@@ -78,11 +79,11 @@ class SettingsCamera(FlaskForm):
     path_timelapse = StringField(lazy_gettext('Timelapse Path'))
     path_video = StringField(lazy_gettext('Video Path'))
     camera_add = SubmitField(
-        TOOLTIPS_SETTINGS['add']['title'])
+        TRANSLATIONS['add']['title'])
     camera_mod = SubmitField(
-        TOOLTIPS_SETTINGS['save']['title'])
+        TRANSLATIONS['save']['title'])
     camera_del = SubmitField(
-        TOOLTIPS_SETTINGS['delete']['title'])
+        TRANSLATIONS['delete']['title'])
 
 
 #
@@ -113,11 +114,11 @@ class SettingsEmail(FlaskForm):
     )
     smtp_password = PasswordField(
         lazy_gettext('SMTP Password'),
-        render_kw={"placeholder": lazy_gettext('Password')}
+        render_kw={"placeholder": TRANSLATIONS['password']['title']}
     )
     smtp_from_email = EmailField(
         lazy_gettext('From Email'),
-        render_kw={"placeholder": lazy_gettext('Email')},
+        render_kw={"placeholder": TRANSLATIONS['email']['title']},
         validators=[
             DataRequired(),
             validators.Email()
@@ -143,7 +144,7 @@ class SettingsEmail(FlaskForm):
         ]
     )
     save = SubmitField(
-        TOOLTIPS_SETTINGS['save']['title'])
+        TRANSLATIONS['save']['title'])
 
 
 #
@@ -185,7 +186,7 @@ class SettingsGeneral(FlaskForm):
     stats_opt_out = BooleanField(lazy_gettext('Opt-out of statistics'))
     enable_upgrade_check = BooleanField(lazy_gettext('Check for Updates'))
     Submit = SubmitField(
-        TOOLTIPS_SETTINGS['save']['title'])
+        TRANSLATIONS['save']['title'])
 
 
 #
@@ -199,7 +200,7 @@ class Input(FlaskForm):
 class InputDel(FlaskForm):
     input_id = StringField(widget=widgets.HiddenInput())
     delete_input = SubmitField(
-        TOOLTIPS_SETTINGS['delete']['title'])
+        TRANSLATIONS['delete']['title'])
 
 
 #
@@ -217,9 +218,9 @@ class MeasurementMod(FlaskForm):
     name = StringField(lazy_gettext('Measurement Name'))
     units = SelectMultipleField(lazy_gettext('Measurement Units'))
     save_measurement = SubmitField(
-        TOOLTIPS_SETTINGS['save']['title'])
+        TRANSLATIONS['save']['title'])
     delete_measurement = SubmitField(
-        TOOLTIPS_SETTINGS['delete']['title'])
+        TRANSLATIONS['delete']['title'])
 
 
 class UnitAdd(FlaskForm):
@@ -235,9 +236,9 @@ class UnitMod(FlaskForm):
     name = StringField(lazy_gettext('Unit Name'))
     unit = StringField(lazy_gettext('Unit Abbreviation'))
     save_unit = SubmitField(
-        TOOLTIPS_SETTINGS['save']['title'])
+        TRANSLATIONS['save']['title'])
     delete_unit = SubmitField(
-        TOOLTIPS_SETTINGS['delete']['title'])
+        TRANSLATIONS['delete']['title'])
 
 
 class ConversionAdd(FlaskForm):
@@ -256,9 +257,9 @@ class ConversionMod(FlaskForm):
     convert_unit_to = StringField(lazy_gettext('Convert To Unit'))
     equation = StringField(lazy_gettext('Equation'))
     save_conversion = SubmitField(
-        TOOLTIPS_SETTINGS['save']['title'])
+        TRANSLATIONS['save']['title'])
     delete_conversion = SubmitField(
-        TOOLTIPS_SETTINGS['delete']['title'])
+        TRANSLATIONS['delete']['title'])
 
 
 #
@@ -280,25 +281,25 @@ class UserRoles(FlaskForm):
     role_id = StringField('Role ID', widget=widgets.HiddenInput())
     add_role = SubmitField(lazy_gettext('Add Role'))
     save_role = SubmitField(
-        TOOLTIPS_SETTINGS['save']['title'])
+        TRANSLATIONS['save']['title'])
     delete_role = SubmitField(
-        TOOLTIPS_SETTINGS['delete']['title'])
+        TRANSLATIONS['delete']['title'])
 
 
 class UserAdd(FlaskForm):
     user_name = StringField(
-        lazy_gettext('Username'),
+        TRANSLATIONS['user']['title'],
         validators=[DataRequired()]
     )
     email = EmailField(
-        lazy_gettext('Email'),
+        TRANSLATIONS['email']['title'],
         validators=[
             DataRequired(),
             validators.Email()
         ]
     )
     password_new = PasswordField(
-        lazy_gettext('Password'),
+        TRANSLATIONS['password']['title'],
         validators=[
             DataRequired(),
             validators.EqualTo('password_repeat',
@@ -327,13 +328,13 @@ class UserAdd(FlaskForm):
 class UserMod(FlaskForm):
     user_id = StringField('User ID', widget=widgets.HiddenInput())
     email = EmailField(
-        lazy_gettext('Email'),
-        render_kw={"placeholder": lazy_gettext("Email")},
+        TRANSLATIONS['email']['title'],
+        render_kw={"placeholder": TRANSLATIONS['email']['title']},
         validators=[
             DataRequired(),
             validators.Email()])
     password_new = PasswordField(
-        lazy_gettext('Password'),
+        TRANSLATIONS['password']['title'],
         render_kw={"placeholder": lazy_gettext("New Password")},
         validators=[
             validators.Optional(),
@@ -358,9 +359,9 @@ class UserMod(FlaskForm):
     )
     theme = StringField(lazy_gettext('Theme'))
     save = SubmitField(
-        TOOLTIPS_SETTINGS['save']['title'])
+        TRANSLATIONS['save']['title'])
     delete = SubmitField(
-        TOOLTIPS_SETTINGS['delete']['title'])
+        TRANSLATIONS['delete']['title'])
 
 
 #

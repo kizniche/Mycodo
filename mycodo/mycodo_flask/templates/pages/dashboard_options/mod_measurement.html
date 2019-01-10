@@ -72,7 +72,7 @@
       <div class="col-auto">
         {{form_base.name.label(class_='control-label')}}
         <div>
-          {{form_base.name(class_='form-control', value=each_dashboard.name, **{'title': tooltips_settings['name']['phrase']})}}
+          {{form_base.name(class_='form-control', value=each_dashboard.name, **{'title': dict_translation['name']['phrase']})}}
         </div>
       </div>
       <div class="col-auto">
@@ -80,7 +80,7 @@
         <div>
           <select class="form-control" id="measurement_id" name="measurement_id" style="width: 100%;">
           {% if choices_input or choices_math or choices_pid %}
-            <option value="">{{tooltips_settings['select_one']['title']}}</option>
+            <option value="">{{dict_translation['select_one']['title']}}</option>
             {% for each_choice, value in choices_input.items() -%}
             <option value="{{each_choice}}" {% if each_dashboard.input_ids_measurements == each_choice %}selected{% endif %}>{{value}}</option>
             {% endfor -%}
@@ -91,7 +91,7 @@
             <option value="{{each_choice}}" {% if each_dashboard.input_ids_measurements == each_choice %}selected{% endif %}>{{value}}</option>
             {% endfor -%}
           {% else %}
-            <option value="">{{tooltips_settings['none_available']['title']}}</option>
+            <option value="">{{dict_translation['none_available']['title']}}</option>
           {% endif %}
           </select>
         </div>

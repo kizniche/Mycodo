@@ -16,10 +16,10 @@
       </a>
     </div>
     <div class="col-xs-5 col-sm-4 col-md-3 col-lg-4">
-      {{form_conditional.name(class_='form-control', value=each_cond.name, **{'title': tooltips_settings['name']['phrase']})}}
+      {{form_conditional.name(class_='form-control', value=each_cond.name, **{'title': dict_translation['name']['phrase']})}}
     </div>
     <div class="col-xs-5 col-sm-3 col-md-4 col-lg-3">
-      <input class="form-control btn btn-sm" disabled="" title="UUID: {{each_cond.unique_id}}" value="[Conditional]
+      <input class="form-control btn btn-sm" disabled="" title="UUID: {{each_cond.unique_id}}" value="[{{dict_translation['conditional']['title']}}]
         {%- if each_cond.is_activated %} {{_('Active')}}
         {%- else %} {{_('Inactive')}}
         {%- endif -%}

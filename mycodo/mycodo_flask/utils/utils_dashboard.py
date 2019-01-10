@@ -7,7 +7,7 @@ from flask import flash
 from flask import url_for
 from flask_babel import gettext
 
-from mycodo.config_translations import TOOLTIPS_SETTINGS
+from mycodo.config_translations import TRANSLATIONS
 from mycodo.databases.models import Conversion
 from mycodo.databases.models import Dashboard
 from mycodo.databases.models import DeviceMeasurements
@@ -41,8 +41,8 @@ def dashboard_add(form_base, form_object, display_order):
     Either Graph, Gauge, or Camera
     """
     action = '{action} {controller}'.format(
-        action=TOOLTIPS_SETTINGS['add']['title'],
-        controller=gettext("Dashboard"))
+        action=TRANSLATIONS['add']['title'],
+        controller=TRANSLATIONS['dashboard']['title'])
     error = []
 
     new_graph = Dashboard()
@@ -186,8 +186,8 @@ def dashboard_add(form_base, form_object, display_order):
 def dashboard_mod(form_base, form_object, request_form):
     """Modify the settings of an item on the dashboard"""
     action = '{action} {controller}'.format(
-        action=TOOLTIPS_SETTINGS['modify']['title'],
-        controller=gettext("Dashboard"))
+        action=TRANSLATIONS['modify']['title'],
+        controller=TRANSLATIONS['dashboard']['title'])
     error = []
 
     mod_graph = Dashboard.query.filter(
@@ -352,8 +352,8 @@ def dashboard_mod(form_base, form_object, request_form):
 def dashboard_del(form_base):
     """Delete an item on the dashboard"""
     action = '{action} {controller}'.format(
-        action=TOOLTIPS_SETTINGS['delete']['title'],
-        controller=gettext("Dashboard"))
+        action=TRANSLATIONS['delete']['title'],
+        controller=TRANSLATIONS['dashboard']['title'])
     error = []
 
     try:
@@ -371,8 +371,8 @@ def dashboard_del(form_base):
 def dashboard_reorder(dashboard_id, display_order, direction):
     """reorder something on the dashboard"""
     action = '{action} {controller}'.format(
-        action=gettext("Reorder"),
-        controller=gettext("Dashboard"))
+        action=TRANSLATIONS['reorder']['title'],
+        controller=TRANSLATIONS['dashboard']['title'])
     error = []
     try:
         status, reord_list = reorder(display_order,

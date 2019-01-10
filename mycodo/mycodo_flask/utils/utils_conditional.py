@@ -6,7 +6,7 @@ from flask import flash
 from flask import url_for
 from flask_babel import gettext
 
-from mycodo.config_translations import TOOLTIPS_SETTINGS
+from mycodo.config_translations import TRANSLATIONS
 from mycodo.databases.models import Actions
 from mycodo.databases.models import Conditional
 from mycodo.databases.models import ConditionalConditions
@@ -28,8 +28,8 @@ def conditional_mod(form):
     """Modify a Conditional"""
     error = []
     action = '{action} {controller}'.format(
-        action=TOOLTIPS_SETTINGS['modify']['title'],
-        controller=gettext("Conditional"))
+        action=TRANSLATIONS['modify']['title'],
+        controller=TRANSLATIONS['conditional']['title'])
 
     try:
         cond_mod = Conditional.query.filter(
@@ -100,8 +100,8 @@ def conditional_del(cond_id):
     """Delete a Conditional"""
     error = []
     action = '{action} {controller}'.format(
-        action=TOOLTIPS_SETTINGS['delete']['title'],
-        controller=gettext("Conditional"))
+        action=TRANSLATIONS['delete']['title'],
+        controller=TRANSLATIONS['conditional']['title'])
 
     cond = Conditional.query.filter(
         Conditional.unique_id == cond_id).first()
@@ -146,8 +146,9 @@ def conditional_condition_add(form):
     """Add a Conditional Condition"""
     error = []
     action = '{action} {controller}'.format(
-        action=TOOLTIPS_SETTINGS['add']['title'],
-        controller='{} {}'.format(gettext("Conditional"), gettext("Condition")))
+        action=TRANSLATIONS['add']['title'],
+        controller='{} {}'.format(TRANSLATIONS['conditional']['title'],
+                                  gettext("Condition")))
 
     cond = Conditional.query.filter(
         Conditional.unique_id == form.function_id.data).first()
@@ -181,8 +182,9 @@ def conditional_condition_mod(form):
     """Modify a Conditional condition"""
     error = []
     action = '{action} {controller}'.format(
-        action=TOOLTIPS_SETTINGS['modify']['title'],
-        controller='{} {}'.format(gettext("Conditional"), gettext("Condition")))
+        action=TRANSLATIONS['modify']['title'],
+        controller='{} {}'.format(TRANSLATIONS['conditional']['title'],
+                                  gettext("Condition")))
 
     try:
         conditional = Conditional.query.filter(
@@ -224,8 +226,9 @@ def conditional_condition_del(form):
     """Delete a Conditional Condition"""
     error = []
     action = '{action} {controller}'.format(
-        action=TOOLTIPS_SETTINGS['delete']['title'],
-        controller='{} {}'.format(gettext("Conditional"), gettext("Condition")))
+        action=TRANSLATIONS['delete']['title'],
+        controller='{} {}'.format(TRANSLATIONS['conditional']['title'],
+                                  gettext("Condition")))
 
     cond = Conditional.query.filter(
         Conditional.unique_id == form.conditional_id.data).first()
@@ -252,8 +255,8 @@ def conditional_activate(cond_id):
     """Activate a Conditional"""
     error = []
     action = '{action} {controller}'.format(
-        action=TOOLTIPS_SETTINGS['activate']['title'],
-        controller=gettext("Conditional"))
+        action=TRANSLATIONS['activate']['title'],
+        controller=TRANSLATIONS['conditional']['title'])
 
     conditions = ConditionalConditions.query.filter(
         ConditionalConditions.conditional_id == cond_id).all()
@@ -276,10 +279,7 @@ def conditional_activate(cond_id):
         error = check_actions(each_action, error)
 
     if not error:
-        controller_activate_deactivate(
-            'activate',
-            'Conditional',
-            cond_id)
+        controller_activate_deactivate('activate', 'Conditional', cond_id)
 
     flash_success_errors(error, action, url_for('routes_page.page_function'))
 
@@ -288,14 +288,11 @@ def conditional_deactivate(cond_id):
     """Deactivate a Conditional"""
     error = []
     action = '{action} {controller}'.format(
-        action=TOOLTIPS_SETTINGS['deactivate']['title'],
-        controller=gettext("Conditional"))
+        action=TRANSLATIONS['deactivate']['title'],
+        controller=TRANSLATIONS['conditional']['title'])
 
     if not error:
-        controller_activate_deactivate(
-            'deactivate',
-            'Conditional',
-            cond_id)
+        controller_activate_deactivate('deactivate', 'Conditional', cond_id)
 
     flash_success_errors(error, action, url_for('routes_page.page_function'))
 

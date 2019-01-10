@@ -15,6 +15,8 @@ from wtforms import validators
 from wtforms import widgets
 from wtforms.widgets.html5 import NumberInput
 
+from mycodo.config_translations import TRANSLATIONS
+
 
 #
 # Camera Use
@@ -72,7 +74,7 @@ class ExportSettings(FlaskForm):
 
 
 class ImportSettings(FlaskForm):
-    settings_import_file = FileField('Upload')
+    settings_import_file = FileField(TRANSLATIONS['upload']['title'])
     settings_import_upload = SubmitField(lazy_gettext('Import Settings'))
 
 
@@ -81,7 +83,7 @@ class ExportInfluxdb(FlaskForm):
 
 
 class ImportInfluxdb(FlaskForm):
-    influxdb_import_file = FileField('Upload')
+    influxdb_import_file = FileField(TRANSLATIONS['upload']['title'])
     influxdb_import_upload = SubmitField(lazy_gettext('Import Influxdb'))
 
 
@@ -99,7 +101,7 @@ class LogView(FlaskForm):
         )],
         widget=NumberInput()
     )
-    loglogin = SubmitField(lazy_gettext('Login'))
+    loglogin = SubmitField(lazy_gettext(TRANSLATIONS['login']['title']))
     loghttp_access = SubmitField(lazy_gettext('Web Access'))
     loghttp_error = SubmitField(lazy_gettext('Web Error'))
     logdaemon = SubmitField(lazy_gettext('Daemon'))

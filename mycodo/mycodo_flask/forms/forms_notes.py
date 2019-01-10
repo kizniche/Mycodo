@@ -15,7 +15,7 @@ from wtforms import SubmitField
 from wtforms import TextAreaField
 from wtforms import widgets
 
-from mycodo.config_translations import TOOLTIPS_SETTINGS
+from mycodo.config_translations import TRANSLATIONS
 
 
 #
@@ -24,45 +24,38 @@ from mycodo.config_translations import TOOLTIPS_SETTINGS
 
 class NoteAdd(FlaskForm):
     name = StringField(
-        TOOLTIPS_SETTINGS['name']['title'])
+        TRANSLATIONS['name']['title'])
     note_tags = SelectMultipleField('Tags')
     files = FileField(lazy_gettext('Attached Files'))
     enter_custom_date_time = BooleanField(lazy_gettext('Use Custom Date/Time'))
-    date_time = DateTimeField('Custom Date/Time', format='%Y-%m-%d %H:%M:%S')
-    note = TextAreaField(lazy_gettext('Note'))
-    note_add = SubmitField(
-        TOOLTIPS_SETTINGS['save']['title'])
+    date_time = DateTimeField(
+        'Custom Date/Time', format='%Y-%m-%d %H:%M:%S')
+    note = TextAreaField(TRANSLATIONS['note']['title'])
+    note_add = SubmitField(TRANSLATIONS['save']['title'])
 
 
 class NoteOptions(FlaskForm):
     note_unique_id = StringField(widget=widgets.HiddenInput())
-    note_mod = SubmitField(
-        TOOLTIPS_SETTINGS['edit']['title'])
-    note_del = SubmitField(
-        TOOLTIPS_SETTINGS['delete']['title'])
+    note_mod = SubmitField(TRANSLATIONS['edit']['title'])
+    note_del = SubmitField(TRANSLATIONS['delete']['title'])
 
 
 class NoteMod(FlaskForm):
     note_unique_id = StringField(widget=widgets.HiddenInput())
     file_selected = StringField(widget=widgets.HiddenInput())
-    name = StringField(
-        TOOLTIPS_SETTINGS['name']['title'])
+    name = StringField(TRANSLATIONS['name']['title'])
     note_tags = SelectMultipleField(lazy_gettext('Tags'))
     files = FileField(lazy_gettext('Attached Files'))
     enter_custom_date_time = BooleanField(lazy_gettext('Use Custom Date/Time'))
-    date_time = DateTimeField('Custom Date/Time', format='%Y-%m-%d %H:%M:%S')
-    note = TextAreaField(lazy_gettext('Note'))
-    file_del = SubmitField(
-        TOOLTIPS_SETTINGS['delete']['title'])
-    note_cancel = SubmitField(
-        TOOLTIPS_SETTINGS['cancel']['title'])
+    date_time = DateTimeField(
+        'Custom Date/Time', format='%Y-%m-%d %H:%M:%S')
+    note = TextAreaField(TRANSLATIONS['note']['title'])
+    file_del = SubmitField(TRANSLATIONS['delete']['title'])
+    note_cancel = SubmitField(TRANSLATIONS['cancel']['title'])
     rename_name = StringField()
-    file_rename = SubmitField(
-        TOOLTIPS_SETTINGS['rename']['title'])
-    note_del = SubmitField(
-        TOOLTIPS_SETTINGS['delete']['title'])
-    note_save = SubmitField(
-        TOOLTIPS_SETTINGS['save']['title'])
+    file_rename = SubmitField(TRANSLATIONS['rename']['title'])
+    note_del = SubmitField(TRANSLATIONS['delete']['title'])
+    note_save = SubmitField(TRANSLATIONS['save']['title'])
 
 
 class NotesShow(FlaskForm):
@@ -82,8 +75,10 @@ class NotesShow(FlaskForm):
     filter_tags = StringField(lazy_gettext('Filter Tags'))
     filter_files = StringField(lazy_gettext('Filter Files'))
     filter_notes = StringField(lazy_gettext('Filter Notes'))
-    sort_by = SelectField(lazy_gettext('Sort By'), choices=sort_by_choices)
-    sort_direction = SelectField(lazy_gettext('Sort Direction'), choices=sort_direction_choices)
+    sort_by = SelectField(
+        lazy_gettext('Sort By'), choices=sort_by_choices)
+    sort_direction = SelectField(
+        lazy_gettext('Sort Direction'), choices=sort_direction_choices)
     notes_show = SubmitField(lazy_gettext('Show Notes'))
     notes_export = SubmitField(lazy_gettext('Export Notes'))
     notes_import_file = FileField('Note ZIP File')
@@ -95,15 +90,13 @@ class NotesShow(FlaskForm):
 #
 
 class TagAdd(FlaskForm):
-    tag_name = StringField(lazy_gettext('Tag'))
-    tag_add = SubmitField(
-        TOOLTIPS_SETTINGS['create']['title'])
+    tag_name = StringField(TRANSLATIONS['tag']['title'])
+    tag_add = SubmitField(TRANSLATIONS['create']['title'])
 
 
 class TagOptions(FlaskForm):
-    tag_unique_id = StringField(lazy_gettext('Tag'), widget=widgets.HiddenInput())
+    tag_unique_id = StringField(
+        TRANSLATIONS['tag']['title'], widget=widgets.HiddenInput())
     rename = StringField()
-    tag_rename = SubmitField(
-        TOOLTIPS_SETTINGS['rename']['title'])
-    tag_del = SubmitField(
-        TOOLTIPS_SETTINGS['delete']['title'])
+    tag_rename = SubmitField(TRANSLATIONS['rename']['title'])
+    tag_del = SubmitField(TRANSLATIONS['delete']['title'])

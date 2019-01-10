@@ -3,7 +3,7 @@
 <div class="col-auto">
   {{form_mod_input.adc_gain.label(class_='control-label')}}
   <div>
-    <select class="form-control form-tooltip form-dropdown" data-placement="top" id="adc_gain" name="adc_gain" title="{{tooltips_settings['adc_gain']['phrase']}}">
+    <select class="form-control form-tooltip form-dropdown" data-placement="top" id="adc_gain" name="adc_gain" title="{{dict_translation['adc_gain']['phrase']}}">
       <option value=""></option>
       {% for each_value, each_name in dict_inputs[each_input.device]['adc_gain'] %}
         <option value="{{each_value}}"{% if each_input.adc_gain == each_value %} selected{% endif %}>{{each_name}}</option>

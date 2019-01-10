@@ -16,25 +16,25 @@ from wtforms import widgets
 from wtforms.widgets.html5 import NumberInput
 
 from mycodo.config import FUNCTION_ACTIONS
-from mycodo.config_translations import TOOLTIPS_SETTINGS
+from mycodo.config_translations import TRANSLATIONS
 
 
 class DataBase(FlaskForm):
     reorder_type = StringField('Reorder Type', widget=widgets.HiddenInput())
     list_visible_elements = SelectMultipleField('New Order')
     reorder = SubmitField(
-        TOOLTIPS_SETTINGS['save_order']['title'])
+        TRANSLATIONS['save_order']['title'])
 
 
 class Trigger(FlaskForm):
     function_id = StringField('Function ID', widget=widgets.HiddenInput())
     function_type = StringField('Function Type', widget=widgets.HiddenInput())
     name = StringField(
-        TOOLTIPS_SETTINGS['name']['title'])
+        TRANSLATIONS['name']['title'])
 
     # Edge detection
     measurement = StringField(
-        TOOLTIPS_SETTINGS['measurement']['title'])
+        TRANSLATIONS['measurement']['title'])
     edge_detected = StringField(lazy_gettext('If Edge Detected'))
 
     # Sunrise/sunset
@@ -81,19 +81,19 @@ class Trigger(FlaskForm):
         widget=NumberInput(step='any'))
 
     action_type = SelectField(
-        choices=[('', TOOLTIPS_SETTINGS['select_one']['title'])] + FUNCTION_ACTIONS)
+        choices=[('', TRANSLATIONS['select_one']['title'])] + FUNCTION_ACTIONS)
     add_action = SubmitField(lazy_gettext('Add Action'))
 
     activate_trigger = SubmitField(
-        TOOLTIPS_SETTINGS['activate']['title'])
+        TRANSLATIONS['activate']['title'])
     deactivate_trigger = SubmitField(
-        TOOLTIPS_SETTINGS['deactivate']['title'])
+        TRANSLATIONS['deactivate']['title'])
     test_all_actions = SubmitField(lazy_gettext('Test All Actions'))
     delete_trigger = SubmitField(
-        TOOLTIPS_SETTINGS['delete']['title'])
+        TRANSLATIONS['delete']['title'])
     save_trigger = SubmitField(
-        TOOLTIPS_SETTINGS['save']['title'])
+        TRANSLATIONS['save']['title'])
     order_up = SubmitField(
-        TOOLTIPS_SETTINGS['up']['title'])
+        TRANSLATIONS['up']['title'])
     order_down = SubmitField(
-        TOOLTIPS_SETTINGS['down']['title'])
+        TRANSLATIONS['down']['title'])

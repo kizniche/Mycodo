@@ -2,7 +2,7 @@
   {{form_trigger.measurement.label(class_='control-label')}}
   <div>
     <select class="form-control" id="measurement" name="measurement" style="width: 100%;" title="" data-original-title="{{_('Select the measurement to use as the input')}}">
-      <option value="">{{tooltips_settings['select_one']['title']}}</option>
+      <option value="">{{dict_translation['select_one']['title']}}</option>
     {% set edge_sensor = [] %}
     {% for each_choice, value in choices_input.items() -%}
       {%- if table_input.query.filter(table_input.unique_id == each_choice.split(',')[0]).first().device == 'EDGE' -%}
@@ -12,7 +12,7 @@
     {% endfor -%}
 
     {% if not edge_sensor -%}
-      <option value="">{{tooltips_settings['none_available']['title']}}</option>
+      <option value="">{{dict_translation['none_available']['title']}}</option>
     {% endif -%}
     </select>
   </div>

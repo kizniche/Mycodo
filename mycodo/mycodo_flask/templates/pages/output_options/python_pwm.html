@@ -1,12 +1,12 @@
 <div class="col-md-12 col-lg-6">
   {{form_mod_output.pwm_command.label(class_='control-label')}}
   <div>
-    <textarea class="form-control" id="pwm_command" name="pwm_command" rows="5" title="{{tooltips_settings['pwm_command']['phrase']}}">{{each_output.pwm_command}}</textarea>
+    <textarea class="form-control" id="pwm_command" name="pwm_command" rows="5" title="{{dict_translation['pwm_command']['phrase']}}">{{each_output.pwm_command}}</textarea>
    </div>
 </div>
 <div class="col-auto">
   {{form_mod_output.trigger_functions_at_start.label(class_='control-label')}}
   <div class="input-group-text">
-    <input id="trigger_functions_at_start" name="trigger_functions_at_start" type="checkbox" title="{{tooltips_settings['trigger_functions_at_start']['phrase']}}" value="y"{% if each_output.trigger_functions_at_start %} checked{% endif %}>
+    <input id="trigger_functions_at_start" name="trigger_functions_at_start" type="checkbox" title="{{dict_translation['trigger_functions_at_start']['phrase']}}" value="y"{% if each_output.trigger_functions_at_start %} checked{% endif %}>
   </div>
 </div>

@@ -6,48 +6,120 @@
 from flask_babel import lazy_gettext
 
 
-TOOLTIPS_SETTINGS = {
+TRANSLATIONS = {
     # Words
+    'actions': {
+        'title': lazy_gettext('Actions')},
     'add': {
         'title': lazy_gettext('Add')},
     'activate': {
         'title': lazy_gettext('Activate')},
+    'alert': {
+        'title': lazy_gettext('Alert')},
     'calibration': {
         'title': lazy_gettext('Calibration')},
+    'camera': {
+        'title': lazy_gettext('Camera')},
     'cancel': {
         'title': lazy_gettext('Cancel')},
+    'conditional': {
+        'title': lazy_gettext('Conditional')},
+    'controller': {
+        'title': lazy_gettext('Controller')},
     'create': {
         'title': lazy_gettext('Create')},
+    'dashboard': {
+        'title': lazy_gettext('Dashboard')},
+    'data': {
+        'title': lazy_gettext('Data')},
     'deactivate': {
         'title': lazy_gettext('Deactivate')},
     'delete': {
         'title': lazy_gettext('Delete')},
+    'diagnostic': {
+        'title': lazy_gettext('Diagnostic')},
+    'display': {
+        'title': lazy_gettext('Display')},
     'down': {
         'title': lazy_gettext('Down')},
+    'duration': {
+        'title': lazy_gettext('Duration')},
+    'edge': {
+        'title': lazy_gettext('Edge')},
     'edit': {
         'title': lazy_gettext('Edit')},
+    'email': {
+        'title': lazy_gettext('E-Mail')},
+    'error': {
+        'title': lazy_gettext('Error')},
+    'export': {
+        'title': lazy_gettext('Export')},
+    'function': {
+        'title': lazy_gettext('Function')},
+    'general': {
+        'title': lazy_gettext('General')},
+    'hold': {
+        'title': lazy_gettext('Hold')},
+    'import': {
+        'title': lazy_gettext('Import')},
     'input': {
         'title': lazy_gettext('Input')},
+    'invalid': {
+        'title': lazy_gettext('Invalid')},
+    'lcd': {
+        'title': lazy_gettext('LCD')},
+    'login': {
+        'title': lazy_gettext('Login')},
+    'math': {
+        'title': lazy_gettext('Math')},
     'measurement': {
         'title': lazy_gettext('Measurement')},
+    'method': {
+        'title': lazy_gettext('Method')},
     'modify': {
         'title': lazy_gettext('Modify')},
     'none_available': {
         'title': lazy_gettext('None Available')},
+    'note': {
+        'title': lazy_gettext('Note')},
     'off': {
         'title': lazy_gettext('Off')},
     'on': {
         'title': lazy_gettext('On')},
+    'output': {
+        'title': lazy_gettext('Output')},
+    'password': {
+        'title': lazy_gettext('Password')},
+    'pause': {
+        'title': lazy_gettext('Pause')},
+    'pid': {
+        'title': lazy_gettext('PID')},
+    'pwm': {
+        'title': lazy_gettext('PWM')},
     'rename': {
         'title': lazy_gettext('Rename')},
+    'reorder': {
+        'title': lazy_gettext('Reorder')},
+    'resume': {
+        'title': lazy_gettext('Resume')},
     'save': {
         'title': lazy_gettext('Save')},
     'save_order': {
         'title': lazy_gettext('Save Order')},
     'select_one': {
         'title': lazy_gettext('Select One')},
+    'settings': {
+        'title': lazy_gettext('Settings')},
+    'tag': {
+        'title': lazy_gettext('Tag')},
+    'timer': {
+        'title': lazy_gettext('Timer')},
     'up': {
         'title': lazy_gettext('Up')},
+    'upload': {
+        'title': lazy_gettext('Upload')},
+    'user': {
+        'title': lazy_gettext('User')},
 
     # Phrases
     '1wire_id': {
@@ -90,7 +162,7 @@ TOOLTIPS_SETTINGS = {
         'title': lazy_gettext('Duration On (seconds)'),
         'phrase': lazy_gettext('Turn on for a duration of time (seconds)')},
     'duty_cycle': {
-        'title': '{} (%)'.format(lazy_gettext('Duty Cycle')),
+        'title': lazy_gettext('Duty Cycle'),
         'phrase': lazy_gettext('Duty cycle for the PWM (percent, 0.0 - 100.0)')},
     'flow_rate': {
         'title': lazy_gettext('Flow Rate (ml/min)'),
@@ -236,7 +308,7 @@ TOOLTIPS_SETTINGS = {
         'title': lazy_gettext('Times Check'),
         'phrase': lazy_gettext('Number of times to check')},
     'trigger': {
-        'title': lazy_gettext('On Trigger'),
+        'title': lazy_gettext('Trigger'),
         'phrase': lazy_gettext('What state triggers the output to turn on? High or Low?')},
     'trigger_functions_at_start': {
         'title': lazy_gettext('Trigger at Startup'),

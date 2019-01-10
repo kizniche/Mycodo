@@ -136,7 +136,7 @@
         <td>
           <select class="form-control" id="units" name="units" multiple>
             {% if not choices_units.items() %}
-            <option value="">{{tooltips_settings['none_available']['title']}}</option>
+            <option value="">{{dict_translation['none_available']['title']}}</option>
             {% else %}
               {% for each_unit, each_display in choices_units.items() %}
             <option value="{{each_unit}}"{% if each_unit in each_measurement.units.split(',') %} selected{% endif %}>{{each_display}}</option>

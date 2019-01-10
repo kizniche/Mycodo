@@ -15,19 +15,19 @@ from wtforms.validators import DataRequired
 from wtforms.widgets.html5 import NumberInput
 
 from mycodo.config import METHODS
-from mycodo.config_translations import TOOLTIPS_SETTINGS
+from mycodo.config_translations import TRANSLATIONS
 
 
 class MethodCreate(FlaskForm):
     name = StringField(
-        TOOLTIPS_SETTINGS['name']['title'])
+        TRANSLATIONS['name']['title'])
     method_type = SelectField(
         choices=METHODS,
         validators=[DataRequired()]
     )
     controller_type = HiddenField('Controller Type')
     Submit = SubmitField(
-        TOOLTIPS_SETTINGS['add']['title'])
+        TRANSLATIONS['add']['title'])
 
 
 class MethodAdd(FlaskForm):
@@ -116,7 +116,7 @@ class MethodMod(FlaskForm):
     method_type = HiddenField('Method Type')
     method_select = HiddenField('Method Select')
     name = StringField(
-        TOOLTIPS_SETTINGS['name']['title'])
+        TRANSLATIONS['name']['title'])
     daily_time_start = StringField(
         lazy_gettext('Start HH:MM:SS'),
         render_kw={"placeholder": "HH:MM:SS"}
@@ -153,14 +153,14 @@ class MethodMod(FlaskForm):
     setpoint_end = DecimalField(
         lazy_gettext('End Setpoint'),
         widget=NumberInput(step='any'))
-    output_id = StringField(lazy_gettext('Output'))
+    output_id = StringField(TRANSLATIONS['output']['title'])
     output_state = StringField(lazy_gettext('State'))
     output_duration = DecimalField(
         lazy_gettext('Duration/Duty Cycle'),
         widget=NumberInput(step='any'))
     rename = SubmitField(
-        TOOLTIPS_SETTINGS['rename']['title'])
+        TRANSLATIONS['rename']['title'])
     save = SubmitField(
-        TOOLTIPS_SETTINGS['save']['title'])
+        TRANSLATIONS['save']['title'])
     Delete = SubmitField(
-        TOOLTIPS_SETTINGS['delete']['title'])
+        TRANSLATIONS['delete']['title'])

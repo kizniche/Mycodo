@@ -1,9 +1,9 @@
 {% extends "layout-settings.html" %}
 {% set active_page = "settings" %}
 {% set active_settings = "users" %}
-{% set help_page = ["users", _('User Settings')] %}
+{% set help_page = ["users", dict_translation['settings']['title'] + ': ' + dict_translation['user']['title']] %}
 
-{% block title %} - {{_('User Settings')}}{% endblock %}
+{% block title %} - {{dict_translation['settings']['title'] + ': ' + dict_translation['user']['title']}}{% endblock %}
 
 {% block settings %}
   <!-- Route: /settings/users -->

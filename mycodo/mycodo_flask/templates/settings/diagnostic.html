@@ -1,9 +1,9 @@
 {% extends "layout-settings.html" %}
 {% set active_page = "settings" %}
 {% set active_settings = "diagnostic" %}
-{% set help_page = ["diagnostic-settings", _('Diagnostics')] %}
+{% set help_page = ["diagnostic-settings", dict_translation['settings']['title'] + ': ' + dict_translation['diagnostic']['title']] %}
 
-{% block title %} - {{_('Diagnostics')}}{% endblock %}
+{% block title %} - {{dict_translation['settings']['title'] + ': ' + dict_translation['diagnostic']['title']}}{% endblock %}
 
 {% block settings %}
   <!-- Route: /settings/diagnostic -->

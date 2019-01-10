@@ -1,8 +1,8 @@
 {% extends "layout.html" %}
 {% set active_page = "function" %}
-{% set help_page = ["function", _('Function')] %}
+{% set help_page = ["function", dict_translation['function']['title']] %}
 
-{% block title %} - {{_('Function')}}{% endblock %}
+{% block title %} - {{dict_translation['function']['title']}}{% endblock %}
 
 {% block head %}
   <link rel="stylesheet" type="text/css" href="/static/css/bootstrap-clockpicker.min.css">
@@ -15,7 +15,7 @@
   <div class="container">
     {% include 'flash_messages.html' %}
 
-    <h4>{{_('Functions')}} <a href="/help#{{help_page[0]}}" target="_blank"><span style="font-size: 16px" class="fas fa-question-circle"></span></a></h4>
+    <h4>{{dict_translation['function']['title']}} <a href="/help#{{help_page[0]}}" target="_blank"><span style="font-size: 16px" class="fas fa-question-circle"></span></a></h4>
     <p>{{_('Functions conduct complex tasks, often coupling one or more <a href="/data">Data</a> sources with <a href="/output">Outputs</a>. For example, this could be using a PID Controller to create a feedback loop with a temperature sensor and heater in order to regulate temperature.')}}</p>
 
     <div style="clear: both; padding: 0.5em 0;"></div>
@@ -25,7 +25,7 @@
 
     <div class="row small-gutters" style="padding-left: 0.75em">
       <div class="col-auto">
-        <select class="selectpicker" title="{{_('Function')}}: {{tooltips_settings['select_one']['title']}}" id="func_type" name="func_type">
+        <select class="selectpicker" title="{{_('Function')}}: {{dict_translation['select_one']['title']}}" id="func_type" name="func_type">
           {% for each_function in function_types -%}
             <option value="{{each_function[0]}}">{{each_function[2]}}</option>
           {% endfor -%}
@@ -55,7 +55,7 @@
 
       <div class="form-inline" style="padding-bottom: 1em;">
         <div class="form-group">
-          <a data-toggle="collapse" href="#collapseContainerReorderFunction" aria-expanded="false" aria-controls="collapseContainerReorderFunction" class="btn btn-sm btn-primary" role="button">{{_('Function')}} {{_('Reorder')}}</a>
+          <a data-toggle="collapse" href="#collapseContainerReorderFunction" aria-expanded="false" aria-controls="collapseContainerReorderFunction" class="btn btn-sm btn-primary" role="button">{{dict_translate['function']['title'] + ' ' + dict_translate['reorder']['title']}}</a>
         </div>
       </div>
 

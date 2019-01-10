@@ -21,6 +21,7 @@ from sqlalchemy import func
 from mycodo.config import LOGIN_ATTEMPTS
 from mycodo.config import LOGIN_BAN_SECONDS
 from mycodo.config import LOGIN_LOG_FILE
+from mycodo.config_translations import TRANSLATIONS
 from mycodo.databases.models import AlembicVersion
 from mycodo.databases.models import Misc
 from mycodo.databases.models import Role
@@ -31,14 +32,14 @@ from mycodo.mycodo_flask.utils import utils_general
 from mycodo.utils.utils import test_password
 from mycodo.utils.utils import test_username
 
+logger = logging.getLogger(__name__)
+
 blueprint = Blueprint(
     'routes_authentication',
     __name__,
     static_folder='../static',
     template_folder='../templates'
 )
-
-logger = logging.getLogger(__name__)
 
 
 @blueprint.route('/create_admin', methods=('GET', 'POST'))
@@ -108,6 +109,7 @@ def create_admin():
     dismiss_notification = Misc.query.first().dismiss_notification
 
     return render_template('create_admin.html',
+                           dict_translation=TRANSLATIONS,
                            dismiss_notification=dismiss_notification,
                            form_create_admin=form_create_admin,
                            form_notice=form_notice)
@@ -176,7 +178,8 @@ def do_login():
             return redirect('/login')
 
     return render_template('login.html',
-                           form_login=form_login,)
+                           dict_translation=TRANSLATIONS,
+                           form_login=form_login)
 
 
 @blueprint.route("/logout")

@@ -6,7 +6,7 @@
   {{form_mod_input.measurements_enabled.label(class_='control-label')}}
   <div>
   {% set channels = table_device_measurements.query.filter(table_device_measurements.device_id == each_input.unique_id).count() %}
-    <select class="form-control form-tooltip form-dropdown" data-placement="top" id="measurements_enabled" name="measurements_enabled" title="{{tooltips_settings['measurements_enabled']['phrase']}}" size="{{[10, channels]|min}}" multiple>
+    <select class="form-control form-tooltip form-dropdown" data-placement="top" id="measurements_enabled" name="measurements_enabled" title="{{dict_translation['measurements_enabled']['phrase']}}" size="{{[10, channels]|min}}" multiple>
 
   {% include 'pages/data_options/TEMPLATE_Measurements_Enabled_Info.html' %}
 

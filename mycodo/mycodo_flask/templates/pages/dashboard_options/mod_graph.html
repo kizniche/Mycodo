@@ -23,7 +23,7 @@
       <div class="col-auto">
         {{form_base.name.label(class_='control-label')}}
         <div>
-          {{form_base.name(class_='form-control', value=each_dashboard.name, **{'title': tooltips_settings['name']['phrase']})}}
+          {{form_base.name(class_='form-control', value=each_dashboard.name, **{'title': dict_translation['name']['phrase']})}}
         </div>
       </div>
       <div class="col-auto">
@@ -76,7 +76,7 @@
             <option value="{{each_choice}}"{%- if each_choice|string in each_dashboard.input_ids_measurements %} selected{%- endif -%}>{{value}}</option>
             {% endfor -%}
           {% else %}
-            <option value="">{{tooltips_settings['none_available']['title']}}</option>
+            <option value="">{{dict_translation['none_available']['title']}}</option>
           {% endif %}
           </select>
         </div>
@@ -90,7 +90,7 @@
             <option value="{{each_choice}}"{%- if each_choice|string in each_dashboard.math_ids %} selected{%- endif -%}>{{value}}</option>
             {% endfor -%}
           {% else %}
-            <option value="">{{tooltips_settings['none_available']['title']}}</option>
+            <option value="">{{dict_translation['none_available']['title']}}</option>
           {% endif %}
           </select>
         </div>
@@ -104,7 +104,7 @@
             <option value="{{each_choice}}"{%- if each_choice|string in each_dashboard.output_ids %} selected{%- endif -%}>{{value}}</option>
             {% endfor -%}
           {% else %}
-            <option value="">{{tooltips_settings['none_available']['title']}}</option>
+            <option value="">{{dict_translation['none_available']['title']}}</option>
           {% endif %}
           </select>
         </div>
@@ -118,7 +118,7 @@
               <option value="{{each_choice}}"{%- if each_choice|string in each_dashboard.pid_ids %} selected{%- endif -%}>{{value}}</option>
             {% endfor -%}
           {% else %}
-            <option value="">{{tooltips_settings['none_available']['title']}}</option>
+            <option value="">{{dict_translation['none_available']['title']}}</option>
           {% endif %}
           </select>
         </div>
@@ -132,7 +132,7 @@
               <option value="{{each_choice}}"{%- if each_choice|string in each_dashboard.note_tag_ids %} selected{%- endif -%}>{{value}}</option>
             {% endfor -%}
           {% else %}
-            <option value="">{{tooltips_settings['none_available']['title']}}</option>
+            <option value="">{{dict_translation['none_available']['title']}}</option>
           {% endif %}
           </select>
         </div>

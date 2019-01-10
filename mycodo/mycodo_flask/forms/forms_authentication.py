@@ -15,6 +15,8 @@ from wtforms import widgets
 from wtforms.validators import DataRequired
 from wtforms.widgets.html5 import NumberInput
 
+from mycodo.config_translations import TRANSLATIONS
+
 
 #
 # Create Admin
@@ -22,16 +24,16 @@ from wtforms.widgets.html5 import NumberInput
 
 class CreateAdmin(FlaskForm):
     username = StringField(
-        lazy_gettext('Username'),
-        render_kw={"placeholder": lazy_gettext('Username')},
+        TRANSLATIONS['user']['title'],
+        render_kw={"placeholder": TRANSLATIONS['user']['title']},
         validators=[DataRequired()])
     email = StringField(
-        lazy_gettext('Email'),
-        render_kw={"placeholder": lazy_gettext('Email')},
+        TRANSLATIONS['email']['title'],
+        render_kw={"placeholder": TRANSLATIONS['email']['title']},
         validators=[DataRequired()])
     password = PasswordField(
-        lazy_gettext('Password'),
-        render_kw={"placeholder": lazy_gettext('Password')},
+        TRANSLATIONS['password']['title'],
+        render_kw={"placeholder": TRANSLATIONS['password']['title']},
         validators=[DataRequired()])
     password_repeat = PasswordField(
         lazy_gettext('Repeat Password'),
@@ -45,13 +47,13 @@ class CreateAdmin(FlaskForm):
 
 class Login(FlaskForm):
     username = StringField(
-        lazy_gettext('Username'),
-        render_kw={"placeholder": lazy_gettext("Username")},
+        TRANSLATIONS['user']['title'],
+        render_kw={"placeholder": TRANSLATIONS['user']['title']},
         validators=[DataRequired()]
     )
     password = PasswordField(
-        lazy_gettext('Password'),
-        render_kw={"placeholder": lazy_gettext("Password")},
+        TRANSLATIONS['password']['title'],
+        render_kw={"placeholder": TRANSLATIONS['password']['title']},
         validators=[DataRequired()]
     )
     remember = BooleanField(lazy_gettext('remember'))
@@ -90,11 +92,11 @@ class RemoteSetup(FlaskForm):
         validators=[DataRequired()]
     )
     username = StringField(
-        lazy_gettext('Username'),
+        TRANSLATIONS['user']['title'],
         validators=[DataRequired()]
     )
     password = PasswordField(
-        lazy_gettext('Password'),
+        TRANSLATIONS['password']['title'],
         validators=[DataRequired()]
     )
     add = SubmitField(lazy_gettext('Add Host'))

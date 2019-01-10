@@ -9,7 +9,7 @@
   <meta name="author" content="">
   <link rel="icon" href="/static/img/favicon.png">
 
-  <title>Mycodo {{_('Login')}} - {{host}}</title>
+  <title>Mycodo {{dict_translation['login']['title']}} - {{host}}</title>
 
   <!-- Bootstrap core CSS -->
   <link href="/static/css/bootstrap.min.css" rel="stylesheet">
@@ -35,7 +35,7 @@
 
     <form id='login_form' class="form-signin" name="login" action="/login" method="POST">
       <input type="hidden" name="form-name" value="login">
-      <h2 class="form-signin-heading">Mycodo {{_("Login")}}</h2>
+      <h2 class="form-signin-heading">Mycodo {{dict_translation['login']['title']}}</h2>
       <h4 style="text-align: center;">{{host}}</h4>
       {{ form_login.hidden_tag() }}
       {{ form_login.username.label(class_='sr-only') }}
@@ -43,7 +43,7 @@
       {{ form_login.password.label(class_='sr-only') }}
       {{ form_login.password(class_='form-control') }}
       <div class="checkbox">
-        {{ form_login.remember() }} {{_('Remember me (90 days)')}}
+        {{ form_login.remember() }} {{_('Remember me') + ' (' + _('90 days') + ')'}}
       </div>
       <button class="btn btn-lg btn-primary btn-block" type="submit">{{_('Sign in')}}</button>
     </form>

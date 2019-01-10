@@ -22,7 +22,7 @@
       </a>
     </div>
     <div class="col-xs-5 col-sm-3">
-      {{form_mod_input.name(class_='form-control', value=each_input.name, **{'title': tooltips_settings['name']['phrase']})}}
+      {{form_mod_input.name(class_='form-control', value=each_input.name, **{'title': dict_translation['name']['phrase']})}}
     </div>
     <div class="col-xs-5 col-sm-2">
       <input class="form-control btn btn-sm btn-block" disabled="" title="[{{'%02d' % each_input.id}}] UUID: {{each_input.unique_id}}" value="{% if each_input.interface and each_input.interface not in ['RPi', 'Mycodo']%}[{{each_input.interface}}] {% endif %}{% if each_input.device in dict_inputs %}{{dict_inputs[each_input.device]['input_name']}}{% endif %}" type="text">
@@ -152,7 +152,7 @@
 
   <div class="form-inline" style="padding-bottom: 1em;">
     <div class="form-group">
-      <a data-toggle="collapse" href="#collapseContainerReorderInput" aria-expanded="false" aria-controls="collapseContainerReorderInput" class="btn btn-sm btn-primary" role="button">{{_('Input')}} {{_('Reorder')}}</a>
+      <a data-toggle="collapse" href="#collapseContainerReorderInput" aria-expanded="false" aria-controls="collapseContainerReorderInput" class="btn btn-sm btn-primary" role="button">{{dict_translate['input']['title'] + ' ' + dict_translate['reorder']['title']}}</a>
     </div>
   </div>
 

@@ -16,7 +16,7 @@ from wtforms.validators import DataRequired
 from wtforms.widgets.html5 import NumberInput
 
 from mycodo.config import LCDS
-from mycodo.config_translations import TOOLTIPS_SETTINGS
+from mycodo.config_translations import TRANSLATIONS
 
 
 class LCDAdd(FlaskForm):
@@ -26,13 +26,13 @@ class LCDAdd(FlaskForm):
         validators=[DataRequired()]
     )
     add = SubmitField(
-        TOOLTIPS_SETTINGS['add']['title'])
+        TRANSLATIONS['add']['title'])
 
 
 class LCDMod(FlaskForm):
     lcd_id = StringField('LCD ID', widget=widgets.HiddenInput())
     name = StringField(
-        TOOLTIPS_SETTINGS['name']['title'],
+        TRANSLATIONS['name']['title'],
         validators=[DataRequired()]
     )
     location = StringField(
@@ -58,17 +58,17 @@ class LCDMod(FlaskForm):
     )
     add_display = SubmitField(lazy_gettext('Add Display Set'))
     save = SubmitField(
-        TOOLTIPS_SETTINGS['save']['title'])
+        TRANSLATIONS['save']['title'])
     delete = SubmitField(
-        TOOLTIPS_SETTINGS['delete']['title'])
+        TRANSLATIONS['delete']['title'])
     activate = SubmitField(
-        TOOLTIPS_SETTINGS['activate']['title'])
+        TRANSLATIONS['activate']['title'])
     deactivate = SubmitField(
-        TOOLTIPS_SETTINGS['deactivate']['title'])
+        TRANSLATIONS['deactivate']['title'])
     reorder_up = SubmitField(
-        TOOLTIPS_SETTINGS['up']['title'])
+        TRANSLATIONS['up']['title'])
     reorder_down = SubmitField(
-        TOOLTIPS_SETTINGS['down']['title'])
+        TRANSLATIONS['down']['title'])
     reset_flashing = SubmitField(lazy_gettext('Reset LCD'))
 
 
@@ -77,7 +77,7 @@ class LCDModDisplay(FlaskForm):
     lcd_data_id = StringField('LCD Data ID', widget=widgets.HiddenInput())
     line_1_display = StringField(lazy_gettext('Line 1'))
     line_1_max_age = IntegerField(
-        TOOLTIPS_SETTINGS['max_age']['title'],
+        TRANSLATIONS['max_age']['title'],
         validators=[validators.NumberRange(min=1, max=999999999)],
         widget=NumberInput()
     )
@@ -88,7 +88,7 @@ class LCDModDisplay(FlaskForm):
     )
     line_2_display = StringField(lazy_gettext('Line 2'))
     line_2_max_age = IntegerField(
-        TOOLTIPS_SETTINGS['max_age']['title'],
+        TRANSLATIONS['max_age']['title'],
         validators=[validators.NumberRange(min=1, max=999999999)],
         widget=NumberInput()
     )
@@ -99,7 +99,7 @@ class LCDModDisplay(FlaskForm):
     )
     line_3_display = StringField(lazy_gettext('Line 3'))
     line_3_max_age = IntegerField(
-        TOOLTIPS_SETTINGS['max_age']['title'],
+        TRANSLATIONS['max_age']['title'],
         validators=[validators.NumberRange(min=1, max=999999999)],
         widget=NumberInput()
     )
@@ -110,7 +110,7 @@ class LCDModDisplay(FlaskForm):
     )
     line_4_display = StringField(lazy_gettext('Line 4'))
     line_4_max_age = IntegerField(
-        TOOLTIPS_SETTINGS['max_age']['title'],
+        TRANSLATIONS['max_age']['title'],
         validators=[validators.NumberRange(min=1, max=999999999)],
         widget=NumberInput()
     )
@@ -120,6 +120,6 @@ class LCDModDisplay(FlaskForm):
         widget=NumberInput()
     )
     save_display = SubmitField(
-        TOOLTIPS_SETTINGS['save']['title'])
+        TRANSLATIONS['save']['title'])
     delete_display = SubmitField(
-        TOOLTIPS_SETTINGS['delete']['title'])
+        TRANSLATIONS['delete']['title'])

@@ -8,9 +8,9 @@
 
     {% if each_input.interface == '1WIRE' %}
 
-  <label class="control-label">{{tooltips_settings['1wire_id']['title']}}</label>
+  <label class="control-label">{{dict_translation['1wire_id']['title']}}</label>
   <div>
-    <select class="form-control form-tooltip form-dropdown" data-placement="top" id="location" name="location" title="{{tooltips_settings['1wire_id']['phrase']}}">
+    <select class="form-control form-tooltip form-dropdown" data-placement="top" id="location" name="location" title="{{dict_translation['1wire_id']['phrase']}}">
       {% if custom_options_values[each_input.unique_id]['library'] == 'w1thermsensor' %}
         {% if devices_1wire_w1thermsensor != [] %}
         <option value=""></option>

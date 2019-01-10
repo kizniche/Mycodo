@@ -1,9 +1,9 @@
 {% extends "layout-settings.html" %}
 {% set active_page = "input" %}
 {% set active_settings = "input" %}
-{% set help_page = ["input-settings", _('Input Settings')] %}
+{% set help_page = ["input-settings", dict_translation['settings']['title'] + ': ' + dict_translation['input']['title']] %}
 
-{% block title %} - {{_('Input Settings')}}{% endblock %}
+{% block title %} - {{dict_translation['settings']['title'] + ': ' + dict_translation['input']['title']}}{% endblock %}
 
 {% block settings %}
   <!-- Route: /settings/input -->

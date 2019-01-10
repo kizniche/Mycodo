@@ -3,7 +3,7 @@
 <div class="col-auto">
   {{form_mod_input.adc_resolution.label(class_='control-label')}}
   <div>
-    <select class="form-control form-tooltip form-dropdown" data-placement="top" id="adc_resolution" name="adc_resolution" title="{{tooltips_settings['adc_resolution']['phrase']}}">
+    <select class="form-control form-tooltip form-dropdown" data-placement="top" id="adc_resolution" name="adc_resolution" title="{{dict_translation['adc_resolution']['phrase']}}">
       <option value=""></option>
       {% for each_value, each_name in dict_inputs[each_input.device]['adc_resolution'] %}
         <option value="{{each_value}}"{% if each_input.adc_resolution == each_value %} selected{% endif %}>{{each_name}}</option>

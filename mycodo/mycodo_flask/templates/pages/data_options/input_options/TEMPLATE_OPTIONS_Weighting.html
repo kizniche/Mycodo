@@ -5,9 +5,9 @@
   <div>
 
   {%- if 'weighting' in dict_inputs[each_input.device]['options_disabled'] -%}
-    {{form_mod_input.weighting(class_='form-control', value=each_input.weighting, disabled=True, **{'title': tooltips_settings['weighting']['phrase']})}}
+    {{form_mod_input.weighting(class_='form-control', value=each_input.weighting, disabled=True, **{'title': dict_translation['weighting']['phrase']})}}
   {% else %}
-    {{form_mod_input.weighting(class_='form-control', value=each_input.weighting, **{'title': tooltips_settings['weighting']['phrase']})}}
+    {{form_mod_input.weighting(class_='form-control', value=each_input.weighting, **{'title': dict_translation['weighting']['phrase']})}}
   {%- endif -%}
 
   </div>

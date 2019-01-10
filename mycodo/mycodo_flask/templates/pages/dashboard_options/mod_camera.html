@@ -22,20 +22,20 @@
       <div class="col-auto">
         {{form_base.name.label(class_='control-label')}}
         <div>
-          {{form_base.name(class_='form-control', value=each_dashboard.name, **{'title': tooltips_settings['name']['phrase']})}}
+          {{form_base.name(class_='form-control', value=each_dashboard.name, **{'title': dict_translation['name']['phrase']})}}
         </div>
       </div>
       <div class="col-auto">
         {{form_camera.camera_id.label(class_='control-label')}}
         <div>
           <select class="form-control" id="camera_id" name="camera_id" style="width: 100%;">
-            <option value="">{{tooltips_settings['select_one']['title']}}</option>
+            <option value="">{{dict_translation['select_one']['title']}}</option>
           {% if choices_camera %}
           {% for each_choice, value in choices_camera.items() -%}
             <option value="{{each_choice}}" {% if each_dashboard.camera_id == each_choice %}selected{% endif %}>{{value}}</option>
           {% endfor -%}
           {% else %}
-            <option value="">{{tooltips_settings['none_available']['title']}}</option>
+            <option value="">{{dict_translation['none_available']['title']}}</option>
           {% endif %}
           </select>
         </div>

@@ -10,7 +10,7 @@ from flask import url_for
 from flask_babel import gettext
 
 from mycodo.config import LCD_INFO
-from mycodo.config_translations import TOOLTIPS_SETTINGS
+from mycodo.config_translations import TRANSLATIONS
 from mycodo.databases.models import DisplayOrder
 from mycodo.databases.models import LCD
 from mycodo.databases.models import LCDData
@@ -35,8 +35,8 @@ logger = logging.getLogger(__name__)
 
 def lcd_add(form):
     action = '{action} {controller}'.format(
-        action=TOOLTIPS_SETTINGS['add']['title'],
-        controller=gettext("LCD"))
+        action=TRANSLATIONS['add']['title'],
+        controller=TRANSLATIONS['lcd']['title'])
     error = []
 
     if current_app.config['TESTING']:
@@ -93,8 +93,8 @@ def lcd_add(form):
 
 def lcd_mod(form_mod_lcd):
     action = '{action} {controller}'.format(
-        action=TOOLTIPS_SETTINGS['modify']['title'],
-        controller=gettext("LCD"))
+        action=TRANSLATIONS['modify']['title'],
+        controller=TRANSLATIONS['lcd']['title'])
     error = []
 
     mod_lcd = LCD.query.filter(
@@ -122,8 +122,8 @@ def lcd_mod(form_mod_lcd):
 
 def lcd_del(lcd_id):
     action = '{action} {controller}'.format(
-        action=TOOLTIPS_SETTINGS['delete']['title'],
-        controller=gettext("LCD"))
+        action=TRANSLATIONS['delete']['title'],
+        controller=TRANSLATIONS['lcd']['title'])
     error = []
 
     lcd = LCD.query.filter(
@@ -153,8 +153,8 @@ def lcd_del(lcd_id):
 
 def lcd_reorder(lcd_id, display_order, direction):
     action = '{action} {controller}'.format(
-        action=gettext("Reorder"),
-        controller=gettext("LCD"))
+        action=TRANSLATIONS['reorder']['title'],
+        controller=TRANSLATIONS['lcd']['title'])
     error = []
     try:
         status, reord_list = reorder(display_order,
@@ -172,8 +172,8 @@ def lcd_reorder(lcd_id, display_order, direction):
 
 def lcd_activate(lcd_id):
     action = '{action} {controller}'.format(
-        action=TOOLTIPS_SETTINGS['activate']['title'],
-        controller=gettext("LCD"))
+        action=TRANSLATIONS['activate']['title'],
+        controller=TRANSLATIONS['lcd']['title'])
     error = []
 
     try:
@@ -201,20 +201,14 @@ def lcd_activate(lcd_id):
                 "Cannot activate LCD if there are blank lines"))
 
         if not error:
-            controller_activate_deactivate(
-                'activate',
-                'LCD',
-                lcd_id)
+            controller_activate_deactivate('activate', 'LCD', lcd_id)
     except Exception as except_msg:
         error.append(except_msg)
     flash_success_errors(error, action, url_for('routes_page.page_lcd'))
 
 
 def lcd_deactivate(lcd_id):
-    controller_activate_deactivate(
-        'deactivate',
-        'LCD',
-        lcd_id)
+    controller_activate_deactivate('deactivate', 'LCD', lcd_id)
 
 
 def lcd_reset_flashing(lcd_id):
@@ -228,8 +222,8 @@ def lcd_reset_flashing(lcd_id):
 
 def lcd_display_add(form):
     action = '{action} {controller}'.format(
-        action=TOOLTIPS_SETTINGS['add']['title'],
-        controller=gettext("Display"))
+        action=TRANSLATIONS['add']['title'],
+        controller=TRANSLATIONS['display']['title'])
     error = []
 
     lcd = LCD.query.filter(
@@ -253,8 +247,8 @@ def lcd_display_add(form):
 
 def lcd_display_mod(form):
     action = '{action} {controller}'.format(
-        action=TOOLTIPS_SETTINGS['modify']['title'],
-        controller=gettext("Display"))
+        action=TRANSLATIONS['modify']['title'],
+        controller=TRANSLATIONS['display']['title'])
     error = []
 
     lcd = LCD.query.filter(
@@ -319,8 +313,8 @@ def lcd_display_mod(form):
 
 def lcd_display_del(lcd_data_id, delete_last=False):
     action = '{action} {controller}'.format(
-        action=TOOLTIPS_SETTINGS['delete']['title'],
-        controller=gettext("Display"))
+        action=TRANSLATIONS['delete']['title'],
+        controller=TRANSLATIONS['display']['title'])
     error = []
 
     lcd_data_this = LCDData.query.filter(

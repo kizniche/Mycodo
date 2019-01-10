@@ -1,9 +1,9 @@
 {% extends "layout-settings.html" %}
 {% set active_page = "settings" %}
 {% set active_settings = "alerts" %}
-{% set help_page = ["alert-settings", _('Alert Settings')] %}
+{% set help_page = ["alert-settings", dict_translation['settings']['title'] + ': ' + dict_translation['alert']['title']] %}
 
-{% block title %} - {{_('Alerts Settings')}}{% endblock %}
+{% block title %} - {{dict_translation['settings']['title'] + ': ' + dict_translation['alert']['title']}}{% endblock %}
 
 {% block settings %}
   <!-- Route: /settings/alerts -->

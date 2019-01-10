@@ -1,8 +1,8 @@
 {% extends "layout.html" %}
 {% set active_page = "dashboard" %}
-{% set help_page = ["dashboard", _('Dashboard')] %}
+{% set help_page = ["dashboard", dict_translation['dashboard']['title']] %}
 
-{% block title %} - {{_('Dashboard')}}{% endblock %}
+{% block title %} - {{dict_translation['dashboard']['title']}}{% endblock %}
 
 {% block head %}
 
@@ -91,7 +91,7 @@
         {{form_base.dashboard_type(class_='selectpicker', **{'data-style': 'btn-sm'})}}
       </div>
       <div class="form-group">
-        <a data-toggle="collapse" href="#collapseContainerReorder" aria-expanded="false" aria-controls="collapseContainerReorder" class="btn btn-sm btn-primary" role="button">{{_('Reorder Elements')}}</a>
+        <a data-toggle="collapse" href="#collapseContainerReorder" aria-expanded="false" aria-controls="collapseContainerReorder" class="btn btn-sm btn-primary" role="button">{{dict_translate['reorder']['title']}}</a>
       </div>
     </div>
 

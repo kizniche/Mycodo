@@ -17,6 +17,7 @@ from mycodo.config import ALEMBIC_VERSION
 from mycodo.config import INSTALL_DIRECTORY
 from mycodo.config import MYCODO_VERSION
 from mycodo.config import SQL_DATABASE_MYCODO
+from mycodo.config_translations import TRANSLATIONS
 from mycodo.mycodo_flask.utils.utils_general import flash_form_errors
 from mycodo.mycodo_flask.utils.utils_general import flash_success_errors
 from mycodo.utils.system_pi import assure_path_exists
@@ -36,8 +37,8 @@ def export_measurements(form):
     and measurement values
     """
     action = '{action} {controller}'.format(
-        action=gettext("Export"),
-        controller=gettext("Measurements"))
+        action=TRANSLATIONS['export']['title'],
+        controller=TRANSLATIONS['measurement']['title'])
     error = []
 
     if form.validate():
@@ -73,8 +74,8 @@ def export_settings(form):
     to the user
     """
     action = '{action} {controller}'.format(
-        action=gettext("Export"),
-        controller=gettext("Settings"))
+        action=TRANSLATIONS['export']['title'],
+        controller=TRANSLATIONS['settings']['title'])
     error = []
 
     try:
@@ -105,8 +106,8 @@ def export_influxdb(form):
     it to the user
     """
     action = '{action} {controller}'.format(
-        action=gettext("Export"),
-        controller=gettext("Measurements"))
+        action=TRANSLATIONS['export']['title'],
+        controller=TRANSLATIONS['measurement']['title'])
     error = []
 
     try:
@@ -172,8 +173,8 @@ def import_settings(form):
     database and implement the one form the zip in its's place.
     """
     action = '{action} {controller}'.format(
-        action=gettext("Import"),
-        controller=gettext("Settings"))
+        action=TRANSLATIONS['import']['title'],
+        controller=TRANSLATIONS['settings']['title'])
     error = []
 
     try:
@@ -316,8 +317,8 @@ def import_influxdb(form):
     in InfluxDB.
     """
     action = '{action} {controller}'.format(
-        action=gettext("Import"),
-        controller=gettext("Influxdb"))
+        action=TRANSLATIONS['import']['title'],
+        controller="Influxdb")
     error = []
 
     try:

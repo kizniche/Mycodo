@@ -16,7 +16,7 @@ from wtforms.validators import DataRequired
 from wtforms.widgets.html5 import NumberInput
 
 from mycodo.config import MATHS
-from mycodo.config_translations import TOOLTIPS_SETTINGS
+from mycodo.config_translations import TRANSLATIONS
 
 
 class MathAdd(FlaskForm):
@@ -25,20 +25,20 @@ class MathAdd(FlaskForm):
         validators=[DataRequired()]
     )
     math_add = SubmitField(
-        TOOLTIPS_SETTINGS['add']['title'])
+        TRANSLATIONS['add']['title'])
 
 
 class MathMod(FlaskForm):
     math_id = StringField('Math ID', widget=widgets.HiddenInput())
     name = StringField(
-        TOOLTIPS_SETTINGS['name']['title'],
+        TRANSLATIONS['name']['title'],
         validators=[DataRequired()])
     period = DecimalField(
         lazy_gettext('Period (seconds)'),
         validators=[DataRequired()],
         widget=NumberInput(step='any'))
     max_measure_age = IntegerField(
-        TOOLTIPS_SETTINGS['max_age']['title'],
+        TRANSLATIONS['max_age']['title'],
         validators=[DataRequired()],
         widget=NumberInput())
     start_offset = DecimalField(
@@ -47,25 +47,25 @@ class MathMod(FlaskForm):
     inputs = SelectMultipleField(
         lazy_gettext('Inputs'))
     select_measurement_unit = StringField(
-        TOOLTIPS_SETTINGS['select_measurement_unit']['title'])
+        TRANSLATIONS['select_measurement_unit']['title'])
     measurements_enabled = SelectMultipleField(
-        TOOLTIPS_SETTINGS['measurements_enabled']['title'])
+        TRANSLATIONS['measurements_enabled']['title'])
     math_mod = SubmitField(
-        TOOLTIPS_SETTINGS['save']['title'])
+        TRANSLATIONS['save']['title'])
     math_delete = SubmitField(
-        TOOLTIPS_SETTINGS['delete']['title'])
+        TRANSLATIONS['delete']['title'])
     math_activate = SubmitField(
-        TOOLTIPS_SETTINGS['activate']['title'])
+        TRANSLATIONS['activate']['title'])
     math_deactivate = SubmitField(
-        TOOLTIPS_SETTINGS['deactivate']['title'])
+        TRANSLATIONS['deactivate']['title'])
     math_order_up = SubmitField(
-        TOOLTIPS_SETTINGS['up']['title'])
+        TRANSLATIONS['up']['title'])
     math_order_down = SubmitField(
-        TOOLTIPS_SETTINGS['down']['title'])
+        TRANSLATIONS['down']['title'])
 
 
 class MathModAverageSingle(FlaskForm):
-    average_input = StringField(TOOLTIPS_SETTINGS['input']['title'])
+    average_input = StringField(TRANSLATIONS['input']['title'])
 
 
 class MathModDifference(FlaskForm):
@@ -74,7 +74,7 @@ class MathModDifference(FlaskForm):
 
 
 class MathModEquation(FlaskForm):
-    equation_input = StringField(TOOLTIPS_SETTINGS['input']['title'])
+    equation_input = StringField(TRANSLATIONS['input']['title'])
     equation = StringField(lazy_gettext('Equation'))
 
 
@@ -106,16 +106,16 @@ class MathMeasurementMod(FlaskForm):
     math_id = StringField('Math ID', widget=widgets.HiddenInput())
     math_measurement_id = StringField(widget=widgets.HiddenInput())
     name = StringField(
-        TOOLTIPS_SETTINGS['name']['title'],
+        TRANSLATIONS['name']['title'],
         validators=[DataRequired()]
     )
     select_measurement_unit = StringField(
-        TOOLTIPS_SETTINGS['select_measurement_unit']['title'])
+        TRANSLATIONS['select_measurement_unit']['title'])
     convert_to_measurement_unit = StringField(
         lazy_gettext('Convert to Measurement'))
 
     math_measurement_mod = SubmitField(
-        TOOLTIPS_SETTINGS['save']['title'])
+        TRANSLATIONS['save']['title'])
 
 
 class MathModMisc(FlaskForm):
