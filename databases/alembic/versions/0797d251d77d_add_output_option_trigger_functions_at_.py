@@ -1,7 +1,7 @@
 """Add output option trigger_functions_at_start
 
 Revision ID: 0797d251d77d
-Revises: b4d958997cf0
+Revises: 5a70a31c71e8
 Create Date: 2019-01-09 15:23:51.419313
 
 """
@@ -11,7 +11,7 @@ import sqlalchemy as sa
 
 # revision identifiers, used by Alembic.
 revision = '0797d251d77d'
-down_revision = 'b4d958997cf0'
+down_revision = '5a70a31c71e8'
 branch_labels = None
 depends_on = None
 
