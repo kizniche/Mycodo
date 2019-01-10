@@ -1265,26 +1265,26 @@ no longer acquiring measurements.
 To create a basic conditional, follow these steps, following along with the
 numbers in the screenshots, below:
 
-1. Go to the ```Setup -> Functions``` page and add a ```Controller: Conditional```.
-2. Next to (1), select ```Measurement```, then select ```Add Condition```.
-3. Next to (2), select ```Output (Duration)``` (or any other action), then select ```Add Action```.
-4. Select a measurement (3), then select ```Save``` (4).
-5. Select a ```Controller ID``` (5) for an Output, then select ```Save``` (6).
-6. Make note of what your Measurement ID (7) is and replace the Measurement IDs in the ```Conditional Statement``` (8) with that ID, then select ```Save``` (9).
+1. Go to the ``Setup -> Functions`` page and add a ``Controller: Conditional``.
+2. Next to (1), select ``Measurement``, then select ``Add Condition``.
+3. Next to (2), select ``Output (Duration)`` (or any other action), then select ``Add Action``.
+4. Select a measurement (3), then select ``Save`` (4).
+5. Select a ``Controller ID`` (5) for an Output, then select ``Save`` (6).
+6. Make note of what your Measurement ID (7) is and replace the Measurement IDs in the ``Conditional Statement`` (8) with that ID, then select ``Save`` (9).
 
-If your ```Conditional Statement``` has been formatted correctly, your
+If your ``Conditional Statement`` has been formatted correctly, your
 Conditional will save and it will be ready to activate. See the example
-```Conditional Statements```, below, for a very brief set of possible
+``Conditional Statements``, below, for a very brief set of possible
 statements that can be used. Keep in mind there are many more possibilities
 than these and I only include them here as a primer for developing your own
-```Conditional Statement```. Refer to an introductory Python guide for learning
+``Conditional Statement``. Refer to an introductory Python guide for learning
 about Python syntax and other conditional statement options.
 
 |Screenshot-Mycodo-Conditional-Guide-01|
 
 |Screenshot-Mycodo-Conditional-Guide-02|
 
-Example ```Conditional Statements``` are below:
+Example ``Conditional Statements`` are below:
 
 ::
 
