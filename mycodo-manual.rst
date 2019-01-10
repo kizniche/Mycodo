@@ -1262,8 +1262,8 @@ as "None < 23"), then the conditional will not trigger and will throw an error
 in the daemon log. Accounting for None is useful for determining if an Input is
 no longer acquiring measurements.
 
-To create a basic conditional, follow these steps, following along with the
-numbers in the screenshots, below:
+To create a basic conditional, follow these steps, using the numbers in the
+screenshots that correspond to the numbers in parentheses:
 
 1. Go to the ``Setup -> Functions`` select "Controller: Conditional", then click ``Add``.
 2. Next to (1), select "Measurement", then click ``Add Condition``.
@@ -1273,8 +1273,12 @@ numbers in the screenshots, below:
 6. Make note of what your Measurement ID (7) is and replace the Measurement IDs in the ``Conditional Statement`` (8) with that ID (notice "bf43a998" in the first image was replaced with "1c487d5e" in the second image), then click ``Save`` (9).
 
 If your ``Conditional Statement`` has been formatted correctly, your
-Conditional will save and it will be ready to activate. Below are a few
-``Conditional Statement``, examples.
+Conditional will save and it will be ready to activate. If an error is returned,
+your options will not have been saved. Inspect the error for which line is
+causing the issue and read the error message itself to try to understand what
+the problem is and how to fix it. There are an unfathomable number of ways to
+configure a Conditional, but this should hopefully get you started to developing
+one that suits your needs.
 
 |Screenshot-Mycodo-Conditional-Guide-01|
 
