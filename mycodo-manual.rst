@@ -1269,8 +1269,8 @@ numbers in the screenshots, below:
 2. Next to (1), select "Measurement", then click ``Add Condition``.
 3. Next to (2), select "Output (Duration)" (or any other action), then click ``Add Action``.
 4. Select a measurement (3), then click ``Save`` (4).
-5. Select a ``Controller ID`` (5) for an Output, select either "On" or "Off" for ``Then State``, then click ``Save`` (6). For instance, you can see "bf43a998" in the first image was replaced with "1c487d5e" in the second image (8).
-6. Make note of what your Measurement ID (7) is and replace the Measurement IDs in the ``Conditional Statement`` (8) with that ID, then click ``Save`` (9).
+5. Select a ``Controller ID`` (5) for an Output, select either "On" or "Off" for ``Then State``, then click ``Save`` (6).
+6. Make note of what your Measurement ID (7) is and replace the Measurement IDs in the ``Conditional Statement`` (8) with that ID, then click ``Save`` (9). For instance, you can see "bf43a998" in the first image was replaced with "1c487d5e" in the second image (8).
 
 If your ``Conditional Statement`` has been formatted correctly, your
 Conditional will save and it will be ready to activate. Below are a few
