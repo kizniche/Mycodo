@@ -145,6 +145,7 @@ case "${1:-''}" in
         adduser mycodo gpio
         adduser mycodo i2c
         adduser mycodo video
+        adduser pi mycodo
     ;;
     'initialize')
         printf "\n#### Running initialization\n"
