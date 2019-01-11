@@ -3,12 +3,15 @@
 #  config.py - Global Mycodo settings
 #
 import binascii
+import sys
 from datetime import timedelta
 
 import os
 from flask_babel import lazy_gettext
 
-from mycodo.config_translations import TRANSLATIONS
+sys.path.append(
+    os.path.abspath(os.path.dirname(__file__)))
+from config_translations import TRANSLATIONS
 
 MYCODO_VERSION = '7.0.5'
 ALEMBIC_VERSION = '0797d251d77d'
