@@ -1376,48 +1376,43 @@ hopefully get you started to developing one that suits your needs.
 
 Example Conditional Statements are below:
 
-    # Example 1
-    if None not in [{bf43a998}, {dh54wqno}]:
-        sum = {bf43a998} + {dh54wqno}
-        if {bf43a998} > 2 and 10 < {dh54wqno} < 23 and sum < 30.5:
-            print(1)  # True (Do trigger actions)
-    else:
-        print(0)  # False (Do not trigger actions)
+    # Example 1, no measurement, useful to notify by email when an Input stops working
+    if {dj73gs0d} is None:
+        print(1)
 
-    # Example 2
+    # Example 2, test two measurements
     if None not in [{dj73gs0d}, {02nspgh1}]:
         if {dj73gs0d} < 20 and {02nspgh1} > 10:
             print(1)
 
-    # Example 3
+    # Example 3, test two measurements and sum of measurements
+    if None not in [{bf43a998}, {dh54wqno}]:
+        sum = {bf43a998} + {dh54wqno}
+        if {bf43a998} > 2 and 10 < {dh54wqno} < 23 and sum < 30.5:
+            print(1)  # True (Do trigger actions)
+
+    # Example 4, combine into one conditional
     if {dj73gs0d} != None and 20 < {dj73gs0d} < 30:
         print(1)
 
-    # Example 4
+    # Example 5, test two measurements and convert Edge Input from 0 or 1 to True or False
     if None not in [{dj73gs0d}, {02nspgh1}]:
         if bool({dj73gs0d}) and {02nspgh1} > 10:
             print(1)
 
-    # Example 5
-    if None not in [{dj73gs0d}, {02nspgh1}, {ucna62k4}]:
-        if {dj73gs0d} < 20 or ({02nspgh1} > 10 and not bool({ucna62k4})):
-            print(1)
-
-    # Example 6
+    # Example 6, test measurement with "or" and a rounded measurement
     if None not in [{dj73gs0d}, {02nspgh1}]:
         if {dj73gs0d} > 20 or int(round({02nspgh1})) in [20, 21, 22]:
             print(1)
 
-Each ID encased in curly brackets ({}) will be converted to the most
-recent measurement obtained from that particular sensor or device under
-Conditions.
+Each ID encased in curly brackets “{}” will be converted to the most
+recent measurement obtained from that particular measurement Condition.
 
 Before activating any conditionals, it’s advised to thoroughly explore
 all possible scenarios and plan a configuration that eliminates
-conflicts. Then, trial run your configuration before connecting devices
-to the outputs. Some devices or outputs may respond atypically or fail
-when switched on and off in rapid succession. Therefore, avoid creating
-an infinite loop with conditional statements.
+conflicts. Some devices or outputs may respond atypically or fail when
+switched on and off in rapid succession. Therefore, trial run your
+configuration before connecting devices to any outputs.
 
 Conditional Options
 

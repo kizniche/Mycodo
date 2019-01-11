@@ -10,7 +10,7 @@ from flask_babel import lazy_gettext
 
 from mycodo.config_translations import TRANSLATIONS
 
-MYCODO_VERSION = '7.0.4'
+MYCODO_VERSION = '7.0.5'
 ALEMBIC_VERSION = '0797d251d77d'
 
 #  FORCE_UPGRADE_MASTER
