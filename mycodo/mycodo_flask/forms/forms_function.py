@@ -20,33 +20,26 @@ from mycodo.config_translations import TRANSLATIONS
 class DataBase(FlaskForm):
     reorder_type = StringField('Reorder Type', widget=widgets.HiddenInput())
     list_visible_elements = SelectMultipleField('New Order')
-    reorder = SubmitField(
-        TRANSLATIONS['save_order']['title'])
+    reorder = SubmitField(TRANSLATIONS['save_order']['title'])
 
 
 class FunctionAdd(FlaskForm):
     func_type = SelectField('Function Type')
-    func_add = SubmitField(
-        TRANSLATIONS['add']['title'])
+    func_add = SubmitField(TRANSLATIONS['add']['title'])
 
 
 class FunctionMod(FlaskForm):
     function_id = StringField('Function ID', widget=widgets.HiddenInput())
     function_type = StringField('Function Type', widget=widgets.HiddenInput())
-    name = StringField(
-        TRANSLATIONS['name']['title'])
+    name = StringField(TRANSLATIONS['name']['title'])
     action_type = SelectField(
         choices=[('', TRANSLATIONS['select_one']['title'])] + FUNCTION_ACTIONS)
     add_action = SubmitField(lazy_gettext('Add Action'))
-    order_up = SubmitField(
-        TRANSLATIONS['up']['title'])
-    order_down = SubmitField(
-        TRANSLATIONS['down']['title'])
+    order_up = SubmitField(TRANSLATIONS['up']['title'])
+    order_down = SubmitField(TRANSLATIONS['down']['title'])
     execute_all_actions = SubmitField(lazy_gettext('Execute All Actions'))
-    save_function = SubmitField(
-        TRANSLATIONS['save']['title'])
-    delete_function = SubmitField(
-        TRANSLATIONS['delete']['title'])
+    save_function = SubmitField(TRANSLATIONS['save']['title'])
+    delete_function = SubmitField(TRANSLATIONS['delete']['title'])
 
 
 class Actions(FlaskForm):
@@ -72,7 +65,5 @@ class Actions(FlaskForm):
         lazy_gettext('Then Duration'),
         widget=NumberInput(step='any'))
 
-    save_action = SubmitField(
-        TRANSLATIONS['save']['title'])
-    delete_action = SubmitField(
-        TRANSLATIONS['delete']['title'])
+    save_action = SubmitField(TRANSLATIONS['save']['title'])
+    delete_action = SubmitField(TRANSLATIONS['delete']['title'])

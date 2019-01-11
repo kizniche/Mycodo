@@ -23,12 +23,10 @@ class PIDModBase(FlaskForm):
     function_type = StringField('Function Type', widget=widgets.HiddenInput())
     name = StringField(
         TRANSLATIONS['name']['title'],
-        validators=[DataRequired()]
-    )
+        validators=[DataRequired()])
     measurement = StringField(
         TRANSLATIONS['measurement']['title'],
-        validators=[DataRequired()]
-    )
+        validators=[DataRequired()])
     direction = SelectField(
         lazy_gettext('Direction'),
         choices=[
@@ -39,7 +37,7 @@ class PIDModBase(FlaskForm):
         validators=[DataRequired()]
     )
     period = DecimalField(
-        lazy_gettext('Period (seconds)'),
+        TRANSLATIONS['period']['title'],
         validators=[validators.NumberRange(
             min=1.0,
             max=86400.0
@@ -58,7 +56,7 @@ class PIDModBase(FlaskForm):
         widget=NumberInput(step='any')
     )
     setpoint = DecimalField(
-        lazy_gettext('Setpoint'),
+        TRANSLATIONS['setpoint']['title'],
         validators=[validators.NumberRange(
             min=-1000000,
             max=1000000
@@ -105,16 +103,11 @@ class PIDModBase(FlaskForm):
     pid_hold = SubmitField(lazy_gettext('Hold'))
     pid_pause = SubmitField(lazy_gettext('Pause'))
     pid_resume = SubmitField(lazy_gettext('Resume'))
-    pid_delete = SubmitField(
-        TRANSLATIONS['delete']['title'])
-    pid_activate = SubmitField(
-        TRANSLATIONS['activate']['title'])
-    pid_deactivate = SubmitField(
-        TRANSLATIONS['deactivate']['title'])
-    order_up = SubmitField(
-        TRANSLATIONS['up']['title'])
-    order_down = SubmitField(
-        TRANSLATIONS['down']['title'])
+    pid_delete = SubmitField(TRANSLATIONS['delete']['title'])
+    pid_activate = SubmitField(TRANSLATIONS['activate']['title'])
+    pid_deactivate = SubmitField(TRANSLATIONS['deactivate']['title'])
+    order_up = SubmitField(TRANSLATIONS['up']['title'])
+    order_down = SubmitField(TRANSLATIONS['down']['title'])
 
     pid_autotune_noiseband = DecimalField(
         lazy_gettext('Noise Band'),

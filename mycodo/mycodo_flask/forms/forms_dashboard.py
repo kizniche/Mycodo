@@ -64,18 +64,12 @@ class DashboardBase(FlaskForm):
         widget=NumberInput()
     )
     list_visible_elements = SelectMultipleField(lazy_gettext('Visible Elements'))
-    reorder = SubmitField(
-        TRANSLATIONS['save_order']['title'])
-    create = SubmitField(
-        TRANSLATIONS['create']['title'])
-    modify = SubmitField(
-        TRANSLATIONS['save']['title'])
-    delete = SubmitField(
-        TRANSLATIONS['delete']['title'])
-    order_up = SubmitField(
-        TRANSLATIONS['up']['title'])
-    order_down = SubmitField(
-        TRANSLATIONS['down']['title'])
+    reorder = SubmitField(TRANSLATIONS['save_order']['title'])
+    create = SubmitField(TRANSLATIONS['create']['title'])
+    modify = SubmitField(TRANSLATIONS['save']['title'])
+    delete = SubmitField(TRANSLATIONS['delete']['title'])
+    order_up = SubmitField(TRANSLATIONS['up']['title'])
+    order_down = SubmitField(TRANSLATIONS['down']['title'])
 
 
 class DashboardGraph(FlaskForm):
@@ -116,8 +110,7 @@ class DashboardGauge(FlaskForm):
         ],
         validators=[DataRequired()]
     )
-    input_ids = StringField(
-        TRANSLATIONS['measurement']['title'])
+    input_ids = StringField(TRANSLATIONS['measurement']['title'])
     y_axis_min = DecimalField(
         lazy_gettext('Gauge Min'),
         widget=NumberInput(step='any'))
@@ -131,8 +124,7 @@ class DashboardGauge(FlaskForm):
 
 
 class DashboardMeasurement(FlaskForm):
-    measurement_id = StringField(
-        TRANSLATIONS['measurement']['title'])
+    measurement_id = StringField(TRANSLATIONS['measurement']['title'])
     max_measure_age = IntegerField(
         TRANSLATIONS['max_age']['title'],
         widget=NumberInput())

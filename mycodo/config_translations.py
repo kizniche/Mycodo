@@ -108,6 +108,8 @@ TRANSLATIONS = {
         'title': lazy_gettext('Save Order')},
     'select_one': {
         'title': lazy_gettext('Select One')},
+    'setpoint': {
+        'title': lazy_gettext('Setpoint')},
     'settings': {
         'title': lazy_gettext('Settings')},
     'tag': {
@@ -210,7 +212,7 @@ TRANSLATIONS = {
         'title': lazy_gettext('On Command'),
         'phrase': lazy_gettext('Command to execute (as user mycodo) when the output is instructed to turn on')},
     'period': {
-        'title': lazy_gettext('Period'),
+        'title': lazy_gettext('Period (seconds)'),
         'phrase': lazy_gettext('The duration (seconds) between input reads')},
     'pin_clock': {
         'title': lazy_gettext('Clock Pin'),

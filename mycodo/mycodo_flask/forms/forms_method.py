@@ -19,15 +19,13 @@ from mycodo.config_translations import TRANSLATIONS
 
 
 class MethodCreate(FlaskForm):
-    name = StringField(
-        TRANSLATIONS['name']['title'])
+    name = StringField(TRANSLATIONS['name']['title'])
     method_type = SelectField(
         choices=METHODS,
         validators=[DataRequired()]
     )
     controller_type = HiddenField('Controller Type')
-    Submit = SubmitField(
-        TRANSLATIONS['add']['title'])
+    Submit = SubmitField(TRANSLATIONS['add']['title'])
 
 
 class MethodAdd(FlaskForm):
@@ -85,12 +83,10 @@ class MethodAdd(FlaskForm):
     y3 = DecimalField('Y3', widget=NumberInput(step='any'))
     output_daily_time = StringField(
         lazy_gettext('Time HH:MM:SS'),
-        render_kw={"placeholder": "HH:MM:SS"}
-    )
+        render_kw={"placeholder": "HH:MM:SS"})
     output_time = StringField(
         lazy_gettext('Time YYYY-MM-DD HH:MM:SS'),
-        render_kw={"placeholder": "YYYY-MM-DD HH:MM:SS"}
-    )
+        render_kw={"placeholder": "YYYY-MM-DD HH:MM:SS"})
     output_duration = DecimalField(
         lazy_gettext('Duration/Duty Cycle'),
         widget=NumberInput(step='any'))
@@ -109,38 +105,30 @@ class MethodAdd(FlaskForm):
 
 
 class MethodMod(FlaskForm):
-    method_id = StringField(
-        'Method ID', widget=widgets.HiddenInput())
-    method_data_id = StringField(
-        'Method Data ID', widget=widgets.HiddenInput())
+    method_id = StringField('Method ID', widget=widgets.HiddenInput())
+    method_data_id = StringField('Method Data ID', widget=widgets.HiddenInput())
     method_type = HiddenField('Method Type')
     method_select = HiddenField('Method Select')
     name = StringField(
         TRANSLATIONS['name']['title'])
     daily_time_start = StringField(
         lazy_gettext('Start HH:MM:SS'),
-        render_kw={"placeholder": "HH:MM:SS"}
-    )
+        render_kw={"placeholder": "HH:MM:SS"})
     daily_time_end = StringField(
         lazy_gettext('End HH:MM:SS'),
-        render_kw={"placeholder": "HH:MM:SS"}
-    )
+        render_kw={"placeholder": "HH:MM:SS"})
     time_start = StringField(
         lazy_gettext('Start YYYY-MM-DD HH:MM:SS'),
-        render_kw={"placeholder": "YYYY-MM-DD HH:MM:SS"}
-    )
+        render_kw={"placeholder": "YYYY-MM-DD HH:MM:SS"})
     time_end = StringField(
         lazy_gettext('End YYYY-MM-DD HH:MM:SS'),
-        render_kw={"placeholder": "YYYY-MM-DD HH:MM:SS"}
-    )
+        render_kw={"placeholder": "YYYY-MM-DD HH:MM:SS"})
     output_daily_time = StringField(
         lazy_gettext('Time HH:MM:SS'),
-        render_kw={"placeholder": "HH:MM:SS"}
-    )
+        render_kw={"placeholder": "HH:MM:SS"})
     output_time = StringField(
         lazy_gettext('Time YYYY-MM-DD HH:MM:SS'),
-        render_kw={"placeholder": "YYYY-MM-DD HH:MM:SS"}
-    )
+        render_kw={"placeholder": "YYYY-MM-DD HH:MM:SS"})
     duration = DecimalField(
         lazy_gettext('Duration (seconds)'),
         widget=NumberInput(step='any'))
@@ -158,9 +146,6 @@ class MethodMod(FlaskForm):
     output_duration = DecimalField(
         lazy_gettext('Duration/Duty Cycle'),
         widget=NumberInput(step='any'))
-    rename = SubmitField(
-        TRANSLATIONS['rename']['title'])
-    save = SubmitField(
-        TRANSLATIONS['save']['title'])
-    Delete = SubmitField(
-        TRANSLATIONS['delete']['title'])
+    rename = SubmitField(TRANSLATIONS['rename']['title'])
+    save = SubmitField(TRANSLATIONS['save']['title'])
+    delete = SubmitField(TRANSLATIONS['delete']['title'])

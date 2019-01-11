@@ -44,24 +44,15 @@ class MathMod(FlaskForm):
     start_offset = DecimalField(
         lazy_gettext('Start Offset (seconds)'),
         widget=NumberInput(step='any'))
-    inputs = SelectMultipleField(
-        lazy_gettext('Inputs'))
-    select_measurement_unit = StringField(
-        TRANSLATIONS['select_measurement_unit']['title'])
-    measurements_enabled = SelectMultipleField(
-        TRANSLATIONS['measurements_enabled']['title'])
-    math_mod = SubmitField(
-        TRANSLATIONS['save']['title'])
-    math_delete = SubmitField(
-        TRANSLATIONS['delete']['title'])
-    math_activate = SubmitField(
-        TRANSLATIONS['activate']['title'])
-    math_deactivate = SubmitField(
-        TRANSLATIONS['deactivate']['title'])
-    math_order_up = SubmitField(
-        TRANSLATIONS['up']['title'])
-    math_order_down = SubmitField(
-        TRANSLATIONS['down']['title'])
+    inputs = SelectMultipleField(lazy_gettext('Inputs'))
+    select_measurement_unit = StringField(TRANSLATIONS['select_measurement_unit']['title'])
+    measurements_enabled = SelectMultipleField(TRANSLATIONS['measurements_enabled']['title'])
+    math_mod = SubmitField(TRANSLATIONS['save']['title'])
+    math_delete = SubmitField(TRANSLATIONS['delete']['title'])
+    math_activate = SubmitField(TRANSLATIONS['activate']['title'])
+    math_deactivate = SubmitField(TRANSLATIONS['deactivate']['title'])
+    math_order_up = SubmitField(TRANSLATIONS['up']['title'])
+    math_order_down = SubmitField(TRANSLATIONS['down']['title'])
 
 
 class MathModAverageSingle(FlaskForm):
@@ -91,8 +82,7 @@ class MathModHumidity(FlaskForm):
 
 
 class MathModRedundancy(FlaskForm):
-    order_of_use = SelectMultipleField(
-        lazy_gettext('Order of Use'))
+    order_of_use = SelectMultipleField(lazy_gettext('Order of Use'))
 
 
 class MathModVerification(FlaskForm):
@@ -109,13 +99,10 @@ class MathMeasurementMod(FlaskForm):
         TRANSLATIONS['name']['title'],
         validators=[DataRequired()]
     )
-    select_measurement_unit = StringField(
-        TRANSLATIONS['select_measurement_unit']['title'])
-    convert_to_measurement_unit = StringField(
-        lazy_gettext('Convert to Measurement'))
+    select_measurement_unit = StringField(TRANSLATIONS['select_measurement_unit']['title'])
+    convert_to_measurement_unit = StringField(lazy_gettext('Convert to Measurement'))
 
-    math_measurement_mod = SubmitField(
-        TRANSLATIONS['save']['title'])
+    math_measurement_mod = SubmitField(TRANSLATIONS['save']['title'])
 
 
 class MathModMisc(FlaskForm):

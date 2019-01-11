@@ -47,8 +47,7 @@ class NoteMod(FlaskForm):
     note_tags = SelectMultipleField(lazy_gettext('Tags'))
     files = FileField(lazy_gettext('Attached Files'))
     enter_custom_date_time = BooleanField(lazy_gettext('Use Custom Date/Time'))
-    date_time = DateTimeField(
-        'Custom Date/Time', format='%Y-%m-%d %H:%M:%S')
+    date_time = DateTimeField('Custom Date/Time', format='%Y-%m-%d %H:%M:%S')
     note = TextAreaField(TRANSLATIONS['note']['title'])
     file_del = SubmitField(TRANSLATIONS['delete']['title'])
     note_cancel = SubmitField(TRANSLATIONS['cancel']['title'])
@@ -75,8 +74,7 @@ class NotesShow(FlaskForm):
     filter_tags = StringField(lazy_gettext('Filter Tags'))
     filter_files = StringField(lazy_gettext('Filter Files'))
     filter_notes = StringField(lazy_gettext('Filter Notes'))
-    sort_by = SelectField(
-        lazy_gettext('Sort By'), choices=sort_by_choices)
+    sort_by = SelectField(lazy_gettext('Sort By'), choices=sort_by_choices)
     sort_direction = SelectField(
         lazy_gettext('Sort Direction'), choices=sort_direction_choices)
     notes_show = SubmitField(lazy_gettext('Show Notes'))

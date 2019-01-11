@@ -22,44 +22,34 @@ from mycodo.config_translations import TRANSLATIONS
 class DataBase(FlaskForm):
     reorder_type = StringField('Reorder Type', widget=widgets.HiddenInput())
     list_visible_elements = SelectMultipleField('New Order')
-    reorder = SubmitField(
-        TRANSLATIONS['save_order']['title'])
+    reorder = SubmitField(TRANSLATIONS['save_order']['title'])
 
 
 class Trigger(FlaskForm):
     function_id = StringField('Function ID', widget=widgets.HiddenInput())
     function_type = StringField('Function Type', widget=widgets.HiddenInput())
-    name = StringField(
-        TRANSLATIONS['name']['title'])
+    name = StringField(TRANSLATIONS['name']['title'])
 
     # Edge detection
-    measurement = StringField(
-        TRANSLATIONS['measurement']['title'])
+    measurement = StringField(TRANSLATIONS['measurement']['title'])
     edge_detected = StringField(lazy_gettext('If Edge Detected'))
 
     # Sunrise/sunset
-    rise_or_set = StringField(
-        lazy_gettext('Rise or Set'))
+    rise_or_set = StringField(lazy_gettext('Rise or Set'))
     latitude = DecimalField(
-        lazy_gettext('Latitude (decimal)'),
-        widget=NumberInput(step='any'))
+        lazy_gettext('Latitude (decimal)'), widget=NumberInput(step='any'))
     longitude = DecimalField(
-        lazy_gettext('Longitude (decimal)'),
-        widget=NumberInput(step='any'))
+        lazy_gettext('Longitude (decimal)'), widget=NumberInput(step='any'))
     zenith = DecimalField(
-        lazy_gettext('Zenith'),
-        widget=NumberInput(step='any'))
+        lazy_gettext('Zenith'), widget=NumberInput(step='any'))
     date_offset_days = IntegerField(
-        lazy_gettext('Date Offset (days)'),
-        widget=NumberInput())
+        lazy_gettext('Date Offset (days)'), widget=NumberInput())
     time_offset_minutes = IntegerField(
-        lazy_gettext('Time Offset (minutes)'),
-        widget=NumberInput())
+        lazy_gettext('Time Offset (minutes)'), widget=NumberInput())
 
     # Timer
     period = DecimalField(
-        lazy_gettext('Period (seconds)'),
-        widget=NumberInput(step='any'))
+        lazy_gettext('Period (seconds)'), widget=NumberInput(step='any'))
     timer_start_offset = IntegerField(
         lazy_gettext('Start Offset (seconds)'), widget=NumberInput())
     timer_start_time = StringField(lazy_gettext('Start Time (HH:MM)'))
@@ -74,26 +64,18 @@ class Trigger(FlaskForm):
     unique_id_2 = StringField(lazy_gettext('If ID 2'))
     output_state = StringField(lazy_gettext('If State'))
     output_duration = DecimalField(
-        lazy_gettext('If Duration (seconds)'),
-        widget=NumberInput(step='any'))
+        lazy_gettext('If Duration (seconds)'), widget=NumberInput(step='any'))
     output_duty_cycle = DecimalField(
-        lazy_gettext('If Duty Cycle (%)'),
-        widget=NumberInput(step='any'))
+        lazy_gettext('If Duty Cycle (%)'), widget=NumberInput(step='any'))
 
     action_type = SelectField(
         choices=[('', TRANSLATIONS['select_one']['title'])] + FUNCTION_ACTIONS)
     add_action = SubmitField(lazy_gettext('Add Action'))
 
-    activate_trigger = SubmitField(
-        TRANSLATIONS['activate']['title'])
-    deactivate_trigger = SubmitField(
-        TRANSLATIONS['deactivate']['title'])
+    activate_trigger = SubmitField(TRANSLATIONS['activate']['title'])
+    deactivate_trigger = SubmitField(TRANSLATIONS['deactivate']['title'])
     test_all_actions = SubmitField(lazy_gettext('Test All Actions'))
-    delete_trigger = SubmitField(
-        TRANSLATIONS['delete']['title'])
-    save_trigger = SubmitField(
-        TRANSLATIONS['save']['title'])
-    order_up = SubmitField(
-        TRANSLATIONS['up']['title'])
-    order_down = SubmitField(
-        TRANSLATIONS['down']['title'])
+    delete_trigger = SubmitField(TRANSLATIONS['delete']['title'])
+    save_trigger = SubmitField(TRANSLATIONS['save']['title'])
+    order_up = SubmitField(TRANSLATIONS['up']['title'])
+    order_down = SubmitField(TRANSLATIONS['down']['title'])

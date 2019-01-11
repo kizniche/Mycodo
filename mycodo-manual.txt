@@ -243,16 +243,16 @@ Here is how I generally set up Mycodo to monitor and regulate:
     to begin recording measurements to the database.
 5.  Go to the Live page to ensure there is recent data being acquired
     from the input.
-6.  On the Setup -> Outputs page, add a relay and configure the GPIO pin
+6.  On the Setup -> Output page, add a relay and configure the GPIO pin
     that switches it, whether the relay switches On when the signal is
     HIGH or LOW, and what state (On or Off) to set the relay when Mycodo
     starts. A pulse-width modulated (PWM) output may also be used, among
     others.
 7.  Test the relay by switching it On and Off or generating a PWM signal
-    from the Setup -> Outputs page and make sure the device connected to
+    from the Setup -> Output page and make sure the device connected to
     the relay turns On when you select “On”, and Off when you select
     “Off”.
-8.  On the Setup -> Functions page, create a PID controller with the
+8.  On the Setup -> Function page, create a PID controller with the
     appropriate input, output, and other parameters. Activate the PID
     controller.
 9.  On the Dash page, create a graph that includes the input
@@ -381,7 +381,7 @@ do this, follow the below instructions:
     return this value. You can deactivate the first sensor (mimicking
     the first sensor stopped working) and see if the second sensor’s
     value is then returned.
-9.  Go to the Setup -> Functions page and select the new Redundancy Math
+9.  Go to the Setup -> Function page and select the new Redundancy Math
     controller for the PID Measurement option.
 
 The PID controller will now use the measurement returned from the
@@ -784,7 +784,7 @@ produce a new value that may be used within Mycodo.
 
 Output
 
-Setup -> Outputs
+Setup -> Output
 
 Outputs are various signals that can be generated that operate devices.
 An output can be a PWM signal, a simple HIGH/LOW signal to operate a
@@ -864,6 +864,10 @@ command, to name a few.
                           will not issue an on or off command when Mycodo
                           starts or stops.
 
+  Trigger at Startup      Select to enable triggering Functions (such as
+                          Output Triggers) when Mycodo starts and if Start
+                          State is set to ON.
+
   Seconds to turn On      This is a way to turn a output on for a specific
                           duration of time. This can be useful for testing
                           the outputs and powered devices or the measured
@@ -896,8 +900,8 @@ interval or ‘period’ of time; a low duty cycle corresponds to low power,
 because the power is off for most of the time. Duty cycle is expressed
 in percent, 100% being fully on.
 
-PWM pins can be set up on the Setup -> Outputs` page, then it may be
-used by a PWM PID Controller.
+PWM pins can be set up on the Setup -> Output` page, then it may be used
+by a PWM PID Controller.
 
   ------------------------------------------------------------------------
   Setting                 Description
@@ -1043,7 +1047,7 @@ peristaltic pump.
 
 Function
 
-Setup -> Functions
+Setup -> Function
 
 Functions couple Inputs with Outputs to perform specific tasks. For
 example, this could be regulation of temperature with a temperature
@@ -1318,11 +1322,15 @@ And typical Daemon Log output will look like this:
 Conditional
 
 Conditional controllers are used to perform certain actions based on
-whether a conditional statement is true. Python 3 is the environment
-that these conditionals will be executed. For the conditional to be true
-(and trigger the actions), the code must print a “1” and for the
-conditional to be false (and not trigger the actions), the code must
-print a “0” or print nothing.
+whether a conditional statement is true, which is typically based on a
+measurement or GPIO state.
+
+Conditional Setup Guide
+
+Python 3 is the environment that these conditionals will be executed.
+For the conditional to be true (and trigger the actions), the code must
+print a “1” and for the conditional to be false (and not trigger the
+actions), the code must print a “0” or print nothing.
 
 Since the Python code contained in the Conditional Statement must be
 formatted properly, it’s best to familiarize yourself with the basics of
@@ -1338,7 +1346,35 @@ conditional will not trigger and will throw an error in the daemon log.
 Accounting for None is useful for determining if an Input is no longer
 acquiring measurements.
 
-Example conditionals are below:
+To create a basic conditional, follow these steps, using the numbers in
+the screenshots, below, that correspond to the numbers in parentheses:
+
+1.  Go to the Setup -> Function page, select “Controller: Conditional”,
+    then click Add.
+2.  Next to (1), select “Measurement”, then click Add Condition.
+3.  Next to (2), select “Output (Duration)” (or any other action), then
+    click Add Action.
+4.  Select a measurement (3), then click Save (4).
+5.  Select a Controller ID (5) for an Output, select either “On” or
+    “Off” for Then State, then click Save (6).
+6.  Make note of what your Measurement ID (7) is and replace the
+    Measurement IDs in the Conditional Statement (8) with that ID
+    (notice “bf43a998” in the first image was replaced with “1c487d5e”
+    in the second image), then click Save (9).
+
+If your Conditional Statement has been formatted correctly, your
+Conditional will save and it will be ready to activate. If an error is
+returned, your options will not have been saved. Inspect the error for
+which line is causing the issue and read the error message itself to try
+to understand what the problem is and how to fix it. There are an
+unfathomable number of ways to configure a Conditional, but this should
+hopefully get you started to developing one that suits your needs.
+
+[Screenshot-Mycodo-Conditional-Guide-01]
+
+[Screenshot-Mycodo-Conditional-Guide-02]
+
+Example Conditional Statements are below:
 
     # Example 1
     if None not in [{bf43a998}, {dh54wqno}]:
@@ -1644,7 +1680,7 @@ Conditional, Trigger).
 
 LCDs
 
-Setup -> LCDs
+Setup -> LCD
 
 Data may be output to a liquid crystal display (LCD) for easy viewing.
 Please see LCD Displays for specific information regarding
@@ -1686,7 +1722,7 @@ next every set period.
 
 Methods
 
-Setup -> Methods
+Setup -> Method
 
 Methods enable Setpoint Tracking in PIDs and time-based duty cycle
 changes in timers. Normally, a PID controller will regulate an

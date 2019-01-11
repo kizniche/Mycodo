@@ -26,18 +26,15 @@ from mycodo.config_translations import TRANSLATIONS
 class DataBase(FlaskForm):
     reorder_type = StringField('Reorder Type', widget=widgets.HiddenInput())
     list_visible_elements = SelectMultipleField('New Order')
-    reorder = SubmitField(
-        TRANSLATIONS['save_order']['title'])
+    reorder = SubmitField(TRANSLATIONS['save_order']['title'])
 
 
 class OutputAdd(FlaskForm):
     output_quantity = IntegerField(lazy_gettext('Quantity'))
     output_type = SelectField(
         choices=OUTPUTS,
-        validators=[DataRequired()]
-    )
-    output_add = SubmitField(
-        TRANSLATIONS['add']['title'])
+        validators=[DataRequired()])
+    output_add = SubmitField(TRANSLATIONS['add']['title'])
 
 
 class OutputMod(FlaskForm):
@@ -45,25 +42,16 @@ class OutputMod(FlaskForm):
     output_pin = HiddenField('Output Pin')
     name = StringField(
         TRANSLATIONS['name']['title'],
-        validators=[DataRequired()]
-    )
+        validators=[DataRequired()])
     location = StringField(lazy_gettext('Location'))
-    i2c_bus = IntegerField(
-        TRANSLATIONS['i2c_bus']['title'])
-    baud_rate = IntegerField(
-        TRANSLATIONS['baud_rate']['title'])
-    gpio_location = IntegerField(
-        TRANSLATIONS['gpio_location']['title'], widget=NumberInput())
-    protocol = IntegerField(
-        TRANSLATIONS['protocol']['title'], widget=NumberInput())
-    pulse_length = IntegerField(
-        TRANSLATIONS['pulse_length']['title'], widget=NumberInput())
-    on_command = StringField(
-        TRANSLATIONS['on_command']['title'])
-    off_command = StringField(
-        TRANSLATIONS['off_command']['title'])
-    pwm_command = StringField(
-        TRANSLATIONS['pwm_command']['title'])
+    i2c_bus = IntegerField(TRANSLATIONS['i2c_bus']['title'])
+    baud_rate = IntegerField(TRANSLATIONS['baud_rate']['title'])
+    gpio_location = IntegerField(TRANSLATIONS['gpio_location']['title'], widget=NumberInput())
+    protocol = IntegerField(TRANSLATIONS['protocol']['title'], widget=NumberInput())
+    pulse_length = IntegerField(TRANSLATIONS['pulse_length']['title'], widget=NumberInput())
+    on_command = StringField(TRANSLATIONS['on_command']['title'])
+    off_command = StringField(TRANSLATIONS['off_command']['title'])
+    pwm_command = StringField(TRANSLATIONS['pwm_command']['title'])
     pwm_invert_signal = BooleanField(lazy_gettext('Invert Signal'))
     amps = DecimalField(
         TRANSLATIONS['amps']['title'],
@@ -106,14 +94,9 @@ class OutputMod(FlaskForm):
     )
     flow_rate = DecimalField(
         TRANSLATIONS['trigger_functions_at_start']['title'],
-        widget=NumberInput(step='any')
-    )
-    save = SubmitField(
-        TRANSLATIONS['save']['title'])
-    delete = SubmitField(
-        TRANSLATIONS['delete']['title'])
-    order_up = SubmitField(
-        TRANSLATIONS['up']['title'])
-    order_down = SubmitField(
-        TRANSLATIONS['down']['title'])
+        widget=NumberInput(step='any'))
+    save = SubmitField(TRANSLATIONS['save']['title'])
+    delete = SubmitField(TRANSLATIONS['delete']['title'])
+    order_up = SubmitField(TRANSLATIONS['up']['title'])
+    order_down = SubmitField(TRANSLATIONS['down']['title'])
     on_submit = SubmitField(lazy_gettext('Turn On'))

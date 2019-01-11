@@ -303,19 +303,19 @@ PID_INFO = {
         0: {
             'measurement': '',
             'unit': '',
-            'name': 'Setpoint',
+            'name': TRANSLATIONS['setpoint']['title'],
             'measurement_type': 'setpoint'
         },
         1: {
             'measurement': '',
             'unit': '',
-            'name': 'Setpoint Band (Min)',
+            'name': '{} (Band Min)'.format(TRANSLATIONS['setpoint']['title']),
             'measurement_type': 'setpoint'
         },
         2: {
             'measurement': '',
             'unit': '',
-            'name': 'Setpoint Band (Max)',
+            'name': '{} (Band Max)'.format(TRANSLATIONS['setpoint']['title']),
             'measurement_type': 'setpoint'
         },
         3: {
@@ -336,12 +336,12 @@ PID_INFO = {
         6: {
             'measurement': 'duration_time',
             'unit': 's',
-            'name': 'Output Duration'
+            'name': '{} ({})'.format(TRANSLATIONS['output']['title'], TRANSLATIONS['duration']['title'])
         },
         7: {
             'measurement': 'duty_cycle',
             'unit': 'percent',
-            'name': 'Output Duty Cycle'
+            'name': '{} ({})'.format(TRANSLATIONS['output']['title'], TRANSLATIONS['duty_cycle']['title'])
         }
     }
 }
@@ -429,8 +429,8 @@ FUNCTION_ACTIONS = [
     ('photo', lazy_gettext('Camera: Capture Photo')),
     ('activate_controller', '{}: {}'.format(TRANSLATIONS['controller']['title'], TRANSLATIONS['activate']['title'])),
     ('deactivate_controller', '{}: {}'.format(TRANSLATIONS['controller']['title'], TRANSLATIONS['deactivate']['title'])),
-    ('create_note', lazy_gettext('Create Note')),
-    ('email', lazy_gettext('Email Notification')),
+    ('create_note', TRANSLATIONS['note']['title']),
+    ('email', TRANSLATIONS['email']['title']),
     ('command', lazy_gettext('Execute Command')),
     ('lcd_backlight_off', '{}: {}'.format(TRANSLATIONS['lcd']['title'], lazy_gettext('Backlight Off'))),
     ('lcd_backlight_on', '{}: {}'.format(TRANSLATIONS['lcd']['title'], lazy_gettext('LCD: Backlight On'))),

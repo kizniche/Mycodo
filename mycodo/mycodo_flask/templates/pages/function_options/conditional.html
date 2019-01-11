@@ -59,7 +59,7 @@
       <div class="col-md-12 col-lg-6">
         {{form_conditional.conditional_statement.label(class_='control-label')}}
         <div>
-          <textarea class="form-control" id="conditional_statement" name="conditional_statement" rows="5" type="text" title="{{_('The Python 3 code to execute. Executing print(1) triggers actions.')}}">{{each_cond.conditional_statement}}</textarea>
+          <textarea class="form-control" id="conditional_statement" name="conditional_statement" rows="4" type="text" title="{{_('The Python 3 code to execute. Executing print(1) triggers actions.')}}">{{each_cond.conditional_statement}}</textarea>
         </div>
       </div>
       <div class="col-auto">
@@ -82,31 +82,28 @@
       </div>
     </div>
 
-    <div class="row align-items-end small-gutters" style="padding: 1.5em 0 0.2em 0.1em">
-      <div class="col-auto">
-        {{form_conditional.condition_type(class_='form-control btn btn-sm')}}
-      </div>
-      <div class="col-auto">
-        {{form_conditional.add_condition(class_='form-control btn btn-sm')}}
-      </div>
-    </div>
-
-    <div class="row align-items-end small-gutters" style="border-bottom: 1px solid #ddd; padding: 1.5em 0 0.2em 0.1em">
-      <div class="col-auto">
-        {{form_conditional.action_type(class_='form-control')}}
-      </div>
-      <div class="col-auto">
-        {{form_conditional.add_action(class_='form-control btn btn-sm')}}
-      </div>
-    </div>
-
     </form>
 
-  {% if conditions_dict[each_cond.unique_id] %}
+    <div class="row align-items-end small-gutters" style="border-top: 1px solid #ddd; padding-top: 0.5em">
+      <h5>{{_('Conditions')}} <a href="/help#conditional-conditions" target="_blank"><span style="font-size: 16px" class="fas fa-question-circle"></span></a></h5>
+    </div>
 
-    <h5>{{_('Conditions')}} <a href="/help#conditional-conditions" target="_blank"><span style="font-size: 16px" class="fas fa-question-circle"></span></a></h5>
+    <div class="row align-items-end small-gutters" style="padding-bottom: 0.2em">
+      <form method="post" action="/function">
+      {{form_conditional.csrf_token}}
+      {{form_conditional.function_id(class_='form-control', value=each_cond.unique_id)}}
+      {{form_conditional.function_type(class_='form-control', value='conditional')}}
 
-  {% endif %}
+      <div class="row align-items-end small-gutters" style="padding: 0.5em 0 0.2em 1em">
+        <div class="col-auto">
+          {{form_conditional.condition_type(class_='form-control')}}
+        </div>
+        <div class="col-auto">
+          {{form_conditional.add_condition(class_='form-control btn btn-sm')}}
+        </div>
+      </div>
+      </form>
+    </div>
 
   {% for each_condition in conditional_conditions if each_condition.conditional_id == each_cond.unique_id %}
 
@@ -115,7 +112,7 @@
     {{form_conditional_conditions.conditional_id(class_='form-control', value=each_cond.unique_id)}}
     {{form_conditional_conditions.conditional_condition_id(class_='form-control', value=each_condition.unique_id)}}
 
-    <div class="row align-items-end small-gutters" style="border-bottom: 1px solid #ddd; padding-bottom: 0.3em">
+    <div class="row align-items-end small-gutters" style="padding-bottom: 0.3em">
       <div class="col-auto">
         <input class="form-control btn btn-sm btn-block" disabled="" value="{% for each_con in conditional_conditions_list if each_condition.condition_type == each_con[0] %}{{"{" + each_condition.unique_id.split('-')[0] + "}"}} {{each_con[1]}}{% endfor %}" title="{{_('This {ID} is what should be used in the Conditional Statement Python code')}}" type="text">
       </div>
@@ -138,11 +135,27 @@
 
   {% endfor %}
 
-  {% if actions_dict['conditional'][each_cond.unique_id] %}
+    <div class="row align-items-end small-gutters" style="border-top: 1px solid #ddd; padding-top: 0.5em">
+      <h5>{{_('Actions')}} <a href="/help#function-actions" target="_blank"><span style="font-size: 16px" class="fas fa-question-circle"></span></a></h5>
+    </div>
 
-    <h5>{{_('Actions')}} <a href="/help#function-actions" target="_blank"><span style="font-size: 16px" class="fas fa-question-circle"></span></a></h5>
+    <div class="row align-items-end small-gutters" style="padding-bottom: 0.2em">
+      <form method="post" action="/function">
+      {{form_conditional.csrf_token}}
+      {{form_conditional.function_id(class_='form-control', value=each_cond.unique_id)}}
+      {{form_conditional.function_type(class_='form-control', value='conditional')}}
 
-  {% endif %}
+      <div class="row align-items-end small-gutters" style="padding: 0.5em 0 0.2em 1em">
+        <div class="col-auto">
+          {{form_conditional.action_type(class_='form-control')}}
+        </div>
+        <div class="col-auto">
+          {{form_conditional.add_action(class_='form-control btn btn-sm')}}
+        </div>
+      </div>
+
+      </form>
+    </div>
 
   {% for each_action in actions if each_action.function_id == each_cond.unique_id %}
 
@@ -152,7 +165,7 @@
     {{form_actions.function_id(class_='form-control', value=each_cond.unique_id)}}
     {{form_actions.function_action_id(class_='form-control', value=each_action.unique_id)}}
 
-    <div class="row align-items-end small-gutters" style="border-bottom: 1px solid #ddd; padding-bottom: 0.3em">
+    <div class="row align-items-end small-gutters" style="padding-bottom: 0.3em">
       <div class="col-sm-2">
         <input class="form-control btn btn-sm btn-block" disabled="" value="[{{loop.index}}] {% for each_act in function_actions_list if each_action.action_type == each_act[0] %}{{each_act[1]}}{% endfor %}" type="text">
       </div>

@@ -25,8 +25,7 @@ class LCDAdd(FlaskForm):
         choices=LCDS,
         validators=[DataRequired()]
     )
-    add = SubmitField(
-        TRANSLATIONS['add']['title'])
+    add = SubmitField(TRANSLATIONS['add']['title'])
 
 
 class LCDMod(FlaskForm):
@@ -57,18 +56,12 @@ class LCDMod(FlaskForm):
         widget=NumberInput(step='any')
     )
     add_display = SubmitField(lazy_gettext('Add Display Set'))
-    save = SubmitField(
-        TRANSLATIONS['save']['title'])
-    delete = SubmitField(
-        TRANSLATIONS['delete']['title'])
-    activate = SubmitField(
-        TRANSLATIONS['activate']['title'])
-    deactivate = SubmitField(
-        TRANSLATIONS['deactivate']['title'])
-    reorder_up = SubmitField(
-        TRANSLATIONS['up']['title'])
-    reorder_down = SubmitField(
-        TRANSLATIONS['down']['title'])
+    save = SubmitField(TRANSLATIONS['save']['title'])
+    delete = SubmitField(TRANSLATIONS['delete']['title'])
+    activate = SubmitField(TRANSLATIONS['activate']['title'])
+    deactivate = SubmitField(TRANSLATIONS['deactivate']['title'])
+    reorder_up = SubmitField(TRANSLATIONS['up']['title'])
+    reorder_down = SubmitField(TRANSLATIONS['down']['title'])
     reset_flashing = SubmitField(lazy_gettext('Reset LCD'))
 
 
@@ -119,7 +112,5 @@ class LCDModDisplay(FlaskForm):
         validators=[validators.NumberRange(min=0)],
         widget=NumberInput()
     )
-    save_display = SubmitField(
-        TRANSLATIONS['save']['title'])
-    delete_display = SubmitField(
-        TRANSLATIONS['delete']['title'])
+    save_display = SubmitField(TRANSLATIONS['save']['title'])
+    delete_display = SubmitField(TRANSLATIONS['delete']['title'])

@@ -28,8 +28,7 @@ logger = logging.getLogger("mycodo.forms_input")
 class DataBase(FlaskForm):
     reorder_type = StringField('Reorder Type', widget=widgets.HiddenInput())
     list_visible_elements = SelectMultipleField('New Order')
-    reorder = SubmitField(
-        TRANSLATIONS['save_order']['title'])
+    reorder = SubmitField(TRANSLATIONS['save_order']['title'])
 
 
 class InputAdd(FlaskForm):
@@ -59,8 +58,7 @@ class InputAdd(FlaskForm):
         choices=choices_inputs,
         validators=[DataRequired()]
     )
-    input_add = SubmitField(
-        TRANSLATIONS['add']['title'])
+    input_add = SubmitField(TRANSLATIONS['add']['title'])
 
 
 class InputMod(FlaskForm):
@@ -80,36 +78,21 @@ class InputMod(FlaskForm):
         widget=NumberInput(step='any')
     )
     location = StringField(lazy_gettext('Location'))
-    ftdi_location = StringField(
-        TRANSLATIONS['ftdi_location']['title'])
-    uart_location = StringField(
-        TRANSLATIONS['uart_location']['title'])
-    i2c_location = StringField(
-        TRANSLATIONS['i2c_location']['title'])
-    gpio_location = IntegerField(
-        TRANSLATIONS['gpio_location']['title'])
-
-    i2c_bus = IntegerField(
-        TRANSLATIONS['i2c_bus']['title'], widget=NumberInput())
-    baud_rate = IntegerField(
-        TRANSLATIONS['baud_rate']['title'], widget=NumberInput())
-    power_output_id = StringField(
-        lazy_gettext('Power Output'))  # For powering input
-    calibrate_sensor_measure = StringField(
-        lazy_gettext('Calibration Measurement'))
-    resolution = IntegerField(
-        TRANSLATIONS['resolution']['title'], widget=NumberInput())
-    resolution_2 = IntegerField(
-        TRANSLATIONS['resolution']['title'], widget=NumberInput())
-    sensitivity = IntegerField(
-        TRANSLATIONS['sensitivity']['title'], widget=NumberInput())
-
-    measurements_enabled = SelectMultipleField(
-        TRANSLATIONS['measurements_enabled']['title'])
+    ftdi_location = StringField(TRANSLATIONS['ftdi_location']['title'])
+    uart_location = StringField(TRANSLATIONS['uart_location']['title'])
+    gpio_location = IntegerField(TRANSLATIONS['gpio_location']['title'])
+    i2c_location = StringField(TRANSLATIONS['i2c_location']['title'])
+    i2c_bus = IntegerField(TRANSLATIONS['i2c_bus']['title'], widget=NumberInput())
+    baud_rate = IntegerField(TRANSLATIONS['baud_rate']['title'], widget=NumberInput())
+    power_output_id = StringField(lazy_gettext('Power Output'))  # For powering input
+    calibrate_sensor_measure = StringField(lazy_gettext('Calibration Measurement'))
+    resolution = IntegerField(TRANSLATIONS['resolution']['title'], widget=NumberInput())
+    resolution_2 = IntegerField(TRANSLATIONS['resolution']['title'], widget=NumberInput())
+    sensitivity = IntegerField( TRANSLATIONS['sensitivity']['title'], widget=NumberInput())
+    measurements_enabled = SelectMultipleField(TRANSLATIONS['measurements_enabled']['title'])
 
     # Server options
-    host = StringField(
-        TRANSLATIONS['host']['title'])
+    host = StringField(TRANSLATIONS['host']['title'])
     port = IntegerField(
         TRANSLATIONS['port']['title'], widget=NumberInput())
     times_check = IntegerField(
@@ -118,12 +101,10 @@ class InputMod(FlaskForm):
         TRANSLATIONS['deadline']['title'], widget=NumberInput())
 
     # Linux Command
-    cmd_command = StringField(
-        TRANSLATIONS['cmd_command']['title'])
+    cmd_command = StringField(TRANSLATIONS['cmd_command']['title'])
 
     # MAX chip options
-    thermocouple_type = StringField(
-        TRANSLATIONS['thermocouple_type']['title'])
+    thermocouple_type = StringField(TRANSLATIONS['thermocouple_type']['title'])
     ref_ohm = IntegerField(
         TRANSLATIONS['ref_ohm']['title'], widget=NumberInput())
 
@@ -145,8 +126,7 @@ class InputMod(FlaskForm):
         TRANSLATIONS['adc_gain']['title'], widget=NumberInput())
     adc_resolution = IntegerField(
         TRANSLATIONS['adc_resolution']['title'], widget=NumberInput())
-    adc_sample_speed = StringField(
-        TRANSLATIONS['adc_sample_speed']['title'])
+    adc_sample_speed = StringField(TRANSLATIONS['adc_sample_speed']['title'])
 
     switch_edge = StringField(lazy_gettext('Edge'))
     switch_bouncetime = IntegerField(
@@ -155,8 +135,7 @@ class InputMod(FlaskForm):
         lazy_gettext('Reset Period'), widget=NumberInput())
 
     # Pre-Output
-    pre_output_id = StringField(
-        TRANSLATIONS['pre_output_id']['title'])
+    pre_output_id = StringField(TRANSLATIONS['pre_output_id']['title'])
     pre_output_duration = DecimalField(
         TRANSLATIONS['pre_output_duration']['title'],
         validators=[validators.NumberRange(
@@ -180,32 +159,23 @@ class InputMod(FlaskForm):
         widget=NumberInput(step='any'))
 
     # SHT options
-    sht_voltage = StringField(
-        TRANSLATIONS['sht_voltage']['title'])
+    sht_voltage = StringField(TRANSLATIONS['sht_voltage']['title'])
 
-    input_mod = SubmitField(
-        TRANSLATIONS['save']['title'])
-    input_delete = SubmitField(
-        TRANSLATIONS['delete']['title'])
+    input_mod = SubmitField(TRANSLATIONS['save']['title'])
+    input_delete = SubmitField(TRANSLATIONS['delete']['title'])
     input_acquire_measurements = SubmitField(lazy_gettext('Acquire Measurements Now'))
-    input_activate = SubmitField(
-        TRANSLATIONS['activate']['title'])
-    input_deactivate = SubmitField(
-        TRANSLATIONS['deactivate']['title'])
-    input_order_up = SubmitField(
-        TRANSLATIONS['up']['title'])
-    input_order_down = SubmitField(
-        TRANSLATIONS['down']['title'])
+    input_activate = SubmitField(TRANSLATIONS['activate']['title'])
+    input_deactivate = SubmitField(TRANSLATIONS['deactivate']['title'])
+    input_order_up = SubmitField(TRANSLATIONS['up']['title'])
+    input_order_down = SubmitField(TRANSLATIONS['down']['title'])
 
 
 class InputMeasurementMod(FlaskForm):
     input_id = StringField('Input ID', widget=widgets.HiddenInput())
     input_measurement_id = StringField(widget=widgets.HiddenInput())
     name = StringField(
-        TRANSLATIONS['name']['title'], validators=[DataRequired()]
-    )
-    select_measurement_unit = StringField(
-        TRANSLATIONS['select_measurement_unit']['title'])
+        TRANSLATIONS['name']['title'], validators=[DataRequired()])
+    select_measurement_unit = StringField(TRANSLATIONS['select_measurement_unit']['title'])
 
     scale_from_min = DecimalField(
         TRANSLATIONS['scale_from_min']['title'],
@@ -222,10 +192,7 @@ class InputMeasurementMod(FlaskForm):
     invert_scale = BooleanField(
         TRANSLATIONS['invert_scale']['title'])
 
-    rescaled_measurement_unit = StringField(
-        lazy_gettext('Rescaled Measurement'))
-    convert_to_measurement_unit = StringField(
-        TRANSLATIONS['convert_to_measurement_unit']['title'])
+    rescaled_measurement_unit = StringField(lazy_gettext('Rescaled Measurement'))
+    convert_to_measurement_unit = StringField(TRANSLATIONS['convert_to_measurement_unit']['title'])
 
-    input_measurement_mod = SubmitField(
-        TRANSLATIONS['save']['title'])
+    input_measurement_mod = SubmitField(TRANSLATIONS['save']['title'])

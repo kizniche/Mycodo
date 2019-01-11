@@ -28,18 +28,13 @@ from mycodo.config_translations import TRANSLATIONS
 
 class SettingsCamera(FlaskForm):
     camera_id = StringField('Camera ID', widget=widgets.HiddenInput())
-    name = StringField(
-        TRANSLATIONS['name']['title'])
-    library = StringField(
-        lazy_gettext('Library'))
-    device = StringField(
-        lazy_gettext('Device'))
+    name = StringField(TRANSLATIONS['name']['title'])
+    library = StringField(lazy_gettext('Library'))
+    device = StringField(lazy_gettext('Device'))
     opencv_device = IntegerField(
         lazy_gettext('OpenCV Device'), widget=NumberInput())
-    hflip = BooleanField(
-        lazy_gettext('Flip image horizontally'))
-    vflip = BooleanField(
-        lazy_gettext('Flip image vertically'))
+    hflip = BooleanField(lazy_gettext('Flip image horizontally'))
+    vflip = BooleanField(lazy_gettext('Flip image vertically'))
     rotation = IntegerField(
         lazy_gettext('Rotate Image'), widget=NumberInput())
     height = IntegerField(
@@ -47,26 +42,19 @@ class SettingsCamera(FlaskForm):
     width = IntegerField(
         lazy_gettext('Image Width'), widget=NumberInput())
     brightness = DecimalField(
-        lazy_gettext('Brightness'),
-        widget=NumberInput(step='any'))
+        lazy_gettext('Brightness'), widget=NumberInput(step='any'))
     contrast = DecimalField(
-        lazy_gettext('Contrast'),
-        widget=NumberInput(step='any'))
+        lazy_gettext('Contrast'), widget=NumberInput(step='any'))
     exposure = DecimalField(
-        lazy_gettext('Exposure'),
-        widget=NumberInput(step='any'))
+        lazy_gettext('Exposure'), widget=NumberInput(step='any'))
     gain = DecimalField(
-        lazy_gettext('Gain'),
-        widget=NumberInput(step='any'))
+        lazy_gettext('Gain'), widget=NumberInput(step='any'))
     hue = DecimalField(
-        lazy_gettext('Hue'),
-        widget=NumberInput(step='any'))
+        lazy_gettext('Hue'), widget=NumberInput(step='any'))
     saturation = DecimalField(
-        lazy_gettext('Saturation'),
-        widget=NumberInput(step='any'))
+        lazy_gettext('Saturation'), widget=NumberInput(step='any'))
     white_balance = DecimalField(
-        lazy_gettext('White Balance'),
-        widget=NumberInput(step='any'))
+        lazy_gettext('White Balance'), widget=NumberInput(step='any'))
     custom_options = StringField(lazy_gettext('Custom Options'))
     output_id = StringField(TRANSLATIONS['output']['title'])
     output_duration = DecimalField(
@@ -78,12 +66,9 @@ class SettingsCamera(FlaskForm):
     path_still = StringField(lazy_gettext('Still Image Path'))
     path_timelapse = StringField(lazy_gettext('Timelapse Path'))
     path_video = StringField(lazy_gettext('Video Path'))
-    camera_add = SubmitField(
-        TRANSLATIONS['add']['title'])
-    camera_mod = SubmitField(
-        TRANSLATIONS['save']['title'])
-    camera_del = SubmitField(
-        TRANSLATIONS['delete']['title'])
+    camera_add = SubmitField(TRANSLATIONS['add']['title'])
+    camera_mod = SubmitField(TRANSLATIONS['save']['title'])
+    camera_del = SubmitField(TRANSLATIONS['delete']['title'])
 
 
 #
@@ -143,8 +128,7 @@ class SettingsEmail(FlaskForm):
             validators.Optional()
         ]
     )
-    save = SubmitField(
-        TRANSLATIONS['save']['title'])
+    save = SubmitField(TRANSLATIONS['save']['title'])
 
 
 #
@@ -160,14 +144,11 @@ class SettingsGeneral(FlaskForm):
     hide_warning = BooleanField(lazy_gettext('Hide warning messages'))
     hide_tooltips = BooleanField(lazy_gettext('Hide Form Tooltips'))
     max_amps = DecimalField(
-        lazy_gettext('Max Amps'),
-        widget=NumberInput(step='any'))
+        lazy_gettext('Max Amps'), widget=NumberInput(step='any'))
     output_stats_volts = IntegerField(
-        lazy_gettext('Voltage'),
-        widget=NumberInput())
+        lazy_gettext('Voltage'), widget=NumberInput())
     output_stats_cost = DecimalField(
-        lazy_gettext('Cost per kWh'),
-        widget=NumberInput(step='any'))
+        lazy_gettext('Cost per kWh'), widget=NumberInput(step='any'))
     output_stats_currency = StringField(lazy_gettext('Currency Unit'))
     output_stats_day_month = StringField(lazy_gettext('Day of Month'))
     output_usage_report_gen = BooleanField(lazy_gettext('Generate Usage/Cost Report'))
@@ -185,8 +166,7 @@ class SettingsGeneral(FlaskForm):
     )
     stats_opt_out = BooleanField(lazy_gettext('Opt-out of statistics'))
     enable_upgrade_check = BooleanField(lazy_gettext('Check for Updates'))
-    Submit = SubmitField(
-        TRANSLATIONS['save']['title'])
+    Submit = SubmitField(TRANSLATIONS['save']['title'])
 
 
 #
@@ -197,10 +177,10 @@ class Input(FlaskForm):
     import_input_file = FileField(lazy_gettext('Upload'))
     import_input_upload = SubmitField(lazy_gettext('Import Input Module'))
 
+
 class InputDel(FlaskForm):
     input_id = StringField(widget=widgets.HiddenInput())
-    delete_input = SubmitField(
-        TRANSLATIONS['delete']['title'])
+    delete_input = SubmitField(TRANSLATIONS['delete']['title'])
 
 
 #
@@ -217,17 +197,15 @@ class MeasurementMod(FlaskForm):
     measurement_id = StringField('Measurement ID', widget=widgets.HiddenInput())
     name = StringField(lazy_gettext('Measurement Name'))
     units = SelectMultipleField(lazy_gettext('Measurement Units'))
-    save_measurement = SubmitField(
-        TRANSLATIONS['save']['title'])
-    delete_measurement = SubmitField(
-        TRANSLATIONS['delete']['title'])
+    save_measurement = SubmitField(TRANSLATIONS['save']['title'])
+    delete_measurement = SubmitField(TRANSLATIONS['delete']['title'])
 
 
 class UnitAdd(FlaskForm):
-    name = StringField(lazy_gettext('Unit Name'),
-        validators=[DataRequired()])
-    unit = StringField(lazy_gettext('Unit Abbreviation'),
-        validators=[DataRequired()])
+    name = StringField(
+        lazy_gettext('Unit Name'), validators=[DataRequired()])
+    unit = StringField(
+        lazy_gettext('Unit Abbreviation'), validators=[DataRequired()])
     add_unit = SubmitField(lazy_gettext('Add Unit'))
 
 
@@ -235,19 +213,17 @@ class UnitMod(FlaskForm):
     unit_id = StringField('Unit ID', widget=widgets.HiddenInput())
     name = StringField(lazy_gettext('Unit Name'))
     unit = StringField(lazy_gettext('Unit Abbreviation'))
-    save_unit = SubmitField(
-        TRANSLATIONS['save']['title'])
-    delete_unit = SubmitField(
-        TRANSLATIONS['delete']['title'])
+    save_unit = SubmitField(TRANSLATIONS['save']['title'])
+    delete_unit = SubmitField(TRANSLATIONS['delete']['title'])
 
 
 class ConversionAdd(FlaskForm):
-    convert_unit_from = StringField(lazy_gettext('Convert From Unit'),
-        validators=[DataRequired()])
-    convert_unit_to = StringField(lazy_gettext('Convert To Measurement'),
-        validators=[DataRequired()])
-    equation = StringField(lazy_gettext('Equation'),
-        validators=[DataRequired()])
+    convert_unit_from = StringField(
+        lazy_gettext('Convert From Unit'), validators=[DataRequired()])
+    convert_unit_to = StringField(
+        lazy_gettext('Convert To Measurement'), validators=[DataRequired()])
+    equation = StringField(
+        lazy_gettext('Equation'), validators=[DataRequired()])
     add_conversion = SubmitField(lazy_gettext('Add Conversion'))
 
 
@@ -256,10 +232,8 @@ class ConversionMod(FlaskForm):
     convert_unit_from = StringField(lazy_gettext('Convert From Unit'))
     convert_unit_to = StringField(lazy_gettext('Convert To Unit'))
     equation = StringField(lazy_gettext('Equation'))
-    save_conversion = SubmitField(
-        TRANSLATIONS['save']['title'])
-    delete_conversion = SubmitField(
-        TRANSLATIONS['delete']['title'])
+    save_conversion = SubmitField(TRANSLATIONS['save']['title'])
+    delete_conversion = SubmitField(TRANSLATIONS['delete']['title'])
 
 
 #
@@ -268,9 +242,7 @@ class ConversionMod(FlaskForm):
 
 class UserRoles(FlaskForm):
     name = StringField(
-        lazy_gettext('Role Name'),
-        validators=[DataRequired()]
-    )
+        lazy_gettext('Role Name'), validators=[DataRequired()])
     view_logs = BooleanField(lazy_gettext('View Logs'))
     view_stats = BooleanField(lazy_gettext('View Stats'))
     view_camera = BooleanField(lazy_gettext('View Camera'))
@@ -280,17 +252,13 @@ class UserRoles(FlaskForm):
     edit_settings = BooleanField(lazy_gettext('Edit Settings'))
     role_id = StringField('Role ID', widget=widgets.HiddenInput())
     add_role = SubmitField(lazy_gettext('Add Role'))
-    save_role = SubmitField(
-        TRANSLATIONS['save']['title'])
-    delete_role = SubmitField(
-        TRANSLATIONS['delete']['title'])
+    save_role = SubmitField(TRANSLATIONS['save']['title'])
+    delete_role = SubmitField(TRANSLATIONS['delete']['title'])
 
 
 class UserAdd(FlaskForm):
     user_name = StringField(
-        TRANSLATIONS['user']['title'],
-        validators=[DataRequired()]
-    )
+        TRANSLATIONS['user']['title'], validators=[DataRequired()])
     email = EmailField(
         TRANSLATIONS['email']['title'],
         validators=[
@@ -311,17 +279,11 @@ class UserAdd(FlaskForm):
         ]
     )
     password_repeat = PasswordField(
-        lazy_gettext('Repeat Password'),
-        validators=[DataRequired()]
-    )
+        lazy_gettext('Repeat Password'), validators=[DataRequired()])
     addRole = StringField(
-        lazy_gettext('Role'),
-        validators=[DataRequired()]
-    )
+        lazy_gettext('Role'), validators=[DataRequired()])
     theme = StringField(
-        lazy_gettext('Theme'),
-        validators=[DataRequired()]
-    )
+        lazy_gettext('Theme'), validators=[DataRequired()])
     add_user = SubmitField(lazy_gettext('Add User'))
 
 
@@ -350,18 +312,15 @@ class UserMod(FlaskForm):
     )
     password_repeat = PasswordField(
         lazy_gettext('Repeat Password'),
-        render_kw={"placeholder": lazy_gettext("Repeat Password")}
-    )
+        render_kw={"placeholder": lazy_gettext("Repeat Password")})
     role_id = IntegerField(
         lazy_gettext('Role ID'),
         validators=[DataRequired()],
         widget=NumberInput()
     )
     theme = StringField(lazy_gettext('Theme'))
-    save = SubmitField(
-        TRANSLATIONS['save']['title'])
-    delete = SubmitField(
-        TRANSLATIONS['delete']['title'])
+    save = SubmitField(TRANSLATIONS['save']['title'])
+    delete = SubmitField(TRANSLATIONS['delete']['title'])
 
 
 #

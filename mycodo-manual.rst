@@ -131,14 +131,14 @@ Here is how I generally set up Mycodo to monitor and regulate:
    begin recording measurements to the database.
 5. Go to the ``Live`` page to ensure there is
    recent data being acquired from the input.
-6. On the ``Setup -> Outputs`` page, add a relay and configure the GPIO pin that
+6. On the ``Setup -> Output`` page, add a relay and configure the GPIO pin that
    switches it, whether the relay switches On when the signal is HIGH or
    LOW, and what state (On or Off) to set the relay when Mycodo starts.
    A pulse-width modulated (PWM) output may also be used, among others.
 7. Test the relay by switching it On and Off or generating a PWM signal
-   from the ``Setup -> Outputs`` page and make sure the device connected to the
+   from the ``Setup -> Output`` page and make sure the device connected to the
    relay turns On when you select "On", and Off when you select "Off".
-8. On the ``Setup -> Functions`` page, create a PID controller with the
+8. On the ``Setup -> Function`` page, create a PID controller with the
    appropriate input, output, and other parameters. Activate the PID
    controller.
 9. On the ``Dash`` page, create a graph that includes
@@ -245,14 +245,14 @@ fast-switching solid state relay, an
 Yes, you can use as many sensors as you would like to create a redundant system so your PID doesn't stop working if one or more sensors fail. To do this, follow the below instructions:
 
 1. Add and activate all your sensors. For this example, we will use three temperature sensors, Sensor1, Sensor2, and Sensor3, that return measurements in degrees Celsius.
-2. Go to the Setup -> Data page and add the Math controller "Redundancy".
+2. Go to the ``Setup -> Data`` page and add the Math controller "Redundancy".
 3. In the options of the Redundancy controller, set the Period, Start Offset, and Max Age.
 4. In the options of the Redundancy controller, select Sensor1, Sensor2, and Sensor3 for the Input option and click Save.
 5. In the options of the Redundancy controller, change the order you wish to use the sensors under Order of Use. For this example, we will use the default order (Sensor1, Sensor2, Sensor3).
 6. In the options of the Redundancy controller, under Measurement Settings, select Celsius for the Measurement Unit and click Save under Measurement Settings.
 7. Activate the Redundancy Math controller.
 8. Go to the Live page and verify the Redundancy Math controller is working correctly by returning a value from one of the three selected Inputs. If the first sensor is working correctly, it should return this value. You can deactivate the first sensor (mimicking the first sensor stopped working) and see if the second sensor's value is then returned.
-9. Go to the Setup -> Functions page and select the new Redundancy Math controller for the PID Measurement option.
+9. Go to the ``Setup -> Function`` page and select the new Redundancy Math controller for the PID Measurement option.
 
 The PID controller will now use the measurement returned from the Redundancy Math controller, which in turn will acquire its measurement in the following way:
 
@@ -651,7 +651,7 @@ produce a new value that may be used within Mycodo.
 Output
 ------
 
-``Setup -> Outputs``
+``Setup -> Output``
 
 Outputs are various signals that can be generated that operate devices.
 An output can be a PWM signal, a simple HIGH/LOW signal to operate a
@@ -772,7 +772,7 @@ interval or 'period' of time; a low duty cycle corresponds to low power,
 because the power is off for most of the time. Duty cycle is expressed
 in percent, 100% being fully on.
 
-PWM pins can be set up on the ``Setup -> Outputs``` page, then it may be used by a PWM
+PWM pins can be set up on the ``Setup -> Output``` page, then it may be used by a PWM
 PID Controller.
 
 +-----------------------+-------------------------------------------------+
@@ -942,7 +942,7 @@ Currently, only one pump is supported, the `Atlas Scientific EZO-PMP peristaltic
 Function
 --------
 
-``Setup -> Functions``
+``Setup -> Function``
 
 Functions couple Inputs with Outputs to perform specific tasks. For
 example, this could be regulation of temperature with a temperature
@@ -1265,7 +1265,7 @@ no longer acquiring measurements.
 To create a basic conditional, follow these steps, using the numbers in the
 screenshots, below, that correspond to the numbers in parentheses:
 
-1. Go to the ``Setup -> Functions`` page, select "Controller: Conditional", then click ``Add``.
+1. Go to the ``Setup -> Function`` page, select "Controller: Conditional", then click ``Add``.
 2. Next to (1), select "Measurement", then click ``Add Condition``.
 3. Next to (2), select "Output (Duration)" (or any other action), then click ``Add Action``.
 4. Select a measurement (3), then click ``Save`` (4).
@@ -1608,7 +1608,7 @@ Conditional, Trigger).
 LCDs
 ----
 
-``Setup -> LCDs``
+``Setup -> LCD``
 
 Data may be output to a liquid crystal display (LCD) for easy viewing.
 Please see `LCD Displays <#lcd-displays>`__ for specific information
@@ -1650,7 +1650,7 @@ next every set period.
 Methods
 -------
 
-``Setup -> Methods``
+``Setup -> Method``
 
 Methods enable Setpoint Tracking in PIDs and time-based duty cycle
 changes in timers. Normally, a PID controller will regulate an
