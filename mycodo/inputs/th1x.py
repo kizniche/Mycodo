@@ -67,7 +67,6 @@ class InputModule(AbstractInput):
     def __init__(self, input_dev, testing=False):
         super(InputModule, self).__init__()
         self.logger = logging.getLogger("mycodo.inputs.th16")
-        self._measurements = None
         self.ip_address = None
 
         if not testing:

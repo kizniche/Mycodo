@@ -64,7 +64,6 @@ class InputModule(AbstractInput):
     def __init__(self, input_dev, testing=False):
         super(InputModule, self).__init__()
         self.logger = logging.getLogger("mycodo.inputs.sht2x")
-        self._measurements = None
 
         if not testing:
             from smbus2 import SMBus

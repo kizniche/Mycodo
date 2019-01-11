@@ -90,7 +90,6 @@ class InputModule(AbstractInput):
         """
         super(InputModule, self).__init__()
         self.logger = logging.getLogger('mycodo.inputs.dht22')
-        self._measurements = None
         self.temp_temperature = None
         self.temp_humidity = None
         self.temp_dew_point = None

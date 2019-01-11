@@ -88,7 +88,6 @@ class InputModule(AbstractInput):
     def __init__(self, input_dev, testing=False):
         super(InputModule, self).__init__()
         self.logger = logging.getLogger("mycodo.inputs.atlas_ph")
-        self._measurements = None
         self.atlas_sensor_ftdi = None
         self.atlas_sensor_uart = None
         self.atlas_sensor_i2c = None
@@ -145,7 +144,6 @@ class InputModule(AbstractInput):
 
     def get_measurement(self):
         """ Gets the sensor's pH measurement via UART/I2C """
-        self._measurements = None
         ph = None
 
         return_dict = measurements_dict.copy()

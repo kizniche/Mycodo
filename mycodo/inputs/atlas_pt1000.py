@@ -45,7 +45,6 @@ class InputModule(AbstractInput):
     def __init__(self, input_dev, testing=False):
         super(InputModule, self).__init__()
         self.logger = logging.getLogger("mycodo.inputs.atlas_pt1000")
-        self._measurements = None
         self.atlas_sensor_ftdi = None
         self.atlas_sensor_uart = None
         self.atlas_sensor_i2c = None
@@ -89,7 +88,6 @@ class InputModule(AbstractInput):
 
     def get_measurement(self):
         """ Gets the Atlas PT1000's temperature in Celsius """
-        self._measurements = None
         temp = None
 
         return_dict = measurements_dict.copy()

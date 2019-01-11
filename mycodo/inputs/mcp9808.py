@@ -60,7 +60,6 @@ class InputModule(AbstractInput):
     def __init__(self, input_dev, testing=False):
         super(InputModule, self).__init__()
         self.logger = logging.getLogger("mycodo.inputs.mcp9808")
-        self._measurements = None
 
         if not testing:
             from Adafruit_MCP9808 import MCP9808

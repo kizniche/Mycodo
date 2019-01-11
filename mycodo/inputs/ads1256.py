@@ -97,7 +97,6 @@ class InputModule(AbstractInput):
         super(InputModule, self).__init__()
         self.logger = logging.getLogger('mycodo.ads1256')
         self.run_main = run_main
-        self._measurements = None
 
         if not testing:
             from ADS1256_definitions import POS_AIN0

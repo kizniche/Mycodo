@@ -71,12 +71,6 @@ class InputModule(AbstractInput):
         super(InputModule, self).__init__()
         self.logger = logging.getLogger('mycodo.mcp342x')
         self.acquiring_measurement = False
-        self._measurements = None
-
-        self.i2c_address = int(str(input_dev.i2c_location), 16)
-        self.i2c_bus = input_dev.i2c_bus
-        self.adc_gain = input_dev.adc_gain
-        self.adc_resolution = input_dev.adc_resolution
 
         if not testing:
             from smbus2 import SMBus
@@ -88,12 +82,15 @@ class InputModule(AbstractInput):
                 DeviceMeasurements).filter(
                     DeviceMeasurements.device_id == input_dev.unique_id)
 
+            self.i2c_address = int(str(input_dev.i2c_location), 16)
+            self.i2c_bus = input_dev.i2c_bus
+            self.adc_gain = input_dev.adc_gain
+            self.adc_resolution = input_dev.adc_resolution
+
             self.MCP342x = MCP342x
             self.bus = SMBus(self.i2c_bus)
 
     def get_measurement(self):
-        self._measurements = None
-
         return_dict = measurements_dict.copy()
 
         for each_measure in self.device_measurements.all():

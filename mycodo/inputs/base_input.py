@@ -30,8 +30,8 @@ class AbstractInput(object):
 
     def __init__(self, run_main=False):
         self.logger = logging.getLogger('mycodo.inputs.base_input')
-        self.run_main = run_main
         self._measurements = None
+        self.run_main = run_main
         self.avg_max = {}
         self.avg_index = {}
         self.avg_meas = {}
@@ -88,7 +88,6 @@ class AbstractInput(object):
 
     def next(self):
         """ Get next measurement reading """
-        self._measurements = None
         if self.read():  # raised an error
             raise StopIteration  # required
         return self.measurements
@@ -113,6 +112,7 @@ class AbstractInput(object):
 
         :returns: None on success or 1 on error
         """
+        self._measurements = None
         try:
             self._measurements = self.get_measurement()
             if self._measurements is not None:

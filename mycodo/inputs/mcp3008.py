@@ -57,7 +57,6 @@ class InputModule(AbstractInput):
         super(InputModule, self).__init__()
         self.logger = logging.getLogger('mycodo.mcp3008')
         self.acquiring_measurement = False
-        self._measurements = None
         self.adc = None
 
         if not testing:
@@ -81,8 +80,6 @@ class InputModule(AbstractInput):
                                                 mosi=self.pin_mosi)
 
     def get_measurement(self):
-        self._measurements = None
-
         return_dict = measurements_dict.copy()
 
         for each_measure in self.device_measurements.all():

@@ -51,7 +51,6 @@ class InputModule(AbstractInput):
     def __init__(self, input_dev, testing=False):
         super(InputModule, self).__init__()
         self.logger = logging.getLogger("mycodo.inputs.tsl2591_sensor")
-        self._measurements = None
 
         if not testing:
             import tsl2591

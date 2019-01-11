@@ -108,10 +108,6 @@ class InputModule(AbstractInput):
     def __init__(self, input_dev, testing=False):
         super(InputModule, self).__init__()
         self.logger = logging.getLogger("mycodo.inputs.hdc1000")
-        self._measurements = None
-
-        self.resolution_temperature = input_dev.resolution
-        self.resolution_humidity = input_dev.resolution_2
 
         if not testing:
             self.logger = logging.getLogger(
@@ -121,6 +117,8 @@ class InputModule(AbstractInput):
                 DeviceMeasurements).filter(
                     DeviceMeasurements.device_id == input_dev.unique_id)
 
+            self.resolution_temperature = input_dev.resolution
+            self.resolution_humidity = input_dev.resolution_2
             self.i2c_bus = input_dev.i2c_bus
             self.i2c_address = 0x40  # HDC1000-F Address
 

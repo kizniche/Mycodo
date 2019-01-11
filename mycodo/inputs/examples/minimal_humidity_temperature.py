@@ -55,10 +55,7 @@ class InputModule(AbstractInput):
     """ Input support class """
     def __init__(self, input_dev, testing=False):
         super(InputModule, self).__init__()
-        self.logger = logging.getLogger("mycodo.inputs.{name_lower}".format(
-            name_lower=INPUT_INFORMATION['input_name_unique'].lower()))
-
-        self._measurements = None
+        self.logger = logging.getLogger("mycodo.inputs.dummy_input")
 
         if not testing:
             self.logger = logging.getLogger(

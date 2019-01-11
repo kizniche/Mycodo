@@ -232,11 +232,6 @@ class InputModule(AbstractInput):
         self.logger = logging.getLogger("mycodo.inputs.{name_lower}".format(
             name_lower=INPUT_INFORMATION['input_name_unique'].lower()))
 
-        #
-        # Initialize the measurements this input returns
-        #
-        self._measurements = None
-
         if not testing:
             self.logger = logging.getLogger(
                 "mycodo.inputs.{name_lower}_{id}".format(

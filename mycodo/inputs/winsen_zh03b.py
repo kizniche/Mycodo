@@ -93,7 +93,6 @@ class InputModule(AbstractInput):
     def __init__(self, input_dev, testing=False):
         super(InputModule, self).__init__()
         self.logger = logging.getLogger("mycodo.inputs.winsen_zh03b")
-        self._measurements = None
         self.fan_is_on = False
 
         if not testing:

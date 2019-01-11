@@ -85,7 +85,6 @@ class InputModule(AbstractInput):
     def __init__(self, input_dev, testing=False):
         super(InputModule, self).__init__()
         self.logger = logging.getLogger("mycodo.inputs.mh_z19")
-        self._measurements = None
         self.measure_range = None
         self.abc_enable = False
 

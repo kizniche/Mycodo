@@ -55,7 +55,6 @@ class InputModule(AbstractInput):
         super(InputModule, self).__init__()
         self.logger = logging.getLogger("mycodo.inputs.tsl2561")
         self.run_main = run_main
-        self._measurements = None
 
         if not testing:
             from tsl2561 import TSL2561

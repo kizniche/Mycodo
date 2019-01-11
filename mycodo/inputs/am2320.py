@@ -62,8 +62,6 @@ class InputModule(AbstractInput):
     def __init__(self, input_dev, testing=False):
         super(InputModule, self).__init__()
         self.logger = logging.getLogger('mycodo.inputs.am2320')
-        self.name = INPUT_INFORMATION['input_name_unique']
-        self._measurements = None
         self.powered = False
         self.sensor = None
         self.i2c_address = 0x5C

@@ -45,7 +45,6 @@ class InputModule(AbstractInput):
     def __init__(self, input_dev, testing=False):
         super(InputModule, self).__init__()
         self.logger = logging.getLogger("mycodo.inputs.atlas_ec")
-        self._measurements = None
         self.atlas_sensor_ftdi = None
         self.atlas_sensor_uart = None
         self.atlas_sensor_i2c = None
@@ -91,7 +90,6 @@ class InputModule(AbstractInput):
 
     def get_measurement(self):
         """ Gets the sensor's Electrical Conductivity measurement via UART/I2C """
-        self._measurements = None
         electrical_conductivity = None
 
         return_dict = measurements_dict.copy()

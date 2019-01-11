@@ -60,8 +60,6 @@ class InputModule(AbstractInput):
     def __init__(self, input_dev, testing=False):
         super(InputModule, self).__init__()
         self.logger = logging.getLogger("mycodo.inputs.amg8833")
-        self._measurements = None
-
         self.save_image = False
         self.temp_max = None
         self.temp_min = None
@@ -89,8 +87,6 @@ class InputModule(AbstractInput):
 
     def get_measurement(self):
         """ Gets the AMG8833's measurements """
-        self._measurements = None
-
         return_dict = measurements_dict.copy()
 
         pixels = self.sensor.readPixels()

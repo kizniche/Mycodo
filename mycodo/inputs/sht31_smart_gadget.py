@@ -130,7 +130,6 @@ class InputModule(AbstractInput):
         self.logger = logging.getLogger("mycodo.inputs.sht31_smart_gadget")
         self.running = True
         self.unique_id = input_dev.unique_id
-        self._measurements = None
         self.download_stored_data = None
         self.logging_interval_ms = None
         self.gadget = None

@@ -68,7 +68,6 @@ class InputModule(AbstractInput):
         super(InputModule, self).__init__()
         self.logger = logging.getLogger('mycodo.ads1x15')
         self.run_main = run_main
-        self._measurements = None
 
         if not testing:
             import Adafruit_ADS1x15
@@ -87,8 +86,6 @@ class InputModule(AbstractInput):
         self.running = True
 
     def get_measurement(self):
-        self._measurements = None
-
         return_dict = measurements_dict.copy()
 
         for each_measure in self.device_measurements.all():

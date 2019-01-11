@@ -85,7 +85,6 @@ class InputModule(AbstractInput):
     def __init__(self, input_dev, testing=False):
         super(InputModule, self).__init__()
         self.logger = logging.getLogger("mycodo.inputs.htu21d")
-        self._measurements = None
 
         if not testing:
             import pigpio
