@@ -149,13 +149,13 @@ def controller_activate_deactivate(controller_action,
                 flash(
                     "{} {} (SQL)".format(
                         translated_names[controller_type],
-                        TRANSLATIONS['activated']['title']),
+                        TRANSLATIONS['activate']['title']),
                     "success")
             else:
                 flash(
                     "{} {} (SQL)".format(
                         translated_names[controller_type],
-                        TRANSLATIONS['deactivated']['title']),
+                        TRANSLATIONS['deactivate']['title']),
                     "success")
     except Exception as except_msg:
         flash(gettext("Error: %(err)s",
