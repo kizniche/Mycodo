@@ -1,3 +1,10 @@
+## 7.0.6 (Unreleased)
+
+### Bugfixes
+
+ - Fix Error message when activating/deactivating controllers (no actual error occurred)
+
+
 ## 7.0.5 (2019-01-10)
 
 ### Bugfixes
