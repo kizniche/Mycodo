@@ -39,14 +39,13 @@ def conditional_mod(form):
         # Replace measurements in conditional statement
         conditions = ConditionalConditions.query.filter(
             ConditionalConditions.conditional_id == form.function_id.data).all()
-        cond_statement_replaced = form.conditional_statement.data
-        cond_statement_replaced_number = None
-        cond_statement_replaced_none = None
+        cond_statement_replaced_number = form.conditional_statement.data
+        cond_statement_replaced_none = form.conditional_statement.data
         for each_condition in conditions:
-            cond_statement_replaced_number = cond_statement_replaced.replace(
+            cond_statement_replaced_number = cond_statement_replaced_number.replace(
                 '{{{id}}}'.format(id=each_condition.unique_id.split('-')[0]), str(100))
         for each_condition in conditions:
-            cond_statement_replaced_none = cond_statement_replaced.replace(
+            cond_statement_replaced_none = cond_statement_replaced_none.replace(
                 '{{{id}}}'.format(id=each_condition.unique_id.split('-')[0]), 'None')
 
         # Replace short action IDs in conditional statement with full action IDs
