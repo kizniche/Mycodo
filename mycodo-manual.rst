@@ -1435,13 +1435,14 @@ Statement.
 |                       | returned.                                       |
 +-----------------------+-------------------------------------------------+
 | GPIO State            | Acquires the current GPIO state and returns     |
-|                       | True if HIGH or False if LOW. If the latest     |
+|                       | True/1 if HIGH or False/0 if LOW. If the latest |
 |                       | value is older than this duration, "None" is    |
 |                       | returned.                                       |
 +-----------------------+-------------------------------------------------+
-| Refractory Period     | The minimum duration (seconds) to wait after a  |
-| (seconds)             | conditional has been triggered to begin         |
-|                       | evaluating the conditional again.               |
+| Max Age (seconds)     | The minimum age (seconds) the measurement can   |
+|                       | be. If the last measurement is older than this, |
+|                       | "None" will be returned instead of a            |
+|                       | measurement.                                    |
 +-----------------------+-------------------------------------------------+
 
 Trigger

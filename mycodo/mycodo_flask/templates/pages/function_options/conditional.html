@@ -53,13 +53,16 @@
       <div class="col-auto">
         {{form_conditional.order_down(class_='form-control btn btn-sm')}}
       </div>
+      <div class="col-auto my-auto">
+        <h5>{{_('Help')}} <a href="/help#conditional" target="_blank"><span style="font-size: 16px" class="fas fa-question-circle"></span></a></h5>
+      </div>
     </div>
 
     <div class="row small-gutters" style="padding: 1.5em 0 0.2em 0.1em">
       <div class="col-md-12 col-lg-6">
         {{form_conditional.conditional_statement.label(class_='control-label')}}
         <div>
-          <textarea class="form-control" id="conditional_statement" name="conditional_statement" rows="4" type="text" title="{{_('The Python 3 code to execute. Executing print(1) triggers actions.')}}">{{each_cond.conditional_statement}}</textarea>
+          <textarea class="form-control" id="conditional_statement" name="conditional_statement" rows="4" type="text" title="{{_('The Python 3 code to execute')}}">{{each_cond.conditional_statement}}</textarea>
         </div>
       </div>
       <div class="col-auto">
@@ -85,7 +88,7 @@
     </form>
 
     <div class="row align-items-end small-gutters" style="border-top: 1px solid #ddd; padding-top: 0.5em">
-      <h5>{{_('Conditions')}} <a href="/help#conditional-conditions" target="_blank"><span style="font-size: 16px" class="fas fa-question-circle"></span></a></h5>
+      <h5>{{_('Conditions')}} <a href="/help#conditional-condition-options" target="_blank"><span style="font-size: 16px" class="fas fa-question-circle"></span></a></h5>
     </div>
 
     <div class="row align-items-end small-gutters" style="padding-bottom: 0.2em">
