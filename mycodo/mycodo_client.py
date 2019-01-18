@@ -159,6 +159,9 @@ class DaemonControl:
     def test_trigger_actions(self, function_id, message=''):
         return self.rpyc_client.root.test_trigger_actions(function_id, message)
 
+    def trigger_action(self, action_id, test=False):
+        return self.rpyc_client.root.trigger_action(action_id, test=test)
+
     def trigger_trigger_actions(
             self, trigger_id, message='', edge=None,
             output_state=None, on_duration=None, duty_cycle=None):

@@ -6,6 +6,7 @@ import pwd
 import socket
 import subprocess
 import time
+import traceback
 from collections import OrderedDict
 
 import os
@@ -40,9 +41,9 @@ def add_custom_units(units):
 
 def test_python_execute(code_string):
     try:
-        exec(code_string)
-    except Exception as e:
-        return 1, e
+        exec(code_string, globals())
+    except Exception:
+        return 1, traceback.format_exc()
     else:
         return 0, None
 

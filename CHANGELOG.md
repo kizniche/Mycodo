@@ -4,6 +4,10 @@
 
  - Fix Error message when activating/deactivating controllers (no actual error occurred)
 
+### Features
+
+ - Add ability to execute individual actions from Conditional Statements ([#605](https://github.com/kizniche/mycodo/issues/605))
+
 
 ## 7.0.5 (2019-01-10)
 

@@ -49,8 +49,32 @@ def conditional_mod(form):
             cond_statement_replaced_none = cond_statement_replaced.replace(
                 '{{{id}}}'.format(id=each_condition.unique_id.split('-')[0]), 'None')
 
+        # Replace short action IDs in conditional statement with full action IDs
+        for each_action in Actions.query.all():
+            cond_statement_replaced_number = cond_statement_replaced_number.replace(
+                '{{{id}}}'.format(id=each_action.unique_id.split('-')[0]), each_action.unique_id)
+            cond_statement_replaced_none = cond_statement_replaced_none.replace(
+                '{{{id}}}'.format(id=each_action.unique_id.split('-')[0]), each_action.unique_id)
+
+        pre_statement = """
+import os
+import sys
+sys.path.append(os.path.abspath('/var/mycodo-root'))
+from mycodo.mycodo_client import DaemonControl
+control = DaemonControl()
+
+def run_all_actions():
+    print(1)
+
+def run_action(action_id):
+    control.trigger_action(action_id, test=True)
+
+"""
+        cond_statement_replaced_number = pre_statement + cond_statement_replaced_number
+        cond_statement_replaced_none = pre_statement + cond_statement_replaced_none
+
         # Test conditional statement
-        status_num, _ = test_python_execute(cond_statement_replaced_number)
+        status_num, msg_num = test_python_execute(cond_statement_replaced_number)
         status_none, msg_none = test_python_execute(cond_statement_replaced_none)
 
         if not status_num and not status_none:
@@ -60,14 +84,18 @@ def conditional_mod(form):
             error.append(
                 "Error encountered while checking Conditional Statement code"
                 " for validity."
-                "\n\nCode entered:\n{codeo}"
+                "\n\nCode entered:\n\n{codeo}"
+                "\n\n============================================================="
                 "\n\nCode tested with IDs replaced with numbers:\n{code_num}"
-                "\nErrors from this code: {err_num}"
+                "\n\n-------------------------------------------------------------"
+                "\n\nErrors from this code:\n\n{err_num}"
+                "\n\n============================================================="
                 "\n\nCode tested with IDs replaced with None:\n{code_none}"
-                "\nErrors from this code: {err_none}".format(
+                "\n\n-------------------------------------------------------------"
+                "\n\nErrors from this code:\n\n{err_none}".format(
                     codeo=form.conditional_statement.data,
                     code_num=cond_statement_replaced_number,
-                    err_num=status_num,
+                    err_num=msg_num,
                     code_none=cond_statement_replaced_none,
                     err_none=msg_none))
 

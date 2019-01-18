@@ -76,6 +76,7 @@ from mycodo.utils.statistics import send_anonymous_stats
 from mycodo.utils.tools import generate_output_usage_report
 from mycodo.utils.tools import next_schedule
 from mycodo.utils.function_actions import trigger_function_actions
+from mycodo.utils.function_actions import trigger_action
 
 
 MYCODO_DB_PATH = 'sqlite:///' + SQL_DATABASE_MYCODO
@@ -265,6 +266,11 @@ def mycodo_service(mycodo):
             """Test triggering actions"""
             return mycodo.test_trigger_actions(
                 function_id, message)
+
+        @staticmethod
+        def exposed_trigger_action(action_id, test=False):
+            """Trigger actions"""
+            return mycodo.trigger_action(action_id, test=test)
 
         @staticmethod
         def exposed_trigger_trigger_actions(
@@ -1043,6 +1049,14 @@ class DaemonController:
             self, function_id, message=''):
         try:
             return trigger_function_actions(function_id, message=message)
+        except Exception as except_msg:
+            message = "Could not trigger Conditional Actions:" \
+                      " {err}".format(err=except_msg)
+            self.logger.exception(message)
+
+    def trigger_action(self, action_id, test=False):
+        try:
+            return trigger_action(action_id, test=test)
         except Exception as except_msg:
             message = "Could not trigger Conditional Actions:" \
                       " {err}".format(err=except_msg)

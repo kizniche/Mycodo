@@ -645,9 +645,9 @@ class OutputController(threading.Thread):
             sys.stderr = codeErr
 
             if state == 'on' and self.output_on_command[output_id]:
-                exec(self.output_on_command[output_id])
+                exec(self.output_on_command[output_id], globals())
             elif state == 'off' and self.output_off_command[output_id]:
-                exec (self.output_off_command[output_id])
+                exec(self.output_off_command[output_id], globals())
             else:
                 return
 
@@ -678,11 +678,11 @@ class OutputController(threading.Thread):
 
                 if state == 'on' and 100 >= duty_cycle >= 0:
                     cmd = self.output_pwm_command[output_id].replace('((duty_cycle))', str(duty_cycle))
-                    exec(cmd)
+                    exec(cmd, globals())
                     self.pwm_state[output_id] = abs(duty_cycle)
                 elif state == 'off' or duty_cycle == 0:
                     cmd = self.output_pwm_command[output_id].replace('((duty_cycle))', str(0.0))
-                    exec(cmd)
+                    exec(cmd, globals())
                     self.pwm_state[output_id] = None
                 else:
                     return

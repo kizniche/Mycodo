@@ -46,10 +46,10 @@ def function_add(form_add_func):
         if form_add_func.func_type.data.startswith('conditional_'):
             new_func = Conditional()
             new_func.conditional_statement = """
-# Replace 'asdf1234' with your measurement's ID (from Conditions, below)
+# Replace 'asdf1234' with a measurement ID from Conditions, below.
 if {asdf1234} is not None:  # If a measurement exists
     if {asdf1234} < 23:  # If the measurement is less than 23
-        print(1)  # If both are True, trigger all actions"""
+        run_all_actions()  # If both are True, trigger all actions"""
             new_func.save()
         elif form_add_func.func_type.data.startswith('pid_'):
             new_func = PID().save()

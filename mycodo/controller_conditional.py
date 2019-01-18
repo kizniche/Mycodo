@@ -30,11 +30,13 @@ import sys
 import threading
 import time
 import timeit
+import traceback
 
 import RPi.GPIO as GPIO
 from io import StringIO
 
 from mycodo.config import SQL_DATABASE_MYCODO
+from mycodo.databases.models import Actions
 from mycodo.databases.models import Conditional
 from mycodo.databases.models import ConditionalConditions
 from mycodo.databases.models import Conversion
@@ -264,12 +266,37 @@ class ConditionalController(threading.Thread):
                     self.logger.error("Exception reading the GPIO pin")
                 conditions_check[each_condition.unique_id.split('-')[0]] = gpio_state
 
-        # Replace measurements in conditional statement
-        cond_statement_replaced = self.conditional_statement
         # self.logger.info("Conditional Statement (pre-replacement):\n{}".format(self.conditional_statement))
+
+        cond_statement_replaced = self.conditional_statement
+
+        # Replace measurements in conditional statement
         for each_condition_id, each_value in conditions_check.items():
             cond_statement_replaced = cond_statement_replaced.replace(
                 '{{{id}}}'.format(id=each_condition_id), str(each_value))
+
+        # Replace short action IDs in conditional statement with full action IDs
+        for each_action in db_retrieve_table_daemon(Actions, entry='all'):
+            cond_statement_replaced = cond_statement_replaced.replace(
+                '{{{id}}}'.format(id=each_action.unique_id.split('-')[0]), each_action.unique_id)
+
+        # Add functions to the top of the statement string
+        pre_statement = """
+import os
+import sys
+sys.path.append(os.path.abspath('/var/mycodo-root'))
+from mycodo.mycodo_client import DaemonControl
+control = DaemonControl()
+
+def run_all_actions():
+    print(1)
+
+def run_action(action_id):
+    control.trigger_action(action_id)
+
+"""
+
+        cond_statement_replaced = pre_statement + cond_statement_replaced
         # self.logger.info("Conditional Statement (replaced):\n{}".format(cond_statement_replaced))
 
         # Set the refractory period
@@ -283,7 +310,7 @@ class ConditionalController(threading.Thread):
             sys.stdout = codeOut
             sys.stderr = codeErr
 
-            exec(cond_statement_replaced)
+            exec(cond_statement_replaced, globals())
 
             # restore stdout and stderr
             sys.stdout = sys.__stdout__
@@ -309,6 +336,7 @@ class ConditionalController(threading.Thread):
                 "Error evaluating conditional statement. "
                 "Replaced Conditional Statement: '{cond_rep}'".format(
                     cond_rep=cond_statement_replaced))
+            self.logger.error(traceback.format_exc())
             evaluated_statement = None
 
         if evaluated_statement is None or not evaluated_statement:

@@ -245,10 +245,10 @@ class TriggerController(threading.Thread):
                 if self.is_activated:
                     pwm_duty_cycle = self.get_method_output(
                         trigger.unique_id_1)
-                    self.set_output_duty_cycle(trigger.unique_id_2,
-                                               pwm_duty_cycle)
+                    self.set_output_duty_cycle(
+                        trigger.unique_id_2, pwm_duty_cycle)
                     trigger_function_actions(
-                        self.function_id, trigger.unique_id, duty_cycle=pwm_duty_cycle)
+                        self.function_id, duty_cycle=pwm_duty_cycle)
             else:
                 self.timer_period = now
 
