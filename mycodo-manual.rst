@@ -1244,17 +1244,17 @@ state.
 Conditional Setup Guide
 '''''''''''''''''''''''
 
-Python 3 is the environment that these conditionals will be executed. For the
-conditional to be true (and trigger the actions), the function run_all_actions()
-must be called. Additionally, individual actions may be executed with the
-run_action() function.
+Python 3 is the environment that these conditionals will be executed. The
+following
 
 +-----------------------+-------------------------------------------------+
 | Function              | Description                                     |
 +=======================+=================================================+
+| measure("{ID}")       | Returns a measurement for the Condition with ID.|
++-----------------------+-------------------------------------------------+
 | run_all_actions()     | Executes all actions.                           |
 +-----------------------+-------------------------------------------------+
-| run_action('{ID}')    | Executes a specific action with ID.             |
+| run_action("{ID}")    | Executes the Action with ID.                    |
 +-----------------------+-------------------------------------------------+
 
 Since the Python code contained in the Conditional Statement must be formatted
@@ -1312,32 +1312,41 @@ the ``Conditions`` section of the Conditional.
 ::
 
     # Example 1, no measurement, useful to notify by email when an Input stops working
-    if {asdf1234} is None:
+    if measure("{asdf1234}") is None:
         run_all_actions()
 
     # Example 2, test two measurements
-    if None not in [{asdf1234}, {hjkl5678}]:
-        if {asdf1234} < 20 and {hjkl5678} > 10:
+    measure_1 = measure("{asdf1234}")
+    measure_2 = measure("{hjkl5678}")
+    if None not in [measure_1, measure_2]:
+        if measure_1 < 20 and measure_2 > 10:
             run_all_actions()
 
     # Example 3, test two measurements and sum of measurements
-    if None not in [{asdf1234}, {hjkl5678}]:
-        sum = {asdf1234} + {hjkl5678}
-        if {asdf1234} > 2 and 10 < {hjkl5678} < 23 and sum < 30.5:
+    measure_1 = measure("{asdf1234}")
+    measure_2 = measure("{hjkl5678}")
+    if None not in [measure_1, measure_2]:
+        sum = measure_1 + measure_2
+        if measure_1 > 2 and 10 < measure_2 < 23 and sum < 30.5:
             run_all_actions()
 
     # Example 4, combine into one conditional
-    if {asdf1234} != None and 20 < {asdf1234} < 30:
+    measurement = measure("{asdf1234}")
+    if measurement != None and 20 < measurement < 30:
         run_all_actions()
 
     # Example 5, test two measurements and convert Edge Input from 0 or 1 to True or False
-    if None not in [{asdf1234}, {hjkl5678}]:
-        if bool({asdf1234}) and {hjkl5678} > 10:
+    measure_1 = measure("{asdf1234}")
+    measure_2 = measure("{hjkl5678}")
+    if None not in [measure_1, measure_2]:
+        if bool(measure_1) and measure_2 > 10:
             run_all_actions()
 
     # Example 6, test measurement with "or" and a rounded measurement
-    if None not in [{asdf1234}, {hjkl5678}]:
-        if {asdf1234} > 20 or int(round({hjkl5678})) in [20, 21, 22]:
+    measure_1 = measure("{asdf1234}")
+    measure_2 = measure("{hjkl5678}")
+    if None not in [measure_1, measure_2]:
+        if measure_1 > 20 or int(round(measure_2)) in [20, 21, 22]:
             run_all_actions()
 
 
@@ -1352,42 +1361,52 @@ is used here, which is just another way to trigger all actions.
 ::
 
     # Example 1
-    if {asdf1234} is None:
-        run_action('{qwer1234}')
-    elif {asdf1234} > 23:
-        run_action('{uiop5678}')
+    measurement = measure("{asdf1234}")
+    if measurement is None:
+        run_action("{qwer1234}")
+    elif measurement > 23:
+        run_action("{uiop5678}")
     else:
         run_all_actions()
 
     # Example 2, test two measurements
-    if None not in [{asdf1234}, {hjkl5678}]:
-        if {asdf1234} < 20 and {hjkl5678} > 10:
-            run_action('{qwer1234}')
-            run_action('{uiop5678}')
+    measure_1 = measure("{asdf1234}")
+    measure_2 = measure("{hjkl5678}")
+    if None not in [measure_1, measure_2]:
+        if measure_1 < 20 and measure_2 > 10:
+            run_action("{qwer1234}")
+            run_action("{uiop5678}")
 
     # Example 3, test two measurements and sum of measurements
-    if None not in [{asdf1234}, {hjkl5678}]:
-        sum = {asdf1234} + {hjkl5678}
-        if {asdf1234} > 2 and 10 < {hjkl5678} < 23 and sum < 30.5:
-            run_action('{qwer1234}')
+    measure_1 = measure("{asdf1234}")
+    measure_2 = measure("{hjkl5678}")
+    if None not in [measure_1, measure_2]:
+        sum = measure_1 + measure_2
+        if measure_1 > 2 and 10 < measure_2 < 23 and sum < 30.5:
+            run_action("{qwer1234}")
         else:
-            run_action('{uiop5678}')
+            run_action("{uiop5678}")
 
     # Example 4, combine into one conditional
-    if {asdf1234} != None and 20 < {asdf1234} < 30:
-        run_action('{uiop5678}')
+    measurement = measure("{asdf1234}")
+    if measurement != None and 20 < measurement < 30:
+        run_action("{uiop5678}")
 
     # Example 5, test two measurements and convert Edge Input from 0 or 1 to True or False
-    if None not in [{asdf1234}, {hjkl5678}]:
-        if bool({asdf1234}) and {hjkl5678} > 10:
+    measure_1 = measure("{asdf1234}")
+    measure_2 = measure("{hjkl5678}")
+    if None not in [measure_1, measure_2]:
+        if bool(measure_1) and measure_2 > 10:
             run_all_actions()
 
     # Example 6, test measurement with "or" and a rounded measurement
-    if None not in [{asdf1234}, {hjkl5678}]:
-        if {asdf1234} > 20 or int(round({hjkl5678})) in [20, 21, 22]:
-            run_action('{qwer1234}')
-            if {asdf1234} > 30:
-                run_action('{uiop5678}')
+    measure_1 = measure("{asdf1234}")
+    measure_2 = measure("{hjkl5678}")
+    if None not in [measure_1, measure_2]:
+        if measure_1 > 20 or int(round(measure_2)) in [20, 21, 22]:
+            run_action("{qwer1234}")
+            if measure_1 > 30:
+                run_action("{uiop5678}")
 
 
 Before activating any conditionals, it's advised to thoroughly explore all

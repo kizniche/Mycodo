@@ -62,15 +62,23 @@ sys.path.append(os.path.abspath('/var/mycodo-root'))
 from mycodo.mycodo_client import DaemonControl
 control = DaemonControl()
 
+def measure(condition_id):
+    return [[TEST]]
+
 def run_all_actions():
     print(1)
 
 def run_action(action_id):
-    control.trigger_action(action_id, test=True)
+    control.trigger_action(action_id, test=False)
 
 """
-        cond_statement_replaced_number = pre_statement + cond_statement_replaced_number
-        cond_statement_replaced_none = pre_statement + cond_statement_replaced_none
+
+        cond_statement_replaced_number = (
+                pre_statement.replace('[[TEST]]', '100') +
+                cond_statement_replaced_number)
+        cond_statement_replaced_none = (
+                pre_statement.replace('[[TEST]]', 'None') +
+                cond_statement_replaced_none)
 
         # Test conditional statement
         status_num, msg_num = test_python_execute(cond_statement_replaced_number)

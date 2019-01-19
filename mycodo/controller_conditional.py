@@ -32,23 +32,19 @@ import time
 import timeit
 import traceback
 
-import RPi.GPIO as GPIO
 from io import StringIO
 
 from mycodo.config import SQL_DATABASE_MYCODO
 from mycodo.databases.models import Actions
 from mycodo.databases.models import Conditional
 from mycodo.databases.models import ConditionalConditions
-from mycodo.databases.models import Conversion
-from mycodo.databases.models import DeviceMeasurements
 from mycodo.databases.models import Misc
 from mycodo.databases.models import SMTP
 from mycodo.mycodo_client import DaemonControl
 from mycodo.utils.database import db_retrieve_table_daemon
+from mycodo.utils.function_actions import get_condition_measurement
 from mycodo.utils.function_actions import trigger_function_actions
-from mycodo.utils.influx import read_last_influxdb
 from mycodo.utils.system_pi import is_int
-from mycodo.utils.system_pi import return_measurement_info
 
 MYCODO_DB_PATH = 'sqlite:///' + SQL_DATABASE_MYCODO
 
@@ -208,9 +204,6 @@ class ConditionalController(threading.Thread):
         cond = db_retrieve_table_daemon(
             Conditional, unique_id=self.function_id, entry='first')
 
-        conditions = db_retrieve_table_daemon(ConditionalConditions).filter(
-            ConditionalConditions.conditional_id == self.function_id)
-
         now = time.time()
         timestamp = datetime.datetime.fromtimestamp(now).strftime('%Y-%m-%d %H:%M:%S')
         message = "{ts}\n[Conditional {id} ({name})]".format(
@@ -218,62 +211,13 @@ class ConditionalController(threading.Thread):
             name=cond.name,
             id=self.function_id)
 
-        conditions_check = {}
-
-        # Iterate through conditions and acquire measurements or GPIO states
-        for each_condition in conditions:
-            conditions_check[each_condition.unique_id.split('-')[0]] = {}
-
-            device_id = each_condition.measurement.split(',')[0]
-            measurement_id = each_condition.measurement.split(',')[1]
-
-            device_measurement = db_retrieve_table_daemon(
-                DeviceMeasurements, unique_id=measurement_id)
-            if device_measurement:
-                conversion = db_retrieve_table_daemon(
-                    Conversion, unique_id=device_measurement.conversion_id)
-            else:
-                conversion = None
-            channel, unit, measurement = return_measurement_info(
-                device_measurement, conversion)
-
-            if None in [channel, unit]:
-                self.logger.error(
-                    "Could not determine channel or unit from measurement ID: "
-                    "{}".format(measurement_id))
-                return
-
-            max_age = each_condition.max_age
-
-            # Check Measurement Conditions
-            if each_condition.condition_type == 'measurement':
-                # Check if there hasn't been a measurement in the last set number
-                # of seconds. If not, trigger conditional
-                last_measurement = self.get_last_measurement(
-                    device_id, unit, measurement, channel, max_age)
-                conditions_check[each_condition.unique_id.split('-')[0]] = last_measurement
-
-            # If the edge detection variable is set, calling this function will
-            # trigger an edge detection event. This will merely produce the correct
-            # message based on the edge detection settings.
-            elif each_condition.condition_type == 'edge':
-                try:
-                    GPIO.setmode(GPIO.BCM)
-                    GPIO.setup(int(each_condition.gpio_pin), GPIO.IN)
-                    gpio_state = GPIO.input(int(each_condition.gpio_pin))
-                except:
-                    gpio_state = None
-                    self.logger.error("Exception reading the GPIO pin")
-                conditions_check[each_condition.unique_id.split('-')[0]] = gpio_state
-
         # self.logger.info("Conditional Statement (pre-replacement):\n{}".format(self.conditional_statement))
-
         cond_statement_replaced = self.conditional_statement
 
         # Replace measurements in conditional statement
-        for each_condition_id, each_value in conditions_check.items():
+        for each_condition in db_retrieve_table_daemon(ConditionalConditions, entry='all'):
             cond_statement_replaced = cond_statement_replaced.replace(
-                '{{{id}}}'.format(id=each_condition_id), str(each_value))
+                '{{{id}}}'.format(id=each_condition.unique_id.split('-')[0]), each_condition.unique_id)
 
         # Replace short action IDs in conditional statement with full action IDs
         for each_action in db_retrieve_table_daemon(Actions, entry='all'):
@@ -287,6 +231,9 @@ import sys
 sys.path.append(os.path.abspath('/var/mycodo-root'))
 from mycodo.mycodo_client import DaemonControl
 control = DaemonControl()
+
+def measure(condition_id):
+    return control.get_condition_measurement(condition_id)
 
 def run_all_actions():
     print(1)
@@ -334,9 +281,9 @@ def run_action(action_id):
         except:
             self.logger.error(
                 "Error evaluating conditional statement. "
-                "Replaced Conditional Statement: '{cond_rep}'".format(
-                    cond_rep=cond_statement_replaced))
-            self.logger.error(traceback.format_exc())
+                "Replaced Conditional Statement:\n\n{cond_rep}\n\n{traceback}".format(
+                    cond_rep=cond_statement_replaced,
+                    traceback=traceback.format_exc()))
             evaluated_statement = None
 
         if evaluated_statement is None or not evaluated_statement:
@@ -351,40 +298,6 @@ def run_action(action_id):
         trigger_function_actions(
             self.function_id,
             message=message)
-
-    @staticmethod
-    def get_last_measurement(unique_id, unit, measurement, channel, duration_sec):
-        """
-        Retrieve the latest input measurement
-
-        :return: The latest input value or None if no data available
-        :rtype: float or None
-
-        :param unique_id: What unique_id tag to query in the Influxdb
-            database (eg. '00000001')
-        :type unique_id: str
-        :param unit: What unit to query in the Influxdb
-            database (eg. 'C', 's')
-        :type unit: str
-        :param measurement: What measurement to query in the Influxdb
-            database (eg. 'temperature', 'duration_time')
-        :type measurement: str or None
-        :param channel: Channel
-        :type channel: int or None
-        :param duration_sec: How many seconds to look for a past measurement
-        :type duration_sec: int or None
-        """
-
-        last_measurement = read_last_influxdb(
-            unique_id,
-            unit,
-            measurement,
-            channel,
-            duration_sec=duration_sec)
-
-        if last_measurement is not None:
-            last_value = last_measurement[1]
-            return last_value
 
     def is_running(self):
         return self.running

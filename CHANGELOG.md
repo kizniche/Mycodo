@@ -1,12 +1,15 @@
 ## 7.0.6 (Unreleased)
 
+This release changes Conditional behavior. After upgrading to this version, your Conditional Statements should have had all Condition '{ID}' changed to 'measure("{ID}")'. Check every Conditional after the upgrade to ensure they work as expected. Additionally, the recommended logic to store and test measurements has changed, so review the Examples in the [Conditionals section of the manual](https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.rst#conditional).
+
 ### Bugfixes
 
  - Fix Error message when activating/deactivating controllers (no actual error occurred)
 
 ### Features
 
- - Add ability to execute individual actions from Conditional Statements ([#605](https://github.com/kizniche/mycodo/issues/605))
+ - Add ability to conduct individual measurement in Conditional Statements ([#605](https://github.com/kizniche/mycodo/issues/605))
+ - Add ability to execute individual actions in Conditional Statements ([#605](https://github.com/kizniche/mycodo/issues/605))
 
 
 ## 7.0.5 (2019-01-10)
