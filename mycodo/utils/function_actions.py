@@ -1,13 +1,16 @@
 # coding=utf-8
-
 import logging
 import threading
 import time
+
+import RPi.GPIO as GPIO
 
 from mycodo.config import SQL_DATABASE_MYCODO
 from mycodo.databases.models import Actions
 from mycodo.databases.models import Camera
 from mycodo.databases.models import Conditional
+from mycodo.databases.models import Conversion
+from mycodo.databases.models import DeviceMeasurements
 from mycodo.databases.models import Input
 from mycodo.databases.models import LCD
 from mycodo.databases.models import Math
@@ -21,10 +24,92 @@ from mycodo.databases.utils import session_scope
 from mycodo.devices.camera import camera_record
 from mycodo.mycodo_client import DaemonControl
 from mycodo.utils.database import db_retrieve_table_daemon
+from mycodo.utils.influx import read_last_influxdb
 from mycodo.utils.send_data import send_email
 from mycodo.utils.system_pi import cmd_output
+from mycodo.utils.system_pi import return_measurement_info
 
 MYCODO_DB_PATH = 'sqlite:///' + SQL_DATABASE_MYCODO
+
+logger = logging.getLogger("mycodo.function_actions")
+
+
+def get_condition_measurement(sql_condition):
+    device_id = sql_condition.measurement.split(',')[0]
+    measurement_id = sql_condition.measurement.split(',')[1]
+
+    device_measurement = db_retrieve_table_daemon(
+        DeviceMeasurements, unique_id=measurement_id)
+    if device_measurement:
+        conversion = db_retrieve_table_daemon(
+            Conversion, unique_id=device_measurement.conversion_id)
+    else:
+        conversion = None
+    channel, unit, measurement = return_measurement_info(
+        device_measurement, conversion)
+
+    if None in [channel, unit]:
+        logger.error(
+            "Could not determine channel or unit from measurement ID: "
+            "{}".format(measurement_id))
+        return
+
+    max_age = sql_condition.max_age
+
+    # Check Measurement Conditions
+    if sql_condition.condition_type == 'measurement':
+        # Check if there hasn't been a measurement in the last set number
+        # of seconds. If not, trigger conditional
+        last_measurement = get_last_measurement(
+            device_id, unit, measurement, channel, max_age)
+        return last_measurement
+
+    # If the edge detection variable is set, calling this function will
+    # trigger an edge detection event. This will merely produce the correct
+    # message based on the edge detection settings.
+    elif sql_condition.condition_type == 'gpio_state':
+        try:
+            GPIO.setmode(GPIO.BCM)
+            GPIO.setup(int(sql_condition.gpio_pin), GPIO.IN)
+            gpio_state = GPIO.input(int(sql_condition.gpio_pin))
+        except:
+            gpio_state = None
+            logger.error("Exception reading the GPIO pin")
+        return gpio_state
+
+
+def get_last_measurement(unique_id, unit, measurement, channel, duration_sec):
+    """
+    Retrieve the latest input measurement
+
+    :return: The latest input value or None if no data available
+    :rtype: float or None
+
+    :param unique_id: What unique_id tag to query in the Influxdb
+        database (eg. '00000001')
+    :type unique_id: str
+    :param unit: What unit to query in the Influxdb
+        database (eg. 'C', 's')
+    :type unit: str
+    :param measurement: What measurement to query in the Influxdb
+        database (eg. 'temperature', 'duration_time')
+    :type measurement: str or None
+    :param channel: Channel
+    :type channel: int or None
+    :param duration_sec: How many seconds to look for a past measurement
+    :type duration_sec: int or None
+    """
+
+    last_measurement = read_last_influxdb(
+        unique_id,
+        unit,
+        measurement,
+        channel,
+        duration_sec=duration_sec)
+
+    if last_measurement is not None:
+        last_value = last_measurement[1]
+        return last_value
 
 
 def trigger_action(cond_action_id, message='',

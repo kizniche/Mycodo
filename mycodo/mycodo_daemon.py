@@ -58,6 +58,7 @@ from mycodo.controller_pid import PIDController
 from mycodo.controller_trigger import TriggerController
 from mycodo.databases.models import Camera
 from mycodo.databases.models import Conditional
+from mycodo.databases.models import ConditionalConditions
 from mycodo.databases.models import Input
 from mycodo.databases.models import LCD
 from mycodo.databases.models import Math
@@ -75,6 +76,7 @@ from mycodo.utils.statistics import return_stat_file_dict
 from mycodo.utils.statistics import send_anonymous_stats
 from mycodo.utils.tools import generate_output_usage_report
 from mycodo.utils.tools import next_schedule
+from mycodo.utils.function_actions import get_condition_measurement
 from mycodo.utils.function_actions import trigger_function_actions
 from mycodo.utils.function_actions import trigger_action
 
@@ -105,6 +107,10 @@ def mycodo_service(mycodo):
         def exposed_lcd_flash(lcd_id, state):
             """Starts or stops an LCD from flashing (alarm)"""
             return mycodo.lcd_flash(lcd_id, state)
+
+        @staticmethod
+        def exposed_get_condition_measurement(condition_id):
+            return mycodo.get_condition_measurement(condition_id)
 
         @staticmethod
         def exposed_controller_activate(cont_type, cont_id):
@@ -261,22 +267,20 @@ def mycodo_service(mycodo):
             return mycodo.output_setup(action, output_id)
 
         @staticmethod
-        def exposed_test_trigger_actions(
-                function_id, message=''):
+        def exposed_test_trigger_actions(function_id, message=''):
             """Test triggering actions"""
-            return mycodo.test_trigger_actions(
-                function_id, message)
+            return mycodo.test_trigger_actions(function_id, message)
 
         @staticmethod
         def exposed_trigger_action(action_id, test=False):
-            """Trigger actions"""
+            """Trigger action"""
             return mycodo.trigger_action(action_id, test=test)
 
         @staticmethod
         def exposed_trigger_trigger_actions(
                 function_id, message='', edge=None, output_state=None,
                 on_duration=None, duty_cycle=None):
-            """Trigger actions"""
+            """Trigger all actions"""
             return mycodo.trigger_trigger_actions(
                 function_id, message, edge=edge, output_state=output_state,
                 on_duration=on_duration, duty_cycle=duty_cycle)
@@ -480,6 +484,13 @@ class DaemonController:
 
         # Wait for the client to receive the response before it disconnects
         time.sleep(1)
+
+    @staticmethod
+    def get_condition_measurement(condition_id):
+        condition = db_retrieve_table_daemon(ConditionalConditions).filter(
+            ConditionalConditions.unique_id == condition_id).first()
+        if condition:
+            return get_condition_measurement(condition)
 
     def controller_activate(self, cont_type, cont_id):
         """
