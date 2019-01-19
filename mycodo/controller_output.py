@@ -777,7 +777,7 @@ class OutputController(threading.Thread):
                 oid=output_id,
                 state=each_trigger.output_state)
 
-            self.control.trigger_trigger_actions(
+            self.control.trigger_all_actions(
                 each_trigger.unique_id,
                 message=message,
                 output_state=state,
@@ -831,7 +831,7 @@ class OutputController(threading.Thread):
                         state=each_trigger.output_state,
                         duty_cycle=each_trigger.output_duty_cycle)
 
-            self.control.trigger_trigger_actions(
+            self.control.trigger_all_actions(
                 each_trigger.unique_id,
                 message=message,
                 duty_cycle=duty_cycle)

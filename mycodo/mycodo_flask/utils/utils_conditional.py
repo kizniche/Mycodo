@@ -62,14 +62,16 @@ sys.path.append(os.path.abspath('/var/mycodo-root'))
 from mycodo.mycodo_client import DaemonControl
 control = DaemonControl()
 
+message=''
+
 def measure(condition_id):
     return [[TEST]]
 
-def run_all_actions():
-    print(1)
+def run_all_actions(message=message):
+    pass
 
-def run_action(action_id):
-    control.trigger_action(action_id, test=False)
+def run_action(action_id, message=message):
+    pass
 
 """
 

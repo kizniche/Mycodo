@@ -419,7 +419,7 @@ class InputController(threading.Thread):
                                     state=state_str,
                                     pin=bcm_pin)
 
-                    self.control.trigger_trigger_actions(
+                    self.control.trigger_all_actions(
                         each_trigger.unique_id, message=message,
                         edge=edge)
 

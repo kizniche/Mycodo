@@ -10,6 +10,7 @@ This release changes Conditional behavior. After upgrading to this version, your
 
  - Add ability to conduct individual measurement in Conditional Statements ([#605](https://github.com/kizniche/mycodo/issues/605))
  - Add ability to execute individual actions in Conditional Statements ([#605](https://github.com/kizniche/mycodo/issues/605))
+ - Add ability to modify the Conditional message ([#605](https://github.com/kizniche/mycodo/issues/605))
 
 
 ## 7.0.5 (2019-01-10)

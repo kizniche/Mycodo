@@ -60,13 +60,13 @@ class TriggerController(threading.Thread):
     should be executed.
 
     The main loop in this class will continually check if any timer
-    Triggers have elapsed. If any have, trigger_trigger_actions()
+    Triggers have elapsed. If any have, trigger_all_actions()
     will be ran to execute all actions associated with that particular
     trigger.
 
     Edge and Output conditionals are triggered from
     the Input and Output controllers, respectively, and the
-    trigger_trigger_actions() function in this class will be ran.
+    trigger_all_actions() function in this class will be ran.
     """
     def __init__(self, ready, function_id):
         threading.Thread.__init__(self)

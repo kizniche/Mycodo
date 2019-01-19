@@ -22,7 +22,7 @@ logger = logging.getLogger("mycodo.notification")
 
 def send_email(smtp_host, smtp_ssl, smtp_port, smtp_user, smtp_pass,
                smtp_email_from, email_to, message_body,
-               attachment_file=False, attachment_type=False):
+               attachment_file=None, attachment_type=False):
     """
     Email a specific recipient or recipients a message.
 
@@ -65,17 +65,18 @@ def send_email(smtp_host, smtp_ssl, smtp_port, smtp_user, smtp_pass,
         outer.attach(MIMEText(message_body, 'plain'))  # or 'html'
 
         # Add the attachments to the message
-        attachments = [attachment_file]
-        for file in attachments:
-            try:
-                with open(file, 'rb') as fp:
-                    msg = MIMEBase('application', "octet-stream")
-                    msg.set_payload(fp.read())
-                encoders.encode_base64(msg)
-                msg.add_header('Content-Disposition', 'attachment', filename=os.path.basename(file))
-                outer.attach(msg)
-            except:
-                logger.error("Unable to open one of the attachments. Error: ", sys.exc_info()[0])
+        if attachment_file:
+            attachments = [attachment_file]
+            for file in attachments:
+                try:
+                    with open(file, 'rb') as fp:
+                        msg = MIMEBase('application', "octet-stream")
+                        msg.set_payload(fp.read())
+                    encoders.encode_base64(msg)
+                    msg.add_header('Content-Disposition', 'attachment', filename=os.path.basename(file))
+                    outer.attach(msg)
+                except:
+                    logger.error("Unable to open one of the attachments. Error: ", sys.exc_info()[0])
 
         composed = outer.as_string()
 

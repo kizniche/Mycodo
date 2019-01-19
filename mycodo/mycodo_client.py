@@ -162,13 +162,14 @@ class DaemonControl:
     def test_trigger_actions(self, function_id, message=''):
         return self.rpyc_client.root.test_trigger_actions(function_id, message)
 
-    def trigger_action(self, action_id, test=False):
-        return self.rpyc_client.root.trigger_action(action_id, test=test)
+    def trigger_action(self, action_id, message='', single_action=False):
+        return self.rpyc_client.root.trigger_action(
+            action_id, message=message, single_action=single_action)
 
-    def trigger_trigger_actions(
+    def trigger_all_actions(
             self, trigger_id, message='', edge=None,
             output_state=None, on_duration=None, duty_cycle=None):
-        return self.rpyc_client.root.trigger_trigger_actions(
+        return self.rpyc_client.root.trigger_all_actions(
             trigger_id, message, edge=edge, output_state=output_state,
             on_duration=on_duration, duty_cycle=duty_cycle)
 

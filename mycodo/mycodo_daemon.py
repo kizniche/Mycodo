@@ -272,16 +272,17 @@ def mycodo_service(mycodo):
             return mycodo.test_trigger_actions(function_id, message)
 
         @staticmethod
-        def exposed_trigger_action(action_id, test=False):
+        def exposed_trigger_action(action_id, message='', single_action=False):
             """Trigger action"""
-            return mycodo.trigger_action(action_id, test=test)
+            return mycodo.trigger_action(
+                action_id, message=message, single_action=single_action)
 
         @staticmethod
-        def exposed_trigger_trigger_actions(
+        def exposed_trigger_all_actions(
                 function_id, message='', edge=None, output_state=None,
                 on_duration=None, duty_cycle=None):
             """Trigger all actions"""
-            return mycodo.trigger_trigger_actions(
+            return mycodo.trigger_all_actions(
                 function_id, message, edge=edge, output_state=output_state,
                 on_duration=on_duration, duty_cycle=duty_cycle)
 
@@ -1065,15 +1066,17 @@ class DaemonController:
                       " {err}".format(err=except_msg)
             self.logger.exception(message)
 
-    def trigger_action(self, action_id, test=False):
+    def trigger_action(self, action_id, message='', single_action=False):
         try:
-            return trigger_action(action_id, test=test)
+            return trigger_action(action_id,
+                                  message=message,
+                                  single_action=single_action)
         except Exception as except_msg:
             message = "Could not trigger Conditional Actions:" \
                       " {err}".format(err=except_msg)
             self.logger.exception(message)
 
-    def trigger_trigger_actions(
+    def trigger_all_actions(
             self, function_id, message='', edge=None,
             output_state=None, on_duration=None, duty_cycle=None):
         try:

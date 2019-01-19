@@ -42,8 +42,6 @@ from mycodo.databases.models import Misc
 from mycodo.databases.models import SMTP
 from mycodo.mycodo_client import DaemonControl
 from mycodo.utils.database import db_retrieve_table_daemon
-from mycodo.utils.function_actions import get_condition_measurement
-from mycodo.utils.function_actions import trigger_function_actions
 from mycodo.utils.system_pi import is_int
 
 MYCODO_DB_PATH = 'sqlite:///' + SQL_DATABASE_MYCODO
@@ -206,7 +204,7 @@ class ConditionalController(threading.Thread):
 
         now = time.time()
         timestamp = datetime.datetime.fromtimestamp(now).strftime('%Y-%m-%d %H:%M:%S')
-        message = "{ts}\n[Conditional {id} ({name})]".format(
+        message = "{ts}\n[Conditional {id}]\n[Name: {name}]".format(
             ts=timestamp,
             name=cond.name,
             id=self.function_id)
@@ -214,7 +212,7 @@ class ConditionalController(threading.Thread):
         # self.logger.info("Conditional Statement (pre-replacement):\n{}".format(self.conditional_statement))
         cond_statement_replaced = self.conditional_statement
 
-        # Replace measurements in conditional statement
+        # Replace short condition IDs in conditional statement with full condition IDs
         for each_condition in db_retrieve_table_daemon(ConditionalConditions, entry='all'):
             cond_statement_replaced = cond_statement_replaced.replace(
                 '{{{id}}}'.format(id=each_condition.unique_id.split('-')[0]), each_condition.unique_id)
@@ -224,24 +222,28 @@ class ConditionalController(threading.Thread):
             cond_statement_replaced = cond_statement_replaced.replace(
                 '{{{id}}}'.format(id=each_action.unique_id.split('-')[0]), each_action.unique_id)
 
+        message += '\n[Conditional Statement]:\n--------------------\n{statement}\n--------------------\n'.format(
+            statement=cond.conditional_statement)
+
         # Add functions to the top of the statement string
         pre_statement = """
-import os
-import sys
+import os, sys
 sys.path.append(os.path.abspath('/var/mycodo-root'))
 from mycodo.mycodo_client import DaemonControl
 control = DaemonControl()
 
+message='''{message}'''
+
 def measure(condition_id):
     return control.get_condition_measurement(condition_id)
 
-def run_all_actions():
-    print(1)
+def run_all_actions(message=message):
+    control.trigger_all_actions('{function_id}', message=message)
 
-def run_action(action_id):
-    control.trigger_action(action_id)
+def run_action(action_id, message=message):
+    control.trigger_action(action_id, message=message, single_action=True)
 
-"""
+""".format(message=message, function_id=self.function_id)
 
         cond_statement_replaced = pre_statement + cond_statement_replaced
         # self.logger.info("Conditional Statement (replaced):\n{}".format(cond_statement_replaced))
@@ -286,18 +288,14 @@ def run_action(action_id):
                     traceback=traceback.format_exc()))
             evaluated_statement = None
 
-        if evaluated_statement is None or not evaluated_statement:
-            return
-
-        message += '\n[Conditional Statement:\n{statement}\n\nReplaced:\n{replaced}\n]'.format(
-            statement=cond.conditional_statement,
-            replaced=cond_statement_replaced)
-
-        # If the code hasn't returned by now, the conditional has been triggered
-        # and the actions for that conditional should be executed
-        trigger_function_actions(
-            self.function_id,
-            message=message)
+        # if evaluated_statement is None or not evaluated_statement:
+        #     return
+        #
+        # # If the code hasn't returned by now, the conditional has been triggered
+        # # and the actions for that conditional should be executed
+        # trigger_function_actions(
+        #     self.function_id,
+        #     message=message)
 
     def is_running(self):
         return self.running

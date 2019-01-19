@@ -33,11 +33,21 @@ def upgrade():
                 # Get conditions for this conditional
                 with session_scope(MYCODO_DB_PATH) as condition_sess:
                     for each_condition in condition_sess.query(ConditionalConditions).all():
-                        # Test if replacement of condition ID to function needs to occur
+                        # Replace {ID} with measure("{ID}")
                         id_str = '{{{id}}}'.format(id=each_condition.unique_id.split('-')[0])
                         new_str = 'measure("{{{id}}}")'.format(id=each_condition.unique_id.split('-')[0])
                         if id_str in each_conditional.conditional_statement:
                             each_conditional.conditional_statement = each_conditional.conditional_statement.replace(id_str, new_str)
+
+                        # Replace print(1) with run_all_actions()
+                        new_str = 'run_all_actions()'
+                        if id_str in each_conditional.conditional_statement:
+                            each_conditional.conditional_statement = each_conditional.conditional_statement.replace(
+                                'print(1)', new_str)
+                            each_conditional.conditional_statement = each_conditional.conditional_statement.replace(
+                                'print("1")', new_str)
+                            each_conditional.conditional_statement = each_conditional.conditional_statement.replace(
+                                "print('1')", new_str)
 
         conditional_sess.commit()
 

@@ -138,7 +138,7 @@ def trigger_action(cond_action_id, message='',
     email_count = smtp_table.email_count
 
     message += "\n[Action {id}]:".format(
-        id=cond_action.id, action_type=cond_action.action_type)
+        id=cond_action.unique_id.split('-')[0], action_type=cond_action.action_type)
 
     # Pause
     if cond_action.action_type == 'pause_actions':
@@ -467,7 +467,6 @@ def trigger_action(cond_action_id, message='',
 
         # If the emails per hour limit has not been exceeded
         if allowed_to_send_notice:
-            email_recipients.append(cond_action.do_action_string)
             message += " Notify {email}.".format(
                 email=cond_action.do_action_string)
             # attachment_type != False indicates to
@@ -478,17 +477,19 @@ def trigger_action(cond_action_id, message='',
             elif cond_action.action_type == 'video_email':
                 message += " Video attached to email."
                 attachment_type = 'video'
+
+            if single_action and cond_action.do_action_string:
+                smtp = db_retrieve_table_daemon(SMTP, entry='first')
+                send_email(smtp.host, smtp.ssl, smtp.port,
+                           smtp.user, smtp.passw, smtp.email_from,
+                           [cond_action.do_action_string], message,
+                           attachment_file, attachment_type)
+            else:
+                email_recipients.append(cond_action.do_action_string)
         else:
             logger_actions.error(
                 "Wait {sec:.0f} seconds to email again.".format(
                     sec=smtp_wait_timer - time.time()))
-
-        if single_action and cond_action.do_action_string:
-            smtp = db_retrieve_table_daemon(SMTP, entry='first')
-            send_email(smtp.host, smtp.ssl, smtp.port,
-                       smtp.user, smtp.passw, smtp.email_from,
-                       [cond_action.do_action_string], message,
-                       attachment_file, attachment_type)
 
     elif cond_action.action_type == 'flash_lcd_on':
         lcd = db_retrieve_table_daemon(
@@ -552,7 +553,7 @@ def trigger_function_actions(
         function_id,
         message='', last_measurement=None,
         device_id=None, device_measurement=None, edge=None,
-        output_state=None, on_duration=None, duty_cycle=None):
+        output_state=None, on_duration=None, duty_cycle=None, test=False):
     """
     Execute the Actions belonging to a particular Function
 
@@ -567,6 +568,9 @@ def trigger_function_actions(
     :param duty_cycle: If output conditional, the duty cycle
     :return:
     """
+    if test:
+        return
+
     logger_actions = logging.getLogger("mycodo.trigger_function_actions_{id}".format(
         id=function_id.split('-')[0]))
 
@@ -579,8 +583,8 @@ def trigger_function_actions(
     # List of tags to add to a note
     note_tags = []
 
-    attachment_file = False
-    attachment_type = False
+    attachment_file = None
+    attachment_type = None
     input_dev = None
     output = None
     device = None
@@ -616,6 +620,7 @@ def trigger_function_actions(
          email_recipients,
          attachment_file,
          attachment_type) = trigger_action(cond_action.unique_id, message,
+                                           single_action=False,
                                            note_tags=note_tags,
                                            email_recipients=email_recipients,
                                            attachment_file=attachment_file,
