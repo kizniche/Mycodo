@@ -112,16 +112,14 @@ def get_last_measurement(unique_id, unit, measurement, channel, duration_sec):
         return last_value
 
 
-def trigger_action(cond_action_id, message='',
-                   note_tags=None,
-                   email_recipients=None,
-                   attachment_file=None,
-                   attachment_type=None,
-                   single_action=False,
-                   test=False):
-    if test:
-        return
-
+def trigger_action(
+        cond_action_id,
+        message='',
+        note_tags=None,
+        email_recipients=None,
+        attachment_file=None,
+        attachment_type=None,
+        single_action=False):
     cond_action = db_retrieve_table_daemon(Actions, unique_id=cond_action_id)
     if not cond_action:
         return
@@ -551,9 +549,14 @@ def trigger_action(cond_action_id, message='',
 
 def trigger_function_actions(
         function_id,
-        message='', last_measurement=None,
-        device_id=None, device_measurement=None, edge=None,
-        output_state=None, on_duration=None, duty_cycle=None, test=False):
+        message='',
+        last_measurement=None,
+        device_id=None,
+        device_measurement=None,
+        edge=None,
+        output_state=None,
+        on_duration=None,
+        duty_cycle=None):
     """
     Execute the Actions belonging to a particular Function
 
@@ -568,9 +571,6 @@ def trigger_function_actions(
     :param duty_cycle: If output conditional, the duty cycle
     :return:
     """
-    if test:
-        return
-
     logger_actions = logging.getLogger("mycodo.trigger_function_actions_{id}".format(
         id=function_id.split('-')[0]))
 
@@ -619,7 +619,8 @@ def trigger_function_actions(
          note_tags,
          email_recipients,
          attachment_file,
-         attachment_type) = trigger_action(cond_action.unique_id, message,
+         attachment_type) = trigger_action(cond_action.unique_id,
+                                           message=message,
                                            single_action=False,
                                            note_tags=note_tags,
                                            email_recipients=email_recipients,

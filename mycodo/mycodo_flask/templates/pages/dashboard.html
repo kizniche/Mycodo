@@ -395,7 +395,7 @@ $(document).ready(function() {
               past_data.push({
                 x: new_time,
                 title: data[i][1],
-                text: data[i][2].replace(/(?:\r\n|\r|\n)/g, '<br>')
+                text: data[i][2].replace(/(?:\r\n|\r|\n)/g, '<br>').replace(/  /g, '░░')
               });
             }
             else {

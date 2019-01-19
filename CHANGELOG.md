@@ -5,6 +5,7 @@ This release changes Conditional behavior. After upgrading to this version, your
 ### Bugfixes
 
  - Fix Error message when activating/deactivating controllers (no actual error occurred)
+ - Fix (workaround) for inability to display Note whitespaces on Graphs
 
 ### Features
 
