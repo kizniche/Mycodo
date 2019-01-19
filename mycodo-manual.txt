@@ -1328,34 +1328,33 @@ measurement or GPIO state.
 Conditional Setup Guide
 
 Python 3 is the environment that these conditionals will be executed.
-For the conditional to be true (and trigger the actions), the function
-run_all_actions() must be called. Additionally, individual actions may
-be executed with the run_action() function.
+The following
 
   Function                Description
   ----------------------- ------------------------------------------------
+  measure(“{ID}”)         Returns a measurement for the Condition with ID.
   run_all_actions()       Executes all actions.
-  run_action(‘{ID}’)      Executes a specific action with ID.
+  run_action(“{ID}”)      Executes the Action with ID.
 
 Since the Python code contained in the Conditional Statement must be
 formatted properly, it’s best to familiarize yourself with the basics of
 Python.
 
-Note that there are two different IDs in use here, one set of IDs come
-from the Measurements, under the Conditions section of the Conditional,
-and one set of IDs come from the Actions, under the Actions section of
-the Conditional. Read all of this section, including the examples,
-below, to fully understand how to configure a conditional properly.
+Note that there are two different IDs in use here, one set of IDs are
+for the measurements, under the Conditions section of the Conditional,
+and one set of IDs are for the Actions, under the Actions section of the
+Conditional. Read all of this section, including the examples, below, to
+fully understand how to configure a conditional properly.
 
 IMPORTANT: If a measurement hasn’t been acquired within the Max Age that
-is set, “None” will be returned and substituted with the {ID} in the
+is set, “None” will be returned when measure(“{ID}”) is called in the
 code. It is very important that you account for this. All examples below
 incorporate a test for the measurement being None, and this should not
 be removed. If an error occurs (such as if the statement resolves to
-comparing None to a numerical value, such as “None < 23”), then the
-conditional will not trigger and will throw an error in the daemon log.
+comparing None to a numerical value, such as “if None < 23”), then the
+code will stop there and an error will be logged in the daemon log.
 Accounting for None is useful for determining if an Input is no longer
-acquiring measurements.
+acquiring measurements (e.g. dead sensor, malfunction, etc.).
 
 To create a basic conditional, follow these steps, using the numbers in
 the screenshots, below, that correspond to the numbers in parentheses:
@@ -1368,10 +1367,10 @@ the screenshots, below, that correspond to the numbers in parentheses:
 4.  Select a measurement (3), then click Save (4).
 5.  Select a Controller ID (5) for an Output, select either “On” or
     “Off” for Then State, then click Save (6).
-6.  Make note of what your Measurement ID (7) is and replace the
-    Measurement IDs in the Conditional Statement (8) with that ID
-    (notice “bf43a998” in the first image was replaced with “1c487d5e”
-    in the second image), then click Save (9).
+6.  Make note of what your Condition ID (7) is and replace the Condition
+    IDs in the Conditional Statement (8) with that ID (notice “bf43a998”
+    in the first image was replaced with “1c487d5e” in the second
+    image), then click Save (9).
 7.  Additionally, you may configure the Conditional Statement with more
     control by utilizing run_action() (see the
     Advanced Conditional Statement examples, below, for proper usage).
@@ -1394,37 +1393,46 @@ manual to understand how to use Conditionals.
 
 Simple Conditional Statement examples:
 
-Each ID encased in curly brackets “{}” will be converted to the most
-recent measurement obtained from that particular measurement under the
-Conditions section of the Conditional.
+Each measure(“{ID}”) will return the most recent measurement obtained
+from that particular measurement under the Conditions section of the
+Conditional, as long as it’s within the set Max Age.
 
     # Example 1, no measurement, useful to notify by email when an Input stops working
-    if {asdf1234} is None:
+    if measure("{asdf1234}") is None:
         run_all_actions()
 
     # Example 2, test two measurements
-    if None not in [{asdf1234}, {hjkl5678}]:
-        if {asdf1234} < 20 and {hjkl5678} > 10:
+    measure_1 = measure("{asdf1234}")
+    measure_2 = measure("{hjkl5678}")
+    if None not in [measure_1, measure_2]:
+        if measure_1 < 20 and measure_2 > 10:
             run_all_actions()
 
     # Example 3, test two measurements and sum of measurements
-    if None not in [{asdf1234}, {hjkl5678}]:
-        sum = {asdf1234} + {hjkl5678}
-        if {asdf1234} > 2 and 10 < {hjkl5678} < 23 and sum < 30.5:
+    measure_1 = measure("{asdf1234}")
+    measure_2 = measure("{hjkl5678}")
+    if None not in [measure_1, measure_2]:
+        sum = measure_1 + measure_2
+        if measure_1 > 2 and 10 < measure_2 < 23 and sum < 30.5:
             run_all_actions()
 
     # Example 4, combine into one conditional
-    if {asdf1234} != None and 20 < {asdf1234} < 30:
+    measurement = measure("{asdf1234}")
+    if measurement != None and 20 < measurement < 30:
         run_all_actions()
 
     # Example 5, test two measurements and convert Edge Input from 0 or 1 to True or False
-    if None not in [{asdf1234}, {hjkl5678}]:
-        if bool({asdf1234}) and {hjkl5678} > 10:
+    measure_1 = measure("{asdf1234}")
+    measure_2 = measure("{hjkl5678}")
+    if None not in [measure_1, measure_2]:
+        if bool(measure_1) and measure_2 > 10:
             run_all_actions()
 
     # Example 6, test measurement with "or" and a rounded measurement
-    if None not in [{asdf1234}, {hjkl5678}]:
-        if {asdf1234} > 20 or int(round({hjkl5678})) in [20, 21, 22]:
+    measure_1 = measure("{asdf1234}")
+    measure_2 = measure("{hjkl5678}")
+    if None not in [measure_1, measure_2]:
+        if measure_1 > 20 or int(round(measure_2)) in [20, 21, 22]:
             run_all_actions()
 
 Advanced Conditional Statement examples:
@@ -1432,47 +1440,57 @@ Advanced Conditional Statement examples:
 These examples expand on the simple examples, above, by activating
 specific actions. The following examples will reference actions with IDs
 that can be found under the Actions section of the Conditional. Two
-example action ID will be used: ‘qwer1234’ and ‘uiop5678’. Additionally,
-run_all_actions() is used here, which is just another way to trigger all
-actions.
+example action ID will be used: “qwer1234” and “uiop5678”. Additionally,
+run_all_actions() is used here, which will run all actions in the order
+in which they appear in the Actions section of the Conditional.
 
     # Example 1
-    if {asdf1234} is None:
-        run_action('{qwer1234}')
-    elif {asdf1234} > 23:
-        run_action('{uiop5678}')
+    measurement = measure("{asdf1234}")
+    if measurement is None:
+        run_action("{qwer1234}")
+    elif measurement > 23:
+        run_action("{uiop5678}")
     else:
         run_all_actions()
 
     # Example 2, test two measurements
-    if None not in [{asdf1234}, {hjkl5678}]:
-        if {asdf1234} < 20 and {hjkl5678} > 10:
-            run_action('{qwer1234}')
-            run_action('{uiop5678}')
+    measure_1 = measure("{asdf1234}")
+    measure_2 = measure("{hjkl5678}")
+    if None not in [measure_1, measure_2]:
+        if measure_1 < 20 and measure_2 > 10:
+            run_action("{qwer1234}")
+            run_action("{uiop5678}")
 
     # Example 3, test two measurements and sum of measurements
-    if None not in [{asdf1234}, {hjkl5678}]:
-        sum = {asdf1234} + {hjkl5678}
-        if {asdf1234} > 2 and 10 < {hjkl5678} < 23 and sum < 30.5:
-            run_action('{qwer1234}')
+    measure_1 = measure("{asdf1234}")
+    measure_2 = measure("{hjkl5678}")
+    if None not in [measure_1, measure_2]:
+        sum = measure_1 + measure_2
+        if measure_1 > 2 and 10 < measure_2 < 23 and sum < 30.5:
+            run_action("{qwer1234}")
         else:
-            run_action('{uiop5678}')
+            run_action("{uiop5678}")
 
     # Example 4, combine into one conditional
-    if {asdf1234} != None and 20 < {asdf1234} < 30:
-        run_action('{uiop5678}')
+    measurement = measure("{asdf1234}")
+    if measurement != None and 20 < measurement < 30:
+        run_action("{uiop5678}")
 
     # Example 5, test two measurements and convert Edge Input from 0 or 1 to True or False
-    if None not in [{asdf1234}, {hjkl5678}]:
-        if bool({asdf1234}) and {hjkl5678} > 10:
+    measure_1 = measure("{asdf1234}")
+    measure_2 = measure("{hjkl5678}")
+    if None not in [measure_1, measure_2]:
+        if bool(measure_1) and measure_2 > 10:
             run_all_actions()
 
     # Example 6, test measurement with "or" and a rounded measurement
-    if None not in [{asdf1234}, {hjkl5678}]:
-        if {asdf1234} > 20 or int(round({hjkl5678})) in [20, 21, 22]:
-            run_action('{qwer1234}')
-            if {asdf1234} > 30:
-                run_action('{uiop5678}')
+    measure_1 = measure("{asdf1234}")
+    measure_2 = measure("{hjkl5678}")
+    if None not in [measure_1, measure_2]:
+        if measure_1 > 20 or int(round(measure_2)) in [20, 21, 22]:
+            run_action("{qwer1234}")
+            if measure_1 > 30:
+                run_action("{uiop5678}")
 
 Before activating any conditionals, it’s advised to thoroughly explore
 all possible scenarios and plan a configuration that eliminates
@@ -1514,13 +1532,15 @@ Conditional Statement.
                           long to accept values. If the latest value is
                           older than this duration, “None” is returned.
 
-  GPIO State              Acquires the current GPIO state and returns True
-                          if HIGH or False if LOW. If the latest value is
-                          older than this duration, “None” is returned.
+  GPIO State              Acquires the current GPIO state and returns
+                          True/1 if HIGH or False/0 if LOW. If the latest
+                          value is older than this duration, “None” is
+                          returned.
 
-  Refractory Period       The minimum duration (seconds) to wait after a
-  (seconds)               conditional has been triggered to begin
-                          evaluating the conditional again.
+  Max Age (seconds)       The minimum age (seconds) the measurement can
+                          be. If the last measurement is older than this,
+                          “None” will be returned instead of a
+                          measurement.
   ------------------------------------------------------------------------
 
 Trigger

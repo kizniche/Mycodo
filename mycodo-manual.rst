@@ -1261,20 +1261,20 @@ Since the Python code contained in the Conditional Statement must be formatted
 properly, it's best to familiarize yourself with the
 `basics of Python <https://realpython.com/python-conditional-statements/>`__.
 
-Note that there are two different IDs in use here, one set of IDs come from the
-Measurements, under the ``Conditions`` section of the Conditional, and one set
-of IDs come from the Actions, under the ``Actions`` section of the Conditional.
+Note that there are two different IDs in use here, one set of IDs are for the
+measurements, under the ``Conditions`` section of the Conditional, and one set
+of IDs are for the Actions, under the ``Actions`` section of the Conditional.
 Read all of this section, including the examples, below, to fully understand how
 to configure a conditional properly.
 
 IMPORTANT: If a measurement hasn't been acquired within the Max Age that is set,
-"None" will be returned and substituted with the {ID} in the code. It is very
+"None" will be returned when measure("{ID}") is called in the code. It is very
 important that you account for this. All examples below incorporate a test for
 the measurement being None, and this should not be removed. If an error occurs
 (such as if the statement resolves to comparing None to a numerical value, such
-as "None < 23"), then the conditional will not trigger and will throw an error
+as "if None < 23"), then the code will stop there and an error will be logged
 in the daemon log. Accounting for None is useful for determining if an Input is
-no longer acquiring measurements.
+no longer acquiring measurements (e.g. dead sensor, malfunction, etc.).
 
 To create a basic conditional, follow these steps, using the numbers in the
 screenshots, below, that correspond to the numbers in parentheses:
@@ -1284,7 +1284,7 @@ screenshots, below, that correspond to the numbers in parentheses:
 3. Next to (2), select "Output (Duration)" (or any other action), then click ``Add Action``.
 4. Select a measurement (3), then click ``Save`` (4).
 5. Select a ``Controller ID`` (5) for an Output, select either "On" or "Off" for ``Then State``, then click ``Save`` (6).
-6. Make note of what your Measurement ID (7) is and replace the Measurement IDs in the ``Conditional Statement`` (8) with that ID (notice "bf43a998" in the first image was replaced with "1c487d5e" in the second image), then click ``Save`` (9).
+6. Make note of what your Condition ID (7) is and replace the Condition IDs in the ``Conditional Statement`` (8) with that ID (notice "bf43a998" in the first image was replaced with "1c487d5e" in the second image), then click ``Save`` (9).
 7. Additionally, you may configure the ``Conditional Statement`` with more control by utilizing ``run_action()`` (see the ``Advanced Conditional Statement examples``, below, for proper usage).
 
 If your ``Conditional Statement`` has been formatted correctly, your
@@ -1305,9 +1305,9 @@ how to use Conditionals.
 
 Simple ``Conditional Statement`` examples:
 
-Each ID encased in curly brackets "{}" will be converted to the most
-recent measurement obtained from that particular measurement under
-the ``Conditions`` section of the Conditional.
+Each measure("{ID}") will return the most recent measurement obtained from that
+particular measurement under the ``Conditions`` section of the Conditional, as
+long as it's within the set Max Age.
 
 ::
 
@@ -1355,8 +1355,9 @@ Advanced ``Conditional Statement`` examples:
 These examples expand on the simple examples, above, by activating specific
 actions. The following examples will reference actions with IDs that can be
 found under the ``Actions`` section of the Conditional. Two example action
-ID will be used: 'qwer1234' and 'uiop5678'. Additionally, run_all_actions()
-is used here, which is just another way to trigger all actions.
+ID will be used: "qwer1234" and "uiop5678". Additionally, run_all_actions()
+is used here, which will run all actions in the order in which they appear
+in the Actions section of the Conditional.
 
 ::
 
