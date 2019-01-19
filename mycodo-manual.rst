@@ -1252,9 +1252,9 @@ following
 +=======================+=================================================+
 | measure("{ID}")       | Returns a measurement for the Condition with ID.|
 +-----------------------+-------------------------------------------------+
-| run_all_actions()     | Executes all actions.                           |
-+-----------------------+-------------------------------------------------+
 | run_action("{ID}")    | Executes the Action with ID.                    |
++-----------------------+-------------------------------------------------+
+| run_all_actions()     | Executes all actions.                           |
 +-----------------------+-------------------------------------------------+
 
 Since the Python code contained in the Conditional Statement must be formatted
