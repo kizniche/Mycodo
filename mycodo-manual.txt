@@ -1359,21 +1359,24 @@ acquiring measurements (e.g. dead sensor, malfunction, etc.).
 To create a basic conditional, follow these steps, using the numbers in
 the screenshots, below, that correspond to the numbers in parentheses:
 
-1.  Go to the Setup -> Function page, select “Controller: Conditional”,
-    then click Add.
-2.  Next to (1), select “Measurement”, then click Add Condition.
-3.  Next to (2), select “Output (Duration)” (or any other action), then
-    click Add Action.
-4.  Select a measurement (3), then click Save (4).
-5.  Select a Controller ID (5) for an Output, select either “On” or
-    “Off” for Then State, then click Save (6).
-6.  Make note of what your Condition ID (7) is and replace the Condition
-    IDs in the Conditional Statement (8) with that ID (notice “bf43a998”
-    in the first image was replaced with “1c487d5e” in the second
-    image), then click Save (9).
-7.  Additionally, you may configure the Conditional Statement with more
-    control by utilizing run_action() (see the
-    Advanced Conditional Statement examples, below, for proper usage).
+-   Navigate to the Setup -> Function page.
+-   Select “Controller: Conditional”, then click Add.
+-   Under Conditions (1), select a condition option, then click
+    Add Condition.
+-   Configure the newly-added Condition then click Save.
+-   Under Actions (2), select an action option, then click Add Action.
+-   Configure the newly-added Action then click Save.
+-   Notice that each Condition and each Action has its own ID
+    (underlined).
+-   The default Conditional Statement (3) contains placeholder IDs that
+    need to be changed to your Condition and Action IDs. Change the ID
+    in measure(“{asdf1234}”) to your Condition ID. Change the ID in
+    run_action(“{qwer5678}”, message=message) to your Action ID. Click
+    Save at the top of the Conditional.
+-   The logic used in the Conditional Statement will need to be adjusted
+    to suit your particular needs. Additionally, you may add more
+    Conditions or Actions. See the
+    Advanced Conditional Statement examples, below, for usage examples.
 
 If your Conditional Statement has been formatted correctly, your
 Conditional will save and it will be ready to activate. If an error is
@@ -1387,9 +1390,7 @@ Note: Mycodo is constantly changing, so the screenshots below may not
 match what you see exactly. Be sure to read this entire section of the
 manual to understand how to use Conditionals.
 
-[Screenshot-Mycodo-Conditional-Guide-01]
-
-[Screenshot-Mycodo-Conditional-Guide-02]
+[Screenshot-Mycodo-Conditional-Setup]
 
 Simple Conditional Statement examples:
 

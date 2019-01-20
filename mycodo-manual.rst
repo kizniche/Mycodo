@@ -1286,7 +1286,7 @@ screenshots, below, that correspond to the numbers in parentheses:
 - Under Actions (2), select an action option, then click ``Add Action``.
 - Configure the newly-added Action then click ``Save``.
 - Notice that each Condition and each Action has its own ID (underlined).
-- The default Conditional Statement contains placeholder IDs that need to be changed to your Condition and Action IDs. Change the ID in measure("{asdf1234}") to your Condition ID. Change the ID in run_action("{qwer5678}", message=message) to your Action ID. Click ``Save`` at the top of the Conditional.
+- The default Conditional Statement (3) contains placeholder IDs that need to be changed to your Condition and Action IDs. Change the ID in measure("{asdf1234}") to your Condition ID. Change the ID in run_action("{qwer5678}", message=message) to your Action ID. Click ``Save`` at the top of the Conditional.
 - The logic used in the Conditional Statement will need to be adjusted to suit your particular needs. Additionally, you may add more Conditions or Actions. See the ``Advanced Conditional Statement examples``, below, for usage examples.
 
 If your ``Conditional Statement`` has been formatted correctly, your
