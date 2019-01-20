@@ -1,6 +1,6 @@
-## 7.0.6 (Unreleased)
+## 7.1.0 (2019-01-20)
 
-This release changes Conditional behavior. After upgrading to this version, your Conditional Statements should have had all Condition '{ID}' changed to 'measure("{ID}")'. Check every Conditional after the upgrade to ensure they work as expected. Additionally, the recommended logic to store and test measurements has changed, so review the Examples in the [Conditionals section of the manual](https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.rst#conditional).
+This release changes Conditional behavior. After upgrading to this version, your Conditional Statements should have every Condition '{ID}' changed to 'measure("{ID}")'. Check every Conditional after the upgrade to ensure they work as expected. Additionally, the recommended logic to store and test measurements has changed, so review the Examples in the [Conditionals section of the manual](https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.rst#conditional).
 
 ### Bugfixes
 

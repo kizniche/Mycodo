@@ -9,11 +9,10 @@ from datetime import timedelta
 import os
 from flask_babel import lazy_gettext
 
-sys.path.append(
-    os.path.abspath(os.path.dirname(__file__)))
+sys.path.append(os.path.abspath(os.path.dirname(__file__)))
 from config_translations import TRANSLATIONS
 
-MYCODO_VERSION = '7.0.5'
+MYCODO_VERSION = '7.1.0'
 ALEMBIC_VERSION = '70c828e05255'
 
 #  FORCE_UPGRADE_MASTER

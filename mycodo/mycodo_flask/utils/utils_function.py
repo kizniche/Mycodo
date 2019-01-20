@@ -48,11 +48,12 @@ def function_add(form_add_func):
             new_func.conditional_statement = '''
 # Replace "asdf1234" with a Condition ID, "qwer5678" with an Action ID.
 measurement = measure("{asdf1234}")
+message += "Measure: {meas}".format(meas=measurement)
 if measurement is not None:  # If a measurement exists
     if measurement < 23:  # If the measurement is less than 23
-        run_all_actions()  # Run all actions
+        run_all_actions(message=message)  # Run all actions
     else:  # If the measurement is greater or equal to 23
-        run_action("{qwer5678}")  # Run a single Action'''
+        run_action("{qwer5678}", message=message)  # Run a single Action'''
             new_func.save()
         elif form_add_func.func_type.data.startswith('pid_'):
             new_func = PID().save()
