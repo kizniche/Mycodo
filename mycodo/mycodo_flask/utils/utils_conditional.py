@@ -32,40 +32,17 @@ def conditional_mod(form):
         controller=TRANSLATIONS['conditional']['title'])
 
     try:
-        cond_mod = Conditional.query.filter(
-            Conditional.unique_id == form.function_id.data).first()
-        cond_mod.name = form.name.data
-
-        # Replace measurements in conditional statement
-        conditions = ConditionalConditions.query.filter(
-            ConditionalConditions.conditional_id == form.function_id.data).all()
-        cond_statement_replaced_number = form.conditional_statement.data
-        cond_statement_replaced_none = form.conditional_statement.data
-        for each_condition in conditions:
-            cond_statement_replaced_number = cond_statement_replaced_number.replace(
-                '{{{id}}}'.format(id=each_condition.unique_id.split('-')[0]), str(100))
-        for each_condition in conditions:
-            cond_statement_replaced_none = cond_statement_replaced_none.replace(
-                '{{{id}}}'.format(id=each_condition.unique_id.split('-')[0]), 'None')
-
-        # Replace short action IDs in conditional statement with full action IDs
-        for each_action in Actions.query.all():
-            cond_statement_replaced_number = cond_statement_replaced_number.replace(
-                '{{{id}}}'.format(id=each_action.unique_id.split('-')[0]), each_action.unique_id)
-            cond_statement_replaced_none = cond_statement_replaced_none.replace(
-                '{{{id}}}'.format(id=each_action.unique_id.split('-')[0]), each_action.unique_id)
-
         pre_statement = """
-import os
-import sys
+import os, random, sys
 sys.path.append(os.path.abspath('/var/mycodo-root'))
 from mycodo.mycodo_client import DaemonControl
 control = DaemonControl()
 
 message=''
+list_test_values = [None, -100000, -10000, -1000, -100, -10, 0, 1, 10, 100, 1000, 10000, 100000]
 
 def measure(condition_id):
-    return [[TEST]]
+    return random.choice(list_test_values)  # Choose a random value from the list
 
 def run_all_actions(message=message):
     pass
@@ -75,39 +52,32 @@ def run_action(action_id, message=message):
 
 """
 
-        cond_statement_replaced_number = (
-                pre_statement.replace('[[TEST]]', '100') +
-                cond_statement_replaced_number)
-        cond_statement_replaced_none = (
-                pre_statement.replace('[[TEST]]', 'None') +
-                cond_statement_replaced_none)
+        cond_statement_replaced = (pre_statement +
+                                   form.conditional_statement.data)
 
-        # Test conditional statement
-        status_num, msg_num = test_python_execute(cond_statement_replaced_number)
-        status_none, msg_none = test_python_execute(cond_statement_replaced_none)
+        # Iterate 100 times to attempt to find a value combination that causes an error
+        for _ in range(100):
+            # Test conditional statement
+            status_num, err_msg = test_python_execute(cond_statement_replaced)
 
-        if not status_num and not status_none:
-            # No errors found executing code
-            cond_mod.conditional_statement = form.conditional_statement.data
-        else:
-            error.append(
-                "Error encountered while checking Conditional Statement code"
-                " for validity."
-                "\n\nCode entered:\n\n{codeo}"
-                "\n\n============================================================="
-                "\n\nCode tested with IDs replaced with numbers:\n{code_num}"
-                "\n\n-------------------------------------------------------------"
-                "\n\nErrors from this code:\n\n{err_num}"
-                "\n\n============================================================="
-                "\n\nCode tested with IDs replaced with None:\n{code_none}"
-                "\n\n-------------------------------------------------------------"
-                "\n\nErrors from this code:\n\n{err_none}".format(
-                    codeo=form.conditional_statement.data,
-                    code_num=cond_statement_replaced_number,
-                    err_num=msg_num,
-                    code_none=cond_statement_replaced_none,
-                    err_none=msg_none))
+            if status_num:  # Error(s) found executing code
+                error.append(
+                    "Error encountered while checking Conditional Statement code"
+                    " for validity."
+                    "\n\nCode entered:\n\n{code}"
+                    "\n\n============================================================="
+                    "\n\nCode test:\n{code_test}"
+                    "\n\n-------------------------------------------------------------"
+                    "\n\nErrors from this code:\n\n{err}".format(
+                        code=form.conditional_statement.data,
+                        code_test=cond_statement_replaced,
+                        err=err_msg))
+                break
 
+        cond_mod = Conditional.query.filter(
+            Conditional.unique_id == form.function_id.data).first()
+        cond_mod.name = form.name.data
+        cond_mod.conditional_statement = form.conditional_statement.data
         cond_mod.period = form.period.data
         cond_mod.start_offset = form.start_offset.data
         cond_mod.refractory_period = form.refractory_period.data
