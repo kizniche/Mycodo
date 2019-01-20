@@ -1390,7 +1390,7 @@ Note: Mycodo is constantly changing, so the screenshots below may not
 match what you see exactly. Be sure to read this entire section of the
 manual to understand how to use Conditionals.
 
-[Screenshot-Mycodo-Conditional-Setup]
+[Figure-Mycodo-Conditional-Setup]
 
 Simple Conditional Statement examples:
 
