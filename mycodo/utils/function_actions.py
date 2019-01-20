@@ -4,6 +4,7 @@ import threading
 import time
 
 import RPi.GPIO as GPIO
+import os
 
 from mycodo.config import SQL_DATABASE_MYCODO
 from mycodo.databases.models import Actions
@@ -147,7 +148,7 @@ def trigger_action(
         time.sleep(cond_action.pause_duration)
 
     # Actuate output (duration)
-    elif (cond_action.action_type == 'output' and cond_action.do_unique_id and
+    if (cond_action.action_type == 'output' and cond_action.do_unique_id and
           cond_action.do_output_state in ['on', 'off']):
         this_output = db_retrieve_table_daemon(
             Output, unique_id=cond_action.do_unique_id, entry='first')
@@ -170,7 +171,7 @@ def trigger_action(
         output_on_off.start()
 
     # Actuate output (PWM)
-    elif (cond_action.action_type == 'output_pwm' and cond_action.do_unique_id and
+    if (cond_action.action_type == 'output_pwm' and cond_action.do_unique_id and
           cond_action.do_output_pwm):
         this_output = db_retrieve_table_daemon(
             Output, unique_id=cond_action.do_unique_id, entry='first')
@@ -187,7 +188,7 @@ def trigger_action(
         output_on.start()
 
     # Execute command in shell
-    elif cond_action.action_type == 'command':
+    if cond_action.action_type == 'command':
 
         # Replace string variables with actual values
         command_str = cond_action.do_action_string
@@ -236,7 +237,7 @@ def trigger_action(
         message += "(return status: {stat}).".format(stat=cmd_status)
 
     # Create Note
-    elif cond_action.action_type == 'create_note':
+    if cond_action.action_type == 'create_note':
         tag_name = db_retrieve_table_daemon(
             NoteTags, unique_id=cond_action.do_action_string).name
 
@@ -259,7 +260,8 @@ def trigger_action(
             note_tags.append(cond_action.do_action_string)
 
     # Capture photo
-    elif cond_action.action_type in ['photo', 'photo_email']:
+    # If emailing later, store location of photo as attachment_file
+    if cond_action.action_type in ['photo', 'photo_email']:
         this_camera = db_retrieve_table_daemon(
             Camera, unique_id=cond_action.do_unique_id, entry='first')
         message += "  Capturing photo with camera {unique_id} ({id}, {name}).".format(
@@ -268,10 +270,11 @@ def trigger_action(
             name=this_camera.name)
         camera_still = db_retrieve_table_daemon(
             Camera, unique_id=cond_action.do_unique_id)
-        attachment_file = camera_record('photo', camera_still.unique_id)
+        attachment_path_file = camera_record('photo', camera_still.unique_id)
+        attachment_file = os.path.join(attachment_path_file[0], attachment_path_file[1])
 
     # Capture video
-    elif cond_action.action_type in ['video', 'video_email']:
+    if cond_action.action_type in ['video', 'video_email']:
         this_camera = db_retrieve_table_daemon(
             Camera, unique_id=cond_action.do_unique_id, entry='first')
         message += "  Capturing video with camera {unique_id} ({id}, {name}).".format(
@@ -280,12 +283,13 @@ def trigger_action(
             name=this_camera.name)
         camera_stream = db_retrieve_table_daemon(
             Camera, unique_id=cond_action.do_unique_id)
-        attachment_file = camera_record(
+        attachment_path_file = camera_record(
             'video', camera_stream.unique_id,
             duration_sec=cond_action.do_camera_duration)
+        attachment_file = os.path.join(attachment_path_file[0], attachment_path_file[1])
 
     # Activate Controller
-    elif cond_action.action_type == 'activate_controller':
+    if cond_action.action_type == 'activate_controller':
         (controller_type,
          controller_object,
          controller_entry) = which_controller(
@@ -321,7 +325,7 @@ def trigger_action(
             activate_controller.start()
 
     # Deactivate Controller
-    elif cond_action.action_type == 'deactivate_controller':
+    if cond_action.action_type == 'deactivate_controller':
         (controller_type,
          controller_object,
          controller_entry) = which_controller(
@@ -345,7 +349,7 @@ def trigger_action(
             deactivate_controller.start()
 
     # Resume PID controller
-    elif cond_action.action_type == 'resume_pid':
+    if cond_action.action_type == 'resume_pid':
         pid = db_retrieve_table_daemon(
             PID, unique_id=cond_action.do_unique_id, entry='first')
         message += " Resume PID {unique_id} ({id}, {name}).".format(
@@ -366,7 +370,7 @@ def trigger_action(
             resume_pid.start()
 
     # Pause PID controller
-    elif cond_action.action_type == 'pause_pid':
+    if cond_action.action_type == 'pause_pid':
         pid = db_retrieve_table_daemon(
             PID, unique_id=cond_action.do_unique_id, entry='first')
         message += " Pause PID {unique_id} ({id}, {name}).".format(
@@ -387,7 +391,7 @@ def trigger_action(
             pause_pid.start()
 
     # Set PID Setpoint
-    elif cond_action.action_type == 'setpoint_pid':
+    if cond_action.action_type == 'setpoint_pid':
         pid = db_retrieve_table_daemon(
             PID, unique_id=cond_action.do_unique_id, entry='first')
         message += " Set Setpoint of PID {unique_id} ({id}, {name}).".format(
@@ -409,7 +413,7 @@ def trigger_action(
                 new_session.commit()
 
     # Set PID Method and start method from beginning
-    elif cond_action.action_type == 'method_pid':
+    if cond_action.action_type == 'method_pid':
         pid = db_retrieve_table_daemon(
             PID, unique_id=cond_action.do_unique_id, entry='first')
         message += " Set Method of PID {unique_id} ({id}, {name}).".format(
@@ -442,9 +446,8 @@ def trigger_action(
 
     # Email the Conditional message. Optionally capture a photo or
     # video and attach to the email.
-    elif cond_action.action_type in ['email',
-                                     'photo_email',
-                                     'video_email']:
+    if cond_action.action_type in [
+            'email', 'photo_email', 'video_email']:
 
         if (email_count >= smtp_max_count and
                 time.time() < smtp_wait_timer):
@@ -489,7 +492,7 @@ def trigger_action(
                 "Wait {sec:.0f} seconds to email again.".format(
                     sec=smtp_wait_timer - time.time()))
 
-    elif cond_action.action_type == 'flash_lcd_on':
+    if cond_action.action_type == 'flash_lcd_on':
         lcd = db_retrieve_table_daemon(
             LCD, unique_id=cond_action.do_unique_id)
         message += " LCD {unique_id} ({id}, {name}) Flash On.".format(
@@ -502,7 +505,7 @@ def trigger_action(
             args=(cond_action.do_unique_id, True,))
         start_flashing.start()
 
-    elif cond_action.action_type == 'flash_lcd_off':
+    if cond_action.action_type == 'flash_lcd_off':
         lcd = db_retrieve_table_daemon(
             LCD, unique_id=cond_action.do_unique_id)
         message += " LCD {unique_id} ({id}, {name}) Flash Off.".format(
@@ -515,7 +518,7 @@ def trigger_action(
             args=(cond_action.do_unique_id, False,))
         start_flashing.start()
 
-    elif cond_action.action_type == 'lcd_backlight_off':
+    if cond_action.action_type == 'lcd_backlight_off':
         lcd = db_retrieve_table_daemon(
             LCD, unique_id=cond_action.do_unique_id)
         message += " LCD {unique_id} ({id}, {name}) Backlight Off.".format(
@@ -528,7 +531,7 @@ def trigger_action(
             args=(cond_action.do_unique_id, False,))
         start_flashing.start()
 
-    elif cond_action.action_type == 'lcd_backlight_on':
+    if cond_action.action_type == 'lcd_backlight_on':
         lcd = db_retrieve_table_daemon(
             LCD, unique_id=cond_action.do_unique_id)
         message += " LCD {unique_id} ({id}, {name}) Backlight On.".format(

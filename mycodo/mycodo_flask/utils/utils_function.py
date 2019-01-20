@@ -262,6 +262,7 @@ def action_mod(form):
                                         'video_email']:
             mod_action.do_action_string = form.do_action_string.data
             mod_action.do_unique_id = form.do_unique_id.data
+            mod_action.do_camera_duration = form.do_camera_duration.data
 
         elif mod_action.action_type in ['flash_lcd_on',
                                         'flash_lcd_off',
@@ -416,7 +417,7 @@ def check_form_actions(form, error):
             error.append("Email must be set")
         if not form.do_unique_id.data or form.do_unique_id.data == '':
             error.append("Camera must be set")
-        if (form.action_type.data == 'video_email' and
+        if (action.action_type == 'video_email' and
                 Camera.query.filter(
                     and_(Camera.unique_id == form.do_unique_id.data,
                          Camera.library != 'picamera')).count()):

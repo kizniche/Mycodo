@@ -94,7 +94,7 @@
   </select>
 </div>
 
-{% elif each_action.action_type == 'photo_email' %}
+{% elif each_action.action_type in ['photo_email', 'video_email'] %}
 
 <div class="col-auto">
   <label class='control-label'>{{_('Email Address')}}</label>
@@ -105,9 +105,6 @@
     {%- endfor -%}
   </select>
 </div>
-
-{% elif each_action.action_type == 'video' %}
-
 <div class="col-auto">
   {{form_actions.do_unique_id.label(class_='control-label')}}
   <select class="form-control form-tooltip form-dropdown" id="do_unique_id" name="do_unique_id" data-placement="top" title="{{_('Camera to capture with')}}">
@@ -117,21 +114,21 @@
     {%- endfor -%}
   </select>
 </div>
+
+  {% if each_action.action_type == 'video_email' %}
+
 <div class="col-auto">
-  {{form_actions.do_camera_duration.label(class_='control-label')}}
+  <label class='control-label'>{{_('Video Duration (seconds)')}}</label>
   {{form_actions.do_camera_duration(class_='form-control', value=each_action.do_camera_duration, **{'title':_('Duration to record video (sec)')})}}
 </div>
 
-{% elif each_action.action_type == 'video_email' %}
+  {% endif %}
+
+{% elif each_action.action_type == 'video' %}
 
 <div class="col-auto">
-  <label class='control-label'>{{_('Email Address')}}</label>
-  <select class="form-control form-tooltip form-dropdown" id="do_action_string" name="do_action_string" data-placement="top" title="{{_('Email address to notify')}}">
-    <option value=""></option>
-    {%- for each_user in user -%}
-      <option value="{{each_user.email}}"{% if each_action.do_action_string == each_user.email %} selected{% endif %}>{{each_user.email}}</option>
-    {%- endfor -%}
-  </select>
+  <label class='control-label'>{{_('Video Duration (seconds)')}}</label>
+  {{form_actions.do_camera_duration(class_='form-control', value=each_action.do_camera_duration, **{'title':_('Duration to record video (sec)')})}}
 </div>
 
 {% elif each_action.action_type == 'command' %}

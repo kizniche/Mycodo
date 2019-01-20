@@ -434,6 +434,8 @@ FUNCTION_ACTIONS = [
     ('deactivate_controller', '{}: {}'.format(TRANSLATIONS['controller']['title'], TRANSLATIONS['deactivate']['title'])),
     ('create_note', TRANSLATIONS['note']['title']),
     ('email', TRANSLATIONS['email']['title']),
+    ('photo_email', lazy_gettext('Email with Photo Attachment')),
+    ('video_email', lazy_gettext('Email with Video Attachment')),
     ('command', lazy_gettext('Execute Command')),
     ('lcd_backlight_off', '{}: {}'.format(TRANSLATIONS['lcd']['title'], lazy_gettext('Backlight Off'))),
     ('lcd_backlight_on', '{}: {}'.format(TRANSLATIONS['lcd']['title'], lazy_gettext('LCD: Backlight On'))),
@@ -447,7 +449,6 @@ FUNCTION_ACTIONS = [
     ('setpoint_pid', '{}: {}'.format(TRANSLATIONS['pid']['title'], lazy_gettext('Set Setpoint'))),
 
     # TODO: These have been disabled until they can be properly tested
-    # ('photo_email', lazy_gettext('Email Photo')),
     # ('video', lazy_gettext('Video')),
     # ('video_email', lazy_gettext('Email Video'))
 ]

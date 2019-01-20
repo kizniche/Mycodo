@@ -110,7 +110,7 @@ class Actions(CRUDMixin, db.Model):
     do_output_state = db.Column(db.Text, default='')  # 'on' or 'off'
     do_output_duration = db.Column(db.Float, default=0.0)
     do_output_pwm = db.Column(db.Float, default=0.0)
-    do_camera_duration = db.Column(db.Float, default=0.0)
+    do_camera_duration = db.Column(db.Float, default=5.0)
 
     def __repr__(self):
         return "<{cls}(id={s.id})>".format(s=self, cls=self.__class__.__name__)
