@@ -1301,7 +1301,7 @@ Note: Mycodo is constantly changing, so the screenshots below may not match what
 you see exactly. Be sure to read this entire section of the manual to understand
 how to use Conditionals.
 
-|Screenshot-Mycodo-Conditional-Setup|
+|Figure-Mycodo-Conditional-Setup|
 
 Simple ``Conditional Statement`` examples:
 
@@ -3696,5 +3696,5 @@ Raspberry Pi, 8 relays, 8 outlets:
 .. |Schematic-Sensor-DS18B20-03| image:: manual_images/Schematic-Sensor-DS18B20-03.jpg
 .. |Schematic: Pi, 4 relays, 4 outlets, and 1 DS18B20 sensor| image:: manual_images/Schematic-Pi-4-relays.png
 .. |Schematic: Pi, 8 relays, and 8 outlets| image:: manual_images/Schematic-Pi-8-relays.png
-.. |Screenshot-Mycodo-Conditional-Setup| image:: manual_images/Screenshot-Mycodo-Conditional-Setup.png
+.. |Figure-Mycodo-Conditional-Setup| image:: manual_images/Figure-Mycodo-Conditional-Setup.png
 .. |PID Autotune Output| image:: manual_images/Autotune-Output-Example.png
