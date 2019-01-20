@@ -1730,8 +1730,14 @@ Conditional, Trigger).
 
   Controller: Deactivate  Deactivate a particular controller.
 
-  Email Notification      Send an email containing the conditional
+  E-Mail                  Send an email containing the conditional
                           statement and actions.
+
+  E-Mail with Photo       Send an email containing the conditional
+  Attachment              statement, actions, and captured photo.
+
+  E-Mail with Video       Send an email containing the conditional
+  Attachment              statement, actions, and captured video.
 
   Execute Command         Execute a command in the linux shell (as user
                           mycodo).
