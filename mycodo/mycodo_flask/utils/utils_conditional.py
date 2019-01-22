@@ -1,7 +1,10 @@
 # -*- coding: utf-8 -*-
 import logging
+import uuid
 
+import os
 import sqlalchemy
+from flask import Markup
 from flask import flash
 from flask import url_for
 from flask_babel import gettext
@@ -17,9 +20,9 @@ from mycodo.mycodo_flask.utils.utils_function import check_actions
 from mycodo.mycodo_flask.utils.utils_general import controller_activate_deactivate
 from mycodo.mycodo_flask.utils.utils_general import delete_entry_with_id
 from mycodo.mycodo_flask.utils.utils_general import flash_success_errors
+from mycodo.utils.system_pi import cmd_output
 from mycodo.utils.system_pi import csv_to_list_of_str
 from mycodo.utils.system_pi import list_to_csv
-from mycodo.utils.system_pi import test_python_execute
 
 logger = logging.getLogger(__name__)
 
@@ -32,47 +35,79 @@ def conditional_mod(form):
         controller=TRANSLATIONS['conditional']['title'])
 
     try:
-        pre_statement = """
+        pre_statement = """'''Executes code in Conditional Modules'''
 import os, random, sys
 sys.path.append(os.path.abspath('/var/mycodo-root'))
 from mycodo.mycodo_client import DaemonControl
 control = DaemonControl()
 
-message=''
-list_test_values = [None, -100000, -10000, -1000, -100, -10, 0, 1, 10, 100, 1000, 10000, 100000]
+message = ''
 
 def measure(condition_id):
-    return random.choice(list_test_values)  # Choose a random value from the list
+    '''TEST FUNCTION: Returns latest measurement stored in influxdb'''
+    TEST_VALUES = [None, -100000, -10000, -1000, -100, -10, 0, 1, 10, 100, 1000, 10000, 100000]
+    print(condition_id)
+    return random.choice(TEST_VALUES)  # Choose a random value from the list
 
-def run_all_actions(message=message):
-    pass
+def run_all_actions(mess=message):
+    '''TEST FUNCTION: Run all Conditional Actions'''
+    print(mess)
 
-def run_action(action_id, message=message):
-    pass
+def run_action(action_id, mess=message):
+    '''TEST FUNCTION: Runs a specific Function Action'''
+    print(action_id, mess)
+
+#######################
+### BEGIN USER CODE ###
+#######################
 
 """
 
         cond_statement_replaced = (pre_statement +
                                    form.conditional_statement.data)
 
-        # Iterate 100 times to attempt to find a value combination that causes an error
-        for _ in range(100):
-            # Test conditional statement
-            status_num, err_msg = test_python_execute(cond_statement_replaced)
+        code_html = ''
+        for line_num, each_line in enumerate(cond_statement_replaced.splitlines(), 1):
+            line_spacing = ''
+            if 0 < line_num < 10:
+                line_spacing = '  '
+            elif 10 <= line_num < 100:
+                line_spacing = ' '
+            code_html += '{sp}{ln}: {line}\n'.format(sp=line_spacing, ln=line_num, line=each_line)
 
-            if status_num:  # Error(s) found executing code
-                error.append(
-                    "Error encountered while checking Conditional Statement code"
-                    " for validity."
-                    "\n\nCode entered:\n\n{code}"
-                    "\n\n============================================================="
-                    "\n\nCode test:\n{code_test}"
-                    "\n\n-------------------------------------------------------------"
-                    "\n\nErrors from this code:\n\n{err}".format(
-                        code=form.conditional_statement.data,
-                        code_test=cond_statement_replaced,
-                        err=err_msg))
-                break
+        path_file = '/tmp/conditional_test_code_{}.py'.format(str(uuid.uuid4()).split('-')[0])
+        with open(path_file, 'w') as out:
+            out.write('{}\n'.format(cond_statement_replaced))
+
+        cmd_test = 'export PYTHONPATH=$PYTHONPATH:/var/mycodo-root && pylint3 -d C0327,C0103,C0410,C0413,C0103 {path}'.format(path=path_file)
+        cmd_out, cmd_err, cmd_status = cmd_output(cmd_test)
+
+        message = Markup('<pre>\n\nFull Conditional Statement code:\n\n{code}\n\nConditional Statement code evaluation:\n{report}</pre>'.format(code=code_html, report=cmd_out.decode("utf-8")))
+        if cmd_status:
+            flash(message, 'error')
+        else:
+            flash(message, 'success')
+
+        os.remove(path_file)
+
+        # Iterate 100 times to attempt to find a value combination that causes an error
+        # for _ in range(100):
+        #     # Test conditional statement
+        #     status_num, err_msg = test_python_execute(cond_statement_replaced)
+        #
+        #     if status_num:  # Error(s) found executing code
+        #         error.append(
+        #             "Error encountered while checking Conditional Statement code"
+        #             " for validity."
+        #             "\n\nCode entered:\n\n{code}"
+        #             "\n\n============================================================="
+        #             "\n\nCode test:\n{code_test}"
+        #             "\n\n-------------------------------------------------------------"
+        #             "\n\nErrors from this code:\n\n{err}".format(
+        #                 code=form.conditional_statement.data,
+        #                 code_test=cond_statement_replaced,
+        #                 err=err_msg))
+        #         break
 
         cond_mod = Conditional.query.filter(
             Conditional.unique_id == form.function_id.data).first()

@@ -11,7 +11,7 @@ fi
 # Raspberry Pi but should work with most debian-based systems.
 APT_PKGS="fswebcam gawk gcc git libffi-dev libi2c-dev logrotate \
           moreutils nginx python-setuptools sqlite3 wget \
-          python3 python3-dev python3-smbus"
+          python3 python3-dev python3-smbus python3-pylint-common"
 
 PYTHON_BINARY_SYS_LOC="$(python3.5 -c "import os; print(os.environ['_'])")"
 
