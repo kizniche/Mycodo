@@ -35,79 +35,80 @@ def conditional_mod(form):
         controller=TRANSLATIONS['conditional']['title'])
 
     try:
-        pre_statement = """'''Executes code in Conditional Modules'''
-import os, random, sys
+        pre_statement = """import os, random, sys
 sys.path.append(os.path.abspath('/var/mycodo-root'))
 from mycodo.mycodo_client import DaemonControl
-control = DaemonControl()
 
+control = DaemonControl()
 message = ''
 
 def measure(condition_id):
-    '''TEST FUNCTION: Returns latest measurement stored in influxdb'''
-    TEST_VALUES = [None, -100000, -10000, -1000, -100, -10, 0, 1, 10, 100, 1000, 10000, 100000]
-    print(condition_id)
-    return random.choice(TEST_VALUES)  # Choose a random value from the list
+    # pylint: disable=unused-argument
+    return random.choice([None, -100000, -10000, -1000, -100, -10, 0, 1, 10, 100, 1000, 10000, 100000])
 
-def run_all_actions(mess=message):
-    '''TEST FUNCTION: Run all Conditional Actions'''
-    print(mess)
+def run_all_actions(message=message):
+    # pylint: disable=unused-argument
+    pass
 
-def run_action(action_id, mess=message):
-    '''TEST FUNCTION: Runs a specific Function Action'''
-    print(action_id, mess)
+def run_action(action_id, message=message):
+    # pylint: disable=unused-argument
+    pass
 
-#######################
-### BEGIN USER CODE ###
-#######################
+###########################
+##### BEGIN USER CODE #####
+###########################
 
 """
 
-        cond_statement_replaced = (pre_statement +
-                                   form.conditional_statement.data)
+        cond_statement = (pre_statement +
+                          form.conditional_statement.data)
 
-        code_html = ''
-        for line_num, each_line in enumerate(cond_statement_replaced.splitlines(), 1):
-            line_spacing = ''
-            if 0 < line_num < 10:
-                line_spacing = '  '
-            elif 10 <= line_num < 100:
+        if len(cond_statement.splitlines()) > 999:
+            error.append("Too many lines in code. Reduce code to less than 1000 lines.")
+
+        lines_code = ''
+        for line_num, each_line in enumerate(cond_statement.splitlines(), 1):
+            if len(str(line_num)) == 3:
+                line_spacing = ''
+            elif len(str(line_num)) == 2:
                 line_spacing = ' '
-            code_html += '{sp}{ln}: {line}\n'.format(sp=line_spacing, ln=line_num, line=each_line)
+            else:
+                line_spacing = '  '
+            lines_code += '{sp}{ln}: {line}\n'.format(
+                sp=line_spacing,
+                ln=line_num,
+                line=each_line)
 
-        path_file = '/tmp/conditional_test_code_{}.py'.format(str(uuid.uuid4()).split('-')[0])
+        path_file = '/tmp/conditional_code_{}.py'.format(
+            str(uuid.uuid4()).split('-')[0])
         with open(path_file, 'w') as out:
-            out.write('{}\n'.format(cond_statement_replaced))
+            out.write('{}\n'.format(cond_statement))
 
-        cmd_test = 'export PYTHONPATH=$PYTHONPATH:/var/mycodo-root && pylint3 -d C0327,C0103,C0410,C0413,C0103 {path}'.format(path=path_file)
+        cmd_test = 'export PYTHONPATH=$PYTHONPATH:/var/mycodo-root && ' \
+                   'pylint3 -d I,W0621,C0103,C0111,C0301,C0327,C0410,C0413 {path}'.format(
+            path=path_file)
         cmd_out, cmd_err, cmd_status = cmd_output(cmd_test)
-
-        message = Markup('<pre>\n\nFull Conditional Statement code:\n\n{code}\n\nConditional Statement code evaluation:\n{report}</pre>'.format(code=code_html, report=cmd_out.decode("utf-8")))
-        if cmd_status:
-            flash(message, 'error')
-        else:
-            flash(message, 'success')
 
         os.remove(path_file)
 
-        # Iterate 100 times to attempt to find a value combination that causes an error
-        # for _ in range(100):
-        #     # Test conditional statement
-        #     status_num, err_msg = test_python_execute(cond_statement_replaced)
-        #
-        #     if status_num:  # Error(s) found executing code
-        #         error.append(
-        #             "Error encountered while checking Conditional Statement code"
-        #             " for validity."
-        #             "\n\nCode entered:\n\n{code}"
-        #             "\n\n============================================================="
-        #             "\n\nCode test:\n{code_test}"
-        #             "\n\n-------------------------------------------------------------"
-        #             "\n\nErrors from this code:\n\n{err}".format(
-        #                 code=form.conditional_statement.data,
-        #                 code_test=cond_statement_replaced,
-        #                 err=err_msg))
-        #         break
+        message = Markup(
+            '<pre>\n\n'
+            'Full Conditional Statement code:\n\n{code}\n\n'
+            'Conditional Statement code analysis:\n\n{report}'
+            '</pre>'.format(
+                code=lines_code, report=cmd_out.decode("utf-8")))
+        if cmd_status:
+            flash('Error(s) were found while evaluating your code. Review '
+                  'the error(s), below, and fix them before activating your '
+                  'Conditional.', 'error')
+            flash(message, 'error')
+        else:
+            flash(
+                "No errors were found while evaluating your code. However, "
+                "this doesn't mean your code will perform as expected. "
+                "Review your code for issues and test your Conditional "
+                "before putting it into a production environment.", 'success')
+            flash(message, 'success')
 
         cond_mod = Conditional.query.filter(
             Conditional.unique_id == form.function_id.data).first()
