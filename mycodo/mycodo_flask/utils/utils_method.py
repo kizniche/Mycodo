@@ -401,7 +401,7 @@ def method_mod(form_mod_method):
     display_order = csv_to_list_of_str(method.method_order)
 
     try:
-        if form_mod_method.Delete.data:
+        if form_mod_method.delete.data:
             delete_entry_with_id(MethodData,
                                  form_mod_method.method_data_id.data)
             if form_mod_method.method_select.data != 'output':
