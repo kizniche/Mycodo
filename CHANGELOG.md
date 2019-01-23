@@ -3,6 +3,7 @@
 ### Bugfixes
 
  - Fix missing PID Setpoint measurement
+ - Fix missing location option for Free Space Input
 
 
 ## 7.1.2 (2019-01-23)

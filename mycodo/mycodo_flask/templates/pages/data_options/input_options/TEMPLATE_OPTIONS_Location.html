@@ -33,9 +33,9 @@
     </select>
   </div>
 
-    {% elif 'location' in dict_inputs[each_input.device] and
-            dict_inputs[each_input.device]['location']['options']|length > 1
-    %}
+    {% elif 'location' in dict_inputs[each_input.device] %}
+
+      {% if dict_inputs[each_input.device]['location']['options']|length > 1 %}
 
   {{form_mod_input.location.label(class_='control-label')}}
   <div>
@@ -47,17 +47,22 @@
     </select>
   </div>
 
+      {% else %}
+
+  <label class="control-label">{{dict_inputs[each_input.device]['location']['title']}}</label>
+  <div>
+    {{form_mod_input.location(class_='form-control', value=each_input.location, **{'title': _(dict_inputs[each_input.device]['location']['phrase'])})}}
+  </div>
+
+      {% endif %}
+
     {% endif %}
 
   {% else %}
 
   {{form_mod_input.location.label(class_='control-label')}}
   <div>
-    {%- if 'location' in dict_inputs[each_input.device]['options_disabled'] -%}
-      {{form_mod_input.location(class_='form-control', value=each_input.location, disabled=True, **{'title': dict_inputs[each_input.device]['location']['phrase']})}}
-    {% else %}
-      {{form_mod_input.location(class_='form-control', value=each_input.location, **{'title': _(dict_inputs[each_input.device]['location']['phrase'])})}}
-    {%- endif -%}
+    {{form_mod_input.location(class_='form-control', value=each_input.location, disabled=True, **{'title': dict_inputs[each_input.device]['location']['phrase']})}}
   </div>
 
   {% endif %}
