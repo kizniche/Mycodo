@@ -305,7 +305,7 @@ PID_INFO = {
         0: {
             'measurement': '',
             'unit': '',
-            'name': TRANSLATIONS['setpoint']['title'],
+            'name': '{}'.format(TRANSLATIONS['setpoint']['title']),
             'measurement_type': 'setpoint'
         },
         1: {

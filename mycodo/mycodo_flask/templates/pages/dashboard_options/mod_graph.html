@@ -183,11 +183,13 @@
       <div class="form-check">
         {% set index = '{0:0>2}'.format(n) %}
         <input id="color_number{{index}}" name="color_number{{index}}" placeholder="#000000" type="color" value="{{colors_graph[each_dashboard.unique_id][n]['color']}}">
-        <label for="color_number{{index}}">{{colors_graph[each_dashboard.unique_id][n]['name']}}, CH{{colors_graph[each_dashboard.unique_id][n]['channel']}}
+        <label for="color_number{{index}}">{{colors_graph[each_dashboard.unique_id][n]['name']}}, CH{{colors_graph[each_dashboard.unique_id][n]['channel'] + 1}}
         {%- if colors_graph[each_dashboard.unique_id][n]['measure_name'] -%}
           {{', ' + colors_graph[each_dashboard.unique_id][n]['measure_name']}}
         {%- endif -%}
-          {{' (' + dict_units[colors_graph[each_dashboard.unique_id][n]['unit']]['name']}})</label>
+        {%- if colors_graph[each_dashboard.unique_id][n]['unit'] in dict_units -%}
+          {{' (' + dict_units[colors_graph[each_dashboard.unique_id][n]['unit']]['name'] + ')'}}
+        {%- endif -%}</label>
       </div>
     </div>
       {% endfor %}

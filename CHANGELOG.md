@@ -1,3 +1,10 @@
+## 7.1.3 (Unreleased)
+
+### Bugfixes
+
+ - Fix missing PID Setpoint measurement
+
+
 ## 7.1.2 (2019-01-23)
 
 ### Bugfixes

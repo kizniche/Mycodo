@@ -472,37 +472,43 @@ def form_pid_choices(choices, each_pid, dict_units, dict_measurements):
         channel, unit, measurement = return_measurement_info(
             each_measure, conversion)
 
-        if unit:
-            value = '{input_id},{meas_id}'.format(
-                input_id=each_pid.unique_id,
-                meas_id=each_measure.unique_id)
+        value = '{input_id},{meas_id}'.format(
+            input_id=each_pid.unique_id,
+            meas_id=each_measure.unique_id)
 
+        if unit:
             display_unit = find_name_unit(
                 dict_units, unit)
             display_measurement = find_name_measurement(
                 dict_measurements, measurement)
+        elif each_measure.measurement_type == 'setpoint':
+            display_unit = None
+            display_measurement = 'Setpoint'
+        else:
+            display_unit = None
+            display_measurement = None
 
-            if each_measure.name:
-                channel_info = 'CH{cnum} ({cname})'.format(
-                    cnum=channel + 1, cname=each_measure.name)
-            else:
-                channel_info = 'CH{cnum}'.format(cnum=channel + 1)
+        if each_measure.name:
+            channel_info = 'CH{cnum} ({cname})'.format(
+                cnum=channel + 1, cname=each_measure.name)
+        else:
+            channel_info = 'CH{cnum}'.format(cnum=channel + 1)
 
-            if display_measurement and display_unit:
-                measurement_unit = '{meas} ({unit})'.format(
-                    meas=display_measurement, unit=display_unit)
-            elif display_measurement:
-                measurement_unit = '{meas}'.format(
-                    meas=display_measurement)
-            else:
-                measurement_unit = '({unit})'.format(unit=display_unit)
+        if display_measurement and display_unit:
+            measurement_unit = '{meas} ({unit})'.format(
+                meas=display_measurement, unit=display_unit)
+        elif display_measurement:
+            measurement_unit = '{meas}'.format(
+                meas=display_measurement)
+        else:
+            measurement_unit = '({unit})'.format(unit=display_unit)
 
-            display = '[PID {id:02d}] {i_name} {chan} {meas}'.format(
-                id=each_pid.id,
-                i_name=each_pid.name,
-                chan=channel_info,
-                meas=measurement_unit)
-            choices.update({value: display})
+        display = '[PID {id:02d}] {i_name} {chan} {meas}'.format(
+            id=each_pid.id,
+            i_name=each_pid.name,
+            chan=channel_info,
+            meas=measurement_unit)
+        choices.update({value: display})
 
     return choices
 
