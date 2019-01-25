@@ -1,7 +1,7 @@
 {% if each_output.interface == 'I2C' %}
 
 <div class="col-auto">
-  {{form_mod_output.i2c_location.label(class_='control-label')}}
+  <label class="control-label">{{dict_translation['i2c_location']['title']}}</label>
   <div>
     {{form_mod_output.location(class_='form-control', value=each_output.location, **{'title': dict_translation['i2c_location']['phrase']})}}
   </div>

@@ -363,6 +363,8 @@ def settings_diagnostic():
             utils_settings.settings_diagnostic_delete_notes_tags()
         elif form_settings_diagnostic.delete_outputs.data:
             utils_settings.settings_diagnostic_delete_outputs()
+        elif form_settings_diagnostic.delete_settings_database.data:
+            utils_settings.settings_diagnostic_delete_settings_database()
         elif form_settings_diagnostic.delete_file_dependency.data:
             utils_settings.settings_diagnostic_delete_file('dependency')
         elif form_settings_diagnostic.delete_file_upgrade.data:

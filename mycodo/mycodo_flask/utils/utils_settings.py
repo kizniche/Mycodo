@@ -14,6 +14,7 @@ from flask_babel import gettext
 from sqlalchemy import and_
 from sqlalchemy import or_
 
+from mycodo.config import BACKUP_LOG_FILE
 from mycodo.config import DEPENDENCY_INIT_FILE
 from mycodo.config import INSTALL_DIRECTORY
 from mycodo.config import UPGRADE_INIT_FILE
@@ -1245,6 +1246,26 @@ def settings_diagnostic_delete_outputs():
                 db.session.commit()
             display_order.output = ''
             db.session.commit()
+        except Exception as except_msg:
+            error.append(except_msg)
+
+    flash_success_errors(error, action, url_for('routes_settings.settings_diagnostic'))
+
+
+def settings_diagnostic_delete_settings_database():
+    action = '{action} {controller}'.format(
+        action=TRANSLATIONS['delete']['title'],
+        controller='Settings Database')
+    error = []
+
+    if not error:
+        try:
+            os.remove('/var/mycodo-root/databases/mycodo.db')
+            cmd = "{pth}/mycodo/scripts/mycodo_wrapper frontend_restart" \
+                  " | ts '[%Y-%m-%d %H:%M:%S]'" \
+                  " >> {log} 2>&1".format(pth=INSTALL_DIRECTORY,
+                                          log=BACKUP_LOG_FILE)
+            subprocess.Popen(cmd, shell=True)
         except Exception as except_msg:
             error.append(except_msg)
 

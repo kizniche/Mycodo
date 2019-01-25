@@ -1,3 +1,10 @@
+## 7.1.4 (Unreleased)
+
+### Features
+
+ - Add Diagnostic option: Delete Settings Database
+
+
 ## 7.1.3 (2019-01-23)
 
 ### Bugfixes

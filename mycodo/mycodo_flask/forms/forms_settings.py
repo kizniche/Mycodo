@@ -374,5 +374,6 @@ class SettingsDiagnostic(FlaskForm):
     delete_maths = SubmitField(lazy_gettext('Delete All Maths'))
     delete_notes_tags = SubmitField(lazy_gettext('Delete All Notes and Note Tags'))
     delete_outputs = SubmitField(lazy_gettext('Delete All Outputs'))
+    delete_settings_database = SubmitField(lazy_gettext('Delete Settings Database'))
     delete_file_dependency = SubmitField(lazy_gettext('Delete File') + ': .dependency')
     delete_file_upgrade = SubmitField(lazy_gettext('Delete File') + ': .upgrade')
