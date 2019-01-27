@@ -270,4 +270,4 @@ class SHT31:
         return self.__readCharacteristcAscii('SoftwareRevisionString')
 
     def clear_logged_data(self):
-        self.loggedData = {'Temp': {}, 'Humi': {}}
+        self.loggedDataReadout = {'Temp': {}, 'Humi': {}}

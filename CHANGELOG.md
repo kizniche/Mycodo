@@ -1,3 +1,10 @@
+## 7.1.5 (Unreleased)
+
+### Bugfixes
+
+ - Fix issue downloading logged data from SHT31 Smart Gadget
+
+
 ## 7.1.4 (2019-01-26)
 
 ### Bugfixes
