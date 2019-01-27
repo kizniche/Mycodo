@@ -173,8 +173,7 @@ class InputMod(FlaskForm):
 class InputMeasurementMod(FlaskForm):
     input_id = StringField('Input ID', widget=widgets.HiddenInput())
     input_measurement_id = StringField(widget=widgets.HiddenInput())
-    name = StringField(
-        TRANSLATIONS['name']['title'], validators=[DataRequired()])
+    name = StringField(TRANSLATIONS['name']['title'])
     select_measurement_unit = StringField(TRANSLATIONS['select_measurement_unit']['title'])
 
     scale_from_min = DecimalField(

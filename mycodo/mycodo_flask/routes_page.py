@@ -472,6 +472,7 @@ def page_dashboard():
     form_camera = forms_dashboard.DashboardCamera()
     form_graph = forms_dashboard.DashboardGraph()
     form_gauge = forms_dashboard.DashboardGauge()
+    form_indicator = forms_dashboard.DashboardIndicator()
     form_measurement = forms_dashboard.DashboardMeasurement()
     form_output = forms_dashboard.DashboardOutput()
     form_pid = forms_dashboard.DashboardPIDControl()
@@ -498,6 +499,8 @@ def page_dashboard():
                 form_dashboard_object = form_graph
             elif form_base.dashboard_type.data == 'gauge':
                 form_dashboard_object = form_gauge
+            elif form_base.dashboard_type.data == 'indicator':
+                form_dashboard_object = form_indicator
             elif form_base.dashboard_type.data == 'measurement':
                 form_dashboard_object = form_measurement
             elif form_base.dashboard_type.data == 'output':
@@ -698,6 +701,7 @@ def page_dashboard():
                            form_camera=form_camera,
                            form_graph=form_graph,
                            form_gauge=form_gauge,
+                           form_indicator=form_indicator,
                            form_measurement=form_measurement,
                            form_output=form_output,
                            form_pid=form_pid,

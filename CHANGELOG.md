@@ -4,6 +4,10 @@
 
  - Fix issue downloading logged data from SHT31 Smart Gadget
 
+### Features
+
+ - Add Dashboard widget: Indicator ([#606](https://github.com/kizniche/mycodo/issues/606))
+
 
 ## 7.1.4 (2019-01-26)
 

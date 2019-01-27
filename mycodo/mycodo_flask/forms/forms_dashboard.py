@@ -27,6 +27,7 @@ class DashboardBase(FlaskForm):
             ('', lazy_gettext('Add Dashboard Element')),
             ('graph', lazy_gettext('Graph')),
             ('gauge', lazy_gettext('Gauge')),
+            ('indicator', TRANSLATIONS['indicator']['title']),
             ('measurement', TRANSLATIONS['measurement']['title']),
             ('output', TRANSLATIONS['output']['title']),
             ('pid_control', lazy_gettext('PID Control')),
@@ -121,6 +122,19 @@ class DashboardGauge(FlaskForm):
         TRANSLATIONS['max_age']['title'],
         widget=NumberInput())
     enable_timestamp = BooleanField(lazy_gettext('Show Timestamp'))
+
+
+class DashboardIndicator(FlaskForm):
+    measurement_id = StringField(TRANSLATIONS['measurement']['title'])
+    max_measure_age = IntegerField(
+        TRANSLATIONS['max_age']['title'],
+        widget=NumberInput())
+    font_em_value = DecimalField(
+        lazy_gettext('Value Font (em)'),
+        widget=NumberInput(step='any'))
+    font_em_timestamp = DecimalField(
+        lazy_gettext('Timestamp Font (em)'),
+        widget=NumberInput(step='any'))
 
 
 class DashboardMeasurement(FlaskForm):

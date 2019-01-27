@@ -101,6 +101,19 @@ def dashboard_add(form_base, form_object, display_order):
         new_graph.input_ids_measurements = form_object.input_ids.data
         new_graph.enable_timestamp = form_object.enable_timestamp.data
 
+    # Indicator
+    elif form_base.dashboard_type.data == 'indicator':
+
+        dashboard_type = 'Indicator'
+        error = measurement_error_check(form_object, error)
+        new_graph.graph_type = 'indicator'
+        new_graph.width = form_base.width.data
+        new_graph.height = form_base.height.data
+        new_graph.max_measure_age = form_object.max_measure_age.data
+        new_graph.refresh_duration = form_base.refresh_duration.data
+        new_graph.font_em_timestamp = form_object.font_em_timestamp.data
+        new_graph.input_ids_measurements = form_object.measurement_id.data
+
     # Measurement
     elif form_base.dashboard_type.data == 'measurement':
 
@@ -281,6 +294,18 @@ def dashboard_mod(form_base, form_object, request_form):
         else:
             error.append("A valid Measurement must be selected")
 
+    # Indicator Mod
+    elif form_base.dashboard_type.data == 'indicator':
+
+        error = indicator_error_check(form_object, error)
+        mod_graph.width = form_base.width.data
+        mod_graph.height = form_base.height.data
+        mod_graph.refresh_duration = form_base.refresh_duration.data
+        mod_graph.max_measure_age = form_object.max_measure_age.data
+        mod_graph.font_em_timestamp = form_object.font_em_timestamp.data
+        if form_object.measurement_id.data:
+            mod_graph.input_ids_measurements = form_object.measurement_id.data
+
     # Measurement Mod
     elif form_base.dashboard_type.data == 'measurement':
 
@@ -401,22 +426,29 @@ def gauge_error_check(form, error):
     return error
 
 
+def indicator_error_check(form, error):
+    """Determine if there are any errors in the indicator form"""
+    if form.measurement_id.data == '':
+        error.append("A valid Measurement must be selected")
+    return error
+
+
 def measurement_error_check(form, error):
-    """Determine if there are any errors in the gauge form"""
+    """Determine if there are any errors in the measurement form"""
     if form.measurement_id.data == '':
         error.append("A valid Measurement must be selected")
     return error
 
 
 def output_error_check(form, error):
-    """Determine if there are any errors in the gauge form"""
+    """Determine if there are any errors in the output form"""
     if form.output_id.data == '':
         error.append("A valid Output must be selected")
     return error
 
 
 def pid_error_check(form, error):
-    """Determine if there are any errors in the gauge form"""
+    """Determine if there are any errors in the PID form"""
     if form.pid_id.data == '':
         error.append("A valid PID Controller must be selected")
     return error

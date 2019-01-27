@@ -63,6 +63,8 @@
           {% include 'pages/dashboard_options/mod_graph.html' %}
         {% elif each_dashboard.graph_type in ['gauge_angular', 'gauge_solid'] %}
           {% include 'pages/dashboard_options/mod_gauge.html' %}
+        {% elif each_dashboard.graph_type == 'indicator' %}
+          {% include 'pages/dashboard_options/mod_indicator.html' %}
         {% elif each_dashboard.graph_type == 'measurement' %}
           {% include 'pages/dashboard_options/mod_measurement.html' %}
         {% elif each_dashboard.graph_type == 'output' %}
@@ -155,6 +157,9 @@
     </div>
     <div class="add_dashboard_object" style="display: none" id="gauge">
      {% include 'pages/dashboard_options/add_gauge.html' %}
+    </div>
+    <div class="add_dashboard_object" style="display: none" id="indicator">
+     {% include 'pages/dashboard_options/add_indicator.html' %}
     </div>
     <div class="add_dashboard_object" style="display: none" id="measurement">
      {% include 'pages/dashboard_options/add_measurement.html' %}
@@ -444,7 +449,7 @@ $(document).ready(function() {
           if (dash_type === "gauge") {
             var null_point = chart_gauge[chart_number].series[0].points[0];
             null_point.update(null);
-          } else if (['measurement', 'output', 'pid_control'].indexOf(dash_type) >= 0) {
+          } else if (['indicator', 'measurement', 'output', 'pid_control'].indexOf(dash_type) >= 0) {
             document.getElementById('value-' + chart_number).innerHTML = 'NO DATA';
             document.getElementById('timestamp-' + chart_number).innerHTML = 'MAX AGE EXCEEDED';
           }
@@ -457,6 +462,13 @@ $(document).ready(function() {
           if (dash_type === "gauge") {
             var new_point = chart_gauge[chart_number].series[0].points[0];
             new_point.update(measurement);
+          } else if (dash_type === "indicator") {
+            if (measurement) {
+              document.getElementById('value-' + chart_number).src = "/static/img/button-green.png";
+            } else {
+              document.getElementById('value-' + chart_number).src = "/static/img/button-red.png";
+            }
+            document.getElementById('value-' + chart_number).title = "Value: " + measurement;
           } else {
             if (dash_type === "output") {
               if (measurement_id === 's') {
@@ -832,6 +844,8 @@ $(document).ready(function() {
         {% include 'pages/dashboard_options/display_gauge_solid.html' %}
       {% elif each_dashboard.graph_type == 'gauge_angular' %}
         {% include 'pages/dashboard_options/display_gauge_angular.html' %}
+      {% elif each_dashboard.graph_type == 'indicator' %}
+        {% include 'pages/dashboard_options/display_indicator.html' %}
       {% elif each_dashboard.graph_type == 'measurement' %}
         {% include 'pages/dashboard_options/display_measurement.html' %}
       {% elif each_dashboard.graph_type == 'output' %}
