@@ -1,4 +1,8 @@
-## 7.1.4 (Unreleased)
+## 7.1.4 (2019-01-26)
+
+### Bugfixes
+
+ - Fix dependency issue preventing Mycodo installation ([#614](https://github.com/kizniche/mycodo/issues/614))
 
 ### Features
 

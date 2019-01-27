@@ -1526,6 +1526,20 @@ if None not in [measure_1, measure_2]:
         run_action(&quot;{qwer1234}&quot;)
         if measure_1 &gt; 30:
             run_action(&quot;{uiop5678}&quot;)</code></pre>
+<p>If your action is a type that receives a message (E-Mail or Note), you can modify this message to include extra information before it is added to the Note or E-Mail. To do this, append a string to the variable <code>message</code> and add this to the <code>message</code> parameter of run_action() or run_all_actions(). Below are some examples. Note the use of “+=” instead of “=”, which appends the string to the variable <code>message</code>.</p>
+<pre><code># Example 1
+measurement = measure(&quot;{asdf1234}&quot;)
+if measurement is None and measurement &gt; 23:
+    message += &quot;Measurement was {}&quot;.format(measurement)
+    run_action(&quot;{uiop5678}&quot;, message=message)
+
+# Example 2
+measure_1 = measure(&quot;{asdf1234}&quot;)
+measure_2 = measure(&quot;{hjkl5678}&quot;)
+if None not in [measure_1, measure_2]:
+    if measure_1 &lt; 20 and measure_2 &gt; 10:
+        message += &quot;Measurement 1: {m1}, Measurement 2: {m2}&quot;.format(m1=measure_1, m2=measure_2)
+        run_all_actions(message=message)</code></pre>
 <p>Before activating any conditionals, it’s advised to thoroughly explore all possible scenarios and plan a configuration that eliminates conflicts. Some devices or outputs may respond atypically or fail when switched on and off in rapid succession. Therefore, trial run your configuration before connecting devices to any outputs.</p>
 <h4 id="conditional-options">Conditional Options</h4>
 <p>Check if the latest measurement is above or below the set value.</p>

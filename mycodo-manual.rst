@@ -1409,15 +1409,13 @@ in the Actions section of the Conditional.
             if measure_1 > 30:
                 run_action("{uiop5678}")
 
+
 If your action is a type that receives a message (E-Mail or Note), you can
 modify this message to include extra information before it is added to the
 Note or E-Mail. To do this, append a string to the variable ``message`` and
 add this to the ``message`` parameter of run_action() or run_all_actions().
-Below are some examples. Note the use of ``+=`` instead of ``=``, which
-appends the string to the variable ``message``. This is important because
-``message`` has already been generated and the user's code is merely an
-intermediary in the building of the entire string that will be passed to an
-E-Mail or Note.
+Below are some examples. Note the use of "+=" instead of "=", which
+appends the string to the variable ``message``.
 
 ::
 
@@ -1434,6 +1432,7 @@ E-Mail or Note.
         if measure_1 < 20 and measure_2 > 10:
             message += "Measurement 1: {m1}, Measurement 2: {m2}".format(m1=measure_1, m2=measure_2)
             run_all_actions(message=message)
+
 
 Before activating any conditionals, it's advised to thoroughly explore all
 possible scenarios and plan a configuration that eliminates conflicts. Some

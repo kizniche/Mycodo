@@ -10,7 +10,7 @@ webtest == 2.0.32
 
 alembic == 1.0.5
 argparse == 1.4.0
-bcrypt == 3.1.5
+bcrypt == 3.1.4
 daemonize == 2.5.0
 Flask == 1.0.2
 Flask_Babel == 0.12.2
