@@ -442,53 +442,78 @@ $(document).ready(function() {
     if (decimal_places === null) {
       decimal_places = 1;
     }
-    var url = '/last/' + unique_id + '/' + measure_type + '/' + measurement_id + '/' + max_measure_age_sec.toString();
-    $.ajax(url, {
-      success: function(data, responseText, jqXHR) {
-        if (jqXHR.status === 204) {
-          if (dash_type === "gauge") {
-            var null_point = chart_gauge[chart_number].series[0].points[0];
-            null_point.update(null);
-          } else if (['indicator', 'measurement', 'output', 'pid_control'].indexOf(dash_type) >= 0) {
-            document.getElementById('value-' + chart_number).innerHTML = 'NO DATA';
-            document.getElementById('timestamp-' + chart_number).innerHTML = 'MAX AGE EXCEEDED';
-          }
-        }
-        else {
-          var formattedTime = epoch_to_timestamp(data[0]);
-          var measurement = data[1];
-          var units = '';
-
-          if (dash_type === "gauge") {
-            var new_point = chart_gauge[chart_number].series[0].points[0];
-            new_point.update(measurement);
-          } else if (dash_type === "indicator") {
-            if (measurement) {
-              document.getElementById('value-' + chart_number).src = "/static/img/button-green.png";
-            } else {
-              document.getElementById('value-' + chart_number).src = "/static/img/button-red.png";
-            }
-            document.getElementById('value-' + chart_number).title = "Value: " + measurement;
-          } else {
-            if (dash_type === "output") {
-              if (measurement_id === 's') {
-                units = ' s';
-              } else if (measurement_id === 'percent') {
-                units = ' %';
+    if (dash_type === "indicator" && measure_type === "output") {
+      var url = '/gpiostate_unique_id/' + unique_id;
+      $.ajax(url, {
+        success: function (data, responseText, jqXHR) {
+          if (jqXHR.status !== 204) {
+            if (data !== null) {
+              document.getElementById('timestamp-' + chart_number).innerHTML = '';
+              if (data !== 'off') {
+                document.getElementById('value-' + chart_number).src = '/static/img/button-green.png';
+                document.getElementById('value-' + chart_number).title = "{{_('On')}}";
+              }
+              else {
+                document.getElementById('value-' + chart_number).src = '/static/img/button-red.png';
+                document.getElementById('value-' + chart_number).title = "{{_('Off')}}";
               }
             }
-            document.getElementById('value-' + chart_number).innerHTML = measurement.toFixed(decimal_places) + units;
+          } else {
+            document.getElementById('value-' + chart_number).src = '/static/img/button-yellow.png';
+            document.getElementById('timestamp-' + chart_number).innerHTML = '{{_('Error')}}';
           }
-          document.getElementById('timestamp-' + chart_number).innerHTML = formattedTime;
+        },
+        error: function (XMLHttpRequest, textStatus, errorThrown) {
+          document.getElementById('value-' + chart_number).src = '';
+          document.getElementById('value-' + chart_number).innerHTML = 'NO DATA';
+          document.getElementById('timestamp-' + chart_number).innerHTML = '{{_('Error')}}';
         }
-      },
-      error: function(XMLHttpRequest, textStatus, errorThrown) {
-        if (dash_type === "gauge") {
-          var point = chart_gauge[chart_number].series[0].points[0];
-          point.update(null);
+      });
+    } else {
+      var url = '/last/' + unique_id + '/' + measure_type + '/' + measurement_id + '/' + max_measure_age_sec.toString();
+      $.ajax(url, {
+        success: function(data, responseText, jqXHR) {
+           if (jqXHR.status === 204) {
+            if (dash_type === "gauge") {
+              var null_point = chart_gauge[chart_number].series[0].points[0];
+              null_point.update(null);
+            } else if (['indicator', 'measurement', 'output', 'pid_control'].indexOf(dash_type) >= 0) {
+              document.getElementById('value-' + chart_number).innerHTML = 'NO DATA';
+              document.getElementById('timestamp-' + chart_number).innerHTML = 'MAX AGE EXCEEDED';
+            }
+          }
+          else {
+            var formattedTime = epoch_to_timestamp(data[0]);
+            var measurement = data[1];
+            var units = '';
+
+            if (dash_type === "gauge") {
+              var new_point = chart_gauge[chart_number].series[0].points[0];
+              new_point.update(measurement);
+            } else {
+              if (dash_type === "output") {
+                if (measurement_id === 's') {
+                  units = ' s';
+                } else if (measurement_id === 'percent') {
+                  units = ' %';
+                }
+              }
+              document.getElementById('value-' + chart_number).innerHTML = measurement.toFixed(decimal_places) + units;
+            }
+            document.getElementById('timestamp-' + chart_number).innerHTML = formattedTime;
+          }
+        },
+        error: function(XMLHttpRequest, textStatus, errorThrown) {
+          if (dash_type === "gauge") {
+            var point = chart_gauge[chart_number].series[0].points[0];
+            point.update(null);
+          } else if (['indicator', 'measurement', 'output', 'pid_control'].indexOf(dash_type) >= 0) {
+            document.getElementById('value-' + chart_number).innerHTML = 'NO DATA';
+            document.getElementById('timestamp-' + chart_number).innerHTML = '{{_('Error')}}';
+          }
         }
-      }
-    });
+      });
+    }
   }
 
   // Repeat function for getLastData()
