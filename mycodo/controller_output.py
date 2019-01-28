@@ -644,10 +644,16 @@ class OutputController(threading.Thread):
             sys.stdout = codeOut
             sys.stderr = codeErr
 
+            pre_command = """
+output_id = '{}'
+""".format(output_id)
+
             if state == 'on' and self.output_on_command[output_id]:
-                exec(self.output_on_command[output_id], globals())
+                full_command = pre_command + self.output_on_command[output_id]
+                exec(full_command, globals())
             elif state == 'off' and self.output_off_command[output_id]:
-                exec(self.output_off_command[output_id], globals())
+                full_command = pre_command + self.output_off_command[output_id]
+                exec(full_command, globals())
             else:
                 return
 
@@ -676,13 +682,21 @@ class OutputController(threading.Thread):
                 sys.stdout = codeOut
                 sys.stderr = codeErr
 
+                pre_command = """
+output_id = '{}'
+""".format(output_id)
+
                 if state == 'on' and 100 >= duty_cycle >= 0:
-                    cmd = self.output_pwm_command[output_id].replace('((duty_cycle))', str(duty_cycle))
-                    exec(cmd, globals())
+                    full_command = (pre_command +
+                                    self.output_pwm_command[output_id].replace(
+                                        '((duty_cycle))', str(duty_cycle)))
+                    exec(full_command, globals())
                     self.pwm_state[output_id] = abs(duty_cycle)
                 elif state == 'off' or duty_cycle == 0:
-                    cmd = self.output_pwm_command[output_id].replace('((duty_cycle))', str(0.0))
-                    exec(cmd, globals())
+                    full_command = (pre_command +
+                                    self.output_pwm_command[output_id].replace(
+                                        '((duty_cycle))', str(0.0)))
+                    exec(full_command, globals())
                     self.pwm_state[output_id] = None
                 else:
                     return

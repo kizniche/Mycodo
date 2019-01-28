@@ -100,19 +100,19 @@ def output_add(form_add):
                 elif output_type == 'python':
                     new_output.on_command = """
 timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-write_string = "{ts}: ON\\n".format(ts=timestamp)
+write_string = "{ts}: ID: {id}: ON\\n".format(id=output_id, ts=timestamp)
 with open("/home/pi/Mycodo/OutputTest.txt", "a") as myfile:
     myfile.write(write_string)"""
                     new_output.off_command = """
 timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-write_string = "{ts}: OFF\\n".format(ts=timestamp)
+write_string = "{ts}: ID: {id}: OFF\\n".format(id=output_id, ts=timestamp)
 with open("/home/pi/Mycodo/OutputTest.txt", "a") as myfile:
     myfile.write(write_string)"""
                 elif output_type == 'python_pwm':
                     new_output.pwm_command = """
 timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-write_string = "{ts}: Duty Cycle: ((duty_cycle)) %\\n".format(
-    ts=timestamp)
+write_string = "{ts}: ID: {id}: Duty Cycle: ((duty_cycle)) %\\n".format(
+    id=output_id, ts=timestamp)
 with open("/home/pi/Mycodo/OutputTest.txt", "a") as myfile:
     myfile.write(write_string)"""
                 elif output_type == 'atlas_ezo_pmp':

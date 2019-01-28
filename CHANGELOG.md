@@ -4,6 +4,7 @@
 
  - Fix issue downloading logged data from SHT31 Smart Gadget
  - Fix issue using PID measurements on Measurement Dashboard widget ([#616](https://github.com/kizniche/mycodo/issues/616))
+ - Fix issue with Python Command Output variable declaration
 
 ### Features
 
