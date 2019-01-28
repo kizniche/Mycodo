@@ -2530,6 +2530,8 @@ Shows a green or red button depending if the measurement value is 0 or not 0.
 | Timestamp Font Size   | The font size of the timestamp value in em.     |
 | (em)                  |                                                 |
 +-----------------------+-------------------------------------------------+
+| Invert                | Invert/reverse the colors.                      |
++-----------------------+-------------------------------------------------+
 | Measurement           | The device to display information about.        |
 +-----------------------+-------------------------------------------------+
 

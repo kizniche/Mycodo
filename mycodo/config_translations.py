@@ -62,6 +62,8 @@ TRANSLATIONS = {
         'title': lazy_gettext('Hold')},
     'indicator': {
         'title': lazy_gettext('Indicator')},
+    'invert': {
+        'title': lazy_gettext('Invert')},
     'import': {
         'title': lazy_gettext('Import')},
     'input': {

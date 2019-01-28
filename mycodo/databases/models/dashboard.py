@@ -49,6 +49,9 @@ class Dashboard(CRUDMixin, db.Model):
     y_axis_min = db.Column(db.Float, default=None)  # y-axis minimum
     y_axis_max = db.Column(db.Float, default=None)  # y-axis maximum
 
+    # Indicator options
+    option_invert = db.Column(db.Boolean, default=False)
+
     # Output options
     font_em_value = db.Column(db.Float, default=1.0)  # Font size of value
     font_em_timestamp = db.Column(db.Float, default=1.0)  # Font size of timestamp

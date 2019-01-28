@@ -12,8 +12,8 @@ from flask_babel import lazy_gettext
 sys.path.append(os.path.abspath(os.path.dirname(__file__)))
 from config_translations import TRANSLATIONS
 
-MYCODO_VERSION = '7.1.4'
-ALEMBIC_VERSION = '70c828e05255'
+MYCODO_VERSION = '7.1.5'
+ALEMBIC_VERSION = '82ee046fbf9b'
 
 #  FORCE_UPGRADE_MASTER
 #  Set True to enable upgrading to the master branch of the Mycodo repository.

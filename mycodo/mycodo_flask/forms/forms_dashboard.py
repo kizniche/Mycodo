@@ -135,6 +135,7 @@ class DashboardIndicator(FlaskForm):
     font_em_timestamp = DecimalField(
         lazy_gettext('Timestamp Font (em)'),
         widget=NumberInput(step='any'))
+    option_invert = BooleanField(TRANSLATIONS['invert']['title'])
 
 
 class DashboardMeasurement(FlaskForm):

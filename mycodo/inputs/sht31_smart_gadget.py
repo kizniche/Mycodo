@@ -196,11 +196,11 @@ class InputModule(AbstractInput):
 
     def download_data(self):
         # Clear data previously stored in dictionary
-        self.gadget.clear_logged_data()
+        self.gadget.loggedDataReadout = {'Temp': {}, 'Humi': {}}
 
         # Download stored data starting from self.gadget.newestTimeStampMs
         self.gadget.readLoggedDataInterval(
-            start_ms=self.gadget.newestTimeStampMs)
+            startMs=self.gadget.newestTimeStampMs)
 
         while self.running:
             if (not self.gadget.waitForNotifications(5) or
@@ -215,7 +215,7 @@ class InputModule(AbstractInput):
             DeviceMeasurements.channel == 0).first()
         conversion = db_retrieve_table_daemon(
             Conversion, unique_id=measurement.conversion_id)
-        for each_ts, each_measure in self.gadget.loggedData['Temp'].items():
+        for each_ts, each_measure in self.gadget.loggedDataReadout['Temp'].items():
             list_timestamps_temp.append(each_ts)
             datetime_ts = datetime.datetime.utcfromtimestamp(each_ts / 1000)
             if self.is_enabled(0):
@@ -245,7 +245,7 @@ class InputModule(AbstractInput):
             DeviceMeasurements.channel == 1).first()
         conversion = db_retrieve_table_daemon(
             Conversion, unique_id=measurement.conversion_id)
-        for each_ts, each_measure in self.gadget.loggedData['Humi'].items():
+        for each_ts, each_measure in self.gadget.loggedDataReadout['Humi'].items():
             list_timestamps_humi.append(each_ts)
             datetime_ts = datetime.datetime.utcfromtimestamp(each_ts / 1000)
             if self.is_enabled(1):
@@ -285,8 +285,8 @@ class InputModule(AbstractInput):
                 conversion = db_retrieve_table_daemon(
                     Conversion, unique_id=measurement.conversion_id)
                 dewpoint = calculate_dewpoint(
-                    self.gadget.loggedData['Temp'][each_ts],
-                    self.gadget.loggedData['Humi'][each_ts])
+                    self.gadget.loggedDataReadout['Temp'][each_ts],
+                    self.gadget.loggedDataReadout['Humi'][each_ts])
                 measurement_single = {
                     3: {
                         'measurement': 'dewpoint',
@@ -317,8 +317,8 @@ class InputModule(AbstractInput):
                 conversion = db_retrieve_table_daemon(
                     Conversion, unique_id=measurement.conversion_id)
                 vpd = calculate_vapor_pressure_deficit(
-                    self.gadget.loggedData['Temp'][each_ts],
-                    self.gadget.loggedData['Humi'][each_ts])
+                    self.gadget.loggedDataReadout['Temp'][each_ts],
+                    self.gadget.loggedDataReadout['Humi'][each_ts])
                 measurement_single = {
                     4: {
                         'measurement': 'vapor_pressure_deficit',

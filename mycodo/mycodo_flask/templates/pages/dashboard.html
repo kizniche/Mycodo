@@ -438,7 +438,7 @@ $(document).ready(function() {
   }
 
   // Retrieve the latest/last measurement for gauges/outputs
-  function getLastData(chart_number, dash_type, unique_id, measure_type, measurement_id, max_measure_age_sec, decimal_places) {
+  function getLastData(chart_number, dash_type, unique_id, measure_type, measurement_id, max_measure_age_sec, decimal_places, extra) {
     if (decimal_places === null) {
       decimal_places = 1;
     }
@@ -450,12 +450,15 @@ $(document).ready(function() {
             if (data !== null) {
               document.getElementById('timestamp-' + chart_number).innerHTML = '';
               if (data !== 'off') {
-                document.getElementById('value-' + chart_number).src = '/static/img/button-green.png';
                 document.getElementById('value-' + chart_number).title = "{{_('On')}}";
+              } else {
+                document.getElementById('value-' + chart_number).title = "{{_('Off')}}";
+              }
+              if ((data !== 'off' && !extra) || (data === 'off' && extra)) {
+                document.getElementById('value-' + chart_number).src = '/static/img/button-green.png';
               }
               else {
                 document.getElementById('value-' + chart_number).src = '/static/img/button-red.png';
-                document.getElementById('value-' + chart_number).title = "{{_('Off')}}";
               }
             }
           } else {
@@ -490,6 +493,13 @@ $(document).ready(function() {
             if (dash_type === "gauge") {
               var new_point = chart_gauge[chart_number].series[0].points[0];
               new_point.update(measurement);
+            } else if (dash_type === "indicator") {
+              if ((measurement && !extra) || (!measurement && extra)) {
+                document.getElementById('value-' + chart_number).src = '/static/img/button-green.png';
+              } else {
+                document.getElementById('value-' + chart_number).src = '/static/img/button-red.png';
+              }
+              document.getElementById('value-' + chart_number).title = "{{_('Value')}}: " + measurement;
             } else {
               if (dash_type === "output") {
                 if (measurement_id === 's') {
@@ -517,9 +527,9 @@ $(document).ready(function() {
   }
 
   // Repeat function for getLastData()
-  function repeatLastData(chart_number, dash_type, dev_id, measure_type, measurement_id, period_sec, max_measure_age_sec, decimal_places) {
+  function repeatLastData(chart_number, dash_type, dev_id, measure_type, measurement_id, period_sec, max_measure_age_sec, decimal_places, extra) {
     setInterval(function () {
-      getLastData(chart_number, dash_type, dev_id, measure_type, measurement_id, max_measure_age_sec, decimal_places)
+      getLastData(chart_number, dash_type, dev_id, measure_type, measurement_id, max_measure_age_sec, decimal_places, extra)
     }, period_sec * 1000);
   }
 

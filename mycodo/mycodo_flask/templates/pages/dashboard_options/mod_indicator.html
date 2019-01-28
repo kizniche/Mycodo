@@ -86,6 +86,10 @@
           {{form_indicator.font_em_timestamp(class_='form-control', value=each_dashboard.font_em_timestamp)}}
         </div>
       </div>
+      <div class="form-check form-check-inline">
+        <input class="form-check-input" id="option_invert" name="option_invert" type="checkbox" value="y"{% if each_dashboard.option_invert %} checked{% endif %}>
+        {{form_indicator.option_invert.label(class_='control-label')}}
+      </div>
     </div>
 
     <div class="row small-gutters" style="padding: 1em 1em 0 0.8em;">
