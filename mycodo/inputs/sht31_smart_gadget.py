@@ -114,7 +114,8 @@ INPUT_INFORMATION = {
             'constraints_pass': constraints_pass_positive_value,
             'name': lazy_gettext('Set Logging Interval'),
             'phrase': lazy_gettext(
-                'Set the logging interval (seconds) the device will store measurements on its internal memory.')
+                'Set the logging interval (seconds) the device will store '
+                'measurements on its internal memory.')
         }
     ]
 }
@@ -130,6 +131,7 @@ class InputModule(AbstractInput):
         self.logger = logging.getLogger("mycodo.inputs.sht31_smart_gadget")
         self.running = True
         self.unique_id = input_dev.unique_id
+        self._measurements = None
         self.download_stored_data = None
         self.logging_interval_ms = None
         self.gadget = None
@@ -143,7 +145,8 @@ class InputModule(AbstractInput):
             from mycodo.devices.sht31_smart_gadget import SHT31
             from bluepy import btle
             self.logger = logging.getLogger(
-                "mycodo.sht31_smart_gadget_{id}".format(id=input_dev.unique_id.split('-')[0]))
+                "mycodo.sht31_smart_gadget_{id}".format(
+                    id=input_dev.unique_id.split('-')[0]))
 
             self.device_measurements = db_retrieve_table_daemon(
                 DeviceMeasurements).filter(
@@ -180,7 +183,8 @@ class InputModule(AbstractInput):
 
         if not self.connected:
             self.connected = False
-            self.logger.error("Could not connect: {}".format(self.connect_error))
+            self.logger.error(
+                "Could not connect: {}".format(self.connect_error))
 
     def disconnect(self):
         try:
@@ -196,7 +200,7 @@ class InputModule(AbstractInput):
 
         # Download stored data starting from self.gadget.newestTimeStampMs
         self.gadget.readLoggedDataInterval(
-            startMs=self.gadget.newestTimeStampMs)
+            start_ms=self.gadget.newestTimeStampMs)
 
         while self.running:
             if (not self.gadget.waitForNotifications(5) or
@@ -207,9 +211,11 @@ class InputModule(AbstractInput):
         list_timestamps_humi = []
 
         # Store logged temperature
-        measurement = self.device_measurements.filter(DeviceMeasurements.channel == 0).first()
-        conversion = db_retrieve_table_daemon(Conversion, unique_id=measurement.conversion_id)
-        for each_ts, each_measure in self.gadget.loggedDataReadout['Temp'].items():
+        measurement = self.device_measurements.filter(
+            DeviceMeasurements.channel == 0).first()
+        conversion = db_retrieve_table_daemon(
+            Conversion, unique_id=measurement.conversion_id)
+        for each_ts, each_measure in self.gadget.loggedData['Temp'].items():
             list_timestamps_temp.append(each_ts)
             datetime_ts = datetime.datetime.utcfromtimestamp(each_ts / 1000)
             if self.is_enabled(0):
@@ -235,9 +241,11 @@ class InputModule(AbstractInput):
                     timestamp=datetime_ts)
 
         # Store logged humidity
-        measurement = self.device_measurements.filter(DeviceMeasurements.channel == 1).first()
-        conversion = db_retrieve_table_daemon(Conversion, unique_id=measurement.conversion_id)
-        for each_ts, each_measure in self.gadget.loggedDataReadout['Humi'].items():
+        measurement = self.device_measurements.filter(
+            DeviceMeasurements.channel == 1).first()
+        conversion = db_retrieve_table_daemon(
+            Conversion, unique_id=measurement.conversion_id)
+        for each_ts, each_measure in self.gadget.loggedData['Humi'].items():
             list_timestamps_humi.append(each_ts)
             datetime_ts = datetime.datetime.utcfromtimestamp(each_ts / 1000)
             if self.is_enabled(1):
@@ -277,8 +285,8 @@ class InputModule(AbstractInput):
                 conversion = db_retrieve_table_daemon(
                     Conversion, unique_id=measurement.conversion_id)
                 dewpoint = calculate_dewpoint(
-                    self.gadget.loggedDataReadout['Temp'][each_ts],
-                    self.gadget.loggedDataReadout['Humi'][each_ts])
+                    self.gadget.loggedData['Temp'][each_ts],
+                    self.gadget.loggedData['Humi'][each_ts])
                 measurement_single = {
                     3: {
                         'measurement': 'dewpoint',
@@ -309,8 +317,8 @@ class InputModule(AbstractInput):
                 conversion = db_retrieve_table_daemon(
                     Conversion, unique_id=measurement.conversion_id)
                 vpd = calculate_vapor_pressure_deficit(
-                    self.gadget.loggedDataReadout['Temp'][each_ts],
-                    self.gadget.loggedDataReadout['Humi'][each_ts])
+                    self.gadget.loggedData['Temp'][each_ts],
+                    self.gadget.loggedData['Humi'][each_ts])
                 measurement_single = {
                     4: {
                         'measurement': 'vapor_pressure_deficit',
@@ -415,7 +423,7 @@ class InputModule(AbstractInput):
                     hw=self.device_information['hardware_revision'],
                     sw=self.device_information['software_revision'],
                     sec=self.device_information['logger_interval_ms'] / 1000))
-            self.initialized = True
+        self.initialized = True
 
     def set_logging_interval(self):
         """Set logging interval (resets memory; set after downloading data)"""
