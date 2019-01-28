@@ -174,17 +174,18 @@ def epoch_of_next_time(time_str):
         return None
 
 
-def cmd_output(command, su_mycodo=False, stdout_pipe=True):
+def cmd_output(command, stdout_pipe=True):
     """
     Executed command and returns a list of lines from the output
     """
-    full_cmd = '{}'.format(command)
-    if su_mycodo:  # TODO: Remove su as I don't beleive it works
-        full_cmd = 'su mycodo && {}'.format(command)
     if stdout_pipe:
-        cmd = subprocess.Popen(full_cmd, stdout=subprocess.PIPE, shell=True)
+        cmd = subprocess.Popen(command,
+                               stdout=subprocess.PIPE,
+                               shell=True)
     else:
-        cmd = subprocess.Popen(full_cmd, shell=True)
+        cmd = subprocess.Popen(command,
+                               shell=True)
+
     cmd_out, cmd_err = cmd.communicate()
     cmd_status = cmd.wait()
     return cmd_out, cmd_err, cmd_status

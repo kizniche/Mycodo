@@ -24,7 +24,7 @@
         {%- if not device_measurements_dict[measurement_id].single_channel -%}
           {{'CH' + (device_measurements_dict[measurement_id].channel|int + 1)|string + ', '}}
         {%- endif -%}
-      {{dict_measurements[device_measurements_dict[measurement_id].measurement]['name']}}
+      {{dict_measurements[device_measurements_dict[measurement_id].measurement]['name']}})
 
       {%- endif -%}
     {%- endif -%}
@@ -45,17 +45,33 @@
         {%- if not device_measurements_dict[measurement_id].single_channel -%}
           {{'CH' + (device_measurements_dict[measurement_id].channel|int + 1)|string + ', '}}
         {%- endif -%}
-      {{dict_measurements[device_measurements_dict[measurement_id].measurement]['name']}}
+      {{dict_measurements[device_measurements_dict[measurement_id].measurement]['name']}})
 
       {%- endif -%}
     {%- endif -%}
   {%- endfor -%}
 
   {%- for each_pid in pid -%}
-    {%- if each_pid.unique_id == each_dashboard.input_ids_measurements.split(',')[0] %}
-      {{dict_measurements[each_dashboard.input_ids_measurements.split(',')[1]]['name']|safe}} ({{dict_measurements[each_dashboard.input_ids_measurements.split(',')[1]]['unit']|safe}})
+    {%- if each_pid.unique_id == each_dashboard.input_ids_measurements.split(',')[0] -%}
+      {%- set measurement_id = each_dashboard.input_ids_measurements.split(',')[1] -%}
+      {%- if measurement_id in device_measurements_dict -%}
+
+  <span style="font-size: {{each_dashboard.font_em_value}}em" id="value-{{chart_number}}"></span>
+        {%- if dict_measure_units[measurement_id] in dict_units and
+               dict_units[dict_measure_units[measurement_id]]['unit'] -%}
+          {{' ' + dict_units[dict_measure_units[measurement_id]]['unit']}}
+        {%- endif -%}
+  <br/><span style="font-size: {{each_dashboard.font_em_timestamp}}em">
+      {{each_pid.name}} (
+        {%- if not device_measurements_dict[measurement_id].single_channel -%}
+          {{'CH' + (device_measurements_dict[measurement_id].channel|int + 1)|string + ', '}}
+        {%- endif -%}
+      {{dict_measurements[device_measurements_dict[measurement_id].measurement]['name']}})
+
+      {%- endif -%}
     {%- endif -%}
-  {%- endfor -%})
+  {%- endfor -%}
+
   </span>
   <br/><span style="font-size: {{each_dashboard.font_em_timestamp}}em" id="timestamp-{{chart_number}}"></span>
 

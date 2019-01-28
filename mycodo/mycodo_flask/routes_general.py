@@ -267,7 +267,7 @@ def last_data(unique_id, measure_type, measurement_id, period):
     if not str_is_float(period):
         return '', 204
 
-    if measure_type in ['input', 'math', 'output']:
+    if measure_type in ['input', 'math', 'output', 'pid']:
         current_app.config['INFLUXDB_USER'] = INFLUXDB_USER
         current_app.config['INFLUXDB_PASSWORD'] = INFLUXDB_PASSWORD
         current_app.config['INFLUXDB_DATABASE'] = INFLUXDB_DATABASE

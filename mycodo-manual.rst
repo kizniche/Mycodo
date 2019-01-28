@@ -407,7 +407,7 @@ the measurement database to be used throughout the Mycodo system.
 |                       | Pre Output is turned off directly before        |
 |                       | acquiring a measurement.                        |
 +-----------------------+-------------------------------------------------+
-| Command               | A linux command (executed as the user 'mycodo') |
+| Command               | A linux command (executed as the user 'root')   |
 |                       | that the return value becomes the measurement   |
 +-----------------------+-------------------------------------------------+
 | Command Measurement   | The measured condition (e.g. temperature,       |
@@ -1694,7 +1694,7 @@ Conditional, Trigger).
 | Attachment            | statement, actions, and captured video.         |
 +-----------------------+-------------------------------------------------+
 | Execute Command       | Execute a command in the linux shell (as user   |
-|                       | mycodo).                                        |
+|                       | 'root').                                        |
 +-----------------------+-------------------------------------------------+
 | LCD: Backlight        | Turn the LCD backlight on or off. Note: Only    |
 |                       | some LCDs are supported.                        |
@@ -2311,10 +2311,10 @@ differences in hardware and software.
 |                       | self-explanatory. Not all options will work     |
 |                       | with all cameras.                               |
 +-----------------------+-------------------------------------------------+
-| Pre Command           | A command to execute (as user mycodo) before a  |
+| Pre Command           | A command to execute (as user 'root') before a  |
 |                       | still image is captured.                        |
 +-----------------------+-------------------------------------------------+
-| Post Command          | A command to execute (as user mycodo) after a   |
+| Post Command          | A command to execute (as user 'root') after a   |
 |                       | still image is captured.                        |
 +-----------------------+-------------------------------------------------+
 | Flip horizontally     | Flip, or mirror, the image horizontally.        |
@@ -2510,6 +2510,27 @@ Cameras may be added to keep a continuous view on areas.
 | Timelapse Image       |                                                 |
 +-----------------------+-------------------------------------------------+
 | Add Timestamp         | Append a timestamp to the image.                |
++-----------------------+-------------------------------------------------+
+
+Indicator
+`````````
+
+Shows a green or red button depending if the measurement value is 0 or not 0.
+
++-----------------------+-------------------------------------------------+
+| Setting               | Description                                     |
++=======================+=================================================+
+| Refresh (seconds)     | The duration between acquisitions of new data   |
+|                       | to display on the graph.                        |
++-----------------------+-------------------------------------------------+
+| Max Age (seconds)     | The maximum allowable age of the measurement.   |
+|                       | If the age is greater than this, the gauge will |
+|                       | turn off, indicating there is an issue.         |
++-----------------------+-------------------------------------------------+
+| Timestamp Font Size   | The font size of the timestamp value in em.     |
+| (em)                  |                                                 |
++-----------------------+-------------------------------------------------+
+| Measurement           | The device to display information about.        |
 +-----------------------+-------------------------------------------------+
 
 Measurement

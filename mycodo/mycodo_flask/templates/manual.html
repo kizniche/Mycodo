@@ -392,6 +392,7 @@
 <li><a href="#graphs">Graphs</a></li>
 <li><a href="#gauges">Gauges</a></li>
 <li><a href="#cameras">Cameras</a></li>
+<li><a href="#indicator">Indicator</a></li>
 <li><a href="#measurement">Measurement</a></li>
 <li><a href="#output-1">Output</a></li>
 <li><a href="#pid-control">PID Control</a></li>
@@ -703,7 +704,7 @@ optional arguments:
 </tr>
 <tr class="odd">
 <td>Command</td>
-<td>A linux command (executed as the user ‘mycodo’) that the return value becomes the measurement</td>
+<td>A linux command (executed as the user ‘root’) that the return value becomes the measurement</td>
 </tr>
 <tr class="even">
 <td>Command Measurement</td>
@@ -1872,7 +1873,7 @@ if None not in [measure_1, measure_2]:
 </tr>
 <tr class="odd">
 <td>Execute Command</td>
-<td>Execute a command in the linux shell (as user mycodo).</td>
+<td>Execute a command in the linux shell (as user ‘root’).</td>
 </tr>
 <tr class="even">
 <td>LCD: Backlight</td>
@@ -2407,11 +2408,11 @@ if None not in [measure_1, measure_2]:
 </tr>
 <tr class="even">
 <td>Pre Command</td>
-<td>A command to execute (as user mycodo) before a still image is captured.</td>
+<td>A command to execute (as user ‘root’) before a still image is captured.</td>
 </tr>
 <tr class="odd">
 <td>Post Command</td>
-<td>A command to execute (as user mycodo) after a still image is captured.</td>
+<td>A command to execute (as user ‘root’) after a still image is captured.</td>
 </tr>
 <tr class="even">
 <td>Flip horizontally</td>
@@ -2636,6 +2637,38 @@ if None not in [measure_1, measure_2]:
 <tr class="odd">
 <td>Add Timestamp</td>
 <td>Append a timestamp to the image.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="indicator">Indicator</h3>
+<p>Shows a green or red button depending if the measurement value is 0 or not 0.</p>
+<table>
+<colgroup>
+<col style="width: 32%"></col>
+<col style="width: 67%"></col>
+</colgroup>
+<thead>
+<tr class="header">
+<th>Setting</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Refresh (seconds)</td>
+<td>The duration between acquisitions of new data to display on the graph.</td>
+</tr>
+<tr class="even">
+<td>Max Age (seconds)</td>
+<td>The maximum allowable age of the measurement. If the age is greater than this, the gauge will turn off, indicating there is an issue.</td>
+</tr>
+<tr class="odd">
+<td>Timestamp Font Size (em)</td>
+<td>The font size of the timestamp value in em.</td>
+</tr>
+<tr class="even">
+<td>Measurement</td>
+<td>The device to display information about.</td>
 </tr>
 </tbody>
 </table>
