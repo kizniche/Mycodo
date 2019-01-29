@@ -64,6 +64,10 @@ def lcd_add(form):
             new_lcd.location = '0x3c'
             new_lcd.x_characters = 21
             new_lcd.y_lines = 4
+        elif form.lcd_type.data == '128x64_pioled':
+            new_lcd.location = '0x3c'
+            new_lcd.x_characters = 21
+            new_lcd.y_lines = 8
         elif form.lcd_type.data == '16x2_generic':
             new_lcd.location = '0x27'
             new_lcd.x_characters = 16
@@ -304,6 +308,42 @@ def lcd_display_mod(form):
             else:
                 mod_lcd_data.line_4_id = ''
                 mod_lcd_data.line_4_measurement = ''
+
+            if form.line_5_display.data:
+                mod_lcd_data.line_5_id = form.line_5_display.data.split(",")[0]
+                mod_lcd_data.line_5_measurement = form.line_5_display.data.split(",")[1]
+                mod_lcd_data.line_5_max_age = form.line_5_max_age.data
+                mod_lcd_data.line_5_decimal_places = form.line_5_decimal_places.data
+            else:
+                mod_lcd_data.line_5_id = ''
+                mod_lcd_data.line_5_measurement = ''
+
+            if form.line_6_display.data:
+                mod_lcd_data.line_6_id = form.line_6_display.data.split(",")[0]
+                mod_lcd_data.line_6_measurement = form.line_6_display.data.split(",")[1]
+                mod_lcd_data.line_6_max_age = form.line_6_max_age.data
+                mod_lcd_data.line_6_decimal_places = form.line_6_decimal_places.data
+            else:
+                mod_lcd_data.line_6_id = ''
+                mod_lcd_data.line_6_measurement = ''
+
+            if form.line_7_display.data:
+                mod_lcd_data.line_7_id = form.line_7_display.data.split(",")[0]
+                mod_lcd_data.line_7_measurement = form.line_7_display.data.split(",")[1]
+                mod_lcd_data.line_7_max_age = form.line_7_max_age.data
+                mod_lcd_data.line_7_decimal_places = form.line_7_decimal_places.data
+            else:
+                mod_lcd_data.line_7_id = ''
+                mod_lcd_data.line_7_measurement = ''
+
+            if form.line_8_display.data:
+                mod_lcd_data.line_8_id = form.line_8_display.data.split(",")[0]
+                mod_lcd_data.line_8_measurement = form.line_8_display.data.split(",")[1]
+                mod_lcd_data.line_8_max_age = form.line_8_max_age.data
+                mod_lcd_data.line_8_decimal_places = form.line_8_decimal_places.data
+            else:
+                mod_lcd_data.line_8_id = ''
+                mod_lcd_data.line_8_measurement = ''
 
             db.session.commit()
         except Exception as except_msg:

@@ -13,7 +13,7 @@ sys.path.append(os.path.abspath(os.path.dirname(__file__)))
 from config_translations import TRANSLATIONS
 
 MYCODO_VERSION = '7.1.5'
-ALEMBIC_VERSION = '82ee046fbf9b'
+ALEMBIC_VERSION = 'ed21c36670f4'
 
 #  FORCE_UPGRADE_MASTER
 #  Set True to enable upgrading to the master branch of the Mycodo repository.
@@ -56,6 +56,16 @@ LCD_INFO = {
             ('pip-pypi', 'Adafruit_PureIO', 'Adafruit_PureIO'),
             ('pip-git', 'Adafruit_SSD1306', 'git://github.com/adafruit/Adafruit_Python_SSD1306.git#egg=adafruit-ssd1306')
         ]
+    },
+    '128x64_pioled': {
+        'name': lazy_gettext('PiOLED 128x64'),
+        'dependencies_module': [
+            ('apt', 'libjpeg-dev', 'libjpeg-dev'),
+            ('pip-pypi', 'PIL', 'Pillow'),
+            ('pip-pypi', 'Adafruit_GPIO', 'Adafruit_GPIO'),
+            ('pip-pypi', 'Adafruit_PureIO', 'Adafruit_PureIO'),
+            ('pip-git', 'Adafruit_SSD1306', 'git://github.com/adafruit/Adafruit_Python_SSD1306.git#egg=adafruit-ssd1306')
+        ]
     }
 }
 
@@ -63,7 +73,8 @@ LCD_INFO = {
 LCDS = [
     ('16x2_generic', LCD_INFO['16x2_generic']['name']),
     ('16x4_generic', LCD_INFO['16x4_generic']['name']),
-    ('128x32_pioled', LCD_INFO['128x32_pioled']['name'])
+    ('128x32_pioled', LCD_INFO['128x32_pioled']['name']),
+    ('128x64_pioled', LCD_INFO['128x64_pioled']['name'])
 ]
 
 # Math info

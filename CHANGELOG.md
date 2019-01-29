@@ -1,3 +1,10 @@
+## 7.1.6 (Unreleased)
+
+### Features
+
+ - Add 128x64 PiOLED ([#589](https://github.com/kizniche/mycodo/issues/589))
+
+
 ## 7.1.5 (2019-01-28)
 
 ### Bugfixes

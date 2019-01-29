@@ -154,8 +154,20 @@ class LCDController(threading.Thread):
                     elif i == 4:
                         self.lcd_max_age[each_lcd_display.unique_id][i] = each_lcd_display.line_4_max_age
                         self.lcd_decimal_places[each_lcd_display.unique_id][i] = each_lcd_display.line_4_decimal_places
+                    elif i == 5:
+                        self.lcd_max_age[each_lcd_display.unique_id][i] = each_lcd_display.line_5_max_age
+                        self.lcd_decimal_places[each_lcd_display.unique_id][i] = each_lcd_display.line_5_decimal_places
+                    elif i == 6:
+                        self.lcd_max_age[each_lcd_display.unique_id][i] = each_lcd_display.line_6_max_age
+                        self.lcd_decimal_places[each_lcd_display.unique_id][i] = each_lcd_display.line_6_decimal_places
+                    elif i == 7:
+                        self.lcd_max_age[each_lcd_display.unique_id][i] = each_lcd_display.line_7_max_age
+                        self.lcd_decimal_places[each_lcd_display.unique_id][i] = each_lcd_display.line_7_decimal_places
+                    elif i == 8:
+                        self.lcd_max_age[each_lcd_display.unique_id][i] = each_lcd_display.line_8_max_age
+                        self.lcd_decimal_places[each_lcd_display.unique_id][i] = each_lcd_display.line_8_decimal_places
 
-                if self.lcd_y_lines in [2, 4]:
+                if self.lcd_y_lines in [2, 4, 8]:
                     self.setup_lcd_line(
                         each_lcd_display.unique_id, 1,
                         each_lcd_display.line_1_id,
@@ -165,7 +177,7 @@ class LCDController(threading.Thread):
                         each_lcd_display.line_2_id,
                         each_lcd_display.line_2_measurement)
 
-                if self.lcd_y_lines == 4:
+                if self.lcd_y_lines in [4, 8]:
                     self.setup_lcd_line(
                         each_lcd_display.unique_id, 3,
                         each_lcd_display.line_3_id,
@@ -175,12 +187,31 @@ class LCDController(threading.Thread):
                         each_lcd_display.line_4_id,
                         each_lcd_display.line_4_measurement)
 
+                if self.lcd_y_lines == 8:
+                    self.setup_lcd_line(
+                        each_lcd_display.unique_id, 5,
+                        each_lcd_display.line_5_id,
+                        each_lcd_display.line_5_measurement)
+                    self.setup_lcd_line(
+                        each_lcd_display.unique_id, 6,
+                        each_lcd_display.line_6_id,
+                        each_lcd_display.line_6_measurement)
+                    self.setup_lcd_line(
+                        each_lcd_display.unique_id, 7,
+                        each_lcd_display.line_7_id,
+                        each_lcd_display.line_7_measurement)
+                    self.setup_lcd_line(
+                        each_lcd_display.unique_id, 8,
+                        each_lcd_display.line_8_id,
+                        each_lcd_display.line_8_measurement)
+
             if self.lcd_type in ['16x2_generic',
                                  '16x4_generic']:
                 from mycodo.devices.lcd_generic import LCD_Generic
                 self.lcd_out = LCD_Generic(lcd_dev)
                 self.lcd_init()
-            elif self.lcd_type == '128x32_pioled':
+            elif self.lcd_type in ['128x32_pioled',
+                                   '128x64_pioled']:
                 from mycodo.devices.lcd_pioled import LCD_Pioled
                 self.lcd_out = LCD_Pioled(lcd_dev)
                 self.lcd_init()
@@ -391,8 +422,10 @@ class LCDController(threading.Thread):
         line_2 = ''
         line_3 = ''
         line_4 = ''
+
         self.lcd_out.lcd_init()
         display_id = self.display_sets[self.display_set_count]
+
         if 1 in self.lcd_string_line[display_id] and self.lcd_string_line[display_id][1]:
             line_1 = self.lcd_string_line[display_id][1]
         if 2 in self.lcd_string_line[display_id] and self.lcd_string_line[display_id][2]:
@@ -401,7 +434,29 @@ class LCDController(threading.Thread):
             line_3 = self.lcd_string_line[display_id][3]
         if 4 in self.lcd_string_line[display_id] and self.lcd_string_line[display_id][4]:
             line_4 = self.lcd_string_line[display_id][4]
-        self.lcd_out.lcd_write_lines(line_1, line_2, line_3, line_4)
+
+        if self.lcd_type == '128x64_pioled':
+            line_5 = ''
+            line_6 = ''
+            line_7 = ''
+            line_8 = ''
+            if 5 in self.lcd_string_line[display_id] and self.lcd_string_line[display_id][5]:
+                line_5 = self.lcd_string_line[display_id][5]
+            if 6 in self.lcd_string_line[display_id] and self.lcd_string_line[display_id][6]:
+                line_6 = self.lcd_string_line[display_id][6]
+            if 7 in self.lcd_string_line[display_id] and self.lcd_string_line[display_id][7]:
+                line_7 = self.lcd_string_line[display_id][7]
+            if 8 in self.lcd_string_line[display_id] and self.lcd_string_line[display_id][8]:
+                line_8 = self.lcd_string_line[display_id][8]
+            self.lcd_out.lcd_write_lines(line_1, line_2, line_3, line_4,
+                                         message_line_5=line_5,
+                                         message_line_6=line_6,
+                                         message_line_7=line_7,
+                                         message_line_8=line_8)
+        elif self.lcd_type in ['128x32_pioled',
+                               '16x2_generic',
+                               '16x4_generic']:
+            self.lcd_out.lcd_write_lines(line_1, line_2, line_3, line_4)
 
     @staticmethod
     def output_state(output_id):

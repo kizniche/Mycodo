@@ -20,11 +20,18 @@ class LCD_Pioled:
         self.i2c_bus = lcd_dev.i2c_bus
         self.lcd_x_characters = lcd_dev.x_characters
         self.lcd_y_lines = lcd_dev.y_lines
+        self.lcd_type = lcd_dev.lcd_type
 
-        self.disp = Adafruit_SSD1306.SSD1306_128_32(
-            rst=None,
-            i2c_address=self.i2c_address,
-            i2c_bus=self.i2c_bus)
+        if self.lcd_type == '128x32_pioled':
+            self.disp = Adafruit_SSD1306.SSD1306_128_32(
+                rst=None,
+                i2c_address=self.i2c_address,
+                i2c_bus=self.i2c_bus)
+        elif self.lcd_type == '128x64_pioled':
+            self.disp = Adafruit_SSD1306.SSD1306_128_64(
+                rst=None,
+                i2c_address=self.i2c_address,
+                i2c_bus=self.i2c_bus)
 
         self.disp.begin()
 
@@ -41,7 +48,11 @@ class LCD_Pioled:
                         message_line_1,
                         message_line_2,
                         message_line_3,
-                        message_line_4):
+                        message_line_4,
+                        message_line_5=None,
+                        message_line_6=None,
+                        message_line_7=None,
+                        message_line_8=None):
         """ Send strings to display """
         x = 0
         top = -2  # padding
@@ -55,7 +66,13 @@ class LCD_Pioled:
         draw.text((x, top), message_line_1, font=font, fill=255)
         draw.text((x, top + 8), message_line_2, font=font, fill=255)
         draw.text((x, top + 16), message_line_3, font=font, fill=255)
-        draw.text((x, top + 25), message_line_4, font=font, fill=255)
+        draw.text((x, top + 24), message_line_4, font=font, fill=255)
+
+        if all([message_line_5, message_line_6, message_line_7, message_line_8]):
+            draw.text((x, top + 32), message_line_5, font=font, fill=255)
+            draw.text((x, top + 40), message_line_6, font=font, fill=255)
+            draw.text((x, top + 48), message_line_7, font=font, fill=255)
+            draw.text((x, top + 54), message_line_8, font=font, fill=255)
 
         self.disp.image(image)
         self.disp.display()

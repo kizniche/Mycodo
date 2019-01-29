@@ -72,6 +72,8 @@ TRANSLATIONS = {
         'title': lazy_gettext('Invalid')},
     'lcd': {
         'title': lazy_gettext('LCD')},
+    'line': {
+        'title': lazy_gettext('Line')},
     'login': {
         'title': lazy_gettext('Login')},
     'math': {
