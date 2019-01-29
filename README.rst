@@ -67,23 +67,20 @@ variability further.
 Software Features
 -----------------
 
--  Inputs: Periodically measure devices, such as analog-to-digital
-   converters (ADCs), sensors (temperature, humidity, etc.), or add your
-   own.
--  Outputs: Manipulate the environment by switching GPIO pins High or
-   Low, switching relays, generating PWM signals, email notifications,
-   executing linux/Python 3 commands, and more.
--  PID Controllers: Couple inputs with outputs to create feedback loops
-   in order to regulate environmental conditions.
--  Methods: Change the desired condition over time (useful for reflow
-   ovens, thermal cyclers, mimicking natural environmental changes,
-   etc.)
--  Timers: Schedule the execution of actions at various times and
-   intervals.
--  LCDs: Display measurements and data on 16x2 and 20x4 I2C-enabled LCD
-   displays.
--  I2C Multiplexer Support: Allow multiple devices/sensors with the same
-   I2C address to be used simultaneously.
+-  `Inputs <https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.rst#data>`__:
+   Periodically measure devices, such as analog-to-digital converters (ADCs), sensors (temperature, humidity, etc.), or add your own.
+-  `Outputs <https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.rst#output>`__:
+   Manipulate the environment by switching GPIO pins High or Low, switching relays, generating PWM signals, email notifications, executing linux/Python 3 commands, and more.
+-  `PID Controllers <https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.rst#pid-controller>`__:
+   Couple inputs with outputs to create feedback loops in order to regulate environmental conditions.
+-  `Methods <https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.rst#methods>`__:
+   Change the desired condition over time (useful for reflow ovens, thermal cyclers, mimicking natural environmental changes, etc.).
+-  `Timers/Triggers <https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.rst#trigger>`__:
+   Schedule the execution of actions in response to various times, intervals, or actions.
+-  `Conditionals <https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.rst#conditional>`__:
+   Develop complex responses based on input measurements and custom user code.
+-  `LCDs <https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.rst#lcds>`__:
+   Display measurements and data on 16x2 up to 128x64 I2C-enabled LCD displays.
 -  Camera support: Raspberry Pi Camera and USB cameras, to stream live
    video (only Pi cam), capture still images and video, and create
    time-lapses.
@@ -112,10 +109,9 @@ Software Features
 Supported Inputs
 ----------------
 
-All supported Inputs can be found under `Sensor
-Interfaces <https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.rst#sensor-interfaces>`__
-and `Device
-Setup <https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.rst#device-setup>`__.
+All supported Inputs can be found under the
+`Input Devices <https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.rst#input-devices>`__
+section of the manual.
 
 Install
 -------
@@ -184,30 +180,6 @@ disabled for all parts of the web interface to function properly.
 
 Install Notes
 ~~~~~~~~~~~~~
-
-If you want write access to the mycodo files, add your user to the
-mycodo group, changing 'pi' to your user if it differs, then re-log in
-for the changes to take effect.
-
-::
-
-    sudo adduser pi mycodo
-
-In certain circumstances after the initial install or an upgrade, the
-mycodo daemon will not be able to start because of a missing or corrupt
-pip package. I'm still trying to understand why this happens and how to
-prevent it. If you cannot start the daemon, try to reinstall the
-required python modules with the following command:
-
-::
-
-    sudo ~/Mycodo/env/bin/pip install -r ~/Mycodo/install/requirements.txt --upgrade --force-reinstall --no-deps
-
-Then reboot
-
-::
-
-    sudo shutdown now -r
 
 If you receive an unresolvable error during the install, please `create
 an issue <https://github.com/kizniche/Mycodo/issues>`__. If you want to
