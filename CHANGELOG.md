@@ -4,6 +4,11 @@
 
  - Add LCD: 128x64 OLED ([#589](https://github.com/kizniche/mycodo/issues/589))
 
+### Miscellaneous
+
+ - Update Translations
+ - Add Languages: Dutch, Norwegian, Serbian, Swedish
+
 
 ## 7.1.5 (2019-01-28)
 

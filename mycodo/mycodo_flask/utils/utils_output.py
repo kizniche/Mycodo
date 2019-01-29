@@ -336,7 +336,7 @@ def output_on_off(form_output):
                     return_value = control.output_on(
                         form_output.output_id.data,
                         duty_cycle=float(form_output.pwm_duty_cycle_on.data))
-                    flash(gettext("PWM set to %(dc)s%% at %(hertz)s Hz: %(rvalue)s",
+                    flash(gettext("PWM set to %(dc)s %% at %(hertz)s Hz: %(rvalue)s",
                                   dc=float(form_output.pwm_duty_cycle_on.data),
                                   hertz=output.pwm_hertz,
                                   rvalue=return_value),

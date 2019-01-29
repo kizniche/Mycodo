@@ -93,12 +93,16 @@ Software Features
    encryption and authorization standards.
 -  System upgrade: When a new version is released on github, an upgrade
    can be initiated from the web interface.
--  Languages: English, `Español (Spanish) <#espa%C3%B1ol-spanish>`__,
-   `Deutsche (German) <#deutsche-german>`__,
-   `Français (French) <#fran%C3%A7ais-french>`__,
+-  Languages: English, `Spanish <#spanish>`__,
+   `Dutch <#dutch>`__,
+   `German <#german>`__,
+   `French <#french>`__,
    `Italian <#italian>`__,
+   `Norwegian <#norwegian>`__,
    `Portuguese <#portuguese>`__,
-   `Russian <#russian>`__, and
+   `Russian <#russian>`__,
+   `Serbian <#serbian>`__,
+   `Swedish <#swedish>`__, and
    `Chinese <#chinese>`__ (Change
    language under Configure -> Language)
 
@@ -298,12 +302,16 @@ Languages
 ---------
 
 -  Native: English
--  Complete: `Español (Spanish) <#espa%C3%B1ol-spanish>`__,
-   `Deutsche (German) <#deutsche-german>`__,
-   `Français (French) <#fran%C3%A7ais-french>`__,
+-  Complete: `Spanish <#spanish>`__,
+   `Dutch <#dutch>`__,
+   `German <#german>`__,
+   `French <#french>`__,
    `Italian <#italian>`__,
+   `Norwegian <#norwegian>`__,
    `Portuguese <#portuguese>`__,
-   `Russian <#russian>`__, and
+   `Russian <#russian>`__,
+   `Serbian <#serbian>`__,
+   `Swedish <#swedish>`__, and
    `Chinese <#chinese>`__
 
 By default, mycodo will display the default language set by your browser. You may also
@@ -319,8 +327,8 @@ English
 
 The native language used in the software.
 
-Deutsche (German)
-~~~~~~~~~~~~~~~~~
+German
+~~~~~~
 
 Mycodo ist ein automatisiertes Überwachungs- und Regelsystem, das auf
 dem Raspberry Pi (Versionen Zero, 1, 2 und 3) läuft.
@@ -344,8 +352,33 @@ modulieren, Befehle ausführen, per E-Mail benachrichtigen usw.) und
 vieles mehr. Das Frontend ist eine Webschnittstelle, die eine einfache
 Navigation und Konfiguration von jedem browserfähigen Gerät ermöglicht.
 
-Español (Spanish)
-~~~~~~~~~~~~~~~~~
+Dutch
+~~~~~
+
+Mycodo is een geautomatiseerd monitoring- en regelsysteem dat is gebouwd
+om op de Raspberry Pi te draaien (versies Zero, 1, 2 en 3).
+
+Oorspronkelijk ontworpen om eetbare paddenstoelen te kweken, is Mycodo
+uitgegroeid tot het vermogen om veel meer te doen, waaronder het kweken
+van planten, het kweken van micro-organismen, het onderhouden van
+bijenbijen bij de bijen, het incuberen van dieren en eieren, het
+onderhouden van aquatische systemen, het ouder worden van kazen, het
+fermenteren van voedsel en tabak, het koken eten (sous-vide) en meer.
+
+Het systeem bestaat uit een backend (daemon) en een frontend
+(gebruikersinterface). De backend voert metingen uit van sensoren en
+apparaten, coördineert vervolgens een diverse reeks antwoorden op die
+metingen, inclusief het vermogen om outputs te moduleren (relais, PWM,
+draadloze outlets), omgevingsomstandigheden te regelen met elektrische
+apparaten onder PID-regeling (gestage regeling of omschakeling tijd),
+timers plannen, foto's maken en video streamen, acties activeren wanneer
+metingen aan bepaalde voorwaarden voldoen (relais moduleren, opdrachten
+uitvoeren, per e-mail op de hoogte stellen, etc.) en meer. De frontend is
+een webinterface die gemakkelijke navigatie en configuratie mogelijk
+maakt vanaf elk apparaat met een browser.
+
+Spanish
+~~~~~~~
 
 Mycodo es un sistema de control remoto y automatizado con un enfoque en
 la modulación de las condiciones ambientales. Fue construido para
@@ -362,8 +395,8 @@ cultivar microorganismos, mantener la homeostasis del apiario de abejas,
 incubar huevos de serpiente y animales jóvenes, envejecer quesos,
 fermentar alimentos, mantener sistemas acuáticos y mucho más.
 
-Français (French)
-~~~~~~~~~~~~~~~~~
+French
+~~~~~~
 
 Mycodo est un système de surveillance à distance et de régulation
 automatisée, axé sur la modulation des conditions environnementales. Il
@@ -406,6 +439,30 @@ le misurazioni soddisfano determinate condizioni (moduli relè, comandi
 di esecuzione, notifica via e-mail, ecc.) e altro. Il frontend è
 un'interfaccia web che consente una facile navigazione e configurazione
 da qualsiasi dispositivo abilitato per il browser.
+
+Norwegian
+~~~~~~~~~
+
+Mycodo er et automatisert overvåkings- og reguleringssystem som ble bygget
+for å kjøre på Raspberry Pi (versjoner Zero, 1, 2 og 3).
+
+Mycodo er opprinnelig utviklet for å dyrke spiselige sopp, og har vokst
+til å inkludere muligheten til å gjøre mye mer, inkludert dyrking av
+planter, dyrking av mikroorganismer, opprettholder honningbi apiary
+homeostasis, inkubering av dyr og egg, opprettholde akvatiske systemer,
+aldrende oster, fermenterende matvarer og tobakk, matlaging mat (sous-vide)
+og mer.
+
+Systemet består av en backend (daemon) og en frontend (brukergrensesnitt).
+Backend utfører målinger fra sensorer og enheter, og koordinerer deretter
+et mangfoldig sett med svar på disse målingene, inkludert muligheten til å
+modulere utganger (reléer, PWM, trådløse uttak), regulere miljøforhold med
+elektriske enheter under PID-kontroll (stabil regulering eller endring over
+tid), planlegge timere, ta bilder og streame video, utløse handlinger når
+målingene oppfyller visse forhold (modulere reléer, utføre kommandoer,
+varsle via e-post, etc.) og mer. Frontend er et webgrensesnitt som gjør det
+enkelt å navigere og konfigurere fra hvilken som helst nettleseraktivert
+enhet.
 
 Portuguese
 ~~~~~~~~~~
@@ -453,6 +510,53 @@ Russian
 и т. д.) и многое другое. Интерфейс - это веб-интерфейс, который
 обеспечивает удобную навигацию и настройку с любого устройства с
 поддержкой браузера.
+
+Serbian
+~~~~~~~
+
+Мицодо је аутоматски систем за надзор и регулацију који је направљен да
+ради на Распберри Пи (верзије Зеро, 1, 2 и 3).
+
+Оригинално дизајниран за узгајање јестивих гљива, Мицодо је нарастао на
+могућност да уради много више, укључујући култивирање биљака, култивисање
+микроорганизама, одржавање хомеостазе пчелињег меда, инкубирање животиња
+и јаја, одржавање водених система, старење сирева, ферментисање хране и
+дуван, кухање храна (соус-виде), и више.
+
+Систем садржи бацкенд (даемон) и фронтенд (кориснички интерфејс). Бацкенд
+врши мерења од сензора и уређаја, затим координира различите одговоре на
+та мерења, укључујући могућност модулације излаза (релеји, ПВМ, бежичне
+утичнице), регулисање услова околине са електричним уређајима под ПИД
+контролом (стална регулација или промена време), распоред времена, снимање
+фотографија и стримовање видео снимака, акције покретања када мерења
+испуњавају одређене услове (модулација релеја, извршавање команди,
+обавештавање путем е-поште, итд.), и још много тога. Фронтенд је веб
+интерфејс који омогућава једноставну навигацију и конфигурацију са било
+ког уређаја са омогућеним претраживачем.
+
+Swedish
+~~~~~~~
+
+Mycodo är ett automatiserat övervaknings- och reglersystem som byggdes
+för att springa på Raspberry Pi (versioner noll, 1, 2 och 3).
+
+Mycodo har ursprungligen utformats för att odla ätliga svampar, och har
+därmed ökat möjligheten att göra mycket mer, inklusive odling av växter,
+odlingsmikroorganismer, upprätthållande av honeybee apiary homeostasis,
+inkubering av djur och ägg, upprätthållande av vattenlevande system,
+åldrande ostar, jäsning av mat och tobak, matlagning mat (sous-vide)
+och mer.
+
+Systemet innefattar en backend (daemon) och en frontend
+(användargränssnitt). Bakgrunden utför mätningar från sensorer och
+enheter och samordnar sedan en mängd olika svar på dessa mätningar,
+inklusive möjligheten att modulera utgångar (reläer, PWM, trådlösa
+uttag), reglera miljöförhållandena med elektriska enheter under
+PID-kontroll (ständig reglering eller byte över tid), schemalägg timer,
+ta bilder och strömma video, utlös åtgärder när mätningar uppfyller
+vissa villkor (modulera reläer, utföra kommandon, meddela via e-post
+etc.) och mer. Frontend är ett webbgränssnitt som möjliggör enkel
+navigering och konfiguration från alla webbläsaraktiverade enheter.
 
 Chinese
 ~~~~~~~

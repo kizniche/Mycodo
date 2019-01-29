@@ -66,7 +66,7 @@ class Trigger(FlaskForm):
     output_duration = DecimalField(
         lazy_gettext('If Duration (seconds)'), widget=NumberInput(step='any'))
     output_duty_cycle = DecimalField(
-        lazy_gettext('If Duty Cycle (%)'), widget=NumberInput(step='any'))
+        lazy_gettext('If Duty Cycle (%%)'), widget=NumberInput(step='any'))
 
     action_type = SelectField(
         choices=[('', TRANSLATIONS['select_one']['title'])] + FUNCTION_ACTIONS)

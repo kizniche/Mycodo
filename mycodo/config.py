@@ -32,23 +32,27 @@ LANGUAGES = {
     'es': 'Español (Spanish)',
     'fr': 'Français (French)',
     'it': 'Italiano (Italian)',
+    'nl': 'Nederlands (Dutch)',
+    'nb': 'Norsk (Norwegian)',
     'pt': 'Português (Portuguese)',
     'ru': 'русский язык (Russian)',
+    'sr': 'српски (Serbian)',
+    'sv': 'Svenska (Swedish)',
     'zh': '中文 (Chinese)'
 }
 
 # LCD info
 LCD_INFO = {
     '16x2_generic': {
-        'name': lazy_gettext('Generic 16x2'),
+        'name': '16x2 Generic',
         'dependencies_module': []
     },
     '16x4_generic': {
-        'name': lazy_gettext('Generic 16x4'),
+        'name': '16x4 Generic',
         'dependencies_module': []
     },
     '128x32_pioled': {
-        'name': lazy_gettext('PiOLED 128x32'),
+        'name': '128x32 OLED',
         'dependencies_module': [
             ('apt', 'libjpeg-dev', 'libjpeg-dev'),
             ('pip-pypi', 'PIL', 'Pillow'),
@@ -58,7 +62,7 @@ LCD_INFO = {
         ]
     },
     '128x64_pioled': {
-        'name': lazy_gettext('PiOLED 128x64'),
+        'name': '128x64 OLED',
         'dependencies_module': [
             ('apt', 'libjpeg-dev', 'libjpeg-dev'),
             ('pip-pypi', 'PIL', 'Pillow'),

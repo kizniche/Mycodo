@@ -98,7 +98,7 @@ def parse_input_information():
                       'sensorutils.py']
 
     path_inputs = os.path.abspath(os.path.join(os.path.dirname(__file__), os.path.pardir) + '/inputs')
-    path_custom_inputs = "{}/custom_inputs".format(path_inputs)
+    path_custom_inputs = os.path.join(path_inputs, "custom_inputs")
 
     input_paths = [path_inputs, path_custom_inputs]
 
