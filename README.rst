@@ -93,7 +93,7 @@ Software Features
    encryption and authorization standards.
 -  System upgrade: When a new version is released on github, an upgrade
    can be initiated from the web interface.
--  Languages: English, `Spanish <#spanish>`__,
+-  Languages: English,
    `Dutch <#dutch>`__,
    `German <#german>`__,
    `French <#french>`__,
@@ -102,9 +102,10 @@ Software Features
    `Portuguese <#portuguese>`__,
    `Russian <#russian>`__,
    `Serbian <#serbian>`__,
-   `Swedish <#swedish>`__, and
-   `Chinese <#chinese>`__ (Change
-   language under Configure -> Language)
+   `Spanish <#spanish>`__,
+   `Swedish <#swedish>`__,
+   `Chinese <#chinese>`__.
+    (Change language under Configure -> Language)
 
 `Read the manual <#manual>`__ for details.
 
@@ -302,8 +303,7 @@ Languages
 ---------
 
 -  Native: English
--  Complete: `Spanish <#spanish>`__,
-   `Dutch <#dutch>`__,
+-  Complete: `Dutch <#dutch>`__,
    `German <#german>`__,
    `French <#french>`__,
    `Italian <#italian>`__,
@@ -311,8 +311,9 @@ Languages
    `Portuguese <#portuguese>`__,
    `Russian <#russian>`__,
    `Serbian <#serbian>`__,
-   `Swedish <#swedish>`__, and
-   `Chinese <#chinese>`__
+   `Spanish <#spanish>`__,
+   `Swedish <#swedish>`__,
+   `Chinese <#chinese>`__.
 
 By default, mycodo will display the default language set by your browser. You may also
 force a language in the settings at ``[Gear Icon]`` -> ``Configure`` ->
@@ -326,31 +327,6 @@ English
 ~~~~~~~
 
 The native language used in the software.
-
-German
-~~~~~~
-
-Mycodo ist ein automatisiertes Überwachungs- und Regelsystem, das auf
-dem Raspberry Pi (Versionen Zero, 1, 2 und 3) läuft.
-
-Ursprünglich zur Kultivierung von essbaren Pilzen entwickelt, hat Mycodo
-die Fähigkeit, viel mehr zu tun, einschließlich der Kultivierung von
-Pflanzen, Kultivierung von Mikroorganismen, Aufrechterhaltung der
-Imkerei-Homöostase, Inkubation von Tieren und Eiern, Aufrechterhaltung
-aquatischer Systeme, Alterung von Käse, Fermentierung von Lebensmitteln
-und Tabak, Kochen Essen (sous-vide) und mehr.
-
-Das System umfasst ein Backend (Daemon) und ein Frontend
-(Benutzerschnittstelle). Das Backend führt Messungen von Sensoren und
-Geräten durch und koordiniert dann verschiedene Reaktionen auf diese
-Messungen, einschließlich der Fähigkeit, Ausgänge (Relais, PWM,
-drahtlose Ausgänge) zu modulieren, Umgebungsbedingungen mit elektrischen
-Geräten unter PID-Kontrolle zu regulieren (stetige Regelung oder
-Umschaltung) Zeit), Timer planen, Fotos aufnehmen und Videos streamen,
-Aktionen auslösen, wenn Messungen bestimmte Bedingungen erfüllen (Relais
-modulieren, Befehle ausführen, per E-Mail benachrichtigen usw.) und
-vieles mehr. Das Frontend ist eine Webschnittstelle, die eine einfache
-Navigation und Konfiguration von jedem browserfähigen Gerät ermöglicht.
 
 Dutch
 ~~~~~
@@ -377,24 +353,6 @@ uitvoeren, per e-mail op de hoogte stellen, etc.) en meer. De frontend is
 een webinterface die gemakkelijke navigatie en configuratie mogelijk
 maakt vanaf elk apparaat met een browser.
 
-Spanish
-~~~~~~~
-
-Mycodo es un sistema de control remoto y automatizado con un enfoque en
-la modulación de las condiciones ambientales. Fue construido para
-ejecutarse en el Raspberry Pi (versiones Zero, 1, 2 y 3) y tiene como
-objetivo ser fácil de instalar y operar.
-
-El sistema central coordina un conjunto diverso de respuestas a las
-mediciones de sensores, incluyendo acciones tales como grabación de
-cámara, notificaciones por correo electrónico, activación /
-desactivación de relés, regulación con control PID y más.
-
-Mycodo se ha utilizado para cultivar hongos gourmet, cultivar plantas,
-cultivar microorganismos, mantener la homeostasis del apiario de abejas,
-incubar huevos de serpiente y animales jóvenes, envejecer quesos,
-fermentar alimentos, mantener sistemas acuáticos y mucho más.
-
 French
 ~~~~~~
 
@@ -414,6 +372,31 @@ des plantes, cultiver des micro-organismes, entretenir l'homéostasie du
 rucher des abeilles, incuber les œufs de serpent et les jeunes animaux,
 vieillir les fromages, fermenter les aliments, entretenir les systèmes
 aquatiques et plus encore.
+
+German
+~~~~~~
+
+Mycodo ist ein automatisiertes Überwachungs- und Regelsystem, das auf
+dem Raspberry Pi (Versionen Zero, 1, 2 und 3) läuft.
+
+Ursprünglich zur Kultivierung von essbaren Pilzen entwickelt, hat Mycodo
+die Fähigkeit, viel mehr zu tun, einschließlich der Kultivierung von
+Pflanzen, Kultivierung von Mikroorganismen, Aufrechterhaltung der
+Imkerei-Homöostase, Inkubation von Tieren und Eiern, Aufrechterhaltung
+aquatischer Systeme, Alterung von Käse, Fermentierung von Lebensmitteln
+und Tabak, Kochen Essen (sous-vide) und mehr.
+
+Das System umfasst ein Backend (Daemon) und ein Frontend
+(Benutzerschnittstelle). Das Backend führt Messungen von Sensoren und
+Geräten durch und koordiniert dann verschiedene Reaktionen auf diese
+Messungen, einschließlich der Fähigkeit, Ausgänge (Relais, PWM,
+drahtlose Ausgänge) zu modulieren, Umgebungsbedingungen mit elektrischen
+Geräten unter PID-Kontrolle zu regulieren (stetige Regelung oder
+Umschaltung) Zeit), Timer planen, Fotos aufnehmen und Videos streamen,
+Aktionen auslösen, wenn Messungen bestimmte Bedingungen erfüllen (Relais
+modulieren, Befehle ausführen, per E-Mail benachrichtigen usw.) und
+vieles mehr. Das Frontend ist eine Webschnittstelle, die eine einfache
+Navigation und Konfiguration von jedem browserfähigen Gerät ermöglicht.
 
 Italian
 ~~~~~~~
@@ -533,6 +516,24 @@ Serbian
 обавештавање путем е-поште, итд.), и још много тога. Фронтенд је веб
 интерфејс који омогућава једноставну навигацију и конфигурацију са било
 ког уређаја са омогућеним претраживачем.
+
+Spanish
+~~~~~~~
+
+Mycodo es un sistema de control remoto y automatizado con un enfoque en
+la modulación de las condiciones ambientales. Fue construido para
+ejecutarse en el Raspberry Pi (versiones Zero, 1, 2 y 3) y tiene como
+objetivo ser fácil de instalar y operar.
+
+El sistema central coordina un conjunto diverso de respuestas a las
+mediciones de sensores, incluyendo acciones tales como grabación de
+cámara, notificaciones por correo electrónico, activación /
+desactivación de relés, regulación con control PID y más.
+
+Mycodo se ha utilizado para cultivar hongos gourmet, cultivar plantas,
+cultivar microorganismos, mantener la homeostasis del apiario de abejas,
+incubar huevos de serpiente y animales jóvenes, envejecer quesos,
+fermentar alimentos, mantener sistemas acuáticos y mucho más.
 
 Swedish
 ~~~~~~~
