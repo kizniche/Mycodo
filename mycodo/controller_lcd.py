@@ -422,6 +422,10 @@ class LCDController(threading.Thread):
         line_2 = ''
         line_3 = ''
         line_4 = ''
+        line_5 = ''
+        line_6 = ''
+        line_7 = ''
+        line_8 = ''
 
         self.lcd_out.lcd_init()
         display_id = self.display_sets[self.display_set_count]
@@ -434,29 +438,26 @@ class LCDController(threading.Thread):
             line_3 = self.lcd_string_line[display_id][3]
         if 4 in self.lcd_string_line[display_id] and self.lcd_string_line[display_id][4]:
             line_4 = self.lcd_string_line[display_id][4]
+        if 5 in self.lcd_string_line[display_id] and self.lcd_string_line[display_id][5]:
+            line_5 = self.lcd_string_line[display_id][5]
+        if 6 in self.lcd_string_line[display_id] and self.lcd_string_line[display_id][6]:
+            line_6 = self.lcd_string_line[display_id][6]
+        if 7 in self.lcd_string_line[display_id] and self.lcd_string_line[display_id][7]:
+            line_7 = self.lcd_string_line[display_id][7]
+        if 8 in self.lcd_string_line[display_id] and self.lcd_string_line[display_id][8]:
+            line_8 = self.lcd_string_line[display_id][8]
 
-        if self.lcd_type == '128x64_pioled':
-            line_5 = ''
-            line_6 = ''
-            line_7 = ''
-            line_8 = ''
-            if 5 in self.lcd_string_line[display_id] and self.lcd_string_line[display_id][5]:
-                line_5 = self.lcd_string_line[display_id][5]
-            if 6 in self.lcd_string_line[display_id] and self.lcd_string_line[display_id][6]:
-                line_6 = self.lcd_string_line[display_id][6]
-            if 7 in self.lcd_string_line[display_id] and self.lcd_string_line[display_id][7]:
-                line_7 = self.lcd_string_line[display_id][7]
-            if 8 in self.lcd_string_line[display_id] and self.lcd_string_line[display_id][8]:
-                line_8 = self.lcd_string_line[display_id][8]
+        if self.lcd_type in ['128x32_pioled',
+                             '16x2_generic',
+                             '16x4_generic']:
+            self.lcd_out.lcd_write_lines(line_1, line_2, line_3, line_4)
+
+        elif self.lcd_type == '128x64_pioled':
             self.lcd_out.lcd_write_lines(line_1, line_2, line_3, line_4,
                                          message_line_5=line_5,
                                          message_line_6=line_6,
                                          message_line_7=line_7,
                                          message_line_8=line_8)
-        elif self.lcd_type in ['128x32_pioled',
-                               '16x2_generic',
-                               '16x4_generic']:
-            self.lcd_out.lcd_write_lines(line_1, line_2, line_3, line_4)
 
     @staticmethod
     def output_state(output_id):
