@@ -356,72 +356,78 @@ maakt vanaf elk apparaat met een browser.
 French
 ~~~~~~
 
-Mycodo est un système de surveillance à distance et de régulation
-automatisée, axé sur la modulation des conditions environnementales. Il
-a été construit pour exécuter dans le Raspberry Pi (versions Zero, 1, 2
-et 3) et vise à être facile à installer et à utiliser.
+Mycodo est un système de surveillance et de régulation automatisé conçu
+pour fonctionner sur le Raspberry Pi (versions zéro, 1, 2 et 3).
 
-Le système de base coordonne un ensemble divers de réponses aux mesures
-de capteurs, y compris des actions telles que l'enregistrement de
-caméra, les notifications par courrier électronique, l'activation /
-désactivation de relais, la régulation avec contrôle PID, et plus
-encore.
+Conçu à l'origine pour cultiver des champignons comestibles, Mycodo s'est
+développé pour inclure la capacité de faire beaucoup plus, notamment la
+culture de plantes, la culture de micro-organismes, le maintien de
+l'homéostasie du rucher des abeilles, la mise en incubation des animaux
+et des œufs, la maintenance des systèmes aquatiques, le vieillissement
+des fromages, la fermentation nourriture (sous vide), et plus.
 
-Mycodo a été utilisé pour cultiver des champignons gourmands, cultiver
-des plantes, cultiver des micro-organismes, entretenir l'homéostasie du
-rucher des abeilles, incuber les œufs de serpent et les jeunes animaux,
-vieillir les fromages, fermenter les aliments, entretenir les systèmes
-aquatiques et plus encore.
+Le système comprend un serveur (démon) et une interface utilisateur
+(interface utilisateur). Le système effectue des mesures à partir de
+capteurs et d’appareils, puis coordonne un ensemble divers de réponses à
+ces mesures, notamment la possibilité de moduler les sorties (relais,
+PWM, prises sans fil), de réguler les conditions environnementales avec
+des appareils électriques sous contrôle PID (régulation continue ou
+basculement temps), planifiez des minuteries, capturez des photos et des
+flux vidéo, déclenchez des actions lorsque les mesures répondent à
+certaines conditions (moduler des relais, exécuter des commandes, notifier
+par courrier électronique, etc.), etc. L'interface Web est une interface
+Web qui facilite la navigation et la configuration à partir de tout
+appareil compatible avec le navigateur.
 
 German
 ~~~~~~
 
-Mycodo ist ein automatisiertes Überwachungs- und Regelsystem, das auf
-dem Raspberry Pi (Versionen Zero, 1, 2 und 3) läuft.
+Mycodo ist ein automatisiertes Überwachungs- und Regulierungssystem, das
+für den Raspberry Pi (Versionen Zero, 1, 2 und 3) entwickelt wurde.
 
-Ursprünglich zur Kultivierung von essbaren Pilzen entwickelt, hat Mycodo
-die Fähigkeit, viel mehr zu tun, einschließlich der Kultivierung von
-Pflanzen, Kultivierung von Mikroorganismen, Aufrechterhaltung der
-Imkerei-Homöostase, Inkubation von Tieren und Eiern, Aufrechterhaltung
-aquatischer Systeme, Alterung von Käse, Fermentierung von Lebensmitteln
-und Tabak, Kochen Essen (sous-vide) und mehr.
+Ursprünglich für die Kultivierung von Speisepilzen konzipiert, hat Mycodo
+die Fähigkeit zu weitaus mehr erweitert, darunter die Kultivierung von
+Pflanzen, die Kultivierung von Mikroorganismen, die Aufrechterhaltung der
+Homöostase der Bienenhaus-Bienenhäuser, die Inkubation von Tieren und
+Eiern, die Aufrechterhaltung von Wassersystemen, das Altern von Käse, das
+Gären von Lebensmitteln und Tabak sowie das Kochen Essen (Sous-Vide) und
+mehr.
 
-Das System umfasst ein Backend (Daemon) und ein Frontend
-(Benutzerschnittstelle). Das Backend führt Messungen von Sensoren und
-Geräten durch und koordiniert dann verschiedene Reaktionen auf diese
-Messungen, einschließlich der Fähigkeit, Ausgänge (Relais, PWM,
-drahtlose Ausgänge) zu modulieren, Umgebungsbedingungen mit elektrischen
-Geräten unter PID-Kontrolle zu regulieren (stetige Regelung oder
-Umschaltung) Zeit), Timer planen, Fotos aufnehmen und Videos streamen,
+Das System besteht aus einem Backend (Daemon) und einem Frontend
+(Benutzeroberfläche). Das Backend führt Messungen von Sensoren und Geräten
+durch und koordiniert dann eine Vielzahl von Reaktionen auf diese
+Messungen, einschließlich der Möglichkeit, Ausgänge (Relais, PWM,
+drahtlose Ausgänge) zu modulieren und Umgebungsbedingungen mit elektrischen
+Geräten unter PID-Steuerung zu regulieren (stetige Regelung oder
+Umschaltung) Zeit), Zeitpläne planen, Fotos aufnehmen und Videos streamen,
 Aktionen auslösen, wenn Messungen bestimmte Bedingungen erfüllen (Relais
-modulieren, Befehle ausführen, per E-Mail benachrichtigen usw.) und
-vieles mehr. Das Frontend ist eine Webschnittstelle, die eine einfache
-Navigation und Konfiguration von jedem browserfähigen Gerät ermöglicht.
+modulieren, Befehle ausführen, per E-Mail benachrichtigen usw.) und vieles
+mehr. Das Frontend ist eine Weboberfläche, die eine einfache Navigation und
+Konfiguration von jedem Browser-fähigen Gerät aus ermöglicht.
 
 Italian
 ~~~~~~~
 
-Mycodo è un sistema di monitoraggio e regolazione automatico che è
-stato creato per funzionare su Raspberry Pi (versioni Zero, 1, 2 e 3).
+Mycodo è un sistema di monitoraggio e regolazione automatico che è stato
+creato per funzionare sul Raspberry Pi (versioni Zero, 1, 2 e 3).
 
-Originariamente progettato per coltivare funghi commestibili, Mycodo
-è cresciuto fino a comprendere la possibilità di fare molto di più,
-coltivando piante, coltivando microrganismi, mantenendo l'omeostasi
-delle api apistiche del miele, incubando animali e uova, mantenendo
-sistemi acquatici, formaggi stagionati, alimenti fermentati e tabacco,
-cucinando cibo (sous-vide), e altro ancora.
+Originariamente progettato per coltivare funghi commestibili, Mycodo è
+cresciuto fino a comprendere la capacità di fare molto di più, coltivando
+piante, coltivando microrganismi, mantenendo l'omeostasi delle api apistiche
+del miele, incubando animali e uova, mantenendo sistemi acquatici, formaggi
+stagionati, alimenti fermentati e tabacco, cucinando cibo (sous-vide) e
+altro ancora.
 
-Il sistema comprende un backend (demone) e un frontend (interfaccia
-utente). Il back-end esegue misurazioni da sensori e dispositivi,
-quindi coordina una serie diversificata di risposte a tali misurazioni,
-inclusa la possibilità di modulare le uscite (relè, PWM, prese wireless),
-regola le condizioni ambientali con dispositivi elettrici sotto controllo
-PID (regolazione costante o commutazione tempo), programmare i timer,
-acquisire foto e riprodurre video in streaming, attivare azioni quando
-le misurazioni soddisfano determinate condizioni (moduli relè, comandi
-di esecuzione, notifica via e-mail, ecc.) e altro. Il frontend è
-un'interfaccia web che consente una facile navigazione e configurazione
-da qualsiasi dispositivo abilitato per il browser.
+Il sistema comprende un backend (demone) e un frontend (interfaccia utente).
+Il back-end esegue misurazioni da sensori e dispositivi, quindi coordina un
+insieme diversificato di risposte a tali misurazioni, inclusa la possibilità
+di modulare le uscite (relè, PWM, prese wireless), regola le condizioni
+ambientali con dispositivi elettrici sotto controllo PID (regolazione costante
+o commutazione tempo), programmare i timer, acquisire foto e trasmettere
+video, attivare azioni quando le misurazioni soddisfano determinate condizioni
+(modulazione di relè, esecuzione di comandi, notifica via e-mail, ecc.) e
+altro. Il frontend è un'interfaccia web che consente una facile navigazione e
+configurazione da qualsiasi dispositivo abilitato per il browser.
 
 Norwegian
 ~~~~~~~~~
@@ -449,50 +455,54 @@ enhet.
 
 Portuguese
 ~~~~~~~~~~
-Mycodo é um sistema automatizado de monitoramento e regulação que foi
+
+O Mycodo é um sistema automatizado de monitoramento e regulação que foi
 construído para rodar no Raspberry Pi (versões Zero, 1, 2 e 3).
 
-Originalmente projetado para cultivar cogumelos comestíveis, o Mycodo
-cresceu para incluir a capacidade de fazer muito mais, incluindo
-cultivar plantas, cultivar microorganismos, manter a homeostase do
-apiário de abelhas, incubar animais e ovos, manter sistemas aquáticos,
-queijos envelhecidos, fermentar alimentos e tabaco, cozinhar comida
-(sous-vide) e muito mais.
+Originalmente concebido para cultivar cogumelos comestíveis, o Mycodo
+cresceu para incluir a capacidade de fazer muito mais, incluindo cultivar
+plantas, cultivar microorganismos, manter a homeostase do apiário de
+abelhas, incubar animais e ovos, manter sistemas aquáticos, queijos
+envelhecidos, fermentar alimentos e tabaco, cozinhar comida (sous-vide) e
+muito mais.
 
 O sistema compreende um backend (daemon) e um frontend (interface de
-usuário). O backend realiza medições a partir de sensores e dispositivos
-e coordena um conjunto diversificado de respostas a essas medições,
+usuário). O backend conduz medições a partir de sensores e dispositivos e
+coordena um conjunto diversificado de respostas a essas medições,
 incluindo a capacidade de modular saídas (relés, PWM, tomadas sem fio),
-regular condições ambientais com dispositivos elétricos sob controle PID
-(regulação estável ou troca tempo), agendar cronômetros, capturar fotos
-e transmitir vídeo, desencadear ações quando as medições atenderem a
+regular as condições ambientais com dispositivos elétricos sob controle
+PID (regulação estável ou troca tempo), agendar cronômetros, capturar
+fotos e transmitir vídeo, acionar ações quando as medições atenderem a
 determinadas condições (modular relés, executar comandos, notificar por
-e-mail etc.) e muito mais. O frontend é uma interface da Web que permite
-fácil navegação e configuração a partir de qualquer dispositivo
-habilitado para navegador.
+e-mail etc.) e muito mais. O frontend é uma interface da web que permite
+fácil navegação e configuração a partir de qualquer dispositivo habilitado
+para navegador.
 
 Russian
 ~~~~~~~
 
-Первоначально разработанный для выращивания съедобных грибов, Mycodo
-вырос, чтобы включать в себя способность делать гораздо больше, в том
-числе выращивать растения, культивировать микроорганизмы, поддерживать
-гомеостаз медоносной пчелы, инкубировать животных и яйца, поддерживать
-водные системы, стареющие сыры, ферментировать продукты и табак,
-готовить еда (sous-vide) и многое другое.
+Mycodo - это автоматизированная система мониторинга и регулирования,
+созданная для работы на Raspberry Pi (версии Zero, 1, 2 и 3).
 
-Система содержит бэкэнд (демон) и интерфейс (пользовательский
-интерфейс). Бэкэнд выполняет измерения от датчиков и устройств, затем
-координирует разнообразные ответы на эти измерения, в том числе
-возможность модулировать выходы (реле, ШИМ, беспроводные розетки),
+Первоначально разработанный для выращивания съедобных грибов, Mycodo
+вырос и теперь способен делать гораздо больше, включая выращивание
+растений, выращивание микроорганизмов, поддержание гомеостаза пасеки
+медоносных пчел, инкубацию животных и яиц, поддержание водных систем,
+старение сыров, ферментацию продуктов и табака, приготовление пищи. еда
+(sous-vide) и многое другое.
+
+Система включает в себя бэкэнд (демон) и интерфейс (пользовательский
+интерфейс). Бэкэнд проводит измерения от датчиков и устройств, затем
+координирует разнообразный набор ответов на эти измерения, включая
+возможность модулировать выходы (реле, ШИМ, беспроводные выходы),
 регулировать условия окружающей среды с помощью электрических устройств
-под ПИД-регулированием (устойчивое регулирование или изменение время),
-расписание таймеров, сбор фотографий и потоковое видео, триггерные
+под управлением ПИД (постоянное регулирование или переключение). время),
+планировать таймеры, захватывать фотографии и потоковое видео, запускать
 действия, когда измерения соответствуют определенным условиям
-(модулировать реле, выполнять команды, уведомлять по электронной почте
-и т. д.) и многое другое. Интерфейс - это веб-интерфейс, который
-обеспечивает удобную навигацию и настройку с любого устройства с
-поддержкой браузера.
+(модулировать реле, выполнять команды, отправлять уведомления по
+электронной почте и т. д.) и многое другое. Интерфейс представляет собой
+веб-интерфейс, который обеспечивает простую навигацию и настройку с любого
+устройства с поддержкой браузера.
 
 Serbian
 ~~~~~~~
@@ -520,20 +530,26 @@ Serbian
 Spanish
 ~~~~~~~
 
-Mycodo es un sistema de control remoto y automatizado con un enfoque en
-la modulación de las condiciones ambientales. Fue construido para
-ejecutarse en el Raspberry Pi (versiones Zero, 1, 2 y 3) y tiene como
-objetivo ser fácil de instalar y operar.
+Mycodo es un sistema automatizado de monitoreo y regulación que fue creado
+para ejecutarse en la Raspberry Pi (versiones cero, 1, 2 y 3).
 
-El sistema central coordina un conjunto diverso de respuestas a las
-mediciones de sensores, incluyendo acciones tales como grabación de
-cámara, notificaciones por correo electrónico, activación /
-desactivación de relés, regulación con control PID y más.
+Originalmente diseñado para cultivar hongos comestibles, Mycodo ha crecido
+para incluir la capacidad de hacer mucho más, incluido el cultivo de plantas,
+el cultivo de microorganismos, el mantenimiento de la homeostasis de las
+abejas, la incubación de animales y huevos, el mantenimiento de los sistemas
+acuáticos, el envejecimiento de los quesos, la fermentación de alimentos y el
+tabaco, la cocina. comida (sous-vide), y más.
 
-Mycodo se ha utilizado para cultivar hongos gourmet, cultivar plantas,
-cultivar microorganismos, mantener la homeostasis del apiario de abejas,
-incubar huevos de serpiente y animales jóvenes, envejecer quesos,
-fermentar alimentos, mantener sistemas acuáticos y mucho más.
+El sistema comprende un backend (daemon) y un frontend (interfaz de usuario).
+El backend realiza mediciones desde sensores y dispositivos, luego coordina
+un conjunto diverso de respuestas a esas mediciones, incluida la capacidad
+de modular salidas (relés, PWM, salidas inalámbricas), regular las
+condiciones ambientales con dispositivos eléctricos bajo control PID
+(regulación constante o cambio tiempo), programe temporizadores, capture
+fotos y transmita videos, active acciones cuando las mediciones cumplan
+ciertas condiciones (module relés, ejecute comandos, notifique por correo
+electrónico, etc.) y más. La interfaz es una interfaz web que permite una
+fácil navegación y configuración desde cualquier dispositivo con navegador.
 
 Swedish
 ~~~~~~~
@@ -562,15 +578,11 @@ navigering och konfiguration från alla webbläsaraktiverade enheter.
 Chinese
 ~~~~~~~
 
-Mycodo最初设计用于种植可食用的蘑菇，已经发展到能够做更多的工作，包括种植植物，
-培养微生物，维持蜂蜜蜂房稳态，孵化动物和鸡蛋，维持水生系统，陈年奶酪，
-发酵食品和烟草，烹饪食物（sous-vide）等等。
+Mycodo是一个自动监控和调节系统，可在Raspberry Pi上运行（版本为Zero，1,2和3）。
 
-该系统包括后端（守护进程）和前端（用户界面）。后端从传感器和设备进行测量，
-然后协调对这些测量的各种响应，包括调制输出（继电器，PWM，无线插座）的能力，
-通过PID控制的电气设备调节环境条件（稳定调节或转换时间），安排计时器，捕获照片和流视频，
-在测量满足特定条件时触发动作（调制继电器，执行命令，通过电子邮件通知等）
-等等。前端是一个Web界面，可以从任何支持浏览器的设备轻松导航和配置。
+Mycodo最初设计用于种植可食用的蘑菇，已经发展到能够做更多的事情，包括种植植物，培养微生物，保持蜂蜜蜂房稳态，孵化动物和鸡蛋，维持水生系统，陈年奶酪，发酵食品和烟草，烹饪食物（sous-vide）等等。
+
+该系统包括后端（守护进程）和前端（用户界面）。后端从传感器和设备进行测量，然后协调对这些测量的各种响应，包括调制输出（继电器，PWM，无线插座）的能力，通过PID控制的电气设备调节环境条件（稳定调节或转换时间），安排计时器，捕获照片和流视频，在测量满足特定条件时触发操作（调制继电器，执行命令，通过电子邮件通知等）等等。前端是一个Web界面，可以从任何支持浏览器的设备轻松导航和配置。
 
 
 .. |Build Status| image:: https://travis-ci.org/kizniche/Mycodo.svg?branch=master
