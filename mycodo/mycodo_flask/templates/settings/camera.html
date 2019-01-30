@@ -45,16 +45,16 @@
       {{form_camera.csrf_token}}
       {{form_camera.camera_id(value=each_camera.unique_id)}}
       <div class="row small-gutters" style="border-bottom: 2px solid #ddd; padding: 1em 0;">
-        <div class="col-xs-12 col-sm-3">
+        <div class="col-12 col-sm-3">
           {{form_camera.name(class_='form-control', value=each_camera.name, **{'title':_('Name for this Camera')})}}
         </div>
-        <div class="col-xs-12 col-sm-3">
+        <div class="col-12 col-sm-3">
           <input class="form-control" disabled="" title="[{{'%02d' % each_camera.id}}] UUID: {{each_camera.unique_id}}" value="{{each_camera.library}}" type="text">
         </div>
-        <div class="col-xs-12 col-sm-3">
+        <div class="col-12 col-sm-3">
           {{form_camera.camera_mod(class_='btn btn-primary btn-block')}}
         </div>
-        <div class="col-xs-12 col-sm-3">
+        <div class="col-12 col-sm-3">
           {{form_camera.camera_del(class_='btn btn-primary btn-block')}}
         </div>
       </div>

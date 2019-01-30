@@ -64,7 +64,7 @@
       {%- set chart_number = loop.index -%}
       <div style="margin-bottom: 1em; border: 2px solid #ddd; border-radius: 5px;">
         <div class="row small-gutters" style="padding: 0 1em">
-          <div class="col-xs-12 col-sm-6">
+          <div class="col-12 col-sm-6">
             <input class="form-control btn btn-sm" disabled="" title="[{{'%02d' % each_method.id}} UUID: {{each_method.unique_id}}" value="[{{method_info[each_method.method_type]['name']}}] {{each_method.name}}" type="text">
           </div>
           <div class="col-auto">

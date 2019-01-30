@@ -17,7 +17,7 @@
 
   <main role="main" class="container sidebar-drop">
     <div class="row">
-      <div class="col-md-3 col-xs-1 p-l-0 p-r-0 collapse in show" id="sidebar">
+      <div class="col-md-3 col-1 p-l-0 p-r-0 collapse in show" id="sidebar">
         <div class="list-group panel">
           <a class="list-group-item collapsed{% if active_settings == 'general' %} active{% endif %}" href="{{url_for('routes_settings.settings_general')}}"><i class="fas fa-globe"></i>&nbsp;&nbsp;{{_('General')}}</a>
           <a class="list-group-item collapsed{% if active_settings == 'input' %} active{% endif %}" href="{{url_for('routes_settings.settings_input')}}"><i class="fas fa-sign-in-alt"></i>&nbsp;&nbsp;{{_('Inputs')}}</a>
@@ -29,7 +29,7 @@
           <a class="list-group-item collapsed{% if active_settings == 'diagnostic' %} active{% endif %}" href="{{url_for('routes_settings.settings_diagnostic')}}"><i class="fas fa-wrench"></i>&nbsp;&nbsp;{{_('Diagnostics')}}</a>
         </div>
       </div>
-      <div class="col-md-9 col-xs-11 p-l-2 p-t-2" style="padding-bottom: 1em">
+      <div class="col-md-9 col-11 p-l-2 p-t-2" style="padding-bottom: 1em">
         <a href="#sidebar" data-toggle="collapse"><i class="fas fa-bars fa-lg"></i></a>
         {% include 'flash_messages.html' %}
         {% block settings %}{% endblock %}

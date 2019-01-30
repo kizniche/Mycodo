@@ -151,7 +151,7 @@
       {{form_add_output.hidden_tag()}}
 
       <div class="row small-gutters" style="padding-left: 0.75em">
-        <div class="col-sm-3 col-md-2 col-lg-1">
+        <div class="col-2 col-lg-1">
           {{form_add_output.output_quantity(class_='form-control', type="number", value=1, **{'title': _('Quantity')})}}
         </div>
         <div class="col-auto">
@@ -177,37 +177,37 @@
 
         <div class="row small-gutters pause-background" style="border-bottom: 1px solid #ddd; padding: 0.4em 0.2em 0.4em 0;" id="{{each_output.unique_id}}-output-state">
 
-          <div class="col-xs-2 col-sm-1 text-center icon-fh">
+          <div class="col-2 col-md-1 text-center icon-fh">
             <a data-toggle="collapse" href="#collapseContainer{{each_output.unique_id}}" aria-expanded="false" aria-controls="collapseContainer{{each_output.unique_id}}">
               <span style="font-size: 3.6em" class="collapse-button{{each_output.unique_id}} fa fa-plus-square"></span>
             </a>
           </div>
 
-          <div class="col-xs-5 col-sm-5 col-md-5 col-lg-3 small-gutters">
+          <div class="col-5 col-lg-3 small-gutters">
             {{form_mod_output.name(class_='form-control', value=each_output.name, **{'title': dict_translation['name']['phrase']})}}
           </div>
-          <div class="col-xs-5 col-sm-6 col-md-6 col-lg-2 small-gutters">
+          <div class="col-5 col-md-6 col-lg-2 small-gutters">
             <input class="form-control btn btn-sm btn-block" disabled="" id="{{each_output.unique_id}}-input-output-state" title="[{{'%02d' % each_output.id}}] UUID: {{each_output.unique_id}}" value="{{ _('Unconfigured')}}" type="text">
           </div>
 
         {% if each_output.output_type not in ['pwm', 'command_pwm', 'python_pwm', 'atlas_ezo_pmp'] -%}
-          <div class="col-xs-5 col-sm-6 col-md-4 col-lg-2 small-gutters">
+          <div class="col-4 col-md-4 col-lg-2 small-gutters">
             <input class="form-control btn btn-sm btn-success btn-block turn_on" id="turn_on" name="{{each_output.unique_id}}/on/sec/0" type="button" value="{{dict_translation['on']['title']}}">
           </div>
         {%- endif %}
 
         {% if each_output.output_type not in ['pwm', 'command_pwm', 'python_pwm'] -%}
-          <div class="col-xs-5 col-sm-6 col-md-4 col-lg-2 small-gutters">
+          <div class="col-4 col-md-4 col-lg-2 small-gutters">
         {% else %}
-          <div class="col-xs-5 col-sm-6 col-md-8 col-lg-4 small-gutters">
+          <div class="col-8 col-md-8 col-lg-4 small-gutters">
         {% endif %}
             <input class="form-control btn btn-sm btn-danger btn-block turn_off" id="turn_off" name="{{each_output.unique_id}}/off/sec/0" type="button" value="{{dict_translation['off']['title']}}">
           </div>
 
-          <div class="col small-gutters">
+          <div class="col-2 col-lg-1 small-gutters">
             {{form_mod_output.order_up(class_='form-control btn btn-sm btn-block')}}
           </div>
-          <div class="col small-gutters">
+          <div class="col-2 col-lg-1 small-gutters">
             {{form_mod_output.order_down(class_='form-control btn btn-sm btn-block')}}
           </div>
 
@@ -216,13 +216,13 @@
         <div class="collapse" id="collapseContainer{{each_output.unique_id}}" style="padding: 0.5em">
 
           <div class="row small-gutters">
-            <div class="col-xs-6 col-sm-6 col-md-4">
+            <div class="col-6 col-sm-6 col-md-4">
               <input class="form-control" disabled="" value="{{output_info[each_output.output_type]['name']}} ({{each_output.interface}})" type="text">
             </div>
-            <div class="col-xs-3 col-sm-3 col-md-4">
+            <div class="col-3 col-sm-3 col-md-4">
               {{form_mod_output.save(class_='form-control btn btn-sm btn-block')}}
             </div>
-            <div class="col-xs-3 col-sm-3 col-md-4">
+            <div class="col-3 col-sm-3 col-md-4">
               {{form_mod_output.delete(class_='form-control btn btn-sm btn-block', **{'onclick':'return confirm("Are you sure you want to delete this?")'})}}
             </div>
 
@@ -230,7 +230,7 @@
             {% include 'pages/output_options/'+each_output_template %}
           {% endfor %}
 
-            <div class="col-xs-6 col-sm-4 col-md-3">
+            <div class="col-6 col-sm-4 col-md-3">
               {{form_mod_output.amps.label(class_='control-label')}}
               <div>
                 {{form_mod_output.amps(class_='form-control', value=each_output.amps, **{'title': dict_translation['amps']['phrase']})}}
@@ -246,10 +246,10 @@
               <label class='control-label'>{{dict_translation['duration_on_seconds']['title']}}</label>
               <div>
                 <div class="row small-gutters">
-                  <div class="col-xs-6 col-sm-4 col-md-3 small-gutters">
+                  <div class="col-6 col-sm-4 col-md-3 small-gutters">
                     <input class="form-control" id="sec_on_amt_{{each_output.unique_id}}" name="sec_on_amt_{{each_output.unique_id}}" title="{{dict_translation['duration_on_seconds']['phrase']}}" type="text" value="">
                   </div>
-                  <div class="col-xs-6 col-sm-4 col-md-3 small-gutters">
+                  <div class="col-6 col-sm-4 col-md-3 small-gutters">
                     <input class="btn btn-success btn-block sec_on_amt" id="turn_on" name="{{each_output.unique_id}}/on/sec/" type="button" value="{{_('Turn On')}}">
                   </div>
                 </div>
@@ -264,10 +264,10 @@
               <label class='control-label'>{{dict_translation['pump_amount']['title']}}</label>
               <div>
                 <div class="row small-gutters">
-                  <div class="col-xs-6 col-sm-4 col-md-3 small-gutters">
+                  <div class="col-6 col-sm-4 col-md-3 small-gutters">
                     <input class="form-control" id="sec_on_amt_{{each_output.unique_id}}" name="sec_on_amt_{{each_output.unique_id}}" title="{{dict_translation['pump_amount']['phrase']}}" type="text" value="">
                   </div>
-                  <div class="col-xs-6 col-sm-4 col-md-3 small-gutters">
+                  <div class="col-6 col-sm-4 col-md-3 small-gutters">
                     <input class="btn btn-success btn-block sec_on_amt" id="turn_on" name="{{each_output.unique_id}}/on/sec/" type="button" value="{{_('Pump Volume')}}">
                   </div>
                 </div>
@@ -282,10 +282,10 @@
               <label class='control-label'>{{dict_translation['duty_cycle']['title']}}</label>
               <div>
                 <div class="row small-gutters">
-                  <div class="col-xs-6 col-sm-4 col-md-3 small-gutters">
+                  <div class="col-6 col-sm-4 col-md-3 small-gutters">
                   <input class="form-control" id="duty_cycle_on_amt_{{each_output.unique_id}}" name="duty_cycle_on_amt_{{each_output.unique_id}}" title="{{dict_translation['duty_cycle']['phrase']}}" type="number" value="">
                   </div>
-                  <div class="col-xs-6 col-sm-4 col-md-3 small-gutters">
+                  <div class="col-6 col-sm-4 col-md-3 small-gutters">
                   <input class="btn btn-success btn-block duty_cycle_on_amt" id="turn_on" name="{{each_output.unique_id}}/on/pwm/" type="button" value="{{_('Turn On')}}">
                   </div>
                 </div>

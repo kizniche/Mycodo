@@ -93,7 +93,7 @@
     <div style="padding: 0.5em; margin-bottom: 0.7em; border: 1px solid #ddd; border-radius: 5px;">
 
       <div class="row">
-        <div class="col-xs-12 col-sm-6 text-left">
+        <div class="col-12 col-sm-6 text-left">
           {{each_input.name}} (Input {{each_input.unique_id[:8]}})
           {%- if each_input.device != 'EDGE' -%}
             <div>
@@ -102,7 +102,7 @@
           {%- endif -%}
         </div>
 
-        <div class="col-xs-12 col-sm-6 text-right">
+        <div class="col-12 col-sm-6 text-right">
           {{_('Measurement')}} | {{_('Timestamp')}}
         {% for each_meas in table_device_measurements.query.filter(table_device_measurements.device_id == each_input.unique_id).all() if each_meas.is_enabled %}
           {% set measure_string = each_input.unique_id + '-input-' + each_meas.unique_id %}
@@ -143,14 +143,14 @@
     <div style="padding: 0.5em; margin-bottom: 0.7em; border: 1px solid #ddd; border-radius: 5px;">
 
       <div class="row">
-        <div class="col-xs-12 col-sm-6 text-left">
+        <div class="col-12 col-sm-6 text-left">
           {{each_math.name}} (Math {{each_math.unique_id[:8]}})
           <div>
             {{_('Math (%(type)s), %(sec)s second interval', type=each_math.math_type, sec=each_math.period)}}
           </div>
         </div>
 
-        <div class="col-xs-12 col-sm-6 text-right">
+        <div class="col-12 col-sm-6 text-right">
           {{_('Measurement')}} | {{_('Timestamp')}}
         {% for each_meas in table_device_measurements.query.filter(table_device_measurements.device_id == each_math.unique_id).all() if each_meas.is_enabled %}
           {% set measure_string = each_math.unique_id + '-math-' + each_meas.unique_id %}
