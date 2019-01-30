@@ -340,6 +340,9 @@ class InputModule(AbstractInput):
                     channel=4,
                     timestamp=datetime_ts)
 
+        # Download successfully finished, set newest timestamp
+        self.gadget.newestTimeStampMs = self.gadget.tmp_newestTimeStampMs
+
     def get_device_information(self):
         if 'info_timestamp' not in self.device_information:
             self.initialize()

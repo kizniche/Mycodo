@@ -93,6 +93,8 @@ class SHT31:
         self.loggedData = {'Temp': {}, 'Humi': {}}
         self.__loggerInterval = 0
         self.__loggingReadout = False
+
+        self.tmp_newestTimeStampMs = 0
         self.newestTimeStampMs = 0
 
         self.__peripheral = Peripheral(addr, 'random', iface)
@@ -245,9 +247,10 @@ class SHT31:
         if stopMs is not None:
             self.setNewestTimestampMs(stopMs)
 
-        self.newestTimeStampMs = self.readNewestTimestampMs()
+        self.tmp_newestTimeStampMs = self.readNewestTimestampMs()
+
         self.__peripheral.delegate.prepareLoggerReadout(
-            self.readLoggerIntervalMs(), self.newestTimeStampMs)
+            self.readLoggerIntervalMs(), self.tmp_newestTimeStampMs)
 
         self.__characteristics['StartLoggerDownload'].write(
             (1).to_bytes(1, byteorder='little'))

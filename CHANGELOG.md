@@ -3,6 +3,7 @@
 ### Features
 
  - Add LCD: 128x64 OLED ([#589](https://github.com/kizniche/mycodo/issues/589))
+ - Improve SHT31 Smart Gadget module
 
 ### Miscellaneous
 
