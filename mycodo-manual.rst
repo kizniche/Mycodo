@@ -332,21 +332,25 @@ Data
 
 ``Setup -> Data``
 
-Data includes controllers that produce and store data in the measurement
-database. Input controllers generally acquire measurements from sensors,
-but they may also come from executed commands. Math controllers, on the
-other hand, perform math on already-stored values to create new values
-that are stored.
+Data are individual pieces of information stored for later use. They may
+be values acquired from sensors, signals from analog-to-digital controllers,
+a response from a command, or even math performed on other data to produce
+an average, to name a few. Add, configure, and activate Inputs to begin
+recording measurements to the database and allow them to be used throughout
+Mycodo.
 
 Input
 `````
 
-Inputs (such as sensors or analog signals) measure environmental
-conditions, which will be stored in a time-series database (InfluxDB).
-This database will provide measurements for `Graphs <#graphs>`__,
-`LCDs <#lcds>`__, `PID Controllers <#pid-controllers>`__,
-`Conditional Statements <#conditional-statements>`__, and other parts of Mycodo to
-operate from.
+Inputs, such as sensors, ADC signals, or even a response from a command,
+enable measuring conditions in the environment or elsewhere, which will
+be stored in a time-series database (InfluxDB). This database will provide
+measurements for `Graphs <#graphs>`__, `LCDs <#lcds>`__,
+`PID Controllers <#pid-controllers>`__,
+`Conditional Statements <#conditional-statements>`__, and other parts of
+Mycodo to operate from. Add, configure, and activate inputs to begin
+recording measurements to the database and allow them to be used throughout
+Mycodo.
 
 In addition to several supported sensors and devices, a Linux command
 may be specified that will be executed and the return value stored in

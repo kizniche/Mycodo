@@ -638,9 +638,9 @@ optional arguments:
 <p>/V A VMS/DOS-style option.</p>
 <h2 id="data">Data</h2>
 <p><code>Setup -&gt; Data</code></p>
-<p>Data includes controllers that produce and store data in the measurement database. Input controllers generally acquire measurements from sensors, but they may also come from executed commands. Math controllers, on the other hand, perform math on already-stored values to create new values that are stored.</p>
+<p>Data are individual pieces of information stored for later use. They may be values acquired from sensors, signals from analog-to-digital controllers, a response from a command, or even math performed on other data to produce an average, to name a few. Add, configure, and activate Inputs to begin recording measurements to the database and allow them to be used throughout Mycodo.</p>
 <h3 id="input">Input</h3>
-<p>Inputs (such as sensors or analog signals) measure environmental conditions, which will be stored in a time-series database (InfluxDB). This database will provide measurements for <a href="#graphs">Graphs</a>, <a href="#lcds">LCDs</a>, <a href="#pid-controllers">PID Controllers</a>, <a href="#conditional-statements">Conditional Statements</a>, and other parts of Mycodo to operate from.</p>
+<p>Inputs, such as sensors, ADC signals, or even a response from a command, enable measuring conditions in the environment or elsewhere, which will be stored in a time-series database (InfluxDB). This database will provide measurements for <a href="#graphs">Graphs</a>, <a href="#lcds">LCDs</a>, <a href="#pid-controllers">PID Controllers</a>, <a href="#conditional-statements">Conditional Statements</a>, and other parts of Mycodo to operate from. Add, configure, and activate inputs to begin recording measurements to the database and allow them to be used throughout Mycodo.</p>
 <p>In addition to several supported sensors and devices, a Linux command may be specified that will be executed and the return value stored in the measurement database to be used throughout the Mycodo system.</p>
 <table>
 <colgroup>

@@ -1,5 +1,4 @@
 <h4>{{_('Input')}} <a href="/help#input" target="_blank"><span style="font-size: 16px" class="fas fa-question-circle"></span></a></h4>
-<p>{{_('Inputs, such as sensors, ADC signals, or even a response from a command, enable measuring conditions in the environment or elsewhere. Add, configure, and activate inputs to begin recording measurements to the database and allow them to be used throughout Mycodo.')}}</p>
 
 {% for each_order_input_id in display_order_input -%}
   {%- set all_input = table_input.query.filter(table_input.unique_id == each_order_input_id).all() -%}
@@ -16,18 +15,18 @@
                   {% else -%}inactive-background
                   {% endif %} small-gutters" style="border-bottom: 1px solid #ddd; padding: 0.3em 0.2em 0.3em 0">
 
-    <div class="col-xs-2 col-sm-1 text-center icon-fh">
+    <div class="col-2 col-sm-1 text-center icon-fh">
       <a data-toggle="collapse" href="#collapseContainer-input-{{each_input.id}}" aria-expanded="false" aria-controls="collapseContainer{{each_input.id}}">
         <span style="font-size: 3.6em" class="collapse-button{{each_input.id}} fa fa-plus-square"></span>
       </a>
     </div>
-    <div class="col-xs-5 col-sm-3">
+    <div class="col-5 col-sm-3">
       {{form_mod_input.name(class_='form-control', value=each_input.name, **{'title': dict_translation['name']['phrase']})}}
     </div>
-    <div class="col-xs-5 col-sm-2">
+    <div class="col-5 col-sm-2">
       <input class="form-control btn btn-sm btn-block" disabled="" title="[{{'%02d' % each_input.id}}] UUID: {{each_input.unique_id}}" value="{% if each_input.interface and each_input.interface not in ['RPi', 'Mycodo']%}[{{each_input.interface}}] {% endif %}{% if each_input.device in dict_inputs %}{{dict_inputs[each_input.device]['input_name']}}{% endif %}" type="text">
     </div>
-    <div class="col-xs-4 col-xs-offset-2 col-sm-2 col-sm-offset-0">
+    <div class="col-4 col-xs-offset-2 col-sm-2 col-sm-offset-0">
     {% if each_input.is_activated -%}
       {%- set has_active_pid = [] -%}
       {%- for each_pid in pid if each_pid.measurement.split(',')[0] == each_input.unique_id and each_pid.is_activated -%}
@@ -43,10 +42,10 @@
     {% endif -%}
     </div>
 
-    <div class="col-xs-3 col-sm-2">
+    <div class="col-4 col-sm-2">
       {{form_mod_input.input_order_up(class_='form-control btn btn-sm btn-block')}}
     </div>
-    <div class="col-xs-3 col-sm-2">
+    <div class="col-4 col-sm-2">
       {{form_mod_input.input_order_down(class_='form-control btn btn-sm btn-block')}}
     </div>
 

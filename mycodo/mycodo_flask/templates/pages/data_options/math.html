@@ -1,5 +1,4 @@
 <h4>{{_('Math')}} <a href="/help#math" target="_blank"><span style="font-size: 16px" class="fas fa-question-circle"></span></a></h4>
-<p>{{_('Math can be performed on one or more Inputs in order to produce a new value')}}</p>
 
 {% for each_order_math_id in display_order_math -%}
   {% set channels = table_device_measurements.query.filter(table_device_measurements.device_id == each_order_math_id).count() %}
@@ -17,18 +16,18 @@
                   {% else -%}inactive-background
                   {% endif %} small-gutters" style="border-bottom: 1px solid #ddd; padding: 0.4em 0.2em 0.4em 0">
 
-    <div class="col-xs-2 col-sm-1 text-center icon-fh">
+    <div class="col-2 col-sm-1 text-center icon-fh">
       <a data-toggle="collapse" href="#collapseContainer-math-{{each_math.id}}" aria-expanded="false" aria-controls="collapseContainer{{each_math.id}}">
         <span style="font-size: 3.6em" class="collapse-button{{each_math.id}} fa fa-plus-square"></span>
       </a>
     </div>
-    <div class="col-xs-5 col-sm-3">
+    <div class="col-5 col-sm-3">
       {{form_mod_math.name(class_='form-control', value=each_math.name, **{'title': dict_translation['name']['phrase']})}}
     </div>
-    <div class="col-xs-5 col-sm-2">
+    <div class="col-5 col-sm-2">
       <input class="form-control btn btn-sm btn-block" disabled="" title="UUID: {{each_math.unique_id}}" value="[{{'%02d' % each_math.id}}] {% if each_math.math_type in math_info %}{{math_info[each_math.math_type]['name']}}{% endif %}" type="text">
     </div>
-    <div class="col-xs-4 col-xs-offset-2 col-sm-2 col-sm-offset-0">
+    <div class="col-4 col-xs-offset-2 col-sm-2 col-sm-offset-0">
     {% if each_math.is_activated -%}
       {{form_mod_math.math_deactivate(class_='form-control btn btn-sm btn-block')}}
     {% else -%}
@@ -36,10 +35,10 @@
     {% endif -%}
     </div>
 
-    <div class="col-xs-3 col-sm-2">
+    <div class="col-4 col-sm-2">
       {{form_mod_math.math_order_up(class_='form-control btn btn-sm btn-block')}}
     </div>
-    <div class="col-xs-3 col-sm-2">
+    <div class="col-4 col-sm-2">
       {{form_mod_math.math_order_down(class_='form-control btn btn-sm btn-block')}}
     </div>
 
