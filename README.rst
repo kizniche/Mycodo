@@ -111,7 +111,8 @@ Supported Inputs
 
 All supported Inputs can be found under the
 `Input Devices <https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.rst#input-devices>`__
-section of the manual.
+and `Input Device Details <https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.rst#input-device-details>`__
+sections of the manual.
 
 Install
 -------
@@ -230,6 +231,8 @@ The Mycodo Manual may be viewed as
 `HTML <http://htmlpreview.github.io/?https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.html>`__,
 or `Plain
 Text <https://raw.githubusercontent.com/kizniche/Mycodo/master/mycodo-manual.txt>`__
+
+The `Mycodo Wiki <https://github.com/kizniche/Mycodo/wiki>`__ also contains useful information.
 
 Donate
 ------

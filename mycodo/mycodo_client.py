@@ -167,10 +167,10 @@ class DaemonControl:
             action_id, message=message, single_action=single_action)
 
     def trigger_all_actions(
-            self, trigger_id, message='', edge=None,
+            self, function_id, message='', edge=None,
             output_state=None, on_duration=None, duty_cycle=None):
         return self.rpyc_client.root.trigger_all_actions(
-            trigger_id, message, edge=edge, output_state=output_state,
+            function_id, message, edge=edge, output_state=output_state,
             on_duration=on_duration, duty_cycle=duty_cycle)
 
     def terminate_daemon(self):
@@ -310,6 +310,14 @@ def parseargs(parser):
                         required=False)
     parser.add_argument('--dutycycle', metavar='DUTYCYCLE', type=float,
                         help='Turn on PWM output for a duty cycle (%%)',
+                        required=False)
+
+    # Functions
+    parser.add_argument('--trigger_action', metavar='ACTIONID', type=str,
+                        help='Trigger action with Action ID',
+                        required=False)
+    parser.add_argument('--trigger_all_actions', metavar='FUNCTIONID', type=str,
+                        help='Trigger all actions belonging to Function with ID',
                         required=False)
 
     parser.add_argument('-t', '--terminate', action='store_true',
@@ -466,6 +474,11 @@ if __name__ == "__main__":
         print(daemon.pid_set(args.pid_set_ki[0], 'ki', args.pid_set_ki[1]))
     elif args.pid_set_kd:
         print(daemon.pid_set(args.pid_set_kd[0], 'kd', args.pid_set_kd[1]))
+
+    elif args.trigger_action:
+        print(daemon.trigger_action(args.trigger_action))
+    elif args.trigger_all_actions:
+        print(daemon.trigger_all_actions(args.trigger_all_actions))
 
     elif args.terminate:
         logger.info("[Remote command] Terminate daemon...")

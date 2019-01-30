@@ -169,11 +169,13 @@ commands, so it's recommended to execute the installed symlink
                          [--pid_set_integrator ID INTEGRATOR]
                          [--pid_set_derivator ID DERIVATOR] [--pid_set_kp ID KP]
                          [--pid_set_ki ID KI] [--pid_set_kd ID KD] [-c] [--ramuse]
+                         [--input_force_measurements INPUTID]
                          [--lcd_backlight_on LCDID] [--lcd_backlight_off LCDID]
                          [--lcd_reset LCDID] [--output_state OUTPUTID]
                          [--output_currently_on OUTPUTID] [--outputoff OUTPUTID]
                          [--outputon OUTPUTID] [--duration SECONDS]
-                         [--dutycycle DUTYCYCLE] [-t]
+                         [--dutycycle DUTYCYCLE] [--trigger_action ACTIONID]
+                         [--trigger_all_actions FUNCTIONID] [-t]
 
     Client for Mycodo daemon.
 
@@ -209,6 +211,8 @@ commands, so it's recommended to execute the installed symlink
       --pid_set_kd ID KD    Set the Kd gain of the PID controller.
       -c, --checkdaemon     Check if all active daemon controllers are running
       --ramuse              Return the amount of ram used by the Mycodo daemon
+      --input_force_measurements INPUTID
+                            Force acquiring measurements for Input ID
       --lcd_backlight_on LCDID
                             Turn on LCD backlight with LCD ID
       --lcd_backlight_off LCDID
@@ -224,7 +228,13 @@ commands, so it's recommended to execute the installed symlink
       --duration SECONDS    Turn on output for a duration of time (seconds)
       --dutycycle DUTYCYCLE
                             Turn on PWM output for a duty cycle (%)
+      --trigger_action ACTIONID
+                            Trigger action with Action ID
+      --trigger_all_actions FUNCTIONID
+                            Trigger all actions belonging to Function with ID
       -t, --terminate       Terminate the daemon
+
+
 
 
 --------------
