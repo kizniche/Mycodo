@@ -1,5 +1,9 @@
 ## 7.1.6 (Unreleased)
 
+### Bugfixes
+
+ - Fix missing dependency for PWM Outputs ([#617](https://github.com/kizniche/mycodo/issues/617))
+
 ### Features
 
  - Add LCD: 128x64 OLED ([#589](https://github.com/kizniche/mycodo/issues/589))
