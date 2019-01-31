@@ -73,10 +73,10 @@ if measurement is not None:  # If a measurement exists
                 new_measurement.save()
 
         elif form_add_func.func_type.data.startswith('trigger_'):
-            new_func = Trigger().save()
+            new_func = Trigger()
             for name_id, name, _ in FUNCTION_TYPES:
                 if form_add_func.func_type.data == name_id:
-                    new_func.name = name
+                    new_func.name = '{}'.format(name)
             new_func.trigger_type = form_add_func.func_type.data
             new_func.save()
         elif form_add_func.func_type.data.startswith('function_'):

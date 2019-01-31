@@ -1,8 +1,9 @@
-## 7.1.6 (Unreleased)
+## 7.1.6 (2019-01-30)
 
 ### Bugfixes
 
  - Fix missing dependency for PWM Outputs ([#617](https://github.com/kizniche/mycodo/issues/617))
+ - Fix issue creating Triggers ([#618](https://github.com/kizniche/mycodo/issues/618))
 
 ### Features
 
