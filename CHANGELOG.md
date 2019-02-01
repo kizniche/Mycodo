@@ -3,7 +3,7 @@
 ### Bugfixes
 
  - Fix pigpio issue ([#617](https://github.com/kizniche/mycodo/issues/617))
- - Fix PID Autotune ungracefull exit ([#621](https://github.com/kizniche/mycodo/issues/621))
+ - Fix PID Autotune ungraceful exit ([#621](https://github.com/kizniche/mycodo/issues/621))
 
 
 ## 7.1.6 (2019-01-30)

@@ -212,7 +212,7 @@ class PIDController(threading.Thread):
                         noiseband=self.autotune_noiseband)
                 except Exception as msg:
                     self.logger.error(msg)
-                    self.stop_controller()
+                    self.stop_controller(deactivate_pid=True)
 
             self.ready.set()
 
