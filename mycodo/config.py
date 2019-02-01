@@ -257,7 +257,7 @@ OUTPUT_INFO = {
     'pwm': {
         'name': lazy_gettext('PWM (GPIO)'),
         'dependencies_module': [
-            ('internal', 'pip-exists pigpio', 'pigpio')
+            ('internal', 'apt python3-pigpio', 'pigpio')
         ],
         'measure': {
             'duty_cycle': {'percent': {0: {}}}

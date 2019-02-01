@@ -31,7 +31,7 @@ INPUT_INFORMATION = {
     'options_disabled': ['interface'],
 
     'dependencies_module': [
-        ('internal', 'pip-exists pigpio', 'pigpio')
+        ('internal', 'apt python3-pigpio', 'pigpio')
     ],
 
     'interfaces': ['GPIO'],

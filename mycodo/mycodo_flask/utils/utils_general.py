@@ -803,7 +803,7 @@ def return_dependencies(device_type):
                                         unmet_deps.append(entry)
                                     else:
                                         met_deps = True
-                            if package.startswith('pip-exists'):
+                            elif package.startswith('pip-exists'):
                                 py_module = package.split(' ', 1)[1]
                                 try:
                                     module = importlib.util.find_spec(py_module)
@@ -815,6 +815,12 @@ def return_dependencies(device_type):
                                 except ImportError:
                                     if entry not in unmet_deps:
                                         unmet_deps.append(entry)
+                            elif package.startswith('apt'):
+                                if (not dpkg_package_exists(package) and
+                                        entry not in unmet_deps):
+                                    unmet_deps.append(entry)
+                                else:
+                                    met_deps = True
 
                     if not each_dict:
                         met_deps = True

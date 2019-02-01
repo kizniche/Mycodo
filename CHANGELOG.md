@@ -1,3 +1,10 @@
+## 7.1.7 (Unreleased)
+
+### Bugfixes
+
+ - Fix pigpio issue ([#617](https://github.com/kizniche/mycodo/issues/617))
+
+
 ## 7.1.6 (2019-01-30)
 
 ### Bugfixes
