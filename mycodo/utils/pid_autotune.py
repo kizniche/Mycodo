@@ -52,13 +52,13 @@ class PIDAutotune(object):
         if setpoint is None:
             raise ValueError('setpoint must be specified')
         if out_step < 1:
-            raise ValueError('out_step must be greater or equal to 1')
+            raise ValueError('out_step ({}) must be greater or equal to 1'.format(out_step))
         if sampletime < 1:
-            raise ValueError('sampletime must be greater or equal to 1')
+            raise ValueError('sampletime ({}) must be greater or equal to 1'.format(sampletime))
         if lookback < sampletime:
-            raise ValueError('lookback must be greater or equal to sampletime')
+            raise ValueError('lookback ({lb}) must be greater or equal to sampletime ({st})'.format(lb=lookback, st=sampletime))
         if out_min >= out_max:
-            raise ValueError('out_min must be less than out_max')
+            raise ValueError('out_min ({omn}) must be less than out_max ({omx})'.format(omn=out_min, omx=out_max))
 
         self._time = time
         self._logger = logging.getLogger('mycodo.pid_autotune')

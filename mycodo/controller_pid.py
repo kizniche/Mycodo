@@ -202,13 +202,17 @@ class PIDController(threading.Thread):
             # If activated, initialize PID Autotune
             if self.autotune_activated:
                 self.autotune_timestamp = time.time()
-                self.autotune = PIDAutotune(
-                    self.setpoint,
-                    out_step=self.autotune_outstep,
-                    sampletime=self.period,
-                    out_min=0,
-                    out_max=self.period,
-                    noiseband=self.autotune_noiseband)
+                try:
+                    self.autotune = PIDAutotune(
+                        self.setpoint,
+                        out_step=self.autotune_outstep,
+                        sampletime=self.period,
+                        out_min=0,
+                        out_max=self.period,
+                        noiseband=self.autotune_noiseband)
+                except Exception as msg:
+                    self.logger.error(msg)
+                    self.stop_controller()
 
             self.ready.set()
 
