@@ -3,7 +3,7 @@ Mycodo
 
 Environmental Regulation System
 
-Latest version: 7.1.6 |Build Status| |Codacy Badge| |DOI|
+Latest version: 7.1.7 |Build Status| |Codacy Badge| |DOI|
 
 `Mycodo Manual <https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.rst>`__
 (`PDF <https://github.com/kizniche/Mycodo/raw/master/mycodo-manual.pdf>`__,
@@ -36,7 +36,6 @@ navigation and configuration from any browser-enabled device.
 
 .. contents::
    :depth: 3
-
 
 What is PID Control?
 --------------------
@@ -105,6 +104,31 @@ Software Features
     (Change language under Configure -> Language)
 
 `Read the manual <#manual>`__ for details.
+
+Issues and Discussion
+---------------------
+
+Before making a post on the forum or issue on github, read the pertinent section of the
+`Manual <https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.rst>`__.
+
+Bug in the Mycodo Software
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+If you believe there is a bug in the Mycodo software, first search through the guthub
+`Issues <https://github.com/kizniche/Mycodo/issues>`__ and see if your issue has already
+been discussed or resolved. If your issue is novel, you can create a
+`New Issue <https://github.com/kizniche/Mycodo/issues/new>`__. When creating a new issue,
+make sure to read all information in the issue template and follow the instructions. Replace
+the template text with the actual information, such as "step 1" under "Steps to Reproduce
+the issue" should be replaced with the actual step to reproduce the issue.
+
+Need assistance with Mycodo
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+If you Mycodo is supposedly operating correctly and you would like assistance with how to
+configure the system or to merely discuss something related to Mycodo, do a search on the
+`Mycodo Forum <https://kylegabriel.com/forum/mycodo/>`__ for a similar discussion. If a pertinent
+topic doesn't already exist on the forum, create a new post in the appropriate subforum.
 
 Supported Inputs
 ----------------
