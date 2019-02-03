@@ -325,7 +325,7 @@ def output_sec_on(output_id, past_seconds):
         control = DaemonControl()
         output_time_on = control.output_sec_currently_on(output_id)
 
-    query = query_string('duration_time', output.unique_id, value='SUM',
+    query = query_string('s', output.unique_id, measure='duration_time', channel=0, value='SUM',
                          past_sec=past_seconds)
     query_output = client.query(query)
     sec_recorded_on = 0

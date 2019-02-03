@@ -1,3 +1,10 @@
+## 7.2.0 (Unreleased)
+
+### Bugfixes
+
+ - Fix calculating Output Usage
+
+
 ## 7.1.7 (2019-02-02)
 
 ### Bugfixes
