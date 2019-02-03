@@ -58,6 +58,7 @@ from mycodo.databases.models import Conversion
 from mycodo.databases.models import Dashboard
 from mycodo.databases.models import DeviceMeasurements
 from mycodo.databases.models import DisplayOrder
+from mycodo.databases.models import EnergyUsage
 from mycodo.databases.models import Function
 from mycodo.databases.models import Input
 from mycodo.databases.models import LCD
@@ -97,10 +98,12 @@ from mycodo.mycodo_flask.utils import utils_general
 from mycodo.mycodo_flask.utils import utils_input
 from mycodo.mycodo_flask.utils import utils_lcd
 from mycodo.mycodo_flask.utils import utils_math
+from mycodo.mycodo_flask.utils import utils_misc
 from mycodo.mycodo_flask.utils import utils_notes
 from mycodo.mycodo_flask.utils import utils_output
 from mycodo.mycodo_flask.utils import utils_pid
 from mycodo.mycodo_flask.utils import utils_trigger
+from mycodo.utils.influx import average_past_seconds
 from mycodo.utils.inputs import list_analog_to_digital_converters
 from mycodo.utils.inputs import parse_custom_option_values
 from mycodo.utils.inputs import parse_input_information
@@ -1794,15 +1797,68 @@ def page_data():
                            devices_1wire_w1thermsensor=devices_1wire_w1thermsensor)
 
 
-@blueprint.route('/usage')
+@blueprint.route('/usage', methods=('GET', 'POST'))
 @flask_login.login_required
 def page_usage():
     """ Display output usage (duration and energy usage/cost) """
     if not utils_general.user_has_permission('view_stats'):
         return redirect(url_for('routes_general.home'))
 
+    energy_usage_stats = {}
+
+    form_energy_usage_add = forms_misc.EnergyUsageAdd()
+    form_energy_usage_mod = forms_misc.EnergyUsageMod()
+
+    if request.method == 'POST':
+        if not utils_general.user_has_permission('edit_controllers'):
+            return redirect(url_for('routes_page.page_usage'))
+
+        if form_energy_usage_add.energy_usage_add.data:
+            utils_misc.energy_usage_add(form_energy_usage_add)
+        elif form_energy_usage_mod.energy_usage_mod.data:
+            utils_misc.energy_usage_mod(form_energy_usage_mod)
+        elif form_energy_usage_mod.energy_usage_delete.data:
+            utils_misc.energy_usage_delete(
+                form_energy_usage_mod.energy_usage_id.data)
+
+        return redirect(url_for('routes_page.page_usage'))
+
+    energy_usage = EnergyUsage.query.all()
+    input_dev = Input.query.all()
+    math = Math.query.all()
     misc = Misc.query.first()
     output = Output.query.all()
+
+    # Generate all measurement and units used
+    dict_measurements = add_custom_measurements(Measurement.query.all())
+    dict_units = add_custom_units(Unit.query.all())
+
+    choices_input = utils_general.choices_inputs(
+        input_dev, dict_units, dict_measurements)
+    choices_math = utils_general.choices_maths(
+        math, dict_units, dict_measurements)
+
+    # calculate energy usage from Inputs/Maths measuring amps
+    for each_energy in energy_usage:
+        energy_usage_stats[each_energy.unique_id] = {}
+        device_measurement = DeviceMeasurements.query.filter(
+            DeviceMeasurements.unique_id == each_energy.measurement_id).first()
+        if device_measurement:
+            conversion = Conversion.query.filter(
+                Conversion.unique_id == device_measurement.conversion_id).first()
+        else:
+            conversion = None
+        channel, unit, measurement = return_measurement_info(
+            device_measurement, conversion)
+        if unit == 'A':  # If unit is amps, proceed
+            energy_usage_stats[each_energy.unique_id]['hour'] = average_past_seconds(
+                each_energy.device_id, unit, channel, 3600, measure=measurement)
+            energy_usage_stats[each_energy.unique_id]['day'] = average_past_seconds(
+                each_energy.device_id, unit, channel, 86400, measure=measurement)
+            energy_usage_stats[each_energy.unique_id]['week'] = average_past_seconds(
+                each_energy.device_id, unit, channel, 604800, measure=measurement)
+            energy_usage_stats[each_energy.unique_id]['month'] = average_past_seconds(
+                each_energy.device_id, unit, channel, 2629800, measure=measurement)
 
     output_stats = return_output_usage(misc, output)
 
@@ -1815,8 +1871,14 @@ def page_usage():
     display_order = csv_to_list_of_str(DisplayOrder.query.first().output)
 
     return render_template('pages/usage.html',
+                           choices_input=choices_input,
+                           choices_math=choices_math,
                            date_suffix=date_suffix,
                            display_order=display_order,
+                           energy_usage=energy_usage,
+                           energy_usage_stats=energy_usage_stats,
+                           form_energy_usage_add=form_energy_usage_add,
+                           form_energy_usage_mod=form_energy_usage_mod,
                            misc=misc,
                            output=output,
                            output_stats=output_stats,

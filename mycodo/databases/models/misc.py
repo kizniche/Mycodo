@@ -1,5 +1,6 @@
 # coding=utf-8
 from mycodo.databases import CRUDMixin
+from mycodo.databases import set_uuid
 from mycodo.mycodo_flask.extensions import db
 
 
@@ -35,3 +36,14 @@ class Misc(CRUDMixin, db.Model):
 
     def __repr__(self):
         return "<{cls}(id={s.id})>".format(s=self, cls=self.__class__.__name__)
+
+
+class EnergyUsage(CRUDMixin, db.Model):
+    __tablename__ = "energy_usage"
+    __table_args__ = {'extend_existing': True}
+
+    id = db.Column(db.Integer, unique=True, primary_key=True)
+    unique_id = db.Column(db.String, nullable=False, unique=True, default=set_uuid)  # ID for influxdb entries
+    name = db.Column(db.Text, default='Name')
+    device_id = db.Column(db.Text, default='')
+    measurement_id = db.Column(db.Text, db.ForeignKey('device_measurements.unique_id'), default='')

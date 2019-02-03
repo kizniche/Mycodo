@@ -1,6 +1,6 @@
 {% extends "layout.html" %}
 {% set active_page = "usage_reports" %}
-{% set help_page = ["output-usage", _('Output Usage')] %}
+{% set help_page = ["energy-usage", _('Energy Usage')] %}
 
 {% block title %} - {{_('Usage Reports')}}{% endblock %}
 
@@ -9,12 +9,12 @@
   <div class="container">
     {% include 'flash_messages.html' %}
 
-    <h4>{{_('Output Usage Reports')}} <a href="/help#{{help_page[0]}}" target="_blank"><span style="font-size: 16px" class="fas fa-question-circle"></span></a></h4>
+    <h4>{{_('Energy Usage Reports')}} <a href="/help#{{help_page[0]}}" target="_blank"><span style="font-size: 16px" class="fas fa-question-circle"></span></a></h4>
 
     <div style="clear: both; padding: 0.5em 0;"></div>
 
     {% if not reports %}
-      {{_('No Reports. Go to <a href="%(loc)">Output Usage Options</a> to schedule a report to be generated.', loc='/settings-general')}}
+      {{_('No Reports. Go to <a href="%(loc)">Energy Usage Options</a> to schedule a report to be generated.', loc='/settings-general')}}
     {% else %}
       Save location: {{report_location}}
     {% endif %}

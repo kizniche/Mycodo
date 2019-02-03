@@ -50,6 +50,8 @@ TRANSLATIONS = {
         'title': lazy_gettext('Edit')},
     'email': {
         'title': lazy_gettext('E-Mail')},
+    'energy_usage': {
+        'title': lazy_gettext('Energy Usage')},
     'error': {
         'title': lazy_gettext('Error')},
     'export': {

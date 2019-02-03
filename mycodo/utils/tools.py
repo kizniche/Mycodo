@@ -239,4 +239,4 @@ def generate_output_usage_report():
 
         set_user_grp(report_path_file, 'mycodo', 'mycodo')
     except Exception:
-        logger.exception("Output Usage Report Generation ERROR")
+        logger.exception("Energy Usage Report Generation ERROR")

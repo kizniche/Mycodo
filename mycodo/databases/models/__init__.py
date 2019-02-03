@@ -49,6 +49,7 @@ from .measurement import Measurement
 from .measurement import Unit
 from .method import Method
 from .method import MethodData
+from .misc import EnergyUsage
 from .misc import Misc
 from .notes import NoteTags
 from .notes import Notes

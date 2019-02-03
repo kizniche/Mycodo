@@ -339,6 +339,18 @@ def output_sec_on(output_id, past_seconds):
     return sec_recorded_on + sec_currently_on
 
 
+def average_past_seconds(unique_id, unit, channel, past_seconds, measure=None):
+    """Return measurement average for a given period"""
+    client = InfluxDBClient(INFLUXDB_HOST, INFLUXDB_PORT, INFLUXDB_USER,
+                            INFLUXDB_PASSWORD, INFLUXDB_DATABASE, timeout=5)
+
+    query = query_string(unit, unique_id, measure=measure, channel=channel, value='MEAN',
+                         past_sec=past_seconds)
+    query_output = client.query(query)
+    if query_output:
+        return query_output.raw['series'][0]['values'][0][1]
+
+
 def valid_date_str(date_str):
     try:
         datetime.datetime.strptime(date_str, '%Y-%m-%dT%H:%M:%S.%fZ')

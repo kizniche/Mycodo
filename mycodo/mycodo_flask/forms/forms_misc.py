@@ -9,6 +9,7 @@ from wtforms import DecimalField
 from wtforms import FileField
 from wtforms import HiddenField
 from wtforms import IntegerField
+from wtforms import SelectField
 from wtforms import StringField
 from wtforms import SubmitField
 from wtforms import validators
@@ -16,6 +17,23 @@ from wtforms import widgets
 from wtforms.widgets.html5 import NumberInput
 
 from mycodo.config_translations import TRANSLATIONS
+
+
+#
+# Energy Usage
+#
+
+class EnergyUsageAdd(FlaskForm):
+    energy_usage_select = SelectField('Select Amp Measurement')
+    energy_usage_add = SubmitField(TRANSLATIONS['add']['title'])
+
+
+class EnergyUsageMod(FlaskForm):
+    energy_usage_id = StringField('Energy Usage ID', widget=widgets.HiddenInput())
+    name = StringField(TRANSLATIONS['name']['title'])
+    selection_device_measure_ids = StringField('Select Amp Measurement')
+    energy_usage_mod = SubmitField(TRANSLATIONS['save']['title'])
+    energy_usage_delete = SubmitField(TRANSLATIONS['delete']['title'])
 
 
 #

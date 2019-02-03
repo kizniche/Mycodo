@@ -276,8 +276,8 @@ def sees_navbar(testapp):
         'Method',
         'Note',
         'Output',
-        'Output Usage',
-        'Output Usage Reports',
+        'Energy Usage',
+        'Energy Usage Reports',
         'Remote Admin',
         'System Information',
         'Upgrade'
