@@ -6,7 +6,7 @@
 
 ### Features
 
- - Add new energy usage/cost analysis based on amperage measurements (See [Energy Usage](https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.md#energy-usage) in the manual)
+ - Add new energy usage/cost analysis based on amperage measurements (See [Energy Usage](https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.rst#energy-usage) in the manual)
 
 
 ## 7.1.7 (2019-02-02)
