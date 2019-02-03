@@ -740,8 +740,8 @@ to name a few.
 | Current Draw (amps)   | The is the amount of current the device powered |
 |                       | by the output draws. Note: this value should be |
 |                       | calculated based on the voltage set in the      |
-|                       | `Output Usage                                   |
-|                       | Settings <#output-usage-settings>`__.           |
+|                       | `Energy Usage                                   |
+|                       | Settings <#energy-usage-settings>`__.           |
 +-----------------------+-------------------------------------------------+
 | Start State           | This specifies whether the output should be ON  |
 |                       | or OFF when mycodo initially starts. Wireless   |
@@ -810,8 +810,8 @@ PID Controller.
 | Current Draw (amps)   | This is the current draw, in amps, when the     |
 |                       | duty cycle is 100%. Note: this value should be  |
 |                       | calculated based on the voltage set in the      |
-|                       | `Output Usage                                   |
-|                       | Settings <#output-usage-settings>`__.           |
+|                       | `Energy Usage                                   |
+|                       | Settings <#energy-usage-settings>`__.           |
 +-----------------------+-------------------------------------------------+
 
 Non-hardware PWM Pins
@@ -1865,7 +1865,7 @@ within a 24-hour period and this method will repeat daily.
 PID Tuning
 ==========
 
-Function -> PIDs
+``Function -> PIDs``
 
 PID Control Theory
 ------------------
@@ -2071,14 +2071,16 @@ General Settings
 |                       | red.                                            |
 +-----------------------+-------------------------------------------------+
 
-Output Usage Settings
+Energy Usage Settings
 ---------------------
 
-In order to calculate accurate output usage statistics, a few
+``[Gear Icon] -> Configure -> General``
+
+In order to calculate accurate energy usage statistics, a few
 characteristics of your electrical system needs to be know. These
 variables should describe the characteristics of the electrical system
 being used by the relays to operate electrical devices. Note: Proper
-output usage calculations also rely on the correct current draw to be
+energy usage calculations also rely on the correct current draw to be
 set for each output (see `Output Settings <#output>`__).
 
 +-----------------------+-------------------------------------------------+
@@ -2104,6 +2106,12 @@ set for each output (see `Output Settings <#output>`__).
 | Day of Month          | This is the day of the month (1-30) that the    |
 |                       | electricity meter is read (which will           |
 |                       | correspond to the electrical bill).             |
++-----------------------+-------------------------------------------------+
+| Generate Usage/Cost   | These options define when an Energy Usage       |
+| Report                | Report will be generated. Currently these       |
+|                       | Only support the Output Duration calculation    |
+|                       | method. For more information about the methods, |
+|                       | see `Energy Usage <#energy-usage>`__.           |
 +-----------------------+-------------------------------------------------+
 
 Input Settings
@@ -2222,7 +2230,7 @@ The ``Edit Controllers`` permission protects the editing of Conditionals, Graphs
 LCDs, Methods, PIDs, Outputs, and Inputs.
 
 The ``View Stats`` permission protects the viewing of usage statistics
-and the System Information and Output Usage pages.
+and the System Information and Energy Usage pages.
 
 Pi Settings
 -----------
@@ -2381,7 +2389,6 @@ https://github.com/kizniche/Mycodo/tree/master/mycodo/inputs/examples/minimal_hu
 The following link provides the full list of available INPUT_INFORMATION options along with descriptions:
 
 https://github.com/kizniche/Mycodo/tree/master/mycodo/inputs/examples/example_all_options_temperature.py
-
 
 
 Dashboard
@@ -2755,15 +2762,56 @@ create time-lapses, and stream video. Cameras may also be used by
 image or video capture (as well as the ability to email the image/video
 with a notification).
 
-Output Usage
+Energy Usage
 ------------
 
-``More -> Output Usage``
+``More -> Energy Usage``
 
-Output usage statistics are calculated for each output, based on how
-long the output has been powered, the current draw of the device
-connected to the output, and other
-`Relay Usage Settings <#output-usage-settings>`__.
+There are two methods for calculating energy usage. The first relies on
+determining how long Outputs have been on. Based on this, if the number
+of Amps the output draws has been set in the output Settings, then the
+kWh and cost can be calculated. Discovering the number of amps the
+device draws can be accomplished by calculating this from the output
+typically given as watts on the device label, or with the use of a
+current clamp while the device is operating. The limitation of this
+method is PWM Outputs are not currently used to calculate these figures
+due to the difficulty determining the current consumption of devices
+driven by PWM signals.
+
+The second method for calculating energy consumption is more accurate and
+is the recommended method if you desire the most accurate estimation
+of energy consumption and cost. This method relies on an Input or Math
+measuring Amps. One way to do this is with the used of an analog-to-digital
+converter (ADC) that converts the voltage output from a transformer into
+current (Amps). One wire from the AC line that powers your device(s) passes
+thorough the transformer and the device converts the current that passes
+through that wire into a voltage that corresponds to the amperage. For
+instance, the below sensor converts 0 - 50 amps input to 0 - 5 volts output.
+An ADC receives this output as its input. One would set this conversion
+range in Mycodo and the calculated amperage will be stored. On the Energy
+Usage page, add this ADC Input measurement and a report summary will be
+generated. Keep in mind that for a particular period (for example, the past
+week) to be accurate, there needs to be a constant measurement of amps at a
+periodic rate. The faster the rate the more accurate the calculation will
+be. This is due to the amperage measurements being averaged for this period
+prior to calculating kWh and cost. If there is any time turing this period
+where amp measurements aren't being acquired when in fact there are devices
+consuming current, the calculation is likely to not be accurate.
+
+|Current Sensor Transformer|
+
+`Greystone CS-650-50 AC Solid Core Current Sensor (Transformer) <https://shop.greystoneenergy.com/shop/cs-sensor-series-ac-solid-core-current-sensor>`__
+
+The following settings are for calculating energy usage from an amp
+measurement. For calculating based on Output duration, see
+`Energy Usage Settings <#energy-usage-settings>`__.
+
++------------------------+-------------------------------------------------------+
+| Setting                | Description                                           |
++========================+=======================================================+
+| Select Amp Measurement | This is a measurement with the amp (A) units that     |
+|                        | will be used to calculate energy usage.               |
++------------------------+-------------------------------------------------------+
 
 Backup-Restore
 --------------
@@ -2832,15 +2880,38 @@ USB Device Persistence Across Reboots
 
 From `(#547) Theoi-Meteoroi on Github <https://github.com/kizniche/Mycodo/issues/547#issuecomment-428752904>`__:
 
-Using USB devices, such as USB-to-serial interfaces to connect a sensor, while convenient, poses an issue if there are multiple devices when the system reboots. After a reboot, there is no guarantee the device will persist with the same name. For instance, if Sensor A is /dev/ttyUSB0 and Sensor B is /dev/ttyUSB1, after a reboot Sensor A may be /dev/ttyUSB1 and Sensor B may be /dev/ttyUSB0. This will cause Mycodo to query the wrong device for a measurement, potentially causing a mis-measurement, or worse, an incorrect measurement because the response is not from the correct sensor (I've seen my temperature sensor read 700+ degrees celsius because of this!). Follow the instructions below to alleviate this issue.
+Using USB devices, such as USB-to-serial interfaces to connect a sensor,
+while convenient, poses an issue if there are multiple devices when the
+system reboots. After a reboot, there is no guarantee the device will
+persist with the same name. For instance, if Sensor A is /dev/ttyUSB0
+and Sensor B is /dev/ttyUSB1, after a reboot Sensor A may be /dev/ttyUSB1
+and Sensor B may be /dev/ttyUSB0. This will cause Mycodo to query the
+wrong device for a measurement, potentially causing a mis-measurement,
+or worse, an incorrect measurement because the response is not from the
+correct sensor (I've seen my temperature sensor read 700+ degrees celsius
+because of this!). Follow the instructions below to alleviate this issue.
 
- I use udev to create a persistent device name ('/dev/dust-sensor') that will be linked to the /dev/ttyUSBn that is chosen at device arrival in the kernel. The only requirement is some attribute returned from the USB device that is unique. The common circumstance is that none of the attributes are unique and you get stuck with just VID and PID, which is ok as long as you don't have any other adapters that report the same VID and PID. If you have multiple adapters with the same VID and PID, then hopefully they have some unique attribute. This command will walk the attributes. Run on each USB device and then compare differences to possibly find some attribute to use.
+I use udev to create a persistent device name ('/dev/dust-sensor') that
+will be linked to the /dev/ttyUSBn that is chosen at device arrival in
+the kernel. The only requirement is some attribute returned from the USB
+device that is unique. The common circumstance is that none of the
+attributes are unique and you get stuck with just VID and PID, which is
+ok as long as you don't have any other adapters that report the same VID
+and PID. If you have multiple adapters with the same VID and PID, then
+hopefully they have some unique attribute. This command will walk the
+attributes. Run on each USB device and then compare differences to
+possibly find some attribute to use.
 
 ``udevadm info --name=/dev/ttyUSB0 --attribute-walk``
 
-I ended up using the serial number on the ZH03B to program the USB adapter serial field. This way guarantees unique serial numbers rather than me trying to remember what was the last serial number I used to increment by 1.
+I ended up using the serial number on the ZH03B to program the USB adapter
+serial field. This way guarantees unique serial numbers rather than me
+trying to remember what was the last serial number I used to increment
+by 1.
 
-When you plug a USB device in it can be enumerated to different device names by the operating system. To fix this problem for this sensor on linux, I changed attributes that make the connection unique.
+When you plug a USB device in it can be enumerated to different device
+names by the operating system. To fix this problem for this sensor on
+linux, I changed attributes that make the connection unique.
 
 First - find the VID and PID for the USB device:
 
@@ -3760,3 +3831,4 @@ Raspberry Pi, 8 relays, 8 outlets:
 .. |Schematic: Pi, 8 relays, and 8 outlets| image:: manual_images/Schematic-Pi-8-relays.png
 .. |Figure-Mycodo-Conditional-Setup| image:: manual_images/Figure-Mycodo-Conditional-Setup.png
 .. |PID Autotune Output| image:: manual_images/Autotune-Output-Example.png
+.. |Current Sensor Transformer| image:: manual_images/Figure-Current-Sensor-Transformer.png
