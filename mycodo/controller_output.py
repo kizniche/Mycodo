@@ -401,6 +401,13 @@ class OutputController(threading.Thread):
             # PWM command output
             elif self.output_type[output_id] in ['command_pwm',
                                                  'python_pwm']:
+                self.output_switch(output_id, 'on', duty_cycle=duty_cycle)
+                self.logger.debug(
+                    "PWM command {id} ({name}) executed with a duty cycle of {dc:.2f}%".format(
+                        id=self.output_id[output_id],
+                        name=self.output_name[output_id],
+                        dc=abs(duty_cycle)))
+
                 if self.pwm_invert_signal[output_id]:
                     duty_cycle = 100.0 - abs(duty_cycle)
 
@@ -408,13 +415,6 @@ class OutputController(threading.Thread):
                     self.pwm_time_turned_on[output_id] = datetime.datetime.now()
                 else:
                     self.pwm_time_turned_on[output_id] = None
-
-                self.logger.debug(
-                    "PWM command {id} ({name}) executed with a duty cycle of {dc:.2f}%".format(
-                        id=self.output_id[output_id],
-                        name=self.output_name[output_id],
-                        dc=abs(duty_cycle)))
-                self.output_switch(output_id, 'on', duty_cycle=duty_cycle)
 
                 # Write the duty cycle of the PWM to the database
                 write_db = threading.Thread(
@@ -428,26 +428,26 @@ class OutputController(threading.Thread):
 
             # PWM output
             elif self.output_type[output_id] == 'pwm':
-                if self.pwm_invert_signal[output_id]:
-                    duty_cycle = 100.0 - abs(duty_cycle)
-
-                if duty_cycle:
-                    self.pwm_time_turned_on[output_id] = datetime.datetime.now()
-                else:
-                    self.pwm_time_turned_on[output_id] = None
-
-                # Record the time the PWM was turned on
                 if self.pwm_hertz[output_id] <= 0:
                     self.logger.warning("PWM Hertz must be a positive value")
                     return 1
 
+                if self.pwm_invert_signal[output_id]:
+                    duty_cycle = 100.0 - abs(duty_cycle)
+
+                self.output_switch(output_id, 'on', duty_cycle=duty_cycle)
                 self.logger.debug(
                     "PWM {id} ({name}) set to a duty cycle of {dc:.2f}% at {hertz} Hz".format(
                         id=self.output_id[output_id],
                         name=self.output_name[output_id],
                         dc=abs(duty_cycle),
                         hertz=self.pwm_hertz[output_id]))
-                self.output_switch(output_id, 'on', duty_cycle=duty_cycle)
+
+                # Record the time the PWM was turned on
+                if duty_cycle:
+                    self.pwm_time_turned_on[output_id] = datetime.datetime.now()
+                else:
+                    self.pwm_time_turned_on[output_id] = None
 
                 # Write the duty cycle of the PWM to the database
                 write_db = threading.Thread(

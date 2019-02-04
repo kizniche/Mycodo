@@ -3,6 +3,7 @@
 ### Bugfixes
 
  - Fix calculating Output Usage
+ - Fix error-handling of PWM signal generation ([#617](https://github.com/kizniche/mycodo/issues/617))
 
 ### Features
 
