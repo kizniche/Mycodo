@@ -18,6 +18,8 @@ TRANSLATIONS = {
         'title': lazy_gettext('Alert')},
     'calibration': {
         'title': lazy_gettext('Calibration')},
+    'calculate': {
+        'title': lazy_gettext('Calculate')},
     'camera': {
         'title': lazy_gettext('Camera')},
     'cancel': {

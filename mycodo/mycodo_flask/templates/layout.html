@@ -199,7 +199,6 @@
             </div>
           </li>
 
-
           <li class="nav-item dropdown{% if active_page in ['notes', 'export', 'usage', 'usage_reports'] %} active{% endif %}">
             <a class="nav-link dropdown-toggle" href="#" id="dropdown01" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{_('More')}}</a>
             <div class="dropdown-menu" aria-labelledby="dropdown01">
@@ -222,9 +221,10 @@
             {% endif %}
               <a class="dropdown-item{% if active_page == 'help' %} active{% endif %}" target="_blank" href="{{url_for('routes_page.page_help')}}"><i class="fas fa-book"></i> {{_('Mycodo Manual')}}</a>
               <div class="dropdown-divider"></div>
+              <a class="dropdown-item" target="_blank" href="https://kylegabriel.com/forum/"><i class="fas fa-comments"></i> {{_('Discussion Forum')}}</a>
               <a class="dropdown-item" target="_blank" href="https://github.com/kizniche/Mycodo/issues/new"><i class="fas fa-bug"></i> {{_('Submit an Issue')}}</a>
               <a class="dropdown-item" target="_blank" href="https://github.com/kizniche/Mycodo"><i class="fab fa-github"></i> {{_('Mycodo on Github')}}</a>
-              <a class="dropdown-item" target="_blank" href="https://github.com/kizniche/Mycodo/blob/master/CHANGELOG.md"><i class="fab fa-github"></i> {{_('Changelog')}}</a>
+              <a class="dropdown-item" target="_blank" href="https://github.com/kizniche/Mycodo/blob/master/CHANGELOG.md"><i class="fas fa-edit"></i> {{_('Changelog')}}</a>
             </div>
           </li>
 
