@@ -34,7 +34,7 @@ def output_add(form_add):
         controller=TRANSLATIONS['output']['title'])
     error = []
 
-    dep_unmet, _ = return_dependencies(form_add.output_type.data)
+    dep_unmet, _ = return_dependencies(form_add.output_type.data.split(',')[0])
     if dep_unmet:
         list_unmet_deps = []
         for each_dep in dep_unmet:

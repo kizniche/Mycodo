@@ -111,7 +111,6 @@
     </div>
     <div class="row small-gutters">
       <div class="col">
-        {{form_settings_pi.pigpiod_state(value=pigpiod_sample_rate)}}
         <select class="form-control" id="pigpiod_sample_rate" name="pigpiod_sample_rate" title="" data-original-title="Select a sample rate in milliseconds for pigpiod">
           <option value=""></option>
           <option value="uninstalled"{% if pigpiod_sample_rate == 'uninstalled' %} selected{% endif %}>Uninstall pigpiod</option>
