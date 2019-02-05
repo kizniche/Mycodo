@@ -49,7 +49,7 @@ INPUT_INFORMATION = {
         ('apt', 'libglib2.0-dev', 'libglib2.0-dev'),
         ('pip-pypi', 'miflora', 'miflora'),
         ('pip-pypi', 'btlewrap', 'btlewrap'),
-        ('pip-pypi', 'bluepy', 'bluepy==1.2.0'),
+        ('pip-pypi', 'bluepy', 'bluepy'),
     ],
 
     'interfaces': ['BT'],
