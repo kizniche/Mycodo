@@ -3,6 +3,7 @@
 ### Bugfixes
 
  - Remove bluepy version restriction that conflicts with another requirement for the latest version
+ - Fix errors in Energy Usage calculations
 
 ### Features
 
