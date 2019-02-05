@@ -4,6 +4,10 @@
 
  - Remove bluepy version restriction that conflicts with another requirement for the latest version
 
+### Features
+
+ - Add asynchronous graphs to Energy Usage summaries
+
 
 ## 7.2.0 (2019-02-04)
 

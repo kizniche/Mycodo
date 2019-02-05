@@ -8,6 +8,22 @@
 <script type="text/javascript" src="/static/js/moment.min.js"></script>
 <script type="text/javascript" src="/static/js/daterangepicker.js"></script>
 <link rel="stylesheet" type="text/css" href="/static/css/daterangepicker.css" />
+
+<script src="/static/js/highstock.js"></script>
+
+<script type="text/javascript" src="/static/js/modules/exporting.js"></script>
+<script type="text/javascript" src="/static/js/modules/offline-exporting.js"></script>
+<script type="text/javascript" src="/static/js/modules/export-data.js"></script>
+<script type="text/javascript" src="/static/js/modules/canvas-tools.js"></script>
+<script type="text/javascript" src="/static/js/modules/jspdf.min.js"></script>
+<script type="text/javascript" src="/static/js/modules/highcharts-export-clientside.js"></script>
+
+<script src="/static/js/modules/jspdf.min.js"></script>
+<script src="/static/js/modules/highcharts-export-clientside.js"></script>
+{% if current_user.theme in dark_themes %}
+  <script src="/static/js/dark-unica.js"></script>
+{% endif %}
+
 {% endblock %}
 
 {% block body %}
@@ -68,7 +84,37 @@
       </div>
     </div>
 
-    <div class="row small-gutters" style="border-bottom: 1px solid #ddd">
+    <div class="collapse" id="collapseContainer-input-{{each_energy.id}}">
+      <div class="row small-gutters" style="padding: 0.5em">
+        <div class="col-auto small-gutters">
+          {{form_energy_usage_mod.energy_usage_mod(class_='form-control btn btn-sm btn-block')}}
+        </div>
+        <div class="col-auto small-gutters">
+          {{form_energy_usage_mod.energy_usage_delete(class_='form-control btn btn-sm btn-block',**{'onclick':'return confirm("Are you sure you want to delete this?")'})}}
+        </div>
+      </div>
+
+      <div class="row small-gutters" style="border-bottom: 1px solid #ddd; padding: 0.5em">
+        <div class="col-auto">
+          {{form_energy_usage_mod.selection_device_measure_ids.label(class_='control-label')}}
+          <div>
+            <select class="form-control" id="selection_device_measure_ids" name="selection_device_measure_ids" style="width: 100%;" title="" data-original-title="{{_('Select a measurement with the unit:') + ' ' +_('Amps')}}">
+              <option value="">None Selected</option>
+            {% for each_choice, value in choices_input.items() -%}
+              <option value="{{each_choice}}"{% if each_choice == each_energy.device_id + ',' + each_energy.measurement_id %} selected{% endif %}>{{value}}</option>
+            {% endfor -%}
+            {% for each_choice, value in choices_math.items() -%}
+              <option value="{{each_choice}}"{% if each_choice == each_energy.device_id + ',' + each_energy.measurement_id %} selected{% endif %}>{{value}}</option>
+            {% endfor -%}
+            </select>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="container-{{each_energy.unique_id}}" style="height: 400px; width: 100%"></div>
+
+    <div class="row small-gutters" style="border-bottom: 1px solid #ddd; padding-top: 0.1em">
       <div class="table-responsive">
         <table class="table">
           <tr>
@@ -103,7 +149,7 @@
       </div>
     </div>
 
-    <div class="row align-items-end small-gutters" style="border-bottom: 1px solid #ddd; padding: 0.5em">
+    <div class="row align-items-end small-gutters" style="padding: 0.5em">
       <div class="col-12 col-sm-7 col-lg-4">
         {{form_energy_usage_mod.energy_usage_date_range.label(class_='control-label')}}
         <div>
@@ -139,40 +185,11 @@
       {% endif %}
     </div>
 
-    <div class="collapse" id="collapseContainer-input-{{each_energy.id}}">
-      <div class="row small-gutters" style="padding: 0.5em">
-        <div class="col-auto small-gutters">
-          {{form_energy_usage_mod.energy_usage_mod(class_='form-control btn btn-sm btn-block')}}
-        </div>
-        <div class="col-auto small-gutters">
-          {{form_energy_usage_mod.energy_usage_delete(class_='form-control btn btn-sm btn-block',**{'onclick':'return confirm("Are you sure you want to delete this?")'})}}
-        </div>
-      </div>
-
-      <div class="row small-gutters" style="padding: 0.5em">
-        <div class="col-auto">
-          {{form_energy_usage_mod.selection_device_measure_ids.label(class_='control-label')}}
-          <div>
-            <select class="form-control" id="selection_device_measure_ids" name="selection_device_measure_ids" style="width: 100%;" title="" data-original-title="{{_('Select a measurement with the unit:') + ' ' +_('Amps')}}">
-              <option value="">None Selected</option>
-            {% for each_choice, value in choices_input.items() -%}
-              <option value="{{each_choice}}"{% if each_choice == each_energy.device_id + ',' + each_energy.measurement_id %} selected{% endif %}>{{value}}</option>
-            {% endfor -%}
-            {% for each_choice, value in choices_math.items() -%}
-              <option value="{{each_choice}}"{% if each_choice == each_energy.device_id + ',' + each_energy.measurement_id %} selected{% endif %}>{{value}}</option>
-            {% endfor -%}
-            </select>
-          </div>
-        </div>
-      </div>
-
-    </div>
-
     </form>
 
   </div>
 
-  <div style="clear: both; padding-bottom: 0.5em;"></div>
+  <div style="clear: both; padding-bottom: 0.75em;"></div>
 
   {% endfor %}
 
@@ -285,5 +302,216 @@ $('.collapse').on('show.bs.collapse', function(){
   $(this).parent().find(".fa-minus-square").removeClass("fa-minus-square").addClass("fa-plus-square");
 });
 </script>
+
+
+{% if graph_info %}
+<script>
+Highcharts.setOptions({
+  global: {
+    useUTC: false
+  },
+  lang: {
+    thousandsSep: ','
+  }
+});
+
+$(document).ready(function() {
+    var id_measure = [
+    {% for energy_usage_id in graph_info %}
+    {
+      chart_id: '{{energy_usage_id}}',
+      device_id: '{{graph_info[energy_usage_id]['main']['device_id']}}',
+      unit: '{{graph_info[energy_usage_id]['main']['unit']}}',
+      channel: '{{graph_info[energy_usage_id]['main']['channel']}}'
+    },
+    {% endfor %}
+    ];
+    var chart = [];
+
+    function getPastData(chart_id, device_id, unit, channel, start_time) {
+      var url = '/async_usage/' + device_id + '/' + unit + '/' + channel + '/' + start_time + '/0';
+      $.getJSON(url,
+        function(data, responseText, jqXHR) {
+          if (jqXHR.status !== 204) {
+            var new_data = [];
+            for (i = 0; i < data.length; i++) {
+              var new_date = new Date(data[i][0]);
+              var new_time = new_date.getTime();
+              new_data.push([new_time, data[i][1]]);
+            }
+            new_data.push([new Date().getTime(), null]);
+            chart[chart_id].series[0].setData(new_data, false, false);
+            var nav = chart[chart_id].get('navigator');
+            nav.setData(new_data, false, false);
+          }
+          chart[chart_id].redraw();
+        }
+      );
+    }
+
+    function set_data_from_url(url, chart_id) {
+      $.getJSON(url,
+        function (data, responseText, jqXHR) {
+          if (jqXHR.status !== 204) {
+            var new_data = [];
+            for (i = 0; i < data.length; i++) {
+              var new_date = new Date(data[i][0]);
+              var new_time = new_date.getTime();
+              new_data.push([new_time, data[i][1]]);
+            }
+          }
+          chart[chart_id].series[0].setData(new_data);
+          chart[chart_id].hideLoading();
+        }
+      );
+    }
+
+    function updateAllSeries(e) {
+      var min = null;
+      var max = null;
+      if (e.xAxis == null) {
+        min = e.min;
+        max = e.max;
+      } else {
+        min = e.xAxis[0].min;
+        max = e.xAxis[0].max;
+      }
+      for (var each_id in id_measure) {
+        var url = '/async_usage/' + id_measure[each_id]['device_id'] + '/' + id_measure[each_id]['unit'] + '/' + id_measure[each_id]['channel'] + '/' + Math.round(min) / 1000 + '/' + Math.round(max) / 1000;
+        set_data_from_url(url, id_measure[each_id]['chart_id'])
+      }
+    }
+
+    // create the chart
+  {% for energy_usage_id in graph_info %}
+
+    chart['{{energy_usage_id}}'] = new Highcharts.StockChart({
+        chart: {
+          renderTo: 'container-{{energy_usage_id}}',
+          zoomType: 'x',
+          events: {
+            load: function () {
+              getPastData('{{energy_usage_id}}', '{{graph_info[energy_usage_id]['main']['device_id']}}', '{{graph_info[energy_usage_id]['main']['unit']}}', '{{graph_info[energy_usage_id]['main']['channel']}}', '{{graph_info[energy_usage_id]['main']['start_time_epoch']}}');
+            },
+            selection: updateAllSeries
+          }
+        },
+
+        tooltip: {
+          shared: true,
+          formatter: function(){
+            var d = new Date(this.x);
+            if (this.point) {
+              return '<b>'+ Highcharts.dateFormat('%B %e, %Y %H:%M:%S.', this.x) + d.getMilliseconds()
+                   + '</b><br/>' + this.series.name
+                   + '<br/>' + this.point.title
+                   + '<br/>' + this.point.text;
+            }
+            else {
+              var s = '<b>'+ Highcharts.dateFormat('%B %e, %Y %H:%M:%S.', this.x) + d.getMilliseconds() + '</b>';
+              $.each(this.points, function(i, point) {
+                  s += '<br/><span style="color:' + point.color + '">\u25CF</span> ' + point.series.name + ': ' + Highcharts.numberFormat(point.y, this.series.tooltipOptions.valueDecimals) + ' ' + this.series.tooltipOptions.valueSuffix;
+              });
+              return s;
+            }
+          }
+        },
+
+        navigator: {
+            adaptToUpdatedData: false,
+            series: {
+                id: 'navigator'
+            }
+        },
+
+        scrollbar: {
+          liveRedraw: false
+        },
+
+        legend: {
+          enabled: false
+        },
+
+        // subtitle: {
+        //     text: 'Display many data points'
+        // },
+
+        rangeSelector: {
+            buttons: [{
+                type: 'hour',
+                count: 1,
+                text: '1h'
+            }, {
+                type: 'day',
+                count: 1,
+                text: '1d'
+            }, {
+                type: 'week',
+                count: 1,
+                text: '1w'
+            }, {
+                type: 'month',
+                count: 1,
+                text: '1m'
+            }, {
+                type: 'all',
+                text: 'All'
+            }],
+            inputEnabled: false, // it supports only days
+            selected: 4 // all
+        },
+
+        xAxis: {
+          events: {
+            setExtremes: function(e) {
+              if (typeof(e.rangeSelectorButton) !== 'undefined' || e.trigger === 'navigator') {
+                updateAllSeries(e);
+              }
+            }
+          },
+          minRange: 1800 * 1000 // 30 minutes
+        },
+
+        yAxis: [
+          {
+            title: {
+              text: 'Amps (A)'
+            },
+            labels: {
+              format: '{value}'
+            },
+            opposite: false,
+            id: 'A'
+          }
+        ],
+
+        credits: {
+          enabled: false,
+          href: "https://github.com/kizniche/Mycodo",
+          text: "Mycodo"
+        },
+
+        series: [
+            {
+              name: 'Amps',
+              type: 'column',
+              dataGrouping: {
+                approximation: 'average'
+              },
+              tooltip: {
+                valueSuffix: ' A',
+                valueDecimals: 3
+              },
+              yAxis: 'A',
+              data: []
+            }
+        ]
+    });
+
+{% endfor %}
+
+});
+</script>
+{% endif %}
 
 {% endblock %}

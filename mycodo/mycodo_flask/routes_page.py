@@ -1843,8 +1843,11 @@ def page_usage():
     choices_math = utils_general.choices_maths(
         math, dict_units, dict_measurements)
 
+    graph_info = {}
+
     # calculate energy usage from Inputs/Maths measuring amps
     for each_energy in energy_usage:
+        graph_info[each_energy.unique_id] = {}
         energy_usage_stats[each_energy.unique_id] = {}
         energy_usage_stats[each_energy.unique_id]['hour'] = 0
         energy_usage_stats[each_energy.unique_id]['day'] = 0
@@ -1860,6 +1863,16 @@ def page_usage():
             conversion = None
         channel, unit, measurement = return_measurement_info(
             device_measurement, conversion)
+
+        graph_info[each_energy.unique_id]['main'] = {}
+        graph_info[each_energy.unique_id]['main']['device_id'] = each_energy.device_id
+        graph_info[each_energy.unique_id]['main']['measurement_id'] = each_energy.measurement_id
+        graph_info[each_energy.unique_id]['main']['channel'] = channel
+        graph_info[each_energy.unique_id]['main']['unit'] = unit
+        graph_info[each_energy.unique_id]['main']['measurement'] = measurement
+        graph_info[each_energy.unique_id]['main']['start_time_epoch'] = (
+            datetime.datetime.now() -
+            datetime.timedelta(seconds=2629800)).strftime('%s')
 
         if unit == 'A':  # If unit is amps, proceed
             hour = average_past_seconds(
@@ -1922,6 +1935,13 @@ def page_usage():
         channel, unit, measurement = return_measurement_info(
             device_measurement, conversion)
 
+        graph_info[energy_device.unique_id]['calculate'] = {}
+        graph_info[energy_device.unique_id]['calculate']['device_id'] = energy_device.device_id
+        graph_info[energy_device.unique_id]['calculate']['measurement_id'] = energy_device.measurement_id
+        graph_info[energy_device.unique_id]['calculate']['channel'] = channel
+        graph_info[energy_device.unique_id]['calculate']['unit'] = unit
+        graph_info[energy_device.unique_id]['calculate']['measurement'] = measurement
+
         calculate_usage[energy_device.unique_id] = {}
         calculate_usage[energy_device.unique_id]['average_amps'] = 0
         calculate_usage[energy_device.unique_id]['kwh'] = 0
@@ -1956,6 +1976,7 @@ def page_usage():
                            energy_usage_stats=energy_usage_stats,
                            form_energy_usage_add=form_energy_usage_add,
                            form_energy_usage_mod=form_energy_usage_mod,
+                           graph_info=graph_info,
                            misc=misc,
                            output=output,
                            output_stats=output_stats,

@@ -762,6 +762,171 @@ def async_data(device_id, device_type, measurement_id, start_seconds, end_second
             return '', 204
 
 
+@blueprint.route('/async_usage/<device_id>/<unit>/<channel>/<start_seconds>/<end_seconds>')
+@flask_login.login_required
+def async_usage_data(device_id, unit, channel, start_seconds, end_seconds):
+    """
+    Return data from start_seconds to end_seconds from influxdb.
+    Used for asynchronous graph display of many points (up to millions).
+    """
+    current_app.config['INFLUXDB_USER'] = INFLUXDB_USER
+    current_app.config['INFLUXDB_PASSWORD'] = INFLUXDB_PASSWORD
+    current_app.config['INFLUXDB_DATABASE'] = INFLUXDB_DATABASE
+    current_app.config['INFLUXDB_TIMEOUT'] = 5
+    dbcon = influx_db.connection
+
+    # Set the time frame to the past year if start/end not specified
+    if start_seconds == '0' and end_seconds == '0':
+        # Get how many points there are in the past year
+        query_str = query_string(
+            unit, device_id,
+            channel=channel,
+            value='COUNT')
+
+        if query_str == 1:
+            return '', 204
+        raw_data = dbcon.query(query_str).raw
+
+        count_points = raw_data['series'][0]['values'][0][1]
+        # Get the timestamp of the first point in the past year
+        query_str = query_string(
+            unit, device_id,
+            channel=channel,
+            limit=1)
+
+        if query_str == 1:
+            return '', 204
+        raw_data = dbcon.query(query_str).raw
+
+        first_point = raw_data['series'][0]['values'][0][0]
+        end = datetime.datetime.utcnow()
+        end_str = end.strftime('%Y-%m-%dT%H:%M:%S.%fZ')
+    # Set the time frame to the past start epoch to now
+    elif start_seconds != '0' and end_seconds == '0':
+        start = datetime.datetime.utcfromtimestamp(float(start_seconds))
+        start_str = start.strftime('%Y-%m-%dT%H:%M:%S.%fZ')
+        end = datetime.datetime.utcnow()
+        end_str = end.strftime('%Y-%m-%dT%H:%M:%S.%fZ')
+
+        query_str = query_string(
+            unit, device_id,
+            channel=channel,
+            value='COUNT',
+            start_str=start_str,
+            end_str=end_str)
+
+        if query_str == 1:
+            return '', 204
+        raw_data = dbcon.query(query_str).raw
+
+        count_points = raw_data['series'][0]['values'][0][1]
+        # Get the timestamp of the first point in the past year
+
+        query_str = query_string(
+            unit, device_id,
+            channel=channel,
+            start_str=start_str,
+            end_str=end_str,
+            limit=1)
+
+        if query_str == 1:
+            return '', 204
+        raw_data = dbcon.query(query_str).raw
+
+        first_point = raw_data['series'][0]['values'][0][0]
+    else:
+        start = datetime.datetime.utcfromtimestamp(float(start_seconds))
+        start_str = start.strftime('%Y-%m-%dT%H:%M:%S.%fZ')
+        end = datetime.datetime.utcfromtimestamp(float(end_seconds))
+        end_str = end.strftime('%Y-%m-%dT%H:%M:%S.%fZ')
+
+        query_str = query_string(
+            unit, device_id,
+            channel=channel,
+            value='COUNT',
+            start_str=start_str,
+            end_str=end_str)
+
+        if query_str == 1:
+            return '', 204
+        raw_data = dbcon.query(query_str).raw
+
+        count_points = raw_data['series'][0]['values'][0][1]
+        # Get the timestamp of the first point in the past year
+
+        query_str = query_string(
+            unit, device_id,
+            channel=channel,
+            start_str=start_str,
+            end_str=end_str,
+            limit=1)
+
+        if query_str == 1:
+            return '', 204
+        raw_data = dbcon.query(query_str).raw
+
+        first_point = raw_data['series'][0]['values'][0][0]
+
+    start = datetime.datetime.strptime(first_point[:26],
+                                       '%Y-%m-%dT%H:%M:%S.%f')
+    start_str = start.strftime('%Y-%m-%dT%H:%M:%S.%fZ')
+
+    logger.debug('Count = {}'.format(count_points))
+    logger.debug('Start = {}'.format(start))
+    logger.debug('End   = {}'.format(end))
+
+    # How many seconds between the start and end period
+    time_difference_seconds = (end - start).total_seconds()
+    logger.debug('Difference seconds = {}'.format(time_difference_seconds))
+
+    # If there are more than 700 points in the time frame, we need to group
+    # data points into 700 groups with points averaged in each group.
+    if count_points > 700:
+        # Average period between input reads
+        seconds_per_point = time_difference_seconds / count_points
+        logger.debug('Seconds per point = {}'.format(seconds_per_point))
+
+        # How many seconds to group data points in
+        group_seconds = int(time_difference_seconds / 700)
+        logger.debug('Group seconds = {}'.format(group_seconds))
+
+        try:
+            query_str = query_string(
+                unit, device_id,
+                channel=channel,
+                value='MEAN',
+                start_str=start_str,
+                end_str=end_str,
+                group_sec=group_seconds)
+
+            if query_str == 1:
+                return '', 204
+            raw_data = dbcon.query(query_str).raw
+
+            return jsonify(raw_data['series'][0]['values'])
+        except Exception as e:
+            logger.error("URL for 'async_data' raised and error: "
+                         "{err}".format(err=e))
+            return '', 204
+    else:
+        try:
+            query_str = query_string(
+                unit, device_id,
+                channel=channel,
+                start_str=start_str,
+                end_str=end_str)
+
+            if query_str == 1:
+                return '', 204
+            raw_data = dbcon.query(query_str).raw
+
+            return jsonify(raw_data['series'][0]['values'])
+        except Exception as e:
+            logger.error("URL for 'async_data' raised and error: "
+                         "{err}".format(err=e))
+            return '', 204
+
+
 @blueprint.route('/output_mod/<output_id>/<state>/<out_type>/<amount>')
 @flask_login.login_required
 def output_mod(output_id, state, out_type, amount):
