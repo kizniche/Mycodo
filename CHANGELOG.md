@@ -1,9 +1,10 @@
-## 7.2.0 (Unreleased)
+## 7.2.0 (2019-02-04)
 
 ### Bugfixes
 
  - Fix calculating Output Usage
  - Fix error-handling of PWM signal generation ([#617](https://github.com/kizniche/mycodo/issues/617))
+ - Fix output dependency issue ([#617](https://github.com/kizniche/mycodo/issues/617))
 
 ### Features
 
@@ -15,7 +16,7 @@
 
 ### Bugfixes
 
- - Fix pigpio issue ([#617](https://github.com/kizniche/mycodo/issues/617))
+ - Attempted fix of output dependency issue ([#617](https://github.com/kizniche/mycodo/issues/617))
  - Fix PID Autotune ungraceful exit ([#621](https://github.com/kizniche/mycodo/issues/621))
 
 
@@ -23,7 +24,7 @@
 
 ### Bugfixes
 
- - Fix missing dependency for PWM Outputs ([#617](https://github.com/kizniche/mycodo/issues/617))
+ - Attempted fix of output dependency issue ([#617](https://github.com/kizniche/mycodo/issues/617))
  - Fix issue creating Triggers ([#618](https://github.com/kizniche/mycodo/issues/618))
 
 ### Features
