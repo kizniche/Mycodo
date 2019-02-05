@@ -1941,6 +1941,8 @@ def page_usage():
         graph_info[energy_device.unique_id]['calculate']['channel'] = channel
         graph_info[energy_device.unique_id]['calculate']['unit'] = unit
         graph_info[energy_device.unique_id]['calculate']['measurement'] = measurement
+        graph_info[energy_device.unique_id]['calculate']['start_time_epoch'] = start_seconds
+        graph_info[energy_device.unique_id]['calculate']['end_time_epoch'] = end_seconds
 
         calculate_usage[energy_device.unique_id] = {}
         calculate_usage[energy_device.unique_id]['average_amps'] = 0

@@ -160,6 +160,9 @@
         {{form_energy_usage_mod.energy_usage_range_calc(class_='form-control btn btn-sm btn-block')}}
       </div>
       {% if calculate_usage[each_energy.unique_id] %}
+
+      <div id="container-calc-{{each_energy.unique_id}}" style="height: 400px; width: 100%"></div>
+
       <div class="col-12 small-gutters" style="padding-top: 0.5em">
         <div class="table-responsive">
           <table class="table">
@@ -328,8 +331,12 @@ $(document).ready(function() {
     ];
     var chart = [];
 
-    function getPastData(chart_id, device_id, unit, channel, start_time) {
-      var url = '/async_usage/' + device_id + '/' + unit + '/' + channel + '/' + start_time + '/0';
+    function getPastData(chart_id, device_id, unit, channel, start_time, end_time) {
+      if (typeof(end_time)==='undefined') {
+        var url = '/async_usage/' + device_id + '/' + unit + '/' + channel + '/' + start_time + '/0';
+      } else {
+        var url = '/async_usage/' + device_id + '/' + unit + '/' + channel + '/' + start_time + '/' + end_time;
+      }
       $.getJSON(url,
         function(data, responseText, jqXHR) {
           if (jqXHR.status !== 204) {
@@ -366,7 +373,7 @@ $(document).ready(function() {
       );
     }
 
-    function updateAllSeries(e) {
+    function updateAllSeries(e, chart_id) {
       var min = null;
       var max = null;
       if (e.xAxis == null) {
@@ -378,22 +385,26 @@ $(document).ready(function() {
       }
       for (var each_id in id_measure) {
         var url = '/async_usage/' + id_measure[each_id]['device_id'] + '/' + id_measure[each_id]['unit'] + '/' + id_measure[each_id]['channel'] + '/' + Math.round(min) / 1000 + '/' + Math.round(max) / 1000;
-        set_data_from_url(url, id_measure[each_id]['chart_id'])
+        set_data_from_url(url, chart_id)
       }
     }
 
     // create the chart
   {% for energy_usage_id in graph_info %}
 
-    chart['{{energy_usage_id}}'] = new Highcharts.StockChart({
+    {% if calculate_usage[energy_usage_id] %}
+
+    chart['calc-{{energy_usage_id}}'] = new Highcharts.StockChart({
         chart: {
-          renderTo: 'container-{{energy_usage_id}}',
+          renderTo: 'container-calc-{{energy_usage_id}}',
           zoomType: 'x',
           events: {
             load: function () {
-              getPastData('{{energy_usage_id}}', '{{graph_info[energy_usage_id]['main']['device_id']}}', '{{graph_info[energy_usage_id]['main']['unit']}}', '{{graph_info[energy_usage_id]['main']['channel']}}', '{{graph_info[energy_usage_id]['main']['start_time_epoch']}}');
+              getPastData('calc-{{energy_usage_id}}', '{{graph_info[energy_usage_id]['calculate']['device_id']}}', '{{graph_info[energy_usage_id]['calculate']['unit']}}', '{{graph_info[energy_usage_id]['calculate']['channel']}}', '{{graph_info[energy_usage_id]['calculate']['start_time_epoch']}}');
             },
-            selection: updateAllSeries
+            selection: function(e) {
+              updateAllSeries(e, 'calc-{{energy_usage_id}}')
+            }
           }
         },
 
@@ -465,7 +476,134 @@ $(document).ready(function() {
           events: {
             setExtremes: function(e) {
               if (typeof(e.rangeSelectorButton) !== 'undefined' || e.trigger === 'navigator') {
-                updateAllSeries(e);
+                updateAllSeries(e, 'calc-{{energy_usage_id}}');
+              }
+            }
+          },
+          minRange: 1800 * 1000 // 30 minutes
+        },
+
+        yAxis: [
+          {
+            title: {
+              text: 'Amps (A)'
+            },
+            labels: {
+              format: '{value}'
+            },
+            opposite: false,
+            id: 'A'
+          }
+        ],
+
+        credits: {
+          enabled: false,
+          href: "https://github.com/kizniche/Mycodo",
+          text: "Mycodo"
+        },
+
+        series: [
+            {
+              name: 'Amps',
+              type: 'column',
+              dataGrouping: {
+                approximation: 'average'
+              },
+              tooltip: {
+                valueSuffix: ' A',
+                valueDecimals: 3
+              },
+              yAxis: 'A',
+              data: []
+            }
+        ]
+    });
+
+    {% endif %}
+
+    chart['{{energy_usage_id}}'] = new Highcharts.StockChart({
+        chart: {
+          renderTo: 'container-{{energy_usage_id}}',
+          zoomType: 'x',
+          events: {
+            load: function () {
+              getPastData('{{energy_usage_id}}', '{{graph_info[energy_usage_id]['main']['device_id']}}', '{{graph_info[energy_usage_id]['main']['unit']}}', '{{graph_info[energy_usage_id]['main']['channel']}}', '{{graph_info[energy_usage_id]['main']['start_time_epoch']}}');
+            },
+            selection: function(e) {
+              updateAllSeries(e, '{{energy_usage_id}}')
+            }
+          }
+        },
+
+        tooltip: {
+          shared: true,
+          formatter: function(){
+            var d = new Date(this.x);
+            if (this.point) {
+              return '<b>'+ Highcharts.dateFormat('%B %e, %Y %H:%M:%S.', this.x) + d.getMilliseconds()
+                   + '</b><br/>' + this.series.name
+                   + '<br/>' + this.point.title
+                   + '<br/>' + this.point.text;
+            }
+            else {
+              var s = '<b>'+ Highcharts.dateFormat('%B %e, %Y %H:%M:%S.', this.x) + d.getMilliseconds() + '</b>';
+              $.each(this.points, function(i, point) {
+                  s += '<br/><span style="color:' + point.color + '">\u25CF</span> ' + point.series.name + ': ' + Highcharts.numberFormat(point.y, this.series.tooltipOptions.valueDecimals) + ' ' + this.series.tooltipOptions.valueSuffix;
+              });
+              return s;
+            }
+          }
+        },
+
+        navigator: {
+            adaptToUpdatedData: false,
+            series: {
+                id: 'navigator'
+            }
+        },
+
+        scrollbar: {
+          liveRedraw: false
+        },
+
+        legend: {
+          enabled: false
+        },
+
+        // subtitle: {
+        //     text: 'Display many data points'
+        // },
+
+        rangeSelector: {
+            buttons: [{
+                type: 'hour',
+                count: 1,
+                text: '1h'
+            }, {
+                type: 'day',
+                count: 1,
+                text: '1d'
+            }, {
+                type: 'week',
+                count: 1,
+                text: '1w'
+            }, {
+                type: 'month',
+                count: 1,
+                text: '1m'
+            }, {
+                type: 'all',
+                text: 'All'
+            }],
+            inputEnabled: false, // it supports only days
+            selected: 4 // all
+        },
+
+        xAxis: {
+          events: {
+            setExtremes: function(e) {
+              if (typeof(e.rangeSelectorButton) !== 'undefined' || e.trigger === 'navigator') {
+                updateAllSeries(e, '{{energy_usage_id}}');
               }
             }
           },
