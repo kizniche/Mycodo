@@ -1962,6 +1962,7 @@ def page_usage():
             if hours < 1:
                 hours = 1
             calculate_usage[energy_device.unique_id]['kwh'] = (misc.output_usage_volts * average_amps) / 1000 / hours
+            calculate_usage[energy_device.unique_id]['hours'] = hours
 
     else:
         picker_end = datetime.datetime.now().strftime('%m/%d/%Y %H:%M')
