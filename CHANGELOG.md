@@ -1,3 +1,10 @@
+## 7.2.1 (Unreleased)
+
+### Bugfixes
+
+ - Remove bluepy version restriction that conflicts with another requirement for the latest version
+
+
 ## 7.2.0 (2019-02-04)
 
 ### Bugfixes
