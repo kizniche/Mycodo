@@ -8,6 +8,7 @@
 ### Features
 
  - Add new energy usage/cost analysis based on amperage measurements (See [Energy Usage](https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.rst#energy-usage) in the manual)
+ - Add password recovery feature (technically just creates new admin user from the command line)
 
 
 ## 7.1.7 (2019-02-02)

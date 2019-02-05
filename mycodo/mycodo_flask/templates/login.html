@@ -37,16 +37,19 @@
       <input type="hidden" name="form-name" value="login">
       <h2 class="form-signin-heading">Mycodo {{dict_translation['login']['title']}}</h2>
       <h4 style="text-align: center;">{{host}}</h4>
-      {{ form_login.hidden_tag() }}
-      {{ form_login.username.label(class_='sr-only') }}
-      {{ form_login.username(class_='form-control') }}
-      {{ form_login.password.label(class_='sr-only') }}
-      {{ form_login.password(class_='form-control') }}
-      <div class="checkbox">
+      {{form_login.hidden_tag()}}
+      {{form_login.username.label(class_='sr-only')}}
+      {{form_login.username(class_='form-control')}}
+      {{form_login.password.label(class_='sr-only')}}
+      {{form_login.password(class_='form-control')}}
+      <div class="checkbox" style="padding-top: 0.5em">
         {{ form_login.remember() }} {{_('Remember me') + ' (' + _('90 days') + ')'}}
       </div>
       <button class="btn btn-lg btn-primary btn-block" type="submit">{{_('Sign in')}}</button>
     </form>
+    <div style="text-align: center;">
+      <a href="/forgot_password" target="_blank">{{_('Forgot password?')}}</a>
+    </div>
   </div>
 
 {% endif %}

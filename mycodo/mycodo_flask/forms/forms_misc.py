@@ -24,7 +24,7 @@ from mycodo.config_translations import TRANSLATIONS
 #
 
 class EnergyUsageAdd(FlaskForm):
-    energy_usage_select = SelectField('Select Amp Measurement')
+    energy_usage_select = SelectField('{}: {}'.format(lazy_gettext('Measurement'), lazy_gettext('Amp')))
     energy_usage_add = SubmitField(TRANSLATIONS['add']['title'])
 
 

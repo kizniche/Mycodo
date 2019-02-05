@@ -119,6 +119,7 @@
           <table class="table">
             <tr>
               <td>{{picker_start}} - {{picker_end}}</td>
+              <td></td>
             </tr>
             <tr>
               <td>{{_('Amps (Average over period)')}}</td>
@@ -209,7 +210,7 @@
               </tr>
               <tr>
                 <td colspan="2"></td>
-                <td>{{_('Energy Usage')}} (kWh@{{misc.output_usage_volts}}V)</td>
+                <td>{{_('Energy Usage')}} (kWh, @{{misc.output_usage_volts}}V)</td>
                 <td>{{value['1d']['kwh']|round(3)}}</td>
                 <td>{{value['1w']['kwh']|round(3)}}</td>
                 <td>{{value['1m']['kwh']|round(3)}}</td>

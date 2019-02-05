@@ -201,6 +201,12 @@ def logout():
     return response
 
 
+@blueprint.route('/forgot_password')
+def forgot_password():
+    """Load the default landing page"""
+    return render_template('forgot_password.html')
+
+
 @blueprint.route('/newremote/')
 def newremote():
     """Verify authentication as a client computer to the remote admin"""
