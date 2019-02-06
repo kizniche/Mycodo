@@ -1907,13 +1907,15 @@ def page_usage():
     display_order = csv_to_list_of_str(DisplayOrder.query.first().output)
 
     calculate_usage = {}
+    picker_start = {}
+    picker_end = {}
     if calculate_pass:
-        picker_start = form_energy_usage_mod.energy_usage_date_range.data.split(' - ')[0]
+        str_start = form_energy_usage_mod.energy_usage_date_range.data.split(' - ')[0]
         start_seconds = int(time.mktime(
-            time.strptime(picker_start, '%m/%d/%Y %H:%M')))
-        picker_end = form_energy_usage_mod.energy_usage_date_range.data.split(' - ')[1]
+            time.strptime(str_start, '%m/%d/%Y %H:%M')))
+        str_end = form_energy_usage_mod.energy_usage_date_range.data.split(' - ')[1]
         end_seconds = int(time.mktime(
-            time.strptime(picker_end, '%m/%d/%Y %H:%M')))
+            time.strptime(str_end, '%m/%d/%Y %H:%M')))
 
         utc_offset_timedelta = datetime.datetime.utcnow() - datetime.datetime.now()
         start = datetime.datetime.fromtimestamp(float(start_seconds))
@@ -1934,6 +1936,9 @@ def page_usage():
             conversion = None
         channel, unit, measurement = return_measurement_info(
             device_measurement, conversion)
+
+        picker_start[energy_device.unique_id] = form_energy_usage_mod.energy_usage_date_range.data.split(' - ')[0]
+        picker_end[energy_device.unique_id] = form_energy_usage_mod.energy_usage_date_range.data.split(' - ')[1]
 
         graph_info[energy_device.unique_id]['calculate'] = {}
         graph_info[energy_device.unique_id]['calculate']['device_id'] = energy_device.device_id
@@ -1967,10 +1972,9 @@ def page_usage():
             calculate_usage[energy_device.unique_id]['kwh'] = misc.output_usage_volts * average_amps / 1000 * hours
             calculate_usage[energy_device.unique_id]['hours'] = hours
 
-    else:
-        picker_end = datetime.datetime.now().strftime('%m/%d/%Y %H:%M')
-        picker_start = datetime.datetime.now() - datetime.timedelta(hours=6)
-        picker_start = picker_start.strftime('%m/%d/%Y %H:%M')
+    picker_end['default'] = datetime.datetime.now().strftime('%m/%d/%Y %H:%M')
+    picker_start['default'] = datetime.datetime.now() - datetime.timedelta(hours=6)
+    picker_start['default'] = picker_start['default'].strftime('%m/%d/%Y %H:%M')
 
     return render_template('pages/usage.html',
                            calculate_usage=calculate_usage,

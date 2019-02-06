@@ -5,7 +5,7 @@
  - Remove bluepy version restriction that conflicts with another requirement for the latest version
  - Fix Energy Usage calculations
  - Fix issue setting Output Action duty cycle to 0
- - Fix output controller error: "TypeError: unhashable type: 'dict'"
+ - Fix output controller startup issue
 
 ### Features
 

@@ -153,7 +153,7 @@
       <div class="col-12 col-sm-7 col-lg-4">
         {{form_energy_usage_mod.energy_usage_date_range.label(class_='control-label')}}
         <div>
-          <input class="form-control" type="text" name="energy_usage_date_range" value="{{picker_start}} - {{picker_end}}" />
+          <input class="form-control" type="text" name="energy_usage_date_range" value="{% if each_energy.unique_id in picker_start %}{{picker_start[each_energy.unique_id]}}{% else %}{{picker_start['default']}}{% endif %} - {% if each_energy.unique_id in picker_end %}{{picker_end[each_energy.unique_id]}}{% else %}{{picker_end['default']}}{% endif %}" />
         </div>
       </div>
       <div class="col-auto small-gutters">
@@ -167,7 +167,7 @@
         <div class="table-responsive">
           <table class="table">
             <tr>
-              <td>{{picker_start}} - {{picker_end}}, {{calculate_usage[each_energy.unique_id]['hours']|round(2)}} hours</td>
+              <td>{{picker_start[each_energy.unique_id]}} - {{picker_end[each_energy.unique_id]}}, {{calculate_usage[each_energy.unique_id]['hours']|round(2)}} hours</td>
               <td></td>
             </tr>
             <tr>
@@ -346,7 +346,9 @@ $(document).ready(function() {
               var new_time = new_date.getTime();
               new_data.push([new_time, data[i][1]]);
             }
-            new_data.push([new Date().getTime(), null]);
+            if (typeof(end_time)==='undefined') {
+              new_data.push([new Date().getTime(), null]);
+            }
             chart[chart_id].series[0].setData(new_data, false, false);
             var nav = chart[chart_id].get('navigator');
             nav.setData(new_data, false, false);
@@ -400,7 +402,7 @@ $(document).ready(function() {
           zoomType: 'x',
           events: {
             load: function () {
-              getPastData('calc-{{energy_usage_id}}', '{{graph_info[energy_usage_id]['calculate']['device_id']}}', '{{graph_info[energy_usage_id]['calculate']['unit']}}', '{{graph_info[energy_usage_id]['calculate']['channel']}}', '{{graph_info[energy_usage_id]['calculate']['start_time_epoch']}}');
+              getPastData('calc-{{energy_usage_id}}', '{{graph_info[energy_usage_id]['calculate']['device_id']}}', '{{graph_info[energy_usage_id]['calculate']['unit']}}', '{{graph_info[energy_usage_id]['calculate']['channel']}}', '{{graph_info[energy_usage_id]['calculate']['start_time_epoch']}}', '{{graph_info[energy_usage_id]['calculate']['end_time_epoch']}}');
             },
             selection: function(e) {
               updateAllSeries(e, 'calc-{{energy_usage_id}}')
