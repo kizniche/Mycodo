@@ -13,6 +13,10 @@
 
  - Add asynchronous graphs to Energy Usage summaries
 
+### Miscellaneous
+
+ - Improve error-handling of Function Actions
+
 
 ## 7.2.0 (2019-02-04)
 
