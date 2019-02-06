@@ -279,12 +279,10 @@ def mycodo_service(mycodo):
 
         @staticmethod
         def exposed_trigger_all_actions(
-                function_id, message='', edge=None, output_state=None,
-                on_duration=None, duty_cycle=None):
+                function_id, message=''):
             """Trigger all actions"""
             return mycodo.trigger_all_actions(
-                function_id, message, edge=edge, output_state=output_state,
-                on_duration=on_duration, duty_cycle=duty_cycle)
+                function_id, message)
 
         @staticmethod
         def exposed_terminate_daemon():
@@ -1077,14 +1075,11 @@ class DaemonController:
             self.logger.exception(message)
 
     def trigger_all_actions(
-            self, function_id, message='', edge=None,
-            output_state=None, on_duration=None, duty_cycle=None):
+            self, function_id, message=''):
         try:
             return trigger_function_actions(
                 function_id,
-                message=message, edge=edge,
-                output_state=output_state, on_duration=on_duration,
-                duty_cycle=duty_cycle)
+                message=message)
         except Exception as except_msg:
             message = "Could not trigger Conditional Actions:" \
                       " {err}".format(err=except_msg)

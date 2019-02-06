@@ -172,7 +172,7 @@ def trigger_action(
 
     # Actuate output (PWM)
     if (cond_action.action_type == 'output_pwm' and cond_action.do_unique_id and
-          cond_action.do_output_pwm):
+          0 <= cond_action.do_output_pwm <= 100):
         this_output = db_retrieve_table_daemon(
             Output, unique_id=cond_action.do_unique_id, entry='first')
         message += " Turn output {unique_id} ({id}, {name}) duty cycle to {duty_cycle}%.".format(
@@ -553,13 +553,7 @@ def trigger_action(
 def trigger_function_actions(
         function_id,
         message='',
-        last_measurement=None,
-        device_id=None,
-        device_measurement=None,
-        edge=None,
-        output_state=None,
-        on_duration=None,
-        duty_cycle=None):
+        device_id=None):
     """
     Execute the Actions belonging to a particular Function
 
@@ -588,34 +582,10 @@ def trigger_function_actions(
 
     attachment_file = None
     attachment_type = None
-    input_dev = None
-    output = None
-    device = None
 
     actions = db_retrieve_table_daemon(Actions)
     actions = actions.filter(
         Actions.function_id == function_id).all()
-
-    if device_id:
-        input_dev = db_retrieve_table_daemon(
-            Input, unique_id=device_id, entry='first')
-        if input_dev:
-            device = input_dev
-
-        math = db_retrieve_table_daemon(
-            Math, unique_id=device_id, entry='first')
-        if math:
-            device = math
-
-        output = db_retrieve_table_daemon(
-            Output, unique_id=device_id, entry='first')
-        if output:
-            device = output
-
-        pid = db_retrieve_table_daemon(
-            PID, unique_id=device_id, entry='first')
-        if pid:
-            device = pid
 
     for cond_action in actions:
         (message,

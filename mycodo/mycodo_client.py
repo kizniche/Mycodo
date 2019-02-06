@@ -167,11 +167,9 @@ class DaemonControl:
             action_id, message=message, single_action=single_action)
 
     def trigger_all_actions(
-            self, function_id, message='', edge=None,
-            output_state=None, on_duration=None, duty_cycle=None):
+            self, function_id, message=''):
         return self.rpyc_client.root.trigger_all_actions(
-            function_id, message, edge=edge, output_state=output_state,
-            on_duration=on_duration, duty_cycle=duty_cycle)
+            function_id, message)
 
     def terminate_daemon(self):
         return self.rpyc_client.root.terminate_daemon()
