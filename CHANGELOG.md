@@ -4,6 +4,7 @@
 
  - Remove bluepy version restriction that conflicts with another requirement for the latest version
  - Fix Energy Usage calculations
+ - Fix inability to set Output Action duty cycle to 0
 
 ### Features
 

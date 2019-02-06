@@ -402,8 +402,8 @@ def check_form_actions(form, error):
     elif action.action_type == 'output_pwm':
         if not form.do_unique_id.data or form.do_unique_id.data == '':
             error.append("Output must be set")
-        if not form.do_output_pwm.data or form.do_output_pwm.data == '':
-            error.append("Duty Cycle must be set")
+        if form.do_output_pwm.data < 0 or form.do_output_pwm.data > 100 or form.do_output_pwm.data == '':
+            error.append("Duty Cycle must be set (0 <= duty cycle <= 100)")
     elif action.action_type in ['activate_pid',
                                 'deactivate_pid',
                                 'resume_pid',
