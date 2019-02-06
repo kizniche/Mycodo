@@ -32,7 +32,7 @@ class EnergyUsageMod(FlaskForm):
     energy_usage_id = StringField('Energy Usage ID', widget=widgets.HiddenInput())
     name = StringField(TRANSLATIONS['name']['title'])
     selection_device_measure_ids = StringField('Select Amp Measurement')
-    energy_usage_date_range = StringField(lazy_gettext('Time Range DD/MM/YYYY HH:MM'))
+    energy_usage_date_range = StringField(lazy_gettext('Time Range MM/DD/YYYY HH:MM'))
     energy_usage_range_calc = SubmitField(TRANSLATIONS['calculate']['title'])
     energy_usage_mod = SubmitField(TRANSLATIONS['save']['title'])
     energy_usage_delete = SubmitField(TRANSLATIONS['delete']['title'])
@@ -85,7 +85,7 @@ class DaemonControl(FlaskForm):
 
 class ExportMeasurements(FlaskForm):
     measurement = StringField(lazy_gettext('Measurement to Export'))
-    date_range = StringField(lazy_gettext('Time Range DD/MM/YYYY HH:MM'))
+    date_range = StringField(lazy_gettext('Time Range MM/DD/YYYY HH:MM'))
     export_data_csv = SubmitField(lazy_gettext('Export Data as CSV'))
 
 

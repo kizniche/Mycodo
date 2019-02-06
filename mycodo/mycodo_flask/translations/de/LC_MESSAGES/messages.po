@@ -2120,8 +2120,8 @@ msgid "Measurement to Export"
 msgstr "Messung Export"
 
 #: mycodo_flask/forms/forms_misc.py:68
-msgid "Time Range DD/MM/YYYY HH:MM"
-msgstr "Zeitspanne DD/MM/YYYY HH:MM"
+msgid "Time Range MM/DD/YYYY HH:MM"
+msgstr "Zeitspanne MM/DD/YYYY HH:MM"
 
 #: mycodo_flask/forms/forms_misc.py:69
 msgid "Export Data as CSV"
@@ -4786,8 +4786,8 @@ msgid "Required: Start date/time, end date/time, start setpoint"
 msgstr "Erforderlich: Startdatum /-zeit, Enddatum /-zeit, Start-Sollwert"
 
 #: mycodo_flask/utils/utils_method.py:53
-msgid "Invalid Date/Time format. Correct format: DD/MM/YYYY HH:MM:SS"
-msgstr "Ungültiges Datums- / Uhrzeitformat Korrektes Format: DD/MM/YYYY HH:MM:SS"
+msgid "Invalid Date/Time format. Correct format: MM/DD/YYYY HH:MM:SS"
+msgstr "Ungültiges Datums- / Uhrzeitformat Korrektes Format: MM/DD/YYYY HH:MM:SS"
 
 #: mycodo_flask/utils/utils_method.py:57
 msgid "The end time/date must be after the start time/date."
@@ -4821,7 +4821,7 @@ msgstr "Erforderlich: Datum / Uhrzeit, Ausgabe und Ausgabezustand"
 
 #: mycodo_flask/utils/utils_method.py:115
 msgid "Invalid Date/Time format. Correct format: DD-MM-YYYY HH:MM:SS"
-msgstr "Ungültiges Datums- / Uhrzeitformat Korrektes Format: DD/MM/YYYY HH:MM:SS"
+msgstr "Ungültiges Datums- / Uhrzeitformat Korrektes Format: MM/DD/YYYY HH:MM:SS"
 
 #: mycodo_flask/utils/utils_method.py:122
 msgid "Required: Output, Output State, and Output Duration"

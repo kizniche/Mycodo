@@ -2112,7 +2112,7 @@ msgid "Measurement to Export"
 msgstr "Metingen om te exporteren"
 
 #: mycodo_flask/forms/forms_misc.py:68
-msgid "Time Range DD/MM/YYYY HH:MM"
+msgid "Time Range MM/DD/YYYY HH:MM"
 msgstr "Tijdbereik DD / MM / JJJJ UU: MM"
 
 #: mycodo_flask/forms/forms_misc.py:69
@@ -4772,7 +4772,7 @@ msgid "Required: Start date/time, end date/time, start setpoint"
 msgstr "Vereist: begindatum / -tijd, einddatum / -tijd, start-instelpunt"
 
 #: mycodo_flask/utils/utils_method.py:53
-msgid "Invalid Date/Time format. Correct format: DD/MM/YYYY HH:MM:SS"
+msgid "Invalid Date/Time format. Correct format: MM/DD/YYYY HH:MM:SS"
 msgstr ""
 "Ongeldige datum / tijd-indeling. Juiste indeling: DD / MM / JJJJ UU: MM: "
 "SS"

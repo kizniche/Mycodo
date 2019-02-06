@@ -2062,7 +2062,7 @@ msgid "Measurement to Export"
 msgstr "出口计量"
 
 #: mycodo_flask/forms/forms_misc.py:68
-msgid "Time Range DD/MM/YYYY HH:MM"
+msgid "Time Range MM/DD/YYYY HH:MM"
 msgstr "时间范围DD / MM / YYYY HH：MM"
 
 #: mycodo_flask/forms/forms_misc.py:69
@@ -4515,7 +4515,7 @@ msgid "Required: Start date/time, end date/time, start setpoint"
 msgstr "必需：开始日期/时间，结束日期/时间，开始设定值"
 
 #: mycodo_flask/utils/utils_method.py:53
-msgid "Invalid Date/Time format. Correct format: DD/MM/YYYY HH:MM:SS"
+msgid "Invalid Date/Time format. Correct format: MM/DD/YYYY HH:MM:SS"
 msgstr "无效的日期/时间格式。格式正确：DD / MM / YYYY HH：MM：SS"
 
 #: mycodo_flask/utils/utils_method.py:57

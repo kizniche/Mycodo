@@ -2110,7 +2110,7 @@ msgid "Measurement to Export"
 msgstr "Medição para Exportar"
 
 #: mycodo_flask/forms/forms_misc.py:68
-msgid "Time Range DD/MM/YYYY HH:MM"
+msgid "Time Range MM/DD/YYYY HH:MM"
 msgstr "Intervalo de tempo DD / MM / AAAA HH: MM"
 
 #: mycodo_flask/forms/forms_misc.py:69
@@ -4747,7 +4747,7 @@ msgstr ""
 "ajuste inicial"
 
 #: mycodo_flask/utils/utils_method.py:53
-msgid "Invalid Date/Time format. Correct format: DD/MM/YYYY HH:MM:SS"
+msgid "Invalid Date/Time format. Correct format: MM/DD/YYYY HH:MM:SS"
 msgstr ""
 "Formato de data / hora inválido. Formato correto: DD / MM / AAAA HH: MM: "
 "SS"

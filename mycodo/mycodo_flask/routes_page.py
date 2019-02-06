@@ -1956,12 +1956,15 @@ def page_usage():
             end_str,
             measure=measurement)
 
+        calculate_usage[energy_device.unique_id]['average_amps'] = 0
+        calculate_usage[energy_device.unique_id]['kwh'] = 0
+        calculate_usage[energy_device.unique_id]['hours'] = 0
         if average_amps:
             calculate_usage[energy_device.unique_id]['average_amps'] = average_amps
             hours = ((end_seconds - start_seconds) / 3600)
             if hours < 1:
                 hours = 1
-            calculate_usage[energy_device.unique_id]['kwh'] = (misc.output_usage_volts * average_amps) / 1000 / hours
+            calculate_usage[energy_device.unique_id]['kwh'] = misc.output_usage_volts * average_amps / 1000 * hours
             calculate_usage[energy_device.unique_id]['hours'] = hours
 
     else:

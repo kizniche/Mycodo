@@ -51,7 +51,7 @@ def validate_method_data(form_data, this_method):
                                              '%Y-%m-%d %H:%M:%S')
             except ValueError:
                 flash(gettext("Invalid Date/Time format. Correct format: "
-                              "DD/MM/YYYY HH:MM:SS"), "error")
+                              "MM/DD/YYYY HH:MM:SS"), "error")
                 return 1
             if end_time <= start_time:
                 flash(gettext("The end time/date must be after the start "

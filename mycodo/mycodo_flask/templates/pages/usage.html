@@ -133,17 +133,17 @@
           </tr>
           <tr>
             <td>{{_('Energy Usage')}} (kWh, @{{misc.output_usage_volts}}V)</td>
-            <td>{{(misc.output_usage_volts * energy_usage_stats[each_energy.unique_id]['hour'] / 1000 / 1)|round(3)}}</td>
-            <td>{{(misc.output_usage_volts * energy_usage_stats[each_energy.unique_id]['day'] / 1000 / 24)|round(3)}}</td>
-            <td>{{(misc.output_usage_volts * energy_usage_stats[each_energy.unique_id]['week'] / 1000 / 168)|round(3)}}</td>
-            <td>{{(misc.output_usage_volts * energy_usage_stats[each_energy.unique_id]['month'] / 1000 / 720)|round(3)}}</td>
+            <td>{{(misc.output_usage_volts * energy_usage_stats[each_energy.unique_id]['hour'] / 1000)|round(3)}}</td>
+            <td>{{(misc.output_usage_volts * energy_usage_stats[each_energy.unique_id]['day'] / 1000 * 24)|round(3)}}</td>
+            <td>{{(misc.output_usage_volts * energy_usage_stats[each_energy.unique_id]['week'] / 1000 * 168)|round(3)}}</td>
+            <td>{{(misc.output_usage_volts * energy_usage_stats[each_energy.unique_id]['month'] / 1000 * 720)|round(3)}}</td>
           </tr>
           <tr>
             <td>{{_('Cost')}} ({{misc.output_usage_currency}}, at {{misc.output_usage_currency}}{{misc.output_usage_cost}}/kWh)</td>
             <td>{{(misc.output_usage_volts * energy_usage_stats[each_energy.unique_id]['hour'] / 1000 * misc.output_usage_cost)|round(2)}}</td>
-            <td>{{(misc.output_usage_volts * energy_usage_stats[each_energy.unique_id]['day'] / 1000 * misc.output_usage_cost)|round(2)}}</td>
-            <td>{{(misc.output_usage_volts * energy_usage_stats[each_energy.unique_id]['week'] / 1000 * misc.output_usage_cost)|round(2)}}</td>
-            <td>{{(misc.output_usage_volts * energy_usage_stats[each_energy.unique_id]['month'] / 1000 * misc.output_usage_cost)|round(2)}}</td>
+            <td>{{(misc.output_usage_volts * energy_usage_stats[each_energy.unique_id]['day'] / 1000 * 24 * misc.output_usage_cost)|round(2)}}</td>
+            <td>{{(misc.output_usage_volts * energy_usage_stats[each_energy.unique_id]['week'] / 1000 * 168 * misc.output_usage_cost)|round(2)}}</td>
+            <td>{{(misc.output_usage_volts * energy_usage_stats[each_energy.unique_id]['month'] / 1000 * 720 * misc.output_usage_cost)|round(2)}}</td>
           </tr>
         </table>
       </div>
@@ -180,7 +180,7 @@
             </tr>
             <tr>
               <td>{{_('Cost')}} ({{misc.output_usage_currency}}, at {{misc.output_usage_currency}}{{misc.output_usage_cost}}/kWh)</td>
-              <td>{{(calculate_usage[each_energy.unique_id]['kwh'] * calculate_usage[each_energy.unique_id]['hours'] * misc.output_usage_cost)|round(2)}}</td>
+              <td>{{(calculate_usage[each_energy.unique_id]['kwh'] * misc.output_usage_cost)|round(2)}}</td>
             </tr>
           </table>
         </div>
