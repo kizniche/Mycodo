@@ -4,9 +4,10 @@
 
  - Remove bluepy version restriction that conflicts with another requirement for the latest version
  - Fix Energy Usage calculations
- - Fix issue setting Output Action duty cycle to 0
  - Fix output controller startup issue
  - Fix notes duplicating on graphs
+ - Fix inability of Function Action (Output PWM) to set a duty cycle of 0
+ - Fix inability of Function Action (Activate Controller) to activate Conditional
 
 ### Features
 

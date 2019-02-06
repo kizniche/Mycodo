@@ -301,18 +301,6 @@ def trigger_action(
         if controller_entry.is_activated:
             message += " Notice: Controller is already active!"
         else:
-            # If controller is Conditional and is
-            # run_pwm_method, activate method start
-            is_conditional = db_retrieve_table_daemon(
-                Conditional, unique_id=cond_action.do_unique_id, entry='first')
-            if (is_conditional and
-                    is_conditional.conditional_type == 'run_pwm_method'):
-                with session_scope(MYCODO_DB_PATH) as new_session:
-                    mod_cont_ready = new_session.query(Conditional).filter(
-                        Conditional.unique_id == cond_action.do_unique_id).first()
-                    mod_cont_ready.method_start_time = 'Ready'
-                    new_session.commit()
-
             with session_scope(MYCODO_DB_PATH) as new_session:
                 mod_cont = new_session.query(controller_object).filter(
                     controller_object.unique_id == cond_action.do_unique_id).first()
