@@ -6,6 +6,7 @@
  - Fix Energy Usage calculations
  - Fix issue setting Output Action duty cycle to 0
  - Fix output controller startup issue
+ - Fix notes duplicating on graphs
 
 ### Features
 
