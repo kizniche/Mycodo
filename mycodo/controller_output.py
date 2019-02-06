@@ -901,7 +901,7 @@ output_id = '{}'
                 self.output_on_off(
                     each_output_id,
                     'on',
-                    trigger_conditionals=self.trigger_functions_at_start[self.output_id])
+                    trigger_conditionals=self.trigger_functions_at_start[each_output_id])
             else:
                 self.output_on_off(
                     each_output_id,
