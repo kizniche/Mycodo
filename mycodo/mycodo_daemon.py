@@ -441,7 +441,8 @@ class DaemonController:
 
                 # Log ram usage every 5 days
                 if now > self.timer_ram_use:
-                    self.timer_ram_use = now + 432000
+                    while now > self.timer_ram_use:
+                        self.timer_ram_use += 432000
                     self.log_ram_usage()
 
                 # Capture time-lapse image (if enabled)
@@ -457,12 +458,14 @@ class DaemonController:
                 # Collect and send anonymous statistics (if enabled)
                 if (not self.opt_out_statistics and
                         now > self.timer_stats):
-                    self.timer_stats = self.timer_stats + STATS_INTERVAL
+                    while now > self.timer_stats:
+                        self.timer_stats += STATS_INTERVAL
                     self.send_stats()
 
                 # Check if running the latest version (if enabled)
                 if now > self.timer_upgrade:
-                    self.timer_upgrade = self.timer_upgrade + UPGRADE_CHECK_INTERVAL
+                    while now > self.timer_upgrade:
+                        self.timer_upgrade += UPGRADE_CHECK_INTERVAL
                     if self.enable_upgrade_check:
                         self.check_mycodo_upgrade_exists(now)
 
@@ -1077,9 +1080,7 @@ class DaemonController:
     def trigger_all_actions(
             self, function_id, message=''):
         try:
-            return trigger_function_actions(
-                function_id,
-                message=message)
+            return trigger_function_actions(function_id, message=message)
         except Exception as except_msg:
             message = "Could not trigger Conditional Actions:" \
                       " {err}".format(err=except_msg)

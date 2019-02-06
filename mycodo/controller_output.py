@@ -793,10 +793,7 @@ output_id = '{}'
 
             self.control.trigger_all_actions(
                 each_trigger.unique_id,
-                message=message,
-                output_state=state,
-                on_duration=on_duration,
-                duty_cycle=duty_cycle)
+                message=message)
 
         #
         # Check PWM Outputs
@@ -846,9 +843,7 @@ output_id = '{}'
                         duty_cycle=each_trigger.output_duty_cycle)
 
             self.control.trigger_all_actions(
-                each_trigger.unique_id,
-                message=message,
-                duty_cycle=duty_cycle)
+                each_trigger.unique_id, message=message)
 
     def all_outputs_initialize(self, outputs):
         for each_output in outputs:

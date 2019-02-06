@@ -420,8 +420,7 @@ class InputController(threading.Thread):
                                     pin=bcm_pin)
 
                     self.control.trigger_all_actions(
-                        each_trigger.unique_id, message=message,
-                        edge=edge)
+                        each_trigger.unique_id, message=message)
 
     def create_measurements_dict(self):
         measurements_record = {}
