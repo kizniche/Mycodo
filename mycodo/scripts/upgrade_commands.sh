@@ -246,6 +246,8 @@ case "${1:-''}" in
         rm -rf ./PIGPIO
         /bin/bash ${MYCODO_PATH}/mycodo/scripts/upgrade_commands.sh disable-pigpiod
         /bin/bash ${MYCODO_PATH}/mycodo/scripts/upgrade_commands.sh enable-pigpiod-low
+        mkdir -p /opt/mycodo
+        touch /opt/mycodo/pigpio-installed
     ;;
     'uninstall-pigpiod')
         printf "\n#### Uninstalling pigpiod\n"
@@ -258,6 +260,7 @@ case "${1:-''}" in
         cd ${MYCODO_PATH}/install
         rm -rf ./PIGPIO
         touch /etc/systemd/system/pigpiod_uninstalled.service
+        rm -f /opt/mycodo/pigpio-installed
     ;;
     'disable-pigpiod')
         printf "\n#### Disabling installed pigpiod startup script\n"

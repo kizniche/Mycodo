@@ -92,7 +92,7 @@ INPUT_INFORMATION = {
         ('pip-git', 'adafruit-bme280', 'git://github.com/adafruit/Adafruit_Python_BME280.git#egg=adafruit-bme280'),
         ('apt', 'whiptail', 'whiptail'),
         ('apt', 'zsh', 'zsh'),
-        ('internal', 'apt python3-pigpio', 'pigpio'),
+        ('internal', 'file-exists /opt/mycodo/pigpio-installed', 'pigpio'),
         ('internal', 'pip-exists wiringpi', 'wiringpi'),
         ('internal', 'file-exists /usr/local/include/bcm2835.h', 'bcm2835')
     ],

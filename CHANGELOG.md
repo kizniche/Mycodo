@@ -8,6 +8,7 @@
  - Fix notes duplicating on graphs
  - Fix inability of Function Action (Output PWM) to set a duty cycle of 0
  - Fix inability of Function Action (Activate Controller) to activate Conditional
+ - Fix pigpio dependency issue ([#617](https://github.com/kizniche/mycodo/issues/617))
 
 ### Features
 

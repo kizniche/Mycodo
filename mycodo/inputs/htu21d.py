@@ -66,7 +66,7 @@ INPUT_INFORMATION = {
     'options_disabled': ['interface'],
 
     'dependencies_module': [
-        ('internal', 'apt python3-pigpio', 'pigpio')
+        ('internal', 'file-exists /opt/mycodo/pigpio-installed', 'pigpio')
     ],
 
     'interfaces': ['I2C'],
