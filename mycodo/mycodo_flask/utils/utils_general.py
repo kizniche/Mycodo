@@ -771,7 +771,9 @@ def return_dependencies(device_type):
     for each_section in list_dependencies:
         if device_type in each_section:
             for each_device, each_dict in each_section[device_type].items():
-                if each_device == 'dependencies_module':
+                if not each_dict:
+                    met_deps = True
+                elif each_device == 'dependencies_module':
                     for (install_type, package, install_id) in each_dict:
                         entry = (
                             package, '{0} {1}'.format(install_type, install_id),
@@ -821,9 +823,6 @@ def return_dependencies(device_type):
                                     unmet_deps.append(entry)
                                 else:
                                     met_deps = True
-
-                    if not each_dict:
-                        met_deps = True
 
     return unmet_deps, met_deps
 
