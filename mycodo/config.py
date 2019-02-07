@@ -12,7 +12,7 @@ from flask_babel import lazy_gettext
 sys.path.append(os.path.abspath(os.path.dirname(__file__)))
 from config_translations import TRANSLATIONS
 
-MYCODO_VERSION = '7.2.0'
+MYCODO_VERSION = '7.2.1'
 ALEMBIC_VERSION = 'a8341ac0d779'
 
 #  FORCE_UPGRADE_MASTER
@@ -257,7 +257,7 @@ OUTPUT_INFO = {
     'pwm': {
         'name': lazy_gettext('PWM (GPIO)'),
         'dependencies_module': [
-            ('internal', 'file-exists /opt/mycodo/pigpio-installed', 'pigpio')
+            ('internal', 'file-exists /opt/mycodo/pigpio_installed', 'pigpio')
         ],
         'measure': {
             'duty_cycle': {'percent': {0: {}}}
