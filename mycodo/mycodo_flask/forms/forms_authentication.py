@@ -60,28 +60,6 @@ class Login(FlaskForm):
 
 
 #
-# Log viewer
-#
-
-class LogView(FlaskForm):
-    lines = IntegerField(
-        lazy_gettext('Number of Lines'),
-        validators=[validators.NumberRange(
-            min=1,
-            message=lazy_gettext('Number of lines should be greater than 0')
-        )],
-        widget=NumberInput()
-    )
-    loglogin = SubmitField(lazy_gettext('Login Log'))
-    loghttp = SubmitField(lazy_gettext('HTTP Log'))
-    logdaemon = SubmitField(lazy_gettext('Daemon Log'))
-    logbackup = SubmitField(lazy_gettext('Backup Log'))
-    logkeepup = SubmitField(lazy_gettext('KeepUp Log'))
-    logupgrade = SubmitField(lazy_gettext('Upgrade Log'))
-    logrestore = SubmitField(lazy_gettext('Restore Log'))
-
-
-#
 # Remote Admin add servers
 #
 

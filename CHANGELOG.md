@@ -1,3 +1,11 @@
+## 7.2.2 (Unreleased)
+
+### Features
+
+ - Add log line of PID settings when activated or saved
+ - Add PID Settings button to Mycodo Logs page
+
+
 ## 7.2.1 (2019-02-06)
 
 ### Bugfixes

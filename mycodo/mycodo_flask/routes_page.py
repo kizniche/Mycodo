@@ -1113,36 +1113,45 @@ def page_logview():
         if form_log_view.lines.data:
             lines = form_log_view.lines.data
 
-        if form_log_view.loglogin.data:
-            logfile = LOGIN_LOG_FILE
-        elif form_log_view.loghttp_access.data:
-            logfile = HTTP_ACCESS_LOG_FILE
-        elif form_log_view.loghttp_error.data:
-            logfile = HTTP_ERROR_LOG_FILE
-        elif form_log_view.logdependency.data:
-            logfile = DEPENDENCY_LOG_FILE
-        elif form_log_view.logdaemon.data:
-            logfile = DAEMON_LOG_FILE
-        elif form_log_view.logkeepup.data:
-            logfile = KEEPUP_LOG_FILE
-        elif form_log_view.logbackup.data:
-            logfile = BACKUP_LOG_FILE
-        elif form_log_view.logrestore.data:
-            logfile = RESTORE_LOG_FILE
-        elif form_log_view.logupgrade.data:
-            logfile = UPGRADE_LOG_FILE
-
         # Get contents from file
-        if os.path.isfile(logfile):
-            command = 'tail -n {lines} {log}'.format(lines=lines,
-                                                     log=logfile)
+        if form_log_view.log_pid_settings.data:
+            command = 'grep "PID Settings" {log} | tail -n {lines} '.format(
+                lines=lines, log=DAEMON_LOG_FILE)
             log = subprocess.Popen(
                 command, stdout=subprocess.PIPE, shell=True)
             (log_output, _) = log.communicate()
             log.wait()
             log_output = str(log_output, 'latin-1')
         else:
-            log_output = 404
+            if form_log_view.loglogin.data:
+                logfile = LOGIN_LOG_FILE
+            elif form_log_view.loghttp_access.data:
+                logfile = HTTP_ACCESS_LOG_FILE
+            elif form_log_view.loghttp_error.data:
+                logfile = HTTP_ERROR_LOG_FILE
+            elif form_log_view.logdependency.data:
+                logfile = DEPENDENCY_LOG_FILE
+            elif form_log_view.logdaemon.data:
+                logfile = DAEMON_LOG_FILE
+            elif form_log_view.logkeepup.data:
+                logfile = KEEPUP_LOG_FILE
+            elif form_log_view.logbackup.data:
+                logfile = BACKUP_LOG_FILE
+            elif form_log_view.logrestore.data:
+                logfile = RESTORE_LOG_FILE
+            elif form_log_view.logupgrade.data:
+                logfile = UPGRADE_LOG_FILE
+
+            if os.path.isfile(logfile):
+                command = 'tail -n {lines} {log}'.format(lines=lines,
+                                                         log=logfile)
+                log = subprocess.Popen(
+                    command, stdout=subprocess.PIPE, shell=True)
+                (log_output, _) = log.communicate()
+                log.wait()
+                log_output = str(log_output, 'latin-1')
+            else:
+                log_output = 404
 
     return render_template('tools/logview.html',
                            form_log_view=form_log_view,

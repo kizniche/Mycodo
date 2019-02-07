@@ -184,8 +184,8 @@ class PIDController(threading.Thread):
     def run(self):
         try:
             self.running = True
-            startup_str = "Activated in {:.1f} ms".format(
-                (timeit.default_timer() - self.thread_startup_timer) * 1000)
+            startup_str = "Activated in {time:.1f} ms".format(
+                time=(timeit.default_timer() - self.thread_startup_timer) * 1000)
             if self.is_paused:
                 startup_str += ", started Paused"
             elif self.is_held:
@@ -297,6 +297,8 @@ class PIDController(threading.Thread):
                 Output, unique_id=self.lower_output_id).output_type
         except AttributeError:
             self.lower_output_type = None
+
+        self.logger.info("PID Settings: {}".format(self.pid_parameters_str()))
 
         return "success"
 
@@ -835,6 +837,48 @@ class PIDController(threading.Thread):
                 self.control.output_off(self.raise_output_id)
             if self.direction in ['lower', 'both'] and self.lower_output_id:
                 self.control.output_off(self.lower_output_id)
+
+    def pid_parameters_str(self):
+        return "Device ID: {did}, " \
+               "Measurement ID: {mid}, " \
+               "Direction: {dir}, " \
+               "Period: {per}, " \
+               "Setpoint: {sp}, " \
+               "Band: {band}, " \
+               "Kp: {kp}, " \
+               "Ki: {ki}, " \
+               "Kd: {kd}, " \
+               "Integrator Min: {imn}, " \
+               "Integrator Max {imx}, " \
+               "Output Raise: {opr}, " \
+               "Output Raise Min On: {oprmnon}, " \
+               "Output Raise Max On: {oprmxon}, " \
+               "Output Raise Min Off: {oprmnoff}, " \
+               "Output Lower: {opl}, " \
+               "Output Lower Min On: {oplmnon}, " \
+               "Output Lower Max On: {oplmxon}, " \
+               "Output Lower Min Off: {oplmnoff}, " \
+               "Setpoint Tracking: {spt}".format(
+            did=self.device_id,
+            mid=self.measurement_id,
+            dir=self.direction,
+            per=self.period,
+            sp=self.setpoint,
+            band=self.band,
+            kp=self.Kp,
+            ki=self.Ki,
+            kd=self.Kd,
+            imn=self.integrator_min,
+            imx=self.integrator_max,
+            opr=self.raise_output_id,
+            oprmnon=self.raise_min_duration,
+            oprmxon=self.raise_max_duration,
+            oprmnoff=self.raise_min_off_duration,
+            opl=self.lower_output_id,
+            oplmnon=self.lower_min_duration,
+            oplmxon=self.lower_max_duration,
+            oplmnoff=self.lower_min_off_duration,
+            spt=self.method_id)
 
     def control_var_to_duty_cycle(self, control_variable):
         # Convert control variable to duty cycle

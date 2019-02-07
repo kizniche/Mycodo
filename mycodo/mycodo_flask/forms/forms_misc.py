@@ -24,14 +24,16 @@ from mycodo.config_translations import TRANSLATIONS
 #
 
 class EnergyUsageAdd(FlaskForm):
-    energy_usage_select = SelectField('{}: {}'.format(lazy_gettext('Measurement'), lazy_gettext('Amp')))
+    energy_usage_select = SelectField(
+        '{}: {}'.format(lazy_gettext('Measurement'), lazy_gettext('Amp')))
     energy_usage_add = SubmitField(TRANSLATIONS['add']['title'])
 
 
 class EnergyUsageMod(FlaskForm):
     energy_usage_id = StringField('Energy Usage ID', widget=widgets.HiddenInput())
     name = StringField(TRANSLATIONS['name']['title'])
-    selection_device_measure_ids = StringField('Select Amp Measurement')
+    selection_device_measure_ids = StringField(
+        '{}: {}'.format(lazy_gettext('Measurement'), lazy_gettext('Amp')))
     energy_usage_date_range = StringField(lazy_gettext('Time Range MM/DD/YYYY HH:MM'))
     energy_usage_range_calc = SubmitField(TRANSLATIONS['calculate']['title'])
     energy_usage_mod = SubmitField(TRANSLATIONS['save']['title'])
@@ -130,6 +132,7 @@ class LogView(FlaskForm):
     logkeepup = SubmitField(lazy_gettext('KeepUp'))
     logupgrade = SubmitField(lazy_gettext('Upgrade'))
     logrestore = SubmitField(lazy_gettext('Restore'))
+    log_pid_settings = SubmitField(lazy_gettext('PID Settings'))
 
 
 #

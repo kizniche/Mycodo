@@ -384,11 +384,9 @@ class InputController(threading.Thread):
                     (self.switch_edge == 'both' and gpio_state)):
                 rising_or_falling = 1  # Rising edge detected
                 state_str = 'Rising'
-                edge = 1
             else:
                 rising_or_falling = -1  # Falling edge detected
                 state_str = 'Falling'
-                edge = 0
 
             write_db = threading.Thread(
                 target=write_influxdb_value,
