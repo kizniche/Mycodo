@@ -1,5 +1,9 @@
 ## 7.2.2 (Unreleased)
 
+### Bugfixes
+
+ - Fix inability to change BMP280 I2C address ([#625](https://github.com/kizniche/mycodo/issues/625))
+
 ### Features
 
  - Add log line of PID settings when activated or saved
