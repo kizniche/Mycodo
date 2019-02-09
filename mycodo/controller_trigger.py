@@ -144,9 +144,7 @@ class TriggerController(threading.Thread):
                                     self.unique_id_2,
                                     pwm_duty_cycle)
                                 if self.trigger_actions_at_period:
-                                    trigger_function_actions(
-                                        self.function_id,
-                                        duty_cycle=pwm_duty_cycle)
+                                    trigger_function_actions(self.function_id)
                         else:
                             check_approved = True
 
@@ -247,8 +245,7 @@ class TriggerController(threading.Thread):
                         trigger.unique_id_1)
                     self.set_output_duty_cycle(
                         trigger.unique_id_2, pwm_duty_cycle)
-                    trigger_function_actions(
-                        self.function_id, duty_cycle=pwm_duty_cycle)
+                    trigger_function_actions(self.function_id)
             else:
                 self.timer_period = now
 
@@ -424,11 +421,7 @@ class TriggerController(threading.Thread):
                 return
 
         # If the code hasn't returned by now, action should be executed
-        trigger_function_actions(
-            self.function_id,
-            message=message, last_measurement=last_measurement,
-            device_id=device_id, device_measurement=device_measurement,
-            edge=gpio_state)
+        trigger_function_actions(self.function_id, message=message)
 
     def is_running(self):
         return self.running

@@ -3,6 +3,7 @@
 ### Bugfixes
 
  - Fix inability to change BMP280 I2C address ([#625](https://github.com/kizniche/mycodo/issues/625))
+ - Fix issue triggering function actions ([#626](https://github.com/kizniche/mycodo/issues/626))
 
 ### Features
 
