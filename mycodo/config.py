@@ -13,7 +13,7 @@ sys.path.append(os.path.abspath(os.path.dirname(__file__)))
 from config_translations import TRANSLATIONS
 
 MYCODO_VERSION = '7.2.2'
-ALEMBIC_VERSION = 'a8341ac0d779'
+ALEMBIC_VERSION = '2976b41930ad'
 
 #  FORCE_UPGRADE_MASTER
 #  Set True to enable upgrading to the master branch of the Mycodo repository.
@@ -44,11 +44,11 @@ LANGUAGES = {
 # LCD info
 LCD_INFO = {
     '16x2_generic': {
-        'name': '16x2 Generic',
+        'name': '16x2 LCD',
         'dependencies_module': []
     },
-    '16x4_generic': {
-        'name': '16x4 Generic',
+    '20x4_generic': {
+        'name': '20x4 LCD',
         'dependencies_module': []
     },
     '128x32_pioled': {
@@ -76,7 +76,7 @@ LCD_INFO = {
 # Math form dropdown
 LCDS = [
     ('16x2_generic', LCD_INFO['16x2_generic']['name']),
-    ('16x4_generic', LCD_INFO['16x4_generic']['name']),
+    ('20x4_generic', LCD_INFO['20x4_generic']['name']),
     ('128x32_pioled', LCD_INFO['128x32_pioled']['name']),
     ('128x64_pioled', LCD_INFO['128x64_pioled']['name'])
 ]

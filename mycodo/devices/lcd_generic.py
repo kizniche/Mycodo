@@ -8,7 +8,7 @@ logger = logging.getLogger("mycodo.device.lcd_generic")
 
 
 class LCD_Generic:
-    """Output to a generic I2C LCD (16x2 and 16x4 LCD with I2C backpack)"""
+    """Output to a generic I2C LCD (16x2 and 20x4 LCD with I2C backpack)"""
 
     def __init__(self, lcd_dev):
         self.logger = logging.getLogger("mycodo.lcd_{id}".format(id=lcd_dev.unique_id.split('-')[0]))

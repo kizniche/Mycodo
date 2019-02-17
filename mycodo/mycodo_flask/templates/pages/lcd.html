@@ -93,7 +93,7 @@
       </div>
       <div class="row small-gutters">
 
-      {% if each_lcd.lcd_type in ['16x2_generic', '16x4_generic'] %}
+      {% if each_lcd.lcd_type in ['16x2_generic', '20x4_generic'] %}
 
         <div class="col-auto">
           {{form_lcd_mod.location.label(class_='control-label')}}
@@ -212,7 +212,7 @@
         </div>
       </div>
 
-        {%- if each_lcd.lcd_type in ['16x4_generic', '128x32_pioled', '128x64_pioled'] -%}
+        {%- if each_lcd.lcd_type in ['20x4_generic', '128x32_pioled', '128x64_pioled'] -%}
 
       <div class="row small-gutters">
         <div class="col-auto">

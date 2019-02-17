@@ -206,7 +206,7 @@ class LCDController(threading.Thread):
                         each_lcd_display.line_8_measurement)
 
             if self.lcd_type in ['16x2_generic',
-                                 '16x4_generic']:
+                                 '20x4_generic']:
                 from mycodo.devices.lcd_generic import LCD_Generic
                 self.lcd_out = LCD_Generic(lcd_dev)
                 self.lcd_init()
@@ -449,7 +449,7 @@ class LCDController(threading.Thread):
 
         if self.lcd_type in ['128x32_pioled',
                              '16x2_generic',
-                             '16x4_generic']:
+                             '20x4_generic']:
             self.lcd_out.lcd_write_lines(line_1, line_2, line_3, line_4)
 
         elif self.lcd_type == '128x64_pioled':

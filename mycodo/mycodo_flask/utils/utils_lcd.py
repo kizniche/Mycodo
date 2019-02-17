@@ -72,9 +72,9 @@ def lcd_add(form):
             new_lcd.location = '0x27'
             new_lcd.x_characters = 16
             new_lcd.y_lines = 2
-        elif form.lcd_type.data == '16x4_generic':
+        elif form.lcd_type.data == '20x4_generic':
             new_lcd.location = '0x27'
-            new_lcd.x_characters = 16
+            new_lcd.x_characters = 20
             new_lcd.y_lines = 4
 
         if not error:
@@ -112,7 +112,7 @@ def lcd_mod(form_mod_lcd):
             try:
                 mod_lcd.name = form_mod_lcd.name.data
                 if mod_lcd.lcd_type in ['16x2_generic',
-                                        '16x4_generic']:
+                                        '20x4_generic']:
                     mod_lcd.location = form_mod_lcd.location.data
                 mod_lcd.i2c_bus = form_mod_lcd.i2c_bus.data
                 mod_lcd.period = form_mod_lcd.period.data
