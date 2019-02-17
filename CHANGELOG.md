@@ -3,6 +3,7 @@
 ### Bugfixes
 
  - Fix issue with SHT31 Smart Gadget disconnect error-handling
+ - Prevent dashboard camera streaming if using the fswebcam library ([#630](https://github.com/kizniche/mycodo/issues/630))
 
 
 ## 7.2.2 (2019-02-08)

@@ -57,7 +57,7 @@ def check_for_valid_unit_and_conversion(device_id, error):
                 DeviceMeasurements.device_id == device_id)
         else:
             measurements = None
-            error.append("Could not find measurments")
+            error.append("Could not find measurements")
 
         if measurements:
             for each_meas in measurements:

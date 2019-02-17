@@ -8,6 +8,7 @@ from flask import url_for
 from flask_babel import gettext
 
 from mycodo.config_translations import TRANSLATIONS
+from mycodo.databases.models import Camera
 from mycodo.databases.models import Conversion
 from mycodo.databases.models import Dashboard
 from mycodo.databases.models import DeviceMeasurements
@@ -165,6 +166,12 @@ def dashboard_add(form_base, form_object, display_order):
     # Camera
     elif (form_base.dashboard_type.data == 'camera' and
           form_object.camera_id.data):
+
+        camera = Camera.query.filter(Camera.unique_id == form_object.camera_id.data).first()
+        if not camera:
+            error.append("Invalid Camera ID. Check your camera settings.")
+        elif form_object.camera_image_type.data == 'stream' and camera.library != 'picamera':
+            error.append("Only cameras that use the 'picamera' library may be used for streaming")
 
         dashboard_type = 'Camera'
         new_graph.graph_type = form_base.dashboard_type.data
