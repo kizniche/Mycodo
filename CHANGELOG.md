@@ -1,3 +1,10 @@
+## 7.2.3 (Unreleased)
+
+### Bugfixes
+
+ - Fix issue with SHT31 Smart Gadget disconnect error-handling
+
+
 ## 7.2.2 (2019-02-08)
 
 ### Bugfixes

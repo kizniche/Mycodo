@@ -172,8 +172,8 @@ class InputModule(AbstractInput):
             if not self.running:
                 break
             try:
-                self.gadget = self.SHT31(addr=self.location,
-                                         iface=self.bt_adapter)
+                self.gadget = self.SHT31(
+                    addr=self.location, iface=self.bt_adapter)
                 self.connected = True
                 self.connect_error = None
                 break
@@ -182,7 +182,6 @@ class InputModule(AbstractInput):
             time.sleep(0.1)
 
         if not self.connected:
-            self.connected = False
             self.logger.error(
                 "Could not connect: {}".format(self.connect_error))
 
@@ -361,26 +360,35 @@ class InputModule(AbstractInput):
             self.connect()
 
         if self.connected:
-            # Download stored data
-            if self.download_stored_data:
-                self.download_data()
+            try:
+                # Download stored data
+                if self.download_stored_data:
+                    self.download_data()
 
-            # Set logging interval if not already set
-            if ('logger_interval_ms' in self.device_information
-                    and self.logging_interval_ms != self.device_information['logger_interval_ms']):
-                self.set_logging_interval()
+                # Set logging interval if not already set
+                if ('logger_interval_ms' in self.device_information
+                        and self.logging_interval_ms != self.device_information['logger_interval_ms']):
+                    self.set_logging_interval()
 
-            # Get battery percent charge
-            if self.is_enabled(2):
-                return_dict[2]['value'] = self.gadget.readBattery()
+                # Get battery percent charge
+                if self.is_enabled(2):
+                    return_dict[2]['value'] = self.gadget.readBattery()
 
-            # Get temperature and humidity last so their timestamp in the
-            # database will be the most accurate
-            if self.is_enabled(0):
-                return_dict[0]['value'] = self.gadget.readTemperature()
+                # Get temperature and humidity last so their timestamp in the
+                # database will be the most accurate
+                if self.is_enabled(0):
+                    return_dict[0]['value'] = self.gadget.readTemperature()
 
-            if self.is_enabled(1):
-                return_dict[1]['value'] = self.gadget.readHumidity()
+                if self.is_enabled(1):
+                    return_dict[1]['value'] = self.gadget.readHumidity()
+            except self.btle.BTLEDisconnectError:
+                logging.error("Disconnected")
+                return
+            except Exception:
+                logging.exception("Unknown Error")
+                return
+            finally:
+                self.disconnect()
 
             if (self.is_enabled(3) and
                     self.is_enabled(0) and
@@ -393,8 +401,6 @@ class InputModule(AbstractInput):
                     self.is_enabled(1)):
                 return_dict[4]['value'] = calculate_vapor_pressure_deficit(
                     return_dict[0]['value'], return_dict[1]['value'])
-
-            self.disconnect()
 
             return return_dict
 
