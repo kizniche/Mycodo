@@ -63,16 +63,25 @@ class OutputMod(FlaskForm):
         )],
         widget=NumberInput(step='any')
     )
-    trigger = SelectField(
-        TRANSLATIONS['trigger']['title'],
+    on_state = SelectField(
+        TRANSLATIONS['on_state']['title'],
         choices=[
             ("1", lazy_gettext('High')),
             ("0", lazy_gettext('Low'))
         ],
         validators=[Optional()]
     )
-    on_at_start = SelectField(
-        TRANSLATIONS['on_at_start']['title'],
+    state_at_startup = SelectField(
+        TRANSLATIONS['state_at_startup']['title'],
+        choices=[
+            ("-1", lazy_gettext('Neither')),
+            ("1", TRANSLATIONS['on']['title']),
+            ("0", TRANSLATIONS['off']['title'])
+        ],
+        validators=[DataRequired()]
+    )
+    state_at_shutdown = SelectField(
+        TRANSLATIONS['state_at_shutdown']['title'],
         choices=[
             ("-1", lazy_gettext('Neither')),
             ("1", TRANSLATIONS['on']['title']),

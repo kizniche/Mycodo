@@ -683,7 +683,7 @@ to name a few.
 | WiringPi Pin          | This is the GPIO that will be the signal to the |
 |                       | output, using WiringPi numbering.               |
 +-----------------------+-------------------------------------------------+
-| On Trigger            | This is the state of the GPIO to signal the     |
+| On State              | This is the state of the GPIO to signal the     |
 |                       | output to turn the device on. HIGH will send a  |
 |                       | 3.3-volt signal and LOW will send a 0-volt      |
 |                       | signal. If you output completes the circuit     |
@@ -743,11 +743,17 @@ to name a few.
 |                       | `Energy Usage                                   |
 |                       | Settings <#energy-usage-settings>`__.           |
 +-----------------------+-------------------------------------------------+
-| Start State           | This specifies whether the output should be ON  |
-|                       | or OFF when mycodo initially starts. Wireless   |
-|                       | relays have an additional option 'Neither'      |
+| Startup State         | This specifies whether the output should be ON  |
+|                       | or OFF when mycodo initially starts. Some       |
+|                       | outputs have an additional option 'Neither'     |
 |                       | which will not issue an on or off command when  |
 |                       | Mycodo starts or stops.                         |
++-----------------------+-------------------------------------------------+
+| Shutdown State        | This specifies whether the output should be ON  |
+|                       | or OFF when mycodo initially shuts down.        |
+|                       | Some outputs have an additional option          |
+|                       | 'Neither' which will not issue an on or off     |
+|                       | command when Mycodo starts or stops.            |
 +-----------------------+-------------------------------------------------+
 | Trigger at Startup    | Select to enable triggering Functions (such as  |
 |                       | Output Triggers) when Mycodo starts and if      |

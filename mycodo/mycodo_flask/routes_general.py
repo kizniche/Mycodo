@@ -194,7 +194,7 @@ def gpio_state():
     for each_output in output:
         if each_output.output_type == 'wired' and each_output.pin and -1 < each_output.pin < 40:
             GPIO.setup(each_output.pin, GPIO.OUT)
-            if GPIO.input(each_output.pin) == each_output.trigger:
+            if GPIO.input(each_output.pin) == each_output.on_state:
                 state[each_output.unique_id] = 'on'
             else:
                 state[each_output.unique_id] = 'off'
@@ -225,7 +225,7 @@ def gpio_state_unique_id(unique_id):
 
     if output.output_type == 'wired' and output.pin and -1 < output.pin < 40:
         GPIO.setup(output.pin, GPIO.OUT)
-        if GPIO.input(output.pin) == output.trigger:
+        if GPIO.input(output.pin) == output.on_state:
             state = 'on'
         else:
             state = 'off'

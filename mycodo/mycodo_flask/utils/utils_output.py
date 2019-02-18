@@ -82,7 +82,8 @@ def output_add(form_add):
                 new_output.channel = 0
 
                 if output_type == 'wired':
-                    new_output.on_at_start = False
+                    new_output.state_at_startup = 0
+                    new_output.state_at_shutdown = 0
                 elif output_type == 'wireless_rpi_rf':
                     new_output.pin = None
                     new_output.protocol = 1
@@ -162,7 +163,7 @@ def output_mod(form_output):
             if not is_int(form_output.gpio_location.data):
                 error.append("BCM GPIO Pin must be an integer")
             mod_output.pin = form_output.gpio_location.data
-            mod_output.trigger = bool(int(form_output.trigger.data))
+            mod_output.on_state = bool(int(form_output.on_state.data))
         elif mod_output.output_type == 'wireless_rpi_rf':
             if not is_int(form_output.gpio_location.data):
                 error.append("Pin must be an integer")
@@ -203,16 +204,27 @@ def output_mod(form_output):
             if form_output.baud_rate.data:
                 mod_output.baud_rate = form_output.baud_rate.data
 
-        if (form_output.on_at_start.data == '-1' or
+        if (form_output.state_at_startup.data == '-1' or
                 mod_output.output_type in ['pwm', 'command_pwm']):
-            mod_output.on_at_start = None
-        elif form_output.on_at_start.data is not None:
+            mod_output.state_at_startup = None
+        elif form_output.state_at_startup.data is not None:
             try:
-                mod_output.on_at_start = bool(int(form_output.on_at_start.data))
+                mod_output.state_at_startup = bool(int(form_output.state_at_startup.data))
             except Exception:
                 logger.error(
-                    "Error: Could not handle form_output.on_at_start.data: "
-                    "{}".format(form_output.on_at_start.data))
+                    "Error: Could not handle form_output.state_at_startup.data: "
+                    "{}".format(form_output.state_at_startup.data))
+
+        if (form_output.state_at_shutdown.data == '-1' or
+                mod_output.output_type in ['pwm', 'command_pwm']):
+            mod_output.state_at_shutdown = None
+        elif form_output.state_at_shutdown.data is not None:
+            try:
+                mod_output.state_at_shutdown = bool(int(form_output.state_at_shutdown.data))
+            except Exception:
+                logger.error(
+                    "Error: Could not handle form_output.state_at_shutdown.data: "
+                    "{}".format(form_output.state_at_shutdown.data))
 
         if not error:
             db.session.commit()

@@ -23,9 +23,8 @@ class Output(CRUDMixin, db.Model):
     conversion_id = db.Column(db.Text, db.ForeignKey('conversion.unique_id'), default='')
     channel = db.Column(db.Integer, default=None)
     pin = db.Column(db.Integer, default=None)  # Pin connected to the device/output
-    trigger = db.Column(db.Boolean, default=True)  # GPIO output to turn output on (True=HIGH, False=LOW)
+    on_state = db.Column(db.Boolean, default=True)  # GPIO output to turn output on (True=HIGH, False=LOW)
     amps = db.Column(db.Float, default=0.0)  # The current drawn by the device connected to the output
-    on_at_start = db.Column(db.Boolean, default=None)  # Turn output on or off when daemon starts
     on_until = db.Column(db.DateTime, default=None)  # Stores time to turn off output (if on for a duration)
     last_duration = db.Column(db.Float, default=None)  # Stores the last on duration (seconds)
     on_duration = db.Column(db.Boolean, default=None)  # Stores if the output is currently on for a duration
@@ -35,6 +34,9 @@ class Output(CRUDMixin, db.Model):
     off_command = db.Column(db.Text, default=None)
     pwm_command = db.Column(db.Text, default=None)
     trigger_functions_at_start = db.Column(db.Boolean, default=True)
+
+    state_at_startup = db.Column(db.Boolean, default=None)  # Turn output on (1) or off (0) when daemon starts
+    state_at_shutdown = db.Column(db.Boolean, default=None)  # Turn output on (1) or off (0) when daemon shuts down
 
     # PWM
     pwm_hertz = db.Column(db.Integer, default=None)  # PWM Hertz
@@ -77,4 +79,4 @@ class Output(CRUDMixin, db.Model):
         :rtype: bool
         """
         if self.output_type == 'wired' and self._is_setup():
-            return self.trigger == GPIO.input(self.pin)
+            return self.on_state == GPIO.input(self.pin)

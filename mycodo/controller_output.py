@@ -72,8 +72,9 @@ class OutputController(threading.Thread):
         self.output_name = {}
         self.output_pin = {}
         self.output_amps = {}
-        self.output_trigger = {}
-        self.output_on_at_start = {}
+        self.output_on_state = {}
+        self.output_state_at_startup = {}
+        self.output_state_at_shutdown = {}
         self.trigger_functions_at_start = {}
 
         self.output_on_until = {}
@@ -153,8 +154,12 @@ class OutputController(threading.Thread):
         finally:
             # Turn all outputs off
             for each_output_id in self.output_id:
-                self.output_on_off(
-                    each_output_id, 'off', trigger_conditionals=False)
+                if self.output_state_at_shutdown[each_output_id] is False:
+                    self.output_on_off(
+                        each_output_id, 'off', trigger_conditionals=False)
+                elif self.output_state_at_shutdown[each_output_id]:
+                    self.output_on_off(
+                        each_output_id, 'on', trigger_conditionals=False)
             self.cleanup_gpio()
             self.running = False
             self.logger.info(
@@ -168,7 +173,7 @@ class OutputController(threading.Thread):
                       trigger_conditionals=True):
         """
         Turn a output on or off
-        The GPIO may be either HIGH or LOW to activate a output. This trigger
+        The GPIO may be either HIGH or LOW to activate a output. This on
         state will be referenced to determine if the GPIO needs to be high or
         low to turn the output on or off.
 
@@ -555,10 +560,10 @@ class OutputController(threading.Thread):
         if self.output_type[output_id] == 'wired':
             if state == 'on':
                 GPIO.output(self.output_pin[output_id],
-                            self.output_trigger[output_id])
+                            self.output_on_state[output_id])
             elif state == 'off':
                 GPIO.output(self.output_pin[output_id],
-                            not self.output_trigger[output_id])
+                            not self.output_on_state[output_id])
 
         elif self.output_type[output_id] == 'wireless_rpi_rf':
             if state == 'on':
@@ -717,7 +722,7 @@ output_id = '{}'
                 codeOut.close()
                 codeErr.close()
 
-    def check_triggers(self, output_id, state=None, on_duration=None, duty_cycle=None):
+    def check_triggers(self, output_id, on_duration=None):
         """
         This function is executed whenever an output is turned on or off
         It is responsible for executing Output Triggers
@@ -857,8 +862,9 @@ output_id = '{}'
             self.output_name[each_output.unique_id] = each_output.name
             self.output_pin[each_output.unique_id] = each_output.pin
             self.output_amps[each_output.unique_id] = each_output.amps
-            self.output_trigger[each_output.unique_id] = each_output.trigger
-            self.output_on_at_start[each_output.unique_id] = each_output.on_at_start
+            self.output_on_state[each_output.unique_id] = each_output.on_state
+            self.output_state_at_startup[each_output.unique_id] = each_output.state_at_startup
+            self.output_state_at_shutdown[each_output.unique_id] = each_output.state_at_shutdown
             self.output_on_until[each_output.unique_id] = datetime.datetime.now()
             self.output_last_duration[each_output.unique_id] = 0
             self.output_on_duration[each_output.unique_id] = False
@@ -889,10 +895,10 @@ output_id = '{}'
     def all_outputs_set_state(self):
         """Turn all outputs on that are set to be on at startup"""
         for each_output_id in self.output_id:
-            if (self.output_on_at_start[each_output_id] is None or
+            if (self.output_state_at_startup[each_output_id] is None or
                     self.output_type[each_output_id] == 'pwm'):
                 pass  # Don't turn on or off
-            elif self.output_on_at_start[each_output_id]:
+            elif self.output_state_at_startup[each_output_id]:
                 self.output_on_off(
                     each_output_id,
                     'on',
@@ -940,8 +946,9 @@ output_id = '{}'
             self.output_name[output_id] = output.name
             self.output_pin[output_id] = output.pin
             self.output_amps[output_id] = output.amps
-            self.output_trigger[output_id] = output.trigger
-            self.output_on_at_start[output_id] = output.on_at_start
+            self.output_on_state[output_id] = output.on_state
+            self.output_state_at_startup[output_id] = output.state_at_startup
+            self.output_state_at_shutdown[output_id] = output.state_at_shutdown
             self.output_on_until[output_id] = datetime.datetime.now()
             self.output_time_turned_on[output_id] = None
             self.output_last_duration[output_id] = 0
@@ -1009,8 +1016,9 @@ output_id = '{}'
             self.output_name.pop(output_id, None)
             self.output_pin.pop(output_id, None)
             self.output_amps.pop(output_id, None)
-            self.output_trigger.pop(output_id, None)
-            self.output_on_at_start.pop(output_id, None)
+            self.output_on_state.pop(output_id, None)
+            self.output_state_at_startup.pop(output_id, None)
+            self.output_state_at_shutdown.pop(output_id, None)
             self.output_on_until.pop(output_id, None)
             self.output_last_duration.pop(output_id, None)
             self.output_on_duration.pop(output_id, None)
@@ -1106,8 +1114,8 @@ output_id = '{}'
                 GPIO.setwarnings(True)
                 GPIO.setup(self.output_pin[output_id], GPIO.OUT)
                 GPIO.output(self.output_pin[output_id],
-                            not self.output_trigger[output_id])
-                state = 'LOW' if self.output_trigger[output_id] else 'HIGH'
+                            not self.output_on_state[output_id])
+                state = 'LOW' if self.output_on_state[output_id] else 'HIGH'
                 self.logger.info(
                     "Output {id} setup on pin {pin} and turned OFF "
                     "(OFF={state})".format(id=output_id.split('-')[0],
@@ -1119,7 +1127,7 @@ output_id = '{}'
                     "trigger={trigger}: {err}".format(
                         id=output_id.split('-')[0],
                         pin=self.output_pin[output_id],
-                        trigger=self.output_trigger[output_id],
+                        trigger=self.output_on_state[output_id],
                         err=except_msg))
 
         elif self.output_type[output_id] == 'wireless_rpi_rf':
@@ -1165,7 +1173,7 @@ output_id = '{}'
         if output_id in self.output_type:
             if self.output_type[output_id] == 'wired':
                 if (self.output_pin[output_id] is not None and
-                        self.output_trigger[output_id] == GPIO.input(self.output_pin[output_id])):
+                        self.output_on_state[output_id] == GPIO.input(self.output_pin[output_id])):
                     return 'on'
             elif self.output_type[output_id] in ['command',
                                                  'python',
@@ -1190,7 +1198,7 @@ output_id = '{}'
         """
         if (self.output_type[output_id] == 'wired' and
                 self._is_setup(output_id)):
-            return self.output_trigger[output_id] == GPIO.input(self.output_pin[output_id])
+            return self.output_on_state[output_id] == GPIO.input(self.output_pin[output_id])
         elif self.output_type[output_id] in ['command',
                                              'command_pwm',
                                              'python',

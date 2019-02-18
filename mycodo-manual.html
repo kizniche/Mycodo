@@ -969,7 +969,7 @@ optional arguments:
 <td>This is the GPIO that will be the signal to the output, using WiringPi numbering.</td>
 </tr>
 <tr class="odd">
-<td>On Trigger</td>
+<td>On State</td>
 <td>This is the state of the GPIO to signal the output to turn the device on. HIGH will send a 3.3-volt signal and LOW will send a 0-volt signal. If you output completes the circuit (and the device powers on) when a 3.3-volt signal is sent, then set this to HIGH. If the device powers when a 0-volt signal is sent, set this to LOW.</td>
 </tr>
 <tr class="even">
@@ -1021,14 +1021,18 @@ optional arguments:
 <td>The is the amount of current the device powered by the output draws. Note: this value should be calculated based on the voltage set in the <a href="#energy-usage-settings">Energy Usage Settings</a>.</td>
 </tr>
 <tr class="even">
-<td>Start State</td>
-<td>This specifies whether the output should be ON or OFF when mycodo initially starts. Wireless relays have an additional option ‘Neither’ which will not issue an on or off command when Mycodo starts or stops.</td>
+<td>Startup State</td>
+<td>This specifies whether the output should be ON or OFF when mycodo initially starts. Some outputs have an additional option ‘Neither’ which will not issue an on or off command when Mycodo starts or stops.</td>
 </tr>
 <tr class="odd">
+<td>Shutdown State</td>
+<td>This specifies whether the output should be ON or OFF when mycodo initially shuts down. Some outputs have an additional option ‘Neither’ which will not issue an on or off command when Mycodo starts or stops.</td>
+</tr>
+<tr class="even">
 <td>Trigger at Startup</td>
 <td>Select to enable triggering Functions (such as Output Triggers) when Mycodo starts and if Start State is set to ON.</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>Seconds to turn On</td>
 <td>This is a way to turn a output on for a specific duration of time. This can be useful for testing the outputs and powered devices or the measured effects a device may have on an environmental condition.</td>
 </tr>

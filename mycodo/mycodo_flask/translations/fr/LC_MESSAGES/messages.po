@@ -944,7 +944,7 @@ msgstr ""
 "reçoit l'ordre de désactiver"
 
 #: config_translations.py:215
-msgid "Start State"
+msgid "Startup State"
 msgstr "Etat de départ"
 
 #: config_translations.py:216

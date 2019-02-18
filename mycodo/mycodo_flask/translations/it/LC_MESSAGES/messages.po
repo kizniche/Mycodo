@@ -946,8 +946,8 @@ msgstr ""
 " spegnersi"
 
 #: config_translations.py:215
-msgid "Start State"
-msgstr "Start State"
+msgid "Startup State"
+msgstr "Startup State"
 
 #: config_translations.py:216
 msgid "When Mycodo starts, set the output state"

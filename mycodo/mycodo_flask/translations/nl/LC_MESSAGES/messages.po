@@ -948,7 +948,7 @@ msgstr ""
 "opdracht krijgt om uit te schakelen"
 
 #: config_translations.py:215
-msgid "Start State"
+msgid "Startup State"
 msgstr "Start staat"
 
 #: config_translations.py:216

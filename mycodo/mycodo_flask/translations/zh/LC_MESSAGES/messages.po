@@ -940,7 +940,7 @@ msgid ""
 msgstr "指示输出关闭时执行的命令（作为用户mycodo）"
 
 #: config_translations.py:215
-msgid "Start State"
+msgid "Startup State"
 msgstr "开始状态"
 
 #: config_translations.py:216
@@ -1215,7 +1215,7 @@ msgid "Number of times to check"
 msgstr "要检查的次数"
 
 #: config_translations.py:319
-msgid "Trigger"
+msgid "On State"
 msgstr "触发"
 
 #: config_translations.py:320

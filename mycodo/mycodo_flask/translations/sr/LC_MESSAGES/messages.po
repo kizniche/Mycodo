@@ -945,7 +945,7 @@ msgstr ""
 "искључи"
 
 #: config_translations.py:215
-msgid "Start State"
+msgid "Startup State"
 msgstr "Старт Стате"
 
 #: config_translations.py:216

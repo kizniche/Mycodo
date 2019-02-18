@@ -6,6 +6,10 @@
  - Prevent dashboard camera streaming if using the fswebcam library ([#630](https://github.com/kizniche/mycodo/issues/630))
  - Fix number of line characters for 20x4 LCDs ([#627](https://github.com/kizniche/mycodo/issues/627))
 
+### Features
+
+ - Add option to set Output shutdown state (on/off/neither)
+
 
 ## 7.2.2 (2019-02-08)
 

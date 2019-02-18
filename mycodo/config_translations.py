@@ -126,6 +126,8 @@ TRANSLATIONS = {
         'title': lazy_gettext('Tag')},
     'timer': {
         'title': lazy_gettext('Timer')},
+    'trigger': {
+        'title': lazy_gettext('Trigger')},
     'up': {
         'title': lazy_gettext('Up')},
     'upload': {
@@ -215,9 +217,12 @@ TRANSLATIONS = {
     'off_command': {
         'title': lazy_gettext('Off Command'),
         'phrase': lazy_gettext('Command to execute (as user mycodo) when the output is instructed to turn off')},
-    'on_at_start': {
-        'title': lazy_gettext('Start State'),
+    'state_at_startup': {
+        'title': lazy_gettext('Startup State'),
         'phrase': lazy_gettext('When Mycodo starts, set the output state')},
+    'state_at_shutdown': {
+        'title': lazy_gettext('Shutdown State'),
+        'phrase': lazy_gettext('When Mycodo shuts down, set the output state')},
     'on_command': {
         'title': lazy_gettext('On Command'),
         'phrase': lazy_gettext('Command to execute (as user mycodo) when the output is instructed to turn on')},
@@ -319,8 +324,8 @@ TRANSLATIONS = {
     'times_check': {
         'title': lazy_gettext('Times Check'),
         'phrase': lazy_gettext('Number of times to check')},
-    'trigger': {
-        'title': lazy_gettext('Trigger'),
+    'on_state': {
+        'title': lazy_gettext('On State'),
         'phrase': lazy_gettext('What state triggers the output to turn on? High or Low?')},
     'trigger_functions_at_start': {
         'title': lazy_gettext('Trigger at Startup'),

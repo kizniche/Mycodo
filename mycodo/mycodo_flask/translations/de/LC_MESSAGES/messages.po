@@ -948,7 +948,7 @@ msgstr ""
 "angewiesen wird, auszuschalten"
 
 #: config_translations.py:215
-msgid "Start State"
+msgid "Startup State"
 msgstr "Start Zustand"
 
 #: config_translations.py:216

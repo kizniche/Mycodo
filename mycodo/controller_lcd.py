@@ -463,7 +463,7 @@ class LCDController(threading.Thread):
     def output_state(output_id):
         output = db_retrieve_table_daemon(Output, unique_id=output_id)
         GPIO.setmode(GPIO.BCM)
-        if GPIO.input(output.pin) == output.trigger:
+        if GPIO.input(output.pin) == output.on_state:
             gpio_state = 'On'
         else:
             gpio_state = 'Off'

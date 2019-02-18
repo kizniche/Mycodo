@@ -949,7 +949,7 @@ msgstr ""
 "указывается, чтобы отключить"
 
 #: config_translations.py:215
-msgid "Start State"
+msgid "Startup State"
 msgstr "Начальное состояние"
 
 #: config_translations.py:216
@@ -1243,7 +1243,7 @@ msgid "Number of times to check"
 msgstr "Количество раз проверить"
 
 #: config_translations.py:319
-msgid "Trigger"
+msgid "On State"
 msgstr "Спусковой крючок"
 
 #: config_translations.py:320

@@ -11,12 +11,22 @@
    </div>
 </div>
 <div class="col-auto">
-  {{form_mod_output.on_at_start.label(class_='control-label')}}
+  {{form_mod_output.state_at_startup.label(class_='control-label')}}
   <div>
-    <select class="form-control form-tooltip form-dropdown" id="on_at_start" name="on_at_start" data-placement="top" title="{{dict_translation['on_at_start']['phrase']}}">
-      <option value="-1"{% if each_output.on_at_start == none %} selected{% endif %}>{{_('Neither')}}</option>
-      <option value="1"{% if each_output.on_at_start == 1 %} selected{% endif %}>{{dict_translation['on']['title']}}</option>
-      <option value="0"{% if each_output.on_at_start == 0 %} selected{% endif %}>{{dict_translation['off']['title']}}</option>
+    <select class="form-control form-tooltip form-dropdown" id="state_at_startup" name="state_at_startup" data-placement="top" title="{{dict_translation['state_at_startup']['phrase']}}">
+      <option value="-1"{% if each_output.state_at_startup == none %} selected{% endif %}>{{_('Neither')}}</option>
+      <option value="1"{% if each_output.state_at_startup == 1 %} selected{% endif %}>{{dict_translation['on']['title']}}</option>
+      <option value="0"{% if each_output.state_at_startup == 0 %} selected{% endif %}>{{dict_translation['off']['title']}}</option>
+    </select>
+  </div>
+</div>
+<div class="col-auto">
+  {{form_mod_output.state_at_shutdown.label(class_='control-label')}}
+  <div>
+    <select class="form-control form-tooltip form-dropdown" id="state_at_shutdown" name="state_at_shutdown" data-placement="top" title="{{dict_translation['state_at_shutdown']['phrase']}}">
+      <option value="-1"{% if each_output.state_at_shutdown == none %} selected{% endif %}>{{_('Neither')}}</option>
+      <option value="1"{% if each_output.state_at_shutdown == 1 %} selected{% endif %}>{{dict_translation['on']['title']}}</option>
+      <option value="0"{% if each_output.state_at_shutdown == 0 %} selected{% endif %}>{{dict_translation['off']['title']}}</option>
     </select>
   </div>
 </div>
