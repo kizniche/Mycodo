@@ -389,27 +389,30 @@ def form_input_choices(choices, each_input, dict_units, dict_measurements):
             display_measurement = find_name_measurement(
                 dict_measurements, measurement)
 
+            if isinstance(channel, int):
+                channel_num = ' CH{cnum}'.format(cnum=channel + 1)
+            else:
+                channel_num = ''
+
             if each_measure.name:
                 channel_name = ' ({name})'.format(name=each_measure.name)
             else:
                 channel_name = ''
 
-            channel_info = "CH{cnum}{cname}".format(
-                cnum=channel + 1, cname=channel_name)
-
             if display_measurement and display_unit:
-                measurement_unit = '{meas} ({unit})'.format(
+                measurement_unit = ' {meas} ({unit})'.format(
                     meas=display_measurement, unit=display_unit)
             elif display_measurement:
-                measurement_unit = '{meas}'.format(
+                measurement_unit = ' {meas}'.format(
                     meas=display_measurement)
             else:
-                measurement_unit = '({unit})'.format(unit=display_unit)
+                measurement_unit = ' ({unit})'.format(unit=display_unit)
 
-            display = '[Input {id:02d}] {i_name} {chan} {meas}'.format(
+            display = '[Input {id:02d}] {i_name}{chan_num}{chan_name}{meas}'.format(
                 id=each_input.id,
                 i_name=each_input.name,
-                chan=channel_info,
+                chan_num=channel_num,
+                chan_name=channel_name,
                 meas=measurement_unit)
 
             choices.update({value: display})

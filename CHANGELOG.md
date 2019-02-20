@@ -2,6 +2,7 @@
 
 ### Bugfixes
 
+ - Fix unset channel causing 500 error ([#631](https://github.com/kizniche/mycodo/issues/631))
  - During first install, initialize after install of influxdb
 
 ### Miscellaneous

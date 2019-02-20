@@ -61,6 +61,9 @@ def return_measurement_info(device_measurement, conversion):
         measurement = None
         channel = None
 
+        if device_measurement:
+            channel = device_measurement.channel
+
         if (device_measurement and
                 device_measurement.conversion_id and
                 conversion):
@@ -76,7 +79,6 @@ def return_measurement_info(device_measurement, conversion):
             if device_measurement:
                 unit = device_measurement.unit
                 measurement = device_measurement.measurement
-                channel = device_measurement.channel
 
         return channel, unit, measurement
     except Exception:
