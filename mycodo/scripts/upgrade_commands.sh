@@ -48,6 +48,7 @@ Options:
   update-cron                   Update cron entries
   install-bcm2835               Install bcm2835
   install-pigpiod               Install pigpiod
+  install-wiringpi              Install wiringpi
   uninstall-pigpiod             Uninstall pigpiod
   disable-pigpiod               Disable pigpiod
   enable-pigpiod-low            Enable pigpiod with 1 ms sample rate
@@ -232,6 +233,16 @@ case "${1:-''}" in
         sudo make install
         cd ${MYCODO_PATH}/install
         rm -rf ./bcm2835-1.50
+    ;;
+    'install-wiringpi')
+        cd ${MYCODO_PATH}/install
+        git clone --recursive https://github.com/WiringPi/WiringPi-Python.git
+        cd WiringPi-Python
+        git submodule update --init
+        cd WiringPi
+        ./build
+        cd ${MYCODO_PATH}/install
+        rm -rf ./WiringPi-Python
     ;;
     'install-pigpiod')
         printf "\n#### Installing pigpiod\n"

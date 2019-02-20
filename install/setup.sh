@@ -87,9 +87,10 @@ ${INSTALL_CMD} update-packages 2>&1 | tee -a ${LOG_LOCATION}
 ${INSTALL_CMD} setup-virtualenv 2>&1 | tee -a ${LOG_LOCATION}
 ${INSTALL_CMD} update-pip3 2>&1 | tee -a ${LOG_LOCATION}
 ${INSTALL_CMD} update-pip3-packages 2>&1 | tee -a ${LOG_LOCATION}
-${INSTALL_CMD} initialize 2>&1 | tee -a ${LOG_LOCATION}
+${INSTALL_CMD} install-wiringpi 2>&1 | tee -a ${LOG_LOCATION}
 ${INSTALL_CMD} update-influxdb 2>&1 | tee -a ${LOG_LOCATION}
 ${INSTALL_CMD} update-influxdb-db-user 2>&1 | tee -a ${LOG_LOCATION}
+${INSTALL_CMD} initialize 2>&1 | tee -a ${LOG_LOCATION}
 ${INSTALL_CMD} update-logrotate 2>&1 | tee -a ${LOG_LOCATION}
 ${INSTALL_CMD} ssl-certs-generate 2>&1 | tee -a ${LOG_LOCATION}
 ${INSTALL_CMD} update-mycodo-startup-script 2>&1 | tee -a ${LOG_LOCATION}

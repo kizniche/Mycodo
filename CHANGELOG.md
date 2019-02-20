@@ -1,3 +1,14 @@
+## 7.2.4 (Unreleased)
+
+### Bugfixes
+
+ - During first install, initialize after install of influxdb
+
+### Miscellaneous
+
+ - Add wiringpi to install
+
+
 ## 7.2.3 (2019-02-19)
 
 ### Bugfixes
