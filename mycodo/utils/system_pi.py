@@ -57,11 +57,14 @@ def dpkg_package_exists(package_name):
 
 def return_measurement_info(device_measurement, conversion):
     try:
+        unit = None
+        measurement = None
+        channel = None
+
         if (device_measurement and
                 device_measurement.conversion_id and
                 conversion):
             unit = conversion.convert_unit_to
-            measurement = None
         elif (device_measurement and
                 hasattr(device_measurement, 'rescaled_unit') and
                 hasattr(device_measurement, 'rescaled_measurement') and
@@ -70,9 +73,12 @@ def return_measurement_info(device_measurement, conversion):
             unit = device_measurement.rescaled_unit
             measurement = device_measurement.rescaled_measurement
         else:
-            unit = device_measurement.unit
-            measurement = device_measurement.measurement
-        return device_measurement.channel, unit, measurement
+            if device_measurement:
+                unit = device_measurement.unit
+                measurement = device_measurement.measurement
+                channel = device_measurement.channel
+
+        return channel, unit, measurement
     except Exception:
         logger.exception("{}, {}".format(device_measurement, conversion))
         return None, None, None

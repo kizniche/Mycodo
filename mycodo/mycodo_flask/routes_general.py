@@ -1034,21 +1034,26 @@ def last_data_pid(pid_id, input_period):
 
     try:
         pid = PID.query.filter(PID.unique_id == pid_id).first()
-        device_id = pid.measurement.split(',')[0]
-        measurement_id = pid.measurement.split(',')[1]
+        
+        if len(pid.measurement.split(',')) == 2:
+            device_id = pid.measurement.split(',')[0]
+            measurement_id = pid.measurement.split(',')[1]
+        else:
+            device_id = None
+            measurement_id = None
 
         actual_measurement = DeviceMeasurements.query.filter(
             DeviceMeasurements.unique_id == measurement_id).first()
         if actual_measurement:
-            actual_cnversion = Conversion.query.filter(
+            actual_conversion = Conversion.query.filter(
                 Conversion.unique_id == actual_measurement.conversion_id).first()
         else:
-            actual_cnversion = None
+            actual_conversion = None
 
         (actual_channel,
          actual_unit,
          actual_measurement) = return_measurement_info(
-            actual_measurement, actual_cnversion)
+            actual_measurement, actual_conversion)
 
         setpoint_measurement = None
         setpoint_unit = None
@@ -1068,14 +1073,22 @@ def last_data_pid(pid_id, input_period):
             pid_id, 'pid_value', input_period, measurement='pid_i_value')
         d_value = return_point_timestamp(
             pid_id, 'pid_value', input_period, measurement='pid_d_value')
-        pid_value = [p_value[0], '{:.3f}'.format(float(p_value[1]) + float(i_value[1]) + float(d_value[1]))]
+        if None not in (p_value[1], i_value[1], d_value[1]):
+            pid_value = [p_value[0], '{:.3f}'.format(float(p_value[1]) + float(i_value[1]) + float(d_value[1]))]
+        else:
+            pid_value = None
+
+        if setpoint_measurement:
+            setpoint_measurement_display = setpoint_measurement.measurement
+        else:
+            setpoint_measurement_display = None
 
         live_data = {
             'activated': pid.is_activated,
             'paused': pid.is_paused,
             'held': pid.is_held,
             'setpoint': return_point_timestamp(
-                pid_id, setpoint_unit, input_period, measurement=setpoint_measurement.measurement),
+                pid_id, setpoint_unit, input_period, measurement=setpoint_measurement_display),
             'pid_p_value': p_value,
             'pid_i_value': i_value,
             'pid_d_value': d_value,
