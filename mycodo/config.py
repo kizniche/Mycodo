@@ -12,7 +12,7 @@ from flask_babel import lazy_gettext
 sys.path.append(os.path.abspath(os.path.dirname(__file__)))
 from config_translations import TRANSLATIONS
 
-MYCODO_VERSION = '7.2.2'
+MYCODO_VERSION = '7.2.3'
 ALEMBIC_VERSION = '2976b41930ad'
 
 #  FORCE_UPGRADE_MASTER
