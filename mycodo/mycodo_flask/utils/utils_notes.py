@@ -421,7 +421,8 @@ def export_notes(form):
                          each_note.note,
                          ';'.join(list_tag_id_names),
                          each_note.files])
-            attach_files.append(each_note.files.split(','))
+            if each_note.files:
+                attach_files.append(each_note.files.split(','))
 
     # Zip csv file and attachments
     data = io.BytesIO()

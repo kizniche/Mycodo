@@ -550,10 +550,7 @@ class OutputController(threading.Thread):
             self.output_off_triggered[output_id] = False
 
         if trigger_conditionals:
-            self.check_triggers(output_id,
-                                state=state,
-                                on_duration=duration,
-                                duty_cycle=duty_cycle)
+            self.check_triggers(output_id, on_duration=duration)
 
     def output_switch(self, output_id, state, duty_cycle=None):
         """Conduct the actual execution of GPIO state change, PWM, or command execution"""
@@ -732,8 +729,7 @@ output_id = '{}'
         #
         trigger_output = db_retrieve_table_daemon(Trigger)
         trigger_output = trigger_output.filter(
-            or_(Trigger.trigger_type == 'trigger_output',
-                Trigger.trigger_type == 'trigger_output_duration'))
+            Trigger.trigger_type == 'trigger_output')
         trigger_output = trigger_output.filter(
             Trigger.unique_id_1 == output_id)
         trigger_output = trigger_output.filter(
@@ -748,7 +744,9 @@ output_id = '{}'
                     Trigger.output_state == 'on_duration_none_any',
                     Trigger.output_state == 'on_duration_equal',
                     Trigger.output_state == 'on_duration_greater_than',
-                    Trigger.output_state == 'on_duration_less_than'))
+                    Trigger.output_state == 'on_duration_equal_greater_than',
+                    Trigger.output_state == 'on_duration_less_than',
+                    Trigger.output_state == 'on_duration_equal_less_than'))
 
             on_duration_none = and_(
                 Trigger.output_state == 'on_duration_none',
@@ -768,9 +766,17 @@ output_id = '{}'
                 Trigger.output_state == 'on_duration_greater_than',
                 on_duration > Trigger.output_duration)
 
+            on_duration_equal_greater_than = and_(
+                Trigger.output_state == 'on_duration_equal_greater_than',
+                on_duration >= Trigger.output_duration)
+
             on_duration_less_than = and_(
                 Trigger.output_state == 'on_duration_less_than',
                 on_duration < Trigger.output_duration)
+
+            on_duration_equal_less_than = and_(
+                Trigger.output_state == 'on_duration_equal_less_than',
+                on_duration <= Trigger.output_duration)
 
             trigger_output = trigger_output.filter(
                 or_(on_duration_none,
@@ -778,7 +784,9 @@ output_id = '{}'
                     on_duration_none_any,
                     on_duration_equal,
                     on_duration_greater_than,
-                    on_duration_less_than))
+                    on_duration_equal_greater_than,
+                    on_duration_less_than,
+                    on_duration_equal_less_than))
         else:
             trigger_output = trigger_output.filter(
                 Trigger.output_state == 'off')

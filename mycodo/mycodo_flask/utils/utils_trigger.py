@@ -46,12 +46,6 @@ def trigger_mod(form):
             trigger.output_state = form.output_state.data
             trigger.output_duration = form.output_duration.data
 
-        elif trigger.trigger_type == 'trigger_output_duration':
-            error = check_form_output_duration(form, error)
-            trigger.unique_id_1 = form.unique_id_1.data
-            trigger.output_state = form.output_state.data
-            trigger.output_duration = form.output_duration.data
-
         elif trigger.trigger_type == 'trigger_output_pwm':
             error = check_form_output_pwm(form, error)
             trigger.unique_id_1 = form.unique_id_1.data

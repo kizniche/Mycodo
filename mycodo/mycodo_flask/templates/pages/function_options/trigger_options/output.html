@@ -18,7 +18,9 @@
     <option value="on_duration_none_any"{% if each_trigger.output_state == 'on_duration_none_any' %} selected{% endif %}>{{dict_translation['on']['title']}} ({{_('no or any duration')}})</option>
     <option value="on_duration_equal"{% if each_trigger.output_state == 'on_duration_equal' %} selected{% endif %}>{{dict_translation['on']['title']}} ({{_('equal to duration')}})</option>
     <option value="on_duration_greater_than"{% if each_trigger.output_state == 'on_duration_greater_than' %} selected{% endif %}>{{dict_translation['on']['title']}} ({{_('greater than duration')}})</option>
+    <option value="on_duration_equal_greater_than"{% if each_trigger.output_state == 'on_duration_equal_greater_than' %} selected{% endif %}>{{dict_translation['on']['title']}} ({{_('greater than or equal to duration')}})</option>
     <option value="on_duration_less_than"{% if each_trigger.output_state == 'on_duration_less_than' %} selected{% endif %}>{{dict_translation['on']['title']}} ({{_('less than duration')}})</option>
+    <option value="on_duration_equal_less_than"{% if each_trigger.output_state == 'on_duration_equal_less_than' %} selected{% endif %}>{{dict_translation['on']['title']}} ({{_('less than or equal to duration')}})</option>
     <option value="off"{% if each_trigger.output_state == 'off' %} selected{% endif %}>{{dict_translation['off']['title']}}</option>
   </select>
 </div>

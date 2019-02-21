@@ -223,16 +223,30 @@
  <div class="table-responsive">
   <table class="table">
     <tr>
+      <td></td>
       <td>ID</td>
       <td>Time, Name (Tags)</td>
       <td>Files</td>
       <td>Note</td>
-      <td></td>
     </tr>
 
     {% for each_note in notes %}
 
     <tr>
+      <td>
+        <form method="post" action="/notes">
+        {{form_note_options.csrf_token}}
+        {{form_note_options.note_unique_id(value=each_note.unique_id)}}
+        <div class="row no-gutters">
+          <div class="col-12">
+            {{form_note_options.note_mod(class_='btn btn-sm btn-primary')}}
+          </div>
+          <div class="col-12 mt-1">
+            {{form_note_options.note_del(class_='btn btn-sm btn-primary', **{'onclick':'return confirm("Are you sure you want to delete this?")'})}}
+          </div>
+        </div>
+        </form>
+      </td>
       <td>{{each_note.id}}</td>
       <td>
         {{utc_to_local_time(each_note.date_time)}}
@@ -246,20 +260,6 @@
       {%- endif -%}
       </td>
       <td><pre>{{each_note.note}}</pre></td>
-      <td>
-        <form method="post" action="/notes">
-        {{form_note_options.csrf_token}}
-        {{form_note_options.note_unique_id(value=each_note.unique_id)}}
-        <div class="row no-gutters">
-          <div class="col-6">
-            {{form_note_options.note_mod(class_='btn btn-primary')}}
-          </div>
-          <div class="col-6">
-            {{form_note_options.note_del(class_='btn btn-primary', **{'onclick':'return confirm("Are you sure you want to delete this?")'})}}
-          </div>
-        </div>
-        </form>
-      </td>
     </tr>
 
     {% endfor -%}

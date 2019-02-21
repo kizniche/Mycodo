@@ -60,8 +60,6 @@
 
   {% if each_trigger.trigger_type == 'trigger_output' %}
     {% include 'pages/function_options/trigger_options/output.html' %}
-  {% elif each_trigger.trigger_type == 'trigger_output_duration' %}
-    {% include 'pages/function_options/trigger_options/output_duration.html' %}
   {% elif each_trigger.trigger_type == 'trigger_output_pwm' %}
     {% include 'pages/function_options/trigger_options/output_pwm.html' %}
   {% elif each_trigger.trigger_type == 'trigger_edge' %}

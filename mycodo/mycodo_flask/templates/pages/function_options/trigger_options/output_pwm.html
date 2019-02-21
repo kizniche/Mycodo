@@ -14,9 +14,9 @@
   <div>
     <select class="form-control form-tooltip form-dropdown" data-placement="top" id="output_state" name="output_state" title="{{_('The conditional is triggered when the measured condition is greater than or less than the set value, or the measurement timestamp is greater than the value of seconds')}}">
       <option value="">{{dict_translation['select_one']['title']}}</option>
-      <option value="above"{% if each_trigger.direction == 'above' %} selected{% endif %}>{{_('Greater Than (>)')}}</option>
-      <option value="below"{% if each_trigger.direction == 'below' %} selected{% endif %}>{{_('Less Than (<)')}}</option>
-      <option value="equal"{% if each_trigger.direction == 'equal' %} selected{% endif %}>{{_('Equal To (=)')}}</option>
+      <option value="above"{% if each_trigger.output_state == 'above' %} selected{% endif %}>{{_('Greater Than (>)')}}</option>
+      <option value="below"{% if each_trigger.output_state == 'below' %} selected{% endif %}>{{_('Less Than (<)')}}</option>
+      <option value="equal"{% if each_trigger.output_state == 'equal' %} selected{% endif %}>{{_('Equal To (=)')}}</option>
     </select>
   </div>
 </div>

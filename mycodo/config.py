@@ -409,11 +409,6 @@ FUNCTION_TYPES = [
         '{}: {} ({}/{})'.format(TRANSLATIONS['trigger']['title'], TRANSLATIONS['output']['title'],
                                 TRANSLATIONS['on']['title'], TRANSLATIONS['off']['title'])),
     (
-        'trigger_output_duration',
-        '{} ({})'.format(TRANSLATIONS['output']['title'], TRANSLATIONS['duration']['title']),
-        '{}: {} ({})'.format(TRANSLATIONS['trigger']['title'], TRANSLATIONS['output']['title'],
-                             TRANSLATIONS['duration']['title'])),
-    (
         'trigger_output_pwm',
         '{} ({})'.format(TRANSLATIONS['output']['title'], TRANSLATIONS['pwm']['title']),
         '{}: {} ({})'.format(TRANSLATIONS['trigger']['title'], TRANSLATIONS['output']['title'],

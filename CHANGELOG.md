@@ -1,3 +1,16 @@
+## 7.2.5 (Unreleased)
+
+### Bugfixes
+
+ - Fix issue with check_triggers() in output controller
+ - Fix issue preventing export of Notes
+ - Fix table issue on Note page
+
+### Miscellaneous
+
+ - Remove redundant Output (Duration) Trigger (use Output (On/Off) Trigger)
+
+
 ## 7.2.4 (2019-02-20)
 
 ### Bugfixes
