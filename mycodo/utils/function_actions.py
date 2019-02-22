@@ -173,14 +173,12 @@ def trigger_action(
             command = 'irsend SEND_ONCE {remote} {code}'.format(
                 remote=cond_action.remote, code=cond_action.code)
             output, err, stat = cmd_output(command)
-            logger.error("TEST00: {}".format(cond_action.id))
 
             # Send more than once
             if cond_action.send_times > 1:
                 for _ in range(cond_action.send_times - 1):
                     time.sleep(0.5)
                     output, err, stat = cmd_output(command)
-                    logger.error("TEST00: {}".format(cond_action.id))
 
             message += " [{id}] Infrared Send " \
                        "code '{code}', remote '{remote}', times: {times}:" \
