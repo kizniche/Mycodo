@@ -87,6 +87,7 @@ class TriggerController(threading.Thread):
             Misc, entry='first').sample_rate_controller_conditional
 
         self.trigger_type = None
+        self.trigger_name = None
         self.is_activated = None
         self.smtp_max_count = None
         self.email_count = None
@@ -104,6 +105,11 @@ class TriggerController(threading.Thread):
         self.method_start_time = None
         self.method_end_time = None
         self.method_start_act = None
+
+        # Infrared remote input
+        self.lirc = None
+        self.program = None
+        self.word = None
 
         self.setup_settings()
 
@@ -124,7 +130,10 @@ class TriggerController(threading.Thread):
                     while self.pause_loop:
                         time.sleep(0.1)
 
-                if (self.is_activated and self.timer_period and
+                if self.trigger_type == 'trigger_infrared_remote_input':
+                    self.infrared_remote_input()
+
+                elif (self.is_activated and self.timer_period and
                         self.timer_period < time.time()):
                     check_approved = False
 
@@ -194,6 +203,7 @@ class TriggerController(threading.Thread):
             Trigger, unique_id=self.function_id)
 
         self.trigger_type = trigger.trigger_type
+        self.trigger_name = trigger.name
         self.is_activated = trigger.is_activated
 
         self.smtp_max_count = db_retrieve_table_daemon(
@@ -249,7 +259,14 @@ class TriggerController(threading.Thread):
             else:
                 self.timer_period = now
 
-        # Set up trigger sunrise/sunset
+        elif self.trigger_type == 'trigger_infrared_remote_input':
+            import lirc
+            self.lirc = lirc
+            self.program = trigger.program
+            self.word = trigger.word
+            lirc.init(self.program, config_filename='/home/pi/.lircrc', blocking=False)
+
+            # Set up trigger sunrise/sunset
         elif self.trigger_type == 'trigger_sunrise_sunset':
             self.period = 60
             # Set the next trigger at the specified sunrise/sunset time (+-offsets)
@@ -347,15 +364,16 @@ class TriggerController(threading.Thread):
         logger_cond = logging.getLogger("mycodo.conditional_{id}".format(
             id=self.function_id))
 
-        trigger = db_retrieve_table_daemon(
-            Trigger, unique_id=self.function_id, entry='first')
-
         now = time.time()
-        timestamp = datetime.datetime.fromtimestamp(now).strftime('%Y-%m-%d %H:%M:%S')
+        timestamp = datetime.datetime.fromtimestamp(now).strftime(
+            '%Y-%m-%d %H:%M:%S')
         message = "{ts}\n[Trigger {id} ({name})]".format(
             ts=timestamp,
-            name=trigger.name,
+            name=self.trigger_name,
             id=self.function_id)
+
+        trigger = db_retrieve_table_daemon(
+            Trigger, unique_id=self.function_id, entry='first')
 
         device_id = trigger.measurement.split(',')[0]
 
@@ -417,11 +435,30 @@ class TriggerController(threading.Thread):
 
         # Check if the current time is between the start and end time
         if trigger.trigger_type == 'trigger_timer_daily_time_span':
-            if not time_between_range(self.timer_start_time, self.timer_end_time):
+            if not time_between_range(self.timer_start_time,
+                                      self.timer_end_time):
                 return
 
         # If the code hasn't returned by now, action should be executed
         trigger_function_actions(self.function_id, message=message)
+
+    def infrared_remote_input(self):
+        """Wait for an infrared input signal"""
+        while self.running:
+            code = self.lirc.nextcode()
+            if code and self.word in code:
+                now = time.time()
+                timestamp = datetime.datetime.fromtimestamp(now).strftime(
+                    '%Y-%m-%d %H:%M:%S')
+                message = "{ts}\n[Trigger {id} ({name})]".format(
+                    ts=timestamp,
+                    name=self.trigger_name,
+                    id=self.function_id)
+                message += "\nInfrared Remote Input detected " \
+                           "'{word}' on program '{prog}'".format(
+                    word=self.word, prog=self.program)
+                trigger_function_actions(self.function_id, message=message)
+            time.sleep(0.05)
 
     def is_running(self):
         return self.running

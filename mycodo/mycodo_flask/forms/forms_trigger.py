@@ -47,6 +47,10 @@ class Trigger(FlaskForm):
     time_offset_minutes = IntegerField(
         lazy_gettext('Time Offset (minutes)'), widget=NumberInput())
 
+    # Receive infrared from remote
+    program = StringField(lazy_gettext('Program'))
+    word = StringField(lazy_gettext('Word'))
+
     # Timer
     period = DecimalField(
         lazy_gettext('Period (seconds)'), widget=NumberInput(step='any'))

@@ -1595,6 +1595,19 @@ duty cycle specified by the method.
 |                        | Conditional is activated.                       |
 +------------------------+-------------------------------------------------+
 
+Infrared Remote Input Options
+'''''''''''''''''''''''''''''
+
+Mycodo uses lirc to detect Infrared signals. Follow the `lirc setup guide <#infrared-remote>`__ before using this feature.
+
++------------------------+-------------------------------------------------+
+| Setting                | Description                                     |
++========================+=================================================+
+| Program                | This is the variable 'program' in ~/.lircrc     |
++------------------------+-------------------------------------------------+
+| Word                   | This is the variable 'config' in ~/.lircrc      |
++------------------------+-------------------------------------------------+
+
 Sunrise/Sunset Options
 ''''''''''''''''''''''
 
@@ -2960,15 +2973,15 @@ Infrared Remote
 
 Infrared (IR) light is a common way to send and receive signals across distances. This is typically done with IR remotes with several buttons configured to send different signals. These signals can be detected by the Raspberry Pi with the use of an `IR receiver diode <https://www.sparkfun.com/products/10266>`__ and used to perform actions within the linux environment and Mycodo. This is done with `lirc <http://lirc.org/>`__, and needs to be properly configured before IR signals can be detected and interpreted.
 
-The IR receiver typically has three connections, power (3.3 volts), ground, and data (GPIO pin), and should be connected to the appropriate pins of your Raspberry Pi. Make sure your IR receiver can operate at 3.3 volts, which is the appropriate voltage GPIOs operate at. For testing, I used the ``Sparkfun Infrared Control Kit <https://www.sparkfun.com/products/14677>``__, which has an ``Information Guide <https://learn.sparkfun.com/tutorials/ir-control-kit-hookup-guide>``__, however there are cheaper alternatives.
+The IR receiver typically has three connections, power (3.3 volts), ground, and data (GPIO pin), and should be connected to the appropriate pins of your Raspberry Pi. Make sure your IR receiver can operate at 3.3 volts, which is the appropriate voltage GPIOs operate at. For testing, I used the `Sparkfun Infrared Control Kit <https://www.sparkfun.com/products/14677>`__, which has an `Information Guide <https://learn.sparkfun.com/tutorials/ir-control-kit-hookup-guide>`__, however there are cheaper alternatives.
 
 Install the necessary linux dependencies:
 
 ``sudo apt install liblircclient-dev lirc``
 
-Install the lirc python package:
+Install the lirc python package in the Mycodo virtualenv:
 
-``sudo ~/Mycodo/env/bin/pip install python-lirc``
+``~/Mycodo/env/bin/pip install python-lirc``
 
 Edit ``/boot/config.txt`` and add to the end of the file, replacing 17 from ``gpio_out_pin=17`` with the GPIO (BCM numbering) connected to your IR LED and 18 from ``gpio_in_pin=18`` connected to the IR receiver. You can omit either of these options if you aren't using either the IR receiver or transmitting LED:
 
@@ -2987,15 +3000,19 @@ Restart your system:
 
 Check `this remote database <http://lirc-remotes.sourceforge.net/remotes-table.html>`__ for your remote, and if it's found, place it in ``/etc/lirc/lircd.conf.d/``, otherwise you will need to generate a config file for your remote.
 
-To generate a config file for your remote, issue the following command:
+To generate a config file for your remote, lirc must first be stopped:
+
+``sudo service lircd stop``
+
+Then, issue the following command:
 
 ``sudo irrecord -n -d /dev/lirc0``
 
 You will be prompted with a very specific set of instructions in order to map your remote. If you successfully finish the config generation, you will have a *.lirc.conf file that you should place in ``/etc/lirc/lircd.conf.d/``
 
-Restart lirc to load this config:
+Start lirc back up to load this config:
 
-``sudo service lirc restart``
+``sudo service lirc start``
 
 Now, start ``irw`` and press a button on your remote. If everything works, you should see information appear when you press each button, such as below:
 
@@ -3014,7 +3031,7 @@ Now, start ``irw`` and press a button on your remote. If everything works, you s
 
 Now that we have the remote detected and mapped, we can set commands to be executed or what word is returned to Mycodo. Create a file ``~/.lirc``:
 
-``nano ~/.lirc``
+``nano ~/.lircrc``
 
 and configure the responses to button presses
 
@@ -3059,7 +3076,7 @@ And press the buttons defined in ``~/.lirc`` and see if the output appears on th
     power
     a
 
-From here, you can create any Python code to react to button presses on your remote.
+From here, you can create any Python code to react to button presses on your remote. You can also set up the Mycodo Function Trigger: Infrared Remote Input and trigger events in response to Mycodo detecting specific button presses. See `Infrared Remote Input Options <#infrared-remote-input-options>`__ for configuring this trigger.
 
 In order to send an IR signal to your IR LED, connect your LED to the GPIO defined with ``gpio_out_pin=17`` in ``/boot/config.txt``. You can test if your LED is working by creating a file, ``LED_blink.py``, replacing ``17`` with the pin connected to your LED:
 
@@ -3085,9 +3102,7 @@ If your LED is working, then issue the following command, replacing ``simple_rem
 
 ``irsend SEND_ONCE simple_remote KEY_POWER``
 
-You can verify this is working by running the ``infrared_receive.py`` while you execute the ``irsend`` command and you should see it print the button command that was sent.
-
-Note: This is a feature currently in development, so as of now there isn't any integrated support in Mycodo, however this is planned for the near future.
+You can verify this is working by running ``infrared_receive.py``, then executing the ``irsend`` command while it's still running, and you should see it print the button command that was sent.
 
 Troubleshooting
 ===============

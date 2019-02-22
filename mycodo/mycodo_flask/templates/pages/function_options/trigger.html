@@ -66,6 +66,8 @@
     {% include 'pages/function_options/trigger_options/edge.html' %}
   {% elif each_trigger.trigger_type == 'trigger_run_pwm_method' %}
     {% include 'pages/function_options/trigger_options/run_pwm_method.html' %}
+  {% elif each_trigger.trigger_type == 'trigger_infrared_remote_input' %}
+    {% include 'pages/function_options/trigger_options/infrared_remote_input.html' %}
   {% elif each_trigger.trigger_type == 'trigger_sunrise_sunset' %}
     {% include 'pages/function_options/trigger_options/sunrise_sunset.html' %}
   {% elif each_trigger.trigger_type == 'trigger_timer_daily_time_point' %}

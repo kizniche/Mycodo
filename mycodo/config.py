@@ -13,7 +13,7 @@ sys.path.append(os.path.abspath(os.path.dirname(__file__)))
 from config_translations import TRANSLATIONS
 
 MYCODO_VERSION = '7.2.4'
-ALEMBIC_VERSION = '2976b41930ad'
+ALEMBIC_VERSION = '27e1eca963ab'
 
 #  FORCE_UPGRADE_MASTER
 #  Set True to enable upgrading to the master branch of the Mycodo repository.
@@ -428,13 +428,17 @@ FUNCTION_TYPES = [
         '{}: {} ({})'.format(TRANSLATIONS['trigger']['title'], TRANSLATIONS['timer']['title'],
                              TRANSLATIONS['duration']['title'])),
     (
+        'trigger_infrared_remote_input',
+        lazy_gettext('Infrared Remote Input'),
+        '{}: {}'.format(TRANSLATIONS['trigger']['title'], lazy_gettext('Infrared Remote Input'))),
+    (
         'trigger_run_pwm_method',
         lazy_gettext('Run PWM Method'),
-        '{}: ({})'.format(TRANSLATIONS['trigger']['title'], lazy_gettext('Run PWM Method'))),
+        '{}: {}'.format(TRANSLATIONS['trigger']['title'], lazy_gettext('Run PWM Method'))),
     (
         'trigger_sunrise_sunset',
         lazy_gettext('Sunrise/Sunset'),
-        '{}: ({})'.format(TRANSLATIONS['trigger']['title'], lazy_gettext('Sunrise/Sunset')))
+        '{}: {}'.format(TRANSLATIONS['trigger']['title'], lazy_gettext('Sunrise/Sunset')))
 ]
 
 # Conditional actions

@@ -60,6 +60,11 @@ def trigger_mod(form):
             trigger.trigger_actions_at_start = form.trigger_actions_at_start.data
             trigger.trigger_actions_at_period = form.trigger_actions_at_period.data
 
+        elif trigger.trigger_type == 'trigger_infrared_remote_input':
+            error = check_form_infrared_remote_input(form, error)
+            trigger.program = form.program.data
+            trigger.word = form.word.data
+
         elif trigger.trigger_type == 'trigger_sunrise_sunset':
             error = check_form_sunrise_sunset(form, error)
             trigger.rise_or_set = form.rise_or_set.data
@@ -264,6 +269,17 @@ def check_form_run_pwm_method(form, error):
     if not form.unique_id_2.data:
         error.append("{id} must be set".format(
             id=form.unique_id_2.label.text))
+    return error
+
+
+def check_form_infrared_remote_input(form, error):
+    """Checks if the submitted form has any errors"""
+    if not form.program.data:
+        error.append("{id} must be set".format(
+            id=form.program.label.text))
+    if not form.word.data:
+        error.append("{id} must be set".format(
+            id=form.program.label.text))
     return error
 
 

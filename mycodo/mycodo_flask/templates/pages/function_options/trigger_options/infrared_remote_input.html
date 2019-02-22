@@ -1,0 +1,12 @@
+<div class="col-auto">
+  {{form_trigger.program.label(class_='control-label')}}
+  <div>
+   {{form_trigger.program(class_='form-control', value=each_trigger.program, **{'title':_('The program variable set in ~/.lircrc')})}}
+  </div>
+</div>
+<div class="col-auto">
+  {{form_trigger.word.label(class_='control-label')}}
+  <div>
+   {{form_trigger.word(class_='form-control', value=each_trigger.word, **{'title':_('The config variable set in ~/.lircrc')})}}
+  </div>
+</div>

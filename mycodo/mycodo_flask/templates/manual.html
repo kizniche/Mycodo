@@ -410,6 +410,7 @@
 <li><a href="#backup-restore">Backup-Restore</a></li>
 <li><a href="#system-information">System Information</a></li>
 <li><a href="#usb-device-persistence-across-reboots">USB Device Persistence Across Reboots</a></li>
+<li><a href="#infrared-remote">Infrared Remote</a></li>
 </ul></li>
 <li><a href="#troubleshooting">Troubleshooting</a><ul>
 <li><a href="#daemon-not-running">Daemon Not Running</a></li>
@@ -1724,6 +1725,30 @@ if None not in [measure_1, measure_2]:
 </tr>
 </tbody>
 </table>
+<h4 id="infrared-remote-input-options">Infrared Remote Input Options</h4>
+<p>Mycodo uses lirc to detect Infrared signals. Follow the <a href="#infrared-remote">lirc setup guide</a> before using this feature.</p>
+<table>
+<colgroup>
+<col style="width: 33%"></col>
+<col style="width: 66%"></col>
+</colgroup>
+<thead>
+<tr class="header">
+<th>Setting</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Program</td>
+<td>This is the variable ‘program’ in ~/.lircrc</td>
+</tr>
+<tr class="even">
+<td>Word</td>
+<td>This is the variable ‘config’ in ~/.lircrc</td>
+</tr>
+</tbody>
+</table>
 <h4 id="sunrisesunset-options">Sunrise/Sunset Options</h4>
 <p>Trigger events at sunrise or sunset (or a time offset of those), based on latitude and longitude.</p>
 <table>
@@ -3001,6 +3026,89 @@ ATTRS{serial}==&quot;3f980000.usb&quot;</code></pre>
 pi@raspberry:/dev $ ls -al dust-sensor
 lrwxrwxrwx 1 root root 7 Oct 6 21:04 dust-sensor -&gt; ttyUSB0</code></pre>
 <p>Now, every time the dust sensor is plugged in, it shows up at /dev/dust-sensor</p>
+<h2 id="infrared-remote">Infrared Remote</h2>
+<p>Infrared (IR) light is a common way to send and receive signals across distances. This is typically done with IR remotes with several buttons configured to send different signals. These signals can be detected by the Raspberry Pi with the use of an <a href="https://www.sparkfun.com/products/10266">IR receiver diode</a> and used to perform actions within the linux environment and Mycodo. This is done with <a href="http://lirc.org/">lirc</a>, and needs to be properly configured before IR signals can be detected and interpreted.</p>
+<p>The IR receiver typically has three connections, power (3.3 volts), ground, and data (GPIO pin), and should be connected to the appropriate pins of your Raspberry Pi. Make sure your IR receiver can operate at 3.3 volts, which is the appropriate voltage GPIOs operate at. For testing, I used the <a href="https://www.sparkfun.com/products/14677">Sparkfun Infrared Control Kit</a>, which has an <a href="https://learn.sparkfun.com/tutorials/ir-control-kit-hookup-guide">Information Guide</a>, however there are cheaper alternatives.</p>
+<p>Install the necessary linux dependencies:</p>
+<p><code>sudo apt install liblircclient-dev lirc</code></p>
+<p>Install the lirc python package in the Mycodo virtualenv:</p>
+<p><code>~/Mycodo/env/bin/pip install python-lirc</code></p>
+<p>Edit <code>/boot/config.txt</code> and add to the end of the file, replacing 17 from <code>gpio_out_pin=17</code> with the GPIO (BCM numbering) connected to your IR LED and 18 from <code>gpio_in_pin=18</code> connected to the IR receiver. You can omit either of these options if you aren’t using either the IR receiver or transmitting LED:</p>
+<p><code>dtoverlay=lirc-rpi,gpio_out_pin=17,gpio_in_pin=18,gpio_in_pull=up</code></p>
+<p>Edit <code>/etc/lirc/lirc_options.conf</code> and ensure the following settings are set:</p>
+<pre><code>driver = default
+device = /dev/lirc0</code></pre>
+<p>Restart your system:</p>
+<p><code>sudo shutdnown now -r</code></p>
+<p>Check <a href="http://lirc-remotes.sourceforge.net/remotes-table.html">this remote database</a> for your remote, and if it’s found, place it in <code>/etc/lirc/lircd.conf.d/</code>, otherwise you will need to generate a config file for your remote.</p>
+<p>To generate a config file for your remote, lirc must first be stopped:</p>
+<p><code>sudo service lircd stop</code></p>
+<p>Then, issue the following command:</p>
+<p><code>sudo irrecord -n -d /dev/lirc0</code></p>
+<p>You will be prompted with a very specific set of instructions in order to map your remote. If you successfully finish the config generation, you will have a *.lirc.conf file that you should place in <code>/etc/lirc/lircd.conf.d/</code></p>
+<p>Start lirc back up to load this config:</p>
+<p><code>sudo service lirc start</code></p>
+<p>Now, start <code>irw</code> and press a button on your remote. If everything works, you should see information appear when you press each button, such as below:</p>
+<pre><code>pi@raspberry:~ $ irw
+0000000000ff629d 00 KEY_POWER simple_remote
+0000000000ff22dd 01 KEY_A simple_remote
+0000000000ff02fd 01 KEY_B simple_remote
+0000000000ffc23d 00 KEY_C simple_remote
+0000000000ff9867 00 KEY_UP simple_remote
+0000000000ff38c7 00 KEY_DOWN simple_remote
+0000000000ff30cf 01 KEY_LEFT simple_remote
+0000000000ff7a85 00 KEY_RIGHT simple_remote
+0000000000ff18e7 01 KEY_SELECT simple_remote</code></pre>
+<p>Now that we have the remote detected and mapped, we can set commands to be executed or what word is returned to Mycodo. Create a file <code>~/.lirc</code>:</p>
+<p><code>nano ~/.lircrc</code></p>
+<p>and configure the responses to button presses</p>
+<pre><code>begin
+  button = KEY_POWER
+  prog = mycodo
+  config = power
+  repeat = 0
+end
+begin
+  button = KEY_A
+  prog = mycodo
+  config = a
+  repeat = 0
+end</code></pre>
+<p>To test this with Python, create the test program <code>infrared_receive.py</code>:</p>
+<pre><code>import lirc
+import time
+
+sockid = lirc.init(&quot;mycodo&quot;, blocking=False)
+while True:
+    code = lirc.nextcode()
+    if code:
+        print(code[0])
+    time.sleep(0.05)</code></pre>
+<p>Execute this using the Mycodo virtualenv:</p>
+<p><code>~/Mycodo/env/bin/python infrared_receive.py</code></p>
+<p>And press the buttons defined in <code>~/.lirc</code> and see if the output appears on the console:</p>
+<pre><code>pi@raspberry:~ $ ~/Mycodo/env/bin/python ./test_IR.py
+power
+a</code></pre>
+<p>From here, you can create any Python code to react to button presses on your remote. You can also set up the Mycodo Function Trigger: Infrared Remote Input and trigger events in response to Mycodo detecting specific button presses. See <a href="#infrared-remote-input-options">Infrared Remote Input Options</a> for configuring this trigger.</p>
+<p>In order to send an IR signal to your IR LED, connect your LED to the GPIO defined with <code>gpio_out_pin=17</code> in <code>/boot/config.txt</code>. You can test if your LED is working by creating a file, <code>LED_blink.py</code>, replacing <code>17</code> with the pin connected to your LED:</p>
+<pre><code>import RPi.GPIO as GPIO
+import time
+
+pin = 17
+GPIO.setwarnings(False)
+GPIO.setmode(GPIO.BCM)
+GPIO.setup(pin, GPIO.OUT, initial=GPIO.LOW)
+
+while True:
+    GPIO.output(pin, GPIO.HIGH)
+    time.sleep(1)
+    GPIO.output(pin, GPIO.LOW)
+    time.sleep(1)</code></pre>
+<p>Since IR LEDs produce a wavelength of light that humans can’t see, you’ll need to aim a video camera that lacks an infrared filter and see if the LED is blinking.</p>
+<p>If your LED is working, then issue the following command, replacing <code>simple_remote</code> with the name of your remote defined in your config file:</p>
+<p><code>irsend SEND_ONCE simple_remote KEY_POWER</code></p>
+<p>You can verify this is working by running <code>infrared_receive.py</code>, then executing the <code>irsend</code> command while it’s still running, and you should see it print the button command that was sent.</p>
 <h1 id="troubleshooting">Troubleshooting</h1>
 <h2 id="daemon-not-running">Daemon Not Running</h2>
 <ul>

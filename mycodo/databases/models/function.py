@@ -82,6 +82,10 @@ class Trigger(CRUDMixin, db.Model):
     timer_start_time = db.Column(db.Text, default='16:30')
     timer_end_time = db.Column(db.Text, default='19:00')
 
+    # Receive infrared from remote
+    program = db.Column(db.Text, default='mycodo')
+    word = db.Column(db.Text, default='button_a')
+
     # Method
     method_start_time = db.Column(db.Text, default=None)
     method_end_time = db.Column(db.Text, default=None)
