@@ -159,6 +159,9 @@ class DaemonControl:
     def refresh_daemon_trigger_settings(self, unique_id):
         return self.rpyc_client.root.refresh_daemon_trigger_settings(unique_id)
 
+    def send_infrared_code_broadcast(self, code):
+        return self.rpyc_client.root.send_infrared_code_broadcast(code)
+
     def test_trigger_actions(self, function_id, message=''):
         return self.rpyc_client.root.test_trigger_actions(function_id, message)
 

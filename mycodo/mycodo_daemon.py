@@ -267,6 +267,11 @@ def mycodo_service(mycodo):
             return mycodo.output_setup(action, output_id)
 
         @staticmethod
+        def exposed_send_infrared_code_broadcast(code):
+            """Broadcast infrared code to all IR Triggers"""
+            return mycodo.send_infrared_code_broadcast(code)
+
+        @staticmethod
         def exposed_test_trigger_actions(function_id, message=''):
             """Test triggering actions"""
             return mycodo.test_trigger_actions(function_id, message)
@@ -1057,6 +1062,11 @@ class DaemonController:
             self.logger.info(
                 "Output controller had an issue stopping: {err}".format(
                     err=err))
+
+    def send_infrared_code_broadcast(self, code):
+        for each_trigger_id in self.controller['Trigger']:
+            if self.controller['Trigger'][each_trigger_id].trigger_type == 'trigger_infrared_remote_input':
+                self.controller['Trigger'][each_trigger_id].receive_infrared_code_broadcast(code)
 
     def test_trigger_actions(
             self, function_id, message=''):

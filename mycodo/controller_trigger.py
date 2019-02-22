@@ -443,27 +443,27 @@ class TriggerController(threading.Thread):
         trigger_function_actions(self.function_id, message=message)
 
     def infrared_remote_input(self):
-        """Wait for an infrared input signal"""
-        while self.running:
-            code = self.lirc.nextcode()
-            if code and code[0] == self.word:
-                now = time.time()
-                timestamp = datetime.datetime.fromtimestamp(now).strftime(
-                    '%Y-%m-%d %H:%M:%S')
-                message = "{ts}\n[Trigger {id} ({name})]".format(
-                    ts=timestamp,
-                    name=self.trigger_name,
-                    id=self.function_id)
-                message += "\nInfrared Remote Input detected " \
-                           "'{word}' on program '{prog}'".format(
-                    word=self.word, prog=self.program)
-                trigger_function_actions(self.function_id, message=message)
-            elif self.pause_loop:
-                self.verify_pause_loop = True
-                while self.pause_loop:
-                    time.sleep(0.1)
+        """
+        Wait for an infrared input signal
+        Because only one thread will capture the button press, the thread that
+         catches it will send a broadcast of the codes to all trigger threads.
+        """
+        code = self.lirc.nextcode()
+        if code:
+            self.control.send_infrared_code_broadcast(code)
 
-            time.sleep(0.01)
+    def receive_infrared_code_broadcast(self, code):
+        if self.word in code:
+            timestamp = datetime.datetime.fromtimestamp(
+                time.time()).strftime('%Y-%m-%d %H:%M:%S')
+            message = "{ts}\n[Trigger {id} ({name})]".format(
+                ts=timestamp,
+                name=self.trigger_name,
+                id=self.function_id)
+            message += "\nInfrared Remote Input detected " \
+                       "'{word}' on program '{prog}'".format(
+                        word=self.word, prog=self.program)
+            trigger_function_actions(self.function_id, message=message)
 
     def is_running(self):
         return self.running
