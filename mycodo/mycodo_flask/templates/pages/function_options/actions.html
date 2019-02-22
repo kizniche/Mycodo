@@ -55,6 +55,27 @@
   </div>
 </div>
 
+{% elif each_action.action_type == 'infrared_send' %}
+
+<div class="col-auto">
+  {{form_actions.remote.label(class_='control-label')}}
+  <div>
+    {{form_actions.remote(class_='form-control', value=each_action.remote, **{'title':_('What remote to use')})}}
+  </div>
+</div>
+<div class="col-auto">
+  {{form_actions.code.label(class_='control-label')}}
+  <div>
+    {{form_actions.code(class_='form-control', value=each_action.code, **{'title':_('What code to send')})}}
+  </div>
+</div>
+<div class="col-auto">
+  {{form_actions.send_times.label(class_='control-label')}}
+  <div>
+    {{form_actions.send_times(class_='form-control', value=each_action.send_times, **{'title':_('The number of times to send the code')})}}
+  </div>
+</div>
+
 {% elif each_action.action_type == 'email' %}
 
 <div class="col-auto">

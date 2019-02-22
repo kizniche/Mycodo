@@ -1729,6 +1729,10 @@ Conditional, Trigger).
 | Execute Command       | Execute a command in the linux shell (as user   |
 |                       | 'root').                                        |
 +-----------------------+-------------------------------------------------+
+| Infrared Remote Send  | Send an infrared signal. See                    |
+|                       | `Infrared Remote <#infrared-remote>`__ for      |
+|                       | details.                                        |
++-----------------------+-------------------------------------------------+
 | LCD: Backlight        | Turn the LCD backlight on or off. Note: Only    |
 |                       | some LCDs are supported.                        |
 +-----------------------+-------------------------------------------------+
@@ -3103,6 +3107,8 @@ If your LED is working, then issue the following command, replacing ``simple_rem
 ``irsend SEND_ONCE simple_remote KEY_POWER``
 
 You can verify this is working by running ``infrared_receive.py``, then executing the ``irsend`` command while it's still running, and you should see it print the button command that was sent.
+
+IR codes can be sent from Mycodo using the Infrared Remote Send Function Action. The ``Remote`` option should to match the remote name in the config file in ``/etc/lirc/lircd.conf.d/`` and the ``Code`` option should match a code that's in ``/home/pi/.lircrc``. If ``Times to Send`` is set larger than 1, the code will be sent multiple times at intervals of 0.5 seconds.
 
 Troubleshooting
 ===============

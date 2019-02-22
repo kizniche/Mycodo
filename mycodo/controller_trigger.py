@@ -445,13 +445,8 @@ class TriggerController(threading.Thread):
     def infrared_remote_input(self):
         """Wait for an infrared input signal"""
         while self.running:
-            if self.pause_loop:
-                self.verify_pause_loop = True
-                while self.pause_loop:
-                    time.sleep(0.1)
-
             code = self.lirc.nextcode()
-            if code and self.word in code:
+            if code and code[0] == self.word:
                 now = time.time()
                 timestamp = datetime.datetime.fromtimestamp(now).strftime(
                     '%Y-%m-%d %H:%M:%S')
@@ -463,6 +458,10 @@ class TriggerController(threading.Thread):
                            "'{word}' on program '{prog}'".format(
                     word=self.word, prog=self.program)
                 trigger_function_actions(self.function_id, message=message)
+            elif self.pause_loop:
+                self.verify_pause_loop = True
+                while self.pause_loop:
+                    time.sleep(0.1)
 
             time.sleep(0.01)
 

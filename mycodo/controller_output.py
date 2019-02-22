@@ -385,7 +385,8 @@ class OutputController(threading.Thread):
                                                  'python',
                                                  'wired',
                                                  'wireless_rpi_rf']:
-                if self.is_on(output_id):
+                # Don't turn on if already on, except if it's a radio frequency output
+                if self.is_on(output_id) and self.output_type[output_id] != 'wireless_rpi_rf':
                     self.logger.debug(
                         "Output {id} ({name}) is already on.".format(
                             id=self.output_id[output_id],
@@ -395,7 +396,8 @@ class OutputController(threading.Thread):
                     # Record the time the output was turned on in order to
                     # calculate and log the total duration is was on, when
                     # it eventually turns off.
-                    self.output_time_turned_on[output_id] = datetime.datetime.now()
+                    if not self.output_time_turned_on[output_id]:
+                        self.output_time_turned_on[output_id] = datetime.datetime.now()
                     self.logger.debug(
                         "Output {id} ({name}) ON at {timeon}.".format(
                             id=self.output_id[output_id],

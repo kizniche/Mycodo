@@ -1913,38 +1913,42 @@ if None not in [measure_1, measure_2]:
 <td>Execute a command in the linux shell (as user ‘root’).</td>
 </tr>
 <tr class="even">
+<td>Infrared Remote Send</td>
+<td>Send an infrared signal. See <a href="#infrared-remote">Infrared Remote</a> for details.</td>
+</tr>
+<tr class="odd">
 <td>LCD: Backlight</td>
 <td>Turn the LCD backlight on or off. Note: Only some LCDs are supported.</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>LCD: Flash</td>
 <td>Start of stop the LCD flashing to indicate an alert. Note: Only some LCDs are supported.</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>Output: Duration</td>
 <td>Turn a output on, off, or on for a duration of time.</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>Output: Duty Cycle</td>
 <td>Turn a PWM output off or on for a duty cycle.</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>PID: Pause</td>
 <td>Pause a particular PID controller.</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>PID: Hold</td>
 <td>Hold a particular PID controller.</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>PID: Resume</td>
 <td>Resume a particular PID controller.</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>PID: Set Method</td>
 <td>Set the Method of a particular PID controller.</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>PID: Set Setpoint</td>
 <td>Set the Setpoint of a particular PID controller.</td>
 </tr>
@@ -3109,6 +3113,7 @@ while True:
 <p>If your LED is working, then issue the following command, replacing <code>simple_remote</code> with the name of your remote defined in your config file:</p>
 <p><code>irsend SEND_ONCE simple_remote KEY_POWER</code></p>
 <p>You can verify this is working by running <code>infrared_receive.py</code>, then executing the <code>irsend</code> command while it’s still running, and you should see it print the button command that was sent.</p>
+<p>IR codes can be sent from Mycodo using the Infrared Remote Send Function Action. The <code>Remote</code> option should to match the remote name in the config file in <code>/etc/lirc/lircd.conf.d/</code> and the <code>Code</code> option should match a code that’s in <code>/home/pi/.lircrc</code>. If <code>Times to Send</code> is set larger than 1, the code will be sent multiple times at intervals of 0.5 seconds.</p>
 <h1 id="troubleshooting">Troubleshooting</h1>
 <h2 id="daemon-not-running">Daemon Not Running</h2>
 <ul>

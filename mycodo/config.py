@@ -452,6 +452,7 @@ FUNCTION_ACTIONS = [
     ('photo_email', lazy_gettext('Email with Photo Attachment')),
     ('video_email', lazy_gettext('Email with Video Attachment')),
     ('command', lazy_gettext('Execute Command')),
+    ('infrared_send', lazy_gettext('Infrared Remote Send')),
     ('lcd_backlight_off', '{}: {}'.format(TRANSLATIONS['lcd']['title'], lazy_gettext('Backlight Off'))),
     ('lcd_backlight_on', '{}: {}'.format(TRANSLATIONS['lcd']['title'], lazy_gettext('LCD: Backlight On'))),
     ('flash_lcd_off', '{}: {}'.format(TRANSLATIONS['lcd']['title'], lazy_gettext('LCD: Flashing Off'))),

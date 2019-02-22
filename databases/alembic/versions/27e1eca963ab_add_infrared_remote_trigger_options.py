@@ -21,8 +21,18 @@ def upgrade():
         batch_op.add_column(sa.Column('program', sa.Text))
         batch_op.add_column(sa.Column('word', sa.Text))
 
+    with op.batch_alter_table("function_actions") as batch_op:
+        batch_op.add_column(sa.Column('remote', sa.Text))
+        batch_op.add_column(sa.Column('code', sa.Text))
+        batch_op.add_column(sa.Column('send_times', sa.Integer))
+
 
 def downgrade():
     with op.batch_alter_table("trigger") as batch_op:
         batch_op.drop_column('program')
         batch_op.drop_column('word')
+
+    with op.batch_alter_table("function_actions") as batch_op:
+        batch_op.drop_column('remote')
+        batch_op.drop_column('code')
+        batch_op.drop_column('send_times')

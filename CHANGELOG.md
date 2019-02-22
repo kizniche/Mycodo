@@ -1,10 +1,15 @@
-## 7.2.5 (Unreleased)
+## 7.3.0 (Unreleased)
 
 ### Bugfixes
 
  - Fix issue with check_triggers() in output controller
  - Fix issue preventing export of Notes
  - Fix table issue on Note page
+
+### Features
+
+ - Add Function Trigger: Infrared Remote Input
+ - Add Function Action: Infrared Remote Send
 
 ### Miscellaneous
 
@@ -17,10 +22,6 @@
 
  - Fix unset channel causing 500 error ([#631](https://github.com/kizniche/mycodo/issues/631))
  - During first install, initialize after install of influxdb
-
-### Features
-
- - Add Trigger: Infrared Remote Input
 
 ### Miscellaneous
 

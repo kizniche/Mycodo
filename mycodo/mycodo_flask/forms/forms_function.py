@@ -6,6 +6,7 @@
 from flask_babel import lazy_gettext
 from flask_wtf import FlaskForm
 from wtforms import DecimalField
+from wtforms import IntegerField
 from wtforms import SelectField
 from wtforms import SelectMultipleField
 from wtforms import StringField
@@ -64,6 +65,11 @@ class Actions(FlaskForm):
     do_camera_duration = DecimalField(
         lazy_gettext('Then Duration'),
         widget=NumberInput(step='any'))
+
+    # Infrared
+    remote = StringField(lazy_gettext('Remote'))
+    code = StringField(lazy_gettext('Code'))
+    send_times = IntegerField(lazy_gettext('Times to Send'))
 
     save_action = SubmitField(TRANSLATIONS['save']['title'])
     delete_action = SubmitField(TRANSLATIONS['delete']['title'])

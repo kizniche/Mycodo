@@ -168,6 +168,33 @@ def trigger_action(
 
             time.sleep(cond_action.pause_duration)
 
+        # Infrared Send
+        if cond_action.action_type == 'infrared_send':
+            command = 'irsend SEND_ONCE {remote} {code}'.format(
+                remote=cond_action.remote, code=cond_action.code)
+            output, err, stat = cmd_output(command)
+            logger.error("TEST00: {}".format(cond_action.id))
+
+            # Send more than once
+            if cond_action.send_times > 1:
+                for _ in range(cond_action.send_times - 1):
+                    time.sleep(0.5)
+                    output, err, stat = cmd_output(command)
+                    logger.error("TEST00: {}".format(cond_action.id))
+
+            message += " [{id}] Infrared Send " \
+                       "code '{code}', remote '{remote}', times: {times}:" \
+                       "\nOutput: {out}" \
+                       "\nError: {err}" \
+                       "\nStatus: {stat}'.".format(
+                            id=cond_action.id,
+                            code=cond_action.code,
+                            remote=cond_action.remote,
+                            times=cond_action.send_times,
+                            out=output,
+                            err=err,
+                            stat=stat)
+
         # Actuate output (duration)
         if (cond_action.action_type == 'output' and
                 cond_action.do_unique_id and
