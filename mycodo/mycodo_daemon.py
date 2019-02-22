@@ -1064,9 +1064,13 @@ class DaemonController:
                     err=err))
 
     def send_infrared_code_broadcast(self, code):
+        """Broadcast IR code to all active IR Triggers (thread for speed)"""
         for each_trigger_id in self.controller['Trigger']:
             if self.controller['Trigger'][each_trigger_id].trigger_type == 'trigger_infrared_remote_input':
-                self.controller['Trigger'][each_trigger_id].receive_infrared_code_broadcast(code)
+                broadcast_ir = threading.Thread(
+                    target=self.controller['Trigger'][each_trigger_id].receive_infrared_code_broadcast,
+                    args=(code,))
+                broadcast_ir.start()
 
     def test_trigger_actions(
             self, function_id, message=''):

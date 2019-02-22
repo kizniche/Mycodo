@@ -344,8 +344,7 @@ class TriggerController(threading.Thread):
 
     def set_output_duty_cycle(self, output_id, duty_cycle):
         """ Set PWM Output duty cycle """
-        self.control.output_on(output_id,
-                               duty_cycle=duty_cycle)
+        self.control.output_on(output_id, duty_cycle=duty_cycle)
 
     def check_triggers(self):
         """
@@ -446,7 +445,7 @@ class TriggerController(threading.Thread):
         """
         Wait for an infrared input signal
         Because only one thread will capture the button press, the thread that
-         catches it will send a broadcast of the codes to all trigger threads.
+        catches it will send a broadcast of the codes to all trigger threads.
         """
         code = self.lirc.nextcode()
         if code:
