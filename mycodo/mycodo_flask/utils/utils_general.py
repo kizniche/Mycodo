@@ -530,7 +530,7 @@ def form_output_choices(choices, each_output, dict_units, dict_measurements):
     display = '[Output {id:02d}] {name} CH{chan}, {meas} ({unit})'.format(
         id=each_output.id,
         name=each_output.name,
-        chan=each_output.channel,
+        chan=each_output.channel + 1,
         meas=dict_measurements[each_output.measurement]['name'],
         unit=dict_units[each_output.unit]['unit'])
     choices.update({value: display})
