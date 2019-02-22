@@ -6,7 +6,7 @@ from flask import url_for
 from flask_babel import gettext
 from sqlalchemy import and_
 
-from mycodo.config import FUNCTION_TYPES
+from mycodo.config import FUNCTION_INFO
 from mycodo.config import PID_INFO
 from mycodo.config_translations import TRANSLATIONS
 from mycodo.databases.models import Actions
@@ -23,6 +23,7 @@ from mycodo.mycodo_flask.utils.utils_general import add_display_order
 from mycodo.mycodo_flask.utils.utils_general import delete_entry_with_id
 from mycodo.mycodo_flask.utils.utils_general import flash_success_errors
 from mycodo.mycodo_flask.utils.utils_general import reorder
+from mycodo.mycodo_flask.utils.utils_general import return_dependencies
 from mycodo.utils.system_pi import csv_to_list_of_str
 from mycodo.utils.system_pi import list_to_csv
 from mycodo.utils.system_pi import str_is_float
@@ -39,6 +40,16 @@ def function_add(form_add_func):
         action=TRANSLATIONS['add']['title'],
         controller=TRANSLATIONS['function']['title'])
     error = []
+
+    dep_unmet, _ = return_dependencies(form_add_func.func_type.data)
+    if dep_unmet:
+        list_unmet_deps = []
+        for each_dep in dep_unmet:
+            list_unmet_deps.append(each_dep[0])
+        error.append(
+            "The {dev} device you're trying to add has unmet dependencies: "
+            "{dep}".format(dev=form_add_func.func_type.data,
+                           dep=', '.join(list_unmet_deps)))
 
     new_func = None
 
@@ -74,9 +85,7 @@ if measurement is not None:  # If a measurement exists
 
         elif form_add_func.func_type.data.startswith('trigger_'):
             new_func = Trigger()
-            for name_id, name, _ in FUNCTION_TYPES:
-                if form_add_func.func_type.data == name_id:
-                    new_func.name = '{}'.format(name)
+            new_func.name = '{}'.format(FUNCTION_INFO[form_add_func.func_type.data]['name'])
             new_func.trigger_type = form_add_func.func_type.data
             new_func.save()
         elif form_add_func.func_type.data.startswith('function_'):
@@ -106,6 +115,9 @@ if measurement is not None:  # If a measurement exists
         error.append(except_msg)
 
     flash_success_errors(error, action, url_for('routes_page.page_function'))
+
+    if dep_unmet:
+        return 1
 
 
 def function_mod(form):

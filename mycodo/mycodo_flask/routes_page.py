@@ -34,7 +34,7 @@ from mycodo.config import DAEMON_PID_FILE
 from mycodo.config import DEPENDENCY_LOG_FILE
 from mycodo.config import FRONTEND_PID_FILE
 from mycodo.config import FUNCTION_ACTIONS
-from mycodo.config import FUNCTION_TYPES
+from mycodo.config import FUNCTION_INFO
 from mycodo.config import HTTP_ACCESS_LOG_FILE
 from mycodo.config import HTTP_ERROR_LOG_FILE
 from mycodo.config import INSTALL_DIRECTORY
@@ -1196,6 +1196,7 @@ def page_function():
     form_actions = forms_function.Actions()
 
     if request.method == 'POST':
+        unmet_dependencies = None
         if not utils_general.user_has_permission('edit_controllers'):
             return redirect(url_for('routes_general.home'))
 
@@ -1210,7 +1211,7 @@ def page_function():
 
         # Function
         if form_add_function.func_add.data:
-            utils_function.function_add(form_add_function)
+            unmet_dependencies = utils_function.function_add(form_add_function)
         elif form_function.save_function.data:
             utils_function.function_mod(
                 form_conditional)
@@ -1340,7 +1341,11 @@ def page_function():
             utils_function.action_del(
                 form_actions)
 
-        return redirect(url_for('routes_page.page_function'))
+        if unmet_dependencies:
+            return redirect(url_for('routes_admin.admin_dependencies',
+                                    device=form_add_function.func_type.data))
+        else:
+            return redirect(url_for('routes_page.page_function'))
 
     # Generate all measurement and units used
     dict_measurements = add_custom_measurements(Measurement.query.all())
@@ -1450,7 +1455,7 @@ def page_function():
                            actions=actions,
                            actions_dict=actions_dict,
                            function_dev=function_dev,
-                           function_types=FUNCTION_TYPES,
+                           function_types=FUNCTION_INFO,
                            function_actions_list=FUNCTION_ACTIONS,
                            controllers=controllers,
                            display_order_function=display_order_function,

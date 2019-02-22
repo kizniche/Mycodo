@@ -25,6 +25,7 @@ from mycodo.config import DEPENDENCY_INIT_FILE
 from mycodo.config import DEPENDENCY_LOG_FILE
 from mycodo.config import FINAL_RELEASES
 from mycodo.config import FORCE_UPGRADE_MASTER
+from mycodo.config import FUNCTION_INFO
 from mycodo.config import INSTALL_DIRECTORY
 from mycodo.config import LCD_INFO
 from mycodo.config import MATH_INFO
@@ -234,6 +235,7 @@ def admin_dependencies(device):
 
     list_dependencies = [
         dict_inputs,
+        FUNCTION_INFO,
         LCD_INFO,
         MATH_INFO,
         METHOD_INFO,
