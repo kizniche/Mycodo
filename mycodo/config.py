@@ -445,7 +445,98 @@ FUNCTION_INFO = {
     }
 }
 
-# Conditional actions
+# Function actions
+FUNCTION_ACTION_INFO = {
+    'pause_actions': {
+        'name': '{}: {}'.format(TRANSLATIONS['actions']['title'], TRANSLATIONS['pause']['title']),
+        'dependencies_module': []
+    },
+    'photo': {
+        'name': lazy_gettext('Camera: Capture Photo'),
+        'dependencies_module': []
+    },
+    'activate_controller': {
+        'name': '{}: {}'.format(TRANSLATIONS['controller']['title'], TRANSLATIONS['activate']['title']),
+        'dependencies_module': []
+    },
+    'deactivate_controller': {
+        'name': '{}: {}'.format(TRANSLATIONS['controller']['title'], TRANSLATIONS['deactivate']['title']),
+        'dependencies_module': []
+    },
+    'create_note': {
+        'name': TRANSLATIONS['note']['title'],
+        'dependencies_module': []
+    },
+    'email': {
+        'name': TRANSLATIONS['email']['title'],
+        'dependencies_module': []
+    },
+    'photo_email': {
+        'name': lazy_gettext('Email with Photo Attachment'),
+        'dependencies_module': []
+    },
+    'video_email': {
+        'name': lazy_gettext('Email with Video Attachment'),
+        'dependencies_module': []
+    },
+    'command': {
+        'name': lazy_gettext('Execute Command'),
+        'dependencies_module': []
+    },
+    'infrared_send': {
+        'name': lazy_gettext('Infrared Send'),
+        'dependencies_module': [
+            ('apt', 'liblircclient-dev', 'liblircclient-dev'),
+            ('apt', 'lirc', 'lirc'),
+            ('pip-pypi', 'lirc', 'python-lirc')
+        ]
+    },
+    'lcd_backlight_off': {
+        'name': '{}: {}'.format(TRANSLATIONS['lcd']['title'], lazy_gettext('Backlight Off')),
+        'dependencies_module': []
+    },
+    'lcd_backlight_on': {
+        'name': '{}: {}'.format(TRANSLATIONS['lcd']['title'], lazy_gettext('LCD: Backlight On')),
+        'dependencies_module': []
+    },
+    'flash_lcd_off': {
+        'name': '{}: {}'.format(TRANSLATIONS['lcd']['title'], lazy_gettext('LCD: Flashing Off')),
+        'dependencies_module': []
+    },
+    'flash_lcd_on': {
+        'name': '{}: {}'.format(TRANSLATIONS['lcd']['title'], lazy_gettext('LCD: Flashing On')),
+        'dependencies_module': []
+    },
+    'output': {
+        'name': '{}: {}'.format(TRANSLATIONS['output']['title'], TRANSLATIONS['duration']['title']),
+        'dependencies_module': []
+    },
+    'output_pwm': {
+        'name': '{}: {}'.format(TRANSLATIONS['output']['title'], TRANSLATIONS['duty_cycle']['title']),
+        'dependencies_module': []
+    },
+    'pause_pid': {
+        'name': '{}: {}'.format(TRANSLATIONS['pid']['title'], TRANSLATIONS['pause']['title']),
+        'dependencies_module': []
+    },
+    'resume_pid': {
+        'name': '{}: {}'.format(TRANSLATIONS['pid']['title'], TRANSLATIONS['resume']['title']),
+        'dependencies_module': []
+    },
+    'method_pid': {
+        'name': '{}: {}'.format(TRANSLATIONS['pid']['title'], lazy_gettext('Set Method')),
+        'dependencies_module': []
+    },
+    'setpoint_pid': {
+        'name': '{}: {}'.format(TRANSLATIONS['pid']['title'], lazy_gettext('Set Setpoint')),
+        'dependencies_module': []
+    }
+
+    # TODO: These have been disabled until they can be properly tested
+    # ('video', lazy_gettext('Video')),
+    # ('video_email', lazy_gettext('Email Video'))
+}
+
 FUNCTION_ACTIONS = [
     ('pause_actions', '{}: {}'.format(TRANSLATIONS['actions']['title'], TRANSLATIONS['pause']['title'])),
     ('photo', lazy_gettext('Camera: Capture Photo')),

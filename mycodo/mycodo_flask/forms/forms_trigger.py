@@ -15,7 +15,7 @@ from wtforms import SubmitField
 from wtforms import widgets
 from wtforms.widgets.html5 import NumberInput
 
-from mycodo.config import FUNCTION_ACTIONS
+from mycodo.config import FUNCTION_ACTION_INFO
 from mycodo.config_translations import TRANSLATIONS
 
 
@@ -72,8 +72,12 @@ class Trigger(FlaskForm):
     output_duty_cycle = DecimalField(
         lazy_gettext('If Duty Cycle (%%)'), widget=NumberInput(step='any'))
 
+    function_action_choices = []
+    for each_function_action in FUNCTION_ACTION_INFO:
+        function_action_choices.append((each_function_action, FUNCTION_ACTION_INFO[each_function_action]['name']))
+
     action_type = SelectField(
-        choices=[('', TRANSLATIONS['select_one']['title'])] + FUNCTION_ACTIONS)
+        choices=[('', TRANSLATIONS['select_one']['title'])] + function_action_choices)
     add_action = SubmitField(lazy_gettext('Add Action'))
 
     activate_trigger = SubmitField(TRANSLATIONS['activate']['title'])

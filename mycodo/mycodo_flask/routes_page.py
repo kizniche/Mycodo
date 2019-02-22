@@ -33,7 +33,7 @@ from mycodo.config import DAEMON_LOG_FILE
 from mycodo.config import DAEMON_PID_FILE
 from mycodo.config import DEPENDENCY_LOG_FILE
 from mycodo.config import FRONTEND_PID_FILE
-from mycodo.config import FUNCTION_ACTIONS
+from mycodo.config import FUNCTION_ACTION_INFO
 from mycodo.config import FUNCTION_INFO
 from mycodo.config import HTTP_ACCESS_LOG_FILE
 from mycodo.config import HTTP_ERROR_LOG_FILE
@@ -1456,7 +1456,7 @@ def page_function():
                            actions_dict=actions_dict,
                            function_dev=function_dev,
                            function_types=FUNCTION_INFO,
-                           function_actions_list=FUNCTION_ACTIONS,
+                           function_actions_list=FUNCTION_ACTION_INFO,
                            controllers=controllers,
                            display_order_function=display_order_function,
                            form_base=form_base,
@@ -1553,7 +1553,7 @@ def page_output():
 
     return render_template('pages/output.html',
                            camera=camera,
-                           conditional_actions_list=FUNCTION_ACTIONS,
+                           conditional_actions_list=FUNCTION_ACTION_INFO,
                            display_order_output=display_order_output,
                            form_base=form_base,
                            form_add_output=form_add_output,
