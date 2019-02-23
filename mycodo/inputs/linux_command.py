@@ -46,7 +46,7 @@ class InputModule(AbstractInput):
 
         if not testing:
             self.logger = logging.getLogger(
-                "mycodo.linux_command_{id}".format(id=input_dev.unique_id.split('-')[0]))
+                "mycodo.inputs.linux_command_{id}".format(id=input_dev.unique_id.split('-')[0]))
 
             self.device_measurements = db_retrieve_table_daemon(
                 DeviceMeasurements).filter(

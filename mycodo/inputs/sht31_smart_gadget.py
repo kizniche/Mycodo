@@ -190,6 +190,8 @@ class InputModule(AbstractInput):
             self.gadget.disconnect()
         except self.btle.BTLEException as e:
             self.logger.error("Disconnect Error: {}".format(e))
+        except Exception:
+            self.logger.exception("Disconnecting")
         finally:
             self.connected = False
 
