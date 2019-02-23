@@ -33,8 +33,7 @@ from mycodo.config import DAEMON_LOG_FILE
 from mycodo.config import DAEMON_PID_FILE
 from mycodo.config import DEPENDENCY_LOG_FILE
 from mycodo.config import FRONTEND_PID_FILE
-from mycodo.config import FUNCTION_ACTION_INFO
-from mycodo.config import FUNCTION_INFO
+from mycodo.config import FUNCTIONS
 from mycodo.config import HTTP_ACCESS_LOG_FILE
 from mycodo.config import HTTP_ERROR_LOG_FILE
 from mycodo.config import INSTALL_DIRECTORY
@@ -1211,7 +1210,8 @@ def page_function():
 
         # Function
         if form_add_function.func_add.data:
-            unmet_dependencies = utils_function.function_add(form_add_function)
+            unmet_dependencies = utils_function.function_add(
+                form_add_function)
         elif form_function.save_function.data:
             utils_function.function_mod(
                 form_conditional)
@@ -1227,8 +1227,7 @@ def page_function():
                 form_conditional.function_id.data,
                 display_order_function, 'down')
         elif form_function.execute_all_actions.data:
-            utils_function.action_execute_all(
-                form_conditional)
+            utils_function.action_execute_all(form_conditional)
 
         # PID
         elif form_mod_pid_base.pid_autotune.data:
@@ -1240,8 +1239,7 @@ def page_function():
                               form_mod_pid_output_raise,
                               form_mod_pid_output_lower)
         elif form_mod_pid_base.pid_delete.data:
-            utils_pid.pid_del(
-                form_mod_pid_base.function_id.data)
+            utils_pid.pid_del(form_mod_pid_base.function_id.data)
         elif form_mod_pid_base.order_up.data:
             utils_function.function_reorder(
                 form_mod_pid_base.function_id.data,
@@ -1268,17 +1266,13 @@ def page_function():
 
         # Trigger
         elif form_trigger.save_trigger.data:
-            utils_trigger.trigger_mod(
-                form_trigger)
+            utils_trigger.trigger_mod(form_trigger)
         elif form_trigger.delete_trigger.data:
-            utils_trigger.trigger_del(
-                form_trigger.function_id.data)
+            utils_trigger.trigger_del(form_trigger.function_id.data)
         elif form_trigger.deactivate_trigger.data:
-            utils_trigger.trigger_deactivate(
-                form_trigger.function_id.data)
+            utils_trigger.trigger_deactivate(form_trigger.function_id.data)
         elif form_trigger.activate_trigger.data:
-            utils_trigger.trigger_activate(
-                form_trigger.function_id.data)
+            utils_trigger.trigger_activate(form_trigger.function_id.data)
         elif form_trigger.order_up.data:
             utils_function.function_reorder(
                 form_trigger.function_id.data,
@@ -1288,16 +1282,13 @@ def page_function():
                 form_trigger.function_id.data,
                 display_order_function, 'down')
         elif form_trigger.add_action.data:
-            utils_function.action_add(
-                form_trigger)
+            unmet_dependencies = utils_function.action_add(form_trigger)
         elif form_trigger.test_all_actions.data:
-            utils_function.action_execute_all(
-                form_trigger)
+            utils_function.action_execute_all(form_trigger)
 
         # Conditional
         elif form_conditional.save_conditional.data:
-            utils_conditional.conditional_mod(
-                form_conditional)
+            utils_conditional.conditional_mod(form_conditional)
         elif form_conditional.delete_conditional.data:
             utils_conditional.conditional_del(
                 form_conditional.function_id.data)
@@ -1316,14 +1307,11 @@ def page_function():
                 form_conditional.function_id.data,
                 display_order_function, 'down')
         elif form_conditional.add_condition.data:
-            utils_conditional.conditional_condition_add(
-                form_conditional)
+            utils_conditional.conditional_condition_add(form_conditional)
         elif form_conditional.add_action.data:
-            utils_function.action_add(
-                form_conditional)
+            unmet_dependencies = utils_function.action_add(form_conditional)
         elif form_conditional.test_all_actions.data:
-            utils_function.action_execute_all(
-                form_conditional)
+            utils_function.action_execute_all(form_conditional)
 
         # Conditional conditions
         elif form_conditional_conditions.save_condition.data:
@@ -1335,15 +1323,21 @@ def page_function():
 
         # Actions
         elif form_actions.save_action.data:
-            utils_function.action_mod(
-                form_actions)
+            utils_function.action_mod(form_actions)
         elif form_actions.delete_action.data:
-            utils_function.action_del(
-                form_actions)
+            utils_function.action_del(form_actions)
 
         if unmet_dependencies:
-            return redirect(url_for('routes_admin.admin_dependencies',
-                                    device=form_add_function.func_type.data))
+            function_type = None
+            if form_add_function.func_add.data:
+                function_type = form_add_function.function_type.data
+            elif form_trigger.add_action.data:
+                function_type = form_trigger.function_type.data
+            elif form_conditional.add_action.data:
+                function_type = form_conditional.function_type.data
+            if function_type:
+                return redirect(url_for('routes_admin.admin_dependencies',
+                                        device=function_type))
         else:
             return redirect(url_for('routes_page.page_function'))
 
@@ -1455,8 +1449,7 @@ def page_function():
                            actions=actions,
                            actions_dict=actions_dict,
                            function_dev=function_dev,
-                           function_types=FUNCTION_INFO,
-                           function_actions_list=FUNCTION_ACTION_INFO,
+                           function_types=FUNCTIONS,
                            controllers=controllers,
                            display_order_function=display_order_function,
                            form_base=form_base,
@@ -1553,7 +1546,6 @@ def page_output():
 
     return render_template('pages/output.html',
                            camera=camera,
-                           conditional_actions_list=FUNCTION_ACTION_INFO,
                            display_order_output=display_order_output,
                            form_base=form_base,
                            form_add_output=form_add_output,

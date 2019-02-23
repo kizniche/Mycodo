@@ -1,0 +1,9 @@
+<div class="col-auto">
+  {{form_actions.do_unique_id.label(class_='control-label')}}
+  <select class="form-control form-tooltip form-dropdown" id="do_unique_id" name="do_unique_id" data-placement="top" title="{{_('Controller to affect')}}">
+    <option value=""></option>
+    {%- for each_controller in controllers -%}
+      <option value="{{each_controller[1]}}"{% if each_action.do_unique_id == each_controller[1] %} selected{% endif %}>[{{each_controller[0]}} {{each_controller[2]}}] {{each_controller[3]}}</option>
+    {%- endfor -%}
+  </select>
+</div>

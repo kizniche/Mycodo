@@ -356,12 +356,16 @@ PID_INFO = {
         6: {
             'measurement': 'duration_time',
             'unit': 's',
-            'name': '{} ({})'.format(TRANSLATIONS['output']['title'], TRANSLATIONS['duration']['title'])
+            'name': '{} ({})'.format(
+                TRANSLATIONS['output']['title'],
+                TRANSLATIONS['duration']['title'])
         },
         7: {
             'measurement': 'duty_cycle',
             'unit': 'percent',
-            'name': '{} ({})'.format(TRANSLATIONS['output']['title'], TRANSLATIONS['duty_cycle']['title'])
+            'name': '{} ({})'.format(
+                TRANSLATIONS['output']['title'],
+                TRANSLATIONS['duty_cycle']['title'])
         }
     }
 }
@@ -384,33 +388,48 @@ CONDITIONAL_CONDITIONS = [
 
 FUNCTION_INFO = {
     'function_spacer': {
-        'name': '{}: {}'.format(TRANSLATIONS['function']['title'], lazy_gettext('Spacer')),
+        'name': '{}: {}'.format(
+            TRANSLATIONS['function']['title'],
+            lazy_gettext('Spacer')),
         'dependencies_module': []
     },
     'function_actions': {
-        'name': '{}: {}'.format(TRANSLATIONS['function']['title'], lazy_gettext('Execute Actions')),
+        'name': '{}: {}'.format(
+            TRANSLATIONS['function']['title'],
+            lazy_gettext('Execute Actions')),
         'dependencies_module': []
     },
     'conditional_conditional': {
-        'name': '{}: {}'.format(TRANSLATIONS['controller']['title'], TRANSLATIONS['conditional']['title']),
+        'name': '{}: {}'.format(
+            TRANSLATIONS['controller']['title'],
+            TRANSLATIONS['conditional']['title']),
         'dependencies_module': []
     },
     'pid_pid': {
-        'name': '{}: {}'.format(TRANSLATIONS['controller']['title'], TRANSLATIONS['pid']['title']),
+        'name': '{}: {}'.format(
+            TRANSLATIONS['controller']['title'],
+            TRANSLATIONS['pid']['title']),
         'dependencies_module': []
     },
     'trigger_edge': {
-        'name': '{}: {}'.format(TRANSLATIONS['trigger']['title'], TRANSLATIONS['edge']['title']),
+        'name': '{}: {}'.format(
+            TRANSLATIONS['trigger']['title'],
+            TRANSLATIONS['edge']['title']),
         'dependencies_module': []
     },
     'trigger_output': {
-        'name': '{}: {} ({}/{})'.format(TRANSLATIONS['trigger']['title'], TRANSLATIONS['output']['title'],
-                                TRANSLATIONS['on']['title'], TRANSLATIONS['off']['title']),
+        'name': '{}: {} ({}/{})'.format(
+            TRANSLATIONS['trigger']['title'],
+            TRANSLATIONS['output']['title'],
+            TRANSLATIONS['on']['title'],
+            TRANSLATIONS['off']['title']),
         'dependencies_module': []
     },
     'trigger_output_pwm': {
-        'name': '{}: {} ({})'.format(TRANSLATIONS['trigger']['title'], TRANSLATIONS['output']['title'],
-                             TRANSLATIONS['pwm']['title']),
+        'name': '{}: {} ({})'.format(
+            TRANSLATIONS['trigger']['title'],
+            TRANSLATIONS['output']['title'],
+            TRANSLATIONS['pwm']['title']),
         'dependencies_module': []
     },
     'trigger_timer_daily_time_point': {
@@ -418,17 +437,23 @@ FUNCTION_INFO = {
         'dependencies_module': []
     },
     'trigger_timer_daily_time_span': {
-        'name': '{}: {} ({})'.format(TRANSLATIONS['trigger']['title'], TRANSLATIONS['timer']['title'],
-                             lazy_gettext('Daily Span')),
+        'name': '{}: {} ({})'.format(
+            TRANSLATIONS['trigger']['title'],
+            TRANSLATIONS['timer']['title'],
+            lazy_gettext('Daily Span')),
         'dependencies_module': []
     },
     'trigger_timer_duration': {
-        'name': '{}: {} ({})'.format(TRANSLATIONS['trigger']['title'], TRANSLATIONS['timer']['title'],
-                             TRANSLATIONS['duration']['title']),
+        'name': '{}: {} ({})'.format(
+            TRANSLATIONS['trigger']['title'],
+            TRANSLATIONS['timer']['title'],
+            TRANSLATIONS['duration']['title']),
         'dependencies_module': []
     },
     'trigger_infrared_remote_input': {
-        'name': '{}: {}'.format(TRANSLATIONS['trigger']['title'], lazy_gettext('Infrared Receive')),
+        'name': '{}: {}'.format(
+            TRANSLATIONS['trigger']['title'],
+            lazy_gettext('Infrared Receive')),
         'dependencies_module': [
             ('apt', 'liblircclient-dev', 'liblircclient-dev'),
             ('apt', 'lirc', 'lirc'),
@@ -436,19 +461,41 @@ FUNCTION_INFO = {
         ]
     },
     'trigger_run_pwm_method': {
-        'name': '{}: {}'.format(TRANSLATIONS['trigger']['title'], lazy_gettext('Run PWM Method')),
+        'name': '{}: {}'.format(
+            TRANSLATIONS['trigger']['title'],
+            lazy_gettext('Run PWM Method')),
         'dependencies_module': []
     },
     'trigger_sunrise_sunset': {
-        'name': '{}: {}'.format(TRANSLATIONS['trigger']['title'], lazy_gettext('Sunrise/Sunset')),
+        'name': '{}: {}'.format(
+            TRANSLATIONS['trigger']['title'],
+            lazy_gettext('Sunrise/Sunset')),
         'dependencies_module': []
     }
 }
 
+FUNCTIONS = [
+    ('function_spacer', FUNCTION_INFO['function_spacer']['name']),
+    ('function_actions', FUNCTION_INFO['function_actions']['name']),
+    ('conditional_conditional', FUNCTION_INFO['conditional_conditional']['name']),
+    ('pid_pid', FUNCTION_INFO['pid_pid']['name']),
+    ('trigger_edge', FUNCTION_INFO['trigger_edge']['name']),
+    ('trigger_output', FUNCTION_INFO['trigger_output']['name']),
+    ('trigger_output_pwm', FUNCTION_INFO['trigger_output_pwm']['name']),
+    ('trigger_timer_daily_time_point', FUNCTION_INFO['trigger_timer_daily_time_point']['name']),
+    ('trigger_timer_daily_time_span', FUNCTION_INFO['trigger_timer_daily_time_span']['name']),
+    ('trigger_timer_duration', FUNCTION_INFO['trigger_timer_duration']['name']),
+    ('trigger_infrared_remote_input', FUNCTION_INFO['trigger_infrared_remote_input']['name']),
+    ('trigger_run_pwm_method', FUNCTION_INFO['trigger_run_pwm_method']['name']),
+    ('trigger_sunrise_sunset', FUNCTION_INFO['trigger_sunrise_sunset']['name'])
+]
+
 # Function actions
 FUNCTION_ACTION_INFO = {
     'pause_actions': {
-        'name': '{}: {}'.format(TRANSLATIONS['actions']['title'], TRANSLATIONS['pause']['title']),
+        'name': '{}: {}'.format(
+            TRANSLATIONS['actions']['title'],
+            TRANSLATIONS['pause']['title']),
         'dependencies_module': []
     },
     'photo': {
@@ -456,11 +503,15 @@ FUNCTION_ACTION_INFO = {
         'dependencies_module': []
     },
     'activate_controller': {
-        'name': '{}: {}'.format(TRANSLATIONS['controller']['title'], TRANSLATIONS['activate']['title']),
+        'name': '{}: {}'.format(
+            TRANSLATIONS['controller']['title'],
+            TRANSLATIONS['activate']['title']),
         'dependencies_module': []
     },
     'deactivate_controller': {
-        'name': '{}: {}'.format(TRANSLATIONS['controller']['title'], TRANSLATIONS['deactivate']['title']),
+        'name': '{}: {}'.format(
+            TRANSLATIONS['controller']['title'],
+            TRANSLATIONS['deactivate']['title']),
         'dependencies_module': []
     },
     'create_note': {
@@ -492,43 +543,63 @@ FUNCTION_ACTION_INFO = {
         ]
     },
     'lcd_backlight_off': {
-        'name': '{}: {}'.format(TRANSLATIONS['lcd']['title'], lazy_gettext('Backlight Off')),
+        'name': '{}: {}'.format(
+            TRANSLATIONS['lcd']['title'],
+            lazy_gettext('Backlight Off')),
         'dependencies_module': []
     },
     'lcd_backlight_on': {
-        'name': '{}: {}'.format(TRANSLATIONS['lcd']['title'], lazy_gettext('LCD: Backlight On')),
+        'name': '{}: {}'.format(
+            TRANSLATIONS['lcd']['title'],
+            lazy_gettext('LCD: Backlight On')),
         'dependencies_module': []
     },
     'flash_lcd_off': {
-        'name': '{}: {}'.format(TRANSLATIONS['lcd']['title'], lazy_gettext('LCD: Flashing Off')),
+        'name': '{}: {}'.format(
+            TRANSLATIONS['lcd']['title'],
+            lazy_gettext('LCD: Flashing Off')),
         'dependencies_module': []
     },
     'flash_lcd_on': {
-        'name': '{}: {}'.format(TRANSLATIONS['lcd']['title'], lazy_gettext('LCD: Flashing On')),
+        'name': '{}: {}'.format(
+            TRANSLATIONS['lcd']['title'],
+            lazy_gettext('LCD: Flashing On')),
         'dependencies_module': []
     },
     'output': {
-        'name': '{}: {}'.format(TRANSLATIONS['output']['title'], TRANSLATIONS['duration']['title']),
+        'name': '{}: {}'.format(
+            TRANSLATIONS['output']['title'],
+            TRANSLATIONS['duration']['title']),
         'dependencies_module': []
     },
     'output_pwm': {
-        'name': '{}: {}'.format(TRANSLATIONS['output']['title'], TRANSLATIONS['duty_cycle']['title']),
+        'name': '{}: {}'.format(
+            TRANSLATIONS['output']['title'],
+            TRANSLATIONS['duty_cycle']['title']),
         'dependencies_module': []
     },
     'pause_pid': {
-        'name': '{}: {}'.format(TRANSLATIONS['pid']['title'], TRANSLATIONS['pause']['title']),
+        'name': '{}: {}'.format(
+            TRANSLATIONS['pid']['title'],
+            TRANSLATIONS['pause']['title']),
         'dependencies_module': []
     },
     'resume_pid': {
-        'name': '{}: {}'.format(TRANSLATIONS['pid']['title'], TRANSLATIONS['resume']['title']),
+        'name': '{}: {}'.format(
+            TRANSLATIONS['pid']['title'],
+            TRANSLATIONS['resume']['title']),
         'dependencies_module': []
     },
     'method_pid': {
-        'name': '{}: {}'.format(TRANSLATIONS['pid']['title'], lazy_gettext('Set Method')),
+        'name': '{}: {}'.format(
+            TRANSLATIONS['pid']['title'],
+            lazy_gettext('Set Method')),
         'dependencies_module': []
     },
     'setpoint_pid': {
-        'name': '{}: {}'.format(TRANSLATIONS['pid']['title'], lazy_gettext('Set Setpoint')),
+        'name': '{}: {}'.format(
+            TRANSLATIONS['pid']['title'],
+            lazy_gettext('Set Setpoint')),
         'dependencies_module': []
     }
 
@@ -538,30 +609,26 @@ FUNCTION_ACTION_INFO = {
 }
 
 FUNCTION_ACTIONS = [
-    ('pause_actions', '{}: {}'.format(TRANSLATIONS['actions']['title'], TRANSLATIONS['pause']['title'])),
-    ('photo', lazy_gettext('Camera: Capture Photo')),
-    ('activate_controller', '{}: {}'.format(TRANSLATIONS['controller']['title'], TRANSLATIONS['activate']['title'])),
-    ('deactivate_controller', '{}: {}'.format(TRANSLATIONS['controller']['title'], TRANSLATIONS['deactivate']['title'])),
-    ('create_note', TRANSLATIONS['note']['title']),
-    ('email', TRANSLATIONS['email']['title']),
-    ('photo_email', lazy_gettext('Email with Photo Attachment')),
-    ('video_email', lazy_gettext('Email with Video Attachment')),
-    ('command', lazy_gettext('Execute Command')),
-    ('infrared_send', lazy_gettext('Infrared Send')),
-    ('lcd_backlight_off', '{}: {}'.format(TRANSLATIONS['lcd']['title'], lazy_gettext('Backlight Off'))),
-    ('lcd_backlight_on', '{}: {}'.format(TRANSLATIONS['lcd']['title'], lazy_gettext('LCD: Backlight On'))),
-    ('flash_lcd_off', '{}: {}'.format(TRANSLATIONS['lcd']['title'], lazy_gettext('LCD: Flashing Off'))),
-    ('flash_lcd_on', '{}: {}'.format(TRANSLATIONS['lcd']['title'], lazy_gettext('LCD: Flashing On'))),
-    ('output', '{}: {}'.format(TRANSLATIONS['output']['title'], TRANSLATIONS['duration']['title'])),
-    ('output_pwm', '{}: {}'.format(TRANSLATIONS['output']['title'], TRANSLATIONS['duty_cycle']['title'])),
-    ('pause_pid', '{}: {}'.format(TRANSLATIONS['pid']['title'], TRANSLATIONS['pause']['title'])),
-    ('resume_pid', '{}: {}'.format(TRANSLATIONS['pid']['title'], TRANSLATIONS['resume']['title'])),
-    ('method_pid', '{}: {}'.format(TRANSLATIONS['pid']['title'], lazy_gettext('Set Method'))),
-    ('setpoint_pid', '{}: {}'.format(TRANSLATIONS['pid']['title'], lazy_gettext('Set Setpoint'))),
-
-    # TODO: These have been disabled until they can be properly tested
-    # ('video', lazy_gettext('Video')),
-    # ('video_email', lazy_gettext('Email Video'))
+    ('pause_actions', FUNCTION_ACTION_INFO['pause_actions']['name']),
+    ('photo', FUNCTION_ACTION_INFO['photo']['name']),
+    ('activate_controller', FUNCTION_ACTION_INFO['activate_controller']['name']),
+    ('deactivate_controller', FUNCTION_ACTION_INFO['deactivate_controller']['name']),
+    ('create_note', FUNCTION_ACTION_INFO['create_note']['name']),
+    ('email', FUNCTION_ACTION_INFO['email']['name']),
+    ('photo_email', FUNCTION_ACTION_INFO['photo_email']['name']),
+    ('video_email', FUNCTION_ACTION_INFO['video_email']['name']),
+    ('command', FUNCTION_ACTION_INFO['command']['name']),
+    ('infrared_send', FUNCTION_ACTION_INFO['infrared_send']['name']),
+    ('lcd_backlight_off', FUNCTION_ACTION_INFO['lcd_backlight_off']['name']),
+    ('lcd_backlight_on', FUNCTION_ACTION_INFO['lcd_backlight_on']['name']),
+    ('flash_lcd_off', FUNCTION_ACTION_INFO['flash_lcd_off']['name']),
+    ('flash_lcd_on', FUNCTION_ACTION_INFO['flash_lcd_on']['name']),
+    ('output', FUNCTION_ACTION_INFO['output']['name']),
+    ('output_pwm', FUNCTION_ACTION_INFO['output_pwm']['name']),
+    ('pause_pid', FUNCTION_ACTION_INFO['pause_pid']['name']),
+    ('resume_pid', FUNCTION_ACTION_INFO['resume_pid']['name']),
+    ('method_pid', FUNCTION_ACTION_INFO['method_pid']['name']),
+    ('setpoint_pid', FUNCTION_ACTION_INFO['setpoint_pid']['name']),
 ]
 
 # Calibration

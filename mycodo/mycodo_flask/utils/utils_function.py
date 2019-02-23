@@ -41,20 +41,20 @@ def function_add(form_add_func):
         controller=TRANSLATIONS['function']['title'])
     error = []
 
-    dep_unmet, _ = return_dependencies(form_add_func.func_type.data)
+    dep_unmet, _ = return_dependencies(form_add_func.function_type.data)
     if dep_unmet:
         list_unmet_deps = []
         for each_dep in dep_unmet:
             list_unmet_deps.append(each_dep[0])
         error.append(
             "The {dev} device you're trying to add has unmet dependencies: "
-            "{dep}".format(dev=form_add_func.func_type.data,
+            "{dep}".format(dev=form_add_func.function_type.data,
                            dep=', '.join(list_unmet_deps)))
 
     new_func = None
 
     try:
-        if form_add_func.func_type.data.startswith('conditional_'):
+        if form_add_func.function_type.data.startswith('conditional_'):
             new_func = Conditional()
             new_func.conditional_statement = '''
 # Replace "asdf1234" with a Condition ID, "qwer5678" with an Action ID.
@@ -66,7 +66,7 @@ if measurement is not None:  # If a measurement exists
     else:  # If the measurement is greater or equal to 23
         run_action("{qwer5678}", message=message)  # Run a single Action'''
             new_func.save()
-        elif form_add_func.func_type.data.startswith('pid_'):
+        elif form_add_func.function_type.data.startswith('pid_'):
             new_func = PID().save()
 
             for each_channel, measure_info in PID_INFO['measure'].items():
@@ -83,22 +83,22 @@ if measurement is not None:  # If a measurement exists
                 new_measurement.channel = each_channel
                 new_measurement.save()
 
-        elif form_add_func.func_type.data.startswith('trigger_'):
+        elif form_add_func.function_type.data.startswith('trigger_'):
             new_func = Trigger()
-            new_func.name = '{}'.format(FUNCTION_INFO[form_add_func.func_type.data]['name'])
-            new_func.trigger_type = form_add_func.func_type.data
+            new_func.name = '{}'.format(FUNCTION_INFO[form_add_func.function_type.data]['name'])
+            new_func.trigger_type = form_add_func.function_type.data
             new_func.save()
-        elif form_add_func.func_type.data.startswith('function_'):
+        elif form_add_func.function_type.data.startswith('function_'):
             new_func = Function()
-            if form_add_func.func_type.data == 'function_spacer':
+            if form_add_func.function_type.data == 'function_spacer':
                 new_func.name = 'Spacer'
-            new_func.function_type = form_add_func.func_type.data
+            new_func.function_type = form_add_func.function_type.data
             new_func.save()
-        elif form_add_func.func_type.data == '':
+        elif form_add_func.function_type.data == '':
             error.append("Must select a function type")
         else:
             error.append("Unknown function type: '{}'".format(
-                form_add_func.func_type.data))
+                form_add_func.function_type.data))
 
         if not error:
             display_order = csv_to_list_of_str(
@@ -181,6 +181,16 @@ def action_add(form):
         controller='{} {}'.format(TRANSLATIONS['conditional']['title'],
                                   TRANSLATIONS['actions']['title']))
 
+    dep_unmet, _ = return_dependencies(form.function_type.data)
+    if dep_unmet:
+        list_unmet_deps = []
+        for each_dep in dep_unmet:
+            list_unmet_deps.append(each_dep[0])
+        error.append(
+            "The {dev} device you're trying to add has unmet dependencies: "
+            "{dep}".format(dev=form.function_type.data,
+                           dep=', '.join(list_unmet_deps)))
+
     if form.function_type.data == 'conditional':
         func = Conditional.query.filter(
             Conditional.unique_id == form.function_id.data).first()
@@ -217,6 +227,9 @@ def action_add(form):
         error.append(except_msg)
 
     flash_success_errors(error, action, url_for('routes_page.page_function'))
+
+    if dep_unmet:
+        return 1
 
 
 def action_mod(form):
@@ -348,19 +361,19 @@ def action_execute_all(form):
     """Execute All Conditional Actions"""
     error = []
 
-    func_type = None
+    function_type = None
     func = None
 
     if form.function_type.data == 'conditional':
-        func_type = TRANSLATIONS['conditional']['title']
+        function_type = TRANSLATIONS['conditional']['title']
         func = Conditional.query.filter(
             Conditional.unique_id == form.function_id.data).first()
     elif form.function_type.data == 'trigger':
-        func_type = TRANSLATIONS['trigger']['title']
+        function_type = TRANSLATIONS['trigger']['title']
         func = Trigger.query.filter(
             Trigger.unique_id == form.function_id.data).first()
     elif form.function_type.data == 'function_actions':
-        func_type = TRANSLATIONS['function']['title']
+        function_type = TRANSLATIONS['function']['title']
         func = Function.query.filter(
             Function.unique_id == form.function_id.data).first()
     else:
@@ -369,7 +382,7 @@ def action_execute_all(form):
 
     action = '{action} {controller}'.format(
         action=gettext("Execute All"),
-        controller='{} {}'.format(func_type, TRANSLATIONS['actions']['title']))
+        controller='{} {}'.format(function_type, TRANSLATIONS['actions']['title']))
 
     if form.function_type.data != 'function_actions' and func and not func.is_activated:
         error.append("Activate the Conditional before testing all Actions")

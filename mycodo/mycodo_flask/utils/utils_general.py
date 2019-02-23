@@ -15,6 +15,7 @@ from flask import url_for
 from flask_babel import gettext
 
 from mycodo.config import CALIBRATION_INFO
+from mycodo.config import FUNCTION_ACTION_INFO
 from mycodo.config import FUNCTION_INFO
 from mycodo.config import LCD_INFO
 from mycodo.config import MATH_INFO
@@ -766,6 +767,7 @@ def return_dependencies(device_type):
 
     list_dependencies = [
         dict_inputs,
+        FUNCTION_ACTION_INFO,
         FUNCTION_INFO,
         LCD_INFO,
         MATH_INFO,

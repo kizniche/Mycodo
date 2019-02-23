@@ -1,13 +1,13 @@
 {%- for each_function in function_dev if each_function.unique_id == order and each_function.function_type == 'function_actions' -%}
 
 <div class="container" style="border: 2px solid #ddd; border-radius: 5px;">
+
   <form method="post" action="/function">
   {{form_function.csrf_token}}
   {{form_function.function_id(class_='form-control', value=each_function.unique_id)}}
   {{form_function.function_type(class_='form-control', value='function_actions')}}
 
   <div class="row small-gutters" style="border-bottom: 1px solid #ddd; padding: 0.3em 0.2em 0.3em 0.3em;">
-
     <div class="col-2 col-sm-1 text-center icon-fh">
       <a data-toggle="collapse" href="#collapseContainer-function-{{each_function.id}}" aria-expanded="false" aria-controls="collapseContainer-function-{{each_function.id}}">
         <span style="font-size: 3.6em" class="collapse-button{{each_function.id}} fa fa-plus-square"></span>
@@ -22,7 +22,6 @@
   </div>
 
   <div class="collapse" id="collapseContainer-function-{{each_function.id}}">
-
     <div class="row small-gutters" style="padding: 0.3em 0.2em 0.3em 0.3em;">
       <div class="col-auto">
         {{form_function.save_function(class_='form-control btn btn-sm')}}
@@ -61,8 +60,7 @@
 
     </form>
 
-
-  {% for each_action in actions if each_action.function_id == each_function.unique_id %}
+    {% for each_action in actions if each_action.function_id == each_function.unique_id %}
 
     <form method="post" action="/function">
     {{form_actions.csrf_token}}
@@ -81,16 +79,14 @@
         {{form_actions.delete_action(class_='form-control btn btn-sm', **{'onclick':'return confirm("Are you sure you want to delete this?")'})}}
       </div>
 
-      {% include 'pages/function_options/actions.html' %}
-
+      {% include 'pages/function_options/action_options/'+each_action.action_type+'.html' %}
     </div>
 
     </form>
 
-  {% endfor %}
+    {% endfor %}
 
   </div>
-
 </div>
 
 <div style="padding-bottom: 0.5em; "></div>

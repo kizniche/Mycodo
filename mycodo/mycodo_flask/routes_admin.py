@@ -25,6 +25,7 @@ from mycodo.config import DEPENDENCY_INIT_FILE
 from mycodo.config import DEPENDENCY_LOG_FILE
 from mycodo.config import FINAL_RELEASES
 from mycodo.config import FORCE_UPGRADE_MASTER
+from mycodo.config import FUNCTION_ACTION_INFO
 from mycodo.config import FUNCTION_INFO
 from mycodo.config import INSTALL_DIRECTORY
 from mycodo.config import LCD_INFO
@@ -235,6 +236,7 @@ def admin_dependencies(device):
 
     list_dependencies = [
         dict_inputs,
+        FUNCTION_ACTION_INFO,
         FUNCTION_INFO,
         LCD_INFO,
         MATH_INFO,
@@ -246,8 +248,8 @@ def admin_dependencies(device):
         for each_device in each_section:
 
             if device in each_section:
-                for each_device, each_val in each_section[device].items():
-                    if each_device in ['name', 'input_name']:
+                for each_device_, each_val in each_section[device].items():
+                    if each_device_ in ['name', 'input_name']:
                         device_name = each_val
 
             # Determine if there are any unmet dependencies

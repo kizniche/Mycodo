@@ -25,9 +25,9 @@
 
     <div class="row small-gutters" style="padding-left: 0.75em">
       <div class="col-auto">
-        <select class="selectpicker" title="{{_('Function')}}: {{dict_translation['select_one']['title']}}" id="func_type" name="func_type">
+        <select class="selectpicker" title="{{_('Function')}}: {{dict_translation['select_one']['title']}}" id="function_type" name="function_type">
           {% for each_function in function_types -%}
-            <option value="{{each_function}}">{{function_types[each_function]['name']}}</option>
+            <option value="{{each_function[0]}}">{{each_function[1]}}</option>
           {% endfor -%}
         </select>
       </div>

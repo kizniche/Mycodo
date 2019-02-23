@@ -1,0 +1,9 @@
+<div class="col-auto">
+  {{form_actions.do_unique_id.label(class_='control-label')}}
+  <select class="form-control form-tooltip form-dropdown" id="do_unique_id" name="do_unique_id" data-placement="top" title="{{_('LCD to flash')}}">
+    <option value=""></option>
+    {%- for each_lcd in lcd -%}
+      <option value="{{each_lcd.unique_id}}"{% if each_action.do_unique_id == each_lcd.unique_id %} selected{% endif %}>[{{'%02d' % each_lcd.id}}] {{each_lcd.name}}</option>
+    {%- endfor -%}
+  </select>
+</div>
