@@ -9,156 +9,149 @@
   <!-- Route: /settings/camera -->
   <h3 style="text-align: right; padding-bottom: 1.3em;"><a href="/help#camera-settings" target="_blank"><span style="font-size: 16px" class="fas fa-question-circle"></span></a> {{_('Camera Settings')}}</h3>
 
-  <form method="post" action="/settings/camera">
-    <div class="row align-items-end small-gutters">
-      {{form_camera.csrf_token}}
-      <div class="col-auto">
-        {{form_camera.name.label(class_='control-label')}}
-        <div>
-          {{form_camera.name(class_='form-control', value='Camera Name')}}
-        </div>
-      </div>
-      <div class="col-auto">
-        {{form_camera.library.label(class_='control-label')}}
-        <div>
-          <select class="form-control" id="library" name="library" title="" data-original-title="Select the library used to communicate">
-            {%- for each_library in camera_libraries -%}
-              <option value="{{each_library}}">{{each_library}}</option>
-            {%- endfor -%}
-          </select>
-        </div>
-      </div>
-      <div class="col-auto">
-        {{form_camera.camera_add(class_='btn btn-primary btn-block')}}
-      </div>
-    </div>
-  </form>
+  <div class="container">
 
-  <p>Note: Not all camera settings will work with every camera.</p>
-
-  <div style="clear: both; padding: 1em 0;"></div>
-
-  {% for each_camera in camera %}
-
-    <div class="container" style="width: 95%; border: 2px solid #ddd; border-radius: 5px;">
-      <form method="post" action="/settings/camera">
-      {{form_camera.csrf_token}}
-      {{form_camera.camera_id(value=each_camera.unique_id)}}
-      <div class="row small-gutters" style="border-bottom: 2px solid #ddd; padding: 1em 0;">
-        <div class="col-12 col-sm-3">
-          {{form_camera.name(class_='form-control', value=each_camera.name, **{'title':_('Name for this Camera')})}}
-        </div>
-        <div class="col-12 col-sm-3">
-          <input class="form-control" disabled="" title="[{{'%02d' % each_camera.id}}] UUID: {{each_camera.unique_id}}" value="{{each_camera.library}}" type="text">
-        </div>
-        <div class="col-12 col-sm-3">
-          {{form_camera.camera_mod(class_='btn btn-primary btn-block')}}
-        </div>
-        <div class="col-12 col-sm-3">
-          {{form_camera.camera_del(class_='btn btn-primary btn-block')}}
-        </div>
-      </div>
-
-      <div class="row small-gutters">
-
-      {% if each_camera.library == 'picamera' %}
-        {% if not pi_camera_enabled %}
-        <div class="col-12" style="color: red">
-          {{_("Raspberry Pi Camera support doesn't appear to be enabled. Please enable it using the Raspberry Pi configuration or with the command 'sudo raspi-config'")}}
-        </div>
-        {% else %}
-          {% include 'settings/camera_options/picamera.html' %}
-        {% endif %}
-      {% elif each_camera.library == 'opencv' %}
-        {% include 'settings/camera_options/opencv.html' %}
-      {% elif each_camera.library == 'fswebcam' %}
-        {% include 'settings/camera_options/fswebcam.html' %}
-      {% endif %}
-
-        <div style="clear: both;"></div>
-
+    <form method="post" action="/settings/camera">
+      <div class="row align-items-end small-gutters">
+        {{form_camera.csrf_token}}
         <div class="col-auto">
-          {{form_camera.cmd_pre_camera.label(class_='control-label')}}
+          {{form_camera.name.label(class_='control-label')}}
           <div>
-            {{form_camera.cmd_pre_camera(class_='form-control', value=each_camera.cmd_pre_camera)}}
-           </div>
+            {{form_camera.name(class_='form-control', value='Camera Name')}}
+          </div>
         </div>
         <div class="col-auto">
-          {{form_camera.cmd_post_camera.label(class_='control-label')}}
+          {{form_camera.library.label(class_='control-label')}}
           <div>
-            {{form_camera.cmd_post_camera(class_='form-control', value=each_camera.cmd_post_camera)}}
-           </div>
-        </div>
-        <div class="col-auto">
-          {{form_camera.output_id.label(class_='control-label')}}
-          <div>
-            <select class="form-control" id="output_id" name="output_id" title="" data-original-title="Select the output to activate while the camera is acquiring an image or streaming.">
-              {%  if not output %}
-                <option value="">No Outputs Available</option>
-              {% else %}
-                <option value="">Disabled</option>
-              {% endif %}
-              {%- for each_output in output -%}
-                <option value="{{each_output.unique_id}}"{% if each_camera.output_id == each_output.unique_id %} selected{% endif %}>[{{'%02d' % each_output.id}}] {{each_output.name}}</option>
+            <select class="form-control" id="library" name="library" title="" data-original-title="Select the library used to communicate">
+              {%- for each_library in camera_libraries -%}
+                <option value="{{each_library}}">{{each_library}}</option>
               {%- endfor -%}
             </select>
           </div>
         </div>
         <div class="col-auto">
-          {{form_camera.output_duration.label(class_='control-label')}}
-          <div>
-            {{form_camera.output_duration(class_='form-control', value=each_camera.output_duration)}}
-           </div>
-        </div>
-        <div class="col-auto">
-          {{form_camera.path_still.label(class_='control-label')}}
-          <div>
-            {{form_camera.path_still(class_='form-control', value=each_camera.path_still, **{'title':_('Path to save still image files. Leave blank to use default location.')})}}
-           </div>
-        </div>
-        <div class="col-auto">
-          {{form_camera.path_timelapse.label(class_='control-label')}}
-          <div>
-            {{form_camera.path_timelapse(class_='form-control', value=each_camera.path_timelapse, **{'title':_('Path to save timelapse image files. Leave blank to use default location.')})}}
-           </div>
-        </div>
-        <div class="col-auto">
-          {{form_camera.path_video.label(class_='control-label')}}
-          <div>
-            {{form_camera.path_video(class_='form-control', value=each_camera.path_video, **{'title':_('Path to save video files. Leave blank to use default location.')})}}
-           </div>
+          {{form_camera.camera_add(class_='btn btn-primary btn-block')}}
         </div>
       </div>
+    </form>
 
-      <div class="row">
-        <div class="form-check">
-          <label class="form-check-label">
-            {%- if each_camera.hflip == 1 -%}
-              {{form_camera.hflip(checked=True)}}
-            {%- else -%}
-              {{form_camera.hflip()}}
-            {%- endif %}
-            {{form_camera.hflip.label.text}}
-          </label>
+    <p>Note: Not all camera settings will work with every camera.</p>
+
+    <div style="clear: both; padding: 1em 0;"></div>
+
+    {% for each_camera in camera %}
+
+      <div class="container" style="border: 2px solid #ddd; border-radius: 5px;">
+        <form method="post" action="/settings/camera">
+        {{form_camera.csrf_token}}
+        {{form_camera.camera_id(value=each_camera.unique_id)}}
+        <div class="row small-gutters" style="border-bottom: 2px solid #ddd; padding: 0.3em 0.2em 0.3em 0">
+          <div class="col-12 col-sm-3">
+            {{form_camera.name(class_='form-control', value=each_camera.name, **{'title':_('Name for this Camera')})}}
+          </div>
+          <div class="col-12 col-sm-3">
+            <input class="form-control" disabled="" title="[{{'%02d' % each_camera.id}}] UUID: {{each_camera.unique_id}}" value="{{each_camera.library}}" type="text">
+          </div>
+          <div class="col-12 col-sm-3">
+            {{form_camera.camera_mod(class_='btn btn-primary btn-block')}}
+          </div>
+          <div class="col-12 col-sm-3">
+            {{form_camera.camera_del(class_='btn btn-primary btn-block')}}
+          </div>
         </div>
-        <div class="form-check">
-          <label class="form-check-label">
-            {%- if each_camera.vflip == 1 -%}
-              {{form_camera.vflip(checked=True)}}
-            {%- else -%}
-              {{form_camera.vflip()}}
-            {%- endif %}
-            {{form_camera.vflip.label.text}}
-          </label>
+
+        <div class="row small-gutters">
+
+        {% if each_camera.library == 'picamera' %}
+          {% if not pi_camera_enabled %}
+          <div class="col-12" style="color: red">
+            {{_("Raspberry Pi Camera support doesn't appear to be enabled. Please enable it using the Raspberry Pi configuration or with the command 'sudo raspi-config'")}}
+          </div>
+          {% else %}
+            {% include 'settings/camera_options/picamera.html' %}
+          {% endif %}
+        {% elif each_camera.library == 'opencv' %}
+          {% include 'settings/camera_options/opencv.html' %}
+        {% elif each_camera.library == 'fswebcam' %}
+          {% include 'settings/camera_options/fswebcam.html' %}
+        {% endif %}
+
+          <div style="clear: both;"></div>
+
+          <div class="col-auto">
+            {{form_camera.cmd_pre_camera.label(class_='control-label')}}
+            <div>
+              {{form_camera.cmd_pre_camera(class_='form-control', value=each_camera.cmd_pre_camera)}}
+             </div>
+          </div>
+          <div class="col-auto">
+            {{form_camera.cmd_post_camera.label(class_='control-label')}}
+            <div>
+              {{form_camera.cmd_post_camera(class_='form-control', value=each_camera.cmd_post_camera)}}
+             </div>
+          </div>
+          <div class="col-auto">
+            {{form_camera.output_id.label(class_='control-label')}}
+            <div>
+              <select class="form-control" id="output_id" name="output_id" title="" data-original-title="Select the output to activate while the camera is acquiring an image or streaming.">
+                {%  if not output %}
+                  <option value="">No Outputs Available</option>
+                {% else %}
+                  <option value="">Disabled</option>
+                {% endif %}
+                {%- for each_output in output -%}
+                  <option value="{{each_output.unique_id}}"{% if each_camera.output_id == each_output.unique_id %} selected{% endif %}>[{{'%02d' % each_output.id}}] {{each_output.name}}</option>
+                {%- endfor -%}
+              </select>
+            </div>
+          </div>
+          <div class="col-auto">
+            {{form_camera.output_duration.label(class_='control-label')}}
+            <div>
+              {{form_camera.output_duration(class_='form-control', value=each_camera.output_duration)}}
+             </div>
+          </div>
+          <div class="col-auto">
+            {{form_camera.path_still.label(class_='control-label')}}
+            <div>
+              {{form_camera.path_still(class_='form-control', value=each_camera.path_still, **{'title':_('Path to save still image files. Leave blank to use default location.')})}}
+             </div>
+          </div>
+          <div class="col-auto">
+            {{form_camera.path_timelapse.label(class_='control-label')}}
+            <div>
+              {{form_camera.path_timelapse(class_='form-control', value=each_camera.path_timelapse, **{'title':_('Path to save timelapse image files. Leave blank to use default location.')})}}
+             </div>
+          </div>
+          <div class="col-auto">
+            {{form_camera.path_video.label(class_='control-label')}}
+            <div>
+              {{form_camera.path_video(class_='form-control', value=each_camera.path_video, **{'title':_('Path to save video files. Leave blank to use default location.')})}}
+             </div>
+          </div>
+          <div class="col-auto">
+            {{form_camera.hflip.label(class_='control-label')}}
+            <div class="input-group-text">
+              <input id="hflip" name="hflip" type="checkbox" value="y"{% if each_camera.hflip %} checked{% endif %}>
+            </div>
+          </div>
+          <div class="col-auto">
+            {{form_camera.vflip.label(class_='control-label')}}
+            <div class="input-group-text">
+              <input id="vflip" name="vflip" type="checkbox" value="y"{% if each_camera.vflip %} checked{% endif %}>
+            </div>
+          </div>
         </div>
+
+        </form>
+
       </div>
 
-      </form>
+      <div style="clear: both; padding:1em 0;"></div>
 
-    </div>
+    {% endfor %}
 
-    <div style="clear: both; padding:1em 0;"></div>
-
-  {% endfor %}
+  </div>
 
 {% endblock %}

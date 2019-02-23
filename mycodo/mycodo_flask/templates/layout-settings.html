@@ -15,26 +15,42 @@
 
   {% set active_settings = active_settings|default('users') -%}
 
-  <main role="main" class="container sidebar-drop">
-    <div class="row">
-      <div class="col-md-3 col-1 p-l-0 p-r-0 collapse in show" id="sidebar">
-        <div class="list-group panel">
-          <a class="list-group-item collapsed{% if active_settings == 'general' %} active{% endif %}" href="{{url_for('routes_settings.settings_general')}}"><i class="fas fa-globe"></i>&nbsp;&nbsp;{{_('General')}}</a>
-          <a class="list-group-item collapsed{% if active_settings == 'input' %} active{% endif %}" href="{{url_for('routes_settings.settings_input')}}"><i class="fas fa-sign-in-alt"></i>&nbsp;&nbsp;{{_('Inputs')}}</a>
-          <a class="list-group-item collapsed{% if active_settings == 'measurement' %} active{% endif %}" href="{{url_for('routes_settings.settings_measurement')}}"><i class="fas fa-weight"></i>&nbsp;&nbsp;{{_('Measurements')}}</a>
-          <a class="list-group-item collapsed{% if active_settings == 'users' %} active{% endif %}" href="{{url_for('routes_settings.settings_users')}}"><i class="fas fa-users"></i>&nbsp;&nbsp;{{_('Users')}}</a>
-          <a class="list-group-item collapsed{% if active_settings == 'pi' %} active{% endif %}" href="{{url_for('routes_settings.settings_pi')}}"><i class="fab fa-linux"></i>&nbsp;&nbsp;{{_('Raspberry Pi')}}</a>
-          <a class="list-group-item collapsed{% if active_settings == 'alerts' %} active{% endif %}" href="{{url_for('routes_settings.settings_alerts')}}"><i class="fas fa-bell"></i>&nbsp;&nbsp;{{_('Alerts')}}</a>
-          <a class="list-group-item collapsed{% if active_settings == 'camera' %} active{% endif %}" href="{{url_for('routes_settings.settings_camera')}}"><i class="fas fa-camera"></i>&nbsp;&nbsp;{{_('Cameras')}}</a>
-          <a class="list-group-item collapsed{% if active_settings == 'diagnostic' %} active{% endif %}" href="{{url_for('routes_settings.settings_diagnostic')}}"><i class="fas fa-wrench"></i>&nbsp;&nbsp;{{_('Diagnostics')}}</a>
-        </div>
+  <div class="d-flex" id="wrapper">
+
+    <!-- Sidebar -->
+    <div class="bg-dark" id="sidebar-wrapper" style="border-right: 1px solid #343434">
+      <div class="sidebar-heading">Settings</div>
+      <div class="list-group list-group-flush">
+        <a class="list-group-item collapsed{% if active_settings == 'general' %} active{% endif %}" href="{{url_for('routes_settings.settings_general')}}"><i class="fas fa-globe"></i>&nbsp;&nbsp;{{_('General')}}</a>
+        <a class="list-group-item collapsed{% if active_settings == 'input' %} active{% endif %}" href="{{url_for('routes_settings.settings_input')}}"><i class="fas fa-sign-in-alt"></i>&nbsp;&nbsp;{{_('Inputs')}}</a>
+        <a class="list-group-item collapsed{% if active_settings == 'measurement' %} active{% endif %}" href="{{url_for('routes_settings.settings_measurement')}}"><i class="fas fa-weight"></i>&nbsp;&nbsp;{{_('Measurements')}}</a>
+        <a class="list-group-item collapsed{% if active_settings == 'users' %} active{% endif %}" href="{{url_for('routes_settings.settings_users')}}"><i class="fas fa-users"></i>&nbsp;&nbsp;{{_('Users')}}</a>
+        <a class="list-group-item collapsed{% if active_settings == 'pi' %} active{% endif %}" href="{{url_for('routes_settings.settings_pi')}}"><i class="fab fa-linux"></i>&nbsp;&nbsp;{{_('Raspberry Pi')}}</a>
+        <a class="list-group-item collapsed{% if active_settings == 'alerts' %} active{% endif %}" href="{{url_for('routes_settings.settings_alerts')}}"><i class="fas fa-bell"></i>&nbsp;&nbsp;{{_('Alerts')}}</a>
+        <a class="list-group-item collapsed{% if active_settings == 'camera' %} active{% endif %}" href="{{url_for('routes_settings.settings_camera')}}"><i class="fas fa-camera"></i>&nbsp;&nbsp;{{_('Cameras')}}</a>
+        <a class="list-group-item collapsed{% if active_settings == 'diagnostic' %} active{% endif %}" href="{{url_for('routes_settings.settings_diagnostic')}}"><i class="fas fa-wrench"></i>&nbsp;&nbsp;{{_('Diagnostics')}}</a>
       </div>
-      <div class="col-md-9 col-11 p-l-2 p-t-2" style="padding-bottom: 1em">
-        <a href="#sidebar" data-toggle="collapse"><i class="fas fa-bars fa-lg"></i></a>
+    </div>
+    <!-- /#sidebar-wrapper -->
+
+    <!-- Page Content -->
+    <div id="page-content-wrapper">
+      <div class="container-fluid">
         {% include 'flash_messages.html' %}
+        <button class="btn btn-primary" id="menu-toggle">Settings Menu</button>
         {% block settings %}{% endblock %}
       </div>
     </div>
-  </main>
+    <!-- /#page-content-wrapper -->
+
+  </div>
+  <!-- /#wrapper -->
+
+  <script>
+    $("#menu-toggle").click(function(e) {
+      e.preventDefault();
+      $("#wrapper").toggleClass("toggled");
+    });
+  </script>
 
 {% endblock %}

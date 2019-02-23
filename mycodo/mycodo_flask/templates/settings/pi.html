@@ -9,163 +9,167 @@
   <!-- Route: /settings/pi -->
   <h3 style="text-align: right; padding-bottom: 1.3em;"><a href="/help#pi-settings" target="_blank"><span style="font-size: 16px" class="fas fa-question-circle"></span></a> {{_('Raspberry Pi Settings')}}</h3>
 
-  <form class="form-horizontal" method="post" action="/settings/pi">
-    <input type="hidden" name="form-name" value="Pi">
-    {{form_settings_pi.csrf_token}}
+  <div class="container">
 
-    <div class="row small-gutters" style="padding: 1em 0">
-      <div class="col-12">
-        The following settings are configured through the non-interactive version of raspi-config. Changes here often require a system reboot before they take effect, which may be executed from the menu at the top-right (Configuration -> Restart System).
-      </div>
-    </div>
-    <div class="row small-gutters">
-      <div class="col">
-        I<sup>2</sup>C Enabled: {{pi_settings['i2c_enabled']}}
-      </div>
-      <div class="col">
-        {% if pi_settings['i2c_enabled'] %}
-          {{form_settings_pi.disable_i2c(class_='btn btn-primary')}}
-        {% else %}
-          {{form_settings_pi.enable_i2c(class_='btn btn-primary')}}
-        {% endif %}
-      </div>
-    </div>
-    <div class="row small-gutters">
-      <div class="col">
-        1-Wire Enabled: {{pi_settings['one_wire_enabled']}}
-      </div>
-      <div class="col">
-        {% if pi_settings['one_wire_enabled'] %}
-          {{form_settings_pi.disable_one_wire(class_='btn btn-primary')}}
-        {% else %}
-          {{form_settings_pi.enable_one_wire(class_='btn btn-primary')}}
-        {% endif %}
-      </div>
-    </div>
-    <div class="row small-gutters">
-      <div class="col">
-        Serial Enabled: {{pi_settings['serial_enabled']}}
-      </div>
-      <div class="col">
-        {% if pi_settings['serial_enabled'] %}
-          {{form_settings_pi.disable_serial(class_='btn btn-primary')}}
-        {% else %}
-          {{form_settings_pi.enable_serial(class_='btn btn-primary')}}
-        {% endif %}
-      </div>
-    </div>
-    <div class="row small-gutters">
-      <div class="col">
-        SPI Enabled: {{pi_settings['spi_enabled']}}
-      </div>
-      <div class="col">
-        {% if pi_settings['spi_enabled'] %}
-          {{form_settings_pi.disable_spi(class_='btn btn-primary')}}
-        {% else %}
-          {{form_settings_pi.enable_spi(class_='btn btn-primary')}}
-        {% endif %}
-      </div>
-    </div>
-    <div class="row small-gutters">
-      <div class="col">
-        SSH Enabled: {{pi_settings['ssh_enabled']}}
-      </div>
-      <div class="col">
-        {% if pi_settings['ssh_enabled'] %}
-          {{form_settings_pi.disable_ssh(class_='btn btn-primary')}}
-        {% else %}
-          {{form_settings_pi.enable_ssh(class_='btn btn-primary')}}
-        {% endif %}
-      </div>
-    </div>
-    <div class="row small-gutters">
-      <div class="col">
-        Pi Camera Enabled: {{pi_settings['pi_camera_enabled']}}
-      </div>
-      <div class="col">
-        {% if pi_settings['pi_camera_enabled'] %}
-          {{form_settings_pi.disable_pi_camera(class_='btn btn-primary')}}
-        {% else %}
-          {{form_settings_pi.enable_pi_camera(class_='btn btn-primary')}}
-        {% endif %}
-      </div>
-    </div>
-    <div class="row small-gutters">
-      <div class="col">
-        {{form_settings_pi.hostname(class_='form-control', value=pi_settings['hostname'])}}
-      </div>
-      <div class="col">
-        {{form_settings_pi.change_hostname(class_='btn btn-primary')}}
-      </div>
-    </div>
+    <form class="form-horizontal" method="post" action="/settings/pi">
+      <input type="hidden" name="form-name" value="Pi">
+      {{form_settings_pi.csrf_token}}
 
-    <div class="row small-gutters" style="padding-top: 2em">
-      <div class="col-12">
-        Service options:
+      <div class="row small-gutters" style="padding: 1em 0">
+        <div class="col-12">
+          The following settings are configured through the non-interactive version of raspi-config. Changes here often require a system reboot before they take effect, which may be executed from the menu at the top-right (Configuration -> Restart System).
+        </div>
       </div>
-    </div>
-    <div class="row small-gutters">
-      <div class="col">
-        {{form_settings_pi.pigpiod_sample_rate.label(class_='control-label')}}
+      <div class="row small-gutters">
+        <div class="col">
+          I<sup>2</sup>C Enabled: {{pi_settings['i2c_enabled']}}
+        </div>
+        <div class="col">
+          {% if pi_settings['i2c_enabled'] %}
+            {{form_settings_pi.disable_i2c(class_='btn btn-primary')}}
+          {% else %}
+            {{form_settings_pi.enable_i2c(class_='btn btn-primary')}}
+          {% endif %}
+        </div>
       </div>
-    </div>
-    <div class="row small-gutters">
-      <div class="col">
-        <select class="form-control" id="pigpiod_sample_rate" name="pigpiod_sample_rate" title="" data-original-title="Select a sample rate in milliseconds for pigpiod">
-          <option value=""></option>
-          <option value="uninstalled"{% if pigpiod_sample_rate == 'uninstalled' %} selected{% endif %}>Uninstall pigpiod</option>
-          <option value="disabled"{% if pigpiod_sample_rate == 'disabled' %} selected{% endif %}>Disable pigpiod</option>
-          <option value="low"{% if pigpiod_sample_rate == 'low' %} selected{% endif %}>1 ms (faster)</option>
-          <option value="high"{% if pigpiod_sample_rate == 'high' %} selected{% endif %}>5 ms (slower)</option>
-        </select>
+      <div class="row small-gutters">
+        <div class="col">
+          1-Wire Enabled: {{pi_settings['one_wire_enabled']}}
+        </div>
+        <div class="col">
+          {% if pi_settings['one_wire_enabled'] %}
+            {{form_settings_pi.disable_one_wire(class_='btn btn-primary')}}
+          {% else %}
+            {{form_settings_pi.enable_one_wire(class_='btn btn-primary')}}
+          {% endif %}
+        </div>
       </div>
-      <div class="col">
-        {{form_settings_pi.change_pigpiod_sample_rate(class_='btn btn-primary',**{'onclick':'return confirm("Changing the sample rate of pigpiod requires restarting both pigpiod and the mycodo daemon. Please confirm this is what you wish to do.")'})}}
+      <div class="row small-gutters">
+        <div class="col">
+          Serial Enabled: {{pi_settings['serial_enabled']}}
+        </div>
+        <div class="col">
+          {% if pi_settings['serial_enabled'] %}
+            {{form_settings_pi.disable_serial(class_='btn btn-primary')}}
+          {% else %}
+            {{form_settings_pi.enable_serial(class_='btn btn-primary')}}
+          {% endif %}
+        </div>
       </div>
-    </div>
+      <div class="row small-gutters">
+        <div class="col">
+          SPI Enabled: {{pi_settings['spi_enabled']}}
+        </div>
+        <div class="col">
+          {% if pi_settings['spi_enabled'] %}
+            {{form_settings_pi.disable_spi(class_='btn btn-primary')}}
+          {% else %}
+            {{form_settings_pi.enable_spi(class_='btn btn-primary')}}
+          {% endif %}
+        </div>
+      </div>
+      <div class="row small-gutters">
+        <div class="col">
+          SSH Enabled: {{pi_settings['ssh_enabled']}}
+        </div>
+        <div class="col">
+          {% if pi_settings['ssh_enabled'] %}
+            {{form_settings_pi.disable_ssh(class_='btn btn-primary')}}
+          {% else %}
+            {{form_settings_pi.enable_ssh(class_='btn btn-primary')}}
+          {% endif %}
+        </div>
+      </div>
+      <div class="row small-gutters">
+        <div class="col">
+          Pi Camera Enabled: {{pi_settings['pi_camera_enabled']}}
+        </div>
+        <div class="col">
+          {% if pi_settings['pi_camera_enabled'] %}
+            {{form_settings_pi.disable_pi_camera(class_='btn btn-primary')}}
+          {% else %}
+            {{form_settings_pi.enable_pi_camera(class_='btn btn-primary')}}
+          {% endif %}
+        </div>
+      </div>
+      <div class="row small-gutters">
+        <div class="col">
+          {{form_settings_pi.hostname(class_='form-control', value=pi_settings['hostname'])}}
+        </div>
+        <div class="col">
+          {{form_settings_pi.change_hostname(class_='btn btn-primary')}}
+        </div>
+      </div>
 
-    <div class="row small-gutters" style="padding-top: 2em">
-      <div class="col-12">
-        Mycodo Controller Sample Rates<br/>
-        The sample rates of Mycodo daemon controllers can be changed below. Note that the daemon will need to be restarted after saving in order for the new options to take effect. Select Config [Gear Icon] -> Restart Backend to restart the daemon.
-      </div>
-      <div class="col-auto">
-        {{form_settings_pi.sample_rate_controller_conditional.label(class_='control-label')}}
-        <div>
-          {{form_settings_pi.sample_rate_controller_conditional(class_='form-control', value=misc.sample_rate_controller_conditional)}}
+      <div class="row small-gutters" style="padding-top: 2em">
+        <div class="col-12">
+          Service options:
         </div>
       </div>
-      <div class="col-auto">
-        {{form_settings_pi.sample_rate_controller_input.label(class_='control-label')}}
-        <div>
-          {{form_settings_pi.sample_rate_controller_input(class_='form-control', value=misc.sample_rate_controller_input)}}
+      <div class="row small-gutters">
+        <div class="col">
+          {{form_settings_pi.pigpiod_sample_rate.label(class_='control-label')}}
         </div>
       </div>
-      <div class="col-auto">
-        {{form_settings_pi.sample_rate_controller_math.label(class_='control-label')}}
-        <div>
-          {{form_settings_pi.sample_rate_controller_math(class_='form-control', value=misc.sample_rate_controller_math)}}
+      <div class="row small-gutters">
+        <div class="col">
+          <select class="form-control" id="pigpiod_sample_rate" name="pigpiod_sample_rate" title="" data-original-title="Select a sample rate in milliseconds for pigpiod">
+            <option value=""></option>
+            <option value="uninstalled"{% if pigpiod_sample_rate == 'uninstalled' %} selected{% endif %}>Uninstall pigpiod</option>
+            <option value="disabled"{% if pigpiod_sample_rate == 'disabled' %} selected{% endif %}>Disable pigpiod</option>
+            <option value="low"{% if pigpiod_sample_rate == 'low' %} selected{% endif %}>1 ms (faster)</option>
+            <option value="high"{% if pigpiod_sample_rate == 'high' %} selected{% endif %}>5 ms (slower)</option>
+          </select>
+        </div>
+        <div class="col">
+          {{form_settings_pi.change_pigpiod_sample_rate(class_='btn btn-primary',**{'onclick':'return confirm("Changing the sample rate of pigpiod requires restarting both pigpiod and the mycodo daemon. Please confirm this is what you wish to do.")'})}}
         </div>
       </div>
-      <div class="col-auto">
-        {{form_settings_pi.sample_rate_controller_output.label(class_='control-label')}}
-        <div>
-          {{form_settings_pi.sample_rate_controller_output(class_='form-control', value=misc.sample_rate_controller_output)}}
-        </div>
-      </div>
-      <div class="col-auto">
-        {{form_settings_pi.sample_rate_controller_pid.label(class_='control-label')}}
-        <div>
-          {{form_settings_pi.sample_rate_controller_pid(class_='form-control', value=misc.sample_rate_controller_pid)}}
-        </div>
-      </div>
-    </div>
-    <div class="row small-gutters" style="padding: 0.5em 0 0.5em 0">
-      <div class="col-auto">
-        {{form_settings_pi.save_sample_rates(class_='btn btn-primary')}}
-      </div>
-    </div>
 
-  </form>
+      <div class="row small-gutters" style="padding-top: 2em">
+        <div class="col-12">
+          Mycodo Controller Sample Rates<br/>
+          The sample rates of Mycodo daemon controllers can be changed below. Note that the daemon will need to be restarted after saving in order for the new options to take effect. Select Config [Gear Icon] -> Restart Backend to restart the daemon.
+        </div>
+        <div class="col-auto">
+          {{form_settings_pi.sample_rate_controller_conditional.label(class_='control-label')}}
+          <div>
+            {{form_settings_pi.sample_rate_controller_conditional(class_='form-control', value=misc.sample_rate_controller_conditional)}}
+          </div>
+        </div>
+        <div class="col-auto">
+          {{form_settings_pi.sample_rate_controller_input.label(class_='control-label')}}
+          <div>
+            {{form_settings_pi.sample_rate_controller_input(class_='form-control', value=misc.sample_rate_controller_input)}}
+          </div>
+        </div>
+        <div class="col-auto">
+          {{form_settings_pi.sample_rate_controller_math.label(class_='control-label')}}
+          <div>
+            {{form_settings_pi.sample_rate_controller_math(class_='form-control', value=misc.sample_rate_controller_math)}}
+          </div>
+        </div>
+        <div class="col-auto">
+          {{form_settings_pi.sample_rate_controller_output.label(class_='control-label')}}
+          <div>
+            {{form_settings_pi.sample_rate_controller_output(class_='form-control', value=misc.sample_rate_controller_output)}}
+          </div>
+        </div>
+        <div class="col-auto">
+          {{form_settings_pi.sample_rate_controller_pid.label(class_='control-label')}}
+          <div>
+            {{form_settings_pi.sample_rate_controller_pid(class_='form-control', value=misc.sample_rate_controller_pid)}}
+          </div>
+        </div>
+      </div>
+      <div class="row small-gutters" style="padding: 0.5em 0 0.5em 0">
+        <div class="col-auto">
+          {{form_settings_pi.save_sample_rates(class_='btn btn-primary')}}
+        </div>
+      </div>
+
+    </form>
+
+  </div>
 
 {% endblock %}

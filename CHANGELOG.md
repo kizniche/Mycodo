@@ -1,3 +1,15 @@
+## 7.3.1 (Unreleased)
+
+### Bugfixes
+
+ - Fix settings menu layout
+
+### Features
+
+ - Add dependency system for Function Actions
+ - Add proper dependencies for infrared Send Function Action
+
+
 ## 7.3.0 (2019-02-22)
 
 ### Bugfixes

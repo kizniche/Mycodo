@@ -9,102 +9,106 @@
   <!-- Route: /settings/measurement -->
   <h3 style="text-align: right; padding-bottom: 1.3em;"><a href="/help#measurement-settings" target="_blank"><span style="font-size: 16px" class="fas fa-question-circle"></span></a> {{_('Measurement Settings')}}</h3>
 
-  <h3>{{_('Add Measurement')}}</h3>
+  <div class="container">
 
-  <form class="form-horizontal" method="post" action="/settings/measurement">
-  {{form_add_measurement.hidden_tag()}}
+    <h3>{{_('Add Measurement')}}</h3>
 
-  <div class="row align-items-end small-gutters">
-    <div class="col-6 col-sm-3 col-md-3">
-      {{form_add_measurement.name.label(class_='control-label')}}
-      <div>
-        {{form_add_measurement.name(class_='form-control')}}
+    <form class="form-horizontal" method="post" action="/settings/measurement">
+    {{form_add_measurement.hidden_tag()}}
+
+    <div class="row align-items-end small-gutters">
+      <div class="col-6 col-sm-3 col-md-3">
+        {{form_add_measurement.name.label(class_='control-label')}}
+        <div>
+          {{form_add_measurement.name(class_='form-control')}}
+        </div>
+      </div>
+      <div class="col-auto">
+        {{form_add_measurement.units.label(class_='control-label')}}
+        <div>
+          <select class="form-control" id="units" name="units" multiple>
+            {% for each_unit, each_display in choices_units.items() %}
+            <option value="{{each_unit}}">{{each_display}}</option>
+            {% endfor %}
+          </select>
+        </div>
+      </div>
+      <div class="col-4 col-sm-3 col-md-3">
+        {{form_add_measurement.add_measurement(class_='btn btn-primary')}}
       </div>
     </div>
-    <div class="col-auto">
-      {{form_add_measurement.units.label(class_='control-label')}}
-      <div>
-        <select class="form-control" id="units" name="units" multiple>
-          {% for each_unit, each_display in choices_units.items() %}
-          <option value="{{each_unit}}">{{each_display}}</option>
-          {% endfor %}
-        </select>
+
+    </form>
+
+    <div style="clear: both; padding: 1em 0;"></div>
+
+    <h3>{{_('Add Unit')}}</h3>
+
+    <form class="form-horizontal" method="post" action="/settings/measurement">
+    {{form_add_unit.hidden_tag()}}
+
+    <div class="row align-items-end small-gutters">
+      <div class="col-6 col-sm-3 col-md-3">
+        {{form_add_unit.name.label(class_='control-label')}}
+        <div>
+          {{form_add_unit.name(class_='form-control')}}
+        </div>
+      </div>
+      <div class="col-6 col-sm-3 col-md-3">
+        {{form_add_unit.unit.label(class_='control-label')}}
+        <div>
+          {{form_add_unit.unit(class_='form-control')}}
+        </div>
+      </div>
+      <div class="col-4 col-sm-3 col-md-3">
+        {{form_add_unit.add_unit(class_='btn btn-primary')}}
       </div>
     </div>
-    <div class="col-4 col-sm-3 col-md-3">
-      {{form_add_measurement.add_measurement(class_='btn btn-primary')}}
+
+    </form>
+
+    <div style="clear: both; padding: 1em 0;"></div>
+
+    <h3>{{_('Add Conversion')}}</h3>
+
+    <form class="form-horizontal" method="post" action="/settings/measurement">
+    {{form_add_conversion.hidden_tag()}}
+
+    <div class="row align-items-end small-gutters">
+      <div class="col-6 col-sm-3 col-md-3">
+        {{form_add_conversion.convert_unit_from.label(class_='control-label')}}
+        <div>
+          <select class="form-control" id="convert_unit_from" name="convert_unit_from">
+            {% for each_unit, each_display in choices_units.items() %}
+            <option value="{{each_unit}}">{{each_display}}</option>
+            {% endfor %}
+          </select>
+        </div>
+      </div>
+      <div class="col-6 col-sm-3 col-md-3">
+        {{form_add_conversion.convert_unit_to.label(class_='control-label')}}
+        <div>
+          <select class="form-control" id="convert_unit_to" name="convert_unit_to">
+            {% for each_unit, each_display in choices_units.items() %}
+            <option value="{{each_unit}}">{{each_display}}</option>
+            {% endfor %}
+          </select>
+        </div>
+      </div>
+      <div class="col-6 col-sm-3 col-md-3">
+        {{form_add_conversion.equation.label(class_='control-label')}}
+        <div>
+          {{form_add_conversion.equation(class_='form-control')}}
+        </div>
+      </div>
+      <div class="col-4 col-sm-3 col-md-3">
+        {{form_add_conversion.add_conversion(class_='btn btn-primary')}}
+      </div>
     </div>
+
+    </form>
+
   </div>
-
-  </form>
-
-  <div style="clear: both; padding: 1em 0;"></div>
-
-  <h3>{{_('Add Unit')}}</h3>
-
-  <form class="form-horizontal" method="post" action="/settings/measurement">
-  {{form_add_unit.hidden_tag()}}
-
-  <div class="row align-items-end small-gutters">
-    <div class="col-6 col-sm-3 col-md-3">
-      {{form_add_unit.name.label(class_='control-label')}}
-      <div>
-        {{form_add_unit.name(class_='form-control')}}
-      </div>
-    </div>
-    <div class="col-6 col-sm-3 col-md-3">
-      {{form_add_unit.unit.label(class_='control-label')}}
-      <div>
-        {{form_add_unit.unit(class_='form-control')}}
-      </div>
-    </div>
-    <div class="col-4 col-sm-3 col-md-3">
-      {{form_add_unit.add_unit(class_='btn btn-primary')}}
-    </div>
-  </div>
-
-  </form>
-
-  <div style="clear: both; padding: 1em 0;"></div>
-
-  <h3>{{_('Add Conversion')}}</h3>
-
-  <form class="form-horizontal" method="post" action="/settings/measurement">
-  {{form_add_conversion.hidden_tag()}}
-
-  <div class="row align-items-end small-gutters">
-    <div class="col-6 col-sm-3 col-md-3">
-      {{form_add_conversion.convert_unit_from.label(class_='control-label')}}
-      <div>
-        <select class="form-control" id="convert_unit_from" name="convert_unit_from">
-          {% for each_unit, each_display in choices_units.items() %}
-          <option value="{{each_unit}}">{{each_display}}</option>
-          {% endfor %}
-        </select>
-      </div>
-    </div>
-    <div class="col-6 col-sm-3 col-md-3">
-      {{form_add_conversion.convert_unit_to.label(class_='control-label')}}
-      <div>
-        <select class="form-control" id="convert_unit_to" name="convert_unit_to">
-          {% for each_unit, each_display in choices_units.items() %}
-          <option value="{{each_unit}}">{{each_display}}</option>
-          {% endfor %}
-        </select>
-      </div>
-    </div>
-    <div class="col-6 col-sm-3 col-md-3">
-      {{form_add_conversion.equation.label(class_='control-label')}}
-      <div>
-        {{form_add_conversion.equation(class_='form-control')}}
-      </div>
-    </div>
-    <div class="col-4 col-sm-3 col-md-3">
-      {{form_add_conversion.add_conversion(class_='btn btn-primary')}}
-    </div>
-  </div>
-
-  </form>
 
   <div style="clear: both; padding: 1em 0;"></div>
 
