@@ -19,7 +19,7 @@
 
     <!-- Sidebar -->
     <div class="bg-dark" id="sidebar-wrapper" style="border-right: 1px solid #343434">
-      <div class="sidebar-heading">Settings</div>
+      <div class="sidebar-heading">Configuration</div>
       <div class="list-group list-group-flush">
         <a class="list-group-item collapsed{% if active_settings == 'general' %} active{% endif %}" href="{{url_for('routes_settings.settings_general')}}"><i class="fas fa-globe"></i>&nbsp;&nbsp;{{_('General')}}</a>
         <a class="list-group-item collapsed{% if active_settings == 'input' %} active{% endif %}" href="{{url_for('routes_settings.settings_input')}}"><i class="fas fa-sign-in-alt"></i>&nbsp;&nbsp;{{_('Inputs')}}</a>

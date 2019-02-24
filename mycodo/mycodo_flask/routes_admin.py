@@ -203,6 +203,7 @@ def admin_dependencies(device):
     form_dependencies = forms_dependencies.Dependencies()
 
     if device != '0':
+        # Only loading a single dependency page
         device_unmet_dependencies, _ = utils_general.return_dependencies(device)
     elif form_dependencies.device.data:
         device_unmet_dependencies, _ = utils_general.return_dependencies(form_dependencies.device.data)
@@ -252,28 +253,30 @@ def admin_dependencies(device):
                     if each_device_ in ['name', 'input_name']:
                         device_name = each_val
 
-            # Determine if there are any unmet dependencies
-            dep_unmet, dep_met = utils_general.return_dependencies(each_device)
+            # Only get all dependencies when not loading a single dependency page
+            if device == '0':
+                # Determine if there are any unmet dependencies for every device
+                dep_unmet, dep_met = utils_general.return_dependencies(each_device)
 
-            unmet_dependencies.update({
-                each_device: dep_unmet
-            })
-            if dep_unmet:
-                unmet_exist = True
+                unmet_dependencies.update({
+                    each_device: dep_unmet
+                })
+                if dep_unmet:
+                    unmet_exist = True
 
-            # Determine if there are any met dependencies
-            if dep_met:
-                if each_device not in met_dependencies:
-                    met_dependencies.append(each_device)
-                    met_exist = True
+                # Determine if there are any met dependencies
+                if dep_met:
+                    if each_device not in met_dependencies:
+                        met_dependencies.append(each_device)
+                        met_exist = True
 
-            # Find all the devices that use each unmet dependency
-            if unmet_dependencies[each_device]:
-                for each_dep in unmet_dependencies[each_device]:
-                    if each_dep not in unmet_list:
-                        unmet_list[each_dep] = []
-                    if each_device not in unmet_list[each_dep]:
-                        unmet_list[each_dep].append(each_device)
+                # Find all the devices that use each unmet dependency
+                if unmet_dependencies[each_device]:
+                    for each_dep in unmet_dependencies[each_device]:
+                        if each_dep not in unmet_list:
+                            unmet_list[each_dep] = []
+                        if each_device not in unmet_list[each_dep]:
+                            unmet_list[each_dep].append(each_device)
 
     if request.method == 'POST':
         if not utils_general.user_has_permission('edit_controllers'):

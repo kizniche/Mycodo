@@ -3,6 +3,7 @@
 ### Bugfixes
 
  - Fix settings menu layout
+ - Significantly improve speed of dependency-checking
 
 ### Features
 

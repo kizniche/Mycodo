@@ -1757,7 +1757,7 @@ def page_data():
                 if '.' in str_ow and len(str_ow) == 15:
                     devices_1wire_ow_shell.append(str_ow)
         except Exception:
-            logger.exception("Error finding 1-wire devices with 'owdir'")
+            logger.error("Error finding 1-wire devices with 'owdir'")
 
     return render_template('pages/data.html',
                            and_=and_,

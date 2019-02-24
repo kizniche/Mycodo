@@ -7,9 +7,8 @@
 
 {% block settings %}
   <!-- Route: /settings/measurement -->
-  <h3 style="text-align: right; padding-bottom: 1.3em;"><a href="/help#measurement-settings" target="_blank"><span style="font-size: 16px" class="fas fa-question-circle"></span></a> {{_('Measurement Settings')}}</h3>
-
   <div class="container">
+    <h3 style="text-align: right; padding-bottom: 1.3em;"><a href="/help#measurement-settings" target="_blank"><span style="font-size: 16px" class="fas fa-question-circle"></span></a> {{_('Measurement Settings')}}</h3>
 
     <h3>{{_('Add Measurement')}}</h3>
 
@@ -108,74 +107,219 @@
 
     </form>
 
-  </div>
+    <div style="clear: both; padding: 1em 0;"></div>
 
-  <div style="clear: both; padding: 1em 0;"></div>
+    {% if measurement %}
 
-  {% if measurement %}
+    <hr>
 
-  <hr>
+    <h3>{{_('Custom')}} {{_('Measurements')}}</h3>
 
-  <h3>{{_('Custom')}} {{_('Measurements')}}</h3>
+    <div class="table-responsive">
+      <table class="table">
+        <tr>
+          <td>ID</td>
+          <td>{{form_mod_measurement.name.label(class_='control-label')}}</td>
+          <td>{{form_add_measurement.units.label(class_='control-label')}}</td>
+          <td></td>
 
-  <div class="table-responsive">
-    <table class="table">
-      <tr>
-        <td>ID</td>
-        <td>{{form_mod_measurement.name.label(class_='control-label')}}</td>
-        <td>{{form_add_measurement.units.label(class_='control-label')}}</td>
-        <td></td>
+        </tr>
 
-      </tr>
+    {% for each_measurement in measurement %}
 
-  {% for each_measurement in measurement %}
+    <form method="post" action="/settings/measurement">
+    {{form_mod_measurement.csrf_token}}
+    {{form_mod_measurement.measurement_id(value=each_measurement.unique_id)}}
 
-  <form method="post" action="/settings/measurement">
-  {{form_mod_measurement.csrf_token}}
-  {{form_mod_measurement.measurement_id(value=each_measurement.unique_id)}}
+        <tr>
+          <td>{{each_measurement.name_safe}}</td>
+          <td>{{form_mod_measurement.name(class_='form-control', value=each_measurement.name)}}</td>
+          <td>
+            <select class="form-control" id="units" name="units" multiple>
+              {% if not choices_units.items() %}
+              <option value="">{{dict_translation['none_available']['title']}}</option>
+              {% else %}
+                {% for each_unit, each_display in choices_units.items() %}
+              <option value="{{each_unit}}"{% if each_unit in each_measurement.units.split(',') %} selected{% endif %}>{{each_display}}</option>
+                {% endfor %}
+              {% endif %}
+            </select>
+          </td>
+          <td>
+            <div class="col-12 small-gutters">
+              {{form_mod_measurement.save_measurement(class_='btn btn-primary btn-block')}}
+            </div>
+            <div class="col-12 small-gutters">
+              {{form_mod_measurement.delete_measurement(class_='btn btn-primary btn-block', **{'onclick':'return confirm("Are you sure you want to delete this?")'})}}
+            </div>
+          </td>
+        </tr>
 
-      <tr>
-        <td>{{each_measurement.name_safe}}</td>
-        <td>{{form_mod_measurement.name(class_='form-control', value=each_measurement.name)}}</td>
-        <td>
-          <select class="form-control" id="units" name="units" multiple>
-            {% if not choices_units.items() %}
-            <option value="">{{dict_translation['none_available']['title']}}</option>
-            {% else %}
+    </form>
+
+    <div style="clear: both; padding: 0.5em 0;"></div>
+
+    {% endfor -%}
+
+      </table>
+    </div>
+
+    {% endif %}
+
+    {% if unit %}
+
+    <hr>
+
+    <h3>{{_('Custom')}} {{_('Units')}}</h3>
+
+    <div class="table-responsive">
+      <table class="table">
+        <tr>
+          <td>ID</td>
+          <td>{{form_mod_unit.name.label(class_='control-label')}}</td>
+          <td>{{form_mod_unit.unit.label(class_='control-label')}}</td>
+          <td></td>
+        </tr>
+
+     {% for each_unit in unit %}
+
+      <form method="post" action="/settings/measurement">
+      {{form_mod_unit.csrf_token}}
+      {{form_mod_unit.unit_id(value=each_unit.unique_id)}}
+
+        <tr>
+          <td>{{each_unit.name_safe}}</td>
+          <td>{{form_mod_unit.name(class_='form-control', value=each_unit.name)}}</td>
+          <td>{{form_mod_unit.unit(class_='form-control', value=each_unit.unit)}}</td>
+          <td>
+            <div class="col-12 small-gutters">
+              {{form_mod_unit.save_unit(class_='btn btn-primary btn-block')}}
+            </div>
+            <div class="col-12 small-gutters">
+              {{form_mod_unit.delete_unit(class_='btn btn-primary btn-block', **{'onclick':'return confirm("Are you sure you want to delete this?")'})}}
+            </div>
+          </td>
+        </tr>
+
+      </form>
+
+    <div style="clear: both; padding: 0.5em 0;"></div>
+
+    {% endfor -%}
+
+      </table>
+    </div>
+
+    {% endif %}
+
+    {% if conversion %}
+
+    <hr>
+
+    <h3>{{_('Custom')}} {{_('Conversions')}}</h3>
+
+      <div class="table-responsive">
+        <table class="table">
+          <tr>
+            <td>{{_('ID')}}</td>
+            <td>{{form_mod_conversion.convert_unit_from.label(class_='control-label')}}</td>
+            <td>{{form_mod_conversion.convert_unit_to.label(class_='control-label')}}</td>
+            <td>{{form_mod_conversion.equation.label(class_='control-label')}}</td>
+            <td></td>
+            <td></td>
+          </tr>
+
+    {% for each_conversion in conversion %}
+
+    <form method="post" action="/settings/measurement">
+    {{form_mod_conversion.csrf_token}}
+    {{form_mod_conversion.conversion_id(value=each_conversion.unique_id)}}
+
+        <tr>
+          <td>
+            {{'%02d' % each_conversion.id}}
+          </td>
+          <td>
+          {% if not each_conversion.protected %}
+            <select class="form-control" id="convert_unit_from" name="convert_unit_from">
+              <option value=""></option>
               {% for each_unit, each_display in choices_units.items() %}
-            <option value="{{each_unit}}"{% if each_unit in each_measurement.units.split(',') %} selected{% endif %}>{{each_display}}</option>
+              <option value="{{each_unit}}"{% if each_unit == each_conversion.convert_unit_from %} selected{% endif %}>{{each_display}}</option>
               {% endfor %}
-            {% endif %}
-          </select>
-        </td>
-        <td>
-          <div class="col-12 small-gutters">
-            {{form_mod_measurement.save_measurement(class_='btn btn-primary btn-block')}}
-          </div>
-          <div class="col-12 small-gutters">
-            {{form_mod_measurement.delete_measurement(class_='btn btn-primary btn-block', **{'onclick':'return confirm("Are you sure you want to delete this?")'})}}
-          </div>
-        </td>
+            </select>
+          {% else %}
+            {% for each_unit, each_display in choices_units.items() if each_unit == each_conversion.convert_unit_from %}
+            {{each_display}}
+            {% endfor %}
+          {% endif %}
+          <td>
+          {% if not each_conversion.protected %}
+            <select class="form-control" id="convert_unit_to" name="convert_unit_to">
+              <option value=""></option>
+              {% for each_unit, each_display in choices_units.items() %}
+              <option value="{{each_unit}}"{% if each_unit == each_conversion.convert_unit_to %} selected{% endif %}>{{each_display}}</option>
+              {% endfor %}
+            </select>
+          {% else %}
+            {% for each_unit, each_display in choices_units.items() if each_unit == each_conversion.convert_unit_to %}
+            {{each_display}}
+            {% endfor %}
+          {% endif %}
+          </td>
+          <td>
+            {{form_mod_conversion.equation(class_='form-control', value=each_conversion.equation)}}
+          </td>
+          <td>
+            {{form_mod_conversion.save_conversion(class_='btn btn-primary btn-block')}}
+          </td>
+        {% if not each_conversion.protected %}
+          <td>
+            {{form_mod_conversion.delete_conversion(class_='btn btn-primary btn-block', **{'onclick':'return confirm("Are you sure you want to delete this?")'})}}
+          </td>
+        {% endif %}
+        </tr>
+
+    </form>
+
+    {% endfor -%}
+
+      </table>
+    </div>
+
+    {% endif %}
+
+    <hr>
+
+    <h3>{{_('All')}} {{_('Measurements')}}</h3>
+
+    <div class="table-responsive">
+      <table class="table">
+        <tr>
+          <td>ID</td>
+          <td>{{form_mod_measurement.name.label(class_='control-label')}}</td>
+          <td>{{form_add_measurement.units.label(class_='control-label')}}</td>
+          <td></td>
+        </tr>
+
+    {% for each_unit, each_info in dict_measurements.items() %}
+
+      <tr>
+        <td>{{each_unit}}</td>
+        <td>{{each_info['name']}}</td>
+        <td>{% for each_unit in each_info['units'] %}{{each_unit}}{{ ", " if not loop.last }}{% endfor %}</td>
+        <td></td>
       </tr>
 
-  </form>
+    {% endfor %}
 
-  <div style="clear: both; padding: 0.5em 0;"></div>
+      </table>
+    </div>
 
-  {% endfor -%}
+    <hr>
 
-    </table>
-  </div>
+    <h3>{{_('All')}} {{_('Units')}}</h3>
 
-  {% endif %}
-
-  {% if unit %}
-
-  <hr>
-
-  <h3>{{_('Custom')}} {{_('Units')}}</h3>
-
-  <div class="table-responsive">
+    <div class="table-responsive">
     <table class="table">
       <tr>
         <td>ID</td>
@@ -184,165 +328,20 @@
         <td></td>
       </tr>
 
-   {% for each_unit in unit %}
-
-    <form method="post" action="/settings/measurement">
-    {{form_mod_unit.csrf_token}}
-    {{form_mod_unit.unit_id(value=each_unit.unique_id)}}
+    {% for each_unit, each_info in dict_units.items() %}
 
       <tr>
-        <td>{{each_unit.name_safe}}</td>
-        <td>{{form_mod_unit.name(class_='form-control', value=each_unit.name)}}</td>
-        <td>{{form_mod_unit.unit(class_='form-control', value=each_unit.unit)}}</td>
-        <td>
-          <div class="col-12 small-gutters">
-            {{form_mod_unit.save_unit(class_='btn btn-primary btn-block')}}
-          </div>
-          <div class="col-12 small-gutters">
-            {{form_mod_unit.delete_unit(class_='btn btn-primary btn-block', **{'onclick':'return confirm("Are you sure you want to delete this?")'})}}
-          </div>
-        </td>
-      </tr>
-
-    </form>
-
-  <div style="clear: both; padding: 0.5em 0;"></div>
-
-  {% endfor -%}
-
-    </table>
-  </div>
-
-  {% endif %}
-
-  {% if conversion %}
-
-  <hr>
-
-  <h3>{{_('Custom')}} {{_('Conversions')}}</h3>
-
-    <div class="table-responsive">
-      <table class="table">
-        <tr>
-          <td>{{_('ID')}}</td>
-          <td>{{form_mod_conversion.convert_unit_from.label(class_='control-label')}}</td>
-          <td>{{form_mod_conversion.convert_unit_to.label(class_='control-label')}}</td>
-          <td>{{form_mod_conversion.equation.label(class_='control-label')}}</td>
-          <td></td>
-          <td></td>
-        </tr>
-
-  {% for each_conversion in conversion %}
-
-  <form method="post" action="/settings/measurement">
-  {{form_mod_conversion.csrf_token}}
-  {{form_mod_conversion.conversion_id(value=each_conversion.unique_id)}}
-
-      <tr>
-        <td>
-          {{'%02d' % each_conversion.id}}
-        </td>
-        <td>
-        {% if not each_conversion.protected %}
-          <select class="form-control" id="convert_unit_from" name="convert_unit_from">
-            <option value=""></option>
-            {% for each_unit, each_display in choices_units.items() %}
-            <option value="{{each_unit}}"{% if each_unit == each_conversion.convert_unit_from %} selected{% endif %}>{{each_display}}</option>
-            {% endfor %}
-          </select>
-        {% else %}
-          {% for each_unit, each_display in choices_units.items() if each_unit == each_conversion.convert_unit_from %}
-          {{each_display}}
-          {% endfor %}
-        {% endif %}
-        <td>
-        {% if not each_conversion.protected %}
-          <select class="form-control" id="convert_unit_to" name="convert_unit_to">
-            <option value=""></option>
-            {% for each_unit, each_display in choices_units.items() %}
-            <option value="{{each_unit}}"{% if each_unit == each_conversion.convert_unit_to %} selected{% endif %}>{{each_display}}</option>
-            {% endfor %}
-          </select>
-        {% else %}
-          {% for each_unit, each_display in choices_units.items() if each_unit == each_conversion.convert_unit_to %}
-          {{each_display}}
-          {% endfor %}
-        {% endif %}
-        </td>
-        <td>
-          {{form_mod_conversion.equation(class_='form-control', value=each_conversion.equation)}}
-        </td>
-        <td>
-          {{form_mod_conversion.save_conversion(class_='btn btn-primary btn-block')}}
-        </td>
-      {% if not each_conversion.protected %}
-        <td>
-          {{form_mod_conversion.delete_conversion(class_='btn btn-primary btn-block', **{'onclick':'return confirm("Are you sure you want to delete this?")'})}}
-        </td>
-      {% endif %}
-      </tr>
-
-  </form>
-
-  {% endfor -%}
-
-    </table>
-  </div>
-
-  {% endif %}
-
-  <hr>
-
-  <h3>{{_('All')}} {{_('Measurements')}}</h3>
-
-  <div class="table-responsive">
-    <table class="table">
-      <tr>
-        <td>ID</td>
-        <td>{{form_mod_measurement.name.label(class_='control-label')}}</td>
-        <td>{{form_add_measurement.units.label(class_='control-label')}}</td>
+        <td>{{each_unit}}</td>
+        <td>{{each_info['name']}}</td>
+        <td>{{each_info['unit']}}</td>
         <td></td>
       </tr>
 
-  {% for each_unit, each_info in dict_measurements.items() %}
+    {% endfor %}
 
-    <tr>
-      <td>{{each_unit}}</td>
-      <td>{{each_info['name']}}</td>
-      <td>{% for each_unit in each_info['units'] %}{{each_unit}}{{ ", " if not loop.last }}{% endfor %}</td>
-      <td></td>
-    </tr>
+      </table>
+    </div>
 
-  {% endfor %}
-
-    </table>
-  </div>
-
-  <hr>
-
-  <h3>{{_('All')}} {{_('Units')}}</h3>
-
-  <div class="table-responsive">
-  <table class="table">
-    <tr>
-      <td>ID</td>
-      <td>{{form_mod_unit.name.label(class_='control-label')}}</td>
-      <td>{{form_mod_unit.unit.label(class_='control-label')}}</td>
-      <td></td>
-    </tr>
-
-  {% for each_unit, each_info in dict_units.items() %}
-
-    <tr>
-      <td>{{each_unit}}</td>
-      <td>{{each_info['name']}}</td>
-      <td>{{each_info['unit']}}</td>
-      <td></td>
-    </tr>
-
-  {% endfor %}
-
-    </table>
   </div>
 
 {% endblock %}
