@@ -539,7 +539,8 @@ FUNCTION_ACTION_INFO = {
         'dependencies_module': [
             ('apt', 'liblircclient-dev', 'liblircclient-dev'),
             ('apt', 'lirc', 'lirc'),
-            ('pip-pypi', 'lirc', 'python-lirc')
+            ('pip-pypi', 'lirc', 'python-lirc'),
+            ('pip-pypi', 'py_irsend', 'py-irsend')
         ]
     },
     'lcd_backlight_off': {

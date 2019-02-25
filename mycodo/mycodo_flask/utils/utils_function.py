@@ -181,7 +181,7 @@ def action_add(form):
         controller='{} {}'.format(TRANSLATIONS['conditional']['title'],
                                   TRANSLATIONS['actions']['title']))
 
-    dep_unmet, _ = return_dependencies(form.function_type.data)
+    dep_unmet, _ = return_dependencies(form.action_type.data)
     if dep_unmet:
         list_unmet_deps = []
         for each_dep in dep_unmet:

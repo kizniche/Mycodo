@@ -70,7 +70,7 @@
 
     <div class="row align-items-end small-gutters" style="border-bottom: 1px solid #ddd; padding-bottom: 0.3em">
       <div class="col-sm-2">
-        <input class="form-control btn btn-sm btn-block" disabled="" value="[{{loop.index}}] {% for each_act in function_actions_list if each_action.action_type == each_act[0] %}{{each_act[1]}}{% endfor %}" type="text">
+        <input class="form-control btn btn-sm btn-block" disabled="" value="[{{loop.index}}] {% for each_act in function_action_info if each_action.action_type == each_act %}{{function_action_info[each_act]['name']}}{% endfor %}" type="text">
       </div>
       <div class="col-auto">
         {{form_actions.save_action(class_='form-control btn btn-sm')}}

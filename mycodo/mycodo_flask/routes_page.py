@@ -34,6 +34,7 @@ from mycodo.config import DAEMON_PID_FILE
 from mycodo.config import DEPENDENCY_LOG_FILE
 from mycodo.config import FRONTEND_PID_FILE
 from mycodo.config import FUNCTIONS
+from mycodo.config import FUNCTION_ACTION_INFO
 from mycodo.config import HTTP_ACCESS_LOG_FILE
 from mycodo.config import HTTP_ERROR_LOG_FILE
 from mycodo.config import INSTALL_DIRECTORY
@@ -1332,9 +1333,9 @@ def page_function():
             if form_add_function.func_add.data:
                 function_type = form_add_function.function_type.data
             elif form_trigger.add_action.data:
-                function_type = form_trigger.function_type.data
+                function_type = form_trigger.action_type.data
             elif form_conditional.add_action.data:
-                function_type = form_conditional.function_type.data
+                function_type = form_conditional.action_type.data
             if function_type:
                 return redirect(url_for('routes_admin.admin_dependencies',
                                         device=function_type))
@@ -1436,8 +1437,19 @@ def page_function():
                 sunrise_set_calc[each_trigger.unique_id]['offset_sunrise'] = None
                 sunrise_set_calc[each_trigger.unique_id]['offset_sunset'] = None
 
+    # Get infrared remotes and codes
+    infrared_remotes = {}
+    try:
+        from py_irsend import irsend
+        for each_remote in irsend.list_remotes():
+            infrared_remotes[each_remote.decode('utf-8')] = irsend.list_codes(each_remote)
+            infrared_remotes[each_remote.decode('utf-8')] = [x.decode('utf-8') for x in infrared_remotes[each_remote.decode('utf-8')]]
+    except:
+        pass
+
     return render_template('pages/function.html',
-                           table_input=Input,
+                           actions=actions,
+                           actions_dict=actions_dict,
                            camera=camera,
                            choices_input=choices_input,
                            choices_math=choices_math,
@@ -1446,10 +1458,6 @@ def page_function():
                            conditional=conditional,
                            conditional_conditions=conditional_conditions,
                            conditions_dict=conditions_dict,
-                           actions=actions,
-                           actions_dict=actions_dict,
-                           function_dev=function_dev,
-                           function_types=FUNCTIONS,
                            controllers=controllers,
                            display_order_function=display_order_function,
                            form_base=form_base,
@@ -1464,18 +1472,23 @@ def page_function():
                            form_mod_pid_output_raise=form_mod_pid_output_raise,
                            form_mod_pid_output_lower=form_mod_pid_output_lower,
                            form_trigger=form_trigger,
-                           names_function=names_function,
+                           function_action_info=FUNCTION_ACTION_INFO,
+                           function_dev=function_dev,
+                           function_types=FUNCTIONS,
+                           infrared_remotes=infrared_remotes,
                            input=input_dev,
                            lcd=lcd,
                            math=math,
                            method=method,
+                           names_function=names_function,
                            output=output,
                            pid=pid,
+                           sunrise_set_calc=sunrise_set_calc,
+                           table_input=Input,
                            tags=tags,
                            trigger=trigger,
                            units=MEASUREMENTS,
-                           user=user,
-                           sunrise_set_calc=sunrise_set_calc)
+                           user=user)
 
 
 @blueprint.route('/output', methods=('GET', 'POST'))

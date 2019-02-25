@@ -763,10 +763,6 @@ def return_dependencies(device_type):
     unmet_deps = []
     met_deps = False
 
-    import time
-    start = time.time()
-    logger.error("TEST00: All dependencies: {}".format(device_type))
-
     dict_inputs = parse_input_information()
 
     list_dependencies = [
@@ -835,7 +831,6 @@ def return_dependencies(device_type):
                                 else:
                                     met_deps = True
 
-    logger.error("TEST00: All dependencies end: {}".format(time.time() - start))
     return unmet_deps, met_deps
 
 

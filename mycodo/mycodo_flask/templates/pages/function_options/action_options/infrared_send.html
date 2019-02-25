@@ -1,14 +1,22 @@
 <div class="col-auto">
   {{form_actions.remote.label(class_='control-label')}}
-  <div>
-    {{form_actions.remote(class_='form-control', value=each_action.remote, **{'title':_('What remote to use')})}}
-  </div>
+  <select class="form-control form-tooltip form-dropdown" id="remote" name="remote" data-placement="top" title="{{_('What remote to use')}}">
+    <option value="">{{_('Select One')}}</option>
+    {%- for each_remote in infrared_remotes -%}
+      <option value="{{each_remote}}"{% if each_action.remote == each_remote %} selected{% endif %}>{{each_remote}}</option>
+    {%- endfor -%}
+  </select>
 </div>
 <div class="col-auto">
   {{form_actions.code.label(class_='control-label')}}
-  <div>
-    {{form_actions.code(class_='form-control', value=each_action.code, **{'title':_('What code to send')})}}
-  </div>
+  <select class="form-control form-tooltip form-dropdown" id="code" name="code" data-placement="top" title="{{_('What code to send')}}">
+    <option value=""><- Save Remote First</option>
+    {%- for each_remote in infrared_remotes if each_remote == each_action.remote -%}
+      {%- for each_code in infrared_remotes[each_remote] -%}
+      <option value="{{each_code}}"{% if each_action.code == each_code %} selected{% endif %}>{{each_code}}</option>
+      {%- endfor -%}
+    {%- endfor -%}
+  </select>
 </div>
 <div class="col-auto">
   {{form_actions.send_times.label(class_='control-label')}}
