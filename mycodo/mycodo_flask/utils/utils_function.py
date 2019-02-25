@@ -441,8 +441,8 @@ def check_form_actions(form, error):
         if not form.do_unique_id.data or form.do_unique_id.data == '':
             error.append("ID must be set")
     elif action.action_type == 'infrared_send':
-        if not form.remote.data or not form.code.data:
-            error.append("Remote and Code must be set")
+        if not form.remote.data:
+            error.append("Remote must be set")
     elif action.action_type == 'email':
         if not form.do_action_string.data or form.do_action_string.data == '':
             error.append("Email must be set")

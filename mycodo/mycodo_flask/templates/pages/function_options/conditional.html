@@ -179,7 +179,7 @@
         {{form_actions.delete_action(class_='form-control btn btn-sm', **{'onclick':'return confirm("Are you sure you want to delete this?")'})}}
       </div>
 
-      {% include 'pages/function_options/actions.html' %}
+      {% include 'pages/function_options/action_options/'+each_action.action_type+'.html' %}
 
     </div>
 

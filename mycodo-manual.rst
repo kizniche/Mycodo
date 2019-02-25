@@ -2979,13 +2979,11 @@ Infrared (IR) light is a common way to send and receive signals across distances
 
 The IR receiver typically has three connections, power (3.3 volts), ground, and data (GPIO pin), and should be connected to the appropriate pins of your Raspberry Pi. Make sure your IR receiver can operate at 3.3 volts, which is the appropriate voltage GPIOs operate at. For testing, I used the `Sparkfun Infrared Control Kit <https://www.sparkfun.com/products/14677>`__, which has an `Information Guide <https://learn.sparkfun.com/tutorials/ir-control-kit-hookup-guide>`__, however there are cheaper alternatives.
 
-Install the necessary linux dependencies:
+Adding an Infrared Output device or an Infrared Send function action will automatically install the dependencies, otherwise it can be done manually:
 
 ``sudo apt install liblircclient-dev lirc``
 
-Install the lirc python package in the Mycodo virtualenv:
-
-``~/Mycodo/env/bin/pip install python-lirc``
+``~/Mycodo/env/bin/pip install python-lirc py-irsend``
 
 Edit ``/boot/config.txt`` and add to the end of the file, replacing 17 from ``gpio_out_pin=17`` with the GPIO (BCM numbering) connected to your IR LED and 18 from ``gpio_in_pin=18`` connected to the IR receiver. You can omit either of these options if you aren't using either the IR receiver or transmitting LED:
 
@@ -3000,7 +2998,7 @@ Edit ``/etc/lirc/lirc_options.conf`` and ensure the following settings are set:
 
 Restart your system:
 
-``sudo shutdnown now -r``
+``sudo shutdown now -r``
 
 Check `this remote database <http://lirc-remotes.sourceforge.net/remotes-table.html>`__ for your remote, and if it's found, place it in ``/etc/lirc/lircd.conf.d/``, otherwise you will need to generate a config file for your remote.
 
@@ -3014,7 +3012,51 @@ Then, issue the following command:
 
 You will be prompted with a very specific set of instructions in order to map your remote. If you successfully finish the config generation, you will have a *.lirc.conf file that you should place in ``/etc/lirc/lircd.conf.d/``
 
-Start lirc back up to load this config:
+If ``irrecord`` is unable to parse the remote code (due to complexity or other issue), you can still use the raw data to create a config file. To obtain the raw code data, run the following command, and press a button on the remote once.
+
+``mode2 -m``
+
+You should see output similar to the following, with data represented in 6 columns.
+
+::
+
+    pi@rapsberry:~ $ mode2 -m
+    Using driver default on device /dev/lirc0
+    Trying device: /dev/lirc0
+    Using device: /dev/lirc0
+     16777215
+
+         3431     1747      444     1313      441     1312
+          444      471      441      474      440      474
+          440     1315      439      476      438      480
+          444     1312      442     1313      441      475
+          438     1317      439      476      437      477
+
+Use the 6-column data to generate your config file, with the following as an example ``example_remote.lircd.conf``, that should be placed in ``/etc/lirc/lircd.conf.d/``.
+
+::
+
+    begin remote
+      name  example_remote
+      flags RAW_CODES
+      eps           30
+      aeps          100
+
+      ptrail       0
+      repeat       0  0
+      gap          107902
+
+          begin raw_codes
+              name KEY_POWER
+                 3431     1747      444     1313      441     1312
+                  444      471      441      474      440      474
+                  440     1315      439      476      438      480
+                  444     1312      442     1313      441      475
+                  438     1317      439      476      437      477
+          end raw_codes
+    end remote
+
+Start lirc back up to load all the remote config files:
 
 ``sudo service lirc start``
 
