@@ -10,7 +10,7 @@
 
  - Add dependency system for Function Actions
  - Add proper dependencies for infrared Send Function Action
- - Improve Infrared Sed Action by detecting remotes and codes
+ - Improve Infrared Send Action by detecting remotes and codes
 
 
 ## 7.3.0 (2019-02-22)

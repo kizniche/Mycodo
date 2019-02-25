@@ -1441,9 +1441,11 @@ def page_function():
     infrared_remotes = {}
     try:
         from py_irsend import irsend
-        for each_remote in irsend.list_remotes():
-            infrared_remotes[each_remote.decode('utf-8')] = irsend.list_codes(each_remote)
-            infrared_remotes[each_remote.decode('utf-8')] = [x.decode('utf-8') for x in infrared_remotes[each_remote.decode('utf-8')]]
+        for remote in irsend.list_remotes():
+            remote_str = remote.decode('utf-8')
+            infrared_remotes[remote_str] = irsend.list_codes(remote)
+            infrared_remotes[remote_str] = [
+                x.decode('utf-8') for x in infrared_remotes[remote_str]]
     except:
         pass
 
