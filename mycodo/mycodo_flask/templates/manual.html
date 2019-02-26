@@ -3033,24 +3033,57 @@ lrwxrwxrwx 1 root root 7 Oct 6 21:04 dust-sensor -&gt; ttyUSB0</code></pre>
 <h2 id="infrared-remote">Infrared Remote</h2>
 <p>Infrared (IR) light is a common way to send and receive signals across distances. This is typically done with IR remotes with several buttons configured to send different signals. These signals can be detected by the Raspberry Pi with the use of an <a href="https://www.sparkfun.com/products/10266">IR receiver diode</a> and used to perform actions within the linux environment and Mycodo. This is done with <a href="http://lirc.org/">lirc</a>, and needs to be properly configured before IR signals can be detected and interpreted.</p>
 <p>The IR receiver typically has three connections, power (3.3 volts), ground, and data (GPIO pin), and should be connected to the appropriate pins of your Raspberry Pi. Make sure your IR receiver can operate at 3.3 volts, which is the appropriate voltage GPIOs operate at. For testing, I used the <a href="https://www.sparkfun.com/products/14677">Sparkfun Infrared Control Kit</a>, which has an <a href="https://learn.sparkfun.com/tutorials/ir-control-kit-hookup-guide">Information Guide</a>, however there are cheaper alternatives.</p>
-<p>Install the necessary linux dependencies:</p>
+<p>Adding an Infrared Output device or an Infrared Send function action will automatically install the dependencies, otherwise it can be done manually:</p>
 <p><code>sudo apt install liblircclient-dev lirc</code></p>
-<p>Install the lirc python package in the Mycodo virtualenv:</p>
-<p><code>~/Mycodo/env/bin/pip install python-lirc</code></p>
+<p><code>~/Mycodo/env/bin/pip install python-lirc py-irsend</code></p>
 <p>Edit <code>/boot/config.txt</code> and add to the end of the file, replacing 17 from <code>gpio_out_pin=17</code> with the GPIO (BCM numbering) connected to your IR LED and 18 from <code>gpio_in_pin=18</code> connected to the IR receiver. You can omit either of these options if you aren’t using either the IR receiver or transmitting LED:</p>
 <p><code>dtoverlay=lirc-rpi,gpio_out_pin=17,gpio_in_pin=18,gpio_in_pull=up</code></p>
 <p>Edit <code>/etc/lirc/lirc_options.conf</code> and ensure the following settings are set:</p>
 <pre><code>driver = default
 device = /dev/lirc0</code></pre>
 <p>Restart your system:</p>
-<p><code>sudo shutdnown now -r</code></p>
+<p><code>sudo shutdown now -r</code></p>
 <p>Check <a href="http://lirc-remotes.sourceforge.net/remotes-table.html">this remote database</a> for your remote, and if it’s found, place it in <code>/etc/lirc/lircd.conf.d/</code>, otherwise you will need to generate a config file for your remote.</p>
 <p>To generate a config file for your remote, lirc must first be stopped:</p>
 <p><code>sudo service lircd stop</code></p>
 <p>Then, issue the following command:</p>
 <p><code>sudo irrecord -n -d /dev/lirc0</code></p>
 <p>You will be prompted with a very specific set of instructions in order to map your remote. If you successfully finish the config generation, you will have a *.lirc.conf file that you should place in <code>/etc/lirc/lircd.conf.d/</code></p>
-<p>Start lirc back up to load this config:</p>
+<p>If <code>irrecord</code> is unable to parse the remote code (due to complexity or other issue), you can still use the raw data to create a config file. To obtain the raw code data, run the following command, and press a button on the remote once.</p>
+<p><code>mode2 -m</code></p>
+<p>You should see output similar to the following, with data represented in 6 columns.</p>
+<pre><code>pi@rapsberry:~ $ mode2 -m
+Using driver default on device /dev/lirc0
+Trying device: /dev/lirc0
+Using device: /dev/lirc0
+ 16777215
+
+     3431     1747      444     1313      441     1312
+      444      471      441      474      440      474
+      440     1315      439      476      438      480
+      444     1312      442     1313      441      475
+      438     1317      439      476      437      477</code></pre>
+<p>Use the 6-column data to generate your config file, with the following as an example <code>example_remote.lircd.conf</code>, that should be placed in <code>/etc/lirc/lircd.conf.d/</code>.</p>
+<pre><code>begin remote
+  name  example_remote
+  flags RAW_CODES
+  eps           30
+  aeps          100
+
+  ptrail       0
+  repeat       0  0
+  gap          107902
+
+      begin raw_codes
+          name KEY_POWER
+             3431     1747      444     1313      441     1312
+              444      471      441      474      440      474
+              440     1315      439      476      438      480
+              444     1312      442     1313      441      475
+              438     1317      439      476      437      477
+      end raw_codes
+end remote</code></pre>
+<p>Start lirc back up to load all the remote config files:</p>
 <p><code>sudo service lirc start</code></p>
 <p>Now, start <code>irw</code> and press a button on your remote. If everything works, you should see information appear when you press each button, such as below:</p>
 <pre><code>pi@raspberry:~ $ irw
