@@ -560,6 +560,10 @@ produce a new value that may be used within Mycodo.
 |                                 | measurement over a duration of time determined  |
 |                                 | by the Max Age (seconds) option.                |
 +---------------------------------+-------------------------------------------------+
+| Sum (Single Measurement)        | Stores the sum of one selected measurement over |
+|                                 | a duration of time determined by the Max Age    |
+|                                 | (seconds) option.                               |
++---------------------------------+-------------------------------------------------+
 | Difference                      | Stores the mathematical difference (value\_1 -  |
 |                                 | value\_2).                                      |
 +---------------------------------+-------------------------------------------------+

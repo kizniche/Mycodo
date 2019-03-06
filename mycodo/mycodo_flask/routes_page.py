@@ -1600,6 +1600,7 @@ def page_data():
     form_mod_math = forms_math.MathMod()
     form_mod_math_measurement = forms_math.MathMeasurementMod()
     form_mod_average_single = forms_math.MathModAverageSingle()
+    form_mod_sum_single = forms_math.MathModSumSingle()
     form_mod_redundancy = forms_math.MathModRedundancy()
     form_mod_difference = forms_math.MathModDifference()
     form_mod_equation = forms_math.MathModEquation()
@@ -1669,6 +1670,8 @@ def page_data():
                 utils_math.math_mod(form_mod_math, form_mod_humidity)
             elif math_type == 'average_single':
                 utils_math.math_mod(form_mod_math, form_mod_average_single)
+            elif math_type == 'sum_single':
+                utils_math.math_mod(form_mod_math, form_mod_sum_single)
             elif math_type == 'redundancy':
                 utils_math.math_mod(form_mod_math, form_mod_redundancy)
             elif math_type == 'difference':
@@ -1795,6 +1798,7 @@ def page_data():
                            form_mod_input=form_mod_input,
                            form_mod_input_measurement=form_mod_input_measurement,
                            form_mod_average_single=form_mod_average_single,
+                           form_mod_sum_single=form_mod_sum_single,
                            form_mod_redundancy=form_mod_redundancy,
                            form_mod_difference=form_mod_difference,
                            form_mod_equation=form_mod_equation,

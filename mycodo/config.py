@@ -97,6 +97,13 @@ MATH_INFO = {
         'enable_measurements_convert': True,
         'measure': {}
     },
+    'sum_single': {
+        'name': lazy_gettext('Sum (Single Input)'),
+        'dependencies_module': [],
+        'enable_measurements_select': False,
+        'enable_measurements_convert': True,
+        'measure': {}
+    },
     'difference': {
         'name': lazy_gettext('Difference'),
         'dependencies_module': [],
@@ -203,6 +210,7 @@ MATH_INFO = {
 MATHS = [
     ('average', MATH_INFO['average']['name']),
     ('average_single', MATH_INFO['average_single']['name']),
+    ('sum_single', MATH_INFO['sum_single']['name']),
     ('difference', MATH_INFO['difference']['name']),
     ('equation', MATH_INFO['equation']['name']),
     ('redundancy', MATH_INFO['redundancy']['name']),

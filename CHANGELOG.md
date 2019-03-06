@@ -1,3 +1,10 @@
+## 7.3.2 (Unreleased)
+
+### Features
+
+ - Add Math: Sum (single input)
+
+
 ## 7.3.1 (2019-02-26)
 
 ### Bugfixes

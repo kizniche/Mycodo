@@ -343,7 +343,6 @@ def average_past_seconds(unique_id, unit, channel, past_seconds, measure=None):
     """Return measurement average for the past x seconds"""
     client = InfluxDBClient(INFLUXDB_HOST, INFLUXDB_PORT, INFLUXDB_USER,
                             INFLUXDB_PASSWORD, INFLUXDB_DATABASE, timeout=5)
-
     query = query_string(unit, unique_id, measure=measure, channel=channel, value='MEAN',
                          past_sec=past_seconds)
     query_output = client.query(query)
@@ -355,9 +354,19 @@ def average_start_end_seconds(unique_id, unit, channel, str_start, str_end, meas
     """Return measurement average for a period of time"""
     client = InfluxDBClient(INFLUXDB_HOST, INFLUXDB_PORT, INFLUXDB_USER,
                             INFLUXDB_PASSWORD, INFLUXDB_DATABASE, timeout=5)
-
     query = query_string(unit, unique_id, measure=measure, channel=channel, value='MEAN',
                          start_str=str_start, end_str=str_end)
+    query_output = client.query(query)
+    if query_output:
+        return query_output.raw['series'][0]['values'][0][1]
+
+
+def sum_past_seconds(unique_id, unit, channel, past_seconds, measure=None):
+    """Return measurement average for the past x seconds"""
+    client = InfluxDBClient(INFLUXDB_HOST, INFLUXDB_PORT, INFLUXDB_USER,
+                            INFLUXDB_PASSWORD, INFLUXDB_DATABASE, timeout=5)
+    query = query_string(unit, unique_id, measure=measure, channel=channel, value='SUM',
+                         past_sec=past_seconds)
     query_output = client.query(query)
     if query_output:
         return query_output.raw['series'][0]['values'][0][1]
