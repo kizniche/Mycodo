@@ -550,17 +550,35 @@ Math
 Math controllers allow one or more Inputs to have math applied to
 produce a new value that may be used within Mycodo.
 
+Note: "Last" means the controller will only acquire the last
+(latest) measurement in the database for performing math with. "Past"
+means the controller will acquire all measurements from the present
+until the "Max Age (seconds)" set by the user (e.g. if measurements
+are acquired every 10 seconds, and a Max Age is set to 60 seconds,
+there will on average be 6 measurements returned to have math performed).
+
 +---------------------------------+-------------------------------------------------+
 | Type                            | Description                                     |
 +=================================+=================================================+
-| Average (Multiple Measurements) | Stores the statistical mean of multiple         |
-|                                 | selected measurements.                          |
+| Average (Last, Multiple         | Stores the statistical mean of multiple         |
+| Measurements)                   | selected measurements.                          |
 +---------------------------------+-------------------------------------------------+
-| Average (Single Measurement)    | Stores the statistical mean of one selected     |
-|                                 | measurement over a duration of time determined  |
+| Average (Last, Single           | Stores the statistical mean of one selected     |
+| Measurement)                    | measurement over a duration of time determined  |
 |                                 | by the Max Age (seconds) option.                |
 +---------------------------------+-------------------------------------------------+
-| Sum (Single Measurement)        | Stores the sum of one selected measurement over |
+| Average (Past, Single           | Stores the statistical mean of one selected     |
+| Measurement)                    | measurement over a duration of time determined  |
+|                                 | by the Max Age (seconds) option.                |
++---------------------------------+-------------------------------------------------+
+| Sum (Last, Multiple             | Stores the sum of multiple selected             |
+| Measurements)                   | measurements.                                   |
++---------------------------------+-------------------------------------------------+
+| Sum (Last, Single Measurement)  | Stores the sum of one selected measurement over |
+|                                 | a duration of time determined by the Max Age    |
+|                                 | (seconds) option.                               |
++---------------------------------+-------------------------------------------------+
+| Sum (Past, Single Measurement)  | Stores the sum of one selected measurement over |
 |                                 | a duration of time determined by the Max Age    |
 |                                 | (seconds) option.                               |
 +---------------------------------+-------------------------------------------------+

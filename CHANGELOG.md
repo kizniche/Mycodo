@@ -2,7 +2,7 @@
 
 ### Features
 
- - Add Math controller: Sum (single input)
+ - Add Math controllers: Sum (past, single channel), Sum (last, multiple channels)
  - Add Outputs to Math controllers: Average, Redundancy, Statistics, Sum
 
 

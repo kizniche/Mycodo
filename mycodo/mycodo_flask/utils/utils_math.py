@@ -144,9 +144,10 @@ def math_mod(form_mod_math, form_mod_type=None):
 
         # Collect inputs and measurement name and units
         if mod_math.math_type in ['average',
-                                  'redundancy',
                                   'difference',
+                                  'redundancy',
                                   'statistics',
+                                  'sum',
                                   'verification']:
             if len(form_mod_math.inputs.data) < 2:
                 error.append("At least two Inputs must be selected")

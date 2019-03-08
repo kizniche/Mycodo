@@ -257,6 +257,37 @@ class MathController(threading.Thread):
                 self.logger.exception("average_single Error: {err}".format(err=msg))
 
         #
+        # Sum (multiple channels)
+        #
+        if self.math_type == 'sum':
+            device_measurement = self.device_measurements.filter(
+                DeviceMeasurements.channel == 0).first()
+
+            if device_measurement:
+                conversion = db_retrieve_table_daemon(
+                    Conversion, unique_id=device_measurement.conversion_id)
+            else:
+                conversion = None
+            channel, unit, measurement = return_measurement_info(
+                device_measurement, conversion)
+
+            success, measure = self.get_measurements_from_str(self.inputs)
+            if success:
+                sum_value = float(sum(measure))
+
+                measurement_dict = {
+                    channel: {
+                        'measurement': measurement,
+                        'unit': unit,
+                        'value': sum_value
+                    }
+                }
+            elif measure:
+                self.logger.error(measure)
+            else:
+                self.error_not_within_max_age()
+
+        #
         # Sum (single channel)
         #
         elif self.math_type == 'sum_single':
