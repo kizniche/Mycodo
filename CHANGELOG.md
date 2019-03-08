@@ -1,3 +1,11 @@
+## 7.3.2 (Unreleased)
+
+### Features
+
+ - Add Math controllers: Sum (past, single channel), Sum (last, multiple channels)
+ - Add Outputs to Math controllers: Average, Redundancy, Statistics, Sum
+
+
 ## 7.3.1 (2019-02-26)
 
 ### Bugfixes

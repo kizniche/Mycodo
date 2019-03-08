@@ -1,12 +1,15 @@
 <div class="col-auto">
   {{form_mod_math.inputs.label(class_='control-label')}}
   <div>
-    <select class="form-control btn-sm" id="inputs" name="inputs" style="width: 100%;" size="{{choices_input|length+choices_math|length}}" multiple>
-    {% if choices_input or choices_math %}
+    <select class="form-control btn-sm" id="inputs" name="inputs" style="width: 100%;" size="{{choices_input|length+choices_math|length+choices_output|length}}" multiple>
+    {% if choices_input or choices_math or choices_output %}
       {% for each_choice, value in choices_input.items() -%}
       <option value="{{each_choice}}"{%- if each_math.inputs and each_choice|string in each_math.inputs %} selected{%- endif -%}>{{value}}</option>
       {% endfor -%}
       {% for each_choice, value in choices_math.items() -%}
+      <option value="{{each_choice}}"{%- if each_math.inputs and each_choice|string in each_math.inputs %} selected{%- endif -%}>{{value}}</option>
+      {% endfor -%}
+      {% for each_choice, value in choices_output.items() -%}
       <option value="{{each_choice}}"{%- if each_math.inputs and each_choice|string in each_math.inputs %} selected{%- endif -%}>{{value}}</option>
       {% endfor -%}
     {% else %}

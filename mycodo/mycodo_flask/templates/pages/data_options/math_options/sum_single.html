@@ -1,8 +1,8 @@
 <div class="row small-gutters" style="padding: 0.5em">
   <div class="col-auto">
-    {{form_mod_average_single.average_input.label(class_='control-label')}}
+    {{form_mod_sum_single.sum_input.label(class_='control-label')}}
     <div>
-      <select class="form-control" id="average_input" name="average_input" style="width: 100%;">
+      <select class="form-control" id="sum_input" name="sum_input" style="width: 100%;">
       {% if choices_input or choices_math %}
         <option value=""></option>
         {% for each_choice, value in choices_input.items() -%}

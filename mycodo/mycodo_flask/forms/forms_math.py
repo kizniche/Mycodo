@@ -59,6 +59,10 @@ class MathModAverageSingle(FlaskForm):
     average_input = StringField(TRANSLATIONS['input']['title'])
 
 
+class MathModSumSingle(FlaskForm):
+    sum_input = StringField(TRANSLATIONS['input']['title'])
+
+
 class MathModDifference(FlaskForm):
     difference_reverse_order = BooleanField(lazy_gettext('Reverse Equation'))
     difference_absolute = BooleanField(lazy_gettext('Absolute Value'))

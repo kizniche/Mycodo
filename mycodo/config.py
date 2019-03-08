@@ -85,13 +85,26 @@ LCDS = [
 # Math info
 MATH_INFO = {
     'average': {
-        'name': lazy_gettext('Average (Multiple Inputs)'),
+        'name': lazy_gettext('Average (Last, Multiple Channels)'),
         'dependencies_module': [],
         'enable_measurements_select': True,
         'measure': {}
     },
     'average_single': {
-        'name': lazy_gettext('Average (Single Input)'),
+        'name': lazy_gettext('Average (Past, Single Channel)'),
+        'dependencies_module': [],
+        'enable_measurements_select': False,
+        'enable_measurements_convert': True,
+        'measure': {}
+    },
+    'sum': {
+        'name': lazy_gettext('Sum (Last, Multiple Channels)'),
+        'dependencies_module': [],
+        'enable_measurements_select': True,
+        'measure': {}
+    },
+    'sum_single': {
+        'name': lazy_gettext('Sum (Past, Single Channel)'),
         'dependencies_module': [],
         'enable_measurements_select': False,
         'enable_measurements_convert': True,
@@ -203,6 +216,8 @@ MATH_INFO = {
 MATHS = [
     ('average', MATH_INFO['average']['name']),
     ('average_single', MATH_INFO['average_single']['name']),
+    ('sum', MATH_INFO['sum']['name']),
+    ('sum_single', MATH_INFO['sum_single']['name']),
     ('difference', MATH_INFO['difference']['name']),
     ('equation', MATH_INFO['equation']['name']),
     ('redundancy', MATH_INFO['redundancy']['name']),

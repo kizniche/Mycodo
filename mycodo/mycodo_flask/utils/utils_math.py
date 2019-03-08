@@ -144,9 +144,10 @@ def math_mod(form_mod_math, form_mod_type=None):
 
         # Collect inputs and measurement name and units
         if mod_math.math_type in ['average',
-                                  'redundancy',
                                   'difference',
+                                  'redundancy',
                                   'statistics',
+                                  'sum',
                                   'verification']:
             if len(form_mod_math.inputs.data) < 2:
                 error.append("At least two Inputs must be selected")
@@ -162,6 +163,26 @@ def math_mod(form_mod_math, form_mod_type=None):
             # Change measurement information
             if form_mod_type.average_input.data and ',' in form_mod_type.average_input.data:
                 measurement_id = form_mod_type.average_input.data.split(',')[1]
+                selected_measurement = get_measurement(measurement_id)
+                if selected_measurement:
+                    conversion = Conversion.query.filter(
+                        Conversion.unique_id == selected_measurement.conversion_id).first()
+                else:
+                    conversion = None
+                _, unit, measurement = return_measurement_info(
+                    selected_measurement, conversion)
+
+                mod_measurement = DeviceMeasurements.query.filter(
+                    DeviceMeasurements.device_id == form_mod_math.math_id.data).first()
+                mod_measurement.measurement = measurement
+                mod_measurement.unit = unit
+
+        if mod_math.math_type == 'sum_single':
+            mod_math.inputs = form_mod_type.sum_input.data
+
+            # Change measurement information
+            if form_mod_type.sum_input.data and ',' in form_mod_type.sum_input.data:
+                measurement_id = form_mod_type.sum_input.data.split(',')[1]
                 selected_measurement = get_measurement(measurement_id)
                 if selected_measurement:
                     conversion = Conversion.query.filter(
