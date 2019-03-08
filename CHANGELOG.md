@@ -2,7 +2,8 @@
 
 ### Features
 
- - Add Math: Sum (single input)
+ - Add Math controller: Sum (single input)
+ - Add Outputs to Math controllers: Average, Redundancy, Statistics, Sum
 
 
 ## 7.3.1 (2019-02-26)

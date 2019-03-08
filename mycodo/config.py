@@ -85,20 +85,20 @@ LCDS = [
 # Math info
 MATH_INFO = {
     'average': {
-        'name': lazy_gettext('Average (Multiple Inputs)'),
+        'name': lazy_gettext('Average (Multiple Channels)'),
         'dependencies_module': [],
         'enable_measurements_select': True,
         'measure': {}
     },
     'average_single': {
-        'name': lazy_gettext('Average (Single Input)'),
+        'name': lazy_gettext('Average (Single Channel)'),
         'dependencies_module': [],
         'enable_measurements_select': False,
         'enable_measurements_convert': True,
         'measure': {}
     },
     'sum_single': {
-        'name': lazy_gettext('Sum (Single Input)'),
+        'name': lazy_gettext('Sum (Single Channel)'),
         'dependencies_module': [],
         'enable_measurements_select': False,
         'enable_measurements_convert': True,

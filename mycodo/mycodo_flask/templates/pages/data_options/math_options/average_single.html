@@ -11,6 +11,9 @@
         {% for each_choice, value in choices_math.items() -%}
         <option value="{{each_choice}}"{%- if each_math.inputs and each_choice|string in each_math.inputs %} selected{%- endif -%}>{{value}}</option>
         {% endfor -%}
+        {% for each_choice, value in choices_output.items() -%}
+        <option value="{{each_choice}}"{%- if each_math.inputs and each_choice|string in each_math.inputs %} selected{%- endif -%}>{{value}}</option>
+        {% endfor -%}
       {% else %}
         <option value="">{{dict_translation['none_available']['title']}}</option>
       {% endif %}
