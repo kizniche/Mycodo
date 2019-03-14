@@ -91,7 +91,6 @@ class InputController(threading.Thread):
         self.control = DaemonControl()
         self.pause_loop = False
         self.verify_pause_loop = True
-        self.force_measurements_trigger = False
 
         self.dict_inputs = parse_input_information()
 
@@ -210,10 +209,6 @@ class InputController(threading.Thread):
                     while self.pause_loop:
                         time.sleep(0.1)
 
-                if self.force_measurements_trigger:
-                    self.acquire_measurements_now()
-                    self.force_measurements_trigger = False
-
                 if self.device not in ['EDGE']:
                     now = time.time()
                     # Signal that a measurement needs to be obtained
@@ -229,17 +224,7 @@ class InputController(threading.Thread):
                             self.pre_output_setup and
                             not self.pre_output_activated):
 
-                        # Set up lock
-                        self.input_lock = locket.lock_file(self.lock_file, timeout=30)
-                        try:
-                            self.input_lock.acquire()
-                            self.pre_output_locked = True
-                        except locket.LockError:
-                            self.logger.error("Could not acquire input lock. Breaking for future locking.")
-                            try:
-                                os.remove(self.lock_file)
-                            except OSError:
-                                self.logger.error("Can't delete lock file: Lock file doesn't exist.")
+                        self.lock_setup()
 
                         self.pre_output_timer = time.time() + self.pre_output_duration
                         self.pre_output_activated = True
@@ -283,14 +268,7 @@ class InputController(threading.Thread):
                             self.pre_output_activated = False
                             self.get_new_measurement = False
 
-                            # release pre-output lock
-                            try:
-                                if self.pre_output_locked:
-                                    self.input_lock.release()
-                                    self.pre_output_locked = False
-                            except AttributeError:
-                                self.logger.error("Can't release lock: "
-                                                  "Lock file not present.")
+                            self.lock_release()
 
                         elif not self.pre_output_setup:
                             # Pre-output not enabled, just measure
@@ -321,6 +299,29 @@ class InputController(threading.Thread):
         except Exception as except_msg:
             self.logger.exception("Error: {err}".format(
                 err=except_msg))
+
+    def lock_setup(self):
+        # Set up lock
+        self.input_lock = locket.lock_file(self.lock_file, timeout=30)
+        try:
+            self.input_lock.acquire()
+            self.pre_output_locked = True
+        except locket.LockError:
+            self.logger.error("Could not acquire input lock. Breaking for future locking.")
+            try:
+                os.remove(self.lock_file)
+            except OSError:
+                self.logger.error("Can't delete lock file: Lock file doesn't exist.")
+
+    def lock_release(self):
+        # release pre-output lock
+        try:
+            if self.pre_output_locked:
+                self.input_lock.release()
+                self.pre_output_locked = False
+        except AttributeError:
+            self.logger.error("Can't release lock: "
+                              "Lock file not present.")
 
     def update_measure(self):
         """
@@ -439,17 +440,9 @@ class InputController(threading.Thread):
         return measurements_record
 
     def force_measurements(self):
-        self.force_measurements_trigger = True
+        # Signal that a measurement needs to be obtained
+        self.next_measurement = time.time()
         return "Input instructed to begin acquiring measurements"
-
-    def acquire_measurements_now(self):
-        try:
-            self.update_measure()
-            add_measurements_influxdb(
-                self.unique_id, self.create_measurements_dict())
-            return "Success"
-        except Exception as msg:
-            return "Failure: {}".format(msg)
 
     def is_running(self):
         return self.running

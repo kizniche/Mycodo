@@ -916,17 +916,27 @@ class DaemonController:
         :type trigger_conditionals: Indicate whether to trigger conditional statements
         """
         try:
-            return_status = self.controller['Output'].output_on_off(
-                output_id,
-                'on',
-                duration=duration,
-                min_off=min_off,
-                duty_cycle=duty_cycle,
-                trigger_conditionals=trigger_conditionals)
-            if return_status:
+            test_count = 1
+            while self.controller['Output'] is None and test_count < 30:
+                # Upon initial startup, triggers may actuate outputs before the controller is started
+                test_count += 1
+                time.sleep(0.1)
+
+            if self.controller['Output'] is None:
+                self.logger.error("Could not find Output Controller")
                 return "Error"
             else:
-                return "Turned on"
+                return_status = self.controller['Output'].output_on_off(
+                    output_id,
+                    'on',
+                    duration=duration,
+                    min_off=min_off,
+                    duty_cycle=duty_cycle,
+                    trigger_conditionals=trigger_conditionals)
+                if return_status:
+                    return "Error"
+                else:
+                    return "Turned on"
         except Exception as except_msg:
             message = "Could not turn output on:" \
                       " {err}".format(err=except_msg)

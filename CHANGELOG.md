@@ -1,5 +1,10 @@
 ## 7.3.2 (Unreleased)
 
+### Bugfixes
+
+ - Include Pre Output activation during Acquire Measurements Now instruction
+ - Fix Outputs triggering at startup
+
 ### Features
 
  - Add Math controllers: Sum (past, single channel), Sum (last, multiple channels)
