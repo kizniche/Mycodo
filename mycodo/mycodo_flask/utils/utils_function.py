@@ -390,7 +390,7 @@ def action_execute_all(form):
     try:
         if not error:
             control = DaemonControl()
-            control.test_trigger_actions(
+            control.trigger_all_actions(
                 form.function_id.data,
                 message="Test triggering all actions of function {}".format(form.function_id.data))
     except Exception as except_msg:

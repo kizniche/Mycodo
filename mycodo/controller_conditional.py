@@ -1,8 +1,6 @@
 # coding=utf-8
 #
-# controller_conditional.py - Conditional controller that checks measurements
-#                             and performs functions on at predefined
-#                             intervals
+# controller_conditional.py - Conditional controller
 #
 #  Copyright (C) 2017  Kyle T. Gabriel
 #
@@ -203,7 +201,8 @@ class ConditionalController(threading.Thread):
             Conditional, unique_id=self.function_id, entry='first')
 
         now = time.time()
-        timestamp = datetime.datetime.fromtimestamp(now).strftime('%Y-%m-%d %H:%M:%S')
+        timestamp = datetime.datetime.fromtimestamp(
+            now).strftime('%Y-%m-%d %H:%M:%S')
         message = "{ts}\n[Conditional {id}]\n[Name: {name}]".format(
             ts=timestamp,
             name=cond.name,
@@ -213,16 +212,25 @@ class ConditionalController(threading.Thread):
         cond_statement_replaced = self.conditional_statement
 
         # Replace short condition IDs in conditional statement with full condition IDs
-        for each_condition in db_retrieve_table_daemon(ConditionalConditions, entry='all'):
+        for each_condition in db_retrieve_table_daemon(
+                ConditionalConditions, entry='all'):
+            condition_id_short = each_condition.unique_id.split('-')[0]
             cond_statement_replaced = cond_statement_replaced.replace(
-                '{{{id}}}'.format(id=each_condition.unique_id.split('-')[0]), each_condition.unique_id)
+                '{{{id}}}'.format(id=condition_id_short),
+                each_condition.unique_id)
 
         # Replace short action IDs in conditional statement with full action IDs
         for each_action in db_retrieve_table_daemon(Actions, entry='all'):
+            action_id_short = each_action.unique_id.split('-')[0]
             cond_statement_replaced = cond_statement_replaced.replace(
-                '{{{id}}}'.format(id=each_action.unique_id.split('-')[0]), each_action.unique_id)
+                '{{{id}}}'.format(id=action_id_short),
+                each_action.unique_id)
 
-        message += '\n[Conditional Statement]:\n--------------------\n{statement}\n--------------------\n'.format(
+        message += '\n[Conditional Statement]:' \
+                   '\n--------------------' \
+                   '\n{statement}' \
+                   '\n--------------------' \
+                   '\n'.format(
             statement=cond.conditional_statement)
 
         # Add functions to the top of the statement string
@@ -267,35 +275,17 @@ def run_action(action_id, message=message):
             py_error = codeErr.getvalue()
             py_output = codeOut.getvalue()
 
-            # Evaluate conditional returned value (should be string of "1" (True) or "0" (False))
-            if is_int(py_output):
-                evaluated_statement = bool(int(py_output))
-            else:
-                evaluated_statement = False
-
             if py_error:
                 self.logger.error("Error: {err}".format(err=py_error))
 
             codeOut.close()
             codeErr.close()
-
-            # self.logger.info("Conditional Statement (evaluated): {}".format(eval(cond_statement_replaced)))
         except:
             self.logger.error(
                 "Error evaluating conditional statement. "
                 "Replaced Conditional Statement:\n\n{cond_rep}\n\n{traceback}".format(
                     cond_rep=cond_statement_replaced,
                     traceback=traceback.format_exc()))
-            evaluated_statement = None
-
-        # if evaluated_statement is None or not evaluated_statement:
-        #     return
-        #
-        # # If the code hasn't returned by now, the conditional has been triggered
-        # # and the actions for that conditional should be executed
-        # trigger_function_actions(
-        #     self.function_id,
-        #     message=message)
 
     def is_running(self):
         return self.running

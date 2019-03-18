@@ -272,22 +272,15 @@ def mycodo_service(mycodo):
             return mycodo.send_infrared_code_broadcast(code)
 
         @staticmethod
-        def exposed_test_trigger_actions(function_id, message=''):
-            """Test triggering actions"""
-            return mycodo.test_trigger_actions(function_id, message)
-
-        @staticmethod
         def exposed_trigger_action(action_id, message='', single_action=False):
             """Trigger action"""
             return mycodo.trigger_action(
                 action_id, message=message, single_action=single_action)
 
         @staticmethod
-        def exposed_trigger_all_actions(
-                function_id, message=''):
+        def exposed_trigger_all_actions(function_id, message=''):
             """Trigger all actions"""
-            return mycodo.trigger_all_actions(
-                function_id, message)
+            return mycodo.trigger_all_actions(function_id, message=message)
 
         @staticmethod
         def exposed_terminate_daemon():
@@ -1082,15 +1075,6 @@ class DaemonController:
                     args=(code,))
                 broadcast_ir.start()
 
-    def test_trigger_actions(
-            self, function_id, message=''):
-        try:
-            return trigger_function_actions(function_id, message=message)
-        except Exception as except_msg:
-            message = "Could not trigger Conditional Actions:" \
-                      " {err}".format(err=except_msg)
-            self.logger.exception(message)
-
     def trigger_action(self, action_id, message='', single_action=False):
         try:
             return trigger_action(action_id,
@@ -1101,9 +1085,9 @@ class DaemonController:
                       " {err}".format(err=except_msg)
             self.logger.exception(message)
 
-    def trigger_all_actions(
-            self, function_id, message=''):
+    def trigger_all_actions(self, function_id, message=''):
         try:
+            self.logger.error("TEST00: message: {}".format(message))
             return trigger_function_actions(function_id, message=message)
         except Exception as except_msg:
             message = "Could not trigger Conditional Actions:" \
