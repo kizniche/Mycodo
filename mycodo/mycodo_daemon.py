@@ -1087,7 +1087,6 @@ class DaemonController:
 
     def trigger_all_actions(self, function_id, message=''):
         try:
-            self.logger.error("TEST00: message: {}".format(message))
             return trigger_function_actions(function_id, message=message)
         except Exception as except_msg:
             message = "Could not trigger Conditional Actions:" \

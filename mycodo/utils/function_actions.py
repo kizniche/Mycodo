@@ -600,8 +600,6 @@ def trigger_function_actions(function_id, message=''):
     logger_actions = logging.getLogger("mycodo.trigger_function_actions_{id}".format(
         id=function_id.split('-')[0]))
 
-    logger_actions.error("TEST01: message: {}".format(message))
-
     # List of all email notification recipients
     # List is appended with TO email addresses when an email Action is
     # encountered. An email is sent to all recipients after all actions
