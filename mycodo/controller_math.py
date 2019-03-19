@@ -373,7 +373,7 @@ class MathController(threading.Thread):
             channel, unit, measurement = return_measurement_info(
                 device_measurement, conversion)
 
-            success, measure = self.get_measurements_from_str(self.inputs)
+            success, measure = self.get_measurements_from_str(self.equation_input)
             if success:
                 replaced_str = self.equation.replace('x', str(measure[0]))
                 equation_output = eval(replaced_str)
