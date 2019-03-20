@@ -39,7 +39,7 @@ INPUT_INFORMATION = {
     ],
     'options_disabled': ['interface'],
 
-    'interfaces': ['RPi'],
+    'interfaces': ['Mycodo'],
 
     'custom_options': [
         {
