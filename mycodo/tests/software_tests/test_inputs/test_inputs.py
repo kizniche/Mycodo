@@ -35,6 +35,7 @@ from mycodo.inputs.signal_revolutions import InputModule as SignalRPMInput
 from mycodo.inputs.tmp006 import InputModule as TMP006Sensor
 from mycodo.inputs.tsl2561 import InputModule as TSL2561Sensor
 from mycodo.inputs.tsl2591_sensor import InputModule as TSL2591Sensor
+from mycodo.inputs.ttn_data_storage import InputModule as TTN_DATA_STORAGE
 
 input_classes = [
     AM2315Sensor(None, testing=True),
@@ -63,7 +64,8 @@ input_classes = [
     SignalRPMInput(None, testing=True),
     TMP006Sensor(None, testing=True),
     TSL2561Sensor(None, testing=True),
-    TSL2591Sensor(None, testing=True)
+    TSL2591Sensor(None, testing=True),
+    TTN_DATA_STORAGE(None, testing=True)
 ]
 
 
