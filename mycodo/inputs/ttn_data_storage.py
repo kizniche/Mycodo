@@ -55,7 +55,7 @@ INPUT_INFORMATION = {
             'id': 'app_api_key',
             'type': 'text',
             'default_value': '',
-            'name': lazy_gettext('API Key'),
+            'name': lazy_gettext('App API Key'),
             'phrase': lazy_gettext('The Things Network Application API Key')
         },
         {
