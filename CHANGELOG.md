@@ -9,6 +9,7 @@
 
 ### Features
 
+ - Add Input: The Things Network: Integration: Data Storage (pull data from TTN, example Input with temperature)
  - Add Math controllers: Sum (past, single channel), Sum (last, multiple channels)
  - Add Outputs to Math controllers: Average, Redundancy, Statistics, Sum
 
