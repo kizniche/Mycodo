@@ -74,15 +74,17 @@ class InputModule(AbstractInput):
         super(InputModule, self).__init__()
         self.logger = logging.getLogger("mycodo.inputs.ttn_data_storage")
 
-        self.unique_id = input_dev.unique_id
-        self.interface = input_dev.interface
-        self.period = input_dev.period
-        self.first_run = True
+
 
         if not testing:
             self.logger = logging.getLogger(
                 "mycodo.ttn_data_storage_{id}".format(id=input_dev.unique_id.split('-')[0]))
-
+            
+            self.unique_id = input_dev.unique_id
+            self.interface = input_dev.interface
+            self.period = input_dev.period
+            self.first_run = True
+            
             self.device_measurements = db_retrieve_table_daemon(
                 DeviceMeasurements).filter(
                 DeviceMeasurements.device_id == input_dev.unique_id)
