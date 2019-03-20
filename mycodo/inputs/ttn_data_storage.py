@@ -137,12 +137,12 @@ class InputModule(AbstractInput):
 
                 # Store temperature
                 measurement = self.device_measurements.filter(
-                    DeviceMeasurements.channel == 0).first()
+                    DeviceMeasurements.channel == 1).first()
                 conversion = db_retrieve_table_daemon(
                     Conversion, unique_id=measurement.conversion_id)
                 datetime_ts = datetime.datetime.strptime(each_resp['time'][:-7], '%Y-%m-%dT%H:%M:%S.%f')
                 measurement_single = {
-                    0: {
+                    1: {
                         'measurement': 'temperature',
                         'unit': 'C',
                         'value': each_resp['temperature']
@@ -153,13 +153,13 @@ class InputModule(AbstractInput):
                     measurement,
                     measurement_single,
                     measurement.channel,
-                    measurement_single[0])
+                    measurement_single[1])
                 write_influxdb_value(
                     self.unique_id,
-                    measurement_single[0]['unit'],
-                    value=measurement_single[0]['value'],
-                    measure=measurement_single[0]['measurement'],
-                    channel=0,
+                    measurement_single[1]['unit'],
+                    value=measurement_single[1]['value'],
+                    measure=measurement_single[1]['measurement'],
+                    channel=1,
                     timestamp=datetime_ts)
         except:
             self.logger.exception("Error acquiring and/or storing measurements")
