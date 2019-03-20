@@ -104,16 +104,15 @@ class InputModule(AbstractInput):
             app=self.application_id, dev=self.device_id, time="{}s".format(past_seconds))
         headers = {"Authorization": "key {k}".format(k=self.app_api_key)}
         response = requests.get(endpoint, headers=headers)
-
         try:
             for each_resp in response.json():
+                datetime_ts = datetime.datetime.strptime(each_resp['time'][:-7], '%Y-%m-%dT%H:%M:%S.%f')
 
                 # Store humidity
                 measurement = self.device_measurements.filter(
                     DeviceMeasurements.channel == 0).first()
                 conversion = db_retrieve_table_daemon(
                     Conversion, unique_id=measurement.conversion_id)
-                datetime_ts = datetime.datetime.strptime(each_resp['time'][:-7],'%Y-%m-%dT%H:%M:%S.%f')
                 measurement_single = {
                     0: {
                         'measurement': 'humidity',
@@ -140,7 +139,6 @@ class InputModule(AbstractInput):
                     DeviceMeasurements.channel == 1).first()
                 conversion = db_retrieve_table_daemon(
                     Conversion, unique_id=measurement.conversion_id)
-                datetime_ts = datetime.datetime.strptime(each_resp['time'][:-7], '%Y-%m-%dT%H:%M:%S.%f')
                 measurement_single = {
                     1: {
                         'measurement': 'temperature',
