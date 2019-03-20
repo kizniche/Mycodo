@@ -107,25 +107,30 @@ class InputModule(AbstractInput):
         try:
             for each_resp in response.json():
                 datetime_ts = datetime.datetime.strptime(each_resp['time'][:-7], '%Y-%m-%dT%H:%M:%S.%f')
+                measurements = {
+                    0: {
+                        'measurement': 'humidity',
+                        'unit': '%',
+                        'value': each_resp['humidity']
+                    },
+                    1: {
+                        'measurement': 'temperature',
+                        'unit': 'C',
+                        'value': each_resp['temperature']
+                    }
+                }
 
                 # Store humidity
                 measurement = self.device_measurements.filter(
                     DeviceMeasurements.channel == 0).first()
                 conversion = db_retrieve_table_daemon(
                     Conversion, unique_id=measurement.conversion_id)
-                measurement_single = {
-                    0: {
-                        'measurement': 'humidity',
-                        'unit': '%',
-                        'value': each_resp['humidity']
-                    }
-                }
                 measurement_single = parse_measurement(
                     conversion,
                     measurement,
-                    measurement_single,
+                    measurements,
                     measurement.channel,
-                    measurement_single[0])
+                    measurements[0])
                 write_influxdb_value(
                     self.unique_id,
                     measurement_single[0]['unit'],
@@ -139,19 +144,12 @@ class InputModule(AbstractInput):
                     DeviceMeasurements.channel == 1).first()
                 conversion = db_retrieve_table_daemon(
                     Conversion, unique_id=measurement.conversion_id)
-                measurement_single = {
-                    1: {
-                        'measurement': 'temperature',
-                        'unit': 'C',
-                        'value': each_resp['temperature']
-                    }
-                }
                 measurement_single = parse_measurement(
                     conversion,
                     measurement,
-                    measurement_single,
+                    measurements,
                     measurement.channel,
-                    measurement_single[1])
+                    measurements[1])
                 write_influxdb_value(
                     self.unique_id,
                     measurement_single[1]['unit'],
