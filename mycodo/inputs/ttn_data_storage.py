@@ -1,13 +1,15 @@
 # coding=utf-8
 import datetime
 import logging
-
 import requests
 from flask_babel import lazy_gettext
 
 from mycodo.databases.models import Conversion
 from mycodo.databases.models import DeviceMeasurements
 from mycodo.inputs.base_input import AbstractInput
+from mycodo.inputs.sensorutils import calculate_altitude
+from mycodo.inputs.sensorutils import calculate_dewpoint
+from mycodo.inputs.sensorutils import calculate_vapor_pressure_deficit
 from mycodo.utils.database import db_retrieve_table_daemon
 from mycodo.utils.influx import parse_measurement
 from mycodo.utils.influx import write_influxdb_value
@@ -16,11 +18,27 @@ from mycodo.utils.influx import write_influxdb_value
 measurements_dict = {
     0: {
         'measurement': 'humidity',
-        'unit': '%'
+        'unit': 'percent'
     },
     1: {
         'measurement': 'temperature',
         'unit': 'C'
+    },
+    2: {
+        'measurement': 'pressure',
+        'unit': 'Pa'
+    },
+    3: {
+        'measurement': 'dewpoint',
+        'unit': 'C'
+    },
+    4: {
+        'measurement': 'altitude',
+        'unit': 'm'
+    },
+    5: {
+        'measurement': 'vapor_pressure_deficit',
+        'unit': 'Pa'
     }
 }
 
@@ -34,6 +52,7 @@ INPUT_INFORMATION = {
 
     'options_enabled': [
         'custom_options',
+        'measurements_select',
         'period',
         'pre_output'
     ],
@@ -118,53 +137,57 @@ class InputModule(AbstractInput):
                 measurements = {
                     0: {
                         'measurement': 'humidity',
-                        'unit': '%',
+                        'unit': 'percent',
                         'value': each_resp['humidity']
                     },
                     1: {
                         'measurement': 'temperature',
                         'unit': 'C',
                         'value': each_resp['temperature']
+                    },
+                    2: {
+                        'measurement': 'pressure',
+                        'unit': 'Pa',
+                        'value': each_resp['pressure']
+                    },
+                    3: {
+                        'measurement': 'dewpoint',
+                        'unit': 'C',
+                        'value': calculate_dewpoint(
+                            each_resp['temperature'], each_resp['humidity'])
+                    },
+                    4: {
+                        'measurement': 'altitude',
+                        'unit': 'm',
+                        'value': calculate_altitude(each_resp['pressure'])
+                    },
+                    5: {
+                        'measurement': 'vapor_pressure_deficit',
+                        'unit': 'Pa',
+                        'value': calculate_vapor_pressure_deficit(
+                            each_resp['temperature'], each_resp['humidity'])
                     }
                 }
 
-                # Store humidity
-                measurement = self.device_measurements.filter(
-                    DeviceMeasurements.channel == 0).first()
-                conversion = db_retrieve_table_daemon(
-                    Conversion, unique_id=measurement.conversion_id)
-                measurement_single = parse_measurement(
-                    conversion,
-                    measurement,
-                    measurements,
-                    measurement.channel,
-                    measurements[0])
-                write_influxdb_value(
-                    self.unique_id,
-                    measurement_single[0]['unit'],
-                    value=measurement_single[0]['value'],
-                    measure=measurement_single[0]['measurement'],
-                    channel=0,
-                    timestamp=datetime_ts)
-
-                # Store temperature
-                measurement = self.device_measurements.filter(
-                    DeviceMeasurements.channel == 1).first()
-                conversion = db_retrieve_table_daemon(
-                    Conversion, unique_id=measurement.conversion_id)
-                measurement_single = parse_measurement(
-                    conversion,
-                    measurement,
-                    measurements,
-                    measurement.channel,
-                    measurements[1])
-                write_influxdb_value(
-                    self.unique_id,
-                    measurement_single[1]['unit'],
-                    value=measurement_single[1]['value'],
-                    measure=measurement_single[1]['measurement'],
-                    channel=1,
-                    timestamp=datetime_ts)
+                for channel in measurements:
+                    if self.is_enabled(channel):
+                        measurement = self.device_measurements.filter(
+                            DeviceMeasurements.channel == channel).first()
+                        conversion = db_retrieve_table_daemon(
+                            Conversion, unique_id=measurement.conversion_id)
+                        measurement_single = parse_measurement(
+                            conversion,
+                            measurement,
+                            measurements,
+                            measurement.channel,
+                            measurements[channel])
+                        write_influxdb_value(
+                            self.unique_id,
+                            measurement_single[channel]['unit'],
+                            value=measurement_single[channel]['value'],
+                            measure=measurement_single[channel]['measurement'],
+                            channel=channel,
+                            timestamp=datetime_ts)
         except:
             self.logger.exception("Error acquiring and/or storing measurements")
 
