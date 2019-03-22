@@ -93,8 +93,6 @@ class InputModule(AbstractInput):
         super(InputModule, self).__init__()
         self.logger = logging.getLogger("mycodo.inputs.ttn_data_storage")
 
-
-
         if not testing:
             self.logger = logging.getLogger(
                 "mycodo.ttn_data_storage_{id}".format(id=input_dev.unique_id.split('-')[0]))
@@ -119,18 +117,14 @@ class InputModule(AbstractInput):
                     elif option == 'device_id':
                         self.device_id = value
 
-            # Get all the data the past 7 days when first started
-            self.get_new_data(604800)  # 604800 seconds = 7 days (longest Data Storage Integration stores for)
-
     def get_new_data(self, past_seconds):
-        if self.first_run:
-            self.first_run = False
-            return
-
         endpoint = "https://{app}.data.thethingsnetwork.org/api/v2/query/{dev}?last={time}".format(
             app=self.application_id, dev=self.device_id, time="{}s".format(past_seconds))
         headers = {"Authorization": "key {k}".format(k=self.app_api_key)}
         response = requests.get(endpoint, headers=headers)
+        if not response:
+            return
+
         try:
             for each_resp in response.json():
                 datetime_ts = datetime.datetime.strptime(each_resp['time'][:-7], '%Y-%m-%dT%H:%M:%S.%f')
@@ -193,4 +187,9 @@ class InputModule(AbstractInput):
 
     def get_measurement(self):
         """ Gets the data """
-        self.get_new_data(int(self.period))
+        if self.first_run:
+            # Get all the data the past 7 days when first started
+            self.get_new_data(604800)  # 604800 seconds = 7 days (longest Data Storage Integration stores for)
+            self.first_run = False
+        else:
+            self.get_new_data(int(self.period))
