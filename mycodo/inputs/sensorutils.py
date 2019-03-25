@@ -81,6 +81,19 @@ def calculate_vapor_pressure_deficit(temperature, relative_humidity):
     svp = calculate_saturated_vapor_pressure(temperature)
     return ((100 - relative_humidity) / 100) * svp
 
+def calculate_vapor_pressure_deficit_02(temperature_c, relative_humidity):
+    import math
+    A = -10440.397
+    B = -11.29465
+    CC = -0.027022355
+    D = 0.00001289036
+    E = -0.0000000024780681
+    F = 6.5459673
+    t_r = (temperature_c + 273.15) * (9 / 5)
+    vp_sat = A / t_r + B + CC * t_r + D * (t_r ** 2) + E * (t_r ** 3) + F * math.log(t_r)
+    vp_air = vp_sat * relative_humidity / 100
+    return vp_air
+
 
 def is_device(path):
     """Determines if a path exists, created to check if a /dev/device exists"""

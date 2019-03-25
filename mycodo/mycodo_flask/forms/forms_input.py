@@ -77,6 +77,7 @@ class InputMod(FlaskForm):
         )],
         widget=NumberInput(step='any')
     )
+    num_channels = IntegerField(lazy_gettext('Number of Measurements'), widget=NumberInput())
     location = StringField(lazy_gettext('Location'))
     ftdi_location = StringField(TRANSLATIONS['ftdi_location']['title'])
     uart_location = StringField(TRANSLATIONS['uart_location']['title'])
@@ -173,6 +174,7 @@ class InputMod(FlaskForm):
 class InputMeasurementMod(FlaskForm):
     input_id = StringField('Input ID', widget=widgets.HiddenInput())
     input_measurement_id = StringField(widget=widgets.HiddenInput())
+    input_type = StringField(widget=widgets.HiddenInput())
     name = StringField(TRANSLATIONS['name']['title'])
     select_measurement_unit = StringField(TRANSLATIONS['select_measurement_unit']['title'])
 

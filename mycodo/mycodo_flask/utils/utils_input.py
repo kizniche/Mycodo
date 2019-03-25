@@ -102,6 +102,10 @@ def input_add(form_add):
             # Interfacing options
             #
 
+            # Number of channels (for Inputs with variable number of measurements)
+            if new_input.device == 'TTN_DATA_STORAGE':
+                new_input.num_channels = 1
+
             # I2C options
             if input_interface == 'I2C':
                 if dict_has_value('i2c_location'):
@@ -238,7 +242,25 @@ def input_add(form_add):
                     display_order, new_input.unique_id)
                 db.session.commit()
 
-                if ('measurements_dict' in dict_inputs[input_name] and
+                #
+                # The Things Network: Data Storage (variable number of measurements)
+                #
+
+                if new_input.device == 'TTN_DATA_STORAGE':
+                    # Add first default measurement with empty unit and measurement
+                    new_measurement = DeviceMeasurements()
+                    new_measurement.name = ""
+                    new_measurement.device_id = new_input.unique_id
+                    new_measurement.measurement = ""
+                    new_measurement.unit = ""
+                    new_measurement.channel = 0
+                    new_measurement.save()
+
+                #
+                # If measurements defined in the Input Module
+                #
+
+                elif ('measurements_dict' in dict_inputs[input_name] and
                         dict_inputs[input_name]['measurements_dict'] != []):
                     for each_channel in dict_inputs[input_name]['measurements_dict']:
                         measure_info = dict_inputs[input_name]['measurements_dict'][each_channel]
@@ -452,6 +474,37 @@ def input_mod(form_mod, request_form):
         mod_input.custom_options = ';'.join(list_options)
 
         if not error:
+
+            # Add or delete channels for TTN data storage Input
+            if mod_input.device == 'TTN_DATA_STORAGE':
+                if mod_input.num_channels is None:
+                    mod_input.num_channels = form_mod.num_channels.data
+
+                elif mod_input.num_channels != form_mod.num_channels.data:
+                    channels = DeviceMeasurements.query.filter(
+                        DeviceMeasurements.device_id == form_mod.input_id.data).all()
+
+                    # Delete channels
+                    if form_mod.num_channels.data < mod_input.num_channels:
+                        for index, each_channel in enumerate(channels):
+                            if index + 1 >= mod_input.num_channels:
+                                delete_entry_with_id(DeviceMeasurements,
+                                                     each_channel.unique_id)
+
+                    # Add channels
+                    elif form_mod.num_channels.data > mod_input.num_channels:
+                        start_number = mod_input.num_channels + 1
+                        for index in range(start_number, form_mod.num_channels.data + 1):
+                            new_measurement = DeviceMeasurements()
+                            new_measurement.name = ""
+                            new_measurement.device_id = mod_input.unique_id
+                            new_measurement.measurement = ""
+                            new_measurement.unit = ""
+                            new_measurement.channel = index
+                            new_measurement.save()
+
+                    mod_input.num_channels = form_mod.num_channels.data
+
             db.session.commit()
 
     except Exception as except_msg:
@@ -477,29 +530,34 @@ def measurement_mod(form):
 
         mod_meas.name = form.name.data
 
-        input_info = parse_input_information()
-        if ('enable_channel_unit_select' in input_info[mod_input.device] and
-                input_info[mod_input.device]['enable_channel_unit_select']):
-            if ',' in form.select_measurement_unit.data:
-                mod_meas.measurement = form.select_measurement_unit.data.split(',')[0]
-                mod_meas.unit = form.select_measurement_unit.data.split(',')[1]
-            else:
-                mod_meas.measurement = ''
-                mod_meas.unit = ''
+        if form.input_type.data == 'measurement_select':
+            mod_meas.measurement = form.select_measurement_unit.data.split(',')[0]
+            mod_meas.unit = form.select_measurement_unit.data.split(',')[1]
 
-        if form.rescaled_measurement_unit.data != '' and ',' in form.rescaled_measurement_unit.data:
-            mod_meas.rescaled_measurement = form.rescaled_measurement_unit.data.split(',')[0]
-            mod_meas.rescaled_unit = form.rescaled_measurement_unit.data.split(',')[1]
-        elif form.rescaled_measurement_unit.data == '':
-            mod_meas.rescaled_measurement = ''
-            mod_meas.rescaled_unit = ''
+        elif form.input_type.data == 'measurement_convert':
+            input_info = parse_input_information()
+            if ('enable_channel_unit_select' in input_info[mod_input.device] and
+                    input_info[mod_input.device]['enable_channel_unit_select']):
+                if ',' in form.select_measurement_unit.data:
+                    mod_meas.measurement = form.select_measurement_unit.data.split(',')[0]
+                    mod_meas.unit = form.select_measurement_unit.data.split(',')[1]
+                else:
+                    mod_meas.measurement = ''
+                    mod_meas.unit = ''
 
-        mod_meas.scale_from_min = form.scale_from_min.data
-        mod_meas.scale_from_max = form.scale_from_max.data
-        mod_meas.scale_to_min = form.scale_to_min.data
-        mod_meas.scale_to_max = form.scale_to_max.data
-        mod_meas.invert_scale = form.invert_scale.data
-        mod_meas.conversion_id = form.convert_to_measurement_unit.data
+            if form.rescaled_measurement_unit.data != '' and ',' in form.rescaled_measurement_unit.data:
+                mod_meas.rescaled_measurement = form.rescaled_measurement_unit.data.split(',')[0]
+                mod_meas.rescaled_unit = form.rescaled_measurement_unit.data.split(',')[1]
+            elif form.rescaled_measurement_unit.data == '':
+                mod_meas.rescaled_measurement = ''
+                mod_meas.rescaled_unit = ''
+
+            mod_meas.scale_from_min = form.scale_from_min.data
+            mod_meas.scale_from_max = form.scale_from_max.data
+            mod_meas.scale_to_min = form.scale_to_min.data
+            mod_meas.scale_to_max = form.scale_to_max.data
+            mod_meas.invert_scale = form.invert_scale.data
+            mod_meas.conversion_id = form.convert_to_measurement_unit.data
 
         if not error:
             db.session.commit()

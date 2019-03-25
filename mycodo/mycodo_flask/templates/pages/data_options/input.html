@@ -87,6 +87,8 @@
 
         {% include 'pages/data_options/input_options/TEMPLATE_OPTIONS_Location.html' %}
 
+        {% include 'pages/data_options/input_options/TEMPLATE_OPTIONS_Num_channels.html' %}
+
         {% if each_input.device != 'EDGE' -%}
           {% include 'pages/data_options/input_options/TEMPLATE_OPTIONS_Period.html' %}
           {% include 'pages/data_options/input_options/TEMPLATE_OPTIONS_Pre_Output.html' %}
@@ -133,6 +135,7 @@
       </div>
     </div>
 
+    {% include 'pages/data_options/input_options/TEMPLATE_OPTIONS_TTN_data_storage.html' %}
     {% include 'pages/data_options/input_options/TEMPLATE_OPTIONS_Measurements_Convert.html' %}
 
   </div> <!- collapse container end ->

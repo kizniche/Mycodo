@@ -1,0 +1,10 @@
+{% if each_input.device == 'TTN_DATA_STORAGE' %}
+
+<div class="col-auto">
+  {{form_mod_input.num_channels.label(class_='control-label')}}
+  <div>
+    {{form_mod_input.num_channels(class_='form-control', value=each_input.num_channels, **{'title': _('Number of measurements')})}}
+  </div>
+</div>
+
+{% endif %}

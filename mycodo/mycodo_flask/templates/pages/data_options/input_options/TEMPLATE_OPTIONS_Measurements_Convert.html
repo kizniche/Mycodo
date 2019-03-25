@@ -2,12 +2,16 @@
                               and_(table_device_measurements.device_id == each_input.unique_id,
                                    table_device_measurements.is_enabled)).all() %}
 {% if all_measurements %}
+
+  <h5>Convert Measurements</h5>
+
   {% for each_measurement in all_measurements %}
 
 <form method="post" action="/data">
 {{form_mod_input_measurement.csrf_token}}
 {{form_mod_input_measurement.input_id(value=each_input.unique_id)}}
 {{form_mod_input_measurement.input_measurement_id(value=each_measurement.unique_id)}}
+{{form_mod_input_measurement.input_type(value='measurement_convert')}}
 
 <div class="row small-gutters align-items-end" style="border-bottom: 1px solid #ddd; padding: 0.5em">
   <div class="col-auto small-gutters">
@@ -17,13 +21,13 @@
     {% if each_measurement.unit and each_measurement.measurement %}
 
   <div class="col-auto">
-    <input class="form-control btn btn-sm btn-block" disabled="" title="UUID: {{each_measurement.unique_id}}" value="{% if each_measurement.channel != None %}CH{{each_measurement.channel + 1}} {% endif %}{{dict_measurements[each_measurement.measurement]['name']}} ({{dict_units[each_measurement.unit]['unit']}})" type="text">
+    <input class="form-control btn btn-sm btn-block" disabled="" title="UUID: {{each_measurement.unique_id}}" value="{% if each_measurement.channel != None %}CH{{each_measurement.channel}} {% endif %}{{dict_measurements[each_measurement.measurement]['name']}} ({{dict_units[each_measurement.unit]['unit']}})" type="text">
   </div>
 
     {% else %}
 
   <div class="col-auto">
-    <input class="form-control btn btn-sm btn-block" disabled="" title="UUID: {{each_measurement.unique_id}}" value="{% if each_measurement.channel != None %}CH{{each_measurement.channel + 1}} {% endif %}" type="text">
+    <input class="form-control btn btn-sm btn-block" disabled="" title="UUID: {{each_measurement.unique_id}}" value="{% if each_measurement.channel != None %}CH{{each_measurement.channel}} {% endif %}" type="text">
   </div>
 
     {% endif %}

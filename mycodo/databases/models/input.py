@@ -77,6 +77,8 @@ class Input(CRUDMixin, db.Model):
     times_check = db.Column(db.Integer, default=1)
     deadline = db.Column(db.Integer, default=2)
 
+    num_channels = db.Column(db.Integer, default=1)
+
     custom_options = db.Column(db.Text, default='')
 
     def is_active(self):

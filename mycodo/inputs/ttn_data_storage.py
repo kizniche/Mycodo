@@ -14,40 +14,34 @@ from mycodo.utils.database import db_retrieve_table_daemon
 from mycodo.utils.influx import parse_measurement
 from mycodo.utils.influx import write_influxdb_value
 
+
+def constraints_pass_positive_value(mod_input, value):
+    """
+    Check if the user input is acceptable
+    :param mod_input: SQL object with user-saved Input options
+    :param value: float or int
+    :return: tuple: (bool, list of strings)
+    """
+    errors = []
+    all_passed = True
+    # Ensure value is positive
+    if value <= 0:
+        all_passed = False
+        errors.append("Must be a positive value")
+    if value > 100:
+        all_passed = False
+        errors.append("Number of measurements cannot exceed 100")
+    return all_passed, errors, mod_input
+
 # Measurements
-measurements_dict = {
-    0: {
-        'measurement': 'humidity',
-        'unit': 'percent'
-    },
-    1: {
-        'measurement': 'temperature',
-        'unit': 'C'
-    },
-    2: {
-        'measurement': 'pressure',
-        'unit': 'Pa'
-    },
-    3: {
-        'measurement': 'dewpoint',
-        'unit': 'C'
-    },
-    4: {
-        'measurement': 'altitude',
-        'unit': 'm'
-    },
-    5: {
-        'measurement': 'vapor_pressure_deficit',
-        'unit': 'Pa'
-    }
-}
+measurements_dict = {}
 
 # Input information
 INPUT_INFORMATION = {
     'input_name_unique': 'TTN_DATA_STORAGE',
     'input_manufacturer': 'The Things Network',
     'input_name': 'TTN Integration: Data Storage',
-    'measurements_name': 'Temperature/Humidity',
+    'measurements_name': 'Variable measurements',
     'measurements_dict': measurements_dict,
 
     'options_enabled': [
@@ -93,15 +87,17 @@ class InputModule(AbstractInput):
         super(InputModule, self).__init__()
         self.logger = logging.getLogger("mycodo.inputs.ttn_data_storage")
 
+        self.num_channels = input_dev.num_channels
+
         if not testing:
             self.logger = logging.getLogger(
                 "mycodo.ttn_data_storage_{id}".format(id=input_dev.unique_id.split('-')[0]))
-            
+
             self.unique_id = input_dev.unique_id
             self.interface = input_dev.interface
             self.period = input_dev.period
             self.first_run = True
-            
+
             self.device_measurements = db_retrieve_table_daemon(
                 DeviceMeasurements).filter(
                 DeviceMeasurements.device_id == input_dev.unique_id)
@@ -122,49 +118,24 @@ class InputModule(AbstractInput):
             app=self.application_id, dev=self.device_id, time="{}s".format(past_seconds))
         headers = {"Authorization": "key {k}".format(k=self.app_api_key)}
         response = requests.get(endpoint, headers=headers)
-        if not response:
+        if not response.json():
             return
 
         try:
             for each_resp in response.json():
                 datetime_ts = datetime.datetime.strptime(each_resp['time'][:-7], '%Y-%m-%dT%H:%M:%S.%f')
-                measurements = {
-                    0: {
-                        'measurement': 'humidity',
-                        'unit': 'percent',
-                        'value': each_resp['humidity']
-                    },
-                    1: {
-                        'measurement': 'temperature',
-                        'unit': 'C',
-                        'value': each_resp['temperature']
-                    },
-                    2: {
-                        'measurement': 'pressure',
-                        'unit': 'Pa',
-                        'value': each_resp['pressure']
-                    },
-                    3: {
-                        'measurement': 'dewpoint',
-                        'unit': 'C',
-                        'value': calculate_dewpoint(
-                            each_resp['temperature'], each_resp['humidity'])
-                    },
-                    4: {
-                        'measurement': 'altitude',
-                        'unit': 'm',
-                        'value': calculate_altitude(each_resp['pressure'])
-                    },
-                    5: {
-                        'measurement': 'vapor_pressure_deficit',
-                        'unit': 'Pa',
-                        'value': calculate_vapor_pressure_deficit(
-                            each_resp['temperature'], each_resp['humidity'])
-                    }
-                }
+                measurements = {}
 
+                for each_measurement in self.device_measurements.all():
+                    if each_measurement.name in each_resp and each_resp[each_measurement.name] is not None:
+                        measurements[each_measurement.channel] = {}
+                        measurements[each_measurement.channel]['measurement'] = each_measurement.measurement
+                        measurements[each_measurement.channel]['unit'] = each_measurement.unit
+                        measurements[each_measurement.channel]['value'] = each_resp[each_measurement.name]
+
+                # Add to influxdb
                 for channel in measurements:
-                    if self.is_enabled(channel):
+                    if 'value' in measurements[channel] and self.is_enabled(channel):
                         measurement = self.device_measurements.filter(
                             DeviceMeasurements.channel == channel).first()
                         conversion = db_retrieve_table_daemon(
@@ -183,7 +154,7 @@ class InputModule(AbstractInput):
                             channel=channel,
                             timestamp=datetime_ts)
         except:
-            self.logger.exception("Error acquiring and/or storing measurements")
+            self.logger.error("Error acquiring and/or storing measurements")
 
     def get_measurement(self):
         """ Gets the data """
