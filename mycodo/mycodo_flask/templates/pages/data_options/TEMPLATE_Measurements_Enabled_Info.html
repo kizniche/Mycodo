@@ -3,7 +3,7 @@
        <option value="{{each_measurement.unique_id}}"{% if each_measurement.is_enabled %} selected{% endif %}>
 
     {%- if each_measurement.channel != None -%}
-      {{'CH' + (each_measurement.channel + 1)|string + ': '}}
+      {{'CH' + (each_measurement.channel)|string + ': '}}
     {%- endif -%}
        
     {%- if each_measurement.conversion_id -%}

@@ -493,8 +493,8 @@ def input_mod(form_mod, request_form):
 
                     # Add channels
                     elif form_mod.num_channels.data > mod_input.num_channels:
-                        start_number = mod_input.num_channels + 1
-                        for index in range(start_number, form_mod.num_channels.data + 1):
+                        start_number = mod_input.num_channels
+                        for index in range(start_number, form_mod.num_channels.data):
                             new_measurement = DeviceMeasurements()
                             new_measurement.name = ""
                             new_measurement.device_id = mod_input.unique_id
