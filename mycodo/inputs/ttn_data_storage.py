@@ -112,6 +112,7 @@ class InputModule(AbstractInput):
                         self.device_id = value
 
     def get_new_data(self, past_seconds):
+        # Basic implementation. Future development may use more complex library to access API
         endpoint = "https://{app}.data.thethingsnetwork.org/api/v2/query/{dev}?last={time}".format(
             app=self.application_id, dev=self.device_id, time="{}s".format(past_seconds))
         headers = {"Authorization": "key {k}".format(k=self.app_api_key)}
@@ -124,15 +125,17 @@ class InputModule(AbstractInput):
                 if not self.running:
                     break
 
-                datetime_ts = datetime.datetime.strptime(each_resp['time'][:-7], '%Y-%m-%dT%H:%M:%S.%f')
+                timestamp_format = '%Y-%m-%dT%H:%M:%S.%f'
+                datetime_ts = datetime.datetime.strptime(
+                    each_resp['time'][:-7], timestamp_format)
                 measurements = {}
 
-                for each_measurement in self.device_measurements.all():
-                    if each_measurement.name in each_resp and each_resp[each_measurement.name] is not None:
-                        measurements[each_measurement.channel] = {}
-                        measurements[each_measurement.channel]['measurement'] = each_measurement.measurement
-                        measurements[each_measurement.channel]['unit'] = each_measurement.unit
-                        measurements[each_measurement.channel]['value'] = each_resp[each_measurement.name]
+                for each_meas in self.device_measurements.all():
+                    if each_meas.name in each_resp and each_resp[each_meas.name] is not None:
+                        measurements[each_meas.channel] = {}
+                        measurements[each_meas.channel]['measurement'] = each_meas.measurement
+                        measurements[each_meas.channel]['unit'] = each_meas.unit
+                        measurements[each_meas.channel]['value'] = each_resp[each_meas.name]
 
                 # Add to influxdb
                 for channel in measurements:
