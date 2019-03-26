@@ -640,7 +640,9 @@ def input_activate(form_mod):
     if not input_dev.period:
         error.append("Period must be set")
 
-    if input_dev.pre_output_id and not input_dev.pre_output_duration:
+    if (input_dev.pre_output_id and
+            len(input_dev.pre_output_id) > 1 and
+            not input_dev.pre_output_duration):
         error.append("Pre Output Duration must be > 0 if Pre Output is enabled")
 
     if not device_measurements.filter(DeviceMeasurements.is_enabled == True).count():
@@ -667,7 +669,9 @@ def input_activate(form_mod):
     elif input_dev.device == 'TTN_DATA_STORAGE':
         measure_set = True
         for each_channel in device_measurements.all():
-            if not each_channel.name or not each_channel.measurement or not each_channel.unit:
+            if (not each_channel.name or
+                    not each_channel.measurement or
+                    not each_channel.unit):
                 measure_set = False
         if not measure_set:
             error.append("All measurements must have a name and unit/measurement set")
