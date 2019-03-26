@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
-import logging
-import subprocess
-
 import bcrypt
 import flask_login
+import logging
 import os
 import re
 import sqlalchemy
+import subprocess
+import time
 from flask import flash
 from flask import redirect
 from flask import url_for
@@ -1292,6 +1292,22 @@ def settings_diagnostic_delete_file(delete_type):
                     error.append("File not found: {}".format(file_remove))
             else:
                 error.append("Unknown file: {}".format(delete_type))
+        except Exception as except_msg:
+            error.append(except_msg)
+
+    flash_success_errors(error, action, url_for('routes_settings.settings_diagnostic'))
+
+
+def settings_diagnostic_reset_email_counter():
+    action = gettext("Reset email counter")
+    error = []
+
+    if not error:
+        try:
+            smtp_settings = SMTP.query.first()
+            smtp_settings.email_count = 0
+            smtp_settings.smtp_wait_timer = time.time() + 3600
+            db.session.commit()
         except Exception as except_msg:
             error.append(except_msg)
 

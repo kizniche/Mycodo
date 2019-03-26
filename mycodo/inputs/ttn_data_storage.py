@@ -121,6 +121,9 @@ class InputModule(AbstractInput):
 
         try:
             for each_resp in response.json():
+                if not self.running:
+                    break
+
                 datetime_ts = datetime.datetime.strptime(each_resp['time'][:-7], '%Y-%m-%dT%H:%M:%S.%f')
                 measurements = {}
 

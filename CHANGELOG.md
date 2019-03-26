@@ -6,6 +6,7 @@
  - Fix Outputs triggering at startup
  - Fix CCS811 Input measurement issue ([#641](https://github.com/kizniche/mycodo/issues/641))
  - Fix Math controller (equation)
+ - Fix sending email notification to multiple recipients
 
 ### Features
 
