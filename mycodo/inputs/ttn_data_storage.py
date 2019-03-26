@@ -7,9 +7,6 @@ from flask_babel import lazy_gettext
 from mycodo.databases.models import Conversion
 from mycodo.databases.models import DeviceMeasurements
 from mycodo.inputs.base_input import AbstractInput
-from mycodo.inputs.sensorutils import calculate_altitude
-from mycodo.inputs.sensorutils import calculate_dewpoint
-from mycodo.inputs.sensorutils import calculate_vapor_pressure_deficit
 from mycodo.utils.database import db_retrieve_table_daemon
 from mycodo.utils.influx import parse_measurement
 from mycodo.utils.influx import write_influxdb_value

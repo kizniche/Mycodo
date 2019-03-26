@@ -71,8 +71,16 @@ def load_module_from_file(path_file):
 
 
 def parse_custom_option_values(inputs):
+    # Check if inputs is iterable or a single input
+    try:
+        iterator = iter(inputs)
+    except TypeError:
+        iter_input = [inputs]  # Not iterable
+    else:
+        iter_input = inputs  # iterable
+
     custom_options_values = {}
-    for each_input in inputs:
+    for each_input in iter_input:
         custom_options_values[each_input.unique_id] = {}
         if each_input.custom_options:
             for each_option in each_input.custom_options.split(';'):

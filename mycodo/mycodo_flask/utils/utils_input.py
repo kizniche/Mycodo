@@ -6,7 +6,6 @@ import sqlalchemy
 from RPi import GPIO
 from flask import current_app
 from flask import flash
-from flask import redirect
 from flask import url_for
 from flask_babel import gettext
 
@@ -24,6 +23,7 @@ from mycodo.mycodo_flask.utils.utils_general import flash_form_errors
 from mycodo.mycodo_flask.utils.utils_general import flash_success_errors
 from mycodo.mycodo_flask.utils.utils_general import reorder
 from mycodo.mycodo_flask.utils.utils_general import return_dependencies
+from mycodo.utils.inputs import parse_custom_option_values
 from mycodo.utils.inputs import parse_input_information
 from mycodo.utils.system_pi import csv_to_list_of_str
 from mycodo.utils.system_pi import is_int
@@ -623,13 +623,32 @@ def input_reorder(input_id, display_order, direction):
 
 
 def input_activate(form_mod):
+    action = '{action} {controller}'.format(
+        action=TRANSLATIONS['activate']['title'],
+        controller=TRANSLATIONS['input']['title'])
+    error = []
     input_id = form_mod.input_id.data
     input_dev = Input.query.filter(Input.unique_id == input_id).first()
-    if input_dev.device == 'LinuxCommand':
-        if input_dev.cmd_command is '':
-            flash("Cannot activate Input without Command set.", "error")
-            return redirect(url_for('routes_page.page_data'))
-    controller_activate_deactivate('activate', 'Input',  input_id)
+    if input_dev.device == 'LinuxCommand' and not input_dev.cmd_command:
+        error.append("Cannot activate Command Input without a Command set")
+    if input_dev.device == 'TTN_DATA_STORAGE':
+        device_measurements = DeviceMeasurements.query.filter(
+            DeviceMeasurements.device_id == input_dev.unique_id).all()
+        measure_set = True
+        for each_channel in device_measurements:
+            if not each_channel.name or not each_channel.measurement or not each_channel.unit:
+                measure_set = False
+        if not measure_set:
+            error.append("All measurements must have a name and unit/measurement set")
+        custom_options_values = parse_custom_option_values(input_dev)
+        app_id = custom_options_values[input_dev.unique_id]['application_id']
+        api_key = custom_options_values[input_dev.unique_id]['app_api_key']
+        device_id = custom_options_values[input_dev.unique_id]['device_id']
+        if not app_id or not api_key or not device_id:
+            error.append("Application ID, App API Key, and Device ID must be set")
+    if not error:
+        controller_activate_deactivate('activate', 'Input',  input_id)
+    flash_success_errors(error, action, url_for('routes_page.page_data'))
 
 
 def input_deactivate(form_mod):
