@@ -337,7 +337,7 @@ $(document).ready(function() {
                   {{' (' + device_measurements_dict[measurement_id].name}})
                 {%- endif -%}
 
-                {{' (CH' + (device_measurements_dict[measurement_id].channel + 1)|string}}
+                {{' (CH' + (device_measurements_dict[measurement_id].channel)|string}}
 
                 {%- if dict_measure_measurements[measurement_id] in dict_measurements and
                  dict_measurements[dict_measure_measurements[measurement_id]]['name'] -%}
@@ -388,7 +388,7 @@ $(document).ready(function() {
                 {{' (' + device_measurements_dict[measurement_id].name}})
               {%- endif -%}
 
-                {{' (CH' + (device_measurements_dict[measurement_id].channel + 1)|string}}
+                {{' (CH' + (device_measurements_dict[measurement_id].channel)|string}}
 
               {%- if dict_measure_measurements[measurement_id] in dict_measurements and
                dict_measurements[dict_measure_measurements[measurement_id]]['name'] -%}
@@ -437,7 +437,7 @@ $(document).ready(function() {
                   {{' (' + device_measurements_dict[measurement_id].name}})
                 {%- endif -%}
 
-                  {{' (CH' + (device_measurements_dict[measurement_id].channel + 1)|string}}
+                  {{' (CH' + (device_measurements_dict[measurement_id].channel)|string}}
 
                 {%- if dict_measure_measurements[measurement_id] in dict_measurements and
                  dict_measurements[dict_measure_measurements[measurement_id]]['name'] -%}

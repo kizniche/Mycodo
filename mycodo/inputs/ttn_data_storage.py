@@ -56,6 +56,7 @@ INPUT_INFORMATION = {
             'id': 'application_id',
             'type': 'text',
             'default_value': '',
+            'required': True,
             'name': lazy_gettext('Application ID'),
             'phrase': lazy_gettext('The Things Network Application ID')
         },
@@ -63,6 +64,7 @@ INPUT_INFORMATION = {
             'id': 'app_api_key',
             'type': 'text',
             'default_value': '',
+            'required': True,
             'name': lazy_gettext('App API Key'),
             'phrase': lazy_gettext('The Things Network Application API Key')
         },
@@ -70,6 +72,7 @@ INPUT_INFORMATION = {
             'id': 'device_id',
             'type': 'text',
             'default_value': '',
+            'required': True,
             'name': lazy_gettext('Device ID'),
             'phrase': lazy_gettext('The Things Network Device ID')
         }

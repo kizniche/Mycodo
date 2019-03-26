@@ -111,6 +111,7 @@ INPUT_INFORMATION = {
             'id': 'logging_interval',
             'type': 'integer',
             'default_value': 600,
+            'required': True,
             'constraints_pass': constraints_pass_positive_value,
             'name': lazy_gettext('Set Logging Interval'),
             'phrase': lazy_gettext(

@@ -123,7 +123,7 @@
             {{' (' + each_meas.name + ') '}}
           {%- endif -%}
 
-            CH{{each_meas.channel + 1}} | <span id="{{measure_string}}-time">&lt;{{_('Please wait')}}&gt;</span><br>
+            CH{{each_meas.channel}} | <span id="{{measure_string}}-time">&lt;{{_('Please wait')}}&gt;</span><br>
           </div>
         {% endfor %}
         </div>
@@ -172,7 +172,7 @@
             {{' (' + each_meas.name + ') '}}
           {%- endif -%}
 
-            CH{{each_meas.channel + 1}} | <span id="{{measure_string}}-time">&lt;{{_('Please wait')}}&gt;</span><br>
+            CH{{each_meas.channel}} | <span id="{{measure_string}}-time">&lt;{{_('Please wait')}}&gt;</span><br>
           </div>
         {% endfor %}
         </div>

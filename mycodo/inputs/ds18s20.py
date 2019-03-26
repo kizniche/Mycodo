@@ -64,6 +64,7 @@ INPUT_INFORMATION = {
                 ('w1thermsensor', 'w1thermsensor'),
                 ('ow_shell', 'ow-shell')
             ],
+            'required': True,
             'constraints_pass': constraints_pass_measure_range,
             'name': lazy_gettext('Library'),
             'phrase': lazy_gettext('Select the library used to communicate')

@@ -98,7 +98,7 @@
 
             {{each_input.name}} (
               {%- if not device_measurements_dict[measurement_id].single_channel -%}
-                {{'CH' + (device_measurements_dict[measurement_id].channel|int + 1)|string + ', '}}
+                {{'CH' + (device_measurements_dict[measurement_id].channel|int)|string + ', '}}
               {%- endif -%}
             {{dict_measurements[device_measurements_dict[measurement_id].measurement]['name']}}
 
@@ -113,7 +113,7 @@
 
             {{each_math.name}} (
               {%- if not device_measurements_dict[measurement_id].single_channel -%}
-                {{'CH' + (device_measurements_dict[measurement_id].channel|int + 1)|string + ', '}}
+                {{'CH' + (device_measurements_dict[measurement_id].channel|int)|string + ', '}}
               {%- endif -%}
             {{dict_measurements[device_measurements_dict[measurement_id].measurement]['name']}}
 

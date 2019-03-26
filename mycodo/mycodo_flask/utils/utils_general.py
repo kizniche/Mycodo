@@ -66,7 +66,7 @@ def check_for_valid_unit_and_conversion(device_id, error):
                 # Check that unit is set
                 if each_meas.unit in ['', None]:
                     error.append("Unit not set for channel {chan}".format(
-                        chan=each_meas.channel + 1))
+                        chan=each_meas.channel))
 
                 # If conversion ID set, check if it's valid
                 if each_meas.conversion_id:
@@ -392,7 +392,7 @@ def form_input_choices(choices, each_input, dict_units, dict_measurements):
                 dict_measurements, measurement)
 
             if isinstance(channel, int):
-                channel_num = ' CH{cnum}'.format(cnum=channel + 1)
+                channel_num = ' CH{cnum}'.format(cnum=channel)
             else:
                 channel_num = ''
 
@@ -444,9 +444,9 @@ def form_math_choices(choices, each_math, dict_units, dict_measurements):
 
             if each_measure.name:
                 channel_info = 'CH{cnum} ({cname})'.format(
-                    cnum=channel + 1, cname=each_measure.name)
+                    cnum=channel, cname=each_measure.name)
             else:
-                channel_info = 'CH{cnum}'.format(cnum=channel + 1)
+                channel_info = 'CH{cnum}'.format(cnum=channel)
 
             if display_measurement and display_unit:
                 measurement_unit = '{meas} ({unit})'.format(
@@ -495,9 +495,9 @@ def form_pid_choices(choices, each_pid, dict_units, dict_measurements):
 
         if each_measure.name:
             channel_info = 'CH{cnum} ({cname})'.format(
-                cnum=channel + 1, cname=each_measure.name)
+                cnum=channel, cname=each_measure.name)
         else:
-            channel_info = 'CH{cnum}'.format(cnum=channel + 1)
+            channel_info = 'CH{cnum}'.format(cnum=channel)
 
         if display_measurement and display_unit:
             measurement_unit = '{meas} ({unit})'.format(
@@ -531,7 +531,7 @@ def form_output_choices(choices, each_output, dict_units, dict_measurements):
     display = '[Output {id:02d}] {name} CH{chan}, {meas} ({unit})'.format(
         id=each_output.id,
         name=each_output.name,
-        chan=each_output.channel + 1,
+        chan=each_output.channel,
         meas=dict_measurements[each_output.measurement]['name'],
         unit=dict_units[each_output.unit]['unit'])
     choices.update({value: display})

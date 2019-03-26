@@ -627,25 +627,47 @@ def input_activate(form_mod):
         action=TRANSLATIONS['activate']['title'],
         controller=TRANSLATIONS['input']['title'])
     error = []
+    dict_inputs = parse_input_information()
     input_id = form_mod.input_id.data
     input_dev = Input.query.filter(Input.unique_id == input_id).first()
+    device_measurements = DeviceMeasurements.query.filter(
+        DeviceMeasurements.device_id == input_dev.unique_id)
+    custom_options_values = parse_custom_option_values(input_dev)
+
+    #
+    # General Input checks
+    #
+    if not input_dev.period:
+        error.append("Period must be set")
+
+    if input_dev.pre_output_id and not input_dev.pre_output_duration:
+        error.append("Pre Output Duration must be > 0 if Pre Output is enabled")
+
+    if not device_measurements.filter(DeviceMeasurements.is_enabled == True).count():
+        error.append("At least one measurement must be enabled")
+
+    #
+    # Check if required custom options are set
+    #
+    for each_option in dict_inputs[input_dev.device]['custom_options']:
+        value = custom_options_values[input_dev.unique_id][each_option['id']]
+        if 'required' in each_option and each_option['required'] and not value:
+            error.append("{} is required to be set".format(each_option['name']))
+
+    #
+    # Input-specific checks
+    #
     if input_dev.device == 'LinuxCommand' and not input_dev.cmd_command:
         error.append("Cannot activate Command Input without a Command set")
-    if input_dev.device == 'TTN_DATA_STORAGE':
-        device_measurements = DeviceMeasurements.query.filter(
-            DeviceMeasurements.device_id == input_dev.unique_id).all()
+
+    elif input_dev.device == 'TTN_DATA_STORAGE':
         measure_set = True
-        for each_channel in device_measurements:
+        for each_channel in device_measurements.all():
             if not each_channel.name or not each_channel.measurement or not each_channel.unit:
                 measure_set = False
         if not measure_set:
             error.append("All measurements must have a name and unit/measurement set")
-        custom_options_values = parse_custom_option_values(input_dev)
-        app_id = custom_options_values[input_dev.unique_id]['application_id']
-        api_key = custom_options_values[input_dev.unique_id]['app_api_key']
-        device_id = custom_options_values[input_dev.unique_id]['device_id']
-        if not app_id or not api_key or not device_id:
-            error.append("Application ID, App API Key, and Device ID must be set")
+
     if not error:
         controller_activate_deactivate('activate', 'Input',  input_id)
     flash_success_errors(error, action, url_for('routes_page.page_data'))

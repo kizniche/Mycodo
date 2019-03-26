@@ -71,6 +71,7 @@ INPUT_INFORMATION = {
                 ('3000', '0 - 3000 ppmv'),
                 ('5000', '0 - 5000 ppmv'),
             ],
+            'required': True,
             'constraints_pass': constraints_pass_measure_range,
             'name': lazy_gettext('Measurement Range'),
             'phrase': lazy_gettext('Set the measuring range of the sensor')
