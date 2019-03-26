@@ -649,10 +649,14 @@ def input_activate(form_mod):
     #
     # Check if required custom options are set
     #
-    for each_option in dict_inputs[input_dev.device]['custom_options']:
-        value = custom_options_values[input_dev.unique_id][each_option['id']]
-        if 'required' in each_option and each_option['required'] and not value:
-            error.append("{} is required to be set".format(each_option['name']))
+    if 'custom_options' in dict_inputs[input_dev.device]:
+        for each_option in dict_inputs[input_dev.device]['custom_options']:
+            value = custom_options_values[input_dev.unique_id][each_option['id']]
+            if ('required' in each_option and
+                    each_option['required'] and
+                    not value):
+                error.append("{} is required to be set".format(
+                    each_option['name']))
 
     #
     # Input-specific checks
