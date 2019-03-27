@@ -122,12 +122,16 @@ class InputModule(AbstractInput):
     def get_new_data(self, past_seconds):
         # Basic implementation. Future development may use more complex library to access API
         endpoint = "https://{app}.data.thethingsnetwork.org/api/v2/query/{dev}?last={time}".format(
-            app=self.application_id, dev=self.device_id, time="{}s".format(past_seconds))
+            app=self.application_id, dev=self.device_id, time="{}s".format(int(past_seconds)))
         headers = {"Authorization": "key {k}".format(k=self.app_api_key)}
         timestamp_format = '%Y-%m-%dT%H:%M:%S.%f'
 
         response = requests.get(endpoint, headers=headers)
-        if not response:
+        try:
+            responses = response.json()
+        except ValueError:  # No data returned
+            self.logger.debug("Response Error. Response: {}".format(
+                response.content))
             return
 
         for each_resp in response.json():
@@ -148,13 +152,11 @@ class InputModule(AbstractInput):
                         each_resp['time'][:-4], timestamp_format)
                     ts_formatted_correctly = True
                 except:
-                    self.logger.error(
-                        "Could not parse timestamp: {}".format(
-                            each_resp['time']))
+                    self.logger.error("Could not parse timestamp: {}".format(
+                        each_resp['time']))
 
             if not ts_formatted_correctly:
-                # Malformed timestamp encountered.
-                # Throw out measurement.
+                # Malformed timestamp encountered. Discard measurement.
                 continue
 
             if (not self.latest_datetime or
@@ -224,7 +226,7 @@ class InputModule(AbstractInput):
                     "Downloading and parsing past 7 days of data...".format(
                         seconds_download))
             else:
-                self.logger.debug(
+                self.logger.info(
                     "Downloading and parsing past {} seconds of data...".format(
                         int(seconds_download)))
 
@@ -236,4 +238,6 @@ class InputModule(AbstractInput):
                     "Download and parsing completed in {} seconds.".format(
                         int(elapsed)))
         else:
-            self.get_new_data(int(self.period))
+            self.get_new_data(self.period)
+
+        return {}
