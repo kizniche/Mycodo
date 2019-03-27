@@ -14,6 +14,7 @@
  - Add Math controllers: Sum (past, single channel), Sum (last, multiple channels)
  - Add Outputs to Math controllers: Average, Redundancy, Statistics, Sum
  - Add 'required' option for Input 'custom_options' (indicates if option is required to activate Input)
+ - Add 'Output State' ('on', 'off', or duty cycle) Condition for Conditional controllers ([#642](https://github.com/kizniche/mycodo/issues/642))
 
 ### Miscellaneous
 

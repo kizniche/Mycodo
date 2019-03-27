@@ -1,0 +1,11 @@
+<div class="col-auto">
+  {{form_conditional_conditions.output_id.label(class_='control-label')}}
+  <div>
+    <select class="form-control" id="output_id" name="output_id" style="width: 100%;" title="" data-original-title="{{_('Select the output to return the current state ("on", "off" or integer duty cycle)')}}">
+        <option value="">{{dict_translation['select_one']['title']}}</option>
+      {% for each_choice, value in choices_output.items() -%}
+        <option value="{{each_choice.split(',')[0]}}"{% if each_condition.output_id == each_choice.split(',')[0] %} selected{% endif %}>{{value}}</option>
+      {% endfor -%}
+      </select>
+  </div>
+</div>

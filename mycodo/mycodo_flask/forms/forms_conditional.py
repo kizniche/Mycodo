@@ -69,5 +69,7 @@ class ConditionalConditions(FlaskForm):
         lazy_gettext('GPIO Pin (BCM)'),
         widget=NumberInput())
 
+    output_id = StringField(TRANSLATIONS['output']['title'])
+
     save_condition = SubmitField(TRANSLATIONS['save']['title'])
     delete_condition = SubmitField(TRANSLATIONS['delete']['title'])

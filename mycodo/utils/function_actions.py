@@ -62,38 +62,40 @@ def check_allowed_to_email():
 
 
 def get_condition_measurement(sql_condition):
-    device_id = sql_condition.measurement.split(',')[0]
-    measurement_id = sql_condition.measurement.split(',')[1]
-
-    device_measurement = db_retrieve_table_daemon(
-        DeviceMeasurements, unique_id=measurement_id)
-    if device_measurement:
-        conversion = db_retrieve_table_daemon(
-            Conversion, unique_id=device_measurement.conversion_id)
-    else:
-        conversion = None
-    channel, unit, measurement = return_measurement_info(
-        device_measurement, conversion)
-
-    if None in [channel, unit]:
-        logger.error(
-            "Could not determine channel or unit from measurement ID: "
-            "{}".format(measurement_id))
-        return
-
-    max_age = sql_condition.max_age
-
+    """
+    Returns condition measurements for Conditional controllers
+    :param sql_condition: str containint comma-separated device ID and measurement ID
+    :return: measurement: float measurement, gpio_state: int 0 or 1, output_state: 'on', 'off', or int duty cycle
+    """
     # Check Measurement Conditions
     if sql_condition.condition_type == 'measurement':
+        device_id = sql_condition.measurement.split(',')[0]
+        measurement_id = sql_condition.measurement.split(',')[1]
+
+        device_measurement = db_retrieve_table_daemon(
+            DeviceMeasurements, unique_id=measurement_id)
+        if device_measurement:
+            conversion = db_retrieve_table_daemon(
+                Conversion, unique_id=device_measurement.conversion_id)
+        else:
+            conversion = None
+        channel, unit, measurement = return_measurement_info(
+            device_measurement, conversion)
+
+        if None in [channel, unit]:
+            logger.error(
+                "Could not determine channel or unit from measurement ID: "
+                "{}".format(measurement_id))
+            return
+
+        max_age = sql_condition.max_age
         # Check if there hasn't been a measurement in the last set number
         # of seconds. If not, trigger conditional
         last_measurement = get_last_measurement(
             device_id, unit, measurement, channel, max_age)
         return last_measurement
 
-    # If the edge detection variable is set, calling this function will
-    # trigger an edge detection event. This will merely produce the correct
-    # message based on the edge detection settings.
+    # Return GPIO state
     elif sql_condition.condition_type == 'gpio_state':
         try:
             GPIO.setmode(GPIO.BCM)
@@ -103,6 +105,14 @@ def get_condition_measurement(sql_condition):
             gpio_state = None
             logger.error("Exception reading the GPIO pin")
         return gpio_state
+
+    # Return output state
+    elif sql_condition.condition_type == 'output_state':
+        output = Output.query.filter(
+            Output.unique_id == sql_condition.output_id).first()
+        if output:
+            control = DaemonControl()
+            return control.output_state(output.unique_id)
 
 
 def get_last_measurement(unique_id, unit, measurement, channel, duration_sec):

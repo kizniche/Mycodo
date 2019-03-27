@@ -1350,6 +1350,8 @@ def page_function():
         input_dev, dict_units, dict_measurements)
     choices_math = utils_general.choices_maths(
         math, dict_units, dict_measurements)
+    choices_output = utils_general.choices_outputs(
+        output, dict_units, dict_measurements)
     choices_pid = utils_general.choices_pids(
         pid, dict_units, dict_measurements)
 
@@ -1455,6 +1457,7 @@ def page_function():
                            camera=camera,
                            choices_input=choices_input,
                            choices_math=choices_math,
+                           choices_output=choices_output,
                            choices_pid=choices_pid,
                            conditional_conditions_list=CONDITIONAL_CONDITIONS,
                            conditional=conditional,
