@@ -1,4 +1,4 @@
-## 7.3.2 (Unreleased)
+## 7.4.0 (Unreleased)
 
 ### Bugfixes
 
