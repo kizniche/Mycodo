@@ -19,6 +19,7 @@ depends_on = None
 def upgrade():
     with op.batch_alter_table("input") as batch_op:
         batch_op.add_column(sa.Column('num_channels', sa.Integer))
+        batch_op.add_column(sa.Column('datetime', sa.DateTime))
 
     with op.batch_alter_table("conditional_data") as batch_op:
         batch_op.add_column(sa.Column('output_id', sa.Text))
@@ -27,6 +28,7 @@ def upgrade():
 def downgrade():
     with op.batch_alter_table("input") as batch_op:
         batch_op.drop_column('num_channels')
+        batch_op.drop_column('datetime')
 
     with op.batch_alter_table("conditional_data") as batch_op:
         batch_op.drop_column('output_id')

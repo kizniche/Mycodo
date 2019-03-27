@@ -77,7 +77,9 @@ class Input(CRUDMixin, db.Model):
     times_check = db.Column(db.Integer, default=1)
     deadline = db.Column(db.Integer, default=2)
 
+    # The Things Network: Data Storage
     num_channels = db.Column(db.Integer, default=1)
+    datetime = db.Column(db.DateTime, default=None)
 
     custom_options = db.Column(db.Text, default='')
 

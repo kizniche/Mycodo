@@ -10,7 +10,7 @@
 
 ### Features
 
- - Add Input: The Things Network: Integration: Data Storage (pull data from TTN, variable number of measurements)
+ - Add Input: The Things Network: Integration: Data Storage (pull data from TTN)
  - Add Math controllers: Sum (past, single channel), Sum (last, multiple channels)
  - Add Outputs to Math controllers: Average, Redundancy, Statistics, Sum
  - Add 'required' option for Input 'custom_options' (indicates if option is required to activate Input)

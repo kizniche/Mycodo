@@ -282,7 +282,7 @@ the Upgrade option in the web interface (recommended) or by issuing the
 following command in a terminal. A log of the upgrade process is created
 at ``/var/log/mycodo/mycodoupgrade.log``
 
-::
+.. code-block:: bash
 
     sudo /bin/bash ~/Mycodo/mycodo/scripts/upgrade_commands.sh upgrade
 
@@ -541,8 +541,98 @@ the measurement database to be used throughout the Mycodo system.
 |                       | ping attempt, after which 0 (offline) will be   |
 |                       | returned (Server Ping input).                   |
 +-----------------------+-------------------------------------------------+
+| Number of Measurement | The number of unique measurements to store data |
+|                       | for this input.                                 |
++-----------------------+-------------------------------------------------+
+| Application ID        | The Application ID on The Things Network.       |
++-----------------------+-------------------------------------------------+
+| App API Key           | The Application API Key on The Things Network.  |
++-----------------------+-------------------------------------------------+
+| Device ID             | The Device ID of the Application on The Things  |
+|                       | Network.                                        |
++-----------------------+-------------------------------------------------+
 
 1. `Debouncing a signal <http://kylegabriel.com/projects/2016/02/morse-code-translator.html#debouncing>`__
+
+The Things Network
+''''''''''''''''''
+
+`The Things Network <https://www.thethingsnetwork.org/>`__ (TTN) Input
+module enables downloading of data from TTN if the Data Storage Integration
+is enabled in your TTN Application. The Data Storage Integration will store
+data for up to 7 days. Mycodo will download this data periodically and
+store the measurements locally.
+
+The payload on TTN must be properly decoded to variables that correspond to
+the "Name" option under "Select Measurements", in the lower section of the
+Input options. For instance, in your TTN Application, if a custom Payload
+Format is selected, the decoder code may look like this:
+
+.. code-block:: javascript
+
+    function Decoder(bytes, port) {
+        var decoded = {};
+        var rawTemp = bytes[0] + bytes[1] * 256;
+        decoded.temperature = sflt162f(rawTemp) * 100;
+        return decoded;
+    }
+
+    function sflt162f(rawSflt16) {
+        rawSflt16 &= 0xFFFF;
+        if (rawSflt16 === 0x8000)
+            return -0.0;
+        var sSign = ((rawSflt16 & 0x8000) !== 0) ? -1 : 1;
+        var exp1 = (rawSflt16 >> 11) & 0xF;
+        var mant1 = (rawSflt16 & 0x7FF) / 2048.0;
+        return sSign * mant1 * Math.pow(2, exp1 - 15);
+    }
+
+This will decode the 2-byte payload into a temperature float value with
+the name "temperature". Set "Number of Measurements" to "1", then set the
+"Name" for the first channel (CH0) to "temperature" and the "Measurement
+Unit" to "Temperature: Celsius (°C)".
+
+Upon activation of the Input, data will be downloaded for the past 7 days.
+The latest data timestamp will be stored so any subsequent activation of the
+Input will only download new data (since the last known timestamp).
+
+There are several example Input modules that, in addition to storing the
+measurements of a sensor in the influx database, will write the measurements
+to a serial device. This is useful of you have a LoRaWAN transmitter connected
+via serial to receive measurement information from Mycodo and transmit it to
+a LoRaWAN gateway (and subsequently to The Things Network). The data on TTN
+can then be downloaded elsewhere with the TTN Input. These example Input
+modules are located in the following locations:
+
+``~/Mycodo/mycodo/inputs/examples/bme280_ttn.py``
+
+``~/Mycodo/mycodo/inputs/examples/k30_ttn.py``
+
+For example, the following excerpt from ``bme_280.py`` will write a set of
+comma-separated strings to the user-specified serial device with the first
+string (the letter "B") used to denote the sensor/measurements, followed by
+the actual measurements (humidity, pressure, and temperature, in this case).
+
+.. code-block:: python
+
+    string_send = 'B,{},{},{}'.format(
+        return_dict[1]['value'],
+        return_dict[2]['value'],
+        return_dict[0]['value'])
+    self.serial_send = self.serial.Serial(self.serial_device, 9600)
+    self.serial_send.write(string_send.encode())
+
+This is useful if multiple data strings are to be sent to the same serial device
+(e.g. if both ``bme280_ttn.py`` and ``k30_ttn.py`` are being used at the same
+time), allowing the serial device to distinguish what data is being received.
+
+The full code used to decode both ``bme280_ttn.py`` and ``k30_ttn.py``, with
+informative comments, is located at
+``~/Mycodo/mycodo/inputs/examples/ttn_data_storage_decoder_example.js``.
+
+These example Input modules may be modified to suit your needs and imported
+into Mycodo through the ``Configure -> Inputs`` page. After import, they
+will be available to use on the ``Setup -> Data`` page.
 
 Math
 ````
@@ -946,7 +1036,7 @@ receiver script, below, replacing 17 with the pin your receiver is
 connected to (using BCM numbering), and press one of the buttons on your
 remote (either on or off) to detect the numeric code associated with that button.
 
-::
+.. code-block:: python
 
     sudo ~/Mycodo/env/bin/python ~/Mycodo/mycodo/devices/wireless_rpi_rf.py -d 2 -g 17
 
@@ -1351,7 +1441,7 @@ Each measure("{ID}") will return the most recent measurement obtained from that
 particular measurement under the ``Conditions`` section of the Conditional, as
 long as it's within the set Max Age.
 
-::
+.. code-block:: python
 
     # Example 1, no measurement, useful to notify by email when an Input stops working
     if measure("{asdf1234}") is None:
@@ -1401,7 +1491,7 @@ ID will be used: "qwer1234" and "uiop5678". Additionally, run_all_actions()
 is used here, which will run all actions in the order in which they appear
 in the Actions section of the Conditional.
 
-::
+.. code-block:: python
 
     # Example 1
     measurement = measure("{asdf1234}")
@@ -1459,7 +1549,7 @@ add this to the ``message`` parameter of run_action() or run_all_actions().
 Below are some examples. Note the use of "+=" instead of "=", which
 appends the string to the variable ``message``.
 
-::
+.. code-block:: python
 
     # Example 1
     measurement = measure("{asdf1234}")
@@ -2875,7 +2965,7 @@ changing the appropriate directory names, 'user' to your user name, and
 TIME and COMMIT to the appropriate text found as the directory names in
 /var/Mycodo-backups/
 
-::
+.. code-block:: bash
 
     sudo mv /home/user/Mycodo /home/user/Mycodo_old
     sudo cp -a /var/Mycodo-backups/Mycodo-TIME-COMMIT /home/user/Mycodo
@@ -3148,7 +3238,7 @@ From here, you can create any Python code to react to button presses on your rem
 
 In order to send an IR signal to your IR LED, connect your LED to the GPIO defined with ``gpio_out_pin=17`` in ``/boot/config.txt``. You can test if your LED is working by creating a file, ``LED_blink.py``, replacing ``17`` with the pin connected to your LED:
 
-::
+.. code-block:: python
 
     import RPi.GPIO as GPIO
     import time
@@ -3222,7 +3312,7 @@ Incorrect Database Version
    your browser in order to generate a new database and create a new
    Admin user.
 
-::
+.. code-block:: bash
 
     mv ~/Mycodo/databases/mycodo.db ~/Mycodo/databases/mycodo.db.backup
     sudo service mycodoflask restart
