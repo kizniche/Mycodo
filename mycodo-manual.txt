@@ -268,85 +268,9 @@ Here is how I generally set up Mycodo to monitor and regulate:
 _Can I communicate with Mycodo from the command line?_
 
 Yes, ~/Mycodo/mycodo/mycodo_client.py has this functionality, but
-there’s a lot to be desired. Below may not be the most current list of
-commands, so it’s recommended to execute the installed symlink
-mycodo-client --help to see a full list with descriptions.
-
-    pi@raspberry:~ $ mycodo-client --help
-    usage: mycodo-client [-h] [--activatecontroller CONTROLLER ID]
-                         [--deactivatecontroller CONTROLLER ID] [--pid_pause ID]
-                         [--pid_hold ID] [--pid_resume ID] [--pid_get_setpoint ID]
-                         [--pid_get_error ID] [--pid_get_integrator ID]
-                         [--pid_get_derivator ID] [--pid_get_kp ID]
-                         [--pid_get_ki ID] [--pid_get_kd ID]
-                         [--pid_set_setpoint ID SETPOINT]
-                         [--pid_set_integrator ID INTEGRATOR]
-                         [--pid_set_derivator ID DERIVATOR] [--pid_set_kp ID KP]
-                         [--pid_set_ki ID KI] [--pid_set_kd ID KD] [-c] [--ramuse]
-                         [--input_force_measurements INPUTID]
-                         [--lcd_backlight_on LCDID] [--lcd_backlight_off LCDID]
-                         [--lcd_reset LCDID] [--output_state OUTPUTID]
-                         [--output_currently_on OUTPUTID] [--outputoff OUTPUTID]
-                         [--outputon OUTPUTID] [--duration SECONDS]
-                         [--dutycycle DUTYCYCLE] [--trigger_action ACTIONID]
-                         [--trigger_all_actions FUNCTIONID] [-t]
-
-    Client for Mycodo daemon.
-
-    optional arguments:
-      -h, --help            show this help message and exit
-      --activatecontroller CONTROLLER ID
-                            Activate controller. Options: Conditional, LCD, Math,
-                            PID, Input
-      --deactivatecontroller CONTROLLER ID
-                            Deactivate controller. Options: Conditional, LCD,
-                            Math, PID, Input
-      --pid_pause ID        Pause PID controller.
-      --pid_hold ID         Hold PID controller.
-      --pid_resume ID       Resume PID controller.
-      --pid_get_setpoint ID
-                            Get the setpoint value of the PID controller.
-      --pid_get_error ID    Get the error value of the PID controller.
-      --pid_get_integrator ID
-                            Get the integrator value of the PID controller.
-      --pid_get_derivator ID
-                            Get the derivator value of the PID controller.
-      --pid_get_kp ID       Get the Kp gain of the PID controller.
-      --pid_get_ki ID       Get the Ki gain of the PID controller.
-      --pid_get_kd ID       Get the Kd gain of the PID controller.
-      --pid_set_setpoint ID SETPOINT
-                            Set the setpoint value of the PID controller.
-      --pid_set_integrator ID INTEGRATOR
-                            Set the integrator value of the PID controller.
-      --pid_set_derivator ID DERIVATOR
-                            Set the derivator value of the PID controller.
-      --pid_set_kp ID KP    Set the Kp gain of the PID controller.
-      --pid_set_ki ID KI    Set the Ki gain of the PID controller.
-      --pid_set_kd ID KD    Set the Kd gain of the PID controller.
-      -c, --checkdaemon     Check if all active daemon controllers are running
-      --ramuse              Return the amount of ram used by the Mycodo daemon
-      --input_force_measurements INPUTID
-                            Force acquiring measurements for Input ID
-      --lcd_backlight_on LCDID
-                            Turn on LCD backlight with LCD ID
-      --lcd_backlight_off LCDID
-                            Turn off LCD backlight with LCD ID
-      --lcd_reset LCDID     Reset LCD with LCD ID
-      --output_state OUTPUTID
-                            State of output with output ID
-      --output_currently_on OUTPUTID
-                            How many seconds an output has currently been active
-                            for
-      --outputoff OUTPUTID  Turn off output with output ID
-      --outputon OUTPUTID   Turn on output with output ID
-      --duration SECONDS    Turn on output for a duration of time (seconds)
-      --dutycycle DUTYCYCLE
-                            Turn on PWM output for a duty cycle (%)
-      --trigger_action ACTIONID
-                            Trigger action with Action ID
-      --trigger_all_actions FUNCTIONID
-                            Trigger all actions belonging to Function with ID
-      -t, --terminate       Terminate the daemon
+there’s a lot to be desired. See Mycodo Client, but note it may not be
+the most current list of commands, so it’s recommended to execute
+mycodo-client --help to see a full list of current options.
 
 ------------------------------------------------------------------------
 
@@ -439,33 +363,81 @@ Each section performs specific tasks or groups of related tasks.
 
 Mycodo Client
 
--a Output all. -b Output both (this description is quite long). -c arg
-Output just arg. –long Output all day long.
+    pi@raspberry:~ $ mycodo-client --help
+    usage: mycodo-client [-h] [--activatecontroller CONTROLLER ID]
+                         [--deactivatecontroller CONTROLLER ID] [--pid_pause ID]
+                         [--pid_hold ID] [--pid_resume ID] [--pid_get_setpoint ID]
+                         [--pid_get_error ID] [--pid_get_integrator ID]
+                         [--pid_get_derivator ID] [--pid_get_kp ID]
+                         [--pid_get_ki ID] [--pid_get_kd ID]
+                         [--pid_set_setpoint ID SETPOINT]
+                         [--pid_set_integrator ID INTEGRATOR]
+                         [--pid_set_derivator ID DERIVATOR] [--pid_set_kp ID KP]
+                         [--pid_set_ki ID KI] [--pid_set_kd ID KD] [-c] [--ramuse]
+                         [--input_force_measurements INPUTID]
+                         [--lcd_backlight_on LCDID] [--lcd_backlight_off LCDID]
+                         [--lcd_reset LCDID] [--output_state OUTPUTID]
+                         [--output_currently_on OUTPUTID] [--outputoff OUTPUTID]
+                         [--outputon OUTPUTID] [--duration SECONDS]
+                         [--dutycycle DUTYCYCLE] [--trigger_action ACTIONID]
+                         [--trigger_all_actions FUNCTIONID] [-t]
 
--p This option has two paragraphs in the
+    Client for Mycodo daemon.
 
-    description. This is the first.
-
-    This is the second. Blank lines may be omitted between options (as
-    above) or left in (as here and below).
-
--test this is a test
-
-–very-long-option A VMS-style option. Note
-
-    the adjustment for the required two spaces.
-
-–an-even-longer-option The description can
-
-    also start on the next line.
-
--2, –two This option has two variants.
-
--f FILE, –file=FILE These two options are
-
-    synonyms; both have arguments.
-
-/V A VMS/DOS-style option.
+    optional arguments:
+      -h, --help            show this help message and exit
+      --activatecontroller CONTROLLER ID
+                            Activate controller. Options: Conditional, LCD, Math,
+                            PID, Input
+      --deactivatecontroller CONTROLLER ID
+                            Deactivate controller. Options: Conditional, LCD,
+                            Math, PID, Input
+      --pid_pause ID        Pause PID controller.
+      --pid_hold ID         Hold PID controller.
+      --pid_resume ID       Resume PID controller.
+      --pid_get_setpoint ID
+                            Get the setpoint value of the PID controller.
+      --pid_get_error ID    Get the error value of the PID controller.
+      --pid_get_integrator ID
+                            Get the integrator value of the PID controller.
+      --pid_get_derivator ID
+                            Get the derivator value of the PID controller.
+      --pid_get_kp ID       Get the Kp gain of the PID controller.
+      --pid_get_ki ID       Get the Ki gain of the PID controller.
+      --pid_get_kd ID       Get the Kd gain of the PID controller.
+      --pid_set_setpoint ID SETPOINT
+                            Set the setpoint value of the PID controller.
+      --pid_set_integrator ID INTEGRATOR
+                            Set the integrator value of the PID controller.
+      --pid_set_derivator ID DERIVATOR
+                            Set the derivator value of the PID controller.
+      --pid_set_kp ID KP    Set the Kp gain of the PID controller.
+      --pid_set_ki ID KI    Set the Ki gain of the PID controller.
+      --pid_set_kd ID KD    Set the Kd gain of the PID controller.
+      -c, --checkdaemon     Check if all active daemon controllers are running
+      --ramuse              Return the amount of ram used by the Mycodo daemon
+      --input_force_measurements INPUTID
+                            Force acquiring measurements for Input ID
+      --lcd_backlight_on LCDID
+                            Turn on LCD backlight with LCD ID
+      --lcd_backlight_off LCDID
+                            Turn off LCD backlight with LCD ID
+      --lcd_reset LCDID     Reset LCD with LCD ID
+      --output_state OUTPUTID
+                            State of output with output ID
+      --output_currently_on OUTPUTID
+                            How many seconds an output has currently been active
+                            for
+      --outputoff OUTPUTID  Turn off output with output ID
+      --outputon OUTPUTID   Turn on output with output ID
+      --duration SECONDS    Turn on output for a duration of time (seconds)
+      --dutycycle DUTYCYCLE
+                            Turn on PWM output for a duty cycle (%)
+      --trigger_action ACTIONID
+                            Trigger action with Action ID
+      --trigger_all_actions FUNCTIONID
+                            Trigger all actions belonging to Function with ID
+      -t, --terminate       Terminate the daemon
 
 
 Data
@@ -675,25 +647,136 @@ the measurement database to be used throughout the Mycodo system.
   Deadline (seconds)      The maximum amount of time to wait for each ping
                           attempt, after which 0 (offline) will be
                           returned (Server Ping input).
+
+  Number of Measurement   The number of unique measurements to store data
+                          for this input.
+
+  Application ID          The Application ID on The Things Network.
+
+  App API Key             The Application API Key on The Things Network.
+
+  Device ID               The Device ID of the Application on The Things
+                          Network.
   ------------------------------------------------------------------------
 
 1.  Debouncing a signal
+
+The Things Network
+
+The Things Network (TTN) Input module enables downloading of data from
+TTN if the Data Storage Integration is enabled in your TTN Application.
+The Data Storage Integration will store data for up to 7 days. Mycodo
+will download this data periodically and store the measurements locally.
+
+The payload on TTN must be properly decoded to variables that correspond
+to the “Name” option under “Select Measurements”, in the lower section
+of the Input options. For instance, in your TTN Application, if a custom
+Payload Format is selected, the decoder code may look like this:
+
+    function Decoder(bytes, port) {
+        var decoded = {};
+        var rawTemp = bytes[0] + bytes[1] * 256;
+        decoded.temperature = sflt162f(rawTemp) * 100;
+        return decoded;
+    }
+
+    function sflt162f(rawSflt16) {
+        rawSflt16 &= 0xFFFF;
+        if (rawSflt16 === 0x8000)
+            return -0.0;
+        var sSign = ((rawSflt16 & 0x8000) !== 0) ? -1 : 1;
+        var exp1 = (rawSflt16 >> 11) & 0xF;
+        var mant1 = (rawSflt16 & 0x7FF) / 2048.0;
+        return sSign * mant1 * Math.pow(2, exp1 - 15);
+    }
+
+This will decode the 2-byte payload into a temperature float value with
+the name “temperature”. Set “Number of Measurements” to “1”, then set
+the “Name” for the first channel (CH0) to “temperature” and the
+“Measurement Unit” to “Temperature: Celsius (°C)”.
+
+Upon activation of the Input, data will be downloaded for the past 7
+days. The latest data timestamp will be stored so any subsequent
+activation of the Input will only download new data (since the last
+known timestamp).
+
+There are several example Input modules that, in addition to storing the
+measurements of a sensor in the influx database, will write the
+measurements to a serial device. This is useful of you have a LoRaWAN
+transmitter connected via serial to receive measurement information from
+Mycodo and transmit it to a LoRaWAN gateway (and subsequently to The
+Things Network). The data on TTN can then be downloaded elsewhere with
+the TTN Input. These example Input modules are located in the following
+locations:
+
+~/Mycodo/mycodo/inputs/examples/bme280_ttn.py
+
+~/Mycodo/mycodo/inputs/examples/k30_ttn.py
+
+For example, the following excerpt from bme_280.py will write a set of
+comma-separated strings to the user-specified serial device with the
+first string (the letter “B”) used to denote the sensor/measurements,
+followed by the actual measurements (humidity, pressure, and
+temperature, in this case).
+
+    string_send = 'B,{},{},{}'.format(
+        return_dict[1]['value'],
+        return_dict[2]['value'],
+        return_dict[0]['value'])
+    self.serial_send = self.serial.Serial(self.serial_device, 9600)
+    self.serial_send.write(string_send.encode())
+
+This is useful if multiple data strings are to be sent to the same
+serial device (e.g. if both bme280_ttn.py and k30_ttn.py are being used
+at the same time), allowing the serial device to distinguish what data
+is being received.
+
+The full code used to decode both bme280_ttn.py and k30_ttn.py, with
+informative comments, is located at
+~/Mycodo/mycodo/inputs/examples/ttn_data_storage_decoder_example.js.
+
+These example Input modules may be modified to suit your needs and
+imported into Mycodo through the Configure -> Inputs page. After import,
+they will be available to use on the Setup -> Data page.
 
 Math
 
 Math controllers allow one or more Inputs to have math applied to
 produce a new value that may be used within Mycodo.
 
+Note: “Last” means the controller will only acquire the last (latest)
+measurement in the database for performing math with. “Past” means the
+controller will acquire all measurements from the present until the “Max
+Age (seconds)” set by the user (e.g. if measurements are acquired every
+10 seconds, and a Max Age is set to 60 seconds, there will on average be
+6 measurements returned to have math performed).
+
   ------------------------------------------------------------------------
   Type                          Description
   ----------------------------- ------------------------------------------
-  Average (Multiple             Stores the statistical mean of multiple
+  Average (Last, Multiple       Stores the statistical mean of multiple
   Measurements)                 selected measurements.
 
-  Average (Single Measurement)  Stores the statistical mean of one
-                                selected measurement over a duration of
+  Average (Last, Single         Stores the statistical mean of one
+  Measurement)                  selected measurement over a duration of
                                 time determined by the Max Age (seconds)
                                 option.
+
+  Average (Past, Single         Stores the statistical mean of one
+  Measurement)                  selected measurement over a duration of
+                                time determined by the Max Age (seconds)
+                                option.
+
+  Sum (Last, Multiple           Stores the sum of multiple selected
+  Measurements)                 measurements.
+
+  Sum (Last, Single             Stores the sum of one selected measurement
+  Measurement)                  over a duration of time determined by the
+                                Max Age (seconds) option.
+
+  Sum (Past, Single             Stores the sum of one selected measurement
+  Measurement)                  over a duration of time determined by the
+                                Max Age (seconds) option.
 
   Difference                    Stores the mathematical difference
                                 (value_1 -value_2).
