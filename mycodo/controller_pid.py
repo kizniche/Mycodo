@@ -235,6 +235,7 @@ class PIDController(threading.Thread):
         except Exception as except_msg:
             self.logger.exception("Run Error: {err}".format(
                 err=except_msg))
+            self.thread_shutdown_timer = timeit.default_timer()
         finally:
             # Turn off output used in PID when the controller is deactivated
             if self.raise_output_id and self.direction in ['raise', 'both']:
