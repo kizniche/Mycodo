@@ -226,7 +226,10 @@ class PIDController(threading.Thread):
                         "Activate the PID controller to start it again.")
 
                 elif time.time() > self.timer:
-                    self.check_pid()
+                    try:
+                        self.check_pid()
+                    except TimeoutError:
+                        self.logger.exception("check_pid() TimeoutError")
 
                 time.sleep(self.sample_rate)
         except Exception as except_msg:
