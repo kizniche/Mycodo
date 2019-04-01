@@ -102,7 +102,6 @@ class InputModule(AbstractInput):
             self.interface = input_dev.interface
             self.period = input_dev.period
             self.first_run = True
-            self.num_channels = input_dev.num_channels
             self.latest_datetime = input_dev.datetime
             self.device_measurements = db_retrieve_table_daemon(
                 DeviceMeasurements).filter(

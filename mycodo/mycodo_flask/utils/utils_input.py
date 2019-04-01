@@ -102,10 +102,6 @@ def input_add(form_add):
             # Interfacing options
             #
 
-            # Number of channels (for Inputs with variable number of measurements)
-            if new_input.device == 'TTN_DATA_STORAGE':
-                new_input.num_channels = 1
-
             # I2C options
             if input_interface == 'I2C':
                 if dict_has_value('i2c_location'):
@@ -477,23 +473,20 @@ def input_mod(form_mod, request_form):
 
             # Add or delete channels for TTN data storage Input
             if mod_input.device == 'TTN_DATA_STORAGE':
-                if mod_input.num_channels is None:
-                    mod_input.num_channels = form_mod.num_channels.data
+                channels = DeviceMeasurements.query.filter(
+                    DeviceMeasurements.device_id == form_mod.input_id.data)
 
-                elif mod_input.num_channels != form_mod.num_channels.data:
-                    channels = DeviceMeasurements.query.filter(
-                        DeviceMeasurements.device_id == form_mod.input_id.data).all()
-
+                if channels.count() != form_mod.num_channels.data:
                     # Delete channels
-                    if form_mod.num_channels.data < mod_input.num_channels:
-                        for index, each_channel in enumerate(channels):
-                            if index + 1 >= mod_input.num_channels:
+                    if form_mod.num_channels.data < channels.count():
+                        for index, each_channel in enumerate(channels.all()):
+                            if index + 1 >= channels.count():
                                 delete_entry_with_id(DeviceMeasurements,
                                                      each_channel.unique_id)
 
                     # Add channels
-                    elif form_mod.num_channels.data > mod_input.num_channels:
-                        start_number = mod_input.num_channels
+                    elif form_mod.num_channels.data > channels.count():
+                        start_number = channels.count()
                         for index in range(start_number, form_mod.num_channels.data):
                             new_measurement = DeviceMeasurements()
                             new_measurement.name = ""
@@ -502,8 +495,6 @@ def input_mod(form_mod, request_form):
                             new_measurement.unit = ""
                             new_measurement.channel = index
                             new_measurement.save()
-
-                    mod_input.num_channels = form_mod.num_channels.data
 
             db.session.commit()
 
