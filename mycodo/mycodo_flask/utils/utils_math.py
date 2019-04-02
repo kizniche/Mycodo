@@ -13,6 +13,7 @@ from mycodo.databases.models import DeviceMeasurements
 from mycodo.databases.models import DisplayOrder
 from mycodo.databases.models import Input
 from mycodo.databases.models import Math
+from mycodo.databases.models import Output
 from mycodo.mycodo_flask.extensions import db
 from mycodo.mycodo_flask.utils.utils_general import add_display_order
 from mycodo.mycodo_flask.utils.utils_general import controller_activate_deactivate
@@ -163,14 +164,21 @@ def math_mod(form_mod_math, form_mod_type=None):
             # Change measurement information
             if form_mod_type.average_input.data and ',' in form_mod_type.average_input.data:
                 measurement_id = form_mod_type.average_input.data.split(',')[1]
-                selected_measurement = get_measurement(measurement_id)
-                if selected_measurement:
-                    conversion = Conversion.query.filter(
-                        Conversion.unique_id == selected_measurement.conversion_id).first()
+
+                if measurement_id == 'output':
+                    output = Output.query.filter(
+                        Output.unique_id == form_mod_type.sum_input.data.split(',')[0]).first()
+                    unit = output.unit
+                    measurement = output.measurement
                 else:
-                    conversion = None
-                _, unit, measurement = return_measurement_info(
-                    selected_measurement, conversion)
+                    selected_measurement = get_measurement(measurement_id)
+                    if selected_measurement:
+                        conversion = Conversion.query.filter(
+                            Conversion.unique_id == selected_measurement.conversion_id).first()
+                    else:
+                        conversion = None
+                    _, unit, measurement = return_measurement_info(
+                        selected_measurement, conversion)
 
                 mod_measurement = DeviceMeasurements.query.filter(
                     DeviceMeasurements.device_id == form_mod_math.math_id.data).first()
@@ -183,14 +191,21 @@ def math_mod(form_mod_math, form_mod_type=None):
             # Change measurement information
             if form_mod_type.sum_input.data and ',' in form_mod_type.sum_input.data:
                 measurement_id = form_mod_type.sum_input.data.split(',')[1]
-                selected_measurement = get_measurement(measurement_id)
-                if selected_measurement:
-                    conversion = Conversion.query.filter(
-                        Conversion.unique_id == selected_measurement.conversion_id).first()
+
+                if measurement_id == 'output':
+                    output = Output.query.filter(
+                        Output.unique_id == form_mod_type.sum_input.data.split(',')[0]).first()
+                    unit = output.unit
+                    measurement = output.measurement
                 else:
-                    conversion = None
-                _, unit, measurement = return_measurement_info(
-                    selected_measurement, conversion)
+                    selected_measurement = get_measurement(measurement_id)
+                    if selected_measurement:
+                        conversion = Conversion.query.filter(
+                            Conversion.unique_id == selected_measurement.conversion_id).first()
+                    else:
+                        conversion = None
+                    _, unit, measurement = return_measurement_info(
+                        selected_measurement, conversion)
 
                 mod_measurement = DeviceMeasurements.query.filter(
                     DeviceMeasurements.device_id == form_mod_math.math_id.data).first()

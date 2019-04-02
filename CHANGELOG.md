@@ -1,8 +1,16 @@
+## 7.4.2 (2019-04-02)
+
+### Bugfixes
+
+ - Fix Average (single) and Sum (single) Math controllers with an Output selected
+
+
 ## 7.4.1 (2019-04-02)
 
 ### Bugfixes
 
  - Fix custom input preservation during upgrade
+
 
 ## 7.4.0 (2019-04-01)
 

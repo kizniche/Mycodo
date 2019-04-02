@@ -37,6 +37,7 @@ from mycodo.databases.models import Conversion
 from mycodo.databases.models import DeviceMeasurements
 from mycodo.databases.models import Math
 from mycodo.databases.models import Misc
+from mycodo.databases.models import Output
 from mycodo.databases.models import SMTP
 from mycodo.inputs.sensorutils import calculate_vapor_pressure_deficit
 from mycodo.inputs.sensorutils import convert_units
@@ -226,15 +227,21 @@ class MathController(threading.Thread):
             device_id = self.inputs.split(',')[0]
             measurement_id = self.inputs.split(',')[1]
 
-            device_measurement = db_retrieve_table_daemon(
-                DeviceMeasurements, unique_id=measurement_id)
-            if device_measurement:
-                conversion = db_retrieve_table_daemon(
-                    Conversion, unique_id=device_measurement.conversion_id)
+            if measurement_id == 'output':
+                output = db_retrieve_table_daemon(Output, unique_id=device_id)
+                channel = output.channel
+                unit = output.unit
+                measurement = output.measurement
             else:
-                conversion = None
-            channel, unit, measurement = return_measurement_info(
-                device_measurement, conversion)
+                device_measurement = db_retrieve_table_daemon(
+                    DeviceMeasurements, unique_id=measurement_id)
+                if device_measurement:
+                    conversion = db_retrieve_table_daemon(
+                        Conversion, unique_id=device_measurement.conversion_id)
+                else:
+                    conversion = None
+                channel, unit, measurement = return_measurement_info(
+                    device_measurement, conversion)
 
             try:
                 average_measurements = average_past_seconds(
@@ -294,15 +301,21 @@ class MathController(threading.Thread):
             device_id = self.inputs.split(',')[0]
             measurement_id = self.inputs.split(',')[1]
 
-            device_measurement = db_retrieve_table_daemon(
-                DeviceMeasurements, unique_id=measurement_id)
-            if device_measurement:
-                conversion = db_retrieve_table_daemon(
-                    Conversion, unique_id=device_measurement.conversion_id)
+            if measurement_id == 'output':
+                output = db_retrieve_table_daemon(Output, unique_id=device_id)
+                channel = output.channel
+                unit = output.unit
+                measurement = output.measurement
             else:
-                conversion = None
-            channel, unit, measurement = return_measurement_info(
-                device_measurement, conversion)
+                device_measurement = db_retrieve_table_daemon(
+                    DeviceMeasurements, unique_id=measurement_id)
+                if device_measurement:
+                    conversion = db_retrieve_table_daemon(
+                        Conversion, unique_id=device_measurement.conversion_id)
+                else:
+                    conversion = None
+                channel, unit, measurement = return_measurement_info(
+                    device_measurement, conversion)
 
             try:
                 sum_measurements = sum_past_seconds(
