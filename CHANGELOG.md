@@ -1,10 +1,3 @@
-## 7.4.1 (Unreleased)
-
-### Bugfixes
-
- - Fix SSL issue with upgrade-checking
-
-
 ## 7.4.0 (2019-04-01)
 
 ### Bugfixes

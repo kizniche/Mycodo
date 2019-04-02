@@ -2,7 +2,6 @@
 import argparse
 import json
 import logging
-import ssl
 import sys
 from urllib.request import urlopen
 
@@ -28,8 +27,7 @@ def json_to_dict(url):
     :param url: website address
     :type url: str
     """
-    context = ssl._create_unverified_context()
-    response = urlopen(url, context=context)
+    response = urlopen(url)
     data = response.read().decode("utf-8")
     return json.loads(data)
 
