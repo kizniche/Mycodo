@@ -158,7 +158,7 @@ runSelfUpgrade() {
 
   if [ -d ${INSTALL_DIRECTORY}/Mycodo/mycodo/inputs/custom_inputs ] ; then
     printf "Copying mycodo/inputs/custom_inputs..."
-    if ! cp -R ${INSTALL_DIRECTORY}/Mycodo/mycodo/inputs/custom_inputs ${MYCODO_NEW_TMP_DIR}/mycodo/inputs/custom_inputs ; then
+    if ! cp ${INSTALL_DIRECTORY}/Mycodo/mycodo/inputs/custom_inputs/*.py ${MYCODO_NEW_TMP_DIR}/mycodo/inputs/custom_inputs/ ; then
       printf "Failed: Error while trying to copy mycodo/inputs/custom_inputs"
       error_found
     fi
