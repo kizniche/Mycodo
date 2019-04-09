@@ -92,7 +92,6 @@ def main():
                         help="Protocol (Default: 1)")
     args = parser.parse_args()
 
-
     if args.direction == 1:
         rfdevice = RFDevice(args.gpio)
         rfdevice.enable_tx()

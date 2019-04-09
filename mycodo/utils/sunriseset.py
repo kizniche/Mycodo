@@ -75,7 +75,7 @@ class Sun:
     def calc_sun_time(self, is_rise_time):
         # is_rise_time == False, returns sunsetTime
 
-        to_rad = math.pi/180
+        to_rad = math.pi / 180
 
         # 1. first calculate the day of the year
         n1 = math.floor(275 * self.month / 9)
@@ -183,14 +183,18 @@ def calculate_sunrise_sunset_epoch(trigger):
         if trigger.rise_or_set == 'sunrise':
             # If the sunrise is in the past, add a day
             if float(new_sunrise.strftime('%s')) < time.time():
-                tomorrow_sunrise = new_sunrise + datetime.timedelta(days=1)
+                tomorrow_sunrise = new_sunrise
+                while float(tomorrow_sunrise.strftime('%s')) < time.time():
+                    tomorrow_sunrise = tomorrow_sunrise + datetime.timedelta(days=1)
                 return float(tomorrow_sunrise.strftime('%s'))
             else:
                 return float(new_sunrise.strftime('%s'))
         elif trigger.rise_or_set == 'sunset':
             # If the sunrise is in the past, add a day
             if float(new_sunset.strftime('%s')) < time.time():
-                tomorrow_sunset = new_sunset + datetime.timedelta(days=1)
+                tomorrow_sunset = new_sunset
+                while float(tomorrow_sunset.strftime('%s')) < time.time():
+                    tomorrow_sunset = tomorrow_sunset + datetime.timedelta(days=1)
                 return float(tomorrow_sunset.strftime('%s'))
             else:
                 return float(new_sunset.strftime('%s'))

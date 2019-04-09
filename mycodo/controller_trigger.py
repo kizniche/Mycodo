@@ -433,7 +433,7 @@ class TriggerController(threading.Thread):
             self.timer_period = calculate_sunrise_sunset_epoch(trigger)
 
         # Check if the current time is between the start and end time
-        if trigger.trigger_type == 'trigger_timer_daily_time_span':
+        elif trigger.trigger_type == 'trigger_timer_daily_time_span':
             if not time_between_range(self.timer_start_time,
                                       self.timer_end_time):
                 return
