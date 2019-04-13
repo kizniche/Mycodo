@@ -9,6 +9,22 @@ from flask_babel import lazy_gettext
 # Measurement information
 # First unit in list is the default unit when Input is created
 MEASUREMENTS = {
+    'acceleration_g_force': {
+        'name': lazy_gettext('Acceleration (G-Force)'),
+        'meas': 'g_force',
+        'units': ['g_force']},
+    'acceleration_x_g_force': {
+        'name': lazy_gettext('Acceleration (G-Force, X)'),
+        'meas': 'g_force',
+        'units': ['g_force']},
+    'acceleration_y_g_force': {
+        'name': lazy_gettext('Acceleration (G-Force, Y)'),
+        'meas': 'g_force',
+        'units': ['g_force']},
+    'acceleration_z_g_force': {
+        'name': lazy_gettext('Acceleration (G-Force, Z)'),
+        'meas': 'g_force',
+        'units': ['g_force']},
     'altitude': {
         'name': lazy_gettext('Altitude'),
         'meas': 'altitude',
@@ -206,6 +222,9 @@ UNITS = {
     'full': {
         'name': lazy_gettext('Full'),
         'unit': 'full'},
+    'g_force': {
+        'name': lazy_gettext('G-Force'),
+        'unit': 'G'},
     'GB': {
         'name': lazy_gettext('Gigabyte'),
         'unit': 'GB'},

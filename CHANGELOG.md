@@ -3,6 +3,12 @@
 ### Bugfixes
 
  - Fix Sunrise/Sunset calculation
+ - Update Infrared Remote section of manual to work with latest kernel
+ - Add Bluetooth locking to prevent broken pipes
+
+### Features
+
+ - Add Input: RuuviTag ([#638](https://github.com/kizniche/mycodo/issues/638))
 
 
 ## 7.4.2 (2019-04-02)
