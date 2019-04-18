@@ -3,6 +3,11 @@
 ### Bugfixes
 
  - Fix storing latest SHT31 Smart Gadget measurements
+ - Fix Base Input __repr__ and __str__
+
+### Miscellaneous
+
+ - Update InfluxDB to 1.7.6
 
 
 ## 7.4.3 (2019-04-17)
