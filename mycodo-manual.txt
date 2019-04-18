@@ -3084,10 +3084,15 @@ Now, every time the dust sensor is plugged in, it shows up at
 
 Infrared Remote
 
-#### Note: As of 4/8/2019, the Raspberry Pi kernel no longer supports
+#### Note 1: As of 4/8/2019, the Raspberry Pi kernel no longer supports
 lirc-rpi as an overlay in /boot/config.txt (use gpio-ir, details below).
 To ensure the below instructions work, make sure you are using the
 latest kernel by running sudo rpi-update
+
+#### Note 2: Currently only receiving IR commands is working. IR sending
+is not working. When I get time to test and develop an implementation of
+this feature that both sends and receives IR signals, I will remove this
+note.
 
 Infrared (IR) light is a common way to send and receive signals across
 distances. This is typically done with IR remotes with several buttons

@@ -9,6 +9,7 @@
 ### Features
 
  - Add Input: RuuviTag ([#638](https://github.com/kizniche/mycodo/issues/638))
+ - Add Inputs: Atlas Scientific ORP, Atlas Scientific DO (FTDI, UART, I2C) ([#643](https://github.com/kizniche/mycodo/issues/643))
  - Add Reset Pin option and editable location for SD1306 OLED display ([#647](https://github.com/kizniche/mycodo/issues/647))
 
 
