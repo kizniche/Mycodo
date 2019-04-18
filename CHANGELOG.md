@@ -1,3 +1,10 @@
+## 7.4.4 (Unreleased)
+
+### Bugfixes
+
+ - Fix storing latest SHT31 Smart Gadget measurements
+
+
 ## 7.4.3 (2019-04-17)
 
 ### Bugfixes

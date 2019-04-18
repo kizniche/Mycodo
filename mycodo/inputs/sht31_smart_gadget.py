@@ -431,8 +431,7 @@ class InputModule(AbstractInput):
             lock.release()
             os.remove(self.lock_file_bluetooth)
 
-            if self.connected:
-                return return_dict
+            return return_dict
 
     def initialize(self):
         """Initialize the device by obtaining sensor information"""
