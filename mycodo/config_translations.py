@@ -104,12 +104,16 @@ TRANSLATIONS = {
         'title': lazy_gettext('Pause')},
     'pid': {
         'title': lazy_gettext('PID')},
+    'pin': {
+        'title': lazy_gettext('Pin')},
     'pwm': {
         'title': lazy_gettext('PWM')},
     'rename': {
         'title': lazy_gettext('Rename')},
     'reorder': {
         'title': lazy_gettext('Reorder')},
+    'reset': {
+        'title': lazy_gettext('Reset')},
     'resume': {
         'title': lazy_gettext('Resume')},
     'save': {

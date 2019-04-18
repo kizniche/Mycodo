@@ -111,10 +111,12 @@ def lcd_mod(form_mod_lcd):
         if form_mod_lcd.validate():
             try:
                 mod_lcd.name = form_mod_lcd.name.data
-                if mod_lcd.lcd_type in ['16x2_generic',
-                                        '20x4_generic']:
-                    mod_lcd.location = form_mod_lcd.location.data
+                mod_lcd.location = form_mod_lcd.location.data
                 mod_lcd.i2c_bus = form_mod_lcd.i2c_bus.data
+                if form_mod_lcd.pin_reset.data is not None:
+                    mod_lcd.pin_reset = form_mod_lcd.pin_reset.data
+                else:
+                    mod_lcd.pin_reset = None
                 mod_lcd.period = form_mod_lcd.period.data
                 db.session.commit()
             except Exception as except_msg:

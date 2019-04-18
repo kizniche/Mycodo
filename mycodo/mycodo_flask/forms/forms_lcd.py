@@ -13,6 +13,7 @@ from wtforms import SubmitField
 from wtforms import validators
 from wtforms import widgets
 from wtforms.validators import DataRequired
+from wtforms.validators import Optional
 from wtforms.widgets.html5 import NumberInput
 
 from mycodo.config import LCDS
@@ -43,6 +44,11 @@ class LCDMod(FlaskForm):
                                unit=lazy_gettext('I<sup>2</sup>C')),
         validators=[DataRequired()],
         widget=NumberInput()
+    )
+    pin_reset = IntegerField(
+        "{pin}: {reset}".format(pin=TRANSLATIONS['pin']['title'],
+                                reset=TRANSLATIONS['reset']['title']),
+        validators=[Optional()]
     )
     period = DecimalField(
         lazy_gettext('Period (seconds)'),

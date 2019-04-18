@@ -13,8 +13,8 @@ from flask_babel import lazy_gettext
 sys.path.append(os.path.abspath(os.path.dirname(__file__)))
 from config_translations import TRANSLATIONS
 
-MYCODO_VERSION = '7.4.2'
-ALEMBIC_VERSION = 'f9ddbe510462'
+MYCODO_VERSION = '7.4.3'
+ALEMBIC_VERSION = '7a9b3cea5c06'
 
 #  FORCE_UPGRADE_MASTER
 #  Set True to enable upgrading to the master branch of the Mycodo repository.
@@ -53,7 +53,7 @@ LCD_INFO = {
         'dependencies_module': []
     },
     '128x32_pioled': {
-        'name': '128x32 OLED',
+        'name': '128x32 OLED (SD1306)',
         'dependencies_module': [
             ('apt', 'libjpeg-dev', 'libjpeg-dev'),
             ('pip-pypi', 'PIL', 'Pillow'),
@@ -63,7 +63,7 @@ LCD_INFO = {
         ]
     },
     '128x64_pioled': {
-        'name': '128x64 OLED',
+        'name': '128x64 OLED (SD1306)',
         'dependencies_module': [
             ('apt', 'libjpeg-dev', 'libjpeg-dev'),
             ('pip-pypi', 'PIL', 'Pillow'),

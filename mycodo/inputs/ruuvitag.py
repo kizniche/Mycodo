@@ -1,5 +1,6 @@
 # coding=utf-8
 import logging
+
 import os
 
 from mycodo.databases.models import DeviceMeasurements
@@ -104,7 +105,6 @@ class InputModule(AbstractInput):
         self.last_downloaded_timestamp = None
 
         if not testing:
-            from ruuvitag_sensor.ruuvitag import RuuviTag
             import locket
             self.logger = logging.getLogger(
                 "mycodo.ruuvitag_{id}".format(
@@ -118,12 +118,10 @@ class InputModule(AbstractInput):
             self.lock_file_bluetooth = '/var/lock/bluetooth_dev_hci{}'.format(input_dev.bt_adapter)
             self.location = input_dev.location
             self.bt_adapter = input_dev.bt_adapter
-            self.sensor = RuuviTag(self.location, bt_device='hci{}'.format(self.bt_adapter))
 
     def get_measurement(self):
         """ Obtain and return the measurements """
         return_dict = measurements_dict.copy()
-        state = None
         lock_acquired = False
 
         # Set up lock
@@ -136,46 +134,52 @@ class InputModule(AbstractInput):
             os.remove(self.lock_file_bluetooth)
 
         if lock_acquired:
-            state = self.sensor.update()
-            state = self.sensor.state
-            lock.release()
+            from mycodo.utils.system_pi import cmd_output
+            cmd = '/var/mycodo-root/env/bin/python ' \
+                  '/var/mycodo-root/mycodo/inputs/scripts/ruuvitag_values.py ' \
+                  '--mac_address {mac} --bt_adapter {bta}'.format(
+                    mac=self.location, bta=self.bt_adapter)
+            cmd_return, _, cmd_status = cmd_output(cmd)
 
+            values = cmd_return.decode('ascii').split(',')
+
+            if self.is_enabled(0):
+                return_dict[0]['value'] = float(str(values[0]))
+
+            if self.is_enabled(1):
+                return_dict[1]['value'] = float(values[1])
+
+            if self.is_enabled(2):
+                return_dict[2]['value'] = float(values[2])
+
+            if self.is_enabled(3):
+                return_dict[3]['value'] = float(values[3]) / 1000
+
+            if self.is_enabled(4):
+                return_dict[4]['value'] = float(values[4]) / 1000
+
+            if self.is_enabled(5):
+                return_dict[5]['value'] = float(values[5]) / 1000
+
+            if self.is_enabled(6):
+                return_dict[6]['value'] = float(values[6]) / 1000
+
+            if self.is_enabled(7):
+                return_dict[7]['value'] = float(values[7]) / 1000
+
+            if (self.is_enabled(8) and
+                    self.is_enabled(0) and
+                    self.is_enabled(1)):
+                return_dict[8]['value'] = calculate_dewpoint(
+                    return_dict[0]['value'], return_dict[1]['value'])
+
+            if (self.is_enabled(9) and
+                    self.is_enabled(0) and
+                    self.is_enabled(1)):
+                return_dict[9]['value'] = calculate_vapor_pressure_deficit(
+                    return_dict[0]['value'], return_dict[1]['value'])
+
+        lock.release()
         os.remove(self.lock_file_bluetooth)
-
-        if self.is_enabled(0):
-            return_dict[0]['value'] = state['temperature']
-
-        if self.is_enabled(1):
-            return_dict[1]['value'] = state['humidity']
-
-        if self.is_enabled(2):
-            return_dict[2]['value'] = state['pressure']
-
-        if self.is_enabled(3):
-            return_dict[3]['value'] = state['battery'] / 1000
-
-        if self.is_enabled(4):
-            return_dict[4]['value'] = state['acceleration'] / 1000
-
-        if self.is_enabled(5):
-            return_dict[5]['value'] = state['acceleration_x'] / 1000
-
-        if self.is_enabled(6):
-            return_dict[6]['value'] = state['acceleration_y'] / 1000
-
-        if self.is_enabled(7):
-            return_dict[7]['value'] = state['acceleration_z'] / 1000
-
-        if (self.is_enabled(8) and
-                self.is_enabled(0) and
-                self.is_enabled(1)):
-            return_dict[8]['value'] = calculate_dewpoint(
-                return_dict[0]['value'], return_dict[1]['value'])
-
-        if (self.is_enabled(9) and
-                self.is_enabled(0) and
-                self.is_enabled(1)):
-            return_dict[9]['value'] = calculate_vapor_pressure_deficit(
-                return_dict[0]['value'], return_dict[1]['value'])
 
         return return_dict

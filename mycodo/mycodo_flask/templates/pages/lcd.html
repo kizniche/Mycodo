@@ -125,7 +125,7 @@
         <div class="col-auto">
           {{form_lcd_mod.location.label(class_='control-label')}}
           <div>
-            <input class="form-control btn btn-sm btn-block" disabled="" title="" value="{{each_lcd.location}}" type="text">
+            {{form_lcd_mod.location(class_='form-control', value=each_lcd.location)}}
           </div>
         </div>
 
@@ -137,6 +137,18 @@
             {{form_lcd_mod.i2c_bus(class_='form-control', value=each_lcd.i2c_bus)}}
           </div>
         </div>
+
+      {% if each_lcd.lcd_type in ['128x32_pioled', '128x64_pioled'] %}
+
+        <div class="col-auto">
+          {{form_lcd_mod.pin_reset.label(class_='control-label')}}
+          <div>
+            {{form_lcd_mod.pin_reset(class_='form-control', value=each_lcd.pin_reset if each_lcd.pin_reset != None else '')}}
+          </div>
+        </div>
+
+      {% endif %}
+
         <div class="col-auto">
           {{form_lcd_mod.period.label(class_='control-label')}}
           <div>

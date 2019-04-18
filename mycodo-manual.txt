@@ -3084,6 +3084,11 @@ Now, every time the dust sensor is plugged in, it shows up at
 
 Infrared Remote
 
+#### Note: As of 4/8/2019, the Raspberry Pi kernel no longer supports
+lirc-rpi as an overlay in /boot/config.txt (use gpio-ir, details below).
+To ensure the below instructions work, make sure you are using the
+latest kernel by running sudo rpi-update
+
 Infrared (IR) light is a common way to send and receive signals across
 distances. This is typically done with IR remotes with several buttons
 configured to send different signals. These signals can be detected by
@@ -3107,19 +3112,18 @@ sudo apt install liblircclient-dev lirc
 
 ~/Mycodo/env/bin/pip install python-lirc py-irsend
 
-Edit /boot/config.txt and add to the end of the file, replacing 17 from
-gpio_out_pin=17 with the GPIO (BCM numbering) connected to your IR LED
-and 18 from gpio_in_pin=18 connected to the IR receiver. You can omit
-either of these options if you aren’t using either the IR receiver or
-transmitting LED:
+Edit /boot/config.txt and add to the end of the file, replacing “17”
+with the GPIO (BCM numbering) connected to your IR LED and “18” with the
+GPIO connected to the IR receiver. You can omit either of these options
+if you aren’t using either the IR receiver or transmitting LED:
 
-dtoverlay=lirc-rpi,gpio_out_pin=17,gpio_in_pin=18,gpio_in_pull=up
+dtoverlay=gpio-ir,gpio_pin=18 dtoverlay=gpio-ir-tx,gpio_pin=17
 
 Edit /etc/lirc/lirc_options.conf and ensure the following settings are
 set:
 
     driver = default
-    device = /dev/lirc0
+    device = /dev/lirc1
 
 Restart your system:
 
@@ -3135,7 +3139,7 @@ sudo service lircd stop
 
 Then, issue the following command:
 
-sudo irrecord -n -d /dev/lirc0
+sudo irrecord -n -d /dev/lirc1
 
 You will be prompted with a very specific set of instructions in order
 to map your remote. If you successfully finish the config generation,

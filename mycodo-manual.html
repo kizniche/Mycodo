@@ -3112,23 +3112,24 @@ pi@raspberry:/dev $ ls -al dust-sensor
 lrwxrwxrwx 1 root root 7 Oct 6 21:04 dust-sensor -&gt; ttyUSB0</code></pre>
 <p>Now, every time the dust sensor is plugged in, it shows up at /dev/dust-sensor</p>
 <h2 id="infrared-remote">Infrared Remote</h2>
+<p>#### Note: As of 4/8/2019, the Raspberry Pi kernel no longer supports <code>lirc-rpi</code> as an overlay in <code>/boot/config.txt</code> (use <code>gpio-ir</code>, details below). To ensure the below instructions work, make sure you are using the latest kernel by running <code>sudo rpi-update</code></p>
 <p>Infrared (IR) light is a common way to send and receive signals across distances. This is typically done with IR remotes with several buttons configured to send different signals. These signals can be detected by the Raspberry Pi with the use of an <a href="https://www.sparkfun.com/products/10266">IR receiver diode</a> and used to perform actions within the linux environment and Mycodo. This is done with <a href="http://lirc.org/">lirc</a>, and needs to be properly configured before IR signals can be detected and interpreted.</p>
 <p>The IR receiver typically has three connections, power (3.3 volts), ground, and data (GPIO pin), and should be connected to the appropriate pins of your Raspberry Pi. Make sure your IR receiver can operate at 3.3 volts, which is the appropriate voltage GPIOs operate at. For testing, I used the <a href="https://www.sparkfun.com/products/14677">Sparkfun Infrared Control Kit</a>, which has an <a href="https://learn.sparkfun.com/tutorials/ir-control-kit-hookup-guide">Information Guide</a>, however there are cheaper alternatives.</p>
 <p>Adding an Infrared Output device or an Infrared Send function action will automatically install the dependencies, otherwise it can be done manually:</p>
 <p><code>sudo apt install liblircclient-dev lirc</code></p>
 <p><code>~/Mycodo/env/bin/pip install python-lirc py-irsend</code></p>
-<p>Edit <code>/boot/config.txt</code> and add to the end of the file, replacing 17 from <code>gpio_out_pin=17</code> with the GPIO (BCM numbering) connected to your IR LED and 18 from <code>gpio_in_pin=18</code> connected to the IR receiver. You can omit either of these options if you aren’t using either the IR receiver or transmitting LED:</p>
-<p><code>dtoverlay=lirc-rpi,gpio_out_pin=17,gpio_in_pin=18,gpio_in_pull=up</code></p>
+<p>Edit <code>/boot/config.txt</code> and add to the end of the file, replacing “17” with the GPIO (BCM numbering) connected to your IR LED and “18” with the GPIO connected to the IR receiver. You can omit either of these options if you aren’t using either the IR receiver or transmitting LED:</p>
+<p><code>dtoverlay=gpio-ir,gpio_pin=18 dtoverlay=gpio-ir-tx,gpio_pin=17</code></p>
 <p>Edit <code>/etc/lirc/lirc_options.conf</code> and ensure the following settings are set:</p>
 <pre><code>driver = default
-device = /dev/lirc0</code></pre>
+device = /dev/lirc1</code></pre>
 <p>Restart your system:</p>
 <p><code>sudo shutdown now -r</code></p>
 <p>Check <a href="http://lirc-remotes.sourceforge.net/remotes-table.html">this remote database</a> for your remote, and if it’s found, place it in <code>/etc/lirc/lircd.conf.d/</code>, otherwise you will need to generate a config file for your remote.</p>
 <p>To generate a config file for your remote, lirc must first be stopped:</p>
 <p><code>sudo service lircd stop</code></p>
 <p>Then, issue the following command:</p>
-<p><code>sudo irrecord -n -d /dev/lirc0</code></p>
+<p><code>sudo irrecord -n -d /dev/lirc1</code></p>
 <p>You will be prompted with a very specific set of instructions in order to map your remote. If you successfully finish the config generation, you will have a *.lirc.conf file that you should place in <code>/etc/lirc/lircd.conf.d/</code></p>
 <p>If <code>irrecord</code> is unable to parse the remote code (due to complexity or other issue), you can still use the raw data to create a config file. To obtain the raw code data, run the following command, and press a button on the remote once.</p>
 <p><code>mode2 -m</code></p>

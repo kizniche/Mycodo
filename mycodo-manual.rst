@@ -3054,6 +3054,8 @@ Now, every time the dust sensor is plugged in, it shows up at /dev/dust-sensor
 Infrared Remote
 ---------------
 
+#### Note: As of 4/8/2019, the Raspberry Pi kernel no longer supports ``lirc-rpi`` as an overlay in ``/boot/config.txt`` (use ``gpio-ir``, details below). To ensure the below instructions work, make sure you are using the latest kernel by running ``sudo rpi-update``
+
 Infrared (IR) light is a common way to send and receive signals across distances. This is typically done with IR remotes with several buttons configured to send different signals. These signals can be detected by the Raspberry Pi with the use of an `IR receiver diode <https://www.sparkfun.com/products/10266>`__ and used to perform actions within the linux environment and Mycodo. This is done with `lirc <http://lirc.org/>`__, and needs to be properly configured before IR signals can be detected and interpreted.
 
 The IR receiver typically has three connections, power (3.3 volts), ground, and data (GPIO pin), and should be connected to the appropriate pins of your Raspberry Pi. Make sure your IR receiver can operate at 3.3 volts, which is the appropriate voltage GPIOs operate at. For testing, I used the `Sparkfun Infrared Control Kit <https://www.sparkfun.com/products/14677>`__, which has an `Information Guide <https://learn.sparkfun.com/tutorials/ir-control-kit-hookup-guide>`__, however there are cheaper alternatives.
@@ -3064,16 +3066,19 @@ Adding an Infrared Output device or an Infrared Send function action will automa
 
 ``~/Mycodo/env/bin/pip install python-lirc py-irsend``
 
-Edit ``/boot/config.txt`` and add to the end of the file, replacing 17 from ``gpio_out_pin=17`` with the GPIO (BCM numbering) connected to your IR LED and 18 from ``gpio_in_pin=18`` connected to the IR receiver. You can omit either of these options if you aren't using either the IR receiver or transmitting LED:
+Edit ``/boot/config.txt`` and add to the end of the file, replacing "17" with the GPIO (BCM numbering) connected to your IR LED and "18" with the GPIO connected to the IR receiver. You can omit either of these options if you aren't using either the IR receiver or transmitting LED:
 
-``dtoverlay=lirc-rpi,gpio_out_pin=17,gpio_in_pin=18,gpio_in_pull=up``
+``
+dtoverlay=gpio-ir,gpio_pin=18
+dtoverlay=gpio-ir-tx,gpio_pin=17
+``
 
 Edit ``/etc/lirc/lirc_options.conf`` and ensure the following settings are set:
 
 ::
 
     driver = default
-    device = /dev/lirc0
+    device = /dev/lirc1
 
 Restart your system:
 
@@ -3087,7 +3092,7 @@ To generate a config file for your remote, lirc must first be stopped:
 
 Then, issue the following command:
 
-``sudo irrecord -n -d /dev/lirc0``
+``sudo irrecord -n -d /dev/lirc1``
 
 You will be prompted with a very specific set of instructions in order to map your remote. If you successfully finish the config generation, you will have a *.lirc.conf file that you should place in ``/etc/lirc/lircd.conf.d/``
 

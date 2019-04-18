@@ -9,6 +9,7 @@
 ### Features
 
  - Add Input: RuuviTag ([#638](https://github.com/kizniche/mycodo/issues/638))
+ - Add Reset Pin option and editable location for SD1306 OLED display ([#647](https://github.com/kizniche/mycodo/issues/647))
 
 
 ## 7.4.2 (2019-04-02)

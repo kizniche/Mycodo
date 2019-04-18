@@ -21,15 +21,16 @@ class LCD_Pioled:
         self.lcd_x_characters = lcd_dev.x_characters
         self.lcd_y_lines = lcd_dev.y_lines
         self.lcd_type = lcd_dev.lcd_type
+        self.pin_reset = lcd_dev.pin_reset
 
         if self.lcd_type == '128x32_pioled':
             self.disp = Adafruit_SSD1306.SSD1306_128_32(
-                rst=None,
+                rst=self.pin_reset,
                 i2c_address=self.i2c_address,
                 i2c_bus=self.i2c_bus)
         elif self.lcd_type == '128x64_pioled':
             self.disp = Adafruit_SSD1306.SSD1306_128_64(
-                rst=None,
+                rst=self.pin_reset,
                 i2c_address=self.i2c_address,
                 i2c_bus=self.i2c_bus)
 

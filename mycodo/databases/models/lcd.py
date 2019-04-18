@@ -10,6 +10,7 @@ class LCD(CRUDMixin, db.Model):
 
     id = db.Column(db.Integer, unique=True, primary_key=True)
     unique_id = db.Column(db.String, nullable=False, unique=True, default=set_uuid)
+    pin_reset = db.Column(db.Integer, default=None)
     lcd_type = db.Column(db.Text, default=None)
     name = db.Column(db.Text, default='LCD')
     is_activated = db.Column(db.Boolean, default=False)

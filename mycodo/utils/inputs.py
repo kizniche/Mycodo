@@ -102,7 +102,7 @@ def parse_input_information():
         return dict_inp
 
     excluded_files = ['__init__.py', '__pycache__', 'base_input.py',
-                      'custom_inputs', 'examples', 'tmp_inputs',
+                      'custom_inputs', 'examples', 'scripts', 'tmp_inputs',
                       'sensorutils.py']
 
     path_inputs = os.path.abspath(os.path.join(os.path.dirname(__file__), os.path.pardir) + '/inputs')
