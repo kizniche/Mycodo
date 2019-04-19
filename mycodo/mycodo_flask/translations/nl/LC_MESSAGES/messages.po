@@ -1792,7 +1792,7 @@ msgstr "Spoor Max"
 
 #: mycodo_flask/forms/forms_dashboard.py:124
 msgid "Show Timestamp"
-msgstr "Toon tijdstempel"
+msgstr "Toon tijdcode"
 
 #: mycodo_flask/forms/forms_dashboard.py:133
 #: mycodo_flask/forms/forms_dashboard.py:147
@@ -1806,7 +1806,7 @@ msgstr "Waarde lettertype (em)"
 #: mycodo_flask/forms/forms_dashboard.py:166
 #: mycodo_flask/forms/forms_dashboard.py:183
 msgid "Timestamp Font (em)"
-msgstr "Tijdstempel lettertype (em)"
+msgstr "Tijdcode lettertype (em)"
 
 #: mycodo_flask/forms/forms_dashboard.py:153
 #: mycodo_flask/forms/forms_dashboard.py:169
@@ -3416,7 +3416,7 @@ msgstr "Ingang (%(type)s), %(sec)s tweede interval"
 #: mycodo_flask/templates/pages/live.html:106
 #: mycodo_flask/templates/pages/live.html:154
 msgid "Timestamp"
-msgstr "tijdstempel"
+msgstr "Tijdcode"
 
 #: mycodo_flask/templates/pages/live.html:126
 #: mycodo_flask/templates/pages/live.html:175
@@ -4064,7 +4064,7 @@ msgid ""
 "the value of seconds"
 msgstr ""
 "De voorwaarde wordt getriggerd wanneer de gemeten conditie groter of "
-"kleiner is dan de ingestelde waarde, of de metingstijdstempel is groter "
+"kleiner is dan de ingestelde waarde, of de metings tijdcode groter is "
 "dan de waarde van seconden"
 
 #: mycodo_flask/templates/pages/function_options/trigger_options/output_pwm.html:17
