@@ -2918,7 +2918,7 @@ msgstr "info"
 #: mycodo_flask/templates/layout-remote.html:47
 #: mycodo_flask/templates/layout.html:191
 msgid "Setup"
-msgstr "Opstelling"
+msgstr "Instellingen"
 
 #: mycodo_flask/templates/layout-remote.html:56
 msgid "Exit"
@@ -2976,20 +2976,20 @@ msgstr "Geen connectie"
 
 #: mycodo_flask/templates/layout.html:175
 msgid "Dash"
-msgstr "scheutje"
+msgstr "Dashboard"
 
 #: mycodo_flask/templates/layout.html:179
 #: mycodo_flask/templates/pages/live.html:5
 msgid "Live"
-msgstr "Leven"
+msgstr "Live"
 
 #: mycodo_flask/templates/layout.html:183
 msgid "Async"
-msgstr "async"
+msgstr "Asynchroon"
 
 #: mycodo_flask/templates/layout.html:187
 msgid "Cam"
-msgstr "kam"
+msgstr "Camera"
 
 #: mycodo_flask/templates/layout.html:198
 #: mycodo_flask/templates/tools/calibration.html:3
