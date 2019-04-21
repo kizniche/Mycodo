@@ -323,6 +323,10 @@ def input_mod(form_mod, request_form):
             error.append(gettext(
                 "Invalid device or improper permissions to read device"))
 
+        if ('gpio_location' in dict_inputs[mod_input.device]['options_enabled'] and
+                form_mod.gpio_location.data is None):
+            error.append(gettext("Pin (GPIO) must be set"))
+
         mod_input.name = form_mod.name.data
 
         if form_mod.location.data:
@@ -333,7 +337,7 @@ def input_mod(form_mod, request_form):
             mod_input.ftdi_location = form_mod.ftdi_location.data
         if form_mod.uart_location.data:
             mod_input.uart_location = form_mod.uart_location.data
-        if form_mod.gpio_location.data:
+        if form_mod.gpio_location.data and form_mod.gpio_location.data is not None:
             mod_input.gpio_location = form_mod.gpio_location.data
 
         if form_mod.power_output_id.data:

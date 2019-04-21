@@ -5,6 +5,7 @@
  - Fix storing latest SHT31 Smart Gadget measurements
  - Fix Base Input __repr__ and __str__
  - Fix unaccounted PID error if activation attempted when Measurement not set ([#649](https://github.com/kizniche/mycodo/issues/649))
+ - Fix missing GPIO Pin sanity check ([#650](https://github.com/kizniche/mycodo/issues/650))
 
 ### Miscellaneous
 
