@@ -266,7 +266,7 @@ class MathController(threading.Thread):
         #
         # Sum (multiple channels)
         #
-        if self.math_type == 'sum':
+        elif self.math_type == 'sum':
             device_measurement = self.device_measurements.filter(
                 DeviceMeasurements.channel == 0).first()
 
