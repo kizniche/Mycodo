@@ -44,7 +44,27 @@ message = ''
 
 def measure(condition_id):
     # pylint: disable=unused-argument
-    return random.choice([None, -100000, -10000, -1000, -100, -10, 0, 1, 10, 100, 1000, 10000, 100000])
+    return random.choice([
+        None, -100000, -10000, -1000, -100, -10,
+        0, 1, 10, 100, 1000, 10000, 100000
+    ])
+
+def measure_dict(condition_id):
+    # pylint: disable=unused-argument
+    return [
+        {'time': '2019-04-24T18:01:00.000Z', 'value': -100000},
+        {'time': '2019-04-24T18:02:00.000Z', 'value': -10000},
+        {'time': '2019-04-24T18:03:00.000Z', 'value': -1000},
+        {'time': '2019-04-24T18:04:00.000Z', 'value': -100},
+        {'time': '2019-04-24T18:05:00.000Z', 'value': -10},
+        {'time': '2019-04-24T18:06:00.000Z', 'value': -1},
+        {'time': '2019-04-24T18:07:00.000Z', 'value': 1},
+        {'time': '2019-04-24T18:08:00.000Z', 'value': 10},
+        {'time': '2019-04-24T18:09:00.000Z', 'value': 100},
+        {'time': '2019-04-24T18:10:00.000Z', 'value': 1000},
+        {'time': '2019-04-24T18:11:00.000Z', 'value': 10000},
+        {'time': '2019-04-24T18:12:00.000Z', 'value': 100000},
+    ]
 
 def run_all_actions(message=message):
     # pylint: disable=unused-argument
@@ -236,7 +256,8 @@ def conditional_condition_mod(form):
         cond_mod = ConditionalConditions.query.filter(
             ConditionalConditions.unique_id == form.conditional_condition_id.data).first()
 
-        if cond_mod.condition_type == 'measurement':
+        if cond_mod.condition_type in ['measurement',
+                                       'measurement_dict']:
             error = check_form_measurements(form, error)
             cond_mod.measurement = form.measurement.data
             cond_mod.max_age = form.max_age.data

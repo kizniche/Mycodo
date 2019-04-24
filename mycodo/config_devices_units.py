@@ -181,6 +181,10 @@ MEASUREMENTS = {
         'name': lazy_gettext('Temperature'),
         'meas': 'temperature',
         'units': ['C', 'F', 'K']},
+    'unitless': {
+        'name': lazy_gettext('Unitless'),
+        'meas': 'unitless',
+        'units': ['none']},
     'vapor_pressure_deficit': {
         'name': lazy_gettext('Vapor Pressure Deficit'),
         'meas': 'vapor_pressure_deficit',
@@ -287,6 +291,9 @@ UNITS = {
     'minute': {
         'name': lazy_gettext('Minute'),
         'unit': 'm'},
+    'none': {
+        'name': lazy_gettext('Unitless'),
+        'unit': ''},
     'Pa': {
         'name': lazy_gettext('Pascal'),
         'unit': 'Pa'},

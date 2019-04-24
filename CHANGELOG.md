@@ -7,6 +7,10 @@
  - Fix unaccounted PID error if activation attempted when Measurement not set ([#649](https://github.com/kizniche/mycodo/issues/649))
  - Fix missing GPIO Pin sanity check ([#650](https://github.com/kizniche/mycodo/issues/650))
 
+### Features
+
+ - Add Conditional Condition: Measurement (Multiple)
+
 ### Miscellaneous
 
  - Update InfluxDB to 1.7.6

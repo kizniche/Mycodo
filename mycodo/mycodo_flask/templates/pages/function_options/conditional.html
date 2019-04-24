@@ -128,6 +128,8 @@
 
     {% if each_condition.condition_type == 'measurement' %}
       {% include 'pages/function_options/conditional_options/measurement.html' %}
+    {% elif each_condition.condition_type == 'measurement_dict' %}
+      {% include 'pages/function_options/conditional_options/measurement_dict.html' %}
     {% elif each_condition.condition_type == 'gpio_state' %}
       {% include 'pages/function_options/conditional_options/gpio_state.html' %}
     {% elif each_condition.condition_type == 'output_state' %}

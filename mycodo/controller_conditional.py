@@ -40,7 +40,6 @@ from mycodo.databases.models import Misc
 from mycodo.databases.models import SMTP
 from mycodo.mycodo_client import DaemonControl
 from mycodo.utils.database import db_retrieve_table_daemon
-from mycodo.utils.system_pi import is_int
 
 MYCODO_DB_PATH = 'sqlite:///' + SQL_DATABASE_MYCODO
 
@@ -244,6 +243,14 @@ message='''{message}'''
 
 def measure(condition_id):
     return control.get_condition_measurement(condition_id)
+
+def measure_dict(condition_id):
+    string_sets = control.get_condition_measurement_dict(condition_id)
+    list_ts_values = []
+    for each_set in string_sets.split(';'):
+        ts_value = each_set.split(',')
+        list_ts_values.append({{'time': ts_value[0], 'value': float(ts_value[1])}})
+    return list_ts_values
 
 def run_all_actions(message=message):
     control.trigger_all_actions('{function_id}', message=message)

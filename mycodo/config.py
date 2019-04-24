@@ -399,6 +399,9 @@ CALIBRATION_INFO = {
 # Conditional controllers
 CONDITIONAL_CONDITIONS = [
     ('measurement', TRANSLATIONS['measurement']['title']),
+    ('measurement_dict', "{} ({})".format(
+        TRANSLATIONS['measurement']['title'],
+        TRANSLATIONS['multiple']['title'])),
     ('gpio_state', lazy_gettext('GPIO State')),
     ('output_state', lazy_gettext('Output State'))
 ]

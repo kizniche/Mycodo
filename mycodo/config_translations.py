@@ -88,6 +88,8 @@ TRANSLATIONS = {
         'title': lazy_gettext('Method')},
     'modify': {
         'title': lazy_gettext('Modify')},
+    'multiple': {
+        'title': lazy_gettext('Multiple')},
     'none_available': {
         'title': lazy_gettext('None Available')},
     'note': {

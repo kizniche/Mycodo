@@ -77,6 +77,7 @@ from mycodo.utils.statistics import send_anonymous_stats
 from mycodo.utils.tools import generate_output_usage_report
 from mycodo.utils.tools import next_schedule
 from mycodo.utils.function_actions import get_condition_measurement
+from mycodo.utils.function_actions import get_condition_measurement_dict
 from mycodo.utils.function_actions import trigger_function_actions
 from mycodo.utils.function_actions import trigger_action
 
@@ -111,6 +112,10 @@ def mycodo_service(mycodo):
         @staticmethod
         def exposed_get_condition_measurement(condition_id):
             return mycodo.get_condition_measurement(condition_id)
+
+        @staticmethod
+        def exposed_get_condition_measurement_dict(condition_id):
+            return mycodo.get_condition_measurement_dict(condition_id)
 
         @staticmethod
         def exposed_controller_activate(cont_type, cont_id):
@@ -491,6 +496,13 @@ class DaemonController:
             ConditionalConditions.unique_id == condition_id).first()
         if condition:
             return get_condition_measurement(condition)
+
+    @staticmethod
+    def get_condition_measurement_dict(condition_id):
+        condition = db_retrieve_table_daemon(ConditionalConditions).filter(
+            ConditionalConditions.unique_id == condition_id).first()
+        if condition:
+            return get_condition_measurement_dict(condition)
 
     def controller_activate(self, cont_type, cont_id):
         """

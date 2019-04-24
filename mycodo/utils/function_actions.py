@@ -26,6 +26,7 @@ from mycodo.devices.camera import camera_record
 from mycodo.mycodo_client import DaemonControl
 from mycodo.utils.database import db_retrieve_table_daemon
 from mycodo.utils.influx import read_last_influxdb
+from mycodo.utils.influx import read_past_influxdb
 from mycodo.utils.send_data import send_email
 from mycodo.utils.system_pi import cmd_output
 from mycodo.utils.system_pi import return_measurement_info
@@ -64,7 +65,7 @@ def check_allowed_to_email():
 def get_condition_measurement(sql_condition):
     """
     Returns condition measurements for Conditional controllers
-    :param sql_condition: str containint comma-separated device ID and measurement ID
+    :param sql_condition: str containing comma-separated device ID and measurement ID
     :return: measurement: float measurement, gpio_state: int 0 or 1, output_state: 'on', 'off', or int duty cycle
     """
     # Check Measurement Conditions
@@ -115,6 +116,41 @@ def get_condition_measurement(sql_condition):
             return control.output_state(output.unique_id)
 
 
+def get_condition_measurement_dict(sql_condition):
+    """
+    Returns dict of multiple condition measurements for Conditional controllers
+    :param sql_condition: str containing comma-separated device ID and measurement ID
+    :return: measurement: dict of float measurements
+    """
+    # Check Measurement Conditions
+    if sql_condition.condition_type == 'measurement_dict':
+        device_id = sql_condition.measurement.split(',')[0]
+        measurement_id = sql_condition.measurement.split(',')[1]
+
+        device_measurement = db_retrieve_table_daemon(
+            DeviceMeasurements, unique_id=measurement_id)
+        if device_measurement:
+            conversion = db_retrieve_table_daemon(
+                Conversion, unique_id=device_measurement.conversion_id)
+        else:
+            conversion = None
+        channel, unit, measurement = return_measurement_info(
+            device_measurement, conversion)
+
+        if None in [channel, unit]:
+            logger.error(
+                "Could not determine channel or unit from measurement ID: "
+                "{}".format(measurement_id))
+            return
+
+        max_age = sql_condition.max_age
+        # Check if there hasn't been a measurement in the last set number
+        # of seconds. If not, trigger conditional
+        past_measurements = get_past_measurements(
+            device_id, unit, measurement, channel, max_age)
+        return past_measurements
+
+
 def get_last_measurement(unique_id, unit, measurement, channel, duration_sec):
     """
     Retrieve the latest input measurement
@@ -147,6 +183,44 @@ def get_last_measurement(unique_id, unit, measurement, channel, duration_sec):
     if last_measurement is not None:
         last_value = last_measurement[1]
         return last_value
+
+
+def get_past_measurements(unique_id, unit, measurement, channel, duration_sec):
+    """
+    Retrieve the past input measurements
+
+    :return: The latest input value or None if no data available
+    :rtype: dict or None
+
+    :param unique_id: What unique_id tag to query in the Influxdb
+        database (eg. '00000001')
+    :type unique_id: str
+    :param unit: What unit to query in the Influxdb
+        database (eg. 'C', 's')
+    :type unit: str
+    :param measurement: What measurement to query in the Influxdb
+        database (eg. 'temperature', 'duration_time')
+    :type measurement: str or None
+    :param channel: Channel
+    :type channel: int or None
+    :param duration_sec: How many seconds to look for a past measurement
+    :type duration_sec: int or None
+    """
+
+    past_measurements = read_past_influxdb(
+        unique_id,
+        unit,
+        measurement,
+        channel,
+        past_seconds=duration_sec)
+
+    if past_measurements:
+        string_ts_values = ''
+        for index, each_set in enumerate(past_measurements):
+            string_ts_values += '{},{}'.format(each_set[0], each_set[1])
+            if index + 1 < len(past_measurements):
+                string_ts_values += ';'
+        return string_ts_values
 
 
 def trigger_action(
