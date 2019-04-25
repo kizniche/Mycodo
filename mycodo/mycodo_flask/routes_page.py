@@ -1115,7 +1115,7 @@ def page_logview():
 
         # Get contents from file
         if form_log_view.log_pid_settings.data:
-            command = 'grep "PID Settings" {log} | tail -n {lines} '.format(
+            command = 'grep -a "PID Settings" {log} | tail -n {lines} '.format(
                 lines=lines, log=DAEMON_LOG_FILE)
             log = subprocess.Popen(
                 command, stdout=subprocess.PIPE, shell=True)

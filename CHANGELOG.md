@@ -8,6 +8,7 @@
  - Fix missing GPIO Pin sanity check ([#650](https://github.com/kizniche/mycodo/issues/650))
  - Fix "Unknown math type" filling log ([#651](https://github.com/kizniche/mycodo/issues/651))
  - Fix inability to stop PID autotune ([#651](https://github.com/kizniche/mycodo/issues/651))
+ - Fix incomplete display of PID Settings on Mycodo Logs page
 
 ### Features
 
