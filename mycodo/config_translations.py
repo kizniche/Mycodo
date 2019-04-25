@@ -128,6 +128,8 @@ TRANSLATIONS = {
         'title': lazy_gettext('Setpoint')},
     'settings': {
         'title': lazy_gettext('Settings')},
+    'single': {
+        'title': lazy_gettext('Single')},
     'tag': {
         'title': lazy_gettext('Tag')},
     'timer': {

@@ -398,7 +398,9 @@ CALIBRATION_INFO = {
 
 # Conditional controllers
 CONDITIONAL_CONDITIONS = [
-    ('measurement', TRANSLATIONS['measurement']['title']),
+    ('measurement', "{} ({})".format(
+        TRANSLATIONS['measurement']['title'],
+        TRANSLATIONS['single']['title'])),
     ('measurement_dict', "{} ({})".format(
         TRANSLATIONS['measurement']['title'],
         TRANSLATIONS['multiple']['title'])),

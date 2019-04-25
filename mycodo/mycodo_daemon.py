@@ -596,7 +596,10 @@ class DaemonController:
             if cont_id in self.controller[cont_type]:
                 if self.controller[cont_type][cont_id].is_running():
                     try:
-                        self.controller[cont_type][cont_id].stop_controller()
+                        if cont_type == 'PID':
+                            self.controller[cont_type][cont_id].stop_controller(deactivate_pid=True)
+                        else:
+                            self.controller[cont_type][cont_id].stop_controller()
                         self.controller[cont_type][cont_id].join()
                         return 0, "{type} controller with ID {id} "\
                             "deactivated.".format(type=cont_type, id=cont_id)

@@ -169,7 +169,7 @@ def controller_activate_deactivate(controller_action,
             control = DaemonControl()
             if controller_action == 'activate':
                 return_values = control.controller_activate(
-                    controller_type,controller_id)
+                    controller_type, controller_id)
             else:
                 return_values = control.controller_deactivate(
                     controller_type, controller_id)
