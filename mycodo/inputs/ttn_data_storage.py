@@ -191,9 +191,10 @@ class InputModule(AbstractInput):
                             measurements[each_meas.channel]['measurement'] = meas[each_meas.channel]['measurement']
                             measurements[each_meas.channel]['unit'] = meas[each_meas.channel]['unit']
                             measurements[each_meas.channel]['value'] = meas[each_meas.channel]['value']
-                            measurements[each_meas.channel]['timestamp_utc'] = datetime_utc
 
-            add_measurements_influxdb(self.unique_id, measurements)
+            add_measurements_influxdb(
+                self.unique_id, measurements,
+                use_same_timestamp=INPUT_INFORMATION['measurements_use_same_timestamp'])
 
         # set datetime to latest timestamp
         if self.running:

@@ -35,22 +35,18 @@ def add_measurements_influxdb(unique_id, measurements, use_same_timestamp=True):
 
             if use_same_timestamp:
                 # Create and use timestamp when data is stored in influxdb
-                data.append(format_influxdb_data(
-                    unique_id,
-                    each_measurement['unit'],
-                    each_measurement['value'],
-                    channel=each_channel,
-                    measure=each_measurement['measurement'],
-                    timestamp=None))
+                timestamp = None
             else:
                 # Use timestamp stored with each measurement
-                data.append(format_influxdb_data(
-                    unique_id,
-                    each_measurement['unit'],
-                    each_measurement['value'],
-                    channel=each_channel,
-                    measure=each_measurement['measurement'],
-                    timestamp=each_measurement['timestamp_utc']))
+                timestamp = each_measurement['timestamp_utc']
+
+            data.append(format_influxdb_data(
+                unique_id,
+                each_measurement['unit'],
+                each_measurement['value'],
+                channel=each_channel,
+                measure=each_measurement['measurement'],
+                timestamp=timestamp))
 
     write_db = threading.Thread(
         target=write_influxdb_list,
