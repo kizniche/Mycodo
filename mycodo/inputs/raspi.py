@@ -27,6 +27,7 @@ INPUT_INFORMATION = {
     'input_name': 'RPi CPU/GPU Temperature',
     'measurements_name': 'Temperature',
     'measurements_dict': measurements_dict,
+    'measurements_use_same_timestamp': True,
 
     'options_enabled': [
         'measurements_select',
@@ -39,7 +40,7 @@ INPUT_INFORMATION = {
 
 
 class InputModule(AbstractInput):
-    """ A sensor support class that monitors the raspberry pi's cpu temperature """
+    """ A sensor support class that monitors the raspberry pi's CPU and GPU temperatures """
 
     def __init__(self, input_dev, testing=False):
         super(InputModule, self).__init__()
@@ -54,7 +55,7 @@ class InputModule(AbstractInput):
                     DeviceMeasurements.device_id == input_dev.unique_id)
 
     def get_measurement(self):
-        """ Gets the Raspberry pi's temperature in Celsius by reading the temp file and div by 1000 """
+        """ Gets the Raspberry pi's CPU and GPU temperatures in Celsius """
         # import psutil
         # import resource
         # open_files_count = 0

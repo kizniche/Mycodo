@@ -147,6 +147,7 @@ def parse_input_information():
                 dict_inputs = dict_has_value(dict_inputs, input_custom, 'input_name')
                 dict_inputs = dict_has_value(dict_inputs, input_custom, 'measurements_name')
                 dict_inputs = dict_has_value(dict_inputs, input_custom, 'measurements_dict')
+                dict_inputs = dict_has_value(dict_inputs, input_custom, 'measurements_use_same_timestamp')
                 dict_inputs = dict_has_value(dict_inputs, input_custom, 'measurements_rescale')
 
                 # Dependencies

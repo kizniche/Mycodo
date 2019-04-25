@@ -277,8 +277,14 @@ class InputController(threading.Thread):
 
                         # Add measurement(s) to influxdb
                         if self.measurement_success:
+                            use_same_timestamp = True
+                            if ('measurements_use_same_timestamp' in self.dict_inputs[self.device] and
+                                    not self.dict_inputs[self.device]['measurements_use_same_timestamp']):
+                                use_same_timestamp = False
                             add_measurements_influxdb(
-                                self.unique_id, self.create_measurements_dict())
+                                self.unique_id,
+                                self.create_measurements_dict(),
+                                use_same_timestamp=use_same_timestamp)
                             self.measurement_success = False
 
                 self.trigger_cond = False

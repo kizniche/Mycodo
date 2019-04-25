@@ -20,11 +20,12 @@ from mycodo.utils.database import db_retrieve_table_daemon
 logger = logging.getLogger("mycodo.influxdb")
 
 
-def add_measurements_influxdb(unique_id, measurements):
+def add_measurements_influxdb(unique_id, measurements, use_same_timestamp=True):
     """
 
     :param unique_id: Unique ID of device
     :param measurements: dict of measurements
+    :param use_same_timestamp: boolean,
     :return:
     """
     data = []
@@ -37,13 +38,24 @@ def add_measurements_influxdb(unique_id, measurements):
             else:
                 timestamp = None
 
-            data.append(format_influxdb_data(
-                unique_id,
-                each_measurement['unit'],
-                each_measurement['value'],
-                channel=each_channel,
-                measure=each_measurement['measurement'],
-                timestamp=timestamp))
+            if use_same_timestamp:
+                data.append(format_influxdb_data(
+                    unique_id,
+                    each_measurement['unit'],
+                    each_measurement['value'],
+                    channel=each_channel,
+                    measure=each_measurement['measurement'],
+                    timestamp=timestamp))
+            else:
+                ts = datetime.datetime.fromtimestamp(
+                    each_measurement['time'], datetime.timezone.utc)
+                data.append(format_influxdb_data(
+                    unique_id,
+                    each_measurement['unit'],
+                    each_measurement['value'],
+                    channel=each_channel,
+                    measure=each_measurement['measurement'],
+                    timestamp=ts))
 
     write_db = threading.Thread(
         target=write_influxdb_list,

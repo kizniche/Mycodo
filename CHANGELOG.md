@@ -13,6 +13,7 @@
 ### Features
 
  - Add Conditional Condition: Measurement (Multiple)
+ - Add ability of Inputs to store measurements with the same or separate timestamps
 
 ### Miscellaneous
 
