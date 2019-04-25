@@ -33,11 +33,6 @@ def add_measurements_influxdb(unique_id, measurements, use_same_timestamp=True):
     for each_channel, each_measurement in measurements.items():
         if 'value' in each_measurement and each_measurement['value'] is not None:
 
-            if 'timestamp' in each_measurement:
-                timestamp = each_measurement['timestamp']
-            else:
-                timestamp = None
-
             if use_same_timestamp:
                 data.append(format_influxdb_data(
                     unique_id,
@@ -45,17 +40,15 @@ def add_measurements_influxdb(unique_id, measurements, use_same_timestamp=True):
                     each_measurement['value'],
                     channel=each_channel,
                     measure=each_measurement['measurement'],
-                    timestamp=timestamp))
+                    timestamp=None))
             else:
-                ts = datetime.datetime.fromtimestamp(
-                    each_measurement['time'], datetime.timezone.utc)
                 data.append(format_influxdb_data(
                     unique_id,
                     each_measurement['unit'],
                     each_measurement['value'],
                     channel=each_channel,
                     measure=each_measurement['measurement'],
-                    timestamp=ts))
+                    timestamp=each_measurement['datetime_utc_ts']))
 
     write_db = threading.Thread(
         target=write_influxdb_list,

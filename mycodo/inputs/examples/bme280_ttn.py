@@ -61,6 +61,7 @@ INPUT_INFORMATION = {
     'input_name': 'BME280 (->Serial->TTN)',
     'measurements_name': 'Pressure/Humidity/Temperature',
     'measurements_dict': measurements_dict,
+    'measurements_use_same_timestamp': True,
 
     'options_enabled': [
         'i2c_location',
@@ -164,28 +165,31 @@ class InputModule(AbstractInput):
         return_dict = measurements_dict.copy()
 
         if self.is_enabled(0):
-            return_dict[0]['value'] = self.sensor.read_temperature()
+            self.set_value(return_dict, 0, self.sensor.read_temperature())
 
         if self.is_enabled(1):
-            return_dict[1]['value'] = self.sensor.read_humidity()
+            self.set_value(return_dict, 1, self.sensor.read_humidity())
 
         if self.is_enabled(2):
-            return_dict[2]['value'] = self.sensor.read_pressure()
+            self.set_value(return_dict, 2, self.sensor.read_pressure())
 
         if (self.is_enabled(3) and
                 self.is_enabled(0) and
                 self.is_enabled(1)):
-            return_dict[3]['value'] = calculate_dewpoint(
+            dewpoint = calculate_dewpoint(
                 return_dict[0]['value'], return_dict[1]['value'])
+            self.set_value(return_dict, 3, dewpoint)
 
         if self.is_enabled(4) and self.is_enabled(2):
-            return_dict[4]['value'] = calculate_altitude(return_dict[2]['value'])
+            altitude = calculate_altitude(return_dict[2]['value'])
+            self.set_value(return_dict, 4, altitude)
 
         if (self.is_enabled(5) and
                 self.is_enabled(0) and
                 self.is_enabled(1)):
-            return_dict[5]['value'] = calculate_vapor_pressure_deficit(
+            vpd = calculate_vapor_pressure_deficit(
                 return_dict[0]['value'], return_dict[1]['value'])
+            self.set_value(return_dict, 5, vpd)
 
         try:
             now = time.time()
@@ -193,9 +197,9 @@ class InputModule(AbstractInput):
                 self.timer = now + 80
                 # "B" designates this data belonging to the BME280
                 string_send = 'B,{},{},{}'.format(
-                    return_dict[1]['value'],
-                    return_dict[2]['value'],
-                    return_dict[0]['value'])
+                    self.get_value(1),
+                    self.get_value(2),
+                    self.get_value(0))
                 self.lock_setup()
                 self.serial_send = self.serial.Serial(self.serial_device, 9600)
                 self.serial_send.write(string_send.encode())

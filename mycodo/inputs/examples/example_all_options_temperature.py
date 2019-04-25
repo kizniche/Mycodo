@@ -63,6 +63,11 @@ INPUT_INFORMATION = {
     'measurements_name': 'Temperature',
     'measurements_dict': measurements_dict,
 
+    # For use with Inputs that store multiple measurements.
+    # Set True if all measurements should be stored in the database with the same timestamp.
+    # Set False to use the timestamp generated when self.set_value() is used to save measurement.
+    'measurements_use_same_timestamp': True,
+
     # Web User Interface display options
     # Options that are enabled will be editable from the input options page.
     # Options that are disabled will appear on the input options page but not be editable.

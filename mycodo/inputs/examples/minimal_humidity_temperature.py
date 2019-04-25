@@ -31,6 +31,7 @@ INPUT_INFORMATION = {
     'input_name': 'Dummy Input 00',
     'measurements_name': 'Humidity/Temperature',
     'measurements_dict': measurements_dict,
+    'measurements_use_same_timestamp': True,
 
     'options_enabled': [
         'period',
@@ -84,16 +85,17 @@ class InputModule(AbstractInput):
             temperature = self.random.randint(0, 50)
 
             if self.is_enabled(0):
-                return_dict[0]['value'] = temperature
+                self.set_value(return_dict, 0, temperature)
 
             if self.is_enabled(1):
-                return_dict[1]['value'] = humidity
+                self.set_value(return_dict, 1, humidity)
 
             if (self.is_enabled(2) and
                     self.is_enabled(0) and
                     self.is_enabled(1)):
-                return_dict[2]['value'] = calculate_dewpoint(
-                    return_dict[0]['value'], return_dict[1]['value'])
+                dewpoint = calculate_dewpoint(
+                    self.get_value(0), self.get_value(1))
+                self.set_value(return_dict, 2, dewpoint)
 
             return return_dict
         except Exception as msg:

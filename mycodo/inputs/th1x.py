@@ -43,6 +43,7 @@ INPUT_INFORMATION = {
     'input_name': 'TH16/10 (Tasmota firmware)',
     'measurements_name': 'Humidity/Temperature',
     'measurements_dict': measurements_dict,
+    'measurements_use_same_timestamp': False,
 
     'options_enabled': [
         'measurements_select',
@@ -102,24 +103,24 @@ class InputModule(AbstractInput):
         if self.is_enabled(0):
             return_dict[0]['value'] = convert_from_x_to_y_unit(
                 'F', 'C', dict_data['StatusSNS']['AM2301']['Temperature'])
-            return_dict[0]['timestamp'] = datetime_timestmp
+            return_dict[0]['datetime_utc_ts'] = datetime_timestmp
 
         if self.is_enabled(1):
             return_dict[1]['value'] = dict_data['StatusSNS']['AM2301']['Humidity']
-            return_dict[1]['timestamp'] = datetime_timestmp
+            return_dict[1]['datetime_utc_ts'] = datetime_timestmp
 
         if (self.is_enabled(2) and
                 self.is_enabled(0) and
                 self.is_enabled(1)):
             return_dict[2]['value'] = calculate_dewpoint(
                 return_dict[0]['value'], return_dict[1]['value'])
-            return_dict[2]['timestamp'] = datetime_timestmp
+            return_dict[2]['datetime_utc_ts'] = datetime_timestmp
 
         if (self.is_enabled(3) and
                 self.is_enabled(0) and
                 self.is_enabled(1)):
             return_dict[3]['value'] = calculate_vapor_pressure_deficit(
                 return_dict[0]['value'], return_dict[1]['value'])
-            return_dict[3]['timestamp'] = datetime_timestmp
+            return_dict[3]['datetime_utc_ts'] = datetime_timestmp
 
         return return_dict

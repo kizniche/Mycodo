@@ -8,8 +8,8 @@ Input.
 All Inputs should inherit from this class and overwrite methods that raise
 NotImplementedErrors
 """
+import datetime
 import logging
-import time
 
 from sqlalchemy import and_
 
@@ -130,7 +130,7 @@ class AbstractInput(object):
     @staticmethod
     def set_value(return_dict, channel, value):
         return_dict[channel]['value'] = value
-        return_dict[channel]['time'] = int(time.time())
+        return_dict[channel]['time'] = datetime.datetime.utcnow()
 
     def filter_average(self, name, init_max=0, measurement=None):
         """
