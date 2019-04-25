@@ -22,10 +22,10 @@ logger = logging.getLogger("mycodo.influxdb")
 
 def add_measurements_influxdb(unique_id, measurements, use_same_timestamp=True):
     """
-
+    Parse measurement data into list to be input into influxdb
     :param unique_id: Unique ID of device
     :param measurements: dict of measurements
-    :param use_same_timestamp: boolean,
+    :param use_same_timestamp: boolean
     :return:
     """
     data = []
@@ -34,6 +34,7 @@ def add_measurements_influxdb(unique_id, measurements, use_same_timestamp=True):
         if 'value' in each_measurement and each_measurement['value'] is not None:
 
             if use_same_timestamp:
+                # Create and use timestamp when data is stored in influxdb
                 data.append(format_influxdb_data(
                     unique_id,
                     each_measurement['unit'],
@@ -42,13 +43,14 @@ def add_measurements_influxdb(unique_id, measurements, use_same_timestamp=True):
                     measure=each_measurement['measurement'],
                     timestamp=None))
             else:
+                # Use timestamp stored with each measurement
                 data.append(format_influxdb_data(
                     unique_id,
                     each_measurement['unit'],
                     each_measurement['value'],
                     channel=each_channel,
                     measure=each_measurement['measurement'],
-                    timestamp=each_measurement['datetime_utc_ts']))
+                    timestamp=each_measurement['timestamp_utc']))
 
     write_db = threading.Thread(
         target=write_influxdb_list,
@@ -101,6 +103,9 @@ def format_influxdb_data(unique_id, unit, value, channel=None, measure=None, tim
         influx_dict['tags']['channel'] = channel
 
     if timestamp:
+        # Timestamp (UTC) can either be received as:
+        # 1. datetime object
+        # 2. string in the format %Y-%m-%dT%H:%M:%S.%fZ
         if isinstance(timestamp, str):
             influx_dict['time'] = timestamp
         else:
@@ -120,7 +125,7 @@ def parse_measurement(conversion,
         'measurement': each_measurement['measurement'],
         'unit': each_measurement['unit'],
         'value': each_measurement['value'],
-        'timestamp': timestamp
+        'timestamp_utc': timestamp
     }
 
     # Scaling needs to come before conversion
@@ -133,7 +138,7 @@ def parse_measurement(conversion,
             'measurement': measurement.rescaled_measurement,
             'unit': measurement.rescaled_unit,
             'value': scaled_value,
-            'timestamp': timestamp
+            'timestamp_utc': timestamp
         }
 
     # Convert measurement
@@ -145,7 +150,7 @@ def parse_measurement(conversion,
             'measurement': None,
             'unit': conversion.convert_unit_to,
             'value': converted_value,
-            'timestamp': timestamp
+            'timestamp_utc': timestamp
         }
     return measurements_record
 

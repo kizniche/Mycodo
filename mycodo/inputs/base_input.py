@@ -128,9 +128,9 @@ class AbstractInput(object):
         return self._measurements[channel]['value']
 
     @staticmethod
-    def set_value(return_dict, channel, value):
+    def set_value(return_dict, channel, value, timestamp=None):
         return_dict[channel]['value'] = value
-        return_dict[channel]['time'] = datetime.datetime.utcnow()
+        return_dict[channel]['timestamp_utc'] = timestamp if timestamp else datetime.datetime.utcnow()
 
     def filter_average(self, name, init_max=0, measurement=None):
         """

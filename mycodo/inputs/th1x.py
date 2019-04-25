@@ -101,26 +101,26 @@ class InputModule(AbstractInput):
 
         # Convert temperature to SI unit Celsius
         if self.is_enabled(0):
-            return_dict[0]['value'] = convert_from_x_to_y_unit(
+            temp_c = convert_from_x_to_y_unit(
                 'F', 'C', dict_data['StatusSNS']['AM2301']['Temperature'])
-            return_dict[0]['datetime_utc_ts'] = datetime_timestmp
+            self.set_value(return_dict, 0, temp_c, timestamp=datetime_timestmp)
 
         if self.is_enabled(1):
-            return_dict[1]['value'] = dict_data['StatusSNS']['AM2301']['Humidity']
-            return_dict[1]['datetime_utc_ts'] = datetime_timestmp
+            humidity = dict_data['StatusSNS']['AM2301']['Humidity']
+            self.set_value(return_dict, 1, humidity, timestamp=datetime_timestmp)
 
         if (self.is_enabled(2) and
                 self.is_enabled(0) and
                 self.is_enabled(1)):
-            return_dict[2]['value'] = calculate_dewpoint(
-                return_dict[0]['value'], return_dict[1]['value'])
-            return_dict[2]['datetime_utc_ts'] = datetime_timestmp
+            dewpoint = calculate_dewpoint(
+                self.get_value(0), self.get_value(1))
+            self.set_value(return_dict, 2, dewpoint, timestamp=datetime_timestmp)
 
         if (self.is_enabled(3) and
                 self.is_enabled(0) and
                 self.is_enabled(1)):
-            return_dict[3]['value'] = calculate_vapor_pressure_deficit(
-                return_dict[0]['value'], return_dict[1]['value'])
-            return_dict[3]['datetime_utc_ts'] = datetime_timestmp
+            vpd = calculate_vapor_pressure_deficit(
+                self.get_value(0), self.get_value(1))
+            self.set_value(return_dict, 3, vpd, timestamp=datetime_timestmp)
 
         return return_dict

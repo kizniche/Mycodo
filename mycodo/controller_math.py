@@ -434,7 +434,7 @@ class MathController(threading.Thread):
                                 'measurement': measurement,
                                 'unit': unit,
                                 'value': float(measure[1]),
-                                'timestamp': measure[0],
+                                'timestamp_utc': measure[0],
                             }
                         }
                         measurement_success = True

@@ -174,7 +174,7 @@ class InputModule(AbstractInput):
                     measurements[each_meas.channel]['measurement'] = each_meas.measurement
                     measurements[each_meas.channel]['unit'] = each_meas.unit
                     measurements[each_meas.channel]['value'] = each_resp[each_meas.name]
-                    measurements[each_meas.channel]['datetime_utc_ts'] = datetime_utc
+                    measurements[each_meas.channel]['timestamp_utc'] = datetime_utc
 
                     # Convert value/unit is conversion_id present and valid
                     if each_meas.conversion_id:
@@ -191,7 +191,7 @@ class InputModule(AbstractInput):
                             measurements[each_meas.channel]['measurement'] = meas[each_meas.channel]['measurement']
                             measurements[each_meas.channel]['unit'] = meas[each_meas.channel]['unit']
                             measurements[each_meas.channel]['value'] = meas[each_meas.channel]['value']
-                            measurements[each_meas.channel]['datetime_utc_ts'] = datetime_utc
+                            measurements[each_meas.channel]['timestamp_utc'] = datetime_utc
 
             add_measurements_influxdb(self.unique_id, measurements)
 
