@@ -1585,16 +1585,16 @@ Statement.
 | Condition             | Description                                     |
 +=======================+=================================================+
 | Measurement           | Acquires the latest measurement from an Input   |
-|                       | or device. Set Max Age (seconds) to restrict    |
+| (Single)              | or device. Set Max Age (seconds) to restrict    |
 |                       | how long to accept values. If the latest value  |
 |                       | is older than this duration, "None" is          |
 |                       | returned.                                       |
 +-----------------------+-------------------------------------------------+
-| Measurement           | Acquires the last measurement from an Input     |
+| Measurement           | Acquires the last measurements from an Input    |
 | (Multiple)            | or device. Set Max Age (seconds) to restrict    |
-|                       | how long to accept values. If the latest value  |
-|                       | is older than this duration, "None" is          |
-|                       | returned. This differs from the "Measurement"   |
+|                       | how long to accept values. If no values are     |
+|                       | found in this duration, "None" is returned.     |
+|                       | This differs from the "Measurement (Single)"    |
 |                       | Condition because it returns a list of          |
 |                       | dictionaries with 'time' and 'value' key pairs. |
 +-----------------------+-------------------------------------------------+
