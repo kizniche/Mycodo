@@ -84,8 +84,36 @@ def test__iter__returns_iterator():
         full_path = inspect.getfile(each_class.__class__)
         filename = os.path.splitext(os.path.basename(full_path))[0]
         with mock.patch('mycodo.inputs.{fn}.InputModule.get_measurement'.format(fn=filename)) as mock_measure:
-            mock_measure.side_effect = [dict(temperature={'C': {0: 24}}, humidity={'percent': {0: 55}}),
-                                        dict(temperature={'C': {0: 25}}, humidity={'percent': {0: 76}})]
+            mock_measure.side_effect = [
+                {
+                   0: {
+                       'measurement': 'temperature',
+                       'unit': 'C',
+                       'value': 24,
+                       'time': 1556199975
+                   },
+                   1: {
+                       'measurement': 'humidity',
+                       'unit': 'percent',
+                       'value': 55,
+                       'time': 1556199975
+                   }
+                },
+                {
+                   0: {
+                       'measurement': 'temperature',
+                       'unit': 'C',
+                       'value': 25,
+                       'time': 1556199975
+                   },
+                   1: {
+                       'measurement': 'humidity',
+                       'unit': 'percent',
+                       'value': 76,
+                       'time': 1556199975
+                   }
+                }
+            ]
             assert isinstance(each_class.__iter__(), Iterator), "{cls} is not an iterator instance".format(cls=each_class.__class__.__name__)
 
 
@@ -95,17 +123,51 @@ def test_read_updates_temp():
         full_path = inspect.getfile(each_class.__class__)
         filename = os.path.splitext(os.path.basename(full_path))[0]
         with mock.patch('mycodo.inputs.{fn}.InputModule.get_measurement'.format(fn=filename)) as mock_measure:
-            mock_measure.side_effect = [dict(temperature={'C': {0: 24}}, humidity={'percent': {0: 55}}),
-                                        dict(temperature={'C': {0: 25}}, humidity={'percent': {0: 76}})]
+            mock_measure.side_effect = [
+                {
+                   0: {
+                       'measurement': 'temperature',
+                       'unit': 'C',
+                       'value': 24,
+                       'time': 1556199975
+                   },
+                   1: {
+                       'measurement': 'humidity',
+                       'unit': 'percent',
+                       'value': 55,
+                       'time': 1556199975
+                   }
+                },
+                {
+                   0: {
+                       'measurement': 'temperature',
+                       'unit': 'C',
+                       'value': 25,
+                       'time': 1556199975
+                   },
+                   1: {
+                       'measurement': 'humidity',
+                       'unit': 'percent',
+                       'value': 76,
+                       'time': 1556199975
+                   }
+                }
+            ]
             print("Testing {}".format(filename))
             assert each_class._measurements is None
             assert each_class._measurements is None
             assert not each_class.read()
-            assert each_class.measurements['temperature']['C'][0] == 24
-            assert each_class.measurements['humidity']['percent'][0] == 55
+            assert each_class.measurements[0]['measurement'] == 'temperature'
+            assert each_class.measurements[0]['unit'] == 'C'
+            assert each_class.measurements[0]['time'] == 1556199975
+            assert each_class.measurements[0]['value'] == 24
+            assert each_class.measurements[1]['measurement'] == 'humidity'
+            assert each_class.measurements[1]['unit'] == 'percent'
+            assert each_class.measurements[1]['time'] == 1556199975
+            assert each_class.measurements[1]['value'] == 55
             assert not each_class.read()
-            assert each_class.measurements['temperature']['C'][0] == 25
-            assert each_class.measurements['humidity']['percent'][0] == 76
+            assert each_class.measurements[0]['value'] == 25
+            assert each_class.measurements[1]['value'] == 76
 
 
 def test_special_method_str():
@@ -114,11 +176,39 @@ def test_special_method_str():
         full_path = inspect.getfile(each_class.__class__)
         filename = os.path.splitext(os.path.basename(full_path))[0]
         with mock.patch('mycodo.inputs.{fn}.InputModule.get_measurement'.format(fn=filename)) as mock_measure:
-            mock_measure.side_effect = [dict(temperature={'C': {0: 24}}, humidity={'percent': {0: 55}}),
-                                        dict(temperature={'C': {0: 25}}, humidity={'percent': {0: 76}})]
+            mock_measure.side_effect = [
+                {
+                   0: {
+                       'measurement': 'temperature',
+                       'unit': 'C',
+                       'value': 24,
+                       'time': 1556199975
+                   },
+                   1: {
+                       'measurement': 'humidity',
+                       'unit': 'percent',
+                       'value': 55,
+                       'time': 1556199975
+                   }
+                },
+                {
+                   0: {
+                       'measurement': 'temperature',
+                       'unit': 'C',
+                       'value': 25,
+                       'time': 1556199975
+                   },
+                   1: {
+                       'measurement': 'humidity',
+                       'unit': 'percent',
+                       'value': 76,
+                       'time': 1556199975
+                   }
+                }
+            ]
             each_class.read()
-            assert "temperature,C,0,24" in str(each_class)
-            assert "humidity,percent,0,55" in str(each_class)
+            assert "1556199975,0,temperature,C,24" in str(each_class)
+            assert "1556199975,1,humidity,percent,55" in str(each_class)
 
 
 def test_special_method_repr():
@@ -127,11 +217,26 @@ def test_special_method_repr():
         full_path = inspect.getfile(each_class.__class__)
         filename = os.path.splitext(os.path.basename(full_path))[0]
         with mock.patch('mycodo.inputs.{fn}.InputModule.get_measurement'.format(fn=filename)) as mock_measure:
-            mock_measure.side_effect = [dict(temperature={'C': {0: 24}}, humidity={'percent': {0: 55}})]
+            mock_measure.side_effect = [
+                {
+                   0: {
+                       'measurement': 'temperature',
+                       'unit': 'C',
+                       'value': 24,
+                       'time': 1556199975
+                   },
+                   1: {
+                       'measurement': 'humidity',
+                       'unit': 'percent',
+                       'value': 55,
+                       'time': 1556199975
+                   }
+                }
+            ]
             each_class.read()
             assert "<InputModule" in repr(each_class)
-            assert "(temperature,C,0,24)" in repr(each_class)
-            assert "(humidity,percent,0,55)" in repr(each_class)
+            assert "(1556199975,0,temperature,C,24)" in repr(each_class)
+            assert "(1556199975,1,humidity,percent,55)" in repr(each_class)
             assert ">" in repr(each_class)
 
 

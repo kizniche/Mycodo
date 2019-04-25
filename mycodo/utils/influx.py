@@ -246,7 +246,7 @@ def read_past_influxdb(unique_id, unit, measurement, channel, past_seconds):
     if query_str == 1:
         return '', 204
     raw_data = client.query(query_str).raw
-    if raw_data:
+    if raw_data and 'series' in raw_data:
         return raw_data['series'][0]['values']
 
 
@@ -294,18 +294,12 @@ def read_last_influxdb(unique_id, unit, measurement, channel, duration_sec=None)
         logger.debug("Failed to establish a new influxdb connection. Ensure influxdb is running.")
         last_measurement = None
 
-    if last_measurement:
+    if last_measurement and 'series' in last_measurement:
         try:
             number = len(last_measurement['series'][0]['values'])
             last_time = last_measurement['series'][0]['values'][number - 1][0]
             last_measurement = last_measurement['series'][0]['values'][number - 1][1]
             return [last_time, last_measurement]
-        except KeyError:
-            if duration_sec:
-                logger.debug("No measurement available in the past "
-                             "{sec} seconds.".format(sec=duration_sec))
-            else:
-                logger.debug("No measurement available.")
         except Exception:
             logger.exception("Error parsing the last influx measurement")
 

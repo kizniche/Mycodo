@@ -39,7 +39,6 @@ class AbstractInput(object):
         self.acquiring_measurement = False
         self.running = True
         self.device_measurements = None
-        self.measurements_ts_utc = None
 
     def __iter__(self):
         """ Support the iterator protocol """
@@ -51,7 +50,7 @@ class AbstractInput(object):
         if self._measurements:
             for each_channel, channel_data in self._measurements.items():
                 return_str += '({ts},{chan},{meas},{unit},{val})'.format(
-                    ts=self.measurements_ts_utc,
+                    ts=channel_data['time'],
                     chan=each_channel,
                     meas=channel_data['measurement'],
                     unit=channel_data['unit'],
@@ -72,7 +71,7 @@ class AbstractInput(object):
                 else:
                     skip_first_separator = True
                 return_str += '{ts},{chan},{meas},{unit},{val}'.format(
-                    ts=self.measurements_ts_utc,
+                    ts=channel_data['time'],
                     chan=each_channel,
                     meas=channel_data['measurement'],
                     unit=channel_data['unit'],
@@ -114,7 +113,6 @@ class AbstractInput(object):
         try:
             self._measurements = self.get_measurement()
             if self._measurements is not None:
-                self.measurements_ts_utc = int(time.time())
                 return  # success - no errors
         except IOError as e:
             self.logger.error(
@@ -125,6 +123,14 @@ class AbstractInput(object):
                 "{cls} raised an exception when taking a reading: "
                 "{err}".format(cls=type(self).__name__, err=e))
         return 1
+
+    def get_value(self, channel):
+        return self._measurements[channel]['value']
+
+    @staticmethod
+    def set_value(return_dict, channel, value):
+        return_dict[channel]['value'] = value
+        return_dict[channel]['time'] = int(time.time())
 
     def filter_average(self, name, init_max=0, measurement=None):
         """

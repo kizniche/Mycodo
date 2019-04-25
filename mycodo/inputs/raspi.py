@@ -70,14 +70,14 @@ class InputModule(AbstractInput):
         if self.is_enabled(0):
             # CPU temperature
             with open('/sys/class/thermal/thermal_zone0/temp') as cpu_temp_file:
-                temperature_cpu = float(cpu_temp_file.read()) / 1000
-                return_dict[0]['value'] = temperature_cpu
+                temp_cpu = float(cpu_temp_file.read()) / 1000
+                self.set_value(return_dict, 0, temp_cpu)
 
         if self.is_enabled(1):
             # GPU temperature
             temperature_gpu = subprocess.check_output(
                 ('/opt/vc/bin/vcgencmd', 'measure_temp'))
-            return_dict[1]['value'] = float(
-                temperature_gpu.split(b'=')[1].split(b"'")[0])
+            temp_gpu = float(temperature_gpu.split(b'=')[1].split(b"'")[0])
+            self.set_value(return_dict, 1, temp_gpu)
 
         return return_dict
