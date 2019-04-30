@@ -22,7 +22,8 @@ INPUT_INFORMATION = {
     'measurements_dict': measurements_dict,
 
     'options_enabled': [
-        'period'
+        'period',
+        'log_level_debug'
     ],
     'options_disabled': ['interface'],
 
@@ -45,6 +46,11 @@ class InputModule(AbstractInput):
                 "mycodo.mycodo_ram_{id}".format(id=input_dev.unique_id.split('-')[0]))
 
             self.control = DaemonControl()
+
+        if input_dev.log_level_debug:
+            self.logger.setLevel(logging.DEBUG)
+        else:
+            self.logger.setLevel(logging.INFO)
 
     def get_measurement(self):
         """ Gets the measurement in units by reading resource """

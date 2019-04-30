@@ -25,7 +25,8 @@ INPUT_INFORMATION = {
         'uart_location',
         'uart_baud_rate',
         'period',
-        'pre_output'
+        'pre_output',
+        'log_level_debug'
     ],
     'options_disabled': ['interface'],
 
@@ -63,6 +64,11 @@ class InputModule(AbstractInput):
                     'Could not open "{dev}". '
                     'Check the device location is correct.'.format(
                         dev=self.uart_location))
+
+        if input_dev.log_level_debug:
+            self.logger.setLevel(logging.DEBUG)
+        else:
+            self.logger.setLevel(logging.INFO)
 
     def get_measurement(self):
         """ Gets the K30's CO2 concentration in ppmv via UART"""

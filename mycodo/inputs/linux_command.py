@@ -27,7 +27,8 @@ INPUT_INFORMATION = {
         'measurements_select_measurement_unit',
         'period',
         'cmd_command',
-        'pre_output'
+        'pre_output',
+        'log_level_debug'
     ],
     'options_disabled': ['interface'],
 
@@ -53,6 +54,11 @@ class InputModule(AbstractInput):
                 DeviceMeasurements.device_id == input_dev.unique_id)
 
             self.command = input_dev.cmd_command
+
+        if input_dev.log_level_debug:
+            self.logger.setLevel(logging.DEBUG)
+        else:
+            self.logger.setLevel(logging.INFO)
 
     def get_measurement(self):
         """ Determine if the return value of the command is a number """

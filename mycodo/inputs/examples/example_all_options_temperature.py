@@ -79,7 +79,8 @@ INPUT_INFORMATION = {
         'uart_location',
         'custom_options',
         'period',
-        'pre_output'
+        'pre_output',
+        'log_level_debug'
     ],
     'options_disabled': ['interface'],
 
@@ -294,6 +295,11 @@ class InputModule(AbstractInput):
                 # No UART driver available for this input
                 pass
 
+        if input_dev.log_level_debug:
+            self.logger.setLevel(logging.DEBUG)
+        else:
+            self.logger.setLevel(logging.INFO)
+
     def get_measurement(self):
         """ Gets the temperature and humidity """
         #
@@ -311,5 +317,8 @@ class InputModule(AbstractInput):
         #
         # End sensor measurement code
         #
+
+        self.logger.info("This INFO message will always be displayed.")
+        self.logger.debug("This DEBUG message will only be displayed if the Debug option is enabled.")
 
         return return_dict

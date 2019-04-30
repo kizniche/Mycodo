@@ -17,6 +17,7 @@ class PID(CRUDMixin, db.Model):
     is_held = db.Column(db.Boolean, default=False)
     is_paused = db.Column(db.Boolean, default=False)
     is_preset = db.Column(db.Boolean, default=False)  # Is config saved as a preset?
+    log_level_debug = db.Column(db.Boolean, default=False)
     preset_name = db.Column(db.Text, default='')  # Name for preset
     period = db.Column(db.Float, default=30.0)
     start_offset = db.Column(db.Float, default=30.0)

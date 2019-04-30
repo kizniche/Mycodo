@@ -41,7 +41,8 @@ INPUT_INFORMATION = {
         'measurements_select',
         'period',
         'pin_clock',
-        'pre_output'
+        'pre_output',
+        'log_level_debug'
     ],
     'options_disabled': ['interface'],
 
@@ -98,6 +99,11 @@ class InputModule(AbstractInput):
             self.sht_sensor = Sht(self.clock_pin,
                                   self.gpio,
                                   voltage=self.sht_voltage)
+
+        if input_dev.log_level_debug:
+            self.logger.setLevel(logging.DEBUG)
+        else:
+            self.logger.setLevel(logging.INFO)
 
     def get_measurement(self):
         """ Gets the humidity and temperature """

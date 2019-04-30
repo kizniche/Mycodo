@@ -53,7 +53,8 @@ INPUT_INFORMATION = {
         'custom_options',
         'measurements_select',
         'period',
-        'pre_output'
+        'pre_output',
+        'log_level_debug'
     ],
     'options_disabled': ['interface'],
 
@@ -118,6 +119,11 @@ class InputModule(AbstractInput):
                         self.app_api_key = value
                     elif option == 'device_id':
                         self.device_id = value
+
+        if input_dev.log_level_debug:
+            self.logger.setLevel(logging.DEBUG)
+        else:
+            self.logger.setLevel(logging.INFO)
 
     def get_new_data(self, past_seconds):
         # Basic implementation. Future development may use more complex library to access API

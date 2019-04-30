@@ -23,7 +23,8 @@ INPUT_INFORMATION = {
 
     'options_enabled': [
         'location',
-        'period'
+        'period',
+        'log_level_debug'
     ],
     'options_disabled': ['interface'],
 
@@ -49,6 +50,11 @@ class InputModule(AbstractInput):
                 "mycodo.raspi_freespace_{id}".format(id=input_dev.unique_id.split('-')[0]))
 
             self.path = input_dev.location
+
+        if input_dev.log_level_debug:
+            self.logger.setLevel(logging.DEBUG)
+        else:
+            self.logger.setLevel(logging.INFO)
 
     def get_measurement(self):
         """ Gets the free space """

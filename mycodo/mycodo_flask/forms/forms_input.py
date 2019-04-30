@@ -77,6 +77,8 @@ class InputMod(FlaskForm):
         )],
         widget=NumberInput(step='any')
     )
+    log_level_debug = BooleanField(
+        TRANSLATIONS['log_level_debug']['title'])
     num_channels = IntegerField(lazy_gettext('Number of Measurements'), widget=NumberInput())
     location = StringField(lazy_gettext('Location'))
     ftdi_location = StringField(TRANSLATIONS['ftdi_location']['title'])

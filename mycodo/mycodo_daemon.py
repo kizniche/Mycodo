@@ -371,14 +371,17 @@ class DaemonController:
 
     """
 
-    def __init__(self):
+    def __init__(self, debug):
         self.logger = logging.getLogger("mycodo.daemon")
+        if not debug:
+            self.logger.setLevel(logging.INFO)
         self.logger.info("Mycodo daemon v{ver} starting".format(ver=MYCODO_VERSION))
 
         self.startup_timer = timeit.default_timer()
         self.daemon_startup_time = None
         self.daemon_run = True
         self.terminated = False
+        self.debug = debug
 
         self.dict_input_information = {}
         self.input_information_update()
@@ -432,7 +435,7 @@ class DaemonController:
         self.logger.info("Anonymous statistics {state}".format(state=state))
 
     def run(self):
-        self.start_all_controllers()
+        self.start_all_controllers(self.debug)
         self.daemon_startup_time = timeit.default_timer() - self.startup_timer
         self.logger.info("Mycodo daemon started in {sec:.3f} seconds".format(
             sec=self.daemon_startup_time))
@@ -998,7 +1001,7 @@ class DaemonController:
             self.logger.exception(
                 "Statistics initialization Error: {err}".format(err=msg))
 
-    def start_all_controllers(self):
+    def start_all_controllers(self, debug):
         """
         Start all activated controllers
 
@@ -1017,7 +1020,7 @@ class DaemonController:
             }
 
             self.logger.debug("Starting Output controller")
-            self.controller['Output'] = OutputController()
+            self.controller['Output'] = OutputController(debug)
             self.controller['Output'].daemon = True
             self.controller['Output'].start()
 
@@ -1245,8 +1248,10 @@ class MycodoDaemon:
 
     """
 
-    def __init__(self, mycodo):
+    def __init__(self, mycodo, debug):
         self.logger = logging.getLogger("mycodo.daemon")
+        if not debug:
+            self.logger.setLevel(logging.INFO)
         self.mycodo = mycodo
 
     def start_daemon(self):
@@ -1292,12 +1297,8 @@ if __name__ == '__main__':
     logger = logging.getLogger("mycodo")
     fh = logging.FileHandler(DAEMON_LOG_FILE, 'a')
 
-    if args.debug:
-        logger.setLevel(logging.DEBUG)
-        fh.setLevel(logging.DEBUG)
-    else:
-        logger.setLevel(logging.INFO)
-        fh.setLevel(logging.INFO)
+    logger.setLevel(logging.DEBUG)
+    fh.setLevel(logging.DEBUG)
 
     formatter = logging.Formatter(
         "%(asctime)s - %(name)s - %(levelname)s - %(message)s")
@@ -1306,8 +1307,8 @@ if __name__ == '__main__':
     logger.addHandler(fh)
     keep_fds = [fh.stream.fileno()]
 
-    daemon_controller = DaemonController()
-    mycodo_daemon = MycodoDaemon(daemon_controller)
+    daemon_controller = DaemonController(args.debug)
+    mycodo_daemon = MycodoDaemon(daemon_controller, args.debug)
 
     # Set up daemon and start it
     daemon = Daemonize(app="mycodo_daemon",

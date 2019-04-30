@@ -60,6 +60,7 @@ def pid_mod(form_mod_pid_base,
     mod_pid.measurement = form_mod_pid_base.measurement.data
     mod_pid.direction = form_mod_pid_base.direction.data
     mod_pid.period = form_mod_pid_base.period.data
+    mod_pid.log_level_debug = form_mod_pid_base.log_level_debug.data
     mod_pid.start_offset = form_mod_pid_base.start_offset.data
     mod_pid.max_measure_age = form_mod_pid_base.max_measure_age.data
     mod_pid.setpoint = form_mod_pid_base.setpoint.data

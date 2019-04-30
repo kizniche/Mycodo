@@ -34,6 +34,7 @@ def trigger_mod(form):
         trigger = Trigger.query.filter(
             Trigger.unique_id == form.function_id.data).first()
         trigger.name = form.name.data
+        trigger.log_level_debug = form.log_level_debug.data
 
         if trigger.trigger_type == 'trigger_edge':
             error = check_form_edge(form, error)

@@ -89,6 +89,7 @@ class ConditionalController(threading.Thread):
         self.period = None
         self.start_offset = None
         self.refractory_period = None
+        self.log_level_debug = None
         self.conditional_statement = None
         self.timer_refractory_period = None
         self.smtp_wait_timer = None
@@ -180,9 +181,15 @@ class ConditionalController(threading.Thread):
         self.period = cond.period
         self.start_offset = cond.start_offset
         self.refractory_period = cond.refractory_period
+        self.log_level_debug = cond.log_level_debug
         self.timer_refractory_period = 0
         self.smtp_wait_timer = now + 3600
         self.timer_period = now + self.start_offset
+
+        if self.log_level_debug:
+            self.logger.setLevel(logging.DEBUG)
+        else:
+            self.logger.setLevel(logging.INFO)
 
     def check_conditionals(self):
         """

@@ -13,6 +13,7 @@ class Math(CRUDMixin, db.Model):
     name = db.Column(db.Text, default='Input Name')
     math_type = db.Column(db.Text, default=None)
     is_activated = db.Column(db.Boolean, default=False)
+    log_level_debug = db.Column(db.Boolean, default=False)
     period = db.Column(db.Float, default=15.0)  # Duration between readings
     start_offset = db.Column(db.Float, default=10.0)
     max_measure_age = db.Column(db.Integer, default=60)

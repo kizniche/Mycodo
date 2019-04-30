@@ -26,7 +26,8 @@ INPUT_INFORMATION = {
         'weighting',
         'sample_time',
         'period',
-        'pre_output'
+        'pre_output',
+        'log_level_debug'
     ],
     'options_disabled': ['interface'],
 
@@ -58,6 +59,11 @@ class InputModule(AbstractInput):
             self.rpm_pulses_per_rev = input_dev.rpm_pulses_per_rev
             self.sample_time = input_dev.sample_time
             self.pigpio = pigpio
+
+        if input_dev.log_level_debug:
+            self.logger.setLevel(logging.DEBUG)
+        else:
+            self.logger.setLevel(logging.INFO)
 
     def get_measurement(self):
         """ Gets the revolutions """

@@ -114,6 +114,12 @@
           {{form_mod_pid_base.max_measure_age(class_='form-control', value=each_pid.max_measure_age, **{'title':_('Maximum allowable measurement age (to allow the PID controller to manipulate outputs, the measurement must have occurred in the past x seconds)')})}}
         </div>
       </div>
+      <div class="col-auto">
+        {{form_mod_pid_base.log_level_debug.label(class_='control-label')}}
+        <div class="input-group-text">
+          <input id="log_level_debug" name="log_level_debug" type="checkbox" title="{{dict_translation['log_level_debug']['phrase']}}" value="y"{% if each_pid.log_level_debug %} checked{% endif %}>
+        </div>
+      </div>
     </div>
 
     <div class="row small-gutters">

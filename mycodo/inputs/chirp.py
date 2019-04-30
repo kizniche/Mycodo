@@ -36,7 +36,8 @@ INPUT_INFORMATION = {
         'i2c_location',
         'measurements_select',
         'period',
-        'pre_output'
+        'pre_output',
+        'log_level_debug'
     ],
     'options_disabled': ['interface'],
 
@@ -73,6 +74,11 @@ class InputModule(AbstractInput):
             self.i2c_bus = input_dev.i2c_bus
             self.bus = SMBus(self.i2c_bus)
             self.filter_average('lux', init_max=3)
+
+        if input_dev.log_level_debug:
+            self.logger.setLevel(logging.DEBUG)
+        else:
+            self.logger.setLevel(logging.INFO)
 
     def get_measurement(self):
         """ Gets the light, moisture, and temperature """

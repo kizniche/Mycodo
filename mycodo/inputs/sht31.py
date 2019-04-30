@@ -64,7 +64,8 @@ INPUT_INFORMATION = {
         'measurements_select',
         'custom_options',
         'period',
-        'pre_output'
+        'pre_output',
+        'log_level_debug'
     ],
     'options_disabled': ['interface'],
 
@@ -150,6 +151,11 @@ class InputModule(AbstractInput):
             self.sensor = SHT31(
                 address=self.i2c_address,
                 busnum=self.i2c_bus)
+
+        if input_dev.log_level_debug:
+            self.logger.setLevel(logging.DEBUG)
+        else:
+            self.logger.setLevel(logging.INFO)
 
     def get_measurement(self):
         """ Gets the measurement in units by reading the """

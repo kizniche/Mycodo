@@ -23,7 +23,8 @@ INPUT_INFORMATION = {
     'options_enabled': [
         'location',
         'period',
-        'pre_output'
+        'pre_output',
+        'log_level_debug'
     ],
     'options_disabled': ['interface'],
 
@@ -50,6 +51,11 @@ class InputModule(AbstractInput):
             self.location = input_dev.location
             self.sensor = W1ThermSensor(W1ThermSensor.THERM_SENSOR_MAX31850K,
                                         self.location)
+
+        if input_dev.log_level_debug:
+            self.logger.setLevel(logging.DEBUG)
+        else:
+            self.logger.setLevel(logging.INFO)
 
     def get_measurement(self):
         """ Gets the MAX31850K's temperature in Celsius """

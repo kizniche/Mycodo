@@ -19,7 +19,8 @@ INPUT_INFORMATION = {
     'options_enabled': [
         'gpio_location',
         'period',
-        'pre_output'
+        'pre_output',
+        'log_level_debug'
     ],
     'options_disabled': ['interface'],
 

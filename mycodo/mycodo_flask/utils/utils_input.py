@@ -360,6 +360,7 @@ def input_mod(form_mod, request_form):
                 else:
                     each_measurement.is_enabled = False
 
+        mod_input.log_level_debug = form_mod.log_level_debug.data
         mod_input.i2c_bus = form_mod.i2c_bus.data
         mod_input.baud_rate = form_mod.baud_rate.data
         mod_input.pre_output_duration = form_mod.pre_output_duration.data

@@ -30,7 +30,8 @@ INPUT_INFORMATION = {
         'channels_convert',
         'adc_gain',
         'period',
-        'pre_output'
+        'pre_output',
+        'log_level_debug'
     ],
     'options_disabled': ['interface', 'i2c_location'],
 
@@ -83,6 +84,12 @@ class InputModule(AbstractInput):
             self.adc_gain = input_dev.adc_gain
             self.adc = Adafruit_ADS1x15.ADS1115(address=self.i2c_address,
                                                 busnum=self.i2c_bus)
+
+        if input_dev.log_level_debug:
+            self.logger.setLevel(logging.DEBUG)
+        else:
+            self.logger.setLevel(logging.INFO)
+
         self.running = True
 
     def get_measurement(self):

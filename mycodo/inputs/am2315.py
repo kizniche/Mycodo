@@ -67,7 +67,8 @@ INPUT_INFORMATION = {
     'options_enabled': [
         'measurements_select',
         'period',
-        'pre_output'
+        'pre_output',
+        'log_level_debug'
     ],
     'options_disabled': ['interface', 'i2c_location'],
 
@@ -106,6 +107,11 @@ class InputModule(AbstractInput):
             self.control = DaemonControl()
             self.start_sensor()
             self.am = AM2315(self.i2c_bus)
+
+        if input_dev.log_level_debug:
+            self.logger.setLevel(logging.DEBUG)
+        else:
+            self.logger.setLevel(logging.INFO)
 
     def get_measurement(self):
         """ Gets the humidity and temperature """

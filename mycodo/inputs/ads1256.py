@@ -33,7 +33,8 @@ INPUT_INFORMATION = {
         'adc_sample_speed',
         'custom_options',
         'period',
-        'pre_output'
+        'pre_output',
+        'log_level_debug'
     ],
     'options_disabled': ['interface'],
 
@@ -158,6 +159,11 @@ class InputModule(AbstractInput):
                 raise Exception(
                     "SPI device /dev/spi* not found. Ensure SPI is enabled "
                     "and the device is recognized/setup by linux.")
+
+        if input_dev.log_level_debug:
+            self.logger.setLevel(logging.DEBUG)
+        else:
+            self.logger.setLevel(logging.INFO)
 
     def get_measurement(self):
         self._measurements = {}

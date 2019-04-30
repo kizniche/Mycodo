@@ -50,10 +50,14 @@ class OutputController(threading.Thread):
     class for controlling outputs
 
     """
-    def __init__(self):
+    def __init__(self, debug):
         threading.Thread.__init__(self)
 
         self.logger = logging.getLogger("mycodo.output")
+        if debug:
+            self.logger.setLevel(logging.DEBUG)
+        else:
+            self.logger.setLevel(logging.INFO)
 
         self.thread_startup_timer = timeit.default_timer()
         self.thread_shutdown_timer = 0

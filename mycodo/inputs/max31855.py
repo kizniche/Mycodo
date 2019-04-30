@@ -33,7 +33,8 @@ INPUT_INFORMATION = {
         'pin_miso',
         'measurements_select',
         'period',
-        'pre_output'
+        'pre_output',
+        'log_level_debug'
     ],
     'options_disabled': ['interface'],
 
@@ -74,6 +75,11 @@ class InputModule(AbstractInput):
             self.sensor = MAX31855.MAX31855(self.pin_clock,
                                             self.pin_cs,
                                             self.pin_miso)
+
+        if input_dev.log_level_debug:
+            self.logger.setLevel(logging.DEBUG)
+        else:
+            self.logger.setLevel(logging.INFO)
 
     def get_measurement(self):
         """ Gets the measurement in units by reading the """

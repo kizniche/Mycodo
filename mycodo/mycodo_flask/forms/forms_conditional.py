@@ -5,6 +5,7 @@
 
 from flask_babel import lazy_gettext
 from flask_wtf import FlaskForm
+from wtforms import BooleanField
 from wtforms import DecimalField
 from wtforms import IntegerField
 from wtforms import SelectField
@@ -30,6 +31,8 @@ class Conditional(FlaskForm):
     period = DecimalField(
         lazy_gettext('Period (seconds)'),
         widget=NumberInput(step='any'))
+    log_level_debug = BooleanField(
+        TRANSLATIONS['log_level_debug']['title'])
     refractory_period = DecimalField(
         lazy_gettext('Refractory Period (seconds)'),
         widget=NumberInput(step='any'))

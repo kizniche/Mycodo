@@ -29,6 +29,8 @@ class Trigger(FlaskForm):
     function_id = StringField('Function ID', widget=widgets.HiddenInput())
     function_type = StringField('Function Type', widget=widgets.HiddenInput())
     name = StringField(TRANSLATIONS['name']['title'])
+    log_level_debug = BooleanField(
+        TRANSLATIONS['log_level_debug']['title'])
 
     # Edge detection
     measurement = StringField(TRANSLATIONS['measurement']['title'])

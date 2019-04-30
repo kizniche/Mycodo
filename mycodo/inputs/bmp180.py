@@ -34,7 +34,8 @@ INPUT_INFORMATION = {
     'options_enabled': [
         'measurements_select',
         'period',
-        'pre_output'
+        'pre_output',
+        'log_level_debug'
     ],
     'options_disabled': ['interface', 'i2c_location'],
 
@@ -70,6 +71,11 @@ class InputModule(AbstractInput):
 
             self.i2c_bus = input_dev.i2c_bus
             self.bmp = BMP085.BMP085(busnum=self.i2c_bus)
+
+        if input_dev.log_level_debug:
+            self.logger.setLevel(logging.DEBUG)
+        else:
+            self.logger.setLevel(logging.INFO)
 
     def get_measurement(self):
         """ Gets the measurement in units by reading the BMP180/085 """

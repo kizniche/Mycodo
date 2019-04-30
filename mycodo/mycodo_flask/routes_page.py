@@ -1122,6 +1122,30 @@ def page_logview():
             (log_output, _) = log.communicate()
             log.wait()
             log_output = str(log_output, 'latin-1')
+        elif form_log_view.logdaemon_info.data:
+            command = 'grep -a "INFO" {log} | tail -n {lines} '.format(
+                lines=lines, log=DAEMON_LOG_FILE)
+            log = subprocess.Popen(
+                command, stdout=subprocess.PIPE, shell=True)
+            (log_output, _) = log.communicate()
+            log.wait()
+            log_output = str(log_output, 'latin-1')
+        elif form_log_view.logdaemon_error.data:
+            command = 'grep -a "ERROR" {log} | tail -n {lines} '.format(
+                lines=lines, log=DAEMON_LOG_FILE)
+            log = subprocess.Popen(
+                command, stdout=subprocess.PIPE, shell=True)
+            (log_output, _) = log.communicate()
+            log.wait()
+            log_output = str(log_output, 'latin-1')
+        elif form_log_view.logdaemon_debug.data:
+            command = 'grep -a "DEBUG" {log} | tail -n {lines} '.format(
+                lines=lines, log=DAEMON_LOG_FILE)
+            log = subprocess.Popen(
+                command, stdout=subprocess.PIPE, shell=True)
+            (log_output, _) = log.communicate()
+            log.wait()
+            log_output = str(log_output, 'latin-1')
         else:
             if form_log_view.loglogin.data:
                 logfile = LOGIN_LOG_FILE

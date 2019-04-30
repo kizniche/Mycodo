@@ -49,7 +49,8 @@ INPUT_INFORMATION = {
         'measurements_select',
         'custom_options',
         'period',
-        'pre_output'
+        'pre_output',
+        'log_level_debug'
     ],
 
     'custom_options': [
@@ -85,6 +86,11 @@ class InputModule(AbstractInput):
                     value = each_option.split(',')[1]
                     if option == 'ip_address':
                         self.ip_address = value.replace(" ", "")  # Remove spaces from string
+
+        if input_dev.log_level_debug:
+            self.logger.setLevel(logging.DEBUG)
+        else:
+            self.logger.setLevel(logging.INFO)
 
     def get_measurement(self):
         return_dict = measurements_dict.copy()

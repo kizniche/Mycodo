@@ -117,6 +117,7 @@ def math_mod(form_mod_math, form_mod_type=None):
 
         mod_math.name = form_mod_math.name.data
         mod_math.period = form_mod_math.period.data
+        mod_math.log_level_debug = form_mod_math.log_level_debug.data
         mod_math.max_measure_age = form_mod_math.max_measure_age.data
         mod_math.start_offset = form_mod_math.start_offset.data
 

@@ -12,6 +12,7 @@ class Input(CRUDMixin, db.Model):
     unique_id = db.Column(db.String, nullable=False, unique=True, default=set_uuid)
     name = db.Column(db.Text, default='Input Name')
     is_activated = db.Column(db.Boolean, default=False)
+    log_level_debug = db.Column(db.Boolean, default=False)
     is_preset = db.Column(db.Boolean, default=False)  # Is config saved as a preset?
     preset_name = db.Column(db.Text, default=None)  # Name for preset
     device = db.Column(db.Text, default='')  # Device name, such as DHT11, DHT22, DS18B20

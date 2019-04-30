@@ -44,7 +44,8 @@ INPUT_INFORMATION = {
         'uart_baud_rate',
         'custom_options',
         'period',
-        'pre_output'
+        'pre_output',
+        'log_level_debug'
     ],
     'options_disabled': ['interface'],
 
@@ -117,6 +118,11 @@ class InputModule(AbstractInput):
             self.logger.debug(
                 "Min time between transmissions: {} seconds".format(
                     min_seconds_between_transmissions))
+
+        if input_dev.log_level_debug:
+            self.logger.setLevel(logging.DEBUG)
+        else:
+            self.logger.setLevel(logging.INFO)
 
     def lock_setup(self):
         self.lock = self.locket.lock_file(self.lock_file, timeout=10)

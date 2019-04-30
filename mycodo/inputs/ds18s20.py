@@ -44,7 +44,8 @@ INPUT_INFORMATION = {
         'location',
         'custom_options',
         'period',
-        'pre_output'
+        'pre_output',
+        'log_level_debug'
     ],
     'options_disabled': ['interface'],
 
@@ -100,6 +101,11 @@ class InputModule(AbstractInput):
                                             self.location)
             elif self.library == 'ow_shell':
                 pass
+
+        if input_dev.log_level_debug:
+            self.logger.setLevel(logging.DEBUG)
+        else:
+            self.logger.setLevel(logging.INFO)
 
     def get_measurement(self):
         """ Gets the DS18S20's temperature in Celsius """

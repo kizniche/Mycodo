@@ -116,6 +116,12 @@ class MathController(threading.Thread):
             self.period = math.period
             self.start_offset = math.start_offset
             self.max_measure_age = math.max_measure_age
+            self.log_level_debug = math.log_level_debug
+
+            if self.log_level_debug:
+                self.logger.setLevel(logging.DEBUG)
+            else:
+                self.logger.setLevel(logging.INFO)
 
             # Inputs to calculate with
             self.inputs = math.inputs
@@ -759,6 +765,9 @@ class MathController(threading.Thread):
             self.logger.error("Unknown math type: {type}".format(type=self.math_type))
 
         # Finally, add measurements to influxdb
+        self.logger.debug(
+            "Adding measurements to influxdb with ID {}: {}".format(
+                self.unique_id, measurement_dict))
         add_measurements_influxdb(self.unique_id, measurement_dict)
 
     def error_not_within_max_age(self):

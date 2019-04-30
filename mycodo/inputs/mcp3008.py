@@ -35,7 +35,8 @@ INPUT_INFORMATION = {
         'measurements_select',
         'channels_convert',
         'period',
-        'pre_output'
+        'pre_output',
+        'log_level_debug'
     ],
     'options_disabled': ['interface'],
 
@@ -78,6 +79,11 @@ class InputModule(AbstractInput):
                                                 cs=self.pin_cs,
                                                 miso=self.pin_miso,
                                                 mosi=self.pin_mosi)
+
+        if input_dev.log_level_debug:
+            self.logger.setLevel(logging.DEBUG)
+        else:
+            self.logger.setLevel(logging.INFO)
 
     def get_measurement(self):
         return_dict = measurements_dict.copy()

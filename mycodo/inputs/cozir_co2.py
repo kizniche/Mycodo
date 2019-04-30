@@ -38,7 +38,8 @@ INPUT_INFORMATION = {
         'uart_location',
         'measurements_select',
         'period',
-        'pre_output'
+        'pre_output',
+        'log_level_debug'
     ],
     'options_disabled': ['interface'],
 
@@ -73,6 +74,11 @@ class InputModule(AbstractInput):
 
             self.uart_location = input_dev.uart_location
             self.sensor = Cozir(self.uart_location)
+
+        if input_dev.log_level_debug:
+            self.logger.setLevel(logging.DEBUG)
+        else:
+            self.logger.setLevel(logging.INFO)
 
     def get_measurement(self):
         """ Gets the measurements """

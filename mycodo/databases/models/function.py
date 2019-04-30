@@ -23,6 +23,7 @@ class Conditional(CRUDMixin, db.Model):
     name = db.Column(db.Text, default='Conditional')
 
     is_activated = db.Column(db.Boolean, default=False)
+    log_level_debug = db.Column(db.Boolean, default=False)
     conditional_statement = db.Column(db.Text, default='')
     period = db.Column(db.Float, default=60.0)
     refractory_period = db.Column(db.Float, default=0.0)
@@ -61,6 +62,7 @@ class Trigger(CRUDMixin, db.Model):
     trigger_type = db.Column(db.Text, default=None)
     name = db.Column(db.Text, default='Trigger Name')
     is_activated = db.Column(db.Boolean, default=False)
+    log_level_debug = db.Column(db.Boolean, default=False)
 
     # Used to hold unique IDs
     unique_id_1 = db.Column(db.String, default=None)

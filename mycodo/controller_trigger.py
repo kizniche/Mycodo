@@ -89,6 +89,7 @@ class TriggerController(threading.Thread):
         self.trigger_type = None
         self.trigger_name = None
         self.is_activated = None
+        self.log_level_debug = None
         self.smtp_max_count = None
         self.email_count = None
         self.allowed_to_send_notice = None
@@ -205,6 +206,12 @@ class TriggerController(threading.Thread):
         self.trigger_type = trigger.trigger_type
         self.trigger_name = trigger.name
         self.is_activated = trigger.is_activated
+        self.log_level_debug = trigger.log_level_debug
+
+        if self.log_level_debug:
+            self.logger.setLevel(logging.DEBUG)
+        else:
+            self.logger.setLevel(logging.INFO)
 
         self.smtp_max_count = db_retrieve_table_daemon(
             SMTP, entry='first').hourly_max

@@ -22,7 +22,8 @@ INPUT_INFORMATION = {
     'options_enabled': [
         'gpio_location',
         'period',
-        'pre_output'
+        'pre_output',
+        'log_level_debug'
     ],
     'options_disabled': ['interface'],
 
@@ -50,6 +51,11 @@ class InputModule(AbstractInput):
             self.gpio = GPIO
             self.gpio.setmode(self.gpio.BCM)
             self.gpio.setup(self.location, self.gpio.IN)
+
+        if input_dev.log_level_debug:
+            self.logger.setLevel(logging.DEBUG)
+        else:
+            self.logger.setLevel(logging.INFO)
 
     def get_measurement(self):
         """ Gets the GPIO state via RPi.GPIO """

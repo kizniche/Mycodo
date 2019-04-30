@@ -68,7 +68,8 @@ INPUT_INFORMATION = {
         'custom_options',
         'measurements_select',
         'period',
-        'pre_output'
+        'pre_output',
+        'log_level_debug'
     ],
     'options_disabled': ['interface'],
 
@@ -139,6 +140,11 @@ class InputModule(AbstractInput):
             self.lock_file = "/var/lock/mycodo_ttn.lock"
             self.locked = False
             self.ttn_serial_error = False
+
+        if input_dev.log_level_debug:
+            self.logger.setLevel(logging.DEBUG)
+        else:
+            self.logger.setLevel(logging.INFO)
 
     def lock_setup(self):
         self.lock = self.locket.lock_file(self.lock_file, timeout=10)

@@ -25,7 +25,8 @@ INPUT_INFORMATION = {
         'location',
         'port',
         'period',
-        'pre_output'
+        'pre_output',
+        'log_level_debug'
     ],
     'options_disabled': ['interface'],
 
@@ -56,6 +57,11 @@ class InputModule(AbstractInput):
 
             self.location = input_dev.location
             self.port = input_dev.port
+
+        if input_dev.log_level_debug:
+            self.logger.setLevel(logging.DEBUG)
+        else:
+            self.logger.setLevel(logging.INFO)
 
     def get_measurement(self):
         """ Determine if the return value of the command is a number """

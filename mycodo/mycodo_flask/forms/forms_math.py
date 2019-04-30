@@ -37,6 +37,8 @@ class MathMod(FlaskForm):
         lazy_gettext('Period (seconds)'),
         validators=[DataRequired()],
         widget=NumberInput(step='any'))
+    log_level_debug = BooleanField(
+        TRANSLATIONS['log_level_debug']['title'])
     max_measure_age = IntegerField(
         TRANSLATIONS['max_age']['title'],
         validators=[DataRequired()],

@@ -41,7 +41,8 @@ INPUT_INFORMATION = {
         'gpio_location',
         'measurements_select',
         'period',
-        'pre_output'
+        'pre_output',
+        'log_level_debug'
     ],
     'options_disabled': ['interface'],
 
@@ -106,6 +107,11 @@ class InputModule(AbstractInput):
             self.high_tick = None
             self.bit = None
             self.either_edge_cb = None
+
+        if input_dev.log_level_debug:
+            self.logger.setLevel(logging.DEBUG)
+        else:
+            self.logger.setLevel(logging.INFO)
 
         self.start_sensor()
 

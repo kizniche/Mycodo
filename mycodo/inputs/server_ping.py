@@ -26,7 +26,8 @@ INPUT_INFORMATION = {
         'times_check',
         'deadline',
         'period',
-        'pre_output'
+        'pre_output',
+        'log_level_debug'
     ],
     'options_disabled': ['interface'],
 
@@ -58,6 +59,11 @@ class InputModule(AbstractInput):
             self.location = input_dev.location
             self.times_check = input_dev.times_check
             self.deadline = input_dev.deadline
+
+        if input_dev.log_level_debug:
+            self.logger.setLevel(logging.DEBUG)
+        else:
+            self.logger.setLevel(logging.INFO)
 
     def get_measurement(self):
         """ Determine if the return value of the command is a number """

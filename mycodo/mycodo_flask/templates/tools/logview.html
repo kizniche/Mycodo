@@ -17,35 +17,44 @@
       </div>
       <div class="col-12 col-sm-10">
         <div class="row small-gutters">
-          <div class="col-6 col-sm-3 col-md-2">
-            {{form_log_view.loglogin(class_='btn btn-primary btn-block')}}
-          </div>
-          <div class="col-6 col-sm-3 col-md-2">
-            {{form_log_view.loghttp_access(class_='btn btn-primary btn-block')}}
-          </div>
-          <div class="col-6 col-sm-3 col-md-2">
-            {{form_log_view.loghttp_error(class_='btn btn-primary btn-block')}}
-          </div>
-          <div class="col-6 col-sm-3 col-md-2">
+          <div class="col-auto">
             {{form_log_view.logdaemon(class_='btn btn-primary btn-block')}}
           </div>
-          <div class="col-6 col-sm-3 col-md-2">
+          <div class="col-auto">
+            {{form_log_view.logdaemon_info(class_='btn btn-primary btn-block')}}
+          </div>
+          <div class="col-auto">
+            {{form_log_view.logdaemon_error(class_='btn btn-primary btn-block')}}
+          </div>
+          <div class="col-auto">
+            {{form_log_view.logdaemon_debug(class_='btn btn-primary btn-block')}}
+          </div>
+          <div class="col-auto">
+            {{form_log_view.log_pid_settings(class_='btn btn-primary btn-block')}}
+          </div>
+          <div class="col-auto">
+            {{form_log_view.loglogin(class_='btn btn-primary btn-block')}}
+          </div>
+          <div class="col-auto">
+            {{form_log_view.loghttp_access(class_='btn btn-primary btn-block')}}
+          </div>
+          <div class="col-auto">
+            {{form_log_view.loghttp_error(class_='btn btn-primary btn-block')}}
+          </div>
+          <div class="col-auto">
             {{form_log_view.logdependency(class_='btn btn-primary btn-block')}}
           </div>
-          <div class="col-6 col-sm-3 col-md-2">
+          <div class="col-auto">
             {{form_log_view.logkeepup(class_='btn btn-primary btn-block')}}
           </div>
-          <div class="col-6 col-sm-3 col-md-2">
+          <div class="col-auto">
             {{form_log_view.logbackup(class_='btn btn-primary btn-block')}}
           </div>
-          <div class="col-6 col-sm-3 col-md-2">
+          <div class="col-auto">
             {{form_log_view.logrestore(class_='btn btn-primary btn-block')}}
           </div>
-          <div class="col-6 col-sm-3 col-md-2">
+          <div class="col-auto">
             {{form_log_view.logupgrade(class_='btn btn-primary btn-block')}}
-          </div>
-          <div class="col-6 col-sm-3 col-md-2">
-            {{form_log_view.log_pid_settings(class_='btn btn-primary btn-block')}}
           </div>
         </div>
       </div>

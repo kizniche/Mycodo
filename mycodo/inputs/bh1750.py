@@ -31,7 +31,8 @@ INPUT_INFORMATION = {
         'period',
         'resolution',
         'sensitivity',
-        'pre_output'
+        'pre_output',
+        'log_level_debug'
     ],
     'options_disabled': ['interface'],
 
@@ -92,6 +93,11 @@ class InputModule(AbstractInput):
             self.i2c_bus = SMBus(input_dev.i2c_bus)
             self.power_down()
             self.set_sensitivity(sensitivity=self.sensitivity)
+
+        if input_dev.log_level_debug:
+            self.logger.setLevel(logging.DEBUG)
+        else:
+            self.logger.setLevel(logging.INFO)
 
     @property
     def lux(self):

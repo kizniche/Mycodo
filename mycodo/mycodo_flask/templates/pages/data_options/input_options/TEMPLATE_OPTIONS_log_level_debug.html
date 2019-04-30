@@ -1,0 +1,12 @@
+{% if 'log_level_debug' in dict_inputs[each_input.device]['options_disabled'] or
+      'log_level_debug' in dict_inputs[each_input.device]['options_enabled']
+  %}
+
+<div class="col-auto">
+  {{form_mod_input.log_level_debug.label(class_='control-label')}}
+  <div class="input-group-text">
+    <input id="log_level_debug" name="log_level_debug" type="checkbox" title="{{dict_translation['log_level_debug']['phrase']}}" value="y"{% if each_input.log_level_debug %} checked{% endif %}>
+  </div>
+</div>
+
+{% endif %}

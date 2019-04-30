@@ -25,7 +25,9 @@ INPUT_INFORMATION = {
         'i2c_location',
         'uart_location',
         'period',
-        'pre_output'],
+        'pre_output',
+        'log_level_debug'
+    ],
     'options_disabled': ['interface'],
 
     'dependencies_module': [
@@ -66,6 +68,11 @@ class InputModule(AbstractInput):
                 self.initialize_sensor()
             except Exception:
                 self.logger.exception("Exception while initializing sensor")
+
+        if input_dev.log_level_debug:
+            self.logger.setLevel(logging.DEBUG)
+        else:
+            self.logger.setLevel(logging.INFO)
 
     def initialize_sensor(self):
         from mycodo.devices.atlas_scientific_ftdi import AtlasScientificFTDI

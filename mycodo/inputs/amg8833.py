@@ -36,7 +36,8 @@ INPUT_INFORMATION = {
         'i2c_location',
         'measurements_select',
         'period',
-        'pre_output'
+        'pre_output',
+        'log_level_debug'
     ],
     'options_disabled': ['interface'],
 
@@ -84,6 +85,11 @@ class InputModule(AbstractInput):
             self.sensor = self.Adafruit_AMG88xx(address=self.i2c_address,
                                                 busnum=self.i2c_bus)
             time.sleep(.1)  # wait for it to boot
+
+        if input_dev.log_level_debug:
+            self.logger.setLevel(logging.DEBUG)
+        else:
+            self.logger.setLevel(logging.INFO)
 
     def get_measurement(self):
         """ Gets the AMG8833's measurements """

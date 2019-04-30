@@ -42,7 +42,8 @@ INPUT_INFORMATION = {
         'bt_location',
         'measurements_select',
         'period',
-        'pre_output'
+        'pre_output',
+        'log_level_debug'
     ],
     'options_disabled': ['interface'],
 
@@ -87,6 +88,11 @@ class InputModule(AbstractInput):
             self.location = input_dev.location
             self.bt_adapter = input_dev.bt_adapter
             self.poller = MiFloraPoller(self.location, BluepyBackend, adapter='hci{}'.format(self.bt_adapter))
+
+        if input_dev.log_level_debug:
+            self.logger.setLevel(logging.DEBUG)
+        else:
+            self.logger.setLevel(logging.INFO)
 
     def get_measurement(self):
         """ Gets the light, moisture, and temperature """

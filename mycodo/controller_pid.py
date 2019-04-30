@@ -104,6 +104,7 @@ class PIDController(threading.Thread):
 
         self.device_measurements = db_retrieve_table_daemon(DeviceMeasurements)
 
+        self.log_level_debug = None
         self.PID_Controller = None
         self.control_variable = 0.0
         self.derivator = 0.0
@@ -253,6 +254,7 @@ class PIDController(threading.Thread):
         self.is_activated = pid.is_activated
         self.is_held = pid.is_held
         self.is_paused = pid.is_paused
+        self.log_level_debug = pid.log_level_debug
         self.method_id = pid.method_id
         self.direction = pid.direction
         self.raise_output_id = pid.raise_output_id
@@ -283,6 +285,11 @@ class PIDController(threading.Thread):
 
         self.device_id = pid.measurement.split(',')[0]
         self.measurement_id = pid.measurement.split(',')[1]
+
+        if self.log_level_debug:
+            self.logger.setLevel(logging.DEBUG)
+        else:
+            self.logger.setLevel(logging.INFO)
 
         input_dev = db_retrieve_table_daemon(Input, unique_id=self.device_id)
         math = db_retrieve_table_daemon(Math, unique_id=self.device_id)

@@ -35,7 +35,8 @@ INPUT_INFORMATION = {
 
     'options_enabled': [
         'period',
-        'pre_output'
+        'pre_output',
+        'log_level_debug'
     ],
     'options_disabled': [
         'interface',
@@ -74,6 +75,11 @@ class InputModule(AbstractInput):
             self.i2c_address = input_dev.i2c_location
             self.i2c_bus = input_dev.i2c_bus
 
+        if input_dev.log_level_debug:
+            self.logger.setLevel(logging.DEBUG)
+        else:
+            self.logger.setLevel(logging.INFO)
+
     def get_measurement(self):
         """ Measures temperature and humidity """
         # Resetting these values ensures old measurements aren't mistaken for new measurements
@@ -83,6 +89,15 @@ class InputModule(AbstractInput):
         try:
             humidity = self.random.randint(0, 100)
             temperature = self.random.randint(0, 50)
+
+            self.logger.info(
+                "This INFO message will always be displayed. "
+                "Acquiring measurements...")
+            self.logger.debug(
+                "This DEBUG message will only be displayed if the Debug "
+                "option is enabled. "
+                "Humidity: {hum}, Temperature: {temp}".format(
+                    hum=humidity, temp=temperature))
 
             if self.is_enabled(0):
                 self.set_value(return_dict, 0, temperature)

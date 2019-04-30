@@ -24,7 +24,8 @@ INPUT_INFORMATION = {
         'location',
         'resolution',
         'period',
-        'pre_output'
+        'pre_output',
+        'log_level_debug'
     ],
     'options_disabled': ['interface'],
 
@@ -61,6 +62,11 @@ class InputModule(AbstractInput):
                                         self.location)
             if self.resolution:
                 self.sensor.set_precision(self.resolution)
+
+        if input_dev.log_level_debug:
+            self.logger.setLevel(logging.DEBUG)
+        else:
+            self.logger.setLevel(logging.INFO)
 
     def get_measurement(self):
         """ Gets the DS1822's temperature in Celsius """

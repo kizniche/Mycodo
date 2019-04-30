@@ -31,7 +31,8 @@ INPUT_INFORMATION = {
 
     'options_enabled': [
         'measurements_select',
-        'period'
+        'period',
+        'log_level_debug'
     ],
     'options_disabled': ['interface'],
 
@@ -54,6 +55,11 @@ class InputModule(AbstractInput):
                 DeviceMeasurements).filter(
                     DeviceMeasurements.device_id == input_dev.unique_id)
 
+        if input_dev.log_level_debug:
+            self.logger.setLevel(logging.DEBUG)
+        else:
+            self.logger.setLevel(logging.INFO)
+
     def get_measurement(self):
         """ Gets the Raspberry pi's CPU and GPU temperatures in Celsius """
         # import psutil
@@ -68,11 +74,14 @@ class InputModule(AbstractInput):
 
         return_dict = measurements_dict.copy()
 
+        self.logger.debug("Acquiring Measurements...")
+
         if self.is_enabled(0):
             # CPU temperature
             with open('/sys/class/thermal/thermal_zone0/temp') as cpu_temp_file:
                 temp_cpu = float(cpu_temp_file.read()) / 1000
                 self.set_value(return_dict, 0, temp_cpu)
+                self.logger.debug("CPU Temperature: {}".format(temp_cpu))
 
         if self.is_enabled(1):
             # GPU temperature
@@ -80,5 +89,6 @@ class InputModule(AbstractInput):
                 ('/opt/vc/bin/vcgencmd', 'measure_temp'))
             temp_gpu = float(temperature_gpu.split(b'=')[1].split(b"'")[0])
             self.set_value(return_dict, 1, temp_gpu)
+            self.logger.debug("GPU Temperature: {}".format(temp_gpu))
 
         return return_dict

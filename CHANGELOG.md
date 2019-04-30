@@ -1,4 +1,4 @@
-## 7.4.4 (Unreleased)
+## 7.5.0 (Unreleased)
 
 ### Bugfixes
 
@@ -14,6 +14,8 @@
 
  - Add Conditional Condition: Measurement (Multiple)
  - Add ability of Inputs to store measurements with the same or separate timestamps
+ - Add option to show debug lines in Daemon Log (for Input/Math/PID/Trigger/Conditional)
+ - Add Log Filters: Daemon INFO, Daemon DEBUG
 
 ### Miscellaneous
 

@@ -33,7 +33,8 @@ INPUT_INFORMATION = {
 
     'options_enabled': [
         'measurements_select',
-        'period'
+        'period',
+        'log_level_debug'
     ],
     'options_disabled': ['interface'],
 
@@ -63,6 +64,11 @@ class InputModule(AbstractInput):
             self.device_measurements = db_retrieve_table_daemon(
                 DeviceMeasurements).filter(
                     DeviceMeasurements.device_id == input_dev.unique_id)
+
+        if input_dev.log_level_debug:
+            self.logger.setLevel(logging.DEBUG)
+        else:
+            self.logger.setLevel(logging.INFO)
 
     def get_measurement(self):
         """ Gets the cpu load averages """

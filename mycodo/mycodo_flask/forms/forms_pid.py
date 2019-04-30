@@ -44,6 +44,8 @@ class PIDModBase(FlaskForm):
         )],
         widget=NumberInput(step='any')
     )
+    log_level_debug = BooleanField(
+        TRANSLATIONS['log_level_debug']['title'])
     start_offset = DecimalField(
         lazy_gettext('Start Offset (seconds)'),
         widget=NumberInput(step='any'))
