@@ -771,7 +771,7 @@ class MathController(threading.Thread):
         add_measurements_influxdb(self.unique_id, measurement_dict)
 
     def error_not_within_max_age(self):
-        self.logger.error(
+        self.logger.debug(
             "One or more inputs were not within the Max Age that has been "
             "set. Ensure all Inputs are operating properly.")
 
