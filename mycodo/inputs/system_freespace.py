@@ -16,7 +16,7 @@ measurements_dict = {
 # Input information
 INPUT_INFORMATION = {
     'input_name_unique': 'RPiFreeSpace',
-    'input_manufacturer': 'Mycodo',
+    'input_manufacturer': 'System',
     'input_name': 'Free Space',
     'measurements_name': 'Unallocated Disk Space',
     'measurements_dict': measurements_dict,
@@ -42,12 +42,12 @@ class InputModule(AbstractInput):
 
     def __init__(self, input_dev, testing=False):
         super(InputModule, self).__init__()
-        self.logger = logging.getLogger("mycodo.inputs.raspi_freespace")
+        self.logger = logging.getLogger("mycodo.inputs.system_freespace")
         self._disk_space = None
 
         if not testing:
             self.logger = logging.getLogger(
-                "mycodo.raspi_freespace_{id}".format(
+                "mycodo.system_freespace_{id}".format(
                     id=input_dev.unique_id.split('-')[0]))
 
             self.path = input_dev.location

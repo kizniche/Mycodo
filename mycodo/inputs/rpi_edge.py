@@ -11,7 +11,7 @@ measurements_dict = {
 # Input information
 INPUT_INFORMATION = {
     'input_name_unique': 'EDGE',
-    'input_manufacturer': 'Mycodo',
+    'input_manufacturer': 'Raspberry Pi',
     'input_name': 'Edge',
     'measurements_name': 'Rising/Falling Edge',
     'measurements_dict': measurements_dict,

@@ -26,8 +26,8 @@ measurements_dict = {
 # Input information
 INPUT_INFORMATION = {
     'input_name_unique': 'RPiCPULoad',
-    'input_manufacturer': 'Raspberry Pi',
-    'input_name': 'RPi CPU Load',
+    'input_manufacturer': 'System',
+    'input_name': 'CPU Load',
     'measurements_name': 'CPULoad',
     'measurements_dict': measurements_dict,
 
@@ -38,7 +38,7 @@ INPUT_INFORMATION = {
     ],
     'options_disabled': ['interface'],
 
-    'interfaces': ['RPi'],
+    'interfaces': ['Mycodo'],
     'location': {
         'title': 'Directory',
         'phrase': 'Directory to report the free space of',
@@ -52,14 +52,14 @@ class InputModule(AbstractInput):
 
     def __init__(self, input_dev, testing=False):
         super(InputModule, self).__init__()
-        self.logger = logging.getLogger("mycodo.inputs.raspi_cpuload")
+        self.logger = logging.getLogger("mycodo.inputs.system_cpuload")
         self._cpu_load_1m = None
         self._cpu_load_5m = None
         self._cpu_load_15m = None
 
         if not testing:
             self.logger = logging.getLogger(
-                "mycodo.raspi_cpuload_{id}".format(
+                "mycodo.system_cpuload_{id}".format(
                     id=input_dev.unique_id.split('-')[0]))
 
             self.device_measurements = db_retrieve_table_daemon(

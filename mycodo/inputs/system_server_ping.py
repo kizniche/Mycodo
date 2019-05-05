@@ -16,7 +16,7 @@ measurements_dict = {
 # Input information
 INPUT_INFORMATION = {
     'input_name_unique': 'SERVER_PING',
-    'input_manufacturer': 'Mycodo',
+    'input_manufacturer': 'System',
     'input_name': 'Server Ping',
     'measurements_name': 'Boolean',
     'measurements_dict': measurements_dict,

@@ -25,7 +25,7 @@ measurements_dict = {
 # Input information
 INPUT_INFORMATION = {
     'input_name_unique': 'SIGNAL_PWM',
-    'input_manufacturer': 'Mycodo',
+    'input_manufacturer': 'Raspberry Pi',
     'input_name': 'Signal (PWM)',
     'measurements_name': 'Frequency/Pulse Width/Duty Cycle',
     'measurements_dict': measurements_dict,

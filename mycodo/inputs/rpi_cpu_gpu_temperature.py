@@ -24,7 +24,7 @@ measurements_dict = {
 INPUT_INFORMATION = {
     'input_name_unique': 'RPi',
     'input_manufacturer': 'Raspberry Pi',
-    'input_name': 'RPi CPU/GPU Temperature',
+    'input_name': 'CPU/GPU Temperature',
     'measurements_name': 'Temperature',
     'measurements_dict': measurements_dict,
     'measurements_use_same_timestamp': True,
@@ -45,11 +45,11 @@ class InputModule(AbstractInput):
 
     def __init__(self, input_dev, testing=False):
         super(InputModule, self).__init__()
-        self.logger = logging.getLogger("mycodo.inputs.raspi")
+        self.logger = logging.getLogger("mycodo.inputs.cpu_gpu_temperature")
 
         if not testing:
             self.logger = logging.getLogger(
-                "mycodo.raspi_{id}".format(
+                "mycodo.cpu_gpu_temperature_{id}".format(
                     id=input_dev.unique_id.split('-')[0]))
 
             self.device_measurements = db_retrieve_table_daemon(

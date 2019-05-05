@@ -1572,6 +1572,14 @@ measure_2 <span class="op">=</span> measure(<span class="st">&quot;</span><span 
 <span class="cf">if</span> <span class="va">None</span> <span class="kw">not</span> <span class="kw">in</span> [measure_1, measure_2]:
     <span class="cf">if</span> measure_1 <span class="op">&gt;</span> <span class="dv">20</span> <span class="kw">or</span> <span class="bu">int</span>(<span class="bu">round</span>(measure_2)) <span class="kw">in</span> [<span class="dv">20</span>, <span class="dv">21</span>, <span class="dv">22</span>]:
         run_all_actions()</code></pre></div>
+<p>“Measurement (Multiple)” is useful if you need to check if a particular value has been stored in any of the past measurements (within the set Max Age), not just the last measurement. This is useful if you have an alert system that each numerical value represents a different alert that you need to check each past value if it occurred. Here is an example that retrieves all measurements from the past 30 minutes and checks if each measurement value is equal to “119”. If “119” exists, the Actions are executed and <code>break</code> is used to exit the <code>for</code> loop. each_measure[‘time’] may also be used to retrieve the timestamp for the particular measurement.</p>
+<div class="sourceCode"><pre class="sourceCode python"><code class="sourceCode python"><span class="co"># Example 1, find a particular measurement in the past 30 minutes (set Max Age to 1800 seconds)</span>
+measurements <span class="op">=</span> measure_dict(<span class="st">&quot;</span><span class="sc">{asdf1234}</span><span class="st">&quot;</span>)
+<span class="cf">if</span> measurements:
+    <span class="cf">for</span> each_measure <span class="kw">in</span> measurements:
+        <span class="cf">if</span> each_measure[<span class="st">'value'</span>] <span class="op">==</span> <span class="dv">119</span>:
+            run_all_actions()
+            <span class="cf">break</span></code></pre></div>
 <p>Advanced <code>Conditional Statement</code> examples:</p>
 <p>These examples expand on the simple examples, above, by activating specific actions. The following examples will reference actions with IDs that can be found under the <code>Actions</code> section of the Conditional. Two example action ID will be used: “qwer1234” and “uiop5678”. Additionally, run_all_actions() is used here, which will run all actions in the order in which they appear in the Actions section of the Conditional.</p>
 <div class="sourceCode"><pre class="sourceCode python"><code class="sourceCode python"><span class="co"># Example 1</span>
@@ -1679,14 +1687,18 @@ measure_2 <span class="op">=</span> measure(<span class="st">&quot;</span><span 
 </thead>
 <tbody>
 <tr class="odd">
-<td>Measurement</td>
+<td>Measurement (Single)</td>
 <td>Acquires the latest measurement from an Input or device. Set Max Age (seconds) to restrict how long to accept values. If the latest value is older than this duration, “None” is returned.</td>
 </tr>
 <tr class="even">
+<td>Measurement (Multiple)</td>
+<td>Acquires the last measurements from an Input or device. Set Max Age (seconds) to restrict how long to accept values. If no values are found in this duration, “None” is returned. This differs from the “Measurement (Single)” Condition because it returns a list of dictionaries with ‘time’ and ‘value’ key pairs.</td>
+</tr>
+<tr class="odd">
 <td>GPIO State</td>
 <td>Acquires the current GPIO state and returns True/1 if HIGH or False/0 if LOW. If the latest value is older than this duration, “None” is returned.</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>Max Age (seconds)</td>
 <td>The minimum age (seconds) the measurement can be. If the last measurement is older than this, “None” will be returned instead of a measurement.</td>
 </tr>
