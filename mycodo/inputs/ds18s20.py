@@ -84,7 +84,8 @@ class InputModule(AbstractInput):
         if not testing:
             from w1thermsensor import W1ThermSensor
             self.logger = logging.getLogger(
-                "mycodo.ds18s20_{id}".format(id=input_dev.unique_id.split('-')[0]))
+                "mycodo.ds18s20_{id}".format(
+                    id=input_dev.unique_id.split('-')[0]))
 
             self.location = input_dev.location
             self.library = None
@@ -97,15 +98,16 @@ class InputModule(AbstractInput):
                         self.library = value
 
             if self.library == 'w1thermsensor':
-                self.sensor = W1ThermSensor(W1ThermSensor.THERM_SENSOR_DS18S20,
-                                            self.location)
+                self.sensor = W1ThermSensor(
+                    W1ThermSensor.THERM_SENSOR_DS18S20,
+                    self.location)
             elif self.library == 'ow_shell':
                 pass
 
-        if input_dev.log_level_debug:
-            self.logger.setLevel(logging.DEBUG)
-        else:
-            self.logger.setLevel(logging.INFO)
+            if input_dev.log_level_debug:
+                self.logger.setLevel(logging.DEBUG)
+            else:
+                self.logger.setLevel(logging.INFO)
 
     def get_measurement(self):
         """ Gets the DS18S20's temperature in Celsius """

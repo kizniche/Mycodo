@@ -120,10 +120,10 @@ class InputModule(AbstractInput):
             self.location = input_dev.location
             self.bt_adapter = input_dev.bt_adapter
 
-        if input_dev.log_level_debug:
-            self.logger.setLevel(logging.DEBUG)
-        else:
-            self.logger.setLevel(logging.INFO)
+            if input_dev.log_level_debug:
+                self.logger.setLevel(logging.DEBUG)
+            else:
+                self.logger.setLevel(logging.INFO)
 
     def get_measurement(self):
         """ Obtain and return the measurements """

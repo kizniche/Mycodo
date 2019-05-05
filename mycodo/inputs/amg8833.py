@@ -72,7 +72,8 @@ class InputModule(AbstractInput):
         if not testing:
             from Adafruit_AMG88xx import Adafruit_AMG88xx
             self.logger = logging.getLogger(
-                "mycodo.ds18b20_{id}".format(id=input_dev.unique_id.split('-')[0]))
+                "mycodo.ds18b20_{id}".format(
+                    id=input_dev.unique_id.split('-')[0]))
 
             self.device_measurements = db_retrieve_table_daemon(
                 DeviceMeasurements).filter(
@@ -82,14 +83,15 @@ class InputModule(AbstractInput):
             self.i2c_address = int(str(input_dev.i2c_location), 16)
             self.i2c_bus = input_dev.i2c_bus
             self.input_dev = input_dev
-            self.sensor = self.Adafruit_AMG88xx(address=self.i2c_address,
-                                                busnum=self.i2c_bus)
-            time.sleep(.1)  # wait for it to boot
+            self.sensor = self.Adafruit_AMG88xx(
+                address=self.i2c_address,
+                busnum=self.i2c_bus)
+            time.sleep(0.1)  # wait for it to boot
 
-        if input_dev.log_level_debug:
-            self.logger.setLevel(logging.DEBUG)
-        else:
-            self.logger.setLevel(logging.INFO)
+            if input_dev.log_level_debug:
+                self.logger.setLevel(logging.DEBUG)
+            else:
+                self.logger.setLevel(logging.INFO)
 
     def get_measurement(self):
         """ Gets the AMG8833's measurements """

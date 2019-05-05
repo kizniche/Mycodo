@@ -112,7 +112,8 @@ class InputModule(AbstractInput):
 
         if not testing:
             self.logger = logging.getLogger(
-                "mycodo.hdc1000_{id}".format(id=input_dev.unique_id.split('-')[0]))
+                "mycodo.hdc1000_{id}".format(
+                    id=input_dev.unique_id.split('-')[0]))
 
             self.device_measurements = db_retrieve_table_daemon(
                 DeviceMeasurements).filter(
@@ -123,8 +124,10 @@ class InputModule(AbstractInput):
             self.i2c_bus = input_dev.i2c_bus
             self.i2c_address = 0x40  # HDC1000-F Address
 
-            self.HDC1000_fr = io.open("/dev/i2c-" + str(self.i2c_bus), "rb", buffering=0)
-            self.HDC1000_fw = io.open("/dev/i2c-" + str(self.i2c_bus), "wb", buffering=0)
+            self.HDC1000_fr = io.open(
+                "/dev/i2c-" + str(self.i2c_bus), "rb", buffering=0)
+            self.HDC1000_fw = io.open(
+                "/dev/i2c-" + str(self.i2c_bus), "wb", buffering=0)
 
             # set device address
             fcntl.ioctl(self.HDC1000_fr, I2C_SLAVE, self.i2c_address)
@@ -140,21 +143,26 @@ class InputModule(AbstractInput):
 
             # Set resolutions
             if self.resolution_temperature == 11:
-                self.set_temperature_resolution(HDC1000_CONFIG_TEMPERATURE_RESOLUTION_11BIT)
+                self.set_temperature_resolution(
+                    HDC1000_CONFIG_TEMPERATURE_RESOLUTION_11BIT)
             elif self.resolution_temperature == 14:
-                self.set_temperature_resolution(HDC1000_CONFIG_TEMPERATURE_RESOLUTION_14BIT)
+                self.set_temperature_resolution(
+                    HDC1000_CONFIG_TEMPERATURE_RESOLUTION_14BIT)
 
             if self.resolution_humidity == 8:
-                self.set_humidity_resolution(HDC1000_CONFIG_HUMIDITY_RESOLUTION_8BIT)
+                self.set_humidity_resolution(
+                    HDC1000_CONFIG_HUMIDITY_RESOLUTION_8BIT)
             elif self.resolution_humidity == 11:
-                self.set_humidity_resolution(HDC1000_CONFIG_HUMIDITY_RESOLUTION_11BIT)
+                self.set_humidity_resolution(
+                    HDC1000_CONFIG_HUMIDITY_RESOLUTION_11BIT)
             elif self.resolution_humidity == 14:
-                self.set_humidity_resolution(HDC1000_CONFIG_HUMIDITY_RESOLUTION_14BIT)
+                self.set_humidity_resolution(
+                    HDC1000_CONFIG_HUMIDITY_RESOLUTION_14BIT)
 
-        if input_dev.log_level_debug:
-            self.logger.setLevel(logging.DEBUG)
-        else:
-            self.logger.setLevel(logging.INFO)
+            if input_dev.log_level_debug:
+                self.logger.setLevel(logging.DEBUG)
+            else:
+                self.logger.setLevel(logging.INFO)
 
     def get_measurement(self):
         """ Gets the humidity and temperature """

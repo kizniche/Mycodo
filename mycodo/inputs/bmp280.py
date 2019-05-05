@@ -102,7 +102,8 @@ class InputModule(AbstractInput):
         if not testing:
             import Adafruit_GPIO.I2C as I2C
             self.logger = logging.getLogger(
-                "mycodo.bmp280_{id}".format(id=input_dev.unique_id.split('-')[0]))
+                "mycodo.bmp280_{id}".format(
+                    id=input_dev.unique_id.split('-')[0]))
 
             self.device_measurements = db_retrieve_table_daemon(
                 DeviceMeasurements).filter(
@@ -121,16 +122,17 @@ class InputModule(AbstractInput):
             self._mode = mode
             # Create I2C device.
             i2c = I2C
-            self._device = i2c.get_i2c_device(self.i2c_address,
-                                              busnum=self.i2c_bus)
+            self._device = i2c.get_i2c_device(
+                self.i2c_address,
+                busnum=self.i2c_bus)
             # Load calibration values.
             self._load_calibration()
             self._tfine = 0
 
-        if input_dev.log_level_debug:
-            self.logger.setLevel(logging.DEBUG)
-        else:
-            self.logger.setLevel(logging.INFO)
+            if input_dev.log_level_debug:
+                self.logger.setLevel(logging.DEBUG)
+            else:
+                self.logger.setLevel(logging.INFO)
 
     def get_measurement(self):
         """ Gets the measurement in units by reading the """

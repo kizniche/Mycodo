@@ -69,10 +69,10 @@ class InputModule(AbstractInput):
             except Exception:
                 self.logger.exception("Exception while initializing sensor")
 
-        if input_dev.log_level_debug:
-            self.logger.setLevel(logging.DEBUG)
-        else:
-            self.logger.setLevel(logging.INFO)
+            if input_dev.log_level_debug:
+                self.logger.setLevel(logging.DEBUG)
+            else:
+                self.logger.setLevel(logging.INFO)
 
     def initialize_sensor(self):
         from mycodo.devices.atlas_scientific_ftdi import AtlasScientificFTDI

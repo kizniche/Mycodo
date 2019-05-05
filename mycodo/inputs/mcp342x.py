@@ -77,7 +77,8 @@ class InputModule(AbstractInput):
             from smbus2 import SMBus
             from MCP342x import MCP342x
             self.logger = logging.getLogger(
-                'mycodo.mcp342x_{id}'.format(id=input_dev.unique_id.split('-')[0]))
+                'mycodo.mcp342x_{id}'.format(
+                    id=input_dev.unique_id.split('-')[0]))
 
             self.device_measurements = db_retrieve_table_daemon(
                 DeviceMeasurements).filter(
@@ -91,10 +92,10 @@ class InputModule(AbstractInput):
             self.MCP342x = MCP342x
             self.bus = SMBus(self.i2c_bus)
 
-        if input_dev.log_level_debug:
-            self.logger.setLevel(logging.DEBUG)
-        else:
-            self.logger.setLevel(logging.INFO)
+            if input_dev.log_level_debug:
+                self.logger.setLevel(logging.DEBUG)
+            else:
+                self.logger.setLevel(logging.INFO)
 
     def get_measurement(self):
         return_dict = measurements_dict.copy()

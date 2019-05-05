@@ -64,7 +64,8 @@ class InputModule(AbstractInput):
 
         if not testing:
             self.logger = logging.getLogger(
-                "mycodo.chirp_{id}".format(id=input_dev.unique_id.split('-')[0]))
+                "mycodo.chirp_{id}".format(
+                    id=input_dev.unique_id.split('-')[0]))
 
             self.device_measurements = db_retrieve_table_daemon(
                 DeviceMeasurements).filter(
@@ -75,10 +76,10 @@ class InputModule(AbstractInput):
             self.bus = SMBus(self.i2c_bus)
             self.filter_average('lux', init_max=3)
 
-        if input_dev.log_level_debug:
-            self.logger.setLevel(logging.DEBUG)
-        else:
-            self.logger.setLevel(logging.INFO)
+            if input_dev.log_level_debug:
+                self.logger.setLevel(logging.DEBUG)
+            else:
+                self.logger.setLevel(logging.INFO)
 
     def get_measurement(self):
         """ Gets the light, moisture, and temperature """

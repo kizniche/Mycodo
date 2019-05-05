@@ -54,19 +54,21 @@ class InputModule(AbstractInput):
         if not testing:
             from w1thermsensor import W1ThermSensor
             self.logger = logging.getLogger(
-                "mycodo.ds1822_{id}".format(id=input_dev.unique_id.split('-')[0]))
+                "mycodo.ds1822_{id}".format(
+                    id=input_dev.unique_id.split('-')[0]))
 
             self.location = input_dev.location
             self.resolution = input_dev.resolution
-            self.sensor = W1ThermSensor(W1ThermSensor.THERM_SENSOR_DS1822,
-                                        self.location)
+            self.sensor = W1ThermSensor(
+                W1ThermSensor.THERM_SENSOR_DS1822,
+                self.location)
             if self.resolution:
                 self.sensor.set_precision(self.resolution)
 
-        if input_dev.log_level_debug:
-            self.logger.setLevel(logging.DEBUG)
-        else:
-            self.logger.setLevel(logging.INFO)
+            if input_dev.log_level_debug:
+                self.logger.setLevel(logging.DEBUG)
+            else:
+                self.logger.setLevel(logging.INFO)
 
     def get_measurement(self):
         """ Gets the DS1822's temperature in Celsius """

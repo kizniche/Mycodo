@@ -81,6 +81,7 @@ def calculate_vapor_pressure_deficit(temperature, relative_humidity):
     svp = calculate_saturated_vapor_pressure(temperature)
     return ((100 - relative_humidity) / 100) * svp
 
+
 def calculate_vapor_pressure_deficit_02(temperature_c, relative_humidity):
     import math
     A = -10440.397

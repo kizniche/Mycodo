@@ -63,7 +63,8 @@ class InputModule(AbstractInput):
         if not testing:
             from Adafruit_BMP import BMP085
             self.logger = logging.getLogger(
-                "mycodo.bmp180_{id}".format(id=input_dev.unique_id.split('-')[0]))
+                "mycodo.bmp180_{id}".format(
+                    id=input_dev.unique_id.split('-')[0]))
 
             self.device_measurements = db_retrieve_table_daemon(
                 DeviceMeasurements).filter(
@@ -72,10 +73,10 @@ class InputModule(AbstractInput):
             self.i2c_bus = input_dev.i2c_bus
             self.bmp = BMP085.BMP085(busnum=self.i2c_bus)
 
-        if input_dev.log_level_debug:
-            self.logger.setLevel(logging.DEBUG)
-        else:
-            self.logger.setLevel(logging.INFO)
+            if input_dev.log_level_debug:
+                self.logger.setLevel(logging.DEBUG)
+            else:
+                self.logger.setLevel(logging.INFO)
 
     def get_measurement(self):
         """ Gets the measurement in units by reading the BMP180/085 """

@@ -121,7 +121,8 @@ class InputModule(AbstractInput):
             self.CH_SEQUENCE = (POTI, LDR, EXT2, EXT3, EXT4, EXT5, EXT6, EXT7)
 
             self.logger = logging.getLogger(
-                'mycodo.ads1256_{id}'.format(id=input_dev.unique_id.split('-')[0]))
+                'mycodo.ads1256_{id}'.format(
+                    id=input_dev.unique_id.split('-')[0]))
 
             self.adc_calibration = None
 
@@ -160,10 +161,10 @@ class InputModule(AbstractInput):
                     "SPI device /dev/spi* not found. Ensure SPI is enabled "
                     "and the device is recognized/setup by linux.")
 
-        if input_dev.log_level_debug:
-            self.logger.setLevel(logging.DEBUG)
-        else:
-            self.logger.setLevel(logging.INFO)
+            if input_dev.log_level_debug:
+                self.logger.setLevel(logging.DEBUG)
+            else:
+                self.logger.setLevel(logging.INFO)
 
     def get_measurement(self):
         self._measurements = {}

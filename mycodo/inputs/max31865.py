@@ -87,7 +87,8 @@ class InputModule(AbstractInput):
 
         if not testing:
             self.logger = logging.getLogger(
-                "mycodo.max31865_{id}".format(id=input_dev.unique_id.split('-')[0]))
+                "mycodo.max31865_{id}".format(
+                    id=input_dev.unique_id.split('-')[0]))
 
             self.pin_clock = input_dev.pin_clock
             self.pin_cs = input_dev.pin_cs
@@ -95,15 +96,16 @@ class InputModule(AbstractInput):
             self.pin_mosi = input_dev.pin_mosi
             self.thermocouple_type = input_dev.thermocouple_type
             self.ref_ohm = input_dev.ref_ohm
-            self.sensor = max31865_sen(self.pin_cs,
-                                       self.pin_miso,
-                                       self.pin_mosi,
-                                       self.pin_clock)
+            self.sensor = max31865_sen(
+                self.pin_cs,
+                self.pin_miso,
+                self.pin_mosi,
+                self.pin_clock)
 
-        if input_dev.log_level_debug:
-            self.logger.setLevel(logging.DEBUG)
-        else:
-            self.logger.setLevel(logging.INFO)
+            if input_dev.log_level_debug:
+                self.logger.setLevel(logging.DEBUG)
+            else:
+                self.logger.setLevel(logging.INFO)
 
     def get_measurement(self):
         """ Gets the measurement in units by reading the """

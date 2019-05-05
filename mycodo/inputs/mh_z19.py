@@ -93,7 +93,8 @@ class InputModule(AbstractInput):
         if not testing:
             import serial
             self.logger = logging.getLogger(
-                "mycodo.mhz19_{id}".format(id=input_dev.unique_id.split('-')[0]))
+                "mycodo.mhz19_{id}".format(
+                    id=input_dev.unique_id.split('-')[0]))
 
             self.uart_location = input_dev.uart_location
             self.baud_rate = input_dev.baud_rate
@@ -102,9 +103,10 @@ class InputModule(AbstractInput):
             self.serial_device = is_device(self.uart_location)
             if self.serial_device:
                 try:
-                    self.ser = serial.Serial(self.serial_device,
-                                             baudrate=self.baud_rate,
-                                             timeout=1)
+                    self.ser = serial.Serial(
+                        self.serial_device,
+                        baudrate=self.baud_rate,
+                        timeout=1)
                 except serial.SerialException:
                     self.logger.exception('Opening serial')
             else:
@@ -132,10 +134,10 @@ class InputModule(AbstractInput):
 
             time.sleep(0.1)
 
-        if input_dev.log_level_debug:
-            self.logger.setLevel(logging.DEBUG)
-        else:
-            self.logger.setLevel(logging.INFO)
+            if input_dev.log_level_debug:
+                self.logger.setLevel(logging.DEBUG)
+            else:
+                self.logger.setLevel(logging.INFO)
 
     def get_measurement(self):
         """ Gets the MH-Z19's CO2 concentration in ppmv via UART"""

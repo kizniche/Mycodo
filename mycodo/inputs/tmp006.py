@@ -67,7 +67,8 @@ class InputModule(AbstractInput):
         if not testing:
             from Adafruit_TMP import TMP006
             self.logger = logging.getLogger(
-                "mycodo.tmp006_{id}".format(id=input_dev.unique_id.split('-')[0]))
+                "mycodo.tmp006_{id}".format(
+                    id=input_dev.unique_id.split('-')[0]))
 
             self.device_measurements = db_retrieve_table_daemon(
                 DeviceMeasurements).filter(
@@ -76,12 +77,13 @@ class InputModule(AbstractInput):
             self.i2c_address = int(str(input_dev.i2c_location), 16)
             self.i2c_bus = input_dev.i2c_bus
             self.sensor = TMP006.TMP006(
-                address=self.i2c_address, busnum=self.i2c_bus)
+                address=self.i2c_address,
+                busnum=self.i2c_bus)
 
-        if input_dev.log_level_debug:
-            self.logger.setLevel(logging.DEBUG)
-        else:
-            self.logger.setLevel(logging.INFO)
+            if input_dev.log_level_debug:
+                self.logger.setLevel(logging.DEBUG)
+            else:
+                self.logger.setLevel(logging.INFO)
 
     def get_measurement(self):
         """ Gets the TMP006's temperature in Celsius """

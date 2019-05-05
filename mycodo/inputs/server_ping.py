@@ -54,16 +54,17 @@ class InputModule(AbstractInput):
 
         if not testing:
             self.logger = logging.getLogger(
-                "mycodo.server_ping_{id}".format(id=input_dev.unique_id.split('-')[0]))
+                "mycodo.server_ping_{id}".format(
+                    id=input_dev.unique_id.split('-')[0]))
 
             self.location = input_dev.location
             self.times_check = input_dev.times_check
             self.deadline = input_dev.deadline
 
-        if input_dev.log_level_debug:
-            self.logger.setLevel(logging.DEBUG)
-        else:
-            self.logger.setLevel(logging.INFO)
+            if input_dev.log_level_debug:
+                self.logger.setLevel(logging.DEBUG)
+            else:
+                self.logger.setLevel(logging.INFO)
 
     def get_measurement(self):
         """ Determine if the return value of the command is a number """

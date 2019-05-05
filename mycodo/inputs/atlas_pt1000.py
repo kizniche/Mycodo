@@ -53,7 +53,8 @@ class InputModule(AbstractInput):
 
         if not testing:
             self.logger = logging.getLogger(
-                "mycodo.inputs.atlas_pt1000_{id}".format(id=input_dev.unique_id.split('-')[0]))
+                "mycodo.inputs.atlas_pt1000_{id}".format(
+                    id=input_dev.unique_id.split('-')[0]))
 
             self.interface = input_dev.interface
             if self.interface == 'FTDI':
@@ -65,10 +66,10 @@ class InputModule(AbstractInput):
                 self.i2c_bus = input_dev.i2c_bus
             self.initialize_sensor()
 
-        if input_dev.log_level_debug:
-            self.logger.setLevel(logging.DEBUG)
-        else:
-            self.logger.setLevel(logging.INFO)
+            if input_dev.log_level_debug:
+                self.logger.setLevel(logging.DEBUG)
+            else:
+                self.logger.setLevel(logging.INFO)
 
     def initialize_sensor(self):
         from mycodo.devices.atlas_scientific_ftdi import AtlasScientificFTDI

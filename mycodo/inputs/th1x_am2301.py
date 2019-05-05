@@ -74,7 +74,8 @@ class InputModule(AbstractInput):
 
         if not testing:
             self.logger = logging.getLogger(
-                "mycodo.th16_am2301_{id}".format(id=input_dev.unique_id.split('-')[0]))
+                "mycodo.th16_am2301_{id}".format(
+                    id=input_dev.unique_id.split('-')[0]))
 
             self.device_measurements = db_retrieve_table_daemon(
                 DeviceMeasurements).filter(
@@ -85,12 +86,12 @@ class InputModule(AbstractInput):
                     option = each_option.split(',')[0]
                     value = each_option.split(',')[1]
                     if option == 'ip_address':
-                        self.ip_address = value.replace(" ", "")  # Remove spaces from string
+                        self.ip_address = value.replace(" ", "")  # Remove spaces
 
-        if input_dev.log_level_debug:
-            self.logger.setLevel(logging.DEBUG)
-        else:
-            self.logger.setLevel(logging.INFO)
+            if input_dev.log_level_debug:
+                self.logger.setLevel(logging.DEBUG)
+            else:
+                self.logger.setLevel(logging.INFO)
 
     def get_measurement(self):
         return_dict = measurements_dict.copy()

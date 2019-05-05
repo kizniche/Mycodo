@@ -90,7 +90,8 @@ class InputModule(AbstractInput):
         if not testing:
             import pigpio
             self.logger = logging.getLogger(
-                "mycodo.htu21d_{id}".format(id=input_dev.unique_id.split('-')[0]))
+                "mycodo.htu21d_{id}".format(
+                    id=input_dev.unique_id.split('-')[0]))
 
             self.device_measurements = db_retrieve_table_daemon(
                 DeviceMeasurements).filter(
@@ -100,10 +101,10 @@ class InputModule(AbstractInput):
             self.i2c_address = 0x40  # HTU21D-F Address
             self.pi = pigpio.pi()
 
-        if input_dev.log_level_debug:
-            self.logger.setLevel(logging.DEBUG)
-        else:
-            self.logger.setLevel(logging.INFO)
+            if input_dev.log_level_debug:
+                self.logger.setLevel(logging.DEBUG)
+            else:
+                self.logger.setLevel(logging.INFO)
 
     def get_measurement(self):
         """ Gets the humidity and temperature """

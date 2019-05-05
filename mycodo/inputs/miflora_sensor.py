@@ -77,7 +77,8 @@ class InputModule(AbstractInput):
             from btlewrap import BluepyBackend
             import locket
             self.logger = logging.getLogger(
-                "mycodo.miflora_{id}".format(id=input_dev.unique_id.split('-')[0]))
+                "mycodo.miflora_{id}".format(
+                    id=input_dev.unique_id.split('-')[0]))
 
             self.device_measurements = db_retrieve_table_daemon(
                 DeviceMeasurements).filter(
@@ -87,12 +88,15 @@ class InputModule(AbstractInput):
             self.lock_file_bluetooth = '/var/lock/bluetooth_dev_hci{}'.format(input_dev.bt_adapter)
             self.location = input_dev.location
             self.bt_adapter = input_dev.bt_adapter
-            self.poller = MiFloraPoller(self.location, BluepyBackend, adapter='hci{}'.format(self.bt_adapter))
+            self.poller = MiFloraPoller(
+                self.location,
+                BluepyBackend,
+                adapter='hci{}'.format(self.bt_adapter))
 
-        if input_dev.log_level_debug:
-            self.logger.setLevel(logging.DEBUG)
-        else:
-            self.logger.setLevel(logging.INFO)
+            if input_dev.log_level_debug:
+                self.logger.setLevel(logging.DEBUG)
+            else:
+                self.logger.setLevel(logging.INFO)
 
     def get_measurement(self):
         """ Gets the light, moisture, and temperature """

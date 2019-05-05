@@ -98,7 +98,8 @@ class InputModule(AbstractInput):
 
         if not testing:
             self.logger = logging.getLogger(
-                "mycodo.ttn_data_storage_{id}".format(id=input_dev.unique_id.split('-')[0]))
+                "mycodo.ttn_data_storage_{id}".format(
+                    id=input_dev.unique_id.split('-')[0]))
 
             self.unique_id = input_dev.unique_id
             self.interface = input_dev.interface
@@ -120,10 +121,10 @@ class InputModule(AbstractInput):
                     elif option == 'device_id':
                         self.device_id = value
 
-        if input_dev.log_level_debug:
-            self.logger.setLevel(logging.DEBUG)
-        else:
-            self.logger.setLevel(logging.INFO)
+            if input_dev.log_level_debug:
+                self.logger.setLevel(logging.DEBUG)
+            else:
+                self.logger.setLevel(logging.INFO)
 
     def get_new_data(self, past_seconds):
         # Basic implementation. Future development may use more complex library to access API

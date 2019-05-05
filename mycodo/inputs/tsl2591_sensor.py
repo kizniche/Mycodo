@@ -56,17 +56,19 @@ class InputModule(AbstractInput):
         if not testing:
             import tsl2591
             self.logger = logging.getLogger(
-                "mycodo.tsl2591_{id}".format(id=input_dev.unique_id.split('-')[0]))
+                "mycodo.tsl2591_{id}".format(
+                    id=input_dev.unique_id.split('-')[0]))
 
             self.i2c_address = int(str(input_dev.i2c_location), 16)
             self.i2c_bus = input_dev.i2c_bus
-            self.tsl = tsl2591.Tsl2591(i2c_bus=self.i2c_bus,
-                                       sensor_address=self.i2c_address)
+            self.tsl = tsl2591.Tsl2591(
+                i2c_bus=self.i2c_bus,
+                sensor_address=self.i2c_address)
 
-        if input_dev.log_level_debug:
-            self.logger.setLevel(logging.DEBUG)
-        else:
-            self.logger.setLevel(logging.INFO)
+            if input_dev.log_level_debug:
+                self.logger.setLevel(logging.DEBUG)
+            else:
+                self.logger.setLevel(logging.INFO)
 
     def get_measurement(self):
         """ Gets the TSL2591's lux """

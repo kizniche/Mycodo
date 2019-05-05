@@ -82,10 +82,10 @@ class InputModule(AbstractInput):
             self.start_sensor()
             self.sensor = SMBus(self.i2c_bus)
 
-        if input_dev.log_level_debug:
-            self.logger.setLevel(logging.DEBUG)
-        else:
-            self.logger.setLevel(logging.INFO)
+            if input_dev.log_level_debug:
+                self.logger.setLevel(logging.DEBUG)
+            else:
+                self.logger.setLevel(logging.INFO)
 
     def get_measurement(self):
         """ Gets the humidity and temperature """

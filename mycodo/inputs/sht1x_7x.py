@@ -80,7 +80,8 @@ class InputModule(AbstractInput):
             from sht_sensor import Sht
             from sht_sensor import ShtVDDLevel
             self.logger = logging.getLogger(
-                "mycodo.sht1x_7x_{id}".format(id=input_dev.unique_id.split('-')[0]))
+                "mycodo.sht1x_7x_{id}".format(
+                    id=input_dev.unique_id.split('-')[0]))
 
             self.device_measurements = db_retrieve_table_daemon(
                 DeviceMeasurements).filter(
@@ -95,15 +96,17 @@ class InputModule(AbstractInput):
                 4.0: ShtVDDLevel.vdd_4,
                 5.0: ShtVDDLevel.vdd_5
             }
-            self.sht_voltage = sht_sensor_vdd_value[round(float(input_dev.sht_voltage), 1)]
-            self.sht_sensor = Sht(self.clock_pin,
-                                  self.gpio,
-                                  voltage=self.sht_voltage)
+            self.sht_voltage = sht_sensor_vdd_value[
+                round(float(input_dev.sht_voltage), 1)]
+            self.sht_sensor = Sht(
+                self.clock_pin,
+                self.gpio,
+                voltage=self.sht_voltage)
 
-        if input_dev.log_level_debug:
-            self.logger.setLevel(logging.DEBUG)
-        else:
-            self.logger.setLevel(logging.INFO)
+            if input_dev.log_level_debug:
+                self.logger.setLevel(logging.DEBUG)
+            else:
+                self.logger.setLevel(logging.INFO)
 
     def get_measurement(self):
         """ Gets the humidity and temperature """

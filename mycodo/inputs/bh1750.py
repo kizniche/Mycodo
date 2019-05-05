@@ -81,7 +81,8 @@ class InputModule(AbstractInput):
         if not testing:
             from smbus2 import SMBus
             self.logger = logging.getLogger(
-                "mycodo.bh1750_{id}".format(id=input_dev.unique_id.split('-')[0]))
+                "mycodo.bh1750_{id}".format(
+                    id=input_dev.unique_id.split('-')[0]))
 
             self.device_measurements = db_retrieve_table_daemon(
                 DeviceMeasurements).filter(
@@ -94,10 +95,10 @@ class InputModule(AbstractInput):
             self.power_down()
             self.set_sensitivity(sensitivity=self.sensitivity)
 
-        if input_dev.log_level_debug:
-            self.logger.setLevel(logging.DEBUG)
-        else:
-            self.logger.setLevel(logging.INFO)
+            if input_dev.log_level_debug:
+                self.logger.setLevel(logging.DEBUG)
+            else:
+                self.logger.setLevel(logging.INFO)
 
     @property
     def lux(self):

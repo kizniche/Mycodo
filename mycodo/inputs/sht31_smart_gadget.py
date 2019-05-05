@@ -166,16 +166,17 @@ class InputModule(AbstractInput):
                         self.logging_interval_ms = int(value) * 1000
 
             self.locket = locket
-            self.lock_file_bluetooth = '/var/lock/bluetooth_dev_hci{}'.format(input_dev.bt_adapter)
+            self.lock_file_bluetooth = '/var/lock/bluetooth_dev_hci{}'.format(
+                input_dev.bt_adapter)
             self.SHT31 = SHT31
             self.btle = btle
             self.location = input_dev.location
             self.bt_adapter = input_dev.bt_adapter
 
-        if input_dev.log_level_debug:
-            self.logger.setLevel(logging.DEBUG)
-        else:
-            self.logger.setLevel(logging.INFO)
+            if input_dev.log_level_debug:
+                self.logger.setLevel(logging.DEBUG)
+            else:
+                self.logger.setLevel(logging.INFO)
 
     def connect(self):
         # Make three attempts to connect

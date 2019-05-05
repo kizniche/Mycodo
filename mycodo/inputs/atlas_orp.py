@@ -93,7 +93,8 @@ class InputModule(AbstractInput):
 
         if not testing:
             self.logger = logging.getLogger(
-                "mycodo.inputs.atlas_orp_{id}".format(id=input_dev.unique_id.split('-')[0]))
+                "mycodo.inputs.atlas_orp_{id}".format(
+                    id=input_dev.unique_id.split('-')[0]))
 
             self.input_dev = input_dev
             self.interface = input_dev.interface
@@ -112,10 +113,10 @@ class InputModule(AbstractInput):
             except Exception:
                 self.logger.exception("Exception while initializing sensor")
 
-        if input_dev.log_level_debug:
-            self.logger.setLevel(logging.DEBUG)
-        else:
-            self.logger.setLevel(logging.INFO)
+            if input_dev.log_level_debug:
+                self.logger.setLevel(logging.DEBUG)
+            else:
+                self.logger.setLevel(logging.INFO)
 
     def initialize_sensor(self):
         from mycodo.devices.atlas_scientific_ftdi import AtlasScientificFTDI

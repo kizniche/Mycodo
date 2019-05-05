@@ -65,7 +65,8 @@ class InputModule(AbstractInput):
         if not testing:
             from Adafruit_CCS811 import Adafruit_CCS811
             self.logger = logging.getLogger(
-                "mycodo.ccs811_{id}".format(id=input_dev.unique_id.split('-')[0]))
+                "mycodo.ccs811_{id}".format(
+                    id=input_dev.unique_id.split('-')[0]))
 
             self.device_measurements = db_retrieve_table_daemon(
                 DeviceMeasurements).filter(
@@ -73,17 +74,18 @@ class InputModule(AbstractInput):
 
             self.i2c_address = int(str(input_dev.i2c_location), 16)
             self.i2c_bus = input_dev.i2c_bus
-            self.sensor = Adafruit_CCS811(address=self.i2c_address,
-                                          busnum=self.i2c_bus)
+            self.sensor = Adafruit_CCS811(
+                address=self.i2c_address,
+                busnum=self.i2c_bus)
             while not self.sensor.available():
                 pass
             temp = self.sensor.calculateTemperature()
             self.sensor.tempOffset = temp - 25.0
 
-        if input_dev.log_level_debug:
-            self.logger.setLevel(logging.DEBUG)
-        else:
-            self.logger.setLevel(logging.INFO)
+            if input_dev.log_level_debug:
+                self.logger.setLevel(logging.DEBUG)
+            else:
+                self.logger.setLevel(logging.INFO)
 
     def get_measurement(self):
         """ Gets the CO2, VOC, and temperature """

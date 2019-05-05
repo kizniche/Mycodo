@@ -97,7 +97,8 @@ class InputModule(AbstractInput):
 
         if not testing:
             self.logger = logging.getLogger(
-                "mycodo.max31856_{id}".format(id=input_dev.unique_id.split('-')[0]))
+                "mycodo.max31856_{id}".format(
+                    id=input_dev.unique_id.split('-')[0]))
 
             self.device_measurements = db_retrieve_table_daemon(
                 DeviceMeasurements).filter(
@@ -108,32 +109,33 @@ class InputModule(AbstractInput):
             self.pin_miso = input_dev.pin_miso
             self.pin_mosi = input_dev.pin_mosi
             self.thermocouple_type = input_dev.thermocouple_type
-            self.sensor = max31856(self.logger,
-                                   self.pin_cs,
-                                   self.pin_miso,
-                                   self.pin_mosi,
-                                   self.pin_clock)
+            self.sensor = max31856(
+                self.logger,
+                self.pin_cs,
+                self.pin_miso,
+                self.pin_mosi,
+                self.pin_clock)
             if self.thermocouple_type == 'B':
-                self.sensor.writeRegister(1, 0x00) #for B Type
+                self.sensor.writeRegister(1, 0x00)  # B Type
             elif self.thermocouple_type == 'E':
-                self.sensor.writeRegister(1, 0x01) #for E Type
+                self.sensor.writeRegister(1, 0x01)  # E Type
             elif self.thermocouple_type == 'J':
-                self.sensor.writeRegister(1, 0x02) #for J Type
+                self.sensor.writeRegister(1, 0x02)  # J Type
             elif self.thermocouple_type == 'K':
-                self.sensor.writeRegister(1, 0x03) #for K Type
+                self.sensor.writeRegister(1, 0x03)  # K Type
             elif self.thermocouple_type == 'N':
-                self.sensor.writeRegister(1, 0x04) #for N Type
+                self.sensor.writeRegister(1, 0x04)  # N Type
             elif self.thermocouple_type == 'R':
-                self.sensor.writeRegister(1, 0x05) #for R Type
+                self.sensor.writeRegister(1, 0x05)  # R Type
             elif self.thermocouple_type == 'S':
-                self.sensor.writeRegister(1, 0x06) #for S Type
+                self.sensor.writeRegister(1, 0x06)  # S Type
             elif self.thermocouple_type == 'T':
-                self.sensor.writeRegister(1, 0x07) #for T Type
+                self.sensor.writeRegister(1, 0x07)  # T Type
 
-        if input_dev.log_level_debug:
-            self.logger.setLevel(logging.DEBUG)
-        else:
-            self.logger.setLevel(logging.INFO)
+            if input_dev.log_level_debug:
+                self.logger.setLevel(logging.DEBUG)
+            else:
+                self.logger.setLevel(logging.INFO)
 
     def get_measurement(self):
         """ Gets the measurement in units by reading the """

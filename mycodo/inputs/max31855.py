@@ -63,7 +63,8 @@ class InputModule(AbstractInput):
         if not testing:
             import Adafruit_MAX31855.MAX31855 as MAX31855
             self.logger = logging.getLogger(
-                "mycodo.max31855_{id}".format(id=input_dev.unique_id.split('-')[0]))
+                "mycodo.max31855_{id}".format(
+                    id=input_dev.unique_id.split('-')[0]))
 
             self.device_measurements = db_retrieve_table_daemon(
                 DeviceMeasurements).filter(
@@ -72,14 +73,15 @@ class InputModule(AbstractInput):
             self.pin_clock = input_dev.pin_clock
             self.pin_cs = input_dev.pin_cs
             self.pin_miso = input_dev.pin_miso
-            self.sensor = MAX31855.MAX31855(self.pin_clock,
-                                            self.pin_cs,
-                                            self.pin_miso)
+            self.sensor = MAX31855.MAX31855(
+                self.pin_clock,
+                self.pin_cs,
+                self.pin_miso)
 
-        if input_dev.log_level_debug:
-            self.logger.setLevel(logging.DEBUG)
-        else:
-            self.logger.setLevel(logging.INFO)
+            if input_dev.log_level_debug:
+                self.logger.setLevel(logging.DEBUG)
+            else:
+                self.logger.setLevel(logging.INFO)
 
     def get_measurement(self):
         """ Gets the measurement in units by reading the """

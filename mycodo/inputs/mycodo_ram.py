@@ -43,14 +43,15 @@ class InputModule(AbstractInput):
 
         if not testing:
             self.logger = logging.getLogger(
-                "mycodo.mycodo_ram_{id}".format(id=input_dev.unique_id.split('-')[0]))
+                "mycodo.mycodo_ram_{id}".format(
+                    id=input_dev.unique_id.split('-')[0]))
 
             self.control = DaemonControl()
 
-        if input_dev.log_level_debug:
-            self.logger.setLevel(logging.DEBUG)
-        else:
-            self.logger.setLevel(logging.INFO)
+            if input_dev.log_level_debug:
+                self.logger.setLevel(logging.DEBUG)
+            else:
+                self.logger.setLevel(logging.INFO)
 
     def get_measurement(self):
         """ Gets the measurement in units by reading resource """

@@ -45,17 +45,18 @@ class InputModule(AbstractInput):
         if not testing:
             import RPi.GPIO as GPIO
             self.logger = logging.getLogger(
-                "mycodo.gpio_state_{id}".format(id=input_dev.unique_id.split('-')[0]))
+                "mycodo.gpio_state_{id}".format(
+                    id=input_dev.unique_id.split('-')[0]))
 
             self.location = int(input_dev.gpio_location)
             self.gpio = GPIO
             self.gpio.setmode(self.gpio.BCM)
             self.gpio.setup(self.location, self.gpio.IN)
 
-        if input_dev.log_level_debug:
-            self.logger.setLevel(logging.DEBUG)
-        else:
-            self.logger.setLevel(logging.INFO)
+            if input_dev.log_level_debug:
+                self.logger.setLevel(logging.DEBUG)
+            else:
+                self.logger.setLevel(logging.INFO)
 
     def get_measurement(self):
         """ Gets the GPIO state via RPi.GPIO """

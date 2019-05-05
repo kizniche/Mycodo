@@ -100,7 +100,8 @@ class InputModule(AbstractInput):
             import serial
             import binascii
             self.logger = logging.getLogger(
-                "mycodo.winsen_zh03b_{id}".format(id=input_dev.unique_id.split('-')[0]))
+                "mycodo.winsen_zh03b_{id}".format(
+                    id=input_dev.unique_id.split('-')[0]))
 
             self.device_measurements = db_retrieve_table_daemon(
                 DeviceMeasurements).filter(
@@ -149,10 +150,10 @@ class InputModule(AbstractInput):
                     'Check the device location is correct.'.format(
                         dev=self.uart_location))
 
-        if input_dev.log_level_debug:
-            self.logger.setLevel(logging.DEBUG)
-        else:
-            self.logger.setLevel(logging.INFO)
+            if input_dev.log_level_debug:
+                self.logger.setLevel(logging.DEBUG)
+            else:
+                self.logger.setLevel(logging.INFO)
 
     def get_measurement(self):
         """ Gets the WINSEN_ZH03B's Particulate concentration in μg/m^3 via UART """

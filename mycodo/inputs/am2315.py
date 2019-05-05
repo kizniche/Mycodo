@@ -96,7 +96,8 @@ class InputModule(AbstractInput):
         if not testing:
             from mycodo.mycodo_client import DaemonControl
             self.logger = logging.getLogger(
-                'mycodo.am2315_{id}'.format(id=input_dev.unique_id.split('-')[0]))
+                'mycodo.am2315_{id}'.format(
+                    id=input_dev.unique_id.split('-')[0]))
 
             self.device_measurements = db_retrieve_table_daemon(
                 DeviceMeasurements).filter(
@@ -108,10 +109,10 @@ class InputModule(AbstractInput):
             self.start_sensor()
             self.am = AM2315(self.i2c_bus)
 
-        if input_dev.log_level_debug:
-            self.logger.setLevel(logging.DEBUG)
-        else:
-            self.logger.setLevel(logging.INFO)
+            if input_dev.log_level_debug:
+                self.logger.setLevel(logging.DEBUG)
+            else:
+                self.logger.setLevel(logging.INFO)
 
     def get_measurement(self):
         """ Gets the humidity and temperature """

@@ -63,7 +63,8 @@ class InputModule(AbstractInput):
         if not testing:
             import Adafruit_MCP3008
             self.logger = logging.getLogger(
-                'mycodo.mcp3008_{id}'.format(id=input_dev.unique_id.split('-')[0]))
+                'mycodo.mcp3008_{id}'.format(
+                    id=input_dev.unique_id.split('-')[0]))
 
             self.device_measurements = db_retrieve_table_daemon(
                 DeviceMeasurements).filter(
@@ -75,15 +76,16 @@ class InputModule(AbstractInput):
             self.pin_mosi = input_dev.pin_mosi
             self.scale_from_max = input_dev.scale_from_max
 
-            self.adc = Adafruit_MCP3008.MCP3008(clk=self.pin_clock,
-                                                cs=self.pin_cs,
-                                                miso=self.pin_miso,
-                                                mosi=self.pin_mosi)
+            self.adc = Adafruit_MCP3008.MCP3008(
+                clk=self.pin_clock,
+                cs=self.pin_cs,
+                miso=self.pin_miso,
+                mosi=self.pin_mosi)
 
-        if input_dev.log_level_debug:
-            self.logger.setLevel(logging.DEBUG)
-        else:
-            self.logger.setLevel(logging.INFO)
+            if input_dev.log_level_debug:
+                self.logger.setLevel(logging.DEBUG)
+            else:
+                self.logger.setLevel(logging.INFO)
 
     def get_measurement(self):
         return_dict = measurements_dict.copy()

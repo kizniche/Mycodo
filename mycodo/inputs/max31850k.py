@@ -46,16 +46,18 @@ class InputModule(AbstractInput):
         if not testing:
             from w1thermsensor import W1ThermSensor
             self.logger = logging.getLogger(
-                "mycodo.max31850k_{id}".format(id=input_dev.unique_id.split('-')[0]))
+                "mycodo.max31850k_{id}".format(
+                    id=input_dev.unique_id.split('-')[0]))
 
             self.location = input_dev.location
-            self.sensor = W1ThermSensor(W1ThermSensor.THERM_SENSOR_MAX31850K,
-                                        self.location)
+            self.sensor = W1ThermSensor(
+                W1ThermSensor.THERM_SENSOR_MAX31850K,
+                self.location)
 
-        if input_dev.log_level_debug:
-            self.logger.setLevel(logging.DEBUG)
-        else:
-            self.logger.setLevel(logging.INFO)
+            if input_dev.log_level_debug:
+                self.logger.setLevel(logging.DEBUG)
+            else:
+                self.logger.setLevel(logging.INFO)
 
     def get_measurement(self):
         """ Gets the MAX31850K's temperature in Celsius """
