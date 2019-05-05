@@ -40,12 +40,12 @@ class InputModule(AbstractInput):
 
     def __init__(self, input_dev, testing=False):
         super(InputModule, self).__init__()
-        self.logger = logging.getLogger("mycodo.inputs.gpio_state")
+        self.logger = logging.getLogger("mycodo.inputs.rpi_gpio_state")
 
         if not testing:
             import RPi.GPIO as GPIO
             self.logger = logging.getLogger(
-                "mycodo.gpio_state_{id}".format(
+                "mycodo.rpi_gpio_state_{id}".format(
                     id=input_dev.unique_id.split('-')[0]))
 
             self.location = int(input_dev.gpio_location)

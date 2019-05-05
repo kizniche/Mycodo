@@ -48,12 +48,12 @@ class InputModule(AbstractInput):
 
     def __init__(self, input_dev, testing=False):
         super(InputModule, self).__init__()
-        self.logger = logging.getLogger("mycodo.inputs.server_port_open")
+        self.logger = logging.getLogger("mycodo.inputs.system_server_port_open")
         self._measurement = None
 
         if not testing:
             self.logger = logging.getLogger(
-                "mycodo.server_port_open_{id}".format(
+                "mycodo.system_server_port_open_{id}".format(
                     id=input_dev.unique_id.split('-')[0]))
 
             self.location = input_dev.location

@@ -47,12 +47,12 @@ class InputModule(AbstractInput):
 
     def __init__(self, input_dev, testing=False):
         super(InputModule, self).__init__()
-        self.logger = logging.getLogger("mycodo.inputs.signal_revolutions")
+        self.logger = logging.getLogger("mycodo.inputs.rpi_signal_revolutions")
 
         if not testing:
             import pigpio
             self.logger = logging.getLogger(
-                "mycodo.signal_revolutions_{id}".format(
+                "mycodo.rpi_signal_revolutions_{id}".format(
                     id=input_dev.unique_id.split('-')[0]))
 
             self.gpio = int(input_dev.gpio_location)
