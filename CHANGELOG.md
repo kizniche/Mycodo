@@ -16,6 +16,7 @@
  - Add ability of Inputs to store measurements with the same or separate timestamps
  - Add option to show debug lines in Daemon Log (for Input/Math/PID/Trigger/Conditional)
  - Add Log Filters: Daemon INFO, Daemon DEBUG
+ - Add Input: TH1x with DS18B20 ([#654](https://github.com/kizniche/mycodo/issues/654))
 
 ### Miscellaneous
 

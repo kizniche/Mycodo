@@ -40,7 +40,7 @@ measurements_dict = {
 INPUT_INFORMATION = {
     'input_name_unique': 'TH16_10',
     'input_manufacturer': 'Sonoff',
-    'input_name': 'TH16/10 (Tasmota firmware)',
+    'input_name': 'TH16/10 (Tasmota firmware) with AM2301',
     'measurements_name': 'Humidity/Temperature',
     'measurements_dict': measurements_dict,
     'measurements_use_same_timestamp': False,
@@ -69,12 +69,12 @@ INPUT_INFORMATION = {
 class InputModule(AbstractInput):
     def __init__(self, input_dev, testing=False):
         super(InputModule, self).__init__()
-        self.logger = logging.getLogger("mycodo.inputs.th16")
+        self.logger = logging.getLogger("mycodo.inputs.th16_am2301")
         self.ip_address = None
 
         if not testing:
             self.logger = logging.getLogger(
-                "mycodo.th16_{id}".format(id=input_dev.unique_id.split('-')[0]))
+                "mycodo.th16_am2301_{id}".format(id=input_dev.unique_id.split('-')[0]))
 
             self.device_measurements = db_retrieve_table_daemon(
                 DeviceMeasurements).filter(
