@@ -1,3 +1,10 @@
+## 7.5.1 (2019-05-06)
+
+### Bugfixes
+
+ - Fix bug in Input get_value() ([#654](https://github.com/kizniche/mycodo/issues/654))
+
+
 ## 7.5.0 (2019-05-06)
 
 ### Bugfixes

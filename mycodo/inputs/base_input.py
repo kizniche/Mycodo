@@ -32,6 +32,7 @@ class AbstractInput(object):
     def __init__(self, run_main=False):
         self.logger = logging.getLogger('mycodo.inputs.base_input')
         self._measurements = None
+        self.tmp_values = None
         self.run_main = run_main
         self.avg_max = {}
         self.avg_index = {}
@@ -109,6 +110,7 @@ class AbstractInput(object):
 
         :returns: None on success or 1 on error
         """
+        self.tmp_values = {}
         self._measurements = None
         try:
             self._measurements = self.get_measurement()
@@ -125,10 +127,14 @@ class AbstractInput(object):
         return 1
 
     def get_value(self, channel):
-        return self._measurements[channel]['value']
+        if (channel in self.tmp_values and
+                'value' in self.tmp_values[channel]):
+            return self.tmp_values[channel]['value']
 
-    @staticmethod
-    def set_value(return_dict, channel, value, timestamp=None):
+    def set_value(self, return_dict, channel, value, timestamp=None):
+        if channel not in self.tmp_values:
+            self.tmp_values[channel] = {}
+        self.tmp_values[channel]['value'] = value
         return_dict[channel]['value'] = value
         return_dict[channel]['timestamp_utc'] = timestamp if timestamp else datetime.datetime.utcnow()
 
