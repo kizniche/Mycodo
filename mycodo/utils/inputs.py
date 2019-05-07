@@ -64,7 +64,8 @@ def list_analog_to_digital_converters():
 
 
 def load_module_from_file(path_file):
-    spec = importlib.util.spec_from_file_location('module.name', path_file)
+    module_name = "mycodo.inputs.{}".format(os.path.basename(path_file).split('.')[0])
+    spec = importlib.util.spec_from_file_location(module_name, path_file)
     input_custom = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(input_custom)
     return input_custom

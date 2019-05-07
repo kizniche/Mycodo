@@ -89,8 +89,9 @@ class PIDController(threading.Thread):
     def __init__(self, ready, pid_id):
         threading.Thread.__init__(self)
 
-        self.logger = logging.getLogger("mycodo.pid_{id}".format(
-            id=pid_id.split('-')[0]))
+        self.logger = logging.getLogger(__name__)
+        self.logger = logging.LoggerAdapter(
+            self.logger, {'name_info': pid_id.split('-')[0]})
 
         self.running = False
         self.thread_startup_timer = timeit.default_timer()

@@ -31,6 +31,7 @@ class AbstractInput(object):
 
     def __init__(self, run_main=False):
         self.logger = logging.getLogger('mycodo.inputs.base_input')
+        self.input_dev = None
         self._measurements = None
         self.tmp_values = None
         self.run_main = run_main
@@ -180,6 +181,13 @@ class AbstractInput(object):
                     DeviceMeasurements.is_enabled == True,
                     DeviceMeasurements.channel == channel)).count()):
             return True
+
+    def setup_logger(self, name=None, log_id=None):
+        log_id = log_id if log_id else 'Input'
+        name = name if name else __name__
+        self.logger = logging.getLogger(name)
+        self.logger = logging.LoggerAdapter(
+            self.logger, {'name_info': log_id})
 
     def stop_sensor(self):
         """ Called when sensors are deactivated """

@@ -1,3 +1,10 @@
+## 7.5.2 (2019-05-07)
+
+### Bugfixes
+
+ - Fix issues with new debug log level setting
+
+
 ## 7.5.1 (2019-05-06)
 
 ### Bugfixes

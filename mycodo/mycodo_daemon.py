@@ -277,15 +277,15 @@ def mycodo_service(mycodo):
             return mycodo.send_infrared_code_broadcast(code)
 
         @staticmethod
-        def exposed_trigger_action(action_id, message='', single_action=False):
+        def exposed_trigger_action(action_id, message='', single_action=False, debug=False):
             """Trigger action"""
             return mycodo.trigger_action(
-                action_id, message=message, single_action=single_action)
+                action_id, message=message, single_action=single_action, debug=debug)
 
         @staticmethod
-        def exposed_trigger_all_actions(function_id, message=''):
+        def exposed_trigger_all_actions(function_id, message='', debug=False):
             """Trigger all actions"""
-            return mycodo.trigger_all_actions(function_id, message=message)
+            return mycodo.trigger_all_actions(function_id, message=message, debug=debug)
 
         @staticmethod
         def exposed_terminate_daemon():
@@ -372,11 +372,15 @@ class DaemonController:
     """
 
     def __init__(self, debug):
-        self.logger = logging.getLogger("mycodo.daemon")
+        self.logger = logging.getLogger()
+        self.logger = logging.LoggerAdapter(self.logger, {'name_info': 'Daemon'})
+
         if not debug:
             self.logger.setLevel(logging.INFO)
+
         self.logger.info("Mycodo daemon v{ver} starting".format(ver=MYCODO_VERSION))
 
+        self.log_level_debug = debug
         self.startup_timer = timeit.default_timer()
         self.daemon_startup_time = None
         self.daemon_run = True
@@ -1093,19 +1097,24 @@ class DaemonController:
                     args=(code,))
                 broadcast_ir.start()
 
-    def trigger_action(self, action_id, message='', single_action=False):
+    def trigger_action(self, action_id, message='', single_action=False, debug=False):
         try:
-            return trigger_action(action_id,
-                                  message=message,
-                                  single_action=single_action)
+            return trigger_action(
+                action_id,
+                message=message,
+                single_action=single_action,
+                debug=debug)
         except Exception as except_msg:
             message = "Could not trigger Conditional Actions:" \
                       " {err}".format(err=except_msg)
             self.logger.exception(message)
 
-    def trigger_all_actions(self, function_id, message=''):
+    def trigger_all_actions(self, function_id, message='', debug=False):
         try:
-            return trigger_function_actions(function_id, message=message)
+            return trigger_function_actions(
+                function_id,
+                message=message,
+                debug=debug)
         except Exception as except_msg:
             message = "Could not trigger Conditional Actions:" \
                       " {err}".format(err=except_msg)
@@ -1235,7 +1244,7 @@ class DaemonController:
 
         # Send stats
         try:
-            send_anonymous_stats(self.start_time)
+            send_anonymous_stats(self.start_time, self.log_level_debug)
         except Exception as except_msg:
             self.logger.exception(
                 "Could not send statistics: {err}".format(
@@ -1294,16 +1303,14 @@ if __name__ == '__main__':
     args = parse_args()
 
     # Set up logger
-    logger = logging.getLogger("mycodo")
-    fh = logging.FileHandler(DAEMON_LOG_FILE, 'a')
-
+    logger = logging.getLogger()
     logger.setLevel(logging.DEBUG)
-    fh.setLevel(logging.DEBUG)
-
-    formatter = logging.Formatter(
-        "%(asctime)s - %(name)s - %(levelname)s - %(message)s")
-    fh.setFormatter(formatter)
     logger.propagate = False
+    fh = logging.FileHandler(DAEMON_LOG_FILE, 'a')
+    fh.setLevel(logging.DEBUG)
+    formatter = logging.Formatter(
+        "%(asctime)s - %(levelname)s - %(name)s - %(name_info)s - %(message)s")
+    fh.setFormatter(formatter)
     logger.addHandler(fh)
     keep_fds = [fh.stream.fileno()]
 

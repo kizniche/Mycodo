@@ -154,7 +154,7 @@ class TriggerController(threading.Thread):
                                     self.unique_id_2,
                                     pwm_duty_cycle)
                                 if self.trigger_actions_at_period:
-                                    trigger_function_actions(self.function_id)
+                                    trigger_function_actions(self.function_id, debug=self.log_level_debug)
                         else:
                             check_approved = True
 
@@ -262,7 +262,7 @@ class TriggerController(threading.Thread):
                         trigger.unique_id_1)
                     self.set_output_duty_cycle(
                         trigger.unique_id_2, pwm_duty_cycle)
-                    trigger_function_actions(self.function_id)
+                    trigger_function_actions(self.function_id, debug=self.log_level_debug)
             else:
                 self.timer_period = now
 
@@ -446,7 +446,7 @@ class TriggerController(threading.Thread):
                 return
 
         # If the code hasn't returned by now, action should be executed
-        trigger_function_actions(self.function_id, message=message)
+        trigger_function_actions(self.function_id, message=message, debug=self.log_level_debug)
 
     def infrared_remote_input(self):
         """
@@ -469,7 +469,7 @@ class TriggerController(threading.Thread):
             message += "\nInfrared Remote Input detected " \
                        "'{word}' on program '{prog}'".format(
                         word=self.word, prog=self.program)
-            trigger_function_actions(self.function_id, message=message)
+            trigger_function_actions(self.function_id, message=message, debug=self.log_level_debug)
 
     def is_running(self):
         return self.running

@@ -230,7 +230,8 @@ def trigger_action(
         email_recipients=None,
         attachment_file=None,
         attachment_type=None,
-        single_action=False):
+        single_action=False,
+        debug=False):
     """
     Trigger individual action
 
@@ -245,6 +246,8 @@ def trigger_action(
     :param attachment_file: string location of a file to attach to an email
     :param attachment_type: string type of email attachment
     :param single_action: True if only one action is being triggered, False if only one of multiple actions
+    :param debug: determine if logging level should be DEBUG
+
     :return: message or (message, note_tags, email_recipients, attachment_file, attachment_type)
     """
     cond_action = db_retrieve_table_daemon(Actions, unique_id=cond_action_id)
@@ -257,6 +260,11 @@ def trigger_action(
 
     logger_actions = logging.getLogger("mycodo.trigger_action_{id}".format(
         id=cond_action.unique_id.split('-')[0]))
+
+    if debug:
+        logger_actions.setLevel(logging.DEBUG)
+    else:
+        logger_actions.setLevel(logging.INFO)
 
     message += "\n[Action {id}]:".format(
         id=cond_action.unique_id.split('-')[0], action_type=cond_action.action_type)
@@ -671,22 +679,34 @@ def trigger_action(
         logger_actions.exception("Error triggering action:")
         message += " Error while executing action! See Daemon log for details."
 
+    logger_actions.debug("Message: ".format(message))
+    logger_actions.debug("Note Tags: ".format(note_tags))
+    logger_actions.debug("Email Recipients: ".format(email_recipients))
+    logger_actions.debug("Attachment Files: ".format(attachment_file))
+    logger_actions.debug("Attachment Type: ".format(attachment_type))
+
     if single_action:
         return message
     else:
         return message, note_tags, email_recipients, attachment_file, attachment_type
 
 
-def trigger_function_actions(function_id, message=''):
+def trigger_function_actions(function_id, message='', debug=False):
     """
     Execute the Actions belonging to a particular Function
 
     :param function_id:
     :param message: The message generated from the conditional check
+    :param debug: determine if logging level should be DEBUG
     :return:
     """
     logger_actions = logging.getLogger("mycodo.trigger_function_actions_{id}".format(
         id=function_id.split('-')[0]))
+
+    if debug:
+        logger_actions.setLevel(logging.DEBUG)
+    else:
+        logger_actions.setLevel(logging.INFO)
 
     # List of all email notification recipients
     # List is appended with TO email addresses when an email Action is
@@ -715,7 +735,8 @@ def trigger_function_actions(function_id, message=''):
                                            note_tags=note_tags,
                                            email_recipients=email_recipients,
                                            attachment_file=attachment_file,
-                                           attachment_type=attachment_type)
+                                           attachment_type=attachment_type,
+                                           debug=debug)
 
     # Send email after all conditional actions have been checked
     # In order to append all action messages to send in the email
@@ -750,7 +771,7 @@ def trigger_function_actions(function_id, message=''):
                 new_note.note = message
                 db_session.add(new_note)
 
-    logger_actions.debug(message)
+    logger_actions.debug("Message: {}".format(message))
 
 
 def which_controller(unique_id):

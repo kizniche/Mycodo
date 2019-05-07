@@ -165,13 +165,15 @@ class DaemonControl:
     def send_infrared_code_broadcast(self, code):
         return self.rpyc_client.root.send_infrared_code_broadcast(code)
 
-    def trigger_action(self, action_id, message='', single_action=False):
+    def trigger_action(self, action_id, message='',
+                       single_action=False, debug=False):
         return self.rpyc_client.root.trigger_action(
-            action_id, message=message, single_action=single_action)
+            action_id, message=message,
+            single_action=single_action, debug=debug)
 
-    def trigger_all_actions(self, function_id, message=''):
+    def trigger_all_actions(self, function_id, message='', debug=False):
         return self.rpyc_client.root.trigger_all_actions(
-            function_id, message=message)
+            function_id, message=message, debug=debug)
 
     def terminate_daemon(self):
         return self.rpyc_client.root.terminate_daemon()

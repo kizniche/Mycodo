@@ -74,9 +74,7 @@ def add_update_csv(csv_file, key, value):
             try:
                 os.remove(temp_file_name)  # delete any existing temp file
             except OSError as e:
-                logger.debug(
-                    "OS error raised in 'add_update_csv' (no file to delete "
-                    "is normal): {err}".format(err=e))
+                pass  # no file to delete is normal
         os.rename(csv_file, temp_file_name)
 
         # create a temporary dictionary from the input file
@@ -217,7 +215,7 @@ def recreate_stat_file():
     os.chmod(STATS_CSV, 0o664)
 
 
-def send_anonymous_stats(start_time):
+def send_anonymous_stats(start_time, debug=False):
     """
     Send anonymous usage statistics
 
@@ -225,6 +223,11 @@ def send_anonymous_stats(start_time):
         current_stat = return_stat_file_dict(csv_file)
         add_update_csv(csv_file, 'stat', current_stat['stat'] + 5)
     """
+    if debug:
+        logger.setLevel(logging.DEBUG)
+    else:
+        logger.setLevel(logging.INFO)
+
     try:
         client = InfluxDBClient(STATS_HOST, STATS_PORT, STATS_USER, STATS_PASSWORD, STATS_DATABASE)
         # Prepare stats before sending
