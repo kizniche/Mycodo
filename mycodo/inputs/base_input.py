@@ -31,7 +31,6 @@ class AbstractInput(object):
 
     def __init__(self, run_main=False):
         self.logger = logging.getLogger('mycodo.inputs.base_input')
-        self.input_dev = None
         self._measurements = None
         self.tmp_values = None
         self.run_main = run_main
