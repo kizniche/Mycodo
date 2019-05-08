@@ -84,9 +84,8 @@ class LCDController(threading.Thread):
     def __init__(self, ready, lcd_id):
         threading.Thread.__init__(self)
 
-        self.logger = logging.getLogger(__name__)
-        self.logger = logging.LoggerAdapter(
-            self.logger, {'name_info': lcd_id.split('-')[0]})
+        self.logger = logging.getLogger(
+            "{}_{}".format(__name__, lcd_id.split('-')[0]))
 
         self.running = False
         self.thread_startup_timer = timeit.default_timer()

@@ -48,8 +48,10 @@ class InputModule(AbstractInput):
         self.setup_logger(name=__name__)
 
         if not testing:
-            self.setup_logger(
-                name=__name__, log_id=input_dev.unique_id.split('-')[0])
+            self.logger = logging.getLogger(__name__)
+            self.logger.error("TEST00")
+            # self.setup_logger(
+            #     name=__name__, log_id=input_dev.unique_id.split('-')[0])
 
             self.device_measurements = db_retrieve_table_daemon(
                 DeviceMeasurements).filter(

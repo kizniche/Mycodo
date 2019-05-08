@@ -19,9 +19,8 @@ class AtlasScientificI2C:
         # the specific I2C channel is selected with bus
         # it is usually 1, except for older revisions where its 0
         # wb and rb indicate binary read and write
-        self.logger = logging.getLogger(__name__)
-        self.logger = logging.LoggerAdapter(
-            self.logger, {'name_info': "{}-{}".format(i2c_address, i2c_bus)})
+        self.logger = logging.getLogger(
+            "{}_{}_{}".format(__name__, i2c_address, i2c_bus))
         self.current_addr = i2c_address
         self.setup = True
         try:

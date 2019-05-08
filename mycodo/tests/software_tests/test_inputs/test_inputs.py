@@ -69,9 +69,6 @@ input_classes = [
 ]
 
 
-# ----------------------------
-#   AM2315 tests
-# ----------------------------
 def test_inputs_have_depreciated_stop_sensor():
     """ Verify that the input objects have the stop_sensor() method """
     for each_class in input_classes:

@@ -307,9 +307,7 @@ class ComThread(threading.Thread):
     def __init__(self, mycodo):
         threading.Thread.__init__(self)
 
-        self.logger = logging.getLogger(__name__)
-        self.logger = logging.LoggerAdapter(
-            self.logger, {'name_info': 'rpyc'})
+        self.logger = logging.getLogger('mycodo.rpyc')
         self.logger.setLevel(logging.WARNING)
         self.mycodo = mycodo
         self.server = None
@@ -374,10 +372,7 @@ class DaemonController:
     """
 
     def __init__(self, debug):
-        self.logger = logging.getLogger()
-        self.logger = logging.LoggerAdapter(
-            self.logger, {'name_info': 'Daemon'})
-
+        self.logger = logging.getLogger('mycodo.daemon')
         if not debug:
             self.logger.setLevel(logging.INFO)
 
@@ -1261,9 +1256,7 @@ class MycodoDaemon:
     """
 
     def __init__(self, mycodo, debug):
-        self.logger = logging.getLogger(__name__)
-        self.logger = logging.LoggerAdapter(
-            self.logger, {'name_info': 'Daemon'})
+        self.logger = logging.getLogger('mycodo.daemon')
         if not debug:
             self.logger.setLevel(logging.INFO)
         self.mycodo = mycodo
@@ -1308,13 +1301,13 @@ if __name__ == '__main__':
     args = parse_args()
 
     # Set up logger
-    logger = logging.getLogger()
+    logger = logging.getLogger('mycodo')
     logger.setLevel(logging.DEBUG)
     logger.propagate = False
     fh = logging.FileHandler(DAEMON_LOG_FILE, 'a')
     fh.setLevel(logging.DEBUG)
     formatter = logging.Formatter(
-        "%(asctime)s - %(levelname)s - %(name)s - %(name_info)s - %(message)s")
+        "%(asctime)s - %(levelname)s - %(name)s - %(message)s")
     fh.setFormatter(formatter)
     logger.addHandler(fh)
     keep_fds = [fh.stream.fileno()]

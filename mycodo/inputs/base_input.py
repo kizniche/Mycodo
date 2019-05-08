@@ -196,11 +196,12 @@ class AbstractInput(object):
             return True
 
     def setup_logger(self, name=None, log_id=None):
-        log_id = log_id if log_id else 'Input'
         name = name if name else __name__
-        self.logger = logging.getLogger(name)
-        self.logger = logging.LoggerAdapter(
-            self.logger, {'name_info': log_id})
+        if log_id:
+            log_name = "{}_{}".format(name, log_id)
+        else:
+            log_name = name
+        self.logger = logging.getLogger(log_name)
 
     def stop_sensor(self):
         """ Called when sensors are deactivated """

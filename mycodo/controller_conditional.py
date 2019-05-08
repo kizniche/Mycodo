@@ -65,9 +65,8 @@ class ConditionalController(threading.Thread):
     def __init__(self, ready, function_id):
         threading.Thread.__init__(self)
 
-        self.logger = logging.getLogger(__name__)
-        self.logger = logging.LoggerAdapter(
-            self.logger, {'name_info': function_id.split('-')[0]})
+        self.logger = logging.getLogger(
+            "{}_{}".format(__name__, function_id.split('-')[0]))
 
         self.function_id = function_id
         self.running = False

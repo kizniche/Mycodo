@@ -62,8 +62,6 @@ class PIDAutotune(object):
 
         self._time = time
         self._logger = logging.getLogger(__name__)
-        self._logger = logging.LoggerAdapter(
-            self._logger, {'name_info': 'PID'})
         self._inputs = deque(maxlen=round(lookback / sampletime))
         self._sampletime = sampletime * 1000
         self._setpoint = setpoint

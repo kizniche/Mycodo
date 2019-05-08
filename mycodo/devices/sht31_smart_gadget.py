@@ -39,8 +39,6 @@ class SHT31Delegate(DefaultDelegate):
         DefaultDelegate.__init__(self)
         self.logger = logging.getLogger(
             "mycodo.device.sht31_smart_gadget.delegate")
-        self.logger = logging.LoggerAdapter(
-            self.logger, {'name_info': 'Input'})
         self.parent = parent
         self.sustainedNotifications = {'Temp': 0, 'Humi': 0}
         self.enabledNotifications = {'Temp': False, 'Humi': False}

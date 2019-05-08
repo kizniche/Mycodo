@@ -26,8 +26,6 @@ from mycodo.utils.system_pi import get_measurement
 from mycodo.utils.system_pi import list_to_csv
 
 logger = logging.getLogger(__name__)
-logger = logging.LoggerAdapter(
-    logger, {'name_info': 'PID'})
 
 
 #

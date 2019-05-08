@@ -78,9 +78,8 @@ class InputController(threading.Thread):
     def __init__(self, ready, input_id):
         threading.Thread.__init__(self)
 
-        self.logger = logging.getLogger(__name__)
-        self.logger = logging.LoggerAdapter(
-            self.logger, {'name_info': input_id.split('-')[0]})
+        self.logger = logging.getLogger(
+            "{}_{}".format(__name__, input_id.split('-')[0]))
 
         self.stop_iteration_counter = 0
         self.thread_startup_timer = timeit.default_timer()

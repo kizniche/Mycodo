@@ -15,8 +15,6 @@ from mycodo.utils.system_pi import cmd_output
 from mycodo.utils.system_pi import set_user_grp
 
 logger = logging.getLogger(__name__)
-logger = logging.LoggerAdapter(
-    logger, {'name_info': 'Camera'})
 
 
 #
