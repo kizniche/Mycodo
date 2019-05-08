@@ -97,13 +97,10 @@ class InputModule(AbstractInput):
 
     def __init__(self, input_dev, mode=BMP280_STANDARD, testing=False):
         super(InputModule, self).__init__()
-        self.setup_logger(name=__name__)
+        self.setup_logger(testing=testing, name=__name__, input_dev=input_dev)
 
         if not testing:
             import Adafruit_GPIO.I2C as I2C
-
-            self.setup_logger(
-                name=__name__, log_id=input_dev.unique_id.split('-')[0])
 
             self.device_measurements = db_retrieve_table_daemon(
                 DeviceMeasurements).filter(
@@ -128,11 +125,6 @@ class InputModule(AbstractInput):
             # Load calibration values.
             self._load_calibration()
             self._tfine = 0
-
-            if input_dev.log_level_debug:
-                self.logger.setLevel(logging.DEBUG)
-            else:
-                self.logger.setLevel(logging.INFO)
 
     def get_measurement(self):
         """ Gets the measurement in units by reading the """

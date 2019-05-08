@@ -108,16 +108,13 @@ class InputModule(AbstractInput):
 
     def __init__(self, input_dev, testing=False):
         super(InputModule, self).__init__()
-        self.setup_logger(name=__name__)
+        self.setup_logger(testing=testing, name=__name__, input_dev=input_dev)
         self.timer = 0
 
         if not testing:
             from Adafruit_BME280 import BME280
             import serial
             import locket
-
-            self.setup_logger(
-                name=__name__, log_id=input_dev.unique_id.split('-')[0])
 
             self.device_measurements = db_retrieve_table_daemon(
                 DeviceMeasurements).filter(
@@ -141,11 +138,6 @@ class InputModule(AbstractInput):
             self.lock_file = "/var/lock/mycodo_ttn.lock"
             self.locked = False
             self.ttn_serial_error = False
-
-        if input_dev.log_level_debug:
-            self.logger.setLevel(logging.DEBUG)
-        else:
-            self.logger.setLevel(logging.INFO)
 
     def lock_setup(self):
         self.lock = self.locket.lock_file(self.lock_file, timeout=10)

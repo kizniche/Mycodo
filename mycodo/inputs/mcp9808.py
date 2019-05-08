@@ -60,13 +60,10 @@ class InputModule(AbstractInput):
 
     def __init__(self, input_dev, testing=False):
         super(InputModule, self).__init__()
-        self.setup_logger(name=__name__)
+        self.setup_logger(testing=testing, name=__name__, input_dev=input_dev)
 
         if not testing:
             from Adafruit_MCP9808 import MCP9808
-
-            self.setup_logger(
-                name=__name__, log_id=input_dev.unique_id.split('-')[0])
 
             self.i2c_address = int(str(input_dev.i2c_location), 16)
             self.i2c_bus = input_dev.i2c_bus
@@ -75,11 +72,6 @@ class InputModule(AbstractInput):
                 address=self.i2c_address,
                 busnum=self.i2c_bus)
             self.sensor.begin()
-
-            if input_dev.log_level_debug:
-                self.logger.setLevel(logging.DEBUG)
-            else:
-                self.logger.setLevel(logging.INFO)
 
     def get_measurement(self):
         """ Gets the MCP9808's temperature in Celsius """

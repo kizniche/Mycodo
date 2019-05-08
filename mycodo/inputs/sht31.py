@@ -118,7 +118,7 @@ class InputModule(AbstractInput):
 
     def __init__(self, input_dev, testing=False):
         super(InputModule, self).__init__()
-        self.setup_logger(name=__name__)
+        self.setup_logger(testing=testing, name=__name__, input_dev=input_dev)
         self.measurement_count = 0
         self.heater_enable = None
         self.heater_seconds = None
@@ -126,9 +126,6 @@ class InputModule(AbstractInput):
 
         if not testing:
             from Adafruit_SHT31 import SHT31
-
-            self.setup_logger(
-                name=__name__, log_id=input_dev.unique_id.split('-')[0])
 
             self.device_measurements = db_retrieve_table_daemon(
                 DeviceMeasurements).filter(
@@ -150,11 +147,6 @@ class InputModule(AbstractInput):
             self.sensor = SHT31(
                 address=self.i2c_address,
                 busnum=self.i2c_bus)
-
-            if input_dev.log_level_debug:
-                self.logger.setLevel(logging.DEBUG)
-            else:
-                self.logger.setLevel(logging.INFO)
 
     def get_measurement(self):
         """ Gets the measurement in units by reading the """

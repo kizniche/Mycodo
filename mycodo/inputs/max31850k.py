@@ -41,23 +41,15 @@ class InputModule(AbstractInput):
 
     def __init__(self, input_dev, testing=False):
         super(InputModule, self).__init__()
-        self.setup_logger(name=__name__)
+        self.setup_logger(testing=testing, name=__name__, input_dev=input_dev)
 
         if not testing:
             from w1thermsensor import W1ThermSensor
-
-            self.setup_logger(
-                name=__name__, log_id=input_dev.unique_id.split('-')[0])
 
             self.location = input_dev.location
             self.sensor = W1ThermSensor(
                 W1ThermSensor.THERM_SENSOR_MAX31850K,
                 self.location)
-
-            if input_dev.log_level_debug:
-                self.logger.setLevel(logging.DEBUG)
-            else:
-                self.logger.setLevel(logging.INFO)
 
     def get_measurement(self):
         """ Gets the MAX31850K's temperature in Celsius """

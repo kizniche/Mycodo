@@ -46,15 +46,12 @@ class InputModule(AbstractInput):
 
     def __init__(self, input_dev, testing=False):
         super(InputModule, self).__init__()
-        self.setup_logger(name=__name__)
+        self.setup_logger(testing=testing, name=__name__, input_dev=input_dev)
         self.atlas_sensor_ftdi = None
         self.atlas_sensor_uart = None
         self.atlas_sensor_i2c = None
 
         if not testing:
-            self.setup_logger(
-                name=__name__, log_id=input_dev.unique_id.split('-')[0])
-
             self.interface = input_dev.interface
             if self.interface == 'FTDI':
                 self.ftdi_location = input_dev.ftdi_location
@@ -64,11 +61,6 @@ class InputModule(AbstractInput):
                 self.i2c_address = int(str(input_dev.i2c_location), 16)
                 self.i2c_bus = input_dev.i2c_bus
             self.initialize_sensor()
-
-            if input_dev.log_level_debug:
-                self.logger.setLevel(logging.DEBUG)
-            else:
-                self.logger.setLevel(logging.INFO)
 
     def initialize_sensor(self):
         from mycodo.devices.atlas_scientific_ftdi import AtlasScientificFTDI

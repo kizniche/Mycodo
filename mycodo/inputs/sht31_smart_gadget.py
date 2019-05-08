@@ -131,7 +131,7 @@ class InputModule(AbstractInput):
     """
     def __init__(self, input_dev, testing=False):
         super(InputModule, self).__init__()
-        self.setup_logger(name=__name__)
+        self.setup_logger(testing=testing, name=__name__, input_dev=input_dev)
         self.running = True
         self.unique_id = input_dev.unique_id
         self._measurements = None
@@ -148,9 +148,6 @@ class InputModule(AbstractInput):
             from mycodo.devices.sht31_smart_gadget import SHT31
             from bluepy import btle
             import locket
-
-            self.setup_logger(
-                name=__name__, log_id=input_dev.unique_id.split('-')[0])
 
             self.device_measurements = db_retrieve_table_daemon(
                 DeviceMeasurements).filter(
@@ -172,11 +169,6 @@ class InputModule(AbstractInput):
             self.btle = btle
             self.location = input_dev.location
             self.bt_adapter = input_dev.bt_adapter
-
-            if input_dev.log_level_debug:
-                self.logger.setLevel(logging.DEBUG)
-            else:
-                self.logger.setLevel(logging.INFO)
 
     def connect(self):
         # Make three attempts to connect
@@ -234,6 +226,9 @@ class InputModule(AbstractInput):
             list_timestamps_temp.append(each_ts)
             datetime_ts = datetime.datetime.utcfromtimestamp(each_ts / 1000)
             if self.is_enabled(0):
+                if -200 > each_measure or each_measure > 200:
+                    continue  # Temperature outside acceptable range
+
                 measurement_single = {
                     0: {
                         'measurement': 'temperature',
@@ -266,6 +261,9 @@ class InputModule(AbstractInput):
             list_timestamps_humi.append(each_ts)
             datetime_ts = datetime.datetime.utcfromtimestamp(each_ts / 1000)
             if self.is_enabled(1):
+                if 0 > each_measure or each_measure > 100:
+                    continue  # Humidity outside acceptable range
+
                 measurement_single = {
                     1: {
                         'measurement': 'humidity',
@@ -294,6 +292,14 @@ class InputModule(AbstractInput):
         for each_ts in list_timestamps_both:
             if not self.running:
                 break
+
+            temperature = self.gadget.loggedDataReadout['Temp'][each_ts]
+            humidity = self.gadget.loggedDataReadout['Humi'][each_ts]
+
+            if ((-200 > temperature or temperature > 200) or
+                    (0 > humidity or humidity > 100)):
+                continue  # Measurement outside acceptable range
+
             datetime_ts = datetime.datetime.utcfromtimestamp(each_ts / 1000)
             # Calculate and store dew point
             if (self.is_enabled(3) and
@@ -303,9 +309,7 @@ class InputModule(AbstractInput):
                     DeviceMeasurements.channel == 3).first()
                 conversion = db_retrieve_table_daemon(
                     Conversion, unique_id=measurement.conversion_id)
-                dewpoint = calculate_dewpoint(
-                    self.gadget.loggedDataReadout['Temp'][each_ts],
-                    self.gadget.loggedDataReadout['Humi'][each_ts])
+                dewpoint = calculate_dewpoint(temperature, humidity)
                 measurement_single = {
                     3: {
                         'measurement': 'dewpoint',
@@ -335,9 +339,7 @@ class InputModule(AbstractInput):
                     DeviceMeasurements.channel == 4).first()
                 conversion = db_retrieve_table_daemon(
                     Conversion, unique_id=measurement.conversion_id)
-                vpd = calculate_vapor_pressure_deficit(
-                    self.gadget.loggedDataReadout['Temp'][each_ts],
-                    self.gadget.loggedDataReadout['Humi'][each_ts])
+                vpd = calculate_vapor_pressure_deficit(temperature, humidity)
                 measurement_single = {
                     4: {
                         'measurement': 'vapor_pressure_deficit',

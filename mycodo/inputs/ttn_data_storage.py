@@ -94,12 +94,9 @@ class InputModule(AbstractInput):
 
     def __init__(self, input_dev, testing=False):
         super(InputModule, self).__init__()
-        self.setup_logger(name=__name__)
+        self.setup_logger(testing=testing, name=__name__, input_dev=input_dev)
 
         if not testing:
-            self.setup_logger(
-                name=__name__, log_id=input_dev.unique_id.split('-')[0])
-
             self.unique_id = input_dev.unique_id
             self.interface = input_dev.interface
             self.period = input_dev.period
@@ -119,11 +116,6 @@ class InputModule(AbstractInput):
                         self.app_api_key = value
                     elif option == 'device_id':
                         self.device_id = value
-
-            if input_dev.log_level_debug:
-                self.logger.setLevel(logging.DEBUG)
-            else:
-                self.logger.setLevel(logging.INFO)
 
     def get_new_data(self, past_seconds):
         # Basic implementation. Future development may use more complex library to access API

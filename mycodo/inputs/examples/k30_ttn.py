@@ -75,15 +75,12 @@ class InputModule(AbstractInput):
 
     def __init__(self, input_dev, testing=False):
         super(InputModule, self).__init__()
-        self.setup_logger(name=__name__)
+        self.setup_logger(testing=testing, name=__name__, input_dev=input_dev)
         self.timer = 0
 
         if not testing:
             import serial
             import locket
-
-            self.setup_logger(
-                name=__name__, log_id=input_dev.unique_id.split('-')[0])
 
             if input_dev.custom_options:
                 for each_option in input_dev.custom_options.split(';'):
@@ -119,11 +116,6 @@ class InputModule(AbstractInput):
             self.logger.debug(
                 "Min time between transmissions: {} seconds".format(
                     min_seconds_between_transmissions))
-
-        if input_dev.log_level_debug:
-            self.logger.setLevel(logging.DEBUG)
-        else:
-            self.logger.setLevel(logging.INFO)
 
     def lock_setup(self):
         self.lock = self.locket.lock_file(self.lock_file, timeout=10)

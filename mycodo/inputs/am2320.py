@@ -62,16 +62,13 @@ class InputModule(AbstractInput):
     """
     def __init__(self, input_dev, testing=False):
         super(InputModule, self).__init__()
-        self.setup_logger(name=__name__)
+        self.setup_logger(testing=testing, name=__name__, input_dev=input_dev)
         self.powered = False
         self.sensor = None
         self.i2c_address = 0x5C
 
         if not testing:
             from smbus2 import SMBus
-
-            self.setup_logger(
-                name=__name__, log_id=input_dev.unique_id.split('-')[0])
 
             self.device_measurements = db_retrieve_table_daemon(
                 DeviceMeasurements).filter(
@@ -81,11 +78,6 @@ class InputModule(AbstractInput):
             self.power_output_id = input_dev.power_output_id
             self.start_sensor()
             self.sensor = SMBus(self.i2c_bus)
-
-            if input_dev.log_level_debug:
-                self.logger.setLevel(logging.DEBUG)
-            else:
-                self.logger.setLevel(logging.INFO)
 
     def get_measurement(self):
         """ Gets the humidity and temperature """

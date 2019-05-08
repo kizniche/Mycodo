@@ -96,7 +96,7 @@ class InputModule(AbstractInput):
     """ ADC Read """
     def __init__(self, input_dev, testing=False, run_main=True):
         super(InputModule, self).__init__()
-        self.setup_logger(name=__name__)
+        self.setup_logger(testing=testing, name=__name__, input_dev=input_dev)
         self.run_main = run_main
 
         if not testing:
@@ -111,9 +111,6 @@ class InputModule(AbstractInput):
             from ADS1256_definitions import NEG_AINCOM
             from pipyadc_py3 import ADS1256
             import glob
-
-            self.setup_logger(
-                name=__name__, log_id=input_dev.unique_id.split('-')[0])
 
             # Input pin for the potentiometer on the Waveshare Precision ADC board
             POTI = POS_AIN0 | NEG_AINCOM
@@ -159,11 +156,6 @@ class InputModule(AbstractInput):
                 raise Exception(
                     "SPI device /dev/spi* not found. Ensure SPI is enabled "
                     "and the device is recognized/setup by linux.")
-
-            if input_dev.log_level_debug:
-                self.logger.setLevel(logging.DEBUG)
-            else:
-                self.logger.setLevel(logging.INFO)
 
     def get_measurement(self):
         self._measurements = {}

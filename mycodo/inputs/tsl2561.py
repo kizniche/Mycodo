@@ -54,25 +54,17 @@ class InputModule(AbstractInput):
 
     def __init__(self, input_dev, testing=False, run_main=True):
         super(InputModule, self).__init__()
-        self.setup_logger(name=__name__)
+        self.setup_logger(testing=testing, name=__name__, input_dev=input_dev)
         self.run_main = run_main
 
         if not testing:
             from tsl2561 import TSL2561
-
-            self.setup_logger(
-                name=__name__, log_id=input_dev.unique_id.split('-')[0])
 
             self.i2c_address = int(str(input_dev.i2c_location), 16)
             self.i2c_bus = input_dev.i2c_bus
             self.tsl = TSL2561(
                 address=self.i2c_address,
                 busnum=self.i2c_bus)
-
-            if input_dev.log_level_debug:
-                self.logger.setLevel(logging.DEBUG)
-            else:
-                self.logger.setLevel(logging.INFO)
 
     def get_measurement(self):
         """ Gets the TSL2561's lux """

@@ -65,12 +65,9 @@ class InputModule(AbstractInput):
 
     def __init__(self, input_dev, testing=False):
         super(InputModule, self).__init__()
-        self.setup_logger(name=__name__)
+        self.setup_logger(testing=testing, name=__name__, input_dev=input_dev)
 
         if not testing:
-            self.setup_logger(
-                name=__name__, log_id=input_dev.unique_id.split('-')[0])
-
             self.interface = input_dev.interface
             self.uart_location = input_dev.uart_location
 
@@ -107,11 +104,6 @@ class InputModule(AbstractInput):
                 self.RXLVL = 0X09 << 3
                 self.i2c = SMBus(self.i2c_bus)
                 self.begin()
-
-            if input_dev.log_level_debug:
-                self.logger.setLevel(logging.DEBUG)
-            else:
-                self.logger.setLevel(logging.INFO)
 
     def get_measurement(self):
         """ Gets the MH-Z16's CO2 concentration in ppmv via UART"""

@@ -60,7 +60,7 @@ class InputModule(AbstractInput):
 
     def __init__(self, input_dev, testing=False):
         super(InputModule, self).__init__()
-        self.setup_logger(name=__name__)
+        self.setup_logger(testing=testing, name=__name__, input_dev=input_dev)
         self.save_image = False
         self.temp_max = None
         self.temp_min = None
@@ -71,9 +71,6 @@ class InputModule(AbstractInput):
 
         if not testing:
             from Adafruit_AMG88xx import Adafruit_AMG88xx
-
-            self.setup_logger(
-                name=__name__, log_id=input_dev.unique_id.split('-')[0])
 
             self.device_measurements = db_retrieve_table_daemon(
                 DeviceMeasurements).filter(
@@ -87,11 +84,6 @@ class InputModule(AbstractInput):
                 address=self.i2c_address,
                 busnum=self.i2c_bus)
             time.sleep(0.1)  # wait for it to boot
-
-            if input_dev.log_level_debug:
-                self.logger.setLevel(logging.DEBUG)
-            else:
-                self.logger.setLevel(logging.INFO)
 
     def get_measurement(self):
         """ Gets the AMG8833's measurements """

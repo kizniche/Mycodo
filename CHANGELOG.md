@@ -1,3 +1,11 @@
+## 7.5.3 (Unreleased)
+
+### Bugfixes
+
+ - Prevent logging aberrant SHT31 Smart Gadget measurements
+ - Handle type casting issues with Ruuvitag Input
+
+
 ## 7.5.2 (2019-05-08)
 
 ### Bugfixes

@@ -76,13 +76,10 @@ class InputModule(AbstractInput):
     """ A sensor support class that monitors the DS18B20's lux """
     def __init__(self, input_dev, testing=False):
         super(InputModule, self).__init__()
-        self.setup_logger(name=__name__)
+        self.setup_logger(testing=testing, name=__name__, input_dev=input_dev)
 
         if not testing:
             from smbus2 import SMBus
-
-            self.setup_logger(
-                name=__name__, log_id=input_dev.unique_id.split('-')[0])
 
             self.device_measurements = db_retrieve_table_daemon(
                 DeviceMeasurements).filter(
@@ -94,11 +91,6 @@ class InputModule(AbstractInput):
             self.i2c_bus = SMBus(input_dev.i2c_bus)
             self.power_down()
             self.set_sensitivity(sensitivity=self.sensitivity)
-
-            if input_dev.log_level_debug:
-                self.logger.setLevel(logging.DEBUG)
-            else:
-                self.logger.setLevel(logging.INFO)
 
     @property
     def lux(self):

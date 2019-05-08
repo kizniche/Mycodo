@@ -79,7 +79,7 @@ class InputModule(AbstractInput):
 
         """
         super(InputModule, self).__init__()
-        self.setup_logger(name=__name__)
+        self.setup_logger(testing=testing, name=__name__, input_dev=input_dev)
         self.temp_temperature = 0
         self.temp_humidity = 0
         self.temp_dew_point = None
@@ -90,9 +90,6 @@ class InputModule(AbstractInput):
         if not testing:
             import pigpio
             from mycodo.mycodo_client import DaemonControl
-
-            self.setup_logger(
-                name=__name__, log_id=input_dev.unique_id.split('-')[0])
 
             self.device_measurements = db_retrieve_table_daemon(
                 DeviceMeasurements).filter(
@@ -108,11 +105,6 @@ class InputModule(AbstractInput):
             self.high_tick = None
             self.bit = None
             self.either_edge_cb = None
-
-            if input_dev.log_level_debug:
-                self.logger.setLevel(logging.DEBUG)
-            else:
-                self.logger.setLevel(logging.INFO)
 
         self.start_sensor()
 

@@ -83,12 +83,9 @@ class InputModule(AbstractInput):
 
     def __init__(self, input_dev, testing=False):
         super(InputModule, self).__init__()
-        self.setup_logger(name=__name__)
+        self.setup_logger(testing=testing, name=__name__, input_dev=input_dev)
 
         if not testing:
-            self.setup_logger(
-                name=__name__, log_id=input_dev.unique_id.split('-')[0])
-
             self.pin_clock = input_dev.pin_clock
             self.pin_cs = input_dev.pin_cs
             self.pin_miso = input_dev.pin_miso
@@ -100,11 +97,6 @@ class InputModule(AbstractInput):
                 self.pin_miso,
                 self.pin_mosi,
                 self.pin_clock)
-
-            if input_dev.log_level_debug:
-                self.logger.setLevel(logging.DEBUG)
-            else:
-                self.logger.setLevel(logging.INFO)
 
     def get_measurement(self):
         """ Gets the measurement in units by reading the """

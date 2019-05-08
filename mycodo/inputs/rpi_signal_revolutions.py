@@ -47,24 +47,16 @@ class InputModule(AbstractInput):
 
     def __init__(self, input_dev, testing=False):
         super(InputModule, self).__init__()
-        self.setup_logger(name=__name__)
+        self.setup_logger(testing=testing, name=__name__, input_dev=input_dev)
 
         if not testing:
             import pigpio
-
-            self.setup_logger(
-                name=__name__, log_id=input_dev.unique_id.split('-')[0])
 
             self.gpio = int(input_dev.gpio_location)
             self.weighting = input_dev.weighting
             self.rpm_pulses_per_rev = input_dev.rpm_pulses_per_rev
             self.sample_time = input_dev.sample_time
             self.pigpio = pigpio
-
-            if input_dev.log_level_debug:
-                self.logger.setLevel(logging.DEBUG)
-            else:
-                self.logger.setLevel(logging.INFO)
 
     def get_measurement(self):
         """ Gets the revolutions """

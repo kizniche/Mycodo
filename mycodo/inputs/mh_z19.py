@@ -86,15 +86,12 @@ class InputModule(AbstractInput):
 
     def __init__(self, input_dev, testing=False):
         super(InputModule, self).__init__()
-        self.setup_logger(name=__name__)
+        self.setup_logger(testing=testing, name=__name__, input_dev=input_dev)
         self.measure_range = None
         self.abc_enable = False
 
         if not testing:
             import serial
-
-            self.setup_logger(
-                name=__name__, log_id=input_dev.unique_id.split('-')[0])
 
             self.uart_location = input_dev.uart_location
             self.baud_rate = input_dev.baud_rate
@@ -133,11 +130,6 @@ class InputModule(AbstractInput):
                 self.set_measure_range(self.measure_range)
 
             time.sleep(0.1)
-
-            if input_dev.log_level_debug:
-                self.logger.setLevel(logging.DEBUG)
-            else:
-                self.logger.setLevel(logging.INFO)
 
     def get_measurement(self):
         """ Gets the MH-Z19's CO2 concentration in ppmv via UART"""

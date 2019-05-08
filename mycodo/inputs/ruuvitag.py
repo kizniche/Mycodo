@@ -92,7 +92,7 @@ class InputModule(AbstractInput):
     """
     def __init__(self, input_dev, testing=False):
         super(InputModule, self).__init__()
-        self.setup_logger(name=__name__)
+        self.setup_logger(testing=testing, name=__name__, input_dev=input_dev)
         self.running = True
         self.unique_id = input_dev.unique_id
         self._measurements = None
@@ -108,9 +108,6 @@ class InputModule(AbstractInput):
         if not testing:
             import locket
 
-            self.setup_logger(
-                name=__name__, log_id=input_dev.unique_id.split('-')[0])
-
             self.device_measurements = db_retrieve_table_daemon(
                 DeviceMeasurements).filter(
                     DeviceMeasurements.device_id == input_dev.unique_id)
@@ -119,11 +116,6 @@ class InputModule(AbstractInput):
             self.lock_file_bluetooth = '/var/lock/bluetooth_dev_hci{}'.format(input_dev.bt_adapter)
             self.location = input_dev.location
             self.bt_adapter = input_dev.bt_adapter
-
-            if input_dev.log_level_debug:
-                self.logger.setLevel(logging.DEBUG)
-            else:
-                self.logger.setLevel(logging.INFO)
 
     def get_measurement(self):
         """ Obtain and return the measurements """
@@ -148,6 +140,11 @@ class InputModule(AbstractInput):
             cmd_return, _, cmd_status = cmd_output(cmd)
 
             values = cmd_return.decode('ascii').split(',')
+
+            try:
+                test = float(str(values[0]))
+            except ValueError:
+                self.logger.debug("Could not convert string to float: string '{}'".format(str(values[0])))
 
             if self.is_enabled(0):
                 self.set_value(0, float(str(values[0])))

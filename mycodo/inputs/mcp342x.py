@@ -70,15 +70,12 @@ class InputModule(AbstractInput):
     """ ADC Read """
     def __init__(self, input_dev, testing=False):
         super(InputModule, self).__init__()
-        self.setup_logger(name=__name__)
+        self.setup_logger(testing=testing, name=__name__, input_dev=input_dev)
         self.acquiring_measurement = False
 
         if not testing:
             from smbus2 import SMBus
             from MCP342x import MCP342x
-
-            self.setup_logger(
-                name=__name__, log_id=input_dev.unique_id.split('-')[0])
 
             self.device_measurements = db_retrieve_table_daemon(
                 DeviceMeasurements).filter(
@@ -91,11 +88,6 @@ class InputModule(AbstractInput):
 
             self.MCP342x = MCP342x
             self.bus = SMBus(self.i2c_bus)
-
-            if input_dev.log_level_debug:
-                self.logger.setLevel(logging.DEBUG)
-            else:
-                self.logger.setLevel(logging.INFO)
 
     def get_measurement(self):
         self.return_dict = measurements_dict.copy()

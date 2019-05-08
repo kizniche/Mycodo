@@ -56,15 +56,12 @@ class InputModule(AbstractInput):
     """ ADC Read """
     def __init__(self, input_dev, testing=False):
         super(InputModule, self).__init__()
-        self.setup_logger(name=__name__)
+        self.setup_logger(testing=testing, name=__name__, input_dev=input_dev)
         self.acquiring_measurement = False
         self.adc = None
 
         if not testing:
             import Adafruit_MCP3008
-
-            self.setup_logger(
-                name=__name__, log_id=input_dev.unique_id.split('-')[0])
 
             self.device_measurements = db_retrieve_table_daemon(
                 DeviceMeasurements).filter(
@@ -81,11 +78,6 @@ class InputModule(AbstractInput):
                 cs=self.pin_cs,
                 miso=self.pin_miso,
                 mosi=self.pin_mosi)
-
-            if input_dev.log_level_debug:
-                self.logger.setLevel(logging.DEBUG)
-            else:
-                self.logger.setLevel(logging.INFO)
 
     def get_measurement(self):
         self.return_dict = measurements_dict.copy()

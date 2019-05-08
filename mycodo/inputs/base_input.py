@@ -29,9 +29,9 @@ class AbstractInput(object):
 
     """
 
-    def __init__(self, run_main=False):
+    def __init__(self, testing=False, run_main=False):
         self.logger = None
-        self.setup_logger(name=__name__)
+        self.setup_logger(testing=testing, name=__name__)
         self._measurements = None
         self.return_dict = {}
         self.run_main = run_main
@@ -195,13 +195,18 @@ class AbstractInput(object):
                     DeviceMeasurements.channel == channel)).count()):
             return True
 
-    def setup_logger(self, name=None, log_id=None):
+    def setup_logger(self, testing=None, name=None, input_dev=None):
         name = name if name else __name__
-        if log_id:
-            log_name = "{}_{}".format(name, log_id)
+        if not testing and input_dev:
+            log_name = "{}_{}".format(name, input_dev.unique_id.split('-')[0])
         else:
             log_name = name
         self.logger = logging.getLogger(log_name)
+        if not testing and input_dev:
+            if input_dev.log_level_debug:
+                self.logger.setLevel(logging.DEBUG)
+            else:
+                self.logger.setLevel(logging.INFO)
 
     def stop_sensor(self):
         """ Called when sensors are deactivated """
