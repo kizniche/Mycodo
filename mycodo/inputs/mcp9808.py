@@ -60,7 +60,7 @@ class InputModule(AbstractInput):
 
     def __init__(self, input_dev, testing=False):
         super(InputModule, self).__init__()
-        self.setup_logger()
+        self.setup_logger(name=__name__)
 
         if not testing:
             from Adafruit_MCP9808 import MCP9808

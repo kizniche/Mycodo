@@ -30,9 +30,8 @@ class AbstractInput(object):
     """
 
     def __init__(self, run_main=False):
-        self.logger = logging.getLogger(__name__)
-        self.logger = logging.LoggerAdapter(
-            self.logger, {'name_info': 'Input'})
+        self.logger = None
+        self.setup_logger(name=__name__)
         self._measurements = None
         self.return_dict = {}
         self.run_main = run_main

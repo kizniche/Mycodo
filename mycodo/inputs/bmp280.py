@@ -97,7 +97,7 @@ class InputModule(AbstractInput):
 
     def __init__(self, input_dev, mode=BMP280_STANDARD, testing=False):
         super(InputModule, self).__init__()
-        self.setup_logger()
+        self.setup_logger(name=__name__)
 
         if not testing:
             import Adafruit_GPIO.I2C as I2C

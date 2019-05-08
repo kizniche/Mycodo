@@ -90,7 +90,7 @@ class InputModule(AbstractInput):
         eventually cause the DHT22 to hang.  A 3 second interval seems OK.
         """
         super(InputModule, self).__init__()
-        self.setup_logger()
+        self.setup_logger(name=__name__)
         self.temp_temperature = None
         self.temp_humidity = None
         self.temp_dew_point = None

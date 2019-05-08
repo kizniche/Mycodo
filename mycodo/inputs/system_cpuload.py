@@ -52,7 +52,7 @@ class InputModule(AbstractInput):
 
     def __init__(self, input_dev, testing=False):
         super(InputModule, self).__init__()
-        self.setup_logger()
+        self.setup_logger(name=__name__)
         self._cpu_load_1m = None
         self._cpu_load_5m = None
         self._cpu_load_15m = None

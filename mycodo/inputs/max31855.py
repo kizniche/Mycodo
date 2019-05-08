@@ -58,7 +58,7 @@ class InputModule(AbstractInput):
 
     def __init__(self, input_dev, testing=False):
         super(InputModule, self).__init__()
-        self.setup_logger()
+        self.setup_logger(name=__name__)
 
         if not testing:
             import Adafruit_MAX31855.MAX31855 as MAX31855

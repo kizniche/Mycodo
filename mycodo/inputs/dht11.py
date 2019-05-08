@@ -79,7 +79,7 @@ class InputModule(AbstractInput):
 
         """
         super(InputModule, self).__init__()
-        self.setup_logger()
+        self.setup_logger(name=__name__)
         self.temp_temperature = 0
         self.temp_humidity = 0
         self.temp_dew_point = None

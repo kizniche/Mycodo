@@ -96,7 +96,7 @@ class InputModule(AbstractInput):
     """ ADC Read """
     def __init__(self, input_dev, testing=False, run_main=True):
         super(InputModule, self).__init__()
-        self.setup_logger()
+        self.setup_logger(name=__name__)
         self.run_main = run_main
 
         if not testing:

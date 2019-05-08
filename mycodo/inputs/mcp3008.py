@@ -56,7 +56,7 @@ class InputModule(AbstractInput):
     """ ADC Read """
     def __init__(self, input_dev, testing=False):
         super(InputModule, self).__init__()
-        self.setup_logger()
+        self.setup_logger(name=__name__)
         self.acquiring_measurement = False
         self.adc = None
 

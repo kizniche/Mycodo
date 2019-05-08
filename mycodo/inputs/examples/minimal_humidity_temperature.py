@@ -59,7 +59,7 @@ class InputModule(AbstractInput):
     """ Input support class """
     def __init__(self, input_dev, testing=False):
         super(InputModule, self).__init__()
-        self.setup_logger()
+        self.setup_logger(name=__name__)
 
         if not testing:
             # Load dependent modules
