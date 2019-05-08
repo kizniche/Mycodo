@@ -79,7 +79,7 @@ class InputModule(AbstractInput):
 
         """
         super(InputModule, self).__init__()
-        self.logger = logging.getLogger('mycodo.inputs.dht11')
+        self.setup_logger()
         self.temp_temperature = 0
         self.temp_humidity = 0
         self.temp_dew_point = None
@@ -90,9 +90,9 @@ class InputModule(AbstractInput):
         if not testing:
             import pigpio
             from mycodo.mycodo_client import DaemonControl
-            self.logger = logging.getLogger(
-                'mycodo.dht11_{id}'.format(
-                    id=input_dev.unique_id.split('-')[0]))
+
+            self.setup_logger(
+                name=__name__, log_id=input_dev.unique_id.split('-')[0])
 
             self.device_measurements = db_retrieve_table_daemon(
                 DeviceMeasurements).filter(
@@ -118,7 +118,7 @@ class InputModule(AbstractInput):
 
     def get_measurement(self):
         """ Gets the humidity and temperature """
-        return_dict = measurements_dict.copy()
+        self.return_dict = measurements_dict.copy()
 
         if not self.pi.connected:  # Check if pigpiod is running
             self.logger.error("Could not connect to pigpiod."
@@ -145,18 +145,18 @@ class InputModule(AbstractInput):
             self.measure_sensor()
             if self.temp_dew_point is not None:
                 if self.is_enabled(0):
-                    return_dict[0]['value'] = self.temp_temperature
+                    self.set_value(0, self.temp_temperature)
                 if self.is_enabled(1):
-                    return_dict[1]['value'] = self.temp_humidity
+                    self.set_value(1, self.temp_humidity)
                 if (self.is_enabled(2) and
                         self.is_enabled(0) and
                         self.is_enabled(1)):
-                    return_dict[2]['value'] = self.temp_dew_point
+                    self.set_value(2, self.temp_dew_point)
                 if (self.is_enabled(3) and
                         self.is_enabled(0) and
                         self.is_enabled(1)):
-                    return_dict[3]['value'] = self.temp_vpd
-                return return_dict  # success - no errors
+                    self.set_value(3, self.temp_vpd)
+                return self.return_dict  # success - no errors
             time.sleep(2)
 
         # Measurement failure, power cycle the sensor (if enabled)
@@ -169,18 +169,18 @@ class InputModule(AbstractInput):
                 self.measure_sensor()
                 if self.temp_dew_point is not None:
                     if self.is_enabled(0):
-                        return_dict[0]['value'] = self.temp_temperature
+                        self.set_value(0, self.temp_temperature)
                     if self.is_enabled(1):
-                        return_dict[1]['value'] = self.temp_humidity
+                        self.set_value(1, self.temp_humidity)
                     if (self.is_enabled(2) and
                             self.is_enabled(0) and
                             self.is_enabled(1)):
-                        return_dict[2]['value'] = self.temp_dew_point
+                        self.set_value(2, self.temp_dew_point)
                     if (self.is_enabled(3) and
                             self.is_enabled(0) and
                             self.is_enabled(1)):
-                        return_dict[3]['value'] = self.temp_vpd
-                    return return_dict  # success - no errors
+                        self.set_value(3, self.temp_vpd)
+                    return self.return_dict  # success - no errors
                 time.sleep(2)
 
         self.logger.error("Could not acquire a measurement")

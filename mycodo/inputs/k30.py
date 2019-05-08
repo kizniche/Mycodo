@@ -41,13 +41,13 @@ class InputModule(AbstractInput):
 
     def __init__(self, input_dev, testing=False):
         super(InputModule, self).__init__()
-        self.logger = logging.getLogger("mycodo.inputs.k30")
+        self.setup_logger()
 
         if not testing:
             import serial
-            self.logger = logging.getLogger(
-                "mycodo.k30_{id}".format(
-                    id=input_dev.unique_id.split('-')[0]))
+
+            self.setup_logger(
+                name=__name__, log_id=input_dev.unique_id.split('-')[0])
 
             self.uart_location = input_dev.uart_location
             self.baud_rate = input_dev.baud_rate
@@ -77,7 +77,7 @@ class InputModule(AbstractInput):
         if not self.serial_device:  # Don't measure if device isn't validated
             return None
 
-        return_dict = measurements_dict.copy()
+        self.return_dict = measurements_dict.copy()
 
         co2 = None
 
@@ -91,6 +91,6 @@ class InputModule(AbstractInput):
             low = resp[4]
             co2 = (high * 256) + low
 
-        return_dict[0]['value'] = co2
+            self.set_value(0, co2)
 
-        return return_dict
+        return self.return_dict

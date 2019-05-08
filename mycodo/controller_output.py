@@ -54,7 +54,8 @@ class OutputController(threading.Thread):
         threading.Thread.__init__(self)
 
         self.logger = logging.getLogger(__name__)
-        self.logger = logging.LoggerAdapter(self.logger, {'name_info': 'Output'})
+        self.logger = logging.LoggerAdapter(
+            self.logger, {'name_info': 'Output'})
 
         if debug:
             self.logger.setLevel(logging.DEBUG)

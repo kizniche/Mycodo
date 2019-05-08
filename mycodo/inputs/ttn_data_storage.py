@@ -94,12 +94,11 @@ class InputModule(AbstractInput):
 
     def __init__(self, input_dev, testing=False):
         super(InputModule, self).__init__()
-        self.logger = logging.getLogger("mycodo.inputs.ttn_data_storage")
+        self.setup_logger()
 
         if not testing:
-            self.logger = logging.getLogger(
-                "mycodo.ttn_data_storage_{id}".format(
-                    id=input_dev.unique_id.split('-')[0]))
+            self.setup_logger(
+                name=__name__, log_id=input_dev.unique_id.split('-')[0])
 
             self.unique_id = input_dev.unique_id
             self.interface = input_dev.interface

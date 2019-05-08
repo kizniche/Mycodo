@@ -79,13 +79,13 @@ class InputModule(AbstractInput):
 
     def __init__(self, input_dev, testing=False):
         super(InputModule, self).__init__()
-        self.logger = logging.getLogger("mycodo.inputs.ds18s20")
+        self.setup_logger()
 
         if not testing:
             from w1thermsensor import W1ThermSensor
-            self.logger = logging.getLogger(
-                "mycodo.ds18s20_{id}".format(
-                    id=input_dev.unique_id.split('-')[0]))
+
+            self.setup_logger(
+                name=__name__, log_id=input_dev.unique_id.split('-')[0])
 
             self.location = input_dev.location
             self.library = None
@@ -111,13 +111,13 @@ class InputModule(AbstractInput):
 
     def get_measurement(self):
         """ Gets the DS18S20's temperature in Celsius """
-        return_dict = measurements_dict.copy()
+        self.return_dict = measurements_dict.copy()
 
         n = 2
         for i in range(n):
             try:
                 if self.library == 'w1thermsensor':
-                    return_dict[0]['value'] = self.sensor.get_temperature()
+                    self.set_value(0, self.sensor.get_temperature())
                 elif self.library == 'ow_shell':
                     try:
                         command = 'owread /{id}/temperature; echo'.format(
@@ -127,10 +127,10 @@ class InputModule(AbstractInput):
                         (owread_output, _) = owread.communicate()
                         owread.wait()
                         if owread_output:
-                            return_dict[0]['value'] = float(owread_output.decode("latin1"))
+                            self.set_value(0, float(owread_output.decode("latin1")))
                     except Exception:
                         self.logger.exception(1)
-                return return_dict
+                return self.return_dict
             except Exception as e:
                 if i == n:
                     self.logger.exception(

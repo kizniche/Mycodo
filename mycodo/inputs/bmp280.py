@@ -97,13 +97,13 @@ class InputModule(AbstractInput):
 
     def __init__(self, input_dev, mode=BMP280_STANDARD, testing=False):
         super(InputModule, self).__init__()
-        self.logger = logging.getLogger("mycodo.inputs.bmp280")
+        self.setup_logger()
 
         if not testing:
             import Adafruit_GPIO.I2C as I2C
-            self.logger = logging.getLogger(
-                "mycodo.bmp280_{id}".format(
-                    id=input_dev.unique_id.split('-')[0]))
+
+            self.setup_logger(
+                name=__name__, log_id=input_dev.unique_id.split('-')[0])
 
             self.device_measurements = db_retrieve_table_daemon(
                 DeviceMeasurements).filter(
@@ -136,19 +136,19 @@ class InputModule(AbstractInput):
 
     def get_measurement(self):
         """ Gets the measurement in units by reading the """
-        return_dict = measurements_dict.copy()
+        self.return_dict = measurements_dict.copy()
 
         if self.is_enabled(0):
-            return_dict[0]['value'] = self.read_pressure()
+            self.set_value(0, self.read_pressure())
 
         if self.is_enabled(1):
-            return_dict[1]['value'] = self.read_temperature()
+            self.set_value(1, self.read_temperature())
 
         if self.is_enabled(2) and self.is_enabled(0):
-            return_dict[2]['value'] = calculate_altitude(
-                return_dict[0]['value'])
+            self.set_value(2, calculate_altitude(
+                self.get_value(0)))
 
-        return return_dict
+        return self.return_dict
 
     def _load_calibration(self):
         self.cal_REGISTER_DIG_T1 = self._device.readU16LE(BMP280_REGISTER_DIG_T1)  # UINT16

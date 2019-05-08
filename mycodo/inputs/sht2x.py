@@ -64,13 +64,13 @@ class InputModule(AbstractInput):
 
     def __init__(self, input_dev, testing=False):
         super(InputModule, self).__init__()
-        self.logger = logging.getLogger("mycodo.inputs.sht2x")
+        self.setup_logger()
 
         if not testing:
             from smbus2 import SMBus
-            self.logger = logging.getLogger(
-                "mycodo.sht2x_{id}".format(
-                    id=input_dev.unique_id.split('-')[0]))
+
+            self.setup_logger(
+                name=__name__, log_id=input_dev.unique_id.split('-')[0])
 
             self.device_measurements = db_retrieve_table_daemon(
                 DeviceMeasurements).filter(
@@ -87,7 +87,7 @@ class InputModule(AbstractInput):
 
     def get_measurement(self):
         """ Gets the humidity and temperature """
-        return_dict = measurements_dict.copy()
+        self.return_dict = measurements_dict.copy()
 
         for _ in range(2):
             try:
@@ -111,24 +111,24 @@ class InputModule(AbstractInput):
                 humidity = -6 + (((data0 * 256 + data1) * 125.0) / 65536.0)
 
                 if self.is_enabled(0):
-                    return_dict[0]['value'] = temperature
+                    self.set_value(0, temperature)
 
                 if self.is_enabled(1):
-                    return_dict[1]['value'] = humidity
+                    self.set_value(1, humidity)
 
                 if (self.is_enabled(2) and
                         self.is_enabled(0) and
                         self.is_enabled(1)):
-                    return_dict[2]['value'] = calculate_dewpoint(
-                        return_dict[0]['value'], return_dict[1]['value'])
+                    self.set_value(2, calculate_dewpoint(
+                        self.get_value(0), self.get_value(1)))
 
                 if (self.is_enabled(3) and
                         self.is_enabled(0) and
                         self.is_enabled(1)):
-                    return_dict[3]['value'] = calculate_vapor_pressure_deficit(
-                        return_dict[0]['value'], return_dict[1]['value'])
+                    self.set_value(3, calculate_vapor_pressure_deficit(
+                        self.get_value(0), self.get_value(1)))
 
-                return return_dict
+                return self.return_dict
             except Exception as e:
                 self.logger.exception(
                     "Exception when taking a reading: {err}".format(err=e))

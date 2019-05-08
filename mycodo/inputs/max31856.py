@@ -93,12 +93,11 @@ class InputModule(AbstractInput):
 
     def __init__(self, input_dev, testing=False):
         super(InputModule, self).__init__()
-        self.logger = logging.getLogger("mycodo.inputs.max31856")
+        self.setup_logger()
 
         if not testing:
-            self.logger = logging.getLogger(
-                "mycodo.max31856_{id}".format(
-                    id=input_dev.unique_id.split('-')[0]))
+            self.setup_logger(
+                name=__name__, log_id=input_dev.unique_id.split('-')[0])
 
             self.device_measurements = db_retrieve_table_daemon(
                 DeviceMeasurements).filter(
@@ -139,15 +138,15 @@ class InputModule(AbstractInput):
 
     def get_measurement(self):
         """ Gets the measurement in units by reading the """
-        return_dict = measurements_dict.copy()
+        self.return_dict = measurements_dict.copy()
 
         if self.is_enabled(0):
-            return_dict[0]['value'] = self.sensor.readThermocoupleTemp()
+            self.set_value(0, self.sensor.readThermocoupleTemp())
 
         if self.is_enabled(1):
-            return_dict[1]['value'] = self.sensor.readJunctionTemp()
+            self.set_value(1, self.sensor.readJunctionTemp())
 
-        return return_dict
+        return self.return_dict
 
 
 class max31856(object):

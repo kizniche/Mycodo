@@ -87,13 +87,13 @@ class InputModule(AbstractInput):
 
     def __init__(self, input_dev, testing=False):
         super(InputModule, self).__init__()
-        self.logger = logging.getLogger("mycodo.inputs.ds18b20")
+        self.setup_logger()
 
         if not testing:
             from w1thermsensor import W1ThermSensor
-            self.logger = logging.getLogger(
-                "mycodo.ds18b20_{id}".format(
-                    id=input_dev.unique_id.split('-')[0]))
+
+            self.setup_logger(
+                name=__name__, log_id=input_dev.unique_id.split('-')[0])
 
             self.interface = input_dev.interface
             self.location = input_dev.location
@@ -123,7 +123,7 @@ class InputModule(AbstractInput):
 
     def get_measurement(self):
         """ Gets the DS18B20's temperature in Celsius """
-        return_dict = measurements_dict.copy()
+        self.return_dict = measurements_dict.copy()
 
         temperature = None
         n = 2
@@ -172,6 +172,6 @@ class InputModule(AbstractInput):
                 "{temp} C".format(temp=temperature))
             return None
 
-        return_dict[0]['value'] = temperature
+        self.set_value(0, temperature)
 
-        return return_dict
+        return self.return_dict

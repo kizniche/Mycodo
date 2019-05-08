@@ -96,7 +96,7 @@ class InputModule(AbstractInput):
     """ ADC Read """
     def __init__(self, input_dev, testing=False, run_main=True):
         super(InputModule, self).__init__()
-        self.logger = logging.getLogger('mycodo.ads1256')
+        self.setup_logger()
         self.run_main = run_main
 
         if not testing:
@@ -112,6 +112,9 @@ class InputModule(AbstractInput):
             from pipyadc_py3 import ADS1256
             import glob
 
+            self.setup_logger(
+                name=__name__, log_id=input_dev.unique_id.split('-')[0])
+
             # Input pin for the potentiometer on the Waveshare Precision ADC board
             POTI = POS_AIN0 | NEG_AINCOM
             # Light dependant resistor
@@ -119,10 +122,6 @@ class InputModule(AbstractInput):
             EXT2, EXT3, EXT4 = POS_AIN2 | NEG_AINCOM, POS_AIN3 | NEG_AINCOM, POS_AIN4 | NEG_AINCOM
             EXT5, EXT6, EXT7 = POS_AIN5 | NEG_AINCOM, POS_AIN6 | NEG_AINCOM, POS_AIN7 | NEG_AINCOM
             self.CH_SEQUENCE = (POTI, LDR, EXT2, EXT3, EXT4, EXT5, EXT6, EXT7)
-
-            self.logger = logging.getLogger(
-                'mycodo.ads1256_{id}'.format(
-                    id=input_dev.unique_id.split('-')[0]))
 
             self.adc_calibration = None
 
@@ -172,7 +171,7 @@ class InputModule(AbstractInput):
         voltages_dict = {}
         count = 0
 
-        return_dict = measurements_dict.copy()
+        self.return_dict = measurements_dict.copy()
 
         # 2 attempts to get valid measurement
         while (self.running and count < 2 and
@@ -189,9 +188,9 @@ class InputModule(AbstractInput):
 
         for each_measure in self.device_measurements.all():
             if each_measure.is_enabled:
-                return_dict[each_measure.channel]['value'] = voltages_list[each_measure.channel]
+                self.set_value(each_measure.channel, voltages_list[each_measure.channel])
 
-        return return_dict
+        return self.return_dict
 
 
 if __name__ == "__main__":

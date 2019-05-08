@@ -14,7 +14,9 @@ from mycodo.utils.system_pi import assure_path_exists
 from mycodo.utils.system_pi import cmd_output
 from mycodo.utils.system_pi import set_user_grp
 
-logger = logging.getLogger('mycodo.devices.picamera')
+logger = logging.getLogger(__name__)
+self.logger = logging.LoggerAdapter(
+            self.logger, {'name_info': 'Camera'})
 
 
 #

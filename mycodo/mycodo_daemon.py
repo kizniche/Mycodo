@@ -307,7 +307,9 @@ class ComThread(threading.Thread):
     def __init__(self, mycodo):
         threading.Thread.__init__(self)
 
-        self.logger = logging.getLogger("mycodo.rpyc")
+        self.logger = logging.getLogger(__name__)
+        self.logger = logging.LoggerAdapter(
+            self.logger, {'name_info': 'rpyc'})
         self.logger.setLevel(logging.WARNING)
         self.mycodo = mycodo
         self.server = None
@@ -373,7 +375,8 @@ class DaemonController:
 
     def __init__(self, debug):
         self.logger = logging.getLogger()
-        self.logger = logging.LoggerAdapter(self.logger, {'name_info': 'Daemon'})
+        self.logger = logging.LoggerAdapter(
+            self.logger, {'name_info': 'Daemon'})
 
         if not debug:
             self.logger.setLevel(logging.INFO)
@@ -1258,7 +1261,9 @@ class MycodoDaemon:
     """
 
     def __init__(self, mycodo, debug):
-        self.logger = logging.getLogger("mycodo.daemon")
+        self.logger = logging.getLogger(__name__)
+        self.logger = logging.LoggerAdapter(
+            self.logger, {'name_info': 'Daemon'})
         if not debug:
             self.logger.setLevel(logging.INFO)
         self.mycodo = mycodo

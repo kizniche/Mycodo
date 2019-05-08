@@ -89,15 +89,15 @@ class InputModule(AbstractInput):
     """
     def __init__(self, input_dev, testing=False):
         super(InputModule, self).__init__()
-        self.logger = logging.getLogger('mycodo.inputs.am2315')
+        self.setup_logger()
         self.powered = False
         self.am = None
 
         if not testing:
             from mycodo.mycodo_client import DaemonControl
-            self.logger = logging.getLogger(
-                'mycodo.am2315_{id}'.format(
-                    id=input_dev.unique_id.split('-')[0]))
+
+            self.setup_logger(
+                name=__name__, log_id=input_dev.unique_id.split('-')[0])
 
             self.device_measurements = db_retrieve_table_daemon(
                 DeviceMeasurements).filter(
@@ -116,7 +116,7 @@ class InputModule(AbstractInput):
 
     def get_measurement(self):
         """ Gets the humidity and temperature """
-        return_dict = measurements_dict.copy()
+        self.return_dict = measurements_dict.copy()
 
         temperature = None
         humidity = None
@@ -158,24 +158,24 @@ class InputModule(AbstractInput):
 
         if measurements_success:
             if self.is_enabled(0):
-                return_dict[0]['value'] = temperature
+                self.set_value(0, temperature)
 
             if self.is_enabled(1):
-                return_dict[1]['value'] = humidity
+                self.set_value(1, humidity)
 
             if (self.is_enabled(2) and
                     self.is_enabled(0) and
                     self.is_enabled(1)):
-                return_dict[2]['value'] = calculate_dewpoint(
-                    return_dict[0]['value'], return_dict[1]['value'])
+                self.set_value(2, calculate_dewpoint(
+                    self.get_value(0), self.get_value(1)))
 
             if (self.is_enabled(3) and
                     self.is_enabled(0) and
                     self.is_enabled(1)):
-                return_dict[3]['value'] = calculate_vapor_pressure_deficit(
-                    return_dict[0]['value'], return_dict[1]['value'])
+                self.set_value(3, calculate_vapor_pressure_deficit(
+                    self.get_value(0), self.get_value(1)))
 
-            return return_dict
+            return self.return_dict
         else:
             self.logger.debug("Could not acquire a measurement")
 

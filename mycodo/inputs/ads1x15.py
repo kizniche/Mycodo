@@ -67,14 +67,14 @@ class InputModule(AbstractInput):
         """
     def __init__(self, input_dev, testing=False, run_main=False):
         super(InputModule, self).__init__()
-        self.logger = logging.getLogger('mycodo.ads1x15')
+        self.setup_logger()
         self.run_main = run_main
 
         if not testing:
             import Adafruit_ADS1x15
-            self.logger = logging.getLogger(
-                'mycodo.ads1x15_{id}'.format(
-                    id=input_dev.unique_id.split('-')[0]))
+
+            self.setup_logger(
+                name=__name__, log_id=input_dev.unique_id.split('-')[0])
 
             self.device_measurements = db_retrieve_table_daemon(
                 DeviceMeasurements).filter(
@@ -95,14 +95,16 @@ class InputModule(AbstractInput):
         self.running = True
 
     def get_measurement(self):
-        return_dict = measurements_dict.copy()
+        self.return_dict = measurements_dict.copy()
 
         for each_measure in self.device_measurements.all():
             if each_measure.is_enabled:
-                return_dict[each_measure.channel]['value'] = self.adc.read_adc(
-                    each_measure.channel, gain=self.adc_gain) / 10000.0
+                self.set_value(
+                    each_measure.channel,
+                    self.adc.read_adc(each_measure.channel,
+                                      gain=self.adc_gain) / 10000.0)
 
-        return return_dict
+        return self.return_dict
 
 
 if __name__ == "__main__":

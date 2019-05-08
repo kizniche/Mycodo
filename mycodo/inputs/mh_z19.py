@@ -86,15 +86,15 @@ class InputModule(AbstractInput):
 
     def __init__(self, input_dev, testing=False):
         super(InputModule, self).__init__()
-        self.logger = logging.getLogger("mycodo.inputs.mh_z19")
+        self.setup_logger()
         self.measure_range = None
         self.abc_enable = False
 
         if not testing:
             import serial
-            self.logger = logging.getLogger(
-                "mycodo.mhz19_{id}".format(
-                    id=input_dev.unique_id.split('-')[0]))
+
+            self.setup_logger(
+                name=__name__, log_id=input_dev.unique_id.split('-')[0])
 
             self.uart_location = input_dev.uart_location
             self.baud_rate = input_dev.baud_rate
@@ -141,7 +141,7 @@ class InputModule(AbstractInput):
 
     def get_measurement(self):
         """ Gets the MH-Z19's CO2 concentration in ppmv via UART"""
-        return_dict = measurements_dict.copy()
+        self.return_dict = measurements_dict.copy()
 
         co2 = None
 
@@ -162,9 +162,9 @@ class InputModule(AbstractInput):
         else:
             self.logger.error("Bad response")
 
-        return_dict[0]['value'] = co2
+        self.set_value(0, co2)
 
-        return return_dict
+        return self.return_dict
 
     def abcoff(self):
         """

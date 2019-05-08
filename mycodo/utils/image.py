@@ -24,6 +24,8 @@
 import logging
 
 logger = logging.getLogger("mycodo.utils.image")
+logger = logging.LoggerAdapter(
+    logger, {'name_info': 'Image'})
 
 
 def generate_thermal_image_from_pixels(

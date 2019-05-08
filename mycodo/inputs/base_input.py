@@ -30,9 +30,11 @@ class AbstractInput(object):
     """
 
     def __init__(self, run_main=False):
-        self.logger = logging.getLogger('mycodo.inputs.base_input')
+        self.logger = logging.getLogger(__name__)
+        self.logger = logging.LoggerAdapter(
+            self.logger, {'name_info': 'Input'})
         self._measurements = None
-        self.tmp_values = None
+        self.return_dict = {}
         self.run_main = run_main
         self.avg_max = {}
         self.avg_index = {}
@@ -110,7 +112,6 @@ class AbstractInput(object):
 
         :returns: None on success or 1 on error
         """
-        self.tmp_values = {}
         self._measurements = None
         try:
             self._measurements = self.get_measurement()
@@ -127,16 +128,30 @@ class AbstractInput(object):
         return 1
 
     def get_value(self, channel):
-        if (channel in self.tmp_values and
-                'value' in self.tmp_values[channel]):
-            return self.tmp_values[channel]['value']
+        """
+        Returns the value of a channel, if set.
+        :param channel: measurement channel
+        :type channel: int
+        :return: measurement value
+        :rtype: float
+        """
+        if (channel in self.return_dict and
+                'value' in self.return_dict[channel]):
+            return self.return_dict[channel]['value']
 
-    def set_value(self, return_dict, channel, value, timestamp=None):
-        if channel not in self.tmp_values:
-            self.tmp_values[channel] = {}
-        self.tmp_values[channel]['value'] = value
-        return_dict[channel]['value'] = value
-        return_dict[channel]['timestamp_utc'] = timestamp if timestamp else datetime.datetime.utcnow()
+    def set_value(self, channel, value, timestamp=None):
+        """
+        Sets the measurement value for a channel
+        :param channel: measurement channel
+        :type channel: int
+        :param value: measurement value
+        :type value: float
+        :param timestamp: measurement timestamp
+        :type timestamp: datetime.datetime
+        :return:
+        """
+        self.return_dict[channel]['value'] = value
+        self.return_dict[channel]['timestamp_utc'] = timestamp if timestamp else datetime.datetime.utcnow()
 
     def filter_average(self, name, init_max=0, measurement=None):
         """

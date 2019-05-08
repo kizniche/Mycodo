@@ -57,16 +57,16 @@ class InputModule(AbstractInput):
 
     def __init__(self, input_dev, testing=False):
         super(InputModule, self).__init__()
-        self.logger = logging.getLogger("mycodo.inputs.ccs811")
+        self.setup_logger()
         self._co2 = None
         self._voc = None
         self._temperature = None
 
         if not testing:
             from Adafruit_CCS811 import Adafruit_CCS811
-            self.logger = logging.getLogger(
-                "mycodo.ccs811_{id}".format(
-                    id=input_dev.unique_id.split('-')[0]))
+
+            self.setup_logger(
+                name=__name__, log_id=input_dev.unique_id.split('-')[0])
 
             self.device_measurements = db_retrieve_table_daemon(
                 DeviceMeasurements).filter(
@@ -89,25 +89,25 @@ class InputModule(AbstractInput):
 
     def get_measurement(self):
         """ Gets the CO2, VOC, and temperature """
-        return_dict = measurements_dict.copy()
+        self.return_dict = measurements_dict.copy()
 
         if self.sensor.available():
 
             temp = self.sensor.calculateTemperature()
 
             if self.is_enabled(2):
-                return_dict[2]['value'] = temp
+                self.set_value(2, temp)
 
             if not self.sensor.readData():
 
                 if self.is_enabled(0):
-                    return_dict[0]['value'] = self.sensor.geteCO2()
+                    self.set_value(0, self.sensor.geteCO2())
 
                 if self.is_enabled(1):
-                    return_dict[1]['value'] = self.sensor.getTVOC()
+                    self.set_value(1, self.sensor.getTVOC())
 
             else:
                 self.logger.error("Sensor error")
                 return
 
-            return return_dict
+            return self.return_dict

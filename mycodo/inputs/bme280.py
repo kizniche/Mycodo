@@ -81,13 +81,13 @@ class InputModule(AbstractInput):
 
     def __init__(self, input_dev, testing=False):
         super(InputModule, self).__init__()
-        self.logger = logging.getLogger("mycodo.inputs.bme280")
+        self.setup_logger()
 
         if not testing:
             from Adafruit_BME280 import BME280
-            self.logger = logging.getLogger(
-                "mycodo.bme280_{id}".format(
-                    id=input_dev.unique_id.split('-')[0]))
+
+            self.setup_logger(
+                name=__name__, log_id=input_dev.unique_id.split('-')[0])
 
             self.device_measurements = db_retrieve_table_daemon(
                 DeviceMeasurements).filter(
@@ -106,30 +106,30 @@ class InputModule(AbstractInput):
 
     def get_measurement(self):
         """ Gets the measurement in units by reading the """
-        return_dict = measurements_dict.copy()
+        self.return_dict = measurements_dict.copy()
 
         if self.is_enabled(0):
-            return_dict[0]['value'] = self.sensor.read_temperature()
+            self.set_value(0, self.sensor.read_temperature())
 
         if self.is_enabled(1):
-            return_dict[1]['value'] = self.sensor.read_humidity()
+            self.set_value(1, self.sensor.read_humidity())
 
         if self.is_enabled(2):
-            return_dict[2]['value'] = self.sensor.read_pressure()
+            self.set_value(2, self.sensor.read_pressure())
 
         if (self.is_enabled(3) and
                 self.is_enabled(0) and
                 self.is_enabled(1)):
-            return_dict[3]['value'] = calculate_dewpoint(
-                return_dict[0]['value'], return_dict[1]['value'])
+            self.set_value(3, calculate_dewpoint(
+                self.get_value(0), self.get_value(1)))
 
         if self.is_enabled(4) and self.is_enabled(2):
-            return_dict[4]['value'] = calculate_altitude(return_dict[2]['value'])
+            self.set_value(4, calculate_altitude(self.get_value(2)))
 
         if (self.is_enabled(5) and
                 self.is_enabled(0) and
                 self.is_enabled(1)):
-            return_dict[5]['value'] = calculate_vapor_pressure_deficit(
-                return_dict[0]['value'], return_dict[1]['value'])
+            self.set_value(5, calculate_vapor_pressure_deficit(
+                self.get_value(0), self.get_value(1)))
 
-        return return_dict
+        return self.return_dict

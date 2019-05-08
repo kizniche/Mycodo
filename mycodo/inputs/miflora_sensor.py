@@ -70,15 +70,15 @@ class InputModule(AbstractInput):
 
     def __init__(self, input_dev, testing=False):
         super(InputModule, self).__init__()
-        self.logger = logging.getLogger("mycodo.inputs.miflora")
+        self.setup_logger()
 
         if not testing:
             from miflora.miflora_poller import MiFloraPoller
             from btlewrap import BluepyBackend
             import locket
-            self.logger = logging.getLogger(
-                "mycodo.miflora_{id}".format(
-                    id=input_dev.unique_id.split('-')[0]))
+
+            self.setup_logger(
+                name=__name__, log_id=input_dev.unique_id.split('-')[0])
 
             self.device_measurements = db_retrieve_table_daemon(
                 DeviceMeasurements).filter(
@@ -106,7 +106,7 @@ class InputModule(AbstractInput):
         from miflora.miflora_poller import MI_TEMPERATURE
         from miflora.miflora_poller import MI_BATTERY
 
-        return_dict = measurements_dict.copy()
+        self.return_dict = measurements_dict.copy()
         lock_acquired = False
 
         # Set up lock
@@ -120,22 +120,22 @@ class InputModule(AbstractInput):
 
         if lock_acquired:
             if self.is_enabled(0):
-                return_dict[0]['value'] = self.poller.parameter_value(MI_BATTERY)
+                self.set_value(0, self.poller.parameter_value(MI_BATTERY))
 
             if self.is_enabled(1):
-                return_dict[1]['value'] = self.poller.parameter_value(MI_CONDUCTIVITY)
+                self.set_value(1, self.poller.parameter_value(MI_CONDUCTIVITY))
 
             if self.is_enabled(2):
-                return_dict[2]['value'] = self.poller.parameter_value(MI_LIGHT)
+                self.set_value(2, self.poller.parameter_value(MI_LIGHT))
 
             if self.is_enabled(3):
-                return_dict[3]['value'] = self.poller.parameter_value(MI_MOISTURE)
+                self.set_value(3, self.poller.parameter_value(MI_MOISTURE))
 
             if self.is_enabled(4):
-                return_dict[4]['value'] = self.poller.parameter_value(MI_TEMPERATURE)
+                self.set_value(4, self.poller.parameter_value(MI_TEMPERATURE))
 
             lock.release()
 
         os.remove(self.lock_file_bluetooth)
 
-        return return_dict
+        return self.return_dict

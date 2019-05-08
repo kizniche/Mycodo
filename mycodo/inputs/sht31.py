@@ -118,7 +118,7 @@ class InputModule(AbstractInput):
 
     def __init__(self, input_dev, testing=False):
         super(InputModule, self).__init__()
-        self.logger = logging.getLogger("mycodo.inputs.sht31")
+        self.setup_logger()
         self.measurement_count = 0
         self.heater_enable = None
         self.heater_seconds = None
@@ -127,9 +127,8 @@ class InputModule(AbstractInput):
         if not testing:
             from Adafruit_SHT31 import SHT31
 
-            self.logger = logging.getLogger(
-                "mycodo.sht31_{id}".format(
-                    id=input_dev.unique_id.split('-')[0]))
+            self.setup_logger(
+                name=__name__, log_id=input_dev.unique_id.split('-')[0])
 
             self.device_measurements = db_retrieve_table_daemon(
                 DeviceMeasurements).filter(
@@ -159,25 +158,25 @@ class InputModule(AbstractInput):
 
     def get_measurement(self):
         """ Gets the measurement in units by reading the """
-        return_dict = measurements_dict.copy()
+        self.return_dict = measurements_dict.copy()
 
         if self.is_enabled(0):
-            return_dict[0]['value'] = self.sensor.read_temperature()
+            self.set_value(0, self.sensor.read_temperature())
 
         if self.is_enabled(1):
-            return_dict[1]['value'] = self.sensor.read_humidity()
+            self.set_value(1, self.sensor.read_humidity())
 
         if (self.is_enabled(2) and
                 self.is_enabled(0) and
                 self.is_enabled(1)):
-            return_dict[2]['value'] = calculate_dewpoint(
-                return_dict[0]['value'], return_dict[1]['value'])
+            self.set_value(2, calculate_dewpoint(
+                self.get_value(0), self.get_value(1)))
 
         if (self.is_enabled(3) and
                 self.is_enabled(0) and
                 self.is_enabled(1)):
-            return_dict[3]['value'] = calculate_vapor_pressure_deficit(
-                return_dict[0]['value'], return_dict[1]['value'])
+            self.set_value(3, calculate_vapor_pressure_deficit(
+                self.get_value(0), self.get_value(1)))
 
         if self.heater_enable and self.heater_seconds and self.heater_measurements:
             time.sleep(2)
@@ -188,7 +187,7 @@ class InputModule(AbstractInput):
                 time.sleep(self.heater_seconds)
                 self.sensor.set_heater(False)
 
-        return return_dict
+        return self.return_dict
 
     def status(self):
         status = self.sensor.read_status()

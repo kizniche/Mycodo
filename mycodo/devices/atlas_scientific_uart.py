@@ -14,8 +14,9 @@ class AtlasScientificUART:
     """A Class to communicate with Atlas Scientific sensors via UART"""
 
     def __init__(self, serial_device, baudrate=9600):
-        self.logger = logging.getLogger(
-            "mycodo.device.atlas_scientific_uart_{dev}".format(dev=serial_device))
+        self.logger = logging.getLogger(__name__)
+        self.logger = logging.LoggerAdapter(
+            self.logger, {'name_info': serial_device})
         self.setup = False
         self.serial_device = serial_device
         try:

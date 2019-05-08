@@ -60,15 +60,15 @@ class InputModule(AbstractInput):
 
     def __init__(self, input_dev,  testing=False):
         super(InputModule, self).__init__()
-        self.logger = logging.getLogger("mycodo.inputs.tmp006")
+        self.setup_logger()
         self._temperature_die = None
         self._temperature_object = None
 
         if not testing:
             from Adafruit_TMP import TMP006
-            self.logger = logging.getLogger(
-                "mycodo.tmp006_{id}".format(
-                    id=input_dev.unique_id.split('-')[0]))
+
+            self.setup_logger(
+                name=__name__, log_id=input_dev.unique_id.split('-')[0])
 
             self.device_measurements = db_retrieve_table_daemon(
                 DeviceMeasurements).filter(
@@ -87,14 +87,14 @@ class InputModule(AbstractInput):
 
     def get_measurement(self):
         """ Gets the TMP006's temperature in Celsius """
-        return_dict = measurements_dict.copy()
+        self.return_dict = measurements_dict.copy()
 
         self.sensor.begin()
 
         if self.is_enabled(0):
-            return_dict[0]['value'] = self.sensor.readObjTempC()
+            self.set_value(0, self.sensor.readObjTempC())
 
         if self.is_enabled(1):
-            return_dict[1]['value'] = self.sensor.readDieTempC()
+            self.set_value(1, self.sensor.readDieTempC())
 
-        return return_dict
+        return self.return_dict

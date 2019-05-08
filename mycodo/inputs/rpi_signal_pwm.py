@@ -56,13 +56,13 @@ class InputModule(AbstractInput):
 
     def __init__(self, input_dev, testing=False):
         super(InputModule, self).__init__()
-        self.logger = logging.getLogger("mycodo.inputs.rpi_signal_pwm")
+        self.setup_logger()
 
         if not testing:
             import pigpio
-            self.logger = logging.getLogger(
-                "mycodo.rpi_signal_pwm_{id}".format(
-                    id=input_dev.unique_id.split('-')[0]))
+
+            self.setup_logger(
+                name=__name__, log_id=input_dev.unique_id.split('-')[0])
 
             self.device_measurements = db_retrieve_table_daemon(
                 DeviceMeasurements).filter(
@@ -80,7 +80,7 @@ class InputModule(AbstractInput):
 
     def get_measurement(self):
         """ Gets the pwm """
-        return_dict = measurements_dict.copy()
+        self.return_dict = measurements_dict.copy()
 
         pi = self.pigpio.pi()
         if not pi.connected:  # Check if pigpiod is running
@@ -94,18 +94,18 @@ class InputModule(AbstractInput):
         time.sleep(self.sample_time)
 
         if self.is_enabled(0):
-            return_dict[0]['value'] = read_pwm.frequency()
+            self.set_value(0, read_pwm.frequency())
 
         if self.is_enabled(1):
-            return_dict[1]['value'] = int(read_pwm.pulse_width() + 0.5)
+            self.set_value(1, int(read_pwm.pulse_width() + 0.5))
 
         if self.is_enabled(2):
-            return_dict[2]['value'] = read_pwm.duty_cycle()
+            self.set_value(2, read_pwm.duty_cycle())
 
         read_pwm.cancel()
         pi.stop()
 
-        return return_dict
+        return self.return_dict
 
 
 class ReadPWM:

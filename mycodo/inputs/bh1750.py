@@ -76,13 +76,13 @@ class InputModule(AbstractInput):
     """ A sensor support class that monitors the DS18B20's lux """
     def __init__(self, input_dev, testing=False):
         super(InputModule, self).__init__()
-        self.logger = logging.getLogger("mycodo.inputs.bh1750")
+        self.setup_logger()
 
         if not testing:
             from smbus2 import SMBus
-            self.logger = logging.getLogger(
-                "mycodo.bh1750_{id}".format(
-                    id=input_dev.unique_id.split('-')[0]))
+
+            self.setup_logger(
+                name=__name__, log_id=input_dev.unique_id.split('-')[0])
 
             self.device_measurements = db_retrieve_table_daemon(
                 DeviceMeasurements).filter(
@@ -109,7 +109,7 @@ class InputModule(AbstractInput):
 
     def get_measurement(self):
         """ Gets the BH1750's lux """
-        return_dict = measurements_dict.copy()
+        self.return_dict = measurements_dict.copy()
 
         if self.resolution == 0:
             lux = self.measure_low_res()
@@ -120,9 +120,9 @@ class InputModule(AbstractInput):
         else:
             return None
 
-        return_dict[0]['value'] = lux
+        self.set_value(0, lux)
 
-        return return_dict
+        return self.return_dict
 
     def _set_mode(self, mode):
         self.mode = mode

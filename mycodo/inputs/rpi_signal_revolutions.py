@@ -47,13 +47,13 @@ class InputModule(AbstractInput):
 
     def __init__(self, input_dev, testing=False):
         super(InputModule, self).__init__()
-        self.logger = logging.getLogger("mycodo.inputs.rpi_signal_revolutions")
+        self.setup_logger()
 
         if not testing:
             import pigpio
-            self.logger = logging.getLogger(
-                "mycodo.rpi_signal_revolutions_{id}".format(
-                    id=input_dev.unique_id.split('-')[0]))
+
+            self.setup_logger(
+                name=__name__, log_id=input_dev.unique_id.split('-')[0])
 
             self.gpio = int(input_dev.gpio_location)
             self.weighting = input_dev.weighting
@@ -68,7 +68,7 @@ class InputModule(AbstractInput):
 
     def get_measurement(self):
         """ Gets the revolutions """
-        return_dict = measurements_dict.copy()
+        self.return_dict = measurements_dict.copy()
 
         pi = self.pigpio.pi()
         if not pi.connected:  # Check if pigpiod is running
@@ -91,8 +91,8 @@ class InputModule(AbstractInput):
         pi.stop()
 
         if rpm or rpm == 0:
-            return_dict[0]['value'] = rpm
-            return return_dict
+            self.set_value(0, rpm)
+            return self.return_dict
 
 
 class ReadRPM:

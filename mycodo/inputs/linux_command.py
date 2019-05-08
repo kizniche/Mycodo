@@ -43,12 +43,11 @@ class InputModule(AbstractInput):
 
     def __init__(self, input_dev, testing=False):
         super(InputModule, self).__init__()
-        self.logger = logging.getLogger("mycodo.inputs.linux_command")
+        self.setup_logger()
 
         if not testing:
-            self.logger = logging.getLogger(
-                "mycodo.inputs.linux_command_{id}".format(
-                    id=input_dev.unique_id.split('-')[0]))
+            self.setup_logger(
+                name=__name__, log_id=input_dev.unique_id.split('-')[0])
 
             self.device_measurements = db_retrieve_table_daemon(
                 DeviceMeasurements).filter(
@@ -63,7 +62,7 @@ class InputModule(AbstractInput):
 
     def get_measurement(self):
         """ Determine if the return value of the command is a number """
-        return_dict = measurements_dict.copy()
+        self.return_dict = measurements_dict.copy()
 
         out, _, _ = cmd_output(self.command)
 
@@ -78,8 +77,8 @@ class InputModule(AbstractInput):
 
         for channel, meas in enumerate(self.device_measurements.all()):
             if meas.is_enabled:
-                return_dict[channel]['unit'] = meas.unit
-                return_dict[channel]['measurement'] = meas.measurement
-                return_dict[channel]['value'] = list_measurements[channel]
+                self.return_dict[channel]['unit'] = meas.unit
+                self.return_dict[channel]['measurement'] = meas.measurement
+                self.return_dict[channel]['value'] = list_measurements[channel]
 
-        return return_dict
+        return self.return_dict

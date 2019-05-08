@@ -65,12 +65,11 @@ class InputModule(AbstractInput):
 
     def __init__(self, input_dev, testing=False):
         super(InputModule, self).__init__()
-        self.logger = logging.getLogger("mycodo.inputs.mh_z16")
+        self.setup_logger()
 
         if not testing:
-            self.logger = logging.getLogger(
-                "mycodo.mh_z16_{id}".format(
-                    id=input_dev.unique_id.split('-')[0]))
+            self.setup_logger(
+                name=__name__, log_id=input_dev.unique_id.split('-')[0])
 
             self.interface = input_dev.interface
             self.uart_location = input_dev.uart_location
@@ -116,7 +115,7 @@ class InputModule(AbstractInput):
 
     def get_measurement(self):
         """ Gets the MH-Z16's CO2 concentration in ppmv via UART"""
-        return_dict = measurements_dict.copy()
+        self.return_dict = measurements_dict.copy()
 
         co2 = None
 
@@ -142,9 +141,9 @@ class InputModule(AbstractInput):
             except Exception:
                 co2 = None
 
-        return_dict[0]['value'] = co2
+        self.set_value(0, co2)
 
-        return return_dict
+        return self.return_dict
 
     def begin(self):
         try:

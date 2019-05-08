@@ -60,7 +60,7 @@ class InputModule(AbstractInput):
 
     def __init__(self, input_dev, testing=False):
         super(InputModule, self).__init__()
-        self.logger = logging.getLogger("mycodo.inputs.amg8833")
+        self.setup_logger()
         self.save_image = False
         self.temp_max = None
         self.temp_min = None
@@ -71,9 +71,9 @@ class InputModule(AbstractInput):
 
         if not testing:
             from Adafruit_AMG88xx import Adafruit_AMG88xx
-            self.logger = logging.getLogger(
-                "mycodo.ds18b20_{id}".format(
-                    id=input_dev.unique_id.split('-')[0]))
+
+            self.setup_logger(
+                name=__name__, log_id=input_dev.unique_id.split('-')[0])
 
             self.device_measurements = db_retrieve_table_daemon(
                 DeviceMeasurements).filter(
@@ -95,7 +95,7 @@ class InputModule(AbstractInput):
 
     def get_measurement(self):
         """ Gets the AMG8833's measurements """
-        return_dict = measurements_dict.copy()
+        self.return_dict = measurements_dict.copy()
 
         pixels = self.sensor.readPixels()
 
@@ -106,7 +106,7 @@ class InputModule(AbstractInput):
 
         for meas in self.device_measurements.all():
             if meas.is_enabled:
-                return_dict[meas.channel]['value'] = pixels[meas.channel]
+                self.set_value(meas.channel, pixels[meas.channel])
 
         if self.save_image:
             timestamp = datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
@@ -128,4 +128,4 @@ class InputModule(AbstractInput):
                 temp_min=self.temp_min,
                 temp_max=self.temp_max)
 
-        return return_dict
+        return self.return_dict

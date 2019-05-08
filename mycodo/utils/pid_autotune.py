@@ -61,7 +61,9 @@ class PIDAutotune(object):
             raise ValueError('out_min ({omn}) must be less than out_max ({omx})'.format(omn=out_min, omx=out_max))
 
         self._time = time
-        self._logger = logging.getLogger('mycodo.pid_autotune')
+        self._logger = logging.getLogger(__name__)
+        self._logger = logging.LoggerAdapter(
+            self._logger, {'name_info': 'PID'})
         self._inputs = deque(maxlen=round(lookback / sampletime))
         self._sampletime = sampletime * 1000
         self._setpoint = setpoint

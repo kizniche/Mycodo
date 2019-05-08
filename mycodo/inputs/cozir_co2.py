@@ -61,13 +61,13 @@ class InputModule(AbstractInput):
 
     def __init__(self, input_dev, testing=False):
         super(InputModule, self).__init__()
-        self.logger = logging.getLogger("mycodo.inputs.cozir_co2")
+        self.setup_logger()
 
         if not testing:
             from cozir import Cozir
-            self.logger = logging.getLogger(
-                "mycodo.cozir_co2_{id}".format(
-                    id=input_dev.unique_id.split('-')[0]))
+
+            self.setup_logger(
+                name=__name__, log_id=input_dev.unique_id.split('-')[0])
 
             self.device_measurements = db_retrieve_table_daemon(
                 DeviceMeasurements).filter(
@@ -83,21 +83,21 @@ class InputModule(AbstractInput):
 
     def get_measurement(self):
         """ Gets the measurements """
-        return_dict = measurements_dict.copy()
+        self.return_dict = measurements_dict.copy()
 
         if self.is_enabled(0):
-            return_dict[0]['value'] = self.sensor.read_CO2()
+            self.set_value(0, self.sensor.read_CO2())
 
         if self.is_enabled(1):
-            return_dict[1]['value'] = self.sensor.read_temperature()
+            self.set_value(1, self.sensor.read_temperature())
 
         if self.is_enabled(2):
-            return_dict[2]['value'] = self.sensor.read_humidity()
+            self.set_value(2, self.sensor.read_humidity())
 
         if (self.is_enabled(3) and
                 self.is_enabled(1) and
                 self.is_enabled(2)):
-            return_dict[3]['value'] = calculate_dewpoint(
-                return_dict[1]['value'], return_dict[2]['value'])
+            self.set_value(3, calculate_dewpoint(
+                self.get_value(1), self.get_value(2)))
 
-        return return_dict
+        return self.return_dict

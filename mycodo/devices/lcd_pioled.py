@@ -14,7 +14,9 @@ class LCD_Pioled:
     """Output to the PiOLED I2C LCD"""
 
     def __init__(self, lcd_dev):
-        self.logger = logging.getLogger("mycodo.lcd_{id}".format(id=lcd_dev.unique_id.split('-')[0]))
+        self.logger = logging.getLogger(__name__)
+        self.logger = logging.LoggerAdapter(
+            self.logger, {'name_info': lcd_dev.unique_id.split('-')[0]})
 
         self.i2c_address = int(str(lcd_dev.location), 16)
         self.i2c_bus = lcd_dev.i2c_bus

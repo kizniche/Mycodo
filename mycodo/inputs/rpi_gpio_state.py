@@ -40,13 +40,13 @@ class InputModule(AbstractInput):
 
     def __init__(self, input_dev, testing=False):
         super(InputModule, self).__init__()
-        self.logger = logging.getLogger("mycodo.inputs.rpi_gpio_state")
+        self.setup_logger()
 
         if not testing:
             import RPi.GPIO as GPIO
-            self.logger = logging.getLogger(
-                "mycodo.rpi_gpio_state_{id}".format(
-                    id=input_dev.unique_id.split('-')[0]))
+
+            self.setup_logger(
+                name=__name__, log_id=input_dev.unique_id.split('-')[0])
 
             self.location = int(input_dev.gpio_location)
             self.gpio = GPIO
@@ -60,11 +60,11 @@ class InputModule(AbstractInput):
 
     def get_measurement(self):
         """ Gets the GPIO state via RPi.GPIO """
-        return_dict = measurements_dict.copy()
+        self.return_dict = measurements_dict.copy()
 
-        return_dict[0]['value'] = self.gpio.input(self.location)
+        self.set_value(0, self.gpio.input(self.location))
 
-        return return_dict
+        return self.return_dict
 
     def stop_sensor(self):
         self.gpio.setmode(self.gpio.BCM)

@@ -70,15 +70,15 @@ class InputModule(AbstractInput):
     """ ADC Read """
     def __init__(self, input_dev, testing=False):
         super(InputModule, self).__init__()
-        self.logger = logging.getLogger('mycodo.mcp342x')
+        self.setup_logger()
         self.acquiring_measurement = False
 
         if not testing:
             from smbus2 import SMBus
             from MCP342x import MCP342x
-            self.logger = logging.getLogger(
-                'mycodo.mcp342x_{id}'.format(
-                    id=input_dev.unique_id.split('-')[0]))
+
+            self.setup_logger(
+                name=__name__, log_id=input_dev.unique_id.split('-')[0])
 
             self.device_measurements = db_retrieve_table_daemon(
                 DeviceMeasurements).filter(
@@ -98,7 +98,7 @@ class InputModule(AbstractInput):
                 self.logger.setLevel(logging.INFO)
 
     def get_measurement(self):
-        return_dict = measurements_dict.copy()
+        self.return_dict = measurements_dict.copy()
 
         for each_measure in self.device_measurements.all():
             if each_measure.is_enabled:
@@ -107,7 +107,7 @@ class InputModule(AbstractInput):
                                    channel=each_measure.channel,
                                    gain=self.adc_gain,
                                    resolution=self.adc_resolution)
-                return_dict[each_measure.channel]['value'] = adc.convert_and_read()
+                self.set_value(each_measure.channel, adc.convert_and_read())
 
         # Dummy data for testing
         # import random
@@ -116,7 +116,7 @@ class InputModule(AbstractInput):
         # return_dict[2]['value'] = random.uniform(0.5, 0.6)
         # return_dict[3]['value'] = random.uniform(3.5, 6.2)
 
-        return return_dict
+        return self.return_dict
 
 
 if __name__ == "__main__":

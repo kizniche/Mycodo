@@ -54,14 +54,15 @@ class InputModule(AbstractInput):
 
     def __init__(self, input_dev, testing=False, run_main=True):
         super(InputModule, self).__init__()
-        self.logger = logging.getLogger("mycodo.inputs.tsl2561")
+        self.setup_logger()
         self.run_main = run_main
 
         if not testing:
             from tsl2561 import TSL2561
-            self.logger = logging.getLogger(
-                "mycodo.tsl2561_{id}".format(
-                    id=input_dev.unique_id.split('-')[0]))
+
+            self.setup_logger(
+                name=__name__, log_id=input_dev.unique_id.split('-')[0])
+
             self.i2c_address = int(str(input_dev.i2c_location), 16)
             self.i2c_bus = input_dev.i2c_bus
             self.tsl = TSL2561(
@@ -75,7 +76,7 @@ class InputModule(AbstractInput):
 
     def get_measurement(self):
         """ Gets the TSL2561's lux """
-        return_dict = measurements_dict.copy()
+        self.return_dict = measurements_dict.copy()
 
         from tsl2561.constants import TSL2561_INTEGRATIONTIME_402MS
         self.tsl.set_integration_time(TSL2561_INTEGRATIONTIME_402MS)
@@ -84,18 +85,18 @@ class InputModule(AbstractInput):
             full, ir = self.tsl._get_luminosity()
 
             if self.is_enabled(0):
-                return_dict[0]['value'] = full
+                self.set_value(0, full)
 
             if self.is_enabled(1):
-                return_dict[1]['value'] = ir
+                self.set_value(1, ir)
 
             if (self.is_enabled(2) and
                     self.is_enabled(0) and
                     self.is_enabled(1)):
-                return_dict[2]['value'] = self.tsl._calculate_lux(
-                    return_dict[0]['value'], return_dict[1]['value'])
+                self.set_value(2, self.tsl._calculate_lux(
+                    self.get_value(0), self.get_value(1)))
 
-            return return_dict
+            return self.return_dict
         except Exception as err:
             if 'saturated' in repr(err):
                 self.logger.error(

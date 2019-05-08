@@ -11,7 +11,9 @@ import os
 from mycodo.databases.models import Conversion
 from mycodo.utils.database import db_retrieve_table_daemon
 
-logger = logging.getLogger("mycodo.sensor_utils")
+logger = logging.getLogger(__name__)
+logger = logging.LoggerAdapter(
+    logger, {'name_info': 'Input'})
 
 
 def calculate_altitude(pressure_pa, sea_level_pa=101325.0):

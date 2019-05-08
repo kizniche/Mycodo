@@ -69,13 +69,12 @@ INPUT_INFORMATION = {
 class InputModule(AbstractInput):
     def __init__(self, input_dev, testing=False):
         super(InputModule, self).__init__()
-        self.logger = logging.getLogger("mycodo.inputs.th16_am2301")
+        self.setup_logger()
         self.ip_address = None
 
         if not testing:
-            self.logger = logging.getLogger(
-                "mycodo.th16_am2301_{id}".format(
-                    id=input_dev.unique_id.split('-')[0]))
+            self.setup_logger(
+                name=__name__, log_id=input_dev.unique_id.split('-')[0])
 
             self.device_measurements = db_retrieve_table_daemon(
                 DeviceMeasurements).filter(
@@ -94,7 +93,7 @@ class InputModule(AbstractInput):
                 self.logger.setLevel(logging.INFO)
 
     def get_measurement(self):
-        return_dict = measurements_dict.copy()
+        self.return_dict = measurements_dict.copy()
 
         url = "http://{ip}/cm?cmnd=status%2010".format(ip=self.ip_address)
         r = requests.get(url)
@@ -110,24 +109,24 @@ class InputModule(AbstractInput):
         if self.is_enabled(0):
             temp_c = convert_from_x_to_y_unit(
                 'F', 'C', dict_data['StatusSNS']['AM2301']['Temperature'])
-            self.set_value(return_dict, 0, temp_c, timestamp=datetime_timestmp)
+            self.set_value(0, temp_c, timestamp=datetime_timestmp)
 
         if self.is_enabled(1):
             humidity = dict_data['StatusSNS']['AM2301']['Humidity']
-            self.set_value(return_dict, 1, humidity, timestamp=datetime_timestmp)
+            self.set_value(1, humidity, timestamp=datetime_timestmp)
 
         if (self.is_enabled(2) and
                 self.is_enabled(0) and
                 self.is_enabled(1)):
             dewpoint = calculate_dewpoint(
                 self.get_value(0), self.get_value(1))
-            self.set_value(return_dict, 2, dewpoint, timestamp=datetime_timestmp)
+            self.set_value(2, dewpoint, timestamp=datetime_timestmp)
 
         if (self.is_enabled(3) and
                 self.is_enabled(0) and
                 self.is_enabled(1)):
             vpd = calculate_vapor_pressure_deficit(
                 self.get_value(0), self.get_value(1))
-            self.set_value(return_dict, 3, vpd, timestamp=datetime_timestmp)
+            self.set_value(3, vpd, timestamp=datetime_timestmp)
 
-        return return_dict
+        return self.return_dict

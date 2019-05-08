@@ -51,13 +51,13 @@ class InputModule(AbstractInput):
 
     def __init__(self, input_dev, testing=False):
         super(InputModule, self).__init__()
-        self.logger = logging.getLogger("mycodo.inputs.tsl2591_sensor")
+        self.setup_logger()
 
         if not testing:
             import tsl2591
-            self.logger = logging.getLogger(
-                "mycodo.tsl2591_{id}".format(
-                    id=input_dev.unique_id.split('-')[0]))
+
+            self.setup_logger(
+                name=__name__, log_id=input_dev.unique_id.split('-')[0])
 
             self.i2c_address = int(str(input_dev.i2c_location), 16)
             self.i2c_bus = input_dev.i2c_bus
@@ -72,20 +72,20 @@ class InputModule(AbstractInput):
 
     def get_measurement(self):
         """ Gets the TSL2591's lux """
-        return_dict = measurements_dict.copy()
+        self.return_dict = measurements_dict.copy()
 
         full, ir = self.tsl.get_full_luminosity()  # read raw values (full spectrum and ir spectrum)
 
         if self.is_enabled(0):
-            return_dict[0]['value'] = full
+            self.set_value(0, full)
 
         if self.is_enabled(1):
-            return_dict[1]['value'] = ir
+            self.set_value(1, ir)
 
         if (self.is_enabled(2) and
                 self.is_enabled(0) and
                 self.is_enabled(1)):
-            return_dict[2]['value'] = self.tsl.calculate_lux(
-                return_dict[0]['value'], return_dict[1]['value'])
+            self.set_value(2, self.tsl.calculate_lux(
+                self.get_value(0), self.get_value(1)))
 
-        return return_dict
+        return self.return_dict

@@ -38,13 +38,12 @@ class InputModule(AbstractInput):
     """
     def __init__(self, input_dev, testing=False):
         super(InputModule, self).__init__()
-        self.logger = logging.getLogger("mycodo.inputs.mycodo_ram")
+        self.setup_logger()
         self._disk_space = None
 
         if not testing:
-            self.logger = logging.getLogger(
-                "mycodo.mycodo_ram_{id}".format(
-                    id=input_dev.unique_id.split('-')[0]))
+            self.setup_logger(
+                name=__name__, log_id=input_dev.unique_id.split('-')[0])
 
             self.control = DaemonControl()
 
@@ -55,11 +54,11 @@ class InputModule(AbstractInput):
 
     def get_measurement(self):
         """ Gets the measurement in units by reading resource """
-        return_dict = measurements_dict.copy()
+        self.return_dict = measurements_dict.copy()
 
         try:
-            return_dict[0]['value'] = resource.getrusage(
-                resource.RUSAGE_SELF).ru_maxrss / float(1000)
-            return return_dict
+            self.set_value(0, resource.getrusage(
+                resource.RUSAGE_SELF).ru_maxrss / float(1000))
+            return self.return_dict
         except Exception:
             pass

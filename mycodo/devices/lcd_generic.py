@@ -11,7 +11,9 @@ class LCD_Generic:
     """Output to a generic I2C LCD (16x2 and 20x4 LCD with I2C backpack)"""
 
     def __init__(self, lcd_dev):
-        self.logger = logging.getLogger("mycodo.lcd_{id}".format(id=lcd_dev.unique_id.split('-')[0]))
+        self.logger = logging.getLogger(__name__)
+        self.logger = logging.LoggerAdapter(
+            self.logger, {'name_info': lcd_dev.unique_id.split('-')[0]})
 
         self.lcd_initialized = False
         self.lcd_is_on = False

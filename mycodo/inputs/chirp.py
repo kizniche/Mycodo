@@ -60,12 +60,11 @@ class InputModule(AbstractInput):
 
     def __init__(self, input_dev, testing=False):
         super(InputModule, self).__init__()
-        self.logger = logging.getLogger("mycodo.inputs.chirp")
+        self.setup_logger()
 
         if not testing:
-            self.logger = logging.getLogger(
-                "mycodo.chirp_{id}".format(
-                    id=input_dev.unique_id.split('-')[0]))
+            self.setup_logger(
+                name=__name__, log_id=input_dev.unique_id.split('-')[0])
 
             self.device_measurements = db_retrieve_table_daemon(
                 DeviceMeasurements).filter(
@@ -83,18 +82,18 @@ class InputModule(AbstractInput):
 
     def get_measurement(self):
         """ Gets the light, moisture, and temperature """
-        return_dict = measurements_dict.copy()
+        self.return_dict = measurements_dict.copy()
 
         if self.is_enabled(0):
-            return_dict[0]['value'] = self.filter_average('lux', measurement=self.light())
+            self.set_value(0, self.filter_average('lux', measurement=self.light()))
 
         if self.is_enabled(1):
-            return_dict[1]['value'] = self.moist()
+            self.set_value(1, self.moist())
 
         if self.is_enabled(2):
-            return_dict[2]['value'] = self.temp() / 10.0
+            self.set_value(2, self.temp() / 10.0)
 
-        return return_dict
+        return self.return_dict
 
     def get_reg(self, reg):
         # read 2 bytes from register

@@ -75,14 +75,15 @@ class InputModule(AbstractInput):
 
     def __init__(self, input_dev, testing=False):
         super(InputModule, self).__init__()
-        self.logger = logging.getLogger("mycodo.inputs.k30_ttn")
+        self.setup_logger()
         self.timer = 0
 
         if not testing:
             import serial
             import locket
-            self.logger = logging.getLogger(
-                "mycodo.k30_ttn_{id}".format(id=input_dev.unique_id.split('-')[0]))
+
+            self.setup_logger(
+                name=__name__, log_id=input_dev.unique_id.split('-')[0])
 
             if input_dev.custom_options:
                 for each_option in input_dev.custom_options.split(';'):
@@ -149,7 +150,7 @@ class InputModule(AbstractInput):
         if not self.uart_location:  # Don't measure if device isn't validated
             return None
 
-        return_dict = measurements_dict.copy()
+        self.return_dict = measurements_dict.copy()
 
         co2 = None
 
@@ -163,7 +164,7 @@ class InputModule(AbstractInput):
             low = resp[4]
             co2 = (high * 256) + low
 
-        self.set_value(return_dict, 0, co2)
+        self.set_value(0, co2)
 
         try:
             now = time.time()
@@ -183,4 +184,4 @@ class InputModule(AbstractInput):
                 self.logger.error("TTN: Could not send serial")
                 self.ttn_serial_error = True
 
-        return return_dict
+        return self.return_dict

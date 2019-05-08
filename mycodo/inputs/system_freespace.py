@@ -42,13 +42,12 @@ class InputModule(AbstractInput):
 
     def __init__(self, input_dev, testing=False):
         super(InputModule, self).__init__()
-        self.logger = logging.getLogger("mycodo.inputs.system_freespace")
+        self.setup_logger()
         self._disk_space = None
 
         if not testing:
-            self.logger = logging.getLogger(
-                "mycodo.system_freespace_{id}".format(
-                    id=input_dev.unique_id.split('-')[0]))
+            self.setup_logger(
+                name=__name__, log_id=input_dev.unique_id.split('-')[0])
 
             self.path = input_dev.location
 
@@ -59,9 +58,9 @@ class InputModule(AbstractInput):
 
     def get_measurement(self):
         """ Gets the free space """
-        return_dict = measurements_dict.copy()
+        self.return_dict = measurements_dict.copy()
 
         f = os.statvfs(self.path)
-        return_dict[0]['value'] = (f.f_bsize * f.f_bavail) / 1000000.0
+        self.set_value(0, (f.f_bsize * f.f_bavail) / 1000000.0)
 
-        return return_dict
+        return self.return_dict

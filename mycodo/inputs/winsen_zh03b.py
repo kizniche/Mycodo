@@ -93,15 +93,15 @@ class InputModule(AbstractInput):
 
     def __init__(self, input_dev, testing=False):
         super(InputModule, self).__init__()
-        self.logger = logging.getLogger("mycodo.inputs.winsen_zh03b")
+        self.setup_logger()
         self.fan_is_on = False
 
         if not testing:
             import serial
             import binascii
-            self.logger = logging.getLogger(
-                "mycodo.winsen_zh03b_{id}".format(
-                    id=input_dev.unique_id.split('-')[0]))
+
+            self.setup_logger(
+                name=__name__, log_id=input_dev.unique_id.split('-')[0])
 
             self.device_measurements = db_retrieve_table_daemon(
                 DeviceMeasurements).filter(
@@ -160,7 +160,7 @@ class InputModule(AbstractInput):
         if not self.serial_device:  # Don't measure if device isn't validated
             return None
 
-        return_dict = measurements_dict.copy()
+        self.return_dict = measurements_dict.copy()
 
         self.logger.debug("Reading sample")
 
@@ -186,19 +186,19 @@ class InputModule(AbstractInput):
             self.logger.error("PM10 measurement out of range (over 1000 ug/m^3)")
 
         if self.is_enabled(0):
-            return_dict[0]['value'] = pm_1_0
+            self.set_value(0, pm_1_0)
 
         if self.is_enabled(1):
-            return_dict[1]['value'] = pm_2_5
+            self.set_value(1, pm_2_5)
 
         if self.is_enabled(2):
-            return_dict[2]['value'] = pm_10_0
+            self.set_value(2, pm_10_0)
 
         # Turn the fan off
         if self.fan_modulate:
             self.dormant_mode('sleep')
 
-        return return_dict
+        return self.return_dict
 
     @staticmethod
     def hex_to_byte(hex_str):

@@ -131,7 +131,7 @@ class InputModule(AbstractInput):
     """
     def __init__(self, input_dev, testing=False):
         super(InputModule, self).__init__()
-        self.logger = logging.getLogger("mycodo.inputs.sht31_smart_gadget")
+        self.setup_logger()
         self.running = True
         self.unique_id = input_dev.unique_id
         self._measurements = None
@@ -148,9 +148,9 @@ class InputModule(AbstractInput):
             from mycodo.devices.sht31_smart_gadget import SHT31
             from bluepy import btle
             import locket
-            self.logger = logging.getLogger(
-                "mycodo.sht31_smart_gadget_{id}".format(
-                    id=input_dev.unique_id.split('-')[0]))
+
+            self.setup_logger(
+                name=__name__, log_id=input_dev.unique_id.split('-')[0])
 
             self.device_measurements = db_retrieve_table_daemon(
                 DeviceMeasurements).filter(
@@ -371,7 +371,7 @@ class InputModule(AbstractInput):
 
     def get_measurement(self):
         """ Obtain and return the measurements """
-        return_dict = measurements_dict.copy()
+        self.return_dict = measurements_dict.copy()
         lock_acquired = False
 
         # Set up lock
@@ -405,15 +405,15 @@ class InputModule(AbstractInput):
 
                     # Get battery percent charge
                     if self.is_enabled(2):
-                        return_dict[2]['value'] = self.gadget.readBattery()
+                        self.set_value(2, self.gadget.readBattery())
 
                     # Get temperature and humidity last so their timestamp in the
                     # database will be the most accurate
                     if self.is_enabled(0):
-                        return_dict[0]['value'] = self.gadget.readTemperature()
+                        self.set_value(0, self.gadget.readTemperature())
 
                     if self.is_enabled(1):
-                        return_dict[1]['value'] = self.gadget.readHumidity()
+                        self.set_value(1, self.gadget.readHumidity())
                 except self.btle.BTLEDisconnectError:
                     logging.error("Disconnected")
                     return
@@ -426,19 +426,19 @@ class InputModule(AbstractInput):
                 if (self.is_enabled(3) and
                         self.is_enabled(0) and
                         self.is_enabled(1)):
-                    return_dict[3]['value'] = calculate_dewpoint(
-                        return_dict[0]['value'], return_dict[1]['value'])
+                    self.set_value(3, calculate_dewpoint(
+                        self.get_value(0), self.get_value(1)))
 
                 if (self.is_enabled(4) and
                         self.is_enabled(0) and
                         self.is_enabled(1)):
-                    return_dict[4]['value'] = calculate_vapor_pressure_deficit(
-                        return_dict[0]['value'], return_dict[1]['value'])
+                    self.set_value(4, calculate_vapor_pressure_deficit(
+                        self.get_value(0), self.get_value(1)))
 
             lock.release()
             os.remove(self.lock_file_bluetooth)
 
-            return return_dict
+            return self.return_dict
 
     def initialize(self):
         """Initialize the device by obtaining sensor information"""

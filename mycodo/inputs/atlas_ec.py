@@ -46,15 +46,14 @@ class InputModule(AbstractInput):
 
     def __init__(self, input_dev, testing=False):
         super(InputModule, self).__init__()
-        self.logger = logging.getLogger("mycodo.inputs.atlas_ec")
+        self.setup_logger()
         self.atlas_sensor_ftdi = None
         self.atlas_sensor_uart = None
         self.atlas_sensor_i2c = None
 
         if not testing:
-            self.logger = logging.getLogger(
-                "mycodo.inputs.atlas_ec_{id}".format(
-                    id=input_dev.unique_id.split('-')[0]))
+            self.setup_logger(
+                name=__name__, log_id=input_dev.unique_id.split('-')[0])
 
             self.interface = input_dev.interface
             if self.interface == 'FTDI':
@@ -79,27 +78,17 @@ class InputModule(AbstractInput):
         from mycodo.devices.atlas_scientific_i2c import AtlasScientificI2C
         from mycodo.devices.atlas_scientific_uart import AtlasScientificUART
         if self.interface == 'FTDI':
-            self.logger = logging.getLogger(
-                "mycodo.inputs.atlas_electrical_conductivity_ftdi_{ftdi}".format(
-                    ftdi=self.ftdi_location))
             self.atlas_sensor_ftdi = AtlasScientificFTDI(self.ftdi_location)
         elif self.interface == 'UART':
-            self.logger = logging.getLogger(
-                "mycodo.inputs.atlas_electrical_conductivity_uart_{uart}".format(
-                    uart=self.uart_location))
             self.atlas_sensor_uart = AtlasScientificUART(self.uart_location)
         elif self.interface == 'I2C':
-            self.logger = logging.getLogger(
-                "mycodo.inputs.atlas_electrical_conductivity_i2c_{bus}_{add}".format(
-                    bus=self.i2c_bus, add=self.i2c_address))
             self.atlas_sensor_i2c = AtlasScientificI2C(
                 i2c_address=self.i2c_address, i2c_bus=self.i2c_bus)
 
     def get_measurement(self):
         """ Gets the sensor's Electrical Conductivity measurement via UART/I2C """
         electrical_conductivity = None
-
-        return_dict = measurements_dict.copy()
+        self.return_dict = measurements_dict.copy()
 
         # Read sensor via UART
         if self.interface == 'FTDI':
@@ -193,6 +182,6 @@ class InputModule(AbstractInput):
                 self.logger.error(
                     'I2C device is not set up. Check the log for errors.')
 
-        return_dict[0]['value'] = electrical_conductivity
+        self.set_value(0, electrical_conductivity)
 
-        return return_dict
+        return self.return_dict

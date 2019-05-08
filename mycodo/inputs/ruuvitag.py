@@ -92,7 +92,7 @@ class InputModule(AbstractInput):
     """
     def __init__(self, input_dev, testing=False):
         super(InputModule, self).__init__()
-        self.logger = logging.getLogger("mycodo.inputs.ruuvitag")
+        self.setup_logger()
         self.running = True
         self.unique_id = input_dev.unique_id
         self._measurements = None
@@ -107,9 +107,9 @@ class InputModule(AbstractInput):
 
         if not testing:
             import locket
-            self.logger = logging.getLogger(
-                "mycodo.ruuvitag_{id}".format(
-                    id=input_dev.unique_id.split('-')[0]))
+
+            self.setup_logger(
+                name=__name__, log_id=input_dev.unique_id.split('-')[0])
 
             self.device_measurements = db_retrieve_table_daemon(
                 DeviceMeasurements).filter(
@@ -127,7 +127,7 @@ class InputModule(AbstractInput):
 
     def get_measurement(self):
         """ Obtain and return the measurements """
-        return_dict = measurements_dict.copy()
+        self.return_dict = measurements_dict.copy()
         lock_acquired = False
 
         # Set up lock
@@ -150,42 +150,42 @@ class InputModule(AbstractInput):
             values = cmd_return.decode('ascii').split(',')
 
             if self.is_enabled(0):
-                return_dict[0]['value'] = float(str(values[0]))
+                self.set_value(0, float(str(values[0])))
 
             if self.is_enabled(1):
-                return_dict[1]['value'] = float(values[1])
+                self.set_value(1, float(values[1]))
 
             if self.is_enabled(2):
-                return_dict[2]['value'] = float(values[2])
+                self.set_value(2, float(values[2]))
 
             if self.is_enabled(3):
-                return_dict[3]['value'] = float(values[3]) / 1000
+                self.set_value(3, float(values[3]) / 1000)
 
             if self.is_enabled(4):
-                return_dict[4]['value'] = float(values[4]) / 1000
+                self.set_value(4, float(values[4]) / 1000)
 
             if self.is_enabled(5):
-                return_dict[5]['value'] = float(values[5]) / 1000
+                self.set_value(5, float(values[5]) / 1000)
 
             if self.is_enabled(6):
-                return_dict[6]['value'] = float(values[6]) / 1000
+                self.set_value(6, float(values[6]) / 1000)
 
             if self.is_enabled(7):
-                return_dict[7]['value'] = float(values[7]) / 1000
+                self.set_value(7, float(values[7]) / 1000)
 
             if (self.is_enabled(8) and
                     self.is_enabled(0) and
                     self.is_enabled(1)):
-                return_dict[8]['value'] = calculate_dewpoint(
-                    return_dict[0]['value'], return_dict[1]['value'])
+                self.set_value(8, calculate_dewpoint(
+                    self.get_value(0), self.get_value(1)))
 
             if (self.is_enabled(9) and
                     self.is_enabled(0) and
                     self.is_enabled(1)):
-                return_dict[9]['value'] = calculate_vapor_pressure_deficit(
-                    return_dict[0]['value'], return_dict[1]['value'])
+                self.set_value(9, calculate_vapor_pressure_deficit(
+                    self.get_value(0), self.get_value(1)))
 
         lock.release()
         os.remove(self.lock_file_bluetooth)
 
-        return return_dict
+        return self.return_dict

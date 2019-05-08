@@ -235,14 +235,12 @@ class InputModule(AbstractInput):
 
     def __init__(self, input_dev, testing=False):
         super(InputModule, self).__init__()
-        self.logger = logging.getLogger("mycodo.inputs.{name_lower}".format(
-            name_lower=INPUT_INFORMATION['input_name_unique'].lower()))
+        self.setup_logger()
 
         if not testing:
-            self.logger = logging.getLogger(
-                "mycodo.inputs.{name_lower}_{id}".format(
-                    name_lower=INPUT_INFORMATION['input_name_unique'].lower(),
-                    id=input_dev.unique_id.split('-')[0]))
+            self.setup_logger(
+                name=__name__, log_id=input_dev.unique_id.split('-')[0])
+
             self.interface = input_dev.interface
 
             #
@@ -306,13 +304,13 @@ class InputModule(AbstractInput):
         # Copy measurements dictionary
         #
 
-        return_dict = measurements_dict.copy()
+        self.return_dict = measurements_dict.copy()
 
         #
         # Begin sensor measurement code
         #
 
-        return_dict[0]['value'] = self.random.randint(50, 70)
+        self.set_value(0, self.random.randint(50, 70))
 
         #
         # End sensor measurement code
@@ -321,4 +319,4 @@ class InputModule(AbstractInput):
         self.logger.info("This INFO message will always be displayed.")
         self.logger.debug("This DEBUG message will only be displayed if the Debug option is enabled.")
 
-        return return_dict
+        return self.return_dict

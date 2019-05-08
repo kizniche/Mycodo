@@ -58,13 +58,13 @@ class InputModule(AbstractInput):
 
     def __init__(self, input_dev, testing=False):
         super(InputModule, self).__init__()
-        self.logger = logging.getLogger("mycodo.inputs.max31855")
+        self.setup_logger()
 
         if not testing:
             import Adafruit_MAX31855.MAX31855 as MAX31855
-            self.logger = logging.getLogger(
-                "mycodo.max31855_{id}".format(
-                    id=input_dev.unique_id.split('-')[0]))
+
+            self.setup_logger(
+                name=__name__, log_id=input_dev.unique_id.split('-')[0])
 
             self.device_measurements = db_retrieve_table_daemon(
                 DeviceMeasurements).filter(
@@ -85,12 +85,12 @@ class InputModule(AbstractInput):
 
     def get_measurement(self):
         """ Gets the measurement in units by reading the """
-        return_dict = measurements_dict.copy()
+        self.return_dict = measurements_dict.copy()
 
         if self.is_enabled(0):
-            return_dict[0]['value'] = self.sensor.readTempC()
+            self.set_value(0, self.sensor.readTempC())
 
         if self.is_enabled(1):
-            return_dict[1]['value'] = self.sensor.readInternalC()
+            self.set_value(1, self.sensor.readInternalC())
 
-        return return_dict
+        return self.return_dict

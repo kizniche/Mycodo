@@ -56,15 +56,15 @@ class InputModule(AbstractInput):
     """ ADC Read """
     def __init__(self, input_dev, testing=False):
         super(InputModule, self).__init__()
-        self.logger = logging.getLogger('mycodo.mcp3008')
+        self.setup_logger()
         self.acquiring_measurement = False
         self.adc = None
 
         if not testing:
             import Adafruit_MCP3008
-            self.logger = logging.getLogger(
-                'mycodo.mcp3008_{id}'.format(
-                    id=input_dev.unique_id.split('-')[0]))
+
+            self.setup_logger(
+                name=__name__, log_id=input_dev.unique_id.split('-')[0])
 
             self.device_measurements = db_retrieve_table_daemon(
                 DeviceMeasurements).filter(
@@ -88,14 +88,14 @@ class InputModule(AbstractInput):
                 self.logger.setLevel(logging.INFO)
 
     def get_measurement(self):
-        return_dict = measurements_dict.copy()
+        self.return_dict = measurements_dict.copy()
 
         for each_measure in self.device_measurements.all():
             if each_measure.is_enabled:
-                return_dict[each_measure.channel]['value'] = (
-                    (self.adc.read_adc(each_measure.channel) / 1023.0) * self.scale_from_max)
+                self.set_value(each_measure.channel, (
+                    (self.adc.read_adc(each_measure.channel) / 1023.0) * self.scale_from_max))
 
-        return return_dict
+        return self.return_dict
 
 
 def parse_args(parser):
