@@ -664,6 +664,8 @@ FUNCTION_ACTIONS = [
     ('resume_pid', FUNCTION_ACTION_INFO['resume_pid']['name']),
     ('method_pid', FUNCTION_ACTION_INFO['method_pid']['name']),
     ('setpoint_pid', FUNCTION_ACTION_INFO['setpoint_pid']['name']),
+    ('setpoint_pid_raise', FUNCTION_ACTION_INFO['setpoint_pid_raise']['name']),
+    ('setpoint_pid_lower', FUNCTION_ACTION_INFO['setpoint_pid_lower']['name'])
 ]
 
 # Calibration
