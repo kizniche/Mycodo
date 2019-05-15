@@ -290,8 +290,9 @@ def run_action(action_id, message=message):
             codeErr.close()
         except:
             self.logger.error(
-                "Error evaluating conditional statement. "
-                "Replaced Conditional Statement:\n\n{cond_rep}\n\n{traceback}".format(
+                "Error evaluating conditional statement. Code and Traceback below.\n"
+                "Conditional Statement Executed:\n\n{cond_rep}\n\n"
+                "Conditional Statement Traceback:\n\n{traceback}".format(
                     cond_rep=cond_statement_replaced,
                     traceback=traceback.format_exc()))
 

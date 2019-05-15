@@ -5,6 +5,14 @@
  - Prevent logging aberrant SHT31 Smart Gadget measurements
  - Handle type casting issues with Ruuvitag Input
 
+### Features
+
+ - Add Function Actions: Raise/Lower PID Setpoint ([#657](https://github.com/kizniche/mycodo/issues/657))
+
+### Miscellaneous
+
+ - Add Unit: Pounds per square inch (psi) ([#657](https://github.com/kizniche/mycodo/issues/657))
+
 
 ## 7.5.2 (2019-05-08)
 

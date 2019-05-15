@@ -148,7 +148,7 @@ MEASUREMENTS = {
     'pressure': {
         'name': lazy_gettext('Pressure'),
         'meas': 'pressure',
-        'units': ['Pa', 'kPa']},
+        'units': ['psi', 'Pa', 'kPa']},
     'pulse_width': {
         'name': lazy_gettext('Pulse Width'),
         'meas': 'pulse_width',
@@ -312,6 +312,9 @@ UNITS = {
     'ppm': {
         'name': lazy_gettext('Parts per million'),
         'unit': 'ppm'},
+    'psi': {
+        'name': lazy_gettext('Pounds per square inch'),
+        'unit': 'psi'},
     'rpm': {
         'name': lazy_gettext('Revolutions per minute'),
         'unit': 'rpm'},

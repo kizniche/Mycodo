@@ -624,6 +624,18 @@ FUNCTION_ACTION_INFO = {
             TRANSLATIONS['pid']['title'],
             lazy_gettext('Set Setpoint')),
         'dependencies_module': []
+    },
+    'setpoint_pid_raise': {
+        'name': '{}: {}'.format(
+            TRANSLATIONS['pid']['title'],
+            lazy_gettext('Raise Setpoint')),
+        'dependencies_module': []
+    },
+    'setpoint_pid_lower': {
+        'name': '{}: {}'.format(
+            TRANSLATIONS['pid']['title'],
+            lazy_gettext('Lower Setpoint')),
+        'dependencies_module': []
     }
 
     # TODO: These have been disabled until they can be properly tested

@@ -557,7 +557,59 @@ def trigger_action(
                 with session_scope(MYCODO_DB_PATH) as new_session:
                     mod_pid = new_session.query(PID).filter(
                         PID.unique_id == cond_action.do_unique_id).first()
-                    mod_pid.setpoint = cond_action.do_action_string
+                    mod_pid.setpoint = float(cond_action.do_action_string)
+                    new_session.commit()
+
+        # Raise PID Setpoint
+        if cond_action.action_type == 'setpoint_pid_raise':
+            pid = db_retrieve_table_daemon(
+                PID, unique_id=cond_action.do_unique_id, entry='first')
+            current_setpoint = control.pid_get(pid.unique_id, 'setpoint')
+            new_setpoint = current_setpoint + float(cond_action.do_action_string)
+            message += " Raise Setpoint of PID {unique_id} by {amt}, to {sp} ({id}, {name}).".format(
+                unique_id=cond_action.do_unique_id,
+                amt=float(cond_action.do_action_string),
+                sp=new_setpoint,
+                id=pid.id,
+                name=pid.name)
+            if pid.is_activated:
+                setpoint_pid = threading.Thread(
+                    target=control.pid_set,
+                    args=(pid.unique_id,
+                          'setpoint',
+                          new_setpoint,))
+                setpoint_pid.start()
+            else:
+                with session_scope(MYCODO_DB_PATH) as new_session:
+                    mod_pid = new_session.query(PID).filter(
+                        PID.unique_id == cond_action.do_unique_id).first()
+                    mod_pid.setpoint = new_setpoint
+                    new_session.commit()
+
+        # Lower PID Setpoint
+        if cond_action.action_type == 'setpoint_pid_raise':
+            pid = db_retrieve_table_daemon(
+                PID, unique_id=cond_action.do_unique_id, entry='first')
+            current_setpoint = control.pid_get(pid.unique_id, 'setpoint')
+            new_setpoint = current_setpoint - float(cond_action.do_action_string)
+            message += " Lower Setpoint of PID {unique_id} by {amt}, to {sp} ({id}, {name}).".format(
+                unique_id=cond_action.do_unique_id,
+                amt=float(cond_action.do_action_string),
+                sp=new_setpoint,
+                id=pid.id,
+                name=pid.name)
+            if pid.is_activated:
+                setpoint_pid = threading.Thread(
+                    target=control.pid_set,
+                    args=(pid.unique_id,
+                          'setpoint',
+                          new_setpoint,))
+                setpoint_pid.start()
+            else:
+                with session_scope(MYCODO_DB_PATH) as new_session:
+                    mod_pid = new_session.query(PID).filter(
+                        PID.unique_id == cond_action.do_unique_id).first()
+                    mod_pid.setpoint = new_setpoint
                     new_session.commit()
 
         # Set PID Method and start method from beginning
