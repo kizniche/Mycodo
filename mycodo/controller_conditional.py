@@ -193,14 +193,7 @@ class ConditionalController(threading.Thread):
 
     def check_conditionals(self):
         """
-        Check if any Conditionals are activated and
-        execute their actions if the Conditional is true.
-
-        For example, if "temperature > 30", notify me@gmail.com
-
-        "if measured temperature is above 30C" is the Conditional to check.
-        "notify me@gmail.com" is the Condition Action to execute if the
-        Conditional is True.
+        Check if any Conditionals are activated and execute their code
         """
 
         cond = db_retrieve_table_daemon(
@@ -214,7 +207,7 @@ class ConditionalController(threading.Thread):
             name=cond.name,
             id=self.function_id)
 
-        # self.logger.info("Conditional Statement (pre-replacement):\n{}".format(self.conditional_statement))
+        self.logger.debug("Conditional Statement (pre-replacement):\n{}".format(self.conditional_statement))
         cond_statement_replaced = self.conditional_statement
 
         # Replace short condition IDs in conditional statement with full condition IDs
@@ -269,7 +262,7 @@ def run_action(action_id, message=message):
 """.format(message=message, function_id=self.function_id)
 
         cond_statement_replaced = pre_statement + cond_statement_replaced
-        # self.logger.info("Conditional Statement (replaced):\n{}".format(cond_statement_replaced))
+        self.logger.debug("Conditional Statement (post-replacement):\n{}".format(cond_statement_replaced))
 
         # Set the refractory period
         if self.refractory_period:

@@ -154,7 +154,9 @@ class TriggerController(threading.Thread):
                                     self.unique_id_2,
                                     pwm_duty_cycle)
                                 if self.trigger_actions_at_period:
-                                    trigger_function_actions(self.function_id, debug=self.log_level_debug)
+                                    trigger_function_actions(
+                                        self.function_id,
+                                        debug=self.log_level_debug)
                         else:
                             check_approved = True
 
@@ -262,7 +264,8 @@ class TriggerController(threading.Thread):
                         trigger.unique_id_1)
                     self.set_output_duty_cycle(
                         trigger.unique_id_2, pwm_duty_cycle)
-                    trigger_function_actions(self.function_id, debug=self.log_level_debug)
+                    trigger_function_actions(self.function_id,
+                                             debug=self.log_level_debug)
             else:
                 self.timer_period = now
 
@@ -271,7 +274,9 @@ class TriggerController(threading.Thread):
             self.lirc = lirc
             self.program = trigger.program
             self.word = trigger.word
-            lirc.init(self.program, config_filename='/home/pi/.lircrc', blocking=False)
+            lirc.init(self.program,
+                      config_filename='/home/pi/.lircrc',
+                      blocking=False)
 
             # Set up trigger sunrise/sunset
         elif self.trigger_type == 'trigger_sunrise_sunset':
@@ -285,7 +290,8 @@ class TriggerController(threading.Thread):
             method = db_retrieve_table_daemon(Method, unique_id=method_id)
             method_data = db_retrieve_table_daemon(MethodData)
             method_data = method_data.filter(MethodData.method_id == method_id)
-            method_data_repeat = method_data.filter(MethodData.duration_sec == 0).first()
+            method_data_repeat = method_data.filter(
+                MethodData.duration_sec == 0).first()
             self.method_start_act = self.method_start_time
             self.method_start_time = None
             self.method_end_time = None
@@ -364,9 +370,6 @@ class TriggerController(threading.Thread):
         "notify me@gmail.com" is the Trigger Action to execute if the
         Trigger is True.
         """
-        last_measurement = None
-        gpio_state = None
-
         logger_cond = logging.getLogger("mycodo.conditional_{id}".format(
             id=self.function_id))
 
@@ -383,10 +386,10 @@ class TriggerController(threading.Thread):
 
         device_id = trigger.measurement.split(',')[0]
 
-        if len(trigger.measurement.split(',')) > 1:
-            device_measurement = trigger.measurement.split(',')[1]
-        else:
-            device_measurement = None
+        # if len(trigger.measurement.split(',')) > 1:
+        #     device_measurement = trigger.measurement.split(',')[1]
+        # else:
+        #     device_measurement = None
 
         device = None
 
@@ -446,7 +449,10 @@ class TriggerController(threading.Thread):
                 return
 
         # If the code hasn't returned by now, action should be executed
-        trigger_function_actions(self.function_id, message=message, debug=self.log_level_debug)
+        trigger_function_actions(
+            self.function_id,
+            message=message,
+            debug=self.log_level_debug)
 
     def infrared_remote_input(self):
         """
@@ -469,7 +475,9 @@ class TriggerController(threading.Thread):
             message += "\nInfrared Remote Input detected " \
                        "'{word}' on program '{prog}'".format(
                         word=self.word, prog=self.program)
-            trigger_function_actions(self.function_id, message=message, debug=self.log_level_debug)
+            trigger_function_actions(self.function_id,
+                                     message=message,
+                                     debug=self.log_level_debug)
 
     def is_running(self):
         return self.running

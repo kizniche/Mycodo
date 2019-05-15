@@ -767,7 +767,7 @@ class MathController(threading.Thread):
 
         # Finally, add measurements to influxdb
         self.logger.debug(
-            "Adding measurements to influxdb with ID {}: {}".format(
+            "Adding measurements to InfluxDB with ID {}: {}".format(
                 self.unique_id, measurement_dict))
         add_measurements_influxdb(self.unique_id, measurement_dict)
 

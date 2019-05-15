@@ -102,7 +102,8 @@ class PIDController(threading.Thread):
         self.sample_rate = db_retrieve_table_daemon(
             Misc, entry='first').sample_rate_controller_pid
 
-        self.device_measurements = db_retrieve_table_daemon(DeviceMeasurements)
+        self.device_measurements = db_retrieve_table_daemon(
+            DeviceMeasurements)
 
         self.log_level_debug = None
         self.PID_Controller = None
@@ -240,9 +241,11 @@ class PIDController(threading.Thread):
         finally:
             # Turn off output used in PID when the controller is deactivated
             if self.raise_output_id and self.direction in ['raise', 'both']:
-                self.control.output_off(self.raise_output_id, trigger_conditionals=True)
+                self.control.output_off(self.raise_output_id,
+                                        trigger_conditionals=True)
             if self.lower_output_id and self.direction in ['lower', 'both']:
-                self.control.output_off(self.lower_output_id, trigger_conditionals=True)
+                self.control.output_off(self.lower_output_id,
+                                        trigger_conditionals=True)
 
             self.running = False
             self.logger.info("Deactivated in {:.1f} ms".format(
@@ -395,7 +398,8 @@ class PIDController(threading.Thread):
         method = db_retrieve_table_daemon(Method, unique_id=method_id)
         method_data = db_retrieve_table_daemon(MethodData)
         method_data = method_data.filter(MethodData.method_id == method_id)
-        method_data_repeat = method_data.filter(MethodData.duration_sec == 0).first()
+        method_data_repeat = method_data.filter(
+            MethodData.duration_sec == 0).first()
         pid = db_retrieve_table_daemon(PID, unique_id=self.pid_id)
         self.method_type = method.method_type
         self.method_start_act = pid.method_start_time
@@ -443,6 +447,7 @@ class PIDController(threading.Thread):
                     self.method_start_act = 'Ended'
 
         self.method_id = method_id
+        self.logger.debug("Method enabled: {id}".format(id=self.method_id))
 
     def write_pid_values(self):
         """ Write PID values to the measurement database """
@@ -549,6 +554,11 @@ class PIDController(threading.Thread):
 
         # Produce output form P, I, and D values
         pid_value = self.P_value + self.I_value + self.D_value
+
+        self.logger.debug(
+            "PID: Input: {inp},"
+            "Output: P: {p}, I: {i}, D: {d}, Out: {o}".format(
+            inp=current_value, p=self.P_value, i=self.I_value, d=self.D_value, o=pid_value))
 
         return pid_value
 

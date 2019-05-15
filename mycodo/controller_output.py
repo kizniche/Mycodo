@@ -143,7 +143,10 @@ class OutputController(threading.Thread):
                     if (self.output_on_until[output_id] < current_time and
                             self.output_on_duration[output_id] and
                             not self.output_off_triggered[output_id] and
-                            (self.output_type[output_id] in ['command', 'command_pwn', 'python', 'python_pwm'] or
+                            (self.output_type[output_id] in ['command',
+                                                             'command_pwn',
+                                                             'python',
+                                                             'python_pwm'] or
                              self.output_pin[output_id] is not None)):
 
                         # Use threads to prevent a slow execution of a
@@ -242,7 +245,9 @@ class OutputController(threading.Thread):
                 self.atlas_command[output_id].write(write_cmd)
             else:
                 self.logger.error(
-                    "Invalid parameters: ID: {id}, State: {state}, volume: {vol}".format(
+                    "Invalid parameters: ID: {id}, "
+                    "State: {state}, "
+                    "volume: {vol}".format(
                         id=output_id, state=state, vol=volume_ml))
 
         # Signaled to turn output on
@@ -1213,7 +1218,8 @@ output_id = '{}'
         """
         if (self.output_type[output_id] == 'wired' and
                 self._is_setup(output_id)):
-            return self.output_on_state[output_id] == GPIO.input(self.output_pin[output_id])
+            return self.output_on_state[output_id] == GPIO.input(
+                self.output_pin[output_id])
         elif self.output_type[output_id] in ['command',
                                              'command_pwm',
                                              'python',
