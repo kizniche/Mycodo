@@ -2128,6 +2128,7 @@ def dict_custom_colors():
                     if None not in [input_dev, device_measurement]:
                         total.append({
                             'unique_id': input_unique_id,
+                            'type': 'Input',
                             'name': input_dev.name,
                             'channel': channel,
                             'unit': unit,
@@ -2163,6 +2164,7 @@ def dict_custom_colors():
                     if math is not None:
                         total.append({
                             'unique_id': math_unique_id,
+                            'type': 'Math',
                             'name': math.name,
                             'channel': channel,
                             'unit': unit,
@@ -2198,6 +2200,7 @@ def dict_custom_colors():
                     if pid is not None:
                         total.append({
                             'unique_id': pid_unique_id,
+                            'type': 'PID',
                             'name': pid.name,
                             'channel': channel,
                             'unit': unit,
@@ -2228,10 +2231,33 @@ def dict_custom_colors():
                     if device_measurement is not None:
                         total.append({
                             'unique_id': output_unique_id,
+                            'type': 'Output',
                             'name': device_measurement.name,
                             'channel': channel,
                             'unit': unit,
                             'measure': measurement,
+                            'color': color})
+                        index += 1
+                index_sum += index
+
+            if each_graph.note_tag_ids:
+                index = 0
+                for each_set in each_graph.note_tag_ids.split(';'):
+                    tag_unique_id = each_set.split(',')[0]
+
+                    device_measurement = NoteTags.query.filter_by(
+                        unique_id=tag_unique_id).first()
+
+                    if (index < len(each_graph.note_tag_ids.split(',')) and
+                            len(colors) > index_sum + index):
+                        color = colors[index_sum + index]
+                    else:
+                        color = '#FF00AA'
+                    if device_measurement is not None:
+                        total.append({
+                            'unique_id': tag_unique_id,
+                            'type': 'Tag',
+                            'name': device_measurement.name,
                             'color': color})
                         index += 1
                 index_sum += index
