@@ -123,7 +123,7 @@
 
     <div class="row align-items-end small-gutters" style="padding-bottom: 0.3em">
       <div class="col-auto">
-        <input class="form-control btn btn-sm btn-block" disabled="" value="{% for each_con in conditional_conditions_list if each_condition.condition_type == each_con[0] %}{{"{" + each_condition.unique_id.split('-')[0] + "}"}} {{each_con[1]}}{% endfor %}" title="{{_('This {ID} is what should be used in the Conditional Statement Python code')}}" type="text">
+        <input class="form-control btn btn-sm btn-block" disabled="" value="{% for each_con in conditional_conditions_list if each_condition.condition_type == each_con[0] %}{{"{" + each_condition.unique_id.split('-')[0] + "}"}} {{each_con[1]}}{% endfor %}" title="{{_('This {ID} should be used in the Conditional Statement Python code, as a parameter in the measure() and measure_dict() functions')}}" type="text">
       </div>
       <div class="col-auto">
         {{form_conditional_conditions.save_condition(class_='form-control btn btn-sm')}}
@@ -180,7 +180,7 @@
 
     <div class="row align-items-end small-gutters" style="padding-bottom: 0.3em">
       <div class="col-sm-2">
-        <input class="form-control btn btn-sm btn-block" disabled="" value="{{"{" + each_action.unique_id.split('-')[0] + "}"}} {% for each_act in function_action_info if each_action.action_type == each_act %}{{function_action_info[each_act]['name']}}{% endfor %}" type="text">
+        <input class="form-control btn btn-sm btn-block" disabled="" title="This {ID} should be used in the Conditional Statement Python code, as a parameter in the run_action() function" value="{{"{" + each_action.unique_id.split('-')[0] + "}"}} {% for each_act in function_action_info if each_action.action_type == each_act %}{{function_action_info[each_act]['name']}}{% endfor %}" type="text">
       </div>
       <div class="col-auto">
         {{form_actions.save_action(class_='form-control btn btn-sm')}}

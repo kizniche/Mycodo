@@ -271,9 +271,11 @@ def action_mod(form):
                                         'deactivate_timer']:
             mod_action.do_unique_id = form.do_unique_id.data
 
-        elif mod_action.action_type == 'setpoint_pid':
+        elif mod_action.action_type in ['setpoint_pid',
+                                        'setpoint_pid_raise',
+                                        'setpoint_pid_lower']:
             if not str_is_float(form.do_action_string.data):
-                error.append("Setpoint must be an integer or float value")
+                error.append("Setpoint value must be an integer or float value")
             mod_action.do_unique_id = form.do_unique_id.data
             mod_action.do_action_string = form.do_action_string.data
 
@@ -308,7 +310,8 @@ def action_mod(form):
             mod_action.do_unique_id = form.do_unique_id.data
             mod_action.do_camera_duration = form.do_camera_duration.data
 
-        elif mod_action.action_type in ['command', 'create_note']:
+        elif mod_action.action_type in ['command',
+                                        'create_note']:
             mod_action.do_action_string = form.do_action_string.data
 
         if not error:

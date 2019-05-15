@@ -564,8 +564,7 @@ def trigger_action(
         if cond_action.action_type == 'setpoint_pid_raise':
             pid = db_retrieve_table_daemon(
                 PID, unique_id=cond_action.do_unique_id, entry='first')
-            current_setpoint = control.pid_get(pid.unique_id, 'setpoint')
-            new_setpoint = current_setpoint + float(cond_action.do_action_string)
+            new_setpoint = pid.setpoint + float(cond_action.do_action_string)
             message += " Raise Setpoint of PID {unique_id} by {amt}, to {sp} ({id}, {name}).".format(
                 unique_id=cond_action.do_unique_id,
                 amt=float(cond_action.do_action_string),
@@ -587,11 +586,10 @@ def trigger_action(
                     new_session.commit()
 
         # Lower PID Setpoint
-        if cond_action.action_type == 'setpoint_pid_raise':
+        if cond_action.action_type == 'setpoint_pid_lower':
             pid = db_retrieve_table_daemon(
                 PID, unique_id=cond_action.do_unique_id, entry='first')
-            current_setpoint = control.pid_get(pid.unique_id, 'setpoint')
-            new_setpoint = current_setpoint - float(cond_action.do_action_string)
+            new_setpoint = pid.setpoint - float(cond_action.do_action_string)
             message += " Lower Setpoint of PID {unique_id} by {amt}, to {sp} ({id}, {name}).".format(
                 unique_id=cond_action.do_unique_id,
                 amt=float(cond_action.do_action_string),

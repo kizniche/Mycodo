@@ -1351,6 +1351,9 @@ following
 +=======================+=================================================+
 | measure("{ID}")       | Returns a measurement for the Condition with ID.|
 +-----------------------+-------------------------------------------------+
+| measure_dict("{ID}")  | Returns a dictionary of measurement for the     |
+|                       | Condition with ID.                              |
++-----------------------+-------------------------------------------------+
 | run_action("{ID}")    | Executes the Action with ID.                    |
 +-----------------------+-------------------------------------------------+
 | run_all_actions()     | Executes all actions.                           |
