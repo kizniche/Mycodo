@@ -617,27 +617,20 @@ there will on average be 6 measurements returned to have math performed).
 +---------------------------------+-------------------------------------------------+
 | Type                            | Description                                     |
 +=================================+=================================================+
-| Average (Last, Multiple         | Stores the statistical mean of multiple         |
-| Measurements)                   | selected measurements.                          |
+| Average (Last, Multiple         | Stores the statistical mean of the last         |
+| Channels)                       | measurement of multiple selected measurement    |
+|                                 | channels.                                       |
 +---------------------------------+-------------------------------------------------+
-| Average (Last, Single           | Stores the statistical mean of one selected     |
-| Measurement)                    | measurement over a duration of time determined  |
-|                                 | by the Max Age (seconds) option.                |
+| Average (Past, Single Channel)  | Stores the statistical mean of one selected     |
+|                                 | measurement channel over a duration of time     |
+|                                 | determined by the Max Age (seconds) option.     |
 +---------------------------------+-------------------------------------------------+
-| Average (Past, Single           | Stores the statistical mean of one selected     |
-| Measurement)                    | measurement over a duration of time determined  |
-|                                 | by the Max Age (seconds) option.                |
+| Sum (Last, Multiple Channels)   | Stores the sum of multiple selected             |
+|                                 | measurement channels.                           |
 +---------------------------------+-------------------------------------------------+
-| Sum (Last, Multiple             | Stores the sum of multiple selected             |
-| Measurements)                   | measurements.                                   |
-+---------------------------------+-------------------------------------------------+
-| Sum (Last, Single Measurement)  | Stores the sum of one selected measurement over |
-|                                 | a duration of time determined by the Max Age    |
-|                                 | (seconds) option.                               |
-+---------------------------------+-------------------------------------------------+
-| Sum (Past, Single Measurement)  | Stores the sum of one selected measurement over |
-|                                 | a duration of time determined by the Max Age    |
-|                                 | (seconds) option.                               |
+| Sum (Past, Single Channel)      | Stores the sum of one selected measurement      |
+|                                 | channel over a duration of time determined by   |
+|                                 | the Max Age(seconds) option.                    |
 +---------------------------------+-------------------------------------------------+
 | Difference                      | Stores the mathematical difference (value\_1 -  |
 |                                 | value\_2).                                      |
