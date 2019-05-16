@@ -189,7 +189,7 @@
         {%- endif -%}
          {{colors_graph[each_dashboard.unique_id][n]['name']}}
         {%- if 'channel' in colors_graph[each_dashboard.unique_id][n] and colors_graph[each_dashboard.unique_id][n]['channel'] != '' -%}
-          {{', CH' + colors_graph[each_dashboard.unique_id][n]['channel']}}
+          {{', CH' + colors_graph[each_dashboard.unique_id][n]['channel']|string}}
         {%- endif -%}
         {%- if colors_graph[each_dashboard.unique_id][n]['measure_name'] -%}
           {{', ' + colors_graph[each_dashboard.unique_id][n]['measure_name']}}
