@@ -5,6 +5,8 @@
  - Prevent logging aberrant SHT31 Smart Gadget measurements
  - Handle type casting issues with Ruuvitag Input
  - Add Tags to Custom Colors selection of Graphs ([#656](https://github.com/kizniche/mycodo/issues/656))
+ - Fix issues with Single Channel Sum and Average Math controllers
+ - Fix inability to change Measurement Conversion back to "Do Not Convert"
 
 ### Features
 

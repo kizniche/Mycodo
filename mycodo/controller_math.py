@@ -44,10 +44,9 @@ from mycodo.inputs.sensorutils import convert_units
 from mycodo.mycodo_client import DaemonControl
 from mycodo.utils.database import db_retrieve_table_daemon
 from mycodo.utils.influx import add_measurements_influxdb
-from mycodo.utils.influx import read_last_influxdb
 from mycodo.utils.influx import average_past_seconds
+from mycodo.utils.influx import read_last_influxdb
 from mycodo.utils.influx import sum_past_seconds
-from mycodo.utils.influx import read_past_influxdb
 from mycodo.utils.system_pi import get_measurement
 from mycodo.utils.system_pi import return_measurement_info
 
@@ -200,16 +199,11 @@ class MathController(threading.Thread):
         # Average (multiple channels)
         #
         if self.math_type == 'average':
-            device_measurement = self.device_measurements.filter(
+            math_dev_measurement = self.device_measurements.filter(
                 DeviceMeasurements.channel == 0).first()
 
-            if device_measurement:
-                conversion = db_retrieve_table_daemon(
-                    Conversion, unique_id=device_measurement.conversion_id)
-            else:
-                conversion = None
             channel, unit, measurement = return_measurement_info(
-                device_measurement, conversion)
+                math_dev_measurement, None)
 
             success, measure = self.get_measurements_from_str(self.inputs)
             if success:
@@ -231,38 +225,57 @@ class MathController(threading.Thread):
         # Average (single channel)
         #
         elif self.math_type == 'average_single':
+            math_dev_measurement = self.device_measurements.filter(
+                DeviceMeasurements.channel == 0).first()
+
+            math_conversion = db_retrieve_table_daemon(
+                Conversion, unique_id=math_dev_measurement.conversion_id)
+
+            (math_channel,
+             math_unit,
+             math_measurement) = return_measurement_info(
+                math_dev_measurement, math_conversion)
+
             device_id = self.inputs.split(',')[0]
             measurement_id = self.inputs.split(',')[1]
 
             if measurement_id == 'output':
                 output = db_retrieve_table_daemon(Output, unique_id=device_id)
-                channel = output.channel
-                unit = output.unit
-                measurement = output.measurement
+                measure_channel = output.channel
+                measure_unit = output.unit
+                measure_measurement = output.measurement
             else:
                 device_measurement = db_retrieve_table_daemon(
                     DeviceMeasurements, unique_id=measurement_id)
                 if device_measurement:
-                    conversion = db_retrieve_table_daemon(
+                    measure_conversion = db_retrieve_table_daemon(
                         Conversion, unique_id=device_measurement.conversion_id)
                 else:
-                    conversion = None
-                channel, unit, measurement = return_measurement_info(
-                    device_measurement, conversion)
+                    measure_conversion = None
+                (measure_channel,
+                 measure_unit,
+                 measure_measurement) = return_measurement_info(
+                    device_measurement, measure_conversion)
 
             try:
-                average_measurements = average_past_seconds(
+                return_value = average_past_seconds(
                     device_id,
-                    unit,
-                    channel,
+                    measure_unit,
+                    measure_channel,
                     self.max_measure_age,
-                    measure=measurement)
-                if average_measurements:
+                    measure=measure_measurement)
+
+                if math_dev_measurement.conversion_id:
+                    return_value = convert_units(
+                        math_dev_measurement.conversion_id,
+                        return_value)
+
+                if return_value:
                     measurement_dict = {
-                        channel: {
-                            'measurement': measurement,
-                            'unit': unit,
-                            'value': average_measurements
+                        math_dev_measurement.channel: {
+                            'measurement': measure_measurement,
+                            'unit': math_unit,
+                            'value': return_value
                         }
                     }
                 else:
@@ -305,38 +318,57 @@ class MathController(threading.Thread):
         # Sum (single channel)
         #
         elif self.math_type == 'sum_single':
+            math_dev_measurement = self.device_measurements.filter(
+                DeviceMeasurements.channel == 0).first()
+
+            math_conversion = db_retrieve_table_daemon(
+                Conversion, unique_id=math_dev_measurement.conversion_id)
+
+            (math_channel,
+             math_unit,
+             math_measurement) = return_measurement_info(
+                math_dev_measurement, math_conversion)
+
             device_id = self.inputs.split(',')[0]
             measurement_id = self.inputs.split(',')[1]
 
             if measurement_id == 'output':
                 output = db_retrieve_table_daemon(Output, unique_id=device_id)
-                channel = output.channel
-                unit = output.unit
-                measurement = output.measurement
+                measure_channel = output.channel
+                measure_unit = output.unit
+                measure_measurement = output.measurement
             else:
                 device_measurement = db_retrieve_table_daemon(
                     DeviceMeasurements, unique_id=measurement_id)
                 if device_measurement:
-                    conversion = db_retrieve_table_daemon(
+                    measure_conversion = db_retrieve_table_daemon(
                         Conversion, unique_id=device_measurement.conversion_id)
                 else:
-                    conversion = None
-                channel, unit, measurement = return_measurement_info(
-                    device_measurement, conversion)
+                    measure_conversion = None
+                (measure_channel,
+                 measure_unit,
+                 measure_measurement) = return_measurement_info(
+                    device_measurement, measure_conversion)
 
             try:
-                sum_measurements = sum_past_seconds(
+                return_value = sum_past_seconds(
                     device_id,
-                    unit,
-                    channel,
+                    measure_unit,
+                    measure_channel,
                     self.max_measure_age,
-                    measure=measurement)
-                if sum_measurements:
+                    measure=measure_measurement)
+
+                if math_dev_measurement.conversion_id:
+                    return_value = convert_units(
+                        math_dev_measurement.conversion_id,
+                        return_value)
+
+                if return_value:
                     measurement_dict = {
-                        channel: {
-                            'measurement': measurement,
-                            'unit': unit,
-                            'value': sum_measurements
+                        math_dev_measurement.channel: {
+                            'measurement': measure_measurement,
+                            'unit': math_unit,
+                            'value': return_value
                         }
                     }
                 else:

@@ -314,7 +314,7 @@ def math_measurement_mod(form):
                 mod_meas.measurement = ''
                 mod_meas.unit = ''
 
-        if form.convert_to_measurement_unit.data:
+        if form.convert_to_measurement_unit.data is not None:
             mod_meas.conversion_id = form.convert_to_measurement_unit.data
 
         if not error:
