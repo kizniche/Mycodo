@@ -754,29 +754,21 @@ Age (seconds)” set by the user (e.g. if measurements are acquired every
   ------------------------------------------------------------------------
   Type                          Description
   ----------------------------- ------------------------------------------
-  Average (Last, Multiple       Stores the statistical mean of multiple
-  Measurements)                 selected measurements.
-
-  Average (Last, Single         Stores the statistical mean of one
-  Measurement)                  selected measurement over a duration of
-                                time determined by the Max Age (seconds)
-                                option.
+  Average (Last, Multiple       Stores the statistical mean of the last
+  Channels)                     measurement of multiple selected
+                                measurement channels.
 
   Average (Past, Single         Stores the statistical mean of one
-  Measurement)                  selected measurement over a duration of
-                                time determined by the Max Age (seconds)
-                                option.
+  Channel)                      selected measurement channel over a
+                                duration of time determined by the Max Age
+                                (seconds) option.
 
-  Sum (Last, Multiple           Stores the sum of multiple selected
-  Measurements)                 measurements.
+  Sum (Last, Multiple Channels) Stores the sum of multiple selected
+                                measurement channels.
 
-  Sum (Last, Single             Stores the sum of one selected measurement
-  Measurement)                  over a duration of time determined by the
-                                Max Age (seconds) option.
-
-  Sum (Past, Single             Stores the sum of one selected measurement
-  Measurement)                  over a duration of time determined by the
-                                Max Age (seconds) option.
+  Sum (Past, Single Channel)    Stores the sum of one selected measurement
+                                channel over a duration of time determined
+                                by the Max Age(seconds) option.
 
   Difference                    Stores the mathematical difference
                                 (value_1 -value_2).
@@ -1432,11 +1424,18 @@ Conditional Setup Guide
 Python 3 is the environment that these conditionals will be executed.
 The following
 
+  ------------------------------------------------------------------------
   Function                Description
   ----------------------- ------------------------------------------------
   measure(“{ID}”)         Returns a measurement for the Condition with ID.
+
+  measure_dict(“{ID}”)    Returns a dictionary of measurement for the
+                          Condition with ID.
+
   run_action(“{ID}”)      Executes the Action with ID.
+
   run_all_actions()       Executes all actions.
+  ------------------------------------------------------------------------
 
 Since the Python code contained in the Conditional Statement must be
 formatted properly, it’s best to familiarize yourself with the basics of

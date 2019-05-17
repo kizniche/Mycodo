@@ -900,28 +900,20 @@ optional arguments:
 </thead>
 <tbody>
 <tr class="odd">
-<td>Average (Last, Multiple Measurements)</td>
-<td>Stores the statistical mean of multiple selected measurements.</td>
+<td>Average (Last, Multiple Channels)</td>
+<td>Stores the statistical mean of the last measurement of multiple selected measurement channels.</td>
 </tr>
 <tr class="even">
-<td>Average (Last, Single Measurement)</td>
-<td>Stores the statistical mean of one selected measurement over a duration of time determined by the Max Age (seconds) option.</td>
+<td>Average (Past, Single Channel)</td>
+<td>Stores the statistical mean of one selected measurement channel over a duration of time determined by the Max Age (seconds) option.</td>
 </tr>
 <tr class="odd">
-<td>Average (Past, Single Measurement)</td>
-<td>Stores the statistical mean of one selected measurement over a duration of time determined by the Max Age (seconds) option.</td>
+<td>Sum (Last, Multiple Channels)</td>
+<td>Stores the sum of multiple selected measurement channels.</td>
 </tr>
 <tr class="even">
-<td>Sum (Last, Multiple Measurements)</td>
-<td>Stores the sum of multiple selected measurements.</td>
-</tr>
-<tr class="odd">
-<td>Sum (Last, Single Measurement)</td>
-<td>Stores the sum of one selected measurement over a duration of time determined by the Max Age (seconds) option.</td>
-</tr>
-<tr class="even">
-<td>Sum (Past, Single Measurement)</td>
-<td>Stores the sum of one selected measurement over a duration of time determined by the Max Age (seconds) option.</td>
+<td>Sum (Past, Single Channel)</td>
+<td>Stores the sum of one selected measurement channel over a duration of time determined by the Max Age(seconds) option.</td>
 </tr>
 <tr class="odd">
 <td>Difference</td>
@@ -1506,10 +1498,14 @@ optional arguments:
 <td>Returns a measurement for the Condition with ID.</td>
 </tr>
 <tr class="even">
+<td>measure_dict(“{ID}”)</td>
+<td>Returns a dictionary of measurement for the Condition with ID.</td>
+</tr>
+<tr class="odd">
 <td>run_action(“{ID}”)</td>
 <td>Executes the Action with ID.</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>run_all_actions()</td>
 <td>Executes all actions.</td>
 </tr>
