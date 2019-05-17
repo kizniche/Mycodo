@@ -7,7 +7,8 @@
  - Add Tags to Custom Colors selection of Graphs ([#656](https://github.com/kizniche/mycodo/issues/656))
  - Fix issues with Single Channel Sum and Average Math controllers
  - Fix inability to change Measurement Conversion back to "Do Not Convert"
- - Avoid build error with bcrypt 3.1.6 by using version 3.1.4
+ - Avoid build error with bcrypt 3.1.6 by lowering to version 3.1.4 ([#658](https://github.com/kizniche/mycodo/issues/658))
+ - Fix issue with conversion calculation in wet-bulb humidity function
 
 ### Features
 

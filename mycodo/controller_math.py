@@ -201,7 +201,6 @@ class MathController(threading.Thread):
         if self.math_type == 'average':
             math_dev_measurement = self.device_measurements.filter(
                 DeviceMeasurements.channel == 0).first()
-
             channel, unit, measurement = return_measurement_info(
                 math_dev_measurement, None)
 
@@ -227,10 +226,8 @@ class MathController(threading.Thread):
         elif self.math_type == 'average_single':
             math_dev_measurement = self.device_measurements.filter(
                 DeviceMeasurements.channel == 0).first()
-
             math_conversion = db_retrieve_table_daemon(
                 Conversion, unique_id=math_dev_measurement.conversion_id)
-
             (math_channel,
              math_unit,
              math_measurement) = return_measurement_info(
@@ -249,7 +246,8 @@ class MathController(threading.Thread):
                     DeviceMeasurements, unique_id=measurement_id)
                 if device_measurement:
                     measure_conversion = db_retrieve_table_daemon(
-                        Conversion, unique_id=device_measurement.conversion_id)
+                        Conversion,
+                        unique_id=device_measurement.conversion_id)
                 else:
                     measure_conversion = None
                 (measure_channel,
@@ -281,22 +279,22 @@ class MathController(threading.Thread):
                 else:
                     self.error_not_within_max_age()
             except Exception as msg:
-                self.logger.exception("average_single Error: {err}".format(err=msg))
+                self.logger.exception(
+                    "average_single Error: {err}".format(err=msg))
 
         #
         # Sum (multiple channels)
         #
         elif self.math_type == 'sum':
-            device_measurement = self.device_measurements.filter(
+            math_dev_measurement = self.device_measurements.filter(
                 DeviceMeasurements.channel == 0).first()
-
-            if device_measurement:
+            if math_dev_measurement:
                 conversion = db_retrieve_table_daemon(
-                    Conversion, unique_id=device_measurement.conversion_id)
+                    Conversion, unique_id=math_dev_measurement.conversion_id)
             else:
                 conversion = None
             channel, unit, measurement = return_measurement_info(
-                device_measurement, conversion)
+                math_dev_measurement, conversion)
 
             success, measure = self.get_measurements_from_str(self.inputs)
             if success:
@@ -320,10 +318,8 @@ class MathController(threading.Thread):
         elif self.math_type == 'sum_single':
             math_dev_measurement = self.device_measurements.filter(
                 DeviceMeasurements.channel == 0).first()
-
             math_conversion = db_retrieve_table_daemon(
                 Conversion, unique_id=math_dev_measurement.conversion_id)
-
             (math_channel,
              math_unit,
              math_measurement) = return_measurement_info(
@@ -342,7 +338,8 @@ class MathController(threading.Thread):
                     DeviceMeasurements, unique_id=measurement_id)
                 if device_measurement:
                     measure_conversion = db_retrieve_table_daemon(
-                        Conversion, unique_id=device_measurement.conversion_id)
+                        Conversion,
+                        unique_id=device_measurement.conversion_id)
                 else:
                     measure_conversion = None
                 (measure_channel,
@@ -374,21 +371,22 @@ class MathController(threading.Thread):
                 else:
                     self.error_not_within_max_age()
             except Exception as msg:
-                self.logger.exception("sum_single Error: {err}".format(err=msg))
+                self.logger.exception(
+                    "sum_single Error: {err}".format(err=msg))
 
         #
         # Difference between two channels
         #
         elif self.math_type == 'difference':
-            device_measurement = self.device_measurements.filter(
+            math_dev_measurement = self.device_measurements.filter(
                 DeviceMeasurements.channel == 0).first()
-            if device_measurement:
+            if math_dev_measurement:
                 conversion = db_retrieve_table_daemon(
-                    Conversion, unique_id=device_measurement.conversion_id)
+                    Conversion, unique_id=math_dev_measurement.conversion_id)
             else:
                 conversion = None
             channel, unit, measurement = return_measurement_info(
-                device_measurement, conversion)
+                math_dev_measurement, conversion)
 
             success, measure = self.get_measurements_from_str(self.inputs)
             if success:
@@ -415,17 +413,18 @@ class MathController(threading.Thread):
         # Equation (math performed on measurement)
         #
         elif self.math_type == 'equation':
-            device_measurement = self.device_measurements.filter(
+            math_dev_measurement = self.device_measurements.filter(
                 DeviceMeasurements.channel == 0).first()
-            if device_measurement:
+            if math_dev_measurement:
                 conversion = db_retrieve_table_daemon(
-                    Conversion, unique_id=device_measurement.conversion_id)
+                    Conversion, unique_id=math_dev_measurement.conversion_id)
             else:
                 conversion = None
             channel, unit, measurement = return_measurement_info(
-                device_measurement, conversion)
+                math_dev_measurement, conversion)
 
-            success, measure = self.get_measurements_from_str(self.equation_input)
+            success, measure = self.get_measurements_from_str(
+                self.equation_input)
             if success:
                 replaced_str = self.equation.replace('x', str(measure[0]))
                 equation_output = eval(replaced_str)
@@ -453,15 +452,16 @@ class MathController(threading.Thread):
                 device_id = each_id_measurement_id.split(',')[0]
                 measurement_id = each_id_measurement_id.split(',')[1]
 
-                device_measurement = self.device_measurements.filter(
+                math_dev_measurement = self.device_measurements.filter(
                     DeviceMeasurements.channel == 0).first()
-                if device_measurement:
+                if math_dev_measurement:
                     conversion = db_retrieve_table_daemon(
-                        Conversion, unique_id=device_measurement.conversion_id)
+                        Conversion,
+                        unique_id=math_dev_measurement.conversion_id)
                 else:
                     conversion = None
                 channel, unit, measurement = return_measurement_info(
-                    device_measurement, conversion)
+                    math_dev_measurement, conversion)
 
                 try:
                     success_measure, measure = self.get_measurements_from_id(
@@ -480,7 +480,8 @@ class MathController(threading.Thread):
                         break
 
                 except Exception as msg:
-                    self.logger.exception("redundancy Error: {err}".format(err=msg))
+                    self.logger.exception(
+                        "redundancy Error: {err}".format(err=msg))
 
             if not measurement_success:
                 self.error_not_within_max_age()
@@ -531,15 +532,15 @@ class MathController(threading.Thread):
         # Verification (only use measurement if it's close to another measurement)
         #
         elif self.math_type == 'verification':
-            device_measurement = self.device_measurements.filter(
+            math_dev_measurement = self.device_measurements.filter(
                 DeviceMeasurements.channel == 0).first()
-            if device_measurement:
+            if math_dev_measurement:
                 conversion = db_retrieve_table_daemon(
-                    Conversion, unique_id=device_measurement.conversion_id)
+                    Conversion, unique_id=math_dev_measurement.conversion_id)
             else:
                 conversion = None
             channel, unit, measurement = return_measurement_info(
-                device_measurement, conversion)
+                math_dev_measurement, conversion)
 
             success, measure = self.get_measurements_from_str(self.inputs)
             if (success and
@@ -567,31 +568,28 @@ class MathController(threading.Thread):
             critical_error = False
 
             if self.pressure_pa_id and self.pressure_pa_measure_id:
+
                 success_pa, pressure = self.get_measurements_from_id(
                     self.pressure_pa_id, self.pressure_pa_measure_id)
+
                 if success_pa:
                     pressure_pa = int(pressure[1])
                     # Pressure must be in Pa, convert if not
 
-                    if db_retrieve_table_daemon(DeviceMeasurements, unique_id=self.pressure_pa_measure_id):
-                        measurement = db_retrieve_table_daemon(DeviceMeasurements, unique_id=self.pressure_pa_measure_id)
-                    else:
-                        self.logger.error("Could not find pressure measurement")
-                        measurement = None
+                    measurement_press = db_retrieve_table_daemon(
+                        DeviceMeasurements,
+                        unique_id=self.pressure_pa_measure_id)
+                    if not measurement_press:
+                        self.logger.error(
+                            "Could not find pressure measurement")
+                        measurement_press = None
                         critical_error = True
 
-                    if measurement and measurement.unit != 'Pa':
-                        for each_conv in db_retrieve_table_daemon(Conversion, entry='all'):
-                            if (each_conv.convert_unit_from == measurement.unit and
-                                    each_conv.convert_unit_to == 'Pa'):
-                                pressure_pa = convert_units(
-                                    each_conv.unique_id, pressure_pa)
-                            else:
-                                self.logger.error(
-                                    "Could not find conversion for unit "
-                                    "{unit} to Pa (Pascals)".format(
-                                        unit=measurement.unit))
-                                critical_error = True
+                    if measurement_press and measurement_press.unit != 'Pa':
+                        pressure_pa, status = self.is_measurement_unit(
+                            measurement_press.unit, 'Pa', pressure_pa)
+                        if status == 'error':
+                            critical_error = True
 
             success_dbt, dry_bulb_t = self.get_measurements_from_id(
                 self.dry_bulb_t_id, self.dry_bulb_t_measure_id)
@@ -602,48 +600,34 @@ class MathController(threading.Thread):
                 dbt_kelvin = float(dry_bulb_t[1])
                 wbt_kelvin = float(wet_bulb_t[1])
 
-                if db_retrieve_table_daemon(DeviceMeasurements, unique_id=self.dry_bulb_t_measure_id):
-                    measurement = db_retrieve_table_daemon(DeviceMeasurements, unique_id=self.dry_bulb_t_measure_id)
-                else:
-                    self.logger.error("Could not find pressure measurement")
-                    measurement = None
+                measurement_db_temp = db_retrieve_table_daemon(
+                    DeviceMeasurements,
+                    unique_id=self.dry_bulb_t_measure_id)
+                if not measurement_db_temp:
+                    self.logger.error(
+                        "Could not find dry bulb temperature measurement")
+                    measurement_db_temp = None
                     critical_error = True
 
-                if measurement and measurement.unit != 'K':
-                    conversion_found = False
-                    for each_conv in db_retrieve_table_daemon(Conversion, entry='all'):
-                        if (each_conv.convert_unit_from == measurement.unit and
-                                each_conv.convert_unit_to == 'K'):
-                            dbt_kelvin = convert_units(
-                                each_conv.unique_id, dbt_kelvin)
-                            conversion_found = True
-                    if not conversion_found:
-                        self.logger.error(
-                            "Could not find conversion for unit "
-                            "{unit} to K (Kelvin)".format(
-                                unit=measurement.unit))
+                if measurement_db_temp and measurement_db_temp.unit != 'K':
+                    dbt_kelvin, status = self.is_measurement_unit(
+                        measurement_db_temp.unit, 'K', dbt_kelvin)
+                    if status == 'error':
                         critical_error = True
 
-                if db_retrieve_table_daemon(DeviceMeasurements, unique_id=self.dry_bulb_t_measure_id):
-                    measurement = db_retrieve_table_daemon(DeviceMeasurements, unique_id=self.dry_bulb_t_measure_id)
-                else:
-                    self.logger.error("Could not find pressure measurement")
-                    measurement = None
+                measurement_wb_temp = db_retrieve_table_daemon(
+                    DeviceMeasurements,
+                    unique_id=self.wet_bulb_t_measure_id)
+                if not measurement_wb_temp:
+                    self.logger.error(
+                        "Could not find wet bulb temperature measurement")
+                    measurement_wb_temp = None
                     critical_error = True
 
-                if measurement and measurement.unit != 'K':
-                    conversion_found = False
-                    for each_conv in db_retrieve_table_daemon(Conversion, entry='all'):
-                        if (each_conv.convert_unit_from == measurement.unit and
-                                each_conv.convert_unit_to == 'K'):
-                            wbt_kelvin = convert_units(
-                                each_conv.unique_id, wbt_kelvin)
-                            conversion_found = True
-                    if not conversion_found:
-                        self.logger.error(
-                            "Could not find conversion for unit "
-                            "{unit} to K (Kelvin)".format(
-                                unit=measurement.unit))
+                if measurement_wb_temp and measurement_wb_temp.unit != 'K':
+                    wbt_kelvin, status = self.is_measurement_unit(
+                        measurement_wb_temp.unit, 'K', wbt_kelvin)
+                    if status == 'error':
                         critical_error = True
 
                 # Convert temperatures to Kelvin (already done above)
@@ -688,7 +672,8 @@ class MathController(threading.Thread):
 
                     for each_measurement in self.device_measurements.all():
                         conversion = db_retrieve_table_daemon(
-                            Conversion, unique_id=each_measurement.conversion_id)
+                            Conversion,
+                            unique_id=each_measurement.conversion_id)
                         channel, unit, measurement = return_measurement_info(
                             each_measurement, conversion)
 
@@ -707,65 +692,41 @@ class MathController(threading.Thread):
             vpd_pa = None
             critical_error = False
 
-            success_dbt, temperature = self.get_measurements_from_id(
+            success_temp, temperature = self.get_measurements_from_id(
                 self.unique_id_1, self.unique_measurement_id_1)
-            success_wbt, humidity = self.get_measurements_from_id(
+            success_hum, humidity = self.get_measurements_from_id(
                 self.unique_id_2, self.unique_measurement_id_2)
 
-            if success_dbt and success_wbt:
+            if success_temp and success_hum:
                 vpd_temperature_celsius = float(temperature[1])
                 vpd_humidity_percent = float(humidity[1])
 
-                if db_retrieve_table_daemon(
-                        DeviceMeasurements,
-                        unique_id=self.unique_measurement_id_1):
-                    measurement = db_retrieve_table_daemon(
-                        DeviceMeasurements,
-                        unique_id=self.unique_measurement_id_1)
-                else:
+                measurement_temp = db_retrieve_table_daemon(
+                    DeviceMeasurements,
+                    unique_id=self.unique_measurement_id_1)
+                if not measurement_temp:
                     self.logger.error("Could not find temperature measurement")
-                    measurement = None
+                    measurement_temp = None
                     critical_error = True
 
-                if measurement and measurement.unit != 'C':
-                    conversion_found = False
-                    for each_conv in db_retrieve_table_daemon(Conversion, entry='all'):
-                        if (each_conv.convert_unit_from == measurement.unit and
-                                each_conv.convert_unit_to == 'C'):
-                            vpd_temperature_celsius = convert_units(
-                                each_conv.unique_id, vpd_temperature_celsius)
-                            conversion_found = True
-                    if not conversion_found:
-                        self.logger.error(
-                            "Could not find conversion for unit "
-                            "{unit} to C (Celsius)".format(
-                                unit=measurement.unit))
+                if measurement_temp and measurement_temp.unit != 'C':
+                    vpd_temperature_celsius, status = self.is_measurement_unit(
+                        measurement_temp.unit, 'C', vpd_temperature_celsius)
+                    if status == 'error':
                         critical_error = True
 
-                if db_retrieve_table_daemon(
-                        DeviceMeasurements,
-                        unique_id=self.unique_measurement_id_2):
-                    measurement = db_retrieve_table_daemon(
-                        DeviceMeasurements,
-                        unique_id=self.unique_measurement_id_2)
-                else:
+                measurement_hum = db_retrieve_table_daemon(
+                    DeviceMeasurements,
+                    unique_id=self.unique_measurement_id_2)
+                if not measurement_hum:
                     self.logger.error("Could not find humidity measurement")
-                    measurement = None
+                    measurement_hum = None
                     critical_error = True
 
-                if measurement and measurement.unit != 'percent':
-                    conversion_found = False
-                    for each_conv in db_retrieve_table_daemon(Conversion, entry='all'):
-                        if (each_conv.convert_unit_from == measurement.unit and
-                                each_conv.convert_unit_to == 'percent'):
-                            vpd_humidity_percent = convert_units(
-                                each_conv.unique_id, vpd_humidity_percent)
-                            conversion_found = True
-                    if not conversion_found:
-                        self.logger.error(
-                            "Could not find conversion for unit "
-                            "{unit} to percent (%)".format(
-                                unit=measurement.unit))
+                if measurement_hum and measurement_hum.unit != 'percent':
+                    vpd_humidity_percent, status = self.is_measurement_unit(
+                        measurement_hum.unit, 'percent', vpd_humidity_percent)
+                    if status == 'error':
                         critical_error = True
 
                 try:
@@ -780,11 +741,11 @@ class MathController(threading.Thread):
                     self.logger.error("TypeError: {msg}".format(msg=err))
 
                 if vpd_pa:
-                    measure = self.device_measurements.first()
+                    math_dev_measurement = self.device_measurements.first()
                     conversion = db_retrieve_table_daemon(
-                        Conversion, unique_id=measure.conversion_id)
+                        Conversion, unique_id=math_dev_measurement.conversion_id)
                     channel, unit, measurement = return_measurement_info(
-                        measure, conversion)
+                        math_dev_measurement, conversion)
 
                     measurement_dict[channel] = {
                         'measurement': measurement,
@@ -802,6 +763,23 @@ class MathController(threading.Thread):
             "Adding measurements to InfluxDB with ID {}: {}".format(
                 self.unique_id, measurement_dict))
         add_measurements_influxdb(self.unique_id, measurement_dict)
+
+    def is_measurement_unit(self, unit_from, unit_to, value):
+        """ Converts value from one measurement to another """
+        if unit_from != unit_to:
+            for each_conv in db_retrieve_table_daemon(Conversion, entry='all'):
+                if (each_conv.convert_unit_from == unit_from and
+                        each_conv.convert_unit_to == unit_to):
+                    return_value = convert_units(
+                        each_conv.unique_id, value)
+                    return return_value, 'success'
+                else:
+                    self.logger.error(
+                        "Could not find conversion for unit "
+                        "{unit_from} to {unit_to}".format(
+                            unit_from=unit_from,
+                            unit_to=unit_to))
+                    return None, 'error'
 
     def error_not_within_max_age(self):
         self.logger.debug(
