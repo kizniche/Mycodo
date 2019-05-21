@@ -288,13 +288,17 @@ def run_action(action_id, message=message):
 
             codeOut.close()
             codeErr.close()
-        except:
+        except TimeoutError:
+            self.logger.error("RPyC timed out. To prevent this error, increase the "
+                              "RPyC Timeout value in the configuration menu.")
+        except Exception:
             self.logger.error(
                 "Error evaluating conditional statement. Code and Traceback below.\n"
                 "Conditional Statement Executed:\n\n{cond_rep}\n\n"
                 "Conditional Statement Traceback:\n\n{traceback}".format(
                     cond_rep=cond_statement_replaced,
                     traceback=traceback.format_exc()))
+
 
     def is_running(self):
         return self.running

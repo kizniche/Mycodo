@@ -30,7 +30,14 @@ import signal
 import socket
 import sys
 
+import os
 import rpyc
+
+sys.path.append(
+    os.path.abspath(os.path.join(os.path.dirname(__file__), os.path.pardir)))
+
+from mycodo.databases.models import Misc
+from mycodo.utils.database import db_retrieve_table_daemon
 
 logging.basicConfig(
     stream=sys.stdout,
@@ -50,8 +57,18 @@ class DaemonControl:
 
     """
     def __init__(self):
+        rpyc_timeout = 30
         try:
-            self.rpyc_client = rpyc.connect("localhost", 18813)
+            misc = db_retrieve_table_daemon(Misc, entry='first')
+            rpyc_timeout = misc.rpyc_timeout
+        except:
+            logger.error("Could not access SQL table to determine RPyC Timeout")
+
+        try:
+            self.rpyc_client = rpyc.connect(
+                "localhost",
+                port=18813,
+                config={'sync_request_timeout': rpyc_timeout})
         except socket.error:
             raise Exception("Connection refused. Is the daemon running?")
 

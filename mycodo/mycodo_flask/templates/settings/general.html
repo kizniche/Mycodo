@@ -34,6 +34,12 @@
         </div>
       </div>
       <div class="form-group">
+        {{form_settings_general.rpyc_timeout.label(class_='col-sm-12 control-label checkbox-nopad')}}
+        <div class="col-sm-12">
+          {{form_settings_general.rpyc_timeout(class_='form-control', value=misc.rpyc_timeout, **{'title':_("Set the timeout (seconds) for RPyC connections (client-daemon communication). Requires daemon restart.")})}}
+        </div>
+      </div>
+      <div class="form-group">
         {{form_settings_general.force_https.label(class_='col-sm-12 control-label checkbox-nopad')}}
         <div class="col-sm-12">
           {%- if misc.force_https == true -%}

@@ -1,3 +1,10 @@
+## 7.5.4 (Unreleased)
+
+### Features
+
+ - Add RPyC Timeout configuration option
+
+
 ## 7.5.3 (2019-05-17)
 
 ### Bugfixes

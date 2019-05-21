@@ -70,9 +70,9 @@ def measure_dict(condition_id):
         {'time': '2019-04-24T18:12:00.000Z', 'value': 100000},
     ]
 
-def get_pid_setpoint(condition_id):
+def run_all_actions(message=message):
     # pylint: disable=unused-argument
-    return True
+    pass
 
 def run_action(action_id, message=message):
     # pylint: disable=unused-argument

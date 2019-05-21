@@ -262,8 +262,10 @@ def settings_general_mod(form):
         if not error:
             try:
                 mod_misc = Misc.query.first()
+
                 force_https = mod_misc.force_https
                 mod_misc.force_https = form.force_https.data
+                mod_misc.rpyc_timeout = form.rpyc_timeout.data
                 mod_misc.hide_alert_success = form.hide_success.data
                 mod_misc.hide_alert_info = form.hide_info.data
                 mod_misc.hide_alert_warning = form.hide_warning.data
