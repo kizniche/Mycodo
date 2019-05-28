@@ -48,14 +48,6 @@ def pid_mod(form_mod_pid_base,
     mod_pid = PID.query.filter(
         PID.unique_id == form_mod_pid_base.function_id.data).first()
 
-    # Check if a specific setting can be modified if the PID is active
-    if mod_pid.is_activated:
-        error = can_set_output(
-            error,
-            form_mod_pid_base.function_id.data,
-            form_mod_pid_base.raise_output_id.data,
-            form_mod_pid_base.lower_output_id.data)
-
     mod_pid.name = form_mod_pid_base.name.data
     mod_pid.measurement = form_mod_pid_base.measurement.data
     mod_pid.direction = form_mod_pid_base.direction.data
@@ -259,9 +251,6 @@ def pid_activate(pid_id):
     pid = PID.query.filter(
         PID.unique_id == pid_id).first()
 
-    error = can_set_output(
-        error, pid_id, pid.raise_output_id, pid.lower_output_id)
-
     device_unique_id = pid.measurement.split(',')[0]
     input_dev = Input.query.filter(
         Input.unique_id == device_unique_id).first()
@@ -348,20 +337,3 @@ def pid_manipulate(pid_id, action):
                 TRANSLATIONS['Error']['title'],
                 TRANSLATIONS['PID']['title'], err),
             "error")
-
-
-def can_set_output(error, pid_id, raise_output_id, lower_output_id):
-    """ Don't allow an output to be used with more than one active PID """
-    pid_all = (PID.query
-               .filter(PID.is_activated == True)
-               .filter(PID.unique_id != pid_id)).all()
-    for each_pid in pid_all:
-        if ((raise_output_id and
-                (raise_output_id == each_pid.raise_output_id or
-                 raise_output_id == each_pid.lower_output_id)) or
-            (lower_output_id and
-                (lower_output_id == each_pid.lower_output_id or
-                 lower_output_id == each_pid.raise_output_id))):
-            error.append(gettext(
-                "Output already in use by another active PID controller"))
-    return error
