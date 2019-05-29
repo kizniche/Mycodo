@@ -106,6 +106,7 @@ def test_routes_logged_in_as_admin(_, testapp):
     login_user(testapp, 'admin', '53CR3t_p4zZW0rD')
 
     # Test if the navigation bar is seen on the main page
+    print("Test: test_routes_logged_in_as_admin: sees_navbar(testapp)")
     sees_navbar(testapp)
 
     # Test all endpoints
@@ -142,7 +143,9 @@ def test_routes_logged_in_as_admin(_, testapp):
         ('usage', '<!-- Route: /usage -->'),
         ('usage_reports', '<!-- Route: /usage_reports -->')
     ]
+
     for route in routes:
+        print("Test: test_routes_logged_in_as_admin: testapp.get('/{}').maybe_follow()".format(route[0]))
         response = testapp.get('/{add}'.format(add=route[0])).maybe_follow()
         assert response.status_code == 200, "Endpoint Tested: {page}".format(page=route[0])
         assert route[1] in response, "Unexpected HTTP Response: \n{body}".format(body=response.body)
