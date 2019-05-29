@@ -7,6 +7,7 @@ from mycodo.databases.models import Input
 from mycodo.databases.models import Math
 from mycodo.databases.models import User
 from mycodo.mycodo_flask.utils.utils_general import generate_form_input_list
+from mycodo.tests.software_tests.conftest import create_misc_entry
 from mycodo.tests.software_tests.conftest import login_user
 from mycodo.tests.software_tests.factories import UserFactory
 from mycodo.utils.inputs import parse_input_information
@@ -103,6 +104,9 @@ def test_routes_when_not_logged_in(testapp):
 def test_routes_logged_in_as_admin(_, testapp):
     """ Verifies behavior of these endpoints for a logged in admin user """
     print("\nTest: test_routes_logged_in_as_admin")
+
+    print("Test: test_routes_logged_in_as_admin: create_misc_entry()")
+    create_misc_entry()
 
     print("Test: test_routes_logged_in_as_admin: login_user(testapp, 'admin', '53CR3t_p4zZW0rD')")
     login_user(testapp, 'admin', '53CR3t_p4zZW0rD')
