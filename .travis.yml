@@ -18,4 +18,4 @@ install:
   - sed -i '/picamera/d' install/requirements.txt
   - pip3 install --upgrade -r install/requirements.txt
 script:
-  - cd mycodo && pytest -W ignore::DeprecationWarning tests/software_tests
+  - cd mycodo && pytest -W ignore::DeprecationWarning -s tests/software_tests

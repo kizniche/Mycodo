@@ -1791,7 +1791,9 @@ def page_data():
 
     # Add 1-wire devices from ow-shell (if installed)
     devices_1wire_ow_shell = []
-    if not dpkg_package_exists('ow-shell'):
+    if current_app.config['TESTING']:
+        logger.debug("Testing: Skipping testing for 'ow-shell'")
+    elif not dpkg_package_exists('ow-shell'):
         logger.debug("Package 'ow-shell' not found")
     else:
         logger.debug("Package 'ow-shell' found")

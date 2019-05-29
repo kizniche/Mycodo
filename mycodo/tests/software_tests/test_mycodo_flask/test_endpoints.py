@@ -163,9 +163,10 @@ def test_add_all_data_devices_logged_in_as_admin(_, testapp):
             for each_interface in dict_inputs[each_input]['interfaces']:
                 choices_input.append('{inp},{int}'.format(inp=each_input, int=each_interface))
 
-    for each_input in choices_input:
+    print("\n")
+    for index, each_input in enumerate(choices_input):
         choice_name = each_input.split(',')[0]
-        print("Testing {}".format(each_input))
+        print("Testing adding Input ({}/{}): {}".format(index + 1, len(choices_input), each_input))
         response = add_data(testapp, data_type='input', input_type=each_input)
 
         # Verify success message flashed
@@ -181,7 +182,8 @@ def test_add_all_data_devices_logged_in_as_admin(_, testapp):
 
     # Add All Maths
     math_count = 0
-    for each_math in MATH_INFO.keys():
+    for index, each_math in enumerate(MATH_INFO.keys()):
+        print("Testing adding Math ({}/{}): {}".format(index + 1, len(MATH_INFO.keys()), each_math))
         response = add_data(testapp, data_type='math', input_type=each_math)
 
         # Verify success message flashed
