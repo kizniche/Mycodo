@@ -7,7 +7,6 @@ from mycodo.databases.models import Input
 from mycodo.databases.models import Math
 from mycodo.databases.models import User
 from mycodo.mycodo_flask.utils.utils_general import generate_form_input_list
-from mycodo.tests.software_tests.conftest import create_misc_entry
 from mycodo.tests.software_tests.conftest import login_user
 from mycodo.tests.software_tests.factories import UserFactory
 from mycodo.utils.inputs import parse_input_information
