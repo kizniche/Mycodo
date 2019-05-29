@@ -1,9 +1,10 @@
-## 7.5.4 (Unreleased)
+## 7.5.4 (2019-05-29)
 
 ### Bugfixes
 
  - Increase lock timeout for Ruuvitag and SHT31 Smart Gadget ([#638](https://github.com/kizniche/mycodo/issues/638))
  - Fix IO error during locking for Ruuvitag ([#638](https://github.com/kizniche/mycodo/issues/638))
+ - Fix pytests
 
 ### Features
 
