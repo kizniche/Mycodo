@@ -296,7 +296,7 @@ class OutputController(threading.Thread):
                 if off_until_datetime and off_until_datetime > current_time and not self.is_on(output_id):
                     off_seconds = (
                         off_until_datetime - current_time).total_seconds()
-                    self.logger.error(
+                    self.logger.debug(
                         "Output {id} ({name}) instructed to turn on, however "
                         "the output has been instructed to stay off for "
                         "{off_sec:.2f} more seconds.".format(
