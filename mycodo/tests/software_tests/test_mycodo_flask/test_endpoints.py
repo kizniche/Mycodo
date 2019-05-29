@@ -105,9 +105,6 @@ def test_routes_logged_in_as_admin(_, testapp):
     """ Verifies behavior of these endpoints for a logged in admin user """
     print("\nTest: test_routes_logged_in_as_admin")
 
-    print("Test: test_routes_logged_in_as_admin: create_misc_entry()")
-    create_misc_entry()
-
     print("Test: test_routes_logged_in_as_admin: login_user(testapp, 'admin', '53CR3t_p4zZW0rD')")
     login_user(testapp, 'admin', '53CR3t_p4zZW0rD')
 

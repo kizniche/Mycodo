@@ -24,9 +24,7 @@ from mycodo.mycodo_flask.app import create_app
 from mycodo.config import TestConfig
 from webtest import TestApp
 from mycodo.mycodo_flask.extensions import db as _db
-from mycodo.tests.software_tests.factories import MiscFactory
 from mycodo.tests.software_tests.factories import UserFactory
-from mycodo.databases.models import Misc
 from mycodo.databases.models import Role
 from mycodo.databases.models import User
 from mycodo.databases.models import populate_db
@@ -102,14 +100,6 @@ def create_guest_user():
         user.language = 'en'
         user.save()
 
-def create_misc_entry():
-    """ Create a Misc table entry in the database """
-    print("Misc entries: {}, {}".format(Misc.query.count(), Misc.query.first()))
-    if not Misc.query.first():
-        print("Adding Misc table entry")
-        misc = MiscFactory()
-        misc.id = 1
-        misc.save()
 
 def login_user(app, username, password):
     """

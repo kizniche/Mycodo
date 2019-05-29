@@ -40,8 +40,11 @@ blueprint.before_request(before_request_admin_exist)
 def inject_variables():
     """Variables to send with every page request"""
     try:
-        control = DaemonControl()
-        daemon_status = control.daemon_status()
+        if not current_app.config['TESTING']:
+            control = DaemonControl()
+            daemon_status = control.daemon_status()
+        else:
+            daemon_status = '0'
     except Exception as e:
         logger.debug("URL for 'inject_variables' raised and error: "
                      "{err}".format(err=e))
