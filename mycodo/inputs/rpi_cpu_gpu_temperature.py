@@ -47,6 +47,8 @@ class InputModule(AbstractInput):
         super(InputModule, self).__init__()
         self.setup_logger(testing=testing, name=__name__, input_dev=input_dev)
 
+        self.logger.error("TEST00: {}".format(self.logger.getEffectiveLevel()))
+
         if not testing:
             self.device_measurements = db_retrieve_table_daemon(
                 DeviceMeasurements).filter(

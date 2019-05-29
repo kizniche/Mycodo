@@ -108,13 +108,8 @@ def login_user(app, username, password):
     :returns: None
     """
     res = app.get('/login')
-    print("TEST00")
     form = res.forms['login_form']
-    print("TEST01")
     form['username'] = username
-    print("TEST02")
     form['password'] = password
-    print("TEST03")
     form.submit().maybe_follow()
-    print("TEST04")
     return None

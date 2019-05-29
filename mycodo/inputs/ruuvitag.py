@@ -130,7 +130,8 @@ class InputModule(AbstractInput):
             lock_acquired = True
         except:
             self.logger.error("Could not acquire lock. Breaking for future locking.")
-            os.remove(self.lock_file_bluetooth)
+            if os.path.exists(self.lock_file_bluetooth):
+                os.remove(self.lock_file_bluetooth)
 
         if lock_acquired:
             from mycodo.utils.system_pi import cmd_output

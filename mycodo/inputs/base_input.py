@@ -121,9 +121,12 @@ class AbstractInput(object):
                 "{cls}.get_measurement() method raised IOError: "
                 "{err}".format(cls=type(self).__name__, err=e))
         except Exception as e:
-            self.logger.exception(
-                "{cls} raised an exception when taking a reading: "
-                "{err}".format(cls=type(self).__name__, err=e))
+            msg = "{cls} raised an exception when taking a reading: " \
+                  "{err}".format(cls=type(self).__name__, err=e)
+            if self.logger.getEffectiveLevel() == 10:  # 10 == DEBUG logging level, 20 == INFO
+                self.logger.exception(msg)
+            else:
+                self.logger.error(msg)
         return 1
 
     def get_value(self, channel):
