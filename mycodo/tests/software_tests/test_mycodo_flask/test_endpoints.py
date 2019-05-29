@@ -103,6 +103,8 @@ def test_routes_when_not_logged_in(testapp):
 def test_routes_logged_in_as_admin(_, testapp):
     """ Verifies behavior of these endpoints for a logged in admin user """
     print("\nTest: test_routes_logged_in_as_admin")
+
+    print("Test: test_routes_logged_in_as_admin: login_user(testapp, 'admin', '53CR3t_p4zZW0rD')")
     login_user(testapp, 'admin', '53CR3t_p4zZW0rD')
 
     # Test if the navigation bar is seen on the main page
