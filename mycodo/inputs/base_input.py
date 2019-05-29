@@ -216,5 +216,13 @@ class AbstractInput(object):
         """ Not used yet """
         self.running = True
 
+    @staticmethod
+    def str_is_float(str_value):
+        try:
+            test = float(str(str_value))
+            return True
+        except:
+            return False
+
     def is_acquiring_measurement(self):
         return self.acquiring_measurement

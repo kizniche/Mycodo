@@ -113,7 +113,8 @@ class InputModule(AbstractInput):
                     DeviceMeasurements.device_id == input_dev.unique_id)
 
             self.locket = locket
-            self.lock_file_bluetooth = '/var/lock/bluetooth_dev_hci{}'.format(input_dev.bt_adapter)
+            self.lock_file_bluetooth = '/var/lock/bluetooth_dev_hci{}'.format(
+                input_dev.bt_adapter)
             self.location = input_dev.location
             self.bt_adapter = input_dev.bt_adapter
 
@@ -123,7 +124,7 @@ class InputModule(AbstractInput):
         lock_acquired = False
 
         # Set up lock
-        lock = self.locket.lock_file(self.lock_file_bluetooth, timeout=1200)
+        lock = self.locket.lock_file(self.lock_file_bluetooth, timeout=3600)
         try:
             lock.acquire()
             lock_acquired = True
@@ -141,10 +142,9 @@ class InputModule(AbstractInput):
 
             values = cmd_return.decode('ascii').split(',')
 
-            try:
-                test = float(str(values[0]))
-            except ValueError:
+            if not self.str_is_float(values[0]):
                 self.logger.debug("Could not convert string to float: string '{}'".format(str(values[0])))
+                return
 
             if self.is_enabled(0):
                 self.set_value(0, float(str(values[0])))
@@ -182,7 +182,7 @@ class InputModule(AbstractInput):
                 self.set_value(9, calculate_vapor_pressure_deficit(
                     self.get_value(0), self.get_value(1)))
 
-        lock.release()
-        os.remove(self.lock_file_bluetooth)
+            lock.release()
+            os.remove(self.lock_file_bluetooth)
 
         return self.return_dict

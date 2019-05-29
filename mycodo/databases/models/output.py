@@ -26,6 +26,7 @@ class Output(CRUDMixin, db.Model):
     on_state = db.Column(db.Boolean, default=True)  # GPIO output to turn output on (True=HIGH, False=LOW)
     amps = db.Column(db.Float, default=0.0)  # The current drawn by the device connected to the output
     on_until = db.Column(db.DateTime, default=None)  # Stores time to turn off output (if on for a duration)
+    off_until = db.Column(db.DateTime, default=None)  # Stores time the output can turn on again
     last_duration = db.Column(db.Float, default=None)  # Stores the last on duration (seconds)
     on_duration = db.Column(db.Boolean, default=None)  # Stores if the output is currently on for a duration
     protocol = db.Column(db.Integer, default=None)

@@ -261,7 +261,7 @@ class InputModule(AbstractInput):
             list_timestamps_humi.append(each_ts)
             datetime_ts = datetime.datetime.utcfromtimestamp(each_ts / 1000)
             if self.is_enabled(1):
-                if 0 > each_measure or each_measure > 100:
+                if 0 >= each_measure or each_measure > 100:
                     continue  # Humidity outside acceptable range
 
                 measurement_single = {
@@ -377,7 +377,7 @@ class InputModule(AbstractInput):
         lock_acquired = False
 
         # Set up lock
-        lock = self.locket.lock_file(self.lock_file_bluetooth, timeout=1200)
+        lock = self.locket.lock_file(self.lock_file_bluetooth, timeout=3600)
         try:
             lock.acquire()
             lock_acquired = True

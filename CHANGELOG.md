@@ -1,8 +1,18 @@
 ## 7.5.4 (Unreleased)
 
+### Bugfixes
+
+ - Increase lock timeout for Ruuvitag and SHT31 Smart Gadget ([#638](https://github.com/kizniche/mycodo/issues/638))
+ - Fix IO error during locking for Ruuvitag ([#638](https://github.com/kizniche/mycodo/issues/638))
+
 ### Features
 
  - Add RPyC Timeout configuration option
+ - Allow multiple PIDs to use the same output ([#661](https://github.com/kizniche/mycodo/issues/661))
+ 
+### Miscellaneous
+
+ - Refactor Min Off Duration to be centrally controlled by the Output Controller ([#660](https://github.com/kizniche/mycodo/issues/660))
 
 
 ## 7.5.3 (2019-05-17)

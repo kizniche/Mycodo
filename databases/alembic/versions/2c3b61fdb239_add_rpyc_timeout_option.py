@@ -20,6 +20,9 @@ def upgrade():
     with op.batch_alter_table("misc") as batch_op:
         batch_op.add_column(sa.Column('rpyc_timeout', sa.Integer))
 
+    with op.batch_alter_table("output") as batch_op:
+        batch_op.add_column(sa.Column('off_until', sa.DateTime))
+
     op.execute(
         '''
         UPDATE misc
@@ -31,3 +34,6 @@ def upgrade():
 def downgrade():
     with op.batch_alter_table("misc") as batch_op:
         batch_op.drop_column('rpyc_timeout')
+
+    with op.batch_alter_table("output") as batch_op:
+        batch_op.drop_column('off_until')
