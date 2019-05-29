@@ -836,14 +836,17 @@ def page_info():
     if uname_output:
         uname_output = uname_output.decode("latin1")
 
-    gpio = subprocess.Popen(
-        "gpio readall", stdout=subprocess.PIPE, shell=True)
-    (gpio_output, _) = gpio.communicate()
-    gpio.wait()
-    if gpio_output:
-        gpio_output = gpio_output.decode("latin1")
+    if not current_app.config['TESTING']:
+        gpio = subprocess.Popen(
+            "gpio readall", stdout=subprocess.PIPE, shell=True)
+        (gpio_output, _) = gpio.communicate()
+        gpio.wait()
+        if gpio_output:
+            gpio_output = gpio_output.decode("latin1")
+    else:
+        gpio_output = ''
 
-    # Search for /dev/i2c- devices and compile a sorted dictionary of each
+        # Search for /dev/i2c- devices and compile a sorted dictionary of each
     # device's integer device number and the corresponding 'i2cdetect -y ID'
     # output for display on the info page
     i2c_devices_sorted = {}

@@ -5,6 +5,7 @@ import logging
 import flask_login
 import operator
 import os
+from flask import current_app
 from flask import redirect
 from flask import render_template
 from flask import request
@@ -85,7 +86,8 @@ def settings_camera():
 
     pi_camera_enabled = False
     try:
-        if 'start_x=1' in open('/boot/config.txt').read():
+        if (not current_app.config['TESTING'] and
+                'start_x=1' in open('/boot/config.txt').read()):
             pi_camera_enabled = True
     except IOError as e:
         logger.error("Camera IOError raised in '/settings/camera' endpoint: "
