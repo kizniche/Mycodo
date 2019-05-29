@@ -31,6 +31,7 @@ def redirects_to_admin_creation_page(testapp, endpoint):
 
 def test_sees_admin_creation_form(testapp):
     """ No Admin user exists: user sees the admin creation page """
+    print("\nTest: test_sees_admin_creation_form")
     # Delete all admin users to show the admin creation form
     for each_admin in User.query.filter_by(role_id=1).all():
         each_admin.delete()
@@ -40,6 +41,7 @@ def test_sees_admin_creation_form(testapp):
 
 def test_does_not_see_admin_creation_form(testapp):
     """ Admin user exists: user sees the normal login page """
+    print("\nTest: test_does_not_see_admin_creation_form")
     expected_body_msg = "<!-- Route: /login -->"
     assert expected_body_msg in testapp.get('/').maybe_follow()
 
@@ -49,6 +51,7 @@ def test_routes_when_not_logged_in(testapp):
     Verifies behavior of these endpoints when not logged in.
     All endpoint requests should redirect to the login page.
     """
+    print("\nTest: test_routes_when_not_logged_in")
     routes = [
         '',
         'admin/backup',
@@ -99,6 +102,7 @@ def test_routes_when_not_logged_in(testapp):
 @mock.patch('mycodo.mycodo_flask.routes_authentication.login_log')
 def test_routes_logged_in_as_admin(_, testapp):
     """ Verifies behavior of these endpoints for a logged in admin user """
+    print("\nTest: test_routes_logged_in_as_admin")
     login_user(testapp, 'admin', '53CR3t_p4zZW0rD')
 
     # Test if the navigation bar is seen on the main page
@@ -147,6 +151,7 @@ def test_routes_logged_in_as_admin(_, testapp):
 @mock.patch('mycodo.mycodo_flask.routes_authentication.login_log')
 def test_add_all_data_devices_logged_in_as_admin(_, testapp):
     """ Verifies adding all inputs as a logged in admin user """
+    print("\nTest: test_add_all_data_devices_logged_in_as_admin")
     login_user(testapp, 'admin', '53CR3t_p4zZW0rD')
 
     # Add All Inputs
@@ -163,7 +168,6 @@ def test_add_all_data_devices_logged_in_as_admin(_, testapp):
             for each_interface in dict_inputs[each_input]['interfaces']:
                 choices_input.append('{inp},{int}'.format(inp=each_input, int=each_interface))
 
-    print("\n")
     for index, each_input in enumerate(choices_input):
         choice_name = each_input.split(',')[0]
         print("Testing adding Input ({}/{}): {}".format(index + 1, len(choices_input), each_input))
@@ -205,6 +209,7 @@ def test_add_all_data_devices_logged_in_as_admin(_, testapp):
 @mock.patch('mycodo.mycodo_flask.routes_authentication.login_log')
 def test_routes_logged_in_as_guest(_, testapp):
     """ Verifies behavior of these endpoints for a logged in guest user """
+    print("\nTest: test_routes_logged_in_as_guest")
     login_user(testapp, 'guest', '53CR3t_p4zZW0rD')
 
     # Test if the navigation bar is seen on the main page
