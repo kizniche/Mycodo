@@ -1,3 +1,10 @@
+## 7.5.5 (Unreleased)
+
+### Features
+
+ - Add --get_measurement parameter to mycodo_client.py
+
+
 ## 7.5.4 (2019-05-29)
 
 ### Bugfixes

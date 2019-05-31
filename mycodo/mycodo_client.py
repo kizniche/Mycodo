@@ -31,11 +31,18 @@ import socket
 import sys
 
 import os
-import rpyc
-
 sys.path.append(
     os.path.abspath(os.path.join(os.path.dirname(__file__), os.path.pardir)))
 
+import requests
+import rpyc
+from influxdb import InfluxDBClient
+
+from mycodo.config import INFLUXDB_DATABASE
+from mycodo.config import INFLUXDB_HOST
+from mycodo.config import INFLUXDB_PASSWORD
+from mycodo.config import INFLUXDB_PORT
+from mycodo.config import INFLUXDB_USER
 from mycodo.databases.models import Misc
 from mycodo.utils.database import db_retrieve_table_daemon
 
@@ -300,6 +307,12 @@ def parseargs(parser):
                         help='Force acquiring measurements for Input ID',
                         required=False)
 
+    # Measurement
+    parser.add_argument('--get_measurement', nargs=3,
+                        metavar=('ID', 'UNIT', 'CHANNEL'), type=str,
+                        help='Get the last measurement',
+                        required=False)
+
     # LCD
     parser.add_argument('--lcd_backlight_on', metavar='LCDID', type=str,
                         help='Turn on LCD backlight with LCD ID',
@@ -364,10 +377,37 @@ if __name__ == "__main__":
 
     elif args.input_force_measurements:
         return_msg = daemon.input_force_measurements(args.input_force_measurements)
-        logger.info("[Remote command] Fore acquiring measurements for Input with ID '{id}': "
+        logger.info("[Remote command] Force acquiring measurements for Input with ID '{id}': "
                     "Server returned: {msg}".format(
                         id=args.input_force_measurements,
                         msg=return_msg))
+
+    elif args.get_measurement:
+        client = InfluxDBClient(INFLUXDB_HOST, INFLUXDB_PORT, INFLUXDB_USER,
+                                INFLUXDB_PASSWORD, INFLUXDB_DATABASE, timeout=5)
+        query = "SELECT LAST(value) FROM {unit} " \
+                "WHERE device_id='{id}' " \
+                "AND channel='{channel}'".format(
+            unit=args.get_measurement[1],
+            id=args.get_measurement[0],
+            channel=args.get_measurement[2])
+
+        try:
+            last_measurement = client.query(query).raw
+        except requests.exceptions.ConnectionError:
+            logger.debug("ERROR;Failed to establish a new influxdb connection. Ensure influxdb is running.")
+            last_measurement = None
+
+        if last_measurement and 'series' in last_measurement:
+            try:
+                number = len(last_measurement['series'][0]['values'])
+                last_time = last_measurement['series'][0]['values'][number - 1][0]
+                last_measurement = last_measurement['series'][0]['values'][number - 1][1]
+                print("SUCCESS;{};{}".format(last_measurement,last_time))
+            except Exception:
+                logger.info("ERROR;Could not retrieve measurement.")
+        else:
+            logger.info("ERROR;Could not retrieve measurement.")
 
     elif args.lcd_reset:
         return_msg = daemon.lcd_reset(args.lcd_reset)
