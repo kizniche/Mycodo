@@ -374,6 +374,7 @@ class InputModule(AbstractInput):
         """ Obtain and return the measurements """
         self.return_dict = measurements_dict.copy()
 
+        self.logger.debug("Starting measurement")
         try:
             with self.filelock.FileLock(self.lock_file_bluetooth, timeout=3600):
                 if not self.initialized:
@@ -427,7 +428,10 @@ class InputModule(AbstractInput):
                         self.set_value(4, calculate_vapor_pressure_deficit(
                             self.get_value(0), self.get_value(1)))
 
-                return self.return_dict
+                    self.logger.debug("Completed measurement")
+                    return self.return_dict
+                else:
+                    self.logger.debug("Not connected: Not measuring")
 
         except self.filelock.Timeout:
             self.logger.error("Lock timeout")
