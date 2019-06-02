@@ -1,5 +1,9 @@
 ## 7.5.5 (Unreleased)
 
+### Bugfixes
+
+ - Add influxdb read/write wait timers to prevent connection errors at startup before influxdb has started
+
 ### Features
 
  - Add --get_measurement parameter to mycodo_client.py

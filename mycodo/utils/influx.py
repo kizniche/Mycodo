@@ -2,6 +2,7 @@
 import datetime
 import logging
 import threading
+import time
 from uuid import UUID
 
 import requests
@@ -236,6 +237,7 @@ def query_string(unit, unique_id,
 
 
 def read_past_influxdb(unique_id, unit, measurement, channel, past_seconds):
+    raw_data = None
     client = InfluxDBClient(
         INFLUXDB_HOST,
         INFLUXDB_PORT,
@@ -251,7 +253,18 @@ def read_past_influxdb(unique_id, unit, measurement, channel, past_seconds):
         past_sec=past_seconds)
     if query_str == 1:
         return '', 204
-    raw_data = client.query(query_str).raw
+    try:
+        raw_data = client.query(query_str).raw
+    except:
+        logger.debug(
+            "Could not read form influxdb for ID {}, channel {}. "
+            "waiting 15 seconds and trying again.".format(unique_id, channel))
+        time.sleep(15)
+        try:
+            raw_data = client.query(query_str).raw
+        except:
+            logger.debug("Could not read form influxdb after waiting 15 seconds.")
+
     if raw_data and 'series' in raw_data:
         return raw_data['series'][0]['values']
 
@@ -297,8 +310,15 @@ def read_last_influxdb(unique_id, unit, measurement, channel, duration_sec=None)
     try:
         last_measurement = client.query(query).raw
     except requests.exceptions.ConnectionError:
-        logger.debug("Failed to establish a new influxdb connection. Ensure influxdb is running.")
-        last_measurement = None
+        logger.debug(
+            "Could not read form influxdb for ID {}, channel {}. "
+            "waiting 15 seconds and trying again.".format(unique_id, channel))
+        time.sleep(15)
+        try:
+            last_measurement = client.query(query).raw
+        except requests.exceptions.ConnectionError:
+            logger.debug("Failed to establish a new influxdb connection. Ensure influxdb is running.")
+            last_measurement = None
 
     if last_measurement and 'series' in last_measurement:
         try:
@@ -325,7 +345,10 @@ def output_sec_on(output_id, past_seconds):
         control = DaemonControl()
         output_time_on = control.output_sec_currently_on(output_id)
 
-    query = query_string('s', output.unique_id, measure='duration_time', channel=0, value='SUM',
+    query = query_string('s', output.unique_id,
+                         measure='duration_time',
+                         channel=0,
+                         value='SUM',
                          past_sec=past_seconds)
     query_output = client.query(query)
     sec_recorded_on = 0
@@ -343,7 +366,10 @@ def average_past_seconds(unique_id, unit, channel, past_seconds, measure=None):
     """Return measurement average for the past x seconds"""
     client = InfluxDBClient(INFLUXDB_HOST, INFLUXDB_PORT, INFLUXDB_USER,
                             INFLUXDB_PASSWORD, INFLUXDB_DATABASE, timeout=5)
-    query = query_string(unit, unique_id, measure=measure, channel=channel, value='MEAN',
+    query = query_string(unit, unique_id,
+                         measure=measure,
+                         channel=channel,
+                         value='MEAN',
                          past_sec=past_seconds)
     query_output = client.query(query)
     if query_output:
@@ -354,8 +380,12 @@ def average_start_end_seconds(unique_id, unit, channel, str_start, str_end, meas
     """Return measurement average for a period of time"""
     client = InfluxDBClient(INFLUXDB_HOST, INFLUXDB_PORT, INFLUXDB_USER,
                             INFLUXDB_PASSWORD, INFLUXDB_DATABASE, timeout=5)
-    query = query_string(unit, unique_id, measure=measure, channel=channel, value='MEAN',
-                         start_str=str_start, end_str=str_end)
+    query = query_string(unit, unique_id,
+                         measure=measure,
+                         channel=channel,
+                         value='MEAN',
+                         start_str=str_start,
+                         end_str=str_end)
     query_output = client.query(query)
     if query_output:
         return query_output.raw['series'][0]['values'][0][1]
@@ -365,7 +395,10 @@ def sum_past_seconds(unique_id, unit, channel, past_seconds, measure=None):
     """Return measurement average for the past x seconds"""
     client = InfluxDBClient(INFLUXDB_HOST, INFLUXDB_PORT, INFLUXDB_USER,
                             INFLUXDB_PASSWORD, INFLUXDB_DATABASE, timeout=5)
-    query = query_string(unit, unique_id, measure=measure, channel=channel, value='SUM',
+    query = query_string(unit, unique_id,
+                         measure=measure,
+                         channel=channel,
+                         value='SUM',
                          past_sec=past_seconds)
     query_output = client.query(query)
     if query_output:
@@ -399,7 +432,8 @@ def valid_uuid(uuid_str):
     return val.hex == uuid_str.replace('-', '')
 
 
-def write_influxdb_value(unique_id, unit, value, measure=None, channel=None, timestamp=None):
+def write_influxdb_value(
+        unique_id, unit, value, measure=None, channel=None, timestamp=None):
     """
     Write a value into an Influxdb database
 
@@ -437,11 +471,20 @@ def write_influxdb_value(unique_id, unit, value, measure=None, channel=None, tim
         client.write_points(data)
         return 0
     except Exception as except_msg:
-        logger.debug(
-            "Failed to write measurement to influxdb (Device ID: {id}). Data "
-            "that was submitted for writing: {data}. Exception: {err}".format(
-                id=unique_id, data=data, err=except_msg))
-        return 1
+        logger.debug("Failed to write measurements to influxdb with ID {}. "
+                     "Retrying in 30 seconds.".format(unique_id))
+        time.sleep(30)
+        try:
+            client.write_points(data)
+            logger.debug("Successfully wrote measurements to influxdb after "
+                         "30-second wait.")
+            return 0
+        except:
+            logger.debug(
+                "Failed to write measurement to influxdb (Device ID: {id}). Data "
+                "that was submitted for writing: {data}. Exception: {err}".format(
+                    id=unique_id, data=data, err=except_msg))
+            return 1
 
 
 def write_influxdb_list(data):
@@ -458,14 +501,27 @@ def write_influxdb_list(data):
     :param data: The data being entered into Influxdb
     :type data: list of dictionaries
     """
+    if not data:
+        logger.debug("No data. Not writing to influxdb")
+        return
+
     client = InfluxDBClient(INFLUXDB_HOST, INFLUXDB_PORT, INFLUXDB_USER,
                             INFLUXDB_PASSWORD, INFLUXDB_DATABASE, timeout=5)
     try:
         client.write_points(data)
         return 0
     except Exception as except_msg:
-        logger.debug(
-            "Failed to write measurements to influxdb. Data that was "
-            "submitted for writing: {data}. Exception: {err}".format(
-                data=data, err=except_msg))
-        return 1
+        logger.debug("Failed to write measurements to influxdb. "
+                     "Retrying in 30 seconds. Data: {}".format(data))
+        time.sleep(30)
+        try:
+            client.write_points(data)
+            logger.debug("Successfully wrote measurements to influxdb after "
+                         "30-second wait. Data: {}".format(data))
+            return 0
+        except:
+            logger.debug(
+                "Failed to write measurements to influxdb. Data that was "
+                "submitted for writing: {data}. Exception: {err}".format(
+                    data=data, err=except_msg))
+            return 1

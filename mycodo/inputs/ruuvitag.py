@@ -118,6 +118,7 @@ class InputModule(AbstractInput):
         """ Obtain and return the measurements """
         self.return_dict = measurements_dict.copy()
 
+        self.logger.debug("Starting measurement")
         try:
             with self.filelock.FileLock(self.lock_file_bluetooth, timeout=3600):
                 from mycodo.utils.system_pi import cmd_output
@@ -125,12 +126,12 @@ class InputModule(AbstractInput):
                       '/var/mycodo-root/mycodo/inputs/scripts/ruuvitag_values.py ' \
                       '--mac_address {mac} --bt_adapter {bta}'.format(
                         mac=self.location, bta=self.bt_adapter)
-                cmd_return, _, cmd_status = cmd_output(cmd)
+                cmd_return, _, cmd_status = cmd_output(cmd, timeout=10)
 
                 values = cmd_return.decode('ascii').split(',')
 
                 if not self.str_is_float(values[0]):
-                    self.logger.debug("Could not convert string to float: string '{}'".format(str(values[0])))
+                    self.logger.debug("Error: Could not convert string to float: string '{}'".format(str(values[0])))
                     return
 
                 if self.is_enabled(0):
@@ -169,6 +170,7 @@ class InputModule(AbstractInput):
                     self.set_value(9, calculate_vapor_pressure_deficit(
                         self.get_value(0), self.get_value(1)))
 
+                self.logger.debug("Completed measurement")
                 return self.return_dict
 
         except self.filelock.Timeout:

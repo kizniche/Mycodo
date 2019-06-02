@@ -182,10 +182,11 @@ def epoch_of_next_time(time_str):
         return None
 
 
-def cmd_output(command, stdout_pipe=True):
+def cmd_output(command, stdout_pipe=True, timeout=3600):
     """
     Executed command and returns a list of lines from the output
     """
+    from threading import Timer
     if stdout_pipe:
         cmd = subprocess.Popen(command,
                                stdout=subprocess.PIPE,
@@ -194,7 +195,12 @@ def cmd_output(command, stdout_pipe=True):
         cmd = subprocess.Popen(command,
                                shell=True)
 
-    cmd_out, cmd_err = cmd.communicate()
+    timer = Timer(timeout, cmd.kill)
+    try:
+        timer.start()
+        cmd_out, cmd_err = cmd.communicate()
+    finally:
+        timer.cancel()
     cmd_status = cmd.wait()
     return cmd_out, cmd_err, cmd_status
 
