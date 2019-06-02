@@ -2,8 +2,7 @@
 import logging
 import time
 
-import locket
-import os
+import filelock
 import serial
 from serial import SerialException
 
@@ -48,34 +47,22 @@ class AtlasScientificUART:
 
     def query(self, query_str):
         """ Send command and return reply """
-        lock_acquired = False
-        lock_file_amend = '{lf}.{dev}'.format(lf=ATLAS_PH_LOCK_FILE,
-                                              dev=self.serial_device.replace("/", "-"))
+        lock_file_amend = '{lf}.{dev}'.format(
+            lf=ATLAS_PH_LOCK_FILE,
+            dev=self.serial_device.replace("/", "-"))
 
         try:
-            # Set up lock
-            lock = locket.lock_file(lock_file_amend, timeout=120)
-            try:
-                lock.acquire()
-                lock_acquired = True
-            except:
-                self.logger.error("Could not acquire lock. Breaking for future locking.")
-                os.remove(lock_file_amend)
-
-            if lock_acquired:
+            with filelock.FileLock(lock_file_amend, timeout=3600):
                 self.send_cmd(query_str)
                 time.sleep(1.3)
                 response = self.read_lines()
-                lock.release()
                 return response
-
-            os.remove(lock_file_amend)
-
+        except filelock.Timeout:
+            self.logger.error("Lock timeout")
         except Exception as err:
             self.logger.exception(
                 "{cls} raised an exception when taking a reading: "
                 "{err}".format(cls=type(self).__name__, err=err))
-            return None
 
     def read_lines(self):
         """

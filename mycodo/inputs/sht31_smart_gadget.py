@@ -1,8 +1,7 @@
 # coding=utf-8
 import datetime
-import logging
-import os
 import time
+
 from flask_babel import lazy_gettext
 
 from mycodo.databases.models import Conversion
@@ -90,7 +89,7 @@ INPUT_INFORMATION = {
     'options_disabled': ['interface'],
 
     'dependencies_module': [
-        ('pip-pypi', 'locket', 'locket'),
+        ('pip-pypi', 'filelock', 'filelock'),
         ('apt', 'pi-bluetooth', 'pi-bluetooth'),
         ('apt', 'libglib2.0-dev', 'libglib2.0-dev'),
         ('pip-pypi', 'bluepy', 'bluepy')
@@ -147,7 +146,7 @@ class InputModule(AbstractInput):
         if not testing:
             from mycodo.devices.sht31_smart_gadget import SHT31
             from bluepy import btle
-            import locket
+            import filelock
 
             self.device_measurements = db_retrieve_table_daemon(
                 DeviceMeasurements).filter(
@@ -162,7 +161,7 @@ class InputModule(AbstractInput):
                     elif option == 'logging_interval':
                         self.logging_interval_ms = int(value) * 1000
 
-            self.locket = locket
+            self.filelock = filelock
             self.lock_file_bluetooth = '/var/lock/bluetooth_dev_hci{}'.format(
                 input_dev.bt_adapter)
             self.SHT31 = SHT31
@@ -374,73 +373,64 @@ class InputModule(AbstractInput):
     def get_measurement(self):
         """ Obtain and return the measurements """
         self.return_dict = measurements_dict.copy()
-        lock_acquired = False
 
-        # Set up lock
-        lock = self.locket.lock_file(self.lock_file_bluetooth, timeout=3600)
         try:
-            lock.acquire()
-            lock_acquired = True
-        except:
-            self.logger.error("Could not acquire lock. Breaking for future locking.")
-            os.remove(self.lock_file_bluetooth)
+            with self.filelock.FileLock(self.lock_file_bluetooth, timeout=3600):
+                if not self.initialized:
+                    self.initialize()
 
-        if lock_acquired:
-            if not self.initialized:
-                self.initialize()
+                if not self.connected:
+                    self.connect()
 
-            if not self.connected:
-                self.connect()
+                if self.connected:
+                    try:
+                        # Download stored data
+                        if self.download_stored_data:
+                            self.download_data()
+                            if not self.running:
+                                return
 
-            if self.connected:
-                try:
-                    # Download stored data
-                    if self.download_stored_data:
-                        self.download_data()
-                        if not self.running:
-                            return
+                        # Set logging interval if not already set
+                        if ('logger_interval_ms' in self.device_information
+                                and self.logging_interval_ms != self.device_information['logger_interval_ms']):
+                            self.set_logging_interval()
 
-                    # Set logging interval if not already set
-                    if ('logger_interval_ms' in self.device_information
-                            and self.logging_interval_ms != self.device_information['logger_interval_ms']):
-                        self.set_logging_interval()
+                        # Get battery percent charge
+                        if self.is_enabled(2):
+                            self.set_value(2, self.gadget.readBattery())
 
-                    # Get battery percent charge
-                    if self.is_enabled(2):
-                        self.set_value(2, self.gadget.readBattery())
+                        # Get temperature and humidity last so their timestamp in the
+                        # database will be the most accurate
+                        if self.is_enabled(0):
+                            self.set_value(0, self.gadget.readTemperature())
 
-                    # Get temperature and humidity last so their timestamp in the
-                    # database will be the most accurate
-                    if self.is_enabled(0):
-                        self.set_value(0, self.gadget.readTemperature())
+                        if self.is_enabled(1):
+                            self.set_value(1, self.gadget.readHumidity())
+                    except self.btle.BTLEDisconnectError:
+                        self.logger.error("Disconnected")
+                        return
+                    except Exception:
+                        self.logger.exception("Unknown Error")
+                        return
+                    finally:
+                        self.disconnect()
 
-                    if self.is_enabled(1):
-                        self.set_value(1, self.gadget.readHumidity())
-                except self.btle.BTLEDisconnectError:
-                    logging.error("Disconnected")
-                    return
-                except Exception:
-                    logging.exception("Unknown Error")
-                    return
-                finally:
-                    self.disconnect()
+                    if (self.is_enabled(3) and
+                            self.is_enabled(0) and
+                            self.is_enabled(1)):
+                        self.set_value(3, calculate_dewpoint(
+                            self.get_value(0), self.get_value(1)))
 
-                if (self.is_enabled(3) and
-                        self.is_enabled(0) and
-                        self.is_enabled(1)):
-                    self.set_value(3, calculate_dewpoint(
-                        self.get_value(0), self.get_value(1)))
+                    if (self.is_enabled(4) and
+                            self.is_enabled(0) and
+                            self.is_enabled(1)):
+                        self.set_value(4, calculate_vapor_pressure_deficit(
+                            self.get_value(0), self.get_value(1)))
 
-                if (self.is_enabled(4) and
-                        self.is_enabled(0) and
-                        self.is_enabled(1)):
-                    self.set_value(4, calculate_vapor_pressure_deficit(
-                        self.get_value(0), self.get_value(1)))
+                return self.return_dict
 
-            lock.release()
-            os.remove(self.lock_file_bluetooth)
-
-            return self.return_dict
+        except self.filelock.Timeout:
+            self.logger.error("Lock timeout")
 
     def initialize(self):
         """Initialize the device by obtaining sensor information"""

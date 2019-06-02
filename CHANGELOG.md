@@ -3,6 +3,10 @@
 ### Features
 
  - Add --get_measurement parameter to mycodo_client.py
+ 
+### Miscellaneous
+
+ - Replace locket with filelock
 
 
 ## 7.5.4 (2019-05-29)

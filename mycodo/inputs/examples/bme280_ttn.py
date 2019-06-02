@@ -13,7 +13,6 @@
 # Author: Tony DiCola
 # Based on the BMP280 driver with BME280 changes provided by
 # David J Taylor, Edinburgh (www.satsignal.eu)
-import logging
 import os
 import time
 from flask_babel import lazy_gettext
@@ -74,7 +73,7 @@ INPUT_INFORMATION = {
     'options_disabled': ['interface'],
 
     'dependencies_module': [
-        ('pip-pypi', 'locket', 'locket'),
+        ('pip-pypi', 'filelock', 'filelock'),
         ('pip-pypi', 'serial', 'pyserial'),
         ('pip-pypi', 'Adafruit_GPIO', 'Adafruit_GPIO'),
         ('pip-git', 'Adafruit_BME280', 'git://github.com/adafruit/Adafruit_Python_BME280.git#egg=adafruit-bme280')
@@ -114,7 +113,7 @@ class InputModule(AbstractInput):
         if not testing:
             from Adafruit_BME280 import BME280
             import serial
-            import locket
+            import filelock
 
             self.device_measurements = db_retrieve_table_daemon(
                 DeviceMeasurements).filter(
@@ -133,31 +132,11 @@ class InputModule(AbstractInput):
                                  busnum=self.i2c_bus)
             self.serial = serial
             self.serial_send = None
-            self.locket = locket
+            self.filelock = filelock
             self.lock = None
             self.lock_file = "/var/lock/mycodo_ttn.lock"
             self.locked = False
             self.ttn_serial_error = False
-
-    def lock_setup(self):
-        self.lock = self.locket.lock_file(self.lock_file, timeout=10)
-        try:
-            self.lock.acquire()
-            self.locked = True
-        except self.locket.LockError:
-            self.logger.error("Could not acquire input lock. Breaking for future locking.")
-            try:
-                os.remove(self.lock_file)
-            except OSError:
-                self.logger.error("Can't delete lock file: Lock file doesn't exist.")
-
-    def lock_release(self):
-        try:
-            if self.locked:
-                self.lock.release()
-                self.locked = False
-        except AttributeError:
-            self.logger.error("Can't release lock: Lock file not present.")
 
     def get_measurement(self):
         """ Gets the measurement in units by reading the """
@@ -199,11 +178,13 @@ class InputModule(AbstractInput):
                     self.get_value(1),
                     self.get_value(2),
                     self.get_value(0))
-                self.lock_setup()
-                self.serial_send = self.serial.Serial(self.serial_device, 9600)
-                self.serial_send.write(string_send.encode())
-                time.sleep(4)
-                self.lock_release()
+                try:
+                    with self.filelock.FileLock(self.lock_file, timeout=10):
+                        self.serial_send = self.serial.Serial(self.serial_device, 9600)
+                        self.serial_send.write(string_send.encode())
+                        time.sleep(4)
+                except self.filelock.Timeout:
+                    self.logger.error("Lock timeout")
                 self.ttn_serial_error = False
         except:
             if not self.ttn_serial_error:

@@ -50,7 +50,7 @@ INPUT_INFORMATION = {
     'options_disabled': ['interface'],
 
     'dependencies_module': [
-        ('pip-pypi', 'locket', 'locket'),
+        ('pip-pypi', 'filelock', 'filelock'),
         ('pip-pypi', 'serial', 'pyserial')
     ],
 
@@ -80,7 +80,7 @@ class InputModule(AbstractInput):
 
         if not testing:
             import serial
-            import locket
+            import filelock
 
             if input_dev.custom_options:
                 for each_option in input_dev.custom_options.split(';'):
@@ -108,7 +108,7 @@ class InputModule(AbstractInput):
 
             self.serial = serial
             self.serial_send = None
-            self.locket = locket
+            self.filelock = filelock
             self.lock = None
             self.lock_file = "/var/lock/mycodo_ttn.lock"
             self.locked = False
@@ -116,26 +116,6 @@ class InputModule(AbstractInput):
             self.logger.debug(
                 "Min time between transmissions: {} seconds".format(
                     min_seconds_between_transmissions))
-
-    def lock_setup(self):
-        self.lock = self.locket.lock_file(self.lock_file, timeout=10)
-        try:
-            self.lock.acquire()
-            self.locked = True
-        except self.locket.LockError:
-            self.logger.error("Could not acquire input lock. Breaking for future locking.")
-            try:
-                os.remove(self.lock_file)
-            except OSError:
-                self.logger.error("Can't delete lock file: Lock file doesn't exist.")
-
-    def lock_release(self):
-        try:
-            if self.locked:
-                self.lock.release()
-                self.locked = False
-        except AttributeError:
-            self.logger.error("Can't release lock: Lock file not present.")
 
     def get_measurement(self):
         """ Gets the K30's CO2 concentration in ppmv via UART"""
@@ -164,11 +144,13 @@ class InputModule(AbstractInput):
                 self.timer = now + min_seconds_between_transmissions
                 # "K" designates this data belonging to the K30
                 string_send = 'K,{}'.format(self.get_value(0))
-                self.lock_setup()
-                self.serial_send = self.serial.Serial(self.serial_device, 9600)
-                self.serial_send.write(string_send.encode())
-                time.sleep(4)
-                self.lock_release()
+                try:
+                    with self.filelock.FileLock(self.lock_file, timeout=10):
+                        self.serial_send = self.serial.Serial(self.serial_device, 9600)
+                        self.serial_send.write(string_send.encode())
+                        time.sleep(4)
+                except self.filelock.Timeout:
+                    self.logger.error("Lock timeout")
                 self.ttn_serial_error = False
         except:
             if not self.ttn_serial_error:

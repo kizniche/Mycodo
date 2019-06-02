@@ -1,5 +1,4 @@
 # coding=utf-8
-import logging
 import os
 
 from mycodo.databases.models import DeviceMeasurements
@@ -48,7 +47,7 @@ INPUT_INFORMATION = {
     'options_disabled': ['interface'],
 
     'dependencies_module': [
-        ('pip-pypi', 'locket', 'locket'),
+        ('pip-pypi', 'filelock', 'filelock'),
         ('apt', 'libglib2.0-dev', 'libglib2.0-dev'),
         ('pip-pypi', 'miflora', 'miflora'),
         ('pip-pypi', 'btlewrap', 'btlewrap'),
@@ -75,13 +74,13 @@ class InputModule(AbstractInput):
         if not testing:
             from miflora.miflora_poller import MiFloraPoller
             from btlewrap import BluepyBackend
-            import locket
+            import filelock
 
             self.device_measurements = db_retrieve_table_daemon(
                 DeviceMeasurements).filter(
                     DeviceMeasurements.device_id == input_dev.unique_id)
 
-            self.locket = locket
+            self.filelock = filelock
             self.lock_file_bluetooth = '/var/lock/bluetooth_dev_hci{}'.format(input_dev.bt_adapter)
             self.location = input_dev.location
             self.bt_adapter = input_dev.bt_adapter
@@ -99,35 +98,25 @@ class InputModule(AbstractInput):
         from miflora.miflora_poller import MI_BATTERY
 
         self.return_dict = measurements_dict.copy()
-        lock_acquired = False
 
-        # Set up lock
-        lock = self.locket.lock_file(self.lock_file_bluetooth, timeout=1200)
         try:
-            lock.acquire()
-            lock_acquired = True
-        except:
-            self.logger.error("Could not acquire lock. Breaking for future locking.")
-            os.remove(self.lock_file_bluetooth)
+            with self.filelock.FileLock(self.lock_file_bluetooth, timeout=3600):
+                if self.is_enabled(0):
+                    self.set_value(0, self.poller.parameter_value(MI_BATTERY))
 
-        if lock_acquired:
-            if self.is_enabled(0):
-                self.set_value(0, self.poller.parameter_value(MI_BATTERY))
+                if self.is_enabled(1):
+                    self.set_value(1, self.poller.parameter_value(MI_CONDUCTIVITY))
 
-            if self.is_enabled(1):
-                self.set_value(1, self.poller.parameter_value(MI_CONDUCTIVITY))
+                if self.is_enabled(2):
+                    self.set_value(2, self.poller.parameter_value(MI_LIGHT))
 
-            if self.is_enabled(2):
-                self.set_value(2, self.poller.parameter_value(MI_LIGHT))
+                if self.is_enabled(3):
+                    self.set_value(3, self.poller.parameter_value(MI_MOISTURE))
 
-            if self.is_enabled(3):
-                self.set_value(3, self.poller.parameter_value(MI_MOISTURE))
+                if self.is_enabled(4):
+                    self.set_value(4, self.poller.parameter_value(MI_TEMPERATURE))
 
-            if self.is_enabled(4):
-                self.set_value(4, self.poller.parameter_value(MI_TEMPERATURE))
+                return self.return_dict
 
-            lock.release()
-
-        os.remove(self.lock_file_bluetooth)
-
-        return self.return_dict
+        except self.filelock.Timeout:
+            self.logger.error("Lock timeout")

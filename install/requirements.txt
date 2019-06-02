@@ -24,7 +24,7 @@ Flask_WTF == 0.14.2
 geocoder == 1.38.1
 gunicorn == 19.9.0
 influxdb == 5.0.0
-locket == 0.2.0
+filelock == 3.0.12
 pyserial
 python-dateutil == 2.7.5
 requests

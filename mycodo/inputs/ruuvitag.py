@@ -1,8 +1,4 @@
 # coding=utf-8
-import logging
-
-import os
-
 from mycodo.databases.models import DeviceMeasurements
 from mycodo.inputs.base_input import AbstractInput
 from mycodo.inputs.sensorutils import calculate_dewpoint
@@ -72,7 +68,7 @@ INPUT_INFORMATION = {
     'options_disabled': ['interface'],
 
     'dependencies_module': [
-        ('pip-pypi', 'locket', 'locket'),
+        ('pip-pypi', 'filelock', 'filelock'),
         ('apt', 'python3-dev', 'python3-dev'),
         ('apt', 'python3-psutil', 'python3-psutil'),
         ('pip-pypi', 'bleson', 'bleson'),
@@ -106,13 +102,13 @@ class InputModule(AbstractInput):
         self.last_downloaded_timestamp = None
 
         if not testing:
-            import locket
+            import filelock
 
             self.device_measurements = db_retrieve_table_daemon(
                 DeviceMeasurements).filter(
                     DeviceMeasurements.device_id == input_dev.unique_id)
 
-            self.locket = locket
+            self.filelock = filelock
             self.lock_file_bluetooth = '/var/lock/bluetooth_dev_hci{}'.format(
                 input_dev.bt_adapter)
             self.location = input_dev.location
@@ -121,69 +117,59 @@ class InputModule(AbstractInput):
     def get_measurement(self):
         """ Obtain and return the measurements """
         self.return_dict = measurements_dict.copy()
-        lock_acquired = False
 
-        # Set up lock
-        lock = self.locket.lock_file(self.lock_file_bluetooth, timeout=3600)
         try:
-            lock.acquire()
-            lock_acquired = True
-        except:
-            self.logger.error("Could not acquire lock. Breaking for future locking.")
-            if os.path.exists(self.lock_file_bluetooth):
-                os.remove(self.lock_file_bluetooth)
+            with self.filelock.FileLock(self.lock_file_bluetooth, timeout=3600):
+                from mycodo.utils.system_pi import cmd_output
+                cmd = '/var/mycodo-root/env/bin/python ' \
+                      '/var/mycodo-root/mycodo/inputs/scripts/ruuvitag_values.py ' \
+                      '--mac_address {mac} --bt_adapter {bta}'.format(
+                        mac=self.location, bta=self.bt_adapter)
+                cmd_return, _, cmd_status = cmd_output(cmd)
 
-        if lock_acquired:
-            from mycodo.utils.system_pi import cmd_output
-            cmd = '/var/mycodo-root/env/bin/python ' \
-                  '/var/mycodo-root/mycodo/inputs/scripts/ruuvitag_values.py ' \
-                  '--mac_address {mac} --bt_adapter {bta}'.format(
-                    mac=self.location, bta=self.bt_adapter)
-            cmd_return, _, cmd_status = cmd_output(cmd)
+                values = cmd_return.decode('ascii').split(',')
 
-            values = cmd_return.decode('ascii').split(',')
+                if not self.str_is_float(values[0]):
+                    self.logger.debug("Could not convert string to float: string '{}'".format(str(values[0])))
+                    return
 
-            if not self.str_is_float(values[0]):
-                self.logger.debug("Could not convert string to float: string '{}'".format(str(values[0])))
-                return
+                if self.is_enabled(0):
+                    self.set_value(0, float(str(values[0])))
 
-            if self.is_enabled(0):
-                self.set_value(0, float(str(values[0])))
+                if self.is_enabled(1):
+                    self.set_value(1, float(values[1]))
 
-            if self.is_enabled(1):
-                self.set_value(1, float(values[1]))
+                if self.is_enabled(2):
+                    self.set_value(2, float(values[2]))
 
-            if self.is_enabled(2):
-                self.set_value(2, float(values[2]))
+                if self.is_enabled(3):
+                    self.set_value(3, float(values[3]) / 1000)
 
-            if self.is_enabled(3):
-                self.set_value(3, float(values[3]) / 1000)
+                if self.is_enabled(4):
+                    self.set_value(4, float(values[4]) / 1000)
 
-            if self.is_enabled(4):
-                self.set_value(4, float(values[4]) / 1000)
+                if self.is_enabled(5):
+                    self.set_value(5, float(values[5]) / 1000)
 
-            if self.is_enabled(5):
-                self.set_value(5, float(values[5]) / 1000)
+                if self.is_enabled(6):
+                    self.set_value(6, float(values[6]) / 1000)
 
-            if self.is_enabled(6):
-                self.set_value(6, float(values[6]) / 1000)
+                if self.is_enabled(7):
+                    self.set_value(7, float(values[7]) / 1000)
 
-            if self.is_enabled(7):
-                self.set_value(7, float(values[7]) / 1000)
+                if (self.is_enabled(8) and
+                        self.is_enabled(0) and
+                        self.is_enabled(1)):
+                    self.set_value(8, calculate_dewpoint(
+                        self.get_value(0), self.get_value(1)))
 
-            if (self.is_enabled(8) and
-                    self.is_enabled(0) and
-                    self.is_enabled(1)):
-                self.set_value(8, calculate_dewpoint(
-                    self.get_value(0), self.get_value(1)))
+                if (self.is_enabled(9) and
+                        self.is_enabled(0) and
+                        self.is_enabled(1)):
+                    self.set_value(9, calculate_vapor_pressure_deficit(
+                        self.get_value(0), self.get_value(1)))
 
-            if (self.is_enabled(9) and
-                    self.is_enabled(0) and
-                    self.is_enabled(1)):
-                self.set_value(9, calculate_vapor_pressure_deficit(
-                    self.get_value(0), self.get_value(1)))
+                return self.return_dict
 
-            lock.release()
-            os.remove(self.lock_file_bluetooth)
-
-        return self.return_dict
+        except self.filelock.Timeout:
+            self.logger.error("Lock timeout")

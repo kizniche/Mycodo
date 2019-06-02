@@ -29,7 +29,7 @@ import time
 import timeit
 
 import RPi.GPIO as GPIO
-import locket
+import filelock
 import os
 import requests
 
@@ -319,11 +319,11 @@ class InputController(threading.Thread):
 
     def lock_setup(self):
         # Set up lock
-        self.input_lock = locket.lock_file(self.lock_file, timeout=30)
+        self.input_lock = filelock.FileLock(self.lock_file, timeout=30)
         try:
             self.input_lock.acquire()
             self.pre_output_locked = True
-        except locket.LockError:
+        except filelock.Timeout:
             self.logger.error("Could not acquire input lock. Breaking for future locking.")
             try:
                 os.remove(self.lock_file)
