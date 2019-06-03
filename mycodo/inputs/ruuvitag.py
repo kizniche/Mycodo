@@ -128,6 +128,9 @@ class InputModule(AbstractInput):
                         mac=self.location, bta=self.bt_adapter)
                 cmd_return, _, cmd_status = cmd_output(cmd, timeout=10)
 
+                if not cmd_return:
+                    return
+
                 values = cmd_return.decode('ascii').split(',')
 
                 if not self.str_is_float(values[0]):

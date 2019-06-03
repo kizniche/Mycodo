@@ -3,11 +3,13 @@ import datetime
 import grp
 import logging
 import pwd
+import signal
 import socket
 import subprocess
 import time
 import traceback
 from collections import OrderedDict
+from threading import Timer
 
 import os
 
@@ -19,6 +21,9 @@ from mycodo.databases.models import DeviceMeasurements
 from mycodo.utils.database import db_retrieve_table_daemon
 
 logger = logging.getLogger("mycodo.system_pi")
+
+if logging.getLevelName(logging.getLogger().getEffectiveLevel()) == 'INFO':
+    logger.setLevel(logging.INFO)
 
 
 def add_custom_units(units):
@@ -182,27 +187,48 @@ def epoch_of_next_time(time_str):
         return None
 
 
-def cmd_output(command, stdout_pipe=True, timeout=3600):
+def cmd_output(command, stdout_pipe=True, timeout=360):
     """
-    Executed command and returns a list of lines from the output
+    Executes a bash command and returns the output
+
+    :param command: Bash command to execute
+    :param stdout_pipe: Capture output
+    :param timeout: Kill process if it runs longer than this many seconds
+    :return: tuple of output, errors, status
     """
-    from threading import Timer
+    cmd_success = True
+
     if stdout_pipe:
         cmd = subprocess.Popen(command,
                                stdout=subprocess.PIPE,
-                               shell=True)
+                               shell=True,
+                               preexec_fn=os.setpgrp)
     else:
         cmd = subprocess.Popen(command,
-                               shell=True)
+                               shell=True,
+                               preexec_fn=os.setpgrp)
 
-    timer = Timer(timeout, cmd.kill)
+    def kill_process():
+        nonlocal cmd_success
+        cmd_success = False
+        os.killpg(os.getpgid(cmd.pid), signal.SIGTERM)
+        logger.debug("cmd_output() timed out after {} seconds "
+                     "with command '{}'".format(timeout, command))
+
+    # Add timeout functionality
+    timer = Timer(timeout, kill_process)
     try:
         timer.start()
         cmd_out, cmd_err = cmd.communicate()
     finally:
         timer.cancel()
+
     cmd_status = cmd.wait()
-    return cmd_out, cmd_err, cmd_status
+
+    if cmd_success:
+        return cmd_out, cmd_err, cmd_status
+    else:
+        return None, None, None
 
 
 def internet(host="8.8.8.8", port=53, timeout=3):

@@ -17,6 +17,7 @@
 
 ### Bugfixes
 
+ - Prevent rapid successive measurements from inputs after measurement delay
  - Increase lock timeout for Ruuvitag and SHT31 Smart Gadget ([#638](https://github.com/kizniche/mycodo/issues/638))
  - Fix IO error during locking for Ruuvitag ([#638](https://github.com/kizniche/mycodo/issues/638))
  - Fix pytests
@@ -25,6 +26,7 @@
 
  - Add RPyC Timeout configuration option
  - Allow multiple PIDs to use the same output ([#661](https://github.com/kizniche/mycodo/issues/661))
+ - Add timeout parameter to cmd_output() function
  
 ### Miscellaneous
 

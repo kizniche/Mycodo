@@ -20,13 +20,16 @@ from mycodo.utils.database import db_retrieve_table_daemon
 
 logger = logging.getLogger("mycodo.influxdb")
 
+if logging.getLevelName(logging.getLogger().getEffectiveLevel()) == 'INFO':
+    logger.setLevel(logging.INFO)
+
 
 def add_measurements_influxdb(unique_id, measurements, use_same_timestamp=True):
     """
     Parse measurement data into list to be input into influxdb
     :param unique_id: Unique ID of device
     :param measurements: dict of measurements
-    :param use_same_timestamp: boolean
+    :param use_same_timestamp: Allow influxdb to create the timestamp upon storage
     :return:
     """
     data = []
@@ -35,7 +38,7 @@ def add_measurements_influxdb(unique_id, measurements, use_same_timestamp=True):
         if 'value' in each_measurement and each_measurement['value'] is not None:
 
             if use_same_timestamp:
-                # Create and use timestamp when data is stored in influxdb
+                # influxdb will create the timestamp when the data is stored
                 timestamp = None
             else:
                 # Use timestamp stored with each measurement
@@ -51,7 +54,7 @@ def add_measurements_influxdb(unique_id, measurements, use_same_timestamp=True):
 
     write_db = threading.Thread(
         target=write_influxdb_list,
-        args=(data,))
+        args=(data,unique_id,))
     write_db.start()
 
 
@@ -487,7 +490,7 @@ def write_influxdb_value(
             return 1
 
 
-def write_influxdb_list(data):
+def write_influxdb_list(data, unique_id):
     """
     Write an entry into an Influxdb database
 
@@ -500,9 +503,11 @@ def write_influxdb_list(data):
 
     :param data: The data being entered into Influxdb
     :type data: list of dictionaries
+    :param unique_id: For logging purposes
+    :type unique_id: str
     """
     if not data:
-        logger.debug("No data. Not writing to influxdb")
+        logger.debug("No data for ID {}. Not writing to influxdb".format(unique_id))
         return
 
     client = InfluxDBClient(INFLUXDB_HOST, INFLUXDB_PORT, INFLUXDB_USER,

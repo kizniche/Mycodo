@@ -1,6 +1,5 @@
 # coding=utf-8
 import datetime
-import logging
 import time
 
 import requests
@@ -190,9 +189,12 @@ class InputModule(AbstractInput):
                             measurements[each_meas.channel]['unit'] = meas[each_meas.channel]['unit']
                             measurements[each_meas.channel]['value'] = meas[each_meas.channel]['value']
 
-            add_measurements_influxdb(
-                self.unique_id, measurements,
-                use_same_timestamp=INPUT_INFORMATION['measurements_use_same_timestamp'])
+            if measurements:
+                add_measurements_influxdb(
+                    self.unique_id, measurements,
+                    use_same_timestamp=INPUT_INFORMATION['measurements_use_same_timestamp'])
+            else:
+                self.logger.debug("No measurements to add to influxdb.")
 
         # set datetime to latest timestamp
         if self.running:

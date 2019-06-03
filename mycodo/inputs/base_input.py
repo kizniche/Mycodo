@@ -123,7 +123,7 @@ class AbstractInput(object):
         except Exception as e:
             msg = "{cls} raised an exception when taking a reading: " \
                   "{err}".format(cls=type(self).__name__, err=e)
-            if self.logger.getEffectiveLevel() == 10:  # 10 == DEBUG logging level, 20 == INFO
+            if logging.getLevelName(self.logger.getEffectiveLevel()) == 'DEBUG':
                 self.logger.exception(msg)
             else:
                 self.logger.error(msg)

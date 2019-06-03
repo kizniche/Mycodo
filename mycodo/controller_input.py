@@ -130,6 +130,7 @@ class InputController(threading.Thread):
         self.pre_output_duration = input_dev.pre_output_duration
         self.pre_output_during_measure = input_dev.pre_output_during_measure
         self.pre_output_setup = False
+        self.last_measurement = 0
         self.next_measurement = time.time()
         self.get_new_measurement = False
         self.trigger_cond = False
@@ -223,9 +224,15 @@ class InputController(threading.Thread):
                 if self.device not in ['EDGE']:
                     now = time.time()
                     # Signal that a measurement needs to be obtained
-                    if now > self.next_measurement and not self.get_new_measurement:
-                        self.get_new_measurement = True
-                        self.trigger_cond = True
+                    if (now > self.next_measurement and
+                            not self.get_new_measurement):
+
+                        # Prevent double measurement if previous acquisition of a measurement was delayed
+                        if self.last_measurement < self.next_measurement:
+                            self.get_new_measurement = True
+                            self.trigger_cond = True
+
+                        # Ensure the next measure event will occur in the future
                         while self.next_measurement < now:
                             self.next_measurement += self.period
 
@@ -378,6 +385,7 @@ class InputController(threading.Thread):
 
         if self.device_recognized and measurements is not None:
             self.measurement = Measurement(measurements)
+            self.last_measurement = time.time()
             self.measurement_success = True
         else:
             self.measurement_success = False

@@ -426,7 +426,10 @@ class MathController(threading.Thread):
             success, measure = self.get_measurements_from_str(
                 self.equation_input)
             if success:
-                replaced_str = self.equation.replace('x', str(measure[0]))
+                if 'x' in self.equation:
+                    replaced_str = self.equation.replace('x', str(measure[0]))
+                else:
+                    replaced_str = self.equation
                 equation_output = eval(replaced_str)
 
                 measurement_dict = {
@@ -759,10 +762,15 @@ class MathController(threading.Thread):
             self.logger.error("Unknown math type: {type}".format(type=self.math_type))
 
         # Finally, add measurements to influxdb
-        self.logger.debug(
-            "Adding measurements to InfluxDB with ID {}: {}".format(
-                self.unique_id, measurement_dict))
-        add_measurements_influxdb(self.unique_id, measurement_dict)
+        if measurement_dict:
+            self.logger.debug(
+                "Adding measurements to InfluxDB with ID {}: {}".format(
+                    self.unique_id, measurement_dict))
+            add_measurements_influxdb(self.unique_id, measurement_dict)
+        else:
+            self.logger.debug(
+                "No measurements to add to InfluxDB with ID {}".format(
+                    self.unique_id))
 
     def is_measurement_unit(self, unit_from, unit_to, value):
         """ Converts value from one measurement to another """
