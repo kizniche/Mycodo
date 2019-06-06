@@ -58,8 +58,7 @@ INPUT_INFORMATION = {
 class InputModule(AbstractInput):
     """ Input support class """
     def __init__(self, input_dev, testing=False):
-        super(InputModule, self).__init__()
-        self.setup_logger(testing=testing, name=__name__, input_dev=input_dev)
+        super(InputModule, self).__init__(input_dev, name=__name__)
 
         if not testing:
             # Load dependent modules
@@ -67,9 +66,6 @@ class InputModule(AbstractInput):
             self.random = random
 
             self.interface = input_dev.interface
-            self.device_measurements = db_retrieve_table_daemon(
-                DeviceMeasurements).filter(
-                DeviceMeasurements.device_id == input_dev.unique_id)
 
             # Retrieve options
             # These options can be used here to initialize an I2C device or elsewhere in this class

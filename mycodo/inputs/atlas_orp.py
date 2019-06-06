@@ -82,8 +82,7 @@ class InputModule(AbstractInput):
     """A sensor support class that monitors the Atlas Scientific sensor ORP"""
 
     def __init__(self, input_dev, testing=False):
-        super(InputModule, self).__init__()
-        self.setup_logger(testing=testing, name=__name__, input_dev=input_dev)
+        super(InputModule, self).__init__(input_dev, name=__name__)
         self.atlas_sensor_ftdi = None
         self.atlas_sensor_uart = None
         self.atlas_sensor_i2c = None
@@ -93,7 +92,6 @@ class InputModule(AbstractInput):
         self.i2c_bus = None
 
         if not testing:
-            self.input_dev = input_dev
             self.interface = input_dev.interface
             self.calibrate_sensor_measure = input_dev.calibrate_sensor_measure
             self.max_age = None

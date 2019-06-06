@@ -65,10 +65,8 @@ class InputModule(AbstractInput):
          -  16 = +/-0.
         See table 3 in the ADS1015/ADS1115 datasheet for more info on gain.
         """
-    def __init__(self, input_dev, testing=False, run_main=False):
-        super(InputModule, self).__init__()
-        self.setup_logger(testing=testing, name=__name__, input_dev=input_dev)
-        self.run_main = run_main
+    def __init__(self, input_dev, testing=False,):
+        super(InputModule, self).__init__(input_dev, name=__name__)
 
         if not testing:
             import Adafruit_ADS1x15
@@ -84,17 +82,14 @@ class InputModule(AbstractInput):
                 address=self.i2c_address,
                 busnum=self.i2c_bus)
 
-        self.running = True
-
     def get_measurement(self):
         self.return_dict = measurements_dict.copy()
 
-        for each_measure in self.device_measurements.all():
-            if each_measure.is_enabled:
+        for channel in self.device_measurements:
+            if self.is_enabled(channel):
                 self.set_value(
-                    each_measure.channel,
-                    self.adc.read_adc(each_measure.channel,
-                                      gain=self.adc_gain) / 10000.0)
+                    channel,
+                    self.adc.read_adc(channel, gain=self.adc_gain) / 10000.0)
 
         return self.return_dict
 
@@ -108,7 +103,6 @@ if __name__ == "__main__":
     settings.i2c_bus = 1
     settings.adc_gain = 1
     settings.channels = 4
-    settings.run_main = True
 
-    measurements = InputModule(settings, run_main=True).next()
+    measurements = InputModule(settings).next()
     print("Measurements: {}".format(measurements))

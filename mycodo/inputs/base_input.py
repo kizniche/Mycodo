@@ -10,10 +10,14 @@ NotImplementedErrors
 """
 import datetime
 import logging
+import time
 
-from sqlalchemy import and_
+import filelock
+import os
 
+from mycodo.databases.models import Conversion
 from mycodo.databases.models import DeviceMeasurements
+from mycodo.utils.database import db_retrieve_table_daemon
 
 
 class AbstractInput(object):
@@ -29,18 +33,26 @@ class AbstractInput(object):
 
     """
 
-    def __init__(self, testing=False, run_main=False):
+    def __init__(self, input_dev, testing=False, name=__name__):
         self.logger = None
-        self.setup_logger(testing=testing, name=__name__)
+        self.setup_logger(testing=testing, name=name, input_dev=input_dev)
+        self.input_dev = input_dev
+        self.unique_id = input_dev.unique_id
         self._measurements = None
+        self.channels_conversion = {}
+        self.channels_measurement = {}
+        self.lock = None
+        self.lock_file = None
+        self.locked = False
         self.return_dict = {}
-        self.run_main = run_main
         self.avg_max = {}
         self.avg_index = {}
         self.avg_meas = {}
         self.acquiring_measurement = False
         self.running = True
         self.device_measurements = None
+
+        self.check_setup()
 
     def __iter__(self):
         """ Support the iterator protocol """
@@ -112,10 +124,13 @@ class AbstractInput(object):
         :returns: None on success or 1 on error
         """
         self._measurements = None
+        self.check_setup()
         try:
             self._measurements = self.get_measurement()
             if self._measurements is not None:
                 return  # success - no errors
+        except TimeoutError as error:
+            self.logger.error("Error: {}".format(error))
         except IOError as e:
             self.logger.error(
                 "{cls}.get_measurement() method raised IOError: "
@@ -127,7 +142,35 @@ class AbstractInput(object):
                 self.logger.exception(msg)
             else:
                 self.logger.error(msg)
+
+        # Clean up
+        self.lock_release()
+
         return 1
+
+    def lock_acquire(self, lockfile, timeout):
+        self.lock = filelock.FileLock(lockfile, timeout=1)
+        self.locked = False
+        timer = time.time() + timeout
+        self.logger.debug("Acquiring lock")
+        while self.running and time.time() < timer:
+            try:
+                self.lock.acquire()
+                self.logger.debug("Lock acquired")
+                self.locked = True
+                break
+            except:
+                pass
+
+    def lock_release(self):
+        if self.lock:
+            try:
+                self.lock.release(force=True)
+            finally:
+                try:
+                    os.remove(self.lock_file)
+                except:
+                    pass
 
     def get_value(self, channel):
         """
@@ -189,14 +232,36 @@ class AbstractInput(object):
 
         return average
 
+    def check_setup(self):
+        try:
+            if not self.device_measurements:
+                self.setup_device_measurement()
+        except:
+            self.setup_device_measurement()
+
+    def setup_device_measurement(self):
+        # Make 5 attempts to access database
+        for _ in range(5):
+            try:
+                self.device_measurements = db_retrieve_table_daemon(
+                    DeviceMeasurements).filter(
+                    DeviceMeasurements.device_id == self.input_dev.unique_id)
+
+                for each_measure in self.device_measurements.all():
+                    self.channels_measurement[each_measure.channel] = each_measure
+                    self.channels_conversion[each_measure.channel] = db_retrieve_table_daemon(
+                        Conversion, unique_id=each_measure.conversion_id)
+                return
+            except Exception as msg:
+                self.logger.debug("Error: {}".format(msg))
+            time.sleep(3)
+
     def is_enabled(self, channel):
-        if self.run_main:
-            return True
-        elif (self.device_measurements and
-                self.device_measurements.filter(and_(
-                    DeviceMeasurements.is_enabled == True,
-                    DeviceMeasurements.channel == channel)).count()):
-            return True
+        try:
+            return self.channels_measurement[channel].is_enabled
+        except:
+            self.setup_device_measurement()
+            return self.channels_measurement[channel].is_enabled
 
     def setup_logger(self, testing=None, name=None, input_dev=None):
         name = name if name else __name__

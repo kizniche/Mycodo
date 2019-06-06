@@ -92,17 +92,12 @@ class InputModule(AbstractInput):
     """ A sensor support class that monitors the WINSEN_ZH03B's particulate concentration """
 
     def __init__(self, input_dev, testing=False):
-        super(InputModule, self).__init__()
-        self.setup_logger(testing=testing, name=__name__, input_dev=input_dev)
+        super(InputModule, self).__init__(input_dev, name=__name__)
         self.fan_is_on = False
 
         if not testing:
             import serial
             import binascii
-
-            self.device_measurements = db_retrieve_table_daemon(
-                DeviceMeasurements).filter(
-                    DeviceMeasurements.device_id == input_dev.unique_id)
 
             self.binascii = binascii
             self.uart_location = input_dev.uart_location

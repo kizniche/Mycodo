@@ -56,18 +56,13 @@ class InputModule(AbstractInput):
     """
 
     def __init__(self, input_dev, testing=False):
-        super(InputModule, self).__init__()
-        self.setup_logger(testing=testing, name=__name__, input_dev=input_dev)
+        super(InputModule, self).__init__(input_dev, name=__name__)
         self._co2 = None
         self._voc = None
         self._temperature = None
 
         if not testing:
             from Adafruit_CCS811 import Adafruit_CCS811
-
-            self.device_measurements = db_retrieve_table_daemon(
-                DeviceMeasurements).filter(
-                    DeviceMeasurements.device_id == input_dev.unique_id)
 
             self.i2c_address = int(str(input_dev.i2c_location), 16)
             self.i2c_bus = input_dev.i2c_bus

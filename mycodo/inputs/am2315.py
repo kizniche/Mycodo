@@ -88,17 +88,12 @@ class InputModule(AbstractInput):
 
     """
     def __init__(self, input_dev, testing=False):
-        super(InputModule, self).__init__()
-        self.setup_logger(testing=testing, name=__name__, input_dev=input_dev)
+        super(InputModule, self).__init__(input_dev, name=__name__)
         self.powered = False
         self.am = None
 
         if not testing:
             from mycodo.mycodo_client import DaemonControl
-
-            self.device_measurements = db_retrieve_table_daemon(
-                DeviceMeasurements).filter(
-                    DeviceMeasurements.device_id == input_dev.unique_id)
 
             self.i2c_bus = input_dev.i2c_bus
             self.power_output_id = input_dev.power_output_id

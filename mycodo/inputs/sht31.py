@@ -117,8 +117,7 @@ class InputModule(AbstractInput):
     """
 
     def __init__(self, input_dev, testing=False):
-        super(InputModule, self).__init__()
-        self.setup_logger(testing=testing, name=__name__, input_dev=input_dev)
+        super(InputModule, self).__init__(input_dev, name=__name__)
         self.measurement_count = 0
         self.heater_enable = None
         self.heater_seconds = None
@@ -126,10 +125,6 @@ class InputModule(AbstractInput):
 
         if not testing:
             from Adafruit_SHT31 import SHT31
-
-            self.device_measurements = db_retrieve_table_daemon(
-                DeviceMeasurements).filter(
-                    DeviceMeasurements.device_id == input_dev.unique_id)
 
             if input_dev.custom_options:
                 for each_option in input_dev.custom_options.split(';'):

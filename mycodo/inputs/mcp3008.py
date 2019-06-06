@@ -55,17 +55,11 @@ INPUT_INFORMATION = {
 class InputModule(AbstractInput):
     """ ADC Read """
     def __init__(self, input_dev, testing=False):
-        super(InputModule, self).__init__()
-        self.setup_logger(testing=testing, name=__name__, input_dev=input_dev)
-        self.acquiring_measurement = False
+        super(InputModule, self).__init__(input_dev, name=__name__)
         self.adc = None
 
         if not testing:
             import Adafruit_MCP3008
-
-            self.device_measurements = db_retrieve_table_daemon(
-                DeviceMeasurements).filter(
-                    DeviceMeasurements.device_id == input_dev.unique_id)
 
             self.pin_clock = input_dev.pin_clock
             self.pin_cs = input_dev.pin_cs
@@ -82,10 +76,10 @@ class InputModule(AbstractInput):
     def get_measurement(self):
         self.return_dict = measurements_dict.copy()
 
-        for each_measure in self.device_measurements.all():
-            if each_measure.is_enabled:
-                self.set_value(each_measure.channel, (
-                    (self.adc.read_adc(each_measure.channel) / 1023.0) * self.scale_from_max))
+        for channel in self.device_measurements:
+            if self.is_enabled(channel):
+                self.set_value(channel, (
+                    (self.adc.read_adc(channel) / 1023.0) * self.scale_from_max))
 
         return self.return_dict
 

@@ -1,3 +1,14 @@
+## 7.5.6 (Unreleased)
+
+### Bugfixes
+
+ - Fix issues with SHT31 Smart Gadget and Ruuvitag Inputs ([#638](https://github.com/kizniche/mycodo/issues/638))
+
+### Features
+
+ - Add ability to set timeout period for Input functions with @timeout(seconds) decorator
+
+
 ## 7.5.5 (2019-06-03)
 
 ### Bugfixes

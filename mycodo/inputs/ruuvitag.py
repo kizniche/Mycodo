@@ -1,9 +1,11 @@
 # coding=utf-8
-from mycodo.databases.models import DeviceMeasurements
+import time
+
+from wrapt_timeout_decorator import timeout
+
 from mycodo.inputs.base_input import AbstractInput
 from mycodo.inputs.sensorutils import calculate_dewpoint
 from mycodo.inputs.sensorutils import calculate_vapor_pressure_deficit
-from mycodo.utils.database import db_retrieve_table_daemon
 
 # Measurements
 measurements_dict = {
@@ -87,11 +89,8 @@ class InputModule(AbstractInput):
 
     """
     def __init__(self, input_dev, testing=False):
-        super(InputModule, self).__init__()
-        self.setup_logger(testing=testing, name=__name__, input_dev=input_dev)
-        self.running = True
-        self.unique_id = input_dev.unique_id
-        self._measurements = None
+        super(InputModule, self).__init__(input_dev, name=__name__)
+
         self.download_stored_data = None
         self.logging_interval_ms = None
         self.gadget = None
@@ -104,23 +103,22 @@ class InputModule(AbstractInput):
         if not testing:
             import filelock
 
-            self.device_measurements = db_retrieve_table_daemon(
-                DeviceMeasurements).filter(
-                    DeviceMeasurements.device_id == input_dev.unique_id)
-
             self.filelock = filelock
-            self.lock_file_bluetooth = '/var/lock/bluetooth_dev_hci{}'.format(
+            self.lock_file = '/var/lock/bluetooth_dev_hci{}'.format(
                 input_dev.bt_adapter)
             self.location = input_dev.location
             self.bt_adapter = input_dev.bt_adapter
 
+    @timeout(3610)
     def get_measurement(self):
         """ Obtain and return the measurements """
         self.return_dict = measurements_dict.copy()
 
         self.logger.debug("Starting measurement")
-        try:
-            with self.filelock.FileLock(self.lock_file_bluetooth, timeout=3600):
+        time.sleep(1)
+        self.lock_acquire(self.lock_file, timeout=3600)
+        if self.locked:
+            try:
                 from mycodo.utils.system_pi import cmd_output
                 cmd = '/var/mycodo-root/env/bin/python ' \
                       '/var/mycodo-root/mycodo/inputs/scripts/ruuvitag_values.py ' \
@@ -129,6 +127,7 @@ class InputModule(AbstractInput):
                 cmd_return, _, cmd_status = cmd_output(cmd, timeout=10)
 
                 if not cmd_return:
+                    self.logger.debug("Measurement command returned no data")
                     return
 
                 values = cmd_return.decode('ascii').split(',')
@@ -176,5 +175,11 @@ class InputModule(AbstractInput):
                 self.logger.debug("Completed measurement")
                 return self.return_dict
 
-        except self.filelock.Timeout:
+            except Exception as msg:
+                self.logger.debug("Error: {}".format(msg))
+
+            finally:
+                self.lock_release()
+
+        else:
             self.logger.error("Lock timeout")

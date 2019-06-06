@@ -74,8 +74,7 @@ class InputModule(AbstractInput):
     """ A sensor support class that monitors the K30's CO2 concentration """
 
     def __init__(self, input_dev, testing=False):
-        super(InputModule, self).__init__()
-        self.setup_logger(testing=testing, name=__name__, input_dev=input_dev)
+        super(InputModule, self).__init__(input_dev, name=__name__)
         self.timer = 0
 
         if not testing:
@@ -109,9 +108,7 @@ class InputModule(AbstractInput):
             self.serial = serial
             self.serial_send = None
             self.filelock = filelock
-            self.lock = None
             self.lock_file = "/var/lock/mycodo_ttn.lock"
-            self.locked = False
             self.ttn_serial_error = False
             self.logger.debug(
                 "Min time between transmissions: {} seconds".format(

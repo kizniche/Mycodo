@@ -52,10 +52,8 @@ INPUT_INFORMATION = {
 class InputModule(AbstractInput):
     """ A sensor support class that monitors the TSL2561's lux """
 
-    def __init__(self, input_dev, testing=False, run_main=True):
-        super(InputModule, self).__init__()
-        self.setup_logger(testing=testing, name=__name__, input_dev=input_dev)
-        self.run_main = run_main
+    def __init__(self, input_dev, testing=False):
+        super(InputModule, self).__init__(input_dev, name=__name__)
 
         if not testing:
             from tsl2561 import TSL2561
@@ -164,7 +162,6 @@ if __name__ == "__main__":
     settings.unique_id = '0000-0000'
     settings.i2c_location = '0x39'
     settings.i2c_bus = 1
-    settings.run_main = True
 
-    measurements = InputModule(settings, run_main=True).next()
+    measurements = InputModule(settings).next()
     print("Measurements: {}".format(measurements))

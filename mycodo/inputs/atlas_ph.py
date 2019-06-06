@@ -89,8 +89,7 @@ class InputModule(AbstractInput):
     """A sensor support class that monitors the Atlas Scientific sensor pH"""
 
     def __init__(self, input_dev, testing=False):
-        super(InputModule, self).__init__()
-        self.setup_logger(testing=testing, name=__name__, input_dev=input_dev)
+        super(InputModule, self).__init__(input_dev, name=__name__)
         self.atlas_sensor_ftdi = None
         self.atlas_sensor_uart = None
         self.atlas_sensor_i2c = None
@@ -146,7 +145,11 @@ class InputModule(AbstractInput):
             device_id = self.calibrate_sensor_measure.split(',')[0]
             measurement_id = self.calibrate_sensor_measure.split(',')[1]
 
-            device_measurement = self.device_measurements.filter(
+            all_device_measurements = db_retrieve_table_daemon(
+                DeviceMeasurements).filter(
+                DeviceMeasurements.device_id == self.input_dev.unique_id)
+
+            device_measurement = all_device_measurements.filter(
                 DeviceMeasurements.unique_id == measurement_id).first()
             if device_measurement:
                 conversion = db_retrieve_table_daemon(

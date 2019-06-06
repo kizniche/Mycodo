@@ -42,14 +42,9 @@ class InputModule(AbstractInput):
     """ A sensor support class that returns a value from a command """
 
     def __init__(self, input_dev, testing=False):
-        super(InputModule, self).__init__()
-        self.setup_logger(testing=testing, name=__name__, input_dev=input_dev)
+        super(InputModule, self).__init__(input_dev, name=__name__)
 
         if not testing:
-            self.device_measurements = db_retrieve_table_daemon(
-                DeviceMeasurements).filter(
-                DeviceMeasurements.device_id == input_dev.unique_id)
-
             self.command = input_dev.cmd_command
 
     def get_measurement(self):
@@ -67,10 +62,10 @@ class InputModule(AbstractInput):
                 "by the command.")
             return
 
-        for channel, meas in enumerate(self.device_measurements.all()):
-            if meas.is_enabled:
-                self.return_dict[channel]['unit'] = meas.unit
-                self.return_dict[channel]['measurement'] = meas.measurement
+        for channel in self.device_measurements:
+            if self.is_enabled(channel):
+                self.return_dict[channel]['unit'] = self.device_measurements[channel].unit
+                self.return_dict[channel]['measurement'] = self.device_measurements[channel].measurement
                 self.return_dict[channel]['value'] = list_measurements[channel]
 
         return self.return_dict

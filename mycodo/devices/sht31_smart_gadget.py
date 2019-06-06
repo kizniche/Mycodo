@@ -35,10 +35,14 @@ from bluepy.btle import UUID
 
 
 class SHT31Delegate(DefaultDelegate):
-    def __init__(self, parent):
+    def __init__(self, parent, debug=False):
         DefaultDelegate.__init__(self)
         self.logger = logging.getLogger(
             "mycodo.device.sht31_smart_gadget.delegate")
+        if debug:
+            self.logger.setLevel(logging.DEBUG)
+        else:
+            self.logger.setLevel(logging.INFO)
         self.parent = parent
         self.sustainedNotifications = {'Temp': 0, 'Humi': 0}
         self.enabledNotifications = {'Temp': False, 'Humi': False}
@@ -46,13 +50,16 @@ class SHT31Delegate(DefaultDelegate):
         self.__loggerInterval = 0
         self.__newestTimeStampMs = 0
         self.loggingReadout = False
+        self.logger.debug("SHT31Delegate Initialized")
 
     def prepareLoggerReadout(self, loggerInterval, newestTimeStampMs):
+        self.logger.debug("prepareLoggerReadout()")
         self.__loggerInterval = loggerInterval
         self.__newestTimeStampMs = newestTimeStampMs
         self.loggingReadout = True
 
     def handleNotification(self, cHandle, data):
+        self.logger.debug("handleNotification()")
         dataTypes = {55: 'Temp', 50: 'Humi'}
         typeData = dataTypes[cHandle]
 
@@ -86,76 +93,95 @@ class SHT31Delegate(DefaultDelegate):
 
 
 class SHT31:
-    def __init__(self, addr=None, iface=None):
+    def __init__(self, addr=None, iface=None, debug=False):
         self.logger = logging.getLogger(
             "mycodo.device.sht31_smart_gadget.sht31")
+        if debug:
+            self.logger.setLevel(logging.DEBUG)
+        else:
+            self.logger.setLevel(logging.INFO)
         self.loggedDataReadout = {'Temp': {}, 'Humi': {}}
         self.loggedData = {'Temp': {}, 'Humi': {}}
         self.__loggerInterval = 0
         self.__loggingReadout = False
+        self.__characteristics = {}
 
         self.tmp_newestTimeStampMs = 0
         self.newestTimeStampMs = 0
 
         self.__peripheral = Peripheral(addr, 'random', iface)
         if addr is not None:
-            self.__peripheral.setDelegate(SHT31Delegate(self))
+            self.__peripheral.setDelegate(SHT31Delegate(self, debug=debug))
             self.__prepareGadget()
+        self.logger.debug("SHT31 Initialized")
 
     def __prepareGadget(self):
-        self.__characteristics = {
-            'SystemId':  # READ
-                self.__peripheral.getCharacteristics(uuid=UUID(0x2A23))[0],
-            'ManufacturerNameString':  # READ
-                self.__peripheral.getCharacteristics(uuid=UUID(0x2A29))[0],
-            'ModelNumberString':  # READ
-                self.__peripheral.getCharacteristics(uuid=UUID(0x2A24))[0],
-            'SerialNumberString':  # READ
-                self.__peripheral.getCharacteristics(uuid=UUID(0x2A25))[0],
-            'HardwareRevisionString':  # READ
-                self.__peripheral.getCharacteristics(uuid=UUID(0x2A27))[0],
-            'FirmwareRevisionString':  # READ
-                self.__peripheral.getCharacteristics(uuid=UUID(0x2A26))[0],
-            'SoftwareRevisionString':  # READ
-                self.__peripheral.getCharacteristics(uuid=UUID(0x2A28))[0],
-            'Battery':  # READ NOTIFY
-                self.__peripheral.getCharacteristics(uuid=UUID(0x2A19))[0],
-            'DeviceName':  # READ WRITE
-                self.__peripheral.getCharacteristics(
-                    uuid=UUID("00002a00-0000-1000-8000-00805f9b34fb"))[0],
-            'SyncTimeMs':  # WRITE
-                self.__peripheral.getCharacteristics(
-                    uuid=UUID("0000f235-b38d-4985-720e-0f993a68ee41"))[0],
-            'OldestTimeStampMs':  # READ WRITE
-                self.__peripheral.getCharacteristics(
-                    uuid=UUID("0000f236-b38d-4985-720e-0f993a68ee41"))[0],
-            'NewestTimeStampMs':  # READ WRITE
-                self.__peripheral.getCharacteristics(
-                    uuid=UUID("0000f237-b38d-4985-720e-0f993a68ee41"))[0],
-            'StartLoggerDownload':  # WRITE NOTIFY
-                self.__peripheral.getCharacteristics(
-                    uuid=UUID("0000f238-b38d-4985-720e-0f993a68ee41"))[0],
-            'LoggerIntervalMs':  # READ NOTIFY
-                self.__peripheral.getCharacteristics(
-                    uuid=UUID("0000f239-b38d-4985-720e-0f993a68ee41"))[0],
-            'Humidity':  # READ NOTIFY
-                self.__peripheral.getCharacteristics(
-                    uuid=UUID("00001235-b38d-4985-720e-0f993a68ee41"))[0],
-            'Temperature':  # READ NOTIFY
-                self.__peripheral.getCharacteristics(
-                    uuid=UUID("00002235-b38d-4985-720e-0f993a68ee41"))[0]
-        }
+        if self.__characteristics:
+            return
+
+        self.logger.debug("__prepareGadget()")
+        # READ
+        self.__characteristics['SystemId'] = self.__peripheral.getCharacteristics(uuid=UUID(0x2A23))[0]
+        time.sleep(0.5)
+        # READ
+        self.__characteristics['ManufacturerNameString'] = self.__peripheral.getCharacteristics(uuid=UUID(0x2A29))[0]
+        time.sleep(0.5)
+        # READ
+        self.__characteristics['ModelNumberString'] = self.__peripheral.getCharacteristics(uuid=UUID(0x2A24))[0]
+        time.sleep(0.5)
+        # READ
+        self.__characteristics['SerialNumberString'] = self.__peripheral.getCharacteristics(uuid=UUID(0x2A25))[0]
+        time.sleep(0.5)
+        # READ
+        self.__characteristics['HardwareRevisionString'] = self.__peripheral.getCharacteristics(uuid=UUID(0x2A27))[0]
+        time.sleep(0.5)
+        # READ
+        self.__characteristics['FirmwareRevisionString'] = self.__peripheral.getCharacteristics(uuid=UUID(0x2A26))[0]
+        time.sleep(0.5)
+        # READ
+        self.__characteristics['SoftwareRevisionString'] = self.__peripheral.getCharacteristics(uuid=UUID(0x2A28))[0]
+        time.sleep(0.5)
+        # READ NOTIFY
+        self.__characteristics['Battery'] = self.__peripheral.getCharacteristics(uuid=UUID(0x2A19))[0]
+        time.sleep(0.5)
+        # READ WRITE
+        self.__characteristics['DeviceName'] = self.__peripheral.getCharacteristics(uuid=UUID("00002a00-0000-1000-8000-00805f9b34fb"))[0]
+        time.sleep(0.5)
+        # WRITE
+        self.__characteristics['SyncTimeMs'] = self.__peripheral.getCharacteristics(uuid=UUID("0000f235-b38d-4985-720e-0f993a68ee41"))[0]
+        time.sleep(0.5)
+        # READ WRITE
+        self.__characteristics['OldestTimeStampMs'] = self.__peripheral.getCharacteristics(uuid=UUID("0000f236-b38d-4985-720e-0f993a68ee41"))[0]
+        time.sleep(0.5)
+        # READ WRITE
+        self.__characteristics['NewestTimeStampMs'] = self.__peripheral.getCharacteristics(uuid=UUID("0000f237-b38d-4985-720e-0f993a68ee41"))[0]
+        time.sleep(0.5)
+        # WRITE NOTIFY
+        self.__characteristics['StartLoggerDownload'] = self.__peripheral.getCharacteristics(uuid=UUID("0000f238-b38d-4985-720e-0f993a68ee41"))[0]
+        time.sleep(0.5)
+        # READ NOTIFY
+        self.__characteristics['LoggerIntervalMs'] = self.__peripheral.getCharacteristics(uuid=UUID("0000f239-b38d-4985-720e-0f993a68ee41"))[0]
+        time.sleep(0.5)
+        # READ NOTIFY
+        self.__characteristics['Humidity'] = self.__peripheral.getCharacteristics(uuid=UUID("00001235-b38d-4985-720e-0f993a68ee41"))[0]
+        time.sleep(0.5)
+        # READ NOTIFY
+        self.__characteristics['Temperature'] =  self.__peripheral.getCharacteristics(uuid=UUID("00002235-b38d-4985-720e-0f993a68ee41"))[0]
+        time.sleep(0.5)
+
         if self.readFirmwareRevisionString() == '1.3':
             # Error in the documentation/firmware of 1.3 runnumber does not
             # start with 0 it starts with 1, therefore insert an offset here.
             self.__peripheral.delegate.offset = 1
 
     def connect(self, addr, iface=None):
+        self.logger.debug("connect()")
         self.__peripheral.setDelegate(SHT31Delegate(self))
         self.__peripheral.connect(addr, 'random', iface)
         self.__prepareGadget()
 
     def disconnect(self):
+        self.logger.debug("disconnect()")
         self.__peripheral.disconnect()
 
     def __readCharacteristcAscii(self, name):
@@ -199,6 +225,7 @@ class SHT31:
             byteorder='little')
 
     def setSyncTimeMs(self, timestamp=None):
+        self.logger.debug("setSyncTimeMs()")
         timestampMs = timestamp if timestamp else int(round(time.time() * 1000))
         self.__characteristics['SyncTimeMs'].write(
             timestampMs.to_bytes(8, byteorder='little'))
@@ -233,6 +260,7 @@ class SHT31:
             (int(interval)).to_bytes(4, byteorder='little'))
 
     def readLoggedDataInterval(self, startMs=None, stopMs=None):
+        self.logger.debug("readLoggedDataInterval()")
         self.setSyncTimeMs()
         # Sleep a bit to enable the gadget to set the SyncTime; otherwise 0 is read when readNewestTimestampMs is used
         time.sleep(0.1)

@@ -89,8 +89,7 @@ class InputModule(AbstractInput):
         Taking readings more often than about once every two seconds will
         eventually cause the DHT22 to hang.  A 3 second interval seems OK.
         """
-        super(InputModule, self).__init__()
-        self.setup_logger(testing=testing, name=__name__, input_dev=input_dev)
+        super(InputModule, self).__init__(input_dev, name=__name__)
         self.temp_temperature = None
         self.temp_humidity = None
         self.temp_dew_point = None
@@ -102,10 +101,6 @@ class InputModule(AbstractInput):
         if not testing:
             import pigpio
             from mycodo.mycodo_client import DaemonControl
-
-            self.device_measurements = db_retrieve_table_daemon(
-                DeviceMeasurements).filter(
-                    DeviceMeasurements.device_id == input_dev.unique_id)
 
             self.power_output_id = input_dev.power_output_id
 

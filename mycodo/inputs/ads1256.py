@@ -94,10 +94,8 @@ INPUT_INFORMATION = {
 
 class InputModule(AbstractInput):
     """ ADC Read """
-    def __init__(self, input_dev, testing=False, run_main=True):
-        super(InputModule, self).__init__()
-        self.setup_logger(testing=testing, name=__name__, input_dev=input_dev)
-        self.run_main = run_main
+    def __init__(self, input_dev, testing=False):
+        super(InputModule, self).__init__(input_dev, name=__name__)
 
         if not testing:
             from ADS1256_definitions import POS_AIN0
@@ -121,11 +119,6 @@ class InputModule(AbstractInput):
             self.CH_SEQUENCE = (POTI, LDR, EXT2, EXT3, EXT4, EXT5, EXT6, EXT7)
 
             self.adc_calibration = None
-
-            self.device_measurements = db_retrieve_table_daemon(
-                DeviceMeasurements).filter(
-                    DeviceMeasurements.device_id == input_dev.unique_id)
-
             self.adc_gain = input_dev.adc_gain
             self.adc_sample_speed = input_dev.adc_sample_speed
 
@@ -151,7 +144,6 @@ class InputModule(AbstractInput):
                 elif self.adc_calibration == 'SYSGCAL':
                     self.ads.cal_system_gain()
 
-                self.running = True
             else:
                 raise Exception(
                     "SPI device /dev/spi* not found. Ensure SPI is enabled "
@@ -178,9 +170,9 @@ class InputModule(AbstractInput):
                 "something is wrong).")
             return
 
-        for each_measure in self.device_measurements.all():
-            if each_measure.is_enabled:
-                self.set_value(each_measure.channel, voltages_list[each_measure.channel])
+        for channel in self.device_measurements:
+            if self.is_enabled(channel):
+                self.set_value(channel, voltages_list[channel])
 
         return self.return_dict
 
@@ -194,5 +186,5 @@ if __name__ == "__main__":
     settings.adc_sample_speed = '10'
     settings.channels = 8
 
-    measurements = InputModule(settings, run_main=True).next()
+    measurements = InputModule(settings).next()
     print("Measurements: {}".format(InputModule(settings).next()))

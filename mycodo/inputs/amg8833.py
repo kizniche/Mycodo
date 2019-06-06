@@ -59,8 +59,7 @@ class InputModule(AbstractInput):
     """ A sensor support class that monitors the AMG8833's temperature """
 
     def __init__(self, input_dev, testing=False):
-        super(InputModule, self).__init__()
-        self.setup_logger(testing=testing, name=__name__, input_dev=input_dev)
+        super(InputModule, self).__init__(input_dev, name=__name__)
         self.save_image = False
         self.temp_max = None
         self.temp_min = None
@@ -71,10 +70,6 @@ class InputModule(AbstractInput):
 
         if not testing:
             from Adafruit_AMG88xx import Adafruit_AMG88xx
-
-            self.device_measurements = db_retrieve_table_daemon(
-                DeviceMeasurements).filter(
-                    DeviceMeasurements.device_id == input_dev.unique_id)
 
             self.Adafruit_AMG88xx = Adafruit_AMG88xx
             self.i2c_address = int(str(input_dev.i2c_location), 16)
@@ -96,9 +91,9 @@ class InputModule(AbstractInput):
             self.logger.error("Max Pixel = {0} C".format(max(pixels)))
             self.logger.error("Thermistor = {0} C".format(self.sensor.readThermistor()))
 
-        for meas in self.device_measurements.all():
-            if meas.is_enabled:
-                self.set_value(meas.channel, pixels[meas.channel])
+        for channel in self.device_measurements:
+            if self.is_enabled(channel):
+                self.set_value(channel, pixels[channel])
 
         if self.save_image:
             timestamp = datetime.now().strftime('%Y-%m-%d_%H-%M-%S')

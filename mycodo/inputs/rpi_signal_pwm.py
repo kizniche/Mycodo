@@ -55,15 +55,10 @@ class InputModule(AbstractInput):
     """ A sensor support class that monitors pwm """
 
     def __init__(self, input_dev, testing=False):
-        super(InputModule, self).__init__()
-        self.setup_logger(testing=testing, name=__name__, input_dev=input_dev)
+        super(InputModule, self).__init__(input_dev, name=__name__)
 
         if not testing:
             import pigpio
-
-            self.device_measurements = db_retrieve_table_daemon(
-                DeviceMeasurements).filter(
-                    DeviceMeasurements.device_id == input_dev.unique_id)
 
             self.gpio = int(input_dev.gpio_location)
             self.weighting = input_dev.weighting

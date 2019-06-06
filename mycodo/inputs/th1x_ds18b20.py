@@ -54,15 +54,10 @@ INPUT_INFORMATION = {
 
 class InputModule(AbstractInput):
     def __init__(self, input_dev, testing=False):
-        super(InputModule, self).__init__()
-        self.setup_logger(testing=testing, name=__name__, input_dev=input_dev)
+        super(InputModule, self).__init__(input_dev, name=__name__)
         self.ip_address = None
 
         if not testing:
-            self.device_measurements = db_retrieve_table_daemon(
-                DeviceMeasurements).filter(
-                DeviceMeasurements.device_id == input_dev.unique_id)
-
             if input_dev.custom_options:
                 for each_option in input_dev.custom_options.split(';'):
                     option = each_option.split(',')[0]

@@ -2,7 +2,6 @@
 import csv
 import logging
 import pwd
-import resource
 import string
 import time
 from collections import OrderedDict
@@ -11,7 +10,9 @@ import geocoder
 import os
 import random
 import requests
+import resource
 from influxdb import InfluxDBClient
+from influxdb.exceptions import InfluxDBServerError
 from sqlalchemy import func
 
 from mycodo.config import ID_FILE
@@ -301,6 +302,8 @@ def send_anonymous_stats(start_time, debug=False):
         logger.debug("Could not send anonymous usage statistics: Connection "
                      "timed out (expected if there's no internet or the "
                      "server is down)")
+    except InfluxDBServerError as except_msg:
+        logger.error("Statistics: InfluxDB server error: {}".format(except_msg['error']))
     except Exception as except_msg:
         logger.exception(
             "Could not send anonymous usage statistics: {err}".format(

@@ -3,13 +3,11 @@ import datetime
 import time
 
 from flask_babel import lazy_gettext
+from wrapt_timeout_decorator import timeout
 
-from mycodo.databases.models import Conversion
-from mycodo.databases.models import DeviceMeasurements
 from mycodo.inputs.base_input import AbstractInput
 from mycodo.inputs.sensorutils import calculate_dewpoint
 from mycodo.inputs.sensorutils import calculate_vapor_pressure_deficit
-from mycodo.utils.database import db_retrieve_table_daemon
 from mycodo.utils.influx import parse_measurement
 from mycodo.utils.influx import write_influxdb_value
 
@@ -129,11 +127,8 @@ class InputModule(AbstractInput):
 
     """
     def __init__(self, input_dev, testing=False):
-        super(InputModule, self).__init__()
-        self.setup_logger(testing=testing, name=__name__, input_dev=input_dev)
-        self.running = True
-        self.unique_id = input_dev.unique_id
-        self._measurements = None
+        super(InputModule, self).__init__(input_dev, name=__name__)
+
         self.download_stored_data = None
         self.logging_interval_ms = None
         self.gadget = None
@@ -148,10 +143,6 @@ class InputModule(AbstractInput):
             from bluepy import btle
             import filelock
 
-            self.device_measurements = db_retrieve_table_daemon(
-                DeviceMeasurements).filter(
-                    DeviceMeasurements.device_id == input_dev.unique_id)
-
             if input_dev.custom_options:
                 for each_option in input_dev.custom_options.split(';'):
                     option = each_option.split(',')[0]
@@ -162,23 +153,74 @@ class InputModule(AbstractInput):
                         self.logging_interval_ms = int(value) * 1000
 
             self.filelock = filelock
-            self.lock_file_bluetooth = '/var/lock/bluetooth_dev_hci{}'.format(
+            self.lock_file = '/var/lock/bluetooth_dev_hci{}'.format(
                 input_dev.bt_adapter)
             self.SHT31 = SHT31
             self.btle = btle
+            self.log_level_debug = input_dev.log_level_debug
             self.location = input_dev.location
             self.bt_adapter = input_dev.bt_adapter
 
+    def initialize(self):
+        """Initialize the device by obtaining sensor information"""
+        self.logger.debug("Input Initializing: {}".format(self.initialized))
+        if not self.initialized:
+            for _ in range(3):
+                if not self.running:
+                    break
+                try:
+                    self.gadget = self.SHT31(
+                        addr=self.location,
+                        iface=self.bt_adapter,
+                        debug=self.log_level_debug)
+                    self.initialized = True
+                    self.logger.debug("Input Initializing 5: {}".format(self.initialized))
+                    self.connected = True
+                    break
+                except self.btle.BTLEException as e:
+                    self.connect_error = e
+                time.sleep(0.1)
+
+            if self.connect_error:
+                self.logger.error(
+                    "Initialize Error: {}".format(self.connect_error))
+
+        if self.connected:
+            # Fill device information dictionary
+            self.device_information['manufacturer'] = self.gadget.readManufacturerNameString()
+            self.device_information['model'] = self.gadget.readModelNumberString()
+            self.device_information['serial_number'] = self.gadget.readSerialNumberString()
+            self.device_information['device_name'] = self.gadget.readDeviceName()
+            self.device_information['firmware_revision'] = self.gadget.readFirmwareRevisionString()
+            self.device_information['hardware_revision'] = self.gadget.readHardwareRevisionString()
+            self.device_information['software_revision'] = self.gadget.readSoftwareRevisionString()
+            self.device_information['logger_interval_ms'] = self.gadget.readLoggerIntervalMs()
+            self.device_information['battery'] = self.gadget.readBattery()
+            self.device_information['info_timestamp'] = int(time.time() * 1000)
+            self.logger.info(
+                "{man}, {mod}, SN: {sn}, Name: {name}, Firmware: {fw}, "
+                "Hardware: {hw}, Software: {sw}, Log Interval: {sec} sec".format(
+                    man=self.device_information['manufacturer'],
+                    mod=self.device_information['model'],
+                    sn=self.device_information['serial_number'],
+                    name=self.device_information['device_name'],
+                    fw=self.device_information['firmware_revision'],
+                    hw=self.device_information['hardware_revision'],
+                    sw=self.device_information['software_revision'],
+                    sec=self.device_information['logger_interval_ms'] / 1000))
+
     def connect(self):
         # Make three attempts to connect
+        self.logger.debug("Connecting")
         for _ in range(3):
             if not self.running:
                 break
             try:
-                self.gadget = self.SHT31(
+                self.gadget.connect(
                     addr=self.location, iface=self.bt_adapter)
                 self.connected = True
                 self.connect_error = None
+                self.logger.debug("Connected")
                 break
             except self.btle.BTLEException as e:
                 self.connect_error = e
@@ -190,7 +232,9 @@ class InputModule(AbstractInput):
 
     def disconnect(self):
         try:
+            self.logger.debug("Disconnecting")
             self.gadget.disconnect()
+            self.logger.debug("Disconnected")
         except self.btle.BTLEException as e:
             self.logger.error("Disconnect Error: {}".format(e))
         except Exception:
@@ -199,6 +243,7 @@ class InputModule(AbstractInput):
             self.connected = False
 
     def download_data(self):
+        self.logger.debug("Downloading Data")
         # Clear data previously stored in dictionary
         self.gadget.loggedDataReadout = {'Temp': {}, 'Humi': {}}
 
@@ -211,14 +256,15 @@ class InputModule(AbstractInput):
                     not self.gadget.isLogReadoutInProgress()):
                 break  # Done reading data
 
+        self.logger.debug("Downloaded Data")
+        self.logger.debug("Parsing/saving data")
+
         list_timestamps_temp = []
         list_timestamps_humi = []
 
         # Store logged temperature
-        measurement = self.device_measurements.filter(
-            DeviceMeasurements.channel == 0).first()
-        conversion = db_retrieve_table_daemon(
-            Conversion, unique_id=measurement.conversion_id)
+        self.logger.debug("Storing {} temperatures".format(
+            len(self.gadget.loggedDataReadout['Temp'])))
         for each_ts, each_measure in self.gadget.loggedDataReadout['Temp'].items():
             if not self.running:
                 break
@@ -236,10 +282,10 @@ class InputModule(AbstractInput):
                     }
                 }
                 measurement_single = parse_measurement(
-                    conversion,
-                    measurement,
+                    self.channels_conversion[0],
+                    self.channels_measurement[0],
                     measurement_single,
-                    measurement.channel,
+                    self.channels_measurement[0].channel,
                     measurement_single[0])
                 write_influxdb_value(
                     self.unique_id,
@@ -250,10 +296,8 @@ class InputModule(AbstractInput):
                     timestamp=datetime_ts)
 
         # Store logged humidity
-        measurement = self.device_measurements.filter(
-            DeviceMeasurements.channel == 1).first()
-        conversion = db_retrieve_table_daemon(
-            Conversion, unique_id=measurement.conversion_id)
+        self.logger.debug("Storing {} humidities".format(
+            len(self.gadget.loggedDataReadout['Humi'])))
         for each_ts, each_measure in self.gadget.loggedDataReadout['Humi'].items():
             if not self.running:
                 break
@@ -271,10 +315,10 @@ class InputModule(AbstractInput):
                     }
                 }
                 measurement_single = parse_measurement(
-                    conversion,
-                    measurement,
+                    self.channels_conversion[1],
+                    self.channels_measurement[1],
                     measurement_single,
-                    measurement.channel,
+                    self.channels_measurement[1].channel,
                     measurement_single[1])
                 write_influxdb_value(
                     self.unique_id,
@@ -288,6 +332,8 @@ class InputModule(AbstractInput):
         list_timestamps_both = list(
             set(list_timestamps_temp).intersection(list_timestamps_humi))
 
+        self.logger.debug("Calculating/storing {} dewpoint and vpd".format(
+            len(list_timestamps_both)))
         for each_ts in list_timestamps_both:
             if not self.running:
                 break
@@ -304,10 +350,6 @@ class InputModule(AbstractInput):
             if (self.is_enabled(3) and
                     self.is_enabled(0) and
                     self.is_enabled(1)):
-                measurement = self.device_measurements.filter(
-                    DeviceMeasurements.channel == 3).first()
-                conversion = db_retrieve_table_daemon(
-                    Conversion, unique_id=measurement.conversion_id)
                 dewpoint = calculate_dewpoint(temperature, humidity)
                 measurement_single = {
                     3: {
@@ -317,10 +359,10 @@ class InputModule(AbstractInput):
                     }
                 }
                 measurement_single = parse_measurement(
-                    conversion,
-                    measurement,
+                    self.channels_conversion[3],
+                    self.channels_measurement[3],
                     measurement_single,
-                    measurement.channel,
+                    self.channels_measurement[3].channel,
                     measurement_single[3])
                 write_influxdb_value(
                     self.unique_id,
@@ -334,10 +376,6 @@ class InputModule(AbstractInput):
             if (self.is_enabled(4) and
                     self.is_enabled(0) and
                     self.is_enabled(1)):
-                measurement = self.device_measurements.filter(
-                    DeviceMeasurements.channel == 4).first()
-                conversion = db_retrieve_table_daemon(
-                    Conversion, unique_id=measurement.conversion_id)
                 vpd = calculate_vapor_pressure_deficit(temperature, humidity)
                 measurement_single = {
                     4: {
@@ -347,10 +385,10 @@ class InputModule(AbstractInput):
                     }
                 }
                 measurement_single = parse_measurement(
-                    conversion,
-                    measurement,
+                    self.channels_conversion[4],
+                    self.channels_measurement[4],
                     measurement_single,
-                    measurement.channel,
+                    self.channels_measurement[4].channel,
                     measurement_single[4])
                 write_influxdb_value(
                     self.unique_id,
@@ -362,21 +400,25 @@ class InputModule(AbstractInput):
 
         # Download successfully finished, set newest timestamp
         self.gadget.newestTimeStampMs = self.gadget.tmp_newestTimeStampMs
+        self.logger.debug("Parsed/saved data")
 
     def get_device_information(self):
-        if 'info_timestamp' not in self.device_information:
+        if not self.initialized:
             self.initialize()
 
         if 'info_timestamp' in self.device_information:
             return self.device_information
 
+    @timeout(3610)
     def get_measurement(self):
         """ Obtain and return the measurements """
         self.return_dict = measurements_dict.copy()
 
         self.logger.debug("Starting measurement")
-        try:
-            with self.filelock.FileLock(self.lock_file_bluetooth, timeout=3600):
+        time.sleep(1)
+        self.lock_acquire(self.lock_file, timeout=3600)
+        if self.locked:
+            try:
                 if not self.initialized:
                     self.initialize()
 
@@ -396,6 +438,7 @@ class InputModule(AbstractInput):
                                 and self.logging_interval_ms != self.device_information['logger_interval_ms']):
                             self.set_logging_interval()
 
+                        self.logger.debug("Acquiring present measurements")
                         # Get battery percent charge
                         if self.is_enabled(2):
                             self.set_value(2, self.gadget.readBattery())
@@ -407,6 +450,7 @@ class InputModule(AbstractInput):
 
                         if self.is_enabled(1):
                             self.set_value(1, self.gadget.readHumidity())
+                        self.logger.debug("Acquired present measurements")
                     except self.btle.BTLEDisconnectError:
                         self.logger.error("Disconnected")
                         return
@@ -432,39 +476,11 @@ class InputModule(AbstractInput):
                     return self.return_dict
                 else:
                     self.logger.debug("Not connected: Not measuring")
+            finally:
+                self.lock_release()
 
-        except self.filelock.Timeout:
+        else:
             self.logger.error("Lock timeout")
-
-    def initialize(self):
-        """Initialize the device by obtaining sensor information"""
-        if not self.connected:
-            self.connect()
-
-        if self.connected:
-            # Fill device information dictionary
-            self.device_information['manufacturer'] = self.gadget.readManufacturerNameString()
-            self.device_information['model'] = self.gadget.readModelNumberString()
-            self.device_information['serial_number'] = self.gadget.readSerialNumberString()
-            self.device_information['device_name'] = self.gadget.readDeviceName()
-            self.device_information['firmware_revision'] = self.gadget.readFirmwareRevisionString()
-            self.device_information['hardware_revision'] = self.gadget.readHardwareRevisionString()
-            self.device_information['software_revision'] = self.gadget.readSoftwareRevisionString()
-            self.device_information['logger_interval_ms'] = self.gadget.readLoggerIntervalMs()
-            self.device_information['battery'] = self.gadget.readBattery()
-            self.device_information['info_timestamp'] = int(time.time() * 1000)
-            self.logger.info(
-                "{man}, {mod}, SN: {sn}, Name: {name}, Firmware: {fw}, "
-                "Hardware: {hw}, Software: {sw}, Log Interval: {sec} sec".format(
-                    man=self.device_information['manufacturer'],
-                    mod=self.device_information['model'],
-                    sn=self.device_information['serial_number'],
-                    name=self.device_information['device_name'],
-                    fw=self.device_information['firmware_revision'],
-                    hw=self.device_information['hardware_revision'],
-                    sw=self.device_information['software_revision'],
-                    sec=self.device_information['logger_interval_ms'] / 1000))
-        self.initialized = True
 
     def set_logging_interval(self):
         """Set logging interval (resets memory; set after downloading data)"""
@@ -472,6 +488,7 @@ class InputModule(AbstractInput):
             self.connect()
 
         if self.connected:
+            self.logger.debug("Setting Interval")
             self.gadget.setLoggerIntervalMs(self.logging_interval_ms)
             self.device_information['logger_interval_ms'] = self.logging_interval_ms
             self.logger.info(

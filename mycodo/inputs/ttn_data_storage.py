@@ -92,8 +92,7 @@ class InputModule(AbstractInput):
     """ A sensor support class that retrieves stored data from The Things Network """
 
     def __init__(self, input_dev, testing=False):
-        super(InputModule, self).__init__()
-        self.setup_logger(testing=testing, name=__name__, input_dev=input_dev)
+        super(InputModule, self).__init__(input_dev, name=__name__)
 
         if not testing:
             self.unique_id = input_dev.unique_id
@@ -101,9 +100,6 @@ class InputModule(AbstractInput):
             self.period = input_dev.period
             self.first_run = True
             self.latest_datetime = input_dev.datetime
-            self.device_measurements = db_retrieve_table_daemon(
-                DeviceMeasurements).filter(
-                DeviceMeasurements.device_id == input_dev.unique_id)
 
             if input_dev.custom_options:
                 for each_option in input_dev.custom_options.split(';'):
@@ -161,33 +157,33 @@ class InputModule(AbstractInput):
                 self.latest_datetime = datetime_utc
 
             measurements = {}
-            for each_meas in self.device_measurements.all():
-                if (self.is_enabled(each_meas.channel) and
-                        each_meas.name in each_resp and
-                        each_resp[each_meas.name] is not None):
+            for channel in self.channels_measurement:
+                if (self.is_enabled(channel) and
+                        self.channels_measurement[channel].name in each_resp and
+                        each_resp[self.channels_measurement[channel].name] is not None):
 
                     # Original value/unit
-                    measurements[each_meas.channel] = {}
-                    measurements[each_meas.channel]['measurement'] = each_meas.measurement
-                    measurements[each_meas.channel]['unit'] = each_meas.unit
-                    measurements[each_meas.channel]['value'] = each_resp[each_meas.name]
-                    measurements[each_meas.channel]['timestamp_utc'] = datetime_utc
+                    measurements[channel] = {}
+                    measurements[channel]['measurement'] = self.channels_measurement[channel].measurement
+                    measurements[channel]['unit'] = self.channels_measurement[channel].unit
+                    measurements[channel]['value'] = each_resp[self.channels_measurement[channel].name]
+                    measurements[channel]['timestamp_utc'] = datetime_utc
 
                     # Convert value/unit is conversion_id present and valid
-                    if each_meas.conversion_id:
+                    if self.channels_conversion[channel]:
                         conversion = db_retrieve_table_daemon(
-                            Conversion, unique_id=each_meas.conversion_id)
+                            Conversion, unique_id=self.channels_measurement[channel].conversion_id)
                         if conversion:
                             meas = parse_measurement(
-                                conversion,
-                                each_meas,
+                                self.channels_conversion[channel],
+                                self.channels_measurement[channel],
                                 measurements,
-                                each_meas.channel,
-                                measurements[each_meas.channel])
+                                channel,
+                                measurements[channel])
 
-                            measurements[each_meas.channel]['measurement'] = meas[each_meas.channel]['measurement']
-                            measurements[each_meas.channel]['unit'] = meas[each_meas.channel]['unit']
-                            measurements[each_meas.channel]['value'] = meas[each_meas.channel]['value']
+                            measurements[channel]['measurement'] = meas[channel]['measurement']
+                            measurements[channel]['unit'] = meas[channel]['unit']
+                            measurements[channel]['value'] = meas[channel]['value']
 
             if measurements:
                 add_measurements_influxdb(

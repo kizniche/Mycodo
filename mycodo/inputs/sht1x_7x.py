@@ -70,8 +70,7 @@ class InputModule(AbstractInput):
     """
 
     def __init__(self, input_dev, testing=False):
-        super(InputModule, self).__init__()
-        self.setup_logger(testing=testing, name=__name__, input_dev=input_dev)
+        super(InputModule, self).__init__(input_dev, name=__name__)
         self._dew_point = None
         self._humidity = None
         self._temperature = None
@@ -79,10 +78,6 @@ class InputModule(AbstractInput):
         if not testing:
             from sht_sensor import Sht
             from sht_sensor import ShtVDDLevel
-
-            self.device_measurements = db_retrieve_table_daemon(
-                DeviceMeasurements).filter(
-                    DeviceMeasurements.device_id == input_dev.unique_id)
 
             self.gpio = int(input_dev.gpio_location)
             self.clock_pin = input_dev.clock_pin
