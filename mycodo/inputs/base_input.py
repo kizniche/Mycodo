@@ -124,7 +124,6 @@ class AbstractInput(object):
         :returns: None on success or 1 on error
         """
         self._measurements = None
-        self.initialize_measurements()
         try:
             self._measurements = self.get_measurement()
             if self._measurements is not None:
