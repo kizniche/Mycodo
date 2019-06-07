@@ -50,7 +50,7 @@
     $(function() {
       {%- for each_input in table_input.query.filter(table_input.is_activated).all() -%}
         {% for each_meas in table_device_measurements.query.filter(table_device_measurements.device_id == each_input.unique_id).all() if each_meas.is_enabled %}
-          liveTextData('{{each_input.unique_id}}', 'input', '{{each_meas.unique_id}}', {{each_input.period + 1}});
+          liveTextData('{{each_input.unique_id}}', 'input', '{{each_meas.unique_id}}', {{each_input.period * 2}});
         {% endfor %}
       {%- endfor -%}
 
@@ -63,7 +63,7 @@
 
           {%- else -%}
 
-          liveTextData('{{each_math.unique_id}}', 'math', '{{each_meas.unique_id}}', {{each_math.period + 1}});
+          liveTextData('{{each_math.unique_id}}', 'math', '{{each_meas.unique_id}}', {{each_math.period * 2}});
 
           {%- endif -%}
         {% endfor %}
