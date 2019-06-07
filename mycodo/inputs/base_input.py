@@ -37,7 +37,6 @@ class AbstractInput(object):
         self.logger = None
         self.setup_logger(testing=testing, name=name, input_dev=input_dev)
         self.input_dev = input_dev
-        self.unique_id = input_dev.unique_id
         self._measurements = None
         self.channels_conversion = {}
         self.channels_measurement = {}
@@ -52,7 +51,9 @@ class AbstractInput(object):
         self.running = True
         self.device_measurements = None
 
-        self.check_setup()
+        if not testing:
+            self.unique_id = input_dev.unique_id
+            self.check_setup()
 
     def __iter__(self):
         """ Support the iterator protocol """
