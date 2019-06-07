@@ -1,8 +1,6 @@
 # coding=utf-8
 import time
 
-from wrapt_timeout_decorator import timeout
-
 from mycodo.inputs.base_input import AbstractInput
 from mycodo.inputs.sensorutils import calculate_dewpoint
 from mycodo.inputs.sensorutils import calculate_vapor_pressure_deficit
@@ -109,15 +107,15 @@ class InputModule(AbstractInput):
             self.location = input_dev.location
             self.bt_adapter = input_dev.bt_adapter
 
-    @timeout(3610)
     def get_measurement(self):
         """ Obtain and return the measurements """
         self.return_dict = measurements_dict.copy()
 
-        self.logger.debug("Starting measurement")
         time.sleep(1)
+
         self.lock_acquire(self.lock_file, timeout=3600)
         if self.locked:
+            self.logger.debug("Starting measurement")
             try:
                 from mycodo.utils.system_pi import cmd_output
                 cmd = '/var/mycodo-root/env/bin/python ' \
@@ -180,6 +178,3 @@ class InputModule(AbstractInput):
 
             finally:
                 self.lock_release()
-
-        else:
-            self.logger.error("Lock timeout")

@@ -153,25 +153,30 @@ class AbstractInput(object):
         self.lock = filelock.FileLock(lockfile, timeout=1)
         self.locked = False
         timer = time.time() + timeout
-        self.logger.debug("Acquiring lock")
+        self.logger.debug("Acquiring lock for {} ({} sec timeout)".format(
+            lockfile, timeout))
         while self.running and time.time() < timer:
             try:
                 self.lock.acquire()
-                self.logger.debug("Lock acquired")
+                seconds = time.time() - (timer - timeout)
+                self.logger.debug(
+                    "Lock acquired for {} in {:.2f} seconds".format(
+                        lockfile, seconds))
                 self.locked = True
                 break
             except:
                 pass
+        if not self.locked:
+            self.logger.debug(
+                "Lock unable to be acquired after {:.2f} seconds. "
+                "Breaking for future lock.".format(timeout))
+            self.lock_release()
 
     def lock_release(self):
-        if self.lock:
-            try:
-                self.lock.release(force=True)
-            finally:
-                try:
-                    os.remove(self.lock_file)
-                except:
-                    pass
+        try:
+            self.lock.release(force=True)
+        except:
+            pass
 
     def get_value(self, channel):
         """

@@ -3,7 +3,6 @@ import datetime
 import time
 
 from flask_babel import lazy_gettext
-from wrapt_timeout_decorator import timeout
 
 from mycodo.inputs.base_input import AbstractInput
 from mycodo.inputs.sensorutils import calculate_dewpoint
@@ -163,7 +162,7 @@ class InputModule(AbstractInput):
 
     def initialize(self):
         """Initialize the device by obtaining sensor information"""
-        self.logger.debug("Input Initializing: {}".format(self.initialized))
+        self.logger.debug("Input Initializing (Initialized: {})".format(self.initialized))
         if not self.initialized:
             for _ in range(3):
                 if not self.running:
@@ -174,7 +173,6 @@ class InputModule(AbstractInput):
                         iface=self.bt_adapter,
                         debug=self.log_level_debug)
                     self.initialized = True
-                    self.logger.debug("Input Initializing 5: {}".format(self.initialized))
                     self.connected = True
                     break
                 except self.btle.BTLEException as e:
@@ -409,15 +407,15 @@ class InputModule(AbstractInput):
         if 'info_timestamp' in self.device_information:
             return self.device_information
 
-    @timeout(3610)
     def get_measurement(self):
         """ Obtain and return the measurements """
         self.return_dict = measurements_dict.copy()
 
-        self.logger.debug("Starting measurement")
         time.sleep(1)
+
         self.lock_acquire(self.lock_file, timeout=3600)
         if self.locked:
+            self.logger.debug("Starting measurement")
             try:
                 if not self.initialized:
                     self.initialize()
@@ -478,9 +476,6 @@ class InputModule(AbstractInput):
                     self.logger.debug("Not connected: Not measuring")
             finally:
                 self.lock_release()
-
-        else:
-            self.logger.error("Lock timeout")
 
     def set_logging_interval(self):
         """Set logging interval (resets memory; set after downloading data)"""
