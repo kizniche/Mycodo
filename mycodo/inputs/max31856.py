@@ -21,12 +21,9 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-import logging
 import time
 
-from mycodo.databases.models import DeviceMeasurements
 from mycodo.inputs.base_input import AbstractInput
-from mycodo.utils.database import db_retrieve_table_daemon
 
 # Measurements
 measurements_dict = {
@@ -128,10 +125,10 @@ class InputModule(AbstractInput):
         self.return_dict = measurements_dict.copy()
 
         if self.is_enabled(0):
-            self.set_value(0, self.sensor.readThermocoupleTemp())
+            self.value_set(0, self.sensor.readThermocoupleTemp())
 
         if self.is_enabled(1):
-            self.set_value(1, self.sensor.readJunctionTemp())
+            self.value_set(1, self.sensor.readJunctionTemp())
 
         return self.return_dict
 

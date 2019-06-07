@@ -1,12 +1,9 @@
 # coding=utf-8
-import logging
 from collections import OrderedDict
 
 from flask_babel import lazy_gettext
 
-from mycodo.databases.models import DeviceMeasurements
 from mycodo.inputs.base_input import AbstractInput
-from mycodo.utils.database import db_retrieve_table_daemon
 
 # Measurements
 measurements_dict = OrderedDict()
@@ -172,7 +169,7 @@ class InputModule(AbstractInput):
 
         for channel in self.device_measurements:
             if self.is_enabled(channel):
-                self.set_value(channel, voltages_list[channel])
+                self.value_set(channel, voltages_list[channel])
 
         return self.return_dict
 

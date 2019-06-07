@@ -1,5 +1,4 @@
 # coding=utf-8
-import logging
 from collections import OrderedDict
 
 from mycodo.databases.models import DeviceMeasurements
@@ -87,7 +86,7 @@ class InputModule(AbstractInput):
 
         for channel in self.device_measurements:
             if self.is_enabled(channel):
-                self.set_value(
+                self.value_set(
                     channel,
                     self.adc.read_adc(channel, gain=self.adc_gain) / 10000.0)
 

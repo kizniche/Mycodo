@@ -1,6 +1,4 @@
 # coding=utf-8
-import logging
-
 from mycodo.inputs.base_input import AbstractInput
 from mycodo.utils.system_pi import str_is_float
 
@@ -174,6 +172,6 @@ class InputModule(AbstractInput):
                 self.logger.error(
                     'I2C device is not set up. Check the log for errors.')
 
-        self.set_value(0, electrical_conductivity)
+        self.value_set(0, electrical_conductivity)
 
         return self.return_dict

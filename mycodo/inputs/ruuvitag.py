@@ -4,6 +4,7 @@ import time
 from mycodo.inputs.base_input import AbstractInput
 from mycodo.inputs.sensorutils import calculate_dewpoint
 from mycodo.inputs.sensorutils import calculate_vapor_pressure_deficit
+from mycodo.utils.system_pi import str_is_float
 
 # Measurements
 measurements_dict = {
@@ -130,47 +131,47 @@ class InputModule(AbstractInput):
 
                 values = cmd_return.decode('ascii').split(',')
 
-                if not self.str_is_float(values[0]):
+                if not str_is_float(values[0]):
                     self.logger.debug(
                         "Error: Could not convert string to float: "
                         "string '{}'".format(str(values[0])))
                     return
 
                 if self.is_enabled(0):
-                    self.set_value(0, float(str(values[0])))
+                    self.value_set(0, float(str(values[0])))
 
                 if self.is_enabled(1):
-                    self.set_value(1, float(values[1]))
+                    self.value_set(1, float(values[1]))
 
                 if self.is_enabled(2):
-                    self.set_value(2, float(values[2]))
+                    self.value_set(2, float(values[2]))
 
                 if self.is_enabled(3):
-                    self.set_value(3, float(values[3]) / 1000)
+                    self.value_set(3, float(values[3]) / 1000)
 
                 if self.is_enabled(4):
-                    self.set_value(4, float(values[4]) / 1000)
+                    self.value_set(4, float(values[4]) / 1000)
 
                 if self.is_enabled(5):
-                    self.set_value(5, float(values[5]) / 1000)
+                    self.value_set(5, float(values[5]) / 1000)
 
                 if self.is_enabled(6):
-                    self.set_value(6, float(values[6]) / 1000)
+                    self.value_set(6, float(values[6]) / 1000)
 
                 if self.is_enabled(7):
-                    self.set_value(7, float(values[7]) / 1000)
+                    self.value_set(7, float(values[7]) / 1000)
 
                 if (self.is_enabled(8) and
                         self.is_enabled(0) and
                         self.is_enabled(1)):
-                    self.set_value(8, calculate_dewpoint(
-                        self.get_value(0), self.get_value(1)))
+                    self.value_set(8, calculate_dewpoint(
+                        self.value_get(0), self.value_get(1)))
 
                 if (self.is_enabled(9) and
                         self.is_enabled(0) and
                         self.is_enabled(1)):
-                    self.set_value(9, calculate_vapor_pressure_deficit(
-                        self.get_value(0), self.get_value(1)))
+                    self.value_set(9, calculate_vapor_pressure_deficit(
+                        self.value_get(0), self.value_get(1)))
 
                 self.logger.debug("Completed measurement")
                 return self.return_dict

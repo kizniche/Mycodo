@@ -1,5 +1,4 @@
 # coding=utf-8
-import logging
 import time
 
 from mycodo.inputs.base_input import AbstractInput
@@ -89,6 +88,6 @@ class InputModule(AbstractInput):
                 "{temp} C".format(temp=temperature))
             return None
 
-        self.set_value(0, temperature)
+        self.value_set(0, temperature)
 
         return self.return_dict

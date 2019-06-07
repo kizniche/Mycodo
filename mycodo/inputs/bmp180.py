@@ -1,11 +1,8 @@
 # coding=utf-8
-import logging
 import time
 
-from mycodo.databases.models import DeviceMeasurements
 from mycodo.inputs.base_input import AbstractInput
 from mycodo.inputs.sensorutils import calculate_altitude
-from mycodo.utils.database import db_retrieve_table_daemon
 
 # Measurements
 measurements_dict = {
@@ -72,13 +69,13 @@ class InputModule(AbstractInput):
         self.return_dict = measurements_dict.copy()
 
         if self.is_enabled(0):
-            self.set_value(0, self.bmp.read_pressure())
+            self.value_set(0, self.bmp.read_pressure())
 
         if self.is_enabled(1):
-            self.set_value(1, self.bmp.read_temperature())
+            self.value_set(1, self.bmp.read_temperature())
 
         if self.is_enabled(2) and self.is_enabled(0):
-            self.set_value(2, calculate_altitude(
-                self.get_value(0)))
+            self.value_set(2, calculate_altitude(
+                self.value_get(0)))
 
         return self.return_dict

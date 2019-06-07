@@ -1,5 +1,4 @@
 # coding=utf-8
-import logging
 import time
 
 from flask_babel import lazy_gettext
@@ -153,7 +152,7 @@ class InputModule(AbstractInput):
         else:
             self.logger.error("Bad response")
 
-        self.set_value(0, co2)
+        self.value_set(0, co2)
 
         return self.return_dict
 

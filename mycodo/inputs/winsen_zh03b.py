@@ -2,15 +2,12 @@
 #
 # From https://github.com/Theoi-Meteoroi/Winsen_ZH03B
 #
-import logging
 import time
 
 from flask_babel import lazy_gettext
 
-from mycodo.databases.models import DeviceMeasurements
 from mycodo.inputs.base_input import AbstractInput
 from mycodo.inputs.sensorutils import is_device
-from mycodo.utils.database import db_retrieve_table_daemon
 
 
 def constraints_pass_positive_value(mod_input, value):
@@ -173,13 +170,13 @@ class InputModule(AbstractInput):
             self.logger.error("PM10 measurement out of range (over 1000 ug/m^3)")
 
         if self.is_enabled(0):
-            self.set_value(0, pm_1_0)
+            self.value_set(0, pm_1_0)
 
         if self.is_enabled(1):
-            self.set_value(1, pm_2_5)
+            self.value_set(1, pm_2_5)
 
         if self.is_enabled(2):
-            self.set_value(2, pm_10_0)
+            self.value_set(2, pm_10_0)
 
         # Turn the fan off
         if self.fan_modulate:

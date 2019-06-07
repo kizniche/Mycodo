@@ -3,14 +3,11 @@
 # Author: Tony DiCola
 # Based on the BMP280 driver with BME280 changes provided by
 # David J Taylor, Edinburgh (www.satsignal.eu)
-import logging
 
-from mycodo.databases.models import DeviceMeasurements
 from mycodo.inputs.base_input import AbstractInput
 from mycodo.inputs.sensorutils import calculate_altitude
 from mycodo.inputs.sensorutils import calculate_dewpoint
 from mycodo.inputs.sensorutils import calculate_vapor_pressure_deficit
-from mycodo.utils.database import db_retrieve_table_daemon
 
 # Measurements
 measurements_dict = {
@@ -96,27 +93,27 @@ class InputModule(AbstractInput):
         self.return_dict = measurements_dict.copy()
 
         if self.is_enabled(0):
-            self.set_value(0, self.sensor.read_temperature())
+            self.value_set(0, self.sensor.read_temperature())
 
         if self.is_enabled(1):
-            self.set_value(1, self.sensor.read_humidity())
+            self.value_set(1, self.sensor.read_humidity())
 
         if self.is_enabled(2):
-            self.set_value(2, self.sensor.read_pressure())
+            self.value_set(2, self.sensor.read_pressure())
 
         if (self.is_enabled(3) and
                 self.is_enabled(0) and
                 self.is_enabled(1)):
-            self.set_value(3, calculate_dewpoint(
-                self.get_value(0), self.get_value(1)))
+            self.value_set(3, calculate_dewpoint(
+                self.value_get(0), self.value_get(1)))
 
         if self.is_enabled(4) and self.is_enabled(2):
-            self.set_value(4, calculate_altitude(self.get_value(2)))
+            self.value_set(4, calculate_altitude(self.value_get(2)))
 
         if (self.is_enabled(5) and
                 self.is_enabled(0) and
                 self.is_enabled(1)):
-            self.set_value(5, calculate_vapor_pressure_deficit(
-                self.get_value(0), self.get_value(1)))
+            self.value_set(5, calculate_vapor_pressure_deficit(
+                self.value_get(0), self.value_get(1)))
 
         return self.return_dict

@@ -1,8 +1,6 @@
 # coding=utf-8
-import logging
 import time
 
-from mycodo.databases.models import DeviceMeasurements
 from mycodo.databases.models import Output
 from mycodo.inputs.base_input import AbstractInput
 from mycodo.inputs.sensorutils import calculate_dewpoint
@@ -150,17 +148,17 @@ class InputModule(AbstractInput):
             self.measure_sensor()
             if self.temp_dew_point is not None:
                 if self.is_enabled(0):
-                    self.set_value(0, self.temp_temperature)
+                    self.value_set(0, self.temp_temperature)
                 if self.is_enabled(1):
-                    self.set_value(1, self.temp_humidity)
+                    self.value_set(1, self.temp_humidity)
                 if (self.is_enabled(2) and
                         self.is_enabled(0) and
                         self.is_enabled(1)):
-                    self.set_value(2, self.temp_dew_point)
+                    self.value_set(2, self.temp_dew_point)
                 if (self.is_enabled(3) and
                         self.is_enabled(0) and
                         self.is_enabled(1)):
-                    self.set_value(3, self.temp_vpd)
+                    self.value_set(3, self.temp_vpd)
                 return self.return_dict  # success - no errors
             time.sleep(2)
 
@@ -174,17 +172,17 @@ class InputModule(AbstractInput):
                 self.measure_sensor()
                 if self.temp_dew_point is not None:
                     if self.is_enabled(0):
-                        self.set_value(0, self.temp_temperature)
+                        self.value_set(0, self.temp_temperature)
                     if self.is_enabled(1):
-                        self.set_value(1, self.temp_humidity)
+                        self.value_set(1, self.temp_humidity)
                     if (self.is_enabled(2) and
                             self.is_enabled(0) and
                             self.is_enabled(1)):
-                        self.set_value(2, self.temp_dew_point)
+                        self.value_set(2, self.temp_dew_point)
                     if (self.is_enabled(3) and
                             self.is_enabled(0) and
                             self.is_enabled(1)):
-                        self.set_value(3, self.temp_vpd)
+                        self.value_set(3, self.temp_vpd)
                     return self.return_dict  # success - no errors
                 time.sleep(2)
 

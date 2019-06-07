@@ -1,9 +1,5 @@
 # coding=utf-8
-import logging
-
 from mycodo.inputs.base_input import AbstractInput
-from mycodo.databases.models import DeviceMeasurements
-from mycodo.utils.database import db_retrieve_table_daemon
 
 # Measurements
 measurements_dict = {
@@ -83,15 +79,15 @@ class InputModule(AbstractInput):
             temp = self.sensor.calculateTemperature()
 
             if self.is_enabled(2):
-                self.set_value(2, temp)
+                self.value_set(2, temp)
 
             if not self.sensor.readData():
 
                 if self.is_enabled(0):
-                    self.set_value(0, self.sensor.geteCO2())
+                    self.value_set(0, self.sensor.geteCO2())
 
                 if self.is_enabled(1):
-                    self.set_value(1, self.sensor.getTVOC())
+                    self.value_set(1, self.sensor.getTVOC())
 
             else:
                 self.logger.error("Sensor error")

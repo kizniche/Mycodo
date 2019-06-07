@@ -52,7 +52,7 @@ class AbstractInput(object):
 
         if not testing:
             self.unique_id = input_dev.unique_id
-            self.check_setup()
+            self.initialize_measurements()
 
     def __iter__(self):
         """ Support the iterator protocol """
@@ -124,7 +124,7 @@ class AbstractInput(object):
         :returns: None on success or 1 on error
         """
         self._measurements = None
-        self.check_setup()
+        self.initialize_measurements()
         try:
             self._measurements = self.get_measurement()
             if self._measurements is not None:
@@ -142,44 +142,64 @@ class AbstractInput(object):
                 self.logger.exception(msg)
             else:
                 self.logger.error(msg)
-
-        # Clean up
-        self.lock_release()
-
+        finally:
+            # Clean up
+            self.lock_release()
         return 1
 
-    def lock_acquire(self, lockfile, timeout):
-        """ Non-blocking locking method """
-        self.lock = filelock.FileLock(lockfile, timeout=1)
-        self.locked = False
-        timer = time.time() + timeout
-        self.logger.debug("Acquiring lock for {} ({} sec timeout)".format(
-            lockfile, timeout))
-        while self.running and time.time() < timer:
-            try:
-                self.lock.acquire()
-                seconds = time.time() - (timer - timeout)
-                self.logger.debug(
-                    "Lock acquired for {} in {:.2f} seconds".format(
-                        lockfile, seconds))
-                self.locked = True
-                break
-            except:
-                pass
-        if not self.locked:
-            self.logger.debug(
-                "Lock unable to be acquired after {:.2f} seconds. "
-                "Breaking for future lock.".format(timeout))
-            self.lock_release()
-
-    def lock_release(self):
-        """ Release lock and force deletion of lock file """
+    def initialize_measurements(self):
         try:
-            self.lock.release(force=True)
+            if self.device_measurements:
+                return
         except:
-            pass
+            self.setup_device_measurement()
 
-    def get_value(self, channel):
+    def is_enabled(self, channel):
+        try:
+            return self.channels_measurement[channel].is_enabled
+        except:
+            self.setup_device_measurement()
+            return self.channels_measurement[channel].is_enabled
+
+    def setup_device_measurement(self):
+        # Make 5 attempts to access database
+        for _ in range(5):
+            try:
+                self.device_measurements = db_retrieve_table_daemon(
+                    DeviceMeasurements).filter(
+                    DeviceMeasurements.device_id == self.input_dev.unique_id)
+
+                for each_measure in self.device_measurements.all():
+                    self.channels_measurement[each_measure.channel] = each_measure
+                    self.channels_conversion[each_measure.channel] = db_retrieve_table_daemon(
+                        Conversion, unique_id=each_measure.conversion_id)
+                return
+            except Exception as msg:
+                self.logger.debug("Error: {}".format(msg))
+            time.sleep(1)
+
+    def setup_logger(self, testing=None, name=None, input_dev=None):
+        name = name if name else __name__
+        if not testing and input_dev:
+            log_name = "{}_{}".format(name, input_dev.unique_id.split('-')[0])
+        else:
+            log_name = name
+        self.logger = logging.getLogger(log_name)
+        if not testing and input_dev:
+            if input_dev.log_level_debug:
+                self.logger.setLevel(logging.DEBUG)
+            else:
+                self.logger.setLevel(logging.INFO)
+
+    def start_sensor(self):
+        """ Not used yet """
+        self.running = True
+
+    def stop_sensor(self):
+        """ Called when sensors are deactivated """
+        self.running = False
+
+    def value_get(self, channel):
         """
         Returns the value of a channel, if set.
         :param channel: measurement channel
@@ -191,19 +211,26 @@ class AbstractInput(object):
                 'value' in self.return_dict[channel]):
             return self.return_dict[channel]['value']
 
-    def set_value(self, channel, value, timestamp=None):
+    def value_set(self, chan, value, ts=None):
         """
         Sets the measurement value for a channel
-        :param channel: measurement channel
-        :type channel: int
+        :param chan: measurement channel
+        :type chan: int
         :param value: measurement value
         :type value: float
-        :param timestamp: measurement timestamp
-        :type timestamp: datetime.datetime
+        :param ts: measurement timestamp
+        :type ts: datetime.datetime
         :return:
         """
-        self.return_dict[channel]['value'] = value
-        self.return_dict[channel]['timestamp_utc'] = timestamp if timestamp else datetime.datetime.utcnow()
+        self.return_dict[chan]['value'] = value
+        if ts:
+            self.return_dict[chan]['timestamp_utc'] = ts
+        else:
+            self.return_dict[chan]['timestamp_utc'] = datetime.datetime.utcnow()
+
+    #
+    # Accessory functions
+    #
 
     def filter_average(self, name, init_max=0, measurement=None):
         """
@@ -211,7 +238,7 @@ class AbstractInput(object):
         Use to smooth erratic measurements
 
         :param name: name of the measurement
-        :param init_max: initialize variables for this name
+        :param init_max: initialize_measurements variables for this name
         :param measurement: add measurement to pool and return average of past init_max measurements
         :return: int or float, whichever measurements come in as
         """
@@ -239,65 +266,36 @@ class AbstractInput(object):
 
         return average
 
-    def check_setup(self):
-        try:
-            if not self.device_measurements:
-                self.setup_device_measurement()
-        except:
-            self.setup_device_measurement()
-
-    def setup_device_measurement(self):
-        # Make 5 attempts to access database
-        for _ in range(5):
+    def lock_acquire(self, lockfile, timeout):
+        """ Non-blocking locking method """
+        self.lock = filelock.FileLock(lockfile, timeout=1)
+        self.locked = False
+        timer = time.time() + timeout
+        self.logger.debug("Acquiring lock for {} ({} sec timeout)".format(
+            lockfile, timeout))
+        while self.running and time.time() < timer:
             try:
-                self.device_measurements = db_retrieve_table_daemon(
-                    DeviceMeasurements).filter(
-                    DeviceMeasurements.device_id == self.input_dev.unique_id)
+                self.lock.acquire()
+                seconds = time.time() - (timer - timeout)
+                self.logger.debug(
+                    "Lock acquired for {} in {:.3f} seconds".format(
+                        lockfile, seconds))
+                self.locked = True
+                break
+            except:
+                pass
+        if not self.locked:
+            self.logger.debug(
+                "Lock unable to be acquired after {:.3f} seconds. "
+                "Breaking for future lock.".format(timeout))
+            self.lock_release()
 
-                for each_measure in self.device_measurements.all():
-                    self.channels_measurement[each_measure.channel] = each_measure
-                    self.channels_conversion[each_measure.channel] = db_retrieve_table_daemon(
-                        Conversion, unique_id=each_measure.conversion_id)
-                return
-            except Exception as msg:
-                self.logger.debug("Error: {}".format(msg))
-            time.sleep(3)
-
-    def is_enabled(self, channel):
+    def lock_release(self):
+        """ Release lock and force deletion of lock file """
         try:
-            return self.channels_measurement[channel].is_enabled
+            self.lock.release(force=True)
         except:
-            self.setup_device_measurement()
-            return self.channels_measurement[channel].is_enabled
-
-    def setup_logger(self, testing=None, name=None, input_dev=None):
-        name = name if name else __name__
-        if not testing and input_dev:
-            log_name = "{}_{}".format(name, input_dev.unique_id.split('-')[0])
-        else:
-            log_name = name
-        self.logger = logging.getLogger(log_name)
-        if not testing and input_dev:
-            if input_dev.log_level_debug:
-                self.logger.setLevel(logging.DEBUG)
-            else:
-                self.logger.setLevel(logging.INFO)
-
-    def stop_sensor(self):
-        """ Called when sensors are deactivated """
-        self.running = False
-
-    def start_sensor(self):
-        """ Not used yet """
-        self.running = True
-
-    @staticmethod
-    def str_is_float(str_value):
-        try:
-            test = float(str(str_value))
-            return True
-        except:
-            return False
+            pass
 
     def is_acquiring_measurement(self):
         return self.acquiring_measurement

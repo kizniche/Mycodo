@@ -1,5 +1,4 @@
 # coding=utf-8
-import logging
 import time
 
 from flask_babel import lazy_gettext
@@ -276,6 +275,6 @@ class InputModule(AbstractInput):
                 self.logger.error(
                     'I2C device is not set up. Check the log for errors.')
 
-        self.set_value(0, ph)
+        self.value_set(0, ph)
 
         return self.return_dict

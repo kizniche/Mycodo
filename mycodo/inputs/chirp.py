@@ -1,12 +1,9 @@
 # coding=utf-8
-import logging
 import time
 
 from smbus2 import SMBus
 
 from mycodo.inputs.base_input import AbstractInput
-from mycodo.databases.models import DeviceMeasurements
-from mycodo.utils.database import db_retrieve_table_daemon
 
 # Measurements
 measurements_dict = {
@@ -72,13 +69,13 @@ class InputModule(AbstractInput):
         self.return_dict = measurements_dict.copy()
 
         if self.is_enabled(0):
-            self.set_value(0, self.filter_average('lux', measurement=self.light()))
+            self.value_set(0, self.filter_average('lux', measurement=self.light()))
 
         if self.is_enabled(1):
-            self.set_value(1, self.moist())
+            self.value_set(1, self.moist())
 
         if self.is_enabled(2):
-            self.set_value(2, self.temp() / 10.0)
+            self.value_set(2, self.temp() / 10.0)
 
         return self.return_dict
 

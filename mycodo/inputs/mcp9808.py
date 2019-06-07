@@ -1,6 +1,4 @@
 # coding=utf-8
-import logging
-
 from mycodo.inputs.base_input import AbstractInput
 
 # Measurements
@@ -77,7 +75,7 @@ class InputModule(AbstractInput):
         self.return_dict = measurements_dict.copy()
 
         try:
-            self.set_value(0, self.sensor.readTempC())
+            self.value_set(0, self.sensor.readTempC())
             return self.return_dict
         except Exception as msg:
             self.logger.exception("Inout read failure: {}".format(msg))

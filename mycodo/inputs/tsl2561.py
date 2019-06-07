@@ -1,6 +1,4 @@
 # coding=utf-8
-import logging
-
 from mycodo.inputs.base_input import AbstractInput
 
 # Measurements
@@ -75,16 +73,16 @@ class InputModule(AbstractInput):
             full, ir = self.tsl._get_luminosity()
 
             if self.is_enabled(0):
-                self.set_value(0, full)
+                self.value_set(0, full)
 
             if self.is_enabled(1):
-                self.set_value(1, ir)
+                self.value_set(1, ir)
 
             if (self.is_enabled(2) and
                     self.is_enabled(0) and
                     self.is_enabled(1)):
-                self.set_value(2, self.tsl._calculate_lux(
-                    self.get_value(0), self.get_value(1)))
+                self.value_set(2, self.tsl._calculate_lux(
+                    self.value_get(0), self.value_get(1)))
 
             return self.return_dict
         except Exception as err:

@@ -173,7 +173,6 @@ class InputModule(AbstractInput):
                         addr=self.location,
                         iface=self.bt_adapter,
                         debug=self.log_level_debug)
-                    self.initialized = True
                     self.connected = True
                     break
                 except self.btle.BTLEException as e:
@@ -194,7 +193,6 @@ class InputModule(AbstractInput):
             self.device_information['hardware_revision'] = self.gadget.readHardwareRevisionString()
             self.device_information['software_revision'] = self.gadget.readSoftwareRevisionString()
             self.device_information['logger_interval_ms'] = self.gadget.readLoggerIntervalMs()
-            self.device_information['battery'] = self.gadget.readBattery()
             self.device_information['info_timestamp'] = int(time.time() * 1000)
             self.logger.info(
                 "{man}, {mod}, SN: {sn}, Name: {name}, Firmware: {fw}, "
@@ -207,6 +205,7 @@ class InputModule(AbstractInput):
                     hw=self.device_information['hardware_revision'],
                     sw=self.device_information['software_revision'],
                     sec=self.device_information['logger_interval_ms'] / 1000))
+            self.initialized = True
 
     def connect(self):
         # Make three attempts to connect
@@ -440,15 +439,15 @@ class InputModule(AbstractInput):
                         self.logger.debug("Acquiring present measurements")
                         # Get battery percent charge
                         if self.is_enabled(2):
-                            self.set_value(2, self.gadget.readBattery())
+                            self.value_set(2, self.gadget.readBattery())
 
                         # Get temperature and humidity last so their timestamp in the
                         # database will be the most accurate
                         if self.is_enabled(0):
-                            self.set_value(0, self.gadget.readTemperature())
+                            self.value_set(0, self.gadget.readTemperature())
 
                         if self.is_enabled(1):
-                            self.set_value(1, self.gadget.readHumidity())
+                            self.value_set(1, self.gadget.readHumidity())
                         self.logger.debug("Acquired present measurements")
                     except self.btle.BTLEDisconnectError:
                         self.logger.error("Disconnected")
@@ -462,14 +461,14 @@ class InputModule(AbstractInput):
                     if (self.is_enabled(3) and
                             self.is_enabled(0) and
                             self.is_enabled(1)):
-                        self.set_value(3, calculate_dewpoint(
-                            self.get_value(0), self.get_value(1)))
+                        self.value_set(3, calculate_dewpoint(
+                            self.value_get(0), self.value_get(1)))
 
                     if (self.is_enabled(4) and
                             self.is_enabled(0) and
                             self.is_enabled(1)):
-                        self.set_value(4, calculate_vapor_pressure_deficit(
-                            self.get_value(0), self.get_value(1)))
+                        self.value_set(4, calculate_vapor_pressure_deficit(
+                            self.value_get(0), self.value_get(1)))
 
                     self.logger.debug("Completed measurement")
                     return self.return_dict

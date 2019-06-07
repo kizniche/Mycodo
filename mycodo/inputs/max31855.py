@@ -1,9 +1,5 @@
 # coding=utf-8
-import logging
-
-from mycodo.databases.models import DeviceMeasurements
 from mycodo.inputs.base_input import AbstractInput
-from mycodo.utils.database import db_retrieve_table_daemon
 
 # Measurements
 measurements_dict = {
@@ -75,9 +71,9 @@ class InputModule(AbstractInput):
         self.return_dict = measurements_dict.copy()
 
         if self.is_enabled(0):
-            self.set_value(0, self.sensor.readTempC())
+            self.value_set(0, self.sensor.readTempC())
 
         if self.is_enabled(1):
-            self.set_value(1, self.sensor.readInternalC())
+            self.value_set(1, self.sensor.readInternalC())
 
         return self.return_dict

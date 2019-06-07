@@ -24,11 +24,9 @@
 #
 # This library was originally authored by Sopwith:
 #     http://sopwith.ismellsmoke.net/?p=104
-import logging
 import math
 import time
 
-from mycodo.databases.models import DeviceMeasurements
 from mycodo.databases.models import Output
 from mycodo.inputs.base_input import AbstractInput
 from mycodo.inputs.sensorutils import calculate_dewpoint
@@ -145,22 +143,22 @@ class InputModule(AbstractInput):
 
         if measurements_success:
             if self.is_enabled(0):
-                self.set_value(0, temperature)
+                self.value_set(0, temperature)
 
             if self.is_enabled(1):
-                self.set_value(1, humidity)
+                self.value_set(1, humidity)
 
             if (self.is_enabled(2) and
                     self.is_enabled(0) and
                     self.is_enabled(1)):
-                self.set_value(2, calculate_dewpoint(
-                    self.get_value(0), self.get_value(1)))
+                self.value_set(2, calculate_dewpoint(
+                    self.value_get(0), self.value_get(1)))
 
             if (self.is_enabled(3) and
                     self.is_enabled(0) and
                     self.is_enabled(1)):
-                self.set_value(3, calculate_vapor_pressure_deficit(
-                    self.get_value(0), self.get_value(1)))
+                self.value_set(3, calculate_vapor_pressure_deficit(
+                    self.value_get(0), self.value_get(1)))
 
             return self.return_dict
         else:

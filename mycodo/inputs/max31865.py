@@ -21,7 +21,6 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-import logging
 import math
 import time
 
@@ -101,7 +100,7 @@ class InputModule(AbstractInput):
         """ Gets the measurement in units by reading the """
         self.return_dict = measurements_dict.copy()
 
-        self.set_value(0, self.sensor.readTemp(
+        self.value_set(0, self.sensor.readTemp(
             self.thermocouple_type, self.ref_ohm))
 
         return self.return_dict

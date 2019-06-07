@@ -1,11 +1,7 @@
 # coding=utf-8
-import logging
-
 import os
 
-from mycodo.databases.models import DeviceMeasurements
 from mycodo.inputs.base_input import AbstractInput
-from mycodo.utils.database import db_retrieve_table_daemon
 
 # Measurements
 measurements_dict = {
@@ -63,12 +59,12 @@ class InputModule(AbstractInput):
         load_avg = os.getloadavg()
 
         if self.is_enabled(0):
-            self.set_value(0, load_avg[0])
+            self.value_set(0, load_avg[0])
 
         if self.is_enabled(1):
-            self.set_value(1, load_avg[1])
+            self.value_set(1, load_avg[1])
 
         if self.is_enabled(2):
-            self.set_value(2, load_avg[2])
+            self.value_set(2, load_avg[2])
 
         return self.return_dict

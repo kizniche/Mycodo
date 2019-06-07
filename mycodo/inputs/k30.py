@@ -1,5 +1,4 @@
 # coding=utf-8
-import logging
 import time
 
 from mycodo.inputs.base_input import AbstractInput
@@ -82,6 +81,6 @@ class InputModule(AbstractInput):
             low = resp[4]
             co2 = (high * 256) + low
 
-            self.set_value(0, co2)
+            self.value_set(0, co2)
 
         return self.return_dict

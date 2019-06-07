@@ -4,15 +4,12 @@
 # https://github.com/arendst/Sonoff-Tasmota
 import datetime
 import json
-import logging
 
 import requests
 from flask_babel import lazy_gettext
 
-from mycodo.databases.models import DeviceMeasurements
 from mycodo.inputs.base_input import AbstractInput
 from mycodo.inputs.sensorutils import convert_from_x_to_y_unit
-from mycodo.utils.database import db_retrieve_table_daemon
 
 # Measurements
 measurements_dict = {
@@ -84,6 +81,6 @@ class InputModule(AbstractInput):
                 dict_data['StatusSNS']['TempUnit'],
                 'C',
                 dict_data['StatusSNS']['DS18B20']['Temperature'])
-            self.set_value(0, temp_c, timestamp=datetime_timestmp)
+            self.value_set(0, temp_c, timestamp=datetime_timestmp)
 
         return self.return_dict

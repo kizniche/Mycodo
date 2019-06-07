@@ -1,5 +1,4 @@
 # coding=utf-8
-import logging
 import resource
 
 from mycodo.inputs.base_input import AbstractInput
@@ -48,7 +47,7 @@ class InputModule(AbstractInput):
         self.return_dict = measurements_dict.copy()
 
         try:
-            self.set_value(0, resource.getrusage(
+            self.value_set(0, resource.getrusage(
                 resource.RUSAGE_SELF).ru_maxrss / float(1000))
             return self.return_dict
         except Exception:

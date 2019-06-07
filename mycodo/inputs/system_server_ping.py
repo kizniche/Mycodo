@@ -1,6 +1,4 @@
 # coding=utf-8
-import logging
-
 import os
 
 from mycodo.inputs.base_input import AbstractInput
@@ -65,8 +63,8 @@ class InputModule(AbstractInput):
                 times=self.times_check, deadline=self.deadline, host=self.location))
 
         if response == 0:
-            self.set_value(0, 1)  # Server is up
+            self.value_set(0, 1)  # Server is up
         else:
-            self.set_value(0, 0)  # Server is down
+            self.value_set(0, 0)  # Server is down
 
         return self.return_dict

@@ -1,6 +1,4 @@
 # coding=utf-8
-import logging
-
 import os
 
 from mycodo.inputs.base_input import AbstractInput
@@ -52,6 +50,6 @@ class InputModule(AbstractInput):
         self.return_dict = measurements_dict.copy()
 
         f = os.statvfs(self.path)
-        self.set_value(0, (f.f_bsize * f.f_bavail) / 1000000.0)
+        self.value_set(0, (f.f_bsize * f.f_bavail) / 1000000.0)
 
         return self.return_dict

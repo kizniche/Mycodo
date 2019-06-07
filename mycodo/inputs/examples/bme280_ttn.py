@@ -136,31 +136,31 @@ class InputModule(AbstractInput):
         self.return_dict = measurements_dict.copy()
 
         if self.is_enabled(0):
-            self.set_value(0, self.sensor.read_temperature())
+            self.value_set(0, self.sensor.read_temperature())
 
         if self.is_enabled(1):
-            self.set_value(1, self.sensor.read_humidity())
+            self.value_set(1, self.sensor.read_humidity())
 
         if self.is_enabled(2):
-            self.set_value(2, self.sensor.read_pressure())
+            self.value_set(2, self.sensor.read_pressure())
 
         if (self.is_enabled(3) and
                 self.is_enabled(0) and
                 self.is_enabled(1)):
             dewpoint = calculate_dewpoint(
-                self.get_value(0), self.get_value(1))
-            self.set_value(3, dewpoint)
+                self.value_get(0), self.value_get(1))
+            self.value_set(3, dewpoint)
 
         if self.is_enabled(4) and self.is_enabled(2):
-            altitude = calculate_altitude(self.get_value(2))
-            self.set_value(4, altitude)
+            altitude = calculate_altitude(self.value_get(2))
+            self.value_set(4, altitude)
 
         if (self.is_enabled(5) and
                 self.is_enabled(0) and
                 self.is_enabled(1)):
             vpd = calculate_vapor_pressure_deficit(
-                self.get_value(0), self.get_value(1))
-            self.set_value(5, vpd)
+                self.value_get(0), self.value_get(1))
+            self.value_set(5, vpd)
 
         try:
             now = time.time()
@@ -168,9 +168,9 @@ class InputModule(AbstractInput):
                 self.timer = now + 80
                 # "B" designates this data belonging to the BME280
                 string_send = 'B,{},{},{}'.format(
-                    self.get_value(1),
-                    self.get_value(2),
-                    self.get_value(0))
+                    self.value_get(1),
+                    self.value_get(2),
+                    self.value_get(0))
                 try:
                     with self.filelock.FileLock(self.lock_file, timeout=10):
                         self.serial_send = self.serial.Serial(self.serial_device, 9600)

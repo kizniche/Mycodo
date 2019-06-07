@@ -1,10 +1,7 @@
 # coding=utf-8
-import logging
 import time
 
 from mycodo.inputs.base_input import AbstractInput
-from mycodo.databases.models import DeviceMeasurements
-from mycodo.utils.database import db_retrieve_table_daemon
 
 list_sensitivity = []
 for num in range(31, 255):
@@ -107,7 +104,7 @@ class InputModule(AbstractInput):
         else:
             return None
 
-        self.set_value(0, lux)
+        self.value_set(0, lux)
 
         return self.return_dict
 

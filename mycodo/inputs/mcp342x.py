@@ -1,10 +1,7 @@
 # coding=utf-8
-import logging
 from collections import OrderedDict
 
-from mycodo.databases.models import DeviceMeasurements
 from mycodo.inputs.base_input import AbstractInput
-from mycodo.utils.database import db_retrieve_table_daemon
 
 # Measurements
 measurements_dict = OrderedDict()
@@ -93,7 +90,7 @@ class InputModule(AbstractInput):
                                    channel=channel,
                                    gain=self.adc_gain,
                                    resolution=self.adc_resolution)
-                self.set_value(channel, adc.convert_and_read())
+                self.value_set(channel, adc.convert_and_read())
 
         # Dummy data for testing
         # import random

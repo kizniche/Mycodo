@@ -1,6 +1,4 @@
 # coding=utf-8
-import logging
-
 from flask_babel import lazy_gettext
 
 from mycodo.inputs.base_input import AbstractInput
@@ -221,6 +219,6 @@ class InputModule(AbstractInput):
                 self.logger.error(
                     'I2C device is not set up. Check the log for errors.')
 
-        self.set_value(0, orp)
+        self.value_set(0, orp)
 
         return self.return_dict

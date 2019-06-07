@@ -1,10 +1,7 @@
 # coding=utf-8
-import logging
 import time
 
-from mycodo.databases.models import DeviceMeasurements
 from mycodo.inputs.base_input import AbstractInput
-from mycodo.utils.database import db_retrieve_table_daemon
 
 # Measurements
 measurements_dict = {
@@ -81,13 +78,13 @@ class InputModule(AbstractInput):
         time.sleep(self.sample_time)
 
         if self.is_enabled(0):
-            self.set_value(0, read_pwm.frequency())
+            self.value_set(0, read_pwm.frequency())
 
         if self.is_enabled(1):
-            self.set_value(1, int(read_pwm.pulse_width() + 0.5))
+            self.value_set(1, int(read_pwm.pulse_width() + 0.5))
 
         if self.is_enabled(2):
-            self.set_value(2, read_pwm.duty_cycle())
+            self.value_set(2, read_pwm.duty_cycle())
 
         read_pwm.cancel()
         pi.stop()

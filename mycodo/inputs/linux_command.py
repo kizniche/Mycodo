@@ -1,9 +1,6 @@
 # coding=utf-8
-import logging
 
-from mycodo.databases.models import DeviceMeasurements
 from mycodo.inputs.base_input import AbstractInput
-from mycodo.utils.database import db_retrieve_table_daemon
 from mycodo.utils.system_pi import cmd_output
 from mycodo.utils.system_pi import str_is_float
 

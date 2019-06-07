@@ -9,8 +9,6 @@
 #
 # Comment will be updated with other code to go along with this module
 #
-import logging
-import os
 import time
 from flask_babel import lazy_gettext
 
@@ -133,14 +131,14 @@ class InputModule(AbstractInput):
             low = resp[4]
             co2 = (high * 256) + low
 
-        self.set_value(0, co2)
+        self.value_set(0, co2)
 
         try:
             now = time.time()
             if now > self.timer:
                 self.timer = now + min_seconds_between_transmissions
                 # "K" designates this data belonging to the K30
-                string_send = 'K,{}'.format(self.get_value(0))
+                string_send = 'K,{}'.format(self.value_get(0))
                 try:
                     with self.filelock.FileLock(self.lock_file, timeout=10):
                         self.serial_send = self.serial.Serial(self.serial_device, 9600)

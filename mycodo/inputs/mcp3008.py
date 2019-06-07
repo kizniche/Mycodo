@@ -1,11 +1,8 @@
 # coding=utf-8
 import argparse
-import logging
 from collections import OrderedDict
 
-from mycodo.databases.models import DeviceMeasurements
 from mycodo.inputs.base_input import AbstractInput
-from mycodo.utils.database import db_retrieve_table_daemon
 
 
 # Measurements
@@ -78,7 +75,7 @@ class InputModule(AbstractInput):
 
         for channel in self.device_measurements:
             if self.is_enabled(channel):
-                self.set_value(channel, (
+                self.value_set(channel, (
                     (self.adc.read_adc(channel) / 1023.0) * self.scale_from_max))
 
         return self.return_dict

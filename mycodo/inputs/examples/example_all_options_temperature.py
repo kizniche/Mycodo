@@ -1,6 +1,4 @@
 # coding=utf-8
-import logging
-
 from flask_babel import lazy_gettext
 
 from mycodo.inputs.base_input import AbstractInput
@@ -65,7 +63,7 @@ INPUT_INFORMATION = {
 
     # For use with Inputs that store multiple measurements.
     # Set True if all measurements should be stored in the database with the same timestamp.
-    # Set False to use the timestamp generated when self.set_value() is used to save measurement.
+    # Set False to use the timestamp generated when self.value_set() is used to save measurement.
     'measurements_use_same_timestamp': True,
 
     # Web User Interface display options
@@ -301,7 +299,7 @@ class InputModule(AbstractInput):
         # Begin sensor measurement code
         #
 
-        self.set_value(0, self.random.randint(50, 70))
+        self.value_set(0, self.random.randint(50, 70))
 
         #
         # End sensor measurement code

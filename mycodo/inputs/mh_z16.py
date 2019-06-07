@@ -19,7 +19,6 @@
 # The above copyright notice and this permission notice shall be
 # included in all copies or substantial portions of the Software.
 
-import logging
 import time
 
 from mycodo.inputs.base_input import AbstractInput
@@ -132,7 +131,7 @@ class InputModule(AbstractInput):
             except Exception:
                 co2 = None
 
-        self.set_value(0, co2)
+        self.value_set(0, co2)
 
         return self.return_dict
 

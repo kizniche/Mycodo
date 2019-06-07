@@ -4,17 +4,14 @@
 # https://github.com/arendst/Sonoff-Tasmota
 import datetime
 import json
-import logging
 
 import requests
 from flask_babel import lazy_gettext
 
-from mycodo.databases.models import DeviceMeasurements
 from mycodo.inputs.base_input import AbstractInput
 from mycodo.inputs.sensorutils import calculate_dewpoint
 from mycodo.inputs.sensorutils import calculate_vapor_pressure_deficit
 from mycodo.inputs.sensorutils import convert_from_x_to_y_unit
-from mycodo.utils.database import db_retrieve_table_daemon
 
 # Measurements
 measurements_dict = {
@@ -96,24 +93,24 @@ class InputModule(AbstractInput):
         if self.is_enabled(0):
             temp_c = convert_from_x_to_y_unit(
                 'F', 'C', dict_data['StatusSNS']['AM2301']['Temperature'])
-            self.set_value(0, temp_c, timestamp=datetime_timestmp)
+            self.value_set(0, temp_c, timestamp=datetime_timestmp)
 
         if self.is_enabled(1):
             humidity = dict_data['StatusSNS']['AM2301']['Humidity']
-            self.set_value(1, humidity, timestamp=datetime_timestmp)
+            self.value_set(1, humidity, timestamp=datetime_timestmp)
 
         if (self.is_enabled(2) and
                 self.is_enabled(0) and
                 self.is_enabled(1)):
             dewpoint = calculate_dewpoint(
-                self.get_value(0), self.get_value(1))
-            self.set_value(2, dewpoint, timestamp=datetime_timestmp)
+                self.value_get(0), self.value_get(1))
+            self.value_set(2, dewpoint, timestamp=datetime_timestmp)
 
         if (self.is_enabled(3) and
                 self.is_enabled(0) and
                 self.is_enabled(1)):
             vpd = calculate_vapor_pressure_deficit(
-                self.get_value(0), self.get_value(1))
-            self.set_value(3, vpd, timestamp=datetime_timestmp)
+                self.value_get(0), self.value_get(1))
+            self.value_set(3, vpd, timestamp=datetime_timestmp)
 
         return self.return_dict

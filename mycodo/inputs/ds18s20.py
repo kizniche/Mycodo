@@ -1,5 +1,4 @@
 # coding=utf-8
-import logging
 import subprocess
 import time
 
@@ -108,7 +107,7 @@ class InputModule(AbstractInput):
         for i in range(n):
             try:
                 if self.library == 'w1thermsensor':
-                    self.set_value(0, self.sensor.get_temperature())
+                    self.value_set(0, self.sensor.get_temperature())
                 elif self.library == 'ow_shell':
                     try:
                         command = 'owread /{id}/temperature; echo'.format(
@@ -118,7 +117,7 @@ class InputModule(AbstractInput):
                         (owread_output, _) = owread.communicate()
                         owread.wait()
                         if owread_output:
-                            self.set_value(0, float(owread_output.decode("latin1")))
+                            self.value_set(0, float(owread_output.decode("latin1")))
                     except Exception:
                         self.logger.exception(1)
                 return self.return_dict

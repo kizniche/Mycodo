@@ -1,6 +1,4 @@
 # coding=utf-8
-import logging
-
 from mycodo.inputs.base_input import AbstractInput
 
 # Measurements
@@ -53,7 +51,7 @@ class InputModule(AbstractInput):
         """ Gets the GPIO state via RPi.GPIO """
         self.return_dict = measurements_dict.copy()
 
-        self.set_value(0, self.gpio.input(self.location))
+        self.value_set(0, self.gpio.input(self.location))
 
         return self.return_dict
 

@@ -1,5 +1,4 @@
 # coding=utf-8
-import logging
 import time
 from collections import OrderedDict
 from datetime import datetime
@@ -7,9 +6,7 @@ from datetime import datetime
 import os
 
 from mycodo.config import PATH_CAMERAS
-from mycodo.databases.models import DeviceMeasurements
 from mycodo.inputs.base_input import AbstractInput
-from mycodo.utils.database import db_retrieve_table_daemon
 from mycodo.utils.image import generate_thermal_image_from_pixels
 from mycodo.utils.system_pi import assure_path_exists
 
@@ -93,7 +90,7 @@ class InputModule(AbstractInput):
 
         for channel in self.device_measurements:
             if self.is_enabled(channel):
-                self.set_value(channel, pixels[channel])
+                self.value_set(channel, pixels[channel])
 
         if self.save_image:
             timestamp = datetime.now().strftime('%Y-%m-%d_%H-%M-%S')

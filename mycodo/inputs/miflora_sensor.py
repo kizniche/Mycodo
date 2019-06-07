@@ -97,19 +97,19 @@ class InputModule(AbstractInput):
         try:
             with self.filelock.FileLock(self.lock_file_bluetooth, timeout=3600):
                 if self.is_enabled(0):
-                    self.set_value(0, self.poller.parameter_value(MI_BATTERY))
+                    self.value_set(0, self.poller.parameter_value(MI_BATTERY))
 
                 if self.is_enabled(1):
-                    self.set_value(1, self.poller.parameter_value(MI_CONDUCTIVITY))
+                    self.value_set(1, self.poller.parameter_value(MI_CONDUCTIVITY))
 
                 if self.is_enabled(2):
-                    self.set_value(2, self.poller.parameter_value(MI_LIGHT))
+                    self.value_set(2, self.poller.parameter_value(MI_LIGHT))
 
                 if self.is_enabled(3):
-                    self.set_value(3, self.poller.parameter_value(MI_MOISTURE))
+                    self.value_set(3, self.poller.parameter_value(MI_MOISTURE))
 
                 if self.is_enabled(4):
-                    self.set_value(4, self.poller.parameter_value(MI_TEMPERATURE))
+                    self.value_set(4, self.poller.parameter_value(MI_TEMPERATURE))
 
                 return self.return_dict
 
