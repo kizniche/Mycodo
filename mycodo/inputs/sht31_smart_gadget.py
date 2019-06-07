@@ -162,7 +162,8 @@ class InputModule(AbstractInput):
 
     def initialize(self):
         """Initialize the device by obtaining sensor information"""
-        self.logger.debug("Input Initializing (Initialized: {})".format(self.initialized))
+        self.logger.debug(
+            "Input Initializing (Initialized: {})".format(self.initialized))
         if not self.initialized:
             for _ in range(3):
                 if not self.running:

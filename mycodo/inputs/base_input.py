@@ -13,7 +13,6 @@ import logging
 import time
 
 import filelock
-import os
 
 from mycodo.databases.models import Conversion
 from mycodo.databases.models import DeviceMeasurements
@@ -150,6 +149,7 @@ class AbstractInput(object):
         return 1
 
     def lock_acquire(self, lockfile, timeout):
+        """ Non-blocking locking method """
         self.lock = filelock.FileLock(lockfile, timeout=1)
         self.locked = False
         timer = time.time() + timeout
@@ -173,6 +173,7 @@ class AbstractInput(object):
             self.lock_release()
 
     def lock_release(self):
+        """ Release lock and force deletion of lock file """
         try:
             self.lock.release(force=True)
         except:

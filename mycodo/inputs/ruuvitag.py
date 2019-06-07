@@ -131,7 +131,9 @@ class InputModule(AbstractInput):
                 values = cmd_return.decode('ascii').split(',')
 
                 if not self.str_is_float(values[0]):
-                    self.logger.debug("Error: Could not convert string to float: string '{}'".format(str(values[0])))
+                    self.logger.debug(
+                        "Error: Could not convert string to float: "
+                        "string '{}'".format(str(values[0])))
                     return
 
                 if self.is_enabled(0):
