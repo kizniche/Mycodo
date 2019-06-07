@@ -69,7 +69,6 @@ INPUT_INFORMATION = {
     'options_disabled': ['interface'],
 
     'dependencies_module': [
-        ('pip-pypi', 'filelock', 'filelock'),
         ('apt', 'python3-dev', 'python3-dev'),
         ('apt', 'python3-psutil', 'python3-psutil'),
         ('pip-pypi', 'bleson', 'bleson'),
@@ -100,9 +99,6 @@ class InputModule(AbstractInput):
         self.last_downloaded_timestamp = None
 
         if not testing:
-            import filelock
-
-            self.filelock = filelock
             self.lock_file = '/var/lock/bluetooth_dev_hci{}'.format(
                 input_dev.bt_adapter)
             self.location = input_dev.location

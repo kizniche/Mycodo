@@ -11,6 +11,7 @@ webtest == 2.0.32
 alembic == 1.0.9
 argparse == 1.4.0
 daemonize == 2.5.0
+filelock == 3.0.12
 Flask == 1.0.2
 Flask_Babel == 0.12.2
 Flask_Compress == 1.4.0
@@ -30,7 +31,6 @@ python-dateutil == 2.7.5
 requests
 rpyc == 4.0.2
 SQLAlchemy == 1.3.3
-wrapt_timeout_decorator == 1.3.0
 WTForms == 2.2.1
 
 # Note: bcrypt 3.1.6 causes build errors. Use 3.1.4 for now.

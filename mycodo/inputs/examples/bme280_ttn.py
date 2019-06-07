@@ -13,16 +13,15 @@
 # Author: Tony DiCola
 # Based on the BMP280 driver with BME280 changes provided by
 # David J Taylor, Edinburgh (www.satsignal.eu)
-import os
 import time
+
+import filelock
 from flask_babel import lazy_gettext
 
-from mycodo.databases.models import DeviceMeasurements
 from mycodo.inputs.base_input import AbstractInput
 from mycodo.inputs.sensorutils import calculate_altitude
 from mycodo.inputs.sensorutils import calculate_dewpoint
 from mycodo.inputs.sensorutils import calculate_vapor_pressure_deficit
-from mycodo.utils.database import db_retrieve_table_daemon
 
 # Measurements
 measurements_dict = {
@@ -73,7 +72,6 @@ INPUT_INFORMATION = {
     'options_disabled': ['interface'],
 
     'dependencies_module': [
-        ('pip-pypi', 'filelock', 'filelock'),
         ('pip-pypi', 'serial', 'pyserial'),
         ('pip-pypi', 'Adafruit_GPIO', 'Adafruit_GPIO'),
         ('pip-git', 'Adafruit_BME280', 'git://github.com/adafruit/Adafruit_Python_BME280.git#egg=adafruit-bme280')
@@ -112,7 +110,6 @@ class InputModule(AbstractInput):
         if not testing:
             from Adafruit_BME280 import BME280
             import serial
-            import filelock
 
             if input_dev.custom_options:
                 for each_option in input_dev.custom_options.split(';'):
@@ -127,7 +124,6 @@ class InputModule(AbstractInput):
                                  busnum=self.i2c_bus)
             self.serial = serial
             self.serial_send = None
-            self.filelock = filelock
             self.lock_file = "/var/lock/mycodo_ttn.lock"
             self.ttn_serial_error = False
 
@@ -171,13 +167,14 @@ class InputModule(AbstractInput):
                     self.value_get(1),
                     self.value_get(2),
                     self.value_get(0))
-                try:
-                    with self.filelock.FileLock(self.lock_file, timeout=10):
+                self.lock_acquire(self.lock_file, timeout=10)
+                if self.locked:
+                    try:
                         self.serial_send = self.serial.Serial(self.serial_device, 9600)
                         self.serial_send.write(string_send.encode())
                         time.sleep(4)
-                except self.filelock.Timeout:
-                    self.logger.error("Lock timeout")
+                    finally:
+                        self.lock_release()
                 self.ttn_serial_error = False
         except:
             if not self.ttn_serial_error:

@@ -86,7 +86,6 @@ INPUT_INFORMATION = {
     'options_disabled': ['interface'],
 
     'dependencies_module': [
-        ('pip-pypi', 'filelock', 'filelock'),
         ('apt', 'pi-bluetooth', 'pi-bluetooth'),
         ('apt', 'libglib2.0-dev', 'libglib2.0-dev'),
         ('pip-pypi', 'bluepy', 'bluepy')
@@ -140,7 +139,6 @@ class InputModule(AbstractInput):
         if not testing:
             from mycodo.devices.sht31_smart_gadget import SHT31
             from bluepy import btle
-            import filelock
 
             if input_dev.custom_options:
                 for each_option in input_dev.custom_options.split(';'):
@@ -151,7 +149,6 @@ class InputModule(AbstractInput):
                     elif option == 'logging_interval':
                         self.logging_interval_ms = int(value) * 1000
 
-            self.filelock = filelock
             self.lock_file = '/var/lock/bluetooth_dev_hci{}'.format(
                 input_dev.bt_adapter)
             self.SHT31 = SHT31

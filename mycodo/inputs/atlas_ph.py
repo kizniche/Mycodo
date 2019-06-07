@@ -60,7 +60,6 @@ INPUT_INFORMATION = {
     'options_disabled': ['interface'],
 
     'dependencies_module': [
-        ('pip-pypi', 'filelock', 'filelock'),
         ('pip-pypi', 'pylibftdi', 'pylibftdi')
     ],
 

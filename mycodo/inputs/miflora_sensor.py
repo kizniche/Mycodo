@@ -1,9 +1,7 @@
 # coding=utf-8
-import os
+import filelock
 
-from mycodo.databases.models import DeviceMeasurements
 from mycodo.inputs.base_input import AbstractInput
-from mycodo.utils.database import db_retrieve_table_daemon
 
 # Measurements
 measurements_dict = {
@@ -47,7 +45,6 @@ INPUT_INFORMATION = {
     'options_disabled': ['interface'],
 
     'dependencies_module': [
-        ('pip-pypi', 'filelock', 'filelock'),
         ('apt', 'libglib2.0-dev', 'libglib2.0-dev'),
         ('pip-pypi', 'miflora', 'miflora'),
         ('pip-pypi', 'btlewrap', 'btlewrap'),
@@ -73,10 +70,8 @@ class InputModule(AbstractInput):
         if not testing:
             from miflora.miflora_poller import MiFloraPoller
             from btlewrap import BluepyBackend
-            import filelock
 
-            self.filelock = filelock
-            self.lock_file_bluetooth = '/var/lock/bluetooth_dev_hci{}'.format(input_dev.bt_adapter)
+            self.lock_file = '/var/lock/bluetooth_dev_hci{}'.format(input_dev.bt_adapter)
             self.location = input_dev.location
             self.bt_adapter = input_dev.bt_adapter
             self.poller = MiFloraPoller(
@@ -94,8 +89,9 @@ class InputModule(AbstractInput):
 
         self.return_dict = measurements_dict.copy()
 
-        try:
-            with self.filelock.FileLock(self.lock_file_bluetooth, timeout=3600):
+        self.lock_acquire(self.lock_file, timeout=3600)
+        if self.locked:
+            try:
                 if self.is_enabled(0):
                     self.value_set(0, self.poller.parameter_value(MI_BATTERY))
 
@@ -112,6 +108,5 @@ class InputModule(AbstractInput):
                     self.value_set(4, self.poller.parameter_value(MI_TEMPERATURE))
 
                 return self.return_dict
-
-        except self.filelock.Timeout:
-            self.logger.error("Lock timeout")
+            finally:
+                self.lock_release()

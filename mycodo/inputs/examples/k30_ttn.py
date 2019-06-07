@@ -10,6 +10,8 @@
 # Comment will be updated with other code to go along with this module
 #
 import time
+
+import filelock
 from flask_babel import lazy_gettext
 
 from mycodo.inputs.base_input import AbstractInput
@@ -48,7 +50,6 @@ INPUT_INFORMATION = {
     'options_disabled': ['interface'],
 
     'dependencies_module': [
-        ('pip-pypi', 'filelock', 'filelock'),
         ('pip-pypi', 'serial', 'pyserial')
     ],
 
@@ -77,7 +78,6 @@ class InputModule(AbstractInput):
 
         if not testing:
             import serial
-            import filelock
 
             if input_dev.custom_options:
                 for each_option in input_dev.custom_options.split(';'):
@@ -105,7 +105,6 @@ class InputModule(AbstractInput):
 
             self.serial = serial
             self.serial_send = None
-            self.filelock = filelock
             self.lock_file = "/var/lock/mycodo_ttn.lock"
             self.ttn_serial_error = False
             self.logger.debug(
@@ -139,13 +138,14 @@ class InputModule(AbstractInput):
                 self.timer = now + min_seconds_between_transmissions
                 # "K" designates this data belonging to the K30
                 string_send = 'K,{}'.format(self.value_get(0))
-                try:
-                    with self.filelock.FileLock(self.lock_file, timeout=10):
+                self.lock_acquire(self.lock_file, timeout=10)
+                if self.locked:
+                    try:
                         self.serial_send = self.serial.Serial(self.serial_device, 9600)
                         self.serial_send.write(string_send.encode())
                         time.sleep(4)
-                except self.filelock.Timeout:
-                    self.logger.error("Lock timeout")
+                    finally:
+                        self.lock_release()
                 self.ttn_serial_error = False
         except:
             if not self.ttn_serial_error:
