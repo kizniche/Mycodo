@@ -89,7 +89,7 @@ class InputModule(AbstractInput):
         Taking readings more often than about once every two seconds will
         eventually cause the DHT22 to hang.  A 3 second interval seems OK.
         """
-        super(InputModule, self).__init__(input_dev, name=__name__)
+        super(InputModule, self).__init__(input_dev, testing=testing, name=__name__)
         self.temp_temperature = None
         self.temp_humidity = None
         self.temp_dew_point = None

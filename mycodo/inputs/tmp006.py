@@ -59,7 +59,7 @@ class InputModule(AbstractInput):
     """ A sensor support class that monitors the TMP006's die and object temperatures """
 
     def __init__(self, input_dev,  testing=False):
-        super(InputModule, self).__init__(input_dev, name=__name__)
+        super(InputModule, self).__init__(input_dev, testing=testing, name=__name__)
         self._temperature_die = None
         self._temperature_object = None
 

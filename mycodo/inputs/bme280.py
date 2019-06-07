@@ -80,7 +80,7 @@ class InputModule(AbstractInput):
     """
 
     def __init__(self, input_dev, testing=False):
-        super(InputModule, self).__init__(input_dev, name=__name__)
+        super(InputModule, self).__init__(input_dev, testing=testing, name=__name__)
 
         if not testing:
             from Adafruit_BME280 import BME280

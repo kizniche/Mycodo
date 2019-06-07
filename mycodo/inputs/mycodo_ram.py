@@ -37,7 +37,7 @@ class InputModule(AbstractInput):
 
     """
     def __init__(self, input_dev, testing=False):
-        super(InputModule, self).__init__(input_dev, name=__name__)
+        super(InputModule, self).__init__(input_dev, testing=testing, name=__name__)
         self._disk_space = None
 
         if not testing:

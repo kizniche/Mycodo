@@ -44,7 +44,7 @@ class InputModule(AbstractInput):
     """ A sensor support class that monitors the raspberry pi's CPU and GPU temperatures """
 
     def __init__(self, input_dev, testing=False):
-        super(InputModule, self).__init__(input_dev, name=__name__)
+        super(InputModule, self).__init__(input_dev, testing=testing, name=__name__)
 
     def get_measurement(self):
         """ Gets the Raspberry pi's CPU and GPU temperatures in Celsius """

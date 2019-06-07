@@ -55,7 +55,7 @@ INPUT_INFORMATION = {
 class InputModule(AbstractInput):
     """ ADC Read """
     def __init__(self, input_dev, testing=False):
-        super(InputModule, self).__init__(input_dev, name=__name__)
+        super(InputModule, self).__init__(input_dev, testing=testing, name=__name__)
         self.adc = None
 
         if not testing:

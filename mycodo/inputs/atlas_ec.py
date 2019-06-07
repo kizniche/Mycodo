@@ -46,7 +46,7 @@ class InputModule(AbstractInput):
     """A sensor support class that monitors the Atlas Scientific sensor ElectricalConductivity"""
 
     def __init__(self, input_dev, testing=False):
-        super(InputModule, self).__init__(input_dev, name=__name__)
+        super(InputModule, self).__init__(input_dev, testing=testing, name=__name__)
         self.atlas_sensor_ftdi = None
         self.atlas_sensor_uart = None
         self.atlas_sensor_i2c = None

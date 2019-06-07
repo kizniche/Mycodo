@@ -75,7 +75,7 @@ ONE_TIME_LOW_RES_MODE = 0x23
 class InputModule(AbstractInput):
     """ A sensor support class that monitors the DS18B20's lux """
     def __init__(self, input_dev, testing=False):
-        super(InputModule, self).__init__(input_dev, name=__name__)
+        super(InputModule, self).__init__(input_dev, testing=testing, name=__name__)
 
         if not testing:
             from smbus2 import SMBus

@@ -78,7 +78,7 @@ class InputModule(AbstractInput):
         This gpio will be set high to power the sensor.
 
         """
-        super(InputModule, self).__init__(input_dev, name=__name__)
+        super(InputModule, self).__init__(input_dev, testing=testing, name=__name__)
         self.temp_temperature = 0
         self.temp_humidity = 0
         self.temp_dew_point = None

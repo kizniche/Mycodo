@@ -66,7 +66,7 @@ class InputModule(AbstractInput):
         See table 3 in the ADS1015/ADS1115 datasheet for more info on gain.
         """
     def __init__(self, input_dev, testing=False,):
-        super(InputModule, self).__init__(input_dev, name=__name__)
+        super(InputModule, self).__init__(input_dev, testing=testing, name=__name__)
 
         if not testing:
             import Adafruit_ADS1x15
