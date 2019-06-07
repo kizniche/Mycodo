@@ -3,10 +3,12 @@
 ### Bugfixes
 
  - Fix issues with SHT31 Smart Gadget and Ruuvitag Inputs ([#638](https://github.com/kizniche/mycodo/issues/638))
+ - Fix 500 Error generating measurement/unit choices
 
 ### Features
 
  - Increase Live page measurement query duration to fix the display of Input measurements
+
 
 ## 7.5.5 (2019-06-03)
 

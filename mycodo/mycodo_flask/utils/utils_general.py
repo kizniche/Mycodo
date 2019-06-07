@@ -202,15 +202,18 @@ def choices_measurements_units(measurements, units):
     choices = OrderedDict()
     for each_meas, each_info in sorted_dict_measurements.items():
         for each_unit in each_info['units']:
-            value = '{meas},{unit}'.format(
-                meas=each_meas, unit=each_unit)
-            display = '{meas}: {unit_name}'.format(
-                meas=each_info['name'],
-                unit_name=dict_units[each_unit]['name'])
-            if dict_units[each_unit]['unit']:
-                display += ' ({unit})'.format(
-                    unit=dict_units[each_unit]['unit'])
-            choices.update({value: display})
+            try:
+                value = '{meas},{unit}'.format(
+                    meas=each_meas, unit=each_unit)
+                display = '{meas}: {unit_name}'.format(
+                    meas=each_info['name'],
+                    unit_name=dict_units[each_unit]['name'])
+                if dict_units[each_unit]['unit']:
+                    display += ' ({unit})'.format(
+                        unit=dict_units[each_unit]['unit'])
+                choices.update({value: display})
+            except:
+                logger.exception("Error in choices_measurements_units()")
 
     return choices
 
