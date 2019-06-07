@@ -3,7 +3,8 @@
 ### Bugfixes
 
  - Fix issues with SHT31 Smart Gadget and Ruuvitag Inputs ([#638](https://github.com/kizniche/mycodo/issues/638))
- - Fix 500 Error generating measurement/unit choices
+ - Fix 500 Error generating measurement/unit choices ([#662](https://github.com/kizniche/mycodo/issues/662))
+ - Change AM2320 Input code ([#585](https://github.com/kizniche/mycodo/issues/585))
 
 ### Features
 
