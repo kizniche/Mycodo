@@ -151,7 +151,8 @@ class AbstractInput(object):
             if self.device_measurements:
                 return
         except:
-            self.setup_device_measurement()
+            pass
+        self.setup_device_measurement()
 
     def is_enabled(self, channel):
         try:

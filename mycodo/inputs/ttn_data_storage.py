@@ -123,7 +123,7 @@ class InputModule(AbstractInput):
         try:
             responses = response.json()
         except ValueError:  # No data returned
-            self.logger.debug("Response Error. Response: {}".format(
+            self.logger.debug("Response Error. Response: {}. Likely there is no data to be retrieved on TTN".format(
                 response.content))
             return
 
