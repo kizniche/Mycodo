@@ -27,15 +27,16 @@ if __name__ == "__main__":
         state = sensor.update()
         state = sensor.state
 
-        result = "{temp},{hum},{press},{bat},{accel},{accel_x},{accel_y},{accel_z}".format(
-            temp=state['temperature'],
-            hum=state['humidity'],
-            press=state['pressure'],
-            bat=state['battery'],
-            accel=state['acceleration'],
-            accel_x=state['acceleration_x'],
-            accel_y=state['acceleration_y'],
-            accel_z=state['acceleration_z'])
-        print(result, end='')
+        if state:
+            result = "{temp},{hum},{press},{bat},{accel},{accel_x},{accel_y},{accel_z}".format(
+                temp=state['temperature'],
+                hum=state['humidity'],
+                press=state['pressure'],
+                bat=state['battery'],
+                accel=state['acceleration'],
+                accel_x=state['acceleration_x'],
+                accel_y=state['acceleration_y'],
+                accel_z=state['acceleration_z'])
+            print(result, end='')
     except:
         pass

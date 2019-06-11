@@ -72,7 +72,7 @@ INPUT_INFORMATION = {
         ('apt', 'python3-dev', 'python3-dev'),
         ('apt', 'python3-psutil', 'python3-psutil'),
         ('pip-pypi', 'bleson', 'bleson'),
-        ('pip-pypi', 'ruuvitag_sensor', 'git+https://github.com/ttu/ruuvitag-sensor.git@bleson-ble-communication'),
+        ('pip-pypi', 'ruuvitag_sensor', 'ruuvitag_sensor'),
     ],
 
     'interfaces': ['BT'],

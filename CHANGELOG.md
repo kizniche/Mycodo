@@ -1,3 +1,10 @@
+## 7.5.7 (2019-06-11)
+
+### Bugfixes
+
+ - Fix Ruuvitag Input
+
+
 ## 7.5.6 (2019-06-11)
 
 ### Bugfixes
