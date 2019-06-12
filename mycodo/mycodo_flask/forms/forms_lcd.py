@@ -5,6 +5,7 @@
 
 from flask_babel import lazy_gettext
 from flask_wtf import FlaskForm
+from wtforms import BooleanField
 from wtforms import DecimalField
 from wtforms import IntegerField
 from wtforms import SelectField
@@ -61,6 +62,8 @@ class LCDMod(FlaskForm):
         )],
         widget=NumberInput(step='any')
     )
+    log_level_debug = BooleanField(
+        TRANSLATIONS['log_level_debug']['title'])
     add_display = SubmitField(lazy_gettext('Add Display Set'))
     save = SubmitField(TRANSLATIONS['save']['title'])
     delete = SubmitField(TRANSLATIONS['delete']['title'])

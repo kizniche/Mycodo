@@ -118,6 +118,7 @@ def lcd_mod(form_mod_lcd):
                 else:
                     mod_lcd.pin_reset = None
                 mod_lcd.period = form_mod_lcd.period.data
+                mod_lcd.log_level_debug = form_mod_lcd.log_level_debug.data
                 db.session.commit()
             except Exception as except_msg:
                 error.append(except_msg)

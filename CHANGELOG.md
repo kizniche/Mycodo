@@ -1,3 +1,10 @@
+## 7.5.8 (Unreleased)
+
+### Features
+
+ - Add Debug Logging as an LCD option
+
+
 ## 7.5.7 (2019-06-11)
 
 ### Bugfixes

@@ -155,6 +155,12 @@
             {{form_lcd_mod.period(class_='form-control', value=each_lcd.period)}}
           </div>
         </div>
+        <div class="col-auto">
+          {{form_lcd_mod.log_level_debug.label(class_='control-label')}}
+          <div class="input-group-text">
+            <input id="log_level_debug" name="log_level_debug" type="checkbox" title="{{dict_translation['log_level_debug']['phrase']}}" value="y"{% if each_lcd.log_level_debug %} checked{% endif %}>
+          </div>
+        </div>
       </div>
 
       </form>

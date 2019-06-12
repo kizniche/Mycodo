@@ -109,6 +109,12 @@ class LCDController(threading.Thread):
             self.lcd_y_lines = lcd_dev.y_lines
             self.timer = time.time() + self.lcd_period
             self.backlight_timer = time.time()
+            self.log_level_debug = lcd_dev.log_level_debug
+
+            if self.log_level_debug:
+                self.logger.setLevel(logging.DEBUG)
+            else:
+                self.logger.setLevel(logging.INFO)
 
             self.list_pids = ['setpoint', 'pid_time']
             self.list_outputs = ['duration_time', 'output_time', 'output_state']

@@ -14,6 +14,7 @@ class LCD(CRUDMixin, db.Model):
     lcd_type = db.Column(db.Text, default=None)
     name = db.Column(db.Text, default='LCD')
     is_activated = db.Column(db.Boolean, default=False)
+    log_level_debug = db.Column(db.Boolean, default=False)
     period = db.Column(db.Float, default=30.0)
     location = db.Column(db.Text, default=None)
     i2c_bus = db.Column(db.Integer, default=1)
