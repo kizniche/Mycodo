@@ -1,5 +1,9 @@
 ## 7.5.8 (Unreleased)
 
+### Bugfixes
+
+ - Fix "getrandom() initialization failed" with rng-tools ([#663](https://github.com/kizniche/mycodo/issues/663))
+
 ### Features
 
  - Add Debug Logging as an LCD option

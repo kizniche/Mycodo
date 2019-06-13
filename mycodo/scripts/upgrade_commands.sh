@@ -8,10 +8,11 @@ if [ "$EUID" -ne 0 ] ; then
 fi
 
 # Required apt packages. This has only been tested with Raspbian for the
-# Raspberry Pi but should work with most debian-based systems.
+# Raspberry Pi but should work with most Debian-based systems.
 APT_PKGS="fswebcam gawk gcc git libffi-dev libi2c-dev logrotate \
           moreutils nginx python-setuptools sqlite3 wget \
-          python3 python3-dev python3-smbus python3-pylint-common"
+          python3 python3-dev python3-smbus python3-pylint-common \
+          rng-tools"
 
 PYTHON_BINARY_SYS_LOC="$(python3.5 -c "import os; print(os.environ['_'])")"
 
