@@ -211,20 +211,20 @@ class AbstractInput(object):
                 'value' in self.return_dict[channel]):
             return self.return_dict[channel]['value']
 
-    def value_set(self, chan, value, ts=None):
+    def value_set(self, chan, value, timestamp=None):
         """
         Sets the measurement value for a channel
         :param chan: measurement channel
         :type chan: int
         :param value: measurement value
         :type value: float
-        :param ts: measurement timestamp
-        :type ts: datetime.datetime
+        :param timestamp: measurement timestamp
+        :type timestamp: datetime.datetime
         :return:
         """
         self.return_dict[chan]['value'] = value
-        if ts:
-            self.return_dict[chan]['timestamp_utc'] = ts
+        if timestamp:
+            self.return_dict[chan]['timestamp_utc'] = timestamp
         else:
             self.return_dict[chan]['timestamp_utc'] = datetime.datetime.utcnow()
 

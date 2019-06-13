@@ -70,10 +70,6 @@ class InputModule(AbstractInput):
         if not testing:
             import Adafruit_ADS1x15
 
-            self.device_measurements = db_retrieve_table_daemon(
-                DeviceMeasurements).filter(
-                    DeviceMeasurements.device_id == input_dev.unique_id)
-
             self.i2c_address = int(str(input_dev.i2c_location), 16)
             self.i2c_bus = input_dev.i2c_bus
             self.adc_gain = input_dev.adc_gain
@@ -84,7 +80,7 @@ class InputModule(AbstractInput):
     def get_measurement(self):
         self.return_dict = measurements_dict.copy()
 
-        for channel in self.device_measurements:
+        for channel in self.channels_measurement:
             if self.is_enabled(channel):
                 self.value_set(
                     channel,

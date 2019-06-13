@@ -88,7 +88,7 @@ class InputModule(AbstractInput):
             self.logger.error("Max Pixel = {0} C".format(max(pixels)))
             self.logger.error("Thermistor = {0} C".format(self.sensor.readThermistor()))
 
-        for channel in self.device_measurements:
+        for channel in self.channels_measurement:
             if self.is_enabled(channel):
                 self.value_set(channel, pixels[channel])
 

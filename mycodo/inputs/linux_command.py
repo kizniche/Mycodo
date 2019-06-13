@@ -59,10 +59,10 @@ class InputModule(AbstractInput):
                 "by the command.")
             return
 
-        for channel in self.device_measurements:
+        for channel in self.channels_measurement:
             if self.is_enabled(channel):
-                self.return_dict[channel]['unit'] = self.device_measurements[channel].unit
-                self.return_dict[channel]['measurement'] = self.device_measurements[channel].measurement
+                self.return_dict[channel]['unit'] = self.channels_measurement[channel].unit
+                self.return_dict[channel]['measurement'] = self.channels_measurement[channel].measurement
                 self.return_dict[channel]['value'] = list_measurements[channel]
 
         return self.return_dict

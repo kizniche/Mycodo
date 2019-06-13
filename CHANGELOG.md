@@ -3,6 +3,7 @@
 ### Bugfixes
 
  - Fix "getrandom() initialization failed" with rng-tools ([#663](https://github.com/kizniche/mycodo/issues/663))
+ - Fix issues with TH16/10 with AM2301 and Linux Command Inputs ([#663](https://github.com/kizniche/mycodo/issues/663))
 
 ### Features
 

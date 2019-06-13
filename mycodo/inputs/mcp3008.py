@@ -73,7 +73,7 @@ class InputModule(AbstractInput):
     def get_measurement(self):
         self.return_dict = measurements_dict.copy()
 
-        for channel in self.device_measurements:
+        for channel in self.channels_measurement:
             if self.is_enabled(channel):
                 self.value_set(channel, (
                     (self.adc.read_adc(channel) / 1023.0) * self.scale_from_max))

@@ -167,7 +167,7 @@ class InputModule(AbstractInput):
                 "something is wrong).")
             return
 
-        for channel in self.device_measurements:
+        for channel in self.channels_measurement:
             if self.is_enabled(channel):
                 self.value_set(channel, voltages_list[channel])
 
