@@ -8,6 +8,7 @@
 ### Features
 
  - Add Debug Logging as an LCD option
+ - Add traceback to error message during adding Input ([#664](https://github.com/kizniche/mycodo/issues/664))
 
 
 ## 7.5.7 (2019-06-11)

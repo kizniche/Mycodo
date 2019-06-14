@@ -1,12 +1,14 @@
 # -*- coding: utf-8 -*-
+import logging
+import subprocess
+import time
+import traceback
+
 import bcrypt
 import flask_login
-import logging
 import os
 import re
 import sqlalchemy
-import subprocess
-import time
 from flask import flash
 from flask import redirect
 from flask import url_for
@@ -342,7 +344,8 @@ def settings_input_import(form):
                 error.append("Could not load INPUT_INFORMATION dictionary from "
                              "the uploaded input module")
         except Exception:
-            error.append("Could not load uploaded file as a python module")
+            error.append("Could not load uploaded file as a python module:\n"
+                         "{}".format(traceback.format_exc()))
 
         dict_inputs = parse_input_information()
         list_inputs = []
@@ -444,16 +447,6 @@ def settings_input_delete(form):
     custom_directory = os.path.join(install_dir, 'mycodo/inputs/custom_inputs')
     file_name = '{}.py'.format(form.input_id.data.lower())
     full_path_file = os.path.join(custom_directory, file_name)
-
-    try:
-        input_info = load_module_from_file(full_path_file)
-        if not hasattr(input_info, 'INPUT_INFORMATION'):
-            error.append("Could not load INPUT_INFORMATION dictionary from "
-                         "the uploaded input module")
-        else:
-            input_device_name = input_info.INPUT_INFORMATION['input_name_unique']
-    except Exception:
-        error.append("Could not load uploaded file as a python module")
 
     if not error:
         # Check if any Input entries exist
