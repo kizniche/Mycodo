@@ -133,6 +133,14 @@ class InputModule(AbstractInput):
                         "string '{}'".format(str(values[0])))
                     return
 
+                battery_volts = float(values[3]) / 1000
+                if battery_volts < 1 or battery_volts > 4:
+                    self.logger.debug(
+                        "Not recording measurements: "
+                        "Battery outside expected range (1 < volts < 4): "
+                        "{volts}".format(volts=battery_volts))
+                    return
+
                 if self.is_enabled(0):
                     self.value_set(0, float(str(values[0])))
 

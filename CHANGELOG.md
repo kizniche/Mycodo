@@ -1,3 +1,10 @@
+## 7.5.8 (Unreleased)
+
+### Bugfixes
+
+ - Fix rare measurement issue with Ruuvitag
+
+
 ## 7.5.8 (2019-06-13)
 
 ### Bugfixes
