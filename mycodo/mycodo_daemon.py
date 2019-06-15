@@ -929,12 +929,6 @@ class DaemonController:
         :type trigger_conditionals: Indicate whether to trigger conditional statements
         """
         try:
-            test_count = 1
-            while self.controller['Output'] is None and test_count < 30:
-                # Upon initial startup, triggers may actuate outputs before the controller is started
-                test_count += 1
-                time.sleep(0.1)
-
             if self.controller['Output'] is None:
                 self.logger.error("Could not find Output Controller")
                 return "Error"
@@ -1026,7 +1020,15 @@ class DaemonController:
             self.controller['Output'].daemon = True
             self.controller['Output'].start()
 
+            # Ensure Output controller has started before continuing
             time.sleep(0.5)
+            output_controller_timout = time.time() + 60
+            while not self.controller['Output'].is_running():
+                if time.time() > output_controller_timout:
+                    self.logger.error("Output controller timed out")
+                    break
+                time.sleep(0.1)
+            self.logger.info("Output controller fully started")
 
             for each_controller in self.cont_types:
                 self.logger.debug(

@@ -3,6 +3,7 @@
 ### Bugfixes
 
  - Fix rare measurement issue with Ruuvitag
+ - Ensure Output Controller has fully started before starting other controllers ([#665](https://github.com/kizniche/mycodo/issues/665))
 
 
 ## 7.5.8 (2019-06-13)

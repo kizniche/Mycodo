@@ -56,9 +56,8 @@ class OutputController(threading.Thread):
     """
     def __init__(self, debug):
         threading.Thread.__init__(self)
-
+        self.running = False
         self.logger = logging.getLogger(__name__)
-
         if debug:
             self.logger.setLevel(logging.DEBUG)
         else:
@@ -130,14 +129,12 @@ class OutputController(threading.Thread):
             self.logger.exception(
                 "Problem initializing outputs: {err}".format(err=except_msg))
 
-        self.running = False
-
     def run(self):
         try:
-            self.running = True
             self.logger.info(
                 "Output controller activated in {:.1f} ms".format(
                     (timeit.default_timer() - self.thread_startup_timer)*1000))
+            self.running = True
 
             while self.running:
                 current_time = datetime.datetime.now()
@@ -164,6 +161,7 @@ class OutputController(threading.Thread):
 
                 time.sleep(self.sample_rate)
         finally:
+            self.running = False
             # Turn all outputs off
             for each_output_id in self.output_id:
                 if self.output_state_at_shutdown[each_output_id] is False:
@@ -173,7 +171,6 @@ class OutputController(threading.Thread):
                     self.output_on_off(
                         each_output_id, 'on', trigger_conditionals=False)
             self.cleanup_gpio()
-            self.running = False
             self.logger.info(
                 "Output controller deactivated in {:.1f} ms".format(
                     (timeit.default_timer() - self.thread_shutdown_timer)*1000))
@@ -1276,7 +1273,10 @@ output_id = '{}'
         return False
 
     def is_running(self):
-        return self.running
+        try:
+            return self.running
+        except:
+            return False
 
     def stop_controller(self):
         """Signal to stop the controller"""
