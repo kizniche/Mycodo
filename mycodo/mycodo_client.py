@@ -31,8 +31,7 @@ import socket
 import sys
 
 import os
-sys.path.append(
-    os.path.abspath(os.path.join(os.path.dirname(__file__), os.path.pardir)))
+sys.path.append(os.path.abspath(os.path.join(os.path.realpath(__file__), '../..')))
 
 import requests
 import rpyc
