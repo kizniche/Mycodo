@@ -118,7 +118,7 @@ class InputModule(AbstractInput):
             app=self.application_id, dev=self.device_id, time="{}s".format(int(past_seconds)))
         headers = {"Authorization": "key {k}".format(k=self.app_api_key)}
         timestamp_format = '%Y-%m-%dT%H:%M:%S.%f'
-        datetime_utc = None
+
         response = requests.get(endpoint, headers=headers)
         try:
             responses = response.json()
