@@ -1,3 +1,10 @@
+## 7.5.10 (2019-06-17)
+
+### Bugfixes
+
+ - Fix TTN Data Input timestamps
+
+
 ## 7.5.9 (2019-06-16)
 
 ### Bugfixes

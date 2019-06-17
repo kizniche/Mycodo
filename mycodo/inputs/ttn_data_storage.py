@@ -118,7 +118,7 @@ class InputModule(AbstractInput):
             app=self.application_id, dev=self.device_id, time="{}s".format(int(past_seconds)))
         headers = {"Authorization": "key {k}".format(k=self.app_api_key)}
         timestamp_format = '%Y-%m-%dT%H:%M:%S.%f'
-
+        datetime_utc = None
         response = requests.get(endpoint, headers=headers)
         try:
             responses = response.json()
@@ -179,13 +179,15 @@ class InputModule(AbstractInput):
                                 self.channels_measurement[channel],
                                 measurements,
                                 channel,
-                                measurements[channel])
+                                measurements[channel],
+                                timestamp=datetime_utc)
 
                             measurements[channel]['measurement'] = meas[channel]['measurement']
                             measurements[channel]['unit'] = meas[channel]['unit']
                             measurements[channel]['value'] = meas[channel]['value']
 
             if measurements:
+                self.logger.debug("Adding measurements to influxdb: {}".format(measurements))
                 add_measurements_influxdb(
                     self.unique_id, measurements,
                     use_same_timestamp=INPUT_INFORMATION['measurements_use_same_timestamp'])

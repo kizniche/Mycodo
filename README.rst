@@ -3,7 +3,7 @@ Mycodo
 
 Environmental Regulation System
 
-Latest version: 7.5.9 |Build Status| |Codacy Badge| |DOI|
+Latest version: 7.5.10 |Build Status| |Codacy Badge| |DOI|
 
 `Mycodo Manual <https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.rst>`__
 (`PDF <https://github.com/kizniche/Mycodo/raw/master/mycodo-manual.pdf>`__,
