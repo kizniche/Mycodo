@@ -462,7 +462,7 @@ def input_mod(form_mod, request_form):
                                     name=each_option['name'],
                                     error=each_error))
 
-                        if value:
+                        if value is not None:
                             null_value = False
                             option = '{id},{value}'.format(
                                 id=key,
