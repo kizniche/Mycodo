@@ -76,7 +76,7 @@ class InputModule(AbstractInput):
 
         out, err, status = cmd_output(self.command, timeout=timeout)
 
-        self.logger.debug("Command returned: Status: {}, Error: {}".format(err, status))
+        self.logger.debug("Command returned: {}, Status: {}, Error: {}".format(out, err, status))
 
         if str_is_float(out):
             list_measurements = [float(out)]
