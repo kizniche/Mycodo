@@ -240,10 +240,11 @@ def input_add(form_add):
                 db.session.commit()
 
                 #
-                # The Things Network: Data Storage (variable number of measurements)
+                # If there are a variable number of measurements
                 #
 
-                if new_input.device == 'TTN_DATA_STORAGE':
+                if ('measurements_variable_amount' in dict_inputs[input_name] and
+                        dict_inputs[input_name]['measurements_variable_amount']):
                     # Add first default measurement with empty unit and measurement
                     new_measurement = DeviceMeasurements()
                     new_measurement.name = ""
@@ -366,7 +367,10 @@ def input_mod(form_mod, request_form):
         mod_input.baud_rate = form_mod.baud_rate.data
         mod_input.pre_output_duration = form_mod.pre_output_duration.data
         mod_input.pre_output_during_measure = form_mod.pre_output_during_measure.data
-        mod_input.period = form_mod.period.data
+
+        if form_mod.period.data:
+            mod_input.period = form_mod.period.data
+
         mod_input.resolution = form_mod.resolution.data
         mod_input.resolution_2 = form_mod.resolution_2.data
         mod_input.sensitivity = form_mod.sensitivity.data
@@ -477,8 +481,9 @@ def input_mod(form_mod, request_form):
 
         if not error:
 
-            # Add or delete channels for TTN data storage Input
-            if mod_input.device == 'TTN_DATA_STORAGE':
+            # Add or delete channels for variable measurement Inputs
+            if ('measurements_variable_amount' in dict_inputs[mod_input.device] and
+                    dict_inputs[mod_input.device]['measurements_variable_amount']):
                 channels = DeviceMeasurements.query.filter(
                     DeviceMeasurements.device_id == form_mod.input_id.data)
 
@@ -663,7 +668,8 @@ def input_activate(form_mod):
     if input_dev.device == 'LinuxCommand' and not input_dev.cmd_command:
         error.append("Cannot activate Command Input without a Command set")
 
-    elif input_dev.device == 'TTN_DATA_STORAGE':
+    elif ('measurements_variable_amount' in dict_inputs[input_dev.device] and
+            dict_inputs[input_dev.device]['measurements_variable_amount']):
         measure_set = True
         for each_channel in device_measurements.all():
             if (not each_channel.name or

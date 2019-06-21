@@ -7,7 +7,6 @@ from flask_babel import lazy_gettext
 
 from mycodo.config import SQL_DATABASE_MYCODO
 from mycodo.databases.models import Conversion
-from mycodo.databases.models import DeviceMeasurements
 from mycodo.databases.models import Input
 from mycodo.databases.utils import session_scope
 from mycodo.inputs.base_input import AbstractInput
@@ -46,6 +45,7 @@ INPUT_INFORMATION = {
     'input_name': 'TTN Integration: Data Storage',
     'measurements_name': 'Variable measurements',
     'measurements_dict': measurements_dict,
+    'measurements_variable_amount': True,
     'measurements_use_same_timestamp': False,
 
     'options_enabled': [

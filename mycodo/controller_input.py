@@ -212,6 +212,14 @@ class InputController(threading.Thread):
                                       callback=self.edge_detected,
                                       bouncetime=self.switch_bouncetime)
 
+            # Set up MQTT listener
+            elif ('listener' in self.dict_inputs[self.device] and
+                    self.dict_inputs[self.device]['listener']):
+                input_listener = threading.Thread(
+                    target=self.measure_input.listener())
+                input_listener.daemon = True
+                input_listener.start()
+
             while self.running:
                 # Pause loop to modify conditional statements.
                 # Prevents execution of conditional while variables are
@@ -221,7 +229,7 @@ class InputController(threading.Thread):
                     while self.pause_loop:
                         time.sleep(0.1)
 
-                if self.device not in ['EDGE']:
+                if self.device not in ['EDGE', 'MQTT_PAHO']:
                     now = time.time()
                     # Signal that a measurement needs to be obtained
                     if (now > self.next_measurement and

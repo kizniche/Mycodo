@@ -1,3 +1,14 @@
+## 7.5.11 (Unreleased)
+
+### Bugfixes
+
+ - Fix inability of Input custom_options value to be 0
+
+### Features
+
+ - Add MQTT (paho) Input ([#664](https://github.com/kizniche/mycodo/issues/664))
+
+
 ## 7.5.10 (2019-06-17)
 
 ### Bugfixes

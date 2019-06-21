@@ -1,5 +1,4 @@
 # coding=utf-8
-
 from mycodo.inputs.base_input import AbstractInput
 from mycodo.utils.system_pi import cmd_output
 from mycodo.utils.system_pi import str_is_float
@@ -56,7 +55,7 @@ class InputModule(AbstractInput):
             self.logger.error(
                 "The command returned a non-numerical value. "
                 "Ensure only one numerical value is returned "
-                "by the command.")
+                "by the command. Value returned: '{}'".format(out))
             return
 
         for channel in self.channels_measurement:

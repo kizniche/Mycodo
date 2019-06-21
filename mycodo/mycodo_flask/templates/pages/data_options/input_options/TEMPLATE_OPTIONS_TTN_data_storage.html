@@ -1,4 +1,4 @@
-{% if each_input.device == 'TTN_DATA_STORAGE' %}
+{% if each_input.device in ['TTN_DATA_STORAGE', 'MQTT_PAHO'] %}
 
 {% set all_measurements = table_device_measurements.query.filter(
                           and_(table_device_measurements.device_id == each_input.unique_id,

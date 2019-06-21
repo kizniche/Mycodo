@@ -1,4 +1,4 @@
-{% if each_input.device == 'TTN_DATA_STORAGE' %}
+{% if each_input.device in ['TTN_DATA_STORAGE', 'MQTT_PAHO'] %}
 
 <div class="col-auto">
   {{form_mod_input.num_channels.label(class_='control-label')}}
