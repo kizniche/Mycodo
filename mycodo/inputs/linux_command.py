@@ -1,4 +1,6 @@
 # coding=utf-8
+from flask_babel import lazy_gettext
+
 from mycodo.inputs.base_input import AbstractInput
 from mycodo.utils.system_pi import cmd_output
 from mycodo.utils.system_pi import str_is_float
@@ -20,6 +22,7 @@ INPUT_INFORMATION = {
     'measurements_dict': measurements_dict,
 
     'options_enabled': [
+        'custom_options',
         'measurements_select_measurement_unit',
         'period',
         'cmd_command',
@@ -31,6 +34,17 @@ INPUT_INFORMATION = {
     'enable_channel_unit_select': True,
     'interfaces': ['Mycodo'],
     'cmd_command': 'shuf -i 50-70 -n 1',
+
+    'custom_options': [
+        {
+            'id': 'command_timeout',
+            'type': 'integer',
+            'default_value': 60,
+            'required': True,
+            'name': lazy_gettext('Command Timeout'),
+            'phrase': lazy_gettext('How long to wait for the command to finish before killing the process.')
+        }
+    ]
 }
 
 
@@ -42,12 +56,27 @@ class InputModule(AbstractInput):
 
         if not testing:
             self.command = input_dev.cmd_command
+            self.command_timeout = None
+            if input_dev.custom_options:
+                for each_option in input_dev.custom_options.split(';'):
+                    option = each_option.split(',')[0]
+                    value = each_option.split(',')[1]
+                    if option == 'command_timeout':
+                        self.command_timeout = int(value)
 
     def get_measurement(self):
         """ Determine if the return value of the command is a number """
         self.return_dict = measurements_dict.copy()
 
-        out, _, _ = cmd_output(self.command)
+        self.logger.debug("Command being executed: {}".format(self.command))
+
+        timeout = 360
+        if self.command_timeout:
+            timeout = self.command_timeout
+
+        out, err, status = cmd_output(self.command, timeout=timeout)
+
+        self.logger.debug("Command returned: Status: {}, Error: {}".format(err, status))
 
         if str_is_float(out):
             list_measurements = [float(out)]

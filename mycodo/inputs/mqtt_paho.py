@@ -81,6 +81,11 @@ class InputModule(AbstractInput):
         super(InputModule, self).__init__(input_dev, testing=testing, name=__name__)
 
         if not testing:
+            self.mqtt_host = None
+            self.mqtt_port = None
+            self.mqtt_channel = None
+            self.mqtt_keepalive = None
+            self.mqtt_clientid = None
             if input_dev.custom_options:
                 for each_option in input_dev.custom_options.split(';'):
                     option = each_option.split(',')[0]

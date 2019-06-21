@@ -7,6 +7,7 @@
 ### Features
 
  - Add MQTT (paho) Input ([#664](https://github.com/kizniche/mycodo/issues/664))
+ - Add timeout option for Linux Command Input
 
 
 ## 7.5.10 (2019-06-17)
