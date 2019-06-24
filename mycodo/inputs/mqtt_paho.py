@@ -1,5 +1,6 @@
 # coding=utf-8
 import datetime
+from ast import literal_eval
 
 import paho.mqtt.client as mqtt
 from flask_babel import lazy_gettext
@@ -68,8 +69,15 @@ INPUT_INFORMATION = {
             'required': False,
             'name': lazy_gettext('Client ID'),
             'phrase': lazy_gettext('Unique client ID for connecting to the MQTT server')
+        },
+        {
+            'id': 'mqtt_channel',
+            'type': 'text',
+            'default_value': '/rsu/pi',
+            'required': False,
+            'name': lazy_gettext('Subscription Channel'),
+            'phrase': lazy_gettext('The name of the thread with which to subscribe to')
         }
-
     ]
 }
 
@@ -94,7 +102,7 @@ class InputModule(AbstractInput):
                         self.mqtt_host = value
                     elif option == 'mqtt_port':
                         self.mqtt_port = int(value)
-                    elif option == 'mqtt_channel':
+                    elif option == 'mqtt_channel':  # TODO: Remove if unnecessary
                         self.mqtt_channel = value
                     elif option == 'mqtt_keepalive':
                         self.mqtt_keepalive = int(value)
@@ -102,7 +110,8 @@ class InputModule(AbstractInput):
                         self.mqtt_clientid = value
 
             ### Create a client instance
-            self.logger.info("Client created with ID {}".format(self.mqtt_clientid))
+            self.logger.debug("Client created with ID {}".format(
+                self.mqtt_clientid))
             self.client = mqtt.Client(self.mqtt_clientid)
 
     def callbacks_connect(self):
@@ -134,17 +143,20 @@ class InputModule(AbstractInput):
         """ Set up the subscriptions to the proper MQTT channels to listen to """
         try:
             for channel in self.channels_measurement:
+                self.client.subscribe(self.mqtt_channel)  # TODO: Remove if unnecessary
+                #self.logger.debug("Subscribed to channel '{}'".format(self.mqtt_channel))
                 self.client.subscribe(self.channels_measurement[channel].name)
-                self.logger.info("Subscribed to '{}'".format(self.channels_measurement[channel].name))
+                self.logger.debug("Subscribed to  measurement'{}'".format(self.channels_measurement[channel].name))
         except:
-            self.logger.error("Could not subscribe to MQTT channel '{}'".format(
+            self.logger.error("Could not subscribe to MQTT topic '{}'".format(
                 self.mqtt_channel))
 
     def on_connect(self, client, obj, flags, rc):
-        self.logger.info("Connected to '{}', rc: {}".format(self.mqtt_channel, rc))
+        self.logger.debug("Connected to '{}', rc: {}".format(
+            self.mqtt_channel, rc))
 
     def on_subscribe(self, client, obj, mid, granted_qos):
-        self.logger.info("Subscribing to topic: {}, {}, {}".format(
+        self.logger.debug("Subscribing to mqtt topic: {}, {}, {}".format(
             self.mqtt_channel, mid, granted_qos))
 
     def on_log(self, mqttc, obj, level, string):
@@ -152,34 +164,65 @@ class InputModule(AbstractInput):
 
     def on_message(self, client, userdata, msg):
         datetime_utc = datetime.datetime.utcnow()
-        self.logger.debug("Message received: Channel: {}, Value: {}".format(msg.topic, msg.payload.decode()))
+        self.logger.debug("Message received: Topic: {}, Value: {}".format(
+            msg.topic, msg.payload.decode()))
         measurement = {}
         channel = None
-        for each_channel in self.channels_measurement:
-            if self.channels_measurement[each_channel].name == msg.topic:
-                channel = each_channel
-
-        if channel is None:
-            self.logger.error("Could not determine channel for '{}'".format(msg.topic))
-            return
 
         try:
-            value = float(msg.payload.decode())
-        except:
-            self.logger.exception("Message doesn't represent a float value.")
+            payload = literal_eval(msg.payload.decode())
+            payload_measurements = [value['sensor'] for key, value in payload['measurements'].items()]
+            payload_values = [value['value'] for key, value in payload['measurements'].items()]
+            self.logger.debug("Message received: {}".format(
+                payload_measurements))
+        except Exception as e:
+            self.logger.error('Failed parse payload: {}'.format(e))
             return
 
-        # Original value/unit
-        measurement[channel] = {}
-        measurement[channel]['measurement'] = self.channels_measurement[channel].measurement
-        measurement[channel]['unit'] = self.channels_measurement[channel].unit
-        measurement[channel]['value'] = value
-        measurement[channel]['timestamp_utc'] = datetime_utc
+        #self.logger.debug("channels measurement : '{}'".format(self.channels_measurement))
 
+        for channel in self.channels_measurement:
+            try:
+                if self.channels_measurement[channel].name in payload_measurements:
+                    payload_channel = payload_measurements.index(  # TODO: Remove if unnecessary
+                        self.channels_measurement[channel].name)
+                    self.logger.debug(
+                        "measurement: '{}' is for Mycodo channel '{}' and "
+                        "payload channel '{}'".format(
+                            self.channels_measurement[channel].name,
+                            channel,
+                            payload_channel))
+                    try:
+                        payload_value = float(payload_values[payload_channel])
+                    except Exception as e:
+                        self.logger.exception(
+                            "Message doesn't represent a float value. "
+                            "Error: {}".format(e))
+                        continue
+
+                    # Original value/unit
+                    measurement[channel] = {}
+                    measurement[channel]['measurement'] = self.channels_measurement[channel].measurement
+                    measurement[channel]['unit'] = self.channels_measurement[channel].unit
+                    measurement[channel]['value'] = payload_value
+                    measurement[channel]['timestamp_utc'] = datetime_utc
+
+                    self.add_measurement_influxdb(channel, measurement)
+            except Exception as e:
+                self.logger.debug(
+                    "Channel name not in payload. Error: {}".format(e))
+
+        if channel is None:
+            self.logger.error(
+                "Could not determine channel for '{}'".format(msg.topic))
+            return
+
+    def add_measurement_influxdb(self, channel, measurement):
         # Convert value/unit is conversion_id present and valid
         if self.channels_conversion[channel]:
             conversion = db_retrieve_table_daemon(
-                Conversion, unique_id=self.channels_measurement[channel].conversion_id)
+                Conversion,
+                unique_id=self.channels_measurement[channel].conversion_id)
             if conversion:
                 meas = parse_measurement(
                     self.channels_conversion[channel],
@@ -187,20 +230,22 @@ class InputModule(AbstractInput):
                     measurement,
                     channel,
                     measurement[channel],
-                    timestamp=datetime_utc)
+                    timestamp=measurement[channel]['timestamp_utc'])
 
                 measurement[channel]['measurement'] = meas[channel]['measurement']
                 measurement[channel]['unit'] = meas[channel]['unit']
                 measurement[channel]['value'] = meas[channel]['value']
 
         if measurement:
-            self.logger.debug("Adding measurement to influxdb: {}".format(measurement))
+            self.logger.debug(
+                "Adding measurement to influxdb: {}".format(measurement))
             add_measurements_influxdb(
-                self.unique_id, measurement,
+                self.unique_id,
+                measurement,
                 use_same_timestamp=INPUT_INFORMATION['measurements_use_same_timestamp'])
 
     def on_disconnect(self, client, userdata, rc=0):
-        self.logger.info("Disconnected result code {}".format(rc))
+        self.logger.debug("Disconnected result code {}".format(rc))
 
     def stop_sensor(self):
         """ Called when sensors are deactivated """
