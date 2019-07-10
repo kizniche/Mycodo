@@ -72,9 +72,9 @@ class InputModule(AbstractInput):
 
         if not testing:
             self.command = input_dev.cmd_command
-            self.command_timeout = None
-            self.execute_as_user = None
-            self.current_working_dir = None
+            self.command_timeout = 60
+            self.execute_as_user = 'pi'
+            self.current_working_dir = '/home/pi'
             if input_dev.custom_options:
                 for each_option in input_dev.custom_options.split(';'):
                     option = each_option.split(',')[0]
