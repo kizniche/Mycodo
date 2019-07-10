@@ -21,13 +21,13 @@ from mycodo.utils.database import db_retrieve_table_daemon
 
 class AbstractInput(object):
     """
-    Base sensor class that ensures certain methods and values are present
+    Base Input class that ensures certain methods and values are present
     in inputs.
 
-    This class is not to be used directly.  It is to be inherited by sensor classes.
+    This class is not to be used directly.  It is to be inherited by Input classes.
 
      example:
-         class MyNewSensor(AbstractInput):
+         class MyNewInput(AbstractInput):
              ... do stuff
 
     """
@@ -191,12 +191,12 @@ class AbstractInput(object):
             else:
                 self.logger.setLevel(logging.INFO)
 
-    def start_sensor(self):
+    def start_input(self):
         """ Not used yet """
         self.running = True
 
-    def stop_sensor(self):
-        """ Called when sensors are deactivated """
+    def stop_input(self):
+        """ Called when Input is deactivated """
         self.running = False
 
     def value_get(self, channel):

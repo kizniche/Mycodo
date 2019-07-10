@@ -487,9 +487,9 @@ class InputController(threading.Thread):
     def stop_controller(self):
         self.thread_shutdown_timer = timeit.default_timer()
 
-        # Execute stop_sensor() if not EDGE or ADC
+        # Execute stop_input() if not EDGE or ADC
         if self.device != 'EDGE':
-            self.measure_input.stop_sensor()
+            self.measure_input.stop_input()
 
         # Ensure pre-output is off
         if self.pre_output_setup:

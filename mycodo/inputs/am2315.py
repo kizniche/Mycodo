@@ -96,7 +96,7 @@ class InputModule(AbstractInput):
             self.i2c_bus = input_dev.i2c_bus
             self.power_output_id = input_dev.power_output_id
             self.control = DaemonControl()
-            self.start_sensor()
+            self.start_input()
             self.am = AM2315(self.i2c_bus)
 
     def get_measurement(self):
@@ -115,7 +115,7 @@ class InputModule(AbstractInput):
             self.logger.error(
                 'Sensor power output {rel} detected as being off. '
                 'Turning on.'.format(rel=self.power_output_id))
-            self.start_sensor()
+            self.start_input()
             time.sleep(2)
 
         # Try twice to get measurement. This prevents an anomaly where
@@ -131,9 +131,9 @@ class InputModule(AbstractInput):
         # Measurement failure, power cycle the sensor (if enabled)
         # Then try two more times to get a measurement
         if self.power_output_id and not measurements_success:
-            self.stop_sensor()
+            self.stop_input()
             time.sleep(2)
-            self.start_sensor()
+            self.start_input()
             for _ in range(2):
                 dew_point, humidity, temperature = self.return_measurements()
                 if dew_point is not None:
@@ -181,7 +181,7 @@ class InputModule(AbstractInput):
         self.logger.error("All measurements returned failed CRC")
         return None, None, None
 
-    def start_sensor(self):
+    def start_input(self):
         """ Turn the sensor on """
         if self.power_output_id:
             self.logger.info("Turning on sensor")
@@ -189,7 +189,7 @@ class InputModule(AbstractInput):
             time.sleep(2)
             self.powered = True
 
-    def stop_sensor(self):
+    def stop_input(self):
         """ Turn the sensor off """
         if self.power_output_id:
             self.logger.info("Turning off sensor")

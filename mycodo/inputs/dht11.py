@@ -99,7 +99,7 @@ class InputModule(AbstractInput):
             self.bit = None
             self.either_edge_cb = None
 
-        self.start_sensor()
+        self.start_input()
 
     def get_measurement(self):
         """ Gets the humidity and temperature """
@@ -120,7 +120,7 @@ class InputModule(AbstractInput):
             self.logger.error(
                 'Sensor power output {rel} detected as being off. '
                 'Turning on.'.format(rel=self.power_output_id))
-            self.start_sensor()
+            self.start_input()
             time.sleep(2)
 
         # Try twice to get measurement. This prevents an anomaly where
@@ -147,9 +147,9 @@ class InputModule(AbstractInput):
         # Measurement failure, power cycle the sensor (if enabled)
         # Then try two more times to get a measurement
         if self.power_output_id is not None and self.running:
-            self.stop_sensor()
+            self.stop_input()
             time.sleep(2)
-            self.start_sensor()
+            self.start_input()
             for _ in range(2):
                 self.measure_sensor()
                 if self.temp_dew_point is not None:
@@ -288,7 +288,7 @@ class InputModule(AbstractInput):
             self.either_edge_cb.cancel()
             self.either_edge_cb = None
 
-    def start_sensor(self):
+    def start_input(self):
         """ Power the sensor """
         if self.power_output_id:
             self.logger.info("Turning on sensor")
@@ -296,7 +296,7 @@ class InputModule(AbstractInput):
             time.sleep(2)
             self.powered = True
 
-    def stop_sensor(self):
+    def stop_input(self):
         """ Depower the sensor """
         if self.power_output_id:
             self.logger.info("Turning off sensor")

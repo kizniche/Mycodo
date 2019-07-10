@@ -105,7 +105,7 @@ class InputModule(AbstractInput):
 
         return self.return_dict
 
-    def stop_sensor(self):
+    def stop_input(self):
         """ Called by InputController class when sensors are deactivated """
         self.sensor.cleanupGPIO()
         self.running = False

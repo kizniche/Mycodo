@@ -55,6 +55,6 @@ class InputModule(AbstractInput):
 
         return self.return_dict
 
-    def stop_sensor(self):
+    def stop_input(self):
         self.gpio.setmode(self.gpio.BCM)
         self.gpio.cleanup(self.location)

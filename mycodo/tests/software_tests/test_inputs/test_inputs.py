@@ -69,13 +69,13 @@ input_classes = [
 ]
 
 
-def test_inputs_have_depreciated_stop_sensor():
-    """ Verify that the input objects have the stop_sensor() method """
-    print("\nTest: test_inputs_have_depreciated_stop_sensor")
+def test_inputs_have_depreciated_stop_input():
+    """ Verify that the input objects have the stop_input() method """
+    print("\nTest: test_inputs_have_depreciated_stop_input")
     for index, each_class in enumerate(input_classes):
-        print("test_inputs_have_depreciated_stop_sensor: Testing Class ({}/{}): {}".format(
+        print("test_inputs_have_depreciated_stop_input: Testing Class ({}/{}): {}".format(
             index + 1, len(input_classes), each_class))
-        assert hasattr(each_class, 'stop_sensor')
+        assert hasattr(each_class, 'stop_input')
 
 
 def test__iter__returns_iterator():
