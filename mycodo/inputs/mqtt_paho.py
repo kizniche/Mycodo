@@ -1,8 +1,6 @@
 # coding=utf-8
 import datetime
-from ast import literal_eval
 
-import paho.mqtt.client as mqtt
 from flask_babel import lazy_gettext
 
 from mycodo.databases.models import Conversion
@@ -81,6 +79,8 @@ class InputModule(AbstractInput):
         super(InputModule, self).__init__(input_dev, testing=testing, name=__name__)
 
         if not testing:
+            import paho.mqtt.client as mqtt
+
             self.mqtt_host = None
             self.mqtt_port = None
             self.mqtt_channel = None
