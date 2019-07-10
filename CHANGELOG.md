@@ -3,6 +3,7 @@
 ### Bugfixes
 
  - Fix inability of Input custom_options value to be 0
+ - Fix improper unit conversion for TH1X-AM2301 Input ([#670](https://github.com/kizniche/mycodo/issues/670))
 
 ### Features
 

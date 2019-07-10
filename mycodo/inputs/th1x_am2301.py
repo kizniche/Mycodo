@@ -92,7 +92,9 @@ class InputModule(AbstractInput):
         # Convert temperature to SI unit Celsius
         if self.is_enabled(0):
             temp_c = convert_from_x_to_y_unit(
-                'F', 'C', dict_data['StatusSNS']['AM2301']['Temperature'])
+                dict_data['StatusSNS']['TempUnit'],
+                'C',
+                dict_data['StatusSNS']['AM2301']['Temperature'])
             self.value_set(0, temp_c, timestamp=datetime_timestmp)
 
         if self.is_enabled(1):
