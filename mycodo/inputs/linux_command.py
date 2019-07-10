@@ -43,6 +43,22 @@ INPUT_INFORMATION = {
             'required': True,
             'name': lazy_gettext('Command Timeout'),
             'phrase': lazy_gettext('How long to wait for the command to finish before killing the process.')
+        },
+        {
+            'id': 'execute_as_user',
+            'type': 'text',
+            'default_value': 'pi',
+            'required': True,
+            'name': lazy_gettext('User'),
+            'phrase': lazy_gettext('The user to execute the command.')
+        },
+        {
+            'id': 'current_working_dir',
+            'type': 'text',
+            'default_value': '/home/pi',
+            'required': True,
+            'name': lazy_gettext('CWD'),
+            'phrase': lazy_gettext('The current working directory of the shell environment.')
         }
     ]
 }
@@ -57,12 +73,18 @@ class InputModule(AbstractInput):
         if not testing:
             self.command = input_dev.cmd_command
             self.command_timeout = None
+            self.execute_as_user = None
+            self.current_working_dir = None
             if input_dev.custom_options:
                 for each_option in input_dev.custom_options.split(';'):
                     option = each_option.split(',')[0]
                     value = each_option.split(',')[1]
                     if option == 'command_timeout':
                         self.command_timeout = int(value)
+                    elif option == 'execute_as_user':
+                        self.execute_as_user = value
+                    elif option == 'current_working_dir':
+                        self.current_working_dir = value
 
     def get_measurement(self):
         """ Determine if the return value of the command is a number """
@@ -74,12 +96,16 @@ class InputModule(AbstractInput):
         if self.command_timeout:
             timeout = self.command_timeout
 
-        out, err, status = cmd_output(self.command, timeout=timeout)
+        out, err, status = cmd_output(
+            self.command,
+            timeout=timeout,
+            user=self.execute_as_user,
+            cwd=self.current_working_dir)
 
         self.logger.debug("Command returned: {}, Status: {}, Error: {}".format(out, err, status))
 
         if str_is_float(out):
-            list_measurements = [float(out)]
+            measurement_value = float(out)
         else:
             self.logger.error(
                 "The command returned a non-numerical value. "
@@ -91,6 +117,6 @@ class InputModule(AbstractInput):
             if self.is_enabled(channel):
                 self.return_dict[channel]['unit'] = self.channels_measurement[channel].unit
                 self.return_dict[channel]['measurement'] = self.channels_measurement[channel].measurement
-                self.return_dict[channel]['value'] = list_measurements[channel]
+                self.return_dict[channel]['value'] = measurement_value
 
         return self.return_dict

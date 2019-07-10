@@ -187,26 +187,54 @@ def epoch_of_next_time(time_str):
         return None
 
 
-def cmd_output(command, stdout_pipe=True, timeout=360):
+def cmd_output(command, stdout_pipe=True, timeout=360, user='pi', cwd='/home/pi'):
     """
     Executes a bash command and returns the output
 
     :param command: Bash command to execute
     :param stdout_pipe: Capture output
     :param timeout: Kill process if it runs longer than this many seconds
+    :param user: The user to execute the command as
+    :param cwd: The current working directory of the environment
     :return: tuple of output, errors, status
     """
     cmd_success = True
+
+    def report_ids(msg):
+        logger.debug('uid, gid = {}, {}; {}'.format(os.getuid(), os.getgid(), msg))
+
+    def demote(user_uid, user_gid):
+        def result():
+            report_ids('starting demotion')
+            os.setgid(user_gid)
+            os.setuid(user_uid)
+            report_ids('finished demotion')
+        return result
+
+    pw_record = pwd.getpwnam(user)
+    user_name = pw_record.pw_name
+    user_home_dir = pw_record.pw_dir
+    user_uid = pw_record.pw_uid
+    user_gid = pw_record.pw_gid
+    env = os.environ.copy()
+    env['HOME'] = user_home_dir
+    env['LOGNAME'] = user_name
+    env['PWD'] = cwd
+    env['USER'] = user_name
 
     if stdout_pipe:
         cmd = subprocess.Popen(command,
                                stdout=subprocess.PIPE,
                                shell=True,
-                               preexec_fn=os.setpgrp)
+                               preexec_fn=demote(user_uid, user_gid),
+                               cwd=cwd,
+                               env=env)
     else:
         cmd = subprocess.Popen(command,
                                shell=True,
-                               preexec_fn=os.setpgrp)
+                               preexec_fn=demote(user_uid, user_gid),
+                               cwd=cwd,
+                               env=env)
 
     def kill_process():
         nonlocal cmd_success
