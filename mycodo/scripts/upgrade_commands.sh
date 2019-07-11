@@ -2,9 +2,9 @@
 #
 #  upgrade_commands.sh - Mycodo commands
 #
-if [ "$EUID" -ne 0 ] ; then
-  printf "Please run as root.\n"
-  exit 1
+if [[ "$EUID" -ne 0 ]]; then
+    printf "Please run as root.\n"
+    exit 1
 fi
 
 # Required apt packages. This has only been tested with Raspbian for the
@@ -14,15 +14,17 @@ APT_PKGS="fswebcam gawk gcc git libffi-dev libi2c-dev logrotate \
           python3 python3-dev python3-smbus python3-pylint-common \
           rng-tools"
 
-PYTHON_BINARY_SYS_LOC="$(python3.5 -c "import os; print(os.environ['_'])")"
+PYTHON_BINARY_SYS_LOC="$(python3 -c "import os; print(os.environ['_'])")"
 
 # Get the Mycodo root directory
 SOURCE="${BASH_SOURCE[0]}"
-while [ -h "$SOURCE" ]; do # resolve $SOURCE until the file is no longer a symlink
-  DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
-  SOURCE="$(readlink "$SOURCE")"
-  [[ $SOURCE != /* ]] && SOURCE="$DIR/$SOURCE" # if $SOURCE was a relative symlink, we need to resolve it relative to the path where the symlink file was located
+
+while [[ -h "$SOURCE" ]]; do # resolve $SOURCE until the file is no longer a symlink
+    DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
+    SOURCE="$(readlink "$SOURCE")"
+    [[ $SOURCE != /* ]] && SOURCE="$DIR/$SOURCE" # if $SOURCE was a relative symlink, we need to resolve it relative to the path where the symlink file was located
 done
+
 MYCODO_PATH="$( cd -P "$( dirname "${SOURCE}" )/../.." && pwd )"
 
 cd ${MYCODO_PATH}
@@ -99,30 +101,30 @@ case "${1:-''}" in
         mkdir -p /var/Mycodo-backups
         mkdir -p ${MYCODO_PATH}/note_attachments
 
-        if [ ! -e /var/log/mycodo/mycodo.log ]; then
+        if [[ ! -e /var/log/mycodo/mycodo.log ]]; then
             touch /var/log/mycodo/mycodo.log
         fi
-        if [ ! -e /var/log/mycodo/mycodobackup.log ]; then
+        if [[ ! -e /var/log/mycodo/mycodobackup.log ]]; then
             touch /var/log/mycodo/mycodobackup.log
         fi
-        if [ ! -e /var/log/mycodo/mycodokeepup.log ]; then
+        if [[ ! -e /var/log/mycodo/mycodokeepup.log ]]; then
             touch /var/log/mycodo/mycodokeepup.log
         fi
-        if [ ! -e /var/log/mycodo/mycododependency.log ]; then
+        if [[ ! -e /var/log/mycodo/mycododependency.log ]]; then
             touch /var/log/mycodo/mycododependency.log
         fi
-        if [ ! -e /var/log/mycodo/mycodoupgrade.log ]; then
+        if [[ ! -e /var/log/mycodo/mycodoupgrade.log ]]; then
             touch /var/log/mycodo/mycodoupgrade.log
         fi
-        if [ ! -e /var/log/mycodo/mycodorestore.log ]; then
+        if [[ ! -e /var/log/mycodo/mycodorestore.log ]]; then
             touch /var/log/mycodo/mycodorestore.log
         fi
-        if [ ! -e /var/log/mycodo/login.log ]; then
+        if [[ ! -e /var/log/mycodo/login.log ]]; then
             touch /var/log/mycodo/login.log
         fi
 
         # Create empty mycodo database file if it doesn't exist
-        if [ ! -e ${MYCODO_PATH}/databases/mycodo.db ]; then
+        if [[ ! -e ${MYCODO_PATH}/databases/mycodo.db ]]; then
             touch ${MYCODO_PATH}/databases/mycodo.db
         fi
         /bin/bash ${MYCODO_PATH}/mycodo/scripts/upgrade_commands.sh update-permissions
@@ -168,7 +170,7 @@ case "${1:-''}" in
     ;;
     'setup-virtualenv')
         printf "\n#### Checking python 3 virtualenv\n"
-        if [ ! -e ${MYCODO_PATH}/env/bin/python3 ]; then
+        if [[ ! -e ${MYCODO_PATH}/env/bin/python3 ]]; then
             printf "#### Virtualenv doesn't exist. Creating...\n"
             pip install virtualenv --upgrade
             rm -rf ${MYCODO_PATH}/env
@@ -303,21 +305,21 @@ case "${1:-''}" in
     'update-pigpiod')
         printf "\n#### Checking which pigpiod startup script is being used\n"
         GPIOD_SAMPLE_RATE=99
-        if [ -e /etc/systemd/system/pigpiod_low.service ]; then
+        if [[ -e /etc/systemd/system/pigpiod_low.service ]]; then
             GPIOD_SAMPLE_RATE=1
-        elif [ -e /etc/systemd/system/pigpiod_high.service ]; then
+        elif [[ -e /etc/systemd/system/pigpiod_high.service ]]; then
             GPIOD_SAMPLE_RATE=5
-        elif [ -e /etc/systemd/system/pigpiod_disabled.service ]; then
+        elif [[ -e /etc/systemd/system/pigpiod_disabled.service ]]; then
             GPIOD_SAMPLE_RATE=100
         fi
 
         /bin/bash ${MYCODO_PATH}/mycodo/scripts/upgrade_commands.sh disable-pigpiod
 
-        if [ "$GPIOD_SAMPLE_RATE" -eq "1" ]; then
+        if [[ "$GPIOD_SAMPLE_RATE" -eq "1" ]]; then
             /bin/bash ${MYCODO_PATH}/mycodo/scripts/upgrade_commands.sh enable-pigpiod-low
-        elif [ "$GPIOD_SAMPLE_RATE" -eq "5" ]; then
+        elif [[ "$GPIOD_SAMPLE_RATE" -eq "5" ]]; then
             /bin/bash ${MYCODO_PATH}/mycodo/scripts/upgrade_commands.sh enable-pigpiod-high
-        elif [ "$GPIOD_SAMPLE_RATE" -eq "100" ]; then
+        elif [[ "$GPIOD_SAMPLE_RATE" -eq "100" ]]; then
             /bin/bash ${MYCODO_PATH}/mycodo/scripts/upgrade_commands.sh enable-pigpiod-disabled
         else
             printf "#### Could not determine pgiod sample rate. Setting up pigpiod with 1 ms sample rate\n"
@@ -330,7 +332,7 @@ case "${1:-''}" in
         INSTALL_FILE="influxdb_1.7.6_armhf.deb"
         CORRECT_VERSION="1.7.6-1"
         CURRENT_VERSION=$(apt-cache policy influxdb | grep 'Installed' | gawk '{print $2}')
-        if [ "${CURRENT_VERSION}" != "${CORRECT_VERSION}" ]; then
+        if [[ "${CURRENT_VERSION}" != "${CORRECT_VERSION}" ]]; then
             echo "#### Incorrect InfluxDB version (v${CURRENT_VERSION}) installed. Installing v${CORRECT_VERSION}..."
             wget --quiet ${INSTALL_ADDRESS}${INSTALL_FILE}
             dpkg -i ${INSTALL_FILE}
@@ -359,7 +361,7 @@ case "${1:-''}" in
     ;;
     'update-logrotate')
         printf "\n#### Installing logrotate scripts\n"
-        if [ -e /etc/cron.daily/logrotate ]; then
+        if [[ -e /etc/cron.daily/logrotate ]]; then
             printf "#### logrotate execution moved from cron.daily to cron.hourly\n"
             mv -f /etc/cron.daily/logrotate /etc/cron.hourly/
         fi
@@ -400,7 +402,7 @@ case "${1:-''}" in
     ;;
     'update-pip3-packages')
         printf "\n#### Installing pip requirements from requirements.txt\n"
-        if [ ! -d ${MYCODO_PATH}/env ]; then
+        if [[ ! -d ${MYCODO_PATH}/env ]]; then
             printf "\n## Error: Virtualenv doesn't exist. Create with $0 setup-virtualenv\n"
         else
             ${MYCODO_PATH}/env/bin/pip3 install --upgrade pip setuptools

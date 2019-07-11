@@ -1,3 +1,10 @@
+## 7.6.2 (Unreleased)
+
+### Bugfixes
+
+ - Various fixes for Raspbian Buster ([#668](https://github.com/kizniche/mycodo/issues/668))
+
+
 ## 7.6.1 (2019-07-11)
 
 ### Bugfixes
