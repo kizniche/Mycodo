@@ -380,7 +380,7 @@ case "${1:-''}" in
         apt-get update -y
         apt-get remove -y apache2
         apt-get install -y ${APT_PKGS}
-        easy_install pip
+        python3 /usr/lib/python3/dist-packages/easy_install.py pip
         pip install --upgrade pip
     ;;
     'update-permissions')

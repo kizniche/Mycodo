@@ -143,8 +143,8 @@ Install
 
 These install procedures have been tested to work with the Raspberry Pi
 (versions Zero, 1, 2, and 3) following a fresh install of
-`Raspbian <https://www.raspberrypi.org/downloads/raspbian/>`__ (Full or
-Lite version), with an active internet connection.
+`Raspbian <https://www.raspberrypi.org/downloads/raspbian/>`__ Buster
+(2019-06-20) Lite version, with an active internet connection.
 
 Once Raspbian has been installed, follow the guide below to set up the
 system prior to installing Mycodo.
@@ -175,8 +175,7 @@ Then change the following settings
    en\_US.UTF-8, if US)
 -  ``Localisation Options`` -> ``Change Timezone``
 -  ``Interfacing Options`` -> ``SSH`` -> ``Enable``
--  ``Advanced Options`` -> ``Expand Filesystem`` (***required***)
--  Reboot (***required***)
+-  Reboot
 
 Install Mycodo
 ~~~~~~~~~~~~~~
