@@ -1,3 +1,10 @@
+## 7.6.1 (2019-07-11)
+
+### Bugfixes
+
+ - Fix TH1X-AM2301 Input ([#670](https://github.com/kizniche/mycodo/issues/670))
+
+
 ## 7.6.0 (2019-07-10)
 
 ### Bugfixes
