@@ -68,8 +68,9 @@ class InputModule(AbstractInput):
         url = "http://{ip}/cm?cmnd=status%2010".format(ip=self.ip_address)
         r = requests.get(url)
         str_json = r.text
-
         dict_data = json.loads(str_json)
+
+        self.logger.debug("Returned Data: {}".format(dict_data))
 
         # Convert string to datetime object
         datetime_timestmp = datetime.datetime.strptime(
@@ -77,10 +78,14 @@ class InputModule(AbstractInput):
 
         # Convert temperature to SI unit Celsius
         if self.is_enabled(0):
-            temp_c = convert_from_x_to_y_unit(
-                dict_data['StatusSNS']['TempUnit'],
-                'C',
-                dict_data['StatusSNS']['DS18B20']['Temperature'])
+            if ('TempUnit' in dict_data['StatusSNS'] and
+                    dict_data['StatusSNS']['TempUnit']):
+                temp_c = convert_from_x_to_y_unit(
+                    dict_data['StatusSNS']['TempUnit'],
+                    'C',
+                    dict_data['StatusSNS']['DS18B20']['Temperature'])
+            else:
+                temp_c = dict_data['StatusSNS']['DS18B20']['Temperature']
             self.value_set(0, temp_c, timestamp=datetime_timestmp)
 
         return self.return_dict

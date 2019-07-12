@@ -79,40 +79,48 @@ class InputModule(AbstractInput):
     def get_measurement(self):
         self.return_dict = measurements_dict.copy()
 
-        url = "http://{ip}/cm?cmnd=status%2010".format(ip=self.ip_address)
-        r = requests.get(url)
-        str_json = r.text
+        try:
+            url = "http://{ip}/cm?cmnd=status%2010".format(ip=self.ip_address)
+            r = requests.get(url)
+            str_json = r.text
+            dict_data = json.loads(str_json)
 
-        dict_data = json.loads(str_json)
+            self.logger.debug("Returned Data: {}".format(dict_data))
 
-        # Convert string to datetime object
-        datetime_timestmp = datetime.datetime.strptime(
-            dict_data['StatusSNS']['Time'], '%Y-%m-%dT%H:%M:%S')
+            # Convert string to datetime object
+            datetime_timestmp = datetime.datetime.strptime(
+                dict_data['StatusSNS']['Time'], '%Y-%m-%dT%H:%M:%S')
 
-        # Convert temperature to SI unit Celsius
-        if self.is_enabled(0):
-            temp_c = convert_from_x_to_y_unit(
-                dict_data['StatusSNS']['TempUnit'],
-                'C',
-                dict_data['StatusSNS']['AM2301']['Temperature'])
-            self.value_set(0, temp_c, timestamp=datetime_timestmp)
+            # Convert temperature to SI unit Celsius
+            if self.is_enabled(0):
+                if ('TempUnit' in dict_data['StatusSNS'] and
+                        dict_data['StatusSNS']['TempUnit']):
+                    temp_c = convert_from_x_to_y_unit(
+                        dict_data['StatusSNS']['TempUnit'],
+                        'C',
+                        dict_data['StatusSNS']['AM2301']['Temperature'])
+                else:
+                    temp_c = dict_data['StatusSNS']['AM2301']['Temperature']
+                self.value_set(0, temp_c, timestamp=datetime_timestmp)
 
-        if self.is_enabled(1):
-            humidity = dict_data['StatusSNS']['AM2301']['Humidity']
-            self.value_set(1, humidity, timestamp=datetime_timestmp)
+            if self.is_enabled(1):
+                humidity = dict_data['StatusSNS']['AM2301']['Humidity']
+                self.value_set(1, humidity, timestamp=datetime_timestmp)
 
-        if (self.is_enabled(2) and
-                self.is_enabled(0) and
-                self.is_enabled(1)):
-            dewpoint = calculate_dewpoint(
-                self.value_get(0), self.value_get(1))
-            self.value_set(2, dewpoint, timestamp=datetime_timestmp)
+            if (self.is_enabled(2) and
+                    self.is_enabled(0) and
+                    self.is_enabled(1)):
+                dewpoint = calculate_dewpoint(
+                    self.value_get(0), self.value_get(1))
+                self.value_set(2, dewpoint, timestamp=datetime_timestmp)
 
-        if (self.is_enabled(3) and
-                self.is_enabled(0) and
-                self.is_enabled(1)):
-            vpd = calculate_vapor_pressure_deficit(
-                self.value_get(0), self.value_get(1))
-            self.value_set(3, vpd, timestamp=datetime_timestmp)
+            if (self.is_enabled(3) and
+                    self.is_enabled(0) and
+                    self.is_enabled(1)):
+                vpd = calculate_vapor_pressure_deficit(
+                    self.value_get(0), self.value_get(1))
+                self.value_set(3, vpd, timestamp=datetime_timestmp)
 
-        return self.return_dict
+            return self.return_dict
+        except Exception:
+            self.logger.exception("TEST00")

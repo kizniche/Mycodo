@@ -52,7 +52,7 @@ def convert_from_x_to_y_unit(unit_from, unit_to, in_value):
     :return:
     """
     if unit_from == unit_to:  # Units are the same, no conversion
-        logger.error("Units are the same ({uf} to {ut}). "
+        logger.debug("Units are the same ('{uf}' to '{ut}'). "
                      "Not performing conversion.".format(
             uf=unit_to, ut=unit_from))
         return in_value
