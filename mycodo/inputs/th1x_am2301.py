@@ -4,7 +4,7 @@
 # https://github.com/arendst/Sonoff-Tasmota
 import datetime
 import json
-import traceback
+
 import requests
 from flask_babel import lazy_gettext
 
@@ -124,4 +124,3 @@ class InputModule(AbstractInput):
             return self.return_dict
         except Exception:
             self.logger.exception("TEST01")
-            self.logger.error("TEST02: {}".format(traceback.format_exc()))
