@@ -222,7 +222,7 @@ class AbstractInput(object):
         :type timestamp: datetime.datetime
         :return:
         """
-        self.return_dict[chan]['value'] = value
+        self.return_dict[chan]['value'] = float(value)
         if timestamp:
             self.return_dict[chan]['timestamp_utc'] = timestamp
         else:
