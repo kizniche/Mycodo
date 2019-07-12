@@ -97,7 +97,7 @@ def calculate_saturated_vapor_pressure(temp_c):
     :param temp_c: Temperature in Celsius
     :return:
     """
-    if None in temp_c:
+    if temp_c is None:
         return
     return 610.7 * 10 ** (7.5 * temp_c / (237.3 + temp_c))
 
