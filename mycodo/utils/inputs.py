@@ -212,6 +212,8 @@ def parse_input_information():
                 dict_inputs = dict_has_value(dict_inputs, input_custom, 'thermocouple_type')
                 dict_inputs = dict_has_value(dict_inputs, input_custom, 'ref_ohm')
 
+                dict_inputs = dict_has_value(dict_inputs, input_custom, 'test_before_saving')
+
                 dict_inputs = dict_has_value(dict_inputs, input_custom, 'custom_options')
 
     return dict_inputs

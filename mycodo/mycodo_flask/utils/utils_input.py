@@ -406,6 +406,17 @@ def input_mod(form_mod, request_form):
         if form_mod.sht_voltage.data:
             mod_input.sht_voltage = form_mod.sht_voltage.data
 
+        if 'test_before_saving' in dict_inputs[mod_input.device]:
+            (constraints_pass,
+             constraints_errors,
+             mod_input) = dict_inputs[mod_input.device]['test_before_saving'](
+                mod_input, request_form)
+            if constraints_pass:
+                pass
+            elif constraints_errors:
+                for each_error in constraints_errors:
+                    flash(each_error, 'error')
+
         # Custom options
         list_options = []
         if 'custom_options' in dict_inputs[mod_input.device]:

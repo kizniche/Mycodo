@@ -1,3 +1,10 @@
+## 7.6.4 (Unreleased)
+
+### Features
+
+ - Add Pylint test for Python 3 Code Input
+
+
 ## 7.6.3 (2019-07-14)
 
 ### Bugfixes
