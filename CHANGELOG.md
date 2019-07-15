@@ -1,4 +1,8 @@
-## 7.6.3 (Unreleased)
+## 7.6.3 (2019-07-14)
+
+### Bugfixes
+
+ - Fix calculating VPD
 
 ### Features
 
