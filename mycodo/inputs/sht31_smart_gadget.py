@@ -417,8 +417,14 @@ class InputModule(AbstractInput):
                 if not self.initialized:
                     self.initialize()
 
-                if not self.connected:
+                if not self.initialized:
+                    self.logger.error("Count not initialize sensor.")
+
+                if self.initialized and not self.connected:
                     self.connect()
+
+                if not self.connected:
+                    self.logger.error("Count not connect to sensor.")
 
                 if self.connected:
                     try:
