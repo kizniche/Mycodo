@@ -304,12 +304,16 @@ class ComThread(threading.Thread):
     user) to communicate with the daemon (mycodo_daemon.py, executed as root).
 
     """
-    def __init__(self, mycodo):
+    def __init__(self, mycodo, debug):
         threading.Thread.__init__(self)
 
         self.logger = logging.getLogger('mycodo.rpyc')
-        self.logger.setLevel(logging.WARNING)
+        if debug:
+            self.logger.setLevel(logging.DEBUG)
+        else:
+            self.logger.setLevel(logging.WARNING)
         self.mycodo = mycodo
+        self.debug = debug
         self.server = None
         self.rpyc_monitor = None
 
@@ -320,11 +324,12 @@ class ComThread(threading.Thread):
             self.server = ThreadedServer(service, port=18813, logger=self.logger)
             self.server.start()
 
-            # self.rpyc_monitor = threading.Thread(
-            #     target=monitor_rpyc,
-            #     args=(self.logger,))
-            # self.rpyc_monitor.daemon = True
-            # self.rpyc_monitor.start()
+            if self.debug:
+                self.rpyc_monitor = threading.Thread(
+                    target=monitor_rpyc,
+                    args=(self.logger,))
+                self.rpyc_monitor.daemon = True
+                self.rpyc_monitor.start()
         except Exception as err:
             self.logger.exception(
                 "ERROR: ComThread: {msg}".format(msg=err))
@@ -1261,13 +1266,14 @@ class MycodoDaemon:
         self.logger = logging.getLogger('mycodo.daemon')
         if not debug:
             self.logger.setLevel(logging.INFO)
+        self.debug = debug
         self.mycodo = mycodo
 
     def start_daemon(self):
         """Start communication and daemon threads"""
         try:
             self.logger.info("Starting rpyc server")
-            ct = ComThread(self.mycodo)
+            ct = ComThread(self.mycodo, self.debug)
             ct.daemon = True
             # Start communication thread for receiving commands from mycodo_client.py
             ct.start()
