@@ -26,6 +26,9 @@ import logging
 
 import os
 
+from mycodo.config import PATH_INPUTS
+from mycodo.config import PATH_INPUTS_CUSTOM
+
 logger = logging.getLogger("mycodo.utils.inputs")
 
 
@@ -106,10 +109,7 @@ def parse_input_information():
                       'custom_inputs', 'examples', 'scripts', 'tmp_inputs',
                       'sensorutils.py']
 
-    path_inputs = os.path.abspath(os.path.join(os.path.dirname(__file__), os.path.pardir) + '/inputs')
-    path_custom_inputs = os.path.join(path_inputs, "custom_inputs")
-
-    input_paths = [path_inputs, path_custom_inputs]
+    input_paths = [PATH_INPUTS, PATH_INPUTS_CUSTOM]
 
     dict_inputs = {}
 
@@ -212,6 +212,7 @@ def parse_input_information():
                 dict_inputs = dict_has_value(dict_inputs, input_custom, 'thermocouple_type')
                 dict_inputs = dict_has_value(dict_inputs, input_custom, 'ref_ohm')
 
+                dict_inputs = dict_has_value(dict_inputs, input_custom, 'execute_at_creation')
                 dict_inputs = dict_has_value(dict_inputs, input_custom, 'test_before_saving')
 
                 dict_inputs = dict_has_value(dict_inputs, input_custom, 'custom_options')

@@ -19,6 +19,7 @@ from sqlalchemy import or_
 from mycodo.config import BACKUP_LOG_FILE
 from mycodo.config import DEPENDENCY_INIT_FILE
 from mycodo.config import INSTALL_DIRECTORY
+from mycodo.config import PATH_INPUTS_CUSTOM
 from mycodo.config import UPGRADE_INIT_FILE
 from mycodo.config_devices_units import MEASUREMENTS
 from mycodo.config_devices_units import UNITS
@@ -326,8 +327,7 @@ def settings_input_import(form):
         install_dir = os.path.abspath(INSTALL_DIRECTORY)
         tmp_directory = os.path.join(install_dir, 'mycodo/inputs/tmp_inputs')
         assure_path_exists(tmp_directory)
-        custom_directory = os.path.join(install_dir, 'mycodo/inputs/custom_inputs')
-        assure_path_exists(custom_directory)
+        assure_path_exists(PATH_INPUTS_CUSTOM)
         tmp_name = 'tmp_input_testing.py'
         full_path_tmp = os.path.join(tmp_directory, tmp_name)
 
@@ -420,8 +420,7 @@ def settings_input_import(form):
             unique_name = '{}.py'.format(input_info.INPUT_INFORMATION['input_name_unique'].lower())
 
             # Move module from temp directory to custom_input directory
-            full_path_custom_inputs = os.path.join(install_dir, 'mycodo/inputs/custom_inputs')
-            full_path_final = os.path.join(full_path_custom_inputs, unique_name)
+            full_path_final = os.path.join(PATH_INPUTS_CUSTOM, unique_name)
             os.rename(full_path_tmp, full_path_final)
 
             # Reload frontend to refresh the inputs
@@ -443,10 +442,8 @@ def settings_input_delete(form):
     error = []
 
     input_device_name = None
-    install_dir = os.path.abspath(INSTALL_DIRECTORY)
-    custom_directory = os.path.join(install_dir, 'mycodo/inputs/custom_inputs')
     file_name = '{}.py'.format(form.input_id.data.lower())
-    full_path_file = os.path.join(custom_directory, file_name)
+    full_path_file = os.path.join(PATH_INPUTS_CUSTOM, file_name)
 
     if not error:
         # Check if any Input entries exist
@@ -463,7 +460,7 @@ def settings_input_delete(form):
 
         # Reload frontend to refresh the inputs
         cmd = '{path}/mycodo/scripts/mycodo_wrapper frontend_reload 2>&1'.format(
-            path=install_dir)
+            path=os.path.abspath(INSTALL_DIRECTORY))
         subprocess.Popen(cmd, shell=True)
         flash('Frontend reloaded to scan for new Input Modules', 'success')
 

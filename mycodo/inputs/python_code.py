@@ -1,17 +1,19 @@
 # coding=utf-8
-import sys
-import traceback
-import uuid
+
+import importlib.util
+import textwrap
 
 import os
 from flask import Markup
 from flask import flash
-from io import StringIO
 
+from mycodo.config import PATH_PYTHON_CODE_USER
 from mycodo.databases.models import DeviceMeasurements
 from mycodo.inputs.base_input import AbstractInput
 from mycodo.utils.database import db_retrieve_table_daemon
+from mycodo.utils.system_pi import assure_path_exists
 from mycodo.utils.system_pi import cmd_output
+from mycodo.utils.system_pi import set_user_grp
 
 
 def format_pre_statement(unique_id, measure_info):
@@ -40,6 +42,45 @@ def store_measurement(channel=None, measurement=None):
     return pre_statement
 
 
+def execute_at_creation(unique_id, cmd_command, dict_inputs):
+    error = []
+    pre_statement_run = """import os
+import sys
+sys.path.append(os.path.abspath('/var/mycodo-root'))
+from mycodo.mycodo_client import DaemonControl
+from mycodo.utils.influx import add_measurements_influxdb
+control = DaemonControl()
+
+class PythonInputRun:
+    def __init__(self, logger, input_id, measurement_info):
+        self.logger = logger
+        self.input_id = input_id
+        self.measurement_info = measurement_info
+
+    def store_measurement(self, channel=None, measurement=None):
+        if None in [channel, measurement]:
+            return
+        measure = {channel: {}}
+        measure[channel]['measurement'] = self.measurement_info[channel]['measurement']
+        measure[channel]['unit'] = self.measurement_info[channel]['unit']
+        measure[channel]['value'] = measurement
+        add_measurements_influxdb(self.input_id, measure)
+
+    def python_code_run(self):
+"""
+    indented_code = textwrap.indent(cmd_command, ' ' * 8)
+    input_python_code_run = pre_statement_run + indented_code
+
+    assure_path_exists(PATH_PYTHON_CODE_USER)
+    file_run = '{}/input_python_code_{}.py'.format(
+        PATH_PYTHON_CODE_USER, unique_id)
+    with open(file_run, 'w') as fw:
+        fw.write('{}\n'.format(input_python_code_run))
+        fw.close()
+    set_user_grp(file_run, 'mycodo', 'mycodo')
+
+    return error, (input_python_code_run, file_run)
+
 def test_before_saving(mod_input, request_form):
     """
     Function to run when the Input is saved to evaluate the Python 3 code using pylint3
@@ -49,28 +90,19 @@ def test_before_saving(mod_input, request_form):
     """
     all_passed = True
 
+    error, (input_python_code_run, file_run) = execute_at_creation(
+        mod_input.unique_id, mod_input.cmd_command, None)
+
     # Only add strings to this list to prevent options from being saved.
     # Use flash('my error message', 'error') to show errors but allow options
     # to save.
     error = []
 
-    measure_info = {}
-    device_measurements = db_retrieve_table_daemon(
-        DeviceMeasurements).filter(
-        DeviceMeasurements.device_id == mod_input.unique_id)
-    for each_measure in device_measurements.all():
-        measure_info[each_measure.channel] = {}
-        measure_info[each_measure.channel]['unit'] = each_measure.unit
-        measure_info[each_measure.channel]['measurement'] = each_measure.measurement
-
-    pre_statement = format_pre_statement(mod_input.unique_id, measure_info)
-    code_combined = pre_statement + mod_input.cmd_command
-
-    if len(code_combined.splitlines()) > 999:
+    if len(input_python_code_run.splitlines()) > 999:
         error.append("Too many lines in code. Reduce code to less than 1000 lines.")
 
     lines_code = ''
-    for line_num, each_line in enumerate(code_combined.splitlines(), 1):
+    for line_num, each_line in enumerate(input_python_code_run.splitlines(), 1):
         if len(str(line_num)) == 3:
             line_spacing = ''
         elif len(str(line_num)) == 2:
@@ -82,37 +114,28 @@ def test_before_saving(mod_input, request_form):
             ln=line_num,
             line=each_line)
 
-    path_file = '/tmp/input_code_{}.py'.format(
-        str(uuid.uuid4()).split('-')[0])
-    with open(path_file, 'w') as out:
-        out.write('{}\n'.format(code_combined))
-
     cmd_test = 'export PYTHONPATH=$PYTHONPATH:/var/mycodo-root && ' \
-               'pylint3 -d I,W0621,C0103,C0111,C0301,C0327,C0410,C0411,C0413 {path}'.format(
-        path=path_file)
+               'pylint3 -d I,W0621,C0103,C0111,C0301,C0327,C0410,C0413 {path}'.format(
+        path=file_run)
     cmd_out, cmd_err, cmd_status = cmd_output(cmd_test)
-
-    os.remove(path_file)
 
     message = Markup(
         '<pre>\n\n'
-        'Full Python 3 code:\n\n{code}\n\n'
-        'Python 3 code analysis:\n\n{report}'
+        'Full Python Code Input code:\n\n{code}\n\n'
+        'Python Code Input code analysis:\n\n{report}'
         '</pre>'.format(
             code=lines_code, report=cmd_out.decode("utf-8")))
     if cmd_status:
-        flash(
-            'Error(s) were found while evaluating your code. Review '
-            'the error(s), below, and fix them before activating your Input.')
+        flash('Error(s) were found while evaluating your code. Review '
+              'the error(s), below, and fix them before activating your '
+              'Input.', 'error')
         flash(message, 'error')
     else:
         flash(
             "No errors were found while evaluating your code. However, "
             "this doesn't mean your code will perform as expected. "
             "Review your code for issues and test your Input "
-            "before putting it into a production environment. Note: You "
-            "must have the specified channels added for the Input to use the "
-            "store_measurement() function.", 'success')
+            "before putting it into a production environment.", 'success')
         flash(message, 'success')
 
     return all_passed, error, mod_input
@@ -139,6 +162,7 @@ INPUT_INFORMATION = {
     ],
     'options_disabled': ['interface'],
 
+    'execute_at_creation': execute_at_creation,
     'test_before_saving': test_before_saving,
 
     'interfaces': ['Mycodo'],
@@ -146,11 +170,9 @@ INPUT_INFORMATION = {
 
 # Get measurements/values (for example, these are randomly-generated numbers)
 random_value_channel_0 = random.uniform(10.0, 100.0)
-random_value_channel_1 = random.uniform(500.0, 1000.0)
 
 # Store measurements in database (must specify the channel and measurement)
-store_measurement(channel=0, measurement=random_value_channel_0)
-store_measurement(channel=1, measurement=random_value_channel_1)"""
+self.store_measurement(channel=0, measurement=random_value_channel_0)"""
 }
 
 
@@ -176,43 +198,18 @@ class InputModule(AbstractInput):
         """ Determine if the return value of the command is a number """
         self.return_dict = measurements_dict.copy()
 
-        # Add functions to the top of the statement string
-        pre_statement = format_pre_statement(
-            self.unique_id, self.measure_info)
+        file_run = '{}/input_python_code_{}.py'.format(
+            PATH_PYTHON_CODE_USER, self.unique_id)
 
-        code_combined = pre_statement + self.python_code
-        self.logger.debug("Python 3 code to be executed:"
-                          "\n{}".format(code_combined))
+        with open(file_run, 'r') as file:
+            self.logger.debug("Python Code:\n{}".format(file.read()))
 
+        module_name = "mycodo.input.python_code_exec_{}".format(os.path.basename(file_run).split('.')[0])
+        spec = importlib.util.spec_from_file_location(module_name, file_run)
+        conditional_run = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(conditional_run)
+        run = conditional_run.PythonInputRun(self.logger, self.unique_id, self.measure_info)
         try:
-            codeOut = StringIO()
-            codeErr = StringIO()
-            # capture output and errors
-            sys.stdout = codeOut
-            sys.stderr = codeErr
-
-            exec(code_combined, globals())
-
-            # restore stdout and stderr
-            sys.stdout = sys.__stdout__
-            sys.stderr = sys.__stderr__
-            py_error = codeErr.getvalue()
-            py_output = codeOut.getvalue()
-
-            if py_error:
-                self.logger.error("Error: {err}".format(err=py_error))
-            if py_output:
-                self.logger.debug("Output: {err}".format(err=py_output))
-
-            codeOut.close()
-            codeErr.close()
-        except TimeoutError:
-            self.logger.error("RPyC timed out. To prevent this error, increase the "
-                              "RPyC Timeout value in the configuration menu.")
+            run.python_code_run()
         except Exception:
-            self.logger.error(
-                "Error evaluating Python 3 code. Code and Traceback below.\n"
-                "Python 3 code Executed:\n\n{code_rep}\n\n"
-                "Error Traceback:\n\n{traceback}".format(
-                    code_rep=code_combined,
-                    traceback=traceback.format_exc()))
+            self.logger.exception(1)

@@ -9,6 +9,7 @@ from flask import flash
 from flask import url_for
 from flask_babel import gettext
 
+from mycodo.config import PATH_PYTHON_CODE_USER
 from mycodo.config_translations import TRANSLATIONS
 from mycodo.databases.models import DeviceMeasurements
 from mycodo.databases.models import DisplayOrder
@@ -37,7 +38,6 @@ logger = logging.getLogger(__name__)
 #
 # Input manipulation
 #
-
 
 def input_add(form_add):
     action = '{action} {controller}'.format(
@@ -238,6 +238,18 @@ def input_add(form_add):
                 DisplayOrder.query.first().inputs = add_display_order(
                     display_order, new_input.unique_id)
                 db.session.commit()
+
+                #
+                # Execute at Creation
+                #
+
+                if 'execute_at_creation' in dict_inputs[new_input.device]:
+                    (creation_errors,
+                     tuple_code_filename) = dict_inputs[new_input.device]['execute_at_creation'](
+                        new_input.unique_id, new_input.cmd_command, dict_inputs[input_name])
+                    if creation_errors:
+                        for each_error in creation_errors:
+                            flash(each_error, 'error')
 
                 #
                 # If there are a variable number of measurements
@@ -491,7 +503,6 @@ def input_mod(form_mod, request_form):
         mod_input.custom_options = ';'.join(list_options)
 
         if not error:
-
             # Add or delete channels for variable measurement Inputs
             if ('measurements_variable_amount' in dict_inputs[mod_input.device] and
                     dict_inputs[mod_input.device]['measurements_variable_amount']):
@@ -610,6 +621,15 @@ def input_del(input_id):
             DisplayOrder.query.first().inputs = list_to_csv(display_order)
         except Exception:  # id not in list
             pass
+
+        try:
+            file_path = os.path.join(
+                PATH_PYTHON_CODE_USER, 'input_python_code_{}.py'.format(
+                    input_dev.unique_id))
+            os.remove(file_path)
+        except:
+            pass
+
         db.session.commit()
     except Exception as except_msg:
         error.append(except_msg)

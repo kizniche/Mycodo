@@ -110,8 +110,8 @@ def mycodo_service(mycodo):
             return mycodo.lcd_flash(lcd_id, state)
 
         @staticmethod
-        def exposed_get_condition_measurement(condition_id):
-            return mycodo.get_condition_measurement(condition_id)
+        def exposed_get_condition_measurement(condition_id, function_id=None):
+            return mycodo.get_condition_measurement(condition_id, function_id=function_id)
 
         @staticmethod
         def exposed_get_condition_measurement_dict(condition_id):
@@ -500,12 +500,12 @@ class DaemonController:
         # Wait for the client to receive the response before it disconnects
         time.sleep(1)
 
-    @staticmethod
-    def get_condition_measurement(condition_id):
+    def get_condition_measurement(self, condition_id, function_id=None):
         condition = db_retrieve_table_daemon(ConditionalConditions).filter(
             ConditionalConditions.unique_id == condition_id).first()
         if condition:
-            return get_condition_measurement(condition)
+            condition_return = get_condition_measurement(condition)
+            return condition_return
 
     @staticmethod
     def get_condition_measurement_dict(condition_id):

@@ -13,8 +13,8 @@ from flask_babel import lazy_gettext
 sys.path.append(os.path.abspath(os.path.dirname(__file__)))
 from config_translations import TRANSLATIONS
 
-MYCODO_VERSION = '7.6.3'
-ALEMBIC_VERSION = '6333b0832b3d'
+MYCODO_VERSION = '7.7.0'
+ALEMBIC_VERSION = '65271370a3a9'
 
 #  FORCE_UPGRADE_MASTER
 #  Set True to enable upgrading to the master branch of the Mycodo repository.
@@ -729,6 +729,9 @@ MYCODO_DB_PATH = 'sqlite:///' + SQL_DATABASE_MYCODO
 
 # File paths/logging
 PATH_1WIRE = '/sys/bus/w1/devices/'
+PATH_INPUTS = os.path.join(INSTALL_DIRECTORY, 'mycodo/inputs')
+PATH_INPUTS_CUSTOM = os.path.join(INSTALL_DIRECTORY, 'mycodo/inputs/custom_inputs')
+PATH_PYTHON_CODE_USER = os.path.join(INSTALL_DIRECTORY, 'mycodo/user_python_code')
 USAGE_REPORTS_PATH = os.path.join(INSTALL_DIRECTORY, 'output_usage_reports')
 DEPENDENCY_INIT_FILE = os.path.join(INSTALL_DIRECTORY, '.dependency')
 UPGRADE_INIT_FILE = os.path.join(INSTALL_DIRECTORY, '.upgrade')

@@ -90,8 +90,8 @@ class DaemonControl:
         except TimeoutException:
             return "Error: Timeout"
 
-    def get_condition_measurement(self, condition_id):
-        return self.rpyc_client.root.get_condition_measurement(condition_id)
+    def get_condition_measurement(self, condition_id, function_id=None):
+        return self.rpyc_client.root.get_condition_measurement(condition_id, function_id=function_id)
 
     def get_condition_measurement_dict(self, condition_id):
         return self.rpyc_client.root.get_condition_measurement_dict(condition_id)

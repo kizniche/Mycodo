@@ -23,19 +23,17 @@
 #
 
 import datetime
+import importlib.util
 import logging
-import sys
 import threading
 import time
 import timeit
-import traceback
 
-from io import StringIO
+import os
 
+from mycodo.config import PATH_PYTHON_CODE_USER
 from mycodo.config import SQL_DATABASE_MYCODO
-from mycodo.databases.models import Actions
 from mycodo.databases.models import Conditional
-from mycodo.databases.models import ConditionalConditions
 from mycodo.databases.models import Misc
 from mycodo.databases.models import SMTP
 from mycodo.mycodo_client import DaemonControl
@@ -195,6 +193,8 @@ class ConditionalController(threading.Thread):
         """
         Check if any Conditionals are activated and execute their code
         """
+        file_run = '{}/conditional_{}.py'.format(
+            PATH_PYTHON_CODE_USER, self.function_id)
 
         cond = db_retrieve_table_daemon(
             Conditional, unique_id=self.function_id, entry='first')
@@ -208,22 +208,9 @@ class ConditionalController(threading.Thread):
             id=self.function_id)
 
         self.logger.debug("Conditional Statement (pre-replacement):\n{}".format(self.conditional_statement))
-        cond_statement_replaced = self.conditional_statement
 
-        # Replace short condition IDs in conditional statement with full condition IDs
-        for each_condition in db_retrieve_table_daemon(
-                ConditionalConditions, entry='all'):
-            condition_id_short = each_condition.unique_id.split('-')[0]
-            cond_statement_replaced = cond_statement_replaced.replace(
-                '{{{id}}}'.format(id=condition_id_short),
-                each_condition.unique_id)
-
-        # Replace short action IDs in conditional statement with full action IDs
-        for each_action in db_retrieve_table_daemon(Actions, entry='all'):
-            action_id_short = each_action.unique_id.split('-')[0]
-            cond_statement_replaced = cond_statement_replaced.replace(
-                '{{{id}}}'.format(id=action_id_short),
-                each_action.unique_id)
+        with open(file_run, 'r') as file:
+            self.logger.debug("Conditional Statement (post-replacement):\n{}".format(file.read()))
 
         message += '\n[Conditional Statement]:' \
                    '\n--------------------' \
@@ -232,72 +219,16 @@ class ConditionalController(threading.Thread):
                    '\n'.format(
             statement=cond.conditional_statement)
 
-        # Add functions to the top of the statement string
-        pre_statement = """
-import os, sys
-sys.path.append(os.path.abspath('/var/mycodo-root'))
-from mycodo.mycodo_client import DaemonControl
-control = DaemonControl()
-
-message='''{message}'''
-
-def measure(condition_id):
-    return control.get_condition_measurement(condition_id)
-
-def measure_dict(condition_id):
-    string_sets = control.get_condition_measurement_dict(condition_id)
-    if string_sets:
-        list_ts_values = []
-        for each_set in string_sets.split(';'):
-            ts_value = each_set.split(',')
-            list_ts_values.append({{'time': ts_value[0], 'value': float(ts_value[1])}})
-        return list_ts_values
-
-def run_all_actions(message=message):
-    control.trigger_all_actions('{function_id}', message=message)
-
-def run_action(action_id, message=message):
-    control.trigger_action(action_id, message=message, single_action=True)
-
-""".format(message=message, function_id=self.function_id)
-
-        cond_statement_replaced = pre_statement + cond_statement_replaced
-        self.logger.debug("Conditional Statement (post-replacement):\n{}".format(cond_statement_replaced))
-
         # Set the refractory period
         if self.refractory_period:
             self.timer_refractory_period = time.time() + self.refractory_period
 
-        try:
-            codeOut = StringIO()
-            codeErr = StringIO()
-            # capture output and errors
-            sys.stdout = codeOut
-            sys.stderr = codeErr
-
-            exec(cond_statement_replaced, globals())
-
-            # restore stdout and stderr
-            sys.stdout = sys.__stdout__
-            sys.stderr = sys.__stderr__
-            py_error = codeErr.getvalue()
-            py_output = codeOut.getvalue()
-
-            if py_error:
-                self.logger.error("Error: {err}".format(err=py_error))
-
-            codeOut.close()
-            codeErr.close()
-        except TimeoutError:
-            self.logger.error("RPyC timed out. To prevent this error, increase the "
-                              "RPyC Timeout value in the configuration menu.")
-        except Exception:
-            self.logger.error(
-                "Error evaluating conditional statement. Code and Traceback below.\n"
-                "Conditional Statement Executed:\n\n{cond_rep}\n\n"
-                "Conditional Statement Traceback:\n\n{traceback}".format(
-                    cond_rep=cond_statement_replaced,
-                    traceback=traceback.format_exc()))
+        module_name = "mycodo.conditional.{}".format(os.path.basename(file_run).split('.')[0])
+        spec = importlib.util.spec_from_file_location(module_name, file_run)
+        conditional_run = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(conditional_run)
+        run = conditional_run.ConditionalRun(self.logger, self.function_id, message)
+        run.conditional_code_run()
 
 
     def is_running(self):

@@ -1,14 +1,13 @@
 # -*- coding: utf-8 -*-
 import logging
-import uuid
 
 import os
 import sqlalchemy
-from flask import Markup
 from flask import flash
 from flask import url_for
 from flask_babel import gettext
 
+from mycodo.config import PATH_PYTHON_CODE_USER
 from mycodo.config_translations import TRANSLATIONS
 from mycodo.databases.models import Actions
 from mycodo.databases.models import Conditional
@@ -20,7 +19,7 @@ from mycodo.mycodo_flask.utils.utils_function import check_actions
 from mycodo.mycodo_flask.utils.utils_general import controller_activate_deactivate
 from mycodo.mycodo_flask.utils.utils_general import delete_entry_with_id
 from mycodo.mycodo_flask.utils.utils_general import flash_success_errors
-from mycodo.utils.system_pi import cmd_output
+from mycodo.mycodo_flask.utils.utils_misc import save_conditional_code
 from mycodo.utils.system_pi import csv_to_list_of_str
 from mycodo.utils.system_pi import list_to_csv
 
@@ -35,104 +34,11 @@ def conditional_mod(form):
         controller=TRANSLATIONS['conditional']['title'])
 
     try:
-        pre_statement = """import os, random, sys
-sys.path.append(os.path.abspath('/var/mycodo-root'))
-from mycodo.mycodo_client import DaemonControl
-
-control = DaemonControl()
-message = ''
-
-# The following functions are used to test the Conditional code.
-# The functions that are used in the production environment will
-# return the proper values and affect the proper systems when called.
-
-def measure(condition_id):
-    # pylint: disable=unused-argument
-    return random.choice([
-        None, -100000, -10000, -1000, -100, -10,
-        0, 1, 10, 100, 1000, 10000, 100000
-    ])
-
-def measure_dict(condition_id):
-    # pylint: disable=unused-argument
-    return [
-        {'time': '2019-04-24T18:01:00.000Z', 'value': -100000},
-        {'time': '2019-04-24T18:02:00.000Z', 'value': -10000},
-        {'time': '2019-04-24T18:03:00.000Z', 'value': -1000},
-        {'time': '2019-04-24T18:04:00.000Z', 'value': -100},
-        {'time': '2019-04-24T18:05:00.000Z', 'value': -10},
-        {'time': '2019-04-24T18:06:00.000Z', 'value': -1},
-        {'time': '2019-04-24T18:07:00.000Z', 'value': 1},
-        {'time': '2019-04-24T18:08:00.000Z', 'value': 10},
-        {'time': '2019-04-24T18:09:00.000Z', 'value': 100},
-        {'time': '2019-04-24T18:10:00.000Z', 'value': 1000},
-        {'time': '2019-04-24T18:11:00.000Z', 'value': 10000},
-        {'time': '2019-04-24T18:12:00.000Z', 'value': 100000},
-    ]
-
-def run_all_actions(message=message):
-    # pylint: disable=unused-argument
-    pass
-
-def run_action(action_id, message=message):
-    # pylint: disable=unused-argument
-    pass
-
-###########################
-##### BEGIN USER CODE #####
-###########################
-
-"""
-
-        cond_statement = (pre_statement +
-                          form.conditional_statement.data)
-
-        if len(cond_statement.splitlines()) > 999:
-            error.append("Too many lines in code. Reduce code to less than 1000 lines.")
-
-        lines_code = ''
-        for line_num, each_line in enumerate(cond_statement.splitlines(), 1):
-            if len(str(line_num)) == 3:
-                line_spacing = ''
-            elif len(str(line_num)) == 2:
-                line_spacing = ' '
-            else:
-                line_spacing = '  '
-            lines_code += '{sp}{ln}: {line}\n'.format(
-                sp=line_spacing,
-                ln=line_num,
-                line=each_line)
-
-        path_file = '/tmp/conditional_code_{}.py'.format(
-            str(uuid.uuid4()).split('-')[0])
-        with open(path_file, 'w') as out:
-            out.write('{}\n'.format(cond_statement))
-
-        cmd_test = 'export PYTHONPATH=$PYTHONPATH:/var/mycodo-root && ' \
-                   'pylint3 -d I,W0621,C0103,C0111,C0301,C0327,C0410,C0413 {path}'.format(
-            path=path_file)
-        cmd_out, cmd_err, cmd_status = cmd_output(cmd_test)
-
-        os.remove(path_file)
-
-        message = Markup(
-            '<pre>\n\n'
-            'Full Conditional Statement code:\n\n{code}\n\n'
-            'Conditional Statement code analysis:\n\n{report}'
-            '</pre>'.format(
-                code=lines_code, report=cmd_out.decode("utf-8")))
-        if cmd_status:
-            flash('Error(s) were found while evaluating your code. Review '
-                  'the error(s), below, and fix them before activating your '
-                  'Conditional.', 'error')
-            flash(message, 'error')
-        else:
-            flash(
-                "No errors were found while evaluating your code. However, "
-                "this doesn't mean your code will perform as expected. "
-                "Review your code for issues and test your Conditional "
-                "before putting it into a production environment.", 'success')
-            flash(message, 'success')
+        save_conditional_code(
+            error,
+            form.conditional_statement.data,
+            form.function_id.data,
+            test=True)
 
         cond_mod = Conditional.query.filter(
             Conditional.unique_id == form.function_id.data).first()
@@ -199,6 +105,15 @@ def conditional_del(cond_id):
             display_order = csv_to_list_of_str(DisplayOrder.query.first().function)
             display_order.remove(cond_id)
             DisplayOrder.query.first().function = list_to_csv(display_order)
+
+            try:
+                file_path = os.path.join(
+                    PATH_PYTHON_CODE_USER, 'conditional_{}.py'.format(
+                        cond.unique_id))
+                os.remove(file_path)
+            except:
+                pass
+
             db.session.commit()
     except sqlalchemy.exc.OperationalError as except_msg:
         error.append(except_msg)

@@ -24,6 +24,7 @@ from mycodo.mycodo_flask.utils.utils_general import delete_entry_with_id
 from mycodo.mycodo_flask.utils.utils_general import flash_success_errors
 from mycodo.mycodo_flask.utils.utils_general import reorder
 from mycodo.mycodo_flask.utils.utils_general import return_dependencies
+from mycodo.mycodo_flask.utils.utils_misc import save_conditional_code
 from mycodo.utils.system_pi import csv_to_list_of_str
 from mycodo.utils.system_pi import list_to_csv
 from mycodo.utils.system_pi import str_is_float
@@ -57,15 +58,21 @@ def function_add(form_add_func):
         if form_add_func.function_type.data.startswith('conditional_'):
             new_func = Conditional()
             new_func.conditional_statement = '''
+# Example code to be used to learn how to use a Conditional.
 # Replace "asdf1234" with a Condition ID, "qwer5678" with an Action ID.
-measurement = measure("{asdf1234}")
-message += "Measure: {meas}".format(meas=measurement)
+measurement = self.measure("{asdf1234}")
+self.message += "Measure: {meas}".format(meas=measurement)
 if measurement is not None:  # If a measurement exists
     if measurement < 23:  # If the measurement is less than 23
-        run_all_actions(message=message)  # Run all actions
-    else:  # If the measurement is greater or equal to 23
-        run_action("{qwer5678}", message=message)  # Run a single Action'''
+        self.run_all_actions(message=self.message)  # Then Run all actions
+    else:  # Else If the measurement is equal or grater than 23, run a specific action
+        self.run_action("{qwer5678}", message=self.message)  # Run a single Action'''
             new_func.save()
+            save_conditional_code(
+                error,
+                new_func.conditional_statement,
+                new_func.unique_id,
+                test=False)
         elif form_add_func.function_type.data.startswith('pid_'):
             new_func = PID().save()
 

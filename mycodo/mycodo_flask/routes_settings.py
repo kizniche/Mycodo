@@ -15,6 +15,7 @@ from flask.blueprints import Blueprint
 from mycodo.config import CAMERA_LIBRARIES
 from mycodo.config import INSTALL_DIRECTORY
 from mycodo.config import LANGUAGES
+from mycodo.config import PATH_INPUTS_CUSTOM
 from mycodo.config import THEMES
 from mycodo.databases.models import Camera
 from mycodo.databases.models import Conversion
@@ -155,8 +156,6 @@ def settings_input():
 
     # Get list of custom inputs
     excluded_files = ['__init__.py', '__pycache__']
-    install_dir = os.path.abspath(INSTALL_DIRECTORY)
-    path_custom_inputs = os.path.join(install_dir, 'mycodo/inputs/custom_inputs')
 
     if request.method == 'POST':
         if not utils_general.user_has_permission('edit_controllers'):
@@ -171,10 +170,10 @@ def settings_input():
 
     dict_inputs = {}
 
-    for each_file in os.listdir(path_custom_inputs):
+    for each_file in os.listdir(PATH_INPUTS_CUSTOM):
         if each_file not in excluded_files:
             try:
-                full_path_file = os.path.join(path_custom_inputs, each_file)
+                full_path_file = os.path.join(PATH_INPUTS_CUSTOM, each_file)
                 input_info = load_module_from_file(full_path_file)
                 dict_inputs[input_info.INPUT_INFORMATION['input_name_unique']] = {}
                 dict_inputs[input_info.INPUT_INFORMATION['input_name_unique']]['input_name'] = \

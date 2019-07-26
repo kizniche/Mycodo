@@ -1,8 +1,25 @@
-## 7.6.4 (Unreleased)
+## 7.7.0 (Unreleased)
+
+This release changes how user-created Python code is executed. This affects Python Code Inputs and Conditional Statements. All effort was made to reformat user scripts during the upgrade process to adhere to the new formatting guidelines, however there are a few instances where scripts could not be updated properly and will need to be done manually by the user before they will work properly. After upgrading your system, ensure your code conforms to the following guidelines:
+
+1. Conditional Statements
+   * Use 4-space indentation (not 2-space, tab, or other)
+   * Change measure() to self.measure()
+   * Change measure_dict() to self.measure_dict()
+   * Change run_action() to self.run_action()
+   * Change run_all_actions() to self.run_all_actions()
+2. Python Code Inputs
+   * Use 4-space indentation (not 2-space, tab, or other)
+
 
 ### Features
 
  - Add Pylint test for Python 3 Code Input
+ - Add execute_at_creation option for Inputs
+
+### Miscellaneous
+
+ - Refactor how user-created Python code is executed (i.e. Python Code Inputs and Conditional Statements)
 
 
 ## 7.6.3 (2019-07-14)

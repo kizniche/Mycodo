@@ -1,9 +1,7 @@
 # coding=utf-8
 from collections import OrderedDict
 
-from mycodo.databases.models import DeviceMeasurements
 from mycodo.inputs.base_input import AbstractInput
-from mycodo.utils.database import db_retrieve_table_daemon
 
 # Measurements
 measurements_dict = OrderedDict()
