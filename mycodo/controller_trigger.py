@@ -142,7 +142,6 @@ class TriggerController(threading.Thread):
                     # Check if the trigger period has elapsed
                     if self.trigger_type in ['trigger_sunrise_sunset',
                                              'trigger_run_pwm_method']:
-                        self.logger.error("TEST00: {}, {}".format(self.timer_period, time.time()))
                         while self.running and self.timer_period < time.time():
                             self.timer_period = calculate_sunrise_sunset_epoch(self.trigger)
 
@@ -160,7 +159,6 @@ class TriggerController(threading.Thread):
                                         self.function_id,
                                         debug=self.log_level_debug)
                         else:
-                            self.logger.error("TEST01: {}, {}".format(self.timer_period, time.time()))
                             check_approved = True
 
                     elif (self.trigger_type in [
@@ -286,7 +284,6 @@ class TriggerController(threading.Thread):
             self.period = 60
             # Set the next trigger at the specified sunrise/sunset time (+-offsets)
             self.timer_period = calculate_sunrise_sunset_epoch(self.trigger)
-            self.logger.error("TESTXX: {}, {}".format(self.timer_period, time.time()))
 
     def start_method(self, method_id):
         """ Instruct a method to start running """
