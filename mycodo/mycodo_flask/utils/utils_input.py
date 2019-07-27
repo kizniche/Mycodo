@@ -243,7 +243,7 @@ def input_add(form_add):
                 # Execute at Creation
                 #
 
-                if 'execute_at_creation' in dict_inputs[new_input.device]:
+                if 'execute_at_creation' in dict_inputs[new_input.device] and not current_app.config['TESTING']:
                     (creation_errors,
                      tuple_code_filename) = dict_inputs[new_input.device]['execute_at_creation'](
                         new_input.unique_id, new_input.cmd_command, dict_inputs[input_name])

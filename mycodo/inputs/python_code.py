@@ -81,6 +81,7 @@ class PythonInputRun:
 
     return error, (input_python_code_run, file_run)
 
+
 def test_before_saving(mod_input, request_form):
     """
     Function to run when the Input is saved to evaluate the Python 3 code using pylint3
