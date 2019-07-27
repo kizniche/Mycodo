@@ -1,5 +1,5 @@
 <div class="col-auto">
-  <label class="control-label">Current Sunrise & Sunset at Geolocation</label>
+  <label class="control-label">Next Sunrise & Sunset at Geolocation</label>
   <div>
     {% if sunrise_set_calc[each_trigger.unique_id]['sunrise'] and sunrise_set_calc[each_trigger.unique_id]['sunset'] %}
       Sunrise: {{sunrise_set_calc[each_trigger.unique_id]['sunrise']}}<br/>
@@ -11,7 +11,7 @@
 </div>
 <div class="col-1"></div>
 <div class="col-auto">
-  <label class="control-label">Sunrise & Sunset with Offsets</label>
+  <label class="control-label">Next Sunrise & Sunset with Offsets</label>
   <div>
     {% if sunrise_set_calc[each_trigger.unique_id]['offset_sunrise'] and sunrise_set_calc[each_trigger.unique_id]['offset_sunset'] %}
       Sunrise: {{sunrise_set_calc[each_trigger.unique_id]['offset_sunrise']}}<br/>

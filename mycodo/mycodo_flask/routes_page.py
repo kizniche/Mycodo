@@ -1430,8 +1430,8 @@ def page_function():
                 sun = Sun(latitude=each_trigger.latitude,
                           longitude=each_trigger.longitude,
                           zenith=each_trigger.zenith)
-                sunrise = sun.get_sunrise_time()
-                sunset = sun.get_sunset_time()
+                sunrise = sun.get_sunrise_time()['time_local']
+                sunset = sun.get_sunset_time()['time_local']
 
                 # Adjust for date offset
                 new_date = datetime.datetime.now() + datetime.timedelta(
@@ -1442,25 +1442,21 @@ def page_function():
                           zenith=each_trigger.zenith,
                           day=new_date.day,
                           month=new_date.month,
-                          year=new_date.year)
-                offset_rise = sun.get_sunrise_time()
-                offset_set = sun.get_sunset_time()
-
-                # Adjust for time offset
-                offset_rise = offset_rise['time_local'] + datetime.timedelta(
-                    minutes=each_trigger.time_offset_minutes)
-                offset_set = offset_set['time_local'] + datetime.timedelta(
-                    minutes=each_trigger.time_offset_minutes)
+                          year=new_date.year,
+                          offset_minutes=each_trigger.time_offset_minutes)
+                offset_rise = sun.get_sunrise_time()['time_local']
+                offset_set = sun.get_sunset_time()['time_local']
 
                 sunrise_set_calc[each_trigger.unique_id]['sunrise'] = (
-                    sunrise['time_local'].strftime("%Y-%m-%d %H:%M"))
+                    sunrise.strftime("%Y-%m-%d %H:%M"))
                 sunrise_set_calc[each_trigger.unique_id]['sunset'] = (
-                    sunset['time_local'].strftime("%Y-%m-%d %H:%M"))
+                    sunset.strftime("%Y-%m-%d %H:%M"))
                 sunrise_set_calc[each_trigger.unique_id]['offset_sunrise'] = (
                     offset_rise.strftime("%Y-%m-%d %H:%M"))
                 sunrise_set_calc[each_trigger.unique_id]['offset_sunset'] = (
                     offset_set.strftime("%Y-%m-%d %H:%M"))
             except:
+                logger.exception(1)
                 sunrise_set_calc[each_trigger.unique_id]['sunrise'] = None
                 sunrise_set_calc[each_trigger.unique_id]['sunrise'] = None
                 sunrise_set_calc[each_trigger.unique_id]['offset_sunrise'] = None

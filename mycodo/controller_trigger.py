@@ -86,6 +86,7 @@ class TriggerController(threading.Thread):
         self.sample_rate = db_retrieve_table_daemon(
             Misc, entry='first').sample_rate_controller_conditional
 
+        self.trigger = None
         self.trigger_type = None
         self.trigger_name = None
         self.is_activated = None
@@ -141,8 +142,9 @@ class TriggerController(threading.Thread):
                     # Check if the trigger period has elapsed
                     if self.trigger_type in ['trigger_sunrise_sunset',
                                              'trigger_run_pwm_method']:
+                        self.logger.error("TEST00: {}, {}".format(self.timer_period, time.time()))
                         while self.running and self.timer_period < time.time():
-                            self.timer_period += self.period
+                            self.timer_period = calculate_sunrise_sunset_epoch(self.trigger)
 
                         if self.trigger_type == 'trigger_run_pwm_method':
                             # Only execute trigger actions when started
@@ -158,6 +160,7 @@ class TriggerController(threading.Thread):
                                         self.function_id,
                                         debug=self.log_level_debug)
                         else:
+                            self.logger.error("TEST01: {}, {}".format(self.timer_period, time.time()))
                             check_approved = True
 
                     elif (self.trigger_type in [
@@ -202,13 +205,13 @@ class TriggerController(threading.Thread):
 
     def setup_settings(self):
         """ Define all settings """
-        trigger = db_retrieve_table_daemon(
+        self.trigger = db_retrieve_table_daemon(
             Trigger, unique_id=self.function_id)
 
-        self.trigger_type = trigger.trigger_type
-        self.trigger_name = trigger.name
-        self.is_activated = trigger.is_activated
-        self.log_level_debug = trigger.log_level_debug
+        self.trigger_type = self.trigger.trigger_type
+        self.trigger_name = self.trigger.name
+        self.is_activated = self.trigger.is_activated
+        self.log_level_debug = self.trigger.log_level_debug
 
         if self.log_level_debug:
             self.logger.setLevel(logging.DEBUG)
@@ -227,43 +230,43 @@ class TriggerController(threading.Thread):
 
         # Set up trigger timer (daily time point)
         if self.trigger_type == 'trigger_timer_daily_time_point':
-            self.timer_start_time = trigger.timer_start_time
+            self.timer_start_time = self.trigger.timer_start_time
             self.timer_period = epoch_of_next_time(
-                '{hm}:00'.format(hm=trigger.timer_start_time))
+                '{hm}:00'.format(hm=self.trigger.timer_start_time))
 
         # Set up trigger timer (daily time span)
         elif self.trigger_type == 'trigger_timer_daily_time_span':
-            self.timer_start_time = trigger.timer_start_time
-            self.timer_end_time = trigger.timer_end_time
-            self.period = trigger.period
+            self.timer_start_time = self.trigger.timer_start_time
+            self.timer_end_time = self.trigger.timer_end_time
+            self.period = self.trigger.period
             self.timer_period = now
 
         # Set up trigger timer (duration)
         elif self.trigger_type == 'trigger_timer_duration':
-            self.period = trigger.period
-            if trigger.timer_start_offset:
-                self.timer_period = now + trigger.timer_start_offset
+            self.period = self.trigger.period
+            if self.trigger.timer_start_offset:
+                self.timer_period = now + self.trigger.timer_start_offset
             else:
                 self.timer_period = now
 
         # Set up trigger Run PWM Method
         elif self.trigger_type == 'trigger_run_pwm_method':
-            self.unique_id_1 = trigger.unique_id_1
-            self.unique_id_2 = trigger.unique_id_2
-            self.period = trigger.period
-            self.trigger_actions_at_period = trigger.trigger_actions_at_period
-            self.trigger_actions_at_start = trigger.trigger_actions_at_start
-            self.method_start_time = trigger.method_start_time
-            self.method_end_time = trigger.method_end_time
+            self.unique_id_1 = self.trigger.unique_id_1
+            self.unique_id_2 = self.trigger.unique_id_2
+            self.period = self.trigger.period
+            self.trigger_actions_at_period = self.trigger.trigger_actions_at_period
+            self.trigger_actions_at_start = self.trigger.trigger_actions_at_start
+            self.method_start_time = self.trigger.method_start_time
+            self.method_end_time = self.trigger.method_end_time
             if self.is_activated:
-                self.start_method(trigger.unique_id_1)
+                self.start_method(self.trigger.unique_id_1)
             if self.trigger_actions_at_start:
-                self.timer_period = now + trigger.period
+                self.timer_period = now + self.trigger.period
                 if self.is_activated:
                     pwm_duty_cycle = self.get_method_output(
-                        trigger.unique_id_1)
+                        self.trigger.unique_id_1)
                     self.set_output_duty_cycle(
-                        trigger.unique_id_2, pwm_duty_cycle)
+                        self.trigger.unique_id_2, pwm_duty_cycle)
                     trigger_function_actions(self.function_id,
                                              debug=self.log_level_debug)
             else:
@@ -272,8 +275,8 @@ class TriggerController(threading.Thread):
         elif self.trigger_type == 'trigger_infrared_remote_input':
             import lirc
             self.lirc = lirc
-            self.program = trigger.program
-            self.word = trigger.word
+            self.program = self.trigger.program
+            self.word = self.trigger.word
             lirc.init(self.program,
                       config_filename='/home/pi/.lircrc',
                       blocking=False)
@@ -282,7 +285,8 @@ class TriggerController(threading.Thread):
         elif self.trigger_type == 'trigger_sunrise_sunset':
             self.period = 60
             # Set the next trigger at the specified sunrise/sunset time (+-offsets)
-            self.timer_period = calculate_sunrise_sunset_epoch(trigger)
+            self.timer_period = calculate_sunrise_sunset_epoch(self.trigger)
+            self.logger.error("TESTXX: {}, {}".format(self.timer_period, time.time()))
 
     def start_method(self, method_id):
         """ Instruct a method to start running """

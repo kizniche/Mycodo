@@ -40,10 +40,11 @@ class Sun:
     and zenith
     """
     def __init__(self, latitude, longitude, zenith=90.0,
-                 day=None, month=None, year=None):
+                 day=None, month=None, year=None, offset_minutes=None):
         self.latitude = latitude
         self.longitude = longitude
         self.zenith = zenith
+        self.offset_minutes = offset_minutes
         if None in (day, month, year):
             self.day, self.month, self.year = self.get_current_uct()
         else:
@@ -149,16 +150,30 @@ class Sun:
         time_utc = parse('{hour}:{min}'.format(
             hour=ut_hour, min=ut_minute)).replace(tzinfo=tz.tzutc())
 
+        if self.offset_minutes:
+            time_utc = time_utc + datetime.timedelta(minutes=self.offset_minutes)
+
         # 10. calculate local time
         time_local = time_utc.astimezone(tz.tzlocal())
 
-        return {
+        # Ensure time is in the future
+        now = datetime.datetime.now(tz.tz.tzlocal())
+
+        while now > time_local:
+            time_utc = time_utc + datetime.timedelta(days=1)
+            time_local = time_local + datetime.timedelta(days=1)
+
+        dict_sunriseset = {
             'status': True,
+            'utc_time': time_utc,
             'utc_hour': ut_hour,
             'utc_min': ut_minute,
-            'time_utc': time_utc,
-            'time_local': time_local
+            'time_local': time_local,
+            'local_hour': time_local.hour,
+            'local_minute': time_local.minute
         }
+
+        return dict_sunriseset
 
 
 def calculate_sunrise_sunset_epoch(trigger):
@@ -172,32 +187,14 @@ def calculate_sunrise_sunset_epoch(trigger):
                   zenith=trigger.zenith,
                   day=new_date.day,
                   month=new_date.month,
-                  year=new_date.year)
-        sunrise = sun.get_sunrise_time()
-        sunset = sun.get_sunset_time()
-
-        # Adjust for time offset
-        new_sunrise = sunrise['time_local'] + datetime.timedelta(minutes=trigger.time_offset_minutes)
-        new_sunset = sunset['time_local'] + datetime.timedelta(minutes=trigger.time_offset_minutes)
+                  year=new_date.year,
+                  offset_minutes=trigger.time_offset_minutes)
 
         if trigger.rise_or_set == 'sunrise':
-            # If the sunrise is in the past, add a day
-            if float(new_sunrise.strftime('%s')) < time.time():
-                tomorrow_sunrise = new_sunrise
-                while float(tomorrow_sunrise.strftime('%s')) < time.time():
-                    tomorrow_sunrise = tomorrow_sunrise + datetime.timedelta(days=1)
-                return float(tomorrow_sunrise.strftime('%s'))
-            else:
-                return float(new_sunrise.strftime('%s'))
+            return float(sun.calc_sun_time(True)['time_local'].strftime('%s'))
+
         elif trigger.rise_or_set == 'sunset':
-            # If the sunrise is in the past, add a day
-            if float(new_sunset.strftime('%s')) < time.time():
-                tomorrow_sunset = new_sunset
-                while float(tomorrow_sunset.strftime('%s')) < time.time():
-                    tomorrow_sunset = tomorrow_sunset + datetime.timedelta(days=1)
-                return float(tomorrow_sunset.strftime('%s'))
-            else:
-                return float(new_sunset.strftime('%s'))
+            return float(sun.calc_sun_time(False)['time_local'].strftime('%s'))
     except:
         return None
 

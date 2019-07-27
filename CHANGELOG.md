@@ -11,6 +11,9 @@ This release changes how user-created Python code is executed. This affects Pyth
 2. Python Code Inputs
    * Use 4-space indentation (not 2-space, tab, or other)
 
+### Bugfixes
+
+ - Fix sunrise/sunset calculation
 
 ### Features
 
