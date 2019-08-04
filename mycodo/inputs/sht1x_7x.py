@@ -76,7 +76,7 @@ class InputModule(AbstractInput):
             from sht_sensor import ShtVDDLevel
 
             self.gpio = int(input_dev.gpio_location)
-            self.clock_pin = input_dev.clock_pin
+            self.pin_clock = input_dev.pin_clock
             sht_sensor_vdd_value = {
                 2.5: ShtVDDLevel.vdd_2_5,
                 3.0: ShtVDDLevel.vdd_3,
@@ -87,7 +87,7 @@ class InputModule(AbstractInput):
             self.sht_voltage = sht_sensor_vdd_value[
                 round(float(input_dev.sht_voltage), 1)]
             self.sht_sensor = Sht(
-                self.clock_pin,
+                self.pin_clock,
                 self.gpio,
                 voltage=self.sht_voltage)
 
