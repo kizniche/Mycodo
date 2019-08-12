@@ -854,6 +854,7 @@ class PIDController(threading.Thread):
                                                duty_cycle=0)
 
         else:
+            self.logger.debug("Last measurement unsuccessful. Turning outputs off.")
             if self.direction in ['raise', 'both'] and self.raise_output_id:
                 self.control.output_off(self.raise_output_id)
             if self.direction in ['lower', 'both'] and self.lower_output_id:
