@@ -34,7 +34,7 @@ import os
 sys.path.append(os.path.abspath(os.path.join(os.path.realpath(__file__), '../..')))
 
 import requests
-import rpyc
+import Pyro4
 from influxdb import InfluxDBClient
 
 from mycodo.config import INFLUXDB_DATABASE
@@ -63,26 +63,27 @@ class DaemonControl:
 
     """
     def __init__(self):
-        rpyc_timeout = 30
+        pyro_timeout = 30
         try:
             misc = db_retrieve_table_daemon(Misc, entry='first')
-            rpyc_timeout = misc.rpyc_timeout
+            pyro_timeout = misc.rpyc_timeout  # TODO: Rename to pyro_timeout at next major revision
         except:
-            logger.error("Could not access SQL table to determine RPyC Timeout")
+            logger.error("Could not access SQL table to determine Pyro Timeout")
 
         try:
-            self.rpyc_client = rpyc.connect(
-                "localhost",
-                port=18813,
-                config={'sync_request_timeout': rpyc_timeout})
+            self.pyro_server = Pyro4.Proxy("PYRONAME:mycodo.pyro_server")
+            self.pyro_server._pyroHmacKey = b"YTBTPmNZFbpJB99qJrtNUVY9htaMQ8ps"
+            self.pyro_server._pyroTimeout = pyro_timeout
         except socket.error:
             raise Exception("Connection refused. Is the daemon running?")
+        except Exception:
+            logger.exception("Initializing Pyro")
 
     def check_daemon(self):
         signal.signal(signal.SIGALRM, timeout_handler)
         signal.alarm(10)  # 10 second timeout while checking the daemon status
         try:
-            result = self.rpyc_client.root.check_daemon()
+            result = self.pyro_server.check_daemon()
             if result:
                 return result
             else:
@@ -91,70 +92,70 @@ class DaemonControl:
             return "Error: Timeout"
 
     def get_condition_measurement(self, condition_id, function_id=None):
-        return self.rpyc_client.root.get_condition_measurement(condition_id, function_id=function_id)
+        return self.pyro_server.get_condition_measurement(condition_id, function_id=function_id)
 
     def get_condition_measurement_dict(self, condition_id):
-        return self.rpyc_client.root.get_condition_measurement_dict(condition_id)
+        return self.pyro_server.get_condition_measurement_dict(condition_id)
 
     def controller_activate(self, controller_type, controller_id):
-        return self.rpyc_client.root.controller_activate(
+        return self.pyro_server.controller_activate(
             controller_type, controller_id)
 
     def controller_deactivate(self, controller_type, controller_id):
-        return self.rpyc_client.root.controller_deactivate(
+        return self.pyro_server.controller_deactivate(
             controller_type, controller_id)
 
     def daemon_status(self):
-        return self.rpyc_client.root.daemon_status()
+        return self.pyro_server.daemon_status()
 
     def input_information_get(self):
-        return self.rpyc_client.root.input_information_get()
+        return self.pyro_server.input_information_get()
 
     def input_information_update(self):
-        return self.rpyc_client.root.input_information_update()
+        return self.pyro_server.input_information_update()
 
     def input_force_measurements(self, input_id):
-        return self.rpyc_client.root.input_force_measurements(input_id)
+        return self.pyro_server.input_force_measurements(input_id)
 
     def lcd_backlight(self, lcd_id, state):
-        return self.rpyc_client.root.lcd_backlight(lcd_id, state)
+        return self.pyro_server.lcd_backlight(lcd_id, state)
 
     def lcd_flash(self, lcd_id, state):
-        return self.rpyc_client.root.lcd_flash(lcd_id, state)
+        return self.pyro_server.lcd_flash(lcd_id, state)
 
     def lcd_reset(self, lcd_id):
-        return self.rpyc_client.root.lcd_reset(lcd_id)
+        return self.pyro_server.lcd_reset(lcd_id)
 
     def is_in_virtualenv(self):
-        return self.rpyc_client.root.is_in_virtualenv()
+        return self.pyro_server.is_in_virtualenv()
 
     def pid_hold(self, pid_id):
-        return self.rpyc_client.root.pid_hold(pid_id)
+        return self.pyro_server.pid_hold(pid_id)
 
     def pid_mod(self, pid_id):
-        return self.rpyc_client.root.pid_mod(pid_id)
+        return self.pyro_server.pid_mod(pid_id)
 
     def pid_pause(self, pid_id):
-        return self.rpyc_client.root.pid_pause(pid_id)
+        return self.pyro_server.pid_pause(pid_id)
 
     def pid_resume(self, pid_id):
-        return self.rpyc_client.root.pid_resume(pid_id)
+        return self.pyro_server.pid_resume(pid_id)
 
     def pid_get(self, pid_id, setting):
-        return self.rpyc_client.root.pid_get(pid_id, setting)
+        return self.pyro_server.pid_get(pid_id, setting)
 
     def pid_set(self, pid_id, setting, value):
-        return self.rpyc_client.root.pid_set(pid_id, setting, value)
+        return self.pyro_server.pid_set(pid_id, setting, value)
 
     def ram_use(self):
-        return self.rpyc_client.root.ram_use()
+        return self.pyro_server.ram_use()
 
     def output_off(self, output_id, trigger_conditionals=True):
-        return self.rpyc_client.root.output_off(output_id, trigger_conditionals)
+        return self.pyro_server.output_off(output_id, trigger_conditionals)
 
     def output_on(self, output_id, duration=0.0, min_off=0.0,
                   duty_cycle=0.0, trigger_conditionals=True):
-        return self.rpyc_client.root.output_on(
+        return self.pyro_server.output_on(
             output_id, duration=duration, min_off=min_off,
             duty_cycle=duty_cycle, trigger_conditionals=trigger_conditionals)
 
@@ -165,47 +166,49 @@ class DaemonControl:
             return self.output_off(output_id)
 
     def output_sec_currently_on(self, output_id):
-        return self.rpyc_client.root.output_sec_currently_on(output_id)
+        return self.pyro_server.output_sec_currently_on(output_id)
 
     def output_setup(self, action, output_id):
-        return self.rpyc_client.root.output_setup(action, output_id)
+        return self.pyro_server.output_setup(action, output_id)
 
     def output_state(self, output_id):
-        return self.rpyc_client.root.output_state(output_id)
+        return self.pyro_server.output_state(output_id)
 
     def refresh_daemon_camera_settings(self):
-        return self.rpyc_client.root.refresh_daemon_camera_settings()
+        return self.pyro_server.refresh_daemon_camera_settings()
 
     def refresh_daemon_conditional_settings(self, unique_id):
-        return self.rpyc_client.root.refresh_daemon_conditional_settings(unique_id)
+        return self.pyro_server.refresh_daemon_conditional_settings(unique_id)
 
     def refresh_daemon_misc_settings(self):
-        return self.rpyc_client.root.refresh_daemon_misc_settings()
+        return self.pyro_server.refresh_daemon_misc_settings()
 
     def refresh_daemon_trigger_settings(self, unique_id):
-        return self.rpyc_client.root.refresh_daemon_trigger_settings(unique_id)
+        return self.pyro_server.refresh_daemon_trigger_settings(unique_id)
 
     def send_infrared_code_broadcast(self, code):
-        return self.rpyc_client.root.send_infrared_code_broadcast(code)
+        return self.pyro_server.send_infrared_code_broadcast(code)
 
     def trigger_action(self, action_id, message='',
                        single_action=False, debug=False):
-        return self.rpyc_client.root.trigger_action(
+        return self.pyro_server.trigger_action(
             action_id, message=message,
             single_action=single_action, debug=debug)
 
     def trigger_all_actions(self, function_id, message='', debug=False):
-        return self.rpyc_client.root.trigger_all_actions(
+        return self.pyro_server.trigger_all_actions(
             function_id, message=message, debug=debug)
 
     def terminate_daemon(self):
-        return self.rpyc_client.root.terminate_daemon()
+        return self.pyro_server.terminate_daemon()
 
 
 def daemon_active():
     """ Used to determine if the daemon is reachable to communicate """
     try:
-        rpyc.connect("localhost", 18813)
+        daemon = DaemonControl()
+        if daemon.check_daemon() != 'alive':
+            return False
         return True
     except socket.error:
         return False

@@ -138,7 +138,7 @@ class SettingsEmail(FlaskForm):
 class SettingsGeneral(FlaskForm):
     landing_page = StringField(lazy_gettext('Landing Page'))
     language = StringField(lazy_gettext('Language'))
-    rpyc_timeout = StringField(lazy_gettext('RPyC Timeout'))
+    rpyc_timeout = StringField(lazy_gettext('Pyro Timeout'))
     force_https = BooleanField(lazy_gettext('Force HTTPS'))
     hide_success = BooleanField(lazy_gettext('Hide success messages'))
     hide_info = BooleanField(lazy_gettext('Hide info messages'))

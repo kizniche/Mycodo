@@ -1,0 +1,17 @@
+[Unit]
+Description=Pyro4 NameServer
+After=syslog.target
+
+[Service]
+User=root
+Group=mycodo
+WorkingDirectory=/var/mycodo-root/mycodo
+Environment="PYRO_HMAC_KEY=YTBTPmNZFbpJB99qJrtNUVY9htaMQ8ps"
+ExecStart=/var/mycodo-root/env/bin/pyro4-ns
+
+ExecReload=/bin/kill -HUP $MAINPID
+ExecStop=/bin/kill -s TERM $MAINPID
+
+[Install]
+WantedBy=multi-user.target
+Alias=mycodopyro.service

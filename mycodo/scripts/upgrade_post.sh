@@ -10,8 +10,8 @@ fi
 
 INSTALL_DIRECTORY=$( cd "$( dirname "${BASH_SOURCE[0]}" )/../../" && pwd -P )
 INSTALL_CMD="/bin/bash ${INSTALL_DIRECTORY}/mycodo/scripts/upgrade_commands.sh"
-INSTALL_DEP="/bin/bash ${INSTALL_DIRECTORY}/mycodo/scripts/dependencies.sh"
-cd ${INSTALL_DIRECTORY}
+
+cd ${INSTALL_DIRECTORY} || exit
 
 ${INSTALL_CMD} initialize
 
@@ -34,6 +34,7 @@ ${INSTALL_DIRECTORY}/env/bin/python ${INSTALL_DIRECTORY}/mycodo/utils/update_ins
 ${INSTALL_CMD} update-influxdb
 ${INSTALL_CMD} update-alembic
 ${INSTALL_CMD} update-mycodo-startup-script
+${INSTALL_CMD} update-pyro-startup-script
 ${INSTALL_CMD} compile-translations
 ${INSTALL_CMD} update-cron
 ${INSTALL_CMD} update-permissions

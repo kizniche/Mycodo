@@ -62,6 +62,7 @@ Options:
   update-influxdb-db-user       Create the influxdb database and user
   update-logrotate              Install logrotate script
   update-mycodo-startup-script  Install the Mycodo daemon startup script
+  update-pyro-startup-script    Install the Pyro Nameserver startup script
   update-packages               Install required apt packages are installed/up-to-date
   update-permissions            Set permissions for Mycodo directories/files
   update-pip3                   Update pip
@@ -374,6 +375,13 @@ case "${1:-''}" in
         rm -rf /etc/systemd/system/mycodo.service
         printf "#### Enabling current mycodo startup script\n"
         systemctl enable ${MYCODO_PATH}/install/mycodo.service
+    ;;
+    'update-pyro-startup-script')
+        printf "\n#### Disabling installed pyro-ns startup script\n"
+        systemctl disable mycodopyro.service
+        rm -rf /etc/systemd/system/mycodopyro.service
+        printf "#### Enabling current pyro-ns startup script\n"
+        systemctl enable ${MYCODO_PATH}/install/mycodopyro.service
     ;;
     'update-packages')
         printf "\n#### Installing prerequisite apt packages and update pip\n"
