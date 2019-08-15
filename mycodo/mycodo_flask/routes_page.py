@@ -906,7 +906,7 @@ def page_info():
     pstree_daemon_output = None
     top_daemon_output = None
     daemon_up = daemon_active()
-    if daemon_up:
+    if daemon_up is True:
         control = DaemonControl()
         ram_use_daemon = control.ram_use()
         virtualenv_daemon = control.is_in_virtualenv()

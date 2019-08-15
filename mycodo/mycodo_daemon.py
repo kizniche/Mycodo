@@ -617,8 +617,6 @@ class DaemonController:
                     return "Error: Trigger ID {}".format(trigger_id)
             if not self.controller['Output'].is_running():
                 return "Error: Output controller"
-            if not self.controller['Conditional'].is_running():
-                return "Error: Conditional controller"
         except Exception as except_msg:
             message = "Could not check running threads:" \
                       " {err}".format(err=except_msg)

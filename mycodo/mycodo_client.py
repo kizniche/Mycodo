@@ -80,9 +80,9 @@ class DaemonControl:
             logger.exception("Initializing Pyro")
 
     def check_daemon(self):
-        signal.signal(signal.SIGALRM, timeout_handler)
-        signal.alarm(10)  # 10 second timeout while checking the daemon status
+        old_timeout = self.pyro_server._pyroTimeout
         try:
+            self.pyro_server._pyroTimeout = 10
             result = self.pyro_server.check_daemon()
             if result:
                 return result
@@ -90,6 +90,8 @@ class DaemonControl:
                 return "GOOD"
         except TimeoutException:
             return "Error: Timeout"
+        finally:
+            self.pyro_server._pyroTimeout = old_timeout
 
     def get_condition_measurement(self, condition_id, function_id=None):
         return self.pyro_server.get_condition_measurement(condition_id, function_id=function_id)
@@ -207,7 +209,7 @@ def daemon_active():
     """ Used to determine if the daemon is reachable to communicate """
     try:
         daemon = DaemonControl()
-        if daemon.check_daemon() != 'alive':
+        if daemon.check_daemon() != 'GOOD':
             return False
         return True
     except socket.error:
