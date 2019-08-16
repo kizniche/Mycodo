@@ -14,6 +14,8 @@ before_install:
   - influx -execute "CREATE DATABASE mycodo_db"
   - influx -database mycodo_db -execute "CREATE USER mycodo WITH PASSWORD 'mmdu77sj3nIoiajjs'"
   - export PATH=/usr/bin:$PATH
+  - export PYRO_HMAC_KEY=YTBTPmNZFbpJB99qJrtNUVY9htaMQ8ps
+  - pyro4-ns
 install:
   - sed -i '/picamera/d' install/requirements.txt
   - pip3 install --upgrade -r install/requirements.txt
