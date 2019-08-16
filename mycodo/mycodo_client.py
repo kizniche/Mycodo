@@ -90,6 +90,8 @@ class DaemonControl:
                 return "GOOD"
         except TimeoutException:
             return "Error: Timeout"
+        except Pyro4.errors.CommunicationError:
+            return "Error: Pyro Communication"
         finally:
             self.pyro_server._pyroTimeout = old_timeout
 
