@@ -77,6 +77,8 @@
     <div class="row small-gutters" style="padding: 0.5em">
 
       {% if each_input.device in dict_inputs %}
+        {% include 'pages/data_options/input_options/TEMPLATE_OPTIONS_Message.html' %}
+
         {% include 'pages/data_options/input_options/TEMPLATE_OPTIONS_Interface.html' %}
         {% include 'pages/data_options/input_options/TEMPLATE_OPTIONS_GPIO.html' %}
         {% include 'pages/data_options/input_options/TEMPLATE_OPTIONS_BT.html' %}

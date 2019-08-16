@@ -16,6 +16,7 @@ This release changes how user-created Python code is executed. This affects Pyth
 ### Bugfixes
 
  - Fix sunrise/sunset calculation
+ - Fix inability to use "," in Input custom options
 
 ### Features
 
@@ -23,6 +24,7 @@ This release changes how user-created Python code is executed. This affects Pyth
  - Add execute_at_creation option for Inputs
  - Add Measurement: Radiation Dose Rate
  - Add Units: Microsieverts per hour (µSv/hr), Counts per minute (cpm)
+ - Add 'message' option for custom Inputs to display a message with the Input options in the web interface
 
 ### Miscellaneous
 

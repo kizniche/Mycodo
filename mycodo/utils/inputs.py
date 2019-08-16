@@ -89,7 +89,10 @@ def parse_custom_option_values(inputs):
         if each_input.custom_options:
             for each_option in each_input.custom_options.split(';'):
                 option = each_option.split(',')[0]
-                value = each_option.split(',')[1]
+                if len(each_option.split(',')) > 2:
+                    value = ','.join(each_option.split(',')[1:])
+                else:
+                    value = each_option.split(',')[1]
                 custom_options_values[each_input.unique_id][option] = value
 
     return custom_options_values
@@ -152,6 +155,7 @@ def parse_input_information():
                 dict_inputs = dict_has_value(dict_inputs, input_custom, 'measurements_use_same_timestamp')
                 dict_inputs = dict_has_value(dict_inputs, input_custom, 'measurements_rescale')
                 dict_inputs = dict_has_value(dict_inputs, input_custom, 'listener')
+                dict_inputs = dict_has_value(dict_inputs, input_custom, 'message')
 
                 # Dependencies
                 dict_inputs = dict_has_value(dict_inputs, input_custom, 'dependencies_module')

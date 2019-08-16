@@ -61,6 +61,8 @@ INPUT_INFORMATION = {
     'measurements_dict': measurements_dict,
     'measurements_use_same_timestamp': True,
 
+    'message': "Note: This is just an informative note to the user.",
+
     'options_enabled': [
         'i2c_location',
         'custom_options',

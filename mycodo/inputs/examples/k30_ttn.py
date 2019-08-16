@@ -39,6 +39,8 @@ INPUT_INFORMATION = {
     'measurements_dict': measurements_dict,
     'measurements_use_same_timestamp': True,
 
+    'message': "WARNING: This sensor doesn't have reverse-polarity protection, so if you accidentally reverse the voltage, you will damage the sensor.",
+
     'options_enabled': [
         'uart_location',
         'uart_baud_rate',

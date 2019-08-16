@@ -66,6 +66,10 @@ INPUT_INFORMATION = {
     # Set False to use the timestamp generated when self.value_set() is used to save measurement.
     'measurements_use_same_timestamp': True,
 
+    # Add a message that the user can see when they view the options of the Input.
+    # This will be displayed at the top of the options when the user expands the input with the "+" icon.
+    'message': "Note: Don't forget to do x and y before activating this Input",
+
     # Web User Interface display options
     # Options that are enabled will be editable from the input options page.
     # Options that are disabled will appear on the input options page but not be editable.
