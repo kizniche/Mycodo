@@ -153,6 +153,10 @@ MEASUREMENTS = {
         'name': lazy_gettext('Pulse Width'),
         'meas': 'pulse_width',
         'units': ['us']},
+    'radiation_dose_rate': {
+        'name': lazy_gettext('Radiation Dose Rate'),
+        'meas': 'radiation_dose_rate',
+        'units': ['uSv_hr']},
     'revolutions': {
         'name': lazy_gettext('Revolutions'),
         'meas': 'revolutions',
@@ -210,6 +214,9 @@ UNITS = {
     'uS_cm': {
         'name': lazy_gettext('Microsiemens per centimeter'),
         'unit': 'μS/cm'},
+    'uSv_hr': {
+        'name': lazy_gettext('Microsieverts per hour'),
+        'unit': 'μSv/hr'},
     'A': {
         'name': lazy_gettext('Amp'),
         'unit': 'A'},
