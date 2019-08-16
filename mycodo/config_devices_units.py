@@ -156,7 +156,7 @@ MEASUREMENTS = {
     'radiation_dose_rate': {
         'name': lazy_gettext('Radiation Dose Rate'),
         'meas': 'radiation_dose_rate',
-        'units': ['uSv_hr']},
+        'units': ['cpm', 'uSv_hr']},
     'revolutions': {
         'name': lazy_gettext('Revolutions'),
         'meas': 'revolutions',
@@ -226,6 +226,9 @@ UNITS = {
     'C': {
         'name': lazy_gettext('Celsius'),
         'unit': '°C'},
+    'cpm': {
+        'name': lazy_gettext('Counts per minute'),
+        'unit': 'cpm'},
     'cpu_load': {
         'name': lazy_gettext('CPU Load'),
         'unit': 'Proc.'},

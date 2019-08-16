@@ -21,7 +21,8 @@ This release changes how user-created Python code is executed. This affects Pyth
 
  - Add Pylint test for Python 3 Code Input
  - Add execute_at_creation option for Inputs
- - Add Measurement/Unit: Radiation Dose Rate (µSv/hr)
+ - Add Measurement: Radiation Dose Rate
+ - Add Units: Microsieverts per hour (µSv/hr), Counts per minute (cpm)
 
 ### Miscellaneous
 
