@@ -90,8 +90,12 @@ class DaemonControl:
                 return "GOOD"
         except TimeoutException:
             return "Error: Timeout"
-        except Pyro4.errors.CommunicationError:
-            return "Error: Pyro Communication"
+        except Pyro4.errors.CommunicationError as err:
+            return "Error: Failed to initialize Pyro Communication: {}".format(err)
+        except Pyro4.errors.NamingError as err:
+            return "Error: Failed to locate Pyro Nameserver: {}".format(err)
+        except Exception as err:
+            return "Error: Pyro Exception: {}".format(err)
         finally:
             self.pyro_server._pyroTimeout = old_timeout
 
