@@ -17,6 +17,7 @@ This release changes how user-created Python code is executed. This affects Pyth
 
  - Fix sunrise/sunset calculation
  - Fix inability to use "," in Input custom options
+ - Fix missing install dependency for Ruuvitag Input ([#638](https://github.com/kizniche/mycodo/issues/638))
 
 ### Features
 

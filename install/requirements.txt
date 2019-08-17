@@ -10,6 +10,7 @@ webtest == 2.0.33
 
 alembic == 1.0.11
 argparse == 1.4.0
+bcrypt == 3.1.7  # Note: bcrypt 3.1.6 causes build errors in Raspbian Jessie (use 3.1.4). Raspbian Buster can use latest.
 daemonize == 2.5.0
 filelock == 3.0.12
 Flask == 1.1.1
@@ -30,12 +31,8 @@ pyro4
 pyserial
 python-dateutil == 2.8.0
 requests
-# rpyc == 4.1.0
 SQLAlchemy == 1.3.5
 WTForms == 2.2.1
-
-# Note: bcrypt 3.1.6 causes build errors in Raspbian Jessie (use 3.1.4). Raspbian Buster can use latest.
-bcrypt == 3.1.7
 
 # Devices and Sensors
 picamera == 1.13

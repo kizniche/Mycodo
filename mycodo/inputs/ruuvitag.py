@@ -71,7 +71,7 @@ INPUT_INFORMATION = {
     'dependencies_module': [
         ('apt', 'python3-dev', 'python3-dev'),
         ('apt', 'python3-psutil', 'python3-psutil'),
-        ('pip-pypi', 'bleson', 'bleson'),
+        ('apt', 'bluez-hcidump', 'bluez-hcidump'),
         ('pip-pypi', 'ruuvitag_sensor', 'ruuvitag_sensor'),
     ],
 
