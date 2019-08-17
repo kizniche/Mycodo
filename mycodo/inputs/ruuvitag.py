@@ -4,7 +4,6 @@ import time
 from mycodo.inputs.base_input import AbstractInput
 from mycodo.inputs.sensorutils import calculate_dewpoint
 from mycodo.inputs.sensorutils import calculate_vapor_pressure_deficit
-from mycodo.utils.system_pi import str_is_float
 
 # Measurements
 measurements_dict = {
@@ -71,6 +70,7 @@ INPUT_INFORMATION = {
     'dependencies_module': [
         ('apt', 'python3-dev', 'python3-dev'),
         ('apt', 'python3-psutil', 'python3-psutil'),
+        ('apt', 'bluez', 'bluez'),
         ('apt', 'bluez-hcidump', 'bluez-hcidump'),
         ('pip-pypi', 'ruuvitag_sensor', 'ruuvitag_sensor'),
     ],
@@ -99,10 +99,16 @@ class InputModule(AbstractInput):
         self.last_downloaded_timestamp = None
 
         if not testing:
+            from ruuvitag_sensor.ruuvitag import RuuviTag
+            self.ruuvitag = RuuviTag
+
             self.lock_file = '/var/lock/bluetooth_dev_hci{}'.format(
                 input_dev.bt_adapter)
             self.location = input_dev.location
             self.bt_adapter = input_dev.bt_adapter
+            self.sensor = self.ruuvitag(
+                self.location,
+                bt_device='hci{}'.format(self.bt_adapter))
 
     def get_measurement(self):
         """ Obtain and return the measurements """
@@ -114,26 +120,14 @@ class InputModule(AbstractInput):
         if self.locked:
             self.logger.debug("Starting measurement")
             try:
-                from mycodo.utils.system_pi import cmd_output
-                cmd = '/var/mycodo-root/env/bin/python ' \
-                      '/var/mycodo-root/mycodo/inputs/scripts/ruuvitag_values.py ' \
-                      '--mac_address {mac} --bt_adapter {bta}'.format(
-                        mac=self.location, bta=self.bt_adapter)
-                cmd_return, _, cmd_status = cmd_output(cmd, timeout=10)
+                state = self.sensor.update()
+                state = self.sensor.state
 
-                if not cmd_return:
+                if not state:
                     self.logger.debug("Measurement command returned no data")
                     return
 
-                values = cmd_return.decode('ascii').split(',')
-
-                if not str_is_float(values[0]):
-                    self.logger.debug(
-                        "Error: Could not convert string to float: "
-                        "string '{}'".format(str(values[0])))
-                    return
-
-                battery_volts = float(values[3]) / 1000
+                battery_volts = state['battery'] / 1000
                 if battery_volts < 1 or battery_volts > 4:
                     self.logger.debug(
                         "Not recording measurements: "
@@ -142,28 +136,28 @@ class InputModule(AbstractInput):
                     return
 
                 if self.is_enabled(0):
-                    self.value_set(0, float(str(values[0])))
+                    self.value_set(0, state['temperature'])
 
                 if self.is_enabled(1):
-                    self.value_set(1, float(values[1]))
+                    self.value_set(1, state['humidity'])
 
                 if self.is_enabled(2):
-                    self.value_set(2, float(values[2]))
+                    self.value_set(2, state['pressure'])
 
                 if self.is_enabled(3):
-                    self.value_set(3, float(values[3]) / 1000)
+                    self.value_set(3, state['battery'] / 1000)
 
                 if self.is_enabled(4):
-                    self.value_set(4, float(values[4]) / 1000)
+                    self.value_set(4, state['acceleration'] / 1000)
 
                 if self.is_enabled(5):
-                    self.value_set(5, float(values[5]) / 1000)
+                    self.value_set(5, state['acceleration_x'] / 1000)
 
                 if self.is_enabled(6):
-                    self.value_set(6, float(values[6]) / 1000)
+                    self.value_set(6, state['acceleration_y'] / 1000)
 
                 if self.is_enabled(7):
-                    self.value_set(7, float(values[7]) / 1000)
+                    self.value_set(7, state['acceleration_z'] / 1000)
 
                 if (self.is_enabled(8) and
                         self.is_enabled(0) and
