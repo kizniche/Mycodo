@@ -905,7 +905,12 @@ def page_info():
     virtualenv_daemon = False
     pstree_daemon_output = None
     top_daemon_output = None
-    daemon_up = daemon_active()
+
+    if not current_app.config['TESTING']:
+        daemon_up = daemon_active()
+    else:
+        daemon_up = False
+
     if daemon_up is True:
         control = DaemonControl()
         ram_use_daemon = control.ram_use()
