@@ -32,6 +32,7 @@ This release changes how user-created Python code is executed. This affects Pyth
 
  - Refactor how user-created Python code is executed (i.e. Python Code Inputs and Conditional Statements)
  - Refactor RPC by replacing RPyC with Pyro4 for improved system stability ([#671](https://github.com/kizniche/mycodo/issues/671), [#679](https://github.com/kizniche/mycodo/issues/679))
+ - Increase Nginx file upload size
 
 
 ## 7.6.3 (2019-07-14)
