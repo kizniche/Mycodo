@@ -54,6 +54,7 @@ import threading
 import time
 import timeit
 
+import Pyro4
 import requests
 
 from mycodo.config import SQL_DATABASE_MYCODO
@@ -234,6 +235,8 @@ class PIDController(threading.Thread):
                         self.logger.exception("check_pid() TimeoutError")
 
                 time.sleep(self.sample_rate)
+        except Pyro4.errors.TimeoutError:
+            self.logger.exception("Pyro4 TimeoutError")
         except Exception as except_msg:
             self.logger.exception("Run Error: {err}".format(
                 err=except_msg))
