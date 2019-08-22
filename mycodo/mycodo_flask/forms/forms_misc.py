@@ -123,19 +123,9 @@ class LogView(FlaskForm):
         )],
         widget=NumberInput()
     )
-    loghttp_access = SubmitField(lazy_gettext('Web Access'))
-    loghttp_error = SubmitField(lazy_gettext('Web Error'))
-    logdaemon = SubmitField('{} ({})'.format(lazy_gettext('Daemon'), lazy_gettext('ALL')))
-    logdaemon_info = SubmitField('{} ({})'.format(lazy_gettext('Daemon'), lazy_gettext('INFO')))
-    logdaemon_error = SubmitField('{} ({})'.format(lazy_gettext('Daemon'), lazy_gettext('ERROR')))
-    logdaemon_debug = SubmitField('{} ({})'.format(lazy_gettext('Daemon'), lazy_gettext('DEBUG')))
-    log_pid_settings = SubmitField('{} ({})'.format(lazy_gettext('Daemon'), lazy_gettext('PID')))
-    loglogin = SubmitField(lazy_gettext(TRANSLATIONS['login']['title']))
-    logdependency = SubmitField(lazy_gettext('Dependency'))
-    logbackup = SubmitField(lazy_gettext('Backup'))
-    logkeepup = SubmitField(lazy_gettext('KeepUp'))
-    logupgrade = SubmitField(lazy_gettext('Upgrade'))
-    logrestore = SubmitField(lazy_gettext('Restore'))
+
+    log = StringField(lazy_gettext('Log'))
+    log_view = SubmitField(lazy_gettext('View Log'))
 
 
 #
