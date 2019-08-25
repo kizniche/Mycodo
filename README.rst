@@ -138,6 +138,9 @@ All supported Inputs can be found under the
 and `Input Device Details <https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.rst#input-device-details>`__
 sections of the manual.
 
+Additionally, I have another github repository devoted to Custom Inputs that are not included in
+the built-in set. These can be found at `kizniche/Mycodo-custom-inputs <https://github.com/kizniche/Mycodo-custom-inputs>`__.
+
 Install
 -------
 

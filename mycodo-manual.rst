@@ -319,6 +319,22 @@ Mycodo to operate from. Add, configure, and activate inputs to begin
 recording measurements to the database and allow them to be used throughout
 Mycodo.
 
+Custom Inputs
+'''''''''''''
+
+Before discussing the built-in Inputs, it should be noted that there is an
+Input import system in Mycodo that allows user-created Inputs to be used
+in the Mycodo system. Custom Inputs can be uploaded on the
+```Config -> Inputs``` ``Configure -> Inputs`` page. After import, they
+will be available to use on the ``Setup -> Data`` page.
+
+Additionally, I have another github repository devoted to Custom Inputs that
+are not included in the built-in set. These can be found at
+`kizniche/Mycodo-custom-inputs <https://github.com/kizniche/Mycodo-custom-inputs>`__.
+
+Built-In Inputs
+'''''''''''''''
+
 In addition to several supported sensors and devices, a Linux command
 may be specified that will be executed and the return value stored in
 the measurement database to be used throughout the Mycodo system.
@@ -2816,7 +2832,12 @@ Notes
 
 ``More -> Notes``
 
-Notes may be created that can then be displayed on graphs or referenced at a later time. All notes are timestamped with the date/time of creation or may be created with a custom date/time. Each note must have at least one tag selected. Tags are what are selected to be displayed on a graph and all notes with that tag will appear in the time frame selected on the graph.
+Notes may be created that can then be displayed on graphs or referenced
+at a later time. All notes are timestamped with the date/time of creation
+or may be created with a custom date/time. Each note must have at least
+one tag selected. Tags are what are selected to be displayed on a graph
+and all notes with that tag will appear in the time frame selected on the
+graph.
 
 Tag Options
 ```````````
