@@ -129,11 +129,18 @@ class AbstractInput(object):
             if self._measurements is not None:
                 return  # success - no errors
         except TimeoutError as error:
-            self.logger.error("Error: {}".format(error))
+            msg = "TimeoutError: {}".format(error)
+            if logging.getLevelName(self.logger.getEffectiveLevel()) == 'DEBUG':
+                self.logger.exception(msg)
+            else:
+                self.logger.error(msg)
         except IOError as e:
-            self.logger.error(
-                "{cls}.get_measurement() method raised IOError: "
-                "{err}".format(cls=type(self).__name__, err=e))
+            msg = "{cls}.get_measurement() method raised IOError: " \
+                  "{err}".format(cls=type(self).__name__, err=e)
+            if logging.getLevelName(self.logger.getEffectiveLevel()) == 'DEBUG':
+                self.logger.exception(msg)
+            else:
+                self.logger.error(msg)
         except Exception as e:
             msg = "{cls} raised an exception when taking a reading: " \
                   "{err}".format(cls=type(self).__name__, err=e)
