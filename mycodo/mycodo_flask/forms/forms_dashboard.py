@@ -21,7 +21,7 @@ from mycodo.config_translations import TRANSLATIONS
 
 
 class DashboardBase(FlaskForm):
-    dashboard_id = StringField('Dash Object ID', widget=widgets.HiddenInput())
+    dashboard_id = StringField('Dashboard Object ID', widget=widgets.HiddenInput())
     dashboard_type = SelectField('Dashboard Element Type',
         choices=[
             ('', lazy_gettext('Add Dashboard Element')),

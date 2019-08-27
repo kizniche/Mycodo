@@ -147,7 +147,7 @@ class InputModule(AbstractInput):
                         self.serial_send.write(string_send.encode())
                         time.sleep(4)
                     finally:
-                        self.lock_release()
+                        self.lock_release(self.lock_file)
                 self.ttn_serial_error = False
         except:
             if not self.ttn_serial_error:

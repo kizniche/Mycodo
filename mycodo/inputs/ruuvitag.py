@@ -178,4 +178,4 @@ class InputModule(AbstractInput):
                 self.logger.debug("Error: {}".format(msg))
 
             finally:
-                self.lock_release()
+                self.lock_release(self.lock_file)

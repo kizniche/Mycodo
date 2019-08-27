@@ -13,6 +13,7 @@ import logging
 import time
 
 import filelock
+import os
 
 from mycodo.databases.models import Conversion
 from mycodo.databases.models import DeviceMeasurements
@@ -39,7 +40,7 @@ class AbstractInput(object):
         self._measurements = None
         self.channels_conversion = {}
         self.channels_measurement = {}
-        self.lock = None
+        self.lock = {}
         self.lock_file = None
         self.locked = False
         self.return_dict = {}
@@ -143,7 +144,8 @@ class AbstractInput(object):
                 self.logger.error(msg)
         finally:
             # Clean up
-            self.lock_release()
+            if self.locked:
+                self.lock_release(self.lock_file)
         return 1
 
     def initialize_measurements(self):
@@ -198,6 +200,11 @@ class AbstractInput(object):
     def stop_input(self):
         """ Called when Input is deactivated """
         self.running = False
+        try:
+            if self.lock_file:
+                self.lock_release(self.lock_file)
+        except:
+            pass
 
     def value_get(self, channel):
         """
@@ -268,14 +275,14 @@ class AbstractInput(object):
 
     def lock_acquire(self, lockfile, timeout):
         """ Non-blocking locking method """
-        self.lock = filelock.FileLock(lockfile, timeout=1)
+        self.lock[lockfile] = filelock.FileLock(lockfile, timeout=1)
         self.locked = False
         timer = time.time() + timeout
         self.logger.debug("Acquiring lock for {} ({} sec timeout)".format(
             lockfile, timeout))
         while self.running and time.time() < timer:
             try:
-                self.lock.acquire()
+                self.lock[lockfile].acquire()
                 seconds = time.time() - (timer - timeout)
                 self.logger.debug(
                     "Lock acquired for {} in {:.3f} seconds".format(
@@ -284,18 +291,23 @@ class AbstractInput(object):
                 break
             except:
                 pass
+            time.sleep(0.05)
         if not self.locked:
             self.logger.debug(
                 "Lock unable to be acquired after {:.3f} seconds. "
                 "Breaking for future lock.".format(timeout))
-            self.lock_release()
+            self.lock_release(self.lock_file)
 
-    def lock_release(self):
+    def lock_release(self, lockfile):
         """ Release lock and force deletion of lock file """
         try:
-            self.lock.release(force=True)
+            self.logger.debug("Releasing lock for {}".format(lockfile))
+            self.lock[lockfile].release(force=True)
+            os.remove(lockfile)
         except:
             pass
+        finally:
+            self.locked = False
 
     def is_acquiring_measurement(self):
         return self.acquiring_measurement

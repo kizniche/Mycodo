@@ -173,25 +173,18 @@
       <div class="collapse navbar-collapse" id="navbarCollapse">
         <ul class="navbar-nav mr-auto">
 
-          <li class="nav-item{% if active_page == 'dashboard' %} active{% endif %}">
-            <a class="nav-link" href="{{url_for('routes_page.page_dashboard')}}">{{_('Dash')}}</a>
-          </li>
-
-          <li class="nav-item{% if active_page == 'live' %} active{% endif %}">
-            <a class="nav-link" href="{{url_for('routes_page.page_live')}}">{{_('Live')}}</a>
-          </li>
-
-          <li class="nav-item{% if active_page == 'graph_async' %} active{% endif %}">
-            <a class="nav-link" href="{{url_for('routes_page.page_graph_async')}}">{{_('Async')}}</a>
-          </li>
-
-          <li class="nav-item{% if active_page == 'camera' %} active{% endif %}">
-            <a class="nav-link" href="{{url_for('routes_page.page_camera')}}">{{_('Cam')}}</a>
+          <li class="nav-item dropdown{% if active_page in ['dashboard', 'live', 'graph_async'] %} active{% endif %}">
+            <a class="nav-link dropdown-toggle" href="#" id="dropdown00" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{_('Data')}}</a>
+            <div class="dropdown-menu" aria-labelledby="dropdown00">
+              <a class="dropdown-item{% if active_page == 'dashboard' %} active{% endif %}" href="{{url_for('routes_page.page_dashboard')}}"><i class="fas fa-tachometer-alt"></i> {{_('Dashboard')}}</a>
+              <a class="dropdown-item{% if active_page == 'live' %} active{% endif %}" href="{{url_for('routes_page.page_live')}}"><i class="fas fa-play-circle"></i> {{_('Live')}}</a>
+              <a class="dropdown-item{% if active_page == 'graph_async' %} active{% endif %}" href="{{url_for('routes_page.page_graph_async')}}"><i class="fas fa-sync"></i> {{_('Asynchronous Graphs')}}</a>
+            </div>
           </li>
 
           <li class="nav-item dropdown{% if active_page in ['data', 'output', 'function', 'method_list', 'lcd', 'calibration'] %} active{% endif %}">
-            <a class="nav-link dropdown-toggle" href="#" id="dropdown00" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{_('Setup')}}</a>
-            <div class="dropdown-menu" aria-labelledby="dropdown00">
+            <a class="nav-link dropdown-toggle" href="#" id="dropdown01" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{_('Setup')}}</a>
+            <div class="dropdown-menu" aria-labelledby="dropdown01">
               <a class="dropdown-item{% if active_page == 'data' %} active{% endif %}" href="{{url_for('routes_page.page_data')}}"><i class="fas fa-database"></i> {{dict_translation['data']['title']}}</a>
               <a class="dropdown-item{% if active_page == 'output' %} active{% endif %}" href="{{url_for('routes_page.page_output')}}"><i class="fas fa-bolt"></i> {{dict_translation['output']['title']}}</a>
               <a class="dropdown-item{% if active_page == 'function' %} active{% endif %}" href="{{url_for('routes_page.page_function')}}"><i class="fas fa-random"></i> {{dict_translation['function']['title']}}</a>
@@ -201,9 +194,10 @@
             </div>
           </li>
 
-          <li class="nav-item dropdown{% if active_page in ['notes', 'export', 'usage', 'usage_reports'] %} active{% endif %}">
-            <a class="nav-link dropdown-toggle" href="#" id="dropdown01" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{_('More')}}</a>
-            <div class="dropdown-menu" aria-labelledby="dropdown01">
+          <li class="nav-item dropdown{% if active_page in ['camera', 'notes', 'export', 'usage', 'usage_reports'] %} active{% endif %}">
+            <a class="nav-link dropdown-toggle" href="#" id="dropdown02" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{_('More')}}</a>
+            <div class="dropdown-menu" aria-labelledby="dropdown02">
+              <a class="dropdown-item{% if active_page == 'camera' %} active{% endif %}" href="{{url_for('routes_page.page_camera')}}"><i class="fas fa-camera"></i> {{_('Camera')}}</a>
               <a class="dropdown-item{% if active_page == 'notes' %} active{% endif %}" href="{{url_for('routes_page.page_notes')}}"><i class="fas fa-edit"></i> {{dict_translation['note']['title']}}</a>
               <a class="dropdown-item{% if active_page == 'export' %} active{% endif %}" href="{{url_for('routes_page.page_export')}}"><i class="fas fa-save"></i> {{dict_translation['export']['title'] + ' ' + dict_translation['import']['title']}}</a>
               <a class="dropdown-item{% if active_page == 'usage' %} active{% endif %}" href="{{url_for('routes_page.page_usage')}}"><i class="fas fa-sliders-h"></i> {{_('Energy Usage')}}</a>

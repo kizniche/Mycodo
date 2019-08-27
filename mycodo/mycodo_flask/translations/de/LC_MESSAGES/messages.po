@@ -2981,7 +2981,7 @@ msgid "No Connection"
 msgstr "Keine Verbindung"
 
 #: mycodo_flask/templates/layout.html:175
-msgid "Dash"
+msgid "Dashboard"
 msgstr "Dashboard"
 
 #: mycodo_flask/templates/layout.html:179
@@ -2990,11 +2990,11 @@ msgid "Live"
 msgstr "Live"
 
 #: mycodo_flask/templates/layout.html:183
-msgid "Async"
-msgstr "Async"
+msgid "Asynchronous Graphs"
+msgstr "Asynchronous Graphs"
 
 #: mycodo_flask/templates/layout.html:187
-msgid "Cam"
+msgid "Camera"
 msgstr "Kamera"
 
 #: mycodo_flask/templates/layout.html:198

@@ -19,6 +19,7 @@ This release changes how user-created Python code is executed. This affects Pyth
  - Fix inability to use "," in Input custom options
  - Fix install dependencies for Ruuvitag Input ([#638](https://github.com/kizniche/mycodo/issues/638))
  - Fix reliability issue with Ruuvitag Input (crashing Mycodo daemon) ([#638](https://github.com/kizniche/mycodo/issues/638))
+ - Fix storing of SHT31 Smart Gadget erroneous measurements
 
 ### Features
 
@@ -34,6 +35,7 @@ This release changes how user-created Python code is executed. This affects Pyth
  - Refactor how user-created Python code is executed (i.e. Python Code Inputs and Conditional Statements)
  - Refactor RPC by replacing RPyC with Pyro4 for improved system stability ([#671](https://github.com/kizniche/mycodo/issues/671), [#679](https://github.com/kizniche/mycodo/issues/679))
  - Increase Nginx file upload size
+ - Reorganize menu layout
 
 
 ## 7.6.3 (2019-07-14)
