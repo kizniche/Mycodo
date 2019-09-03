@@ -233,10 +233,10 @@ class PIDController(threading.Thread):
                         self.check_pid()
                     except TimeoutError:
                         self.logger.exception("check_pid() TimeoutError")
+                    except Pyro4.errors.TimeoutError:
+                        self.logger.exception("Pyro4 TimeoutError")
 
                 time.sleep(self.sample_rate)
-        except Pyro4.errors.TimeoutError:
-            self.logger.exception("Pyro4 TimeoutError")
         except Exception as except_msg:
             self.logger.exception("Run Error: {err}".format(
                 err=except_msg))
@@ -250,9 +250,12 @@ class PIDController(threading.Thread):
                 self.control.output_off(self.lower_output_id,
                                         trigger_conditionals=True)
 
-            self.running = False
-            self.logger.info("Deactivated in {:.1f} ms".format(
-                (timeit.default_timer() - self.thread_shutdown_timer) * 1000))
+            if self.running:
+                self.running = False
+                self.logger.info("Unexpectedly deactivated")
+            else:
+                self.logger.info("Deactivated in {:.1f} ms".format(
+                    (timeit.default_timer() - self.thread_shutdown_timer) * 1000))
 
     def initialize_values(self):
         """Set PID parameters"""

@@ -20,6 +20,7 @@ This release changes how user-created Python code is executed. This affects Pyth
  - Fix install dependencies for Ruuvitag Input ([#638](https://github.com/kizniche/mycodo/issues/638))
  - Fix reliability issue with Ruuvitag Input (crashing Mycodo daemon) ([#638](https://github.com/kizniche/mycodo/issues/638))
  - Fix storing of SHT31 Smart Gadget erroneous measurements
+ - Prevent Pyro4 TimeoutErrors from stopping PID and Conditional controllers
 
 ### Features
 

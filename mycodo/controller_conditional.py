@@ -132,7 +132,11 @@ class ConditionalController(threading.Thread):
                         check_approved = True
 
                     if check_approved:
-                        self.check_conditionals()
+                        try:
+                            self.check_conditionals()
+                        except Exception as except_msg:
+                            self.logger.exception("check_conditionals() Error: {err}".format(
+                                err=except_msg))
 
                 time.sleep(self.sample_rate)
 
