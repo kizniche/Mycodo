@@ -22,8 +22,6 @@
 #
 #  Contact at kylegabriel.com
 #
-
-import logging
 import threading
 import time
 import timeit
@@ -33,6 +31,7 @@ from statistics import stdev
 import urllib3
 
 import mycodo.utils.psypy as SI
+from mycodo.base_controller import AbstractController
 from mycodo.databases.models import Conversion
 from mycodo.databases.models import DeviceMeasurements
 from mycodo.databases.models import Math
@@ -72,23 +71,16 @@ class Measurement:
         return self.rawData
 
 
-class MathController(threading.Thread):
+class MathController(AbstractController, threading.Thread):
     """
     Class to operate discrete PID controller
-
     """
     def __init__(self, ready, math_id):
         threading.Thread.__init__(self)
-
-        self.logger = logging.getLogger(
-            "{}_{}".format(__name__, math_id.split('-')[0]))
+        super(MathController, self).__init__(ready, unique_id=math_id, name=__name__)
 
         try:
             self.measurements = None
-            self.running = False
-            self.thread_startup_timer = timeit.default_timer()
-            self.thread_shutdown_timer = 0
-            self.ready = ready
             self.pause_loop = False
             self.verify_pause_loop = True
             self.control = DaemonControl()
@@ -118,10 +110,7 @@ class MathController(threading.Thread):
             self.max_measure_age = math.max_measure_age
             self.log_level_debug = math.log_level_debug
 
-            if self.log_level_debug:
-                self.logger.setLevel(logging.DEBUG)
-            else:
-                self.logger.setLevel(logging.INFO)
+            self.set_log_level_debug(self.log_level_debug)
 
             # Inputs to calculate with
             self.inputs = math.inputs
@@ -161,36 +150,42 @@ class MathController(threading.Thread):
 
     def run(self):
         try:
-            self.running = True
             self.logger.info("Activated in {:.1f} ms".format(
                 (timeit.default_timer() - self.thread_startup_timer) * 1000))
+
             self.ready.set()
 
             while self.running:
-                # Pause loop to modify conditional statements.
-                # Prevents execution of conditional while variables are
-                # being modified.
-                if self.pause_loop:
-                    self.verify_pause_loop = True
-                    while self.pause_loop:
-                        time.sleep(0.1)
+                try:
+                    # Pause loop to modify conditional statements.
+                    # Prevents execution of conditional while variables are
+                    # being modified.
+                    if self.pause_loop:
+                        self.verify_pause_loop = True
+                        while self.pause_loop:
+                            time.sleep(0.1)
 
-                if self.is_activated and time.time() > self.timer:
+                    if self.is_activated and time.time() > self.timer:
+                        # Ensure the next timer ends in the future
+                        while time.time() > self.timer:
+                            self.timer += self.period
 
-                    self.calculate_math()
+                        self.attempt_execute(self.calculate_math, 3, 10)
 
-                    # Ensure the next timer ends in the future
-                    while time.time() > self.timer:
-                        self.timer += self.period
-
-                time.sleep(self.sample_rate)
-
-            self.running = False
-            self.logger.info("Deactivated in {:.1f} ms".format(
-                (timeit.default_timer() - self.thread_shutdown_timer) * 1000))
+                except Exception as except_msg:
+                    self.logger.exception(
+                        "Controller Error: {err}".format(
+                            err=except_msg))
+                finally:
+                    time.sleep(self.sample_rate)
         except Exception as except_msg:
             self.logger.exception("Run Error: {err}".format(
                 err=except_msg))
+            self.thread_shutdown_timer = timeit.default_timer()
+        finally:
+            self.running = False
+            self.logger.info("Deactivated in {:.1f} ms".format(
+                (timeit.default_timer() - self.thread_shutdown_timer) * 1000))
 
     def calculate_math(self):
         measurement_dict = {}
@@ -835,10 +830,3 @@ class MathController(threading.Thread):
         if not measurement:
             return False, None
         return True, measurement
-
-    def is_running(self):
-        return self.running
-
-    def stop_controller(self):
-        self.thread_shutdown_timer = timeit.default_timer()
-        self.running = False

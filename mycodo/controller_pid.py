@@ -46,10 +46,9 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
-
+#
 import calendar
 import datetime
-import logging
 import threading
 import time
 import timeit
@@ -57,6 +56,7 @@ import timeit
 import Pyro4
 import requests
 
+from mycodo.base_controller import AbstractController
 from mycodo.config import SQL_DATABASE_MYCODO
 from mycodo.databases.models import Conversion
 from mycodo.databases.models import DeviceMeasurements
@@ -82,21 +82,14 @@ from mycodo.utils.system_pi import return_measurement_info
 MYCODO_DB_PATH = 'sqlite:///' + SQL_DATABASE_MYCODO
 
 
-class PIDController(threading.Thread):
+class PIDController(AbstractController, threading.Thread):
     """
     Class to operate discrete PID controller in Mycodo
-
     """
     def __init__(self, ready, pid_id):
         threading.Thread.__init__(self)
+        super(PIDController, self).__init__(ready, unique_id=pid_id, name=__name__)
 
-        self.logger = logging.getLogger(
-            "{}_{}".format(__name__, pid_id.split('-')[0]))
-
-        self.running = False
-        self.thread_startup_timer = timeit.default_timer()
-        self.thread_shutdown_timer = 0
-        self.ready = ready
         self.pid_id = pid_id
         self.control = DaemonControl()
 
@@ -143,7 +136,7 @@ class PIDController(threading.Thread):
         self.integrator_min = None
         self.integrator_max = None
         self.period = None
-        self.start_offset = None
+        self.start_offset = 0
         self.max_measure_age = None
         self.default_setpoint = None
         self.setpoint = None
@@ -186,9 +179,8 @@ class PIDController(threading.Thread):
 
     def run(self):
         try:
-            self.running = True
-            startup_str = "Activated in {time:.1f} ms".format(
-                time=(timeit.default_timer() - self.thread_startup_timer) * 1000)
+            startup_str = "Activated in {:.1f} ms".format(
+                (timeit.default_timer() - self.thread_startup_timer) * 1000)
             if self.is_paused:
                 startup_str += ", started Paused"
             elif self.is_held:
@@ -220,23 +212,29 @@ class PIDController(threading.Thread):
             self.ready.set()
 
             while self.running:
-                if (self.method_start_act == 'Ended' and
-                        self.method_type == 'Duration'):
-                    self.stop_controller(ended_normally=False,
-                                         deactivate_pid=True)
-                    self.logger.warning(
-                        "Method has ended. "
-                        "Activate the PID controller to start it again.")
+                try:
+                    if (self.method_start_act == 'Ended' and
+                            self.method_type == 'Duration'):
+                        self.stop_controller(
+                            ended_normally=False, deactivate_pid=True)
+                        self.logger.warning(
+                            "Method has ended. "
+                            "Activate the PID controller to start it again.")
 
-                elif time.time() > self.timer:
-                    try:
-                        self.check_pid()
-                    except TimeoutError:
-                        self.logger.exception("check_pid() TimeoutError")
-                    except Pyro4.errors.TimeoutError:
-                        self.logger.exception("Pyro4 TimeoutError")
+                    elif time.time() > self.timer:
 
-                time.sleep(self.sample_rate)
+                        while time.time() > self.timer:
+                            self.timer = self.timer + self.period
+
+                        self.attempt_execute(self.check_pid, 3, 10)
+
+                except Pyro4.errors.TimeoutError:
+                    self.logger.exception("Pyro4 TimeoutError")
+                except Exception as except_msg:
+                    self.logger.exception(
+                        "check_pid() Error: {err}".format(err=except_msg))
+                finally:
+                    time.sleep(self.sample_rate)
         except Exception as except_msg:
             self.logger.exception("Run Error: {err}".format(
                 err=except_msg))
@@ -250,12 +248,8 @@ class PIDController(threading.Thread):
                 self.control.output_off(self.lower_output_id,
                                         trigger_conditionals=True)
 
-            if self.running:
-                self.running = False
-                self.logger.info("Unexpectedly deactivated")
-            else:
-                self.logger.info("Deactivated in {:.1f} ms".format(
-                    (timeit.default_timer() - self.thread_shutdown_timer) * 1000))
+            self.logger.info("Deactivated in {:.1f} ms".format(
+                (timeit.default_timer() - self.thread_shutdown_timer) * 1000))
 
     def initialize_values(self):
         """Set PID parameters"""
@@ -295,10 +289,7 @@ class PIDController(threading.Thread):
         self.device_id = pid.measurement.split(',')[0]
         self.measurement_id = pid.measurement.split(',')[1]
 
-        if self.log_level_debug:
-            self.logger.setLevel(logging.DEBUG)
-        else:
-            self.logger.setLevel(logging.INFO)
+        self.set_log_level_debug(self.log_level_debug)
 
         input_dev = db_retrieve_table_daemon(Input, unique_id=self.device_id)
         math = db_retrieve_table_daemon(Math, unique_id=self.device_id)
@@ -324,10 +315,6 @@ class PIDController(threading.Thread):
 
     def check_pid(self):
         """ Get measurement and apply to PID controller """
-        # Ensure the timer ends in the future
-        while time.time() > self.timer:
-            self.timer = self.timer + self.period
-
         # If PID is active, retrieve measurement and update
         # the control variable.
         # A PID on hold will sustain the current output and
@@ -1036,9 +1023,6 @@ class PIDController(threading.Thread):
 
     def get_kd(self):
         return self.Kd
-
-    def is_running(self):
-        return self.running
 
     def stop_controller(self, ended_normally=True, deactivate_pid=False):
         self.thread_shutdown_timer = timeit.default_timer()

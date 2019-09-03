@@ -1,7 +1,7 @@
 # coding=utf-8
 """
 This module contains the AbstractInput Class which acts as a template
-for all inputs.  It is not to be used directly.  The AbstractInput Class
+for all inputs.  It is not to be used directly. The AbstractInput Class
 ensures that certain methods and instance variables are included in each
 Input.
 
@@ -24,15 +24,7 @@ class AbstractInput(object):
     """
     Base Input class that ensures certain methods and values are present
     in inputs.
-
-    This class is not to be used directly.  It is to be inherited by Input classes.
-
-     example:
-         class MyNewInput(AbstractInput):
-             ... do stuff
-
     """
-
     def __init__(self, input_dev, testing=False, name=__name__):
         self.logger = None
         self.setup_logger(testing=testing, name=name, input_dev=input_dev)

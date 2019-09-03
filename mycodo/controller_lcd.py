@@ -47,16 +47,16 @@
 # THE SOFTWARE.
 #
 # <http://code.activestate.com/recipes/577231-discrete-lcd-controller/>
-
+#
 import calendar
 import datetime
-import logging
 import threading
 import time
 import timeit
 
 import RPi.GPIO as GPIO
 
+from mycodo.base_controller import AbstractController
 from mycodo.config import MYCODO_VERSION
 from mycodo.databases.models import Conversion
 from mycodo.databases.models import DeviceMeasurements
@@ -76,21 +76,14 @@ from mycodo.utils.system_pi import cmd_output
 from mycodo.utils.system_pi import return_measurement_info
 
 
-class LCDController(threading.Thread):
+class LCDController(AbstractController, threading.Thread):
     """
     Class to operate LCD controller
-
     """
     def __init__(self, ready, lcd_id):
         threading.Thread.__init__(self)
+        super(LCDController, self).__init__(ready, unique_id=lcd_id, name=__name__)
 
-        self.logger = logging.getLogger(
-            "{}_{}".format(__name__, lcd_id.split('-')[0]))
-
-        self.running = False
-        self.thread_startup_timer = timeit.default_timer()
-        self.thread_shutdown_timer = 0
-        self.ready = ready
         self.flash_lcd_on = False
         self.lcd_initialized = False
         self.lcd_is_on = False
@@ -111,10 +104,7 @@ class LCDController(threading.Thread):
             self.backlight_timer = time.time()
             self.log_level_debug = lcd_dev.log_level_debug
 
-            if self.log_level_debug:
-                self.logger.setLevel(logging.DEBUG)
-            else:
-                self.logger.setLevel(logging.INFO)
+            self.set_log_level_debug(self.log_level_debug)
 
             self.list_pids = ['setpoint', 'pid_time']
             self.list_outputs = ['duration_time', 'output_time', 'output_state']
@@ -234,9 +224,9 @@ class LCDController(threading.Thread):
 
     def run(self):
         try:
-            self.running = True
             self.logger.info("Activated in {:.1f} ms".format(
                 (timeit.default_timer() - self.thread_startup_timer) * 1000))
+
             self.ready.set()
 
             while self.running:
@@ -552,12 +542,3 @@ class LCDController(threading.Thread):
             self.flash_lcd_on = False
             self.lcd_backlight(True)
             return 1, "LCD {} Reset".format(self.lcd_id)
-
-    def is_running(self):
-        """ returns if the controller is running """
-        return self.running
-
-    def stop_controller(self):
-        """ Stops the controller """
-        self.thread_shutdown_timer = timeit.default_timer()
-        self.running = False

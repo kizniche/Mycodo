@@ -21,16 +21,15 @@
 #
 #  Contact at kylegabriel.com
 #
-
 import datetime
 import importlib.util
-import logging
 import threading
 import time
 import timeit
 
 import os
 
+from mycodo.base_controller import AbstractController
 from mycodo.config import PATH_PYTHON_CODE_USER
 from mycodo.config import SQL_DATABASE_MYCODO
 from mycodo.databases.models import Conditional
@@ -42,7 +41,7 @@ from mycodo.utils.database import db_retrieve_table_daemon
 MYCODO_DB_PATH = 'sqlite:///' + SQL_DATABASE_MYCODO
 
 
-class ConditionalController(threading.Thread):
+class ConditionalController(AbstractController, threading.Thread):
     """
     Class to operate Conditional controller
 
@@ -62,17 +61,11 @@ class ConditionalController(threading.Thread):
     """
     def __init__(self, ready, function_id):
         threading.Thread.__init__(self)
-
-        self.logger = logging.getLogger(
-            "{}_{}".format(__name__, function_id.split('-')[0]))
+        super(ConditionalController, self).__init__(ready, unique_id=function_id, name=__name__)
 
         self.function_id = function_id
-        self.running = False
-        self.thread_startup_timer = timeit.default_timer()
-        self.thread_shutdown_timer = 0
         self.pause_loop = False
         self.verify_pause_loop = True
-        self.ready = ready
         self.control = DaemonControl()
 
         self.sample_rate = db_retrieve_table_daemon(
@@ -106,48 +99,45 @@ class ConditionalController(threading.Thread):
 
     def run(self):
         try:
-            self.running = True
             self.logger.info(
                 "Activated in {:.1f} ms".format(
                     (timeit.default_timer() - self.thread_startup_timer) * 1000))
+
             self.ready.set()
 
             while self.running:
-                # Pause loop to modify conditional statements.
-                # Prevents execution of conditional while variables are
-                # being modified.
-                if self.pause_loop:
-                    self.verify_pause_loop = True
-                    while self.pause_loop:
-                        time.sleep(0.1)
-
-                if (self.is_activated and self.timer_period and
-                        self.timer_period < time.time()):
-                    check_approved = False
+                try:
+                    # Pause loop to modify conditional statements.
+                    # Prevents execution of conditional while variables are
+                    # being modified.
+                    if self.pause_loop:
+                        self.verify_pause_loop = True
+                        while self.pause_loop:
+                            time.sleep(0.1)
 
                     # Check if the conditional period has elapsed
-                    if self.timer_refractory_period < time.time():
+                    if (self.is_activated and self.timer_period and
+                            self.timer_period < time.time() and
+                            self.timer_refractory_period < time.time()):
+
                         while self.timer_period < time.time():
                             self.timer_period += self.period
-                        check_approved = True
 
-                    if check_approved:
-                        try:
-                            self.check_conditionals()
-                        except Exception as except_msg:
-                            self.logger.exception("check_conditionals() Error: {err}".format(
-                                err=except_msg))
+                        self.attempt_execute(self.check_conditionals, 3, 10)
 
-                time.sleep(self.sample_rate)
-
-            self.running = False
-            self.logger.info(
-                "Deactivated in {:.1f} ms".format(
-                    (timeit.default_timer() -
-                     self.thread_shutdown_timer) * 1000))
+                except Exception as except_msg:
+                    self.logger.exception(
+                        "Controller Error: {err}".format(
+                            err=except_msg))
+                finally:
+                    time.sleep(self.sample_rate)
         except Exception as except_msg:
-            self.logger.exception("Run Error: {err}".format(
-                err=except_msg))
+            self.logger.exception("Run Error: {err}".format(err=except_msg))
+            self.thread_shutdown_timer = timeit.default_timer()
+        finally:
+            self.running = False
+            self.logger.info("Deactivated in {:.1f} ms".format(
+                (timeit.default_timer() - self.thread_shutdown_timer) * 1000))
 
     def refresh_settings(self):
         """ Signal to pause the main loop and wait for verification, the refresh settings """
@@ -188,10 +178,7 @@ class ConditionalController(threading.Thread):
         self.smtp_wait_timer = now + 3600
         self.timer_period = now + self.start_offset
 
-        if self.log_level_debug:
-            self.logger.setLevel(logging.DEBUG)
-        else:
-            self.logger.setLevel(logging.INFO)
+        self.set_log_level_debug(self.log_level_debug)
 
     def check_conditionals(self):
         """
@@ -233,11 +220,3 @@ class ConditionalController(threading.Thread):
         spec.loader.exec_module(conditional_run)
         run = conditional_run.ConditionalRun(self.logger, self.function_id, message)
         run.conditional_code_run()
-
-
-    def is_running(self):
-        return self.running
-
-    def stop_controller(self):
-        self.thread_shutdown_timer = timeit.default_timer()
-        self.running = False

@@ -137,29 +137,34 @@ class OutputController(threading.Thread):
             self.running = True
 
             while self.running:
-                current_time = datetime.datetime.now()
-                for output_id in self.output_id:
-                    # Is the current time past the time the output was supposed
-                    # to turn off?
-                    if (self.output_on_until[output_id] < current_time and
-                            self.output_on_duration[output_id] and
-                            not self.output_off_triggered[output_id] and
-                            (self.output_type[output_id] in ['command',
-                                                             'command_pwn',
-                                                             'python',
-                                                             'python_pwm'] or
-                             self.output_pin[output_id] is not None)):
+                try:
+                    current_time = datetime.datetime.now()
+                    for output_id in self.output_id:
+                        # Is the current time past the time the output was supposed
+                        # to turn off?
+                        if (self.output_on_until[output_id] < current_time and
+                                self.output_on_duration[output_id] and
+                                not self.output_off_triggered[output_id] and
+                                (self.output_type[output_id] in ['command',
+                                                                 'command_pwn',
+                                                                 'python',
+                                                                 'python_pwm'] or
+                                 self.output_pin[output_id] is not None)):
 
-                        # Use threads to prevent a slow execution of a
-                        # process that could slow the loop
-                        self.output_off_triggered[output_id] = True
-                        turn_output_off = threading.Thread(
-                            target=self.output_on_off,
-                            args=(output_id,
-                                  'off',))
-                        turn_output_off.start()
-
-                time.sleep(self.sample_rate)
+                            # Use threads to prevent a slow execution of a
+                            # process that could slow the loop
+                            self.output_off_triggered[output_id] = True
+                            turn_output_off = threading.Thread(
+                                target=self.output_on_off,
+                                args=(output_id,
+                                      'off',))
+                            turn_output_off.start()
+                except Exception as except_msg:
+                    self.logger.exception(
+                        "Controller Error: {err}".format(
+                            err=except_msg))
+                finally:
+                    time.sleep(self.sample_rate)
         finally:
             self.running = False
             # Turn all outputs off
@@ -173,7 +178,7 @@ class OutputController(threading.Thread):
             self.cleanup_gpio()
             self.logger.info(
                 "Output controller deactivated in {:.1f} ms".format(
-                    (timeit.default_timer() - self.thread_shutdown_timer)*1000))
+                    (timeit.default_timer() - self.thread_shutdown_timer) * 1000))
 
     def output_on_off(self, output_id, state,
                       duration=0.0,

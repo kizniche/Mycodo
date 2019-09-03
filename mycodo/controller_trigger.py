@@ -23,13 +23,13 @@
 #  Contact at kylegabriel.com
 #
 import datetime
-import logging
 import threading
 import time
 import timeit
 
 import RPi.GPIO as GPIO
 
+from mycodo.base_controller import AbstractController
 from mycodo.config import SQL_DATABASE_MYCODO
 from mycodo.databases.models import Input
 from mycodo.databases.models import Math
@@ -52,7 +52,7 @@ from mycodo.utils.system_pi import time_between_range
 MYCODO_DB_PATH = 'sqlite:///' + SQL_DATABASE_MYCODO
 
 
-class TriggerController(threading.Thread):
+class TriggerController(AbstractController, threading.Thread):
     """
     Class to operate Trigger controller
 
@@ -70,17 +70,11 @@ class TriggerController(threading.Thread):
     """
     def __init__(self, ready, function_id):
         threading.Thread.__init__(self)
-
-        self.logger = logging.getLogger(
-            "mycodo.trigger_{id}".format(id=function_id.split('-')[0]))
+        super(TriggerController, self).__init__(ready, unique_id=function_id, name=__name__)
 
         self.function_id = function_id
-        self.running = False
-        self.thread_startup_timer = timeit.default_timer()
-        self.thread_shutdown_timer = 0
         self.pause_loop = False
         self.verify_pause_loop = True
-        self.ready = ready
         self.control = DaemonControl()
 
         self.sample_rate = db_retrieve_table_daemon(
@@ -117,76 +111,80 @@ class TriggerController(threading.Thread):
 
     def run(self):
         try:
-            self.running = True
-            self.logger.info(
-                "Activated in {:.1f} ms".format(
-                    (timeit.default_timer() - self.thread_startup_timer) * 1000))
+            self.logger.info("Activated in {:.1f} ms".format(
+                (timeit.default_timer() - self.thread_startup_timer) * 1000))
+
             self.ready.set()
 
             while self.running:
-                # Pause loop to modify trigger.
-                # Prevents execution of trigger while variables are
-                # being modified.
-                if self.pause_loop:
-                    self.verify_pause_loop = True
-                    while self.pause_loop:
-                        time.sleep(0.1)
+                try:
+                    # Pause loop to modify trigger.
+                    # Prevents execution of trigger while variables are
+                    # being modified.
+                    if self.pause_loop:
+                        self.verify_pause_loop = True
+                        while self.pause_loop:
+                            time.sleep(0.1)
 
-                if self.trigger_type == 'trigger_infrared_remote_input':
-                    self.infrared_remote_input()
+                    if self.trigger_type == 'trigger_infrared_remote_input':
+                        self.infrared_remote_input()
 
-                elif (self.is_activated and self.timer_period and
-                        self.timer_period < time.time()):
-                    check_approved = False
+                    elif (self.is_activated and self.timer_period and
+                            self.timer_period < time.time()):
+                        check_approved = False
 
-                    # Check if the trigger period has elapsed
-                    if self.trigger_type in ['trigger_sunrise_sunset',
-                                             'trigger_run_pwm_method']:
-                        while self.running and self.timer_period < time.time():
-                            self.timer_period = calculate_sunrise_sunset_epoch(self.trigger)
+                        # Check if the trigger period has elapsed
+                        if self.trigger_type in ['trigger_sunrise_sunset',
+                                                 'trigger_run_pwm_method']:
+                            while self.running and self.timer_period < time.time():
+                                self.timer_period = calculate_sunrise_sunset_epoch(self.trigger)
 
-                        if self.trigger_type == 'trigger_run_pwm_method':
-                            # Only execute trigger actions when started
-                            # Now only set PWM output
-                            pwm_duty_cycle, ended = self.get_method_output(
-                                self.unique_id_1)
-                            if not ended:
-                                self.set_output_duty_cycle(
-                                    self.unique_id_2,
-                                    pwm_duty_cycle)
-                                if self.trigger_actions_at_period:
-                                    trigger_function_actions(
-                                        self.function_id,
-                                        debug=self.log_level_debug)
-                        else:
+                            if self.trigger_type == 'trigger_run_pwm_method':
+                                # Only execute trigger actions when started
+                                # Now only set PWM output
+                                pwm_duty_cycle, ended = self.get_method_output(
+                                    self.unique_id_1)
+                                if not ended:
+                                    self.set_output_duty_cycle(
+                                        self.unique_id_2,
+                                        pwm_duty_cycle)
+                                    if self.trigger_actions_at_period:
+                                        trigger_function_actions(
+                                            self.function_id,
+                                            debug=self.log_level_debug)
+                            else:
+                                check_approved = True
+
+                        elif (self.trigger_type in [
+                                'trigger_timer_daily_time_point',
+                                'trigger_timer_daily_time_span',
+                                'trigger_timer_duration']):
+                            if self.trigger_type == 'trigger_timer_daily_time_point':
+                                self.timer_period = epoch_of_next_time(
+                                    '{hm}:00'.format(hm=self.timer_start_time))
+                            elif self.trigger_type in ['trigger_timer_duration',
+                                                       'trigger_timer_daily_time_span']:
+                                while self.running and self.timer_period < time.time():
+                                    self.timer_period += self.period
                             check_approved = True
 
-                    elif (self.trigger_type in [
-                            'trigger_timer_daily_time_point',
-                            'trigger_timer_daily_time_span',
-                            'trigger_timer_duration']):
-                        if self.trigger_type == 'trigger_timer_daily_time_point':
-                            self.timer_period = epoch_of_next_time(
-                                '{hm}:00'.format(hm=self.timer_start_time))
-                        elif self.trigger_type in ['trigger_timer_duration',
-                                                   'trigger_timer_daily_time_span']:
-                            while self.running and self.timer_period < time.time():
-                                self.timer_period += self.period
-                        check_approved = True
+                        if check_approved:
+                            self.attempt_execute(self.check_triggers, 3, 10)
 
-                    if check_approved:
-                        self.check_triggers()
-
-                time.sleep(self.sample_rate)
-
-            self.running = False
-            self.logger.info(
-                "Deactivated in {:.1f} ms".format(
-                    (timeit.default_timer() -
-                     self.thread_shutdown_timer) * 1000))
+                except Exception as except_msg:
+                    self.logger.exception(
+                        "Controller Error: {err}".format(
+                            err=except_msg))
+                finally:
+                    time.sleep(self.sample_rate)
         except Exception as except_msg:
             self.logger.exception("Run Error: {err}".format(
                 err=except_msg))
+            self.thread_shutdown_timer = timeit.default_timer()
+        finally:
+            self.running = False
+            self.logger.info("Deactivated in {:.1f} ms".format(
+                    (timeit.default_timer() - self.thread_shutdown_timer) * 1000))
 
     def refresh_settings(self):
         """ Signal to pause the main loop and wait for verification, the refresh settings """
@@ -211,10 +209,7 @@ class TriggerController(threading.Thread):
         self.is_activated = self.trigger.is_activated
         self.log_level_debug = self.trigger.log_level_debug
 
-        if self.log_level_debug:
-            self.logger.setLevel(logging.DEBUG)
-        else:
-            self.logger.setLevel(logging.INFO)
+        self.set_log_level_debug(self.log_level_debug)
 
         self.smtp_max_count = db_retrieve_table_daemon(
             SMTP, entry='first').hourly_max
@@ -371,9 +366,6 @@ class TriggerController(threading.Thread):
         "notify me@gmail.com" is the Trigger Action to execute if the
         Trigger is True.
         """
-        logger_cond = logging.getLogger("mycodo.conditional_{id}".format(
-            id=self.function_id))
-
         now = time.time()
         timestamp = datetime.datetime.fromtimestamp(now).strftime(
             '%Y-%m-%d %H:%M:%S')
@@ -416,7 +408,7 @@ class TriggerController(threading.Thread):
 
         if not device:
             message += " Error: Controller not Input, Math, Output, or PID"
-            logger_cond.error(message)
+            self.logger.error(message)
             return
 
         # If the edge detection variable is set, calling this function will
@@ -429,13 +421,13 @@ class TriggerController(threading.Thread):
                 gpio_state = GPIO.input(int(input_dev.pin))
             except:
                 gpio_state = None
-                logger_cond.error("Exception reading the GPIO pin")
+                self.logger.error("Exception reading the GPIO pin")
             if (gpio_state is not None and
                     gpio_state == trigger.if_sensor_gpio_state):
                 message += " GPIO State Detected (state = {state}).".format(
                     state=trigger.if_sensor_gpio_state)
             else:
-                logger_cond.error("GPIO not configured correctly or GPIO state not verified")
+                self.logger.error("GPIO not configured correctly or GPIO state not verified")
                 return
 
         # Calculate the sunrise/sunset times and find the next time this trigger should trigger
@@ -479,10 +471,3 @@ class TriggerController(threading.Thread):
             trigger_function_actions(self.function_id,
                                      message=message,
                                      debug=self.log_level_debug)
-
-    def is_running(self):
-        return self.running
-
-    def stop_controller(self):
-        self.thread_shutdown_timer = timeit.default_timer()
-        self.running = False
