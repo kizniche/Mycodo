@@ -37,23 +37,24 @@ class AbstractController(object):
             "method".format(cls=type(self).__name__))
         raise NotImplementedError
 
-    def attempt_execute(self, func, times_attempt, sleep_sec):
-        for i in range(times_attempt):
+    def attempt_execute(self, func, times=3, delay_sec=10):
+        """ Attempt to execute a function several times with a delay between attempts """
+        for i in range(times):
             try:
                 func()
                 break
             except Exception:
-                if i+1 < times_attempt:
+                if i+1 < times:
                     self.logger.exception(
                         "Exception executing on attempt {} of {}. Waiting "
                         "{} seconds and trying again.".format(
-                            i + 1, times_attempt, sleep_sec))
-                    time.sleep(sleep_sec)
+                            i + 1, times, delay_sec))
+                    time.sleep(delay_sec)
                 else:
                     self.logger.exception(
                         "Exception executing on attempt {} of {}. Could not "
                         "execute {}()".format(
-                            i + 1, times_attempt, func.__name__))
+                            i + 1, times, func.__name__))
 
     def set_log_level_debug(self, log_level_debug):
         if log_level_debug:

@@ -123,7 +123,7 @@ class ConditionalController(AbstractController, threading.Thread):
                         while self.timer_period < time.time():
                             self.timer_period += self.period
 
-                        self.attempt_execute(self.check_conditionals, 3, 10)
+                        self.attempt_execute(self.check_conditionals)
 
                 except Exception as except_msg:
                     self.logger.exception(

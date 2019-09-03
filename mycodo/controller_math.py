@@ -170,7 +170,7 @@ class MathController(AbstractController, threading.Thread):
                         while time.time() > self.timer:
                             self.timer += self.period
 
-                        self.attempt_execute(self.calculate_math, 3, 10)
+                        self.attempt_execute(self.calculate_math)
 
                 except Exception as except_msg:
                     self.logger.exception(

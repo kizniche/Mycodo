@@ -226,7 +226,7 @@ class PIDController(AbstractController, threading.Thread):
                         while time.time() > self.timer:
                             self.timer = self.timer + self.period
 
-                        self.attempt_execute(self.check_pid, 3, 10)
+                        self.attempt_execute(self.check_pid)
 
                 except Pyro4.errors.TimeoutError:
                     self.logger.exception("Pyro4 TimeoutError")

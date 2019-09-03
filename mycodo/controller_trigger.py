@@ -169,7 +169,7 @@ class TriggerController(AbstractController, threading.Thread):
                             check_approved = True
 
                         if check_approved:
-                            self.attempt_execute(self.check_triggers, 3, 10)
+                            self.attempt_execute(self.check_triggers)
 
                 except Exception as except_msg:
                     self.logger.exception(
