@@ -88,7 +88,6 @@ class MathController(AbstractController, threading.Thread):
         self.device_measurements = None
 
         # General variables
-        self.unique_id = None
         self.name = ''
         self.math_type = None
         self.is_activated = None
