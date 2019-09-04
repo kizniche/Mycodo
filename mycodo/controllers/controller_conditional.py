@@ -48,15 +48,17 @@ class ConditionalController(AbstractController, threading.Thread):
     This code typically queries measurement data and causes execution of function
     actions as a result of the conditions set by the user.
     """
-    def __init__(self, ready, function_id):
+    def __init__(self, ready, unique_id):
         threading.Thread.__init__(self)
-        super(ConditionalController, self).__init__(ready, unique_id=function_id, name=__name__)
+        super(ConditionalController, self).__init__(ready, unique_id=unique_id, name=__name__)
 
-        self.function_id = function_id
+        self.unique_id = unique_id
+        self.sample_rate = None
+
+        self.control = DaemonControl()
+
         self.pause_loop = False
         self.verify_pause_loop = True
-        self.control = DaemonControl()
-        self.sample_rate = None
         self.is_activated = None
         self.smtp_max_count = None
         self.email_count = None
@@ -81,7 +83,7 @@ class ConditionalController(AbstractController, threading.Thread):
         self.method_end_time = None
         self.method_start_act = None
 
-    def run(self):
+    def loop(self):
         # Pause loop to modify conditional statements.
         # Prevents execution of conditional while variables are
         # being modified.
@@ -113,7 +115,7 @@ class ConditionalController(AbstractController, threading.Thread):
             SMTP, entry='first').hourly_max
 
         cond = db_retrieve_table_daemon(
-            Conditional, unique_id=self.function_id)
+            Conditional, unique_id=self.unique_id)
         self.is_activated = cond.is_activated
         self.conditional_statement = cond.conditional_statement
         self.period = cond.period
@@ -145,10 +147,10 @@ class ConditionalController(AbstractController, threading.Thread):
         Check if any Conditionals are activated and execute their code
         """
         file_run = '{}/conditional_{}.py'.format(
-            PATH_PYTHON_CODE_USER, self.function_id)
+            PATH_PYTHON_CODE_USER, self.unique_id)
 
         cond = db_retrieve_table_daemon(
-            Conditional, unique_id=self.function_id, entry='first')
+            Conditional, unique_id=self.unique_id, entry='first')
 
         now = time.time()
         timestamp = datetime.datetime.fromtimestamp(
@@ -156,7 +158,7 @@ class ConditionalController(AbstractController, threading.Thread):
         message = "{ts}\n[Conditional {id}]\n[Name: {name}]".format(
             ts=timestamp,
             name=cond.name,
-            id=self.function_id)
+            id=self.unique_id)
 
         self.logger.debug("Conditional Statement (pre-replacement):\n{}".format(self.conditional_statement))
 
@@ -178,5 +180,5 @@ class ConditionalController(AbstractController, threading.Thread):
         spec = importlib.util.spec_from_file_location(module_name, file_run)
         conditional_run = importlib.util.module_from_spec(spec)
         spec.loader.exec_module(conditional_run)
-        run = conditional_run.ConditionalRun(self.logger, self.function_id, message)
+        run = conditional_run.ConditionalRun(self.logger, self.unique_id, message)
         run.conditional_code_run()

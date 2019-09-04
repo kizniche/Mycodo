@@ -73,18 +73,18 @@ class MathController(AbstractController, threading.Thread):
     """
     Class to operate discrete PID controller
     """
-    def __init__(self, ready, math_id):
+    def __init__(self, ready, unique_id):
         threading.Thread.__init__(self)
-        super(MathController, self).__init__(ready, unique_id=math_id, name=__name__)
+        super(MathController, self).__init__(ready, unique_id=unique_id, name=__name__)
+
+        self.unique_id = unique_id
+        self.sample_rate = None
+
+        self.control = DaemonControl()
 
         self.measurements = None
         self.pause_loop = False
         self.verify_pause_loop = True
-        self.control = DaemonControl()
-
-        self.math_id = math_id
-
-        self.sample_rate = None
         self.device_measurements = None
 
         # General variables
@@ -149,11 +149,11 @@ class MathController(AbstractController, threading.Thread):
         self.sample_rate = db_retrieve_table_daemon(
             Misc, entry='first').sample_rate_controller_math
 
-        math = db_retrieve_table_daemon(Math, unique_id=self.math_id)
+        math = db_retrieve_table_daemon(Math, unique_id=self.unique_id)
 
         self.device_measurements = db_retrieve_table_daemon(
             DeviceMeasurements).filter(
-            DeviceMeasurements.device_id == self.math_id)
+            DeviceMeasurements.device_id == self.unique_id)
 
         # General variables
         self.unique_id = math.unique_id

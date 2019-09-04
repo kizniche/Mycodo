@@ -79,15 +79,17 @@ class LCDController(AbstractController, threading.Thread):
     """
     Class to operate LCD controller
     """
-    def __init__(self, ready, lcd_id):
+    def __init__(self, ready, unique_id):
         threading.Thread.__init__(self)
-        super(LCDController, self).__init__(ready, unique_id=lcd_id, name=__name__)
+        super(LCDController, self).__init__(ready, unique_id=unique_id, name=__name__)
 
+        self.unique_id = unique_id
         self.sample_rate = 1
+
         self.flash_lcd_on = False
         self.lcd_initialized = False
         self.lcd_is_on = False
-        self.lcd_id = lcd_id
+        
         self.display_sets = []
         self.display_set_count = 0
 
@@ -176,7 +178,7 @@ class LCDController(AbstractController, threading.Thread):
         self.lcd_out.lcd_write_lines(line_1, line_2, '', '')
 
     def initialize_variables(self):
-        lcd_dev = db_retrieve_table_daemon(LCD, unique_id=self.lcd_id)
+        lcd_dev = db_retrieve_table_daemon(LCD, unique_id=self.unique_id)
         self.lcd_type = lcd_dev.lcd_type
         self.lcd_name = lcd_dev.name
         self.lcd_i2c_address = int(lcd_dev.location, 16)
@@ -539,8 +541,8 @@ class LCDController(AbstractController, threading.Thread):
         """ Enable the LCD to begin or end flashing """
         if state:
             self.flash_lcd_on = True
-            return 1, "LCD {} Flashing Turned On".format(self.lcd_id)
+            return 1, "LCD {} Flashing Turned On".format(self.unique_id)
         else:
             self.flash_lcd_on = False
             self.lcd_backlight(True)
-            return 1, "LCD {} Reset".format(self.lcd_id)
+            return 1, "LCD {} Reset".format(self.unique_id)

@@ -72,24 +72,22 @@ class InputController(AbstractController, threading.Thread):
     """
     Class for controlling the input
     """
-    def __init__(self, ready, input_id):
+    def __init__(self, ready, unique_id):
         threading.Thread.__init__(self)
-        super(InputController, self).__init__(ready, unique_id=input_id, name=__name__)
+        super(InputController, self).__init__(ready, unique_id=unique_id, name=__name__)
 
-        self.input_id = input_id
+        self.unique_id = unique_id
+        self.sample_rate = None
+
+        self.control = DaemonControl()
 
         self.stop_iteration_counter = 0
         self.lock = {}
         self.measurement = None
         self.measurement_success = False
-        self.control = DaemonControl()
         self.pause_loop = False
         self.verify_pause_loop = True
-
-        self.dict_inputs = parse_input_information()
-
-        self.sample_rate = None
-
+        self.dict_inputs = None
         self.device_measurements = None
         self.conversions = None
         self.input_dev = None
@@ -248,11 +246,11 @@ class InputController(AbstractController, threading.Thread):
             Misc, entry='first').sample_rate_controller_input
 
         input_dev = db_retrieve_table_daemon(
-            Input, unique_id=self.input_id)
+            Input, unique_id=self.unique_id)
 
         self.device_measurements = db_retrieve_table_daemon(
             DeviceMeasurements).filter(
-            DeviceMeasurements.device_id == self.input_id)
+            DeviceMeasurements.device_id == self.unique_id)
 
         self.conversions = db_retrieve_table_daemon(Conversion)
 
@@ -470,7 +468,7 @@ class InputController(AbstractController, threading.Thread):
                                     ts=timestamp,
                                     cid=each_trigger.id,
                                     cname=each_trigger.name,
-                                    oid=self.input_id,
+                                    oid=self.unique_id,
                                     name=self.input_name,
                                     state=state_str,
                                     pin=bcm_pin)
@@ -497,7 +495,7 @@ class InputController(AbstractController, threading.Thread):
                     each_measurement)
         self.logger.debug(
             "Adding measurements to InfluxDB with ID {}: {}".format(
-                self.input_id, measurements_record))
+                self.unique_id, measurements_record))
         return measurements_record
 
     def force_measurements(self):

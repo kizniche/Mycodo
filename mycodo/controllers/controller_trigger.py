@@ -67,15 +67,17 @@ class TriggerController(AbstractController, threading.Thread):
     the Input and Output controllers, respectively, and the
     trigger_all_actions() function in this class will be ran.
     """
-    def __init__(self, ready, function_id):
+    def __init__(self, ready, unique_id):
         threading.Thread.__init__(self)
-        super(TriggerController, self).__init__(ready, unique_id=function_id, name=__name__)
+        super(TriggerController, self).__init__(ready, unique_id=unique_id, name=__name__)
 
-        self.function_id = function_id
+        self.unique_id = unique_id
+        self.sample_rate = None
+
+        self.control = DaemonControl()
+        
         self.pause_loop = False
         self.verify_pause_loop = True
-        self.control = DaemonControl()
-        self.sample_rate = None
         self.trigger = None
         self.trigger_type = None
         self.trigger_name = None
@@ -136,7 +138,7 @@ class TriggerController(AbstractController, threading.Thread):
                             pwm_duty_cycle)
                         if self.trigger_actions_at_period:
                             trigger_function_actions(
-                                self.function_id,
+                                self.unique_id,
                                 debug=self.log_level_debug)
                 else:
                     check_approved = True
@@ -185,7 +187,7 @@ class TriggerController(AbstractController, threading.Thread):
             SMTP, entry='first').hourly_max
 
         self.trigger = db_retrieve_table_daemon(
-            Trigger, unique_id=self.function_id)
+            Trigger, unique_id=self.unique_id)
         self.trigger_type = self.trigger.trigger_type
         self.trigger_name = self.trigger.name
         self.is_activated = self.trigger.is_activated
@@ -236,7 +238,7 @@ class TriggerController(AbstractController, threading.Thread):
                         self.trigger.unique_id_1)
                     self.set_output_duty_cycle(
                         self.trigger.unique_id_2, pwm_duty_cycle)
-                    trigger_function_actions(self.function_id,
+                    trigger_function_actions(self.unique_id,
                                              debug=self.log_level_debug)
             else:
                 self.timer_period = now
@@ -273,7 +275,7 @@ class TriggerController(AbstractController, threading.Thread):
                     with session_scope(MYCODO_DB_PATH) as db_session:
                         mod_conditional = db_session.query(Trigger)
                         mod_conditional = mod_conditional.filter(
-                            Trigger.unique_id == self.function_id).first()
+                            Trigger.unique_id == self.unique_id).first()
                         mod_conditional.is_activated = False
                         db_session.commit()
                     self.stop_controller()
@@ -292,7 +294,7 @@ class TriggerController(AbstractController, threading.Thread):
                     with session_scope(MYCODO_DB_PATH) as db_session:
                         mod_conditional = db_session.query(Trigger)
                         mod_conditional = mod_conditional.filter(
-                            Trigger.unique_id == self.function_id).first()
+                            Trigger.unique_id == self.unique_id).first()
                         mod_conditional.method_start_time = self.method_start_time
                         mod_conditional.method_end_time = self.method_end_time
                         db_session.commit()
@@ -300,7 +302,7 @@ class TriggerController(AbstractController, threading.Thread):
     def get_method_output(self, method_id):
         """ Get output variable from method """
         this_controller = db_retrieve_table_daemon(
-            Trigger, unique_id=self.function_id)
+            Trigger, unique_id=self.unique_id)
         setpoint, ended = calculate_method_setpoint(
             method_id,
             Trigger,
@@ -319,7 +321,7 @@ class TriggerController(AbstractController, threading.Thread):
             with session_scope(MYCODO_DB_PATH) as db_session:
                 mod_conditional = db_session.query(Trigger)
                 mod_conditional = mod_conditional.filter(
-                    Trigger.unique_id == self.function_id).first()
+                    Trigger.unique_id == self.unique_id).first()
                 mod_conditional.is_activated = False
                 db_session.commit()
             self.is_activated = False
@@ -348,10 +350,10 @@ class TriggerController(AbstractController, threading.Thread):
         message = "{ts}\n[Trigger {id} ({name})]".format(
             ts=timestamp,
             name=self.trigger_name,
-            id=self.function_id)
+            id=self.unique_id)
 
         trigger = db_retrieve_table_daemon(
-            Trigger, unique_id=self.function_id, entry='first')
+            Trigger, unique_id=self.unique_id, entry='first')
 
         device_id = trigger.measurement.split(',')[0]
 
@@ -419,7 +421,7 @@ class TriggerController(AbstractController, threading.Thread):
 
         # If the code hasn't returned by now, action should be executed
         trigger_function_actions(
-            self.function_id,
+            self.unique_id,
             message=message,
             debug=self.log_level_debug)
 
@@ -440,10 +442,10 @@ class TriggerController(AbstractController, threading.Thread):
             message = "{ts}\n[Trigger {id} ({name})]".format(
                 ts=timestamp,
                 name=self.trigger_name,
-                id=self.function_id)
+                id=self.unique_id)
             message += "\nInfrared Remote Input detected " \
                        "'{word}' on program '{prog}'".format(
                         word=self.word, prog=self.program)
-            trigger_function_actions(self.function_id,
+            trigger_function_actions(self.unique_id,
                                      message=message,
                                      debug=self.log_level_debug)

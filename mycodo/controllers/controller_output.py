@@ -57,11 +57,11 @@ class OutputController(AbstractController, threading.Thread):
         threading.Thread.__init__(self)
         super(OutputController, self).__init__(ready, unique_id=None, name=__name__)
 
-        self.set_log_level_debug(debug)
+        self.sample_rate = None
 
         self.control = DaemonControl()
 
-        self.sample_rate = None
+        self.set_log_level_debug(debug)
 
         # SMTP options
         self.smtp_max_count = None

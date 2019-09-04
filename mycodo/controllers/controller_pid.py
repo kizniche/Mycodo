@@ -83,14 +83,15 @@ class PIDController(AbstractController, threading.Thread):
     """
     Class to operate discrete PID controller in Mycodo
     """
-    def __init__(self, ready, pid_id):
+    def __init__(self, ready, unique_id):
         threading.Thread.__init__(self)
-        super(PIDController, self).__init__(ready, unique_id=pid_id, name=__name__)
+        super(PIDController, self).__init__(ready, unique_id=unique_id, name=__name__)
 
-        self.pid_id = pid_id
+        self.unique_id = unique_id
+        self.sample_rate = None
+
         self.control = DaemonControl()
 
-        self.sample_rate = None
         self.device_measurements = None
         self.device_id = None
         self.measurement_id = None
@@ -192,7 +193,7 @@ class PIDController(AbstractController, threading.Thread):
         self.device_measurements = db_retrieve_table_daemon(
             DeviceMeasurements)
 
-        pid = db_retrieve_table_daemon(PID, unique_id=self.pid_id)
+        pid = db_retrieve_table_daemon(PID, unique_id=self.unique_id)
 
         self.device_id = pid.measurement.split(',')[0]
         self.measurement_id = pid.measurement.split(',')[1]
@@ -290,7 +291,7 @@ class PIDController(AbstractController, threading.Thread):
                 if self.method_id != '':
                     # Update setpoint using a method
                     this_pid = db_retrieve_table_daemon(
-                        PID, unique_id=self.pid_id)
+                        PID, unique_id=self.unique_id)
                     setpoint, ended = calculate_method_setpoint(
                         self.method_id,
                         PID,
@@ -357,7 +358,7 @@ class PIDController(AbstractController, threading.Thread):
         method_data = method_data.filter(MethodData.method_id == method_id)
         method_data_repeat = method_data.filter(
             MethodData.duration_sec == 0).first()
-        pid = db_retrieve_table_daemon(PID, unique_id=self.pid_id)
+        pid = db_retrieve_table_daemon(PID, unique_id=self.unique_id)
         self.method_type = method.method_type
         self.method_start_act = pid.method_start_time
         self.method_start_time = None
@@ -378,7 +379,7 @@ class PIDController(AbstractController, threading.Thread):
 
                 with session_scope(MYCODO_DB_PATH) as db_session:
                     mod_pid = db_session.query(PID).filter(
-                        PID.unique_id == self.pid_id).first()
+                        PID.unique_id == self.unique_id).first()
                     mod_pid.method_start_time = self.method_start_time
                     mod_pid.method_end_time = self.method_end_time
                     db_session.commit()
@@ -426,7 +427,7 @@ class PIDController(AbstractController, threading.Thread):
 
         measurement_dict = {}
         measurements = self.device_measurements.filter(
-            DeviceMeasurements.device_id == self.pid_id).all()
+            DeviceMeasurements.device_id == self.unique_id).all()
         for each_channel, each_measurement in enumerate(measurements):
             if (each_measurement.channel not in measurement_dict and
                     each_measurement.channel < len(list_measurements)):
@@ -456,7 +457,7 @@ class PIDController(AbstractController, threading.Thread):
                         'value': list_measurements[each_channel]
                     }
 
-        add_measurements_influxdb(self.pid_id, measurement_dict)
+        add_measurements_influxdb(self.unique_id, measurement_dict)
 
     def update_pid_output(self, current_value):
         """
@@ -869,7 +870,7 @@ class PIDController(AbstractController, threading.Thread):
     def write_pid_output_influxdb(self, unit, measurement, channel, value):
         write_pid_out_db = threading.Thread(
             target=write_influxdb_value,
-            args=(self.pid_id,
+            args=(self.unique_id,
                   unit,
                   value,),
             kwargs={'measure': measurement,
@@ -904,7 +905,7 @@ class PIDController(AbstractController, threading.Thread):
         self.setpoint = float(setpoint)
         with session_scope(MYCODO_DB_PATH) as db_session:
             mod_pid = db_session.query(PID).filter(
-                PID.unique_id == self.pid_id).first()
+                PID.unique_id == self.unique_id).first()
             mod_pid.setpoint = setpoint
             db_session.commit()
         return "Setpoint set to {sp}".format(sp=setpoint)
@@ -913,7 +914,7 @@ class PIDController(AbstractController, threading.Thread):
         """ Set the method of PID """
         with session_scope(MYCODO_DB_PATH) as db_session:
             mod_pid = db_session.query(PID).filter(
-                PID.unique_id == self.pid_id).first()
+                PID.unique_id == self.unique_id).first()
             mod_pid.method_id = method_id
 
             if method_id == '':
@@ -942,7 +943,7 @@ class PIDController(AbstractController, threading.Thread):
         self.Kp = float(p)
         with session_scope(MYCODO_DB_PATH) as db_session:
             mod_pid = db_session.query(PID).filter(
-                PID.unique_id == self.pid_id).first()
+                PID.unique_id == self.unique_id).first()
             mod_pid.p = p
             db_session.commit()
         return "Kp set to {kp}".format(kp=self.Kp)
@@ -952,7 +953,7 @@ class PIDController(AbstractController, threading.Thread):
         self.Ki = float(i)
         with session_scope(MYCODO_DB_PATH) as db_session:
             mod_pid = db_session.query(PID).filter(
-                PID.unique_id == self.pid_id).first()
+                PID.unique_id == self.unique_id).first()
             mod_pid.i = i
             db_session.commit()
         return "Ki set to {ki}".format(ki=self.Ki)
@@ -962,7 +963,7 @@ class PIDController(AbstractController, threading.Thread):
         self.Kd = float(d)
         with session_scope(MYCODO_DB_PATH) as db_session:
             mod_pid = db_session.query(PID).filter(
-                PID.unique_id == self.pid_id).first()
+                PID.unique_id == self.unique_id).first()
             mod_pid.d = d
             db_session.commit()
         return "Kd set to {kd}".format(kd=self.Kd)
@@ -996,7 +997,7 @@ class PIDController(AbstractController, threading.Thread):
         if self.method_id != '' and ended_normally:
             with session_scope(MYCODO_DB_PATH) as db_session:
                 mod_pid = db_session.query(PID).filter(
-                    PID.unique_id == self.pid_id).first()
+                    PID.unique_id == self.unique_id).first()
                 mod_pid.method_start_time = 'Ended'
                 mod_pid.method_end_time = None
                 db_session.commit()
@@ -1005,7 +1006,7 @@ class PIDController(AbstractController, threading.Thread):
         if deactivate_pid:
             with session_scope(MYCODO_DB_PATH) as db_session:
                 mod_pid = db_session.query(PID).filter(
-                    PID.unique_id == self.pid_id).first()
+                    PID.unique_id == self.unique_id).first()
                 mod_pid.is_activated = False
                 mod_pid.autotune_activated = False
                 db_session.commit()
