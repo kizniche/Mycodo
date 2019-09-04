@@ -109,10 +109,14 @@ class InputModule(AbstractInput):
 
             # Input pin for the potentiometer on the Waveshare Precision ADC board
             POTI = POS_AIN0 | NEG_AINCOM
+
             # Light dependant resistor
             LDR = POS_AIN1 | NEG_AINCOM
+
+            # The other external input screw terminals of the Waveshare board
             EXT2, EXT3, EXT4 = POS_AIN2 | NEG_AINCOM, POS_AIN3 | NEG_AINCOM, POS_AIN4 | NEG_AINCOM
             EXT5, EXT6, EXT7 = POS_AIN5 | NEG_AINCOM, POS_AIN6 | NEG_AINCOM, POS_AIN7 | NEG_AINCOM
+
             self.CH_SEQUENCE = (POTI, LDR, EXT2, EXT3, EXT4, EXT5, EXT6, EXT7)
 
             self.adc_calibration = None
@@ -172,16 +176,3 @@ class InputModule(AbstractInput):
                 self.value_set(channel, voltages_list[channel])
 
         return self.return_dict
-
-
-if __name__ == "__main__":
-    from types import SimpleNamespace
-    settings = SimpleNamespace()
-    settings.id = 1
-    settings.unique_id = '0000-0000'
-    settings.adc_gain = '1'
-    settings.adc_sample_speed = '10'
-    settings.channels = 8
-
-    measurements = InputModule(settings).next()
-    print("Measurements: {}".format(InputModule(settings).next()))

@@ -85,17 +85,3 @@ class InputModule(AbstractInput):
                     self.adc.read_adc(channel, gain=self.adc_gain) / 10000.0)
 
         return self.return_dict
-
-
-if __name__ == "__main__":
-    from types import SimpleNamespace
-    settings = SimpleNamespace()
-    settings.id = 1
-    settings.unique_id = '0000-0000'
-    settings.i2c_location = '0x48'
-    settings.i2c_bus = 1
-    settings.adc_gain = 1
-    settings.channels = 4
-
-    measurements = InputModule(settings).next()
-    print("Measurements: {}".format(measurements))

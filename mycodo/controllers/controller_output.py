@@ -22,18 +22,16 @@
 #  Contact at kylegabriel.com
 
 import datetime
-import logging
 import sys
 import threading
 import time
-import timeit
 
 import RPi.GPIO as GPIO
 from io import StringIO
 from sqlalchemy import and_
 from sqlalchemy import or_
 
-from mycodo.base_controller import AbstractController
+from mycodo.controllers.base_controller import AbstractController
 from mycodo.config import SQL_DATABASE_MYCODO
 from mycodo.databases.models import Misc
 from mycodo.databases.models import Output
@@ -63,8 +61,14 @@ class OutputController(AbstractController, threading.Thread):
 
         self.control = DaemonControl()
 
-        self.sample_rate = db_retrieve_table_daemon(
-            Misc, entry='first').sample_rate_controller_output
+        self.sample_rate = None
+
+        # SMTP options
+        self.smtp_max_count = None
+        self.smtp_wait_time = None
+        self.smtp_timer = None
+        self.email_count = None
+        self.allowed_to_send_notice = None
 
         self.output_id = {}
         self.output_unique_id = {}
@@ -107,6 +111,44 @@ class OutputController(AbstractController, threading.Thread):
 
         self.output_time_turned_on = {}
 
+    def loop(self):
+        current_time = datetime.datetime.now()
+        for output_id in self.output_id:
+            # Is the current time past the time the output was supposed
+            # to turn off?
+            if (self.output_on_until[output_id] < current_time and
+                    self.output_on_duration[output_id] and
+                    not self.output_off_triggered[output_id] and
+                    (self.output_type[output_id] in ['command',
+                                                     'command_pwn',
+                                                     'python',
+                                                     'python_pwm'] or
+                     self.output_pin[output_id] is not None)):
+
+                # Use threads to prevent a slow execution of a
+                # process that could slow the loop
+                self.output_off_triggered[output_id] = True
+                turn_output_off = threading.Thread(
+                    target=self.output_on_off,
+                    args=(output_id,
+                          'off',))
+                turn_output_off.start()
+
+    def run_finally(self):
+        # Turn all outputs off
+        for each_output_id in self.output_id:
+            if self.output_state_at_shutdown[each_output_id] is False:
+                self.output_on_off(
+                    each_output_id, 'off', trigger_conditionals=False)
+            elif self.output_state_at_shutdown[each_output_id]:
+                self.output_on_off(
+                    each_output_id, 'on', trigger_conditionals=False)
+        self.cleanup_gpio()
+
+    def initialize_variables(self):
+        self.sample_rate = db_retrieve_table_daemon(
+            Misc, entry='first').sample_rate_controller_output
+
         self.logger.debug("Initializing Outputs")
         try:
             smtp = db_retrieve_table_daemon(SMTP, entry='first')
@@ -125,58 +167,64 @@ class OutputController(AbstractController, threading.Thread):
             self.logger.exception(
                 "Problem initializing outputs: {err}".format(err=except_msg))
 
-    def run(self):
-        try:
-            self.logger.info(
-                "Output controller activated in {:.1f} ms".format(
-                    (timeit.default_timer() - self.thread_startup_timer) * 1000))
+    def all_outputs_initialize(self, outputs):
+        for each_output in outputs:
+            self.output_id[each_output.unique_id] = each_output.id
+            self.output_unique_id[each_output.unique_id] = each_output.unique_id
+            self.output_type[each_output.unique_id] = each_output.output_type
+            self.output_interface[each_output.unique_id] = each_output.interface
+            self.output_location[each_output.unique_id] = each_output.location
+            self.output_i2c_bus[each_output.unique_id] = each_output.i2c_bus
+            self.output_baud_rate[each_output.unique_id] = each_output.baud_rate
+            self.output_name[each_output.unique_id] = each_output.name
+            self.output_pin[each_output.unique_id] = each_output.pin
+            self.output_amps[each_output.unique_id] = each_output.amps
+            self.output_on_state[each_output.unique_id] = each_output.on_state
+            self.output_state_at_startup[each_output.unique_id] = each_output.state_at_startup
+            self.output_state_at_shutdown[each_output.unique_id] = each_output.state_at_shutdown
+            self.output_on_until[each_output.unique_id] = datetime.datetime.now()
+            self.output_last_duration[each_output.unique_id] = 0
+            self.output_on_duration[each_output.unique_id] = False
+            self.output_off_triggered[each_output.unique_id] = False
+            self.output_time_turned_on[each_output.unique_id] = None
+            self.output_protocol[each_output.unique_id] = each_output.protocol
+            self.output_pulse_length[each_output.unique_id] = each_output.pulse_length
+            self.output_on_command[each_output.unique_id] = each_output.on_command
+            self.output_off_command[each_output.unique_id] = each_output.off_command
+            self.output_pwm_command[each_output.unique_id] = each_output.pwm_command
+            self.output_flow_rate[each_output.unique_id] = each_output.flow_rate
+            self.trigger_functions_at_start[each_output.unique_id] = each_output.trigger_functions_at_start
 
-            self.ready.set()
-            self.running = True
+            self.pwm_hertz[each_output.unique_id] = each_output.pwm_hertz
+            self.pwm_library[each_output.unique_id] = each_output.pwm_library
+            self.pwm_invert_signal[each_output.unique_id] = each_output.pwm_invert_signal
+            self.pwm_time_turned_on[each_output.unique_id] = None
 
-            while self.running:
-                try:
-                    current_time = datetime.datetime.now()
-                    for output_id in self.output_id:
-                        # Is the current time past the time the output was supposed
-                        # to turn off?
-                        if (self.output_on_until[output_id] < current_time and
-                                self.output_on_duration[output_id] and
-                                not self.output_off_triggered[output_id] and
-                                (self.output_type[output_id] in ['command',
-                                                                 'command_pwn',
-                                                                 'python',
-                                                                 'python_pwm'] or
-                                 self.output_pin[output_id] is not None)):
+            if self.output_pin[each_output.unique_id] is not None:
+                self.setup_pin(each_output.unique_id)
 
-                            # Use threads to prevent a slow execution of a
-                            # process that could slow the loop
-                            self.output_off_triggered[output_id] = True
-                            turn_output_off = threading.Thread(
-                                target=self.output_on_off,
-                                args=(output_id,
-                                      'off',))
-                            turn_output_off.start()
-                except Exception as except_msg:
-                    self.logger.exception(
-                        "Controller Error: {err}".format(
-                            err=except_msg))
-                finally:
-                    time.sleep(self.sample_rate)
-        finally:
-            self.running = False
-            # Turn all outputs off
-            for each_output_id in self.output_id:
-                if self.output_state_at_shutdown[each_output_id] is False:
-                    self.output_on_off(
-                        each_output_id, 'off', trigger_conditionals=False)
-                elif self.output_state_at_shutdown[each_output_id]:
-                    self.output_on_off(
-                        each_output_id, 'on', trigger_conditionals=False)
-            self.cleanup_gpio()
-            self.logger.info(
-                "Output controller deactivated in {:.1f} ms".format(
-                    (timeit.default_timer() - self.thread_shutdown_timer) * 1000))
+            if self.output_type[each_output.unique_id] == 'atlas_ezo_pmp':
+                self.setup_atlas_command(each_output.unique_id)
+
+            self.logger.debug("{id} ({name}) Initialized".format(
+                id=each_output.unique_id.split('-')[0], name=each_output.name))
+
+    def all_outputs_set_state(self):
+        """Turn all outputs on that are set to be on at startup"""
+        for each_output_id in self.output_id:
+            if (self.output_state_at_startup[each_output_id] is None or
+                    self.output_type[each_output_id] == 'pwm'):
+                pass  # Don't turn on or off
+            elif self.output_state_at_startup[each_output_id]:
+                self.output_on_off(
+                    each_output_id,
+                    'on',
+                    trigger_conditionals=self.trigger_functions_at_start[each_output_id])
+            else:
+                self.output_on_off(
+                    each_output_id,
+                    'off',
+                    trigger_conditionals=False)
 
     def output_on_off(self, output_id, state,
                       duration=0.0,
@@ -877,65 +925,6 @@ output_id = '{}'
 
             self.control.trigger_all_actions(
                 each_trigger.unique_id, message=message)
-
-    def all_outputs_initialize(self, outputs):
-        for each_output in outputs:
-            self.output_id[each_output.unique_id] = each_output.id
-            self.output_unique_id[each_output.unique_id] = each_output.unique_id
-            self.output_type[each_output.unique_id] = each_output.output_type
-            self.output_interface[each_output.unique_id] = each_output.interface
-            self.output_location[each_output.unique_id] = each_output.location
-            self.output_i2c_bus[each_output.unique_id] = each_output.i2c_bus
-            self.output_baud_rate[each_output.unique_id] = each_output.baud_rate
-            self.output_name[each_output.unique_id] = each_output.name
-            self.output_pin[each_output.unique_id] = each_output.pin
-            self.output_amps[each_output.unique_id] = each_output.amps
-            self.output_on_state[each_output.unique_id] = each_output.on_state
-            self.output_state_at_startup[each_output.unique_id] = each_output.state_at_startup
-            self.output_state_at_shutdown[each_output.unique_id] = each_output.state_at_shutdown
-            self.output_on_until[each_output.unique_id] = datetime.datetime.now()
-            self.output_last_duration[each_output.unique_id] = 0
-            self.output_on_duration[each_output.unique_id] = False
-            self.output_off_triggered[each_output.unique_id] = False
-            self.output_time_turned_on[each_output.unique_id] = None
-            self.output_protocol[each_output.unique_id] = each_output.protocol
-            self.output_pulse_length[each_output.unique_id] = each_output.pulse_length
-            self.output_on_command[each_output.unique_id] = each_output.on_command
-            self.output_off_command[each_output.unique_id] = each_output.off_command
-            self.output_pwm_command[each_output.unique_id] = each_output.pwm_command
-            self.output_flow_rate[each_output.unique_id] = each_output.flow_rate
-            self.trigger_functions_at_start[each_output.unique_id] = each_output.trigger_functions_at_start
-
-            self.pwm_hertz[each_output.unique_id] = each_output.pwm_hertz
-            self.pwm_library[each_output.unique_id] = each_output.pwm_library
-            self.pwm_invert_signal[each_output.unique_id] = each_output.pwm_invert_signal
-            self.pwm_time_turned_on[each_output.unique_id] = None
-
-            if self.output_pin[each_output.unique_id] is not None:
-                self.setup_pin(each_output.unique_id)
-
-            if self.output_type[each_output.unique_id] == 'atlas_ezo_pmp':
-                self.setup_atlas_command(each_output.unique_id)
-
-            self.logger.debug("{id} ({name}) Initialized".format(
-                id=each_output.unique_id.split('-')[0], name=each_output.name))
-
-    def all_outputs_set_state(self):
-        """Turn all outputs on that are set to be on at startup"""
-        for each_output_id in self.output_id:
-            if (self.output_state_at_startup[each_output_id] is None or
-                    self.output_type[each_output_id] == 'pwm'):
-                pass  # Don't turn on or off
-            elif self.output_state_at_startup[each_output_id]:
-                self.output_on_off(
-                    each_output_id,
-                    'on',
-                    trigger_conditionals=self.trigger_functions_at_start[each_output_id])
-            else:
-                self.output_on_off(
-                    each_output_id,
-                    'off',
-                    trigger_conditionals=False)
 
     def cleanup_gpio(self):
         for each_output_pin in self.output_pin:

@@ -25,11 +25,10 @@
 import datetime
 import threading
 import time
-import timeit
 
 import RPi.GPIO as GPIO
 
-from mycodo.base_controller import AbstractController
+from mycodo.controllers.base_controller import AbstractController
 from mycodo.config import SQL_DATABASE_MYCODO
 from mycodo.databases.models import Input
 from mycodo.databases.models import Math
@@ -104,85 +103,62 @@ class TriggerController(AbstractController, threading.Thread):
         self.program = None
         self.word = None
 
-        self.initialize_values()
-
     def run(self):
-        try:
-            self.logger.info("Activated in {:.1f} ms".format(
-                (timeit.default_timer() - self.thread_startup_timer) * 1000))
+        # Pause loop to modify trigger.
+        # Prevents execution of trigger while variables are
+        # being modified.
+        if self.pause_loop:
+            self.verify_pause_loop = True
+            while self.pause_loop:
+                time.sleep(0.1)
 
-            self.ready.set()
-            self.running = True
+        if self.trigger_type == 'trigger_infrared_remote_input':
+            self.infrared_remote_input()
 
-            while self.running:
-                try:
-                    # Pause loop to modify trigger.
-                    # Prevents execution of trigger while variables are
-                    # being modified.
-                    if self.pause_loop:
-                        self.verify_pause_loop = True
-                        while self.pause_loop:
-                            time.sleep(0.1)
+        elif (self.is_activated and self.timer_period and
+                self.timer_period < time.time()):
+            check_approved = False
 
-                    if self.trigger_type == 'trigger_infrared_remote_input':
-                        self.infrared_remote_input()
+            # Check if the trigger period has elapsed
+            if self.trigger_type in ['trigger_sunrise_sunset',
+                                     'trigger_run_pwm_method']:
+                while self.running and self.timer_period < time.time():
+                    self.timer_period = calculate_sunrise_sunset_epoch(self.trigger)
 
-                    elif (self.is_activated and self.timer_period and
-                            self.timer_period < time.time()):
-                        check_approved = False
+                if self.trigger_type == 'trigger_run_pwm_method':
+                    # Only execute trigger actions when started
+                    # Now only set PWM output
+                    pwm_duty_cycle, ended = self.get_method_output(
+                        self.unique_id_1)
+                    if not ended:
+                        self.set_output_duty_cycle(
+                            self.unique_id_2,
+                            pwm_duty_cycle)
+                        if self.trigger_actions_at_period:
+                            trigger_function_actions(
+                                self.function_id,
+                                debug=self.log_level_debug)
+                else:
+                    check_approved = True
 
-                        # Check if the trigger period has elapsed
-                        if self.trigger_type in ['trigger_sunrise_sunset',
-                                                 'trigger_run_pwm_method']:
-                            while self.running and self.timer_period < time.time():
-                                self.timer_period = calculate_sunrise_sunset_epoch(self.trigger)
+            elif (self.trigger_type in [
+                    'trigger_timer_daily_time_point',
+                    'trigger_timer_daily_time_span',
+                    'trigger_timer_duration']):
+                if self.trigger_type == 'trigger_timer_daily_time_point':
+                    self.timer_period = epoch_of_next_time(
+                        '{hm}:00'.format(hm=self.timer_start_time))
+                elif self.trigger_type in ['trigger_timer_duration',
+                                           'trigger_timer_daily_time_span']:
+                    while self.running and self.timer_period < time.time():
+                        self.timer_period += self.period
+                check_approved = True
 
-                            if self.trigger_type == 'trigger_run_pwm_method':
-                                # Only execute trigger actions when started
-                                # Now only set PWM output
-                                pwm_duty_cycle, ended = self.get_method_output(
-                                    self.unique_id_1)
-                                if not ended:
-                                    self.set_output_duty_cycle(
-                                        self.unique_id_2,
-                                        pwm_duty_cycle)
-                                    if self.trigger_actions_at_period:
-                                        trigger_function_actions(
-                                            self.function_id,
-                                            debug=self.log_level_debug)
-                            else:
-                                check_approved = True
+            if check_approved:
+                self.attempt_execute(self.check_triggers)
 
-                        elif (self.trigger_type in [
-                                'trigger_timer_daily_time_point',
-                                'trigger_timer_daily_time_span',
-                                'trigger_timer_duration']):
-                            if self.trigger_type == 'trigger_timer_daily_time_point':
-                                self.timer_period = epoch_of_next_time(
-                                    '{hm}:00'.format(hm=self.timer_start_time))
-                            elif self.trigger_type in ['trigger_timer_duration',
-                                                       'trigger_timer_daily_time_span']:
-                                while self.running and self.timer_period < time.time():
-                                    self.timer_period += self.period
-                            check_approved = True
-
-                        if check_approved:
-                            self.attempt_execute(self.check_triggers)
-
-                except Exception as except_msg:
-                    self.logger.exception(
-                        "Controller Error: {err}".format(
-                            err=except_msg))
-                finally:
-                    time.sleep(self.sample_rate)
-        except Exception as except_msg:
-            self.logger.exception("Run Error: {err}".format(
-                err=except_msg))
-            self.thread_shutdown_timer = timeit.default_timer()
-        finally:
-            self.running = False
-            self.logger.info("Deactivated in {:.1f} ms".format(
-                    (timeit.default_timer() - self.thread_shutdown_timer) * 1000))
+    def run_finally(self):
+        pass
 
     def refresh_settings(self):
         """ Signal to pause the main loop and wait for verification, the refresh settings """
@@ -191,13 +167,13 @@ class TriggerController(AbstractController, threading.Thread):
             time.sleep(0.1)
 
         self.logger.info("Refreshing trigger settings")
-        self.initialize_values()
+        self.initialize_variables()
 
         self.pause_loop = False
         self.verify_pause_loop = False
         return "Trigger settings successfully refreshed"
 
-    def initialize_values(self):
+    def initialize_variables(self):
         """ Define all settings """
         self.email_count = 0
         self.allowed_to_send_notice = True

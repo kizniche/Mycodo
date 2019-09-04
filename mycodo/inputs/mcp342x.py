@@ -100,20 +100,3 @@ class InputModule(AbstractInput):
         # return_dict[3]['value'] = random.uniform(3.5, 6.2)
 
         return self.return_dict
-
-
-if __name__ == "__main__":
-    from types import SimpleNamespace
-    settings = SimpleNamespace()
-    settings.id = 1
-    settings.unique_id='0000-0000'
-    settings.i2c_location = '0x68'
-    settings.i2c_bus = 1
-    settings.adc_gain = 1
-    settings.adc_resolution = 12
-    settings.channels = 4
-    settings.run_main = True
-
-    measurements = InputModule(settings).next()
-
-    print("Measurements: {}".format(measurements))

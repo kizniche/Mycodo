@@ -24,14 +24,13 @@
 #
 import threading
 import time
-import timeit
 from statistics import median
 from statistics import stdev
 
 import urllib3
 
 import mycodo.utils.psypy as SI
-from mycodo.base_controller import AbstractController
+from mycodo.controllers.base_controller import AbstractController
 from mycodo.databases.models import Conversion
 from mycodo.databases.models import DeviceMeasurements
 from mycodo.databases.models import Math
@@ -78,108 +77,130 @@ class MathController(AbstractController, threading.Thread):
         threading.Thread.__init__(self)
         super(MathController, self).__init__(ready, unique_id=math_id, name=__name__)
 
-        try:
-            self.measurements = None
-            self.pause_loop = False
+        self.measurements = None
+        self.pause_loop = False
+        self.verify_pause_loop = True
+        self.control = DaemonControl()
+
+        self.math_id = math_id
+
+        self.sample_rate = None
+        self.device_measurements = None
+
+        # General variables
+        self.unique_id = None
+        self.name = ''
+        self.math_type = None
+        self.is_activated = None
+        self.period = None
+        self.start_offset = None
+        self.max_measure_age = None
+        self.log_level_debug = None
+
+        # Inputs to calculate with
+        self.inputs = None
+
+        # Difference variables
+        self.difference_reverse_order = None
+        self.difference_absolute = None
+
+        # Equation variables
+        self.equation_input = None
+        self.equation = None
+
+        # Redundancy variables
+        self.order_of_use = None
+
+        # Verification variables
+        self.max_difference = None
+
+        # Humidity variables
+        self.dry_bulb_t_id = None
+        self.dry_bulb_t_measure_id = None
+        self.wet_bulb_t_id = None
+        self.wet_bulb_t_measure_id = None
+        self.pressure_pa_id = None
+        self.pressure_pa_measure_id = None
+
+        # Misc ids
+        self.unique_id_1 = None
+        self.unique_measurement_id_1 = None
+        self.unique_id_2 = None
+        self.unique_measurement_id_2 = None
+
+        self.timer = None
+
+    def loop(self):
+        # Pause loop to modify conditional statements.
+        # Prevents execution of conditional while variables are
+        # being modified.
+        if self.pause_loop:
             self.verify_pause_loop = True
-            self.control = DaemonControl()
+            while self.pause_loop:
+                time.sleep(0.1)
 
-            self.sample_rate = db_retrieve_table_daemon(
-                Misc, entry='first').sample_rate_controller_math
+        if self.is_activated and time.time() > self.timer:
+            # Ensure the next timer ends in the future
+            while time.time() > self.timer:
+                self.timer += self.period
+            self.attempt_execute(self.calculate_math)
 
-            self.math_id = math_id
-            math = db_retrieve_table_daemon(Math, unique_id=self.math_id)
+    def initialize_variables(self):
+        self.sample_rate = db_retrieve_table_daemon(
+            Misc, entry='first').sample_rate_controller_math
 
-            self.device_measurements = db_retrieve_table_daemon(
-                DeviceMeasurements).filter(
-                    DeviceMeasurements.device_id == self.math_id)
+        math = db_retrieve_table_daemon(Math, unique_id=self.math_id)
 
-            # General variables
-            self.unique_id = math.unique_id
-            self.name = math.name
-            self.math_type = math.math_type
-            self.is_activated = math.is_activated
-            self.period = math.period
-            self.start_offset = math.start_offset
-            self.max_measure_age = math.max_measure_age
-            self.log_level_debug = math.log_level_debug
+        self.device_measurements = db_retrieve_table_daemon(
+            DeviceMeasurements).filter(
+            DeviceMeasurements.device_id == self.math_id)
 
-            self.set_log_level_debug(self.log_level_debug)
+        # General variables
+        self.unique_id = math.unique_id
+        self.name = math.name
+        self.math_type = math.math_type
+        self.is_activated = math.is_activated
+        self.period = math.period
+        self.start_offset = math.start_offset
+        self.max_measure_age = math.max_measure_age
+        self.log_level_debug = math.log_level_debug
 
-            # Inputs to calculate with
-            self.inputs = math.inputs
+        self.set_log_level_debug(self.log_level_debug)
 
-            # Difference variables
-            self.difference_reverse_order = math.difference_reverse_order
-            self.difference_absolute = math.difference_absolute
+        # Inputs to calculate with
+        self.inputs = math.inputs
 
-            # Equation variables
-            self.equation_input = math.equation_input
-            self.equation = math.equation
+        # Difference variables
+        self.difference_reverse_order = math.difference_reverse_order
+        self.difference_absolute = math.difference_absolute
 
-            # Redundancy variables
-            self.order_of_use = math.order_of_use
+        # Equation variables
+        self.equation_input = math.equation_input
+        self.equation = math.equation
 
-            # Verification variables
-            self.max_difference = math.max_difference
+        # Redundancy variables
+        self.order_of_use = math.order_of_use
 
-            # Humidity variables
-            self.dry_bulb_t_id = math.dry_bulb_t_id
-            self.dry_bulb_t_measure_id = math.dry_bulb_t_measure_id
-            self.wet_bulb_t_id = math.wet_bulb_t_id
-            self.wet_bulb_t_measure_id = math.wet_bulb_t_measure_id
-            self.pressure_pa_id = math.pressure_pa_id
-            self.pressure_pa_measure_id = math.pressure_pa_measure_id
+        # Verification variables
+        self.max_difference = math.max_difference
 
-            # Misc ids
-            self.unique_id_1 = math.unique_id_1
-            self.unique_measurement_id_1 = math.unique_measurement_id_1
-            self.unique_id_2 = math.unique_id_2
-            self.unique_measurement_id_2 = math.unique_measurement_id_2
+        # Humidity variables
+        self.dry_bulb_t_id = math.dry_bulb_t_id
+        self.dry_bulb_t_measure_id = math.dry_bulb_t_measure_id
+        self.wet_bulb_t_id = math.wet_bulb_t_id
+        self.wet_bulb_t_measure_id = math.wet_bulb_t_measure_id
+        self.pressure_pa_id = math.pressure_pa_id
+        self.pressure_pa_measure_id = math.pressure_pa_measure_id
 
-            self.timer = time.time() + self.start_offset
-        except Exception as except_msg:
-            self.logger.exception("Initialization Error")
+        # Misc ids
+        self.unique_id_1 = math.unique_id_1
+        self.unique_measurement_id_1 = math.unique_measurement_id_1
+        self.unique_id_2 = math.unique_id_2
+        self.unique_measurement_id_2 = math.unique_measurement_id_2
 
-    def run(self):
-        try:
-            self.logger.info("Activated in {:.1f} ms".format(
-                (timeit.default_timer() - self.thread_startup_timer) * 1000))
+        self.timer = time.time() + self.start_offset
 
-            self.ready.set()
-            self.running = True
-
-            while self.running:
-                try:
-                    # Pause loop to modify conditional statements.
-                    # Prevents execution of conditional while variables are
-                    # being modified.
-                    if self.pause_loop:
-                        self.verify_pause_loop = True
-                        while self.pause_loop:
-                            time.sleep(0.1)
-
-                    if self.is_activated and time.time() > self.timer:
-                        # Ensure the next timer ends in the future
-                        while time.time() > self.timer:
-                            self.timer += self.period
-
-                        self.attempt_execute(self.calculate_math)
-
-                except Exception as except_msg:
-                    self.logger.exception(
-                        "Controller Error: {err}".format(
-                            err=except_msg))
-                finally:
-                    time.sleep(self.sample_rate)
-        except Exception as except_msg:
-            self.logger.exception("Run Error: {err}".format(
-                err=except_msg))
-            self.thread_shutdown_timer = timeit.default_timer()
-        finally:
-            self.running = False
-            self.logger.info("Deactivated in {:.1f} ms".format(
-                (timeit.default_timer() - self.thread_shutdown_timer) * 1000))
+        self.set_log_level_debug(self.log_level_debug)
 
     def calculate_math(self):
         measurement_dict = {}
