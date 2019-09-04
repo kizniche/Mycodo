@@ -76,10 +76,7 @@ class TriggerController(AbstractController, threading.Thread):
         self.pause_loop = False
         self.verify_pause_loop = True
         self.control = DaemonControl()
-
-        self.sample_rate = db_retrieve_table_daemon(
-            Misc, entry='first').sample_rate_controller_conditional
-
+        self.sample_rate = None
         self.trigger = None
         self.trigger_type = None
         self.trigger_name = None
@@ -107,7 +104,7 @@ class TriggerController(AbstractController, threading.Thread):
         self.program = None
         self.word = None
 
-        self.setup_settings()
+        self.initialize_values()
 
     def run(self):
         try:
@@ -115,6 +112,7 @@ class TriggerController(AbstractController, threading.Thread):
                 (timeit.default_timer() - self.thread_startup_timer) * 1000))
 
             self.ready.set()
+            self.running = True
 
             while self.running:
                 try:
@@ -193,17 +191,25 @@ class TriggerController(AbstractController, threading.Thread):
             time.sleep(0.1)
 
         self.logger.info("Refreshing trigger settings")
-        self.setup_settings()
+        self.initialize_values()
 
         self.pause_loop = False
         self.verify_pause_loop = False
         return "Trigger settings successfully refreshed"
 
-    def setup_settings(self):
+    def initialize_values(self):
         """ Define all settings """
+        self.email_count = 0
+        self.allowed_to_send_notice = True
+
+        self.sample_rate = db_retrieve_table_daemon(
+            Misc, entry='first').sample_rate_controller_conditional
+
+        self.smtp_max_count = db_retrieve_table_daemon(
+            SMTP, entry='first').hourly_max
+
         self.trigger = db_retrieve_table_daemon(
             Trigger, unique_id=self.function_id)
-
         self.trigger_type = self.trigger.trigger_type
         self.trigger_name = self.trigger.name
         self.is_activated = self.trigger.is_activated
@@ -211,13 +217,7 @@ class TriggerController(AbstractController, threading.Thread):
 
         self.set_log_level_debug(self.log_level_debug)
 
-        self.smtp_max_count = db_retrieve_table_daemon(
-            SMTP, entry='first').hourly_max
-        self.email_count = 0
-        self.allowed_to_send_notice = True
-
         now = time.time()
-
         self.smtp_wait_timer = now + 3600
         self.timer_period = None
 

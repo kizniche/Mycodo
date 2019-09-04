@@ -410,8 +410,6 @@ class InputModule(AbstractInput):
         """ Obtain and return the measurements """
         self.return_dict = measurements_dict.copy()
 
-        time.sleep(1)
-
         self.lock_acquire(self.lock_file, timeout=3600)
         if self.locked:
             self.logger.debug("Starting measurement")
@@ -481,6 +479,7 @@ class InputModule(AbstractInput):
                     self.logger.debug("Not connected: Not measuring")
             finally:
                 self.lock_release(self.lock_file)
+                time.sleep(1)
 
     def set_logging_interval(self):
         """Set logging interval (resets memory; set after downloading data)"""

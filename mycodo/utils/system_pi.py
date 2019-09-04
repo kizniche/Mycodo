@@ -61,6 +61,7 @@ def dpkg_package_exists(package_name):
 
 
 def return_measurement_info(device_measurement, conversion):
+    """ Return unit, measurement, and channel of a device measurement"""
     try:
         unit = None
         measurement = None

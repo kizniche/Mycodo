@@ -976,9 +976,11 @@ class DaemonController:
             }
 
             self.logger.debug("Starting Output controller")
-            self.controller['Output'] = OutputController(debug)
+            ready = threading.Event()
+            self.controller['Output'] = OutputController(ready, debug)
             self.controller['Output'].daemon = True
             self.controller['Output'].start()
+            ready.wait()  # wait for thread to return ready
 
             # Ensure Output controller has started before continuing
             time.sleep(0.5)

@@ -99,6 +99,10 @@ class PIDController(AbstractController, threading.Thread):
         self.device_measurements = db_retrieve_table_daemon(
             DeviceMeasurements)
 
+        self.device_id = None
+        self.measurement_id = None
+        self.raise_output_type = None
+        self.lower_output_type = None
         self.log_level_debug = None
         self.PID_Controller = None
         self.control_variable = 0.0
@@ -130,16 +134,16 @@ class PIDController(AbstractController, threading.Thread):
         self.lower_min_duration = None
         self.lower_max_duration = None
         self.lower_min_off_duration = None
-        self.Kp = None
-        self.Ki = None
-        self.Kd = None
+        self.Kp = 0
+        self.Ki = 0
+        self.Kd = 0
         self.integrator_min = None
         self.integrator_max = None
-        self.period = None
+        self.period = 0
         self.start_offset = 0
         self.max_measure_age = None
         self.default_setpoint = None
-        self.setpoint = None
+        self.setpoint = 0
         self.store_lower_as_negative = None
 
         # Hysteresis options
@@ -151,17 +155,9 @@ class PIDController(AbstractController, threading.Thread):
         self.autotune = None
         self.autotune_activated = False
         self.autotune_debug = False
-        self.autotune_noiseband = None
-        self.autotune_outstep = None
+        self.autotune_noiseband = 0
+        self.autotune_outstep = 0
         self.autotune_timestamp = None
-
-        self.device_id = None
-        self.measurement_id = None
-
-        self.input_duration = None
-
-        self.raise_output_type = None
-        self.lower_output_type = None
 
         self.first_start = True
 
@@ -177,6 +173,28 @@ class PIDController(AbstractController, threading.Thread):
         if self.method_id != '':
             self.setup_method(self.method_id)
 
+        # Initialize PID Controller
+        self.PID_Controller = PIDControl(
+            self.period,
+            self.Kp, self.Ki, self.Kd,
+            integrator_min=self.integrator_min,
+            integrator_max=self.integrator_max)
+
+        # If activated, initialize PID Autotune
+        if self.autotune_activated:
+            self.autotune_timestamp = time.time()
+            try:
+                self.autotune = PIDAutotune(
+                    self.setpoint,
+                    out_step=self.autotune_outstep,
+                    sampletime=self.period,
+                    out_min=0,
+                    out_max=self.period,
+                    noiseband=self.autotune_noiseband)
+            except Exception as msg:
+                self.logger.error(msg)
+                self.stop_controller(deactivate_pid=True)
+
     def run(self):
         try:
             startup_str = "Activated in {:.1f} ms".format(
@@ -187,29 +205,8 @@ class PIDController(AbstractController, threading.Thread):
                 startup_str += ", started Held"
             self.logger.info(startup_str)
 
-            # Initialize PID Controller
-            self.PID_Controller = PIDControl(
-                self.period,
-                self.Kp, self.Ki, self.Kd,
-                integrator_min=self.integrator_min,
-                integrator_max=self.integrator_max)
-
-            # If activated, initialize PID Autotune
-            if self.autotune_activated:
-                self.autotune_timestamp = time.time()
-                try:
-                    self.autotune = PIDAutotune(
-                        self.setpoint,
-                        out_step=self.autotune_outstep,
-                        sampletime=self.period,
-                        out_min=0,
-                        out_max=self.period,
-                        noiseband=self.autotune_noiseband)
-                except Exception as msg:
-                    self.logger.error(msg)
-                    self.stop_controller(deactivate_pid=True)
-
             self.ready.set()
+            self.running = True
 
             while self.running:
                 try:
@@ -254,6 +251,10 @@ class PIDController(AbstractController, threading.Thread):
     def initialize_values(self):
         """Set PID parameters"""
         pid = db_retrieve_table_daemon(PID, unique_id=self.pid_id)
+
+        self.device_id = pid.measurement.split(',')[0]
+        self.measurement_id = pid.measurement.split(',')[1]
+
         self.is_activated = pid.is_activated
         self.is_held = pid.is_held
         self.is_paused = pid.is_paused
@@ -286,23 +287,14 @@ class PIDController(AbstractController, threading.Thread):
         self.autotune_noiseband = pid.autotune_noiseband
         self.autotune_outstep = pid.autotune_outstep
 
-        self.device_id = pid.measurement.split(',')[0]
-        self.measurement_id = pid.measurement.split(',')[1]
-
         self.set_log_level_debug(self.log_level_debug)
-
-        input_dev = db_retrieve_table_daemon(Input, unique_id=self.device_id)
-        math = db_retrieve_table_daemon(Math, unique_id=self.device_id)
-        if input_dev:
-            self.input_duration = input_dev.period
-        elif math:
-            self.input_duration = math.period
 
         try:
             self.raise_output_type = db_retrieve_table_daemon(
                 Output, unique_id=self.raise_output_id).output_type
         except AttributeError:
             self.raise_output_type = None
+
         try:
             self.lower_output_type = db_retrieve_table_daemon(
                 Output, unique_id=self.lower_output_id).output_type

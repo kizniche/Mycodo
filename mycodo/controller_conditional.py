@@ -67,10 +67,7 @@ class ConditionalController(AbstractController, threading.Thread):
         self.pause_loop = False
         self.verify_pause_loop = True
         self.control = DaemonControl()
-
-        self.sample_rate = db_retrieve_table_daemon(
-            Misc, entry='first').sample_rate_controller_conditional
-
+        self.sample_rate = None
         self.is_activated = None
         self.smtp_max_count = None
         self.email_count = None
@@ -95,7 +92,7 @@ class ConditionalController(AbstractController, threading.Thread):
         self.method_end_time = None
         self.method_start_act = None
 
-        self.setup_settings()
+        self.initialize_values()
 
     def run(self):
         try:
@@ -104,6 +101,7 @@ class ConditionalController(AbstractController, threading.Thread):
                     (timeit.default_timer() - self.thread_startup_timer) * 1000))
 
             self.ready.set()
+            self.running = True
 
             while self.running:
                 try:
@@ -146,39 +144,38 @@ class ConditionalController(AbstractController, threading.Thread):
             time.sleep(0.1)
 
         self.logger.info("Refreshing conditional settings")
-        self.setup_settings()
+        self.initialize_values()
 
         self.pause_loop = False
         self.verify_pause_loop = False
         return "Conditional settings successfully refreshed"
 
-    def setup_settings(self):
+    def initialize_values(self):
         """ Define all settings """
-        cond = db_retrieve_table_daemon(
-            Conditional, unique_id=self.function_id)
+        self.email_count = 0
+        self.allowed_to_send_notice = True
+        self.timer_refractory_period = 0
 
-        self.is_activated = cond.is_activated
+        self.sample_rate = db_retrieve_table_daemon(
+            Misc, entry='first').sample_rate_controller_conditional
 
         self.smtp_max_count = db_retrieve_table_daemon(
             SMTP, entry='first').hourly_max
-        self.email_count = 0
-        self.allowed_to_send_notice = True
 
-        now = time.time()
-
-        self.smtp_wait_timer = now + 3600
-        self.timer_period = None
-
+        cond = db_retrieve_table_daemon(
+            Conditional, unique_id=self.function_id)
+        self.is_activated = cond.is_activated
         self.conditional_statement = cond.conditional_statement
         self.period = cond.period
         self.start_offset = cond.start_offset
         self.refractory_period = cond.refractory_period
         self.log_level_debug = cond.log_level_debug
-        self.timer_refractory_period = 0
-        self.smtp_wait_timer = now + 3600
-        self.timer_period = now + self.start_offset
 
         self.set_log_level_debug(self.log_level_debug)
+
+        now = time.time()
+        self.smtp_wait_timer = now + 3600
+        self.timer_period = now + self.start_offset
 
     def check_conditionals(self):
         """

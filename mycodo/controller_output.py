@@ -33,6 +33,7 @@ from io import StringIO
 from sqlalchemy import and_
 from sqlalchemy import or_
 
+from mycodo.base_controller import AbstractController
 from mycodo.config import SQL_DATABASE_MYCODO
 from mycodo.databases.models import Misc
 from mycodo.databases.models import Output
@@ -49,22 +50,17 @@ from mycodo.utils.system_pi import cmd_output
 MYCODO_DB_PATH = 'sqlite:///' + SQL_DATABASE_MYCODO
 
 
-class OutputController(threading.Thread):
+class OutputController(AbstractController, threading.Thread):
     """
     class for controlling outputs
 
     """
-    def __init__(self, debug):
+    def __init__(self, ready, debug):
         threading.Thread.__init__(self)
-        self.running = False
-        self.logger = logging.getLogger(__name__)
-        if debug:
-            self.logger.setLevel(logging.DEBUG)
-        else:
-            self.logger.setLevel(logging.INFO)
+        super(OutputController, self).__init__(ready, unique_id=None, name=__name__)
 
-        self.thread_startup_timer = timeit.default_timer()
-        self.thread_shutdown_timer = 0
+        self.set_log_level_debug(debug)
+
         self.control = DaemonControl()
 
         self.sample_rate = db_retrieve_table_daemon(
@@ -133,7 +129,9 @@ class OutputController(threading.Thread):
         try:
             self.logger.info(
                 "Output controller activated in {:.1f} ms".format(
-                    (timeit.default_timer() - self.thread_startup_timer)*1000))
+                    (timeit.default_timer() - self.thread_startup_timer) * 1000))
+
+            self.ready.set()
             self.running = True
 
             while self.running:
@@ -1276,14 +1274,3 @@ output_id = '{}'
             if output_id in self.pwm_output:
                 return True
         return False
-
-    def is_running(self):
-        try:
-            return self.running
-        except:
-            return False
-
-    def stop_controller(self):
-        """Signal to stop the controller"""
-        self.thread_shutdown_timer = timeit.default_timer()
-        self.running = False

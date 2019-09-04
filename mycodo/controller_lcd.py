@@ -228,6 +228,7 @@ class LCDController(AbstractController, threading.Thread):
                 (timeit.default_timer() - self.thread_startup_timer) * 1000))
 
             self.ready.set()
+            self.running = True
 
             while self.running:
                 if not self.lcd_initialized:

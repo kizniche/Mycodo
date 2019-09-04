@@ -37,7 +37,6 @@ from mycodo.databases.models import DeviceMeasurements
 from mycodo.databases.models import Math
 from mycodo.databases.models import Misc
 from mycodo.databases.models import Output
-from mycodo.databases.models import SMTP
 from mycodo.inputs.sensorutils import calculate_vapor_pressure_deficit
 from mycodo.inputs.sensorutils import convert_units
 from mycodo.mycodo_client import DaemonControl
@@ -87,11 +86,6 @@ class MathController(AbstractController, threading.Thread):
 
             self.sample_rate = db_retrieve_table_daemon(
                 Misc, entry='first').sample_rate_controller_math
-
-            smtp = db_retrieve_table_daemon(SMTP, entry='first')
-            self.smtp_max_count = smtp.hourly_max
-            self.email_count = 0
-            self.allowed_to_send_notice = True
 
             self.math_id = math_id
             math = db_retrieve_table_daemon(Math, unique_id=self.math_id)
@@ -145,8 +139,7 @@ class MathController(AbstractController, threading.Thread):
 
             self.timer = time.time() + self.start_offset
         except Exception as except_msg:
-            self.logger.exception("Init Error: {err}".format(
-                err=except_msg))
+            self.logger.exception("Initialization Error")
 
     def run(self):
         try:
@@ -154,6 +147,7 @@ class MathController(AbstractController, threading.Thread):
                 (timeit.default_timer() - self.thread_startup_timer) * 1000))
 
             self.ready.set()
+            self.running = True
 
             while self.running:
                 try:
@@ -190,573 +184,43 @@ class MathController(AbstractController, threading.Thread):
     def calculate_math(self):
         measurement_dict = {}
 
-        #
         # Average (multiple channels)
-        #
         if self.math_type == 'average':
-            math_dev_measurement = self.device_measurements.filter(
-                DeviceMeasurements.channel == 0).first()
-            channel, unit, measurement = return_measurement_info(
-                math_dev_measurement, None)
-
-            success, measure = self.get_measurements_from_str(self.inputs)
-            if success:
-                average = float(sum(measure) / float(len(measure)))
-
-                measurement_dict = {
-                    channel: {
-                        'measurement': measurement,
-                        'unit': unit,
-                        'value': average
-                    }
-                }
-            elif measure:
-                self.logger.error(measure)
-            else:
-                self.error_not_within_max_age()
-
-        #
+            measurement_dict = self.math_average(measurement_dict)
         # Average (single channel)
-        #
         elif self.math_type == 'average_single':
-            math_dev_measurement = self.device_measurements.filter(
-                DeviceMeasurements.channel == 0).first()
-            math_conversion = db_retrieve_table_daemon(
-                Conversion, unique_id=math_dev_measurement.conversion_id)
-            (math_channel,
-             math_unit,
-             math_measurement) = return_measurement_info(
-                math_dev_measurement, math_conversion)
-
-            device_id = self.inputs.split(',')[0]
-            measurement_id = self.inputs.split(',')[1]
-
-            if measurement_id == 'output':
-                output = db_retrieve_table_daemon(Output, unique_id=device_id)
-                measure_channel = output.channel
-                measure_unit = output.unit
-                measure_measurement = output.measurement
-            else:
-                device_measurement = db_retrieve_table_daemon(
-                    DeviceMeasurements, unique_id=measurement_id)
-                if device_measurement:
-                    measure_conversion = db_retrieve_table_daemon(
-                        Conversion,
-                        unique_id=device_measurement.conversion_id)
-                else:
-                    measure_conversion = None
-                (measure_channel,
-                 measure_unit,
-                 measure_measurement) = return_measurement_info(
-                    device_measurement, measure_conversion)
-
-            try:
-                return_value = average_past_seconds(
-                    device_id,
-                    measure_unit,
-                    measure_channel,
-                    self.max_measure_age,
-                    measure=measure_measurement)
-
-                if math_dev_measurement.conversion_id:
-                    return_value = convert_units(
-                        math_dev_measurement.conversion_id,
-                        return_value)
-
-                if return_value:
-                    measurement_dict = {
-                        math_dev_measurement.channel: {
-                            'measurement': measure_measurement,
-                            'unit': math_unit,
-                            'value': return_value
-                        }
-                    }
-                else:
-                    self.error_not_within_max_age()
-            except Exception as msg:
-                self.logger.exception(
-                    "average_single Error: {err}".format(err=msg))
-
-        #
+            measurement_dict = self.math_average_single(measurement_dict)
         # Sum (multiple channels)
-        #
         elif self.math_type == 'sum':
-            math_dev_measurement = self.device_measurements.filter(
-                DeviceMeasurements.channel == 0).first()
-            if math_dev_measurement:
-                conversion = db_retrieve_table_daemon(
-                    Conversion, unique_id=math_dev_measurement.conversion_id)
-            else:
-                conversion = None
-            channel, unit, measurement = return_measurement_info(
-                math_dev_measurement, conversion)
-
-            success, measure = self.get_measurements_from_str(self.inputs)
-            if success:
-                sum_value = float(sum(measure))
-
-                measurement_dict = {
-                    channel: {
-                        'measurement': measurement,
-                        'unit': unit,
-                        'value': sum_value
-                    }
-                }
-            elif measure:
-                self.logger.error(measure)
-            else:
-                self.error_not_within_max_age()
-
-        #
+            measurement_dict = self.math_sum(measurement_dict)
         # Sum (single channel)
-        #
         elif self.math_type == 'sum_single':
-            math_dev_measurement = self.device_measurements.filter(
-                DeviceMeasurements.channel == 0).first()
-            math_conversion = db_retrieve_table_daemon(
-                Conversion, unique_id=math_dev_measurement.conversion_id)
-            (math_channel,
-             math_unit,
-             math_measurement) = return_measurement_info(
-                math_dev_measurement, math_conversion)
-
-            device_id = self.inputs.split(',')[0]
-            measurement_id = self.inputs.split(',')[1]
-
-            if measurement_id == 'output':
-                output = db_retrieve_table_daemon(Output, unique_id=device_id)
-                measure_channel = output.channel
-                measure_unit = output.unit
-                measure_measurement = output.measurement
-            else:
-                device_measurement = db_retrieve_table_daemon(
-                    DeviceMeasurements, unique_id=measurement_id)
-                if device_measurement:
-                    measure_conversion = db_retrieve_table_daemon(
-                        Conversion,
-                        unique_id=device_measurement.conversion_id)
-                else:
-                    measure_conversion = None
-                (measure_channel,
-                 measure_unit,
-                 measure_measurement) = return_measurement_info(
-                    device_measurement, measure_conversion)
-
-            try:
-                return_value = sum_past_seconds(
-                    device_id,
-                    measure_unit,
-                    measure_channel,
-                    self.max_measure_age,
-                    measure=measure_measurement)
-
-                if math_dev_measurement.conversion_id:
-                    return_value = convert_units(
-                        math_dev_measurement.conversion_id,
-                        return_value)
-
-                if return_value:
-                    measurement_dict = {
-                        math_dev_measurement.channel: {
-                            'measurement': measure_measurement,
-                            'unit': math_unit,
-                            'value': return_value
-                        }
-                    }
-                else:
-                    self.error_not_within_max_age()
-            except Exception as msg:
-                self.logger.exception(
-                    "sum_single Error: {err}".format(err=msg))
-
-        #
+            measurement_dict = self.math_sum_single(measurement_dict)
         # Difference between two channels
-        #
         elif self.math_type == 'difference':
-            math_dev_measurement = self.device_measurements.filter(
-                DeviceMeasurements.channel == 0).first()
-            if math_dev_measurement:
-                conversion = db_retrieve_table_daemon(
-                    Conversion, unique_id=math_dev_measurement.conversion_id)
-            else:
-                conversion = None
-            channel, unit, measurement = return_measurement_info(
-                math_dev_measurement, conversion)
-
-            success, measure = self.get_measurements_from_str(self.inputs)
-            if success:
-                if self.difference_reverse_order:
-                    difference = measure[1] - measure[0]
-                else:
-                    difference = measure[0] - measure[1]
-                if self.difference_absolute:
-                    difference = abs(difference)
-
-                measurement_dict = {
-                    channel: {
-                        'measurement': measurement,
-                        'unit': unit,
-                        'value': difference
-                    }
-                }
-            elif measure:
-                self.logger.error(measure)
-            else:
-                self.error_not_within_max_age()
-
-        #
+            measurement_dict = self.math_difference(measurement_dict)
         # Equation (math performed on measurement)
-        #
         elif self.math_type == 'equation':
-            math_dev_measurement = self.device_measurements.filter(
-                DeviceMeasurements.channel == 0).first()
-            if math_dev_measurement:
-                conversion = db_retrieve_table_daemon(
-                    Conversion, unique_id=math_dev_measurement.conversion_id)
-            else:
-                conversion = None
-            channel, unit, measurement = return_measurement_info(
-                math_dev_measurement, conversion)
-
-            success, measure = self.get_measurements_from_str(
-                self.equation_input)
-            if success:
-                if 'x' in self.equation:
-                    replaced_str = self.equation.replace('x', str(measure[0]))
-                else:
-                    replaced_str = self.equation
-                equation_output = eval(replaced_str)
-
-                measurement_dict = {
-                    channel: {
-                        'measurement': measurement,
-                        'unit': unit,
-                        'value': float(equation_output)
-                    }
-                }
-            elif measure:
-                self.logger.error(measure)
-            else:
-                self.error_not_within_max_age()
-
-        #
+            measurement_dict = self.math_equation(measurement_dict)
         # Redundancy (Use next measurement if one isn't currently available)
-        #
         elif self.math_type == 'redundancy':
-            list_order = self.order_of_use.split(';')
-            measurement_success = False
-
-            for each_id_measurement_id in list_order:
-                device_id = each_id_measurement_id.split(',')[0]
-                measurement_id = each_id_measurement_id.split(',')[1]
-
-                math_dev_measurement = self.device_measurements.filter(
-                    DeviceMeasurements.channel == 0).first()
-                if math_dev_measurement:
-                    conversion = db_retrieve_table_daemon(
-                        Conversion,
-                        unique_id=math_dev_measurement.conversion_id)
-                else:
-                    conversion = None
-                channel, unit, measurement = return_measurement_info(
-                    math_dev_measurement, conversion)
-
-                try:
-                    success_measure, measure = self.get_measurements_from_id(
-                        device_id, measurement_id)
-
-                    if success_measure:
-                        measurement_dict = {
-                            channel: {
-                                'measurement': measurement,
-                                'unit': unit,
-                                'value': float(measure[1]),
-                                'timestamp_utc': measure[0],
-                            }
-                        }
-                        measurement_success = True
-                        break
-
-                except Exception as msg:
-                    self.logger.exception(
-                        "redundancy Error: {err}".format(err=msg))
-
-            if not measurement_success:
-                self.error_not_within_max_age()
-
-        #
+            measurement_dict = self.math_redundancy(measurement_dict)
         # Statistical analysis on all measurements from a period of time
-        #
         elif self.math_type == 'statistics':
-            success, measure = self.get_measurements_from_str(self.inputs)
-            if success:
-                # Perform some math
-                stat_mean = float(sum(measure) / float(len(measure)))
-                stat_median = median(measure)
-                stat_minimum = min(measure)
-                stat_maximum = max(measure)
-                stdev_ = stdev(measure)
-                stdev_mean_upper = stat_mean + stdev_
-                stdev_mean_lower = stat_mean - stdev_
-
-                list_measurement = [
-                    stat_mean,
-                    stat_median,
-                    stat_minimum,
-                    stat_maximum,
-                    stdev_,
-                    stdev_mean_upper,
-                    stdev_mean_lower
-                ]
-
-                for each_measurement in self.device_measurements.all():
-                    conversion = db_retrieve_table_daemon(
-                        Conversion, unique_id=each_measurement.conversion_id)
-                    channel, unit, measurement = return_measurement_info(
-                        each_measurement, conversion)
-
-                    measurement_dict[channel] = {
-                            'measurement': measurement,
-                            'unit': unit,
-                            'value': list_measurement[channel]
-                    }
-
-            elif measure:
-                self.logger.error(measure)
-            else:
-                self.error_not_within_max_age()
-
-        #
+            measurement_dict = self.math_statistics(measurement_dict)
         # Verification (only use measurement if it's close to another measurement)
-        #
         elif self.math_type == 'verification':
-            math_dev_measurement = self.device_measurements.filter(
-                DeviceMeasurements.channel == 0).first()
-            if math_dev_measurement:
-                conversion = db_retrieve_table_daemon(
-                    Conversion, unique_id=math_dev_measurement.conversion_id)
-            else:
-                conversion = None
-            channel, unit, measurement = return_measurement_info(
-                math_dev_measurement, conversion)
-
-            success, measure = self.get_measurements_from_str(self.inputs)
-            if (success and
-                    max(measure) - min(measure) <
-                    self.max_difference):
-                difference = max(measure) - min(measure)
-
-                measurement_dict = {
-                    channel: {
-                        'measurement': measurement,
-                        'unit': unit,
-                        'value': difference
-                    }
-                }
-            elif measure:
-                self.logger.error(measure)
-            else:
-                self.error_not_within_max_age()
-
-        #
+            measurement_dict = self.math_verification(measurement_dict)
         # Calculate humidity from wet- and dry-bulb temperatures
-        #
         elif self.math_type == 'humidity':
-            pressure_pa = 101325
-            critical_error = False
-
-            if self.pressure_pa_id and self.pressure_pa_measure_id:
-
-                success_pa, pressure = self.get_measurements_from_id(
-                    self.pressure_pa_id, self.pressure_pa_measure_id)
-
-                if success_pa:
-                    pressure_pa = int(pressure[1])
-                    # Pressure must be in Pa, convert if not
-
-                    measurement_press = db_retrieve_table_daemon(
-                        DeviceMeasurements,
-                        unique_id=self.pressure_pa_measure_id)
-                    if not measurement_press:
-                        self.logger.error(
-                            "Could not find pressure measurement")
-                        measurement_press = None
-                        critical_error = True
-
-                    if measurement_press and measurement_press.unit != 'Pa':
-                        pressure_pa, status = self.is_measurement_unit(
-                            measurement_press.unit, 'Pa', pressure_pa)
-                        if status == 'error':
-                            critical_error = True
-
-            success_dbt, dry_bulb_t = self.get_measurements_from_id(
-                self.dry_bulb_t_id, self.dry_bulb_t_measure_id)
-            success_wbt, wet_bulb_t = self.get_measurements_from_id(
-                self.wet_bulb_t_id, self.wet_bulb_t_measure_id)
-
-            if success_dbt and success_wbt:
-                dbt_kelvin = float(dry_bulb_t[1])
-                wbt_kelvin = float(wet_bulb_t[1])
-
-                measurement_db_temp = db_retrieve_table_daemon(
-                    DeviceMeasurements,
-                    unique_id=self.dry_bulb_t_measure_id)
-                if not measurement_db_temp:
-                    self.logger.error(
-                        "Could not find dry bulb temperature measurement")
-                    measurement_db_temp = None
-                    critical_error = True
-
-                if measurement_db_temp and measurement_db_temp.unit != 'K':
-                    dbt_kelvin, status = self.is_measurement_unit(
-                        measurement_db_temp.unit, 'K', dbt_kelvin)
-                    if status == 'error':
-                        critical_error = True
-
-                measurement_wb_temp = db_retrieve_table_daemon(
-                    DeviceMeasurements,
-                    unique_id=self.wet_bulb_t_measure_id)
-                if not measurement_wb_temp:
-                    self.logger.error(
-                        "Could not find wet bulb temperature measurement")
-                    measurement_wb_temp = None
-                    critical_error = True
-
-                if measurement_wb_temp and measurement_wb_temp.unit != 'K':
-                    wbt_kelvin, status = self.is_measurement_unit(
-                        measurement_wb_temp.unit, 'K', wbt_kelvin)
-                    if status == 'error':
-                        critical_error = True
-
-                # Convert temperatures to Kelvin (already done above)
-                # dbt_kelvin = celsius_to_kelvin(dry_bulb_t_c)
-                # wbt_kelvin = celsius_to_kelvin(wet_bulb_t_c)
-                psypi = None
-
-                try:
-                    if not critical_error:
-                        psypi = SI.state(
-                            "DBT", dbt_kelvin, "WBT", wbt_kelvin, pressure_pa)
-                    else:
-                        self.logger.error(
-                            "One or more critical errors prevented the "
-                            "humidity from being calculated")
-                except TypeError as err:
-                    self.logger.error("TypeError: {msg}".format(msg=err))
-
-                if psypi:
-                    percent_relative_humidity = psypi[2] * 100
-
-                    # Ensure percent humidity stays within 0 - 100 % range
-                    if percent_relative_humidity > 100:
-                        percent_relative_humidity = 100
-                    elif percent_relative_humidity < 0:
-                        percent_relative_humidity = 0
-
-                    # Dry bulb temperature: psypi[0])
-                    # Wet bulb temperature: psypi[5])
-
-                    specific_enthalpy = float(psypi[1])
-                    humidity = float(percent_relative_humidity)
-                    specific_volume = float(psypi[3])
-                    humidity_ratio = float(psypi[4])
-
-                    list_measurement = [
-                        specific_enthalpy,
-                        humidity,
-                        specific_volume,
-                        humidity_ratio
-                    ]
-
-                    for each_measurement in self.device_measurements.all():
-                        conversion = db_retrieve_table_daemon(
-                            Conversion,
-                            unique_id=each_measurement.conversion_id)
-                        channel, unit, measurement = return_measurement_info(
-                            each_measurement, conversion)
-
-                        measurement_dict[channel] = {
-                            'measurement': measurement,
-                            'unit': unit,
-                            'value': list_measurement[channel]
-                        }
-            else:
-                self.error_not_within_max_age()
-
-        #
+            measurement_dict = self.math_humidity(measurement_dict)
         # Calculate vapor pressure deficit from temperature and humidity
-        #
         elif self.math_type == 'vapor_pressure_deficit':
-            vpd_pa = None
-            critical_error = False
-
-            success_temp, temperature = self.get_measurements_from_id(
-                self.unique_id_1, self.unique_measurement_id_1)
-            success_hum, humidity = self.get_measurements_from_id(
-                self.unique_id_2, self.unique_measurement_id_2)
-
-            if success_temp and success_hum:
-                vpd_temperature_celsius = float(temperature[1])
-                vpd_humidity_percent = float(humidity[1])
-
-                measurement_temp = db_retrieve_table_daemon(
-                    DeviceMeasurements,
-                    unique_id=self.unique_measurement_id_1)
-                if not measurement_temp:
-                    self.logger.error("Could not find temperature measurement")
-                    measurement_temp = None
-                    critical_error = True
-
-                if measurement_temp and measurement_temp.unit != 'C':
-                    vpd_temperature_celsius, status = self.is_measurement_unit(
-                        measurement_temp.unit, 'C', vpd_temperature_celsius)
-                    if status == 'error':
-                        critical_error = True
-
-                measurement_hum = db_retrieve_table_daemon(
-                    DeviceMeasurements,
-                    unique_id=self.unique_measurement_id_2)
-                if not measurement_hum:
-                    self.logger.error("Could not find humidity measurement")
-                    measurement_hum = None
-                    critical_error = True
-
-                if measurement_hum and measurement_hum.unit != 'percent':
-                    vpd_humidity_percent, status = self.is_measurement_unit(
-                        measurement_hum.unit, 'percent', vpd_humidity_percent)
-                    if status == 'error':
-                        critical_error = True
-
-                try:
-                    if not critical_error:
-                        vpd_pa = calculate_vapor_pressure_deficit(
-                            vpd_temperature_celsius, vpd_humidity_percent)
-                    else:
-                        self.logger.error(
-                            "One or more critical errors prevented the "
-                            "vapor pressure deficit from being calculated")
-                except TypeError as err:
-                    self.logger.error("TypeError: {msg}".format(msg=err))
-
-                if vpd_pa:
-                    math_dev_measurement = self.device_measurements.first()
-                    conversion = db_retrieve_table_daemon(
-                        Conversion, unique_id=math_dev_measurement.conversion_id)
-                    channel, unit, measurement = return_measurement_info(
-                        math_dev_measurement, conversion)
-
-                    measurement_dict[channel] = {
-                        'measurement': measurement,
-                        'unit': unit,
-                        'value': vpd_pa
-                    }
-            else:
-                self.error_not_within_max_age()
-
+            measurement_dict = self.math_vapor_pressure_deficit(measurement_dict)
         else:
             self.logger.error("Unknown math type: {type}".format(type=self.math_type))
 
-        # Finally, add measurements to influxdb
+        # Add measurement(s) to influxdb
         if measurement_dict:
             self.logger.debug(
                 "Adding measurements to InfluxDB with ID {}: {}".format(
@@ -766,6 +230,466 @@ class MathController(AbstractController, threading.Thread):
             self.logger.debug(
                 "No measurements to add to InfluxDB with ID {}".format(
                     self.unique_id))
+
+    def math_average(self, measurement_dict):
+        math_dev_measurement = self.device_measurements.filter(
+            DeviceMeasurements.channel == 0).first()
+        channel, unit, measurement = return_measurement_info(
+            math_dev_measurement, None)
+
+        success, measure = self.get_measurements_from_str(self.inputs)
+        if success:
+            average = float(sum(measure) / float(len(measure)))
+
+            measurement_dict = {
+                channel: {
+                    'measurement': measurement,
+                    'unit': unit,
+                    'value': average
+                }
+            }
+        elif measure:
+            self.logger.error(measure)
+        else:
+            self.error_not_within_max_age()
+        return measurement_dict
+
+    def math_average_single(self, measurement_dict):
+        (device_id,
+         math_dev_measurement,
+         math_unit,
+         measure_channel,
+         measure_unit,
+         measure_measurement) = self.return_single_measure_info()
+
+        try:
+            return_value = average_past_seconds(
+                device_id,
+                measure_unit,
+                measure_channel,
+                self.max_measure_age,
+                measure=measure_measurement)
+
+            if math_dev_measurement.conversion_id:
+                return_value = convert_units(
+                    math_dev_measurement.conversion_id,
+                    return_value)
+
+            if return_value:
+                measurement_dict = {
+                    math_dev_measurement.channel: {
+                        'measurement': measure_measurement,
+                        'unit': math_unit,
+                        'value': return_value
+                    }
+                }
+            else:
+                self.error_not_within_max_age()
+        except Exception as msg:
+            self.logger.exception(
+                "average_single Error: {err}".format(err=msg))
+        return measurement_dict
+
+    def math_sum(self, measurement_dict):
+        channel, unit, measurement = self.return_single_conversion_info()
+
+        success, measure = self.get_measurements_from_str(self.inputs)
+        if success:
+            sum_value = float(sum(measure))
+
+            measurement_dict = {
+                channel: {
+                    'measurement': measurement,
+                    'unit': unit,
+                    'value': sum_value
+                }
+            }
+        elif measure:
+            self.logger.error(measure)
+        else:
+            self.error_not_within_max_age()
+        return measurement_dict
+
+    def math_sum_single(self, measurement_dict):
+        (device_id,
+         math_dev_measurement,
+         math_unit,
+         measure_channel,
+         measure_unit,
+         measure_measurement) = self.return_single_measure_info()
+
+        try:
+            return_value = sum_past_seconds(
+                device_id,
+                measure_unit,
+                measure_channel,
+                self.max_measure_age,
+                measure=measure_measurement)
+
+            if math_dev_measurement.conversion_id:
+                return_value = convert_units(
+                    math_dev_measurement.conversion_id,
+                    return_value)
+
+            if return_value:
+                measurement_dict = {
+                    math_dev_measurement.channel: {
+                        'measurement': measure_measurement,
+                        'unit': math_unit,
+                        'value': return_value
+                    }
+                }
+            else:
+                self.error_not_within_max_age()
+        except Exception as msg:
+            self.logger.exception(
+                "sum_single Error: {err}".format(err=msg))
+        return measurement_dict
+
+    def math_difference(self, measurement_dict):
+        channel, unit, measurement = self.return_single_conversion_info()
+
+        success, measure = self.get_measurements_from_str(self.inputs)
+        if success:
+            if self.difference_reverse_order:
+                difference = measure[1] - measure[0]
+            else:
+                difference = measure[0] - measure[1]
+            if self.difference_absolute:
+                difference = abs(difference)
+
+            measurement_dict = {
+                channel: {
+                    'measurement': measurement,
+                    'unit': unit,
+                    'value': difference
+                }
+            }
+        elif measure:
+            self.logger.error(measure)
+        else:
+            self.error_not_within_max_age()
+        return measurement_dict
+
+    def math_equation(self, measurement_dict):
+        channel, unit, measurement = self.return_single_conversion_info()
+
+        success, measure = self.get_measurements_from_str(
+            self.equation_input)
+        if success:
+            if 'x' in self.equation:
+                replaced_str = self.equation.replace('x', str(measure[0]))
+            else:
+                replaced_str = self.equation
+            equation_output = eval(replaced_str)
+
+            measurement_dict = {
+                channel: {
+                    'measurement': measurement,
+                    'unit': unit,
+                    'value': float(equation_output)
+                }
+            }
+        elif measure:
+            self.logger.error(measure)
+        else:
+            self.error_not_within_max_age()
+        return measurement_dict
+
+    def math_redundancy(self, measurement_dict):
+        list_order = self.order_of_use.split(';')
+        measurement_success = False
+
+        for each_id_measurement_id in list_order:
+            device_id = each_id_measurement_id.split(',')[0]
+            measurement_id = each_id_measurement_id.split(',')[1]
+
+            math_dev_measurement = self.device_measurements.filter(
+                DeviceMeasurements.channel == 0).first()
+            if math_dev_measurement:
+                conversion = db_retrieve_table_daemon(
+                    Conversion,
+                    unique_id=math_dev_measurement.conversion_id)
+            else:
+                conversion = None
+            channel, unit, measurement = return_measurement_info(
+                math_dev_measurement, conversion)
+
+            try:
+                success_measure, measure = self.get_measurements_from_id(
+                    device_id, measurement_id)
+
+                if success_measure:
+                    measurement_dict = {
+                        channel: {
+                            'measurement': measurement,
+                            'unit': unit,
+                            'value': float(measure[1]),
+                            'timestamp_utc': measure[0],
+                        }
+                    }
+                    measurement_success = True
+                    break
+
+            except Exception as msg:
+                self.logger.exception(
+                    "redundancy Error: {err}".format(err=msg))
+        if not measurement_success:
+            self.error_not_within_max_age()
+        return measurement_dict
+
+    def math_statistics(self, measurement_dict):
+        success, measure = self.get_measurements_from_str(self.inputs)
+        if success:
+            # Perform some math
+            stat_mean = float(sum(measure) / float(len(measure)))
+            stat_median = median(measure)
+            stat_minimum = min(measure)
+            stat_maximum = max(measure)
+            stdev_ = stdev(measure)
+            stdev_mean_upper = stat_mean + stdev_
+            stdev_mean_lower = stat_mean - stdev_
+
+            list_measurement = [
+                stat_mean,
+                stat_median,
+                stat_minimum,
+                stat_maximum,
+                stdev_,
+                stdev_mean_upper,
+                stdev_mean_lower
+            ]
+
+            for each_measurement in self.device_measurements.all():
+                conversion = db_retrieve_table_daemon(
+                    Conversion, unique_id=each_measurement.conversion_id)
+                channel, unit, measurement = return_measurement_info(
+                    each_measurement, conversion)
+
+                measurement_dict[channel] = {
+                    'measurement': measurement,
+                    'unit': unit,
+                    'value': list_measurement[channel]
+                }
+
+        elif measure:
+            self.logger.error(measure)
+        else:
+            self.error_not_within_max_age()
+        return measurement_dict
+
+    def math_verification(self, measurement_dict):
+        channel, unit, measurement = self.return_single_conversion_info()
+
+        success, measure = self.get_measurements_from_str(self.inputs)
+        if (success and
+                max(measure) - min(measure) <
+                self.max_difference):
+            difference = max(measure) - min(measure)
+
+            measurement_dict = {
+                channel: {
+                    'measurement': measurement,
+                    'unit': unit,
+                    'value': difference
+                }
+            }
+        elif measure:
+            self.logger.error(measure)
+        else:
+            self.error_not_within_max_age()
+        return measurement_dict
+
+    def math_humidity(self, measurement_dict):
+        pressure_pa = 101325
+        critical_error = False
+
+        if self.pressure_pa_id and self.pressure_pa_measure_id:
+
+            success_pa, pressure = self.get_measurements_from_id(
+                self.pressure_pa_id, self.pressure_pa_measure_id)
+
+            if success_pa:
+                pressure_pa = int(pressure[1])
+                # Pressure must be in Pa, convert if not
+
+                measurement_press = db_retrieve_table_daemon(
+                    DeviceMeasurements,
+                    unique_id=self.pressure_pa_measure_id)
+                if not measurement_press:
+                    self.logger.error(
+                        "Could not find pressure measurement")
+                    measurement_press = None
+                    critical_error = True
+
+                if measurement_press and measurement_press.unit != 'Pa':
+                    pressure_pa, status = self.is_measurement_unit(
+                        measurement_press.unit, 'Pa', pressure_pa)
+                    if status == 'error':
+                        critical_error = True
+
+        success_dbt, dry_bulb_t = self.get_measurements_from_id(
+            self.dry_bulb_t_id, self.dry_bulb_t_measure_id)
+        success_wbt, wet_bulb_t = self.get_measurements_from_id(
+            self.wet_bulb_t_id, self.wet_bulb_t_measure_id)
+
+        if success_dbt and success_wbt:
+            dbt_kelvin = float(dry_bulb_t[1])
+            wbt_kelvin = float(wet_bulb_t[1])
+
+            measurement_db_temp = db_retrieve_table_daemon(
+                DeviceMeasurements,
+                unique_id=self.dry_bulb_t_measure_id)
+            if not measurement_db_temp:
+                self.logger.error(
+                    "Could not find dry bulb temperature measurement")
+                measurement_db_temp = None
+                critical_error = True
+
+            if measurement_db_temp and measurement_db_temp.unit != 'K':
+                dbt_kelvin, status = self.is_measurement_unit(
+                    measurement_db_temp.unit, 'K', dbt_kelvin)
+                if status == 'error':
+                    critical_error = True
+
+            measurement_wb_temp = db_retrieve_table_daemon(
+                DeviceMeasurements,
+                unique_id=self.wet_bulb_t_measure_id)
+            if not measurement_wb_temp:
+                self.logger.error(
+                    "Could not find wet bulb temperature measurement")
+                measurement_wb_temp = None
+                critical_error = True
+
+            if measurement_wb_temp and measurement_wb_temp.unit != 'K':
+                wbt_kelvin, status = self.is_measurement_unit(
+                    measurement_wb_temp.unit, 'K', wbt_kelvin)
+                if status == 'error':
+                    critical_error = True
+
+            # Convert temperatures to Kelvin (already done above)
+            # dbt_kelvin = celsius_to_kelvin(dry_bulb_t_c)
+            # wbt_kelvin = celsius_to_kelvin(wet_bulb_t_c)
+            psypi = None
+
+            try:
+                if not critical_error:
+                    psypi = SI.state(
+                        "DBT", dbt_kelvin, "WBT", wbt_kelvin, pressure_pa)
+                else:
+                    self.logger.error(
+                        "One or more critical errors prevented the "
+                        "humidity from being calculated")
+            except TypeError as err:
+                self.logger.error("TypeError: {msg}".format(msg=err))
+
+            if psypi:
+                percent_relative_humidity = psypi[2] * 100
+
+                # Ensure percent humidity stays within 0 - 100 % range
+                if percent_relative_humidity > 100:
+                    percent_relative_humidity = 100
+                elif percent_relative_humidity < 0:
+                    percent_relative_humidity = 0
+
+                # Dry bulb temperature: psypi[0])
+                # Wet bulb temperature: psypi[5])
+
+                specific_enthalpy = float(psypi[1])
+                humidity = float(percent_relative_humidity)
+                specific_volume = float(psypi[3])
+                humidity_ratio = float(psypi[4])
+
+                list_measurement = [
+                    specific_enthalpy,
+                    humidity,
+                    specific_volume,
+                    humidity_ratio
+                ]
+
+                for each_measurement in self.device_measurements.all():
+                    conversion = db_retrieve_table_daemon(
+                        Conversion,
+                        unique_id=each_measurement.conversion_id)
+                    channel, unit, measurement = return_measurement_info(
+                        each_measurement, conversion)
+
+                    measurement_dict[channel] = {
+                        'measurement': measurement,
+                        'unit': unit,
+                        'value': list_measurement[channel]
+                    }
+        else:
+            self.error_not_within_max_age()
+        return measurement_dict
+
+    def math_vapor_pressure_deficit(self, measurement_dict):
+        vpd_pa = None
+        critical_error = False
+
+        success_temp, temperature = self.get_measurements_from_id(
+            self.unique_id_1, self.unique_measurement_id_1)
+        success_hum, humidity = self.get_measurements_from_id(
+            self.unique_id_2, self.unique_measurement_id_2)
+
+        if success_temp and success_hum:
+            vpd_temperature_celsius = float(temperature[1])
+            vpd_humidity_percent = float(humidity[1])
+
+            measurement_temp = db_retrieve_table_daemon(
+                DeviceMeasurements,
+                unique_id=self.unique_measurement_id_1)
+            if not measurement_temp:
+                self.logger.error("Could not find temperature measurement")
+                measurement_temp = None
+                critical_error = True
+
+            if measurement_temp and measurement_temp.unit != 'C':
+                vpd_temperature_celsius, status = self.is_measurement_unit(
+                    measurement_temp.unit, 'C', vpd_temperature_celsius)
+                if status == 'error':
+                    critical_error = True
+
+            measurement_hum = db_retrieve_table_daemon(
+                DeviceMeasurements,
+                unique_id=self.unique_measurement_id_2)
+            if not measurement_hum:
+                self.logger.error("Could not find humidity measurement")
+                measurement_hum = None
+                critical_error = True
+
+            if measurement_hum and measurement_hum.unit != 'percent':
+                vpd_humidity_percent, status = self.is_measurement_unit(
+                    measurement_hum.unit, 'percent', vpd_humidity_percent)
+                if status == 'error':
+                    critical_error = True
+
+            try:
+                if not critical_error:
+                    vpd_pa = calculate_vapor_pressure_deficit(
+                        vpd_temperature_celsius, vpd_humidity_percent)
+                else:
+                    self.logger.error(
+                        "One or more critical errors prevented the "
+                        "vapor pressure deficit from being calculated")
+            except TypeError as err:
+                self.logger.error("TypeError: {msg}".format(msg=err))
+
+            if vpd_pa:
+                math_dev_measurement = self.device_measurements.first()
+                conversion = db_retrieve_table_daemon(
+                    Conversion, unique_id=math_dev_measurement.conversion_id)
+                channel, unit, measurement = return_measurement_info(
+                    math_dev_measurement, conversion)
+
+                measurement_dict[channel] = {
+                    'measurement': measurement,
+                    'unit': unit,
+                    'value': vpd_pa
+                }
+        else:
+            self.error_not_within_max_age()
+        return measurement_dict
 
     def is_measurement_unit(self, unit_from, unit_to, value):
         """ Converts value from one measurement to another """
@@ -830,3 +754,56 @@ class MathController(AbstractController, threading.Thread):
         if not measurement:
             return False, None
         return True, measurement
+
+    def return_single_conversion_info(self):
+        """ Return channel, unit, and measurement of a math device measurement """
+        math_dev_measurement = self.device_measurements.filter(
+            DeviceMeasurements.channel == 0).first()
+        if math_dev_measurement:
+            conversion = db_retrieve_table_daemon(
+                Conversion, unique_id=math_dev_measurement.conversion_id)
+        else:
+            conversion = None
+        channel, unit, measurement = return_measurement_info(
+            math_dev_measurement, conversion)
+
+        return channel, unit, measurement
+
+    def return_single_measure_info(self):
+        math_dev_measurement = self.device_measurements.filter(
+            DeviceMeasurements.channel == 0).first()
+        math_conversion = db_retrieve_table_daemon(
+            Conversion, unique_id=math_dev_measurement.conversion_id)
+        (math_channel,
+         math_unit,
+         math_measurement) = return_measurement_info(
+            math_dev_measurement, math_conversion)
+
+        device_id = self.inputs.split(',')[0]
+        measurement_id = self.inputs.split(',')[1]
+
+        if measurement_id == 'output':
+            output = db_retrieve_table_daemon(Output, unique_id=device_id)
+            measure_channel = output.channel
+            measure_unit = output.unit
+            measure_measurement = output.measurement
+        else:
+            device_measurement = db_retrieve_table_daemon(
+                DeviceMeasurements, unique_id=measurement_id)
+            if device_measurement:
+                measure_conversion = db_retrieve_table_daemon(
+                    Conversion,
+                    unique_id=device_measurement.conversion_id)
+            else:
+                measure_conversion = None
+            (measure_channel,
+             measure_unit,
+             measure_measurement) = return_measurement_info(
+                device_measurement, measure_conversion)
+
+        return (device_id,
+                math_dev_measurement,
+                math_unit,
+                measure_channel,
+                measure_unit,
+                measure_measurement)

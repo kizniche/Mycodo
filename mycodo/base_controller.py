@@ -19,16 +19,15 @@ class AbstractController(object):
     in controllers.
     """
     def __init__(self, ready, unique_id=None, name=__name__):
+        self.running = False
         self.thread_startup_timer = timeit.default_timer()
         self.thread_shutdown_timer = 0
+        self.ready = ready
 
         logger_name = "{}".format(name)
         if unique_id:
             logger_name += "_{}".format(unique_id.split('-')[0])
         self.logger = logging.getLogger(logger_name)
-
-        self.ready = ready
-        self.running = True
 
     def run(self):
         self.logger.error(
@@ -39,22 +38,21 @@ class AbstractController(object):
 
     def attempt_execute(self, func, times=3, delay_sec=10):
         """ Attempt to execute a function several times with a delay between attempts """
-        for i in range(times):
+        for i in range(1, times + 1):
             try:
                 func()
                 break
             except Exception:
-                if i+1 < times:
+                if i < times:
                     self.logger.exception(
-                        "Exception executing on attempt {} of {}. Waiting "
+                        "Exception executing {}() on attempt {} of {}. Waiting "
                         "{} seconds and trying again.".format(
-                            i + 1, times, delay_sec))
+                            func.__name__, i, times, delay_sec))
                     time.sleep(delay_sec)
                 else:
                     self.logger.exception(
-                        "Exception executing on attempt {} of {}. Could not "
-                        "execute {}()".format(
-                            i + 1, times, func.__name__))
+                        "Exception executing {}() on attempt {} of {}.".format(
+                            func.__name__, i, times))
 
     def set_log_level_debug(self, log_level_debug):
         if log_level_debug:

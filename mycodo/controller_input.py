@@ -192,6 +192,7 @@ class InputController(AbstractController, threading.Thread):
                 (timeit.default_timer() - self.thread_startup_timer) * 1000))
 
             self.ready.set()
+            self.running = True
 
             # Set up edge detection
             if self.device == 'EDGE':
