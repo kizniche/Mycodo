@@ -92,7 +92,6 @@ class InputController(AbstractController, threading.Thread):
         self.conversions = None
         self.input_dev = None
         self.input_name = None
-        self.unique_id = None
         self.log_level_debug = None
         self.gpio_location = None
         self.device = None
