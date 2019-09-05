@@ -21,8 +21,8 @@ class AbstractController(object):
     in controllers.
     """
     def __init__(self, ready, unique_id=None, name=__name__):
-        self.running = False
         self.thread_startup_timer = timeit.default_timer()
+        self.running = False
         self.thread_shutdown_timer = 0
         self.sample_rate = 30
         self.ready = ready
@@ -95,8 +95,11 @@ class AbstractController(object):
         finally:
             self.run_finally()
             self.running = False
-            self.logger.info("Deactivated in {:.1f} ms".format(
-                (timeit.default_timer() - self.thread_shutdown_timer) * 1000))
+            if self.thread_shutdown_timer:
+                self.logger.info("Deactivated in {:.1f} ms".format(
+                    (timeit.default_timer() - self.thread_shutdown_timer) * 1000))
+            else:
+                self.logger.error("Deactivated unexpectedly")
 
     def is_running(self):
         return self.running

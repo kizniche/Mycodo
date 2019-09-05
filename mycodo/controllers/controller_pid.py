@@ -139,6 +139,8 @@ class PIDController(AbstractController, threading.Thread):
         self.default_setpoint = None
         self.setpoint = 0
         self.store_lower_as_negative = None
+        self.first_start = None
+        self.timer = None
 
         # Hysteresis options
         self.band = None
@@ -152,10 +154,6 @@ class PIDController(AbstractController, threading.Thread):
         self.autotune_noiseband = 0
         self.autotune_outstep = 0
         self.autotune_timestamp = None
-
-        self.first_start = True
-
-        self.timer = time.time() + self.start_offset
 
         # Check if a method is set for this PID
         self.method_type = None
@@ -224,6 +222,8 @@ class PIDController(AbstractController, threading.Thread):
         self.setpoint = pid.setpoint
         self.band = pid.band
         self.store_lower_as_negative = pid.store_lower_as_negative
+        self.first_start = True
+        self.timer = time.time() + self.start_offset
 
         # Autotune
         self.autotune_activated = pid.autotune_activated
