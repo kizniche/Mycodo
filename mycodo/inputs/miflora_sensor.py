@@ -109,4 +109,4 @@ class InputModule(AbstractInput):
 
                 return self.return_dict
             finally:
-                self.lock_release()
+                self.lock_release(self.lock_file)

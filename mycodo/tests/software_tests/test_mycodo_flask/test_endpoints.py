@@ -280,11 +280,11 @@ def sees_navbar(testapp):
     response = testapp.get('/').maybe_follow()
     assert response.status_code == 200
     navbar_strings = [
-        'Async',
+        'Asynchronous Graphs',
         'Calibration & Setup',
-        'Cam',
+        'Camera',
         'Configure',
-        'Dash',
+        'Dashboard',
         'Data',
         'Export',
         'Function',

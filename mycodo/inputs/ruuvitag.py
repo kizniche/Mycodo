@@ -120,8 +120,6 @@ class InputModule(AbstractInput):
         """ Obtain and return the measurements """
         self.return_dict = measurements_dict.copy()
 
-        time.sleep(1)
-
         self.lock_acquire(self.lock_file, timeout=3600)
         if self.locked:
             self.logger.debug("Starting measurement")
@@ -185,3 +183,4 @@ class InputModule(AbstractInput):
             finally:
                 self.lock_release()
                 self.logger.debug("Lock released")
+                time.sleep(1)

@@ -263,12 +263,13 @@ class InputModule(AbstractInput):
         for each_ts, each_measure in self.gadget.loggedDataReadout['Temp'].items():
             if not self.running:
                 break
-            list_timestamps_temp.append(each_ts)
-            datetime_ts = datetime.datetime.utcfromtimestamp(each_ts / 1000)
-            if self.is_enabled(0):
-                if -200 > each_measure or each_measure > 200:
-                    continue  # Temperature outside acceptable range
 
+            if -40 > each_measure or each_measure > 125:
+                continue  # Temperature outside acceptable range
+            list_timestamps_temp.append(each_ts)
+
+            if self.is_enabled(0):
+                datetime_ts = datetime.datetime.utcfromtimestamp(each_ts / 1000)
                 measurement_single = {
                     0: {
                         'measurement': 'temperature',
@@ -296,12 +297,13 @@ class InputModule(AbstractInput):
         for each_ts, each_measure in self.gadget.loggedDataReadout['Humi'].items():
             if not self.running:
                 break
-            list_timestamps_humi.append(each_ts)
-            datetime_ts = datetime.datetime.utcfromtimestamp(each_ts / 1000)
-            if self.is_enabled(1):
-                if 0 >= each_measure or each_measure > 100:
-                    continue  # Humidity outside acceptable range
 
+            if 0 >= each_measure or each_measure > 100:
+                continue  # Humidity outside acceptable range
+            list_timestamps_humi.append(each_ts)
+
+            if self.is_enabled(1):
+                datetime_ts = datetime.datetime.utcfromtimestamp(each_ts / 1000)
                 measurement_single = {
                     1: {
                         'measurement': 'humidity',
@@ -408,8 +410,6 @@ class InputModule(AbstractInput):
         """ Obtain and return the measurements """
         self.return_dict = measurements_dict.copy()
 
-        time.sleep(1)
-
         self.lock_acquire(self.lock_file, timeout=3600)
         if self.locked:
             self.logger.debug("Starting measurement")
@@ -478,7 +478,8 @@ class InputModule(AbstractInput):
                 else:
                     self.logger.debug("Not connected: Not measuring")
             finally:
-                self.lock_release()
+                self.lock_release(self.lock_file)
+                time.sleep(1)
 
     def set_logging_interval(self):
         """Set logging interval (resets memory; set after downloading data)"""

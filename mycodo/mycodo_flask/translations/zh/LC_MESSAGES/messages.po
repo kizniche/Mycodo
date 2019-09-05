@@ -2923,7 +2923,7 @@ msgid "No Connection"
 msgstr "无连接"
 
 #: mycodo_flask/templates/layout.html:175
-msgid "Dash"
+msgid "Dashboard"
 msgstr "短跑"
 
 #: mycodo_flask/templates/layout.html:179
@@ -2932,11 +2932,11 @@ msgid "Live"
 msgstr "生活"
 
 #: mycodo_flask/templates/layout.html:183
-msgid "Async"
+msgid "Asynchronous Graphs"
 msgstr "异步"
 
 #: mycodo_flask/templates/layout.html:187
-msgid "Cam"
+msgid "Camera"
 msgstr "凸轮"
 
 #: mycodo_flask/templates/layout.html:198

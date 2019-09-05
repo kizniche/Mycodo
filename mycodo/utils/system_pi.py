@@ -61,6 +61,7 @@ def dpkg_package_exists(package_name):
 
 
 def return_measurement_info(device_measurement, conversion):
+    """ Return unit, measurement, and channel of a device measurement"""
     try:
         unit = None
         measurement = None
@@ -285,6 +286,8 @@ def internet(host="8.8.8.8", port=53, timeout=3):
 def str_is_float(text):
     """Returns true if the string represents a float value"""
     try:
+        if not text:
+            return False
         if text.isalpha():
             return False
         float(text)

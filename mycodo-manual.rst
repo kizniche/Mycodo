@@ -129,7 +129,7 @@ Here is how I generally set up Mycodo to monitor and regulate:
    the correct sensor or input device. Configure the input with the
    correct communication pins and other options. Activate the input to
    begin recording measurements to the database.
-5. Go to the ``Live`` page to ensure there is
+5. Go to the ``Data -> Live`` page to ensure there is
    recent data being acquired from the input.
 6. On the ``Setup -> Output`` page, add a relay and configure the GPIO pin that
    switches it, whether the relay switches On when the signal is HIGH or
@@ -141,7 +141,7 @@ Here is how I generally set up Mycodo to monitor and regulate:
 8. On the ``Setup -> Function`` page, create a PID controller with the
    appropriate input, output, and other parameters. Activate the PID
    controller.
-9. On the ``Dash`` page, create a graph that includes
+9. On the ``Data -> Dashboard`` page, create a graph that includes
    the input measurement, the output that is being used by the PID, and
    the PID output and setpoint. This provides a good visualization for
    tuning the PID. See `Quick Setup Examples <#quick-setup-examples>`__
@@ -181,7 +181,7 @@ Yes, you can use as many sensors as you would like to create a redundant system 
 5. In the options of the Redundancy controller, change the order you wish to use the sensors under Order of Use. For this example, we will use the default order (Sensor1, Sensor2, Sensor3).
 6. In the options of the Redundancy controller, under Measurement Settings, select Celsius for the Measurement Unit and click Save under Measurement Settings.
 7. Activate the Redundancy Math controller.
-8. Go to the Live page and verify the Redundancy Math controller is working correctly by returning a value from one of the three selected Inputs. If the first sensor is working correctly, it should return this value. You can deactivate the first sensor (mimicking the first sensor stopped working) and see if the second sensor's value is then returned.
+8. Go to the ``Data -> Live`` page and verify the Redundancy Math controller is working correctly by returning a value from one of the three selected Inputs. If the first sensor is working correctly, it should return this value. You can deactivate the first sensor (mimicking the first sensor stopped working) and see if the second sensor's value is then returned.
 9. Go to the ``Setup -> Function`` page and select the new Redundancy Math controller for the PID Measurement option.
 
 The PID controller will now use the measurement returned from the Redundancy Math controller, which in turn will acquire its measurement in the following way:
@@ -318,6 +318,22 @@ measurements for `Graphs <#graphs>`__, `LCDs <#lcds>`__,
 Mycodo to operate from. Add, configure, and activate inputs to begin
 recording measurements to the database and allow them to be used throughout
 Mycodo.
+
+Custom Inputs
+'''''''''''''
+
+Before discussing the built-in Inputs, it should be noted that there is an
+Input import system in Mycodo that allows user-created Inputs to be used
+in the Mycodo system. Custom Inputs can be uploaded on the
+```Config -> Inputs``` ``Configure -> Inputs`` page. After import, they
+will be available to use on the ``Setup -> Data`` page.
+
+Additionally, I have another github repository devoted to Custom Inputs that
+are not included in the built-in set. These can be found at
+`kizniche/Mycodo-custom-inputs <https://github.com/kizniche/Mycodo-custom-inputs>`__.
+
+Built-In Inputs
+'''''''''''''''
 
 In addition to several supported sensors and devices, a Linux command
 may be specified that will be executed and the return value stored in
@@ -2491,10 +2507,10 @@ configurations, either the result of a misconfigured part of the system
 upgrade, or other unforeseen issue. Sometimes it is necessary to perform
 diagnostic actions that can determine the cause of the issue or fix the
 issue itself. The options below are meant to alleviate issues, such as a
-misconfigured dashboard element causing an error on the ``Dash`` page,
-which may cause an inability to access the ``Dash`` page to correct the
+misconfigured dashboard element causing an error on the ``Data -> Dashboard`` page,
+which may cause an inability to access the ``Data -> Dashboard`` page to correct the
 issue. Deleting all Dashboard Elements may be the most economical method
-to enable access to the ``Dash`` page again, at the cost of having to
+to enable access to the ``Data -> Dashboard`` page again, at the cost of having to
 readd all the Dashboard Elements that were once there.
 
 +--------------------------------+-------------------------------------------------+
@@ -2530,7 +2546,7 @@ https://github.com/kizniche/Mycodo/tree/master/mycodo/inputs/examples/example_al
 Dashboard
 ---------
 
-``Dash``
+``Data -> Dashboard``
 
 The dashboard is where you can add pieces of data for easy viewing. It
 is highly customizable and provides an easy way to see exactly what data
@@ -2776,7 +2792,7 @@ PID Control
 Live Measurements
 -----------------
 
-``Live``
+``Data -> Live``
 
 The ``Live`` page is the first page a user sees after logging
 in to Mycodo. It will display the current measurements being acquired
@@ -2788,7 +2804,7 @@ on the page from the measurement database.
 Asynchronous Graphs
 -------------------
 
-``Async``
+``Data -> Asynchronous Graphs``
 
 A graphical data display that is useful for viewing data sets spanning
 relatively long periods of time (weeks/months/years), which could be
@@ -2816,7 +2832,12 @@ Notes
 
 ``More -> Notes``
 
-Notes may be created that can then be displayed on graphs or referenced at a later time. All notes are timestamped with the date/time of creation or may be created with a custom date/time. Each note must have at least one tag selected. Tags are what are selected to be displayed on a graph and all notes with that tag will appear in the time frame selected on the graph.
+Notes may be created that can then be displayed on graphs or referenced
+at a later time. All notes are timestamped with the date/time of creation
+or may be created with a custom date/time. Each note must have at least
+one tag selected. Tags are what are selected to be displayed on a graph
+and all notes with that tag will appear in the time frame selected on the
+graph.
 
 Tag Options
 ```````````
@@ -2889,7 +2910,7 @@ Dependency page in order to install it.
 Camera
 ------
 
-``Cam``
+``More -> Camera``
 
 Once a cameras has been set up (in the
 `Camera Settings <#camera-settings>`__), it may be used to capture still images,

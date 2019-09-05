@@ -257,7 +257,7 @@ Here is how I generally set up Mycodo to monitor and regulate:
 8.  On the Setup -> Function page, create a PID controller with the
     appropriate input, output, and other parameters. Activate the PID
     controller.
-9.  On the Dash page, create a graph that includes the input
+9.  On the Dashboard page, create a graph that includes the input
     measurement, the output that is being used by the PID, and the PID
     output and setpoint. This provides a good visualization for tuning
     the PID. See Quick Setup Examples for a greater detail of this
@@ -2532,9 +2532,9 @@ database upgrade, or other unforeseen issue. Sometimes it is necessary
 to perform diagnostic actions that can determine the cause of the issue
 or fix the issue itself. The options below are meant to alleviate
 issues, such as a misconfigured dashboard element causing an error on
-the Dash page, which may cause an inability to access the Dash page to
+the Dashboard page, which may cause an inability to access the Dashboard page to
 correct the issue. Deleting all Dashboard Elements may be the most
-economical method to enable access to the Dash page again, at the cost
+economical method to enable access to the Dashboard page again, at the cost
 of having to readd all the Dashboard Elements that were once there.
 
   ------------------------------------------------------------------------

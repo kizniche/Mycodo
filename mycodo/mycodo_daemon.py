@@ -32,12 +32,12 @@ sys.path.append(
 
 import argparse
 import logging
-import resource
 import threading
 import time
 import timeit
 
 import Pyro4
+import resource
 from daemonize import Daemonize
 from pkg_resources import parse_version
 
@@ -48,13 +48,13 @@ from mycodo.config import SQL_DATABASE_MYCODO
 from mycodo.config import STATS_CSV
 from mycodo.config import STATS_INTERVAL
 from mycodo.config import UPGRADE_CHECK_INTERVAL
-from mycodo.controller_conditional import ConditionalController
-from mycodo.controller_input import InputController
-from mycodo.controller_lcd import LCDController
-from mycodo.controller_math import MathController
-from mycodo.controller_output import OutputController
-from mycodo.controller_pid import PIDController
-from mycodo.controller_trigger import TriggerController
+from mycodo.controllers.controller_conditional import ConditionalController
+from mycodo.controllers.controller_input import InputController
+from mycodo.controllers.controller_lcd import LCDController
+from mycodo.controllers.controller_math import MathController
+from mycodo.controllers.controller_output import OutputController
+from mycodo.controllers.controller_pid import PIDController
+from mycodo.controllers.controller_trigger import TriggerController
 from mycodo.databases.models import Camera
 from mycodo.databases.models import Conditional
 from mycodo.databases.models import ConditionalConditions
@@ -67,6 +67,10 @@ from mycodo.databases.models import Trigger
 from mycodo.databases.utils import session_scope
 from mycodo.devices.camera import camera_record
 from mycodo.utils.database import db_retrieve_table_daemon
+from mycodo.utils.function_actions import get_condition_measurement
+from mycodo.utils.function_actions import get_condition_measurement_dict
+from mycodo.utils.function_actions import trigger_action
+from mycodo.utils.function_actions import trigger_function_actions
 from mycodo.utils.github_release_info import github_releases
 from mycodo.utils.inputs import parse_input_information
 from mycodo.utils.statistics import add_update_csv
@@ -75,11 +79,6 @@ from mycodo.utils.statistics import return_stat_file_dict
 from mycodo.utils.statistics import send_anonymous_stats
 from mycodo.utils.tools import generate_output_usage_report
 from mycodo.utils.tools import next_schedule
-from mycodo.utils.function_actions import get_condition_measurement
-from mycodo.utils.function_actions import get_condition_measurement_dict
-from mycodo.utils.function_actions import trigger_function_actions
-from mycodo.utils.function_actions import trigger_action
-
 
 MYCODO_DB_PATH = 'sqlite:///' + SQL_DATABASE_MYCODO
 
@@ -975,20 +974,22 @@ class DaemonController:
                 'Trigger': db_retrieve_table_daemon(Trigger, entry='all')
             }
 
-            self.logger.debug("Starting Output controller")
-            self.controller['Output'] = OutputController(debug)
+            self.logger.debug("Starting Output Controller")
+            ready = threading.Event()
+            self.controller['Output'] = OutputController(ready, debug)
             self.controller['Output'].daemon = True
             self.controller['Output'].start()
+            ready.wait()  # wait for thread to return ready
 
             # Ensure Output controller has started before continuing
             time.sleep(0.5)
             output_controller_timout = time.time() + 60
             while not self.controller['Output'].is_running():
                 if time.time() > output_controller_timout:
-                    self.logger.error("Output controller timed out")
+                    self.logger.error("Output Controller timed out")
                     break
                 time.sleep(0.1)
-            self.logger.info("Output controller fully started")
+            self.logger.debug("Output Controller fully started")
 
             for each_controller in self.cont_types:
                 self.logger.debug(

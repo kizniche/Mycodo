@@ -21,18 +21,16 @@
 #  along with Mycodo. If not, see <http://www.gnu.org/licenses/>.
 #
 #  Contact at kylegabriel.com
-
+#
 import datetime
-import logging
 import threading
 import time
-import timeit
 
 import RPi.GPIO as GPIO
 import filelock
 import os
-import requests
 
+from mycodo.controllers.base_controller import AbstractController
 from mycodo.databases.models import Conversion
 from mycodo.databases.models import DeviceMeasurements
 from mycodo.databases.models import Input
@@ -70,51 +68,195 @@ class Measurement:
         return self.rawData
 
 
-class InputController(threading.Thread):
+class InputController(AbstractController, threading.Thread):
     """
     Class for controlling the input
-
     """
-    def __init__(self, ready, input_id):
+    def __init__(self, ready, unique_id):
         threading.Thread.__init__(self)
+        super(InputController, self).__init__(ready, unique_id=unique_id, name=__name__)
 
-        self.logger = logging.getLogger(
-            "{}_{}".format(__name__, input_id.split('-')[0]))
+        self.unique_id = unique_id
+        self.sample_rate = None
+
+        self.control = DaemonControl()
 
         self.stop_iteration_counter = 0
-        self.thread_startup_timer = timeit.default_timer()
-        self.thread_shutdown_timer = 0
-        self.ready = ready
         self.lock = {}
         self.measurement = None
         self.measurement_success = False
-        self.control = DaemonControl()
         self.pause_loop = False
         self.verify_pause_loop = True
+        self.dict_inputs = None
+        self.device_measurements = None
+        self.conversions = None
+        self.input_dev = None
+        self.input_name = None
+        self.log_level_debug = None
+        self.gpio_location = None
+        self.device = None
+        self.interface = None
+        self.period = None
 
+        # Edge detection
+        self.switch_edge = None
+        self.switch_bouncetime = None
+        self.switch_reset_period = None
+
+        # Pre-Output: Activates prior to input measurement
+        self.pre_output_id = None
+        self.pre_output_duration = None
+        self.pre_output_during_measure = None
+        self.pre_output_setup = None
+        self.last_measurement = None
+        self.next_measurement = None
+        self.get_new_measurement = None
+        self.trigger_cond = None
+        self.measurement_acquired = None
+        self.pre_output_activated = None
+        self.pre_output_locked = None
+        self.pre_output_timer = None
+
+        # SMTP options
+        self.smtp_max_count = None
+        self.email_count = None
+        self.allowed_to_send_notice = None
+
+        # Set up input lock
+        self.input_lock = None
+        self.lock_file = None
+
+        self.i2c_address = None
+        self.switch_edge_gpio = None
+        self.measure_input = None
+        self.device_recognized = None
+
+        self.edge_reset_timer = time.time()
+        self.input_timer = time.time()
+        self.lastUpdate = None
+
+    def __str__(self):
+        return str(self.__class__)
+
+    def loop(self):
+        # Pause loop to modify conditional statements.
+        # Prevents execution of conditional while variables are
+        # being modified.
+        if self.pause_loop:
+            self.verify_pause_loop = True
+            while self.pause_loop:
+                time.sleep(0.1)
+
+        if self.device not in ['EDGE', 'MQTT_PAHO']:
+            now = time.time()
+            # Signal that a measurement needs to be obtained
+            if (now > self.next_measurement and
+                    not self.get_new_measurement):
+
+                # Prevent double measurement if previous acquisition of a measurement was delayed
+                if self.last_measurement < self.next_measurement:
+                    self.get_new_measurement = True
+                    self.trigger_cond = True
+
+                # Ensure the next measure event will occur in the future
+                while self.next_measurement < now:
+                    self.next_measurement += self.period
+
+            # if signaled and a pre output is set up correctly, turn the
+            # output on or on for the set duration
+            if (self.get_new_measurement and
+                    self.pre_output_setup and
+                    not self.pre_output_activated):
+
+                self.lock_setup()
+
+                self.pre_output_timer = time.time() + self.pre_output_duration
+                self.pre_output_activated = True
+
+                # Only run the pre-output before measurement
+                # Turn on for a duration, measure after it turns off
+                if not self.pre_output_during_measure:
+                    output_on = threading.Thread(
+                        target=self.control.output_on,
+                        args=(self.pre_output_id,
+                              self.pre_output_duration,))
+                    output_on.start()
+
+                # Run the pre-output during the measurement
+                # Just turn on, then off after the measurement
+                else:
+                    output_on = threading.Thread(
+                        target=self.control.output_on,
+                        args=(self.pre_output_id,))
+                    output_on.start()
+
+            # If using a pre output, wait for it to complete before
+            # querying the input for a measurement
+            if self.get_new_measurement:
+
+                if (self.pre_output_setup and
+                        self.pre_output_activated and
+                        now > self.pre_output_timer):
+
+                    if self.pre_output_during_measure:
+                        # Measure then turn off pre-output
+                        self.update_measure()
+                        output_off = threading.Thread(
+                            target=self.control.output_off,
+                            args=(self.pre_output_id,))
+                        output_off.start()
+                    else:
+                        # Pre-output has turned off, now measure
+                        self.update_measure()
+
+                    self.pre_output_activated = False
+                    self.get_new_measurement = False
+
+                    self.lock_release()
+
+                elif not self.pre_output_setup:
+                    # Pre-output not enabled, just measure
+                    self.update_measure()
+                    self.get_new_measurement = False
+
+                # Add measurement(s) to influxdb
+                if self.measurement_success:
+                    use_same_timestamp = True
+                    if ('measurements_use_same_timestamp' in self.dict_inputs[self.device] and
+                            not self.dict_inputs[self.device]['measurements_use_same_timestamp']):
+                        use_same_timestamp = False
+                    add_measurements_influxdb(
+                        self.unique_id,
+                        self.create_measurements_dict(),
+                        use_same_timestamp=use_same_timestamp)
+                    self.measurement_success = False
+
+        self.trigger_cond = False
+
+    def run_finally(self):
+        if self.device == 'EDGE':
+            GPIO.setmode(GPIO.BCM)
+            GPIO.cleanup(int(self.gpio_location))
+
+    def initialize_variables(self):
         self.dict_inputs = parse_input_information()
 
         self.sample_rate = db_retrieve_table_daemon(
             Misc, entry='first').sample_rate_controller_input
 
-        self.input_id = input_id
         input_dev = db_retrieve_table_daemon(
-            Input, unique_id=self.input_id)
-
-        if input_dev.log_level_debug:
-            self.logger.setLevel(logging.DEBUG)
-        else:
-            self.logger.setLevel(logging.INFO)
+            Input, unique_id=self.unique_id)
 
         self.device_measurements = db_retrieve_table_daemon(
             DeviceMeasurements).filter(
-                DeviceMeasurements.device_id == self.input_id)
+            DeviceMeasurements.device_id == self.unique_id)
 
         self.conversions = db_retrieve_table_daemon(Conversion)
 
         self.input_dev = input_dev
         self.input_name = input_dev.name
         self.unique_id = input_dev.unique_id
+        self.log_level_debug = input_dev.log_level_debug
         self.gpio_location = input_dev.gpio_location
         self.device = input_dev.device
         self.interface = input_dev.interface
@@ -138,6 +280,8 @@ class InputController(threading.Thread):
         self.pre_output_activated = False
         self.pre_output_locked = False
         self.pre_output_timer = time.time()
+
+        self.set_log_level_debug(self.log_level_debug)
 
         # Check if Pre-Output ID actually exists
         output = db_retrieve_table_daemon(Output, entry='all')
@@ -190,147 +334,24 @@ class InputController(threading.Thread):
 
         self.edge_reset_timer = time.time()
         self.input_timer = time.time()
-        self.running = False
         self.lastUpdate = None
 
-    def __str__(self):
-        return str(self.__class__)
+        # Set up edge detection
+        if self.device == 'EDGE':
+            GPIO.setmode(GPIO.BCM)
+            GPIO.setup(int(self.gpio_location), GPIO.IN)
+            GPIO.add_event_detect(int(self.gpio_location),
+                                  self.switch_edge_gpio,
+                                  callback=self.edge_detected,
+                                  bouncetime=self.switch_bouncetime)
 
-    def run(self):
-        try:
-            self.running = True
-            self.logger.info("Activated in {:.1f} ms".format(
-                (timeit.default_timer() - self.thread_startup_timer) * 1000))
-            self.ready.set()
-
-            # Set up edge detection
-            if self.device == 'EDGE':
-                GPIO.setmode(GPIO.BCM)
-                GPIO.setup(int(self.gpio_location), GPIO.IN)
-                GPIO.add_event_detect(int(self.gpio_location),
-                                      self.switch_edge_gpio,
-                                      callback=self.edge_detected,
-                                      bouncetime=self.switch_bouncetime)
-
-            # Set up MQTT listener
-            elif ('listener' in self.dict_inputs[self.device] and
-                    self.dict_inputs[self.device]['listener']):
-                input_listener = threading.Thread(
-                    target=self.measure_input.listener())
-                input_listener.daemon = True
-                input_listener.start()
-
-            while self.running:
-                # Pause loop to modify conditional statements.
-                # Prevents execution of conditional while variables are
-                # being modified.
-                if self.pause_loop:
-                    self.verify_pause_loop = True
-                    while self.pause_loop:
-                        time.sleep(0.1)
-
-                if self.device not in ['EDGE', 'MQTT_PAHO']:
-                    now = time.time()
-                    # Signal that a measurement needs to be obtained
-                    if (now > self.next_measurement and
-                            not self.get_new_measurement):
-
-                        # Prevent double measurement if previous acquisition of a measurement was delayed
-                        if self.last_measurement < self.next_measurement:
-                            self.get_new_measurement = True
-                            self.trigger_cond = True
-
-                        # Ensure the next measure event will occur in the future
-                        while self.next_measurement < now:
-                            self.next_measurement += self.period
-
-                    # if signaled and a pre output is set up correctly, turn the
-                    # output on or on for the set duration
-                    if (self.get_new_measurement and
-                            self.pre_output_setup and
-                            not self.pre_output_activated):
-
-                        self.lock_setup()
-
-                        self.pre_output_timer = time.time() + self.pre_output_duration
-                        self.pre_output_activated = True
-
-                        # Only run the pre-output before measurement
-                        # Turn on for a duration, measure after it turns off
-                        if not self.pre_output_during_measure:
-                            output_on = threading.Thread(
-                                target=self.control.output_on,
-                                args=(self.pre_output_id,
-                                      self.pre_output_duration,))
-                            output_on.start()
-
-                        # Run the pre-output during the measurement
-                        # Just turn on, then off after the measurement
-                        else:
-                            output_on = threading.Thread(
-                                target=self.control.output_on,
-                                args=(self.pre_output_id,))
-                            output_on.start()
-
-                    # If using a pre output, wait for it to complete before
-                    # querying the input for a measurement
-                    if self.get_new_measurement:
-
-                        if (self.pre_output_setup and
-                                self.pre_output_activated and
-                                now > self.pre_output_timer):
-
-                            if self.pre_output_during_measure:
-                                # Measure then turn off pre-output
-                                self.update_measure()
-                                output_off = threading.Thread(
-                                    target=self.control.output_off,
-                                    args=(self.pre_output_id,))
-                                output_off.start()
-                            else:
-                                # Pre-output has turned off, now measure
-                                self.update_measure()
-
-                            self.pre_output_activated = False
-                            self.get_new_measurement = False
-
-                            self.lock_release()
-
-                        elif not self.pre_output_setup:
-                            # Pre-output not enabled, just measure
-                            self.update_measure()
-                            self.get_new_measurement = False
-
-                        # Add measurement(s) to influxdb
-                        if self.measurement_success:
-                            use_same_timestamp = True
-                            if ('measurements_use_same_timestamp' in self.dict_inputs[self.device] and
-                                    not self.dict_inputs[self.device]['measurements_use_same_timestamp']):
-                                use_same_timestamp = False
-                            add_measurements_influxdb(
-                                self.unique_id,
-                                self.create_measurements_dict(),
-                                use_same_timestamp=use_same_timestamp)
-                            self.measurement_success = False
-
-                self.trigger_cond = False
-
-                time.sleep(self.sample_rate)
-
-            self.running = False
-
-            if self.device == 'EDGE':
-                GPIO.setmode(GPIO.BCM)
-                GPIO.cleanup(int(self.gpio_location))
-
-            self.logger.info("Deactivated in {:.1f} ms".format(
-                (timeit.default_timer() - self.thread_shutdown_timer) * 1000))
-        except requests.ConnectionError:
-            self.logger.error("Could not connect to influxdb. Check that it "
-                              "is running and accepting connections")
-        except Exception as except_msg:
-            self.logger.exception("Error: {err}".format(
-                err=except_msg))
+        # Set up MQTT listener
+        elif ('listener' in self.dict_inputs[self.device] and
+              self.dict_inputs[self.device]['listener']):
+            input_listener = threading.Thread(
+                target=self.measure_input.listener())
+            input_listener.daemon = True
+            input_listener.start()
 
     def lock_setup(self):
         # Set up lock
@@ -446,7 +467,7 @@ class InputController(threading.Thread):
                                     ts=timestamp,
                                     cid=each_trigger.id,
                                     cname=each_trigger.name,
-                                    oid=self.input_id,
+                                    oid=self.unique_id,
                                     name=self.input_name,
                                     state=state_str,
                                     pin=bcm_pin)
@@ -473,7 +494,7 @@ class InputController(threading.Thread):
                     each_measurement)
         self.logger.debug(
             "Adding measurements to InfluxDB with ID {}: {}".format(
-                self.input_id, measurements_record))
+                self.unique_id, measurements_record))
         return measurements_record
 
     def force_measurements(self):
@@ -481,12 +502,7 @@ class InputController(threading.Thread):
         self.next_measurement = time.time()
         return "Input instructed to begin acquiring measurements"
 
-    def is_running(self):
-        return self.running
-
-    def stop_controller(self):
-        self.thread_shutdown_timer = timeit.default_timer()
-
+    def pre_stop(self):
         # Execute stop_input() if not EDGE or ADC
         if self.device != 'EDGE':
             self.measure_input.stop_input()
@@ -497,5 +513,3 @@ class InputController(threading.Thread):
                 target=self.control.output_off,
                 args=(self.pre_output_id,))
             output_on.start()
-
-        self.running = False

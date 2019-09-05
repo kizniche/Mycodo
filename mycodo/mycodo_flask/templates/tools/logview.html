@@ -15,48 +15,25 @@
       <div class="col-12 col-sm-2">
         {{form_log_view.lines(class_='form-control', type="number", value=lines)}}
       </div>
-      <div class="col-12 col-sm-10">
-        <div class="row small-gutters">
-          <div class="col-auto">
-            {{form_log_view.logdaemon(class_='btn btn-primary btn-block')}}
-          </div>
-          <div class="col-auto">
-            {{form_log_view.logdaemon_info(class_='btn btn-primary btn-block')}}
-          </div>
-          <div class="col-auto">
-            {{form_log_view.logdaemon_error(class_='btn btn-primary btn-block')}}
-          </div>
-          <div class="col-auto">
-            {{form_log_view.logdaemon_debug(class_='btn btn-primary btn-block')}}
-          </div>
-          <div class="col-auto">
-            {{form_log_view.log_pid_settings(class_='btn btn-primary btn-block')}}
-          </div>
-          <div class="col-auto">
-            {{form_log_view.loglogin(class_='btn btn-primary btn-block')}}
-          </div>
-          <div class="col-auto">
-            {{form_log_view.loghttp_access(class_='btn btn-primary btn-block')}}
-          </div>
-          <div class="col-auto">
-            {{form_log_view.loghttp_error(class_='btn btn-primary btn-block')}}
-          </div>
-          <div class="col-auto">
-            {{form_log_view.logdependency(class_='btn btn-primary btn-block')}}
-          </div>
-          <div class="col-auto">
-            {{form_log_view.logkeepup(class_='btn btn-primary btn-block')}}
-          </div>
-          <div class="col-auto">
-            {{form_log_view.logbackup(class_='btn btn-primary btn-block')}}
-          </div>
-          <div class="col-auto">
-            {{form_log_view.logrestore(class_='btn btn-primary btn-block')}}
-          </div>
-          <div class="col-auto">
-            {{form_log_view.logupgrade(class_='btn btn-primary btn-block')}}
-          </div>
-        </div>
+      <div class="col-auto">
+        <select class="form-control form-tooltip form-dropdown" data-placement="top" id="log" name="log" title="Log to view">
+          <option value="log_daemon"{% if log_field == "log_daemon" %} selected{% endif %}>Daemon</option>
+          <option value="log_pid_settings"{% if log_field == "log_pid_settings" %} selected{% endif %}>Daemon (PID Settings)</option>
+          <option value="log_keepup"{% if log_field == "log_keepup" %} selected{% endif %}>Daemon Keepup</option>
+          <option value="log_dependency"{% if log_field == "log_dependency" %} selected{% endif %}>Dependency</option>
+          <option value="log_nginx"{% if log_field == "log_nginx" %} selected{% endif %}>Nginx</option>
+          <option value="log_pyro"{% if log_field == "log_pyro" %} selected{% endif %}>Pyro</option>
+          <option value="log_backup"{% if log_field == "log_backup" %} selected{% endif %}>System Backup</option>
+          <option value="log_restore"{% if log_field == "log_restore" %} selected{% endif %}>System Restore</option>
+          <option value="log_upgrade"{% if log_field == "log_upgrade" %} selected{% endif %}>System Upgrade</option>
+          <option value="log_flask"{% if log_field == "log_flask" %} selected{% endif %}>Web</option>
+          <option value="log_http_access"{% if log_field == "log_http_access" %} selected{% endif %}>Web Access</option>
+          <option value="log_http_error"{% if log_field == "log_http_error" %} selected{% endif %}>Web Error</option>
+          <option value="log_login"{% if log_field == "log_login" %} selected{% endif %}>Web Login</option>
+        </select>
+      </div>
+      <div class="col-auto">
+        {{form_log_view.log_view(class_='btn btn-primary btn-block')}}
       </div>
     </form>
 

@@ -47,16 +47,15 @@
 # THE SOFTWARE.
 #
 # <http://code.activestate.com/recipes/577231-discrete-lcd-controller/>
-
+#
 import calendar
 import datetime
-import logging
 import threading
 import time
-import timeit
 
 import RPi.GPIO as GPIO
 
+from mycodo.controllers.base_controller import AbstractController
 from mycodo.config import MYCODO_VERSION
 from mycodo.databases.models import Conversion
 from mycodo.databases.models import DeviceMeasurements
@@ -76,236 +75,231 @@ from mycodo.utils.system_pi import cmd_output
 from mycodo.utils.system_pi import return_measurement_info
 
 
-class LCDController(threading.Thread):
+class LCDController(AbstractController, threading.Thread):
     """
     Class to operate LCD controller
-
     """
-    def __init__(self, ready, lcd_id):
+    def __init__(self, ready, unique_id):
         threading.Thread.__init__(self)
+        super(LCDController, self).__init__(ready, unique_id=unique_id, name=__name__)
 
-        self.logger = logging.getLogger(
-            "{}_{}".format(__name__, lcd_id.split('-')[0]))
+        self.unique_id = unique_id
+        self.sample_rate = 1
 
-        self.running = False
-        self.thread_startup_timer = timeit.default_timer()
-        self.thread_shutdown_timer = 0
-        self.ready = ready
         self.flash_lcd_on = False
         self.lcd_initialized = False
         self.lcd_is_on = False
-        self.lcd_id = lcd_id
+        
         self.display_sets = []
         self.display_set_count = 0
 
-        try:
-            lcd_dev = db_retrieve_table_daemon(LCD, unique_id=self.lcd_id)
-            self.lcd_type = lcd_dev.lcd_type
-            self.lcd_name = lcd_dev.name
-            self.lcd_i2c_address = int(lcd_dev.location, 16)
-            self.lcd_i2c_bus = lcd_dev.i2c_bus
-            self.lcd_period = lcd_dev.period
-            self.lcd_x_characters = lcd_dev.x_characters
-            self.lcd_y_lines = lcd_dev.y_lines
+        self.lcd_out = None
+        self.lcd_type = None
+        self.lcd_name = None
+        self.lcd_i2c_address = None
+        self.lcd_i2c_bus = None
+        self.lcd_period = None
+        self.lcd_x_characters = None
+        self.lcd_y_lines = None
+        self.timer = None
+        self.backlight_timer = None
+        self.log_level_debug = None
+
+        self.list_pids = None
+        self.list_outputs = None
+
+        self.list_inputs = None
+        self.dict_units = None
+
+        self.lcd_string_line = {}
+        self.lcd_line = {}
+        self.lcd_max_age = {}
+        self.lcd_decimal_places = {}
+
+    def loop(self):
+        if not self.lcd_initialized:
+            self.stop_controller()
+        elif (self.lcd_is_on and
+                self.lcd_initialized and
+                time.time() > self.timer):
+            try:
+                # Acquire all measurements to be displayed on the LCD
+                display_id = self.display_sets[self.display_set_count]
+                for line in range(1, self.lcd_y_lines + 1):
+                    if not self.running:
+                        break
+                    if self.lcd_line[display_id][line]['id'] and self.lcd_line[display_id][line]['setup']:
+                        self.create_lcd_line(
+                            self.get_measurement(display_id, line),
+                            display_id,
+                            line)
+                    else:
+                        self.lcd_string_line[display_id][line] = 'LCD LINE ERROR'
+                # Output lines to the LCD
+                if self.running:
+                    self.output_lcds()
+            except KeyError:
+                self.logger.exception(
+                    "KeyError: Unable to output to LCD.")
+            except IOError:
+                self.logger.exception(
+                    "IOError: Unable to output to LCD.")
+            except Exception:
+                self.logger.exception(
+                    "Exception: Unable to output to LCD.")
+
+            # Increment display counter to show the next display
+            if len(self.display_sets) > 1:
+                if self.display_set_count < len(self.display_sets) - 1:
+                    self.display_set_count += 1
+                else:
+                    self.display_set_count = 0
+
             self.timer = time.time() + self.lcd_period
-            self.backlight_timer = time.time()
-            self.log_level_debug = lcd_dev.log_level_debug
 
-            if self.log_level_debug:
-                self.logger.setLevel(logging.DEBUG)
-            else:
-                self.logger.setLevel(logging.INFO)
+        elif not self.lcd_is_on:
+            # Turn backlight off
+            self.lcd_out.lcd_backlight(0)
 
-            self.list_pids = ['setpoint', 'pid_time']
-            self.list_outputs = ['duration_time', 'output_time', 'output_state']
+        if self.flash_lcd_on:
+            if time.time() > self.backlight_timer:
+                if self.lcd_is_on:
+                    self.lcd_backlight(0)
+                    seconds = 0.2
+                else:
+                    self.output_lcds()
+                    seconds = 1.1
+                self.backlight_timer = time.time() + seconds
 
-            # Add custom measurement and units to list
-            self.list_inputs = add_custom_measurements(
-                db_retrieve_table_daemon(Measurement, entry='all'))
+    def run_finally(self):
+        self.lcd_out.lcd_init()  # Blank LCD
+        line_1 = 'Mycodo {}'.format(MYCODO_VERSION)
+        line_2 = 'Stop {}'.format(self.lcd_name)
+        self.lcd_out.lcd_write_lines(line_1, line_2, '', '')
 
-            self.list_inputs.update(
-                {'input_time': {'unit': None, 'name': 'Time'}})
-            self.list_inputs.update(
-                {'pid_time': {'unit': None, 'name': 'Time'}})
+    def initialize_variables(self):
+        lcd_dev = db_retrieve_table_daemon(LCD, unique_id=self.unique_id)
+        self.lcd_type = lcd_dev.lcd_type
+        self.lcd_name = lcd_dev.name
+        self.lcd_i2c_address = int(lcd_dev.location, 16)
+        self.lcd_i2c_bus = lcd_dev.i2c_bus
+        self.lcd_period = lcd_dev.period
+        self.lcd_x_characters = lcd_dev.x_characters
+        self.lcd_y_lines = lcd_dev.y_lines
+        self.timer = time.time() + self.lcd_period
+        self.backlight_timer = time.time()
+        self.log_level_debug = lcd_dev.log_level_debug
 
-            self.dict_units = add_custom_units(
-                db_retrieve_table_daemon(Unit, entry='all'))
+        self.set_log_level_debug(self.log_level_debug)
 
-            lcd_data = db_retrieve_table_daemon(
-                LCDData).filter(LCDData.lcd_id == lcd_dev.unique_id).all()
+        self.list_pids = ['setpoint', 'pid_time']
+        self.list_outputs = ['duration_time', 'output_time', 'output_state']
 
-            self.lcd_string_line = {}
-            self.lcd_line = {}
-            self.lcd_max_age = {}
-            self.lcd_decimal_places = {}
+        # Add custom measurement and units to list
+        self.list_inputs = add_custom_measurements(
+            db_retrieve_table_daemon(Measurement, entry='all'))
 
-            for each_lcd_display in lcd_data:
-                self.display_sets.append(each_lcd_display.unique_id)
-                self.lcd_string_line[each_lcd_display.unique_id] = {}
-                self.lcd_line[each_lcd_display.unique_id] = {}
-                self.lcd_max_age[each_lcd_display.unique_id] = {}
-                self.lcd_decimal_places[each_lcd_display.unique_id] = {}
+        self.list_inputs.update(
+            {'input_time': {'unit': None, 'name': 'Time'}})
+        self.list_inputs.update(
+            {'pid_time': {'unit': None, 'name': 'Time'}})
 
-                for i in range(1, self.lcd_y_lines + 1):
-                    self.lcd_string_line[each_lcd_display.unique_id][i] = ''
-                    self.lcd_line[each_lcd_display.unique_id][i] = {}
-                    if i == 1:
-                        self.lcd_max_age[each_lcd_display.unique_id][i] = each_lcd_display.line_1_max_age
-                        self.lcd_decimal_places[each_lcd_display.unique_id][i] = each_lcd_display.line_1_decimal_places
-                    elif i == 2:
-                        self.lcd_max_age[each_lcd_display.unique_id][i] = each_lcd_display.line_2_max_age
-                        self.lcd_decimal_places[each_lcd_display.unique_id][i] = each_lcd_display.line_2_decimal_places
-                    elif i == 3:
-                        self.lcd_max_age[each_lcd_display.unique_id][i] = each_lcd_display.line_3_max_age
-                        self.lcd_decimal_places[each_lcd_display.unique_id][i] = each_lcd_display.line_3_decimal_places
-                    elif i == 4:
-                        self.lcd_max_age[each_lcd_display.unique_id][i] = each_lcd_display.line_4_max_age
-                        self.lcd_decimal_places[each_lcd_display.unique_id][i] = each_lcd_display.line_4_decimal_places
-                    elif i == 5:
-                        self.lcd_max_age[each_lcd_display.unique_id][i] = each_lcd_display.line_5_max_age
-                        self.lcd_decimal_places[each_lcd_display.unique_id][i] = each_lcd_display.line_5_decimal_places
-                    elif i == 6:
-                        self.lcd_max_age[each_lcd_display.unique_id][i] = each_lcd_display.line_6_max_age
-                        self.lcd_decimal_places[each_lcd_display.unique_id][i] = each_lcd_display.line_6_decimal_places
-                    elif i == 7:
-                        self.lcd_max_age[each_lcd_display.unique_id][i] = each_lcd_display.line_7_max_age
-                        self.lcd_decimal_places[each_lcd_display.unique_id][i] = each_lcd_display.line_7_decimal_places
-                    elif i == 8:
-                        self.lcd_max_age[each_lcd_display.unique_id][i] = each_lcd_display.line_8_max_age
-                        self.lcd_decimal_places[each_lcd_display.unique_id][i] = each_lcd_display.line_8_decimal_places
+        self.dict_units = add_custom_units(
+            db_retrieve_table_daemon(Unit, entry='all'))
 
-                if self.lcd_y_lines in [2, 4, 8]:
-                    self.setup_lcd_line(
-                        each_lcd_display.unique_id, 1,
-                        each_lcd_display.line_1_id,
-                        each_lcd_display.line_1_measurement)
-                    self.setup_lcd_line(
-                        each_lcd_display.unique_id, 2,
-                        each_lcd_display.line_2_id,
-                        each_lcd_display.line_2_measurement)
+        lcd_data = db_retrieve_table_daemon(
+            LCDData).filter(LCDData.lcd_id == lcd_dev.unique_id).all()
 
-                if self.lcd_y_lines in [4, 8]:
-                    self.setup_lcd_line(
-                        each_lcd_display.unique_id, 3,
-                        each_lcd_display.line_3_id,
-                        each_lcd_display.line_3_measurement)
-                    self.setup_lcd_line(
-                        each_lcd_display.unique_id, 4,
-                        each_lcd_display.line_4_id,
-                        each_lcd_display.line_4_measurement)
+        for each_lcd_display in lcd_data:
+            self.display_sets.append(each_lcd_display.unique_id)
+            self.lcd_string_line[each_lcd_display.unique_id] = {}
+            self.lcd_line[each_lcd_display.unique_id] = {}
+            self.lcd_max_age[each_lcd_display.unique_id] = {}
+            self.lcd_decimal_places[each_lcd_display.unique_id] = {}
 
-                if self.lcd_y_lines == 8:
-                    self.setup_lcd_line(
-                        each_lcd_display.unique_id, 5,
-                        each_lcd_display.line_5_id,
-                        each_lcd_display.line_5_measurement)
-                    self.setup_lcd_line(
-                        each_lcd_display.unique_id, 6,
-                        each_lcd_display.line_6_id,
-                        each_lcd_display.line_6_measurement)
-                    self.setup_lcd_line(
-                        each_lcd_display.unique_id, 7,
-                        each_lcd_display.line_7_id,
-                        each_lcd_display.line_7_measurement)
-                    self.setup_lcd_line(
-                        each_lcd_display.unique_id, 8,
-                        each_lcd_display.line_8_id,
-                        each_lcd_display.line_8_measurement)
+            for i in range(1, self.lcd_y_lines + 1):
+                self.lcd_string_line[each_lcd_display.unique_id][i] = ''
+                self.lcd_line[each_lcd_display.unique_id][i] = {}
+                if i == 1:
+                    self.lcd_max_age[each_lcd_display.unique_id][i] = each_lcd_display.line_1_max_age
+                    self.lcd_decimal_places[each_lcd_display.unique_id][i] = each_lcd_display.line_1_decimal_places
+                elif i == 2:
+                    self.lcd_max_age[each_lcd_display.unique_id][i] = each_lcd_display.line_2_max_age
+                    self.lcd_decimal_places[each_lcd_display.unique_id][i] = each_lcd_display.line_2_decimal_places
+                elif i == 3:
+                    self.lcd_max_age[each_lcd_display.unique_id][i] = each_lcd_display.line_3_max_age
+                    self.lcd_decimal_places[each_lcd_display.unique_id][i] = each_lcd_display.line_3_decimal_places
+                elif i == 4:
+                    self.lcd_max_age[each_lcd_display.unique_id][i] = each_lcd_display.line_4_max_age
+                    self.lcd_decimal_places[each_lcd_display.unique_id][i] = each_lcd_display.line_4_decimal_places
+                elif i == 5:
+                    self.lcd_max_age[each_lcd_display.unique_id][i] = each_lcd_display.line_5_max_age
+                    self.lcd_decimal_places[each_lcd_display.unique_id][i] = each_lcd_display.line_5_decimal_places
+                elif i == 6:
+                    self.lcd_max_age[each_lcd_display.unique_id][i] = each_lcd_display.line_6_max_age
+                    self.lcd_decimal_places[each_lcd_display.unique_id][i] = each_lcd_display.line_6_decimal_places
+                elif i == 7:
+                    self.lcd_max_age[each_lcd_display.unique_id][i] = each_lcd_display.line_7_max_age
+                    self.lcd_decimal_places[each_lcd_display.unique_id][i] = each_lcd_display.line_7_decimal_places
+                elif i == 8:
+                    self.lcd_max_age[each_lcd_display.unique_id][i] = each_lcd_display.line_8_max_age
+                    self.lcd_decimal_places[each_lcd_display.unique_id][i] = each_lcd_display.line_8_decimal_places
 
-            if self.lcd_type in ['16x2_generic',
-                                 '20x4_generic']:
-                from mycodo.devices.lcd_generic import LCD_Generic
-                self.lcd_out = LCD_Generic(lcd_dev)
-                self.lcd_init()
-            elif self.lcd_type in ['128x32_pioled',
-                                   '128x64_pioled']:
-                from mycodo.devices.lcd_pioled import LCD_Pioled
-                self.lcd_out = LCD_Pioled(lcd_dev)
-                self.lcd_init()
-            else:
-                self.logger.error("Unknown LCD type: {}".format(self.lcd_type))
+            if self.lcd_y_lines in [2, 4, 8]:
+                self.setup_lcd_line(
+                    each_lcd_display.unique_id, 1,
+                    each_lcd_display.line_1_id,
+                    each_lcd_display.line_1_measurement)
+                self.setup_lcd_line(
+                    each_lcd_display.unique_id, 2,
+                    each_lcd_display.line_2_id,
+                    each_lcd_display.line_2_measurement)
 
-            if self.lcd_initialized:
-                line_1 = 'Mycodo {}'.format(MYCODO_VERSION)
-                line_2 = 'Start {}'.format(self.lcd_name)
-                self.lcd_out.lcd_write_lines(line_1, line_2, '', '')
-        except Exception as except_msg:
-            self.logger.exception("Error: {err}".format(err=except_msg))
+            if self.lcd_y_lines in [4, 8]:
+                self.setup_lcd_line(
+                    each_lcd_display.unique_id, 3,
+                    each_lcd_display.line_3_id,
+                    each_lcd_display.line_3_measurement)
+                self.setup_lcd_line(
+                    each_lcd_display.unique_id, 4,
+                    each_lcd_display.line_4_id,
+                    each_lcd_display.line_4_measurement)
 
-    def run(self):
-        try:
-            self.running = True
-            self.logger.info("Activated in {:.1f} ms".format(
-                (timeit.default_timer() - self.thread_startup_timer) * 1000))
-            self.ready.set()
+            if self.lcd_y_lines == 8:
+                self.setup_lcd_line(
+                    each_lcd_display.unique_id, 5,
+                    each_lcd_display.line_5_id,
+                    each_lcd_display.line_5_measurement)
+                self.setup_lcd_line(
+                    each_lcd_display.unique_id, 6,
+                    each_lcd_display.line_6_id,
+                    each_lcd_display.line_6_measurement)
+                self.setup_lcd_line(
+                    each_lcd_display.unique_id, 7,
+                    each_lcd_display.line_7_id,
+                    each_lcd_display.line_7_measurement)
+                self.setup_lcd_line(
+                    each_lcd_display.unique_id, 8,
+                    each_lcd_display.line_8_id,
+                    each_lcd_display.line_8_measurement)
 
-            while self.running:
-                if not self.lcd_initialized:
-                    self.stop_controller()
-                elif (self.lcd_is_on and
-                        self.lcd_initialized and
-                        time.time() > self.timer):
-                    try:
-                        # Acquire all measurements to be displayed on the LCD
-                        display_id = self.display_sets[self.display_set_count]
-                        for line in range(1, self.lcd_y_lines + 1):
-                            if not self.running:
-                                break
-                            if self.lcd_line[display_id][line]['id'] and self.lcd_line[display_id][line]['setup']:
-                                self.create_lcd_line(
-                                    self.get_measurement(display_id, line),
-                                    display_id,
-                                    line)
-                            else:
-                                self.lcd_string_line[display_id][line] = 'LCD LINE ERROR'
-                        # Output lines to the LCD
-                        if self.running:
-                            self.output_lcds()
-                    except KeyError:
-                        self.logger.exception(
-                            "KeyError: Unable to output to LCD.")
-                    except IOError:
-                        self.logger.exception(
-                            "IOError: Unable to output to LCD.")
-                    except Exception:
-                        self.logger.exception(
-                            "Exception: Unable to output to LCD.")
+        if self.lcd_type in ['16x2_generic',
+                             '20x4_generic']:
+            from mycodo.devices.lcd_generic import LCD_Generic
+            self.lcd_out = LCD_Generic(lcd_dev)
+            self.lcd_init()
+        elif self.lcd_type in ['128x32_pioled',
+                               '128x64_pioled']:
+            from mycodo.devices.lcd_pioled import LCD_Pioled
+            self.lcd_out = LCD_Pioled(lcd_dev)
+            self.lcd_init()
+        else:
+            self.logger.error("Unknown LCD type: {}".format(self.lcd_type))
 
-                    # Increment display counter to show the next display
-                    if len(self.display_sets) > 1:
-                        if self.display_set_count < len(self.display_sets) - 1:
-                            self.display_set_count += 1
-                        else:
-                            self.display_set_count = 0
-
-                    self.timer = time.time() + self.lcd_period
-
-                elif not self.lcd_is_on:
-                    # Turn backlight off
-                    self.lcd_out.lcd_backlight(0)
-
-                if self.flash_lcd_on:
-                    if time.time() > self.backlight_timer:
-                        if self.lcd_is_on:
-                            self.lcd_backlight(0)
-                            seconds = 0.2
-                        else:
-                            self.output_lcds()
-                            seconds = 1.1
-                        self.backlight_timer = time.time() + seconds
-
-                time.sleep(1)
-
-        except Exception as except_msg:
-            self.logger.exception("Exception: {err}".format(err=except_msg))
-        finally:
-            self.lcd_out.lcd_init()  # Blank LCD
+        if self.lcd_initialized:
             line_1 = 'Mycodo {}'.format(MYCODO_VERSION)
-            line_2 = 'Stop {}'.format(self.lcd_name)
+            line_2 = 'Start {}'.format(self.lcd_name)
             self.lcd_out.lcd_write_lines(line_1, line_2, '', '')
-            self.logger.info("Deactivated in {:.1f} ms".format(
-                (timeit.default_timer() - self.thread_shutdown_timer) * 1000))
-            self.running = False
 
     def lcd_init(self):
         self.lcd_out.lcd_init()
@@ -547,17 +541,8 @@ class LCDController(threading.Thread):
         """ Enable the LCD to begin or end flashing """
         if state:
             self.flash_lcd_on = True
-            return 1, "LCD {} Flashing Turned On".format(self.lcd_id)
+            return 1, "LCD {} Flashing Turned On".format(self.unique_id)
         else:
             self.flash_lcd_on = False
             self.lcd_backlight(True)
-            return 1, "LCD {} Reset".format(self.lcd_id)
-
-    def is_running(self):
-        """ returns if the controller is running """
-        return self.running
-
-    def stop_controller(self):
-        """ Stops the controller """
-        self.thread_shutdown_timer = timeit.default_timer()
-        self.running = False
+            return 1, "LCD {} Reset".format(self.unique_id)

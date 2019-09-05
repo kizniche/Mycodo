@@ -19,6 +19,9 @@ This release changes how user-created Python code is executed. This affects Pyth
  - Fix inability to use "," in Input custom options
  - Fix install dependencies for Ruuvitag Input ([#638](https://github.com/kizniche/mycodo/issues/638))
  - Fix reliability issue with Ruuvitag Input (crashing Mycodo daemon) ([#638](https://github.com/kizniche/mycodo/issues/638))
+ - Fix storing of SHT31 Smart Gadget erroneous measurements
+ - Prevent Pyro4 TimeoutErrors from stopping PID and Conditional controllers
+ - Improve Controller reliability/stability
 
 ### Features
 
@@ -27,11 +30,15 @@ This release changes how user-created Python code is executed. This affects Pyth
  - Add Measurement: Radiation Dose Rate
  - Add Units: Microsieverts per hour (µSv/hr), Counts per minute (cpm)
  - Add 'message' option for custom Inputs to display a message with the Input options in the web interface
+ - Add more logs to view and consolidate "View Logs" page
 
 ### Miscellaneous
 
  - Refactor how user-created Python code is executed (i.e. Python Code Inputs and Conditional Statements)
  - Refactor RPC by replacing RPyC with Pyro4 for improved system stability ([#671](https://github.com/kizniche/mycodo/issues/671), [#679](https://github.com/kizniche/mycodo/issues/679))
+ - Increase Nginx file upload size
+ - Reorganize menu layout
+ - Modify linux_command exception-handling ([#682](https://github.com/kizniche/mycodo/issues/682))
 
 
 ## 7.6.3 (2019-07-14)

@@ -107,7 +107,7 @@ class InputModule(AbstractInput):
         if str_is_float(out):
             measurement_value = float(out)
         else:
-            self.logger.error(
+            self.logger.debug(
                 "The command returned a non-numerical value. "
                 "Ensure only one numerical value is returned "
                 "by the command. Value returned: '{}'".format(out))
