@@ -35,6 +35,7 @@ ${INSTALL_CMD} update-influxdb
 ${INSTALL_CMD} update-alembic
 ${INSTALL_CMD} update-mycodo-startup-script
 ${INSTALL_CMD} update-pyro-startup-script
+${INSTALL_CMD} pyro-restart
 ${INSTALL_CMD} compile-translations
 ${INSTALL_CMD} update-cron
 ${INSTALL_CMD} update-permissions

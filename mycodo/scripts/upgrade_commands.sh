@@ -57,6 +57,7 @@ Options:
   enable-pigpiod-low            Enable pigpiod with 1 ms sample rate
   enable-pigpiod-high           Enable pigpiod with 5 ms sample rate
   enable-pigpiod-disabled       Create empty service to indicate pigpiod is disabled
+  pyro-restart                  Restart the Pyro Nameserver
   update-pigpiod                Update to latest version of pigpiod service file
   update-influxdb               Update influxdb to the latest version
   update-influxdb-db-user       Create the influxdb database and user
@@ -302,6 +303,10 @@ case "${1:-''}" in
     'enable-pigpiod-disabled')
         printf "\n#### pigpiod has been disabled. It can be enabled in the web UI configuration\n"
         touch /etc/systemd/system/pigpiod_disabled.service
+    ;;
+    'pyro-restart')
+        printf "\n#### Restarting pyro4-ns\n"
+        service mycodopyro restart
     ;;
     'update-pigpiod')
         printf "\n#### Checking which pigpiod startup script is being used\n"

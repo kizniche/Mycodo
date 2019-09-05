@@ -1,6 +1,8 @@
 # coding=utf-8
 import time
 
+import timeout_decorator
+
 from mycodo.inputs.base_input import AbstractInput
 from mycodo.inputs.sensorutils import calculate_dewpoint
 from mycodo.inputs.sensorutils import calculate_vapor_pressure_deficit
@@ -110,6 +112,10 @@ class InputModule(AbstractInput):
                 self.location,
                 bt_device='hci{}'.format(self.bt_adapter))
 
+    @timeout_decorator.timeout(10, use_signals=False)
+    def get_ruuvitag_data(self):
+        return self.sensor.update()
+
     def get_measurement(self):
         """ Obtain and return the measurements """
         self.return_dict = measurements_dict.copy()
@@ -120,8 +126,7 @@ class InputModule(AbstractInput):
         if self.locked:
             self.logger.debug("Starting measurement")
             try:
-                state = self.sensor.update()
-                state = self.sensor.state
+                state = self.get_ruuvitag_data()
 
                 if not state:
                     self.logger.debug("Measurement command returned no data")
@@ -179,3 +184,4 @@ class InputModule(AbstractInput):
 
             finally:
                 self.lock_release()
+                self.logger.debug("Lock released")
