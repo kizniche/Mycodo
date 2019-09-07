@@ -31,6 +31,7 @@ This release changes how user-created Python code is executed. This affects Pyth
  - Add Units: Microsieverts per hour (µSv/hr), Counts per minute (cpm)
  - Add 'message' option for custom Inputs to display a message with the Input options in the web interface
  - Add more logs to view and consolidate "View Logs" page
+ - Add automatic initialization of Input custom_options variables
 
 ### Miscellaneous
 

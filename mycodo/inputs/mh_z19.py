@@ -85,8 +85,13 @@ class InputModule(AbstractInput):
 
     def __init__(self, input_dev, testing=False):
         super(InputModule, self).__init__(input_dev, testing=testing, name=__name__)
+
+        # custom options
         self.measure_range = None
         self.abc_enable = False
+        # set custom_options
+        self.setup_custom_options(
+            INPUT_INFORMATION['custom_options'], input_dev)
 
         if not testing:
             import serial
@@ -109,15 +114,6 @@ class InputModule(AbstractInput):
                     'Could not open "{dev}". '
                     'Check the device location is correct.'.format(
                         dev=self.uart_location))
-
-            if input_dev.custom_options:
-                for each_option in input_dev.custom_options.split(';'):
-                    option = each_option.split(',')[0]
-                    value = each_option.split(',')[1]
-                    if option == 'abc_enable':
-                        self.abc_enable = bool(value)
-                    elif option == 'measure_range':
-                        self.measure_range = value
 
             if self.abc_enable:
                 self.abcon()

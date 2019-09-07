@@ -78,28 +78,20 @@ class InputModule(AbstractInput):
     def __init__(self, input_dev, testing=False):
         super(InputModule, self).__init__(input_dev, testing=testing, name=__name__)
 
+        # custom options
+        self.mqtt_host = None
+        self.mqtt_port = None
+        self.mqtt_channel = None
+        self.mqtt_keepalive = None
+        self.mqtt_clientid = None
+        # set custom_options
+        self.setup_custom_options(
+            INPUT_INFORMATION['custom_options'], input_dev)
+
         if not testing:
             import paho.mqtt.client as mqtt
 
-            self.mqtt_host = None
-            self.mqtt_port = None
-            self.mqtt_channel = None
-            self.mqtt_keepalive = None
-            self.mqtt_clientid = None
-            if input_dev.custom_options:
-                for each_option in input_dev.custom_options.split(';'):
-                    option = each_option.split(',')[0]
-                    value = each_option.split(',')[1]
-                    if option == 'mqtt_hostname':
-                        self.mqtt_host = value
-                    elif option == 'mqtt_port':
-                        self.mqtt_port = int(value)
-                    elif option == 'mqtt_keepalive':
-                        self.mqtt_keepalive = int(value)
-                    elif option == 'mqtt_clientid':
-                        self.mqtt_clientid = value
-
-            ### Create a client instance
+            # Create a client instance
             self.logger.debug("Client created with ID {}".format(
                 self.mqtt_clientid))
             self.client = mqtt.Client(self.mqtt_clientid)

@@ -94,23 +94,20 @@ class InputModule(AbstractInput):
     def __init__(self, input_dev, testing=False):
         super(InputModule, self).__init__(input_dev, testing=testing, name=__name__)
 
+        # custom options
+        self.application_id = None
+        self.app_api_key = None
+        self.device_id = None
+        # set custom_options
+        self.setup_custom_options(
+            INPUT_INFORMATION['custom_options'], input_dev)
+
         if not testing:
             self.unique_id = input_dev.unique_id
             self.interface = input_dev.interface
             self.period = input_dev.period
             self.first_run = True
             self.latest_datetime = input_dev.datetime
-
-            if input_dev.custom_options:
-                for each_option in input_dev.custom_options.split(';'):
-                    option = each_option.split(',')[0]
-                    value = each_option.split(',')[1]
-                    if option == 'application_id':
-                        self.application_id = value
-                    elif option == 'app_api_key':
-                        self.app_api_key = value
-                    elif option == 'device_id':
-                        self.device_id = value
 
     def get_new_data(self, past_seconds):
         # Basic implementation. Future development may use more complex library to access API

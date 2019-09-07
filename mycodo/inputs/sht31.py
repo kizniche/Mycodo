@@ -115,24 +115,19 @@ class InputModule(AbstractInput):
 
     def __init__(self, input_dev, testing=False):
         super(InputModule, self).__init__(input_dev, testing=testing, name=__name__)
+
         self.measurement_count = 0
+
+        # custom options
         self.heater_enable = None
         self.heater_seconds = None
         self.heater_measurements = None
+        # set custom_options
+        self.setup_custom_options(
+            INPUT_INFORMATION['custom_options'], input_dev)
 
         if not testing:
             from Adafruit_SHT31 import SHT31
-
-            if input_dev.custom_options:
-                for each_option in input_dev.custom_options.split(';'):
-                    option = each_option.split(',')[0]
-                    value = each_option.split(',')[1]
-                    if option == 'heater_enable':
-                        self.heater_enable = bool(value)
-                    elif option == 'heater_seconds':
-                        self.heater_seconds = float(value)
-                    elif option == 'heater_measurements':
-                        self.heater_measurements = int(value)
 
             self.i2c_address = int(str(input_dev.i2c_location), 16)
             self.i2c_bus = input_dev.i2c_bus

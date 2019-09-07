@@ -70,21 +70,16 @@ class InputModule(AbstractInput):
     def __init__(self, input_dev, testing=False):
         super(InputModule, self).__init__(input_dev, testing=testing, name=__name__)
 
+        # custom options
+        self.command_timeout = None
+        self.execute_as_user = None
+        self.current_working_dir = None
+        # set custom_options
+        self.setup_custom_options(
+            INPUT_INFORMATION['custom_options'], input_dev)
+
         if not testing:
             self.command = input_dev.cmd_command
-            self.command_timeout = 60
-            self.execute_as_user = 'pi'
-            self.current_working_dir = '/home/pi'
-            if input_dev.custom_options:
-                for each_option in input_dev.custom_options.split(';'):
-                    option = each_option.split(',')[0]
-                    value = each_option.split(',')[1]
-                    if option == 'command_timeout':
-                        self.command_timeout = int(value)
-                    elif option == 'execute_as_user':
-                        self.execute_as_user = value
-                    elif option == 'current_working_dir':
-                        self.current_working_dir = value
 
     def get_measurement(self):
         """ Determine if the return value of the command is a number """

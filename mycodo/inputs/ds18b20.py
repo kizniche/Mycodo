@@ -87,20 +87,18 @@ class InputModule(AbstractInput):
     def __init__(self, input_dev, testing=False):
         super(InputModule, self).__init__(input_dev, testing=testing, name=__name__)
 
+        # custom options
+        self.library = None
+        # set custom_options
+        self.setup_custom_options(
+            INPUT_INFORMATION['custom_options'], input_dev)
+
         if not testing:
             from w1thermsensor import W1ThermSensor
 
             self.interface = input_dev.interface
             self.location = input_dev.location
             self.resolution = input_dev.resolution
-            self.library = None
-
-            if input_dev.custom_options:
-                for each_option in input_dev.custom_options.split(';'):
-                    option = each_option.split(',')[0]
-                    value = each_option.split(',')[1]
-                    if option == 'library':
-                        self.library = value
 
             if self.library == 'w1thermsensor':
                 self.sensor = W1ThermSensor(

@@ -88,17 +88,15 @@ class InputModule(AbstractInput):
         self.i2c_address = None
         self.i2c_bus = None
 
+        # custom options
+        self.max_age = None
+        # set custom_options
+        self.setup_custom_options(
+            INPUT_INFORMATION['custom_options'], input_dev)
+
         if not testing:
             self.interface = input_dev.interface
             self.calibrate_sensor_measure = input_dev.calibrate_sensor_measure
-            self.max_age = None
-
-            if input_dev.custom_options:
-                for each_option in input_dev.custom_options.split(';'):
-                    option = each_option.split(',')[0]
-                    value = each_option.split(',')[1]
-                    if option == 'max_age':
-                        self.max_age = int(value)
 
             try:
                 self.initialize_sensor()

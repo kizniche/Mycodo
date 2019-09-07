@@ -90,7 +90,15 @@ class InputModule(AbstractInput):
 
     def __init__(self, input_dev, testing=False):
         super(InputModule, self).__init__(input_dev, testing=testing, name=__name__)
+
         self.fan_is_on = False
+
+        # custom options
+        self.fan_modulate = None
+        self.fan_seconds = None
+        # set custom_options
+        self.setup_custom_options(
+            INPUT_INFORMATION['custom_options'], input_dev)
 
         if not testing:
             import serial
@@ -101,18 +109,6 @@ class InputModule(AbstractInput):
             self.baud_rate = input_dev.baud_rate
             # Check if device is valid
             self.serial_device = is_device(self.uart_location)
-
-            self.fan_modulate = True
-            self.fan_seconds = 50.0
-
-            if input_dev.custom_options:
-                for each_option in input_dev.custom_options.split(';'):
-                    option = each_option.split(',')[0]
-                    value = each_option.split(',')[1]
-                    if option == 'fan_modulate':
-                        self.fan_modulate = bool(value)
-                    elif option == 'fan_seconds':
-                        self.fan_seconds = float(value)
 
             if self.serial_device:
                 try:

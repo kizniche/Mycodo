@@ -52,15 +52,12 @@ INPUT_INFORMATION = {
 class InputModule(AbstractInput):
     def __init__(self, input_dev, testing=False):
         super(InputModule, self).__init__(input_dev, testing=testing, name=__name__)
-        self.ip_address = None
 
-        if not testing:
-            if input_dev.custom_options:
-                for each_option in input_dev.custom_options.split(';'):
-                    option = each_option.split(',')[0]
-                    value = each_option.split(',')[1]
-                    if option == 'ip_address':
-                        self.ip_address = value.replace(" ", "")  # Remove spaces
+        # custom options
+        self.ip_address = None
+        # set custom_options
+        self.setup_custom_options(
+            INPUT_INFORMATION['custom_options'], input_dev)
 
     def get_measurement(self):
         self.return_dict = measurements_dict.copy()

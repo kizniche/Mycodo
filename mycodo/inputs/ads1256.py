@@ -94,6 +94,12 @@ class InputModule(AbstractInput):
     def __init__(self, input_dev, testing=False):
         super(InputModule, self).__init__(input_dev, testing=testing, name=__name__)
 
+        # custom options
+        self.adc_calibration = None
+        # set custom_options
+        self.setup_custom_options(
+            INPUT_INFORMATION['custom_options'], input_dev)
+
         if not testing:
             from ADS1256_definitions import POS_AIN0
             from ADS1256_definitions import POS_AIN1
@@ -119,16 +125,8 @@ class InputModule(AbstractInput):
 
             self.CH_SEQUENCE = (POTI, LDR, EXT2, EXT3, EXT4, EXT5, EXT6, EXT7)
 
-            self.adc_calibration = None
             self.adc_gain = input_dev.adc_gain
             self.adc_sample_speed = input_dev.adc_sample_speed
-
-            if input_dev.custom_options:
-                for each_option in input_dev.custom_options.split(';'):
-                    option = each_option.split(',')[0]
-                    value = each_option.split(',')[1]
-                    if option == 'adc_calibration':
-                        self.adc_calibration = value
 
             if glob.glob('/dev/spi*'):
                 self.ads = ADS1256()

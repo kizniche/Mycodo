@@ -238,6 +238,19 @@ class InputModule(AbstractInput):
     def __init__(self, input_dev, testing=False):
         super(InputModule, self).__init__(input_dev, testing=testing, name=__name__)
 
+        #
+        # Set variables to custom options
+        #
+
+        # Initialize custom option variables to None
+        self.fan_modulate = None
+        self.fan_seconds = None
+        self.measure_range = None
+
+        # Set custom option variables to defaults or user-set values
+        self.setup_custom_options(
+            INPUT_INFORMATION['custom_options'], input_dev)
+
         if not testing:
             self.interface = input_dev.interface
 
@@ -253,27 +266,6 @@ class InputModule(AbstractInput):
             #
 
             self.resolution = input_dev.resolution
-
-            #
-            # Load custom options
-            #
-
-            # Default values if user settings are not set
-            self.fan_modulate = True
-            self.fan_seconds = 5.0
-            self.measure_range = '5000'
-
-            # User values if user settings are set
-            if input_dev.custom_options:
-                for each_option in input_dev.custom_options.split(';'):
-                    option = each_option.split(',')[0]
-                    value = each_option.split(',')[1]
-                    if option == 'fan_modulate':
-                        self.fan_modulate = bool(value)
-                    elif option == 'fan_seconds':
-                        self.fan_seconds = float(value)
-                    elif option == 'measure_range':
-                        self.measure_range = value
 
             #
             # Initialize the sensor class
