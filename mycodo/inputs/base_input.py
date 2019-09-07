@@ -162,6 +162,46 @@ class AbstractInput(object):
             self.setup_device_measurement()
             return self.channels_measurement[channel].is_enabled
 
+    def setup_custom_options(self, custom_options, input_dev):
+        for each_option_default in custom_options:
+            try:
+                error = []
+                if 'type' not in each_option_default:
+                    error.append("'type' not found in custom_options")
+                if 'id' not in each_option_default:
+                    error.append("'id' not found in custom_options")
+                if 'default_value' not in each_option_default:
+                    error.append("'default_value' not found in custom_options")
+                for each_error in error:
+                    self.logger.error(each_error)
+                if error:
+                    return
+
+                option_value = each_option_default['default_value']
+
+                if input_dev.custom_options:
+                    for each_option in input_dev.custom_options.split(';'):
+                        option = each_option.split(',')[0]
+                        value = each_option.split(',')[1]
+
+                        if option == each_option_default['id']:
+                            option_value = value
+
+                if each_option_default['type'] == 'integer':
+                    setattr(self, each_option_default['id'], int(option_value))
+                elif each_option_default['type'] == 'float':
+                    setattr(self, each_option_default['id'], float(option_value))
+                elif each_option_default['type'] == 'bool':
+                    setattr(self, each_option_default['id'], bool(option_value))
+                elif each_option_default['type'] == 'text':
+                    setattr(self, each_option_default['id'], str(option_value))
+                elif each_option_default['type'] == 'select':
+                    setattr(self, each_option_default['id'], str(option_value))
+                else:
+                    self.logger.error("Unknown custom_option type '{}'".format(each_option_default['type']))
+            except Exception:
+                self.logger.exception("Error parsing custom_options")
+
     def setup_device_measurement(self):
         # Make 5 attempts to access database
         for _ in range(5):

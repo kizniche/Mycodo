@@ -127,8 +127,6 @@ class InputModule(AbstractInput):
     def __init__(self, input_dev, testing=False):
         super(InputModule, self).__init__(input_dev, testing=testing, name=__name__)
 
-        self.download_stored_data = None
-        self.logging_interval_ms = None
         self.gadget = None
         self.connected = False
         self.connect_error = None
@@ -136,26 +134,25 @@ class InputModule(AbstractInput):
         self.initialized = False
         self.last_downloaded_timestamp = None
 
+        # custom options
+        self.download_stored_data = None
+        self.logging_interval_ms = None
+        self.logging_interval = None
+        self.setup_custom_options(
+            INPUT_INFORMATION['custom_options'], input_dev)
+        self.logging_interval_ms = self.logging_interval * 1000
+
         if not testing:
             from mycodo.devices.sht31_smart_gadget import SHT31
             from bluepy import btle
-
-            if input_dev.custom_options:
-                for each_option in input_dev.custom_options.split(';'):
-                    option = each_option.split(',')[0]
-                    value = each_option.split(',')[1]
-                    if option == 'download_stored_data':
-                        self.download_stored_data = bool(value)
-                    elif option == 'logging_interval':
-                        self.logging_interval_ms = int(value) * 1000
-
-            self.lock_file = '/var/lock/bluetooth_dev_hci{}'.format(
-                input_dev.bt_adapter)
             self.SHT31 = SHT31
             self.btle = btle
+
             self.log_level_debug = input_dev.log_level_debug
             self.location = input_dev.location
             self.bt_adapter = input_dev.bt_adapter
+            self.lock_file = '/var/lock/bluetooth_dev_hci{}'.format(
+                self.bt_adapter)
 
     def initialize(self):
         """Initialize the device by obtaining sensor information"""

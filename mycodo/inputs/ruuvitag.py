@@ -1,9 +1,11 @@
 # coding=utf-8
+import subprocess
 import time
 
 from mycodo.inputs.base_input import AbstractInput
 from mycodo.inputs.sensorutils import calculate_dewpoint
 from mycodo.inputs.sensorutils import calculate_vapor_pressure_deficit
+from mycodo.utils.system_pi import str_is_float
 
 # Measurements
 measurements_dict = {
@@ -118,43 +120,66 @@ class InputModule(AbstractInput):
         if self.locked:
             self.logger.debug("Starting measurement")
             try:
-                state = self.sensor.update()
+                from mycodo.utils.system_pi import cmd_output
+                cmd = 'timeout -k 11 10 /var/mycodo-root/env/bin/python ' \
+                      '/var/mycodo-root/mycodo/inputs/scripts/ruuvitag_values.py ' \
+                      '--mac_address {mac} --bt_adapter {bta}'.format(
+                          mac=self.location, bta=self.bt_adapter)
+                cmd = subprocess.Popen(cmd, stdout=subprocess.PIPE, shell=True)
+                cmd_return, cmd_err = cmd.communicate()
+                cmd_status = cmd.wait()
 
-                if not state:
+                if not cmd_return:
                     self.logger.debug("Measurement command returned no data")
                     return
 
-                battery_volts = state['battery'] / 1000
-                if battery_volts < 1 or battery_volts > 4:
+                values = cmd_return.decode('ascii').split(',')
+
+                if not str_is_float(values[0]):
+                    self.logger.debug(
+                        "Error: Could not convert string to float: "
+                        "string '{}'".format(str(values[0])))
+                    return
+
+                temperature = float(str(values[0]))
+                humidity = float(values[1])
+                pressure = float(values[2])
+                battery = float(values[3]) / 1000
+                acceleration_g_force = float(values[4]) / 1000
+                acceleration_x_g_force = float(values[5]) / 1000
+                acceleration_y_g_force = float(values[6]) / 1000
+                acceleration_z_g_force = float(values[7]) / 1000
+
+                if battery < 1 or battery > 4:
                     self.logger.debug(
                         "Not recording measurements: "
-                        "Battery outside expected range (1 < volts < 4): "
-                        "{volts}".format(volts=battery_volts))
+                        "Battery outside expected range (1 < battery volts < 4): "
+                        "{bat}".format(bat=battery))
                     return
 
                 if self.is_enabled(0):
-                    self.value_set(0, state['temperature'])
+                    self.value_set(0, temperature)
 
                 if self.is_enabled(1):
-                    self.value_set(1, state['humidity'])
+                    self.value_set(1, humidity)
 
                 if self.is_enabled(2):
-                    self.value_set(2, state['pressure'])
+                    self.value_set(2, pressure)
 
                 if self.is_enabled(3):
-                    self.value_set(3, state['battery'] / 1000)
+                    self.value_set(3, battery)
 
                 if self.is_enabled(4):
-                    self.value_set(4, state['acceleration'] / 1000)
+                    self.value_set(4, acceleration_g_force)
 
                 if self.is_enabled(5):
-                    self.value_set(5, state['acceleration_x'] / 1000)
+                    self.value_set(5, acceleration_x_g_force)
 
                 if self.is_enabled(6):
-                    self.value_set(6, state['acceleration_y'] / 1000)
+                    self.value_set(6, acceleration_y_g_force)
 
                 if self.is_enabled(7):
-                    self.value_set(7, state['acceleration_z'] / 1000)
+                    self.value_set(7, acceleration_z_g_force)
 
                 if (self.is_enabled(8) and
                         self.is_enabled(0) and

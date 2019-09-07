@@ -822,6 +822,15 @@ def page_info():
     if not utils_general.user_has_permission('view_stats'):
         return redirect(url_for('routes_general.home'))
 
+    virtualenv_flask = False
+    virtualenv_daemon = False
+    daemon_pid = None
+    pstree_daemon_output = None
+    top_daemon_output = None
+    frontend_pid = None
+    pstree_frontend_output = None
+    top_frontend_output = None
+
     uptime = subprocess.Popen(
         "uptime", stdout=subprocess.PIPE, shell=True)
     (uptime_output, _) = uptime.communicate()
@@ -893,18 +902,12 @@ def page_info():
     database_version = AlembicVersion.query.first().version_num
     correct_database_version = ALEMBIC_VERSION
 
-    virtualenv_flask = False
     if hasattr(sys, 'real_prefix'):
         virtualenv_flask = True
 
-    daemon_pid = None
     if os.path.exists(DAEMON_PID_FILE):
         with open(DAEMON_PID_FILE, 'r') as pid_file:
             daemon_pid = int(pid_file.read())
-
-    virtualenv_daemon = False
-    pstree_daemon_output = None
-    top_daemon_output = None
 
     if not current_app.config['TESTING']:
         daemon_up = daemon_active()
@@ -916,43 +919,16 @@ def page_info():
         ram_use_daemon = control.ram_use()
         virtualenv_daemon = control.is_in_virtualenv()
 
-        pstree_damon = subprocess.Popen(
-            "pstree -p {pid}".format(pid=daemon_pid), stdout=subprocess.PIPE, shell=True)
-        (pstree_daemon_output, _) = pstree_damon.communicate()
-        pstree_damon.wait()
-        if pstree_daemon_output:
-            pstree_daemon_output = pstree_daemon_output.decode("latin1")
-
-        top_daemon = subprocess.Popen(
-            "top -bH -n 1 -p {pid}".format(pid=daemon_pid), stdout=subprocess.PIPE, shell=True)
-        (top_daemon_output, _) = top_daemon.communicate()
-        top_daemon.wait()
-        if top_daemon_output:
-            top_daemon_output = top_daemon_output.decode("latin1")
+        pstree_daemon_output, top_daemon_output = output_pstree_top(daemon_pid)
     else:
         ram_use_daemon = 0
 
-    frontend_pid = None
     if os.path.exists(FRONTEND_PID_FILE):
         with open(FRONTEND_PID_FILE, 'r') as pid_file:
             frontend_pid = int(pid_file.read())
 
-    pstree_frontend_output = None
-    top_frontend_output = None
     if frontend_pid:
-        pstree_damon = subprocess.Popen(
-            "pstree -p {pid}".format(pid=frontend_pid), stdout=subprocess.PIPE, shell=True)
-        (pstree_frontend_output, _) = pstree_damon.communicate()
-        pstree_damon.wait()
-        if pstree_frontend_output:
-            pstree_frontend_output = pstree_frontend_output.decode("latin1")
-
-        top_frontend = subprocess.Popen(
-            "top -bH -n 1 -p {pid}".format(pid=frontend_pid), stdout=subprocess.PIPE, shell=True)
-        (top_frontend_output, _) = top_frontend.communicate()
-        top_frontend.wait()
-        if top_frontend_output:
-            top_frontend_output = top_frontend_output.decode("latin1")
+        pstree_frontend_output, top_frontend_output = output_pstree_top(frontend_pid)
 
     ram_use_flask = resource.getrusage(
         resource.RUSAGE_SELF).ru_maxrss / float(1000)
@@ -981,6 +957,24 @@ def page_info():
                            uptime=uptime_output,
                            virtualenv_daemon=virtualenv_daemon,
                            virtualenv_flask=virtualenv_flask)
+
+
+def output_pstree_top(pid):
+    pstree = subprocess.Popen(
+        "pstree -p {pid}".format(pid=pid), stdout=subprocess.PIPE, shell=True)
+    (pstree_output, _) = pstree.communicate()
+    pstree.wait()
+    if pstree_output:
+        pstree_output = pstree_output.decode("latin1")
+
+    top = subprocess.Popen(
+        "top -bH -n 1 -p {pid}".format(pid=pid), stdout=subprocess.PIPE, shell=True)
+    (top_output, _) = top.communicate()
+    top.wait()
+    if top_output:
+        top_output = top_output.decode("latin1")
+
+    return pstree_output, top_output
 
 
 @blueprint.route('/lcd', methods=('GET', 'POST'))
