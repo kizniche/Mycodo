@@ -78,13 +78,13 @@ class InputModule(AbstractInput):
     def __init__(self, input_dev, testing=False):
         super(InputModule, self).__init__(input_dev, testing=testing, name=__name__)
 
-        # custom options
+        # Initialize custom options
         self.mqtt_host = None
         self.mqtt_port = None
         self.mqtt_channel = None
         self.mqtt_keepalive = None
         self.mqtt_clientid = None
-        # set custom_options
+        # Set custom options
         self.setup_custom_options(
             INPUT_INFORMATION['custom_options'], input_dev)
 

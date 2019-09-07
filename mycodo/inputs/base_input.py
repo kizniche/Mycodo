@@ -26,6 +26,7 @@ class AbstractInput(object):
     in inputs.
     """
     def __init__(self, input_dev, testing=False, name=__name__):
+
         self.logger = None
         self.setup_logger(testing=testing, name=name, input_dev=input_dev)
         self.input_dev = input_dev

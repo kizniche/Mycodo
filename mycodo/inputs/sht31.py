@@ -118,11 +118,11 @@ class InputModule(AbstractInput):
 
         self.measurement_count = 0
 
-        # custom options
+        # Initialize custom options
         self.heater_enable = None
         self.heater_seconds = None
         self.heater_measurements = None
-        # set custom_options
+        # Set custom options
         self.setup_custom_options(
             INPUT_INFORMATION['custom_options'], input_dev)
 

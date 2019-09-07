@@ -110,9 +110,9 @@ class InputModule(AbstractInput):
 
         self.timer = 0
 
-        # custom options
+        # Initialize custom options
         self.serial_device = None
-        # set custom_options
+        # Set custom options
         self.setup_custom_options(
             INPUT_INFORMATION['custom_options'], input_dev)
 

@@ -2,6 +2,9 @@
 #
 #  config_translations.py - Mycodo phrases for translation
 #
+# To generate new files:
+#
+#
 
 from flask_babel import lazy_gettext
 

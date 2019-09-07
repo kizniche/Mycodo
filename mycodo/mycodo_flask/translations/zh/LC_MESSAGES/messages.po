@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2019-01-29 15:09-0500\n"
+"POT-Creation-Date: 2019-09-07 13:38-0400\n"
 "PO-Revision-Date: 2018-08-10 15:59-0400\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: zh\n"
@@ -16,1254 +16,1416 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.6.0\n"
+"Generated-By: Babel 2.7.0\n"
 
-#: config.py:87
-msgid "Average (Multiple Inputs)"
-msgstr "平均（多输入）"
+#: config.py:88
+msgid "Average (Last, Multiple Channels)"
+msgstr ""
 
-#: config.py:93
-msgid "Average (Single Input)"
-msgstr "平均（单输入）"
+#: config.py:94
+msgid "Average (Past, Single Channel)"
+msgstr ""
 
-#: config.py:100
+#: config.py:101
+msgid "Sum (Last, Multiple Channels)"
+msgstr ""
+
+#: config.py:107
+msgid "Sum (Past, Single Channel)"
+msgstr ""
+
+#: config.py:114
 msgid "Difference"
 msgstr "区别"
 
-#: config.py:106 mycodo_flask/forms/forms_math.py:69
-#: mycodo_flask/forms/forms_settings.py:226
-#: mycodo_flask/forms/forms_settings.py:234
+#: config.py:120 mycodo_flask/forms/forms_math.py:75
+#: mycodo_flask/forms/forms_settings.py:227
+#: mycodo_flask/forms/forms_settings.py:235
 msgid "Equation"
 msgstr "方程"
 
-#: config.py:112
+#: config.py:126
 msgid "Humidity (Wet/Dry-Bulb)"
 msgstr "湿度（湿/干灯泡）"
 
-#: config.py:135
+#: config.py:149
 msgid "Redundancy"
 msgstr "冗余"
 
-#: config.py:141 mycodo_flask/templates/admin/statistics.html:6
+#: config.py:155 mycodo_flask/templates/admin/statistics.html:6
 msgid "Statistics"
 msgstr "统计"
 
-#: config.py:183
+#: config.py:197
 msgid "Verification"
 msgstr "验证"
 
-#: config.py:189 config_devices_units.py:161
+#: config.py:203 config_devices_units.py:193
 msgid "Vapor Pressure Deficit"
 msgstr "蒸汽压力不足"
 
-#: config.py:217
+#: config.py:233
 msgid "Time/Date"
 msgstr "时间/日期"
 
-#: config.py:221 config_devices_units.py:49 config_translations.py:46
+#: config.py:237 config_devices_units.py:69 config_translations.py:51
 msgid "Duration"
 msgstr "持续时间"
 
-#: config.py:225
+#: config.py:241
 msgid "Daily (Time-Based)"
 msgstr "每日（基于时间）"
 
-#: config.py:229
+#: config.py:245
 msgid "Daily (Sine Wave)"
 msgstr "每日（正弦波）"
 
-#: config.py:233
+#: config.py:249
 msgid "Daily (Bezier Curve)"
 msgstr "每日（贝塞尔曲线）"
 
-#: config.py:252
+#: config.py:268
 msgid "On/Off (GPIO)"
 msgstr "开/关（GPIO）"
 
-#: config.py:258
+#: config.py:274
 msgid "PWM (GPIO)"
 msgstr "PWM（GPIO）"
 
-#: config.py:264
+#: config.py:282
 msgid "Wireless 315/433MHz LPD/SRD (rpi-rf)"
 msgstr "无线315 / 433MHz LPD / SRD（rpi-rf）"
 
-#: config.py:272
+#: config.py:291
 msgid "On/Off (Linux Command)"
 msgstr "开/关（Linux命令）"
 
-#: config.py:278
+#: config.py:297
 msgid "PWM (Linux Command)"
 msgstr "PWM（Linux命令）"
 
-#: config.py:284
+#: config.py:303
 msgid "On/Off (Python Command)"
 msgstr "开/关（Python命令）"
 
-#: config.py:290
+#: config.py:309
 msgid "PWM (Python Command)"
 msgstr "PWM（Python命令）"
 
-#: config.py:296
+#: config.py:315
 msgid "Atlas EZO-PMP"
 msgstr "Atlas EZO-PMP"
 
-#: config.py:313
+#: config.py:332
 msgid "I2C"
 msgstr "I2C"
 
-#: config.py:315
+#: config.py:334
 msgid "UART"
 msgstr "UART"
 
-#: config.py:369
+#: config.py:392
 msgid "DS-Type Sensor Calibration"
 msgstr "DS型传感器校准"
 
-#: config.py:379 config_devices_units.py:77
+#: config.py:407 config_devices_units.py:97
 msgid "GPIO State"
 msgstr "GPIO国家"
 
-#: config.py:385 config.py:386
+#: config.py:408
+msgid "Output State"
+msgstr ""
+
+#: config.py:415
 msgid "Spacer"
 msgstr "间隔"
 
-#: config.py:390
+#: config.py:421
 msgid "Execute Actions"
 msgstr "执行动作"
 
-#: config.py:422
+#: config.py:458
 msgid "Trigger: Timer (Daily Point)"
 msgstr "触发：定时器（每日点）"
 
-#: config.py:425 config.py:427
+#: config.py:465
 msgid "Daily Span"
 msgstr "每日跨度"
 
-#: config.py:435 config.py:436
+#: config.py:478
+msgid "Infrared Receive"
+msgstr ""
+
+#: config.py:488
 msgid "Run PWM Method"
 msgstr "运行PWM方法"
 
-#: config.py:439 config.py:440
+#: config.py:494
 msgid "Sunrise/Sunset"
 msgstr "日出日落"
 
-#: config.py:446
+#: config.py:524
 msgid "Camera: Capture Photo"
 msgstr "相机：拍摄照片"
 
-#: config.py:451
+#: config.py:548
 msgid "Email with Photo Attachment"
 msgstr "带照片附件的电子邮件"
 
-#: config.py:452
+#: config.py:552
 msgid "Email with Video Attachment"
 msgstr "带视频附件的电子邮件"
 
-#: config.py:453
+#: config.py:556
 msgid "Execute Command"
 msgstr "执行命令"
 
-#: config.py:454
+#: config.py:560
+msgid "Infrared Send"
+msgstr ""
+
+#: config.py:571
 msgid "Backlight Off"
 msgstr "背光关闭"
 
-#: config.py:455
+#: config.py:577
 msgid "LCD: Backlight On"
 msgstr "LCD：背光打开"
 
-#: config.py:456
+#: config.py:583
 msgid "LCD: Flashing Off"
 msgstr "LCD：闪烁关闭"
 
-#: config.py:457
+#: config.py:589
 msgid "LCD: Flashing On"
 msgstr "LCD：闪烁"
 
-#: config.py:462
+#: config.py:619
 msgid "Set Method"
 msgstr "设置方法"
 
-#: config.py:463
+#: config.py:625
 #: mycodo_flask/templates/pages/dashboard_options/mod_pid_control.html:62
 #: mycodo_flask/templates/pages/dashboard_options/mod_pid_control.html:92
 msgid "Set Setpoint"
 msgstr "设定设定值"
 
+#: config.py:631
+#: mycodo_flask/templates/pages/function_options/action_options/setpoint_pid_raise.html:11
+msgid "Raise Setpoint"
+msgstr ""
+
+#: config.py:637
+#: mycodo_flask/templates/pages/function_options/action_options/setpoint_pid_lower.html:11
+msgid "Lower Setpoint"
+msgstr ""
+
 #: config_devices_units.py:13
+msgid "Acceleration (G-Force)"
+msgstr ""
+
+#: config_devices_units.py:17
+msgid "Acceleration (G-Force, X)"
+msgstr ""
+
+#: config_devices_units.py:21
+msgid "Acceleration (G-Force, Y)"
+msgstr ""
+
+#: config_devices_units.py:25
+msgid "Acceleration (G-Force, Z)"
+msgstr ""
+
+#: config_devices_units.py:29
 msgid "Altitude"
 msgstr "高度"
 
-#: config_devices_units.py:17
+#: config_devices_units.py:33
 msgid "Battery"
 msgstr "电池"
 
-#: config_devices_units.py:21 config_devices_units.py:189
+#: config_devices_units.py:37 config_devices_units.py:224
 msgid "Boolean"
 msgstr "布尔"
 
-#: config_devices_units.py:25
+#: config_devices_units.py:41
 msgid "CO2"
 msgstr "CO2"
 
-#: config_devices_units.py:29
+#: config_devices_units.py:45
 msgid "CPU Load 1 min"
 msgstr "CPU负载1分钟"
 
-#: config_devices_units.py:33
+#: config_devices_units.py:49
 msgid "CPU Load 5 min"
 msgstr "CPU负载5分钟"
 
-#: config_devices_units.py:37
+#: config_devices_units.py:53
 msgid "CPU Load 15 min"
 msgstr "CPU负载15分钟"
 
-#: config_devices_units.py:41
+#: config_devices_units.py:57
 msgid "Dewpoint"
 msgstr "露点"
 
-#: config_devices_units.py:45
+#: config_devices_units.py:61
 msgid "Disk"
 msgstr "磁盘"
 
-#: config_devices_units.py:53 config_translations.py:173
+#: config_devices_units.py:65
+msgid "Dissolved Oxygen"
+msgstr ""
+
+#: config_devices_units.py:73 config_translations.py:190
 msgid "Duty Cycle"
 msgstr "占空比"
 
-#: config_devices_units.py:57
+#: config_devices_units.py:77
 msgid "GPIO Edge"
 msgstr "GPIO Edge"
 
-#: config_devices_units.py:61
+#: config_devices_units.py:81
 msgid "Electrical Conductivity"
 msgstr "电导率"
 
-#: config_devices_units.py:65
+#: config_devices_units.py:85
 msgid "Electrical Current"
 msgstr "电流"
 
-#: config_devices_units.py:69
+#: config_devices_units.py:89
 msgid "Electrical Potential"
 msgstr "电势"
 
-#: config_devices_units.py:73 mycodo_flask/forms/forms_method.py:68
+#: config_devices_units.py:93 mycodo_flask/forms/forms_method.py:68
 msgid "Frequency"
 msgstr "频率"
 
-#: config_devices_units.py:81
+#: config_devices_units.py:101
 #: mycodo_flask/templates/pages/data_options/math_options/vapor_pressure_deficit.html:24
 msgid "Humidity"
 msgstr "湿度"
 
-#: config_devices_units.py:85
+#: config_devices_units.py:105
 msgid "Humidity Ratio"
 msgstr "湿度比"
 
-#: config_devices_units.py:89
+#: config_devices_units.py:109
 msgid "Ion Concentration"
 msgstr "离子浓度"
 
-#: config_devices_units.py:93
+#: config_devices_units.py:113
 msgid "Light"
 msgstr "光"
 
-#: config_devices_units.py:97
+#: config_devices_units.py:117
 msgid "Moisture"
 msgstr "湿气"
 
-#: config_devices_units.py:113
+#: config_devices_units.py:121
+msgid "Oxidation Reduction Potential"
+msgstr ""
+
+#: config_devices_units.py:137
 msgid "PID P-Value"
 msgstr "PID P值"
 
-#: config_devices_units.py:117
+#: config_devices_units.py:141
 msgid "PID I-Value"
 msgstr "PID I值"
 
-#: config_devices_units.py:121
+#: config_devices_units.py:145
 msgid "PID D-Value"
 msgstr "PID D值"
 
-#: config_devices_units.py:125 mycodo_flask/forms/forms_math.py:80
+#: config_devices_units.py:149 mycodo_flask/forms/forms_math.py:86
 msgid "Pressure"
 msgstr "压力"
 
-#: config_devices_units.py:129
+#: config_devices_units.py:153
 msgid "Pulse Width"
 msgstr "脉冲宽度"
 
-#: config_devices_units.py:133
+#: config_devices_units.py:157
+msgid "Radiation Dose Rate"
+msgstr ""
+
+#: config_devices_units.py:161
 msgid "Revolutions"
 msgstr "革命"
 
-#: config_devices_units.py:137 config_devices_units.py:282
-#: config_translations.py:118
-#: mycodo_flask/templates/pages/function_options/actions.html:203
+#: config_devices_units.py:165 config_devices_units.py:335
+#: config_translations.py:131
+#: mycodo_flask/templates/pages/function_options/action_options/setpoint_pid.html:11
 msgid "Setpoint"
 msgstr "设定点"
 
-#: config_devices_units.py:141
+#: config_devices_units.py:169
 msgid "Band Min"
 msgstr "Band Min"
 
-#: config_devices_units.py:145
+#: config_devices_units.py:173
 msgid "Band Max"
 msgstr "Band Max"
 
-#: config_devices_units.py:149
+#: config_devices_units.py:177
 msgid "Specific Enthalpy"
 msgstr "具体焓"
 
-#: config_devices_units.py:153
+#: config_devices_units.py:181
 msgid "Specific Volume"
 msgstr "比容"
 
-#: config_devices_units.py:157 mycodo_flask/forms/forms_calibration.py:35
+#: config_devices_units.py:185 mycodo_flask/forms/forms_calibration.py:35
 #: mycodo_flask/templates/pages/data_options/math_options/vapor_pressure_deficit.html:6
 msgid "Temperature"
 msgstr "温度"
 
-#: config_devices_units.py:165
+#: config_devices_units.py:189 config_devices_units.py:305
+msgid "Unitless"
+msgstr ""
+
+#: config_devices_units.py:197
 msgid "VOC"
 msgstr "VOC"
 
-#: config_devices_units.py:169
+#: config_devices_units.py:201
 msgid "Volume"
 msgstr "体积"
 
-#: config_devices_units.py:180
+#: config_devices_units.py:212
 msgid "Microsecond"
 msgstr "微秒"
 
-#: config_devices_units.py:183
+#: config_devices_units.py:215
 msgid "Microsiemens per centimeter"
 msgstr "每厘米微米门"
 
-#: config_devices_units.py:186
+#: config_devices_units.py:218
+msgid "Microsieverts per hour"
+msgstr ""
+
+#: config_devices_units.py:221 mycodo_flask/forms/forms_misc.py:28
+#: mycodo_flask/forms/forms_misc.py:36
 msgid "Amp"
 msgstr "安培"
 
-#: config_devices_units.py:192
+#: config_devices_units.py:227
 msgid "Celsius"
 msgstr "摄氏"
 
-#: config_devices_units.py:195
+#: config_devices_units.py:230
+msgid "Counts per minute"
+msgstr ""
+
+#: config_devices_units.py:233
 msgid "CPU Load"
 msgstr "CPU负载"
 
-#: config_devices_units.py:198
+#: config_devices_units.py:236
 msgid "Decimal"
 msgstr "十进制"
 
-#: config_devices_units.py:201
+#: config_devices_units.py:239
 msgid "Fahrenheit"
 msgstr "飞轮海"
 
-#: config_devices_units.py:204
+#: config_devices_units.py:242
 msgid "Foot"
 msgstr "脚丫子"
 
-#: config_devices_units.py:207
+#: config_devices_units.py:245
 msgid "Full"
 msgstr "充分"
 
-#: config_devices_units.py:210
+#: config_devices_units.py:248
+msgid "G-Force"
+msgstr ""
+
+#: config_devices_units.py:251
 msgid "Gigabyte"
 msgstr "技嘉"
 
-#: config_devices_units.py:213
+#: config_devices_units.py:254
 msgid "Hertz"
 msgstr "赫兹"
 
-#: config_devices_units.py:216
+#: config_devices_units.py:257
 msgid "Infrared"
 msgstr "红外线"
 
-#: config_devices_units.py:219
+#: config_devices_units.py:260
 msgid "Kelvin"
 msgstr "开"
 
-#: config_devices_units.py:222
+#: config_devices_units.py:263
 msgid "Kilobyte"
 msgstr "千字节"
 
-#: config_devices_units.py:225
+#: config_devices_units.py:266
 msgid "Kilogram per kilogram"
 msgstr "公斤每公斤"
 
-#: config_devices_units.py:228
+#: config_devices_units.py:269
 msgid "Kilohertz"
 msgstr "千赫"
 
-#: config_devices_units.py:231
+#: config_devices_units.py:272
 msgid "Kilojoule per kilogram"
 msgstr "Kilojoule每公斤"
 
-#: config_devices_units.py:234
+#: config_devices_units.py:275
 msgid "Kilopascal"
 msgstr "千帕"
 
-#: config_devices_units.py:237
+#: config_devices_units.py:278
 msgid "Lux"
 msgstr "勒克司"
 
-#: config_devices_units.py:240
+#: config_devices_units.py:281
 msgid "Meter"
 msgstr "仪表"
 
-#: config_devices_units.py:243
+#: config_devices_units.py:284
+msgid "Milligram per Liter"
+msgstr ""
+
+#: config_devices_units.py:287
 msgid "Milliliter"
 msgstr "毫升"
 
-#: config_devices_units.py:246
+#: config_devices_units.py:290
+msgid "Millivolt"
+msgstr ""
+
+#: config_devices_units.py:293
 msgid "Cubic meters per kilogram"
 msgstr "每公斤立方米"
 
-#: config_devices_units.py:249
+#: config_devices_units.py:296
 msgid "Megahertz"
 msgstr "兆赫"
 
-#: config_devices_units.py:252
+#: config_devices_units.py:299
 msgid "Megabyte"
 msgstr "兆字节"
 
-#: config_devices_units.py:255
+#: config_devices_units.py:302
 msgid "Minute"
 msgstr "分钟"
 
-#: config_devices_units.py:258
+#: config_devices_units.py:308
 msgid "Pascal"
 msgstr "帕斯卡尔"
 
-#: config_devices_units.py:261
+#: config_devices_units.py:311
 msgid "Percent"
 msgstr "百分"
 
-#: config_devices_units.py:264
+#: config_devices_units.py:314
 msgid "pH"
 msgstr "pH值"
 
-#: config_devices_units.py:267
+#: config_devices_units.py:317
 msgid "PID values"
 msgstr "PID值"
 
-#: config_devices_units.py:270
+#: config_devices_units.py:320
 msgid "Parts per billion"
 msgstr "十亿分之一"
 
-#: config_devices_units.py:273
+#: config_devices_units.py:323
 msgid "Parts per million"
 msgstr "百万分之一"
 
-#: config_devices_units.py:276
+#: config_devices_units.py:326
+msgid "Pounds per square inch"
+msgstr ""
+
+#: config_devices_units.py:329
 msgid "Revolutions per minute"
 msgstr "每分钟转数"
 
-#: config_devices_units.py:279
+#: config_devices_units.py:332
 msgid "Second"
 msgstr "第二"
 
-#: config_devices_units.py:285
+#: config_devices_units.py:338
 msgid "Microgram per cubic meter"
 msgstr "每立方米的微克数"
 
-#: config_devices_units.py:288
+#: config_devices_units.py:341
 msgid "Volt"
 msgstr "伏特"
 
-#: config_translations.py:12
-#: mycodo_flask/templates/pages/function_options/conditional.html:142
-#: mycodo_flask/templates/pages/function_options/trigger.html:96
+#: config_translations.py:15
+#: mycodo_flask/templates/pages/function_options/conditional.html:152
+#: mycodo_flask/templates/pages/function_options/trigger.html:103
 msgid "Actions"
 msgstr "操作"
 
-#: config_translations.py:14
+#: config_translations.py:17
 msgid "Add"
 msgstr "加"
 
-#: config_translations.py:16
+#: config_translations.py:19
 msgid "Activate"
 msgstr "启用"
 
-#: config_translations.py:18
+#: config_translations.py:21
 msgid "Alert"
 msgstr "警报"
 
-#: config_translations.py:20 inputs/ads1256.py:87
+#: config_translations.py:23 inputs/ads1256.py:85
 msgid "Calibration"
 msgstr "校准"
 
-#: config_translations.py:22 mycodo_flask/forms/forms_dashboard.py:196
+#: config_translations.py:25
+msgid "Calculate"
+msgstr ""
+
+#: config_translations.py:27 mycodo_flask/forms/forms_dashboard.py:196
+#: mycodo_flask/templates/layout.html:200
 #: mycodo_flask/templates/pages/camera.html:5
 #: mycodo_flask/templates/pages/dashboard_options/add_camera.html:10
 msgid "Camera"
 msgstr "相机"
 
-#: config_translations.py:24
+#: config_translations.py:29
 msgid "Cancel"
 msgstr "取消"
 
-#: config_translations.py:26
+#: config_translations.py:31
 msgid "Conditional"
 msgstr "条件"
 
-#: config_translations.py:28
+#: config_translations.py:33
 msgid "Controller"
 msgstr "调节器"
 
-#: config_translations.py:30 mycodo_flask/templates/tools/notes.html:73
+#: config_translations.py:35 mycodo_flask/templates/tools/notes.html:73
 msgid "Create"
 msgstr "创建"
 
-#: config_translations.py:32
+#: config_translations.py:37 mycodo_flask/templates/layout.html:179
 msgid "Dashboard"
 msgstr "仪表板"
 
-#: config_translations.py:34
+#: config_translations.py:39 mycodo_flask/templates/layout.html:177
 msgid "Data"
 msgstr "数据"
 
-#: config_translations.py:36
+#: config_translations.py:41
 msgid "Deactivate"
 msgstr "停用"
 
-#: config_translations.py:38
+#: config_translations.py:43
 msgid "Delete"
 msgstr "删除"
 
-#: config_translations.py:40
+#: config_translations.py:45
 msgid "Diagnostic"
 msgstr "诊断"
 
-#: config_translations.py:42
+#: config_translations.py:47
 msgid "Display"
 msgstr "显示"
 
-#: config_translations.py:44
+#: config_translations.py:49
 msgid "Down"
 msgstr "下"
 
-#: config_translations.py:48 config_translations.py:304
-#: mycodo_flask/forms/forms_input.py:131
+#: config_translations.py:53 config_translations.py:327
+#: mycodo_flask/forms/forms_input.py:134
 msgid "Edge"
 msgstr "边缘"
 
-#: config_translations.py:50 mycodo_flask/templates/pages/method-list.html:74
+#: config_translations.py:55 mycodo_flask/templates/pages/method-list.html:74
 msgid "Edit"
 msgstr "编辑"
 
-#: config_translations.py:52
+#: config_translations.py:57
 msgid "E-Mail"
 msgstr "电子邮件"
 
-#: config_translations.py:54 mycodo_flask/templates/flash_messages.html:33
-#: mycodo_flask/templates/pages/dashboard.html:466
-#: mycodo_flask/templates/pages/dashboard.html:472
-#: mycodo_flask/templates/pages/dashboard.html:522
+#: config_translations.py:59 mycodo_flask/templates/layout.html:203
+#: mycodo_flask/templates/pages/usage.html:3
+#: mycodo_flask/templates/pages/usage.html:5
+#: mycodo_flask/templates/pages/usage.html:35
+#: mycodo_flask/templates/pages/usage.html:135
+#: mycodo_flask/templates/pages/usage.html:178
+#: mycodo_flask/templates/pages/usage.html:233
+#: mycodo_flask/templates/pages/usage.html:267
+#: mycodo_flask/templates/pages/usage_reports.html:3
+msgid "Energy Usage"
+msgstr "能源使用"
+
+#: config_translations.py:61 mycodo_flask/templates/flash_messages.html:33
+#: mycodo_flask/templates/pages/dashboard.html:470
+#: mycodo_flask/templates/pages/dashboard.html:476
+#: mycodo_flask/templates/pages/dashboard.html:526
 msgid "Error"
 msgstr "错误"
 
-#: config_translations.py:56
+#: config_translations.py:63
 msgid "Export"
 msgstr "出口"
 
-#: config_translations.py:58 mycodo_flask/templates/pages/function.html:28
+#: config_translations.py:65 mycodo_flask/templates/pages/function.html:28
 msgid "Function"
 msgstr "功能"
 
-#: config_translations.py:60 mycodo_flask/templates/layout-settings.html:22
+#: config_translations.py:67 mycodo_flask/templates/layout-settings.html:24
 msgid "General"
 msgstr "一般"
 
-#: config_translations.py:62 mycodo_flask/forms/forms_pid.py:103
+#: config_translations.py:69 mycodo_flask/forms/forms_pid.py:105
 msgid "Hold"
 msgstr "保持"
 
-#: config_translations.py:64
+#: config_translations.py:71
 #: mycodo_flask/templates/pages/dashboard_options/add_indicator.html:10
 msgid "Indicator"
 msgstr "指示符"
 
-#: config_translations.py:66
+#: config_translations.py:73
 msgid "Invert"
 msgstr "倒置"
 
-#: config_translations.py:68 mycodo_flask/templates/tools/notes.html:138
-#: mycodo_flask/utils/utils_notes.py:451
-#: mycodo_flask/utils/utils_settings.py:314
-#: mycodo_flask/utils/utils_settings.py:436
+#: config_translations.py:75 mycodo_flask/templates/tools/notes.html:138
+#: mycodo_flask/utils/utils_notes.py:452
+#: mycodo_flask/utils/utils_settings.py:319
+#: mycodo_flask/utils/utils_settings.py:444
 msgid "Import"
 msgstr "进口"
 
-#: config_translations.py:70 mycodo_flask/templates/layout-remote.html:50
-#: mycodo_flask/templates/pages/data.html:26
+#: config_translations.py:77 mycodo_flask/templates/layout-remote.html:50
+#: mycodo_flask/templates/pages/data.html:25
 #: mycodo_flask/templates/pages/data_options/input.html:1
 msgid "Input"
 msgstr "输入"
 
-#: config_translations.py:72
+#: config_translations.py:79
 msgid "Invalid"
 msgstr "无效"
 
-#: config_translations.py:74
+#: config_translations.py:81
 msgid "LCD"
 msgstr "液晶显示"
 
-#: config_translations.py:76
+#: config_translations.py:83
 msgid "Line"
 msgstr "线"
 
-#: config_translations.py:78
+#: config_translations.py:85
 msgid "Login"
 msgstr "登录"
 
-#: config_translations.py:80 mycodo_flask/templates/pages/data.html:38
+#: config_translations.py:87 mycodo_flask/templates/pages/data.html:37
 #: mycodo_flask/templates/pages/data_options/math.html:1
 msgid "Math"
 msgstr "数学"
 
-#: config_translations.py:82
+#: config_translations.py:89 mycodo_flask/forms/forms_misc.py:28
+#: mycodo_flask/forms/forms_misc.py:36
 #: mycodo_flask/templates/pages/dashboard_options/add_measurement.html:10
 #: mycodo_flask/templates/pages/live.html:106
 #: mycodo_flask/templates/pages/live.html:154
 msgid "Measurement"
 msgstr "测量"
 
-#: config_translations.py:84 mycodo_flask/routes_method.py:309
-#: mycodo_flask/templates/pages/function_options/actions.html:219
+#: config_translations.py:91 mycodo_flask/routes_method.py:309
+#: mycodo_flask/templates/pages/function_options/action_options/method_pid.html:11
 #: mycodo_flask/templates/pages/method-list.html:39
 msgid "Method"
 msgstr "方法"
 
-#: config_translations.py:86
+#: config_translations.py:93
 msgid "Modify"
 msgstr "修改"
 
-#: config_translations.py:88
+#: config_translations.py:95
+msgid "Multiple"
+msgstr ""
+
+#: config_translations.py:97
 msgid "None Available"
 msgstr "没有可用"
 
-#: config_translations.py:90
+#: config_translations.py:99
 msgid "Note"
 msgstr "注意"
 
-#: config_translations.py:92 mycodo_flask/templates/pages/dashboard.html:455
+#: config_translations.py:101 mycodo_flask/templates/pages/dashboard.html:459
 msgid "Off"
 msgstr "离"
 
-#: config_translations.py:94 mycodo_flask/templates/pages/dashboard.html:453
+#: config_translations.py:103 mycodo_flask/templates/pages/dashboard.html:457
 msgid "On"
 msgstr "上"
 
-#: config_translations.py:96 mycodo_flask/forms/forms_method.py:93
+#: config_translations.py:105 mycodo_flask/forms/forms_method.py:93
 #: mycodo_flask/templates/pages/dashboard_options/add_output.html:10
 msgid "Output"
 msgstr "产量"
 
-#: config_translations.py:98
+#: config_translations.py:107
 msgid "Password"
 msgstr "密码"
 
-#: config_translations.py:100 mycodo_flask/forms/forms_pid.py:104
+#: config_translations.py:109 mycodo_flask/forms/forms_pid.py:106
 msgid "Pause"
 msgstr "暂停"
 
-#: config_translations.py:102 mycodo_flask/forms/forms_dashboard.py:175
+#: config_translations.py:111 mycodo_flask/forms/forms_dashboard.py:175
 #: mycodo_flask/templates/pages/dashboard_options/add_pid_control.html:10
 msgid "PID"
 msgstr "PID"
 
-#: config_translations.py:104
+#: config_translations.py:113
+msgid "Pin"
+msgstr ""
+
+#: config_translations.py:115
 msgid "PWM"
 msgstr "PWM"
 
-#: config_translations.py:106
+#: config_translations.py:117
 msgid "Rename"
 msgstr "改名"
 
-#: config_translations.py:108
+#: config_translations.py:119
 msgid "Reorder"
 msgstr "重新排序"
 
-#: config_translations.py:110 mycodo_flask/forms/forms_pid.py:105
+#: config_translations.py:121
+msgid "Reset"
+msgstr ""
+
+#: config_translations.py:123 mycodo_flask/forms/forms_pid.py:107
 msgid "Resume"
 msgstr "恢复"
 
-#: config_translations.py:112
+#: config_translations.py:125
 msgid "Save"
 msgstr "保存"
 
-#: config_translations.py:114
+#: config_translations.py:127
 msgid "Save Order"
 msgstr "保存订单"
 
-#: config_translations.py:116
+#: config_translations.py:129
+#: mycodo_flask/templates/pages/function_options/action_options/infrared_send.html:8
 msgid "Select One"
 msgstr "选择一个"
 
-#: config_translations.py:120
+#: config_translations.py:133
 msgid "Settings"
 msgstr "设置"
 
-#: config_translations.py:122
+#: config_translations.py:135
+msgid "Single"
+msgstr ""
+
+#: config_translations.py:137
 msgid "Tag"
 msgstr "标签"
 
-#: config_translations.py:124
+#: config_translations.py:139
 msgid "Timer"
 msgstr "计时器"
 
-#: config_translations.py:126
+#: config_translations.py:141
+msgid "Trigger"
+msgstr ""
+
+#: config_translations.py:143
 msgid "Up"
 msgstr "向上"
 
-#: config_translations.py:128 mycodo_flask/forms/forms_settings.py:177
+#: config_translations.py:145 mycodo_flask/forms/forms_settings.py:178
 msgid "Upload"
 msgstr "上传"
 
-#: config_translations.py:130
+#: config_translations.py:147 inputs/linux_command.py:52
 msgid "User"
 msgstr "用户"
 
-#: config_translations.py:134
+#: config_translations.py:151
 msgid "1-Wire Device ID"
 msgstr "1-Wire器件ID"
 
-#: config_translations.py:135
+#: config_translations.py:152
 msgid "Select the 1-wire device ID"
 msgstr "选择1线设备ID"
 
-#: config_translations.py:137 mycodo_flask/forms/forms_settings.py:51
+#: config_translations.py:154 mycodo_flask/forms/forms_settings.py:51
 msgid "Gain"
 msgstr "获得"
 
-#: config_translations.py:138
+#: config_translations.py:155
 msgid ""
 "Adjust the gain to change the measurable voltage range. See ADC "
 "documentation for details."
 msgstr "调整增益以改变可测量的电压范围。有关详情，请参阅ADC文档。"
 
-#: config_translations.py:140 config_translations.py:271
-#: config_translations.py:274 mycodo_flask/forms/forms_calibration.py:47
+#: config_translations.py:157 config_translations.py:294
+#: config_translations.py:297 mycodo_flask/forms/forms_calibration.py:47
 msgid "Resolution"
 msgstr "解析度"
 
-#: config_translations.py:141
+#: config_translations.py:158
 msgid "ADC Resolution (see ADC documentation)"
 msgstr "ADC分辨率（参见ADC文档）"
 
-#: config_translations.py:143
+#: config_translations.py:160
 msgid "Sample Speed"
 msgstr "采样速度"
 
-#: config_translations.py:144
+#: config_translations.py:161
 msgid "ADC Sample Speed (see ADC documentation)"
 msgstr "ADC采样速度（参见ADC文档）"
 
-#: config_translations.py:146
+#: config_translations.py:163
 msgid "Current Draw (amps)"
 msgstr "电流消耗（安培）"
 
-#: config_translations.py:147
+#: config_translations.py:164
 msgid "The number of amps the output device draws (at 120/240 VAC)"
 msgstr "输出设备绘制的放大器数量（120/240 VAC）"
 
-#: config_translations.py:149
+#: config_translations.py:166
 msgid "Baud Rate"
 msgstr "波特率"
 
-#: config_translations.py:150
+#: config_translations.py:167
 msgid "The UART baud rate"
 msgstr "UART波特率"
 
-#: config_translations.py:152
+#: config_translations.py:169
 msgid "MAC (XX:XX:XX:XX:XX:XX)"
 msgstr "MAC（XX：XX：XX：XX：XX：XX）"
 
-#: config_translations.py:153
+#: config_translations.py:170
 msgid "The MAC address of the input"
 msgstr "输入的MAC地址"
 
-#: config_translations.py:155
+#: config_translations.py:172
 msgid "BT Adapter"
 msgstr "BT适配器"
 
-#: config_translations.py:156
+#: config_translations.py:173
 msgid "The Bluetooth adapter of the input"
 msgstr "输入的蓝牙适配器"
 
-#: config_translations.py:158 mycodo_flask/routes_calibration.py:323
-#: mycodo_flask/templates/pages/function_options/actions.html:137
+#: config_translations.py:175 mycodo_flask/routes_calibration.py:323
+#: mycodo_flask/templates/pages/function_options/action_options/command.html:2
 msgid "Command"
 msgstr "命令"
 
-#: config_translations.py:159
+#: config_translations.py:176
 msgid "The command to executed (as user mycodo) to return a measurement value"
 msgstr "要执行的命令（作为用户mycodo）以返回测量值"
 
-#: config_translations.py:162
+#: config_translations.py:179
 msgid "Select the unit of the measurement to be stored in the database"
 msgstr "选择要存储在数据库中的测量单位"
 
-#: config_translations.py:164
+#: config_translations.py:181
 msgid "Convert to Unit"
 msgstr "转换为单位"
 
-#: config_translations.py:165
+#: config_translations.py:182
 msgid "Convert the measurement to a different unit"
 msgstr "将测量值转换为其他单位"
 
-#: config_translations.py:167
+#: config_translations.py:184
 msgid "Deadline"
 msgstr "最后期限"
 
-#: config_translations.py:168
+#: config_translations.py:185
 msgid "Time (seconds) to wait until failure"
 msgstr "等待失败的时间（秒）"
 
-#: config_translations.py:170
+#: config_translations.py:187
 msgid "Duration On (seconds)"
 msgstr "持续时间（秒）"
 
-#: config_translations.py:171
+#: config_translations.py:188
 msgid "Turn on for a duration of time (seconds)"
 msgstr "开启一段时间（秒）"
 
-#: config_translations.py:174
+#: config_translations.py:191
 msgid "Duty cycle for the PWM (percent, 0.0 - 100.0)"
 msgstr "PWM的占空比（百分比，0.0  -  100.0）"
 
-#: config_translations.py:176
+#: config_translations.py:193
 msgid "Flow Rate (ml/min)"
 msgstr "流速（ml / min）"
 
-#: config_translations.py:177
+#: config_translations.py:194
 msgid "Flow rate in ml/minute"
 msgstr "流速（ml /分钟）"
 
-#: config_translations.py:179
+#: config_translations.py:196
 msgid "FTDI Device"
 msgstr "FTDI设备"
 
-#: config_translations.py:180
+#: config_translations.py:197
 msgid "The FTDI device (e.g. /dev/ttyUSB1)"
 msgstr "FTDI设备（例如/ dev / ttyUSB1）"
 
-#: config_translations.py:182
+#: config_translations.py:199
 msgid "Pin (GPIO)"
 msgstr "引脚（GPIO）"
 
-#: config_translations.py:183
+#: config_translations.py:200
 msgid "The GPIO pin using BCM numbering"
 msgstr "GPIO引脚使用BCM编号"
 
-#: config_translations.py:185
+#: config_translations.py:202
 msgid "Host"
 msgstr "主办"
 
-#: config_translations.py:186
+#: config_translations.py:203
 msgid "Host address or IP"
 msgstr "主机地址或IP"
 
-#: config_translations.py:188
+#: config_translations.py:205
 msgid "I<sup>2</sup>C Bus"
 msgstr "我<sup> 2 </ sup> C Bus"
 
-#: config_translations.py:189
+#: config_translations.py:206
 msgid "The I2C bus the device is connected to"
 msgstr "设备连接的I2C总线"
 
-#: config_translations.py:191
+#: config_translations.py:208
 msgid "I<sup>2</sup>C Address"
 msgstr "我<sup> 2 </ sup> C地址"
 
-#: config_translations.py:192
+#: config_translations.py:209
 msgid "The I2C address of the device"
 msgstr "设备的I2C地址"
 
-#: config_translations.py:194
+#: config_translations.py:211
 msgid "Interface"
 msgstr "接口"
 
-#: config_translations.py:195
+#: config_translations.py:212
 msgid "The interface used to communicate"
 msgstr "用于通信的接口"
 
-#: config_translations.py:197
+#: config_translations.py:214
 msgid "Invert Scale"
 msgstr "反转比例"
 
-#: config_translations.py:198
+#: config_translations.py:215
 msgid "Invert the scale"
 msgstr "反转比例"
 
-#: config_translations.py:200
+#: config_translations.py:217
+msgid "Log Level: Debug"
+msgstr ""
+
+#: config_translations.py:218
+msgid "Show debug lines in the Daemon Log"
+msgstr ""
+
+#: config_translations.py:220
 msgid "Max Age (seconds)"
 msgstr "最大年龄（秒）"
 
-#: config_translations.py:201
+#: config_translations.py:221
 msgid "The maximum allowable measurement age"
 msgstr "最大允许测量年龄"
 
-#: config_translations.py:203
+#: config_translations.py:223
 msgid "Unit Measurement"
 msgstr "单位测量"
 
-#: config_translations.py:204
+#: config_translations.py:224
 msgid "Select a unit for the stored value"
 msgstr "选择存储值的单位"
 
-#: config_translations.py:206
+#: config_translations.py:226
 msgid "Measurements Enabled"
 msgstr "测量已启用"
 
-#: config_translations.py:207
+#: config_translations.py:227
 msgid "The measurements to record"
 msgstr "测量记录"
 
-#: config_translations.py:209 mycodo_flask/templates/pages/usage.html:24
+#: config_translations.py:229 mycodo_flask/templates/pages/usage.html:209
 msgid "Name"
 msgstr "名称"
 
-#: config_translations.py:210
+#: config_translations.py:230
 msgid "A name to distinguish this from others"
 msgstr "一个名称，以区别于其他人"
 
-#: config_translations.py:212
+#: config_translations.py:232
 msgid "Off Command"
 msgstr "关闭命令"
 
-#: config_translations.py:213
+#: config_translations.py:233
 #: mycodo_flask/templates/pages/output_options/python.html:10
 msgid ""
 "Command to execute (as user mycodo) when the output is instructed to turn"
 " off"
 msgstr "指示输出关闭时执行的命令（作为用户mycodo）"
 
-#: config_translations.py:215
+#: config_translations.py:235
 msgid "Startup State"
 msgstr "开始状态"
 
-#: config_translations.py:216
+#: config_translations.py:236
 msgid "When Mycodo starts, set the output state"
 msgstr "当Mycodo启动时，设置输出状态"
 
-#: config_translations.py:218
+#: config_translations.py:238
+msgid "Shutdown State"
+msgstr ""
+
+#: config_translations.py:239
+msgid "When Mycodo shuts down, set the output state"
+msgstr ""
+
+#: config_translations.py:241
 msgid "On Command"
 msgstr "在命令"
 
-#: config_translations.py:219
+#: config_translations.py:242
 #: mycodo_flask/templates/pages/output_options/python.html:4
 msgid ""
 "Command to execute (as user mycodo) when the output is instructed to turn"
 " on"
 msgstr "指示打开输出时执行的命令（作为用户mycodo）"
 
-#: config_translations.py:221 mycodo_flask/forms/forms_conditional.py:31
-#: mycodo_flask/forms/forms_lcd.py:48 mycodo_flask/forms/forms_math.py:37
-#: mycodo_flask/forms/forms_trigger.py:52
+#: config_translations.py:244 mycodo_flask/forms/forms_conditional.py:32
+#: mycodo_flask/forms/forms_lcd.py:55 mycodo_flask/forms/forms_math.py:37
+#: mycodo_flask/forms/forms_trigger.py:58
 msgid "Period (seconds)"
 msgstr "期间（秒）"
 
-#: config_translations.py:222
+#: config_translations.py:245
 msgid "The duration (seconds) between input reads"
 msgstr "输入读取之间的持续时间（秒）"
 
-#: config_translations.py:224
+#: config_translations.py:247
 msgid "Clock Pin"
 msgstr "时钟针"
 
-#: config_translations.py:225
+#: config_translations.py:248
 msgid "The GPIO (using BCM numbering) connected to the Clock pin"
 msgstr "GPIO（使用BCM编号）连接到Clock引脚"
 
-#: config_translations.py:227
+#: config_translations.py:250
 msgid "CS Pin"
 msgstr "CS Pin"
 
-#: config_translations.py:228
+#: config_translations.py:251
 msgid "The GPIO (using BCM numbering) connected to the Cable Select pin"
 msgstr "GPIO（使用BCM编号）连接到Cable Select引脚"
 
-#: config_translations.py:230
+#: config_translations.py:253
 msgid "MISO Pin"
 msgstr "MISO Pin"
 
-#: config_translations.py:231
+#: config_translations.py:254
 msgid "The GPIO (using BCM numbering) connected to the MISO pin"
 msgstr "GPIO（使用BCM编号）连接到MISO引脚"
 
-#: config_translations.py:233
+#: config_translations.py:256
 msgid "MOSI Pin"
 msgstr "MOSI Pin"
 
-#: config_translations.py:234
+#: config_translations.py:257
 msgid "The GPIO (using BCM numbering) connected to the MOSI pin"
 msgstr "GPIO（使用BCM编号）连接到MOSI引脚"
 
-#: config_translations.py:236
+#: config_translations.py:259 inputs/mqtt_paho.py:52
 msgid "Port"
 msgstr "港口"
 
-#: config_translations.py:237
+#: config_translations.py:260
 msgid "Host port number"
 msgstr "主机端口号"
 
-#: config_translations.py:239
+#: config_translations.py:262
 msgid "Pre Out Duration"
 msgstr "预备持续时间"
 
-#: config_translations.py:240
+#: config_translations.py:263
 msgid ""
 "If a Pre Output is selected, set the duration (seconds) to turn the Pre "
 "Output on for before every measurement is acquired."
 msgstr "如果选择了预输出，则设置持续时间（秒）以在获取每个测量值之前打开预输出。"
 
-#: config_translations.py:244
+#: config_translations.py:267
 msgid "Pre During Measure"
 msgstr "预测期间"
 
-#: config_translations.py:245
+#: config_translations.py:268
 msgid ""
 "Check to turn the output off after (opposed to before) the measurement is"
 " complete"
 msgstr "检查在完成测量后（与之前相反）关闭输出"
 
-#: config_translations.py:247
+#: config_translations.py:270
 msgid "Pre Output"
 msgstr "预输出"
 
-#: config_translations.py:248
+#: config_translations.py:271
 msgid "Turn the selected output on before taking every measurement"
 msgstr "在进行每次测量之前，打开所选输出"
 
-#: config_translations.py:250
+#: config_translations.py:273
 msgid "Protocol"
 msgstr "协议"
 
-#: config_translations.py:251
+#: config_translations.py:274
 msgid "Wireless 433 MHz protocol"
 msgstr "无线433 MHz协议"
 
-#: config_translations.py:253
+#: config_translations.py:276
 msgid "Pulse Length"
 msgstr "脉冲长度"
 
-#: config_translations.py:254
+#: config_translations.py:277
 msgid "Wireless 433 MHz pulse length"
 msgstr "无线433 MHz脉冲长度"
 
-#: config_translations.py:256
+#: config_translations.py:279
 msgid "Amount to Dispense (ml)"
 msgstr "分配量（ml）"
 
-#: config_translations.py:257
+#: config_translations.py:280
 msgid "Volume in ml to pump"
 msgstr "以ml为单位的体积泵"
 
-#: config_translations.py:259
+#: config_translations.py:282
 msgid "PWM Command"
 msgstr "PWM命令"
 
-#: config_translations.py:260
+#: config_translations.py:283
 #, python-format
 msgid "Command to execute (as user mycodo) to set the PWM duty cycle (%%)"
 msgstr "执行命令（作为用户mycodo）设置PWM占空比 (%%)"
 
-#: config_translations.py:262
+#: config_translations.py:285
 msgid "Frequency (Hertz)"
 msgstr "频率（赫兹）"
 
-#: config_translations.py:263
+#: config_translations.py:286
 msgid "The Hertz to output the PWM signal (0 - 70,000)"
 msgstr "赫兹输出PWM信号（0  -  70,000）"
 
-#: config_translations.py:265 inputs/ds18b20.py:76 inputs/ds18s20.py:68
+#: config_translations.py:288 inputs/ds18b20.py:77 inputs/ds18s20.py:69
 #: mycodo_flask/forms/forms_settings.py:32
 msgid "Library"
 msgstr "图书馆"
 
-#: config_translations.py:266
+#: config_translations.py:289
 msgid ""
 "Which method to produce the PWM signal (hardware pins can produce higher "
 "frequencies)"
 msgstr "哪种方法可以产生PWM信号（硬件引脚可以产生更高的频率）"
 
-#: config_translations.py:268
+#: config_translations.py:291
 msgid "Reference Resistance"
 msgstr "参考电阻"
 
-#: config_translations.py:269
+#: config_translations.py:292
 msgid "Reference resistance (Ohm)"
 msgstr "参考电阻（欧姆）"
 
-#: config_translations.py:272 config_translations.py:275
+#: config_translations.py:295 config_translations.py:298
 msgid "Measurement resolution"
 msgstr "测量分辨率"
 
-#: config_translations.py:277
+#: config_translations.py:300
 msgid "Pulses Per Rev"
 msgstr "脉冲每转"
 
-#: config_translations.py:278
+#: config_translations.py:301
 msgid ""
 "The number of pulses per revolution to calculate revolutions per minute "
 "(RPM)"
 msgstr "计算每分钟转数（RPM）的每转脉冲数"
 
-#: config_translations.py:280
+#: config_translations.py:303
 msgid "Sample Time"
 msgstr "采样时间"
 
-#: config_translations.py:281
+#: config_translations.py:304
 msgid ""
 "The amount of time (seconds) to sample the input before caluclating the "
 "measurement"
 msgstr "在计算测量值之前对输入进行采样的时间量（秒）"
 
-#: config_translations.py:283
+#: config_translations.py:306
 msgid "Unscaled Unit Min"
 msgstr "非标定单位最小值"
 
-#: config_translations.py:284
+#: config_translations.py:307
 msgid "Unscaled minimum unit"
 msgstr "非标定最小单位"
 
-#: config_translations.py:286
+#: config_translations.py:309
 msgid "Unscaled Unit Max"
 msgstr "非标定单位最大值"
 
-#: config_translations.py:287
+#: config_translations.py:310
 msgid "Unscaled maximum unit"
 msgstr "非标定最大单位"
 
-#: config_translations.py:289
+#: config_translations.py:312
 msgid "Rescaled Unit Min"
 msgstr "重新调整的单位分钟"
 
-#: config_translations.py:290
+#: config_translations.py:313
 msgid "Rescaled minimum unit"
 msgstr "重新调整的最小单位"
 
-#: config_translations.py:292
+#: config_translations.py:315
 msgid "Rescaled Unit Max"
 msgstr "重新调整的单位最大值"
 
-#: config_translations.py:293
+#: config_translations.py:316
 msgid "Rescaled maximum unit"
 msgstr "重新调整的最大单位"
 
-#: config_translations.py:295
+#: config_translations.py:318
 msgid "Measurement Unit"
 msgstr "测量单位"
 
-#: config_translations.py:296
+#: config_translations.py:319
 msgid "Select the measurement and unit to store this measurement in the database"
 msgstr "选择测量和单位以将此测量值存储在数据库中"
 
-#: config_translations.py:298
+#: config_translations.py:321
 msgid "Sensitivity"
 msgstr "灵敏度"
 
-#: config_translations.py:299
+#: config_translations.py:322
 msgid "Measurement sensitivity"
 msgstr "测量灵敏度"
 
-#: config_translations.py:301 mycodo_flask/forms/forms_settings.py:149
+#: config_translations.py:324 mycodo_flask/forms/forms_settings.py:150
 msgid "Voltage"
 msgstr "电压"
 
-#: config_translations.py:302
+#: config_translations.py:325
 msgid "The input voltage to the sensor"
 msgstr "传感器的输入电压"
 
-#: config_translations.py:305
+#: config_translations.py:328
 msgid "Edge detection: low to high (rising), high to low (falling), or both"
 msgstr "边沿检测：从低到高（上升），从高到低（下降）或两者兼而有之"
 
-#: config_translations.py:307 mycodo_flask/forms/forms_input.py:133
+#: config_translations.py:330 mycodo_flask/forms/forms_input.py:136
 msgid "Bounce Time (ms)"
 msgstr "弹跳时间（ms）"
 
-#: config_translations.py:308
+#: config_translations.py:331
 msgid "The amount of time (miliseconds) to bounce the input signal"
 msgstr "反射输入信号的时间量（毫秒）"
 
-#: config_translations.py:310 mycodo_flask/forms/forms_input.py:135
+#: config_translations.py:333 mycodo_flask/forms/forms_input.py:138
 msgid "Reset Period"
 msgstr "重置期间"
 
-#: config_translations.py:311
+#: config_translations.py:334
 msgid ""
 "Wait a period of time (seconds) after the first edge detection to begin "
 "detecting again"
 msgstr "在第一次边缘检测后等待一段时间（秒）以再次开始检测"
 
-#: config_translations.py:313
+#: config_translations.py:336
 msgid "RTD Probe Type"
 msgstr "RTD探头类型"
 
-#: config_translations.py:314
+#: config_translations.py:337
 msgid "The type of thermocouple connected"
 msgstr "连接的热电偶类型"
 
-#: config_translations.py:316
+#: config_translations.py:339
 msgid "Times Check"
 msgstr "时间检查"
 
-#: config_translations.py:317
+#: config_translations.py:340
 msgid "Number of times to check"
 msgstr "要检查的次数"
 
-#: config_translations.py:319
+#: config_translations.py:342
 msgid "On State"
 msgstr "触发"
 
-#: config_translations.py:320
+#: config_translations.py:343
 msgid "What state triggers the output to turn on? High or Low?"
 msgstr "什么状态触发输出打开？高还是低？"
 
-#: config_translations.py:322
+#: config_translations.py:345
 msgid "Trigger at Startup"
 msgstr "在启动时触发"
 
-#: config_translations.py:323
+#: config_translations.py:346
 msgid "Whether or not to trigger Functions when Mycodo starts"
 msgstr "是否在Mycodo启动时触发功能"
 
-#: config_translations.py:325
+#: config_translations.py:348
 msgid "UART Device"
 msgstr "UART设备"
 
-#: config_translations.py:326
+#: config_translations.py:349
 msgid "The UART device location (e.g. /dev/ttyUSB1)"
 msgstr "UART设备位置（例如/ dev / ttyUSB1）"
 
-#: config_translations.py:328
+#: config_translations.py:351
 msgid "Weighting"
 msgstr "权重"
 
-#: config_translations.py:329
+#: config_translations.py:352
 msgid ""
 "The weighting of the previous measurement on the current measurement. "
 "Range: 0.0 - 1.0. Used for smoothing measurements. 0.0 means no "
 "weighting."
 msgstr "前一次测量对当前测量的加权。范围：0.0  -  1.0。用于平滑测量。 0.0表示没有加权。"
 
-#: inputs/ads1256.py:88
+#: inputs/ads1256.py:86
 msgid "Set the calibration method to perform during Input activation"
 msgstr "设置校准方法以在输入激活期间执行"
 
-#: inputs/atlas_ph.py:78
+#: inputs/atlas_do.py:71 inputs/atlas_orp.py:71 inputs/atlas_ph.py:79
 msgid "Calibration Max Age"
 msgstr "校准最大年龄"
 
-#: inputs/atlas_ph.py:79
+#: inputs/atlas_do.py:72 inputs/atlas_orp.py:72 inputs/atlas_ph.py:80
 msgid "The Max Age (seconds) of the Input/Math to use for calibration"
 msgstr "用于校准的输入/数学的最大年龄（秒）"
 
-#: inputs/ds18b20.py:77 inputs/ds18s20.py:69
+#: inputs/ds18b20.py:78 inputs/ds18s20.py:70
 msgid "Select the library used to communicate"
 msgstr "选择用于通信的库"
+
+#: inputs/linux_command.py:44
+msgid "Command Timeout"
+msgstr ""
+
+#: inputs/linux_command.py:45
+msgid "How long to wait for the command to finish before killing the process."
+msgstr ""
+
+#: inputs/linux_command.py:53
+msgid "The user to execute the command."
+msgstr ""
+
+#: inputs/linux_command.py:60
+msgid "CWD"
+msgstr ""
+
+#: inputs/linux_command.py:61
+msgid "The current working directory of the shell environment."
+msgstr ""
 
 #: inputs/mh_z19.py:61
 msgid "Enable ABC"
@@ -1273,131 +1435,191 @@ msgstr "启用ABC"
 msgid "Enable automatic baseline correction (ABC)"
 msgstr "启用自动基线校正（ABC）"
 
-#: inputs/examples/example_all_options_temperature.py:219 inputs/mh_z19.py:75
+#: inputs/examples/example_all_options_temperature.py:227 inputs/mh_z19.py:76
 msgid "Measurement Range"
 msgstr "测量范围"
 
-#: inputs/examples/example_all_options_temperature.py:220 inputs/mh_z19.py:76
+#: inputs/examples/example_all_options_temperature.py:228 inputs/mh_z19.py:77
 msgid "Set the measuring range of the sensor"
 msgstr "设置传感器的测量范围"
 
-#: inputs/sht31.py:88
+#: inputs/mqtt_paho.py:44 mycodo_flask/forms/forms_settings.py:345
+msgid "Hostname"
+msgstr "主机名"
+
+#: inputs/mqtt_paho.py:45
+msgid "The hostname of the MQTT server"
+msgstr ""
+
+#: inputs/mqtt_paho.py:53
+msgid "The port of the MQTT server"
+msgstr ""
+
+#: inputs/mqtt_paho.py:60
+msgid "Keep Alive"
+msgstr ""
+
+#: inputs/mqtt_paho.py:61
+msgid "Maximum amount of time between received signals. Set to 0 to disable."
+msgstr ""
+
+#: inputs/mqtt_paho.py:68
+msgid "Client ID"
+msgstr ""
+
+#: inputs/mqtt_paho.py:69
+msgid "Unique client ID for connecting to the MQTT server"
+msgstr ""
+
+#: inputs/sht31.py:86
 msgid "Enable Heater"
 msgstr "启用加热器"
 
-#: inputs/sht31.py:89
+#: inputs/sht31.py:87
 msgid ""
 "Enable heater to evaporate condensation. Turn on heater x seconds every y"
 " measurements."
 msgstr "启用加热器以蒸发冷凝。每y次测量打开加热器x秒。"
 
-#: inputs/sht31.py:97
+#: inputs/sht31.py:95
 msgid "Heater On Seconds"
 msgstr "加热器秒"
 
-#: inputs/sht31.py:98
+#: inputs/sht31.py:96
 msgid "How long to turn the heater on (seconds)."
 msgstr "打开加热器多长时间（秒）。"
 
-#: inputs/sht31.py:105
+#: inputs/sht31.py:103
 msgid "Heater On Period"
 msgstr "加热器期间"
 
-#: inputs/sht31.py:106
+#: inputs/sht31.py:104
 msgid "After how many measurements to turn the heater on. This will repeat."
 msgstr "经过多少次测量才能打开加热器。这将重复。"
 
-#: inputs/sht31_smart_gadget.py:107
+#: inputs/sht31_smart_gadget.py:104
 msgid "Download Stored Data"
 msgstr "下载存储的数据"
 
-#: inputs/sht31_smart_gadget.py:108
+#: inputs/sht31_smart_gadget.py:105
 msgid "Download the data logged to the device."
 msgstr "下载记录到设备的数据。"
 
-#: inputs/sht31_smart_gadget.py:115
+#: inputs/sht31_smart_gadget.py:113
 msgid "Set Logging Interval"
 msgstr "设置记录间隔"
 
-#: inputs/sht31_smart_gadget.py:116
+#: inputs/sht31_smart_gadget.py:114
 msgid ""
 "Set the logging interval (seconds) the device will store measurements on "
 "its internal memory."
 msgstr "设置设备将测量值存储在其内部存储器上的记录间隔（秒）。"
 
-#: inputs/th1x.py:59
+#: inputs/th1x_am2301.py:59 inputs/th1x_ds18b20.py:45
 msgid "IP Address"
 msgstr "IP地址"
 
-#: inputs/th1x.py:60
+#: inputs/th1x_am2301.py:60 inputs/th1x_ds18b20.py:46
 msgid "The IP address of the device"
 msgstr "设备的IP地址"
 
-#: inputs/examples/example_all_options_temperature.py:197
-#: inputs/winsen_zh03b.py:75
+#: inputs/ttn_data_storage.py:68
+msgid "Application ID"
+msgstr ""
+
+#: inputs/ttn_data_storage.py:69
+msgid "The Things Network Application ID"
+msgstr ""
+
+#: inputs/ttn_data_storage.py:76
+msgid "App API Key"
+msgstr ""
+
+#: inputs/ttn_data_storage.py:77
+msgid "The Things Network Application API Key"
+msgstr ""
+
+#: inputs/ttn_data_storage.py:84
+msgid "Device ID"
+msgstr ""
+
+#: inputs/ttn_data_storage.py:85
+msgid "The Things Network Device ID"
+msgstr ""
+
+#: inputs/examples/example_all_options_temperature.py:205
+#: inputs/winsen_zh03b.py:73
 msgid "Fan Off After Measure"
 msgstr "测量后风扇关闭"
 
-#: inputs/examples/example_all_options_temperature.py:198
-#: inputs/winsen_zh03b.py:76
+#: inputs/examples/example_all_options_temperature.py:206
+#: inputs/winsen_zh03b.py:74
 msgid "Turn the fan on only during the measurement"
 msgstr "仅在测量期间打开风扇"
 
-#: inputs/examples/example_all_options_temperature.py:205
-#: inputs/winsen_zh03b.py:83
+#: inputs/examples/example_all_options_temperature.py:213
+#: inputs/winsen_zh03b.py:81
 msgid "Fan On Duration"
 msgstr "扇子持续时间"
 
-#: inputs/examples/example_all_options_temperature.py:206
-#: inputs/winsen_zh03b.py:84
+#: inputs/examples/example_all_options_temperature.py:214
+#: inputs/winsen_zh03b.py:82
 msgid "How long to turn the fan on (seconds) before acquiring measurements"
 msgstr "在获取测量值之前，将风扇打开多长时间（秒）"
+
+#: inputs/examples/bme280_ttn.py:94 inputs/examples/k30_ttn.py:67
+msgid "Serial Device"
+msgstr ""
+
+#: inputs/examples/bme280_ttn.py:95 inputs/examples/k30_ttn.py:68
+msgid "The serial device to write to"
+msgstr ""
 
 #: mycodo_flask/app.py:116
 msgid "Please log in to access this page"
 msgstr "请登录访问此页"
 
-#: mycodo_flask/routes_admin.py:101
+#: mycodo_flask/routes_admin.py:103
 msgid "Backup in progress"
 msgstr "正在备份"
 
-#: mycodo_flask/routes_admin.py:120
+#: mycodo_flask/routes_admin.py:122
 msgid "Deletion of backup in progress"
 msgstr "删除正在进行的备份"
 
-#: mycodo_flask/routes_admin.py:130
+#: mycodo_flask/routes_admin.py:132
 msgid "Restore in progress"
 msgstr "正在恢复"
 
-#: mycodo_flask/routes_admin.py:364
+#: mycodo_flask/routes_admin.py:371
 msgid ""
 "Upgrade functionality is disabled because an internet connection was "
 "unable to be detected"
 msgstr "由于无法检测到Internet连接，因此禁用了升级功能"
 
-#: mycodo_flask/routes_admin.py:384
+#: mycodo_flask/routes_admin.py:391
 msgid ""
 "There was an error encountered during the upgrade process. Check the "
 "upgrade log for details."
 msgstr "升级过程中遇到错误。检查升级日志以获取详细信息。"
 
-#: mycodo_flask/routes_admin.py:403
+#: mycodo_flask/routes_admin.py:410
 msgid "Could not determine local mycodo version or online release versions: {err}"
 msgstr "无法确定本地mycodo版本或在线发布版本：{err}"
 
-#: mycodo_flask/routes_admin.py:463
+#: mycodo_flask/routes_admin.py:470
 msgid "The upgrade (from master branch) has started"
 msgstr "升级（来自主分支）已启动"
 
-#: mycodo_flask/routes_admin.py:475
+#: mycodo_flask/routes_admin.py:482
 msgid "The upgrade has started"
 msgstr "升级已经开始"
 
-#: mycodo_flask/routes_admin.py:490
+#: mycodo_flask/routes_admin.py:497
 msgid "The major version upgrade has started"
 msgstr "主要版本升级已经开始"
 
-#: mycodo_flask/routes_admin.py:492
+#: mycodo_flask/routes_admin.py:499
 msgid "You cannot upgrade if an upgrade is not available"
 msgstr "如果升级不可用，则无法升级"
 
@@ -1406,20 +1628,20 @@ msgid "Cannot access admin creation form if an admin user already exists."
 msgstr "如果管理员用户已存在，则无法访问管理员创建表单。"
 
 #: mycodo_flask/routes_authentication.py:71
-#: mycodo_flask/utils/utils_settings.py:149
-#: mycodo_flask/utils/utils_settings.py:189
+#: mycodo_flask/utils/utils_settings.py:152
+#: mycodo_flask/utils/utils_settings.py:192
 msgid "Passwords do not match. Please try again."
 msgstr "密码不匹配。请再试一次。"
 
 #: mycodo_flask/routes_authentication.py:75
-#: mycodo_flask/utils/utils_settings.py:134
+#: mycodo_flask/utils/utils_settings.py:137
 msgid ""
 "Invalid user name. Must be between 2 and 64 characters and only contain "
 "letters and numbers."
 msgstr "无效的用户名。必须介于2到64个字符之间，且只能包含字母和数字。"
 
 #: mycodo_flask/routes_authentication.py:81
-#: mycodo_flask/utils/utils_settings.py:144
+#: mycodo_flask/utils/utils_settings.py:147
 msgid ""
 "Invalid password. Must be between 6 and 64 characters and only contain "
 "letters, numbers, and symbols."
@@ -1455,35 +1677,35 @@ msgstr "成功退出"
 msgid "A valid temperature is required: %(temp)s is invalid."
 msgstr "需要有效温度: %(temp)s 无效。"
 
-#: mycodo_flask/routes_general.py:810
+#: mycodo_flask/routes_general.py:975
 msgid "System rebooting in 10 seconds"
 msgstr "系统在10秒内重启"
 
-#: mycodo_flask/routes_general.py:812
+#: mycodo_flask/routes_general.py:977
 msgid "System shutting down in 10 seconds"
 msgstr "系统在10秒内关闭"
 
-#: mycodo_flask/routes_general.py:814
+#: mycodo_flask/routes_general.py:979
 msgid "Command to restart the daemon sent"
 msgstr "用于重新启动守护程序的命令"
 
-#: mycodo_flask/routes_general.py:816
+#: mycodo_flask/routes_general.py:981
 msgid "Command to reload the frontend sent"
 msgstr "命令重新加载发送的前端"
 
-#: mycodo_flask/routes_page.py:184
+#: mycodo_flask/routes_page.py:188
 msgid "Cannot start time-lapse if stream is active."
 msgstr "如果流处于活动状态，则无法启动延时。"
 
-#: mycodo_flask/routes_page.py:214
+#: mycodo_flask/routes_page.py:218
 msgid "Cannot start stream if time-lapse is active."
 msgstr "如果延时有效，则无法启动流。"
 
 #: mycodo_flask/forms/forms_authentication.py:39
 #: mycodo_flask/forms/forms_authentication.py:40
-#: mycodo_flask/forms/forms_settings.py:282
-#: mycodo_flask/forms/forms_settings.py:314
+#: mycodo_flask/forms/forms_settings.py:283
 #: mycodo_flask/forms/forms_settings.py:315
+#: mycodo_flask/forms/forms_settings.py:316
 msgid "Repeat Password"
 msgstr "重复输入密码"
 
@@ -1491,56 +1713,19 @@ msgstr "重复输入密码"
 msgid "remember"
 msgstr "记得"
 
-#: mycodo_flask/forms/forms_authentication.py:68
-msgid "Number of Lines"
-msgstr "行数"
-
-#: mycodo_flask/forms/forms_authentication.py:71
-#: mycodo_flask/forms/forms_misc.py:100
-msgid "Number of lines should be greater than 0"
-msgstr "行数应大于0"
-
-#: mycodo_flask/forms/forms_authentication.py:75
-msgid "Login Log"
-msgstr "登录日志"
-
-#: mycodo_flask/forms/forms_authentication.py:76
-msgid "HTTP Log"
-msgstr "HTTP日志"
-
-#: mycodo_flask/forms/forms_authentication.py:77
-msgid "Daemon Log"
-msgstr "守护程序日志"
-
-#: mycodo_flask/forms/forms_authentication.py:78
-msgid "Backup Log"
-msgstr "备份日志"
-
-#: mycodo_flask/forms/forms_authentication.py:79
-msgid "KeepUp Log"
-msgstr "KeepUp Log"
-
-#: mycodo_flask/forms/forms_authentication.py:80
-msgid "Upgrade Log"
-msgstr "升级日志"
-
-#: mycodo_flask/forms/forms_authentication.py:81
-msgid "Restore Log"
-msgstr "还原日志"
-
-#: mycodo_flask/forms/forms_authentication.py:91
+#: mycodo_flask/forms/forms_authentication.py:69
 msgid "Domain or IP Address"
 msgstr "域或IP地址"
 
-#: mycodo_flask/forms/forms_authentication.py:102
+#: mycodo_flask/forms/forms_authentication.py:80
 msgid "Add Host"
 msgstr "添加主机"
 
-#: mycodo_flask/forms/forms_authentication.py:103
+#: mycodo_flask/forms/forms_authentication.py:81
 msgid "Delete Host"
 msgstr "删除主机"
 
-#: mycodo_flask/forms/forms_authentication.py:107
+#: mycodo_flask/forms/forms_authentication.py:85
 msgid "I Understand"
 msgstr "我明白"
 
@@ -1574,36 +1759,36 @@ msgstr "设备"
 msgid "Set Resolution"
 msgstr "设置分辨率"
 
-#: mycodo_flask/forms/forms_conditional.py:29
+#: mycodo_flask/forms/forms_conditional.py:30
 msgid "Conditional Statement"
 msgstr "条件声明"
 
-#: mycodo_flask/forms/forms_conditional.py:34
+#: mycodo_flask/forms/forms_conditional.py:37
 msgid "Refractory Period (seconds)"
 msgstr "不应期（秒）"
 
-#: mycodo_flask/forms/forms_conditional.py:37
-#: mycodo_flask/forms/forms_math.py:45 mycodo_flask/forms/forms_pid.py:48
-#: mycodo_flask/forms/forms_trigger.py:54
+#: mycodo_flask/forms/forms_conditional.py:40
+#: mycodo_flask/forms/forms_math.py:47 mycodo_flask/forms/forms_pid.py:50
+#: mycodo_flask/forms/forms_trigger.py:60
 msgid "Start Offset (seconds)"
 msgstr "开始偏移（秒）"
 
-#: mycodo_flask/forms/forms_conditional.py:41
+#: mycodo_flask/forms/forms_conditional.py:44
 msgid "Add Condition"
 msgstr "添加条件"
 
-#: mycodo_flask/forms/forms_conditional.py:44
-#: mycodo_flask/forms/forms_function.py:37
-#: mycodo_flask/forms/forms_trigger.py:73
+#: mycodo_flask/forms/forms_conditional.py:47
+#: mycodo_flask/forms/forms_function.py:38
+#: mycodo_flask/forms/forms_trigger.py:78
 msgid "Add Action"
 msgstr "添加动作"
 
-#: mycodo_flask/forms/forms_conditional.py:47
-#: mycodo_flask/forms/forms_trigger.py:77
+#: mycodo_flask/forms/forms_conditional.py:50
+#: mycodo_flask/forms/forms_trigger.py:82
 msgid "Test All Actions"
 msgstr "测试所有操作"
 
-#: mycodo_flask/forms/forms_conditional.py:69
+#: mycodo_flask/forms/forms_conditional.py:72
 msgid "GPIO Pin (BCM)"
 msgstr "GPIO引脚（BCM）"
 
@@ -1661,8 +1846,8 @@ msgstr "的PID"
 msgid "Outputs"
 msgstr "输出"
 
-#: mycodo_flask/forms/forms_dashboard.py:81 mycodo_flask/forms/forms_math.py:47
-#: mycodo_flask/templates/layout-settings.html:23
+#: mycodo_flask/forms/forms_dashboard.py:81 mycodo_flask/forms/forms_math.py:49
+#: mycodo_flask/templates/layout-settings.html:25
 msgid "Inputs"
 msgstr "输入"
 
@@ -1762,11 +1947,11 @@ msgstr "时间戳字体（em）"
 
 #: mycodo_flask/forms/forms_dashboard.py:153
 #: mycodo_flask/forms/forms_dashboard.py:169
-#: mycodo_flask/forms/forms_dashboard.py:189 mycodo_flask/forms/forms_lcd.py:78
-#: mycodo_flask/forms/forms_lcd.py:89 mycodo_flask/forms/forms_lcd.py:100
-#: mycodo_flask/forms/forms_lcd.py:111 mycodo_flask/forms/forms_lcd.py:122
-#: mycodo_flask/forms/forms_lcd.py:133 mycodo_flask/forms/forms_lcd.py:144
-#: mycodo_flask/forms/forms_lcd.py:155
+#: mycodo_flask/forms/forms_dashboard.py:189 mycodo_flask/forms/forms_lcd.py:87
+#: mycodo_flask/forms/forms_lcd.py:98 mycodo_flask/forms/forms_lcd.py:109
+#: mycodo_flask/forms/forms_lcd.py:120 mycodo_flask/forms/forms_lcd.py:131
+#: mycodo_flask/forms/forms_lcd.py:142 mycodo_flask/forms/forms_lcd.py:153
+#: mycodo_flask/forms/forms_lcd.py:164
 msgid "Decimal Places"
 msgstr "小数位"
 
@@ -1790,123 +1975,139 @@ msgstr "图像显示类型"
 msgid "Install All Dependencies"
 msgstr "安装所有依赖项"
 
-#: mycodo_flask/forms/forms_function.py:40
+#: mycodo_flask/forms/forms_function.py:41
 msgid "Execute All Actions"
 msgstr "执行所有操作"
 
-#: mycodo_flask/forms/forms_function.py:53
+#: mycodo_flask/forms/forms_function.py:54
 #: mycodo_flask/forms/forms_method.py:59 mycodo_flask/forms/forms_method.py:133
 msgid "Duration (seconds)"
 msgstr "持续时间（秒）"
 
-#: mycodo_flask/forms/forms_function.py:55
+#: mycodo_flask/forms/forms_function.py:56
 msgid "Action String"
 msgstr "动作字符串"
 
-#: mycodo_flask/forms/forms_function.py:56
+#: mycodo_flask/forms/forms_function.py:57
 msgid "Controller ID"
 msgstr "控制器ID"
 
-#: mycodo_flask/forms/forms_function.py:57
+#: mycodo_flask/forms/forms_function.py:58
 msgid "Then State"
 msgstr "然后陈述"
 
-#: mycodo_flask/forms/forms_function.py:59
+#: mycodo_flask/forms/forms_function.py:60
 msgid "Then Duration (seconds)"
 msgstr "然后持续时间（秒）"
 
-#: mycodo_flask/forms/forms_function.py:62
+#: mycodo_flask/forms/forms_function.py:63
 msgid "Then Duty Cycle"
 msgstr "然后是工作周期"
 
-#: mycodo_flask/forms/forms_function.py:65
+#: mycodo_flask/forms/forms_function.py:66
 msgid "Then Duration"
 msgstr "持续时间"
 
-#: mycodo_flask/forms/forms_input.py:80 mycodo_flask/forms/forms_output.py:46
+#: mycodo_flask/forms/forms_function.py:70
+msgid "Remote"
+msgstr ""
+
+#: mycodo_flask/forms/forms_function.py:71
+msgid "Code"
+msgstr ""
+
+#: mycodo_flask/forms/forms_function.py:72
+msgid "Times to Send"
+msgstr ""
+
+#: mycodo_flask/forms/forms_input.py:82
+msgid "Number of Measurements"
+msgstr ""
+
+#: mycodo_flask/forms/forms_input.py:83 mycodo_flask/forms/forms_output.py:46
 msgid "Location"
 msgstr "位置"
 
-#: mycodo_flask/forms/forms_input.py:87
+#: mycodo_flask/forms/forms_input.py:90
 msgid "Power Output"
 msgstr "功率输出"
 
-#: mycodo_flask/forms/forms_input.py:88
+#: mycodo_flask/forms/forms_input.py:91
 msgid "Calibration Measurement"
 msgstr "校准测量"
 
-#: mycodo_flask/forms/forms_input.py:122
+#: mycodo_flask/forms/forms_input.py:125
 msgid "BT Adapter (hci[X])"
 msgstr "BT适配器（hci [X]）"
 
-#: mycodo_flask/forms/forms_input.py:166
+#: mycodo_flask/forms/forms_input.py:169
 msgid "Acquire Measurements Now"
 msgstr "立即获取测量值"
 
-#: mycodo_flask/forms/forms_input.py:194
+#: mycodo_flask/forms/forms_input.py:198
 msgid "Rescaled Measurement"
 msgstr "重新调整测量"
 
-#: mycodo_flask/forms/forms_lcd.py:24
+#: mycodo_flask/forms/forms_lcd.py:26
 msgid "LCD Type"
 msgstr "LCD类型"
 
-#: mycodo_flask/forms/forms_lcd.py:38
+#: mycodo_flask/forms/forms_lcd.py:40
 #: mycodo_flask/templates/pages/data_options/input_options/TEMPLATE_OPTIONS_I2C.html:39
 msgid "Address"
 msgstr "地址"
 
-#: mycodo_flask/forms/forms_lcd.py:39 mycodo_flask/forms/forms_lcd.py:43
+#: mycodo_flask/forms/forms_lcd.py:41 mycodo_flask/forms/forms_lcd.py:45
 msgid "I<sup>2</sup>C"
 msgstr "我<SUP> 2 </ SUP> C ^"
 
-#: mycodo_flask/forms/forms_lcd.py:42
+#: mycodo_flask/forms/forms_lcd.py:44
 msgid "Bus"
 msgstr "总线"
 
-#: mycodo_flask/forms/forms_lcd.py:52
+#: mycodo_flask/forms/forms_lcd.py:59
 msgid ""
 "Duration between calculating LCD output and applying to regulation must "
 "be between 5 and 86400 seconds."
 msgstr "计算LCD输出和应用于调节之间的持续时间必须介于5和86400秒之间。"
 
-#: mycodo_flask/forms/forms_lcd.py:58
+#: mycodo_flask/forms/forms_lcd.py:67
 msgid "Add Display Set"
 msgstr "添加显示集"
 
-#: mycodo_flask/forms/forms_lcd.py:65
+#: mycodo_flask/forms/forms_lcd.py:74
 msgid "Reset LCD"
 msgstr "重置LCD"
 
-#: mycodo_flask/forms/forms_math.py:63
+#: mycodo_flask/forms/forms_math.py:69
 msgid "Reverse Equation"
 msgstr "逆方程"
 
-#: mycodo_flask/forms/forms_math.py:64
+#: mycodo_flask/forms/forms_math.py:70
 msgid "Absolute Value"
 msgstr "绝对值"
 
-#: mycodo_flask/forms/forms_math.py:74
+#: mycodo_flask/forms/forms_math.py:80
 msgid "Dry Bulb Temperature"
 msgstr "干球温度"
 
-#: mycodo_flask/forms/forms_math.py:77
+#: mycodo_flask/forms/forms_math.py:83
 msgid "Wet Bulb Temperature"
 msgstr "湿球温度"
 
-#: mycodo_flask/forms/forms_math.py:81
+#: mycodo_flask/forms/forms_math.py:87
 msgid "optional"
 msgstr "可选的"
 
-#: mycodo_flask/forms/forms_math.py:85
+#: mycodo_flask/forms/forms_math.py:91
 msgid "Order of Use"
 msgstr "使用顺序"
 
-#: mycodo_flask/forms/forms_math.py:90
+#: mycodo_flask/forms/forms_math.py:96
 msgid "Max Difference"
 msgstr "最大差异"
 
-#: mycodo_flask/forms/forms_math.py:103
+#: mycodo_flask/forms/forms_math.py:109
 msgid "Convert to Measurement"
 msgstr "转换为测量"
 
@@ -1966,7 +2167,7 @@ msgstr "持续时间/工作周期"
 msgid "Relay State"
 msgstr "继电器状态"
 
-#: mycodo_flask/forms/forms_method.py:98 mycodo_flask/forms/forms_output.py:102
+#: mycodo_flask/forms/forms_method.py:98 mycodo_flask/forms/forms_output.py:111
 #: mycodo_flask/templates/pages/dashboard_options/mod_output.html:79
 #: mycodo_flask/templates/pages/dashboard_options/mod_output.html:90
 #: mycodo_flask/templates/pages/method-build.html:294
@@ -2001,147 +2202,123 @@ msgstr "结束设定点"
 msgid "State"
 msgstr "州"
 
-#: mycodo_flask/forms/forms_misc.py:27
-msgid "Capture Still"
-msgstr "捕获仍然"
-
-#: mycodo_flask/forms/forms_misc.py:28
-msgid "Start Timelapse"
-msgstr "开始Timelapse"
-
-#: mycodo_flask/forms/forms_misc.py:29
-msgid "Pause Timelapse"
-msgstr "暂停游戏中时光倒流"
-
-#: mycodo_flask/forms/forms_misc.py:30
-msgid "Resume Timelapse"
-msgstr "恢复游戏中时光倒流"
-
-#: mycodo_flask/forms/forms_misc.py:31
-msgid "Stop Timelapse"
-msgstr "停止尕"
-
-#: mycodo_flask/forms/forms_misc.py:33
-msgid "Interval (seconds)"
-msgstr "间隔（秒）"
-
-#: mycodo_flask/forms/forms_misc.py:36
-msgid "Photo Interval must be a positive value"
-msgstr "照片间隔必须是正值"
-
-#: mycodo_flask/forms/forms_misc.py:41
-msgid "Run Time (seconds)"
-msgstr "运行时间（秒）"
-
-#: mycodo_flask/forms/forms_misc.py:44
-msgid "Total Run Time must be a positive value"
-msgstr "总运行时间必须是正值"
-
-#: mycodo_flask/forms/forms_misc.py:48
-msgid "Start Stream"
-msgstr "开始流"
-
-#: mycodo_flask/forms/forms_misc.py:49
-msgid "Stop Stream"
-msgstr "停止流"
-
-#: mycodo_flask/forms/forms_misc.py:57
-msgid "Stop Daemon"
-msgstr "停止守护进程"
-
-#: mycodo_flask/forms/forms_misc.py:58
-msgid "Start Daemon"
-msgstr "启动守护进程"
-
-#: mycodo_flask/forms/forms_misc.py:59
-msgid "Restart Daemon"
-msgstr "重启守护进程"
-
-#: mycodo_flask/forms/forms_misc.py:67
-msgid "Measurement to Export"
-msgstr "出口计量"
-
-#: mycodo_flask/forms/forms_misc.py:68
+#: mycodo_flask/forms/forms_misc.py:37 mycodo_flask/forms/forms_misc.py:90
 msgid "Time Range MM/DD/YYYY HH:MM"
 msgstr "时间范围DD / MM / YYYY HH：MM"
 
-#: mycodo_flask/forms/forms_misc.py:69
+#: mycodo_flask/forms/forms_misc.py:49
+msgid "Capture Still"
+msgstr "捕获仍然"
+
+#: mycodo_flask/forms/forms_misc.py:50
+msgid "Start Timelapse"
+msgstr "开始Timelapse"
+
+#: mycodo_flask/forms/forms_misc.py:51
+msgid "Pause Timelapse"
+msgstr "暂停游戏中时光倒流"
+
+#: mycodo_flask/forms/forms_misc.py:52
+msgid "Resume Timelapse"
+msgstr "恢复游戏中时光倒流"
+
+#: mycodo_flask/forms/forms_misc.py:53
+msgid "Stop Timelapse"
+msgstr "停止尕"
+
+#: mycodo_flask/forms/forms_misc.py:55
+msgid "Interval (seconds)"
+msgstr "间隔（秒）"
+
+#: mycodo_flask/forms/forms_misc.py:58
+msgid "Photo Interval must be a positive value"
+msgstr "照片间隔必须是正值"
+
+#: mycodo_flask/forms/forms_misc.py:63
+msgid "Run Time (seconds)"
+msgstr "运行时间（秒）"
+
+#: mycodo_flask/forms/forms_misc.py:66
+msgid "Total Run Time must be a positive value"
+msgstr "总运行时间必须是正值"
+
+#: mycodo_flask/forms/forms_misc.py:70
+msgid "Start Stream"
+msgstr "开始流"
+
+#: mycodo_flask/forms/forms_misc.py:71
+msgid "Stop Stream"
+msgstr "停止流"
+
+#: mycodo_flask/forms/forms_misc.py:79
+msgid "Stop Daemon"
+msgstr "停止守护进程"
+
+#: mycodo_flask/forms/forms_misc.py:80
+msgid "Start Daemon"
+msgstr "启动守护进程"
+
+#: mycodo_flask/forms/forms_misc.py:81
+msgid "Restart Daemon"
+msgstr "重启守护进程"
+
+#: mycodo_flask/forms/forms_misc.py:89
+msgid "Measurement to Export"
+msgstr "出口计量"
+
+#: mycodo_flask/forms/forms_misc.py:91
 msgid "Export Data as CSV"
 msgstr "将数据导出为CSV"
 
-#: mycodo_flask/forms/forms_misc.py:73
+#: mycodo_flask/forms/forms_misc.py:95
 msgid "Export Settings"
 msgstr "导出设置"
 
-#: mycodo_flask/forms/forms_misc.py:78
+#: mycodo_flask/forms/forms_misc.py:100
 msgid "Import Settings"
 msgstr "导入设置"
 
-#: mycodo_flask/forms/forms_misc.py:82
+#: mycodo_flask/forms/forms_misc.py:104
 msgid "Export Influxdb"
 msgstr "导出Influxdb"
 
-#: mycodo_flask/forms/forms_misc.py:87
+#: mycodo_flask/forms/forms_misc.py:109
 msgid "Import Influxdb"
 msgstr "导入Influxdb"
 
-#: mycodo_flask/forms/forms_misc.py:97
+#: mycodo_flask/forms/forms_misc.py:119
 msgid "Lines"
 msgstr "行"
 
-#: mycodo_flask/forms/forms_misc.py:104
-msgid "logintitle"
-msgstr "logintitle"
+#: mycodo_flask/forms/forms_misc.py:122
+msgid "Number of lines should be greater than 0"
+msgstr "行数应大于0"
 
-#: mycodo_flask/forms/forms_misc.py:105
-msgid "Web Access"
-msgstr "Web访问"
+#: mycodo_flask/forms/forms_misc.py:127
+msgid "Log"
+msgstr ""
 
-#: mycodo_flask/forms/forms_misc.py:106
-msgid "Web Error"
-msgstr "网络错误"
+#: mycodo_flask/forms/forms_misc.py:128
+msgid "View Log"
+msgstr ""
 
-#: mycodo_flask/forms/forms_misc.py:107
-msgid "Daemon"
-msgstr "守护进程"
-
-#: mycodo_flask/forms/forms_misc.py:108
-msgid "Dependency"
-msgstr "依赖"
-
-#: mycodo_flask/forms/forms_misc.py:109
-msgid "Backup"
-msgstr "备用"
-
-#: mycodo_flask/forms/forms_misc.py:110
-msgid "KeepUp"
-msgstr "赶上"
-
-#: mycodo_flask/forms/forms_misc.py:111 mycodo_flask/templates/layout.html:240
-msgid "Upgrade"
-msgstr "升级"
-
-#: mycodo_flask/forms/forms_misc.py:112
-msgid "Restore"
-msgstr "恢复"
-
-#: mycodo_flask/forms/forms_misc.py:120
+#: mycodo_flask/forms/forms_misc.py:136
 msgid "Upgrade Mycodo"
 msgstr "升级Mycodo"
 
-#: mycodo_flask/forms/forms_misc.py:121
+#: mycodo_flask/forms/forms_misc.py:137
 msgid "Upgrade Mycodo to Next Major Version"
 msgstr "将Mycodo升级到下一个主要版本"
 
-#: mycodo_flask/forms/forms_misc.py:130
+#: mycodo_flask/forms/forms_misc.py:146
 msgid "Create Backup"
 msgstr "创建备份"
 
-#: mycodo_flask/forms/forms_misc.py:131
+#: mycodo_flask/forms/forms_misc.py:147
 msgid "Restore Backup"
 msgstr "恢复备份"
 
-#: mycodo_flask/forms/forms_misc.py:132
+#: mycodo_flask/forms/forms_misc.py:148
 msgid "Delete Backup"
 msgstr "删除备份"
 
@@ -2217,18 +2394,21 @@ msgstr "高"
 msgid "Low"
 msgstr "低"
 
-#: mycodo_flask/forms/forms_output.py:77
+#: mycodo_flask/forms/forms_output.py:77 mycodo_flask/forms/forms_output.py:86
 #: mycodo_flask/templates/pages/output_options/command.html:17
+#: mycodo_flask/templates/pages/output_options/command.html:27
 #: mycodo_flask/templates/pages/output_options/python.html:17
+#: mycodo_flask/templates/pages/output_options/python.html:27
 #: mycodo_flask/templates/pages/output_options/wireless_rpi_rf.html:41
+#: mycodo_flask/templates/pages/output_options/wireless_rpi_rf.html:51
 msgid "Neither"
 msgstr "也不"
 
-#: mycodo_flask/forms/forms_output.py:90
+#: mycodo_flask/forms/forms_output.py:99
 msgid "Any Pin, <= 40 kHz"
 msgstr "任何引脚，<= 40 kHz"
 
-#: mycodo_flask/forms/forms_output.py:91
+#: mycodo_flask/forms/forms_output.py:100
 msgid "Hardware Pin, <= 30 MHz"
 msgstr "硬件引脚，<= 30 MHz"
 
@@ -2249,91 +2429,91 @@ msgstr "降低"
 msgid "Both"
 msgstr "都"
 
-#: mycodo_flask/forms/forms_pid.py:67
+#: mycodo_flask/forms/forms_pid.py:69
 msgid "Band (+/- Setpoint)"
 msgstr "乐队（+/-设定点）"
 
-#: mycodo_flask/forms/forms_pid.py:69
+#: mycodo_flask/forms/forms_pid.py:71
 msgid "Store Lower as Negative"
 msgstr "存储较低为负"
 
-#: mycodo_flask/forms/forms_pid.py:71
+#: mycodo_flask/forms/forms_pid.py:73
 msgid "Kp Gain"
 msgstr "Kp Gain"
 
-#: mycodo_flask/forms/forms_pid.py:78
+#: mycodo_flask/forms/forms_pid.py:80
 msgid "Ki Gain"
 msgstr "Ki Gain"
 
-#: mycodo_flask/forms/forms_pid.py:85
+#: mycodo_flask/forms/forms_pid.py:87
 msgid "Kd Gain"
 msgstr "Kd Gain"
 
-#: mycodo_flask/forms/forms_pid.py:92
+#: mycodo_flask/forms/forms_pid.py:94
 msgid "Integrator Min"
 msgstr "积分器Min"
 
-#: mycodo_flask/forms/forms_pid.py:95
+#: mycodo_flask/forms/forms_pid.py:97
 msgid "Integrator Max"
 msgstr "积分器Max"
 
-#: mycodo_flask/forms/forms_pid.py:97
+#: mycodo_flask/forms/forms_pid.py:99
 msgid "Output (Raise)"
 msgstr "输出（提升）"
 
-#: mycodo_flask/forms/forms_pid.py:98
+#: mycodo_flask/forms/forms_pid.py:100
 msgid "Output (Lower)"
 msgstr "输出（下）"
 
-#: mycodo_flask/forms/forms_pid.py:113
+#: mycodo_flask/forms/forms_pid.py:115
 msgid "Noise Band"
 msgstr "噪音带"
 
-#: mycodo_flask/forms/forms_pid.py:116
+#: mycodo_flask/forms/forms_pid.py:118
 msgid "Outstep"
 msgstr "Outstep"
 
-#: mycodo_flask/forms/forms_pid.py:118 mycodo_flask/utils/utils_pid.py:202
+#: mycodo_flask/forms/forms_pid.py:120 mycodo_flask/utils/utils_pid.py:195
 msgid "Start Autotune"
 msgstr "启动自动调谐"
 
-#: mycodo_flask/forms/forms_pid.py:123
+#: mycodo_flask/forms/forms_pid.py:125
 msgid "Min On Duration (Raise)"
 msgstr "最小持续时间（提升）"
 
-#: mycodo_flask/forms/forms_pid.py:131
+#: mycodo_flask/forms/forms_pid.py:133
 msgid "Max On Duration (Raise)"
 msgstr "最大持续时间（提升）"
 
-#: mycodo_flask/forms/forms_pid.py:139
+#: mycodo_flask/forms/forms_pid.py:141
 msgid "Min Off Duration (Raise)"
 msgstr "最短关闭时间（提高）"
 
-#: mycodo_flask/forms/forms_pid.py:150
+#: mycodo_flask/forms/forms_pid.py:152
 msgid "Min On Duration (Lower)"
 msgstr "最小持续时间（下）"
 
-#: mycodo_flask/forms/forms_pid.py:158
+#: mycodo_flask/forms/forms_pid.py:160
 msgid "Max On Duration (Lower)"
 msgstr "Max On Duration（Lower）"
 
-#: mycodo_flask/forms/forms_pid.py:166
+#: mycodo_flask/forms/forms_pid.py:168
 msgid "Min Off Duration (Lower)"
 msgstr "最短关闭时间（下限）"
 
-#: mycodo_flask/forms/forms_pid.py:177
+#: mycodo_flask/forms/forms_pid.py:179
 msgid "Min Duty Cycle (Raise)"
 msgstr "最小工作周期（提升）"
 
-#: mycodo_flask/forms/forms_pid.py:185
+#: mycodo_flask/forms/forms_pid.py:187
 msgid "Max Duty Cycle (Raise)"
 msgstr "最大占空比（提升）"
 
-#: mycodo_flask/forms/forms_pid.py:196
+#: mycodo_flask/forms/forms_pid.py:198
 msgid "Min Duty Cycle (Lower)"
 msgstr "最小占空比（下）"
 
-#: mycodo_flask/forms/forms_pid.py:204
+#: mycodo_flask/forms/forms_pid.py:206
 msgid "Max Duty Cycle (Lower)"
 msgstr "最大占空比（下）"
 
@@ -2466,370 +2646,382 @@ msgid "Language"
 msgstr "语言"
 
 #: mycodo_flask/forms/forms_settings.py:141
+msgid "Pyro Timeout"
+msgstr ""
+
+#: mycodo_flask/forms/forms_settings.py:142
 msgid "Force HTTPS"
 msgstr "强制HTTPS"
 
-#: mycodo_flask/forms/forms_settings.py:142
+#: mycodo_flask/forms/forms_settings.py:143
 msgid "Hide success messages"
 msgstr "隐藏成功消息"
 
-#: mycodo_flask/forms/forms_settings.py:143
+#: mycodo_flask/forms/forms_settings.py:144
 msgid "Hide info messages"
 msgstr "隐藏信息消息"
 
-#: mycodo_flask/forms/forms_settings.py:144
+#: mycodo_flask/forms/forms_settings.py:145
 msgid "Hide warning messages"
 msgstr "隐藏警告消息"
 
-#: mycodo_flask/forms/forms_settings.py:145
+#: mycodo_flask/forms/forms_settings.py:146
 msgid "Hide Form Tooltips"
 msgstr "隐藏表单工具提示"
 
-#: mycodo_flask/forms/forms_settings.py:147
+#: mycodo_flask/forms/forms_settings.py:148
 msgid "Max Amps"
 msgstr "最大安培"
 
-#: mycodo_flask/forms/forms_settings.py:151
+#: mycodo_flask/forms/forms_settings.py:152
 msgid "Cost per kWh"
 msgstr "每千瓦时的成本"
 
-#: mycodo_flask/forms/forms_settings.py:152
+#: mycodo_flask/forms/forms_settings.py:153
 msgid "Currency Unit"
 msgstr "货币单位"
 
-#: mycodo_flask/forms/forms_settings.py:153
+#: mycodo_flask/forms/forms_settings.py:154
 msgid "Day of Month"
 msgstr "一个月的一天"
 
-#: mycodo_flask/forms/forms_settings.py:154
+#: mycodo_flask/forms/forms_settings.py:155
 msgid "Generate Usage/Cost Report"
 msgstr "生成使用/成本报告"
 
-#: mycodo_flask/forms/forms_settings.py:155
+#: mycodo_flask/forms/forms_settings.py:156
 msgid "Time Span to Generate"
 msgstr "生成时间跨度"
 
-#: mycodo_flask/forms/forms_settings.py:157
+#: mycodo_flask/forms/forms_settings.py:158
 msgid "Day of Week/Month to Generate"
 msgstr "生成星期/月的日子"
 
-#: mycodo_flask/forms/forms_settings.py:159
+#: mycodo_flask/forms/forms_settings.py:160
 msgid "Hour of Day to Generate"
 msgstr "生成的一天中的小时"
 
-#: mycodo_flask/forms/forms_settings.py:163
-#: mycodo_flask/templates/settings/general.html:177
+#: mycodo_flask/forms/forms_settings.py:164
+#: mycodo_flask/templates/settings/general.html:184
 msgid "Hour Options: 0-23"
 msgstr "小时选项：0-23"
 
-#: mycodo_flask/forms/forms_settings.py:167
+#: mycodo_flask/forms/forms_settings.py:168
 msgid "Opt-out of statistics"
 msgstr "选择退出统计数据"
 
-#: mycodo_flask/forms/forms_settings.py:168
+#: mycodo_flask/forms/forms_settings.py:169
 msgid "Check for Updates"
 msgstr "检查更新"
 
-#: mycodo_flask/forms/forms_settings.py:178
-#: mycodo_flask/templates/settings/input.html:12
+#: mycodo_flask/forms/forms_settings.py:179
+#: mycodo_flask/templates/settings/input.html:13
 msgid "Import Input Module"
 msgstr "导入输入模块"
 
-#: mycodo_flask/forms/forms_settings.py:191
-#: mycodo_flask/forms/forms_settings.py:198
+#: mycodo_flask/forms/forms_settings.py:192
+#: mycodo_flask/forms/forms_settings.py:199
 msgid "Measurement Name"
 msgstr "测量名称"
 
-#: mycodo_flask/forms/forms_settings.py:192
-#: mycodo_flask/forms/forms_settings.py:199
+#: mycodo_flask/forms/forms_settings.py:193
+#: mycodo_flask/forms/forms_settings.py:200
 msgid "Measurement Units"
 msgstr "测量单位"
 
-#: mycodo_flask/forms/forms_settings.py:193
-#: mycodo_flask/templates/settings/measurement.html:12
+#: mycodo_flask/forms/forms_settings.py:194
+#: mycodo_flask/templates/settings/measurement.html:13
 msgid "Add Measurement"
 msgstr "添加测量"
 
-#: mycodo_flask/forms/forms_settings.py:206
-#: mycodo_flask/forms/forms_settings.py:214
+#: mycodo_flask/forms/forms_settings.py:207
+#: mycodo_flask/forms/forms_settings.py:215
 msgid "Unit Name"
 msgstr "单位名称"
 
-#: mycodo_flask/forms/forms_settings.py:208
-#: mycodo_flask/forms/forms_settings.py:215
+#: mycodo_flask/forms/forms_settings.py:209
+#: mycodo_flask/forms/forms_settings.py:216
 msgid "Unit Abbreviation"
 msgstr "单位缩写"
 
-#: mycodo_flask/forms/forms_settings.py:209
-#: mycodo_flask/templates/settings/measurement.html:43
+#: mycodo_flask/forms/forms_settings.py:210
+#: mycodo_flask/templates/settings/measurement.html:44
 msgid "Add Unit"
 msgstr "添加单位"
 
-#: mycodo_flask/forms/forms_settings.py:222
-#: mycodo_flask/forms/forms_settings.py:232
+#: mycodo_flask/forms/forms_settings.py:223
+#: mycodo_flask/forms/forms_settings.py:233
 msgid "Convert From Unit"
 msgstr "从单位转换"
 
-#: mycodo_flask/forms/forms_settings.py:224
+#: mycodo_flask/forms/forms_settings.py:225
 msgid "Convert To Measurement"
 msgstr "转换为测量"
 
-#: mycodo_flask/forms/forms_settings.py:227
-#: mycodo_flask/templates/settings/measurement.html:70
+#: mycodo_flask/forms/forms_settings.py:228
+#: mycodo_flask/templates/settings/measurement.html:71
 msgid "Add Conversion"
 msgstr "添加转换"
 
-#: mycodo_flask/forms/forms_settings.py:233
+#: mycodo_flask/forms/forms_settings.py:234
 msgid "Convert To Unit"
 msgstr "转换为单位"
 
-#: mycodo_flask/forms/forms_settings.py:245
+#: mycodo_flask/forms/forms_settings.py:246
 msgid "Role Name"
 msgstr "角色名称"
 
-#: mycodo_flask/forms/forms_settings.py:246
+#: mycodo_flask/forms/forms_settings.py:247
 #: mycodo_flask/templates/tools/logview.html:3
 msgid "View Logs"
 msgstr "查看日志"
 
-#: mycodo_flask/forms/forms_settings.py:247
+#: mycodo_flask/forms/forms_settings.py:248
 msgid "View Stats"
 msgstr "查看统计信息"
 
-#: mycodo_flask/forms/forms_settings.py:248
+#: mycodo_flask/forms/forms_settings.py:249
 msgid "View Camera"
 msgstr "查看相机"
 
-#: mycodo_flask/forms/forms_settings.py:249
+#: mycodo_flask/forms/forms_settings.py:250
 msgid "View Settings"
 msgstr "查看设置"
 
-#: mycodo_flask/forms/forms_settings.py:250
+#: mycodo_flask/forms/forms_settings.py:251
 msgid "Edit Users"
 msgstr "编辑用户"
 
-#: mycodo_flask/forms/forms_settings.py:251
+#: mycodo_flask/forms/forms_settings.py:252
 msgid "Edit Controllers"
 msgstr "编辑控制器"
 
-#: mycodo_flask/forms/forms_settings.py:252
+#: mycodo_flask/forms/forms_settings.py:253
 msgid "Edit Settings"
 msgstr "编辑设置"
 
-#: mycodo_flask/forms/forms_settings.py:254
+#: mycodo_flask/forms/forms_settings.py:255
 msgid "Add Role"
 msgstr "添加角色"
 
-#: mycodo_flask/forms/forms_settings.py:274
-#: mycodo_flask/forms/forms_settings.py:305
+#: mycodo_flask/forms/forms_settings.py:275
+#: mycodo_flask/forms/forms_settings.py:306
 msgid "Passwords must match"
 msgstr "密码必须匹配"
 
-#: mycodo_flask/forms/forms_settings.py:277
-#: mycodo_flask/forms/forms_settings.py:309
+#: mycodo_flask/forms/forms_settings.py:278
+#: mycodo_flask/forms/forms_settings.py:310
 msgid "Password must be 6 or more characters"
 msgstr "密码必须是6个或更多字符"
 
-#: mycodo_flask/forms/forms_settings.py:284
+#: mycodo_flask/forms/forms_settings.py:285
 msgid "Role"
 msgstr "角色"
 
-#: mycodo_flask/forms/forms_settings.py:286
-#: mycodo_flask/forms/forms_settings.py:321
+#: mycodo_flask/forms/forms_settings.py:287
+#: mycodo_flask/forms/forms_settings.py:322
 msgid "Theme"
 msgstr "主题"
 
-#: mycodo_flask/forms/forms_settings.py:287
-#: mycodo_flask/templates/settings/users.html:12
+#: mycodo_flask/forms/forms_settings.py:288
+#: mycodo_flask/templates/settings/users.html:13
 msgid "Add User"
 msgstr "添加用户"
 
-#: mycodo_flask/forms/forms_settings.py:300
+#: mycodo_flask/forms/forms_settings.py:301
 msgid "New Password"
 msgstr "新密码"
 
-#: mycodo_flask/forms/forms_settings.py:317
+#: mycodo_flask/forms/forms_settings.py:318
 msgid "Role ID"
 msgstr "角色ID"
 
-#: mycodo_flask/forms/forms_settings.py:332
+#: mycodo_flask/forms/forms_settings.py:333
 msgid "Enable I2C"
 msgstr "启用I2C"
 
-#: mycodo_flask/forms/forms_settings.py:333
+#: mycodo_flask/forms/forms_settings.py:334
 msgid "Disable I2C"
 msgstr "禁用I2C"
 
-#: mycodo_flask/forms/forms_settings.py:334
+#: mycodo_flask/forms/forms_settings.py:335
 msgid "Enable 1-Wire"
 msgstr "启用1-Wire"
 
-#: mycodo_flask/forms/forms_settings.py:335
+#: mycodo_flask/forms/forms_settings.py:336
 msgid "Disable 1-Wire"
 msgstr "禁用1-Wire"
 
-#: mycodo_flask/forms/forms_settings.py:336
+#: mycodo_flask/forms/forms_settings.py:337
 msgid "Enable Serial"
 msgstr "启用串行"
 
-#: mycodo_flask/forms/forms_settings.py:337
+#: mycodo_flask/forms/forms_settings.py:338
 msgid "Disable Serial"
 msgstr "禁用串行"
 
-#: mycodo_flask/forms/forms_settings.py:338
+#: mycodo_flask/forms/forms_settings.py:339
 msgid "Enable SPI"
 msgstr "启用S​​PI"
 
-#: mycodo_flask/forms/forms_settings.py:339
+#: mycodo_flask/forms/forms_settings.py:340
 msgid "Disable SPI"
 msgstr "禁用SPI"
 
-#: mycodo_flask/forms/forms_settings.py:340
+#: mycodo_flask/forms/forms_settings.py:341
 msgid "Enable SSH"
 msgstr "启用S​​SH"
 
-#: mycodo_flask/forms/forms_settings.py:341
+#: mycodo_flask/forms/forms_settings.py:342
 msgid "Disable SSH"
 msgstr "禁用SSH"
 
-#: mycodo_flask/forms/forms_settings.py:342
+#: mycodo_flask/forms/forms_settings.py:343
 msgid "Enable Pi Camera"
 msgstr "启用Pi相机"
 
-#: mycodo_flask/forms/forms_settings.py:343
+#: mycodo_flask/forms/forms_settings.py:344
 msgid "Disable Pi Camera"
 msgstr "禁用Pi相机"
 
-#: mycodo_flask/forms/forms_settings.py:344
-msgid "Hostname"
-msgstr "主机名"
-
-#: mycodo_flask/forms/forms_settings.py:345
+#: mycodo_flask/forms/forms_settings.py:346
 msgid "Change Hostname"
 msgstr "更改主机名"
 
-#: mycodo_flask/forms/forms_settings.py:346
+#: mycodo_flask/forms/forms_settings.py:347
 msgid "Configure pigpiod"
 msgstr "配置pigpiod"
 
-#: mycodo_flask/forms/forms_settings.py:347
+#: mycodo_flask/forms/forms_settings.py:348
 msgid "Reconfigure"
 msgstr "重新配置"
 
-#: mycodo_flask/forms/forms_settings.py:350
+#: mycodo_flask/forms/forms_settings.py:351
 msgid "Conditional Sample Rate (seconds)"
 msgstr "条件采样率（秒）"
 
-#: mycodo_flask/forms/forms_settings.py:353
+#: mycodo_flask/forms/forms_settings.py:354
 msgid "Input Sample Rate (seconds)"
 msgstr "输入采样率（秒）"
 
-#: mycodo_flask/forms/forms_settings.py:356
+#: mycodo_flask/forms/forms_settings.py:357
 msgid "Math Sample Rate (seconds)"
 msgstr "数学采样率（秒）"
 
-#: mycodo_flask/forms/forms_settings.py:359
+#: mycodo_flask/forms/forms_settings.py:360
 msgid "Output Sample Rate (seconds)"
 msgstr "输出采样率（秒）"
 
-#: mycodo_flask/forms/forms_settings.py:362
+#: mycodo_flask/forms/forms_settings.py:363
 msgid "PID Sample Rate (seconds)"
 msgstr "PID采样率（秒）"
 
-#: mycodo_flask/forms/forms_settings.py:364
+#: mycodo_flask/forms/forms_settings.py:365
 msgid "Save Sample Rates"
 msgstr "保存采样率"
 
-#: mycodo_flask/forms/forms_settings.py:372
+#: mycodo_flask/forms/forms_settings.py:373
 msgid "Delete All Dashboard Elements"
 msgstr "删除所有仪表板元素"
 
-#: mycodo_flask/forms/forms_settings.py:373
+#: mycodo_flask/forms/forms_settings.py:374
 msgid "Delete All Inputs"
 msgstr "删除所有输入"
 
-#: mycodo_flask/forms/forms_settings.py:374
+#: mycodo_flask/forms/forms_settings.py:375
 msgid "Delete All Maths"
 msgstr "删除所有数学"
 
-#: mycodo_flask/forms/forms_settings.py:375
+#: mycodo_flask/forms/forms_settings.py:376
 msgid "Delete All Notes and Note Tags"
 msgstr "删除所有注释和注释标签"
 
-#: mycodo_flask/forms/forms_settings.py:376
+#: mycodo_flask/forms/forms_settings.py:377
 msgid "Delete All Outputs"
 msgstr "删除所有输出"
 
-#: mycodo_flask/forms/forms_settings.py:377
+#: mycodo_flask/forms/forms_settings.py:378
 msgid "Delete Settings Database"
 msgstr "删除设置数据库"
 
-#: mycodo_flask/forms/forms_settings.py:378
 #: mycodo_flask/forms/forms_settings.py:379
+#: mycodo_flask/forms/forms_settings.py:380
 msgid "Delete File"
 msgstr "删除文件"
 
-#: mycodo_flask/forms/forms_trigger.py:35
+#: mycodo_flask/forms/forms_settings.py:381
+msgid "Reset Email Counter"
+msgstr ""
+
+#: mycodo_flask/forms/forms_trigger.py:37
 msgid "If Edge Detected"
 msgstr "如果检测到边缘"
 
-#: mycodo_flask/forms/forms_trigger.py:38
+#: mycodo_flask/forms/forms_trigger.py:40
 msgid "Rise or Set"
 msgstr "上升或设定"
 
-#: mycodo_flask/forms/forms_trigger.py:40
+#: mycodo_flask/forms/forms_trigger.py:42
 msgid "Latitude (decimal)"
 msgstr "纬度（十进制）"
 
-#: mycodo_flask/forms/forms_trigger.py:42
+#: mycodo_flask/forms/forms_trigger.py:44
 msgid "Longitude (decimal)"
 msgstr "经度（十进制）"
 
-#: mycodo_flask/forms/forms_trigger.py:44
+#: mycodo_flask/forms/forms_trigger.py:46
 msgid "Zenith"
 msgstr "顶点"
 
-#: mycodo_flask/forms/forms_trigger.py:46
+#: mycodo_flask/forms/forms_trigger.py:48
 msgid "Date Offset (days)"
 msgstr "日期偏移（天）"
 
-#: mycodo_flask/forms/forms_trigger.py:48
+#: mycodo_flask/forms/forms_trigger.py:50
 msgid "Time Offset (minutes)"
 msgstr "时间偏移（分钟）"
 
-#: mycodo_flask/forms/forms_trigger.py:55
+#: mycodo_flask/forms/forms_trigger.py:53
+msgid "Program"
+msgstr ""
+
+#: mycodo_flask/forms/forms_trigger.py:54
+msgid "Word"
+msgstr ""
+
+#: mycodo_flask/forms/forms_trigger.py:61
 msgid "Start Time (HH:MM)"
 msgstr "开始时间（HH：MM）"
 
-#: mycodo_flask/forms/forms_trigger.py:56
+#: mycodo_flask/forms/forms_trigger.py:62
 msgid "End Time (HH:MM)"
 msgstr "结束时间（HH：MM）"
 
-#: mycodo_flask/forms/forms_trigger.py:59
+#: mycodo_flask/forms/forms_trigger.py:65
 msgid "Trigger Every Period"
 msgstr "触发每个时期"
 
-#: mycodo_flask/forms/forms_trigger.py:60
+#: mycodo_flask/forms/forms_trigger.py:66
 msgid "Trigger when Activated"
 msgstr "激活时触发"
 
-#: mycodo_flask/forms/forms_trigger.py:63
+#: mycodo_flask/forms/forms_trigger.py:69
 msgid "If ID 1"
 msgstr "如果ID为1"
 
-#: mycodo_flask/forms/forms_trigger.py:64
+#: mycodo_flask/forms/forms_trigger.py:70
 msgid "If ID 2"
 msgstr "如果是ID 2"
 
-#: mycodo_flask/forms/forms_trigger.py:65
+#: mycodo_flask/forms/forms_trigger.py:71
 msgid "If State"
 msgstr "如果是国家"
 
-#: mycodo_flask/forms/forms_trigger.py:67
+#: mycodo_flask/forms/forms_trigger.py:73
 msgid "If Duration (seconds)"
 msgstr "如果持续时间（秒）"
 
-#: mycodo_flask/forms/forms_trigger.py:69
+#: mycodo_flask/forms/forms_trigger.py:75
 #, python-format
 msgid "If Duty Cycle (%%)"
 msgstr "如果占空比（%%）"
@@ -2864,7 +3056,7 @@ msgid "Info"
 msgstr "信息"
 
 #: mycodo_flask/templates/layout-remote.html:47
-#: mycodo_flask/templates/layout.html:191
+#: mycodo_flask/templates/layout.html:186
 msgid "Setup"
 msgstr "建立"
 
@@ -2872,127 +3064,117 @@ msgstr "建立"
 msgid "Exit"
 msgstr "出口"
 
-#: mycodo_flask/templates/layout-settings.html:24
-#: mycodo_flask/templates/settings/measurement.html:115
-#: mycodo_flask/templates/settings/measurement.html:292
+#: mycodo_flask/templates/layout-settings.html:26
+#: mycodo_flask/templates/settings/measurement.html:116
+#: mycodo_flask/templates/settings/measurement.html:293
 msgid "Measurements"
 msgstr "测量"
 
-#: mycodo_flask/templates/layout-settings.html:25
-#: mycodo_flask/templates/settings/users.html:73
+#: mycodo_flask/templates/layout-settings.html:27
+#: mycodo_flask/templates/settings/users.html:74
 msgid "Users"
 msgstr "用户"
 
-#: mycodo_flask/templates/layout-settings.html:26
+#: mycodo_flask/templates/layout-settings.html:28
 #: mycodo_flask/templates/settings/pi.html:4
 #: mycodo_flask/templates/settings/pi.html:6
 msgid "Raspberry Pi"
 msgstr "树莓派"
 
-#: mycodo_flask/templates/layout-settings.html:27
+#: mycodo_flask/templates/layout-settings.html:29
 msgid "Alerts"
 msgstr "警报"
 
-#: mycodo_flask/templates/layout-settings.html:28
+#: mycodo_flask/templates/layout-settings.html:30
 #: mycodo_flask/templates/pages/camera.html:3
 msgid "Cameras"
 msgstr "相机"
 
-#: mycodo_flask/templates/layout-settings.html:29
-#: mycodo_flask/templates/settings/diagnostic.html:10
+#: mycodo_flask/templates/layout-settings.html:31
+#: mycodo_flask/templates/settings/diagnostic.html:11
 msgid "Diagnostics"
 msgstr "诊断"
 
-#: mycodo_flask/templates/layout.html:76 mycodo_flask/templates/layout.html:85
-#: mycodo_flask/templates/layout.html:167
+#: mycodo_flask/templates/layout.html:78 mycodo_flask/templates/layout.html:87
+#: mycodo_flask/templates/layout.html:169
 msgid "Daemon is Not Running"
 msgstr "守护程序未运行"
 
-#: mycodo_flask/templates/layout.html:81 mycodo_flask/templates/layout.html:167
+#: mycodo_flask/templates/layout.html:83 mycodo_flask/templates/layout.html:169
 msgid "Daemon is Running"
 msgstr "守护进程正在运行"
 
-#: mycodo_flask/templates/layout.html:91
+#: mycodo_flask/templates/layout.html:93
 msgid "Cannot Check Daemon Status"
 msgstr "无法检查守护程序状态"
 
-#: mycodo_flask/templates/layout.html:112
-#: mycodo_flask/templates/pages/dashboard.html:374
+#: mycodo_flask/templates/layout.html:114
+#: mycodo_flask/templates/pages/dashboard.html:375
 #: mycodo_flask/templates/pages/output.html:122
 msgid "No Connection"
 msgstr "无连接"
 
-#: mycodo_flask/templates/layout.html:175
-msgid "Dashboard"
-msgstr "短跑"
-
-#: mycodo_flask/templates/layout.html:179
+#: mycodo_flask/templates/layout.html:180
 #: mycodo_flask/templates/pages/live.html:5
 msgid "Live"
 msgstr "生活"
 
-#: mycodo_flask/templates/layout.html:183
+#: mycodo_flask/templates/layout.html:181
+#: mycodo_flask/templates/pages/graph-async.html:3
+#: mycodo_flask/templates/pages/graph-async.html:30
 msgid "Asynchronous Graphs"
 msgstr "异步"
 
-#: mycodo_flask/templates/layout.html:187
-msgid "Camera"
-msgstr "凸轮"
-
-#: mycodo_flask/templates/layout.html:198
+#: mycodo_flask/templates/layout.html:193
 #: mycodo_flask/templates/tools/calibration.html:3
 #: mycodo_flask/templates/tools/calibration_options/atlas_ph.html:3
 #: mycodo_flask/templates/tools/calibration_options/ds_resolution.html:3
 msgid "Calibration & Setup"
 msgstr "校准和设置"
 
-#: mycodo_flask/templates/layout.html:204
+#: mycodo_flask/templates/layout.html:198
 msgid "More"
 msgstr "更多"
 
-#: mycodo_flask/templates/layout.html:208
-#: mycodo_flask/templates/pages/usage.html:3
-#: mycodo_flask/templates/pages/usage.html:12
-#: mycodo_flask/templates/pages/usage_reports.html:3
-#: mycodo_flask/templates/settings/general.html:114
-msgid "Output Usage"
-msgstr "输出用法"
-
-#: mycodo_flask/templates/layout.html:209
+#: mycodo_flask/templates/layout.html:204
 #: mycodo_flask/templates/pages/usage_reports.html:12
-msgid "Output Usage Reports"
-msgstr "输出使用报告"
+msgid "Energy Usage Reports"
+msgstr ""
 
-#: mycodo_flask/templates/layout.html:221
+#: mycodo_flask/templates/layout.html:216
 #: mycodo_flask/templates/pages/function_options/conditional.html:57
 msgid "Help"
 msgstr "帮帮我"
 
-#: mycodo_flask/templates/layout.html:223
+#: mycodo_flask/templates/layout.html:218
 msgid "Mycodo Manual"
 msgstr "Mycodo手册"
 
-#: mycodo_flask/templates/layout.html:225
+#: mycodo_flask/templates/layout.html:220
+msgid "Discussion Forum"
+msgstr ""
+
+#: mycodo_flask/templates/layout.html:221
 msgid "Submit an Issue"
 msgstr "提交问题"
 
-#: mycodo_flask/templates/layout.html:226
+#: mycodo_flask/templates/layout.html:222
 msgid "Mycodo on Github"
 msgstr "Github上的Mycodo"
 
-#: mycodo_flask/templates/layout.html:227
+#: mycodo_flask/templates/layout.html:223
 msgid "Changelog"
 msgstr "更新日志"
 
-#: mycodo_flask/templates/layout.html:234
+#: mycodo_flask/templates/layout.html:230
 msgid "Configure"
 msgstr "配置"
 
-#: mycodo_flask/templates/layout.html:235
+#: mycodo_flask/templates/layout.html:231
 msgid "Mycodo Logs"
 msgstr "Mycodo日志"
 
-#: mycodo_flask/templates/layout.html:236
+#: mycodo_flask/templates/layout.html:232
 #: mycodo_flask/templates/pages/info.html:3
 #: mycodo_flask/templates/pages/info.html:5
 msgid "System Information"
@@ -3001,38 +3183,42 @@ msgstr "系统信息"
 #: mycodo_flask/templates/admin/dependencies.html:3
 #: mycodo_flask/templates/admin/dependencies.html:5
 #: mycodo_flask/templates/admin/dependencies.html:44
-#: mycodo_flask/templates/layout.html:238
+#: mycodo_flask/templates/layout.html:234
 msgid "Dependencies"
 msgstr "依赖"
+
+#: mycodo_flask/templates/layout.html:236
+msgid "Upgrade"
+msgstr "升级"
 
 #: mycodo_flask/templates/admin/backup.html:3
 #: mycodo_flask/templates/admin/backup.html:5
 #: mycodo_flask/templates/admin/backup.html:12
-#: mycodo_flask/templates/layout.html:241
+#: mycodo_flask/templates/layout.html:237
 msgid "Backup Restore"
 msgstr "备份还原"
 
-#: mycodo_flask/templates/layout.html:243
+#: mycodo_flask/templates/layout.html:239
 msgid "Restart Backend"
 msgstr "重启后端"
 
-#: mycodo_flask/templates/layout.html:244
+#: mycodo_flask/templates/layout.html:240
 msgid "Restart Frontend"
 msgstr "重启前端"
 
-#: mycodo_flask/templates/layout.html:246
+#: mycodo_flask/templates/layout.html:242
 msgid "Restart System"
 msgstr "重启系统"
 
-#: mycodo_flask/templates/layout.html:247
+#: mycodo_flask/templates/layout.html:243
 msgid "Shutdown System"
 msgstr "关机系统"
 
-#: mycodo_flask/templates/layout.html:249
+#: mycodo_flask/templates/layout.html:245
 msgid "Remote Admin"
 msgstr "远程管理员"
 
-#: mycodo_flask/templates/layout.html:251
+#: mycodo_flask/templates/layout.html:247
 msgid "Logout"
 msgstr "登出"
 
@@ -3051,6 +3237,10 @@ msgstr "90天"
 #: mycodo_flask/templates/login.html:48
 msgid "Sign in"
 msgstr "签到"
+
+#: mycodo_flask/templates/login.html:51
+msgid "Forgot password?"
+msgstr ""
 
 #: mycodo_flask/templates/admin/backup.html:14
 msgid ""
@@ -3171,8 +3361,8 @@ msgstr "最后一次游戏中"
 msgid "Last Still"
 msgstr "最后还是"
 
-#: mycodo_flask/templates/pages/dashboard.html:361
-#: mycodo_flask/templates/pages/dashboard.html:363
+#: mycodo_flask/templates/pages/dashboard.html:362
+#: mycodo_flask/templates/pages/dashboard.html:364
 #: mycodo_flask/templates/pages/function_options/conditional.html:23
 #: mycodo_flask/templates/pages/function_options/pid.html:27
 #: mycodo_flask/templates/pages/function_options/trigger.html:24
@@ -3182,7 +3372,7 @@ msgstr "最后还是"
 msgid "Active"
 msgstr "活性"
 
-#: mycodo_flask/templates/pages/dashboard.html:368
+#: mycodo_flask/templates/pages/dashboard.html:369
 #: mycodo_flask/templates/pages/function_options/conditional.html:24
 #: mycodo_flask/templates/pages/function_options/pid.html:30
 #: mycodo_flask/templates/pages/function_options/trigger.html:25
@@ -3191,19 +3381,9 @@ msgstr "活性"
 msgid "Inactive"
 msgstr "待用"
 
-#: mycodo_flask/templates/pages/dashboard.html:502
+#: mycodo_flask/templates/pages/dashboard.html:506
 msgid "Value"
 msgstr "值"
-
-#: mycodo_flask/templates/pages/data.html:17
-msgid ""
-"Data are individual pieces of information stored for later use. They may "
-"be values acquired from sensors, signals from analog-to-digital "
-"controllers, a response from a command, or even math performed on other "
-"data to produce an average, to name a few. Add, configure, and activate "
-"Inputs to begin recording measurements to the database and allow them to "
-"be used throughout Mycodo."
-msgstr "数据是存储的各个信息，供以后使用。它们可以是从传感器获取的值，来自模拟到数字控制器的信号，来自命令的响应，或甚至对其他数据执行的数学以产生平均值，仅举几个例子。添加，配置和激活输入以开始将测量结果记录到数据库，并允许它们在整个Mycodo中使用。"
 
 #: mycodo_flask/templates/pages/function.html:19
 msgid ""
@@ -3215,19 +3395,14 @@ msgstr ""
 "函数执行复杂的任务，通常将一个或多个<a href=\"/data\">数据</a>源与<a "
 "href=\"/output\">输出</a>耦合。例如，这可以使用PID控制器来创建具有温度传感器和加热器的反馈回路，以便调节温度。"
 
-#: mycodo_flask/templates/pages/graph-async.html:3
-#: mycodo_flask/templates/pages/graph-async.html:31
-msgid "Asynchronous Graphs"
-msgstr "异步图"
-
-#: mycodo_flask/templates/pages/graph-async.html:23
+#: mycodo_flask/templates/pages/graph-async.html:22
 msgid "Asynchronous Graph"
 msgstr "异步图"
 
 #: mycodo_flask/templates/pages/dashboard_options/add_graph.html:133
 #: mycodo_flask/templates/pages/dashboard_options/mod_graph.html:144
-#: mycodo_flask/templates/pages/data_options/math_options/form_options/inputs.html:18
-#: mycodo_flask/templates/pages/graph-async.html:94
+#: mycodo_flask/templates/pages/data_options/math_options/form_options/inputs.html:21
+#: mycodo_flask/templates/pages/graph-async.html:93
 #: mycodo_flask/templates/tools/note_edit.html:18
 #: mycodo_flask/templates/tools/notes.html:125
 msgid ""
@@ -3295,7 +3470,7 @@ msgid ""
 " to conditional events you configure (flash the LCD)."
 msgstr "LCD可以显示数据，便于查看和显示您配置的条件事件的警报（闪烁LCD）。"
 
-#: mycodo_flask/templates/pages/lcd.html:159
+#: mycodo_flask/templates/pages/lcd.html:177
 msgid "Display Set"
 msgstr "显示集"
 
@@ -3379,53 +3554,68 @@ msgstr "未配置"
 msgid "Pump Volume"
 msgstr "泵容量"
 
-#: mycodo_flask/templates/pages/usage.html:5
-msgid "Usage"
-msgstr "用法"
+#: mycodo_flask/templates/pages/usage.html:46
+#: mycodo_flask/templates/pages/usage.html:101
+msgid "Select a measurement with the unit:"
+msgstr ""
 
-#: mycodo_flask/templates/pages/usage.html:23
-#: mycodo_flask/templates/settings/measurement.html:223
-msgid "ID"
-msgstr "ID"
+#: mycodo_flask/templates/pages/usage.html:46
+#: mycodo_flask/templates/pages/usage.html:101
+msgid "Amps"
+msgstr ""
 
-#: mycodo_flask/templates/pages/usage.html:26
+#: mycodo_flask/templates/pages/usage.html:122
+msgid "Past Hour"
+msgstr ""
+
+#: mycodo_flask/templates/pages/usage.html:123
+#: mycodo_flask/templates/pages/usage.html:211
 msgid "Past Day"
 msgstr "过去的一天"
 
-#: mycodo_flask/templates/pages/usage.html:27
+#: mycodo_flask/templates/pages/usage.html:124
+#: mycodo_flask/templates/pages/usage.html:212
 msgid "Past Week"
 msgstr "上周"
 
-#: mycodo_flask/templates/pages/usage.html:28
-#: mycodo_flask/templates/pages/usage.html:29
+#: mycodo_flask/templates/pages/usage.html:125
+#: mycodo_flask/templates/pages/usage.html:213
+#: mycodo_flask/templates/pages/usage.html:214
 msgid "Past Month"
 msgstr "过去一个月"
 
-#: mycodo_flask/templates/pages/usage.html:29
+#: mycodo_flask/templates/pages/usage.html:128
+#: mycodo_flask/templates/pages/usage.html:174
+msgid "Amps (Average over period)"
+msgstr ""
+
+#: mycodo_flask/templates/pages/usage.html:142
+#: mycodo_flask/templates/pages/usage.html:182
+#: mycodo_flask/templates/pages/usage.html:276
+msgid "Cost"
+msgstr "成本"
+
+#: mycodo_flask/templates/pages/usage.html:208
+#: mycodo_flask/templates/settings/measurement.html:224
+msgid "ID"
+msgstr "ID"
+
+#: mycodo_flask/templates/pages/usage.html:214
 msgid "From"
 msgstr "从"
 
-#: mycodo_flask/templates/pages/usage.html:30
+#: mycodo_flask/templates/pages/usage.html:215
 msgid "Past Year"
 msgstr "过去的一年"
 
-#: mycodo_flask/templates/pages/usage.html:39
-#: mycodo_flask/templates/pages/usage.html:73
+#: mycodo_flask/templates/pages/usage.html:224
+#: mycodo_flask/templates/pages/usage.html:258
 msgid "Duration On (hours)"
 msgstr "持续时间（小时）"
 
-#: mycodo_flask/templates/pages/usage.html:48
-#: mycodo_flask/templates/pages/usage.html:82
-msgid "Energy Usage"
-msgstr "能源使用"
-
-#: mycodo_flask/templates/pages/usage.html:72
+#: mycodo_flask/templates/pages/usage.html:257
 msgid "Total"
 msgstr "总"
-
-#: mycodo_flask/templates/pages/usage.html:91
-msgid "Cost"
-msgstr "成本"
 
 #: mycodo_flask/templates/pages/usage_reports.html:5
 msgid "Usage Reports"
@@ -3433,9 +3623,9 @@ msgstr "使用报告"
 
 #: mycodo_flask/templates/pages/usage_reports.html:17
 msgid ""
-"No Reports. Go to <a href=\"%(loc)\">Output Usage Options</a> to schedule"
+"No Reports. Go to <a href=\"%(loc)\">Energy Usage Options</a> to schedule"
 " a report to be generated."
-msgstr "没有报道。转到<a href=\"%(loc)\">输出使用选项</a>以安排生成报告。"
+msgstr ""
 
 #: mycodo_flask/templates/pages/dashboard_options/add_camera.html:64
 #: mycodo_flask/templates/pages/dashboard_options/mod_camera.html:47
@@ -3470,52 +3660,47 @@ msgstr "PWM开"
 msgid "A numerical value to set the PID setpoint"
 msgstr "用于设置PID设定值的数值"
 
-#: mycodo_flask/templates/pages/data_options/input.html:2
-msgid ""
-"Inputs, such as sensors, ADC signals, or even a response from a command, "
-"enable measuring conditions in the environment or elsewhere. Add, "
-"configure, and activate inputs to begin recording measurements to the "
-"database and allow them to be used throughout Mycodo."
-msgstr "输入（例如传感器，ADC信号，甚至来自命令的响应）可以在环境或其他地方测量条件。添加，配置和激活输入以开始将测量结果记录到数据库，并允许它们在整个Mycodo中使用。"
-
-#: mycodo_flask/templates/pages/data_options/input.html:133
-#: mycodo_flask/templates/pages/data_options/math.html:129
+#: mycodo_flask/templates/pages/data_options/input.html:137
+#: mycodo_flask/templates/pages/data_options/math.html:134
 #: mycodo_flask/templates/settings/measurement.html:4
 #: mycodo_flask/templates/settings/measurement.html:6
-#: mycodo_flask/templates/settings/measurement.html:10
+#: mycodo_flask/templates/settings/measurement.html:11
 msgid "Measurement Settings"
 msgstr "测量设置"
 
-#: mycodo_flask/templates/pages/data_options/math.html:2
-msgid ""
-"Math can be performed on one or more Inputs in order to produce a new "
-"value"
-msgstr "可以在一个或多个输入上执行数学运算以生成新值"
-
-#: mycodo_flask/templates/pages/data_options/math.html:63
+#: mycodo_flask/templates/pages/data_options/math.html:62
 msgid "The duration (seconds) between math calculations"
 msgstr "数学计算之间的持续时间（秒）"
 
-#: mycodo_flask/templates/pages/data_options/math.html:69
+#: mycodo_flask/templates/pages/data_options/math.html:68
 #: mycodo_flask/templates/pages/function_options/conditional.html:77
 #: mycodo_flask/templates/pages/function_options/pid.html:108
 msgid "The duration (seconds) to wait before the first operation"
 msgstr "在第一次操作之前等待的持续时间（秒）"
 
-#: mycodo_flask/templates/pages/data_options/input_options/TEMPLATE_OPTIONS_Measurements_Convert.html:68
+#: mycodo_flask/templates/pages/data_options/input_options/TEMPLATE_OPTIONS_Cmd_Command.html:10
+#: mycodo_flask/templates/pages/function_options/conditional.html:65
+msgid "The Python 3 code to execute"
+msgstr "要执行的Python 3代码"
+
+#: mycodo_flask/templates/pages/data_options/input_options/TEMPLATE_OPTIONS_Measurements_Convert.html:72
 msgid "Do Not Rescale"
 msgstr "不要重新缩放"
 
-#: mycodo_flask/templates/pages/data_options/input_options/TEMPLATE_OPTIONS_Measurements_Convert.html:108
+#: mycodo_flask/templates/pages/data_options/input_options/TEMPLATE_OPTIONS_Measurements_Convert.html:112
 #: mycodo_flask/templates/pages/data_options/math_options/TEMPLATE_OPTIONS_Measurements_Convert.html:79
 msgid "Do Not Convert"
 msgstr "不要转换"
 
+#: mycodo_flask/templates/pages/data_options/input_options/TEMPLATE_OPTIONS_Num_channels.html:6
+msgid "Number of measurements"
+msgstr ""
+
 #: mycodo_flask/templates/pages/data_options/input_options/TEMPLATE_OPTIONS_Single_Input_Math.html:7
 #: mycodo_flask/templates/pages/data_options/math_options/humidity.html:45
-#: mycodo_flask/templates/pages/function_options/pid.html:178
-#: mycodo_flask/templates/pages/function_options/pid.html:201
-#: mycodo_flask/templates/pages/function_options/pid.html:228
+#: mycodo_flask/templates/pages/function_options/pid.html:184
+#: mycodo_flask/templates/pages/function_options/pid.html:207
+#: mycodo_flask/templates/pages/function_options/pid.html:234
 msgid "Disabled"
 msgstr "残"
 
@@ -3533,86 +3718,6 @@ msgstr "存储soved值的方程式。设“x”表示输入值。"
 msgid "The maximum allowed difference between any selected measurements"
 msgstr "任何选定测量之间允许的最大差异"
 
-#: mycodo_flask/templates/pages/function_options/actions.html:6
-msgid "How long to pause executing actions"
-msgstr "暂停执行操作多长时间"
-
-#: mycodo_flask/templates/pages/function_options/actions.html:15
-#: mycodo_flask/templates/pages/function_options/actions.html:43
-msgid "What output to manipulate"
-msgstr "要操纵什么输出"
-
-#: mycodo_flask/templates/pages/function_options/actions.html:25
-msgid "Turn the output on or off"
-msgstr "打开或关闭输出"
-
-#: mycodo_flask/templates/pages/function_options/actions.html:34
-msgid "How long to turn the output on (optional)"
-msgstr "打开输出多长时间（可选）"
-
-#: mycodo_flask/templates/pages/function_options/actions.html:54
-msgid "What duty cycle to set the output"
-msgstr "设置输出的占空比"
-
-#: mycodo_flask/templates/pages/function_options/actions.html:61
-#: mycodo_flask/templates/pages/function_options/actions.html:100
-msgid "Email Address"
-msgstr "电子邮件地址"
-
-#: mycodo_flask/templates/pages/function_options/actions.html:62
-#: mycodo_flask/templates/pages/function_options/actions.html:101
-msgid "Email address to notify"
-msgstr "电子邮件地址通知"
-
-#: mycodo_flask/templates/pages/function_options/actions.html:77
-msgid "LCD to flash"
-msgstr "LCD闪烁"
-
-#: mycodo_flask/templates/pages/function_options/actions.html:89
-#: mycodo_flask/templates/pages/function_options/actions.html:110
-msgid "Camera to capture with"
-msgstr "用相机捕捉"
-
-#: mycodo_flask/templates/pages/function_options/actions.html:121
-#: mycodo_flask/templates/pages/function_options/actions.html:130
-msgid "Video Duration (seconds)"
-msgstr "视频时长（秒）"
-
-#: mycodo_flask/templates/pages/function_options/actions.html:122
-#: mycodo_flask/templates/pages/function_options/actions.html:131
-msgid "Duration to record video (sec)"
-msgstr "录制视频的持续时间（秒）"
-
-#: mycodo_flask/templates/pages/function_options/actions.html:138
-msgid "Command to execute (as user \"mycodo\")"
-msgstr "要执行的命令（作为用户\"mycodo\"）"
-
-#: mycodo_flask/templates/pages/function_options/actions.html:148
-msgid "Tag to save note with"
-msgstr "标记以保存注释"
-
-#: mycodo_flask/templates/pages/function_options/actions.html:168
-msgid "Controller to affect"
-msgstr "控制器影响"
-
-#: mycodo_flask/templates/pages/function_options/actions.html:183
-#: mycodo_flask/templates/pages/function_options/actions.html:195
-#: mycodo_flask/templates/pages/function_options/actions.html:211
-msgid "PID to affect"
-msgstr "PID影响"
-
-#: mycodo_flask/templates/pages/function_options/actions.html:204
-msgid "The value to set the PID setpoint"
-msgstr "设置PID设定值的值"
-
-#: mycodo_flask/templates/pages/function_options/actions.html:220
-msgid "Method to set the PID to use"
-msgstr "设置要使用的PID的方法"
-
-#: mycodo_flask/templates/pages/function_options/conditional.html:65
-msgid "The Python 3 code to execute"
-msgstr "要执行的Python 3代码"
-
 #: mycodo_flask/templates/pages/function_options/conditional.html:71
 #: mycodo_flask/templates/pages/function_options/trigger_options/timer_daily_time_span.html:26
 msgid "The duration between checking whether the conditional is true"
@@ -3624,13 +3729,15 @@ msgid ""
 " monitoring again"
 msgstr "条件触发器在再次开始监视之前等待的最短持续时间"
 
-#: mycodo_flask/templates/pages/function_options/conditional.html:91
+#: mycodo_flask/templates/pages/function_options/conditional.html:97
 msgid "Conditions"
 msgstr "条件"
 
-#: mycodo_flask/templates/pages/function_options/conditional.html:120
-msgid "This {ID} is what should be used in the Conditional Statement Python code"
-msgstr "这个{ID}应该在条件语句Python代码中使用"
+#: mycodo_flask/templates/pages/function_options/conditional.html:126
+msgid ""
+"This {ID} should be used in the Conditional Statement Python code, as a "
+"parameter in the measure() and measure_dict() functions"
+msgstr ""
 
 #: mycodo_flask/templates/pages/function_options/pid.html:28
 msgid "Paused"
@@ -3641,6 +3748,7 @@ msgid "On Hold"
 msgstr "等候接听"
 
 #: mycodo_flask/templates/pages/function_options/conditional_options/measurement.html:4
+#: mycodo_flask/templates/pages/function_options/conditional_options/measurement_dict.html:4
 #: mycodo_flask/templates/pages/function_options/pid.html:78
 #: mycodo_flask/templates/pages/function_options/trigger_options/edge.html:4
 msgid "Select the measurement to use as the input"
@@ -3663,31 +3771,31 @@ msgid ""
 "seconds)"
 msgstr "允许的最大测量年龄（允许PID控制器操作输出，测量必须在过去的x秒内发生）"
 
-#: mycodo_flask/templates/pages/function_options/pid.html:123
+#: mycodo_flask/templates/pages/function_options/pid.html:129
 msgid ""
 "This is the desired state of a perticular environmental condition. For "
 "instance, this could be the desired temperature in Celsius."
 msgstr "这是特定环境条件的理想状态。例如，这可能是摄氏温度。"
 
-#: mycodo_flask/templates/pages/function_options/pid.html:129
+#: mycodo_flask/templates/pages/function_options/pid.html:135
 msgid ""
 "The control hysteresis surounding the setpoint, with a band that is the "
 "setpoint plus and minus the band value. 0 is disabled."
 msgstr "控制滞后超出设定值，带宽为设定值加上和减去带宽值。 0被禁用。"
 
-#: mycodo_flask/templates/pages/function_options/pid.html:144
+#: mycodo_flask/templates/pages/function_options/pid.html:150
 msgid "Proportional gain"
 msgstr "比例增益"
 
-#: mycodo_flask/templates/pages/function_options/pid.html:150
+#: mycodo_flask/templates/pages/function_options/pid.html:156
 msgid "Integral gain"
 msgstr "积分增益"
 
-#: mycodo_flask/templates/pages/function_options/pid.html:156
+#: mycodo_flask/templates/pages/function_options/pid.html:162
 msgid "Derivative gain"
 msgstr "衍生收益"
 
-#: mycodo_flask/templates/pages/function_options/pid.html:162
+#: mycodo_flask/templates/pages/function_options/pid.html:168
 msgid ""
 "Limit the integrator minimum, for calculating Ki_total: (Ki_total = Ki * "
 "integrator; and PID output = Kp_total + Ki_total + Kd_total)"
@@ -3695,7 +3803,7 @@ msgstr ""
 "限制积分器最小值，用于计算Ki_total：（Ki_total = Ki *积分器; PID输出= Kp_total + Ki_total + "
 "Kd_total）"
 
-#: mycodo_flask/templates/pages/function_options/pid.html:168
+#: mycodo_flask/templates/pages/function_options/pid.html:174
 msgid ""
 "Limit the integrator maximum, for calculating Ki_total: (Ki_total = Ki * "
 "integrator; and PID output = Kp_total + Ki_total + Kd_total)"
@@ -3703,53 +3811,159 @@ msgstr ""
 "限制积分器最大值，用于计算Ki_total：（Ki_total = Ki *积分器; PID输出= Kp_total + Ki_total + "
 "Kd_total）"
 
-#: mycodo_flask/templates/pages/function_options/pid.html:177
+#: mycodo_flask/templates/pages/function_options/pid.html:183
 msgid ""
 "The output that will raise the selected environmental condition (Measure "
 "Type)"
 msgstr "将提高所选环境条件的输出（测量类型）"
 
-#: mycodo_flask/templates/pages/function_options/pid.html:200
+#: mycodo_flask/templates/pages/function_options/pid.html:206
 msgid ""
 "The output that will lower the selected environmental condition (Measure "
 "Type)"
 msgstr "将降低所选环境条件的输出（测量类型）"
 
-#: mycodo_flask/templates/pages/function_options/pid.html:224
+#: mycodo_flask/templates/pages/function_options/pid.html:230
 msgid ""
 "Select the method to use when calculating the setpoint. When enabled, the"
 " setpoint(s) of the method override the PID setpoint above."
 msgstr "选择计算设定值时使用的方法。启用时，方法的设定值将覆盖上面的PID设定值。"
 
-#: mycodo_flask/templates/pages/function_options/pid.html:226
+#: mycodo_flask/templates/pages/function_options/pid.html:232
 msgid "No methods exist. Create one with this button"
 msgstr "没有方法。使用此按钮创建一个"
 
-#: mycodo_flask/templates/pages/function_options/pid.html:239
+#: mycodo_flask/templates/pages/function_options/pid.html:245
 msgid "Invalid saved method. Save another method from this list."
 msgstr "保存的方法无效。从此列表中保存另一个方法。"
 
-#: mycodo_flask/templates/pages/function_options/pid.html:244
+#: mycodo_flask/templates/pages/function_options/pid.html:250
 msgid "Manage Methods"
 msgstr "管理方法"
 
-#: mycodo_flask/templates/pages/function_options/pid.html:250
+#: mycodo_flask/templates/pages/function_options/pid.html:256
 msgid "Autotune"
 msgstr "自动调谐"
 
-#: mycodo_flask/templates/pages/function_options/pid.html:255
+#: mycodo_flask/templates/pages/function_options/pid.html:261
 msgid ""
 "Autotune Only: How much above and below the setpoint the process variable"
 " must reach before changing direction."
 msgstr "仅自动调谐：在更改方向之前，过程变量必须达到设定值的上下几度。"
 
-#: mycodo_flask/templates/pages/function_options/pid.html:261
+#: mycodo_flask/templates/pages/function_options/pid.html:267
 #, python-format
 msgid ""
 "Autotune Only: How many seconds to turn the output on each PID cycle. For"
 " instance, if this equals the PID Period, it will be on 100%% of the "
 "time."
 msgstr "仅自动调谐：在每个PID周期上转动输出的秒数。例如，如果这等于PID Period，它将在100 %% 的时间内。"
+
+#: mycodo_flask/templates/pages/function_options/action_options/activate_controller.html:3
+#: mycodo_flask/templates/pages/function_options/action_options/deactivate_controller.html:3
+msgid "Controller to affect"
+msgstr "控制器影响"
+
+#: mycodo_flask/templates/pages/function_options/action_options/activate_pid.html:3
+#: mycodo_flask/templates/pages/function_options/action_options/deactivate_pid.html:3
+#: mycodo_flask/templates/pages/function_options/action_options/method_pid.html:3
+#: mycodo_flask/templates/pages/function_options/action_options/pause_pid.html:3
+#: mycodo_flask/templates/pages/function_options/action_options/resume_pid.html:3
+#: mycodo_flask/templates/pages/function_options/action_options/setpoint_pid.html:3
+#: mycodo_flask/templates/pages/function_options/action_options/setpoint_pid_lower.html:3
+#: mycodo_flask/templates/pages/function_options/action_options/setpoint_pid_raise.html:3
+msgid "PID to affect"
+msgstr "PID影响"
+
+#: mycodo_flask/templates/pages/function_options/action_options/command.html:3
+msgid "Command to execute (as user \"mycodo\")"
+msgstr "要执行的命令（作为用户\"mycodo\"）"
+
+#: mycodo_flask/templates/pages/function_options/action_options/create_note.html:3
+msgid "Tag to save note with"
+msgstr "标记以保存注释"
+
+#: mycodo_flask/templates/pages/function_options/action_options/email.html:2
+#: mycodo_flask/templates/pages/function_options/action_options/photo_email.html:2
+#: mycodo_flask/templates/pages/function_options/action_options/video_email.html:2
+msgid "Email Address"
+msgstr "电子邮件地址"
+
+#: mycodo_flask/templates/pages/function_options/action_options/email.html:3
+#: mycodo_flask/templates/pages/function_options/action_options/photo_email.html:3
+#: mycodo_flask/templates/pages/function_options/action_options/video_email.html:3
+msgid "Email address to notify"
+msgstr "电子邮件地址通知"
+
+#: mycodo_flask/templates/pages/function_options/action_options/flash_lcd_off.html:3
+#: mycodo_flask/templates/pages/function_options/action_options/flash_lcd_on.html:3
+#: mycodo_flask/templates/pages/function_options/action_options/lcd_backlight_off.html:3
+#: mycodo_flask/templates/pages/function_options/action_options/lcd_backlight_on.html:3
+msgid "LCD to flash"
+msgstr "LCD闪烁"
+
+#: mycodo_flask/templates/pages/function_options/action_options/infrared_send.html:7
+msgid "What remote to use"
+msgstr ""
+
+#: mycodo_flask/templates/pages/function_options/action_options/infrared_send.html:16
+msgid "What code to send"
+msgstr ""
+
+#: mycodo_flask/templates/pages/function_options/action_options/infrared_send.html:28
+msgid "The number of times to send the code"
+msgstr ""
+
+#: mycodo_flask/templates/pages/function_options/action_options/method_pid.html:12
+msgid "Method to set the PID to use"
+msgstr "设置要使用的PID的方法"
+
+#: mycodo_flask/templates/pages/function_options/action_options/output.html:4
+#: mycodo_flask/templates/pages/function_options/action_options/output_pwm.html:4
+msgid "What output to manipulate"
+msgstr "要操纵什么输出"
+
+#: mycodo_flask/templates/pages/function_options/action_options/output.html:14
+msgid "Turn the output on or off"
+msgstr "打开或关闭输出"
+
+#: mycodo_flask/templates/pages/function_options/action_options/output.html:23
+msgid "How long to turn the output on (optional)"
+msgstr "打开输出多长时间（可选）"
+
+#: mycodo_flask/templates/pages/function_options/action_options/output_pwm.html:15
+msgid "What duty cycle to set the output"
+msgstr "设置输出的占空比"
+
+#: mycodo_flask/templates/pages/function_options/action_options/pause_actions.html:4
+msgid "How long to pause executing actions"
+msgstr "暂停执行操作多长时间"
+
+#: mycodo_flask/templates/pages/function_options/action_options/photo.html:3
+#: mycodo_flask/templates/pages/function_options/action_options/photo_email.html:12
+#: mycodo_flask/templates/pages/function_options/action_options/video_email.html:12
+msgid "Camera to capture with"
+msgstr "用相机捕捉"
+
+#: mycodo_flask/templates/pages/function_options/action_options/setpoint_pid.html:12
+msgid "The value to set the PID setpoint"
+msgstr "设置PID设定值的值"
+
+#: mycodo_flask/templates/pages/function_options/action_options/setpoint_pid_lower.html:12
+msgid "The amount to lower the PID setpoint by"
+msgstr ""
+
+#: mycodo_flask/templates/pages/function_options/action_options/setpoint_pid_raise.html:12
+msgid "The amount to raise the PID setpoint by"
+msgstr ""
+
+#: mycodo_flask/templates/pages/function_options/action_options/video.html:2
+msgid "Video Duration (seconds)"
+msgstr "视频时长（秒）"
+
+#: mycodo_flask/templates/pages/function_options/action_options/video.html:3
+msgid "Duration to record video (sec)"
+msgstr "录制视频的持续时间（秒）"
 
 #: mycodo_flask/templates/pages/function_options/conditional_options/gpio_state.html:4
 msgid ""
@@ -3758,8 +3972,15 @@ msgid ""
 msgstr "用于测量状态的GPIO引脚。高电平时返回值为True，低电平时返回False。"
 
 #: mycodo_flask/templates/pages/function_options/conditional_options/measurement.html:21
+#: mycodo_flask/templates/pages/function_options/conditional_options/measurement_dict.html:21
 msgid "Do not accept measurements older than this age"
 msgstr "不接受超过此年龄的测量值"
+
+#: mycodo_flask/templates/pages/function_options/conditional_options/output_state.html:4
+msgid ""
+"Select the output to return the current state (\"on\", \"off\" or integer"
+" duty cycle)"
+msgstr ""
 
 #: mycodo_flask/templates/pages/function_options/pid_options/output_lower.html:5
 msgid ""
@@ -3828,8 +4049,15 @@ msgstr "升起"
 msgid "Falling"
 msgstr "落下"
 
+#: mycodo_flask/templates/pages/function_options/trigger_options/infrared_remote_input.html:4
+msgid "The program variable set in ~/.lircrc"
+msgstr ""
+
+#: mycodo_flask/templates/pages/function_options/trigger_options/infrared_remote_input.html:10
+msgid "The config variable set in ~/.lircrc"
+msgstr ""
+
 #: mycodo_flask/templates/pages/function_options/trigger_options/output.html:4
-#: mycodo_flask/templates/pages/function_options/trigger_options/output_duration.html:4
 #: mycodo_flask/templates/pages/function_options/trigger_options/output_pwm.html:4
 msgid "Trigger this conditional to act when this output turns on or off"
 msgstr "触发此条件以在此输出打开或关闭时执行"
@@ -3859,27 +4087,22 @@ msgid "greater than duration"
 msgstr "大于持续时间"
 
 #: mycodo_flask/templates/pages/function_options/trigger_options/output.html:21
+msgid "greater than or equal to duration"
+msgstr ""
+
+#: mycodo_flask/templates/pages/function_options/trigger_options/output.html:22
 msgid "less than duration"
 msgstr "少于持续时间"
 
-#: mycodo_flask/templates/pages/function_options/trigger_options/output.html:28
-#: mycodo_flask/templates/pages/function_options/trigger_options/output_duration.html:23
+#: mycodo_flask/templates/pages/function_options/trigger_options/output.html:23
+msgid "less than or equal to duration"
+msgstr ""
+
+#: mycodo_flask/templates/pages/function_options/trigger_options/output.html:30
 msgid ""
 "(Optional) Set this to a specific duration of time if the conditional "
 "should trigger when the output On duration equals this amount"
 msgstr "（可选）如果条件应在输出开启持续时间等于此数量时触发，则将此值设置为特定的持续时间"
-
-#: mycodo_flask/templates/pages/function_options/trigger_options/output_duration.html:14
-msgid "What action will trigger this conditional statement?"
-msgstr "什么动作会触发这个条件声明？"
-
-#: mycodo_flask/templates/pages/function_options/trigger_options/output_duration.html:16
-msgid "Greater Than or Equal"
-msgstr "大于或等于"
-
-#: mycodo_flask/templates/pages/function_options/trigger_options/output_duration.html:17
-msgid "Less Than or Equal"
-msgstr "小于或等于"
 
 #: mycodo_flask/templates/pages/function_options/trigger_options/output_pwm.html:15
 msgid ""
@@ -4077,177 +4300,183 @@ msgstr "无线433 MHz开启命令"
 msgid "Wireless 433 MHz Off command"
 msgstr "无线433 MHz关闭命令"
 
-#: mycodo_flask/templates/settings/alerts.html:10
+#: mycodo_flask/templates/settings/alerts.html:11
 msgid "Alerts Settings"
 msgstr "提醒设置"
 
-#: mycodo_flask/templates/settings/alerts.html:24
+#: mycodo_flask/templates/settings/alerts.html:25
 msgid "465 for SSL, 587 for TSL"
 msgstr "SSL为465，TSL为587"
 
-#: mycodo_flask/templates/settings/alerts.html:41
+#: mycodo_flask/templates/settings/alerts.html:42
 msgid "Usually your full email address"
 msgstr "通常是您的完整邮箱地址"
 
-#: mycodo_flask/templates/settings/alerts.html:47
+#: mycodo_flask/templates/settings/alerts.html:48
 msgid "Only enter a password here if you wish to change it"
 msgstr "如果您想更改密码，请在此处输入密码"
 
-#: mycodo_flask/templates/settings/alerts.html:59
+#: mycodo_flask/templates/settings/alerts.html:60
 msgid "Maximum number of alerts that can be emailed per hour."
 msgstr "每小时可通过电子邮件发送的最大警报数。"
 
-#: mycodo_flask/templates/settings/camera.html:10
+#: mycodo_flask/templates/settings/camera.html:11
 msgid "Camera Settings"
 msgstr "相机设置"
 
-#: mycodo_flask/templates/settings/camera.html:49
+#: mycodo_flask/templates/settings/camera.html:50
 msgid "Name for this Camera"
 msgstr "此相机的名称"
 
-#: mycodo_flask/templates/settings/camera.html:67
+#: mycodo_flask/templates/settings/camera.html:68
 msgid ""
 "Raspberry Pi Camera support doesn't appear to be enabled. Please enable "
 "it using the Raspberry Pi configuration or with the command 'sudo raspi-"
 "config'"
 msgstr "Raspberry Pi Camera支持似乎未启用。请使用Raspberry Pi配置或命令'sudo raspi-config'启用它"
 
-#: mycodo_flask/templates/settings/camera.html:116
+#: mycodo_flask/templates/settings/camera.html:117
 msgid "Path to save still image files. Leave blank to use default location."
 msgstr "保存静止图像文件的路径。留空以使用默认位置。"
 
-#: mycodo_flask/templates/settings/camera.html:122
+#: mycodo_flask/templates/settings/camera.html:123
 msgid "Path to save timelapse image files. Leave blank to use default location."
 msgstr "保存timelapse图像文件的路径。留空以使用默认位置。"
 
-#: mycodo_flask/templates/settings/camera.html:128
+#: mycodo_flask/templates/settings/camera.html:129
 msgid "Path to save video files. Leave blank to use default location."
 msgstr "保存视频文件的路径。留空以使用默认位置。"
 
-#: mycodo_flask/templates/settings/general.html:10
-#: mycodo_flask/utils/utils_settings.py:251
+#: mycodo_flask/templates/settings/general.html:11
+#: mycodo_flask/utils/utils_settings.py:254
 msgid "General Settings"
 msgstr "常规设置"
 
-#: mycodo_flask/templates/settings/general.html:18
+#: mycodo_flask/templates/settings/general.html:19
 msgid "Selecting a language will override the web browser's language"
 msgstr "选择语言将覆盖Web浏览器的语言"
 
-#: mycodo_flask/templates/settings/general.html:29
+#: mycodo_flask/templates/settings/general.html:30
 msgid "Which page to land on after logging in"
 msgstr "登录后要登陆的页面"
 
-#: mycodo_flask/templates/settings/general.html:43
+#: mycodo_flask/templates/settings/general.html:39
+msgid ""
+"Set the timeout (seconds) for Pyro connections (client-daemon "
+"communication). Requires daemon restart."
+msgstr ""
+
+#: mycodo_flask/templates/settings/general.html:50
 msgid ""
 "Check to force all web connections to use SSL (port 443) for greater "
 "security."
 msgstr "选中此选项可强制所有Web连接使用SSL（端口443）以提高安全性。"
 
-#: mycodo_flask/templates/settings/general.html:54
+#: mycodo_flask/templates/settings/general.html:61
 msgid ""
 "Check to prevent Success alert messages from appearing at the top of the "
 "page."
 msgstr "检查以防止成功警报消息显示在页面顶部。"
 
-#: mycodo_flask/templates/settings/general.html:65
+#: mycodo_flask/templates/settings/general.html:72
 msgid ""
 "Check to prevent Info alert messages from appearing at the top of the "
 "page."
 msgstr "检查以防止信息警报消息出现在页面顶部。"
 
-#: mycodo_flask/templates/settings/general.html:76
+#: mycodo_flask/templates/settings/general.html:83
 msgid ""
 "Check to prevent Warning alert messages from appearing at the top of the "
 "page."
 msgstr "检查以防止警告警报消息出现在页面顶部。"
 
-#: mycodo_flask/templates/settings/general.html:87
+#: mycodo_flask/templates/settings/general.html:94
 msgid "Hide tooltips that pop up over form inputs."
 msgstr "隐藏弹出表单输入的工具提示。"
 
-#: mycodo_flask/templates/settings/general.html:98
+#: mycodo_flask/templates/settings/general.html:105
 msgid "Check if you do not wish to send anonymous usage statistics."
 msgstr "检查您是否不希望发送匿名使用情况统计信息。"
 
-#: mycodo_flask/templates/settings/general.html:98
+#: mycodo_flask/templates/settings/general.html:105
 msgid "View collected statistics"
 msgstr "查看收集的统计信"
 
-#: mycodo_flask/templates/settings/general.html:109
+#: mycodo_flask/templates/settings/general.html:116
 msgid "Check if you would like Mycodo to automatically check for upgrades."
 msgstr "检查您是否希望Mycodo自动检查升级。"
 
-#: mycodo_flask/templates/settings/general.html:120
+#: mycodo_flask/templates/settings/general.html:127
 msgid "Set the maximum allowed amperage to be switched on at any given time"
 msgstr "设置在任何给定时间打开的最大允许安培数"
 
-#: mycodo_flask/templates/settings/general.html:126
+#: mycodo_flask/templates/settings/general.html:133
 msgid "Set the voltage used to power the devices powered by the outputs"
 msgstr "设置用于为输出供电的设备供电的电压"
 
-#: mycodo_flask/templates/settings/general.html:132
+#: mycodo_flask/templates/settings/general.html:139
 msgid "Set the cost per kilowatt-hour"
 msgstr "设定每千瓦时的成本"
 
-#: mycodo_flask/templates/settings/general.html:138
+#: mycodo_flask/templates/settings/general.html:145
 msgid "Set the unit of currency used to pay for the electricity"
 msgstr "设置用于支付电费的货币单位"
 
-#: mycodo_flask/templates/settings/general.html:144
+#: mycodo_flask/templates/settings/general.html:151
 msgid "Set a day of the month to calculate monthly power usage"
 msgstr "设置一个月中的某天来计算每月用电量"
 
-#: mycodo_flask/templates/settings/general.html:155
+#: mycodo_flask/templates/settings/general.html:162
 msgid ""
 "Automatically generate output usage reports on a daily/weekly/monthly "
 "schedule"
 msgstr "自动生成每日/每周/每月计划的输出使用报告"
 
-#: mycodo_flask/templates/settings/general.html:161
+#: mycodo_flask/templates/settings/general.html:168
 msgid "How often to generate a report"
 msgstr "生成报告的频率"
 
-#: mycodo_flask/templates/settings/general.html:171
+#: mycodo_flask/templates/settings/general.html:178
 msgid "Day Options: Daily: 1-7 (1=Monday), Monthly: 1-28"
 msgstr "日期选项：每日：1-7（1 =星期一），每月：1-28"
 
-#: mycodo_flask/templates/settings/input.html:10
+#: mycodo_flask/templates/settings/input.html:11
 msgid "Input Settings"
 msgstr "输入设置"
 
-#: mycodo_flask/templates/settings/input.html:32
+#: mycodo_flask/templates/settings/input.html:33
 msgid "Imported Input Modules"
 msgstr "导入的输入模块"
 
-#: mycodo_flask/templates/settings/measurement.html:115
-#: mycodo_flask/templates/settings/measurement.html:172
-#: mycodo_flask/templates/settings/measurement.html:218
+#: mycodo_flask/templates/settings/measurement.html:116
+#: mycodo_flask/templates/settings/measurement.html:173
+#: mycodo_flask/templates/settings/measurement.html:219
 msgid "Custom"
 msgstr "习惯"
 
-#: mycodo_flask/templates/settings/measurement.html:172
-#: mycodo_flask/templates/settings/measurement.html:319
+#: mycodo_flask/templates/settings/measurement.html:173
+#: mycodo_flask/templates/settings/measurement.html:320
 msgid "Units"
 msgstr "单位"
 
-#: mycodo_flask/templates/settings/measurement.html:218
+#: mycodo_flask/templates/settings/measurement.html:219
 msgid "Conversions"
 msgstr "转换"
 
-#: mycodo_flask/templates/settings/measurement.html:292
-#: mycodo_flask/templates/settings/measurement.html:319
+#: mycodo_flask/templates/settings/measurement.html:293
+#: mycodo_flask/templates/settings/measurement.html:320
 msgid "All"
 msgstr "所有"
 
-#: mycodo_flask/templates/settings/pi.html:10
+#: mycodo_flask/templates/settings/pi.html:11
 msgid "Raspberry Pi Settings"
 msgstr "Raspberry Pi设置"
 
-#: mycodo_flask/templates/settings/users.html:10
+#: mycodo_flask/templates/settings/users.html:11
 msgid "User Settings"
 msgstr "用户设置"
 
-#: mycodo_flask/templates/settings/users.html:124
+#: mycodo_flask/templates/settings/users.html:125
 msgid "Roles"
 msgstr "角色"
 
@@ -4370,29 +4599,29 @@ msgstr "选择DS18B20传感器"
 msgid "Select a resolution"
 msgstr "选择分辨率"
 
-#: mycodo_flask/utils/utils_conditional.py:128
-#: mycodo_flask/utils/utils_conditional.py:254
+#: mycodo_flask/utils/utils_conditional.py:59
+#: mycodo_flask/utils/utils_conditional.py:198
 #: mycodo_flask/utils/utils_trigger.py:100
 #, python-format
 msgid "Daemon response: %(resp)s"
 msgstr "守护进程响应: %(resp)s"
 
-#: mycodo_flask/utils/utils_conditional.py:194
-#: mycodo_flask/utils/utils_conditional.py:230
-#: mycodo_flask/utils/utils_conditional.py:274
+#: mycodo_flask/utils/utils_conditional.py:134
+#: mycodo_flask/utils/utils_conditional.py:170
+#: mycodo_flask/utils/utils_conditional.py:218
 msgid "Condition"
 msgstr "条件"
 
-#: mycodo_flask/utils/utils_dashboard.py:185
+#: mycodo_flask/utils/utils_dashboard.py:192
 #, python-format
 msgid "{dev} with ID %(id)s successfully added"
 msgstr "已成功添加ID为 %(id)s 的{dev}"
 
-#: mycodo_flask/utils/utils_function.py:354
+#: mycodo_flask/utils/utils_function.py:394
 msgid "Execute All"
 msgstr "执行全部"
 
-#: mycodo_flask/utils/utils_general.py:162
+#: mycodo_flask/utils/utils_general.py:164
 #: mycodo_flask/utils/utils_remote_host.py:160
 #: mycodo_flask/utils/utils_remote_host.py:164
 #: mycodo_flask/utils/utils_remote_host.py:168
@@ -4401,104 +4630,108 @@ msgstr "执行全部"
 msgid "Error: %(err)s"
 msgstr "错误: %(err)s"
 
-#: mycodo_flask/utils/utils_general.py:586
-#: mycodo_flask/utils/utils_general.py:601
-#: mycodo_flask/utils/utils_general.py:621
-#: mycodo_flask/utils/utils_general.py:626 mycodo_flask/utils/utils_lcd.py:222
-#: mycodo_flask/utils/utils_lcd.py:224
+#: mycodo_flask/utils/utils_general.py:594
+#: mycodo_flask/utils/utils_general.py:609
+#: mycodo_flask/utils/utils_general.py:629
+#: mycodo_flask/utils/utils_general.py:634 mycodo_flask/utils/utils_lcd.py:225
+#: mycodo_flask/utils/utils_lcd.py:227
 #, python-format
 msgid "%(msg)s"
 msgstr "%(msg)s"
 
-#: mycodo_flask/utils/utils_general.py:593
-#: mycodo_flask/utils/utils_output.py:282
-#: mycodo_flask/utils/utils_output.py:289
+#: mycodo_flask/utils/utils_general.py:601
 #: mycodo_flask/utils/utils_output.py:294
+#: mycodo_flask/utils/utils_output.py:301
+#: mycodo_flask/utils/utils_output.py:306
 #, python-format
 msgid "%(err)s"
 msgstr "%(err)s"
 
-#: mycodo_flask/utils/utils_general.py:594
+#: mycodo_flask/utils/utils_general.py:602
 #, python-format
 msgid "Entry with ID %(id)s not found"
 msgstr "未找到ID为 %(id)s 的条目"
 
-#: mycodo_flask/utils/utils_general.py:612
+#: mycodo_flask/utils/utils_general.py:620
 #, python-format
 msgid "Error in the %(field)s field - %(err)s"
 msgstr "%(field)s 字段中的错误 - %(err)s"
 
-#: mycodo_flask/utils/utils_general.py:660
+#: mycodo_flask/utils/utils_general.py:668
 msgid "Cannot move above the first item in the list"
 msgstr "无法移动到列表中的第一个项目之上"
 
-#: mycodo_flask/utils/utils_general.py:664
+#: mycodo_flask/utils/utils_general.py:672
 msgid "Cannot move below the last item in the list"
 msgstr "无法移动到列表中的最后一项之下"
 
-#: mycodo_flask/utils/utils_input.py:254
+#: mycodo_flask/utils/utils_input.py:286
 #, python-format
 msgid "%(type)s Input with ID %(id)s (%(uuid)s) successfully added"
 msgstr "%(type)s 已成功添加ID为 %(id)s (%(uuid)s) 的输入"
 
-#: mycodo_flask/utils/utils_input.py:286 mycodo_flask/utils/utils_input.py:475
-#: mycodo_flask/utils/utils_math.py:267
+#: mycodo_flask/utils/utils_input.py:318 mycodo_flask/utils/utils_input.py:552
+#: mycodo_flask/utils/utils_math.py:304
 msgid "Deactivate controller before modifying its settings"
 msgstr "在修改其设置之前停用控制器"
 
-#: mycodo_flask/utils/utils_input.py:291
+#: mycodo_flask/utils/utils_input.py:323
 msgid ""
 "Choose a Read Period equal to or greater than 7. The AM2315 may become "
 "unresponsive if the period is below 7."
 msgstr "选择等于或大于7的读取周期。如果周期低于7，AM2315可能会无响应。"
 
-#: mycodo_flask/utils/utils_input.py:299
+#: mycodo_flask/utils/utils_input.py:331
 msgid "The Read Period cannot be less than the Pre Output Duration"
 msgstr "读取周期不能小于预输出持续时间"
 
-#: mycodo_flask/utils/utils_input.py:305
+#: mycodo_flask/utils/utils_input.py:337
 msgid "Invalid device or improper permissions to read device"
 msgstr "设备无效或读取设备的权限不正确"
 
-#: mycodo_flask/utils/utils_input.py:598
+#: mycodo_flask/utils/utils_input.py:342
+msgid "Pin (GPIO) must be set"
+msgstr ""
+
+#: mycodo_flask/utils/utils_input.py:739
 msgid "Force Measurements"
 msgstr "力测量"
 
-#: mycodo_flask/utils/utils_input.py:607
+#: mycodo_flask/utils/utils_input.py:748
 msgid ""
 "Activate controller before attempting to force the acquisition of "
 "measurements"
 msgstr "在尝试强制采集测量之前激活控制器"
 
-#: mycodo_flask/utils/utils_lcd.py:107 mycodo_flask/utils/utils_lcd.py:136
-#: mycodo_flask/utils/utils_lcd.py:236 mycodo_flask/utils/utils_lcd.py:261
-#: mycodo_flask/utils/utils_lcd.py:269
+#: mycodo_flask/utils/utils_lcd.py:107 mycodo_flask/utils/utils_lcd.py:139
+#: mycodo_flask/utils/utils_lcd.py:239 mycodo_flask/utils/utils_lcd.py:264
+#: mycodo_flask/utils/utils_lcd.py:272
 msgid "Deactivate LCD controller before modifying its settings."
 msgstr "在修改其设置之前，请取消激活LCD控制器。"
 
-#: mycodo_flask/utils/utils_lcd.py:204
+#: mycodo_flask/utils/utils_lcd.py:207
 msgid "Cannot activate LCD if there are blank lines"
 msgstr "如果有空行，则无法激活LCD"
 
-#: mycodo_flask/utils/utils_lcd.py:368
+#: mycodo_flask/utils/utils_lcd.py:371
 msgid "Deactivate LCD controller before modifying its settings"
 msgstr "在修改其设置之前，请取消激活LCD控制器"
 
-#: mycodo_flask/utils/utils_lcd.py:371
+#: mycodo_flask/utils/utils_lcd.py:374
 msgid "The last display cannot be deleted"
 msgstr "无法删除最后一个显示"
 
-#: mycodo_flask/utils/utils_math.py:80
+#: mycodo_flask/utils/utils_math.py:81
 #, python-format
 msgid "%(type)s Math with ID %(id)s (%(uuid)s) successfully added"
 msgstr "%(type)s 已成功添加ID %(id)s (%(uuid)s) 的数学"
 
-#: mycodo_flask/utils/utils_math.py:109
+#: mycodo_flask/utils/utils_math.py:110
 msgid "Deactivate Math controller before modifying its settings"
 msgstr "在修改其设置之前，请停用Math控制器"
 
-#: mycodo_flask/utils/utils_math.py:114 mycodo_flask/utils/utils_pid.py:125
-#: mycodo_flask/utils/utils_pid.py:132
+#: mycodo_flask/utils/utils_math.py:115 mycodo_flask/utils/utils_pid.py:118
+#: mycodo_flask/utils/utils_pid.py:125
 msgid "Error in form field(s)"
 msgstr "表单字段中的错误"
 
@@ -4609,8 +4842,13 @@ msgid ""
 "(%(st)s)"
 msgstr "输入结束时间 (%(et)s) 不能与下一个条目的开始时间 (%(st)s) 重叠"
 
+#: mycodo_flask/utils/utils_misc.py:163
+#, python-format
+msgid "Energy Usage with ID %(id)s (%(uuid)s) successfully added"
+msgstr ""
+
 #: mycodo_flask/utils/utils_notes.py:218 mycodo_flask/utils/utils_notes.py:259
-#: mycodo_flask/utils/utils_settings.py:1278
+#: mycodo_flask/utils/utils_settings.py:1274
 msgid "File"
 msgstr "文件"
 
@@ -4622,138 +4860,138 @@ msgstr "数量无效"
 msgid "Acceptable values"
 msgstr "可接受的值"
 
-#: mycodo_flask/utils/utils_output.py:306
+#: mycodo_flask/utils/utils_output.py:318
 msgid "Actuate"
 msgstr "开动"
 
-#: mycodo_flask/utils/utils_output.py:314
+#: mycodo_flask/utils/utils_output.py:326
 msgid "Cannot modulate output with a GPIO of 0"
 msgstr "无法在GPIO为0的情况下调制输出"
 
-#: mycodo_flask/utils/utils_output.py:320
+#: mycodo_flask/utils/utils_output.py:332
 msgid "Value must be greater than 0"
 msgstr "值必须大于0"
 
-#: mycodo_flask/utils/utils_output.py:324
+#: mycodo_flask/utils/utils_output.py:336
 #, python-format
 msgid "Output turned on for %(sec)s seconds: %(rvalue)s"
 msgstr "输出开启 %(sec)s 秒: %(rvalue)s"
 
-#: mycodo_flask/utils/utils_output.py:330
+#: mycodo_flask/utils/utils_output.py:342
 msgid "Invalid pin"
 msgstr "无效的引脚"
 
-#: mycodo_flask/utils/utils_output.py:332
+#: mycodo_flask/utils/utils_output.py:344
 msgid "PWM Hertz must be a positive value"
 msgstr "PWM赫兹必须是正值"
 
-#: mycodo_flask/utils/utils_output.py:334
+#: mycodo_flask/utils/utils_output.py:346
 msgid "PWM duty cycle must be a positive value"
 msgstr "PWM占空比必须是正值"
 
-#: mycodo_flask/utils/utils_output.py:340
+#: mycodo_flask/utils/utils_output.py:352
 #, python-format
 msgid "PWM set to %(dc)s %% at %(hertz)s Hz: %(rvalue)s"
 msgstr "PWM设置为 %(dc)s %% at %(hertz)s Hz: %(rvalue)s"
 
-#: mycodo_flask/utils/utils_output.py:346
+#: mycodo_flask/utils/utils_output.py:358
 #, python-format
 msgid "Output turned on: %(rvalue)s"
 msgstr "输出已打开: %(rvalue)s"
 
-#: mycodo_flask/utils/utils_output.py:350
+#: mycodo_flask/utils/utils_output.py:362
 #, python-format
 msgid "Output turned off: %(rvalue)s"
 msgstr "输出关闭: %(rvalue)s"
 
-#: mycodo_flask/utils/utils_output.py:354
+#: mycodo_flask/utils/utils_output.py:366
 msgid "Invalid value"
 msgstr "无效值"
 
-#: mycodo_flask/utils/utils_pid.py:152
+#: mycodo_flask/utils/utils_pid.py:145
 msgid "Raise and lower outputs cannot be the same"
 msgstr "提升和降低输出不能相同"
 
-#: mycodo_flask/utils/utils_pid.py:232
+#: mycodo_flask/utils/utils_pid.py:221 mycodo_flask/utils/utils_pid.py:230
 msgid "A valid Measurement is required"
 msgstr "需要有效的测量"
 
-#: mycodo_flask/utils/utils_pid.py:235
+#: mycodo_flask/utils/utils_pid.py:234
 msgid "A Raise Output and/or a Lower Output is required"
 msgstr "需要提升输出和/或低输出"
 
-#: mycodo_flask/utils/utils_pid.py:265
+#: mycodo_flask/utils/utils_pid.py:261
 msgid ""
 "Cannot activate PID controller if the associated sensor controller is "
 "inactive"
 msgstr "如果相关的传感器控制器处于非活动状态，则无法激活PID控"
 
-#: mycodo_flask/utils/utils_pid.py:272
+#: mycodo_flask/utils/utils_pid.py:268
 msgid ""
 "Cannot activate PID controller if raise and/or lower output IDs are not "
 "selected"
 msgstr "如果未选择上升和/或下限输出ID，则无法激活PID控制器"
-
-#: mycodo_flask/utils/utils_pid.py:358
-msgid "Output already in use by another active PID controller"
-msgstr "输出已被另一个有效PID控制器使用"
 
 #: mycodo_flask/utils/utils_remote_host.py:148
 #, python-format
 msgid "Remote Host %(host)s with ID %(id)s (%(uuid)s) successfully added"
 msgstr "已成功添加ID为 %(id)s (%(uuid)s) 的远程主机 %(host)s"
 
-#: mycodo_flask/utils/utils_settings.py:78
+#: mycodo_flask/utils/utils_settings.py:81
 msgid "User Role"
 msgstr "用户角色"
 
-#: mycodo_flask/utils/utils_settings.py:140
+#: mycodo_flask/utils/utils_settings.py:143
 msgid "Another user already has that email address."
 msgstr "另一位用户已拥有该电子邮件地址。"
 
-#: mycodo_flask/utils/utils_settings.py:187
+#: mycodo_flask/utils/utils_settings.py:190
 msgid "Invalid password"
 msgstr "无效的密码"
 
-#: mycodo_flask/utils/utils_settings.py:501
+#: mycodo_flask/utils/utils_settings.py:497
 #, python-format
 msgid "Measurement with ID %(id)s (%(uuid)s) successfully added"
 msgstr "成功添加ID %(id)s (%(uuid)s) 的测量值"
 
-#: mycodo_flask/utils/utils_settings.py:565
-#: mycodo_flask/utils/utils_settings.py:606
-#: mycodo_flask/utils/utils_settings.py:648
+#: mycodo_flask/utils/utils_settings.py:561
+#: mycodo_flask/utils/utils_settings.py:602
+#: mycodo_flask/utils/utils_settings.py:644
 msgid "Unit"
 msgstr "单元"
 
-#: mycodo_flask/utils/utils_settings.py:587
+#: mycodo_flask/utils/utils_settings.py:583
 #, python-format
 msgid "Unit with ID %(id)s (%(uuid)s) successfully added"
 msgstr "已成功添加ID为 %(id)s (%(uuid)s) 的单位"
 
-#: mycodo_flask/utils/utils_settings.py:677
-#: mycodo_flask/utils/utils_settings.py:719
-#: mycodo_flask/utils/utils_settings.py:752
+#: mycodo_flask/utils/utils_settings.py:673
+#: mycodo_flask/utils/utils_settings.py:715
+#: mycodo_flask/utils/utils_settings.py:748
 msgid "Conversion"
 msgstr "转变"
 
-#: mycodo_flask/utils/utils_settings.py:700
+#: mycodo_flask/utils/utils_settings.py:696
 #, python-format
 msgid "Conversion with ID %(id)s (%(uuid)s) successfully added"
 msgstr "已成功添加ID为 %(id)s (%(uuid)s) 的转换"
 
-#: mycodo_flask/utils/utils_settings.py:965
+#: mycodo_flask/utils/utils_settings.py:961
 msgid "Pi Settings"
 msgstr "Pi设置"
 
-#: mycodo_flask/utils/utils_settings.py:975
+#: mycodo_flask/utils/utils_settings.py:971
 msgid "Alert Settings"
 msgstr "警报设置"
 
-#: mycodo_flask/utils/utils_settings.py:987
+#: mycodo_flask/utils/utils_settings.py:983
 #, python-format
 msgid ""
 "Test email sent to %(recip)s. Check your inbox to see if it was "
 "successful."
 msgstr "测试发送给 %(recip)s 的电子邮件。检查收件箱是否成功。"
+
+#: mycodo_flask/utils/utils_settings.py:1298
+msgid "Reset email counter"
+msgstr ""
 

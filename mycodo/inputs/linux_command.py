@@ -70,11 +70,11 @@ class InputModule(AbstractInput):
     def __init__(self, input_dev, testing=False):
         super(InputModule, self).__init__(input_dev, testing=testing, name=__name__)
 
-        # custom options
+        # Initialize custom options
         self.command_timeout = None
         self.execute_as_user = None
         self.current_working_dir = None
-        # set custom_options
+        # Set custom options
         self.setup_custom_options(
             INPUT_INFORMATION['custom_options'], input_dev)
 

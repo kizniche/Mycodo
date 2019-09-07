@@ -97,9 +97,9 @@ class InputModule(AbstractInput):
         self.i2c_address = None
         self.i2c_bus = None
 
-        # custom options
+        # Initialize custom options
         self.max_age = None
-        # set custom_options
+        # Set custom options
         self.setup_custom_options(
             INPUT_INFORMATION['custom_options'], input_dev)
 

@@ -134,11 +134,11 @@ class InputModule(AbstractInput):
         self.initialized = False
         self.last_downloaded_timestamp = None
 
-        # custom options
+        # Initialize custom options
         self.download_stored_data = None
         self.logging_interval_ms = None
         self.logging_interval = None
-        # set custom_options
+        # Set custom options
         self.setup_custom_options(
             INPUT_INFORMATION['custom_options'], input_dev)
         self.logging_interval_ms = self.logging_interval * 1000

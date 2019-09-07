@@ -93,10 +93,10 @@ class InputModule(AbstractInput):
 
         self.fan_is_on = False
 
-        # custom options
+        # Initialize custom options
         self.fan_modulate = None
         self.fan_seconds = None
-        # set custom_options
+        # Set custom options
         self.setup_custom_options(
             INPUT_INFORMATION['custom_options'], input_dev)
 

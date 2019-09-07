@@ -8,7 +8,6 @@
 #
 # Fedora
 # sudo yum install pandoc texlive texlive-collection-latexextra
-#
 
 INSTALL_DIRECTORY=$( cd "$( dirname "${BASH_SOURCE[0]}" )/../../" && pwd -P )
 cd ${INSTALL_DIRECTORY}

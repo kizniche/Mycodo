@@ -540,11 +540,11 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <li>Determine what relays you will need to power your electric devices. The Raspberry Pi is capable of directly switching relays (using a 3.3-volt signal). Remember to select a relay that can handle the load and doesn’t exceed the maximum current draw from the Raspberry Pi GPIO pins.</li>
 <li>See the <a href="#device-specific-information">Device Specific Information</a> for information about what sensors are supported. Acquire sensor(s) and relay(s) and connect them to the Raspberry Pi according to the manufacturer’s instructions.</li>
 <li>On the <code>Setup -&gt; Data</code> page, create a new input using the drop-down to select the correct sensor or input device. Configure the input with the correct communication pins and other options. Activate the input to begin recording measurements to the database.</li>
-<li>Go to the <code>Live</code> page to ensure there is recent data being acquired from the input.</li>
+<li>Go to the <code>Data -&gt; Live</code> page to ensure there is recent data being acquired from the input.</li>
 <li>On the <code>Setup -&gt; Output</code> page, add a relay and configure the GPIO pin that switches it, whether the relay switches On when the signal is HIGH or LOW, and what state (On or Off) to set the relay when Mycodo starts. A pulse-width modulated (PWM) output may also be used, among others.</li>
 <li>Test the relay by switching it On and Off or generating a PWM signal from the <code>Setup -&gt; Output</code> page and make sure the device connected to the relay turns On when you select “On”, and Off when you select “Off”.</li>
 <li>On the <code>Setup -&gt; Function</code> page, create a PID controller with the appropriate input, output, and other parameters. Activate the PID controller.</li>
-<li>On the <code>Dash</code> page, create a graph that includes the input measurement, the output that is being used by the PID, and the PID output and setpoint. This provides a good visualization for tuning the PID. See <a href="#quick-setup-examples">Quick Setup Examples</a> for a greater detail of this process and tuning tips.</li>
+<li>On the <code>Data -&gt; Dashboard</code> page, create a graph that includes the input measurement, the output that is being used by the PID, and the PID output and setpoint. This provides a good visualization for tuning the PID. See <a href="#quick-setup-examples">Quick Setup Examples</a> for a greater detail of this process and tuning tips.</li>
 </ol>
 <hr />
 <p><em>Can I communicate with Mycodo from the command line?</em></p>
@@ -563,7 +563,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <li>In the options of the Redundancy controller, change the order you wish to use the sensors under Order of Use. For this example, we will use the default order (Sensor1, Sensor2, Sensor3).</li>
 <li>In the options of the Redundancy controller, under Measurement Settings, select Celsius for the Measurement Unit and click Save under Measurement Settings.</li>
 <li>Activate the Redundancy Math controller.</li>
-<li>Go to the Live page and verify the Redundancy Math controller is working correctly by returning a value from one of the three selected Inputs. If the first sensor is working correctly, it should return this value. You can deactivate the first sensor (mimicking the first sensor stopped working) and see if the second sensor’s value is then returned.</li>
+<li>Go to the <code>Data -&gt; Live</code> page and verify the Redundancy Math controller is working correctly by returning a value from one of the three selected Inputs. If the first sensor is working correctly, it should return this value. You can deactivate the first sensor (mimicking the first sensor stopped working) and see if the second sensor’s value is then returned.</li>
 <li>Go to the <code>Setup -&gt; Function</code> page and select the new Redundancy Math controller for the PID Measurement option.</li>
 </ol>
 <p>The PID controller will now use the measurement returned from the Redundancy Math controller, which in turn will acquire its measurement in the following way:</p>
@@ -656,6 +656,10 @@ optional arguments:
 <p>Data are individual pieces of information stored for later use. They may be values acquired from sensors, signals from analog-to-digital controllers, a response from a command, or even math performed on other data to produce an average, to name a few. Add, configure, and activate Inputs to begin recording measurements to the database and allow them to be used throughout Mycodo.</p>
 <h3 id="input">Input</h3>
 <p>Inputs, such as sensors, ADC signals, or even a response from a command, enable measuring conditions in the environment or elsewhere, which will be stored in a time-series database (InfluxDB). This database will provide measurements for <a href="#graphs">Graphs</a>, <a href="#lcds">LCDs</a>, <a href="#pid-controllers">PID Controllers</a>, <a href="#conditional-statements">Conditional Statements</a>, and other parts of Mycodo to operate from. Add, configure, and activate inputs to begin recording measurements to the database and allow them to be used throughout Mycodo.</p>
+<h4 id="custom-inputs">Custom Inputs</h4>
+<p>Before discussing the built-in Inputs, it should be noted that there is an Input import system in Mycodo that allows user-created Inputs to be used in the Mycodo system. Custom Inputs can be uploaded on the <code>`Config -&gt; Inputs</code>` <code>Configure -&gt; Inputs</code> page. After import, they will be available to use on the <code>Setup -&gt; Data</code> page.</p>
+<p>Additionally, I have another github repository devoted to Custom Inputs that are not included in the built-in set. These can be found at <a href="https://github.com/kizniche/Mycodo-custom-inputs">kizniche/Mycodo-custom-inputs</a>.</p>
+<h4 id="built-in-inputs">Built-In Inputs</h4>
 <p>In addition to several supported sensors and devices, a Linux command may be specified that will be executed and the return value stored in the measurement database to be used throughout the Mycodo system.</p>
 <table>
 <colgroup>
@@ -2573,7 +2577,7 @@ measurement <span class="op">=</span> <span class="va">self</span>.measure(<span
 </table>
 <h2 id="diagnostic-settings">Diagnostic Settings</h2>
 <p><code>[Gear Icon] -&gt; Configure -&gt; Diagnostics</code></p>
-<p>Sometimes issues arise in the system as a result of incompatible configurations, either the result of a misconfigured part of the system (Input, Output, etc.) or an update that didn’t properly handle a database upgrade, or other unforeseen issue. Sometimes it is necessary to perform diagnostic actions that can determine the cause of the issue or fix the issue itself. The options below are meant to alleviate issues, such as a misconfigured dashboard element causing an error on the <code>Dash</code> page, which may cause an inability to access the <code>Dash</code> page to correct the issue. Deleting all Dashboard Elements may be the most economical method to enable access to the <code>Dash</code> page again, at the cost of having to readd all the Dashboard Elements that were once there.</p>
+<p>Sometimes issues arise in the system as a result of incompatible configurations, either the result of a misconfigured part of the system (Input, Output, etc.) or an update that didn’t properly handle a database upgrade, or other unforeseen issue. Sometimes it is necessary to perform diagnostic actions that can determine the cause of the issue or fix the issue itself. The options below are meant to alleviate issues, such as a misconfigured dashboard element causing an error on the <code>Data -&gt; Dashboard</code> page, which may cause an inability to access the <code>Data -&gt; Dashboard</code> page to correct the issue. Deleting all Dashboard Elements may be the most economical method to enable access to the <code>Data -&gt; Dashboard</code> page again, at the cost of having to readd all the Dashboard Elements that were once there.</p>
 <table>
 <colgroup>
 <col style="width: 39%"></col>
@@ -2606,7 +2610,7 @@ measurement <span class="op">=</span> <span class="va">self</span>.measure(<span
 <p>The following link provides the full list of available INPUT_INFORMATION options along with descriptions:</p>
 <p><a href="https://github.com/kizniche/Mycodo/tree/master/mycodo/inputs/examples/example_all_options_temperature.py" class="uri">https://github.com/kizniche/Mycodo/tree/master/mycodo/inputs/examples/example_all_options_temperature.py</a></p>
 <h2 id="dashboard">Dashboard</h2>
-<p><code>Dash</code></p>
+<p><code>Data -&gt; Dashboard</code></p>
 <p>The dashboard is where you can add pieces of data for easy viewing. It is highly customizable and provides an easy way to see exactly what data you want to see on one screen.</p>
 <table>
 <colgroup>
@@ -2953,10 +2957,10 @@ measurement <span class="op">=</span> <span class="va">self</span>.measure(<span
 </tbody>
 </table>
 <h2 id="live-measurements">Live Measurements</h2>
-<p><code>Live</code></p>
+<p><code>Data -&gt; Live</code></p>
 <p>The <code>Live</code> page is the first page a user sees after logging in to Mycodo. It will display the current measurements being acquired from Input and Math controllers. If there is nothing displayed on the <code>Live</code> page, ensure an Input or Math controller is both configured correctly and activated. Data will be automatically updated on the page from the measurement database.</p>
 <h2 id="asynchronous-graphs">Asynchronous Graphs</h2>
-<p><code>Async</code></p>
+<p><code>Data -&gt; Asynchronous Graphs</code></p>
 <p>A graphical data display that is useful for viewing data sets spanning relatively long periods of time (weeks/months/years), which could be very data- and processor-intensive to view as a Live Graph. Select a time frame and data will be loaded from that time span, if it exists. The first view will be of the entire selected data set. For every view/zoom, 700 data points will be loaded. If there are more than 700 data points recorded for the time span selected, 700 points will be created from an averaging of the points in that time span. This enables much less data to be used to navigate a large data set. For instance, 4 months of data may be 10 megabytes if all of it were downloaded. However, when viewing a 4 month span, it’s not possible to see every data point of that 10 megabytes, and aggregating of points is inevitable. With asynchronous loading of data, you only download what you see. So, instead of downloading 10 megabytes every graph load, only ~50kb will be downloaded until a new zoom level is selected, at which time only another ~50kb is downloaded.</p>
 <p>Note: Live Graphs require measurements to be acquired, therefore at least one sensor needs to be added and activated in order to display live data.</p>
 <h2 id="notes">Notes</h2>
@@ -3034,7 +3038,7 @@ measurement <span class="op">=</span> <span class="va">self</span>.measure(<span
 <p>The dependency page allows viewing of dependency information and the ability to initiate their installation.</p>
 <p>During the installation of Mycodo, there is an option to select which dependencies to install. If “Minimal Install” or “Custom Install” was selected (rather than “Full Install”), there may be unmet dependencies on your system. Don’t worry, this isn’t necessarily a problem. These optional dependencies only need to be installed when there’s a particular feature you want to use. When a user attempts to use a feature that has an unmet dependency, the user will be forwarded to the Dependency page in order to install it.</p>
 <h2 id="camera">Camera</h2>
-<p><code>Cam</code></p>
+<p><code>More -&gt; Camera</code></p>
 <p>Once a cameras has been set up (in the <a href="#camera-settings">Camera Settings</a>), it may be used to capture still images, create time-lapses, and stream video. Cameras may also be used by <a href="#conditional-statements">Conditional Statements</a> to trigger a camera image or video capture (as well as the ability to email the image/video with a notification).</p>
 <h2 id="energy-usage">Energy Usage</h2>
 <p><code>More -&gt; Energy Usage</code></p>
