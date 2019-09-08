@@ -232,11 +232,6 @@ sleep 30
 
 cd ${INSTALL_DIRECTORY}/Mycodo
 
-if ! ${INSTALL_DIRECTORY}/Mycodo/mycodo/scripts/upgrade_commands.sh update-alembic ; then
-  printf "Failed: Error while updating database with alembic.\n"
-  error_found
-fi
-
 printf "\nRunning post-upgrade script...\n"
 if ! ${INSTALL_DIRECTORY}/Mycodo/mycodo/scripts/upgrade_post.sh ; then
   printf "Failed: Error while running post-upgrade script.\n"

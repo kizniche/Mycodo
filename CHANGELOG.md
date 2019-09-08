@@ -1,3 +1,10 @@
+## 7.7.2 (Unreleased)
+
+### Bugfixes
+
+ - Remove redundant alembic upgrade that can cause upgrade errors
+
+
 ## 7.7.1 (2019.09.08)
 
 ### Bugfixes
