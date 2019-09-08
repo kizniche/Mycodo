@@ -4,7 +4,7 @@ After=syslog.target
 
 [Service]
 Type=forking
-ExecStart=/usr/local/bin/pigpiod -s 1
+ExecStart=/usr/bin/pigpiod -s 1
 ExecStop=/usr/bin/killall pigpiod
 ExecReload=/bin/kill -HUP $MAINPID
 Restart=always
