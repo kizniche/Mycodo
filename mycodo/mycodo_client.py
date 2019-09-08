@@ -23,18 +23,34 @@
 #
 #  Contact at kylegabriel.com
 
+
+
 import argparse
 import datetime
 import logging
-import signal
 import socket
 import sys
 
 import os
+
 sys.path.append(os.path.abspath(os.path.join(os.path.realpath(__file__), '../..')))
 
 import requests
-import Pyro4
+
+# TODO: Remove this in next major revision
+try:
+    import Pyro4
+except:
+    import subprocess
+    command = '/home/pi/Mycodo/env/bin/pip install Pyro4'
+    cmd = subprocess.Popen(command, stdout=subprocess.PIPE, shell=True)
+    cmd_out, cmd_err = cmd.communicate()
+    cmd_status = cmd.wait()
+    try:
+        import Pyro4
+    except:
+        print("Couldn't import Pyro4")
+
 from influxdb import InfluxDBClient
 
 from mycodo.config import INFLUXDB_DATABASE
