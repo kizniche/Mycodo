@@ -105,7 +105,7 @@ class TriggerController(AbstractController, threading.Thread):
         self.program = None
         self.word = None
 
-    def run(self):
+    def loop(self):
         # Pause loop to modify trigger.
         # Prevents execution of trigger while variables are
         # being modified.

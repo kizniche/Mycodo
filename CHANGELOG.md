@@ -1,3 +1,11 @@
+## 7.7.1 (2019.09.08)
+
+### Bugfixes
+
+ - Fix issue with Pyro4
+ - Fix issue with Trigger controllers
+
+
 ## 7.7.0 (2019.09.08)
 
 This release changes how user-created Python code is executed. This affects Python Code Inputs and Conditional Functions. All effort was made to reformat user scripts during the upgrade process to adhere to the new formatting guidelines, however there are a few instances where scripts could not be updated properly and will need to be done manually by the user before they will work properly. After upgrading your system, ensure your code conforms to the following guidelines:

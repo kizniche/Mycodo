@@ -272,9 +272,9 @@ class ComThread(threading.Thread):
 
     def run(self):
         try:
+            ns = Pyro4.locateNS(hmac_key='YTBTPmNZFbpJB99qJrtNUVY9htaMQ8ps')  # find the name server
             daemon = Pyro4.Daemon()  # make a Pyro daemon
             daemon._pyroHmacKey = b"YTBTPmNZFbpJB99qJrtNUVY9htaMQ8ps"
-            ns = Pyro4.locateNS(hmac_key='YTBTPmNZFbpJB99qJrtNUVY9htaMQ8ps')  # find the name server
             uri = daemon.register(PyroServer(self.mycodo))  # register the PyroServer class as a Pyro object
             ns.register("mycodo.pyro_server", uri)  # register the object with a name in the name server
 
@@ -303,6 +303,7 @@ def monitor_pyro(logger_pyro):
         if now > log_timer:
             try:
                 pyro_server = Pyro4.Proxy("PYRONAME:mycodo.pyro_server")
+                pyro_server._pyroHmacKey = b"YTBTPmNZFbpJB99qJrtNUVY9htaMQ8ps"
                 logger_pyro.debug(
                     "Pyro4 communication thread (30-minute timer): "
                     "daemon_status()={stat}".format(stat=pyro_server.daemon_status))
