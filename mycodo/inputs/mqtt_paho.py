@@ -79,7 +79,7 @@ class InputModule(AbstractInput):
         super(InputModule, self).__init__(input_dev, testing=testing, name=__name__)
 
         # Initialize custom options
-        self.mqtt_host = None
+        self.mqtt_hostname = None
         self.mqtt_port = None
         self.mqtt_channel = None
         self.mqtt_keepalive = None
@@ -112,14 +112,14 @@ class InputModule(AbstractInput):
         """ Set up the connection to the MQTT Server """
         try:
             self.client.connect(
-                self.mqtt_host,
+                self.mqtt_hostname,
                 port=self.mqtt_port,
                 keepalive=self.mqtt_keepalive)
             self.logger.info("Connected to {} as {}".format(
-                self.mqtt_host, self.mqtt_clientid))
+                self.mqtt_hostname, self.mqtt_clientid))
         except:
             self.logger.error("Could not connect to mqtt host: {}:{}".format(
-                self.mqtt_host, self.mqtt_port))
+                self.mqtt_hostname, self.mqtt_port))
 
     def subscribe(self):
         """ Set up the subscriptions to the proper MQTT channels to listen to """
