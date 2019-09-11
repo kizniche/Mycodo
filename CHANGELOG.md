@@ -3,6 +3,9 @@
 ### Bugfixes
 
  - Remove redundant alembic upgrade that can cause upgrade errors
+ - Fix moving Conditional code during upgrade
+
+# TODO Add db revision that saves conditional code to user code directory
 
 
 ## 7.7.1 (2019.09.08)
