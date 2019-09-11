@@ -198,6 +198,9 @@ class DaemonControl:
     def output_state(self, output_id):
         return self.pyro_server.output_state(output_id)
 
+    def output_sec_currently_on(self, output_id):
+        return self.pyro_server.output_sec_currently_on(output_id)
+
     def refresh_daemon_camera_settings(self):
         return self.pyro_server.refresh_daemon_camera_settings()
 

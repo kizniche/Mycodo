@@ -176,8 +176,12 @@ class PyroServer(object):
         return self.mycodo.refresh_daemon_trigger_settings(unique_id)
 
     def output_state(self, output_id):
-        """Return the output state (not pin but whether output is on or off"""
+        """Return the output state (not pin but whether output is on or off)"""
         return self.mycodo.output_state(output_id)
+
+    def output_sec_currently_on(self, output_id):
+        """Return how long the output has been on (0 if off)"""
+        return self.mycodo.output_sec_currently_on(output_id)
 
     def output_on(self,
             output_id, duration=0.0, min_off=0.0,
@@ -939,6 +943,20 @@ class DaemonController:
             return self.controller['Output'].output_state(output_id)
         except Exception as except_msg:
             message = "Could not query output state:" \
+                      " {err}".format(err=except_msg)
+            self.logger.exception(message)
+
+    def output_sec_currently_on(self, output_id):
+        """
+        Return how long the the output has been on (0 for off)
+
+        :param output_id: Unique ID for output
+        :type output_id: str
+        """
+        try:
+            return self.controller['Output'].output_sec_currently_on(output_id)
+        except Exception as except_msg:
+            message = "Could not query output on duration:" \
                       " {err}".format(err=except_msg)
             self.logger.exception(message)
 

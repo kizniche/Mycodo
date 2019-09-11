@@ -6,6 +6,7 @@
  - Fix moving Conditional/input code during upgrade
  - Generate Conditional/input code for next upgrade
  - Fix MQTT Input ([#685](https://github.com/kizniche/mycodo/issues/685))
+ - Add output_sec_currently_on() to mycodo_client.py, for availability in user commands ([Ref](https://kylegabriel.com/forum/general-discussion/conditional-wit-output-duration/#post-159))
 
 # TODO Add db revision that saves conditional code to user code directory
 

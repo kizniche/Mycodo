@@ -1206,6 +1206,32 @@ output_id = '{}'
                     return self.pwm_state[output_id]
         return 'off'
 
+    def output_on_duration(self, output_id):
+        """
+        :param output_id: Unique ID for each output
+        :type output_id: str
+
+        :return: How long the output has been on for
+        :rtype: float
+        """
+        if output_id in self.output_type:
+            if self.output_type[output_id] == 'wired':
+                if (self.output_pin[output_id] is not None and
+                        self.output_on_state[output_id] == GPIO.input(self.output_pin[output_id])):
+                    return 'on'
+            elif self.output_type[output_id] in ['command',
+                                                 'python',
+                                                 'wireless_rpi_rf']:
+                if (self.output_time_turned_on[output_id] or
+                        self.output_on_until[output_id] > datetime.datetime.now()):
+                    return 'on'
+            elif self.output_type[output_id] in ['pwm',
+                                                 'command_pwm',
+                                                 'python_pwm']:
+                if output_id in self.pwm_state and self.pwm_state[output_id]:
+                    return self.pwm_state[output_id]
+        return 0
+
     def set_off_until(self, dt_off_until, output_id):
         with session_scope(MYCODO_DB_PATH) as new_session:
             mod_cont = new_session.query(Output).filter(
