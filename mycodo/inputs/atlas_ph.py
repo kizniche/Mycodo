@@ -158,9 +158,9 @@ class InputModule(AbstractInput):
 
             last_measurement = read_last_influxdb(
                 device_id,
-                measurement.unit,
-                measurement.measurement,
-                measurement.channel,
+                unit,
+                measurement,
+                channel,
                 self.max_age)
 
             if last_measurement:
