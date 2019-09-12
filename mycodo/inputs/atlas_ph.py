@@ -268,14 +268,12 @@ class InputModule(AbstractInput):
                         "Sensor read unsuccessful: {err}".format(
                             err=ph_str))
                 elif ph_status == 'success':
-                    try:
-                        ph = ph_str
-                        if ',' in ph_str:
-                            ph = float(ph_str.split(',')[2])
-                        else:
-                            ph = float(ph_str)
-                    except:
-                        self.logger.exception("Convert pH string to float")
+                    if ',' in ph_str and str_is_float(ph_str.split(',')[2]):
+                        ph = float(ph_str.split(',')[2])
+                    elif str_is_float(ph_str):
+                        ph = float(ph_str)
+                    else:
+                        self.logger.error("Could not determine pH from returned string: '{}'".format(ph_str))
             else:
                 self.logger.error(
                     'I2C device is not set up. Check the log for errors.')
