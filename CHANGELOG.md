@@ -7,8 +7,6 @@
  - Generate Conditional/input code for next upgrade
  - Fix MQTT Input ([#685](https://github.com/kizniche/mycodo/issues/685))
 
-# TODO Add db revision that saves conditional code to user code directory
-
 
 ## 7.7.1 (2019.09.08)
 

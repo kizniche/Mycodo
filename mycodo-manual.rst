@@ -1373,6 +1373,14 @@ Note: Indentation must use 4 spaces (not 2 spaces, tabs, or other).
 |                           | also be changed to 'error' or 'debug'.          |
 +---------------------------+-------------------------------------------------+
 
+There are additional functions that can be used, but these must use the full
+unique ID (not an abridged version as the functions above). See
+/home/pi/Mycodo/mycodo/mycodo_client.py for the functions available for use.
+These may be accessed via the 'control' object. An example, below, will return
+how long the output has been on (or 0 if it's currently off):
+
+``output_on_seconds = control.output_sec_currently_on('1b6ada50-1e69-403a-9fa6-ec748b16dc23')``
+
 Since the Python code contained in the Conditional Statement must be formatted
 properly, it's best to familiarize yourself with the
 `basics of Python <https://realpython.com/python-conditional-statements/>`__.
