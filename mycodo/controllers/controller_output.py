@@ -277,7 +277,7 @@ class OutputController(AbstractController, threading.Thread):
             volume_ml = duration
             if state == 'on' and volume_ml > 0:
                 # Calculate command, given flow rate
-                minutes_to_run = self.output_flow_rate[output_id] * volume_ml
+                minutes_to_run = volume_ml / self.output_flow_rate[output_id]
 
                 write_cmd = 'D,{ml:.2f},{min:.2f}'.format(
                         ml=volume_ml, min=minutes_to_run)

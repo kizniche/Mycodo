@@ -7,6 +7,7 @@
  - Generate Conditional/input code for next upgrade
  - Fix MQTT Input ([#685](https://github.com/kizniche/mycodo/issues/685))
  - Fix Atlas pH Input issue ([#686](https://github.com/kizniche/mycodo/issues/686))
+ - Fix Atlas EZO Pump Input issue ([#562](https://github.com/kizniche/mycodo/issues/562))
  - Fix Atlas EZP Pump Output (UART) error on Output page
 
 
