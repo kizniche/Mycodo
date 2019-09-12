@@ -16,7 +16,7 @@
 {% elif each_output.interface == 'UART' %}
 
 <div class="col-auto">
-  {{form_mod_output.uart_location.label(class_='control-label')}}
+  <label class="control-label">{{dict_translation['uart_location']['title']}}</label>
   <div>
     {{form_mod_output.location(class_='form-control', value=each_output.location, **{'title': dict_translation['uart_location']['phrase']})}}
   </div>
