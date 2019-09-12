@@ -102,7 +102,7 @@ class OutputMod(FlaskForm):
         validators=[DataRequired()]
     )
     flow_rate = DecimalField(
-        TRANSLATIONS['trigger_functions_at_start']['title'],
+        TRANSLATIONS['flow_rate']['title'],
         widget=NumberInput(step='any'))
     save = SubmitField(TRANSLATIONS['save']['title'])
     delete = SubmitField(TRANSLATIONS['delete']['title'])
