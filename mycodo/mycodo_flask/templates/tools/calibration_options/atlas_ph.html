@@ -71,11 +71,13 @@ function startTimer() {
 
     {% if ui_stage == 'start' %}
 
-    <p>This guide will walk you through the calibration procedure for the Atlas Scientific pH Sensor. To complete this procedure, you will need three solutions, each with a different pH (pH 4, pH 7, and pH 10). At each step, you will be instructed to insert the pH probe into each solution and wait for the reading to equilibrate before proceeding. Between transferring the probe from one solution to another, you will be instructed to rinse the probe with distilled water. Instructions will be provided at each step of the way.</p>
+    <p>{{_('This guide will walk you through the calibration procedure for the Atlas Scientific pH Sensor. To complete this procedure, you will need at least one of the standard pH solutions (pH 4.0, pH 7.0, and pH 10.0). Instructions will be provided at each step.')}}</p>
 
-    <p>To begin calibration, have your probe properly connected to Mycodo, select the probe from the dropdown list, and click Begin Calibration.</p>
+    <p>{{_('To begin calibration, have your probe properly connected to Mycodo, select the probe from the dropdown list, and click Begin Calibration.')}}</p>
 
-    <p>To clear any currently-stored calibration from the sensor memory, click Clear Calibration.</p>
+    <p>{{_('To clear any currently-stored calibration from the sensor memory, click Clear Calibration.')}}</p>
+
+    <p style="color: red; font-weight: bold">{{_('NOTE: It is recommended to deactivate the pH Sensor Input prior to performing a calibration.')}}</p>
 
     <form method="post" action="/setup_atlas_ph">
     {{form_ph_calibrate.hidden_current_stage(value='start')}}
@@ -94,8 +96,8 @@ function startTimer() {
       <div class="col-auto small-gutters">
         <select class="selectpicker" id="point_calibration" name="point_calibration" title="" data-original-title="Select which pH points to calibrate">
           <option value="low,mid,high">All 3 Points (4.0, 7.0, 10.0)</option>
-          <option value="low,high">2 Points (4.0, 10.0)</option>
           <option value="low,mid">2 Points (4.0, 7.0)</option>
+          <option value="low,high">2 Points (4.0, 10.0)</option>
           <option value="mid,high">2 Points (7.0, 10.0)</option>
           <option value="low">1 Point (4.0)</option>
           <option value="mid">1 Point (7.0)</option>
@@ -145,7 +147,7 @@ function startTimer() {
       {% else %}
 
     <p>3. {{dict_translation['calibration']['title']}}{% if input_device_name %}: {{input_device_name}}{% endif %} {{selected_input.id}} ({{selected_input.name}})</p>
-    <p>{{_('Rinse the pH probe with distilled water and place it into the pH %(ph)s solution, then click Ready', ph='4.0')}}</p>
+    <p>{{_('Rinse the pH probe with distilled water, place it into the pH %(ph)s solution, then click Ready', ph='4.0')}}</p>
 
     <form method="post" action="/setup_atlas_ph">
     {{form_ph_calibrate.hidden_current_stage(value='low')}}
@@ -177,7 +179,7 @@ function startTimer() {
       {% else %}
 
     <p>2. {{dict_translation['calibration']['title']}}{% if input_device_name %}: {{input_device_name}}{% endif %} {{selected_input.id}} ({{selected_input.name}})</p>
-    <p>{{_('Rinse the pH probe with distilled water and place it into the pH %(ph)s solution, then click Ready', ph='7.0')}}</p>
+    <p>{{_('Rinse the pH probe with distilled water, place it into the pH %(ph)s solution, then click Ready', ph='7.0')}}</p>
 
     <form method="post" action="/setup_atlas_ph">
     {{form_ph_calibrate.hidden_current_stage(value='mid')}}
@@ -209,7 +211,7 @@ function startTimer() {
       {% else %}
 
     <p>4. {{dict_translation['calibration']['title']}}{% if input_device_name %}: {{input_device_name}}{% endif %} {{selected_input.id}} ({{selected_input.name}})</p>
-    <p>{{_('Rinse the pH probe with distilled water and place it into the pH %(ph)s solution, then click Ready', ph='10.0')}}</p>
+    <p>{{_('Rinse the pH probe with distilled water, place it into the pH %(ph)s solution, then click Ready', ph='10.0')}}</p>
 
     <form method="post" action="/setup_atlas_ph">
     {{form_ph_calibrate.hidden_current_stage(value='high')}}
