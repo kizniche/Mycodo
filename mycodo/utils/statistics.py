@@ -7,6 +7,7 @@ import time
 from collections import OrderedDict
 
 import geocoder
+import hashlib
 import os
 import random
 import requests
@@ -161,6 +162,35 @@ def return_stat_file_dict(csv_file):
         return OrderedDict((row[0], row[1]) for row in reader)
 
 
+def get_anonymous_id():
+    pid = "0"
+    try:
+        f = open('/proc/cpuinfo', 'r')
+        for line in f:
+            if line[0:6]=='Serial':
+              pid = line[10:26]
+        f.close()
+    except:
+        pid = "ER"
+
+    em = "0"
+    try:
+        f = open('/sys/class/net/eth0/address', 'r')
+        for line in f:
+            em = line
+        f.close()
+    except:
+        em = "ER"
+
+    try:
+        hash_string = '{}_{}'.format(pid, em).encode('utf-8')
+        anon_id = hashlib.sha256(hash_string).hexdigest()[:10]
+    except:
+        anon_id = '0000000000'
+
+    return anon_id
+
+
 def recreate_stat_file():
     """
     Create a statistics file with basic stats
@@ -170,8 +200,7 @@ def recreate_stat_file():
     """
     uid_gid = pwd.getpwnam('mycodo').pw_uid
     if not os.path.isfile(ID_FILE):
-        anonymous_id = ''.join([random.choice(
-            string.ascii_letters + string.digits) for _ in range(12)])
+        anonymous_id = get_anonymous_id()
         with open(ID_FILE, 'w') as write_file:
             write_file.write('{}'.format(anonymous_id))
         os.chown(ID_FILE, uid_gid, uid_gid)
@@ -180,7 +209,7 @@ def recreate_stat_file():
     with open(ID_FILE, 'r') as read_file:
         stat_id = read_file.readline().strip()
 
-    if not stat_id.isalnum() or len(stat_id) != 12:
+    if not stat_id.isalnum() or len(stat_id) != 10:
         stat_id = 'NoneNoneNone'
 
     new_stat_data = [

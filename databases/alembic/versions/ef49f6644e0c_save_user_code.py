@@ -19,6 +19,8 @@ from mycodo.databases.models import Input
 from mycodo.databases.utils import session_scope
 from mycodo.config import PATH_PYTHON_CODE_USER
 from mycodo.config import SQL_DATABASE_MYCODO
+from mycodo.config import ID_FILE
+from mycodo.config import STATS_CSV
 from mycodo.inputs.python_code import execute_at_creation
 from mycodo.mycodo_flask.utils.utils_misc import pre_statement_run
 from mycodo.utils.system_pi import assure_path_exists
@@ -84,6 +86,12 @@ def upgrade():
                                             None)
                     except Exception as msg:
                         print("Exception: {}".format(msg))
+
+    try:
+        os.remove(ID_FILE)
+        os.remove(STATS_CSV)
+    except:
+        pass
 
 def downgrade():
     pass
