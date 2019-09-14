@@ -70,14 +70,26 @@ def setup_atlas_ph():
     form_ph_calibrate = forms_calibration.CalibrationAtlasph()
 
     input_dev = Input.query.filter(Input.device == 'ATLAS_PH').all()
-    stage = 0
+    ui_stage = 'start'
+    backend_stage = None
     next_stage = None
     selected_input = None
+    selected_point_calibration = None
     input_device_name = None
     complete_with_error = None
 
-    if form_ph_calibrate.hidden_next_stage.data is not None:
-        next_stage = int(form_ph_calibrate.hidden_next_stage.data)
+    if form_ph_calibrate.hidden_current_stage.data:
+        backend_stage = form_ph_calibrate.hidden_current_stage.data
+
+    if form_ph_calibrate.hidden_selected_point_calibration.data:
+        selected_point_calibration = form_ph_calibrate.hidden_selected_point_calibration.data
+    elif form_ph_calibrate.point_calibration.data:
+        selected_point_calibration = form_ph_calibrate.point_calibration.data
+
+    if selected_point_calibration:
+        list_point_calibrations = selected_point_calibration.split(',')
+    else:
+        list_point_calibrations = []
 
     # Clear Calibration memory
     if form_ph_calibrate.clear_calibration.data:
@@ -91,11 +103,13 @@ def setup_atlas_ph():
         if isinstance(message, tuple):
             message_status = message[0]
             message_info = message[1]
-            message = "Calibration command returned from sensor: {}".format(message_status)
+            message = "Calibration command returned from sensor: {}".format(
+                message_status)
             if message_info:
                 message += ": {}".format(message_info)
         else:
-            message = "Calibration command returned from sensor: {}".format(message)
+            message = "Calibration command returned from sensor: {}".format(
+                message)
 
         if sensor_measurement != 'NA':
             message = "{} {}".format(sensor_measurement, message)
@@ -106,8 +120,8 @@ def setup_atlas_ph():
             flash(message, "success")
 
     # Begin calibration from Selected input
-    elif form_ph_calibrate.go_from_first_stage.data:
-        stage = 1
+    elif form_ph_calibrate.start_calibration.data:
+        ui_stage = 'temperature'
         selected_input = Input.query.filter_by(
             unique_id=form_ph_calibrate.selected_input_id.data).first()
         dict_inputs = parse_input_information()
@@ -123,7 +137,7 @@ def setup_atlas_ph():
     # Continue calibration from selected input
     elif (form_ph_calibrate.go_to_next_stage.data or
             form_ph_calibrate.go_to_last_stage.data or
-            (next_stage is not None and next_stage > 1)):
+            (backend_stage is not None and backend_stage not in ['start', 'temperature'])):
         selected_input = Input.query.filter_by(
             unique_id=form_ph_calibrate.hidden_input_id.data).first()
         dict_inputs = parse_input_information()
@@ -132,28 +146,47 @@ def setup_atlas_ph():
             if selected_input.device == each_input[0]:
                 input_device_name = each_input[1]
 
-    if next_stage in [2, 3, 4, 5]:
+    if backend_stage in ['temperature', 'low', 'mid', 'high']:
         time.sleep(2)  # Sleep makes querying sensor more stable
 
-    if next_stage == 2:
+        # Determine next ui_stage
+        if backend_stage == 'temperature':
+            next_stage = list_point_calibrations[0]
+            logger.error("next_stage1: {}".format(next_stage))
+        else:
+            current_stage_index = list_point_calibrations.index(backend_stage)
+            if current_stage_index == len(list_point_calibrations) - 1:
+                next_stage = 'complete'
+            else:
+                next_stage = list_point_calibrations[current_stage_index + 1]
+
+
+    if form_ph_calibrate.clear_calibration.data:
+        pass
+    elif backend_stage == 'temperature':
         if form_ph_calibrate.temperature.data is None:
-            flash(gettext("A valid temperature is required: %(temp)s is invalid.",
-                          temp=form_ph_calibrate.temperature.data), "error")
-            stage = 1
+            flash(gettext(
+                "A valid temperature is required: %(temp)s is invalid.",
+                temp=form_ph_calibrate.temperature.data), "error")
+            ui_stage = 'start'
         else:
             temp = '{temp:.2f}'.format(
                 temp=float(form_ph_calibrate.temperature.data))
-            stage, complete_with_error = dual_commands_to_sensor(
-                selected_input, 'temperature', temp, 'continuous', 1)
-    elif next_stage == 3:
-        stage, complete_with_error = dual_commands_to_sensor(
-            selected_input, 'mid', '7.0', 'continuous', 2)
-    elif next_stage == 4:
-        stage, complete_with_error = dual_commands_to_sensor(
-            selected_input, 'low', '4.0', 'continuous', 3)
-    elif next_stage == 5:
-        stage, complete_with_error = dual_commands_to_sensor(
-            selected_input, 'high', '10.0', 'end', 4)
+            ui_stage, complete_with_error = dual_commands_to_sensor(
+                selected_input, 'temperature', temp, 'continuous',
+                current_stage='temperature', next_stage=next_stage)
+    elif backend_stage == 'low':
+        ui_stage, complete_with_error = dual_commands_to_sensor(
+            selected_input, 'low', '4.0', 'continuous',
+            current_stage='low', next_stage=next_stage)
+    elif backend_stage == 'mid':
+        ui_stage, complete_with_error = dual_commands_to_sensor(
+            selected_input, 'mid', '7.0', 'continuous',
+            current_stage='mid', next_stage=next_stage)
+    elif backend_stage == 'high':
+        ui_stage, complete_with_error = dual_commands_to_sensor(
+            selected_input, 'high', '10.0', 'end',
+            current_stage='high', next_stage=next_stage)
 
     return render_template('tools/calibration_options/atlas_ph.html',
                            complete_with_error=complete_with_error,
@@ -161,7 +194,8 @@ def setup_atlas_ph():
                            input=input_dev,
                            input_device_name=input_device_name,
                            selected_input=selected_input,
-                           stage=stage)
+                           selected_point_calibration=selected_point_calibration,
+                           ui_stage=ui_stage)
 
 
 @blueprint.route('/setup_atlas_ph_measure/<input_id>')
@@ -233,7 +267,7 @@ def setup_atlas_ph_measure(input_id):
 
 
 def dual_commands_to_sensor(input_sel, first_cmd, amount,
-                            second_cmd, current_stage):
+                            second_cmd, current_stage, next_stage=None):
     """
     Handles the Atlas Scientific pH sensor calibration:
     Sends two consecutive commands to the sensor board
@@ -310,7 +344,7 @@ def dual_commands_to_sensor(input_sel, first_cmd, amount,
         else:
             flash(second_info_str, "success")
             # Advance to the next stage
-            return_stage = current_stage + 1
+            return_stage = next_stage
 
     return return_stage, return_error
 

@@ -28,14 +28,16 @@ class Calibration(FlaskForm):
 
 # Atlas Scientific pH sensor
 class CalibrationAtlasph(FlaskForm):
-    selected_input_id = StringField(lazy_gettext('Atlas pH Sensor'))
     hidden_input_id = StringField('Sensor ID', widget=widgets.HiddenInput())
+    hidden_current_stage = StringField('Stage', widget=widgets.HiddenInput())
+    hidden_selected_point_calibration = StringField(
+        'pH Points to Calibrate', widget=widgets.HiddenInput())
+    selected_input_id = StringField(lazy_gettext('Atlas pH Sensor'))
     clear_calibration = SubmitField(lazy_gettext('Clear Calibration'))
     temperature = DecimalField(
-        lazy_gettext('Temperature'),
-        widget=NumberInput(step='any'))
-    hidden_next_stage = StringField('Stage', widget=widgets.HiddenInput())
-    go_from_first_stage = SubmitField(lazy_gettext('Begin Calibration'))
+        lazy_gettext('Temperature'), widget=NumberInput(step='any'))
+    point_calibration = StringField(lazy_gettext('pH Points to Calibrate'))
+    start_calibration = SubmitField(lazy_gettext('Begin Calibration'))
     go_to_next_stage = SubmitField(lazy_gettext('Continue to Next Stage'))
     go_to_last_stage = SubmitField(lazy_gettext('Continue to Next Stage'))
 

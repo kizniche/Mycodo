@@ -11,6 +11,10 @@
  - Fix Atlas Scientific pH Input issue ([#686](https://github.com/kizniche/mycodo/issues/686))
  - Fix issues with calibration of Atlas Scientific pH sensor ([#686](https://github.com/kizniche/mycodo/issues/686))
 
+### Features
+
+ - Add ability to choose 1, 2, or 3 point pH calibration of Atlas Scientific pH sensor ([#686](https://github.com/kizniche/mycodo/issues/686))
+
 
 ## 7.7.1 (2019.09.08)
 
