@@ -47,6 +47,7 @@ class AtlasScientificI2C:
     def write(self, cmd):
         """ Append the null character and send the command over I2C"""
         cmd += "\00"
+        # self.logger.error("Atlas Scientific command being sent: '{}'".format(cmd))
         self.file_write.write(cmd.encode('latin-1'))
 
     def read(self, num_of_bytes=31):

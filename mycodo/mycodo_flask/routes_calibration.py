@@ -1,6 +1,7 @@
 # coding=utf-8
 """ collection of Page endpoints """
 import logging
+import time
 
 import flask_login
 import os
@@ -84,6 +85,21 @@ def setup_atlas_ph():
             unique_id=form_ph_calibrate.selected_input_id.data).first()
         atlas_command = AtlasScientificCommand(selected_input)
         status, message = atlas_command.calibrate('clear_calibration')
+
+        sensor_measurement = atlas_command.get_sensor_measurement()
+
+        if isinstance(message, tuple):
+            message_status = message[0]
+            message_info = message[1]
+            message = "Calibration command returned from sensor: {}".format(message_status)
+            if message_info:
+                message += ": {}".format(message_info)
+        else:
+            message = "Calibration command returned from sensor: {}".format(message)
+
+        if sensor_measurement != 'NA':
+            message = "{} {}".format(sensor_measurement, message)
+
         if status:
             flash(message, "error")
         else:
@@ -115,6 +131,9 @@ def setup_atlas_ph():
         for each_input in list_inputs_sorted:
             if selected_input.device == each_input[0]:
                 input_device_name = each_input[1]
+
+    if next_stage in [2, 3, 4, 5]:
+        time.sleep(2)  # Sleep makes querying sensor more stable
 
     if next_stage == 2:
         if form_ph_calibrate.temperature.data is None:
@@ -213,6 +232,89 @@ def setup_atlas_ph_measure(input_id):
         return ph
 
 
+def dual_commands_to_sensor(input_sel, first_cmd, amount,
+                            second_cmd, current_stage):
+    """
+    Handles the Atlas Scientific pH sensor calibration:
+    Sends two consecutive commands to the sensor board
+    Denies advancement to the next stage if any commands fail
+    Permits advancement to the next stage if all commands succeed
+    Prints any errors or successes
+    """
+    return_error = None
+    set_temp = None
+
+    if first_cmd == 'temperature':
+        unit = '°C'
+        set_temp = amount
+    else:
+        unit = 'pH'
+
+    atlas_command = AtlasScientificCommand(input_sel)
+
+    sensor_measurement = atlas_command.get_sensor_measurement()
+
+    first_status, first_return_str = atlas_command.calibrate(first_cmd, temperature=set_temp)
+
+    if isinstance(first_return_str, tuple):
+        message_status = first_return_str[0]
+        message_info = first_return_str[1]
+        first_return_message = "{}".format(message_status)
+        if message_info:
+            first_return_message += ": {}".format(message_info)
+    else:
+        first_return_message = first_return_str
+
+    first_info_str = "{act}: {lvl} ({amt} {unit}): {resp}".format(
+        act=TRANSLATIONS['calibration']['title'],
+        lvl=first_cmd,
+        amt=amount,
+        unit=unit,
+        resp=first_return_message)
+
+    if sensor_measurement != 'NA':
+        first_info_str = "{} {}".format(
+            sensor_measurement, first_info_str)
+
+    if first_status:
+        flash(first_info_str, "error")
+        return_error = first_return_str
+        return_stage = current_stage
+    else:
+        flash(first_info_str, "success")
+        time.sleep(0.1)  # Add space between commands
+        second_status, second_return_str = atlas_command.calibrate(second_cmd)
+
+        if isinstance(second_return_str, tuple):
+            message_status = second_return_str[0]
+            message_info = second_return_str[1]
+            second_return_message = "{}".format(message_status)
+            if message_info:
+                second_return_message += ": {}".format(message_info)
+        else:
+            second_return_message = second_return_str
+
+        second_info_str = "{act}: {cmd}: {resp}".format(
+            act=gettext('Command'),
+            cmd=second_cmd,
+            resp=second_return_message)
+
+        if sensor_measurement != 'NA':
+            second_info_str = "{} {}".format(
+                sensor_measurement, second_info_str)
+
+        if second_status:
+            flash(second_info_str, "error")
+            return_error = second_return_str
+            return_stage = current_stage
+        else:
+            flash(second_info_str, "success")
+            # Advance to the next stage
+            return_stage = current_stage + 1
+
+    return return_stage, return_error
+
+
 @blueprint.route('/setup_ds_resolution', methods=('GET', 'POST'))
 @flask_login.login_required
 def setup_ds_resolution():
@@ -286,48 +388,3 @@ def setup_ds_resolution():
                            ds_inputs=ds_inputs,
                            form_ds=form_ds,
                            inputs=inputs)
-
-
-def dual_commands_to_sensor(input_sel, first_cmd, amount,
-                            second_cmd, current_stage):
-    """
-    Handles the Atlas Scientific pH sensor calibration:
-    Sends two consecutive commands to the sensor board
-    Denies advancement to the next stage if any commands fail
-    Permits advancement to the next stage if all commands succeed
-    Prints any errors or successes
-    """
-    return_error = None
-    set_temp = None
-
-    if first_cmd == 'temperature':
-        unit = 'C'
-        set_temp = amount
-    else:
-        unit = 'pH'
-
-    atlas_command = AtlasScientificCommand(input_sel)
-
-    first_status, first_return_str = atlas_command.calibrate(first_cmd, temperature=set_temp)
-    info_str = "{act}: {lvl} ({amt} {unit}): {resp}".format(
-        act=TRANSLATIONS['calibration']['title'], lvl=first_cmd, amt=amount, unit=unit, resp=first_return_str)
-
-    if first_status:
-        flash(info_str, "error")
-        return_error = first_return_str
-        return_stage = current_stage
-    else:
-        flash(info_str, "success")
-        second_status, second_return_str = atlas_command.calibrate(second_cmd)
-        second_info_str = "{act}: {cmd}: {resp}".format(
-            act=gettext('Command'), cmd=second_cmd, resp=second_return_str)
-        if second_status:
-            flash(second_info_str, "error")
-            return_error = second_return_str
-            return_stage = current_stage
-        else:
-            flash(second_info_str, "success")
-            # Advance to the next stage
-            return_stage = current_stage + 1
-
-    return return_stage, return_error

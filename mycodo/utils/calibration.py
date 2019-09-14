@@ -31,15 +31,24 @@ class AtlasScientificCommand:
                 i2c_address=int(str(input_dev.i2c_location), 16),
                 i2c_bus=input_dev.i2c_bus)
 
-        self.board_version, self.board_info = self.get_board_version()
+        self.measurement, self.board_version, self.firmware_version = self.get_board_version()
 
         if self.board_version == 0:
-            logger.error("Unable to retrieve device info (this indicates the "
-                         "device was not properly initialized or connected)")
+            logger.error(
+                "Atlas Scientific board initialization unsuccessful. "
+                "Unable to retrieve device info (this indicates the "
+                "device was not properly initialized or connected)")
         else:
             # TODO: Change back to debug
-            logger.error("Device Info: {info}".format(info=self.board_info))
-            logger.error("Detected Version: {ver}".format(ver=self.board_version))
+            logger.info(
+                "Atlas Scientific board initialization success. "
+                "Measurement: {meas}, Board: {brd}, Firmware: {fw}".format(
+                    meas=self.measurement,
+                    brd=self.board_version,
+                    fw=self.firmware_version))
+
+    def get_sensor_measurement(self):
+        return self.measurement
 
     def get_board_version(self):
         """Return the board version of the Atlas Scientific pH sensor"""
@@ -59,14 +68,17 @@ class AtlasScientificCommand:
         # Check first letter of info response
         # "P" indicates a legacy board version
         if info is None:
-            return 0, None
-        elif info is list:
+            return 0, None, None
+        elif isinstance(info, tuple):
             for each_line in info:
                 if each_line == 'P':
-                    return 1, each_line  # Older board version
+                    return 'NA', 1, each_line  # Older board version
                 elif ',' in each_line and len(each_line.split(',')) == 3:
-                    return 2, each_line  # Newer board version
-        return 0, None
+                    info_split = each_line.split(',')
+                    measurement = info_split[1]
+                    firmware = info_split[2]
+                    return measurement, 2, firmware  # Newer board version
+        return 0, None, None
 
     def calibrate(self, command, temperature=None, custom_cmd=None):
         """
@@ -110,6 +122,9 @@ class AtlasScientificCommand:
                 err, msg = self.send_command('T')
             elif self.board_version == 2:
                 err, msg = self.send_command('Cal,high,10.00')
+        elif command == 'calibrated':  # Not implemented. This queries whether there is a stored calibration
+            if self.board_version == 2:
+                err, msg = self.send_command('Cal,?')
         elif command == 'end':
             if self.board_version == 1:
                 err, msg = self.send_command('E')

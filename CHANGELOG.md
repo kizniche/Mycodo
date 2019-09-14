@@ -6,9 +6,10 @@
  - Fix moving Conditional/input code during upgrade
  - Generate Conditional/input code for next upgrade
  - Fix MQTT Input ([#685](https://github.com/kizniche/mycodo/issues/685))
- - Fix Atlas pH Input issue ([#686](https://github.com/kizniche/mycodo/issues/686))
- - Fix Atlas EZO Pump Input issue ([#562](https://github.com/kizniche/mycodo/issues/562))
- - Fix Atlas EZP Pump Output (UART) error on Output page
+ - Fix Atlas Scientific EZO Pump Input issue ([#562](https://github.com/kizniche/mycodo/issues/562))
+ - Fix Atlas Scientific EZP Pump Output (UART) error on Output page
+ - Fix Atlas Scientific pH Input issue ([#686](https://github.com/kizniche/mycodo/issues/686))
+ - Fix issues with calibration of Atlas Scientific pH sensor ([#686](https://github.com/kizniche/mycodo/issues/686))
 
 
 ## 7.7.1 (2019.09.08)

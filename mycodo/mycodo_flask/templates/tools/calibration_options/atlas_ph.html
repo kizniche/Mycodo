@@ -35,12 +35,12 @@ function startTimer() {
     }, 5000);
   {% endif %}
 
-  var timer = 120;
+  var timer = 120;  // 120 second wait for the measurements to equilibrate
   function display(notifier, str) {
     document.getElementById(notifier).innerHTML = str;
   }
   function toMinuteAndSecond(x) {
-    return "{{_('Please wait for sensor to equilibrate')}}: " + x + " {{_('seconds')}}";
+    return "{{_('Please wait for the sensor measurements to equilibrate')}}: " + x + " {{_('seconds')}}";
   }
   function setTimer(remain, actions) {
     (function countdown() {
@@ -75,7 +75,7 @@ function startTimer() {
 
     <p>To begin calibration, have your probe properly connected to Mycodo, select the probe from the dropdown list, and click Begin Calibration.</p>
 
-    <p>If you wish to clear the calibration from the sensor memory, click Clear Calibration.</p>
+    <p>To clear any currently-stored calibration from the sensor memory, click Clear Calibration.</p>
 
     <form method="post" action="/setup_atlas_ph">
     {{form_ph_calibrate.hidden_next_stage(value=1)}}
@@ -137,11 +137,11 @@ function startTimer() {
 
     <form method="post" action="/setup_atlas_ph">
     {{form_ph_calibrate.hidden_next_stage(value=3)}}
-    <div style="display: none" id="ph_status">&lt;Please wait&gt;</div>
+    <div style="display: none; padding-bottom: 1em" id="ph_status">&lt;Please wait&gt;</div>
     <div class="row small-gutters">
       {{form_ph_calibrate.hidden_input_id(value=selected_input.unique_id)}}
       <div id="proceed_stage_2">
-        <div id="go_to_next_stage" style="display: none" class="col-auto small-gutters">
+        <div class="col-auto small-gutters" id="go_to_next_stage" style="display: none">
           {{form_ph_calibrate.go_to_next_stage(class_='form-control btn btn-sm')}}
         </div>
       </div>
@@ -169,7 +169,7 @@ function startTimer() {
 
     <form method="post" action="/setup_atlas_ph">
     {{form_ph_calibrate.hidden_next_stage(value=4)}}
-    <div style="display: none" id="ph_status">&lt;Please wait&gt;</div>
+    <div style="display: none; padding-bottom: 1em" id="ph_status">&lt;Please wait&gt;</div>
     <div class="row small-gutters">
       {{form_ph_calibrate.hidden_input_id(value=selected_input.unique_id)}}
       <div id="proceed_stage_2">
@@ -201,7 +201,7 @@ function startTimer() {
 
     <form method="post" action="/setup_atlas_ph">
     {{form_ph_calibrate.hidden_next_stage(value=5)}}
-    <div style="display: none" id="ph_status">&lt;Please wait&gt;</div>
+    <div style="display: none; padding-bottom: 1em" id="ph_status">&lt;Please wait&gt;</div>
     <div class="row small-gutters">
       {{form_ph_calibrate.hidden_input_id(value=selected_input.unique_id)}}
       <div id="proceed_stage_2">
