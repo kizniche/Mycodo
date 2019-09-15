@@ -31,8 +31,8 @@ from io import StringIO
 from sqlalchemy import and_
 from sqlalchemy import or_
 
-from mycodo.controllers.base_controller import AbstractController
 from mycodo.config import SQL_DATABASE_MYCODO
+from mycodo.controllers.base_controller import AbstractController
 from mycodo.databases.models import Misc
 from mycodo.databases.models import Output
 from mycodo.databases.models import SMTP
@@ -42,6 +42,7 @@ from mycodo.devices.atlas_scientific_i2c import AtlasScientificI2C
 from mycodo.devices.atlas_scientific_uart import AtlasScientificUART
 from mycodo.mycodo_client import DaemonControl
 from mycodo.utils.database import db_retrieve_table_daemon
+from mycodo.utils.influx import add_measurements_influxdb
 from mycodo.utils.influx import write_influxdb_value
 from mycodo.utils.system_pi import cmd_output
 
@@ -285,24 +286,35 @@ class OutputController(AbstractController, threading.Thread):
 
                 self.atlas_command[output_id].write(write_cmd)
 
-                write_db = threading.Thread(
-                    target=write_influxdb_value,
-                    args=(self.output_unique_id[output_id],
-                          'ml',
-                          volume_ml,),
-                    kwargs={'measure': 'volume',
-                            'channel': 0})
-                write_db.start()
+                measurement_dict = {
+                    0: {
+                        'measurement': 'volume',
+                        'unit': 'ml',
+                        'value': volume_ml
+                    },
+                    1: {
+                        'measurement': 'time',
+                        'unit': 'minute',
+                        'value': minutes_to_run
+                    }
+                }
+                add_measurements_influxdb(
+                    self.output_unique_id[output_id], measurement_dict)
+
             elif state == 'off' or volume_ml == 0:
                 write_cmd = 'X'
-                self.logger.error("EZO-PMP command: {}".format(write_cmd))
+                self.logger.debug("EZO-PMP command: {}".format(write_cmd))
                 self.atlas_command[output_id].write(write_cmd)
             else:
                 self.logger.error(
                     "Invalid parameters: ID: {id}, "
                     "State: {state}, "
-                    "volume: {vol}".format(
-                        id=output_id, state=state, vol=volume_ml))
+                    "Volume: {vol}, "
+                    "Flow Rate: {fr}".format(
+                        id=output_id,
+                        state=state,
+                        vol=volume_ml,
+                        fr=self.output_flow_rate[output_id]))
 
         #
         # Signaled to turn output on

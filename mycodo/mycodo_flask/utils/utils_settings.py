@@ -269,6 +269,7 @@ def settings_general_mod(form):
                 force_https = mod_misc.force_https
                 mod_misc.force_https = form.force_https.data
                 mod_misc.rpyc_timeout = form.rpyc_timeout.data
+                mod_misc.daemon_debug_mode = form.daemon_debug_mode.data
                 mod_misc.hide_alert_success = form.hide_success.data
                 mod_misc.hide_alert_info = form.hide_info.data
                 mod_misc.hide_alert_warning = form.hide_warning.data

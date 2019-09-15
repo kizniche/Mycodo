@@ -521,22 +521,61 @@ def form_pid_choices(choices, each_pid, dict_units, dict_measurements):
     return choices
 
 
+def form_output_choices(choices, each_output, dict_units, dict_measurements):
+    device_measurements = DeviceMeasurements.query.filter(
+        DeviceMeasurements.device_id == each_output.unique_id).all()
+
+    for each_measure in device_measurements:
+        conversion = Conversion.query.filter(
+            Conversion.unique_id == each_measure.conversion_id).first()
+        channel, unit, measurement = return_measurement_info(
+            each_measure, conversion)
+
+        if unit:
+            value = '{output_id},{meas_id}'.format(
+                output_id=each_output.unique_id,
+                meas_id=each_measure.unique_id)
+
+            display_unit = find_name_unit(
+                dict_units, unit)
+            display_measurement = find_name_measurement(
+                dict_measurements, measurement)
+
+            if isinstance(channel, int):
+                channel_num = ' CH{cnum}'.format(cnum=channel)
+            else:
+                channel_num = ''
+
+            if each_measure.name:
+                channel_name = ' ({name})'.format(name=each_measure.name)
+            else:
+                channel_name = ''
+
+            if display_measurement and display_unit:
+                measurement_unit = ' {meas} ({unit})'.format(
+                    meas=display_measurement, unit=display_unit)
+            elif display_measurement:
+                measurement_unit = ' {meas}'.format(
+                    meas=display_measurement)
+            else:
+                measurement_unit = ' ({unit})'.format(unit=display_unit)
+
+            display = '[Input {id:02d}] {i_name}{chan_num}{chan_name}{meas}'.format(
+                id=each_output.id,
+                i_name=each_output.name,
+                chan_num=channel_num,
+                chan_name=channel_name,
+                meas=measurement_unit)
+
+            choices.update({value: display})
+
+    return choices
+
+
 def form_tag_choices(choices, each_tag):
     value = '{id},tag'.format(id=each_tag.unique_id)
     display = '[Tag {id:02d}] {name}'.format(
         id=each_tag.id, name=each_tag.name)
-    choices.update({value: display})
-    return choices
-
-
-def form_output_choices(choices, each_output, dict_units, dict_measurements):
-    value = '{id},output'.format(id=each_output.unique_id)
-    display = '[Output {id:02d}] {name} CH{chan}, {meas} ({unit})'.format(
-        id=each_output.id,
-        name=each_output.name,
-        chan=each_output.channel,
-        meas=dict_measurements[each_output.measurement]['name'],
-        unit=dict_units[each_output.unit]['unit'])
     choices.update({value: display})
     return choices
 

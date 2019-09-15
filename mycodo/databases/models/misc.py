@@ -34,6 +34,7 @@ class Misc(CRUDMixin, db.Model):
     enable_upgrade_check = db.Column(db.Boolean, default=True)  # Periodically check for a Mycodo upgrade
     mycodo_upgrade_available = db.Column(db.Boolean, default=False)  # Stores if an upgrade is available
     rpyc_timeout = db.Column(db.Integer, default=30)
+    daemon_debug_mode = db.Column(db.Boolean, default=False)
 
     def __repr__(self):
         return "<{cls}(id={s.id})>".format(s=self, cls=self.__class__.__name__)

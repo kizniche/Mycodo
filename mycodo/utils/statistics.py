@@ -167,7 +167,7 @@ def get_anonymous_id():
     try:
         f = open('/proc/cpuinfo', 'r')
         for line in f:
-            if line[0:6]=='Serial':
+            if line[0:6] == 'Serial':
               pid = line[10:26]
         f.close()
     except:
@@ -206,15 +206,9 @@ def recreate_stat_file():
         os.chown(ID_FILE, uid_gid, uid_gid)
         os.chmod(ID_FILE, 0o664)
 
-    with open(ID_FILE, 'r') as read_file:
-        stat_id = read_file.readline().strip()
-
-    if not stat_id.isalnum() or len(stat_id) != 10:
-        stat_id = 'NoneNoneNone'
-
     new_stat_data = [
         ['stat', 'value'],
-        ['id', stat_id],
+        ['id', get_anonymous_id()],
         ['uptime', 0.0],
         ['RPi_revision', get_pi_revision()],
         ['Mycodo_revision', MYCODO_VERSION],

@@ -185,6 +185,10 @@ MEASUREMENTS = {
         'name': lazy_gettext('Temperature'),
         'meas': 'temperature',
         'units': ['C', 'F', 'K']},
+    'time': {
+        'name': lazy_gettext('Time'),
+        'meas': 'time',
+        'units': ['s', 'minute', 'h']},
     'unitless': {
         'name': lazy_gettext('Unitless'),
         'meas': 'unitless',
@@ -250,6 +254,9 @@ UNITS = {
     'GB': {
         'name': lazy_gettext('Gigabyte'),
         'unit': 'GB'},
+    'h': {
+        'name': lazy_gettext('Hour'),
+        'unit': 'h'},
     'Hz': {
         'name': lazy_gettext('Hertz'),
         'unit': 'Hz'},
@@ -283,6 +290,9 @@ UNITS = {
     'mg_L': {
         'name': lazy_gettext('Milligram per Liter'),
         'unit': 'mg/L'},
+    'minute': {
+        'name': lazy_gettext('Minute'),
+        'unit': 'min'},
     'ml': {
         'name': lazy_gettext('Milliliter'),
         'unit': 'ml'},
@@ -298,9 +308,6 @@ UNITS = {
     'MB': {
         'name': lazy_gettext('Megabyte'),
         'unit': 'MB'},
-    'minute': {
-        'name': lazy_gettext('Minute'),
-        'unit': 'm'},
     'none': {
         'name': lazy_gettext('Unitless'),
         'unit': ''},

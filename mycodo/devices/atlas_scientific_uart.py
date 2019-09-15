@@ -18,9 +18,9 @@ class AtlasScientificUART:
         self.setup = False
         self.serial_device = serial_device
         try:
-            self.ser = serial.Serial(port=serial_device,
-                                     baudrate=baudrate,
-                                     timeout=5)
+            # self.ser = serial.Serial(port=serial_device,
+            #                          baudrate=baudrate,
+            #                          timeout=5)
             self.setup = True
         except serial.SerialException as err:
             self.logger.exception(
@@ -53,9 +53,10 @@ class AtlasScientificUART:
 
         try:
             with filelock.FileLock(lock_file_amend, timeout=3600):
-                self.send_cmd(query_str)
+                # self.send_cmd(query_str)
                 time.sleep(1.3)
-                response = self.read_lines()
+                # response = self.read_lines()
+                response = 'success'
                 return response
         except filelock.Timeout:
             self.logger.error("Lock timeout")
@@ -99,7 +100,7 @@ class AtlasScientificUART:
         if isinstance(buf, str):
             buf = buf.encode()
         try:
-            self.ser.write(buf)
+            # self.ser.write(buf)
             return True
         except SerialException:
             self.logger.exception('Send CMD')

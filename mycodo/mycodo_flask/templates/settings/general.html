@@ -40,6 +40,17 @@
         </div>
       </div>
       <div class="form-group">
+        {{form_settings_general.daemon_debug_mode.label(class_='col-sm-12 control-label checkbox-nopad')}}
+        <div class="col-sm-12">
+          {%- if misc.daemon_debug_mode == true -%}
+            {{form_settings_general.daemon_debug_mode(checked=True)}}
+          {%- else -%}
+            {{form_settings_general.daemon_debug_mode()}}
+          {%- endif -%}
+          &nbsp;&nbsp;{{_('Enable Daemon debug logging for diagnosing issues. Requires Daemon restart.')}}
+        </div>
+      </div>
+      <div class="form-group">
         {{form_settings_general.force_https.label(class_='col-sm-12 control-label checkbox-nopad')}}
         <div class="col-sm-12">
           {%- if misc.force_https == true -%}

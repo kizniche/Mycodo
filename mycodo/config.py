@@ -14,7 +14,7 @@ sys.path.append(os.path.abspath(os.path.dirname(__file__)))
 from config_translations import TRANSLATIONS
 
 MYCODO_VERSION = '7.7.2'
-ALEMBIC_VERSION = 'ef49f6644e0c'
+ALEMBIC_VERSION = '2e416233221b'
 
 #  FORCE_UPGRADE_MASTER
 #  Set True to enable upgrading to the master branch of the Mycodo repository.
@@ -315,7 +315,8 @@ OUTPUT_INFO = {
         'name': lazy_gettext('Atlas EZO-PMP'),
         'dependencies_module': [],
         'measure': {
-            'volume': {'ml': {0: {}}}
+            'volume': {'ml': {0: {}}},
+            'time': {'minute': {1: {}}}
         }}
 }
 

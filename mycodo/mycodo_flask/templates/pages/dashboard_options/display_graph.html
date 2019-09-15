@@ -48,14 +48,19 @@
             {%- endif -%}
           {%- endfor -%}
 
-          {%- for each_output in output -%}
-            {%- for each_graph_output_id in graph_output_ids if each_output.unique_id == each_graph_output_id.split(',')[0] %}
-          getPastData({{chart_number}}, {{count_series|count}}, '{{each_output.unique_id}}', 'output', '{{each_output.unique_id}}', {{each_dashboard.x_axis_duration*60}});
-          {% if each_dashboard.enable_auto_refresh %}
-          getLiveData({{chart_number}}, {{count_series|count}}, '{{each_output.unique_id}}', 'output', '{{each_output.unique_id}}', {{each_dashboard.x_axis_duration}}, {{each_dashboard.enable_xaxis_reset|int}}, {{each_dashboard.refresh_duration}}, {% if each_dashboard.enable_graph_shift %}true{% else %}false{% endif %});
-          {% endif %}
-              {%- do count_series.append(1) %}
-            {%- endfor -%}
+          {%- for output_and_measurement_ids in graph_output_ids -%}
+            {%- set output_id = output_and_measurement_ids.split(',')[0] -%}
+            {%- set measurement_id = output_and_measurement_ids.split(',')[1] -%}
+            {%- set all_output = table_output.query.filter(table_output.unique_id == output_id).all() -%}
+            {%- if all_output -%}
+              {% for each_output in all_output %}
+          getPastData({{chart_number}}, {{count_series|count}}, '{{each_output.unique_id}}', 'output', '{{measurement_id}}', {{each_dashboard.x_axis_duration*60}});
+                {% if each_dashboard.enable_auto_refresh -%}
+          getLiveData({{chart_number}}, {{count_series|count}}, '{{each_output.unique_id}}', 'output', '{{measurement_id}}', {{each_dashboard.x_axis_duration}}, {{each_dashboard.enable_xaxis_reset|int}}, {{each_dashboard.refresh_duration}}, {% if each_dashboard.enable_graph_shift %}true{% else %}false{% endif %});
+                {%- endif -%}
+                {%- do count_series.append(1) -%}
+              {%- endfor -%}
+            {%- endif -%}
           {%- endfor -%}
 
           {%- for each_pid in pid -%}
@@ -387,23 +392,58 @@
     {%- endfor -%}
   {% endfor %}
 
-  {%- for each_output in output -%}
-    {%- for each_graph_output_id in graph_output_ids if each_output.unique_id == each_graph_output_id.split(',')[0] -%}
+  {%- for output_and_measurement_ids in graph_output_ids -%}
+    {%- set output_id = output_and_measurement_ids.split(',')[0] -%}
+    {%- set all_output = table_output.query.filter(table_output.unique_id == output_id).all() -%}
+    {%- if all_output -%}
+      {%- for each_output in all_output -%}
+        {%- set measurement_id = output_and_measurement_ids.split(',')[1] -%}
+        {%- if measurement_id in device_measurements_dict -%}
+
       {
-        name: '{{each_output.name}} ({{dict_measurements[each_output.measurement]['name']}})',
+        name: '{{each_output.name}}
+
+          {%- if device_measurements_dict[measurement_id].name -%}
+            {{' (' + device_measurements_dict[measurement_id].name}})
+          {%- endif -%}
+
+          {{' (CH' + (device_measurements_dict[measurement_id].channel)|string}}
+
+          {%- if dict_measure_measurements[measurement_id] in dict_measurements and
+                 dict_measurements[dict_measure_measurements[measurement_id]]['name'] -%}
+            {{', ' + dict_measurements[dict_measure_measurements[measurement_id]]['name']}}
+          {%- endif -%}
+
+          {%- if dict_measure_units[measurement_id] in dict_units and
+                 dict_units[dict_measure_units[measurement_id]]['unit'] -%}
+            {{', ' + dict_units[dict_measure_units[measurement_id]]['unit']}}
+          {%- endif -%}
+
+          )',
         type: 'column',
-        dataGrouping: {
-          approximation: 'high',
-          groupPixelWidth: 1
-        },
         tooltip: {
-          valueSuffix: ' {{dict_units[each_output.unit]['unit']}}',
-          valueDecimals: 2
+          valueSuffix: '
+          {%- if device_measurements_dict[measurement_id].conversion_id -%}
+            {{' ' + dict_units[table_conversion.query.filter(table_conversion.unique_id == device_measurements_dict[measurement_id].conversion_id).first().convert_unit_to]['unit']}}
+          {%- elif device_measurements_dict[measurement_id].rescaled_unit -%}
+            {{' ' + dict_units[device_measurements_dict[measurement_id].rescaled_unit]['unit']}}
+          {%- else -%}
+            {{' ' + dict_units[device_measurements_dict[measurement_id].unit]['unit']}}
+          {%- endif -%}
+          ',
+          valueDecimals: 3
         },
-        yAxis: '{{each_output.unit}}',
+        yAxis: '
+          {%- if measurement_id in dict_measure_units -%}
+            {{dict_measure_units[measurement_id]}}
+          {%- endif -%}
+            ',
         data: []
       },
-    {%- endfor -%}
+
+        {%- endif -%}
+      {%- endfor -%}
+    {%- endif -%}
   {%- endfor -%}
 
   {%- for each_pid in pid -%}
@@ -493,9 +533,9 @@
     {%- endfor -%}
 
     {% for each_output in output -%}
-      {%- for output_and_measurement_id in graph_output_ids if each_output.unique_id == output_and_measurement_id.split(',')[0] %}
-        {%- set measurement_id = output_and_measurement_id.split(',')[0] -%}
-    retrieveLiveData({{chart_number}}, {{count_series|count}}, '{{each_output.unique_id}}', 'output', '{{each_output.unique_id}}', {{each_dashboard.x_axis_duration}}, {{each_dashboard.enable_xaxis_reset|int}}, {{each_dashboard.refresh_duration}}, {% if each_dashboard.enable_graph_shift %}true{% else %}false{% endif %});
+      {%- for output_and_measurement_ids in graph_output_ids if each_output.unique_id == output_and_measurement_ids.split(',')[0] %}
+        {%- set measurement_id = output_and_measurement_ids.split(',')[1] -%}
+    retrieveLiveData({{chart_number}}, {{count_series|count}}, '{{each_output.unique_id}}', 'output', '{{measurement_id}}', {{each_dashboard.x_axis_duration}}, {{each_dashboard.enable_xaxis_reset|int}}, {{each_dashboard.refresh_duration}}, {% if each_dashboard.enable_graph_shift %}true{% else %}false{% endif %});
         {%- do count_series.append(1) %}
       {%- endfor -%}
     {%- endfor -%}

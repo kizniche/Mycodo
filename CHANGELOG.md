@@ -3,6 +3,12 @@
 ### Bugfixes
 
  - Fix wait time for calibration ([#686](https://github.com/kizniche/mycodo/issues/686))
+ - Add 'minute' measurement storage to EZO Pump Output
+
+### Features
+
+ - Add ability to store multiple measurements for Outputs ([#562](https://github.com/kizniche/mycodo/issues/562))
+ - Add ability to enable Daemon debug mode from Configuration page
 
 
 ## 7.7.2 (2019.09.14)

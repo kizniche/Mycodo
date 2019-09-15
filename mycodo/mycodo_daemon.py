@@ -1277,8 +1277,13 @@ if __name__ == '__main__':
     logger.addHandler(fh)
     keep_fds = [fh.stream.fileno()]
 
-    daemon_controller = DaemonController(args.debug)
-    mycodo_daemon = MycodoDaemon(daemon_controller, args.debug)
+    misc = db_retrieve_table_daemon(Misc, entry='first')
+    debug = misc.daemon_debug_mode
+    if args.debug:
+        debug = args.debug
+
+    daemon_controller = DaemonController(debug)
+    mycodo_daemon = MycodoDaemon(daemon_controller, debug)
 
     # Set up daemon and start it
     daemon = Daemonize(app="mycodo_daemon",

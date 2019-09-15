@@ -366,12 +366,9 @@ def past_data(unique_id, measure_type, measurement_id, past_seconds):
         current_app.config['INFLUXDB_TIMEOUT'] = 5
         dbcon = influx_db.connection
 
-        if measure_type in ['input', 'math', 'pid']:
+        if measure_type in ['input', 'math', 'output', 'pid']:
             measure = DeviceMeasurements.query.filter(
                 DeviceMeasurements.unique_id == measurement_id).first()
-        elif measure_type == 'output':
-            measure = Output.query.filter(
-                Output.unique_id == unique_id).first()
         else:
             measure = None
 

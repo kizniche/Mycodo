@@ -8,6 +8,7 @@ from flask_babel import gettext
 
 from mycodo.config import OUTPUT_INFO
 from mycodo.config_translations import TRANSLATIONS
+from mycodo.databases.models import DeviceMeasurements
 from mycodo.databases.models import DisplayOrder
 from mycodo.databases.models import Output
 from mycodo.mycodo_client import DaemonControl
@@ -241,12 +242,21 @@ def output_del(form_output):
     error = []
 
     try:
-        delete_entry_with_id(Output,
-                             form_output.output_id.data)
+        device_measurements = DeviceMeasurements.query.filter(
+            DeviceMeasurements.device_id == form_output.output_id.data).all()
+
+        for each_measurement in device_measurements:
+            delete_entry_with_id(
+                DeviceMeasurements, each_measurement.unique_id)
+
+        delete_entry_with_id(
+            Output, form_output.output_id.data)
+
         display_order = csv_to_list_of_str(DisplayOrder.query.first().output)
         display_order.remove(form_output.output_id.data)
         DisplayOrder.query.first().output = list_to_csv(display_order)
         db.session.commit()
+
         manipulate_output('Delete', form_output.output_id.data)
     except Exception as except_msg:
         error.append(except_msg)
