@@ -312,6 +312,15 @@ def choices_outputs(output, dict_units, dict_measurements):
     return choices
 
 
+def choices_output_devices(output, dict_units, dict_measurements):
+    """ populate form multi-select choices from Output entries """
+    choices = OrderedDict()
+    for each_output in output:
+        choices = form_output_choices_devices(
+            choices, each_output, dict_units, dict_measurements)
+    return choices
+
+
 def choices_tags(tags):
     """ populate form multi-select choices from Tag entries """
     choices = OrderedDict()
@@ -569,6 +578,18 @@ def form_output_choices(choices, each_output, dict_units, dict_measurements):
 
             choices.update({value: display})
 
+    return choices
+
+
+def form_output_choices_devices(choices, each_output, dict_units, dict_measurements):
+    value = '{id},output'.format(id=each_output.unique_id)
+    display = '[Output {id:02d}] {name} CH{chan}, {meas} ({unit})'.format(
+        id=each_output.id,
+        name=each_output.name,
+        chan=each_output.channel,
+        meas=dict_measurements[each_output.measurement]['name'],
+        unit=dict_units[each_output.unit]['unit'])
+    choices.update({value: display})
     return choices
 
 

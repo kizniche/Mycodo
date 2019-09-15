@@ -583,6 +583,8 @@ def page_dashboard():
         math, dict_units, dict_measurements)
     choices_output = utils_general.choices_outputs(
         output, dict_units, dict_measurements)
+    choices_output_devices = utils_general.choices_output_devices(
+        output, dict_units, dict_measurements)
     choices_pid = utils_general.choices_pids(
         pid, dict_units, dict_measurements)
     choices_note_tag = utils_general.choices_tags(tags)
@@ -680,6 +682,7 @@ def page_dashboard():
                            choices_input=choices_input,
                            choices_math=choices_math,
                            choices_output=choices_output,
+                           choices_output_devices=choices_output_devices,
                            choices_pid=choices_pid,
                            choices_note_tag=choices_note_tag,
                            custom_yaxes=custom_yaxes,

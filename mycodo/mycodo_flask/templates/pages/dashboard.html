@@ -480,7 +480,7 @@ $(document).ready(function() {
       var url = '/last/' + unique_id + '/' + measure_type + '/' + measurement_id + '/' + max_measure_age_sec.toString();
       $.ajax(url, {
         success: function(data, responseText, jqXHR) {
-           if (jqXHR.status === 204) {
+          if (jqXHR.status === 204) {
             if (dash_type === "gauge") {
               var null_point = chart_gauge[chart_number].series[0].points[0];
               null_point.update(null);
@@ -492,7 +492,6 @@ $(document).ready(function() {
           else {
             var formattedTime = epoch_to_timestamp(data[0]);
             var measurement = data[1];
-            var units = '';
 
             if (dash_type === "gauge") {
               var new_point = chart_gauge[chart_number].series[0].points[0];
@@ -505,14 +504,7 @@ $(document).ready(function() {
               }
               document.getElementById('value-' + chart_number).title = "{{_('Value')}}: " + measurement;
             } else {
-              if (dash_type === "output") {
-                if (measurement_id === 's') {
-                  units = ' s';
-                } else if (measurement_id === 'percent') {
-                  units = ' %';
-                }
-              }
-              document.getElementById('value-' + chart_number).innerHTML = measurement.toFixed(decimal_places) + units;
+              document.getElementById('value-' + chart_number).innerHTML = measurement.toFixed(decimal_places);
             }
             document.getElementById('timestamp-' + chart_number).innerHTML = formattedTime;
           }

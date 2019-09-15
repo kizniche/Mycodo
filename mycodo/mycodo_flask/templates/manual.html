@@ -1520,6 +1520,8 @@ optional arguments:
 </tr>
 </tbody>
 </table>
+<p>There are additional functions that can be used, but these must use the full unique ID (not an abridged version as the functions above). See /home/pi/Mycodo/mycodo/mycodo_client.py for the functions available for use. These may be accessed via the ‘control’ object. An example, below, will return how long the output has been on (or 0 if it’s currently off):</p>
+<p><code>output_on_seconds = control.output_sec_currently_on('1b6ada50-1e69-403a-9fa6-ec748b16dc23')</code></p>
 <p>Since the Python code contained in the Conditional Statement must be formatted properly, it’s best to familiarize yourself with the <a href="https://realpython.com/python-conditional-statements/">basics of Python</a>.</p>
 <p>Note that there are two different IDs in use here, one set of IDs are for the measurements, under the <code>Conditions</code> section of the Conditional, and one set of IDs are for the Actions, under the <code>Actions</code> section of the Conditional. Read all of this section, including the examples, below, to fully understand how to configure a conditional properly.</p>
 <p>IMPORTANT: If a measurement hasn’t been acquired within the Max Age that is set, “None” will be returned when self.measure(“{ID}”) is called in the code. It is very important that you account for this. All examples below incorporate a test for the measurement being None, and this should not be removed. If an error occurs (such as if the statement resolves to comparing None to a numerical value, such as “if None &lt; 23”), then the code will stop there and an error will be logged in the daemon log. Accounting for None is useful for determining if an Input is no longer acquiring measurements (e.g. dead sensor, malfunction, etc.).</p>

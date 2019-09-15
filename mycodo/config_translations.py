@@ -191,7 +191,7 @@ TRANSLATIONS = {
         'phrase': lazy_gettext('Duty cycle for the PWM (percent, 0.0 - 100.0)')},
     'flow_rate': {
         'title': lazy_gettext('Flow Rate (ml/min)'),
-        'phrase': lazy_gettext('Flow rate in ml/minute')},
+        'phrase': lazy_gettext('Flow rate in ml/minute (0.5 min, 105 max)')},
     'ftdi_location': {
         'title': lazy_gettext('FTDI Device'),
         'phrase': lazy_gettext('The FTDI device (e.g. /dev/ttyUSB1)')},

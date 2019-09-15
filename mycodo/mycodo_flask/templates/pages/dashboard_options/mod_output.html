@@ -7,13 +7,25 @@
   </div>
 </div>
 
+{%- set device_id = each_dashboard.output_ids.split(',')[0] -%}
+{%- set measurement_id = each_dashboard.output_ids.split(',')[1] -%}
+
 {% set is_pwm = [] -%}
-{% for each_output in output if each_output.unique_id == each_dashboard.output_ids.split(',')[0] and each_output.output_type in ['pwm', 'command_pwm'] %}
-  {%- do is_pwm.append(1) %}
+{% set is_ezo_pump = [] -%}
+{% for each_output in output if each_output.unique_id == device_id %}
+  {% if each_output.output_type in ['pwm', 'command_pwm'] %}
+    {%- do is_pwm.append(1) %}
+  {% elif each_output.output_type in ['atlas_ezo_pmp'] %}
+    {%- do is_ezo_pump.append(1) %}
+  {% endif %}
 {% endfor %}
 
 <div class="pause-background" id="container-output-{{chart_number}}" style="height: {{each_dashboard.height}}px; text-align: center">
   <span style="font-size: {{each_dashboard.font_em_value}}em" id="value-{{chart_number}}"></span>
+{%- if dict_measure_units[measurement_id] in dict_units and
+       dict_units[dict_measure_units[measurement_id]]['unit'] -%}
+  {{' ' + dict_units[dict_measure_units[measurement_id]]['unit']}}
+{%- endif -%}
   <br/><span style="font-size: {{each_dashboard.font_em_timestamp}}em" id="timestamp-{{chart_number}}"></span>
 
   {% if each_dashboard.enable_output_controls %}
@@ -31,10 +43,17 @@
     {% if not is_pwm %}
 
     <div class="col-auto">
-      <input class="form-control-sm" id="sec_on_amt_{{each_dashboard.output_ids.split(',')[0]}}" name="sec_on_amt_{{each_dashboard.output_ids.split(',')[0]}}" title="Turn output on for a specific number of seconds" type="number" step="any" value="" placeholder="Seconds">
+      <input class="form-control-sm" id="sec_on_amt_{{each_dashboard.output_ids.split(',')[0]}}" name="sec_on_amt_{{each_dashboard.output_ids.split(',')[0]}}" title="Turn output on for a specific number of seconds" type="number" step="any" value="">
     </div>
     <div class="col-auto">
+    {% if is_ezo_pump %}
+      {%- if dict_measure_units[measurement_id] in dict_units and
+             dict_units[dict_measure_units[measurement_id]]['name'] -%}
+      <input class="btn btn-sm sec_on_amt" id="turn_on" name="{{each_dashboard.output_ids.split(',')[0]}}/on/sec/" type="button" value="{{dict_units[dict_measure_units[measurement_id]]['name'] + ' ' + _('Out')}}">
+      {% endif %}
+    {% else %}
       <input class="btn btn-sm sec_on_amt" id="turn_on" name="{{each_dashboard.output_ids.split(',')[0]}}/on/sec/" type="button" value="{{_('Sec On')}}">
+    {% endif %}
     </div>
 
     {% else %}
