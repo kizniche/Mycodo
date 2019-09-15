@@ -1,3 +1,10 @@
+## 7.7.3 (Unreleased)
+
+### Bugfixes
+
+ - Fix wait time for calibration ([#686](https://github.com/kizniche/mycodo/issues/686))
+
+
 ## 7.7.2 (2019.09.14)
 
 ### Bugfixes
