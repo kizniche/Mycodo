@@ -33,6 +33,7 @@ from sqlalchemy import or_
 
 from mycodo.config import SQL_DATABASE_MYCODO
 from mycodo.controllers.base_controller import AbstractController
+from mycodo.databases.models import DeviceMeasurements
 from mycodo.databases.models import Misc
 from mycodo.databases.models import Output
 from mycodo.databases.models import SMTP
@@ -41,6 +42,7 @@ from mycodo.databases.utils import session_scope
 from mycodo.devices.atlas_scientific_i2c import AtlasScientificI2C
 from mycodo.devices.atlas_scientific_uart import AtlasScientificUART
 from mycodo.mycodo_client import DaemonControl
+from mycodo.utils.influx import read_last_influxdb
 from mycodo.utils.database import db_retrieve_table_daemon
 from mycodo.utils.influx import add_measurements_influxdb
 from mycodo.utils.influx import write_influxdb_value
@@ -282,7 +284,7 @@ class OutputController(AbstractController, threading.Thread):
 
                 write_cmd = 'D,{ml:.2f},{min:.2f}'.format(
                         ml=volume_ml, min=minutes_to_run)
-                self.logger.error("EZO-PMP command: {}".format(write_cmd))
+                self.logger.debug("EZO-PMP command: {}".format(write_cmd))
 
                 self.atlas_command[output_id].write(write_cmd)
 
@@ -305,6 +307,21 @@ class OutputController(AbstractController, threading.Thread):
                 write_cmd = 'X'
                 self.logger.debug("EZO-PMP command: {}".format(write_cmd))
                 self.atlas_command[output_id].write(write_cmd)
+                measurement_dict = {
+                    0: {
+                        'measurement': 'volume',
+                        'unit': 'ml',
+                        'value': 0
+                    },
+                    1: {
+                        'measurement': 'time',
+                        'unit': 'minute',
+                        'value': 0
+                    }
+                }
+                add_measurements_influxdb(
+                    self.output_unique_id[output_id], measurement_dict)
+
             else:
                 self.logger.error(
                     "Invalid parameters: ID: {id}, "
@@ -1216,6 +1233,26 @@ output_id = '{}'
                                                  'python_pwm']:
                 if output_id in self.pwm_state and self.pwm_state[output_id]:
                     return self.pwm_state[output_id]
+            elif self.output_type[output_id] == 'atlas_ezo_pmp':
+                device_measurements = db_retrieve_table_daemon(
+                    DeviceMeasurements).filter(
+                    DeviceMeasurements.device_id == output_id)
+                for each_dev_meas in device_measurements:
+                    if each_dev_meas.unit == 'minute':
+                        last_measurement = read_last_influxdb(
+                            output_id,
+                            each_dev_meas.unit,
+                            each_dev_meas.measurement,
+                            each_dev_meas.channel)
+                        if last_measurement:
+                            datetime_ts = datetime.datetime.strptime(
+                                last_measurement[0][:-7], '%Y-%m-%dT%H:%M:%S.%f')
+                            minutes_on = last_measurement[1]
+                            ts_pmp_off = datetime_ts + datetime.timedelta(minutes=minutes_on)
+                            now = datetime.datetime.utcnow()
+                            is_on = bool(now < ts_pmp_off)
+                            if is_on:
+                                return 'on'
         return 'off'
 
     def output_on_duration(self, output_id):
@@ -1273,6 +1310,26 @@ output_id = '{}'
         elif self.output_type[output_id] == 'pwm':
             if self.pwm_time_turned_on[output_id]:
                 return True
+        elif self.output_type[output_id] == 'atlas_ezo_pmp':
+            device_measurements = db_retrieve_table_daemon(
+                DeviceMeasurements).filter(
+                DeviceMeasurements.device_id == output_id)
+            for each_dev_meas in device_measurements:
+                if each_dev_meas.unit == 'minute':
+                    last_measurement = read_last_influxdb(
+                        output_id,
+                        each_dev_meas.unit,
+                        each_dev_meas.measurement,
+                        each_dev_meas.channel)
+                    if last_measurement:
+                        datetime_ts = datetime.datetime.strptime(
+                            last_measurement[0][:-7], '%Y-%m-%dT%H:%M:%S.%f')
+                        minutes_on = last_measurement[1]
+                        ts_pmp_off = datetime_ts + datetime.timedelta(minutes=minutes_on)
+                        now = datetime.datetime.utcnow()
+                        is_on = bool(now < ts_pmp_off)
+                        if is_on:
+                            return True
         return False
 
     def _is_setup(self, output_id):

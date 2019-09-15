@@ -31,7 +31,8 @@
   {% if each_dashboard.enable_output_controls %}
 
   <div class="row small-gutters" style="padding: 0.3em 1.5em 0 1.5em">
-    {% if not is_pwm -%}
+    {% if not is_pwm and not is_ezo_pump -%}
+
     <div class="col-auto">
       <input class="btn btn-sm turn_on" id="turn_on" name="{{each_dashboard.output_ids.split(',')[0]}}/on/sec/0" type="button" value="{{dict_translation['on']['title']}}">
     </div>

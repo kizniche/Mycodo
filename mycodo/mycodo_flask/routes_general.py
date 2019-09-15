@@ -220,10 +220,10 @@ def gpio_state_unique_id(unique_id):
     output = Output.query.filter(
                 Output.unique_id == unique_id).first()
     daemon_control = DaemonControl()
-    GPIO.setmode(GPIO.BCM)
-    GPIO.setwarnings(False)
 
     if output.output_type == 'wired' and output.pin and -1 < output.pin < 40:
+        GPIO.setmode(GPIO.BCM)
+        GPIO.setwarnings(False)
         GPIO.setup(output.pin, GPIO.OUT)
         if GPIO.input(output.pin) == output.on_state:
             state = 'on'
