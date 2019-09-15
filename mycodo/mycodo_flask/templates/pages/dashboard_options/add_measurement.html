@@ -74,6 +74,9 @@
           {% for each_choice, value in choices_pid.items() -%}
           <option value="{{each_choice}}">{{value}}</option>
           {% endfor -%}
+          {% for each_choice, value in choices_output.items() -%}
+          <option value="{{each_choice}}">{{value}}</option>
+          {% endfor -%}
         {% else %}
           <option value="">{{dict_translation['none_available']['title']}}</option>
         {% endif %}

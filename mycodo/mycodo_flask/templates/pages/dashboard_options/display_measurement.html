@@ -14,6 +14,14 @@
     {%- endfor -%}
   {%- endfor -%}
 
+  {% for each_output in output -%}
+    {%- for device_and_measurement_ids in graph_input_ids if each_output.unique_id == device_and_measurement_ids.split(',')[0] %}
+      {%- set measurement_id = device_and_measurement_ids.split(',')[1] -%}
+  getLastData({{chart_number}}, 'measurement', '{{each_output.unique_id}}', 'output', '{{measurement_id}}', {{each_dashboard.max_measure_age}}, {{each_dashboard.decimal_places}});
+  repeatLastData({{chart_number}}, 'measurement', '{{each_output.unique_id}}', 'output', '{{measurement_id}}', {{each_dashboard.refresh_duration}}, {{each_dashboard.max_measure_age}}, {{each_dashboard.decimal_places}});
+    {%- endfor -%}
+  {%- endfor -%}
+
   {%- for each_pid in pid -%}
     {%- for device_and_measurement_ids in graph_input_ids if each_pid.unique_id == device_and_measurement_ids.split(',')[0] %}
       {%- set measurement_id = device_and_measurement_ids.split(',')[1] -%}
