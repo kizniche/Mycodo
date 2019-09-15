@@ -242,14 +242,14 @@ $(document).ready(function() {
     {% endif %}
     modOutput(btn_val);
   });
-  $('.sec_on_amt').click(function() {
+  $('.output_on_amt').click(function() {
     var btn_val = this.name;
     var id = btn_val.split('/')[0];
-    var sec = $('#sec_on_amt_' + id).val();
+    var on_amt = $('#sec_on_amt_' + id).val();
     {% if not misc.hide_alert_info %}
-    toastr['info']('Command sent to turn output On for ' + sec + ' seconds');
+    toastr['info']('Command sent to turn output On for ' + on_amt);
     {% endif %}
-    modOutput(btn_val + sec);
+    modOutput(btn_val + on_amt);
   });
   $('.duty_cycle_on_amt').click(function() {
     var btn_val = this.name;

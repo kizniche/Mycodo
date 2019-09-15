@@ -65,14 +65,14 @@
       {% endif %}
       getAjax(btn_val);
     });
-    $('.sec_on_amt').click(function() {
+    $('.output_on_amt').click(function() {
       var btn_val = this.name;
       var id = btn_val.split('/')[0];
-      var sec = $('#sec_on_amt_' + id).val();
+      var on_amt = $('#sec_on_amt_' + id).val();
       {% if not misc.hide_alert_info %}
-      toastr['info']('Command sent to turn output ' + id + ' On for ' + sec + ' seconds');
+      toastr['info']('Command sent to turn output ' + id + ' On for ' + on_amt);
       {% endif %}
-      getAjax(btn_val + sec);
+      getAjax(btn_val + on_amt);
     });
     $('.duty_cycle_on_amt').click(function() {
       var btn_val = this.name;
@@ -196,7 +196,7 @@
           </div>
         {%- endif %}
 
-        {% if each_output.output_type not in ['pwm', 'command_pwm', 'python_pwm'] -%}
+        {% if each_output.output_type not in ['pwm', 'command_pwm', 'python_pwm', 'atlas_ezo_pmp'] -%}
           <div class="col-4 col-md-4 col-lg-2 small-gutters">
         {% else %}
           <div class="col-8 col-md-8 col-lg-4 small-gutters">
@@ -250,7 +250,7 @@
                     <input class="form-control" id="sec_on_amt_{{each_output.unique_id}}" name="sec_on_amt_{{each_output.unique_id}}" title="{{dict_translation['duration_on_seconds']['phrase']}}" type="text" value="">
                   </div>
                   <div class="col-6 col-sm-4 col-md-3 small-gutters">
-                    <input class="btn btn-success btn-block sec_on_amt" id="turn_on" name="{{each_output.unique_id}}/on/sec/" type="button" value="{{_('Turn On')}}">
+                    <input class="btn btn-success btn-block output_on_amt" id="turn_on" name="{{each_output.unique_id}}/on/sec/" type="button" value="{{_('Turn On')}}">
                   </div>
                 </div>
               </div>
@@ -268,7 +268,7 @@
                     <input class="form-control" id="sec_on_amt_{{each_output.unique_id}}" name="sec_on_amt_{{each_output.unique_id}}" title="{{dict_translation['pump_amount']['phrase']}}" type="text" value="">
                   </div>
                   <div class="col-6 col-sm-4 col-md-3 small-gutters">
-                    <input class="btn btn-success btn-block sec_on_amt" id="turn_on" name="{{each_output.unique_id}}/on/sec/" type="button" value="{{_('Pump Volume')}}">
+                    <input class="btn btn-success btn-block output_on_amt" id="turn_on" name="{{each_output.unique_id}}/on/sec/" type="button" value="{{_('Pump Volume')}}">
                   </div>
                 </div>
               </div>
