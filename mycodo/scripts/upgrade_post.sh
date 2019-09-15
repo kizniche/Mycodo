@@ -15,8 +15,9 @@ cd ${INSTALL_DIRECTORY} || exit
 
 ${INSTALL_CMD} initialize
 
-printf "\n#### Removing statistics file\n"
-rm ${INSTALL_DIRECTORY}/databases/statistics.csv
+printf "\n#### Removing statistics files\n"
+rm -f ${INSTALL_DIRECTORY}/databases/statistics.csv
+rm -f ${INSTALL_DIRECTORY}/databases/statistics.id
 
 ${INSTALL_CMD} update-swap-size
 ${INSTALL_CMD} setup-virtualenv
