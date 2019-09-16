@@ -794,9 +794,7 @@ class MathController(AbstractController, threading.Thread):
             DeviceMeasurements.channel == 0).first()
         math_conversion = db_retrieve_table_daemon(
             Conversion, unique_id=math_dev_measurement.conversion_id)
-        (math_channel,
-         math_unit,
-         math_measurement) = return_measurement_info(
+        _, math_unit, _ = return_measurement_info(
             math_dev_measurement, math_conversion)
 
         device_id = self.inputs.split(',')[0]

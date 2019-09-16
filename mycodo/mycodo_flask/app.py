@@ -59,10 +59,6 @@ def create_app(config=ProdConfig):
     return app
 
 
-def get_ip_address():
-    return request.environ.get('HTTP_X_FORWARDED_FOR', 'unknown address')
-
-
 def register_extensions(app):
     """ register extensions to the app """
     app.jinja_env.add_extension('jinja2.ext.do')  # Global values in jinja

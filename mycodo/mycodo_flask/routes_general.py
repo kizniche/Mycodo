@@ -1121,14 +1121,14 @@ def pid_mod_unique_id(unique_id, state):
     if state == 'activate_pid':
         pid.is_activated = True
         pid.save()
-        return_val, return_str = daemon.controller_activate('PID', pid.unique_id)
+        _, return_str = daemon.controller_activate('PID', pid.unique_id)
         return return_str
     elif state == 'deactivate_pid':
         pid.is_activated = False
         pid.is_paused = False
         pid.is_held = False
         pid.save()
-        return_val, return_str = daemon.controller_deactivate('PID', pid.unique_id)
+        _, return_str = daemon.controller_deactivate('PID', pid.unique_id)
         return return_str
     elif state == 'pause_pid':
         pid.is_paused = True

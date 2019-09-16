@@ -11,7 +11,6 @@
 #
 import time
 
-import filelock
 from flask_babel import lazy_gettext
 
 from mycodo.inputs.base_input import AbstractInput

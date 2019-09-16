@@ -29,7 +29,6 @@ from mycodo.utils.system_pi import assure_path_exists
 
 logger = logging.getLogger(__name__)
 
-
 #
 # Tags
 #

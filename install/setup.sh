@@ -117,7 +117,7 @@ CURRENT_DATE=$(date)
 printf "#### Mycodo Installer finished ${CURRENT_DATE}\n" 2>&1 | tee -a ${LOG_LOCATION}
 
 DURATION=$SECONDS
-printf "#### Total install time: $(($DURATION / 60)) minutes and $(($DURATION % 60)) seconds\n" 2>&1 | tee -a ${LOG_LOCATION}
+printf "#### Total install time: $((DURATION / 60)) minutes and $((DURATION % 60)) seconds\n" 2>&1 | tee -a ${LOG_LOCATION}
 
 printf "
 ************************************

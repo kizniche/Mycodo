@@ -171,11 +171,11 @@ if __name__ == '__main__':
             # pass commands straight to board
             if len(input_val) == 0:
                 lines = dev.read_lines()
-                for i in range(len(lines)):
-                    print(lines[i])
+                for line in lines:
+                    print(line)
             else:
                 dev.send_cmd(input_val)
                 time.sleep(1.3)
                 lines = dev.read_lines()
-                for i in range(len(lines)):
-                    print(lines[i])
+                for line in lines:
+                    print(line)

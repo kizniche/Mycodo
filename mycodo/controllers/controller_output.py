@@ -1229,68 +1229,10 @@ output_id = '{}'
         :rtype: str
         """
         if output_id in self.output_type:
-            if self.output_type[output_id] == 'wired':
-                if (self.output_pin[output_id] is not None and
-                        self.output_on_state[output_id] == GPIO.input(self.output_pin[output_id])):
-                    return 'on'
-            elif self.output_type[output_id] in ['command',
-                                                 'python',
-                                                 'wireless_rpi_rf']:
-                if (self.output_time_turned_on[output_id] or
-                        self.output_on_until[output_id] > datetime.datetime.now()):
-                    return 'on'
-            elif self.output_type[output_id] in ['pwm',
-                                                 'command_pwm',
-                                                 'python_pwm']:
-                if output_id in self.pwm_state and self.pwm_state[output_id]:
-                    return self.pwm_state[output_id]
-            elif self.output_type[output_id] == 'atlas_ezo_pmp':
-                device_measurements = db_retrieve_table_daemon(
-                    DeviceMeasurements).filter(
-                    DeviceMeasurements.device_id == output_id)
-                for each_dev_meas in device_measurements:
-                    if each_dev_meas.unit == 'minute':
-                        last_measurement = read_last_influxdb(
-                            output_id,
-                            each_dev_meas.unit,
-                            each_dev_meas.measurement,
-                            each_dev_meas.channel)
-                        if last_measurement:
-                            datetime_ts = datetime.datetime.strptime(
-                                last_measurement[0][:-7], '%Y-%m-%dT%H:%M:%S.%f')
-                            minutes_on = last_measurement[1]
-                            ts_pmp_off = datetime_ts + datetime.timedelta(minutes=minutes_on)
-                            now = datetime.datetime.utcnow()
-                            is_on = bool(now < ts_pmp_off)
-                            if is_on:
-                                return 'on'
-        return 'off'
-
-    def output_on_duration(self, output_id):
-        """
-        :param output_id: Unique ID for each output
-        :type output_id: str
-
-        :return: How long the output has been on for
-        :rtype: float
-        """
-        if output_id in self.output_type:
-            if self.output_type[output_id] == 'wired':
-                if (self.output_pin[output_id] is not None and
-                        self.output_on_state[output_id] == GPIO.input(self.output_pin[output_id])):
-                    return 'on'
-            elif self.output_type[output_id] in ['command',
-                                                 'python',
-                                                 'wireless_rpi_rf']:
-                if (self.output_time_turned_on[output_id] or
-                        self.output_on_until[output_id] > datetime.datetime.now()):
-                    return 'on'
-            elif self.output_type[output_id] in ['pwm',
-                                                 'command_pwm',
-                                                 'python_pwm']:
-                if output_id in self.pwm_state and self.pwm_state[output_id]:
-                    return self.pwm_state[output_id]
-        return 0
+            if self.is_on(output_id):
+                return 'on'
+            else:
+                return 'off'
 
     def set_off_until(self, dt_off_until, output_id):
         with session_scope(MYCODO_DB_PATH) as new_session:

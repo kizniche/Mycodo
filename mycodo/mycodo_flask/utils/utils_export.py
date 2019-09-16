@@ -10,7 +10,6 @@ import os
 import shutil
 from flask import send_file
 from flask import url_for
-from flask_babel import gettext
 from werkzeug.utils import secure_filename
 
 from mycodo.config import ALEMBIC_VERSION
@@ -25,11 +24,9 @@ from mycodo.utils.system_pi import cmd_output
 
 logger = logging.getLogger(__name__)
 
-
 #
 # Export
 #
-
 
 def export_measurements(form):
     """

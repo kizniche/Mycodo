@@ -75,7 +75,7 @@ class TriggerController(AbstractController, threading.Thread):
         self.sample_rate = None
 
         self.control = DaemonControl()
-        
+
         self.pause_loop = False
         self.verify_pause_loop = True
         self.trigger = None

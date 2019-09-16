@@ -802,8 +802,7 @@ def check_conversion_being_used(conv, error, state=None):
                                     dev=each_meas.device_id))
     except Exception as except_msg:
         error.append(except_msg)
-    finally:
-        return error
+    return error
 
 
 def remove_conversion_from_controllers(conv_id):

@@ -8,7 +8,6 @@ Create Date: 2019-09-15 11:43:07.003473
 
 
 import sys
-import textwrap
 
 import os
 
@@ -19,15 +18,9 @@ import sqlalchemy as sa
 from mycodo.databases.models import DeviceMeasurements
 from mycodo.databases.models import Output
 from mycodo.databases.models import Dashboard
-from mycodo.databases.models import Conditional
-from mycodo.databases.models import ConditionalConditions
-from mycodo.databases.models import Input
 from mycodo.databases.utils import session_scope
 from mycodo.config import OUTPUT_INFO
 from mycodo.config import SQL_DATABASE_MYCODO
-from mycodo.inputs.python_code import execute_at_creation
-from mycodo.mycodo_flask.utils.utils_misc import pre_statement_run
-from mycodo.utils.system_pi import assure_path_exists
 
 # revision identifiers, used by Alembic.
 revision = '2e416233221b'

@@ -132,7 +132,10 @@ def camera_record(record_type, unique_id, duration_sec=None, tmp_filename=None):
             cmd += " " + settings.custom_options
 
         out, err, status = cmd_output(cmd, stdout_pipe=False)
-        # logger.error("TEST01: {}; {}; {}; {}".format(cmd, out, err, status))
+        logger.debug(
+            "Camera debug message: "
+            "cmd: {}; out: {}; error: {}; status: {}".format(
+                cmd, out, err, status))
 
     # Turn off output, if configured
     if settings.output_id and daemon_control:

@@ -278,7 +278,7 @@ class AM2315:
         # tempF = self.c_to_f(tempC)
 
         # Verify CRC
-        crc = 256*data[7] + data[6]
+        crc = 256 * crc_L + crc_H
         t = bytearray([data[0], data[1], data[2], data[3], data[4], data[5]])
         c = self.verify_crc(t)
 

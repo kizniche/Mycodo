@@ -1,6 +1,4 @@
 # coding=utf-8
-import filelock
-
 from mycodo.inputs.base_input import AbstractInput
 
 # Measurements

@@ -110,8 +110,7 @@ def setup_atlas_ezo_pump():
         else:
             atlas_command = connect_atlas_ezo_pump(selected_output)
             if atlas_command:
-                write_cmd = 'Cal,clear'.format(
-                    form_ezo_pump_calibrate.ml_to_dispense.data)
+                write_cmd = 'Cal,clear'
                 logger.error("EZO-PMP command: {}".format(write_cmd))
                 status, msg = atlas_command.query(write_cmd)
                 info_str = "{act}: {lvl}: {resp}".format(

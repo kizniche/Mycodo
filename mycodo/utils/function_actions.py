@@ -729,11 +729,11 @@ def trigger_action(
         logger_actions.exception("Error triggering action:")
         message += " Error while executing action! See Daemon log for details."
 
-    logger_actions.debug("Message: ".format(message))
-    logger_actions.debug("Note Tags: ".format(note_tags))
-    logger_actions.debug("Email Recipients: ".format(email_recipients))
-    logger_actions.debug("Attachment Files: ".format(attachment_file))
-    logger_actions.debug("Attachment Type: ".format(attachment_type))
+    logger_actions.debug("Message: {}".format(message))
+    logger_actions.debug("Note Tags: {}".format(note_tags))
+    logger_actions.debug("Email Recipients: {}".format(email_recipients))
+    logger_actions.debug("Attachment Files: {}".format(attachment_file))
+    logger_actions.debug("Attachment Type: {}".format(attachment_type))
 
     if single_action:
         return message
