@@ -71,33 +71,37 @@ def output_add(form_add):
                                    'python']:
                     new_output.measurement = 'duration_time'
                     new_output.unit = 's'
+
                 elif output_type in ['command_pwm',
                                      'pwm',
                                      'python_pwm']:
                     new_output.measurement = 'duty_cycle'
                     new_output.unit = 'percent'
-                elif output_type == 'atlas_ezo_pmp':
-                    new_output.output_mode = 'fastest_flow_rate'
 
                 new_output.channel = 0
 
                 if output_type == 'wired':
                     new_output.state_at_startup = 0
                     new_output.state_at_shutdown = 0
+
                 elif output_type == 'wireless_rpi_rf':
                     new_output.pin = None
                     new_output.protocol = 1
                     new_output.pulse_length = 189
                     new_output.on_command = '22559'
                     new_output.off_command = '22558'
+
                 elif output_type == 'command':
                     new_output.on_command = '/home/pi/script_on.sh'
                     new_output.off_command = '/home/pi/script_off.sh'
+
                 elif output_type == 'command_pwm':
                     new_output.pwm_command = '/home/pi/script_pwm.sh ((duty_cycle))'
+
                 elif output_type == 'pwm':
                     new_output.pwm_hertz = 22000
                     new_output.pwm_library = 'pigpio_any'
+
                 elif output_type == 'python':
                     new_output.on_command = """
 timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
@@ -109,6 +113,7 @@ timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 write_string = "{ts}: ID: {id}: OFF\\n".format(id=output_id, ts=timestamp)
 with open("/home/pi/Mycodo/OutputTest.txt", "a") as myfile:
     myfile.write(write_string)"""
+
                 elif output_type == 'python_pwm':
                     new_output.pwm_command = """
 timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
@@ -116,7 +121,9 @@ write_string = "{ts}: ID: {id}: Duty Cycle: ((duty_cycle)) %\\n".format(
     id=output_id, ts=timestamp)
 with open("/home/pi/Mycodo/OutputTest.txt", "a") as myfile:
     myfile.write(write_string)"""
+
                 elif output_type == 'atlas_ezo_pmp':
+                    new_output.output_mode = 'fastest_flow_rate'
                     new_output.flow_rate = 10
                     if interface == 'I2C':
                         new_output.location = '0x67'
@@ -164,6 +171,7 @@ def output_mod(form_output):
                 error.append("BCM GPIO Pin must be an integer")
             mod_output.pin = form_output.gpio_location.data
             mod_output.on_state = bool(int(form_output.on_state.data))
+
         elif mod_output.output_type == 'wireless_rpi_rf':
             if not is_int(form_output.gpio_location.data):
                 error.append("Pin must be an integer")
@@ -180,21 +188,26 @@ def output_mod(form_output):
             mod_output.pulse_length = form_output.pulse_length.data
             mod_output.on_command = form_output.on_command.data
             mod_output.off_command = form_output.off_command.data
+
         elif mod_output.output_type in ['command',
                                         'python']:
             mod_output.on_command = form_output.on_command.data
             mod_output.off_command = form_output.off_command.data
+
         elif mod_output.output_type in ['command_pwm',
                                         'python_pwm']:
             mod_output.pwm_command = form_output.pwm_command.data
             mod_output.pwm_invert_signal = form_output.pwm_invert_signal.data
+
         elif mod_output.output_type == 'pwm':
             mod_output.pin = form_output.gpio_location.data
             mod_output.pwm_hertz = form_output.pwm_hertz.data
             mod_output.pwm_library = form_output.pwm_library.data
             mod_output.pwm_invert_signal = form_output.pwm_invert_signal.data
+
         elif mod_output.output_type.startswith('atlas_ezo_pmp'):
             mod_output.location = form_output.location.data
+            mod_output.output_mode = form_output.output_mode.data
             if form_output.flow_rate.data > 105 or form_output.flow_rate.data < 0.5:
                 error.append("Flow Rate must be between 0.5 and 105 ml/min")
             else:

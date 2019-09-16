@@ -283,14 +283,14 @@ class OutputController(AbstractController, threading.Thread):
             if state == 'on' and volume_ml > 0:
                 write_cmd = None
                 if self.output_mode[output_id] == 'fastest_flow_rate':
+                    minutes_to_run = volume_ml * 105
                     write_cmd = 'D,{ml:.2f}'.format(ml=volume_ml)
                 elif self.output_mode[output_id] == 'select_flow_rate':
                     # Calculate command, given flow rate
                     minutes_to_run = volume_ml / self.output_flow_rate[output_id]
                     write_cmd = 'D,{ml:.2f},{min:.2f}'.format(
                             ml=volume_ml, min=minutes_to_run)
-
-                if not write_cmd:
+                else:
                     self.logger.error("Invalid output_mode: '{}'".format(
                         self.output_mode[output_id]))
                     return
