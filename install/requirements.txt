@@ -27,6 +27,7 @@ geocoder == 1.38.1
 gunicorn == 19.9.0
 influxdb == 5.0.0
 filelock == 3.0.12
+pylibftdi == 0.17.0
 pyro4
 pyserial
 python-dateutil == 2.8.0
