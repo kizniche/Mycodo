@@ -329,6 +329,8 @@ OUTPUTS = [
     ('python,GPIO', OUTPUT_INFO['python']['name']),
     ('python_pwm,GPIO', OUTPUT_INFO['python_pwm']['name']),
     ('wireless_rpi_rf,GPIO', OUTPUT_INFO['wireless_rpi_rf']['name']),
+    ('atlas_ezo_pmp,FTDI', '{} ({})'.format(
+        OUTPUT_INFO['atlas_ezo_pmp']['name'], lazy_gettext('FTDI'))),
     ('atlas_ezo_pmp,I2C', '{} ({})'.format(
         OUTPUT_INFO['atlas_ezo_pmp']['name'], lazy_gettext('I2C'))),
     ('atlas_ezo_pmp,UART', '{} ({})'.format(

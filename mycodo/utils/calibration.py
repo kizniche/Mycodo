@@ -123,7 +123,10 @@ class AtlasScientificCommand:
             elif self.board_version == 2:
                 err, msg = self.send_command('Cal,high,10.00')
         elif command == 'calibrated':  # Not implemented. This queries whether there is a stored calibration
-            if self.board_version == 2:
+            if self.board_version == 1:
+                err = 'success'
+                msg = 'Calibrated query not implemented on board version 1 (assume it was successfully calibrated)'
+            elif self.board_version == 2:
                 err, msg = self.send_command('Cal,?')
         elif command == 'end':
             if self.board_version == 1:

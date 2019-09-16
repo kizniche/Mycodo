@@ -17,6 +17,7 @@ from mycodo.config import PATH_1WIRE
 from mycodo.config_translations import TRANSLATIONS
 from mycodo.databases.models import Input
 from mycodo.databases.models import Output
+from mycodo.devices.atlas_scientific_ftdi import AtlasScientificFTDI
 from mycodo.devices.atlas_scientific_i2c import AtlasScientificI2C
 from mycodo.devices.atlas_scientific_uart import AtlasScientificUART
 from mycodo.mycodo_flask.forms import forms_calibration
@@ -90,7 +91,9 @@ def setup_atlas_ezo_pump():
 
     def connect_atlas_ezo_pump(selected_output):
         atlas_command = None
-        if selected_output.interface == 'I2C':
+        if selected_output.interface == 'FTDI':
+            atlas_command = AtlasScientificFTDI(selected_output.ftdi_location)
+        elif selected_output.interface == 'I2C':
             atlas_command = AtlasScientificI2C(
                 i2c_address=int(str(selected_output.location), 16),
                 i2c_bus=selected_output.i2c_bus)
@@ -124,7 +127,7 @@ def setup_atlas_ezo_pump():
             else:
                 flash("Error initializing pump class", 'error')
 
-    if form_ezo_pump_calibrate.start_calibration.data:
+    elif form_ezo_pump_calibrate.start_calibration.data:
         ui_stage = 'question_ml_dispensed'
         selected_output = Output.query.filter(
             Output.unique_id == form_ezo_pump_calibrate.selected_output_id.data).first()
@@ -291,7 +294,6 @@ def setup_atlas_ph():
                 next_stage = 'complete'
             else:
                 next_stage = list_point_calibrations[current_stage_index + 1]
-
 
     if form_ph_calibrate.clear_calibration.data:
         pass

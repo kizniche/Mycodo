@@ -125,7 +125,9 @@ with open("/home/pi/Mycodo/OutputTest.txt", "a") as myfile:
                 elif output_type == 'atlas_ezo_pmp':
                     new_output.output_mode = 'fastest_flow_rate'
                     new_output.flow_rate = 10
-                    if interface == 'I2C':
+                    if interface == 'FTDI':
+                        new_output.location = '/dev/ttyUSB0'
+                    elif interface == 'I2C':
                         new_output.location = '0x67'
                         new_output.i2c_bus = 1
                     elif interface == 'UART':

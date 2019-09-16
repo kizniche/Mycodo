@@ -11,6 +11,7 @@
  - Add Calibration: Atlas Scientific EZO Pump ([#562](https://github.com/kizniche/mycodo/issues/562))
  - Add ability to select pump modes for Atlas Scientific EZO Pump ([#562](https://github.com/kizniche/mycodo/issues/562))
  - Add ability to enable Daemon debug mode from Configuration page
+ - Add ability to use FTDI to communicate with Atlas Scientific EZO Pump
 
 
 ## 7.7.2 (2019.09.14)

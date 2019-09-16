@@ -1,4 +1,13 @@
-{% if each_output.interface == 'I2C' %}
+{% if each_output.interface == 'FTDI' %}
+
+<div class="col-auto">
+  <label class="control-label">{{dict_translation['ftdi_location']['title']}}</label>
+  <div>
+    {{form_mod_output.location(class_='form-control', value=each_output.location, **{'title': dict_translation['ftdi_location']['phrase']})}}
+  </div>
+</div>
+
+{% elif each_output.interface == 'I2C' %}
 
 <div class="col-auto">
   <label class="control-label">{{dict_translation['i2c_location']['title']}}</label>

@@ -103,16 +103,19 @@ def input_add(form_add):
             # Interfacing options
             #
 
-            # I2C options
             if input_interface == 'I2C':
                 if dict_has_value('i2c_location'):
                     new_input.i2c_location = dict_inputs[input_name]['i2c_location'][0]  # First entry in list
 
+            if input_interface == 'FTDI':
+                if dict_has_value('ftdi_location'):
+                    new_input.ftdi_location = dict_inputs[input_name]['ftdi_location']
+
+            if input_interface == 'UART':
+                if dict_has_value('uart_location'):
+                    new_input.uart_location = dict_inputs[input_name]['uart_location']
+
             # UART options
-            if dict_has_value('uart_location'):
-                new_input.uart_location = dict_inputs[input_name]['uart_location']
-            if dict_has_value('ftdi_location'):
-                new_input.uart_location = dict_inputs[input_name]['ftdi_location']
             if dict_has_value('uart_baud_rate'):
                 new_input.baud_rate = dict_inputs[input_name]['uart_baud_rate']
             if dict_has_value('pin_cs'):
