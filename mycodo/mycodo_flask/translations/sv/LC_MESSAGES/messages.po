@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2019-09-15 16:50-0400\n"
+"POT-Creation-Date: 2019-09-15 22:58-0400\n"
 "PO-Revision-Date: 2019-01-29 14:25-0500\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: sv\n"
@@ -375,7 +375,7 @@ msgstr "Specifik engtal"
 msgid "Specific Volume"
 msgstr "Specifik volym"
 
-#: config_devices_units.py:185 mycodo_flask/forms/forms_calibration.py:38
+#: config_devices_units.py:185 mycodo_flask/forms/forms_calibration.py:53
 #: mycodo_flask/templates/pages/data_options/math_options/vapor_pressure_deficit.html:6
 msgid "Temperature"
 msgstr "Temperatur"
@@ -642,7 +642,7 @@ msgstr "Visa"
 msgid "Down"
 msgstr "Ner"
 
-#: config_translations.py:53 config_translations.py:327
+#: config_translations.py:53 config_translations.py:330
 #: mycodo_flask/forms/forms_input.py:134
 msgid "Edge"
 msgstr "Kant"
@@ -878,8 +878,8 @@ msgstr ""
 "Justera förstärkningen för att ändra det mätbara spänningsområdet. Se "
 "ADC-dokumentation för detaljer."
 
-#: config_translations.py:157 config_translations.py:294
-#: config_translations.py:297 mycodo_flask/forms/forms_calibration.py:49
+#: config_translations.py:157 config_translations.py:297
+#: config_translations.py:300 mycodo_flask/forms/forms_calibration.py:64
 msgid "Resolution"
 msgstr "Upplösning"
 
@@ -927,7 +927,7 @@ msgstr "BT-adapter"
 msgid "The Bluetooth adapter of the input"
 msgstr "Bluetooth-adaptern på ingången"
 
-#: config_translations.py:175 mycodo_flask/routes_calibration.py:332
+#: config_translations.py:175 mycodo_flask/routes_calibration.py:465
 #: mycodo_flask/templates/pages/function_options/action_options/command.html:2
 msgid "Command"
 msgstr "Kommando"
@@ -1088,26 +1088,34 @@ msgstr ""
 "att stänga av"
 
 #: config_translations.py:235
+msgid "Output Mode"
+msgstr ""
+
+#: config_translations.py:236
+msgid "Mode to run the output"
+msgstr ""
+
+#: config_translations.py:238
 msgid "Startup State"
 msgstr "Starta staten"
 
-#: config_translations.py:236
+#: config_translations.py:239
 msgid "When Mycodo starts, set the output state"
 msgstr "När Mycodo startar, ställ in utgångsläget"
 
-#: config_translations.py:238
+#: config_translations.py:241
 msgid "Shutdown State"
 msgstr ""
 
-#: config_translations.py:239
+#: config_translations.py:242
 msgid "When Mycodo shuts down, set the output state"
 msgstr ""
 
-#: config_translations.py:241
+#: config_translations.py:244
 msgid "On Command"
 msgstr "På kommando"
 
-#: config_translations.py:242
+#: config_translations.py:245
 #: mycodo_flask/templates/pages/output_options/python.html:4
 msgid ""
 "Command to execute (as user mycodo) when the output is instructed to turn"
@@ -1116,61 +1124,61 @@ msgstr ""
 "Kommando att exekvera (som användar mycodo) när utmatningen är instruerad"
 " att aktivera"
 
-#: config_translations.py:244 mycodo_flask/forms/forms_conditional.py:32
+#: config_translations.py:247 mycodo_flask/forms/forms_conditional.py:32
 #: mycodo_flask/forms/forms_lcd.py:55 mycodo_flask/forms/forms_math.py:37
 #: mycodo_flask/forms/forms_trigger.py:58
 msgid "Period (seconds)"
 msgstr "Period (sekunder)"
 
-#: config_translations.py:245
+#: config_translations.py:248
 msgid "The duration (seconds) between input reads"
 msgstr "Varaktigheten (sekunder) mellan ingången läser"
 
-#: config_translations.py:247
+#: config_translations.py:250
 msgid "Clock Pin"
 msgstr "Klocka Pin"
 
-#: config_translations.py:248
+#: config_translations.py:251
 msgid "The GPIO (using BCM numbering) connected to the Clock pin"
 msgstr "GPIO (med BCM-nummerering) ansluten till klockstiften"
 
-#: config_translations.py:250
+#: config_translations.py:253
 msgid "CS Pin"
 msgstr "CS Pin"
 
-#: config_translations.py:251
+#: config_translations.py:254
 msgid "The GPIO (using BCM numbering) connected to the Cable Select pin"
 msgstr "GPIO (med BCM-numrering) ansluten till kabelvalstiften"
 
-#: config_translations.py:253
+#: config_translations.py:256
 msgid "MISO Pin"
 msgstr "MISO Pin"
 
-#: config_translations.py:254
+#: config_translations.py:257
 msgid "The GPIO (using BCM numbering) connected to the MISO pin"
 msgstr "GPIO (med BCM-nummerering) ansluten till MISO-stiftet"
 
-#: config_translations.py:256
+#: config_translations.py:259
 msgid "MOSI Pin"
 msgstr "MOSI-pin"
 
-#: config_translations.py:257
+#: config_translations.py:260
 msgid "The GPIO (using BCM numbering) connected to the MOSI pin"
 msgstr "GPIO (med BCM-nummerering) ansluten till MOSI-stiftet"
 
-#: config_translations.py:259 inputs/mqtt_paho.py:52
+#: config_translations.py:262 inputs/mqtt_paho.py:52
 msgid "Port"
 msgstr "Hamn"
 
-#: config_translations.py:260
+#: config_translations.py:263
 msgid "Host port number"
 msgstr "Värd port nummer"
 
-#: config_translations.py:262
+#: config_translations.py:265
 msgid "Pre Out Duration"
 msgstr "Fördröjningstid"
 
-#: config_translations.py:263
+#: config_translations.py:266
 msgid ""
 "If a Pre Output is selected, set the duration (seconds) to turn the Pre "
 "Output on for before every measurement is acquired."
@@ -1178,11 +1186,11 @@ msgstr ""
 "Om en Pre Output har valts, ställa in varaktigheten (sekunder) för att "
 "slå på Pre Output innan varje mätning förvärvas."
 
-#: config_translations.py:267
+#: config_translations.py:270
 msgid "Pre During Measure"
 msgstr "Pre under åtgärd"
 
-#: config_translations.py:268
+#: config_translations.py:271
 msgid ""
 "Check to turn the output off after (opposed to before) the measurement is"
 " complete"
@@ -1190,63 +1198,63 @@ msgstr ""
 "Kontrollera att utgången är avstängd efter (i motsats till tidigare) "
 "mätningen är klar"
 
-#: config_translations.py:270
+#: config_translations.py:273
 msgid "Pre Output"
 msgstr "Pre Output"
 
-#: config_translations.py:271
+#: config_translations.py:274
 msgid "Turn the selected output on before taking every measurement"
 msgstr "Vrid den valda utsignalen innan du tar varje mätning"
 
-#: config_translations.py:273
+#: config_translations.py:276
 msgid "Protocol"
 msgstr "Protokoll"
 
-#: config_translations.py:274
+#: config_translations.py:277
 msgid "Wireless 433 MHz protocol"
 msgstr "Trådlöst 433 MHz protokoll"
 
-#: config_translations.py:276
+#: config_translations.py:279
 msgid "Pulse Length"
 msgstr "Pulslängd"
 
-#: config_translations.py:277
+#: config_translations.py:280
 msgid "Wireless 433 MHz pulse length"
 msgstr "Trådlös 433 MHz pulslängd"
 
-#: config_translations.py:279
+#: config_translations.py:282
 msgid "Amount to Dispense (ml)"
 msgstr "Mängd till Dispense (ml)"
 
-#: config_translations.py:280
+#: config_translations.py:283
 msgid "Volume in ml to pump"
 msgstr "Volym i ml för pumpning"
 
-#: config_translations.py:282
+#: config_translations.py:285
 msgid "PWM Command"
 msgstr "PWM-kommando"
 
-#: config_translations.py:283
+#: config_translations.py:286
 #, python-format
 msgid "Command to execute (as user mycodo) to set the PWM duty cycle (%%)"
 msgstr ""
 "Kommando att utföra (som användar mycodo) för att ställa in PWM-"
 "arbetscykeln (%%)"
 
-#: config_translations.py:285
+#: config_translations.py:288
 msgid "Frequency (Hertz)"
 msgstr "Frekvens (Hertz)"
 
-#: config_translations.py:286
+#: config_translations.py:289
 msgid "The Hertz to output the PWM signal (0 - 70,000)"
 msgstr "Hertz för att mata ut PWM-signalen (0 - 70 000)"
 
-#: config_translations.py:288 inputs/ds18b20.py:77 inputs/ds18s20.py:69
+#: config_translations.py:291 inputs/ds18b20.py:77 inputs/ds18s20.py:69
 #: mycodo_flask/forms/forms_settings.py:32
 msgid "Library"
 msgstr "Bibliotek"
 
-#: config_translations.py:289
+#: config_translations.py:292
 msgid ""
 "Which method to produce the PWM signal (hardware pins can produce higher "
 "frequencies)"
@@ -1254,113 +1262,113 @@ msgstr ""
 "Vilken metod för att producera PWM-signalen (hårdvarubärmar kan producera"
 " högre frekvenser)"
 
-#: config_translations.py:291
+#: config_translations.py:294
 msgid "Reference Resistance"
 msgstr "Referensresistens"
 
-#: config_translations.py:292
+#: config_translations.py:295
 msgid "Reference resistance (Ohm)"
 msgstr "Referensmotstånd (Ohm)"
 
-#: config_translations.py:295 config_translations.py:298
+#: config_translations.py:298 config_translations.py:301
 msgid "Measurement resolution"
 msgstr "Mätupplösning"
 
-#: config_translations.py:300
+#: config_translations.py:303
 msgid "Pulses Per Rev"
 msgstr "Pulser per rev"
 
-#: config_translations.py:301
+#: config_translations.py:304
 msgid ""
 "The number of pulses per revolution to calculate revolutions per minute "
 "(RPM)"
 msgstr "Antalet pulser per revolution för att beräkna varv per minut (RPM)"
 
-#: config_translations.py:303
+#: config_translations.py:306
 msgid "Sample Time"
 msgstr "Provtid"
 
-#: config_translations.py:304
+#: config_translations.py:307
 msgid ""
 "The amount of time (seconds) to sample the input before caluclating the "
 "measurement"
 msgstr "Mängden tid (sekunder) för att prova inmatningen innan mätningen avkännes"
 
-#: config_translations.py:306
+#: config_translations.py:309
 msgid "Unscaled Unit Min"
 msgstr "Oskalad enhet Min"
 
-#: config_translations.py:307
+#: config_translations.py:310
 msgid "Unscaled minimum unit"
 msgstr "Oskalad minsta enhet"
 
-#: config_translations.py:309
+#: config_translations.py:312
 msgid "Unscaled Unit Max"
 msgstr "Oskalad enhet Max"
 
-#: config_translations.py:310
+#: config_translations.py:313
 msgid "Unscaled maximum unit"
 msgstr "Oskalad maximal enhet"
 
-#: config_translations.py:312
+#: config_translations.py:315
 msgid "Rescaled Unit Min"
 msgstr "Uppskalad enhet Min"
 
-#: config_translations.py:313
+#: config_translations.py:316
 msgid "Rescaled minimum unit"
 msgstr "Uppskalad minsta enhet"
 
-#: config_translations.py:315
+#: config_translations.py:318
 msgid "Rescaled Unit Max"
 msgstr "Uppskalad enhet Max"
 
-#: config_translations.py:316
+#: config_translations.py:319
 msgid "Rescaled maximum unit"
 msgstr "Uppskalad maximal enhet"
 
-#: config_translations.py:318
+#: config_translations.py:321
 msgid "Measurement Unit"
 msgstr "Måttenhet"
 
-#: config_translations.py:319
+#: config_translations.py:322
 msgid "Select the measurement and unit to store this measurement in the database"
 msgstr "Välj mätning och enhet för att lagra denna mätning i databasen"
 
-#: config_translations.py:321
+#: config_translations.py:324
 msgid "Sensitivity"
 msgstr "Känslighet"
 
-#: config_translations.py:322
+#: config_translations.py:325
 msgid "Measurement sensitivity"
 msgstr "Mätningskänslighet"
 
-#: config_translations.py:324 mycodo_flask/forms/forms_settings.py:151
+#: config_translations.py:327 mycodo_flask/forms/forms_settings.py:151
 msgid "Voltage"
 msgstr "Spänning"
 
-#: config_translations.py:325
+#: config_translations.py:328
 msgid "The input voltage to the sensor"
 msgstr "Ingångsspänningen till sensorn"
 
-#: config_translations.py:328
+#: config_translations.py:331
 msgid "Edge detection: low to high (rising), high to low (falling), or both"
 msgstr ""
 "Kantdetektering: låg till hög (stigande), hög till låg (fallande) eller "
 "båda"
 
-#: config_translations.py:330 mycodo_flask/forms/forms_input.py:136
+#: config_translations.py:333 mycodo_flask/forms/forms_input.py:136
 msgid "Bounce Time (ms)"
 msgstr "Bounce Time (ms)"
 
-#: config_translations.py:331
+#: config_translations.py:334
 msgid "The amount of time (miliseconds) to bounce the input signal"
 msgstr "Mängden tid (milisekunder) för att studsa insignalen"
 
-#: config_translations.py:333 mycodo_flask/forms/forms_input.py:138
+#: config_translations.py:336 mycodo_flask/forms/forms_input.py:138
 msgid "Reset Period"
 msgstr "Återställningsperiod"
 
-#: config_translations.py:334
+#: config_translations.py:337
 msgid ""
 "Wait a period of time (seconds) after the first edge detection to begin "
 "detecting again"
@@ -1368,51 +1376,51 @@ msgstr ""
 "Vänta en tid (sekunder) efter det att den första kanten upptäcktes för "
 "att börja upptäcka igen"
 
-#: config_translations.py:336
+#: config_translations.py:339
 msgid "RTD Probe Type"
 msgstr "RTD Probe Type"
 
-#: config_translations.py:337
+#: config_translations.py:340
 msgid "The type of thermocouple connected"
 msgstr "Typ av termoelement anslutet"
 
-#: config_translations.py:339
+#: config_translations.py:342
 msgid "Times Check"
 msgstr "Tidscheck"
 
-#: config_translations.py:340
+#: config_translations.py:343
 msgid "Number of times to check"
 msgstr "Antal gånger att kontrollera"
 
-#: config_translations.py:342
+#: config_translations.py:345
 msgid "On State"
 msgstr ""
 
-#: config_translations.py:343
+#: config_translations.py:346
 msgid "What state triggers the output to turn on? High or Low?"
 msgstr "Vilket tillstånd utlöses för att sätta på? Hög eller låg?"
 
-#: config_translations.py:345
+#: config_translations.py:348
 msgid "Trigger at Startup"
 msgstr "Utlösare vid uppstart"
 
-#: config_translations.py:346
+#: config_translations.py:349
 msgid "Whether or not to trigger Functions when Mycodo starts"
 msgstr "Oavsett om du vill aktivera Funktioner när Mycodo startar"
 
-#: config_translations.py:348
+#: config_translations.py:351
 msgid "UART Device"
 msgstr "UART-enhet"
 
-#: config_translations.py:349
+#: config_translations.py:352
 msgid "The UART device location (e.g. /dev/ttyUSB1)"
 msgstr "UART-enhetens plats (t.ex. / dev / ttyUSB1)"
 
-#: config_translations.py:351
+#: config_translations.py:354
 msgid "Weighting"
 msgstr "viktning"
 
-#: config_translations.py:352
+#: config_translations.py:355
 msgid ""
 "The weighting of the previous measurement on the current measurement. "
 "Range: 0.0 - 1.0. Used for smoothing measurements. 0.0 means no "
@@ -1722,7 +1730,7 @@ msgstr ""
 msgid "Successfully logged out"
 msgstr "Utloggad framgångsrikt"
 
-#: mycodo_flask/routes_calibration.py:168
+#: mycodo_flask/routes_calibration.py:301
 #, python-format
 msgid "A valid temperature is required: %(temp)s is invalid."
 msgstr "En giltig temperatur krävs: %(temp)s är ogiltig."
@@ -1783,33 +1791,41 @@ msgstr "Jag förstår"
 msgid "Select"
 msgstr "Välj"
 
-#: mycodo_flask/forms/forms_calibration.py:35
-msgid "Atlas pH Sensor"
-msgstr "Atlas pH Sensor"
-
-#: mycodo_flask/forms/forms_calibration.py:36
-msgid "Clear Calibration"
-msgstr "Klar kalibrering"
-
-#: mycodo_flask/forms/forms_calibration.py:39
-msgid "pH Points to Calibrate"
+#: mycodo_flask/forms/forms_calibration.py:33
+msgid "Atlas EZO Pump"
 msgstr ""
 
-#: mycodo_flask/forms/forms_calibration.py:40
+#: mycodo_flask/forms/forms_calibration.py:34
+#: mycodo_flask/forms/forms_calibration.py:55
 msgid "Begin Calibration"
 msgstr "Börja kalibrering"
 
+#: mycodo_flask/forms/forms_calibration.py:35
+#: mycodo_flask/forms/forms_calibration.py:51
+msgid "Clear Calibration"
+msgstr "Klar kalibrering"
+
+#: mycodo_flask/forms/forms_calibration.py:40
 #: mycodo_flask/forms/forms_calibration.py:41
-#: mycodo_flask/forms/forms_calibration.py:42
+#: mycodo_flask/forms/forms_calibration.py:56
+#: mycodo_flask/forms/forms_calibration.py:57
 msgid "Continue to Next Stage"
 msgstr "Fortsätt till nästa steg"
 
-#: mycodo_flask/forms/forms_calibration.py:47
+#: mycodo_flask/forms/forms_calibration.py:50
+msgid "Atlas pH Sensor"
+msgstr "Atlas pH Sensor"
+
+#: mycodo_flask/forms/forms_calibration.py:54
+msgid "pH Points to Calibrate"
+msgstr ""
+
+#: mycodo_flask/forms/forms_calibration.py:62
 #: mycodo_flask/forms/forms_settings.py:33
 msgid "Device"
 msgstr "anordning"
 
-#: mycodo_flask/forms/forms_calibration.py:50
+#: mycodo_flask/forms/forms_calibration.py:65
 msgid "Set Resolution"
 msgstr "Ange upplösning"
 
@@ -2078,7 +2094,7 @@ msgstr ""
 msgid "Number of Measurements"
 msgstr ""
 
-#: mycodo_flask/forms/forms_input.py:83 mycodo_flask/forms/forms_output.py:46
+#: mycodo_flask/forms/forms_input.py:83 mycodo_flask/forms/forms_output.py:47
 msgid "Location"
 msgstr "Plats"
 
@@ -2223,9 +2239,8 @@ msgstr "Varaktighet / Driftscykel"
 msgid "Relay State"
 msgstr "Relä stat"
 
-#: mycodo_flask/forms/forms_method.py:98 mycodo_flask/forms/forms_output.py:111
-#: mycodo_flask/templates/pages/dashboard_options/mod_output.html:98
-#: mycodo_flask/templates/pages/dashboard_options/mod_output.html:109
+#: mycodo_flask/forms/forms_method.py:98 mycodo_flask/forms/forms_output.py:112
+#: mycodo_flask/templates/pages/dashboard_options/mod_output.html:104
 #: mycodo_flask/templates/pages/method-build.html:294
 #: mycodo_flask/templates/pages/output.html:253
 #: mycodo_flask/templates/pages/output.html:289
@@ -2432,25 +2447,25 @@ msgstr "Importera anteckningar"
 msgid "Quantity"
 msgstr "Kvantitet"
 
-#: mycodo_flask/forms/forms_output.py:55
+#: mycodo_flask/forms/forms_output.py:56
 msgid "Invert Signal"
 msgstr "Invertera signalen"
 
-#: mycodo_flask/forms/forms_output.py:61
+#: mycodo_flask/forms/forms_output.py:62
 msgid "The current draw of the device connected to this output, in amps."
 msgstr "Den nuvarande teckningen av enheten ansluten till denna utgång, i ampere."
 
-#: mycodo_flask/forms/forms_output.py:69
+#: mycodo_flask/forms/forms_output.py:70
 #: mycodo_flask/templates/pages/output_options/wired.html:11
 msgid "High"
 msgstr "Hög"
 
-#: mycodo_flask/forms/forms_output.py:70
+#: mycodo_flask/forms/forms_output.py:71
 #: mycodo_flask/templates/pages/output_options/wired.html:12
 msgid "Low"
 msgstr "Låg"
 
-#: mycodo_flask/forms/forms_output.py:77 mycodo_flask/forms/forms_output.py:86
+#: mycodo_flask/forms/forms_output.py:78 mycodo_flask/forms/forms_output.py:87
 #: mycodo_flask/templates/pages/output_options/command.html:17
 #: mycodo_flask/templates/pages/output_options/command.html:27
 #: mycodo_flask/templates/pages/output_options/python.html:17
@@ -2460,11 +2475,11 @@ msgstr "Låg"
 msgid "Neither"
 msgstr "Varken"
 
-#: mycodo_flask/forms/forms_output.py:99
+#: mycodo_flask/forms/forms_output.py:100
 msgid "Any Pin, <= 40 kHz"
 msgstr "Varje Pin, <= 40 kHz"
 
-#: mycodo_flask/forms/forms_output.py:100
+#: mycodo_flask/forms/forms_output.py:101
 msgid "Hardware Pin, <= 30 MHz"
 msgstr "Hårdvara Pin, <= 30 MHz"
 
@@ -3187,6 +3202,7 @@ msgstr "Asynchronous Graphs"
 
 #: mycodo_flask/templates/layout.html:193
 #: mycodo_flask/templates/tools/calibration.html:3
+#: mycodo_flask/templates/tools/calibration_options/atlas_ezo_pump.html:3
 #: mycodo_flask/templates/tools/calibration_options/atlas_ph.html:3
 #: mycodo_flask/templates/tools/calibration_options/ds_resolution.html:3
 msgid "Calibration & Setup"
@@ -3759,16 +3775,18 @@ msgid "Display Latest Timelapse Image"
 msgstr "Visa senaste Timelapse-bilden"
 
 #: mycodo_flask/templates/pages/dashboard_options/mod_output.html:52
+msgid "PWM On"
+msgstr "PWM På"
+
+#: mycodo_flask/templates/pages/dashboard_options/mod_output.html:64
+#: mycodo_flask/templates/pages/dashboard_options/mod_output.html:118
 msgid "Out"
 msgstr ""
 
-#: mycodo_flask/templates/pages/dashboard_options/mod_output.html:55
+#: mycodo_flask/templates/pages/dashboard_options/mod_output.html:67
+#: mycodo_flask/templates/pages/dashboard_options/mod_output.html:121
 msgid "Sec On"
 msgstr "Sec On"
-
-#: mycodo_flask/templates/pages/dashboard_options/mod_output.html:65
-msgid "PWM On"
-msgstr "PWM På"
 
 #: mycodo_flask/templates/pages/dashboard_options/mod_pid_control.html:59
 #: mycodo_flask/templates/pages/dashboard_options/mod_pid_control.html:89
@@ -4483,6 +4501,14 @@ msgstr ""
 "Du kan ange en varaktighet (sekunder) som metoden kommer att sluta efter,"
 " annars lämna blank för att repetera för alltid."
 
+#: mycodo_flask/templates/pages/output_options/atlas_ezo_pmp.html:40
+msgid "Fastest Flow Rate"
+msgstr ""
+
+#: mycodo_flask/templates/pages/output_options/atlas_ezo_pmp.html:41
+msgid "Specify Flow Rate"
+msgstr ""
+
 #: mycodo_flask/templates/pages/output_options/pwm.html:14
 msgid "Any Pin, <= 40kHz"
 msgstr "Vilken Pin, <= 40kHz"
@@ -4750,6 +4776,70 @@ msgstr "Sök"
 msgid "Found"
 msgstr "Hittades"
 
+#: mycodo_flask/templates/tools/calibration_options/atlas_ezo_pump.html:14
+msgid ""
+"This guide will walk you through the calibration procedure for the Atlas "
+"EZO Pump. To complete this procedure, you will need a precision scale "
+"and/or a low-volume (10 ml) graduated cylinder. At a minimum, you will "
+"need a way to accurately measure a small volume of the dispensed fluid."
+msgstr ""
+
+#: mycodo_flask/templates/tools/calibration_options/atlas_ezo_pump.html:16
+msgid ""
+"To begin calibration, have your pump properly connected to Mycodo, purge "
+"all air from the tubing, select the pump from the dropdown list, enter a "
+"volume to dispense (such as 10 ml), then click Begin Calibration."
+msgstr ""
+
+#: mycodo_flask/templates/tools/calibration_options/atlas_ezo_pump.html:18
+#: mycodo_flask/templates/tools/calibration_options/atlas_ph.html:78
+msgid ""
+"To clear any currently-stored calibration from memory, click Clear "
+"Calibration."
+msgstr ""
+
+#: mycodo_flask/templates/tools/calibration_options/atlas_ezo_pump.html:20
+msgid ""
+"NOTE: It is recommended to deactivate anything that may try to operate "
+"the pump so it doesn't interfere with the calibration."
+msgstr ""
+
+#: mycodo_flask/templates/tools/calibration_options/atlas_ezo_pump.html:51
+#: mycodo_flask/templates/tools/calibration_options/atlas_ezo_pump.html:75
+#: mycodo_flask/templates/tools/calibration_options/atlas_ph.html:119
+#: mycodo_flask/templates/tools/calibration_options/atlas_ph.html:145
+#: mycodo_flask/templates/tools/calibration_options/atlas_ph.html:177
+#: mycodo_flask/templates/tools/calibration_options/atlas_ph.html:209
+#: mycodo_flask/templates/tools/calibration_options/atlas_ph.html:240
+msgid "Calibration Failed"
+msgstr "Kalibrering misslyckades"
+
+#: mycodo_flask/templates/tools/calibration_options/atlas_ezo_pump.html:52
+#: mycodo_flask/templates/tools/calibration_options/atlas_ezo_pump.html:82
+#: mycodo_flask/templates/tools/calibration_options/atlas_ph.html:120
+#: mycodo_flask/templates/tools/calibration_options/atlas_ph.html:146
+#: mycodo_flask/templates/tools/calibration_options/atlas_ph.html:178
+#: mycodo_flask/templates/tools/calibration_options/atlas_ph.html:210
+#: mycodo_flask/templates/tools/calibration_options/atlas_ph.html:247
+msgid "Refer to the logs for details"
+msgstr "Se loggarna för detaljer"
+
+#: mycodo_flask/templates/tools/calibration_options/atlas_ezo_pump.html:56
+msgid ""
+"Measure how much fluid (ml) was actually dispensed from the pump, enter "
+"that value in the input field, then click Continue."
+msgstr ""
+
+#: mycodo_flask/templates/tools/calibration_options/atlas_ezo_pump.html:75
+#: mycodo_flask/templates/tools/calibration_options/atlas_ph.html:240
+msgid "Calibration Succeeded"
+msgstr "Kalibrering lyckades"
+
+#: mycodo_flask/templates/tools/calibration_options/atlas_ezo_pump.html:84
+#: mycodo_flask/templates/tools/calibration_options/atlas_ph.html:249
+msgid "Calibration Complete"
+msgstr "Kalibrering Komplett"
+
 #: mycodo_flask/templates/tools/calibration_options/atlas_ph.html:13
 #: mycodo_flask/templates/tools/calibration_options/atlas_ph.html:16
 #: mycodo_flask/templates/tools/calibration_options/atlas_ph.html:29
@@ -4782,33 +4872,11 @@ msgid ""
 "select the probe from the dropdown list, and click Begin Calibration."
 msgstr ""
 
-#: mycodo_flask/templates/tools/calibration_options/atlas_ph.html:78
-msgid ""
-"To clear any currently-stored calibration from the sensor memory, click "
-"Clear Calibration."
-msgstr ""
-
 #: mycodo_flask/templates/tools/calibration_options/atlas_ph.html:80
 msgid ""
 "NOTE: It is recommended to deactivate the pH Sensor Input prior to "
 "performing a calibration."
 msgstr ""
-
-#: mycodo_flask/templates/tools/calibration_options/atlas_ph.html:119
-#: mycodo_flask/templates/tools/calibration_options/atlas_ph.html:145
-#: mycodo_flask/templates/tools/calibration_options/atlas_ph.html:177
-#: mycodo_flask/templates/tools/calibration_options/atlas_ph.html:209
-#: mycodo_flask/templates/tools/calibration_options/atlas_ph.html:240
-msgid "Calibration Failed"
-msgstr "Kalibrering misslyckades"
-
-#: mycodo_flask/templates/tools/calibration_options/atlas_ph.html:120
-#: mycodo_flask/templates/tools/calibration_options/atlas_ph.html:146
-#: mycodo_flask/templates/tools/calibration_options/atlas_ph.html:178
-#: mycodo_flask/templates/tools/calibration_options/atlas_ph.html:210
-#: mycodo_flask/templates/tools/calibration_options/atlas_ph.html:247
-msgid "Refer to the logs for details"
-msgstr "Se loggarna för detaljer"
 
 #: mycodo_flask/templates/tools/calibration_options/atlas_ph.html:124
 msgid ""
@@ -4832,14 +4900,6 @@ msgstr ""
 #: mycodo_flask/templates/tools/calibration_options/atlas_ph.html:230
 msgid "Ready"
 msgstr "Redo"
-
-#: mycodo_flask/templates/tools/calibration_options/atlas_ph.html:240
-msgid "Calibration Succeeded"
-msgstr "Kalibrering lyckades"
-
-#: mycodo_flask/templates/tools/calibration_options/atlas_ph.html:249
-msgid "Calibration Complete"
-msgstr "Kalibrering Komplett"
 
 #: mycodo_flask/templates/tools/calibration_options/ds_resolution.html:23
 msgid "Select a DS18B20 sensor"
@@ -4890,9 +4950,9 @@ msgid "%(msg)s"
 msgstr "%(msg)s"
 
 #: mycodo_flask/utils/utils_general.py:661
-#: mycodo_flask/utils/utils_output.py:304
-#: mycodo_flask/utils/utils_output.py:311
 #: mycodo_flask/utils/utils_output.py:316
+#: mycodo_flask/utils/utils_output.py:323
+#: mycodo_flask/utils/utils_output.py:328
 #, python-format
 msgid "%(err)s"
 msgstr "%(err)s"
@@ -5118,51 +5178,51 @@ msgstr "Ogiltig mängd"
 msgid "Acceptable values"
 msgstr "Godtagbara värden"
 
-#: mycodo_flask/utils/utils_output.py:328
+#: mycodo_flask/utils/utils_output.py:340
 msgid "Actuate"
 msgstr "aktivera"
 
-#: mycodo_flask/utils/utils_output.py:336
+#: mycodo_flask/utils/utils_output.py:348
 msgid "Cannot modulate output with a GPIO of 0"
 msgstr "Kan inte modulera utgången med en GPIO på 0"
 
-#: mycodo_flask/utils/utils_output.py:342
+#: mycodo_flask/utils/utils_output.py:354
 msgid "Value must be greater than 0"
 msgstr "Värdet måste vara större än 0"
 
-#: mycodo_flask/utils/utils_output.py:346
+#: mycodo_flask/utils/utils_output.py:358
 #, python-format
 msgid "Output turned on for %(sec)s seconds: %(rvalue)s"
 msgstr "Utgången aktiverad för %(sec)s sekunder: %(rvalue)s"
 
-#: mycodo_flask/utils/utils_output.py:352
+#: mycodo_flask/utils/utils_output.py:364
 msgid "Invalid pin"
 msgstr "Ogiltig PIN"
 
-#: mycodo_flask/utils/utils_output.py:354
+#: mycodo_flask/utils/utils_output.py:366
 msgid "PWM Hertz must be a positive value"
 msgstr "PWM Hertz måste vara ett positivt värde"
 
-#: mycodo_flask/utils/utils_output.py:356
+#: mycodo_flask/utils/utils_output.py:368
 msgid "PWM duty cycle must be a positive value"
 msgstr "PWM-arbetscykeln måste vara ett positivt värde"
 
-#: mycodo_flask/utils/utils_output.py:362
+#: mycodo_flask/utils/utils_output.py:374
 #, python-format
 msgid "PWM set to %(dc)s %% at %(hertz)s Hz: %(rvalue)s"
 msgstr "PWM satt till %(dc)s %% vid %(hertz)s Hz: %(rvalue)s"
 
-#: mycodo_flask/utils/utils_output.py:368
+#: mycodo_flask/utils/utils_output.py:380
 #, python-format
 msgid "Output turned on: %(rvalue)s"
 msgstr "Utgången aktiverad: %(rvalue)s"
 
-#: mycodo_flask/utils/utils_output.py:372
+#: mycodo_flask/utils/utils_output.py:384
 #, python-format
 msgid "Output turned off: %(rvalue)s"
 msgstr "Utgången avstängd: %(rvalue)s"
 
-#: mycodo_flask/utils/utils_output.py:376
+#: mycodo_flask/utils/utils_output.py:388
 msgid "Invalid value"
 msgstr "ogiltigt värde"
 
@@ -5276,4 +5336,10 @@ msgstr ""
 
 #~ msgid "Flow rate in ml/minute"
 #~ msgstr "Flödeshastighet i ml / minut"
+
+#~ msgid ""
+#~ "To clear any currently-stored "
+#~ "calibration from the sensor memory, "
+#~ "click Clear Calibration."
+#~ msgstr ""
 

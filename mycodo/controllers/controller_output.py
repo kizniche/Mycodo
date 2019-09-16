@@ -285,7 +285,7 @@ class OutputController(AbstractController, threading.Thread):
                 if self.output_mode[output_id] == 'fastest_flow_rate':
                     minutes_to_run = volume_ml * 105
                     write_cmd = 'D,{ml:.2f}'.format(ml=volume_ml)
-                elif self.output_mode[output_id] == 'select_flow_rate':
+                elif self.output_mode[output_id] == 'specify_flow_rate':
                     # Calculate command, given flow rate
                     minutes_to_run = volume_ml / self.output_flow_rate[output_id]
                     write_cmd = 'D,{ml:.2f},{min:.2f}'.format(

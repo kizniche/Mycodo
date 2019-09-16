@@ -1071,46 +1071,50 @@ optional arguments:
 <td>The I2C bus the device is connected to.</td>
 </tr>
 <tr class="odd">
+<td>Output Mode</td>
+<td>The Output mode, if supported.</td>
+</tr>
+<tr class="even">
 <td>Flow Rate</td>
 <td>The flow rate to dispense the volume (ml/min).</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>Pulse Length</td>
 <td>This is the pulse length to transmit via 315/433 MHz. Default is 189 ms.</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>Bit Length</td>
 <td>This is the bit length to transmit via 315/433 MHz. Default is 24-bit.</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>On Command</td>
 <td>This is the command used to turn the output on. For wireless relays, this is the numerical command to be transmitted, and for command outputs this is the command to be executed. Commands may be for the linux terminal or Python 3 (depending on which output type selected).</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>Off Command</td>
 <td>This is the command used to turn the output off. For wireless relays, this is the numerical command to be transmitted, and for command outputs this is the command to be executed. Commands may be for the linux terminal or Python 3 (depending on which output type selected).</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>PWM Command</td>
 <td>This is the command used to set the duty cycle. The string “((duty_cycle))” in the command will be replaced with the actual duty cycle before the command is executed. Ensure “((duty_cycle))” is included in your command for this feature to work correctly. Commands may be for the linux terminal or Python 3 (depending on which output type selected).</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>Current Draw (amps)</td>
 <td>The is the amount of current the device powered by the output draws. Note: this value should be calculated based on the voltage set in the <a href="#energy-usage-settings">Energy Usage Settings</a>.</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>Startup State</td>
 <td>This specifies whether the output should be ON or OFF when mycodo initially starts. Some outputs have an additional option ‘Neither’ which will not issue an on or off command when Mycodo starts or stops.</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>Shutdown State</td>
 <td>This specifies whether the output should be ON or OFF when mycodo initially shuts down. Some outputs have an additional option ‘Neither’ which will not issue an on or off command when Mycodo starts or stops.</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>Trigger at Startup</td>
 <td>Select to enable triggering Functions (such as Output Triggers) when Mycodo starts and if Start State is set to ON.</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>Seconds to turn On</td>
 <td>This is a way to turn a output on for a specific duration of time. This can be useful for testing the outputs and powered devices or the measured effects a device may have on an environmental condition.</td>
 </tr>

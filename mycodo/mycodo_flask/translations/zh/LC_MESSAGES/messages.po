@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2019-09-15 16:50-0400\n"
+"POT-Creation-Date: 2019-09-15 22:58-0400\n"
 "PO-Revision-Date: 2018-08-10 15:59-0400\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: zh\n"
@@ -375,7 +375,7 @@ msgstr "具体焓"
 msgid "Specific Volume"
 msgstr "比容"
 
-#: config_devices_units.py:185 mycodo_flask/forms/forms_calibration.py:38
+#: config_devices_units.py:185 mycodo_flask/forms/forms_calibration.py:53
 #: mycodo_flask/templates/pages/data_options/math_options/vapor_pressure_deficit.html:6
 msgid "Temperature"
 msgstr "温度"
@@ -642,7 +642,7 @@ msgstr "显示"
 msgid "Down"
 msgstr "下"
 
-#: config_translations.py:53 config_translations.py:327
+#: config_translations.py:53 config_translations.py:330
 #: mycodo_flask/forms/forms_input.py:134
 msgid "Edge"
 msgstr "边缘"
@@ -876,8 +876,8 @@ msgid ""
 "documentation for details."
 msgstr "调整增益以改变可测量的电压范围。有关详情，请参阅ADC文档。"
 
-#: config_translations.py:157 config_translations.py:294
-#: config_translations.py:297 mycodo_flask/forms/forms_calibration.py:49
+#: config_translations.py:157 config_translations.py:297
+#: config_translations.py:300 mycodo_flask/forms/forms_calibration.py:64
 msgid "Resolution"
 msgstr "解析度"
 
@@ -925,7 +925,7 @@ msgstr "BT适配器"
 msgid "The Bluetooth adapter of the input"
 msgstr "输入的蓝牙适配器"
 
-#: config_translations.py:175 mycodo_flask/routes_calibration.py:332
+#: config_translations.py:175 mycodo_flask/routes_calibration.py:465
 #: mycodo_flask/templates/pages/function_options/action_options/command.html:2
 msgid "Command"
 msgstr "命令"
@@ -1082,317 +1082,325 @@ msgid ""
 msgstr "指示输出关闭时执行的命令（作为用户mycodo）"
 
 #: config_translations.py:235
+msgid "Output Mode"
+msgstr ""
+
+#: config_translations.py:236
+msgid "Mode to run the output"
+msgstr ""
+
+#: config_translations.py:238
 msgid "Startup State"
 msgstr "开始状态"
 
-#: config_translations.py:236
+#: config_translations.py:239
 msgid "When Mycodo starts, set the output state"
 msgstr "当Mycodo启动时，设置输出状态"
 
-#: config_translations.py:238
+#: config_translations.py:241
 msgid "Shutdown State"
 msgstr ""
 
-#: config_translations.py:239
+#: config_translations.py:242
 msgid "When Mycodo shuts down, set the output state"
 msgstr ""
 
-#: config_translations.py:241
+#: config_translations.py:244
 msgid "On Command"
 msgstr "在命令"
 
-#: config_translations.py:242
+#: config_translations.py:245
 #: mycodo_flask/templates/pages/output_options/python.html:4
 msgid ""
 "Command to execute (as user mycodo) when the output is instructed to turn"
 " on"
 msgstr "指示打开输出时执行的命令（作为用户mycodo）"
 
-#: config_translations.py:244 mycodo_flask/forms/forms_conditional.py:32
+#: config_translations.py:247 mycodo_flask/forms/forms_conditional.py:32
 #: mycodo_flask/forms/forms_lcd.py:55 mycodo_flask/forms/forms_math.py:37
 #: mycodo_flask/forms/forms_trigger.py:58
 msgid "Period (seconds)"
 msgstr "期间（秒）"
 
-#: config_translations.py:245
+#: config_translations.py:248
 msgid "The duration (seconds) between input reads"
 msgstr "输入读取之间的持续时间（秒）"
 
-#: config_translations.py:247
+#: config_translations.py:250
 msgid "Clock Pin"
 msgstr "时钟针"
 
-#: config_translations.py:248
+#: config_translations.py:251
 msgid "The GPIO (using BCM numbering) connected to the Clock pin"
 msgstr "GPIO（使用BCM编号）连接到Clock引脚"
 
-#: config_translations.py:250
+#: config_translations.py:253
 msgid "CS Pin"
 msgstr "CS Pin"
 
-#: config_translations.py:251
+#: config_translations.py:254
 msgid "The GPIO (using BCM numbering) connected to the Cable Select pin"
 msgstr "GPIO（使用BCM编号）连接到Cable Select引脚"
 
-#: config_translations.py:253
+#: config_translations.py:256
 msgid "MISO Pin"
 msgstr "MISO Pin"
 
-#: config_translations.py:254
+#: config_translations.py:257
 msgid "The GPIO (using BCM numbering) connected to the MISO pin"
 msgstr "GPIO（使用BCM编号）连接到MISO引脚"
 
-#: config_translations.py:256
+#: config_translations.py:259
 msgid "MOSI Pin"
 msgstr "MOSI Pin"
 
-#: config_translations.py:257
+#: config_translations.py:260
 msgid "The GPIO (using BCM numbering) connected to the MOSI pin"
 msgstr "GPIO（使用BCM编号）连接到MOSI引脚"
 
-#: config_translations.py:259 inputs/mqtt_paho.py:52
+#: config_translations.py:262 inputs/mqtt_paho.py:52
 msgid "Port"
 msgstr "港口"
 
-#: config_translations.py:260
+#: config_translations.py:263
 msgid "Host port number"
 msgstr "主机端口号"
 
-#: config_translations.py:262
+#: config_translations.py:265
 msgid "Pre Out Duration"
 msgstr "预备持续时间"
 
-#: config_translations.py:263
+#: config_translations.py:266
 msgid ""
 "If a Pre Output is selected, set the duration (seconds) to turn the Pre "
 "Output on for before every measurement is acquired."
 msgstr "如果选择了预输出，则设置持续时间（秒）以在获取每个测量值之前打开预输出。"
 
-#: config_translations.py:267
+#: config_translations.py:270
 msgid "Pre During Measure"
 msgstr "预测期间"
 
-#: config_translations.py:268
+#: config_translations.py:271
 msgid ""
 "Check to turn the output off after (opposed to before) the measurement is"
 " complete"
 msgstr "检查在完成测量后（与之前相反）关闭输出"
 
-#: config_translations.py:270
+#: config_translations.py:273
 msgid "Pre Output"
 msgstr "预输出"
 
-#: config_translations.py:271
+#: config_translations.py:274
 msgid "Turn the selected output on before taking every measurement"
 msgstr "在进行每次测量之前，打开所选输出"
 
-#: config_translations.py:273
+#: config_translations.py:276
 msgid "Protocol"
 msgstr "协议"
 
-#: config_translations.py:274
+#: config_translations.py:277
 msgid "Wireless 433 MHz protocol"
 msgstr "无线433 MHz协议"
 
-#: config_translations.py:276
+#: config_translations.py:279
 msgid "Pulse Length"
 msgstr "脉冲长度"
 
-#: config_translations.py:277
+#: config_translations.py:280
 msgid "Wireless 433 MHz pulse length"
 msgstr "无线433 MHz脉冲长度"
 
-#: config_translations.py:279
+#: config_translations.py:282
 msgid "Amount to Dispense (ml)"
 msgstr "分配量（ml）"
 
-#: config_translations.py:280
+#: config_translations.py:283
 msgid "Volume in ml to pump"
 msgstr "以ml为单位的体积泵"
 
-#: config_translations.py:282
+#: config_translations.py:285
 msgid "PWM Command"
 msgstr "PWM命令"
 
-#: config_translations.py:283
+#: config_translations.py:286
 #, python-format
 msgid "Command to execute (as user mycodo) to set the PWM duty cycle (%%)"
 msgstr "执行命令（作为用户mycodo）设置PWM占空比 (%%)"
 
-#: config_translations.py:285
+#: config_translations.py:288
 msgid "Frequency (Hertz)"
 msgstr "频率（赫兹）"
 
-#: config_translations.py:286
+#: config_translations.py:289
 msgid "The Hertz to output the PWM signal (0 - 70,000)"
 msgstr "赫兹输出PWM信号（0  -  70,000）"
 
-#: config_translations.py:288 inputs/ds18b20.py:77 inputs/ds18s20.py:69
+#: config_translations.py:291 inputs/ds18b20.py:77 inputs/ds18s20.py:69
 #: mycodo_flask/forms/forms_settings.py:32
 msgid "Library"
 msgstr "图书馆"
 
-#: config_translations.py:289
+#: config_translations.py:292
 msgid ""
 "Which method to produce the PWM signal (hardware pins can produce higher "
 "frequencies)"
 msgstr "哪种方法可以产生PWM信号（硬件引脚可以产生更高的频率）"
 
-#: config_translations.py:291
+#: config_translations.py:294
 msgid "Reference Resistance"
 msgstr "参考电阻"
 
-#: config_translations.py:292
+#: config_translations.py:295
 msgid "Reference resistance (Ohm)"
 msgstr "参考电阻（欧姆）"
 
-#: config_translations.py:295 config_translations.py:298
+#: config_translations.py:298 config_translations.py:301
 msgid "Measurement resolution"
 msgstr "测量分辨率"
 
-#: config_translations.py:300
+#: config_translations.py:303
 msgid "Pulses Per Rev"
 msgstr "脉冲每转"
 
-#: config_translations.py:301
+#: config_translations.py:304
 msgid ""
 "The number of pulses per revolution to calculate revolutions per minute "
 "(RPM)"
 msgstr "计算每分钟转数（RPM）的每转脉冲数"
 
-#: config_translations.py:303
+#: config_translations.py:306
 msgid "Sample Time"
 msgstr "采样时间"
 
-#: config_translations.py:304
+#: config_translations.py:307
 msgid ""
 "The amount of time (seconds) to sample the input before caluclating the "
 "measurement"
 msgstr "在计算测量值之前对输入进行采样的时间量（秒）"
 
-#: config_translations.py:306
+#: config_translations.py:309
 msgid "Unscaled Unit Min"
 msgstr "非标定单位最小值"
 
-#: config_translations.py:307
+#: config_translations.py:310
 msgid "Unscaled minimum unit"
 msgstr "非标定最小单位"
 
-#: config_translations.py:309
+#: config_translations.py:312
 msgid "Unscaled Unit Max"
 msgstr "非标定单位最大值"
 
-#: config_translations.py:310
+#: config_translations.py:313
 msgid "Unscaled maximum unit"
 msgstr "非标定最大单位"
 
-#: config_translations.py:312
+#: config_translations.py:315
 msgid "Rescaled Unit Min"
 msgstr "重新调整的单位分钟"
 
-#: config_translations.py:313
+#: config_translations.py:316
 msgid "Rescaled minimum unit"
 msgstr "重新调整的最小单位"
 
-#: config_translations.py:315
+#: config_translations.py:318
 msgid "Rescaled Unit Max"
 msgstr "重新调整的单位最大值"
 
-#: config_translations.py:316
+#: config_translations.py:319
 msgid "Rescaled maximum unit"
 msgstr "重新调整的最大单位"
 
-#: config_translations.py:318
+#: config_translations.py:321
 msgid "Measurement Unit"
 msgstr "测量单位"
 
-#: config_translations.py:319
+#: config_translations.py:322
 msgid "Select the measurement and unit to store this measurement in the database"
 msgstr "选择测量和单位以将此测量值存储在数据库中"
 
-#: config_translations.py:321
+#: config_translations.py:324
 msgid "Sensitivity"
 msgstr "灵敏度"
 
-#: config_translations.py:322
+#: config_translations.py:325
 msgid "Measurement sensitivity"
 msgstr "测量灵敏度"
 
-#: config_translations.py:324 mycodo_flask/forms/forms_settings.py:151
+#: config_translations.py:327 mycodo_flask/forms/forms_settings.py:151
 msgid "Voltage"
 msgstr "电压"
 
-#: config_translations.py:325
+#: config_translations.py:328
 msgid "The input voltage to the sensor"
 msgstr "传感器的输入电压"
 
-#: config_translations.py:328
+#: config_translations.py:331
 msgid "Edge detection: low to high (rising), high to low (falling), or both"
 msgstr "边沿检测：从低到高（上升），从高到低（下降）或两者兼而有之"
 
-#: config_translations.py:330 mycodo_flask/forms/forms_input.py:136
+#: config_translations.py:333 mycodo_flask/forms/forms_input.py:136
 msgid "Bounce Time (ms)"
 msgstr "弹跳时间（ms）"
 
-#: config_translations.py:331
+#: config_translations.py:334
 msgid "The amount of time (miliseconds) to bounce the input signal"
 msgstr "反射输入信号的时间量（毫秒）"
 
-#: config_translations.py:333 mycodo_flask/forms/forms_input.py:138
+#: config_translations.py:336 mycodo_flask/forms/forms_input.py:138
 msgid "Reset Period"
 msgstr "重置期间"
 
-#: config_translations.py:334
+#: config_translations.py:337
 msgid ""
 "Wait a period of time (seconds) after the first edge detection to begin "
 "detecting again"
 msgstr "在第一次边缘检测后等待一段时间（秒）以再次开始检测"
 
-#: config_translations.py:336
+#: config_translations.py:339
 msgid "RTD Probe Type"
 msgstr "RTD探头类型"
 
-#: config_translations.py:337
+#: config_translations.py:340
 msgid "The type of thermocouple connected"
 msgstr "连接的热电偶类型"
 
-#: config_translations.py:339
+#: config_translations.py:342
 msgid "Times Check"
 msgstr "时间检查"
 
-#: config_translations.py:340
+#: config_translations.py:343
 msgid "Number of times to check"
 msgstr "要检查的次数"
 
-#: config_translations.py:342
+#: config_translations.py:345
 msgid "On State"
 msgstr "触发"
 
-#: config_translations.py:343
+#: config_translations.py:346
 msgid "What state triggers the output to turn on? High or Low?"
 msgstr "什么状态触发输出打开？高还是低？"
 
-#: config_translations.py:345
+#: config_translations.py:348
 msgid "Trigger at Startup"
 msgstr "在启动时触发"
 
-#: config_translations.py:346
+#: config_translations.py:349
 msgid "Whether or not to trigger Functions when Mycodo starts"
 msgstr "是否在Mycodo启动时触发功能"
 
-#: config_translations.py:348
+#: config_translations.py:351
 msgid "UART Device"
 msgstr "UART设备"
 
-#: config_translations.py:349
+#: config_translations.py:352
 msgid "The UART device location (e.g. /dev/ttyUSB1)"
 msgstr "UART设备位置（例如/ dev / ttyUSB1）"
 
-#: config_translations.py:351
+#: config_translations.py:354
 msgid "Weighting"
 msgstr "权重"
 
-#: config_translations.py:352
+#: config_translations.py:355
 msgid ""
 "The weighting of the previous measurement on the current measurement. "
 "Range: 0.0 - 1.0. Used for smoothing measurements. 0.0 means no "
@@ -1680,7 +1688,7 @@ msgstr "登录尝试失败次数过多。请等待 %(min)s 分钟，然后再尝
 msgid "Successfully logged out"
 msgstr "成功退出"
 
-#: mycodo_flask/routes_calibration.py:168
+#: mycodo_flask/routes_calibration.py:301
 #, python-format
 msgid "A valid temperature is required: %(temp)s is invalid."
 msgstr "需要有效温度: %(temp)s 无效。"
@@ -1741,33 +1749,41 @@ msgstr "我明白"
 msgid "Select"
 msgstr "选择"
 
-#: mycodo_flask/forms/forms_calibration.py:35
-msgid "Atlas pH Sensor"
-msgstr "Atlas pH传感器"
-
-#: mycodo_flask/forms/forms_calibration.py:36
-msgid "Clear Calibration"
-msgstr "清除校准"
-
-#: mycodo_flask/forms/forms_calibration.py:39
-msgid "pH Points to Calibrate"
+#: mycodo_flask/forms/forms_calibration.py:33
+msgid "Atlas EZO Pump"
 msgstr ""
 
-#: mycodo_flask/forms/forms_calibration.py:40
+#: mycodo_flask/forms/forms_calibration.py:34
+#: mycodo_flask/forms/forms_calibration.py:55
 msgid "Begin Calibration"
 msgstr "开始校准"
 
+#: mycodo_flask/forms/forms_calibration.py:35
+#: mycodo_flask/forms/forms_calibration.py:51
+msgid "Clear Calibration"
+msgstr "清除校准"
+
+#: mycodo_flask/forms/forms_calibration.py:40
 #: mycodo_flask/forms/forms_calibration.py:41
-#: mycodo_flask/forms/forms_calibration.py:42
+#: mycodo_flask/forms/forms_calibration.py:56
+#: mycodo_flask/forms/forms_calibration.py:57
 msgid "Continue to Next Stage"
 msgstr "继续下一阶段"
 
-#: mycodo_flask/forms/forms_calibration.py:47
+#: mycodo_flask/forms/forms_calibration.py:50
+msgid "Atlas pH Sensor"
+msgstr "Atlas pH传感器"
+
+#: mycodo_flask/forms/forms_calibration.py:54
+msgid "pH Points to Calibrate"
+msgstr ""
+
+#: mycodo_flask/forms/forms_calibration.py:62
 #: mycodo_flask/forms/forms_settings.py:33
 msgid "Device"
 msgstr "设备"
 
-#: mycodo_flask/forms/forms_calibration.py:50
+#: mycodo_flask/forms/forms_calibration.py:65
 msgid "Set Resolution"
 msgstr "设置分辨率"
 
@@ -2036,7 +2052,7 @@ msgstr ""
 msgid "Number of Measurements"
 msgstr ""
 
-#: mycodo_flask/forms/forms_input.py:83 mycodo_flask/forms/forms_output.py:46
+#: mycodo_flask/forms/forms_input.py:83 mycodo_flask/forms/forms_output.py:47
 msgid "Location"
 msgstr "位置"
 
@@ -2179,9 +2195,8 @@ msgstr "持续时间/工作周期"
 msgid "Relay State"
 msgstr "继电器状态"
 
-#: mycodo_flask/forms/forms_method.py:98 mycodo_flask/forms/forms_output.py:111
-#: mycodo_flask/templates/pages/dashboard_options/mod_output.html:98
-#: mycodo_flask/templates/pages/dashboard_options/mod_output.html:109
+#: mycodo_flask/forms/forms_method.py:98 mycodo_flask/forms/forms_output.py:112
+#: mycodo_flask/templates/pages/dashboard_options/mod_output.html:104
 #: mycodo_flask/templates/pages/method-build.html:294
 #: mycodo_flask/templates/pages/output.html:253
 #: mycodo_flask/templates/pages/output.html:289
@@ -2388,25 +2403,25 @@ msgstr "导入便笺"
 msgid "Quantity"
 msgstr "数量"
 
-#: mycodo_flask/forms/forms_output.py:55
+#: mycodo_flask/forms/forms_output.py:56
 msgid "Invert Signal"
 msgstr "反转信号"
 
-#: mycodo_flask/forms/forms_output.py:61
+#: mycodo_flask/forms/forms_output.py:62
 msgid "The current draw of the device connected to this output, in amps."
 msgstr "连接到此输出的设备的电流消耗，以安培为单位。"
 
-#: mycodo_flask/forms/forms_output.py:69
+#: mycodo_flask/forms/forms_output.py:70
 #: mycodo_flask/templates/pages/output_options/wired.html:11
 msgid "High"
 msgstr "高"
 
-#: mycodo_flask/forms/forms_output.py:70
+#: mycodo_flask/forms/forms_output.py:71
 #: mycodo_flask/templates/pages/output_options/wired.html:12
 msgid "Low"
 msgstr "低"
 
-#: mycodo_flask/forms/forms_output.py:77 mycodo_flask/forms/forms_output.py:86
+#: mycodo_flask/forms/forms_output.py:78 mycodo_flask/forms/forms_output.py:87
 #: mycodo_flask/templates/pages/output_options/command.html:17
 #: mycodo_flask/templates/pages/output_options/command.html:27
 #: mycodo_flask/templates/pages/output_options/python.html:17
@@ -2416,11 +2431,11 @@ msgstr "低"
 msgid "Neither"
 msgstr "也不"
 
-#: mycodo_flask/forms/forms_output.py:99
+#: mycodo_flask/forms/forms_output.py:100
 msgid "Any Pin, <= 40 kHz"
 msgstr "任何引脚，<= 40 kHz"
 
-#: mycodo_flask/forms/forms_output.py:100
+#: mycodo_flask/forms/forms_output.py:101
 msgid "Hardware Pin, <= 30 MHz"
 msgstr "硬件引脚，<= 30 MHz"
 
@@ -3143,6 +3158,7 @@ msgstr "异步"
 
 #: mycodo_flask/templates/layout.html:193
 #: mycodo_flask/templates/tools/calibration.html:3
+#: mycodo_flask/templates/tools/calibration_options/atlas_ezo_pump.html:3
 #: mycodo_flask/templates/tools/calibration_options/atlas_ph.html:3
 #: mycodo_flask/templates/tools/calibration_options/ds_resolution.html:3
 msgid "Calibration & Setup"
@@ -3664,16 +3680,18 @@ msgid "Display Latest Timelapse Image"
 msgstr "显示最新的间隔拍摄图像"
 
 #: mycodo_flask/templates/pages/dashboard_options/mod_output.html:52
+msgid "PWM On"
+msgstr "PWM开"
+
+#: mycodo_flask/templates/pages/dashboard_options/mod_output.html:64
+#: mycodo_flask/templates/pages/dashboard_options/mod_output.html:118
 msgid "Out"
 msgstr ""
 
-#: mycodo_flask/templates/pages/dashboard_options/mod_output.html:55
+#: mycodo_flask/templates/pages/dashboard_options/mod_output.html:67
+#: mycodo_flask/templates/pages/dashboard_options/mod_output.html:121
 msgid "Sec On"
 msgstr "Sec On"
-
-#: mycodo_flask/templates/pages/dashboard_options/mod_output.html:65
-msgid "PWM On"
-msgstr "PWM开"
 
 #: mycodo_flask/templates/pages/dashboard_options/mod_pid_control.html:59
 #: mycodo_flask/templates/pages/dashboard_options/mod_pid_control.html:89
@@ -4304,6 +4322,14 @@ msgid ""
 "otherwise leave blank to repeat forever."
 msgstr "您可以输入方法将结束的持续时间（秒），否则留空以永久重复。"
 
+#: mycodo_flask/templates/pages/output_options/atlas_ezo_pmp.html:40
+msgid "Fastest Flow Rate"
+msgstr ""
+
+#: mycodo_flask/templates/pages/output_options/atlas_ezo_pmp.html:41
+msgid "Specify Flow Rate"
+msgstr ""
+
 #: mycodo_flask/templates/pages/output_options/pwm.html:14
 msgid "Any Pin, <= 40kHz"
 msgstr "任何引脚，<= 40kHz"
@@ -4548,6 +4574,70 @@ msgstr "搜索"
 msgid "Found"
 msgstr "发现"
 
+#: mycodo_flask/templates/tools/calibration_options/atlas_ezo_pump.html:14
+msgid ""
+"This guide will walk you through the calibration procedure for the Atlas "
+"EZO Pump. To complete this procedure, you will need a precision scale "
+"and/or a low-volume (10 ml) graduated cylinder. At a minimum, you will "
+"need a way to accurately measure a small volume of the dispensed fluid."
+msgstr ""
+
+#: mycodo_flask/templates/tools/calibration_options/atlas_ezo_pump.html:16
+msgid ""
+"To begin calibration, have your pump properly connected to Mycodo, purge "
+"all air from the tubing, select the pump from the dropdown list, enter a "
+"volume to dispense (such as 10 ml), then click Begin Calibration."
+msgstr ""
+
+#: mycodo_flask/templates/tools/calibration_options/atlas_ezo_pump.html:18
+#: mycodo_flask/templates/tools/calibration_options/atlas_ph.html:78
+msgid ""
+"To clear any currently-stored calibration from memory, click Clear "
+"Calibration."
+msgstr ""
+
+#: mycodo_flask/templates/tools/calibration_options/atlas_ezo_pump.html:20
+msgid ""
+"NOTE: It is recommended to deactivate anything that may try to operate "
+"the pump so it doesn't interfere with the calibration."
+msgstr ""
+
+#: mycodo_flask/templates/tools/calibration_options/atlas_ezo_pump.html:51
+#: mycodo_flask/templates/tools/calibration_options/atlas_ezo_pump.html:75
+#: mycodo_flask/templates/tools/calibration_options/atlas_ph.html:119
+#: mycodo_flask/templates/tools/calibration_options/atlas_ph.html:145
+#: mycodo_flask/templates/tools/calibration_options/atlas_ph.html:177
+#: mycodo_flask/templates/tools/calibration_options/atlas_ph.html:209
+#: mycodo_flask/templates/tools/calibration_options/atlas_ph.html:240
+msgid "Calibration Failed"
+msgstr "校准失败"
+
+#: mycodo_flask/templates/tools/calibration_options/atlas_ezo_pump.html:52
+#: mycodo_flask/templates/tools/calibration_options/atlas_ezo_pump.html:82
+#: mycodo_flask/templates/tools/calibration_options/atlas_ph.html:120
+#: mycodo_flask/templates/tools/calibration_options/atlas_ph.html:146
+#: mycodo_flask/templates/tools/calibration_options/atlas_ph.html:178
+#: mycodo_flask/templates/tools/calibration_options/atlas_ph.html:210
+#: mycodo_flask/templates/tools/calibration_options/atlas_ph.html:247
+msgid "Refer to the logs for details"
+msgstr "有关详细信息，请参阅日志"
+
+#: mycodo_flask/templates/tools/calibration_options/atlas_ezo_pump.html:56
+msgid ""
+"Measure how much fluid (ml) was actually dispensed from the pump, enter "
+"that value in the input field, then click Continue."
+msgstr ""
+
+#: mycodo_flask/templates/tools/calibration_options/atlas_ezo_pump.html:75
+#: mycodo_flask/templates/tools/calibration_options/atlas_ph.html:240
+msgid "Calibration Succeeded"
+msgstr "校准成功"
+
+#: mycodo_flask/templates/tools/calibration_options/atlas_ezo_pump.html:84
+#: mycodo_flask/templates/tools/calibration_options/atlas_ph.html:249
+msgid "Calibration Complete"
+msgstr "校准完成"
+
 #: mycodo_flask/templates/tools/calibration_options/atlas_ph.html:13
 #: mycodo_flask/templates/tools/calibration_options/atlas_ph.html:16
 #: mycodo_flask/templates/tools/calibration_options/atlas_ph.html:29
@@ -4580,33 +4670,11 @@ msgid ""
 "select the probe from the dropdown list, and click Begin Calibration."
 msgstr ""
 
-#: mycodo_flask/templates/tools/calibration_options/atlas_ph.html:78
-msgid ""
-"To clear any currently-stored calibration from the sensor memory, click "
-"Clear Calibration."
-msgstr ""
-
 #: mycodo_flask/templates/tools/calibration_options/atlas_ph.html:80
 msgid ""
 "NOTE: It is recommended to deactivate the pH Sensor Input prior to "
 "performing a calibration."
 msgstr ""
-
-#: mycodo_flask/templates/tools/calibration_options/atlas_ph.html:119
-#: mycodo_flask/templates/tools/calibration_options/atlas_ph.html:145
-#: mycodo_flask/templates/tools/calibration_options/atlas_ph.html:177
-#: mycodo_flask/templates/tools/calibration_options/atlas_ph.html:209
-#: mycodo_flask/templates/tools/calibration_options/atlas_ph.html:240
-msgid "Calibration Failed"
-msgstr "校准失败"
-
-#: mycodo_flask/templates/tools/calibration_options/atlas_ph.html:120
-#: mycodo_flask/templates/tools/calibration_options/atlas_ph.html:146
-#: mycodo_flask/templates/tools/calibration_options/atlas_ph.html:178
-#: mycodo_flask/templates/tools/calibration_options/atlas_ph.html:210
-#: mycodo_flask/templates/tools/calibration_options/atlas_ph.html:247
-msgid "Refer to the logs for details"
-msgstr "有关详细信息，请参阅日志"
 
 #: mycodo_flask/templates/tools/calibration_options/atlas_ph.html:124
 msgid ""
@@ -4628,14 +4696,6 @@ msgstr ""
 #: mycodo_flask/templates/tools/calibration_options/atlas_ph.html:230
 msgid "Ready"
 msgstr "准备"
-
-#: mycodo_flask/templates/tools/calibration_options/atlas_ph.html:240
-msgid "Calibration Succeeded"
-msgstr "校准成功"
-
-#: mycodo_flask/templates/tools/calibration_options/atlas_ph.html:249
-msgid "Calibration Complete"
-msgstr "校准完成"
 
 #: mycodo_flask/templates/tools/calibration_options/ds_resolution.html:23
 msgid "Select a DS18B20 sensor"
@@ -4686,9 +4746,9 @@ msgid "%(msg)s"
 msgstr "%(msg)s"
 
 #: mycodo_flask/utils/utils_general.py:661
-#: mycodo_flask/utils/utils_output.py:304
-#: mycodo_flask/utils/utils_output.py:311
 #: mycodo_flask/utils/utils_output.py:316
+#: mycodo_flask/utils/utils_output.py:323
+#: mycodo_flask/utils/utils_output.py:328
 #, python-format
 msgid "%(err)s"
 msgstr "%(err)s"
@@ -4906,51 +4966,51 @@ msgstr "数量无效"
 msgid "Acceptable values"
 msgstr "可接受的值"
 
-#: mycodo_flask/utils/utils_output.py:328
+#: mycodo_flask/utils/utils_output.py:340
 msgid "Actuate"
 msgstr "开动"
 
-#: mycodo_flask/utils/utils_output.py:336
+#: mycodo_flask/utils/utils_output.py:348
 msgid "Cannot modulate output with a GPIO of 0"
 msgstr "无法在GPIO为0的情况下调制输出"
 
-#: mycodo_flask/utils/utils_output.py:342
+#: mycodo_flask/utils/utils_output.py:354
 msgid "Value must be greater than 0"
 msgstr "值必须大于0"
 
-#: mycodo_flask/utils/utils_output.py:346
+#: mycodo_flask/utils/utils_output.py:358
 #, python-format
 msgid "Output turned on for %(sec)s seconds: %(rvalue)s"
 msgstr "输出开启 %(sec)s 秒: %(rvalue)s"
 
-#: mycodo_flask/utils/utils_output.py:352
+#: mycodo_flask/utils/utils_output.py:364
 msgid "Invalid pin"
 msgstr "无效的引脚"
 
-#: mycodo_flask/utils/utils_output.py:354
+#: mycodo_flask/utils/utils_output.py:366
 msgid "PWM Hertz must be a positive value"
 msgstr "PWM赫兹必须是正值"
 
-#: mycodo_flask/utils/utils_output.py:356
+#: mycodo_flask/utils/utils_output.py:368
 msgid "PWM duty cycle must be a positive value"
 msgstr "PWM占空比必须是正值"
 
-#: mycodo_flask/utils/utils_output.py:362
+#: mycodo_flask/utils/utils_output.py:374
 #, python-format
 msgid "PWM set to %(dc)s %% at %(hertz)s Hz: %(rvalue)s"
 msgstr "PWM设置为 %(dc)s %% at %(hertz)s Hz: %(rvalue)s"
 
-#: mycodo_flask/utils/utils_output.py:368
+#: mycodo_flask/utils/utils_output.py:380
 #, python-format
 msgid "Output turned on: %(rvalue)s"
 msgstr "输出已打开: %(rvalue)s"
 
-#: mycodo_flask/utils/utils_output.py:372
+#: mycodo_flask/utils/utils_output.py:384
 #, python-format
 msgid "Output turned off: %(rvalue)s"
 msgstr "输出关闭: %(rvalue)s"
 
-#: mycodo_flask/utils/utils_output.py:376
+#: mycodo_flask/utils/utils_output.py:388
 msgid "Invalid value"
 msgstr "无效值"
 
@@ -5055,4 +5115,10 @@ msgstr ""
 
 #~ msgid "Flow rate in ml/minute"
 #~ msgstr "流速（ml /分钟）"
+
+#~ msgid ""
+#~ "To clear any currently-stored "
+#~ "calibration from the sensor memory, "
+#~ "click Clear Calibration."
+#~ msgstr ""
 

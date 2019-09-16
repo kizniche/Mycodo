@@ -792,6 +792,8 @@ to name a few.
 +-----------------------+-------------------------------------------------+
 | I2C Bus               | The I2C bus the device is connected to.         |
 +-----------------------+-------------------------------------------------+
+| Output Mode           | The Output mode, if supported.                  |
++-----------------------+-------------------------------------------------+
 | Flow Rate             | The flow rate to dispense the volume (ml/min).  |
 +-----------------------+-------------------------------------------------+
 | Pulse Length          | This is the pulse length to transmit via        |
