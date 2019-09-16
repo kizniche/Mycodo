@@ -1,6 +1,6 @@
 {% extends "layout.html" %}
 {% set active_page = "calibration" %}
-{% block title %} - {{_('Calibration & Setup')}}: Atlas pH{% if input_device_name %}: {{input_device_name}}{% endif %}{% endblock %}
+{% block title %} - {{_('Calibration & Setup')}}: Atlas Scientific pH{% if input_device_name %}: {{input_device_name}}{% endif %}{% endblock %}
 
 {% block head %}
 <script>
@@ -67,7 +67,7 @@ function startTimer() {
   <div class="container"> 
     {% include 'flash_messages.html' %}
 
-    <h2>Atlas pH Sensor{% if selected_point_calibration %} (Calibrating {{selected_point_calibration}}){% endif %}</h2>
+    <h2>Atlas Scientific pH Sensor{% if selected_point_calibration %} (Calibrating {{selected_point_calibration}}){% endif %}</h2>
 
     {% if ui_stage == 'start' %}
 
@@ -75,7 +75,7 @@ function startTimer() {
 
     <p>{{_('To begin calibration, have your probe properly connected to Mycodo, select the probe from the dropdown list, and click Begin Calibration.')}}</p>
 
-    <p>{{_('To clear any currently-stored calibration from the sensor memory, click Clear Calibration.')}}</p>
+    <p>{{_('To clear any currently-stored calibration from memory, click Clear Calibration.')}}</p>
 
     <p style="color: red; font-weight: bold">{{_('NOTE: It is recommended to deactivate the pH Sensor Input prior to performing a calibration.')}}</p>
 

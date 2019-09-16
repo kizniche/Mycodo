@@ -671,6 +671,7 @@ FUNCTION_ACTIONS = [
 
 # Calibration
 CALIBRATION_DEVICES = [
+    ('setup_atlas_ezo_pump', 'Atlas Scientific EZO Pump'),
     ('setup_atlas_ph', 'Atlas Scientific pH Sensor'),
     ('setup_ds_resolution', 'DS-Type Temperature Sensors (e.g. DS18B20)')
 ]

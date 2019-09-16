@@ -56,13 +56,15 @@ class AtlasScientificUART:
                 self.send_cmd(query_str)
                 time.sleep(1.3)
                 response = self.read_lines()
-                return response
+                return 'success', response
         except filelock.Timeout:
             self.logger.error("Lock timeout")
+            return None, None
         except Exception as err:
             self.logger.exception(
                 "{cls} raised an exception when taking a reading: "
                 "{err}".format(cls=type(self).__name__, err=err))
+            return None, None
 
     def read_lines(self):
         """

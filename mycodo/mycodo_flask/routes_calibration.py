@@ -16,6 +16,9 @@ from flask_babel import gettext
 from mycodo.config import PATH_1WIRE
 from mycodo.config_translations import TRANSLATIONS
 from mycodo.databases.models import Input
+from mycodo.databases.models import Output
+from mycodo.devices.atlas_scientific_i2c import AtlasScientificI2C
+from mycodo.devices.atlas_scientific_uart import AtlasScientificUART
 from mycodo.mycodo_flask.forms import forms_calibration
 from mycodo.mycodo_flask.routes_static import inject_variables
 from mycodo.mycodo_flask.utils import utils_general
@@ -58,6 +61,135 @@ def calibration_select():
                            form_calibration=form_calibration)
 
 
+@blueprint.route('/setup_atlas_ezo_pump', methods=('GET', 'POST'))
+@flask_login.login_required
+def setup_atlas_ezo_pump():
+    """
+    Step-by-step tool for calibrating the Atlas Scientific pH sensor
+    """
+    if not utils_general.user_has_permission('edit_controllers'):
+        return redirect(url_for('routes_general.home'))
+
+    form_ezo_pump_calibrate = forms_calibration.CalibrationAtlasEZOPump()
+
+    output = Output.query.filter(Output.output_type == 'atlas_ezo_pmp').all()
+
+    ui_stage = 'start'
+    backend_stage = None
+    selected_output = None
+    output_device_name = None
+    complete_with_error = None
+
+    if form_ezo_pump_calibrate.hidden_current_stage.data:
+        backend_stage = form_ezo_pump_calibrate.hidden_current_stage.data
+
+    if form_ezo_pump_calibrate.go_to_last_stage.data:
+        selected_output = Output.query.filter(
+            Output.unique_id == form_ezo_pump_calibrate.hidden_output_id.data).first()
+        output_device_name = selected_output.name
+
+    def connect_atlas_ezo_pump(selected_output):
+        atlas_command = None
+        if selected_output.interface == 'I2C':
+            atlas_command = AtlasScientificI2C(
+                i2c_address=int(str(selected_output.location), 16),
+                i2c_bus=selected_output.i2c_bus)
+        elif selected_output.interface == 'UART':
+            atlas_command = AtlasScientificUART(
+                selected_output.location,
+                baudrate=selected_output.baud_rate)
+        return atlas_command
+
+    # Clear Calibration memory
+    if form_ezo_pump_calibrate.clear_calibration.data:
+        selected_output = Output.query.filter(
+            Output.unique_id == form_ezo_pump_calibrate.selected_output_id.data).first()
+        if not selected_output:
+            flash('Output not found: {}'.format(
+                form_ezo_pump_calibrate.selected_output_id.data), 'error')
+        else:
+            atlas_command = connect_atlas_ezo_pump(selected_output)
+            if atlas_command:
+                write_cmd = 'Cal,clear'.format(
+                    form_ezo_pump_calibrate.ml_to_dispense.data)
+                logger.error("EZO-PMP command: {}".format(write_cmd))
+                status, msg = atlas_command.query(write_cmd)
+                info_str = "{act}: {lvl}: {resp}".format(
+                    act=TRANSLATIONS['calibration']['title'],
+                    lvl=write_cmd,
+                    resp=msg)
+                if status == 'success':
+                    flash(info_str, 'success')
+                else:
+                    flash(info_str, 'error')
+            else:
+                flash("Error initializing pump class", 'error')
+
+    if form_ezo_pump_calibrate.start_calibration.data:
+        ui_stage = 'question_ml_dispensed'
+        selected_output = Output.query.filter(
+            Output.unique_id == form_ezo_pump_calibrate.selected_output_id.data).first()
+        if not selected_output:
+            flash('Output not found: {}'.format(
+                form_ezo_pump_calibrate.selected_output_id.data), 'error')
+        else:
+            output_device_name = selected_output.name
+            atlas_command = connect_atlas_ezo_pump(selected_output)
+            if atlas_command:
+                if (form_ezo_pump_calibrate.ml_to_dispense.data and
+                        form_ezo_pump_calibrate.ml_to_dispense.data > 0):
+                    write_cmd = 'D,{}'.format(
+                        form_ezo_pump_calibrate.ml_to_dispense.data)
+                    logger.error("EZO-PMP command: {}".format(write_cmd))
+                    status, msg = atlas_command.query(write_cmd)
+                    info_str = "{act}: {lvl}: {resp}".format(
+                        act=TRANSLATIONS['calibration']['title'],
+                        lvl=write_cmd,
+                        resp=msg)
+                    if status == 'success':
+                        flash(info_str, 'success')
+                    else:
+                        flash(info_str, 'error')
+                else:
+                    flash("Invalid amount to dispense: '{}'".format(
+                        form_ezo_pump_calibrate.ml_to_dispense.data), 'error')
+            else:
+                flash("Error initializing pump class", 'error')
+
+    elif backend_stage == 'question_ml_dispensed':
+        ui_stage = 'complete'
+        output_device_name = selected_output.name
+        atlas_command = connect_atlas_ezo_pump(selected_output)
+        if atlas_command:
+            if (form_ezo_pump_calibrate.ml_dispensed.data and
+                    form_ezo_pump_calibrate.ml_dispensed.data > 0):
+                write_cmd = 'Cal,{}'.format(
+                    form_ezo_pump_calibrate.ml_dispensed.data)
+                logger.error("EZO-PMP command: {}".format(write_cmd))
+                status, msg = atlas_command.query(write_cmd)
+                info_str = "{act}: {lvl}: {resp}".format(
+                    act=TRANSLATIONS['calibration']['title'],
+                    lvl=write_cmd,
+                    resp=msg)
+                if status == 'success':
+                    flash(info_str, 'success')
+                else:
+                    flash(info_str, 'error')
+            else:
+                flash("Invalid amount dispensed: '{}'".format(
+                    form_ezo_pump_calibrate.ml_dispensed.data), 'error')
+        else:
+            flash("Error initializing pump class", 'error')
+
+    return render_template('tools/calibration_options/atlas_ezo_pump.html',
+                           complete_with_error=complete_with_error,
+                           form_ezo_pump_calibrate=form_ezo_pump_calibrate,
+                           output=output,
+                           output_device_name=output_device_name,
+                           selected_output=selected_output,
+                           ui_stage=ui_stage)
+
+
 @blueprint.route('/setup_atlas_ph', methods=('GET', 'POST'))
 @flask_login.login_required
 def setup_atlas_ph():
@@ -70,6 +202,7 @@ def setup_atlas_ph():
     form_ph_calibrate = forms_calibration.CalibrationAtlasph()
 
     input_dev = Input.query.filter(Input.device == 'ATLAS_PH').all()
+
     ui_stage = 'start'
     backend_stage = None
     next_stage = None

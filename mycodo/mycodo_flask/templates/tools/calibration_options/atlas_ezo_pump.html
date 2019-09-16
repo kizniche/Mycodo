@@ -1,0 +1,91 @@
+{% extends "layout.html" %}
+{% set active_page = "calibration" %}
+{% block title %} - {{_('Calibration & Setup')}}: Atlas Scientific EZO Pump{% if output_device_name %}: {{output_device_name}}{% endif %}{% endblock %}
+
+{% block body %}
+  <!-- Route: /setup_atlas_ph -->
+  <div class="container"> 
+    {% include 'flash_messages.html' %}
+
+    <h2>Atlas Scientific EZO Pump{% if selected_point_calibration %} (Calibrating {{selected_point_calibration}}){% endif %}</h2>
+
+    {% if ui_stage == 'start' %}
+
+    <p>{{_('This guide will walk you through the calibration procedure for the Atlas EZO Pump. To complete this procedure, you will need a precision scale and/or a low-volume (10 ml) graduated cylinder. At a minimum, you will need a way to accurately measure a small volume of the dispensed fluid.')}}</p>
+
+    <p>{{_('To begin calibration, have your pump properly connected to Mycodo, purge all air from the tubing, select the pump from the dropdown list, enter a volume to dispense (such as 10 ml), then click Begin Calibration.')}}</p>
+
+    <p>{{_('To clear any currently-stored calibration from memory, click Clear Calibration.')}}</p>
+
+    <p style="color: red; font-weight: bold">{{_("NOTE: It is recommended to deactivate anything that may try to operate the pump so it doesn't interfere with the calibration.")}}</p>
+
+    <form method="post" action="/setup_atlas_ezo_pump">
+    {{form_ezo_pump_calibrate.hidden_current_stage(value='start')}}
+    <div class="row small-gutters">
+      <div class="col-auto small-gutters">
+        <select class="selectpicker" id="selected_output_id" name="selected_output_id" title="" data-original-title="Select which Atlas Scientific EZO Pump to calibrate">
+          {% if output %}
+            {%- for each_output in output -%}
+              <option value="{{each_output.unique_id}}">{{each_output.id}} ({{each_output.name}})</option>
+            {%- endfor -%}
+          {% else %}
+            <option value="">{{dict_translation['none_available']['title']}}</option>
+          {% endif %}
+        </select>
+      </div>
+      <div class="col-auto small-gutters">
+        {{form_ezo_pump_calibrate.ml_to_dispense(class_='form-control', value=10)}}
+      </div>
+      <div class="col-auto small-gutters">
+        {{form_ezo_pump_calibrate.start_calibration(class_='form-control btn-default')}}
+      </div>
+      <div class="col-auto small-gutters">
+        {{form_ezo_pump_calibrate.clear_calibration(class_='form-control btn-default')}}
+      </div>
+    </div>
+    </form>
+
+    {% elif ui_stage == 'question_ml_dispensed' %}
+
+      {% if complete_with_error %}
+    <p>{{dict_translation['error']['title']}}: {{_('Calibration Failed')}}</p>
+    <p>{{_('Refer to the logs for details')}}</p>
+      {% else %}
+
+    <p>1. {{dict_translation['calibration']['title']}}{% if output_device_name %}: {{output_device_name}}{% endif %} {{selected_output.id}} ({{selected_output.name}})</p>
+    <p>{{_('Measure how much fluid (ml) was actually dispensed from the pump, enter that value in the input field, then click Continue.')}}</p>
+
+    <form method="post" action="/setup_atlas_ezo_pump">
+    {{form_ezo_pump_calibrate.hidden_current_stage(value='question_ml_dispensed')}}
+    <div class="row small-gutters">
+      {{form_ezo_pump_calibrate.hidden_output_id(value=selected_output.unique_id)}}
+      <div class="col-auto small-gutters">
+        {{form_ezo_pump_calibrate.ml_dispensed(class_='form-control')}}
+      </div>
+      <div class="col-auto small-gutters">
+        {{form_ezo_pump_calibrate.go_to_last_stage(class_='form-control btn btn-sm')}}
+      </div>
+    </div>
+    </form>
+
+      {% endif %}
+
+    {% elif ui_stage == 'complete' %}
+
+    <p>5. {{dict_translation['calibration']['title']}}{% if output_device_name %}: {{output_device_name}}{% endif %} {{selected_output.id}} ({{selected_output.name}}): {% if complete_with_error %}{{_('Calibration Failed')}}{% else %}{{_('Calibration Succeeded')}}{% endif %}</p>
+
+      {% if complete_with_error %}
+    <p>
+      {{dict_translation['error']['title']}}:
+      <br>{{complete_with_error}}
+    </p>
+    <p>{{_('Refer to the logs for details')}}</p>
+      {% else %}
+    <p>{{_('Calibration Complete')}}</p>
+      {% endif %}
+
+    {% endif %}
+
+  </div>
+
+{% endblock %}
