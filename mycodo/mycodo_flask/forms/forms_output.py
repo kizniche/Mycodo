@@ -43,6 +43,7 @@ class OutputMod(FlaskForm):
     name = StringField(
         TRANSLATIONS['name']['title'],
         validators=[DataRequired()])
+    output_mode = StringField(TRANSLATIONS['output_mode']['title'])
     location = StringField(lazy_gettext('Location'))
     i2c_bus = IntegerField(TRANSLATIONS['i2c_bus']['title'])
     baud_rate = IntegerField(TRANSLATIONS['baud_rate']['title'])

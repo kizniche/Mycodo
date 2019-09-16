@@ -231,6 +231,9 @@ TRANSLATIONS = {
     'off_command': {
         'title': lazy_gettext('Off Command'),
         'phrase': lazy_gettext('Command to execute (as user mycodo) when the output is instructed to turn off')},
+    'output_mode': {
+        'title': lazy_gettext('Output Mode'),
+        'phrase': lazy_gettext('Mode to run the output')},
     'state_at_startup': {
         'title': lazy_gettext('Startup State'),
         'phrase': lazy_gettext('When Mycodo starts, set the output state')},

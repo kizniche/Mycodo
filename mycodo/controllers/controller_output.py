@@ -76,6 +76,7 @@ class OutputController(AbstractController, threading.Thread):
         self.output_id = {}
         self.output_unique_id = {}
         self.output_type = {}
+        self.output_mode = {}
         self.output_interface = {}
         self.output_location = {}
         self.output_i2c_bus = {}
@@ -175,6 +176,7 @@ class OutputController(AbstractController, threading.Thread):
             self.output_id[each_output.unique_id] = each_output.id
             self.output_unique_id[each_output.unique_id] = each_output.unique_id
             self.output_type[each_output.unique_id] = each_output.output_type
+            self.output_mode[each_output.unique_id] = each_output.output_mode
             self.output_interface[each_output.unique_id] = each_output.interface
             self.output_location[each_output.unique_id] = each_output.location
             self.output_i2c_bus[each_output.unique_id] = each_output.i2c_bus
@@ -279,13 +281,21 @@ class OutputController(AbstractController, threading.Thread):
         if self.output_type[output_id] == 'atlas_ezo_pmp':
             volume_ml = duration
             if state == 'on' and volume_ml > 0:
-                # Calculate command, given flow rate
-                minutes_to_run = volume_ml / self.output_flow_rate[output_id]
+                write_cmd = None
+                if self.output_mode[output_id] == 'fastest_flow_rate':
+                    write_cmd = 'D,{ml:.2f}'.format(ml=volume_ml)
+                elif self.output_mode[output_id] == 'select_flow_rate':
+                    # Calculate command, given flow rate
+                    minutes_to_run = volume_ml / self.output_flow_rate[output_id]
+                    write_cmd = 'D,{ml:.2f},{min:.2f}'.format(
+                            ml=volume_ml, min=minutes_to_run)
 
-                write_cmd = 'D,{ml:.2f},{min:.2f}'.format(
-                        ml=volume_ml, min=minutes_to_run)
+                if not write_cmd:
+                    self.logger.error("Invalid output_mode: '{}'".format(
+                        self.output_mode[output_id]))
+                    return
+
                 self.logger.debug("EZO-PMP command: {}".format(write_cmd))
-
                 self.atlas_command[output_id].write(write_cmd)
 
                 measurement_dict = {
@@ -1055,6 +1065,7 @@ output_id = '{}'
             self.output_id.pop(output_id, None)
             self.output_unique_id.pop(output_id, None)
             self.output_type.pop(output_id, None)
+            self.output_mode.pop(output_id, None)
             self.output_interface.pop(output_id, None)
             self.output_location.pop(output_id, None)
             self.output_i2c_bus.pop(output_id, None)

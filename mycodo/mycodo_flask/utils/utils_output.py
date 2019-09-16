@@ -77,8 +77,7 @@ def output_add(form_add):
                     new_output.measurement = 'duty_cycle'
                     new_output.unit = 'percent'
                 elif output_type == 'atlas_ezo_pmp':
-                    new_output.measurement = 'volume'
-                    new_output.unit = 'ml'
+                    new_output.output_mode = 'fastest_flow_rate'
 
                 new_output.channel = 0
 
