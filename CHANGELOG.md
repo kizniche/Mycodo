@@ -1,3 +1,10 @@
+## 7.7.4 (Unreleased)
+
+### Bugfixes
+
+ - Fix missing Stdout from several log files
+
+
 ## 7.7.3 (2019.09.17)
 
 ### Bugfixes
