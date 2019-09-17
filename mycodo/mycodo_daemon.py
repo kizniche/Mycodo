@@ -36,7 +36,11 @@ import threading
 import time
 import timeit
 
-import Pyro4
+from Pyro5.api import expose
+from Pyro5.api import Daemon
+from Pyro5.api import Proxy
+from Pyro5.api import locate_ns
+
 import resource
 from daemonize import Daemonize
 from pkg_resources import parse_version
@@ -83,11 +87,11 @@ from mycodo.utils.tools import next_schedule
 MYCODO_DB_PATH = 'sqlite:///' + SQL_DATABASE_MYCODO
 
 
-@Pyro4.expose
+@expose
 class PyroServer(object):
     """
     Class to handle communication between the client (mycodo_client.py) and
-    the daemon (mycodo_daemon.py) using Pyro4.
+    the daemon (mycodo_daemon.py) using Pyro5.
     """
     def __init__(self, mycodo):
         self.mycodo = mycodo
@@ -250,7 +254,7 @@ class PyroServer(object):
 
 class ComThread(threading.Thread):
     """
-    Class to run the Pyro4 server thread
+    Class to run the Pyro5 server thread
 
     ComServer will handle execution of commands from the web UI or other
     controllers. It allows the client (mycodo_client.py, excuted as non-root
@@ -272,9 +276,8 @@ class ComThread(threading.Thread):
 
     def run(self):
         try:
-            ns = Pyro4.locateNS(hmac_key='YTBTPmNZFbpJB99qJrtNUVY9htaMQ8ps')  # find the name server
-            daemon = Pyro4.Daemon()  # make a Pyro daemon
-            daemon._pyroHmacKey = b"YTBTPmNZFbpJB99qJrtNUVY9htaMQ8ps"
+            ns = locate_ns()  # find the name server
+            daemon = Daemon()  # make a Pyro daemon
             uri = daemon.register(PyroServer(self.mycodo))  # register the PyroServer class as a Pyro object
             ns.register("mycodo.pyro_server", uri)  # register the object with a name in the name server
 
@@ -296,20 +299,19 @@ class ComThread(threading.Thread):
 
 
 def monitor_pyro(logger_pyro):
-    """Monitor whether the Pyro4 server is active or not"""
+    """Monitor whether the Pyro5 server is active or not"""
     log_timer = time.time() + 1
     while True:
         now = time.time()
         if now > log_timer:
             try:
-                pyro_server = Pyro4.Proxy("PYRONAME:mycodo.pyro_server")
-                pyro_server._pyroHmacKey = b"YTBTPmNZFbpJB99qJrtNUVY9htaMQ8ps"
+                pyro_server = Proxy("PYRONAME:mycodo.pyro_server")
                 logger_pyro.debug(
-                    "Pyro4 communication thread (30-minute timer): "
+                    "Pyro5 communication thread (30-minute timer): "
                     "daemon_status()={stat}".format(stat=pyro_server.daemon_status))
             except Exception as err:
                 logger_pyro.exception(
-                    "Pyro4 Exception: {msg}".format(msg=err))
+                    "Pyro5 Exception: {msg}".format(msg=err))
             log_timer = log_timer + 1800
         time.sleep(1)
 
@@ -1229,7 +1231,7 @@ class MycodoDaemon:
     def start_daemon(self):
         """Start communication and daemon threads"""
         try:
-            self.logger.info("Starting Pyro4 server")
+            self.logger.info("Starting Pyro5 server")
             ct = ComThread(self.mycodo, self.debug)
             ct.daemon = True
             # Start communication thread for receiving commands from mycodo_client.py

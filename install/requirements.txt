@@ -28,7 +28,7 @@ gunicorn == 19.9.0
 influxdb == 5.0.0
 filelock == 3.0.12
 pylibftdi == 0.17.0
-pyro4
+pyro5 == 5.5.1
 pyserial
 python-dateutil == 2.8.0
 requests
@@ -38,4 +38,4 @@ WTForms == 2.2.1
 # Devices and Sensors
 picamera == 1.13
 RPi.GPIO
-smbus2 == 0.2.2
+smbus2 == 0.3.0

@@ -12,7 +12,7 @@ import logging
 import time
 import timeit
 
-import Pyro4
+import Pyro5
 
 
 class AbstractController(object):
@@ -80,8 +80,8 @@ class AbstractController(object):
             while self.running:
                 try:
                     self.loop()
-                except Pyro4.errors.TimeoutError:
-                    self.logger.exception("Pyro4 TimeoutError")
+                except Pyro5.errors.TimeoutError:
+                    self.logger.exception("Pyro5 TimeoutError")
                 except Exception as except_msg:
                     self.logger.exception(
                         "loop() Error: {err}".format(err=except_msg))

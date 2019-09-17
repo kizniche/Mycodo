@@ -315,7 +315,7 @@ case "${1:-''}" in
         touch /etc/systemd/system/pigpiod_disabled.service
     ;;
     'pyro-restart')
-        printf "\n#### Restarting pyro4-ns\n"
+        printf "\n#### Restarting pyro5-ns\n"
         service mycodopyro restart
     ;;
     'update-pigpiod')

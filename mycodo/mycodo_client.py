@@ -39,17 +39,19 @@ import requests
 
 # TODO: Remove this in next major revision
 try:
-    import Pyro4
+    from Pyro5.api import Proxy
+    import Pyro5.errors
 except:
     import subprocess
-    command = '/home/pi/Mycodo/env/bin/pip install Pyro4'
+    command = '/home/pi/Mycodo/env/bin/pip install Pyro5'
     cmd = subprocess.Popen(command, stdout=subprocess.PIPE, shell=True)
     cmd_out, cmd_err = cmd.communicate()
     cmd_status = cmd.wait()
     try:
-        import Pyro4
+        from Pyro5.api import Proxy
+        import Pyro5.errors
     except:
-        print("Couldn't import Pyro4")
+        print("Couldn't import Pyro5")
 
 from influxdb import InfluxDBClient
 
@@ -87,8 +89,7 @@ class DaemonControl:
             logger.error("Could not access SQL table to determine Pyro Timeout")
 
         try:
-            self.pyro_server = Pyro4.Proxy("PYRONAME:mycodo.pyro_server")
-            self.pyro_server._pyroHmacKey = b"YTBTPmNZFbpJB99qJrtNUVY9htaMQ8ps"
+            self.pyro_server = Proxy("PYRONAME:mycodo.pyro_server")
             self.pyro_server._pyroTimeout = pyro_timeout
         except socket.error:
             raise Exception("Connection refused. Is the daemon running?")
@@ -106,9 +107,9 @@ class DaemonControl:
                 return "GOOD"
         except TimeoutException:
             return "Error: Timeout"
-        except Pyro4.errors.CommunicationError as err:
+        except Pyro5.errors.CommunicationError as err:
             return "Error: Failed to initialize Pyro Communication: {}".format(err)
-        except Pyro4.errors.NamingError as err:
+        except Pyro5.errors.NamingError as err:
             return "Error: Failed to locate Pyro Nameserver: {}".format(err)
         except Exception as err:
             return "Error: Pyro Exception: {}".format(err)
