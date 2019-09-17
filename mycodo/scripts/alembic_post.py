@@ -50,97 +50,198 @@ def write_revision_post_alembic(revision):
 
 
 def read_revision_file():
-    with open(ALEMBIC_UPGRADE_POST, 'r') as fd:
-        return fd.read().splitlines()
+    try:
+        with open(ALEMBIC_UPGRADE_POST, 'r') as fd:
+            return fd.read().splitlines()
+    except:
+        return []
 
 
-for each_revision in read_revision_file():
+if __name__ == "__main__":
+    for each_revision in read_revision_file():
 
-    if each_revision == '2e416233221b':
-        try:
-            output_unique_id = {}
-            # Go through each output to get output unique_id
-            with session_scope(MYCODO_DB_PATH) as output_sess:
-                for each_output in output_sess.query(Output).all():
-                    output_unique_id[each_output.unique_id] = []
+        if each_revision == '2e416233221b':
+            print("Execute post-alembic revision {}".format(each_revision))
+            try:
+                output_unique_id = {}
+                # Go through each output to get output unique_id
+                with session_scope(MYCODO_DB_PATH) as output_sess:
+                    for each_output in output_sess.query(Output).all():
+                        output_unique_id[each_output.unique_id] = []
 
-                    # Create measurements in device_measurements table
-                    for measurement, measure_data in OUTPUT_INFO[each_output.output_type]['measure'].items():
-                        for unit, unit_data in measure_data.items():
-                            for channel, channel_data in unit_data.items():
-                                new_measurement = DeviceMeasurements()
-                                new_measurement.device_id = each_output.unique_id
-                                new_measurement.name = ''
-                                new_measurement.is_enabled = True
-                                new_measurement.measurement = measurement
-                                new_measurement.unit = unit
-                                new_measurement.channel = channel
-                                output_sess.add(new_measurement)
+                        # Create measurements in device_measurements table
+                        for measurement, measure_data in OUTPUT_INFO[each_output.output_type]['measure'].items():
+                            for unit, unit_data in measure_data.items():
+                                for channel, channel_data in unit_data.items():
+                                    new_measurement = DeviceMeasurements()
+                                    new_measurement.device_id = each_output.unique_id
+                                    new_measurement.name = ''
+                                    new_measurement.is_enabled = True
+                                    new_measurement.measurement = measurement
+                                    new_measurement.unit = unit
+                                    new_measurement.channel = channel
+                                    output_sess.add(new_measurement)
+                                    output_sess.commit()
+
+                                    output_unique_id[each_output.unique_id].append(new_measurement.unique_id)
+
+                    # Update all outputs in Dashboard elements to new unique_ids
+                    for each_dash in output_sess.query(Dashboard).all():
+                        each_dash.output_ids = each_dash.output_ids.replace(',output', '')
+                        output_sess.commit()
+
+                        for each_output_id, list_device_ids in output_unique_id.items():
+                            id_string = ''
+                            for index, each_device_id in enumerate(list_device_ids):
+                                id_string += '{},{}'.format(each_output_id, each_device_id)
+                                if index + 1 < len(list_device_ids):
+                                    id_string += ';'
+
+                            if each_output_id in each_dash.output_ids:
+                                each_dash.output_ids = each_dash.output_ids.replace(each_output_id, id_string)
                                 output_sess.commit()
+            except:
+                print("ERROR: post-alembic revision {}".format(each_revision))
 
-                                output_unique_id[each_output.unique_id].append(new_measurement.unique_id)
+        elif each_revision == 'ef49f6644e0c':
+            print("Execute post-alembic revision {}".format(each_revision))
+            try:
+                def cond_statement_replace(cond_statement):
+                    """Replace short condition/action IDs in conditional statement with full condition/action IDs"""
+                    cond_statement_replaced = cond_statement
+                    with session_scope(MYCODO_DB_PATH) as conditional_sess:
+                        for each_condition in conditional_sess.query(ConditionalConditions).all():
+                            condition_id_short = each_condition.unique_id.split('-')[0]
+                            cond_statement_replaced = cond_statement_replaced.replace(
+                                '{{{id}}}'.format(id=condition_id_short),
+                                each_condition.unique_id)
 
-                # Update all outputs in Dashboard elements to new unique_ids
-                for each_dash in output_sess.query(Dashboard).all():
-                    each_dash.output_ids = each_dash.output_ids.replace(',output', '')
-                    output_sess.commit()
+                        for each_action in conditional_sess.query(Actions).all():
+                            action_id_short = each_action.unique_id.split('-')[0]
+                            cond_statement_replaced = cond_statement_replaced.replace(
+                                '{{{id}}}'.format(id=action_id_short),
+                                each_action.unique_id)
 
-                    for each_output_id, list_device_ids in output_unique_id.items():
-                        id_string = ''
-                        for index, each_device_id in enumerate(list_device_ids):
-                            id_string += '{},{}'.format(each_output_id, each_device_id)
-                            if index + 1 < len(list_device_ids):
-                                id_string += ';'
+                        conditional_sess.expunge_all()
+                        conditional_sess.close()
 
-                        if each_output_id in each_dash.output_ids:
-                            each_dash.output_ids = each_dash.output_ids.replace(each_output_id, id_string)
-                            output_sess.commit()
-        except:
-            print("ERROR: post-alembic revision {}".format(each_revision))
+                    return cond_statement_replaced
 
-    elif each_revision == 'ef49f6644e0c':
-        try:
-            def cond_statement_replace(cond_statement):
-                """Replace short condition/action IDs in conditional statement with full condition/action IDs"""
-                cond_statement_replaced = cond_statement
                 with session_scope(MYCODO_DB_PATH) as conditional_sess:
-                    for each_condition in conditional_sess.query(ConditionalConditions).all():
-                        condition_id_short = each_condition.unique_id.split('-')[0]
-                        cond_statement_replaced = cond_statement_replaced.replace(
-                            '{{{id}}}'.format(id=condition_id_short),
-                            each_condition.unique_id)
+                    for each_conditional in conditional_sess.query(Conditional).all():
+                        try:
+                            indented_code = textwrap.indent(
+                                each_conditional.conditional_statement, ' ' * 8)
 
-                    for each_action in conditional_sess.query(Actions).all():
-                        action_id_short = each_action.unique_id.split('-')[0]
-                        cond_statement_replaced = cond_statement_replaced.replace(
-                            '{{{id}}}'.format(id=action_id_short),
-                            each_action.unique_id)
+                            cond_statement_run = pre_statement_run + indented_code
+                            cond_statement_run = cond_statement_replace(cond_statement_run)
 
-                    conditional_sess.expunge_all()
-                    conditional_sess.close()
+                            assure_path_exists(PATH_PYTHON_CODE_USER)
+                            file_run = '{}/conditional_{}.py'.format(
+                                PATH_PYTHON_CODE_USER, each_conditional.unique_id)
+                            with open(file_run, 'w') as fw:
+                                fw.write('{}\n'.format(cond_statement_run))
+                                fw.close()
+                        except Exception as msg:
+                            print("Exception: {}".format(msg))
 
-                return cond_statement_replaced
+                        # Inputs
+                    with session_scope(MYCODO_DB_PATH) as input_sess:
+                        for each_input in input_sess.query(Input).all():
+                            if each_input.device == 'PythonCode' and each_input.cmd_command:
+                                try:
+                                    execute_at_creation(each_input.unique_id,
+                                                        each_input.cmd_command,
+                                                        None)
+                                except Exception as msg:
+                                    print("Exception: {}".format(msg))
+            except:
+                print("ERROR: post-alembic revision {}".format(each_revision))
 
-            with session_scope(MYCODO_DB_PATH) as conditional_sess:
-                for each_conditional in conditional_sess.query(Conditional).all():
-                    try:
-                        indented_code = textwrap.indent(
-                            each_conditional.conditional_statement, ' ' * 8)
+        elif each_revision == '65271370a3a9':
+            print("Execute post-alembic revision {}".format(each_revision))
+            try:
+                def cond_statement_replace(cond_statement):
+                    """Replace short condition/action IDs in conditional statement with full condition/action IDs"""
+                    cond_statement_replaced = cond_statement
+                    with session_scope(MYCODO_DB_PATH) as conditional_sess:
+                        for each_condition in conditional_sess.query(ConditionalConditions).all():
+                            condition_id_short = each_condition.unique_id.split('-')[0]
+                            cond_statement_replaced = cond_statement_replaced.replace(
+                                '{{{id}}}'.format(id=condition_id_short),
+                                each_condition.unique_id)
 
-                        cond_statement_run = pre_statement_run + indented_code
-                        cond_statement_run = cond_statement_replace(cond_statement_run)
+                        for each_action in conditional_sess.query(Actions).all():
+                            action_id_short = each_action.unique_id.split('-')[0]
+                            cond_statement_replaced = cond_statement_replaced.replace(
+                                '{{{id}}}'.format(id=action_id_short),
+                                each_action.unique_id)
 
-                        assure_path_exists(PATH_PYTHON_CODE_USER)
-                        file_run = '{}/conditional_{}.py'.format(
-                            PATH_PYTHON_CODE_USER, each_conditional.unique_id)
-                        with open(file_run, 'w') as fw:
-                            fw.write('{}\n'.format(cond_statement_run))
-                            fw.close()
-                    except Exception as msg:
-                        print("Exception: {}".format(msg))
+                        conditional_sess.expunge_all()
+                        conditional_sess.close()
 
-                    # Inputs
+                    return cond_statement_replaced
+
+                # Conditionals
+                with session_scope(MYCODO_DB_PATH) as conditional_sess:
+                    for each_conditional in conditional_sess.query(Conditional).all():
+                        if each_conditional.conditional_statement:
+                            # Replace strings
+                            try:
+                                strings_replace = [
+                                    ('measure(', 'self.measure('),
+                                    ('measure_dict(', 'self.measure_dict('),
+                                    ('run_action(', 'self.run_action('),
+                                    ('run_all_actions(', 'self.run_all_actions('),
+                                    ('=message', '=self.message'),
+                                    ('= message', '= self.message'),
+                                    ('message +=', 'self.message +='),
+                                    ('message+=', 'self.message+=')
+                                ]
+                                for each_set in strings_replace:
+                                    if each_set[0] in each_conditional.conditional_statement:
+                                        each_conditional.conditional_statement = each_conditional.conditional_statement.replace(
+                                            each_set[0], each_set[1])
+                            except Exception as msg:
+                                print("Exception: {}".format(msg))
+
+                    conditional_sess.commit()
+
+                    for each_conditional in conditional_sess.query(Conditional).all():
+                        try:
+                            indented_code = textwrap.indent(
+                                each_conditional.conditional_statement, ' ' * 8)
+
+                            cond_statement_run = pre_statement_run + indented_code
+                            cond_statement_run = cond_statement_replace(cond_statement_run)
+
+                            assure_path_exists(PATH_PYTHON_CODE_USER)
+                            file_run = '{}/conditional_{}.py'.format(
+                                PATH_PYTHON_CODE_USER, each_conditional.unique_id)
+                            with open(file_run, 'w') as fw:
+                                fw.write('{}\n'.format(cond_statement_run))
+                                fw.close()
+                        except Exception as msg:
+                            print("Exception: {}".format(msg))
+
+                # Inputs
                 with session_scope(MYCODO_DB_PATH) as input_sess:
+                    for each_input in input_sess.query(Input).all():
+                        if each_input.device == 'PythonCode' and each_input.cmd_command:
+                            # Replace strings
+                            try:
+                                strings_replace = [
+                                    ('store_measurement(', 'self.store_measurement(')
+                                ]
+                                for each_set in strings_replace:
+                                    if each_set[0] in each_input.cmd_command:
+                                        each_input.cmd_command = each_input.cmd_command.replace(
+                                            each_set[0], each_set[1])
+                            except Exception as msg:
+                                print("Exception: {}".format(msg))
+
+                    input_sess.commit()
+
                     for each_input in input_sess.query(Input).all():
                         if each_input.device == 'PythonCode' and each_input.cmd_command:
                             try:
@@ -149,144 +250,57 @@ for each_revision in read_revision_file():
                                                     None)
                             except Exception as msg:
                                 print("Exception: {}".format(msg))
-        except:
-            print("ERROR: post-alembic revision {}".format(each_revision))
+            except:
+                print("ERROR: post-alembic revision {}".format(each_revision))
 
-    elif each_revision == '65271370a3a9':
-        try:
-            def cond_statement_replace(cond_statement):
-                """Replace short condition/action IDs in conditional statement with full condition/action IDs"""
-                cond_statement_replaced = cond_statement
+        elif each_revision == '70c828e05255':
+            print("Execute post-alembic revision {}".format(each_revision))
+            try:
                 with session_scope(MYCODO_DB_PATH) as conditional_sess:
-                    for each_condition in conditional_sess.query(ConditionalConditions).all():
-                        condition_id_short = each_condition.unique_id.split('-')[0]
-                        cond_statement_replaced = cond_statement_replaced.replace(
-                            '{{{id}}}'.format(id=condition_id_short),
-                            each_condition.unique_id)
+                    for each_conditional in conditional_sess.query(Conditional).all():
+                        if each_conditional.conditional_statement:
 
-                    for each_action in conditional_sess.query(Actions).all():
-                        action_id_short = each_action.unique_id.split('-')[0]
-                        cond_statement_replaced = cond_statement_replaced.replace(
-                            '{{{id}}}'.format(id=action_id_short),
-                            each_action.unique_id)
+                            # Get conditions for this conditional
+                            with session_scope(MYCODO_DB_PATH) as condition_sess:
+                                for each_condition in condition_sess.query(ConditionalConditions).all():
+                                    # Replace {ID} with measure("{ID}")
+                                    id_str = '{{{id}}}'.format(id=each_condition.unique_id.split('-')[0])
+                                    new_str = 'measure("{{{id}}}")'.format(id=each_condition.unique_id.split('-')[0])
+                                    if id_str in each_conditional.conditional_statement:
+                                        each_conditional.conditional_statement = each_conditional.conditional_statement.replace(
+                                            id_str, new_str)
 
-                    conditional_sess.expunge_all()
-                    conditional_sess.close()
+                                    # Replace print(1) with run_all_actions()
+                                    new_str = 'run_all_actions()'
+                                    if id_str in each_conditional.conditional_statement:
+                                        each_conditional.conditional_statement = each_conditional.conditional_statement.replace(
+                                            'print(1)', new_str)
+                                        each_conditional.conditional_statement = each_conditional.conditional_statement.replace(
+                                            'print("1")', new_str)
+                                        each_conditional.conditional_statement = each_conditional.conditional_statement.replace(
+                                            "print('1')", new_str)
 
-                return cond_statement_replaced
+                    conditional_sess.commit()
+            except:
+                print("ERROR: post-alembic revision {}".format(each_revision))
 
-            # Conditionals
-            with session_scope(MYCODO_DB_PATH) as conditional_sess:
-                for each_conditional in conditional_sess.query(Conditional).all():
-                    if each_conditional.conditional_statement:
-                        # Replace strings
-                        try:
-                            strings_replace = [
-                                ('measure(', 'self.measure('),
-                                ('measure_dict(', 'self.measure_dict('),
-                                ('run_action(', 'self.run_action('),
-                                ('run_all_actions(', 'self.run_all_actions('),
-                                ('=message', '=self.message'),
-                                ('= message', '= self.message'),
-                                ('message +=', 'self.message +='),
-                                ('message+=', 'self.message+=')
-                            ]
-                            for each_set in strings_replace:
-                                if each_set[0] in each_conditional.conditional_statement:
-                                    each_conditional.conditional_statement = each_conditional.conditional_statement.replace(
-                                        each_set[0], each_set[1])
-                        except Exception as msg:
-                            print("Exception: {}".format(msg))
+        elif each_revision == 'b4d958997cf0':
+            print("Execute post-alembic revision {}".format(each_revision))
+            try:
+                with session_scope(MYCODO_DB_PATH) as new_session:
+                    for each_input in new_session.query(Input).all():
+                        if each_input.device in ['DS18B20', 'DS18S20']:
+                            if 'library' not in each_input.custom_options:
+                                if each_input.custom_options in [None, '']:
+                                    each_input.custom_options = 'library,w1thermsensor'
+                                else:
+                                    each_input.custom_options += ';library,w1thermsensor'
 
-                conditional_sess.commit()
+                    new_session.commit()
+            except:
+                print("ERROR: post-alembic revision {}".format(each_revision))
 
-                for each_conditional in conditional_sess.query(Conditional).all():
-                    try:
-                        indented_code = textwrap.indent(
-                            each_conditional.conditional_statement, ' ' * 8)
-
-                        cond_statement_run = pre_statement_run + indented_code
-                        cond_statement_run = cond_statement_replace(cond_statement_run)
-
-                        assure_path_exists(PATH_PYTHON_CODE_USER)
-                        file_run = '{}/conditional_{}.py'.format(
-                            PATH_PYTHON_CODE_USER, each_conditional.unique_id)
-                        with open(file_run, 'w') as fw:
-                            fw.write('{}\n'.format(cond_statement_run))
-                            fw.close()
-                    except Exception as msg:
-                        print("Exception: {}".format(msg))
-
-            # Inputs
-            with session_scope(MYCODO_DB_PATH) as input_sess:
-                for each_input in input_sess.query(Input).all():
-                    if each_input.device == 'PythonCode' and each_input.cmd_command:
-                        # Replace strings
-                        try:
-                            strings_replace = [
-                                ('store_measurement(', 'self.store_measurement(')
-                            ]
-                            for each_set in strings_replace:
-                                if each_set[0] in each_input.cmd_command:
-                                    each_input.cmd_command = each_input.cmd_command.replace(
-                                        each_set[0], each_set[1])
-                        except Exception as msg:
-                            print("Exception: {}".format(msg))
-
-                input_sess.commit()
-
-                for each_input in input_sess.query(Input).all():
-                    if each_input.device == 'PythonCode' and each_input.cmd_command:
-                        try:
-                            execute_at_creation(each_input.unique_id,
-                                                each_input.cmd_command,
-                                                None)
-                        except Exception as msg:
-                            print("Exception: {}".format(msg))
-        except:
-            print("ERROR: post-alembic revision {}".format(each_revision))
-
-    elif each_revision == '70c828e05255':
-        try:
-            with session_scope(MYCODO_DB_PATH) as conditional_sess:
-                for each_conditional in conditional_sess.query(Conditional).all():
-                    if each_conditional.conditional_statement:
-
-                        # Get conditions for this conditional
-                        with session_scope(MYCODO_DB_PATH) as condition_sess:
-                            for each_condition in condition_sess.query(ConditionalConditions).all():
-                                # Replace {ID} with measure("{ID}")
-                                id_str = '{{{id}}}'.format(id=each_condition.unique_id.split('-')[0])
-                                new_str = 'measure("{{{id}}}")'.format(id=each_condition.unique_id.split('-')[0])
-                                if id_str in each_conditional.conditional_statement:
-                                    each_conditional.conditional_statement = each_conditional.conditional_statement.replace(
-                                        id_str, new_str)
-
-                                # Replace print(1) with run_all_actions()
-                                new_str = 'run_all_actions()'
-                                if id_str in each_conditional.conditional_statement:
-                                    each_conditional.conditional_statement = each_conditional.conditional_statement.replace(
-                                        'print(1)', new_str)
-                                    each_conditional.conditional_statement = each_conditional.conditional_statement.replace(
-                                        'print("1")', new_str)
-                                    each_conditional.conditional_statement = each_conditional.conditional_statement.replace(
-                                        "print('1')", new_str)
-
-                conditional_sess.commit()
-        except:
-            print("ERROR: post-alembic revision {}".format(each_revision))
-
-    elif each_revision == 'b4d958997cf0':
-        try:
-            with session_scope(MYCODO_DB_PATH) as new_session:
-                for each_input in new_session.query(Input).all():
-                    if each_input.device in ['DS18B20', 'DS18S20']:
-                        if 'library' not in each_input.custom_options:
-                            if each_input.custom_options in [None, '']:
-                                each_input.custom_options = 'library,w1thermsensor'
-                            else:
-                                each_input.custom_options += ';library,w1thermsensor'
-
-                new_session.commit()
-        except:
-            print("ERROR: post-alembic revision {}".format(each_revision))
+    try:
+        os.remove(ALEMBIC_UPGRADE_POST)
+    except:
+        pass
