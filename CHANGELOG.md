@@ -4,6 +4,7 @@
 
  - Fix wait time for Atlas Scientific pH Calibration ([#686](https://github.com/kizniche/mycodo/issues/686))
  - Add 'minute' measurement storage to EZO Pump Output
+ - Fix database upgrade issues
 
 ### Features
 
