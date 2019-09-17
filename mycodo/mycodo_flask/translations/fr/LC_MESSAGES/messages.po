@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Mycodo VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2019-09-15 22:58-0400\n"
+"POT-Creation-Date: 2019-09-16 22:55-0400\n"
 "PO-Revision-Date: 2017-01-05 00:55-0500\n"
 "Last-Translator: \n"
 "Language: fr\n"
@@ -115,105 +115,109 @@ msgid "Atlas EZO-PMP"
 msgstr "Atlas EZO-PMP"
 
 #: config.py:333
+msgid "FTDI"
+msgstr ""
+
+#: config.py:335
 msgid "I2C"
 msgstr "I2C"
 
-#: config.py:335
+#: config.py:337
 msgid "UART"
 msgstr "UART"
 
-#: config.py:393
+#: config.py:395
 msgid "DS-Type Sensor Calibration"
 msgstr "Calibrage du capteur de type DS"
 
-#: config.py:408 config_devices_units.py:97
+#: config.py:410 config_devices_units.py:97
 msgid "GPIO State"
 msgstr "État GPIO"
 
-#: config.py:409
+#: config.py:411
 msgid "Output State"
 msgstr ""
 
-#: config.py:416
+#: config.py:418
 msgid "Spacer"
 msgstr "Spacer"
 
-#: config.py:422
+#: config.py:424
 msgid "Execute Actions"
 msgstr "Exécuter des actions"
 
-#: config.py:459
+#: config.py:461
 msgid "Trigger: Timer (Daily Point)"
 msgstr "Déclencheur: minuterie (point quotidien)"
 
-#: config.py:466
+#: config.py:468
 msgid "Daily Span"
 msgstr "Portée journalière"
 
-#: config.py:479
+#: config.py:481
 msgid "Infrared Receive"
 msgstr ""
 
-#: config.py:489
+#: config.py:491
 msgid "Run PWM Method"
 msgstr "Exécuter la méthode PWM"
 
-#: config.py:495
+#: config.py:497
 msgid "Sunrise/Sunset"
 msgstr "Lever du soleil"
 
-#: config.py:525
+#: config.py:527
 msgid "Camera: Capture Photo"
 msgstr "Appareil photo: capturer une photo"
 
-#: config.py:549
+#: config.py:551
 msgid "Email with Photo Attachment"
 msgstr "Email avec photo jointe"
 
-#: config.py:553
+#: config.py:555
 msgid "Email with Video Attachment"
 msgstr "Email avec pièce jointe vidéo"
 
-#: config.py:557
+#: config.py:559
 msgid "Execute Command"
 msgstr "Exécuter la commande"
 
-#: config.py:561
+#: config.py:563
 msgid "Infrared Send"
 msgstr ""
 
-#: config.py:572
+#: config.py:574
 msgid "Backlight Off"
 msgstr "Rétro-éclairage éteint"
 
-#: config.py:578
+#: config.py:580
 msgid "LCD: Backlight On"
 msgstr "LCD: rétro-éclairage allumé"
 
-#: config.py:584
+#: config.py:586
 msgid "LCD: Flashing Off"
 msgstr "LCD: clignotant éteint"
 
-#: config.py:590
+#: config.py:592
 msgid "LCD: Flashing On"
 msgstr "LCD: clignotant"
 
-#: config.py:620
+#: config.py:622
 msgid "Set Method"
 msgstr "Définir la méthode"
 
-#: config.py:626
+#: config.py:628
 #: mycodo_flask/templates/pages/dashboard_options/mod_pid_control.html:62
 #: mycodo_flask/templates/pages/dashboard_options/mod_pid_control.html:92
 msgid "Set Setpoint"
 msgstr "Définir le point de consigne"
 
-#: config.py:632
+#: config.py:634
 #: mycodo_flask/templates/pages/function_options/action_options/setpoint_pid_raise.html:11
 msgid "Raise Setpoint"
 msgstr ""
 
-#: config.py:638
+#: config.py:640
 #: mycodo_flask/templates/pages/function_options/action_options/setpoint_pid_lower.html:11
 msgid "Lower Setpoint"
 msgstr ""
@@ -698,7 +702,7 @@ msgid "Invert"
 msgstr "Inverser"
 
 #: config_translations.py:75 mycodo_flask/templates/tools/notes.html:138
-#: mycodo_flask/utils/utils_notes.py:452
+#: mycodo_flask/utils/utils_notes.py:451
 #: mycodo_flask/utils/utils_settings.py:320
 #: mycodo_flask/utils/utils_settings.py:445
 msgid "Import"
@@ -925,7 +929,7 @@ msgstr "Adaptateur BT"
 msgid "The Bluetooth adapter of the input"
 msgstr "L'adaptateur Bluetooth de l'entrée"
 
-#: config_translations.py:175 mycodo_flask/routes_calibration.py:465
+#: config_translations.py:175 mycodo_flask/routes_calibration.py:466
 #: mycodo_flask/templates/pages/function_options/action_options/command.html:2
 msgid "Command"
 msgstr "Commander"
@@ -1439,11 +1443,11 @@ msgstr ""
 "Définit la méthode d'étalonnage à effectuer lors de l'activation de "
 "l'entrée"
 
-#: inputs/atlas_do.py:71 inputs/atlas_orp.py:71 inputs/atlas_ph.py:79
+#: inputs/atlas_do.py:71 inputs/atlas_orp.py:71 inputs/atlas_ph.py:80
 msgid "Calibration Max Age"
 msgstr "Calibration Max Age"
 
-#: inputs/atlas_do.py:72 inputs/atlas_orp.py:72 inputs/atlas_ph.py:80
+#: inputs/atlas_do.py:72 inputs/atlas_orp.py:72 inputs/atlas_ph.py:81
 msgid "The Max Age (seconds) of the Input/Math to use for calibration"
 msgstr "L'âge maximum (secondes) de l'entrée / calcul à utiliser pour l'étalonnage"
 
@@ -1617,15 +1621,15 @@ msgstr ""
 "Combien de temps allumer le ventilateur (secondes) avant d’obtenir les "
 "mesures?"
 
-#: inputs/examples/bme280_ttn.py:94 inputs/examples/k30_ttn.py:67
+#: inputs/examples/bme280_ttn.py:93 inputs/examples/k30_ttn.py:66
 msgid "Serial Device"
 msgstr ""
 
-#: inputs/examples/bme280_ttn.py:95 inputs/examples/k30_ttn.py:68
+#: inputs/examples/bme280_ttn.py:94 inputs/examples/k30_ttn.py:67
 msgid "The serial device to write to"
 msgstr ""
 
-#: mycodo_flask/app.py:116
+#: mycodo_flask/app.py:112
 msgid "Please log in to access this page"
 msgstr "Veuillez vous connecter pour accéder à cette page"
 
@@ -1742,7 +1746,7 @@ msgstr ""
 msgid "Successfully logged out"
 msgstr "Déconnecté avec succès"
 
-#: mycodo_flask/routes_calibration.py:301
+#: mycodo_flask/routes_calibration.py:302
 #, python-format
 msgid "A valid temperature is required: %(temp)s is invalid."
 msgstr "Une température valide est requise:%(temp)s n'est pas valide."
@@ -1771,31 +1775,31 @@ msgstr "Impossible de démarrer time-lapse si le flux est actif."
 msgid "Cannot start stream if time-lapse is active."
 msgstr "Impossible de démarrer le flux si time-lapse est actif."
 
-#: mycodo_flask/forms/forms_authentication.py:39
-#: mycodo_flask/forms/forms_authentication.py:40
+#: mycodo_flask/forms/forms_authentication.py:36
+#: mycodo_flask/forms/forms_authentication.py:37
 #: mycodo_flask/forms/forms_settings.py:284
 #: mycodo_flask/forms/forms_settings.py:316
 #: mycodo_flask/forms/forms_settings.py:317
 msgid "Repeat Password"
 msgstr "Répéter le mot de passe"
 
-#: mycodo_flask/forms/forms_authentication.py:59
+#: mycodo_flask/forms/forms_authentication.py:56
 msgid "remember"
 msgstr "rappelles toi"
 
-#: mycodo_flask/forms/forms_authentication.py:69
+#: mycodo_flask/forms/forms_authentication.py:66
 msgid "Domain or IP Address"
 msgstr "Domaine ou adresse IP"
 
-#: mycodo_flask/forms/forms_authentication.py:80
+#: mycodo_flask/forms/forms_authentication.py:77
 msgid "Add Host"
 msgstr "Ajouter un hôte"
 
-#: mycodo_flask/forms/forms_authentication.py:81
+#: mycodo_flask/forms/forms_authentication.py:78
 msgid "Delete Host"
 msgstr "Supprimer l'hôte"
 
-#: mycodo_flask/forms/forms_authentication.py:85
+#: mycodo_flask/forms/forms_authentication.py:82
 msgid "I Understand"
 msgstr "Je comprends"
 
@@ -4540,11 +4544,11 @@ msgstr ""
 "Vous pouvez entrer une durée (secondes) à laquelle la méthode se "
 "terminera après, sinon laisser vide pour répéter pour toujours."
 
-#: mycodo_flask/templates/pages/output_options/atlas_ezo_pmp.html:40
+#: mycodo_flask/templates/pages/output_options/atlas_ezo_pmp.html:49
 msgid "Fastest Flow Rate"
 msgstr ""
 
-#: mycodo_flask/templates/pages/output_options/atlas_ezo_pmp.html:41
+#: mycodo_flask/templates/pages/output_options/atlas_ezo_pmp.html:50
 msgid "Specify Flow Rate"
 msgstr ""
 
@@ -4992,9 +4996,9 @@ msgid "%(msg)s"
 msgstr "%(msg)s"
 
 #: mycodo_flask/utils/utils_general.py:661
-#: mycodo_flask/utils/utils_output.py:316
-#: mycodo_flask/utils/utils_output.py:323
-#: mycodo_flask/utils/utils_output.py:328
+#: mycodo_flask/utils/utils_output.py:318
+#: mycodo_flask/utils/utils_output.py:325
+#: mycodo_flask/utils/utils_output.py:330
 #, python-format
 msgid "%(err)s"
 msgstr "%(err)s"
@@ -5017,17 +5021,17 @@ msgstr "Ne peut pas bouger au-dessus du premier élément de la liste"
 msgid "Cannot move below the last item in the list"
 msgstr "Ne peut pas bouger sous le dernier article de la liste"
 
-#: mycodo_flask/utils/utils_input.py:286
+#: mycodo_flask/utils/utils_input.py:289
 #, python-format
 msgid "%(type)s Input with ID %(id)s (%(uuid)s) successfully added"
 msgstr "%(type)s Entrée avec l'ID %(id)s (%(uuid)s) ajouté avec succès"
 
-#: mycodo_flask/utils/utils_input.py:318 mycodo_flask/utils/utils_input.py:552
+#: mycodo_flask/utils/utils_input.py:321 mycodo_flask/utils/utils_input.py:555
 #: mycodo_flask/utils/utils_math.py:304
 msgid "Deactivate controller before modifying its settings"
 msgstr "Désactiver le contrôleur avant de modifier ses paramètres"
 
-#: mycodo_flask/utils/utils_input.py:323
+#: mycodo_flask/utils/utils_input.py:326
 msgid ""
 "Choose a Read Period equal to or greater than 7. The AM2315 may become "
 "unresponsive if the period is below 7."
@@ -5035,25 +5039,25 @@ msgstr ""
 "Choisissez une période de lecture égale ou supérieure à 7. L'AM2315 peut "
 "ne plus répondre si la période est inférieure à 7."
 
-#: mycodo_flask/utils/utils_input.py:331
+#: mycodo_flask/utils/utils_input.py:334
 msgid "The Read Period cannot be less than the Pre Output Duration"
 msgstr "La période de lecture ne peut pas être inférieure à la durée de pré-sortie"
 
-#: mycodo_flask/utils/utils_input.py:337
+#: mycodo_flask/utils/utils_input.py:340
 msgid "Invalid device or improper permissions to read device"
 msgstr ""
 "Périphérique non valide ou autorisations incorrectes pour lire le "
 "périphérique"
 
-#: mycodo_flask/utils/utils_input.py:342
+#: mycodo_flask/utils/utils_input.py:345
 msgid "Pin (GPIO) must be set"
 msgstr ""
 
-#: mycodo_flask/utils/utils_input.py:739
+#: mycodo_flask/utils/utils_input.py:742
 msgid "Force Measurements"
 msgstr "Mesures de force"
 
-#: mycodo_flask/utils/utils_input.py:748
+#: mycodo_flask/utils/utils_input.py:751
 msgid ""
 "Activate controller before attempting to force the acquisition of "
 "measurements"
@@ -5216,8 +5220,8 @@ msgstr ""
 msgid "Energy Usage with ID %(id)s (%(uuid)s) successfully added"
 msgstr ""
 
-#: mycodo_flask/utils/utils_notes.py:218 mycodo_flask/utils/utils_notes.py:259
-#: mycodo_flask/utils/utils_settings.py:1275
+#: mycodo_flask/utils/utils_notes.py:217 mycodo_flask/utils/utils_notes.py:258
+#: mycodo_flask/utils/utils_settings.py:1274
 msgid "File"
 msgstr "Fichier"
 
@@ -5229,51 +5233,51 @@ msgstr "Quantité invalide"
 msgid "Acceptable values"
 msgstr "Valeurs acceptables"
 
-#: mycodo_flask/utils/utils_output.py:340
+#: mycodo_flask/utils/utils_output.py:342
 msgid "Actuate"
 msgstr "Agir"
 
-#: mycodo_flask/utils/utils_output.py:348
+#: mycodo_flask/utils/utils_output.py:350
 msgid "Cannot modulate output with a GPIO of 0"
 msgstr "Impossible de moduler la sortie avec un GPIO de 0"
 
-#: mycodo_flask/utils/utils_output.py:354
+#: mycodo_flask/utils/utils_output.py:356
 msgid "Value must be greater than 0"
 msgstr "La valeur doit être supérieure à 0"
 
-#: mycodo_flask/utils/utils_output.py:358
+#: mycodo_flask/utils/utils_output.py:360
 #, python-format
 msgid "Output turned on for %(sec)s seconds: %(rvalue)s"
 msgstr "Sortie activée pour les secondes %(sec)s: %(rvalue)s"
 
-#: mycodo_flask/utils/utils_output.py:364
+#: mycodo_flask/utils/utils_output.py:366
 msgid "Invalid pin"
 msgstr "Goupille invalide"
 
-#: mycodo_flask/utils/utils_output.py:366
+#: mycodo_flask/utils/utils_output.py:368
 msgid "PWM Hertz must be a positive value"
 msgstr "PWM Hertz doit être une valeur positive"
 
-#: mycodo_flask/utils/utils_output.py:368
+#: mycodo_flask/utils/utils_output.py:370
 msgid "PWM duty cycle must be a positive value"
 msgstr "Le cycle de service PWM doit être une valeur positive"
 
-#: mycodo_flask/utils/utils_output.py:374
+#: mycodo_flask/utils/utils_output.py:376
 #, python-format
 msgid "PWM set to %(dc)s %% at %(hertz)s Hz: %(rvalue)s"
 msgstr "PWM défini sur %(dc)s %% à %(hertz)s Hz: %(rvalue)s"
 
-#: mycodo_flask/utils/utils_output.py:380
+#: mycodo_flask/utils/utils_output.py:382
 #, python-format
 msgid "Output turned on: %(rvalue)s"
 msgstr "Sortie activée: %(rvalue)s"
 
-#: mycodo_flask/utils/utils_output.py:384
+#: mycodo_flask/utils/utils_output.py:386
 #, python-format
 msgid "Output turned off: %(rvalue)s"
 msgstr "Sortie désactivée: %(rvalue)s"
 
-#: mycodo_flask/utils/utils_output.py:388
+#: mycodo_flask/utils/utils_output.py:390
 msgid "Invalid value"
 msgstr "valeur invalide"
 
@@ -5349,15 +5353,15 @@ msgstr "Conversion"
 msgid "Conversion with ID %(id)s (%(uuid)s) successfully added"
 msgstr "Conversion avec ID %(id)s (%(uuid)s) ajouté avec succès"
 
-#: mycodo_flask/utils/utils_settings.py:962
+#: mycodo_flask/utils/utils_settings.py:961
 msgid "Pi Settings"
 msgstr "Paramètres Pi"
 
-#: mycodo_flask/utils/utils_settings.py:972
+#: mycodo_flask/utils/utils_settings.py:971
 msgid "Alert Settings"
 msgstr "Paramètres d'alerte"
 
-#: mycodo_flask/utils/utils_settings.py:984
+#: mycodo_flask/utils/utils_settings.py:983
 #, python-format
 msgid ""
 "Test email sent to %(recip)s. Check your inbox to see if it was "
@@ -5366,7 +5370,7 @@ msgstr ""
 "E-mail de test envoyé à %(recip)s. Vérifiez votre boîte de réception pour"
 " voir si elle a réussi."
 
-#: mycodo_flask/utils/utils_settings.py:1299
+#: mycodo_flask/utils/utils_settings.py:1298
 msgid "Reset email counter"
 msgstr ""
 

@@ -395,7 +395,7 @@ def average_start_end_seconds(unique_id, unit, channel, str_start, str_end, meas
 
 
 def sum_past_seconds(unique_id, unit, channel, past_seconds, measure=None):
-    """Return measurement average for the past x seconds"""
+    """Return measurement sum for the past x seconds"""
     client = InfluxDBClient(INFLUXDB_HOST, INFLUXDB_PORT, INFLUXDB_USER,
                             INFLUXDB_PASSWORD, INFLUXDB_DATABASE, timeout=5)
     query = query_string(unit, unique_id,

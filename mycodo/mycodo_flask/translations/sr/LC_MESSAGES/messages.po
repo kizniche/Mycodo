@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2019-09-15 22:58-0400\n"
+"POT-Creation-Date: 2019-09-16 22:55-0400\n"
 "PO-Revision-Date: 2019-01-29 14:08-0500\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: sr\n"
@@ -118,105 +118,109 @@ msgid "Atlas EZO-PMP"
 msgstr "Атлас ЕЗО-ПМП"
 
 #: config.py:333
+msgid "FTDI"
+msgstr ""
+
+#: config.py:335
 msgid "I2C"
 msgstr "И2Ц"
 
-#: config.py:335
+#: config.py:337
 msgid "UART"
 msgstr "УАРТ"
 
-#: config.py:393
+#: config.py:395
 msgid "DS-Type Sensor Calibration"
 msgstr "Калибрација сензора типа ДС"
 
-#: config.py:408 config_devices_units.py:97
+#: config.py:410 config_devices_units.py:97
 msgid "GPIO State"
 msgstr "ГПИО Стате"
 
-#: config.py:409
+#: config.py:411
 msgid "Output State"
 msgstr ""
 
-#: config.py:416
+#: config.py:418
 msgid "Spacer"
 msgstr "Спацер"
 
-#: config.py:422
+#: config.py:424
 msgid "Execute Actions"
 msgstr "Изврши радње"
 
-#: config.py:459
+#: config.py:461
 msgid "Trigger: Timer (Daily Point)"
 msgstr "Триггер: Тимер (Дневна тачка)"
 
-#: config.py:466
+#: config.py:468
 msgid "Daily Span"
 msgstr "Даили Спан"
 
-#: config.py:479
+#: config.py:481
 msgid "Infrared Receive"
 msgstr ""
 
-#: config.py:489
+#: config.py:491
 msgid "Run PWM Method"
 msgstr "Покрените ПВМ методу"
 
-#: config.py:495
+#: config.py:497
 msgid "Sunrise/Sunset"
 msgstr "Излазак и залазак Сунца"
 
-#: config.py:525
+#: config.py:527
 msgid "Camera: Capture Photo"
 msgstr "Камера: Снимање фотографије"
 
-#: config.py:549
+#: config.py:551
 msgid "Email with Photo Attachment"
 msgstr "Емаил витх Пхото Аттацхмент"
 
-#: config.py:553
+#: config.py:555
 msgid "Email with Video Attachment"
 msgstr "Емаил са видео прилогом"
 
-#: config.py:557
+#: config.py:559
 msgid "Execute Command"
 msgstr "Изврши команду"
 
-#: config.py:561
+#: config.py:563
 msgid "Infrared Send"
 msgstr ""
 
-#: config.py:572
+#: config.py:574
 msgid "Backlight Off"
 msgstr "Бацклигхт Офф"
 
-#: config.py:578
+#: config.py:580
 msgid "LCD: Backlight On"
 msgstr "ЛЦД: Бацклигхт Он"
 
-#: config.py:584
+#: config.py:586
 msgid "LCD: Flashing Off"
 msgstr "ЛЦД: Трепери Офф"
 
-#: config.py:590
+#: config.py:592
 msgid "LCD: Flashing On"
 msgstr "ЛЦД: Трепери Укључено"
 
-#: config.py:620
+#: config.py:622
 msgid "Set Method"
 msgstr "Сет Метход"
 
-#: config.py:626
+#: config.py:628
 #: mycodo_flask/templates/pages/dashboard_options/mod_pid_control.html:62
 #: mycodo_flask/templates/pages/dashboard_options/mod_pid_control.html:92
 msgid "Set Setpoint"
 msgstr "Сет Сетпоинт"
 
-#: config.py:632
+#: config.py:634
 #: mycodo_flask/templates/pages/function_options/action_options/setpoint_pid_raise.html:11
 msgid "Raise Setpoint"
 msgstr ""
 
-#: config.py:638
+#: config.py:640
 #: mycodo_flask/templates/pages/function_options/action_options/setpoint_pid_lower.html:11
 msgid "Lower Setpoint"
 msgstr ""
@@ -701,7 +705,7 @@ msgid "Invert"
 msgstr "Инверт"
 
 #: config_translations.py:75 mycodo_flask/templates/tools/notes.html:138
-#: mycodo_flask/utils/utils_notes.py:452
+#: mycodo_flask/utils/utils_notes.py:451
 #: mycodo_flask/utils/utils_settings.py:320
 #: mycodo_flask/utils/utils_settings.py:445
 msgid "Import"
@@ -928,7 +932,7 @@ msgstr "БТ Адаптер"
 msgid "The Bluetooth adapter of the input"
 msgstr "Блуетоотх адаптер улаза"
 
-#: config_translations.py:175 mycodo_flask/routes_calibration.py:465
+#: config_translations.py:175 mycodo_flask/routes_calibration.py:466
 #: mycodo_flask/templates/pages/function_options/action_options/command.html:2
 msgid "Command"
 msgstr "Цомманд"
@@ -1428,11 +1432,11 @@ msgstr ""
 msgid "Set the calibration method to perform during Input activation"
 msgstr "Подесите метод калибрације да се изврши током активације улаза"
 
-#: inputs/atlas_do.py:71 inputs/atlas_orp.py:71 inputs/atlas_ph.py:79
+#: inputs/atlas_do.py:71 inputs/atlas_orp.py:71 inputs/atlas_ph.py:80
 msgid "Calibration Max Age"
 msgstr "Калибрација Мак Аге"
 
-#: inputs/atlas_do.py:72 inputs/atlas_orp.py:72 inputs/atlas_ph.py:80
+#: inputs/atlas_do.py:72 inputs/atlas_orp.py:72 inputs/atlas_ph.py:81
 msgid "The Max Age (seconds) of the Input/Math to use for calibration"
 msgstr "Мак Аге (секунде) Инпут / Матх за употребу за калибрацију"
 
@@ -1604,15 +1608,15 @@ msgstr "Фан Он Дуратион"
 msgid "How long to turn the fan on (seconds) before acquiring measurements"
 msgstr "Колико дуго треба укључити вентилатор (секунде) пре добијања мерења"
 
-#: inputs/examples/bme280_ttn.py:94 inputs/examples/k30_ttn.py:67
+#: inputs/examples/bme280_ttn.py:93 inputs/examples/k30_ttn.py:66
 msgid "Serial Device"
 msgstr ""
 
-#: inputs/examples/bme280_ttn.py:95 inputs/examples/k30_ttn.py:68
+#: inputs/examples/bme280_ttn.py:94 inputs/examples/k30_ttn.py:67
 msgid "The serial device to write to"
 msgstr ""
 
-#: mycodo_flask/app.py:116
+#: mycodo_flask/app.py:112
 msgid "Please log in to access this page"
 msgstr "Молимо пријавите се за приступ овој страници"
 
@@ -1723,7 +1727,7 @@ msgstr ""
 msgid "Successfully logged out"
 msgstr "Успешно одјављен"
 
-#: mycodo_flask/routes_calibration.py:301
+#: mycodo_flask/routes_calibration.py:302
 #, python-format
 msgid "A valid temperature is required: %(temp)s is invalid."
 msgstr "Потребна је важећа температура: %(temp)s је неважећа."
@@ -1752,31 +1756,31 @@ msgstr "Није могуће покренути временски интерв
 msgid "Cannot start stream if time-lapse is active."
 msgstr "Није могуће покренути ток ако је активан временски интервал."
 
-#: mycodo_flask/forms/forms_authentication.py:39
-#: mycodo_flask/forms/forms_authentication.py:40
+#: mycodo_flask/forms/forms_authentication.py:36
+#: mycodo_flask/forms/forms_authentication.py:37
 #: mycodo_flask/forms/forms_settings.py:284
 #: mycodo_flask/forms/forms_settings.py:316
 #: mycodo_flask/forms/forms_settings.py:317
 msgid "Repeat Password"
 msgstr "Поновите лозинку"
 
-#: mycodo_flask/forms/forms_authentication.py:59
+#: mycodo_flask/forms/forms_authentication.py:56
 msgid "remember"
 msgstr "запамтити"
 
-#: mycodo_flask/forms/forms_authentication.py:69
+#: mycodo_flask/forms/forms_authentication.py:66
 msgid "Domain or IP Address"
 msgstr "Домена или ИП адреса"
 
-#: mycodo_flask/forms/forms_authentication.py:80
+#: mycodo_flask/forms/forms_authentication.py:77
 msgid "Add Host"
 msgstr "Адд Хост"
 
-#: mycodo_flask/forms/forms_authentication.py:81
+#: mycodo_flask/forms/forms_authentication.py:78
 msgid "Delete Host"
 msgstr "Делете Хост"
 
-#: mycodo_flask/forms/forms_authentication.py:85
+#: mycodo_flask/forms/forms_authentication.py:82
 msgid "I Understand"
 msgstr "Разумем"
 
@@ -4478,11 +4482,11 @@ msgstr ""
 "Можете да унесете трајање (секунде) које ће метод завршити након тога, "
 "иначе оставите празно да бисте га поновили заувек."
 
-#: mycodo_flask/templates/pages/output_options/atlas_ezo_pmp.html:40
+#: mycodo_flask/templates/pages/output_options/atlas_ezo_pmp.html:49
 msgid "Fastest Flow Rate"
 msgstr ""
 
-#: mycodo_flask/templates/pages/output_options/atlas_ezo_pmp.html:41
+#: mycodo_flask/templates/pages/output_options/atlas_ezo_pmp.html:50
 msgid "Specify Flow Rate"
 msgstr ""
 
@@ -4923,9 +4927,9 @@ msgid "%(msg)s"
 msgstr "%(msg)s"
 
 #: mycodo_flask/utils/utils_general.py:661
-#: mycodo_flask/utils/utils_output.py:316
-#: mycodo_flask/utils/utils_output.py:323
-#: mycodo_flask/utils/utils_output.py:328
+#: mycodo_flask/utils/utils_output.py:318
+#: mycodo_flask/utils/utils_output.py:325
+#: mycodo_flask/utils/utils_output.py:330
 #, python-format
 msgid "%(err)s"
 msgstr "%(err)s"
@@ -4948,17 +4952,17 @@ msgstr "Не може да се помери изнад прве ставке н
 msgid "Cannot move below the last item in the list"
 msgstr "Не може да се помери испод последње ставке на листи"
 
-#: mycodo_flask/utils/utils_input.py:286
+#: mycodo_flask/utils/utils_input.py:289
 #, python-format
 msgid "%(type)s Input with ID %(id)s (%(uuid)s) successfully added"
 msgstr "%(type)s Улаз са ИД %(id)s (%(uuid)s) је успешно додато"
 
-#: mycodo_flask/utils/utils_input.py:318 mycodo_flask/utils/utils_input.py:552
+#: mycodo_flask/utils/utils_input.py:321 mycodo_flask/utils/utils_input.py:555
 #: mycodo_flask/utils/utils_math.py:304
 msgid "Deactivate controller before modifying its settings"
 msgstr "Деактивирајте контролер пре мењања његових поставки"
 
-#: mycodo_flask/utils/utils_input.py:323
+#: mycodo_flask/utils/utils_input.py:326
 msgid ""
 "Choose a Read Period equal to or greater than 7. The AM2315 may become "
 "unresponsive if the period is below 7."
@@ -4966,23 +4970,23 @@ msgstr ""
 "Изаберите Период читања једнак или већи од 7. АМ2315 може престати да "
 "реагује ако је период испод 7."
 
-#: mycodo_flask/utils/utils_input.py:331
+#: mycodo_flask/utils/utils_input.py:334
 msgid "The Read Period cannot be less than the Pre Output Duration"
 msgstr "Период читања не може бити мањи од Пре Оутпут Дуратион"
 
-#: mycodo_flask/utils/utils_input.py:337
+#: mycodo_flask/utils/utils_input.py:340
 msgid "Invalid device or improper permissions to read device"
 msgstr "Неважећи уређај или неприкладне дозволе за читање уређаја"
 
-#: mycodo_flask/utils/utils_input.py:342
+#: mycodo_flask/utils/utils_input.py:345
 msgid "Pin (GPIO) must be set"
 msgstr ""
 
-#: mycodo_flask/utils/utils_input.py:739
+#: mycodo_flask/utils/utils_input.py:742
 msgid "Force Measurements"
 msgstr "Мјерење силе"
 
-#: mycodo_flask/utils/utils_input.py:748
+#: mycodo_flask/utils/utils_input.py:751
 msgid ""
 "Activate controller before attempting to force the acquisition of "
 "measurements"
@@ -5140,8 +5144,8 @@ msgstr ""
 msgid "Energy Usage with ID %(id)s (%(uuid)s) successfully added"
 msgstr ""
 
-#: mycodo_flask/utils/utils_notes.py:218 mycodo_flask/utils/utils_notes.py:259
-#: mycodo_flask/utils/utils_settings.py:1275
+#: mycodo_flask/utils/utils_notes.py:217 mycodo_flask/utils/utils_notes.py:258
+#: mycodo_flask/utils/utils_settings.py:1274
 msgid "File"
 msgstr "Филе"
 
@@ -5153,51 +5157,51 @@ msgstr "Неважећа количина"
 msgid "Acceptable values"
 msgstr "Прихватљиве вредности"
 
-#: mycodo_flask/utils/utils_output.py:340
+#: mycodo_flask/utils/utils_output.py:342
 msgid "Actuate"
 msgstr "Ацтуате"
 
-#: mycodo_flask/utils/utils_output.py:348
+#: mycodo_flask/utils/utils_output.py:350
 msgid "Cannot modulate output with a GPIO of 0"
 msgstr "Није могуће модулисати излаз са ГПИО од 0"
 
-#: mycodo_flask/utils/utils_output.py:354
+#: mycodo_flask/utils/utils_output.py:356
 msgid "Value must be greater than 0"
 msgstr "Вредност мора бити већа од 0"
 
-#: mycodo_flask/utils/utils_output.py:358
+#: mycodo_flask/utils/utils_output.py:360
 #, python-format
 msgid "Output turned on for %(sec)s seconds: %(rvalue)s"
 msgstr "Излаз је укључен за %(sec)s секунди: %(rvalue)s"
 
-#: mycodo_flask/utils/utils_output.py:364
+#: mycodo_flask/utils/utils_output.py:366
 msgid "Invalid pin"
 msgstr "Неважећи пин"
 
-#: mycodo_flask/utils/utils_output.py:366
+#: mycodo_flask/utils/utils_output.py:368
 msgid "PWM Hertz must be a positive value"
 msgstr "ПВМ Хертз мора бити позитивна вриједност"
 
-#: mycodo_flask/utils/utils_output.py:368
+#: mycodo_flask/utils/utils_output.py:370
 msgid "PWM duty cycle must be a positive value"
 msgstr "ПВМ радни циклус мора бити позитивна вриједност"
 
-#: mycodo_flask/utils/utils_output.py:374
+#: mycodo_flask/utils/utils_output.py:376
 #, python-format
 msgid "PWM set to %(dc)s %% at %(hertz)s Hz: %(rvalue)s"
 msgstr "ПВМ постављен на %(dc)s %% у %(hertz)s Хз: %(rvalue)s"
 
-#: mycodo_flask/utils/utils_output.py:380
+#: mycodo_flask/utils/utils_output.py:382
 #, python-format
 msgid "Output turned on: %(rvalue)s"
 msgstr "Излаз је укључен: %(rvalue)s"
 
-#: mycodo_flask/utils/utils_output.py:384
+#: mycodo_flask/utils/utils_output.py:386
 #, python-format
 msgid "Output turned off: %(rvalue)s"
 msgstr "Искључен излаз: %(rvalue)s"
 
-#: mycodo_flask/utils/utils_output.py:388
+#: mycodo_flask/utils/utils_output.py:390
 msgid "Invalid value"
 msgstr "Погрешна вредност"
 
@@ -5273,15 +5277,15 @@ msgstr "Конверзија"
 msgid "Conversion with ID %(id)s (%(uuid)s) successfully added"
 msgstr "Конверзија са ИД %(id)s (%(uuid)s) је успешно додата"
 
-#: mycodo_flask/utils/utils_settings.py:962
+#: mycodo_flask/utils/utils_settings.py:961
 msgid "Pi Settings"
 msgstr "Пи Сеттингс"
 
-#: mycodo_flask/utils/utils_settings.py:972
+#: mycodo_flask/utils/utils_settings.py:971
 msgid "Alert Settings"
 msgstr "Поставке упозорења"
 
-#: mycodo_flask/utils/utils_settings.py:984
+#: mycodo_flask/utils/utils_settings.py:983
 #, python-format
 msgid ""
 "Test email sent to %(recip)s. Check your inbox to see if it was "
@@ -5290,7 +5294,7 @@ msgstr ""
 "Е-пошта теста послата на %(recip)s. Проверите своју пристиглу пошту да "
 "бисте видели да ли је била успешна."
 
-#: mycodo_flask/utils/utils_settings.py:1299
+#: mycodo_flask/utils/utils_settings.py:1298
 msgid "Reset email counter"
 msgstr ""
 

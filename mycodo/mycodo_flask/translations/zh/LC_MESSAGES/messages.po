@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2019-09-15 22:58-0400\n"
+"POT-Creation-Date: 2019-09-16 22:55-0400\n"
 "PO-Revision-Date: 2018-08-10 15:59-0400\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: zh\n"
@@ -117,105 +117,109 @@ msgid "Atlas EZO-PMP"
 msgstr "Atlas EZO-PMP"
 
 #: config.py:333
+msgid "FTDI"
+msgstr ""
+
+#: config.py:335
 msgid "I2C"
 msgstr "I2C"
 
-#: config.py:335
+#: config.py:337
 msgid "UART"
 msgstr "UART"
 
-#: config.py:393
+#: config.py:395
 msgid "DS-Type Sensor Calibration"
 msgstr "DS型传感器校准"
 
-#: config.py:408 config_devices_units.py:97
+#: config.py:410 config_devices_units.py:97
 msgid "GPIO State"
 msgstr "GPIO国家"
 
-#: config.py:409
+#: config.py:411
 msgid "Output State"
 msgstr ""
 
-#: config.py:416
+#: config.py:418
 msgid "Spacer"
 msgstr "间隔"
 
-#: config.py:422
+#: config.py:424
 msgid "Execute Actions"
 msgstr "执行动作"
 
-#: config.py:459
+#: config.py:461
 msgid "Trigger: Timer (Daily Point)"
 msgstr "触发：定时器（每日点）"
 
-#: config.py:466
+#: config.py:468
 msgid "Daily Span"
 msgstr "每日跨度"
 
-#: config.py:479
+#: config.py:481
 msgid "Infrared Receive"
 msgstr ""
 
-#: config.py:489
+#: config.py:491
 msgid "Run PWM Method"
 msgstr "运行PWM方法"
 
-#: config.py:495
+#: config.py:497
 msgid "Sunrise/Sunset"
 msgstr "日出日落"
 
-#: config.py:525
+#: config.py:527
 msgid "Camera: Capture Photo"
 msgstr "相机：拍摄照片"
 
-#: config.py:549
+#: config.py:551
 msgid "Email with Photo Attachment"
 msgstr "带照片附件的电子邮件"
 
-#: config.py:553
+#: config.py:555
 msgid "Email with Video Attachment"
 msgstr "带视频附件的电子邮件"
 
-#: config.py:557
+#: config.py:559
 msgid "Execute Command"
 msgstr "执行命令"
 
-#: config.py:561
+#: config.py:563
 msgid "Infrared Send"
 msgstr ""
 
-#: config.py:572
+#: config.py:574
 msgid "Backlight Off"
 msgstr "背光关闭"
 
-#: config.py:578
+#: config.py:580
 msgid "LCD: Backlight On"
 msgstr "LCD：背光打开"
 
-#: config.py:584
+#: config.py:586
 msgid "LCD: Flashing Off"
 msgstr "LCD：闪烁关闭"
 
-#: config.py:590
+#: config.py:592
 msgid "LCD: Flashing On"
 msgstr "LCD：闪烁"
 
-#: config.py:620
+#: config.py:622
 msgid "Set Method"
 msgstr "设置方法"
 
-#: config.py:626
+#: config.py:628
 #: mycodo_flask/templates/pages/dashboard_options/mod_pid_control.html:62
 #: mycodo_flask/templates/pages/dashboard_options/mod_pid_control.html:92
 msgid "Set Setpoint"
 msgstr "设定设定值"
 
-#: config.py:632
+#: config.py:634
 #: mycodo_flask/templates/pages/function_options/action_options/setpoint_pid_raise.html:11
 msgid "Raise Setpoint"
 msgstr ""
 
-#: config.py:638
+#: config.py:640
 #: mycodo_flask/templates/pages/function_options/action_options/setpoint_pid_lower.html:11
 msgid "Lower Setpoint"
 msgstr ""
@@ -700,7 +704,7 @@ msgid "Invert"
 msgstr "倒置"
 
 #: config_translations.py:75 mycodo_flask/templates/tools/notes.html:138
-#: mycodo_flask/utils/utils_notes.py:452
+#: mycodo_flask/utils/utils_notes.py:451
 #: mycodo_flask/utils/utils_settings.py:320
 #: mycodo_flask/utils/utils_settings.py:445
 msgid "Import"
@@ -925,7 +929,7 @@ msgstr "BT适配器"
 msgid "The Bluetooth adapter of the input"
 msgstr "输入的蓝牙适配器"
 
-#: config_translations.py:175 mycodo_flask/routes_calibration.py:465
+#: config_translations.py:175 mycodo_flask/routes_calibration.py:466
 #: mycodo_flask/templates/pages/function_options/action_options/command.html:2
 msgid "Command"
 msgstr "命令"
@@ -1411,11 +1415,11 @@ msgstr "前一次测量对当前测量的加权。范围：0.0  -  1.0。用于�
 msgid "Set the calibration method to perform during Input activation"
 msgstr "设置校准方法以在输入激活期间执行"
 
-#: inputs/atlas_do.py:71 inputs/atlas_orp.py:71 inputs/atlas_ph.py:79
+#: inputs/atlas_do.py:71 inputs/atlas_orp.py:71 inputs/atlas_ph.py:80
 msgid "Calibration Max Age"
 msgstr "校准最大年龄"
 
-#: inputs/atlas_do.py:72 inputs/atlas_orp.py:72 inputs/atlas_ph.py:80
+#: inputs/atlas_do.py:72 inputs/atlas_orp.py:72 inputs/atlas_ph.py:81
 msgid "The Max Age (seconds) of the Input/Math to use for calibration"
 msgstr "用于校准的输入/数学的最大年龄（秒）"
 
@@ -1583,15 +1587,15 @@ msgstr "扇子持续时间"
 msgid "How long to turn the fan on (seconds) before acquiring measurements"
 msgstr "在获取测量值之前，将风扇打开多长时间（秒）"
 
-#: inputs/examples/bme280_ttn.py:94 inputs/examples/k30_ttn.py:67
+#: inputs/examples/bme280_ttn.py:93 inputs/examples/k30_ttn.py:66
 msgid "Serial Device"
 msgstr ""
 
-#: inputs/examples/bme280_ttn.py:95 inputs/examples/k30_ttn.py:68
+#: inputs/examples/bme280_ttn.py:94 inputs/examples/k30_ttn.py:67
 msgid "The serial device to write to"
 msgstr ""
 
-#: mycodo_flask/app.py:116
+#: mycodo_flask/app.py:112
 msgid "Please log in to access this page"
 msgstr "请登录访问此页"
 
@@ -1688,7 +1692,7 @@ msgstr "登录尝试失败次数过多。请等待 %(min)s 分钟，然后再尝
 msgid "Successfully logged out"
 msgstr "成功退出"
 
-#: mycodo_flask/routes_calibration.py:301
+#: mycodo_flask/routes_calibration.py:302
 #, python-format
 msgid "A valid temperature is required: %(temp)s is invalid."
 msgstr "需要有效温度: %(temp)s 无效。"
@@ -1717,31 +1721,31 @@ msgstr "如果流处于活动状态，则无法启动延时。"
 msgid "Cannot start stream if time-lapse is active."
 msgstr "如果延时有效，则无法启动流。"
 
-#: mycodo_flask/forms/forms_authentication.py:39
-#: mycodo_flask/forms/forms_authentication.py:40
+#: mycodo_flask/forms/forms_authentication.py:36
+#: mycodo_flask/forms/forms_authentication.py:37
 #: mycodo_flask/forms/forms_settings.py:284
 #: mycodo_flask/forms/forms_settings.py:316
 #: mycodo_flask/forms/forms_settings.py:317
 msgid "Repeat Password"
 msgstr "重复输入密码"
 
-#: mycodo_flask/forms/forms_authentication.py:59
+#: mycodo_flask/forms/forms_authentication.py:56
 msgid "remember"
 msgstr "记得"
 
-#: mycodo_flask/forms/forms_authentication.py:69
+#: mycodo_flask/forms/forms_authentication.py:66
 msgid "Domain or IP Address"
 msgstr "域或IP地址"
 
-#: mycodo_flask/forms/forms_authentication.py:80
+#: mycodo_flask/forms/forms_authentication.py:77
 msgid "Add Host"
 msgstr "添加主机"
 
-#: mycodo_flask/forms/forms_authentication.py:81
+#: mycodo_flask/forms/forms_authentication.py:78
 msgid "Delete Host"
 msgstr "删除主机"
 
-#: mycodo_flask/forms/forms_authentication.py:85
+#: mycodo_flask/forms/forms_authentication.py:82
 msgid "I Understand"
 msgstr "我明白"
 
@@ -4322,11 +4326,11 @@ msgid ""
 "otherwise leave blank to repeat forever."
 msgstr "您可以输入方法将结束的持续时间（秒），否则留空以永久重复。"
 
-#: mycodo_flask/templates/pages/output_options/atlas_ezo_pmp.html:40
+#: mycodo_flask/templates/pages/output_options/atlas_ezo_pmp.html:49
 msgid "Fastest Flow Rate"
 msgstr ""
 
-#: mycodo_flask/templates/pages/output_options/atlas_ezo_pmp.html:41
+#: mycodo_flask/templates/pages/output_options/atlas_ezo_pmp.html:50
 msgid "Specify Flow Rate"
 msgstr ""
 
@@ -4746,9 +4750,9 @@ msgid "%(msg)s"
 msgstr "%(msg)s"
 
 #: mycodo_flask/utils/utils_general.py:661
-#: mycodo_flask/utils/utils_output.py:316
-#: mycodo_flask/utils/utils_output.py:323
-#: mycodo_flask/utils/utils_output.py:328
+#: mycodo_flask/utils/utils_output.py:318
+#: mycodo_flask/utils/utils_output.py:325
+#: mycodo_flask/utils/utils_output.py:330
 #, python-format
 msgid "%(err)s"
 msgstr "%(err)s"
@@ -4771,39 +4775,39 @@ msgstr "无法移动到列表中的第一个项目之上"
 msgid "Cannot move below the last item in the list"
 msgstr "无法移动到列表中的最后一项之下"
 
-#: mycodo_flask/utils/utils_input.py:286
+#: mycodo_flask/utils/utils_input.py:289
 #, python-format
 msgid "%(type)s Input with ID %(id)s (%(uuid)s) successfully added"
 msgstr "%(type)s 已成功添加ID为 %(id)s (%(uuid)s) 的输入"
 
-#: mycodo_flask/utils/utils_input.py:318 mycodo_flask/utils/utils_input.py:552
+#: mycodo_flask/utils/utils_input.py:321 mycodo_flask/utils/utils_input.py:555
 #: mycodo_flask/utils/utils_math.py:304
 msgid "Deactivate controller before modifying its settings"
 msgstr "在修改其设置之前停用控制器"
 
-#: mycodo_flask/utils/utils_input.py:323
+#: mycodo_flask/utils/utils_input.py:326
 msgid ""
 "Choose a Read Period equal to or greater than 7. The AM2315 may become "
 "unresponsive if the period is below 7."
 msgstr "选择等于或大于7的读取周期。如果周期低于7，AM2315可能会无响应。"
 
-#: mycodo_flask/utils/utils_input.py:331
+#: mycodo_flask/utils/utils_input.py:334
 msgid "The Read Period cannot be less than the Pre Output Duration"
 msgstr "读取周期不能小于预输出持续时间"
 
-#: mycodo_flask/utils/utils_input.py:337
+#: mycodo_flask/utils/utils_input.py:340
 msgid "Invalid device or improper permissions to read device"
 msgstr "设备无效或读取设备的权限不正确"
 
-#: mycodo_flask/utils/utils_input.py:342
+#: mycodo_flask/utils/utils_input.py:345
 msgid "Pin (GPIO) must be set"
 msgstr ""
 
-#: mycodo_flask/utils/utils_input.py:739
+#: mycodo_flask/utils/utils_input.py:742
 msgid "Force Measurements"
 msgstr "力测量"
 
-#: mycodo_flask/utils/utils_input.py:748
+#: mycodo_flask/utils/utils_input.py:751
 msgid ""
 "Activate controller before attempting to force the acquisition of "
 "measurements"
@@ -4953,8 +4957,8 @@ msgstr "输入结束时间 (%(et)s) 不能与下一个条目的开始时间 (%(s
 msgid "Energy Usage with ID %(id)s (%(uuid)s) successfully added"
 msgstr ""
 
-#: mycodo_flask/utils/utils_notes.py:218 mycodo_flask/utils/utils_notes.py:259
-#: mycodo_flask/utils/utils_settings.py:1275
+#: mycodo_flask/utils/utils_notes.py:217 mycodo_flask/utils/utils_notes.py:258
+#: mycodo_flask/utils/utils_settings.py:1274
 msgid "File"
 msgstr "文件"
 
@@ -4966,51 +4970,51 @@ msgstr "数量无效"
 msgid "Acceptable values"
 msgstr "可接受的值"
 
-#: mycodo_flask/utils/utils_output.py:340
+#: mycodo_flask/utils/utils_output.py:342
 msgid "Actuate"
 msgstr "开动"
 
-#: mycodo_flask/utils/utils_output.py:348
+#: mycodo_flask/utils/utils_output.py:350
 msgid "Cannot modulate output with a GPIO of 0"
 msgstr "无法在GPIO为0的情况下调制输出"
 
-#: mycodo_flask/utils/utils_output.py:354
+#: mycodo_flask/utils/utils_output.py:356
 msgid "Value must be greater than 0"
 msgstr "值必须大于0"
 
-#: mycodo_flask/utils/utils_output.py:358
+#: mycodo_flask/utils/utils_output.py:360
 #, python-format
 msgid "Output turned on for %(sec)s seconds: %(rvalue)s"
 msgstr "输出开启 %(sec)s 秒: %(rvalue)s"
 
-#: mycodo_flask/utils/utils_output.py:364
+#: mycodo_flask/utils/utils_output.py:366
 msgid "Invalid pin"
 msgstr "无效的引脚"
 
-#: mycodo_flask/utils/utils_output.py:366
+#: mycodo_flask/utils/utils_output.py:368
 msgid "PWM Hertz must be a positive value"
 msgstr "PWM赫兹必须是正值"
 
-#: mycodo_flask/utils/utils_output.py:368
+#: mycodo_flask/utils/utils_output.py:370
 msgid "PWM duty cycle must be a positive value"
 msgstr "PWM占空比必须是正值"
 
-#: mycodo_flask/utils/utils_output.py:374
+#: mycodo_flask/utils/utils_output.py:376
 #, python-format
 msgid "PWM set to %(dc)s %% at %(hertz)s Hz: %(rvalue)s"
 msgstr "PWM设置为 %(dc)s %% at %(hertz)s Hz: %(rvalue)s"
 
-#: mycodo_flask/utils/utils_output.py:380
+#: mycodo_flask/utils/utils_output.py:382
 #, python-format
 msgid "Output turned on: %(rvalue)s"
 msgstr "输出已打开: %(rvalue)s"
 
-#: mycodo_flask/utils/utils_output.py:384
+#: mycodo_flask/utils/utils_output.py:386
 #, python-format
 msgid "Output turned off: %(rvalue)s"
 msgstr "输出关闭: %(rvalue)s"
 
-#: mycodo_flask/utils/utils_output.py:388
+#: mycodo_flask/utils/utils_output.py:390
 msgid "Invalid value"
 msgstr "无效值"
 
@@ -5082,22 +5086,22 @@ msgstr "转变"
 msgid "Conversion with ID %(id)s (%(uuid)s) successfully added"
 msgstr "已成功添加ID为 %(id)s (%(uuid)s) 的转换"
 
-#: mycodo_flask/utils/utils_settings.py:962
+#: mycodo_flask/utils/utils_settings.py:961
 msgid "Pi Settings"
 msgstr "Pi设置"
 
-#: mycodo_flask/utils/utils_settings.py:972
+#: mycodo_flask/utils/utils_settings.py:971
 msgid "Alert Settings"
 msgstr "警报设置"
 
-#: mycodo_flask/utils/utils_settings.py:984
+#: mycodo_flask/utils/utils_settings.py:983
 #, python-format
 msgid ""
 "Test email sent to %(recip)s. Check your inbox to see if it was "
 "successful."
 msgstr "测试发送给 %(recip)s 的电子邮件。检查收件箱是否成功。"
 
-#: mycodo_flask/utils/utils_settings.py:1299
+#: mycodo_flask/utils/utils_settings.py:1298
 msgid "Reset email counter"
 msgstr ""
 

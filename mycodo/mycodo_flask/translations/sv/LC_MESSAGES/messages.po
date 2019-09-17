@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2019-09-15 22:58-0400\n"
+"POT-Creation-Date: 2019-09-16 22:55-0400\n"
 "PO-Revision-Date: 2019-01-29 14:25-0500\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: sv\n"
@@ -117,105 +117,109 @@ msgid "Atlas EZO-PMP"
 msgstr "Atlas EZO-PMP"
 
 #: config.py:333
+msgid "FTDI"
+msgstr ""
+
+#: config.py:335
 msgid "I2C"
 msgstr "I2C"
 
-#: config.py:335
+#: config.py:337
 msgid "UART"
 msgstr "UART"
 
-#: config.py:393
+#: config.py:395
 msgid "DS-Type Sensor Calibration"
 msgstr "DS-typ Sensor Kalibrering"
 
-#: config.py:408 config_devices_units.py:97
+#: config.py:410 config_devices_units.py:97
 msgid "GPIO State"
 msgstr "GPIO-staten"
 
-#: config.py:409
+#: config.py:411
 msgid "Output State"
 msgstr ""
 
-#: config.py:416
+#: config.py:418
 msgid "Spacer"
 msgstr "spacer"
 
-#: config.py:422
+#: config.py:424
 msgid "Execute Actions"
 msgstr "Utför åtgärder"
 
-#: config.py:459
+#: config.py:461
 msgid "Trigger: Timer (Daily Point)"
 msgstr "Trigger: Timer (Daily Point)"
 
-#: config.py:466
+#: config.py:468
 msgid "Daily Span"
 msgstr "Daglig spänning"
 
-#: config.py:479
+#: config.py:481
 msgid "Infrared Receive"
 msgstr ""
 
-#: config.py:489
+#: config.py:491
 msgid "Run PWM Method"
 msgstr "Kör PWM Metod"
 
-#: config.py:495
+#: config.py:497
 msgid "Sunrise/Sunset"
 msgstr "Soluppgång solnedgång"
 
-#: config.py:525
+#: config.py:527
 msgid "Camera: Capture Photo"
 msgstr "Kamera: Capture Photo"
 
-#: config.py:549
+#: config.py:551
 msgid "Email with Photo Attachment"
 msgstr "E-post med Photo Attachment"
 
-#: config.py:553
+#: config.py:555
 msgid "Email with Video Attachment"
 msgstr "E-post med Video Attachment"
 
-#: config.py:557
+#: config.py:559
 msgid "Execute Command"
 msgstr "Utför kommando"
 
-#: config.py:561
+#: config.py:563
 msgid "Infrared Send"
 msgstr ""
 
-#: config.py:572
+#: config.py:574
 msgid "Backlight Off"
 msgstr "Bakgrundsbelysning Av"
 
-#: config.py:578
+#: config.py:580
 msgid "LCD: Backlight On"
 msgstr "LCD: bakgrundsbelysning på"
 
-#: config.py:584
+#: config.py:586
 msgid "LCD: Flashing Off"
 msgstr "LCD: Blinkar av"
 
-#: config.py:590
+#: config.py:592
 msgid "LCD: Flashing On"
 msgstr "LCD: Blinkar på"
 
-#: config.py:620
+#: config.py:622
 msgid "Set Method"
 msgstr "Ange metod"
 
-#: config.py:626
+#: config.py:628
 #: mycodo_flask/templates/pages/dashboard_options/mod_pid_control.html:62
 #: mycodo_flask/templates/pages/dashboard_options/mod_pid_control.html:92
 msgid "Set Setpoint"
 msgstr "Ställ in börvärde"
 
-#: config.py:632
+#: config.py:634
 #: mycodo_flask/templates/pages/function_options/action_options/setpoint_pid_raise.html:11
 msgid "Raise Setpoint"
 msgstr ""
 
-#: config.py:638
+#: config.py:640
 #: mycodo_flask/templates/pages/function_options/action_options/setpoint_pid_lower.html:11
 msgid "Lower Setpoint"
 msgstr ""
@@ -700,7 +704,7 @@ msgid "Invert"
 msgstr "Invertera"
 
 #: config_translations.py:75 mycodo_flask/templates/tools/notes.html:138
-#: mycodo_flask/utils/utils_notes.py:452
+#: mycodo_flask/utils/utils_notes.py:451
 #: mycodo_flask/utils/utils_settings.py:320
 #: mycodo_flask/utils/utils_settings.py:445
 msgid "Import"
@@ -927,7 +931,7 @@ msgstr "BT-adapter"
 msgid "The Bluetooth adapter of the input"
 msgstr "Bluetooth-adaptern på ingången"
 
-#: config_translations.py:175 mycodo_flask/routes_calibration.py:465
+#: config_translations.py:175 mycodo_flask/routes_calibration.py:466
 #: mycodo_flask/templates/pages/function_options/action_options/command.html:2
 msgid "Command"
 msgstr "Kommando"
@@ -1433,11 +1437,11 @@ msgstr ""
 msgid "Set the calibration method to perform during Input activation"
 msgstr "Ställ in kalibreringsmetoden för att utföra under Input-aktivering"
 
-#: inputs/atlas_do.py:71 inputs/atlas_orp.py:71 inputs/atlas_ph.py:79
+#: inputs/atlas_do.py:71 inputs/atlas_orp.py:71 inputs/atlas_ph.py:80
 msgid "Calibration Max Age"
 msgstr "Kalibrering Maximal ålder"
 
-#: inputs/atlas_do.py:72 inputs/atlas_orp.py:72 inputs/atlas_ph.py:80
+#: inputs/atlas_do.py:72 inputs/atlas_orp.py:72 inputs/atlas_ph.py:81
 msgid "The Max Age (seconds) of the Input/Math to use for calibration"
 msgstr "Maximal ålder (sekunder) för Input / Math som ska användas för kalibrering"
 
@@ -1611,15 +1615,15 @@ msgstr "Fan på varaktighet"
 msgid "How long to turn the fan on (seconds) before acquiring measurements"
 msgstr "Hur länge ska du slå på fläkten (sekunder) innan du får mätningar"
 
-#: inputs/examples/bme280_ttn.py:94 inputs/examples/k30_ttn.py:67
+#: inputs/examples/bme280_ttn.py:93 inputs/examples/k30_ttn.py:66
 msgid "Serial Device"
 msgstr ""
 
-#: inputs/examples/bme280_ttn.py:95 inputs/examples/k30_ttn.py:68
+#: inputs/examples/bme280_ttn.py:94 inputs/examples/k30_ttn.py:67
 msgid "The serial device to write to"
 msgstr ""
 
-#: mycodo_flask/app.py:116
+#: mycodo_flask/app.py:112
 msgid "Please log in to access this page"
 msgstr "Logga in för att komma åt den här sidan"
 
@@ -1730,7 +1734,7 @@ msgstr ""
 msgid "Successfully logged out"
 msgstr "Utloggad framgångsrikt"
 
-#: mycodo_flask/routes_calibration.py:301
+#: mycodo_flask/routes_calibration.py:302
 #, python-format
 msgid "A valid temperature is required: %(temp)s is invalid."
 msgstr "En giltig temperatur krävs: %(temp)s är ogiltig."
@@ -1759,31 +1763,31 @@ msgstr "Kan inte starta time-lapse om ström är aktiv."
 msgid "Cannot start stream if time-lapse is active."
 msgstr "Kan inte starta strömmen om tidsfördröjning är aktiv."
 
-#: mycodo_flask/forms/forms_authentication.py:39
-#: mycodo_flask/forms/forms_authentication.py:40
+#: mycodo_flask/forms/forms_authentication.py:36
+#: mycodo_flask/forms/forms_authentication.py:37
 #: mycodo_flask/forms/forms_settings.py:284
 #: mycodo_flask/forms/forms_settings.py:316
 #: mycodo_flask/forms/forms_settings.py:317
 msgid "Repeat Password"
 msgstr "Repetera lösenord"
 
-#: mycodo_flask/forms/forms_authentication.py:59
+#: mycodo_flask/forms/forms_authentication.py:56
 msgid "remember"
 msgstr "kom ihåg"
 
-#: mycodo_flask/forms/forms_authentication.py:69
+#: mycodo_flask/forms/forms_authentication.py:66
 msgid "Domain or IP Address"
 msgstr "Domän eller IP-adress"
 
-#: mycodo_flask/forms/forms_authentication.py:80
+#: mycodo_flask/forms/forms_authentication.py:77
 msgid "Add Host"
 msgstr "Lägg till värd"
 
-#: mycodo_flask/forms/forms_authentication.py:81
+#: mycodo_flask/forms/forms_authentication.py:78
 msgid "Delete Host"
 msgstr "Ta bort värd"
 
-#: mycodo_flask/forms/forms_authentication.py:85
+#: mycodo_flask/forms/forms_authentication.py:82
 msgid "I Understand"
 msgstr "Jag förstår"
 
@@ -4501,11 +4505,11 @@ msgstr ""
 "Du kan ange en varaktighet (sekunder) som metoden kommer att sluta efter,"
 " annars lämna blank för att repetera för alltid."
 
-#: mycodo_flask/templates/pages/output_options/atlas_ezo_pmp.html:40
+#: mycodo_flask/templates/pages/output_options/atlas_ezo_pmp.html:49
 msgid "Fastest Flow Rate"
 msgstr ""
 
-#: mycodo_flask/templates/pages/output_options/atlas_ezo_pmp.html:41
+#: mycodo_flask/templates/pages/output_options/atlas_ezo_pmp.html:50
 msgid "Specify Flow Rate"
 msgstr ""
 
@@ -4950,9 +4954,9 @@ msgid "%(msg)s"
 msgstr "%(msg)s"
 
 #: mycodo_flask/utils/utils_general.py:661
-#: mycodo_flask/utils/utils_output.py:316
-#: mycodo_flask/utils/utils_output.py:323
-#: mycodo_flask/utils/utils_output.py:328
+#: mycodo_flask/utils/utils_output.py:318
+#: mycodo_flask/utils/utils_output.py:325
+#: mycodo_flask/utils/utils_output.py:330
 #, python-format
 msgid "%(err)s"
 msgstr "%(err)s"
@@ -4975,17 +4979,17 @@ msgstr "Kan inte flytta över det första objektet i listan"
 msgid "Cannot move below the last item in the list"
 msgstr "Kan inte flytta under sista objektet i listan"
 
-#: mycodo_flask/utils/utils_input.py:286
+#: mycodo_flask/utils/utils_input.py:289
 #, python-format
 msgid "%(type)s Input with ID %(id)s (%(uuid)s) successfully added"
 msgstr "%(type)s Inmatning med ID %(id)s (%(uuid)s) har lagts till"
 
-#: mycodo_flask/utils/utils_input.py:318 mycodo_flask/utils/utils_input.py:552
+#: mycodo_flask/utils/utils_input.py:321 mycodo_flask/utils/utils_input.py:555
 #: mycodo_flask/utils/utils_math.py:304
 msgid "Deactivate controller before modifying its settings"
 msgstr "Inaktivera kontrollern innan du ändrar inställningarna"
 
-#: mycodo_flask/utils/utils_input.py:323
+#: mycodo_flask/utils/utils_input.py:326
 msgid ""
 "Choose a Read Period equal to or greater than 7. The AM2315 may become "
 "unresponsive if the period is below 7."
@@ -4993,23 +4997,23 @@ msgstr ""
 "Välj en läsperiod som är lika med eller större än 7. AM2315 kan bli "
 "oförsvarlig om perioden är under 7."
 
-#: mycodo_flask/utils/utils_input.py:331
+#: mycodo_flask/utils/utils_input.py:334
 msgid "The Read Period cannot be less than the Pre Output Duration"
 msgstr "Läsperioden kan inte vara mindre än Pre Output Duration"
 
-#: mycodo_flask/utils/utils_input.py:337
+#: mycodo_flask/utils/utils_input.py:340
 msgid "Invalid device or improper permissions to read device"
 msgstr "Ogiltig enhet eller felaktiga behörigheter för att läsa enheten"
 
-#: mycodo_flask/utils/utils_input.py:342
+#: mycodo_flask/utils/utils_input.py:345
 msgid "Pin (GPIO) must be set"
 msgstr ""
 
-#: mycodo_flask/utils/utils_input.py:739
+#: mycodo_flask/utils/utils_input.py:742
 msgid "Force Measurements"
 msgstr "Force Mätningar"
 
-#: mycodo_flask/utils/utils_input.py:748
+#: mycodo_flask/utils/utils_input.py:751
 msgid ""
 "Activate controller before attempting to force the acquisition of "
 "measurements"
@@ -5165,8 +5169,8 @@ msgstr "Ingångstiden (%(et)s) kan inte överlappa nästa ingångs starttid (%(s
 msgid "Energy Usage with ID %(id)s (%(uuid)s) successfully added"
 msgstr ""
 
-#: mycodo_flask/utils/utils_notes.py:218 mycodo_flask/utils/utils_notes.py:259
-#: mycodo_flask/utils/utils_settings.py:1275
+#: mycodo_flask/utils/utils_notes.py:217 mycodo_flask/utils/utils_notes.py:258
+#: mycodo_flask/utils/utils_settings.py:1274
 msgid "File"
 msgstr "Fil"
 
@@ -5178,51 +5182,51 @@ msgstr "Ogiltig mängd"
 msgid "Acceptable values"
 msgstr "Godtagbara värden"
 
-#: mycodo_flask/utils/utils_output.py:340
+#: mycodo_flask/utils/utils_output.py:342
 msgid "Actuate"
 msgstr "aktivera"
 
-#: mycodo_flask/utils/utils_output.py:348
+#: mycodo_flask/utils/utils_output.py:350
 msgid "Cannot modulate output with a GPIO of 0"
 msgstr "Kan inte modulera utgången med en GPIO på 0"
 
-#: mycodo_flask/utils/utils_output.py:354
+#: mycodo_flask/utils/utils_output.py:356
 msgid "Value must be greater than 0"
 msgstr "Värdet måste vara större än 0"
 
-#: mycodo_flask/utils/utils_output.py:358
+#: mycodo_flask/utils/utils_output.py:360
 #, python-format
 msgid "Output turned on for %(sec)s seconds: %(rvalue)s"
 msgstr "Utgången aktiverad för %(sec)s sekunder: %(rvalue)s"
 
-#: mycodo_flask/utils/utils_output.py:364
+#: mycodo_flask/utils/utils_output.py:366
 msgid "Invalid pin"
 msgstr "Ogiltig PIN"
 
-#: mycodo_flask/utils/utils_output.py:366
+#: mycodo_flask/utils/utils_output.py:368
 msgid "PWM Hertz must be a positive value"
 msgstr "PWM Hertz måste vara ett positivt värde"
 
-#: mycodo_flask/utils/utils_output.py:368
+#: mycodo_flask/utils/utils_output.py:370
 msgid "PWM duty cycle must be a positive value"
 msgstr "PWM-arbetscykeln måste vara ett positivt värde"
 
-#: mycodo_flask/utils/utils_output.py:374
+#: mycodo_flask/utils/utils_output.py:376
 #, python-format
 msgid "PWM set to %(dc)s %% at %(hertz)s Hz: %(rvalue)s"
 msgstr "PWM satt till %(dc)s %% vid %(hertz)s Hz: %(rvalue)s"
 
-#: mycodo_flask/utils/utils_output.py:380
+#: mycodo_flask/utils/utils_output.py:382
 #, python-format
 msgid "Output turned on: %(rvalue)s"
 msgstr "Utgången aktiverad: %(rvalue)s"
 
-#: mycodo_flask/utils/utils_output.py:384
+#: mycodo_flask/utils/utils_output.py:386
 #, python-format
 msgid "Output turned off: %(rvalue)s"
 msgstr "Utgången avstängd: %(rvalue)s"
 
-#: mycodo_flask/utils/utils_output.py:388
+#: mycodo_flask/utils/utils_output.py:390
 msgid "Invalid value"
 msgstr "ogiltigt värde"
 
@@ -5298,15 +5302,15 @@ msgstr "Omvandling"
 msgid "Conversion with ID %(id)s (%(uuid)s) successfully added"
 msgstr "Konvertering med ID %(id)s (%(uuid)s) har lagts till"
 
-#: mycodo_flask/utils/utils_settings.py:962
+#: mycodo_flask/utils/utils_settings.py:961
 msgid "Pi Settings"
 msgstr "Pi Inställningar"
 
-#: mycodo_flask/utils/utils_settings.py:972
+#: mycodo_flask/utils/utils_settings.py:971
 msgid "Alert Settings"
 msgstr "Alert Settings"
 
-#: mycodo_flask/utils/utils_settings.py:984
+#: mycodo_flask/utils/utils_settings.py:983
 #, python-format
 msgid ""
 "Test email sent to %(recip)s. Check your inbox to see if it was "
@@ -5315,7 +5319,7 @@ msgstr ""
 "Test e-post skickat till %(recip)s. Kontrollera din inkorg för att se om "
 "den lyckades."
 
-#: mycodo_flask/utils/utils_settings.py:1299
+#: mycodo_flask/utils/utils_settings.py:1298
 msgid "Reset email counter"
 msgstr ""
 
