@@ -3,6 +3,8 @@
 #  dependencies.sh - Commands to install dependencies
 #
 
+exec 2>&1
+
 if [ "$EUID" -ne 0 ] ; then
   printf "Please run as root.\n"
   exit 1

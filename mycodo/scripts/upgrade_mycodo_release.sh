@@ -1,6 +1,8 @@
 #!/bin/bash
 # Upgrade to the next release within the current major version number
 
+exec 2>&1
+
 ARG=$1
 
 if [ "$EUID" -ne 0 ] ; then

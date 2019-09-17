@@ -2,6 +2,9 @@
 #
 #  upgrade_commands.sh - Mycodo commands
 #
+
+exec 2>&1
+
 if [[ "$EUID" -ne 0 ]]; then
     printf "Please run as root.\n"
     exit 1

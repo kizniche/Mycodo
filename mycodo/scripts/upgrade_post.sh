@@ -3,6 +3,8 @@
 #  upgrade_post.sh - Commands to execute after a Mycodo upgrade
 #
 
+exec 2>&1
+
 if [ "$EUID" -ne 0 ]; then
     printf "Please run as root\n";
     exit

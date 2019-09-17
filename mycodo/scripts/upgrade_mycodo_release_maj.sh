@@ -3,6 +3,8 @@
 # Usage:
 # sudo /bin/bash ./upgrade_mycodo_release_maj.sh [major version number]
 
+exec 2>&1
+
 if [ "$EUID" -ne 0 ] ; then
   printf "Please run as root.\n"
   exit 1
