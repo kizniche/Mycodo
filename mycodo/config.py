@@ -728,6 +728,7 @@ INSTALL_DIRECTORY = os.path.dirname(os.path.realpath(__file__)) + '/..'
 
 # SQLite3 databases that stores users and settings
 DATABASE_PATH = os.path.join(INSTALL_DIRECTORY, 'databases')
+ALEMBIC_UPGRADE_POST = os.path.join(DATABASE_PATH, 'alembic_post_upgrade_versions')
 SQL_DATABASE_MYCODO = os.path.join(DATABASE_PATH, 'mycodo.db')
 MYCODO_DB_PATH = 'sqlite:///' + SQL_DATABASE_MYCODO
 

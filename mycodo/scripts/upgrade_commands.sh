@@ -47,6 +47,7 @@ Options:
   ssl-certs-regenerate          Regenerate SSL certificates
   uninstall-apt-pip             Uninstall the apt version of pip
   update-alembic                Use alembic to upgrade the mycodo.db settings database
+  update-alembic-post           Execute script following all alembic upgrades
   update-apt                    Update apt sources
   update-cron                   Update cron entries
   install-bcm2835               Install bcm2835
@@ -214,6 +215,10 @@ case "${1:-''}" in
         printf "\n#### Upgrading Mycodo database with alembic (if needed)\n"
         cd ${MYCODO_PATH}/databases
         ${MYCODO_PATH}/env/bin/alembic upgrade head
+    ;;
+    'update-alembic-post')
+        printf "\n#### Executing post-alembic script\n"
+        ${MYCODO_PATH}/env/bin/python ${MYCODO_PATH}/mycodo/scripts/alembic_post.py
     ;;
     'update-apt')
         printf "\n\n#### Updating apt repositories\n"

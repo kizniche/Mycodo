@@ -34,6 +34,7 @@ ${INSTALL_DIRECTORY}/env/bin/python ${INSTALL_DIRECTORY}/mycodo/utils/update_ins
 
 ${INSTALL_CMD} update-influxdb
 ${INSTALL_CMD} update-alembic
+${INSTALL_CMD} update-alembic-post
 ${INSTALL_CMD} update-mycodo-startup-script
 ${INSTALL_CMD} update-pyro-startup-script
 ${INSTALL_CMD} pyro-restart
