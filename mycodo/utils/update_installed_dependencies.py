@@ -47,7 +47,7 @@ def get_installed_dependencies():
                                     '{dep}'.format(dep=package))
                         elif install_type == 'apt':
                             cmd = 'dpkg -l {}'.format(package)
-                            _, _, stat = cmd_output(cmd)
+                            _, _, stat = cmd_output(cmd, user='root')
                             if not stat and entry not in met_deps:
                                 met_deps.append(entry)
 
@@ -60,7 +60,7 @@ if __name__ == "__main__":
         if each_dep.split(' ')[0] == 'apt':
             update_cmd = '{home}/mycodo/scripts/dependencies.sh {dep}'.format(
                 home=INSTALL_DIRECTORY, dep=each_dep)
-            output, err, stat = cmd_output(update_cmd)
+            output, err, stat = cmd_output(update_cmd, user='root')
             print("{}".format(output))
 
     tmp_req_file = '{home}/install/requirements-generated.txt'.format(home=INSTALL_DIRECTORY)
@@ -72,6 +72,6 @@ if __name__ == "__main__":
                 f.write('-e {dep}\n'.format(dep=each_dep.split(' ')[1]))
 
     pip_req_update = '{home}/env/bin/pip install --upgrade -r {home}/install/requirements-generated.txt'.format(home=INSTALL_DIRECTORY)
-    output, err, stat = cmd_output(pip_req_update)
+    output, err, stat = cmd_output(pip_req_update, user='root')
     print("{}".format(output))
     os.remove(tmp_req_file)

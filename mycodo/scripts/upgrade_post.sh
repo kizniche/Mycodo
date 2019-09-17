@@ -28,10 +28,7 @@ ${INSTALL_CMD} update-logrotate
 ${INSTALL_CMD} update-pip3
 ${INSTALL_CMD} update-pip3-packages
 ${INSTALL_CMD} update-permissions
-
-printf "\n#### Checking for updates to dependencies\n"
-${INSTALL_DIRECTORY}/env/bin/python ${INSTALL_DIRECTORY}/mycodo/utils/update_installed_dependencies.py
-
+${INSTALL_CMD} update-dependencies
 ${INSTALL_CMD} update-influxdb
 ${INSTALL_CMD} update-alembic
 ${INSTALL_CMD} update-alembic-post

@@ -50,6 +50,7 @@ Options:
   update-alembic-post           Execute script following all alembic upgrades
   update-apt                    Update apt sources
   update-cron                   Update cron entries
+  update-dependencies           Check for updates to dependencies and update
   install-bcm2835               Install bcm2835
   install-pigpiod               Install pigpiod
   install-wiringpi              Install wiringpi
@@ -228,6 +229,10 @@ case "${1:-''}" in
         printf "\n#### Updating Mycodo restart monitor crontab entry\n"
         /bin/bash ${MYCODO_PATH}/install/crontab.sh restart_daemon --remove
         /bin/bash ${MYCODO_PATH}/install/crontab.sh restart_daemon
+    ;;
+    'update-dependencies')
+        printf "\n#### Checking for updates to dependencies\n"
+        ${MYCODO_PATH}/env/bin/python ${MYCODO_PATH}/mycodo/utils/update_installed_dependencies.py
     ;;
     'install-bcm2835')
         printf "\n#### Installing bcm2835\n"
