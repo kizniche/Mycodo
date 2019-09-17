@@ -348,7 +348,6 @@ def setup_atlas_ph_measure(input_id):
     error = None
 
     if selected_input.interface == 'FTDI':
-        from mycodo.devices.atlas_scientific_ftdi import AtlasScientificFTDI
         ph_input_ftdi = AtlasScientificFTDI(selected_input.ftdi_location)
         lines = ph_input_ftdi.query('R')
         logger.debug("All Lines: {lines}".format(lines=lines))
@@ -365,7 +364,6 @@ def setup_atlas_ph_measure(input_id):
                 val=lines[0])
 
     elif selected_input.interface == 'UART':
-        from mycodo.devices.atlas_scientific_uart import AtlasScientificUART
         ph_input_uart = AtlasScientificUART(
             selected_input.uart_location, baudrate=selected_input.baud_rate)
         lines = ph_input_uart.query('R')
@@ -383,7 +381,6 @@ def setup_atlas_ph_measure(input_id):
                 val=lines[0])
 
     elif selected_input.interface == 'I2C':
-        from mycodo.devices.atlas_scientific_i2c import AtlasScientificI2C
         ph_input_i2c = AtlasScientificI2C(
             i2c_address=int(str(selected_input.i2c_location), 16),
             i2c_bus=selected_input.i2c_bus)

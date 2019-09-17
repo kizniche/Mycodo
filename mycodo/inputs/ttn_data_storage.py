@@ -118,7 +118,7 @@ class InputModule(AbstractInput):
 
         response = requests.get(endpoint, headers=headers)
         try:
-            responses = response.json()
+            response.json()
         except ValueError:  # No data returned
             self.logger.debug("Response Error. Response: {}. Likely there is no data to be retrieved on TTN".format(
                 response.content))
@@ -219,8 +219,7 @@ class InputModule(AbstractInput):
             if seconds_download == seconds_seven_days:
                 self.logger.info(
                     "This appears to be the first data download. "
-                    "Downloading and parsing past 7 days of data...".format(
-                        seconds_download))
+                    "Downloading and parsing past 7 days of data...")
             else:
                 self.logger.info(
                     "Downloading and parsing past {} seconds of data...".format(

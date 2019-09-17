@@ -65,7 +65,7 @@ def is_int(test_var, check_range=None):
     e.g. check_range=[0, 100]
     """
     try:
-        value = int(test_var)
+        _ = int(test_var)
     except ValueError:
         return False
 

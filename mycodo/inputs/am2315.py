@@ -328,7 +328,7 @@ class AM2315:
         crc = 0xFFFF
         for l in char:
             crc = crc ^ l
-            for i in range(1,9):
+            for _ in range(1,9):
                 if crc & 0x01:
                     crc = crc >> 1
                     crc = crc ^ 0xA001

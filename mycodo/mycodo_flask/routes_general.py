@@ -90,7 +90,7 @@ def send_note_attachment(filename):
     if file_path is not None:
         try:
             return send_file(file_path, as_attachment=True)
-        except Exception as e:
+        except Exception:
             logger.exception("Send note attachment")
 
 
@@ -1028,7 +1028,7 @@ def last_data_pid(pid_id, input_period):
 
     try:
         pid = PID.query.filter(PID.unique_id == pid_id).first()
-        
+
         if len(pid.measurement.split(',')) == 2:
             device_id = pid.measurement.split(',')[0]
             measurement_id = pid.measurement.split(',')[1]

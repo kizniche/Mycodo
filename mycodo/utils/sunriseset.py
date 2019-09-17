@@ -26,7 +26,6 @@
 import datetime
 import logging
 import math
-import time
 
 from dateutil import tz
 from dateutil.parser import parse

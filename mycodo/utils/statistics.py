@@ -2,14 +2,12 @@
 import csv
 import logging
 import pwd
-import string
 import time
 from collections import OrderedDict
 
 import geocoder
 import hashlib
 import os
-import random
 import requests
 import resource
 from influxdb import InfluxDBClient
@@ -75,7 +73,7 @@ def add_update_csv(csv_file, key, value):
         if os.path.isfile(temp_file_name):
             try:
                 os.remove(temp_file_name)  # delete any existing temp file
-            except OSError as e:
+            except OSError:
                 pass  # no file to delete is normal
         os.rename(csv_file, temp_file_name)
 

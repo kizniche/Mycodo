@@ -91,6 +91,7 @@ class InputModule(AbstractInput):
             self.thermocouple_type = input_dev.thermocouple_type
             self.ref_ohm = input_dev.ref_ohm
             self.sensor = max31865_sen(
+                self.logger,
                 self.pin_cs,
                 self.pin_miso,
                 self.pin_mosi,
@@ -121,7 +122,8 @@ class max31865_sen(object):
        temperature is calculated with the quadratic formula one being the most accurate.
     """
 
-    def __init__(self, csPin=8, misoPin=9, mosiPin=10, clkPin=11):
+    def __init__(self, logger, csPin=8, misoPin=9, mosiPin=10, clkPin=11):
+        self.logger = logger
         import RPi.GPIO as GPIO
         self.GPIO = GPIO
         self.csPin = csPin
@@ -181,7 +183,7 @@ class max31865_sen(object):
         out = self.readRegisters(0, 8)
 
         conf_reg = out[0]
-        # print("config register byte: {}".format(conf_reg))
+        self.logger.debug("config register byte: {}".format(conf_reg))
 
         [rtd_msb, rtd_lsb] = [out[1], out[2]]
         rtd_ADC_Code = ((rtd_msb << 8) | rtd_lsb) >> 1

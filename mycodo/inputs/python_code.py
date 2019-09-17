@@ -118,7 +118,7 @@ def test_before_saving(mod_input, request_form):
     cmd_test = 'export PYTHONPATH=$PYTHONPATH:/var/mycodo-root && ' \
                'pylint3 -d I,W0621,C0103,C0111,C0301,C0327,C0410,C0413 {path}'.format(
         path=file_run)
-    cmd_out, cmd_err, cmd_status = cmd_output(cmd_test)
+    cmd_out, _, cmd_status = cmd_output(cmd_test)
 
     message = Markup(
         '<pre>\n\n'

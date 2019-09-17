@@ -459,7 +459,8 @@ class DaemonController:
         # Wait for the client to receive the response before it disconnects
         time.sleep(1)
 
-    def get_condition_measurement(self, condition_id, function_id=None):
+    @staticmethod
+    def get_condition_measurement(condition_id):
         condition = db_retrieve_table_daemon(ConditionalConditions).filter(
             ConditionalConditions.unique_id == condition_id).first()
         if condition:

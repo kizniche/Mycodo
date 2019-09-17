@@ -120,14 +120,13 @@ class InputModule(AbstractInput):
         if self.locked:
             self.logger.debug("Starting measurement")
             try:
-                from mycodo.utils.system_pi import cmd_output
                 cmd = 'timeout -k 11 10 /var/mycodo-root/env/bin/python ' \
                       '/var/mycodo-root/mycodo/inputs/scripts/ruuvitag_values.py ' \
                       '--mac_address {mac} --bt_adapter {bta}'.format(
                           mac=self.location, bta=self.bt_adapter)
                 cmd = subprocess.Popen(cmd, stdout=subprocess.PIPE, shell=True)
-                cmd_return, cmd_err = cmd.communicate()
-                cmd_status = cmd.wait()
+                cmd_return, _ = cmd.communicate()
+                cmd.wait()
 
                 if not cmd_return:
                     self.logger.debug("Measurement command returned no data")

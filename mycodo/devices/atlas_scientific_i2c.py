@@ -121,8 +121,8 @@ def main():
 
         if input_str.upper().startswith("LIST_ADDR"):
             devices = device.list_i2c_devices()
-            for i in range(len(devices)):
-                print(devices[i])
+            for line in devices:
+                print(line)
 
         # address command lets you change which address the Raspberry Pi will poll
         elif input_str.upper().startswith("ADDRESS"):

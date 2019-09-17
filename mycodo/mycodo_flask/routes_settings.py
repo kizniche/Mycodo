@@ -13,7 +13,6 @@ from flask import url_for
 from flask.blueprints import Blueprint
 
 from mycodo.config import CAMERA_LIBRARIES
-from mycodo.config import INSTALL_DIRECTORY
 from mycodo.config import LANGUAGES
 from mycodo.config import PATH_INPUTS_CUSTOM
 from mycodo.config import THEMES

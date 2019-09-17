@@ -89,7 +89,7 @@ class LCDController(AbstractController, threading.Thread):
         self.flash_lcd_on = False
         self.lcd_initialized = False
         self.lcd_is_on = False
-        
+
         self.display_sets = []
         self.display_set_count = 0
 
