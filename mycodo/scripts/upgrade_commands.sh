@@ -381,11 +381,11 @@ case "${1:-''}" in
     'update-logrotate')
         printf "\n#### Installing logrotate scripts\n"
         if [[ -e /etc/cron.daily/logrotate ]]; then
-            printf "#### logrotate execution moved from cron.daily to cron.hourly\n"
+            printf "logrotate execution moved from cron.daily to cron.hourly\n"
             mv -f /etc/cron.daily/logrotate /etc/cron.hourly/
         fi
         cp -f ${MYCODO_PATH}/install/logrotate_mycodo /etc/logrotate.d/mycodo
-        printf "#### Mycodo logrotate script installed\n"
+        printf "Mycodo logrotate script installed\n"
     ;;
     'update-mycodo-startup-script')
         printf "\n#### Disabling installed mycodo startup script\n"

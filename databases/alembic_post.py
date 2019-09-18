@@ -1,14 +1,16 @@
 # -*- coding: utf-8 -*-
 #
-# Script to be executed following alembic upgrading SQLite database schema
+# Script to be executed following an alembic update of the SQLite database
 #
-# These scripts depend on the most up-to-date database schema and could
-# cause errors if in the actual alembic version files.
+# Alembic is used to update the database schema. This script is used to
+# execute code after all database schema updates have been performed, and
+# typically involves database entry modifications.
 #
 # Note: Newest revision at the top
 #
-# Also need to add the following to the upgrade() function of the alembic
-# upgrade script to indicate which section of this script to run.
+# The following code is also needed in the upgrade() function of the alembic
+# upgrade script to indicate which section of this script to run. This should
+# already be included in the alembic script template.
 #
 # import sys
 # import os
@@ -17,7 +19,6 @@
 # def upgrade():
 #     write_revision_post_alembic(revision)
 #
-
 import sys
 import textwrap
 
