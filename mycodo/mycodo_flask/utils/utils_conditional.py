@@ -255,12 +255,15 @@ def conditional_activate(cond_id):
     conditions = ConditionalConditions.query.filter(
         ConditionalConditions.conditional_id == cond_id)
     if not conditions.count():
-        error.append("No Conditions found: Add at least one Condition before activating.")
+        error.append(
+            "No Conditions found: Add at least one Condition before "
+            "activating.")
 
     actions = Actions.query.filter(
         Actions.function_id == cond_id)
     if not actions.count():
-        error.append("No Actions found: Add at least one Action before activating.")
+        error.append(
+            "No Actions found: Add at least one Action before activating.")
 
     for each_action in actions.all():
         error = check_actions(each_action, error)
@@ -295,12 +298,12 @@ def check_form_measurements(form, error):
     return error
 
 
-def check_cond_measurements(form, error):
+def check_cond_measurements(cond, error):
     """Checks if the saved variables have any errors"""
-    if not form.measurement or form.measurement == '':
-        error.append("Measurement must be set".format(
-            meas=form.measurement))
-    if not form.max_age or form.max_age <= 0:
+    if not cond.measurement or cond.measurement == '':
+        error.append(
+            "Measurement must be set. Condition with ID starting with {id} "
+            "is not set.".format(id=cond.unique_id.split('-')[0]))
+    if not cond.max_age or cond.max_age <= 0:
         error.append("Max Age must be greater than 0")
     return error
-

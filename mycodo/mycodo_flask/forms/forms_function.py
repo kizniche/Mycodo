@@ -57,13 +57,13 @@ class Actions(FlaskForm):
     do_unique_id = StringField(lazy_gettext('Controller ID'))
     do_output_state = StringField(lazy_gettext('Then State'))
     do_output_duration = DecimalField(
-        lazy_gettext('Then Duration (seconds)'),
+        lazy_gettext('Duration (seconds)'),
         widget=NumberInput(step='any'))
     do_output_pwm = DecimalField(
-        lazy_gettext('Then Duty Cycle'),
+        lazy_gettext('Duty Cycle (%)'),
         widget=NumberInput(step='any'))
     do_camera_duration = DecimalField(
-        lazy_gettext('Then Duration'),
+        lazy_gettext('Duration (seconds)'),
         widget=NumberInput(step='any'))
 
     # Infrared

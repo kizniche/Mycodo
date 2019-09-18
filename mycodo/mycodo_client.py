@@ -1,8 +1,7 @@
 #!/usr/bin/mycodo-python
 # -*- coding: utf-8 -*-
 #
-#  mycodo_client.py - Client for mycodo daemon. Communicates with daemon
-#                     to execute commands and receive status.
+#  mycodo_client.py - Client to communicate with the Mycodo daemon.
 #
 #  Copyright (C) 2017  Kyle T. Gabriel
 #
@@ -23,37 +22,18 @@
 #
 #  Contact at kylegabriel.com
 
-
-
 import argparse
 import datetime
 import logging
-import socket
 import sys
 
+import Pyro5.errors
 import os
+import requests
+from Pyro5.api import Proxy
+from influxdb import InfluxDBClient
 
 sys.path.append(os.path.abspath(os.path.join(os.path.realpath(__file__), '../..')))
-
-import requests
-
-# TODO: Remove this in next major revision
-try:
-    from Pyro5.api import Proxy
-    import Pyro5.errors
-except:
-    import subprocess
-    command = '/home/pi/Mycodo/env/bin/pip install Pyro5'
-    cmd = subprocess.Popen(command, stdout=subprocess.PIPE, shell=True)
-    cmd_out, cmd_err = cmd.communicate()
-    cmd_status = cmd.wait()
-    try:
-        from Pyro5.api import Proxy
-        import Pyro5.errors
-    except:
-        print("Couldn't import Pyro5")
-
-from influxdb import InfluxDBClient
 
 from mycodo.config import INFLUXDB_DATABASE
 from mycodo.config import INFLUXDB_HOST
@@ -63,6 +43,7 @@ from mycodo.config import INFLUXDB_USER
 from mycodo.databases.models import Misc
 from mycodo.utils.database import db_retrieve_table_daemon
 
+
 logging.basicConfig(
     stream=sys.stdout,
     level=logging.INFO,
@@ -71,14 +52,9 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 
-class TimeoutException(Exception):  # Custom exception class
-    pass
-
-
 class DaemonControl:
     """
     Communicate with the daemon to execute commands or retrieve information.
-
     """
     def __init__(self):
         self.pyro_timeout = 30
@@ -95,10 +71,8 @@ class DaemonControl:
             proxy = Proxy(self.uri)
             proxy._pyroTimeout = self.pyro_timeout
             return proxy
-        except socket.error:
-            raise Exception("Connection refused. Is the daemon running?")
-        except Exception:
-            logger.exception("Initializing Pyro")
+        except Exception as e:
+            logger.error("Pyro5 proxy error: {}".format(e))
 
     def check_daemon(self):
         proxy = self.proxy()
@@ -110,14 +84,22 @@ class DaemonControl:
                 return result
             else:
                 return "GOOD"
-        except TimeoutException:
-            return "Error: Timeout"
+        except Pyro5.errors.TimeoutError as err:
+            msg = "Pyro5 TimeoutError: {}".format(err)
+            logger.error(msg)
+            return msg
         except Pyro5.errors.CommunicationError as err:
-            return "Error: Failed to initialize Pyro Communication: {}".format(err)
+            msg = "Pyro5 Communication error: {}".format(err)
+            logger.error(msg)
+            return msg
         except Pyro5.errors.NamingError as err:
-            return "Error: Failed to locate Pyro Nameserver: {}".format(err)
+            msg = "Failed to locate Pyro5 Nameserver: {}".format(err)
+            logger.error(msg)
+            return msg
         except Exception as err:
-            return "Error: Pyro Exception: {}".format(err)
+            msg = "Pyro Exception: {}".format(err)
+            logger.error(msg)
+            return msg
         finally:
             proxy._pyroTimeout = old_timeout
 
@@ -219,8 +201,8 @@ class DaemonControl:
     def send_infrared_code_broadcast(self, code):
         return self.proxy().send_infrared_code_broadcast(code)
 
-    def trigger_action(self, action_id, message='',
-                       single_action=False, debug=False):
+    def trigger_action(
+            self, action_id, message='', single_action=False, debug=False):
         return self.proxy().trigger_action(
             action_id, message=message,
             single_action=single_action, debug=debug)
@@ -240,12 +222,8 @@ def daemon_active():
         if daemon.check_daemon() != 'GOOD':
             return False
         return True
-    except socket.error:
+    except Exception:
         return False
-
-
-def timeout_handler(signum, frame):  # Custom signal handler
-    raise TimeoutException
 
 
 def parseargs(parser):

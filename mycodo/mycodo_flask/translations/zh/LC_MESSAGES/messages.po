@@ -2029,7 +2029,7 @@ msgid "Then State"
 msgstr "然后陈述"
 
 #: mycodo_flask/forms/forms_function.py:60
-msgid "Then Duration (seconds)"
+msgid "Duration (seconds)"
 msgstr "然后持续时间（秒）"
 
 #: mycodo_flask/forms/forms_function.py:63

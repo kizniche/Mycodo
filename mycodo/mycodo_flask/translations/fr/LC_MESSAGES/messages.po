@@ -2083,16 +2083,16 @@ msgid "Then State"
 msgstr "Alors état"
 
 #: mycodo_flask/forms/forms_function.py:60
-msgid "Then Duration (seconds)"
-msgstr "Puis durée (secondes)"
+msgid "Duration (seconds)"
+msgstr "Durée (secondes)"
 
 #: mycodo_flask/forms/forms_function.py:63
 msgid "Then Duty Cycle"
 msgstr "Alors le cycle de travail"
 
 #: mycodo_flask/forms/forms_function.py:66
-msgid "Then Duration"
-msgstr "Puis durée"
+msgid "Duration"
+msgstr "Durée"
 
 #: mycodo_flask/forms/forms_function.py:70
 msgid "Remote"

@@ -1,3 +1,11 @@
+## 7.7.5 (Unreleased)
+
+### Miscellaneous
+
+ - Improve post-alembic upgrade system
+ - Improve Pyro5 logging
+
+
 ## 7.7.4 (2019.09.18)
 
 ### Bugfixes

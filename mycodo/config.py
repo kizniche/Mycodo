@@ -14,7 +14,7 @@ sys.path.append(os.path.abspath(os.path.dirname(__file__)))
 from config_translations import TRANSLATIONS
 
 MYCODO_VERSION = '7.7.4'
-ALEMBIC_VERSION = '96ac315ec212'
+ALEMBIC_VERSION = '802cc65f734e'
 
 #  FORCE_UPGRADE_MASTER
 #  Set True to enable upgrading to the master branch of the Mycodo repository.
@@ -724,7 +724,7 @@ THEMES = [
 THEMES_DARK = ['cyborg', 'darkly', 'slate', 'solar', 'superhero']
 
 # Install path, the parent directory this script resides
-INSTALL_DIRECTORY = os.path.dirname(os.path.realpath(__file__)) + '/..'
+INSTALL_DIRECTORY = os.path.abspath(os.path.dirname(os.path.realpath(__file__)) + '/..')
 
 # SQLite3 databases that stores users and settings
 DATABASE_PATH = os.path.join(INSTALL_DIRECTORY, 'databases')

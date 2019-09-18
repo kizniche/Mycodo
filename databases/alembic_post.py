@@ -13,7 +13,7 @@
 # import sys
 # import os
 # sys.path.append(os.path.abspath(os.path.join(__file__, "../../../..")))
-# from mycodo.scripts.alembic_post import write_revision_post_alembic
+# from databases.alembic_post import write_revision_post_alembic
 # def upgrade():
 #     write_revision_post_alembic(revision)
 #
@@ -23,9 +23,10 @@ import textwrap
 
 import os
 
-sys.path.append(os.path.abspath(os.path.join(__file__, "../../..")))
+sys.path.append(os.path.abspath(os.path.join(__file__, "../..")))
 
 from mycodo.config import ALEMBIC_UPGRADE_POST
+from mycodo.config import INSTALL_DIRECTORY
 from mycodo.config import OUTPUT_INFO
 from mycodo.config import PATH_PYTHON_CODE_USER
 from mycodo.config import SQL_DATABASE_MYCODO
@@ -58,10 +59,47 @@ def read_revision_file():
 
 
 if __name__ == "__main__":
-    for each_revision in read_revision_file():
+    error = []
+    print("Found revision IDs to execute code: {con}".format(
+        con=read_revision_file()))
 
-        if each_revision == '2e416233221b':
-            print("Execute post-alembic revision {}".format(each_revision))
+    for each_revision in read_revision_file():
+        print("Revision ID {rev}".format(
+            file=ALEMBIC_UPGRADE_POST, rev=each_revision))
+
+        if not each_revision:
+            print("Error: Revision ID empty")
+
+        # elif each_revision == 'example':
+        #     print("Executing post-alembic code for revision {}".format(each_revision))
+        #     try:
+        #         pass  # Code goes here
+        #     except:
+        #         msg = "ERROR: post-alembic revision {}".format(each_revision)
+        #         error.append(msg)
+        #         print(msg)
+
+        elif each_revision == '802cc65f734e':
+            print("Executing post-alembic code for revision {}".format(each_revision))
+            try:  # Check if already installed
+                from Pyro5.api import Proxy
+                import Pyro5.errors
+            except:  # Not installed. Try to install
+                try:
+                    import subprocess
+                    command = '{}/env/bin/pip install Pyro5'.format(INSTALL_DIRECTORY)
+                    cmd = subprocess.Popen(command, stdout=subprocess.PIPE, shell=True)
+                    cmd_out, cmd_err = cmd.communicate()
+                    cmd_status = cmd.wait()
+                    from Pyro5.api import Proxy
+                    import Pyro5.errors
+                except:
+                    msg = "ERROR: post-alembic revision {}".format(each_revision)
+                    error.append(msg)
+                    print(msg)
+
+        elif each_revision == '2e416233221b':
+            print("Executing post-alembic code for revision {}".format(each_revision))
             try:
                 output_unique_id = {}
                 # Go through each output to get output unique_id
@@ -101,10 +139,12 @@ if __name__ == "__main__":
                                 each_dash.output_ids = each_dash.output_ids.replace(each_output_id, id_string)
                                 output_sess.commit()
             except:
-                print("ERROR: post-alembic revision {}".format(each_revision))
+                msg = "ERROR: post-alembic revision {}".format(each_revision)
+                error.append(msg)
+                print(msg)
 
         elif each_revision == 'ef49f6644e0c':
-            print("Execute post-alembic revision {}".format(each_revision))
+            print("Executing post-alembic code for revision {}".format(each_revision))
             try:
                 def cond_statement_replace(cond_statement):
                     """Replace short condition/action IDs in conditional statement with full condition/action IDs"""
@@ -156,10 +196,12 @@ if __name__ == "__main__":
                                 except Exception as msg:
                                     print("Exception: {}".format(msg))
             except:
-                print("ERROR: post-alembic revision {}".format(each_revision))
+                msg = "ERROR: post-alembic revision {}".format(each_revision)
+                error.append(msg)
+                print(msg)
 
         elif each_revision == '65271370a3a9':
-            print("Execute post-alembic revision {}".format(each_revision))
+            print("Executing post-alembic code for revision {}".format(each_revision))
             try:
                 def cond_statement_replace(cond_statement):
                     """Replace short condition/action IDs in conditional statement with full condition/action IDs"""
@@ -251,10 +293,12 @@ if __name__ == "__main__":
                             except Exception as msg:
                                 print("Exception: {}".format(msg))
             except:
-                print("ERROR: post-alembic revision {}".format(each_revision))
+                msg = "ERROR: post-alembic revision {}".format(each_revision)
+                error.append(msg)
+                print(msg)
 
         elif each_revision == '70c828e05255':
-            print("Execute post-alembic revision {}".format(each_revision))
+            print("Executing post-alembic code for revision {}".format(each_revision))
             try:
                 with session_scope(MYCODO_DB_PATH) as conditional_sess:
                     for each_conditional in conditional_sess.query(Conditional).all():
@@ -282,10 +326,12 @@ if __name__ == "__main__":
 
                     conditional_sess.commit()
             except:
-                print("ERROR: post-alembic revision {}".format(each_revision))
+                msg = "ERROR: post-alembic revision {}".format(each_revision)
+                error.append(msg)
+                print(msg)
 
         elif each_revision == 'b4d958997cf0':
-            print("Execute post-alembic revision {}".format(each_revision))
+            print("Executing post-alembic code for revision {}".format(each_revision))
             try:
                 with session_scope(MYCODO_DB_PATH) as new_session:
                     for each_input in new_session.query(Input).all():
@@ -298,9 +344,18 @@ if __name__ == "__main__":
 
                     new_session.commit()
             except:
-                print("ERROR: post-alembic revision {}".format(each_revision))
+                msg = "ERROR: post-alembic revision {}".format(each_revision)
+                error.append(msg)
+                print(msg)
 
-    try:
-        os.remove(ALEMBIC_UPGRADE_POST)
-    except:
-        pass
+        else:
+            print("Code for revision {} not found".format(each_revision))
+
+    if error:
+        print("Completed with errors. Review the entire log for details.")
+    else:
+        try:
+            print("Completed without errors. Deleting {}".format(ALEMBIC_UPGRADE_POST))
+            os.remove(ALEMBIC_UPGRADE_POST)
+        except:
+            pass

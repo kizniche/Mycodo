@@ -2086,8 +2086,8 @@ msgid "Then State"
 msgstr "Quindi state"
 
 #: mycodo_flask/forms/forms_function.py:60
-msgid "Then Duration (seconds)"
-msgstr "Quindi Durata (secondi)"
+msgid "Duration (seconds)"
+msgstr "Durata (secondi)"
 
 #: mycodo_flask/forms/forms_function.py:63
 msgid "Then Duty Cycle"

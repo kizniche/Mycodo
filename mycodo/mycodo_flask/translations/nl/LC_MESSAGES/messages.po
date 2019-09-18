@@ -2077,7 +2077,7 @@ msgid "Then State"
 msgstr "Dan staat"
 
 #: mycodo_flask/forms/forms_function.py:60
-msgid "Then Duration (seconds)"
+msgid "Duration (seconds)"
 msgstr "Duur (seconden)"
 
 #: mycodo_flask/forms/forms_function.py:63
@@ -2085,7 +2085,7 @@ msgid "Then Duty Cycle"
 msgstr "Vervolgens Duty Cycle"
 
 #: mycodo_flask/forms/forms_function.py:66
-msgid "Then Duration"
+msgid "Duration"
 msgstr "Duur"
 
 #: mycodo_flask/forms/forms_function.py:70

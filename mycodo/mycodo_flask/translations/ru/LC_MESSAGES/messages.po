@@ -2078,8 +2078,8 @@ msgid "Then State"
 msgstr "Тогда государство"
 
 #: mycodo_flask/forms/forms_function.py:60
-msgid "Then Duration (seconds)"
-msgstr "Затем Длительность (в секундах)"
+msgid "Duration (seconds)"
+msgstr "Длительность (в секундах)"
 
 #: mycodo_flask/forms/forms_function.py:63
 msgid "Then Duty Cycle"

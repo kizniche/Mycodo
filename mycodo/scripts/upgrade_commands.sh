@@ -222,7 +222,7 @@ case "${1:-''}" in
     ;;
     'update-alembic-post')
         printf "\n#### Executing post-alembic script\n"
-        ${MYCODO_PATH}/env/bin/python ${MYCODO_PATH}/mycodo/scripts/alembic_post.py
+        ${MYCODO_PATH}/env/bin/python ${MYCODO_PATH}/databases/alembic_post.py
     ;;
     'update-apt')
         printf "\n\n#### Updating apt repositories\n"

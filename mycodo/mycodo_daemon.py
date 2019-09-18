@@ -36,12 +36,11 @@ import threading
 import time
 import timeit
 
-from Pyro5.api import expose
+import resource
 from Pyro5.api import Daemon
 from Pyro5.api import Proxy
+from Pyro5.api import expose
 from Pyro5.api import locate_ns
-
-import resource
 from daemonize import Daemonize
 from pkg_resources import parse_version
 
@@ -256,8 +255,8 @@ class ComThread(threading.Thread):
     Class to run the Pyro5 server thread
 
     ComServer will handle execution of commands from the web UI or other
-    controllers. It allows the client (mycodo_client.py, excuted as non-root
-    user) to communicate with the daemon (mycodo_daemon.py, executed as root).
+    controllers. It allows the client (mycodo_client.py to be executed as non-root
+    user) to communicate with the daemon (mycodo_daemon.py running with root privileges).
 
     """
     def __init__(self, mycodo, debug):
@@ -305,6 +304,7 @@ def monitor_pyro(logger_pyro):
         if now > log_timer:
             try:
                 pyro_server = Proxy("PYRONAME:mycodo.pyro_server")
+                pyro_server.check_daemon()
                 logger_pyro.debug(
                     "Pyro5 communication thread (30-minute timer): "
                     "daemon_status()={stat}".format(stat=pyro_server.daemon_status))
@@ -397,7 +397,7 @@ class DaemonController:
         self.refresh_daemon_misc_settings()
 
         state = 'disabled' if self.opt_out_statistics else 'enabled'
-        self.logger.info("Anonymous statistics {state}".format(state=state))
+        self.logger.debug("Anonymous statistics {state}".format(state=state))
 
     def run(self):
         self.start_all_controllers(self.debug)
@@ -405,11 +405,12 @@ class DaemonController:
         self.logger.info("Mycodo daemon started in {sec:.3f} seconds".format(
             sec=self.daemon_startup_time))
         self.startup_stats()
-        try:
-            # loop until daemon is instructed to shut down
-            while self.daemon_run:
-                now = time.time()
 
+        # loop until daemon is instructed to shut down
+        while self.daemon_run:
+            now = time.time()
+
+            try:
                 # Log ram usage every 5 days
                 if now > self.timer_ram_use:
                     while now > self.timer_ram_use:
@@ -440,16 +441,15 @@ class DaemonController:
                     if self.enable_upgrade_check:
                         self.check_mycodo_upgrade_exists(now)
 
-                time.sleep(1)
-        except Exception as except_msg:
-            self.logger.exception("Unexpected error: {msg}".format(
-                msg=except_msg))
-            raise
+            except Exception as except_msg:
+                self.logger.exception("Daemon Error")
+                raise
+
+            time.sleep(1)
 
         # If the daemon errors or finishes, shut it down
-        finally:
-            self.logger.debug("Stopping all running controllers")
-            self.stop_all_controllers()
+        self.logger.debug("Stopping all running controllers")
+        self.stop_all_controllers()
 
         self.logger.info("Mycodo terminated in {:.3f} seconds\n\n".format(
             timeit.default_timer() - self.thread_shutdown_timer))

@@ -11,7 +11,7 @@ import os
 
 sys.path.append(os.path.abspath(os.path.join(__file__, "../../../..")))
 
-from mycodo.scripts.alembic_post import write_revision_post_alembic
+from databases.alembic_post import write_revision_post_alembic
 
 from mycodo.config import SQL_DATABASE_MYCODO
 from mycodo.config import ID_FILE
