@@ -1,4 +1,8 @@
-## 7.7.5 (Unreleased)
+## 7.7.5 (2019.09.18)
+
+### Bugfixes
+
+ - Fix inability to activate Conditional Controllers ([#690](https://github.com/kizniche/mycodo/issues/690))
 
 ### Miscellaneous
 

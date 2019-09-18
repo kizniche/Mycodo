@@ -250,20 +250,25 @@ def conditional_activate(cond_id):
 
     for each_condition in conditions:
         # Check for errors in the Conditional settings
-        error = check_cond_measurements(each_condition, error)
+        error = check_cond_conditions(each_condition, error)
 
     conditions = ConditionalConditions.query.filter(
         ConditionalConditions.conditional_id == cond_id)
     if not conditions.count():
-        error.append(
-            "No Conditions found: Add at least one Condition before "
-            "activating.")
+        flash(
+            "Conditional activated without any Conditions. Typical "
+            "Conditional Controller use involves the use of Conditions. Only "
+            "proceed without Conditions if you know what you're doing.",
+            'info')
 
     actions = Actions.query.filter(
         Actions.function_id == cond_id)
     if not actions.count():
-        error.append(
-            "No Actions found: Add at least one Action before activating.")
+        flash(
+            "Conditional activated without any Actions. Typical "
+            "Conditional Controller use involves the use of Actions. Only "
+            "proceed without Actions if you know what you're doing.",
+            'info')
 
     for each_action in actions.all():
         error = check_actions(each_action, error)
@@ -298,11 +303,21 @@ def check_form_measurements(form, error):
     return error
 
 
-def check_cond_measurements(cond, error):
+def check_cond_conditions(cond, error):
     """Checks if the saved variables have any errors"""
-    if not cond.measurement or cond.measurement == '':
+    if (cond.condition_type == 'measurement' and
+            (not cond.measurement or cond.measurement == '')):
         error.append(
             "Measurement must be set. Condition with ID starting with {id} "
+            "is not set.".format(id=cond.unique_id.split('-')[0]))
+    if (cond.condition_type == 'output_state' and
+            (not cond.output_id or cond.output_id == '')):
+        error.append(
+            "Output must be set. Condition with ID starting with {id} "
+            "is not set.".format(id=cond.unique_id.split('-')[0]))
+    if cond.condition_type == 'gpio_state' and not cond.gpio_pin:
+        error.append(
+            "GPIO Pin must be set. Condition with ID starting with {id} "
             "is not set.".format(id=cond.unique_id.split('-')[0]))
     if not cond.max_age or cond.max_age <= 0:
         error.append("Max Age must be greater than 0")

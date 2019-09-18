@@ -58,15 +58,25 @@ def function_add(form_add_func):
         if form_add_func.function_type.data.startswith('conditional_'):
             new_func = Conditional()
             new_func.conditional_statement = '''
-# Example code to be used to learn how to use a Conditional.
-# Replace "asdf1234" with a Condition ID, "qwer5678" with an Action ID.
+# Example code for learning how to use a Conditional. See the manual for more information.
+
+self.logger.info("This INFO log entry will appear in the Daemon Log")
+self.logger.error("This ERROR log entry will appear in the Daemon Log")
+
+# Replace "asdf1234" with a Condition ID
 measurement = self.measure("{asdf1234}")
-self.message += "Measure: {meas}".format(meas=measurement)
+
 if measurement is not None:  # If a measurement exists
+    self.message += "This message appears in email alerts and notes.\\n"
+
     if measurement < 23:  # If the measurement is less than 23
-        self.run_all_actions(message=self.message)  # Then Run all actions
-    else:  # Else If the measurement is equal or grater than 23, run a specific action
-        self.run_action("{qwer5678}", message=self.message)  # Run a single Action'''
+        self.message += "Measurement is too Low! Measurement is {meas}\\n".format(meas=measurement)
+        self.run_all_actions(message=self.message)  # Run all actions sequentially
+
+    elif measurement > 27:  # Else If the measurement is greater than 27
+        self.message += "Measurement is too High! Measurement is {meas}\\n".format(meas=measurement)
+        # Replace "qwer5678" with an Action ID
+        self.run_action("{qwer5678}", message=self.message)  # Run a single specific Action'''
             new_func.save()
             save_conditional_code(
                 error,
