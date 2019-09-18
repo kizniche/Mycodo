@@ -11,6 +11,32 @@ from mycodo.mycodo_flask.app import create_app
 
 app = create_app()  # required by the wsgi config and main()
 
+# Flask profiler
+# Accessed at https://127.0.0.1/flask-profiler
+PROFILE_ENABLE = True
+
+if PROFILE_ENABLE:
+    from mycodo.config import DATABASE_PATH
+    SQL_DATABASE_PROFILE = os.path.join(DATABASE_PATH, 'profile.db')
+    PROFILE_DATABASE_URI = 'sqlite:///' + SQL_DATABASE_PROFILE
+    import flask_profiler
+    app.config["FLASK_PROFILER"] = {
+        "enabled": True,
+        "storage": {
+            "engine": "sqlalchemy",
+            "db_url": PROFILE_DATABASE_URI
+        },
+        "basicAuth": {
+            "enabled": True,
+            "username": "admin231",
+            "password": "admin421378956"
+        },
+        "ignore": [
+            "^/static/.*"
+        ]
+    }
+    flask_profiler.init_app(app)
+
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description="Mycodo Flask HTTP server.",

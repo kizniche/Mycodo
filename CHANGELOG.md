@@ -1,3 +1,10 @@
+## 7.7.6 (Unreleased)
+
+### Features
+
+ - Add Flask profiler
+
+
 ## 7.7.5 (2019.09.18)
 
 ### Bugfixes

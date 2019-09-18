@@ -4,11 +4,7 @@
 #           configuring the system, and controlling the daemon.
 #
 
-import datetime
-import sys
-
 import flask_login
-import os
 from flask import Flask
 from flask import flash
 from flask import redirect
@@ -20,7 +16,6 @@ from flask_compress import Compress
 from flask_limiter import Limiter
 from flask_sslify import SSLify
 
-from mycodo.config import INSTALL_DIRECTORY
 from mycodo.config import LANGUAGES
 from mycodo.config import ProdConfig
 from mycodo.databases.models import Misc
@@ -39,7 +34,6 @@ from mycodo.mycodo_flask import routes_static
 from mycodo.mycodo_flask.extensions import db
 from mycodo.mycodo_flask.routes_general import influx_db
 from mycodo.mycodo_flask.utils.utils_general import get_ip_address
-from mycodo.utils.system_pi import assure_path_exists
 
 
 def create_app(config=ProdConfig):
@@ -62,10 +56,6 @@ def create_app(config=ProdConfig):
 def register_extensions(app):
     """ register extensions to the app """
     app.jinja_env.add_extension('jinja2.ext.do')  # Global values in jinja
-
-    # Uncomment to enable profiler
-    # See scripts/profile_analyzer.py to analyze output
-    # app = setup_profiler(app)
 
     # Compress app responses with gzip
     compress = Compress()
@@ -141,22 +131,3 @@ def register_blueprints(app):
     app.register_blueprint(routes_remote_admin.blueprint)  # register remote admin views
     app.register_blueprint(routes_settings.blueprint)  # register settings views
     app.register_blueprint(routes_static.blueprint)  # register static routes
-
-
-def setup_profiler(app):
-    """
-    Set up a profiler
-    Outputs to file and stream
-    See profile_analyzer.py in Mycodo/mycodo/scripts/
-    """
-    from werkzeug.contrib.profiler import MergeStream
-    from werkzeug.contrib.profiler import ProfilerMiddleware
-    app.config['PROFILE'] = True
-    new = 'profile-{dt:%Y-%m-%d_%H:%M:%S}'.format(
-        dt=datetime.datetime.now())
-    profile_path = assure_path_exists(os.path.join(INSTALL_DIRECTORY, new))
-    profile_log = os.path.join(profile_path, 'profile.log')
-    profile_log_file = open(profile_log, 'w')
-    stream = MergeStream(sys.stdout, profile_log_file)
-    app.wsgi_app = ProfilerMiddleware(app.wsgi_app, stream, restrictions=[30])
-    return app
