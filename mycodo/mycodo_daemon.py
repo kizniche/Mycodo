@@ -108,9 +108,8 @@ class PyroServer(object):
         """Starts or stops an LCD from flashing (alarm)"""
         return self.mycodo.lcd_flash(lcd_id, state)
 
-    def get_condition_measurement(self, condition_id, function_id=None):
-        return self.mycodo.get_condition_measurement(
-            condition_id, function_id=function_id)
+    def get_condition_measurement(self, condition_id):
+        return self.mycodo.get_condition_measurement(condition_id)
 
     def get_condition_measurement_dict(self, condition_id):
         return self.mycodo.get_condition_measurement_dict(condition_id)

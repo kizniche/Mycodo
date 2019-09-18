@@ -122,7 +122,7 @@ class DaemonControl:
             proxy._pyroTimeout = old_timeout
 
     def get_condition_measurement(self, condition_id, function_id=None):
-        return self.proxy().get_condition_measurement(condition_id, function_id=function_id)
+        return self.proxy().get_condition_measurement(condition_id)
 
     def get_condition_measurement_dict(self, condition_id):
         return self.proxy().get_condition_measurement_dict(condition_id)

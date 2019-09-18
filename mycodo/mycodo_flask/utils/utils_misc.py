@@ -49,8 +49,9 @@ class ConditionalRun:
             message = self.message
         control.trigger_action(action_id, message=message, single_action=True)
 
-    def measure(self, condition_id):
-        return control.get_condition_measurement(condition_id, function_id=self.function_id)
+    @staticmethod
+    def measure(condition_id):
+        return control.get_condition_measurement(condition_id)
 
     @staticmethod
     def measure_dict(condition_id):
@@ -65,6 +66,7 @@ class ConditionalRun:
 
     def conditional_code_run(self):
 """
+
 
 def cond_statement_replace(cond_statement):
     """Replace short condition/action IDs in conditional statement with full condition/action IDs"""
