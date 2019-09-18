@@ -934,7 +934,10 @@ def output_mod(output_id, state, out_type, amount):
         return daemon.output_on_off(output_id, state, float(amount))
     elif (state == 'on' and out_type in ['pwm', 'command_pwm'] and
               (str_is_float(amount) and float(amount) >= 0)):
-        return daemon.output_on(output_id, duty_cycle=float(amount))
+        return daemon.output_on(
+            daemon.pyro_server._pyroUri,
+            output_id,
+            duty_cycle=float(amount))
 
 
 @blueprint.route('/daemonactive')

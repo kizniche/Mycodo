@@ -355,8 +355,10 @@ def output_on_off(form_output):
                 if float(form_output.sec_on.data) <= 0:
                     error.append(gettext("Value must be greater than 0"))
                 else:
-                    return_value = control.output_on(form_output.output_id.data,
-                                                     duration=float(form_output.sec_on.data))
+                    return_value = control.output_on(
+                        control.pyro_server._pyroUri,
+                        form_output.output_id.data,
+                        duration=float(form_output.sec_on.data))
                     flash(gettext("Output turned on for %(sec)s seconds: %(rvalue)s",
                                   sec=form_output.sec_on.data,
                                   rvalue=return_value),
@@ -370,6 +372,7 @@ def output_on_off(form_output):
                     error.append(gettext("PWM duty cycle must be a positive value"))
                 if not error:
                     return_value = control.output_on(
+                        control.pyro_server._pyroUri,
                         form_output.output_id.data,
                         duty_cycle=float(form_output.pwm_duty_cycle_on.data))
                     flash(gettext("PWM set to %(dc)s %% at %(hertz)s Hz: %(rvalue)s",
@@ -378,11 +381,15 @@ def output_on_off(form_output):
                                   rvalue=return_value),
                           "success")
         elif form_output.turn_on.data:
-            return_value = control.output_on(form_output.output_id.data, 0)
+            return_value = control.output_on(
+                control.pyro_server._pyroUri,
+                form_output.output_id.data, 0)
             flash(gettext("Output turned on: %(rvalue)s",
                           rvalue=return_value), "success")
         elif form_output.turn_off.data:
-            return_value = control.output_off(form_output.output_id.data)
+            return_value = control.output_off(
+                control.pyro_server._pyroUri,
+                form_output.output_id.data)
             flash(gettext("Output turned off: %(rvalue)s",
                           rvalue=return_value), "success")
     except ValueError as except_msg:

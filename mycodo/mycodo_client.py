@@ -175,12 +175,16 @@ class DaemonControl:
     def ram_use(self):
         return self.pyro_server.ram_use()
 
-    def output_off(self, output_id, trigger_conditionals=True):
-        return self.pyro_server.output_off(output_id, trigger_conditionals)
+    @staticmethod
+    def output_off(uri, output_id, trigger_conditionals=True):
+        proxy = Pyro5.api.Proxy(uri)
+        return proxy.output_off(output_id, trigger_conditionals)
 
-    def output_on(self, output_id, duration=0.0, min_off=0.0,
+    @staticmethod
+    def output_on(uri, output_id, duration=0.0, min_off=0.0,
                   duty_cycle=0.0, trigger_conditionals=True):
-        return self.pyro_server.output_on(
+        proxy = Pyro5.api.Proxy(uri)
+        return proxy.output_on(
             output_id, duration=duration, min_off=min_off,
             duty_cycle=duty_cycle, trigger_conditionals=trigger_conditionals)
 
