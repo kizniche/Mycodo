@@ -79,7 +79,6 @@ def camera_record(record_type, unique_id, duration_sec=None, tmp_filename=None):
     if settings.output_id:
         daemon_control = DaemonControl()
         daemon_control.output_on(
-            daemon_control.pyro_server._pyroUri,
             settings.output_id)
 
     # Pause while the output remains on for the specified duration.
@@ -141,9 +140,7 @@ def camera_record(record_type, unique_id, duration_sec=None, tmp_filename=None):
 
     # Turn off output, if configured
     if settings.output_id and daemon_control:
-        daemon_control.output_off(
-            daemon_control.pyro_server._pyroUri,
-            settings.output_id)
+        daemon_control.output_off(settings.output_id)
 
     try:
         set_user_grp(path_file, 'mycodo', 'mycodo')

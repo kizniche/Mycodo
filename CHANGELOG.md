@@ -1,7 +1,8 @@
-## 7.7.4 (Unreleased)
+## 7.7.4 (2019.09.18)
 
 ### Bugfixes
 
+ - Fix issue with Pyro5 proxy handling ([#688](https://github.com/kizniche/mycodo/issues/688))
  - Fix missing Stdout from several log files
 
 

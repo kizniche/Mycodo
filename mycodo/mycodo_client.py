@@ -81,26 +81,31 @@ class DaemonControl:
 
     """
     def __init__(self):
-        pyro_timeout = 30
+        self.pyro_timeout = 30
         try:
             misc = db_retrieve_table_daemon(Misc, entry='first')
-            pyro_timeout = misc.rpyc_timeout  # TODO: Rename to pyro_timeout at next major revision
+            self.pyro_timeout = misc.rpyc_timeout  # TODO: Rename to pyro_timeout at next major revision
         except:
             logger.error("Could not access SQL table to determine Pyro Timeout")
 
+        self.uri = "PYRONAME:mycodo.pyro_server"
+
+    def proxy(self):
         try:
-            self.pyro_server = Proxy("PYRONAME:mycodo.pyro_server")
-            self.pyro_server._pyroTimeout = pyro_timeout
+            proxy = Proxy(self.uri)
+            proxy._pyroTimeout = self.pyro_timeout
+            return proxy
         except socket.error:
             raise Exception("Connection refused. Is the daemon running?")
         except Exception:
             logger.exception("Initializing Pyro")
 
     def check_daemon(self):
-        old_timeout = self.pyro_server._pyroTimeout
+        proxy = self.proxy()
+        old_timeout = proxy._pyroTimeout
         try:
-            self.pyro_server._pyroTimeout = 10
-            result = self.pyro_server.check_daemon()
+            proxy._pyroTimeout = 10
+            result = proxy.check_daemon()
             if result:
                 return result
             else:
@@ -114,77 +119,73 @@ class DaemonControl:
         except Exception as err:
             return "Error: Pyro Exception: {}".format(err)
         finally:
-            self.pyro_server._pyroTimeout = old_timeout
+            proxy._pyroTimeout = old_timeout
 
     def get_condition_measurement(self, condition_id, function_id=None):
-        return self.pyro_server.get_condition_measurement(condition_id, function_id=function_id)
+        return self.proxy().get_condition_measurement(condition_id, function_id=function_id)
 
     def get_condition_measurement_dict(self, condition_id):
-        return self.pyro_server.get_condition_measurement_dict(condition_id)
+        return self.proxy().get_condition_measurement_dict(condition_id)
 
     def controller_activate(self, controller_type, controller_id):
-        return self.pyro_server.controller_activate(
+        return self.proxy().controller_activate(
             controller_type, controller_id)
 
     def controller_deactivate(self, controller_type, controller_id):
-        return self.pyro_server.controller_deactivate(
+        return self.proxy().controller_deactivate(
             controller_type, controller_id)
 
     def daemon_status(self):
-        return self.pyro_server.daemon_status()
+        return self.proxy().daemon_status()
 
     def input_information_get(self):
-        return self.pyro_server.input_information_get()
+        return self.proxy().input_information_get()
 
     def input_information_update(self):
-        return self.pyro_server.input_information_update()
+        return self.proxy().input_information_update()
 
     def input_force_measurements(self, input_id):
-        return self.pyro_server.input_force_measurements(input_id)
+        return self.proxy().input_force_measurements(input_id)
 
     def lcd_backlight(self, lcd_id, state):
-        return self.pyro_server.lcd_backlight(lcd_id, state)
+        return self.proxy().lcd_backlight(lcd_id, state)
 
     def lcd_flash(self, lcd_id, state):
-        return self.pyro_server.lcd_flash(lcd_id, state)
+        return self.proxy().lcd_flash(lcd_id, state)
 
     def lcd_reset(self, lcd_id):
-        return self.pyro_server.lcd_reset(lcd_id)
+        return self.proxy().lcd_reset(lcd_id)
 
     def is_in_virtualenv(self):
-        return self.pyro_server.is_in_virtualenv()
+        return self.proxy().is_in_virtualenv()
 
     def pid_hold(self, pid_id):
-        return self.pyro_server.pid_hold(pid_id)
+        return self.proxy().pid_hold(pid_id)
 
     def pid_mod(self, pid_id):
-        return self.pyro_server.pid_mod(pid_id)
+        return self.proxy().pid_mod(pid_id)
 
     def pid_pause(self, pid_id):
-        return self.pyro_server.pid_pause(pid_id)
+        return self.proxy().pid_pause(pid_id)
 
     def pid_resume(self, pid_id):
-        return self.pyro_server.pid_resume(pid_id)
+        return self.proxy().pid_resume(pid_id)
 
     def pid_get(self, pid_id, setting):
-        return self.pyro_server.pid_get(pid_id, setting)
+        return self.proxy().pid_get(pid_id, setting)
 
     def pid_set(self, pid_id, setting, value):
-        return self.pyro_server.pid_set(pid_id, setting, value)
+        return self.proxy().pid_set(pid_id, setting, value)
 
     def ram_use(self):
-        return self.pyro_server.ram_use()
+        return self.proxy().ram_use()
 
-    @staticmethod
-    def output_off(uri, output_id, trigger_conditionals=True):
-        proxy = Pyro5.api.Proxy(uri)
-        return proxy.output_off(output_id, trigger_conditionals)
+    def output_off(self, output_id, trigger_conditionals=True):
+        return self.proxy().output_off(output_id, trigger_conditionals)
 
-    @staticmethod
-    def output_on(uri, output_id, duration=0.0, min_off=0.0,
+    def output_on(self, output_id, duration=0.0, min_off=0.0,
                   duty_cycle=0.0, trigger_conditionals=True):
-        proxy = Pyro5.api.Proxy(uri)
-        return proxy.output_on(
+        return self.proxy().output_on(
             output_id, duration=duration, min_off=min_off,
             duty_cycle=duty_cycle, trigger_conditionals=trigger_conditionals)
 
@@ -195,41 +196,41 @@ class DaemonControl:
             return self.output_off(output_id)
 
     def output_sec_currently_on(self, output_id):
-        return self.pyro_server.output_sec_currently_on(output_id)
+        return self.proxy().output_sec_currently_on(output_id)
 
     def output_setup(self, action, output_id):
-        return self.pyro_server.output_setup(action, output_id)
+        return self.proxy().output_setup(action, output_id)
 
     def output_state(self, output_id):
-        return self.pyro_server.output_state(output_id)
+        return self.proxy().output_state(output_id)
 
     def refresh_daemon_camera_settings(self):
-        return self.pyro_server.refresh_daemon_camera_settings()
+        return self.proxy().refresh_daemon_camera_settings()
 
     def refresh_daemon_conditional_settings(self, unique_id):
-        return self.pyro_server.refresh_daemon_conditional_settings(unique_id)
+        return self.proxy().refresh_daemon_conditional_settings(unique_id)
 
     def refresh_daemon_misc_settings(self):
-        return self.pyro_server.refresh_daemon_misc_settings()
+        return self.proxy().refresh_daemon_misc_settings()
 
     def refresh_daemon_trigger_settings(self, unique_id):
-        return self.pyro_server.refresh_daemon_trigger_settings(unique_id)
+        return self.proxy().refresh_daemon_trigger_settings(unique_id)
 
     def send_infrared_code_broadcast(self, code):
-        return self.pyro_server.send_infrared_code_broadcast(code)
+        return self.proxy().send_infrared_code_broadcast(code)
 
     def trigger_action(self, action_id, message='',
                        single_action=False, debug=False):
-        return self.pyro_server.trigger_action(
+        return self.proxy().trigger_action(
             action_id, message=message,
             single_action=single_action, debug=debug)
 
     def trigger_all_actions(self, function_id, message='', debug=False):
-        return self.pyro_server.trigger_all_actions(
+        return self.proxy().trigger_all_actions(
             function_id, message=message, debug=debug)
 
     def terminate_daemon(self):
-        return self.pyro_server.terminate_daemon()
+        return self.proxy().terminate_daemon()
 
 
 def daemon_active():

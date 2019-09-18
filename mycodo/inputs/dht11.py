@@ -293,7 +293,6 @@ class InputModule(AbstractInput):
         if self.power_output_id:
             self.logger.info("Turning on sensor")
             self.control.output_on(
-                self.control.pyro_server._pyroUri,
                 self.power_output_id, 0)
             time.sleep(2)
             self.powered = True
@@ -302,7 +301,5 @@ class InputModule(AbstractInput):
         """ Depower the sensor """
         if self.power_output_id:
             self.logger.info("Turning off sensor")
-            self.control.output_off(
-                self.control.pyro_server._pyroUri,
-                self.power_output_id)
+            self.control.output_off(self.power_output_id)
             self.powered = False

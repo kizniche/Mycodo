@@ -178,12 +178,10 @@ class PIDController(AbstractController, threading.Thread):
         # Turn off output used in PID when the controller is deactivated
         if self.raise_output_id and self.direction in ['raise', 'both']:
             self.control.output_off(
-                self.control.pyro_server._pyroUri,
                 self.raise_output_id,
                 trigger_conditionals=True)
         if self.lower_output_id and self.direction in ['lower', 'both']:
             self.control.output_off(
-                self.control.pyro_server._pyroUri,
                 self.lower_output_id,
                 trigger_conditionals=True)
 
@@ -684,7 +682,6 @@ class PIDController(AbstractController, threading.Thread):
 
                         # Activate pwm with calculated duty cycle
                         self.control.output_on(
-                            self.control.pyro_server._pyroUri,
                             self.raise_output_id,
                             duty_cycle=self.raise_duty_cycle)
 
@@ -713,7 +710,6 @@ class PIDController(AbstractController, threading.Thread):
                                     cv=self.control_variable,
                                     id=self.raise_output_id))
                             self.control.output_on(
-                                self.control.pyro_server._pyroUri,
                                 self.raise_output_id,
                                 duration=self.raise_seconds_on,
                                 min_off=self.raise_min_off_duration)
@@ -727,7 +723,6 @@ class PIDController(AbstractController, threading.Thread):
                                                   'command_pwm',
                                                   'python_pwm']:
                         self.control.output_on(
-                            self.control.pyro_server._pyroUri,
                             self.raise_output_id,
                             duty_cycle=0)
 
@@ -770,7 +765,6 @@ class PIDController(AbstractController, threading.Thread):
 
                         # Activate pwm with calculated duty cycle
                         self.control.output_on(
-                            self.control.pyro_server._pyroUri,
                             self.lower_output_id,
                             duty_cycle=stored_duty_cycle)
 
@@ -806,7 +800,6 @@ class PIDController(AbstractController, threading.Thread):
                                                 id=self.lower_output_id))
 
                             self.control.output_on(
-                                self.control.pyro_server._pyroUri,
                                 self.lower_output_id,
                                 duration=stored_seconds_on,
                                 min_off=self.lower_min_off_duration)
@@ -820,7 +813,6 @@ class PIDController(AbstractController, threading.Thread):
                                                   'command_pwm',
                                                   'python_pwm']:
                         self.control.output_on(
-                            self.control.pyro_server._pyroUri,
                             self.lower_output_id,
                             duty_cycle=0)
 
@@ -828,11 +820,9 @@ class PIDController(AbstractController, threading.Thread):
             self.logger.debug("Last measurement unsuccessful. Turning outputs off.")
             if self.direction in ['raise', 'both'] and self.raise_output_id:
                 self.control.output_off(
-                    self.control.pyro_server._pyroUri,
                     self.raise_output_id)
             if self.direction in ['lower', 'both'] and self.lower_output_id:
                 self.control.output_off(
-                    self.control.pyro_server._pyroUri,
                     self.lower_output_id)
 
     def pid_parameters_str(self):
