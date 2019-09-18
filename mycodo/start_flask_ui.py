@@ -13,7 +13,7 @@ app = create_app()  # required by the wsgi config and main()
 
 # Flask profiler
 # Accessed at https://127.0.0.1/flask-profiler
-PROFILE_ENABLE = True
+PROFILE_ENABLE = False
 
 if PROFILE_ENABLE:
     from mycodo.config import DATABASE_PATH
