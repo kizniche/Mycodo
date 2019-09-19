@@ -1,5 +1,9 @@
 ## 7.7.6 (Unreleased)
 
+### Bugfixes
+
+ - Fix Outputs not showing up on Dashboard and mislabeled measurements ([#692](https://github.com/kizniche/mycodo/issues/692))
+
 ### Features
 
  - Add Conditional Conditions: Output Duration On, Controller Running ([#691](https://github.com/kizniche/mycodo/issues/691))

@@ -80,20 +80,31 @@ if __name__ == "__main__":
         #         error.append(msg)
         #         print(msg)
 
+        elif each_revision == 'example':
+            print("Executing post-alembic code for revision {}".format(each_revision))
+            try:
+                with session_scope(MYCODO_DB_PATH) as output_sess:
+                    for each_output in output_sess.query(Output).all():
+                        if each_output.measurement == 'time':
+                            each_output.measurement = 'duration_time'
+                            output_sess.commit()
+            except:
+                msg = "ERROR: post-alembic revision {}".format(each_revision)
+                error.append(msg)
+                print(msg)
+
         elif each_revision == '802cc65f734e':
             print("Executing post-alembic code for revision {}".format(each_revision))
             try:  # Check if already installed
-                from Pyro5.api import Proxy
-                import Pyro5.errors
+                import Pyro5.api
             except:  # Not installed. Try to install
                 try:
                     import subprocess
-                    command = '{}/env/bin/pip install Pyro5'.format(INSTALL_DIRECTORY)
+                    command = '{path}/env/bin/pip install -r {path}/install/requirements.txt'.format(path=INSTALL_DIRECTORY)
                     cmd = subprocess.Popen(command, stdout=subprocess.PIPE, shell=True)
                     cmd_out, cmd_err = cmd.communicate()
                     cmd_status = cmd.wait()
-                    from Pyro5.api import Proxy
-                    import Pyro5.errors
+                    import Pyro5.api
                 except:
                     msg = "ERROR: post-alembic revision {}".format(each_revision)
                     error.append(msg)

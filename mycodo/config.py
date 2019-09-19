@@ -320,7 +320,7 @@ OUTPUT_INFO = {
         'dependencies_module': [],
         'measure': {
             'volume': {'ml': {0: {}}},
-            'time': {'minute': {1: {}}}
+            'duration_time': {'minute': {1: {}}}
         }}
 }
 

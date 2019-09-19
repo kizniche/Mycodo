@@ -619,12 +619,10 @@ def form_output_choices(choices, each_output, dict_units, dict_measurements):
 
 def form_output_choices_devices(choices, each_output, dict_units, dict_measurements):
     value = '{id},output'.format(id=each_output.unique_id)
-    display = '[Output {id:02d}] {name} CH{chan}, {meas} ({unit})'.format(
+    display = '[Output {id:02d}] {name} CH{chan}'.format(
         id=each_output.id,
         name=each_output.name,
-        chan=each_output.channel,
-        meas=dict_measurements[each_output.measurement]['name'],
-        unit=dict_units[each_output.unit]['unit'])
+        chan=each_output.channel)
     choices.update({value: display})
     return choices
 

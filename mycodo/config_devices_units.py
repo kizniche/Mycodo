@@ -68,7 +68,7 @@ MEASUREMENTS = {
     'duration_time': {
         'name': lazy_gettext('Duration'),
         'meas': 'duration_time',
-        'units': ['s']},
+        'units': ['s', 'minute', 'h']},
     'duty_cycle': {
         'name': lazy_gettext('Duty Cycle'),
         'meas': 'duty_cycle',
@@ -185,10 +185,6 @@ MEASUREMENTS = {
         'name': lazy_gettext('Temperature'),
         'meas': 'temperature',
         'units': ['C', 'F', 'K']},
-    'time': {
-        'name': lazy_gettext('Time'),
-        'meas': 'time',
-        'units': ['s', 'minute', 'h']},
     'unitless': {
         'name': lazy_gettext('Unitless'),
         'meas': 'unitless',

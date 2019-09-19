@@ -141,6 +141,20 @@ with open("/home/pi/Mycodo/OutputTest.txt", "a") as myfile:
                     DisplayOrder.query.first().output = add_display_order(
                         display_order, new_output.unique_id)
                     db.session.commit()
+
+                    # Add device measurements
+                    for measurement, measure_data in OUTPUT_INFO[new_output.output_type]['measure'].items():
+                        for unit, unit_data in measure_data.items():
+                            for channel, channel_data in unit_data.items():
+                                new_measurement = DeviceMeasurements()
+                                new_measurement.device_id = new_output.unique_id
+                                new_measurement.name = ''
+                                new_measurement.is_enabled = True
+                                new_measurement.measurement = measurement
+                                new_measurement.unit = unit
+                                new_measurement.channel = channel
+                                new_measurement.save()
+
                     manipulate_output('Add', new_output.unique_id)
             except sqlalchemy.exc.OperationalError as except_msg:
                 error.append(except_msg)
