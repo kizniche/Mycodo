@@ -24,7 +24,7 @@ ALEMBIC_VERSION = '802cc65f734e'
 FORCE_UPGRADE_MASTER = False
 
 # ENABLE FLASK PROFILER
-# Accessed at https://127.0.0.1/flask-profiler
+# Accessed at https://127.0.0.1/mycodo-flask-profiler
 ENABLE_FLASK_PROFILER = False
 
 # Final release for each major version number
