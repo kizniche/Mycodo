@@ -3,6 +3,7 @@
 ### Features
 
  - Add Conditional Conditions: Output Duration On, Controller Running ([#691](https://github.com/kizniche/mycodo/issues/691))
+ - Remove the need for Pyro5 Nameserver ([#692](https://github.com/kizniche/mycodo/issues/692))
  - Add Flask profiler
 
 

@@ -732,13 +732,13 @@ THEMES_DARK = ['cyborg', 'darkly', 'slate', 'solar', 'superhero']
 # Install path, the parent directory this script resides
 INSTALL_DIRECTORY = os.path.abspath(os.path.dirname(os.path.realpath(__file__)) + '/..')
 
-# SQLite3 databases that stores users and settings
+# Database
 DATABASE_PATH = os.path.join(INSTALL_DIRECTORY, 'databases')
 ALEMBIC_UPGRADE_POST = os.path.join(DATABASE_PATH, 'alembic_post_upgrade_versions')
 SQL_DATABASE_MYCODO = os.path.join(DATABASE_PATH, 'mycodo.db')
 MYCODO_DB_PATH = 'sqlite:///' + SQL_DATABASE_MYCODO
 
-# File paths/logging
+# Misc paths
 PATH_1WIRE = '/sys/bus/w1/devices/'
 PATH_INPUTS = os.path.join(INSTALL_DIRECTORY, 'mycodo/inputs')
 PATH_INPUTS_CUSTOM = os.path.join(INSTALL_DIRECTORY, 'mycodo/inputs/custom_inputs')
@@ -747,6 +747,8 @@ USAGE_REPORTS_PATH = os.path.join(INSTALL_DIRECTORY, 'output_usage_reports')
 DEPENDENCY_INIT_FILE = os.path.join(INSTALL_DIRECTORY, '.dependency')
 UPGRADE_INIT_FILE = os.path.join(INSTALL_DIRECTORY, '.upgrade')
 BACKUP_PATH = '/var/Mycodo-backups'  # Where Mycodo backups are stored
+
+# Log files
 LOG_PATH = '/var/log/mycodo'  # Where generated logs are stored
 LOGIN_LOG_FILE = os.path.join(LOG_PATH, 'login.log')
 DAEMON_LOG_FILE = os.path.join(LOG_PATH, 'mycodo.log')
@@ -761,9 +763,12 @@ HTTP_ERROR_LOG_FILE = '/var/log/nginx/error.log'
 # Lock files
 LOCK_PATH = '/var/lock'
 ATLAS_PH_LOCK_FILE = os.path.join(LOCK_PATH, 'sensor-atlas-ph.pid')
-FRONTEND_PID_FILE = os.path.join(LOCK_PATH, 'mycodoflask.pid')
-DAEMON_PID_FILE = os.path.join(LOCK_PATH, 'mycodo.pid')
 LOCK_FILE_STREAM = os.path.join(LOCK_PATH, 'mycodo-camera-stream.pid')
+
+# PID files
+RUN_PATH = '/var/run'
+FRONTEND_PID_FILE = os.path.join(RUN_PATH, 'mycodoflask.pid')
+DAEMON_PID_FILE = os.path.join(RUN_PATH, 'mycodo.pid')
 
 # Remote admin
 STORED_SSL_CERTIFICATE_PATH = os.path.join(

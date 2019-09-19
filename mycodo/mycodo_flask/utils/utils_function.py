@@ -65,6 +65,7 @@ self.logger.error("This ERROR log entry will appear in the Daemon Log")
 
 # Replace "asdf1234" with a Condition ID
 measurement = self.measure("{asdf1234}")
+self.logger.info("Check this measurement in the Daemon Log. The value is {val}".format(val=measurement))
 
 if measurement is not None:  # If a measurement exists
     self.message += "This message appears in email alerts and notes.\\n"

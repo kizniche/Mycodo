@@ -3,10 +3,14 @@ import argparse
 import logging
 import time
 
+import sys
+
 import os
 
-DAEMON_PID_FILE = '/var/lock/mycodo.pid'
-LOG_FILE = '/var/log/mycodo/mycodokeepup.log'
+sys.path.append(os.path.abspath(os.path.join(__file__, "../../..")))
+
+from mycodo.config import DAEMON_PID_FILE
+from mycodo.config import KEEPUP_LOG_FILE
 
 
 def check_daemon(print_msg=True, start_daemon=True):
@@ -50,7 +54,7 @@ def parseargs(par):
 
 if __name__ == '__main__':
     log_format = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
-    logging.basicConfig(filename=LOG_FILE, format=log_format, level=logging.DEBUG)
+    logging.basicConfig(filename=KEEPUP_LOG_FILE, format=log_format, level=logging.DEBUG)
     parser = argparse.ArgumentParser(
         description="Script to check if the Mycodo daemon has crashed and "
                     "restart it if so.")

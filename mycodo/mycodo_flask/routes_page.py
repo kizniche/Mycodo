@@ -1147,14 +1147,6 @@ def page_logview():
                 (log_output, _) = log.communicate()
                 log.wait()
                 log_output = str(log_output, 'latin-1')
-            elif form_log_view.log.data == 'log_pyro':
-                command = 'journalctl -u mycodopyro | tail -n {lines}'.format(
-                    lines=lines)
-                log = subprocess.Popen(
-                    command, stdout=subprocess.PIPE, shell=True)
-                (log_output, _) = log.communicate()
-                log.wait()
-                log_output = str(log_output, 'latin-1')
             else:
                 if form_log_view.log.data == 'log_login':
                     logfile = LOGIN_LOG_FILE

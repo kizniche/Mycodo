@@ -60,7 +60,6 @@ from mycodo.controllers.controller_pid import PIDController
 from mycodo.controllers.controller_trigger import TriggerController
 from mycodo.databases.models import Camera
 from mycodo.databases.models import Conditional
-from mycodo.databases.models import ConditionalConditions
 from mycodo.databases.models import Input
 from mycodo.databases.models import LCD
 from mycodo.databases.models import Math
@@ -278,20 +277,9 @@ class ComThread(threading.Thread):
 
     def run(self):
         try:
-            ns = locate_ns()  # find the name server
-            daemon = Daemon()  # make a Pyro daemon
-            uri = daemon.register(PyroServer(self.mycodo))  # register the PyroServer class as a Pyro object
-            ns.register("mycodo.pyro_server", uri)  # register the object with a name in the name server
-
-            pyro_thread = threading.Thread(target=daemon.requestLoop)
-            pyro_thread.start()  # Start Pyro thread
-
-            if self.debug:
-                self.pyro_monitor = threading.Thread(
-                    target=monitor_pyro,
-                    args=(self.logger,))
-                self.pyro_monitor.daemon = True
-                self.pyro_monitor.start()
+            Daemon.serveSimple({
+                PyroServer(self.mycodo): 'mycodo.pyro_server',
+            }, host="0.0.0.0", port=9090, ns=False)
         except Exception as err:
             self.logger.exception(
                 "ERROR: ComThread: {msg}".format(msg=err))
@@ -307,7 +295,7 @@ def monitor_pyro(logger_pyro):
         now = time.time()
         if now > log_timer:
             try:
-                pyro_server = Proxy("PYRONAME:mycodo.pyro_server")
+                pyro_server = Proxy("PYRO:mycodo.pyro_server@127.0.0.1:9090")
                 pyro_server.check_daemon()
                 logger_pyro.debug(
                     "Pyro5 communication thread (30-minute timer): "
@@ -618,7 +606,7 @@ class DaemonController:
             else:
                 message = "{type} controller with ID {id} not found".format(
                     type=cont_type, id=cont_id)
-                self.logger.warning(message)
+                self.logger.debug(message)
                 return False
         except Exception as except_msg:
             message = "Error: {type} controller with ID {id}:" \

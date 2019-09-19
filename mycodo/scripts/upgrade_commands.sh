@@ -62,13 +62,11 @@ Options:
   enable-pigpiod-low            Enable pigpiod with 1 ms sample rate
   enable-pigpiod-high           Enable pigpiod with 5 ms sample rate
   enable-pigpiod-disabled       Create empty service to indicate pigpiod is disabled
-  pyro-restart                  Restart the Pyro Nameserver
   update-pigpiod                Update to latest version of pigpiod service file
   update-influxdb               Update influxdb to the latest version
   update-influxdb-db-user       Create the influxdb database and user
   update-logrotate              Install logrotate script
   update-mycodo-startup-script  Install the Mycodo daemon startup script
-  update-pyro-startup-script    Install the Pyro Nameserver startup script
   update-packages               Install required apt packages are installed/up-to-date
   update-permissions            Set permissions for Mycodo directories/files
   update-pip3                   Update pip
@@ -317,10 +315,6 @@ case "${1:-''}" in
         printf "\n#### pigpiod has been disabled. It can be enabled in the web UI configuration\n"
         touch /etc/systemd/system/pigpiod_disabled.service
     ;;
-    'pyro-restart')
-        printf "\n#### Restarting pyro5-ns\n"
-        service mycodopyro restart
-    ;;
     'update-pigpiod')
         printf "\n#### Checking which pigpiod startup script is being used\n"
         GPIOD_SAMPLE_RATE=99
@@ -393,13 +387,6 @@ case "${1:-''}" in
         rm -rf /etc/systemd/system/mycodo.service
         printf "#### Enabling current mycodo startup script\n"
         systemctl enable ${MYCODO_PATH}/install/mycodo.service
-    ;;
-    'update-pyro-startup-script')
-        printf "\n#### Disabling installed pyro-ns startup script\n"
-        systemctl disable mycodopyro.service
-        rm -rf /etc/systemd/system/mycodopyro.service
-        printf "#### Enabling current pyro-ns startup script\n"
-        systemctl enable ${MYCODO_PATH}/install/mycodopyro.service
     ;;
     'update-packages')
         printf "\n#### Installing prerequisite apt packages and update pip\n"

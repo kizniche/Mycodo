@@ -1,6 +1,6 @@
 [Unit]
 Description=gunicorn daemon for Mycodo flask web user interface
-After=network.target mycodopyro.service
+After=network.target
 
 [Service]
 User=root
@@ -11,7 +11,7 @@ ExecStart=/var/mycodo-root/env/bin/gunicorn \
 --worker-class gthread \
 --threads 2 \
 --timeout 300 \
---pid /var/lock/mycodoflask.pid \
+--pid /var/run/mycodoflask.pid \
 --bind unix:/var/run/mycodoflask.sock start_flask_ui:app
 
 ExecReload=/bin/kill -s HUP $MAINPID

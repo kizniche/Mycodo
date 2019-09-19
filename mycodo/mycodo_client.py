@@ -64,7 +64,7 @@ class DaemonControl:
         except:
             logger.error("Could not access SQL table to determine Pyro Timeout")
 
-        self.uri = "PYRONAME:mycodo.pyro_server"
+        self.uri= 'PYRO:mycodo.pyro_server@127.0.0.1:9090'
 
     def proxy(self):
         try:

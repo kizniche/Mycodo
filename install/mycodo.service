@@ -1,10 +1,11 @@
 [Unit]
 Description=Mycodo server
-After=syslog.target network.target influxd.service mycodopyro.service
+After=syslog.target network.target influxd.service
 
 [Service]
 Type=forking
 TimeoutSec=0
+ExecStartPre=/bin/sleep 5
 ExecStart=/var/mycodo-root/env/bin/python /var/mycodo-root/mycodo/mycodo_daemon.py
 ExecStop=/var/mycodo-root/env/bin/python /var/mycodo-root/mycodo/mycodo_client.py -t
 ExecReload=/bin/kill -HUP $MAINPID

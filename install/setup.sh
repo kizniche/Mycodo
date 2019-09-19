@@ -94,8 +94,6 @@ ${INSTALL_CMD} initialize 2>&1 | tee -a ${LOG_LOCATION}
 ${INSTALL_CMD} update-logrotate 2>&1 | tee -a ${LOG_LOCATION}
 ${INSTALL_CMD} ssl-certs-generate 2>&1 | tee -a ${LOG_LOCATION}
 ${INSTALL_CMD} update-mycodo-startup-script 2>&1 | tee -a ${LOG_LOCATION}
-${INSTALL_CMD} update-pyro-startup-script 2>&1 | tee -a ${LOG_LOCATION}
-${INSTALL_CMD} pyro-restart 2>&1 | tee -a ${LOG_LOCATION}
 ${INSTALL_CMD} compile-translations 2>&1 | tee -a ${LOG_LOCATION}
 ${INSTALL_CMD} update-cron 2>&1 | tee -a ${LOG_LOCATION}
 ${INSTALL_CMD} initialize 2>&1 | tee -a ${LOG_LOCATION}
