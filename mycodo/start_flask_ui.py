@@ -15,22 +15,6 @@ app = create_app()  # required by the wsgi config and main()
 # Flask profiler
 if ENABLE_FLASK_PROFILER:
     import flask_profiler
-    from mycodo.config import DATABASE_PATH
-    app.config["FLASK_PROFILER"] = {
-        "enabled": True,
-        "storage": {
-            "engine": "sqlalchemy",
-            "db_url": 'sqlite:///{}'.format(os.path.join(DATABASE_PATH, 'profile.db'))
-        },
-        "basicAuth": {
-            "enabled": True,
-            "username": "admin231",
-            "password": "admin421378956"
-        },
-        "ignore": [
-            "^/static/.*"
-        ]
-    }
     flask_profiler.init_app(app)
 
 

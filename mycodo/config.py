@@ -809,6 +809,25 @@ class ProdConfig(object):
     SQLALCHEMY_DATABASE_URI = 'sqlite:///{}'.format(SQL_DATABASE_MYCODO)
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
+    FLASK_PROFILER = {
+        "enabled": True,
+        "storage": {
+            "engine": "sqlalchemy",
+            "db_url": 'sqlite:///{}'.format(os.path.join(DATABASE_PATH, 'profile.db'))
+        },
+        "basicAuth": {
+            "enabled": True,
+            "username": "admin231",
+            "password": "admin421378956"
+        },
+        "ignore": [
+            "^/static/.*",
+            "/login",
+            "/settings/users"
+        ],
+        "endpointRoot": "mycodo-flask-profiler"
+    }
+
     REMEMBER_COOKIE_DURATION = timedelta(days=90)
 
     # Ensure file containing the Flask secret_key exists
