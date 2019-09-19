@@ -7,24 +7,20 @@ import os
 sys.path.append(
     os.path.abspath(os.path.join(os.path.dirname(__file__), os.path.pardir)))
 
+from mycodo.config import ENABLE_FLASK_PROFILER
 from mycodo.mycodo_flask.app import create_app
 
 app = create_app()  # required by the wsgi config and main()
 
 # Flask profiler
-# Accessed at https://127.0.0.1/flask-profiler
-PROFILE_ENABLE = False
-
-if PROFILE_ENABLE:
-    from mycodo.config import DATABASE_PATH
-    SQL_DATABASE_PROFILE = os.path.join(DATABASE_PATH, 'profile.db')
-    PROFILE_DATABASE_URI = 'sqlite:///' + SQL_DATABASE_PROFILE
+if ENABLE_FLASK_PROFILER:
     import flask_profiler
+    from mycodo.config import DATABASE_PATH
     app.config["FLASK_PROFILER"] = {
         "enabled": True,
         "storage": {
             "engine": "sqlalchemy",
-            "db_url": PROFILE_DATABASE_URI
+            "db_url": 'sqlite:///{}'.format(os.path.join(DATABASE_PATH, 'profile.db'))
         },
         "basicAuth": {
             "enabled": True,

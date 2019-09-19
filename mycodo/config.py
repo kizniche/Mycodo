@@ -23,6 +23,10 @@ ALEMBIC_VERSION = '802cc65f734e'
 #  instructed to do so, as it can really mess up your system.
 FORCE_UPGRADE_MASTER = False
 
+# ENABLE FLASK PROFILER
+# Accessed at https://127.0.0.1/flask-profiler
+ENABLE_FLASK_PROFILER = False
+
 # Final release for each major version number
 # Used to determine proper upgrade page to display
 FINAL_RELEASES = ['5.7.3', '6.4.7']
@@ -801,8 +805,8 @@ UPGRADE_CHECK_INTERVAL = 172800
 class ProdConfig(object):
     """ Production Configuration """
     SQL_DATABASE_MYCODO = os.path.join(DATABASE_PATH, 'mycodo.db')
-    MYCODO_DB_PATH = 'sqlite:///' + SQL_DATABASE_MYCODO
-    SQLALCHEMY_DATABASE_URI = 'sqlite:///' + SQL_DATABASE_MYCODO
+    MYCODO_DB_PATH = 'sqlite:///{}'.format(SQL_DATABASE_MYCODO)
+    SQLALCHEMY_DATABASE_URI = 'sqlite:///{}'.format(SQL_DATABASE_MYCODO)
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
     REMEMBER_COOKIE_DURATION = timedelta(days=90)
