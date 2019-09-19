@@ -1376,7 +1376,7 @@ Note: Indentation must use 4 spaces (not 2 spaces, tabs, or other).
 +---------------------------+-------------------------------------------------+
 
 There are additional functions that can be used, but these must use the full
-unique ID (not an abridged version as the functions above). See
+UUID (not an abridged version as the functions above). See
 /home/pi/Mycodo/mycodo/mycodo_client.py for the functions available for use.
 These may be accessed via the 'control' object. An example, below, will return
 how long the output has been on (or 0 if it's currently off):
@@ -1642,10 +1642,28 @@ Statement.
 |                       | value is older than this duration, "None" is    |
 |                       | returned.                                       |
 +-----------------------+-------------------------------------------------+
+| Output State          | Returns 'on' if the output is currently on, and |
+|                       | 'off' if it's currently off.                    |
++-----------------------+-------------------------------------------------+
+| Output Duration On    | Returns how long the output has currently been  |
+|                       | on, in seconds. Returns 0 if off.               |
++-----------------------+-------------------------------------------------+
 | Max Age (seconds)     | The minimum age (seconds) the measurement can   |
 |                       | be. If the last measurement is older than this, |
 |                       | "None" will be returned instead of a            |
 |                       | measurement.                                    |
++-----------------------+-------------------------------------------------+
+
+Additional Conditions
+
++-----------------------+-------------------------------------------------+
+| Condition             | Description                                     |
++=======================+=================================================+
+| Output Duration On    | Returns how long the output has currently been  |
+|                       | on, in seconds. Returns 0 if off.               |
++-----------------------+-------------------------------------------------+
+| Controller Running    | Returns True if the controller is active, False |
+|                       | if inactive.                                    |
 +-----------------------+-------------------------------------------------+
 
 Trigger

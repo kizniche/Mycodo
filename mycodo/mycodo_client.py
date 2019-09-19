@@ -117,6 +117,10 @@ class DaemonControl:
         return self.proxy().controller_deactivate(
             controller_type, controller_id)
 
+    def controller_is_active(self, controller_type, controller_id):
+        return self.proxy().controller_is_active(
+            controller_type, controller_id)
+
     def daemon_status(self):
         return self.proxy().daemon_status()
 

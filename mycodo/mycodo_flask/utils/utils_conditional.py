@@ -185,8 +185,12 @@ def conditional_condition_mod(form):
         elif cond_mod.condition_type == 'gpio_state':
             cond_mod.gpio_pin = form.gpio_pin.data
 
-        elif cond_mod.condition_type == 'output_state':
+        elif cond_mod.condition_type in ['output_state',
+                                         'output_duration_on']:
             cond_mod.output_id = form.output_id.data
+
+        elif cond_mod.condition_type == 'controller_status':
+            cond_mod.controller_id = form.controller_id.data
 
         if not error:
             db.session.commit()

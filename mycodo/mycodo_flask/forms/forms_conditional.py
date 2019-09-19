@@ -73,6 +73,7 @@ class ConditionalConditions(FlaskForm):
         widget=NumberInput())
 
     output_id = StringField(TRANSLATIONS['output']['title'])
+    controller_id = StringField(TRANSLATIONS['controller']['title'])
 
     save_condition = SubmitField(TRANSLATIONS['save']['title'])
     delete_condition = SubmitField(TRANSLATIONS['delete']['title'])

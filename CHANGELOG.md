@@ -2,6 +2,7 @@
 
 ### Features
 
+ - Add Conditional Conditions: Output Duration On, Controller Running ([#691](https://github.com/kizniche/mycodo/issues/691))
  - Add Flask profiler
 
 

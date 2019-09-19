@@ -140,6 +140,10 @@
       {% include 'pages/function_options/conditional_options/gpio_state.html' %}
     {% elif each_condition.condition_type == 'output_state' %}
       {% include 'pages/function_options/conditional_options/output_state.html' %}
+    {% elif each_condition.condition_type == 'output_duration_on' %}
+      {% include 'pages/function_options/conditional_options/output_duration_on.html' %}
+    {% elif each_condition.condition_type == 'controller_status' %}
+      {% include 'pages/function_options/conditional_options/controller_status.html' %}
     {% endif %}
 
     </div>

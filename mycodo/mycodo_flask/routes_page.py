@@ -1389,6 +1389,8 @@ def page_function():
     choices_pid = utils_general.choices_pids(
         pid, dict_units, dict_measurements)
 
+    choices_controller_ids = utils_general.choices_controller_ids()
+
     actions_dict = {
         'conditional': {},
         'trigger': {}
@@ -1485,6 +1487,7 @@ def page_function():
                            actions=actions,
                            actions_dict=actions_dict,
                            camera=camera,
+                           choices_controller_ids=choices_controller_ids,
                            choices_input=choices_input,
                            choices_math=choices_math,
                            choices_output=choices_output,

@@ -14,7 +14,7 @@ sys.path.append(os.path.abspath(os.path.dirname(__file__)))
 from config_translations import TRANSLATIONS
 
 MYCODO_VERSION = '7.7.5'
-ALEMBIC_VERSION = '802cc65f734e'
+ALEMBIC_VERSION = '545744b31813'
 
 #  FORCE_UPGRADE_MASTER
 #  Set True to enable upgrading to the master branch of the Mycodo repository.
@@ -412,7 +412,9 @@ CONDITIONAL_CONDITIONS = [
         TRANSLATIONS['measurement']['title'],
         TRANSLATIONS['multiple']['title'])),
     ('gpio_state', lazy_gettext('GPIO State')),
-    ('output_state', lazy_gettext('Output State'))
+    ('output_state', lazy_gettext('Output State')),
+    ('output_duration_on', lazy_gettext('Output Duration On')),
+    ('controller_status', lazy_gettext("Controller Running")),
 ]
 
 FUNCTION_INFO = {

@@ -1,6 +1,6 @@
 [Unit]
 Description=Mycodo server
-After=syslog.target network.target influxd.service
+After=syslog.target network.target influxd.service mycodopyro.service
 
 [Service]
 Type=forking

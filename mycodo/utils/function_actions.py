@@ -10,6 +10,7 @@ from mycodo.config import SQL_DATABASE_MYCODO
 from mycodo.databases.models import Actions
 from mycodo.databases.models import Camera
 from mycodo.databases.models import Conditional
+from mycodo.databases.models import ConditionalConditions
 from mycodo.databases.models import Conversion
 from mycodo.databases.models import DeviceMeasurements
 from mycodo.databases.models import Input
@@ -62,12 +63,15 @@ def check_allowed_to_email():
     return smtp_wait_timer, allowed_to_send_notice
 
 
-def get_condition_measurement(sql_condition):
+def get_condition_value(condition_id):
     """
     Returns condition measurements for Conditional controllers
-    :param sql_condition: str containing comma-separated device ID and measurement ID
-    :return: measurement: float measurement, gpio_state: int 0 or 1, output_state: 'on', 'off', or int duty cycle
+    :param condition_id: Conditional condition ID
+    :return: measurement: multiple types
     """
+    sql_condition = db_retrieve_table_daemon(ConditionalConditions).filter(
+        ConditionalConditions.unique_id == condition_id).first()
+
     # Check Measurement Conditions
     if sql_condition.condition_type == 'measurement':
         device_id = sql_condition.measurement.split(',')[0]
@@ -109,20 +113,34 @@ def get_condition_measurement(sql_condition):
 
     # Return output state
     elif sql_condition.condition_type == 'output_state':
-        output = Output.query.filter(
-            Output.unique_id == sql_condition.output_id).first()
-        if output:
-            control = DaemonControl()
-            return control.output_state(output.unique_id)
+        control = DaemonControl()
+        return control.output_state(sql_condition.output_id)
+
+    # Return the duration the output is currently on for
+    elif sql_condition.condition_type == 'output_duration_on':
+        control = DaemonControl()
+        return control.output_sec_currently_on(sql_condition.output_id)
+
+    # Return controller active state
+    elif sql_condition.condition_type == 'controller_status':
+        (controller_type,
+         controller_object,
+         controller_entry) = which_controller(sql_condition.controller_id)
+        control = DaemonControl()
+        return control.controller_is_active(
+            controller_type, sql_condition.controller_id)
 
 
-def get_condition_measurement_dict(sql_condition):
+def get_condition_value_dict(condition_id):
     """
     Returns dict of multiple condition measurements for Conditional controllers
-    :param sql_condition: str containing comma-separated device ID and measurement ID
+    :param condition_id: Conditional condition ID
     :return: measurement: dict of float measurements
     """
     # Check Measurement Conditions
+    sql_condition = db_retrieve_table_daemon(ConditionalConditions).filter(
+        ConditionalConditions.unique_id == condition_id).first()
+
     if sql_condition.condition_type == 'measurement_dict':
         device_id = sql_condition.measurement.split(',')[0]
         measurement_id = sql_condition.measurement.split(',')[1]

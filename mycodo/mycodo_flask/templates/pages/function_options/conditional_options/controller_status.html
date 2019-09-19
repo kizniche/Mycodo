@@ -1,0 +1,11 @@
+<div class="col-auto">
+  {{form_conditional_conditions.controller_id.label(class_='control-label')}}
+  <div>
+    <select class="form-control" id="controller_id" name="controller_id" style="width: 100%;" title="" data-original-title="{{_('Select a Controller to get information about')}}">
+        <option value="">{{dict_translation['select_one']['title']}}</option>
+      {% for each_choice, value in choices_controller_ids.items() -%}
+        <option value="{{each_choice}}"{% if each_condition.controller_id == each_choice %} selected{% endif %}>{{value}}</option>
+      {% endfor -%}
+      </select>
+  </div>
+</div>

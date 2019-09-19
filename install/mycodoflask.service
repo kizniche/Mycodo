@@ -1,6 +1,6 @@
 [Unit]
 Description=gunicorn daemon for Mycodo flask web user interface
-After=network.target
+After=network.target mycodopyro.service
 
 [Service]
 User=root

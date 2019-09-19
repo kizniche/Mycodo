@@ -70,8 +70,8 @@ from mycodo.databases.models import Trigger
 from mycodo.databases.utils import session_scope
 from mycodo.devices.camera import camera_record
 from mycodo.utils.database import db_retrieve_table_daemon
-from mycodo.utils.function_actions import get_condition_measurement
-from mycodo.utils.function_actions import get_condition_measurement_dict
+from mycodo.utils.function_actions import get_condition_value
+from mycodo.utils.function_actions import get_condition_value_dict
 from mycodo.utils.function_actions import trigger_action
 from mycodo.utils.function_actions import trigger_function_actions
 from mycodo.utils.github_release_info import github_releases
@@ -120,6 +120,10 @@ class PyroServer(object):
     def controller_deactivate(self, cont_type, cont_id):
         """Deactivates a controller"""
         return self.mycodo.controller_deactivate(cont_type, cont_id)
+
+    def controller_is_active(self, cont_type, cont_id):
+        """Checks if a controller is active"""
+        return self.mycodo.controller_is_active(cont_type, cont_id)
 
     def check_daemon(self):
         """Check if all active controllers respond"""
@@ -354,10 +358,8 @@ class DaemonController:
         # Controller object that will store the thread objects for each
         # controller
         self.controller = {
-            # May only launch a single thread for this controller
             'Conditional': {},
-            'Output': None,
-            # May launch multiple threads per each of these controllers
+            'Output': None,  # May only launch a single thread for this controller
             'Input': {},
             'LCD': {},
             'Math': {},
@@ -460,18 +462,12 @@ class DaemonController:
 
     @staticmethod
     def get_condition_measurement(condition_id):
-        condition = db_retrieve_table_daemon(ConditionalConditions).filter(
-            ConditionalConditions.unique_id == condition_id).first()
-        if condition:
-            condition_return = get_condition_measurement(condition)
-            return condition_return
+        condition_return = get_condition_value(condition_id)
+        return condition_return
 
     @staticmethod
     def get_condition_measurement_dict(condition_id):
-        condition = db_retrieve_table_daemon(ConditionalConditions).filter(
-            ConditionalConditions.unique_id == condition_id).first()
-        if condition:
-            return get_condition_measurement_dict(condition)
+        return get_condition_value_dict(condition_id)
 
     def controller_activate(self, cont_type, cont_id):
         """
@@ -596,6 +592,40 @@ class DaemonController:
                                       err=except_msg)
             self.logger.exception(message)
             return 1, message
+
+    def controller_is_active(self, cont_type, cont_id):
+        """
+        Checks if a controller is active
+
+        :return: True for active, False for inactive
+        :rtype: bool
+
+        :param cont_type: Which controller type is to be activated?
+        :type cont_type: str
+        :param cont_id: Unique ID for controller
+        :type cont_id: str
+        """
+        try:
+            if cont_id in self.controller[cont_type]:
+                if self.controller[cont_type][cont_id].is_running():
+                    return True
+                else:
+                    message = "{type} controller with ID " \
+                              "{id} is not active.".format(type=cont_type,
+                                                              id=cont_id)
+                    self.logger.debug(message)
+                    return False
+            else:
+                message = "{type} controller with ID {id} not found".format(
+                    type=cont_type, id=cont_id)
+                self.logger.warning(message)
+                return False
+        except Exception as except_msg:
+            message = "Error: {type} controller with ID {id}:" \
+                      " {err}".format(type=cont_type, id=cont_id,
+                                      err=except_msg)
+            self.logger.exception(message)
+            return False
 
     def check_daemon(self):
         try:

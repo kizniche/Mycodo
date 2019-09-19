@@ -303,6 +303,42 @@ def choices_pids(pid, dict_units, dict_measurements):
     return choices
 
 
+def choices_controller_ids():
+    """ populate form multi-select choices from Controller IDS """
+    choices = OrderedDict()
+    for each_input in Input.query.all():
+        display = '[Input {id:02d}] {name}'.format(
+            id=each_input.id,
+            name=each_input.name)
+        choices.update({each_input.unique_id: display})
+    for each_math in Math.query.all():
+        display = '[Math {id:02d}] {name}'.format(
+            id=each_math.id,
+            name=each_math.name)
+        choices.update({each_math.unique_id: display})
+    for each_pid in PID.query.all():
+        display = '[PID {id:02d}] {name}'.format(
+            id=each_pid.id,
+            name=each_pid.name)
+        choices.update({each_pid.unique_id: display})
+    for each_cond in Conditional.query.all():
+        display = '[Conditional {id:02d}] {name}'.format(
+            id=each_cond.id,
+            name=each_cond.name)
+        choices.update({each_cond.unique_id: display})
+    for each_trigger in Trigger.query.all():
+        display = '[Trigger {id:02d}] {name}'.format(
+            id=each_trigger.id,
+            name=each_trigger.name)
+        choices.update({each_trigger.unique_id: display})
+    for each_lcd in LCD.query.all():
+        display = '[LCD {id:02d}] {name}'.format(
+            id=each_lcd.id,
+            name=each_lcd.name)
+        choices.update({each_lcd.unique_id: display})
+    return choices
+
+
 def choices_outputs(output, dict_units, dict_measurements):
     """ populate form multi-select choices from Output entries """
     choices = OrderedDict()
