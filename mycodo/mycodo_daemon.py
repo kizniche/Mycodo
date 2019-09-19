@@ -85,228 +85,6 @@ from mycodo.utils.tools import next_schedule
 MYCODO_DB_PATH = 'sqlite:///' + SQL_DATABASE_MYCODO
 
 
-@expose
-class PyroServer(object):
-    """
-    Class to handle communication between the client (mycodo_client.py) and
-    the daemon (mycodo_daemon.py) using Pyro5.
-    """
-    def __init__(self, mycodo):
-        self.mycodo = mycodo
-
-    def lcd_reset(self, lcd_id):
-        """Resets an LCD"""
-        return self.mycodo.lcd_reset(lcd_id)
-
-    def lcd_backlight(self, lcd_id, state):
-        """Turns an LCD backlight on or off"""
-        return self.mycodo.lcd_backlight(lcd_id, state)
-
-    def lcd_flash(self, lcd_id, state):
-        """Starts or stops an LCD from flashing (alarm)"""
-        return self.mycodo.lcd_flash(lcd_id, state)
-
-    def get_condition_measurement(self, condition_id):
-        return self.mycodo.get_condition_measurement(condition_id)
-
-    def get_condition_measurement_dict(self, condition_id):
-        return self.mycodo.get_condition_measurement_dict(condition_id)
-
-    def controller_activate(self, cont_type, cont_id):
-        """Activates a controller"""
-        return self.mycodo.controller_activate(cont_type, cont_id)
-
-    def controller_deactivate(self, cont_type, cont_id):
-        """Deactivates a controller"""
-        return self.mycodo.controller_deactivate(cont_type, cont_id)
-
-    def controller_is_active(self, cont_type, cont_id):
-        """Checks if a controller is active"""
-        return self.mycodo.controller_is_active(cont_type, cont_id)
-
-    def check_daemon(self):
-        """Check if all active controllers respond"""
-        return self.mycodo.check_daemon()
-
-    def input_information_get(self):
-        """Gets all input information"""
-        return self.mycodo.input_information_get()
-
-    def input_information_update(self):
-        """Updates all input information"""
-        return self.mycodo.input_information_update()
-
-    def input_force_measurements(self, input_id):
-        """Updates all input information"""
-        return self.mycodo.input_force_measurements(input_id)
-
-    def pid_hold(self, pid_id):
-        """Hold PID Controller operation"""
-        return self.mycodo.pid_hold(pid_id)
-
-    def pid_mod(self, pid_id):
-        """Set new PID Controller settings"""
-        return self.mycodo.pid_mod(pid_id)
-
-    def pid_pause(self, pid_id):
-        """Pause PID Controller operation"""
-        return self.mycodo.pid_pause(pid_id)
-
-    def pid_resume(self, pid_id):
-        """Resume PID controller operation"""
-        return self.mycodo.pid_resume(pid_id)
-
-    def pid_get(self, pid_id, setting):
-        """Get PID setting"""
-        return self.mycodo.pid_get(pid_id, setting)
-
-    def pid_set(self, pid_id, setting, value):
-        """Set PID setting"""
-        return self.mycodo.pid_set(pid_id, setting, value)
-
-    def refresh_daemon_camera_settings(self, ):
-        """Instruct the daemon to refresh the camera settings"""
-        return self.mycodo.refresh_daemon_camera_settings()
-
-    def refresh_daemon_conditional_settings(self, unique_id):
-        """Instruct the daemon to refresh a conditional's settings"""
-        return self.mycodo.refresh_daemon_conditional_settings(unique_id)
-
-    def refresh_daemon_misc_settings(self):
-        """Instruct the daemon to refresh the misc settings"""
-        return self.mycodo.refresh_daemon_misc_settings()
-
-    def refresh_daemon_trigger_settings(self, unique_id):
-        """Instruct the daemon to refresh a conditional's settings"""
-        return self.mycodo.refresh_daemon_trigger_settings(unique_id)
-
-    def output_state(self, output_id):
-        """Return the output state (not pin but whether output is on or off)"""
-        return self.mycodo.output_state(output_id)
-
-    def output_on(self,
-            output_id, duration=0.0, min_off=0.0,
-            duty_cycle=0.0, trigger_conditionals=True):
-        """Turns output on from the client"""
-        return self.mycodo.output_on(
-            output_id,
-            duration=duration,
-            min_off=min_off,
-            duty_cycle=duty_cycle,
-            trigger_conditionals=trigger_conditionals)
-
-    def output_off(self, output_id, trigger_conditionals=True):
-        """Turns output off from the client"""
-        return self.mycodo.output_off(output_id, trigger_conditionals)
-
-    def output_sec_currently_on(self, output_id):
-        """Turns the amount of time a output has already been on"""
-        return self.mycodo.controller['Output'].output_sec_currently_on(output_id)
-
-    def output_setup(self, action, output_id):
-        """Add, delete, or modify a output in the running output controller"""
-        return self.mycodo.output_setup(action, output_id)
-
-    def send_infrared_code_broadcast(self, code):
-        """Broadcast infrared code to all IR Triggers"""
-        return self.mycodo.send_infrared_code_broadcast(code)
-
-    def trigger_action(self, action_id, message='', single_action=False, debug=False):
-        """Trigger action"""
-        return self.mycodo.trigger_action(
-            action_id,
-            message=message,
-            single_action=single_action,
-            debug=debug)
-
-    def trigger_all_actions(self, function_id, message='', debug=False):
-        """Trigger all actions"""
-        return self.mycodo.trigger_all_actions(
-            function_id, message=message, debug=debug)
-
-    def terminate_daemon(self):
-        """Instruct the daemon to shut down"""
-        return self.mycodo.terminate_daemon()
-
-    @staticmethod
-    def daemon_status():
-        """
-        Merely indicates if the daemon is running or not, with successful
-        response of 'alive'. This will perform checks in the future and
-        return a more detailed daemon status.
-
-        TODO: Incorporate controller checks with daemon status
-        """
-        return 'alive'
-
-    @staticmethod
-    def is_in_virtualenv():
-        """Returns True if this script is running in a virtualenv"""
-        if hasattr(sys, 'real_prefix'):
-            return True
-        return False
-
-    @staticmethod
-    def ram_use():
-        """Return the amount of ram used by the daemon"""
-        return resource.getrusage(
-            resource.RUSAGE_SELF).ru_maxrss / float(1000)
-
-
-class ComThread(threading.Thread):
-    """
-    Class to run the Pyro5 server thread
-
-    ComServer will handle execution of commands from the web UI or other
-    controllers. It allows the client (mycodo_client.py to be executed as non-root
-    user) to communicate with the daemon (mycodo_daemon.py running with root privileges).
-
-    """
-    def __init__(self, mycodo, debug):
-        threading.Thread.__init__(self)
-
-        self.logger = logging.getLogger('mycodo.pyro')
-        if debug:
-            self.logger.setLevel(logging.DEBUG)
-        else:
-            self.logger.setLevel(logging.WARNING)
-        self.mycodo = mycodo
-        self.debug = debug
-        self.server = None
-        self.pyro_monitor = None
-
-    def run(self):
-        try:
-            Daemon.serveSimple({
-                PyroServer(self.mycodo): 'mycodo.pyro_server',
-            }, host="0.0.0.0", port=9090, ns=False)
-        except Exception as err:
-            self.logger.exception(
-                "ERROR: ComThread: {msg}".format(msg=err))
-
-    def close(self):
-        self.server.close()
-
-
-def monitor_pyro(logger_pyro):
-    """Monitor whether the Pyro5 server is active or not"""
-    log_timer = time.time() + 1
-    while True:
-        now = time.time()
-        if now > log_timer:
-            try:
-                pyro_server = Proxy("PYRO:mycodo.pyro_server@127.0.0.1:9090")
-                pyro_server.check_daemon()
-                logger_pyro.debug(
-                    "Pyro5 communication thread (30-minute timer): "
-                    "daemon_status()={stat}".format(stat=pyro_server.daemon_status))
-            except Exception as err:
-                logger_pyro.exception(
-                    "Pyro5 Exception: {msg}".format(msg=err))
-            log_timer = log_timer + 1800
-        time.sleep(1)
-
-
 class DaemonController:
     """
     Mycodo daemon
@@ -1233,6 +1011,246 @@ class DaemonController:
                     err=except_msg))
 
 
+@expose
+class PyroServer(object):
+    """
+    Pyro for communicating between the client and the daemon
+    """
+    def __init__(self, mycodo):
+        self.mycodo = mycodo
+
+    def lcd_reset(self, lcd_id):
+        """Resets an LCD"""
+        return self.mycodo.lcd_reset(lcd_id)
+
+    def lcd_backlight(self, lcd_id, state):
+        """Turns an LCD backlight on or off"""
+        return self.mycodo.lcd_backlight(lcd_id, state)
+
+    def lcd_flash(self, lcd_id, state):
+        """Starts or stops an LCD from flashing (alarm)"""
+        return self.mycodo.lcd_flash(lcd_id, state)
+
+    def get_condition_measurement(self, condition_id):
+        return self.mycodo.get_condition_measurement(condition_id)
+
+    def get_condition_measurement_dict(self, condition_id):
+        return self.mycodo.get_condition_measurement_dict(condition_id)
+
+    def controller_activate(self, cont_type, cont_id):
+        """Activates a controller"""
+        return self.mycodo.controller_activate(cont_type, cont_id)
+
+    def controller_deactivate(self, cont_type, cont_id):
+        """Deactivates a controller"""
+        return self.mycodo.controller_deactivate(cont_type, cont_id)
+
+    def controller_is_active(self, cont_type, cont_id):
+        """Checks if a controller is active"""
+        return self.mycodo.controller_is_active(cont_type, cont_id)
+
+    def check_daemon(self):
+        """Check if all active controllers respond"""
+        return self.mycodo.check_daemon()
+
+    def input_information_get(self):
+        """Gets all input information"""
+        return self.mycodo.input_information_get()
+
+    def input_information_update(self):
+        """Updates all input information"""
+        return self.mycodo.input_information_update()
+
+    def input_force_measurements(self, input_id):
+        """Updates all input information"""
+        return self.mycodo.input_force_measurements(input_id)
+
+    def pid_hold(self, pid_id):
+        """Hold PID Controller operation"""
+        return self.mycodo.pid_hold(pid_id)
+
+    def pid_mod(self, pid_id):
+        """Set new PID Controller settings"""
+        return self.mycodo.pid_mod(pid_id)
+
+    def pid_pause(self, pid_id):
+        """Pause PID Controller operation"""
+        return self.mycodo.pid_pause(pid_id)
+
+    def pid_resume(self, pid_id):
+        """Resume PID controller operation"""
+        return self.mycodo.pid_resume(pid_id)
+
+    def pid_get(self, pid_id, setting):
+        """Get PID setting"""
+        return self.mycodo.pid_get(pid_id, setting)
+
+    def pid_set(self, pid_id, setting, value):
+        """Set PID setting"""
+        return self.mycodo.pid_set(pid_id, setting, value)
+
+    def refresh_daemon_camera_settings(self, ):
+        """Instruct the daemon to refresh the camera settings"""
+        return self.mycodo.refresh_daemon_camera_settings()
+
+    def refresh_daemon_conditional_settings(self, unique_id):
+        """Instruct the daemon to refresh a conditional's settings"""
+        return self.mycodo.refresh_daemon_conditional_settings(unique_id)
+
+    def refresh_daemon_misc_settings(self):
+        """Instruct the daemon to refresh the misc settings"""
+        return self.mycodo.refresh_daemon_misc_settings()
+
+    def refresh_daemon_trigger_settings(self, unique_id):
+        """Instruct the daemon to refresh a conditional's settings"""
+        return self.mycodo.refresh_daemon_trigger_settings(unique_id)
+
+    def output_state(self, output_id):
+        """Return the output state (not pin but whether output is on or off)"""
+        return self.mycodo.output_state(output_id)
+
+    def output_on(self,
+            output_id, duration=0.0, min_off=0.0,
+            duty_cycle=0.0, trigger_conditionals=True):
+        """Turns output on from the client"""
+        return self.mycodo.output_on(
+            output_id,
+            duration=duration,
+            min_off=min_off,
+            duty_cycle=duty_cycle,
+            trigger_conditionals=trigger_conditionals)
+
+    def output_off(self, output_id, trigger_conditionals=True):
+        """Turns output off from the client"""
+        return self.mycodo.output_off(output_id, trigger_conditionals)
+
+    def output_sec_currently_on(self, output_id):
+        """Turns the amount of time a output has already been on"""
+        return self.mycodo.controller['Output'].output_sec_currently_on(output_id)
+
+    def output_setup(self, action, output_id):
+        """Add, delete, or modify a output in the running output controller"""
+        return self.mycodo.output_setup(action, output_id)
+
+    def send_infrared_code_broadcast(self, code):
+        """Broadcast infrared code to all IR Triggers"""
+        return self.mycodo.send_infrared_code_broadcast(code)
+
+    def trigger_action(self, action_id, message='', single_action=False, debug=False):
+        """Trigger action"""
+        return self.mycodo.trigger_action(
+            action_id,
+            message=message,
+            single_action=single_action,
+            debug=debug)
+
+    def trigger_all_actions(self, function_id, message='', debug=False):
+        """Trigger all actions"""
+        return self.mycodo.trigger_all_actions(
+            function_id, message=message, debug=debug)
+
+    def terminate_daemon(self):
+        """Instruct the daemon to shut down"""
+        return self.mycodo.terminate_daemon()
+
+    @staticmethod
+    def daemon_status():
+        """
+        Merely indicates if the daemon is running or not, with successful
+        response of 'alive'. This will perform checks in the future and
+        return a more detailed daemon status.
+
+        TODO: Incorporate controller checks with daemon status
+        """
+        return 'alive'
+
+    @staticmethod
+    def is_in_virtualenv():
+        """Returns True if this script is running in a virtualenv"""
+        if hasattr(sys, 'real_prefix'):
+            return True
+        return False
+
+    @staticmethod
+    def ram_use():
+        """Return the amount of ram used by the daemon"""
+        return resource.getrusage(
+            resource.RUSAGE_SELF).ru_maxrss / float(1000)
+
+
+class PyroDaemon(threading.Thread):
+    """
+    Class to run the Pyro5 server thread
+
+    ComServer will handle execution of commands from the web UI or other
+    controllers. It allows the client (mycodo_client.py to be executed as non-root
+    user) to communicate with the daemon (mycodo_daemon.py running with root privileges).
+
+    """
+    def __init__(self, mycodo, debug):
+        threading.Thread.__init__(self)
+
+        self.logger = logging.getLogger('mycodo.pyro_daemon')
+        if debug:
+            self.logger.setLevel(logging.DEBUG)
+        else:
+            self.logger.setLevel(logging.WARNING)
+        self.mycodo = mycodo
+
+    def run(self):
+        try:
+            self.logger.info("Starting Pyro5 daemon")
+            Daemon.serveSimple({
+                PyroServer(self.mycodo): 'mycodo.pyro_server',
+            }, host="0.0.0.0", port=9090, ns=False)
+        except Exception as err:
+            self.logger.exception(
+                "ERROR: PyroDaemon: {msg}".format(msg=err))
+
+
+class PyroMonitor(threading.Thread):
+    """
+    Monitor whether the Pyro5 server (and daemon) is active or not
+
+    """
+    def __init__(self, debug):
+        threading.Thread.__init__(self)
+
+        self.logger = logging.getLogger('mycodo.pyro_monitor')
+        if debug:
+            self.logger.setLevel(logging.DEBUG)
+        else:
+            self.logger.setLevel(logging.WARNING)
+        self.timer_sec =  1800
+
+    def run(self):
+        try:
+            self.logger.info(
+                "Starting Pyro5 daemon monitor ({:.0f} min timer)".format(
+                    self.timer_sec / 60.0))
+            log_timer = time.time() + 1
+            while True:
+                now = time.time()
+                if now > log_timer:
+                    while now > log_timer:
+                        log_timer += self.timer_sec
+                    try:
+                        proxy = Proxy(
+                            "PYRO:mycodo.pyro_server@127.0.0.1:9090")
+                        proxy.check_daemon()
+                        self.logger.debug(
+                            "Pyro5 daemon monitor: daemon_status() response: "
+                            "'{stat}'".format(stat=proxy.daemon_status()))
+                    except Exception as err:
+                        self.logger.exception(
+                            "Pyro5 daemon monitor Exception: {msg}".format(
+                                msg=err))
+                time.sleep(1)
+        except Exception as err:
+            self.logger.exception(
+                "ERROR: PyroMonitor: {msg}".format(msg=err))
+
+
 class MycodoDaemon:
     """
     Handle starting the components of the Mycodo Daemon
@@ -1249,15 +1267,16 @@ class MycodoDaemon:
     def start_daemon(self):
         """Start communication and daemon threads"""
         try:
-            self.logger.info("Starting Pyro5 server")
-            ct = ComThread(self.mycodo, self.debug)
-            ct.daemon = True
-            # Start communication thread for receiving commands from mycodo_client.py
-            ct.start()
-            # Start daemon thread that manages all controllers
-            self.mycodo.run()
-            # Stop communication thread after daemon has stopped
-            ct.close()
+            pd = PyroDaemon(self.mycodo, self.debug)
+            pd.daemon = True
+            pd.start()
+
+            if self.debug:
+                pm = PyroMonitor(self.debug)
+                pm.daemon = True
+                pm.start()
+
+            self.mycodo.run()  # Start daemon thread that manages controllers
         except Exception:
             self.logger.exception("ERROR Starting Mycodo Daemon")
 
@@ -1279,8 +1298,8 @@ if __name__ == '__main__':
     # Check if lock file already exists
     if os.path.isfile(DAEMON_PID_FILE):
         sys.exit(
-            "Lock file present. Ensure the daemon isn't already running and "
-            "delete {file}".format(file=DAEMON_PID_FILE))
+            "Daemon PID file present. Ensure the daemon isn't already "
+            "running and delete {file}".format(file=DAEMON_PID_FILE))
 
     # Parse commandline arguments
     args = parse_args()
