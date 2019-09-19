@@ -71,7 +71,7 @@ if __name__ == "__main__":
         if not each_revision:
             print("Error: Revision ID empty")
 
-        # elif each_revision == 'example':
+        # elif each_revision == 'REPLACE WITH ALEMBIC REVISION ID':
         #     print("Executing post-alembic code for revision {}".format(each_revision))
         #     try:
         #         pass  # Code goes here
@@ -80,7 +80,7 @@ if __name__ == "__main__":
         #         error.append(msg)
         #         print(msg)
 
-        elif each_revision == 'example':
+        elif each_revision == '545744b31813':
             print("Executing post-alembic code for revision {}".format(each_revision))
             try:
                 with session_scope(MYCODO_DB_PATH) as output_sess:
