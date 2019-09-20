@@ -39,8 +39,8 @@ class InputAdd(FlaskForm):
     for each_input in list_inputs_sorted:
         value = '{inp},'.format(inp=each_input)
         name = '{manuf}: {name}'.format(
-                     manuf=dict_inputs[each_input]['input_manufacturer'],
-                     name=dict_inputs[each_input]['input_name'])
+            manuf=dict_inputs[each_input]['input_manufacturer'],
+            name=dict_inputs[each_input]['input_name'])
 
         if 'input_library' in dict_inputs[each_input]:
             name += ' ({lib})'.format(lib=dict_inputs[each_input]['input_library'])

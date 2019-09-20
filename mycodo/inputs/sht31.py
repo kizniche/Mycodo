@@ -3,6 +3,7 @@
 # Author: Tony DiCola
 # Based on the BMP280 driver with SHT31 changes provided by
 # David J Taylor, Edinburgh (www.satsignal.eu)
+import math
 import time
 
 from flask_babel import lazy_gettext
@@ -52,7 +53,7 @@ measurements_dict = {
 INPUT_INFORMATION = {
     'input_name_unique': 'SHT31',
     'input_manufacturer': 'Sensirion',
-    'input_name': 'SHT31',
+    'input_name': 'SHT3x (30, 31, 35)',
     'measurements_name': 'Humidity/Temperature',
     'measurements_dict': measurements_dict,
 
@@ -150,6 +151,12 @@ class InputModule(AbstractInput):
             except Exception as e:
                 self.logger.exception("Could not read measurements after reset attempt")
                 return
+
+        if math.isnan(temperature) or math.isnan(humidity):
+            self.logger.debug(
+                "At least one measurement is not a number: Temperature: {}, "
+                "Humidity: {}".format(temperature, humidity))
+            return
 
         if self.is_enabled(0):
             self.value_set(0, temperature)
