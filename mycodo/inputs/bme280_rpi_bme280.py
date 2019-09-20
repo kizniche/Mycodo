@@ -35,10 +35,10 @@ measurements_dict = {
 
 # Input information
 INPUT_INFORMATION = {
-    'input_name_unique': 'BME280',
+    'input_name_unique': 'BME280_RPI_BME280',
     'input_manufacturer': 'BOSCH',
     'input_name': 'BME280',
-    'input_library': 'Adafruit_BME280',
+    'input_library': 'RPi.bme280',
     'measurements_name': 'Pressure/Humidity/Temperature',
     'measurements_dict': measurements_dict,
 
@@ -52,8 +52,7 @@ INPUT_INFORMATION = {
     'options_disabled': ['interface'],
 
     'dependencies_module': [
-        ('pip-pypi', 'Adafruit_GPIO', 'Adafruit_GPIO'),
-        ('pip-git', 'Adafruit_BME280', 'git://github.com/adafruit/Adafruit_Python_BME280.git#egg=adafruit-bme280')
+        ('pip-pypi', 'bme280', 'RPi.bme280')
     ],
 
     'interfaces': ['I2C'],
@@ -76,26 +75,30 @@ class InputModule(AbstractInput):
         super(InputModule, self).__init__(input_dev, testing=testing, name=__name__)
 
         if not testing:
-            from Adafruit_BME280 import BME280
+            import smbus2
+            import bme280
 
             self.i2c_address = int(str(input_dev.i2c_location), 16)
             self.i2c_bus = input_dev.i2c_bus
-            self.sensor = BME280(
-                address=self.i2c_address,
-                busnum=self.i2c_bus)
+            self.bus = smbus2.SMBus(self.i2c_bus)
+            self.calibration_params = bme280.load_calibration_params(
+                self.bus, self.i2c_address)
+            self.sensor = bme280
 
     def get_measurement(self):
         """ Gets the measurement in units by reading the """
         self.return_dict = measurements_dict.copy()
 
+        data = self.sensor.sample(self.bus, self.i2c_address, self.calibration_params)
+
         if self.is_enabled(0):
-            self.value_set(0, self.sensor.read_temperature())
+            self.value_set(0, data.temperature)
 
         if self.is_enabled(1):
-            self.value_set(1, self.sensor.read_humidity())
+            self.value_set(1, data.humidity)
 
         if self.is_enabled(2):
-            self.value_set(2, self.sensor.read_pressure())
+            self.value_set(2, data.pressure)
 
         if (self.is_enabled(3) and
                 self.is_enabled(0) and

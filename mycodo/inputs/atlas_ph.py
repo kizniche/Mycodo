@@ -41,8 +41,8 @@ measurements_dict = {
 # Input information
 INPUT_INFORMATION = {
     'input_name_unique': 'ATLAS_PH',
-    'input_manufacturer': 'Atlas',
-    'input_name': 'Atlas pH',
+    'input_manufacturer': 'Atlas Scientific',
+    'input_name': 'pH',
     'measurements_name': 'Ion Concentration',
     'measurements_dict': measurements_dict,
 

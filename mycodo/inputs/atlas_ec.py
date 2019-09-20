@@ -13,8 +13,8 @@ measurements_dict = {
 # Input information
 INPUT_INFORMATION = {
     'input_name_unique': 'ATLAS_EC',
-    'input_manufacturer': 'Atlas',
-    'input_name': 'Atlas EC',
+    'input_manufacturer': 'Atlas Scientific',
+    'input_name': 'EC',
     'measurements_name': 'Electrical Conductivity',
     'measurements_dict': measurements_dict,
 

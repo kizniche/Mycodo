@@ -13,8 +13,8 @@ measurements_dict = {
 # Input information
 INPUT_INFORMATION = {
     'input_name_unique': 'ATLAS_PT1000',
-    'input_manufacturer': 'Atlas',
-    'input_name': 'Atlas PT-1000',
+    'input_manufacturer': 'Atlas Scientific',
+    'input_name': 'PT-1000',
     'measurements_name': 'Temperature',
     'measurements_dict': measurements_dict,
 

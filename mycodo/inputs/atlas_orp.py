@@ -33,8 +33,8 @@ measurements_dict = {
 # Input information
 INPUT_INFORMATION = {
     'input_name_unique': 'ATLAS_ORP',
-    'input_manufacturer': 'Atlas',
-    'input_name': 'Atlas ORP',
+    'input_manufacturer': 'Atlas Scientific',
+    'input_name': 'ORP',
     'measurements_name': 'Oxidation Reduction Potential',
     'measurements_dict': measurements_dict,
 

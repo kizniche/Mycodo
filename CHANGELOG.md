@@ -1,3 +1,11 @@
+## 7.7.7 (Unreleased)
+
+### Features
+
+ - Add Input: BME280 using RPi.bme280 library ([#694](https://github.com/kizniche/mycodo/issues/694))
+ - Add "Library" to distinguish inputs that use different libraries to acquire measurements for the same sensor
+
+
 ## 7.7.6 (2019.09.19)
 
 ### Bugfixes

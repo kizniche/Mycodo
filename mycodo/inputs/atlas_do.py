@@ -33,8 +33,8 @@ measurements_dict = {
 # Input information
 INPUT_INFORMATION = {
     'input_name_unique': 'ATLAS_DO',
-    'input_manufacturer': 'Atlas',
-    'input_name': 'Atlas DO',
+    'input_manufacturer': 'Atlas Scientific',
+    'input_name': 'DO',
     'measurements_name': 'Dissolved Oxygen',
     'measurements_dict': measurements_dict,
 
