@@ -144,12 +144,16 @@ class InputModule(AbstractInput):
             temperature, humidity = self.sensor.read_temperature_humidity()
         except OSError as e:
             self.logger.debug("OSError: {}".format(e))
-            self.logger.debug("Attempting reset of sensor and reread of measurements")
-            self.sensor.reset()
+            self.logger.debug("Attempting reset of sensor and another measurement")
+            try:
+                self.sensor.reset()
+            except Exception:
+                self.logger.debug("Reset command unsuccessful. Skipping measurement.")
+                return
             try:
                 temperature, humidity = self.sensor.read_temperature_humidity()
             except Exception as e:
-                self.logger.exception("Could not read measurements after reset attempt")
+                self.logger.debug("Measurement unsuccessful after reset. Skipping measurement.")
                 return
 
         if math.isnan(temperature) or math.isnan(humidity):
