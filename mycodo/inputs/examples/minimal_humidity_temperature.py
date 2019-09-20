@@ -26,6 +26,7 @@ INPUT_INFORMATION = {
     'input_name_unique': 'TEST_00',
     'input_manufacturer': 'AAA Company X',
     'input_name': 'Dummy Input 00',
+    'input_library': 'random',
     'measurements_name': 'Humidity/Temperature',
     'measurements_dict': measurements_dict,
     'measurements_use_same_timestamp': True,

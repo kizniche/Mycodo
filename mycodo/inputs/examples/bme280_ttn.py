@@ -56,6 +56,7 @@ INPUT_INFORMATION = {
     'input_name_unique': 'BME280_TTN',
     'input_manufacturer': 'BOSCH',
     'input_name': 'BME280 (->Serial->TTN)',
+    'input_library': 'Adafruit_BME280',
     'measurements_name': 'Pressure/Humidity/Temperature',
     'measurements_dict': measurements_dict,
     'measurements_use_same_timestamp': True,

@@ -34,6 +34,7 @@ INPUT_INFORMATION = {
     'input_name_unique': 'K30_TTN',
     'input_manufacturer': 'CO2Meter',
     'input_name': 'K30 (->Serial->TTN)',
+    'input_library': 'serial',
     'measurements_name': 'CO2',
     'measurements_dict': measurements_dict,
     'measurements_use_same_timestamp': True,

@@ -37,7 +37,7 @@ class InputAdd(FlaskForm):
     list_inputs_sorted = generate_form_input_list(dict_inputs)
 
     for each_input in list_inputs_sorted:
-        value = '{inp},'.format(inp=each_input)
+        value = '{inp}'.format(inp=each_input)
         name = '{manuf}: {name}'.format(
                      manuf=dict_inputs[each_input]['input_manufacturer'],
                      name=dict_inputs[each_input]['input_name'])
