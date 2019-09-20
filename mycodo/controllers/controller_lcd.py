@@ -113,6 +113,7 @@ class LCDController(AbstractController, threading.Thread):
 
         self.lcd_string_line = {}
         self.lcd_line = {}
+        self.lcd_text = {}
         self.lcd_max_age = {}
         self.lcd_decimal_places = {}
 
@@ -221,27 +222,35 @@ class LCDController(AbstractController, threading.Thread):
                 self.lcd_string_line[each_lcd_display.unique_id][i] = ''
                 self.lcd_line[each_lcd_display.unique_id][i] = {}
                 if i == 1:
+                    self.lcd_text[each_lcd_display.unique_id][i] = each_lcd_display.line_1_text
                     self.lcd_max_age[each_lcd_display.unique_id][i] = each_lcd_display.line_1_max_age
                     self.lcd_decimal_places[each_lcd_display.unique_id][i] = each_lcd_display.line_1_decimal_places
                 elif i == 2:
+                    self.lcd_text[each_lcd_display.unique_id][i] = each_lcd_display.line_2_text
                     self.lcd_max_age[each_lcd_display.unique_id][i] = each_lcd_display.line_2_max_age
                     self.lcd_decimal_places[each_lcd_display.unique_id][i] = each_lcd_display.line_2_decimal_places
                 elif i == 3:
+                    self.lcd_text[each_lcd_display.unique_id][i] = each_lcd_display.line_3_text
                     self.lcd_max_age[each_lcd_display.unique_id][i] = each_lcd_display.line_3_max_age
                     self.lcd_decimal_places[each_lcd_display.unique_id][i] = each_lcd_display.line_3_decimal_places
                 elif i == 4:
+                    self.lcd_text[each_lcd_display.unique_id][i] = each_lcd_display.line_4_text
                     self.lcd_max_age[each_lcd_display.unique_id][i] = each_lcd_display.line_4_max_age
                     self.lcd_decimal_places[each_lcd_display.unique_id][i] = each_lcd_display.line_4_decimal_places
                 elif i == 5:
+                    self.lcd_text[each_lcd_display.unique_id][i] = each_lcd_display.line_5_text
                     self.lcd_max_age[each_lcd_display.unique_id][i] = each_lcd_display.line_5_max_age
                     self.lcd_decimal_places[each_lcd_display.unique_id][i] = each_lcd_display.line_5_decimal_places
                 elif i == 6:
+                    self.lcd_text[each_lcd_display.unique_id][i] = each_lcd_display.line_6_text
                     self.lcd_max_age[each_lcd_display.unique_id][i] = each_lcd_display.line_6_max_age
                     self.lcd_decimal_places[each_lcd_display.unique_id][i] = each_lcd_display.line_6_decimal_places
                 elif i == 7:
+                    self.lcd_text[each_lcd_display.unique_id][i] = each_lcd_display.line_7_text
                     self.lcd_max_age[each_lcd_display.unique_id][i] = each_lcd_display.line_7_max_age
                     self.lcd_decimal_places[each_lcd_display.unique_id][i] = each_lcd_display.line_7_decimal_places
                 elif i == 8:
+                    self.lcd_text[each_lcd_display.unique_id][i] = each_lcd_display.line_8_text
                     self.lcd_max_age[each_lcd_display.unique_id][i] = each_lcd_display.line_8_max_age
                     self.lcd_decimal_places[each_lcd_display.unique_id][i] = each_lcd_display.line_8_decimal_places
 
@@ -308,7 +317,15 @@ class LCDController(AbstractController, threading.Thread):
 
     def get_measurement(self, display_id, i):
         try:
-            if self.lcd_line[display_id][i]['measure'] == 'BLANK':
+            if self.lcd_line[display_id][i]['measure'] == 'TEXT':
+                self.lcd_line[display_id][i]['name'] = ''
+                self.lcd_line[display_id][i]['unit'] = ''
+                if len(self.lcd_text[display_id][i]) > self.lcd_x_characters:
+                    self.lcd_line[display_id][i]['measure_val'] = self.lcd_text[display_id][i][:self.lcd_x_characters]
+                else:
+                    self.lcd_line[display_id][i]['measure_val'] = self.lcd_text[display_id][i]
+                return True
+            elif self.lcd_line[display_id][i]['measure'] == 'BLANK':
                 self.lcd_line[display_id][i]['name'] = ''
                 self.lcd_line[display_id][i]['unit'] = ''
                 self.lcd_line[display_id][i]['measure_val'] = ''

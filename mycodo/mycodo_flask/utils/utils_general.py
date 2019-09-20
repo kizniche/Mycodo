@@ -371,6 +371,7 @@ def choices_lcd(inputs, maths, pids, outputs, dict_units, dict_measurements):
     # Display IP address
     choices.update({'0000,BLANK': 'Blank Line'})
     choices.update({'0000,IP': 'IP Address of Raspberry Pi'})
+    choices.update({'0000,TEXT': 'Custom Text'})
 
     # Inputs
     for each_input in inputs:

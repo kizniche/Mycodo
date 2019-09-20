@@ -6,6 +6,7 @@
 
 ### Features
 
+ - Add LCD Line: Custom Text
  - Add Input: BME280 using RPi.bme280 library ([#694](https://github.com/kizniche/mycodo/issues/694))
  - Add "Library" to distinguish inputs that use different libraries to acquire measurements for the same sensor
 

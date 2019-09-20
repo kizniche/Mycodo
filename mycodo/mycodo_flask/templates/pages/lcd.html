@@ -190,6 +190,9 @@
             </select>
           </div>
         </div>
+
+      {% if each_lcd_display.line_1_measurement not in ['BLANK', 'IP', 'TEXT'] %}
+
         <div class="col-auto">
           {{form_lcd_display.line_1_max_age.label(class_='control-label')}}
           <div>
@@ -202,6 +205,18 @@
             {{form_lcd_display.line_1_decimal_places(class_='form-control', value=each_lcd_display.line_1_decimal_places)}}
           </div>
         </div>
+
+      {% elif each_lcd_display.line_1_measurement == 'TEXT' %}
+
+        <div class="col-auto">
+          <label class="control-label">{{dict_translation['text']['title']}}</label>
+          <div>
+            {{form_lcd_display.line_1_text(class_='form-control', value=each_lcd_display.line_1_text)}}
+          </div>
+        </div>
+
+      {% endif %}
+
       </div>
 
       <div class="row small-gutters">
@@ -216,6 +231,9 @@
             </select>
           </div>
         </div>
+
+      {% if each_lcd_display.line_2_measurement not in ['BLANK', 'IP', 'TEXT'] %}
+
         <div class="col-auto">
           {{form_lcd_display.line_2_max_age.label(class_='control-label')}}
           <div>
@@ -228,6 +246,18 @@
             {{form_lcd_display.line_2_decimal_places(class_='form-control', value=each_lcd_display.line_2_decimal_places)}}
           </div>
         </div>
+
+      {% elif each_lcd_display.line_2_measurement == 'TEXT' %}
+
+        <div class="col-auto">
+          <label class="control-label">{{dict_translation['text']['title']}}</label>
+          <div>
+            {{form_lcd_display.line_2_text(class_='form-control', value=each_lcd_display.line_2_text)}}
+          </div>
+        </div>
+
+      {% endif %}
+
       </div>
 
         {%- if each_lcd.lcd_type in ['20x4_generic', '128x32_pioled', '128x64_pioled'] -%}
@@ -244,6 +274,9 @@
             </select>
           </div>
         </div>
+
+      {% if each_lcd_display.line_3_measurement not in ['BLANK', 'IP', 'TEXT'] %}
+
         <div class="col-auto">
           {{form_lcd_display.line_3_max_age.label(class_='control-label')}}
           <div>
@@ -256,6 +289,18 @@
             {{form_lcd_display.line_3_decimal_places(class_='form-control', value=each_lcd_display.line_3_decimal_places)}}
           </div>
         </div>
+
+      {% elif each_lcd_display.line_3_measurement == 'TEXT' %}
+
+        <div class="col-auto">
+          <label class="control-label">{{dict_translation['text']['title']}}</label>
+          <div>
+            {{form_lcd_display.line_3_text(class_='form-control', value=each_lcd_display.line_3_text)}}
+          </div>
+        </div>
+
+      {% endif %}
+
       </div>
 
       <div class="row small-gutters">
@@ -270,6 +315,9 @@
             </select>
           </div>
         </div>
+
+      {% if each_lcd_display.line_4_measurement not in ['BLANK', 'IP', 'TEXT'] %}
+
         <div class="col-auto">
           {{form_lcd_display.line_4_max_age.label(class_='control-label')}}
           <div>
@@ -282,6 +330,18 @@
             {{form_lcd_display.line_4_decimal_places(class_='form-control', value=each_lcd_display.line_4_decimal_places)}}
           </div>
         </div>
+
+          {% elif each_lcd_display.line_4_measurement == 'TEXT' %}
+
+        <div class="col-auto">
+          <label class="control-label">{{dict_translation['text']['title']}}</label>
+          <div>
+            {{form_lcd_display.line_4_text(class_='form-control', value=each_lcd_display.line_4_text)}}
+          </div>
+        </div>
+
+      {% endif %}
+
       </div>
 
         {% endif %}
@@ -300,6 +360,9 @@
             </select>
           </div>
         </div>
+
+      {% if each_lcd_display.line_5_measurement not in ['BLANK', 'IP', 'TEXT'] %}
+
         <div class="col-auto">
           {{form_lcd_display.line_5_max_age.label(class_='control-label')}}
           <div>
@@ -312,6 +375,18 @@
             {{form_lcd_display.line_5_decimal_places(class_='form-control', value=each_lcd_display.line_5_decimal_places)}}
           </div>
         </div>
+
+      {% elif each_lcd_display.line_5_measurement == 'TEXT' %}
+
+        <div class="col-auto">
+          <label class="control-label">{{dict_translation['text']['title']}}</label>
+          <div>
+            {{form_lcd_display.line_5_text(class_='form-control', value=each_lcd_display.line_5_text)}}
+          </div>
+        </div>
+
+      {% endif %}
+
       </div>
 
       <div class="row small-gutters">
@@ -326,6 +401,9 @@
             </select>
           </div>
         </div>
+
+      {% if each_lcd_display.line_6_measurement not in ['BLANK', 'IP', 'TEXT'] %}
+
         <div class="col-auto">
           {{form_lcd_display.line_6_max_age.label(class_='control-label')}}
           <div>
@@ -338,6 +416,18 @@
             {{form_lcd_display.line_6_decimal_places(class_='form-control', value=each_lcd_display.line_6_decimal_places)}}
           </div>
         </div>
+
+      {% elif each_lcd_display.line_6_measurement == 'TEXT' %}
+
+        <div class="col-auto">
+          <label class="control-label">{{dict_translation['text']['title']}}</label>
+          <div>
+            {{form_lcd_display.line_6_text(class_='form-control', value=each_lcd_display.line_6_text)}}
+          </div>
+        </div>
+
+      {% endif %}
+
       </div>
 
       <div class="row small-gutters">
@@ -352,6 +442,9 @@
             </select>
           </div>
         </div>
+
+      {% if each_lcd_display.line_7_measurement not in ['BLANK', 'IP', 'TEXT'] %}
+
         <div class="col-auto">
           {{form_lcd_display.line_7_max_age.label(class_='control-label')}}
           <div>
@@ -364,6 +457,18 @@
             {{form_lcd_display.line_7_decimal_places(class_='form-control', value=each_lcd_display.line_7_decimal_places)}}
           </div>
         </div>
+
+      {% elif each_lcd_display.line_7_measurement == 'TEXT' %}
+
+        <div class="col-auto">
+          <label class="control-label">{{dict_translation['text']['title']}}</label>
+          <div>
+            {{form_lcd_display.line_7_text(class_='form-control', value=each_lcd_display.line_7_text)}}
+          </div>
+        </div>
+
+      {% endif %}
+
       </div>
 
       <div class="row small-gutters">
@@ -378,6 +483,9 @@
             </select>
           </div>
         </div>
+
+      {% if each_lcd_display.line_8_measurement not in ['BLANK', 'IP', 'TEXT'] %}
+
         <div class="col-auto">
           {{form_lcd_display.line_8_max_age.label(class_='control-label')}}
           <div>
@@ -390,6 +498,18 @@
             {{form_lcd_display.line_8_decimal_places(class_='form-control', value=each_lcd_display.line_8_decimal_places)}}
           </div>
         </div>
+
+          {% elif each_lcd_display.line_8_measurement == 'TEXT' %}
+
+        <div class="col-auto">
+          <label class="control-label">{{dict_translation['text']['title']}}</label>
+          <div>
+            {{form_lcd_display.line_8_text(class_='form-control', value=each_lcd_display.line_8_text)}}
+          </div>
+        </div>
+
+      {% endif %}
+
       </div>
 
         {% endif %}

@@ -279,6 +279,8 @@ def lcd_display_mod(form):
             if form.line_1_display.data:
                 mod_lcd_data.line_1_id = form.line_1_display.data.split(",")[0]
                 mod_lcd_data.line_1_measurement = form.line_1_display.data.split(",")[1]
+                if form.line_1_text.data:
+                    mod_lcd_data.line_1_text = form.line_1_text.data
                 mod_lcd_data.line_1_max_age = form.line_1_max_age.data
                 mod_lcd_data.line_1_decimal_places = form.line_1_decimal_places.data
             else:
@@ -288,6 +290,8 @@ def lcd_display_mod(form):
             if form.line_2_display.data:
                 mod_lcd_data.line_2_id = form.line_2_display.data.split(",")[0]
                 mod_lcd_data.line_2_measurement = form.line_2_display.data.split(",")[1]
+                if form.line_2_text.data:
+                    mod_lcd_data.line_2_text = form.line_2_text.data
                 mod_lcd_data.line_2_max_age = form.line_2_max_age.data
                 mod_lcd_data.line_2_decimal_places = form.line_2_decimal_places.data
             else:
@@ -297,6 +301,8 @@ def lcd_display_mod(form):
             if form.line_3_display.data:
                 mod_lcd_data.line_3_id = form.line_3_display.data.split(",")[0]
                 mod_lcd_data.line_3_measurement = form.line_3_display.data.split(",")[1]
+                if form.line_3_text.data:
+                    mod_lcd_data.line_3_text = form.line_3_text.data
                 mod_lcd_data.line_3_max_age = form.line_3_max_age.data
                 mod_lcd_data.line_3_decimal_places = form.line_3_decimal_places.data
             else:
@@ -306,6 +312,8 @@ def lcd_display_mod(form):
             if form.line_4_display.data:
                 mod_lcd_data.line_4_id = form.line_4_display.data.split(",")[0]
                 mod_lcd_data.line_4_measurement = form.line_4_display.data.split(",")[1]
+                if form.line_4_text.data:
+                    mod_lcd_data.line_4_text = form.line_4_text.data
                 mod_lcd_data.line_4_max_age = form.line_4_max_age.data
                 mod_lcd_data.line_4_decimal_places = form.line_4_decimal_places.data
             else:
@@ -315,6 +323,8 @@ def lcd_display_mod(form):
             if form.line_5_display.data:
                 mod_lcd_data.line_5_id = form.line_5_display.data.split(",")[0]
                 mod_lcd_data.line_5_measurement = form.line_5_display.data.split(",")[1]
+                if form.line_5_text.data:
+                    mod_lcd_data.line_5_text = form.line_5_text.data
                 mod_lcd_data.line_5_max_age = form.line_5_max_age.data
                 mod_lcd_data.line_5_decimal_places = form.line_5_decimal_places.data
             else:
@@ -324,6 +334,8 @@ def lcd_display_mod(form):
             if form.line_6_display.data:
                 mod_lcd_data.line_6_id = form.line_6_display.data.split(",")[0]
                 mod_lcd_data.line_6_measurement = form.line_6_display.data.split(",")[1]
+                if form.line_6_text.data:
+                    mod_lcd_data.line_6_text = form.line_6_text.data
                 mod_lcd_data.line_6_max_age = form.line_6_max_age.data
                 mod_lcd_data.line_6_decimal_places = form.line_6_decimal_places.data
             else:
@@ -333,6 +345,8 @@ def lcd_display_mod(form):
             if form.line_7_display.data:
                 mod_lcd_data.line_7_id = form.line_7_display.data.split(",")[0]
                 mod_lcd_data.line_7_measurement = form.line_7_display.data.split(",")[1]
+                if form.line_7_text.data:
+                    mod_lcd_data.line_7_text = form.line_7_text.data
                 mod_lcd_data.line_7_max_age = form.line_7_max_age.data
                 mod_lcd_data.line_7_decimal_places = form.line_7_decimal_places.data
             else:
@@ -342,6 +356,8 @@ def lcd_display_mod(form):
             if form.line_8_display.data:
                 mod_lcd_data.line_8_id = form.line_8_display.data.split(",")[0]
                 mod_lcd_data.line_8_measurement = form.line_8_display.data.split(",")[1]
+                if form.line_8_text.data:
+                    mod_lcd_data.line_8_text = form.line_8_text.data
                 mod_lcd_data.line_8_max_age = form.line_8_max_age.data
                 mod_lcd_data.line_8_decimal_places = form.line_8_decimal_places.data
             else:
