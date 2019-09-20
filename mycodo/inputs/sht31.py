@@ -164,6 +164,7 @@ class InputModule(AbstractInput):
             else:
                 success = True
                 break
+            time.sleep(0.1)
 
         if not success:
             return
