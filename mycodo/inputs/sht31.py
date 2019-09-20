@@ -154,9 +154,9 @@ class InputModule(AbstractInput):
                     try:
                         temperature, humidity = self.sensor.read_temperature_humidity()
                     except Exception as e:
-                        self.logger.debug("Measurement unsuccessful after reset. Skipping measurement.")
+                        self.logger.debug("Measurement unsuccessful after reset")
                 except Exception:
-                    self.logger.debug("Reset command unsuccessful. Skipping measurement.")
+                    self.logger.debug("Reset command unsuccessful")
             if math.isnan(temperature) or math.isnan(humidity):
                 self.logger.debug(
                     "At least one measurement is not a number: Temperature: {}, "
@@ -167,6 +167,7 @@ class InputModule(AbstractInput):
             time.sleep(0.1)
 
         if not success:
+            self.logger.debug("Could not obtain measurements after 3 tries")
             return
 
         if self.is_enabled(0):
