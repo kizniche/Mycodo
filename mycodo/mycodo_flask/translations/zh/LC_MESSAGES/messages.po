@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2019-09-16 22:55-0400\n"
+"POT-Creation-Date: 2019-09-19 21:51-0400\n"
 "PO-Revision-Date: 2018-08-10 15:59-0400\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: zh\n"
@@ -18,208 +18,216 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.7.0\n"
 
-#: config.py:88
+#: config.py:92
 msgid "Average (Last, Multiple Channels)"
 msgstr ""
 
-#: config.py:94
+#: config.py:98
 msgid "Average (Past, Single Channel)"
 msgstr ""
 
-#: config.py:101
+#: config.py:105
 msgid "Sum (Last, Multiple Channels)"
 msgstr ""
 
-#: config.py:107
+#: config.py:111
 msgid "Sum (Past, Single Channel)"
 msgstr ""
 
-#: config.py:114
+#: config.py:118
 msgid "Difference"
 msgstr "区别"
 
-#: config.py:120 mycodo_flask/forms/forms_math.py:75
+#: config.py:124 mycodo_flask/forms/forms_math.py:75
 #: mycodo_flask/forms/forms_settings.py:228
 #: mycodo_flask/forms/forms_settings.py:236
 msgid "Equation"
 msgstr "方程"
 
-#: config.py:126
+#: config.py:130
 msgid "Humidity (Wet/Dry-Bulb)"
 msgstr "湿度（湿/干灯泡）"
 
-#: config.py:149
+#: config.py:153
 msgid "Redundancy"
 msgstr "冗余"
 
-#: config.py:155 mycodo_flask/templates/admin/statistics.html:6
+#: config.py:159 mycodo_flask/templates/admin/statistics.html:6
 msgid "Statistics"
 msgstr "统计"
 
-#: config.py:197
+#: config.py:201
 msgid "Verification"
 msgstr "验证"
 
-#: config.py:203 config_devices_units.py:197
+#: config.py:207 config_devices_units.py:193
 msgid "Vapor Pressure Deficit"
 msgstr "蒸汽压力不足"
 
-#: config.py:233
+#: config.py:237
 msgid "Time/Date"
 msgstr "时间/日期"
 
-#: config.py:237 config_devices_units.py:69 config_translations.py:51
+#: config.py:241 config_devices_units.py:69 config_translations.py:51
 msgid "Duration"
 msgstr "持续时间"
 
-#: config.py:241
+#: config.py:245
 msgid "Daily (Time-Based)"
 msgstr "每日（基于时间）"
 
-#: config.py:245
+#: config.py:249
 msgid "Daily (Sine Wave)"
 msgstr "每日（正弦波）"
 
-#: config.py:249
+#: config.py:253
 msgid "Daily (Bezier Curve)"
 msgstr "每日（贝塞尔曲线）"
 
-#: config.py:268
+#: config.py:272
 msgid "On/Off (GPIO)"
 msgstr "开/关（GPIO）"
 
-#: config.py:274
+#: config.py:278
 msgid "PWM (GPIO)"
 msgstr "PWM（GPIO）"
 
-#: config.py:282
+#: config.py:286
 msgid "Wireless 315/433MHz LPD/SRD (rpi-rf)"
 msgstr "无线315 / 433MHz LPD / SRD（rpi-rf）"
 
-#: config.py:291
+#: config.py:295
 msgid "On/Off (Linux Command)"
 msgstr "开/关（Linux命令）"
 
-#: config.py:297
+#: config.py:301
 msgid "PWM (Linux Command)"
 msgstr "PWM（Linux命令）"
 
-#: config.py:303
+#: config.py:307
 msgid "On/Off (Python Command)"
 msgstr "开/关（Python命令）"
 
-#: config.py:309
+#: config.py:313
 msgid "PWM (Python Command)"
 msgstr "PWM（Python命令）"
 
-#: config.py:315
+#: config.py:319
 msgid "Atlas EZO-PMP"
 msgstr "Atlas EZO-PMP"
 
-#: config.py:333
+#: config.py:337
 msgid "FTDI"
 msgstr ""
 
-#: config.py:335
+#: config.py:339
 msgid "I2C"
 msgstr "I2C"
 
-#: config.py:337
+#: config.py:341
 msgid "UART"
 msgstr "UART"
 
-#: config.py:395
+#: config.py:399
 msgid "DS-Type Sensor Calibration"
 msgstr "DS型传感器校准"
 
-#: config.py:410 config_devices_units.py:97
+#: config.py:414 config_devices_units.py:97
 msgid "GPIO State"
 msgstr "GPIO国家"
 
-#: config.py:411
+#: config.py:415
 msgid "Output State"
 msgstr ""
 
-#: config.py:418
+#: config.py:416
+msgid "Output Duration On"
+msgstr ""
+
+#: config.py:417
+msgid "Controller Running"
+msgstr ""
+
+#: config.py:424
 msgid "Spacer"
 msgstr "间隔"
 
-#: config.py:424
+#: config.py:430
 msgid "Execute Actions"
 msgstr "执行动作"
 
-#: config.py:461
+#: config.py:467
 msgid "Trigger: Timer (Daily Point)"
 msgstr "触发：定时器（每日点）"
 
-#: config.py:468
+#: config.py:474
 msgid "Daily Span"
 msgstr "每日跨度"
 
-#: config.py:481
+#: config.py:487
 msgid "Infrared Receive"
 msgstr ""
 
-#: config.py:491
+#: config.py:497
 msgid "Run PWM Method"
 msgstr "运行PWM方法"
 
-#: config.py:497
+#: config.py:503
 msgid "Sunrise/Sunset"
 msgstr "日出日落"
 
-#: config.py:527
+#: config.py:533
 msgid "Camera: Capture Photo"
 msgstr "相机：拍摄照片"
 
-#: config.py:551
+#: config.py:557
 msgid "Email with Photo Attachment"
 msgstr "带照片附件的电子邮件"
 
-#: config.py:555
+#: config.py:561
 msgid "Email with Video Attachment"
 msgstr "带视频附件的电子邮件"
 
-#: config.py:559
+#: config.py:565
 msgid "Execute Command"
 msgstr "执行命令"
 
-#: config.py:563
+#: config.py:569
 msgid "Infrared Send"
 msgstr ""
 
-#: config.py:574
+#: config.py:580
 msgid "Backlight Off"
 msgstr "背光关闭"
 
-#: config.py:580
+#: config.py:586
 msgid "LCD: Backlight On"
 msgstr "LCD：背光打开"
 
-#: config.py:586
+#: config.py:592
 msgid "LCD: Flashing Off"
 msgstr "LCD：闪烁关闭"
 
-#: config.py:592
+#: config.py:598
 msgid "LCD: Flashing On"
 msgstr "LCD：闪烁"
 
-#: config.py:622
+#: config.py:628
 msgid "Set Method"
 msgstr "设置方法"
 
-#: config.py:628
+#: config.py:634
 #: mycodo_flask/templates/pages/dashboard_options/mod_pid_control.html:62
 #: mycodo_flask/templates/pages/dashboard_options/mod_pid_control.html:92
 msgid "Set Setpoint"
 msgstr "设定设定值"
 
-#: config.py:634
+#: config.py:640
 #: mycodo_flask/templates/pages/function_options/action_options/setpoint_pid_raise.html:11
 msgid "Raise Setpoint"
 msgstr ""
 
-#: config.py:640
+#: config.py:646
 #: mycodo_flask/templates/pages/function_options/action_options/setpoint_pid_lower.html:11
 msgid "Lower Setpoint"
 msgstr ""
@@ -248,7 +256,7 @@ msgstr "高度"
 msgid "Battery"
 msgstr "电池"
 
-#: config_devices_units.py:37 config_devices_units.py:228
+#: config_devices_units.py:37 config_devices_units.py:224
 msgid "Boolean"
 msgstr "布尔"
 
@@ -357,7 +365,7 @@ msgstr ""
 msgid "Revolutions"
 msgstr "革命"
 
-#: config_devices_units.py:165 config_devices_units.py:342
+#: config_devices_units.py:165 config_devices_units.py:338
 #: config_translations.py:131
 #: mycodo_flask/templates/pages/function_options/action_options/setpoint_pid.html:11
 msgid "Setpoint"
@@ -384,193 +392,189 @@ msgstr "比容"
 msgid "Temperature"
 msgstr "温度"
 
-#: config_devices_units.py:189
-msgid "Time"
-msgstr ""
-
-#: config_devices_units.py:193 config_devices_units.py:312
+#: config_devices_units.py:189 config_devices_units.py:308
 msgid "Unitless"
 msgstr ""
 
-#: config_devices_units.py:201
+#: config_devices_units.py:197
 msgid "VOC"
 msgstr "VOC"
 
-#: config_devices_units.py:205
+#: config_devices_units.py:201
 msgid "Volume"
 msgstr "体积"
 
-#: config_devices_units.py:216
+#: config_devices_units.py:212
 msgid "Microsecond"
 msgstr "微秒"
 
-#: config_devices_units.py:219
+#: config_devices_units.py:215
 msgid "Microsiemens per centimeter"
 msgstr "每厘米微米门"
 
-#: config_devices_units.py:222
+#: config_devices_units.py:218
 msgid "Microsieverts per hour"
 msgstr ""
 
-#: config_devices_units.py:225 mycodo_flask/forms/forms_misc.py:28
+#: config_devices_units.py:221 mycodo_flask/forms/forms_misc.py:28
 #: mycodo_flask/forms/forms_misc.py:36
 msgid "Amp"
 msgstr "安培"
 
-#: config_devices_units.py:231
+#: config_devices_units.py:227
 msgid "Celsius"
 msgstr "摄氏"
 
-#: config_devices_units.py:234
+#: config_devices_units.py:230
 msgid "Counts per minute"
 msgstr ""
 
-#: config_devices_units.py:237
+#: config_devices_units.py:233
 msgid "CPU Load"
 msgstr "CPU负载"
 
-#: config_devices_units.py:240
+#: config_devices_units.py:236
 msgid "Decimal"
 msgstr "十进制"
 
-#: config_devices_units.py:243
+#: config_devices_units.py:239
 msgid "Fahrenheit"
 msgstr "飞轮海"
 
-#: config_devices_units.py:246
+#: config_devices_units.py:242
 msgid "Foot"
 msgstr "脚丫子"
 
-#: config_devices_units.py:249
+#: config_devices_units.py:245
 msgid "Full"
 msgstr "充分"
 
-#: config_devices_units.py:252
+#: config_devices_units.py:248
 msgid "G-Force"
 msgstr ""
 
-#: config_devices_units.py:255
+#: config_devices_units.py:251
 msgid "Gigabyte"
 msgstr "技嘉"
 
-#: config_devices_units.py:258
+#: config_devices_units.py:254
 msgid "Hour"
 msgstr ""
 
-#: config_devices_units.py:261
+#: config_devices_units.py:257
 msgid "Hertz"
 msgstr "赫兹"
 
-#: config_devices_units.py:264
+#: config_devices_units.py:260
 msgid "Infrared"
 msgstr "红外线"
 
-#: config_devices_units.py:267
+#: config_devices_units.py:263
 msgid "Kelvin"
 msgstr "开"
 
-#: config_devices_units.py:270
+#: config_devices_units.py:266
 msgid "Kilobyte"
 msgstr "千字节"
 
-#: config_devices_units.py:273
+#: config_devices_units.py:269
 msgid "Kilogram per kilogram"
 msgstr "公斤每公斤"
 
-#: config_devices_units.py:276
+#: config_devices_units.py:272
 msgid "Kilohertz"
 msgstr "千赫"
 
-#: config_devices_units.py:279
+#: config_devices_units.py:275
 msgid "Kilojoule per kilogram"
 msgstr "Kilojoule每公斤"
 
-#: config_devices_units.py:282
+#: config_devices_units.py:278
 msgid "Kilopascal"
 msgstr "千帕"
 
-#: config_devices_units.py:285
+#: config_devices_units.py:281
 msgid "Lux"
 msgstr "勒克司"
 
-#: config_devices_units.py:288
+#: config_devices_units.py:284
 msgid "Meter"
 msgstr "仪表"
 
-#: config_devices_units.py:291
+#: config_devices_units.py:287
 msgid "Milligram per Liter"
 msgstr ""
 
-#: config_devices_units.py:294
+#: config_devices_units.py:290
 msgid "Minute"
 msgstr "分钟"
 
-#: config_devices_units.py:297
+#: config_devices_units.py:293
 msgid "Milliliter"
 msgstr "毫升"
 
-#: config_devices_units.py:300
+#: config_devices_units.py:296
 msgid "Millivolt"
 msgstr ""
 
-#: config_devices_units.py:303
+#: config_devices_units.py:299
 msgid "Cubic meters per kilogram"
 msgstr "每公斤立方米"
 
-#: config_devices_units.py:306
+#: config_devices_units.py:302
 msgid "Megahertz"
 msgstr "兆赫"
 
-#: config_devices_units.py:309
+#: config_devices_units.py:305
 msgid "Megabyte"
 msgstr "兆字节"
 
-#: config_devices_units.py:315
+#: config_devices_units.py:311
 msgid "Pascal"
 msgstr "帕斯卡尔"
 
-#: config_devices_units.py:318
+#: config_devices_units.py:314
 msgid "Percent"
 msgstr "百分"
 
-#: config_devices_units.py:321
+#: config_devices_units.py:317
 msgid "pH"
 msgstr "pH值"
 
-#: config_devices_units.py:324
+#: config_devices_units.py:320
 msgid "PID values"
 msgstr "PID值"
 
-#: config_devices_units.py:327
+#: config_devices_units.py:323
 msgid "Parts per billion"
 msgstr "十亿分之一"
 
-#: config_devices_units.py:330
+#: config_devices_units.py:326
 msgid "Parts per million"
 msgstr "百万分之一"
 
-#: config_devices_units.py:333
+#: config_devices_units.py:329
 msgid "Pounds per square inch"
 msgstr ""
 
-#: config_devices_units.py:336
+#: config_devices_units.py:332
 msgid "Revolutions per minute"
 msgstr "每分钟转数"
 
-#: config_devices_units.py:339
+#: config_devices_units.py:335
 msgid "Second"
 msgstr "第二"
 
-#: config_devices_units.py:345
+#: config_devices_units.py:341
 msgid "Microgram per cubic meter"
 msgstr "每立方米的微克数"
 
-#: config_devices_units.py:348
+#: config_devices_units.py:344
 msgid "Volt"
 msgstr "伏特"
 
 #: config_translations.py:15
-#: mycodo_flask/templates/pages/function_options/conditional.html:152
+#: mycodo_flask/templates/pages/function_options/conditional.html:156
 #: mycodo_flask/templates/pages/function_options/trigger.html:103
 msgid "Actions"
 msgstr "操作"
@@ -929,7 +933,7 @@ msgstr "BT适配器"
 msgid "The Bluetooth adapter of the input"
 msgstr "输入的蓝牙适配器"
 
-#: config_translations.py:175 mycodo_flask/routes_calibration.py:466
+#: config_translations.py:175 mycodo_flask/routes_calibration.py:463
 #: mycodo_flask/templates/pages/function_options/action_options/command.html:2
 msgid "Command"
 msgstr "命令"
@@ -1595,7 +1599,7 @@ msgstr ""
 msgid "The serial device to write to"
 msgstr ""
 
-#: mycodo_flask/app.py:112
+#: mycodo_flask/app.py:102
 msgid "Please log in to access this page"
 msgstr "请登录访问此页"
 
@@ -1697,19 +1701,19 @@ msgstr "成功退出"
 msgid "A valid temperature is required: %(temp)s is invalid."
 msgstr "需要有效温度: %(temp)s 无效。"
 
-#: mycodo_flask/routes_general.py:969
+#: mycodo_flask/routes_general.py:971
 msgid "System rebooting in 10 seconds"
 msgstr "系统在10秒内重启"
 
-#: mycodo_flask/routes_general.py:971
+#: mycodo_flask/routes_general.py:973
 msgid "System shutting down in 10 seconds"
 msgstr "系统在10秒内关闭"
 
-#: mycodo_flask/routes_general.py:973
+#: mycodo_flask/routes_general.py:975
 msgid "Command to restart the daemon sent"
 msgstr "用于重新启动守护程序的命令"
 
-#: mycodo_flask/routes_general.py:975
+#: mycodo_flask/routes_general.py:977
 msgid "Command to reload the frontend sent"
 msgstr "命令重新加载发送的前端"
 
@@ -2012,6 +2016,8 @@ msgid "Execute All Actions"
 msgstr "执行所有操作"
 
 #: mycodo_flask/forms/forms_function.py:54
+#: mycodo_flask/forms/forms_function.py:60
+#: mycodo_flask/forms/forms_function.py:66
 #: mycodo_flask/forms/forms_method.py:59 mycodo_flask/forms/forms_method.py:133
 msgid "Duration (seconds)"
 msgstr "持续时间（秒）"
@@ -2028,17 +2034,9 @@ msgstr "控制器ID"
 msgid "Then State"
 msgstr "然后陈述"
 
-#: mycodo_flask/forms/forms_function.py:60
-msgid "Duration (seconds)"
-msgstr "然后持续时间（秒）"
-
 #: mycodo_flask/forms/forms_function.py:63
-msgid "Then Duty Cycle"
-msgstr "然后是工作周期"
-
-#: mycodo_flask/forms/forms_function.py:66
-msgid "Then Duration"
-msgstr "持续时间"
+msgid "Duty Cycle (%)"
+msgstr ""
 
 #: mycodo_flask/forms/forms_function.py:70
 msgid "Remote"
@@ -4007,6 +4005,10 @@ msgstr "视频时长（秒）"
 msgid "Duration to record video (sec)"
 msgstr "录制视频的持续时间（秒）"
 
+#: mycodo_flask/templates/pages/function_options/conditional_options/controller_status.html:4
+msgid "Select a Controller to get information about"
+msgstr ""
+
 #: mycodo_flask/templates/pages/function_options/conditional_options/gpio_state.html:4
 msgid ""
 "The GPIO pin to measure the state of. The return value will be True when "
@@ -4018,10 +4020,9 @@ msgstr "用于测量状态的GPIO引脚。高电平时返回值为True，低电�
 msgid "Do not accept measurements older than this age"
 msgstr "不接受超过此年龄的测量值"
 
+#: mycodo_flask/templates/pages/function_options/conditional_options/output_duration_on.html:4
 #: mycodo_flask/templates/pages/function_options/conditional_options/output_state.html:4
-msgid ""
-"Select the output to return the current state (\"on\", \"off\" or integer"
-" duty cycle)"
+msgid "Select a Output to get information about"
 msgstr ""
 
 #: mycodo_flask/templates/pages/function_options/pid_options/output_lower.html:5
@@ -4710,7 +4711,7 @@ msgid "Select a resolution"
 msgstr "选择分辨率"
 
 #: mycodo_flask/utils/utils_conditional.py:59
-#: mycodo_flask/utils/utils_conditional.py:198
+#: mycodo_flask/utils/utils_conditional.py:202
 #: mycodo_flask/utils/utils_trigger.py:100
 #, python-format
 msgid "Daemon response: %(resp)s"
@@ -4718,7 +4719,7 @@ msgstr "守护进程响应: %(resp)s"
 
 #: mycodo_flask/utils/utils_conditional.py:134
 #: mycodo_flask/utils/utils_conditional.py:170
-#: mycodo_flask/utils/utils_conditional.py:218
+#: mycodo_flask/utils/utils_conditional.py:222
 msgid "Condition"
 msgstr "条件"
 
@@ -4727,7 +4728,7 @@ msgstr "条件"
 msgid "{dev} with ID %(id)s successfully added"
 msgstr "已成功添加ID为 %(id)s 的{dev}"
 
-#: mycodo_flask/utils/utils_function.py:394
+#: mycodo_flask/utils/utils_function.py:405
 msgid "Execute All"
 msgstr "执行全部"
 
@@ -4740,38 +4741,38 @@ msgstr "执行全部"
 msgid "Error: %(err)s"
 msgstr "错误: %(err)s"
 
-#: mycodo_flask/utils/utils_general.py:654
-#: mycodo_flask/utils/utils_general.py:669
-#: mycodo_flask/utils/utils_general.py:689
-#: mycodo_flask/utils/utils_general.py:694 mycodo_flask/utils/utils_lcd.py:225
+#: mycodo_flask/utils/utils_general.py:687
+#: mycodo_flask/utils/utils_general.py:702
+#: mycodo_flask/utils/utils_general.py:722
+#: mycodo_flask/utils/utils_general.py:727 mycodo_flask/utils/utils_lcd.py:225
 #: mycodo_flask/utils/utils_lcd.py:227
 #, python-format
 msgid "%(msg)s"
 msgstr "%(msg)s"
 
-#: mycodo_flask/utils/utils_general.py:661
-#: mycodo_flask/utils/utils_output.py:318
-#: mycodo_flask/utils/utils_output.py:325
-#: mycodo_flask/utils/utils_output.py:330
+#: mycodo_flask/utils/utils_general.py:694
+#: mycodo_flask/utils/utils_output.py:332
+#: mycodo_flask/utils/utils_output.py:339
+#: mycodo_flask/utils/utils_output.py:344
 #, python-format
 msgid "%(err)s"
 msgstr "%(err)s"
 
-#: mycodo_flask/utils/utils_general.py:662
+#: mycodo_flask/utils/utils_general.py:695
 #, python-format
 msgid "Entry with ID %(id)s not found"
 msgstr "未找到ID为 %(id)s 的条目"
 
-#: mycodo_flask/utils/utils_general.py:680
+#: mycodo_flask/utils/utils_general.py:713
 #, python-format
 msgid "Error in the %(field)s field - %(err)s"
 msgstr "%(field)s 字段中的错误 - %(err)s"
 
-#: mycodo_flask/utils/utils_general.py:728
+#: mycodo_flask/utils/utils_general.py:761
 msgid "Cannot move above the first item in the list"
 msgstr "无法移动到列表中的第一个项目之上"
 
-#: mycodo_flask/utils/utils_general.py:732
+#: mycodo_flask/utils/utils_general.py:765
 msgid "Cannot move below the last item in the list"
 msgstr "无法移动到列表中的最后一项之下"
 
@@ -4952,7 +4953,7 @@ msgid ""
 "(%(st)s)"
 msgstr "输入结束时间 (%(et)s) 不能与下一个条目的开始时间 (%(st)s) 重叠"
 
-#: mycodo_flask/utils/utils_misc.py:163
+#: mycodo_flask/utils/utils_misc.py:165
 #, python-format
 msgid "Energy Usage with ID %(id)s (%(uuid)s) successfully added"
 msgstr ""
@@ -4970,51 +4971,51 @@ msgstr "数量无效"
 msgid "Acceptable values"
 msgstr "可接受的值"
 
-#: mycodo_flask/utils/utils_output.py:342
+#: mycodo_flask/utils/utils_output.py:356
 msgid "Actuate"
 msgstr "开动"
 
-#: mycodo_flask/utils/utils_output.py:350
+#: mycodo_flask/utils/utils_output.py:364
 msgid "Cannot modulate output with a GPIO of 0"
 msgstr "无法在GPIO为0的情况下调制输出"
 
-#: mycodo_flask/utils/utils_output.py:356
+#: mycodo_flask/utils/utils_output.py:370
 msgid "Value must be greater than 0"
 msgstr "值必须大于0"
 
-#: mycodo_flask/utils/utils_output.py:360
+#: mycodo_flask/utils/utils_output.py:375
 #, python-format
 msgid "Output turned on for %(sec)s seconds: %(rvalue)s"
 msgstr "输出开启 %(sec)s 秒: %(rvalue)s"
 
-#: mycodo_flask/utils/utils_output.py:366
+#: mycodo_flask/utils/utils_output.py:381
 msgid "Invalid pin"
 msgstr "无效的引脚"
 
-#: mycodo_flask/utils/utils_output.py:368
+#: mycodo_flask/utils/utils_output.py:383
 msgid "PWM Hertz must be a positive value"
 msgstr "PWM赫兹必须是正值"
 
-#: mycodo_flask/utils/utils_output.py:370
+#: mycodo_flask/utils/utils_output.py:385
 msgid "PWM duty cycle must be a positive value"
 msgstr "PWM占空比必须是正值"
 
-#: mycodo_flask/utils/utils_output.py:376
+#: mycodo_flask/utils/utils_output.py:391
 #, python-format
 msgid "PWM set to %(dc)s %% at %(hertz)s Hz: %(rvalue)s"
 msgstr "PWM设置为 %(dc)s %% at %(hertz)s Hz: %(rvalue)s"
 
-#: mycodo_flask/utils/utils_output.py:382
+#: mycodo_flask/utils/utils_output.py:398
 #, python-format
 msgid "Output turned on: %(rvalue)s"
 msgstr "输出已打开: %(rvalue)s"
 
-#: mycodo_flask/utils/utils_output.py:386
+#: mycodo_flask/utils/utils_output.py:403
 #, python-format
 msgid "Output turned off: %(rvalue)s"
 msgstr "输出关闭: %(rvalue)s"
 
-#: mycodo_flask/utils/utils_output.py:390
+#: mycodo_flask/utils/utils_output.py:407
 msgid "Invalid value"
 msgstr "无效值"
 
@@ -5124,5 +5125,20 @@ msgstr ""
 #~ "To clear any currently-stored "
 #~ "calibration from the sensor memory, "
 #~ "click Clear Calibration."
+#~ msgstr ""
+
+#~ msgid "Time"
+#~ msgstr ""
+
+#~ msgid "Then Duty Cycle"
+#~ msgstr "然后是工作周期"
+
+#~ msgid "Then Duration"
+#~ msgstr "持续时间"
+
+#~ msgid ""
+#~ "Select the output to return the "
+#~ "current state (\"on\", \"off\" or "
+#~ "integer duty cycle)"
 #~ msgstr ""
 

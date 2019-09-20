@@ -1524,7 +1524,7 @@ optional arguments:
 </tr>
 </tbody>
 </table>
-<p>There are additional functions that can be used, but these must use the full unique ID (not an abridged version as the functions above). See /home/pi/Mycodo/mycodo/mycodo_client.py for the functions available for use. These may be accessed via the ‘control’ object. An example, below, will return how long the output has been on (or 0 if it’s currently off):</p>
+<p>There are additional functions that can be used, but these must use the full UUID (not an abridged version as the functions above). See /home/pi/Mycodo/mycodo/mycodo_client.py for the functions available for use. These may be accessed via the ‘control’ object. An example, below, will return how long the output has been on (or 0 if it’s currently off):</p>
 <p><code>output_on_seconds = control.output_sec_currently_on('1b6ada50-1e69-403a-9fa6-ec748b16dc23')</code></p>
 <p>Since the Python code contained in the Conditional Statement must be formatted properly, it’s best to familiarize yourself with the <a href="https://realpython.com/python-conditional-statements/">basics of Python</a>.</p>
 <p>Note that there are two different IDs in use here, one set of IDs are for the measurements, under the <code>Conditions</code> section of the Conditional, and one set of IDs are for the Actions, under the <code>Actions</code> section of the Conditional. Read all of this section, including the examples, below, to fully understand how to configure a conditional properly.</p>
@@ -1717,8 +1717,39 @@ measurement <span class="op">=</span> <span class="va">self</span>.measure(<span
 <td>Acquires the current GPIO state and returns True/1 if HIGH or False/0 if LOW. If the latest value is older than this duration, “None” is returned.</td>
 </tr>
 <tr class="even">
+<td>Output State</td>
+<td>Returns ‘on’ if the output is currently on, and ‘off’ if it’s currently off.</td>
+</tr>
+<tr class="odd">
+<td>Output Duration On</td>
+<td>Returns how long the output has currently been on, in seconds. Returns 0 if off.</td>
+</tr>
+<tr class="even">
 <td>Max Age (seconds)</td>
 <td>The minimum age (seconds) the measurement can be. If the last measurement is older than this, “None” will be returned instead of a measurement.</td>
+</tr>
+</tbody>
+</table>
+<p>Additional Conditions</p>
+<table>
+<colgroup>
+<col style="width: 32%"></col>
+<col style="width: 67%"></col>
+</colgroup>
+<thead>
+<tr class="header">
+<th>Condition</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Output Duration On</td>
+<td>Returns how long the output has currently been on, in seconds. Returns 0 if off.</td>
+</tr>
+<tr class="even">
+<td>Controller Running</td>
+<td>Returns True if the controller is active, False if inactive.</td>
 </tr>
 </tbody>
 </table>
