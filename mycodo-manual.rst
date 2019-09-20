@@ -3490,7 +3490,7 @@ Input Devices
     `MH-Z19 <#mh-z19>`__: Carbon dioxide (CO2) in ppmv
     `link <http://www.winsen-sensor.com/products/ndir-co2-sensor/mh-z19.html>`__
 
-    `SHT1x <#sht1x>`__/`SHT31 <#sht31>`__/`SHT7x <#sht7x>`__/`SHT31 Smart Gadget<#sht31>`__: Relative humidity and temperature
+    `SHT1x <#sht1x>`__/`SHT3x <#sht3x>`__/`SHT7x <#sht7x>`__/`SHT31 Smart Gadget <#sht31>`__: Relative humidity and temperature
     `link <https://github.com/mk-fg/sht-sensor>`__
 
     `Sonoff TH10/16 (Tasmota firmware) <#sonoff-th10-16>`__: Relative humidity and temperature
@@ -4003,16 +4003,18 @@ Specifications
 -  2.4 to 5.5V power and I/O
 -  No more than 0.125 Hz sampling rate (once every 8 seconds)
 
-SHT31
+SHT3x
 `````
 
-This includes the sensor itself and the SHT31 Smart Gadget.
+(SHT30, SHT31/SHT31 Smart Gadget, SHT35)
 
 Specifications
 ''''''''''''''
 
--  ±2% relative humidity and ±0.3°C accuracy for most uses
+- 0-100% humidity readings with ±3%,±2%, and ±1.5% relative humidity accuracy
+- ±0.2°C,±0.2°C,and ±0.1°C temperature accuracy for most uses
 -  -40 °C to 125 °C temperature
+- Supply voltage range - 2.15 to 5.5V
 
 SHT7x
 `````
