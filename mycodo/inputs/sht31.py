@@ -139,11 +139,23 @@ class InputModule(AbstractInput):
         """ Gets the measurement in units by reading the """
         self.return_dict = measurements_dict.copy()
 
+        try:
+            temperature, humidity = self.sensor.read_temperature_humidity()
+        except OSError as e:
+            self.logger.debug("OSError: {}".format(e))
+            self.logger.debug("Attempting reset of sensor and reread of measurements")
+            self.sensor.reset()
+            try:
+                temperature, humidity = self.sensor.read_temperature_humidity()
+            except Exception as e:
+                self.logger.exception("Could not read measurements after reset attempt")
+                return
+
         if self.is_enabled(0):
-            self.value_set(0, self.sensor.read_temperature())
+            self.value_set(0, temperature)
 
         if self.is_enabled(1):
-            self.value_set(1, self.sensor.read_humidity())
+            self.value_set(1, humidity)
 
         if (self.is_enabled(2) and
                 self.is_enabled(0) and

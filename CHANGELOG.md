@@ -1,5 +1,9 @@
 ## 7.7.7 (Unreleased)
 
+### Bugfixes
+
+ - Add reset to SHT31 Input when it errors ([#695](https://github.com/kizniche/mycodo/issues/695))
+
 ### Features
 
  - Add Input: BME280 using RPi.bme280 library ([#694](https://github.com/kizniche/mycodo/issues/694))
