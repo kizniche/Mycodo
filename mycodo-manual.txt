@@ -102,7 +102,7 @@ Mycodo Manual
         -   [MH-Z16](#mh-z16)
         -   [MH-Z19](#mh-z19)
         -   [SHT1x](#sht1x)
-        -   [SHT31](#sht31)
+        -   [SHT3x](#sht3x)
         -   [SHT7x](#sht7x)
         -   [TMP006, TMP007](#tmp006-tmp007)
         -   [TSL2561](#tsl2561)
@@ -3529,7 +3529,7 @@ Input Devices
 
   MH-Z19: Carbon dioxide (CO2) in ppmv link
 
-  SHT1x/SHT31/SHT7x/SHT31 Smart Gadget: Relative humidity and
+  SHT1x/SHT3x/SHT7x/SHT31 Smart Gadget: Relative humidity and
   temperature link
 
   Sonoff TH10/16 (Tasmota firmware): Relative humidity and temperature
@@ -3972,14 +3972,17 @@ Specifications
 -   2.4 to 5.5V power and I/O
 -   No more than 0.125 Hz sampling rate (once every 8 seconds)
 
-SHT31
+SHT3x
 
-This includes the sensor itself and the SHT31 Smart Gadget.
+(SHT30, SHT31/SHT31 Smart Gadget, SHT35)
 
 Specifications
 
--   ±2% relative humidity and ±0.3°C accuracy for most uses
+-   0-100% humidity readings with ±3%,±2%, and ±1.5% relative humidity
+    accuracy
+-   ±0.2°C,±0.2°C,and ±0.1°C temperature accuracy for most uses
 -   -40 °C to 125 °C temperature
+-   Supply voltage range - 2.15 to 5.5V
 
 SHT7x
 

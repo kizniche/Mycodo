@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2019-09-19 21:51-0400\n"
+"POT-Creation-Date: 2019-09-20 18:29-0400\n"
 "PO-Revision-Date: 2019-01-29 14:08-0500\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: sr\n"
@@ -289,7 +289,7 @@ msgstr "Диск"
 msgid "Dissolved Oxygen"
 msgstr ""
 
-#: config_devices_units.py:73 config_translations.py:190
+#: config_devices_units.py:73 config_translations.py:192
 msgid "Duty Cycle"
 msgstr "Радни циклус"
 
@@ -651,8 +651,8 @@ msgstr "Приказ"
 msgid "Down"
 msgstr "Довн"
 
-#: config_translations.py:53 config_translations.py:330
-#: mycodo_flask/forms/forms_input.py:134
+#: config_translations.py:53 config_translations.py:332
+#: mycodo_flask/forms/forms_input.py:135
 msgid "Edge"
 msgstr "Ивица"
 
@@ -848,38 +848,42 @@ msgid "Tag"
 msgstr "Таг"
 
 #: config_translations.py:139
+msgid "Text"
+msgstr ""
+
+#: config_translations.py:141
 msgid "Timer"
 msgstr "Тимер"
 
-#: config_translations.py:141
+#: config_translations.py:143
 msgid "Trigger"
 msgstr "Окидач"
 
-#: config_translations.py:143
+#: config_translations.py:145
 msgid "Up"
 msgstr "Горе"
 
-#: config_translations.py:145 mycodo_flask/forms/forms_settings.py:179
+#: config_translations.py:147 mycodo_flask/forms/forms_settings.py:179
 msgid "Upload"
 msgstr "Отпремити"
 
-#: config_translations.py:147 inputs/linux_command.py:52
+#: config_translations.py:149 inputs/linux_command.py:52
 msgid "User"
 msgstr "Усер"
 
-#: config_translations.py:151
+#: config_translations.py:153
 msgid "1-Wire Device ID"
 msgstr "1-Вире Девице ИД"
 
-#: config_translations.py:152
+#: config_translations.py:154
 msgid "Select the 1-wire device ID"
 msgstr "Изаберите ИД уређаја са 1 жицом"
 
-#: config_translations.py:154 mycodo_flask/forms/forms_settings.py:51
+#: config_translations.py:156 mycodo_flask/forms/forms_settings.py:51
 msgid "Gain"
 msgstr "Гаин"
 
-#: config_translations.py:155
+#: config_translations.py:157
 msgid ""
 "Adjust the gain to change the measurable voltage range. See ADC "
 "documentation for details."
@@ -887,205 +891,205 @@ msgstr ""
 "Подесите појачање да бисте променили мерни опсег напона. Погледајте АДЦ "
 "документацију за детаље."
 
-#: config_translations.py:157 config_translations.py:297
-#: config_translations.py:300 mycodo_flask/forms/forms_calibration.py:64
+#: config_translations.py:159 config_translations.py:299
+#: config_translations.py:302 mycodo_flask/forms/forms_calibration.py:64
 msgid "Resolution"
 msgstr "Резолуција"
 
-#: config_translations.py:158
+#: config_translations.py:160
 msgid "ADC Resolution (see ADC documentation)"
 msgstr "АДЦ резолуција (погледајте документацију АДЦ-а)"
 
-#: config_translations.py:160
+#: config_translations.py:162
 msgid "Sample Speed"
 msgstr "Сампле Спеед"
 
-#: config_translations.py:161
+#: config_translations.py:163
 msgid "ADC Sample Speed (see ADC documentation)"
 msgstr "АДЦ Сампле Спеед (погледајте АДЦ документацију)"
 
-#: config_translations.py:163
+#: config_translations.py:165
 msgid "Current Draw (amps)"
 msgstr "Цуррент Драв (појачала)"
 
-#: config_translations.py:164
+#: config_translations.py:166
 msgid "The number of amps the output device draws (at 120/240 VAC)"
 msgstr "Број појачала које извлачи излазни уређај (на 120/240 ВАЦ)"
 
-#: config_translations.py:166
+#: config_translations.py:168
 msgid "Baud Rate"
 msgstr "Број бауда"
 
-#: config_translations.py:167
+#: config_translations.py:169
 msgid "The UART baud rate"
 msgstr "УАРТ бауд рате"
 
-#: config_translations.py:169
+#: config_translations.py:171
 msgid "MAC (XX:XX:XX:XX:XX:XX)"
 msgstr "МАЦ (КСКС: КСКС: КСКС: КСКС: КСКС: КСКС)"
 
-#: config_translations.py:170
+#: config_translations.py:172
 msgid "The MAC address of the input"
 msgstr "МАЦ адреса улаза"
 
-#: config_translations.py:172
+#: config_translations.py:174
 msgid "BT Adapter"
 msgstr "БТ Адаптер"
 
-#: config_translations.py:173
+#: config_translations.py:175
 msgid "The Bluetooth adapter of the input"
 msgstr "Блуетоотх адаптер улаза"
 
-#: config_translations.py:175 mycodo_flask/routes_calibration.py:463
+#: config_translations.py:177 mycodo_flask/routes_calibration.py:463
 #: mycodo_flask/templates/pages/function_options/action_options/command.html:2
 msgid "Command"
 msgstr "Цомманд"
 
-#: config_translations.py:176
+#: config_translations.py:178
 msgid "The command to executed (as user mycodo) to return a measurement value"
 msgstr "Наредба за извршење (као корисник мицодо) за враћање вриједности мјерења"
 
-#: config_translations.py:179
+#: config_translations.py:181
 msgid "Select the unit of the measurement to be stored in the database"
 msgstr "Одаберите јединицу мјерења која ће се похранити у базу података"
 
-#: config_translations.py:181
+#: config_translations.py:183
 msgid "Convert to Unit"
 msgstr "Претвори у јединицу"
 
-#: config_translations.py:182
+#: config_translations.py:184
 msgid "Convert the measurement to a different unit"
 msgstr "Претворите мјерење у другу јединицу"
 
-#: config_translations.py:184
+#: config_translations.py:186
 msgid "Deadline"
 msgstr "Рок"
 
-#: config_translations.py:185
+#: config_translations.py:187
 msgid "Time (seconds) to wait until failure"
 msgstr "Време (секунде) да сачека до неуспеха"
 
-#: config_translations.py:187
+#: config_translations.py:189
 msgid "Duration On (seconds)"
 msgstr "Трајање у (секунди)"
 
-#: config_translations.py:188
+#: config_translations.py:190
 msgid "Turn on for a duration of time (seconds)"
 msgstr "Укључите за време (секунди)"
 
-#: config_translations.py:191
+#: config_translations.py:193
 msgid "Duty cycle for the PWM (percent, 0.0 - 100.0)"
 msgstr "Радни циклус за ПВМ (проценат, 0,0 - 100,0)"
 
-#: config_translations.py:193
+#: config_translations.py:195
 msgid "Flow Rate (ml/min)"
 msgstr "Проток (мл / мин)"
 
-#: config_translations.py:194
+#: config_translations.py:196
 msgid "Flow rate in ml/minute (0.5 min, 105 max)"
 msgstr ""
 
-#: config_translations.py:196
+#: config_translations.py:198
 msgid "FTDI Device"
 msgstr "ФТДИ Девице"
 
-#: config_translations.py:197
+#: config_translations.py:199
 msgid "The FTDI device (e.g. /dev/ttyUSB1)"
 msgstr "ФТДИ уређај (нпр. / Дев / ттиУСБ1)"
 
-#: config_translations.py:199
+#: config_translations.py:201
 msgid "Pin (GPIO)"
 msgstr "Пин (ГПИО)"
 
-#: config_translations.py:200
+#: config_translations.py:202
 msgid "The GPIO pin using BCM numbering"
 msgstr "ГПИО пин помоћу БЦМ нумерације"
 
-#: config_translations.py:202
+#: config_translations.py:204
 msgid "Host"
 msgstr "Домаћин"
 
-#: config_translations.py:203
+#: config_translations.py:205
 msgid "Host address or IP"
 msgstr "Адреса хоста или ИП адреса"
 
-#: config_translations.py:205
+#: config_translations.py:207
 msgid "I<sup>2</sup>C Bus"
 msgstr "И <суп> 2 </суп> Ц Бус"
 
-#: config_translations.py:206
+#: config_translations.py:208
 msgid "The I2C bus the device is connected to"
 msgstr "И2Ц сабирница на коју је уређај повезан"
 
-#: config_translations.py:208
+#: config_translations.py:210
 msgid "I<sup>2</sup>C Address"
 msgstr "И <суп> 2 </суп> Ц Адреса"
 
-#: config_translations.py:209
+#: config_translations.py:211
 msgid "The I2C address of the device"
 msgstr "И2Ц адреса уређаја"
 
-#: config_translations.py:211
+#: config_translations.py:213
 msgid "Interface"
 msgstr "Интерфејс"
 
-#: config_translations.py:212
+#: config_translations.py:214
 msgid "The interface used to communicate"
 msgstr "Интерфејс који се користи за комуникацију"
 
-#: config_translations.py:214
+#: config_translations.py:216
 msgid "Invert Scale"
 msgstr "Инверт Сцале"
 
-#: config_translations.py:215
+#: config_translations.py:217
 msgid "Invert the scale"
 msgstr "Инвертирај скалу"
 
-#: config_translations.py:217
+#: config_translations.py:219
 msgid "Log Level: Debug"
 msgstr ""
 
-#: config_translations.py:218
+#: config_translations.py:220
 msgid "Show debug lines in the Daemon Log"
 msgstr ""
 
-#: config_translations.py:220
+#: config_translations.py:222
 msgid "Max Age (seconds)"
 msgstr "Макс. Година (секунди)"
 
-#: config_translations.py:221
+#: config_translations.py:223
 msgid "The maximum allowable measurement age"
 msgstr "Максимално дозвољено доба мерења"
 
-#: config_translations.py:223
+#: config_translations.py:225
 msgid "Unit Measurement"
 msgstr "Унит Меасуремент"
 
-#: config_translations.py:224
+#: config_translations.py:226
 msgid "Select a unit for the stored value"
 msgstr "Изаберите јединицу за похрањену вриједност"
 
-#: config_translations.py:226
+#: config_translations.py:228
 msgid "Measurements Enabled"
 msgstr "Меасурементс Енаблед"
 
-#: config_translations.py:227
+#: config_translations.py:229
 msgid "The measurements to record"
 msgstr "Мерења за снимање"
 
-#: config_translations.py:229 mycodo_flask/templates/pages/usage.html:209
+#: config_translations.py:231 mycodo_flask/templates/pages/usage.html:209
 msgid "Name"
 msgstr "Име"
 
-#: config_translations.py:230
+#: config_translations.py:232
 msgid "A name to distinguish this from others"
 msgstr "Име које ово разликује од других"
 
-#: config_translations.py:232
+#: config_translations.py:234
 msgid "Off Command"
 msgstr "Офф Цомманд"
 
-#: config_translations.py:233
+#: config_translations.py:235
 #: mycodo_flask/templates/pages/output_options/python.html:10
 msgid ""
 "Command to execute (as user mycodo) when the output is instructed to turn"
@@ -1094,35 +1098,35 @@ msgstr ""
 "Наредба за извршење (као корисник мицодо) када је излаз упућен да се "
 "искључи"
 
-#: config_translations.py:235
+#: config_translations.py:237
 msgid "Output Mode"
 msgstr ""
 
-#: config_translations.py:236
+#: config_translations.py:238
 msgid "Mode to run the output"
 msgstr ""
 
-#: config_translations.py:238
+#: config_translations.py:240
 msgid "Startup State"
 msgstr "Старт Стате"
 
-#: config_translations.py:239
+#: config_translations.py:241
 msgid "When Mycodo starts, set the output state"
 msgstr "Када се Мицодо покрене, подесите излазно стање"
 
-#: config_translations.py:241
+#: config_translations.py:243
 msgid "Shutdown State"
 msgstr ""
 
-#: config_translations.py:242
+#: config_translations.py:244
 msgid "When Mycodo shuts down, set the output state"
 msgstr ""
 
-#: config_translations.py:244
+#: config_translations.py:246
 msgid "On Command"
 msgstr "Он Цомманд"
 
-#: config_translations.py:245
+#: config_translations.py:247
 #: mycodo_flask/templates/pages/output_options/python.html:4
 msgid ""
 "Command to execute (as user mycodo) when the output is instructed to turn"
@@ -1131,61 +1135,61 @@ msgstr ""
 "Наредба за извршење (као корисник мицодо) када је излаз упућен да се "
 "укључи"
 
-#: config_translations.py:247 mycodo_flask/forms/forms_conditional.py:32
+#: config_translations.py:249 mycodo_flask/forms/forms_conditional.py:32
 #: mycodo_flask/forms/forms_lcd.py:55 mycodo_flask/forms/forms_math.py:37
 #: mycodo_flask/forms/forms_trigger.py:58
 msgid "Period (seconds)"
 msgstr "Период (у секундама)"
 
-#: config_translations.py:248
+#: config_translations.py:250
 msgid "The duration (seconds) between input reads"
 msgstr "Трајање (у секундама) између улаза се чита"
 
-#: config_translations.py:250
+#: config_translations.py:252
 msgid "Clock Pin"
 msgstr "Цлоцк Пин"
 
-#: config_translations.py:251
+#: config_translations.py:253
 msgid "The GPIO (using BCM numbering) connected to the Clock pin"
 msgstr "ГПИО (помоћу БЦМ нумерације) је повезан са пин-ом сата"
 
-#: config_translations.py:253
+#: config_translations.py:255
 msgid "CS Pin"
 msgstr "ЦС Пин"
 
-#: config_translations.py:254
+#: config_translations.py:256
 msgid "The GPIO (using BCM numbering) connected to the Cable Select pin"
 msgstr "ГПИО (помоћу БЦМ нумерације) је повезан на пин за избор кабла"
 
-#: config_translations.py:256
+#: config_translations.py:258
 msgid "MISO Pin"
 msgstr "МИСО Пин"
 
-#: config_translations.py:257
+#: config_translations.py:259
 msgid "The GPIO (using BCM numbering) connected to the MISO pin"
 msgstr "ГПИО (користећи БЦМ нумерисање) повезан је са МИСО пин-ом"
 
-#: config_translations.py:259
+#: config_translations.py:261
 msgid "MOSI Pin"
 msgstr "МОСИ Пин"
 
-#: config_translations.py:260
+#: config_translations.py:262
 msgid "The GPIO (using BCM numbering) connected to the MOSI pin"
 msgstr "ГПИО (користећи БЦМ нумерисање) повезан је са МОСИ пин-ом"
 
-#: config_translations.py:262 inputs/mqtt_paho.py:52
+#: config_translations.py:264 inputs/mqtt_paho.py:52
 msgid "Port"
 msgstr "Порт"
 
-#: config_translations.py:263
+#: config_translations.py:265
 msgid "Host port number"
 msgstr "Број порта хоста"
 
-#: config_translations.py:265
+#: config_translations.py:267
 msgid "Pre Out Duration"
 msgstr "Пре Оут Дуратион"
 
-#: config_translations.py:266
+#: config_translations.py:268
 msgid ""
 "If a Pre Output is selected, set the duration (seconds) to turn the Pre "
 "Output on for before every measurement is acquired."
@@ -1193,71 +1197,71 @@ msgstr ""
 "Ако је изабран Пре Оутпут, поставите трајање (у секундама) да укључите "
 "Пре Оутпут за пре сваког мерења."
 
-#: config_translations.py:270
+#: config_translations.py:272
 msgid "Pre During Measure"
 msgstr "Пре током мерења"
 
-#: config_translations.py:271
+#: config_translations.py:273
 msgid ""
 "Check to turn the output off after (opposed to before) the measurement is"
 " complete"
 msgstr "Проверите да ли је излаз искључен после (за разлику од пре) мерења"
 
-#: config_translations.py:273
+#: config_translations.py:275
 msgid "Pre Output"
 msgstr "Пре Оутпут"
 
-#: config_translations.py:274
+#: config_translations.py:276
 msgid "Turn the selected output on before taking every measurement"
 msgstr "Укључите изабрани излаз пре сваког мерења"
 
-#: config_translations.py:276
+#: config_translations.py:278
 msgid "Protocol"
 msgstr "Протокол"
 
-#: config_translations.py:277
+#: config_translations.py:279
 msgid "Wireless 433 MHz protocol"
 msgstr "Бежични 433 МХз протокол"
 
-#: config_translations.py:279
+#: config_translations.py:281
 msgid "Pulse Length"
 msgstr "Пулсе Ленгтх"
 
-#: config_translations.py:280
+#: config_translations.py:282
 msgid "Wireless 433 MHz pulse length"
 msgstr "Бежична дужина импулса од 433 МХз"
 
-#: config_translations.py:282
+#: config_translations.py:284
 msgid "Amount to Dispense (ml)"
 msgstr "Износ за дозирање (мл)"
 
-#: config_translations.py:283
+#: config_translations.py:285
 msgid "Volume in ml to pump"
 msgstr "Запремина у мл за пумпање"
 
-#: config_translations.py:285
+#: config_translations.py:287
 msgid "PWM Command"
 msgstr "ПВМ Цомманд"
 
-#: config_translations.py:286
+#: config_translations.py:288
 #, python-format
 msgid "Command to execute (as user mycodo) to set the PWM duty cycle (%%)"
 msgstr "Наредба за извршење (као корисник мицодо) за постављање ПВМ циклуса (%%)"
 
-#: config_translations.py:288
+#: config_translations.py:290
 msgid "Frequency (Hertz)"
 msgstr "Фреквенција (Хертз)"
 
-#: config_translations.py:289
+#: config_translations.py:291
 msgid "The Hertz to output the PWM signal (0 - 70,000)"
 msgstr "Хертз за излаз ПВМ сигнала (0 - 70,000)"
 
-#: config_translations.py:291 inputs/ds18b20.py:77 inputs/ds18s20.py:69
+#: config_translations.py:293 inputs/ds18b20.py:77 inputs/ds18s20.py:69
 #: mycodo_flask/forms/forms_settings.py:32
 msgid "Library"
 msgstr "Либрари"
 
-#: config_translations.py:292
+#: config_translations.py:294
 msgid ""
 "Which method to produce the PWM signal (hardware pins can produce higher "
 "frequencies)"
@@ -1265,113 +1269,113 @@ msgstr ""
 "Који метод за израду ПВМ сигнала (хардвер игле могу произвести више "
 "фреквенције)"
 
-#: config_translations.py:294
+#: config_translations.py:296
 msgid "Reference Resistance"
 msgstr "Референце Ресистанце"
 
-#: config_translations.py:295
+#: config_translations.py:297
 msgid "Reference resistance (Ohm)"
 msgstr "Референтна отпорност (Охм)"
 
-#: config_translations.py:298 config_translations.py:301
+#: config_translations.py:300 config_translations.py:303
 msgid "Measurement resolution"
 msgstr "Резолуција мерења"
 
-#: config_translations.py:303
+#: config_translations.py:305
 msgid "Pulses Per Rev"
 msgstr "Пулсес Пер Рев"
 
-#: config_translations.py:304
+#: config_translations.py:306
 msgid ""
 "The number of pulses per revolution to calculate revolutions per minute "
 "(RPM)"
 msgstr "Број импулса по обрту за израчунавање броја обртаја у минути (РПМ)"
 
-#: config_translations.py:306
+#: config_translations.py:308
 msgid "Sample Time"
 msgstr "Сампле Тиме"
 
-#: config_translations.py:307
+#: config_translations.py:309
 msgid ""
 "The amount of time (seconds) to sample the input before caluclating the "
 "measurement"
 msgstr "Количина времена (секунди) за узорковање улаза прије израчунавања мјерења"
 
-#: config_translations.py:309
+#: config_translations.py:311
 msgid "Unscaled Unit Min"
 msgstr "Унсцалед Унит Мин"
 
-#: config_translations.py:310
+#: config_translations.py:312
 msgid "Unscaled minimum unit"
 msgstr "Минимална јединица без скалирања"
 
-#: config_translations.py:312
+#: config_translations.py:314
 msgid "Unscaled Unit Max"
 msgstr "Јединица без скалирања Макс"
 
-#: config_translations.py:313
+#: config_translations.py:315
 msgid "Unscaled maximum unit"
 msgstr "Максимална јединица без скалирања"
 
-#: config_translations.py:315
+#: config_translations.py:317
 msgid "Rescaled Unit Min"
 msgstr "Увећана јединица Мин"
 
-#: config_translations.py:316
+#: config_translations.py:318
 msgid "Rescaled minimum unit"
 msgstr "Минимална минимална јединица"
 
-#: config_translations.py:318
+#: config_translations.py:320
 msgid "Rescaled Unit Max"
 msgstr "Увећана јединица Макс"
 
-#: config_translations.py:319
+#: config_translations.py:321
 msgid "Rescaled maximum unit"
 msgstr "Резолуција максималне јединице"
 
-#: config_translations.py:321
+#: config_translations.py:323
 msgid "Measurement Unit"
 msgstr "Мерна јединица"
 
-#: config_translations.py:322
+#: config_translations.py:324
 msgid "Select the measurement and unit to store this measurement in the database"
 msgstr "Изаберите мерење и јединицу за чување овог мерења у бази података"
 
-#: config_translations.py:324
+#: config_translations.py:326
 msgid "Sensitivity"
 msgstr "Осетљивост"
 
-#: config_translations.py:325
+#: config_translations.py:327
 msgid "Measurement sensitivity"
 msgstr "Осетљивост мерења"
 
-#: config_translations.py:327 mycodo_flask/forms/forms_settings.py:151
+#: config_translations.py:329 mycodo_flask/forms/forms_settings.py:151
 msgid "Voltage"
 msgstr "Волтажа"
 
-#: config_translations.py:328
+#: config_translations.py:330
 msgid "The input voltage to the sensor"
 msgstr "Улазни напон сензора"
 
-#: config_translations.py:331
+#: config_translations.py:333
 msgid "Edge detection: low to high (rising), high to low (falling), or both"
 msgstr ""
 "Детекција ивица: ниска до висока (диже се), висока до ниска (пада) или "
 "обоје"
 
-#: config_translations.py:333 mycodo_flask/forms/forms_input.py:136
+#: config_translations.py:335 mycodo_flask/forms/forms_input.py:137
 msgid "Bounce Time (ms)"
 msgstr "Време одбијања (мс)"
 
-#: config_translations.py:334
+#: config_translations.py:336
 msgid "The amount of time (miliseconds) to bounce the input signal"
 msgstr "Количина времена (милисекунди) за одбијање улазног сигнала"
 
-#: config_translations.py:336 mycodo_flask/forms/forms_input.py:138
+#: config_translations.py:338 mycodo_flask/forms/forms_input.py:139
 msgid "Reset Period"
 msgstr "Период поништавања"
 
-#: config_translations.py:337
+#: config_translations.py:339
 msgid ""
 "Wait a period of time (seconds) after the first edge detection to begin "
 "detecting again"
@@ -1379,51 +1383,51 @@ msgstr ""
 "Сачекајте временски период (секунде) након првог откривања ивице да бисте"
 " поново почели да детектујете"
 
-#: config_translations.py:339
+#: config_translations.py:341
 msgid "RTD Probe Type"
 msgstr "Тип сонде РТД"
 
-#: config_translations.py:340
+#: config_translations.py:342
 msgid "The type of thermocouple connected"
 msgstr "Тип термоелемента спојен"
 
-#: config_translations.py:342
+#: config_translations.py:344
 msgid "Times Check"
 msgstr "Тимес Цхецк"
 
-#: config_translations.py:343
+#: config_translations.py:345
 msgid "Number of times to check"
 msgstr "Број пута за проверу"
 
-#: config_translations.py:345
+#: config_translations.py:347
 msgid "On State"
 msgstr ""
 
-#: config_translations.py:346
+#: config_translations.py:348
 msgid "What state triggers the output to turn on? High or Low?"
 msgstr "Које стање покреће излаз? Високо или ниско?"
 
-#: config_translations.py:348
+#: config_translations.py:350
 msgid "Trigger at Startup"
 msgstr "Триггер ат Стартуп"
 
-#: config_translations.py:349
+#: config_translations.py:351
 msgid "Whether or not to trigger Functions when Mycodo starts"
 msgstr "Да ли ће се активирати Функције када се покрене Мицодо"
 
-#: config_translations.py:351
+#: config_translations.py:353
 msgid "UART Device"
 msgstr "УАРТ Девице"
 
-#: config_translations.py:352
+#: config_translations.py:354
 msgid "The UART device location (e.g. /dev/ttyUSB1)"
 msgstr "Локација УАРТ уређаја (нпр. / Дев / ттиУСБ1)"
 
-#: config_translations.py:354
+#: config_translations.py:356
 msgid "Weighting"
 msgstr "Пондерисање"
 
-#: config_translations.py:355
+#: config_translations.py:357
 msgid ""
 "The weighting of the previous measurement on the current measurement. "
 "Range: 0.0 - 1.0. Used for smoothing measurements. 0.0 means no "
@@ -1476,11 +1480,11 @@ msgstr "Омогући АБЦ"
 msgid "Enable automatic baseline correction (ABC)"
 msgstr "Омогући аутоматску корекцију основне линије (АБЦ)"
 
-#: inputs/examples/example_all_options_temperature.py:227 inputs/mh_z19.py:76
+#: inputs/examples/example_all_options_temperature.py:228 inputs/mh_z19.py:76
 msgid "Measurement Range"
 msgstr "Раздаљина"
 
-#: inputs/examples/example_all_options_temperature.py:228 inputs/mh_z19.py:77
+#: inputs/examples/example_all_options_temperature.py:229 inputs/mh_z19.py:77
 msgid "Set the measuring range of the sensor"
 msgstr "Подесите мерни опсег сензора"
 
@@ -1512,11 +1516,11 @@ msgstr ""
 msgid "Unique client ID for connecting to the MQTT server"
 msgstr ""
 
-#: inputs/sht31.py:86
+#: inputs/sht31.py:87
 msgid "Enable Heater"
 msgstr "Енабле Хеатер"
 
-#: inputs/sht31.py:87
+#: inputs/sht31.py:88
 msgid ""
 "Enable heater to evaporate condensation. Turn on heater x seconds every y"
 " measurements."
@@ -1524,19 +1528,19 @@ msgstr ""
 "Омогућите грејање да испари кондензацију. Укључите грејач к секунди "
 "сваког и мерења."
 
-#: inputs/sht31.py:95
+#: inputs/sht31.py:96
 msgid "Heater On Seconds"
 msgstr "Хеатер Он Сецондс"
 
-#: inputs/sht31.py:96
+#: inputs/sht31.py:97
 msgid "How long to turn the heater on (seconds)."
 msgstr "Колико дуго треба укључити грејач (секунде)."
 
-#: inputs/sht31.py:103
+#: inputs/sht31.py:104
 msgid "Heater On Period"
 msgstr "Период грејања"
 
-#: inputs/sht31.py:104
+#: inputs/sht31.py:105
 msgid "After how many measurements to turn the heater on. This will repeat."
 msgstr "Након колико мерења укључите грејач. Ово ће се поновити."
 
@@ -1592,31 +1596,31 @@ msgstr ""
 msgid "The Things Network Device ID"
 msgstr ""
 
-#: inputs/examples/example_all_options_temperature.py:205
+#: inputs/examples/example_all_options_temperature.py:206
 #: inputs/winsen_zh03b.py:73
 msgid "Fan Off After Measure"
 msgstr "Фан Офф Афтер Меасуре"
 
-#: inputs/examples/example_all_options_temperature.py:206
+#: inputs/examples/example_all_options_temperature.py:207
 #: inputs/winsen_zh03b.py:74
 msgid "Turn the fan on only during the measurement"
 msgstr "Укључите вентилатор само током мерења"
 
-#: inputs/examples/example_all_options_temperature.py:213
+#: inputs/examples/example_all_options_temperature.py:214
 #: inputs/winsen_zh03b.py:81
 msgid "Fan On Duration"
 msgstr "Фан Он Дуратион"
 
-#: inputs/examples/example_all_options_temperature.py:214
+#: inputs/examples/example_all_options_temperature.py:215
 #: inputs/winsen_zh03b.py:82
 msgid "How long to turn the fan on (seconds) before acquiring measurements"
 msgstr "Колико дуго треба укључити вентилатор (секунде) пре добијања мерења"
 
-#: inputs/examples/bme280_ttn.py:93 inputs/examples/k30_ttn.py:66
+#: inputs/examples/bme280_ttn.py:94 inputs/examples/k30_ttn.py:67
 msgid "Serial Device"
 msgstr ""
 
-#: inputs/examples/bme280_ttn.py:94 inputs/examples/k30_ttn.py:67
+#: inputs/examples/bme280_ttn.py:95 inputs/examples/k30_ttn.py:68
 msgid "The serial device to write to"
 msgstr ""
 
@@ -2018,11 +2022,11 @@ msgstr "Временска ознака Фонт (ем)"
 
 #: mycodo_flask/forms/forms_dashboard.py:153
 #: mycodo_flask/forms/forms_dashboard.py:169
-#: mycodo_flask/forms/forms_dashboard.py:189 mycodo_flask/forms/forms_lcd.py:87
-#: mycodo_flask/forms/forms_lcd.py:98 mycodo_flask/forms/forms_lcd.py:109
-#: mycodo_flask/forms/forms_lcd.py:120 mycodo_flask/forms/forms_lcd.py:131
-#: mycodo_flask/forms/forms_lcd.py:142 mycodo_flask/forms/forms_lcd.py:153
-#: mycodo_flask/forms/forms_lcd.py:164
+#: mycodo_flask/forms/forms_dashboard.py:189 mycodo_flask/forms/forms_lcd.py:88
+#: mycodo_flask/forms/forms_lcd.py:100 mycodo_flask/forms/forms_lcd.py:112
+#: mycodo_flask/forms/forms_lcd.py:124 mycodo_flask/forms/forms_lcd.py:136
+#: mycodo_flask/forms/forms_lcd.py:148 mycodo_flask/forms/forms_lcd.py:160
+#: mycodo_flask/forms/forms_lcd.py:172
 msgid "Decimal Places"
 msgstr "Децимална места"
 
@@ -2085,31 +2089,31 @@ msgstr ""
 msgid "Times to Send"
 msgstr ""
 
-#: mycodo_flask/forms/forms_input.py:82
+#: mycodo_flask/forms/forms_input.py:83
 msgid "Number of Measurements"
 msgstr ""
 
-#: mycodo_flask/forms/forms_input.py:83 mycodo_flask/forms/forms_output.py:47
+#: mycodo_flask/forms/forms_input.py:84 mycodo_flask/forms/forms_output.py:47
 msgid "Location"
 msgstr "Локација"
 
-#: mycodo_flask/forms/forms_input.py:90
+#: mycodo_flask/forms/forms_input.py:91
 msgid "Power Output"
 msgstr "Излазна снага"
 
-#: mycodo_flask/forms/forms_input.py:91
+#: mycodo_flask/forms/forms_input.py:92
 msgid "Calibration Measurement"
 msgstr "Цалибратион Меасуремент"
 
-#: mycodo_flask/forms/forms_input.py:125
+#: mycodo_flask/forms/forms_input.py:126
 msgid "BT Adapter (hci[X])"
 msgstr "БТ Адаптер (хци [Кс])"
 
-#: mycodo_flask/forms/forms_input.py:169
+#: mycodo_flask/forms/forms_input.py:170
 msgid "Acquire Measurements Now"
 msgstr "Набавите мере сада"
 
-#: mycodo_flask/forms/forms_input.py:198
+#: mycodo_flask/forms/forms_input.py:199
 msgid "Rescaled Measurement"
 msgstr "Ресцалед Меасуремент"
 
@@ -4918,16 +4922,16 @@ msgstr "Изврши све"
 msgid "Error: %(err)s"
 msgstr "Грешка: %(err)s"
 
-#: mycodo_flask/utils/utils_general.py:687
-#: mycodo_flask/utils/utils_general.py:702
-#: mycodo_flask/utils/utils_general.py:722
-#: mycodo_flask/utils/utils_general.py:727 mycodo_flask/utils/utils_lcd.py:225
+#: mycodo_flask/utils/utils_general.py:688
+#: mycodo_flask/utils/utils_general.py:703
+#: mycodo_flask/utils/utils_general.py:723
+#: mycodo_flask/utils/utils_general.py:728 mycodo_flask/utils/utils_lcd.py:225
 #: mycodo_flask/utils/utils_lcd.py:227
 #, python-format
 msgid "%(msg)s"
 msgstr "%(msg)s"
 
-#: mycodo_flask/utils/utils_general.py:694
+#: mycodo_flask/utils/utils_general.py:695
 #: mycodo_flask/utils/utils_output.py:332
 #: mycodo_flask/utils/utils_output.py:339
 #: mycodo_flask/utils/utils_output.py:344
@@ -4935,21 +4939,21 @@ msgstr "%(msg)s"
 msgid "%(err)s"
 msgstr "%(err)s"
 
-#: mycodo_flask/utils/utils_general.py:695
+#: mycodo_flask/utils/utils_general.py:696
 #, python-format
 msgid "Entry with ID %(id)s not found"
 msgstr "Унос са ИД %(id)s није пронађен"
 
-#: mycodo_flask/utils/utils_general.py:713
+#: mycodo_flask/utils/utils_general.py:714
 #, python-format
 msgid "Error in the %(field)s field - %(err)s"
 msgstr "Грешка у пољу %(field)s - %(err)s"
 
-#: mycodo_flask/utils/utils_general.py:761
+#: mycodo_flask/utils/utils_general.py:762
 msgid "Cannot move above the first item in the list"
 msgstr "Не може да се помери изнад прве ставке на листи"
 
-#: mycodo_flask/utils/utils_general.py:765
+#: mycodo_flask/utils/utils_general.py:766
 msgid "Cannot move below the last item in the list"
 msgstr "Не може да се помери испод последње ставке на листи"
 
@@ -5003,11 +5007,11 @@ msgstr "Деактивирајте ЛЦД контролер пре модифи
 msgid "Cannot activate LCD if there are blank lines"
 msgstr "Није могуће активирати ЛЦД ако постоје празне линије"
 
-#: mycodo_flask/utils/utils_lcd.py:371
+#: mycodo_flask/utils/utils_lcd.py:387
 msgid "Deactivate LCD controller before modifying its settings"
 msgstr "Деактивирајте ЛЦД контролер пре модификовања његових поставки"
 
-#: mycodo_flask/utils/utils_lcd.py:374
+#: mycodo_flask/utils/utils_lcd.py:390
 msgid "The last display cannot be deleted"
 msgstr "Последњи приказ се не може избрисати"
 

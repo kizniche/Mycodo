@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2019-09-19 21:51-0400\n"
+"POT-Creation-Date: 2019-09-20 18:29-0400\n"
 "PO-Revision-Date: 2019-01-29 14:54-0500\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: nl\n"
@@ -288,7 +288,7 @@ msgstr "Schijf"
 msgid "Dissolved Oxygen"
 msgstr ""
 
-#: config_devices_units.py:73 config_translations.py:190
+#: config_devices_units.py:73 config_translations.py:192
 msgid "Duty Cycle"
 msgstr "Arbeidscyclus"
 
@@ -650,8 +650,8 @@ msgstr "tonen"
 msgid "Down"
 msgstr "naar beneden"
 
-#: config_translations.py:53 config_translations.py:330
-#: mycodo_flask/forms/forms_input.py:134
+#: config_translations.py:53 config_translations.py:332
+#: mycodo_flask/forms/forms_input.py:135
 msgid "Edge"
 msgstr "Rand"
 
@@ -847,38 +847,42 @@ msgid "Tag"
 msgstr "Label"
 
 #: config_translations.py:139
+msgid "Text"
+msgstr ""
+
+#: config_translations.py:141
 msgid "Timer"
 msgstr "timer"
 
-#: config_translations.py:141
+#: config_translations.py:143
 msgid "Trigger"
 msgstr "Op gang brengen"
 
-#: config_translations.py:143
+#: config_translations.py:145
 msgid "Up"
 msgstr "omhoog"
 
-#: config_translations.py:145 mycodo_flask/forms/forms_settings.py:179
+#: config_translations.py:147 mycodo_flask/forms/forms_settings.py:179
 msgid "Upload"
 msgstr "Uploaden"
 
-#: config_translations.py:147 inputs/linux_command.py:52
+#: config_translations.py:149 inputs/linux_command.py:52
 msgid "User"
 msgstr "Gebruiker"
 
-#: config_translations.py:151
+#: config_translations.py:153
 msgid "1-Wire Device ID"
 msgstr "1-draads apparaat-ID"
 
-#: config_translations.py:152
+#: config_translations.py:154
 msgid "Select the 1-wire device ID"
 msgstr "Selecteer de 1-draads apparaat-ID"
 
-#: config_translations.py:154 mycodo_flask/forms/forms_settings.py:51
+#: config_translations.py:156 mycodo_flask/forms/forms_settings.py:51
 msgid "Gain"
 msgstr "Krijgen"
 
-#: config_translations.py:155
+#: config_translations.py:157
 msgid ""
 "Adjust the gain to change the measurable voltage range. See ADC "
 "documentation for details."
@@ -886,209 +890,209 @@ msgstr ""
 "Pas de versterking aan om het meetbare spanningsbereik te wijzigen. Zie "
 "ADC-documentatie voor details."
 
-#: config_translations.py:157 config_translations.py:297
-#: config_translations.py:300 mycodo_flask/forms/forms_calibration.py:64
+#: config_translations.py:159 config_translations.py:299
+#: config_translations.py:302 mycodo_flask/forms/forms_calibration.py:64
 msgid "Resolution"
 msgstr "Resolutie"
 
-#: config_translations.py:158
+#: config_translations.py:160
 msgid "ADC Resolution (see ADC documentation)"
 msgstr "ADC-resolutie (zie ADC-documentatie)"
 
-#: config_translations.py:160
+#: config_translations.py:162
 msgid "Sample Speed"
 msgstr "Sample Snelheid"
 
-#: config_translations.py:161
+#: config_translations.py:163
 msgid "ADC Sample Speed (see ADC documentation)"
 msgstr "ADC-samplesnelheid (zie ADC-documentatie)"
 
-#: config_translations.py:163
+#: config_translations.py:165
 msgid "Current Draw (amps)"
 msgstr "Huidige trekking (versterkers)"
 
-#: config_translations.py:164
+#: config_translations.py:166
 msgid "The number of amps the output device draws (at 120/240 VAC)"
 msgstr "Het aantal versterkers dat het uitvoerapparaat trekt (bij 120/240 VAC)"
 
-#: config_translations.py:166
+#: config_translations.py:168
 msgid "Baud Rate"
 msgstr "Baudrate"
 
-#: config_translations.py:167
+#: config_translations.py:169
 msgid "The UART baud rate"
 msgstr "De UART-baudsnelheid"
 
-#: config_translations.py:169
+#: config_translations.py:171
 msgid "MAC (XX:XX:XX:XX:XX:XX)"
 msgstr "MAC (XX: XX: XX: XX: XX: XX)"
 
-#: config_translations.py:170
+#: config_translations.py:172
 msgid "The MAC address of the input"
 msgstr "Het MAC-adres van de invoer"
 
-#: config_translations.py:172
+#: config_translations.py:174
 msgid "BT Adapter"
 msgstr "BT-adapter"
 
-#: config_translations.py:173
+#: config_translations.py:175
 msgid "The Bluetooth adapter of the input"
 msgstr "De Bluetooth-adapter van de ingang"
 
-#: config_translations.py:175 mycodo_flask/routes_calibration.py:463
+#: config_translations.py:177 mycodo_flask/routes_calibration.py:463
 #: mycodo_flask/templates/pages/function_options/action_options/command.html:2
 msgid "Command"
 msgstr "Commando"
 
-#: config_translations.py:176
+#: config_translations.py:178
 msgid "The command to executed (as user mycodo) to return a measurement value"
 msgstr ""
 "De opdracht die moet worden uitgevoerd (als gebruiker mycodo) om een "
 "meetwaarde te retourneren"
 
-#: config_translations.py:179
+#: config_translations.py:181
 msgid "Select the unit of the measurement to be stored in the database"
 msgstr ""
 "Selecteer de eenheid van de meting die in de database moet worden "
 "opgeslagen"
 
-#: config_translations.py:181
+#: config_translations.py:183
 msgid "Convert to Unit"
 msgstr "Converteren naar eenheid"
 
-#: config_translations.py:182
+#: config_translations.py:184
 msgid "Convert the measurement to a different unit"
 msgstr "Zet de meting om naar een andere eenheid"
 
-#: config_translations.py:184
+#: config_translations.py:186
 msgid "Deadline"
 msgstr "Deadline"
 
-#: config_translations.py:185
+#: config_translations.py:187
 msgid "Time (seconds) to wait until failure"
 msgstr "Tijd (seconden) om te wachten tot falen"
 
-#: config_translations.py:187
+#: config_translations.py:189
 msgid "Duration On (seconds)"
 msgstr "Duur aan (seconden)"
 
-#: config_translations.py:188
+#: config_translations.py:190
 msgid "Turn on for a duration of time (seconds)"
 msgstr "Aanzetten voor een tijdsduur (seconden)"
 
-#: config_translations.py:191
+#: config_translations.py:193
 msgid "Duty cycle for the PWM (percent, 0.0 - 100.0)"
 msgstr "Inschakelduur voor de PWM (procent, 0.0 - 100.0)"
 
-#: config_translations.py:193
+#: config_translations.py:195
 msgid "Flow Rate (ml/min)"
 msgstr "Stroomsnelheid (ml / min)"
 
-#: config_translations.py:194
+#: config_translations.py:196
 msgid "Flow rate in ml/minute (0.5 min, 105 max)"
 msgstr ""
 
-#: config_translations.py:196
+#: config_translations.py:198
 msgid "FTDI Device"
 msgstr "FTDI-apparaat"
 
-#: config_translations.py:197
+#: config_translations.py:199
 msgid "The FTDI device (e.g. /dev/ttyUSB1)"
 msgstr "Het FTDI-apparaat (bijv. / Dev / ttyUSB1)"
 
-#: config_translations.py:199
+#: config_translations.py:201
 msgid "Pin (GPIO)"
 msgstr "Pin (GPIO)"
 
-#: config_translations.py:200
+#: config_translations.py:202
 msgid "The GPIO pin using BCM numbering"
 msgstr "De GPIO-pin met BCM-nummering"
 
-#: config_translations.py:202
+#: config_translations.py:204
 msgid "Host"
 msgstr "Gastheer"
 
-#: config_translations.py:203
+#: config_translations.py:205
 msgid "Host address or IP"
 msgstr "Hostadres of IP"
 
-#: config_translations.py:205
+#: config_translations.py:207
 msgid "I<sup>2</sup>C Bus"
 msgstr "I <sup> 2 </ sup> C-bus"
 
-#: config_translations.py:206
+#: config_translations.py:208
 msgid "The I2C bus the device is connected to"
 msgstr "De I2C-bus waarop het apparaat is aangesloten"
 
-#: config_translations.py:208
+#: config_translations.py:210
 msgid "I<sup>2</sup>C Address"
 msgstr "I <sup> 2 </ sup> C-adres"
 
-#: config_translations.py:209
+#: config_translations.py:211
 msgid "The I2C address of the device"
 msgstr "Het I2C-adres van het apparaat"
 
-#: config_translations.py:211
+#: config_translations.py:213
 msgid "Interface"
 msgstr "Interface"
 
-#: config_translations.py:212
+#: config_translations.py:214
 msgid "The interface used to communicate"
 msgstr "De interface die wordt gebruikt om te communiceren"
 
-#: config_translations.py:214
+#: config_translations.py:216
 msgid "Invert Scale"
 msgstr "Omkeren schaal"
 
-#: config_translations.py:215
+#: config_translations.py:217
 msgid "Invert the scale"
 msgstr "Keer de schaal om"
 
-#: config_translations.py:217
+#: config_translations.py:219
 msgid "Log Level: Debug"
 msgstr ""
 
-#: config_translations.py:218
+#: config_translations.py:220
 msgid "Show debug lines in the Daemon Log"
 msgstr ""
 
-#: config_translations.py:220
+#: config_translations.py:222
 msgid "Max Age (seconds)"
 msgstr "Max. Leeftijd (seconden)"
 
-#: config_translations.py:221
+#: config_translations.py:223
 msgid "The maximum allowable measurement age"
 msgstr "De maximaal toegestane meetleeftijd"
 
-#: config_translations.py:223
+#: config_translations.py:225
 msgid "Unit Measurement"
 msgstr "Eenheid meting"
 
-#: config_translations.py:224
+#: config_translations.py:226
 msgid "Select a unit for the stored value"
 msgstr "Selecteer een eenheid voor de opgeslagen waarde"
 
-#: config_translations.py:226
+#: config_translations.py:228
 msgid "Measurements Enabled"
 msgstr "Metingen ingeschakeld"
 
-#: config_translations.py:227
+#: config_translations.py:229
 msgid "The measurements to record"
 msgstr "De metingen om op te nemen"
 
-#: config_translations.py:229 mycodo_flask/templates/pages/usage.html:209
+#: config_translations.py:231 mycodo_flask/templates/pages/usage.html:209
 msgid "Name"
 msgstr "Naam"
 
-#: config_translations.py:230
+#: config_translations.py:232
 msgid "A name to distinguish this from others"
 msgstr "Een naam om dit te onderscheiden van anderen"
 
-#: config_translations.py:232
+#: config_translations.py:234
 msgid "Off Command"
 msgstr "Uit Commando"
 
-#: config_translations.py:233
+#: config_translations.py:235
 #: mycodo_flask/templates/pages/output_options/python.html:10
 msgid ""
 "Command to execute (as user mycodo) when the output is instructed to turn"
@@ -1097,35 +1101,35 @@ msgstr ""
 "Commando om uit te voeren (als gebruiker mycodo) wanneer de uitvoer "
 "opdracht krijgt om uit te schakelen"
 
-#: config_translations.py:235
+#: config_translations.py:237
 msgid "Output Mode"
 msgstr ""
 
-#: config_translations.py:236
+#: config_translations.py:238
 msgid "Mode to run the output"
 msgstr ""
 
-#: config_translations.py:238
+#: config_translations.py:240
 msgid "Startup State"
 msgstr "Start staat"
 
-#: config_translations.py:239
+#: config_translations.py:241
 msgid "When Mycodo starts, set the output state"
 msgstr "Wanneer Mycodo start, stelt u de uitgangsstatus in"
 
-#: config_translations.py:241
+#: config_translations.py:243
 msgid "Shutdown State"
 msgstr ""
 
-#: config_translations.py:242
+#: config_translations.py:244
 msgid "When Mycodo shuts down, set the output state"
 msgstr ""
 
-#: config_translations.py:244
+#: config_translations.py:246
 msgid "On Command"
 msgstr "Op commando"
 
-#: config_translations.py:245
+#: config_translations.py:247
 #: mycodo_flask/templates/pages/output_options/python.html:4
 msgid ""
 "Command to execute (as user mycodo) when the output is instructed to turn"
@@ -1134,61 +1138,61 @@ msgstr ""
 "Commando om uit te voeren (als gebruiker mycodo) wanneer de uitvoer "
 "opdracht krijgt om in te schakelen"
 
-#: config_translations.py:247 mycodo_flask/forms/forms_conditional.py:32
+#: config_translations.py:249 mycodo_flask/forms/forms_conditional.py:32
 #: mycodo_flask/forms/forms_lcd.py:55 mycodo_flask/forms/forms_math.py:37
 #: mycodo_flask/forms/forms_trigger.py:58
 msgid "Period (seconds)"
 msgstr "Periode (seconden)"
 
-#: config_translations.py:248
+#: config_translations.py:250
 msgid "The duration (seconds) between input reads"
 msgstr "De duur (seconden) tussen de invoer leest"
 
-#: config_translations.py:250
+#: config_translations.py:252
 msgid "Clock Pin"
 msgstr "Klok pin"
 
-#: config_translations.py:251
+#: config_translations.py:253
 msgid "The GPIO (using BCM numbering) connected to the Clock pin"
 msgstr "De GPIO (met BCM-nummering) verbonden met de klokpen"
 
-#: config_translations.py:253
+#: config_translations.py:255
 msgid "CS Pin"
 msgstr "CS-speld"
 
-#: config_translations.py:254
+#: config_translations.py:256
 msgid "The GPIO (using BCM numbering) connected to the Cable Select pin"
 msgstr "De GPIO (met behulp van BCM-nummering) aangesloten op de kabelkeuzepin"
 
-#: config_translations.py:256
+#: config_translations.py:258
 msgid "MISO Pin"
 msgstr "MISO Pin"
 
-#: config_translations.py:257
+#: config_translations.py:259
 msgid "The GPIO (using BCM numbering) connected to the MISO pin"
 msgstr "De GPIO (met behulp van BCM-nummering) verbonden met de MISO-pin"
 
-#: config_translations.py:259
+#: config_translations.py:261
 msgid "MOSI Pin"
 msgstr "MOSI Pin"
 
-#: config_translations.py:260
+#: config_translations.py:262
 msgid "The GPIO (using BCM numbering) connected to the MOSI pin"
 msgstr "De GPIO (met behulp van BCM-nummering) verbonden met de MOSI-pin"
 
-#: config_translations.py:262 inputs/mqtt_paho.py:52
+#: config_translations.py:264 inputs/mqtt_paho.py:52
 msgid "Port"
 msgstr "Haven"
 
-#: config_translations.py:263
+#: config_translations.py:265
 msgid "Host port number"
 msgstr "Host poort nummer"
 
-#: config_translations.py:265
+#: config_translations.py:267
 msgid "Pre Out Duration"
 msgstr "Pre-out duur"
 
-#: config_translations.py:266
+#: config_translations.py:268
 msgid ""
 "If a Pre Output is selected, set the duration (seconds) to turn the Pre "
 "Output on for before every measurement is acquired."
@@ -1196,11 +1200,11 @@ msgstr ""
 "Als er een Pre-uitvoer is geselecteerd, stelt u de duur (seconden) in om "
 "de Pre-uitvoer in te schakelen voor voordat elke meting wordt verworven."
 
-#: config_translations.py:270
+#: config_translations.py:272
 msgid "Pre During Measure"
 msgstr "Pre tijdens meten"
 
-#: config_translations.py:271
+#: config_translations.py:273
 msgid ""
 "Check to turn the output off after (opposed to before) the measurement is"
 " complete"
@@ -1208,63 +1212,63 @@ msgstr ""
 "Controleer om de uitgang uit te schakelen nadat (in tegenstelling tot "
 "eerder) de meting is voltooid"
 
-#: config_translations.py:273
+#: config_translations.py:275
 msgid "Pre Output"
 msgstr "Pre-output"
 
-#: config_translations.py:274
+#: config_translations.py:276
 msgid "Turn the selected output on before taking every measurement"
 msgstr "Schakel de geselecteerde uitgang in voordat u elke meting uitvoert"
 
-#: config_translations.py:276
+#: config_translations.py:278
 msgid "Protocol"
 msgstr "Protocol"
 
-#: config_translations.py:277
+#: config_translations.py:279
 msgid "Wireless 433 MHz protocol"
 msgstr "Draadloos 433 MHz-protocol"
 
-#: config_translations.py:279
+#: config_translations.py:281
 msgid "Pulse Length"
 msgstr "Pulslengte"
 
-#: config_translations.py:280
+#: config_translations.py:282
 msgid "Wireless 433 MHz pulse length"
 msgstr "Draadloze 433 MHz-pulslengte"
 
-#: config_translations.py:282
+#: config_translations.py:284
 msgid "Amount to Dispense (ml)"
 msgstr "Te doseren hoeveelheid (ml)"
 
-#: config_translations.py:283
+#: config_translations.py:285
 msgid "Volume in ml to pump"
 msgstr "Volume in ml om te pompen"
 
-#: config_translations.py:285
+#: config_translations.py:287
 msgid "PWM Command"
 msgstr "PWM-commando"
 
-#: config_translations.py:286
+#: config_translations.py:288
 #, python-format
 msgid "Command to execute (as user mycodo) to set the PWM duty cycle (%%)"
 msgstr ""
 "Commando om uit te voeren (als gebruiker mycodo) om de PWM-taakcyclus in "
 "te stellen (%%)"
 
-#: config_translations.py:288
+#: config_translations.py:290
 msgid "Frequency (Hertz)"
 msgstr "Frequentie (Hertz)"
 
-#: config_translations.py:289
+#: config_translations.py:291
 msgid "The Hertz to output the PWM signal (0 - 70,000)"
 msgstr "De Hertz voert het PWM-signaal uit (0 - 70.000)"
 
-#: config_translations.py:291 inputs/ds18b20.py:77 inputs/ds18s20.py:69
+#: config_translations.py:293 inputs/ds18b20.py:77 inputs/ds18s20.py:69
 #: mycodo_flask/forms/forms_settings.py:32
 msgid "Library"
 msgstr "Bibliotheek"
 
-#: config_translations.py:292
+#: config_translations.py:294
 msgid ""
 "Which method to produce the PWM signal (hardware pins can produce higher "
 "frequencies)"
@@ -1272,23 +1276,23 @@ msgstr ""
 "Welke methode om het PWM-signaal te produceren (hardwarepinnen kunnen "
 "hogere frequenties produceren)"
 
-#: config_translations.py:294
+#: config_translations.py:296
 msgid "Reference Resistance"
 msgstr "Referentie weerstand"
 
-#: config_translations.py:295
+#: config_translations.py:297
 msgid "Reference resistance (Ohm)"
 msgstr "Referentie weerstand (Ohm)"
 
-#: config_translations.py:298 config_translations.py:301
+#: config_translations.py:300 config_translations.py:303
 msgid "Measurement resolution"
 msgstr "Meetresolutie"
 
-#: config_translations.py:303
+#: config_translations.py:305
 msgid "Pulses Per Rev"
 msgstr "Pulsen per Rev"
 
-#: config_translations.py:304
+#: config_translations.py:306
 msgid ""
 "The number of pulses per revolution to calculate revolutions per minute "
 "(RPM)"
@@ -1296,11 +1300,11 @@ msgstr ""
 "Het aantal pulsen per omwenteling om omwentelingen per minuut (RPM) te "
 "berekenen"
 
-#: config_translations.py:306
+#: config_translations.py:308
 msgid "Sample Time"
 msgstr "Proeftijd"
 
-#: config_translations.py:307
+#: config_translations.py:309
 msgid ""
 "The amount of time (seconds) to sample the input before caluclating the "
 "measurement"
@@ -1308,79 +1312,79 @@ msgstr ""
 "De hoeveelheid tijd (seconden) om de invoer te bemonsteren voordat de "
 "meting wordt caluclatie"
 
-#: config_translations.py:309
+#: config_translations.py:311
 msgid "Unscaled Unit Min"
 msgstr "Ongeschaalde eenheid Min"
 
-#: config_translations.py:310
+#: config_translations.py:312
 msgid "Unscaled minimum unit"
 msgstr "Ongeschaalde minimumeenheid"
 
-#: config_translations.py:312
+#: config_translations.py:314
 msgid "Unscaled Unit Max"
 msgstr "Ongeschaalde eenheid Max"
 
-#: config_translations.py:313
+#: config_translations.py:315
 msgid "Unscaled maximum unit"
 msgstr "Ongeschaalde maximumeenheid"
 
-#: config_translations.py:315
+#: config_translations.py:317
 msgid "Rescaled Unit Min"
 msgstr "Rescaled Unit Min"
 
-#: config_translations.py:316
+#: config_translations.py:318
 msgid "Rescaled minimum unit"
 msgstr "Opnieuw geschaalde minimale eenheid"
 
-#: config_translations.py:318
+#: config_translations.py:320
 msgid "Rescaled Unit Max"
 msgstr "Hervormde eenheid Max"
 
-#: config_translations.py:319
+#: config_translations.py:321
 msgid "Rescaled maximum unit"
 msgstr "Opnieuw geschaalde maximumeenheid"
 
-#: config_translations.py:321
+#: config_translations.py:323
 msgid "Measurement Unit"
 msgstr "Meeteenheid"
 
-#: config_translations.py:322
+#: config_translations.py:324
 msgid "Select the measurement and unit to store this measurement in the database"
 msgstr "Selecteer de meting en eenheid om deze meting in de database op te slaan"
 
-#: config_translations.py:324
+#: config_translations.py:326
 msgid "Sensitivity"
 msgstr "Gevoeligheid"
 
-#: config_translations.py:325
+#: config_translations.py:327
 msgid "Measurement sensitivity"
 msgstr "Meetgevoeligheid"
 
-#: config_translations.py:327 mycodo_flask/forms/forms_settings.py:151
+#: config_translations.py:329 mycodo_flask/forms/forms_settings.py:151
 msgid "Voltage"
 msgstr "Spanning"
 
-#: config_translations.py:328
+#: config_translations.py:330
 msgid "The input voltage to the sensor"
 msgstr "De ingangsspanning naar de sensor"
 
-#: config_translations.py:331
+#: config_translations.py:333
 msgid "Edge detection: low to high (rising), high to low (falling), or both"
 msgstr "Randdetectie: laag naar hoog (stijgend), hoog naar laag (dalend), of beide"
 
-#: config_translations.py:333 mycodo_flask/forms/forms_input.py:136
+#: config_translations.py:335 mycodo_flask/forms/forms_input.py:137
 msgid "Bounce Time (ms)"
 msgstr "Bounce Time (ms)"
 
-#: config_translations.py:334
+#: config_translations.py:336
 msgid "The amount of time (miliseconds) to bounce the input signal"
 msgstr "De hoeveelheid tijd (milliseconden) om het ingangssignaal te kaatsen"
 
-#: config_translations.py:336 mycodo_flask/forms/forms_input.py:138
+#: config_translations.py:338 mycodo_flask/forms/forms_input.py:139
 msgid "Reset Period"
 msgstr "Periode resetten"
 
-#: config_translations.py:337
+#: config_translations.py:339
 msgid ""
 "Wait a period of time (seconds) after the first edge detection to begin "
 "detecting again"
@@ -1388,51 +1392,51 @@ msgstr ""
 "Wacht een tijd (seconden) nadat de eerste randdetectie weer begint te "
 "detecteren"
 
-#: config_translations.py:339
+#: config_translations.py:341
 msgid "RTD Probe Type"
 msgstr "RTD-sondetype"
 
-#: config_translations.py:340
+#: config_translations.py:342
 msgid "The type of thermocouple connected"
 msgstr "Het type thermokoppel aangesloten"
 
-#: config_translations.py:342
+#: config_translations.py:344
 msgid "Times Check"
 msgstr "Times Check"
 
-#: config_translations.py:343
+#: config_translations.py:345
 msgid "Number of times to check"
 msgstr "Aantal keren te controleren"
 
-#: config_translations.py:345
+#: config_translations.py:347
 msgid "On State"
 msgstr ""
 
-#: config_translations.py:346
+#: config_translations.py:348
 msgid "What state triggers the output to turn on? High or Low?"
 msgstr "In welke staat wordt de uitgang geactiveerd? Hoog of laag?"
 
-#: config_translations.py:348
+#: config_translations.py:350
 msgid "Trigger at Startup"
 msgstr "Trigger bij opstarten"
 
-#: config_translations.py:349
+#: config_translations.py:351
 msgid "Whether or not to trigger Functions when Mycodo starts"
 msgstr "Al dan niet om functies te activeren wanneer Mycodo start"
 
-#: config_translations.py:351
+#: config_translations.py:353
 msgid "UART Device"
 msgstr "UART-apparaat"
 
-#: config_translations.py:352
+#: config_translations.py:354
 msgid "The UART device location (e.g. /dev/ttyUSB1)"
 msgstr "De locatie van het UART-apparaat (bijv. / Dev / ttyUSB1)"
 
-#: config_translations.py:354
+#: config_translations.py:356
 msgid "Weighting"
 msgstr "weging"
 
-#: config_translations.py:355
+#: config_translations.py:357
 msgid ""
 "The weighting of the previous measurement on the current measurement. "
 "Range: 0.0 - 1.0. Used for smoothing measurements. 0.0 means no "
@@ -1487,11 +1491,11 @@ msgstr "Schakel ABC in"
 msgid "Enable automatic baseline correction (ABC)"
 msgstr "Automatische basislijncorrectie inschakelen (ABC)"
 
-#: inputs/examples/example_all_options_temperature.py:227 inputs/mh_z19.py:76
+#: inputs/examples/example_all_options_temperature.py:228 inputs/mh_z19.py:76
 msgid "Measurement Range"
 msgstr "Meetbereik"
 
-#: inputs/examples/example_all_options_temperature.py:228 inputs/mh_z19.py:77
+#: inputs/examples/example_all_options_temperature.py:229 inputs/mh_z19.py:77
 msgid "Set the measuring range of the sensor"
 msgstr "Stel het meetbereik van de sensor in"
 
@@ -1523,11 +1527,11 @@ msgstr ""
 msgid "Unique client ID for connecting to the MQTT server"
 msgstr ""
 
-#: inputs/sht31.py:86
+#: inputs/sht31.py:87
 msgid "Enable Heater"
 msgstr "Schakel verwarming in"
 
-#: inputs/sht31.py:87
+#: inputs/sht31.py:88
 msgid ""
 "Enable heater to evaporate condensation. Turn on heater x seconds every y"
 " measurements."
@@ -1535,19 +1539,19 @@ msgstr ""
 "Schakel de verwarmer in om condensatie te verdampen. Schakel de "
 "verwarming x seconden in bij elke y-meting."
 
-#: inputs/sht31.py:95
+#: inputs/sht31.py:96
 msgid "Heater On Seconds"
 msgstr "Verwarming op seconden"
 
-#: inputs/sht31.py:96
+#: inputs/sht31.py:97
 msgid "How long to turn the heater on (seconds)."
 msgstr "Hoelang de verwarming moet worden aangezet (seconden)."
 
-#: inputs/sht31.py:103
+#: inputs/sht31.py:104
 msgid "Heater On Period"
 msgstr "Verwarming op Periode"
 
-#: inputs/sht31.py:104
+#: inputs/sht31.py:105
 msgid "After how many measurements to turn the heater on. This will repeat."
 msgstr "Na hoeveel metingen om de kachel aan te zetten. Dit zal herhalen."
 
@@ -1603,33 +1607,33 @@ msgstr ""
 msgid "The Things Network Device ID"
 msgstr ""
 
-#: inputs/examples/example_all_options_temperature.py:205
+#: inputs/examples/example_all_options_temperature.py:206
 #: inputs/winsen_zh03b.py:73
 msgid "Fan Off After Measure"
 msgstr "Ventilator uit na meten"
 
-#: inputs/examples/example_all_options_temperature.py:206
+#: inputs/examples/example_all_options_temperature.py:207
 #: inputs/winsen_zh03b.py:74
 msgid "Turn the fan on only during the measurement"
 msgstr "Schakel de ventilator alleen in tijdens de meting"
 
-#: inputs/examples/example_all_options_temperature.py:213
+#: inputs/examples/example_all_options_temperature.py:214
 #: inputs/winsen_zh03b.py:81
 msgid "Fan On Duration"
 msgstr "Ventilator aan duur"
 
-#: inputs/examples/example_all_options_temperature.py:214
+#: inputs/examples/example_all_options_temperature.py:215
 #: inputs/winsen_zh03b.py:82
 msgid "How long to turn the fan on (seconds) before acquiring measurements"
 msgstr ""
 "Hoelang de ventilator aan moet blijven (seconden) voordat er metingen "
 "worden verricht"
 
-#: inputs/examples/bme280_ttn.py:93 inputs/examples/k30_ttn.py:66
+#: inputs/examples/bme280_ttn.py:94 inputs/examples/k30_ttn.py:67
 msgid "Serial Device"
 msgstr ""
 
-#: inputs/examples/bme280_ttn.py:94 inputs/examples/k30_ttn.py:67
+#: inputs/examples/bme280_ttn.py:95 inputs/examples/k30_ttn.py:68
 msgid "The serial device to write to"
 msgstr ""
 
@@ -2031,11 +2035,11 @@ msgstr "Tijdcode lettertype (em)"
 
 #: mycodo_flask/forms/forms_dashboard.py:153
 #: mycodo_flask/forms/forms_dashboard.py:169
-#: mycodo_flask/forms/forms_dashboard.py:189 mycodo_flask/forms/forms_lcd.py:87
-#: mycodo_flask/forms/forms_lcd.py:98 mycodo_flask/forms/forms_lcd.py:109
-#: mycodo_flask/forms/forms_lcd.py:120 mycodo_flask/forms/forms_lcd.py:131
-#: mycodo_flask/forms/forms_lcd.py:142 mycodo_flask/forms/forms_lcd.py:153
-#: mycodo_flask/forms/forms_lcd.py:164
+#: mycodo_flask/forms/forms_dashboard.py:189 mycodo_flask/forms/forms_lcd.py:88
+#: mycodo_flask/forms/forms_lcd.py:100 mycodo_flask/forms/forms_lcd.py:112
+#: mycodo_flask/forms/forms_lcd.py:124 mycodo_flask/forms/forms_lcd.py:136
+#: mycodo_flask/forms/forms_lcd.py:148 mycodo_flask/forms/forms_lcd.py:160
+#: mycodo_flask/forms/forms_lcd.py:172
 msgid "Decimal Places"
 msgstr "Decimale plaatsen"
 
@@ -2098,31 +2102,31 @@ msgstr ""
 msgid "Times to Send"
 msgstr ""
 
-#: mycodo_flask/forms/forms_input.py:82
+#: mycodo_flask/forms/forms_input.py:83
 msgid "Number of Measurements"
 msgstr ""
 
-#: mycodo_flask/forms/forms_input.py:83 mycodo_flask/forms/forms_output.py:47
+#: mycodo_flask/forms/forms_input.py:84 mycodo_flask/forms/forms_output.py:47
 msgid "Location"
 msgstr "Plaats"
 
-#: mycodo_flask/forms/forms_input.py:90
+#: mycodo_flask/forms/forms_input.py:91
 msgid "Power Output"
 msgstr "Vermogen"
 
-#: mycodo_flask/forms/forms_input.py:91
+#: mycodo_flask/forms/forms_input.py:92
 msgid "Calibration Measurement"
 msgstr "Kalibratiemeting"
 
-#: mycodo_flask/forms/forms_input.py:125
+#: mycodo_flask/forms/forms_input.py:126
 msgid "BT Adapter (hci[X])"
 msgstr "BT-adapter (hci [X])"
 
-#: mycodo_flask/forms/forms_input.py:169
+#: mycodo_flask/forms/forms_input.py:170
 msgid "Acquire Measurements Now"
 msgstr "Verkrijg nu Metingen"
 
-#: mycodo_flask/forms/forms_input.py:198
+#: mycodo_flask/forms/forms_input.py:199
 msgid "Rescaled Measurement"
 msgstr "Herschaalde meting"
 
@@ -4974,16 +4978,16 @@ msgstr "Alles uitvoeren"
 msgid "Error: %(err)s"
 msgstr "Fout: %(err)s"
 
-#: mycodo_flask/utils/utils_general.py:687
-#: mycodo_flask/utils/utils_general.py:702
-#: mycodo_flask/utils/utils_general.py:722
-#: mycodo_flask/utils/utils_general.py:727 mycodo_flask/utils/utils_lcd.py:225
+#: mycodo_flask/utils/utils_general.py:688
+#: mycodo_flask/utils/utils_general.py:703
+#: mycodo_flask/utils/utils_general.py:723
+#: mycodo_flask/utils/utils_general.py:728 mycodo_flask/utils/utils_lcd.py:225
 #: mycodo_flask/utils/utils_lcd.py:227
 #, python-format
 msgid "%(msg)s"
 msgstr "%(msg)s"
 
-#: mycodo_flask/utils/utils_general.py:694
+#: mycodo_flask/utils/utils_general.py:695
 #: mycodo_flask/utils/utils_output.py:332
 #: mycodo_flask/utils/utils_output.py:339
 #: mycodo_flask/utils/utils_output.py:344
@@ -4991,21 +4995,21 @@ msgstr "%(msg)s"
 msgid "%(err)s"
 msgstr "%(err)s"
 
-#: mycodo_flask/utils/utils_general.py:695
+#: mycodo_flask/utils/utils_general.py:696
 #, python-format
 msgid "Entry with ID %(id)s not found"
 msgstr "Vermelding met ID %(id)s niet gevonden"
 
-#: mycodo_flask/utils/utils_general.py:713
+#: mycodo_flask/utils/utils_general.py:714
 #, python-format
 msgid "Error in the %(field)s field - %(err)s"
 msgstr "Fout in veld %(field)s - %(err)s"
 
-#: mycodo_flask/utils/utils_general.py:761
+#: mycodo_flask/utils/utils_general.py:762
 msgid "Cannot move above the first item in the list"
 msgstr "Kan niet boven het eerste item in de lijst komen"
 
-#: mycodo_flask/utils/utils_general.py:765
+#: mycodo_flask/utils/utils_general.py:766
 msgid "Cannot move below the last item in the list"
 msgstr "Kan niet onder het laatste item in de lijst komen"
 
@@ -5061,11 +5065,11 @@ msgstr "Deactiveer de LCD-controller voordat u de instellingen wijzigt."
 msgid "Cannot activate LCD if there are blank lines"
 msgstr "Kan LCD niet activeren als er lege regels zijn"
 
-#: mycodo_flask/utils/utils_lcd.py:371
+#: mycodo_flask/utils/utils_lcd.py:387
 msgid "Deactivate LCD controller before modifying its settings"
 msgstr "Deactiveer de LCD-controller voordat u de instellingen wijzigt"
 
-#: mycodo_flask/utils/utils_lcd.py:374
+#: mycodo_flask/utils/utils_lcd.py:390
 msgid "The last display cannot be deleted"
 msgstr "Het laatste display kan niet worden verwijderd"
 

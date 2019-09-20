@@ -493,7 +493,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <li><a href="#mh-z16">MH-Z16</a></li>
 <li><a href="#mh-z19">MH-Z19</a></li>
 <li><a href="#sht1x">SHT1x</a></li>
-<li><a href="#sht31">SHT31</a></li>
+<li><a href="#sht3x">SHT3x</a></li>
 <li><a href="#sht7x">SHT7x</a></li>
 <li><a href="#tmp006-tmp007">TMP006, TMP007</a></li>
 <li><a href="#tsl2561">TSL2561</a></li>
@@ -3350,7 +3350,7 @@ GPIO.setup(pin, GPIO.OUT, initial<span class="op">=</span>GPIO.LOW)
 <p><a href="#max31856">MAX31856</a>: Temperature <a href="https://www.adafruit.com/product/3263">link</a></p>
 <p><a href="#max31856">MAX31865</a>: Temperature <a href="https://www.adafruit.com/product/3328">link</a></p>
 <p><a href="#mh-z19">MH-Z19</a>: Carbon dioxide (CO2) in ppmv <a href="http://www.winsen-sensor.com/products/ndir-co2-sensor/mh-z19.html">link</a></p>
-<p><a href="#sht1x">SHT1x</a>/<a href="#sht31">SHT31</a>/<a href="#sht7x">SHT7x</a>/<a href="#sht31">SHT31 Smart Gadget</a>: Relative humidity and temperature <a href="https://github.com/mk-fg/sht-sensor">link</a></p>
+<p><a href="#sht1x">SHT1x</a>/<a href="#sht3x">SHT3x</a>/<a href="#sht7x">SHT7x</a>/<a href="#sht31">SHT31 Smart Gadget</a>: Relative humidity and temperature <a href="https://github.com/mk-fg/sht-sensor">link</a></p>
 <p><a href="#sonoff-th10-16">Sonoff TH10/16 (Tasmota firmware)</a>: Relative humidity and temperature</p>
 <p><a href="#tmp006-tmp007">TMP006, TMP007</a>: Contactless temperature <a href="https://www.sparkfun.com/products/11859">link</a></p>
 <p><a href="#tsl2561">TSL2561</a>: Light <a href="https://www.sparkfun.com/products/12055">link</a></p>
@@ -3638,12 +3638,14 @@ GPIO.setup(pin, GPIO.OUT, initial<span class="op">=</span>GPIO.LOW)
 <li>2.4 to 5.5V power and I/O</li>
 <li>No more than 0.125 Hz sampling rate (once every 8 seconds)</li>
 </ul>
-<h3 id="sht31">SHT31</h3>
-<p>This includes the sensor itself and the SHT31 Smart Gadget.</p>
+<h3 id="sht3x">SHT3x</h3>
+<p>(SHT30, SHT31/SHT31 Smart Gadget, SHT35)</p>
 <h4 id="specifications-25">Specifications</h4>
 <ul>
-<li>±2% relative humidity and ±0.3°C accuracy for most uses</li>
+<li>0-100% humidity readings with ±3%,±2%, and ±1.5% relative humidity accuracy</li>
+<li>±0.2°C,±0.2°C,and ±0.1°C temperature accuracy for most uses</li>
 <li>-40 °C to 125 °C temperature</li>
+<li>Supply voltage range - 2.15 to 5.5V</li>
 </ul>
 <h3 id="sht7x">SHT7x</h3>
 <p>(SHT71, SHT75)</p>
