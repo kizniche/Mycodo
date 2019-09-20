@@ -16,6 +16,7 @@
 ### Bugfixes
 
  - Fix Outputs not showing up on Dashboard and mislabeled measurements ([#692](https://github.com/kizniche/mycodo/issues/692))
+ - Update wiringpi to fix issue with Raspberry Pi 4 board ([#689](https://github.com/kizniche/mycodo/issues/689))
 
 ### Features
 

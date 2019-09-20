@@ -252,13 +252,7 @@ case "${1:-''}" in
     ;;
     'install-wiringpi')
         cd ${MYCODO_PATH}/install
-        git clone --recursive https://github.com/WiringPi/WiringPi-Python.git
-        cd WiringPi-Python
-        git submodule update --init
-        cd WiringPi
-        ./build
-        cd ${MYCODO_PATH}/install
-        rm -rf ./WiringPi-Python
+        dpkg -i wiringpi-latest.deb
     ;;
     'install-pigpiod')
         printf "\n#### Installing pigpiod\n"
