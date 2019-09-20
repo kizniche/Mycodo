@@ -157,7 +157,9 @@ class InputModule(AbstractInput):
                         self.logger.debug("Measurement unsuccessful after reset")
                 except Exception:
                     self.logger.debug("Reset command unsuccessful")
-            if math.isnan(temperature) or math.isnan(humidity):
+            if (None in [temperature, humidity] or
+                    math.isnan(temperature) or
+                    math.isnan(humidity)):
                 self.logger.debug(
                     "At least one measurement is not a number: Temperature: {}, "
                     "Humidity: {}".format(temperature, humidity))
