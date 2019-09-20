@@ -140,26 +140,32 @@ class InputModule(AbstractInput):
         """ Gets the measurement in units by reading the """
         self.return_dict = measurements_dict.copy()
 
-        try:
-            temperature, humidity = self.sensor.read_temperature_humidity()
-        except OSError as e:
-            self.logger.debug("OSError: {}".format(e))
-            self.logger.debug("Attempting reset of sensor and another measurement")
-            try:
-                self.sensor.reset()
-            except Exception:
-                self.logger.debug("Reset command unsuccessful. Skipping measurement.")
-                return
+        temperature = None
+        humidity = None
+        success = False
+        for _ in range(3):  # Three attempts
             try:
                 temperature, humidity = self.sensor.read_temperature_humidity()
-            except Exception as e:
-                self.logger.debug("Measurement unsuccessful after reset. Skipping measurement.")
-                return
+            except OSError as e:
+                self.logger.debug("OSError: {}".format(e))
+                self.logger.debug("Attempting reset of sensor and another measurement")
+                try:
+                    self.sensor.reset()
+                    try:
+                        temperature, humidity = self.sensor.read_temperature_humidity()
+                    except Exception as e:
+                        self.logger.debug("Measurement unsuccessful after reset. Skipping measurement.")
+                except Exception:
+                    self.logger.debug("Reset command unsuccessful. Skipping measurement.")
+            if math.isnan(temperature) or math.isnan(humidity):
+                self.logger.debug(
+                    "At least one measurement is not a number: Temperature: {}, "
+                    "Humidity: {}".format(temperature, humidity))
+            else:
+                success = True
+                break
 
-        if math.isnan(temperature) or math.isnan(humidity):
-            self.logger.debug(
-                "At least one measurement is not a number: Temperature: {}, "
-                "Humidity: {}".format(temperature, humidity))
+        if not success:
             return
 
         if self.is_enabled(0):
