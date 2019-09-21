@@ -137,7 +137,6 @@ class InputModule(AbstractInput):
                 busnum=self.i2c_bus)
 
     def get_measurement(self):
-        """ Gets the measurement in units by reading the """
         self.return_dict = measurements_dict.copy()
 
         temperature = None

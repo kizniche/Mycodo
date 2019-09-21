@@ -19,10 +19,10 @@ class MCP342x_read(object):
         self.channel = channel
         self.gain = gain
         self.resolution = resolution
-        if GPIO.RPI_INFO['P1_REVISION'] in [2, 3]:
-            self.I2C_bus_number = 1
-        else:
+        if GPIO.RPI_INFO['P1_REVISION'] == 1:
             self.I2C_bus_number = 0
+        else:
+            self.I2C_bus_number = 1
         self.bus = SMBus(self.I2C_bus_number)
         self.lock_file = "/var/lock/mycodo_adc_0x{:02X}.pid".format(self.i2c_address)
 
