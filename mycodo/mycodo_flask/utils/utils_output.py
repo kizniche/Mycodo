@@ -145,7 +145,7 @@ with open("/home/pi/Mycodo/OutputTest.txt", "a") as myfile:
                     # Add device measurements
                     for measurement, measure_data in OUTPUT_INFO[new_output.output_type]['measure'].items():
                         for unit, unit_data in measure_data.items():
-                            for channel, channel_data in unit_data.items():
+                            for channel, _ in unit_data.items():
                                 new_measurement = DeviceMeasurements()
                                 new_measurement.device_id = new_output.unique_id
                                 new_measurement.name = ''

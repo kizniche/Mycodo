@@ -268,15 +268,17 @@ def file_del(form):
     if form.file_selected.data in files_list:
         try:
             files_list.remove(form.file_selected.data)
-        except:
-            error.append("Could not remove file from note")
+        except Exception as e:
+            error.append(
+                "Could not remove file from note: {}".format(e))
 
     if mod_note.files:
         try:
             full_file_path = os.path.join(PATH_NOTE_ATTACHMENTS, form.file_selected.data)
             os.remove(full_file_path)
-        except:
-            error.append("Could not remove file from filesystem")
+        except Exception as e:
+            error.append(
+                "Could not remove file from filesystem: {}".format(e))
 
     if not error:
         mod_note.files = ",".join(files_list)

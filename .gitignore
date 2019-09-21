@@ -1,6 +1,7 @@
 # Mycodo files
 env/
 camera/
+/databases/flask_secret_key
 *.db
 *.pem
 *.bak
@@ -222,5 +223,3 @@ docs/_build/
 
 # PyBuilder
 target/
-
-# Created by .ignore support plugin (hsz.mobi)

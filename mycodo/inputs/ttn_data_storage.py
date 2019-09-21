@@ -128,26 +128,20 @@ class InputModule(AbstractInput):
             if not self.running:
                 break
 
-            ts_formatted_correctly = False
             try:
                 datetime_utc = datetime.datetime.strptime(
                     each_resp['time'][:-7], timestamp_format)
-                ts_formatted_correctly = True
-            except:
+            except Exception:
                 # Sometimes the original timestamp is in milliseconds
                 # instead of nanoseconds. Therefore, remove 3 less digits
                 # past the decimal and try again to parse.
                 try:
                     datetime_utc = datetime.datetime.strptime(
                         each_resp['time'][:-4], timestamp_format)
-                    ts_formatted_correctly = True
-                except:
-                    self.logger.error("Could not parse timestamp: {}".format(
-                        each_resp['time']))
-
-            if not ts_formatted_correctly:
-                # Malformed timestamp encountered. Discard measurement.
-                continue
+                except Exception as e:
+                    self.logger.error("Could not parse timestamp '{}': {}".format(
+                        each_resp['time'], e))
+                    continue  # Malformed timestamp encountered. Discard measurement.
 
             if (not self.latest_datetime or
                     self.latest_datetime < datetime_utc):

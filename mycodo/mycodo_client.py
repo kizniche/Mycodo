@@ -61,8 +61,10 @@ class DaemonControl:
         try:
             misc = db_retrieve_table_daemon(Misc, entry='first')
             self.pyro_timeout = misc.rpyc_timeout  # TODO: Rename to pyro_timeout at next major revision
-        except:
-            logger.error("Could not access SQL table to determine Pyro Timeout")
+        except Exception as e:
+            logger.exception(
+                "Could not access SQL table to determine Pyro Timeout. "
+                "Using 30 seconds. Error: {}".format(e))
 
         self.uri= 'PYRO:mycodo.pyro_server@127.0.0.1:9090'
 
@@ -73,6 +75,10 @@ class DaemonControl:
             return proxy
         except Exception as e:
             logger.error("Pyro5 proxy error: {}".format(e))
+
+    #
+    # Status functions
+    #
 
     def check_daemon(self):
         proxy = self.proxy()
@@ -103,11 +109,22 @@ class DaemonControl:
         finally:
             proxy._pyroTimeout = old_timeout
 
-    def get_condition_measurement(self, condition_id, function_id=None):
-        return self.proxy().get_condition_measurement(condition_id)
+    def controller_is_active(self, controller_type, controller_id):
+        return self.proxy().controller_is_active(
+            controller_type, controller_id)
 
-    def get_condition_measurement_dict(self, condition_id):
-        return self.proxy().get_condition_measurement_dict(condition_id)
+    def daemon_status(self):
+        return self.proxy().daemon_status()
+
+    def is_in_virtualenv(self):
+        return self.proxy().is_in_virtualenv()
+
+    def ram_use(self):
+        return self.proxy().ram_use()
+
+    #
+    # Daemon
+    #
 
     def controller_activate(self, controller_type, controller_id):
         return self.proxy().controller_activate(
@@ -117,12 +134,41 @@ class DaemonControl:
         return self.proxy().controller_deactivate(
             controller_type, controller_id)
 
-    def controller_is_active(self, controller_type, controller_id):
-        return self.proxy().controller_is_active(
-            controller_type, controller_id)
+    def refresh_daemon_camera_settings(self):
+        return self.proxy().refresh_daemon_camera_settings()
 
-    def daemon_status(self):
-        return self.proxy().daemon_status()
+    def refresh_daemon_conditional_settings(self, unique_id):
+        return self.proxy().refresh_daemon_conditional_settings(unique_id)
+
+    def refresh_daemon_misc_settings(self):
+        return self.proxy().refresh_daemon_misc_settings()
+
+    def refresh_daemon_trigger_settings(self, unique_id):
+        return self.proxy().refresh_daemon_trigger_settings(unique_id)
+
+    def send_infrared_code_broadcast(self, code):
+        return self.proxy().send_infrared_code_broadcast(code)
+
+    def terminate_daemon(self):
+        return self.proxy().terminate_daemon()
+
+    #
+    # Function Actions
+    #
+
+    def trigger_action(
+            self, action_id, message='', single_action=False, debug=False):
+        return self.proxy().trigger_action(
+            action_id, message=message,
+            single_action=single_action, debug=debug)
+
+    def trigger_all_actions(self, function_id, message='', debug=False):
+        return self.proxy().trigger_all_actions(
+            function_id, message=message, debug=debug)
+
+    #
+    # Input Controller
+    #
 
     def input_information_get(self):
         return self.proxy().input_information_get()
@@ -133,6 +179,10 @@ class DaemonControl:
     def input_force_measurements(self, input_id):
         return self.proxy().input_force_measurements(input_id)
 
+    #
+    # LCD Controller
+    #
+
     def lcd_backlight(self, lcd_id, state):
         return self.proxy().lcd_backlight(lcd_id, state)
 
@@ -142,29 +192,19 @@ class DaemonControl:
     def lcd_reset(self, lcd_id):
         return self.proxy().lcd_reset(lcd_id)
 
-    def is_in_virtualenv(self):
-        return self.proxy().is_in_virtualenv()
+    #
+    # Measurements
+    #
 
-    def pid_hold(self, pid_id):
-        return self.proxy().pid_hold(pid_id)
+    def get_condition_measurement(self, condition_id, function_id=None):
+        return self.proxy().get_condition_measurement(condition_id)
 
-    def pid_mod(self, pid_id):
-        return self.proxy().pid_mod(pid_id)
+    def get_condition_measurement_dict(self, condition_id):
+        return self.proxy().get_condition_measurement_dict(condition_id)
 
-    def pid_pause(self, pid_id):
-        return self.proxy().pid_pause(pid_id)
-
-    def pid_resume(self, pid_id):
-        return self.proxy().pid_resume(pid_id)
-
-    def pid_get(self, pid_id, setting):
-        return self.proxy().pid_get(pid_id, setting)
-
-    def pid_set(self, pid_id, setting, value):
-        return self.proxy().pid_set(pid_id, setting, value)
-
-    def ram_use(self):
-        return self.proxy().ram_use()
+    #
+    # Output Controller
+    #
 
     def output_off(self, output_id, trigger_conditionals=True):
         return self.proxy().output_off(output_id, trigger_conditionals)
@@ -190,33 +230,27 @@ class DaemonControl:
     def output_state(self, output_id):
         return self.proxy().output_state(output_id)
 
-    def refresh_daemon_camera_settings(self):
-        return self.proxy().refresh_daemon_camera_settings()
+    #
+    # PID Controller
+    #
 
-    def refresh_daemon_conditional_settings(self, unique_id):
-        return self.proxy().refresh_daemon_conditional_settings(unique_id)
+    def pid_hold(self, pid_id):
+        return self.proxy().pid_hold(pid_id)
 
-    def refresh_daemon_misc_settings(self):
-        return self.proxy().refresh_daemon_misc_settings()
+    def pid_mod(self, pid_id):
+        return self.proxy().pid_mod(pid_id)
 
-    def refresh_daemon_trigger_settings(self, unique_id):
-        return self.proxy().refresh_daemon_trigger_settings(unique_id)
+    def pid_pause(self, pid_id):
+        return self.proxy().pid_pause(pid_id)
 
-    def send_infrared_code_broadcast(self, code):
-        return self.proxy().send_infrared_code_broadcast(code)
+    def pid_resume(self, pid_id):
+        return self.proxy().pid_resume(pid_id)
 
-    def trigger_action(
-            self, action_id, message='', single_action=False, debug=False):
-        return self.proxy().trigger_action(
-            action_id, message=message,
-            single_action=single_action, debug=debug)
+    def pid_get(self, pid_id, setting):
+        return self.proxy().pid_get(pid_id, setting)
 
-    def trigger_all_actions(self, function_id, message='', debug=False):
-        return self.proxy().trigger_all_actions(
-            function_id, message=message, debug=debug)
-
-    def terminate_daemon(self):
-        return self.proxy().terminate_daemon()
+    def pid_set(self, pid_id, setting, value):
+        return self.proxy().pid_set(pid_id, setting, value)
 
 
 def daemon_active():
@@ -231,6 +265,9 @@ def daemon_active():
 
 
 def parseargs(parser):
+    # Daemon
+    parser.add_argument('-c', '--checkdaemon', action='store_true',
+                        help="Check if all active daemon controllers are running")
     parser.add_argument('--activatecontroller', nargs=2,
                         metavar=('CONTROLLER', 'ID'), type=str,
                         help='Activate controller. Options: Conditional, LCD, Math, PID, Input',
@@ -239,8 +276,62 @@ def parseargs(parser):
                         metavar=('CONTROLLER', 'ID'), type=str,
                         help='Deactivate controller. Options: Conditional, LCD, Math, PID, Input',
                         required=False)
+    parser.add_argument('--ramuse', action='store_true',
+                        help="Return the amount of ram used by the Mycodo daemon")
+    parser.add_argument('-t', '--terminate', action='store_true',
+                        help="Terminate the daemon")
 
-    # PID manipulate
+    # Function Actions
+    parser.add_argument('--trigger_action', metavar='ACTIONID', type=str,
+                        help='Trigger action with Action ID',
+                        required=False)
+    parser.add_argument('--trigger_all_actions', metavar='FUNCTIONID', type=str,
+                        help='Trigger all actions belonging to Function with ID',
+                        required=False)
+
+    # Input Controller
+    parser.add_argument('--input_force_measurements', metavar='INPUTID', type=str,
+                        help='Force acquiring measurements for Input ID',
+                        required=False)
+
+    # LCD Controller
+    parser.add_argument('--lcd_backlight_on', metavar='LCDID', type=str,
+                        help='Turn on LCD backlight with LCD ID',
+                        required=False)
+    parser.add_argument('--lcd_backlight_off', metavar='LCDID', type=str,
+                        help='Turn off LCD backlight with LCD ID',
+                        required=False)
+    parser.add_argument('--lcd_reset', metavar='LCDID', type=str,
+                        help='Reset LCD with LCD ID',
+                        required=False)
+
+    # Measurement
+    parser.add_argument('--get_measurement', nargs=3,
+                        metavar=('ID', 'UNIT', 'CHANNEL'), type=str,
+                        help='Get the last measurement',
+                        required=False)
+
+    # Output Controller
+    parser.add_argument('--output_state', metavar='OUTPUTID', type=str,
+                        help='State of output with output ID',
+                        required=False)
+    parser.add_argument('--output_currently_on', metavar='OUTPUTID', type=str,
+                        help='How many seconds an output has currently been active for',
+                        required=False)
+    parser.add_argument('--outputoff', metavar='OUTPUTID', type=str,
+                        help='Turn off output with output ID',
+                        required=False)
+    parser.add_argument('--outputon', metavar='OUTPUTID', type=str,
+                        help='Turn on output with output ID',
+                        required=False)
+    parser.add_argument('--duration', metavar='SECONDS', type=float,
+                        help='Turn on output for a duration of time (seconds)',
+                        required=False)
+    parser.add_argument('--dutycycle', metavar='DUTYCYCLE', type=float,
+                        help='Turn on PWM output for a duty cycle (%%)',
+                        required=False)
+
+    # PID Controller
     parser.add_argument('--pid_pause', nargs=1,
                         metavar='ID', type=str,
                         help='Pause PID controller.',
@@ -253,8 +344,6 @@ def parseargs(parser):
                         metavar='ID', type=str,
                         help='Resume PID controller.',
                         required=False)
-
-    # PID get
     parser.add_argument('--pid_get_setpoint', nargs=1,
                         metavar='ID', type=str,
                         help='Get the setpoint value of the PID controller.',
@@ -283,10 +372,8 @@ def parseargs(parser):
                         metavar='ID', type=str,
                         help='Get the Kd gain of the PID controller.',
                         required=False)
-
-    # PID set
     parser.add_argument('--pid_set_setpoint', nargs=2,
-                        metavar=('ID','SETPOINT'), type=str,
+                        metavar=('ID', 'SETPOINT'), type=str,
                         help='Set the setpoint value of the PID controller.',
                         required=False)
     parser.add_argument('--pid_set_integrator', nargs=2,
@@ -310,65 +397,6 @@ def parseargs(parser):
                         help='Set the Kd gain of the PID controller.',
                         required=False)
 
-    # Daemon
-    parser.add_argument('-c', '--checkdaemon', action='store_true',
-                        help="Check if all active daemon controllers are running")
-    parser.add_argument('--ramuse', action='store_true',
-                        help="Return the amount of ram used by the Mycodo daemon")
-
-    # Inputs
-    parser.add_argument('--input_force_measurements', metavar='INPUTID', type=str,
-                        help='Force acquiring measurements for Input ID',
-                        required=False)
-
-    # Measurement
-    parser.add_argument('--get_measurement', nargs=3,
-                        metavar=('ID', 'UNIT', 'CHANNEL'), type=str,
-                        help='Get the last measurement',
-                        required=False)
-
-    # LCD
-    parser.add_argument('--lcd_backlight_on', metavar='LCDID', type=str,
-                        help='Turn on LCD backlight with LCD ID',
-                        required=False)
-    parser.add_argument('--lcd_backlight_off', metavar='LCDID', type=str,
-                        help='Turn off LCD backlight with LCD ID',
-                        required=False)
-    parser.add_argument('--lcd_reset', metavar='LCDID', type=str,
-                        help='Reset LCD with LCD ID',
-                        required=False)
-
-    # Output
-    parser.add_argument('--output_state', metavar='OUTPUTID', type=str,
-                        help='State of output with output ID',
-                        required=False)
-    parser.add_argument('--output_currently_on', metavar='OUTPUTID', type=str,
-                        help='How many seconds an output has currently been active for',
-                        required=False)
-    parser.add_argument('--outputoff', metavar='OUTPUTID', type=str,
-                        help='Turn off output with output ID',
-                        required=False)
-    parser.add_argument('--outputon', metavar='OUTPUTID', type=str,
-                        help='Turn on output with output ID',
-                        required=False)
-    parser.add_argument('--duration', metavar='SECONDS', type=float,
-                        help='Turn on output for a duration of time (seconds)',
-                        required=False)
-    parser.add_argument('--dutycycle', metavar='DUTYCYCLE', type=float,
-                        help='Turn on PWM output for a duty cycle (%%)',
-                        required=False)
-
-    # Functions
-    parser.add_argument('--trigger_action', metavar='ACTIONID', type=str,
-                        help='Trigger action with Action ID',
-                        required=False)
-    parser.add_argument('--trigger_all_actions', metavar='FUNCTIONID', type=str,
-                        help='Trigger all actions belonging to Function with ID',
-                        required=False)
-
-    parser.add_argument('-t', '--terminate', action='store_true',
-                        help="Terminate the daemon")
-
     return parser.parse_args()
 
 
@@ -390,11 +418,13 @@ if __name__ == "__main__":
                 msg=return_msg))
 
     elif args.input_force_measurements:
-        return_msg = daemon.input_force_measurements(args.input_force_measurements)
-        logger.info("[Remote command] Force acquiring measurements for Input with ID '{id}': "
-                    "Server returned: {msg}".format(
-                        id=args.input_force_measurements,
-                        msg=return_msg))
+        return_msg = daemon.input_force_measurements(
+            args.input_force_measurements)
+        logger.info(
+            "[Remote command] Force acquiring measurements for Input with "
+            "ID '{id}': Server returned: {msg}".format(
+                id=args.input_force_measurements,
+                msg=return_msg))
 
     elif args.get_measurement:
         client = InfluxDBClient(INFLUXDB_HOST, INFLUXDB_PORT, INFLUXDB_USER,
@@ -402,14 +432,15 @@ if __name__ == "__main__":
         query = "SELECT LAST(value) FROM {unit} " \
                 "WHERE device_id='{id}' " \
                 "AND channel='{channel}'".format(
-            unit=args.get_measurement[1],
-            id=args.get_measurement[0],
-            channel=args.get_measurement[2])
+                    unit=args.get_measurement[1],
+                    id=args.get_measurement[0],
+                    channel=args.get_measurement[2])
 
         try:
             last_measurement = client.query(query).raw
         except requests.exceptions.ConnectionError:
-            logger.debug("ERROR;Failed to establish a new influxdb connection. Ensure influxdb is running.")
+            logger.debug("ERROR: Failed to establish a new influxdb "
+                         "connection. Ensure influxdb is running.")
             last_measurement = None
 
         if last_measurement and 'series' in last_measurement:
@@ -446,10 +477,11 @@ if __name__ == "__main__":
 
     elif args.output_currently_on:
         return_msg = daemon.output_sec_currently_on(args.output_currently_on)
-        logger.info("[Remote command] How many seconds output has been on. ID '{id}': "
-                    "Server returned: {msg}".format(
-                        id=args.output_currently_on,
-                        msg=return_msg))
+        logger.info(
+            "[Remote command] How many seconds output has been on. "
+            "ID '{id}': Server returned: {msg}".format(
+                id=args.output_currently_on,
+                msg=return_msg))
 
     elif args.output_state:
         return_msg = daemon.output_state(args.output_state)
@@ -483,9 +515,11 @@ if __name__ == "__main__":
                         msg=return_msg))
 
     elif args.activatecontroller:
-        if args.activatecontroller[0] not in ['Conditional', 'LCD', 'Math', 'PID', 'Input']:
-            logger.info("Invalid controller type. Options: Conditional, LCD, Math, PID, "
-                        "Input.")
+        if args.activatecontroller[0] not in [
+                'Conditional', 'Input', 'LCD', 'Math', 'PID', 'Trigger']:
+            logger.info(
+                "Invalid controller type: {}. Options: Conditional, Input, "
+                "LCD, Math, PID, Trigger.".format(args.activatecontroller[0]))
         else:
             return_msg = daemon.controller_activate(
                 args.activatecontroller[0], args.activatecontroller[1])
@@ -496,9 +530,11 @@ if __name__ == "__main__":
                             msg=return_msg))
 
     elif args.deactivatecontroller:
-        if args.deactivatecontroller[0] not in ['Conditional', 'LCD', 'Math', 'PID', 'Input']:
-            logger.info("Invalid controller type. Options: Conditional, LCD, Math, PID, "
-                        "Input.")
+        if args.deactivatecontroller[0] not in [
+                'Conditional', 'Input', 'LCD', 'Math', 'PID', 'Trigger']:
+            logger.info(
+                "Invalid controller type: {}. Options: Conditional, Input, "
+                "LCD, Math, PID, Trigger.".format(args.activatecontroller[0]))
         else:
             return_msg = daemon.controller_deactivate(
                 args.deactivatecontroller[0], args.deactivatecontroller[1])

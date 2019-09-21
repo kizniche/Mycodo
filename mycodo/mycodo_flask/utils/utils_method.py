@@ -83,12 +83,12 @@ def validate_method_data(form_data, this_method):
             try:
                 if form_data.restart.data:
                     return 0
-            except:
+            except Exception:
                 pass
             try:
                 if form_data.duration_end.data:
                     return 0
-            except:
+            except Exception:
                 pass
             if (not form_data.duration.data or
                     not form_data.setpoint_start.data):

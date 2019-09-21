@@ -212,8 +212,9 @@ def choices_measurements_units(measurements, units):
                     display += ' ({unit})'.format(
                         unit=dict_units[each_unit]['unit'])
                 choices.update({value: display})
-            except:
-                logger.exception("Error in choices_measurements_units()")
+            except Exception as e:
+                logger.exception(
+                    "Error in choices_measurements_units(): {}".format(e))
 
     return choices
 

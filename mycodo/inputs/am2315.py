@@ -231,7 +231,7 @@ class AM2315:
         # Send a wakeup call to the sensor. This call will always fail
         try:
             self.bus.transaction(self.i2c.writing(self.address, bytes([0x03,0x0,0x04])))
-        except:
+        except Exception:
              pass
 
         time.sleep(0.125)

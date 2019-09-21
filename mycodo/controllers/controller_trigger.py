@@ -398,9 +398,9 @@ class TriggerController(AbstractController, threading.Thread):
                 GPIO.setmode(GPIO.BCM)
                 GPIO.setup(int(input_dev.pin), GPIO.IN)
                 gpio_state = GPIO.input(int(input_dev.pin))
-            except:
+            except Exception as e:
                 gpio_state = None
-                self.logger.error("Exception reading the GPIO pin")
+                self.logger.error("Exception reading the GPIO pin: {}".format(e))
             if (gpio_state is not None and
                     gpio_state == trigger.if_sensor_gpio_state):
                 message += " GPIO State Detected (state = {state}).".format(

@@ -159,7 +159,7 @@ class InputModule(AbstractInput):
 
         try:
             value = float(msg.payload.decode())
-        except:
+        except Exception:
             self.logger.exception("Message doesn't represent a float value.")
             return
 

@@ -1,3 +1,11 @@
+## 7.7.8 (Unreleased)
+
+### Miscellaneous
+
+ - PEP8
+ - Improve error/debug logging
+
+
 ## 7.7.7 (2019.09.20)
 
 ### Bugfixes

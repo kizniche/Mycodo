@@ -515,18 +515,18 @@ def write_influxdb_list(data, unique_id):
     try:
         client.write_points(data)
         return 0
-    except Exception as except_msg:
-        logger.debug("Failed to write measurements to influxdb. "
-                     "Retrying in 30 seconds. Data: {}".format(data))
+    except Exception as e:
+        logger.debug("Failed to write measurements to influxdb: {} "
+                     "Retrying in 30 seconds. Data: {}".format(e, data))
         time.sleep(30)
         try:
             client.write_points(data)
             logger.debug("Successfully wrote measurements to influxdb after "
                          "30-second wait. Data: {}".format(data))
             return 0
-        except:
+        except Exception as e:
             logger.debug(
                 "Failed to write measurements to influxdb. Data that was "
                 "submitted for writing: {data}. Exception: {err}".format(
-                    data=data, err=except_msg))
+                    data=data, err=e))
             return 1

@@ -149,10 +149,10 @@ class InputModule(AbstractInput):
                     finally:
                         self.lock_release(self.lock_file)
                 self.ttn_serial_error = False
-        except:
+        except Exception as e:
             if not self.ttn_serial_error:
                 # Only send this error once if it continually occurs
-                self.logger.error("TTN: Could not send serial")
+                self.logger.error("TTN: Could not send serial: {}".format(e))
                 self.ttn_serial_error = True
 
         return self.return_dict

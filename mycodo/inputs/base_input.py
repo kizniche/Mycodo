@@ -364,7 +364,7 @@ class AbstractInput(object):
             self.logger.debug("Releasing lock for {}".format(lockfile))
             self.lock[lockfile].release(force=True)
             os.remove(lockfile)
-        except:
+        except Exception:
             pass
         finally:
             self.locked = False

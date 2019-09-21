@@ -397,7 +397,7 @@ def csv_to_list_of_str(str_csv):
         for x in str_csv.split(','):
             try:
                 list_str.append(x)
-            except:
+            except Exception:
                 pass
     return list_str
 

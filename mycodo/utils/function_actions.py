@@ -106,9 +106,9 @@ def get_condition_value(condition_id):
             GPIO.setmode(GPIO.BCM)
             GPIO.setup(int(sql_condition.gpio_pin), GPIO.IN)
             gpio_state = GPIO.input(int(sql_condition.gpio_pin))
-        except:
+        except Exception as e:
             gpio_state = None
-            logger.error("Exception reading the GPIO pin")
+            logger.error("Exception reading the GPIO pin: {}".format(e))
         return gpio_state
 
     # Return output state

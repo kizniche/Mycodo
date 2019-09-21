@@ -37,5 +37,5 @@ if __name__ == "__main__":
                 accel_y=state['acceleration_y'],
                 accel_z=state['acceleration_z'])
             print(result, end='')
-    except:
+    except Exception:
         pass

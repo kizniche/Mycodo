@@ -73,10 +73,14 @@ def send_email(smtp_host, smtp_ssl, smtp_port, smtp_user, smtp_pass,
                         msg = MIMEBase('application', "octet-stream")
                         msg.set_payload(fp.read())
                     encoders.encode_base64(msg)
-                    msg.add_header('Content-Disposition', 'attachment', filename=os.path.basename(file))
+                    msg.add_header(
+                        'Content-Disposition',
+                        'attachment',
+                        filename=os.path.basename(file))
                     outer.attach(msg)
-                except:
-                    logger.error("Unable to open one of the attachments. Error: {}".format(sys.exc_info()[0]))
+                except Exception:
+                    logger.error("Unable to open one of the attachments. "
+                                 "Error: {}".format(sys.exc_info()[0]))
 
         composed = outer.as_string()
 
