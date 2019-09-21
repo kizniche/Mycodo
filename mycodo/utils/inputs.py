@@ -116,7 +116,6 @@ def parse_input_information():
     input_paths = [PATH_INPUTS, PATH_INPUTS_CUSTOM]
 
     dict_inputs = {}
-    input_custom = None
 
     for each_path in input_paths:
 
@@ -135,95 +134,93 @@ def parse_input_information():
                 if not hasattr(input_custom, 'INPUT_INFORMATION'):
                     skip_file = True
 
-            if skip_file or not input_custom:
-                return
+            if not skip_file:
+                # logger.info("Found input: {}, {}".format(
+                #     input_custom.INPUT_INFORMATION['input_name_unique'],
+                #     full_path))
 
-            # logger.info("Found input: {}, {}".format(
-            #     input_custom.INPUT_INFORMATION['input_name_unique'],
-            #     full_path))
+                # Populate dictionary of input information
+                if input_custom.INPUT_INFORMATION['input_name_unique'] in dict_inputs:
+                    logger.error("Error: Cannot add input modules because it does not have a unique name: {name}".format(
+                        name=input_custom.INPUT_INFORMATION['input_name_unique']))
+                else:
+                    dict_inputs[input_custom.INPUT_INFORMATION['input_name_unique']] = {}
 
-            # Populate dictionary of input information
-            if input_custom.INPUT_INFORMATION['input_name_unique'] in dict_inputs:
-                logger.error("Error: Cannot add input modules because it does not have a unique name: {name}".format(
-                    name=input_custom.INPUT_INFORMATION['input_name_unique']))
-            else:
-                dict_inputs[input_custom.INPUT_INFORMATION['input_name_unique']] = {}
+                dict_inputs[input_custom.INPUT_INFORMATION['input_name_unique']]['file_path'] = full_path
 
-            dict_inputs[input_custom.INPUT_INFORMATION['input_name_unique']]['file_path'] = full_path
+                dict_inputs = dict_has_value(dict_inputs, input_custom, 'input_manufacturer')
+                dict_inputs = dict_has_value(dict_inputs, input_custom, 'input_name')
+                dict_inputs = dict_has_value(dict_inputs, input_custom, 'input_library')
+                dict_inputs = dict_has_value(dict_inputs, input_custom, 'measurements_name')
+                dict_inputs = dict_has_value(dict_inputs, input_custom, 'measurements_dict')
+                dict_inputs = dict_has_value(dict_inputs, input_custom, 'measurements_variable_amount')
+                dict_inputs = dict_has_value(dict_inputs, input_custom, 'measurements_use_same_timestamp')
+                dict_inputs = dict_has_value(dict_inputs, input_custom, 'measurements_rescale')
+                dict_inputs = dict_has_value(dict_inputs, input_custom, 'listener')
+                dict_inputs = dict_has_value(dict_inputs, input_custom, 'message')
 
-            dict_inputs = dict_has_value(dict_inputs, input_custom, 'input_manufacturer')
-            dict_inputs = dict_has_value(dict_inputs, input_custom, 'input_name')
-            dict_inputs = dict_has_value(dict_inputs, input_custom, 'input_library')
-            dict_inputs = dict_has_value(dict_inputs, input_custom, 'measurements_name')
-            dict_inputs = dict_has_value(dict_inputs, input_custom, 'measurements_dict')
-            dict_inputs = dict_has_value(dict_inputs, input_custom, 'measurements_variable_amount')
-            dict_inputs = dict_has_value(dict_inputs, input_custom, 'measurements_use_same_timestamp')
-            dict_inputs = dict_has_value(dict_inputs, input_custom, 'measurements_rescale')
-            dict_inputs = dict_has_value(dict_inputs, input_custom, 'listener')
-            dict_inputs = dict_has_value(dict_inputs, input_custom, 'message')
+                # Dependencies
+                dict_inputs = dict_has_value(dict_inputs, input_custom, 'dependencies_module')
+                dict_inputs = dict_has_value(dict_inputs, input_custom, 'dependencies_github')
 
-            # Dependencies
-            dict_inputs = dict_has_value(dict_inputs, input_custom, 'dependencies_module')
-            dict_inputs = dict_has_value(dict_inputs, input_custom, 'dependencies_github')
+                dict_inputs = dict_has_value(dict_inputs, input_custom, 'enable_channel_unit_select')
 
-            dict_inputs = dict_has_value(dict_inputs, input_custom, 'enable_channel_unit_select')
+                # Interface
+                dict_inputs = dict_has_value(dict_inputs, input_custom, 'interfaces')
 
-            # Interface
-            dict_inputs = dict_has_value(dict_inputs, input_custom, 'interfaces')
+                # Nonstandard (I2C, UART, etc.) location
+                dict_inputs = dict_has_value(dict_inputs, input_custom, 'location')
 
-            # Nonstandard (I2C, UART, etc.) location
-            dict_inputs = dict_has_value(dict_inputs, input_custom, 'location')
+                # I2C
+                dict_inputs = dict_has_value(dict_inputs, input_custom, 'i2c_location')
+                dict_inputs = dict_has_value(dict_inputs, input_custom, 'i2c_address_editable')
 
-            # I2C
-            dict_inputs = dict_has_value(dict_inputs, input_custom, 'i2c_location')
-            dict_inputs = dict_has_value(dict_inputs, input_custom, 'i2c_address_editable')
+                # FTDI
+                dict_inputs = dict_has_value(dict_inputs, input_custom, 'ftdi_location')
 
-            # FTDI
-            dict_inputs = dict_has_value(dict_inputs, input_custom, 'ftdi_location')
+                # UART
+                dict_inputs = dict_has_value(dict_inputs, input_custom, 'uart_location')
+                dict_inputs = dict_has_value(dict_inputs, input_custom, 'uart_baud_rate')
+                dict_inputs = dict_has_value(dict_inputs, input_custom, 'pin_cs')
+                dict_inputs = dict_has_value(dict_inputs, input_custom, 'pin_miso')
+                dict_inputs = dict_has_value(dict_inputs, input_custom, 'pin_mosi')
+                dict_inputs = dict_has_value(dict_inputs, input_custom, 'pin_clock')
 
-            # UART
-            dict_inputs = dict_has_value(dict_inputs, input_custom, 'uart_location')
-            dict_inputs = dict_has_value(dict_inputs, input_custom, 'uart_baud_rate')
-            dict_inputs = dict_has_value(dict_inputs, input_custom, 'pin_cs')
-            dict_inputs = dict_has_value(dict_inputs, input_custom, 'pin_miso')
-            dict_inputs = dict_has_value(dict_inputs, input_custom, 'pin_mosi')
-            dict_inputs = dict_has_value(dict_inputs, input_custom, 'pin_clock')
+                # Bluetooth (BT)
+                dict_inputs = dict_has_value(dict_inputs, input_custom, 'bt_location')
+                dict_inputs = dict_has_value(dict_inputs, input_custom, 'bt_adapter')
 
-            # Bluetooth (BT)
-            dict_inputs = dict_has_value(dict_inputs, input_custom, 'bt_location')
-            dict_inputs = dict_has_value(dict_inputs, input_custom, 'bt_adapter')
+                # Which form options to display and whether each option is enabled
+                dict_inputs = dict_has_value(dict_inputs, input_custom, 'options_enabled')
+                dict_inputs = dict_has_value(dict_inputs, input_custom, 'options_disabled')
 
-            # Which form options to display and whether each option is enabled
-            dict_inputs = dict_has_value(dict_inputs, input_custom, 'options_enabled')
-            dict_inputs = dict_has_value(dict_inputs, input_custom, 'options_disabled')
+                # Host options
+                dict_inputs = dict_has_value(dict_inputs, input_custom, 'times_check')
+                dict_inputs = dict_has_value(dict_inputs, input_custom, 'deadline')
+                dict_inputs = dict_has_value(dict_inputs, input_custom, 'port')
 
-            # Host options
-            dict_inputs = dict_has_value(dict_inputs, input_custom, 'times_check')
-            dict_inputs = dict_has_value(dict_inputs, input_custom, 'deadline')
-            dict_inputs = dict_has_value(dict_inputs, input_custom, 'port')
+                # Signal options
+                dict_inputs = dict_has_value(dict_inputs, input_custom, 'weighting')
+                dict_inputs = dict_has_value(dict_inputs, input_custom, 'sample_time')
 
-            # Signal options
-            dict_inputs = dict_has_value(dict_inputs, input_custom, 'weighting')
-            dict_inputs = dict_has_value(dict_inputs, input_custom, 'sample_time')
+                # Analog-to-digital converter
+                dict_inputs = dict_has_value(dict_inputs, input_custom, 'adc_gain')
+                dict_inputs = dict_has_value(dict_inputs, input_custom, 'adc_resolution')
+                dict_inputs = dict_has_value(dict_inputs, input_custom, 'adc_sample_speed')
 
-            # Analog-to-digital converter
-            dict_inputs = dict_has_value(dict_inputs, input_custom, 'adc_gain')
-            dict_inputs = dict_has_value(dict_inputs, input_custom, 'adc_resolution')
-            dict_inputs = dict_has_value(dict_inputs, input_custom, 'adc_sample_speed')
+                # Misc
+                dict_inputs = dict_has_value(dict_inputs, input_custom, 'period')
+                dict_inputs = dict_has_value(dict_inputs, input_custom, 'sht_voltage')
+                dict_inputs = dict_has_value(dict_inputs, input_custom, 'cmd_command')
+                dict_inputs = dict_has_value(dict_inputs, input_custom, 'resolution')
+                dict_inputs = dict_has_value(dict_inputs, input_custom, 'resolution_2')
+                dict_inputs = dict_has_value(dict_inputs, input_custom, 'sensitivity')
+                dict_inputs = dict_has_value(dict_inputs, input_custom, 'thermocouple_type')
+                dict_inputs = dict_has_value(dict_inputs, input_custom, 'ref_ohm')
 
-            # Misc
-            dict_inputs = dict_has_value(dict_inputs, input_custom, 'period')
-            dict_inputs = dict_has_value(dict_inputs, input_custom, 'sht_voltage')
-            dict_inputs = dict_has_value(dict_inputs, input_custom, 'cmd_command')
-            dict_inputs = dict_has_value(dict_inputs, input_custom, 'resolution')
-            dict_inputs = dict_has_value(dict_inputs, input_custom, 'resolution_2')
-            dict_inputs = dict_has_value(dict_inputs, input_custom, 'sensitivity')
-            dict_inputs = dict_has_value(dict_inputs, input_custom, 'thermocouple_type')
-            dict_inputs = dict_has_value(dict_inputs, input_custom, 'ref_ohm')
+                dict_inputs = dict_has_value(dict_inputs, input_custom, 'execute_at_creation')
+                dict_inputs = dict_has_value(dict_inputs, input_custom, 'test_before_saving')
 
-            dict_inputs = dict_has_value(dict_inputs, input_custom, 'execute_at_creation')
-            dict_inputs = dict_has_value(dict_inputs, input_custom, 'test_before_saving')
-
-            dict_inputs = dict_has_value(dict_inputs, input_custom, 'custom_options')
+                dict_inputs = dict_has_value(dict_inputs, input_custom, 'custom_options')
 
     return dict_inputs
