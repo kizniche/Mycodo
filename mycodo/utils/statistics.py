@@ -31,6 +31,7 @@ from mycodo.databases.models import Math
 from mycodo.databases.models import Method
 from mycodo.databases.models import Output
 from mycodo.databases.models import PID
+from mycodo.databases.models import Trigger
 from mycodo.utils.database import db_retrieve_table_daemon
 
 MYCODO_DB_PATH = 'sqlite:///' + SQL_DATABASE_MYCODO
@@ -226,7 +227,9 @@ def recreate_stat_file():
         ['num_sensors', 0],
         ['num_sensors_active', 0],
         ['num_conditionals', 0],
-        ['num_conditionals_active', 0]
+        ['num_conditionals_active', 0],
+        ['num_triggers', 0],
+        ['num_triggers_active', 0]
     ]
 
     with open(STATS_CSV, 'w') as csv_stat_file:
@@ -278,6 +281,11 @@ def send_anonymous_stats(start_time, debug=False):
         add_update_csv(STATS_CSV, 'num_pids', get_count(pids))
         add_update_csv(STATS_CSV, 'num_pids_active',
                        get_count(pids.filter(PID.is_activated == True)))
+
+        triggers = db_retrieve_table_daemon(Trigger)
+        add_update_csv(STATS_CSV, 'num_triggers', get_count(triggers))
+        add_update_csv(STATS_CSV, 'num_triggers_active',
+                       get_count(triggers.filter(Trigger.is_activated == True)))
 
         lcds = db_retrieve_table_daemon(LCD)
         add_update_csv(STATS_CSV, 'num_lcds', get_count(lcds))
