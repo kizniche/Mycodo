@@ -215,6 +215,7 @@ class LCDController(AbstractController, threading.Thread):
             self.display_sets.append(each_lcd_display.unique_id)
             self.lcd_string_line[each_lcd_display.unique_id] = {}
             self.lcd_line[each_lcd_display.unique_id] = {}
+            self.lcd_text[each_lcd_display.unique_id] = {}
             self.lcd_max_age[each_lcd_display.unique_id] = {}
             self.lcd_decimal_places[each_lcd_display.unique_id] = {}
 
@@ -491,7 +492,7 @@ class LCDController(AbstractController, threading.Thread):
         if measurement_id == 'output':
             device_measurement = db_retrieve_table_daemon(
                 Output, unique_id=device_id)
-        elif measurement_id in ['BLANK', 'IP']:
+        elif measurement_id in ['BLANK', 'IP', 'TEXT']:
             device_measurement = None
         else:
             device_measurement = db_retrieve_table_daemon(
@@ -516,7 +517,7 @@ class LCDController(AbstractController, threading.Thread):
 
         if 'time' in measurement_id:
             self.lcd_line[display_id][line]['measure'] = 'time'
-        elif measurement_id in ['BLANK', 'IP']:
+        elif measurement_id in ['BLANK', 'IP', 'TEXT']:
             self.lcd_line[display_id][line]['measure'] = measurement_id
             self.lcd_line[display_id][line]['name'] = ''
 
@@ -540,7 +541,7 @@ class LCDController(AbstractController, threading.Thread):
             if controller_found:
                 self.lcd_line[display_id][line]['name'] = controller_found.name
 
-        if (self.lcd_line[display_id][line]['measure'] in ['BLANK', 'IP', 'time'] or
+        if (self.lcd_line[display_id][line]['measure'] in ['BLANK', 'IP', 'TEXT', 'time'] or
                 None not in [self.lcd_line[display_id][line]['name'],
                              self.lcd_line[display_id][line]['unit']]):
             self.lcd_line[display_id][line]['setup'] = True

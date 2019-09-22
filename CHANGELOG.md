@@ -1,4 +1,8 @@
-## 7.7.8 (Unreleased)
+## 7.7.8 (2019.09.22)
+
+### Bugfixes
+
+ - Fix LCD controller
 
 ### Miscellaneous
 
