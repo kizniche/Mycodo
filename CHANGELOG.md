@@ -1,3 +1,11 @@
+## 7.7.9 (Unreleased)
+
+### Miscellaneous
+
+ - Rename Conditional Statement measure() to condition() in Conditional Controllers
+ - Add description for all Conditional Conditions and Actions
+
+
 ## 7.7.8 (2019.09.22)
 
 ### Bugfixes

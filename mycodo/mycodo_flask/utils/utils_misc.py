@@ -50,11 +50,11 @@ class ConditionalRun:
         control.trigger_action(action_id, message=message, single_action=True)
 
     @staticmethod
-    def measure(condition_id):
+    def condition(condition_id):
         return control.get_condition_measurement(condition_id)
 
     @staticmethod
-    def measure_dict(condition_id):
+    def condition_dict(condition_id):
         string_sets = control.get_condition_measurement_dict(condition_id)
         if string_sets:
             list_ts_values = []
@@ -84,6 +84,7 @@ def cond_statement_replace(cond_statement):
             each_action.unique_id)
 
     return cond_statement_replaced
+
 
 def save_conditional_code(error, cond_statement, unique_id, test=False):
     indented_code = textwrap.indent(

@@ -1359,21 +1359,21 @@ following functions can be used within your code.
 
 Note: Indentation must use 4 spaces (not 2 spaces, tabs, or other).
 
-+---------------------------+-------------------------------------------------+
-| Function                  | Description                                     |
-+===========================+=================================================+
-| self.measure("{ID}")      | Returns a measurement for the Condition with ID.|
-+---------------------------+-------------------------------------------------+
-| self.measure_dict("{ID}") | Returns a dictionary of measurement for the     |
-|                           | Condition with ID.                              |
-+---------------------------+-------------------------------------------------+
-| self.run_action("{ID}")   | Executes the Action with ID.                    |
-+---------------------------+-------------------------------------------------+
-| self.run_all_actions()    | Executes all actions.                           |
-+---------------------------+-------------------------------------------------+
-| self.logger.info()        | Writes a log line to the daemon log. 'info' may |
-|                           | also be changed to 'error' or 'debug'.          |
-+---------------------------+-------------------------------------------------+
++-----------------------------+-------------------------------------------------+
+| Function                    | Description                                     |
++=============================+=================================================+
+| self.condition("{ID}")      | Returns a measurement for the Condition with ID.|
++-----------------------------+-------------------------------------------------+
+| self.condition_dict("{ID}") | Returns a dictionary of measurement for the     |
+|                             | Condition with ID.                              |
++-----------------------------+-------------------------------------------------+
+| self.run_action("{ID}")     | Executes the Action with ID.                    |
++-----------------------------+-------------------------------------------------+
+| self.run_all_actions()      | Executes all actions.                           |
++-----------------------------+-------------------------------------------------+
+| self.logger.info()          | Writes a log line to the daemon log. 'info' may |
+|                             | also be changed to 'error' or 'debug'.          |
++-----------------------------+-------------------------------------------------+
 
 There are additional functions that can be used, but these must use the full
 UUID (not an abridged version as the functions above). See
@@ -1394,7 +1394,7 @@ Read all of this section, including the examples, below, to fully understand how
 to configure a conditional properly.
 
 IMPORTANT: If a measurement hasn't been acquired within the Max Age that is set,
-"None" will be returned when self.measure("{ID}") is called in the code. It is very
+"None" will be returned when self.condition("{ID}") is called in the code. It is very
 important that you account for this. All examples below incorporate a test for
 the measurement being None, and this should not be removed. If an error occurs
 (such as if the statement resolves to comparing None to a numerical value, such
@@ -1412,7 +1412,7 @@ screenshots, below, that correspond to the numbers in parentheses:
 - Under Actions (2), select an action option, then click ``Add Action``.
 - Configure the newly-added Action then click ``Save``.
 - Notice that each Condition and each Action has its own ID (underlined).
-- The default Conditional Statement (3) contains placeholder IDs that need to be changed to your Condition and Action IDs. Change the ID in self.measure("{asdf1234}") to your Condition ID. Change the ID in self.run_action("{qwer5678}", message=message) to your Action ID. Click ``Save`` at the top of the Conditional.
+- The default Conditional Statement (3) contains placeholder IDs that need to be changed to your Condition and Action IDs. Change the ID in self.condition("{asdf1234}") to your Condition ID. Change the ID in self.run_action("{qwer5678}", message=message) to your Action ID. Click ``Save`` at the top of the Conditional.
 - The logic used in the Conditional Statement will need to be adjusted to suit your particular needs. Additionally, you may add more Conditions or Actions. See the ``Advanced Conditional Statement examples``, below, for usage examples.
 
 If your ``Conditional Statement`` has been formatted correctly, your
@@ -1431,46 +1431,46 @@ how to use Conditionals.
 
 Simple ``Conditional Statement`` examples:
 
-Each self.measure("{ID}") will return the most recent measurement obtained from that
+Each self.condition("{ID}") will return the most recent measurement obtained from that
 particular measurement under the ``Conditions`` section of the Conditional, as
 long as it's within the set Max Age.
 
 .. code-block:: python
 
     # Example 1, no measurement, useful to notify by email when an Input stops working
-    if self.measure("{asdf1234}") is None:
+    if self.condition("{asdf1234}") is None:
         self.run_all_actions()
 
     # Example 2, test two measurements
-    measure_1 = self.measure("{asdf1234}")
-    measure_2 = self.measure("{hjkl5678}")
+    measure_1 = self.condition("{asdf1234}")
+    measure_2 = self.condition("{hjkl5678}")
     if None not in [measure_1, measure_2]:
         if measure_1 < 20 and measure_2 > 10:
             self.run_all_actions()
 
     # Example 3, test two measurements and sum of measurements
-    measure_1 = self.measure("{asdf1234}")
-    measure_2 = self.measure("{hjkl5678}")
+    measure_1 = self.condition("{asdf1234}")
+    measure_2 = self.condition("{hjkl5678}")
     if None not in [measure_1, measure_2]:
         sum = measure_1 + measure_2
         if measure_1 > 2 and 10 < measure_2 < 23 and sum < 30.5:
             self.run_all_actions()
 
     # Example 4, combine into one conditional
-    measurement = self.measure("{asdf1234}")
+    measurement = self.condition("{asdf1234}")
     if measurement != None and 20 < measurement < 30:
         self.run_all_actions()
 
     # Example 5, test two measurements and convert Edge Input from 0 or 1 to True or False
-    measure_1 = self.measure("{asdf1234}")
-    measure_2 = self.measure("{hjkl5678}")
+    measure_1 = self.condition("{asdf1234}")
+    measure_2 = self.condition("{hjkl5678}")
     if None not in [measure_1, measure_2]:
         if bool(measure_1) and measure_2 > 10:
             self.run_all_actions()
 
     # Example 6, test measurement with "or" and a rounded measurement
-    measure_1 = self.measure("{asdf1234}")
-    measure_2 = self.measure("{hjkl5678}")
+    measure_1 = self.condition("{asdf1234}")
+    measure_2 = self.condition("{hjkl5678}")
     if None not in [measure_1, measure_2]:
         if measure_1 > 20 or int(round(measure_2)) in [20, 21, 22]:
             self.run_all_actions()
@@ -1481,7 +1481,7 @@ long as it's within the set Max Age.
 .. code-block:: python
 
     # Example 1, find a particular measurement in the past 30 minutes (set Max Age to 1800 seconds)
-    measurements = self.measure_dict("{asdf1234}")
+    measurements = self.condition_dict("{asdf1234}")
     if measurements:
         for each_measure in measurements:
             if each_measure['value'] == 119:
@@ -1501,7 +1501,7 @@ in the Actions section of the Conditional.
 .. code-block:: python
 
     # Example 1
-    measurement = self.measure("{asdf1234}")
+    measurement = self.condition("{asdf1234}")
     if measurement is None:
         self.run_action("{qwer1234}")
     elif measurement > 23:
@@ -1510,16 +1510,16 @@ in the Actions section of the Conditional.
         self.run_all_actions()
 
     # Example 2, test two measurements
-    measure_1 = self.measure("{asdf1234}")
-    measure_2 = self.measure("{hjkl5678}")
+    measure_1 = self.condition("{asdf1234}")
+    measure_2 = self.condition("{hjkl5678}")
     if None not in [measure_1, measure_2]:
         if measure_1 < 20 and measure_2 > 10:
             self.run_action("{qwer1234}")
             self.run_action("{uiop5678}")
 
     # Example 3, test two measurements and sum of measurements
-    measure_1 = self.measure("{asdf1234}")
-    measure_2 = self.measure("{hjkl5678}")
+    measure_1 = self.condition("{asdf1234}")
+    measure_2 = self.condition("{hjkl5678}")
     if None not in [measure_1, measure_2]:
         sum = measure_1 + measure_2
         if measure_1 > 2 and 10 < measure_2 < 23 and sum < 30.5:
@@ -1528,13 +1528,13 @@ in the Actions section of the Conditional.
             self.run_action("{uiop5678}")
 
     # Example 4, combine into one conditional
-    measurement = self.measure("{asdf1234}")
+    measurement = self.condition("{asdf1234}")
     if measurement != None and 20 < measurement < 30:
         self.run_action("{uiop5678}")
 
     # Example 5, test two measurements and convert Edge Input from 0 or 1 to True or False
-    measure_1 = self.measure("{asdf1234}")
-    measure_2 = self.measure("{hjkl5678}")
+    measure_1 = self.condition("{asdf1234}")
+    measure_2 = self.condition("{hjkl5678}")
     if None not in [measure_1, measure_2]:
         if bool(measure_1) and measure_2 > 10:
             self.run_all_actions()
@@ -1638,7 +1638,7 @@ Statement.
 |                       | dictionaries with 'time' and 'value' key pairs. |
 +-----------------------+-------------------------------------------------+
 | GPIO State            | Acquires the current GPIO state and returns     |
-|                       | True/1 if HIGH or False/0 if LOW. If the latest |
+|                       | 1 if HIGH or 0 if LOW. If the latest            |
 |                       | value is older than this duration, "None" is    |
 |                       | returned.                                       |
 +-----------------------+-------------------------------------------------+

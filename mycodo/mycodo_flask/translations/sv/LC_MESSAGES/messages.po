@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2019-09-20 18:29-0400\n"
+"POT-Creation-Date: 2019-09-22 22:25-0400\n"
 "PO-Revision-Date: 2019-01-29 14:25-0500\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: sv\n"
@@ -69,6 +69,7 @@ msgid "Time/Date"
 msgstr "Tid / Datum"
 
 #: config.py:241 config_devices_units.py:69 config_translations.py:51
+#: mycodo_flask/templates/pages/function_options/action_options/output.html:27
 msgid "Duration"
 msgstr "Varaktighet"
 
@@ -133,18 +134,22 @@ msgid "DS-Type Sensor Calibration"
 msgstr "DS-typ Sensor Kalibrering"
 
 #: config.py:414 config_devices_units.py:97
+#: mycodo_flask/templates/pages/function_options/conditional_options/gpio_state.html:8
 msgid "GPIO State"
 msgstr "GPIO-staten"
 
 #: config.py:415
+#: mycodo_flask/templates/pages/function_options/conditional_options/output_state.html:13
 msgid "Output State"
 msgstr ""
 
 #: config.py:416
+#: mycodo_flask/templates/pages/function_options/conditional_options/output_duration_on.html:13
 msgid "Output Duration On"
 msgstr ""
 
 #: config.py:417
+#: mycodo_flask/templates/pages/function_options/conditional_options/controller_status.html:13
 msgid "Controller Running"
 msgstr ""
 
@@ -177,58 +182,71 @@ msgid "Sunrise/Sunset"
 msgstr "Soluppgång solnedgång"
 
 #: config.py:533
+#: mycodo_flask/templates/pages/function_options/action_options/photo.html:11
 msgid "Camera: Capture Photo"
 msgstr "Kamera: Capture Photo"
 
-#: config.py:557
+#: config.py:563
+#: mycodo_flask/templates/pages/function_options/action_options/photo_email.html:20
 msgid "Email with Photo Attachment"
 msgstr "E-post med Photo Attachment"
 
-#: config.py:561
+#: config.py:567
+#: mycodo_flask/templates/pages/function_options/action_options/video_email.html:20
 msgid "Email with Video Attachment"
 msgstr "E-post med Video Attachment"
 
-#: config.py:565
+#: config.py:571
+#: mycodo_flask/templates/pages/function_options/action_options/command.html:6
 msgid "Execute Command"
 msgstr "Utför kommando"
 
-#: config.py:569
+#: config.py:575
+#: mycodo_flask/templates/pages/function_options/action_options/infrared_send.html:32
 msgid "Infrared Send"
 msgstr ""
 
-#: config.py:580
+#: config.py:586
+#: mycodo_flask/templates/pages/function_options/action_options/lcd_backlight_off.html:11
 msgid "Backlight Off"
 msgstr "Bakgrundsbelysning Av"
 
-#: config.py:586
-msgid "LCD: Backlight On"
-msgstr "LCD: bakgrundsbelysning på"
-
 #: config.py:592
-msgid "LCD: Flashing Off"
-msgstr "LCD: Blinkar av"
+#: mycodo_flask/templates/pages/function_options/action_options/lcd_backlight_on.html:11
+msgid "Backlight On"
+msgstr ""
 
 #: config.py:598
-msgid "LCD: Flashing On"
-msgstr "LCD: Blinkar på"
+#: mycodo_flask/templates/pages/function_options/action_options/flash_lcd_off.html:11
+msgid "Flashing Off"
+msgstr ""
 
-#: config.py:628
+#: config.py:604
+#: mycodo_flask/templates/pages/function_options/action_options/flash_lcd_on.html:11
+msgid "Flashing On"
+msgstr ""
+
+#: config.py:634
+#: mycodo_flask/templates/pages/function_options/action_options/method_pid.html:20
 msgid "Set Method"
 msgstr "Ange metod"
 
-#: config.py:634
+#: config.py:640
 #: mycodo_flask/templates/pages/dashboard_options/mod_pid_control.html:62
 #: mycodo_flask/templates/pages/dashboard_options/mod_pid_control.html:92
+#: mycodo_flask/templates/pages/function_options/action_options/setpoint_pid.html:15
 msgid "Set Setpoint"
 msgstr "Ställ in börvärde"
 
-#: config.py:640
+#: config.py:646
 #: mycodo_flask/templates/pages/function_options/action_options/setpoint_pid_raise.html:11
+#: mycodo_flask/templates/pages/function_options/action_options/setpoint_pid_raise.html:15
 msgid "Raise Setpoint"
 msgstr ""
 
-#: config.py:646
+#: config.py:652
 #: mycodo_flask/templates/pages/function_options/action_options/setpoint_pid_lower.html:11
+#: mycodo_flask/templates/pages/function_options/action_options/setpoint_pid_lower.html:15
 msgid "Lower Setpoint"
 msgstr ""
 
@@ -574,7 +592,8 @@ msgid "Volt"
 msgstr "Volt"
 
 #: config_translations.py:15
-#: mycodo_flask/templates/pages/function_options/conditional.html:156
+#: mycodo_flask/templates/pages/function_options/action_options/pause_actions.html:8
+#: mycodo_flask/templates/pages/function_options/conditional.html:153
 #: mycodo_flask/templates/pages/function_options/trigger.html:103
 msgid "Actions"
 msgstr "Åtgärder"
@@ -584,6 +603,7 @@ msgid "Add"
 msgstr "Lägg till"
 
 #: config_translations.py:19
+#: mycodo_flask/templates/pages/function_options/action_options/activate_controller.html:11
 msgid "Activate"
 msgstr "Aktivera"
 
@@ -603,6 +623,8 @@ msgstr ""
 #: mycodo_flask/templates/layout.html:200
 #: mycodo_flask/templates/pages/camera.html:5
 #: mycodo_flask/templates/pages/dashboard_options/add_camera.html:10
+#: mycodo_flask/templates/pages/function_options/action_options/photo_email.html:11
+#: mycodo_flask/templates/pages/function_options/action_options/video_email.html:11
 msgid "Camera"
 msgstr "Kamera"
 
@@ -615,6 +637,8 @@ msgid "Conditional"
 msgstr "Villkorlig"
 
 #: config_translations.py:33
+#: mycodo_flask/templates/pages/function_options/action_options/activate_controller.html:11
+#: mycodo_flask/templates/pages/function_options/action_options/deactivate_controller.html:11
 msgid "Controller"
 msgstr "Kontrollant"
 
@@ -631,6 +655,7 @@ msgid "Data"
 msgstr "Data"
 
 #: config_translations.py:41
+#: mycodo_flask/templates/pages/function_options/action_options/deactivate_controller.html:11
 msgid "Deactivate"
 msgstr "Avaktivera"
 
@@ -660,6 +685,8 @@ msgid "Edit"
 msgstr "Redigera"
 
 #: config_translations.py:57
+#: mycodo_flask/templates/pages/function_options/action_options/email.html:11
+#: mycodo_flask/templates/pages/function_options/action_options/email_multiple.html:8
 msgid "E-Mail"
 msgstr "E-post"
 
@@ -708,7 +735,7 @@ msgid "Invert"
 msgstr "Invertera"
 
 #: config_translations.py:75 mycodo_flask/templates/tools/notes.html:138
-#: mycodo_flask/utils/utils_notes.py:451
+#: mycodo_flask/utils/utils_notes.py:453
 #: mycodo_flask/utils/utils_settings.py:320
 #: mycodo_flask/utils/utils_settings.py:445
 msgid "Import"
@@ -725,6 +752,10 @@ msgid "Invalid"
 msgstr "Ogiltig"
 
 #: config_translations.py:81
+#: mycodo_flask/templates/pages/function_options/action_options/flash_lcd_off.html:11
+#: mycodo_flask/templates/pages/function_options/action_options/flash_lcd_on.html:11
+#: mycodo_flask/templates/pages/function_options/action_options/lcd_backlight_off.html:11
+#: mycodo_flask/templates/pages/function_options/action_options/lcd_backlight_on.html:11
 msgid "LCD"
 msgstr "LCD"
 
@@ -744,6 +775,8 @@ msgstr "Matematik"
 #: config_translations.py:89 mycodo_flask/forms/forms_misc.py:28
 #: mycodo_flask/forms/forms_misc.py:36
 #: mycodo_flask/templates/pages/dashboard_options/add_measurement.html:10
+#: mycodo_flask/templates/pages/function_options/conditional_options/measurement.html:25
+#: mycodo_flask/templates/pages/function_options/conditional_options/measurement_dict.html:25
 #: mycodo_flask/templates/pages/live.html:106
 #: mycodo_flask/templates/pages/live.html:154
 msgid "Measurement"
@@ -760,6 +793,9 @@ msgid "Modify"
 msgstr "Ändra"
 
 #: config_translations.py:95
+#: mycodo_flask/templates/pages/function_options/action_options/email_multiple.html:2
+#: mycodo_flask/templates/pages/function_options/action_options/email_multiple.html:8
+#: mycodo_flask/templates/pages/function_options/conditional_options/measurement_dict.html:25
 msgid "Multiple"
 msgstr ""
 
@@ -768,6 +804,7 @@ msgid "None Available"
 msgstr "Ingen tillgänglig"
 
 #: config_translations.py:99
+#: mycodo_flask/templates/pages/function_options/action_options/create_note.html:15
 msgid "Note"
 msgstr "Notera"
 
@@ -781,6 +818,8 @@ msgstr "På"
 
 #: config_translations.py:105 mycodo_flask/forms/forms_method.py:93
 #: mycodo_flask/templates/pages/dashboard_options/add_output.html:10
+#: mycodo_flask/templates/pages/function_options/action_options/output.html:27
+#: mycodo_flask/templates/pages/function_options/action_options/output_pwm.html:19
 msgid "Output"
 msgstr "Produktion"
 
@@ -789,11 +828,19 @@ msgid "Password"
 msgstr "Lösenord"
 
 #: config_translations.py:109 mycodo_flask/forms/forms_pid.py:106
+#: mycodo_flask/templates/pages/function_options/action_options/pause_actions.html:8
+#: mycodo_flask/templates/pages/function_options/action_options/pause_pid.html:11
 msgid "Pause"
 msgstr "Paus"
 
 #: config_translations.py:111 mycodo_flask/forms/forms_dashboard.py:175
 #: mycodo_flask/templates/pages/dashboard_options/add_pid_control.html:10
+#: mycodo_flask/templates/pages/function_options/action_options/method_pid.html:20
+#: mycodo_flask/templates/pages/function_options/action_options/pause_pid.html:11
+#: mycodo_flask/templates/pages/function_options/action_options/resume_pid.html:11
+#: mycodo_flask/templates/pages/function_options/action_options/setpoint_pid.html:15
+#: mycodo_flask/templates/pages/function_options/action_options/setpoint_pid_lower.html:15
+#: mycodo_flask/templates/pages/function_options/action_options/setpoint_pid_raise.html:15
 msgid "PID"
 msgstr "PID"
 
@@ -802,6 +849,7 @@ msgid "Pin"
 msgstr ""
 
 #: config_translations.py:115
+#: mycodo_flask/templates/pages/function_options/action_options/output_pwm.html:19
 msgid "PWM"
 msgstr "PWM"
 
@@ -818,6 +866,7 @@ msgid "Reset"
 msgstr ""
 
 #: config_translations.py:123 mycodo_flask/forms/forms_pid.py:107
+#: mycodo_flask/templates/pages/function_options/action_options/resume_pid.html:11
 msgid "Resume"
 msgstr "Återuppta"
 
@@ -839,6 +888,8 @@ msgid "Settings"
 msgstr "inställningar"
 
 #: config_translations.py:135
+#: mycodo_flask/templates/pages/function_options/action_options/email.html:11
+#: mycodo_flask/templates/pages/function_options/conditional_options/measurement.html:25
 msgid "Single"
 msgstr ""
 
@@ -1521,36 +1572,6 @@ msgstr ""
 msgid "Unique client ID for connecting to the MQTT server"
 msgstr ""
 
-#: inputs/sht31.py:87
-msgid "Enable Heater"
-msgstr "Aktivera värmare"
-
-#: inputs/sht31.py:88
-msgid ""
-"Enable heater to evaporate condensation. Turn on heater x seconds every y"
-" measurements."
-msgstr ""
-"Aktivera värmaren för att förånga kondens. Slå på värmaren x sekunder "
-"varje y-mätning."
-
-#: inputs/sht31.py:96
-msgid "Heater On Seconds"
-msgstr "Värmare på sekunder"
-
-#: inputs/sht31.py:97
-msgid "How long to turn the heater on (seconds)."
-msgstr "Hur länge ska du slå på värmaren (sekunder)."
-
-#: inputs/sht31.py:104
-msgid "Heater On Period"
-msgstr "Värmare på period"
-
-#: inputs/sht31.py:105
-msgid "After how many measurements to turn the heater on. This will repeat."
-msgstr ""
-"Efter hur många mätningar ska du slå på värmaren. Detta kommer att "
-"upprepas."
-
 #: inputs/sht31_smart_gadget.py:104
 msgid "Download Stored Data"
 msgstr "Hämta lagrade data"
@@ -1570,6 +1591,36 @@ msgid ""
 msgstr ""
 "Ställ in loggintervallet (sekunder) enheten lagrar mätningar på "
 "internminnet."
+
+#: inputs/sht3x.py:87
+msgid "Enable Heater"
+msgstr "Aktivera värmare"
+
+#: inputs/sht3x.py:88
+msgid ""
+"Enable heater to evaporate condensation. Turn on heater x seconds every y"
+" measurements."
+msgstr ""
+"Aktivera värmaren för att förånga kondens. Slå på värmaren x sekunder "
+"varje y-mätning."
+
+#: inputs/sht3x.py:96
+msgid "Heater On Seconds"
+msgstr "Värmare på sekunder"
+
+#: inputs/sht3x.py:97
+msgid "How long to turn the heater on (seconds)."
+msgstr "Hur länge ska du slå på värmaren (sekunder)."
+
+#: inputs/sht3x.py:104
+msgid "Heater On Period"
+msgstr "Värmare på period"
+
+#: inputs/sht3x.py:105
+msgid "After how many measurements to turn the heater on. This will repeat."
+msgstr ""
+"Efter hur många mätningar ska du slå på värmaren. Detta kommer att "
+"upprepas."
 
 #: inputs/th1x_am2301.py:59 inputs/th1x_ds18b20.py:45
 msgid "IP Address"
@@ -3876,10 +3927,10 @@ msgstr ""
 msgid "Conditions"
 msgstr "Betingelser"
 
-#: mycodo_flask/templates/pages/function_options/conditional.html:126
+#: mycodo_flask/templates/pages/function_options/conditional.html:193
 msgid ""
-"This {ID} should be used in the Conditional Statement Python code, as a "
-"parameter in the measure() and measure_dict() functions"
+"will execute only this action. <strong>self.run_all_actions()</strong> "
+"will execute all actions sequentially."
 msgstr ""
 
 #: mycodo_flask/templates/pages/function_options/pid.html:28
@@ -4022,36 +4073,53 @@ msgstr ""
 msgid "Controller to affect"
 msgstr "Controller att påverka"
 
-#: mycodo_flask/templates/pages/function_options/action_options/activate_pid.html:3
-#: mycodo_flask/templates/pages/function_options/action_options/deactivate_pid.html:3
-#: mycodo_flask/templates/pages/function_options/action_options/method_pid.html:3
-#: mycodo_flask/templates/pages/function_options/action_options/pause_pid.html:3
-#: mycodo_flask/templates/pages/function_options/action_options/resume_pid.html:3
-#: mycodo_flask/templates/pages/function_options/action_options/setpoint_pid.html:3
-#: mycodo_flask/templates/pages/function_options/action_options/setpoint_pid_lower.html:3
-#: mycodo_flask/templates/pages/function_options/action_options/setpoint_pid_raise.html:3
-msgid "PID to affect"
-msgstr "PID att påverka"
+#: mycodo_flask/templates/pages/function_options/action_options/activate_controller.html:11
+msgid "Activate a controller."
+msgstr ""
 
 #: mycodo_flask/templates/pages/function_options/action_options/command.html:3
 msgid "Command to execute (as user \"mycodo\")"
 msgstr "Kommando att exekvera (som användare \"mycodo\")"
 
+#: mycodo_flask/templates/pages/function_options/action_options/command.html:6
+msgid "Execute a Linux shell command."
+msgstr ""
+
 #: mycodo_flask/templates/pages/function_options/action_options/create_note.html:3
 msgid "Tag to save note with"
 msgstr "Tagg för att spara anteckning med"
 
+#: mycodo_flask/templates/pages/function_options/action_options/create_note.html:15
+msgid "Create a note with the selected Tag."
+msgstr ""
+
+#: mycodo_flask/templates/pages/function_options/action_options/deactivate_controller.html:11
+msgid "Deactivate a controller."
+msgstr ""
+
 #: mycodo_flask/templates/pages/function_options/action_options/email.html:2
+#: mycodo_flask/templates/pages/function_options/action_options/email_multiple.html:2
 #: mycodo_flask/templates/pages/function_options/action_options/photo_email.html:2
 #: mycodo_flask/templates/pages/function_options/action_options/video_email.html:2
 msgid "Email Address"
 msgstr "E-postadress"
 
 #: mycodo_flask/templates/pages/function_options/action_options/email.html:3
+#: mycodo_flask/templates/pages/function_options/action_options/email_multiple.html:4
 #: mycodo_flask/templates/pages/function_options/action_options/photo_email.html:3
 #: mycodo_flask/templates/pages/function_options/action_options/video_email.html:3
 msgid "Email address to notify"
 msgstr "E-postadress för att meddela"
+
+#: mycodo_flask/templates/pages/function_options/action_options/email.html:11
+msgid "Email a single recipient."
+msgstr ""
+
+#: mycodo_flask/templates/pages/function_options/action_options/email_multiple.html:8
+msgid ""
+"Email multiple recipients. Separate email addresses with commas (e.g. "
+"\"email1@address.com,email2@address.com\")."
+msgstr ""
 
 #: mycodo_flask/templates/pages/function_options/action_options/flash_lcd_off.html:3
 #: mycodo_flask/templates/pages/function_options/action_options/flash_lcd_on.html:3
@@ -4059,6 +4127,14 @@ msgstr "E-postadress för att meddela"
 #: mycodo_flask/templates/pages/function_options/action_options/lcd_backlight_on.html:3
 msgid "LCD to flash"
 msgstr "LCD för att blinka"
+
+#: mycodo_flask/templates/pages/function_options/action_options/flash_lcd_off.html:11
+msgid "Stop LCD flashing."
+msgstr ""
+
+#: mycodo_flask/templates/pages/function_options/action_options/flash_lcd_on.html:11
+msgid "Start LCD flashing."
+msgstr ""
 
 #: mycodo_flask/templates/pages/function_options/action_options/infrared_send.html:7
 msgid "What remote to use"
@@ -4072,9 +4148,34 @@ msgstr ""
 msgid "The number of times to send the code"
 msgstr ""
 
+#: mycodo_flask/templates/pages/function_options/action_options/infrared_send.html:32
+msgid "Send an infrared command."
+msgstr ""
+
+#: mycodo_flask/templates/pages/function_options/action_options/lcd_backlight_off.html:11
+msgid "Turn off LCD backlight (if supported)."
+msgstr ""
+
+#: mycodo_flask/templates/pages/function_options/action_options/lcd_backlight_on.html:11
+msgid "Turn on LCD backlight (if supported)."
+msgstr ""
+
+#: mycodo_flask/templates/pages/function_options/action_options/method_pid.html:3
+#: mycodo_flask/templates/pages/function_options/action_options/pause_pid.html:3
+#: mycodo_flask/templates/pages/function_options/action_options/resume_pid.html:3
+#: mycodo_flask/templates/pages/function_options/action_options/setpoint_pid.html:3
+#: mycodo_flask/templates/pages/function_options/action_options/setpoint_pid_lower.html:3
+#: mycodo_flask/templates/pages/function_options/action_options/setpoint_pid_raise.html:3
+msgid "PID to affect"
+msgstr "PID att påverka"
+
 #: mycodo_flask/templates/pages/function_options/action_options/method_pid.html:12
 msgid "Method to set the PID to use"
 msgstr "Metod för att ställa in PID att använda"
+
+#: mycodo_flask/templates/pages/function_options/action_options/method_pid.html:20
+msgid "Select a method to set the PID to use."
+msgstr ""
 
 #: mycodo_flask/templates/pages/function_options/action_options/output.html:4
 #: mycodo_flask/templates/pages/function_options/action_options/output_pwm.html:4
@@ -4089,13 +4190,29 @@ msgstr "Slå på eller av utgången"
 msgid "How long to turn the output on (optional)"
 msgstr "Hur länge ska du sätta på utmatningen på (valfritt)"
 
+#: mycodo_flask/templates/pages/function_options/action_options/output.html:27
+msgid "Turn an Output Off, On, or On or a duration."
+msgstr ""
+
 #: mycodo_flask/templates/pages/function_options/action_options/output_pwm.html:15
 msgid "What duty cycle to set the output"
 msgstr "Vilken arbetscykel för att ställa in utgången"
 
+#: mycodo_flask/templates/pages/function_options/action_options/output_pwm.html:19
+msgid "Set an Output to a PWM duty cycle."
+msgstr ""
+
 #: mycodo_flask/templates/pages/function_options/action_options/pause_actions.html:4
 msgid "How long to pause executing actions"
 msgstr "Hur länge pausar körningsåtgärder"
+
+#: mycodo_flask/templates/pages/function_options/action_options/pause_actions.html:8
+msgid "Set a delay between executing Actions when self.run_all_actions() is used."
+msgstr ""
+
+#: mycodo_flask/templates/pages/function_options/action_options/pause_pid.html:11
+msgid "Pause a PID."
+msgstr ""
 
 #: mycodo_flask/templates/pages/function_options/action_options/photo.html:3
 #: mycodo_flask/templates/pages/function_options/action_options/photo_email.html:12
@@ -4103,16 +4220,40 @@ msgstr "Hur länge pausar körningsåtgärder"
 msgid "Camera to capture with"
 msgstr "Kameran att fånga med"
 
+#: mycodo_flask/templates/pages/function_options/action_options/photo.html:11
+msgid "Capture a photo with the selected Camera."
+msgstr ""
+
+#: mycodo_flask/templates/pages/function_options/action_options/photo_email.html:20
+msgid "Capture a photo with the selected Camera and Email it as an attahment."
+msgstr ""
+
+#: mycodo_flask/templates/pages/function_options/action_options/resume_pid.html:11
+msgid "Resume a PID."
+msgstr ""
+
 #: mycodo_flask/templates/pages/function_options/action_options/setpoint_pid.html:12
 msgid "The value to set the PID setpoint"
 msgstr "Värdet för att ställa in PID börvärdet"
+
+#: mycodo_flask/templates/pages/function_options/action_options/setpoint_pid.html:15
+msgid "Set the Setpoint of a PID."
+msgstr ""
 
 #: mycodo_flask/templates/pages/function_options/action_options/setpoint_pid_lower.html:12
 msgid "The amount to lower the PID setpoint by"
 msgstr ""
 
+#: mycodo_flask/templates/pages/function_options/action_options/setpoint_pid_lower.html:15
+msgid "Lower the Setpoint of a PID by this value."
+msgstr ""
+
 #: mycodo_flask/templates/pages/function_options/action_options/setpoint_pid_raise.html:12
 msgid "The amount to raise the PID setpoint by"
+msgstr ""
+
+#: mycodo_flask/templates/pages/function_options/action_options/setpoint_pid_raise.html:15
+msgid "Raise the Setpoint of a PID by this value."
 msgstr ""
 
 #: mycodo_flask/templates/pages/function_options/action_options/video.html:2
@@ -4123,8 +4264,24 @@ msgstr "Videolängd (sekunder)"
 msgid "Duration to record video (sec)"
 msgstr "Varaktighet för inspelning av video (sek)"
 
+#: mycodo_flask/templates/pages/function_options/action_options/video.html:6
+msgid "Camera: Capture Video"
+msgstr ""
+
+#: mycodo_flask/templates/pages/function_options/action_options/video.html:6
+msgid "Capture a video with the selected Camera."
+msgstr ""
+
+#: mycodo_flask/templates/pages/function_options/action_options/video_email.html:20
+msgid "Capture a video with the selected Camera and Email it as an attahment."
+msgstr ""
+
 #: mycodo_flask/templates/pages/function_options/conditional_options/controller_status.html:4
 msgid "Select a Controller to get information about"
+msgstr ""
+
+#: mycodo_flask/templates/pages/function_options/conditional_options/controller_status.html:13
+msgid "returns True if the controller is running, False if not."
 msgstr ""
 
 #: mycodo_flask/templates/pages/function_options/conditional_options/gpio_state.html:4
@@ -4135,14 +4292,40 @@ msgstr ""
 "GPIO-stiftet för att mäta tillståndet för. Returvärdet kommer att vara "
 "sant när högt och falskt när LOW."
 
+#: mycodo_flask/templates/pages/function_options/conditional_options/gpio_state.html:8
+msgid "returns 1 if the output is HIGH and 0 if the output is LOW."
+msgstr ""
+
 #: mycodo_flask/templates/pages/function_options/conditional_options/measurement.html:21
 #: mycodo_flask/templates/pages/function_options/conditional_options/measurement_dict.html:21
 msgid "Do not accept measurements older than this age"
 msgstr "Acceptera inte mätningar som är äldre än denna ålder"
 
+#: mycodo_flask/templates/pages/function_options/conditional_options/measurement.html:25
+msgid ""
+"returns a value if one is found within the Max Age, otherwise returns "
+"None."
+msgstr ""
+
+#: mycodo_flask/templates/pages/function_options/conditional_options/measurement_dict.html:25
+msgid ""
+"returns a list of dictionaries with \"time\" and \"value\" key pairs "
+"found within the Max Age, otherwise returns None."
+msgstr ""
+
 #: mycodo_flask/templates/pages/function_options/conditional_options/output_duration_on.html:4
 #: mycodo_flask/templates/pages/function_options/conditional_options/output_state.html:4
 msgid "Select a Output to get information about"
+msgstr ""
+
+#: mycodo_flask/templates/pages/function_options/conditional_options/output_duration_on.html:13
+msgid ""
+"returns how long the output has currently been on, in seconds, or 0 if "
+"off."
+msgstr ""
+
+#: mycodo_flask/templates/pages/function_options/conditional_options/output_state.html:13
+msgid "returns \"on\" if the output is on and \"off\" if the output os off."
 msgstr ""
 
 #: mycodo_flask/templates/pages/function_options/pid_options/output_lower.html:5
@@ -4936,7 +5119,7 @@ msgstr "Tillstånd"
 msgid "{dev} with ID %(id)s successfully added"
 msgstr "{dev} med ID %(id)s har lagts till"
 
-#: mycodo_flask/utils/utils_function.py:405
+#: mycodo_flask/utils/utils_function.py:406
 msgid "Execute All"
 msgstr "Kör alla"
 
@@ -4949,16 +5132,16 @@ msgstr "Kör alla"
 msgid "Error: %(err)s"
 msgstr "Fel:%(err)s"
 
-#: mycodo_flask/utils/utils_general.py:688
-#: mycodo_flask/utils/utils_general.py:703
-#: mycodo_flask/utils/utils_general.py:723
-#: mycodo_flask/utils/utils_general.py:728 mycodo_flask/utils/utils_lcd.py:225
+#: mycodo_flask/utils/utils_general.py:689
+#: mycodo_flask/utils/utils_general.py:704
+#: mycodo_flask/utils/utils_general.py:724
+#: mycodo_flask/utils/utils_general.py:729 mycodo_flask/utils/utils_lcd.py:225
 #: mycodo_flask/utils/utils_lcd.py:227
 #, python-format
 msgid "%(msg)s"
 msgstr "%(msg)s"
 
-#: mycodo_flask/utils/utils_general.py:695
+#: mycodo_flask/utils/utils_general.py:696
 #: mycodo_flask/utils/utils_output.py:332
 #: mycodo_flask/utils/utils_output.py:339
 #: mycodo_flask/utils/utils_output.py:344
@@ -4966,21 +5149,21 @@ msgstr "%(msg)s"
 msgid "%(err)s"
 msgstr "%(err)s"
 
-#: mycodo_flask/utils/utils_general.py:696
+#: mycodo_flask/utils/utils_general.py:697
 #, python-format
 msgid "Entry with ID %(id)s not found"
 msgstr "Inmatning med ID %(id)s hittades inte"
 
-#: mycodo_flask/utils/utils_general.py:714
+#: mycodo_flask/utils/utils_general.py:715
 #, python-format
 msgid "Error in the %(field)s field - %(err)s"
 msgstr "Fel i fältet %(field)s - %(err)s"
 
-#: mycodo_flask/utils/utils_general.py:762
+#: mycodo_flask/utils/utils_general.py:763
 msgid "Cannot move above the first item in the list"
 msgstr "Kan inte flytta över det första objektet i listan"
 
-#: mycodo_flask/utils/utils_general.py:766
+#: mycodo_flask/utils/utils_general.py:767
 msgid "Cannot move below the last item in the list"
 msgstr "Kan inte flytta under sista objektet i listan"
 
@@ -5169,7 +5352,7 @@ msgid ""
 "(%(st)s)"
 msgstr "Ingångstiden (%(et)s) kan inte överlappa nästa ingångs starttid (%(st)s)"
 
-#: mycodo_flask/utils/utils_misc.py:165
+#: mycodo_flask/utils/utils_misc.py:166
 #, python-format
 msgid "Energy Usage with ID %(id)s (%(uuid)s) successfully added"
 msgstr ""
@@ -5365,5 +5548,21 @@ msgstr ""
 #~ "Select the output to return the "
 #~ "current state (\"on\", \"off\" or "
 #~ "integer duty cycle)"
+#~ msgstr ""
+
+#~ msgid "LCD: Backlight On"
+#~ msgstr "LCD: bakgrundsbelysning på"
+
+#~ msgid "LCD: Flashing Off"
+#~ msgstr "LCD: Blinkar av"
+
+#~ msgid "LCD: Flashing On"
+#~ msgstr "LCD: Blinkar på"
+
+#~ msgid ""
+#~ "This {ID} should be used in the"
+#~ " Conditional Statement Python code, as "
+#~ "a parameter in the condition() and "
+#~ "condition_dict() functions"
 #~ msgstr ""
 

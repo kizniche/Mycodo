@@ -660,8 +660,8 @@ def trigger_action(
                     mod_pid.method_id = cond_action.do_action_string
                     new_session.commit()
 
-        # Email the Conditional message. Optionally capture a photo or
-        # video and attach to the email.
+        # Email the Conditional message to a single recipient.
+        # Optionally capture a photo or video and attach to the email.
         if cond_action.action_type in [
                 'email', 'photo_email', 'video_email']:
 
@@ -691,6 +691,37 @@ def trigger_action(
                             sec=smtp_wait_timer - time.time()))
             else:
                 email_recipients.append(cond_action.do_action_string)
+
+            # Email the Conditional message to multiple recipients
+            # Optionally capture a photo or video and attach to the email.
+            if cond_action.action_type in ['email_multiple']:
+
+                message += " Notify {email}.".format(
+                    email=cond_action.do_action_string)
+                # attachment_type != False indicates to
+                # attach a photo or video
+                if cond_action.action_type == 'photo_email':
+                    message += " Photo attached to email."
+                    attachment_type = 'still'
+                elif cond_action.action_type == 'video_email':
+                    message += " Video attached to email."
+                    attachment_type = 'video'
+
+                if single_action:
+                    # If the emails per hour limit has not been exceeded
+                    smtp_wait_timer, allowed_to_send_notice = check_allowed_to_email()
+                    if allowed_to_send_notice and cond_action.do_action_string:
+                        smtp = db_retrieve_table_daemon(SMTP, entry='first')
+                        send_email(smtp.host, smtp.ssl, smtp.port,
+                                   smtp.user, smtp.passw, smtp.email_from,
+                                   cond_action.do_action_string.split(','), message,
+                                   attachment_file, attachment_type)
+                    else:
+                        logger_actions.error(
+                            "Wait {sec:.0f} seconds to email again.".format(
+                                sec=smtp_wait_timer - time.time()))
+                else:
+                    email_recipients.extend(cond_action.do_action_string.split(','))
 
         if cond_action.action_type == 'flash_lcd_on':
             lcd = db_retrieve_table_daemon(

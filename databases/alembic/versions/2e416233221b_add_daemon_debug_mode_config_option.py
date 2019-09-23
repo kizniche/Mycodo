@@ -12,7 +12,7 @@ import os
 
 sys.path.append(os.path.abspath(os.path.join(__file__, "../../../..")))
 
-from databases.alembic_post import write_revision_post_alembic
+from databases.alembic_post_utils import write_revision_post_alembic
 
 from alembic import op
 import sqlalchemy as sa

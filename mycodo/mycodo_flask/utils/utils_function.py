@@ -64,7 +64,7 @@ self.logger.info("This INFO log entry will appear in the Daemon Log")
 self.logger.error("This ERROR log entry will appear in the Daemon Log")
 
 # Replace "asdf1234" with a Condition ID
-measurement = self.measure("{asdf1234}")
+measurement = self.condition("{asdf1234}")
 self.logger.info("Check this measurement in the Daemon Log. The value is {val}".format(val=measurement))
 
 if measurement is not None:  # If a measurement exists
@@ -306,7 +306,8 @@ def action_mod(form):
             mod_action.code = form.code.data
             mod_action.send_times = form.send_times.data
 
-        elif mod_action.action_type == 'email':
+        elif mod_action.action_type in ['email',
+                                        'email_multiple']:
             mod_action.do_action_string = form.do_action_string.data
 
         elif mod_action.action_type in ['photo_email',

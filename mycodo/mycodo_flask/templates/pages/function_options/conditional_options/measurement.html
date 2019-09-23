@@ -21,3 +21,6 @@
     {{form_conditional_conditions.max_age(class_='form-control', value=each_condition.max_age, **{'title':_('Do not accept measurements older than this age')})}}
   </div>
 </div>
+<div class="col-12">
+  <strong>{{_('Measurement')}} ({{_('Single')}})</strong>: <strong>self.condition("{{'{' + each_condition.unique_id.split('-')[0] + '}'}}")</strong> {{_('returns a value if one is found within the Max Age, otherwise returns None.')}}
+</div>

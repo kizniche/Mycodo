@@ -34,7 +34,7 @@ def conditional_mod(form):
         controller=TRANSLATIONS['conditional']['title'])
 
     try:
-        save_conditional_code(
+        error = save_conditional_code(
             error,
             form.conditional_statement.data,
             form.function_id.data,

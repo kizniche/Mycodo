@@ -187,6 +187,10 @@ class AbstractInput(object):
 
                 option_value = each_option_default['default_value']
 
+                if not hasattr(input_dev, 'custom_options'):
+                    self.logger.error("input_dev missing attribute custom_options")
+                    return
+
                 if input_dev.custom_options:
                     for each_option in input_dev.custom_options.split(';'):
                         option = each_option.split(',')[0]

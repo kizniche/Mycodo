@@ -15,48 +15,24 @@
 # import sys
 # import os
 # sys.path.append(os.path.abspath(os.path.join(__file__, "../../../..")))
-# from databases.alembic_post import write_revision_post_alembic
+# from databases.alembic_post_utils import write_revision_post_alembic
 # def upgrade():
 #     write_revision_post_alembic(revision)
 #
 import sys
-import textwrap
+import traceback
 
 import os
 
 sys.path.append(os.path.abspath(os.path.join(__file__, "../..")))
 
+from databases.alembic_post_utils import read_revision_file
 from mycodo.config import ALEMBIC_UPGRADE_POST
-from mycodo.config import INSTALL_DIRECTORY
-from mycodo.config import OUTPUT_INFO
-from mycodo.config import PATH_PYTHON_CODE_USER
 from mycodo.config import SQL_DATABASE_MYCODO
-from mycodo.databases.models import Actions
-from mycodo.databases.models import Conditional
-from mycodo.databases.models import ConditionalConditions
-from mycodo.databases.models import Dashboard
-from mycodo.databases.models import DeviceMeasurements
-from mycodo.databases.models import Input
-from mycodo.databases.models import Output
 from mycodo.databases.utils import session_scope
-from mycodo.inputs.python_code import execute_at_creation
-from mycodo.mycodo_flask.utils.utils_misc import pre_statement_run
-from mycodo.utils.system_pi import assure_path_exists
+
 
 MYCODO_DB_PATH = 'sqlite:///' + SQL_DATABASE_MYCODO
-
-
-def write_revision_post_alembic(revision):
-    with open(ALEMBIC_UPGRADE_POST, 'a') as versions_file:
-        versions_file.write('{}\n'.format(revision))
-
-
-def read_revision_file():
-    try:
-        with open(ALEMBIC_UPGRADE_POST, 'r') as fd:
-            return fd.read().splitlines()
-    except:
-        return []
 
 
 if __name__ == "__main__":
@@ -72,47 +48,90 @@ if __name__ == "__main__":
             print("Error: Revision ID empty")
 
         # elif each_revision == 'REPLACE WITH ALEMBIC REVISION ID':
-        #     print("Executing post-alembic code for revision {}".format(each_revision))
+        #     print("Executing post-alembic code for revision {}".format(
+        #         each_revision))
         #     try:
         #         pass  # Code goes here
-        #     except:
-        #         msg = "ERROR: post-alembic revision {}".format(each_revision)
+        #     except Exception:
+        #         msg = "ERROR: post-alembic revision {}: {}".format(
+        #             each_revision, traceback.format_exc())
         #         error.append(msg)
         #         print(msg)
 
-        elif each_revision == '545744b31813':
-            print("Executing post-alembic code for revision {}".format(each_revision))
+        elif each_revision == '0ce53d526f13':
+            print("Executing post-alembic code for revision {}".format(
+                each_revision))
             try:
+                from mycodo.databases.models import Conditional
+                from databases.alembic_post_utils import save_conditional_code
+
+                with session_scope(MYCODO_DB_PATH) as cond_sess:
+                    for each_cond in cond_sess.query(Conditional).all():
+                        error = []
+                        each_cond.conditional_statement = each_cond.conditional_statement.replace(
+                            'self.measure(', 'self.condition(')
+                        each_cond.conditional_statement = each_cond.conditional_statement.replace(
+                            'self.measure_dict(', 'self.condition_dict(')
+                        if not error:
+                            cond_sess.commit()
+                        else:
+                            for each_error in error:
+                                print("Error: {}".format(each_error))
+
+                save_conditional_code()
+            except Exception:
+                msg = "ERROR: post-alembic revision {}: {}".format(
+                    each_revision, traceback.format_exc())
+                error.append(msg)
+                print(msg)
+
+        elif each_revision == '545744b31813':
+            print("Executing post-alembic code for revision {}".format(
+                each_revision))
+            try:
+                from mycodo.databases.models import Output
+
                 with session_scope(MYCODO_DB_PATH) as output_sess:
                     for each_output in output_sess.query(Output).all():
                         if each_output.measurement == 'time':
                             each_output.measurement = 'duration_time'
                             output_sess.commit()
-            except:
-                msg = "ERROR: post-alembic revision {}".format(each_revision)
+            except Exception:
+                msg = "ERROR: post-alembic revision {}: {}".format(
+                    each_revision, traceback.format_exc())
                 error.append(msg)
                 print(msg)
 
         elif each_revision == '802cc65f734e':
-            print("Executing post-alembic code for revision {}".format(each_revision))
+            print("Executing post-alembic code for revision {}".format(
+                each_revision))
             try:  # Check if already installed
                 import Pyro5.api
-            except:  # Not installed. Try to install
+            except Exception:  # Not installed. Try to install
                 try:
+                    from mycodo.config import INSTALL_DIRECTORY
                     import subprocess
-                    command = '{path}/env/bin/pip install -r {path}/install/requirements.txt'.format(path=INSTALL_DIRECTORY)
+                    command = '{path}/env/bin/pip install -r {path}/install/requirements.txt'.format(
+                        path=INSTALL_DIRECTORY)
                     cmd = subprocess.Popen(command, stdout=subprocess.PIPE, shell=True)
                     cmd_out, cmd_err = cmd.communicate()
                     cmd_status = cmd.wait()
                     import Pyro5.api
-                except:
-                    msg = "ERROR: post-alembic revision {}".format(each_revision)
+                except Exception:
+                    msg = "ERROR: post-alembic revision {}: {}".format(
+                        each_revision, traceback.format_exc())
                     error.append(msg)
                     print(msg)
 
         elif each_revision == '2e416233221b':
-            print("Executing post-alembic code for revision {}".format(each_revision))
+            print("Executing post-alembic code for revision {}".format(
+                each_revision))
             try:
+                from mycodo.databases.models import Dashboard
+                from mycodo.databases.models import DeviceMeasurements
+                from mycodo.databases.models import Output
+                from mycodo.config import OUTPUT_INFO
+
                 output_unique_id = {}
                 # Go through each output to get output unique_id
                 with session_scope(MYCODO_DB_PATH) as output_sess:
@@ -133,7 +152,8 @@ if __name__ == "__main__":
                                     output_sess.add(new_measurement)
                                     output_sess.commit()
 
-                                    output_unique_id[each_output.unique_id].append(new_measurement.unique_id)
+                                    output_unique_id[each_output.unique_id].append(
+                                        new_measurement.unique_id)
 
                     # Update all outputs in Dashboard elements to new unique_ids
                     for each_dash in output_sess.query(Dashboard).all():
@@ -148,56 +168,27 @@ if __name__ == "__main__":
                                     id_string += ';'
 
                             if each_output_id in each_dash.output_ids:
-                                each_dash.output_ids = each_dash.output_ids.replace(each_output_id, id_string)
+                                each_dash.output_ids = each_dash.output_ids.replace(
+                                    each_output_id, id_string)
                                 output_sess.commit()
-            except:
-                msg = "ERROR: post-alembic revision {}".format(each_revision)
+            except Exception:
+                msg = "ERROR: post-alembic revision {}: {}".format(
+                    each_revision, traceback.format_exc())
                 error.append(msg)
                 print(msg)
 
         elif each_revision == 'ef49f6644e0c':
-            print("Executing post-alembic code for revision {}".format(each_revision))
+            print("Executing post-alembic code for revision {}".format(
+                each_revision))
             try:
-                def cond_statement_replace(cond_statement):
-                    """Replace short condition/action IDs in conditional statement with full condition/action IDs"""
-                    cond_statement_replaced = cond_statement
-                    with session_scope(MYCODO_DB_PATH) as conditional_sess:
-                        for each_condition in conditional_sess.query(ConditionalConditions).all():
-                            condition_id_short = each_condition.unique_id.split('-')[0]
-                            cond_statement_replaced = cond_statement_replaced.replace(
-                                '{{{id}}}'.format(id=condition_id_short),
-                                each_condition.unique_id)
+                from mycodo.databases.models import Conditional
+                from mycodo.databases.models import Input
+                from mycodo.inputs.python_code import execute_at_creation
+                from databases.alembic_post_utils import save_conditional_code
 
-                        for each_action in conditional_sess.query(Actions).all():
-                            action_id_short = each_action.unique_id.split('-')[0]
-                            cond_statement_replaced = cond_statement_replaced.replace(
-                                '{{{id}}}'.format(id=action_id_short),
-                                each_action.unique_id)
-
-                        conditional_sess.expunge_all()
-                        conditional_sess.close()
-
-                    return cond_statement_replaced
+                save_conditional_code()
 
                 with session_scope(MYCODO_DB_PATH) as conditional_sess:
-                    for each_conditional in conditional_sess.query(Conditional).all():
-                        try:
-                            indented_code = textwrap.indent(
-                                each_conditional.conditional_statement, ' ' * 8)
-
-                            cond_statement_run = pre_statement_run + indented_code
-                            cond_statement_run = cond_statement_replace(cond_statement_run)
-
-                            assure_path_exists(PATH_PYTHON_CODE_USER)
-                            file_run = '{}/conditional_{}.py'.format(
-                                PATH_PYTHON_CODE_USER, each_conditional.unique_id)
-                            with open(file_run, 'w') as fw:
-                                fw.write('{}\n'.format(cond_statement_run))
-                                fw.close()
-                        except Exception as msg:
-                            print("Exception: {}".format(msg))
-
-                        # Inputs
                     with session_scope(MYCODO_DB_PATH) as input_sess:
                         for each_input in input_sess.query(Input).all():
                             if each_input.device == 'PythonCode' and each_input.cmd_command:
@@ -207,34 +198,20 @@ if __name__ == "__main__":
                                                         None)
                                 except Exception as msg:
                                     print("Exception: {}".format(msg))
-            except:
-                msg = "ERROR: post-alembic revision {}".format(each_revision)
+            except Exception:
+                msg = "ERROR: post-alembic revision {}: {}".format(
+                    each_revision, traceback.format_exc())
                 error.append(msg)
                 print(msg)
 
         elif each_revision == '65271370a3a9':
-            print("Executing post-alembic code for revision {}".format(each_revision))
+            print("Executing post-alembic code for revision {}".format(
+                each_revision))
             try:
-                def cond_statement_replace(cond_statement):
-                    """Replace short condition/action IDs in conditional statement with full condition/action IDs"""
-                    cond_statement_replaced = cond_statement
-                    with session_scope(MYCODO_DB_PATH) as conditional_sess:
-                        for each_condition in conditional_sess.query(ConditionalConditions).all():
-                            condition_id_short = each_condition.unique_id.split('-')[0]
-                            cond_statement_replaced = cond_statement_replaced.replace(
-                                '{{{id}}}'.format(id=condition_id_short),
-                                each_condition.unique_id)
-
-                        for each_action in conditional_sess.query(Actions).all():
-                            action_id_short = each_action.unique_id.split('-')[0]
-                            cond_statement_replaced = cond_statement_replaced.replace(
-                                '{{{id}}}'.format(id=action_id_short),
-                                each_action.unique_id)
-
-                        conditional_sess.expunge_all()
-                        conditional_sess.close()
-
-                    return cond_statement_replaced
+                from mycodo.databases.models import Conditional
+                from mycodo.databases.models import Input
+                from mycodo.inputs.python_code import execute_at_creation
+                from databases.alembic_post_utils import save_conditional_code
 
                 # Conditionals
                 with session_scope(MYCODO_DB_PATH) as conditional_sess:
@@ -261,22 +238,7 @@ if __name__ == "__main__":
 
                     conditional_sess.commit()
 
-                    for each_conditional in conditional_sess.query(Conditional).all():
-                        try:
-                            indented_code = textwrap.indent(
-                                each_conditional.conditional_statement, ' ' * 8)
-
-                            cond_statement_run = pre_statement_run + indented_code
-                            cond_statement_run = cond_statement_replace(cond_statement_run)
-
-                            assure_path_exists(PATH_PYTHON_CODE_USER)
-                            file_run = '{}/conditional_{}.py'.format(
-                                PATH_PYTHON_CODE_USER, each_conditional.unique_id)
-                            with open(file_run, 'w') as fw:
-                                fw.write('{}\n'.format(cond_statement_run))
-                                fw.close()
-                        except Exception as msg:
-                            print("Exception: {}".format(msg))
+                    save_conditional_code()
 
                 # Inputs
                 with session_scope(MYCODO_DB_PATH) as input_sess:
@@ -304,14 +266,19 @@ if __name__ == "__main__":
                                                     None)
                             except Exception as msg:
                                 print("Exception: {}".format(msg))
-            except:
-                msg = "ERROR: post-alembic revision {}".format(each_revision)
+            except Exception:
+                msg = "ERROR: post-alembic revision {}: {}".format(
+                    each_revision, traceback.format_exc())
                 error.append(msg)
                 print(msg)
 
         elif each_revision == '70c828e05255':
-            print("Executing post-alembic code for revision {}".format(each_revision))
+            print("Executing post-alembic code for revision {}".format(
+                each_revision))
             try:
+                from mycodo.databases.models import Conditional
+                from mycodo.databases.models import ConditionalConditions
+
                 with session_scope(MYCODO_DB_PATH) as conditional_sess:
                     for each_conditional in conditional_sess.query(Conditional).all():
                         if each_conditional.conditional_statement:
@@ -337,14 +304,18 @@ if __name__ == "__main__":
                                             "print('1')", new_str)
 
                     conditional_sess.commit()
-            except:
-                msg = "ERROR: post-alembic revision {}".format(each_revision)
+            except Exception:
+                msg = "ERROR: post-alembic revision {}: {}".format(
+                    each_revision, traceback.format_exc())
                 error.append(msg)
                 print(msg)
 
         elif each_revision == 'b4d958997cf0':
-            print("Executing post-alembic code for revision {}".format(each_revision))
+            print("Executing post-alembic code for revision {}".format(
+                each_revision))
             try:
+                from mycodo.databases.models import Input
+
                 with session_scope(MYCODO_DB_PATH) as new_session:
                     for each_input in new_session.query(Input).all():
                         if each_input.device in ['DS18B20', 'DS18S20']:
@@ -355,8 +326,9 @@ if __name__ == "__main__":
                                     each_input.custom_options += ';library,w1thermsensor'
 
                     new_session.commit()
-            except:
-                msg = "ERROR: post-alembic revision {}".format(each_revision)
+            except Exception:
+                msg = "ERROR: post-alembic revision {}: {}".format(
+                    each_revision, traceback.format_exc())
                 error.append(msg)
                 print(msg)
 
@@ -367,7 +339,9 @@ if __name__ == "__main__":
         print("Completed with errors. Review the entire log for details.")
     else:
         try:
-            print("Completed without errors. Deleting {}".format(ALEMBIC_UPGRADE_POST))
+            print("Completed without errors. Deleting {}".format(
+                ALEMBIC_UPGRADE_POST))
             os.remove(ALEMBIC_UPGRADE_POST)
-        except:
-            pass
+        except Exception:
+            msg = "ERROR: Could not delete {}: {}".format(
+                ALEMBIC_UPGRADE_POST, traceback.format_exc())

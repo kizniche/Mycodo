@@ -1,0 +1,9 @@
+<div class="col-auto">
+  <label class='control-label'>{{_('Email Address')}} ({{_('Multiple')}})</label>
+  <div>
+    {{form_actions.do_action_string(class_='form-control', value=each_action.do_action_string, **{'title': _('Email address to notify')})}}
+  </div>
+</div>
+<div class="col-12">
+  <strong>{{_('E-Mail')}} ({{_('Multiple')}})</strong>: {{_('Email multiple recipients. Separate email addresses with commas (e.g. "email1@address.com,email2@address.com").')}}
+</div>

@@ -14,7 +14,7 @@ sys.path.append(os.path.abspath(os.path.dirname(__file__)))
 from config_translations import TRANSLATIONS
 
 MYCODO_VERSION = '7.7.8'
-ALEMBIC_VERSION = '9f6bc3a1a450'
+ALEMBIC_VERSION = '0ce53d526f13'
 
 #  FORCE_UPGRADE_MASTER
 #  Set True to enable upgrading to the master branch of the Mycodo repository.
@@ -524,9 +524,9 @@ FUNCTIONS = [
 # Function actions
 FUNCTION_ACTION_INFO = {
     'pause_actions': {
-        'name': '{}: {}'.format(
-            TRANSLATIONS['actions']['title'],
-            TRANSLATIONS['pause']['title']),
+        'name': '{} {}'.format(
+            TRANSLATIONS['pause']['title'],
+            TRANSLATIONS['actions']['title']),
         'dependencies_module': []
     },
     'photo': {
@@ -550,7 +550,13 @@ FUNCTION_ACTION_INFO = {
         'dependencies_module': []
     },
     'email': {
-        'name': TRANSLATIONS['email']['title'],
+        'name': '{} ({})'.format(TRANSLATIONS['email']['title'],
+                                 TRANSLATIONS['single']['title']),
+        'dependencies_module': []
+    },
+    'email_multiple': {
+        'name': '{} ({})'.format(TRANSLATIONS['email']['title'],
+                                 TRANSLATIONS['multiple']['title']),
         'dependencies_module': []
     },
     'photo_email': {
@@ -583,29 +589,29 @@ FUNCTION_ACTION_INFO = {
     'lcd_backlight_on': {
         'name': '{}: {}'.format(
             TRANSLATIONS['lcd']['title'],
-            lazy_gettext('LCD: Backlight On')),
+            lazy_gettext('Backlight On')),
         'dependencies_module': []
     },
     'flash_lcd_off': {
         'name': '{}: {}'.format(
             TRANSLATIONS['lcd']['title'],
-            lazy_gettext('LCD: Flashing Off')),
+            lazy_gettext('Flashing Off')),
         'dependencies_module': []
     },
     'flash_lcd_on': {
         'name': '{}: {}'.format(
             TRANSLATIONS['lcd']['title'],
-            lazy_gettext('LCD: Flashing On')),
+            lazy_gettext('Flashing On')),
         'dependencies_module': []
     },
     'output': {
-        'name': '{}: {}'.format(
+        'name': '{} ({})'.format(
             TRANSLATIONS['output']['title'],
             TRANSLATIONS['duration']['title']),
         'dependencies_module': []
     },
     'output_pwm': {
-        'name': '{}: {}'.format(
+        'name': '{} ({})'.format(
             TRANSLATIONS['output']['title'],
             TRANSLATIONS['duty_cycle']['title']),
         'dependencies_module': []
@@ -659,6 +665,7 @@ FUNCTION_ACTIONS = [
     ('deactivate_controller', FUNCTION_ACTION_INFO['deactivate_controller']['name']),
     ('create_note', FUNCTION_ACTION_INFO['create_note']['name']),
     ('email', FUNCTION_ACTION_INFO['email']['name']),
+    ('email_multiple', FUNCTION_ACTION_INFO['email_multiple']['name']),
     ('photo_email', FUNCTION_ACTION_INFO['photo_email']['name']),
     ('video_email', FUNCTION_ACTION_INFO['video_email']['name']),
     ('command', FUNCTION_ACTION_INFO['command']['name']),
