@@ -47,7 +47,7 @@ class PIDModBase(FlaskForm):
     log_level_debug = BooleanField(
         TRANSLATIONS['log_level_debug']['title'])
     start_offset = DecimalField(
-        lazy_gettext('Start Offset (seconds)'),
+        TRANSLATIONS['start_offset']['title'],
         widget=NumberInput(step='any'))
     max_measure_age = DecimalField(
         TRANSLATIONS['max_age']['title'],

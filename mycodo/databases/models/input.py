@@ -18,6 +18,7 @@ class Input(CRUDMixin, db.Model):
     device = db.Column(db.Text, default='')  # Device name, such as DHT11, DHT22, DS18B20
     interface = db.Column(db.Text, default=None)  # Communication interface (I2C, UART, etc.)
     period = db.Column(db.Float, default=15.0)  # Duration between readings
+    start_offset = db.Column(db.Float, default=0.0)
     power_output_id = db.Column(db.String, default=None)
     resolution = db.Column(db.Integer, default=0)
     resolution_2 = db.Column(db.Integer, default=0)

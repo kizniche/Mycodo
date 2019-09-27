@@ -97,6 +97,7 @@ class InputController(AbstractController, threading.Thread):
         self.device = None
         self.interface = None
         self.period = None
+        self.start_offset = None
 
         # Edge detection
         self.switch_edge = None
@@ -261,6 +262,7 @@ class InputController(AbstractController, threading.Thread):
         self.device = input_dev.device
         self.interface = input_dev.interface
         self.period = input_dev.period
+        self.start_offset = input_dev.start_offset
 
         # Edge detection
         self.switch_edge = input_dev.switch_edge
@@ -273,7 +275,7 @@ class InputController(AbstractController, threading.Thread):
         self.pre_output_during_measure = input_dev.pre_output_during_measure
         self.pre_output_setup = False
         self.last_measurement = 0
-        self.next_measurement = time.time()
+        self.next_measurement = time.time() + self.start_offset
         self.get_new_measurement = False
         self.trigger_cond = False
         self.measurement_acquired = False
@@ -404,7 +406,7 @@ class InputController(AbstractController, threading.Thread):
             if self.stop_iteration_counter > 2:
                 self.stop_iteration_counter = 0
                 self.logger.error(
-                    "StopIteration raised. Possibly could not read "
+                    "StopIteration raised 3 times. Possibly could not read "
                     "input. Ensure it's connected properly and "
                     "detected.")
         except Exception as except_msg:

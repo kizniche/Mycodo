@@ -1,5 +1,10 @@
 ## 7.7.9 (Unreleased)
 
+### Features
+
+ - Add Start Offset option for Inputs
+ - Add ability to disable Graph series Data Grouping
+
 ### Miscellaneous
 
  - Rename Conditional Statement measure() to condition() in Conditional Controllers

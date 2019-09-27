@@ -2106,6 +2106,7 @@ def dict_custom_colors():
             index = 0
             index_sum = 0
             total = []
+
             if each_graph.input_ids_measurements:
                 for each_set in each_graph.input_ids_measurements.split(';'):
                     input_unique_id = each_set.split(',')[0]
@@ -2123,21 +2124,31 @@ def dict_custom_colors():
 
                     input_dev = Input.query.filter_by(
                         unique_id=input_unique_id).first()
+
+                    # Custom colors
                     if (index < len(each_graph.input_ids_measurements.split(';')) and
                             len(colors) > index):
                         color = colors[index]
                     else:
                         color = '#FF00AA'
+
+                    # Data grouping
+                    disable_data_grouping = False
+                    if input_measure_id in each_graph.disable_data_grouping:
+                        disable_data_grouping = True
+
                     if None not in [input_dev, device_measurement]:
                         total.append({
                             'unique_id': input_unique_id,
+                            'measure_id': input_measure_id,
                             'type': 'Input',
                             'name': input_dev.name,
                             'channel': channel,
                             'unit': unit,
                             'measure': measurement,
                             'measure_name': device_measurement.name,
-                            'color': color})
+                            'color': color,
+                            'disable_data_grouping': disable_data_grouping})
                         index += 1
                 index_sum += index
 
@@ -2159,21 +2170,31 @@ def dict_custom_colors():
 
                     math = Math.query.filter_by(
                         unique_id=math_unique_id).first()
+
+                    # Custom colors
                     if (index < len(each_graph.math_ids.split(';')) and
                             len(colors) > index_sum + index):
                         color = colors[index_sum + index]
                     else:
                         color = '#FF00AA'
+
+                    # Data grouping
+                    disable_data_grouping = False
+                    if math_measure_id in each_graph.disable_data_grouping:
+                        disable_data_grouping = True
+
                     if math is not None:
                         total.append({
                             'unique_id': math_unique_id,
+                            'measure_id': math_measure_id,
                             'type': 'Math',
                             'name': math.name,
                             'channel': channel,
                             'unit': unit,
                             'measure': measurement,
                             'measure_name': device_measurement.name,
-                            'color': color})
+                            'color': color,
+                            'disable_data_grouping': disable_data_grouping})
                         index += 1
                 index_sum += index
 
@@ -2195,29 +2216,40 @@ def dict_custom_colors():
 
                     pid = PID.query.filter_by(
                         unique_id=pid_unique_id).first()
+
+                    # Custom colors
                     if (index < len(each_graph.pid_ids.split(';')) and
                             len(colors) > index_sum + index):
                         color = colors[index_sum + index]
                     else:
                         color = '#FF00AA'
+
+                    # Data grouping
+                    disable_data_grouping = False
+                    if pid_measure_id in each_graph.disable_data_grouping:
+                        disable_data_grouping = True
+
                     if pid is not None:
                         total.append({
                             'unique_id': pid_unique_id,
+                            'measure_id': pid_measure_id,
                             'type': 'PID',
                             'name': pid.name,
                             'channel': channel,
                             'unit': unit,
                             'measure': measurement,
-                            'color': color})
+                            'color': color,
+                            'disable_data_grouping': disable_data_grouping})
                         index += 1
 
             if each_graph.output_ids:
                 index = 0
                 for each_set in each_graph.output_ids.split(';'):
                     output_unique_id = each_set.split(',')[0]
+                    output_measure_id = each_set.split(',')[1]
 
-                    device_measurement = Output.query.filter_by(
-                        unique_id=output_unique_id).first()
+                    device_measurement = DeviceMeasurements.query.filter(
+                        DeviceMeasurements.unique_id == output_measure_id).first()
                     if device_measurement:
                         conversion = Conversion.query.filter(
                             Conversion.unique_id == device_measurement.conversion_id).first()
@@ -2226,22 +2258,74 @@ def dict_custom_colors():
                     channel, unit, measurement = return_measurement_info(
                         device_measurement, conversion)
 
-                    if (index < len(each_graph.output_ids.split(',')) and
+                    output = Output.query.filter_by(
+                        unique_id=output_unique_id).first()
+
+                    if (index < len(each_graph.output_ids.split(';')) and
                             len(colors) > index_sum + index):
                         color = colors[index_sum + index]
                     else:
                         color = '#FF00AA'
-                    if device_measurement is not None:
+
+                    # Data grouping
+                    disable_data_grouping = False
+                    if output_measure_id in each_graph.disable_data_grouping:
+                        disable_data_grouping = True
+
+                    if output is not None:
                         total.append({
                             'unique_id': output_unique_id,
+                            'measure_id': output_measure_id,
                             'type': 'Output',
-                            'name': device_measurement.name,
+                            'name': output.name,
                             'channel': channel,
                             'unit': unit,
                             'measure': measurement,
-                            'color': color})
+                            'color': color,
+                            'disable_data_grouping': disable_data_grouping})
                         index += 1
-                index_sum += index
+
+            # if each_graph.output_ids:
+            #     index = 0
+            #     for each_set in each_graph.output_ids.split(';'):
+            #         output_unique_id = each_set.split(',')[0]
+            #         output_measure_id = each_set.split(',')[1]
+            #
+            #         device_measurement = Output.query.filter_by(
+            #             unique_id=output_unique_id).first()
+            #         if device_measurement:
+            #             conversion = Conversion.query.filter(
+            #                 Conversion.unique_id == device_measurement.conversion_id).first()
+            #         else:
+            #             conversion = None
+            #         channel, unit, measurement = return_measurement_info(
+            #             device_measurement, conversion)
+            #
+            #         # Custom color
+            #         if (index < len(each_graph.output_ids.split(',')) and
+            #                 len(colors) > index_sum + index):
+            #             color = colors[index_sum + index]
+            #         else:
+            #             color = '#FF00AA'
+            #
+            #         # Data grouping
+            #         disable_data_grouping = False
+            #         if output_measure_id in each_graph.disable_data_grouping:
+            #             disable_data_grouping = True
+            #
+            #         if device_measurement is not None:
+            #             total.append({
+            #                 'unique_id': output_unique_id,
+            #                 'measure_id': output_measure_id,
+            #                 'type': 'Output',
+            #                 'name': device_measurement.name,
+            #                 'channel': channel,
+            #                 'unit': unit,
+            #                 'measure': measurement,
+            #                 'color': color,
+            #                 'disable_data_grouping': disable_data_grouping})
+            #             index += 1
+            #     index_sum += index
 
             if each_graph.note_tag_ids:
                 index = 0

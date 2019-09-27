@@ -23,6 +23,28 @@ def upgrade():
     from databases.alembic_post_utils import write_revision_post_alembic
     write_revision_post_alembic(revision)
 
+    with op.batch_alter_table("input") as batch_op:
+        batch_op.add_column(sa.Column('start_offset', sa.Float))
+    with op.batch_alter_table("dashboard") as batch_op:
+        batch_op.add_column(sa.Column('disable_data_grouping', sa.Text))
+
+    op.execute(
+        '''
+        UPDATE input
+        SET start_offset=0
+        '''
+    )
+
+    op.execute(
+        '''
+        UPDATE dashboard
+        SET disable_data_grouping=''
+        '''
+    )
+
 
 def downgrade():
-    pass
+    with op.batch_alter_table("input") as batch_op:
+        batch_op.drop_column('start_offset')
+    with op.batch_alter_table("dashboard") as batch_op:
+        batch_op.drop_column('disable_data_grouping')

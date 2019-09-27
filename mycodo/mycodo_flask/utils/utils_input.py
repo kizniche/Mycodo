@@ -385,6 +385,8 @@ def input_mod(form_mod, request_form):
 
         if form_mod.period.data:
             mod_input.period = form_mod.period.data
+        if form_mod.start_offset.data:
+            mod_input.start_offset = form_mod.start_offset.data
 
         mod_input.resolution = form_mod.resolution.data
         mod_input.resolution_2 = form_mod.resolution_2.data

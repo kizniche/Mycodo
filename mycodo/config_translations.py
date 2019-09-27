@@ -328,6 +328,9 @@ TRANSLATIONS = {
     'sht_voltage': {
         'title': lazy_gettext('Voltage'),
         'phrase': lazy_gettext('The input voltage to the sensor')},
+    'start_offset': {
+        'title': lazy_gettext('Start Offset (seconds)'),
+        'phrase': lazy_gettext('The duration (seconds) to wait before the first operation')},
     'switch_edge': {
         'title': lazy_gettext('Edge'),
         'phrase': lazy_gettext('Edge detection: low to high (rising), high to low (falling), or both')},

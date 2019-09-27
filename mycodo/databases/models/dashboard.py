@@ -25,7 +25,6 @@ class Dashboard(CRUDMixin, db.Model):
 
     x_axis_duration = db.Column(db.Integer, default=1440)  # X-axis duration (in minutes)
     use_custom_colors = db.Column(db.Boolean, default=False)  # Enable custom colors of graph series
-    custom_colors = db.Column(db.Text, default='')  # Custom hex color values (csv)
     enable_navbar = db.Column(db.Boolean, default=False)  # Show navigation bar
     enable_rangeselect = db.Column(db.Boolean, default=False)  # Show range selection buttons
     enable_export = db.Column(db.Boolean, default=False)  # Show export menu
@@ -39,6 +38,10 @@ class Dashboard(CRUDMixin, db.Model):
     enable_align_ticks = db.Column(db.Boolean, default=True)  # Enable HighCharts alignTicks
     custom_yaxes = db.Column(db.Text, default='')  # Custom minimum and maximum y-axes
     decimal_places = db.Column(db.Integer, default=1)  # Number of decimal places for displayed value
+
+    # Series-specific options
+    custom_colors = db.Column(db.Text, default='')  # Custom hex color values (csv)
+    disable_data_grouping = db.Column(db.Text, default='')  # Disable data grouping for measurement IDs
 
     # Gauge options
     max_measure_age = db.Column(db.Integer, default=120.0)  # Only show measurements if they are younger than this age

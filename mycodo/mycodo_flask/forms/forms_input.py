@@ -78,6 +78,15 @@ class InputMod(FlaskForm):
         )],
         widget=NumberInput(step='any')
     )
+    start_offset = DecimalField(
+        TRANSLATIONS['start_offset']['title'],
+        validators=[DataRequired(),
+                    validators.NumberRange(
+                        min=0.0,
+                        max=86400.0
+                    )],
+        widget=NumberInput(step='any')
+    )
     log_level_debug = BooleanField(
         TRANSLATIONS['log_level_debug']['title'])
     num_channels = IntegerField(lazy_gettext('Number of Measurements'), widget=NumberInput())

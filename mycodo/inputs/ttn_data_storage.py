@@ -52,6 +52,7 @@ INPUT_INFORMATION = {
         'custom_options',
         'measurements_select',
         'period',
+        'start_offset',
         'pre_output',
         'log_level_debug'
     ],

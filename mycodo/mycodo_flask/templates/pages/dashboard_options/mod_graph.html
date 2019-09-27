@@ -50,15 +50,51 @@
         </div>
       </div>
       <div class="col-auto">
+        {{form_base.refresh_duration.label(class_='control-label')}}
+        <div>
+          {{form_base.refresh_duration(class_='form-control', value=each_dashboard.refresh_duration)}}
+        </div>
+      </div>
+      <div class="col-auto">
         <label class="control-label">{{form_graph.enable_auto_refresh.label.text}}</label>
         <div class="input-group-text">
           <input id="enable_auto_refresh" name="enable_auto_refresh" type="checkbox" value="y"{% if each_dashboard.enable_auto_refresh %} checked{% endif %}>
         </div>
       </div>
       <div class="col-auto">
-        {{form_base.refresh_duration.label(class_='control-label')}}
-        <div>
-          {{form_base.refresh_duration(class_='form-control', value=each_dashboard.refresh_duration)}}
+        <label class="control-label">{{form_graph.enable_xaxis_reset.label.text}}</label>
+        <div class="input-group-text">
+          <input id="enable_xaxis_reset" name="enable_xaxis_reset" type="checkbox" value="y"{% if each_dashboard.enable_xaxis_reset %} checked{% endif %}>
+        </div>
+      </div>
+      <div class="col-auto">
+        <label class="control-label">{{form_graph.enable_title.label.text}}</label>
+        <div class="input-group-text">
+          <input id="enable_title" name="enable_title" type="checkbox" value="y"{% if each_dashboard.enable_title %} checked{% endif %}>
+        </div>
+      </div>
+      <div class="col-auto">
+        <label class="control-label">{{form_graph.enable_navbar.label.text}}</label>
+        <div class="input-group-text">
+          <input id="enable_navbar" name="enable_navbar" type="checkbox" value="y"{% if each_dashboard.enable_navbar %} checked{% endif %}>
+        </div>
+      </div>
+      <div class="col-auto">
+        <label class="control-label">{{form_graph.enable_export.label.text}}</label>
+        <div class="input-group-text">
+          <input id="enable_export" name="enable_export" type="checkbox" value="y"{% if each_dashboard.enable_export %} checked{% endif %}>
+        </div>
+      </div>
+      <div class="col-auto">
+        <label class="control-label">{{form_graph.enable_range.label.text}}</label>
+        <div class="input-group-text">
+          <input id="enable_range" name="enable_range" type="checkbox" value="y"{% if each_dashboard.enable_range %} checked{% endif %}>
+        </div>
+      </div>
+      <div class="col-auto">
+        <label class="control-label">{{form_graph.enable_graph_shift.label.text}}</label>
+        <div class="input-group-text">
+          <input id="enable_graph_shift" name="enable_graph_shift" type="checkbox" value="y"{% if each_dashboard.enable_graph_shift %} checked{% endif %}>
         </div>
       </div>
     </div>
@@ -144,46 +180,21 @@
       {{_('Hold down the <kbd>Ctrl</kbd> or <kbd>&#8984;</kbd> key to select more than one')}}.
     </div>
 
-    <div class="form-row" style="padding-left: 0.5em">
-      <div class="form-check form-check-inline">
-        <input class="form-check-input" id="enable_xaxis_reset" name="enable_xaxis_reset" type="checkbox" value="y"{% if each_dashboard.enable_xaxis_reset %} checked{% endif %}>
-        {{form_graph.enable_xaxis_reset.label(class_='control-label')}}
+    <div class="form-row" style="padding-left: 0.5em; padding-top: 1em">
+      <div class="col-12" style="font-weight: bold">
+        {{_('Series Options')}}
       </div>
-      <div class="form-check form-check-inline">
-        <input class="form-check-input" id="enable_title" name="enable_title" type="checkbox" value="y"{% if each_dashboard.enable_title %} checked{% endif %}>
-        {{form_graph.enable_title.label(class_='control-label')}}
-      </div>
-      <div class="form-check form-check-inline">
-        <input class="form-check-input" id="enable_navbar" name="enable_navbar" type="checkbox" value="y"{% if each_dashboard.enable_navbar %} checked{% endif %}>
-        {{form_graph.enable_navbar.label(class_='control-label')}}
-      </div>
-      <div class="form-check form-check-inline">
-        <input class="form-check-input" id="enable_export" name="enable_export" type="checkbox" value="y"{% if each_dashboard.enable_export %} checked{% endif %}>
-        {{form_graph.enable_export.label(class_='control-label')}}
-      </div>
-      <div class="form-check form-check-inline">
-        <input class="form-check-input" id="enable_range" name="enable_range" type="checkbox" value="y"{% if each_dashboard.enable_rangeselect %} checked{% endif %}>
-        {{form_graph.enable_range.label(class_='control-label')}}
-      </div>
-      <div class="form-check form-check-inline">
-        <input class="form-check-input" id="enable_graph_shift" name="enable_graph_shift" type="checkbox" value="y"{% if each_dashboard.enable_graph_shift %} checked{% endif %}>
-        {{form_graph.enable_graph_shift.label(class_='control-label')}}
-      </div>
-    </div>
-
-    <div class="form-row" style="padding-left: 0.5em">
-      <div class="form-check">
-        <input class="form-check-input" id="use_custom_colors" name="use_custom_colors" type="checkbox" value="y"{% if each_dashboard.use_custom_colors %} checked{% endif %}>
-        {{form_graph.use_custom_colors.label(class_='control-label')}}
+      <div class="col-auto">
+        <label class="control-label">{{form_graph.use_custom_colors.label.text}}</label>
+        <div class="input-group-text">
+          <input id="use_custom_colors" name="use_custom_colors" type="checkbox" value="y"{% if each_dashboard.use_custom_colors %} checked{% endif %}>
+        </div>
       </div>
     </div>
 
       {% for n in range(colors_graph[each_dashboard.unique_id]|length) %}
     <div class="form-row">
-      <div class="form-check">
-        {% set index = '{0:0>2}'.format(n) %}
-        <input id="color_number{{index}}" name="color_number{{index}}" placeholder="#000000" type="color" value="{{colors_graph[each_dashboard.unique_id][n]['color']}}">
-        <label for="color_number{{index}}">
+      <div class="col-12">
         {%- if 'type' in colors_graph[each_dashboard.unique_id][n] -%}
             {{colors_graph[each_dashboard.unique_id][n]['type'] + ': '}}
         {%- endif -%}
@@ -196,27 +207,53 @@
         {%- endif -%}
         {%- if colors_graph[each_dashboard.unique_id][n]['unit'] in dict_units -%}
           {{' (' + dict_units[colors_graph[each_dashboard.unique_id][n]['unit']]['name'] + ')'}}
-        {%- endif -%}</label>
+        {%- endif -%}
       </div>
+      <div class="form-check">
+        {% set index = '{0:0>2}'.format(n) %}
+        <label class="control-label" for="color_number{{index}}">Color</label>
+        <div>
+          <input id="color_number{{index}}" name="color_number{{index}}" placeholder="#000000" type="color" value="{{colors_graph[each_dashboard.unique_id][n]['color']}}">
+        </div>
+      </div>
+        {% if colors_graph[each_dashboard.unique_id][n]['type'] != 'Tag' %}
+      <div class="col-auto">
+        <label class="control-label">Disable Data Grouping</label>
+        <div class="input-group-text">
+          <input id="disable_data_grouping-{{colors_graph[each_dashboard.unique_id][n]['measure_id']}}" name="disable_data_grouping-{{colors_graph[each_dashboard.unique_id][n]['measure_id']}}" type="checkbox" value="y"{% if colors_graph[each_dashboard.unique_id][n]['disable_data_grouping'] %} checked{% endif %}>
+        </div>
+      </div>
+        {% endif %}
     </div>
       {% endfor %}
 
-    <div class="form-row" style="padding-left: 0.5em">
-      <div class="form-check form-check-inline">
-        <input class="form-check-input" id="enable_manual_y_axis" name="enable_manual_y_axis" type="checkbox" value="y"{% if each_dashboard.enable_manual_y_axis %} checked{% endif %}>
-        {{form_graph.enable_manual_y_axis.label(class_='control-label')}}
+    <div class="form-row" style="padding-left: 0.5em; padding-top: 1em">
+      <div class="col-12" style="font-weight: bold">
+        {{_('Y-Axis Options')}}
       </div>
-      <div class="form-check form-check-inline">
-        <input class="form-check-input" id="enable_align_ticks" name="enable_align_ticks" type="checkbox" value="y"{% if each_dashboard.enable_align_ticks %} checked{% endif %}>
-        {{form_graph.enable_align_ticks.label(class_='control-label')}}
+      <div class="col-auto">
+        <label class="control-label">{{form_graph.enable_manual_y_axis.label.text}}</label>
+        <div class="input-group-text">
+          <input id="enable_manual_y_axis" name="enable_manual_y_axis" type="checkbox" value="y"{% if each_dashboard.enable_manual_y_axis %} checked{% endif %}>
+        </div>
       </div>
-      <div class="form-check form-check-inline">
-        <input class="form-check-input" id="enable_start_on_tick" name="enable_start_on_tick" type="checkbox" value="y"{% if each_dashboard.enable_start_on_tick %} checked{% endif %}>
-        {{form_graph.enable_start_on_tick.label(class_='control-label')}}
+      <div class="col-auto">
+        <label class="control-label">{{form_graph.enable_align_ticks.label.text}}</label>
+        <div class="input-group-text">
+          <input id="enable_align_ticks" name="enable_align_ticks" type="checkbox" value="y"{% if each_dashboard.enable_align_ticks %} checked{% endif %}>
+        </div>
       </div>
-      <div class="form-check form-check-inline">
-        <input class="form-check-input" id="enable_end_on_tick" name="enable_end_on_tick" type="checkbox" value="y"{% if each_dashboard.enable_end_on_tick %} checked{% endif %}>
-        {{form_graph.enable_end_on_tick.label(class_='control-label')}}
+      <div class="col-auto">
+        <label class="control-label">{{form_graph.enable_start_on_tick.label.text}}</label>
+        <div class="input-group-text">
+          <input id="enable_start_on_tick" name="enable_start_on_tick" type="checkbox" value="y"{% if each_dashboard.enable_start_on_tick %} checked{% endif %}>
+        </div>
+      </div>
+      <div class="col-auto">
+        <label class="control-label">{{form_graph.enable_end_on_tick.label.text}}</label>
+        <div class="input-group-text">
+          <input id="enable_end_on_tick" name="enable_end_on_tick" type="checkbox" value="y"{% if each_dashboard.enable_end_on_tick %} checked{% endif %}>
+        </div>
       </div>
     </div>
 

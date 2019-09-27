@@ -222,6 +222,8 @@ def dashboard_mod(form_base, form_object, request_form):
         # Generate color option string from form inputs
         sorted_colors_string, error = custom_colors_graph_str(request_form, error)
         mod_graph.custom_colors = sorted_colors_string
+        disable_data_grouping_string, error = data_grouping_graph_str(request_form, error)
+        mod_graph.disable_data_grouping = disable_data_grouping_string
         mod_graph.use_custom_colors = form_object.use_custom_colors.data
 
         # Generate y-axis option string from form inputs
@@ -866,6 +868,19 @@ def custom_colors_graph_str(form, error):
     for each_color in sorted_list:
         short_list.append(each_color[1])
     return ','.join(short_list), error
+
+
+def data_grouping_graph_str(form, error):
+    """
+    Get checkbox options for data grouping, turn into CSV string
+    :param form:
+    :return:
+    """
+    list_data_grouping = []
+    for key in form.keys():
+        if 'disable_data_grouping' in key:
+            list_data_grouping.append(key[22:])
+    return ','.join(list_data_grouping), error
 
 
 def custom_yaxes_str_from_form(form):

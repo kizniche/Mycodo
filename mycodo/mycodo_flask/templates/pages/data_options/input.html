@@ -89,15 +89,16 @@
 
         {% include 'pages/data_options/input_options/TEMPLATE_OPTIONS_Location.html' %}
 
-        {% include 'pages/data_options/input_options/TEMPLATE_OPTIONS_Num_channels.html' %}
-        {% include 'pages/data_options/input_options/TEMPLATE_OPTIONS_Measurements_Enabled.html' %}
-
         {% if each_input.device != 'EDGE' -%}
           {% include 'pages/data_options/input_options/TEMPLATE_OPTIONS_Period.html' %}
+          {% include 'pages/data_options/input_options/TEMPLATE_OPTIONS_Start_Offset.html' %}
           {% include 'pages/data_options/input_options/TEMPLATE_OPTIONS_Pre_Output.html' %}
         {% endif %}
 
         {% include 'pages/data_options/input_options/TEMPLATE_OPTIONS_log_level_debug.html' %}
+
+        {% include 'pages/data_options/input_options/TEMPLATE_OPTIONS_Num_channels.html' %}
+        {% include 'pages/data_options/input_options/TEMPLATE_OPTIONS_Measurements_Enabled.html' %}
 
         {% include 'pages/data_options/input_options/TEMPLATE_OPTIONS_Custom_Options.html' %}
 

@@ -280,8 +280,13 @@
     {%- if all_input -%}
       {%- for each_input in all_input -%}
         {%- set measurement_id = input_and_measurement_ids.split(',')[1] -%}
-        {%- if measurement_id in device_measurements_dict -%}
 
+        {% set disable_data_grouping = [] -%}
+        {% for each_series in colors_graph[each_dashboard.unique_id] if each_series['measure_id'] == measurement_id and each_series['disable_data_grouping'] %}
+          {%- do disable_data_grouping.append(1) %}
+        {% endfor %}
+
+        {%- if measurement_id in device_measurements_dict -%}
       {
         name: '{{each_input.name}}
 
@@ -309,6 +314,9 @@
         {% else -%}
         type: 'line',
         {%- endif -%}
+        dataGrouping: {
+          enabled: {% if disable_data_grouping %}false{% else %}true{% endif %}
+        },
         tooltip: {
           valueSuffix: '
           {%- if device_measurements_dict[measurement_id].conversion_id -%}
@@ -336,10 +344,14 @@
 
   {% for each_math in math -%}
     {%- for math_and_measurement_ids in graph_math_ids if each_math.unique_id == math_and_measurement_ids.split(',')[0] -%}
-
       {%- set measurement_id = math_and_measurement_ids.split(',')[1] -%}
-      {%- if measurement_id in device_measurements_dict -%}
 
+      {% set disable_data_grouping = [] -%}
+      {% for each_series in colors_graph[each_dashboard.unique_id] if each_series['measure_id'] == measurement_id and each_series['disable_data_grouping'] %}
+        {%- do disable_data_grouping.append(1) %}
+      {% endfor %}
+
+      {%- if measurement_id in device_measurements_dict -%}
       {
       name: '{{each_math.name}}
 
@@ -367,6 +379,9 @@
       {% else %}
       type: 'line',
       {% endif %}
+      dataGrouping: {
+        enabled: {% if disable_data_grouping %}false{% else %}true{% endif %}
+      },
       tooltip: {
         valueSuffix: '
         {%- if device_measurements_dict[measurement_id].conversion_id -%}
@@ -398,8 +413,13 @@
     {%- if all_output -%}
       {%- for each_output in all_output -%}
         {%- set measurement_id = output_and_measurement_ids.split(',')[1] -%}
-        {%- if measurement_id in device_measurements_dict -%}
 
+        {% set disable_data_grouping = [] -%}
+        {% for each_series in colors_graph[each_dashboard.unique_id] if each_series['measure_id'] == measurement_id and each_series['disable_data_grouping'] %}
+          {%- do disable_data_grouping.append(1) %}
+        {% endfor %}
+
+        {%- if measurement_id in device_measurements_dict -%}
       {
         name: '{{each_output.name}}
 
@@ -421,6 +441,9 @@
 
           )',
         type: 'column',
+        dataGrouping: {
+          enabled: {% if disable_data_grouping %}false{% else %}true{% endif %}
+        },
         tooltip: {
           valueSuffix: '
           {%- if device_measurements_dict[measurement_id].conversion_id -%}
@@ -449,8 +472,13 @@
   {%- for each_pid in pid -%}
     {%- for pid_and_measurement_ids in graph_pid_ids if each_pid.unique_id == pid_and_measurement_ids.split(',')[0] -%}
       {%- set measurement_id = pid_and_measurement_ids.split(',')[1] -%}
-      {%- if measurement_id in device_measurements_dict -%}
 
+      {% set disable_data_grouping = [] -%}
+      {% for each_series in colors_graph[each_dashboard.unique_id] if each_series['measure_id'] == measurement_id and each_series['disable_data_grouping'] %}
+        {%- do disable_data_grouping.append(1) %}
+      {% endfor %}
+
+      {%- if measurement_id in device_measurements_dict -%}
     {
       name: '{{each_pid.name}}
 
@@ -478,6 +506,9 @@
       {% else %}
       type: 'line',
       {% endif %}
+      dataGrouping: {
+        enabled: {% if disable_data_grouping %}false{% else %}true{% endif %}
+      },
       tooltip: {
         valueSuffix: '
         {%- if measurement_id in dict_measure_units and dict_measure_units[measurement_id] in dict_units -%}
