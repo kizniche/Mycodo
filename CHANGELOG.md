@@ -1,5 +1,9 @@
 ## 7.7.9 (Unreleased)
 
+### Bugfixes
+
+ - Fix issue displaying Outputs on Asynchronous Graph
+
 ### Features
 
  - Add Start Offset option for Inputs

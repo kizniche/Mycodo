@@ -478,21 +478,48 @@ $(document).ready(function() {
           {% endfor %}
 
           {%- for each_output in output if each_output.unique_id == device_id -%}
-              {
-                name: '{{each_output.name}} ({{dict_measurements[each_output.measurement]['name']}})',
-                type: 'column',
-                dataGrouping: {
-                  approximation: 'high',
-                  groupPixelWidth: 1
-                },
-                tooltip: {
-                  valueSuffix: ' {{dict_units[each_output.unit]['unit']}}',
-                  valueDecimals: 2
-                },
-                yAxis: '{{each_output.unit}}',
-                data: []
+            {%- if measurement_id in device_measurements_dict -%}
+
+            {
+              name: '{{each_output.name}}
+
+                {%- if device_measurements_dict[measurement_id].name -%}
+                  {{' (' + device_measurements_dict[measurement_id].name}})
+                {%- endif -%}
+
+                  {{' (CH' + (device_measurements_dict[measurement_id].channel)|string}}
+
+                {%- if dict_measure_measurements[measurement_id] in dict_measurements and
+                 dict_measurements[dict_measure_measurements[measurement_id]]['name'] -%}
+                  {{', ' + dict_measurements[dict_measure_measurements[measurement_id]]['name']}}
+                {%- endif -%}
+
+                {%- if dict_measure_units[measurement_id] in dict_units and
+                       dict_units[dict_measure_units[measurement_id]]['unit'] -%}
+                  {{', ' + dict_units[dict_measure_units[measurement_id]]['unit']}}
+                {%- endif -%}
+
+                )',
+              type: 'column',
+              tooltip: {
+                valueSuffix: '
+                {%- if dict_measure_units[measurement_id] in dict_units and
+                       dict_units[dict_measure_units[measurement_id]]['unit'] -%}
+                  {{' ' + dict_units[dict_measure_units[measurement_id]]['unit']}}
+                {%- endif -%}
+                ',
+                valueDecimals: 3
               },
-          {%- endfor -%}
+              yAxis: '
+                {%- if measurement_id in dict_measure_units -%}
+                  {{dict_measure_units[measurement_id]}}
+                {%- endif -%}
+                  ',
+              data: []
+            },
+
+            {%- endif -%}
+          {% endfor %}
 
           {% for each_tag in tag if each_tag.unique_id == device_id %}
             {
