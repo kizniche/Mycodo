@@ -146,6 +146,22 @@ def dashboard_add(form_base, form_object, display_order):
         new_graph.decimal_places = form_object.decimal_places.data
         new_graph.output_ids = form_object.output_id.data
 
+    # Output Range Slider
+    elif form_base.dashboard_type.data == 'output_pwm_slider':
+
+        dashboard_type = 'Output Range Slider'
+        error = output_error_check(form_object, error)
+        new_graph.graph_type = 'output_pwm_slider'
+        new_graph.width = form_base.width.data
+        new_graph.height = form_base.height.data
+        new_graph.max_measure_age = form_object.max_measure_age.data
+        new_graph.refresh_duration = form_base.refresh_duration.data
+        new_graph.font_em_value = form_object.font_em_value.data
+        new_graph.font_em_timestamp = form_object.font_em_timestamp.data
+        new_graph.enable_output_controls = form_object.enable_output_controls.data
+        new_graph.decimal_places = form_object.decimal_places.data
+        new_graph.output_ids = form_object.output_id.data
+
     # PID Control
     elif form_base.dashboard_type.data == 'pid_control':
 
@@ -331,7 +347,7 @@ def dashboard_mod(form_base, form_object, request_form):
             mod_graph.input_ids_measurements = form_object.measurement_id.data
 
     # Output Mod
-    elif form_base.dashboard_type.data == 'output':
+    elif form_base.dashboard_type.data in ['output', 'output_pwm_slider']:
 
         error = output_error_check(form_object, error)
         mod_graph.width = form_base.width.data

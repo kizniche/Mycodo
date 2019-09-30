@@ -358,6 +358,16 @@ def choices_output_devices(output, dict_units, dict_measurements):
     return choices
 
 
+def choices_outputs_pwm(output, dict_units, dict_measurements):
+    """ populate form multi-select choices from Output entries """
+    choices = OrderedDict()
+    for each_output in output:
+        if each_output.output_type in ['pwm', 'command_pwm', 'python_pwm']:
+            choices = form_output_choices(
+                choices, each_output, dict_units, dict_measurements)
+    return choices
+
+
 def choices_tags(tags):
     """ populate form multi-select choices from Tag entries """
     choices = OrderedDict()

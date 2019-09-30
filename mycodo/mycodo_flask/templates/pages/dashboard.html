@@ -69,6 +69,8 @@
           {% include 'pages/dashboard_options/mod_measurement.html' %}
         {% elif each_dashboard.graph_type == 'output' %}
           {% include 'pages/dashboard_options/mod_output.html' %}
+        {% elif each_dashboard.graph_type == 'output_pwm_slider' %}
+          {% include 'pages/dashboard_options/mod_output_pwm_slider.html' %}
         {% elif each_dashboard.graph_type == 'pid_control' %}
           {% include 'pages/dashboard_options/mod_pid_control.html' %}
         {% elif each_dashboard.graph_type == 'camera' %}
@@ -153,25 +155,28 @@
     </div>
 
     <div class="add_dashboard_object" style="display: none" id="graph">
-     {% include 'pages/dashboard_options/add_graph.html' %}
+      {% include 'pages/dashboard_options/add_graph.html' %}
     </div>
     <div class="add_dashboard_object" style="display: none" id="gauge">
-     {% include 'pages/dashboard_options/add_gauge.html' %}
+      {% include 'pages/dashboard_options/add_gauge.html' %}
     </div>
     <div class="add_dashboard_object" style="display: none" id="indicator">
-     {% include 'pages/dashboard_options/add_indicator.html' %}
+      {% include 'pages/dashboard_options/add_indicator.html' %}
     </div>
     <div class="add_dashboard_object" style="display: none" id="measurement">
-     {% include 'pages/dashboard_options/add_measurement.html' %}
+      {% include 'pages/dashboard_options/add_measurement.html' %}
     </div>
     <div class="add_dashboard_object" style="display: none" id="output">
-     {% include 'pages/dashboard_options/add_output.html' %}
+      {% include 'pages/dashboard_options/add_output.html' %}
+    </div>
+    <div class="add_dashboard_object" style="display: none" id="output_pwm_slider">
+      {% include 'pages/dashboard_options/add_output_pwm_slider.html' %}
     </div>
     <div class="add_dashboard_object" style="display: none" id="pid_control">
-     {% include 'pages/dashboard_options/add_pid_control.html' %}
+      {% include 'pages/dashboard_options/add_pid_control.html' %}
     </div>
     <div class="add_dashboard_object" style="display: none" id="camera">
-     {% include 'pages/dashboard_options/add_camera.html' %}
+      {% include 'pages/dashboard_options/add_camera.html' %}
     </div>
 
   </div>
@@ -186,6 +191,16 @@ jQuery(document).ready(function($) {
 </script>
 
 <script>
+
+function showVal(chart, duty_cycle){
+  document.getElementById("range_val_" + chart).innerHTML = duty_cycle;
+}
+
+function sendVal(chart, output_id, duty_cycle){
+  document.getElementById("range_val_" + chart).innerHTML = duty_cycle;
+  var cmd_send = output_id + '/on/pwm/' + duty_cycle;
+  modOutput(cmd_send);
+}
 
 $('.collapse').on('show.bs.collapse', function(){
   $(this).parent().find(".fa-plus-square").removeClass("fa-plus-square").addClass("fa-minus-square");
@@ -228,37 +243,41 @@ function modOutput(btn_val) {
 $(document).ready(function() {
   $('.turn_on').click(function() {
     var btn_val = this.name;
-    var id = btn_val.split('/')[0];
+    var send_cmd = btn_val.substring(btn_val.indexOf('/')+1);
     {% if not misc.hide_alert_info %}
     toastr['info']('Command sent to turn output On');
     {% endif %}
-    modOutput(btn_val);
+    modOutput(send_cmd);
   });
   $('.turn_off').click(function() {
     var btn_val = this.name;
-    var id = btn_val.split('/')[0];
+    var send_cmd = btn_val.substring(btn_val.indexOf('/') + 1);
     {% if not misc.hide_alert_info %}
     toastr['info']('Command sent to turn output Off');
     {% endif %}
-    modOutput(btn_val);
+    modOutput(send_cmd);
   });
   $('.output_on_amt').click(function() {
     var btn_val = this.name;
-    var id = btn_val.split('/')[0];
-    var on_amt = $('#sec_on_amt_' + id).val();
+    var chart = btn_val.split('/')[0];
+    var id = btn_val.split('/')[1];
+    var on_amt = $('#sec_on_amt_' + chart + '_' + id).val();
+    var send_cmd = btn_val.substring(btn_val.indexOf('/') + 1);
     {% if not misc.hide_alert_info %}
     toastr['info']('Command sent to turn output On for ' + on_amt);
     {% endif %}
-    modOutput(btn_val + on_amt);
+    modOutput(send_cmd + on_amt);
   });
   $('.duty_cycle_on_amt').click(function() {
     var btn_val = this.name;
-    var id = btn_val.split('/')[0];
-    var dc = $('#duty_cycle_on_amt_' + id).val();
+    var chart = btn_val.split('/')[0];
+    var id = btn_val.split('/')[1];
+    var dc = $('#duty_cycle_on_amt_' + chart + '_' + id).val();
+    var send_cmd = btn_val.substring(btn_val.indexOf('/') + 1);
     {% if not misc.hide_alert_info %}
     toastr['info']('Command sent to turn output On with a duty cycle of ' + dc + '%');
     {% endif %}
-    modOutput(btn_val + dc);
+    modOutput(send_cmd + dc);
   });
 });
 
@@ -505,6 +524,11 @@ $(document).ready(function() {
               document.getElementById('value-' + chart_number).title = "{{_('Value')}}: " + measurement;
             } else {
               document.getElementById('value-' + chart_number).innerHTML = measurement.toFixed(decimal_places);
+
+              if (document.getElementById("range_" + chart_number)) {  // Update range slider value
+                document.getElementById("range_" + chart_number).value = measurement.toFixed(0);
+                document.getElementById("range_val_" + chart_number).innerHTML = measurement.toFixed(0);
+              }
             }
             document.getElementById('timestamp-' + chart_number).innerHTML = formattedTime;
           }
@@ -884,6 +908,8 @@ $(document).ready(function() {
         {% include 'pages/dashboard_options/display_measurement.html' %}
       {% elif each_dashboard.graph_type == 'output' %}
         {% include 'pages/dashboard_options/display_output.html' %}
+      {% elif each_dashboard.graph_type == 'output_pwm_slider' %}
+        {% include 'pages/dashboard_options/display_output_pwm_slider.html' %}
       {% elif each_dashboard.graph_type == 'pid_control' %}
         {% include 'pages/dashboard_options/display_pid_control.html' %}
       {% elif each_dashboard.graph_type == 'camera' %}

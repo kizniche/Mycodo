@@ -13,7 +13,7 @@
 {% set is_pwm = [] -%}
 {% set is_ezo_pump = [] -%}
 {% for each_output in output if each_output.unique_id == device_id %}
-  {% if each_output.output_type in ['pwm', 'command_pwm'] %}
+  {% if each_output.output_type in OUTPUTS_PWM %}
     {%- do is_pwm.append(1) %}
   {% elif each_output.output_type in ['atlas_ezo_pmp'] %}
     {%- do is_ezo_pump.append(1) %}
@@ -21,55 +21,22 @@
 {% endfor %}
 
 <div class="pause-background" id="container-output-{{chart_number}}" style="height: {{each_dashboard.height}}px; text-align: center">
-  <span style="font-size: {{each_dashboard.font_em_value}}em" id="value-{{chart_number}}"></span>
-{%- if dict_measure_units[measurement_id] in dict_units and
-       dict_units[dict_measure_units[measurement_id]]['unit'] -%}
-  {{' ' + dict_units[dict_measure_units[measurement_id]]['unit']}}
-{%- endif -%}
-  <br/><span style="font-size: {{each_dashboard.font_em_timestamp}}em" id="timestamp-{{chart_number}}"></span>
+  <span style="font-size: {{each_dashboard.font_em_timestamp}}em" id="timestamp-{{chart_number}}"></span> - <span style="font-size: {{each_dashboard.font_em_value}}em" id="value-{{chart_number}}"></span> %
+<br/>
+<span id="range_val_{{chart_number}}" style="font-size: {{each_dashboard.font_em_value}}em"></span> <input id="range_{{chart_number}}" type="range" min="0" max="100" step="1" value="0" style="width:80%;" oninput="showVal({{chart_number}}, this.value)" onchange="sendVal({{chart_number}}, '{{each_dashboard.output_ids.split(',')[0]}}', this.value)">
 
   {% if each_dashboard.enable_output_controls %}
 
   <div class="row small-gutters" style="padding: 0.3em 1.5em 0 1.5em">
-    {% if not is_pwm and not is_ezo_pump -%}
-
-    <div class="col-auto">
-      <input class="btn btn-sm turn_on" id="turn_on" name="{{chart_number}}/{{each_dashboard.output_ids.split(',')[0]}}/on/sec/0" type="button" value="{{dict_translation['on']['title']}}">
-    </div>
-
-    {%- endif %}
-
     <div class="col-auto">
       <input class="btn btn-sm turn_off" id="turn_off" name="{{chart_number}}/{{each_dashboard.output_ids.split(',')[0]}}/off/sec/0" type="button" value="{{dict_translation['off']['title']}}">
     </div>
-
-    {% if is_pwm %}
-
     <div class="col-auto">
-      <input class="form-control-sm" id="duty_cycle_on_amt_{{chart_number}}_{{each_dashboard.output_ids.split(',')[0]}}" name="duty_cycle_on_amt_{{chart_number}}?{{each_dashboard.output_ids.split(',')[0]}}" title="Select the PWM duty cycle (0.0 - 100.0)" type="number" step="any" value="" placeholder="% Duty Cycle">
+      <input class="form-control-sm" id="duty_cycle_on_amt_{{chart_number}}_{{each_dashboard.output_ids.split(',')[0]}}" name="duty_cycle_on_amt_{{chart_number}}_{{each_dashboard.output_ids.split(',')[0]}}" title="Select the PWM duty cycle (0.0 - 100.0)" type="number" step="any" value="" placeholder="% Duty Cycle">
     </div>
     <div class="col-auto">
       <input class="btn btn-sm duty_cycle_on_amt" id="turn_on" name="{{chart_number}}/{{each_dashboard.output_ids.split(',')[0]}}/on/pwm/" type="button" value="{{_('PWM On')}}">
     </div>
-
-    {% else %}
-
-    <div class="col-auto">
-      <input class="form-control-sm" id="sec_on_amt_{{chart_number}}_{{each_dashboard.output_ids.split(',')[0]}}" name="sec_on_amt_{{chart_number}}_{{each_dashboard.output_ids.split(',')[0]}}" title="Turn this output on for this value (seconds, ml, etc.)" type="number" step="any" value="">
-    </div>
-    <div class="col-auto">
-    {% if is_ezo_pump %}
-      {%- if dict_measure_units[measurement_id] in dict_units and
-             dict_units[dict_measure_units[measurement_id]]['name'] -%}
-      <input class="btn btn-sm output_on_amt" id="turn_on" name="{{chart_number}}/{{each_dashboard.output_ids.split(',')[0]}}/on/sec/" type="button" value="{{dict_units[dict_measure_units[measurement_id]]['name'] + ' ' + _('Out')}}">
-      {% endif %}
-    {% else %}
-      <input class="btn btn-sm output_on_amt" id="turn_on" name="{{chart_number}}/{{each_dashboard.output_ids.split(',')[0]}}/on/sec/" type="button" value="{{_('Sec On')}}">
-    {% endif %}
-    </div>
-
-    {% endif %}
-
   </div>
 
   {% endif %}
@@ -81,21 +48,10 @@
   {% if not each_dashboard.enable_output_controls %}
 
     <div class="form-row">
-      {% if not is_pwm and not is_ezo_pump -%}
-
-      <div class="col-auto">
-        <input class="form-control btn btn-sm turn_on" id="turn_on" name="{{chart_number}}/{{each_dashboard.output_ids.split(',')[0]}}/on/sec/0" type="button" value="{{dict_translation['on']['title']}}">
-      </div>
-
-      {%- endif %}
-
       <div class="col-auto">
         <input class="form-control btn btn-sm turn_off" id="turn_off" name="{{chart_number}}/{{each_dashboard.output_ids.split(',')[0]}}/off/sec/0" type="button" value="{{dict_translation['off']['title']}}">
       </div>
     </div>
-
-    {% if is_pwm %}
-
     <div class="form-row">
       <div class="col-auto">
         <input class="form-control" id="duty_cycle_on_amt_{{chart_number}}_{{each_dashboard.output_ids.split(',')[0]}}" name="duty_cycle_on_amt_{{chart_number}}_{{each_dashboard.output_ids.split(',')[0]}}" title="Select the duty cycle for the PWM when turned on (0.0 - 100.0)" type="number" step="any" value="" placeholder="% Duty Cycle">
@@ -105,32 +61,12 @@
       </div>
     </div>
 
-    {% else %}
-
-    <div class="form-row">
-      <div class="col-auto">
-        <input class="form-control" id="sec_on_amt_{{chart_number}}_{{each_dashboard.output_ids.split(',')[0]}}" name="sec_on_amt_{{chart_number}}_{{each_dashboard.output_ids.split(',')[0]}}" title="Turn this output on for this value (seconds, ml, etc.)" type="number" step="any" value="">
-      </div>
-      <div class="col-auto">
-      {% if is_ezo_pump %}
-        {%- if dict_measure_units[measurement_id] in dict_units and
-               dict_units[dict_measure_units[measurement_id]]['name'] -%}
-        <input class="btn btn-sm output_on_amt" id="turn_on" name="{{chart_number}}/{{each_dashboard.output_ids.split(',')[0]}}/on/sec/" type="button" value="{{dict_units[dict_measure_units[measurement_id]]['name'] + ' ' + _('Out')}}">
-        {% endif %}
-      {% else %}
-        <input class="btn btn-sm output_on_amt" id="turn_on" name="{{chart_number}}/{{each_dashboard.output_ids.split(',')[0]}}/on/sec/" type="button" value="{{_('Sec On')}}">
-      {% endif %}
-      </div>
-    </div>
-
-    {% endif %}
-
   {% endif %}
 
   <form method="post" action="/dashboard">
     {{form_base.csrf_token}}
     {{form_base.dashboard_id(value=each_dashboard.unique_id)}}
-    <input type="hidden" name="dashboard_type" value="output">
+    <input type="hidden" name="dashboard_type" value="output_pwm_slider">
 
     <div class="form-row">
       <div class="col-auto">
@@ -145,7 +81,7 @@
           <select class="form-control" id="output_id" name="output_id" style="width: 100%;">
           {% if choices_output %}
             <option value="">{{dict_translation['select_one']['title']}}</option>
-            {% for each_choice, value in choices_output.items() -%}
+            {% for each_choice, value in choices_output_pwm.items() -%}
               <option value="{{each_choice}}" {% if each_dashboard.output_ids == each_choice %}selected{% endif %}>{{value}}</option>
             {% endfor -%}
           {% else %}

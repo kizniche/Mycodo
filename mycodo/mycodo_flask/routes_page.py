@@ -4,7 +4,6 @@ import calendar
 import datetime
 import glob
 import logging
-import resource
 import socket
 import subprocess
 import sys
@@ -15,6 +14,7 @@ from importlib import import_module
 import flask_login
 import os
 import re
+import resource
 from flask import current_app
 from flask import flash
 from flask import redirect
@@ -43,6 +43,7 @@ from mycodo.config import LOGIN_LOG_FILE
 from mycodo.config import MATH_INFO
 from mycodo.config import MYCODO_VERSION
 from mycodo.config import OUTPUTS
+from mycodo.config import OUTPUTS_PWM
 from mycodo.config import OUTPUT_INFO
 from mycodo.config import PATH_1WIRE
 from mycodo.config import RESTORE_LOG_FILE
@@ -507,7 +508,7 @@ def page_dashboard():
                 form_dashboard_object = form_indicator
             elif form_base.dashboard_type.data == 'measurement':
                 form_dashboard_object = form_measurement
-            elif form_base.dashboard_type.data == 'output':
+            elif form_base.dashboard_type.data in ['output', 'output_pwm_slider']:
                 form_dashboard_object = form_output
             elif form_base.dashboard_type.data == 'pid_control':
                 form_dashboard_object = form_pid
@@ -584,6 +585,8 @@ def page_dashboard():
     choices_output = utils_general.choices_outputs(
         output, dict_units, dict_measurements)
     choices_output_devices = utils_general.choices_output_devices(
+        output, dict_units, dict_measurements)
+    choices_output_pwm = utils_general.choices_outputs_pwm(
         output, dict_units, dict_measurements)
     choices_pid = utils_general.choices_pids(
         pid, dict_units, dict_measurements)
@@ -683,6 +686,7 @@ def page_dashboard():
                            choices_math=choices_math,
                            choices_output=choices_output,
                            choices_output_devices=choices_output_devices,
+                           choices_output_pwm=choices_output_pwm,
                            choices_pid=choices_pid,
                            choices_note_tag=choices_note_tag,
                            custom_yaxes=custom_yaxes,
@@ -698,6 +702,7 @@ def page_dashboard():
                            misc=misc,
                            pid=pid,
                            output=output,
+                           OUTPUTS_PWM=OUTPUTS_PWM,
                            input=input_dev,
                            tags=tags,
                            colors_graph=colors_graph,

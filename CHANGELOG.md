@@ -1,3 +1,10 @@
+## 7.7.10 (Unreleased)
+
+### Features
+
+ - Add Dashboard Widget: Output PWM Range Slider ([#699](https://github.com/kizniche/mycodo/issues/699))
+
+
 ## 7.7.9 (2019.09.29)
 
 ### Bugfixes

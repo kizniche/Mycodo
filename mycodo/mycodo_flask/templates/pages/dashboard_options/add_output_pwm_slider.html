@@ -1,0 +1,92 @@
+<form method="post" action="/dashboard">
+  {{form_base.csrf_token}}
+  <input type="hidden" name="dashboard_type" value="output_pwm_slider">
+
+  <div class="form-row small-gutters">
+
+    <div class="col-sm-6 col-md-3 col-lg-2">
+      {{form_base.name.label(class_='control-label')}}
+      <div>
+        {{form_base.name(class_='form-control', value=_('Output'))}}
+      </div>
+    </div>
+    <div class="col-sm-6 col-md-3 col-lg-2">
+      {{form_base.width.label(class_='control-label')}}
+      <div>
+        <select class="form-control" id="width" name="width">
+          {% for n in range(1, 13) %}
+            <option value="{{n}}"{% if n == 3 %} selected{% endif %}>{{n}}/12</option>
+          {% endfor %}
+        </select>
+      </div>
+    </div>
+    <div class="col-sm-6 col-md-3 col-lg-2">
+      {{form_base.height.label(class_='control-label')}}
+      <div>
+        {{form_base.height(class_='form-control', value=150)}}
+      </div>
+    </div>
+    <div class="col-sm-6 col-md-3 col-lg-2">
+      {{form_output.max_measure_age.label(class_='control-label')}}
+      <div>
+        {{form_output.max_measure_age(class_='form-control', value=3600)}}
+      </div>
+    </div>
+    <div class="col-sm-6 col-md-3 col-lg-2">
+      {{form_base.refresh_duration.label(class_='control-label')}}
+      <div>
+        {{form_base.refresh_duration(class_='form-control', value=15)}}
+      </div>
+    </div>
+    <div class="col-sm-6 col-md-3 col-lg-2">
+      {{form_output.font_em_value.label(class_='control-label')}}
+      <div>
+        {{form_output.font_em_value(class_='form-control', value=2)}}
+      </div>
+    </div>
+    <div class="col-sm-6 col-md-3 col-lg-2">
+      {{form_output.font_em_timestamp.label(class_='control-label')}}
+      <div>
+        {{form_output.font_em_timestamp(class_='form-control', value=1)}}
+      </div>
+    </div>
+    <div class="col-sm-6 col-md-3 col-lg-2">
+      {{form_output.decimal_places.label(class_='control-label')}}
+      <div>
+        {{form_output.decimal_places(class_='form-control', value=1)}}
+      </div>
+    </div>
+    <div class="col-sm-6 col-md-3 col-lg-2">
+      {{form_output.enable_output_controls.label(class_='control-label')}}
+      <div class="input-group-text">
+        <input id="enable_output_controls" name="enable_output_controls" type="checkbox" value="y" checked>
+      </div>
+    </div>
+
+    <div style="clear: both"></div>
+
+    <div class="col-sm-6 col-lg-3">
+      {{form_output.output_id.label(class_='control-label')}}
+      <div>
+        <select class="form-control" id="output_id" name="output_id" style="width: 100%;">
+        {% if choices_output %}
+          <option value="">{{dict_translation['select_one']['title']}}</option>
+          {% for each_choice, value in choices_output_pwm.items() -%}
+          <option value="{{each_choice}}">{{value}}</option>
+          {% endfor -%}
+        {% else %}
+          <option value="">{{dict_translation['none_available']['title']}}</option>
+        {% endif %}
+        </select>
+      </div>
+    </div>
+
+    <div style="clear: both"></div>
+  </div>
+  <div class="form-inline btn-group" style="padding: 1em 0 1em 0">
+    <div class="form-group">
+      {{form_base.create(class_='btn btn-primary')}}
+    </div>
+  </div>
+
+</form>

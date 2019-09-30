@@ -46,6 +46,19 @@ LANGUAGES = {
     'zh': '中文 (Chinese)'
 }
 
+DASHBOARD_WIDGETS = [
+    ('', lazy_gettext('Add Dashboard Element')),
+    ('graph', lazy_gettext('Graph')),
+    ('gauge', lazy_gettext('Gauge')),
+    ('indicator', TRANSLATIONS['indicator']['title']),
+    ('measurement', TRANSLATIONS['measurement']['title']),
+    ('output', TRANSLATIONS['output']['title']),
+    ('output_pwm_slider', '{}: {}'.format(
+        TRANSLATIONS['output']['title'], lazy_gettext('PWM Slider'))),
+    ('pid_control', lazy_gettext('PID Control')),
+    ('camera', TRANSLATIONS['camera']['title'])
+]
+
 # LCD info
 LCD_INFO = {
     '16x2_generic': {
@@ -339,6 +352,10 @@ OUTPUTS = [
         OUTPUT_INFO['atlas_ezo_pmp']['name'], lazy_gettext('I2C'))),
     ('atlas_ezo_pmp,UART', '{} ({})'.format(
         OUTPUT_INFO['atlas_ezo_pmp']['name'], lazy_gettext('UART')))
+]
+
+OUTPUTS_PWM = [
+    'pwm', 'command_pwm', 'python_pwm'
 ]
 
 PID_INFO = {
