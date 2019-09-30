@@ -525,7 +525,8 @@ $(document).ready(function() {
             } else {
               document.getElementById('value-' + chart_number).innerHTML = measurement.toFixed(decimal_places);
 
-              if (document.getElementById("range_" + chart_number)) {  // Update range slider value
+              var range_exists = document.getElementById("range_" + chart_number);
+              if (range_exists != null) {  // Update range slider value
                 document.getElementById("range_" + chart_number).value = measurement.toFixed(0);
                 document.getElementById("range_val_" + chart_number).innerHTML = measurement.toFixed(0);
               }
