@@ -718,7 +718,25 @@ class PIDController(AbstractController, threading.Thread):
                             's', 'duration_time', 6,
                             self.control_variable)
 
+                    elif self.raise_output_type == 'atlas_ezo_pmp':
+                        # Activate raise_output for a volume (ml)
+                        self.logger.debug(
+                            "Setpoint: {sp} Output: {cv} ml to output "
+                            "{id}".format(
+                                sp=self.setpoint,
+                                cv=self.control_variable,
+                                id=self.raise_output_id))
+                        self.control.output_on(
+                            self.raise_output_id,
+                            duration=self.control_variable,
+                            min_off=self.raise_min_off_duration)
+
+                    self.write_pid_output_influxdb(
+                        's', 'duration_time', 6,
+                        self.control_variable)
+
                 else:
+                    # Turn PWM Off if PWM Output
                     if self.raise_output_type in ['pwm',
                                                   'command_pwm',
                                                   'python_pwm']:
@@ -785,10 +803,10 @@ class PIDController(AbstractController, threading.Thread):
                                 abs(self.control_variable)))
 
                         if self.store_lower_as_negative:
-                            stored_seconds_on = -abs(self.lower_seconds_on)
+                            stored_amount_on = -abs(self.lower_seconds_on)
                             stored_control_variable = -abs(self.control_variable)
                         else:
-                            stored_seconds_on = abs(self.lower_seconds_on)
+                            stored_amount_on = abs(self.lower_seconds_on)
                             stored_control_variable = abs(self.control_variable)
 
                         if self.lower_seconds_on > self.lower_min_duration:
@@ -801,14 +819,39 @@ class PIDController(AbstractController, threading.Thread):
 
                             self.control.output_on(
                                 self.lower_output_id,
-                                duration=stored_seconds_on,
+                                duration=stored_amount_on,
                                 min_off=self.lower_min_off_duration)
 
                         self.write_pid_output_influxdb(
                             's', 'duration_time', 6,
                             stored_control_variable)
 
+                    elif self.lower_output_type == 'atlas_ezo_pmp':
+                        if self.store_lower_as_negative:
+                            stored_amount_on = -abs(self.lower_seconds_on)
+                            stored_control_variable = -abs(self.control_variable)
+                        else:
+                            stored_amount_on = abs(self.lower_seconds_on)
+                            stored_control_variable = abs(self.control_variable)
+
+                        # Activate lower_output for a volume (ml)
+                        self.logger.debug("Setpoint: {sp} Output: {cv} to "
+                                          "output {id}".format(
+                            sp=self.setpoint,
+                            cv=self.control_variable,
+                            id=self.lower_output_id))
+
+                        self.control.output_on(
+                            self.lower_output_id,
+                            duration=stored_amount_on,
+                            min_off=self.lower_min_off_duration)
+
+                        self.write_pid_output_influxdb(
+                            's', 'duration_time', 6,
+                            stored_control_variable)
+
                 else:
+                    # Turn PWM Off if PWM Output
                     if self.lower_output_type in ['pwm',
                                                   'command_pwm',
                                                   'python_pwm']:

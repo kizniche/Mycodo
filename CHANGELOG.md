@@ -1,5 +1,9 @@
 ## 7.7.10 (Unreleased)
 
+### Bugfixes
+
+ - Fix Atlas Scientific EZP Pump not working with PID Controllers ([#562](https://github.com/kizniche/mycodo/issues/562))
+
 ### Features
 
  - Add Dashboard Widget: Output PWM Range Slider ([#699](https://github.com/kizniche/mycodo/issues/699))
