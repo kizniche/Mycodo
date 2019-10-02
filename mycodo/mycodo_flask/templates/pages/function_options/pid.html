@@ -225,31 +225,87 @@
     <div class="row align-items-end small-gutters" style="padding-bottom: 0.5em;">
       <div class="col-auto">
         <div>
-          {{form_mod_pid_base.method_id.label(class_='control-label')}}
+          {{form_mod_pid_base.setpoint_tracking_type.label(class_='control-label')}}
         </div>
-        <select class="form-control" id="method_id" name="method_id" title="" data-original-title="{{_('Select the method to use when calculating the setpoint. When enabled, the setpoint(s) of the method override the PID setpoint above.')}}">
-          {%- if method == [] -%}
-            <option value="">{{_('No methods exist. Create one with this button')}} -></option>
-          {%- else -%}
-            <option value="">{{_('Disabled')}}</option>
-          {%- endif-%}
+        <select class="form-control" id="setpoint_tracking_type_{{each_pid.unique_id}}" name="setpoint_tracking_type" title="" data-original-title="{{dict_translation['start_offset']['phrase']}}">
+          <option value="">{{_('Disabled')}}</option>
+          <option value="method"{% if each_pid.setpoint_tracking_type == 'method' %} selected{% endif %}>{{_('Method')}}</option>
+          <option value="input-math"{% if each_pid.setpoint_tracking_type == 'input-math' %} selected{% endif %}>{{_('Input/Math')}}</option>
+        </select>
+      </div>
+
+      <div class="col-auto" id="method_id_{{each_pid.unique_id}}">
+        <div>
+          {{form_mod_pid_base.setpoint_tracking_method_id.label(class_='control-label')}}
+        </div>
+        <select class="form-control" id="setpoint_tracking_method_id" name="setpoint_tracking_method_id" title="" data-original-title="{{_('Select one for calculating the setpoint. When enabled, measurements override the PID setpoint.')}}">
+          <option value="">{{_('Select One')}}</option>
 
           {%- set valid_saved_method = [] -%}
           {%- for each_method in method -%}
-            {%- if each_method.unique_id == each_pid.method_id -%}
+            {%- if each_method.unique_id == each_pid.setpoint_tracking_id -%}
               {%- do valid_saved_method.append(1) -%}
             {%- endif -%}
-            <option value="{{each_method.unique_id}}"{% if each_pid.method_id == each_method.unique_id %} selected{% endif %}>[{{'%02d' % each_method.id}}] {{each_method.name}}</option>
+            <option value="{{each_method.unique_id}}"{% if each_pid.setpoint_tracking_id == each_method.unique_id %} selected{% endif %}>[{{'%02d' % each_method.id}}] {{each_method.name}}</option>
           {%- endfor -%}
-          {%- if not valid_saved_method and each_pid.method_id != '' -%}
-            <option value="" selected>{{_('Invalid saved method. Save another method from this list.')}}</option>
+          {%- if not valid_saved_method and each_pid.setpoint_tracking_id != '' -%}
+            <option value="" selected>{{_('Invalid saved ID. Save another from this list.')}}</option>
           {%- endif -%}
         </select>
       </div>
-      <div class="col-auto">
+      <div class="col-auto" id="method_button_{{each_pid.unique_id}}">
         <a href="/method" class="form-control btn" role="button">{{_('Manage Methods')}}</a>
       </div>
+
+      <div class="col-auto" id="input_math_id_{{each_pid.unique_id}}">
+        <div>
+          {{form_mod_pid_base.setpoint_tracking_input_math_id.label(class_='control-label')}}
+        </div>
+        <select class="form-control" id="setpoint_tracking_input_math_id" name="setpoint_tracking_input_math_id" title="" data-original-title="{{_('Select one for calculating the setpoint. When enabled, measurements override the PID setpoint.')}}">
+          <option value="">{{_('Select One')}}</option>
+
+          {% for each_choice, value in choices_input.items() -%}
+            <option value="{{each_choice}}"{% if each_pid.setpoint_tracking_id == each_choice %} selected{% endif %}>{{value}}</option>
+          {% endfor -%}
+          {% for each_choice, value in choices_math.items() -%}
+            <option value="{{each_choice}}"{% if each_pid.setpoint_tracking_id == each_choice %} selected{% endif %}>{{value}}</option>
+          {% endfor -%}
+        </select>
+      </div>
+      <div class="col-auto" id="input_math_max_age_{{each_pid.unique_id}}">
+        {{form_mod_pid_base.setpoint_tracking_max_age.label(class_='control-label')}}
+        <div>
+          {{form_mod_pid_base.setpoint_tracking_max_age(class_='form-control', value=each_pid.setpoint_tracking_max_age, **{'title':_('Maximum allowable measurement age')})}}
+        </div>
+      </div>
     </div>
+
+  <script>
+    $(document).ready(function(){
+      var checkPattern = function () {
+        if ($('#setpoint_tracking_type_{{each_pid.unique_id}}').val() === 'method') {
+          $("#method_id_{{each_pid.unique_id}}").show();
+          $("#method_button_{{each_pid.unique_id}}").show();
+          $("#input_math_id_{{each_pid.unique_id}}").hide();
+          $("#input_math_max_age_{{each_pid.unique_id}}").hide();
+        }
+        else if ($('#setpoint_tracking_type_{{each_pid.unique_id}}').val() === 'input-math') {
+          $("#method_id_{{each_pid.unique_id}}").hide();
+          $("#method_button_{{each_pid.unique_id}}").hide();
+          $("#input_math_id_{{each_pid.unique_id}}").show();
+          $("#input_math_max_age_{{each_pid.unique_id}}").show();
+        }
+        else {
+          $("#method_id_{{each_pid.unique_id}}").hide();
+          $("#method_button_{{each_pid.unique_id}}").hide();
+          $("#input_math_id_{{each_pid.unique_id}}").hide();
+          $("#input_math_max_age_{{each_pid.unique_id}}").hide();
+        }
+      };
+      $('#setpoint_tracking_type_{{each_pid.unique_id}}').on('change', checkPattern);
+      checkPattern();
+    });
+    </script>
 
     <div class="row align-items-end small-gutters" style="padding-bottom: 0.5em;">
       <div class="col-12">

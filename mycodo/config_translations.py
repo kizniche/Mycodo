@@ -325,6 +325,9 @@ TRANSLATIONS = {
     'sensitivity': {
         'title': lazy_gettext('Sensitivity'),
         'phrase': lazy_gettext('Measurement sensitivity')},
+    'setpoint_tracking_type': {
+        'title': lazy_gettext('Setpoint Tracking Type'),
+        'phrase': lazy_gettext('Select the type of setpoint tracking')},
     'sht_voltage': {
         'title': lazy_gettext('Voltage'),
         'phrase': lazy_gettext('The input voltage to the sensor')},

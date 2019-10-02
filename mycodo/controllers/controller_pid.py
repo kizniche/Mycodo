@@ -55,10 +55,12 @@ import timeit
 
 import requests
 
-from mycodo.controllers.base_controller import AbstractController
 from mycodo.config import SQL_DATABASE_MYCODO
+from mycodo.controllers.base_controller import AbstractController
 from mycodo.databases.models import Conversion
 from mycodo.databases.models import DeviceMeasurements
+from mycodo.databases.models import Input
+from mycodo.databases.models import Math
 from mycodo.databases.models import Method
 from mycodo.databases.models import MethodData
 from mycodo.databases.models import Misc
@@ -118,7 +120,9 @@ class PIDController(AbstractController, threading.Thread):
         self.is_held = None
         self.is_paused = None
         self.measurement = None
-        self.method_id = None
+        self.setpoint_tracking_type = None
+        self.setpoint_tracking_id = None
+        self.setpoint_tracking_max_age = None
         self.direction = None
         self.raise_output_id = None
         self.raise_min_duration = None
@@ -202,7 +206,9 @@ class PIDController(AbstractController, threading.Thread):
         self.is_held = pid.is_held
         self.is_paused = pid.is_paused
         self.log_level_debug = pid.log_level_debug
-        self.method_id = pid.method_id
+        self.setpoint_tracking_type = pid.setpoint_tracking_type
+        self.setpoint_tracking_id = pid.setpoint_tracking_id
+        self.setpoint_tracking_max_age = pid.setpoint_tracking_max_age
         self.direction = pid.direction
         self.raise_output_id = pid.raise_output_id
         self.raise_min_duration = pid.raise_min_duration
@@ -268,8 +274,8 @@ class PIDController(AbstractController, threading.Thread):
                 self.logger.error(msg)
                 self.stop_controller(deactivate_pid=True)
 
-        if self.method_id != '':
-            self.setup_method(self.method_id)
+        if self.setpoint_tracking_type == 'method' and self.setpoint_tracking_id != '':
+            self.setup_method(self.setpoint_tracking_id)
 
         if self.is_paused:
             self.logger.info("Starting Paused")
@@ -290,12 +296,12 @@ class PIDController(AbstractController, threading.Thread):
             self.get_last_measurement()
 
             if self.last_measurement_success:
-                if self.method_id != '':
+                if self.setpoint_tracking_type == 'method' and self.setpoint_tracking_id != '':
                     # Update setpoint using a method
                     this_pid = db_retrieve_table_daemon(
                         PID, unique_id=self.unique_id)
                     setpoint, ended = calculate_method_setpoint(
-                        self.method_id,
+                        self.setpoint_tracking_id,
                         PID,
                         this_pid,
                         Method,
@@ -307,6 +313,34 @@ class PIDController(AbstractController, threading.Thread):
                         self.setpoint = setpoint
                     else:
                         self.setpoint = self.default_setpoint
+
+                if self.setpoint_tracking_type == 'input-math' and self.setpoint_tracking_id != '':
+                    # Update setpoint using an Input or Math
+                    device_id = self.setpoint_tracking_id.split(',')[0]
+                    measurement_id = self.setpoint_tracking_id.split(',')[1]
+
+                    measurement = get_measurement(measurement_id)
+                    if not measurement:
+                        return False, None
+
+                    last_measurement = read_last_influxdb(
+                        device_id,
+                        measurement.unit,
+                        measurement.measurement,
+                        measurement.channel,
+                        self.setpoint_tracking_max_age)
+
+                    if last_measurement[1] is not None:
+                        self.setpoint = last_measurement[1]
+                    else:
+                        self.logger.debug(
+                            "Could not find measurement for Setpoint "
+                            "Tracking. Max Age of {} exceeded for measuring "
+                            "device ID {} (measurement {})".format(
+                                self.setpoint_tracking_max_age,
+                                device_id,
+                                measurement_id))
+                        self.setpoint = None
 
                 # If autotune activated, determine control variable (output) from autotune
                 if self.autotune_activated:
@@ -348,12 +382,14 @@ class PIDController(AbstractController, threading.Thread):
                 self.write_pid_values()  # Write variables to database
 
         # Is PID in a state that allows manipulation of outputs
-        if self.is_activated and (not self.is_paused or self.is_held):
+        if (self.is_activated and
+                self.setpoint is not None and
+                (not self.is_paused or self.is_held)):
             self.manipulate_output()
 
     def setup_method(self, method_id):
         """ Initialize method variables to start running a method """
-        self.method_id = ''
+        self.setpoint_tracking_id = ''
 
         method = db_retrieve_table_daemon(Method, unique_id=method_id)
         method_data = db_retrieve_table_daemon(MethodData)
@@ -406,8 +442,8 @@ class PIDController(AbstractController, threading.Thread):
                 else:
                     self.method_start_act = 'Ended'
 
-        self.method_id = method_id
-        self.logger.debug("Method enabled: {id}".format(id=self.method_id))
+        self.setpoint_tracking_id = method_id
+        self.logger.debug("Method enabled: {id}".format(id=self.setpoint_tracking_id))
 
     def write_pid_values(self):
         """ Write PID values to the measurement database """
@@ -516,7 +552,7 @@ class PIDController(AbstractController, threading.Thread):
         pid_value = self.P_value + self.I_value + self.D_value
 
         self.logger.debug(
-            "PID: Input: {inp},"
+            "PID: Input: {inp}, "
             "Output: P: {p}, I: {i}, D: {d}, Out: {o}".format(
             inp=current_value, p=self.P_value, i=self.I_value, d=self.D_value, o=pid_value))
 
@@ -888,7 +924,8 @@ class PIDController(AbstractController, threading.Thread):
                "Output Lower Min On: {oplmnon}, " \
                "Output Lower Max On: {oplmxon}, " \
                "Output Lower Min Off: {oplmnoff}, " \
-               "Setpoint Tracking: {spt}".format(
+               "Setpoint Tracking Type: {sptt}, " \
+               "Setpoint Tracking ID: {spt}".format(
             did=self.device_id,
             mid=self.measurement_id,
             dir=self.direction,
@@ -908,7 +945,8 @@ class PIDController(AbstractController, threading.Thread):
             oplmnon=self.lower_min_duration,
             oplmxon=self.lower_max_duration,
             oplmnoff=self.lower_min_off_duration,
-            spt=self.method_id)
+            sptt=self.setpoint_tracking_type,
+            spt=self.setpoint_tracking_id)
 
     def control_var_to_duty_cycle(self, control_variable):
         # Convert control variable to duty cycle
@@ -965,10 +1003,10 @@ class PIDController(AbstractController, threading.Thread):
         with session_scope(MYCODO_DB_PATH) as db_session:
             mod_pid = db_session.query(PID).filter(
                 PID.unique_id == self.unique_id).first()
-            mod_pid.method_id = method_id
+            mod_pid.setpoint_tracking_id = method_id
 
             if method_id == '':
-                self.method_id = ''
+                self.setpoint_tracking_id = ''
                 db_session.commit()
             else:
                 mod_pid.method_start_time = 'Ready'
@@ -1044,7 +1082,9 @@ class PIDController(AbstractController, threading.Thread):
         self.running = False
 
         # Unset method start time
-        if self.method_id != '' and ended_normally:
+        if (self.setpoint_tracking_type == 'method' and
+                self.setpoint_tracking_id != '' and
+                ended_normally):
             with session_scope(MYCODO_DB_PATH) as db_session:
                 mod_pid = db_session.query(PID).filter(
                     PID.unique_id == self.unique_id).first()

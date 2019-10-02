@@ -221,6 +221,7 @@ def recreate_stat_file():
         ['num_maths_active', 0],
         ['num_methods', 0],
         ['num_methods_in_pid', 0],
+        ['num_setpoint_meas_in_pid', 0],
         ['num_pids', 0],
         ['num_pids_active', 0],
         ['num_relays', 0],
@@ -301,7 +302,9 @@ def send_anonymous_stats(start_time, debug=False):
         add_update_csv(STATS_CSV, 'num_methods',
                        get_count(methods))
         add_update_csv(STATS_CSV, 'num_methods_in_pid',
-                       get_count(pids.filter(PID.method_id != '')))
+                       get_count(pids.filter(PID.setpoint_tracking_type == 'method')))
+        add_update_csv(STATS_CSV, 'num_setpoint_meas_in_pid',
+                       get_count(pids.filter(PID.setpoint_tracking_type == 'input-math')))
 
         country = geocoder.ip('me').country
         if not country:

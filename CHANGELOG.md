@@ -7,6 +7,7 @@
 ### Features
 
  - Add Dashboard Widget: Output PWM Range Slider ([#699](https://github.com/kizniche/mycodo/issues/699))
+ - Add ability to use Input/Math measurements with PID setpoint tracking ([#639](https://github.com/kizniche/mycodo/issues/639))
 
 
 ## 7.7.9 (2019.09.29)

@@ -58,6 +58,32 @@ if __name__ == "__main__":
         #         error.append(msg)
         #         print(msg)
 
+        elif each_revision == '895ddcdef4ce':
+            # Add PID setpoint_tracking_type and setpoint_tracking_id
+            # If method_id set, set setpoint_tracking_type to 'method;
+            # and copy method_id to new setpoint_tracking_id.
+            # PID.method_id deleted after executing this code.
+            print("Executing post-alembic code for revision {}".format(
+                each_revision))
+            try:
+                from mycodo.databases.models import PID
+
+                with session_scope(MYCODO_DB_PATH) as session:
+                    for each_pid in session.query(PID).all():
+                        error = []
+                        if each_pid.setpoint_tracking_id:
+                            each_pid.setpoint_tracking_type = 'method'
+                        if not error:
+                            session.commit()
+                        else:
+                            for each_error in error:
+                                print("Error: {}".format(each_error))
+            except Exception:
+                msg = "ERROR: post-alembic revision {}: {}".format(
+                    each_revision, traceback.format_exc())
+                error.append(msg)
+                print(msg)
+
         elif each_revision == '0ce53d526f13':
             print("Executing post-alembic code for revision {}".format(
                 each_revision))

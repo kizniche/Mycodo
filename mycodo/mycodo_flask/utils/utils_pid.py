@@ -63,7 +63,14 @@ def pid_mod(form_mod_pid_base,
     mod_pid.d = form_mod_pid_base.k_d.data
     mod_pid.integrator_min = form_mod_pid_base.integrator_max.data
     mod_pid.integrator_max = form_mod_pid_base.integrator_min.data
-    mod_pid.method_id = form_mod_pid_base.method_id.data
+    mod_pid.setpoint_tracking_type = form_mod_pid_base.setpoint_tracking_type.data
+    if form_mod_pid_base.setpoint_tracking_type.data == 'method':
+        mod_pid.setpoint_tracking_id = form_mod_pid_base.setpoint_tracking_method_id.data
+    elif form_mod_pid_base.setpoint_tracking_type.data == 'input-math':
+        mod_pid.setpoint_tracking_id = form_mod_pid_base.setpoint_tracking_input_math_id.data
+        mod_pid.setpoint_tracking_max_age = form_mod_pid_base.setpoint_tracking_max_age.data
+    else:
+        mod_pid.setpoint_tracking_id = ''
 
     # Change measurement information
     if ',' in form_mod_pid_base.measurement.data:
@@ -273,8 +280,8 @@ def pid_activate(pid_id):
         # Signal the duration method can run because it's been
         # properly initiated (non-power failure)
         method = Method.query.filter(
-            Method.unique_id == pid.method_id).first()
-        if method and method.method_type == 'Duration':
+            Method.unique_id == pid.setpoint_tracking_id).first()
+        if pid.setpoint_tracking_type == 'method' and method and method.method_type == 'Duration':
             mod_pid = PID.query.filter(PID.unique_id == pid_id).first()
             mod_pid.method_start_time = 'Ready'
             db.session.commit()

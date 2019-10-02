@@ -303,7 +303,7 @@ def read_last_influxdb(unique_id, unit, measurement, channel, duration_sec=None)
         query = query_string(unit, unique_id,
                              measure=measurement,
                              channel=channel,
-                             past_sec=duration_sec)
+                             past_sec=int(duration_sec))
     else:
         query = query_string(unit, unique_id,
                              measure=measurement,

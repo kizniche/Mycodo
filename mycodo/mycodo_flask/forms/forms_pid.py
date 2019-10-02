@@ -98,10 +98,16 @@ class PIDModBase(FlaskForm):
         widget=NumberInput(step='any'))
     raise_output_id = StringField(lazy_gettext('Output (Raise)'))
     lower_output_id = StringField(lazy_gettext('Output (Lower)'))
-    method_id = StringField(
-        'Setpoint Tracking Method', widget=widgets.HiddenInput())
-    pid_mod = SubmitField(
-        TRANSLATIONS['save']['title'])
+    setpoint_tracking_type = StringField(TRANSLATIONS['setpoint_tracking_type']['title'])
+    setpoint_tracking_method_id = StringField('Setpoint Tracking Method')
+    setpoint_tracking_input_math_id = StringField('Setpoint Tracking Input/Math')
+    setpoint_tracking_max_age = DecimalField('Max Age (seconds)',
+        validators=[validators.NumberRange(
+            min=-1000000,
+            max=1000000
+        )],
+        widget=NumberInput(step='any'))
+    pid_mod = SubmitField(TRANSLATIONS['save']['title'])
     pid_hold = SubmitField(lazy_gettext('Hold'))
     pid_pause = SubmitField(lazy_gettext('Pause'))
     pid_resume = SubmitField(lazy_gettext('Resume'))

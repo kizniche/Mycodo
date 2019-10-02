@@ -42,7 +42,9 @@ class PID(CRUDMixin, db.Model):
     store_lower_as_negative = db.Column(db.Boolean, default=True)
 
     # Setpoint tracking
-    method_id = db.Column(db.String, db.ForeignKey('method.unique_id'), default='')
+    setpoint_tracking_type = db.Column(db.Text, default='')
+    setpoint_tracking_id = db.Column(db.Text, default='')
+    setpoint_tracking_max_age = db.Column(db.Float, default=120.0)
     method_start_time = db.Column(db.Text, default=None)
     method_end_time = db.Column(db.Text, default=None)
 
