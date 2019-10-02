@@ -232,7 +232,7 @@ class OutputController(AbstractController, threading.Thread):
                     trigger_conditionals=False)
 
     def output_on_off(self, output_id, state,
-                      duration=0.0,
+                      amount=0.0,
                       min_off=0.0,
                       duty_cycle=0.0,
                       trigger_conditionals=True):
@@ -250,9 +250,9 @@ class OutputController(AbstractController, threading.Thread):
         :type output_id: str
         :param state: What state is desired? 'on' or 'off'
         :type state: str
-        :param duration: If state is 'on', a duration can be set to turn the output off after
-        :type duration: float
-        :param min_off: Don't turn on if not off for at least this duration (0 = disabled)
+        :param amount: If state is 'on', an amount can be set to turn the output off after
+        :type amount: float
+        :param min_off: Don't turn on if not off for at least this amount (0 = disabled)
         :type min_off: float
         :param duty_cycle: Duty cycle of PWM output
         :type duty_cycle: float
@@ -262,7 +262,7 @@ class OutputController(AbstractController, threading.Thread):
         self.logger.debug("output_on_off({}, {}, {}, {}, {}, {})".format(
             output_id,
             state,
-            duration,
+            amount,
             min_off,
             duty_cycle,
             trigger_conditionals))
@@ -279,7 +279,7 @@ class OutputController(AbstractController, threading.Thread):
 
         # Atlas EZP-PMP
         if self.output_type[output_id] == 'atlas_ezo_pmp':
-            volume_ml = duration
+            volume_ml = amount
             if state == 'on' and volume_ml > 0:
                 write_cmd = None
                 if self.output_mode[output_id] == 'fastest_flow_rate':
@@ -392,19 +392,19 @@ class OutputController(AbstractController, threading.Thread):
                             off_sec=off_seconds))
                     return 1
 
-            # Turn output on for a duration
+            # Turn output on for an amount
             if (self.output_type[output_id] in ['command',
                                                 'python',
                                                 'wired',
                                                 'wireless_rpi_rf'] and
-                    duration != 0):
+                    amount != 0):
 
                 # Set off_until if min_off is set
                 if min_off:
-                    dt_off_until = current_time + datetime.timedelta(seconds=abs(duration) + min_off)
+                    dt_off_until = current_time + datetime.timedelta(seconds=abs(amount) + min_off)
                     self.set_off_until(dt_off_until, output_id)
 
-                # Output is already on for a duration
+                # Output is already on for an amount
                 if self.is_on(output_id) and self.output_on_duration[output_id]:
 
                     if self.output_on_until[output_id] > current_time:
@@ -415,22 +415,22 @@ class OutputController(AbstractController, threading.Thread):
 
                     time_on = abs(self.output_last_duration[output_id]) - remaining_time
                     self.logger.debug(
-                        "Output {rid} ({rname}) is already on for a duration "
+                        "Output {rid} ({rname}) is already on for an amount "
                         "of {ron:.2f} seconds (with {rremain:.2f} seconds "
                         "remaining). Recording the amount of time the output "
-                        "has been on ({rbeenon:.2f} sec) and updating the on "
-                        "duration to {rnewon:.2f} seconds.".format(
+                        "has been on ({rbeenon:.2f} sec) and updating the "
+                        "amount to {rnewon:.2f} seconds.".format(
                             rid=self.output_id[output_id],
                             rname=self.output_name[output_id],
                             ron=abs(self.output_last_duration[output_id]),
                             rremain=remaining_time,
                             rbeenon=time_on,
-                            rnewon=abs(duration)))
+                            rnewon=abs(amount)))
                     self.output_on_until[output_id] = (
-                        current_time + datetime.timedelta(seconds=abs(duration)))
-                    self.output_last_duration[output_id] = duration
+                        current_time + datetime.timedelta(seconds=abs(amount)))
+                    self.output_last_duration[output_id] = amount
 
-                    # Write the duration the output was ON to the
+                    # Write the amount the output was ON to the
                     # database at the timestamp it turned ON
                     if time_on > 0:
                         # Make sure the recorded value is recorded negative
@@ -454,19 +454,19 @@ class OutputController(AbstractController, threading.Thread):
 
                     return 0
 
-                # Output is on, but not for a duration
+                # Output is on, but not for an amount
                 elif self.is_on(output_id) and not self.output_on_duration:
                     self.output_on_duration[output_id] = True
                     self.output_on_until[output_id] = (
-                        current_time + datetime.timedelta(seconds=abs(duration)))
-                    self.output_last_duration[output_id] = duration
+                        current_time + datetime.timedelta(seconds=abs(amount)))
+                    self.output_last_duration[output_id] = amount
                     self.logger.debug(
-                        "Output {id} ({name}) is currently on without a "
-                        "duration. Turning into a duration of {dur:.1f} "
+                        "Output {id} ({name}) is currently on without an "
+                        "amount. Turning into an amount of {dur:.1f} "
                         "seconds.".format(
                             id=self.output_id[output_id],
                             name=self.output_name[output_id],
-                            dur=abs(duration)))
+                            dur=abs(amount)))
                     return 0
 
                 # Output is not already on
@@ -476,12 +476,12 @@ class OutputController(AbstractController, threading.Thread):
                         "seconds.".format(
                             id=self.output_id[output_id],
                             name=self.output_name[output_id],
-                            dur=abs(duration)))
+                            dur=abs(amount)))
                     self.output_switch(output_id, 'on')
                     self.output_on_until[output_id] = (
                             datetime.datetime.now() +
-                            datetime.timedelta(seconds=abs(duration)))
-                    self.output_last_duration[output_id] = duration
+                            datetime.timedelta(seconds=abs(amount)))
+                    self.output_last_duration[output_id] = amount
                     self.output_on_duration[output_id] = True
 
             # Just turn output on
@@ -498,7 +498,7 @@ class OutputController(AbstractController, threading.Thread):
                     return 1
                 else:
                     # Record the time the output was turned on in order to
-                    # calculate and log the total duration is was on, when
+                    # calculate and log the total amount is was on, when
                     # it eventually turns off.
                     if not self.output_time_turned_on[output_id]:
                         self.output_time_turned_on[output_id] = datetime.datetime.now()
@@ -612,7 +612,7 @@ class OutputController(AbstractController, threading.Thread):
                             'channel': 0})
                 write_db.start()
 
-            # Write output duration on to database
+            # Write output amount to database
             elif (self.output_time_turned_on[output_id] is not None or
                     self.output_on_duration[output_id]):
                 duration_sec = None
@@ -628,7 +628,7 @@ class OutputController(AbstractController, threading.Thread):
                     timestamp = (datetime.datetime.utcnow() -
                                  datetime.timedelta(seconds=duration_sec))
 
-                    # Store negative duration if a negative duration is received
+                    # Store negative amount if a negative amount is received
                     if self.output_last_duration[output_id] < 0:
                         duration_sec = -duration_sec
 
@@ -636,7 +636,7 @@ class OutputController(AbstractController, threading.Thread):
                     self.output_on_until[output_id] = datetime.datetime.now()
 
                 if self.output_time_turned_on[output_id] is not None:
-                    # Write the duration the output was ON to the database
+                    # Write the amount the output was ON to the database
                     # at the timestamp it turned ON
                     duration_sec = (datetime.datetime.now() -
                                     self.output_time_turned_on[output_id]).total_seconds()
@@ -657,7 +657,7 @@ class OutputController(AbstractController, threading.Thread):
             self.output_off_triggered[output_id] = False
 
         if trigger_conditionals:
-            self.check_triggers(output_id, on_duration=duration)
+            self.check_triggers(output_id, on_duration=amount)
 
     def output_switch(self, output_id, state, duty_cycle=None):
         """Conduct the actual execution of GPIO state change, PWM, or command execution"""

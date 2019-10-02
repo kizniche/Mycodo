@@ -670,15 +670,15 @@ class DaemonController:
                       " {err}".format(err=except_msg)
             self.logger.exception(message)
 
-    def output_on(self, output_id, duration=0.0, min_off=0.0,
+    def output_on(self, output_id, amount=0.0, min_off=0.0,
                   duty_cycle=0.0, trigger_conditionals=True):
         """
         Turn output on using default output controller
 
         :param output_id: Unique ID for output
         :type output_id: str
-        :param duration: How long to turn the output on
-        :type duration: float
+        :param amount: How long to turn the output on or how much volume to dispense
+        :type amount: float
         :param min_off: Don't turn on if not off for at least this duration (0 = disabled)
         :type min_off: float
         :param duty_cycle: PWM duty cycle % (0-100)
@@ -694,7 +694,7 @@ class DaemonController:
                 return_status = self.controller['Output'].output_on_off(
                     output_id,
                     'on',
-                    duration=duration,
+                    amount=amount,
                     min_off=min_off,
                     duty_cycle=duty_cycle,
                     trigger_conditionals=trigger_conditionals)
@@ -1110,12 +1110,12 @@ class PyroServer(object):
         return self.mycodo.output_state(output_id)
 
     def output_on(self,
-            output_id, duration=0.0, min_off=0.0,
+            output_id, amount=0.0, min_off=0.0,
             duty_cycle=0.0, trigger_conditionals=True):
         """Turns output on from the client"""
         return self.mycodo.output_on(
             output_id,
-            duration=duration,
+            amount=amount,
             min_off=min_off,
             duty_cycle=duty_cycle,
             trigger_conditionals=trigger_conditionals)

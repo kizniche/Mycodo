@@ -371,7 +371,7 @@ def output_on_off(form_output):
                 else:
                     return_value = control.output_on(
                         form_output.output_id.data,
-                        duration=float(form_output.sec_on.data))
+                        amount=float(form_output.sec_on.data))
                     flash(gettext("Output turned on for %(sec)s seconds: %(rvalue)s",
                                   sec=form_output.sec_on.data,
                                   rvalue=return_value),

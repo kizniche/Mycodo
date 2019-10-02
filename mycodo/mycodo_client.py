@@ -209,19 +209,21 @@ class DaemonControl:
     def output_off(self, output_id, trigger_conditionals=True):
         return self.proxy().output_off(output_id, trigger_conditionals)
 
-    def output_on(self, output_id, duration=0.0, min_off=0.0,
+    def output_on(self, output_id, amount=0.0, min_off=0.0,
                   duty_cycle=0.0, trigger_conditionals=True):
         return self.proxy().output_on(
-            output_id, duration=duration, min_off=min_off,
+            output_id, amount=amount, min_off=min_off,
             duty_cycle=duty_cycle, trigger_conditionals=trigger_conditionals)
 
-    def output_on_off(self, output_id, state, duration=0.0):
+    def output_on_off(self, output_id, state, amount=0.0):
+        """ Turn an output on or off """
         if state == 'on':
-            return self.output_on(output_id, duration)
+            return self.output_on(output_id, amount)
         else:
             return self.output_off(output_id)
 
     def output_sec_currently_on(self, output_id):
+        """ Return the amount an output is currently on for (e.g. number fo seconds) """
         return self.proxy().output_sec_currently_on(output_id)
 
     def output_setup(self, action, output_id):
@@ -503,7 +505,7 @@ if __name__ == "__main__":
     elif args.outputon:
         if args.duration:
             return_msg = daemon.output_on(
-                args.outputon, duration=args.duration)
+                args.outputon, amount=args.duration)
         elif args.dutycycle:
             return_msg = daemon.output_on(
                 args.outputon, duty_cycle=args.dutycycle)

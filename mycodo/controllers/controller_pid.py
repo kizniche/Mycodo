@@ -711,7 +711,7 @@ class PIDController(AbstractController, threading.Thread):
                                     id=self.raise_output_id))
                             self.control.output_on(
                                 self.raise_output_id,
-                                duration=self.raise_seconds_on,
+                                amount=self.raise_seconds_on,
                                 min_off=self.raise_min_off_duration)
 
                         self.write_pid_output_influxdb(
@@ -728,7 +728,7 @@ class PIDController(AbstractController, threading.Thread):
                                 id=self.raise_output_id))
                         self.control.output_on(
                             self.raise_output_id,
-                            duration=self.control_variable,
+                            amount=self.control_variable,
                             min_off=self.raise_min_off_duration)
 
                     self.write_pid_output_influxdb(
@@ -819,7 +819,7 @@ class PIDController(AbstractController, threading.Thread):
 
                             self.control.output_on(
                                 self.lower_output_id,
-                                duration=stored_amount_on,
+                                amount=stored_amount_on,
                                 min_off=self.lower_min_off_duration)
 
                         self.write_pid_output_influxdb(
@@ -843,7 +843,7 @@ class PIDController(AbstractController, threading.Thread):
 
                         self.control.output_on(
                             self.lower_output_id,
-                            duration=stored_amount_on,
+                            amount=stored_amount_on,
                             min_off=self.lower_min_off_duration)
 
                         self.write_pid_output_influxdb(
