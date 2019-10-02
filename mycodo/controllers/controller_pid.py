@@ -59,8 +59,6 @@ from mycodo.config import SQL_DATABASE_MYCODO
 from mycodo.controllers.base_controller import AbstractController
 from mycodo.databases.models import Conversion
 from mycodo.databases.models import DeviceMeasurements
-from mycodo.databases.models import Input
-from mycodo.databases.models import Math
 from mycodo.databases.models import Method
 from mycodo.databases.models import MethodData
 from mycodo.databases.models import Misc
