@@ -57,7 +57,7 @@ measurements_dict = {
 INPUT_INFORMATION = {
     'input_name_unique': 'AM2315',
     'input_manufacturer': 'AOSONG',
-    'input_name': 'AM2315',
+    'input_name': 'AM2315/AM2320',
     'measurements_name': 'Humidity/Temperature',
     'measurements_dict': measurements_dict,
     'measurements_rescale': False,
