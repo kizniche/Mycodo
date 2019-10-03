@@ -21,6 +21,7 @@ from mycodo.config import LCD_INFO
 from mycodo.config import MATH_INFO
 from mycodo.config import METHOD_INFO
 from mycodo.config import OUTPUT_INFO
+from mycodo.config import OUTPUTS_PWM
 from mycodo.config import PATH_CAMERAS
 from mycodo.config_devices_units import MEASUREMENTS
 from mycodo.config_devices_units import UNITS
@@ -362,7 +363,7 @@ def choices_outputs_pwm(output, dict_units, dict_measurements):
     """ populate form multi-select choices from Output entries """
     choices = OrderedDict()
     for each_output in output:
-        if each_output.output_type in ['pwm', 'command_pwm', 'python_pwm']:
+        if each_output.output_type in OUTPUTS_PWM:
             choices = form_output_choices(
                 choices, each_output, dict_units, dict_measurements)
     return choices

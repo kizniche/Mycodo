@@ -3,6 +3,8 @@
 ### Bugfixes
 
  - Fix Atlas Scientific EZP Pump not working with PID Controllers ([#562](https://github.com/kizniche/mycodo/issues/562))
+ - Fix Output page not showing Duty Cycle for PWM Output status
+ - Fix blank Live page if Inputs added but not yet activated
 
 ### Features
 

@@ -30,6 +30,7 @@ from mycodo.config import INFLUXDB_PASSWORD
 from mycodo.config import INFLUXDB_USER
 from mycodo.config import INSTALL_DIRECTORY
 from mycodo.config import LOG_PATH
+from mycodo.config import OUTPUTS_PWM
 from mycodo.config import PATH_CAMERAS
 from mycodo.config import PATH_NOTE_ATTACHMENTS
 from mycodo.databases.models import Camera
@@ -182,7 +183,7 @@ def video_feed(unique_id):
                     mimetype='multipart/x-mixed-replace; boundary=frame')
 
 
-@blueprint.route('/gpiostate')
+@blueprint.route('/outputstate')
 @flask_login.login_required
 def gpio_state():
     """Return the GPIO state, for output page status"""
@@ -213,7 +214,7 @@ def gpio_state():
     return jsonify(state)
 
 
-@blueprint.route('/gpiostate_unique_id/<unique_id>')
+@blueprint.route('/outputstate_unique_id/<unique_id>')
 @flask_login.login_required
 def gpio_state_unique_id(unique_id):
     """Return the GPIO state, for dashboard output """
@@ -932,7 +933,7 @@ def output_mod(output_id, state, out_type, amount):
     if (state in ['on', 'off'] and out_type == 'sec' and
             (str_is_float(amount) and float(amount) >= 0)):
         return daemon.output_on_off(output_id, state, float(amount))
-    elif (state == 'on' and out_type in ['pwm', 'command_pwm'] and
+    elif (state == 'on' and out_type in OUTPUTS_PWM and
               (str_is_float(amount) and float(amount) >= 0)):
         return daemon.output_on(
             output_id,

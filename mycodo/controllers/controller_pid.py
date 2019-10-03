@@ -55,6 +55,7 @@ import timeit
 
 import requests
 
+from mycodo.config import OUTPUTS_PWM
 from mycodo.config import SQL_DATABASE_MYCODO
 from mycodo.controllers.base_controller import AbstractController
 from mycodo.databases.models import Conversion
@@ -692,9 +693,7 @@ class PIDController(AbstractController, threading.Thread):
 
                 if self.control_variable > 0:
                     # Determine if the output should be PWM or a duration
-                    if self.raise_output_type in ['pwm',
-                                                  'command_pwm',
-                                                  'python_pwm']:
+                    if self.raise_output_type in OUTPUTS_PWM:
                         self.raise_duty_cycle = float("{0:.1f}".format(
                             self.control_var_to_duty_cycle(self.control_variable)))
 
@@ -771,9 +770,7 @@ class PIDController(AbstractController, threading.Thread):
 
                 else:
                     # Turn PWM Off if PWM Output
-                    if self.raise_output_type in ['pwm',
-                                                  'command_pwm',
-                                                  'python_pwm']:
+                    if self.raise_output_type in OUTPUTS_PWM:
                         self.control.output_on(
                             self.raise_output_id,
                             duty_cycle=0)
@@ -786,9 +783,7 @@ class PIDController(AbstractController, threading.Thread):
 
                 if self.control_variable < 0:
                     # Determine if the output should be PWM or a duration
-                    if self.lower_output_type in ['pwm',
-                                                  'command_pwm',
-                                                  'python_pwm']:
+                    if self.lower_output_type in OUTPUTS_PWM:
                         self.lower_duty_cycle = float("{0:.1f}".format(
                             self.control_var_to_duty_cycle(abs(self.control_variable))))
 
@@ -886,9 +881,7 @@ class PIDController(AbstractController, threading.Thread):
 
                 else:
                     # Turn PWM Off if PWM Output
-                    if self.lower_output_type in ['pwm',
-                                                  'command_pwm',
-                                                  'python_pwm']:
+                    if self.lower_output_type in OUTPUTS_PWM:
                         self.control.output_on(
                             self.lower_output_id,
                             duty_cycle=0)

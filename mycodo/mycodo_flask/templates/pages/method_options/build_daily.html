@@ -58,7 +58,7 @@
     <div>
       <select class="form-control form-tooltip form-dropdown" data-placement="bottom" id="output_id" name="output_id" title="{{_('Modulate the selected output')}}.">
         <option value=""></option>
-        {% for each_output in output if each_output.output_type not in ['pwm', 'command_pwm'] -%}
+        {% for each_output in output if each_output.output_type not in OUTPUTS_PWM -%}
           <option value="{{each_output.id}}">{{"[{0:02d}]".format(each_output.id)}} {{each_output.name}}</option>
         {% endfor -%}
       </select>

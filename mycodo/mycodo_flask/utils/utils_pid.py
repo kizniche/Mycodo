@@ -7,6 +7,7 @@ from flask import redirect
 from flask import url_for
 from flask_babel import gettext
 
+from mycodo.config import OUTPUTS_PWM
 from mycodo.config_translations import TRANSLATIONS
 from mycodo.databases.models import DeviceMeasurements
 from mycodo.databases.models import DisplayOrder
@@ -89,7 +90,7 @@ def pid_mod(form_mod_pid_base,
         raise_output_type = Output.query.filter(
             Output.unique_id == form_mod_pid_base.raise_output_id.data).first().output_type
         if mod_pid.raise_output_id == form_mod_pid_base.raise_output_id.data:
-            if raise_output_type in ['pwm', 'command_pwm']:
+            if raise_output_type in OUTPUTS_PWM:
                 if not form_mod_pid_pwm_raise.validate():
                     error.append(TRANSLATIONS['error']['title'])
                     flash_form_errors(form_mod_pid_pwm_raise)
@@ -105,7 +106,7 @@ def pid_mod(form_mod_pid_base,
                     mod_pid.raise_max_duration = form_mod_pid_output_raise.raise_max_duration.data
                     mod_pid.raise_min_off_duration = form_mod_pid_output_raise.raise_min_off_duration.data
         else:
-            if raise_output_type in ['pwm', 'command_pwm']:
+            if raise_output_type in OUTPUTS_PWM:
                 mod_pid.raise_min_duration = 2
                 mod_pid.raise_max_duration = 98
             else:
@@ -120,7 +121,7 @@ def pid_mod(form_mod_pid_base,
         lower_output_type = Output.query.filter(
             Output.unique_id == form_mod_pid_base.lower_output_id.data).first().output_type
         if mod_pid.lower_output_id == form_mod_pid_base.lower_output_id.data:
-            if lower_output_type in ['pwm', 'command_pwm']:
+            if lower_output_type in OUTPUTS_PWM:
                 if not form_mod_pid_pwm_lower.validate():
                     error.append(gettext("Error in form field(s)"))
                     flash_form_errors(form_mod_pid_pwm_lower)
@@ -136,7 +137,7 @@ def pid_mod(form_mod_pid_base,
                     mod_pid.lower_max_duration = form_mod_pid_output_lower.lower_max_duration.data
                     mod_pid.lower_min_off_duration = form_mod_pid_output_lower.lower_min_off_duration.data
         else:
-            if lower_output_type in ['pwm', 'command_pwm']:
+            if lower_output_type in OUTPUTS_PWM:
                 mod_pid.lower_min_duration = 2
                 mod_pid.lower_max_duration = 98
             else:

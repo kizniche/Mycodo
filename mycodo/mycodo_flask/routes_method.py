@@ -15,6 +15,7 @@ from flask import url_for
 from flask_babel import gettext
 
 from mycodo.config import METHOD_INFO
+from mycodo.config import OUTPUTS_PWM
 from mycodo.config_translations import TRANSLATIONS
 from mycodo.databases.models import DisplayOrder
 from mycodo.databases.models import Method
@@ -293,6 +294,7 @@ def method_builder(method_id):
                                last_sine_method=last_sine_method,
                                last_setpoint_method=last_setpoint_method,
                                last_setpoint=last_setpoint,
+                               OUTPUTS_PWM=OUTPUTS_PWM,
                                form_create_method=form_create_method,
                                form_add_method=form_add_method,
                                form_mod_method=form_mod_method)

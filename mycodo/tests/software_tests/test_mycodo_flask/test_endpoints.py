@@ -65,7 +65,7 @@ def test_routes_when_not_logged_in(testapp):
         'dashboard',
         'export',
         'function',
-        'gpiostate',
+        'outputstate',
         'graph-async',
         'help',
         'info',

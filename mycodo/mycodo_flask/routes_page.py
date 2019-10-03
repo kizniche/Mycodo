@@ -1070,6 +1070,9 @@ def page_live():
     output = Output.query.all()
     math = Math.query.all()
 
+    activated_inputs = Input.query.filter(Input.is_activated).count()
+    activated_maths = Math.query.filter(Input.is_activated).count()
+
     use_unit = utils_general.use_unit_generate(
         device_measurements, input_dev, output, math)
 
@@ -1094,6 +1097,8 @@ def page_live():
         dict_measure_units[each_measurement.unique_id] = unit
 
     return render_template('pages/live.html',
+                           activated_inputs=activated_inputs,
+                           activated_maths=activated_maths,
                            and_=and_,
                            table_device_measurements=DeviceMeasurements,
                            table_input=Input,
@@ -1517,6 +1522,7 @@ def page_function():
                            method=method,
                            names_function=names_function,
                            output=output,
+                           OUTPUTS_PWM=OUTPUTS_PWM,
                            pid=pid,
                            sunrise_set_calc=sunrise_set_calc,
                            table_input=Input,
@@ -1604,6 +1610,7 @@ def page_output():
                            outputs=OUTPUTS,
                            output_info=OUTPUT_INFO,
                            output=output,
+                           OUTPUTS_PWM=OUTPUTS_PWM,
                            output_templates=output_templates,
                            user=user)
 
@@ -1848,6 +1855,7 @@ def page_data():
                            names_input=names_input,
                            names_math=names_math,
                            output=output,
+                           OUTPUTS_PWM=OUTPUTS_PWM,
                            pid=pid,
                            table_conversion=Conversion,
                            table_device_measurements=DeviceMeasurements,
@@ -2050,6 +2058,7 @@ def page_usage():
                            misc=misc,
                            output=output,
                            output_stats=output_stats,
+                           OUTPUTS_PWM=OUTPUTS_PWM,
                            picker_end=picker_end,
                            picker_start=picker_start,
                            timestamp=time.strftime("%c"))

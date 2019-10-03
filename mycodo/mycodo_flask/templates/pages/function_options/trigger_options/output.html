@@ -3,7 +3,7 @@
   <div>
     <select class="form-control form-tooltip form-dropdown" id="unique_id_1" name="unique_id_1" data-placement="top" title="{{_('Trigger this conditional to act when this output turns on or off')}}">
       <option value="">{{dict_translation['select_one']['title']}}</option>
-      {%- for each_output in output if each_output.output_type not in ['pwm', 'command_pwm'] -%}
+      {%- for each_output in output if each_output.output_type not in OUTPUTS_PWM -%}
         <option value="{{each_output.unique_id}}"{% if each_trigger.unique_id_1 == each_output.unique_id %} selected{% endif %}>[{{'%02d' % each_output.id}}] {{each_output.name}}</option>
       {%- endfor -%}
     </select>

@@ -354,6 +354,7 @@ OUTPUTS = [
         OUTPUT_INFO['atlas_ezo_pmp']['name'], lazy_gettext('UART')))
 ]
 
+# Defines which Outputs are PWM
 OUTPUTS_PWM = [
     'pwm', 'command_pwm', 'python_pwm'
 ]

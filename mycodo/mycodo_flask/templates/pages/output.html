@@ -93,7 +93,7 @@
     return s;
   }
   function gpioState() {
-    var url = '/gpiostate';
+    var url = '/outputstate';
     $.getJSON(url,
       function(data, responseText, jqXHR) {
         if (jqXHR.status !== 204) {
@@ -275,7 +275,7 @@
             </div>
           </div>
 
-          {% elif each_output.output_type in ['pwm', 'command_pwm', 'python_pwm'] %}
+          {% elif each_output.output_type in OUTPUTS_PWM %}
 
           <div class="row">
             <div class="col">

@@ -370,7 +370,7 @@ $(document).ready(function() {
   var note_timestmaps = []
 
   function getGPIOState(chart_number, unique_id) {
-    var url = '/gpiostate_unique_id/' + unique_id;
+    var url = '/outputstate_unique_id/' + unique_id;
     $.getJSON(url,
       function(state, responseText, jqXHR) {
         if (jqXHR.status !== 204) {
@@ -466,7 +466,7 @@ $(document).ready(function() {
       decimal_places = 1;
     }
     if (dash_type === "indicator" && measure_type === "output") {
-      var url = '/gpiostate_unique_id/' + unique_id;
+      var url = '/outputstate_unique_id/' + unique_id;
       $.ajax(url, {
         success: function (data, responseText, jqXHR) {
           if (jqXHR.status !== 204) {

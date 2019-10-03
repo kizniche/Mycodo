@@ -31,6 +31,7 @@ from io import StringIO
 from sqlalchemy import and_
 from sqlalchemy import or_
 
+from mycodo.config import OUTPUTS_PWM
 from mycodo.config import SQL_DATABASE_MYCODO
 from mycodo.controllers.base_controller import AbstractController
 from mycodo.databases.models import DeviceMeasurements
@@ -108,6 +109,7 @@ class OutputController(AbstractController, threading.Thread):
         self.pwm_invert_signal = {}
         self.pwm_state = {}
         self.pwm_time_turned_on = {}
+        self.pwm_duty_cycle = {}
 
         # Atlas
         self.output_flow_rate = {}
@@ -204,6 +206,7 @@ class OutputController(AbstractController, threading.Thread):
             self.pwm_library[each_output.unique_id] = each_output.pwm_library
             self.pwm_invert_signal[each_output.unique_id] = each_output.pwm_invert_signal
             self.pwm_time_turned_on[each_output.unique_id] = None
+            self.pwm_duty_cycle[each_output.unique_id] = 0
 
             if self.output_pin[each_output.unique_id] is not None:
                 self.setup_pin(each_output.unique_id)
@@ -509,37 +512,9 @@ class OutputController(AbstractController, threading.Thread):
                             timeon=self.output_time_turned_on[output_id]))
                     self.output_switch(output_id, 'on')
 
-            # PWM command output
-            elif self.output_type[output_id] in ['command_pwm',
-                                                 'python_pwm']:
-                self.output_switch(output_id, 'on', duty_cycle=duty_cycle)
-                self.logger.debug(
-                    "PWM command {id} ({name}) executed with a duty cycle of {dc:.2f}%".format(
-                        id=self.output_id[output_id],
-                        name=self.output_name[output_id],
-                        dc=abs(duty_cycle)))
-
-                if self.pwm_invert_signal[output_id]:
-                    duty_cycle = 100.0 - abs(duty_cycle)
-
-                if duty_cycle:
-                    self.pwm_time_turned_on[output_id] = datetime.datetime.now()
-                else:
-                    self.pwm_time_turned_on[output_id] = None
-
-                # Write the duty cycle of the PWM to the database
-                write_db = threading.Thread(
-                    target=write_influxdb_value,
-                    args=(self.output_unique_id[output_id],
-                          'percent',
-                          duty_cycle,),
-                    kwargs={'measure': 'duty_cycle',
-                            'channel': 0})
-                write_db.start()
-
             # PWM output
-            elif self.output_type[output_id] == 'pwm':
-                if self.pwm_hertz[output_id] <= 0:
+            elif self.output_type[output_id] in OUTPUTS_PWM:
+                if self.output_type[output_id] == 'pwm' and self.pwm_hertz[output_id] <= 0:
                     self.logger.warning("PWM Hertz must be a positive value")
                     return 1
 
@@ -557,10 +532,12 @@ class OutputController(AbstractController, threading.Thread):
                 # Record the time the PWM was turned on
                 if duty_cycle:
                     self.pwm_time_turned_on[output_id] = datetime.datetime.now()
+                    self.pwm_duty_cycle[output_id] = duty_cycle
                 else:
                     self.pwm_time_turned_on[output_id] = None
+                    self.pwm_duty_cycle[output_id] = 0
 
-                # Write the duty cycle of the PWM to the database
+                    # Write the duty cycle of the PWM to the database
                 write_db = threading.Thread(
                     target=write_influxdb_value,
                     args=(self.output_unique_id[output_id],
@@ -593,15 +570,14 @@ class OutputController(AbstractController, threading.Thread):
                     name=self.output_name[output_id]))
 
             # Write PWM duty cycle to database
-            if self.output_type[output_id] in ['pwm',
-                                               'command_pwm',
-                                               'python_pwm']:
+            if self.output_type[output_id] in OUTPUTS_PWM:
                 if self.pwm_invert_signal[output_id]:
                     duty_cycle = 100.0
                 else:
                     duty_cycle = 0.0
 
                 self.pwm_time_turned_on[output_id] = None
+                self.pwm_duty_cycle[output_id] = 0
 
                 write_db = threading.Thread(
                     target=write_influxdb_value,
@@ -1225,12 +1201,15 @@ output_id = '{}'
         :param output_id: Unique ID for each output
         :type output_id: str
 
-        :return: Whether the output is currently "on" or "off"
+        :return: Whether the output is currently "on", "off", or duty cycle (for PWM outputs)
         :rtype: str
         """
         if output_id in self.output_type:
             if self.is_on(output_id):
-                return 'on'
+                if self.output_type[output_id] in OUTPUTS_PWM:
+                    return self.pwm_duty_cycle[output_id]
+                else:
+                    return 'on'
             else:
                 return 'off'
 
@@ -1254,13 +1233,11 @@ output_id = '{}'
             return self.output_on_state[output_id] == GPIO.input(
                 self.output_pin[output_id])
         elif self.output_type[output_id] in ['command',
-                                             'command_pwm',
                                              'python',
-                                             'python_pwm',
                                              'wireless_rpi_rf']:
             if self.output_time_turned_on[output_id] or self.output_on_duration[output_id]:
                 return True
-        elif self.output_type[output_id] == 'pwm':
+        elif self.output_type[output_id] in OUTPUTS_PWM:
             if self.pwm_time_turned_on[output_id]:
                 return True
         elif self.output_type[output_id] == 'atlas_ezo_pmp':

@@ -7,6 +7,7 @@ from flask import url_for
 from flask_babel import gettext
 
 from mycodo.config import OUTPUT_INFO
+from mycodo.config import OUTPUTS_PWM
 from mycodo.config_translations import TRANSLATIONS
 from mycodo.databases.models import DeviceMeasurements
 from mycodo.databases.models import DisplayOrder
@@ -72,9 +73,7 @@ def output_add(form_add):
                     new_output.measurement = 'duration_time'
                     new_output.unit = 's'
 
-                elif output_type in ['command_pwm',
-                                     'pwm',
-                                     'python_pwm']:
+                elif output_type in OUTPUTS_PWM:
                     new_output.measurement = 'duty_cycle'
                     new_output.unit = 'percent'
 
@@ -234,7 +233,7 @@ def output_mod(form_output):
                 mod_output.baud_rate = form_output.baud_rate.data
 
         if (form_output.state_at_startup.data == '-1' or
-                mod_output.output_type in ['pwm', 'command_pwm']):
+                mod_output.output_type in OUTPUTS_PWM):
             mod_output.state_at_startup = None
         elif form_output.state_at_startup.data is not None:
             try:
@@ -245,7 +244,7 @@ def output_mod(form_output):
                     "{}".format(form_output.state_at_startup.data))
 
         if (form_output.state_at_shutdown.data == '-1' or
-                mod_output.output_type in ['pwm', 'command_pwm']):
+                mod_output.output_type in OUTPUTS_PWM):
             mod_output.state_at_shutdown = None
         elif form_output.state_at_shutdown.data is not None:
             try:

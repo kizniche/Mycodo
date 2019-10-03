@@ -78,7 +78,7 @@
 
     {% include 'flash_messages.html' %}
 
-    {%- if display_order_input|length == 0 and display_order_math|length == 0 -%}
+    {%- if not activated_inputs and not activated_maths -%}
     <div>
       {{_('No Data Sources Activated')}}. <a href="/data">Click here</a> to go to the Data page. Read the <a href="/help">Manual</a> to become more familiar with the system and configuration options.
     </div>
