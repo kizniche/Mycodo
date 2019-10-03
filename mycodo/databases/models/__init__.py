@@ -22,8 +22,8 @@
 import subprocess
 
 import sqlalchemy
-from sqlalchemy import and_
 from flask import current_app
+from sqlalchemy import and_
 
 from mycodo.config import ALEMBIC_VERSION
 from mycodo.config import INSTALL_DIRECTORY
@@ -32,6 +32,7 @@ from mycodo.config_devices_units import UNIT_CONVERSIONS
 from mycodo.mycodo_flask.extensions import db
 from .alembic_version import AlembicVersion
 from .camera import Camera
+from .controller import CustomController
 from .dashboard import Dashboard
 from .display_order import DisplayOrder
 from .function import Actions

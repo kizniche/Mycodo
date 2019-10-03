@@ -3,7 +3,6 @@
 <div class="container" style="border: 2px solid #ddd; border-radius: 5px;">
 
   <form method="post" action="/function">
-  <input type="hidden" name="form-name" value="modPID">
   {{form_mod_pid_base.csrf_token}}
   {{form_mod_pid_base.function_id(value=each_pid.unique_id)}}
   {{form_mod_pid_base.function_type(class_='form-control', value='pid')}}

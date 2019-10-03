@@ -43,7 +43,7 @@ from mycodo.utils.database import db_retrieve_table_daemon
 from mycodo.utils.influx import add_measurements_influxdb
 from mycodo.utils.influx import parse_measurement
 from mycodo.utils.influx import write_influxdb_value
-from mycodo.utils.inputs import load_module_from_file
+from mycodo.utils.system_pi import load_module_from_file
 from mycodo.utils.inputs import parse_input_information
 
 
@@ -319,7 +319,8 @@ class InputController(AbstractController, threading.Thread):
 
         if self.device in self.dict_inputs:
             input_loaded = load_module_from_file(
-                self.dict_inputs[self.device]['file_path'])
+                self.dict_inputs[self.device]['file_path'],
+                'inputs')
 
             if self.device == 'EDGE':
                 # Edge detection handled internally, no module to load

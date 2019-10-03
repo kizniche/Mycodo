@@ -33,6 +33,8 @@ TRANSLATIONS = {
         'title': lazy_gettext('Controller')},
     'create': {
         'title': lazy_gettext('Create')},
+    'custom': {
+        'title': lazy_gettext('Custom')},
     'dashboard': {
         'title': lazy_gettext('Dashboard')},
     'data': {

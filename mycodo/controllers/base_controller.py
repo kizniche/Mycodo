@@ -82,15 +82,13 @@ class AbstractController(object):
                     self.loop()
                 except Pyro5.errors.TimeoutError:
                     self.logger.exception("Pyro5 TimeoutError")
-                except Exception as except_msg:
-                    self.logger.exception(
-                        "loop() Error: {err}".format(err=except_msg))
+                except Exception:
+                    self.logger.exception("loop() Error")
                 finally:
                     time.sleep(self.sample_rate)
 
-        except Exception as except_msg:
-            self.logger.exception("Run Error: {err}".format(
-                err=except_msg))
+        except Exception:
+            self.logger.exception("Run Error")
             self.thread_shutdown_timer = timeit.default_timer()
         finally:
             self.run_finally()
@@ -132,3 +130,67 @@ class AbstractController(object):
                     self.logger.exception(
                         "Exception executing {}() on attempt {} of {}.".format(
                             func.__name__, i, times))
+
+    def setup_custom_options(self, custom_options, custom_controller):
+        for each_option_default in custom_options:
+            try:
+                required = False
+                custom_option_set = False
+                error = []
+                if 'type' not in each_option_default:
+                    error.append("'type' not found in custom_options")
+                if 'id' not in each_option_default:
+                    error.append("'id' not found in custom_options")
+                if 'default_value' not in each_option_default:
+                    error.append(
+                        "'default_value' not found in custom_options")
+                for each_error in error:
+                    self.logger.error(each_error)
+                if error:
+                    return
+
+                if ('required' in each_option_default and
+                        each_option_default['required']):
+                    required = True
+
+                option_value = each_option_default['default_value']
+
+                if not hasattr(custom_controller, 'custom_options'):
+                    self.logger.error("custom_controller missing attribute custom_options")
+                    return
+
+                if custom_controller.custom_options:
+                    for each_option in custom_controller.custom_options.split(';'):
+                        option = each_option.split(',')[0]
+                        value = each_option.split(',')[1]
+
+                        if option == each_option_default['id']:
+                            custom_option_set = True
+                            option_value = value
+
+                if required and not custom_option_set:
+                    self.logger.error(
+                        "Custom option '{}' required but was not found to be "
+                        "set by the user".format(each_option_default['id']))
+
+                if each_option_default['type'] == 'integer':
+                    setattr(
+                        self, each_option_default['id'], int(option_value))
+                elif each_option_default['type'] == 'float':
+                    setattr(
+                        self, each_option_default['id'], float(option_value))
+                elif each_option_default['type'] == 'bool':
+                    setattr(
+                        self, each_option_default['id'], bool(option_value))
+                elif each_option_default['type'] == 'text':
+                    setattr(
+                        self, each_option_default['id'], str(option_value))
+                elif each_option_default['type'] == 'select':
+                    setattr(
+                        self, each_option_default['id'], str(option_value))
+                else:
+                    self.logger.error(
+                        "Unknown custom_option type '{}'".format(
+                            each_option_default['type']))
+            except Exception:
+                self.logger.exception("Error parsing custom_options")

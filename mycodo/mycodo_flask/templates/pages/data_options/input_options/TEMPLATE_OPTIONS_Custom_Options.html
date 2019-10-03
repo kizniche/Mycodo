@@ -6,7 +6,7 @@
 <div class="col-auto">
   <label class="control-label" for="{{each_option['id']}}">{{each_option['name']}}</label>
   <div>
-    <input class="form-control" id="{{each_option['id']}}" name="{{each_option['id']}}" title="{{each_option['phrase']}}" type="text" value="{{custom_options_values[each_input.unique_id][each_option['id']]}}">
+    <input class="form-control" id="{{each_option['id']}}" name="{{each_option['id']}}" title="{{each_option['phrase']}}" type="text" value="{{custom_options_values_inputs[each_input.unique_id][each_option['id']]}}">
   </div>
 </div>
     {% elif each_option['type'] == 'select' %}
@@ -16,7 +16,7 @@
     <select class="form-control form-tooltip form-dropdown" data-placement="top" id="{{each_option['id']}}" name="{{each_option['id']}}" title="{{each_option['phrase']}}">
       <option value="">{{dict_translation['select_one']['title']}}</option>
       {% for each_set in each_option['options_select'] %}
-      <option value="{{each_set[0]}}"{% if each_set[0] == custom_options_values[each_input.unique_id][each_option['id']] %} selected{% endif %}>{{each_set[1]}}</option>
+      <option value="{{each_set[0]}}"{% if each_set[0] == custom_options_values_inputs[each_input.unique_id][each_option['id']] %} selected{% endif %}>{{each_set[1]}}</option>
       {% endfor %}
     </select>
   </div>
@@ -25,7 +25,7 @@
 <div class="col-auto">
   <label class="control-label" for="{{each_option['id']}}">{{each_option['name']}}</label>
   <div class="input-group-text">
-    <input id="{{each_option['id']}}" name="{{each_option['id']}}" title="{{each_option['phrase']}}" type="checkbox" value="y"{% if custom_options_values[each_input.unique_id][each_option['id']] %} checked{% endif %}>
+    <input id="{{each_option['id']}}" name="{{each_option['id']}}" title="{{each_option['phrase']}}" type="checkbox" value="y"{% if custom_options_values_inputs[each_input.unique_id][each_option['id']] %} checked{% endif %}>
   </div>
 </div>
     {% endif %}

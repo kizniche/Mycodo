@@ -25,7 +25,7 @@ class DataBase(FlaskForm):
 
 
 class FunctionAdd(FlaskForm):
-    function_type = SelectField('Function Type')
+    function_type = SelectField()
     func_add = SubmitField(TRANSLATIONS['add']['title'])
 
 

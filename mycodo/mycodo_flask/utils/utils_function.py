@@ -12,6 +12,7 @@ from mycodo.config_translations import TRANSLATIONS
 from mycodo.databases.models import Actions
 from mycodo.databases.models import Camera
 from mycodo.databases.models import Conditional
+from mycodo.databases.models import CustomController
 from mycodo.databases.models import DeviceMeasurements
 from mycodo.databases.models import DisplayOrder
 from mycodo.databases.models import Function
@@ -25,6 +26,7 @@ from mycodo.mycodo_flask.utils.utils_general import flash_success_errors
 from mycodo.mycodo_flask.utils.utils_general import reorder
 from mycodo.mycodo_flask.utils.utils_general import return_dependencies
 from mycodo.mycodo_flask.utils.utils_misc import save_conditional_code
+from mycodo.utils.controllers import parse_controller_information
 from mycodo.utils.system_pi import csv_to_list_of_str
 from mycodo.utils.system_pi import list_to_csv
 from mycodo.utils.system_pi import str_is_float
@@ -42,20 +44,24 @@ def function_add(form_add_func):
         controller=TRANSLATIONS['function']['title'])
     error = []
 
-    dep_unmet, _ = return_dependencies(form_add_func.function_type.data)
+    function_name = form_add_func.function_type.data
+
+    dict_controllers = parse_controller_information()
+
+    dep_unmet, _ = return_dependencies(function_name)
     if dep_unmet:
         list_unmet_deps = []
         for each_dep in dep_unmet:
             list_unmet_deps.append(each_dep[0])
         error.append(
             "The {dev} device you're trying to add has unmet dependencies: "
-            "{dep}".format(dev=form_add_func.function_type.data,
+            "{dep}".format(dev=function_name,
                            dep=', '.join(list_unmet_deps)))
 
     new_func = None
 
     try:
-        if form_add_func.function_type.data.startswith('conditional_'):
+        if function_name.startswith('conditional_'):
             new_func = Conditional()
             new_func.conditional_statement = '''
 # Example code for learning how to use a Conditional. See the manual for more information.
@@ -84,7 +90,7 @@ if measurement is not None:  # If a measurement exists
                 new_func.conditional_statement,
                 new_func.unique_id,
                 test=False)
-        elif form_add_func.function_type.data.startswith('pid_'):
+        elif function_name.startswith('pid_'):
             new_func = PID().save()
 
             for each_channel, measure_info in PID_INFO['measure'].items():
@@ -101,22 +107,46 @@ if measurement is not None:  # If a measurement exists
                 new_measurement.channel = each_channel
                 new_measurement.save()
 
-        elif form_add_func.function_type.data.startswith('trigger_'):
+        elif function_name.startswith('trigger_'):
             new_func = Trigger()
-            new_func.name = '{}'.format(FUNCTION_INFO[form_add_func.function_type.data]['name'])
-            new_func.trigger_type = form_add_func.function_type.data
+            new_func.name = '{}'.format(FUNCTION_INFO[function_name]['name'])
+            new_func.trigger_type = function_name
             new_func.save()
-        elif form_add_func.function_type.data.startswith('function_'):
+        elif function_name.startswith('function_'):
             new_func = Function()
-            if form_add_func.function_type.data == 'function_spacer':
+            if function_name == 'function_spacer':
                 new_func.name = 'Spacer'
-            new_func.function_type = form_add_func.function_type.data
+            new_func.function_type = function_name
             new_func.save()
-        elif form_add_func.function_type.data == '':
+
+        elif function_name in dict_controllers:
+            new_func = CustomController()
+            new_func.device = function_name
+
+            if 'controller_name' in dict_controllers[function_name]:
+                new_func.name = dict_controllers[function_name]['controller_name']
+            else:
+                new_func.name = 'Controller Name'
+
+            list_options = []
+            if 'custom_options' in dict_controllers[function_name]:
+                for each_option in dict_controllers[function_name]['custom_options']:
+                    if each_option['default_value'] is False:
+                        default_value = ''
+                    else:
+                        default_value = each_option['default_value']
+                    option = '{id},{value}'.format(
+                        id=each_option['id'],
+                        value=default_value)
+                    list_options.append(option)
+            new_func.custom_options = ';'.join(list_options)
+            new_func.save()
+
+        elif function_name == '':
             error.append("Must select a function type")
         else:
             error.append("Unknown function type: '{}'".format(
-                form_add_func.function_type.data))
+                function_name))
 
         if not error:
             display_order = csv_to_list_of_str(

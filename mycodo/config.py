@@ -765,8 +765,10 @@ MYCODO_DB_PATH = 'sqlite:///' + SQL_DATABASE_MYCODO
 
 # Misc paths
 PATH_1WIRE = '/sys/bus/w1/devices/'
+PATH_CONTROLLERS = os.path.join(INSTALL_DIRECTORY, 'mycodo/controllers')
 PATH_INPUTS = os.path.join(INSTALL_DIRECTORY, 'mycodo/inputs')
-PATH_INPUTS_CUSTOM = os.path.join(INSTALL_DIRECTORY, 'mycodo/inputs/custom_inputs')
+PATH_CONTROLLERS_CUSTOM = os.path.join(PATH_CONTROLLERS, 'custom_controllers')
+PATH_INPUTS_CUSTOM = os.path.join(PATH_INPUTS, 'custom_inputs')
 PATH_PYTHON_CODE_USER = os.path.join(INSTALL_DIRECTORY, 'mycodo/user_python_code')
 USAGE_REPORTS_PATH = os.path.join(INSTALL_DIRECTORY, 'output_usage_reports')
 DEPENDENCY_INIT_FILE = os.path.join(INSTALL_DIRECTORY, '.dependency')

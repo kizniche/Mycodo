@@ -56,6 +56,7 @@ from mycodo.databases.models import Camera
 from mycodo.databases.models import Conditional
 from mycodo.databases.models import ConditionalConditions
 from mycodo.databases.models import Conversion
+from mycodo.databases.models import CustomController
 from mycodo.databases.models import Dashboard
 from mycodo.databases.models import DeviceMeasurements
 from mycodo.databases.models import DisplayOrder
@@ -80,6 +81,7 @@ from mycodo.mycodo_client import DaemonControl
 from mycodo.mycodo_client import daemon_active
 from mycodo.mycodo_flask.extensions import db
 from mycodo.mycodo_flask.forms import forms_conditional
+from mycodo.mycodo_flask.forms import forms_custom_controller
 from mycodo.mycodo_flask.forms import forms_dashboard
 from mycodo.mycodo_flask.forms import forms_function
 from mycodo.mycodo_flask.forms import forms_input
@@ -92,6 +94,7 @@ from mycodo.mycodo_flask.forms import forms_pid
 from mycodo.mycodo_flask.forms import forms_trigger
 from mycodo.mycodo_flask.routes_static import inject_variables
 from mycodo.mycodo_flask.utils import utils_conditional
+from mycodo.mycodo_flask.utils import utils_controller
 from mycodo.mycodo_flask.utils import utils_dashboard
 from mycodo.mycodo_flask.utils import utils_export
 from mycodo.mycodo_flask.utils import utils_function
@@ -104,10 +107,12 @@ from mycodo.mycodo_flask.utils import utils_notes
 from mycodo.mycodo_flask.utils import utils_output
 from mycodo.mycodo_flask.utils import utils_pid
 from mycodo.mycodo_flask.utils import utils_trigger
+from mycodo.mycodo_flask.utils.utils_general import generate_form_controller_list
+from mycodo.utils.controllers import parse_controller_information
 from mycodo.utils.influx import average_past_seconds
 from mycodo.utils.influx import average_start_end_seconds
 from mycodo.utils.inputs import list_analog_to_digital_converters
-from mycodo.utils.inputs import parse_custom_option_values
+from mycodo.utils.system_pi import parse_custom_option_values
 from mycodo.utils.inputs import parse_input_information
 from mycodo.utils.sunriseset import Sun
 from mycodo.utils.system_pi import add_custom_measurements
@@ -1203,6 +1208,7 @@ def page_function():
     camera = Camera.query.all()
     conditional = Conditional.query.all()
     conditional_conditions = ConditionalConditions.query.all()
+    custom_controllers = CustomController.query.all()
     function_dev = Function.query.all()
     actions = Actions.query.all()
     input_dev = Input.query.all()
@@ -1229,6 +1235,7 @@ def page_function():
     form_trigger = forms_trigger.Trigger()
     form_conditional = forms_conditional.Conditional()
     form_conditional_conditions = forms_conditional.ConditionalConditions()
+    form_custom_controller = forms_custom_controller.CustomController()
     form_actions = forms_function.Actions()
 
     if request.method == 'POST':
@@ -1364,6 +1371,20 @@ def page_function():
         elif form_actions.delete_action.data:
             utils_function.action_del(form_actions)
 
+        # Custom Controllers
+        elif form_custom_controller.save_controller.data:
+            utils_controller.controller_mod(
+                form_custom_controller, request.form)
+        elif form_custom_controller.delete_controller.data:
+            utils_controller.controller_del(
+                form_custom_controller.function_id.data)
+        elif form_custom_controller.deactivate_controller.data:
+            utils_controller.controller_deactivate(
+                form_custom_controller.function_id.data)
+        elif form_custom_controller.activate_controller.data:
+            utils_controller.controller_activate(
+                form_custom_controller.function_id.data)
+
         if unmet_dependencies:
             function_type = None
             if form_add_function.func_add.data:
@@ -1381,6 +1402,24 @@ def page_function():
     # Generate all measurement and units used
     dict_measurements = add_custom_measurements(Measurement.query.all())
     dict_units = add_custom_units(Unit.query.all())
+
+    custom_options_values_controllers = parse_custom_option_values(custom_controllers)
+
+    choices_functions = []
+
+    for each_function in FUNCTIONS:
+        choices_functions.append((each_function[0], each_function[1]))
+
+    choices_custom_controllers = []
+
+    dict_controllers = parse_controller_information()
+    list_controllers_sorted = generate_form_controller_list(dict_controllers)
+
+    for each_controller in list_controllers_sorted:
+        value = '{inp}'.format(inp=each_controller)
+        name = '{name}'.format(
+            name=dict_controllers[each_controller]['controller_name'])
+        choices_custom_controllers.append((value, name))
 
     choices_input = utils_general.choices_inputs(
         input_dev, dict_units, dict_measurements)
@@ -1490,6 +1529,8 @@ def page_function():
                            actions_dict=actions_dict,
                            camera=camera,
                            choices_controller_ids=choices_controller_ids,
+                           choices_custom_controllers=choices_custom_controllers,
+                           choices_functions=choices_functions,
                            choices_input=choices_input,
                            choices_math=choices_math,
                            choices_output=choices_output,
@@ -1499,10 +1540,14 @@ def page_function():
                            conditional_conditions=conditional_conditions,
                            conditions_dict=conditions_dict,
                            controllers=controllers,
+                           custom_controllers=custom_controllers,
+                           custom_options_values_controllers=custom_options_values_controllers,
+                           dict_controllers=dict_controllers,
                            display_order_function=display_order_function,
                            form_base=form_base,
                            form_conditional=form_conditional,
                            form_conditional_conditions=form_conditional_conditions,
+                           form_custom_controller=form_custom_controller,
                            form_actions=form_actions,
                            form_add_function=form_add_function,
                            form_function=form_function,
@@ -1744,7 +1789,7 @@ def page_data():
             return redirect(url_for('routes_page.page_data'))
 
     dict_inputs = parse_input_information()
-    custom_options_values = parse_custom_option_values(input_dev)
+    custom_options_values_inputs = parse_custom_option_values(input_dev)
 
     # Generate dict that incorporate user-added measurements/units
     dict_units = add_custom_units(unit)
@@ -1827,7 +1872,7 @@ def page_data():
                            choices_measurement=choices_measurement,
                            choices_measurements_units=choices_measurements_units,
                            choices_unit=choices_unit,
-                           custom_options_values=custom_options_values,
+                           custom_options_values_inputs=custom_options_values_inputs,
                            device_info=parse_input_information(),
                            dict_inputs=dict_inputs,
                            dict_measurements=dict_measurements,

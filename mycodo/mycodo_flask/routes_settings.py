@@ -14,6 +14,7 @@ from flask.blueprints import Blueprint
 
 from mycodo.config import CAMERA_LIBRARIES
 from mycodo.config import LANGUAGES
+from mycodo.config import PATH_CONTROLLERS_CUSTOM
 from mycodo.config import PATH_INPUTS_CUSTOM
 from mycodo.config import THEMES
 from mycodo.databases.models import Camera
@@ -29,10 +30,10 @@ from mycodo.mycodo_flask.forms import forms_settings
 from mycodo.mycodo_flask.routes_static import inject_variables
 from mycodo.mycodo_flask.utils import utils_general
 from mycodo.mycodo_flask.utils import utils_settings
-from mycodo.utils.inputs import load_module_from_file
 from mycodo.utils.system_pi import add_custom_measurements
 from mycodo.utils.system_pi import add_custom_units
 from mycodo.utils.system_pi import cmd_output
+from mycodo.utils.system_pi import load_module_from_file
 
 logger = logging.getLogger('mycodo.mycodo_flask.settings')
 
@@ -140,6 +141,51 @@ def settings_general():
                            form_settings_general=form_settings_general)
 
 
+@blueprint.route('/settings/controller', methods=('GET', 'POST'))
+@flask_login.login_required
+def settings_controller():
+    """ Display controller settings """
+    if not utils_general.user_has_permission('view_settings'):
+        return redirect(url_for('routes_general.home'))
+
+    form_controller = forms_settings.Controller()
+    form_controller_delete = forms_settings.ControllerDel()
+
+    # Get list of custom controllers
+    excluded_files = ['__init__.py', '__pycache__']
+
+    if request.method == 'POST':
+        if not utils_general.user_has_permission('edit_controllers'):
+            return redirect(url_for('routes_general.home'))
+
+        if form_controller.import_controller_upload.data:
+            utils_settings.settings_controller_import(form_controller)
+        elif form_controller_delete.delete_controller.data:
+            utils_settings.settings_controller_delete(form_controller_delete)
+
+        return redirect(url_for('routes_settings.settings_controller'))
+
+    dict_controllers = {}
+
+    for each_file in os.listdir(PATH_CONTROLLERS_CUSTOM):
+        if each_file not in excluded_files:
+            try:
+                full_path_file = os.path.join(PATH_CONTROLLERS_CUSTOM, each_file)
+                controller_info = load_module_from_file(full_path_file, 'controllers')
+                dict_controllers[controller_info.CONTROLLER_INFORMATION['controller_name_unique']] = {}
+                dict_controllers[controller_info.CONTROLLER_INFORMATION['controller_name_unique']]['controller_name'] = \
+                    controller_info.CONTROLLER_INFORMATION['controller_name']
+            except:
+                pass
+
+    # dict_controllers = parse_controller_information()
+
+    return render_template('settings/controller.html',
+                           dict_controllers=dict_controllers,
+                           form_controller=form_controller,
+                           form_controller_delete=form_controller_delete)
+
+
 @blueprint.route('/settings/input', methods=('GET', 'POST'))
 @flask_login.login_required
 def settings_input():
@@ -173,7 +219,7 @@ def settings_input():
         if each_file not in excluded_files:
             try:
                 full_path_file = os.path.join(PATH_INPUTS_CUSTOM, each_file)
-                input_info = load_module_from_file(full_path_file)
+                input_info = load_module_from_file(full_path_file, 'inputs')
                 dict_inputs[input_info.INPUT_INFORMATION['input_name_unique']] = {}
                 dict_inputs[input_info.INPUT_INFORMATION['input_name_unique']]['input_name'] = \
                     input_info.INPUT_INFORMATION['input_name']

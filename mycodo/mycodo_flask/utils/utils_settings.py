@@ -19,6 +19,7 @@ from sqlalchemy import or_
 from mycodo.config import BACKUP_LOG_FILE
 from mycodo.config import DEPENDENCY_INIT_FILE
 from mycodo.config import INSTALL_DIRECTORY
+from mycodo.config import PATH_CONTROLLERS_CUSTOM
 from mycodo.config import PATH_INPUTS_CUSTOM
 from mycodo.config import UPGRADE_INIT_FILE
 from mycodo.config_devices_units import MEASUREMENTS
@@ -26,6 +27,7 @@ from mycodo.config_devices_units import UNITS
 from mycodo.config_translations import TRANSLATIONS
 from mycodo.databases.models import Camera
 from mycodo.databases.models import Conversion
+from mycodo.databases.models import CustomController
 from mycodo.databases.models import Dashboard
 from mycodo.databases.models import DeviceMeasurements
 from mycodo.databases.models import DisplayOrder
@@ -50,13 +52,14 @@ from mycodo.mycodo_flask.utils.utils_general import delete_entry_with_id
 from mycodo.mycodo_flask.utils.utils_general import flash_form_errors
 from mycodo.mycodo_flask.utils.utils_general import flash_success_errors
 from mycodo.mycodo_flask.utils.utils_input import input_deactivate_associated_controllers
+from mycodo.utils.controllers import parse_controller_information
 from mycodo.utils.database import db_retrieve_table
-from mycodo.utils.inputs import load_module_from_file
 from mycodo.utils.inputs import parse_input_information
 from mycodo.utils.send_data import send_email
 from mycodo.utils.system_pi import all_conversions
 from mycodo.utils.system_pi import assure_path_exists
 from mycodo.utils.system_pi import cmd_output
+from mycodo.utils.system_pi import load_module_from_file
 from mycodo.utils.utils import test_password
 from mycodo.utils.utils import test_username
 
@@ -312,6 +315,141 @@ def settings_general_mod(form):
         flash_form_errors(form)
 
 
+def settings_controller_import(form):
+    """
+    Receive an controller module file, check it for errors, add it to Mycodo controller list
+    """
+    action = '{action} {controller}'.format(
+        action=gettext("Import"),
+        controller=TRANSLATIONS['controller']['title'])
+    error = []
+
+    controller_info = None
+
+    try:
+        # correct_format = 'Mycodo_MYCODOVERSION_Settings_DBVERSION_HOST_DATETIME.zip'
+        install_dir = os.path.abspath(INSTALL_DIRECTORY)
+        tmp_directory = os.path.join(install_dir, 'mycodo/controllers/tmp_controllers')
+        assure_path_exists(tmp_directory)
+        assure_path_exists(PATH_CONTROLLERS_CUSTOM)
+        tmp_name = 'tmp_controller_testing.py'
+        full_path_tmp = os.path.join(tmp_directory, tmp_name)
+
+        if not form.import_controller_file.data:
+            error.append('No file present')
+        elif form.import_controller_file.data.filename == '':
+            error.append('No file name')
+        else:
+            form.import_controller_file.data.save(full_path_tmp)
+
+        try:
+            controller_info = load_module_from_file(full_path_tmp, 'controllers')
+            if not hasattr(controller_info, 'CONTROLLER_INFORMATION'):
+                error.append("Could not load CONTROLLER_INFORMATION dictionary from "
+                             "the uploaded controller module")
+        except Exception:
+            error.append("Could not load uploaded file as a python module:\n"
+                         "{}".format(traceback.format_exc()))
+
+        dict_controllers = parse_controller_information()
+        list_controllers = []
+        for each_key in dict_controllers.keys():
+            list_controllers.append(each_key.lower())
+
+        if not error:
+            if 'controller_name_unique' not in controller_info.CONTROLLER_INFORMATION:
+                error.append(
+                    "'controller_name_unique' not found in "
+                    "CONTROLLER_INFORMATION dictionary")
+            elif controller_info.CONTROLLER_INFORMATION['controller_name_unique'] == '':
+                error.append("'controller_name_unique' is empty")
+            elif controller_info.CONTROLLER_INFORMATION['controller_name_unique'].lower() in list_controllers:
+                error.append(
+                    "'controller_name_unique' is not unique, there "
+                    "is already an controller with that name ({})".format(
+                        controller_info.CONTROLLER_INFORMATION['controller_name_unique']))
+
+            if 'controller_name' not in controller_info.CONTROLLER_INFORMATION:
+                error.append(
+                    "'controller_name' not found in CONTROLLER_INFORMATION dictionary")
+            elif controller_info.CONTROLLER_INFORMATION['controller_name'] == '':
+                error.append("'controller_name' is empty")
+
+            if 'dependencies_module' in controller_info.CONTROLLER_INFORMATION:
+                if not isinstance(controller_info.CONTROLLER_INFORMATION['dependencies_module'], list):
+                    error.append("'dependencies_module' must be a list of tuples")
+                else:
+                    for each_dep in controller_info.CONTROLLER_INFORMATION['dependencies_module']:
+                        if not isinstance(each_dep, tuple):
+                            error.append(
+                                "'dependencies_module' must be a list of "
+                                "tuples")
+                        elif len(each_dep) != 3:
+                            error.append(
+                                "'dependencies_module': tuples in list must "
+                                "have 3 items")
+                        elif not each_dep[0] or not each_dep[1] or not each_dep[2]:
+                            error.append(
+                                "'dependencies_module': tuples in list must "
+                                "not be empty")
+                        elif each_dep[0] not in ['internal', 'pip-pypi', 'pip-git', 'apt']:
+                            error.append(
+                                "'dependencies_module': first in tuple "
+                                "must be 'internal', 'pip-pypi', 'pip-git', "
+                                "or 'apt'")
+
+        if not error:
+            # Determine filename
+            unique_name = '{}.py'.format(controller_info.CONTROLLER_INFORMATION['controller_name_unique'].lower())
+
+            # Move module from temp directory to custom_controller directory
+            full_path_final = os.path.join(PATH_CONTROLLERS_CUSTOM, unique_name)
+            os.rename(full_path_tmp, full_path_final)
+
+            # Reload frontend to refresh the controllers
+            cmd = '{path}/mycodo/scripts/mycodo_wrapper frontend_reload 2>&1'.format(
+                path=install_dir)
+            subprocess.Popen(cmd, shell=True)
+            flash('Frontend reloaded to scan for new Controller Modules', 'success')
+
+    except Exception as err:
+        error.append("Exception: {}".format(err))
+
+    flash_success_errors(error, action, url_for('routes_settings.settings_controller'))
+
+
+def settings_controller_delete(form):
+    action = '{action} {controller}'.format(
+        action=gettext("Import"),
+        controller=TRANSLATIONS['controller']['title'])
+    error = []
+
+    controller_device_name = form.controller_id.data
+    file_name = '{}.py'.format(form.controller_id.data.lower())
+    full_path_file = os.path.join(PATH_CONTROLLERS_CUSTOM, file_name)
+
+    if not error:
+        # Check if any Controller entries exist
+        controller_dev = CustomController.query.filter(
+            CustomController.device == controller_device_name).count()
+        if controller_dev:
+            error.append("Cannot delete Controller Module if there are still "
+                         "Controller entries using it. Deactivate and delete all "
+                         "Controller entries that use this module before deleting "
+                         "the module.")
+
+    if not error:
+        os.remove(full_path_file)
+
+        # Reload frontend to refresh the controllers
+        cmd = '{path}/mycodo/scripts/mycodo_wrapper frontend_reload 2>&1'.format(
+            path=os.path.abspath(INSTALL_DIRECTORY))
+        subprocess.Popen(cmd, shell=True)
+        flash('Frontend reloaded to scan for new Controller Modules', 'success')
+
+    flash_success_errors(error, action, url_for('routes_settings.settings_controller'))
+
+
 def settings_input_import(form):
     """
     Receive an input module file, check it for errors, add it to Mycodo input list
@@ -340,7 +478,7 @@ def settings_input_import(form):
             form.import_input_file.data.save(full_path_tmp)
 
         try:
-            input_info = load_module_from_file(full_path_tmp)
+            input_info = load_module_from_file(full_path_tmp, 'inputs')
             if not hasattr(input_info, 'INPUT_INFORMATION'):
                 error.append("Could not load INPUT_INFORMATION dictionary from "
                              "the uploaded input module")
@@ -446,7 +584,7 @@ def settings_input_delete(form):
         controller=TRANSLATIONS['input']['title'])
     error = []
 
-    input_device_name = None
+    input_device_name = form.input_id.data
     file_name = '{}.py'.format(form.input_id.data.lower())
     full_path_file = os.path.join(PATH_INPUTS_CUSTOM, file_name)
 

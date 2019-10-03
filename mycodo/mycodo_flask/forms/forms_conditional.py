@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# forms_misc.py - Miscellaneous Flask Forms
+# forms_conditional.py - Miscellaneous Flask Forms
 #
 
 from flask_babel import lazy_gettext

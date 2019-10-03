@@ -21,13 +21,13 @@
 #
 #  Contact at kylegabriel.com
 
-import importlib.util
 import logging
 
 import os
 
 from mycodo.config import PATH_INPUTS
 from mycodo.config import PATH_INPUTS_CUSTOM
+from mycodo.utils.system_pi import load_module_from_file
 
 logger = logging.getLogger("mycodo.utils.inputs")
 
@@ -66,38 +66,6 @@ def list_analog_to_digital_converters():
     return list_adc
 
 
-def load_module_from_file(path_file):
-    module_name = "mycodo.inputs.{}".format(os.path.basename(path_file).split('.')[0])
-    spec = importlib.util.spec_from_file_location(module_name, path_file)
-    input_custom = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(input_custom)
-    return input_custom
-
-
-def parse_custom_option_values(inputs):
-    # Check if inputs is iterable or a single input
-    try:
-        _ = iter(inputs)
-    except TypeError:
-        iter_input = [inputs]  # Not iterable
-    else:
-        iter_input = inputs  # iterable
-
-    custom_options_values = {}
-    for each_input in iter_input:
-        custom_options_values[each_input.unique_id] = {}
-        if each_input.custom_options:
-            for each_option in each_input.custom_options.split(';'):
-                option = each_option.split(',')[0]
-                if len(each_option.split(',')) > 2:
-                    value = ','.join(each_option.split(',')[1:])
-                else:
-                    value = each_option.split(',')[1]
-                custom_options_values[each_input.unique_id][option] = value
-
-    return custom_options_values
-
-
 def parse_input_information():
     """Parses the variables assigned in each Input and return a dictionary of IDs and values"""
     def dict_has_value(dict_inp, input_cus, key):
@@ -129,7 +97,7 @@ def parse_input_information():
 
             if not skip_file:
                 full_path = "{}/{}".format(real_path, each_file)
-                input_custom = load_module_from_file(full_path)
+                input_custom = load_module_from_file(full_path, 'inputs')
 
                 if not hasattr(input_custom, 'INPUT_INFORMATION'):
                     skip_file = True
@@ -161,7 +129,6 @@ def parse_input_information():
 
                 # Dependencies
                 dict_inputs = dict_has_value(dict_inputs, input_custom, 'dependencies_module')
-                dict_inputs = dict_has_value(dict_inputs, input_custom, 'dependencies_github')
 
                 dict_inputs = dict_has_value(dict_inputs, input_custom, 'enable_channel_unit_select')
 

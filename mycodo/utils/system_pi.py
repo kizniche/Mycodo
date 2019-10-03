@@ -1,6 +1,7 @@
 # coding=utf-8
 import datetime
 import grp
+import importlib.util
 import logging
 import pwd
 import signal
@@ -24,6 +25,39 @@ logger = logging.getLogger("mycodo.system_pi")
 
 if logging.getLevelName(logging.getLogger().getEffectiveLevel()) == 'INFO':
     logger.setLevel(logging.INFO)
+
+
+def parse_custom_option_values(controllers):
+    # Check if controllers is iterable or a single controller
+    try:
+        _ = iter(controllers)
+    except TypeError:
+        iter_controller = [controllers]  # Not iterable
+    else:
+        iter_controller = controllers  # iterable
+
+    custom_options_values = {}
+    for each_controller in iter_controller:
+        custom_options_values[each_controller.unique_id] = {}
+        if each_controller.custom_options:
+            for each_option in each_controller.custom_options.split(';'):
+                option = each_option.split(',')[0]
+                if len(each_option.split(',')) > 2:
+                    value = ','.join(each_option.split(',')[1:])
+                else:
+                    value = each_option.split(',')[1]
+                custom_options_values[each_controller.unique_id][option] = value
+
+    return custom_options_values
+
+
+def load_module_from_file(path_file, module_type):
+    module_name = "mycodo.{}.{}".format(
+        module_type, os.path.basename(path_file).split('.')[0])
+    spec = importlib.util.spec_from_file_location(module_name, path_file)
+    module_custom = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module_custom)
+    return module_custom
 
 
 def add_custom_units(units):

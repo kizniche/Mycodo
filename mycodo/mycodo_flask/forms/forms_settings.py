@@ -172,6 +172,20 @@ class SettingsGeneral(FlaskForm):
 
 
 #
+# Settings (Controller)
+#
+
+class Controller(FlaskForm):
+    import_controller_file = FileField(lazy_gettext('Upload'))
+    import_controller_upload = SubmitField(lazy_gettext('Import Controller Module'))
+
+
+class ControllerDel(FlaskForm):
+    controller_id = StringField(widget=widgets.HiddenInput())
+    delete_controller = SubmitField(TRANSLATIONS['delete']['title'])
+
+
+#
 # Settings (Input)
 #
 

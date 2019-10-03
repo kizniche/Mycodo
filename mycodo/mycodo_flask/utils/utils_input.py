@@ -24,7 +24,7 @@ from mycodo.mycodo_flask.utils.utils_general import flash_form_errors
 from mycodo.mycodo_flask.utils.utils_general import flash_success_errors
 from mycodo.mycodo_flask.utils.utils_general import reorder
 from mycodo.mycodo_flask.utils.utils_general import return_dependencies
-from mycodo.utils.inputs import parse_custom_option_values
+from mycodo.utils.system_pi import parse_custom_option_values
 from mycodo.utils.inputs import parse_input_information
 from mycodo.utils.system_pi import csv_to_list_of_str
 from mycodo.utils.system_pi import is_int
@@ -670,7 +670,7 @@ def input_activate(form_mod):
     input_dev = Input.query.filter(Input.unique_id == input_id).first()
     device_measurements = DeviceMeasurements.query.filter(
         DeviceMeasurements.device_id == input_dev.unique_id)
-    custom_options_values = parse_custom_option_values(input_dev)
+    custom_options_values_inputs = parse_custom_option_values(input_dev)
 
     #
     # General Input checks
@@ -691,7 +691,7 @@ def input_activate(form_mod):
     #
     if 'custom_options' in dict_inputs[input_dev.device]:
         for each_option in dict_inputs[input_dev.device]['custom_options']:
-            value = custom_options_values[input_dev.unique_id][each_option['id']]
+            value = custom_options_values_inputs[input_dev.unique_id][each_option['id']]
             if ('required' in each_option and
                     each_option['required'] and
                     not value):

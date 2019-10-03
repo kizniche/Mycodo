@@ -29,6 +29,7 @@ from mycodo.config_translations import TRANSLATIONS
 from mycodo.databases.models import Camera
 from mycodo.databases.models import Conditional
 from mycodo.databases.models import Conversion
+from mycodo.databases.models import CustomController
 from mycodo.databases.models import DeviceMeasurements
 from mycodo.databases.models import Input
 from mycodo.databases.models import LCD
@@ -109,7 +110,10 @@ def controller_activate_deactivate(controller_action,
         "LCD": TRANSLATIONS['lcd']['title'],
         "Math": TRANSLATIONS['math']['title'],
         "PID": TRANSLATIONS['pid']['title'],
-        "Trigger": TRANSLATIONS['trigger']['title']
+        "Trigger": TRANSLATIONS['trigger']['title'],
+        "CustomController": '{} {}'.format(
+            TRANSLATIONS['custom']['title'],
+            TRANSLATIONS['controller']['title'])
     }
 
     mod_controller = None
@@ -137,6 +141,9 @@ def controller_activate_deactivate(controller_action,
     elif controller_type == 'Trigger':
         mod_controller = Trigger.query.filter(
             Trigger.unique_id == controller_id).first()
+    elif controller_type == 'CustomController':
+        mod_controller = CustomController.query.filter(
+            CustomController.unique_id == controller_id).first()
 
     if mod_controller is None:
         flash("{type} Controller {id} doesn't exist".format(
@@ -974,6 +981,16 @@ def use_unit_generate(device_measurements, input_dev, output, math):
 
 def get_ip_address():
     return request.environ.get('HTTP_X_FORWARDED_FOR', 'unknown address')
+
+
+def generate_form_controller_list(dict_controllers):
+    # Sort dictionary entries by controller_name
+    # Results in list of sorted dictionary keys
+    list_tuples_sorted = sorted(dict_controllers.items(), key=lambda x: x[1]['controller_name'])
+    list_controllers_sorted = []
+    for each_controller in list_tuples_sorted:
+        list_controllers_sorted.append(each_controller[0])
+    return list_controllers_sorted
 
 
 def generate_form_input_list(dict_inputs):

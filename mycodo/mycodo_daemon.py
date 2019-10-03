@@ -40,7 +40,6 @@ import resource
 from Pyro5.api import Daemon
 from Pyro5.api import Proxy
 from Pyro5.api import expose
-from Pyro5.api import locate_ns
 from daemonize import Daemonize
 from pkg_resources import parse_version
 
@@ -66,8 +65,10 @@ from mycodo.databases.models import Math
 from mycodo.databases.models import Misc
 from mycodo.databases.models import PID
 from mycodo.databases.models import Trigger
+from mycodo.databases.models import CustomController
 from mycodo.databases.utils import session_scope
 from mycodo.devices.camera import camera_record
+from mycodo.utils.controllers import parse_controller_information
 from mycodo.utils.database import db_retrieve_table_daemon
 from mycodo.utils.function_actions import get_condition_value
 from mycodo.utils.function_actions import get_condition_value_dict
@@ -79,6 +80,7 @@ from mycodo.utils.statistics import add_update_csv
 from mycodo.utils.statistics import recreate_stat_file
 from mycodo.utils.statistics import return_stat_file_dict
 from mycodo.utils.statistics import send_anonymous_stats
+from mycodo.utils.system_pi import load_module_from_file
 from mycodo.utils.tools import generate_output_usage_report
 from mycodo.utils.tools import next_schedule
 
@@ -130,7 +132,8 @@ class DaemonController:
             'LCD': {},
             'Math': {},
             'PID': {},
-            'Trigger': {}
+            'Trigger': {},
+            'CustomController': {}
         }
 
         # Controllers that may launch multiple threads
@@ -141,7 +144,8 @@ class DaemonController:
             'Input',
             'Math',
             'PID',
-            'LCD'
+            'LCD',
+            'CustomController'
         ]
         self.thread_shutdown_timer = None
         self.start_time = time.time()
@@ -277,6 +281,21 @@ class DaemonController:
             elif cont_type == 'Trigger':
                 controller_manage['type'] = Trigger
                 controller_manage['function'] = TriggerController
+            elif cont_type == 'CustomController':
+                controller_manage['type'] = CustomController
+
+                custom_controller = db_retrieve_table_daemon(controller_manage['type'],
+                                                             unique_id=cont_id)
+                dict_controllers = parse_controller_information()
+                if custom_controller and custom_controller.device in dict_controllers:
+                    input_loaded = load_module_from_file(
+                        dict_controllers[custom_controller.device]['file_path'],
+                        'controllers')
+                    controller_manage['function'] = input_loaded.CustomModule
+                else:
+                    return 1, "Custom controller not found.".format(
+                        type=cont_type)
+
             else:
                 return 1, "'{type}' not a valid controller type.".format(
                     type=cont_type)
@@ -413,6 +432,9 @@ class DaemonController:
             for trigger_id in self.controller['Trigger']:
                 if not self.controller['Trigger'][trigger_id].is_running():
                     return "Error: Trigger ID {}".format(trigger_id)
+            for controller_id in self.controller['CustomController']:
+                if not self.controller['CustomController'][controller_id].is_running():
+                    return "Error: CustomController ID {}".format(trigger_id)
             if not self.controller['Output'].is_running():
                 return "Error: Output controller"
         except Exception as except_msg:
@@ -770,7 +792,8 @@ class DaemonController:
                 'LCD': db_retrieve_table_daemon(LCD, entry='all'),
                 'Math': db_retrieve_table_daemon(Math, entry='all'),
                 'PID': db_retrieve_table_daemon(PID, entry='all'),
-                'Trigger': db_retrieve_table_daemon(Trigger, entry='all')
+                'Trigger': db_retrieve_table_daemon(Trigger, entry='all'),
+                'CustomController': db_retrieve_table_daemon(CustomController, entry='all')
             }
 
             self.logger.debug("Starting Output Controller")
