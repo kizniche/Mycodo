@@ -53,6 +53,8 @@ CONTROLLER_INFORMATION = {
     'controller_name_unique': 'EXAMPLE_CONTROLLER',
     'controller_name': 'Example Custom Controller',
 
+    'message': 'This is a custom message that will appear above the Controller options on the Function page.',
+
     'options_enabled': [
         'custom_options'
     ],

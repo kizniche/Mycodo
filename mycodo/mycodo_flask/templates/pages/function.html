@@ -24,21 +24,17 @@
     {{form_mod_pid_base.csrf_token}}
 
     <div class="row small-gutters" style="padding-left: 0.75em">
-{#      <div class="col-auto">#}
-{#        {{form_add_function.function_type(class_='selectpicker', **{'data-live-search': 'true', 'title': _('Function') + ': ' + dict_translation['select_one']['title']})}}#}
-{#      </div>#}
-
       <div class="col-auto">
-        <select class="selectpicker" title="{{_('Function')}}: {{dict_translation['select_one']['title']}}" id="function_type" name="function_type">
+        <select class="selectpicker" data-live-search="true" title="{{_('Function')}}: {{dict_translation['select_one']['title']}}" id="function_type" name="function_type">
           {% if choices_custom_controllers %}
-            <optgroup label="Built-in Functions">
+            <optgroup label="{{_('Native Functions')}}">
           {% endif %}
           {% for each_function in choices_functions -%}
               <option value="{{each_function[0]}}">{{each_function[1]}}</option>
           {% endfor -%}
           {% if choices_custom_controllers %}
             </optgroup>
-            <optgroup label="Custom Controllers">
+            <optgroup label="{{_('Custom')}} {{_('Controllers')}}">
             {% for each_controller in choices_custom_controllers -%}
               <option value="{{each_controller[0]}}">{{each_controller[1]}}</option>
             {% endfor -%}
@@ -46,7 +42,6 @@
           {% endif %}
         </select>
       </div>
-
 
       <div class="col-auto">
         {{form_add_function.func_add(class_='btn btn-primary')}}

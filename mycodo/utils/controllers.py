@@ -84,6 +84,7 @@ def parse_controller_information():
                 dict_controllers[controller_custom.CONTROLLER_INFORMATION['controller_name_unique']]['file_path'] = full_path
 
                 dict_controllers = dict_has_value(dict_controllers, controller_custom, 'controller_name')
+                dict_controllers = dict_has_value(dict_controllers, controller_custom, 'message')
                 dict_controllers = dict_has_value(dict_controllers, controller_custom, 'options_enabled')
                 dict_controllers = dict_has_value(dict_controllers, controller_custom, 'options_disabled')
 

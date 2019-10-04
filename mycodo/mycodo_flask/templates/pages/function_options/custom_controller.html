@@ -55,6 +55,15 @@
     </div>
 
     <div class="row small-gutters" style="padding-bottom: 0.3em">
+
+      {% if 'message' in dict_controllers[each_controller.device] %}
+
+      <div class="col-12" style="padding-bottom: 0.5em">
+        {{dict_controllers[each_controller.device]['message']}}
+      </div>
+
+      {% endif %}
+
       <div class="col-auto">
         {{form_custom_controller.log_level_debug.label(class_='control-label')}}
         <div class="input-group-text">
