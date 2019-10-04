@@ -320,16 +320,16 @@ recording measurements to the database and allow them to be used throughout
 Mycodo.
 
 Custom Inputs
-'''''''''''''
+`````````````
 
 Before discussing the built-in Inputs, it should be noted that there is an
 Input import system in Mycodo that allows user-created Inputs to be used
 in the Mycodo system. Custom Inputs can be uploaded on the
-``Configure -> Inputs`` page. After import, they
-will be available to use on the ``Setup -> Data`` page.
+``Configure -> Inputs`` page. After import, they will be available to use
+on the ``Setup -> Data`` page.
 
-Additionally, I have another github repository devoted to Custom Inputs and Controllers that
-are not included in the built-in set. These can be found at
+Additionally, I have another github repository devoted to Custom Inputs and
+Controllers that are not included in the built-in set. These can be found at
 `kizniche/Mycodo-custom <https://github.com/kizniche/Mycodo-custom>`__.
 
 Built-In Inputs
