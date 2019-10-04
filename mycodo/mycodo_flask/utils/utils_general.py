@@ -40,6 +40,7 @@ from mycodo.databases.models import Trigger
 from mycodo.databases.models import User
 from mycodo.mycodo_client import DaemonControl
 from mycodo.mycodo_flask.extensions import db
+from mycodo.utils.controllers import parse_controller_information
 from mycodo.utils.inputs import parse_input_information
 from mycodo.utils.system_pi import add_custom_measurements
 from mycodo.utils.system_pi import add_custom_units
@@ -879,9 +880,11 @@ def return_dependencies(device_type):
     unmet_deps = []
     met_deps = False
 
+    dict_controllers = parse_controller_information()
     dict_inputs = parse_input_information()
 
     list_dependencies = [
+        dict_controllers,
         dict_inputs,
         FUNCTION_ACTION_INFO,
         FUNCTION_INFO,

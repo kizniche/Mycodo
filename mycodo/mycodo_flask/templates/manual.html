@@ -529,9 +529,11 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <p>First, read though this manual to make sure you understand how the system works and you’re using the system properly. Also check out the <a href="https://github.com/kizniche/Mycodo/wiki">Mycodo Wiki</a>. You may even want to look through recent <a href="https://github.com/kizniche/Mycodo/issues">GitHub Issues</a>. If you haven’t resolved your issue by this point, make a <a href="https://github.com/kizniche/Mycodo/issues/new">New GitHub Issue</a> describing the issue and attaching a sufficient amount of evidence (screenshots, log files, etc.) to aid in diagnosing the issue.</p>
 <hr />
 <p><em>How do I add an Input (like a sensor) to the system if it’s not currently supported?</em></p>
-<p>Currently, adding an Input device that’s not currently supported can be achieved by two different methods:</p>
-<p>The first involves editing several internal Mycodo files. There has been effort to make the addition process as simple as possible. See the <a href="https://github.com/kizniche/Mycodo/wiki/Adding-Support-for-a-New-Input">Adding Support for a New Input</a> Wiki page for how to do this. All changes will be lost during an upgrade, therefore it is suggested to make a GitHub pull request with your changes to permanently integrate them into Mycodo.</p>
+<p>Yes, Mycodo supports adding custom Inputs. See the <a href="#custom-inputs">Custom Inputs</a> section for more information.</p>
 <p>The second way to add an Input is to create a script that obtains and returns a numerical value when executed in the linux system of the Raspberry Pi. This script may be configured to be executed by a “Linux Command” Input type. This will periodically execute the command and store the returned value to the database for use with the rest of the Mycodo system.</p>
+<hr />
+<p><em>Can I create a new controller like the PID, Trigger, and LCD functions?</em></p>
+<p>Yes, Mycodo supports adding custom Controllers. See the <a href="#custom-controllers">Custom Controllers</a> section for more information.</p>
 <hr />
 <p><em>How do I set up simple regulation?</em></p>
 <p>Here is how I generally set up Mycodo to monitor and regulate:</p>
@@ -657,8 +659,8 @@ optional arguments:
 <h3 id="input">Input</h3>
 <p>Inputs, such as sensors, ADC signals, or even a response from a command, enable measuring conditions in the environment or elsewhere, which will be stored in a time-series database (InfluxDB). This database will provide measurements for <a href="#graphs">Graphs</a>, <a href="#lcds">LCDs</a>, <a href="#pid-controllers">PID Controllers</a>, <a href="#conditional-statements">Conditional Statements</a>, and other parts of Mycodo to operate from. Add, configure, and activate inputs to begin recording measurements to the database and allow them to be used throughout Mycodo.</p>
 <h4 id="custom-inputs">Custom Inputs</h4>
-<p>Before discussing the built-in Inputs, it should be noted that there is an Input import system in Mycodo that allows user-created Inputs to be used in the Mycodo system. Custom Inputs can be uploaded on the <code>`Config -&gt; Inputs</code>` <code>Configure -&gt; Inputs</code> page. After import, they will be available to use on the <code>Setup -&gt; Data</code> page.</p>
-<p>Additionally, I have another github repository devoted to Custom Inputs that are not included in the built-in set. These can be found at <a href="https://github.com/kizniche/Mycodo-custom-inputs">kizniche/Mycodo-custom-inputs</a>.</p>
+<p>Before discussing the built-in Inputs, it should be noted that there is an Input import system in Mycodo that allows user-created Inputs to be used in the Mycodo system. Custom Inputs can be uploaded on the <code>Configure -&gt; Inputs</code> page. After import, they will be available to use on the <code>Setup -&gt; Data</code> page.</p>
+<p>Additionally, I have another github repository devoted to Custom Inputs and Controllers that are not included in the built-in set. These can be found at <a href="https://github.com/kizniche/Mycodo-custom">kizniche/Mycodo-custom</a>.</p>
 <h4 id="built-in-inputs">Built-In Inputs</h4>
 <p>In addition to several supported sensors and devices, a Linux command may be specified that will be executed and the return value stored in the measurement database to be used throughout the Mycodo system.</p>
 <table>
@@ -1256,6 +1258,10 @@ optional arguments:
 <h2 id="function">Function</h2>
 <p><code>Setup -&gt; Function</code></p>
 <p>Functions couple Inputs with Outputs to perform specific tasks. For example, this could be regulation of temperature with a temperature sensor and heater with a PID Controller.</p>
+<h4 id="custom-controllers">Custom Controllers</h4>
+<p>Before discussing the built-in Functions/Controllers, it should be noted that there is an Controller import system in Mycodo that allows user-created Controllers to be used in the Mycodo system. Custom Inputs can be uploaded on the <code>Configure -&gt; Controllers</code> page. After import, they will be available to use on the <code>Setup -&gt; Function</code> page.</p>
+<p>There are also example Custom Controller files in <code>Mycodo/mycodo/controllers/custom_controllers/examples</code></p>
+<p>Additionally, I have another github repository devoted to Custom Inputs and Controllers that are not included in the built-in set. These can be found at <a href="https://github.com/kizniche/Mycodo-custom">kizniche/Mycodo-custom</a>.</p>
 <h3 id="pid-controller">PID Controller</h3>
 <p>A <a href="https://en.wikipedia.org/wiki/PID_controller">proportional-derivative-integral (PID) controller</a> is a control loop feedback mechanism used throughout industry for controlling systems. It efficiently brings a measurable condition, such as the temperature, to a desired state and maintains it there with little overshoot and oscillation. A well-tuned PID controller will raise to the setpoint quickly, have minimal overshoot, and maintain the setpoint with little oscillation.</p>
 <p>PID settings may be changed while the PID is activated and the new settings will take effect immediately. If settings are changed while the controller is paused, the values will be used once the controller resumes operation.</p>

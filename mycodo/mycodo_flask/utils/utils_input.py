@@ -34,7 +34,6 @@ from mycodo.utils.system_pi import str_is_float
 logger = logging.getLogger(__name__)
 
 
-
 #
 # Input manipulation
 #

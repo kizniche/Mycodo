@@ -89,15 +89,8 @@ files, etc.) to aid in diagnosing the issue.
 *How do I add an Input (like a sensor) to the system if it's not
 currently supported?*
 
-Currently, adding an Input device that's not currently supported can be
-achieved by two different methods:
-
-The first involves editing several internal Mycodo files. There has been
-effort to make the addition process as simple as possible. See the
-`Adding Support for a New Input <https://github.com/kizniche/Mycodo/wiki/Adding-Support-for-a-New-Input>`__
-Wiki page for how to do this. All changes will be lost during an
-upgrade, therefore it is suggested to make a GitHub pull request with
-your changes to permanently integrate them into Mycodo.
+Yes, Mycodo supports adding custom Inputs. See the
+`Custom Inputs <#custom-inputs>`__ section for more information.
 
 The second way to add an Input is to create a script that obtains and
 returns a numerical value when executed in the linux system of the
@@ -105,6 +98,13 @@ Raspberry Pi. This script may be configured to be executed by a "Linux
 Command" Input type. This will periodically execute the command and
 store the returned value to the database for use with the rest of the
 Mycodo system.
+
+--------------
+
+*Can I create a new controller like the PID, Trigger, and LCD functions?*
+
+Yes, Mycodo supports adding custom Controllers. See the
+`Custom Controllers <#custom-controllers>`__ section for more information.
 
 --------------
 
@@ -325,12 +325,12 @@ Custom Inputs
 Before discussing the built-in Inputs, it should be noted that there is an
 Input import system in Mycodo that allows user-created Inputs to be used
 in the Mycodo system. Custom Inputs can be uploaded on the
-```Config -> Inputs``` ``Configure -> Inputs`` page. After import, they
+``Configure -> Inputs`` page. After import, they
 will be available to use on the ``Setup -> Data`` page.
 
-Additionally, I have another github repository devoted to Custom Inputs that
+Additionally, I have another github repository devoted to Custom Inputs and Controllers that
 are not included in the built-in set. These can be found at
-`kizniche/Mycodo-custom-inputs <https://github.com/kizniche/Mycodo-custom-inputs>`__.
+`kizniche/Mycodo-custom <https://github.com/kizniche/Mycodo-custom>`__.
 
 Built-In Inputs
 '''''''''''''''
@@ -1057,6 +1057,21 @@ Function
 Functions couple Inputs with Outputs to perform specific tasks. For
 example, this could be regulation of temperature with a temperature
 sensor and heater with a PID Controller.
+
+Custom Controllers
+''''''''''''''''''
+
+Before discussing the built-in Functions/Controllers, it should be noted that there is an
+Controller import system in Mycodo that allows user-created Controllers to be used
+in the Mycodo system. Custom Inputs can be uploaded on the
+``Configure -> Controllers`` page. After import, they
+will be available to use on the ``Setup -> Function`` page.
+
+There are also example Custom Controller files in ``Mycodo/mycodo/controllers/custom_controllers/examples``
+
+Additionally, I have another github repository devoted to Custom Inputs and Controllers that
+are not included in the built-in set. These can be found at
+`kizniche/Mycodo-custom <https://github.com/kizniche/Mycodo-custom>`__.
 
 PID Controller
 ``````````````

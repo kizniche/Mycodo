@@ -2,6 +2,7 @@
 import logging
 
 import sqlalchemy
+from flask import current_app
 from flask import url_for
 from flask_babel import gettext
 from sqlalchemy import and_
@@ -48,15 +49,18 @@ def function_add(form_add_func):
 
     dict_controllers = parse_controller_information()
 
-    dep_unmet, _ = return_dependencies(function_name)
-    if dep_unmet:
-        list_unmet_deps = []
-        for each_dep in dep_unmet:
-            list_unmet_deps.append(each_dep[0])
-        error.append(
-            "The {dev} device you're trying to add has unmet dependencies: "
-            "{dep}".format(dev=function_name,
-                           dep=', '.join(list_unmet_deps)))
+    if current_app.config['TESTING']:
+        dep_unmet = False
+    else:
+        dep_unmet, _ = return_dependencies(function_name)
+        if dep_unmet:
+            list_unmet_deps = []
+            for each_dep in dep_unmet:
+                list_unmet_deps.append(each_dep[0])
+            error.append(
+                "The {dev} device you're trying to add has unmet "
+                "dependencies: {dep}".format(
+                    dev=function_name, dep=', '.join(list_unmet_deps)))
 
     new_func = None
 
