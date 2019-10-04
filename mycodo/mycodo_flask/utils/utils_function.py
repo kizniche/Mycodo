@@ -88,12 +88,15 @@ if measurement is not None:  # If a measurement exists
         self.message += "Measurement is too High! Measurement is {meas}\\n".format(meas=measurement)
         # Replace "qwer5678" with an Action ID
         self.run_action("{qwer5678}", message=self.message)  # Run a single specific Action'''
-            new_func.save()
-            save_conditional_code(
-                error,
-                new_func.conditional_statement,
-                new_func.unique_id,
-                test=False)
+
+            if not error:
+                new_func.save()
+                save_conditional_code(
+                    error,
+                    new_func.conditional_statement,
+                    new_func.unique_id,
+                    test=False)
+
         elif function_name.startswith('pid_'):
             new_func = PID().save()
 
@@ -109,19 +112,23 @@ if measurement is not None:  # If a measurement exists
                 new_measurement.measurement = measure_info['measurement']
                 new_measurement.unit = measure_info['unit']
                 new_measurement.channel = each_channel
-                new_measurement.save()
+                if not error:
+                    new_measurement.save()
 
         elif function_name.startswith('trigger_'):
             new_func = Trigger()
             new_func.name = '{}'.format(FUNCTION_INFO[function_name]['name'])
             new_func.trigger_type = function_name
-            new_func.save()
+            if not error:
+                new_func.save()
+
         elif function_name.startswith('function_'):
             new_func = Function()
             if function_name == 'function_spacer':
                 new_func.name = 'Spacer'
             new_func.function_type = function_name
-            new_func.save()
+            if not error:
+                new_func.save()
 
         elif function_name in dict_controllers:
             new_func = CustomController()
@@ -144,7 +151,8 @@ if measurement is not None:  # If a measurement exists
                         value=default_value)
                     list_options.append(option)
             new_func.custom_options = ';'.join(list_options)
-            new_func.save()
+            if not error:
+                new_func.save()
 
         elif function_name == '':
             error.append("Must select a function type")

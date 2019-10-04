@@ -1,6 +1,6 @@
 # coding=utf-8
 #
-# controller_pocketsphinx.py - Pocketsphinx controller for speech recognition
+# controller_example.py - Pocketsphinx controller for speech recognition
 #
 #  Copyright (C) 2017  Kyle T. Gabriel
 #
@@ -50,15 +50,20 @@ def constraints_pass_positive_value(mod_controller, value):
 
 
 CONTROLLER_INFORMATION = {
-    'controller_name_unique': 'POCKETSPHINX',
-    'controller_name': 'Pocketsphinx Speech Recognition',
+    'controller_name_unique': 'EXAMPLE_CONTROLLER',
+    'controller_name': 'Example Custom Controller',
 
     'options_enabled': [
         'custom_options'
     ],
 
     'dependencies_module': [
-        ('pip-pypi', 'pocketsphinx', 'pocketsphinx')
+        # ('apt', 'build-essential', 'build-essential'),
+        # ('apt', 'bison', 'bison'),
+        # ('apt', 'libasound2-dev', 'libasound2-dev'),
+        # ('apt', 'libpulse-dev', 'libpulse-dev'),
+        # ('apt', 'swig', 'swig'),
+        # ('pip-pypi', 'pocketsphinx', 'pocketsphinx')
     ],
 
     'custom_options': [
@@ -85,14 +90,15 @@ CONTROLLER_INFORMATION = {
             'default_value': True,
             'name': lazy_gettext('Boolean 1'),
             'phrase': lazy_gettext('Boolean 1 Description')
-        },
+        }
+        # TODO: Add custom options for Input/Conditional/Math/Method/PID/Trigger/LCD form selection
     ]
 }
 
 
 class CustomModule(AbstractController, threading.Thread):
     """
-    Class to operate Pocketsphinx controller
+    Class to operate custom controller
     """
     def __init__(self, ready, unique_id, testing=False):
         threading.Thread.__init__(self)
@@ -114,9 +120,8 @@ class CustomModule(AbstractController, threading.Thread):
             CONTROLLER_INFORMATION['custom_options'], custom_controller)
 
         if not testing:
-            # from pocketsphinx import LiveSpeech
-            # self.livespeech = LiveSpeech
             pass
+            # import controller-specific modules here
 
     def run(self):
         try:
@@ -126,13 +131,11 @@ class CustomModule(AbstractController, threading.Thread):
             self.ready.set()
             self.running = True
 
-            self.logger.debug("Pocketsphinx starting: {}, {}, {}...".format(
+            self.logger.debug("Custom controller starting with options: {}, {}, {}...".format(
                 self.text_1, self.integer_1, self.bool_1))
 
             while self.running:
                 time.sleep(1)
-            # for phrase in self.livespeech():
-            #     self.logger.debug(phrase)
         except:
             self.logger.exception("Run Error")
         finally:
