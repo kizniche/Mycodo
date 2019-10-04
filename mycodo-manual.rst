@@ -1059,7 +1059,7 @@ example, this could be regulation of temperature with a temperature
 sensor and heater with a PID Controller.
 
 Custom Controllers
-''''''''''''''''''
+``````````````````
 
 Before discussing the built-in Functions/Controllers, it should be noted that there is an
 Controller import system in Mycodo that allows user-created Controllers to be used
