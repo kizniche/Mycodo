@@ -835,15 +835,19 @@ to name a few.
 +-----------------------+-------------------------------------------------+
 | Startup State         | This specifies whether the output should be ON  |
 |                       | or OFF when mycodo initially starts. Some       |
-|                       | outputs have an additional option 'Neither'     |
-|                       | which will not issue an on or off command when  |
-|                       | Mycodo starts or stops.                         |
+|                       | outputs have an additional options.             |
++-----------------------+-------------------------------------------------+
+| Startup Value         | If the Startup State is set to User Set Value   |
+|                       | (such as for PWM Outputs), then this value will |
+|                       | be set when Mycodo starts up.                   |
 +-----------------------+-------------------------------------------------+
 | Shutdown State        | This specifies whether the output should be ON  |
 |                       | or OFF when mycodo initially shuts down.        |
-|                       | Some outputs have an additional option          |
-|                       | 'Neither' which will not issue an on or off     |
-|                       | command when Mycodo starts or stops.            |
+|                       | Some outputs have an additional options.        |
++-----------------------+-------------------------------------------------+
+| Shutdown Value        | If the Shutdown State is set to User Set Value  |
+|                       | (such as for PWM Outputs), then this value will |
+|                       | be set when Mycodo shuts down.                  |
 +-----------------------+-------------------------------------------------+
 | Trigger at Startup    | Select to enable triggering Functions (such as  |
 |                       | Output Triggers) when Mycodo starts and if      |
