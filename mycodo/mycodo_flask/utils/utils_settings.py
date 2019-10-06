@@ -55,11 +55,11 @@ from mycodo.mycodo_flask.utils.utils_input import input_deactivate_associated_co
 from mycodo.utils.controllers import parse_controller_information
 from mycodo.utils.database import db_retrieve_table
 from mycodo.utils.inputs import parse_input_information
+from mycodo.utils.modules import load_module_from_file
 from mycodo.utils.send_data import send_email
 from mycodo.utils.system_pi import all_conversions
 from mycodo.utils.system_pi import assure_path_exists
 from mycodo.utils.system_pi import cmd_output
-from mycodo.utils.system_pi import load_module_from_file
 from mycodo.utils.utils import test_password
 from mycodo.utils.utils import test_username
 

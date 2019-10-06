@@ -51,15 +51,6 @@ def parse_custom_option_values(controllers):
     return custom_options_values
 
 
-def load_module_from_file(path_file, module_type):
-    module_name = "mycodo.{}.{}".format(
-        module_type, os.path.basename(path_file).split('.')[0])
-    spec = importlib.util.spec_from_file_location(module_name, path_file)
-    module_custom = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(module_custom)
-    return module_custom
-
-
 def add_custom_units(units):
     return_units = UNITS.copy()
 

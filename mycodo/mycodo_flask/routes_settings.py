@@ -30,10 +30,10 @@ from mycodo.mycodo_flask.forms import forms_settings
 from mycodo.mycodo_flask.routes_static import inject_variables
 from mycodo.mycodo_flask.utils import utils_general
 from mycodo.mycodo_flask.utils import utils_settings
+from mycodo.utils.modules import load_module_from_file
 from mycodo.utils.system_pi import add_custom_measurements
 from mycodo.utils.system_pi import add_custom_units
 from mycodo.utils.system_pi import cmd_output
-from mycodo.utils.system_pi import load_module_from_file
 
 logger = logging.getLogger('mycodo.mycodo_flask.settings')
 

@@ -43,8 +43,8 @@ from mycodo.utils.database import db_retrieve_table_daemon
 from mycodo.utils.influx import add_measurements_influxdb
 from mycodo.utils.influx import parse_measurement
 from mycodo.utils.influx import write_influxdb_value
-from mycodo.utils.system_pi import load_module_from_file
 from mycodo.utils.inputs import parse_input_information
+from mycodo.utils.modules import load_module_from_file
 
 
 class Measurement:

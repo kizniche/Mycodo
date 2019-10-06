@@ -27,7 +27,7 @@ import os
 
 from mycodo.config import PATH_INPUTS
 from mycodo.config import PATH_INPUTS_CUSTOM
-from mycodo.utils.system_pi import load_module_from_file
+from mycodo.utils.modules import load_module_from_file
 
 logger = logging.getLogger("mycodo.utils.inputs")
 

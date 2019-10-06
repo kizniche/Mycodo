@@ -76,11 +76,11 @@ from mycodo.utils.function_actions import trigger_action
 from mycodo.utils.function_actions import trigger_function_actions
 from mycodo.utils.github_release_info import github_releases
 from mycodo.utils.inputs import parse_input_information
+from mycodo.utils.modules import load_module_from_file
 from mycodo.utils.statistics import add_update_csv
 from mycodo.utils.statistics import recreate_stat_file
 from mycodo.utils.statistics import return_stat_file_dict
 from mycodo.utils.statistics import send_anonymous_stats
-from mycodo.utils.system_pi import load_module_from_file
 from mycodo.utils.tools import generate_output_usage_report
 from mycodo.utils.tools import next_schedule
 
