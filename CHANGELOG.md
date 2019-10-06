@@ -11,6 +11,7 @@ This release brings a big feature: Custom Controllers. Now users can add Custom 
 ### Features
 
  - Add ability to add Custom Controllers
+ - Add ability to set PWM Output startup and shutdown state ([#699](https://github.com/kizniche/mycodo/issues/699))
  - Add Dashboard Widget: Output PWM Range Slider ([#699](https://github.com/kizniche/mycodo/issues/699))
  - Add ability to use Input/Math measurements with PID setpoint tracking ([#639](https://github.com/kizniche/mycodo/issues/639))
  - Add search to Function select

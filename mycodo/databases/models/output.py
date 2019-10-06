@@ -37,8 +37,10 @@ class Output(CRUDMixin, db.Model):
     pwm_command = db.Column(db.Text, default=None)
     trigger_functions_at_start = db.Column(db.Boolean, default=True)
 
-    state_at_startup = db.Column(db.Boolean, default=None)  # Turn output on (1) or off (0) when daemon starts
-    state_at_shutdown = db.Column(db.Boolean, default=None)  # Turn output on (1) or off (0) when daemon shuts down
+    state_startup = db.Column(db.Text, default=None)
+    startup_value = db.Column(db.Float, default=0)
+    state_shutdown = db.Column(db.Text, default=None)
+    shutdown_value = db.Column(db.Float, default=0)
 
     # PWM
     pwm_hertz = db.Column(db.Integer, default=None)  # PWM Hertz

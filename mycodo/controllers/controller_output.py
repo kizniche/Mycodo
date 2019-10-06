@@ -43,11 +43,12 @@ from mycodo.databases.utils import session_scope
 from mycodo.devices.atlas_scientific_i2c import AtlasScientificI2C
 from mycodo.devices.atlas_scientific_uart import AtlasScientificUART
 from mycodo.mycodo_client import DaemonControl
-from mycodo.utils.influx import read_last_influxdb
 from mycodo.utils.database import db_retrieve_table_daemon
 from mycodo.utils.influx import add_measurements_influxdb
+from mycodo.utils.influx import read_last_influxdb
 from mycodo.utils.influx import write_influxdb_value
 from mycodo.utils.system_pi import cmd_output
+from mycodo.utils.system_pi import return_measurement_info
 
 MYCODO_DB_PATH = 'sqlite:///' + SQL_DATABASE_MYCODO
 
@@ -86,8 +87,10 @@ class OutputController(AbstractController, threading.Thread):
         self.output_pin = {}
         self.output_amps = {}
         self.output_on_state = {}
-        self.output_state_at_startup = {}
-        self.output_state_at_shutdown = {}
+        self.output_state_startup = {}
+        self.output_startup_value = {}
+        self.output_state_shutdown = {}
+        self.output_shutdown_value = {}
         self.trigger_functions_at_start = {}
 
         self.output_on_until = {}
@@ -143,12 +146,32 @@ class OutputController(AbstractController, threading.Thread):
     def run_finally(self):
         # Turn all outputs off
         for each_output_id in self.output_id:
-            if self.output_state_at_shutdown[each_output_id] is False:
+            if self.output_state_shutdown[each_output_id] == '0':
+                self.logger.info(
+                    "Setting Output {id} shutdown state to OFF".format(
+                        id=each_output_id.split('-')[0]))
                 self.output_on_off(
                     each_output_id, 'off', trigger_conditionals=False)
-            elif self.output_state_at_shutdown[each_output_id]:
+
+            elif self.output_state_shutdown[each_output_id] == '1':
+                self.logger.info(
+                    "Setting Output {id} shutdown state to ON".format(
+                        id=each_output_id.split('-')[0]))
                 self.output_on_off(
                     each_output_id, 'on', trigger_conditionals=False)
+
+            elif self.output_state_shutdown[each_output_id] == 'set_duty_cycle':
+                self.logger.info(
+                    "Setting Output {id} shutdown duty cycle to user-set value "
+                    "of {dc} %".format(
+                        id=each_output_id.split('-')[0],
+                        dc=self.output_shutdown_value[each_output_id]))
+                self.output_on_off(
+                    each_output_id,
+                    'on',
+                    duty_cycle=self.output_shutdown_value[each_output_id],
+                    trigger_conditionals=self.trigger_functions_at_start[each_output_id])
+
         self.cleanup_gpio()
 
     def initialize_variables(self):
@@ -187,8 +210,10 @@ class OutputController(AbstractController, threading.Thread):
             self.output_pin[each_output.unique_id] = each_output.pin
             self.output_amps[each_output.unique_id] = each_output.amps
             self.output_on_state[each_output.unique_id] = each_output.on_state
-            self.output_state_at_startup[each_output.unique_id] = each_output.state_at_startup
-            self.output_state_at_shutdown[each_output.unique_id] = each_output.state_at_shutdown
+            self.output_state_startup[each_output.unique_id] = each_output.state_startup
+            self.output_startup_value[each_output.unique_id] = each_output.startup_value
+            self.output_state_shutdown[each_output.unique_id] = each_output.state_shutdown
+            self.output_shutdown_value[each_output.unique_id] = each_output.shutdown_value
             self.output_on_until[each_output.unique_id] = datetime.datetime.now()
             self.output_last_duration[each_output.unique_id] = 0
             self.output_on_duration[each_output.unique_id] = False
@@ -220,15 +245,85 @@ class OutputController(AbstractController, threading.Thread):
     def all_outputs_set_state(self):
         """Turn all outputs on that are set to be on at startup"""
         for each_output_id in self.output_id:
-            if (self.output_state_at_startup[each_output_id] is None or
-                    self.output_type[each_output_id] == 'pwm'):
+            if self.output_state_startup[each_output_id] is None:
                 pass  # Don't turn on or off
-            elif self.output_state_at_startup[each_output_id]:
+
+            # PWM Outputs
+            elif self.output_type[each_output_id] in OUTPUTS_PWM:
+                from mycodo.utils.system_pi import str_is_float
+                if (str_is_float(self.output_state_startup[each_output_id]) and
+                        float(self.output_state_startup[each_output_id]) == 0):
+                    self.logger.info(
+                        "Setting Output {id} startup duty cycle to 0 %".format(
+                            id=each_output_id.split('-')[0]))
+                    self.output_on_off(
+                        each_output_id,
+                        'off',
+                        trigger_conditionals=self.trigger_functions_at_start[each_output_id])
+
+                elif self.output_state_startup[each_output_id] == 'set_duty_cycle':
+                    self.logger.info(
+                        "Setting Output {id} startup duty cycle to user-set"
+                        " value of {dc} %".format(
+                            id=each_output_id.split('-')[0],
+                            dc=self.output_startup_value[each_output_id]))
+                    self.output_on_off(
+                        each_output_id,
+                        'on',
+                        duty_cycle=self.output_startup_value[each_output_id],
+                        trigger_conditionals=self.trigger_functions_at_start[each_output_id])
+
+                elif self.output_state_startup[each_output_id] == 'last_duty_cycle':
+                    device_measurement = db_retrieve_table_daemon(
+                        DeviceMeasurements).filter(
+                        DeviceMeasurements.device_id == each_output_id).all()
+                    measurement = None
+                    for each_meas in device_measurement:
+                        if each_meas.measurement == 'duty_cycle':
+                            measurement = each_meas
+                    channel, unit, measurement = return_measurement_info(
+                        measurement, None)
+
+                    last_measurement = read_last_influxdb(
+                        each_output_id,
+                        unit,
+                        measurement,
+                        channel,
+                        duration_sec=None)
+
+                    if last_measurement:
+                        self.logger.info(
+                            "Setting Output {id} startup duty cycle to last"
+                            " known value of {dc} %".format(
+                                id=each_output_id.split('-')[0],
+                                dc=last_measurement[1]))
+                        self.output_on_off(
+                            each_output_id,
+                            'on',
+                            duty_cycle=last_measurement[1],
+                            trigger_conditionals=self.trigger_functions_at_start[each_output_id])
+                    else:
+                        self.logger.error(
+                            "Output {id} instructed at startup to be set to"
+                            " the last known duty cycle, but a last known "
+                            "duty cycle could not be found in the measurement"
+                            " database".format(
+                                id=each_output_id.split('-')[0]))
+
+            # Non-PWM outputs
+            elif self.output_state_startup[each_output_id] == '1':
+                self.logger.info(
+                    "Setting Output {id} startup state to ON".format(
+                        id=each_output_id.split('-')[0]))
                 self.output_on_off(
                     each_output_id,
                     'on',
                     trigger_conditionals=self.trigger_functions_at_start[each_output_id])
-            else:
+
+            elif self.output_state_startup[each_output_id] == '0':
+                self.logger.info(
+                    "Setting Output {id} startup state to OFF".format(
+                        id=each_output_id.split('-')[0]))
                 self.output_on_off(
                     each_output_id,
                     'off',
@@ -979,8 +1074,10 @@ output_id = '{}'
             self.output_pin[output_id] = output.pin
             self.output_amps[output_id] = output.amps
             self.output_on_state[output_id] = output.on_state
-            self.output_state_at_startup[output_id] = output.state_at_startup
-            self.output_state_at_shutdown[output_id] = output.state_at_shutdown
+            self.output_state_startup[output_id] = output.state_startup
+            self.output_startup_value[output_id] = output.startup_value
+            self.output_state_shutdown[output_id] = output.state_shutdown
+            self.output_shutdown_value[output_id] = output.shutdown_value
             self.output_on_until[output_id] = datetime.datetime.now()
             self.output_time_turned_on[output_id] = None
             self.output_last_duration[output_id] = 0
@@ -1050,8 +1147,10 @@ output_id = '{}'
             self.output_pin.pop(output_id, None)
             self.output_amps.pop(output_id, None)
             self.output_on_state.pop(output_id, None)
-            self.output_state_at_startup.pop(output_id, None)
-            self.output_state_at_shutdown.pop(output_id, None)
+            self.output_state_startup.pop(output_id, None)
+            self.output_startup_value.pop(output_id, None)
+            self.output_state_shutdown.pop(output_id, None)
+            self.output_shutdown_value.pop(output_id, None)
             self.output_on_until.pop(output_id, None)
             self.output_last_duration.pop(output_id, None)
             self.output_on_duration.pop(output_id, None)

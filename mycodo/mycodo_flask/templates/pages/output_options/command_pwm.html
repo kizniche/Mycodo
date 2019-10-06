@@ -4,6 +4,41 @@
     {{form_mod_output.pwm_command(class_='form-control', value=each_output.pwm_command, **{'title': dict_translation['pwm_command']['phrase']})}}
    </div>
 </div>
+
+<div class="col-auto">
+  {{form_mod_output.state_startup.label(class_='control-label')}}
+  <div>
+    <select class="form-control form-tooltip form-dropdown" id="state_startup" name="state_startup" data-placement="top" title="{{dict_translation['state_startup']['phrase']}}">
+      <option value="-1"{% if each_output.state_startup == None %} selected{% endif %}>{{_('Do Nothing')}}</option>
+      <option value="0"{% if each_output.state_startup == '0' %} selected{% endif %}>{{dict_translation['off']['title']}}</option>
+      <option value="set_duty_cycle"{% if each_output.state_startup == 'set_duty_cycle' %} selected{% endif %}>User Set Value</option>
+      <option value="last_duty_cycle"{% if each_output.state_startup == 'last_duty_cycle' %} selected{% endif %}>Last Set Value</option>
+    </select>
+  </div>
+</div>
+<div class="col-auto">
+  {{form_mod_output.startup_value.label(class_='control-label')}}
+  <div>
+    {{form_mod_output.startup_value(class_='form-control', value=each_output.startup_value, **{'title': dict_translation['startup_value']['phrase']})}}
+  </div>
+</div>
+<div class="col-auto">
+  {{form_mod_output.state_shutdown.label(class_='control-label')}}
+  <div>
+    <select class="form-control form-tooltip form-dropdown" id="state_shutdown" name="state_shutdown" data-placement="top" title="{{dict_translation['state_shutdown']['phrase']}}">
+      <option value="-1"{% if each_output.state_startup == None %} selected{% endif %}>{{_('Do Nothing')}}</option>
+      <option value="0"{% if each_output.state_startup == '0' %} selected{% endif %}>{{dict_translation['off']['title']}}</option>
+      <option value="set_duty_cycle"{% if each_output.state_startup == 'set_duty_cycle' %} selected{% endif %}>User Set Value</option>
+    </select>
+  </div>
+</div>
+<div class="col-auto">
+  {{form_mod_output.shutdown_value.label(class_='control-label')}}
+  <div>
+    {{form_mod_output.shutdown_value(class_='form-control', value=each_output.shutdown_value, **{'title': dict_translation['shutdown_value']['phrase']})}}
+  </div>
+</div>
+
 <div class="col-auto">
   {{form_mod_output.trigger_functions_at_start.label(class_='control-label')}}
   <div class="input-group-text">

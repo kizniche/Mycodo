@@ -11,22 +11,22 @@
    </div>
 </div>
 <div class="col-auto">
-  {{form_mod_output.state_at_startup.label(class_='control-label')}}
+  {{form_mod_output.state_startup.label(class_='control-label')}}
   <div>
-    <select class="form-control form-tooltip form-dropdown" id="state_at_startup" name="state_at_startup" data-placement="top" title="{{dict_translation['state_at_startup']['phrase']}}">
-      <option value="-1"{% if each_output.state_at_startup == none %} selected{% endif %}>{{_('Neither')}}</option>
-      <option value="1"{% if each_output.state_at_startup == 1 %} selected{% endif %}>{{dict_translation['on']['title']}}</option>
-      <option value="0"{% if each_output.state_at_startup == 0 %} selected{% endif %}>{{dict_translation['off']['title']}}</option>
+    <select class="form-control form-tooltip form-dropdown" id="state_startup" name="state_startup" data-placement="top" title="{{dict_translation['state_startup']['phrase']}}">
+      <option value="-1"{% if each_output.state_startup == None %} selected{% endif %}>{{_('Do Nothing')}}</option>
+      <option value="1"{% if each_output.state_startup == '1' %} selected{% endif %}>{{dict_translation['on']['title']}}</option>
+      <option value="0"{% if each_output.state_startup == '0' %} selected{% endif %}>{{dict_translation['off']['title']}}</option>
     </select>
   </div>
 </div>
 <div class="col-auto">
-  {{form_mod_output.state_at_shutdown.label(class_='control-label')}}
+  {{form_mod_output.state_shutdown.label(class_='control-label')}}
   <div>
-    <select class="form-control form-tooltip form-dropdown" id="state_at_shutdown" name="state_at_shutdown" data-placement="top" title="{{dict_translation['state_at_shutdown']['phrase']}}">
-      <option value="-1"{% if each_output.state_at_shutdown == none %} selected{% endif %}>{{_('Neither')}}</option>
-      <option value="1"{% if each_output.state_at_shutdown == 1 %} selected{% endif %}>{{dict_translation['on']['title']}}</option>
-      <option value="0"{% if each_output.state_at_shutdown == 0 %} selected{% endif %}>{{dict_translation['off']['title']}}</option>
+    <select class="form-control form-tooltip form-dropdown" id="state_shutdown" name="state_shutdown" data-placement="top" title="{{dict_translation['state_shutdown']['phrase']}}">
+      <option value="-1"{% if each_output.state_shutdown == None %} selected{% endif %}>{{_('Do Nothing')}}</option>
+      <option value="1"{% if each_output.state_shutdown == '1' %} selected{% endif %}>{{dict_translation['on']['title']}}</option>
+      <option value="0"{% if each_output.state_shutdown == '0' %} selected{% endif %}>{{dict_translation['off']['title']}}</option>
     </select>
   </div>
 </div>

@@ -9,6 +9,7 @@ from wtforms import BooleanField
 from wtforms import DecimalField
 from wtforms import HiddenField
 from wtforms import IntegerField
+from wtforms import FloatField
 from wtforms import SelectField
 from wtforms import SelectMultipleField
 from wtforms import StringField
@@ -72,24 +73,10 @@ class OutputMod(FlaskForm):
         ],
         validators=[Optional()]
     )
-    state_at_startup = SelectField(
-        TRANSLATIONS['state_at_startup']['title'],
-        choices=[
-            ("-1", lazy_gettext('Neither')),
-            ("1", TRANSLATIONS['on']['title']),
-            ("0", TRANSLATIONS['off']['title'])
-        ],
-        validators=[DataRequired()]
-    )
-    state_at_shutdown = SelectField(
-        TRANSLATIONS['state_at_shutdown']['title'],
-        choices=[
-            ("-1", lazy_gettext('Neither')),
-            ("1", TRANSLATIONS['on']['title']),
-            ("0", TRANSLATIONS['off']['title'])
-        ],
-        validators=[DataRequired()]
-    )
+    state_startup = SelectField(TRANSLATIONS['state_startup']['title'])
+    startup_value = FloatField(TRANSLATIONS['startup_value']['title'])
+    state_shutdown = SelectField(TRANSLATIONS['state_shutdown']['title'])
+    shutdown_value = FloatField(TRANSLATIONS['shutdown_value']['title'])
     trigger_functions_at_start = BooleanField(
         TRANSLATIONS['trigger_functions_at_start']['title'])
     pwm_hertz = IntegerField(

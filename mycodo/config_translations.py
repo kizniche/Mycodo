@@ -238,12 +238,18 @@ TRANSLATIONS = {
     'output_mode': {
         'title': lazy_gettext('Output Mode'),
         'phrase': lazy_gettext('Mode to run the output')},
-    'state_at_startup': {
-        'title': lazy_gettext('Startup State'),
-        'phrase': lazy_gettext('When Mycodo starts, set the output state')},
-    'state_at_shutdown': {
+    'shutdown_value': {
+        'title': lazy_gettext('Shutdown Value'),
+        'phrase': lazy_gettext('The output value to set when Mycodo shuts down')},
+    'startup_value': {
+        'title': lazy_gettext('Startup Value'),
+        'phrase': lazy_gettext('The output value to set when Mycodo starts up')},
+    'state_shutdown': {
         'title': lazy_gettext('Shutdown State'),
         'phrase': lazy_gettext('When Mycodo shuts down, set the output state')},
+    'state_startup': {
+        'title': lazy_gettext('Startup State'),
+        'phrase': lazy_gettext('When Mycodo starts, set the output state')},
     'on_command': {
         'title': lazy_gettext('On Command'),
         'phrase': lazy_gettext('Command to execute (as user mycodo) when the output is instructed to turn on')},

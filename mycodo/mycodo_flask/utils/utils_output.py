@@ -80,8 +80,8 @@ def output_add(form_add):
                 new_output.channel = 0
 
                 if output_type == 'wired':
-                    new_output.state_at_startup = 0
-                    new_output.state_at_shutdown = 0
+                    new_output.state_startup = '0'
+                    new_output.state_shutdown = '0'
 
                 elif output_type == 'wireless_rpi_rf':
                     new_output.pin = None
@@ -232,27 +232,23 @@ def output_mod(form_output):
             if form_output.baud_rate.data:
                 mod_output.baud_rate = form_output.baud_rate.data
 
-        if (form_output.state_at_startup.data == '-1' or
-                mod_output.output_type in OUTPUTS_PWM):
-            mod_output.state_at_startup = None
-        elif form_output.state_at_startup.data is not None:
-            try:
-                mod_output.state_at_startup = bool(int(form_output.state_at_startup.data))
-            except Exception:
-                logger.error(
-                    "Error: Could not handle form_output.state_at_startup.data: "
-                    "{}".format(form_output.state_at_startup.data))
+        if form_output.state_startup.data == '-1':
+            mod_output.state_startup = None
+        elif form_output.state_startup.data is not None:
+            mod_output.state_startup = form_output.state_startup.data
 
-        if (form_output.state_at_shutdown.data == '-1' or
-                mod_output.output_type in OUTPUTS_PWM):
-            mod_output.state_at_shutdown = None
-        elif form_output.state_at_shutdown.data is not None:
-            try:
-                mod_output.state_at_shutdown = bool(int(form_output.state_at_shutdown.data))
-            except Exception:
-                logger.error(
-                    "Error: Could not handle form_output.state_at_shutdown.data: "
-                    "{}".format(form_output.state_at_shutdown.data))
+        if (hasattr(form_output, 'startup_value') and
+                form_output.startup_value.data):
+            mod_output.startup_value = form_output.startup_value.data
+
+        if form_output.state_shutdown.data == '-1':
+            mod_output.state_shutdown = None
+        elif form_output.state_shutdown.data is not None:
+            mod_output.state_shutdown = form_output.state_shutdown.data
+
+        if (hasattr(form_output, 'shutdown_value') and
+                form_output.shutdown_value.data):
+            mod_output.shutdown_value = form_output.shutdown_value.data
 
         if not error:
             db.session.commit()
